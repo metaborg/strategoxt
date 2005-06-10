@@ -65,6 +65,7 @@
    Str                                                -- _1,
    Char                                               -- _1,
    Wld                                                -- KW["_"],
+   BuildDefaultPT                                     -- KW["_"] _1,
    BuildDefault                                       -- KW["_"] _1,
    Inj                                                -- _1,
 
