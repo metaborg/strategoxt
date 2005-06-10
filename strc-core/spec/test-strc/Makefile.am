@@ -5,13 +5,14 @@ STRPROGS = \
   test04.str \
   test05.str \
   test06.str \
-  test07.str
+  test07.str \
+  test08.str
 
-TESTS = \
-  $(STRPROGS:.str=.str.sh)
+TESTS = $(STRPROGS:.str=.str.sh)
 
 TESTS_ENVIRONMENT =\
-  STRC="$(bindir)/strc --verbose 1" \
+  STRC="$(bindir)/strc --verbose 3" \
   STRATEGO_LIB="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS)
+

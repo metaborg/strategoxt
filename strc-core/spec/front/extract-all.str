@@ -5,8 +5,9 @@ module extract-all
 imports needed-defs
 strategies
 
-  extract-all-io = io-wrap(Specification([id,Strategies(all-defs)]))
+  extract-all-io = 
+    io-wrap(
+      Specification([id,id,Strategies(all-defs)])
+    )
 
-(*
-	// where(dtime; debug(!"  desugar-spec: "))
-*)
+
