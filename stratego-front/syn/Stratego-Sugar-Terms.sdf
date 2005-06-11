@@ -8,7 +8,7 @@ exports
   context-free syntax
     LId 			-> LID  {cons("ListVar")}
     LID				-> Var  {cons("Var")}
-    LId				-> ID
+    LID				-> ID
 
   context-free syntax
     "_" PreTerm 		 -> PreTerm {cons("BuildDefaultPT")}
