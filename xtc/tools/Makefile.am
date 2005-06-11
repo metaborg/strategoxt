@@ -7,4 +7,4 @@ pkgdata_DATA  = stratego-xt-xtc-tools.str strategoxt-xtc-tools.str
 
 EXTRA_DIST    = $(pkgdata_DATA) $(wildcard *.str)
 CLEANFILES    = $(wildcard *.dep)
-BOOTCLEANFILES = $(pkgdata_DATA)
+#BOOTCLEANFILES = $(pkgdata_DATA)
