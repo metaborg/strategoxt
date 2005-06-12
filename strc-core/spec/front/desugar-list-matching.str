@@ -46,7 +46,7 @@ rules
 
   ListVarScope :
     SDefT(f, as1, as2, s) -> SDefT(f, as1, as2', s)
-    where <map(try(?ListVar(<id>)))> as2 => as2'
+    where <map(try(DefaultVarDec(?ListVar(<id>)) + VarDec(?ListVar(<id>),id)))> as2 => as2'
 
   SingleListVar :
     Var(ListVar(x)) -> Var(x)

@@ -41,8 +41,8 @@ strategies
   def-use-def = 
   where(
     {| Context, MarkVar :
-      topdown(try(Var(?ListVar(<id>))))
-      ; !Scope(<tvars>, <id>)
+      //topdown(try(Var(?ListVar(<id>))))
+      !Scope(<tvars>, <id>)
       ; mark-scope
       ; ?Scope(_, <id>)
       ; (sdef-ud <+ rdef-ud <+ overlay-ud)

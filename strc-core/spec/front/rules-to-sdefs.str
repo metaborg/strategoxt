@@ -20,7 +20,7 @@ rules
   RDtoSD : 
     RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), SRule(r)))
     where <declared-vars> ys => ys'
-        ; <tvars; map(try(?ListVar(<id>)))> r => vs
+        ; <tvars> r => vs
 
   DeclareVariables :
     SDef(f, xs, s) -> SDefT(f, xs, [], Scope(<tvars> s, s))
@@ -28,7 +28,7 @@ rules
   DeclareVariables :
     SDefT(f, xs, ys, s) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), s))
     where <declared-vars> ys => ys'
-        ; <tvars; map(try(?ListVar(<id>)))> s => vs
+        ; <tvars> s => vs
 
 //  ExpandCall :
 //    Call(f, ss) -> CallT(f, ss, [])

@@ -34,7 +34,7 @@ libexec_PROGRAMS =				\
 	desugar					\
 	stratego-warnings			\
 	extract					\
-	extract-all 				\
+	extract-all				\
 	lift-dynamic-rules
 
 LDADD           += $(SSL_LIBS)

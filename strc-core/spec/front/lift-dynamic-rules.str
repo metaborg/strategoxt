@@ -114,7 +114,7 @@ strategies
     where {| ContextVar : <DeclareContextVars> x*; <f> s => s' |}
 
   DeclareContextVars =
-    map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
+    map({?x; rules(ContextVar : x -> x)})
 
 strategies
 
@@ -325,15 +325,15 @@ strategies
    */
   DummifyTerm :
     Term|[ x ]| -> Term|[ [DR_DUMMY()] ]| 
-    where <not(ContextVar + ListVar(ContextVar))> x
+    where <not(ContextVar)> x
 
   DummifyTerm :
     Term|[ x@t ]| -> <alltd(DummifyTerm)> Term|[ t ]|
-    where <not(ContextVar + ListVar(ContextVar))> x
+    where <not(ContextVar)> x
 
   DummifyTerm :
     Term|[ x@t ]| -> Term|[ x ]|
-    where <ContextVar + ListVar(ContextVar)> x
+    where <ContextVar> x
 
   DummifyTerm :
     Term|[ _ ]| -> Term|[ [DR_DUMMY()] ]|
@@ -375,7 +375,7 @@ rules
 
     // Determine the context variables to be stored in the closure
     ; <tvars; map(!Var(<id>))> t1' => keys
-    ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t1, t2, s) => vals1
+    ; <tvars; filter(test(ContextVar); !Var(<id>))> (t1, t2, s) => vals1
     ; <diff> (vals1, keys) => t*
 
     ; !(f, (<length> as1, <length> as2)) => rsig
@@ -395,7 +395,7 @@ rules
         // aux-rule will receive pattern vars and entire LHS as additional term args.
         ; <tvars> t1 => t1vars // *all* pattern variables in LHS t1
         ; <concat> [as2,
-                    <map(try(?ListVar(<id>)); !DefaultVarDec(<id>))> t1vars,
+                    <map(!DefaultVarDec(<id>))> t1vars,
                     [DefaultVarDec(x)]
                    ] => as2' // add them to term args as2 (for passing to aux- rule)
 
