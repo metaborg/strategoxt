@@ -25,9 +25,8 @@ bootclean :
 libxtclib.c : 
 	$(STRC)/bin/strc -c --library --verbose 2 --dr new \
         -I ../src \
-        -i ./xtclib.str -o libxtclib.rtree 
-
-#        rm libxtclib.str
+        -i ./xtclib.str -o libxtclib.rtree && \
+        rm libxtclib.str
 
 PARSESTRATEGO = $(STRATEGO_FRONT)/bin/parse-stratego
 .str.rtree :
