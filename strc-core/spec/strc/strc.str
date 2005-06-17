@@ -32,33 +32,33 @@ strategies
     if-verbose2(dbg(|"front-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
       get-infile
-      ; pack-stratego				; fc(|"Stratego-Sugar-Cong")
+      ; pack-stratego				; fc0(|"Stratego-Sugar-Cong", "pack")
       ; output-ast
       ; if-not-lib(add-main)
-      ; repair-types				; fc(|"Stratego-Sugar-Cong")
-      ; pre-desugar				; fc(|"Stratego-Sugar-1")
-      ; combine-sections			; fc(|"Stratego-Sugar-1")
-      ; variables-to-constructors		; fc(|"Stratego-Sugar-1")
-      ; raise-annotations			; fc(|"Stratego-Sugar-2")
-      ; define-lrules				; fc(|"Stratego-Sugar-2")
+      ; repair-types				; fc5(|"Stratego-Sugar-Cong", "fe-rep")
+      ; pre-desugar				; fc1(|"Stratego-Sugar-1", "fe-des1")
+      ; combine-sections			; fc2(|"Stratego-Sugar-1", "fe-comb")
+      ; variables-to-constructors		; fc2(|"Stratego-Sugar-1", "fe-vtc")
+      ; raise-annotations			; fc1(|"Stratego-Sugar-2", "fe-ra1")
+      ; define-lrules				; fc2(|"Stratego-Sugar-2", "fe-dlr")
       ; lift-dynamic-rules			
       ; stratego-desugar			
-      ; raise-annotations			; fc(|"Stratego-Sugar-3")
+      ; raise-annotations			; fc1(|"Stratego-Sugar-3", "fe-ra2")
       ; use-def					
-      ; check-constructors			; fc(|"Stratego-Sugar-3")
-      ; expand-overlays				; fc(|"Stratego-Sugar-3")
-      ; rules-to-sdefs				; fc(|"Stratego-Sugar-3")
-      ; desugar-list-matching			; fc(|"Stratego-Sugar-4")
-      ; desugar-default-vardec			; fc(|"Stratego-Sugar-4")
-      ; introduce-congdefs			; fc(|"Stratego-Sugar-4")
-      ; rename-vars				; fc(|"Stratego-Sugar-4")
-      ; desugar 				; fc(|"Stratego-Sugar-5")
-      ; output-frontend				; fc(|"Stratego-Sugar-5")
-      ; if-lib(extract-all, extract)		; fc(|"Stratego-Sugar-5")
-      ; stratego-warnings			; fc(|"Stratego-Sugar-5")
-      ; rename-defs				; fc(|"Stratego-Sugar-5")
-      ; simplify1				; fc(|"Stratego-Sugar-Cong")
-      ; define-congruences			; fc(|"Stratego-Core")
+      ; check-constructors			; fc3(|"Stratego-Sugar-3", "fe-cc")
+      ; expand-overlays				; fc2(|"Stratego-Sugar-3", "fe-eo")
+      ; rules-to-sdefs				; fc2(|"Stratego-Sugar-3", "fe-rts")
+      ; desugar-list-matching			; fc1(|"Stratego-Sugar-4", "fe-dlm")
+      ; desugar-default-vardec			; fc2(|"Stratego-Sugar-4", "fe-ddv")
+      ; introduce-congdefs			; fc2(|"Stratego-Sugar-4", "fe-cdf")
+      ; rename-vars				; fc2(|"Stratego-Sugar-4", "fe-rnv")
+      ; desugar 				; fc1(|"Stratego-Sugar-5", "fe-des")
+      ; output-frontend				; fc5(|"Stratego-Sugar-5", "fe-of")
+      ; if-lib(extract-all, extract)		; fc2(|"Stratego-Sugar-5", "fe-extr")
+      ; stratego-warnings			; fc4(|"Stratego-Sugar-5", "fe-warn")
+      ; rename-defs				; fc2(|"Stratego-Sugar-5", "fe-rnd")
+      ; simplify1				; fc2(|"Stratego-Sugar-Cong", "fe-sim")
+      ; define-congruences			; fc0(|"Stratego-Core", "fe-cong")
     )
 
   optimize =
@@ -155,21 +155,21 @@ strategies
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
       ; save-as1(!".can")
-      ; fc(|"Stratego-Core")
+      ; fc1(|"Stratego-Core", "be-can")
       ; olevel1(
           lift-definitions
       	  ; save-as1(!".opt15")
           ; simplify1
       	  ; save-as1(!".opt16")
-          ; fc(|"Stratego-Core")
+          ; fc1(|"Stratego-Core", "be-lift")
         )
       ; olevel3(
 	  bound-unbound-vars
       	  ; save-as3(!".opt17")
-          ; fc(|"Stratego-Core")
+          ; fc1(|"Stratego-Core", "be-buv")
 	)
       ; s2c
-      ; fc(|"C")
+      ; fc0(|"C", "be-c")
       ; ac2abox
       ; abox2text
       ; rename-to(get-outfile(!".c"))
@@ -213,7 +213,19 @@ strategies
 
   // format checking
 
-  fc(|format) =
+  fc0(|format, phase) = fc(|format, 0, phase)
+  fc1(|format, phase) = fc(|format, 1, phase)
+  fc2(|format, phase) = fc(|format, 2, phase)
+  fc3(|format, phase) = fc(|format, 3, phase)
+  fc4(|format, phase) = fc(|format, 4, phase)
+  fc5(|format, phase) = fc(|format, 5, phase)
+
+  fc(|format, n, phase) =
+    if <geq>(<get-config> "--format-check", n) then
+      fc(|format, phase)
+    end
+
+  fc(|format, phase) =
     where(
       <concat-strings>[format, ".rtg-nf"]
       ; xtc-find => format'
@@ -221,9 +233,12 @@ strategies
     if not(xtc-transform(!"format-check", 
                          !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
     then
-	save-as(!<concat-strings>[".", format])
+	save-as(!<concat-strings>[".", phase, ".", format])
 	; ?FILE(name)
-	; log(|Error, <concat-strings>["file ", name, "does not satisfy format ", format])
+	; log(|Error, 
+		<concat-strings>["file ", name, "does not satisfy format ", format, 
+		"\nThis indicates a bug in the compiler\n",
+		"Please notify stratego-bugs@cs.uu.nl"])
 	; fail
     end
 
