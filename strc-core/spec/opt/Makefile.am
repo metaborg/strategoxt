@@ -14,11 +14,12 @@ LDADD           += $(SSL_LIBS)
 
 libexec_PROGRAMS = simplify1 simplify2 simplify3		    \
 		   fusion inline dead-def-elim const-prop	    \
-		   dead-var-elim				    \
 		   lift-definitions canonicalize bound-unbound-vars \
 		   worker-wrapper				    \
-		   define-congruences defs-to-external-defs	    \
-		   effects-analysis
+		   define-congruences defs-to-external-defs	    
+
+#		   effects-analysis
+#		   dead-var-elim				    
 
 check_PROGRAMS 	 = bound-unbound-vars-test \
 		   const-prop-test const-prop-test 

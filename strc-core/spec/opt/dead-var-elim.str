@@ -53,7 +53,7 @@ strategies
     Scope(filter(not(!Var(<id>); ElimVar)), id)
 
   DeclareAlive =
-    ?x; rules(ElimVar : Var(x) -> Undefined)
+    ?x; rules(ElimVar+x : Var(x))
 
   mark-build-term =
     alltd(where({?Var(x); override rules(ElimVar : Var(x) -> Undefined)}))
@@ -65,7 +65,7 @@ strategies
     Match(
       alltd(
         {x : (?Var(x){"bound"} + ?Var(x){"(un)bound"} + ?Var(x){})
-         ; override rules(ElimVar : Var(x) -> Undefined)}
+         ; rules(ElimVar.x :- Var(x))}
       )
       ; alltd(?Var(<!Var(<id>)>){_}; ElimVar)
     )
