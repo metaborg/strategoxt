@@ -26,14 +26,13 @@ SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
 # PRETTY-PRINTING ####################################################
 
 %.txt: % 
-	$(prefix)/bin/pp-stratego -p Stratego-Sugar-pretty.pp.af -a -i $< -o $@ --annotations
+	$(prefix)/bin/pp-stratego -a -i $< -o $@ --annotations
 
 %.atxt : %
 	$(ATERM)/bin/baffle -wt -i $< -o $@
 
 %.ttxt : %
 	$(ATERM_FRONT)/bin/pp-aterm -i $< -o $@ --verbose 0
-
 
 # FORMATS ###########################################################
 

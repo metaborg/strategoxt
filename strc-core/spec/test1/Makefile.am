@@ -25,7 +25,10 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
                   test67 test68 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04 \
-		  let-test
+		  let-test \
+		  cs-test01
+
+check_DATA = ExpStratego.tbl Expressions.str
 
 # test26 global choice
 # test44 contexts
@@ -135,3 +138,32 @@ nodist_qcons_test03_SOURCES = qcons-test03.c
 nodist_qcons_test04_SOURCES = qcons-test04.c
 
 nodist_let_test_SOURCES = let-test.c
+
+nodist_cs_test01_SOURCES = cs-test01.c
+
+SDF2RTG_FLAGS = --main $*
+PGEN_FLAGS = -m $*
+SDFINCLUDES = -I $(top_srcdir)/../stratego-front/syn
+
+.def.rtg :
+	$(STRATEGO_REGULAR)/bin/sdf2rtg $(SDF2RTG_FLAGS) -i $< -o $@
+
+.rtg.str :
+	$(STRATEGO_REGULAR)/bin/rtg2sig --module `basename "$*"` -i $< -o $@
+
+.sdf.def :
+	$(SDF_FRONT)/bin/pack-sdf $(SDFINCLUDES) -i $< -o $@ --dep $*.dep
+
+.def.tbl :
+	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
+
+cs-test01.tree : ExpStratego.tbl Expressions.def Expressions.str
+
+ExpStratego.def : Expressions.sdf ExpStratego.sdf
+
+
+%.atree : %.str
+	$(top_srcdir)/../stratego-front/parse/parse-stratego -i $< -o $@ --assimilation off --verbose 4
+
+%.btree : %.str
+	$(top_srcdir)/../stratego-front/parse/parse-stratego -i $< -o $@ --assimilation on --verbose 4
