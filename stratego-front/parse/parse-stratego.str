@@ -35,6 +35,9 @@ strategies
   + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
 	      !"--desugaring on/off : turn desugaring on or off (default: off)")
 
+  + ArgOption("--assimilation", where(<set-config>("--assimilation", <id>)),
+	      !"--assimilation on/off : turn assimilation on or off (default: on)")
+
   io-parse-stratego =
     xtc-io-wrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
@@ -73,12 +76,14 @@ strategies
 
     ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
 
-    ; xtc-transform(!"meta-explode",
-        !["-b" | <concat>
-           [ <pass-verbose>
-           , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
-           ]
-         ])
+    ; if not(<get-config> "--assimilation" => "off") then
+        xtc-transform(!"meta-explode",
+          !["-b" | <concat>
+             [ <pass-verbose>
+             , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
+             ]
+           ])
+      end
 
     ; where(if-not-silent(read-from ; check-module-name(|base)))
 
