@@ -25,7 +25,9 @@ strategies
     alltd(
       ListVarAsTail; dlm-in-build(dlm)
       <+ ListVarInBuild; dlm-in-build(dlm)
+      <+ ConcInBuild; dlm-in-build(dlm)
       <+ SingleListVar
+      <+ ConcInBuild
       <+ App(dlm, dlm-in-build(dlm))
       <+ RootApp(dlm)
     )
@@ -34,6 +36,7 @@ strategies
     alltd(
       ListVarAsTail; dlm-in-match(dlm)
       <+ SingleListVar
+      <+ ConcInMatch
       <+ App(dlm, dlm-in-match(dlm))
       <+ RootApp(dlm)
     )
@@ -67,3 +70,10 @@ rules
   ListVarInBuild : 
     Term|[ Cons(lid, t){^pt} ]| -> <desugar>Term|[ <conc(|)>(lid, t){^pt} ]|
     where <not(is-nil)> t
+
+  ConcInMatch =
+    ?Term|[ Conc(t1, t2){^pt} ]|
+    ; error
+
+  ConcInBuild :
+    Term|[ Conc(t1, t2){^pt} ]| -> <desugar>Term|[ <conc(|)>(t1, t2){^pt} ]|
