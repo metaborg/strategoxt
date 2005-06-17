@@ -430,6 +430,8 @@ rules
   is-conc = ?prod([_,_,_],cf(iter-star(_)),_)
   is-conc = ?prod([_,_,_],iter-star(_),_)
 
+  is-conc = ?prod([_,_,_,_,_],cf(iter-star-sep(_,_)),_)
+
   is-none = ?prod([], cf(opt(_)), _)
   is-none = ?prod([], opt(_), _)
 
@@ -474,6 +476,9 @@ rules
   Constr1 : prod([_,_],      cf(iter(_)),_)       -> "Conc" // after layout removal
   Constr1 : prod([_,_,_],    iter-sep(_,_),_)	  -> "Conc"
   Constr1 : prod([_,_],      iter(_),_)           -> "Conc"
+
+  Constr1 : prod([_,_,_,_,_],cf(iter-star-sep(_,_)),_) -> "Conc"
+  Constr1 : prod([_,_,_],cf(iter-star-sep(_,_)),_) -> "Conc"
 
   Constr1 : prod([], cf(opt(_)), _)		  -> "None"
   Constr1 : prod([], opt(_), _)			  -> "None"
