@@ -9,6 +9,8 @@ signature
     opt          : Term                     -> Term
     layout       : Term
 
+    ConsAux      : a * List(a) -> List(a)
+
 rules
 
   // There is no Wld/0 in asfix so this not buggy.
@@ -64,14 +66,17 @@ strategies
 
   trm-explode =
     TrmMetaVar 
-    <+ TrmLMetaVar 
+    <+ LstMetaVar 
     <+ TrmInt 
     <+ TrmStr 
     <+ TrmFromTerm 
     <+ TrmFromApp
     <+ TrmFromStr 
-    <+ TrmAnno 
-    <+ TrmConc 
+    <+ TrmAnno
+    <+ ConcAssocR; trm-explode
+    <+ ConcCons; trm-explode
+    <+ ConcNil; trm-explode
+    <+ TrmConc
     <+ TrmNil 
     <+ TrmCons 
     <+ TrmOp
@@ -83,11 +88,18 @@ strategies
     meta-var(x) -> Var(x) 
 
   LstMetaVar :
-    meta-listvar(x) -> Var(ListVar(x))
+    meta-listvar(x) -> Var(y)
+    where if <explode-string; last> x => '*' then
+	    !ListVar(x)
+	  else
+	    !x 
+          end => y
 
+/*
   TrmLMetaVar :	
     meta-listvar(x) -> 
     NoAnnoList(Op("Cons", [Var(ListVar(x)), NoAnnoList(Op("Nil", []))]))
+*/
 
   TrmInt = 
     !NoAnnoList(Int(<is-int>))
@@ -122,12 +134,36 @@ strategies
     [x | xs] -> 
     NoAnnoList(Op("Cons",[<trm-explode>x, <trm-explode> xs]))
 
+  TrmCons :
+    ConsAux(x, xs) -> 
+    NoAnnoList(Op("Cons",[<trm-explode>x, <trm-explode> xs]))
+
+  ConcAssocR : 
+    Conc(Conc(t1, t2), t3) -> Conc(t1, Conc(t2, t3))
+
+  ConcCons :
+    Conc([t1 | t2], t3) -> ConsAux(t1, Conc(t2, t3))
+
+  ConcCons :
+    Conc(ConsAux(t1, t2), t3) -> ConsAux(t1, Conc(t2, t3))
+
+  ConcNil :
+    Conc([], t) -> t
+
+  ConcNil :
+    Conc(t, []) -> t
+   
+  TrmConc :
+    Conc(t1, t2) -> NoAnnoList(Op("Conc", [<trm-explode>t1, <trm-explode>t2]))
+
+/*
   TrmConc :
     Conc(ts1,ts2) -> t
     where <try(![<LstMetaVar>])
 	   ; foldr(!<TrmLMetaVar <+ trm-explode> ts2, 
 		   !NoAnnoList(Op("Cons", [<Fst>, <Snd>])), 
 		   trm-explode)> ts1 => t
+*/
 
   str-explode =
     \ meta-var(x) -> Match(Var(x)) \
