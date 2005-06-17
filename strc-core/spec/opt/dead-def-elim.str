@@ -56,12 +56,12 @@ strategies
 
   DeclareDefDead =
     ?SDefT(f, _, _, _)
-    ; rules(DefDead : SDefT(f, _, _, _) -> ())
+    ; rules(DefDead+f : SDefT(f, _, _, _) -> ())
 
   DeleteDeadDefinitions =
      Let(filter(not(DefDead)), id)
 
   DeclareNotDead =
      ?CallT(SVar(f), _, _)
-     ; override rules(DefDead : SDefT(f, _, _, _) -> Undefined)
+     ; rules(DefDead.f :- SDefT(f, _, _, _))
   
