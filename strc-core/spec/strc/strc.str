@@ -339,7 +339,9 @@ strategies // COMPILER COMPONENTS
 
   pack-stratego			= comp(|"pack-stratego", 
 					<concat> [<dep-name>, <get-include-dirs>, <pass-keep>,
-					  <get-config < !["--asfix"] + ![]> "--asfix"])
+					  <get-config < !["--asfix"] + ![]> "--asfix",
+					  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check"])
+
   pre-desugar			= comp(|"pre-desugar")
   repair-types			= comp(|"repair-types")
   combine-sections		= comp(|"combine-sections")

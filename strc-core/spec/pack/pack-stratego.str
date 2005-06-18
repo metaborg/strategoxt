@@ -87,10 +87,10 @@ strategies
          is-qualified =
            ?['/' | _] + ?['.' | _ ]
 
-     in ?(<id>, _)
-      ; ?IncludePathName(<qualify-pathname>)
+     in ?(IncludePathName(<qualify-pathname>), _)
       ; if file-exists then
           include-pathname
+          ; fc(|"Stratego-Sugar-Cong")
         else
           <fatal-error> ["pack-stratego: error: file ", <id>, " does not exist\n"]
         end
@@ -100,8 +100,7 @@ strategies
    * Include from some location in the include path
    */
   pack-stratego-parse-stratego =
-      ?(<id>, includes)
-    ; ?IncludeFromPath(<id>)
+      ?(IncludeFromPath(<id>), includes)
     ; guarantee-extension(|"str")
     ; remove-extension => mod
     ; <fetch-elem(
@@ -110,6 +109,31 @@ strategies
        <+ include-from-xtc-cached(|mod)
        <+ include-from-xtc(|mod)
        )> includes
+    ; fc(|"Stratego-Sugar-Cong")
+
+  fc(|format) =
+  where(
+  if <geq>(<get-config> "--format-check", 0) then
+    ?(file, <id>);
+    where(
+      <concat-strings>[format, ".rtg-nf"]
+      ; xtc-find => format'
+    )
+    ; write-to
+    ; if not(xtc-transform(!"format-check", 
+                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
+    then
+	copy-to(!<concat-strings>[<base-filename> file, ".", "parse.", format] => name)
+	; log(|Error, 
+		<concat-strings>["\nfile `", file, "' does not satisfy format `", format,"'\n",
+		"See file `", name, "'\n",
+		"This problem may be caused by importing a file parsed with an old version of the Stratego syntax."])
+	; fail
+    else
+      id // debug(!"fc succeeded: ")
+    end
+  end
+  )
 
 strategies
 
@@ -132,11 +156,7 @@ strategies
 
   include-from-dir(|mod) :
     IncludeDir(dir) -> <include-pathname> file
-      where 
-        ( <concat-strings; file-exists> [dir,"/", mod, ".str"] 
-        + <concat-strings; file-exists> [dir,"/", mod, ".cr"] 
-        + <concat-strings; file-exists> [dir,"/", mod, ".r"] 
-        ) => file
+      where <concat-strings; file-exists> [dir,"/", mod, ".str"] => file
 
   include-from-xtc-cached(|mod) :
     IncludeXTC() -> (file, tree)
@@ -154,9 +174,8 @@ strategies
     ?file ; log(|Notice(),<conc-strings>("  including ",file))
 
   log-include-xtc =
-    ?file ; log(|Notice(),<concat-strings>["  including ",file," from XTC repository"])
-
-
+    ?file 
+    ; log(|Notice(),<concat-strings>["  including ",file," from XTC repository"])
 
 strategies
 
