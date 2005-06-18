@@ -46,7 +46,9 @@ strategies
       ; raise-annotations			; fc1(|"Stratego-Sugar-3", "fe-ra2")
       ; use-def					
       ; check-constructors			; fc3(|"Stratego-Sugar-3", "fe-cc")
+						; save-as2(!".fe-cc")
       ; expand-overlays				; fc2(|"Stratego-Sugar-3", "fe-eo")
+					
       ; rules-to-sdefs				; fc2(|"Stratego-Sugar-3", "fe-rts")
       ; desugar-list-matching			; fc1(|"Stratego-Sugar-4", "fe-dlm")
       ; desugar-default-vardec			; fc2(|"Stratego-Sugar-4", "fe-ddv")
