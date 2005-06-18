@@ -1,4 +1,4 @@
-\literate[Abox-2-html]
+/*
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
@@ -23,7 +23,7 @@
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
-\begin{code}
+*/
 module Abox-2-html
 imports 
   liblib
@@ -220,4 +220,4 @@ make-html-comment =
    reverse;
    remove-trailing(?"");
    map( \x -> [x,BR] \ )
-\end{code}
+
