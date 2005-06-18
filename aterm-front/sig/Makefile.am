@@ -2,7 +2,8 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SIGS             = ATerms.str
-pkgdata_DATA     = ATerms.rtree
+pkgdata_DATA     = ATerms.str
+#pkgdata_DATA     = ATerms.rtree
 
 EXTRA_DIST       = $(SIGS) $(pkgdata_DATA) 
 CLEANFILES       = $(wildcard *.dep)

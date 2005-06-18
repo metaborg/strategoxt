@@ -8,7 +8,8 @@ sdflib = \
   sdf/production/attributes.str \
   sdf/production/utils.str
 
-nobase_pkgdata_DATA = $(sdflib:.str=.rtree)
+nobase_pkgdata_DATA = $(sdflib)
+#nobase_pkgdata_DATA = $(sdflib:.str=.rtree)
 
-EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree)
-BOOTCLEANFILES = $(sdflib:.str=.rtree)
+#EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree)
+#BOOTCLEANFILES = $(sdflib:.str=.rtree)

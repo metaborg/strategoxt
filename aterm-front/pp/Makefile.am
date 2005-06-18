@@ -8,11 +8,14 @@ bin_PROGRAMS     = pp-aterm
 libexec_PROGRAMS = PpTerm
 LDADD += $(SSL_LIBS)
 
-pkgdata_DATA = pp-aterm-options.rtree ugly-print.rtree
+pkgdata_DATA = pp-aterm-options.str ugly-print.str ugly-print.meta
+
+#pkgdata_DATA = pp-aterm-options.rtree ugly-print.rtree
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) $(pkgdata_DATA)
+BOOTCLEANFILES = $(wildcard *.c) 
+#$(pkgdata_DATA)
 
 SCFLAGS     = --main io-$*
 STRINCLUDES = -I $(XTC)/share/xtc \

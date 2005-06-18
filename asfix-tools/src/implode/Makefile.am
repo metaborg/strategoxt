@@ -4,7 +4,8 @@ include $(wildcard *.dep)
 SUBDIRS      	= data
 
 bin_PROGRAMS	= implode-asfix sglri 
-pkgdata_DATA 	= implode-asfix.str error-reporting.rtree
+pkgdata_DATA 	= implode-asfix.str error-reporting.str
+#pkgdata_DATA 	= implode-asfix.str error-reporting.rtree
 
 SCFLAGS = --main $*
 STRINCLUDES = \

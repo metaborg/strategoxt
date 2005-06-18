@@ -22,10 +22,13 @@ STRINCLUDES    = -I $(top_srcdir)/lib \
                  -I $(GPP)/share/gpp
 LDADD += $(SSL_LIBS)
 
-pkgdata_DATA   = regular-xtc-tools.rtree tool-doc.rtree Makefile.regular
+pkgdata_DATA   = regular-xtc-tools.str tool-doc.str Makefile.regular
+
+#pkgdata_DATA   = regular-xtc-tools.rtree tool-doc.rtree Makefile.regular
 
 EXTRA_DIST     = $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree) 
+BOOTCLEANFILES = $(wildcard *.c) 
+#$(wildcard *.rtree) 
 
 
