@@ -106,14 +106,14 @@ strategies
     ; <fetch-elem(
           include-from-dir-cached(|mod)
        <+ include-from-dir(|mod)
-       <+ include-from-xtc-cached(|mod)
        <+ include-from-xtc(|mod)
+       <+ include-from-xtc-cached(|mod)
        )> includes
     ; fc(|"Stratego-Sugar-Cong")
 
   fc(|format) =
   where(
-  if <geq>(<get-config> "--format-check", 0) then
+  if <geq>(<get-config> "--format-check", 1) then
     ?(file, <id>);
     where(
       <concat-strings>[format, ".rtg-nf"]
