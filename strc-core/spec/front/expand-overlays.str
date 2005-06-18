@@ -13,7 +13,7 @@ strategies
 	     ExpandOverlayInMatch; ElimBuildDefaultMatch,
 	     ExpandOverlayInBuild; ElimBuildDefaultBuild,
 	     fail)> def1* => def2*
-	; <conc>(<map(Overlay-to-Congdef)> ol*, def2*) => def3*
+	; <conc>(<filter(Overlay-to-Congdef)> ol*, def2*) => def3*
 
   DeclareExpandOverlay =
     (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|)
@@ -86,7 +86,7 @@ rules
   Overlay-to-Congdef :
     Overlay(f, xs, t) -> SDefT(f, xdecs, [], s)
     where <map(!VarDec(<id>, DefaultStrat))> xs => xdecs
-	; <term-to-cong <+ debug(!"not a term: "); fatal-error> t => s
+	; <term-to-cong <+ <warn(|"Cannot generate congruence definition from overlay definition")> [f, "/", <length; int-to-string> xs]; fail> t => s
 
   term-to-cong : 
     Var(x) -> CallT(SVar(x), [], [])
