@@ -25,7 +25,9 @@ strategies
    * Term applications with arguments
    */
   not-empty-prodrule-to-constr :
-    ProdRule(nt, [Appl(term, trees)]) -> Constr |[ x : tp* -> srt ]|
+    ProdRule(nt, [Appl(term, trees)]) -> 
+    // Constr |[ x : tp* -> srt ]|
+    OpDecl(x, FunType(tp*, srt))
       where <nonterm-to-sort> nt => srt
           ; <term-to-strid> term => x
           ; <map(
@@ -34,7 +36,9 @@ strategies
              )> trees => tp*
 
   not-empty-constr-to-prodrule :
-    Constr |[ x : tp* -> srt ]| -> ProdRule(nt, [Appl(term, trees)])
+    //Constr |[ x : tp* -> srt ]| 
+    OpDecl(x, FunType(tp*, srt))
+    -> ProdRule(nt, [Appl(term, trees)])
       where <sort-to-nonterm> srt => nt
           ; <strid-to-term> x => term
           ; <map(
@@ -56,7 +60,9 @@ strategies
           ; <try-sort2tree> srt1 => nt1
 
   ref-constr-to-prodrule :
-    Constr |[ : tp* -> srt ]| -> ProdRule(nt, [Appl(TupleTerm(<length> tp*), trees)])
+    OpDeclInj(FunType(tp*, srt))
+    //Constr |[ : tp* -> srt ]| 
+    -> ProdRule(nt, [Appl(TupleTerm(<length> tp*), trees)])
       where <gt> (<length> tp*, 1)
           ; <sort-to-nonterm> srt => nt
           ; <map(
