@@ -1,0 +1,14 @@
+module ExpStratego
+imports Expressions StrategoRenamed
+exports
+  context-free syntax
+    "|[" Exp        "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" {Exp ","}* "]|" -> StrategoTerm {cons("ToTerm")}
+  variables
+    [x] [0-9\']*     -> Id
+    [e] [0-9\']*     -> Exp
+    [e] [0-9\']* "*" -> {Exp ","}*
+    "es"[0-9\']*     -> {Exp ","}*
+hiddens
+  context-free start-symbols
+    StrategoModule

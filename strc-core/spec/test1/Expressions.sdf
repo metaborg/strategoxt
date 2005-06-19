@@ -1,0 +1,18 @@
+module Expressions
+exports
+  sorts Id
+  lexical syntax
+    [a-z]+     -> Id
+    [\ \t\n\r] -> LAYOUT
+  lexical restrictions
+    Id -/- [a-z]
+
+  sorts Exp
+  context-free syntax
+    Id                    -> Exp {cons("Var")}
+    Id "(" {Exp ","}* ")" -> Exp {cons("Call")}
+
+hiddens
+  context-free start-symbols 
+    Exp
+    
