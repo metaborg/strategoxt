@@ -22,22 +22,52 @@ binaries for Windows and MacOSX will be provided.
 
 ---------++ Stratego Language
 
-(Issues STR-58, STR-306, STR-321, STR-316, STR-319, STR-322, STR-235
+(Issues STR-58, STR-306, STR-321, STR-316, STR-319, STR-322, STR-235, STR-307 	  
 
 
 
 ---------+++ Stratego Core Language
 
-The Stratego Core language project aims at 
+The Stratego Core language project constitutes a major refactoring of
+the syntax definition of the language, also requiring a refactoring of
+all tools and components processing Stratego programs (in particular
+the compiler).
 
-clearly distinguishing a core language to be used as intermediate
-language in the compiler
+the project was prompted by the problems encountered in building
+the first version of the Stratego Optimizer in 2003.
 
+also, language development had collected (*** cruft ***)
+
+that needed cleaning
+
+Thus, the aims of the project are to
+
+(1) Clearly distinguishing a core language to be used as intermediate
+language in the compiler.
+
+The syntax definition is now divided into a Stratego-Core language
+that is extended to the full language in Stratego-Sugar, adding
+syntactic abstractions to the Core. The Core is a strict subset
+of the full language.
+
+In addition a number of regular tree grammars is defined that denote a
+number of intermediate languages between Stratego-Sugar and
+Stratego-Core. These RTGs are used by the compiler to verify the
+sanity of the compiler components.
+
+(2) 
 integrating term annotations in the abstract syntax of the core
 language
 
-cleaning up the language
+(3) Cleaning up the language, removing constructs that had not proven
+to be useful, or have been subsumed by more more general constructs.
 
+Despite the changes in the _structure_ of the language, the syntax is
+backwards compatible. This entails that existing applications should still
+work Except of course for constructs that have been
+removed, but these obscure anyway and hardly used in real
+applications. A change that may have impact is that old style dynamic
+rules are no longer supported.
 
 
 ---------+++ Term Annotions
@@ -56,26 +86,29 @@ Sugar
 
 ---------+++ List Variables
 
-
 list variables in concrete syntax
 
----------+++ Old style dynamic rules no longer supported
+---------+++ Disambiguation
 
----------+++ remove obscure features
+Syntactical ambiguity with higher order arguments
 
- Remove the following features from the language
+syntax priority issue: 's1 < s2 + s3 + s4' is ambiguous
+
+---------+++ Rules in let
+
+Let: support rule syntax
+
+---------+++ Outdated constructs no longer supported
+
+Old style dynamic rules no longer supported
+
+Remove the following features from the language
+
 - contextual rules
 - literate programming comments (\begin{code} ... \end{code})
 - strategy rules ( L :: s1 --> s2 )
 - thread
 - modified congruenc
-
----------+++ Syntactical ambiguity with higher order arguments
-
----------+++ Let: support rule syntax
-
----------+++ syntax priority issue: 's1 < s2 + s3 + s4' is ambiguous
-
 
 
 
@@ -93,9 +126,15 @@ list variables in concrete syntax
 
 ---------+++ Build order of stratego-front and stratego-lib
 
+
+
+
 ---------++ Stratego Library
 
 collect-all: recurse to current term instead of children of current term STR-264
+ 	  
+conc-strings: support tuples of >2 strings  
+
 
 
 ---------++!! Detailed List of Issues
