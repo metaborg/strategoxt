@@ -3,6 +3,7 @@ include Makefile.parse-unit
 
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS      = -m $*
+SDF2RTG_FLAGS   = -m $*
 
 check_PROGRAMS 	= prop1 prop1-asfix switch-semantics-test
 check_DATA      = PropStratego.tbl 
