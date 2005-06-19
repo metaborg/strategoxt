@@ -1,0 +1,101 @@
+StrategoXT 0.15 -- released ...
+
+This is a release of a major milestone in the Stratego Core
+refactoring project. It is not considered to be a production release
+to be used by average users. Use of the release for testing by
+seasoned Stratego developers who maintain applications in the
+Stratego/XT environment, would be appreciated, however.
+
+This release will be followed by a number of minor releases,
+introducing improvements in the areas of the compiler back-end,
+dynamic rules, the module system, and the optimizer. This should
+result in a stable and much improved Stratego compiler in release
+0.16.
+
+Since the distributions before 0.16 are experimental, distributions
+are only provided through the Nix release management system. No
+binaries for Windows and MacOSX will be provided.
+
+---------++!! Summary of Changes
+
+%TOC%
+
+---------++ Stratego Language
+
+---------+++ Stratego Core Language
+
+The Stratego Core language project aims at 
+
+clearly distinguishing a core language to be used as intermediate
+language in the compiler
+
+integrating term annotations in the abstract syntax of the core
+language
+
+
+
+---------+++ Term Annotions
+
+   t := i | r | x | pt{^pt}
+
+   pt := c(t1,...,tn) | x
+
+Sugar
+
+   t := pt | pt{t1,...,tn}
+
+    pt -> pt{^Nil()}
+    pt{t1,...,tn} -> pt{^Cons(t1,...,Cons(tn,Nil()))}
+
+
+---------+++ List Variables
+
+
+list variables in concrete syntax
+
+
+---------++ Stratego Core Compiler
+
+---------+++ strc
+
+---------++ StrategoXT Deployment and Build System
+
+---------+++ Build order of stratego-front and stratego-lib
+
+
+---------++!! Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease014Issues
+
+---------++!! Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease014
+
+---------++!! Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++!! Contributions
+
+The Stratego Core refactoring was carried out by
+
+   * Eelco Visser
+
+with help from 
+
+   * Martin Bravenboer
+   * Rob Vermaas
+
+Thanks!
+
