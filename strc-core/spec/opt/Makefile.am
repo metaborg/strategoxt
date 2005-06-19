@@ -21,21 +21,23 @@ libexec_PROGRAMS = simplify1 simplify2 simplify3		    \
 #		   effects-analysis
 #		   dead-var-elim				    
 
-check_PROGRAMS 	 = bound-unbound-vars-test \
-		   const-prop-test const-prop-test 
+check_PROGRAMS 	 = bound-unbound-vars-test 
+
+#		   const-prop-test 
 
 #build-match-laws-test fusion-test
 
 nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES = bound-unbound-vars-test.c
-nodist_const_prop_test_SOURCES = const-prop-test.c
+#nodist_const_prop_test_SOURCES = const-prop-test.c
 nodist_fusion_test_SOURCES = fusion-test.c
 
 nodist_build_match_laws_test_SOURCES=build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES=bound-unbound-vars-test.c
-nodist_const_prop_test_SOURCES=const-prop-test.c
+#nodist_const_prop_test_SOURCES=const-prop-test.c
 
-TESTS 		 = bound-unbound-vars-test const-prop-test 
+TESTS 		 = bound-unbound-vars-test 
+#const-prop-test 
 
 CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = $(wildcard *.c)
