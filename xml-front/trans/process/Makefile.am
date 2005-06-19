@@ -6,7 +6,8 @@ libexec_PROGRAMS = \
   xml-doc2xml-info \
   xml-info2xml-doc
 
-pkgdata_DATA = xml-text-tools.rtree xml-doc2xml-info.rtree
+pkgdata_DATA = xml-text-tools.str xml-doc2xml-info.str
+#pkgdata_DATA = xml-text-tools.rtree xml-doc2xml-info.rtree
 
 SCFLAGS     = --main main-$* --dr new --verbose 4
 STRINCLUDES = \
@@ -23,4 +24,5 @@ LDADD += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree)
+BOOTCLEANFILES = $(wildcard *.c) 
+#$(wildcard *.rtree)

@@ -9,11 +9,13 @@ bin_PROGRAMS = \
   parse-xml-info \
   pp-xml-info 
 
-pkgdata_DATA   = xml-xtc-tools.rtree
+pkgdata_DATA   = xml-xtc-tools.str
+#pkgdata_DATA   = xml-xtc-tools.rtree
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.c) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) xml-xtc-tools.rtree
+BOOTCLEANFILES = $(wildcard *.c) 
+#xml-xtc-tools.rtree
 
 SCFLAGS      = --main main-$* 
 STRINCLUDES  = -I $(XTC)/share/xtc \
