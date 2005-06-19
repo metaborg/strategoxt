@@ -102,7 +102,7 @@ strategies
 */
 
   TrmInt = 
-    !NoAnnoList(Int(<is-int>))
+    !NoAnnoList(Int(<is-int; int-to-string>))
 
   TrmStr = 
     !NoAnnoList(Str(<is-string>))
@@ -125,7 +125,11 @@ strategies
   TrmAnno : 
     WithAnno(t1, t2) -> Anno(t1', t2')
     where <trm-explode; try(?NoAnnoList(<id>))> t1 => t1'
-        ; (<is-list>t2 <+ ![t2]); MetaExplode => t2'
+        ; (<is-list>t2 <+ ![t2])
+        ; foldr(!NoAnnoList(Op("Nil",[]))
+	       ,!NoAnnoList(Op("Cons", [<Fst>, <Snd>]))
+	       , MetaExplode)
+        ; try(?NoAnnoList(<id>)) => t2'
 
   TrmNil :
     [] -> NoAnnoList(Op("Nil", []))
