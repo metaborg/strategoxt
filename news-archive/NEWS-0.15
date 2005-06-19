@@ -22,6 +22,10 @@ binaries for Windows and MacOSX will be provided.
 
 ---------++ Stratego Language
 
+(Issues STR-58, STR-306, STR-321, STR-316, STR-319, STR-322, STR-235
+
+
+
 ---------+++ Stratego Core Language
 
 The Stratego Core language project aims at 
@@ -31,6 +35,8 @@ language in the compiler
 
 integrating term annotations in the abstract syntax of the core
 language
+
+cleaning up the language
 
 
 
@@ -53,14 +59,43 @@ Sugar
 
 list variables in concrete syntax
 
+---------+++ Old style dynamic rules no longer supported
+
+---------+++ remove obscure features
+
+ Remove the following features from the language
+- contextual rules
+- literate programming comments (\begin{code} ... \end{code})
+- strategy rules ( L :: s1 --> s2 )
+- thread
+- modified congruenc
+
+---------+++ Syntactical ambiguity with higher order arguments
+
+---------+++ Let: support rule syntax
+
+---------+++ syntax priority issue: 's1 < s2 + s3 + s4' is ambiguous
+
+
+
 
 ---------++ Stratego Core Compiler
 
 ---------+++ strc
 
+---------+++ Option for preferring .str files over .rtree files
+
+
+
+
+
 ---------++ StrategoXT Deployment and Build System
 
 ---------+++ Build order of stratego-front and stratego-lib
+
+---------++ Stratego Library
+
+collect-all: recurse to current term instead of children of current term STR-264
 
 
 ---------++!! Detailed List of Issues

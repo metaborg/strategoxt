@@ -7,4 +7,5 @@ EXTRA_DIST = \
   NEWS-0.12 \
   NEWS-0.13 \
   NEWS-0.14 \
+  NEWS-0.15 \
   INTRO.html
