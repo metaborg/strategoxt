@@ -617,24 +617,36 @@ strategies
   copy-char = 
     copy; implode-string
 
- /**
-  * @inc string-sort-test-a
-  * @inc string-sort-test-b
-  * @inc string-sort-test-c
-  */
+  /**
+   * Sorts a list of strings lexicographically, ignoring case, ascending.
+   *
+   * @inc string-sort-test-a
+   * @inc string-sort-test-b
+   * @inc string-sort-test-c
+   *
+   * @type List(String) -> List(String)
+   */
   string-sort = 
       map(explode-string)
-    ; sort-list(SortL(string-gt))
+    ; qsort(string-lt)
     ; map(implode-string)
 
+  /**
+   * Sorts a list of strings lexicographically ignoring case, descending.
+   *
+   * @type List(String) -> List(String)
+   */
   string-sort-desc = 
       map(explode-string)
-    ; sort-list(SortL(string-lt))
+    ; qsort(string-gt)
     ; map(implode-string)
 
 strategies
 
   /**
+   * Compares two strings or lists of characters lexicographically and succeeds if
+   * the first one is larger than the second, ignoring case.
+   *
    * @type  (List(Char), List(Char)) -> 1
    * @type  (String, String)         -> 1
    */
@@ -643,10 +655,13 @@ strategies
     strcasecmp; ?1
 
   /**
+   * Compares two strings or lists of characters lexicographically and succeeds if
+   * the first one is smaller than the second, ignoring case.
+   *
    * @type  (List(Char), List(Char)) -> 1
    * @type  (String, String)         -> 1
    */
-  string-lt = 
+  string-lt =
     try((explode-string, explode-string));
     strcasecmp; ?-1
 
@@ -697,6 +712,16 @@ strategies
 	<+ !1
 	)
 
+  /**
+   * Compares two lists of characters lexicographically, ignoring case.
+   *
+   * Returns:
+   *   -1 if first is smaller than the second.
+   *   0  if the strings are equal.
+   *   1  if the first is larger than the second.
+   * 
+   * @type (List(Char), List(Char)) -> -1, 0,1 or -1.
+   */
   strcasecmp = rec r
 	(  \([x|xs],[y|ys]) -> <r>(xs,ys) where <case-char(eq)>(x,y)\
 	<+ \([],[]) -> 0\
@@ -760,7 +785,6 @@ strategies
   get-lines =
     string-tokenize-keep-empty(|['\n'])
 
-
   /**
    * Applies a strategy to all lines in a string.
    *
@@ -790,7 +814,8 @@ strategies
 
 
   /**
-   * Makes one newline-separated string out of a list of strings
+   * Makes one newline-separated string out of a list of strings.
+   *
    * @since 0.9.4
    */
   lines =
@@ -822,6 +847,7 @@ strategies
     all-lines(<conc-strings> (p, <id>))
 
 strategies
+
   /**
    * Trims leading and/or trailing characters from a string.
    *
@@ -834,7 +860,6 @@ strategies
    * @param should succeed for all elements that have to be trimmed.
    * @since 0.9.5
    */
-
   ltrim-chars(s) = string-as-chars(ltrim(s))
 
   rtrim-chars(s) = string-as-chars(rtrim(s))
@@ -929,12 +954,16 @@ strategies
     where(<leq-leq> ('0', <id>, '9'))
 
   /**
+   * Succeeds if this character is upper-case.
+   *
    * @type Char -> Char
    */
   is-upper =
     where(<leq-leq> ('A', <id>, 'Z'))
 
   /**
+   * Succeeds if this character is lower-case.
+   *
    * @type Char -> Char
    */
   is-lower =
@@ -946,15 +975,33 @@ strategies
   is-ascii =
     where(<leq-leq> ( 32, <id>, 127))
 
+  /**
+   * Applies a strategy to the upper-case variants of two characters.
+   *
+   * This is useful for doing case-insenstive operations.
+   *
+   * @param (Char, Char) -> a
+   * @type  (Char, Char) -> a
+   */
   case-char(s) = (to-upper, to-upper); s
 
   /**
+   * Ensures that a character is upper-case.
+   *
+   * This strategy returns the input character if this
+   * character is already upper-case.
+   *
    * @type Char -> Char
    */
   to-upper =
     is-lower < <subt> (<id>, 32) + id
 
   /**
+   * Ensures that a character is lower-case.
+   *
+   * This strategy returns the input character if this
+   * character is already lower-case.
+   *
    * @type Char -> Char
    */
   to-lower = is-upper < <add>  (<id>, 32) + id
