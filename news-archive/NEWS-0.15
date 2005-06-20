@@ -14,7 +14,7 @@ result in a stable and much improved Stratego compiler in release
 
 Since the distributions before 0.16 are experimental, distributions
 are only provided through the Nix release management system. No
-binaries for Windows and MacOSX will be provided.
+binaries for Windows and MacOSX will be available.
 
 ---------++!! Summary of Changes
 
@@ -22,9 +22,8 @@ binaries for Windows and MacOSX will be provided.
 
 ---------++ Stratego Language
 
-(Issues STR-58, STR-306, STR-321, STR-316, STR-319, STR-322, STR-235, STR-307 	  
-
-
+(Issues STR-58, STR-306, STR-321, STR-316, STR-319, STR-322, STR-235,
+STR-307
 
 ---------+++ Stratego Core Language
 
@@ -33,64 +32,106 @@ the syntax definition of the language, also requiring a refactoring of
 all tools and components processing Stratego programs (in particular
 the compiler).
 
-the project was prompted by the problems encountered in building
-the first version of the Stratego Optimizer in 2003.
+The project was prompted by the problems encountered in building the
+first version of the Stratego Optimizer in 2003. In particular, with
+the representation of term annotations in the abstract syntax. In
+addition the language design had eroded somewhat over the years
+through the addition of new features.
 
-also, language development had collected (*** cruft ***)
+Thus, the aims of the project are threefold:
 
-that needed cleaning
+(1) Clearly distinguish a core language to be used as intermediate
+language in the compiler. 
 
-Thus, the aims of the project are to
+(2) Explicitly represent term annotations in the abstract syntax of
+the core language.
 
-(1) Clearly distinguishing a core language to be used as intermediate
-language in the compiler.
+(3) Cleaning up the language, removing constructs that have not proven
+to be useful, or have been subsumed by more more general constructs.
+
+---------+++ Impact
+
+Despite the changes in the _structure_ of the language, the syntax is
+backwards compatible. This entails that existing applications should
+still work. Except of course for applications using constructs that
+have been removed. However, the decision to remove constructs was
+based on the fact that these were not used (some not even document),
+so this shouldn't pose a big problem. The only change with potential
+impact is discontinuation of support for old style dynamic rules. New
+style dynamic rules are the default in StrategoXT 0.14 and should be a
+good platform for preparing migration.
+
+---------+++ Core and Sugar 
 
 The syntax definition is now divided into a Stratego-Core language
 that is extended to the full language in Stratego-Sugar, adding
-syntactic abstractions to the Core. The Core is a strict subset
-of the full language.
+syntactic abstractions to the Core. The Core is a strict subset of the
+full language. In addition, a number of regular tree grammars has been
+defined that denote a number of intermediate languages between
+Stratego-Sugar and Stratego-Core. These RTGs are used by the compiler
+to verify the sanity of the compiler components.
 
-In addition a number of regular tree grammars is defined that denote a
-number of intermediate languages between Stratego-Sugar and
-Stratego-Core. These RTGs are used by the compiler to verify the
-sanity of the compiler components.
+(STR-58)
 
-(2) 
-integrating term annotations in the abstract syntax of the core
-language
+---------+++ Term Annotations
 
-(3) Cleaning up the language, removing constructs that had not proven
-to be useful, or have been subsumed by more more general constructs.
+Term annotations were not originally supported in Stratego. The
+addition was handled by desugaring the matching and building of terms
+with annotions to calls to ATerm library functions using primitives in
+an early stage of compilation. The implicit presence of annotations
+made transformations within the compiler very fragile, and entailed
+that certain optimizations could not be defined properly.
 
-Despite the changes in the _structure_ of the language, the syntax is
-backwards compatible. This entails that existing applications should still
-work Except of course for constructs that have been
-removed, but these obscure anyway and hardly used in real
-applications. A change that may have impact is that old style dynamic
-rules are no longer supported.
+In the new core syntax, terms always have an annotation. A pre-term
+(pt) has the form
 
+   pt := i | r | x | c(t1,...,tn)
 
----------+++ Term Annotions
+and denotes a term without annotation. A term (t) is a pre-term with
+an annotation (which is itself a pre-term):
 
-   t := i | r | x | pt{^pt}
+   t  := pt{^pt}
 
-   pt := c(t1,...,tn) | x
+This is the explicit representation of term annotations; every term
+always has a list of annotations.  That is, the annotation pre-term
+should always be a *list* of the form
 
-Sugar
+   Cons(t1,...,Cons(tn, Nil())
+
+Since most terms do not have annotations, or we're not interested
+in them, in the sugared extension of the core language, term annotations
+are optional. Thus, in Stratego-Sugar, the syntax of terms is extended
+with:
 
    t := pt | pt{t1,...,tn}
 
-    pt -> pt{^Nil()}
-    pt{t1,...,tn} -> pt{^Cons(t1,...,Cons(tn,Nil()))}
+The interpretation of this syntax depends on the use of the term in
+a match or build position. That is, the following desugaring rules
+apply:
 
+   |[ !pt ]| -> |[ !pt{^Nil()} ]|
+   |[ !pt{t1,...,tn} ]| -> |[ !pt{^Cons(t1,...,Cons(tn,Nil()))} ]|
 
----------+++ List Variables
+   |[ ?pt ]| -> |[ ?pt{^_} ]|
+   |[ ?pt{t1,...,tn} ]| -> |[ ?pt{^Cons(t1,...,Cons(tn,Nil()))} ]|
 
-list variables in concrete syntax
+(Note that this is a bit simplified, as the Conses and Nils in the
+right-hand side have annotations themselves, except for the outermost
+ones.)
+
+So a rewrite rule
+
+  A : Plus(x, y) -> Plus(y, x)
+
+is desugared to
+
+  A : Plus(x, y){^_} -> Plus(y, x){^Nil()}
+
+(STR-58)
 
 ---------+++ Disambiguation
 
-Syntactical ambiguity with higher order arguments
+higher-order args
 
 syntax priority issue: 's1 < s2 + s3 + s4' is ambiguous
 
@@ -118,16 +159,28 @@ Remove the following features from the language
 
 ---------+++ Option for preferring .str files over .rtree files
 
+---------+++ List Variables
 
-
-
+The treatment of list variables is cleaned up by improving their
+assimilation in meta-explode. This has made it possible to have fewer
+compiler components be aware of list variables. If list variables in
+concrete syntax quotations should be used as list variables outside
+those quotations as well, they should have a * suffix. See issue
+STR-321.
 
 ---------++ StrategoXT Deployment and Build System
 
 ---------+++ Build order of stratego-front and stratego-lib
 
-
-
+The build order of stratego-front and stratego-lib has been swapped in
+case of a baseline build. The modules in the library should be parsed
+with the local syntax definition of Stratego, instead of the syntax
+definition of the baseline. Since the library should be used with the
+compiler in the current package, it should be compatible with that
+compiler and use the same syntax definition. When bootstrapping
+(building from a pre-compiled source tarball), the build-order is
+reversed since the library is needed for the compilation of the
+components in stratego-front.
 
 ---------++ Stratego Library
 
