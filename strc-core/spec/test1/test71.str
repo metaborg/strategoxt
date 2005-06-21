@@ -6,34 +6,91 @@ strategies
     test-suite(!"test71",
         test1
 	; test2
+	; test3
+	; test4
+	; test5
     )
 
   test1 = 
     apply-test(!"test1"
       , implode
-      , !parsetree(
-
-/*
-appl(prod([cf(opt(layout)),cf(sort("Exp")),cf(opt(layout))],sort("<START>"),no-attrs),[appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([cf(sort("Id")),cf(opt(layout)),lit("("),cf(opt(layout)),cf(iter-star-sep(sort("Exp"),lit(","))),cf(opt(layout)),lit(")")],cf(sort("Exp")),attrs([term(cons("Call"))])),[appl(prod([lex(sort("Id"))],cf(sort("Id")),no-attrs),[appl(prod([lex(iter(char-class([range(97,122)])))],lex(sort("Id")),no-attrs),[appl(prod([char-class([range(97,122)])],lex(iter(char-class([range(97,122)]))),no-attrs),[97])])]),appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([char-class([40])],lit("("),no-attrs),[40]),appl(prod([],cf(opt(layout)),no-attrs),[]),
-*/
-
-appl(prod([cf(iter-star-sep(sort("Exp"),lit(","))),cf(opt(layout)),lit(","),cf(opt(layout)),cf(iter-star-sep(sort("Exp"),lit(",")))],cf(iter-star-sep(sort("Exp"),lit(","))),attrs([assoc(left)])),[appl(prod([varsym(cf(iter-star-sep(sort("Exp"),lit(","))))],cf(iter-star-sep(sort("Exp"),lit(","))),no-attrs),[appl(prod([char-class([101]),lex(iter-star(char-class([39,range(48,57)]))),lit("*")],varsym(cf(iter-star-sep(sort("Exp"),lit(",")))),no-attrs),[101,appl(prod([lex(iter(char-class([39,range(48,57)])))],lex(iter-star(char-class([39,range(48,57)]))),no-attrs),[appl(prod([char-class([39,range(48,57)])],lex(iter(char-class([39,range(48,57)]))),no-attrs),[49])]),appl(prod([char-class([42])],lit("*"),no-attrs),[42])])]),appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([char-class([44])],lit(","),no-attrs),[44]),appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([varsym(cf(iter-star-sep(sort("Exp"),lit(","))))],cf(iter-star-sep(sort("Exp"),lit(","))),no-attrs),[appl(prod([char-class([101]),lex(iter-star(char-class([39,range(48,57)]))),lit("*")],varsym(cf(iter-star-sep(sort("Exp"),lit(",")))),no-attrs),[101,appl(prod([lex(iter(char-class([39,range(48,57)])))],lex(iter-star(char-class([39,range(48,57)]))),no-attrs),[appl(prod([char-class([39,range(48,57)])],lex(iter(char-class([39,range(48,57)]))),no-attrs),[50])]),appl(prod([char-class([42])],lit("*"),no-attrs),[42])])])])
-
-/*
-,appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([char-class([41])],lit(")"),no-attrs),[41])]),appl(prod([cf(layout)],cf(opt(layout)),no-attrs),[appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([range(9,10),13,32])],lex(layout),no-attrs),[10])])])])
-
-*/
-
-,0
-
-)
-
-      , !()
+      , conc-tree
+      , !"Conc"#([meta-listvar("e1*"),meta-listvar("e2*")])
     )
 
   test2 = 
-    apply-test(!"test1"
+    apply-test(!"test2"
 	, is-conc
-	, !prod([cf(iter-star-sep(sort("Exp"),lit(","))),cf(opt(layout)),lit(","),cf(opt(layout)),cf(iter-star-sep(sort("Exp"),lit(",")))],cf(iter-star-sep(sort("Exp"),lit(","))),attrs([assoc(left)]))
-	, !()
+	, conc-prod
 	)
+
+  test3 = 
+    apply-test(!"test3"
+      , ?parsetree(<id>,_)
+        ; appl(id, filter(not(is-layout)))
+        ; ReplConsConc(!"foo")
+      , conc-tree
+      , !"Conc"#(["foo", "foo"])
+    )
+
+  test4 = 
+    apply-test(!"test4"
+      , ?parsetree(<id>,_)
+        ; appl(id, filter(not(is-layout)))
+	; ?appl(<id>, [_,_])
+	; is-conc
+      , conc-tree
+    )
+
+  test5 = 
+    apply-test(!"test5"
+      , ?parsetree(<id>,_)
+        ; appl(id, filter(not(is-layout)))
+        ; ReplConsConcTest(!"foo")
+      , conc-tree
+      , !"Conc"#(["foo", "foo"])
+    )
+
+  ReplConsConcTest(impl) : 
+    appl(p, [t1,t2]) -> t
+    where <is-conc> p
+        ; <impl>t1 => ts1
+        ; <impl>t2 => ts2
+        ; (<[] + [id|id]> ts2; <conc>(ts1, ts2)
+          <+ !"Conc"#([ts1, ts2])) => t
+
+  conc-prod = 
+    !prod([cf(iter-star-sep(sort("Exp"), lit(","))), cf(opt(layout)),
+     lit(","), cf(opt(layout)), cf(iter-star-sep(sort("Exp"),
+     lit(",")))], cf(iter-star-sep(sort("Exp"), lit(","))),
+     attrs([assoc(left)]))
+
+  conc-tree =
+    !parsetree(appl(prod([cf(iter-star-sep(sort("Exp"), lit(","))),
+     cf(opt(layout)), lit(","), cf(opt(layout)),
+     cf(iter-star-sep(sort("Exp"), lit(",")))],
+     cf(iter-star-sep(sort("Exp"), lit(","))), attrs([assoc(left)])),
+     [appl(prod([varsym(cf(iter-star-sep(sort("Exp"), lit(","))))],
+     cf(iter-star-sep(sort("Exp"), lit(","))), no-attrs),
+     [appl(prod([char-class([101]), lex(iter-star(char-class([39,
+     range(48, 57)]))), lit("*")],
+     varsym(cf(iter-star-sep(sort("Exp"), lit(",")))), no-attrs),
+     [101, appl(prod([lex(iter(char-class([39, range(48, 57)])))],
+     lex(iter-star(char-class([39, range(48, 57)]))), no-attrs),
+     [appl(prod([char-class([39, range(48, 57)])],
+     lex(iter(char-class([39, range(48, 57)]))), no-attrs), [49])]),
+     appl(prod([char-class([42])], lit("*"), no-attrs), [42])])]),
+     appl(prod([], cf(opt(layout)), no-attrs), []),
+     appl(prod([char-class([44])], lit(","), no-attrs), [44]),
+     appl(prod([], cf(opt(layout)), no-attrs), []),
+     appl(prod([varsym(cf(iter-star-sep(sort("Exp"), lit(","))))],
+     cf(iter-star-sep(sort("Exp"), lit(","))), no-attrs),
+     [appl(prod([char-class([101]), lex(iter-star(char-class([39,
+     range(48, 57)]))), lit("*")],
+     varsym(cf(iter-star-sep(sort("Exp"), lit(",")))), no-attrs),
+     [101, appl(prod([lex(iter(char-class([39, range(48, 57)])))],
+     lex(iter-star(char-class([39, range(48, 57)]))), no-attrs),
+     [appl(prod([char-class([39, range(48, 57)])],
+     lex(iter(char-class([39, range(48, 57)]))), no-attrs), [50])]),
+     appl(prod([char-class([42])], lit("*"), no-attrs), [42])])])]),
+     0)
