@@ -12,6 +12,12 @@ exports
     Id                    -> Exp {cons("Var")}
     Id "(" {Exp ","}* ")" -> Exp {cons("Call")}
 
+  variables
+    [x] [0-9\']*     -> Id
+    [e] [0-9\']*     -> Exp
+    [e] [0-9\']* "*" -> {Exp ","}*
+    "es"[0-9\']*     -> {Exp ","}*
+
 hiddens
   context-free start-symbols 
     Exp
