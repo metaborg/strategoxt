@@ -405,7 +405,7 @@ rules
         ; <impl>t1 => ts1
         ; <impl>t2 => ts2
         ; (<[] + [id|id]> ts2; <conc>(ts1, ts2)
-          <+ !Conc(ts1, ts2)) => t
+          <+ !"Conc"#([ts1, ts2])) => t
 
   ReplConsConc(impl) : 
     appl(p, [t1,t2,t3]) -> <conc>(<impl>t1, [<impl>t2 | <impl>t3])
@@ -433,6 +433,7 @@ rules
 
   is-conc = ?prod([_,_,_,_,_],cf(iter-star-sep(_,_)),_)
   is-conc = ?prod([_,_,_],cf(iter-star-sep(_,_)),_)
+  is-conc = ?prod([_,_],cf(iter-star-sep(_,_)),_)
 
 
 
