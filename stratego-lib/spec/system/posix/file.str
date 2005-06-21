@@ -317,6 +317,10 @@ strategies
     ?mode; prim("SSL_S_ISREG", mode)
     
   /**
+   * Succeeds when applied to a File which is a directory.
+   *
+   * Idiom: <file-exists ; filemode ; isdir> "/etc"
+   *
    * @type File -> FileMode
    */
   isdir =
