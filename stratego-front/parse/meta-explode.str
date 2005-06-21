@@ -143,13 +143,13 @@ strategies
     NoAnnoList(Op("Cons",[<trm-explode>x, <trm-explode> xs]))
 
   ConcAssocR : 
-    Conc(Conc(t1, t2), t3) -> Conc(t1, Conc(t2, t3))
+    Conc(Conc(t1, t2), t3) -> "Conc"#([t1, "Conc"#([t2, t3])])
 
   ConcCons :
-    Conc([t1 | t2], t3) -> ConsAux(t1, Conc(t2, t3))
+    Conc([t1 | t2], t3) -> ConsAux(t1, "Conc"#([t2, t3]))
 
   ConcCons :
-    Conc(ConsAux(t1, t2), t3) -> ConsAux(t1, Conc(t2, t3))
+    Conc(ConsAux(t1, t2), t3) -> ConsAux(t1, "Conc"#([t2, t3]))
 
   ConcNil :
     Conc([], t) -> t
