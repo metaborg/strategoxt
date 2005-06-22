@@ -48,7 +48,7 @@ strategies
     ; xml-fragments2xml-info
 
   rewrite-Conc :
-    Conc(l1, l2) -> FromApp(BA(CallNoArgs(SVar("conc")), Tuple([ToTerm(l1), ToTerm(l2)])))
+    Conc(l1, l2) -> FromApp(BA(CallNoArgs(SVar("conc")), NoAnnoList(Tuple([ToTerm(l1), ToTerm(l2)]))))
 
   /**
    * Applies namespace declarations in Stratego+XML
