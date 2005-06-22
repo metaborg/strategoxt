@@ -176,7 +176,7 @@ strategies
     <+ ?FromApp(<MetaExplode>)
     <+ \ [] -> Cong("Nil", []) \
     <+ \ [t | ts] -> Cong("Cons", [<str-explode>t,<str-explode>ts]) \
-    <+ is-string; !Match(Str(<id>))
+    <+ is-string; !Match(NoAnnoList(Str(<id>)))
     <+ \ op#(ts) -> Cong(op, <map(str-explode)> ts) \
 
 signature
