@@ -670,6 +670,8 @@ strategies
    *
    * If the strategy succeeds, the current is left untouched.
    *
+   * Example: <string-starts-with(|"foo")> "foobar"
+   *
    * @type  String -> String
    */
   string-starts-with(|start) =
@@ -970,6 +972,11 @@ strategies
     where(<leq-leq> ('a', <id>, 'z'))
 
   /**
+   * Succeeds if this string only contains printable ASCII characters.
+   *
+   * The letters 32 through 126, in total 96 characters, are defined
+   * as printable.
+   *
    * @type Char -> Char
    */
   is-ascii =
