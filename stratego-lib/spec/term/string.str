@@ -47,6 +47,13 @@ strategies
   is-string	 = ?x; prim("SSL_is_string", x)
 
   /**
+   * Succeeds if applied to a printable character
+   *
+   * @type Char -> Char
+   */
+  is-char = is-int ; is-ascii
+
+  /**
    * Implodes a list of chars to a string.
    *
    * @type List(Char) -> String
@@ -941,12 +948,19 @@ strategies
   is-alpha = is-upper + is-lower
 
   /**
+   * Succeeds if applied to a character that is a hexidecimal
+   * digit, i.e. either of the characters in the range '0'-'9'
+   * or 'A'-'F'.
+   * 
    * @type Char -> Char
    */
   is-hexnum =
-      is-num
-    + where(<leq-leq> ('a', <id>, 'f'))
-    + where(<leq-leq> ('A', <id>, 'F'))
+      is-char
+    ; (
+        is-num
+      + where(<leq-leq> ('a', <id>, 'f'))
+      + where(<leq-leq> ('A', <id>, 'F'))
+      )
 
   /**
    * @inc is-num-test
