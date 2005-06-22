@@ -6,10 +6,11 @@ bin_PROGRAMS=\
   parse-rtg \
   pp-rtg \
   sdf2rtg \
-  sig2rtg \
   rtg2sig \
   rtg2typematch \
   rtg-script
+
+#  sig2rtg 
 
 libexec_PROGRAMS = tool-doc2abox
 
