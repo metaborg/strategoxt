@@ -61,7 +61,7 @@ impact is discontinuation of support for old style dynamic rules. New
 style dynamic rules are the default in StrategoXT 0.14 and should be a
 good platform for preparing migration.
 
----------+++ Core and Sugar 
+---------+++ Core vs Sugar 
 
 The syntax definition is now divided into a Stratego-Core language
 that is extended to the full language in Stratego-Sugar, adding
@@ -155,9 +155,20 @@ Remove the following features from the language
 
 ---------++ Stratego Core Compiler
 
----------+++ strc
+The Stratego compiler now compiles program according to the
+Stratego-Sugar syntax definition.
 
----------+++ Option for preferring .str files over .rtree files
+The front-end of the compiler reduces a program to the Stratego-Core
+syntax.
+
+---------+++ No Optimization
+
+optimizer is turned off
+
+
+---------+++ Format Checking
+
+--format-check option
 
 ---------+++ List Variables
 
@@ -167,6 +178,10 @@ compiler components be aware of list variables. If list variables in
 concrete syntax quotations should be used as list variables outside
 those quotations as well, they should have a * suffix. See issue
 STR-321.
+
+---------+++ Prefer .str files
+
+Option for preferring .str files over .rtree files
 
 ---------++ StrategoXT Deployment and Build System
 
