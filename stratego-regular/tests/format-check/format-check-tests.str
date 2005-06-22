@@ -23,15 +23,15 @@ strategies
   int-list-tests = 
       apply-test(!"test: Simple int list", fc-int-list, ![1, 2, 3])
     ; apply-test(!"test: Empty list",      fc-int-list, ![])
-    ; apply-test(!"test: Conc list 1",       fc-int-list, !Conc([], []))
-    ; apply-test(!"test: Conc list 2",       fc-int-list, !Conc([1], [2]))
+    ; apply-test(!"test: Conc list 1",       fc-int-list, !"Conc"#([[], []]))
+    ; apply-test(!"test: Conc list 2",       fc-int-list, !"Conc"#([[1], [2]]))
     ; apply-and-fail(!"test: Not an int-list a", fc-int-list, !["foo"])
     ; apply-and-fail(!"test: Not an int-list b", fc-int-list, ![1, 2, "foo"])
     ; apply-and-fail(!"test: Not an int-list c", fc-int-list, !["foo", 3, 4])
     ; apply-and-fail(!"test: Not an int-list d", fc-int-list, !1)
     ; apply-and-fail(!"test: Not an int-list e", fc-int-list, !"foo")
-    ; apply-and-fail(!"test: Not an int-list f", fc-int-list, !Conc("foo", []))
-    ; apply-and-fail(!"test: Not an int-list g", fc-int-list, !Conc([], "foo"))
+    ; apply-and-fail(!"test: Not an int-list f", fc-int-list, !"Conc"#(["foo", []]))
+    ; apply-and-fail(!"test: Not an int-list g", fc-int-list, !"Conc"#([[], "foo"]))
 
   argument-tests =
           apply-test(!"test: Specify a start symbol a", simple-inj(|"Id"), !"Bla")
@@ -145,3 +145,5 @@ signature
     Tuple2   : Tuple * Int -> Tuple
     Tuple3   : Int * Int * Tuple -> Tuple
     Tuple3   : Int * Int * Int * Int -> Tuple
+
+//    Conc     : List(a) * List(a) -> List(a)
