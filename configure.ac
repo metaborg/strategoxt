@@ -50,12 +50,12 @@ fi
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
 
-AC_ARG_ENABLE([strc-core],
-  AS_HELP_STRING([--enable-strc-core], [build new Stratego compiler]),
-  [CORE_ENABLED=$enable_strc_core],
-  [CORE_ENABLED="yes"]
-)
-AC_SUBST([CORE_ENABLED])
+#AC_ARG_ENABLE([strc-core],
+#  AS_HELP_STRING([--enable-strc-core], [build new Stratego compiler]),
+#  [CORE_ENABLED=$enable_strc_core],
+#  [CORE_ENABLED="yes"]
+#)
+#AC_SUBST([CORE_ENABLED])
 
 AC_ARG_ENABLE([xtc2],
   AS_HELP_STRING([--enable-xtc2], [use the xtc2 library]),
@@ -89,14 +89,16 @@ fi
 
 PKGS="$PKGS asfix-tools"
 
-if test "x$CORE_ENABLED" = "xyes"
-then
-  PKGS="$PKGS strc-core"
-  DIST_PKGS="$DIST_PKGS strc"
-else
-  PKGS="$PKGS strc"
-  DIST_PKGS="$DIST_PKGS strc-core" 
-fi
+PKGS="$PKGS strc-core"
+
+#if test "x$CORE_ENABLED" = "xyes"
+#then
+#  PKGS="$PKGS strc-core"
+#  DIST_PKGS="$DIST_PKGS strc"
+#else
+#  PKGS="$PKGS strc"
+#  DIST_PKGS="$DIST_PKGS strc-core" 
+#fi
 
 PKGS="$PKGS gpp c-tools concrete-syntax xml-front \
         aterm-front sdf-front sdf-tools \
@@ -146,7 +148,7 @@ AB_CONFIG_PKG(autoxt, )
 AB_CONFIG_PKG(srts,   )
 AB_CONFIG_PKG(xtc,              --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(xtc2,             --with-repository=${REPOSITORY})
-AB_CONFIG_PKG(strc,             --with-repository=${REPOSITORY})
+#AB_CONFIG_PKG(strc,             --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(strc-core,        --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(c-tools,          --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(stratego-front,   --with-repository=${REPOSITORY})
