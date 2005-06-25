@@ -75,10 +75,7 @@ if test "$xt_baseline" = "yes"
 then
   echo "*** this is a baseline build; building stratego-front first"
   PKGS="$PKGS stratego-front stratego-lib"
-else
-  echo "*** this is a bootstrap build; building stratego-lib first"
-  PKGS="$PKGS stratego-lib stratego-front"
-fi
+
 
 if test "x$XTC2_ENABLED" = "xyes"
 then
@@ -89,6 +86,26 @@ else
   PKGS="$PKGS xtc"
   DIST_PKGS="$DIST_PKGS xtc2" 
   XTC_DIR="xtc"
+fi
+
+
+else
+  echo "*** this is a bootstrap build; building stratego-lib first"
+  PKGS="$PKGS stratego-lib "
+
+if test "x$XTC2_ENABLED" = "xyes"
+then
+  PKGS="$PKGS xtc2"
+  DIST_PKGS="$DIST_PKGS xtc"
+  XTC_DIR="xtc2"
+else
+  PKGS="$PKGS xtc"
+  DIST_PKGS="$DIST_PKGS xtc2" 
+  XTC_DIR="xtc"
+fi
+
+  PKGS="$PKGS stratego-front"
+
 fi
 
 PKGS="$PKGS asfix-tools"
