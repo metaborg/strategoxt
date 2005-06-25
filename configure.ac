@@ -68,6 +68,8 @@ AC_SUBST([XTC2_ENABLED])
 
 PKGS="autoxt srts"
 
+echo "*** xt_baseline = $xt_baseline"
+
 
 if test "$xt_baseline" = "yes"
 then
