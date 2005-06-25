@@ -11,5 +11,6 @@ sdflib = \
 nobase_pkgdata_DATA = $(sdflib)
 #nobase_pkgdata_DATA = $(sdflib:.str=.rtree)
 
-#EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree)
+EXTRA_DIST = $(sdflib) 
+$(sdflib:.str=.rtree)
 #BOOTCLEANFILES = $(sdflib:.str=.rtree)
