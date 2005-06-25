@@ -71,8 +71,10 @@ PKGS="autoxt srts"
 
 if test "$xt_baseline" = "yes"
 then
+  echo "*** this is a baseline build; building stratego-front first"
   PKGS="$PKGS stratego-front stratego-lib"
 else
+  echo "*** this is a bootstrap build; building stratego-lib first"
   PKGS="$PKGS stratego-lib stratego-front"
 fi
 
