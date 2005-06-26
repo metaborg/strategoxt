@@ -8,8 +8,8 @@ STRINCLUDES     = -I $(top_srcdir)/syn \
 		  -I $(GPP)/share/gpp \
                   -I $(XTC)/share/xtc --verbose 1
 
-bin_PROGRAMS 	 = parse-stratego pp-stratego pretty-stratego
-libexec_PROGRAMS = meta-explode stratego2abox stratego-parenthesize
+bin_PROGRAMS 	 = parse-stratego pp-stratego pretty-stratego 
+libexec_PROGRAMS = meta-explode stratego2abox stratego-parenthesize stratego-ensugar
 
 LDADD += $(SSL_LIBS)
 
