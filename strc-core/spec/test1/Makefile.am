@@ -55,7 +55,7 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
 		  *.dep *test*.c *.out *.ttxt *.txt *.b[0-9]* 
 
-EXTRA_DIST 	= $(wildcard *.str) Expressions.sdf ExpStratego.sdf make-rules io-test*.in bar.c
+EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) Expressions.sdf ExpStratego.sdf make-rules io-test*.in bar.c
 
 include make-rules
 #include $(wildcard *.dep)
