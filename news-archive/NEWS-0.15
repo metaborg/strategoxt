@@ -181,7 +181,7 @@ Let bindings can now introduce new rules. For example,
 </verbatim>
 
 Local rules shadow rules with the same name (and arity) at
-top-lovel. The scope of the rule variables is the enclosing
+top-level. The scope of the rule variables is the enclosing
 definition, not just the rule itself! This is in line with the
 semantics of local definitions, but the practicality of this design
 choice should be reviewed.
