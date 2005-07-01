@@ -14,9 +14,8 @@ result in a stable and much improved Stratego compiler in release
 
 Since the distributions before 0.16 are experimental, distributions
 are only provided through the Nix release management system. No
-binaries for Windows and MacOSX will be available.
-
-FC4 does not work due to a bug in GCC.
+binaries for Windows and MacOSX will be available. RPMs for Fedora
+Core 3 are not provided due to a bug in GCC in that distribution.
 
 ---------++!! Summary of Changes
 
