@@ -66,8 +66,8 @@
    SortTuple.1:iter-star-sep                          -- _1 KW[","],
    Star                                               -- KW["*"],
    StarStar                                           -- KW["**"],
-   OpDecl                                             -- R  [_1 KW[":"] H hs=1 [_2]],
-   OpDeclInj                                          -- KW[":"] _1,
+   OpDecl                                             -- R [_1 KW[":"] H hs=1 [_2]],
+   OpDeclInj                                          -- R ["" KW[":"] H hs=1 [_1]],
    ConstType                                          -- _1,
    FunType                                            -- _1 KW["->"] _2,
    FunType.1:iter-sep                                 -- _1 KW["*"],
@@ -80,6 +80,7 @@
    Char                                               -- _1,
    Wld                                                -- KW["_"],
    BuildDefault                                       -- KW["_"] _1,
+   BuildDefaultPT                                     -- KW["_"] _1,
    Inj                                                -- _1,
    Op                                                 -- H hs=0 [_1 KW["("] H  [_2] KW[")"]],
    Op.2:iter-star-sep                                 -- H hs=0 [_1 KW[","]],
@@ -121,6 +122,20 @@
    DynRuleIntersect.2:iter-star-sep                   -- H hs=0 [_1 KW[","]],
    DynRuleUnion                                       -- _1 H hs=0 [KW["\\"] _2 KW["/"]] _3,
    DynRuleUnion.2:iter-star-sep                       -- H hs=0 [_1 KW[","]],
+
+   DynRuleIntersectUnion                              -- _1 H hs=0 [KW["/"] _2 KW["\\"] _3 KW["/"]] _4, 
+   DynRuleIntersectUnion.2:iter-star-sep              -- H hs=0 [_1 KW[","]],
+   DynRuleIntersectUnion.3:iter-star-sep              -- H hs=0 [_1 KW[","]],
+
+   DynRuleIntersectUnionFix                           -- H hs=0 [KW["/"] _1 KW["\\"] _2 KW["/*"]] _3, 
+   DynRuleIntersectUnionFix.2:iter-star-sep           -- H hs=0 [_1 KW[","]],
+   DynRuleIntersectUnionFix.3:iter-star-sep           -- H hs=0 [_1 KW[","]],
+
+   RuleNames                                          -- H hs=0 [KW["~"] _1],
+   ScopeLabels                                        -- H hs=0 [KW["~"] _1],
+
+   SetDynRuleDepends                                  -- H [ _1 KW[":"] _2 KW["depends"] KW["on"] _3],
+
    SRDefNoArgs                                        -- _1 KW["::"] _2,
    SRDef                                              -- _1 KW["("] _2 KW[")"] KW["::"] _3,
    SRDef.2:iter-star-sep                              -- _1 KW[","],
