@@ -20,6 +20,8 @@ strategies
       + UndefineDynRule(raise, bld)
       + AddScopeLabel(id, bld)
 
+      + SetDynRuleDepends(raise, raise, bld)
+
       + Rule(mch, bld, raise)
       + RuleNoCond(mch, bld)
       
