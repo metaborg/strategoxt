@@ -331,6 +331,14 @@ rules // tuples and list
   stratego-to-abox-prefer :
     Anno(t,as) -> |[ H hs=0 [ ~t KW["{^"] ~as KW["}"] ] ]|
 
+  stratego-to-abox :
+    AnnoList(t,as) -> 
+      |[ H hs=0[ ~t ~as' ] ]|
+    where
+      <pp-generic-list(id, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)>as => as'
+      
+  stratego-to-abox :
+    NoAnnoList(t) -> t
 
 strategies
 
@@ -745,6 +753,9 @@ rules
     Overlay(n,ps,ov) -> |[ V is=2[H[~lit:n KW["("] ~ps' KW[")"] KW["="]] ~ov ] ]| 
     where
       <map(\ s -> S(s) \) ; separate-by-comma> ps => ps'
+
+
+
 
 /**
  * Rewrites a list of boxes to a single box, where the elements are
