@@ -251,7 +251,9 @@ strategies
   save-as(ext) = 
     where(
       copy-to(get-outfile(<conc-strings> (".sci", <ext>)) => file1)
-      ; xtc-transform(!"pp-stratego", !["--abstract" , "-p", "Stratego-Sugar.pp" | <pass-verbose> ] )
+//      ; xtc-transform(!"pp-stratego", !["--abstract" , "-p", "Stratego-Sugar.pp" | <pass-verbose> ] )
+      ; xtc-transform(!"stratego2abox", pass-verbose)
+      ; xtc-transform(!"abox2text", pass-verbose)
       ; copy-to(<conc-strings> (file1, ".txt") => file2)
       ; say(<concat-strings> ["abstract syntax in `", file1, "', concrete syntax in `", file2, "'"])
     )
