@@ -1,4 +1,4 @@
-StrategoXT 0.15 -- released ...
+StrategoXT 0.15 -- released July 5, 2005
 
 This is a release of a major milestone in the Stratego Core
 refactoring project. It is not considered to be a production release
@@ -123,30 +123,24 @@ is desugared to
 
   A : Plus(x, y){^_} -> Plus(y, x){^Nil()}
 
-(STR-58)
+(Eelco Visser)
 
 ---------+++ Disambiguation
 
 The syntax of types of higher-order arguments of strategy definitions
 was ambiguous. Thus, the type of the skip argument in
 
-<verbatim>
   topdownS(s : ATerm() -> ATerm() , skip : a -> a * a -> a) = ...
-</verbatim>
 
 could be parsed as 
 
-<verbatim>
   a -> (a * a -> a)   or ((a -> a) * a) -> a
-</verbatim>
 
 This has been solved by only allowing function types as argument types
 when between parentheses. Thus, the above is not syntactically valid,
 but should now be written as 
 
-<verbatim>
   topdownS(s : ATerm() -> ATerm() , skip : (a -> a) * a -> a) = ...
-</verbatim>
 
 It is better to require explicit disambiguation since it is easy to
 have the wrong expectation from implicit disambiguation in this case.
@@ -154,15 +148,11 @@ have the wrong expectation from implicit disambiguation in this case.
 There was no priority definition between guarded left-choice and
 non-deterministic choice, such that the expression
 
-<verbatim>
   s1 < s2 + s3 + s4
-</verbatim>
 
 could be parsed in two ways, i.e.,
 
-<verbatim>
   s1 < (s2 + s3) + s4   or   s1 < s2 + (s3 + s4) 
-</verbatim>
 
 This has been resolved by giving the =+= operator higher priority than
 guarded choice to prefer the latter over the former. The first variant
@@ -174,12 +164,10 @@ can be selected by using explicit parentheses.
 
 Let bindings can now introduce new rules. For example,
 
-<verbatim>
   main =
     let Foo : 1 -> 2
      in <Foo> 1 => 2
     end 
-</verbatim>
 
 Local rules shadow rules with the same name (and arity) at
 top-level. The scope of the rule variables is the enclosing
@@ -208,18 +196,18 @@ discussion of translation of contextual rules that can be applied by
 hand.
 
 _Literate programming comments_ such as
-<verbatim>
-\begin{code}
-  foo = ...
-\end{code}
-</verbatim>
+
+  \begin{code}
+    foo = ...
+  \end{code}
+
 are no longer supported. Use standard comment delimiters instead.
 
 Other constructs that are discontinued are _strategy rules_ of
 the form
-<verbatim>
-L :: s1 --> s2
-</verbatim>
+
+  L :: s1 --> s2
+
 The thread traversal operator (can be expressed in the library),
 and threading and distributing congruence operators.
 
@@ -241,6 +229,8 @@ the complete syntax definition. By default checks are only carried out
 at a few places, to save compile time. In case an error occurs, the
 level of checking can be increased using the =--format-check= option
 of strc.
+
+(Eelco Visser)
 
 ---------+++ List Variables
 
