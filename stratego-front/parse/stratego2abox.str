@@ -8,6 +8,8 @@ signature
   constructors
     Parenthetical : Term -> Term
     Comment       : Term -> Term
+
+    Cong          : a * b -> c
 strategies
 
   io-stratego2abox =
@@ -149,6 +151,13 @@ rules
   stratego-to-abox : 
     Build(t) -> |[ H hs=0[ KW["!"] ~t ] ]|
 
+rules
+
+  stratego-to-abox :
+    BuildDefault(t) -> |[ H hs=0 [ KW["_"] ~t ] ]|
+
+  stratego-to-abox :
+    BuildDefaultPT(t) -> |[ H hs=0 [ KW["_"] ~t ] ]|
 
 rules
 
@@ -319,10 +328,8 @@ rules // tuples and list
     ) 
   ; pp-generic-list(id, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
 
-  stratego-to-abox-prefer =
-    ?Anno(t,as) 
-  ; <pp-generic-list(id, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)>as => as'
-  ; !|[ H hs=0 [ ~t ~as' ] ]|
+  stratego-to-abox-prefer :
+    Anno(t,as) -> |[ H hs=0 [ ~t KW["{^"] ~as KW["}"] ] ]|
 
 
 strategies
@@ -440,8 +447,11 @@ rules
   stratego-to-abox : 
     Call(name,[]) -> name
 
+  stratego-to-abox : 
+    Cong(name,[]) -> S(name)
+
   stratego-to-abox =
-    ?Call(f,[x | xs])
+    ( ?Call(f,[x | xs]) + ?Cong(g,[x | xs]) ; !S(g) => f )
   ; where( <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => xs' )
   ; worstcase-nicecase(
       !|[  V vs=0 [
@@ -505,6 +515,9 @@ rules
       ]|
     , !|[ H hs=0 [ ~f "(" "|" ~y ~*ys' ")"] ]|
     )
+
+  stratego-to-abox :
+    CallT(f,[],[]) -> |[ H [ ~f ] ]|
 
   stratego-to-abox : 
     CallNoArgs(name) -> name
@@ -688,6 +701,42 @@ rules
   
 
 rules
+
+   stratego-to-abox :
+     DynRuleIntersectFix(ss,s) -> |[ H [ H hs=0[KW["/"] ~ss' KW["\\*"]] ~s ] ]|
+     where
+       <rule-names> ss => ss'
+
+   stratego-to-abox :
+     DynRuleUnionFix(ss,s)     -> |[ H [ H hs=0[KW["\\"] ~ss' KW["/*"]] ~s ] ]|
+     where
+       <rule-names> ss => ss'
+
+   stratego-to-abox :
+     DynRuleIntersect(s1,ss,s2) -> |[ H [ ~s1 H hs=0[KW["/"] ~ss' KW["\\"]] ~s2 ] ]|
+     where
+       <rule-names> ss => ss'
+
+   stratego-to-abox :
+     DynRuleUnion(s1,ss,s2) -> |[ H [ ~s1 H hs=0[KW["\\"] ~ss' KW["/"]] ~s2 ] ]|
+     where
+       <rule-names>ss => ss'
+
+  stratego-to-abox-prefer :
+    DynRuleIntersectUnion(s1,ss1,ss2,s2) -> |[ H [ ~s1 KW["/"] ~ss1' KW["\\"] ~ss2' KW["/"] ~s2 ] ]|
+    where
+      <rule-names>ss1 => ss1'
+    ; <rule-names>ss2 => ss2'
+
+  stratego-to-abox-prefer :
+    DynRuleIntersectUnionFix(ss1,ss2,s1) -> |[ H [ KW["/"] ~ss1' KW["\\"] ~ss2' KW["/*"] ~s1 ] ]|
+    where 
+      <rule-names>ss1 => ss1'
+    ; <rule-names>ss2 => ss2'
+
+  rule-names = separate-by-comma <+ \ RuleNames(names) -> |[ H hs=0 [ KW["~"] ~names ] ]| \
+
+rules
   
   stratego-to-abox :
     OverlayNoArgs(n,ov) -> |[ H [ ~lit:n "=" ~ov ] ]|
@@ -696,9 +745,6 @@ rules
     Overlay(n,ps,ov) -> |[ V is=2[H[~lit:n KW["("] ~ps' KW[")"] KW["="]] ~ov ] ]| 
     where
       <map(\ s -> S(s) \) ; separate-by-comma> ps => ps'
-
-
-
 
 /**
  * Rewrites a list of boxes to a single box, where the elements are
@@ -769,16 +815,6 @@ rules
    Con3 -> KW["["] _1 KW["where"] _2 KW["]"],
    Con4 -> KW["["] _1 KW["where"] _2 KW["]"] KW["("] _3 KW[")"],
    
-
-   RuleNames                              -> KW["~"] _1,
-   DynRuleIntersectFix                    -> H hs=0[KW["/"] _1 KW["\\*"]] _2,
-   DynRuleIntersectFix.1:iter-star-sep    -> H hs=0[_1 KW[","]],
-   DynRuleUnionFix                        -> H hs=0[KW["\\"] _1 KW["/*"]] _2,
-   DynRuleUnionFix.1:iter-star-sep        -> H hs=0[_1 KW[","]],
-   DynRuleIntersect                       -> _1 H hs=0[KW["/"] _2 KW["\\"]] _3,
-   DynRuleIntersect.2:iter-star-sep       -> H hs=0[_1 KW[","]],
-   DynRuleUnion                           -> _1 H hs=0[KW["\\"] _2 KW["/"]] _3,
-   DynRuleUnion.2:iter-star-sep           -> H hs=0[_1 KW[","]],
 
    Cong			    	    -> H hs=0[_1 KW["("] H[_2] KW[")"]],
    Cong.2:iter-star-sep 	    -> H hs=0[_1 KW[","]],

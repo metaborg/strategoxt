@@ -11,5 +11,8 @@
 , DeleteTerm(Term("GenDynRules"))
 , DeleteTerm(Term("DynRuleScope"))
 
+, DeleteTerm(Term("DynRuleIntersectUnion"))
+, DeleteTerm(Term("DynRuleIntersectUnionFix"))
+
 , Reduce
 ]
