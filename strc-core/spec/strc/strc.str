@@ -43,8 +43,8 @@ strategies
       ; define-lrules				; fc2(|"Stratego-Sugar-2", "fe-dlr")
       ; lift-dynamic-rules			
       ; stratego-desugar			
-      ; raise-annotations			; fc1(|"Stratego-Sugar-3", "fe-ra2")
-      ; use-def					
+      ; raise-annotations			; fc1(|"Stratego-Sugar-3", "fe-ra2") 
+      ; use-def			
       ; check-constructors			; fc3(|"Stratego-Sugar-3", "fe-cc")
 						; save-as2(!".fe-cc")
       ; expand-overlays				; fc2(|"Stratego-Sugar-3", "fe-eo")
@@ -252,6 +252,7 @@ strategies
     where(
       copy-to(get-outfile(<conc-strings> (".sci", <ext>)) => file1)
 //      ; xtc-transform(!"pp-stratego", !["--abstract" , "-p", "Stratego-Sugar.pp" | <pass-verbose> ] )
+      ; xtc-transform(!"stratego-parenthesize", pass-verbose)
       ; xtc-transform(!"stratego2abox", pass-verbose)
       ; xtc-transform(!"abox2text", pass-verbose)
       ; copy-to(<conc-strings> (file1, ".txt") => file2)

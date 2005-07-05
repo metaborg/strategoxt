@@ -421,7 +421,7 @@ rules
             ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
 
             // the calls to aux-rule should pass pattern vars and entire LHS as additional term args.
-            ; <concat> [t1*, <map(!Var(<id>))> t1vars, [t0]] => t1'*
+            ; <concat> [ [t1*], <map(!Var(<id>))> t1vars, [t0]] => t1'*
 
             // If dummified key is the same as original, just use x for lookup
             ; (!t1'; try(?t1; !Var(x))) => t1''
