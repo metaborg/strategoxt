@@ -26,11 +26,7 @@ strategies
     ; where( <get-syntax; get-parse-table> meta => FILE(tbl) )
 
     ; xtc-transform(!"sglr",
-        !["-2", "-b", "-p", tbl | <concat>
-           [ <pass-verbose> ()
-           , <pass-sort> meta
-           ]
-         ]
+        !["-2", "-b", "-p", tbl | <pass-sort> meta ]
        )
     ; xtc-transform(!"asfix-anno-comments",!["--sort","LongCom","--sort","ShortCom"])
     ; xtc-transform(!"implode-asfix")

@@ -5,7 +5,7 @@ bin_PROGRAMS     = gen-renamed-sdf-module sdf2parenthesize
 libexec_PROGRAMS = sdf2ast-conflicts sdf-spread-cons
 LDADD       += $(SSL_LIBS)
 
-SCFLAGS       = --main io-$* --dr new
+SCFLAGS       = --main io-$* 
 STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(top_srcdir)/lib \
                 -I $(SDF_FRONT)/share/sdf-front \

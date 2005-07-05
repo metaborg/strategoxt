@@ -9,8 +9,7 @@ STRINCLUDES = -I $(srcdir)/../../../stratego-front/syn	     \
 	  	   -I $(srcdir)/../lib			     \
 	  	   -I $(srcdir)/../opt	
 
-SCFLAGS  	=  --dr new			\
-	  	   --main $*-io			\
+SCFLAGS  	=  --main $*-io			\
 		   --verbose 1
 # 		--keep 10
 

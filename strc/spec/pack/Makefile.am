@@ -7,7 +7,7 @@ bin_PROGRAMS     = pack-stratego
 libexec_PROGRAMS = pack-stratego
 
 STRINCLUDES  = -I $(STRATEGO_FRONT)/share/stratego-front -I $(srcdir)/../sig
-SCFLAGS      = --main $* $(XTCFLAGS) --dr old
+SCFLAGS      = --main $* $(XTCFLAGS) 
 
 EXTRA_DIST     = pack-stratego.str pack-stratego-options.str 
 CLEANFILES     = pack-stratego.dep $(wildcard *.dep) pack-stratego.tst

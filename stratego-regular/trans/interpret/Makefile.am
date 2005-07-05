@@ -9,7 +9,7 @@ libexec_PROGRAMS = \
 
 
 # AM_CFLAGS=-pg
-SCFLAGS          = --main main-$* --dr new
+SCFLAGS          = --main main-$* 
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/lib \
                    -I $(top_srcdir)/xtc \

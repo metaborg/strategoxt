@@ -7,7 +7,7 @@ libexec_PROGRAMS = sdf-desugar sdf-ensugar
 pkgdata_DATA     = pack-sdf-options.str
 #pkgdata_DATA     = pack-sdf-options.rtree
 
-SCFLAGS          = --main main-$* --dr new
+SCFLAGS          = --main main-$* 
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/../sdf-tools/lib \
                    -I $(ATERM_FRONT)/share/aterm-front

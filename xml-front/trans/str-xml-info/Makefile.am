@@ -5,7 +5,7 @@ libexec_PROGRAMS = \
   process-stratego-xml-info \
   parse-stratego-xml-info
 
-SCFLAGS     = --main main-$* --dr new
+SCFLAGS     = --main main-$* 
 STRINCLUDES = -I $(XTC)/share/xtc \
               -I $(top_srcdir)/sig/xml \
               -I $(top_srcdir)/sig/xml-info \
