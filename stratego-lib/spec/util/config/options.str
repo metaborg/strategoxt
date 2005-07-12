@@ -137,7 +137,7 @@ strategies
   keep-option =
     ArgOption("-k" + "--keep"
     , where(<set-config> ("--keep", <string-to-int>))
-    , !"--keep i | -k i  Keep intermediates (default 0)"
+    , !"-k i | --keep i  Keep intermediates (default 0)"
     )
 
   /**

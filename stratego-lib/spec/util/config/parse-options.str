@@ -48,7 +48,7 @@
  *    -S|--silent      Silent execution (same as --verbose 0)
  *    --verbose i      Verbosity level i (default 1)
  *    -s               Turn on statistics
- *    --keep i | -k i  Keep intermediates (default 0)
+ *    -k i | --keep i  Keep intermediates (default 0)
  *    -h|-?|--help     Display usage information
  *    --about          Display information about this program
  *    --version        Same as --about
