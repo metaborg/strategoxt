@@ -29,7 +29,7 @@ strategies
 
         case explode-string => ['n', 'o', '-' | wchars] :
           <implode-string> wchars => wstring 
-	  ; warning-exists
+          ; warning-exists
           ; <get-config <+ get-default-warnings> "--warning"
           ; filter(not(?wstring))
           ; <set-config> ("--warning", <id>)

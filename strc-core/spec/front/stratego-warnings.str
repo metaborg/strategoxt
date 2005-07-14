@@ -78,13 +78,13 @@ strategies
     let debug-call = {ast, arg:
           \ ast@CallT(SVar("debug"),[arg],[]) -> MissingBuildWarning(0, ast)
             where
-              <?Match(Str(_))> arg
+              <?Match(Anno(Str(_), _))> arg
           \ }
-
+         
         xtc-transform-call = {ast, arg:
           \ ast@CallT(SVar("xtc-transform"),[arg | _ ], []) -> MissingBuildWarning(0, ast)
             where
-              <?Match(Str(_))> arg
+              <?Match(Anno(Str(_), _))> arg            
           \ }
 
 
