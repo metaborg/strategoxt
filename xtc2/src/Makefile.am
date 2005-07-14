@@ -4,6 +4,8 @@ include $(wildcard *.dep)
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS 	= xtc
+nodist_xtc_SOURCES = xtc.c
+
 pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree xtc-proc.rtree 
 SCFLAGS 	= --main $* $(XTCFLAGS)
 xtc_LDFLAGS     = $(AM_LDFLAGS) -static

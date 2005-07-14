@@ -5,9 +5,9 @@ pkglib_LTLIBRARIES = \
 
 # xtclib
 
-liblibxtclib_la_SOURCES      = libxtclib.c
-liblibxtclib_dbg_la_SOURCES  = libxtclib.c
-liblibxtclib_prof_la_SOURCES = libxtclib.c
+nodist_liblibxtclib_la_SOURCES      = libxtclib.c
+nodist_liblibxtclib_dbg_la_SOURCES  = libxtclib.c
+nodist_liblibxtclib_prof_la_SOURCES = libxtclib.c
 
 liblibxtclib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
 liblibxtclib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
