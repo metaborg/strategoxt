@@ -5,9 +5,6 @@ strategies
   command-line-options =
     init-strc-config
     ; parse-options(strc-options)
-    ; try(<get-config> "--man"
-          ; <copy-file>(<xtc-find> "strc-manual.txt", stdout)
-          ; <exit> 0)
     ; try(<get-config> "-v"
           ; strc-version
           ; <exit> 0)
@@ -174,10 +171,6 @@ strategies
   + Option("-h" + "--help",         
 	where(<set-config> ("--help",())); !(),         
 	!"-h | --help        Show help")
-
-  + Option("--man",         
-	where(<set-config> ("--man",())); !(),         
-	!"--man              Show manual page")
 
   + Option("-v"+"--version",     
 	where(<set-config> ("-v",())); !(),         
