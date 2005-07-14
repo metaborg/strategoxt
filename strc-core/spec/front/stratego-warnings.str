@@ -112,7 +112,7 @@ strategies
   obsolete-def = 
     strategy-invokation-warning(
       sdef-with-property( 
-        \  CallT(SVar("obsolete"),[Build(Str(msg))],[]) -> ObsoleteWarning(msg) \ 
+        \  CallT(SVar("obsolete"),[Build(Anno(Str(msg), _))],[]) -> ObsoleteWarning(msg) \ 
       )
     )
 
