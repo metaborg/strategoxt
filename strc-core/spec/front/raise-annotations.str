@@ -16,8 +16,8 @@ strategies
         LabeledDynRuleScopeId(id, bld)
       + AddLabelDynRuleId(raise, bld)
       + LabeledDynRuleId(raise, bld)
-      + SetDynRuleMatch(raise, bld)
-      + UndefineDynRule(raise, bld)
+      + SetDynRuleMatch(raise, mch)
+      + UndefineDynRule(raise, mch)
       + AddScopeLabel(id, bld)
 
       + SetDynRuleDepends(raise, raise, bld)
@@ -36,7 +36,7 @@ strategies
       + Build(bld)
       + Match(mch)
 
-      + CallT(id, map(raise), map(bld))   
+      + CallT(id, map(raise), map(bld))
     )
   )
 
@@ -135,11 +135,13 @@ strategies
     traverse(mch, bld, ovl) =
       alltd(
           LabeledDynRuleScopeId(id, in-build(mch, bld, ovl))
+
         + AddLabelDynRuleId(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
         + LabeledDynRuleId(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
-        + SetDynRuleMatch(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
-        + UndefineDynRule(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
         + AddScopeLabel(id, in-build(mch, bld, ovl))
+
+        + SetDynRuleMatch(traverse(mch, bld, ovl), in-match(mch, bld, ovl))
+        + UndefineDynRule(traverse(mch, bld, ovl), in-match(mch, bld, ovl))
 
         + Rule(in-match(mch, bld, ovl), in-build(mch, bld, ovl), traverse(mch, bld, ovl))
         + RuleNoCond(in-match(mch, bld, ovl), in-build(mch, bld, ovl))
