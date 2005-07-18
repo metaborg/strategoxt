@@ -524,8 +524,6 @@ AC_DEFUN([XT_PROG_XTC],
   AC_REQUIRE([XT_CHECK_XTC])
 
   AC_MSG_CHECKING([for location of xtc program])
-
-  pkg-config --variable=xtc xtc > foo
   XTC_PROG="$($PKG_CONFIG --variable=xtc xtc)"
   if test -z "$XTC_PROG"; then
     AC_MSG_RESULT([not found])
