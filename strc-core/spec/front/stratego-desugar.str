@@ -68,7 +68,7 @@ rules
     foldr(!NoAnnoList(Op("Nil",[])), 
           !NoAnnoList(Op("Cons", [<Fst>, <Snd>])), 
           !NoAnnoList(Str(<id>)))
-    <+ \ RuleNames(t) -> NoAnnoList(Op("Cons", [ t, NoAnnoList(Op("Nil", [])) ])) \
+    <+ ?RuleNames(<id>)
 
 
 // strategy definitions
