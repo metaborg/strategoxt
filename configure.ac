@@ -129,14 +129,14 @@ if test "$xt_baseline" = "yes"
 then
   # Hack: the ATERM path could be removed, but the current 
   # baseline contains a pkgconfig file for aterm.
-  PKG_CONFIG_PATH="${ATERM}/lib/pkgconfig:$BASELINE/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  PKG_CONFIG_PATH="${ATERM}/lib/pkgconfig:${BASELINE}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
   XT_CHECK_PACKAGES
-  AC_SUBST([XTC_PKG_CONFIG_PATH], [$BASELINE/lib/pkgconfig])
+  AC_SUBST([XTC_PKG_CONFIG_PATH], [${ATERM}/lib/pkgconfig:${BASELINE}/lib/pkgconfig])
 else
   PKG_CONFIG_PATH="`pwd`:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
-  AC_SUBST([XTC_PKG_CONFIG_PATH], [`pwd`:`pwd`/external])
+  AC_SUBST([XTC_PKG_CONFIG_PATH], [${ATERM}/lib/pkgconfig:`pwd`:`pwd`/external])
 fi
 
 ### OUTPUT #####################################################
