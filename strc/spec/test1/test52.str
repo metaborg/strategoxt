@@ -1,8 +1,0 @@
-module test52
-imports list
-strategies
-
-  main = 
-    rules(Foo: (1, x) -> 3)
-    ; override rules(Foo: (1, x) -> 3)
-

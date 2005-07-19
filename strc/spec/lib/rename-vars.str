@@ -1,4 +1,0 @@
-module rename-vars
-imports stratlib options
-strategies
-  rename-vars = io-wrap(strename)

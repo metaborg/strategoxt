@@ -1,8 +1,0 @@
-module inline
-imports inlining io
-
-strategies
-
-  inline-io = io-wrap(inline-strategies)
-
-

@@ -1,8 +1,0 @@
-module optimizer
-imports Stratego stratego-laws lib
-
-strategies
-
-  main = io-wrap(optimizer)
-
-  optimizer = downup(repeat(simplify))
