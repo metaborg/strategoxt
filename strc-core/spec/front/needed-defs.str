@@ -38,8 +38,10 @@ strategies
    * plus arities.
    */
 
-  definition-names =
-    foldr(![], union, ![<DefinitionName>])
+  definition-names = 
+    where( new-iset => s )
+  ; map({ t: DefinitionName => t ; <iset-add(|t)>s })
+  ; <iset-elements>s 
 
   DefinitionName :
     |[ f(a1* | a2*) = s ]| -> (f, (<length>a1*, <length>a2*))
