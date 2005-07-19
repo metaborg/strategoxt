@@ -120,11 +120,11 @@ strategies
 
   + Option("--ast",
 	where(<set-config>("--ast",())); !(),
-	!"--ast              Produce abstract syntax tree" )
+	!"--ast              Prouce abstract syntax tree of packed program" )
 
   + Option("-F",           
 	where(<set-config>("-F",())); !(),
-	!"-F                 Produce normalized specification" )
+	!"-F                 Produce core after front-end" )
 
   + ArgOption("--keep",
         where(<set-config>("--keep", <string-to-int>)); !(),

@@ -55,12 +55,12 @@ strategies
       ; introduce-congdefs			; fc2(|"Stratego-Sugar-4", "fe-cdf")
       ; rename-vars				; fc2(|"Stratego-Sugar-4", "fe-rnv")
       ; desugar 				; fc1(|"Stratego-Sugar-5", "fe-des")
-      ; output-frontend				; fc5(|"Stratego-Sugar-5", "fe-of")
       ; if-lib(extract-all, extract)		; fc2(|"Stratego-Sugar-5", "fe-extr")
       ; stratego-warnings			; fc4(|"Stratego-Sugar-5", "fe-warn")
       ; rename-defs				; fc2(|"Stratego-Sugar-5", "fe-rnd")
       ; simplify1				; fc2(|"Stratego-Sugar-Cong", "fe-sim")
       ; define-congruences			; fc0(|"Stratego-Core", "fe-cong")
+      ; output-frontend				
     )
 
   optimize =
@@ -269,19 +269,18 @@ strategies
   save-as8(ext) = if-keep8(save-as(ext))
 
   output-ast =
-    try(where(<get-config> "--ast")
-       ; copy-to(get-outfile(!".ast") => astfile)
-       ; say(!["abstract syntax (after parsing) written to file"])
+    if <get-config> "--ast" then
+       copy-to(get-outfile(!".ast") => file)
+       ; notice(|<concat-strings>["Abstract syntax saved in file `", file, "'"])
        ; xtc-io-exit
-    )
+    end
 
   output-frontend =
-    try(where(<get-config> "-F")
-       ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
-       ; copy-to(get-outfile(!".tree") => file)
-       ; say(!["abstract syntax (after frontend) written to file"])
-       ; xtc-io-exit
-    )
+    if <get-config> "-F" then
+      copy-to(get-outfile(!".core") => file)
+      ; notice(|<concat-strings>["Core saved in file `", file, "'"])
+      ; xtc-io-exit
+    end
 
 strategies
 
