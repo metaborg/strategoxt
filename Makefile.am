@@ -5,11 +5,11 @@ DIST_SUBDIRS =   news-archive $(DIST_PKGS)
 EXTRA_DIST   = \
   README svn-revision bootstrap Makefile.xt \
   strategoxt.spec.in strategoxt.spec \
-  external/aterm.pc.in external/sdf2-bundle.pc.in strategoxt.pc.in \
+  external/sdf2-bundle.pc.in strategoxt.pc.in \
   xtc-uninstalled.pc.in stratego-runtime-uninstalled.pc.in stratego-lib-uninstalled.pc.in
 
 pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA = external/aterm.pc external/sdf2-bundle.pc strategoxt.pc
+pkgconfig_DATA = external/sdf2-bundle.pc strategoxt.pc
 
 XTC_PROG=`PKG_CONFIG_PATH=$(XTC_PKG_CONFIG_PATH) $(PKG_CONFIG) --variable=xtc xtc`
 

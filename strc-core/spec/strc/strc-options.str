@@ -33,7 +33,7 @@ strategies
         , "-lstratego-runtime-choice-opt"
         , "-lstratego-runtime-opt"
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
-        , "-lATerm-gcc"
+        , "-lATerm"
         , "-lm"])
     ; <set-config> ("-CD", [])
     ; <set-config> ("-Xlinker", <strc-system-ldflags> ())

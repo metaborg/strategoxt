@@ -353,7 +353,7 @@ AC_DEFUN([XT_EXPLICITLY_USE_XT_PACKAGES],
   AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
 
   # LIBS
-  AC_SUBST([ATERM_LIBS], ['-L$(ATERM)/lib -lATerm-gcc -lm'])
+  AC_SUBST([ATERM_LIBS], ['-L$(ATERM)/lib -lATerm -lm'])
   AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib/srts -lstratego-runtime-opt -lstratego-runtime-choice-opt -lm'])
   AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lstratego-lib-native-opt -lm'])
   AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib/xtc -lstratego-xtc'])
@@ -580,13 +580,13 @@ AC_DEFUN([XT_PROG_SDF2RTG],
 ############ TEST LIBRARIES ##########################################################
 AC_DEFUN([XT_LIB_ATERM],
 [
-  AC_MSG_CHECKING([for libATerm-gcc at $ATERM/lib/libATerm-gcc.a])
+  AC_MSG_CHECKING([for libATerm at $ATERM/lib/libATerm.a])
 
-  test -f $ATERM/lib/libATerm-gcc.a
+  test -f $ATERM/lib/libATerm.a
   if test $? -eq 0; then
     AC_MSG_RESULT([yes])
   else
     AC_MSG_RESULT([no])
-    AC_MSG_ERROR([cannot find libATerm-gcc.a. You must install the ATerm library with the option --with-gcc])
+    AC_MSG_ERROR([cannot find libATerm.a. Is the ATerm library installed at this location?])
   fi
 ])

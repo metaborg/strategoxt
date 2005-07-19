@@ -43,19 +43,7 @@ if test -z "$getopt"; then
   AC_MSG_ERROR([getopt is required])
 fi
 
-# AC_ARG_WITH([curl], 
-#   [AS_HELP_STRING([--with-curl=DIR], [use Curl package at DIR @<:@/usr@:>@])],
-#   [CURL="$withval"], 
-#   [CURL="/usr"])
-
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
-
-#AC_ARG_ENABLE([strc-core],
-#  AS_HELP_STRING([--enable-strc-core], [build new Stratego compiler]),
-#  [CORE_ENABLED=$enable_strc_core],
-#  [CORE_ENABLED="yes"]
-#)
-#AC_SUBST([CORE_ENABLED])
 
 AC_ARG_ENABLE([xtc2],
   AS_HELP_STRING([--enable-xtc2], [use the xtc2 library]),
@@ -135,11 +123,13 @@ AC_SUBST([XTC_DIR])
 
 # TODO: replace with locations of aterm and sdf2-bundle 
 #   if they contain pkg-config files.
-PKG_CONFIG_PATH="`pwd`/external:${PKG_CONFIG_PATH}"
+PKG_CONFIG_PATH="`pwd`/external:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 if test "$xt_baseline" = "yes"
 then
-  PKG_CONFIG_PATH="$BASELINE/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  # Hack: the ATERM path could be removed, but the current 
+  # baseline contains a pkgconfig file for aterm.
+  PKG_CONFIG_PATH="${ATERM}/lib/pkgconfig:$BASELINE/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
   XT_CHECK_PACKAGES
   AC_SUBST([XTC_PKG_CONFIG_PATH], [$BASELINE/lib/pkgconfig])
@@ -154,7 +144,6 @@ AC_CONFIG_FILES([
   Makefile 
   news-archive/Makefile
   strategoxt.spec
-  external/aterm.pc
   external/sdf2-bundle.pc
   strategoxt.pc
   stratego-runtime-uninstalled.pc

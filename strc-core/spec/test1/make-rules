@@ -13,7 +13,7 @@ AM_CFLAGS = -I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include -I/us
 
 SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
          -L$(SRTS)/lib/srts -lstratego-runtime-choice -lstratego-runtime \
-         -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
+         -L$(ATERM)/lib -lATerm $(CHOICELDFLAGS) \
          -lm
 
 # MAKE COPY OF SSL ####################################################
