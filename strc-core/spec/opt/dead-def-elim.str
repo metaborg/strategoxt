@@ -18,31 +18,45 @@ strategies
       [id,
        Strategies(
          if-only-local(id, dead-def-elim)
-         ; map(local-dead-def-elim))
+         ; map(local-dead-def-elim)
+       )
       ]
     )
 
   dead-def-elim =
-    !(["main_0_0"], <map(RegisterDefinition)>, [])
-    ; graph-nodes-roots(Definition, svars, \ (_,x,d) -> [x|d] \ )
+    where(map(RegisterDefinition))
+    ; where(<mark-needed-defs> "main_0_0")
+    ; filter(
+        SDefT(DefNeeded,id,id,id) 
+        <+ ExtSDefInl(DefNeeded,id,id,id)
+        <+ ExtSDef(DefNeeded,id,id)
+      )
 
   RegisterDefinition =
     ?sdef@SDefT(f, xs, ys, s)
     ; rules(
-        Definition : (f, _) -> sdef
+        Definition : f -> sdef
       )
   
   RegisterDefinition =
     ?sdef@ExtSDefInl(f, xs, ys, s)
     ; rules(
-        Definition : (f, _) -> sdef
+        Definition : f -> sdef
       )
   
   RegisterDefinition =
     ?sdef@ExtSDef(f, xs, ys)
     ; rules(
-        Definition : (f, _) -> sdef
+        Definition : f -> sdef
       )
+
+  mark-needed-defs = 
+    DefNeeded 
+    <+ ?f; rules( DefNeeded : f )
+        ; Definition
+        ; rec x(alltd(Call(SVar(mark-needed-defs),x)))
+
+strategies 
   
   local-dead-def-elim =
     Let(id,id)
@@ -58,12 +72,12 @@ strategies
 
   DeclareDefDead =
     ?SDefT(f, _, _, _)
-    ; rules( DefDead+f : SDefT(f, _, _, _) )
+    ; rules( DefDead+f : SDefT(f, x, y, z) -> () )
 
   DeleteDeadDefinitions =
      Let(filter(not(DefDead)), id)
 
   DeclareNotDead =
      ?CallT(SVar(f), _, _)
-     ; rules(DefDead.f :- SDefT(f, _, _, _))
+     ; rules( DefDead.f :- SDefT(f, _, _, _) )
   

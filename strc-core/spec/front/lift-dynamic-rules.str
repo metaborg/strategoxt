@@ -11,7 +11,7 @@ strategies
   lift-dynamic-rules-options =
     ArgOption("--dr",
       where(("old" + "new"); <set-config>("--dr", <id>)); !(),
-             !"--dr (old|new)   Use old/new dynamic rule semantics (default: old)" )
+             !"--dr (old|new) : old dynamic rules are obsolete" )
 
 strategies
 
@@ -131,7 +131,6 @@ strategies
     |[ rules(drd1 drd2 drd*) ]| -> 
     |[ rules(drd1); rules(drd2 drd*) ]|
 
-
   // Labeling the current scope
 
   DesugarDynRuleDef :
@@ -150,6 +149,17 @@ strategies
     |[ rules(     f(as1|as2)+t : t1 ) ]| -> 
     |[ rules( f+t f(as1|as2)   : t1 ) ]|
 
+  // Predicate rules
+
+  DesugarDynRuleDef :
+    |[ rules( f(as1|as2) : t  ) ]| -> 
+    |[ rules( f(as1|as2) : t' -> t' where id ) ]|
+    where <debug(!"lhs: "); alltd(\ Wld() -> Var(<new>) \ ); debug(!"vars: ")> t => t'
+
+  DesugarDynRuleDef :
+    |[ rules( f(as1|as2).t1 : t2 ) ]| -> 
+    |[ rules( f(as1|as2).t1 : t2' -> t2' where id ) ]|
+    where <alltd(\ Wld() -> Var(<new>) \ )> t2 => t2'
 
   // Depends on
 
@@ -198,8 +208,9 @@ strategies
 		; <f4> DR_UNDEFINE(dep)
 		; map({lhs, deps : 
                        ?(_, lhs, _)
-                       ; rules( f(|).scope :- lhs ) })
-		; rules( f(|).scope :- DR_UNDEFINE(dep) )
+                       ; dr-undefine-rule(|~str:f, lhs)
+                      })
+                ; dr-undefine-rule(|~str:f, DR_UNDEFINE(dep))
 	      )
            ]| => newdef
         ; !|[ dr-new(|scope, dep) = ?~str:f; f2(|scope, dep) ]| => newgendef
@@ -215,7 +226,7 @@ strategies
 	  <concat-strings> ["undefine-",  f] => f3
 	; <concat-strings> ["bagof-", f] => f4
 	; <concat-strings> ["aux-",   f] => f5
-	; !|[ f3(|dep) = 
+	; !|[ f3(|dep) = // undefine-f
 	      where(
 
 		// find all rules that depend on dep
@@ -226,7 +237,7 @@ strategies
                       ? (scope, lhs, deps)
 
 		      // undefine the rule with left-hand side lhs
-		      ; rules( f(|).scope :- lhs )
+                      ; dr-undefine-rule-vis(|~str:f, scope, lhs)
 
 		      // undefine each undefine rule related to dep for this dependency
 		      ; !deps
@@ -285,16 +296,6 @@ strategies
     |[ rules(  f(as1|as2).t :+ r ) ]| ->
       <SplitDynamicRule(!|[ dr-add-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
 	|[ rules(  f(as1|as2) : r ) ]|
-
-  SplitDynamicRule :
-    |[ rules( f(as1|as2) : t ) ]| ->
-      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> 
-	|[ rules( f(as1|as2) : t -> t where id ) ]|
-
-  SplitDynamicRule :
-    |[ rules(  f(as1|as2).t : t1 ) ]| ->
-      <SplitDynamicRule(!|[ dr-set-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
-	|[ rules(  f(as1|as2) : t1 -> t1 where id ) ]|
 
   SplitDynamicRule :
     |[ rules( f(as1|as2) :- t ) ]| ->
