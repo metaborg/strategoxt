@@ -44,8 +44,8 @@ strategies
   UndefineSDef =
     ?SDefT(f,_,_,_);
     rules(
-      InlineCall :
-        CallT(SVar(f), ss, ts) -> Undefined
+      InlineCall :-
+        CallT(SVar(f), ss, ts) 
     )
 
   AddSDef =
@@ -64,7 +64,7 @@ strategies
 	    ; !Scope(ys', 
 		     Seq(<zip(\ (t,y) -> Where(Seq(Build(t),Match(Var(y))))\ ); seqs>(ts, ys'), s'))
               => s''
-            ; rules(InlineCall : CallT(SVar(f), _, _) -> Undefined)
+            ; rules(InlineCall :- CallT(SVar(f), _, _) )
 	    //; <debug(!"Inlining: ")> f
 
       InlineCall0 : 
@@ -73,7 +73,7 @@ strategies
 	      <strename> sdef => SDefT(f, xs, ys, s)
   	    ; <gt>(<add>(<length> xs, <length> ys), 0)
             ; new => g
-            ; rules(InlineCall : CallT(SVar(f), _, _) -> Undefined)
+            ; rules(InlineCall :- CallT(SVar(f), _, _) )
 	    //; <debug(!"Inlining: ")> f
     )
 

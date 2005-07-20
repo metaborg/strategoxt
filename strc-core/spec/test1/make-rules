@@ -172,100 +172,104 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 %.f19 : %.f18 %.f18.Stratego-Sugar-5
 	../front/rename-defs -i $< -o $@ -b
 
-# OPTIMIZE ###########################################################
-
 ## Simplification
 
-%.s1 : %.f19 %.f19.Stratego-Sugar-5
+%.f20 : %.f19 %.f19.Stratego-Sugar-5
 	../opt/simplify1 -i $< -o $@ -b
 
-%.s2 : %.s1 %.s1.Stratego-Core-Cong
+%.f21 : %.f20 %.f20.Stratego-Core-Cong
 	../opt/define-congruences -i $< -o $@ -b
 
-%.s2.buv : %.s2
-	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.s2.ea : %.s2.buv
-	../opt/effects-analysis -i $< -o $@ -b
+# OPTIMIZE ###########################################################
+
+#%.s2.buv : %.s2
+#	../opt/bound-unbound-vars -i $< -o $@ -b
+
+#%.s2.ea : %.s2.buv
+#	../opt/effects-analysis -i $< -o $@ -b
 
 ## Innermost fusion
 
-%.s5: %.s4
-	../opt/fusion  -i $< -o $@ -b --verbose 2
+#%.s5: %.s4
+#	../opt/fusion  -i $< -o $@ -b --verbose 2
 
 # Inlining
 
-%.s5.opt1 : %.s5 
+%.opt1 : %.f21 %.f21.Stratego-Core-Cong
 	../opt/worker-wrapper -i $< -o $@ -b
 
-%.s6 : %.s5.opt1 
+%.opt2 : %.opt1 %.opt1.Stratego-Core-Cong
 	../opt/inline -i $< -o $@ -b
 
-%.s7 : %.s6 
+%.opt3 : %.opt2 %.opt2.Stratego-Core-Cong
 	../opt/dead-def-elim -i $< -o $@ -b
 
 ## First Optimization
-
-%.s7.opt1 : %.s7 
-	../opt/simplify1 -i $< -o $@ -b
-
-%.s7.opt2 : %.s7.opt1 
-	../opt/define-congruences -i $< -o $@ -b
-
-%.s7.opt3 : %.s7.opt2 
-	../opt/const-prop -i $< -o $@ -b
-
-%.s7.opt4 : %.s7.opt3 
-	../opt/bound-unbound-vars -i $< -o $@ -b
-
-%.s7.opt5 : %.s7.opt4 
-	../opt/dead-var-elim -i $< -o $@ -b
-
-%.s7.opt : %.s7.opt5
-	../opt/simplify3 -i $< -o $@ -b
-
+#
+#%.s7.opt1 : %.s7 
+#	../opt/simplify1 -i $< -o $@ -b
+#
+#%.s7.opt2 : %.s7.opt1 
+#	../opt/define-congruences -i $< -o $@ -b
+#
+#%.s7.opt3 : %.s7.opt2 
+#	../opt/const-prop -i $< -o $@ -b
+#
+#%.s7.opt4 : %.s7.opt3 
+#	../opt/bound-unbound-vars -i $< -o $@ -b
+#
+#%.s7.opt5 : %.s7.opt4 
+#	../opt/dead-var-elim -i $< -o $@ -b
+#
+#%.s7.opt : %.s7.opt5
+#	../opt/simplify3 -i $< -o $@ -b
+#
 ## Pattern match compilation
 
-%.s8 : %.s7.opt 
+%.opt4 : %.opt3 %.opt3.Stratego-Core-Cong
 	../match/compile-match -i $< -o $@ -b
 
-%.s9 : %.s8 
+%.opt5 : %.opt4 %.opt4.Stratego-Core-Cong
 	../match/desugar-case -i $< -o $@ -b
 
 # Inlining
-
-%.s10 : %.s9 
-	../opt/inline -i $< -o $@ -b
-
-%.s11 : %.s10 
-	../opt/dead-def-elim -i $< -o $@ -b
-
-## Second optimization
-
-%.s11.opt1 : %.s11 
-	../opt/simplify2 -i $< -o $@ -b
-
-%.s11.opt2 : %.s11.opt1 
-	../opt/const-prop -i $< -o $@ -b
-
-%.s11.opt3 : %.s11.opt2 
-	../opt/bound-unbound-vars -i $< -o $@ -b
-
-%.s11.opt4 : %.s11.opt3 
-	../opt/dead-var-elim -i $< -o $@ -b
-
-%.s11.opt : %.s11.opt4 
-	../opt/simplify3 -i $< -o $@ -b
-
-%.s11.check: %.s11.opt
-	../sig/Stratego-Optimized-Format -i $< -o $@ -b
-
-
-
+#
+#%.s10 : %.s9 
+#	../opt/inline -i $< -o $@ -b
+#
+#%.s11 : %.s10 
+#	../opt/dead-def-elim -i $< -o $@ -b
+#
+### Second optimization
+#
+#%.s11.opt1 : %.s11 
+#	../opt/simplify2 -i $< -o $@ -b
+#
+#%.s11.opt2 : %.s11.opt1 
+#	../opt/const-prop -i $< -o $@ -b
+#
+#%.s11.opt3 : %.s11.opt2 
+#	../opt/bound-unbound-vars -i $< -o $@ -b
+#
+#%.s11.opt4 : %.s11.opt3 
+#	../opt/dead-var-elim -i $< -o $@ -b
+#
+#%.s11.opt : %.s11.opt4 
+#	../opt/simplify3 -i $< -o $@ -b
+#
+#%.s11.check: %.s11.opt
+#	../sig/Stratego-Optimized-Format -i $< -o $@ -b
+#
+#
+#
 # BACK-END ###########################################################
 
-%.b1 : %.s2 %.s2.Stratego-Core
+%.b1 : %.f21 %.f21.Stratego-Core
 	../opt/canonicalize -i $< -o $@ -b
+
+#%.b1 : %.opt3 %.opt3.Stratego-Core
+#	../opt/canonicalize -i $< -o $@ -b
 
 %.b2 : %.b1 %.b1.Stratego-Core
 	../opt/lift-definitions -i $< -o $@ -b
