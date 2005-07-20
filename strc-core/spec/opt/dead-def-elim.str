@@ -54,7 +54,7 @@ strategies
     DefNeeded 
     <+ ?f; rules( DefNeeded : f )
         ; Definition
-        ; rec x(alltd(Call(SVar(mark-needed-defs),x)))
+        ; rec x(alltd(CallT(SVar(mark-needed-defs),x,x)))
 
 strategies 
   

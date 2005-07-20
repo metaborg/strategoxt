@@ -265,11 +265,11 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 #
 # BACK-END ###########################################################
 
-%.b1 : %.f21 %.f21.Stratego-Core
-	../opt/canonicalize -i $< -o $@ -b
-
-#%.b1 : %.opt3 %.opt3.Stratego-Core
+#%.b1 : %.f21 %.f21.Stratego-Core
 #	../opt/canonicalize -i $< -o $@ -b
+
+%.b1 : %.opt3 %.opt3.Stratego-Core
+	../opt/canonicalize -i $< -o $@ -b
 
 %.b2 : %.b1 %.b1.Stratego-Core
 	../opt/lift-definitions -i $< -o $@ -b
