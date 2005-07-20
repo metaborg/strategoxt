@@ -7,7 +7,7 @@ SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn/ \
 	  -I $(srcdir)/../lib			    \
 	  -I $(srcdir)/../front			    \
 	  --main $*-io	
-#	  --keep 10
+#--ast	  --keep 10
 
 LDADD           += $(SSL_LIBS)
 

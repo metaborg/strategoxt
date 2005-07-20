@@ -11,7 +11,9 @@ strategies
 	  ,!"--only-local        do not eliminate top-level definitions")
 
   if-only-local(s1, s2) =
-    where(<get-config>"--only-local") < s1 + s2
+    if <get-config> "--only-local" then s1 else s2 end
+
+strategies
    
   dead-def-elim-spec = 
     Specification(
@@ -33,26 +35,13 @@ strategies
       )
 
   RegisterDefinition =
-    ?sdef@SDefT(f, xs, ys, s)
-    ; rules(
-        Definition : f -> sdef
-      )
+    ?sdef
+    ; where( (?SDefT(<id>,_,_,_) <+ ?ExtSDefInl(<id>,_,_,_) <+ ?ExtSDef(<id>,_,_)) => f )
+    ; rules( Definition : f -> sdef )
   
-  RegisterDefinition =
-    ?sdef@ExtSDefInl(f, xs, ys, s)
-    ; rules(
-        Definition : f -> sdef
-      )
-  
-  RegisterDefinition =
-    ?sdef@ExtSDef(f, xs, ys)
-    ; rules(
-        Definition : f -> sdef
-      )
-
   mark-needed-defs = 
     DefNeeded 
-    <+ ?f; rules( DefNeeded : f )
+    <+ ?f; rules( DefNeeded : f -> f )
         ; Definition
         ; rec x(alltd(CallT(SVar(mark-needed-defs),x,x)))
 
@@ -62,9 +51,10 @@ strategies
     Let(id,id)
     ; {| DefDead
        : DeclareDead
-       ; Let(id, local-dead-def-elim)
+       ; Let(local-dead-def-elim, local-dead-def-elim)
        ; try(DeleteDeadDefinitions)
        |}
+    <+ DeclareNotDead
     <+ all(local-dead-def-elim)
 
   DeclareDead =
@@ -72,12 +62,12 @@ strategies
 
   DeclareDefDead =
     ?SDefT(f, _, _, _)
-    ; rules( DefDead+f : SDefT(f, x, y, z) -> () )
+    ; rules( DefDead+f : SDefT(f, x, y, z) -> "1" )
 
   DeleteDeadDefinitions =
-     Let(filter(not(DefDead)), id)
+     Let(filter(not(DefDead => "1")), id)
 
   DeclareNotDead =
-     ?CallT(SVar(f), _, _)
-     ; rules( DefDead.f :- SDefT(f, _, _, _) )
+    ?CallT(SVar(f), _, _)
+    ; rules( DefDead.f : SDefT(f, x, y, z) -> "0" )
   
