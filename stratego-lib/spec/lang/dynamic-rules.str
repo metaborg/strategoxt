@@ -3,7 +3,6 @@
  */
 module lang/dynamic-rules
 imports 
-  lang/scoped-finite-map 
   lang/dynamic-rules-refactored
 signature
   constructors
