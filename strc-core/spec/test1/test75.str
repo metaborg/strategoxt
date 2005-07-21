@@ -1,0 +1,24 @@
+module test75
+
+// test for issue STR-260
+
+imports 
+  dynamic-rules 
+
+signature
+  constructors
+    Foo : String -> Foo
+
+strategies
+
+  main =
+    test1
+
+  test1 = 
+    !"a"
+    ; undefine-rule-A
+    ; <not(A)> Foo("a")
+
+  undefine-rule-A =
+    ?x
+    ; rules( A :- Foo(x) )
