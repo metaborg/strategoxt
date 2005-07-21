@@ -11,8 +11,6 @@ EXTRA_DIST   = \
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = external/sdf2-bundle.pc strategoxt.pc
 
-XTC_PROG=`PKG_CONFIG_PATH=$(XTC_PKG_CONFIG_PATH) $(PKG_CONFIG) --variable=xtc xtc`
-
 install-data-local: install-xtc
 
 install-xtc: 

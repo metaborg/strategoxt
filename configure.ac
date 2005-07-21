@@ -17,13 +17,8 @@ XT_PRE_RELEASE
 
 ### DEPENDENCIES ##################################################
 
-XT_ARG_WITH2([aterm], [prefix], [DIR], [ATerm Library], [lib/libATerm.a])
-XT_ARG_WITH2([sdf],   [prefix], [DIR], [SDF Packages],  [bin/sglr])
-XT_ARG_WITH2([repository], [datadir/$PACKAGE_NAME/XTC], [FILE], [XTC Repository])
-
-AC_SUBST([PGEN], [$SDF])
-AC_SUBST([SGLR], [$SDF])
-AC_SUBST([PT_SUPPORT], [$SDF])
+XT_CHECK_ATERM
+XT_CHECK_SDF
 
 AC_ARG_WITH([strategoxt],
   [AS_HELP_STRING([--with-strategoxt=DIR], [use Stratego/XT baseline at DIR @<:@prefix@:>@])],
@@ -33,6 +28,18 @@ AC_ARG_WITH([strategoxt],
   [BASELINE=$prefix
    xt_baseline="no"
   ])
+
+AC_MSG_CHECKING([whether a baseline Stratego/XT is used])
+if test "$xt_baseline" = "yes"; then
+  AC_MSG_RESULT([yes])
+  # Check the specified value of $STRATEGOXT
+  STRATEGOXT=$BASELINE
+  XT_PKG_STRATEGOXT
+else
+  AC_MSG_RESULT([no])
+fi
+
+XT_WITH_XTC_ARGS
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
@@ -52,66 +59,38 @@ AC_ARG_ENABLE([xtc2],
 )
 AC_SUBST([XTC2_ENABLED])
 
-# Constructing PKGS list
-
+AC_MSG_CHECKING([in which order to build subpackages])
 PKGS="autoxt srts"
-
-echo "*** xt_baseline = $xt_baseline"
-
-
-if test "$xt_baseline" = "yes"
-then
-  echo "*** this is a baseline build; building stratego-front first"
+if test "$xt_baseline" = "yes"; then
   PKGS="$PKGS stratego-front stratego-lib"
 
-
-if test "x$XTC2_ENABLED" = "xyes"
-then
-  PKGS="$PKGS xtc2"
-  DIST_PKGS="$DIST_PKGS xtc"
-  XTC_DIR="xtc2"
+  if test "x$XTC2_ENABLED" = "xyes"; then
+    PKGS="$PKGS xtc2"
+    DIST_PKGS="$DIST_PKGS xtc"
+    XTC_DIR="xtc2"
+  else
+    PKGS="$PKGS xtc"
+    DIST_PKGS="$DIST_PKGS xtc2" 
+    XTC_DIR="xtc"
+  fi
 else
-  PKGS="$PKGS xtc"
-  DIST_PKGS="$DIST_PKGS xtc2" 
-  XTC_DIR="xtc"
-fi
+  PKGS="$PKGS stratego-lib"
 
-
-else
-  echo "*** this is a bootstrap build; building stratego-lib first"
-  PKGS="$PKGS stratego-lib "
-
-if test "x$XTC2_ENABLED" = "xyes"
-then
-  PKGS="$PKGS xtc2"
-  DIST_PKGS="$DIST_PKGS xtc"
-  XTC_DIR="xtc2"
-else
-  PKGS="$PKGS xtc"
-  DIST_PKGS="$DIST_PKGS xtc2" 
-  XTC_DIR="xtc"
-fi
+  if test "x$XTC2_ENABLED" = "xyes"; then
+    PKGS="$PKGS xtc2"
+    DIST_PKGS="$DIST_PKGS xtc"
+    XTC_DIR="xtc2"
+  else
+    PKGS="$PKGS xtc"
+    DIST_PKGS="$DIST_PKGS xtc2" 
+    XTC_DIR="xtc"
+  fi
 
   PKGS="$PKGS stratego-front"
-
 fi
 
-PKGS="$PKGS asfix-tools"
-
-PKGS="$PKGS strc-core"
-
-#if test "x$CORE_ENABLED" = "xyes"
-#then
-#  PKGS="$PKGS strc-core"
-#  DIST_PKGS="$DIST_PKGS strc"
-#else
-#  PKGS="$PKGS strc"
-#  DIST_PKGS="$DIST_PKGS strc-core" 
-#fi
-
-PKGS="$PKGS gpp c-tools concrete-syntax xml-front \
-        aterm-front sdf-front sdf-tools \
-        stratego-regular"
+PKGS="$PKGS asfix-tools strc-core gpp c-tools concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+AC_MSG_RESULT([$PKGS])
 
 DIST_PKGS="$PKGS $DIST_PKGS"
 
@@ -119,25 +98,19 @@ AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
 AC_SUBST([XTC_DIR])
 
-# Construction of PKG_CONFIG_PATH for the specified configuration
-
-# TODO: replace with locations of aterm and sdf2-bundle 
-#   if they contain pkg-config files.
-PKG_CONFIG_PATH="`pwd`/external:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-
-if test "$xt_baseline" = "yes"
-then
-  # Hack: the ATERM path could be removed, but the current 
-  # baseline contains a pkgconfig file for aterm.
-  PKG_CONFIG_PATH="${ATERM}/lib/pkgconfig:${BASELINE}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export PKG_CONFIG_PATH
-  XT_CHECK_PACKAGES
-  AC_SUBST([XTC_PKG_CONFIG_PATH], [${ATERM}/lib/pkgconfig:${BASELINE}/lib/pkgconfig])
+AC_MSG_CHECKING([for the location of the xtc tool to be used])
+if test "$xt_baseline" = "yes"; then
+  XTC_PROG="$STRATEGOXT/bin/xtc"
 else
-  PKG_CONFIG_PATH="`pwd`:${PKG_CONFIG_PATH}"
+  XTC_PROG="`pwd`/xtc/src/xtc"
+
+  # subpackages should pick up the -uninstalled pkgconfig descriptions.
+  # but users can still override the PKG_CONFIG_PATH (pwd added to the end).
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:`pwd`"
   export PKG_CONFIG_PATH
-  AC_SUBST([XTC_PKG_CONFIG_PATH], [${ATERM}/lib/pkgconfig:`pwd`:`pwd`/external])
 fi
+AC_SUBST([XTC_PROG])
+AC_MSG_RESULT([$XTC_PROG])
 
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
@@ -158,7 +131,6 @@ AB_CONFIG_PKG(autoxt, )
 AB_CONFIG_PKG(srts,   )
 AB_CONFIG_PKG(xtc,              --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(xtc2,             --with-repository=${REPOSITORY})
-#AB_CONFIG_PKG(strc,             --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(strc-core,        --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(c-tools,          --with-repository=${REPOSITORY})
 AB_CONFIG_PKG(stratego-front,   --with-repository=${REPOSITORY})

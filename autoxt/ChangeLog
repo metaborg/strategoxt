@@ -1,3 +1,43 @@
+2005-07-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* autoxt.m4: major cleanup and update of autoxt.m4 that merges
+	explicit (--with-*) and implicit (pkg-config) configuration.
+
+	All macros now first check if the user specified an explicit value
+	for the prefix of a package. If this is the case, then some checks
+	are performed to verify that the package is indeed installed at
+	that location. Also, the _CFLAGS and _LIBS flags are set (this
+	information is missing if pkg-config is not used).
+
+	If the user did not specify an explicit value, then pkg-config is
+	used to find the package, its _CFLAGS and _LIBS. Using pkg-config
+	is encouraged, since this will allow the package to evolve its
+	_LIBS and _CFLAGS without breaking dependent packages.
+
+	Main macros are now:
+	XT_CHECK_ATERM
+	XT_CHECK_SDF
+	XT_CHECK_STRATEGOXT
+	XT_USE_XT_PACKAGES (invokes all previous checks)
+
+	The CHECK macros all verify if the package is indeed available at
+	the specified location, so further checks (e.g. XT_PKG_ATERM) are
+	not required.
+
+	The "XT_EXPLICITLY_USE_XT_PACKAGES" is obsolete. Its functionality
+	(the explicit configuration) is now available in the standard
+	macros. The macro is still available as an autoupdate defun that
+	forwards to XT_USE_XT_PACAKGES
+	
+	XT_CHECK_STRATEGOXT_UTILS now supports pkg-config (and explicit
+	configuration).
+
+	The INTERNAL macros (variants of the CHECK macros that are used by
+	packages that are part of Stratego/XT itself) have been moved to a
+	separate .m4 file and are no longer installed.
+
+	All macros now also provide more information to the user.
+
 2005-01-27  Akim Demaille  <akim@epita.fr>
 
 	* config/autoxt.m4 (XT_ARG_WITH): Compute the variable name from
@@ -85,7 +125,7 @@
 	(See UNIX Variants in manual).
 
 	* Makefile.xt: use the XT_DARWIN conditional to add the
-	build_at_load option to LDFLAGS. The is required since the linker
+	-bind_at_load option to LDFLAGS. The is required since the linker
 	of Darwin use lazy invocation of initializers by default. This
 	does not work for Stratego programs that use separate compilation.
 

@@ -1,3 +1,33 @@
+2005-07-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* configure.ac: major update of the toplevel
+	configuration. pkg-config is no longer used when explicit
+	arguments are given. The subpackages now work on explicit
+	configuration as well, which means that the PKG_CONFIG_PATH hacks
+	have been be dropped :) .
+
+	For baseline builds, --with-strategoxt= is required and the real
+	value specified there is used by all the subpackages. That is:
+	pkg-config is not used to lookup the package again (which might
+	result in a different Stratego/XT!).
+
+	The configuration flags --with-aterm and --with-sdf are now
+	optional: pkg-config is used if the locations are not specified
+	explicitly. This should be great for users. In fact, the toplevel
+	configure just uses XT_CHECK_ATERM and XT_CHECK_SDF. Note that the
+	sdf2-bundle does not yet contain a pkg-config file, so Stratego/XT
+	will in fact never be able to find it (the pkg-config file is
+	currently part of Stratego/XT). We should create a new release of
+	the sdf2-bundle (the aterm-dynamic package support pkg-config).
+
+	The configure script now also the user much more information about
+	the choices that are being made.
+
+	* config/internal-autoxt.m4: new file that contains the internal
+	autoxt macros that used to be in autoxt.m4. They make no sense
+	outside of Stratego/XT, so they should not be provided to the
+	user.
+
 2005-05-05  Martin Bravenboer <martin@cs.uu.nl>
 
 	* configure.ac: version to 0.15.
