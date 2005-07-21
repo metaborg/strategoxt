@@ -1,7 +1,7 @@
 module matrix
 imports Stratego automaton
 signature
-  (* subsorts Matrix < Strat *)
+  /* subsorts Matrix < Strat */
   constructors
     Row    : List(Term) * Strat ->  Row
     Row    : List(Term) * List(Term) * Strat ->  Row
@@ -43,7 +43,9 @@ rules
     Row(ts, fin) -> Row(As(Off([]), ts), fin)
 
   Propagate :
-    As(Off(path), Op(f, ts)) -> As(Off(path), Op(f, As(Off(path), ts)))
+    As(Off(path), Anno(Op(f, ts), pt)) -> As(Off(path), Anno(Op(f, As(Off(path), ts)), pt))
+
+    // what to do with annotation?
 
   Propagate :
     As(Off(path), As(Var(x), t)) -> As(Var(x), As(Off(path), t))
@@ -93,7 +95,7 @@ rules
 /*
     Pattern match compilation for Stratego
 
-    Copyright (C) 2003 Eelco Visser <visser@acm.org>
+    Copyright (C) 2003,2005 Eelco Visser <visser@acm.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

@@ -10,8 +10,7 @@ strategies
   (
     (Choice(id, id) + LChoice(id, id));
     rec x(
-      Choice(x, x) 
-      <+ LChoice(x, x)
+      LChoice(x, x)
       <+ rec y(
            Seq(y, match-to-matrix)
            <+ Scope(id, y)
@@ -37,15 +36,11 @@ rules
     Matrix(ps, <map(\ Row(ts, s) -> Row(ts, Scope(xs, s)) \ )> rows)
 
   MatrixMerge : 
-    Choice(Matrix(ps1, rows1), Matrix(ps2, rows2)) ->
-    Matrix(<union> (ps1, ps2), <conc> (rows1, rows2))
+    GuardedLChoice(Matrix(ps, rows), s1, s2) ->
+    LChoice(Matrix(ps, <map(\ row -> (row, s1) \ )> rows), s2)
 
   MatrixMerge : 
-    Choice(Matrix(ps1, rows1), Choice(Matrix(ps2, rows2), s)) ->
-    Choice(Matrix(<union> (ps1, ps2), <conc> (rows1, rows2)), s)
-
-  MatrixMerge : 
-    Choice(Matrix(ps1, rows1), LChoice(Matrix(ps2, rows2), s)) ->
+    LChoice(Matrix(ps1, rows1), LChoice(Matrix(ps2, rows2), s)) ->
     LChoice(Matrix(<union> (ps1, ps2), <conc> (rows1, rows2)), s)
 
   MatrixMerge : 
@@ -54,10 +49,6 @@ rules
 
   MatrixMerge : 
     LChoice(Matrix(ps1, rows1), LChoice(Matrix(ps2, rows2), s)) ->
-    LChoice(Matrix(<union> (ps1, ps2), <conc> (rows1, rows2)), s)
-
-  MatrixMerge : 
-    LChoice(Matrix(ps1, rows1), Choice(Matrix(ps2, rows2), s)) ->
     LChoice(Matrix(<union> (ps1, ps2), <conc> (rows1, rows2)), s)
 
   // The following rule is invalid because of the inequality
