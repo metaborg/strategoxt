@@ -4,7 +4,7 @@
 module lib
 imports 
  
-	dynamic-rules
+	lang/dynamic-rules
 
  // sequential control 
 
@@ -33,6 +33,7 @@ imports
 	term/real
 	collection/hash-table/common
         collection/hash-table/nested
+        collection/hash-table/scoped-finite-map
         collection/set/indexed
         util/date-format
 
