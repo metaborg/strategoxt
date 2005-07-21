@@ -68,7 +68,7 @@ exports
     "~str:"   StrategoTerm -> String    {cons("FromTerm")}
 
     Id "/" Id -> Id {cons("ManglePrefix")}
-    Id "\" Id -> Id {cons("MangleSuffix")}
+    Id "\\" Id -> Id {cons("MangleSuffix")}
 
     "~"   StrategoTerm -> Def       {cons("FromTerm")}
     "~*"  StrategoTerm -> Def*      {cons("FromTerm")}
