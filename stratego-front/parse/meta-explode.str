@@ -169,6 +169,12 @@ strategies
 		   trm-explode)> ts1 => t
 */
 
+  TrmFromMangle : 
+    ManglePrefix(x, y) -> App(Call(SVar("conc-strings"),[]), Tuple([Str(x), Var(y)]))
+
+  TrmFromMangle : 
+    MangleSuffix(x, y) -> App(Call(SVar("conc-strings"),[]), Tuple([Var(x), Str(y)]))
+
   str-explode =
     \ meta-var(x) -> Match(Var(x)) \
     <+ TrmFromTerm
