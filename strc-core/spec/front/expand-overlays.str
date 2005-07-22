@@ -42,31 +42,6 @@ strategies
 
       )
 
-/*
-  DeclareExpandOverlay =
-    ?Overlay|[ c(x*) = pt1{^pt2} ]|
-    ; where(<not(?PreTerm|[ _ pt2' ]|)> pt2)
-    ; rules(
-
-        ExpandOverlayInMatch : 
-          |[ c(t*){^_} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
-
-        ExpandOverlayInMatch : 
-          |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
-          where <not(?PreTerm|[ _ ]|)> pt3
-	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
-
-        ExpandOverlayInBuild : 
-          |[ c(t*){^Nil()} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
-
-        ExpandOverlayInBuild : 
-          |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
-          where <not(?PreTerm|[ [] ]|)> pt3
-	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
-
-      )
-*/
-
   ElimBuildDefaultMatch = 
     topdown(try(\ PreTerm|[ _ pt ]| -> PreTerm|[ _ ]| \
 	        <+ \ Term|[ _ t  ]| -> Term|[ _ ]| \ ))
