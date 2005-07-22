@@ -55,7 +55,7 @@ nodist_use_def_test_SOURCES = use-def-test.c
 #nodist_raise_annotations_test_SOURCES = raise-annotations-test.c
 
 %.atree : %.str
-	parse-stratego $(STRINCLUDES) -i $< | pp-aterm -o $@
+	$(STRATEGO_FRONT)/bin/parse-stratego $(STRINCLUDES) -i $< --assimilation off | $(ATERM_FRONT)/bin/pp-aterm -o $@
 
 %.itree : %.str
 	pack-stratego $(STRINCLUDES) -i $< | pp-aterm -o $@

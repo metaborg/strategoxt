@@ -25,8 +25,12 @@ SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
 
 # PRETTY-PRINTING ####################################################
 
+#%.txt: % 
+#	$(prefix)/bin/pp-stratego -a -i $< -o $@ --annotations
+
 %.txt: % 
-	$(prefix)/bin/pp-stratego -a -i $< -o $@ --annotations
+	$(prefix)/bin/pretty-stratego -a -i $< -o $@ 
+#--annotations
 
 %.atxt : %
 	$(ATERM)/bin/baffle -wt -i $< -o $@
@@ -108,7 +112,6 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 
 %.f0 : %.tree %.tree.Stratego-Sugar-Cong
 	../front/repair-types -i $< -o $@
-
 
 %.f1 : %.f0 %.f0.Stratego-Sugar-Cong
 	../front/pre-desugar -i $< -o $@ -b
