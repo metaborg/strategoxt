@@ -2,9 +2,9 @@
  * Offers facilities to show tool --help and --about information in a nice layout.
  *
  * The core tool-doc constructs are presentation oriented.
- * You can use the overlays in this module to abstract from the presentation.
+ * You can use the sugar in this module to abstract from the presentation.
  *
- * Author : Martin Bravenboer
+ * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module tool-doc
 imports strategoxt-xtc-tools
@@ -13,15 +13,16 @@ strategies
   /**
    * Outputs formatted tool-doc to standard output.
    *
-   * Type : [DocSection] -> [DocSection]
+   * @type List(DocSection) -> List(DocSection)
    */
   tool-doc =
     where(
       xtc-temp-files(
-       write-to
-      ; xtc-transform(!"tool-doc2abox")
-      ; xtc-abox2text(!80)
-      ; where(FILE(read-text-file; echo))
+        topdown(repeat(DesugarToolDoc))
+        ; write-to
+        ; xtc-transform(!"tool-doc2abox")
+        ; xtc-abox2text(!80)
+        ; where(FILE(read-text-file; echo))
       )
     )
 
@@ -47,198 +48,197 @@ signature
     HelpString  : String * String -> HelpString
     HelpString  : List(String) * String -> HelpString
 
-strategies
-
-  /**
-   * Returns the package name as defined by Autoconf.
-   *
-   * Type : _ -> String
-   */
-  package-name      = prim("PACKAGE_NAME_TERM")
-
-  /**
-   * Returns the package version as defined by Autoconf.
-   *
-   * Type : _ -> String
-   */
-  package-version   = prim("PACKAGE_VERSION_TERM")
-
-  /**
-   * Returns the email address to send bug reports to as defined by Autoconf.
-   *
-   * Type : _ -> String
-   */
-  package-bugreport = prim("PACKAGE_BUGREPORT_TERM")
-
-overlays // sugar for usage, summary, description
-
-  /**
-   * Creates a single line of text, prefixed by "Usage: ".
-   *
-   * Type of s : String
-   */
-  Usage(s) =
-    Line(<conc-strings> ("Usage: ", s))
-
-  /**
-   * Creates a paragraph with the heading "Summary".
-   *
-   * Type of p : String
-   * Result    : DocSection
-   */
-  Summary(p) =
-    HSection("Summary:", [Paragraph(p)])
-
-  /**
-   * Creates a section of paragraphs with the heading "Description".
-   *
-   * Type of ps : [String]
-   * Result     : DocSection
-   */
-  Description(ps) =
-    HSection("Description:", <map(!Paragraph(<id>))> ps)
-
-  /**
-   * Creates a definition list of the available options and their description.
-   *
-   * The available options are taken from the "usage-table", "usage" key.
-   * The value of this key is set by parse-options in the standard library.
-   * The value of the key must be a list of strings. These strings are
-   * converted to HelpStrings using the ensure-help-string strategy.
-   *
-   * Result     : DocSection
-   */
-  OptionUsage() =
-    HSection("Options:", [
-      DefList(
-        < table-get 
-        ; reverse
-        ; map(ensure-help-string)
-        ; filter(\ HelpString(f, d) -> Def(f, Paragraph(d)) \)
-        > ("usage-table", "usage")
-      )
-    ])
-
-strategies
-
-  /**
-   * Checks whether the current term is HelpString
-   *
-   * Type : HelpString -> HelpString
-   */
-  ensure-help-string =
-    HelpString(is-string + is-list, is-string)
-
-  /**
-   * Converts a string to a HelpString by splitting it at the first two spaces.
-   *
-   * Type : String -> HelpString
-   */
-  ensure-help-string :
-    s -> HelpString(flags, descr)
-      where <is-string> s 
-          ; <split-before> (s, "  ") => (flags, descr)
-
-  ensure-help-string :
-    "" -> HelpString("", "")
-
-
-overlays
+/**
+ * Sugar for usage, summary, description
+ */
+signature
+  constructors
   
-  /**
-   * Creates a list of authors with the heading "Authors".
-   *
-   * Type of ps : [Paragraph]
-   */
-  Authors(ps) =
-    HSection("Authors:", [ItemList(ps)])
+    /**
+     * Single line of text, prefixed by "Usage: ".
+     */
+    Usage   : String -> DocSection
 
-  /**
-   * Creates a author section with the heading "Author".
-   *
-   * Type of p : Paragraph
-   */
-  Author(p) =
-    HSection("Author:", [ItemList([p])])
+    /**
+     * Section with the heading "Summary".
+     */
+    Summary : String -> DocSection
 
-  /**
-   * Creates a paragraph of the given name and e-mail adress.
-   *
-   * Type of name : String
-   * Type of mail : String
-   */
-  Person(name, mail) =
-    Paragraph(<concat-strings> [name, " <", mail, ">"])
+    /**
+     * Section of paragraphs with the heading "Description".
+     */
+    Description : List(String) -> DocSection
 
-  WebHome(s) =
-    HSection("Website:", [Line(s)])
+    /**
+     * Definition list of the available options and their description.
+     *
+     * The available options are taken from the "usage-table", "usage" key.
+     * The value of this key is set by parse-options in the standard library.
+     * The value of the key must be a list of strings. These strings are
+     * converted to HelpStrings using the ensure-help-string strategy.
+     */
+    OptionUsage : DocSection
+    
+    /**
+     * Authors with the heading "Authors".
+     */
+    Authors : List(DocSection) -> DocSection
 
-  /**
-   * Creates a bug reporting section using the information provided by Autoconf.
-   */
-  AutoReportBugs() =
-    ReportBugs(<package-bugreport> ())
+    /**
+     * Author section with the heading "Author".
+     */
+    Author : DocSection -> DocSection
 
-  ReportBugs(s) =
-    Paragraph(<concat-strings> ["Please report bugs to ", s])
+    /**
+     * Section of the given name and e-mail adress.
+     */
+    Person : String * String -> DocSection
+    
+    /**
+     * Section of the given website.
+     */
+    WebHome : String -> DocSection
 
-  /**
-   * Creates a program section using the information provided by Autoconf.
-   */
-  AutoProgram() =
-    Program(<get-config> "program", <package-name> (), <package-version> ())
+    /**
+     * Bug reporting section using the information provided by Autoconf.
+     */
+    AutoReportBugs : DocSection
 
-  /**
-   * Creates a section with the name of the program, the package and the version.
-   *
-   * Type of name    : String
-   * Type of package : String
-   * Type of version : String
-   */
-  Program(name, package, version) =
-    HSection(name, [
-      DefList([
-        Def("Package", Paragraph(package))
-      , Def("Version", Paragraph(version))
-      ])
+    /**
+     * Bug reporting section from a given email address.
+     */
+    ReportBugs : String -> DocSection
+
+    /**
+     * Program section using the information provided by Autoconf.
+     */
+    AutoProgram : DocSection
+ 
+    /**
+     * Section with the name of the program, the package and the version.
+     */
+    Program : String * String * String -> DocSection
+    
+    /**
+     * Configuration section from a list of items.
+     */
+    Config : List(ConfigItem) -> DocSection
+
+    /**
+     * Config item for the default xtc repository.
+     */
+    DefaultXTCRepository : Def
+    
+    /**
+     * Config item for the currently configured xtc repository.
+     */
+    CurrentXTCRepository : Def
+
+    /**
+     * Config item for the Choice Point Library (CPL) configuration
+     */
+    UsingCPL : Def
+    
+    /**
+     * Generic configuration item: key, value.
+     */
+    ConfigItem : String * String -> Def
+
+    /**
+     * Section of paragraphs with the license heading.
+     */
+    License : List(String) -> DocSection
+
+    /**
+     * GPL license section
+     *
+     * @param Year
+     * @param Author
+     */
+    GNU_GPL : String * String -> DocSection
+
+    /**
+     * Creates a LGPL license.
+     *
+     * @param Year
+     * @param Author     
+     */
+    GNU_LGPL : String * String -> DocSection
+    
+rules
+
+  DesugarToolDoc :
+    Usage(s) -> Line(<conc-strings> ("Usage: ", s))
+
+  DesugarToolDoc :
+    Summary(p) -> HSection("Summary:", [Paragraph(p)])
+
+  DesugarToolDoc :
+    Description(ps) -> HSection("Description:", <map(!Paragraph(<id>))> ps)
+
+  DesugarToolDoc :
+    OptionUsage() ->
+      HSection("Options:", [
+        DefList(
+          < table-get 
+          ; reverse
+          ; map(ensure-help-string)
+          ; filter( \ HelpString(f, d) -> Def(f, Paragraph(d)) \ )
+          > ("usage-table", "usage")
+        )
     ])
+    
+  DesugarToolDoc :    
+    Authors(ps) -> HSection("Authors:", [ItemList(ps)])
 
-overlays
+  DesugarToolDoc :
+    Author(p) -> HSection("Author:", [ItemList([p])])
 
-  Config(items) =
-    HSection("Configuration:", [DefList(items)])
+  DesugarToolDoc :
+    Person(name, mail) -> Paragraph(<concat-strings> [name, " <", mail, ">"])
 
-  DefaultXTCRepository() =
-    ConfigItem("Default XTC Repository", <prim("XTC_REPOSITORY")> ())
+  DesugarToolDoc :
+    WebHome(s) -> HSection("Website:", [Line(s)])
 
-  CurrentXTCRepository() =
-    ConfigItem("Current XTC Repository", <xtc-location> ())
+  DesugarToolDoc :
+    AutoReportBugs() -> ReportBugs(<package-bugreport> ())
 
-  UsingCPL() =
-    ConfigItem("Using CPL", <cpl-loaded < !"Yes" + !"No"> ())
+  DesugarToolDoc :
+    ReportBugs(s) -> Paragraph(<concat-strings> ["Please report bugs to ", s])
 
-  ConfigItem(k, v) =
-    Def(k, Line(v))
+  DesugarToolDoc :
+    AutoProgram() -> Program(<get-config> "program", <package-name> (), <package-version> ())
 
-overlays
+  DesugarToolDoc :
+    Program(name, package, version) ->
+      HSection(name, [
+        DefList([
+          Def("Package", Paragraph(package))
+        , Def("Version", Paragraph(version))
+        ])
+      ])
 
-  /**
-   * Creates a section of paragraphs with the license heading.
-   *
-   * Type of ps : [String]
-   * Result     : DocSection
-   */
-  License(ps) =
-    HSection("License:", <map(!Paragraph(<id>))> ps)
+  DesugarToolDoc :
+    Config(items) -> HSection("Configuration:", [DefList(items)])
 
-  /**
-   * Creates a GPL license.
-   *
-   * Type of year   : String
-   * Type of author : String
-   * Result         : DocSection
-   */
-  GNU_GPL(year, author) =
+  DesugarToolDoc :
+    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <prim("XTC_REPOSITORY")> ())
+
+  DesugarToolDoc :
+    CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location> ())
+
+  DesugarToolDoc :
+    UsingCPL() -> ConfigItem("Using CPL", <cpl-loaded < !"Yes" + !"No"> ())
+
+  DesugarToolDoc :
+    ConfigItem(k, v) -> Def(k, Line(v))
+
+  DesugarToolDoc :
+    License(ps) -> HSection("License:", <map(!Paragraph(<id>))> ps)
+    
+  DesugarToolDoc :    
+    GNU_GPL(year, author)
+      ->
     License(
       [ <concat-strings> ["Copyright (C) ", year, " ", author]
       , "This program is free software; you can redistribute it and/or
@@ -255,14 +255,9 @@ overlays
       ]
     )
 
-  /**
-   * Creates a LGPL license.
-   *
-   * Type of year   : String
-   * Type of author : String
-   * Result         : DocSection
-   */
-  GNU_LGPL(year, author) =
+  DesugarToolDoc :
+    GNU_LGPL(year, author)
+      ->
     License(
       [ <concat-strings> ["Copyright (C) ", year, " ", author]
       , "This library is free software; you can redistribute it and/or modify 
@@ -278,3 +273,49 @@ overlays
          Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
       ]
     )
+    
+strategies
+
+  /**
+   * Returns the package name as defined by Autoconf.
+   *
+   * @type _ -> String
+   */
+  package-name      = prim("PACKAGE_NAME_TERM")
+
+  /**
+   * Returns the package version as defined by Autoconf.
+   *
+   * @type _ -> String
+   */
+  package-version   = prim("PACKAGE_VERSION_TERM")
+
+  /**
+   * Returns the email address to send bug reports to as defined by Autoconf.
+   *
+   * @type _ -> String
+   */
+  package-bugreport = prim("PACKAGE_BUGREPORT_TERM")
+
+strategies
+
+  /**
+   * Checks whether the current term is HelpString
+   *
+   * @type HelpString -> HelpString
+   */
+  ensure-help-string =
+    HelpString(is-string + is-list, is-string)
+
+  /**
+   * Converts a string to a HelpString by splitting it at the first two spaces.
+   *
+   * @type String -> HelpString
+   */
+  ensure-help-string :
+    s -> HelpString(flags, descr)
+      where <is-string> s 
+          ; <split-before> (s, "  ") => (flags, descr)
+
+  ensure-help-string :
+    "" -> HelpString("", "")

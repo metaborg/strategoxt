@@ -1,3 +1,17 @@
+2005-07-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/tool-doc.str: updated tool-doc to use desugaring rewrite
+	rules instead of overlays. Tool-doc was using strategy
+	applications in overlays, which is an obsolete feature in new
+	strc-core compiler. The sugar constructs are now ordinary
+	constructors and desugar rules translate them to the core tool-doc
+	language.
+
+	This should not affect any client programs, since the desugaring
+	is applied in the 'tool-doc' strategy. The change from overlays to
+	constructors does not change the syntax of the tool-doc
+	descriptions.
+	
 2005-01-21  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc/rtg2sig.str: improved the --help and --about by using
