@@ -50,14 +50,14 @@ exports
 
     "~"         StrategoTerm -> Term             {cons("FromTerm")}
     "~term:"    StrategoTerm -> Term             {cons("FromTerm")}
-    "~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
+    %%"~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
     "~term*:"   StrategoTerm -> {Term ","}+      {cons("FromTerm")}
     "~"         StrategoTerm -> {ID   ","}+      {cons("FromTerm")}
 
     "~"         StrategoTerm -> Strategy         {cons("FromTerm")}
     "~strat:"   StrategoTerm -> Strategy         {cons("FromTerm")}
-    "~*"        StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
-    "~strat*:"  StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
+    "~*"        StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
+    "~strat*:"  StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
 
     "~srt:"     StrategoTerm -> Sort {cons("FromTerm")}
     "~srtvar:"  StrategoTerm -> LCID {cons("FromTerm")}
@@ -71,13 +71,13 @@ exports
     Id "\\" Id -> Id {cons("MangleSuffix")}
 
     "~"   StrategoTerm -> Def       {cons("FromTerm")}
-    "~*"  StrategoTerm -> Def*      {cons("FromTerm")}
+    "~*"  StrategoTerm -> Def+      {cons("FromTerm")}
 
-    "~*"  StrategoTerm -> Opdecl*      {cons("FromTerm")}
+    "~*"  StrategoTerm -> Opdecl+      {cons("FromTerm")}
     "~*"  StrategoTerm -> {Type "*"}+  {cons("FromTerm")}
 
-    "~*"          StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
-    "~typed-id*:" StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
+    "~*"          StrategoTerm -> {Typedid ","}+   {cons("FromTerm")}
+    "~typed-id*:" StrategoTerm -> {Typedid ","}+   {cons("FromTerm")}
 
   context-free syntax 
 
@@ -88,20 +88,20 @@ exports
 
   variables
     [xyzfglc][0-9\']*       -> Id       {prefer}
-    [xyzfgl][0-9\']*  "*"   -> {Id ","}* {prefer}
-    "xs"[0-9\']*            -> {Id ","}* {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {Id ","}+ {prefer}
+    "xs"[0-9\']*            -> {Id ","}+ {prefer}
 
-    [xyzfgl][0-9\']*  "*"   -> {ID ","}* {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {ID ","}+ {prefer}
 
     [t][0-9\']*           -> Term     {prefer}
-    [t][0-9\']*   "*"     -> {Term ","}*     {prefer}
-    "ts"[0-9\']*          -> {Term ","}*     {prefer}  
+    [t][0-9\']*   "*"     -> {Term ","}+     {prefer}
+    "ts"[0-9\']*          -> {Term ","}+     {prefer}  
 
     "str"[0-9\']*         -> String {prefer}
 
     [s][0-9\']*           -> Strategy {prefer}
-    "ss"[0-9\']*          -> {Strategy ","}* {prefer}
-    "s"[0-9\']*   "*"     -> {Strategy ","}* {prefer}
+    "ss"[0-9\']*          -> {Strategy ","}+ {prefer}
+    "s"[0-9\']*   "*"     -> {Strategy ","}+ {prefer}
 
     [r][0-9\']*           -> Rule {prefer}
 
@@ -123,7 +123,7 @@ exports
 
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
-    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}+ {prefer}
 
     "dr" [0-9\']*         -> DynRuleId {prefer}
 
@@ -149,28 +149,3 @@ exports
     StrategoLongCom 	-> LAYOUT {prefer}
     StrategoVeryLongCom -> LAYOUT {prefer}
     StrategoWs 		-> LAYOUT {prefer}
-
-  context-free syntax
-
-    %% Obsolete; use |[ ... ]| syntax
-
-    "[[" Module      "]]" -> StrategoTerm {cons("ToTerm"),prefer}
-    "[[" Decl        "]]" -> StrategoTerm {cons("ToTerm")}
-    "[[" Sdecl       "]]" -> StrategoTerm {cons("ToTerm")}
-
-    "[[" Opdecl      "]]" -> StrategoTerm {cons("ToTerm")}
-    "[[" Type        "]]" -> StrategoTerm {cons("ToTerm")}
-
-
-    "[[" Term        "]]"  -> StrategoTerm {cons("ToTerm")}
-    "[[" Term        ":" "T" "]]" -> StrategoTerm {cons("ToTerm")}
-
-    "[[" StratRule   "]]" -> StrategoTerm {cons("ToTerm")}
-    "[[" Rule        "]]" -> StrategoTerm {cons("ToTerm")}
-    "[[" RuleDef     "]]" -> StrategoTerm {cons("ToTerm")}
-
-    "[[" Strategy    "]]"  -> StrategoTerm {cons("ToTerm")}
-    "[[" Strategy    ":" "S" "]]" -> StrategoTerm {cons("ToTerm")}
-    "[[" StrategyDef "]]"  -> StrategoTerm {cons("ToTerm")}
-
-    "[[" Overlay     ":" "O" "]]" -> StrategoTerm {cons("ToTerm")}
