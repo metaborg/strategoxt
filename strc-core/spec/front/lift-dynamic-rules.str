@@ -81,8 +81,10 @@ strategies
 
   lift-dynamic-rule-from-def :
     [def | defs] -> <conc> ([def' | rdefs], defs)
-    where {| ContextVar, LiftedRules
+    where {| ContextVar, LiftedRules, CurrentDef
 	   : <def-tvars> def; DeclareContextVars
+	   ; <def-name> def => name
+           ; rules( CurrentDef : () -> name )
            ; <lift-dynamic-rule> def => def'
 	   ; get-rules => rdefs
 	   |}
@@ -157,6 +159,10 @@ strategies
   DesugarDynRuleDef :
     |[ rules(     f(a1*|a2*)+t : t1 ) ]| -> 
     |[ rules( f+t f(a1*|a2*)   : t1 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules(      f(a1*|a2*)+t1 : r depends on t2 ) ]| -> 
+    |[ rules( f+t1 f(a1*|a2*)    : r depends on t2 ) ]|
 
   // Unconditional rules
 
@@ -324,6 +330,8 @@ rules
       ; <lookup-key(|x)> t1 => t3
       ; <dr-rename-vars> t3 => stdkey
 
+      ; detect-overlap(|f, t1, t3, stdkey, <CurrentDef>())
+
       ; <create-base-rule(|x, aux-call, t3, stdkey)> drd
       ; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
       ; <create-once-rule(|x, aux-call, t3, stdkey)> drd
@@ -332,6 +340,7 @@ rules
       ; create-innermost-scope-strategy(|f)
       ; create-new-strategy(|f)
       ; create-undefine-strategy(|f)
+
 
 strategies // auxiliaries
 
@@ -637,10 +646,118 @@ strategies
 
 strategies
 
-/*
+  detect-overlap(|f, lhs1, key1, rnkey1, def1) =
+  where(
+    if <not(?Term|[ DR_UNDEFINE(x) ]|)> lhs1 then
+      <bagof-LeftHandSide> f
+      ; if not(fetch(?(_,_,rnkey1,_))) then
+          if fetch-elem(overlapping-keys(|rnkey1)) => (lhs2, key2, rnkey2, def2) then
+	    <overlap-error>(f, (lhs1, key1, rnkey1, def1), (lhs2, key2, rnkey2, def2))
+          else
+            rules( LeftHandSide :+ f -> (lhs1, key1, rnkey1, def1) )
+          end
+        end
+    end
+  )
+
+  overlapping-keys(|key) = 
+    where(
+      !(key, <?(_,_,<id>,_)>)
+      ; not(eq)
+      ; match-keys
+    )
+
+  match-keys =
+    ?(x, x)
+
+  match-keys =
+    ?(Term|[ pt1{^pt2} ]|, Term|[ pt3{^pt4} ]|)
+    ; <match-keys>(pt1, pt3)
+    ; <match-keys>(pt2, pt4)
+
+  match-keys =
+    ?(PreTerm|[ c(t1*) ]|, PreTerm|[ c(t2*) ]|)
+    ; <zip(match-keys)> (t1*, t2*)
+
+  match-keys =
+    ?(Term|[ [DR_DUMMY()] ]|, Term|[ t ]|)
+    ; where( <not(?Term|[ [DR_DUMMY()] ]|)> Term|[ t ]| )
+
+  match-keys =
+    ?(Term|[ t ]|, Term|[ [DR_DUMMY()] ]|)
+    ; where( <not(?Term|[ [DR_DUMMY()] ]|)> Term|[ t ]| )
+
+  match-keys =
+    ?(Term|[ x ]|, Term|[ t ]|)
+    ; where( <not(?Term|[ y ]|)> Term|[ t ]| )
+
+  match-keys =
+    ?(Term|[ t ]|, Term|[ x ]|)
+    ; where( <not(?Term|[ y ]|)> Term|[ t ]| )
+
+  overlap-error =
+    ?(f, (lhs1, key1, rnkey1, (g,(gi,gj))), (lhs2, key2, rnkey2, (h,(hi,hj))))
+    ; !["** Error in dynamic rules\n\n",
+        "   Overlapping left-hand sides in dynamic rule `", f, "'\n",
+        "   - definition ", g, "(", <int-to-string> gi, ",", <int-to-string> gj, 
+              ") declares a rule with lhs `",
+              <debug(!"trm-to-string: "); trm-to-string; debug(!"trm-to-string: ")> lhs1, 
+              "'\n",
+        "   - definition ", h, "(", <int-to-string> hi, ",", <int-to-string> hj, 
+              ") declares a rule with lhs `",
+              <debug(!"trm-to-string: "); trm-to-string; debug(!"trm-to-string: ")> lhs2, 
+              "'\n"
+      ]
+    ; <printnl>(stderr, <id>)
+    ; <exit> 1    
+
+  trm-to-string = 
+    trm-to-string1 <+ trm-to-string2
+
+  trm-to-string1 :
+    Term|[ pt{^_} ]| -> <trm-to-string> pt
+
+  trm-to-string2 :
+    Term|[ pt ]| -> <trm-to-string> PreTerm|[ pt ]|
+
+  trm-to-string2 :
+    Term|[ pt{t*} ]| -> <concat-strings>[<trm-to-string>pt, "{", <trms-to-string> t*, "}"]
+
+  trm-to-string2 :
+    Term|[ pt1{^pt2} ]| -> <concat-strings>[<trm-to-string>pt1, "{^", <trm-to-string> pt2, "}"]
+
+  trm-to-string2 :
+    Term|[ x ]| -> x
+
+  trm-to-string2 :
+    PreTerm|[ _ ]| -> "_"
+
+  trm-to-string2 :
+    PreTerm|[ str ]| -> <concat-strings> ["\"", str, "\""]
+
+  trm-to-string2 :
+    PreTerm|[ c(t*) ]| -> <concat-strings>[c, "(", <trms-to-string> t*, ")"]
+
+  trms-to-string :
+    [] -> ""
+
+  trms-to-string :
+    [t] -> <trm-to-string> t
+
+  trms-to-string :
+    [t1, t2 | t*] -> <concat-strings>[<trm-to-string> t1, ", ", <trms-to-string>[t2|t*]]
+
+
+strategies
+
   def-name :
     |[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| -> (f, (<length> a1*, <length> a2*))
-*/
+
+  def-name :
+    |[ f(a1*|a2*) : t1 -> t2 where s ]| -> (f, (<length> a1*, <length> a2*))
+
+  def-name :
+    |[ f(a1*|a2*) = s ]| -> (f, (<length> a1*, <length> a2*))
 
   dr-rename-vars =
     {| DRRenameVar
