@@ -5,7 +5,8 @@ CLEANFILES = *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 STRPROGS = \
   test01.str \
   test02.str \
-  test03.str
+  test03.str \
+  test04.str
 
 TESTS = \
   $(STRPROGS:.str=.str.sh)
