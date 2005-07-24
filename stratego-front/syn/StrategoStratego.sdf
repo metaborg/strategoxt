@@ -89,18 +89,20 @@ exports
   variables
     [xyzfglc][0-9\']*       -> Id       {prefer}
     [xyzfgl][0-9\']*  "*"   -> {Id ","}+ {prefer}
-    "xs"[0-9\']*            -> {Id ","}+ {prefer}
+    "xs"[0-9\']*            -> {Id ","}+ {prefer,obsolete}
 
     [xyzfgl][0-9\']*  "*"   -> {ID ","}+ {prefer}
 
     [t][0-9\']*           -> Term     {prefer}
     [t][0-9\']*   "*"     -> {Term ","}+     {prefer}
-    "ts"[0-9\']*          -> {Term ","}+     {prefer}  
+    "ts"[0-9\']*          -> {Term ","}+     {prefer,obsolete}
+
+    "t:"Id                -> Term     {prefer}
 
     "str"[0-9\']*         -> String {prefer}
 
-    [s][0-9\']*           -> Strategy {prefer}
-    "ss"[0-9\']*          -> {Strategy ","}+ {prefer}
+    "s"[0-9\']*           -> Strategy {prefer}
+    "ss"[0-9\']*          -> {Strategy ","}+ {prefer,obsolete}
     "s"[0-9\']*   "*"     -> {Strategy ","}+ {prefer}
 
     [r][0-9\']*           -> Rule {prefer}
@@ -110,7 +112,7 @@ exports
 
     "a"[0-9\']*           -> Typedid        {prefer}
     "a"[0-9\']*   "*"     -> {Typedid ","}+ {prefer}
-    "as"[0-9\']*          -> {Typedid ","}+ {prefer} 
+    "as"[0-9\']*          -> {Typedid ","}+ {prefer,obsolete}
 
     "tp"[0-9\']*          -> Type 
     "tp"[0-9\']*  "*"     -> {Type "*"}+  

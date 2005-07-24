@@ -59,14 +59,14 @@ exports
 
     "~"         StrategoTerm -> Term             {cons("FromTerm")}
     "~term:"    StrategoTerm -> Term             {cons("FromTerm")}
-    "~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
+    %%"~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
     "~term*:"   StrategoTerm -> {Term ","}+      {cons("FromTerm")}
     "~"         StrategoTerm -> {ID   ","}+      {cons("FromTerm")}
 
     "~"         StrategoTerm -> Strategy         {cons("FromTerm")}
     "~strat:"   StrategoTerm -> Strategy         {cons("FromTerm")}
-    "~*"        StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
-    "~strat*:"  StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
+    "~*"        StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
+    "~strat*:"  StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
 
     "~srt:"     StrategoTerm -> Sort {cons("FromTerm")}
     "~srtvar:"  StrategoTerm -> LCID {cons("FromTerm")}
@@ -77,13 +77,13 @@ exports
     "~str:"   StrategoTerm -> String    {cons("FromTerm")}
 
     "~"   StrategoTerm -> Def       {cons("FromTerm")}
-    "~*"  StrategoTerm -> Def*      {cons("FromTerm")}
+    "~*"  StrategoTerm -> Def+      {cons("FromTerm")}
 
-    "~*"  StrategoTerm -> Opdecl*      {cons("FromTerm")}
+    "~*"  StrategoTerm -> Opdecl+      {cons("FromTerm")}
     "~*"  StrategoTerm -> {Type "*"}+  {cons("FromTerm")}
 
-    "~*"          StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
-    "~typed-id*:" StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
+    "~*"          StrategoTerm -> {Typedid ","}+  {cons("FromTerm")}
+    "~typed-id*:" StrategoTerm -> {Typedid ","}+   {cons("FromTerm")}
 
   context-free syntax 
 
