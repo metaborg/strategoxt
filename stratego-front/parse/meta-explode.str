@@ -57,7 +57,9 @@ strategies
     )
     
   MetaExplode =
-    alltd( ?ToTerm(<trm-explode>) 
+    alltd( Anno(?ToTerm(<pretrm-explode>), MetaExplode)
+	 + NoAnnoList(?ToTerm(<pretrm-explode>))
+	 + ?ToTerm(<trm-explode>)
          + ?ToMetaExpr(<trm-explode>)
          + ?ToMetaListExpr(<trm-explode>)
 	 + ?ToBuild(<!Build(<trm-explode>)>)
@@ -67,12 +69,31 @@ strategies
   trm-explode =
     TrmMetaVar 
     <+ LstMetaVar 
+    <+ TrmFromTerm 
+    <+ TrmFromApp
+    <+ TrmFromStr 
+    <+ TrmAnno
+    <+ ConcAssocR; pretrm-explode
+    <+ ConcCons; pretrm-explode
+    <+ ConcNil; pretrm-explode
+    <+ !NoAnnoList(<
+          TrmInt 
+          <+ TrmStr 
+	  <+ TrmConc 
+	  <+ TrmNil 
+	  <+ TrmCons 
+	  <+ TrmOp
+        >)
+
+  pretrm-explode = 
+    TrmMetaVar 
+    <+ LstMetaVar 
     <+ TrmInt 
     <+ TrmStr 
     <+ TrmFromTerm 
     <+ TrmFromApp
     <+ TrmFromStr 
-    <+ TrmAnno
+    <+ TrmAnno; fatal-err(|"anno in anno")
     <+ ConcAssocR; trm-explode
     <+ ConcCons; trm-explode
     <+ ConcNil; trm-explode
@@ -82,10 +103,10 @@ strategies
     <+ TrmOp
 
   TrmOp :	
-    op#(ts) -> NoAnnoList(Op(op, <map(trm-explode)> ts))
+    op#(ts) -> Op(op, <map(trm-explode)> ts)
 
   TrmMetaVar :
-    meta-var(x) -> Var(x) 
+    meta-var(x) -> Var(x)
 
   LstMetaVar :
     meta-listvar(x) -> Var(y)
@@ -95,17 +116,11 @@ strategies
 	    !x 
           end => y
 
-/*
-  TrmLMetaVar :	
-    meta-listvar(x) -> 
-    NoAnnoList(Op("Cons", [Var(ListVar(x)), NoAnnoList(Op("Nil", []))]))
-*/
-
   TrmInt = 
-    !NoAnnoList(Int(<is-int; int-to-string>))
+    !Int(<is-int; int-to-string>)
 
   TrmStr = 
-    !NoAnnoList(Str(<is-string>))
+    !Str(<is-string>)
 
   TrmFromTerm = 
     ?FromTerm(<MetaExplode>)
@@ -132,15 +147,15 @@ strategies
         ; try(?NoAnnoList(<id>)) => t2'
 
   TrmNil :
-    [] -> NoAnnoList(Op("Nil", []))
+    [] -> Op("Nil", [])
 
   TrmCons :
     [x | xs] -> 
-    NoAnnoList(Op("Cons",[<trm-explode>x, <trm-explode> xs]))
+    Op("Cons",[<trm-explode>x, <trm-explode> xs])
 
   TrmCons :
     ConsAux(x, xs) -> 
-    NoAnnoList(Op("Cons",[<trm-explode>x, <trm-explode> xs]))
+    Op("Cons",[<trm-explode>x, <trm-explode> xs])
 
   ConcAssocR : 
     Conc(Conc(t1, t2), t3) -> "Conc"#([t1, "Conc"#([t2, t3])])
@@ -158,7 +173,7 @@ strategies
     Conc(t, []) -> t
    
   TrmConc :
-    Conc(t1, t2) -> NoAnnoList(Op("Conc", [<trm-explode>t1, <trm-explode>t2]))
+    Conc(t1, t2) -> Op("Conc", [<trm-explode>t1, <trm-explode>t2])
 
 /*
   TrmConc :
