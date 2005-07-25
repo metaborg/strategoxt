@@ -58,4 +58,4 @@ nodist_use_def_test_SOURCES = use-def-test.c
 	$(STRATEGO_FRONT)/bin/parse-stratego $(STRINCLUDES) -i $< --assimilation off | $(ATERM_FRONT)/bin/pp-aterm -o $@
 
 %.itree : %.str
-	pack-stratego $(STRINCLUDES) -i $< | pp-aterm -o $@
+	$(STRC)/libexec/strc-core/pack-stratego $(STRINCLUDES) -i $< | $(ATERM_FRONT)/bin/pp-aterm -o $@
