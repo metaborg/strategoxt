@@ -741,6 +741,9 @@ strategies
     Int(i) -> i
 
   trm-to-string2 :
+    Term|[ x@t ]| -> <concat-strings>[x, "@", <trm-to-string> t]
+
+  trm-to-string2 :
     PreTerm|[ _ ]| -> "_"
 
   trm-to-string2 :
