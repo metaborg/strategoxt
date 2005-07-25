@@ -319,28 +319,26 @@ rules
   SplitDynamicRule(saveclsr):
     drd@|[ rules(  f(a1*|a2*) : t1 -> t2 where s ) ]| -> 
     |[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|
-    where
-      <dummify> t1 => t1'
-      ; <closure> drd => t*
-      ; <dr-rename-vars> drd => stdrule
-      ; <get-stamp>stdrule => stamp
+    where <dummify> t1 => t1'
+	; <closure> drd => t*
+	; <dr-rename-vars> drd => stdrule
+	; <get-stamp>stdrule => stamp
 
-      ; <create-aux-rule(|stdrule)> drd
+	; <create-aux-rule(|stdrule)> drd
 
-      ; new => x
-      ; <aux-call(|x)> drd => aux-call
-      ; <lookup-key(|x)> t1 => t3
-      ; <dr-rename-vars> t3 => stdkey
+	; new => x
+	; <aux-call(|x)> drd => aux-call
+	; <lookup-key(|x)> t1 => t3
+	; <dr-rename-vars> t3 => stdkey
 
-      ; detect-overlap(|f, t1, t3, stdkey, <CurrentDef>())
+	; detect-overlap(|f, t1, t3, stdkey, <CurrentDef>())
 
-      ; <create-base-rule(|x, aux-call, t3, stdkey)> drd
-      ; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
-      ; <create-once-rule(|x, aux-call, t3, stdkey)> drd
-      ; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
+	; <create-base-rule(|x, aux-call, t3, stdkey)> drd
+	; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
+	; <create-once-rule(|x, aux-call, t3, stdkey)> drd
+	; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
 
-      ; create-innermost-scope-strategy(|f)
-
+	; create-innermost-scope-strategy(|f)
 
 strategies // auxiliaries
 
@@ -664,52 +662,59 @@ strategies
     where(
       !(key, <?(_,_,<id>,_)>)
       ; not(eq)
-      ; match-keys
+      ; ![<id>]
+      ; listtd(repeat(match-keys-pos <+ match-keys-neg))
+      ; dbg(|"overlap: ")
+      ; not([])
     )
 
-  match-keys =
-    ?(x, x)
+  match-keys-pos :
+    [(x, x) | ps ] -> ps
 
-  match-keys =
-    ?(Term|[ pt1{^pt2} ]|, Term|[ pt3{^pt4} ]|)
-    ; <match-keys>(pt1, pt3)
-    ; <match-keys>(pt2, pt4)
+  match-keys-pos :
+    [(Term|[ pt1{^pt2} ]|, Term|[ pt3{^pt4} ]|) | ps ] -> [(pt1, pt3),(pt2, pt4) | ps]
 
-  match-keys =
-    ?(PreTerm|[ c(t1*) ]|, PreTerm|[ c(t2*) ]|)
-    ; <zip(match-keys)> (t1*, t2*)
+  match-keys-pos :
+    [(PreTerm|[ c(t1*) ]|, PreTerm|[ c(t2*) ]|) | ps] ->  <conc>(<zip>(t1*, t2*), ps)
 
-  match-keys =
-    ?(Term|[ [DR_DUMMY()] ]|, Term|[ t ]|)
-    ; where( <not(?Term|[ [DR_DUMMY()] ]|)> Term|[ t ]| )
+  match-keys-pos :
+    [(PreTerm|[ c1(t1*) ]|, PreTerm|[ c2(t2*) ]|) | ps] ->  ps
+    where <not(eq)> (c1, c2)
 
-  match-keys =
-    ?(Term|[ t ]|, Term|[ [DR_DUMMY()] ]|)
-    ; where( <not(?Term|[ [DR_DUMMY()] ]|)> Term|[ t ]| )
+  match-keys-neg :
+    [(t1, t2) | ps] -> ps
+    where <not(is-app <+ is-dummy)> t1
+	; <not(contains-dummy)> t2
 
-  match-keys =
-    ?(Term|[ x ]|, Term|[ t ]|)
-    ; where( <not(?Term|[ y ]|)> Term|[ t ]| )
+  match-keys-neg :
+    [(t1, t2) | ps] -> ps
+    where <not(is-app <+ is-dummy)> t2
+	; <not(contains-dummy)> t1
 
-  match-keys =
-    ?(Term|[ t ]|, Term|[ x ]|)
-    ; where( <not(?Term|[ y ]|)> Term|[ t ]| )
+  is-dummy = 
+    ?Term|[ [DR_DUMMY()] ]|
+
+  is-app = 
+    ?PreTerm|[ c1(t1*) ]|
+
+  contains-dummy =
+    oncetd(is-dummy)
 
   overlap-error =
     ?(f, (lhs1, key1, rnkey1, (g,(gi,gj))), (lhs2, key2, rnkey2, (h,(hi,hj))))
-    ; !["** Error in dynamic rules\n\n",
-        "   Overlapping left-hand sides in dynamic rule `", f, "'\n",
-        "   - definition ", g, "(", <int-to-string> gi, ",", <int-to-string> gj, 
-              ") declares a rule with lhs `",
-              <trm-to-string> lhs1, 
-              "'\n",
-        "   - definition ", h, "(", <int-to-string> hi, ",", <int-to-string> hj, 
-              ") declares a rule with lhs `",
-              <trm-to-string> lhs2, 
-              "'\n"
+    ; dbg(|"overlap-eror: ")
+    ; !["** Error in dynamic rules\n",
+        " Overlapping left-hand sides for dynamic rule `", f, "'\n",
+        " In definition ", g, "(", <int-to-string> gi, ",", <int-to-string> gj, "): ",
+              <trm-to-string <+ err(|"construction not supported, please report")> lhs1, 
+              "\n",
+        " In definition ", h, "(", <int-to-string> hi, ",", <int-to-string> hj, "): ",
+              <trm-to-string <+ err(|"construction not supported, please report")> lhs2, 
+              "\n"
       ]
+    ; dbg(|"msg: ")
     ; <printnl>(stderr, <id>)
-    ; <exit> 1    
+    ; <exit> 1
 
   trm-to-string = 
     trm-to-string1 <+ trm-to-string2
@@ -730,7 +735,16 @@ strategies
     Term|[ x ]| -> x
 
   trm-to-string2 :
+    Term|[ lid ]| -> lid
+
+  trm-to-string2 :
+    Int(i) -> i
+
+  trm-to-string2 :
     PreTerm|[ _ ]| -> "_"
+
+  trm-to-string2 :
+    PreTerm|[ str ]| -> <concat-strings> ["\"", str, "\""]
 
   trm-to-string2 :
     PreTerm|[ str ]| -> <concat-strings> ["\"", str, "\""]

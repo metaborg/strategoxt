@@ -8,6 +8,8 @@ STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
 STRATEGOLIB     = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib 
 LDADD 		= $(STRATEGORUNLIBS)
 
+AUTOMAKE_OPTIONS = no-dependencies
+
 if XT_DARWIN
 AM_LDFLAGS += -bind_at_load
 else

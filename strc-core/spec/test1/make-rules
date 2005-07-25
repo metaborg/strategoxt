@@ -110,6 +110,9 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 %.tree : %.rtree 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
+%.tree : %.itree 
+	cp $< $@ 
+
 %.f0 : %.tree %.tree.Stratego-Sugar-Cong
 	../front/repair-types -i $< -o $@
 
