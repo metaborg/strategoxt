@@ -169,6 +169,9 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 %.f17 : %.f16 %.f16.Stratego-Sugar-5
 	../front/extract -i $< -o $@ -b
 
+%.lib.f17 : %.f16 %.f16.Stratego-Sugar-5
+	../front/extract-all -i $< -o $@ -b
+
 %.f18 : %.f17 %.f17.Stratego-Sugar-5
 	../front/stratego-warnings -i $< -o $@ -b -W all
 

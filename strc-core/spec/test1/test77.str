@@ -1,0 +1,6 @@
+module test77
+imports lib
+
+strategies
+
+  main = undefine-GreaterThan(|"a")
