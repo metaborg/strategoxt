@@ -73,9 +73,9 @@ strategies
     <+ TrmFromApp
     <+ TrmFromStr 
     <+ TrmAnno
-    <+ ConcAssocR; pretrm-explode
-    <+ ConcCons; pretrm-explode
-    <+ ConcNil; pretrm-explode
+    <+ ConcAssocR; trm-explode
+    <+ ConcCons; trm-explode
+    <+ ConcNil; trm-explode
     <+ !NoAnnoList(<
           TrmInt 
           <+ TrmStr 
@@ -94,9 +94,9 @@ strategies
     <+ TrmFromApp
     <+ TrmFromStr 
     <+ TrmAnno; fatal-err(|"anno in anno")
-    <+ ConcAssocR; trm-explode
-    <+ ConcCons; trm-explode
-    <+ ConcNil; trm-explode
+    <+ ConcAssocR; pretrm-explode
+    <+ ConcCons; pretrm-explode
+    <+ ConcNil; pretrm-explode
     <+ TrmConc
     <+ TrmNil 
     <+ TrmCons 
