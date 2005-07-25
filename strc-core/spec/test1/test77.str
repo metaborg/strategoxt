@@ -1,6 +1,18 @@
 module test77
-imports lib
+imports
+  list-cons
+  tuple-cons
+  dynamic-rules
+
+signature
+  constructors 
+    Foo : Int * Int * Int -> Foo
 
 strategies
 
-  main = undefine-GreaterThan(|"a")
+  foo = 
+    ?(x,y,z)
+    ; rules( Foo : Foo(x,y,_) -> () depends on [] )
+
+  main = 
+    undefine-Foo(|"a")

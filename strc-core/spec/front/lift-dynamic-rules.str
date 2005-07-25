@@ -217,6 +217,8 @@ strategies
     where new => x; new => x1; new => x2
 	; new => y0; new => y1; new => y2; new => z
         ; <dummify> t2 => t2'
+        ; create-new-strategy(|f)
+        ; create-undefine-strategy(|f)
 
 
 strategies
@@ -338,8 +340,6 @@ rules
       ; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
 
       ; create-innermost-scope-strategy(|f)
-      ; create-new-strategy(|f)
-      ; create-undefine-strategy(|f)
 
 
 strategies // auxiliaries
@@ -409,8 +409,8 @@ strategies
 
 strategies
 
-  // Note: aux rule depends on rhs and condition, other rules depend only on the left-hand side and
-  // should only be generated once per lhs
+  // Note: aux rule depends on rhs and condition, other rules depend
+  // only on the left-hand side and should only be generated once per lhs
   // caching should be done by each generator
 
   /**
@@ -421,7 +421,7 @@ strategies
    */
 
   create-aux-rule(|stdrule) =
-    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| 
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]|
     ; _aux(|f) => g
     ; if is-new(|f, g, stdrule) then
         <get-stamp> stdrule => stamp
@@ -538,7 +538,7 @@ strategies
 
   create-new-strategy(|f) =
     if is-new(|f, "new", ()) then
-      where(_new(|f)   => f2; _bagof(|f) => f4
+      where(_new(|f) => f2; _bagof(|f) => f4
         ; add-def(||[ 
             f2(|scope, dep) = 
                 where(
@@ -701,11 +701,11 @@ strategies
         "   Overlapping left-hand sides in dynamic rule `", f, "'\n",
         "   - definition ", g, "(", <int-to-string> gi, ",", <int-to-string> gj, 
               ") declares a rule with lhs `",
-              <debug(!"trm-to-string: "); trm-to-string; debug(!"trm-to-string: ")> lhs1, 
+              <trm-to-string> lhs1, 
               "'\n",
         "   - definition ", h, "(", <int-to-string> hi, ",", <int-to-string> hj, 
               ") declares a rule with lhs `",
-              <debug(!"trm-to-string: "); trm-to-string; debug(!"trm-to-string: ")> lhs2, 
+              <trm-to-string> lhs2, 
               "'\n"
       ]
     ; <printnl>(stderr, <id>)
