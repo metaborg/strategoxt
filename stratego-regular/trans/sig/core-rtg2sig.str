@@ -81,7 +81,6 @@ strategies
       ; <fetch(?Appl(SomeTerm(), [Ref(Nonterm(srtx))]))> alts
       ; rules(
           OptionTree2Sort : Ref(Nonterm(srtx1)) -> Sort |[ Option(srtx) ]|
-          OptionTree2Sort : Ref(Nonterm(srtx2)) -> Sort |[ Option(srtx) ]|
         )
       )
 
