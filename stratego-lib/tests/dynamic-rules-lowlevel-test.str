@@ -1,5 +1,7 @@
 module dynamic-rules-lowlevel-test
-imports dynamic-rules-refactored sunit
+imports
+  dynamic-rules
+  sunit
 signature
 
 strategies

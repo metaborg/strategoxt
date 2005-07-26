@@ -1,6 +1,8 @@
 module dynamic-rules-highlevel-test
-
-imports dynamic-rules-refactored io sunit
+imports
+  dynamic-rules
+  io
+  sunit
 
 signature
   constructors
