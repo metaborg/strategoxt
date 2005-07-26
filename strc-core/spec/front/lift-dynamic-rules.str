@@ -732,6 +732,9 @@ strategies
     Term|[ pt1{^pt2} ]| -> <concat-strings>[<trm-to-string>pt1, "{^", <trm-to-string> pt2, "}"]
 
   trm-to-string2 :
+    PreTerm|[ t1#(t2) ]| -> <concat-strings>[<trm-to-string>t1, "#(", <trm-to-string> t2, ")"]
+
+  trm-to-string2 :
     Term|[ x ]| -> x
 
   trm-to-string2 :
