@@ -681,6 +681,36 @@ strategies
     [(PreTerm|[ c1(t1*) ]|, PreTerm|[ c2(t2*) ]|) | ps] ->  ps
     where <not(eq)> (c1, c2)
 
+  match-keys-pos :
+    [(Term|[ x@t1 ]|, t2) | ps] -> [(Term|[ t1 ]|, t2) | ps]
+
+  match-keys-pos :
+    [(t1, Term|[ x@t2 ]|) | ps] -> [(t1, Term|[ t2 ]|) | ps]
+
+  match-keys-pos :
+    [(PreTerm|[ t1#(t2) ]|, PreTerm|[ t3#(t4) ]|) | ps] -> [(t1,t3),(t2,t4) | ps]
+
+  match-keys-pos :
+    [(PreTerm|[ ~str:str#(t2) ]|, PreTerm|[ c(t*) ]|) | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ ~str:str{^pt}#(t2) ]|, PreTerm|[ c(t*) ]|) | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ c(t*) ]|), PreTerm|[ ~str:str#(t2) ]| | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ c(t*) ]|), PreTerm|[ ~str:str{^pt}#(t2) ]| | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ t1#(t2) ]|, PreTerm|[ c(t*) ]|) | ps] -> 
+    [(t1, Str(c)), (t2, Op("List", t*)) | ps]
+    where <not(Str(id))> t1
+
   match-keys-neg :
     [(t1, t2) | ps] -> ps
     where <not(is-app <+ is-dummy)> t1
