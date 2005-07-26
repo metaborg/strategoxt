@@ -58,6 +58,7 @@ strategies
     
   MetaExplode =
     alltd( Anno(?ToTerm(<pretrm-explode>), MetaExplode)
+         + AnnoList(?ToTerm(<pretrm-explode>), MetaExplode)
 	 + NoAnnoList(?ToTerm(<pretrm-explode>))
 	 + ?ToTerm(<trm-explode>)
          + ?ToMetaExpr(<trm-explode>)
@@ -83,7 +84,7 @@ strategies
 	  <+ TrmNil 
 	  <+ TrmCons 
 	  <+ TrmOp
-        >)
+        >) 
 
   pretrm-explode = 
     TrmMetaVar 
