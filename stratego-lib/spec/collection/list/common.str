@@ -572,7 +572,7 @@ strategies
     if <eq>(n,0) then 
       id
     else 
-      Tl; drop(|<subst>(n,1))
+      Tl; drop(|<subt>(n,1))
     end
 
   /** 
