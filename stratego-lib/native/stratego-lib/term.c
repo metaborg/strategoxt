@@ -203,3 +203,18 @@ ATerm SSL_address(ATerm t)
   /* ATfprintf(stderr, "<address> %t = %d\n", x, x); */
   return((ATerm)ATmakeInt((int)t));
 }
+
+ATerm SSL_checksum(ATerm t) {
+  unsigned char *digest = ATchecksum(t);
+
+  char buf[32] ;
+  int i, offset = 0;
+
+  for (i=0; i<16 ; i++) {
+    offset += sprintf(&(buf[offset]), "%02x", digest[i]);
+  }
+  
+  return((ATerm) ATmakeAppl0(ATmakeSymbol(buf, 0, ATtrue))) ;
+}
+
+

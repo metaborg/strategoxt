@@ -26,3 +26,4 @@ ATerm SSL_address_lt(ATerm x, ATerm y);
 ATerm SSL_address(ATerm t);
 ATerm SSL_get_arguments(ATerm t);
 ATerm SSL_get_constructor(ATerm t);
+ATerm SSL_checksum(ATerm t);

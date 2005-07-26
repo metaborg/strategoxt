@@ -72,7 +72,12 @@ strategies
   * This can be used to obtain a unique symbolic reference to a term.
   */
   address      = ?t; prim("SSL_address",t)
-  
+
+ /**
+  * Give checksum of a term. Similar to atsum from aterm package.
+  */ 
+  checksum = ?t ; prim("SSL_checksum",t)
+ 
 strategies 
 
   crush(nul, sum) : 
