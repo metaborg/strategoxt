@@ -20,7 +20,6 @@ strategies
     ; where(<length> x* => n)
     ; rules(
 
-
         ExpandOverlayInMatch :+ 
           |[ c(t*){^pt} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^_} ]|)
           where <length> t* => n
@@ -35,12 +34,12 @@ strategies
         ExpandOverlayInBuild :+
           |[ c(t*){^pt} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
           where <length> t* => n
-	      ; <?PreTerm|[ [] ]|> pt
+	      ; <?PreTerm|[ Nil() ]|> pt
 
         ExpandOverlayInBuild :+ 
           |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
           where <length> t* => n
-	      ; <not(?PreTerm|[ [] ]|)> pt3
+	      ; <not(?PreTerm|[ Nil() ]|)> pt3
 	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
 
       )
