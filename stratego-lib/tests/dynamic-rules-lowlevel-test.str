@@ -1,6 +1,6 @@
 module dynamic-rules-lowlevel-test
 imports
-  dynamic-rules
+  lang/dynamic-rules
   sunit
 signature
 

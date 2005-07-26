@@ -1,6 +1,6 @@
 module dynamic-rules-highlevel-test
 imports
-  dynamic-rules
+  lang/dynamic-rules
   io
   sunit
 
