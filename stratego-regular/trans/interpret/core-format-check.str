@@ -132,7 +132,7 @@ strategies
   generate-type-rule =
     ?ProdRule(c, [Appl(ConsTerm(), [Ref(a), Ref(b)])])
     ; rules(
-        UserType :+ t@[hd | tl] -> t
+        ListUserType :+ t@[hd | tl] -> t
           where <not(has-type(|c))> t
               ; <has-type(|b)> tl
               ; <has-type(|a)> hd
@@ -145,7 +145,7 @@ strategies
   generate-type-rule =
     ?ProdRule(c, [Appl(ConcTerm(), [Ref(a), Ref(b)])])
     ; rules(
-        UserType :+ t@Conc(t1, t2) -> t
+        ListUserType :+ t@Conc(t1, t2) -> t
           where <has-type(|a)> t1
               ; <has-type(|b)> t2
               ; <new-type(|c)> t
@@ -157,13 +157,9 @@ strategies
   generate-type-rule =
     ?ProdRule(a, [Appl(NilTerm(), [])])
     ; rules(
-        UserTypeNilTerm :+ t -> t
-          where !t => []
-              ; <new-type(|a)> []
+        ListUserType :+ [] -> []
+          where <new-type(|a)> []
       )
-
-  OptUserType =
-    ?[]; UserTypeNilTerm
 
   /**
    * Some application
@@ -171,7 +167,7 @@ strategies
   generate-type-rule =
     ?ProdRule(b, [Appl(SomeTerm(), [Ref(a)])])
     ; rules(
-        UserType :+ Some(t) -> Some(t)
+        OptUserType :+ Some(t) -> Some(t)
           where <has-type(|a)> t
               ; <new-type(|b)> Some(t)
       )
@@ -182,7 +178,7 @@ strategies
   generate-type-rule =
     ?ProdRule(a, [Appl(NoneTerm(), [])])
     ; rules(
-        UserType :+ None() -> None()
+        OptUserType :+ None() -> None()
           where <new-type(|a)> None()
       )
 
@@ -193,7 +189,7 @@ strategies
     ?ProdRule(a, [Appl(TupleTerm(_), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        UserType :+ t@""#(args) -> t
+        TupleUserType :+ t@""#(args) -> t
           where <not(has-type(|a))> t
               ; <list-has-type(|arg-types)> args
               ; <set-type(|a)> t
@@ -206,7 +202,7 @@ strategies
     ?ProdRule(a, [Appl(Term(f), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        UserType :+ t@f#(args) -> t
+        ApplUserType :+ t@f#(args) -> t
           where <not(has-type(|a))> t
               ; <list-has-type(|arg-types)> args
               ; <set-type(|a)> t
@@ -234,7 +230,14 @@ strategies
 strategies
 
   Type =
-    where(StandardType + UserType + InjUserType + OptUserType)
+    where(
+      StandardType
+    + InjUserType
+    + ApplUserType
+    + TupleUserType
+    + ListUserType
+    + OptUserType
+    )
 
   StandardType =
     is-int; new-type(|Int())
