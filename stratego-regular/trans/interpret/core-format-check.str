@@ -120,7 +120,7 @@ strategies
   generate-type-rule =
     ?ProdRule(b, [Ref(a)])
     ; rules(
-        UserType :+ t -> t
+        InjUserType :+ t -> t
           where <has-type(|a)> t
               ; <not(has-type(|b))> t
               ; <set-type(|b)> t
@@ -234,7 +234,7 @@ strategies
 strategies
 
   Type =
-    where(StandardType + UserType + OptUserType)
+    where(StandardType + UserType + InjUserType + OptUserType)
 
   StandardType =
     is-int; new-type(|Int())
