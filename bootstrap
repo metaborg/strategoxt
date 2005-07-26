@@ -5,10 +5,10 @@ if [ -f /etc/gentoo-release ] ; then
 	# Environment variables for our Gentoo friends.
 	export WANT_AUTOMAKE="1.8"
 	export WANT_AUTOCONF="2.59"
-elif [ -f /etc/debian_version ] ; then
-	# Environment variables for our Debian friends.
-        export ACLOCAL=/usr/bin/aclocal-1.8
-        export AUTOMAKE=/usr/bin/automake-1.8
+#elif [ -f /etc/debian_version ] ; then
+#	# Environment variables for our Debian friends.
+#        export ACLOCAL=/usr/bin/aclocal-1.8
+#        export AUTOMAKE=/usr/bin/automake-1.8
 fi
 
 # Determine autoxt to use.
