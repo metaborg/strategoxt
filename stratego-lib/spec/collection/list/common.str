@@ -541,7 +541,7 @@ strategies
     if <eq>(n,0) then 
       ![]
     else 
-      ![<Hd; s> | <Tl; take(|<subst>(n,1))>]
+      ![<Hd; s> | <Tl; takemap(s|<subst>(n,1))>]
     end
 
   drop-while(s) = 
@@ -549,6 +549,24 @@ strategies
 
   drop-until(s) = 
     at-suffix(([] + [s|id]);?xs); !xs
+
+  drop(|n) =
+    if <eq>(n,0) then 
+      id
+    else 
+      Tl; drop(|<subst>(n,1))
+    end
+
+  splitmap(s|n) =
+    if <eq>(n,0) then 
+      !([], <id>)
+    else 
+      where(
+        Hd; s => x
+        ; Tl; splitmap(s|<subst>(n,1)) => (xs, ys)
+      )
+      ; !([x | xs], ys)
+    end
 
   /**
    * @warning  alias of split-fetch/1
