@@ -530,6 +530,20 @@ strategies
     where(isn => n)
     ; nzip0(id); take-until(?(n,_)); map(Snd)
 
+  take(|n) =
+    if <eq>(n,0) then 
+      ![]
+    else 
+      ![<Hd> | <Tl; take(|<subst>(n,1))>]
+    end
+
+  takemap(s|n) =
+    if <eq>(n,0) then 
+      ![]
+    else 
+      ![<Hd; s> | <Tl; take(|<subst>(n,1))>]
+    end
+
   drop-while(s) = 
     at-suffix(([] + [not(s)|id]);?xs); !xs
 
