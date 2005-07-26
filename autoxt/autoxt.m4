@@ -330,7 +330,7 @@ m4_popdef([AC_Var])dnl
 # XT_CHECK_PACKAGE(VARIABLE,MODULE,[WITNESS])
 #
 # Checks the existance of package 'MODULE' and sets the 
-# variables VARIABLE, VARIABLE_CFLAFS, and VARIABLE_LIBS.
+# variables VARIABLE, VARIABLE_STRCFLAGS, VARIABLE_CFLAFS, and VARIABLE_LIBS.
 #
 # The optional WITNESS checks if the package is indeed 
 # installed at the location where the pkg-config file says it 
@@ -338,12 +338,19 @@ m4_popdef([AC_Var])dnl
 #
 # ------------------
 AC_DEFUN([XT_CHECK_PACKAGE],
-[
+[AC_ARG_VAR([$1][_STRCFLAGS], [Stratego compiler flags for $1, overriding pkg-config])dnl
   PKG_CHECK_MODULES([$1],[$2])
+
+  AC_MSG_CHECKING([for $1[]_STRCFLAGS])
+  if test "${$1[]_STRCFLAGS:+set}" = set; then
+    AC_MSG_RESULT([explicitly set: $$1[]_STRCFLAGS])
+  else
+    $1[]_STRCFLAGS=`$PKG_CONFIG --variable=strcflags "$2"`
+    AC_MSG_RESULT([$$1[]_STRCFLAGS])
+  fi
 
   AC_MSG_CHECKING([prefix of package $2])
   $1=`$PKG_CONFIG --variable=prefix "$2"`
-
   if test -z "$$1"; then
     AC_MSG_ERROR([package $2 does not specify its prefix in the pkg-config file.
           Report this error to the maintainer of this package.])

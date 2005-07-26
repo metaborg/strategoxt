@@ -41,13 +41,13 @@ docdatadir    = $(datadir)/doc/$(PACKAGE)
 #
 
 .str.c : 
-	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -c
 
 .str.rtree :
 	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ 
 
 .rtree.c : 
-	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -c
 
 
 # Note: the .r and .cr extensions are obsolete. The following

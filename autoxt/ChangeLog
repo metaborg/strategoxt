@@ -1,3 +1,15 @@
+2005-07-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* autoxt.m4: added support for pkg_STRCFLAGS to XT_CHECK_PACKAGE,
+	similar to pkg_LIBS and pkg_CFLAGS. This means that you can now
+	use FOO_STRCFLAGS in your makefile instead of specifying paths
+	relative to the prefix variable. pkg-config files need to declare
+	an strcflags variables to support this. FOO_STRCFLAGS is also an
+	influential environment variable.
+
+	* Makefile.xt: added support for STRCFLAGS as a modern alternative
+	of SCFLAGS. SCFLAGS are still supported.
+	
 2005-07-21  Martin Bravenboer <martin@cs.uu.nl>
 
 	* autoxt.m4: major cleanup and update of autoxt.m4 that merges
