@@ -46,61 +46,17 @@ formatcheck = $(prefix)/bin/format-check
 
 STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 
-
-%.Stratego-Sugar : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-1 : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-1.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-2 : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-2.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-3 : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-3.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-4 : %
-	$(formatcheck) -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-4.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-5 : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-5.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-Cong : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  
-
-%.Stratego-Sugar-HL : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-HL.rtg-nf -i $< -o $@  
-
-%.Stratego-Core : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core.rtg-nf -i $< -o $@
-
-%.Stratego-Core-Cong : %
-	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core-Cong.rtg-nf -i $< -o $@
-
-%.C : %
-	$(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -i $< -o $@ 
-
-
-%.Stratego-Sugar.xhtml : %
-	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar.rtg-nf -i $< -o $@  --xhtml
-
-%.Stratego-Sugar-1.xhtml : %
-	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-1.rtg-nf -i $< -o $@  --xhtml
-
-%.Stratego-Sugar-Cong.xhtml : %
-	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  --xhtml
-
-%.Stratego-Sugar-HL.xhtml : %
-	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-HL.rtg-nf -i $< -o $@  --xhtml
-
-%.Stratego-Core.xhtml : %
-	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core.rtg-nf -i $< -o $@ --xhtml
-
-%.Stratego-Core-Cong.xhtml : %
-	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core-Cong.rtg-nf -i $< -o $@ --xhtml
-
-%.C.xhtml : %
-	$(formatcheck) --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -i $< -o $@ --xhtml 
+FC_SUGAR      = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar.rtg-nf      -o /dev/null
+FC_SUGAR1     = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-1.rtg-nf    -o /dev/null
+FC_SUGAR2     = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-2.rtg-nf    -o /dev/null
+FC_SUGAR3     = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-3.rtg-nf    -o /dev/null
+FC_SUGAR4     = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-4.rtg-nf    -o /dev/null
+FC_SUGAR5     = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-5.rtg-nf    -o /dev/null
+FC_SUGAR_CONG = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-Cong.rtg-nf -o /dev/null
+FC_SUGAR_HL   = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-HL.rtg-nf   -o /dev/null
+FC_CORE       = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core.rtg-nf       -o /dev/null
+FC_CORE_CONG  = $(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core-Cong.rtg-nf  -o /dev/null
+FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -o /dev/null
 
 # FRONT-END ###########################################################
 
@@ -113,26 +69,32 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 %.tree : %.itree 
 	cp $< $@ 
 
-%.f0 : %.tree %.tree.Stratego-Sugar-Cong
+%.f0 : %.tree
+	$(FC_SUGAR_CONG) -i $<
 	../front/repair-types -i $< -o $@
 
-%.f1 : %.f0 %.f0.Stratego-Sugar-Cong
+%.f1 : %.f0
+	$(FC_SUGAR_CONG) -i $<
 	../front/pre-desugar -i $< -o $@ -b
 
-%.f2 : %.f1 %.f1.Stratego-Sugar-1
+%.f2 : %.f1
+	$(FC_SUGAR1) -i $<
 	../front/combine-sections -i $< -o $@ -b
 
-%.f3 : %.f2 %.f2.Stratego-Sugar-1
+%.f3 : %.f2
+	$(FC_SUGAR1) -i $<
 	../front/variables-to-constructors -i $< -o $@ -b
 
-%.f4 : %.f3 %.f3.Stratego-Sugar-1
+%.f4 : %.f3
+	$(FC_SUGAR1) -i $<
 	../front/raise-annotations -i $< -o $@ -b
 
-%.f5 : %.f4 %.f4.Stratego-Sugar-2
+%.f5 : %.f4
+	$(FC_SUGAR2) -i $<
 	../front/define-lrules -i $< -o $@ -b 
 
-
-%.f6 : %.f5 %.f5.Stratego-Sugar-2
+%.f6 : %.f5
+	$(FC_SUGAR2) -i $<
 	../front/lift-dynamic-rules -i $< -o $@ -b --dr new
 
 %.f6a : %.f6
@@ -142,51 +104,65 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 	../front/raise-annotations -i $< -o $@ -b
 
 
-%.f8 : %.f7 %.f7.Stratego-Sugar-3
+%.f8 : %.f7
+	$(FC_SUGAR3) -i $<
 	../front/use-def -i $< -o $@ -b 
 
 %.f9 : %.f8
 	../front/check-constructors -i $< -o $@ -b 
 
-%.f10 : %.f9 %.f9.Stratego-Sugar-3
+%.f10 : %.f9
+	$(FC_SUGAR3) -i $<
 	../front/expand-overlays -i $< -o $@ -b 
 
-%.f11 : %.f10 %.f10.Stratego-Sugar-3
+%.f11 : %.f10
+	$(FC_SUGAR3) -i $<
 	../front/rules-to-sdefs -i $< -o $@ -b 
 
-%.f12 : %.f11 %.f11.Stratego-Sugar-3
+%.f12 : %.f11
+	$(FC_SUGAR3) -i $<
 	../front/desugar-list-matching -i $< -o $@ -b 
 
-%.f13 : %.f12 %.f12.Stratego-Sugar-4
+%.f13 : %.f12
+	$(FC_SUGAR4) -i $<
 	../front/desugar-default-vardec -i $< -o $@ -b 
 
-%.f14 : %.f13 %.f13.Stratego-Sugar-4
+%.f14 : %.f13
+	$(FC_SUGAR4) -i $<
 	../front/introduce-congdefs -i $< -o $@ -b 
 
-%.f15 : %.f14 %.f14.Stratego-Sugar-4
+%.f15 : %.f14
+	$(FC_SUGAR4) -i $<
 	../lib/rename-vars -i $< -o $@ -b 
 
-%.f16 : %.f15 %.f15.Stratego-Sugar-4
+%.f16 : %.f15
+	$(FC_SUGAR4) -i $<
 	../front/desugar -i $< -o $@ -b 
 
-%.f17 : %.f16 %.f16.Stratego-Sugar-5
+%.f17 : %.f16
+	$(FC_SUGAR5) -i $<
 	../front/extract -i $< -o $@ -b
 
-%.lib.f17 : %.f16 %.f16.Stratego-Sugar-5
+%.lib.f17 : %.f16
+	$(FC_SUGAR5) -i $<
 	../front/extract-all -i $< -o $@ -b
 
-%.f18 : %.f17 %.f17.Stratego-Sugar-5
+%.f18 : %.f17
+	$(FC_SUGAR5) -i $<
 	../front/stratego-warnings -i $< -o $@ -b -W all
 
-%.f19 : %.f18 %.f18.Stratego-Sugar-5
+%.f19 : %.f18
+	$(FC_SUGAR5) -i $<
 	../front/rename-defs -i $< -o $@ -b
 
 ## Simplification
 
-%.f20 : %.f19 %.f19.Stratego-Sugar-5
+%.f20 : %.f19
+	$(FC_SUGAR5) -i $<
 	../opt/simplify1 -i $< -o $@ -b
 
-%.f21 : %.f20 %.f20.Stratego-Core-Cong
+%.f21 : %.f20
+	$(FC_CORE_CONG) -i $<
 	../opt/define-congruences -i $< -o $@ -b
 
 
@@ -205,13 +181,16 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 
 # Inlining
 
-%.opt1 : %.f21 %.f21.Stratego-Core-Cong
+%.opt1 : %.f21
+	$(FC_CORE_CONG) -i $<
 	../opt/worker-wrapper -i $< -o $@ -b
 
-%.opt2 : %.opt1 %.opt1.Stratego-Core-Cong
+%.opt2 : %.opt1
+	$(FC_CORE_CONG) -i $<
 	../opt/inline -i $< -o $@ -b
 
-%.opt3 : %.opt2 %.opt2.Stratego-Core-Cong
+%.opt3 : %.opt2
+	$(FC_CORE_CONG) -i $<
 	../opt/dead-def-elim -i $< -o $@ -b
 
 ## First Optimization
@@ -236,10 +215,12 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 #
 ## Pattern match compilation
 
-%.opt4 : %.opt3 %.opt3.Stratego-Core-Cong
+%.opt4 : %.opt3
+	$(FC_CORE_CONG) -i $<
 	../match/compile-match -i $< -o $@ -b
 
-%.opt5 : %.opt4 %.opt4.Stratego-Core-Cong
+%.opt5 : %.opt4
+	$(FC_CORE_CONG) -i $<
 	../match/desugar-case -i $< -o $@ -b
 
 # Inlining
@@ -274,25 +255,31 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 #
 # BACK-END ###########################################################
 
-#%.b1 : %.f21 %.f21.Stratego-Core
+#%.b1 : %.f21
 #	../opt/canonicalize -i $< -o $@ -b
 
-%.b1 : %.opt3 %.opt3.Stratego-Core
+%.b1 : %.opt3
+	$(FC_CORE) -i $<
 	../opt/canonicalize -i $< -o $@ -b
 
-%.b2 : %.b1 %.b1.Stratego-Core
+%.b2 : %.b1
+	$(FC_CORE) -i $<
 	../opt/lift-definitions -i $< -o $@ -b
 
-%.b3 : %.b2 %.b2.Stratego-Core
+%.b3 : %.b2
+	$(FC_CORE) -i $<
 	../opt/simplify1 -i $< -o $@ -b
 
-%.b4 : %.b3  %.b3.Stratego-Core
+%.b4 : %.b3
+	$(FC_CORE) -i $<
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.ac : %.b4 %.b4.Stratego-Core
+%.ac : %.b4
+	$(FC_CORE) -i $<
 	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
-%.c.abox : %.ac %.ac.C 
+%.c.abox : %.ac
+	$(FC_C) -i $<
 	$(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
 
 %.c.abox.check : %.c.abox
