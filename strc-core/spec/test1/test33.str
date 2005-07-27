@@ -43,7 +43,7 @@ strategies
     debug(!"DeclareVar: ");
     rules(
       Inline : Var(x) -> e
-      Subst  : Var(x) -> Undefined
+      Subst  :- Var(x)
     )
 
   DeclareFun =

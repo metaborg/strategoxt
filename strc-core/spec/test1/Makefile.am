@@ -24,7 +24,7 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
 		  test27 test28a test28 test29 test30 test31 test32 \
 		  test33 test34 test35 test36 test37 test38 test39  \
 		  test40 test41 test43 test45	    \
-		  test46 test47 test48 test49 test50 test51   \
+		  test46 test47 test48 test49 test50 test51 test53 \
 		  test54 test56 test57 test58 test59 \
 		  test60 test61 test62 test63 test64 test65 test66  \
                   test67 test68 test69 test70 test71 test72 test73 test74 \
@@ -38,11 +38,6 @@ check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 
 # test26 global choice
 # test44 contexts
-# test50 external definitions
-# test51 import liblib
-# test52 override rules (old dynamic rules no longer supported)
-# test53 extend rules (old dynamic rules no longer supported)
-# test55 override rules (old dynamic rules no longer supported)
 
 TESTS 		= $(check_PROGRAMS)
 
@@ -116,7 +111,7 @@ nodist_test49_SOURCES = test49.c
 nodist_test50_SOURCES = test50.c
 nodist_test51_SOURCES = test51.c
 #nodist_test52_SOURCES = test52.c
-#nodist_test53_SOURCES = test53.c
+nodist_test53_SOURCES = test53.c
 nodist_test54_SOURCES = test54.c
 #nodist_test55_SOURCES = test55.c
 nodist_test56_SOURCES = test56.c
