@@ -55,7 +55,7 @@ strategies
      !["test53", "a", "b", "c"]
      ; debug(!"test5")
      ; ?[prog | xs]
-     ; rules(Arguments5 :+ prog -> Undefined)
+     ; rules(Arguments5 :- prog )
      ; <bagof-Arguments5> prog
      ; debug(!"bagof-Arguments5: ")
      ; !xs
