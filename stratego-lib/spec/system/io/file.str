@@ -390,7 +390,7 @@ strategies
    * @type      String -> String
    */
   has-extension(ext) =
-    obsolete(!"has-extension(s); use has-extension(|t)")
+    obsolete(!"has-extension(s); use has-extension(|t), without a dot in the extension argument.")
     ; where(
         ext
         ; explode-string
