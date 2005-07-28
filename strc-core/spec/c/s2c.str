@@ -2,7 +2,13 @@
  * Compilation of Stratego programs to C 
  */
 module s2c
-imports liblib Stratego-Sugar automaton C C-simplify 
+
+imports 
+  liblib 
+  Stratego-Sugar 
+  automaton 
+  C 
+  C-simplify 
 
 strategies
 
@@ -122,8 +128,8 @@ rules
 	}
 
 	// function definitions themselves
-	~ext-def*:<if-lib(![], ![<MainDef>])>
 	~ext-def*:function-defs
+	~ext-def*:<if-lib(![], ![<MainDef>])>
     ]|
     where GenerateIncludes => incl
 	; <filter(DeclareConstructor)> ops => cnstr-decls
@@ -146,14 +152,36 @@ strategies
 
   MainDef = 
     !c:fun-def|[ 
-	ATerm main_0(ATerm t) 
-	{
+      int main(int argc, char *argv[]) {
+        long bp;
+        ATerm out_term; 
+        ATermList in_term;
+        int i; 
+
+        ATinit(argc, argv, &out_term);
+        SRTSChoice_init(&bp);
+
+        init_constructors_srts();
+        init_constructors();
+
+        SRTS_init_mprotect();
+
+        in_term = ATempty; 
+        for(i = argc - 1; i >= 0; i--) {
+          in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
+        }
+
+        if(PushChoice() == 0) {
 	  SRTS_stratego_initialize();
 	  register_strategies();
-	  
-	  t = main_0_0(t);
-	  return(t);
-	}
+          out_term = main_0_0((ATerm)in_term); 
+          ATfprintf(stdout, "\"%t\\n\"", out_term);
+          exit(0);
+        } else {
+          ATfprintf(stderr, "\"%s: rewriting failed\\n\"",  argv[0]);
+          exit(1);
+        }
+      }
     ]|
 
 /**
