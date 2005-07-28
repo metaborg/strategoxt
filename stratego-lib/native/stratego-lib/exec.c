@@ -404,12 +404,12 @@ int permissions_from_term(ATerm perms_term)
 
   todo = (ATermList) perms_term;
 
-  if(todo == ATempty) {
+  if(ATisEmpty(todo)) {
     ATfprintf(stderr, "** ERROR: access requires at least one permission &t .\n", perms_term);
     _fail(perms_term);
   }
 
-  while(todo != ATempty) {
+  while(!ATisEmpty(todo)) {
     amode = amode | permission_from_term(ATgetFirst(todo));
     todo = ATgetNext(todo);
   }
