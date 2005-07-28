@@ -154,8 +154,7 @@ ATerm SSL_implode_string(ATerm chars)
   }
 
   /* ATfprintf(stderr, "chars = %t\n", chars); */
-  for(i = 0; (ATermList) chars != ATempty; 
-      chars = (ATerm) ATgetNext((ATermList) chars), i++)
+  for(i = 0; !ATisEmpty(chars); chars = (ATerm) ATgetNext((ATermList) chars), i++)
     {
     
      /* more room needed to store imploded string */
