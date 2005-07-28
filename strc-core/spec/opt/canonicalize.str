@@ -25,23 +25,22 @@ rules
 
 *)
 
-  Canon :
-    CallT(f, args1, args2) -> Let(defs', CallT(f, args1', args2))
-    where <unzip(try(CallIdFun + CallFailFun); 
-                 (CreateDef1 <+ 
-                  not(CallT(SVar(id),[],[])); CreateDef2 <+ 
-                  split(id,![])))> args1 => (args1', defs)
-        ; <concat> defs => defs'
-        ; not([])
-
-  Canon :
-    PrimT(f, args1, args2) -> Let(defs', PrimT(f, args1', args2))
-    where <unzip(try(CallIdFun + CallFailFun); 
-                 (CreateDef1 <+ 
-                  not(CallT(SVar(id),[],[])); CreateDef2 <+ 
-                  split(id,![])))> args1 => (args1', defs)
-        ; <concat> defs => defs'
-        ; not([])
+  Canon =
+    let
+      canon-args = 
+        unzip(try(CallIdFun + CallFailFun); 
+              ( CreateDef1 
+	     <+ not(CallT(SVar(id),[],[])); CreateDef2 
+	     <+ split(id,![])
+	      )) ; (id,concat ; not([]))
+    in
+      ( ?CallT(f, args1, args2) 
+      + ?CallDynamic(f, args1, args2)
+      + ?PrimT(f, args1, args2) 
+      ) => c#(_) 
+    ; <canon-args>args1 => (args1', defs) 
+    ; !Let(defs, c#([f, args1', args2]))
+    end
 
   CreateDef1 :
     Let(defs,CallT(SVar(f),[],[])) -> (CallT(SVar(f),[],[]), defs)

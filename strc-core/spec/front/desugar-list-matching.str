@@ -19,6 +19,7 @@ strategies
         <+ RtoS; all(dlm)
         <+ Build(dlm-in-build(dlm))
         <+ CallT(id, map(dlm), map(dlm-in-build(dlm)))
+	<+ CallDynamic(dlm-in-build(dlm), map(dlm), map(dlm-in-build(dlm)))
         <+ Match(dlm-in-match(dlm))
       )
     )

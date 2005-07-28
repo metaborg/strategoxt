@@ -62,6 +62,12 @@ rules // Lift non-variable arguments to primitives.
     where <fetch(not(Var(id)))> ts
         ; <unzip(LiftPrimArg); (concat, unzip(id))> ts => (xs, (s, ts'))
 
+  LiftCallArgs :
+    CallDynamic(t, ss, ts) -> Scope(xs, Seq(<seqs>s, CallDynamic(t', ss, ts')))
+      where 
+        <fetch(not(Var(id)))> [t|ts] 
+      ; <unzip(LiftPrimArg);(concat, unzip(id))> [t|ts] => (xs, (s, [t'|ts']))
+
   LiftPrimArg :
     Var(x) -> ([], (Id, Var(x)))
 

@@ -106,10 +106,20 @@ rules
 	  <if-lib(
 	     ![PpControl("#include <srts/init-stratego-module.h>")],
 	     ![PpControl("#include <srts/init-stratego-application.h>")]
-	   )>	
-
+	   )>
+	
 	// signatures of all generated functions
 	~ext-def*:function-sigs
+
+	// 
+	static void register_strategies(void)
+	{
+		int initial_size = 117 ;
+		int max_load = 75;
+		if(strategy_table == NULL) 
+			strategy_table = ATtableCreate(initial_size,max_load);
+		~stm*:function-regs
+	}
 
 	// function definitions themselves
 	~ext-def*:<if-lib(![], ![<MainDef>])>
@@ -119,6 +129,7 @@ rules
 	; <filter(DeclareConstructor)> ops => cnstr-decls
         ; <filter(InitConstructor); concat> ops => cnstr-inits
 	; <map(SDefToDeclaration)> defs => function-sigs
+	; <map(SDefToRegistration)> defs => function-regs
 	; <filter(?SDefT(_,_,_,_))
            ; map(TranslateDef)> defs => function-defs
 	; (CachedTerms <+ ![])
@@ -138,6 +149,8 @@ strategies
 	ATerm main_0(ATerm t) 
 	{
 	  SRTS_stratego_initialize();
+	  register_strategies();
+	  
 	  t = main_0_0(t);
 	  return(t);
 	}
@@ -216,6 +229,17 @@ strategies
     where <map(TranslateVarDec)> a1* => ps1
         ; <map(TranslateVarDec)> a2* => ps2
 	; <conc>(ps1, ps2) => ps
+
+/**
+ * Registration of strategy definition 
+ */
+strategies
+  SDefToRegistration =
+    ( ?Def|[ f(a1*|a2*) = s ]|
+    + ?Def|[ external f(a1* | a2*) = s ]|
+    + ?Def|[ external f(a1* | a2*) ]| )
+  ; !stm |[ SRTS_register_function( (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue)),~id:f) ; ]|
+  
 
 /**
  * Translation of strategy definition to C function
@@ -365,6 +389,14 @@ rules
     where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
         ; <map(topdown(try(construct-term)))> t* => args2
         ; <concat>[args1, args2, [Id("t")]] => args
+
+  TranslateStrat :
+    CallDynamic(tp,s*,t*) -> <debug-depth>stm |[ t = (SRTS_lookup_function(~exp:e))(~exp*:args) ; ]|
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1 
+        ; <map(topdown(try(construct-term)))> t* => args2  
+        ; <concat>[args1, args2, [Id("t")]] => args 
+	; <topdown(try(construct-term))>tp => e
+
 
   TranslateTest :
     Test(s) -> Where(s)

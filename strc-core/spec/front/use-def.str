@@ -112,6 +112,8 @@ strategies
 			   PrimT(id,id,use-vars))
     + CallT(id,id,id) < or(CallT(id,unbound-vars,id),
 			   CallT(id,id,use-vars))
+    + CallDynamic(id,id,id) < or(CallDynamic(id,unbound-vars,id),
+                                 CallDynamic(use-vars,id,use-vars))
     + some(unbound-vars)
 
   bind-vars = 

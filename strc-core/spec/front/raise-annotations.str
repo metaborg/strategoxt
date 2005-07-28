@@ -37,6 +37,7 @@ strategies
       + Match(mch)
 
       + CallT(id, map(raise), map(bld))
+      + CallDynamic(bld,map(raise),map(bld))
     )
   )
 
@@ -158,4 +159,5 @@ strategies
         + Match(in-match(mch, bld, ovl))
 
         + CallT(id, map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
+	+ CallDynamic(in-build(mch, bld, ovl), map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
       )

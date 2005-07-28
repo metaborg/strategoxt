@@ -296,7 +296,10 @@ strategies
     where <explode-string> x => [39 | cs]
         ; <implode-string> cs => x'
 
-
-
-
+  DesugarOnce :
+    CallDynamic(t1,s*,t*) -> CallDynamic(Term |[ <conc-strings>(<cify>t1,t2) ]|,s*,t*)
+    where 
+      <length>s* ; int-to-string => i
+    ; <length>t* ; int-to-string => j
+    ; !NoAnnoList(Str(<concat-strings>["_",i,"_",j])) => t2
 
