@@ -48,18 +48,21 @@ rules
 		      , !Sort("Cons", [<Fst>, <Snd>])
 		      , ?ConstType(<id>))>]))
 
+  CheckCons = Op(id,length); CheckConsN
+
   GenerateCheckRule =
     ?OpDecl(c, ConstType(t))
     ; where(!0 => n)
     ; rules(
-        CheckCons : Op(c, t*) -> Op(c, []) where <length> t* => n
+        CheckConsN : Op(c, n) -> Op(c, [])
+        // CheckConsN : Op(c, <length => n>) -> Op(c, []) 
       )
 
   GenerateCheckRule =
     ?OpDecl(c, FunType(ts, t))
     ; where(<length> ts => n)
     ; rules(
-        CheckCons : Op(c, t*) -> Op(c, []) where <length> t* => n
+        CheckConsN : Op(c, n) -> Op(c, [])
       )
 
   /**
@@ -72,7 +75,7 @@ rules
     ?Overlay(c, xs, t)
     ; where(<length> xs => n)
     ; rules(
-        CheckCons : Op(c, t*) -> Op(c, []) where <length> t* => n
+        CheckConsN : Op(c, n) -> Op(c, [])
       )
 
 /*
@@ -95,23 +98,22 @@ rules
 
   check-constructors =
     ?RDefT(f, xs, ys, <id>)
-    ; check-constructors'(!(f, <length> xs, <length> ys), !"rule")
+    ; check-constructors'(|(f, <length> xs, <length> ys), "rule")
 
   check-constructors =
     ?SDefT(f, xs, ys, <id>)
-    ; check-constructors'(!(f, <length> xs, <length> ys), !"definition")
+    ; check-constructors'(|(f, <length> xs, <length> ys), "definition")
 
   check-constructors =
     ?Overlay(f, xs, <id>)
-    ; check-constructors'(!(f, <length> xs), !"overlay")
+    ; check-constructors'(|(f, <length> xs), "overlay")
 
-  check-constructors'(f, kind) =
+  check-constructors'(|fstr, kindstr) =
     {| CheckConsError :
-       where(f => fstr; kind => kindstr);
        rules(
          CheckConsError : 
            Op(c, ts) -> Op(c, ts) 
-           where <printnl> (stderr, 
+           where err(|
 		   ["error: in ", kindstr, " ", fstr, ": ", 
 		    "constructor ", c, "/", <length; int-to-string> ts,
 		    " not declared"])
