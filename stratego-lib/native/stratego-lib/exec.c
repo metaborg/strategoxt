@@ -94,9 +94,8 @@ FILE* stream_from_term_strict(ATerm term) {
  * Converts a FILE* the a representation in an ATerm.
  */
 ATerm stream_to_term(FILE* stream) {
-  return (ATerm) ATmakeInt((int)stream);
-  // TODO: using an Int for now because Blobs are causing weird problems.
-
+  return (ATerm) ATmakeBlob(sizeof(FILE*),stream);
+  
 /*
   FILE **onheap = (FILE**) malloc(sizeof(FILE*));
   // TODO: free allocated space with Blob destructor?

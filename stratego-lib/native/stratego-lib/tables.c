@@ -55,8 +55,7 @@ ATermTable hashtable_from_term(ATerm table) {
  * Converts an ATermTable to  a representation in an ATerm.
  */
 ATerm hashtable_to_term(ATermTable table) {
-  /* TODO: use a Blob */
-  return (ATerm) ATmakeInt((int) table);
+  return  (ATerm) ATmakeBlob(sizeof(ATermTable),table) ;
 }
 
 /**************************************************************************
