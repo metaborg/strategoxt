@@ -1,8 +1,20 @@
-SINCLUDES 	= -I $(prefix)/share/stratego-lib -I $(prefix)/share/srts
-AM_LDFLAGS	= -L$(prefix)/lib/stratego-lib -L$(prefix)/lib/srts -L$(ATERM)/lib -g
+SINCLUDES = \
+  -I $(prefix)/share/stratego-lib \
+  -I $(prefix)/share/srts
 
-STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-lib-native-opt -lATerm -lm
-LDADD 		= $(STRATEGORUNLIBS)
+
+AM_LDFLAGS = \
+  -L$(prefix)/lib/stratego-lib \
+  -L$(prefix)/lib/srts \
+  -L$(ATERM)/lib \
+  -g
+
+AM_CFLAGS = \
+  -I$(prefix)/include \
+  -I$(prefix)/include \
+  -I$(ATERM)/include
+
+LDADD = -lstratego-lib-native-opt -lstratego-runtime-opt -lATerm -lm
 
 if XT_DARWIN
 AM_LDFLAGS += -bind_at_load
