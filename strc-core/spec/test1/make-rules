@@ -12,7 +12,7 @@ CINCL = -I$(STRATEGO_LIB)/include -I$(SRTS)/include \
 AM_CFLAGS = -I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include -I/usr/include
 
 SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
-         -L$(SRTS)/lib/srts -lstratego-runtime-choice -lstratego-runtime \
+         -L$(SRTS)/lib/srts -lstratego-runtime \
          -L$(ATERM)/lib -lATerm $(CHOICELDFLAGS) \
          -lm
 

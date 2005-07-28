@@ -30,7 +30,6 @@ strategies
         [  <concat-strings> ["-L", <xtc-find-path> "stratego-lib", "/lib/stratego-lib"]
         , "-lstratego-lib-native-opt"
         , <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
-        , "-lstratego-runtime-choice-opt"
         , "-lstratego-runtime-opt"
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
         , "-lATerm"
@@ -151,27 +150,6 @@ strategies
         err(|"--dr flag is deprecated; old dynamic rules are no longer supported"),
 	!"--dr : obsolete; old dynamic rules are no longer supported" )
 
-  + ArgOption("--choice-lib"
-      , where(set-choice-point-lib); !()
-      , !"--choice-lib file  Link with specified choice point library (e.g. /usr/lib/foo.a)"
-      )
-
-  + where(<xtc-find-silent> "libcpl-stratego.la")
-    ; Option("--cpl"
-      , where(<xtc-find; set-choice-point-lib> "libcpl-stratego.la"); !()
-      , !"--cpl              Use the Nancy Choice Point Library"
-      )
-
-//  + Option("--trace-all",  
-//	where(<set-config>("--trace-all",())); !(),
-//	!"--trace-all        Instrument all definitions to print tracing information" )
-//
-//  + ArgOption("-t",        
-//	where(<extend-config>("-t", [<id>])); !(),
-//	!"-t f               Instrument definition of f to print tracing information\n" )
-
-//  + verbose-option
-
   + general-options
 
   + Option("-h" + "--help",         
@@ -195,13 +173,6 @@ strategies
       !2 ; log(|Warning(),"Optimization levels < 2 are broken, setting optimization level to 2.")
     end
       
-
-  set-choice-point-lib = 
-    ?lib
-    ; <get-config> "-CL"
-    ; map(try( \ "-lstratego-choice" -> lib \ ))
-    ; <set-config> ("-CL", <id>)
-
   pass-dr = !["--dr", <get-config> "--dr"]
 
   pass-maybe-unbound-warnings =
@@ -209,7 +180,6 @@ strategies
   ; fetch-elem("maybe-unbound-variables")
   ; !["--maybe-unbound-warnings"]
  <+ !["--no-maybe-unbound-warnings"]
-
 
   conflict-short-description(p) = 
       !["STRC compiles Stratego programs to C or executable code.\n",
@@ -241,7 +211,7 @@ strategies
 
   strc-version =
     where(<printnl>(stdout, 
-	  ["STRC ", <get-config> "VERSION", " (revision ", <prim("SVN_REVISION_TERM")> (), ")\n\n",
+	  ["STRC ", <get-config> "VERSION", " (revision ", <svn-revision-number> (), ")\n\n",
 	  "Copyright (C) 1998-2005 Eelco Visser <visser@acm.org>\n",
 	  "\n",
 	  "This library is free software; you can redistribute it and/or\n",
@@ -251,6 +221,7 @@ strategies
 	  ]))
 
   strc-version-number = prim("VERSION_TERM")
+  svn-revision-number = prim("SVN_REVISION_TERM")
 
   strc-announce =
     if-verbose2(strc-version)

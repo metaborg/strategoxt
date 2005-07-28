@@ -2,9 +2,7 @@ SINCLUDES 	= -I $(prefix)/share/stratego-lib -I $(prefix)/share/srts \
 	          -I $(top_srcdir)/../asfix-tools/src/implode
 AM_LDFLAGS	= -L$(prefix)/lib/stratego-lib -L$(prefix)/lib/srts -L$(ATERM)/lib -g
 
-STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
-		  -lstratego-lib-native-opt -lATerm -lm
-
+STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-lib-native-opt -lATerm -lm
 STRATEGOLIB     = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib 
 LDADD 		= $(STRATEGORUNLIBS)
 
