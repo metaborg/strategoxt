@@ -9,7 +9,7 @@ AM_LDFLAGS = \
   -L$(ATERM)/lib \
   -g
 
-AM_CFLAGS  = \
+AM_CFLAGS = \
   -I$(prefix)/include \
   -I$(prefix)/include \
   -I$(ATERM)/include
