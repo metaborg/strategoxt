@@ -130,6 +130,7 @@ strategies
   general-options =
       verbose-option
     + keep-option
+    + statistics-option
 
   /**
    * Option specifcation for level of keeping intermediate results.
@@ -138,6 +139,15 @@ strategies
     ArgOption("-k" + "--keep"
     , where(<set-config> ("--keep", <string-to-int>))
     , !"-k i | --keep i  Keep intermediates (default 0)"
+    )
+
+  /**
+   * Option specifcation for level of statistics printing
+   */
+  statistics-option =
+    ArgOption("--statistics"
+    , where(<set-config> ("--statistics", <string-to-int>))
+    , !"--statistics i  Print statistics (default 0 = none)"
     )
 
   /**
@@ -220,11 +230,11 @@ strategies
    * stderr.
    */
   report-run-time = 
-    if-verbose5(
+    if <geq>(<get-config> "--statistics", 1) then
       <printnl> (stderr,
         [<whoami> (), " (", <run-time>, " secs)"]
       )
-    )
+    end
 
   whoami =
     <get-config> "program"
