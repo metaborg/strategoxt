@@ -4,5 +4,5 @@ Name: Stratego Runtime
 Description: Runtime support library for Stratego programs
 Version: @PACKAGE_VERSION@
 Requires: aterm
-Libs: -L@abs_top_builddir@/srts/src -lstratego-runtime-opt -lstratego-runtime-choice-opt -lm
+Libs: -L@abs_top_builddir@/srts/src -lstratego-runtime-opt -lm
 Cflags: -I@abs_top_builddir@/srts/src
