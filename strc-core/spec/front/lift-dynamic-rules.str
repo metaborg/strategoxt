@@ -635,13 +635,19 @@ strategies
   DummifyTerm :
     Term|[ _ ]| -> Term|[ [DR_DUMMY()] ]|
 
-  DummifyTerm =
-    ?Term|[ <s> ]|
-    ; fatal-err(|"root application in left-hand side of dynamic rule")
+  DummifyTerm :
+    Term|[ <s> ]| -> |[ ( ~term*:<tvars; map(!Var(<id>))> s ) ]|
 
-  DummifyTerm =
-    ?Term|[ <s> t ]|
-    ; fatal-err(|"term application in left-hand side of dynamic rule")
+  DummifyTerm :
+    Term|[ <s> t ]| -> |[ ( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|
+
+//  DummifyTerm =
+//    ?Term|[ <s> ]|
+//    ; fatal-err(|"root application in left-hand side of dynamic rule")
+
+//  DummifyTerm =
+//    ?Term|[ <s> t ]|
+//    ; fatal-err(|"term application in left-hand side of dynamic rule")
 
 strategies
 
