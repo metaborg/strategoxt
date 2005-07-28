@@ -21,6 +21,7 @@ LIB_SOURCES = \
   aterm-extension.c \
   debug.c \
   mprotect.c \
+  stratego-dynamic-call.c \
   srts/stratego.h \
   srts/aterm-extension.h \
   srts/debug.h \

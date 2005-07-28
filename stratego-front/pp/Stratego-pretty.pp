@@ -127,6 +127,12 @@
    CallT                                              -- H hs=0 [_1 KW["("] H  [_2 KW["|"] _3] KW[")"]],
    CallT.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
    CallT.3:iter-star-sep                              -- H hs=0 [_1 KW[","]],
+
+   CallDynamic                 -- H hs=0 [KW["call"] KW["("] _1 KW["|"] _2 KW["|"] _3 KW[")"]],
+   CallDynamic.2:iter-star-sep -- H hs=0 [_1 KW[","]],
+   CallDynamic.3:iter-star-sep -- H hs=0 [_1 KW[","]],
+
+
    Match                                              -- H hs=0 [KW["?"] _1],
    Build                                              -- H hs=0 [KW["!"] _1],
    ScopeDefault                                       -- H hs=0 [KW["{"] _1 KW["}"]],

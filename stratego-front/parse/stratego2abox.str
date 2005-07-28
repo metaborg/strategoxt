@@ -452,6 +452,64 @@ rules
 
 rules
 
+  stratego-to-abox =
+    ?CallDynamic(f,[x|xs], [y | ys])
+  ; where(
+      <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => xs'
+    ; <map(! |[ H hs=1 [ "," ~<id> ] ]| )> ys => ys'
+    )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ "call" "(" ~f]
+            H hs=1 [ "|" ~x ]
+            ~*xs'
+            H [ "|" ~y ]
+            ~*ys'
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ "call" "(" ~f "|" ~x ~*xs' "|" ~y ~*ys' ")"] ]|
+    )
+
+  stratego-to-abox =
+    ?CallDynamic(f,[x|xs], [])
+  ; where( 
+      <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => xs' 
+    )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ "call" "(" ~f ]
+            H hs=1 [ "|" ~x ]
+            ~*xs'
+            "|"
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ "call" "(" ~f "|" ~x ~*xs' "|" ")"] ]|
+    )
+
+  stratego-to-abox =
+    ?CallDynamic(f,[], [y | ys])
+  ; where( 
+      <map(! |[ H hs=1 [ "," ~<id> ] ]| )> ys => ys' 
+    )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ "call" "(" ~f]
+	    H hs=1 [ "|" ]
+            H ["|" ~y ]
+            ~*ys'
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ "call" "(" ~f "|" "|" ~y ~*ys' ")"] ]|
+    )
+
+  stratego-to-abox :
+    CallDynamic(f,[],[]) -> |[ H [ "call" "(" ~f "|" "|" ")" ] ]|
+
+
+
   stratego-to-abox : 
     Call(name,[]) -> name
 

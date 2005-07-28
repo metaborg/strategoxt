@@ -6,7 +6,8 @@ include_HEADERS = \
   stratego-choice.h \
   stratego-config.h \
   init-stratego-module.h \
-  init-stratego-application.h
+  init-stratego-application.h \
+  stratego-dynamic-call.h
 
 noinst_HEADERS = \
   debug.h \

@@ -33,6 +33,7 @@ USA
 #include "stratego-config.h"
 #include "aterm-extension.h"  
 #include "stratego-choice.h"
+#include "stratego-dynamic-call.h"
 
 ATerm _id(ATerm);
 ATerm _fail(ATerm);
@@ -66,5 +67,4 @@ ATerm _cpl_loaded(ATerm);
 
 #define not_null(x) \
         (x == NULL ? _fail(x) : x)
-
 #endif

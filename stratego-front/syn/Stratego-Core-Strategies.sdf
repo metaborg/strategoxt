@@ -12,6 +12,8 @@ exports
     "let" Def* "in" Strategy "end"		 -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallT")}
 
+    "call" "(" Term "|" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallDynamic")}
+
 
   sorts StrategyDef
   context-free syntax
