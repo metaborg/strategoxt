@@ -226,6 +226,7 @@ strategies
     if <geq>(<get-config> "--format-check", n) then
       fc(|format, phase)
     end
+    ; if-keep(save-as(!phase)|<inc>n)
 
   fc(|format, phase) =
     where(
