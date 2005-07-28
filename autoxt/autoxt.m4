@@ -229,8 +229,8 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
 
   AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(SRTS)/include'])
   AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
-  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib/srts -lstratego-runtime-opt -lstratego-runtime-choice-opt -lm'])
-  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lstratego-lib-native-opt -lm'])
+  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib/srts -lstratego-runtime-opt -lm'])
+  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lm'])
 ])
 
 # XT_CHECK_STRATEGOXT_UTILS
