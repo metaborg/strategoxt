@@ -6,7 +6,7 @@ pkgdata_DATA 	= autoxt.m4 Makefile.xt
 pkgdoc_DATA 	= README
 
 CLEANFILES      = XTC
-EXTRA_DIST	= autoxt.src Makefile.xt autoxt.m4
+EXTRA_DIST	= autoxt.src Makefile.xt autoxt.m4 svn-revision
 
 autoxt: autoxt.src Makefile
 	sed 's@__pkgdatadir__@$(pkgdatadir)@g;\

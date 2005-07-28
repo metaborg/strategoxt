@@ -62,6 +62,10 @@ do
   then
     cp ../Makefile.xt . 
   fi
+  if test -e "../svn-revision"
+  then
+    cp ../svn-revision .
+  fi
   autoreconf -ifv || exit 1
   cd ..
 done

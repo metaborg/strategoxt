@@ -5,6 +5,6 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 CLEANFILES        = XTC
 
-EXTRA_DIST = Makefile.xt 
+EXTRA_DIST = Makefile.xt  svn-revision
 
 ACLOCAL_AMFLAGS = -I ../config
