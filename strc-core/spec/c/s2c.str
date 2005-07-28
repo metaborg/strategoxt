@@ -153,17 +153,12 @@ strategies
   MainDef = 
     !c:fun-def|[ 
       int main(int argc, char *argv[]) {
-        long bp;
         ATerm out_term; 
         ATermList in_term;
         int i; 
 
         ATinit(argc, argv, &out_term);
-        SRTSChoice_init(&bp);
-
-        init_constructors_srts();
         init_constructors();
-
         SRTS_init_mprotect();
 
         in_term = ATempty; 
@@ -370,15 +365,15 @@ rules
     c:stm|[
       {
         ATerm ~id:x = t;
-        int ~id:ptr = stack_ptr;
 	if(PushChoice() == 0)
-	  { ~stm:s1; LocalPopChoice(~id:ptr); ~stm:s2 }
+	  { ~stm:s1; LocalPopChoice(); ~stm:s2 }
 	else
           { t = ~id:x; ~stm:s3 }
       }   
     ]|
-    where new => x; new => ptr
+    where new => x
 
+  /*
   TranslateStrat :
     |[ s1 ++ s2 ]| -> |[ s1 <++ s2 ]|
 
@@ -392,6 +387,7 @@ rules
        }
     ]|
     where new => x
+  */
 
   TranslateNot :
     |[ not(s) ]| -> 
