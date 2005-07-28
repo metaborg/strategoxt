@@ -1,5 +1,0 @@
-/**
- * Choice Point Library related strategies.
- */
-module cpl
-imports util/config/cpl
