@@ -23,8 +23,8 @@ strategies
   /**
    * Returns the list of annotations of the current term.
    */
-  get-annotations = 
-    ?t; prim("SSLgetAnnotations", t)
+  get-annotations :
+    t{t*} -> t*
 
   /**
    * Alias of set-annotations.
@@ -37,14 +37,14 @@ strategies
   /**
    * Sets the annotations of the given term t to the annotations a.
    */
-  set-annotations = 
-    ?(t, a); prim("SSLsetAnnotations", t, a)
+  set-annotations :
+    (t, t*) -> t{t*}
  
-  set-anno = 
-    ?(t, a); <set-annos> (t, [a])
+  set-anno :
+    (t1, t2) -> t1{t2}
 
-  rm-annotations =
-    ?t; prim("ATremoveAnnotations", t)
+  rm-annotations :
+    t -> t{}
 
   /**
    * Succeeds if a term has annotations.
@@ -52,10 +52,10 @@ strategies
    * @inc test-has-annos
    */
   has-annos =
-    ?_{_}
+    ?_{t,t*}
 
   has-annotation = 
-    where(get-annotations; not([]))
+    has-annos 
 
   if-annotation(s1, s2) =
     has-annotation < s1 + s2
