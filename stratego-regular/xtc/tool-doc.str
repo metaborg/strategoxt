@@ -133,11 +133,6 @@ signature
      * Config item for the currently configured xtc repository.
      */
     CurrentXTCRepository : Def
-
-    /**
-     * Config item for the Choice Point Library (CPL) configuration
-     */
-    UsingCPL : Def
     
     /**
      * Generic configuration item: key, value.
@@ -226,9 +221,6 @@ rules
 
   DesugarToolDoc :
     CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location> ())
-
-  DesugarToolDoc :
-    UsingCPL() -> ConfigItem("Using CPL", <cpl-loaded < !"Yes" + !"No"> ())
 
   DesugarToolDoc :
     ConfigItem(k, v) -> Def(k, Line(v))
