@@ -52,14 +52,14 @@ rules
     ?OpDecl(c, ConstType(t))
     ; where(!0 => n)
     ; rules(
-        CheckCons : Op(c, <length => n>) -> Op(c, [])
+        CheckCons : Op(c, t*) -> Op(c, []) where <length> t* => n
       )
 
   GenerateCheckRule =
     ?OpDecl(c, FunType(ts, t))
     ; where(<length> ts => n)
     ; rules(
-        CheckCons : Op(c, <length => n>) -> Op(c, []) 
+        CheckCons : Op(c, t*) -> Op(c, []) where <length> t* => n
       )
 
   /**
@@ -72,7 +72,7 @@ rules
     ?Overlay(c, xs, t)
     ; where(<length> xs => n)
     ; rules(
-        CheckCons : Op(c, <length => n>) -> Op(c, [])
+        CheckCons : Op(c, t*) -> Op(c, []) where <length> t* => n
       )
 
 /*
