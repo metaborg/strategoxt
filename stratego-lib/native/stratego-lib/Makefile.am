@@ -2,7 +2,7 @@ includedir = $(prefix)/include/stratego-lib
 
 include_HEADERS = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
-  ssl-string.h term.h annotations.h placeholder.h dir.h
+  ssl-string.h term.h placeholder.h dir.h
 
 AM_CPPFLAGS = $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
 AM_LDFLAGS  = -avoid-version
@@ -17,7 +17,7 @@ LIB_SOURCES = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
   ssl-string.h term.h dir.h \
   io.c tables.c sets.c time.c exec.c number.c string.c term.c \
-  annotations.c placeholder.c dir.c
+  placeholder.c dir.c
 
 libstratego_lib_native_la_SOURCES      = $(LIB_SOURCES)
 libstratego_lib_native_dbg_la_SOURCES  = $(LIB_SOURCES)
