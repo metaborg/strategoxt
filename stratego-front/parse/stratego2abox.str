@@ -1,7 +1,7 @@
 module stratego2abox
 imports 
   liblib
-  Stratego
+  Stratego-Sugar
   Box
 
 signature
@@ -813,7 +813,55 @@ rules
       <map(\ s -> S(s) \) ; separate-by-comma> ps => ps'
 
 
+rules
+  stratego-to-abox :
+    AnnoCong(s1,s2) -> |[ H[ ~s1 ~s2 ] ]|
+     
 
+
+rules
+  stratego-to-abox :
+    SwitchChoiceNoOtherwise(s1,ss) -> |[
+      V [ V is=2 vs=0 [
+          H hs=1 [KW["switch"] ~s1]
+            ~*ss'
+          ]
+ 	 KW["end"]
+        ]
+      ]|
+      where <map(switch-case)>ss => ss'
+
+  switch-case :
+    (s1,s2) -> |[
+       V is=2 vs=0 [
+         H hs=1[KW["case"] ~s1 KW[":"]]
+         ~s2
+       ]
+     ]|
+
+  stratego-to-abox :
+    SwitchChoice(s1,ss,s2) -> |[
+      V [ V is=2 vs=0 [
+            H hs=1 [KW["switch"] ~s1]
+              ~*ss'
+              V is=2 vs=0 [
+                H hs=1[KW["otherwise"] KW[":"]]
+                ~s2
+              ]
+          ]
+          KW["end"]
+        ]
+      ]|
+      where <map(switch-case)>ss => ss'
+
+
+rules
+  stratego-to-abox :
+    StrategyCurly(s) -> |[ H [ KW["{"] ~s KW["}"] ] ]|
+    
+  stratego-to-abox :
+    ParenStrat(s) -> |[ H hs=0[KW["("] ~s KW[")"]] ]|
+ 
 
 /**
  * Rewrites a list of boxes to a single box, where the elements are
@@ -874,9 +922,7 @@ rules
 
    AnnoTail -> _1 KW["{"] _2 KW["|"] _3 KW["}"],
    AnnoTail.2:iter-star-sep -> _1 KW[","],
-   AnnoCong -> _1 _2,
 
-   StrategyCurly -> KW["{"] _1 KW["}"],
 
    Con  -> H hs=0 [_1 KW["["] _2 KW["]"] KW["("] _3 KW[")"]],
    Con1 -> H hs=0 [   KW["["] _1 KW["]"] ],
@@ -888,33 +934,8 @@ rules
    Cong			    	    -> H hs=0[_1 KW["("] H[_2] KW[")"]],
    Cong.2:iter-star-sep 	    -> H hs=0[_1 KW[","]],
 
-   AngleStrat -> H hs=0[KW["<"] _1 KW[">"]],
-   ParenStrat -> H hs=0[KW["("] _1 KW[")"]],
-  
+ 
 
-
-   SwitchChoiceNoOtherwise -> V[V is=2 vs=0 [
-     H hs=1 [KW["switch"] _1]
-     _2
-   ] KW["end"]
-   ],
-   SwitchChoiceNoOtherwise.2:iter-star -> V is=2 vs=0 [
-     H hs=1[KW["case"] _1 KW[":"]]
-     _2
-   ],
-   SwitchChoice -> V[V is=2 vs=0 [
-     H hs=1 [KW["switch"] _1]
-     _2
-     V is=2 vs=0 [
-       H hs=1[KW["otherwise"] KW[":"]]
-       _2
-     ]
-   ] KW["end"]
-   ],
-   SwitchChoice.2:iter-star -> V is=2 vs=0 [
-     H hs=1[KW["case"] _1 KW[":"]]
-     _2
-   ],
 
 
    --- WON'T!
