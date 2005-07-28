@@ -105,8 +105,7 @@ else
   XTC_PROG="`pwd`/xtc/src/xtc"
 
   # subpackages should pick up the -uninstalled pkgconfig descriptions.
-  # but users can still override the PKG_CONFIG_PATH (pwd added to the end).
-  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:`pwd`"
+  PKG_CONFIG_PATH="`pwd`:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
 fi
 AC_SUBST([XTC_PROG])
