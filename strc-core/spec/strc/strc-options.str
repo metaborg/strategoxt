@@ -126,9 +126,9 @@ strategies
 	where(<set-config>("-F",())); !(),
 	!"-F                 Produce core after front-end" )
 
-  + ArgOption("--keep",
-        where(<set-config>("--keep", <string-to-int>)); !(),
-	!"--keep n           Keep intermediate results (0 = keep nothing)" )
+//  + ArgOption("--keep",
+//        where(<set-config>("--keep", <string-to-int>)); !(),
+//	!"--keep n           Keep intermediate results (0 = keep nothing)" )
 
   + ArgOption("--format-check",
         where(<set-config>("--format-check", <string-to-int>)); !(),
@@ -170,7 +170,9 @@ strategies
 //	where(<extend-config>("-t", [<id>])); !(),
 //	!"-t f               Instrument definition of f to print tracing information\n" )
 
-  + verbose-option
+//  + verbose-option
+
+  + general-options
 
   + Option("-h" + "--help",         
 	where(<set-config> ("--help",())); !(),         
