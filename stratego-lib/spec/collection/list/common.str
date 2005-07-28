@@ -308,6 +308,10 @@ strategies
     \ (l1, l2) -> <at-end(!l2)> l1 \
     <+ \ "" # (xs) -> <concat> xs \
 
+  makeConc = 
+    ?(xs, ys)
+    ; if <is-list> xs; <is-list> ys then conc else !Conc(xs, ys) end
+
   /**
    * @type List(List(a)) -> List(a)
    * @inc  concat-test
