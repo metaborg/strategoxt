@@ -154,3 +154,30 @@ strategies
    */
   dbg(|msg : String) =
     log(|Debug(), msg, <id>)
+
+strategies
+
+  /**
+   * Logs the specified message as critical and terminates the program
+   * with exit code 1.
+   */
+  fatal-err-msg(|msg : String) =
+    log(|Critical(), msg); <exit> 1
+
+  /**
+   * Logs the specified message as and error.
+   */
+  err-msg(|msg : String) =
+    log(|Error(), msg)
+
+  /**
+   * Logs the specified message as a warning.
+   */
+  warn-msg(|msg : String) =
+    log(|Warning(), msg)
+
+  /**
+   * Logs the specified message as a notice.
+   */
+  notice-msg(|msg : String) =
+    log(|Notice(), msg)
