@@ -180,6 +180,31 @@ strategies
     , implode-string
     , !1
     )
+  ; apply-test(!"implode-string on simple list."
+    , implode-string
+    , !['a', 'b', 'c']
+    , !"abc"
+    )
+  ; apply-test(!"implode-string on empty list."
+    , implode-string
+    , ![]
+    , !""
+    )
+  ; apply-test(!"implode-string on empty list with annotation."
+    , implode-string
+    , ![]{1}
+    , !""
+    )
+  ; apply-test(!"implode-string on list where nil has annotation."
+    , implode-string
+    , !['a', 'b', 'c' | []{1} ]
+    , !"abc"
+    )
+  ; apply-test(!"implode-string on list where nil has annotation."
+    , implode-string
+    , !['a', 'b', 'c']{1}
+    , !"abc"
+    )
 
   upper-case-test = 
     apply-test(!"upper-case-test",upper-case,!"foOBaR",!"FOOBAR")
