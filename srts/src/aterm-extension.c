@@ -24,7 +24,6 @@ USA
 #include <stdio.h>
 #include <aterm2.h>
 #include <string.h>
-#include "srts/debug.h"
 
 #define ATmakeSymbol ATmakeAFun
 
