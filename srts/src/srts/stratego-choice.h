@@ -28,13 +28,10 @@
  * Implementation interface
  */
 void SRTSChoice_init(long *bp);
-int  SRTSChoice_supportsGlobalChoice(void);
 jmp_buf* SRTSChoice_pushhook(void);
-extern int stack_ptr;
 
-int GlobalPushChoice(void);
 void PopChoice(void);
-void LocalPopChoice(int index);
+void LocalPopChoice(void);
 
 /**
  * Push of a local choice.

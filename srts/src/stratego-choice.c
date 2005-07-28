@@ -41,9 +41,6 @@ static jmp_buf *jmpbufs_end = 0;
 /* The lowest free element of the jmpbufs array. */
 static jmp_buf *jmpbufs_pos = 0;
 
-/* For compatibility with the cpl implementation; always 0. */
-int stack_ptr = 0;
-
 void SRTSChoice_resizeJmpBufs() {
   unsigned int n = jmpbufs_end - jmpbufs_start;
   jmp_buf *new;
@@ -71,13 +68,6 @@ ATerm _fail(ATerm t) {
   return (ATerm) ATempty;
 }
 
-void SRTSChoice_init(long *bp) {
-}
-
-int SRTSChoice_supportsGlobalChoice(void) {
-  return 0;
-}
-
 jmp_buf* SRTSChoice_pushhook(void) {
   if (jmpbufs_pos >= jmpbufs_end) {
       SRTSChoice_resizeJmpBufs();
@@ -94,6 +84,6 @@ void PopChoice(void) {
   --jmpbufs_pos;
 }
 
-void LocalPopChoice(int index) {
+void LocalPopChoice(void) {
   --jmpbufs_pos;
 }
