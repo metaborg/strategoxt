@@ -235,13 +235,25 @@ strategies
     if not(xtc-transform(!"format-check", 
                          !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
     then
+      if !phase => "pack" then
+        fatal-err(|<concat-strings>[
+          "\n  The result of packing your Stratego program resulted in a file\n",
+          "  with a wrong format. This is probably caused by the use of a\n",
+          "  .rtree file produced by an old version of Stratego, or by a \n",
+          "  concrete syntax embedding using an old syntax of Stratego.\n",
+          "  Recompile with the option '--format-check 1' to discover which\n",
+          "  module caused the problem."
+        ])
+      else
 	save-as(!<concat-strings>[".", phase, ".", format])
 	; ?FILE(name)
-	; log(|Error, 
-		<concat-strings>["file ", name, "does not satisfy format ", format, 
-		"\nThis indicates a bug in the compiler\n",
-		"Please notify stratego-bugs@cs.uu.nl"])
-	; fail
+	; fatal-err(| <concat-strings>[
+	    "file ", name, "does not satisfy format ", format, 
+	    "\nThis indicates a bug in the compiler\n",
+	    "Please notify stratego-bugs@cs.uu.nl"
+          ])
+      end
+      ; fail
     end
 
 strategies
@@ -251,12 +263,12 @@ strategies
   save-as(ext) = 
     where(
       copy-to(get-outfile(<conc-strings> (".sci", <ext>)) => file1)
-//      ; xtc-transform(!"pp-stratego", !["--abstract" , "-p", "Stratego-Sugar.pp" | <pass-verbose> ] )
+      ; say(<concat-strings> ["abstract syntax in `", file1, "'"])
       ; xtc-transform(!"stratego-parenthesize", pass-verbose)
       ; xtc-transform(!"stratego2abox", pass-verbose)
       ; xtc-transform(!"abox2text", pass-verbose)
       ; copy-to(<conc-strings> (file1, ".txt") => file2)
-      ; say(<concat-strings> ["abstract syntax in `", file1, "', concrete syntax in `", file2, "'"])
+      ; say(<concat-strings> ["concrete syntax in `", file2, "'"])
     )
 
   save-as1(ext) = if-keep1(save-as(ext))
