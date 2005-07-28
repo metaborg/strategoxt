@@ -14,10 +14,8 @@ strategies
   desugar-list-matching = 
     rec dlm(
       alltd(
-           ?SDefT(_,_,_,_)
-           ; {| CurrentDef : ListVarScope; all(dlm) |}
-        <+ ?Scope(_, _)
-           ; ListVarScope; all(dlm)
+           ?SDefT(_,_,_,_); ListVarScope; all(dlm)
+        <+ ?Scope(_, _); ListVarScope; all(dlm)
         <+ RtoS; all(dlm)
         <+ Build(dlm-in-build(dlm))
         <+ CallT(id, map(dlm), map(dlm-in-build(dlm)))
@@ -40,7 +38,7 @@ strategies
     alltd(
       ListVarAsTail; dlm-in-match(dlm)
       <+ SingleListVar
-      <+ ConcInMatch
+      //<+ ConcInMatch
       <+ App(dlm, dlm-in-match(dlm))
       <+ RootApp(dlm)
     )
@@ -54,8 +52,8 @@ rules
   ListVarScope :
     SDefT(f, as1, as2, s) -> SDefT(f, as1, as2', s)
     where <map(try(DefaultVarDec(?ListVar(<id>)) + VarDec(?ListVar(<id>),id)))> as2 => as2'
-	; <concat-strings> [f, "(", <length;int-to-string> as1, ",", <length; int-to-string> as2, ")"] => name
-	; rules(CurrentDef : _ -> name )
+	//; <concat-strings> [f, "(", <length;int-to-string> as1, ",", <length; int-to-string> as2, ")"] => name
+	//; rules(CurrentDef : _ -> name )
 
   SingleListVar :
     Var(ListVar(x)) -> Var(x)
@@ -74,12 +72,12 @@ rules
     where <is-nil> t
 
   ListVarInBuild : 
-    Term|[ Cons(lid, t){^pt} ]| -> <desugar>Term|[ <conc(|)>(lid, t){^pt} ]|
+    Term|[ Cons(lid, t){^pt} ]| -> <desugar>Term|[ <makeConc(|)>(lid, t){^pt} ]|
     where <not(is-nil)> t
 
   ConcInMatch =
     ?Term|[ Conc(t1, t2){^pt} ]|
-    ; err(|<concat-strings>["concatentation in match in definition ", <CurrentDef>])
+    // ; err(|<concat-strings>["concatentation in match in definition ", <CurrentDef>])
 
   ConcInBuild :
-    Term|[ Conc(t1, t2){^pt} ]| -> <desugar>Term|[ <conc(|)>(t1, t2){^pt} ]|
+    Term|[ Conc(t1, t2){^pt} ]| -> <desugar>Term|[ <makeConc(|)>(t1, t2){^pt} ]|
