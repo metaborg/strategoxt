@@ -154,20 +154,6 @@ strategies
             else
               ![<id>]
             end
-
-        /**
-         * Add the specified annos represented in XML to an XML element.
-         */
-        add-to-elem(|annos) =
-          add-to-nonempty-elem(|annos)
-          <+ add-to-empty-elem(|annos)
-
-        add-to-nonempty-elem(|annos) =
-          \ Element(n, atts, content, n) -> Element(n, atts, <conc> (anno-content, content), n) \
-
-        add-to-empty-elem(|annos) =
-          \ EmptyElement(n, atts) -> Element(n, atts, anno-content, n) \
-
      in 
         ?_{anno*}
       ; s
@@ -178,3 +164,16 @@ strategies
         ; add-to-elem(|anno-content)
         end
    end
+
+  /**
+   * Add the specified annos represented in XML to an XML element.
+   */
+  add-to-elem(|annos) =
+    add-to-nonempty-elem(|annos)
+    <+ add-to-empty-elem(|annos)
+
+  add-to-nonempty-elem(|annos) :
+    Element(n, atts, content, n) -> Element(n, atts, <conc> (annos, content), n)
+
+  add-to-empty-elem(|annos) :
+    EmptyElement(n, atts) -> Element(n, atts, annos, n)

@@ -11,7 +11,7 @@ STRINCLUDES   = -I $(top_srcdir)/lib \
                 -I $(top_srcdir)/sig/xml \
                 -I $(top_srcdir)/syn/xml \
                 -I $(top_srcdir)/trans/process \
-  		-I $(XML_FRONT)/share/sdf/xml-front
+		-I $(XML_FRONT)/share/sdf/xml-front
 
 LDADD += $(SSL_LIBS)
 
