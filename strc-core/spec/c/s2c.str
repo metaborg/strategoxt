@@ -300,8 +300,8 @@ strategies
 strategies
 
   translate-body =
-      merge-SeqVar
-    ; topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
+    // merge-SeqVar
+    topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
 
   /**
    * @todo Necessary because the build transformation to C performs a bottomup traversal.
@@ -495,7 +495,6 @@ rules
 
   /**
    * @todo  Check the cast to a list.
-   */
   TranslateStrat :
     Match(SeqVar(x), y) ->
       |[ { if(x == NULL) {
@@ -505,6 +504,7 @@ rules
            x = (ATerm) ATappend((ATermList) x, y);
          }
       ]|
+   */
 
   TranslateStrat =
     TranslateMatchNoAnno
@@ -766,9 +766,9 @@ rules
   /**
    * @todo  I need expression blocks. Using a call to a runtime function for now.
    * @todo  Check the cast.
-   */
   ConstructTerm:
     SeqVar(x) -> c:exp |[ x == ATempty || x == NULL ? _fail(x) : SRTS_pop_seqvar(&x) ]|
+   */
 
   ConstructTerm :
     BuildDefault(t) -> t

@@ -8,7 +8,7 @@ exports
   context-free syntax
     Id 				-> Var  {cons("Var")}
     Id				-> ID
-    ":" Var                     -> Var  {cons("SeqVar")}
+    %% ":" Var                  -> Var  {cons("SeqVar")}
 
   sorts Term PreTerm
   context-free syntax
