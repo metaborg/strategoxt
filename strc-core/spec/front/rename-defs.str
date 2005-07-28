@@ -20,7 +20,7 @@ rules
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
         ; rules(RenameVar : (x, (n,m)) -> y)
-        ; (<HoArg> x; rules(HoArg : x -> Undefined)
+        ; (<HoArg> x; rules(HoArg :- x)
                    <+ rules(HoArg : x -> y))
 
   RenameSDef : 
@@ -29,7 +29,7 @@ rules
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
         ; rules(RenameVar : (x, (n,m)) -> y)
-        ; (<HoArg> x; rules(HoArg : x -> Undefined)
+        ; (<HoArg> x; rules(HoArg :- x )
                    <+ rules(HoArg : x -> y))
 
   RenameSDef : 
@@ -38,7 +38,7 @@ rules
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
         ; rules(RenameVar : (x, (n,m)) -> y)
-        ; (<HoArg> x; rules(HoArg : x -> Undefined)
+        ; (<HoArg> x; rules(HoArg :- x)
                    <+ rules(HoArg : x -> y))
 
   RenameCall : 
