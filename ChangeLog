@@ -1,3 +1,15 @@
+2005-07-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* configure.ac: standardization of the versioning scheme. From now
+	on, 0.x (e.g. 0.16) are always stable releases. 0.x.y are bug fix
+	releases (e.g. 0.16.1). Tags of unstable developments are called
+	milestones and will be have version 0.xMy
+	(e.g. 0.16M1). This is similar to the version scheme of Eclipse.
+
+	Or, as wikpedia puts it: "Milestones are constructed both to
+	reassure the traveler that the proper path is being followed and
+	to indicate distance travelled."
+
 2005-07-21  Martin Bravenboer <martin@cs.uu.nl>
 
 	* configure.ac: major update of the toplevel
