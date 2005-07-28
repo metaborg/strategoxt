@@ -30,6 +30,10 @@ strategies
         where(<set-config> ("--asfix", "")); !(),
         !"--asfix              Do not implode the concrete syntax parts")
  
+    + Option("--prefer-str",
+        where(<set-config> ("--prefer-str", "")); !(),
+        !"--prefer-str              Prefer .str files over .rtree files")
+ 
     + ArgOption("--desugaring", 
         where(<set-config>("--desugaring", <id>)),
         !"--desugaring on/off : turn desugaring on or off (default: off)")
@@ -66,6 +70,9 @@ strategies
         <set-config> ("--format-check", 0)
       end
     )
+
+  if-prefer-str(s1, s2) =
+    if <get-config> "--prefer-str" then s1 else s2 end
 
   report-options =
     log(|Notice(), "include path: ", <get-config> "-I")

@@ -353,10 +353,13 @@ strategies // COMPILER COMPONENTS
 
 // FRONTEND
 
-  pack-stratego			= comp(|"pack-stratego", 
-					<concat> [<dep-name>, <get-include-dirs>, <pass-keep>,
-					  <get-config < !["--asfix"] + ![]> "--asfix",
-					  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check"])
+  pack-stratego = 
+    comp(|"pack-stratego",<concat> [
+          <dep-name>, <get-include-dirs>, <pass-keep>,
+	  <get-config < !["--asfix"] + ![]> "--asfix",
+	  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check",
+	  <get-config < !["--prefer-str"] + ![]> "--prefer-str"
+    ])
 
   pre-desugar			= comp(|"pre-desugar")
   repair-types			= comp(|"repair-types")

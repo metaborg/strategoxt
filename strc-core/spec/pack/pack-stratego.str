@@ -103,12 +103,20 @@ strategies
       ?(IncludeFromPath(<id>), includes)
     ; guarantee-extension(|"str")
     ; remove-extension => mod
-    ; <fetch-elem(
-          include-from-dir-cached(|mod)
-       <+ include-from-dir(|mod)
-       <+ include-from-xtc(|mod)
-       <+ include-from-xtc-cached(|mod)
-       )> includes
+    ; <if-prefer-str(
+        fetch-elem(
+           include-from-dir(|mod)
+           <+ include-from-dir-cached(|mod)
+           <+ include-from-xtc(|mod)
+           <+ include-from-xtc-cached(|mod)
+         )
+       , fetch-elem(
+           include-from-dir-cached(|mod)
+           <+ include-from-dir(|mod)
+           <+ include-from-xtc-cached(|mod)
+           <+ include-from-xtc(|mod)
+         )
+      )> includes
     ; fc(|"Stratego-Sugar-Cong")
 
   fc(|format) =
