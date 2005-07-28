@@ -133,7 +133,7 @@ rules
     ]|
     where GenerateIncludes => incl
 	; <filter(DeclareConstructor)> ops => cnstr-decls
-        ; <filter(InitConstructor); concat> ops => cnstr-inits
+        ; <filter(InitConstructorQ <+ InitConstructor); concat> ops => cnstr-inits
 	; <map(SDefToDeclaration)> defs => function-sigs
 	; <map(SDefToRegistration)> defs => function-regs
 	; <filter(?SDefT(_,_,_,_))
@@ -184,12 +184,6 @@ strategies
  */
 strategies 
 
-  TranslateSig :
-    Signature([Constructors(ops)]) ->
-    TranslationUnit(<conc>(decls, fundef))
-    where <filter(DeclareConstructor)> ops => decls
-        ; if-lib(![], ![<InitConstructors> ops]) => fundef
-
   DeclareConstructor :
     OpDecl(c, t) -> c:dec|[ static Symbol ~id:csym; ]|
     // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
@@ -203,12 +197,14 @@ strategies
   Arity : 
     FunType(ts, t) -> <length> ts
 
-  InitConstructors :
-    ops ->
-    FunDef(//DeclSpec([],Static,[],Void,[]),
-	   TypeSpec([],Void,[]),
-           IdDecl([],Id("init_constructors"),Some(ParamList([TypeSpec([],Void,[])]))),
-           Compound([],<filter(InitConstructor); concat> ops))
+  InitConstructorQ :
+    OpDecl(c, t) ->
+    [Stat(Assign(Id(csym), AssignEq,
+                 FunCall(Id("ATmakeSymbol"),[StringLit([<double-quote>c']),IntConst(n),Id("ATtrue")]))),
+     Stat(FunCall(Id("ATprotectSymbol"),[Id(csym)]))]
+    where <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
+	; <Arity> t => ar; int-to-string => n
+        ; <ConstructorName> (c, ar) => csym
 
   InitConstructor :
     OpDecl(c, t) ->
