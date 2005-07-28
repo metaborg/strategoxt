@@ -56,6 +56,9 @@ USA
 
 #define MakeInt(n) ((ATerm)ATmakeInt(n))
 
+ATerm SRTS_getAnnotations(ATerm t);
+ATerm SRTS_setAnnotations(ATerm t, ATerm ts);
+
 ATerm ATmakeString(const char *name);
 ATerm ATmakeStringQ(const char *name);
 ATbool ATisString(ATerm t);

@@ -516,7 +516,10 @@ rules
   TranslateMatchAnno :
     Match(|[ pt1{^pt2} ]|, Id(trm)) -> 
     |[ { ATerm ~id:x; 
-         ~id:x = (ATerm)SSLgetAnnotations(~id:trm);
+         ~id:x = (ATerm)ATgetAnnotations(~id:trm);
+         if(~id:x == NULL) {
+           ~id:x = (ATerm) ATempty;
+         }
          ~stm: (Match(pt2, Id(x)));
          ~stm: (Match(pt1, Id(trm)));
        } ]|
@@ -780,7 +783,7 @@ rules
     Anno(t1, c:exp|[ (ATerm) ATempty ]|) -> t1
 
   ConstructTerm :
-    Anno(t1, t2) -> c:exp|[ (ATerm)SSLsetAnnotations(~exp:t1, ~exp:t2) ]|
+    Anno(t1, t2) -> c:exp|[ (ATerm) SRTS_setAnnotations(~exp:t1, ~exp:t2) ]|
     where <not(?c:exp|[ (ATerm) ATempty ]|)> t2
 
   ConstructTerm :

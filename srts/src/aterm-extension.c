@@ -27,6 +27,22 @@ USA
 
 #define ATmakeSymbol ATmakeAFun
 
+ATerm SRTS_getAnnotations(ATerm t)
+{
+  ATerm annos = ATgetAnnotations(t);
+  if(annos == NULL)
+    return (ATerm) ATempty;
+  else 
+    return annos;
+}
+
+ATerm SRTS_setAnnotations(ATerm t, ATerm ts) {
+  if(ATisEmpty(ts))
+    return AT_removeAnnotations(t);
+  else
+    return ATsetAnnotations(t, ts);
+}
+
 ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
 {
   if(ATisEmpty(l))
