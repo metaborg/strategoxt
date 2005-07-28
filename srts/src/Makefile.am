@@ -23,7 +23,6 @@ LIB_SOURCES = \
   stratego-dynamic-call.c \
   srts/stratego.h \
   srts/aterm-extension.h \
-  srts/debug.h \
   srts/mprotect.h \
   srts/stratego-choice.h
 
