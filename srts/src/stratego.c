@@ -232,3 +232,11 @@ ATermList CheckATermList(ATerm t)
   //ATfprintf(stderr, "CheckATermList(%t) = true\n", t);
   return (ATermList) t;
 }
+
+void SRTS_init_mprotect(void)
+{
+#ifdef NEEDS_MPROTECT
+  do_mprotect();
+  set_segv_handler();
+#endif
+}

@@ -45,6 +45,8 @@ ATerm _some(ATerm, ATerm f(ATerm));
 #define SRTS_one(f, t)    _one(t, f)
 #define SRTS_some(f, t)   _some(t, f)
 
+void SRTS_init_mprotect(void);
+
 #define match_cons(t, sym) \
         ((ATgetType(t) == AT_APPL) && (ATgetSymbol(t) == (sym)))
 
