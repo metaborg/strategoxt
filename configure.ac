@@ -105,7 +105,7 @@ else
   XTC_PROG="`pwd`/xtc/src/xtc"
 
   # subpackages should pick up the -uninstalled pkgconfig descriptions.
-  PKG_CONFIG_PATH="`pwd`:${PKG_CONFIG_PATH}"
+  PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
 fi
 AC_SUBST([XTC_PROG])
