@@ -19,7 +19,6 @@ pkglib_LTLIBRARIES = \
 LIB_SOURCES = \
   stratego.c \
   aterm-extension.c \
-  debug.c \
   mprotect.c \
   stratego-dynamic-call.c \
   srts/stratego.h \

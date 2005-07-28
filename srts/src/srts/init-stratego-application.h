@@ -12,7 +12,7 @@ static void SRTS_stratego_initialize_module()
 
 static void register_init(void) __attribute__((constructor));
 static void register_init(void)
-{  
+{
   SRTS_stratego_initialize_next = SRTS_stratego_initialize;  
   SRTS_stratego_initialize      = &SRTS_stratego_initialize_module;
 }

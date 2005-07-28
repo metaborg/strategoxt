@@ -116,7 +116,7 @@ ATerm AppN(const char *name, ATermList args)
 }
 
 /* Conversion from terms with list notation to lists with Cons/Nil and
-   back. */
+   back. 
 
 ATerm list_to_consnil_op(ATermList t)
 {
@@ -159,5 +159,4 @@ ATerm list_cong(ATermList t, ATerm tl)
     return list_cong_aux(t, tl);
 }
 
-
-
+*/

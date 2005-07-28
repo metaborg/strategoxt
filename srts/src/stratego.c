@@ -30,27 +30,6 @@ USA
 #include "srts/stratego.h"
 #include "srts/mprotect.h"
 
-//static Symbol sym_Cons_2;
-//static Symbol sym_Nil_0;
-//static Symbol sym_Pair_2;
-static Symbol sym__2;
-
-void init_constructors_srts()
-{
-  //sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
-  //ATprotectSymbol(sym_Cons_2);     
-  //sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
-  //ATprotectSymbol(sym_Nil_0); 
-  //sym_Pair_2 = ATmakeSymbol("Pair", 2, ATfalse);
-  //ATprotectSymbol(sym_Pair_2);    
-  sym__2 = ATmakeSymbol("", 2, ATfalse);
-  ATprotectSymbol(sym__2);                              
-}
-
-ATerm stratego__main(ATerm);
-void init_constructors(void);
-//oid init_constant_terms(void);
-
 ATerm _id(ATerm t)
 {
   return(t);
@@ -80,90 +59,9 @@ ATerm _all(ATerm t, ATerm f(ATerm))
       }
       break;
     case AT_LIST :
-      if((ATermList) t != ATempty)
+      if(!ATisEmpty(t))
         {
           t = (ATerm)ATmap((ATermList) t, f);
-        }
-      break;
-    }
-  if(annos == NULL)
-    return t;
-  else
-    return(ATsetAnnotations(t, annos));
-}
-
-ATerm _allenv(ATerm f(ATerm, ATerm), ATerm env, ATerm t)
-{
-  ATerm annos = ATgetAnnotations(t);
-  switch(ATgetType(t))
-    {
-    case AT_APPL :
-      {
-        Symbol c = ATgetSymbol((ATermAppl) t);
-        int i, arity = ATgetArity(c), changed = 0;
-        ATerm kids[arity], original, new;
-        for(i = 0; i < arity; i++)
-          {
-            original = ATgetArgument(t, i);
-            new = f(env,original);
-            kids[i] = new;
-            if(original != new) changed++;
-          }
-        if(changed)
-          t = (ATerm) ATmakeApplArray(c, kids);
-      }
-      break;
-    case AT_LIST :
-      if((ATermList) t != ATempty)
-        {
-	  ATerm a(ATerm t) 
-	    {
-	      return f(env, t);
-	    }
-          t = (ATerm)ATmap((ATermList) t, a);
-        }
-      break;
-    }
-  if(annos == NULL)
-    return t;
-  else
-    return(ATsetAnnotations(t, annos));
-}
-
-ATerm _allacc(ATerm f(ATerm, ATerm), ATerm acc, ATerm t)
-{
-  ATerm annos = ATgetAnnotations(t);
-  switch(ATgetType(t))
-    {
-    case AT_APPL :
-      {
-        Symbol c = ATgetSymbol((ATermAppl) t);
-        int i, arity = ATgetArity(c), changed = 0;
-        ATerm kids[arity], original, new;
-        for(i = 0; i < arity; i++)
-          {
-            original = ATgetArgument(t, i);
-            new = f(acc,original);
-	    acc = ATgetArgument(new, 1);
-	    new = ATgetArgument(new, 2);
-            kids[i] = new;
-            if(original != new) changed++;
-          }
-        if(changed)
-          t = (ATerm) ATmakeApplArray(c, kids);
-	kids[0] = acc;
-	kids[1] = t;
-	t = (ATerm) ATmakeApplArray(sym__2, kids);
-      }
-      break;
-    case AT_LIST :
-      if((ATermList) t != ATempty)
-        {
-	  ATerm a(ATerm t) 
-	    {
-	      return f(acc, t);
-	    }
-          t = (ATerm)ATmap((ATermList) t, a);
         }
       break;
     }
@@ -244,7 +142,7 @@ ATerm _one(ATerm t, ATerm f(ATerm))
     return t;
   else
     return(ATsetAnnotations(t, annos));
-}       
+}
 
 static ATermList _map_some(ATermList ts, ATerm f(ATerm), volatile int transformed)
 {
@@ -313,33 +211,6 @@ ATerm _some(ATerm t, ATerm f(ATerm))
   case AT_LIST :
     {
       t = (ATerm) _map_some((ATermList) t, f, 0);
-      /*
-      ATermList prefix = ATempty, suffix = (ATermList) t;
-      ATerm el;
-      //ATfprintf(stderr, "_some(%t) : AT_LIST\n", t);
-      while(!ATisEmpty(suffix))
-	{
-	  ATerm el_bak;
-	  el = ATgetFirst(suffix);
-	  suffix = ATgetNext(suffix);
-	  el_bak = el;
-	  if (PushChoice() == 0)
-	    {
-	      el = f(el);
-	      PopChoice();
-	      prefix = ATinsert(prefix, el);
-	      transformed++;
-	    }
-	  else
-	    {
-	      prefix = ATinsert(prefix, el_bak);
-	    }
-	}
-      if(transformed > 0)
-	t = (ATerm) ATreverse(prefix);
-      else
-	_fail(t);
-      */
     }
     break;
   default :
@@ -349,56 +220,10 @@ ATerm _some(ATerm t, ATerm f(ATerm))
     return t;
   else
     return(ATsetAnnotations(t, annos));
-}           
-
-ATerm _thread(ATerm t, ATerm f(ATerm))
-{
-  ATerm env;
-  ATerm annos;
-  if(!match_cons(t, sym__2)) 
-    _fail(t);
-  env = ATgetArgument(t,1);
-  t = ATgetArgument(t,0);
-  annos = ATgetAnnotations(t);
-  switch(ATgetType(t)) {
-  case AT_APPL:
-    { 
-      Symbol c = ATgetSymbol((ATermAppl) t);
-      int i, arity = ATgetArity(c);
-      ATerm kids[arity];
-      for(i = 0; i < arity; i++)
-	{
-	  ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetArgument(t, i), env));
-	  if(!match_cons(tmp, sym__2)) _fail(t);
-	      kids[i] = ATgetArgument(tmp,0);
-	      env = ATgetArgument(tmp,1);
-	}
-      t = (ATerm) ATmakeApplArray(c, kids);
-    }
-    break;
-  case AT_LIST:
-    {
-      ATermList prefix = ATempty, suffix = (ATermList) t;
-      while(!ATisEmpty(suffix))
-	{
-	  ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetFirst(suffix), env));
-	  if(!match_cons(tmp, sym__2)) 
-	    _fail(t);
-	  prefix = ATinsert(prefix, ATgetArgument(tmp,0));
-	  suffix = ATgetNext(suffix);
-	  env = ATgetArgument(tmp,1);
-	}
-      t = (ATerm) ATreverse(prefix);
-    }
-    break;
-  }
-  if(annos == NULL)
-    return (ATerm)ATmakeAppl2(sym__2, t, env);
-  else
-    return (ATerm)ATmakeAppl2(sym__2, ATsetAnnotations(t, annos), env);
 }
 
-ATermList CheckATermList(ATerm t) {
+ATermList CheckATermList(ATerm t)
+{
   //ATfprintf(stderr, "CheckATermList(%t)\n", t);
   if(ATgetType(t) != AT_LIST) {
     ATfprintf(stderr, "Warning: trying to build list with illegal tail: %t\n", t);
@@ -407,59 +232,3 @@ ATermList CheckATermList(ATerm t) {
   //ATfprintf(stderr, "CheckATermList(%t) = true\n", t);
   return (ATermList) t;
 }
-
-ATerm SRTS_pop_seqvar(ATermList* list) {
-  ATerm result = ATgetFirst(*list);
-  *list = ATgetNext(*list);
-  return result;
-}
-
-ATerm _cpl_loaded(ATerm t) {
-  if(!SRTSChoice_supportsGlobalChoice()) {
-    _fail(t);
-  }
-
-  return t;
-}
-
-/**
- * Main function in output of Stratego compiler.
- */
-ATerm main_0(ATerm);
-
-/**
- * Main function to be used by compiled programs
- */
-int main(int argc, char *argv[]) {
-  long bp;
-  ATerm out_term; 
-  ATermList in_term;
-  int i; 
-
-  ATinit(argc, argv, &out_term);
-  SRTSChoice_init(&bp);
-
-  init_constructors_srts();
-  init_constructors();
-
-#ifdef NEEDS_MPROTECT
-  do_mprotect();
-  set_segv_handler();
-#endif
-
-  in_term = ATempty; 
-  for(i = argc - 1; i >= 0; i--) {
-    in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
-  }
-
-  if(PushChoice() == 0) {
-    out_term = main_0((ATerm)in_term); 
-    ATfprintf(stdout, "%t\n", out_term);
-    exit(0);
-  } else {
-    ATfprintf(stderr, "%s: rewriting failed\n",  argv[0]);
-    exit(1);
-  }
-
-}
-

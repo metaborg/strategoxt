@@ -10,7 +10,6 @@ include_HEADERS = \
   stratego-dynamic-call.h
 
 noinst_HEADERS = \
-  debug.h \
   mprotect.h
 
 stratego-config.h : $(top_srcdir)/config.h

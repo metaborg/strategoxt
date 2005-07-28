@@ -43,17 +43,16 @@ USA
 #define AT_getInt(t)    (ATisInt(t) ? (((ATermInt)t)->value) : (int)_fail(t))
 #define AT_getString(t) (AT_isString(t) ? ((const char*) ATgetName(ATgetSymbol(t))) : (char*)_fail(t))
 
-
-ATerm list_to_consnil(ATerm t);
-ATerm list_to_tconstnil(ATerm t);
-ATerm list_to_consnil_op(ATermList t);
-ATerm list_to_consnil_op_tl(ATermList t, ATerm tl);
-ATerm list_to_consnil_shallow(ATerm t);
-ATerm list_to_tconstnil_op(ATermList t);
-ATerm consnil_to_list(ATerm t);
-ATerm consnil_to_list_shallow(ATerm t);
-ATerm tuple_cong(ATermList t);
-ATerm list_cong(ATermList t, ATerm tl);
+// ATerm list_to_consnil(ATerm t);
+// ATerm list_to_tconstnil(ATerm t);
+// ATerm list_to_consnil_op(ATermList t);
+// ATerm list_to_consnil_op_tl(ATermList t, ATerm tl);
+// ATerm list_to_consnil_shallow(ATerm t);
+// ATerm list_to_tconstnil_op(ATermList t);
+// ATerm consnil_to_list(ATerm t);
+// ATerm consnil_to_list_shallow(ATerm t);
+// ATerm tuple_cong(ATermList t);
+// ATerm list_cong(ATermList t, ATerm tl);
 
 #define MakeInt(n) ((ATerm)ATmakeInt(n))
 

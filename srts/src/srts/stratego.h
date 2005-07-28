@@ -40,18 +40,10 @@ ATerm _fail(ATerm);
 ATerm _all(ATerm, ATerm f(ATerm));
 ATerm _one(ATerm, ATerm f(ATerm));
 ATerm _some(ATerm, ATerm f(ATerm));
-ATerm _thread(ATerm, ATerm f(ATerm));
-ATerm _bagof(ATerm t, ATerm f(ATerm));
 
 #define SRTS_all(f, t)    _all(t, f)
 #define SRTS_one(f, t)    _one(t, f)
 #define SRTS_some(f, t)   _some(t, f)
-#define SRTS_thread(f, t) _thread(t, f)
-#define SRTS_bagof(f, t)  _bagof(t, f)
-
-ATerm SRTS_pop_seqvar(ATermList* list);
-
-ATerm _cpl_loaded(ATerm);
 
 #define match_cons(t, sym) \
         ((ATgetType(t) == AT_APPL) && (ATgetSymbol(t) == (sym)))
