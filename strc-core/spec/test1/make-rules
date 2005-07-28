@@ -2,20 +2,6 @@
 	   %.f1 %.f2 %.f3 %.f4 %.f5 %.f6 %.f7 %.f8 %.f9 %.f10 %.f11 %.f12 %.f13 \
 	   %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.s10 %.s11 %.s12 %.s13 
 
-CINCLUDES = \
-	--C-include "<srts/stratego.h>" \
-	--C-include "<stratego-lib/stratego-lib.h>" 
-
-CINCL = -I$(STRATEGO_LIB)/include -I$(SRTS)/include \
-	-I$(ATERM)/include $(CHOICEINCLUDES)
-
-AM_CFLAGS = -I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include -I/usr/include
-
-SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
-         -L$(SRTS)/lib/srts -lstratego-runtime \
-         -L$(ATERM)/lib -lATerm $(CHOICELDFLAGS) \
-         -lm
-
 # MAKE COPY OF SSL ####################################################
 
 %.rtree : %.str
