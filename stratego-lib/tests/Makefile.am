@@ -6,7 +6,6 @@ pkgtestsdata_DATA= $(wildcard *.str)
 
 check_PROGRAMS = \
   annotation-props-test \
-  annotations-test \
   apply-test \
   char-test \
   collect-test \
@@ -57,7 +56,6 @@ BOOTCLEANFILES 	= $(wildcard *.c)
 
 STRINCLUDES    	= -I $(top_srcdir)/ssl-compat -I $(top_srcdir)/spec -I $(SRTS)/share/srts
 
-annotations_test_LDADD      = $(SSL_LIBS)
 annotation_props_test_LDADD = $(SSL_LIBS)
 char_test_LDADD             = $(SSL_LIBS)
 dir_test_LDADD              = $(SSL_LIBS)
