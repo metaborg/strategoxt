@@ -257,7 +257,7 @@ rules
   get-max-term-size-config = !15
 
   stratego-to-abox =
-    ( ?Op(f,[x | xs]) + ?CongQ(f,[x | xs]) )
+    ( ?Op(f,[x | xs]) + ?CongQ(f,[x | xs]) + ?OpQ(f,[x|xs]) )
   ; where( <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => children )
   ; worstcase-nicecase(
       !|[  V vs=0 [
