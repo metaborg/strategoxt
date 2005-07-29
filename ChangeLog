@@ -1,3 +1,45 @@
+2005-07-29  Martin Bravenboer <martin@cs.uu.nl>
+	
+	* Implemented support for inter-library dependencies
+	(STR-344). This has several advantages: first, the link order
+	is less fragile, since the inter-library dependencies are used
+	by libtool to determine the right link order. Second, you
+	don't have to link explicitly with libraries that you only
+	depend on indirectly. For example, if you link against
+	stratego-lib, then you don't have to include
+	stratego-lib-native, since stratego-lib now depends on its
+	native library.
+
+	More important, the specification inter-library dependencies
+	allows the creation of dynamic libraries are systems that
+	require dynamic libraries not to refer to external symbols. If
+	you don't specify inter-library dependencies, then their are
+	lots of external symbols in our libraries.
+
+	Our inter-library dependencies are tree-shaped (thanks to the
+	move of the main program to the generated C code instead of the
+	stratego-runtime), which means that we can pass the
+	-no-undefined option to libtool. Libtool will now create
+	.dll's for our libraries. This hasn't been tested yet (only
+	for the runtime, which depends on the aterm library).
+
+	* All libraries now install into /lib instead /lib/srts,
+	/lib/stratego-lib, etc.  If pkg-config is used, then packages
+	should not be affected, since pkg-config is used to lookup the
+	right linker flags. The reason for this, is that there is a
+	problem with the installatin of .dll at Cygwin. They should be
+	installed in /bin, which does not happen if the pkglibdir is
+	used. The library names are rather unique these days, so I
+	don't expect any conflicts with other packages.
+
+	* Dropped the alternative libraries, since they are completely
+	useless. The default CFLAGS of autoconf for gcc are -O2
+	-g. This means that the plain library is actually equivalent
+	to the the debug *and* the 'optimized' library. For this
+	reason, the alternatives have been dropped. Users and packages
+	can control the kind of library that has to be created by
+	setting the CFLAGS variable.
+
 2005-07-28  Martin Bravenboer <martin@cs.uu.nl>
 
 	* configure.ac: standardization of the versioning scheme. From now
