@@ -27,10 +27,10 @@ strategies
                             "-I", <conc-strings>(<xtc-find-path> "stratego-lib", "/include"),
                             "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-CL",
-        [  <concat-strings> ["-L", <xtc-find-path> "stratego-lib", "/lib/stratego-lib"]
-        , "-lstratego-lib-native-opt"
-        , <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
-        , "-lstratego-runtime-opt"
+        [  <concat-strings> ["-L", <xtc-find-path> "stratego-lib", "/lib"]
+        , "-lstratego-lib-native"
+        , <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib"]
+        , "-lstratego-runtime"
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
         , "-lATerm"
         , "-lm"])

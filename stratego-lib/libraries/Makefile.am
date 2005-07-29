@@ -1,17 +1,13 @@
-pkglib_LTLIBRARIES = \
-  libstratego-lib.la \
-  libstratego-lib-dbg.la \
-  libstratego-lib-prof.la 
-
-libstratego_lib_la_SOURCES      = libstrategolib.c
-libstratego_lib_dbg_la_SOURCES  = libstrategolib.c
-libstratego_lib_prof_la_SOURCES = libstrategolib.c
-
-libstratego_lib_dbg_la_CFLAGS  = -g $(AM_CFLAGS)
-libstratego_lib_prof_la_CFLAGS = -pg $(AM_CFLAGS)
+lib_LTLIBRARIES = libstratego-lib.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/native $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
-AM_LDFLAGS  = -avoid-version 
+
+libstratego_lib_la_SOURCES = libstrategolib.c
+libstratego_lib_la_CFLAGS  = -Wall
+libstratego_lib_la_LDFLAGS = -avoid-version -no-undefined
+libstratego_lib_la_LIBADD  = \
+  ../../srts/src/libstratego-runtime.la \
+  ../native/stratego-lib/libstratego-lib-native.la $(ATERM_LIBS)
 
 pkgdata_DATA   	= libstrategolib.rtree 
 EXTRA_DIST	= libstrategolib.rtree strategolib.str

@@ -1,17 +1,13 @@
-pkglib_LTLIBRARIES = \
-  libstratego-xtc.la \
-  libstratego-xtc-dbg.la \
-  libstratego-xtc-prof.la
+lib_LTLIBRARIES = libstratego-xtc.la
 
-libstratego_xtc_la_SOURCES      = libxtclib.c
-libstratego_xtc_dbg_la_SOURCES  = libxtclib.c
-libstratego_xtc_prof_la_SOURCES = libxtclib.c
-
-libstratego_xtc_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
-libstratego_xtc_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
+libstratego_xtc_la_SOURCES = libxtclib.c
+libstratego_xtc_la_CFLAGS  = -Wall
+libstratego_xtc_la_LDFLAGS  = -avoid-version -no-undefined
+libstratego_xtc_la_LIBADD  = \
+  ../../stratego-lib/libraries/libstratego-lib.la \
+  ../../srts/src/libstratego-runtime.la $(ATERM_LIBS)
 
 AM_CPPFLAGS = $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
-AM_LDFLAGS  = -avoid-version 
 
 pkgdata_DATA = libxtclib.rtree liblib.rtree
 

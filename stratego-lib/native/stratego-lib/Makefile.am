@@ -4,28 +4,21 @@ include_HEADERS = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
   ssl-string.h term.h placeholder.h dir.h
 
+# todo: should the headers of the baseline runtime be used?
 AM_CPPFLAGS = $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
-AM_LDFLAGS  = -avoid-version
 
-pkglib_LTLIBRARIES = \
-  libstratego-lib-native.la \
-  libstratego-lib-native-dbg.la \
-  libstratego-lib-native-opt.la \
-  libstratego-lib-native-prof.la
+lib_LTLIBRARIES = libstratego-lib-native.la
+
+# todo: should we link against the baseline runtime library?
+libstratego_lib_native_la_SOURCES = $(LIB_SOURCES)
+libstratego_lib_native_la_LIBADD  = ../../../srts/src/libstratego-runtime.la $(ATERM_LIBS)
+libstratego_lib_native_la_CFLAGS  = -Wall
+libstratego_lib_native_la_LDFLAGS = -avoid-version -no-undefined
 
 LIB_SOURCES = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
   ssl-string.h term.h dir.h \
   io.c tables.c sets.c time.c exec.c number.c string.c term.c \
   placeholder.c dir.c
-
-libstratego_lib_native_la_SOURCES      = $(LIB_SOURCES)
-libstratego_lib_native_dbg_la_SOURCES  = $(LIB_SOURCES)
-libstratego_lib_native_prof_la_SOURCES = $(LIB_SOURCES)
-libstratego_lib_native_opt_la_SOURCES  = $(LIB_SOURCES)
-
-libstratego_lib_native_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
-libstratego_lib_native_prof_la_CFLAGS = -pg $(AM_CFLAGS)
-libstratego_lib_native_opt_la_CFLAGS  = -O2 $(AM_CFLAGS)
 
 bootclean:

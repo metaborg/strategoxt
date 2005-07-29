@@ -4,17 +4,15 @@ SINCLUDES = \
 
 
 AM_LDFLAGS = \
-  -L$(prefix)/lib/stratego-lib \
-  -L$(prefix)/lib/srts \
+  -L$(prefix)/lib \
   -L$(ATERM)/lib \
   -g
 
 AM_CFLAGS = \
   -I$(prefix)/include \
-  -I$(prefix)/include \
   -I$(ATERM)/include
 
-LDADD = -lstratego-lib-native-opt -lstratego-runtime-opt -lATerm -lm
+LDADD = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 
 if XT_DARWIN
 AM_LDFLAGS += -bind_at_load
