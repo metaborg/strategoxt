@@ -89,6 +89,8 @@ rules
   stratego-to-abox : 
     OpDeclInj(rhs) -> |[ R ["" KW[":"] H hs=1 [ ~rhs ] ] ]|
 
+  stratego-to-abox : 
+    OpDeclQ(name,rhs) -> |[ R [~lit:name KW[":"] H hs=1 [~rhs] ] ]|
 
   stratego-to-abox : 
     SortVar(name) -> S(name)
