@@ -411,7 +411,7 @@ rules
         ; <concat>[args1, args2, [Id("t")]] => args
 
   TranslateStrat :
-    CallDynamic(tp,s*,t*) -> <debug-depth>stm |[ t = (SRTS_lookup_function(~exp:e))(~exp*:args) ; ]|
+    CallDynamic(tp,s*,t*) -> stm |[ t = (SRTS_lookup_function(~exp:e))(~exp*:args) ; ]|
     where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1 
         ; <map(topdown(try(construct-term)))> t* => args2  
         ; <concat>[args1, args2, [Id("t")]] => args 
