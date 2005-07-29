@@ -47,8 +47,7 @@ strategies
    * @todo The xs variable is a hack for issue STR-382.
    */
   rm-annotations :
-    t -> t{^xs}
-    where ![] => xs
+    t -> t{}
 
   /**
    * Succeeds if a term has annotations.
