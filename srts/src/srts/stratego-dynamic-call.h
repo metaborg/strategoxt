@@ -4,7 +4,7 @@
 
 typedef ATerm (*str_p)();
 
-ATermTable strategy_table ;
+extern ATermTable strategy_table ;
 
 void SRTS_register_function(ATerm, str_p);
 str_p SRTS_lookup_function(ATerm name);

@@ -1,5 +1,7 @@
 #include "srts/stratego.h"
 
+ATermTable strategy_table ;
+
 void SRTS_register_function(ATerm name, str_p fcn) {
         ATtablePut(
           strategy_table
