@@ -28,8 +28,8 @@ rules
   Add2 : SVar(x) -> [x]
  
   IsVar  : Var(x) -> x
-  //IsSVar : Call(SVar(x), []) -> x
-  //IsSVar : CallT(SVar(x), [], []) -> x
+  IsSVar : Call(SVar(x), []) -> x
+  IsSVar : CallT(SVar(x), [], []) -> x
   //MkTVar : x -> Var(x)
   //MkSVar : x -> SVar(x)
   //MkCall : x -> Call(SVar(x), [])
