@@ -362,7 +362,7 @@ rules
       {
         ATerm ~id:x = t;
 	if(PushChoice() == 0)
-	  { ~stm:s1; LocalPopChoice(); ~stm:s2 }
+	  { ~stm:s1; PopChoice(); ~stm:s2 }
 	else
           { t = ~id:x; ~stm:s3 }
       }   

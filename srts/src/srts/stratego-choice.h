@@ -24,6 +24,11 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
+// @todo: bootstrap problem: remove later.
+extern int stack_ptr;
+// @todo bootstrap problem: remove later
+void LocalPopChoice(int index);
+
 /**
  * Implementation interface
  */
@@ -31,7 +36,6 @@ void SRTSChoice_init(long *bp);
 jmp_buf* SRTSChoice_pushhook(void);
 
 void PopChoice(void);
-void LocalPopChoice(void);
 
 /**
  * Push of a local choice.

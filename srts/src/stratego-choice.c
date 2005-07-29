@@ -84,6 +84,9 @@ void PopChoice(void) {
   --jmpbufs_pos;
 }
 
-void LocalPopChoice(void) {
+// @todo bootstrap problem: remove later
+int stack_ptr = 0;
+// @todo bootstrap problem: remove later
+void LocalPopChoice(int ptr) {
   --jmpbufs_pos;
 }

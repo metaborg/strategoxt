@@ -43,6 +43,18 @@ ATerm SRTS_setAnnotations(ATerm t, ATerm ts) {
     return ATsetAnnotations(t, ts);
 }
 
+// @todo bootstrap problem: remove later
+ATerm SSLgetAnnotations(ATerm t)
+{
+  return SRTS_getAnnotations(t);
+}
+
+// @todo bootstrap problem: remove later
+ATerm SSLsetAnnotations(ATerm t, ATerm ts)
+{
+  return SRTS_setAnnotations(t, ts);
+}
+
 ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
 {
   if(ATisEmpty(l))
