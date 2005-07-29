@@ -388,7 +388,8 @@ strategies
   get-stamp :
     stdrule -> stamp
     where if not(<DrStamp> stdrule => stamp) then 
-            new => stamp
+	    // new => stamp
+	    <checksum> stdrule => stamp
             ; rules( DrStamp : stdrule -> stamp )
           end
 
