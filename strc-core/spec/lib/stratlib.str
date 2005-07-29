@@ -189,8 +189,8 @@ strategies
   tsubs = 
     substitute(IsVar)
 //
-//  ssubs = 
-//    substitute(IsSVar)
+  ssubs = 
+    substitute(IsSVar)
 //
 //  is_var_list = 
 //    map(Var(id))
