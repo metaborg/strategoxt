@@ -28,12 +28,12 @@ rules
   Add2 : SVar(x) -> [x]
  
   IsVar  : Var(x) -> x
-  IsSVar : Call(SVar(x), []) -> x
-  IsSVar : CallT(SVar(x), [], []) -> x
-  MkTVar : x -> Var(x)
-  MkSVar : x -> SVar(x)
- // MkCall : x -> Call(SVar(x), [])
-  MkCall : x -> CallT(SVar(x), [], [])
+  //IsSVar : Call(SVar(x), []) -> x
+  //IsSVar : CallT(SVar(x), [], []) -> x
+  //MkTVar : x -> Var(x)
+  //MkSVar : x -> SVar(x)
+  //MkCall : x -> Call(SVar(x), [])
+  //MkCall : x -> CallT(SVar(x), [], [])
 
 strategies
 
@@ -59,10 +59,10 @@ rules
   Bind3 : Rec(x, s) -> [x]
 
   Bind4 : GenDynRules(rs) -> <tvars> rs
-  Bind4 : DynamicRules(rs) -> <tvars> rs
-  Bind4 : OverrideDynamicRules(rs) -> <tvars> rs
-  Bind4 : ExtendDynamicRules(rs) -> <tvars> rs
-  Bind4 : ExtendOverrideDynamicRules(rs) -> <tvars> rs
+//  Bind4 : DynamicRules(rs) -> <tvars> rs
+//  Bind4 : OverrideDynamicRules(rs) -> <tvars> rs
+//  Bind4 : ExtendDynamicRules(rs) -> <tvars> rs
+//  Bind4 : ExtendOverrideDynamicRules(rs) -> <tvars> rs
 
   Bind5 : SDefT(f, xs, ys, s) -> <declared-vars> xs
   Bind6 : SDefT(f, xs, ys, s) -> <declared-vars> ys
@@ -129,10 +129,10 @@ strategies
     + dynrule-cong(ignore, bnd)
 
     + GenDynRules(bnd)
-    + DynamicRules(bnd)
-    + OverrideDynamicRules(bnd)
-    + ExtendDynamicRules(bnd)
-    + ExtendOverrideDynamicRules(bnd)
+//    + DynamicRules(bnd)
+//    + OverrideDynamicRules(bnd)
+//    + ExtendDynamicRules(bnd)
+//    + ExtendOverrideDynamicRules(bnd)
 
   spaste(nwvars) =
       Let(split(id,nwvars); 
@@ -186,8 +186,8 @@ strategies
   tsubstitute = 
     substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
 
-//  tsubs = 
-//    substitute(IsVar)
+  tsubs = 
+    substitute(IsVar)
 //
 //  ssubs = 
 //    substitute(IsSVar)
