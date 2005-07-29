@@ -741,7 +741,10 @@ rules
     Build(t) -> |[ t = ~exp:<construct-term-caching> t; ]|
 
   construct-term =
-    bottomup(try(ConstructList <+ ConstructTerm))
+    downup2(
+      try(ConstructAnnoVar(construct-term) <+ ConstructVar)
+      ,try(ConstructList <+ ConstructTerm)
+    )
 
   ConstructTerm :
     Int(i) -> c:exp|[ (ATerm)ATmakeInt(~exp:IntConst(<try(int-to-string)> i)) ]|
@@ -753,18 +756,23 @@ rules
     Str(x) -> 
     c:exp|[ (ATerm)ATmakeAppl(ATmakeSymbol(~exp:StringLit([<escape; double-quote>x]), 0, ATtrue)) ]|
 
-  ConstructTerm :
-    Var(x){"bound"} -> Id(x)
+  ConstructVar :
+    Var(x){"bound"} -> c:exp|[ ~id:x ]| 
 
-  ConstructTerm :
+  ConstructVar :
     Var(x){t*} -> c:exp|[ not_null(~id:x) ]|
     where <not(["bound"])> t*
 
-  ConstructTerm :
+  ConstructVar :
     Var(x){"unbound"} -> c:exp|[ not_null(~id:x) ]| 
 
-  ConstructTerm :
+  ConstructVar :
     Var(x){"(un)bound"} -> c:exp|[ not_null(~id:x) ]| 
+
+  ConstructAnnoVar(x) :
+    Anno(t1,t2) -> c:exp|[ (ATerm) SRTS_setAnnotations(~exp:t1', ~exp:t2') ]|
+    where <ConstructVar> t1 => t1'
+	; <x> t2 => t2'
 
   /**
    * @todo  I need expression blocks. Using a call to a runtime function for now.
@@ -781,10 +789,12 @@ rules
 
   ConstructTerm :
     Anno(t1, c:exp|[ (ATerm) ATempty ]|) -> t1
+    where <not(Var(id))> t1
 
   ConstructTerm :
     Anno(t1, t2) -> c:exp|[ (ATerm) SRTS_setAnnotations(~exp:t1, ~exp:t2) ]|
     where <not(?c:exp|[ (ATerm) ATempty ]|)> t2
+       <+ <not(Var(id))> t1
 
   ConstructTerm :
     Explode(t1, t2) -> c:exp|[ SSL_mkterm(~exp:t1, ~exp:t2) ]|
@@ -815,8 +825,10 @@ rules
 
   construct-term-caching =
     rec x(Cache 
+          <+ ConstructAnnoVar(x)
+          <+ ConstructVar
           <+ !(<id>, <all(x); try(ConstructList <+ ConstructTerm)>)
-             ;(CacheConstant <+ Snd)
+             ; (CacheConstant <+ Snd)
          )
 
   CacheConstant :

@@ -210,7 +210,7 @@ strategies
   test-catch-3 =
     apply-test(!"test-catch-3"
     , catch-annos
-    ,      !Plus(Var("a"), Var("b")){Int}
+    , !Plus(Var("a"), Var("b")){Int}
     , !Anno(Plus(Var("a"), Var("b")), [Int])
     )
 
