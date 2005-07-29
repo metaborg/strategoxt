@@ -33,7 +33,7 @@ rules
   //MkTVar : x -> Var(x)
   //MkSVar : x -> SVar(x)
   //MkCall : x -> Call(SVar(x), [])
-  //MkCall : x -> CallT(SVar(x), [], [])
+  MkCall : x -> CallT(SVar(x), [], [])
 
 strategies
 
