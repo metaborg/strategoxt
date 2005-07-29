@@ -43,8 +43,12 @@ strategies
   set-anno :
     (t1, t2) -> t1{t2}
 
+  /**
+   * @todo The xs variable is a hack for issue STR-382.
+   */
   rm-annotations :
-    t -> t{}
+    t -> t{^xs}
+    where ![] => xs
 
   /**
    * Succeeds if a term has annotations.
