@@ -10,9 +10,9 @@
 module stratlib
 imports liblib Stratego-Sugar
 
-signature
-  constructors
-    DynamicRules : List(RuleDef) -> Strategy
+//signature
+//  constructors
+//    DynamicRules : List(RuleDef) -> Strategy
 
 strategies
 
@@ -37,7 +37,7 @@ rules
 
 strategies
 
-  SVarShape(s) = Call(SVar(s), []) + CallT(SVar(s), [], [])
+//  SVarShape(s) = Call(SVar(s), []) + CallT(SVar(s), [], [])
 
 /*
   Bound Variables}
@@ -180,45 +180,44 @@ strategies
               ,sboundin
               ,{f:?((f,_),f)})
 
-  tsubs = 
-    substitute(IsVar)
-
-  ssubs = 
-    substitute(IsSVar)
+  strename = 
+    trename ; srename
 
   tsubstitute = 
     substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
 
-  strename = 
-    trename ; srename
-
-  is_var_list = 
-    map(Var(id))
-
-  is_svar_list = 
-    map(SVar(id))
-
+//  tsubs = 
+//    substitute(IsVar)
+//
+//  ssubs = 
+//    substitute(IsSVar)
+//
+//  is_var_list = 
+//    map(Var(id))
+//
+//  is_svar_list = 
+//    map(SVar(id))
+//
 // Context strategies for strategies
-
-strategies
-
-  conLChoice(s) = rec x(s + LChoice(x, id) + LChoice(id, x))
-
-  conChoice(s) = rec x(s + (Choice(x, id) + Choice(id, x)))
-
-  conChoiceL(s) = Choice(s, id) + s
-
-  choicebu-l'(s) = rec x(try(Choice(id, x); s))
-
-  choicebu-l(s) = rec x(try(Choice(x, x); s))
-
-  choicetd(s) = rec x(s <+ Choice(x, x))
-
-  choicemap(s) = rec x(Choice(x, x) <+ s)
-
-  choicebu(s) = rec x(try(Choice(x, x); s))
-
-  firstInSeq(s) = s <+ Seq(s, id)
-
-  lastInSeq(s) = Seq(id, rec x(s <+ Seq(not(oncetd(s)), x)))
-
+//
+//strategies
+//
+//  conLChoice(s) = rec x(s + LChoice(x, id) + LChoice(id, x))
+//
+//  conChoice(s) = rec x(s + (Choice(x, id) + Choice(id, x)))
+//
+//  conChoiceL(s) = Choice(s, id) + s
+//
+//  choicebu-l'(s) = rec x(try(Choice(id, x); s))
+//
+//  choicebu-l(s) = rec x(try(Choice(x, x); s))
+//
+//  choicetd(s) = rec x(s <+ Choice(x, x))
+//
+//  choicemap(s) = rec x(Choice(x, x) <+ s)
+//
+//  choicebu(s) = rec x(try(Choice(x, x); s))
+//
+//  firstInSeq(s) = s <+ Seq(s, id)
+//
+//  lastInSeq(s) = Seq(id, rec x(s <+ Seq(not(oncetd(s)), x)))

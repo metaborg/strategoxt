@@ -11,11 +11,13 @@ rules
   ApptoApp :
     Term|[ <s1> <s2> t ]| -> Term|[ <s2; s1> t ]|
  
+/*
   ExpandRec : 
     |[ rec x(s) ]| -> <ssubs> ([x], [ |[ rec x(s) ]| ], s)  
 
   UnrollRec : 
     |[ rec x(s) ]| -> |[ rec x(~<ssubs> ([x], [s], s)) ]|
+*/
 
   // Note: duplication of code and computation!
 

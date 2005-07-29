@@ -83,38 +83,40 @@ rules
   AltGiveSDefs :
     Alt(c, args, Let(sdefs, s)) -> sdefs
 
-rules
-
-  CopyPropagation :
-    Seq(Build(t), Scope(xs, Seq(Assign(Var(x)), s))) ->
-    Seq(Build(t), Scope(ys, <tsubs> ([x], [t], s)))
-    where (<Var(id)> t ) // + <leq> (<nrofoccs(?Var(x))> s, 1))
-        ; <is-subterm> (x, xs); <diff> (xs, [x]) => ys          
-
-  CopyPropagation :
-    Seq(Build(t), Scope(xs, Seq(Assign(Var(x)), s))) ->
-    Seq(Build(t), Scope(ys, <tsubs> ([x], [t], s)))
-    where <Var(id)> t; <is-subterm> (x, xs); <diff> (xs, [x]) => ys          
-
-  CopyPropagation :
-    Scope(xs, Seq(Assign(Var(x), Var(y)), s)) ->
-    Scope(ys, <tsubs> ([x], [Var(y)], s))
-    where <is-subterm> (x, xs); <diff> (xs, [x]) => ys
-
-  CopyPropagation :
-    Scope(xs, Seq(Assign(Var(x)), Seq(Assign(Var(y)), s))) ->
-    Scope(ys, Seq(Assign(Var(x)), <tsubs> ([y], [Var(x)], s)))
-    where <is-subterm> (x, xs); <is-subterm> (y, xs); <diff> (xs, [y]) => ys
-
-  CopyPropagation :
-    Scope(xs, Seq(Assign(Var(x)), Seq(Assign(Var(y), Var(x)), s))) ->
-    Scope(ys, Seq(Assign(Var(x)), <tsubs> ([y], [Var(x)], s)))
-    where <is-subterm> (x, xs); <is-subterm> (y, xs); <diff> (xs, [y]) => ys
-
-  CopyPropagation :
-    Seq(Assign(Var(x)), Seq(Build(Var(x)), s)) ->
-    Seq(Assign(Var(x)), s)
-
-  CopyPropagationNotValid :
-    Seq(Assign(x), Seq(Assign(y,x), s)) ->
-    Seq(Assign(x), Seq(Assign(y), s))
+//
+//rules
+//
+//  CopyPropagation :
+//    Seq(Build(t), Scope(xs, Seq(Assign(Var(x)), s))) ->
+//    Seq(Build(t), Scope(ys, <tsubs> ([x], [t], s)))
+//    where (<Var(id)> t ) // + <leq> (<nrofoccs(?Var(x))> s, 1))
+//        ; <is-subterm> (x, xs); <diff> (xs, [x]) => ys          
+//
+//  CopyPropagation :
+//    Seq(Build(t), Scope(xs, Seq(Assign(Var(x)), s))) ->
+//    Seq(Build(t), Scope(ys, <tsubs> ([x], [t], s)))
+//    where <Var(id)> t; <is-subterm> (x, xs); <diff> (xs, [x]) => ys          
+//
+//  CopyPropagation :
+//    Scope(xs, Seq(Assign(Var(x), Var(y)), s)) ->
+//    Scope(ys, <tsubs> ([x], [Var(y)], s))
+//    where <is-subterm> (x, xs); <diff> (xs, [x]) => ys
+//
+//  CopyPropagation :
+//    Scope(xs, Seq(Assign(Var(x)), Seq(Assign(Var(y)), s))) ->
+//    Scope(ys, Seq(Assign(Var(x)), <tsubs> ([y], [Var(x)], s)))
+//    where <is-subterm> (x, xs); <is-subterm> (y, xs); <diff> (xs, [y]) => ys
+//
+//  CopyPropagation :
+//    Scope(xs, Seq(Assign(Var(x)), Seq(Assign(Var(y), Var(x)), s))) ->
+//    Scope(ys, Seq(Assign(Var(x)), <tsubs> ([y], [Var(x)], s)))
+//    where <is-subterm> (x, xs); <is-subterm> (y, xs); <diff> (xs, [y]) => ys
+//
+//  CopyPropagation :
+//    Seq(Assign(Var(x)), Seq(Build(Var(x)), s)) ->
+//    Seq(Assign(Var(x)), s)
+//
+//  CopyPropagationNotValid :
+//    Seq(Assign(x), Seq(Assign(y,x), s)) ->
+//    Seq(Assign(x), Seq(Assign(y), s))
+//
