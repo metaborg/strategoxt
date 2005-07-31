@@ -308,16 +308,23 @@ strategies
     \ (l1, l2) -> <at-end(!l2)> l1 \
     <+ \ "" # (xs) -> <concat> xs \
 
-  makeConc = 
-    ?(xs, ys)
-    ; if <is-list> xs; <is-list> ys then conc else !Conc(xs, ys) end
-
   /**
    * @type List(List(a)) -> List(a)
    * @inc  concat-test
    */
   concat =
     rec x([] + \ [l | ls] -> <at-end(<x> ls)> l\ )
+
+  /**
+   * Concats two elements if both elements are lists. Otherwise, constructs
+   * a Conc term.
+   *
+   * Generic term construction is used to avoid infinite recursion: makeConc
+   * is used in the compilation of Conc itself.
+   */
+  makeConc = 
+    ?(xs, ys)
+    ; if <is-list> xs; <is-list> ys then conc else !"Conc"#([xs, ys]) end
 
 strategies
 

@@ -1,13 +1,25 @@
+2005-07-31  Martin Bravenboer <martin@cs.uu.nl>
+
+	* stratego-lib/spec/collection/list/common.str: fixed the !Conc in
+	the implementation of makeConc to use generic term
+	construction. makeConc is used by the compiler in the compilation
+	of Conc. The previous definition of makeConc results in infinite
+	recursion (segmentation fault), since makeConc is invoke for the
+	Conc constructed in makeConc.
+
+	* strc-core/spec/test1/test82.str: test for this makeConc issue.
+	
 2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
 
-  * spec/system/io/term.str: dropped Assert because of the poor name 
-  (strategies should be lowercase) and because it does not preserve
-  failure. Use 's <+ debug(!msg)' or risky (which preserves failure).
+	* spec/system/io/term.str: dropped Assert because of the poor name
+	(strategies should be lowercase) and because it does not preserve
+	failure. Use 's <+ debug(!msg)' or risky (which preserves
+	failure).
 
 2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
 
-  * spec/system/io/term.str: dropped stdio and stdioO, since these
-  strategies have been obsolete for a long, long time.
+	* spec/system/io/term.str: dropped stdio and stdioO, since these
+	strategies have been obsolete for a long, long time.
 
 2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
 
