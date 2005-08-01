@@ -134,7 +134,7 @@ AC_DEFUN([XT_CHECK_XTC],
 
   if test "${XTC:+set}" = set; then
     AC_SUBST([XTC])
-    AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib/xtc -lstratego-xtc'])
+  AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib -lstratego-xtc'])
     AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
   else
     # Try to find XTC using pkgconfig.
@@ -230,7 +230,7 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
   AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(SRTS)/include'])
   AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
   AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib -lstratego-runtime -lm'])
-  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lstratego-lib-native -lm'])
+  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib -lstratego-lib -lstratego-lib-native -lm'])
 ])
 
 # XT_CHECK_STRATEGOXT_UTILS
