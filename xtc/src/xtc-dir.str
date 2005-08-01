@@ -1,0 +1,137 @@
+module xtc-dir
+
+imports 
+  xtc-proc
+
+signature
+  constructors
+    Dir   : String              -> File // unexpanded directory
+    Dir   : String * List(File) -> File // expanded directory
+    FILE  : String		-> File // regular file
+    Link  : String		-> File // symbolic link
+
+strategies
+
+  current-dir =
+    !Dir(<getcwd>)
+    ; expand-dir
+
+  current-dir-tree =
+    !Dir(<getcwd>)
+    ; expand-dir-tree
+
+  expand-dir :
+    Dir(dir) -> Dir(dir, files)
+    where <readdir; filter(not("." + ".."))> dir
+	; map(<concat-strings>[dir, "/", <id>]; classify-file) => files
+
+  expand-dir-tree =
+    try(!Dir(<is-string>))
+    ; try(Dir(abspath))
+    ; topdown(try(expand-dir))
+
+  classify-file =
+    switch filemode 
+      case isreg : !FILE(<id>)
+      case isdir : !Dir(<id>)
+      case islnk : !Link(<id>)
+    end
+
+  print-dir-tree =
+    print-dir-tree(|"")
+
+  print-dir-tree(|indent) =
+    ?Dir(dir, files)
+    ; where(<debug(!indent)> dir)
+    ; <map(print-dir-tree(|<conc-strings>("  ", indent)))> files
+
+  print-dir-tree(|indent) = 
+    ?FILE(str)
+    ; where(<debug(!indent)> str)
+
+  /**
+   * Change working directory to dir before apply s, and change it
+   * back afterwards.
+   */
+
+  compute-in-dir(s | dir) = 
+    where(
+      getcwd => cwd
+      ; dir
+      ; if not(file-exists) then
+          mkdir
+        else if filemode; isdir then 
+          id 
+        else 
+          <fatal-error> ["file exists and is not a directory: ", <id>]
+        end end
+      ; chdir
+    )
+    ; restore-always(s, where(<chdir> cwd))
+
+  /**
+   * Execute strategy s in directory dir. The directory is created
+   * if it did not yet exist.
+   */
+
+  xtc-compute-in-dir(s | dir) = 
+    try(FILE(abspath))
+    ; where(
+        getcwd => cwd
+        ; !dir
+        ; if not(file-exists) then
+            mkdir
+          else if filemode; isdir then 
+            id 
+          else 
+            <fatal-error> ["file exists and is not a directory: ", <id>]
+          end end
+	; debug(!"Working directory is now: ")
+        ; chdir
+      )
+    ; restore-always(s; copy-to-dir(|cwd), where(<chdir> cwd))
+
+  /**
+   * Execute strategy s in a new temporary directory.
+   */
+
+  xtc-compute-in-tempdir(s) =
+    xtc-compute-in-dir(s | <new-temp-dir>)
+
+  /**
+   * copy-to-dir(|newdir) copies all files in the argument directory
+   * to newdir.
+   */
+
+  copy-to-dir(|newdir) = 
+    try(expand-dir-tree)
+    ; compute-in-dir(!newdir, 
+        rec cp({ 
+          switch id 
+            case ?FILE(file) : 
+                 <copy-file>(file, ".")
+            case ?Dir(dir, files) : 
+	         compute-in-dir(<base-filename> dir,
+                   <map(cp)> files
+                 )
+            case id : 
+                 debug(!"not a file or directory: ")
+            end
+        })
+      )
+
+  /**
+   * Copy all files in directory 'from' for which 'select' succeeds to directory 'to'.
+   */
+
+  copy-files(select | from, to) = 
+    where(
+      !Dir(from)
+      ; dbg(|"copy-files from directory")
+      ; expand-dir
+      ; dbg(|"directory expanded")
+      ; ?Dir(_, <filter(FILE(select))>)
+      ; dbg(|"selected files")
+      ; map(copy-to(!to))
+      ; dbg(|"copied")
+    )

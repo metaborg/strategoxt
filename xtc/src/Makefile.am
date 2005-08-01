@@ -6,10 +6,10 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 bin_PROGRAMS 	= xtc 
 
 #pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
-#		  xtc-proc.rtree xtc-register.rtree
+#		  xtc-proc.rtree xtc-register.rtree xtc-dir.rtree
 
 pkgdata_DATA 	= xtc-lib.str xtc-rep.str \
-		  xtc-proc.str xtc-register.str
+		  xtc-proc.str xtc-register.str xtc-dir.str
 
 SCFLAGS 	= --main $* $(XTCFLAGS)
 xtc_LDFLAGS     = $(AM_LDFLAGS) -static
