@@ -83,10 +83,3 @@ jmp_buf* SRTSChoice_pushhook(void) {
 void PopChoice(void) {
   --jmpbufs_pos;
 }
-
-// @todo bootstrap problem: remove later
-int stack_ptr = 0;
-// @todo bootstrap problem: remove later
-void LocalPopChoice(int ptr) {
-  --jmpbufs_pos;
-}

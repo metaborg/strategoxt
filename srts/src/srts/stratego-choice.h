@@ -24,11 +24,6 @@
 #include <stdlib.h>
 #include <setjmp.h>
 
-// @todo: bootstrap problem: remove later.
-extern int stack_ptr;
-// @todo bootstrap problem: remove later
-void LocalPopChoice(int index);
-
 /**
  * Implementation interface
  */

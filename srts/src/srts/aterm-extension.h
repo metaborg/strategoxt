@@ -45,11 +45,6 @@ USA
 
 #define MakeInt(n) ((ATerm)ATmakeInt(n))
 
-// @todo bootstrap problem: remove later
-ATerm SSLgetAnnotations(ATerm t);
-// @todo bootstrap problem: remove later
-ATerm SSlsetAnnotations(ATerm t, ATerm ts);
-
 ATerm SRTS_getAnnotations(ATerm t);
 ATerm SRTS_setAnnotations(ATerm t, ATerm ts);
 
