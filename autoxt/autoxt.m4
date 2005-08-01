@@ -255,7 +255,7 @@ AC_DEFUN([XT_CHECK_STRATEGOXT_UTILS],
     AC_MSG_RESULT([no])
 
     # Try to find the Stratego/XT Utilities using pkgconfig.
-    XT_CHECK_PACKAGE([STRATEGOXT_UTILS],[strategoxt-utils],[bin/pp-dot$(EXEEXT)])
+    XT_CHECK_PACKAGE([STRATEGOXT_UTILS],[strategoxt-utils],[bin/pp-dot$EXEEXT])
   fi
 
   # backward compatibitily
