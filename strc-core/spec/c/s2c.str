@@ -117,18 +117,11 @@ rules
 	// signatures of all generated functions
 	~ext-def*:function-sigs
 
-	// 
-	static void register_strategies(void)
-	{
-		int initial_size = 117 ;
-		int max_load = 75;
-		if(strategy_table == NULL) 
-			strategy_table = ATtableCreate(initial_size,max_load);
-		~stm*:function-regs
-	}
-
 	// function definitions themselves
 	~ext-def*:function-defs
+
+        ~ext-def*:<if-lib(![], ![<register-strategies-function>function-regs])>
+
 	~ext-def*:<if-lib(![], ![<MainDef>])>
     ]|
     where GenerateIncludes => incl
@@ -141,6 +134,21 @@ rules
 	; (CachedTerms <+ ![])
 	; !(<map(DeclareTermId)>, <map(InitTermId); concat; reverse>) 
 	  => (cnst-decls, cnst-inits)
+
+strategies
+
+  register-strategies-function =
+    !c:fun-def|[
+ 	// 
+	static void register_strategies(void)
+	{
+		int initial_size = 117 ;
+		int max_load = 75;
+		if(strategy_table == NULL) 
+			strategy_table = ATtableCreate(initial_size,max_load);
+		~stm*:<id>
+	}
+     ]|
 
 strategies
 
