@@ -35,6 +35,12 @@ USA
 #include "stratego-choice.h"
 #include "stratego-dynamic-call.h"
 
+/**
+ * Global variable that is used to construct a linked list
+ * of initializers in the Stratego libraries and application.
+ */
+extern void (* SRTS_stratego_initialize)(void);
+
 ATerm _id(ATerm);
 ATerm _fail(ATerm);
 ATerm _all(ATerm, ATerm f(ATerm));

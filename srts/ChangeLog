@@ -1,3 +1,18 @@
+2005-08-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/srts/init-stratego-application.h: moved the declaration of
+	the global SRTS_stratego_initialize variable from an application
+	(via include of init-stratego-application.h) to the Stratego
+	runtime. For libraries, a global variable
+	'SRTS_stratego_initialize' is an external symbol, which is not
+	allowed if you use -no-undefined.
+
+	It's great that Darwin actually checks for undefined symbols
+	(Linux does not), since we can be pretty sure that building
+	dynamic libraries works on Cygwin if it works on Darwin.
+
+	* src/srts/aterm-extension.h: dropped some commented defines.
+
 2005-01-29  Martin Bravenboer <martin@cs.uu.nl>
 	
 	* native/*: moved the native part of the SSL implementation from
