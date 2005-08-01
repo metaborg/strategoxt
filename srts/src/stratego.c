@@ -31,17 +31,29 @@ USA
 #include "srts/mprotect.h"
 
 void (* SRTS_stratego_initialize)(void) = NULL;
+ATerm SRTS_default_xtc_repository = NULL;
 
-ATerm _id(ATerm t)
-{
+/**
+ * For legacy reasons, this is an external function.
+ */
+ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
+  if(SRTS_default_xtc_repository == NULL) {
+    _fail(t);
+    return NULL;
+  }
+  else {
+    return SRTS_default_xtc_repository;
+  }
+}
+
+ATerm _id(ATerm t) {
   return(t);
 }
 
 /**
  * Traversal combinators
  */
-ATerm _all(ATerm t, ATerm f(ATerm))
-{
+ATerm _all(ATerm t, ATerm f(ATerm)) {
   ATerm annos = ATgetAnnotations(t);
   switch(ATgetType(t))
     {

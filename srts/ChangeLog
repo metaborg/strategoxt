@@ -1,5 +1,15 @@
 2005-08-01  Martin Bravenboer <martin@cs.uu.nl>
 
+	* src/srts/init-stratego-application.h:
+	GetInternalDefaultXtcRepository is an undefined external symbol
+	for the XTC library. The default XTC repository is now a variable
+	in the runtime. The function GetInternalDefaultXtcRepository has
+	been moved to the runtime. The function
+	SRTS_stratego_initialize_module for applications initializes the
+	variable, if XTC_REPOSITORY is defined.
+	
+2005-08-01  Martin Bravenboer <martin@cs.uu.nl>
+
 	* src/srts/init-stratego-application.h: moved the declaration of
 	the global SRTS_stratego_initialize variable from an application
 	(via include of init-stratego-application.h) to the Stratego

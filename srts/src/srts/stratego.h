@@ -40,6 +40,7 @@ USA
  * of initializers in the Stratego libraries and application.
  */
 extern void (* SRTS_stratego_initialize)(void);
+extern ATerm SRTS_default_xtc_repository;
 
 ATerm _id(ATerm);
 ATerm _fail(ATerm);
