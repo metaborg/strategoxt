@@ -1,9 +1,5 @@
 module dynamic-rules-highlevel-test
-imports
-  lang/dynamic-rules
-  io
-  sunit
-
+imports libstrategolib
 signature
   constructors
     Foo    : Int * Int -> FooBar

@@ -202,8 +202,7 @@ strategies // Compile generated C code
 	; (<get-config> "-o" <+ get-outfile(!"")) => target
         ; <if-verbose3(debug); call> 
 	    (<xtc-find> "libtool", [
-              "--mode=link", "gcc", ofile, "-o", target
-              | <conc> (<get-config> "-CL", <get-config> "-Xlinker")])
+              "--mode=link", "gcc", ofile, "-o", target | <get-config> "-Xlinker"])
 
 strategies
 

@@ -2,7 +2,7 @@
  * Tests for the system/io/file module.
  */
 module file-test
-imports file sunit
+imports libstrategolib
 
 strategies 
 

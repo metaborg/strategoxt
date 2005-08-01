@@ -1,8 +1,5 @@
 module dynamic-rules-lowlevel-test
-imports
-  lang/dynamic-rules
-  sunit
-signature
+imports libstrategolib
 
 strategies
 

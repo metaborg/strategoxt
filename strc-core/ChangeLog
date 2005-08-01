@@ -1,3 +1,22 @@
+2004-08-01 Martin Bravenboer  <martin@cs.uu.nl>
+
+	* strc-core/spec/strc/strc-options.str: standalone strc: pass
+	absolute paths to libtool .la ibraries instead of composing a
+	search path of -L and -l (STR-383)
+	
+
+	* strc-core/spec/strc/strc-options.str: use the -Xlinker config
+	entry for all linker options.
+
+	* strc-core/spec/strc/strc.str: invoke libtool only with the
+	-Xlinker config.
+
+	* Makefile.am: register all .la libraries in XTC.
+
+	* stratego-lib/tests/Makefile.am: stratego-lib testsuite should
+	use: strc in prefix, libraries in prefix, header files in prefix
+	(STR-384).
+	
 2004-07-28  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/raise-annotations.str: Fixed bug in generic traversal
