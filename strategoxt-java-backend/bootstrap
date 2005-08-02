@@ -1,18 +1,10 @@
-rm -f config.cache
-rm -f acconfig.h
+#! /bin/sh
 
-touch README
-touch NEWS
+set -e
 
 export WANT_AUTOMAKE="1.8"
 export WANT_AUTOCONF="2.59"
 
-libtoolize || glibtoolize
-
 autoxt
-aclocal -I .
-autoconf
-#acconfig
-#autoheader
-automake -a
-
+auto-java-front
+autoreconf -ifv
