@@ -3,6 +3,6 @@ imports
   StrategoStratego
   StrategoRenamed
   Embedded-Java-15 [StrategoTerm]
-
+  Java-EBlock-Prefixed
 exports
   context-free start-symbols StrategoModule

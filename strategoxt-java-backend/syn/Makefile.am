@@ -3,7 +3,9 @@ include $(wildcard *.dep)
 
 sdfdata_DATA 	= Stratego-Stratego-Java-15.tbl $(wildcard *.sdf) 
 
-SDFINCLUDES     = -I ${STRATEGO_FRONT}/share/sdf/stratego-front -Idef ${JAVA_FRONT}/share/sdf/java-front/Stratego-Java-15.def  
+SDFINCLUDES     = \
+	-I ${STRATEGO_FRONT}/share/sdf/stratego-front \
+	-Idef ${JAVA_FRONT}/share/sdf/java-front/Stratego-Java-EBlock.def  
 
 CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
 BOOTCLEANFILES	= $(wildcard *.def) 
