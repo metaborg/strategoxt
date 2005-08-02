@@ -8,7 +8,7 @@ DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = bootstrap Makefile.xt
 
 XTC_IMPORT = \
-  $(STRATEGOXT)/share/strategoxt/XTC
+  $(STRATEGOXT)/share/strategoxt/XTC \
   $(JAVA_FRONT)/share/java-front/XTC
 
 

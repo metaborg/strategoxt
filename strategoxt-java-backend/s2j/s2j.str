@@ -2,60 +2,265 @@
  * Compilation of Stratego programs to Java
  */
 module s2j
-imports Stratego lib Java-15 dynamic-rules config
+imports Stratego liblib Java-15 Java-EBlock 
+
 signature
-  constructors
-    Include : String -> ExternalDef
+  constructors 
+    Match : a * a -> a
 
 strategies
 
-  io-s2j = s2j
-  
-  s2j = 
-    io-wrap(s2java-options, compile)
+  io-s2j = 
+    io-wrap(compile)
  
-  compile = TranslateSpec
-
-strategies
-
-  /**
-   * Command line options
-   */
-
-  s2java-options = 
-    ArgOption("--C-include",       
-	where(<post-extend-config>("--C-include", [<id>])),
-	!"--C-include h   include header file h (\"file.h\" or <file.h>)")
-
-  + Option("--library" + "--lib"
-	  ,where(<set-config> ("--library", ()))
-	  ,!"--library | --lib    build library instead of application")
-
 rules
  
-  TranslateSpec:
-    Specification([Signature([Constructors(ops)]), Strategies(defs)]) ->
+  compile :
+    Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
+     |[ import aterm.ATerm;
+	import aterm.AFun;
+		
+        public class MyStrategoProgram implements SRTS.StrategoProgram {
 
-    compilation-unit |[
+	  private aterm.pure.PureFactory atermFactory; 
+	  
+	  private ATerm not_null(ATerm term) throws Failure
+          {
+                if(term == null) throw new Failure() ;
+                return term;
+          }
+	  public MyStrategoProgram() {
+	  	atermFactory = new aterm.pure.PureFactory();		
+	  }
+	  
+	  public static void main(String args[]) {
+	  	MyStrategoProgram p = new MyStrategoProgram();
+	  }
 
-         public class MyStrategoProgram {
+          ~*function-defs
+        }
+     ]|
+     where 
+       <map(translate-definition)> defs => function-defs
+rules
+  translate-definition :
+     |[ x( a1* | a2* ) = s ]|
+      -> class-body-dec |[ 
+            static ATerm x(param*, ATerm term) 
+            {
+              stm
+              return term ;
+            }
+         ]|
+    where
+      <map(translate-parameter)> a1* => args1
+    ; <map(translate-parameter)> a2* => args2
+    ; <conc> (args1,args2) => param*
+    ; <translate-body> s => stm
 
-           private static ATerm SSL_println(ATerm a, ATerm b) { 
-             return SRTS.StrategoLib.SSL_println(t,s);
+  // XXX: add Strategy parameter
+  translate-parameter :
+    VarDec(x,ConstType(_)) -> param |[ ATerm x ]|
+
+strategies
+  translate-body = topdown(repeat(translate-strategy))
+
+  translate-strategy :
+    Id() -> bstm |[ {} ]|
+
+  translate-strategy :
+    Fail() -> bstm |[ throw new Failure() ; ]|
+
+  translate-strategy :
+    |[ s1 ; s2 ]| -> bstm |[ { ~stm:s1 ~stm:s2 } ]|
+
+  translate-strategy :
+    |[ s1 < s2 + s3 ]| ->
+      bstm |[ 
+        { ATerm x = term ;
+          boolean y = false ;
+          try 
+          {
+            ~stm:s1
+	    y = true ;
+          }
+          catch(Failure f)
+          {
+            term = x ;
+            ~stm:s3
+          }
+          if (y) 
+          {
+            ~stm:s2
+          } 
+        }
+      ]|
+      where
+        new => x
+      ; new => y
+
+
+  translate-strategy :
+    Strat |[ x(s* | t*) ]| ->
+      bstm |[ term = x(e*,term) ; ]|
+      where
+        <map(id)>s* => args1
+      ; <map(construct-term)>t* => args2
+      ; <conc>(args1,args2) => e*
+
+  translate-strategy :
+    Build(t) -> bstm |[ term = e ; ]|
+    where 
+      <construct-term> t => e
+
+strategies
+  
+  construct-term =
+    let construct = construct-list <+ construct-preterm
+    in
+      ?Anno(<construct>,_)
+    end
+
+rules
+  construct-list :
+    Op("Nil",[]) -> |[ atermFactory.makeList() ]|
+  
+  construct-list :
+    Op("Cons",[head,Anno(tail,_)]) -> |[ e2.insert(e1) ]|
+    where
+      <construct-term>head => e1
+    ; <construct-list>tail => e2
+
+rules
+  construct-preterm :
+    Int(i) -> |[ (ATerm) atermFactory.makeInt(i) ]|
+
+  construct-preterm :
+    Str(s) -> |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~s",0,true)) ]|
+
+  construct-preterm :
+    Real(s) -> |[ (ATerm) atermFactory.makeReal(~float:f) ]|
+    where
+      !Float(s) => f
+
+  construct-preterm =
+    ?Var(x){b}
+  ; if !b => "bound" then
+      !expr |[ x ]|
+    else
+      !expr |[ not_null(x) ]|
+    end
+
+  construct-preterm :
+    Op(c,t*) -> |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~c",i,false),e) ]|
+    where 
+      <length ; int-to-string> t* => i
+    ; <list-to-term-array> t* => e
+
+strategies
+  list-to-term-array =
+    where( new => x )
+  ; map-with-index(
+      {i,j,t,e:
+        ?(i,t)
+      ; <dec ; int-to-string>i => j
+      ; <construct-term>t => e
+      ; !bstm |[ x[j] = e ; ]|
+      }
+    ) => bstm*
+  ; !|[ {| ATerm[] x ; bstm* | x |} ]|
+    
+
+
+// matching
+strategies
+
+  translate-strategy :
+    Match(t) -> Match(t,expr |[ term ]| )
+
+  translate-strategy :
+    Match(pattern, e1)
+      -> bstm |[
+           {
+             ATerm x1 = e1;
+             bstm
            }
-         }
-	]|
-/*	
-      public class MyStrategoProgram {
+         ]|
+    where
+      <newname> "term" => x1
+    ; <newname> "result" => y
+    ; <remove-Anno ; Pattern2Stm(|x1)> pattern => bstm
 
-        //private aterm.pure.PureFactory atermFactory; 
-	
-        private static boolean not_null(ATerm t) {
-          return SRTS.StrategoLib.not_null(t);
-        }
+  remove-Anno = topdown(try(?Anno(<id>,_)))
 
-        private static ATerm SSL_println(ATerm t, ATerm s) {
-          return SRTS.StrategoLib.SSL_println(t,s);
-        }
-	  }    
-*/
+strategies
+
+  Pattern2Stm(|z) :
+    Int(i) -> 
+      stm |[ { if(z.getType() != ATerm.INT || ((ATermInt)z).getInt() != i )
+	         throw new Failure();
+             }
+          ]|
+
+  Pattern2Stm(|z) :
+    Real(i) -> 
+      stm |[ { if(z.getType() != ATerm.REAL || ((ATermReal)z).getReal() != ~float:f )
+	         throw new Failure();
+             }
+          ]|
+      where !Float(i) => f
+
+  Pattern2Stm(|z) :
+    Wld() -> stm |[ ; ]|
+
+  Pattern2Stm(|z) :
+    Var(x) -> stm |[ x = z; ]|
+
+  Pattern2Stm(|z) :
+    Explode(x, p) ->
+    stm |[ 
+      {
+        if(z.getType() != ATerm.APPL)
+          throw new Failure();
+
+        x = ((ATermAppl) z).getName();
+
+        ATerm y = ((ATermAppl) z).getArguments();
+        stm1
+      }
+    ]|
+    where
+      <newname> "list" => y
+    ; <Pattern2Stm(|y)> p => stm1
+
+  Pattern2Stm(|z) :
+    Op(sym,ps)
+      ->
+    stm |[
+      {
+        if(z.getType() != ATerm.APPL)
+          throw new Failure();
+
+        ATermAppl x = (ATermAppl) z;
+
+        if(!x.getName().equals("~sym") || x.getArity() != i)
+          throw new Failure();
+
+        bstm*
+      }
+    ]|
+    where
+      <length; int-to-string> ps => i
+    ; <newname> "appl" => x
+    ; <map-with-index({y,i,j,stm2:
+        ?(i, <id>)
+      ; where(
+          <newname> "term" => y
+        ; <dec; int-to-string> i => j
+        )
+      ; Pattern2Stm(|y) => stm2
+      ; ![ bstm |[  ATerm y = x.getArgument(j); ]|, bstm |[  stm2 ]| ]
+      })> ps
+    ; concat => bstm*
+
+
