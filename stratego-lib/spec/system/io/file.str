@@ -282,15 +282,21 @@ strategies
   /**
    * Finds a file in a list of directories (a path).
    *
-   * This strategy operates on a tuple (f, [d*]) where f is the name of the file
-   * to be found, and d* are the directories to search in. The full path of the
-   * first match is the output term.
+   * <find-path(strict|path)> f looks for a file with name f in the list of
+   * directories path. If the file is not found the behaviour depends on the
+   * strategy strict, if it succeeds a fatal-error is flagged, otherwise the
+   * strategy just fails.
+   *
    * Example (when run in strategoxt root):
-   *   <find-in-path> ("file.str", ["ssl/spec", "ssl/tests"]) => "ssl/spec/file.str"
+   *   <find-in-path(id|["ssl/spec","ssl/tests"])> "file.str" => "ssl/spec/file.str"
    */
-  find-in-path =
-    ?(file, <id>) 
-    ; fetch-elem(<concat-strings; file-exists> [<id>,"/",file])
+
+  find-in-path(strict|path) = 
+    ?file
+    ; ( file-exists
+      <+ <fetch-elem(<concat-strings; file-exists> [<id>,"/",file])> path
+      <+ if strict then <fatal-error> ["no such file: ", file] else fail end
+      )
 
   /**
    * Finds a file in a list of directories (a path).
@@ -300,10 +306,32 @@ strategies
    *
    * @param should build a list of paths in which the search is performed.
    */
+
+  find-in-path(|path) =
+    find-in-path(id|path)
+
+  /**
+   * Finds a file in a list of directories (a path)
+   *
+   * @obsolete.
+   *
+   * This strategy operates on a tuple (f, [d*]) where f is the name of the file
+   * to be found, and d* are the directories to search in. The full path of the
+   * first match is the output term.
+   *
+   * Example (when run in strategoxt root):
+   *   <find-in-path> ("file.str", ["ssl/spec", "ssl/tests"]) => "ssl/spec/file.str"
+   */
+
+  find-in-path =
+    ?(file, path); <find-in-path(fail|path)> file
+
+  /** 
+   * @obsolete
+   */
+
   find-in-path(mkpath) =
-    file-exists 
-    <+ split(id, mkpath); find-in-path
-    <+ <fatal-error> ["no such file: ", <id>]
+    find-in-path(|<mkpath>)
 
   /**
    * Finds one file with a specific file extension in a list of directories.
@@ -317,9 +345,21 @@ strategies
    *
    * @param should build the file extension as a string.
    */
+
+  find-file(|ext, path) =
+    guarantee-extension(|ext)
+    ; find-in-path(fail|path)
+
+  find-file(|ext) =
+    ?(file, path)
+    ; <find-file(|ext, path)> file
+
+  /**
+   * @obsolete
+   */
+
   find-file(ext) =
-    (guarantee-extension(|ext), id)
-    ; find-in-path
+    find-file(|<ext>)
 
   /**
    * Finds one file with a specific file extension in a list of directories.
@@ -331,8 +371,8 @@ strategies
    * @param should build the file extension as a string.
    */
   find-file(mkpath, ext) =
-    guarantee-extension(|ext)
-    ; find-in-path(mkpath)
+    guarantee-extension(|<ext>)
+    ; find-in-path(|<mkpath>)
 
 /**
  * Obsolete strategies
