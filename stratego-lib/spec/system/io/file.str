@@ -318,7 +318,7 @@ strategies
    * @param should build the file extension as a string.
    */
   find-file(ext) =
-    (guarantee-extension(ext), id)
+    (guarantee-extension(|ext), id)
     ; find-in-path
 
   /**
@@ -331,7 +331,7 @@ strategies
    * @param should build the file extension as a string.
    */
   find-file(mkpath, ext) =
-    guarantee-extension(ext)
+    guarantee-extension(|ext)
     ; find-in-path(mkpath)
 
 /**
