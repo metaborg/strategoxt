@@ -14,10 +14,13 @@ XT_PRE_RELEASE
 
 XT_USE_XT_PACKAGES
 XT_USE_JAVA_FRONT
+XT_USE_JDK
 XT_TERM_DEFINE 
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
+
+XT_ARG_WITH_JAR([aterm-java],[ATERM],[aterm.jar],[aterm-1.6.jar])
 
 ### OUTPUT #############################
 AC_CONFIG_FILES([
