@@ -5,6 +5,8 @@ AM_INIT_AUTOMAKE
 # set the prefix immediately to the default prefix
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 
+m4_pattern_forbid([^XT_])
+
 XT_SETUP
 XT_SVN_REVISION
 # comment to make this a stable release
