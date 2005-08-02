@@ -594,10 +594,8 @@ strategies
     if <eq>(n,0) then 
       !([], <id>)
     else 
-      where(
-        Hd; s => x
-        ; Tl; splitmap(s|<subt>(n,1)) => (xs, ys)
-      )
+      where(Hd; s => x)
+      ; where(Tl; splitmap(s|<subt>(n,1)) => (xs, ys))
       ; !([x | xs], ys)
     end
 
