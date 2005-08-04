@@ -1,0 +1,79 @@
+-----------------------------------------------------------------------
+StrategoXT 0.16 - under construction
+-----------------------------------------------------------------------
+
+The main goal of this release is to stabilize the refactoring of the
+internal representation of the Stratego Compiler to the Stratego Core
+format. In addition, a large number of outstanding issues are
+addressed.
+
+We have introduced a new versioning scheme for unstable
+releases. Intermediate versions on the way to a new major release get
+an M n suffix indicating that the release is the n-th milestone
+towards the major release.
+
+
+-----------------------------------------------------------------------
+0.16 M 1 (bugs in 0.15)
+-----------------------------------------------------------------------
+
+Bug
+
+[STR-85]  - Sloppy variable-scope in let-strategies
+[STR-301] - Check implementation of quoted constructors
+[STR-326] - File foo not removed during configure
+[STR-327] - XT_CHECK_STRATEGOXT_UTILS should use pkgconfig.
+[STR-329] - use-def complains about unbound variables
+[STR-331] - stratego-warning: missing build operator
+[STR-335] - Typing bug with 0.15 strc
+[STR-338] - strc prints "SSL_printnl: argument not a list" to stderr for unclear reasons.
+[STR-343] - Linking problem for identity Stratego program at Mac OS X
+[STR-344] - Stratego libraries should declare interlibrary dependencies
+[STR-382] - rm-annotations does not remove annotations
+
+New Feature
+
+[STR-320] - Option for preferring .str files over .rtree files
+[STR-345] - stratego runtime libraries must be self-contained
+[STR-346] - Calling strategies by their name
+[STR-351] - checksum
+[STR-361] - autoxt: introduce support for pkg_STRCFLAGS variables
+[STR-371] - --statistics option
+[STR-375] - Support dynamic linking on Cygwin
+[STR-383] - standalone strc: don't use a search path for libraries
+
+Task
+
+[STR-243] - Restructure the native C code of the SSL
+[STR-292] - Check native code of strateg-lib for comparison to ATempty
+[STR-306] - Adapt pretty-printer to Stratego-Sugar syntax
+[STR-315] - Merge improvements to strc with strc-core
+[STR-376] - Replace prims for annotation manipulation by annotation match and build operations
+[STR-377] - Merge stratego-runtime and stratego-runtime-choice
+[STR-378] - strc --help: svn revision is 0 is tarball and buildfarm.
+[STR-379] - Fix compilation issues on Fedor Core 3 in data2xml-doc
+[STR-380] - Remove code from srts that is defined only for bootstrap reasons.
+
+Improvement
+
+[STR-328] - strc --version should provide SVN revision number
+[STR-332] - strc: --keep only keeps intermediate file if format checker fails
+[STR-347] - Configuration: support combined explicit and implicit configuration
+[STR-350] - Don't install the internal autoxt macros
+[STR-352] - Rewrite tool-doc to desugaring instead of overlays
+[STR-370] - Introduce STRCFLAGS. SCFLAGS is obsolete but supported.
+[STR-374] - Logging should not always print the current term
+[STR-384] - stratego-lib testsuite should use libraries in prefix.
+[STR-390] - Support make check on Cygwin
+[STR-391] - Support make check on Darwin
+
+
+-----------------------------------------------------------------------
+0.16 M 2 (Dynamic rules inspected)
+-----------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+0.16 M 3 (Stratego optimizer)
+-----------------------------------------------------------------------
