@@ -74,7 +74,7 @@ strategies
    * if it did not yet exist.
    */
 
-  xtc-compute-in-dir(s | dir) = 
+  xtc-compute-in-dir(s1, s2| dir) = 
     try(FILE(abspath))
     ; where(
         getcwd => cwd
@@ -89,14 +89,40 @@ strategies
 	; debug(!"Working directory is now: ")
         ; chdir
       )
-    ; restore-always(s; copy-to-dir(|cwd), where(<chdir> cwd))
+    ; restore-always(
+        s1; dbg(|"copying"); copy-to-dir(|cwd); dbg(|"copied"); s2
+        , dbg(|"xtc-compute-in-dir: failed"); where(<chdir> cwd); s2)
 
   /**
    * Execute strategy s in a new temporary directory.
    */
 
   xtc-compute-in-tempdir(s) =
-    xtc-compute-in-dir(s | <new-temp-dir>)
+    where(new-temp-dir => dir)
+    ; xtc-compute-in-dir(s, rmdir-ifnotkeep(|dir) | dir)
+
+  rmdir-ifnotkeep(|dir) =
+    if <get-config> "--keep"; <gt>(<id>, 0) then id else rmdir-rec(|dir) end
+
+  rmdir-rec(|dir) = 
+    where(
+      <expand-dir-tree> dir
+      ; if Dir(id,id) then
+        dbg(|"dir-tree: ")
+      ; rec rm({dbg(|"removing: "); 
+          switch id 
+            case ?FILE(file) : 
+                 <remove-file>file
+            case ?Dir(dir, files) : 
+		 <map(rm)> files
+		 ; <dbg(|"removing: "); rmdir> dir
+            case id : 
+                 err(|"not a file or directory")
+            end
+        })
+      ; dbg(|"removed: ")
+      end
+    )
 
   /**
    * copy-to-dir(|newdir) copies all files in the argument directory
