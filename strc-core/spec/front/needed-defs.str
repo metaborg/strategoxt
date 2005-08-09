@@ -19,8 +19,13 @@ strategies
    * Obtaining needed definitions
    */
   needed-defs = 
-    !([("main", (0,0))], <sort-defs; check-ext-overload>, [])
-    ; extract-needed-defs
+    !( [ ("main", (0,0))
+       , ("DYNAMIC-CALLS", (0,0))
+       ]
+    , <sort-defs; check-ext-overload>
+    , []
+    )
+  ; extract-needed-defs
 
   extract-needed-defs =
     graph-nodes-undef-roots-chgr(
