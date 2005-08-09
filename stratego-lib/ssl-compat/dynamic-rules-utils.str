@@ -8,15 +8,11 @@ strategies
    */
 
   new-dynamic-rules(|Rs, scope, dep) = 
-    where(<map(dr-new(|scope, dep))> Rs)
-
-  dr-new(|scope, dep) = fail
+    where(<map({r: ?r; call(<conc-strings>("new-", r)||scope, dep)})> Rs)
 
   /**
    * Kill all dynamic rules dependent on the subject term.
    */
 
   undefine-dynamic-rules(|Rs, dep) = 
-    where(<map(dr-undefine(|dep))> Rs)
-
-  dr-undefine(|dep) = fail
+    where(<map({r: ?r; call(<conc-strings>("undefine-", r)||dep)})> Rs)
