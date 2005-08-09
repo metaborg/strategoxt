@@ -412,7 +412,16 @@ strategies // COMPILER COMPONENTS
 
 // BACK-END
 
-  ac2abox 	= comp(|"ast2abox", ["-p", <xtc-find> "C-pretty.pp"])
+  ac2abox = 
+    where(
+      if <get-config>"--indent-c" then
+        !"C-pretty.pp.af"
+      else
+        !"C.pp.af"
+      end => pp-table 
+    )
+  ; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
+    
   abox2text 	= comp-out(|"abox2text")
   s2c 		= comp(|"s2c",  
 	 		<concat>[

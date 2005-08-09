@@ -166,6 +166,10 @@ strategies
        where(<set-config>("--asfix",())); !(),
        !"--asfix            Concrete syntax parts are not imploded")
 
+  + Option("--indent-c",    
+	where(<set-config> ("--indent-c",())); !(),         
+	!"--indent-c        Use this flag if you want the generated C code to use indentation.")
+
 
   set-opt-level = 
     string-to-int
