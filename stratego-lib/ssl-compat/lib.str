@@ -5,6 +5,7 @@ module lib
 imports 
  
 	lang/dynamic-rules
+        dynamic-rules-utils
 
  // sequential control 
 
