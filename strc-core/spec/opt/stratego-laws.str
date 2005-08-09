@@ -45,7 +45,11 @@ strategies
     downup(repeat(Simplify))
 
   simplify = 
-    innermost(Optimize)
+    bottomup(
+      repeat( AssociateR ; simplify <+ Optimize )
+    )
+    
+//    innermost(Optimize)
 
   simplify-widen = // note same as simplify
     simplify
