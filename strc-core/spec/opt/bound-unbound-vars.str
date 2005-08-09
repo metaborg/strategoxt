@@ -130,7 +130,15 @@ strategies
     ; fork-MarkVar(id, CallT(id, id, map(mark-build-vars)); CallT(id, mark-buv, id))
     //; debug(!"callt b: ")
     //; dr-print-rule-set(|"MarkVar")
-  
+
+  mark-call =
+    CallDynamic(id,id,id)
+    //; debug(!"callt a: ")
+    //; dr-print-rule-set(|"MarkVar")
+    ; fork-MarkVar(id, CallDynamic(mark-build-vars, id, map(mark-build-vars)); CallDynamic(id, mark-buv, id))
+    //; debug(!"callt b: ")
+    //; dr-print-rule-set(|"MarkVar")
+
   mark-prim =
     PrimT(id,id,id)
     ; fork-MarkVar(id, PrimT(id, id, map(mark-build-vars)); PrimT(id, mark-buv, id))

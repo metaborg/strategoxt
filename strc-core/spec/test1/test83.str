@@ -1,0 +1,13 @@
+module test83
+imports 
+  list-cons
+  term/integer
+strategies
+
+  main = 
+    !"inc" => f     ; <call(f||)>1 => 2 
+  ; !"apply-it-now" ; call(<id>|inc|2) => 3
+  
+  DYNAMIC-CALLS = inc ; apply-it-now(id|"")
+
+  apply-it-now(s|t) = <s>t
