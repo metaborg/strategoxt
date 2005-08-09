@@ -8,6 +8,7 @@ strategies
   ; test-wow
   ; test-failbranch
   ; test-nested
+  ; test-switch-in-let
   )
 
   test-woow =
@@ -71,6 +72,14 @@ strategies
       "three",
       "otherwise case")
 
+  test-switch-in-let =
+    apply-test(
+      switch-in-let
+    | "switch-in-let"
+    , [1,2]
+    , [2,2]
+    )
+
   switch-woow =
     ?x
   ; !100
@@ -108,4 +117,12 @@ strategies
         end          : !"nested case condition"
       case is-int : <add> (<id>, 1) <+ !-1
       otherwise : !"otherwise case"
+    end
+
+  switch-in-let =
+    let asd = switch id 
+                case 1    : !2
+		otherwise : id
+              end
+    in map(asd)
     end
