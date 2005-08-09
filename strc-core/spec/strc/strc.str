@@ -32,37 +32,37 @@ strategies
     if-verbose2(dbg(|"front-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
       get-infile
-      ; pack-stratego				; fc0(|"Stratego-Sugar-Cong", "pack")
+      ; pack-stratego				; fc1(|"Stratego-Sugar-Cong", "pack")
       ; output-ast
       ; if-not-lib(add-main)
-      ; repair-types				; fc5(|"Stratego-Sugar-Cong", "fe-rep") // local
-      ; pre-desugar				; fc1(|"Stratego-Sugar-1", "fe-des1")   // local
-      ; combine-sections			; fc2(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
-      ; variables-to-constructors		; fc2(|"Stratego-Sugar-1", "fe-vtc")	// global analysis
+      ; repair-types				; fc6(|"Stratego-Sugar-Cong", "fe-rep") // local
+      ; pre-desugar				; fc2(|"Stratego-Sugar-1", "fe-des1")   // local
+      ; combine-sections			; fc3(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
+      ; variables-to-constructors		; fc3(|"Stratego-Sugar-1", "fe-vtc")	// global analysis
 
-      ; raise-annotations			; fc1(|"Stratego-Sugar-2", "fe-ra1")    // local
-      ; define-lrules				; fc2(|"Stratego-Sugar-2", "fe-dlr")    // local
+      ; raise-annotations			; fc2(|"Stratego-Sugar-2", "fe-ra1")    // local
+      ; define-lrules				; fc3(|"Stratego-Sugar-2", "fe-dlr")    // local
       ; lift-dynamic-rules								// semi-local
       ; stratego-desugar								// local
-      ; raise-annotations			; fc1(|"Stratego-Sugar-3", "fe-ra2")	// local
+      ; raise-annotations			; fc2(|"Stratego-Sugar-3", "fe-ra2")	// local
 
       ; use-def										// local analysis (earlier)
-      ; check-constructors			; fc3(|"Stratego-Sugar-3", "fe-cc")	// global analysis (earlier)
+      ; check-constructors			; fc4(|"Stratego-Sugar-3", "fe-cc")	// global analysis (earlier)
 
-      ; expand-overlays				; fc2(|"Stratego-Sugar-3", "fe-eo")     // global
-      ; rules-to-sdefs				; fc2(|"Stratego-Sugar-3", "fe-rts")    // local
-      ; desugar-list-matching			; fc1(|"Stratego-Sugar-4", "fe-dlm")    // local
-      ; desugar-default-vardec			; fc2(|"Stratego-Sugar-4", "fe-ddv")    // local
-      ; introduce-congdefs			; fc2(|"Stratego-Sugar-4", "fe-cdf")    // global
-      ; rename-vars				; fc2(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
-      ; desugar 				; fc1(|"Stratego-Sugar-5", "fe-des")    // local
+      ; expand-overlays				; fc3(|"Stratego-Sugar-3", "fe-eo")     // global
+      ; rules-to-sdefs				; fc3(|"Stratego-Sugar-3", "fe-rts")    // local
+      ; desugar-list-matching			; fc2(|"Stratego-Sugar-4", "fe-dlm")    // local
+      ; desugar-default-vardec			; fc3(|"Stratego-Sugar-4", "fe-ddv")    // local
+      ; introduce-congdefs			; fc3(|"Stratego-Sugar-4", "fe-cdf")    // global
+      ; rename-vars				; fc3(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
+      ; desugar 				; fc2(|"Stratego-Sugar-5", "fe-des")    // local
 
-      ; if-lib(extract-all, extract)		; fc2(|"Stratego-Sugar-5", "fe-extr")   // global
+      ; if-lib(extract-all, extract)		; fc3(|"Stratego-Sugar-5", "fe-extr")   // global
 
-      ; stratego-warnings			; fc4(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
-      ; rename-defs				; fc2(|"Stratego-Sugar-5", "fe-rnd")    // local
-      ; simplify1				; fc2(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
-      ; define-congruences			; fc0(|"Stratego-Core", "fe-cong")
+      ; stratego-warnings			; fc5(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
+      ; rename-defs				; fc3(|"Stratego-Sugar-5", "fe-rnd")    // local
+      ; simplify1				; fc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
+      ; define-congruences			; fc1(|"Stratego-Core", "fe-cong")
       ; output-frontend				
     )
 
@@ -160,21 +160,21 @@ strategies
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
       ; save-as1(!".can")
-      ; fc1(|"Stratego-Core", "be-can")
+      ; fc2(|"Stratego-Core", "be-can")
       ; olevel1(
           lift-definitions
       	  ; save-as1(!".opt15")
           ; simplify1
       	  ; save-as1(!".opt16")
-          ; fc1(|"Stratego-Core", "be-lift")
+          ; fc2(|"Stratego-Core", "be-lift")
         )
       ; olevel3(
 	  bound-unbound-vars
       	  ; save-as3(!".opt17")
-          ; fc1(|"Stratego-Core", "be-buv")
+          ; fc2(|"Stratego-Core", "be-buv")
 	)
       ; s2c
-      ; fc0(|"C", "be-c")
+      ; fc1(|"C", "be-c")
       ; ac2abox
       ; abox2text
       ; rename-to(get-outfile(!".c"))
@@ -217,12 +217,12 @@ strategies
 
   // format checking
 
-  fc0(|format, phase) = fc(|format, 0, phase)
   fc1(|format, phase) = fc(|format, 1, phase)
   fc2(|format, phase) = fc(|format, 2, phase)
   fc3(|format, phase) = fc(|format, 3, phase)
   fc4(|format, phase) = fc(|format, 4, phase)
   fc5(|format, phase) = fc(|format, 5, phase)
+  fc6(|format, phase) = fc(|format, 6, phase)
 
   fc(|format, n, phase) =
     if <geq>(<get-config> "--format-check", n) then

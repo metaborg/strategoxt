@@ -18,7 +18,7 @@ strategies
     <set-config> ("VERSION", <strc-version-number>)
     ; <set-config> ("--verbose", 1)
     ; <set-config> ("--keep", 0)
-    ; <set-config> ("--format-check", 0)
+    ; <set-config> ("--format-check", 1)
     ; <set-config> ("-O", 6)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
@@ -131,7 +131,7 @@ strategies
 
   + ArgOption("--format-check",
         where(<set-config>("--format-check", <string-to-int>)); !(),
-	!"--format-check n   Format check intermediate results (0 = basic checking)" )
+	!"--format-check n   Format check intermediate results (default 1 = basic checking, use 0 for no checking.)" )
 
   + Option("--prefer-str",
         where(<set-config> ("--prefer-str", "")); !(),
