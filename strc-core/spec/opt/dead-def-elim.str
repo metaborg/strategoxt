@@ -27,7 +27,10 @@ strategies
 
   dead-def-elim =
     where(map(RegisterDefinition))
-    ; where(<mark-needed-defs> "main_0_0")
+    ; where(
+        <mark-needed-defs> "main_0_0"
+      ; <mark-needed-defs> "DYNAMIC_CALLS_0_0"
+      )
     ; filter(
         SDefT(DefNeeded,id,id,id) 
         <+ ExtSDefInl(DefNeeded,id,id,id)
