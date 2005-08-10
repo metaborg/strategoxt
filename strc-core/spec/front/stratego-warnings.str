@@ -13,6 +13,7 @@
 module stratego-warnings
 imports
   liblib
+  error-reporting
   stratego-warnings-options
   Stratego-Sugar
 
@@ -151,13 +152,6 @@ strategies
           , <expected-txt>
           ]
       end => msg
-
-  pp-stratego-fragment =
-    xtc-temp-files(
-      write-to
-    ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
-    ; ?FILE(<read-text-file>)
-    )
    
   /**
    * Create warning string for lower-case constructors

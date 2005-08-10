@@ -1,5 +1,8 @@
 module check-constructors
-imports liblib Stratego-Sugar
+imports
+  liblib
+  Stratego-Sugar
+  error-reporting
 
 strategies
 
@@ -113,10 +116,13 @@ rules
        rules(
          CheckConsError : 
            Op(c, ts) -> Op(c, ts) 
-           where err(|
-		   ["error: in ", kindstr, " ", fstr, ": ", 
-		    "constructor ", c, "/", <length; int-to-string> ts,
-		    " not declared"])
+           where 
+             log(|Error(), ["in ", kindstr, " ", fstr, ": ", 
+                    "constructor ", c, "/", <length; int-to-string> ts, " not declared"])
+             ; <log-puts> "    "
+             ; <pp-stratego-fragment> Op(c, ts)
+             ; log-puts
+             ; <log-puts> "\n"
        );
        manytd(not(CheckCons /* <+ CheckTuple */); CheckConsError)
     |}
