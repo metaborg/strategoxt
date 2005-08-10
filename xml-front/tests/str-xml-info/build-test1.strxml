@@ -173,7 +173,7 @@ overlays
     Element(
         Name(Some("http://www.w3.org/1999/xhtml"),"li")
       , [ ]
-      , [ Text(<int-to-string> nr) ]
+      , [ Text(nr) ]
       )
 
   ul(items) =

@@ -90,22 +90,22 @@ strategies
     ; apply-test(!"List 3"
       , build-list3
       , !()
-      , !Document(ul([li(1), li(2), li(3)]))
+      , !Document(ul([li("1"), li("2"), li("3")]))
       )
     ; apply-test(!"List 3'"
       , build-list3'
       , !()
-      , !Document(ul([li(2), li(3), li(4)]))
+      , !Document(ul([li("2"), li("3"), li("4")]))
       )
     ; apply-test(!"List 4"
       , build-list4
       , !()
-      , !Document(ul([li(1), li(2), li(3), li(4)]))
+      , !Document(ul([li("1"), li("2"), li("3"), li("4")]))
       )
     ; apply-test(!"List 5"
       , build-list5
       , !()
-      , !Document(ul([li(1), li(2), li(3), li(2), li(3), li(4)]))
+      , !Document(ul([li("1"), li("2"), li("3"), li("2"), li("3"), li("4")]))
       )
 
 strategies
