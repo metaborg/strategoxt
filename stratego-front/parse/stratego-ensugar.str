@@ -23,6 +23,9 @@ strategies
 rules
 
   Ensugar :
+    Anno(preterm, Wld()) -> NoAnnoList(preterm)
+
+  Ensugar :
     Op("", xs) -> Tuple(xs)
 
   Ensugar :
