@@ -10,12 +10,10 @@ strategies
 
   strc = 
     command-line-options
-    ; profile'(if-verbose1(<printnl>(stderr, ["-----\ncompilation succeeded:   " | <id>])), 
-                compile)
-    ; if-verbose2(<printnl>(stderr, ["compilation succeeded (", <run-time>, " secs)"]))
+    ; log-timed(compile | "Compilation succeeded", 0)
     ; <exit> 0
-   <+ <printnl>(stderr, ["compilation failed (", <run-time>, " secs)"])
-      ; <exit> 1
+   <+ log(|Error(),["Compilation failed (", <run-time ; temp-real-to-string>, " secs)"])
+    ; <exit> 1
 
 strategies
 
@@ -29,8 +27,7 @@ strategies
     )
 
   front-end =
-    if-verbose2(dbg(|"front-end: "));
-    profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
+    log-timed(
       get-infile
       ; pack-stratego				; fc1(|"Stratego-Sugar-Cong", "pack")
       ; output-ast
@@ -64,10 +61,11 @@ strategies
       ; simplify1				; fc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
       ; define-congruences			; fc1(|"Stratego-Core", "fe-cong")
       ; output-frontend				
+    | "Front-end succeeded"
+    , 0
     )
 
   optimize =
-    if-verbose2(say(!"optimization"));
     profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
 	if-verbose3(where(<get-config> "-O"; debug(!"optimization level: ")))
 	// SIMPLIFICATION
@@ -156,8 +154,7 @@ strategies
 strategies
 
   back-end =
-    if-verbose2(say(!"back-end"));
-    profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
+    log-timed(
       canonicalize
       ; save-as1(!".can")
       ; fc2(|"Stratego-Core", "be-can")
@@ -178,15 +175,19 @@ strategies
       ; ac2abox
       ; abox2text
       ; rename-to(get-outfile(!".c"))
+    | "Back-end succeeded"
+    , 0
     )
 
 strategies // Compile generated C code
 
   c-compile =
      where(<get-config> "-c")
-  <+ profile'(if-verbose1(<printnl>(stderr, ["C compilation succeeded: " | <id>])), 
+  <+ log-timed(
        c-to-object-code 
        ; link-object-code
+     | "C compilation succeeded"
+     , 0
      )
 
   c-to-object-code :
@@ -235,8 +236,11 @@ strategies
       <concat-strings>[format, ".rtg-nf"]
       ; xtc-find => format'
     );
-    if not(xtc-transform(!"format-check", 
-                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
+    if not(log-timed( xtc-transform(!"format-check", 
+                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"])
+                | <concat-strings>["FC '",format,"'"]
+                , 2
+                ))
     then
       if !phase => "pack" then
         fatal-err(|<concat-strings>[
@@ -261,17 +265,46 @@ strategies
 
 strategies
 
+  log-timed(s|msg,level) =
+    if <geq>(<get-config> "--statistics", level) then 
+      where(times => start)
+    ; s 
+    ; where(
+        <diff-times>(<times>,start)
+      ; <concat-strings>[ <align-left>(' ', msg, 25)
+                        , " : [user/system] = ["
+                        , <self-children-user-time; ticks-to-seconds ; temp-real-to-string>
+                        , "s/"
+                        , <self-children-sys-time; ticks-to-seconds ; temp-real-to-string>
+                        , "s]"
+                        ]
+      ; log(|Info(),<id>)
+      )
+    else
+      s
+    end
+
+ /**
+  * @todo after baseline update change to real-to-string(|2) XXX
+  */
+  temp-real-to-string =
+    real-to-string
+  ; try(
+      <string-tokenize>(['.'],<id>) => [a,b]
+    ; <concat-strings>[a,".",<string-as-chars(\[c,d|_] -> [c,d] \)>b]
+    ) 
+
   // save intermediate results
 
   save-as(ext) = 
     where(
       copy-to(get-outfile(<conc-strings> (".sci", <ext>)) => file1)
-      ; say(<concat-strings> ["abstract syntax in `", file1, "'"])
+      ; log(|Info(), ["abstract syntax in '", file1, "'"] )
       ; xtc-transform(!"stratego-parenthesize", pass-verbose)
       ; xtc-transform(!"stratego2abox", pass-verbose)
       ; xtc-transform(!"abox2text", pass-verbose)
       ; copy-to(<conc-strings> (file1, ".txt") => file2)
-      ; say(<concat-strings> ["concrete syntax in `", file2, "'"])
+      ; log(|Info(), ["concrete syntax in '", file2, "'"])
     )
 
   save-as1(ext) = if-keep1(save-as(ext))
@@ -346,13 +379,13 @@ strategies
 strategies // COMPILER COMPONENTS
 
   comp-out(|f) =
-    xtc-transform(!f, pass-verbose)
+    log-timed(xtc-transform(!f, pass-verbose) | f, 1)
 
   comp(|f) =
-    xtc-transform(!f, !["-b" | <pass-verbose> ])
+    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | f, 1)
 
   comp(|f,args) =
-    xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args])
+    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | f, 1)
 
 // FRONTEND
 

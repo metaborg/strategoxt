@@ -11,7 +11,7 @@ strategies
     ; (where(<get-config> "-i")
        <+ <fatal-error> ["no main module specified"])
     ; strc-announce
-    ; if-verbose1(where(<get-config> "-i"; debug(!"compiling ")))
+    ; log(|Info(), ["Compiling '", <get-config>"-i", "'"])
 
   init-strc-config = 
   where(
@@ -19,6 +19,7 @@ strategies
     ; <set-config> ("--verbose", 1)
     ; <set-config> ("--keep", 0)
     ; <set-config> ("--format-check", 1)
+    ; <set-config> ("--statistics", 0)
     ; <set-config> ("-O", 6)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
