@@ -34,7 +34,7 @@ strategies
     ; read-repository-file
     ; log(|Vomit(),<conc-strings>("Read repository ",rep))
     ; <table-putlist(table-append)>(XTC, <id>)
-    ; log(|Vomit(),"Repository stored in table",<id>)
+    ; log(|Vomit(),"Repository stored in table")
     ; <table-put>(XTC, Imported(rep), [])
     ; log(|Vomit(),"Registered repository as imported")
 
