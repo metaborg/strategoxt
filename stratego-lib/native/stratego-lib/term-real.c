@@ -40,6 +40,17 @@ ATerm SSL_real_to_string(ATerm x)
   return((ATerm) ATmakeString(buf));
 }
 
+ATerm SSL_real_to_string_precision(ATerm x, ATerm y)
+{
+  char format[32];
+  char buf[32];
+
+  sprintf(format,"%s%d%s","%.",_get_int(y),"f");
+  sprintf(buf,format,_get_real(x));
+
+  return((ATerm) ATmakeString(buf));
+}
+
 ATerm SSL_string_to_real(ATerm x)
 { char *s, *p;
   double r;
