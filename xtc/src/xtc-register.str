@@ -11,8 +11,8 @@ strategies
       ?tool
     ; xtc-load
     ; (xtc-find-version-loc <+ xtc-find-loc)
-    ; log(|Debug(),<concat-strings> ["Found ", tool, " at ", <id>])
-   <+ log(|Error(),<concat-strings> ["No XTC registration for ", <id>, " found"])
+    ; log(|Vomit(), ["Found ", tool, " at ", <id>])
+   <+ log(|Error(), ["No XTC registration for ", <id>, " found"])
     ; fail
 
   xtc-find-silent = 

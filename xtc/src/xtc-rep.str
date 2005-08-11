@@ -60,7 +60,7 @@ strategies
     )
 
   xtc-load =
-    log(|Debug(),"Loading repository") 
+    log(|Vomit(),"Loading repository") 
   ; where(
       <table-get>(XTC, Repository)
       <+ xtc-location
@@ -70,7 +70,7 @@ strategies
   ; log(|Vomit(),"Loaded repository ")
 
   xtc-store =
-      log(|Debug(),"Saving repository")
+      log(|Vomit(),"Saving repository")
     ; <get-config> "-r"
     ; if can-write-repository then
        <WriteToBinaryFile> (<id>, <table-getlist> XTC)
