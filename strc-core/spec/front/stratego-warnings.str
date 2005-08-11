@@ -124,8 +124,8 @@ strategies
     (caller, strat, ObsoleteWarning(warning)) -> msg
     where
       <concat-strings>
-      ["warning: obsolete strategy or rule invoked from \"", caller, "\":\n  ", 
-       strat, ": \"", warning, "\"\n"] => msg
+      ["obsolete strategy or rule invoked from '", caller, "':  ", 
+       strat, ": \"", warning, "\""] => msg
 
   /**
    * Create warning string for debug warning
@@ -147,7 +147,7 @@ strategies
             \ Match(t) -> Build(t) \ <+ !Build(<id>)
 
        in <concat-strings> [
-            "warning: possibly missing build operator in strategy ", strat, "\n"
+            "possibly missing build operator in strategy ", strat, "\n"
           , <found-txt>
           , <expected-txt>
           ]
@@ -159,7 +159,7 @@ strategies
   mk-warning:
     ConstructorWarning(warning) -> msg
     where
-      <concat-strings> ["warning: lowercase constructor name found: ", warning, "\n"] => msg
+      <concat-strings> ["lowercase constructor name found: ", warning] => msg
    
   /**
    * A strategy-invokation warning is a warning related to a invokation of a
@@ -193,12 +193,9 @@ strategies
   print-warnings = 
     []
    <+
-    map(mk-warning);
+    map(mk-warning ; log(|Warning(),<id>));
     where(length => nr);
-    !(stderr, <id>);
-    print;
-    !(stderr, ["\n", nr, " warning(s)\n"]);
-    print
+    log(|Warning(),[nr, " warning(s)"])
   
   /**
    * Return a list of callers to strategy "strat-name"
