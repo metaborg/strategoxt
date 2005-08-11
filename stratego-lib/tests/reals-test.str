@@ -28,6 +28,7 @@ strategies
 
   real-to-string-test =
     apply-and-show(!"real-to-string-test", real-to-string, !12345678901234567.0)
+  ; apply-and-show(!"real-to-string-test", real-to-string(|2), !12345678901234567.0)
     //apply-and-show(!"real-to-string-test", real-to-string, !1.5e20);
     //apply-and-show(!"real-to-string-test", real-to-string, !-1.5e-20)
 
