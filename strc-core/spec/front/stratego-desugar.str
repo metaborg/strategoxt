@@ -254,24 +254,6 @@ rules
   DesugarChar : // space
     "'\\ '" -> 32
 
-// Constants
-
-//  DesugarOnce : 
-//    Int(x) -> Int(y)
-//    where <int-to-string> x => y
-
-//  DesugarOnce : 
-//    Real(x) -> Real(y)
-//    where <real-to-string> x => y
-
-//  DesugarOnce : 
-//    Int(x) -> Int(y)
-//    where <string-to-int> x => y
-
-//  DesugarOnce : 
-//    Real(x) -> Real(y)
-//    where <string-to-real> x => y
-
 // note: this should not be done in frontend if already done by pack-stratego
   DesugarOnce : 
     Str(x) -> Str(y)
