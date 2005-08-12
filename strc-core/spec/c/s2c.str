@@ -274,38 +274,28 @@ strategies
  */
 strategies 
 
-/**
- * @todo : iterative version of repeat
-
   TranslateDef :
     Def|[ repeat_1_0(a|) = s ]| ->
     |[ 
-       ATerm repeat_1_0(ATerm f(ATerm), ATerm t1)
+       ATerm repeat_1_0(ATerm F (ATerm), ATerm t)
        {
-         ATerm t2;
          while(1)
-           { 
-	    ATerm f_317 = t;
-    if((PushChoice() == 0))
-      {	
-        t = h_89(t);
-        t = j_89(t);
-        PopChoice();
-      }
-    else
-      {
-        t = f_317;
-        t = i_89(t);
-      }
-    return(t);
-  }
-
-           }
+         {
+           ATerm X = t;
+           if((PushChoice() == 0))
+             {
+               t = F(t);
+               PopChoice();
+             }
+           else
+             {
+               t = X;
+               break;
+             }
+         }
          return(t);
        }
     ]|
-*/
-
 
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| ->
@@ -342,15 +332,7 @@ strategies
 strategies
 
   translate-body =
-    // merge-SeqVar
     topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
-
-  /**
-   * @todo Necessary because the build transformation to C performs a bottomup traversal.
-   *       Remove as soon as SeqVar is a real Var and not a Var wrapper: SeqVar(Var(_))
-   */
-  merge-SeqVar =
-    topdown(try(SeqVar(?Var(<id>))))
 
   TranslateVarDec :
     VarDec(x, ConstType(_)) -> param-dec|[ ATerm ~id:x ]|
@@ -392,12 +374,6 @@ rules
   TranslateStrat :
     |[ s1; s2 ]| -> c:stm|[ { ~stm:s1 ~stm:s2 } ]|
 
-  TranslateChoice :
-    |[ s1 + s2 ]| -> |[ s1 <+ s2 ]|
-
-  TranslateLeftChoice :
-    |[ s1 <+ s2 ]| -> |[ s1 < id + s2 ]|
-
   TranslateStrat :
     |[ s1 < s2 + s3 ]| ->
     c:stm|[
@@ -408,35 +384,6 @@ rules
 	else
           { t = ~id:x; ~stm:s3 }
       }   
-    ]|
-    where new => x
-
-  /*
-  TranslateStrat :
-    |[ s1 ++ s2 ]| -> |[ s1 <++ s2 ]|
-
-  TranslateStrat :
-    |[ s1 <++ s2 ]| ->
-    |[ { ATerm x = t;
-         if(GlobalPushChoice() == 0)
-	   { ~stm:s1 }
-	 else 
-	   { t = ~id:x; ~stm:s2 }
-       }
-    ]|
-    where new => x
-  */
-
-  TranslateNot :
-    |[ not(s) ]| -> 
-    c:stm|[ 
-      {
-        ATerm ~id:x = t;
-	if(PushChoice() == 0)
-	  { ~stm:s PopChoice(); _fail(t); }
-	else
-	  { t = ~id:x; }
-      }
     ]|
     where new => x
 
@@ -458,22 +405,6 @@ rules
         ; <map(topdown(try(construct-term)))> t* => args2  
         ; <concat>[args1, args2, [Id("t")]] => args 
 	; <topdown(try(construct-term))>tp => e
-
-
-  TranslateTest :
-    Test(s) -> Where(s)
-
-  TranslateWhere :
-    Where(s) -> 
-    stm|[ 
-      {
-        ATerm ~id:x;
-        x = t;
-        ~stm:s;
-        t = x;
-      }
-    ]|
-    where new => x
 
   TranslateStrat :
     Let(defs,s) -> Compound(<conc> (decs, defs), [s])
@@ -534,19 +465,6 @@ rules
 	 ~stm: (Match(t2, Id(y))); 
        } ]|
     where new => x; new => y
-
-  /**
-   * @todo  Check the cast to a list.
-  TranslateStrat :
-    Match(SeqVar(x), y) ->
-      |[ { if(x == NULL) {
-             x = (ATerm) ATempty;
-           }
-
-           x = (ATerm) ATappend((ATermList) x, y);
-         }
-      ]|
-   */
 
   TranslateStrat =
     TranslateMatchNoAnno
@@ -695,86 +613,6 @@ rules
           ,Compound([],[s2]))
 
 /**
- * Matching automaton with case (obsolete)
- */
-rules 
-
-  TranslateStrat :
-    Assign(Var(x)) ->
-    Stat(Assign(Id(x),AssignEq,Id("t")))
-
-  TranslateStrat :
-    Assign(Var(x),t) -> 
-    Seq(Build(t),Match(Var(x)))
-    where <not(Var(id))> t
-
-  TranslateStrat :
-    Assign(Var(x),Var(y)) -> 
-    IfElse(LAnd(NotEqual(Id(x),Id("NULL")), NotEqual(Id(x),Id(y))),
-           Stat(FunCall(Id("_fail"),[Id(y)])),
-           Stat(Assign(Id(x),AssignEq,Id(y))))
-
-  TranslateStrat :
-    Continue(lab) -> 
-    Goto(Id(lab))
-
-  TranslateStrat :
-    Case(lab, x, alts, s) ->
-    Label(Id(lab), Case(x, alts, s))
-
-  TranslateStrat :
-    Case(Var(t), [], s) -> s
-
-  TranslateStrat :
-    Case(Var(t), [Alt(Str(str), xs, s1) | alts], s2) ->
-    IfElse(FunCall(Id("match_string"),[Id(t),StringLit([<escape; double-quote>str])])
-          ,Compound([],[s1])
-          ,Compound([],[Case(Var(t), alts, s2)]))
-
-  TranslateStrat :
-    Case(Var(t), [Alt(Int(i), xs, s1) | alts], s2) ->
-    IfElse(FunCall(Id("match_int"),[Id(t),IntConst(<try(int-to-string)>i)])
-          ,Compound([],[s1])
-          ,Compound([],[Case(Var(t), alts, s2)]))
-
-  TranslateStrat :
-    Case(Var(t), [Alt(Real(i), xs, s1) | alts], s2) ->
-    IfElse(FunCall(Id("match_real"),[Id(t),FloatConst(<try(real-to-string)>i)])
-          ,Compound([],[s1])
-          ,Compound([],[Case(Var(t), alts, s2)]))
-
-  TranslateStrat :
-    Case(Var(t), [Alt(fun@Fun(c, n), xs, s1) | alts], s2) ->
-    IfElse(FunCall(Id("match_cons"),[Id(t), Id(<ConstructorName> (c, n))])
-          ,Compound([], <conc>(get-args,[s1]))
-          ,Compound([],[Case(Var(t), alts, s2)]))
-    where
-      <not(?Fun("Nil", 0) + ?Fun("Cons", 2))> fun
-    ; <thread-map(\ (Var(x), i) -> 
-         (Stat(Assign(Id(x), AssignEq, ATgetArgument(Id(t),IntConst(<int-to-string>i))))
-             , <add>(i,1)) \ )> 
-      (xs,0) => (get-args,_)
-
-
-  TranslateStrat :
-    Case(Var(t), [Alt(Fun("Nil", 0), [], s1) | alts], s2) ->
-    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id(t)]), Id("AT_LIST")), 
-	        FunCall(Id("ATisEmpty"),[Id(t)]))
-          ,Compound([], s1)
-          ,Compound([],[Case(Var(t), alts, s2)]))
-
-  TranslateStrat :
-    Case(Var(t), [Alt(Fun("Cons", 2), [Var(x1),Var(x2)], s1) | alts], s2) ->
-    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id(t)]), Id("AT_LIST")), 
-                Negation(FunCall(Id("ATisEmpty"),[Id(t)])))
-          ,Compound([], [Stat(Assign(Id(x1), AssignEq, 
-				     FunCall(Id("ATgetFirst"),[CastATermList(Id(t))])))
-                        ,Stat(Assign(Id(x2), AssignEq, 
-				     CastATerm(FunCall(Id("ATgetNext"),[CastATermList(Id(t))]))))
-                        ,s1])
-          ,Compound([],[Case(Var(t), alts, s2)]))
-
-/**
  * Building
  */
 rules
@@ -816,12 +654,6 @@ rules
     where <ConstructVar> t1 => t1'
 	; <x> t2 => t2'
 
-  /**
-   * @todo  I need expression blocks. Using a call to a runtime function for now.
-   * @todo  Check the cast.
-  ConstructTerm:
-    SeqVar(x) -> c:exp |[ x == ATempty || x == NULL ? _fail(x) : SRTS_pop_seqvar(&x) ]|
-   */
 
   ConstructTerm :
     BuildDefault(t) -> t
