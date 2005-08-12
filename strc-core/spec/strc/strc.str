@@ -10,7 +10,7 @@ strategies
 
   strc = 
     command-line-options
-    ; log-timed(compile | "Compilation succeeded", 0)
+    ; log-timed(compile | "Compilation succeeded", 1)
     ; <exit> 0
    <+ log(|Error(),["Compilation failed (", <run-time ; temp-real-to-string>, " secs)"])
     ; <exit> 1
@@ -62,14 +62,13 @@ strategies
       ; define-congruences			; fc1(|"Stratego-Core", "fe-cong")
       ; output-frontend				
     | "Front-end succeeded"
-    , 0
+    , 1
     )
 
   optimize =
-    profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
-	if-verbose3(where(<get-config> "-O"; debug(!"optimization level: ")))
+    log-timed( 
 	// SIMPLIFICATION
-        ; olevel1(	
+          olevel1(	
 	    simplify1
             ; save-as1(!".opt1")
  	  )
@@ -130,6 +129,8 @@ strategies
             ; save-as1(!".opt13")
             ; save-as1(!".opt14")
           )
+    | <concat-strings>["Optimization succeeded -O ",<get-config ; int-to-string>"-O"]
+    , 1
     )
 strategies
 
@@ -176,7 +177,7 @@ strategies
       ; abox2text
       ; rename-to(get-outfile(!".c"))
     | "Back-end succeeded"
-    , 0
+    , 1 
     )
 
 strategies // Compile generated C code
@@ -187,7 +188,7 @@ strategies // Compile generated C code
        c-to-object-code 
        ; link-object-code
      | "C compilation succeeded"
-     , 0
+     , 1 
      )
 
   c-to-object-code :

@@ -19,7 +19,7 @@ strategies
     ; <set-config> ("--verbose", 1)
     ; <set-config> ("--keep", 0)
     ; <set-config> ("--format-check", 1)
-    ; <set-config> ("--statistics", 0)
+    ; <set-config> ("--statistics", 1)
     ; <set-config> ("-O", 6)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
