@@ -412,13 +412,13 @@ strategies
 strategies // COMPILER COMPONENTS
 
   comp-out(|f) =
-    log-timed(xtc-transform(!f, pass-verbose) | <comp-msg>f, 1)
+    log-timed(xtc-transform(!f, pass-verbose) | <comp-msg>f, 2)
 
   comp(|f) =
-    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | <comp-msg>f, 1)
+    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | <comp-msg>f, 2)
 
   comp(|f,args) =
-    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | <comp-msg>f, 1)
+    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | <comp-msg>f, 2)
 
   comp-msg = <concat-strings>["  ",<id>]
 
