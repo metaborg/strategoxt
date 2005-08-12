@@ -136,8 +136,7 @@ strategies
 
   export-external-defs =
     if-lib(where(
-      if-verbose2(say(!"export-external-defs"));
-      profile'(if-verbose1(<printnl>(stderr, ["export-external-defs succeeded:      " | <id>])), 
+      log-timed(
         defs-to-external-defs
 	; where(
 	    <not(eq)>(<get-config>"baseout",<get-config>"basein")
@@ -146,9 +145,13 @@ strategies
 	       ; fail
           )
         ; copy-to(get-outfile(!".rtree") => file1)
+	; log(|Info(), ["Abstract syntax in '", file1, "'"])
+
         ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
         ; copy-to(get-outfile(!".str") => file2)
-        ; say(!["abstract syntax in", file1, " concrete syntax in ", file2])
+	; log(|Info(), ["Concrete syntax in '", file2, "'"])
+      | "Export of externals succeeded"
+      , 1
       )
     ))
 
@@ -193,18 +196,40 @@ strategies // Compile generated C code
 
   c-to-object-code :
     FILE(cfile) -> FILE(ofile)
-    where if-verbose2(say(!"compiling C code"))
+    where log(|Notice(), "Compiling C code")
 	; get-outfile(!".o") => ofile
-        ; <if-verbose3(debug); call> 
+	; <call-backend>
 	   ("gcc", <concat> [<get-config> "-CI", <get-config> "-CD", ["-c", cfile,"-o", ofile]])
 
   link-object-code :
     FILE(ofile) -> FILE(target)
-    where if-verbose2(say(!"linking object code"))
+    where log(|Notice(), "Linking object code")
 	; (<get-config> "-o" <+ get-outfile(!"")) => target
-        ; <if-verbose3(debug); call> 
+	; <call-backend>
 	    (<xtc-find> "libtool", [
               "--mode=link", "gcc", ofile, "-o", target | <get-config> "-Xlinker"])
+
+strategies
+
+  call-backend =
+    ?(tool,args)
+  ; log(|Notice(),<separate-by(|" ") ; concat-strings>["Command:",tool|args])
+  ; if <geq>(<verbosity>,2) then
+      call
+    else
+      where(
+        xtc-new-file => f
+      ; open => fd
+      )
+    ; ( call(|None,Some(fd),Some(fd))
+      ; <close>fd
+     <+ <close>fd
+      ; <read-text-file>f
+      ; log(|Error(),"Command failed :")
+      ; debug
+      ; fail
+      )
+    end
 
 strategies
 
@@ -239,7 +264,7 @@ strategies
     );
     if not(log-timed( xtc-transform(!"format-check", 
                          !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"])
-                | <concat-strings>["FC '",format,"'"]
+                | <concat-strings>["  FC '",format,"'"]
                 , 2
                 ))
     then
@@ -340,8 +365,15 @@ strategies
    */
 
   add-main =
-    try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
-        ; if-not-lib(xtc-io-transform(try(AddMain(|m)))))
+    try(
+      where(
+        <get-config> "-m" => m
+      ; log(|Notice(),["Main strategy is : ",m])
+      )
+      ; if-not-lib(
+          xtc-io-transform(try(AddMain(|m)))
+        )
+      )
     ; save-as3(!".with-main")
 
   AddMain(|main) : 
@@ -365,10 +397,10 @@ strategies
   get-infile :
     FILE(file) -> FILE(file)
     where <remove-extension> file => basein
-	; if-verbose3(debug(!"basein: "))
+        ; log(|Debug(),["Basename of input file: ",basein])
         ; <set-config> ("basein",  basein)
         ; (<get-config; remove-extension> "-o" <+ !basein) => baseout
-	; if-verbose3(debug(!"baseout: "))
+	; log(|Debug(),["Basename of output file: ",baseout])
         ; <set-config> ("baseout", baseout)
 
   get-outfile(suffix) =
