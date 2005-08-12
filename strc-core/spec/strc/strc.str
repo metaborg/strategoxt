@@ -271,7 +271,7 @@ strategies
     ; s 
     ; where(
         <diff-times>(<times>,start)
-      ; <concat-strings>[ <align-left>(' ', msg, 25)
+      ; <concat-strings>[ <align-left>(' ', msg, 27)
                         , " : [user/system] = ["
                         , <self-children-user-time; ticks-to-seconds ; temp-real-to-string>
                         , "s/"
@@ -379,13 +379,15 @@ strategies
 strategies // COMPILER COMPONENTS
 
   comp-out(|f) =
-    log-timed(xtc-transform(!f, pass-verbose) | f, 1)
+    log-timed(xtc-transform(!f, pass-verbose) | <comp-msg>f, 1)
 
   comp(|f) =
-    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | f, 1)
+    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | <comp-msg>f, 1)
 
   comp(|f,args) =
-    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | f, 1)
+    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | <comp-msg>f, 1)
+
+  comp-msg = <concat-strings>["  ",<id>]
 
 // FRONTEND
 
