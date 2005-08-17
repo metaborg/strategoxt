@@ -194,7 +194,6 @@ strategies
 
   DeclareConstructor :
     OpDecl(c, t) -> c:dec|[ static Symbol ~id:csym; ]|
-    // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
     where <Arity> t => n
         ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
         ; rules(ConstructorName : (c, n) -> csym)
@@ -383,7 +382,7 @@ rules
 	  { ~stm:s1; PopChoice(); ~stm:s2 }
 	else
           { t = ~id:x; ~stm:s3 }
-      }   
+      }
     ]|
     where new => x
 

@@ -49,7 +49,6 @@ overlays
 
   CastATerm(e) = 
     |[ (ATerm) ~exp:e ]|
-    // TypeCast(TypeName(TypeSpec([],TypeId("ATerm"),[]),None),e)
 
   CastATermList(e) = 
     TypeCast(TypeName(TypeSpec([],TypeId("ATermList"),[]),None),e)
@@ -77,13 +76,68 @@ overlays
 
 rules
 
-  TranslateSpec :
+  TranslateSpec = 
+    alltd(Translate)
+    ; ComposeTargetProgram
+
+  ComposeTargetProgram =
+    where(
+      GenerateIncludes => incl
+      ; <bagof-Fragment> "ConstructorDecl" => cnstr-decls
+      ; <bagof-Fragment; concat> "ConstructorInit" => cnstr-inits
+      ; <bagof-Fragment> "FunctionSig"     => function-sigs
+      ; <bagof-Fragment> "FunctionReg"     => function-regs
+      ; <bagof-Fragment> "FunctionDef"     => function-defs
+      ; <bagof-Fragment> "ConstDecl"       => cnst-decls
+      ; <bagof-Fragment; concat; reverse> "ConstInit"       => cnst-inits
+    );
+    !|[
+	// C includes specified on command-line or by default configuration
+	~ext-def*:incl
+
+        // legacy
+	~ext-def*: <if-lib(![],
+           ![fun-def|[ void init_constructors(void){} ]|]
+	)>
+
+	// initialize variables denoting constructor symbols
+	~ext-def*:cnstr-decls
+	static void init_module_constructors (void)
+	{
+	  ~stm*:cnstr-inits
+	}
+
+	// initialize cached constant terms
+	~ext-def*:cnst-decls
+	static void init_module_constant_terms (void)
+	{
+	  ~stm*:cnst-inits
+	}
+
+	// include functions for calling the initialization functions
+	~ext-def*:
+	  <if-lib(
+	     ![PpControl("#include <srts/init-stratego-module.h>")],
+	     ![PpControl("#include <srts/init-stratego-application.h>")]
+	   )>
+	
+	// signatures of all generated functions
+	~ext-def*:function-sigs
+
+	// function definitions themselves
+	~ext-def*:function-defs
+
+        ~ext-def*:<if-lib(![], ![<register-strategies-function>function-regs])>
+
+	~ext-def*:<if-lib(![], ![<MainDef>])>
+    ]|
+
+  TranslateSpec' :
     Specification([Signature([Constructors(ops)]), Overlays(_), Strategies(defs)]) ->
     <TranslateSpec> Specification([Signature([Constructors(ops)]), Strategies(defs)])
 
-  TranslateSpec :
+  TranslateSpec' :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
-    <concatenate-lists>
     |[
 	// C includes specified on command-line or by default configuration
 	~ext-def*:incl
@@ -139,7 +193,6 @@ strategies
 
   register-strategies-function =
     !c:fun-def|[
- 	// 
 	static void register_strategies(void)
 	{
 		int initial_size = 117 ;
@@ -151,9 +204,6 @@ strategies
      ]|
 
 strategies
-
-  concatenate-lists =
-    bottomup(try(\ Conc(xs, ys) -> <conc>(xs, ys) \ ))
 
   GenerateIncludes =
     <get-config; map(!PpControl(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include"
@@ -188,13 +238,25 @@ strategies
     ]|
 
 /**
+ * Fragments
+ */
+
+strategies
+
+  fragment(s|tp) =
+    where(s; ?x; rules( Fragment :+ tp -> x ))
+
+/**
  * Signatures
  */
-strategies 
+strategies
+
+  Translate =
+    fragment(DeclareConstructor|"ConstructorDecl")
+    ; fragment(InitConstructorQ <+ InitConstructor|"ConstructorInit")
 
   DeclareConstructor :
     OpDecl(c, t) -> c:dec|[ static Symbol ~id:csym; ]|
-    // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
     where <Arity> t => n
         ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
         ; rules(ConstructorName : (c, n) -> csym)
@@ -226,6 +288,11 @@ strategies
  * Prototypes for strategy definitions
  */
 strategies 
+
+  Translate = 
+    fragment(SDefToDeclaration|"FunctionSig")
+    ; fragment(SDefToRegistration|"FunctionReg")
+    ; fragment(TranslateDef|"FunctionDef")
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
@@ -262,6 +329,7 @@ strategies
  * Registration of strategy definition 
  */
 strategies
+
   SDefToRegistration =
     ( ?Def|[ f(a1*|a2*) = s ]|
     + ?Def|[ external f(a1* | a2*) = s ]|
@@ -712,8 +780,9 @@ rules
 	    + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
         ; new => base; <conc-strings>("term_", <id>) => x
         ; rules( Cache : t -> Id(x) )
-        ; ![(base, x, e) | <CachedTerms <+ ![]>] => xs
-        ; rules( CachedTerms : _ -> xs )
+        ; !(base, x, e)
+        ; fragment(DeclareTermId|"ConstDecl")
+        ; fragment(InitTermId|"ConstInit")
 
   proper-list =
     Op("Nil", [])
@@ -721,21 +790,9 @@ rules
     + Op(id, id)
       ; not(is-ListOp)
 
-  init-cached-terms =
-    (CachedTerms <+ ![]);
-    !TranslationUnit(<conc>(<map(DeclareTermId)>, [<InitTermIds>]))
-
   DeclareTermId :
     (base, x, e) ->
     c:dec|[ static ATerm ~id:x; ]|
-    // Declaration2(TypeSpec([],TypeId("ATerm"),[]),[IdDecl([],Id(x),None)])
-
-  InitTermIds :
-    xs ->
-    FunDef(//DeclSpec([],Static,[],Void,[]),
-	   TypeSpec([],Void,[]),
-           IdDecl([],Id("init_constant_terms"),Some(ParamList([TypeSpec([],Void,[])]))),
-           Compound([],<map(InitTermId); concat; reverse> xs))
 
   InitTermId :
     (base, x, e) ->
