@@ -42,8 +42,8 @@ USA
 extern void (* SRTS_stratego_initialize)(void);
 extern ATerm SRTS_default_xtc_repository;
 
-ATerm _id(ATerm);
-//ATerm _fail(ATerm);
+ATerm _Id(ATerm);
+ATerm _Fail(ATerm);
 ATerm _all(ATerm, ATerm f(ATerm));
 ATerm _one(ATerm, ATerm f(ATerm));
 ATerm _some(ATerm, ATerm f(ATerm));

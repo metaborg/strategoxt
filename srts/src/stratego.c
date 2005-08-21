@@ -43,8 +43,12 @@ ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
     return SRTS_default_xtc_repository;
 }
 
-ATerm _id(ATerm t) {
+ATerm _Id(ATerm t) {
   return(t);
+}
+
+ATerm _Fail(ATerm t) {
+  return(NULL);
 }
 
 /**
