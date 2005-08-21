@@ -19,7 +19,8 @@ bootclean :
 	rm -f $(BOOTCLEANFILES)
 
 libxtclib.c : 
-	$(STRC)/bin/strc -c --library --verbose 2 \
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) \
+	$(top_srcdir)/../strc-core/spec/strc/strc -c --library \
         -I ../src \
         -i ./xtclib.str -o libxtclib.rtree && \
         rm libxtclib.str
