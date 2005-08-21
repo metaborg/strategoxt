@@ -21,7 +21,9 @@ include_HEADERS = \
 	util-time.h
 
 # todo: should the headers of the baseline runtime be used?
-AM_CPPFLAGS = $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+#AM_CPPFLAGS = $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+
+AM_CPPFLAGS = -I$(top_srcdir)/../srts/src $(ATERM_CFLAGS)
 
 lib_LTLIBRARIES = libstratego-lib-native.la
 

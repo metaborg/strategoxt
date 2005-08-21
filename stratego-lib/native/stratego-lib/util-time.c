@@ -1,5 +1,6 @@
 #include <srts/stratego.h>
 #include <stdlib.h>
+#include "stratego-lib-common.h"
 
 /* Time */
 
@@ -32,10 +33,6 @@ ATerm time_t2ATerm(time_t time) {
 }
 
 time_t ATerm2time_t(ATerm term) {
-  if(!ATisInt(term)) {
-     _fail(term);
-  }
-
   return ATgetInt((ATermInt) term);
 }
 
@@ -58,7 +55,8 @@ ATerm SSL_epoch2localtime(ATerm term) {
   if(!ATisInt(term)) {
      _fail(term);
   }
-
+  
+  assert_is_int(term);
   t  = ATerm2time_t(term);
   tp = localtime(&t);
   return (ATerm) struct_tm2ATerm(tp);
@@ -68,6 +66,7 @@ ATerm SSL_epoch2UTC(ATerm term) {
   struct tm *tp;
   time_t t;
 
+  assert_is_int(term);
   t  = ATerm2time_t(term);
   tp = gmtime(&t);
   return (ATerm) struct_tm2ATerm(tp);

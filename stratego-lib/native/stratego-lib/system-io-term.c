@@ -69,7 +69,7 @@ ATerm SSL_print(ATerm file, ATerm str)
   FILE *outfile;
 
   if(ATisInt(file))
-    outfile = (FILE *)AT_getInt(file);
+    outfile = (FILE *)ATgetInt((ATermInt)file);
   else
     outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
@@ -96,7 +96,7 @@ ATerm SSL_printnl(ATerm file, ATerm str)
 
   // ATfprintf(stderr, "SSL_printnl(%t, %t)\n", file, str);
   if(ATisInt(file))
-    outfile = (FILE *)AT_getInt(file);
+    outfile = (FILE *)ATgetInt((ATermInt)file);
   else
     outfile = _SSL_file_table_lookup(file);
 

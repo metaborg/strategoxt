@@ -9,7 +9,7 @@ ATerm SSL_printascii(ATerm file, ATerm str)
   // ATfprintf(stderr, "SSL_printascii(): top = %t\n", Ttop());
 
   if(ATisInt(file))
-    outfile = (FILE *)AT_getInt(file);
+    outfile = (FILE *)ATgetInt((ATermInt)file);
   else
     outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
@@ -32,7 +32,7 @@ ATerm SSL_getchar(ATerm filename)
   FILE *infile;
 
   if(ATisInt(filename))
-    infile = (FILE *)AT_getInt(filename);
+    infile = (FILE *)ATgetInt((ATermInt)filename);
   else if((infile = _SSL_file_table_lookup(filename)) == NULL)
     {
       ATfprintf(stderr, "file %t not open\n", filename);

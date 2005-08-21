@@ -15,27 +15,33 @@ ATerm SSL_is_real(ATerm t)
 
 ATerm SSL_cos(ATerm x)
 { 
+  assert_is_real(x);
   return((ATerm) ATmakeReal(cos(_get_real(x))));
 }
 
 ATerm SSL_sin(ATerm x)
 { 
+  assert_is_real(x);
   return((ATerm) ATmakeReal(sin(_get_real(x))));
 }
 
 ATerm SSL_sqrt(ATerm x)
 { 
+  assert_is_real(x);
   return((ATerm) ATmakeReal(sqrt(_get_real(x))));
 }
 
 ATerm SSL_atan2(ATerm x, ATerm y)
 { 
+  assert_is_real(x);
+  assert_is_real(y);
   return((ATerm) ATmakeReal(atan2(_get_real(x), _get_real(y))));
 }
 
 ATerm SSL_real_to_string(ATerm x)
 { 
   char buf[32];
+  assert_is_real(x);
   sprintf(buf, "%.17g", _get_real(x));
   return((ATerm) ATmakeString(buf));
 }
@@ -45,6 +51,8 @@ ATerm SSL_real_to_string_precision(ATerm x, ATerm y)
   char format[32];
   char buf[32];
 
+  assert_is_real(x);
+  assert_is_int(y);
   sprintf(format,"%s%d%s","%.",_get_int(y),"f");
   sprintf(buf,format,_get_real(x));
 

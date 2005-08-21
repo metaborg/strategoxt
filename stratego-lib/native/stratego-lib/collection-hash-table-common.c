@@ -1,4 +1,5 @@
 #include <srts/stratego.h>
+#include "stratego-lib-common.h"
 
 ATermTable SSL_table_table = NULL;
 
@@ -17,7 +18,7 @@ ATermTable hashtable_from_term(ATerm table) {
       result = (ATermTable) ATgetBlobData((ATermBlob) table);
     }
   } else if(ATisInt(table)) {
-    result = (ATermTable) AT_getInt(table);
+    result = (ATermTable) ATgetInt((ATermInt)table);
   } else {
     fprintf(stderr, "[srts | error] SRTS/table/table_from_term: not a blob or int\n");
     _fail(table);
@@ -39,8 +40,10 @@ ATerm hashtable_to_term(ATermTable table) {
  * Table primitives
  */
 ATerm SSL_hashtable_create(ATerm initial_size_term, ATerm max_load_term) {
-  int initial_size  = AT_getInt(initial_size_term);
-  int max_load      = AT_getInt(max_load_term);
+  assert_is_int(initial_size_term);
+  assert_is_int(max_load_term);
+  int initial_size  = _get_int(initial_size_term);
+  int max_load      = _get_int(max_load_term);
   ATermTable result = ATtableCreate(initial_size,max_load);
   return hashtable_to_term(result);
 }

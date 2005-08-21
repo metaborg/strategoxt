@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include "stratego-lib-common.h"
+
 ATerm SSL_get_pid(void) {
   return((ATerm)ATmakeInt(getpid()));
 }
@@ -68,7 +70,8 @@ ATerm SSL_execv(ATerm file, ATerm argv) {
 
 ATerm SSL_waitpid(ATerm pid) {
   int status;
-  waitpid(AT_getInt(pid), &status, 0);
+  assert_is_int(pid);
+  waitpid(_get_int(pid), &status, 0);
   return App3("WaitStatus",
     (ATerm)ATmakeInt(WIFEXITED(status)   ? WEXITSTATUS(status) : -1),
     (ATerm)ATmakeInt(WIFSIGNALED(status) ? WTERMSIG(status) : -1),

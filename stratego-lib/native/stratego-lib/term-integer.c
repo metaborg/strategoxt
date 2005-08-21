@@ -15,60 +15,80 @@ ATerm SSL_is_int(ATerm t)
 
 ATerm SSL_addi(ATerm x, ATerm y)
 { 
+  assert_is_int(x); 
+  assert_is_int(y);
   return((ATerm) ATmakeInt(_get_int(x) + _get_int(y)));
 }
 
 ATerm SSL_addr(ATerm x, ATerm y)
 { 
+  assert_is_real(x); 
+  assert_is_real(y);
   return((ATerm) ATmakeReal(_get_real(x) + _get_real(y)));
 }
 
 ATerm SSL_subti(ATerm x, ATerm y)
 { 
+  assert_is_int(x); 
+  assert_is_int(y);
   return((ATerm) ATmakeInt(_get_int(x) - _get_int(y)));
 }
 
 ATerm SSL_subtr(ATerm x, ATerm y)
 { 
+  assert_is_real(x); 
+  assert_is_real(y);
   return((ATerm) ATmakeReal(_get_real(x) - _get_real(y)));
 }
 
 ATerm SSL_muli(ATerm x, ATerm y)
 { 
+  assert_is_int(x); 
+  assert_is_int(y);
   return((ATerm) ATmakeInt(_get_int(x) * _get_int(y)));
 }
 
 ATerm SSL_mulr(ATerm x, ATerm y)
 { 
+  assert_is_real(x); 
+  assert_is_real(y);
   return((ATerm) ATmakeReal(_get_real(x) * _get_real(y)));
 }
 
 ATerm SSL_divi(ATerm x, ATerm y)
 { 
+  assert_is_int(x); 
+  assert_is_int(y);
   return((ATerm) ATmakeInt(_get_int(x) / _get_int(y)));
 }
 
 ATerm SSL_divr(ATerm x, ATerm y)
 { 
+  assert_is_real(x); 
+  assert_is_real(y);
   return((ATerm) ATmakeReal(_get_real(x) / _get_real(y)));
 }
 
 ATerm SSL_mod(ATerm x, ATerm y)
 { 
+  assert_is_int(x); 
+  assert_is_int(y);
   return((ATerm) ATmakeInt(_get_int(x) % _get_int(y)));
 }
 
 ATerm SSL_gti(ATerm x, ATerm y)
 { 
+  assert_is_int(x); 
+  assert_is_int(y);
   if(_get_int(x) > _get_int(y))
     return((ATerm) ATempty);
-  else
-    _fail((ATerm) ATempty);
-  return((ATerm) ATempty);
+  return NULL;
 }
 
 ATerm SSL_gtr(ATerm x, ATerm y)
 { 
+  assert_is_real(x); 
+  assert_is_real(y);
   if(_get_real(x) > _get_real(y))
     return((ATerm) ATempty);
   else
@@ -93,7 +113,9 @@ ATerm SSL_rand() {
 }
 
 ATerm SSL_srand(ATerm seed) {
-  int val = _get_int(seed);
+  int val;
+  assert_is_int(seed); 
+  val = _get_int(seed);
   srand(val);
   return (ATerm) ATempty;
 }

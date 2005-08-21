@@ -5,13 +5,19 @@ ATerm stream_to_term(FILE*) ;
 
 /* Integers */
 
+#define assert_is_int(t) if(ATgetType(t) != AT_INT) return NULL;
+
+#define assert_is_real(t) if(ATgetType(t) != AT_REAL && ATgetType(t) != AT_INT) return NULL;
+
 inline static int _get_int(ATerm t)
 {
   if(ATgetType(t) == AT_INT)
     return ATgetInt((ATermInt) t); 
   else 
-    _fail(t);
-  return(0);
+    {
+      fprintf(stderr, "*** fatal error: _get_int called with non-integer argument\n");
+      exit(1);
+    }
 }
 
 inline static double _get_real(ATerm t)

@@ -111,7 +111,8 @@ ATerm SSL_puts(ATerm str_term) {
  */
 ATerm SSL_fputc(ATerm char_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
-  int c = (char) AT_getInt(char_term);
+  assert_is_int(char_term);
+  int c = (char) _get_int(char_term);
 
   int result = fputc(c, stream);
   if(result == EOF) {
@@ -327,7 +328,8 @@ ATerm SSL_mkdtemp(ATerm template) {
  * close
  */
 ATerm SSL_close(ATerm fd) {
-  if(close(AT_getInt(fd)) != 0) 
+  assert_is_int(fd);
+  if(close(_get_int(fd)) != 0) 
     _fail(fd);
   return (ATerm)ATmakeInt(0);
 }
@@ -336,7 +338,8 @@ ATerm SSL_close(ATerm fd) {
  * dup
  */
 ATerm SSL_dup(ATerm oldfd) {
-  int fd = dup(AT_getInt(oldfd));
+  assert_is_int(oldfd);
+  int fd = dup(_get_int(oldfd));
   
   if(fd == -1) {
     _fail(oldfd);
@@ -349,7 +352,9 @@ ATerm SSL_dup(ATerm oldfd) {
  * dup2
  */
 ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
-  int fd = dup2(AT_getInt(fromfd), AT_getInt(tofd));
+  assert_is_int(fromfd);
+  assert_is_int(tofd);
+  int fd = dup2(_get_int(fromfd), _get_int(tofd));
   
   if(fd == -1) {
     _fail(fromfd);
@@ -423,7 +428,8 @@ ATerm SSL_access(ATerm path_term, ATerm perms_term) {
  * fdopen
  */
 ATerm SSL_fdopen(ATerm fd, ATerm mode) {
-  FILE* result = fdopen(AT_getInt(fd), AT_getString(mode));
+  assert_is_int(fd);
+  FILE* result = fdopen(_get_int(fd), AT_getString(mode));
 
   if(result == NULL) {
     _fail(fd);

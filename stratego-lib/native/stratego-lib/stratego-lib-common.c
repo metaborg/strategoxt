@@ -15,7 +15,7 @@ FILE* stream_from_term_transitional(ATerm stream) {
   } else if(ATmatch(stream, "stdin")) { // stdin
     result = stdin;
   } else if(ATisInt(stream)) { // file pointer
-    result = (FILE*) AT_getInt(stream);
+    result = (FILE*) ATgetInt((ATermInt)stream);
   } else { // not a stream
     _fail(stream);
   }
