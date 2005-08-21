@@ -1,6 +1,11 @@
 lib_LTLIBRARIES = libstratego-lib.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/native $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+#AM_CPPFLAGS = -I$(top_srcdir)/native $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/native \
+	-I../../srts/src \
+	$(ATERM_CFLAGS)
 
 libstratego_lib_la_SOURCES = libstrategolib.c
 libstratego_lib_la_CFLAGS  = -Wall
