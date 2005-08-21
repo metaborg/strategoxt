@@ -12,10 +12,10 @@ strategies
 rules
 
   CallIdFun :
-    Id -> CallT(SVar("_id"),[],[])
+    Id -> CallT(SVar("_Id"),[],[])
 
   CallFailFun :
-    Fail -> CallT(SVar("_fail"),[],[])
+    Fail -> CallT(SVar("_Fail"),[],[])
 
 (*
  
