@@ -98,6 +98,9 @@ exports
     InclORExp                    -> LogicalANDExp
     LogicalANDExp "&&" InclORExp -> LogicalANDExp {cons("LAnd")}
 
+  lexical restrictions
+    "&" -/- [\&]
+
   sorts LogicalORExp
   context-free syntax
     LogicalANDExp                   -> LogicalORExp
