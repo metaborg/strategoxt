@@ -46,3 +46,6 @@ rules
     If(e, Compound([],[s])) -> If(e, s)
     where <Stat(id)> s
 
+  Csimplify :
+    Goto(Id(Next)) -> Compound([],[])
+    //stm|[ goto ~id:Next; ]| -> stm|[ { } ]|

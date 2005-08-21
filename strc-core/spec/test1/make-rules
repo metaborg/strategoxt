@@ -276,7 +276,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	$(FC_CORE) -i $<
 	../c/s2c-ng -i $< -o $@  $(CINCLUDES) -b
 
-%.c.abox : %.ac
+%.c.abox : %.ac-ng
 	$(FC_C) -i $<
 	$(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
 
