@@ -294,15 +294,9 @@ strategies
     |[ 
        ATerm ~id:f(~param-dec*:args, ATerm t)
        {
-         ATfprintf(stderr, 
-	   ~exp:StringLit([<conc-strings; escape; double-quote>(f, " start\n")]));
          ~stm:stm;
-         ATfprintf(stderr, 
-	   ~exp:StringLit([<conc-strings; escape; double-quote>(f, " succeeded\n")]));
 	 return(t);
          x : 
-         ATfprintf(stderr, 
-	   ~exp:StringLit([<conc-strings; escape; double-quote>(f, " failed\n")]));
          return NULL;
        }
     ]|
@@ -318,15 +312,9 @@ strategies
     |[ 
        static ATerm ~id:f(~param-dec*:args, ATerm t)
        {
-         ATfprintf(stderr, 
-	   ~exp:StringLit([<conc-strings; escape; double-quote>(f, " start\n")]));
          ~stm:stm;
-         ATfprintf(stderr, 
-	   ~exp:StringLit([<conc-strings; escape; double-quote>(f, " succeeded\n")]));
 	 return(t);
          x : 
-         ATfprintf(stderr, 
-	   ~exp:StringLit([<conc-strings; escape; double-quote>(f, " failed\n")]));
          return NULL;
        }
     ]|
