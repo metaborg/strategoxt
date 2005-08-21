@@ -50,6 +50,7 @@ ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
   else 
     {
       ATerm hd = f(ATgetFirst(l));
+      if(hd == NULL) return NULL;
       return ATinsert(ATmap(ATgetNext(l), f), hd);
     }
 }

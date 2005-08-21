@@ -43,10 +43,12 @@ extern void (* SRTS_stratego_initialize)(void);
 extern ATerm SRTS_default_xtc_repository;
 
 ATerm _id(ATerm);
-ATerm _fail(ATerm);
+//ATerm _fail(ATerm);
 ATerm _all(ATerm, ATerm f(ATerm));
 ATerm _one(ATerm, ATerm f(ATerm));
 ATerm _some(ATerm, ATerm f(ATerm));
+
+#define _fail(x) return(NULL)
 
 #define SRTS_all(f, t)    _all(t, f)
 #define SRTS_one(f, t)    _one(t, f)
@@ -66,6 +68,7 @@ void SRTS_init_mprotect(void);
 #define match_real(t, i) \
         ((ATgetType(t) == AT_REAL) && (ATgetInt((ATermReal)t) == i))
 
-#define not_null(x) \
-        (x == NULL ? _fail(x) : x)
+//#define not_null(x) (x == NULL ? _fail(x) : x)
+
+
 #endif

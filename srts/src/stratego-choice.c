@@ -33,53 +33,55 @@
 
 /* Pointer to the start of  a dynamically allocated array of jmp_buf
    structures. */
-static jmp_buf *jmpbufs_start = 0;
-
-/* Pointer just past the end of the jmpbufs array. */
-static jmp_buf *jmpbufs_end = 0;
-
-/* The lowest free element of the jmpbufs array. */
-static jmp_buf *jmpbufs_pos = 0;
-
-void SRTSChoice_resizeJmpBufs() {
-  unsigned int n = jmpbufs_end - jmpbufs_start;
-  jmp_buf *new;
-
-  n = n == 0 ? 1 : n * 2;
-#ifdef DEBUG
-  fprintf(stderr, "srts: resizing jump buffer array to hold %d elements\n", n);
-#endif
-
-  new = realloc(jmpbufs_start, n * sizeof(jmp_buf));
-  if (!new) {
-    fprintf(stderr, "srts: cannot resize jump buffer array to hold %d elements", n);
-    abort();
-  }
-
-  jmpbufs_pos = new + (jmpbufs_pos - jmpbufs_start);
-  jmpbufs_end = new + n;
-  jmpbufs_start = new;
-}
-
-ATerm _fail(ATerm t) {
-  assert(jmpbufs_pos > jmpbufs_start);
-  longjmp(*--jmpbufs_pos, 1);
-
-  return (ATerm) ATempty;
-}
-
-jmp_buf* SRTSChoice_pushhook(void) {
-  if (jmpbufs_pos >= jmpbufs_end) {
-      SRTSChoice_resizeJmpBufs();
-  }
-
-  return jmpbufs_pos++;
-}
-
-/**
- * choice: s1 <+ s2
- *  if(PushChoice() == 0) {s1; PopChoice();} else s2
- */
-void PopChoice(void) {
-  --jmpbufs_pos;
-}
+//
+//static jmp_buf *jmpbufs_start = 0;
+//
+///* Pointer just past the end of the jmpbufs array. */
+//static jmp_buf *jmpbufs_end = 0;
+//
+///* The lowest free element of the jmpbufs array. */
+//static jmp_buf *jmpbufs_pos = 0;
+//
+//void SRTSChoice_resizeJmpBufs() {
+//  unsigned int n = jmpbufs_end - jmpbufs_start;
+//  jmp_buf *new;
+//
+//  n = n == 0 ? 1 : n * 2;
+//#ifdef DEBUG
+//  fprintf(stderr, "srts: resizing jump buffer array to hold %d elements\n", n);
+//#endif
+//
+//  new = realloc(jmpbufs_start, n * sizeof(jmp_buf));
+//  if (!new) {
+//    fprintf(stderr, "srts: cannot resize jump buffer array to hold %d elements", n);
+//    abort();
+//  }
+//
+//  jmpbufs_pos = new + (jmpbufs_pos - jmpbufs_start);
+//  jmpbufs_end = new + n;
+//  jmpbufs_start = new;
+//}
+//
+//ATerm _fail(ATerm t) {
+//  assert(jmpbufs_pos > jmpbufs_start);
+//  longjmp(*--jmpbufs_pos, 1);
+//
+//  return (ATerm) ATempty;
+//}
+//
+//jmp_buf* SRTSChoice_pushhook(void) {
+//  if (jmpbufs_pos >= jmpbufs_end) {
+//      SRTSChoice_resizeJmpBufs();
+//  }
+//
+//  return jmpbufs_pos++;
+//}
+//
+///**
+// * choice: s1 <+ s2
+// *  if(PushChoice() == 0) {s1; PopChoice();} else s2
+// */
+//void PopChoice(void) {
+//  --jmpbufs_pos;
+//}
+//

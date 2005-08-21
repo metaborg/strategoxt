@@ -34,14 +34,12 @@ USA
 
 #define t_is_string(t) (t_is_appl(t) && ATisQuoted(ATgetSymbol(t)))
 #define AT_isString(t) (t_is_appl(t) && ATisQuoted(ATgetSymbol(t)))
+#define AT_getString(t) ((const char*) ATgetName(ATgetSymbol(t)))
 
 #define ATisReal(t) (ATgetType(t) == AT_REAL)
 #define ATisInt(t)  (ATgetType(t) == AT_INT)
 #define ATisBlob(t) (ATgetType(t) == AT_BLOB)
 #define ATisList(t) (ATgetType(t) == AT_LIST)
-
-#define AT_getInt(t)    (ATisInt(t) ? (((ATermInt)t)->value) : (int)_fail(t))
-#define AT_getString(t) (AT_isString(t) ? ((const char*) ATgetName(ATgetSymbol(t))) : (char*)_fail(t))
 
 #define MakeInt(n) ((ATerm)ATmakeInt(n))
 

@@ -37,13 +37,10 @@ ATerm SRTS_default_xtc_repository = NULL;
  * For legacy reasons, this is an external function.
  */
 ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
-  if(SRTS_default_xtc_repository == NULL) {
-    _fail(t);
+  if(SRTS_default_xtc_repository == NULL)
     return NULL;
-  }
-  else {
+  else 
     return SRTS_default_xtc_repository;
-  }
 }
 
 ATerm _id(ATerm t) {
@@ -66,6 +63,8 @@ ATerm _all(ATerm t, ATerm f(ATerm)) {
           {
             original = ATgetArgument(t, i);
             new = f(original);
+	    if(new == NULL) 
+	      return NULL;
             kids[i] = new;
             if(original != new) changed++;
           }
@@ -93,65 +92,59 @@ ATerm _one(ATerm t, ATerm f(ATerm))
   switch(ATgetType(t)) {
   case AT_APPL :
     {
-      Symbol c = ATgetSymbol((ATermAppl) t);
-      int i, arity = ATgetArity(c);
+      int i, arity = ATgetArity(ATgetSymbol((ATermAppl) t)), transformed = 0;
       for(i = 0; i < arity; i++)
 	{
-	  ATerm t_bak = t, original, new;
-	  int i_bak = i;
-	  if (PushChoice() == 0)
-	    {
-	      original = ATgetArgument(t, i);
-	      new = f(original);
-	      if(new != original)
-		t = (ATerm)ATsetArgument((ATermAppl) t, new, i);
-	      PopChoice();
-	      //ATfprintf(stderr, "_one: %t\n", t);
-	      return(t);
-	    }
-          i = i_bak;
-          t = t_bak;
+	  ATerm original, new;
+	  original = ATgetArgument(t, i);
+	  new = f(original);
+	  if(new == NULL) 
+	    continue;
+	  transformed++;
+	  if(new != original)
+	    t = (ATerm)ATsetArgument((ATermAppl) t, new, i);
+	  break;
 	}
-      _fail(t);
+      if(!transformed)
+	return NULL;
     }
     break;
   case AT_LIST :
     {
-      ATermList prefix = ATempty, suffix = (ATermList) t;
-      ATerm el;
+      ATermList prefix = ATempty;
+      ATermList suffix = (ATermList) t;
+      int transformed = 0;
       while(!ATisEmpty(suffix))
 	{
-	  ATerm el_bak;
-	  el = ATgetFirst(suffix);
+	  ATerm original = ATgetFirst(suffix);
+	  ATerm new = f(original);
 	  suffix = ATgetNext(suffix);
-	  el_bak = el;
-	  if(PushChoice() == 0)
+	  if(new == NULL) 
 	    {
-	      el = f(el);
-	      PopChoice();
-	      if(el == el_bak)
-		suffix = (ATermList) t;
-	      else
-		{
-		  suffix = ATinsert(suffix, el);
-		  while(!ATisEmpty(prefix)) {
-		    suffix = ATinsert(suffix, ATgetFirst(prefix));
-		    prefix = ATgetNext(prefix);
-		  }
-		}
-	      // ATfprintf(stderr, "_one: %t\n", suffix);
-	      return (ATerm) suffix;
+	      prefix = ATinsert(prefix, original);
+	      continue;
 	    }
-	  else 
+	  transformed++;
+	  if(new == original)
+	    suffix = (ATermList) t;
+	  else
 	    {
-	      prefix = ATinsert(prefix, el_bak);
+	      suffix = ATinsert(suffix, new);
+	      while(!ATisEmpty(prefix)) {
+		suffix = ATinsert(suffix, ATgetFirst(prefix));
+		prefix = ATgetNext(prefix);
+	      }
 	    }
+	  // ATfprintf(stderr, "_one: %t\n", suffix);
+	  t = (ATerm) suffix;
+	  break;
 	}
-      _fail(t);
+      if(!transformed)
+	return NULL;
     }
     break;
   default:
-    _fail(t);
+    return NULL;
   }
   if(annos == NULL)
     return t;
@@ -166,26 +159,26 @@ static ATermList _map_some(ATermList ts, ATerm f(ATerm), volatile int transforme
       if(transformed > 0)
 	return ts;
       else 
-	_fail((ATerm)ts);
+	return NULL;
     }
   else 
     {
       ATerm t = ATgetFirst(ts), t_bak = t;
-      if (PushChoice() == 0)
-	{
-	  t = f(t);
-	  PopChoice();
-	  transformed++;
-	}
+      t = f(t);
+      if(t != NULL)
+	transformed++;
+      else
+	t = t_bak;
+      ts = _map_some(ATgetNext(ts), f, transformed);
+      if(ts == NULL)
+	return NULL;
       else
 	{
-	  t = t_bak;
+	  ts = ATinsert(ts, t);
+	  return ts;
 	}
-      ts = _map_some(ATgetNext(ts), f, transformed++);
-      ts = ATinsert(ts, t);
-      return ts;
     }
-  return ts;
+  return NULL;
 }
        
 ATerm _some(ATerm t, ATerm f(ATerm)) 
@@ -204,23 +197,17 @@ ATerm _some(ATerm t, ATerm f(ATerm))
       //ATfprintf(stderr, "_some(%t) : AT_APPL\n", t);
       for(i = 0; i < arity; i++)
 	{
-	  int transformed_bak = transformed;
-	  if (PushChoice() == 0)
-	    {
-	      kids[i] = f(ATgetArgument(t, i));
-	      PopChoice();
-	      transformed++;
-	    }
+	  ATerm t_arg = ATgetArgument(t, i);
+	  kids[i] = f(t_arg);
+	  if(kids[i] != NULL)
+	    transformed++;
 	  else
-	    {
-	      transformed = transformed_bak;
-	      kids[i] = ATgetArgument(t, i);
-	    }
+	    kids[i] = t_arg;
 	}
       if(transformed > 0)
 	t = (ATerm) ATmakeApplArray(c, kids);
       else
-	_fail(t);
+	return NULL;
     }
   break;
   case AT_LIST :
@@ -229,7 +216,7 @@ ATerm _some(ATerm t, ATerm f(ATerm))
     }
     break;
   default :
-    _fail(t);
+    return NULL;
   }
   if(annos == NULL)
     return t;
@@ -241,9 +228,8 @@ ATermList CheckATermList(ATerm t)
 {
   if(ATgetType(t) != AT_LIST) {
     ATfprintf(stderr, "Warning: trying to build list with illegal tail: %t\n", t);
-    _fail(t);
+    return NULL;
   }
-
   return (ATermList) t;
 }
 
