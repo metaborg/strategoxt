@@ -695,14 +695,22 @@ rules
     )
 
   ConstructTerm :
-    Int(i) -> c:exp|[ (ATerm)ATmakeInt(~exp:IntConst(<try(int-to-string)> i)) ]|
+    Int(i) ->
+    exp|[ 
+      (ATerm)ATmakeInt(~exp:IntConst(<try(int-to-string)> i)) 
+    ]|
 
   ConstructTerm :
-    Real(x) -> c:exp|[ (ATerm)ATmakeReal(~exp:FloatConst(<try(real-to-string)> x)) ]|
+    Real(x) -> 
+    exp|[ 
+      (ATerm)ATmakeReal(~exp:FloatConst(<try(real-to-string)> x)) 
+    ]|
 
   ConstructTerm :
     Str(x) -> 
-    c:exp|[ (ATerm)ATmakeAppl(ATmakeSymbol(~exp:StringLit([<escape; double-quote>x]), 0, ATtrue)) ]|
+    exp|[ 
+       (ATerm)ATmakeAppl(ATmakeSymbol(~exp:StringLit([<escape; double-quote>x]), 0, ATtrue)) 
+    ]|
 
   ConstructVar :
     Var(x){"bound"} -> c:exp|[ ~id:x ]| 
