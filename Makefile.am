@@ -36,7 +36,7 @@ install-xtc:
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-lib.la -l $(prefix)/lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.la -l $(prefix)/lib -V $(VERSION)
 
-all-local: 
+all-local: $(XTC_REPS)
 	mkdir -p `dirname $(BUILD_REPOSITORY)`
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
@@ -52,11 +52,11 @@ all-local:
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t SRTS-include -l `pwd`/srts/src -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l foo -V X
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/asfix-tools/XTC
-	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/gpp/XTC             
-	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/stratego-lib/XTC      
+	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/gpp/XTC
+	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/stratego-lib/XTC
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/xtc/XTC
-	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/aterm-front/XTC      
-	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/sdf-front/XTC       
+	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/aterm-front/XTC
+	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/sdf-front/XTC
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/stratego-regular/XTC
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/concrete-syntax/XTC  
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/sdf-tools/XTC       
@@ -64,6 +64,14 @@ all-local:
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/c-tools/XTC          
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/stratego-front/XTC  
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import `pwd`/xml-front/XTC
+
+XTC_REPS = asfix-tools/XTC c-tools/XTC stratego-front/XTC \
+	   strc-core/XTC concrete-syntax/XTC gpp/XTC	  \
+	   stratego-lib/XTC xtc/XTC stratego-regular/XTC  \
+	   sdf-front/XTC sdf-tools/XTC xml-front/XTC	  \
+
+%/XTC : 
+	echo "[]" > $@
 
 relname:
 	echo -n $(distdir) > relname

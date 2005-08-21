@@ -7,7 +7,12 @@ libstratego_xtc_la_LIBADD  = \
   ../../stratego-lib/libraries/libstratego-lib.la \
   ../../srts/src/libstratego-runtime.la $(ATERM_LIBS)
 
-AM_CPPFLAGS = $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+#AM_CPPFLAGS = $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/../stratego-lib/native \
+	-I$(top_srcdir)/../srts/src \
+	$(ATERM_CFLAGS)
 
 pkgdata_DATA = libxtclib.rtree liblib.rtree
 
@@ -19,7 +24,7 @@ bootclean :
 	rm -f $(BOOTCLEANFILES)
 
 libxtclib.c : 
-	XTC_REPOSITORY=$(BUILD_REPOSITORY) \
+	XTC_REPOSITORY=$(top_srcdir)/../XTC \
 	$(top_srcdir)/../strc-core/spec/strc/strc -c --library \
         -I ../src \
         -i ./xtclib.str -o libxtclib.rtree && \
