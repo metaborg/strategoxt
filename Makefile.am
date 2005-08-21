@@ -68,7 +68,7 @@ all-local: $(XTC_REPS)
 XTC_REPS = asfix-tools/XTC c-tools/XTC stratego-front/XTC \
 	   strc-core/XTC concrete-syntax/XTC gpp/XTC	  \
 	   stratego-lib/XTC xtc/XTC stratego-regular/XTC  \
-	   sdf-front/XTC sdf-tools/XTC xml-front/XTC	  \
+	   sdf-front/XTC sdf-tools/XTC xml-front/XTC
 
 %/XTC : 
 	echo "[]" > $@
