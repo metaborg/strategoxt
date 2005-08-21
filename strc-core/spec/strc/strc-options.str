@@ -24,8 +24,8 @@ strategies
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
-    ; <set-config> ("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
-                            "-I", <conc-strings>(<xtc-find-path> "stratego-lib", "/include"),
+    ; <set-config> ("-CI", ["-I", <xtc-find-path> "SRTS-include",
+                            "-I", <xtc-find-path> "stratego-lib-include",
                             "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-Xlinker",
         [ <xtc-find> "libstratego-lib-native.la"
