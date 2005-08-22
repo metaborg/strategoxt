@@ -296,7 +296,7 @@ strategies
        {
          ~stm:stm;
 	 return(t);
-         x : 
+         ~id:F : 
          return NULL;
        }
     ]|
@@ -304,8 +304,8 @@ strategies
 	; <map(TranslateVarDec)> a1* => args1
         ; <map(TranslateVarDec)> a2* => args2
 	; <conc>(args1, args2) => args
-	; <newname> "fail" => x
-	; <translate-strat(|Next, x)>s => stm
+	; <newname> "fail" => F
+	; <translate-strat(|Next, F)>s => stm
 
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| ->
@@ -314,7 +314,7 @@ strategies
        {
          ~stm:stm;
 	 return(t);
-         x : 
+         ~id:F : 
          return NULL;
        }
     ]|
@@ -322,12 +322,18 @@ strategies
 	; <map(TranslateVarDec)> a1* => args1
         ; <map(TranslateVarDec)> a2* => args2
 	; <conc>(args1, args2) => args
-	; <newname> "fail" => x
-	; <translate-strat(|Next, x)> s => stm
+	; <newname> "fail" => F
+	; <translate-strat(|Next, F)> s => stm
 
   is-local-function =
     explode-string
     ; [is-alpha, '_' | list(is-num)]
+
+  check-arg(|F) :
+    VarDec(x, ConstType(_)) -> 
+    stm|[
+      if(x == NULL) goto ~id:F;
+    ]|
 
 strategies
 
@@ -406,6 +412,7 @@ rules
 
   TranslateStrat(|S,F) :
     Strat|[ prim(~str:f, s* | t* ) ]| -> 
+    <check-unbound-args(|F,t*)>
     stm|[ 
       { 
         t = ~id:f(~exp*:args); 
@@ -418,6 +425,7 @@ rules
 
   TranslateStrat(|S,F) :
     Strat|[ f(s* | t* ) ]| -> 
+    <check-unbound-args(|F,t*)>
     stm|[ 
       { 
         t = f(~exp*:args); 
@@ -430,6 +438,7 @@ rules
 
   TranslateStrat(|S,F) :
     CallDynamic(tp,s*,t*) -> 
+    <check-unbound-args(|F,[tp,t*])>
     stm |[ 
       { 
         t = (SRTS_lookup_function(~exp:e))(~exp*:args); 
@@ -636,32 +645,30 @@ rules
 rules
 
   TranslateStrat(|S,F) :
-    Build(t) -> <TranslateStrat(|S,F)> (Build(t), xs)
-    where collect(?Var(<id>){t*}; where(<not(["bound"])> t* )) => xs
-
-  TranslateStrat(|S,F) :
-    (Build(t), xs) -> 
-    stm|[ 
-      if(~exp:e)
-        goto ~id:F;
-      else  
-        { 
-          t = ~exp:<construct-term> t; 
-          goto ~id:S;
-        }
-    ]|
-    where <not([])> xs
-	; foldr(!exp|[ ATfalse ]|
-	       ,!exp|[ ~id:<Fst> == NULL || ~exp:<Snd> ]|) => e
-
-  TranslateStrat(|S,F) :
-    (Build(t), []) -> 
+    Build(t) -> 
+    <check-unbound-args(|F,t)>
     stm|[
       { 
         t = ~exp:<construct-term> t; 
         goto ~id:S;
       }
     ]|
+
+  check-unbound-args(|F,t) =
+    try(CheckUnboundArgs(|F,t))
+
+  CheckUnboundArgs(|F,t) :
+    s -> 
+    stm|[ 
+      if(~exp:e)
+        goto ~id:F;
+      else  
+        ~stm:s
+    ]|
+    where <collect({?Var(<id>){t*}; where(<not(["bound"])> t* )})> t
+	; not([])
+	; foldr1(!exp|[ ~id:<Hd> == NULL ]|
+	        ,!exp|[ ~id:<Fst> == NULL || ~exp:<Snd> ]|) => e
 
 /**
  * Term construction with constant term caching
@@ -695,13 +702,13 @@ rules
   ConstructTerm :
     Int(i) -> 
     exp|[ 
-      (ATerm)ATmakeInt(~exp:IntConst(<try(int-to-string)> i)) 
+      (ATerm)ATmakeInt(~exp:IntConst(<try(int-to-string)> i))
     ]|
 
   ConstructTerm :
     Real(x) -> 
     exp|[ 
-      (ATerm)ATmakeReal(~exp:FloatConst(<try(real-to-string)> x)) 
+      (ATerm)ATmakeReal(~exp:FloatConst(<try(real-to-string)> x))
     ]|
 
   ConstructTerm :
