@@ -225,7 +225,6 @@ ATerm SSL_concat_strings(ATerm strings) {
       _fail(strings);
     }
 
-    if(!ATisString(head)) return NULL;
     result_length += strlen(AT_getString(head));
     tail = ATgetNext(tail);
   }
@@ -236,7 +235,6 @@ ATerm SSL_concat_strings(ATerm strings) {
 
   tail = (ATermList) strings;
   while(!ATisEmpty(tail)) {
-    if(!ATisString(tail)) return NULL;
     const char* str = AT_getString(ATgetFirst(tail));
     int length = strlen(str);
 

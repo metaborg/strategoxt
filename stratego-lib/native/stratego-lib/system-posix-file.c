@@ -41,8 +41,11 @@ ATerm SSL_isatty(ATerm filedes) {
  * fopen
  */
 ATerm SSL_fopen(ATerm pathname, ATerm mode) {
-  if(!ATisString(pathname)) return NULL;
-  if(!ATisString(mode)) return NULL;
+  if(!ATisString(pathname)) 
+    return NULL;
+  if(!ATisString(mode)) 
+    return NULL;
+
   FILE* result = fopen(AT_getString(pathname), AT_getString(mode));
 
   if(result == NULL) {
@@ -84,7 +87,10 @@ ATerm SSL_fflush(ATerm stream_term) {
  */
 ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
-  if(!ATisString(str_term)) return NULL;
+
+  if(!ATisString(str_term)) 
+    return NULL;
+
   const char* str = AT_getString(str_term);
 
   int result = fputs(str, stream);
@@ -99,7 +105,9 @@ ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
  * puts
  */
 ATerm SSL_puts(ATerm str_term) {
-  if(!ATisString(str_term)) return NULL;
+  if(!ATisString(str_term)) 
+    return NULL;
+
   const char* str = AT_getString(str_term);
 
   int result = puts(str);
@@ -218,8 +226,10 @@ ATerm SSL_chdir(ATerm pathname) {
 ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 {
   //int result = mkdir(AT_getString(pathname), permissions_from_term(mode));
-  if(!ATisString(pathname)) return NULL;
-  if(!ATisString(mode)) return NULL;
+
+  if(!ATisString(pathname))
+    return NULL;
+
   int result = mkdir(AT_getString(pathname), 0700);
   return (ATerm) ATmakeInt(result);
 }
