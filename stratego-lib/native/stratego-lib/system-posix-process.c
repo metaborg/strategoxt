@@ -41,6 +41,7 @@ void execv_args(ATerm argv, const char *str_args[]) {
       _fail((ATerm) ATempty);
     }
 
+    if(!ATisString(arg)) return NULL;
     str_args[i++] = AT_getString(arg);
   }
 
@@ -51,6 +52,7 @@ ATerm SSL_execvp(ATerm file, ATerm argv) {
   const char *str_args[256];
   int result;
 
+  if(!ATisString(file)) return NULL;
   str_args[0] = AT_getString(file);
   execv_args(argv, &str_args[1]);
 
@@ -64,6 +66,7 @@ ATerm SSL_execv(ATerm file, ATerm argv) {
 
   execv_args(argv, str_args);
 
+  if(!ATisString(file)) return NULL;
   result = execv(AT_getString(file), (char *const *) str_args);
   return (ATerm) ATmakeInt(result);
 }

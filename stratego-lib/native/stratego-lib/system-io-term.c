@@ -38,6 +38,7 @@ ATerm SSL_read_term_from_stream(ATerm stream_term) {
 }
 
 ATerm SSL_read_term_from_string(ATerm str_term) {
+  if(!AT_isString(str_term)) return NULL;
   const char* str = AT_getString(str_term);
   ATerm result = ATreadFromString(str);
 

@@ -41,6 +41,8 @@ ATerm SSL_isatty(ATerm filedes) {
  * fopen
  */
 ATerm SSL_fopen(ATerm pathname, ATerm mode) {
+  if(!ATisString(pathname)) return NULL;
+  if(!ATisString(mode)) return NULL;
   FILE* result = fopen(AT_getString(pathname), AT_getString(mode));
 
   if(result == NULL) {
@@ -82,6 +84,7 @@ ATerm SSL_fflush(ATerm stream_term) {
  */
 ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(!ATisString(str_term)) return NULL;
   const char* str = AT_getString(str_term);
 
   int result = fputs(str, stream);
@@ -96,6 +99,7 @@ ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
  * puts
  */
 ATerm SSL_puts(ATerm str_term) {
+  if(!ATisString(str_term)) return NULL;
   const char* str = AT_getString(str_term);
 
   int result = puts(str);
@@ -202,6 +206,7 @@ ATerm SSL_getcwd(void) {
  * chdir
  */
 ATerm SSL_chdir(ATerm pathname) {
+  if(!ATisString(pathname)) return NULL;
   const char* dir = AT_getString(pathname);
   int result = chdir(dir);
   return (ATerm) ATmakeInt(result);
@@ -213,6 +218,8 @@ ATerm SSL_chdir(ATerm pathname) {
 ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 {
   //int result = mkdir(AT_getString(pathname), permissions_from_term(mode));
+  if(!ATisString(pathname)) return NULL;
+  if(!ATisString(mode)) return NULL;
   int result = mkdir(AT_getString(pathname), 0700);
   return (ATerm) ATmakeInt(result);
 }
@@ -222,6 +229,7 @@ ATerm SSL_mkdir(ATerm pathname, ATerm mode)
  */
 ATerm SSL_rmdir(ATerm pathname)
 {
+  if(!ATisString(pathname)) return NULL;
   int result = rmdir(AT_getString(pathname));
   return (ATerm) ATmakeInt(result);
 }
@@ -232,6 +240,7 @@ ATerm SSL_rmdir(ATerm pathname)
 ATerm SSL_creat(ATerm pathname)
 {
   int fd;
+  if(!ATisString(pathname)) return NULL;
   //ATfprintf(stderr, "SSL_creat(%t)\n", pathname);
   if((fd = creat(AT_getString(pathname), S_IRWXU)) == -1)
     {
@@ -247,6 +256,7 @@ ATerm SSL_creat(ATerm pathname)
 ATerm SSL_open(ATerm pathname)
 {
   int fd;
+  if(!ATisString(pathname)) return NULL;
   //ATfprintf(stderr, "SSL_open(%t)\n", pathname);
   if((fd = open(AT_getString(pathname),O_CREAT|O_RDWR, S_IRWXU)) == -1)
     {
@@ -264,6 +274,7 @@ ATerm SSL_mkstemp(ATerm template) {
   ATerm term_result;
   int fd;
 
+  if(!ATisString(template)) return NULL;
   const char* str = AT_getString(template);
   /**
    * str is not allowed to be modified, so we copy it.
@@ -295,6 +306,7 @@ ATerm SSL_mkdtemp(ATerm template) {
   ATerm term_result;
   int fd;
 
+  if(!ATisString(template)) return NULL;
   const char* str = AT_getString(template);
   /**
    * str is not allowed to be modified, so we copy it.
@@ -414,6 +426,7 @@ int permissions_from_term(ATerm perms_term)
  * access
  */
 ATerm SSL_access(ATerm path_term, ATerm perms_term) {
+  if(!ATisString(path_term)) return NULL;
   const char* pathname  = AT_getString(path_term);
   int result = -1;
   result = access(pathname, permissions_from_term(perms_term));
@@ -429,6 +442,7 @@ ATerm SSL_access(ATerm path_term, ATerm perms_term) {
  */
 ATerm SSL_fdopen(ATerm fd, ATerm mode) {
   assert_is_int(fd);
+  if(!ATisString(mode)) return NULL;
   FILE* result = fdopen(_get_int(fd), AT_getString(mode));
 
   if(result == NULL) {
@@ -460,6 +474,7 @@ ATerm SSL_filemode(ATerm pathname)
   struct stat buffer;
   int result;
 
+  if(!ATisString(pathname)) return NULL;
   result = stat(AT_getString(pathname), &buffer);
 
   return (ATerm) App2("", (ATerm) ATmakeInt(buffer.st_mode), (ATerm) ATmakeInt(result));

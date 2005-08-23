@@ -188,9 +188,13 @@ ATerm SSL_explode_string(ATerm t)
 }
 
 ATerm SSL_strcat(ATerm str_term1, ATerm str_term2) {
-  const char* str1 = AT_getString(str_term1);
-  const char* str2 = AT_getString(str_term2);
+  const char* str1; 
+  const char* str2;
   ATerm result_term;
+  if(!AT_isString(str_term1)) return NULL;
+  if(!AT_isString(str_term2)) return NULL;
+  str1 = AT_getString(str_term1);
+  str2 = AT_getString(str_term2);
 
   char* result = (char*) malloc(strlen(str1) + strlen(str2) + 2);
   strcpy(result, str1);
@@ -221,6 +225,7 @@ ATerm SSL_concat_strings(ATerm strings) {
       _fail(strings);
     }
 
+    if(!ATisString(head)) return NULL;
     result_length += strlen(AT_getString(head));
     tail = ATgetNext(tail);
   }
@@ -231,6 +236,7 @@ ATerm SSL_concat_strings(ATerm strings) {
 
   tail = (ATermList) strings;
   while(!ATisEmpty(tail)) {
+    if(!ATisString(tail)) return NULL;
     const char* str = AT_getString(ATgetFirst(tail));
     int length = strlen(str);
 
@@ -251,6 +257,7 @@ ATerm SSL_concat_strings(ATerm strings) {
  * String operations
  */
 ATerm SSL_strlen(ATerm str_term) {
+  if(!ATisString(str_term)) return NULL;
   const char* str = AT_getString(str_term);
   return (ATerm) ATmakeInt(strlen(str));
 }
