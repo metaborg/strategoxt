@@ -51,7 +51,9 @@ ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
     {
       ATerm hd = f(ATgetFirst(l));
       if(hd == NULL) return NULL;
-      return ATinsert(ATmap(ATgetNext(l), f), hd);
+      ATerm tl = ATmap(ATgetNext(l), f);
+      if(tl == NULL) return NULL;
+      return ATinsert(tl, hd);
     }
 }
 
