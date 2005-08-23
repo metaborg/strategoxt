@@ -103,15 +103,21 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
     if(write(fdout, buf, n) != n)
       { 
         perror("SSL_copy: write error");
+	close(fdin);
+	close(fdout);
 	_fail(newname);
       }
 
   if(n < 0)
     {
       perror("SSL_copy: read error");
+      close(fdin);
+      close(fdout);
       _fail(oldname);
     }
       
+  close(fdin);
+  close(fdout);
   return newname;
 }
 
