@@ -99,8 +99,13 @@ exports
 
     "t:"Id                -> Term     {prefer}
 
-    "str"[0-9\']*         -> String {prefer}
+  variables
+    "str"[0-9\']* -> String
 
+  lexical syntax
+    "str"[0-9\']* -> Id {reject}
+
+  variables
     "s"[0-9\']*           -> Strategy {prefer}
     "ss"[0-9\']*          -> {Strategy ","}+ {prefer,obsolete}
     "s"[0-9\']*   "*"     -> {Strategy ","}+ {prefer}
