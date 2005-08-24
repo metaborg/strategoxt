@@ -649,10 +649,17 @@ rules
     <check-unbound-args(|F,t)>
     stm|[
       { 
-        t = ~exp:<construct-term> t; 
+        ~dec*:decs
+	~stm*:stms
+        t = ~exp:e;
         goto ~id:S;
       }
     ]|
+    where {| CheckList, FailureLabel
+	   : rules( FailureLabel : _ -> F )
+	   ; <construct-term> t => e
+	   ; bagof-CheckList; unzip; (id, reverse; concat) => (decs, stms)
+	   |}
 
   check-unbound-args(|F,t) =
     try(CheckUnboundArgs(|F,t))
@@ -762,12 +769,19 @@ rules
   ConstructTerm :
     PreTerm|[ Cons(t1,t2) ]| -> 
     exp|[ 
-      (ATerm)ATinsert(~exp:t2', ~exp:<construct-term> t1)
+      (ATerm)ATinsert(~exp:e, ~exp:<construct-term> t1)
     ]|
-    where
-     ( <is-ListOp; construct-term> t2
-     <+ !exp|[ CheckATermList(~exp:<construct-term> t2) ]|
-     ) => t2'
+    where <construct-term> t2
+	; if <not(is-ListOp)> t2 then check-aterm-list end => e
+
+  check-aterm-list :
+    e -> exp|[ x ]|
+    where new => x
+	; FailureLabel => F
+	; !(dec|[ ATerm ~id:x; ]|, 
+            stm*|[ ~id:x = CheckATermList(~exp:e);
+                   if(x == NULL) goto ~id:F; ]|) => stms
+	; rules( CheckList :+ _ -> stms )
 
 strategies
 
