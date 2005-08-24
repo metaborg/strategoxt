@@ -82,8 +82,6 @@ exports
     "(" Rule ")" 			  -> Strategy {cons("SRule")}
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
-    Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
-    Strategy "++>" Strategy 		  -> Strategy {cons("RGChoice"),right}
     "if" Strategy "then" Strategy "else" Strategy "end" -> Strategy {cons("CondChoice")}
     "if" Strategy "then" Strategy "end" -> Strategy {cons("IfThen")}
     "switch" Strategy ("case" Strategy ":" Strategy)* "end" -> Strategy {cons("SwitchChoiceNoOtherwise")}
@@ -108,10 +106,6 @@ exports
      Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
      Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
      Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
-
-     Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
-     Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
-     Strategy "++>" Strategy 		  -> Strategy {cons("RGChoice"),right}
      
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}

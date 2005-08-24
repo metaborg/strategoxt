@@ -226,10 +226,6 @@ rules
   stratego-to-abox : 
     Test(s) -> |[ H hs=0 [ KW["test"] KW["("] ~s KW[")"] ] ]|
 
-  stratego-to-abox : 
-    Bagof(s) -> |[ H hs=0 [ KW["bagof"] KW["("] ~s KW[")"] ] ]|
-
-
 rules
 
   stratego-to-abox =

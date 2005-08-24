@@ -50,12 +50,9 @@ exports
     %% Combinators
 
     Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
-    Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
     Strategy "<" StrategyMid 
              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     Strategy 				  -> StrategyMid
-
-    "bagof" "(" Strategy ")" 		  -> Strategy {cons("Bagof")}
 
     %% Primitives
 
@@ -75,7 +72,6 @@ exports
     }
   > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
   > {right: 
-     Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
