@@ -7,7 +7,7 @@ EXTRA_DIST 	  = Makefile.xt svn-revision
 
 ACLOCAL_AMFLAGS = -I ../config
 
-all-local: 
+all-local::
 	mkdir -p `dirname $(BUILD_REPOSITORY)`
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
@@ -23,9 +23,7 @@ all-local:
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t SRTS-include -l `pwd`/srts/src -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l foo -V X
 
-install-data-local: install-xtc
-
-install-xtc: 
+install-data-local::
 	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
