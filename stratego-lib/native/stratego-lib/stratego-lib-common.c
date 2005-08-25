@@ -29,7 +29,7 @@ FILE* stream_from_term_transitional(ATerm stream) {
  * other representations.
  */
 FILE* stream_from_term_strict(ATerm term) {
-  FILE* result;
+  FILE* result = NULL;
 
   if(ATisBlob(term)) {
     if(ATgetBlobSize((ATermBlob) term) != sizeof(FILE*)) {
@@ -53,12 +53,9 @@ FILE* stream_from_term(ATerm stream) {
   if(ATisBlob(stream)) {
     return stream_from_term_strict(stream);
   } else {
-    // ATfprintf(stderr, "** Warning -- using deprecated stream representation: %t .\n", stream);
     return stream_from_term_transitional(stream);
   }
 }
-
-
 
 /**
  * Converts a FILE* the a representation in an ATerm.

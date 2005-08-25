@@ -60,6 +60,9 @@ ATerm SSL_fopen(ATerm pathname, ATerm mode) {
  */
 ATerm SSL_fclose(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
+
   int result = fclose(stream);
 
   if(result != 0) {
@@ -74,6 +77,8 @@ ATerm SSL_fclose(ATerm stream_term) {
  */
 ATerm SSL_fflush(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
 
   if(fflush(stream) != 0) {
     _fail(stream_term);    
@@ -87,6 +92,8 @@ ATerm SSL_fflush(ATerm stream_term) {
  */
 ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
 
   if(!ATisString(str_term)) 
     return NULL;
@@ -123,6 +130,9 @@ ATerm SSL_puts(ATerm str_term) {
  */
 ATerm SSL_fputc(ATerm char_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
+
   assert_is_int(char_term);
   int c = (char) _get_int(char_term);
 
@@ -139,6 +149,8 @@ ATerm SSL_fputc(ATerm char_term, ATerm stream_term) {
  */
 ATerm SSL_fgetc(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
 
   int c = fgetc(stream);
   if(c == EOF) {
@@ -465,9 +477,15 @@ ATerm SSL_fdopen(ATerm fd, ATerm mode) {
 /**
  * fileno
  */
-ATerm SSL_fileno(ATerm term) {
-  FILE* stream = stream_from_term(term);
-  int fd = fileno(stream);
+ATerm SSL_fileno(ATerm stream_term) {
+  FILE* stream = NULL; 
+  int fd;
+
+  stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
+
+  fd = fileno(stream);
 
   if(fd == -1) {
     _fail(term);

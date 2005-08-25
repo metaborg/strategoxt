@@ -9,24 +9,36 @@
  */
 ATerm SSL_write_term_to_stream_baf(ATerm stream_term, ATerm term) {
   FILE* stream = stream_from_term(stream_term);
-	ATwriteToBinaryFile(term, stream);
+  if(stream == NULL)
+    _fail(stream_term);
+
+  ATwriteToBinaryFile(term, stream);
   return stream_term;
 }
 
 ATerm SSL_write_term_to_stream_taf(ATerm stream_term, ATerm term) {
   FILE* stream = stream_from_term(stream_term);
-	ATwriteToSharedTextFile(term, stream);
+  if(stream == NULL)
+    _fail(stream_term);
+
+  ATwriteToSharedTextFile(term, stream);
   return stream_term;
 }
 
 ATerm SSL_write_term_to_stream_text(ATerm stream_term, ATerm term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
+
   ATwriteToTextFile(term, stream);
   return stream_term;
 }
 
 ATerm SSL_read_term_from_stream(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
+  if(stream == NULL)
+    _fail(stream_term);
+
   ATerm result = ATreadFromFile(stream);
 
   if(result == NULL) {

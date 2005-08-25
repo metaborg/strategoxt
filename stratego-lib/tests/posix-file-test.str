@@ -86,34 +86,62 @@ strategies
        ; <remove-file> "test.aterm"
        ; !t
 
-  char-output-tests =
-      apply-test(!"stdout char output test -- 1",
+  file-stream-tests = id
+
+    ; apply-and-fail(!"fputc applied to a term that is not a stream"
+      , <fputc> ('a', <id>)
+      , !()
+      )
+
+    ; apply-and-fail(!"fputc applied to a term that is not a stream"
+      , <fputc> ('a', <id>)
+      , !Stream("foo")
+      )
+
+    ; apply-and-fail(!"fputs applied to a term that is not a stream"
+      , <fputs> ("a", <id>)
+      , !()
+      )
+
+    ; apply-and-fail(!"fputs applied to a term that is not a stream"
+      , <fputc> ("a", <id>)
+      , !Stream("foo")
+      )
+
+  char-output-tests = id
+
+    ; apply-test(!"stdout char output test -- 1",
         <write-to-stream> (<id>, "This is stdout (1)")
       ; <fputs> ("This is stdout (2)\n", <id>)
       ; <puts> "This is stdout (3)"
       , stdout-stream
       , stdout-stream
       )
+
     ; apply-test(!"write a text file with fputc",
         <write-text-file-c> ("text-file.tmp", <id>)
       , !"This is a test file\nIt can be removed."
       , !()
       )
+
     ; apply-test(!"read a text file with fgetc",
         read-text-file
       , !"text-file.tmp"
       , !"This is a test file\nIt can be removed."
       )
+
     ; apply-test(!"write a text file with fputs",
         <write-text-file> ("text-file.tmp", <id>)
       , !"This is a test file\nIt can be removed."
       , !()
       )
+
     ; apply-test(!"read a text file with fgetc",
         read-text-file-2
       , !"text-file.tmp"
       , !"This is a test file\nIt can be removed."
       )
+
     ; where(<remove-file> "text-file.tmp")
 
   read-text-file =
@@ -136,17 +164,17 @@ strategies
     ; where(<fclose> stream)
 
 
-    write-text-file =
-      ?(file, string)
-      ; <fopen> (file, "w")
-      ; <fputs> (string, <id>)
-      ; fclose
+  write-text-file =
+    ?(file, string)
+    ; <fopen> (file, "w")
+    ; <fputs> (string, <id>)
+    ; fclose
 
-    write-text-file-c =
-      ?(file, string)
-      ; <fopen> (file, "w") => stream
-      ; <explode-string> string
-      ; map(<fputc> (<id>, stream))
-      ; where(<fclose> stream)
-      ; !()
+  write-text-file-c =
+    ?(file, string)
+    ; <fopen> (file, "w") => stream
+    ; <explode-string> string
+    ; map(<fputc> (<id>, stream))
+    ; where(<fclose> stream)
+    ; !()
 

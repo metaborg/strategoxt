@@ -50,18 +50,27 @@ ATerm SSL_hashtable_create(ATerm initial_size_term, ATerm max_load_term) {
 
 ATerm SSL_hashtable_destroy(ATerm table_term) {
   ATermTable table = hashtable_from_term(table_term);
+  if(table == NULL)
+    _fail(table_term);
+
   ATtableDestroy(table);
   return table_term;
 }
 
 ATerm SSL_hashtable_reset(ATerm table_term) {
   ATermTable table = hashtable_from_term(table_term);
+  if(table == NULL)
+    _fail(table_term);
+
   ATtableReset(table);
   return table_term;
 }
 
 ATerm SSL_hashtable_put(ATerm table_term, ATerm key, ATerm value) {
   ATermTable table = hashtable_from_term(table_term);
+  if(table == NULL)
+    _fail(table_term);
+
   ATtablePut(table, key, value);
   return table_term;
 }
@@ -69,6 +78,8 @@ ATerm SSL_hashtable_put(ATerm table_term, ATerm key, ATerm value) {
 ATerm SSL_hashtable_get(ATerm table_term, ATerm key) {
   ATerm result = NULL;
   ATermTable table = hashtable_from_term(table_term);
+  if(table == NULL)
+    _fail(table_term);
 
   result = ATtableGet(table, key);
   if(result == NULL) {
@@ -80,12 +91,18 @@ ATerm SSL_hashtable_get(ATerm table_term, ATerm key) {
 
 ATerm SSL_hashtable_remove(ATerm table_term, ATerm key) {
   ATermTable table = hashtable_from_term(table_term);
+  if(table == NULL)
+    _fail(table_term);
+
   ATtableRemove(table, key);
   return table_term;
 }
 
 ATerm SSL_hashtable_keys(ATerm table_term) {
   ATermTable table = hashtable_from_term(table_term);
+  if(table == NULL)
+    _fail(table_term);
+
   return (ATerm) ATtableKeys(table);
 }
 
