@@ -32,8 +32,6 @@ check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  prop rename-test tail	    \
 		  thread-test traversal-test twice unification-test 	  
 
-# backtrack-test2 backtrack-test3 backtrack-test
-
 TESTS 		= $(check_PROGRAMS)
 
 

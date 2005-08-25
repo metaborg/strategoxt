@@ -20,9 +20,6 @@ strategies
     ; exp-test(|"(b * c) + d", "b * c + d")
     ; exp-test(|"(b + c) + d", "b + c + d")
 
-    ; exp-test(|"++ c ++", "++ c ++")
-    ; exp-test(|"(++ c) ++", "(++ c) ++")
-
     ; exp-test(|"a ? b : c ? d : e")
     ; exp-test(|"a ? b : (c ? d : e)", "a ? b : c ? d : e")
     ; exp-test(|"(a ? b : c) ? d : e", "(a ? b : c) ? d : e")

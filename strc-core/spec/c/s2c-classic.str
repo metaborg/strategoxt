@@ -411,22 +411,6 @@ rules
     ]|
     where new => x
 
-  /*
-  TranslateStrat :
-    |[ s1 ++ s2 ]| -> |[ s1 <++ s2 ]|
-
-  TranslateStrat :
-    |[ s1 <++ s2 ]| ->
-    |[ { ATerm x = t;
-         if(GlobalPushChoice() == 0)
-	   { ~stm:s1 }
-	 else 
-	   { t = ~id:x; ~stm:s2 }
-       }
-    ]|
-    where new => x
-  */
-
   TranslateNot :
     |[ not(s) ]| -> 
     c:stm|[ 
