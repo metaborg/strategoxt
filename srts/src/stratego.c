@@ -228,7 +228,7 @@ ATerm _some(ATerm t, ATerm f(ATerm))
     return(ATsetAnnotations(t, annos));
 }
 
-ATermList CheckATermList(ATerm t)
+ATerm CheckATermList(ATerm t)
 {
   if(ATgetType(t) != AT_LIST) {
     ATfprintf(stderr, "Warning: trying to build list with illegal tail: %t\n", t);

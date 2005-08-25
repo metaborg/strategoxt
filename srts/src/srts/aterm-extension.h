@@ -53,7 +53,7 @@ ATbool ATisThisString(ATerm t, const char *name);
 ATermList ATmap(ATermList l, ATerm (* f)(ATerm));
 ATbool AThasName(ATerm t, const char *name);
 
-ATermList CheckATermList(ATerm t);
+ATerm CheckATermList(ATerm t);
 
 ATerm App0(const char *name);
 ATerm App1(const char *name, ATerm arg1);

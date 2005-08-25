@@ -764,7 +764,7 @@ rules
     ]|
 
   ConstructTerm :
-    Op("Nil", []) -> exp|[ (ATerm) ATempty ]|
+    Op("Nil", []) -> exp|[ (ATerm)ATempty ]|
 
   ConstructTerm :
     PreTerm|[ Cons(t1,t2) ]| -> 
@@ -772,16 +772,27 @@ rules
       (ATerm)ATinsert(~exp:e, ~exp:<construct-term> t1)
     ]|
     where <construct-term> t2
-	; if <not(is-ListOp)> t2 then check-aterm-list end => e
+	; if <not(Anno(is-ListOp,id))> t2 then 
+            check-aterm-list 
+          else 
+            try(debug; UncastATerm)
+          end => e
 
   check-aterm-list :
-    e -> exp|[ x ]|
+    e -> exp|[ (ATermList)x ]|
     where new => x
 	; FailureLabel => F
 	; !(dec|[ ATerm ~id:x; ]|, 
             stm*|[ ~id:x = CheckATermList(~exp:e);
                    if(x == NULL) goto ~id:F; ]|) => stms
 	; rules( CheckList :+ _ -> stms )
+
+  CastATerm :
+    e -> exp|[ (ATerm) ~exp:e ]|
+
+  UncastATerm :
+    exp|[ (ATerm)~exp:e ]| -> e
+    where debug(!"UncastATerm: ")
 
 strategies
 
