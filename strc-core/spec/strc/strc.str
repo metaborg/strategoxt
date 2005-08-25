@@ -351,9 +351,7 @@ strategies
 
   output-frontend =
     if <get-config> "-F" then
-      copy-to(get-outfile(!".core") => file)
-      ; notice(|<concat-strings>["Core saved in file `", file, "'"])
-      ; xtc-io-exit
+      xtc-io-exit
     end
 
 strategies
