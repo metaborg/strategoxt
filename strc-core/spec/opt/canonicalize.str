@@ -60,9 +60,6 @@ rules
       <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args1 => args1'
 
   Canon :
-    Bagof(s) -> CallT(SVar("SRTS_bagof"),[s],[])
-
-  Canon :
     All(s) -> CallT(SVar("SRTS_all"),[s],[])
 
   Canon :

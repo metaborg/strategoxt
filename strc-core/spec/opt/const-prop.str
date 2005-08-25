@@ -41,7 +41,7 @@ strategies
     ; PrimT(id, map(exec-maybe(cp)), alltd(Binding; Var(id)))
 
   prop-traversal(cp) =
-    (?All(_) + ?One(_) + ?Some(_) + ?Bagof(_) )
+    (?All(_) + ?One(_) + ?Some(_))
     ; UndefCurrentTerm
     ; one(exec-maybe(cp))
 
@@ -140,9 +140,6 @@ strategies
   prop-choice(uv) =
     ?Choice(_, _)
     ; prop-abstract-choice(Choice(uv,id),Choice(id, uv))
-   <+
-    ?GChoice(_, _)
-    ; prop-abstract-choice(GChoice(uv,id),GChoice(id, uv))
    <+
     ?LChoice(_, _)
     ; prop-abstract-choice(LChoice(uv,id),LChoice(id, uv))
