@@ -393,6 +393,20 @@ has been deferred.
 
 ---------++ Stratego/XT Deployment and Build System
 
+---------++ New versions of ATerm Library and SDF Packages
+
+Stratego/XT 0.16 requires new versions of the ATerm library (2.4) and
+sdf2-bundle (2.3.2). Downloads for these packages are available from
+the Stratego/XT 0.16 release page.
+
+It is no longer necessary to configure the ATerm library with the
+option =--with-gcc=.
+
+Also, it is no longer necessary to specifiy the locations of the ATerm
+Library and sdf2-bundle to Stratego/XT. Stratego/XT will locate the
+packages using pkg-config if you do not explicitly specify locations
+for these packages.
+
 ---------++ AutoXT
 
 Makefile.xt now supports the STRCFLAGS variable. The old SCFLAGS
