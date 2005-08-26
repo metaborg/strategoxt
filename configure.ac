@@ -117,7 +117,6 @@ AC_CONFIG_FILES([
   news-archive/Makefile
   manpages/Makefile
   strategoxt.spec
-  external/sdf2-bundle.pc
   strategoxt.pc
   stratego-runtime-uninstalled.pc
   stratego-lib-uninstalled.pc

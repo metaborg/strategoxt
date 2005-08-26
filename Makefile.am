@@ -5,11 +5,11 @@ DIST_SUBDIRS =   news-archive manpages $(DIST_PKGS)
 EXTRA_DIST   = \
   README svn-revision bootstrap Makefile.xt \
   strategoxt.spec.in strategoxt.spec \
-  external/sdf2-bundle.pc.in strategoxt.pc.in \
+  strategoxt.pc.in \
   xtc-uninstalled.pc.in stratego-runtime-uninstalled.pc.in stratego-lib-uninstalled.pc.in
 
 pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA = external/sdf2-bundle.pc strategoxt.pc
+pkgconfig_DATA = strategoxt.pc
 
 relname:
 	echo -n $(distdir) > relname
