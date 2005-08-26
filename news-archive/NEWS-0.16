@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
-StrategoXT 0.16 - under construction
+Stratego/XT 0.16 - under construction
 -----------------------------------------------------------------------
 
 Stratego/XT 0.16 introduces a major refactoring of the Stratego Language, 
@@ -27,7 +27,7 @@ releases. The first was 0.15, subsequent releases are numbered 0.16M1,
 We have introduced a new versioning scheme for unstable
 releases. Intermediate versions on the way to a new major release get
 an M n suffix indicating that the release is the n-th milestone
-towards the major release.  
+towards the major release.
 
 This NEWS file presents the result of the entire operation, i.e., it
 discusses the integral set of changes since the previous major release
@@ -367,6 +367,14 @@ of more than 2 strings.
 
 ---------++ Tools
 
+---------+++ Man Pages
+
+All Stratego/XT tools now have a manpage, which are installed on the
+system of the user. The manpages are maintained in DocBook as part of
+the Stratego/XT Manual, so they are also available online.
+
+(Karl Trygve Kalleberg)
+
 ---------+++ GPP
 
 =pptable-diff= now takes the arity of constructors into account.
@@ -381,8 +389,7 @@ has been deferred.
 
 (Eelco Visser)
 
-
----------++ StrategoXT Deployment and Build System
+---------++ Stratego/XT Deployment and Build System
 
 ---------+++ Build order of stratego-front and stratego-lib
 
@@ -399,7 +406,6 @@ xtc is built before stratego-front.
 
 (Eelco Visser)
 
-
 ---------++!! Detailed List of Issues
 
 The full list of issues closed in this release is available at:
@@ -411,13 +417,13 @@ The full list of issues closed in this release is available at:
 The release page contains the source distributions, binary RPMs, and
 detailed instructions on how to install the distributions:
 
-   * http://www.stratego-language.org/Stratego/StrategoRelease015
+   * http://www.stratego-language.org/Stratego/StrategoRelease016M1
 
 ---------++!! Bugs and Known Problems
 
 See our issue tracking systems for reports about (open) bugs:
 
-   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+   * https://bugs.cs.uu.nl/browse/STR
 
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
