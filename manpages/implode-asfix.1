@@ -1,0 +1,209 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "IMPLODE\-ASFIX" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+implode\-asfix \- maps an asfix parse tree to an abstract syntax tree
+.SH "SYNOPSIS"
+.HP 14
+\fBimplode\-asfix\fR [\-\-lex] [\-\-layout] [\-\-lit] [\-\-alt] [\-\-appl] [\-\-nt] [\-\-inj] [\-\-list] [\-\-seq] [\-\-pt] [\-\-concrete] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-output\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The implode\-asfix utility maps an AsFix tree to an abstract syntax tree. The mapping performs several transformations, including:
+.TP 3
+\(bu
+remove layout
+.TP
+\(bu
+flatten lexical subtrees to strings
+.TP
+\(bu
+replace
+appl(prod(...),[...])
+applications by constructor applications, if the production is annotated with a
+cons(...)
+attribute.
+.PP
+The input tree is required to be in AsFix2 format. See the
+AsFix section
+for more information about the AsFix format.
+.SH "OPTIONS"
+.PP
+\fBImplode Options\fR
+.TP
+\fB\-\-alt\fR
+Flatten alternatives.
+.TP
+\fB\-\-appl\fR
+Replace
+\fBappl\fR
+applications by constructor applications.
+.TP
+\fB\-\-concrete\fR
+Skip concrete syntax parts of a Stratego program. Concrete syntax starts a
+\fBToTerm\fR,
+\fBToStrategy\fR
+or
+\fBToBuild\fR
+and stops at
+\fBFromTerm\fR
+or
+\fBFromApp\fR.
+.TP
+\fB\-\-inj\fR
+Remove injections from the parse tree.
+.TP
+\fB\-\-layout\fR
+Remove layout nodes from the parse tree.
+.TP
+\fB\-\-lex\fR
+Flatten lexical substrings to strings.
+.TP
+\fB\-\-list\fR
+Flatten lists.
+.TP
+\fB\-\-lit\fR
+Remove literal nodes from the parse tree.
+.TP
+\fB\-\-nt\fR
+Replace
+\fBappl\fR
+application by non\-terminal applications.
+.TP
+\fB\-\-pt\fR
+Remove the outer
+\fBpt\fR
+constructor from the parse tree
+.TP
+\fB\-\-seq\fR
+Replace sequences by tuples
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+The implosion of parse trees by implode\-asfix uses the
+\fBcons\fR
+annotation of SDF productions. For instance, the following annotation are typical for a small expression language.
+.sp
+.nf
+module Exp
+exports
+  context\-free start\-symbols Exp
+  sorts Id IntConst Exp
+  
+  lexical syntax
+    [\\ \\t\\n]  \-> LAYOUT
+    [a\-zA\-Z]+ \-> Id
+    [0\-9]+    \-> IntConst
+  
+  context\-free syntax
+    Id        \-> Exp {cons("Var")}
+    IntConst  \-> Exp {cons("Int")}
+  
+    Exp "*"  Exp \-> Exp  {left, cons("Mul")}
+    Exp "/"  Exp \-> Exp  {left, cons("Div")}
+    Exp "%"  Exp \-> Exp  {left, cons("Mod")}
+  
+    Exp "+"  Exp \-> Exp  {left, cons("Plus")}
+    Exp "\-"  Exp \-> Exp  {left, cons("Minus")}
+  
+  context\-free priorities
+    {left:
+      Exp "*"  Exp \-> Exp
+      Exp "/"  Exp \-> Exp
+      Exp "%"  Exp \-> Exp
+    } 
+  > {left:
+      Exp "+"  Exp \-> Exp
+      Exp "\-"  Exp \-> Exp
+    }
+.fi
+.PP
+Invoking
+\fBsglr\fR
+followed by
+\fBimplode\-asfix\fR
+results in an abstract syntax tree.
+.sp
+.nf
+$ echo "1 + 2 * 3" | sglr \-2 \-p Exp.def.tbl | implode\-asfix
+Plus(Int("1"),Mul(Int("2"),Int("3")))
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

@@ -1,0 +1,211 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "PARSE\-STRATEGO" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+parse\-stratego \- parses a Stratego source file
+.SH "SYNOPSIS"
+.HP 15
+\fBparse\-stratego\fR [\-I\ \fIdir\fR\ |\ \-\-Include\ \fIdir\fR] [\-\-syntax\ \fIsyn\fR] [\-\-default\-syntax\ \fIsyn\fR] [\-\-asfix] [\-\-desugaring\ \fIon|off\fR] [\-\-assimilation\ \fIon|off\fR] [] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-output\fIfile\fR] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The
+\fBparse\-stratego\fR
+utility is used to parse Stratego source files. The result of the parsing is an abstract syntax tree of the input program, output as a binary ATerm.
+.PP
+Stratego source code may include modules from other directories. Specifying the search path is done by the
+\fB\-I\fR
+option. A parse error will occur if all referenced modules cannot be found. By default the standard library is automatically included in the search path.
+.PP
+Stratego source code can be extended with embedded languages having their own concrete syntax, making Stratego a syntactically extensible language. When the source code contains a Stratego program extended in this way,
+\fBparse\-stratego\fR
+must be told which syntax to use when parsing the source code. This is the task of the
+\fB\-\-syntax\fR
+and
+\fB\-\-default\-syntax\fR
+options.
+.PP
+As a part of embedding languages in Stratego, the new language constructs can be translated into Stratego library functions and code. This is called assimilation, and is controlled by the
+\fB\-\-assimilation\fR
+switch.
+.SH "OPTIONS"
+.PP
+\fBModule and Syntax Options\fR
+.TP
+\fB\-I \fR\fB\fIdir\fR\fR, \fB\-\-Include \fR\fB\fIdir\fR\fR
+Add
+\fIdir\fR
+to the module search path.
+.TP
+\fB\-\-syntax \fR\fB\fIsyn\fR\fR
+Use syntax
+\fIsyn\fR.
+.TP
+\fB\-\-default\-syn \fR\fB\fIsyn\fR\fR
+Use syntax
+\fIsyn\fR
+as the default syntax.
+.TP
+\fB\-\-asfix\fR
+Use the AsFix format.
+.TP
+\fB\-\-desugaring \fR\fB\fIon | off\fR\fR
+Toggle desugaring on/off. Default is off
+.TP
+\fB\-\-assimilation \fR\fB\fIon | off\fR\fR
+Toggle assimilation on/off. Default is on.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Given the file
+\fImyunit.str\fR
+given below.
+.sp
+.nf
+module myunit
+imports
+  sunit
+signature
+  constructors
+    F: A \-> F
+    A: A
+      
+strategies
+      
+  main = 
+    test\-suite(!"foo",
+      apply\-test(
+        !"all\-test1a"
+      , all(id)
+      , !F(A)
+      , !F(A)
+      )
+    )
+    
+.fi
+.PP
+We can obtain the abstract syntax tree for this program as an ATerm by issuing the following command:
+.sp
+.nf
+$ parse\-stratego \-i myunit.str \-o tree.trm
+.fi
+.PP
+The result will be the following term:
+.sp
+.nf
+Module(
+  "parse\-stratego\-example"
+, [ Imports([Import("sunit")])
+  , Signature(
+      [ Constructors(
+          [ OpDecl(
+              "F"
+            , FunType([ConstType(SortNoArgs("A"))], ConstType(SortNoArgs("F")))
+            )
+          , OpDecl("A", ConstType(SortNoArgs("A")))
+          ]
+        )
+      ]
+    )
+  , Strategies(
+      [ SDefNoArgs(
+          "main"
+        , Call(
+            SVar("test\-suite")
+          , [ Build(NoAnnoList(Str("\\"foo\\"")))
+            , Call(
+                SVar("apply\-test")
+              , [ Build(NoAnnoList(Str("\\"all\-test1a\\"")))
+                , All(Id)
+                , Build(NoAnnoList(Op("F", [Var("A")])))
+                , Build(NoAnnoList(Op("F", [Var("A")])))
+                ]
+              )
+            ]
+          )
+        )
+      ]
+    )
+  ]
+)
+    
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

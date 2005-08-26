@@ -115,6 +115,7 @@ AC_MSG_RESULT([$XTC_PROG])
 AC_CONFIG_FILES([
   Makefile 
   news-archive/Makefile
+  manpages/Makefile
   strategoxt.spec
   external/sdf2-bundle.pc
   strategoxt.pc

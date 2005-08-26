@@ -1,0 +1,155 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "SGLR" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+sglr \- parses a text file and produces an parse forest conforming to a given grammar.
+.SH "SYNOPSIS"
+.HP 5
+\fBsglr\fR [\-2] [\-A] [\-b] [\-c] [\-d] [\-f[adefipr]] [\-i\ \fIfile\fR] [\-l] [\-m] [\-m] [\-o\ \fIfile\fR] [\-p\ \fIfile\fR] [\-s\ \fIsymbol\fR] [t] [\-v] [\-V]
+.SH "DESCRIPTION"
+.PP
+\fBsglr\fR
+is a scannerless, generalized LR parser. It interprets a parse table on a given textual input file. The parse table must be generated from an SDF2 grammar definition using the
+\fBsdf2table\fR
+tool. If the result of the parse is unambiguous, a parse tree is emitted. In the case of an ambiguity, a parse forest is emitted.
+.PP
+The term "scannerless" refers to the fact that the parser treats characters as tokens. There is no separate token scanner. The term "generalized" indicates that the parser finds all possible derivations for a given input string. Together, these two features allows users to construct ambiguous grammars, if they desire.
+\fBsglr\fR
+will not complain about conflicts in the parse table, but output the ambiguous result.
+.PP
+For the ambiguous cases, the user is free to construct problem\-specific disambiguation tools which must be applied to the output from
+\fBsglr\fR. This is useful for dealing with various complicated programming languages that are highly ambiguous and context\-sensitive.
+.SH "OPTIONS"
+.PP
+\fBInput/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input file is given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option,
+\fBsglr\fR
+will read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option,
+\fBsglr\fR
+will write to
+\fIstdout\fR.
+.TP
+\fB\-p \fR\fB\fIfile\fR\fR
+The parse table to use, given by the file name
+\fI\fIfile\fR\fR.
+.sp
+Note: This option is always required.
+.sp
+Refer to the tool
+\fBsdf2table\fR
+for how to create parse tables.
+.TP
+\fB\-b\fR
+Use the binary ATerm (BAF) output format. Default is yes.
+.TP
+\fB\-m\fR
+Use the AsFix2ME output format. Default is yes.
+.TP
+\fB\-t\fR
+Use the textual AsFix output format. Default is no.
+.TP
+\fB\-2\fR
+Use the AsFix2 output format. Default is no.
+.TP
+\fB\-A\fR
+Treat ambiguities as errors. Default is no.
+.TP
+\fB\-c\fR
+Toggle cycle detection. Default is on.
+.TP
+\fB\-n\fR
+Toggle parse tree creation. Default is on.
+.PP
+\fBOther Options\fR
+.TP
+\fB\-f[adeipr]\fR
+Toggle filtering, or toggle specific filter. Default is to enable all filters.
+.sp
+\fBa\fR
+\- turn on associativity filter. Default is on.
+.sp
+\fBd\fR
+\- turn on direct eagerness filter. Default is on.
+.sp
+\fBe\fR
+\- turn on eagerness filter. Default is on.
+.sp
+\fBi\fR
+\- turn on injection count. Default is on.
+.sp
+\fBp\fR
+\- turn on priority filter. Default is on.
+.sp
+\fBr\fR
+\- turn on reject filter. Default is on.
+.TP
+\fB\-s \fR\fB\fIsymbol\fR\fR
+Specific start symbol to use in the input grammar. Default is unspecified.
+.PP
+\fBDebugging Options\fR
+.TP
+\fB\-d\fR
+Turn on debugging mode.
+.TP
+\fB\-l\fR
+Turn on statistics logging.
+.TP
+\fB\-h\fR, \fB\-?\fR
+Display usage information.
+.TP
+\fB\-v\fR
+Turn on verbose mode.
+.TP
+\fB\-V\fR
+Show tool name and version number.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Assuming you have used
+\fBsdf2table\fR
+to generate a parse table for you language in the file
+\fIlang.tbl\fR, and that your input program is in the file
+\fIinput.lang\fR, you can apply
+\fBsglr\fR
+as follows:
+.sp
+.nf
+$ sglr \-p lang.tbl \-i input.lang \-o lang.trm
+.fi
+.PP
+The resulting parse tree (or possibly parse forest, if your language grammar allows ambiguities) will be in
+\fIlang.trm\fR.
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

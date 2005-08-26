@@ -1,0 +1,69 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "AUTOXT" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+autoxt \- installs autoconf/make resources for Stratego/XT packages
+.SH "SYNOPSIS"
+.HP 7
+\fBautoxt\fR
+.SH "DESCRIPTION"
+.PP
+The autoxt utility installs autoconf/make resources for Stratego/XT packages. In particular, it installs the M4 macro file autoxt.m4 and the automake file Makefile.xt.
+.SH "EXAMPLE"
+.PP
+The autoxt tool is typically invoked from a bootstrap script at the top\-level of an autoconfiscated project.
+.sp
+.nf
+#!/bin/sh
+rm \-f mkinstalldirs missing install\-sh
+autoxt || exit 1
+mv autoxt.m4 config
+autoreconf \-ifv || exit 1
+.fi
+.sp
+To use the XT packages in your project invoke the
+XT_USE_XT_PACKAGES
+macro in the
+configure.ac
+file. The prefix of that file typically looks like the following:
+.sp
+.nf
+AC_INIT([tiger],[1.3],[stratego\-bugs@cs.uu.nl])
+AC_CONFIG_AUX_DIR([config])
+AM_INIT_AUTOMAKE
+
+# set the prefix immediately to the default prefix
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+
+XT_USE_XT_PACKAGES
+.fi
+.sp
+In each Makefile.am
+.sp
+.nf
+include Makefile.xt
+.fi
+.sp
+.PP
+As usual, the
+\fIbootstrap\fR
+script should make certain that the correct versions of
+\fBautomake\fR, and
+\fBautoconf\fR
+are used.
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

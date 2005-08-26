@@ -1,0 +1,225 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "STRC" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+strc \- compiles Stratego programs to C or executable code
+.SH "SYNOPSIS"
+.HP 5
+\fBstrc\fR [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-output\ \fIfile\fR] [\-I\ \fIdir\fR\ |\ \-\-Include\ \fIdir\fR] [\-m\ \fIname\fR\ |\ \-\-main\ \fIname\fR] [\-\-lib\ |\ \-\-library] [\-C\-include\ \fIfile\fR] [\-CI\ \fIdir\fR] [\-CD\ \fIname\fR=\fIdef\fR] [\-CL\ \fIdir\fR] [\-Cl\ \fIfile\fR] [\-la\ \fIname\fR] [\-Xlinker\ \fIarg\fR] [\-\-xtc\-repo\ \fIfile\fR] [\-c] [\-\-ast] [\-F] [\-\-keep\ \fIlevel\fR] [\-\-format\-check\ \fIlevel\fR] [\-O\ \fIlevel\fR] [\-\-fusion] [\-\-choice\-lib\ \fIfile\fR] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-\-man] [\-v\ |\ \-\-version] [\-W\ |\ \-\-warning\ \fIcategory\fR] [\-\-asfix] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+Stratego is a language for program transformation based on the paradigm of rewriting strategies. The Stratego compiler
+\fBstrc\fR
+translates a Stratego program to a C program then uses
+\fBgcc\fR
+to compile the C file into an executable binary. Stratego modules have the file extension
+\fI.str\fR.
+.PP
+\fBstrc\fR
+is nominally a whole program compiler. This means that in its normal mode of operation, it completely reads all imported modules and then compiles this collection in its entirety to one C program. This compilation scheme is used because the current Stratego language design does not permit separate compilation. Whole program compilation allows aggressive optimization of programs.
+.PP
+There is some rudimentary support for separate compilation of modules using the
+\fB\-lib\fR
+option. For non\-trivial applications, separate compilation speeds up compilation time drastically, but prevents some language features to be used.
+.PP
+The Stratego language definition is provided in the
+Stratego Language
+chapter. For up to date information, refer to the
+[1]\&\fIstratego\-language.org\fR
+website.
+.SH "OPTIONS"
+.PP
+\fBCommon Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR, \fB\-\-input \fR\fB\fIfile\fR\fR
+Main module to compile (required)
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR, \fB\-\-output \fR\fB\fIfile\fR\fR
+Write output to
+\fI\fIfile\fR\fR
+.TP
+\fB\-I \fR\fB\fIdir\fR\fR, \fB\-\-Include \fR\fB\fIdir\fR\fR
+Include modules from directory
+\fI\fIdir\fR\fR
+.TP
+\fB\-m \fR\fB\fIs\fR\fR, \fB\-\-main \fR\fB\fIs\fR\fR
+Use the strategy
+\fB\fIs\fR\fR
+as main strategy instead of
+\fBmain\fR.
+.TP
+\fB\-\-lib\fR, \fB\-\-library\fR
+Build a library instead of an application.
+.TP
+\fB\-\-C\-Include \fR\fB\fIfile\fR\fR
+Include C header
+\fI\fIfile\fR\fR
+(\fI"foo.h"\fR
+or
+\fI<foo.h>\fR)
+.TP
+\fB\-CI \fR\fB\fIdir\fR\fR
+Include C header files from directory
+\fI\fIdir\fR\fR
+.TP
+\fB\-CD \fR\fB\fIname\fR\fR\fB=\fR\fB\fIdef\fR\fR
+Predefine
+\fIname\fR
+as macro, with definition
+\fIdef\fR.
+.TP
+\fB\-CL \fR\fB\fIdir\fR\fR
+Include binary libraries from directory
+\fI\fIdir\fR\fR
+.TP
+\fB\-Cl \fR\fB\fIfile\fR\fR
+Search the library named
+\fI\fIfile\fR\fR
+when linking.
+.TP
+\fB\-la \fR\fB\fIname\fR\fR
+Search the libtool library
+\fIlib\fR\fI\fIname\fR\fR\fI.la\fR
+when linking.
+.TP
+\fB\-Xlinker \fR\fB\fIarg\fR\fR
+Pass the argument
+\fIarg\fR
+to the linker.
+.TP
+\fB\-\-xtc\-repo \fR\fB\fIfile\fR\fR
+Set the default XTC repository in the compiled output program to
+\fI\fIfile\fR\fR. The default is to not set any XTC repository.
+.TP
+\fB\-c\fR
+Produce C code only, i.e. don't invoke
+\fBgcc\fR
+to compile to binary executable.
+.TP
+\fB\-\-ast\fR
+Produce Stratego abstract syntax tree
+.TP
+\fB\-F\fR
+Produce normalized specification
+.TP
+\fB\-\-keep \fR\fB\fIlevel\fR\fR
+Keep intermediate results (0 = keep nothing).
+.TP
+\fB\-\-format\-check \fR\fB\fIlevel\fR\fR
+Format check intermediate results (0 = basic checking).
+.TP
+\fB\-O \fR\fB\fIlevel\fR\fR
+Set optimization level
+\fIlevel\fR
+(0 = no optimization).
+.TP
+\fB\-\-fusion\fR
+Toggle specialize applications of innermost. The default is on.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution (same as
+\fB\-\-verbose\fR
+0)
+.TP
+\fB\-\-verbose \fR\fB\fIlevel\fR\fR
+Verbosity level
+\fIlevel\fR. The default is 1.
+.TP
+\fB\-W \fR\fB\fIcategory\fR\fR, \fB\-\-warning \fR\fB\fIcategory\fR\fR
+Report warnings failling into category
+\fIcategory\fR, which must be either of the following:
+.RS
+.TP 3
+1.
+\fBall\fR
+\- all categories (this is default)
+.TP
+2.
+\fBno\-\fR\fB\fIC\fR\fR\fBC\fR
+\- no warnings in category
+\fIC\fR
+.TP
+3.
+\fBdebug\-arguments\fR
+\- missing build operator
+.TP
+4.
+\fBobsolete\-strategy\-calls\fR
+\- obsolete strategies
+.TP
+5.
+\fBmaybe\-unbound\-variables\fR
+\- unbound variables
+.TP
+6.
+\fBlower\-case\-constructors\fR
+\- warn when finding lower case constructors
+.RE
+.TP
+\fB\-\-asfix\fR
+Concrete syntax parts are not imploded
+.TP
+\fB\-\-help\fR, \fB\-h\fR, \fB\-?\fR
+Display usage version
+.TP
+\fB\-\-about\fR
+Display information about this program.
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Same as
+\fB\-\-about\fR
+.SH "EXAMPLES"
+.PP
+Compile module
+\fI\fIM\fR\fR\fI.str\fR
+to an executable
+\fI\fIM\fR\fR
+.sp
+.nf
+$ strc \-i M
+.fi
+.PP
+Use the strategy
+\fIfoo\fR
+as main strategy instead of
+\fBmain\fR.
+.sp
+.nf
+$ strc \-i M \-\-main foo
+.fi
+.PP
+Compile module
+\fI\fIM\fR\fR\fI.str\fR
+to C code in file
+\fI\fIM\fR\fR\fI.c\fR
+.sp
+.nf
+$ strc \-i M \-c
+.fi
+.PP
+Include modules from directory
+\fI../sig\fR
+.sp
+.nf
+$ strc \-i M \-I ../sig
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+.SH "REFERENCES"
+.TP 3
+1.\ stratego\-language.org
+\%http://www.stratego\-language.org

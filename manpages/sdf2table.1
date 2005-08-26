@@ -1,0 +1,74 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "SDF2TABLE" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+sdf2table \- generates a parse table from an SDF syntax definition.
+.SH "SYNOPSIS"
+.HP 10
+\fBsdf2table\fR [\-b] [\-h] [\-i\ \fIfile\fR.def] [\-l] [\-m\ \fIname\fR] [\-n] [\-o\ \fIfile\fR.tbl] [\-s] [\-t] [\-v] [\-V]
+.SH "DESCRIPTION"
+.PP
+The
+\fBsdf2table\fR
+utility is used to compute a parse table from a syntax definition. The syntax definition must have been created from a set of
+\fI.sdf\fR
+files using the
+\fBpack\-sdf\fR
+utility, or written manually. The resulting
+\fI.tbl\fR
+file is used as input to the
+\fBsglr\fR
+parser.
+.SH "OPTIONS"
+.PP
+\fBInput/Output Options\fR
+.TP
+\fB\-b\fR
+Write output in binary ASFix (BAF) format.
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR\fB.def\fR
+Read input from
+\fI\fIfile\fR\fR\fI.def\fR. Multiple files may be specified.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR\fB.tbl\fR
+Write output to
+\fI\fIfile\fR\fR\fI.tbl\fR. If not speficied,
+\fI.tbl\fR
+will be added as a suffix to the input file name.
+.TP
+\fB\-s\fR
+Check SDF definition and show warnings on
+\fIstderr\fR.
+.TP
+\fB\-n\fR
+Normalize grammar.
+.PP
+\fBHelp and Debugging Options\fR
+.TP
+\fB\-h\fR
+Show usage information.
+.TP
+\fB\-l\fR
+Show statistics information.
+.TP
+\fB\-v\fR
+Enable verbose mode.
+.TP
+\fB\-V\fR
+Show version number.
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

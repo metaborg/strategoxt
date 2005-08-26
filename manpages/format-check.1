@@ -1,0 +1,177 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "FORMAT\-CHECK" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+format\-check \- checks whether an ATerm conforms to a given regular tree grammar (RTG)
+.SH "SYNOPSIS"
+.HP 13
+\fBformat\-check\fR [\-\-rtg\ \fIfile\fR] [\-\-rtg\-nf\ \fIfile\fR] [\-s\ \fIs\fR\ |\-\-start\ \fIs\fR] [\-\-xhtml] [\-\-vis] [\-\-fast] [\-\-check] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-output\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+\fBformat\-check\fR
+checks the input ATerm against a regular tree grammar (RTG), to see if this term is part of the language defined in the RTG. If this is not the case, then the ATerm contains format errors, analogous to syntax errors in normal source code.
+\fBformat\-check\fR
+can operate in three modes:
+\fIplain\fR,
+\fIvisualize\fR
+and
+\fIXHTML\fR.
+.PP
+The plain mode is used by default. In this mode, format errors are reported and no result is written the the output (\fIstdout\fR
+or file). Hence, if
+\fBformat\-check\fR
+is included in a pipeline, then the following tool will probably fail. If the input term is correct, then it is written to the output.
+.PP
+The visualize mode is enabled with the
+\fB\-\-vis\fR
+option. In visualize mode, format errors are reported and in a pretty\-printed ATerm will be written to the output. All innermost parts of the ATerm that cause format errors are printed in red, if your terminal supports control characters for colors. If you want to inspect the ATerm with a pager, like
+\fBmore\fR
+or
+\fBless\fR, then you should use the
+\fB\-r\fR
+flag.
+.PP
+The XHTML mode is enabled with the
+\fB\-\-xhtml\fR
+option. In XHTML mode, format errors are reported and a report in XHTML will be written to the output. The result should be inspected in a web browser (not IE6). As with the visualize mode, this report shows the parts of the ATerm that are not formatted correctly. By moving your mouse over the nodes of ATerm, you can see the non\-terminals that have be inferred by format\-check.
+.PP
+\fBformat\-check\fR
+reports all innermost format errors. That is, only the deepest format errors are reported. A format error is reported by showing the ATerm that is not in the correct format, and the inferred types of the children of the ATerm. In XHTML and visualize mode a format error of term in a list is presented by a red comma and term. This means that a type has been inferred for the term itself, but that it is not expected at this point in the list. If only the term is red, then no type could be inferred for the term itself.
+.PP
+In all modes
+\fBformat\-check\fR
+succeeds (exit code 0) if the ATerm contains no format errors. If the term does contain format errors, then
+\fBformat\-check\fR
+fails (exit code 1).
+.SH "OPTIONS"
+.PP
+\fBGrammar Options\fR
+.TP
+\fB\-\-rtg \fR\fB\fIfile\fR\fR
+Use the regular tree grammar defined in
+\fIfile\fR.
+.TP
+\fB\-\-rtg\-nf \fR\fB\fIfile\fR\fR
+Use the normalized, regular tree grammar defined in
+\fIfile\fR.
+.TP
+\fB\-s \fR\fB\fIs\fR\fR, \fB\-\-start \fR\fB\fIs\fR\fR
+Use
+\fIs\fR
+as the start symbol, i.e. root of the ATerm. By default, the start non\-terminals defined for in the regular tree grammar are used.
+.PP
+\fBReporting Options\fR
+.TP
+\fB\-\-xhtml\fR
+Output report as an XHTML document. See above for a detailed description.
+.TP
+\fB\-\-vis\fR
+Output report as a coloured, pretty\-printed ATerm. See above for a detailed description.
+.TP
+\fB\-\-fast\fR
+Run as fast as possible. Might reduce quality of error messages.
+.PP
+\fBOther Options\fR
+.TP
+\fB\-\-check\fR
+Check tool dependencies.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+To check the ATerm
+\fItree.trm\fR
+against the regular tree grammar in
+\fItree\-grammar.rtg\fR, issue:
+.sp
+.nf
+$ format\-check \-\-rtg tree\-grammar.rtg \-i tree.trm \-o tree.checked.trm
+.fi
+.PP
+If the term in
+\fItree.trm\fR
+is syntactially valid, i.e. it conforms to the regular tree grammar, it will be copied to
+\fItree.checked.trm\fR. If not,
+\fBformat\-check\fR
+wille exit with an error code and
+\fItree.checked.trm\fR
+will not be written to.
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

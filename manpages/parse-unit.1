@@ -1,0 +1,144 @@
+.\" ** You probably do not want to edit this file directly **
+.\" It was generated using the DocBook XSL Stylesheets (version 1.69.1).
+.\" Instead of manually editing it, you probably should edit the DocBook XML
+.\" source for it and then use the DocBook XSL Stylesheets to regenerate it.
+.TH "PARSE\-UNIT" "1" "08/26/2005" "" "Programs and Tools"
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+parse\-unit \- performs the test cases in a testsuite for an SDF syntax definition
+.SH "SYNOPSIS"
+.HP 11
+\fBparse\-unit\fR [\-p\ \fIfile\fR] [\-\-abstract\-input] [\-\-no\-heuristic\-filters] [\-\-single\ \fIint\fR] [\-\-asfix2] [\-\-ast] [\-i\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-o\ \fIfile\fR\ |\ \-\-input\ \fIfile\fR] [\-b] [\-S\ |\ \-\-silent] [\-\-verbose\ \fIlevel\fR] [\-k\ \fIlevel\fR\ |\ \-\-keep\ \fIlevel\fR] [\-\-check] [\-h\ |\ \-?\ |\ \-\-help] [\-\-about] [\-\-version]
+.SH "DESCRIPTION"
+.PP
+The
+\fBparse\-unit\fR
+utility is used for testing SDF syntax definitions. Using it, you can check that small code fragements are parsed correctly with your syntax definition.
+.PP
+The testsuites that
+\fBparse\-unit\fR
+employes, have tests with an input and an expected result. You can specify that a test should succeed, fail or that the abstract syntax tree should have a specific format. The input to
+\fBparse\-unit\fR
+is a string or the contents of a file.
+.SH "OPTIONS"
+.PP
+\fBParsing Options\fR
+.TP
+\fB\-p \fR\fB\fIfile\fR\fR
+Use parse table from the file
+\fIfile\fR. Refer to the
+\fBsdf2table\fR
+tool for how to create one.
+.TP
+\fB\-\-abstract\-input\fR
+Indicates to
+\fBparse\-unit\fR
+that the testsuite input is already in abstract syntax.
+.TP
+\fB\-\-no\-heuristic\-filters\fR
+Do not use heuristic disambiguation filters. It is recommended to enable this options.
+.TP
+\fB\-\-single \fR\fB\fInum\fR\fR
+Run parse test number
+\fInum\fR
+and output the result.
+.TP
+\fB\-\-asfix2\fR
+Enable production of an AsFix2 parse tree instead of an abstract syntax tree.
+.TP
+\fB\-\-ast\fR
+Enable production of an abstract syntax tree. This is the default.
+.PP
+\fBCommon Input/Output Options\fR
+.TP
+\fB\-i \fR\fB\fIfile\fR\fR
+The input term given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-i\fR
+option, input will be read from
+\fIstdin\fR.
+.TP
+\fB\-o \fR\fB\fIfile\fR\fR
+The output will be written to the file given by the file name
+\fI\fIfile\fR\fR.
+.sp
+In the absence of the
+\fB\-o\fR
+option, output will be written to
+\fIstdout\fR.
+.TP
+\fB\-b\fR
+The output will be written in the binary (BAF) ATerm format.
+.sp
+ATerms in the BAF format require a lot less space than ones in the TAF format, but the Java ATerm library does not currently support baf ATerms. ATerms in the baf format is the preferred format of exchange between Stratego tools.
+.PP
+\fBCommon Debugging Options\fR
+.TP
+\fB\-\-about\fR
+See
+\fB\-\-version\fR.
+.TP
+\fB\-h\fR, \fB\-?\fR, \fB\-\-help\fR
+Display usage information.
+.TP
+\fB\-\-keep \fR\fB\fIint\fR\fR
+Keep intermediate results produced by the internal stages in the pretty\-printing process. This is only useful for debugging. A high value of
+\fIint\fR
+indicates increased eagerness for keeping intermediate results.
+.sp
+Default setting is 0, indicating that no intermediates will be kept.
+.TP
+\fB\-S\fR, \fB\-\-silent\fR
+Silent execution. Same as
+\fB\-\-verbose \fR\fB\fI0\fR\fR.
+.TP
+\fB\-\-verbose \fR\fB\fIint\fR\fR
+Set verbosity level to numerical value
+\fIint\fR. The higher the number, the more information about pp\-aterm's inner workings are printed.
+.sp
+Alternatively,
+\fIint\fR
+can be set to either of the following verbosity levels, given in increasing order of verbosity:
+\fBemergency\fR,
+\fBalert\fR,
+\fBcritical\fR,
+\fBerror\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR,
+\fBvomit\fR.
+.TP
+\fB\-\-version\fR
+Displays the tool name and version.
+.SH "EXAMPLE"
+.PP
+Refer to the chapter
+Unit Testing with Parse\-unit
+for a full discussion of
+\fBparse\-unit\fR
+in action.
+.PP
+Given an appropriate language parse table in
+\fIlang.tbl\fR, you can run the fifth test available from the testsuite
+\fImytests.testsuite\fR
+as follows:
+.sp
+.nf
+$ parse\-unit \-\-single 5 \-p lang.tbl \-i mytests.testsuite
+.fi
+.SH "REPORTING BUGS"
+.PP
+Please report bugs to
+<stratego\-bugs@cs.uu.nl>
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002\-2005 Eelco Visser
+<visser@acm.org>
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.

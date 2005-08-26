@@ -9,18 +9,10 @@ SCFLAGS = -I $(srcdir)/../../../stratego-front/syn/ \
 	  -I $(srcdir)/../front			    \
 	  --main $*	
 
-#--verbose 4
-
 LDADD           += $(SSL_LIBS)
 
 bin_PROGRAMS 	= strc
 
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= strc.c
-
-EXTRA_DIST 	= $(wildcard *.str) $(man_MANS)
-man_MANS 	= strc.1
-
-strc.1 : 
-	help2man -n "compile Stratego programs" \
-		-m StrategoXT -S "strc $(VERSION)" --no-info ./strc > $@
+EXTRA_DIST 	= $(wildcard *.str)
