@@ -12,14 +12,14 @@ releases. Intermediate versions on the way to a new major release get
 an M n suffix indicating that the release is the n-th milestone
 towards the major release.
 
-
 -----------------------------------------------------------------------
-0.16 M 1 (bugs in 0.15)
+0.16 M 1 (bugs in 0.15) -- finished August 26, 2005 -- release notes
 -----------------------------------------------------------------------
 
 Bug
 
-[STR-85]  - Sloppy variable-scope in let-strategies
+[STR-85] - Sloppy variable-scope in let-strategies
+[STR-145] - Shared libraries are not shared at Cygwin: static linking is used.
 [STR-301] - Check implementation of quoted constructors
 [STR-326] - File foo not removed during configure
 [STR-327] - XT_CHECK_STRATEGOXT_UTILS should use pkgconfig.
@@ -34,6 +34,7 @@ Bug
 New Feature
 
 [STR-320] - Option for preferring .str files over .rtree files
+[STR-325] - Overlay bodies should be pure term expressions
 [STR-345] - stratego runtime libraries must be self-contained
 [STR-346] - Calling strategies by their name
 [STR-351] - checksum
@@ -53,6 +54,7 @@ Task
 [STR-378] - strc --help: svn revision is 0 is tarball and buildfarm.
 [STR-379] - Fix compilation issues on Fedor Core 3 in data2xml-doc
 [STR-380] - Remove code from srts that is defined only for bootstrap reasons.
+[STR-396] - Inlude manual pages from Stratego/XT manual in Stratego/XT distribution
 
 Improvement
 
@@ -66,6 +68,8 @@ Improvement
 [STR-384] - stratego-lib testsuite should use libraries in prefix.
 [STR-390] - Support make check on Cygwin
 [STR-391] - Support make check on Darwin
+[STR-392] - Check-constructor: pretty-print Stratego AST in error message.
+[STR-401] - Remove pkgconfig file of sdf2-bundle from strategoxt
 
 
 -----------------------------------------------------------------------
