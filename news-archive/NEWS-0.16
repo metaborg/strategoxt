@@ -239,6 +239,8 @@ L :: s1 --> s2
 The thread traversal operator (can be expressed in the library),
 and threading and distributing congruence operators.
 
+TODO: overlays
+
 (Eelco Visser)
 
 ---------+++ Calling strategies by their name ***
@@ -390,6 +392,57 @@ has been deferred.
 (Eelco Visser)
 
 ---------++ Stratego/XT Deployment and Build System
+
+---------++ AutoXT
+
+Makefile.xt now supports the STRCFLAGS variable. The old SCFLAGS
+variable is still supported.
+
+The Autoconf macro XT_USE_XT_PACKAGES now supports a mixture of
+explicit configuration and searching for packages with pkg-config. If
+the user specifies a location of a package, then pkg-config will not
+be used to search for the package.
+
+The AutoXT macros now set variables pkg_STRCFLAGS, where pkg is the
+name of the package. This variable contains the include paths that
+have to be passed to the Stratego compiler to be able to use that
+package. Packages can also pass other arguments to strc using this
+variable, if necessary. This feature allows dependent packages to
+abstract more of the way they need to use a package. Hence, making the
+dependent packages more stable. The value of pkg_STRCFLAGS can be
+specified in the strcflags pkg-config variable. It is inspired by the
+pkg_CFLAGS and pkg_LIBS feature of pkg-config.
+
+The Autoconf macro XT_CHECK_STRATEGOXT_UTILS now supports pkg-config
+as well as explicit configuration.
+
+(Martin Bravenboer)
+
+---------+++ Linking Stratego Libraries
+
+For Stratego/XT 0.16, we have solved various linking issues on Mac OS
+X and Cygwin.
+
+First, the latest version of the ATerm Library (2.4) now creates a
+dynamic library. Indirectly, this allows us to use dynamic linking of
+the Stratego Library at Cygwin. This makes the executables, memory
+consumption and the binary distribution for Cygwin much smaller.
+
+Second, the dynamic ATerm Library solves a linking problem at Mac OS X
+for very small Stratego programs.
+
+Also, Stratego libraries now declare inter-library dependencies. This
+means that all the indirectly required libraries are automatically
+added as arguments to the linker. This is required for building
+dynamic libraries at Cygwin and it might be useful for users that
+don't use Makefile.xt or the stand-alone Stratego compiler.
+
+---------+++ Mac OS X support checked in buildfarm
+
+The improved performance of Stratego/XT on Mac OS X allows us to run a
+full check of the Stratego/XT distribution on the Darwin machine in
+our buildfarm. This will further improve the support of Stratego/XT
+for Mac OS X.
 
 ---------+++ Build order of stratego-front and stratego-lib
 
