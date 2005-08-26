@@ -775,7 +775,7 @@ rules
 	; if <not(Anno(is-ListOp,id))> t2 then 
             check-aterm-list 
           else 
-            try(debug; UncastATerm)
+            try(UncastATerm)
           end => e
 
   check-aterm-list :
@@ -792,7 +792,6 @@ rules
 
   UncastATerm :
     exp|[ (ATerm)~exp:e ]| -> e
-    where debug(!"UncastATerm: ")
 
 strategies
 
