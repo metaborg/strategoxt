@@ -2,15 +2,487 @@
 StrategoXT 0.16 - under construction
 -----------------------------------------------------------------------
 
-The main goal of this release is to stabilize the refactoring of the
-internal representation of the Stratego Compiler to the Stratego Core
-format. In addition, a large number of outstanding issues are
-addressed.
+Stratego/XT 0.16 introduces a major refactoring of the Stratego Language, 
+resulting from the Stratego Core project. 
+
+The project comprises a cleanup of the language, removing obsolete
+language constructs, and a refactoring of the internal representation
+of Stratego programs. In particular the abstract syntax of terms has
+been refactored in order to treat term annotations explicitly within
+the compiler.
+
+In addition, a large number of outstanding issues are addressed. 
+
+
+---------++!! Summary of Changes
+
+%TOC%
+
+---------++ Versioning
+
+The refactoring is being released in a number of milestone
+releases. The first was 0.15, subsequent releases are numbered 0.16M1,
+0.16M2, etc.
 
 We have introduced a new versioning scheme for unstable
 releases. Intermediate versions on the way to a new major release get
 an M n suffix indicating that the release is the n-th milestone
-towards the major release.
+towards the major release.  
+
+This NEWS file presents the result of the entire operation, i.e., it
+discusses the integral set of changes since the previous major release
+(0.14).
+
+The release notes at the end of this file show the issues addressed in
+each milestone. (Although issues from later milestones may be included
+in earlier releases.)
+
+---------++ Stratego Language
+
+---------+++ Stratego Core Language
+
+The Stratego Core language project constitutes a major refactoring of
+the syntax definition of the language, also requiring a refactoring of
+all tools and components processing Stratego programs (in particular
+the compiler).
+
+The project was prompted by the problems encountered in building the
+first version of the Stratego Optimizer in 2003. In particular, with
+the representation of term annotations in the abstract syntax. In
+addition the language design had eroded somewhat over the years
+through the addition of new features.
+
+Thus, the aims of the project are threefold:
+
+(1) Clearly distinguish a core language to be used as intermediate
+language in the compiler. 
+
+(2) Explicitly represent term annotations in the abstract syntax of
+the core language.
+
+(3) Cleaning up the language, removing constructs that have not proven
+to be useful, or have been subsumed by more more general constructs.
+
+---------+++ Impact
+
+Despite the changes in the _structure_ of the language, the syntax is
+backwards compatible. This entails that existing applications should
+still work. Except of course for applications using constructs that
+have been removed. However, the decision to remove constructs was
+based on the fact that these were not used (some not even document),
+so this shouldn't pose a big problem. The only change with potential
+impact is discontinuation of support for old style dynamic rules. New
+style dynamic rules are the default in StrategoXT 0.14 and should be a
+good platform for preparing migration.
+
+---------+++ Core vs Sugar 
+
+The syntax definition is now divided into a Stratego-Core language
+that is extended to the full language in Stratego-Sugar, adding
+syntactic abstractions to the Core. The Core is a strict subset of the
+full language. In addition, a number of regular tree grammars has been
+defined that denote a number of intermediate languages between
+Stratego-Sugar and Stratego-Core. These RTGs are used by the compiler
+to verify the sanity of the compiler components.
+
+---------+++ Term Annotations
+
+Term annotations were not originally supported in Stratego. The
+addition was handled by desugaring the matching and building of terms
+with annotions to calls to ATerm library functions using primitives in
+an early stage of compilation. The implicit presence of annotations
+made transformations within the compiler very fragile, and entailed
+that certain optimizations could not be defined properly.
+
+In the new core syntax, terms always have an annotation. A pre-term
+(pt) has the form
+
+   pt := i | r | x | c(t1,...,tn)
+
+and denotes a term without annotation. A term (t) is a pre-term with
+an annotation (which is itself a pre-term):
+
+   t  := pt{^pt}
+
+This is the explicit representation of term annotations; every term
+always has a list of annotations.  That is, the annotation pre-term
+should always be a *list* of the form
+
+   Cons(t1,...,Cons(tn, Nil())
+
+Since most terms do not have annotations, or we're not interested
+in them, in the sugared extension of the core language, term annotations
+are optional. Thus, in Stratego-Sugar, the syntax of terms is extended
+with:
+
+   t := pt | pt{t1,...,tn}
+
+The interpretation of this syntax depends on the use of the term in
+a match or build position. That is, the following desugaring rules
+apply:
+
+   |[ !pt ]| -> |[ !pt{^Nil()} ]|
+   |[ !pt{t1,...,tn} ]| -> |[ !pt{^Cons(t1,...,Cons(tn,Nil()))} ]|
+
+   |[ ?pt ]| -> |[ ?pt{^_} ]|
+   |[ ?pt{t1,...,tn} ]| -> |[ ?pt{^Cons(t1,...,Cons(tn,Nil()))} ]|
+
+(Note that this is a bit simplified, as the Conses and Nils in the
+right-hand side have annotations themselves, except for the outermost
+ones.)
+
+So a rewrite rule
+
+  A : Plus(x, y) -> Plus(y, x)
+
+is desugared to
+
+  A : Plus(x, y){^_} -> Plus(y, x){^Nil()}
+
+(STR-58)
+
+---------+++ Disambiguation
+
+The syntax of types of higher-order arguments of strategy definitions
+was ambiguous. Thus, the type of the skip argument in
+
+<verbatim>
+  topdownS(s : ATerm() -> ATerm() , skip : a -> a * a -> a) = ...
+</verbatim>
+
+could be parsed as 
+
+<verbatim>
+  a -> (a * a -> a)   or ((a -> a) * a) -> a
+</verbatim>
+
+This has been solved by only allowing function types as argument types
+when between parentheses. Thus, the above is not syntactically valid,
+but should now be written as 
+
+<verbatim>
+  topdownS(s : ATerm() -> ATerm() , skip : (a -> a) * a -> a) = ...
+</verbatim>
+
+It is better to require explicit disambiguation since it is easy to
+have the wrong expectation from implicit disambiguation in this case.
+
+There was no priority definition between guarded left-choice and
+non-deterministic choice, such that the expression
+
+<verbatim>
+  s1 < s2 + s3 + s4
+</verbatim>
+
+could be parsed in two ways, i.e.,
+
+<verbatim>
+  s1 < (s2 + s3) + s4   or   s1 < s2 + (s3 + s4) 
+</verbatim>
+
+This has been resolved by giving the =+= operator higher priority than
+guarded choice to prefer the latter over the former. The first variant
+can be selected by using explicit parentheses.
+
+(Eelco Visser)
+
+---------+++ Rules in let
+
+Let bindings can now introduce new rules. For example,
+
+<verbatim>
+  main =
+    let Foo : 1 -> 2
+     in <Foo> 1 => 2
+    end 
+</verbatim>
+
+Local rules shadow rules with the same name (and arity) at
+top-lovel. The scope of the rule variables is the enclosing
+definition, not just the rule itself! This is in line with the
+semantics of local definitions, but the practicality of this design
+choice should be reviewed.
+
+(Martin Bravenboer)
+
+---------+++ Outdated constructs no longer supported
+
+A number of language constructs have been subsumed by more general
+constructs, or were simply never used. These constructs have been
+removed from the language definition starting with this release.
+
+_Old style dynamic rules_ are no longer supported. Everything
+expressible with old style rules can also be expressed with new style
+dynamic rules. See the paper 'Program Transformation with Scoped
+Dynamic Rewrite Rules' for definition and examples of new style
+dynamic rules.
+
+_Contextual rules_ can now better be expressed using dynamic
+rules. Local uses of contextual rules can also be defined using a
+local traversal. See the paper 'Strategic Pattern Matching' for a
+discussion of translation of contextual rules that can be applied by
+hand.
+
+_Literate programming comments_ such as
+<verbatim>
+\begin{code}
+  foo = ...
+\end{code}
+</verbatim>
+are no longer supported. Use standard comment delimiters instead.
+
+Other constructs that are discontinued are _strategy rules_ of
+the form
+<verbatim>
+L :: s1 --> s2
+</verbatim>
+The thread traversal operator (can be expressed in the library),
+and threading and distributing congruence operators.
+
+(Eelco Visser)
+
+---------+++ Calling strategies by their name ***
+
+(Rob Vermaas)
+
+---------+++ Dynamic Rules Inspected ***
+
+(Eelco Visser)
+
+---------++ Stratego Core Compiler
+
+The Stratego compiler now compiles programs according to the
+Stratego-Sugar syntax definition. The front-end of the compiler is
+drastically refactored and simplified. The optimizer has been disabled
+in this release. Migration and improvement of the optimizer has been
+planned for release 0.15.4.
+
+---------+++ Format Checking
+
+The compiler monitors its own integrity by checking the format of
+intermediate results against subsets of the Regular Tree Grammar of
+the complete syntax definition. By default checks are only carried out
+at a few places, to save compile time. In case an error occurs, the
+level of checking can be increased using the =--format-check= option
+of strc.
+
+---------+++ List Variables
+
+The treatment of list variables is cleaned up by improving their
+assimilation in meta-explode. This has made it possible to have fewer
+compiler components be aware of list variables. If list variables in
+concrete syntax quotations should be used as list variables outside
+those quotations as well, they should have a * suffix. See issue
+STR-321.
+
+Realization of this clean-up required a bugfix in implode-asfix and a
+change in the assimilation of concrete syntax, which entails that
+Conc(ts1,ts2) is now used as a special constructor to denote the
+concatenation of two lists. In particular, if Conc(ts1,ts2) is used in
+a build, this is interpreted as <conc>(ts1, ts2). In other words Conc,
+cannot be used as a normal constructor.
+
+(Eelco Visser)
+
+---------+++ Translation Scheme I: Represent Failure by NULL ***
+
+The back-end of the compiler uses a new translation scheme. The old
+scheme used the C feature of setjmp/longjmp to deal with failing
+transformations. This provided the opportunity to go from using C as
+an assembly language, where an entire Stratego program was compiled to
+a single C function using gotos for control-flow, to a more idiomatic
+style of C programs in which each strategy definition was compiled to
+a C function. The setjmp/longjmp feature elegantly dealt with the
+notion of a failure by declaring a choice point (with setjmp) and
+jumping to it from anywhere (with longjmp). However, since choice
+points are the control-flow mechanism in Stratego, the speed of
+programs depends heavily on the cost of this feature. On Intel
+machinery (running Linux) this is not a big issue, but on Apples and
+Suns (RISC machines) the number of registers saved at each choicepoint
+is quite expensive; at least that is a theory about possibilities for
+improving the performance of Stratego programs.
+
+Eelco Dolstra suggested a long time ago to return NULL to indicate
+failure of a strategy. Indeed, this representation closely matches the
+formal operational semantics of the language, in which the set of
+terms is extended with a failure value; exactly the ATerm data-type
+extended with an extra value (NULL). 
+
+The new translation scheme is pretty standard fair. Noteworthy about
+the new version is the use of concrete syntax of Stratego and C almost
+everywhere. For example, the following rule defines the translation of
+the crucial guarded choice construct:
+
+  TranslateStrat(|S,F) :
+    |[ s1 < s2 + s3 ]| ->
+    stm|[
+      {
+        ATerm ~id:x = t;
+        ~stm:<translate-strat(|Next,F')>s1
+        ~stm:<translate-strat(|S,F)>s2
+        ~id:F' : t = ~id:x; 
+        ~stm:<translate-strat(|S,F)>s3
+      }
+    ]|
+    where <not(Next)> S; new => x; new => F'
+
+An interesting feature of the implementation is the collection of code
+fragments using dynamic rules, and the synthesis of the target program
+from these fragments afterwards; in contrast to the old method in
+which the source program was traversed for each type of fragment
+`driven by' the target program.
+
+The new translation scheme is accompanied by a refactoring of the C
+code of the run-time system and the native part of the Stratego
+Library.
+
+(Eelco Visser)
+
+---------++ Run-Time System
+
+Refactoring to support `represent failure by NULL' model.
+
+(Eelco Visser)
+
+---------++ Stratego Library
+
+---------+++ Native code
+
+Refactoring to support `represent failure by NULL' model.
+
+(Eelco Visser)
+
+---------+++ Stratego code
+
+The definition of collect-all with a skip has been adapted to recurse
+to the current term instead of the children of current term in the
+case of application of the skip strategy.
+
+(Report by Ron de Bruijn, Fix by Martin Bravenboer)
+ 	  
+The string concatenation strategy =conc-strings= now supports tuples
+of more than 2 strings.
+
+(Rob Vermaas)
+
+---------++ Tools
+
+---------+++ GPP
+
+=pptable-diff= now takes the arity of constructors into account.
+
+(Martin Bravenboer)
+
+---------+++ Stratego-regular
+
+The implementation of =sig2rtg= was not compatible with the new
+Stratego syntax. Since the tool does not seem to be used, migration
+has been deferred.
+
+(Eelco Visser)
+
+
+---------++ StrategoXT Deployment and Build System
+
+---------+++ Build order of stratego-front and stratego-lib
+
+The build order of stratego-front and stratego-lib has been swapped in
+case of a baseline build. The modules in the library should be parsed
+with the local syntax definition of Stratego, instead of the syntax
+definition of the baseline. Since the library should be used with the
+compiler in the current package, it should be compatible with that
+compiler and use the same syntax definition. When bootstrapping
+(building from a pre-compiled source tarball), the build-order is
+reversed since the library is needed for the compilation of the
+components in stratego-front. Also in the case of a bootstrap build,
+xtc is built before stratego-front.
+
+(Eelco Visser)
+
+
+---------++!! Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease016M1Issues
+
+---------++!! Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease015
+
+---------++!! Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++!! Contributions
+
+The Stratego Core refactoring was carried out by
+
+   * Eelco Visser
+
+Other improvements, bug reports, and beta tests carried out by
+
+   * Martin Bravenboer
+   * Ron de Bruijn
+   * Rob Vermaas
+   * Daniel Waddington
+
+Thanks!
+
+
+-----------------------------------------------------------------------
+RELEASE NOTES (per milestone)
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+0.15 (= 0.16 M 0) -- finished  -- release notes
+-----------------------------------------------------------------------
+
+Bug
+
+[STR-220] - syntax priority issue: 's1 < s2 + s3 + s4' is ambiguous
+[STR-224] - Term projection in annotations is broken
+[STR-235] - Syntactical ambiguity with higher order arguments
+[STR-264] - collect-all: recurse to current term instead of children of current term
+[STR-290] - concat-strings seg fault
+[STR-293] - strc tests: Makefile.am must use XT_DARWIN
+[STR-318] - format-check fails when reporting incorrect types at top-level (start-symbols)
+[STR-322] - Concatenation of two iter-star-sep lists is not imploded.
+
+New Feature
+
+[STR-111] - pptable-diff: consider number of arguments in pp rule
+[STR-164] - Let: support rule syntax
+[STR-316] - Old style dynamic rules no longer supported
+
+Task
+
+[STR-5] - Automate creation of binary distributions for Microsoft Windows + Cygwin.
+[STR-58] - Stratego Core Language
+[STR-307] - Move stratego-desugar from stratego-front to strc-core
+[STR-313] - Build order of stratego-front and stratego-lib
+[STR-319] - Update meta-explode to Stratego-Sugar abstract syntax
+[STR-321] - List variables in concrete syntax and abstract syntax should have * suffix
+[STR-324] - Disable build of sig2rtg
+
+Improvement
+
+[STR-210] - Conc support: conc the Conc arguments in build.
+[STR-217] - Emacs mode: support fill-paragraph (alt-q) of xdoc comments
+[STR-219] - Emacs mode: abstract syntax buffer for concrete objects syntax 
+[STR-242] - Define native ssl functions as external definitions
+[STR-278] - ppgen: incorrect report of missing constructor
+[STR-279] - conc-strings: support tuples of >2 strings
+[STR-310] - remove obscure features
 
 -----------------------------------------------------------------------
 0.16 M 1 (bugs in 0.15) -- finished August 26, 2005 -- release notes
