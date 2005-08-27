@@ -489,7 +489,7 @@ strategies // COMPILER COMPONENTS
   ; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
     
   abox2text 	= comp-out(|"abox2text")
-  s2c 		= comp(|"s2c-ng",  
+  s2c 		= comp(|"s2c",  
 	 		<concat>[
 			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
 			  <pass-library>
