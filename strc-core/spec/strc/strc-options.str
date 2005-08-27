@@ -24,9 +24,14 @@ strategies
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
-    ; <set-config> ("-CI", ["-I", <xtc-find-path> "SRTS-include",
-                            "-I", <xtc-find-path> "stratego-lib-include",
-                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
+
+    // consider to include CFLAGS from the environment
+    ; <set-config> ("-Xcc",
+        [ "-I", <xtc-find-path> "SRTS-include"
+        , "-I", <xtc-find-path> "stratego-lib-include"
+        , "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")
+        ])
+
     ; <set-config> ("-Xlinker",
         [ <xtc-find> "libstratego-lib-native.la"
         , <xtc-find> "libstratego-runtime.la"
@@ -34,7 +39,7 @@ strategies
         , "-lm"
         | <strc-system-ldflags> ()
         ])
-    ; <set-config> ("-CD", [])
+
     ; <set-config> ("--dr", "new")
   )
 
@@ -79,17 +84,35 @@ strategies
 	where(<post-extend-config>("--C-include", [<id>])); !(), 
 	!"--C-include h      Include header file h (\"file.h\" or <file.h>)")
 
-  + ArgOption("-CI",       
-	where(<extend-config>("-CI", [<id>])); !(),
+  // newline
+  + ArgOption(fail, fail, !"")
+
+  /**
+   * C compiler flags
+   */
+
+  + ArgOption("-Xcc",
+	where(<post-extend-config>("-Xcc", [<id>])); !(),
+	!"-Xcc <arg>         Pass <arg> on to the C compiler")
+
+  + ArgOption("-CI",
+	where(<post-extend-config>("-Xcc", ["-I", <id>])); !(),
 	!"-CI d              Include C headers from directory d")
 
   + ArgOption("-CD",
-	where(<extend-config>("-CD", [<conc-strings> ("-D", <id>)])); !(),
+	where(<post-extend-config>("-Xcc", [<conc-strings> ("-D", <id>)])); !(),
 	!"-CD name=def       Predefine name as a macro, with definition def.")
+
+  // newline
+  + ArgOption(fail, fail, !"")
 
   /**
    * Linker flags.
    */
+
+  + ArgOption("-Xlinker",
+	where(<post-extend-config>("-Xlinker", [<id>])); !(),
+	!"-Xlinker <arg>     Pass <arg> on to the linker")
 
   + ArgOption("-CL",
 	where(<post-extend-config>("-Xlinker", [<conc-strings> ("-L", <id>)])); !(),
@@ -103,9 +126,6 @@ strategies
 	where(<post-extend-config>("-Xlinker", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
 	!"-la <name>         Search the libtool library lib<name>.la when linking.")
 
-  + ArgOption("-Xlinker",
-	where(<post-extend-config>("-Xlinker", [<id>])); !(),
-	!"-Xlinker <arg>     Pass <arg> on to the linker")
 
   // newline
   + ArgOption(fail, fail, !"")
