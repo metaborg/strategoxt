@@ -683,8 +683,13 @@ rules
 rules 
 
   init-term-caching =
-    where(!Op("Nil", []) => t; !CastATerm(Id("ATempty")) => e);
-    rules( Cache : t -> e )
+    where(
+       !Op("Nil", []) => t1
+       ; !Anno(Op("Nil", []),Op("Nil", [])) => t2
+       ; !exp|[ (ATerm) ATempty ]| => e
+    )
+    ; rules( Cache : t1 -> e )
+    ; rules( Cache : t2 -> e )
 
   construct-term =
     Cache 
@@ -694,13 +699,14 @@ rules
        ; (CacheConstant <+ Snd)
 
   CacheConstant :
-    (t, e) -> Id(x)
+    (t, e1) -> e2
     where <(Op(id, map(Cache)); proper-list 
 	    + Anno(Cache, Cache) 
 	    + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
         ; new => base; <conc-strings>("term_", <id>) => x
-        ; rules( Cache : t -> Id(x) )
-        ; !(base, x, e)
+	; !Id(x) => e2
+        ; rules( Cache : t -> e2 )
+        ; !(base, x, e1)
         ; fragment(DeclareTermId|"ConstDecl")
         ; fragment(InitTermId|"ConstInit")
 
@@ -774,9 +780,11 @@ rules
     where <construct-term> t2
 	; if <not(Anno(is-ListOp,id))> t2 then 
             check-aterm-list 
-          else 
+          else if ?Id(_) then
+	    !|[ (ATermList) ~exp:<id> ]|
+          else
             try(UncastATerm)
-          end => e
+          end end => e
 
   check-aterm-list :
     e -> exp|[ (ATermList)x ]|
