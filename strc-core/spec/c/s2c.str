@@ -1,7 +1,7 @@
 /**
  * Compilation of Stratego programs to C 
  */
-module s2c-ng
+module s2c
 
 imports 
   liblib 
@@ -12,7 +12,7 @@ imports
 
 strategies
 
-  s2c-ng = 
+  s2c = 
     io-wrap(s2c-options, compile)
  
   compile = 
