@@ -420,6 +420,14 @@ has been deferred.
 
 (Eelco Visser)
 
+---------+++ pp-stratego
+
+The Stratego pretty printer is now a manually built pretty-printer
+(using Stratego-Box language). The new pretty-printer should give a 
+much nicer output than the old pp-table approach.
+
+(Rob Vermaas)
+
 ---------++ Stratego/XT Deployment and Build System
 
 ---------++ New versions of ATerm Library and SDF Packages
