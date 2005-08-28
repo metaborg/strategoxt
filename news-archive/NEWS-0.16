@@ -245,6 +245,29 @@ TODO: overlays
 
 ---------+++ Calling strategies by their name ***
 
+Strategies can now be called dynamically by name.
+
+<verbatim>
+  !"do-it-now" => f ; call(f | s | t )
+</verbatim>
+
+Above dynamic call calls the do-it-now strategy
+with s as strategy argument and t as term argument. If
+the strategy does not exist (given the name, and arities)
+the dynamic call will fail without warning.
+
+At the moment it is necessary to 'register' a strategy
+to be able to call it dynamically. Make a dummy strategy
+DYNAMIC-CALLS with static calls to the strategies you want
+to call dynamically. 
+
+<verbatim>
+  DYNAMICAL-CALLS = do-it-now(!1 | 1)
+</verbatim>
+
+This is only temporary until we find a good syntax for 
+specifying this.
+
 (Rob Vermaas)
 
 ---------+++ Dynamic Rules Inspected ***
@@ -353,6 +376,12 @@ Refactoring to support `represent failure by NULL' model.
 Refactoring to support `represent failure by NULL' model.
 
 (Eelco Visser)
+
+Refactored native code of stratego-lib to reflect the structure
+and order of the hierarchy of the Stratego part of the library. 
+Removed unused definitions.
+
+(Rob Vermaas)
 
 ---------+++ Stratego code
 
