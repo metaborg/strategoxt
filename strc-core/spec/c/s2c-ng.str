@@ -45,29 +45,6 @@ strategies
   if-lib(s)      = if-lib(s, id)
   if-not-lib(s)  = if-lib(id, s)
 
-overlays
-
-  CastATerm(e) = 
-    |[ (ATerm) ~exp:e ]|
-
-  CastATermList(e) = 
-    TypeCast(TypeName(TypeSpec([],TypeId("ATermList"),[]),None),e)
-
-  CastATermInt(e) = 
-    TypeCast(TypeName(TypeSpec([],TypeId("ATermInt"),[]),None),e)
-
-  CastATermReal(e) = 
-    TypeCast(TypeName(TypeSpec([],TypeId("ATermReal"),[]),None),e)
-
-  CastATermAppl(e) = 
-    TypeCast(TypeName(TypeSpec([],TypeId("ATermAppl"),[]),None),e)
-
-  ATgetArgument(t, i) = 
-    FunCall(Id("ATgetArgument"),[t,i])
-
-  SymOfAppl(t) =
-    FunCall(Id("ATgetSymbol"),[CastATermAppl(t)])
-
 rules
 
   TranslateSpec = 
@@ -636,8 +613,8 @@ rules
         goto ~id:F;
     ]|
     where <map(MatchArg1(|Next,F) <+ MatchArg2(|Next,F))> 
-	   [(hd, FunCall(Id("ATgetFirst"),[CastATermList(trm)])), 
-            (tl, CastATerm(FunCall(Id("ATgetNext"),[CastATermList(trm)])))] => match-args
+	   [(hd, exp|[ ATgetFirst((ATermList)~exp:trm) ]|), 
+            (tl, exp|[ (ATerm)ATgetNetst((ATermList)~exp:trm) ]|)] => match-args
 
 /**
  * Building
