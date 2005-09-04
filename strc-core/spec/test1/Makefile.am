@@ -38,7 +38,8 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04 \
 		  let-test \
-		  cs-test01
+		  cs-test01 \
+		  static-links
 
 check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 
