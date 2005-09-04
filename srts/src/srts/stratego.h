@@ -35,6 +35,52 @@ USA
 #include "stratego-choice.h"
 #include "stratego-dynamic-call.h"
 
+
+/**
+ * Closures and static links.
+ */
+
+typedef struct str_frame *StrStaticLink;
+
+typedef struct str_closure *StrClosure;
+
+struct str_closure 
+{
+  ATerm (*fun)();
+  StrStaticLink sl;
+};
+
+struct str_frame 
+{
+  StrStaticLink parent;
+  ATerm **vars;  
+  StrClosure *funs;
+};
+
+#define sl_decl(par) \
+  struct str_frame frame; \
+  frame.parent = par; 
+
+#define sl_vars(n) \
+  ATerm *sl_vars[n]; \
+  frame.vars = sl_vars; 
+
+#define sl_funs(n) \
+  StrClosure sl_funs[n]; \
+  frame.funs = sl_funs;
+
+#define sl_init_var(i,x)  sl_vars[i] = &x;
+#define sl_init_fun(i,cl) sl_funs[i] = cl;
+
+#define sl_up(sl) ((sl)->parent)
+
+#define sl_readvar(i,s)  (*sl_writevar(i,s))
+#define sl_writevar(i,s) (*(((s)->vars)+i))
+
+#define sl_fun(i,s)    ((*(((s)->funs)+i))->fun)
+#define sl_fun_sl(i,s) ((*(((s)->funs)+i))->sl)
+
+
 /**
  * Global variable that is used to construct a linked list
  * of initializers in the Stratego libraries and application.
