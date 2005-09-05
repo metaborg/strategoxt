@@ -22,21 +22,21 @@ strategies
 
   apply-test(name, s, in-term, out) =
     do-test(name,
-            (sunit-create-input(in-term); s <+ <debug> "  strategy failed"; fail) => tmp;
+            (sunit-create-input(in-term); s <+ <print-failure> "  strategy failed"; fail) => tmp;
   	    sunit-create-output(out) => tmp'; 
 	    ((!tmp' => tmp)
-               <+ (<debug(!"  result not equal : ")> tmp;
-                   <debug(!"  expected         : ")> tmp'); fail))
+               <+ (<print-failure(|"  result not equal : ")> tmp;
+                   <print-failure(|"  expected         : ")> tmp'); fail))
 
   apply-test(name, s, in-term) =
     do-test(name,
-      (sunit-create-input(in-term); s <+ <debug> "  strategy failed"; fail)
+      (sunit-create-input(in-term); s <+ <print-failure> "  strategy failed"; fail)
     )
 
   apply-and-check(name, s, in-term, check) =
     do-test(name,
-      (sunit-create-input(in-term); s  <+ <debug> "  application failed"; fail)
-      ; (check <+ (debug(!"  check failed: "); fail))
+      (sunit-create-input(in-term); s  <+ <print-failure> "  application failed"; fail)
+      ; (check <+ (print-failure(|"  check failed: "); fail))
     )
 
   apply-and-fail(name, s, in-term) =
@@ -45,11 +45,11 @@ strategies
   apply-and-fail(name, s, in-term, out) =
     do-test(name,
 	    ((sunit-create-input(in-term); not(s))
-             <+ <debug> "  succeeded (should fail)"; fail))
+             <+ <print-failure> "  succeeded (should fail)"; fail))
 
   apply-and-show(name, s, in-term) =
     do-test(name
-	   ,(sunit-create-input(in-term); s <+ <debug> "  strategy failed"; fail)
+	   ,(sunit-create-input(in-term); s <+ <print-failure> "  strategy failed"; fail)
             ; <debug> ["  succeeded; result: ", <id>]
            )
 
@@ -97,7 +97,7 @@ strategies
 	   	<+ debug(!"  failed: "); fail)
 
   do-test(s | nr) =
-    where(< debug>nr )
+    where(<debug>nr )
   ; ( where(s) ; record-success <+ record-failure )
 
 /**
@@ -132,3 +132,30 @@ strategies
    */
   report-test =
     (debug(!"successes: "), debug(!"failures: "))
+    
+  print-failure =
+    sunit-failure-string
+    ; debug
+    
+  print-failure(|msg) =
+    debug(<sunit-failure-string> msg)
+
+strategies
+
+  /**
+   * @type String -> String
+   */
+  sunit-failure-string =
+    if <getenv> "ENABLE_COLORS" => "true" then
+      <concat-strings> [
+        <sunit-color-red>
+      , <id>
+      , <sunit-color-plain>
+      ]
+    end
+
+  sunit-color-red =
+    <conc-strings> (<implode-string> [27], "[01;31m")
+
+  sunit-color-plain =
+    <conc-strings> (<implode-string> [27], "[m")
