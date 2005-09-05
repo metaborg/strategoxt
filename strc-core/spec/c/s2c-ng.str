@@ -17,6 +17,7 @@ strategies
  
   compile = 
     init-term-caching
+    // ; init-frames
     ; TranslateSpec
     ; c-simplify
 
@@ -138,12 +139,11 @@ strategies
           in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
         }
 
-        
 	SRTS_stratego_initialize();
         register_strategies();
-        out_term = main_0_0((ATerm)in_term); 
+        out_term = main_0_0(NULL, (ATerm)in_term); 
         
-        if(out_term != NULL) 
+        if(out_term != NULL)
           {
             ATfprintf(stdout, "\"%t\\n\"", out_term);
             exit(0);
@@ -188,18 +188,22 @@ strategies
 
   InitConstructorQ :
     OpDecl(c, t) ->
-    [Stat(Assign(Id(csym), AssignEq,
-                 FunCall(Id("ATmakeSymbol"),[StringLit([<double-quote>c']),IntConst(n),Id("ATtrue")]))),
-     Stat(FunCall(Id("ATprotectSymbol"),[Id(csym)]))]
+    stm*|[
+      ~id:csym = ATmakeSymbol(~exp:StringLit([<double-quote>c']), 
+			      ~exp:IntConst(n), ATtrue);
+      ATprotectSymbol(~id:csym);
+    ]|
     where <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
 	; <Arity> t => ar; int-to-string => n
         ; <ConstructorName> (c, ar) => csym
 
   InitConstructor :
     OpDecl(c, t) ->
-    [Stat(Assign(Id(csym), AssignEq,
-                 FunCall(Id("ATmakeSymbol"),[StringLit([<double-quote>c]),IntConst(n),Id("ATfalse")]))),
-     Stat(FunCall(Id("ATprotectSymbol"),[Id(csym)]))]
+    stm*|[
+      ~id:csym = ATmakeSymbol(~exp:StringLit([<double-quote>c]), 
+			      ~exp:IntConst(n), ATfalse);
+      ATprotectSymbol(~id:csym);
+    ]|
     where <Arity> t => ar; int-to-string => n
         ; <ConstructorName> (c, ar) => csym
 
@@ -215,33 +219,25 @@ strategies
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    dec|[ ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
     where <not(is-local-function)> f
-	; <map(TranslateVarDec)> a1* => ps1
-        ; <map(TranslateVarDec)> a2* => ps2
-	; <conc>(ps1, ps2) => ps
+        ; <map(TranslateVarDec)> [a1*,a2*] => ps
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec|[ static ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    dec|[ static ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
     where <is-local-function> f
-	; <map(TranslateVarDec)> a1* => ps1
-        ; <map(TranslateVarDec)> a2* => ps2
-	; <conc>(ps1, ps2) => ps
+        ; <map(TranslateVarDec)> [a1*,a2*] => ps
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
-    where <map(TranslateVarDec)> a1* => ps1
-        ; <map(TranslateVarDec)> a2* => ps2
-	; <conc>(ps1, ps2) => ps
+    dec|[ ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
+    where <map(TranslateVarDec)> [a1*,a2*] => ps
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) ]| ->
-    dec|[ ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
-    where <map(TranslateVarDec)> a1* => ps1
-        ; <map(TranslateVarDec)> a2* => ps2
-	; <conc>(ps1, ps2) => ps
+    dec|[ ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
+    where <map(TranslateVarDec)> [a1*,a2*] => ps
 
 
 /**
@@ -252,9 +248,36 @@ strategies
   SDefToRegistration =
     ( ?Def|[ f(a1*|a2*) = s ]|
     + ?Def|[ external f(a1* | a2*) = s ]|
-    + ?Def|[ external f(a1* | a2*) ]| )
-  ; !stm |[ SRTS_register_function( (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue)),~id:f) ; ]|
+    + ?Def|[ external f(a1* | a2*) ]| 
+    )
+    ; !stm|[ 
+         SRTS_register_function( 
+           (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue)),
+           ~id:f
+         ) ; 
+       ]|
   
+
+/**
+ * Frames
+ */
+
+strategies
+
+  frame-of =
+    FrameOf <+ !"_outermost"
+
+  function-pointer =
+    if not(frame-of => "_outermost") then
+      id
+    end
+
+  var-access =
+    id    
+
+  static-link =
+    ?f
+    ; Frame
 
 /**
  * Translation of strategy definition to C function
@@ -269,38 +292,50 @@ strategies
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| ->
     |[ 
-       ATerm ~id:f(~param-dec*:args, ATerm t)
+       ATerm ~id:f(StrFramePtr sl, ~param-dec*:args, ATerm t)
        {
+	 sl_decl(0, 0, sl);
          ~stm:stm;
 	 return(t);
          ~id:F : 
          return NULL;
        }
     ]|
-    where <not(is-local-function)> f
-	; <map(TranslateVarDec)> a1* => args1
-        ; <map(TranslateVarDec)> a2* => args2
-	; <conc>(args1, args2) => args
+    where <not(is-local-function)> f;
+       {| Frame, FrameOf 
+	: Frame => g
+	; rules(
+            Frame   :+ _ -> f
+	    FrameOf :  f -> g
+	  )
+	; <mapconcat(TranslateVarDec)> [a1*,a2*] => args
 	; <newname> "fail" => F
 	; <translate-strat(|Next, F)>s => stm
+        |}
 
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| ->
     |[ 
-       static ATerm ~id:f(~param-dec*:args, ATerm t)
+       static ATerm ~id:f(StrFramePtr sl, ~param-dec*:args, ATerm t)
        {
+	 sl_decl(0, 0, sl);
          ~stm:stm;
 	 return(t);
          ~id:F : 
          return NULL;
        }
     ]|
-    where <is-local-function> f
-	; <map(TranslateVarDec)> a1* => args1
-        ; <map(TranslateVarDec)> a2* => args2
-	; <conc>(args1, args2) => args
+    where <is-local-function> f;
+       {| Frame, FrameOf 
+	: Frame => g
+	; rules(
+            Frame   :+ _ -> f
+	    FrameOf :  f -> g
+	  )
+	; <mapconcat(TranslateVarDec)> [a1*,a2*] => args
 	; <newname> "fail" => F
-	; <translate-strat(|Next, F)> s => stm
+	; <translate-strat(|Next, F)>s => stm
+        |}
 
   is-local-function =
     explode-string
@@ -315,11 +350,18 @@ strategies
 strategies
 
   TranslateVarDec :
-    VarDec(x, ConstType(_)) -> param-dec|[ ATerm ~id:x ]|
+    VarDec(x, ConstType(_)) -> param-dec|[ ATerm ~id:x ]| 
 
   TranslateVarDec :
-    VarDec(x, FunType(ts,_)) -> 
-    param-dec|[ ATerm ~id:x(~param-dec*:<map(TranslateType)> ts) ]|
+    VarDec(x, FunType(ts,_)) -> param-dec|[ StrClosure x ]|
+
+/* @todo
+
+    where Frame => g
+	; rules(
+	    VarAccess : Var(x) -> exp|[ sl_up ...
+          )
+*/
 
   TranslateType : 
     ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None)
@@ -388,6 +430,31 @@ rules
     where !S => Next; new => S'
 
   TranslateStrat(|S,F) :
+    Let(defs, s) -> 
+    Compound(<conc> (decs1, decs2), [<translate-strat(|S,F)>s])
+    where <map(SDefToDeclaration)> defs => decs1
+	; <map(TranslateDef)> defs => decs2
+
+
+/**
+ * Strategy calls
+ */
+rules
+
+  TranslateStrat(|S,F) :
+    Strat|[ f(s* | t* ) ]| -> 
+    <check-unbound-args(|F,t*)>
+    stm|[ 
+      { 
+        t = f(~id:<static-link>f, ~exp*:args); 
+        if( t == NULL ) goto ~id:F; else goto ~id:S; 
+      }
+    ]|
+    where <mapconcat(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
+        ; <map(topdown(try(construct-term)))> t* => args2
+        ; <concat>[args1, args2, [Id("t")]] => args
+
+  TranslateStrat(|S,F) :
     Strat|[ prim(~str:f, s* | t* ) ]| -> 
     <check-unbound-args(|F,t*)>
     stm|[ 
@@ -401,19 +468,6 @@ rules
         ; <conc>(args1, args2) => args
 
   TranslateStrat(|S,F) :
-    Strat|[ f(s* | t* ) ]| -> 
-    <check-unbound-args(|F,t*)>
-    stm|[ 
-      { 
-        t = f(~exp*:args); 
-        if( t == NULL ) goto ~id:F; else goto ~id:S; 
-      }
-    ]|
-    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
-        ; <map(topdown(try(construct-term)))> t* => args2
-        ; <concat>[args1, args2, [Id("t")]] => args
-
-  TranslateStrat(|S,F) :
     CallDynamic(tp,s*,t*) -> 
     <check-unbound-args(|F,[tp,t*])>
     stm |[ 
@@ -422,24 +476,19 @@ rules
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
-    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1 
+    where <mapconcat(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1 
         ; <map(topdown(try(construct-term)))> t* => args2  
         ; <concat>[args1, args2, [Id("t")]] => args 
 	; <topdown(try(construct-term))>tp => e
 
-  TranslateStrat(|S,F) :
-    Let(defs, s) -> 
-    Compound(<conc> (decs1, decs2), [<translate-strat(|S,F)>s])
-    where <map(SDefToDeclaration)> defs => decs1
-	; <map(TranslateDef)> defs => decs2
+/**
+ * Matching
+ */
 
 signature
   constructors
     Match : Term * Exp -> Exp
 
-/**
- * Matching
- */
 rules
 
   TranslateStrat(|S,F) :
@@ -614,7 +663,7 @@ rules
     ]|
     where <map(MatchArg1(|Next,F) <+ MatchArg2(|Next,F))> 
 	   [(hd, exp|[ ATgetFirst((ATermList)~exp:trm) ]|), 
-            (tl, exp|[ (ATerm)ATgetNetst((ATermList)~exp:trm) ]|)] => match-args
+            (tl, exp|[ (ATerm)ATgetNext((ATermList)~exp:trm) ]|)] => match-args
 
 /**
  * Building
