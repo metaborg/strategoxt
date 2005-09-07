@@ -179,4 +179,6 @@ int main(void)
 
   fprintf(stdout, "f2_sl(3) = %d\n", 
 	  f3_sl(NULL, &k, 3));
+
+  return 0;
 }
