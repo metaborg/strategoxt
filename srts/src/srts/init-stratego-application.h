@@ -9,6 +9,7 @@ static void SRTS_stratego_initialize_module()
 
 #ifdef XTC_REPOSITORY
   SRTS_default_xtc_repository = XTC_REPOSITORY();
+  ATprotect(&SRTS_default_xtc_repository);
 #endif
 }
 
