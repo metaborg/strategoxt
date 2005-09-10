@@ -11,7 +11,7 @@ strategies
 	!"--no-inlining: do not include definition bodies")
   
   defs-to-external-defs =
-    Specification([id, Strategies(filter(DefToExtDefInl <+ DefToExtDef + ExtSDef(id,id,id)))])
+    Specification([id, Strategies(filter(DefToExtDefInl <+ DefToExtDef + ExtSDef(unmangle,id,id)))])
 
   DefToExtDef :
     SDefT(f, a1*, a2*, s) -> ExtSDef(<unmangle>f, a1*, a2*)
