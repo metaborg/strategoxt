@@ -1,6 +1,7 @@
 /**
  * Strategies for logging 
  */
+
 module util/log
 imports 
   collection/tuple/cons
@@ -127,30 +128,40 @@ strategies
   /**
    * Logs the specified message as critical and terminates the program
    * with exit code 1.
+   *
+   * @type a -> _
    */
   fatal-err(|msg : String) =
     log(|Critical(), msg, <id>); <exit> 1
 
   /**
-   * Logs the specified message as and error.
+   * Logs the specified message as an error.
+   *
+   * @type a -> a
    */
   err(|msg : String) =
     log(|Error(), msg, <id>)
 
   /**
    * Logs the specified message as a warning.
+   *
+   * @type a -> a
    */
   warn(|msg : String) =
     log(|Warning(), msg, <id>)
 
   /**
    * Logs the specified message as a notice.
+   *
+   * @type a -> a
    */
   notice(|msg : String) =
     log(|Notice(), msg, <id>)
 
   /**
    * Logs the specified message as a debug.
+   *
+   * @type a -> a
    */
   dbg(|msg : String) =
     log(|Debug(), msg, <id>)
@@ -160,24 +171,32 @@ strategies
   /**
    * Logs the specified message as critical and terminates the program
    * with exit code 1.
+   *
+   * @type a -> _
    */
   fatal-err-msg(|msg : String) =
     log(|Critical(), msg); <exit> 1
 
   /**
-   * Logs the specified message as and error.
+   * Logs the specified message as an error.
+   *
+   * @type a -> a
    */
   err-msg(|msg : String) =
     log(|Error(), msg)
 
   /**
    * Logs the specified message as a warning.
+   *
+   * @type a -> a
    */
   warn-msg(|msg : String) =
     log(|Warning(), msg)
 
   /**
    * Logs the specified message as a notice.
+   *
+   * @type a -> a
    */
   notice-msg(|msg : String) =
     log(|Notice(), msg)
