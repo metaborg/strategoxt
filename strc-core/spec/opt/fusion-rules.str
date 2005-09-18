@@ -27,6 +27,9 @@ rules
   SeqOverLChoiceL :
     |[ s1 ; (s2 <+ s3) ]| -> |[ (s1; s2) <+ (s1; s3) ]| 
 
+  SeqOverGChoiceL :
+    |[ s1 ; (s2 < id + s3) ]| -> |[ (s1; s2) < id + (s1; s3) ]| 
+
   // The following rules are applicable under certain
   // circumstances. 
 
@@ -41,7 +44,13 @@ rules
 
       SeqOverLChoiceR :
         |[ (s1 <+ s2); s3 ]| -> |[ (s1; s3) <+ (s2; s3) ]|
+
+      SeqOverLChoiceR :
+        |[ (s1 < id + s2); s3 ]| -> |[ (s1; s3) < id + (s2; s3) ]|
     )
+
+  SeqOverGChoiceR :
+    |[ (s1 < s2 + s3); s4 ]| -> |[ s1 < (s2; s4) + (s3; s4) ]|
 
   // Note: watch out for free variable capture
 
@@ -56,6 +65,6 @@ rules
   // Always valid?
  
   BottomupOverConstructor :     
-    Term|[ <bottomup_1_0(s|)> c(t1*) ]| -> Term|[ <s> c(t2*) ]|
+    Term|[ <bottomup_1_0(s|)> c(t1*){^pt} ]| -> Term|[ <s> c(t2*){^pt} ]|
     where <map(\ t -> Term|[ <bottomup_1_0(s|)> t ]| \ )> [t1*] => [t2*]
 

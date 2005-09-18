@@ -1,5 +1,5 @@
 module fusion
-imports Stratego stratego-laws liblib desugar fusion-rules
+imports Stratego stratego-laws liblib stratego-laws fusion-rules
 
 signature
   constructors
@@ -10,8 +10,8 @@ strategies
   fusion-io = 
     io-wrap(
       declare-inline-rules
-      ; ( check-library-definitions
-        ; alltd(innermost-fusion)
+      ; ( // check-library-definitions; // don't check, just assume semantics
+          alltd(innermost-fusion)
 
 // turn off outermost-fusion while it is not finished (EV)
 //        ; alltd(innermost-fusion + outermost-fusion)
@@ -19,8 +19,7 @@ strategies
         ) <+ log(|Info(),"No innermost here")
     )
 
-
-  // Inlining strategy definitions
+// Inlining strategy definitions
 
   declare-inline-rules =
     Specification([Signature(id),
@@ -42,13 +41,14 @@ strategies
         Simplify
 	+ Choice(x, x)
 	+ LChoice(x, x) 
+        + GuardedLChoice(x, x, x)
 	+ Scope(id, Seq(Match(id),Build(id)))
 	+ Scope(id, Seq(Match(id),Seq(id,Build(id))))
 	+ InlineStrat; x
     ))
 
-  // Check library definitions
-  // note that other implementations might also be correct
+// Check library definitions
+// note that other implementations might also be correct
 
   check-library-definitions =
     check-that-try-is-try
@@ -60,7 +60,7 @@ strategies
       new => x
       ; (<InlineStrat> Strategy|[ try_1_0(x(|)|) ]|
          <+ log(|Info(),"No definition of try_1_0: ",<id>); fail)
-      ; (?|[ x(|) <+ id ]|
+      ; (?|[ x(|) < id + id ]|
          <+ log(|Info(),"try is not try"); fail)
       ; log(|Info(),"try is try ")
     )
@@ -88,7 +88,7 @@ strategies
       ; log(|Info(),"bottomup is bottomup")
     )
 
-  // The fusion strategy
+// The fusion strategy
 
   innermost-fusion = 
     ?|[ innermost_1_0(s1|) ]| 
@@ -99,7 +99,7 @@ strategies
     ; where(<bottomup-to-var> Strategy|[ bottomup_1_0(x(|)|) ]|)
 
     ; where(<inline-rules> s1 => s2)
-    ; !|[ bottomup_1_0(rec x((mark(|); s2); bottomup_1_0(x(|)|) <+ id)|) ]|
+    ; !|[ bottomup_1_0(rec x((mark(|); s2); bottomup_1_0(x(|)|) < id + id)|) ]|
     ; propagate-mark
 
     ; fuse-with-bottomup
@@ -108,6 +108,7 @@ strategies
     ; not(oncetd(?Strategy|[ mark(|) ]|)
           ; say(!"not all marks removed"))
     ; desugar
+    ; simplify
     ; log(|Info(),"Fused application of innermost")
 
   // Propagate mark over choice
@@ -116,6 +117,7 @@ strategies
     innermost(
 	SeqOverChoiceL
 	+ SeqOverLChoiceL
+	+ SeqOverGChoiceL
 	+ SeqOverScopeL 
     )
 

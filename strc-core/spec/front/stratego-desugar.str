@@ -118,6 +118,10 @@ rules
           in <foldr(!s', glchoice)> b*
           end => s
 
+  Desugar :
+    |[ where(s) ]| -> |[ {x: ?x; s; !x} ]|
+    where new => x
+
 // overlays
 
   Desugar :

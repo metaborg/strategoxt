@@ -12,8 +12,7 @@ SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn \
 
 LDADD           += $(SSL_LIBS)
 
-libexec_PROGRAMS = 
-#compile-match desugar-case 
+libexec_PROGRAMS = compile-match desugar-case 
 #check_PROGRAMS 	 = matrix-test
 
 CLEANFILES 	 = *.dep $(TESTS) 

@@ -8,21 +8,29 @@ strategies
 
   match-to-matrix =
   (
-    (Choice(id, id) + LChoice(id, id));
-    rec x(
-      LChoice(x, x)
-      <+ rec y(
-           Seq(y, match-to-matrix)
-           <+ Scope(id, y)
-           <+ MatchToMatrix
-           <+ all(match-to-matrix)
-         )
-    )
-   <+ all(match-to-matrix)
+    if Choice(id, id) + LChoice(id, id) + GuardedLChoice(id, Id, id) then
+      rec x(
+        LChoice(x, x)
+        <+ GuardedLChoice(x, Id, x)
+        <+ rec y(
+             Seq(y, match-to-matrix)
+             <+ Scope(id, y)
+             <+ MatchToMatrix
+             <+ ExpandId; y
+             <+ all(match-to-matrix)
+           )
+      )
+   else 
+     all(match-to-matrix)
+   end
   )
-  ; bottomup(repeat(MatrixMerge + Simplify))
+  ; bottomup(repeat(MatrixMerge /* + Simplify */))
 
 rules
+
+  ExpandId :
+    Id -> Scope([x], Seq(Match(Var(x)), Build(Var(x))))
+    where new => x
 
   MatchToMatrix : 
     Match(t) -> <term-to-matrix> t
@@ -36,8 +44,12 @@ rules
     Matrix(ps, <map(\ Row(ts, s) -> Row(ts, Scope(xs, s)) \ )> rows)
 
   MatrixMerge : 
-    GuardedLChoice(Matrix(ps, rows), s1, s2) ->
-    LChoice(Matrix(ps, <map(\ row -> (row, s1) \ )> rows), s2)
+    GuardedLChoice(Matrix(ps, rows), Id, s2) ->
+    LChoice(Matrix(ps, rows), s2)
+
+//  MatrixMerge : 
+//    GuardedLChoice(Matrix(ps, rows), s1, s2) ->
+//    LChoice(Matrix(ps, <map(\ row -> (row, s1) \ )> rows), s2)
 
   MatrixMerge : 
     LChoice(Matrix(ps1, rows1), LChoice(Matrix(ps2, rows2), s)) ->

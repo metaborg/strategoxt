@@ -78,10 +78,10 @@ rules
           <map(AltDropLet)> alts => alts'
 
   AltDropLet :
-    Alt(c, args, Let(sdefs, s)) -> Alt(c, args, s)
+    Alt(c, args, ann, Let(sdefs, s)) -> Alt(c, args, ann, s)
   
   AltGiveSDefs :
-    Alt(c, args, Let(sdefs, s)) -> sdefs
+    Alt(c, args, ann, Let(sdefs, s)) -> sdefs
 
 //
 //rules

@@ -1,0 +1,61 @@
+// pattern match compilation test
+
+module test86
+//imports sunit
+
+imports list-cons
+
+signature
+  constructors
+    F : E * E -> E
+    G : E * E -> E
+    H : E * E -> E
+    I : E
+
+    OA : E * E * E -> E
+    OB : E * E -> E
+    OC : E * E * E -> E
+    OD : E * E * E * E -> E
+    OE : E * E -> E
+    OF : E * E -> E
+   
+
+strategies
+
+/*
+  main = 
+    test-suite(!"test86",
+      test1
+    )
+
+  test1 = 
+    apply-test(!"test1"
+	, test1-strategy
+	, ![]
+	, ![]
+	)
+*/
+
+  DYNAMIC_CALLS = test1-strategy <+ test2-strategy
+
+  main =
+    <test1-strategy> F(G("a", "b"), H("c", "d")) => OC(G("a", "b"), "c", "d")
+    ; <test2-strategy> F("a", "b"){I} => OE("a", "b")
+    ; <test2-strategy> F("a", "b") => OF("a", "b")
+
+  test1-strategy =
+    B <+ A <+ C <+ D
+
+  A : F(G(x, y), z){I} -> OA(x, y, z)
+  
+  B : F(G(I, y), z) -> OB(y, z)
+
+  C : F(x, H(y, z)) -> OC(x, y, z)
+
+  D : F(G(x, y), H(z, a)) -> OD(x, y, z, a)
+
+  test2-strategy =
+    E <+ F
+
+  E : F(x, y){I} -> OE(x, y)
+  F : F(x, y)    -> OF(x, y)

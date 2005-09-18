@@ -166,12 +166,12 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 ## Innermost fusion
 
-#%.s5: %.s4
-#	../opt/fusion  -i $< -o $@ -b --verbose 2
+%.opt0: %.f21
+	../opt/fusion  -i $< -o $@ -b --verbose 2
 
 # Inlining
 
-%.opt1 : %.f21
+%.opt1 : %.opt0
 	$(FC_CORE_CONG) -i $<
 	../opt/worker-wrapper -i $< -o $@ -b
 
@@ -210,7 +210,6 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	../match/compile-match -i $< -o $@ -b
 
 %.opt5 : %.opt4
-	$(FC_CORE_CONG) -i $<
 	../match/desugar-case -i $< -o $@ -b
 
 # Inlining
@@ -248,7 +247,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 #%.b1 : %.f21
 #	../opt/canonicalize -i $< -o $@ -b
 
-%.b1 : %.opt3
+%.b1 : %.opt5
 	$(FC_CORE) -i $<
 	../opt/canonicalize -i $< -o $@ -b
 

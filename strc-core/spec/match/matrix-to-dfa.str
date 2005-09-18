@@ -15,30 +15,31 @@ strategies
     |}
 
   reduce-matrix = 
-    (//MatrixSeenBefore <+
-     MatrixRowsEmpty <+ 
-     SkipWild <+ 
-     ShiftColumn <+ 
-     Mixture)
+    //MatrixSeenBefore 
+    fail
+    <+ MatrixRowsEmpty
+    <+ SkipWild
+    <+ ShiftColumn 
+    <+ Mixture
 
 rules
 
   MatrixScope :
     Matrix(ps, rows) -> 
     Let(sdefs, Scope(ps, Seq(Assign(Var([0])), Matrix(rows'))))
-    where <unzip((* Row(id,simplify-widen); *) RowLet(!ps)); (concat,id)> rows => (sdefs, rows')
+    where <unzip((* Row(id,simplify-widen); *) RowLet(|ps)); (concat,id)> rows => (sdefs, rows')
 
-  RowLet(ps):
+  RowLet(|ps):
     Row(ts, s) -> ([], Row([], ts, s))
     where <simple-strategy> s
 
-  RowLet(ps) :
+  RowLet(|ps) :
     Row(ts1, s) -> 
     ([SDefT(f, [], as, s)], Row([], ts1, CallT(SVar(f), [], ts2)))
     where <not(simple-strategy)> s; new => f
         //; <debug(!"RowLet: ")> Row(ts1, s)
         ; < tvars-matrix
-          ; <isect>(<id>, <ps>)
+          ; <isect>(<id>, ps)
           ; unzip(!(VarDec(<id>,DefaultTerm), Var(<id>)))
           > s => (as, ts2)
         //; debug(!"Free variables: ")
@@ -59,7 +60,8 @@ strategies
     rec x(
       Id 
       + Fail 
-      + Build(rec trm(Var(id) + Int(id) + Real(id) + Str(id) + Op(id,list(trm))))
+      + Build(rec trm(Var(id) + Int(id) + Real(id) + Str(id) 
+              + Anno(Op(id,list(trm)),id)))
       + Assign(Var(id),Var(id))
       + Match(Var(id))
       + Prim(id,id) 
@@ -82,7 +84,7 @@ rules
 
   SkipWild : 
     Matrix(rows) -> Matrix(rows')
-    where <map(Row(id, [As(id,Wld)|id]; Tl, id))> rows => rows'
+    where <map(Row(id, ?[As(_,Wld)|<id>], id))> rows => rows'
 
   // The next column contains a mixture of constructors and wildcards
   // Move it to the first list for later consideration
@@ -104,12 +106,12 @@ rules
 
   Mixture :
     Matrix(rows) -> Case(label, Var(path), alts, def)
-    where <get-row-path> rows => path;
-          <outedges> rows => cs;
-          <transitions> (rows, cs) => alts;
-	  <default-state> rows => def;
-	  new => label; 
-	  rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
+    where <get-row-path> rows => path
+        ; <outedges> rows => cs
+        ; <transitions> (rows, cs) => alts
+	; <default-state> rows => def
+	; new => label
+	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
 
   get-row-path =
     ?[Row([As(Off(<id>),_) | _], _, _) | _]
@@ -120,35 +122,46 @@ strategies
   // constructor name and its arguments from the 
   // first column of a row
 
-  outedges = filter(ConsArgs); uniq
+  outedges = 
+    filter(ConsArgs); uniq
 
-  offsets = map( \ As(Off(p), t) -> Var(p) \ )
+  offsets = 
+    map(offset)
+
+  offset :
+    As(Off(p), t) -> Var(p)
 
 rules
 
   ConsArgs :
-    Row([As(_, Op(c,ts))|_], _, _) -> (Fun(c, <length> ts), <offsets> ts)
+    Row([As(_, Anno(Op(c,t*),pt))|_], _, _) -> 
+    (Fun(c, <length> t*), <offsets> [t*], <offset> pt)
 
   ConsArgs :
-    Row([As(_, Int(n))|_], _, _) -> (Int(n), [])
+    Row([As(Off(p), Op(c,t*))|_], _, _) -> 
+    (Fun(c, <length> t*), <offsets> [t*], ["a" | p])
 
   ConsArgs :
-    Row([As(_, Real(n))|_], _, _) -> (Real(n), [])
+    Row([As(_, Anno(Int(n),pt))|_], _, _) -> (Int(n), [], <offset> pt)
 
   ConsArgs :
-    Row([As(_, Str(x))|_], _, _) -> (Str(x), [])
+    Row([As(_, Anno(Real(n),pt))|_], _, _) -> (Real(n), [], <offset> pt)
+
+  ConsArgs :
+    Row([As(_, Anno(Str(x),pt))|_], _, _) -> (Str(x), [], <offset> pt)
 
 strategies
 
   // Compute the transitions
 
-  transitions = rzip(Transition)
+  transitions = 
+    rzip(Transition)
 
 rules
 
   Transition :
-    (rows, (c, args)) -> Alt(c, args, Matrix(rows'))
-    where <filter(ConsTransition(MatchCons(!c, !args)))> rows => rows'
+    (rows, (c, args, ann)) -> Alt(c, args, ann, Matrix(rows'))
+    where <filter(ConsTransition(MatchCons(|c, args, ann)))> rows => rows'
 
   // map a row onto the row of patterns left to match after the 
   // given constructor is matched. Shift the new patterns to the
@@ -159,35 +172,37 @@ rules
     Row(pats, <conc> (pats'', pats'), fin)
     where <match-cons> t => pats''
 
-  MatchCons(mkc, mkargs) :
-    Op(c, ts) -> ts
-    where mkc => Fun(c, ar); <eq> (<length> ts, ar)
+  MatchCons(|c', args, ann) :
+    Anno(Op(c, t*), pt) -> [t*,pt]
+    where !c' => Fun(c, ar); <eq> (<length> t*, ar)
 
-  MatchCons(mkc, mkargs) :
-    Str(x) -> []
-    where mkc => Str(x); mkargs => []
+  MatchCons(|c', args, ann) :
+    Op(c, t*) -> [t*, As(Off(ann),Wld)]
+    where !c' => Fun(c, ar); <eq> (<length> t*, ar)
 
-  MatchCons(mkc, mkargs) :
-    Real(r) -> []
-    where mkc => Real(r); mkargs => []
+  MatchCons(|c, args, ann) :
+    Anno(Str(x),pt) -> [pt]
+    where !c => Str(x); !args => []
 
-  MatchCons(mkc, mkargs) :
-    Int(n) -> []
-    where mkc => Int(n); mkargs => []
+  MatchCons(|c, args, ann) :
+    Anno(Real(r),pt) -> [pt]
+    where !c => Real(r); !args => []
 
-  MatchCons(mkc, mkargs) :
-    Wld -> ts
-    where mkargs; map(\ Var(p) -> As(Off(p), Wld)\ ) => ts
+  MatchCons(|c, args, ann) :
+    Anno(Int(n),pt) -> [pt]
+    where !c => Int(n); !args => []
+
+  MatchCons(|c, args, ann) :
+    Wld -> [t*, As(Off(ann),Wld)]
+    where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
 
 strategies
 
   // Get the default state (reachable via wildcards)
 
   default-state = 
-    filter(WildPat); 
-    \ rows -> Matrix(rows) \
-
-rules
+    filter(WildPat)
+    ; !Matrix(<id>)
 
   WildPat :
     Row([As(_, Wld) | pats], pats', fin) -> Row(pats, pats', fin)
@@ -196,7 +211,7 @@ rules
 /*
     Pattern match compilation for Stratego
 
-    Copyright (C) 2003 Eelco Visser <visser@acm.org>
+    Copyright (C) 2003, 2005 Eelco Visser <visser@acm.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

@@ -39,6 +39,7 @@ strategies
     + ChoiceIsSugar 
     + NotIsSugar
     + RecIsSugar
+    + Desugar
 
 
   simplify0 = 

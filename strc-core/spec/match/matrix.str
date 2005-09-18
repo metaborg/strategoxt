@@ -43,7 +43,12 @@ rules
     Row(ts, fin) -> Row(As(Off([]), ts), fin)
 
   Propagate :
-    As(Off(path), Anno(Op(f, ts), pt)) -> As(Off(path), Anno(Op(f, As(Off(path), ts)), pt))
+    As(Off(path), Anno(Op(f, ts), pt)) -> 
+    As(Off(path), Anno(Op(f, As(Off(path), ts)), As(Off(["a" | path]), pt)))
+
+  Propagate :
+    As(Off(path), Op(f, ts)) -> 
+    As(Off(path), Anno(Op(f, As(Off(path), ts)), As(Off(["a" | path]), Wld)))
 
     // what to do with annotation?
 
@@ -55,11 +60,10 @@ rules
 
   Propagate :
     As(Off(path), ts) -> ts'
-    where <nzip0(Annotate(!path))> ts => ts'
+    where <nzip0(Annotate(|path))> ts => ts'
 
-  Annotate(mkpath) :
+  Annotate(|path) :
     (i, t) -> As(Off([i | path]), t)
-    where mkpath => path
 
 // Replace variables by wildcards and add renamings from new to old
 // variables

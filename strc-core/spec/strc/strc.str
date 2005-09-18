@@ -20,7 +20,7 @@ strategies
   compile =
     xtc-input(
       front-end
-      //; optimize
+      ; optimize
       ; export-external-defs
       ; back-end
       ; c-compile
@@ -67,13 +67,8 @@ strategies
 
   optimize =
     log-timed( 
-	// SIMPLIFICATION
-          olevel1(	
-	    simplify1
-            ; save-as1(!".opt1")
- 	  )
 	// INNERMOST FUSION
-        ; olevel2(
+        olevel2(
 	    try(where(not(<get-config> "--fusion"))
 		; fusion
             	; save-as2(!".opt2")
@@ -129,9 +124,10 @@ strategies
             ; save-as1(!".opt13")
             ; save-as1(!".opt14")
           )
-    | <concat-strings>["Optimization succeeded -O ",<get-config ; int-to-string>"-O"]
+    | <concat-strings>["Optimization succeeded -O ",<get-config; int-to-string>"-O"]
     , 1
     )
+
 strategies
 
   export-external-defs =
