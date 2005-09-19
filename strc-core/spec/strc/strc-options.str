@@ -79,7 +79,6 @@ strategies
 	where(<set-config>("--library", ())); !(),
 	!"--library | --lib  Build a library instead of an application\n")
 
-
   + ArgOption("--C-include",       
 	where(<post-extend-config>("--C-include", [<id>])); !(), 
 	!"--C-include h      Include header file h (\"file.h\" or <file.h>)")

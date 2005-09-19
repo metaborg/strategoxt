@@ -50,6 +50,18 @@ rules
     As(Off(path), Op(f, ts)) -> 
     As(Off(path), Anno(Op(f, As(Off(path), ts)), As(Off(["a" | path]), Wld)))
 
+  Propagate :
+    As(Off(path), Anno(Int(n),pt)) -> 
+    As(Off(path), Anno(Int(n), As(Off(["a" | path]), pt)))
+
+  Propagate :
+    As(Off(path), Anno(Real(n),pt)) -> 
+    As(Off(path), Anno(Real(n), As(Off(["a" | path]), pt)))
+
+  Propagate :
+    As(Off(path), Anno(Str(n),pt)) -> 
+    As(Off(path), Anno(Str(n), As(Off(["a" | path]), pt)))
+
     // what to do with annotation?
 
   Propagate :

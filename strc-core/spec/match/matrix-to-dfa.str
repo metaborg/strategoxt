@@ -107,8 +107,8 @@ rules
   Mixture :
     Matrix(rows) -> Case(label, Var(path), alts, def)
     where <get-row-path> rows => path
-        ; <outedges> rows => cs
-        ; <transitions> (rows, cs) => alts
+	; <outedges> rows => cs
+	; <transitions> (rows, cs) => alts
 	; <default-state> rows => def
 	; new => label
 	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
