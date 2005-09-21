@@ -56,7 +56,7 @@ strategies
     ?x; rules(ElimVar+x : Var(x))
 
   mark-build-term =
-    alltd(where({?Var(x); override rules(ElimVar : Var(x) -> Undefined)}))
+    alltd(where({?Var(x); rules(ElimVar :- Var(x))}))
 
   MarkBuild =
     Build(mark-build-term)
@@ -86,6 +86,10 @@ strategies // Choice
 	           ,GuardedLChoice(id,id,uv))
 
   elim-abstract-choice(left, right) =
+    left /ElimVar\ right
+
+
+/*
     where(save-ElimVar => bnd0)
     ; left
     ; where(
@@ -116,3 +120,5 @@ strategies // Dynamic rule manipulation
              <+ !(key, [Undefined]))
            }))
     ; restore-ElimVar
+
+*/

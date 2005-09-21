@@ -22,8 +22,8 @@ strategies
     + EmptyScope
     + LetNoDefs
     + LetHoist
-    //+ BuildMatch
-    //+ MatchSimplify
+    + BuildMatch
+    + MatchSimplify
 
   DefineCongruences =
     (MatchingCongruence <+ TransformingAnnoCongruence <+ TransformingCongruence)

@@ -15,9 +15,8 @@ libexec_PROGRAMS = simplify1 simplify2 simplify3		    \
 		   fusion inline dead-def-elim			    \
 		   lift-definitions canonicalize bound-unbound-vars \
 		   worker-wrapper				    \
-		   define-congruences defs-to-external-defs	    
-
-#		   const-prop dead-var-elim
+		   define-congruences defs-to-external-defs	    \
+		   const-prop dead-var-elim
 
 #		   effects-analysis
 #		   dead-var-elim

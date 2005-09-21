@@ -11,25 +11,28 @@ rules // combinations of match and build
 
 
   MisMatch :
-    Seq(Build(Op(f, ts1)), Match(Op(g, ts2))) -> Fail
+    Seq(Build(Anno(Op(f, ts1),pt1)), Match(Anno(Op(g, ts2),pt2))) -> Fail
     where <not(eq)> (f, g)
 
   MisMatch :
-    Seq(Build(Op(f, ts1)), Seq(Match(Op(g, ts2)), _)) -> Fail
+    Seq(Build(Anno(Op(f, ts1),p1)), Seq(Match(Anno(Op(g, ts2),pt2)), _)) -> Fail
     where <not(eq)> (f, g)
 
 
   BuildMatchFusion :
-    Seq(Build(Op(f, ts1)), Match(Op(f, ts2))) ->
+    Seq(Build(Anno(Op(f, ts1),pt1)), Match(Anno(Op(f, ts2),pt2))) ->
     Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
-        Build(Op(f, ts1)))
+    Seq(Build(Anno(pt1,Op(Nil,[]))), 
+    Seq(Match(Anno(pt2,Wld)),
+        Build(Op(f, ts1)))))
 
   BuildMatchFusion :
-    Seq(Build(Op(f, ts1)), Seq(Match(Op(f, ts2)), s)) ->
+    Seq(Build(Anno(Op(f, ts1),pt1)), Seq(Match(Anno(Op(f, ts2),pt2)), s)) ->
     Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
+    Seq(Build(Anno(pt1,Op(Nil,[]))), 
+    Seq(Match(Anno(pt2,Wld)),
     Seq(Build(Op(f, ts1)),
-        s))
-
+        s))))
 
   BuildBuild :
     Seq(Build(t1), Build(t2)) -> Build(t2)
@@ -92,5 +95,5 @@ rules
   BuildAlwaysSucceeds :
     LChoice(Build(t), s) -> Build(t)
     where <topdown(?Var(_) < ?Var(_){"bound"} 
-           + ?Op("Cons", _) < fail 
-           + id)> t
+                   + ?Op("Cons", _) < fail 
+                   + id)> t

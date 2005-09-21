@@ -23,9 +23,10 @@ strategies
     <+ all(cp)
 
   exec-maybe(s) =
-    where(UndefCurrentTerm; save-Binding => bnd0)
-    ; s
-    ; where(UndefCurrentTerm; <restore-Binding> bnd0)
+    {| Binding :
+       where(UndefCurrentTerm)
+       ; s
+       ; where(UndefCurrentTerm) |}
 
   prop-seq(cp) =
     Seq(cp, cp)
@@ -64,10 +65,10 @@ strategies
     ; {| Binding :
 	   where(<map({?x; rules(Binding :- Var(x))})> xs)
            ; Scope(id, cp)
-	   ; where(try(
- 	       CurrentTerm; oncetd({x: ?Var(x); <fetch(?x)> xs})
-               ; UndefCurrentTerm
-	     ))
+	   ; if CurrentTerm; oncetd({x: ?Var(x); <fetch(?x)> xs}) then
+               UndefCurrentTerm
+		  // use dependent dynamic rules here
+	     end
       |}
     
   prop-sdef(cp) =
@@ -78,10 +79,7 @@ strategies
       |}
 
   prop-let(cp) =
-    ?Let(_,_)
-    ; where(save-Binding => bnd0; save-CurrentTerm => trm0)
-    ; Let(map(where(UndefCurrentTerm; <restore-Binding> bnd0); cp)
-         , where(<restore-CurrentTerm> trm0; <restore-Binding> bnd0); cp)
+    Let(map({| Binding, CurrentTerm : UndefCurrentTerm; cp |}), cp)
     
   prop-build =
     Build(alltd(Binding))
@@ -119,7 +117,7 @@ strategies
 	<+ (MatchWildCard, id)
 // TermIsVar can only be used after integration of
 // annotations in abstract syntax
-//	<+ (TermIsVar(Var(id)), id)
+	<+ (TermIsVar(Var(id)), id)
 	<+ (TermIsVarIgnore(Var(id)), id)
     )
 
@@ -149,6 +147,15 @@ strategies
 	           ,GuardedLChoice(id,id,uv))
 
   prop-abstract-choice(left, right) =
+    left /CurrentTerm,Binding\ right
+
+
+  UndefCurrentTerm =
+    rules(CurrentTerm : _ -> Undefined)
+
+
+/*-----------------------------------------------------------------------
+
     where(save-Binding => bnd0; save-CurrentTerm => trm0)
     ; left
     ; where(
@@ -182,10 +189,6 @@ strategies // Dynamic rule manipulation
            }))
     ; restore-Binding
 
-
-  UndefCurrentTerm =
-    rules(CurrentTerm : _ -> Undefined)
-
   save-CurrentTerm =
     <table-getlist> "CurrentTerm"
 
@@ -204,3 +207,6 @@ strategies // Dynamic rule manipulation
              <+ !(key, [Undefined]))
            }))
     ; restore-CurrentTerm
+
+*/
+

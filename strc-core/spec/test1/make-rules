@@ -19,7 +19,7 @@ CINCLUDES = \
 #	$(prefix)/bin/pp-stratego -a -i $< -o $@ --annotations
 
 %.txt: % 
-	$(prefix)/bin/pretty-stratego -a -i $< -o $@ 
+	$(prefix)/bin/pretty-stratego -a -i $< -o $@ --verbose 10
 #--annotations
 
 %.atxt : %
@@ -202,7 +202,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 %.opt7 : %.opt6
 	../opt/const-prop -i $< -o $@ -b
 
-%.opt8 : %.s7.opt7
+%.opt8 : %.opt7
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
 %.opt9 : %.opt8
