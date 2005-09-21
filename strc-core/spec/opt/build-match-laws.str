@@ -18,20 +18,23 @@ rules // combinations of match and build
     Seq(Build(Anno(Op(f, ts1),p1)), Seq(Match(Anno(Op(g, ts2),pt2)), _)) -> Fail
     where <not(eq)> (f, g)
 
+  BuildMatchFusion :
+    Seq(Build(Anno(Op(f, ts1),pt1)), 
+        Match(Anno(Op(f, ts2),pt2)))
+  ->
+    Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
+    Seq(Build(Anno(pt1,Op("Nil",[]))), 
+    Seq(Match(Anno(pt2,Wld)),
+        Build(Anno(Op(f, ts1), pt1)))))
 
   BuildMatchFusion :
-    Seq(Build(Anno(Op(f, ts1),pt1)), Match(Anno(Op(f, ts2),pt2))) ->
+    Seq(Build(Anno(Op(f, ts1),pt1)), 
+    Seq(Match(Anno(Op(f, ts2),pt2)), s)) 
+  ->
     Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
-    Seq(Build(Anno(pt1,Op(Nil,[]))), 
+    Seq(Build(Anno(pt1,Op("Nil",[]))), 
     Seq(Match(Anno(pt2,Wld)),
-        Build(Op(f, ts1)))))
-
-  BuildMatchFusion :
-    Seq(Build(Anno(Op(f, ts1),pt1)), Seq(Match(Anno(Op(f, ts2),pt2)), s)) ->
-    Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
-    Seq(Build(Anno(pt1,Op(Nil,[]))), 
-    Seq(Match(Anno(pt2,Wld)),
-    Seq(Build(Op(f, ts1)),
+    Seq(Build(Anno(Op(f, ts1),pt1)),
         s))))
 
   BuildBuild :
