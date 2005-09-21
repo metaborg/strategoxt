@@ -402,6 +402,8 @@ rules
 
 strategies
 
+  DYNAMIC-CALLS = TypeCheck
+
   test-rules-1 =
     apply-test(!"test-rules-1"
 	, TypeCheck

@@ -14,7 +14,8 @@ strategies
 // Creating a matrix from a term
 
   term-to-matrix =
-    ! As(Off([]), [<id>])
+    not(oncetd(?Explode(_,_)))
+    ; ! As(Off([]), [<id>])
     ; topdown(try(?As(Wld, <id>)))
     ; topdown(try(Propagate))
     ; collect-substitutions
@@ -62,6 +63,10 @@ rules
     As(Off(path), Anno(Str(n),pt)) -> 
     As(Off(path), Anno(Str(n), As(Off(["a" | path]), pt)))
 
+  Propagate :
+    As(Off(path), Anno(Var(x),pt)) -> 
+    As(Off(path), Anno(Var(x), As(Off(["a" | path]), pt)))
+
     // what to do with annotation?
 
   Propagate :
@@ -98,8 +103,14 @@ rules
   IgnoreVar : 
     As(Off(path), Var(x)) -> As(Off(path), Wld) where <is-list> path
 
+  IgnoreVar : 
+    As(Off(path), Anno(Var(x),pt)) -> As(Off(path), Anno(Wld,pt)) where <is-list> path
+
   CollectSubst : 
     As(Off(path), Var(x)) -> [Assign(Var(x), Var(path))]
+
+  CollectSubst : 
+    As(Off(path), Anno(Var(x),pt)) -> [Assign(Var(x), Var(path))]
 
   IgnoreVar : 
     As(Var(x), As(Off(path), t)) -> As(Off(path), t)

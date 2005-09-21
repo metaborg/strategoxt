@@ -25,7 +25,7 @@ strategies
 
   num-to-string = 
     rec x(
-      ; split( <mod>(<id>, 10); <add>(<id>, 48)
+      split( <mod>(<id>, 10); <add>(<id>, 48)
              , <div>(<id>, 10); int )
       ; (id, ?0; ![] <+ x); MkCons
     )

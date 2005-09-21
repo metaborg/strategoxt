@@ -19,7 +19,8 @@ strategies
     fail
     <+ MatrixRowsEmpty
     <+ SkipWild
-    <+ ShiftColumn 
+    <+ ShiftColumn
+    <+ SingletonMatrix 
     <+ Mixture
 
 rules
@@ -60,8 +61,7 @@ strategies
     rec x(
       Id 
       + Fail 
-      + Build(rec trm(Var(id) + Int(id) + Real(id) + Str(id) 
-              + Anno(Op(id,list(trm)),id)))
+      + Build(id)
       + Assign(Var(id),Var(id))
       + Match(Var(id))
       + Prim(id,id) 
@@ -73,6 +73,22 @@ strategies
     //; debug(!"yes: ")
 
 rules
+
+  // Matrix has only one row
+
+  SingletonMatrix :
+    Matrix([Row(t1*, t2*, s)]) -> s'    
+    where <foldr(!s, !Seq(<Fst>,<Snd>), 
+                 !Seq(Build(<offset>), Match(<matrix-pat-to-term>)))> [t1*, t2*] => s'
+
+  matrix-pat-to-term =
+    ?As(Off(p), <id>)
+    ; topdown(try( 
+        \ As(Off(p), Wld) -> Var(p) \
+        <+ \ As(Off(p), t) -> As(Var(p), t) \
+        <+ \ Anno(pt1, As(Off(p), Anno(pt2, As(Off(p'), Wld)))) -> 
+           Anno(pt1, As(Var(p), pt2)) \
+      ))
 
   // All rows are empty
 
@@ -106,11 +122,17 @@ rules
 
   Mixture :
     Matrix(rows) -> Case(label, Var(path), alts, def)
-    where <get-row-path> rows => path
+    where //debug(!"a: ")
+	<get-row-path> rows => path
+	//; debug(!"b: ")
 	; <outedges> rows => cs
+	//; debug(!"c: ")
 	; <transitions> (rows, cs) => alts
+	//; debug(!"d: ")
 	; <default-state> rows => def
+	//; debug(!"e: ")
 	; new => label
+	//; debug(!"f: ")
 	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
 
   get-row-path =
@@ -149,6 +171,9 @@ rules
 
   ConsArgs :
     Row([As(_, Anno(Str(x),pt))|_], _, _) -> (Str(x), [], <offset> pt)
+
+  ConsArgs :
+    Row([As(_, Anno(Wld,pt))|_], _, _) -> (Wld , [], <offset> pt)
 
 strategies
 
@@ -194,6 +219,10 @@ rules
 
   MatchCons(|c, args, ann) :
     Wld -> [t*, As(Off(ann),Wld)]
+    where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
+
+  MatchCons(|c, args, ann) :
+    Anno(Wld,pt) -> [t*, pt]
     where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
 
 strategies

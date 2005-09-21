@@ -167,50 +167,49 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 ## Innermost fusion
 
 %.opt0: %.f21
+	$(FC_CORE) -i $<
 	../opt/fusion  -i $< -o $@ -b --verbose 2
 
 # Inlining
 
 %.opt1 : %.opt0
-	$(FC_CORE_CONG) -i $<
+	$(FC_CORE) -i $<
 	../opt/worker-wrapper -i $< -o $@ -b
 
 %.opt2 : %.opt1
-	$(FC_CORE_CONG) -i $<
+	$(FC_CORE) -i $<
 	../opt/inline -i $< -o $@ -b
 
 %.opt3 : %.opt2
-	$(FC_CORE_CONG) -i $<
+	$(FC_CORE) -i $<
 	../opt/dead-def-elim -i $< -o $@ -b
 
-## First Optimization
-#
-#%.s7.opt1 : %.s7 
-#	../opt/simplify1 -i $< -o $@ -b
-#
-#%.s7.opt2 : %.s7.opt1 
-#	../opt/define-congruences -i $< -o $@ -b
-#
-#%.s7.opt3 : %.s7.opt2 
-#	../opt/const-prop -i $< -o $@ -b
-#
-#%.s7.opt4 : %.s7.opt3 
-#	../opt/bound-unbound-vars -i $< -o $@ -b
-#
-#%.s7.opt5 : %.s7.opt4 
-#	../opt/dead-var-elim -i $< -o $@ -b
-#
-#%.s7.opt : %.s7.opt5
-#	../opt/simplify3 -i $< -o $@ -b
-#
+%.opt4 : %.opt3
+	$(FC_CORE) -i $<
+	../opt/simplify1 -i $< -o $@ -b
+
 ## Pattern match compilation
 
-%.opt4 : %.opt3
-	$(FC_CORE_CONG) -i $<
+%.opt5 : %.opt4
+	$(FC_CORE) -i $<
 	../match/compile-match -i $< -o $@ -b
 
-%.opt5 : %.opt4
+%.opt6 : %.opt5
 	../match/desugar-case -i $< -o $@ -b
+
+## Cleaning up
+
+%.opt7 : %.opt6
+	../opt/const-prop -i $< -o $@ -b
+
+%.opt8 : %.s7.opt7
+	../opt/bound-unbound-vars -i $< -o $@ -b
+
+%.opt9 : %.opt8
+	../opt/dead-var-elim -i $< -o $@ -b
+
+%.opt10 : %.opt9
+	../opt/simplify3 -i $< -o $@ -b
 
 # Inlining
 #
@@ -247,7 +246,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 #%.b1 : %.f21
 #	../opt/canonicalize -i $< -o $@ -b
 
-%.b1 : %.opt5
+%.b1 : %.opt6
 	$(FC_CORE) -i $<
 	../opt/canonicalize -i $< -o $@ -b
 

@@ -1,9 +1,9 @@
 // pattern match compilation test
 
 module test86
-//imports sunit
 
-imports list-cons
+imports 
+  sunit
 
 signature
   constructors
@@ -18,30 +18,28 @@ signature
     OD : E * E * E * E -> E
     OE : E * E -> E
     OF : E * E -> E
-   
 
 strategies
 
-/*
   main = 
     test-suite(!"test86",
       test1
+      ; test2
+      ; test3
+      ; test4
+      ; test5
     )
+
+strategies
 
   test1 = 
     apply-test(!"test1"
 	, test1-strategy
-	, ![]
-	, ![]
+	, !F(G("a", "b"), H("c", "d"))
+	, !OC(G("a", "b"), "c", "d")
 	)
-*/
 
-  DYNAMIC_CALLS = test1-strategy <+ test2-strategy
-
-  main =
-    <test1-strategy> F(G("a", "b"), H("c", "d")) => OC(G("a", "b"), "c", "d")
-    ; <test2-strategy> F("a", "b"){I} => OE("a", "b")
-    ; <test2-strategy> F("a", "b") => OF("a", "b")
+  DYNAMIC-CALLS = test1-strategy 
 
   test1-strategy =
     B <+ A <+ C <+ D
@@ -54,8 +52,102 @@ strategies
 
   D : F(G(x, y), H(z, a)) -> OD(x, y, z, a)
 
-  test2-strategy =
-    E <+ F
+strategies
+
+  test2 = test2a; test2b
+
+  test2a = 
+    apply-test(!"test2a"
+	, test2-strategy
+	, !F("a", "b"){I}
+	, !OE("a", "b")
+	)
+
+  test2b = 
+   apply-test(!"test2b"
+	, test2-strategy
+	, !F("a", "b")
+	, !OF("a", "b")
+	)
+
+  DYNAMIC-CALLS = test2-strategy
+
+  test2-strategy = E <+ F
 
   E : F(x, y){I} -> OE(x, y)
   F : F(x, y)    -> OF(x, y)
+
+strategies
+
+  test3 = test3a; test3b
+ 
+  test3a =
+    apply-test(!"test3a"
+	, test3-strategy
+	, !"b"
+	, !2
+	)
+
+  test3b =
+    apply-test(!"test3b"
+	, test3-strategy
+	, !0
+	, !3
+	)
+
+  DYNAMIC-CALLS = test3-strategy
+
+  test3-strategy =
+       ?"a"; !1 
+    <+ ?"b"; !2
+    <+ ?0;   !3
+    <+ ?1;   !4
+    <+       !5
+
+
+strategies
+
+  test4 = test4a; test4b
+ 
+  test4a =
+    apply-test(!"test4a"
+	, test4-strategy
+	, !F(G("a", "b"){I}, "c")
+	, !("T4-1", G("a", "b"){I}, "c")
+	)
+
+  test4b =
+    apply-test(!"test4b"
+	, test4-strategy
+	, !F(G("a", "b"), "c")
+	, !("T4-2", "a", "b", "c")
+	)
+
+  DYNAMIC-CALLS = test4-strategy
+
+  test4-strategy =
+    T4-1 <+ T4-2
+
+  T4-1 : F(x{I}, y) -> ("T4-1", x, y)
+
+  T4-2 : F(G(x, y), z) -> ("T4-2", x, y, z)
+
+strategies
+
+  test5 = test5a
+ 
+  test5a =
+    apply-test(!"test5a"
+	, test5-strategy
+	, !(G("a", "b"){I}, "c")
+	, !("T5-1", G("a", "b"){I}, ["c"])
+	)
+
+  DYNAMIC-CALLS = test5-strategy
+
+  test5-strategy =
+    T5-1 <+ T5-2
+
+  T5-1 : "" #([x | xs]) -> ("T5-1", x, xs)
+
+  T5-2 : (G(x, y), z) -> ("T5-2", x, y, z)
