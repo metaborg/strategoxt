@@ -28,7 +28,8 @@ exports
 
     PreTerm "{^" PreTerm "}"	 -> Term {cons("Anno")}
 
-    Var "@" Term 		 -> Term {cons("As")}
+    Var "@" Term 		 -> Term {cons("As"),prefer}
+    Var "@" PreTerm 		 -> PreTerm {cons("As")}
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
