@@ -28,6 +28,7 @@ strategies
       ; test3
       ; test4
       ; test5
+      ; test6
     )
 
 strategies
@@ -151,3 +152,22 @@ strategies
   T5-1 : "" #([x | xs]) -> ("T5-1", x, xs)
 
   T5-2 : (G(x, y), z) -> ("T5-2", x, y, z)
+
+strategies
+
+  test6 = test6a
+ 
+  test6a =
+    apply-test(!"test6a"
+	, test6-strategy
+	, ![("a", ["b", "c"], ["d"]),("a", ["e", "f"], ["g"], "foo")]
+	, ![("a", ["b", "c"], ["d"]),("a", ["e", "f"], ["g"], "foo")]
+	)
+
+  DYNAMIC-CALLS = test6-strategy
+
+  test6-strategy =
+    where(map(
+      ?(f, <length => i>, <length => j>)
+    + ?(f, <length => i>, <length => j>, s)
+    ))

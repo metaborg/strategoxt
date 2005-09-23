@@ -158,7 +158,7 @@ strategies
         !"--prefer-str              Prefer .str files over .rtree files")
  
   + ArgOption("-O",
-        where(<set-config>("-O", <set-opt-level> )); !(),
+        where(<set-config>("-O", <string-to-int; set-opt-level> )); !(),
 	!"-O n               Optimization level (0 = no optimization)" )
 
 
@@ -192,6 +192,9 @@ strategies
 
 
   set-opt-level = 
+    id
+
+  set-opt-level-old =
     string-to-int
   ; if <lt>(<id>,2) then
       !2 ; log(|Warning(),"Optimization levels < 2 are broken, setting optimization level to 2.")

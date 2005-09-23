@@ -67,6 +67,7 @@ strategies
 
   optimize =
     log-timed( 
+      dbg(|"starting optimizer");
 	// INNERMOST FUSION
         olevel2(
 	    try(where(not(<get-config> "--fusion"))
