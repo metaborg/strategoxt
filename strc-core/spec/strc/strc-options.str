@@ -20,7 +20,7 @@ strategies
     ; <set-config> ("--keep", 0)
     ; <set-config> ("--format-check", 1)
     ; <set-config> ("--statistics", 1)
-    ; <set-config> ("-O", 3)
+    ; <set-config> ("-O", 1)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])

@@ -246,7 +246,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 #%.b1 : %.f21
 #	../opt/canonicalize -i $< -o $@ -b
 
-%.b1 : %.opt6
+%.b1 : %.opt0
 	$(FC_CORE) -i $<
 	../opt/canonicalize -i $< -o $@ -b
 
