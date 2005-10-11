@@ -80,7 +80,7 @@ strategies
         ; olevel3(
 	    worker-wrapper
             ; save-as6(!".opt2")
-	    ; inline
+	    ; do-inline
 	    ; dead-def-elim
             ; save-as4(!".opt3")
 	    ; simplify1
@@ -103,7 +103,7 @@ strategies
 	// INLINING 
         // inline local definitions introduced by pattern match compilation
         ; olevel5(
-	   inline
+	   do-inline
            ; save-as5(!".opt7")
 	   ; dead-def-elim
            ; save-as5(!".opt8")
@@ -455,7 +455,7 @@ strategies // COMPILER COMPONENTS
 // OPTIMIZER
 
   fusion 		= comp(|"fusion")
-  inline 		= comp(|"inline")
+  do-inline 		= comp(|"inline")
   dead-def-elim 	= comp(|"dead-def-elim", <if-lib(!["--only-local"],![])>)
   compile-match 	= comp(|"compile-match")
   desugar-case 		= comp(|"desugar-case")

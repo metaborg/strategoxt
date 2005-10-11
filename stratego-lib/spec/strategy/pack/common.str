@@ -49,7 +49,7 @@ strategies
   * Unpacking is the reverse of packing, i.e., writing each module
   * in a list of modules to a separate file.
   */
-  unpack(wrapper, getname, ext) = 
+  unpack(wrapper: (term -> term) * term -> term, getname, ext) = 
     wrapper(WriteMod(getname, WriteToTextFile, ext))
 
 strategies

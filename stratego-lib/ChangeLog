@@ -1,3 +1,14 @@
+2005-10-11  Valentin David  <valentin.david@gmail.com>
+
+	Fix STR-418 issue.
+
+	* stratego-lib/ssl-compat/lib.str:
+	Import missing modules.
+
+	* stratego-lib/spec/strategy/pack/common.str,
+	* stratego-lib/spec/strategy/pack/modules.str:
+	Fix signatures.
+
 2005-07-31  Martin Bravenboer <martin@cs.uu.nl>
 
 	* stratego-lib/spec/collection/list/common.str: fixed the !Conc in

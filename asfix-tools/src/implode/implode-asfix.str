@@ -10,7 +10,6 @@ imports
   liblib 
   AsFix 
   verbalize-sdf
-  placeholder
 
 signature
   constructors
@@ -22,6 +21,15 @@ signature
 
     meta-listvar : String -> Term
     meta-var     : String -> Term
+
+strategies
+
+  //FIXME: delete these strategies when the baseline's libstrategolib
+  //       will contain the term/placeholder module.
+  fixme-get-placeholder =
+    ?t; prim("SSL_getPlaceholder", t)
+  fixme-is-placeholder =
+    ?t; prim("SSL_isPlaceholder", t)
 
 strategies
 
@@ -370,7 +378,7 @@ rules
     ; {| ReplacePlaceholder: 
         <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
       ; <alltd({ ph:
-           is-placeholder ; get-placeholder => ph
+           fixme-is-placeholder ; fixme-get-placeholder => ph
          ; (  ReplacePlaceholder 
            <+ log(| Error()
                   , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "

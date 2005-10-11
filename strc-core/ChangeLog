@@ -1,3 +1,8 @@
+2005-10-11  Valentin David  <valentin.david@gmail.com>
+
+	* strc-core/spec/strc/strc.str: Fix redefinition external "inline"
+	strategy.
+
 2004-08-01 Martin Bravenboer  <martin@cs.uu.nl>
 
 	* strc-core/spec/strc/strc-options.str: standalone strc: pass

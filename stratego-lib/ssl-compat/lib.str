@@ -11,12 +11,18 @@ imports
 	strategy/conditional
 	strategy/iteration
 
+ // pack
+
+	strategy/pack/common
+	strategy/pack/modules
+
  // traversal
 
 	strategy/traversal/simple
 	strategy/traversal/list
 	strategy/traversal/fixpoint
 	strategy/traversal/environment
+	strategy/traversal/list-environment
 
  // data types
 
@@ -26,6 +32,9 @@ imports
         term/string
 	term/common
 	term/annotation
+	term/placeholder
+	term/share
+	term/zip
 	annotation-props
  	collection/list/integer
 	term/integer

@@ -42,11 +42,11 @@ strategies
 	where(<set-config> ("-dep", <id>)); !(),
 	!"--dep f | -d f       Write dependency to file f")
 
-  pack-modules(pack : term * (term -> term) -> term)
+  pack-modules(pack : (term -> term) * term -> term)
     = pack-modules(pack, fail)
       <+ <fatal-error> ["Packing modules failed"]
 
-  pack-modules(pack : term * (term -> term) -> term, dep-base) =
+  pack-modules(pack : (term -> term) * term -> term, dep-base) =
     option-wrap(pack-options <+ io-options,
       (<get-config; filter(not("-I"))> "-I" <+ ![]) => path
       ; (<get-config> "-i" <+ !stdin) => infile

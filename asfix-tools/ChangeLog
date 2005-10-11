@@ -1,3 +1,8 @@
+2005-10-11  Valentin David  <valentin.david@gmail.com>
+
+	* asfix-tools/src/implode/implode-asfix.str:
+	Hack around redefinition of the strategies of the "pack" module.
+
 2005-02-03  Valentin David  <valentin.david@gmail.com>
 
 	* src/implode/implode-asfix.str: Fix implosion skipping of
