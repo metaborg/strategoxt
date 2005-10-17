@@ -77,7 +77,7 @@ strategies
           )
 	// INLINING
 	// inline small definitions, congruences
-        ; olevel3(
+        ; olevel2(
 	    worker-wrapper
             ; save-as6(!".opt2")
 	    ; do-inline
@@ -95,7 +95,7 @@ strategies
             ; save-as4(!".opt4")
           )
 	// PATTERN MATCH COMPILATION
-        ; olevel2( 
+        ; olevel3( 
 	    compile-match
 	    ; desugar-case
             ; save-as2(!".opt5")
