@@ -128,6 +128,9 @@ exports
 
     "M"   [0-9\']*        -> ModName {prefer}
 
+    "sc" [0-9\']*         -> SwitchCase {prefer}
+    "sc" [0-9\']* "*"     -> SwitchCase* {prefer}
+
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
     "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}+ {prefer}

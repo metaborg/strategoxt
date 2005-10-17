@@ -75,6 +75,7 @@ exports
 
   %% Syntactic sugar sugar
 
+  sorts SwitchCase
   context-free syntax
 
     SVar  		  		  -> Strategy {cons("CallNoArgs")}
@@ -82,11 +83,16 @@ exports
     "(" Rule ")" 			  -> Strategy {cons("SRule")}
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
-    "if" Strategy "then" Strategy "else" Strategy "end" -> Strategy {cons("CondChoice")}
-    "if" Strategy "then" Strategy "end" -> Strategy {cons("IfThen")}
-    "switch" Strategy ("case" Strategy ":" Strategy)* "end" -> Strategy {cons("SwitchChoiceNoOtherwise")}
-    "switch" Strategy ("case" Strategy ":" Strategy)*
-                       "otherwise" ":" Strategy "end" -> Strategy {cons("SwitchChoice")}
+
+    "if" Strategy "then" Strategy 
+                  "else" Strategy "end"   -> Strategy {cons("CondChoice")}
+    "if" Strategy "then" Strategy "end"   -> Strategy {cons("IfThen")}
+
+    "switch" Strategy SwitchCase* "end"   -> Strategy {cons("SwitchChoiceNoOtherwise")}
+    "switch" Strategy SwitchCase*
+         "otherwise" ":" Strategy "end"   -> Strategy {cons("SwitchChoice")}
+
+    "case" Strategy ":" Strategy          -> SwitchCase {cons("SwitchCase")}
 
     Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
 
