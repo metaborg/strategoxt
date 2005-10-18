@@ -819,7 +819,7 @@ rules
 
 
 rules
-/*
+
   stratego-to-abox :
     SwitchChoiceNoOtherwise(s1,ss) -> |[
       V [ V is=2 vs=0 [
@@ -833,6 +833,14 @@ rules
 
   switch-case :
     (s1,s2) -> |[
+       V is=2 vs=0 [
+         H hs=1[KW["case"] ~s1 KW[":"]]
+         ~s2
+       ]
+     ]|
+
+  switch-case :
+    SwitchCase(s1,s2) -> |[
        V is=2 vs=0 [
          H hs=1[KW["case"] ~s1 KW[":"]]
          ~s2
@@ -854,7 +862,6 @@ rules
       ]|
       where <map(switch-case)>ss => ss'
 
-*/
 rules
   stratego-to-abox :
     StrategyCurly(s) -> |[ H [ KW["{"] ~s KW["}"] ] ]|
