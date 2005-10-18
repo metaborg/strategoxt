@@ -121,6 +121,13 @@ rules
           end => s
 
   Desugar :
+    SwitchChoice(s1, sc*, s2) -> |[ {x : where(s1 => x); s} ]|
+    where new => x
+        ; let glchoice = \ (SwitchCase(si, si'), stl) -> |[ if <~si> x then ~si' else ~stl end ]| \ 
+          in <foldr(!s2, glchoice)> sc*
+          end => s
+
+  Desugar :
     |[ where(s) ]| -> |[ {x: ?x; s; !x} ]|
     where new => x
 
