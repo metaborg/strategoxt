@@ -38,11 +38,17 @@ strategies
   while-not(c, s) = 
     while(not(c), s)
 
-  for(i, c, s) = 
-    i; while-not(c, s)
-
   while(c, s) = 
     if c then s; while(c, s) end
 
   do-while(s, c) =
     s; if c then do-while(s, c) end
+
+  for(i, c, s) = 
+    i; while-not(c, s)
+
+  for(s : Int * a -> a | low, up) =
+    if <leq>(low, up) then
+      s(|low)
+      ; for(s | <inc>low, up)
+    end
