@@ -5,24 +5,44 @@ module strategy/iteration
 imports strategy/conditional
 strategies
 
- /** 
-  * repeat(s,c) repeats strategy s as long as possible and finishes with c.
-  */ 
-  repeat(s, c)       = rec x(s; x <+ c)
-  repeat(s)          = repeat(s, id)
+  /**
+   * Repeat s to the current term until it fails, accumulating the
+   * changes. The result is the last term before failure:
+   * 
+   * t1 - s -> t2 - s -> t3 - s fails -> t3
+   */
 
- /**
-  * repeat1(s,c) applies s at least once.
-  */ 
-  repeat1(s, c)      = rec x(s; (x <+ c))
-  repeat1(s)         = repeat1(s, id)
+  repeat(s) =
+    try(s; repeat(s))
 
-  repeat-until(s, c) = rec x(s; (c <+ x))
+  /** 
+   * repeat(s,c) repeats strategy s as long as possible and finishes with c.
+   */ 
 
-  while(c, s)        = rec x(try(c; s; x))
-  do-while(s, c)     = rec x(s; try(c; x))
+  repeat(s, c) =
+    s; repeat(s, c) <+ c
 
-  while-not(c, s)    = rec x(c <+ s; x)   
+  /**
+   * repeat1(s,c) applies s at least once.
+   */ 
 
-  for(i, c, s)       = i; while-not(c, s)
+  repeat1(s, c) = 
+    s; (repeat1(s, c) <+ c)
 
+  repeat1(s) = 
+    repeat1(s, id)
+
+  repeat-until(s, c) = 
+    s; if c then id else repeat-until(s, c) end
+
+  while-not(c, s) = 
+    while(not(c), s)
+
+  for(i, c, s) = 
+    i; while-not(c, s)
+
+  while(c, s) = 
+    if c then s; while(c, s) end
+
+  do-while(s, c) =
+    s; if c then do-while(s, c) end
