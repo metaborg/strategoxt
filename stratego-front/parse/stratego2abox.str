@@ -228,6 +228,7 @@ rules
 
 rules
 
+/*
   stratego-to-abox =
     ?Parenthetical(e)
   ; switch <stratego-to-abox-prefer <+ stratego-to-abox>e => box
@@ -235,7 +236,7 @@ rules
       case ?H(_,_)      : !box |[ H hs=1 ["(" ~box ")"] ]|
       otherwise         : !box |[ H hs=0 ["(" ~box ")"] ]|
     end
-    
+*/
     
 rules
 
@@ -818,6 +819,7 @@ rules
 
 
 rules
+/*
   stratego-to-abox :
     SwitchChoiceNoOtherwise(s1,ss) -> |[
       V [ V is=2 vs=0 [
@@ -852,7 +854,7 @@ rules
       ]|
       where <map(switch-case)>ss => ss'
 
-
+*/
 rules
   stratego-to-abox :
     StrategyCurly(s) -> |[ H [ KW["{"] ~s KW["}"] ] ]|
