@@ -16,7 +16,7 @@ strategies
 	  ; try(where(<get-config> "--annotations")
                 ; annos-as-comment)
           )
-        ; xtc-transform(!"ast2abox", !["-p", <(get-config <+ !"Stratego-pretty.pp"); xtc-find> "-p" | <pass-verbose>])
+        ; xtc-transform(!"stratego2abox")
         ; xtc-transform(!"abox2text", !<pass-verbose>)
       )
     )

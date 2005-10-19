@@ -84,14 +84,22 @@ rules
 
 rules
 
-  stratego-to-abox : 
-    OpDecl(name,rhs) -> |[ R [~lit:name KW[":"] H hs=1 [~rhs] ] ]|
+  stratego-to-abox-prefer =
+  ( ?OpDecl(name,rhs)
+  + ?OpDeclInj(rhs) ; !"" => name
+  + ?OpDeclQ(name,rhs)
+  )
+  ; !rhs => FunType(lhs,rhs')
+  ; <separate-by-star>lhs => lhs'
+  ; !|[ R [~lit:name KW[":"] H hs=1 [~lhs' KW["->"] ~rhs'] ] ]|
 
-  stratego-to-abox : 
-    OpDeclInj(rhs) -> |[ R ["" KW[":"] H hs=1 [ ~rhs ] ] ]|
 
-  stratego-to-abox : 
-    OpDeclQ(name,rhs) -> |[ R [~lit:name KW[":"] H hs=1 [~rhs] ] ]|
+  stratego-to-abox =
+  ( ?OpDecl(name,rhs)
+  + ?OpDeclInj(rhs) ; !"" => name
+  + ?OpDeclQ(name,rhs)
+  )
+  ; !|[ R [~lit:name KW[":"] H hs=1 [~rhs] ] ]|
 
   stratego-to-abox : 
     SortVar(name) -> S(name)
@@ -123,7 +131,7 @@ rules
     ConstType(sort) -> sort
 
   stratego-to-abox : 
-    FunType(lhs,rhs) -> |[ H [ ~lhs' KW["->"] ~rhs ] ]|
+    FunType(lhs,rhs) -> |[ H [ "(" ~lhs' KW["->"] ~rhs ")" ] ]|
     where
       <separate-by-star>lhs => lhs'
 
@@ -445,9 +453,13 @@ rules
   stratego-to-abox : 
     DefaultVarDec(name) -> S(name)
 
+  stratego-to-abox-prefer :
+    VarDec(name,FunType(lhs,rhs)) -> |[ H [ ~lit:name KW[":"] ~lhs' KW["->"] ~rhs ] ]|
+    where
+      <separate-by-star>lhs => lhs'
+    
   stratego-to-abox : 
     VarDec(name,type) -> |[ H [ ~lit:name KW[":"] ~type ] ]|
-
 
 rules
 
