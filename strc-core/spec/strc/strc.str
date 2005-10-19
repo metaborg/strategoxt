@@ -12,7 +12,7 @@ strategies
     command-line-options
     ; log-timed(compile | "Compilation succeeded", 1)
     ; <exit> 0
-   <+ log(|Error(),["Compilation failed (", <run-time ; temp-real-to-string>, " secs)"])
+   <+ log(|Error(),["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
     ; <exit> 1
 
 strategies
@@ -172,7 +172,7 @@ strategies
           ; fc2(|"Stratego-Core", "be-buv")
 	)
       ; s2c
-      ; fc1(|"C", "be-c")
+      ; fc-c(|1,"be-c")
       ; ac2abox
       ; abox2text
       ; rename-to(get-outfile(!".c"))
@@ -254,6 +254,21 @@ strategies
     end
     ; if-keep(save-as(!phase)|<inc>n)
 
+  fc-c(| n, phase) =
+    if <geq>(<get-config> "--format-check", n) then
+      fc(|"C", phase)
+    end
+    ; if-keep(
+        where(
+          copy-to(get-outfile(<conc-strings>(".",phase)) => file1)
+        ; log(|Info(), ["abstract syntax in '", file1, "'"] )
+        ; xtc-transform(!"pp-c")
+        ; copy-to(<conc-strings> (file1, ".txt") => file2)
+        ; log(|Info(), ["concrete syntax in '", file2, "'"])
+        )
+      | <inc>n
+      )
+
   fc(|format, phase) =
     where(
       <concat-strings>[format, ".rtg-nf"]
@@ -296,9 +311,9 @@ strategies
         <diff-times>(<times>,start)
       ; <concat-strings>[ <align-left>(' ', msg, 27)
                         , " : [user/system] = ["
-                        , <self-children-user-time; ticks-to-seconds ; temp-real-to-string>
+                        , <self-children-user-time; ticks-to-seconds ; real-to-string(|2)>
                         , "s/"
-                        , <self-children-sys-time; ticks-to-seconds ; temp-real-to-string>
+                        , <self-children-sys-time; ticks-to-seconds ; real-to-string(|2)>
                         , "s]"
                         ]
       ; log(|Info(),<id>)
@@ -306,16 +321,6 @@ strategies
     else
       s
     end
-
- /**
-  * @todo after baseline update change to real-to-string(|2) XXX
-  */
-  temp-real-to-string =
-    real-to-string
-  ; try(
-      <string-tokenize>(['.'],<id>) => [a,b]
-    ; <concat-strings>[a,".",<string-as-chars(\[c,d|_] -> [c,d] \)>b]
-    ) 
 
   // save intermediate results
 
