@@ -112,12 +112,16 @@ rules
     ; check-constructors'(|(f, <length> xs), "overlay")
 
   check-constructors'(|fstr, kindstr) =
-    {| CheckConsError :
+    where( 
+      !fstr => (n,i,j) 
+    ; <concat-strings>[n,"(",<int-to-string>i,"|",<int-to-string>j,")"] => fstr' 
+    )
+  ; {| CheckConsError :
        rules(
          CheckConsError : 
            Op(c, ts) -> Op(c, ts) 
            where 
-             log(|Error(), ["in ", kindstr, " ", fstr, ": ", 
+             log(|Error(), ["in ", kindstr, " ", fstr', ": ", 
                     "constructor ", c, "/", <length; int-to-string> ts, " not declared"])
              ; <log-puts> "    "
              ; <pp-stratego-fragment> Op(c, ts)
@@ -126,3 +130,4 @@ rules
        );
        manytd(not(CheckCons /* <+ CheckTuple */); CheckConsError)
     |}
+
