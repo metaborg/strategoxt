@@ -99,7 +99,8 @@ rules
 // sugar for choice
 
   Desugar :
-    RChoice(s1, s2) -> LChoice(s2, s1)
+    |[ s1 +> s2 ]| -> |[ s2 <+ s1 ]|
+    // RChoice(s1, s2) -> LChoice(s2, s1)
 
   Desugar :
     |[ if s1 then s2 else s3 end ]| -> |[ where(s1) < s2 + s3 ]|
@@ -107,25 +108,21 @@ rules
   Desugar :
     |[ if s1 then s2 end ]| -> |[ where(s1) < s2 + id ]|
 
-//  Desugar :
-//    |[ switch s sc* end ]| -> |[ switch s sc* otherwise fail end ]|
-
   Desugar :
     SwitchChoiceNoOtherwise(s0, b*) -> SwitchChoice(s0, b*, |[ fail ]|)
+    // |[ switch s1 sc* end ]| -> |[ switch s1 sc* otherwise fail end ]|
 
   Desugar :
     SwitchChoice(s1, sc*, s2) -> |[ {x : where(s1 => x); s} ]|
+    // |[ switch s1 sc* s2 end ]| -> |[ {x : where(s1 => x); s} ]|
     where new => x
-        ; let glchoice = \ ((si, si'), stl) -> |[ if <~si> x then ~si' else ~stl end ]| \ 
-          in <foldr(!s2, glchoice)> sc*
-          end => s
+        ; <foldr(!s2, glchoice(|x))> sc* => s
 
-  Desugar :
-    SwitchChoice(s1, sc*, s2) -> |[ {x : where(s1 => x); s} ]|
-    where new => x
-        ; let glchoice = \ (SwitchCase(si, si'), stl) -> |[ if <~si> x then ~si' else ~stl end ]| \ 
-          in <foldr(!s2, glchoice)> sc*
-          end => s
+  glchoice(|x) : 
+    ((s1, s2), s3) -> |[ if <~s1> x then ~s2 else ~s3 end ]|
+
+  glchoice(|x) :
+    (SwitchCase(s1, s2), s3) -> |[ if <~s1> x then ~s2 else ~s3 end ]|
 
   Desugar :
     |[ where(s) ]| -> |[ {x: ?x; s; !x} ]|

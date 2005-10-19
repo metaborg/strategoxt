@@ -85,14 +85,14 @@ strategies // Control-flow combinators
 strategies // Boolean combinators
 
   /**
-   * true is a synonym for id
+   * true is a synonym for id.
    */
 
   true = 
     id
 
   /**
-   * false is a synonym for id
+   * false is a synonym for id.
    */
 
   false = 
