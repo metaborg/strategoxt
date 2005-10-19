@@ -6,49 +6,77 @@ imports strategy/conditional
 strategies
 
   /**
-   * Repeat s to the current term until it fails, accumulating the
-   * changes. The result is the last term before failure:
-   * 
-   * t1 - s -> t2 - s -> t3 - s fails -> t3
+   * Repeatedly apply s until it fails.
    */
 
   repeat(s) =
     try(s; repeat(s))
 
   /** 
-   * repeat(s,c) repeats strategy s as long as possible and finishes with c.
+   * Repeatedly apply s until it fails and terminate with application of c.
    */ 
 
   repeat(s, c) =
-    s; repeat(s, c) <+ c
+    (s; repeat(s, c)) <+ c
 
   /**
-   * repeat1(s,c) applies s at least once.
+   * Repeatedly apply s (at least once) and terminate with application of c.
    */ 
 
   repeat1(s, c) = 
     s; (repeat1(s, c) <+ c)
 
+  /**
+   * Repeatedly apply s (at least once).
+   */ 
+
   repeat1(s) = 
     repeat1(s, id)
 
-  repeat-until(s, c) = 
-    s; if c then id else repeat-until(s, c) end
+  /**
+   * Repeatedly apply s until c succeeds.
+   */
 
-  while-not(c, s) = 
-    while(not(c), s)
+  repeat-until(s, c) = 
+    s; (c <+ repeat-until(s, c))
+
+  /**
+   * While c succeeds apply s.
+   */
 
   while(c, s) = 
-    if c then s; while(c, s) end
+    try(c; s; while(c, s))
+
+  /**
+   * While c does not succeed apply s.
+   */
+
+  while-not(c, s) = 
+    c <+ (s; while-not(c, s))
+
+  /**
+   * Apply s at least once and then repeat while c succeeds.
+   */
 
   do-while(s, c) =
-    s; if c then do-while(s, c) end
+    s; while(c, s)
+
+  /**
+   * Repeat application of s after initialization with i 
+   * while c fails.
+   */
 
   for(i, c, s) = 
     i; while-not(c, s)
+
+  /**
+   * Apply s for each integer from low to up (inclusive).
+   */
 
   for(s : Int * a -> a | low, up) =
     if <leq>(low, up) then
       s(|low)
       ; for(s | <inc>low, up)
     end
+
+
