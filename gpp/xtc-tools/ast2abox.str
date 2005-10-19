@@ -9,7 +9,7 @@ strategies
     )
 
   ast2abox-options =
-    pp-options + io-options
+    pp-options
 
 /*
 usage:
