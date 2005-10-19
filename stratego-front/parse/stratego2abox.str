@@ -295,10 +295,10 @@ rules
     Real(i) -> S(i)
 
   stratego-to-abox : 
-    Str(i) -> S(i)
+    Str(i) -> |[ H hs=0 [ "\"" ~lit:i "\""] ]|
 
   stratego-to-abox : 
-    Char(i) -> S(i)
+    Char(i) -> |[ H hs=0 [ "'" ~lit:i "'"] ]|
 
   stratego-to-abox : 
     CharCong(i) -> S(i)
