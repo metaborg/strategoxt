@@ -10,6 +10,7 @@ signature
     Comment       : Term -> Term
 
     Cong          : a * b -> c
+    amb           : List(Term) -> Term
 strategies
 
   io-stratego2abox =
@@ -919,6 +920,18 @@ rules
        ; !H hs=1 [H hs=1 [b1 "*"] b2]
        }
     )
+
+
+  stratego-to-abox :
+    amb(alts) -> V vs=0[V vs=0 is=2 [ "amb>" ~*alts' ] "<amb"]
+    where
+      <map-with-index({s: \
+         (i, b) -> H hs=1 [ H hs=0 [s ">"] b]
+         where
+           <int-to-string> i => s
+       \})> alts => alts'
+
+
 
   
 /*
