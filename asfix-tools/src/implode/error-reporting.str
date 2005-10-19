@@ -76,12 +76,16 @@ strategies
    * @type  a -> a
    */
   report-specific-error(|producer, error) =
-    where(!error => error("Ambiguity", [localized(descr, area-in-file(file, area))]))
-  ; report-area(|"", "Ambiguity found", file, area)
-  ; log(|Error(),"Alternatives are: ")
-  ; where( 
-      <string-tokenize>([';'],descr) 
-    ; map(log(|Error(),<concat-strings>["   ",<id>]))
+    where(
+      !error => error("Ambiguity", <id>)
+    ; map({ descr, file, area :
+        ?localized(descr, area-in-file(file, area))
+      ; report-area(|"", "Ambiguity found", file, area)
+      ; log(|Error(),"Alternatives are: ")
+      ; <string-tokenize>([';'],descr) 
+      ; map(log(|Error(),<concat-strings>["   ",<id>]))
+      ; log(|Error(),"")
+      })
     )
 
 
@@ -92,7 +96,7 @@ strategies
 strategies
 
   report-file(|err, descr, file) =
-    log(|Error(),<concat-strings>[file, ": ", err, ": ", descr])
+    log(|Error(),<concat-strings>[file, ": '", err, "': ", descr])
 
   /**
    * Presents the 'area' in the file at stderr.
