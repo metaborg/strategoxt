@@ -18,6 +18,7 @@ imports
   util/time 
   util/log
 
+  term/string
 strategies
 
   /**
@@ -131,6 +132,19 @@ strategies
       verbose-option
     + keep-option
     + statistics-option
+    + aterm-lib-options
+
+ /** 
+  * Allow all flag starting with -at-* (these are ATerm library flags)
+  */
+  aterm-lib-options =
+    Option(
+      string-starts-with(|"-at-")
+	  , id
+	  , fail
+    )
+
+
 
   /**
    * Option specifcation for level of keeping intermediate results.
