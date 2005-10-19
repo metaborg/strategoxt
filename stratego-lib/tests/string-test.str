@@ -23,6 +23,7 @@ strategies
     ; string-sort-test
     ; string-tokenize-test
     ; split-tests
+    ; string-replace-test
     )
 
 strategies
@@ -262,3 +263,22 @@ strategies
   , !["2001", "2000", "1999", "1998"]
   , !["2001","2000","1999","1998"]
   )
+
+   string-replace-test =
+     apply-test(!"string-replace-test-a"
+  , string-replace(|"foo","bar")
+  , !"foobarfoo"
+  , !"barbarbar"
+  )
+  ; apply-test(!"string-replace-test-b"
+  , string-replace(|"","bar")
+  , !"foobarfoo"
+  , !"foobarfoo"
+  )
+  ; apply-test(!"string-replace-test-c"
+  , string-replace(|"foo","")
+  , !"foobarfoo"
+  , !"bar"
+  )
+  
+  

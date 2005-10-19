@@ -1026,3 +1026,50 @@ strategies
    * @type Char -> Char
    */
   to-lower = is-upper < <add>  (<id>, 32) + id
+
+ /**
+   * Replaces one substring with another in a string.
+   *
+   * Example: <string-replace(|"foo", "bar")> "foobarfoo" gives "barbarbar"
+   *
+   * @param old - the old substring which is to be excised
+   * @param new - the new subtring which is to be inserted
+   * @type String -> String
+   *
+   * @author Karl Trygve Kalleberg <karltk@stratego.org>
+   */
+  string-replace(|old, new) =
+      ![ [], <explode-string>, <explode-string> old ]
+    ; internal-string-replace(|<explode-string> old, <explode-string ; reverse> new)
+    ; reverse
+    ; implode-string
+  
+strategies
+
+/** @internal */
+  internal-string-replace(|old, new) =
+      ?[ pre, [ hd | tl ], cur ]
+    ; (
+          !cur => [hd | ctl]
+        ; ![ pre, tl, ctl ]
+        ; internal-string-replace-found(|old, new)
+        ; internal-string-replace(|old, new)
+       <+
+          ![ [ hd | pre ], tl, cur ]
+        ; internal-string-replace(|old, new)
+      )
+
+/** @internal */
+  internal-string-replace(|old, new):
+  [ pre, [], _ ] -> pre
+  
+/** @internal */
+  internal-string-replace-found(|old, new) =
+      ?[ pre, [ hd | tl ], cur ]
+    ; !cur => [ hd | ctl ]
+    ; ![ pre, tl, ctl ]
+    ; internal-string-replace-found(|old, new)
+
+/** @internal */
+  internal-string-replace-found(|old, new):
+  [ pre, rest, [] ] -> [ <concat> [ pre, new ], rest, old ]
