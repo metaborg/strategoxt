@@ -378,7 +378,7 @@ AC_DEFUN([XT_SVN_REVISION],
 
   if test -e "$srcdir/.svn"; then
     REVFIELD="1"
-    SVN_REVISION=`svn status -v -N -q $srcdir/ | awk "{ if(\\\$NF == \"$srcdir\") print \\\$$REVFIELD }"`
+    SVN_REVISION=`svn info "$srcdir" | sed "/^Revision: /{;s///;p;};d"`
     AC_MSG_RESULT($SVN_REVISION)
   else
     if test -e "$srcdir/svn-revision"; then
