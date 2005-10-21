@@ -42,7 +42,9 @@ strategies
   newname = ?prefix; prim("SSL_newname", prefix)
 
   /**
-   * Checks whether input term is a string.
+   * Succeeds when the input term is a string.
+   *
+   * @type String -> String
    */
   is-string	 = ?x; prim("SSL_is_string", x)
 
@@ -153,6 +155,7 @@ strategies
   escape-chars =
     escape-chars(Escape)
 
+  /** @internal */
   escape-chars(s) = 
     rec x(
        (s; [id, id | x])
@@ -200,10 +203,19 @@ strategies
     + Escape-linefeed
     + Escape-carriage-return
 
+  /** @internal */
   Escape-double-quote    : ['"'  | cs ] -> ['\', '"'  | cs ]
+  
+  /** @internal */
   Escape-single-quote    : ['\'' | cs ] -> ['\', '\'' | cs ]
+  
+  /** @internal */
   Escape-backslash       : ['\'  | cs ] -> ['\', '\'  | cs ]
+  
+  /** @internal */
   Escape-linefeed        : ['\n' | cs ] -> ['\', 'n'  | cs ]
+  
+  /** @internal */
   Escape-carriage-return : ['\r' | cs ] -> ['\', 'r'  | cs ]
 
   /**
@@ -216,44 +228,77 @@ strategies
     + UnEscape-tab
     + UnEscape-carriage-return
 
+  /** @internal */
   UnEscape-double-quote    : ['\', '"'  | cs ] -> ['"'  | cs ]
+  
+  /** @internal */
   UnEscape-single-quote    : ['\', '\'' | cs ] -> ['\'' | cs ]
+  
+  /** @internal */
   UnEscape-backslash       : ['\', '\'  | cs ] -> ['\'  | cs ]
+  
+  /** @internal */
   UnEscape-carriage-return : ['\', 'r'  | cs ] -> ['\r' | cs ]
+  
+  /** @internal */
   UnEscape-linefeed        : ['\', 'n'  | cs ] -> ['\n' | cs ]
+  
+  /** @internal */
   UnEscape-tab             : ['\', 't'  | cs ] -> ['\t' | cs ]
 
+  /** @internal */
   UnEscape(|c) :
     ['\', c | cs ] -> [c  | cs ]
 
 strategies
 
+  /** @internal */
   escape(esc : (List(String) -> List(String)) * List(String) -> List(String) ) = 
     explode-string;
     rec x(esc(x) <+ [id | x] <+ []);
     implode-string
 
- /**
-  * @inc escape-test2
-  */
+  /**
+   * @inc escape-test2
+   */
   cify = escape(Cify)
 
+  /** @internal */
   uncify = escape(UnCify)
 
+  /** @internal */
   UnCify(x) = UnCify1(x) <+ UnCify2(x) <+ UnCify3(x)
 
 rules
 
+  /** @internal */
   Cify(x) : ['\'' | cs] -> ['_', 'p', '_' | <x>cs]
+
+  /** @internal */
   Cify(x) : ['-'  | cs] -> ['_'           | <x>cs]
+
+  /** @internal */
   Cify(x) : ['_'  | cs] -> ['_', '_'      | <x>cs]
+
+  /** @internal */
   Cify(x) : ['"'  | cs] -> ['_', 'q', '_' | <x>cs]
+
+  /** @internal */
   Cify(x) : ['\'  | cs] -> ['_', 'b', '_' | <x>cs]
 
+  /** @internal */
   UnCify1(x) : ['_', 'b', '_' | cs] -> ['\'  | <x>cs]
+
+  /** @internal */
   UnCify1(x) : ['_', 'q', '_' | cs] -> ['"'  | <x>cs]
+
+  /** @internal */
   UnCify1(x) : ['_', 'p', '_' | cs] -> ['\'' | <x>cs]
+
+  /** @internal */
   UnCify2(x) : ['_', '_'      | cs] -> ['_'  | <x>cs]
+
+  /** @internal */
   UnCify3(x) : ['_'           | cs] -> ['-'  | <x>cs]
 
 /**
@@ -280,15 +325,32 @@ strategies
     (c, chars) -> <conc> ([c | chars], [c])
 
   /**
+   * Adds single quotes to the start and end of a list
+   * of characters.
+   *
    * @type List(Char) -> List(Char)
    */
   single-quote-chars = <quote-chars> ('\'', <id>)
+
+  /**
+   * Adds double quotes to the start and end of a 
+   * list of characters.
+   *
+   * @type List(Char) -> List(Char)
+   */
   double-quote-chars = <quote-chars> ('"' , <id>)
 
- /**
-  * @inc single-quote-test
-  */
+  /**
+   * @inc single-quote-test
+   */
   single-quote = string-as-chars(single-quote-chars)
+  
+  /**
+   * Adds double quotes to the start and end of 
+   * a string.
+   *
+   * @type String -> String
+   */
   double-quote = string-as-chars(double-quote-chars)
 
 /**
@@ -344,19 +406,37 @@ strategies
     ; init
 
   /**
+   * Removes single quotes from the start and end of a list 
+   * of characters. Fails if the list is not properly
+   * quoted.
+   *
    * @type  List(Char) -> List(Char)
    */
   un-single-quote-chars = unquote-chars(?'\'')
+
+  /**
+   * Removes double quotes from the start and end of a list 
+   * of characters. Fails if the list is not properly
+   * quoted.
+   *
+   * @type  List(Char) -> List(Char)
+   */
   un-double-quote-chars = unquote-chars(?'"' )
 
   /**
+   * Removes single quotes from the start and end of a string 
+   * Fails if the string is not properly quoted.
+   *
    * @type  String -> String
    */
   un-single-quote = string-as-chars(un-single-quote-chars)
 
- /**
-  * @inc un-double-quote-test
-  */
+  /**
+   * Removes double quotes from the start and end of a string 
+   * Fails if the string is not properly quoted.
+   *
+   * @type  String -> String
+   */
   un-double-quote = string-as-chars(un-double-quote-chars)
 
 strategies 
@@ -372,16 +452,27 @@ strategies
   is-double-quoted =
     is-quoted(|'"')
 
+  /**
+   * Succeeds if the input string is quoted with single quotes.
+   * 
+   * @type  String -> String
+   */
   is-single-quoted =
     is-quoted(|'\'')
 
   /**
+   * Succeeds if the character list is double quoted. That is,
+   * if the first and last character are both double quotes.
+   *
    * @type List(Char) -> List(Char)
    */
   is-double-quoted-chars =
     is-quoted-chars(|'"')
 
   /**
+   * Succeeds if the character list is single quoted. That is,
+   * if the first and last character are both single quotes.
+   *
    * @type List(Char) -> List(Char)
    */
   is-single-quoted-chars =
@@ -413,6 +504,11 @@ strategies
       )
 
   /**
+   * Succeeds if a list of characters are quoted with the
+   * character given by the term argument. That is, if the
+   * first and last character of the list are both equal
+   * to c.
+   *
    * @param Char
    * @type List(Char) -> List(Char)
    */
@@ -456,9 +552,21 @@ strategies
   upper-case = string-as-chars(upper-case-chars)
 
   /**
+   * Convert a list of characters to lower case.
+   *
+   * Example: <explode-string ; lower-case-char ; implode-string> "STRATEGO" => "stratego"
+   *
    * @type  List(Char) -> List(Char)
    */
   lower-case-chars = map(to-lower)
+
+  /**
+   * Convert a list of characters to upper case.
+   *
+   * Example: <explode-string ; upper-case-char ; implode-string> "stratego" => "STRATEGO"
+   *
+   * @type  List(Char) -> List(Char)
+   */
   upper-case-chars = map(to-upper)
 
 strategies
@@ -466,9 +574,9 @@ strategies
   /**
    * Breaks a string into tokens.
    *
-   * string-tokenize is like java.util.StringTokenizer. Given a
-   * list of possible delimiters (characters that separate tokens)
-   * it returns a list of tokens for a given string.
+   * Given a list of possible delimiters (characters that
+   * separate tokens), string-tokenize returns a list of
+   * tokens for a given string.
    *
    * @param List of separate characters
    * @type  String -> List(String)
@@ -476,6 +584,7 @@ strategies
   string-tokenize(|sepchars) =
     string-tokenize({c: ?c; <fetch(?c)> sepchars})
 
+  /** @internal */
   string-tokenize(sep) =
       explode-string
     ; list-tokenize(sep)
@@ -550,22 +659,36 @@ strategies
 
 rules
 
+  /** @internal */
   SplitInit : x -> ([], [], x)
 
+  /** @internal */
   SplitExit : 
 	(xs, cs, []) -> 
 	<reverse> [<reverse; implode-string> cs|xs]
 
+  /** @internal */
   SplitNext : 
 	(xs, cs, [32|ys]) -> 
 	([<reverse; implode-string> cs | xs], [], ys)
 
+  /** @internal */
   SplitNext : 
 	(xs, cs, [y|ys]) -> (xs, [y|cs], ys)
 	where <not(eq)> (y, 32)
 
 strategies
 
+  /**
+   * Splits a string at each occurrence of a whitespace. The
+   * resulting list of string does not contain any of the
+   * whitespaces. Two adjacent whitespaces will result in
+   * an empty string in the result.
+   *
+   * Example: <split-at-space> "foo  bar" => ["foo", "", "bar"]
+   *  
+   * @type String -> List(String)
+   */
   split-at-space =
     explode-string;
     SplitInit;
@@ -607,6 +730,13 @@ strategies
 	(implode-string,implode-string)
 
 
+  /**
+   * Succeeds if the string produced by s is a substring
+   * of the argument string.
+   *
+   * @param _ -> String
+   * @type String -> _
+   */
   is-substring(s) = 
     explode-string;?long;
     s;explode-string => sub;
@@ -712,6 +842,13 @@ strategies
 	  <+ !1
 	  )
 
+  /**
+   * Compares the n first characters of two character lists, n
+   * is given by the last argument. If the two lists are identical,
+   * the integer 0 is returned, otherwise the integer 1 is returned.
+   * 
+   * @type List(Char) * List(Char) * Int -> Int
+   */
   strncmp = rec r
 	(  \(_,_,0) -> 0\
 	<+ \([x|xs],[x|ys],i) -> <r>(xs,ys,<subt>(i,1))\
@@ -858,28 +995,55 @@ strategies
 strategies
 
   /**
-   * Trims leading and/or trailing characters from a string.
+   * Trims leading characters from a string. The characters to 
+   * to trim are given by the strategy argument.
    *
-   * Removes the longest substring for which all characters satisfy strategy s.
-   * Examples:
-   *   <ltrim-chars(?' ')> "   fred  " => "fred  "
-   *   <rtrim-chars(?' ')> "   fred  " => "   fred"
-   *   <trim-chars(?' ')>  "   fred  " => "fred"
+   * Removes from the left-hand side all characters matched by
+   * strategy s.
+   *
+   * Example:  <ltrim-chars(?' ')> "   fred  " => "fred  "
    * 
-   * @param should succeed for all elements that have to be trimmed.
+   * @param should match all characters to be removed
+   * @type String -> String
    * @since 0.9.5
    */
   ltrim-chars(s) = string-as-chars(ltrim(s))
 
+  /**
+   * Trims trailing characters from a string.
+   *
+   * Removes from the right-hand side all characters matched by
+   * strategy s.
+   *
+   * Example: <rtrim-chars(?' ')> "   fred  " => "   fred"
+   *
+   * @param should match on all characters to be removed
+   * @type String -> String
+   * @since 0.9.5
+   */
   rtrim-chars(s) = string-as-chars(rtrim(s))
 
+  /**
+   * Trims leading and trailing characters from a string. The
+   * characters to trim is given by the strategy argument.
+   *
+   * Removes from both ends all characters matched by strategy
+   * s.
+   *
+   * Example:  <trim-chars(?' ')>  "   fred  " => "fred"
+   * 
+   * @param should match all characters to be removed
+   * @type String -> String
+   * @since 0.9.5
+   */
   trim-chars(s)  = string-as-chars(trim(s))
 
   /**
-   * Checks whether a character is whitespace.
+   * Succeeds if the character is whitespace.
    *
    * Whitespace is a space (32), or a tab (9)
    *
+   * @type Char -> Char
    * @since 0.9.5
    */
   is-whitespace = test('\t' + ' ')
@@ -887,6 +1051,7 @@ strategies
   /**
    * Trims all trailing whitespace in a (single-line) string.
    *
+   * @type String -> String
    * @since 0.9.5
    */
   trim-trailing-whitespace =
@@ -895,49 +1060,56 @@ strategies
   /**
    * Trims all leading whitespace in a (single-line) string.
    *
+   * @type String -> String
    * @since 0.9.5
    */
   trim-leading-whitespace =
     ltrim-chars(is-whitespace)
 
   /**
-   * Trims all trailing *and* leading whitespace in a (single-line) string.
+   * Trims all trailing and leading whitespace in a (single-line) string.
    *
+   * @type String -> String
    * @since 0.9.5
    */
   trim-whitespace =
     trim-chars(is-whitespace)
 
 strategies
-/**
- * Some shuffling strategies
- */
-shuffle-forced =
-   where(length; <gt> (<id>, 1))
-   ; where(at-suffix(?[x,y|xs]; where(not(<eq> (x, y)))))
-   ; rec x({orig: ?orig; shuffle; (where(<eq> (orig, <id>)) < x + id)})
-<+ id
 
-shuffle =
-  where(is-list)
-; map(!(<next-random> (), <id>))
-; sort-list(SortL((Fst, Fst); gt))
-; map(Snd)
+  /**
+   * Some shuffling strategies
+   * @internal
+   */
+  shuffle-forced =
+      where(length; <gt> (<id>, 1))
+    ; where(at-suffix(?[x,y|xs]; where(not(<eq> (x, y)))))
+    ; rec x({orig: ?orig; shuffle; (where(<eq> (orig, <id>)) < x + id)})
+    <+ id
 
-shuffle-word-mids =
-  string-tokenize-keep-all(|[' ', '.', ','])
-; map(shuffle-word-mid)
-; concat-strings
+  /** @internal */
+  shuffle =
+      where(is-list)
+    ; map(!(<next-random> (), <id>))
+    ; sort-list(SortL((Fst, Fst); gt))
+    ; map(Snd)
 
-shuffle-word-mid =
-  where(is-string)
-; (where(strlen; <lt> (<id>, 3))
-<+ explode-string
- ; ?[i|cs]
- ; <reverse> cs
- ; ?[l|mid]
- ; where(<shuffle-forced; reverse> mid => shuffledmid)
- ; <concat; implode-string> [[i],shuffledmid, [l]])
+  /** @internal */
+  shuffle-word-mids =
+      string-tokenize-keep-all(|[' ', '.', ','])
+    ; map(shuffle-word-mid)
+    ; concat-strings
+
+  /** @internal */
+  shuffle-word-mid =
+     where(is-string)
+   ; (where(strlen; <lt> (<id>, 3))
+   <+ explode-string
+   ; ?[i|cs]
+   ; <reverse> cs
+   ; ?[l|mid]
+   ; where(<shuffle-forced; reverse> mid => shuffledmid)
+   ; <concat; implode-string> [[i],shuffledmid, [l]])
 
 strategies
 
@@ -945,12 +1117,19 @@ strategies
    * @inc is-alphanum-test
    */
   is-alphanum = is-num + is-alpha
+  
+  /**
+   * Succeeds if the character is part of the lowercase or
+   * uppercase alphabet.
+   *
+   * @type Char -> Char
+   */
   is-alpha = is-upper + is-lower
 
   /**
    * Succeeds if applied to a character that is a hexidecimal
    * digit, i.e. either of the characters in the range '0'-'9'
-   * or 'A'-'F'.
+   * or 'A'-'F' or 'a'-'f'.
    * 
    * @type Char -> Char
    */
@@ -1027,7 +1206,7 @@ strategies
    */
   to-lower = is-upper < <add>  (<id>, 32) + id
 
- /**
+  /**
    * Replaces one substring with another in a string.
    *
    * Example: <string-replace(|"foo", "bar")> "foobarfoo" gives "barbarbar"
@@ -1045,8 +1224,8 @@ strategies
     ; implode-string
   
 strategies
-
-/** @internal */
+ 
+  /** @internal */
   internal-string-replace(|old, new) =
       ?[ pre, [ hd | tl ], cur ]
     ; (
@@ -1059,17 +1238,17 @@ strategies
         ; internal-string-replace(|old, new)
       )
 
-/** @internal */
+  /** @internal */
   internal-string-replace(|old, new):
   [ pre, [], _ ] -> pre
   
-/** @internal */
+  /** @internal */
   internal-string-replace-found(|old, new) =
       ?[ pre, [ hd | tl ], cur ]
     ; !cur => [ hd | ctl ]
     ; ![ pre, tl, ctl ]
     ; internal-string-replace-found(|old, new)
 
-/** @internal */
+  /** @internal */
   internal-string-replace-found(|old, new):
   [ pre, rest, [] ] -> [ <concat> [ pre, new ], rest, old ]
