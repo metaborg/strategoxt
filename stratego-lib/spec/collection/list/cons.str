@@ -1,5 +1,10 @@
 /**
- * Lists are represented by means of the constructors Nil and Cons.
+ * Lists are represented by means of the constructors Nil and Cons. They can
+ * either be written as terms with these constructors, e.g. Cons(0, Cons(1, Nil)),
+ * or using concrete list syntax: [0, 1]
+ *
+ * Stratego pretty-printers and the Stratego Shell will always prefer to display
+ * lists using the concrete syntax.
  */
 module collection/list/cons
 signature
