@@ -1,5 +1,6 @@
 /**
- * lookup elements in a list.
+ * This module contains strategies for working on associative lists.
+ * Associative lists are on the form [(key1, value1), (key2, value2), ...]
  */
 module collection/list/lookup
 imports 
@@ -8,12 +9,13 @@ imports
 strategies
 
   /**
-   * Lookup first value associated to a key in a list of key-value pairs.
+   * Lookup the first value associated with a key in an associative
+   * list. An associative list is a list of key-value pairs.
    *
    * Example:
    *   <lookup> (2, [(1, "a"), (2, "b"), (3, "c")]) => "b"
    *
-   * @type  k * [k * v] -> v
+   * @type  k * List(k * v) -> v
    */  
   lookup = rec x(Look1 <+ Look2 ; x)
 
@@ -22,27 +24,36 @@ strategies
    * The result is the application of s to this element.
    *
    * @type s    a  -> b
-   * @type     [a] -> b
+   * @type     List(a) -> b
    */
   getfirst(s) = rec x(Hd; s <+ Tl; x)
 
   /**
-   * lookup' is equivalent to lookup.
+   * Faster version of lookup.
+   *
    * The advantage over lookup is that lookup' does not construct
    * intermediate pairs.
    *
-   * @type  k * [k * v] -> v
+   * @type  k * List(k * v) -> v
+   * @internal
    */
   lookup' = {x, xs: ?(x, xs) ; <getfirst({y: ?(x, y); !y})> xs}
 
+  /**
+   * Looks up the first value associated with a particular key
+   * in an associative list, using keyeq to do key comparisons.
+   *
+   * @type k * List(k * v) -> v
+   */
   lookup(keyeq) = rec x((Look1'(keyeq) <+ Look2; x))
 
-/**
- * Private helpers
- */
 rules
 
+  /** @internal */
   Look1 : (x, [(x, y)|_]) -> y
+  
+  /** @internal */
   Look2 : (x, [_|xs]) -> (x, xs)
 
+  /** @internal */
   Look1'(keyeq) : (x, [y|_]) -> y where <keyeq> (x, y)
