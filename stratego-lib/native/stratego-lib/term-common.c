@@ -164,7 +164,7 @@ ATerm SSL_get_arguments(ATerm t)
 }
 
 ATerm SSL_address_lt(ATerm x, ATerm y) {
-  ATfprintf(stderr, "<address-lt> (%t,%t) (%d,%d): ", x, y, x, y);
+  /* ATfprintf(stderr, "<address-lt> (%t,%t) (%d,%d): ", x, y, x, y); */
 
   if((int)x < (int)y) {
     return((ATerm) ATempty);

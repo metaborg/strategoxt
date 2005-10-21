@@ -1,3 +1,8 @@
+2005-10-21  Valentin David  <valentin.david@gmail.com>
+
+	* native/stratego-lib/term-common.c (SSL_address_lt):
+	Remove a trailing debug message.
+
 2005-10-11  Valentin David  <valentin.david@gmail.com>
 
 	Fix STR-418 issue.
