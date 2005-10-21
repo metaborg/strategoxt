@@ -1,5 +1,6 @@
 /**
- * Basic functionality on lists. 
+ * This module contains basic functionality for manipulating lists.
+ *
  */
 module collection/list/common
 imports 
@@ -681,35 +682,105 @@ strategies
     split-init-last
 
   /**
+   * Makes n copies of a term into a list of duplicates. The
+   * first input term is the integer n, the second is the term
+   * to duplicate.
+   *
    * @inc copy-test
+   *
+   * Example: <copy> (3, "foo") => ["foo", "foo", "foo"]
+   *
+   * @type Int * a -> List(a)
    */
   copy = 
     for(\ (n,t) -> (n,t,[]) \
        ,\ (0,t,ts) -> ts \
        ,\ (n,t,ts) -> (<subt>(n,1), t, [t|ts]) where <geq>(n,1) \ )
 
+  /**
+   * Makes n copies of a term into a list of duplicates, applying
+   * the strategy s to every copy. The first input term is the 
+   * integer n, the second is the term to duplicate.
+   * 
+   * Example: <copy(\ "foo" -> "bar" \)> (3, "foo") => ["bar","bar,"bar"]
+   *
+   * @param s       a -> b
+   * @type    Int * a -> List(n)
+   */
   copy(s) = 
     for(\ (n,t) -> (n,t,[]) \
        ,\ (0,t,ts) -> ts \
        ,\ (n,t,ts) -> (<subt>(n,1), t, [<s> t|ts]) where <geq>(n,1) \ )
 
+  /** @internal */
   thread-map(s) :
     ([], t) -> ([], t)
 
+  /**
+   * Applies s to each element in the list, keeping along a separate
+   * context term. 
+   *
+   * For each element in the list, a tuple (a, b) is constructed and
+   * given to s. From the result, (a', b'), a' goes to the final list
+   * returned by this strategy, and b' becomes the new b as s is
+   * applied to the next element.
+   *
+   * Example: <thread-map(add ; !(<id>, <id>))> ([1,2,3,4], 1) => ([2,4,7,11],11)
+   *
+   * @param s a * b -> a' * b'
+   * @type List(a) * b -> List(a') * b'
+   */ 
   thread-map(s) :
     ([x | xs], t) -> ([y | ys], t'')
     where <s> (x, t) => (y, t')
 	; <thread-map(s)> (xs, t') => (ys, t'')
 
- /**
-  * @inc number-test
-  */
+  /**
+   * Numbers each element in a list successively with an
+   * integer, starting at 0. The result is a list of pairs,
+   * (elem, num) where elem is the original element and num
+   * is its associated number. s is applied to each pair
+   * before inserting it into the list
+   *
+   * Example: <number(id)> ["a","b","c"] => [("a",0),("b",1),("c",2)]
+   *
+   * @inc number-test
+   *
+   * @param s a * Int -> a' * Int
+   * @type List(a) -> List((a,n),...)
+   */
   number(s) =
     !(<id>, 0); thread-map(!(<s>,<Snd;inc>)); ?(<id>,_)
 
+  /**
+   * Take elements from the start of a list while s succeeds.
+   * Each element of the list is tested against s, starting at
+   * the head of the list. For as long as s succeeds, the elements
+   * are accumulated in a list, which is returned as s fails, or
+   * the end of the list is reached. The actual term returned by
+   * s is ignored.
+   *
+   * Example: <take-while(?2 ; !3)> [2,2,3] => [2,2]
+   *
+   * @param s       a -> _
+   * @type    List(a) -> List(a)
+   */
   take-while(s) = 
     at-suffix([] + ([not(s)|id];![]))
 
+  /**
+   * Take elements from the start of a list until s succeeds. 
+   * Each element of the list is tested against s, starting at
+   * the head of the list. For as long as s does not succeed, the 
+   * elements are accumulated in a list, which is returned at
+   * the instant s fails. The actual term returned by s is
+   * ignored. If s never succeeds, the entire list is returned.
+   *
+   * Example: <take-until(?2; !3)> [3,3,2,4] => [3,3]
+   *
+   * @param s       a -> _
+   * @type    List(a) -> List(a)
+   */
   take-until(s) = 
     at-suffix([] + ([s|id];![]))
 
@@ -757,18 +828,40 @@ strategies
     else 
       ![<Hd; s> | <Tl; takemap(s|<subt>(n,1))>]
     end
-
+  
+  /**
+   * Drops elements from the start of a list while s succeeds. The
+   * first element at which s fails and all following it will be
+   * returned.
+   *
+   * Example: <drop-while(?2)> [2,2,3,4] => [3,4]
+   *
+   * @param s       a -> _
+   * @type    List(a) -> List(a)
+   */
   drop-while(s) = 
     at-suffix(([] + [not(s)|id]);?xs); !xs
 
+  /**
+   * Drops elements from the start of a list until s succeeds. The
+   * first element at which s succeeds and all following it will be
+   * returned.
+   *
+   * Example: <drop-until(?3)> [2,2,3,4] => [3,4]
+   *
+   * @param s       a -> _
+   * @type    List(a) -> List(a)
+   */
   drop-until(s) = 
     at-suffix(([] + [s|id]);?xs); !xs
 
   /**
-   * drop(|n) drops the first n elements from a list.
-   * Fails if the list has fewer than n elements.
+   * Drops the first n elements from a list. If the list has
+   * fewer than n elements, the strategy fails.
+   *
+   * @param n - the number of elements to drop
+   * @type  List(a) -> List(a)
    */
-
   drop(|n) =
     if <eq>(n,0) then 
       id
@@ -777,9 +870,17 @@ strategies
     end
 
   /** 
-   * splitmap(s|n) ~= !(<take(|n); map(s)>, <drop(|n)>)
+   * Splits a list after n elements and applies strategy s to the
+   * first sublist. The second sublist is left untouched. 
+   * Disregarding side-effects, splitmap is equal to 
+   * !(<take(|n); map(s)>, <drop(|n)>). If side-effects are
+   * considered, note that application of s happens while
+   * traversing and splitting.
+   *
+   * @param s a -> b
+   * @param n - the number of elements to apply s to, from the start
+   * @type List(a) -> (List(b), List(a))
    */
-
   splitmap(s|n) =
     if <eq>(n,0) then 
       !([], <id>)
@@ -790,7 +891,8 @@ strategies
     end
 
   /**
-   * @warning  alias of split-fetch/1
+   * @inc split-fetch
+   * @note Alias for split-fetch/1
    */
   split-at(s) = 
     split-fetch(s)
@@ -813,10 +915,10 @@ strategies
 strategies
 
   /**
-   * Trim elements from start and/or end of a list
+   * Trim elements from the end of a list
    *
-   * Removes the biggest sublist from the start and/or end of a list,
-   * for which all elements satisfy the strategy s.
+   * Removes the longest sublist from the end of a list, for which
+   * all elements satisfy the strategy s.
    *
    * @type  List(a) -> List(a)
    * @param should succeed for all elements that have to be trimmed.
@@ -832,10 +934,30 @@ strategies
   ; Tl // Strip off dummy head element.
 
   /**
-   * Note that ltrim is actually an alias for drop-while
+   * Trim elements from the start of a list.
+   *
+   * Removes the longest sublist from the start of a list, for which
+   * all elements satisfy the strategy s.
+   *
+   * @type  List(a) -> List(a)
+   * @param should succeed for all elements that have to be trimmed.
+   * @since 0.9.5
+   * @inc   trim-test
+   * @note Alias for drop-while
    */
   ltrim(s) = drop-while(s)
 
+  /**
+   * Trim elements from both start and end of a list.
+   * 
+   * Removest the longest sublist from both start and end of a
+   * list for which all elements satisfy s.
+   *
+   * @type List(a) -> List(a)
+   * @param s a -> - 
+   * @since 0.9.5
+   * @inc trim-test
+   */
   trim(s) = ltrim(s); rtrim(s)
 
 strategies
