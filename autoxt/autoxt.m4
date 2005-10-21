@@ -376,13 +376,13 @@ AC_DEFUN([XT_SVN_REVISION],
 [
   AC_MSG_CHECKING([for the SVN revision of the source tree])
 
-  if test -e ".svn"; then
+  if test -e "$srcdir/.svn"; then
     REVFIELD="1"
-    SVN_REVISION=`svn status -v -N -q ./ | awk "{ if(\\\$NF == \".\") print \\\$$REVFIELD }"`
+    SVN_REVISION=`svn status -v -N -q $srcdir/ | awk "{ if(\\\$NF == \"$srcdir\") print \\\$$REVFIELD }"`
     AC_MSG_RESULT($SVN_REVISION)
   else
-    if test -e "svn-revision"; then
-      SVN_REVISION="`cat svn-revision`"
+    if test -e "$srcdir/svn-revision"; then
+      SVN_REVISION="`cat $srcdir/svn-revision`"
       AC_MSG_RESULT($SVN_REVISION)
     else
       SVN_REVISION="0"

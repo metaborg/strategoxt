@@ -1,3 +1,8 @@
+2005-10-21  Valentin David  <valentin.david@gmail.com>
+
+	* autoxt.m4 (XT_SVN_REVISION):
+	Fix svn revision retrieving when using a different build directory.
+
 2005-07-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	* autoxt.m4: added support for pkg_STRCFLAGS to XT_CHECK_PACKAGE,
