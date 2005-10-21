@@ -1,5 +1,6 @@
 /**
- * Operations on integer lists
+ * This module contains a collection of strategies for working with
+ * lists of integers.
  */
 module collection/list/integer
 imports 
@@ -8,25 +9,79 @@ imports
 
 strategies
 
+  /**
+   * Returns the sum of all integers in a list of integers
+   *
+   * @type List(Int) -> Int
+   */
   sum = foldr(!0, add)
 
+  /**
+   * Returns the average of all integers in a list of
+   * integers. The result is an integer, which is 
+   * truncated (rounded down).
+   * 
+   * @type List(Int) -> Int
+   */
   average = split(sum, length); div
 
+  /**
+   * Returns the lowest integer in a list of integers.
+   *
+   * @type List(Int) -> Int
+   */
   list-min = list-accum(min)
 
+  /**
+   * Returns the highest integer in a list of integers.
+   *
+   * @type List(Int) -> Int
+   */
   list-max = list-accum(max)
 
+  /**
+   * Reduces a list, applying s successively between
+   * the head and tail of the list. This strategy is
+   * related to foldl.
+   *
+   * Example: <list-accum(id)> [1,2,3] => (3,(2,1))
+   *
+   * @param (a,b)   -> c
+   * @type  List(a) -> d
+   */
   list-accum(s) = !(<Tl>, <Hd>); foldl(s)
 
+  /**
+   * Adds together multiple lists of numbers. The input
+   * is a list of integer (or real) lists, which all must
+   * be of the same length. The result is one list of
+   * the same length, i.e. a sum of vectors.
+   *
+   * Example: <add-lists> [[1.0,2.0],[3,4],[6,7]] => [1.000000000000000e+01,1.300000000000000e+01]
+   *
+   * @type List(List(Number)) -> List(Number)
+   */
   add-lists = list-accum(zip(add <+ !""))
 
  /**
+  * Sort a list of integers in ascending order.
+  *
   * @inc sort-test
+  *
+  * @type List(Int) -> List(Int)
   */
   int-sort = sort-list(SortL(gt))
 
  /**
+  * Succeeds if the integer list is an ascending number
+  * sequence, increasing by one, starting at a given
+  * number. The range strategy can be used to 
+  * 
+  * Example: <is-interval-from> (3, [4,5,6,7]) => 7
+  *
   * @inc is-interval-test
+  *
+  * @type List(Int) -> _
   */
   is-interval-from = 
   rec r(
@@ -36,68 +91,101 @@ strategies
                ; <eq>(x,l)\ }
   )
 
-/**
- * Generates lists of numbers.
- * 
- * The given end point is never part of the generated list; <range> 10 generates a list of 10 values, 
- * exactly the legal indices for items of a sequence of length 10. It is possible to let the range 
- * start at another number.
- *
- * <range> 10 => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
- * <range> (5, 10)     => [5, 6, 7, 8, 9]
- *
- * The documentation of the range strategy is partly copied from the Python tutorial.
- *
- * @type  Int       -> [Int]
- * @type  Int * Int -> [Int]
- * @since 0.9.3
- * @inc   range
- */
 strategies
-
-  range = is-int; <range> (0, <id>)
-  range = (is-int, is-int); range(|1)
-
-/**
- * Generates lists of numbers using a specified step size.
- *
- * These range variants use a specified increment. This step size is allowed
- * to be negative.
- *
- * <range(|3)>   10          => [0, 3, 6, 9]
- * <range(|3)>   (0, 10)     => [0, 3, 6, 9]
- * <range(|-30)> (-10, -100) => [-10, -40, -70]
- *
- * @type step Int
- * @type      Int       -> [Int]
- * @type      Int * Int -> [Int]
- * @since     0.9.3
- * @inc       range
- */
-strategies
-
-  range(|step) = is-int; <range(|step)> (0, <id>)
-  range(|step) = (is-int, is-int); range(<add> (<id>, step))
-
-/**
- * Generates lists of numbers using a 'next' generator.
- *
- *  <range(<mul> (<id>, 2))> 
- *
- * @type next Int -> Int
- *
- * @type      Int       -> [Int]
- * @type      Int * Int -> [Int]
- * @since 0.9.3
- */
-strategies
-
-  range(next) = is-int; <range(next)> (0, <id>)
-  range(next) = (is-int, is-int); range-next(next) <+ ![]
 
   /**
-   * @warning private helper strategy, do not use directly
+   * Generates range of numbers in the form of an integer list. This 
+   * version of range accepts only one integer as input. The generated
+   * sequence of integers is generated, starts at 0 and increases by one
+   * until the specified end point is reached.  The end point is never
+   * part of the generated list.
+   *
+   * Example: <range> 10 => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+   *
+   * @type  Int       -> List(Int)
+   * @type  Int * Int -> List(Int)
+   * @since 0.9.3
    */
+  range = is-int; <range> (0, <id>)
+
+  /**
+   * Generates a range of numbers in the form of an integer list. This version
+   * of range accepts two integers as input. The first is the lower bound, of
+   * the sequence, the second is the upper bound. The upper bound is never
+   * part of the generated list.
+   *
+   * Example: <range> (5, 10)     => [5, 6, 7, 8, 9]
+   *
+   * @type  Int * Int -> List(Int)
+   * @since 0.9.3
+   */
+  range = (is-int, is-int); range(|1)
+
+strategies
+
+  /**
+   * Generates a sequence of integers, using a specified step size. This version
+   * of range starts at zero and adds one integer to the sequence for every
+   * step specified by the term argument. The input term gives the upper bound
+   * of the sequence, and is never included. The step size is allowed
+   * to be negative.
+   *
+   * Example: <range(|3)>   10          => [0, 3, 6, 9]
+   * Example: <range(|-30)> (-10, -100) => [-10, -40, -70]
+   *
+   * @type step Int
+   * @type      Int       -> List(Int)
+   * @type      Int * Int -> List(Int)
+   * @since     0.9.3
+   */
+  range(|step) = is-int; <range(|step)> (0, <id>)
+
+  /**   
+   * Generates a sequence of integers, using a specified step size. This version
+   * of range starts at zero and adds one integer to the sequence for every
+   * step specified by the term argument. The input terms give the lower and
+   * upper bound of the sequence, respectively. The upper bound is never
+   * included. The step size is allowed to be negative.
+   *
+   * Example: <range(|3)>   (0, 10)     => [0, 3, 6, 9]
+   *
+   * @type step Int
+   * @type      Int       -> List(Int)
+   * @type      Int * Int -> List(Int)
+   * @since     0.9.3
+   */
+  range(|step) = (is-int, is-int); range(<add> (<id>, step))
+
+strategies
+
+  /**
+   * Generates a sequence of numbers using a generator strategy. The
+   * input integer is the upper bound. The strategy argument is a 
+   * generator which specifies how to go from the current number in
+   * the sequence to the next. The sequence starts at 0.
+   *
+   * Example: <range(inc)> 5 => [0,1,2,3,4]
+   *
+   * @type next Int -> Int
+   * @type      Int       -> List(Int)
+   */
+  range(next) = is-int; <range(next)> (0, <id>)
+
+  /**
+   * Generates a sequence of numbers using a generator strategy. The
+   * input integers are the lower and upper bounds, respectively. The
+   * strategy argument is a generator which specifies how to go from
+   * the current number in the sequence to the next.
+   *
+   *
+   * Example: <range(inc)> (2,5) => [2,3,4]
+   *
+   * @type      Int * Int -> List(Int)
+   * @since 0.9.3
+   */
+  range(next) = (is-int, is-int); range-next(next) <+ ![]
+
+  /** @internal */
   range-next(inc) :
       (start, end) -> [start | tail]
         where <inc> start => next
@@ -109,5 +197,14 @@ strategies
 
 rules
 
+  /**
+   * Succeeds if the input term is a list of monotonously increasing
+   * integers and the difference between two adjacent integers is
+   * always one.
+   *
+   * Example: <is-interval> [1,2,3,4,5] => (1,5)
+   *
+   * @type List(Int) -> _
+   */
   is-interval:
     [x|xs] -> (x,<is-interval-from>(x,xs))
