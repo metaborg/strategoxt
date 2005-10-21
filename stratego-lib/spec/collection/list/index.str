@@ -1,6 +1,11 @@
 /**
- * Every element of a list is associated with in an integer index.
- * The first element of a list has index 1.
+ * This module contains strategies for working on lists using indexes.
+ * An indexed list works similarly to an array in that every element of
+ * the list is associated with in an integer index, and the first 
+ * element has index 1.
+ * 
+ * Adding the indices to a list is done by add-indices.
+ *
  */
 module collection/list/index
 imports 
@@ -22,39 +27,45 @@ strategies
 
 strategies
 
- /**
-  * Get index of element in list.
-  *
-  * @type (a, List(a)) -> Int
-  */
+  /**
+   * Get index of element in list.
+   *
+   * @type (a, List(a)) -> Int
+   */
   get-index = 
     Gind0 ; rec x(Gind1 <+ Gind2 ; x)
-
-      Gind0  : (x, ys) -> (1, x, ys)
-      Gind1  : (n, x, [x | xs]) -> n
-      Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
+ 
+  
+  /** @internal */
+  Gind0  : (x, ys) -> (1, x, ys)
+  
+  /** @internal */
+  Gind1  : (n, x, [x | xs]) -> n
+  
+  /** @internal */
+  Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
 
   get-index0(s) = at-suffix([s | id]; ![]); length
 
 strategies
 
- /**
-  * Change element in list.
-  * The first element has index 0.
-  *
-  * @type (Int, a, List(a)) -> List(a)
-  * @inc  test-set-index
-  */
+  /**
+   * Change element in list.
+   * The first element has index 0.
+   *
+   * @type (Int, a, List(a)) -> List(a)
+   * @inc  test-set-index
+   */
   set-index =
     ?(i, x, xs)
     ; <at-index(!x)> (i, xs)
 
- /**
-  * Apply s at the specified index
-  * The first element has index 0.
-  *
-  * @type (Int, List(a)) -> List(a)
-  */
+  /**
+   * Apply s at the specified index
+   * The first element has index 0.
+   *
+   * @type (Int, List(a)) -> List(a)
+   */
   at-index(s) =
     ?(i, <id>);
 
@@ -69,30 +80,35 @@ strategies
 
 strategies
 
- /**
-  * Insert element in list.
-  *
-  * @type (Int, a, List(a)) -> List(a)
-  * @inc test-insert
-  */
+  /**
+   * Insert element in list.
+   *
+   * @type (Int, a, List(a)) -> List(a)
+   * @inc test-insert
+   */
   insert =
     Ins0; rec x(Ins1 <+ Ins2(x))
 
-        Ins0:    (i, x, ys) -> (0, i, x, ys)
-        Ins1:    (i, i, x, xs) -> [x | xs]
-        Ins2(r): (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
+  /** @internal */
+  Ins0:    (i, x, ys) -> (0, i, x, ys)
+  
+  /** @internal */
+  Ins1:    (i, i, x, xs) -> [x | xs]
+  
+  /** @internal */
+  Ins2(r): (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
 
- /**
-  * Apply strategies that require some knowledge of the index of an element 
-  * to the elements of the list.
-  *
-  * The index of the first element is 1.
-  *
-  * @param Int * a -> b
-  * @type  List(a) -> List(b)
-  * @inc  test4a
-  * @inc  test4b
-  */
+  /**
+   * Apply strategies that require some knowledge of the index of an element 
+   * to the elements of the list.
+   *
+   * The index of the first element is 1.
+   *
+   * @param Int * a -> b
+   * @type  List(a) -> List(b)
+   * @inc  test4a
+   * @inc  test4b
+   */
   map-with-index(s) = 
       !(1, <id>)
     ; rec x(
@@ -100,12 +116,14 @@ strategies
       + \ (i, [e | es]) -> [<s> (i, e) | <x> (<inc> i, es)] \
       )
 
- /**
-  * Adds indices to the elements of a list.
-  * The index of the first element is 1.
-  *
-  * @type List(a) -> List((Int, a))
-  * @inc test5
-  */
+  /**
+   * Adds indices to the elements of a list.
+   * The index of the first element is 1.
+   *
+   * Example: <add-indices> [1,2,3] => [(1,1),(2,2),(3,3)]
+   *
+   * @type List(a) -> List((Int, a))
+   * @inc test5
+   */
   add-indices = 
     map-with-index(id)
