@@ -11,9 +11,11 @@ imports
 
 rules
  
+  /** @internal */
   HdMember(mklst) : 
     [x | xs] -> xs where mklst; fetch(?x)
 
+  /** @internal */
   HdMember'(eq, mklst) : 
      [x | xs] -> xs 
      where mklst; fetch(\y -> <eq> (x, y)\)
@@ -21,7 +23,8 @@ rules
 strategies
 
   /**
-   * Removes duplicate elements from a list.
+   * Removes duplicate elements from a list. This effectively
+   * converts a list to a set.
    *
    * @type  List(a) -> List(a)
    */
@@ -29,7 +32,8 @@ strategies
     foldr(![], union, ![<id>])
 
   /**
-   * Removes duplicate elements from a list.
+   * Removes duplicate elements from a list. This effectively
+   * converts a list to a set.
    *
    * @type   List(a) -> List(a)
    * @note   nub is an alias of make-set.
@@ -53,6 +57,16 @@ strategies
   union = union(eq)
 
   // a * a -> fail? :: List(a) * List(a) -> List(a)
+  /**
+   * Takes the union of two sets. The result is a set
+   * where all elements found in both sets are present,
+   * but each element occurs only once. The strategy
+   * parameter is the equality operator to be used on the 
+   * elements.
+   *
+   * @param Equality operator to be used on the elements
+   * @type List(a) * List(a) -> List(a)
+   */
   union(eq) : 
     (l1, l2) -> <rec x(
                    ([]; !l2)
@@ -63,17 +77,35 @@ strategies
 strategies
 
   /**
+   * Takes the union of a list of sets. All the sets are
+   * sets are flattened into one list, and all duplicates
+   * are removed, to obtain a new set.
+   *
+   * Example: <unions> [[1,2,3],[3,4,5],[5,6,7]] => [1,2,3,4,5,6,7]
+   *
    * @type  List(List(a)) -> List(a)
    */
   unions = unions(eq)
 
   // a * a -> fail? :: List(List(a)) -> List(a)
+  /**
+   * Takes the union of a list of sets. The result is a set
+   * where all elements found in either of the sets are present,
+   * i.e. where each element occurs only once. The strategy
+   * parameter is the equality operator to be used on the 
+   * elements.
+   *
+   * @param Equality operator used on the elements.
+   * @type List(List(a)) -> List(a)
+   */
   unions(eq) = foldr(![], union(eq))
 
 rules
 
   /**
-   * Difference of two lists.
+   * Computes the difference between two sets. That is, it
+   * returns the elements found in the first set, but not in
+   * the second.
    *
    * @type  (List(a), List(a)) -> List(a)
    * @inc  test3a
@@ -85,6 +117,12 @@ rules
   diff = diff(eq) 
 
   /**
+   * Computes the difference between two sets. That is, the elements
+   * found in the first set, but not in the second. The strategy 
+   * argument is used to compare elements of the sets.
+   *
+   * Example: <diff(eq)> ([1,2,3], [5,1,2]) => [3]
+   * 
    * @param  Used to compare the elements. If an application succeeds, then two elements are equal.
    * @type   (List(a), List(a)) -> List(a)
    */
@@ -96,6 +134,11 @@ rules
                 )> l1
 
   /**
+   * Takes the symmetric difference of two sets. That is, it returns
+   * all elements not found in both sets.
+   *
+   * Example: <sym-diff> ([1,2,3],[5,1,2,6]) => [3,5,6]
+   *
    * @type  (List(a), List(a)) -> List(a)
    * @inc  test4a
    * @inc  test4b
@@ -106,7 +149,13 @@ rules
   sym-diff = sym-diff(eq)
 
   /**
-   * @param  Used to compare the elements. If an application succeeds, then two elements are equal.
+   * Takes the symmetric difference of two sets. That is, it returns
+   * all elements not found in both sets. the strategy argument is
+   * used to compare elements of the sets.
+   *
+   * Example: <sym-diff(eq)> ([1,2,3],[5,1,2,6]) => [3,5,6]
+   *
+   * @param  Equality operator to use on the elements. If it succeeds, the elements are equal.
    * @type   (List(a), List(a)) -> List(a)
    */
   sym-diff(eq) =
@@ -115,11 +164,12 @@ rules
 strategies
 
   /**
-   * Take the intersection of two sets.
+   * Take the intersection of two sets. That is, it returns
+   * all elements found in both sets. 
    *
-   * Elements are compared using the eq strategy.
+   * Example: <isect> ([1,2,3],[5,1,2,6]) => [1,2]
    *
-   * @type [a] * [a] -> [a]
+   * @type List(a) * List(a) -> List(a)
    * @inc  test2a
    * @inc  test2b
    * @inc  test2c
@@ -172,9 +222,43 @@ strategies
    */
   set-eq(eq)   = subset-gen(eq, ?[])
 
+  /**
+   * Succeeds if the first set is a strict subset of the second.
+   * 
+   * Example: <subset> ([1,2],[1,2,3])
+   *
+   * @type List(a) * List(a) -> _
+   */
   subset       = subset(eq)
+
+  /**
+   * Succeeds if the first set is a strict subset of the second. The 
+   * strategy parameter is the equality operator that will be used
+   * to check if two elements are equal.
+   *
+   * @param Equality operator to be used on elements on the set. 
+   * @type List(a) -> List(a) -> _
+   */
   subset(eq)   = subset-gen(eq, ?[_|_])
+
+  /** 
+   * Succeeds if the first set is a (non-strict) subset of the second.
+   * 
+   * Example: <subseteq> ([1,2],[1,2])
+   *
+   * @type List(a) * List(a) -> _
+   */
   subseteq     = subseteq(eq)
+
+  /** 
+   * Succeeds if the first set is a (non-strict) subset of the second.
+   * The strategy parameter is the equality operator that will be used
+   * to check if two elements are equal.
+   * 
+   * Example: <subseteq> ([1,2],[1,2])
+   *
+   * @type List(a) * List(a) -> _
+   */
   subseteq(eq) = subset-gen(eq, ?[] + ?[_|_])
 
   /**
@@ -182,15 +266,16 @@ strategies
    *
    * Other strategies call this one to check for equality, subset or subseteq.
    *
-   * @param test strategy that will compare two elements upon their equality.
-   * @param strategy that tests the remainder of the right (2nd) set after
-   *        comparing all elements from the first list. Basically a match.
+   * @param Equality operator to be used on elements in the set.
+   * @param Matching strategy that tests the remainder of the right (2nd)
+   *        set after comparing all elements from the first list.
    */
   subset-gen(eq, rest) =
-  where(
-  rec r ( {x, xs, y, ys, y*:
-    ([],rest)
-  + ?([x|xs], y* )
-  ; <split-fetch(\ y -> <eq> (x, y)\); conc> y* => ys
-  ; <r> (xs, ys)
-  }))
+    where(
+      rec r ( {x, xs, y, ys, y*:
+        ([],rest)
+      + ?([x|xs], y* )
+      ; <split-fetch(\ y -> <eq> (x, y)\); conc> y* => ys
+      ; <r> (xs, ys)
+      })
+    )
