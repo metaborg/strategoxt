@@ -1,7 +1,15 @@
 /**
- * Lists can be used to represent sets of terms.  Using the
- * notion of sets we can define the collection of a set of
- * subterms corresponding to some criterion.
+ * This module contains strategies for dealing with sets. In
+ * this implementation, sets are encoded as lists, by excising
+ * duplicates. The make-set strategy is used to make a set
+ * from a list.
+ *
+ * Given this notion of sets, we can perform the traditional
+ * set operations such as intersect (isect), union, one-way
+ * difference (diff) and symmetric difference (sym-diff). 
+ *
+ * We can also check sets for equality (set-eq), strict and 
+ * non-strict subset relation (subset and subseteq, respectively).
  */
 module collection/list/set
 imports 
