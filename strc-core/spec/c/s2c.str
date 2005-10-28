@@ -499,8 +499,11 @@ rules
           x = ~exp:trm; 
           goto ~id:S; 
         }
-      else if( x != ~exp:trm )
-        goto ~id:F;
+      else 
+        if( x != ~exp:trm )
+          goto ~id:F;
+        else 
+          goto ~id:S;
     ]|
 
   TranslateStrat(|S,F) :

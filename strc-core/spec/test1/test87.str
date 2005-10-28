@@ -12,6 +12,11 @@ strategies
     test-suite(!"test87",
       test1
       ; test2
+      ; test3
+      ; test4
+      ; test5
+      ; test6
+      ; test7
     )
 
   test1 =
@@ -25,7 +30,7 @@ strategies
     apply-test(!"test2"
 	, JoinDefsExt1
 	, ![ExtSDef("a", ["b"], ["c"]), ExtSDef("a", ["d"], ["e"])]
-	, ExtSDef("a", ["b"], ["c"])
+	, !ExtSDef("a", ["b"], ["c"])
 	)
 
   joindefs = debug(!"joindefs: "); (
@@ -52,3 +57,82 @@ strategies
     ; fetch(?SDefT(f,_,_,_))
     ; <debug(!"error: redefining external definition: ")> f
     ; giving-up
+
+// ---------------
+
+  test3 =
+    apply-test(!"test3"
+	, foo3
+	, ![("a", ["b"], ["c"]), ("a", ["d"], ["e"])]
+	, !("a", ["b"], ["c"])
+	)
+
+  foo3 =
+    where(map(
+      ?(f, <length => i>, <length => j>)
+    + ?(f, <length => i>, <length => j>, s)
+    ))
+    ; Hd
+
+// ---------------
+
+  test4 =
+    apply-test(!"test4"
+	, foo4
+	, ![("a", ["b"]), ("a", ["d"])]
+	, !("a", ["b"])
+	)
+
+  foo4 =
+    where(map(
+      ?(f, <length => i>)
+    + ?(f, <length => i>, s)
+    )) 
+    ; Hd
+
+// ---------------
+
+  test5 =
+    apply-test(!"test5"
+	, foo5
+	, ![("a", ["b"]), ("a", ["d"])]
+	, !("a", ["b"])
+	)
+
+  foo5 =
+    where(map(
+      ?(f, _)
+    + ?(f, _, s)
+    ))
+    ; Hd
+
+// ---------------
+
+  test6 =
+    apply-test(!"test6"
+	, foo6
+	, ![("a", ["b"]), ("a", ["d"])]
+	, !("a", ["b"])
+	)
+
+  foo6 =
+    where(map(
+      {a : ?(f, a); <length> a => i}
+    + {a : ?(f, a, s); <length> a => i}
+    ))
+    ; Hd
+
+// ---------------
+
+  test7 =
+    apply-test(!"test7"
+	, foo7
+	, ![("a", ["b"]), ("a", ["d"])]
+	, !("a", ["b"])
+	)
+
+  foo7 =
+    where(map(
+      {a: ?(f, a); <length> a => i}
+    ))
+    ; Hd
