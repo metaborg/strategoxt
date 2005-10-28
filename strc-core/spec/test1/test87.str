@@ -1,0 +1,54 @@
+module test87
+imports liblib
+signature
+  constructors
+    ExtSDef : String * List(String) * List(String) -> SDef
+    ExtSDefInl : String * List(String) * List(String) * String -> SDef
+    SDefT : String * List(String) * List(String) * String -> SDef
+
+strategies
+
+  main = 
+    test-suite(!"test87",
+      test1
+      ; test2
+    )
+
+  test1 =
+    apply-test(!"test1"
+	, joindefs
+	, ![ExtSDef("a", ["b"], ["c"]), ExtSDef("a", ["d"], ["e"])]
+	, ExtSDef("a", ["b"], ["c"])
+	)
+
+  test2 =
+    apply-test(!"test2"
+	, JoinDefsExt1
+	, ![ExtSDef("a", ["b"], ["c"]), ExtSDef("a", ["d"], ["e"])]
+	, ExtSDef("a", ["b"], ["c"])
+	)
+
+  joindefs = debug(!"joindefs: "); (
+    JoinDefs1 <+ JoinDefs2 <+ JoinDefsExt1 <+ JoinDefsExt2
+  )
+
+  JoinDefs1 : 
+    [sdef] -> sdef
+    where debug(!"JoinDefs1: ")
+
+  JoinDefs2 : 
+    defs @ [SDefT(f, xs1, xs2, s) | _] -> "foo"
+
+  JoinDefsExt1 = debug(!"JoinDefsExt1: "); 
+    where(map(
+      ?ExtSDef(f, <length => i>, <length => j>)
+    + ?ExtSDefInl(f, <length => i>, <length => j>, s)
+    ))
+    ; debug(!"JoinDefsExt1 yes: ") 
+    ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
+
+  JoinDefsExt2 = debug(!"JoinDefsExt2: "); 
+    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
+    ; fetch(?SDefT(f,_,_,_))
+    ; <debug(!"error: redefining external definition: ")> f
+    ; giving-up
