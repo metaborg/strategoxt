@@ -247,7 +247,15 @@ strategies
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
     dec|[ static ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
-    where <is-local-function> f
+    where not(InnerFunction); <is-local-function> f
+	; <map(TranslateVarDec)> a1* => ps1
+        ; <map(TranslateVarDec)> a2* => ps2
+	; <conc>(ps1, ps2) => ps
+
+  SDefToDeclaration :
+    Def|[ f(a1* | a2*) = s ]| ->
+    dec|[ auto ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    where InnerFunction
 	; <map(TranslateVarDec)> a1* => ps1
         ; <map(TranslateVarDec)> a2* => ps2
 	; <conc>(ps1, ps2) => ps
@@ -300,12 +308,15 @@ strategies
          return NULL;
        }
     ]|
-    where <not(is-local-function)> f
+    where <InnerFunction <+ not(is-local-function)> f
 	; <map(TranslateVarDec)> a1* => args1
         ; <map(TranslateVarDec)> a2* => args2
 	; <conc>(args1, args2) => args
 	; <newname> "fail" => F
-	; <translate-strat(|Next, F)>s => stm
+	; {| InnerFunction 
+           : rules( InnerFunction : _)
+           ; <translate-strat(|Next, F)>s => stm
+	   |}
 
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| ->
@@ -318,12 +329,16 @@ strategies
          return NULL;
        }
     ]|
-    where <is-local-function> f
+    where not(InnerFunction)
+        ; <is-local-function> f
 	; <map(TranslateVarDec)> a1* => args1
         ; <map(TranslateVarDec)> a2* => args2
 	; <conc>(args1, args2) => args
 	; <newname> "fail" => F
-	; <translate-strat(|Next, F)> s => stm
+	; {| InnerFunction 
+           : rules( InnerFunction : _)
+           ; <translate-strat(|Next, F)> s => stm
+	   |}
 
   is-local-function =
     explode-string
