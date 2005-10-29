@@ -161,7 +161,7 @@ strategies
   statistics-option =
     ArgOption("--statistics"
     , where(<set-config> ("--statistics", <string-to-int>))
-    , !"--statistics i  Print statistics (default 0 = none)"
+    , !"--statistics i   Print statistics (default 0 = none)"
     )
 
   /**
