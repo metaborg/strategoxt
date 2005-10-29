@@ -86,34 +86,59 @@ test If then else in else branche of if then else
 
 test Switch case no otherwise
   "switch s0 case s1:s1' case s2:s2' end"
-    -> SwitchChoiceNoOtherwise(CallNoArgs(SVar("s0")), [(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'"))),(CallNoArgs(SVar("s2")),CallNoArgs(SVar("s2'")))])
+  -> SwitchChoiceNoOtherwise(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(CallNoArgs(SVar("s1")), CallNoArgs(SVar("s1'")))
+       , SwitchCase(CallNoArgs(SVar("s2")),CallNoArgs(SVar("s2'")))
+       ])
 
 test Switch case with otherwise
   "switch s0 case s1:s1' otherwise:s' end"
-    -> SwitchChoice(CallNoArgs(SVar("s0")), [SwitchCase(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'")))], CallNoArgs(SVar("s'")))
+  -> SwitchChoice(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'")))]
+     , CallNoArgs(SVar("s'"))
+     )
 
 test Switch case no otherwise, no branches
   "switch s0 end"
-    -> SwitchChoiceNoOtherwise(CallNoArgs(SVar("s0")), [])
+  -> SwitchChoiceNoOtherwise(CallNoArgs(SVar("s0")), [])
 
 test Switch case no branches
   "switch s0 otherwise:s' end"
-    -> SwitchChoice(CallNoArgs(SVar("s0")), [], CallNoArgs(SVar("s'")))
+  -> SwitchChoice(CallNoArgs(SVar("s0")), [], CallNoArgs(SVar("s'")))
 
 test Switch case as selector
   "switch switch sA case sB:sB' end case s1:s1' end"
-    -> SwitchChoiceNoOtherwise(
-         SwitchChoiceNoOtherwise(CallNoArgs(SVar("sA")), [(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'")))]),
-         [(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'")))])
+  -> SwitchChoiceNoOtherwise(
+       SwitchChoiceNoOtherwise(
+         CallNoArgs(SVar("sA"))
+       , [ SwitchCase(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'"))) ]
+       )
+     , [ SwitchCase(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'"))) ]
+     )
 
 test Switch case as branch condition
   "switch s0 case switch sA case sB:sB' end:s1' end"
-    -> SwitchChoiceNoOtherwise(CallNoArgs(SVar("s0")),
-         [(SwitchChoiceNoOtherwise(CallNoArgs(SVar("sA")), [(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'")))]),
-           CallNoArgs(SVar("s1'")))])
+  -> SwitchChoiceNoOtherwise(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(
+           SwitchChoiceNoOtherwise(
+             CallNoArgs(SVar("sA"))
+           , [ SwitchCase(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'")))]
+           )
+         , CallNoArgs(SVar("s1'")))
+       ])
 
 test Switch case as branch body
   "switch s0 case s1:switch sA case sB:sB' end end"
-    -> SwitchChoiceNoOtherwise(CallNoArgs(SVar("s0")),
-         [(CallNoArgs(SVar("s1")),
-           SwitchChoiceNoOtherwise(CallNoArgs(SVar("sA")), [(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'")))]))])
+  -> SwitchChoiceNoOtherwise(
+       CallNoArgs(SVar("s0"))
+     , [ SwitchCase(
+           CallNoArgs(SVar("s1"))
+         , SwitchChoiceNoOtherwise(
+             CallNoArgs(SVar("sA"))
+           , [ SwitchCase(CallNoArgs(SVar("sB")),CallNoArgs(SVar("sB'"))) ]
+           )
+         )
+       ])
