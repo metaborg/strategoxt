@@ -90,7 +90,7 @@ test Switch case no otherwise
 
 test Switch case with otherwise
   "switch s0 case s1:s1' otherwise:s' end"
-    -> SwitchChoice(CallNoArgs(SVar("s0")), [(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'")))], CallNoArgs(SVar("s'")))
+    -> SwitchChoice(CallNoArgs(SVar("s0")), [SwitchCase(CallNoArgs(SVar("s1")),CallNoArgs(SVar("s1'")))], CallNoArgs(SVar("s'")))
 
 test Switch case no otherwise, no branches
   "switch s0 end"
