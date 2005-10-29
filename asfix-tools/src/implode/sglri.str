@@ -1,70 +1,49 @@
 module sglri
 imports
   liblib
+  sglri-options
   error-reporting
 
 strategies
 
   sglri =
-    xtc-io-wrap(sglri-options,
-      parse-and-implode
-      <+ <xtc-exit> 1
-    )
+    init-sglr-options
+    ; xtc-io-wrap(sglri-options,
+        parse-and-implode
+        <+ <xtc-exit> 1
+      )
 
   sglri-options =
-      ArgOption("-p",
-        where(<set-config> ("-p", <id>)),
-        !"-p <file.tbl>           Use parse table <file.tbl> (required)")
-    + ArgOption("-s" + "--start", 
-        where(<set-config> ("--start", <id>)),
-        !"-s, --start <symbol>    Start parsing with <symbol>")
-    + sglr-filter-options
+      sglr-parse-table-option
+    + sglr-start-symbol-option
 
     + Option(fail, fail, !"")
 
-    + ArgOption("--sglr", 
-        where(<extend-config> ("--sglr", [<id>])),
-        !"--sglr <opt>            Pass <opt> to sglr")
-    + ArgOption("--impl", 
-        where(<extend-config> ("--impl", [<id>])),
-        !"--impl <opt>            Pass <opt> to implode-asfix")
+    + sglr-filter-option
 
     + Option(fail, fail, !"")
 
-  sglr-filter-options =
-      Option("--no-heuristic-filters"
-      , where(<extend-config> ("--sglr", ["-fi", "-fe"]))
-      , !"--no-heuristic-filters  Don't use heuristic disambiguation filters (encouraged)"
-    )
+    + custom-sglr-option
+    + custom-implode-option
+
+    + Option(fail, fail, !"")
 
 strategies
 
   parse-and-implode =
-    let pass-start =
-          !["-s", <get-config> "--start"] <+ ![]
+    let try-get-parse-table =
+          <get-config> ParseTable() <+ fatal-err(|"No parse table specified")
 
-        pass-sglr =
-          <get-config> "--sglr" <+ ![]
-
-        pass-sglr-verbose =
-          ![]; if-verbose3(!["-v"])
-
-        get-parse-table =
-          <get-config> "-p" <+ <fatal-error> ["** ERROR: no parse table specified"]
-
-     in xtc-sglr-strict(|<get-parse-table>,
+     in xtc-sglr-strict(|<try-get-parse-table> (),
           <concat> [
               ["-2"]
-            , <pass-start> ()
-            , <pass-sglr> ()
+            , <pass-sglr-start-symbol> ()
+            , <pass-custom-sglr-options> ()
             , <pass-sglr-verbose> ()
             ])
     end;
 
-    let pass-implode =
-          <get-config <+ ![]> "--impl"
-
-        pass-binary-output =
+    let pass-binary-output =
           if <get-config> "-b" then
             !["-b"]
           else
@@ -73,7 +52,7 @@ strategies
 
      in implode-asfix(
           <concat> [
-            <pass-implode> ()
+            <pass-custom-implode-options> ()
           , <pass-binary-output> ()
           , <pass-verbose> ()
           ])
@@ -103,6 +82,7 @@ strategies
 
   xtc-command-silent(|tool) =
     where(<xtc-find-warning> tool => loc)
+    ; log(|Debug(),<concat-strings>["Invoking tool ", tool," at location ",loc," with arguments: "],<id>)
     ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
 
   /**
