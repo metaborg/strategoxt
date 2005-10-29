@@ -31,6 +31,10 @@ exports
     ""                             -> UQLiteral {cons("no-chars")}
     [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral {cons("more-chars")}
 
+  %% empty is ok, but cannot be a complete ATerm.
+  context-free syntax  
+    "" -> ATerm {reject}
+
   %% allow function applications without arguments
   context-free syntax
     fun:AFun "(" ")" -> ATerm {cons("fun")}
