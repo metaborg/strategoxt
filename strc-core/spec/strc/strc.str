@@ -87,13 +87,13 @@ strategies
           )
         //; define-congruences
 	// CONSTANT PROPAGATION
-        ; olevel5( 
-	    const-prop
-	    ; bound-unbound-vars
-	    ; dead-var-elim
-	    ; simplify3
-            ; save-as4(!".opt4")
-          )
+        //; olevel5( 
+	//    const-prop
+	//    ; bound-unbound-vars
+	//    ; dead-var-elim
+	//    ; simplify3
+        //    ; save-as4(!".opt4")
+        //  )
 	// PATTERN MATCH COMPILATION
         ; olevel3( 
 	    compile-match
@@ -109,16 +109,16 @@ strategies
            ; save-as5(!".opt8")
           )
 	// CONSTANT PROPAGATION
-        ; olevel4(
-	    simplify2 // lift term arguments from (prim) calls
-            ; save-as3(!".opt9")
-            ; const-prop
-	    ; save-as3(!".opt10")
-	    ; bound-unbound-vars
-	    ; save-as3(!".opt11")
-	    ; dead-var-elim
-            ; save-as3(!".opt12")
-	  )
+        //; olevel4(
+	//    simplify2 // lift term arguments from (prim) calls
+        //    ; save-as3(!".opt9")
+        //    ; const-prop
+	//    ; save-as3(!".opt10")
+	//    ; bound-unbound-vars
+	//    ; save-as3(!".opt11")
+	//    ; dead-var-elim
+        //    ; save-as3(!".opt12")
+	//  )
 	// SIMPLIFICATION
         ; olevel1(
 	    simplify3
