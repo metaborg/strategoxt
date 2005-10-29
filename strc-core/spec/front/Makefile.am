@@ -17,6 +17,7 @@ SCFLAGS  	=  --main $*-io			\
 libexec_PROGRAMS =				\
 	repair-types				\
 	pre-desugar				\
+        stratego-ensugar			\
 	combine-sections			\
 	variables-to-constructors		\
 	raise-annotations			\
