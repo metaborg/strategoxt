@@ -361,12 +361,36 @@ strategies
 
   // check tools upon which this tool depends 
 
+  /**
+   * Used to add the --check option to your XT component. This
+   * strategy should be composed with the other command line 
+   * options of your program, as given to io-wrap, xtc-io-wrap
+   * or option-wrap. It will add a --check option to the command
+   * line. It is intended to be used with xtc-check-dependencies.
+   *
+   * The deps parameter should be a list of components (names) 
+   * required by your program. This will be used by 
+   * xtc-check-dependencies.
+   *
+   * @param deps _ -> List(String)
+   * @type _ -> Option
+   */
   check-options(deps) = 
     Option("--check"
     , where(<set-config>("--check", <deps>))
     , !"--check        check tool dependencies"
     )
 
+  /**
+   * Succeeds if all necessary components for the running program
+   * are available, and the user has specified --check. The 
+   * check-options strategy must have been added to the command line
+   * options of the running program, see check-options for details. 
+   * Additionally, xtc-check-dependencies will only run if the user
+   * specified --check on the command line when invoking the program.
+   *
+   * @type _ -> _
+   */
   xtc-check-dependencies =
     if(<get-config> "--check"
       , filter(not(xtc-find-silent))
@@ -379,6 +403,14 @@ strategies
   // Executing an external process
   // a -> String :: List(String) -> List(String)
 
+  /**
+   * Invokes the XT component given by tool. The input term is
+   * a list of command line arguments that will be passed to the
+   * invoked component.
+   * 
+   * @param tool _ -> String
+   * @type List(a) -> Int
+   */
   xtc-command(tool) = 
       where(tool; xtc-find-warning => loc)
     ; log(|Debug(),<concat-strings>["Invoking tool ",<tool>," at location ",loc," with arguments: "],<id>)
@@ -386,26 +418,66 @@ strategies
 
   // Transparent transformation of terms and files by external processes
 
+  /**
+   * Invokes the XT component given by tool to transform the current term. 
+   * The tool strategy must give the name of the component to invoke. The
+   * The current term will be serialized to the invoked component, and the
+   * result of its execution will become the new current term. No command
+   * line arguments are given.
+   *
+   * @param tool _ -> String
+   * @type       t -> u 
+   */
   xtc-transform(tool) =
     xtc-transform(tool, ![])
 
+  /**
+   * Invokes the XT component given by tool to transform the current term. 
+   * The tool strategy must give the name of the component to invoke. The
+   * The current term will be serialized to the invoked component, and the
+   * result of its execution will become the new current term. The args
+   * parameter must return a list of arguments that will be given to the
+   * invoked component.
+   *
+   * @param tool _ -> String
+   * @type       t -> u 
+   */
   xtc-transform(tool, args) =
     (FILE(id) + stdin)
     < xtc-transform-file(tool, args)
     + xtc-transform-term(tool, args)
 
 
-/**
- * Transforms a file with an external process
- */
 strategies
 
   xtc-transform-file =
     ?(tool, args, file)
 
+  /**
+   * Transforms an existing file with an external process into a new file.
+   * The resulting file will be created automatically, and a handle will
+   * be returned by this strategy. The tool strategy must give the name
+   * of the component to invoke. No arguments will be passed to the
+   * transforming component.
+   *
+   * @param tool       _ -> n 
+   * @type       FILE(a) -> FILE(b)
+   */
   xtc-transform-file(tool) =
     xtc-transform-file(tool, ![])
 
+  /**
+   * Transforms an existing file with an external process into a new file.
+   * The resulting file will be created automatically, and a handle will
+   * be returned by this strategy.
+   *
+   * The tool strategy must give the name of the component to invoke. The
+   * args strategy must give a list of arguments to pass to the component.
+   *
+   * @param tool       _ -> n 
+   * @param args       _ -> List(arg)
+   * @type       FILE(a) -> FILE(b)
+   */
   xtc-transform-file(tool, args) :
     FILE(f) -> FILE(g)
     where <xtc-new-file> f => g
@@ -417,7 +489,16 @@ strategies
         ; <conc; xtc-command(tool)> (<args>, ["-o", g])
 
   /**
-   * Transforms a term with an external process
+   * Transforms the current term with an external process. The current
+   * term will be serialized and handed off to the component identified
+   * by the tool strategy argument. The result of the component will
+   * be returned by this strategy.
+   *
+   * The tool strategy must give the name of the component to invoke. The 
+   * args strategy must give a list of arguments to pass to the component.
+   * @param tool       _ -> n 
+   * @param args       _ -> List(arg)
+   * @type             t -> u
    */
   xtc-transform-term(tool, args) = 
     write-to
@@ -425,21 +506,51 @@ strategies
     ; read-from
 
   /**
-   * Transforms a file with an internal strategy
+   * Transforms a file with an internal strategy s. This strategy
+   * will open an external file, apply s to it, and write the
+   * result back to the file.
    *
-   * @type  File -> File
+   * @param s    a -> b
+   * @type    File -> File
    */
   xtc-io-transform(s) =
     read-from; s; write-to
 
-  // Transforming a file (containing an ATerm) to text with an internal strategy
+  /**
+   * Transforms a file with an internal strategy s into a text file.
+   * This strategy will open an external file (which must be an ATerm),
+   * apply s to it, and print the result as a string back into the
+   * file.
+   *
+   * @param s    a -> b
+   * @type    File -> File
+   */
   xtc-io-transform-text(s) =
       read-from; s; print-to
 
-  // Generating a file with an external process
+  /**
+   * Generates a new file using the component identified by tool. This
+   * strategy will invoke the component given by tool with no arguments,
+   * and write the resulting term to a new file. A handle to the new
+   * file will be returned. No arguments will be passed on to the
+   * invoked component (except the implicit -o).
+   *
+   * @param tool    _ -> name
+   * @type          _ -> FILE(b)
+   */
   xtc-generate(tool) =
     xtc-generate(tool, ![])
 
+  /**
+   * Generates a new file using the component identified by tool. This
+   * strategy will invoke the component given by tool with no arguments,
+   * and write the resulting term to a new file. A handle to the new
+   * file will be returned. The strategy args must produce a list of
+   * arguments which are passed to the invoked component.
+   *
+   * @param tool    _ -> name
+   * @type          _ -> FILE(b)
+   */
   xtc-generate(tool, args) :
     _ -> FILE(g)
     where <xtc-new-file> () => g
