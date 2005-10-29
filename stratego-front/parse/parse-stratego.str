@@ -177,7 +177,9 @@ strategies
      ; !Meta([Syntax(syntax)])
 
     <+ /* final option: no metadata */
-       !Meta([HeuristicFilters(On())])
+       !Meta([
+          HeuristicFilters(Off())
+        ])
      )
    ; log(|Debug(),"Using meta data :", <id>)
 

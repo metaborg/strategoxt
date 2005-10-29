@@ -31,3 +31,10 @@ exports
 
     FunType			-> Type
     ConstType			-> Type
+
+  %%%
+   %% Restriction is required for the Sort* in Sdecl: List(a) is
+   %% ambiguous.
+   %%%
+  context-free restrictions
+    Sort -/- [\(]

@@ -19,3 +19,5 @@ test */ in (*  *) comment
 test *) in (*  *) comment
   "1 (*  *)  *) " fails
 
+test Follow restriction on /*
+  "foo(/* */)" succeeds
