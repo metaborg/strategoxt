@@ -48,29 +48,59 @@ strategies
         ; (stdout + stderr)
 	; <copy-file> (oldname, file)
 
-  // read term from file
 
+  /**
+   * Reads a term from a file. If the given file exists, it will be
+   * treated as an ATerm and its content will be returned, as a term.
+   *
+   * @type FILE -> t
+   */
   read-from :
     FILE(name) -> t
     where <file-exists; ReadFromFile> name => t
 
+  /**
+   * Reads a term from a stdin. The input on stdin is assumed to be
+   * an ATerm. It will be parsed, and returned as a term.
+   *
+   * @type stdin -> t
+   */
   read-from :
     stdin -> t
     where <ReadFromFile> stdin => t
 
-  // write term to file
-
+  /**
+   * Write a term to a temporary file, in binary. The name of the file
+   * is generated automatically, the term is written to it in the
+   * binary ATerm format (BAF), and a handle is returned by this 
+   * strategy.
+   *
+   * @type t -> FILE(name)
+   */
   write-to :
     t -> FILE(name)
     where xtc-new-file => name
         ; <WriteToBinaryFile> (name, t)
 
+  /**
+   * Write a term to a temporary file, as text. The name of the file
+   * is generated automatically, the term is written to it in the
+   * textual ATerm format (TAF), and a handle is returned by this 
+   * strategy.
+   *
+   * @type t -> FILE(name)
+   */
   write-to-text :
     t -> FILE(name)
     where xtc-new-file => name
         ; <WriteToTextFile> (name, t)
 
   /**
+   * Writes a (list of) string(s) to a temporary file. A single
+   * string, or a list of strings is written to a text file. The
+   * file name is generated automatically, and returned by this
+   * strategy.
+   *
    * @type  String or List(String) -> FILE
    */
   print-to :
@@ -86,6 +116,14 @@ strategies
       ; <fprint> (stream, <id>)
       ; <fclose> stream
 
+  /**
+   * Searches for an XT component, by name. The input to this
+   * strategy is the name of the component, as registered in
+   * the XTC registry. If found, a FILE representing its 
+   * location (path) is returned.
+   * 
+   * @type String -> FILE(String)
+   */
   xtc-find-file = 
     !FILE(<xtc-find>)
 
@@ -104,12 +142,30 @@ strategies
   ; <close> fd
   ; !f
 
+  /**
+   * Removes all temporary files created by this program. Each
+   * time the <tt>xtc-*</tt> strategies create a new temporary
+   * file, it will be tracked. Running this strategy will remove
+   * all files created so far.
+   *
+   * @type _ -> _
+   */
   xtc-remove-temporaries =
     where(
       <table-get>(XTC, TEMP) => fs
       ; map(try(remove-file))
     )
 
+  /**
+   * Wrapper strategy that automatically cleans all temporary files
+   * created by s. This strategy is used to wrap a strategy <tt>s</tt>,
+   * which can create one or multiple temporary files. All temporary
+   * files will be cleaned up automatically, and the result of
+   * <tt>s</tt> will be returned.
+   *
+   * @param s  t -> u
+   * @type     t -> u
+   */
   xtc-temp-files(s) = 
     begin-scope(!TempFiles)
     ; restore-always(s,
@@ -118,8 +174,14 @@ strategies
         ; end-scope(!TempFiles)
       )
 
-  // exit after removing temp files
-
+  /**
+   * Clean up temporary files and exit program. In normal operation,
+   * XT components create temporary files, which should be cleaned
+   * up on program exit. Calling this strategy instead of
+   * <tt>exit</tt> ensures that no files are left behind.
+   *
+   * @type Integer -> _
+   */
   xtc-exit =
     ?status
     ; repeat( 
@@ -132,6 +194,10 @@ strategies
 
   // XTC-IO : 'read' input file, transform, and 'write' to output file
 
+  /**
+   * Wrapper that reads, transforms and writes 
+   *
+   */
   xtc-io(s) =
     xtc-temp-files( 
         (!FILE(<get-config> "-i") <+ !stdin)
