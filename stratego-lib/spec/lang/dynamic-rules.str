@@ -273,7 +273,7 @@ strategies // high-level API with implicit rule set
     ; dr-set-rule-set(|name)
 
   /**
-   * Intersect live rule-set with give rule set changing both.
+   * Intersect live rule-set with given rule set changing both.
    */
     
   dr-intersect-symm(|name) =
@@ -297,7 +297,20 @@ strategies // high-level API with implicit rule set
     ; dr-set-rule-set(|name)
 
 
-// low-level API working directly on rule-set
+  /**
+   * Left choice with dynamic rule roll-back in case s1 fails.
+   */
+
+  dr-left-choice(s1,s2|rulenames) =
+    where(<map(dr-start-change-set(|<id>))> rulenames)
+    ; s1 
+    < where(<map(dr-commit-change-set(|<id>))> rulenames)
+    + where(<map(dr-discard-change-set(|<id>))> rulenames)
+      ; s2
+
+/**
+ * Low-level API working directly on rule-set.
+ */
 
 strategies // debugging
 
