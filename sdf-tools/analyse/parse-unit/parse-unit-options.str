@@ -6,6 +6,7 @@
 module parse-unit-options
 imports 
   tool-doc
+  sglri-options
 
 strategies
 
@@ -32,21 +33,17 @@ strategies
 strategies
 
   parse-unit-options =
-       parse-table-option
-    <+ abstract-input-option
-    <+ sglr-filter-options
+       sglr-parse-table-option
+    <+ sglr-filter-option
     <+ single-option
     <+ single-asfix2-option
     <+ single-ast-option
 
   init-parse-unit-options =
     where(<set-verbosity> 1)
+    ; init-sglr-options
 
-  parse-table-option =
-    ArgOption("-p"
-    , where(<set-config> ("--parse-table", <id>))
-    , !"-p <file>         Use parse table <file> (required)"
-    )
+strategies
 
   single-option =
     ArgOption("--single"
@@ -74,27 +71,6 @@ strategies
     , where(<set-config> ("--single-output", "ast"))
     , !"--ast             Parse to AST (only applicable when --single is used)"
     )
-
-  sglr-filter-options =
-    Option("--no-heuristic-filters"
-    , where(<extend-config> ("--sglr-options", ["-fi", "-fe"]))
-    , !"--no-heuristic-filters  Don't use heuristic disambiguation filters (encouraged)"
-    )
-
-  abstract-input-option =
-    Option("--abstract-input"
-    , where(<set-config> ("--abstract-input", ()))
-    , !"--abstract-input  Testsuite is in abstract syntax."
-    )
-
-  is-abstract-input =
-    <get-config> "--abstract-input"
-
-  get-extra-sglr-options =
-    <get-config> "--sglr-options" <+ ![]
-
-  get-parse-table =
-    <get-config> "--parse-table" <+ <fatal-error> ["** ERROR: no parse table specified"]
 
   abs-test-file =
     <conc-strings> (<get-relative-prefix> "-i", <id>)

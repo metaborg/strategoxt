@@ -2,12 +2,11 @@ module parse-unit
 imports
   liblib
   strategoxt-xtc-tools
-  oldskool-parse-testsuite
   parse-testsuite
-  testsuite-upgrade
   parse-unit-test-results
   parse-unit-options
   parse-unit-present
+  explode-aterm
 
 strategies
 
@@ -36,7 +35,7 @@ strategies
   do-full-testsuite =
     echo-start
     ; ?parse-testsuite(name(name), topsort(sort), <id>)
-    ; map-with-index(execute-test(|sort, <get-parse-table> ()))
+    ; map-with-index(execute-test(|sort, <try-get-parse-table> ()))
     ; !TestResults(<id>)
     ; where(<echo-results> (name, <id>))
     ; parse-unit-exit-on-failure
@@ -53,17 +52,17 @@ strategies
     ; where(<debug(!"test : ")> s)
 
     ; !FILE(f)
-    ; sglr-asfix2(|sort, <get-parse-table> ())
+    ; sglr-asfix2(|sort, <try-get-parse-table> ())
     ; if not(is-single-test-output-asfix2) then
         xtc-implode-asfix
       end
 
+  try-get-parse-table =
+    get-sglr-parse-table <+ fatal-err(|"No parse table specified")
+
   read-parse-testsuite =
-    if not(is-abstract-input) then
-      xtc-sglri(|"parse-testsuite.tbl", "TestSuite")
-    end
+    xtc-sglri(|"parse-testsuite.tbl", "TestSuite")
     ; read-from
-    ; try(upgrade-oldskool-testsuite)
     ; parse-testsuite(id, id, map(try(add-description)))
     ; parse-testsuite(id, id, map(ensure-test-input-in-file))
     ; parse-testsuite(id, id, map(ensure-test-output-not-in-file))
@@ -124,13 +123,13 @@ strategies
    * @type FILE -> FILE
    */
   sglr-asfix2(|sort, table) =
-    core-sglr(|<conc> (<get-extra-sglr-options> (), ["-2", "-p", table, "-s", sort]))
+    core-sglr(|<conc> (<pass-custom-sglr-options> (), ["-2", "-p", table, "-s", sort]))
 
   /**
    * @type FILE -> ParseResult
    */
   sglri(|sort, table) = 
-    core-sglri(|<conc> (<get-extra-sglr-options> (), ["-2A", "-p", table, "-s", sort]))
+    core-sglri(|<conc> (<pass-custom-sglr-options> (), ["-2A", "-p", table, "-s", sort]))
 
   /**
    * @type FILE -> FILE
@@ -183,4 +182,5 @@ strategies
 
   xtc-command-silent(|tool) =
     where(<xtc-find-warning> tool => loc)
+    ; log(|Debug(),<concat-strings>["Invoking tool ", tool," at location ",loc," with arguments: "],<id>)
     ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
