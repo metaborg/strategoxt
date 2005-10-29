@@ -1,3 +1,21 @@
+/**
+ * This module contains a strategies for workin on the XTC 
+ * universe. This includes composing components, passing data
+ * between components, and basic file handling.
+ *
+ * The XTC model is based around Unix pipes and ATerm stored
+ * as (temporary) files on disk. Each XT component is a 
+ * an executable program, which reads an ATerm as input
+ * (either from stdin or from a file), processes it, and then
+ * writes the result to another file (or stdout). 
+ * 
+ * The lowlevel details of creating temporary files, opening
+ * pipes, and executing components have been hidden behind the
+ * strategies found in this module. You will find many examples
+ * of wrapper strategies, which perform bookkeeping of temporary
+ * files, opened file descriptors, and similar, to ensure that
+ * these are removed and freed upon program termination.
+ */
 module xtc-proc
 imports xtc-rep 
 
@@ -14,40 +32,70 @@ strategies
 
   // renaming files
 
+  /**
+   * Renames one file to another, on disk. If the new name
+   * is identical to the old, no action is taken. The old
+   * file can also be 'renamed' to stdout, in which case
+   * the content of the old file is written to stdout
+   * before the file is removed.
+   *
+   * @param name _ -> newname
+   * @type FILE(oldname) -> FILE(newname) or stdout
+   */
   rename-to(name) :
     FILE(oldname) -> FILE(oldname)
     where name => oldname
 
+  /**
+   * @inc rename-to
+   */
   rename-to(name) :
     FILE(oldname) -> FILE(newname)
     where name => newname
 	; not(stdout + ?oldname)
         ; <rename-file>(oldname, newname)
 
+  /**
+   * @inc rename-to
+   */
   rename-to(name) :
     FILE(oldname) -> stdout
     where name => stdout
 	; <copy-file> (oldname, stdout)
 	; <remove-file> oldname
 
-  // copying files
 
+  /**
+   * Copies one file to another. If the new file has the same name
+   * as the old, no action is taken. In  addition to a real file,
+   * the new file can be stdout (or stderr). In this case, the contents
+   * of the old file will be written to stdout (or stderr) before the
+   * file is removed.
+   *
+   * @param name        _ -> b
+   * @type        FILE(a) -> FILE(b)
+   */
   copy-to(name) :
     FILE(oldname) -> FILE(oldname)
     where name => oldname
 
+  /**
+   * @inc copy-to
+   */
   copy-to(name) :
     FILE(oldname) -> FILE(oldname)
     where name => newname
 	; not(stdout + stderr + ?oldname)
         ; <copy-file>(oldname, newname)
 
+  /**
+   * @inc copy-to
+   */
   copy-to(name) :
     FILE(oldname) -> FILE(oldname)
     where name => file
         ; (stdout + stderr)
 	; <copy-file> (oldname, file)
-
 
   /**
    * Reads a term from a file. If the given file exists, it will be
@@ -228,17 +276,35 @@ strategies
     ; <xtc-exit> 0
 
   /**
-   * Writes the 
+   * Writes a FILE to the output of this component. The output
+   * is file is retrieved from the -o option given to the
+   * program; if -o was not given, stdou is used.
+   *
+   * @type FILE -> FILE
    */
   xtc-write-output =
     ?FILE(_); copy-to(<get-config> "-o" <+ !stdout())
 
+  /**
+   * @type stdin -> FILE
+   */
   xtc-write-output =
     ?stdin(); <copy-file> (stdin(), <get-config <+ !stdout()> "-o")
 
+  /**
+   * Succeeds if the input term is a FILE
+   *
+   * @type FILE -> FILE
+   */
   xtc-ensure-file =
     ?FILE(_)
 
+  /**
+   * Succeeds if the input term is stdin, and it can be successfully
+   * copied to a FILE.
+   *
+   * @type stdin -> FILE
+   */
   xtc-ensure-file =
       ?stdin()
     ; where(<xtc-new-file> () => f)
