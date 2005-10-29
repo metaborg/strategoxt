@@ -195,8 +195,15 @@ strategies
   // XTC-IO : 'read' input file, transform, and 'write' to output file
 
   /**
-   * Wrapper that reads, transforms and writes 
+   * High-level wrapper that reads a term from a file, transforms it
+   * using s, then writes the output back to a file. The input file
+   * is taken from the command line options given to the program
+   * (the -i option), and the output is taken from the -o option.
+   * If -i is not given, stdin is used. If -o is not given, stdout
+   * is used
    *
+   * @param s       a -> b
+   * @type    FILE(a) -> FILE(a)
    */
   xtc-io(s) =
     xtc-temp-files( 
@@ -208,10 +215,21 @@ strategies
   // stop in the middle of a transformation pipeline, copying the
   // current file to the output file.
 
+  /**
+   * Terminate the running program safely by flushing the current
+   * working file to output. The output file is determined from the
+   * -o option on the command line; if not given, stdout will be
+   * used. All temporary files will also be removed.
+   *
+   * @type t -> _
+   */
   xtc-io-exit =
     xtc-write-output
     ; <xtc-exit> 0
 
+  /**
+   * Writes the 
+   */
   xtc-write-output =
     ?FILE(_); copy-to(<get-config> "-o" <+ !stdout())
 
@@ -365,11 +383,11 @@ strategies
 strategies
 
   /**
-   * xtc-cat concatenates the content of a list 
-   * of Files (FILE or stdin) and stores the result 
-   * in a fresh File
+   * Concatenates the content of a list of files and stores
+   * the result in a fresh File. Each file in the list can
+   * be a FILE, stdin, stdout, or stderr.
    *
-   * :: [File] -> File
+   * @type List(FILE) -> FILE
    */
   xtc-cat:
     in-files -> file
@@ -379,9 +397,16 @@ strategies
           ; <xtc-close-fd> fdout
 
   /**
-   * Transform character chunks in text file.
+   * Transform character chunks in text file. This strategy
+   * inherits the semantics of char-io/filter-text-file,
+   * where more is applied to each line (and must always
+   * suceed), while done must fail when the processing
+   * should stop.
    *
-   * See filter-text-file in char-io module.
+   * @param 
+   * @type   FILE(a) -> FILE(b)
+   *
+   * seealso char-io/filter-text-file
    */
 
   xtc-filter-text-file(more, done) :
@@ -390,33 +415,57 @@ strategies
 	; <filter-text-file(more, done)> (f, g)
 
   /**
-   * File-as-fd applies the specified strategy to
-   * the openend file descriptor of the specified File.
-   * The fd is closed in all cases, also when s fails.
+   * Opens a file, applies the strategy s the file descriptor,
+   * and ensures that the file descriptor is closed on return
+   * of s, regardless of outcome.  The strategy s will be 
+   * handed a file descriptor for the the FILE given to
+   * File-as-fd. The result of s will become the result
+   * of File-as-fd, and the file descriptor will always be
+   * closed, also when s fails.
    *
-   * Int -> b :: File -> b
+   * @param s  Int -> b 
+   * @type    FILE -> b
    */
   File-as-fd(s) =
       xtc-open-fd => fd
     ; finally(s, where(try(<xtc-close-fd> fd)))
 
   /**
-   * xtc-new-file-name is like xtc-new-file but doesn't open the file.
+   * Generates a new file name, but does not create the file on
+   * disk. As the file is not created on disk, another process
+   * may theoretically create it (and thus own it), thus causing
+   * a race condition. For this reason, you may prefer to us
+   * <tt>xtc-new-file</tt> instead.
+   * 
+   * @type _ -> FILE
    */
-  // :: _ -> File
   xtc-new-file-name =
       new-file => f
     ; where(<assert(!TempFiles)> (f, ()))
     ; !FILE(f)
 
-  // :: File -> Int
+  /**
+   * Opens a file and returns a file descriptor. This strategy
+   * can be used to open any <tt>FILE</tt>s as well as
+   * <tt>stdin</tt>, <tt>stdout</tt> and <tt>stderr</tt>. The
+   * file descriptor should be closed with <tt>xtc-close-fd</tt>.
+   *
+   * @type FILE -> Int
+   */
   xtc-open-fd =
       \ FILE(s)  -> <open> s \
     + \ stdin()  -> < STDIN_FILENO> () \
     + \ stdout() -> <STDOUT_FILENO> () \
     + \ stderr() -> <STDERR_FILENO> () \
 
-  // :: Int -> ()
+  /**
+   * Closes a file descriptor. This strategy can be used to close
+   * any file opened by <tt>xtc-open-fd</tt>, and also the
+   * standard files <tt>stdin</tt>, <tt>stdout</tt> and
+   * <tt>stderr</tt>.
+   *
+   * @type FILE -> Int
+   */
   xtc-close-fd = 
     finally(
       ( where(<eq> (<id>, < STDIN_FILENO> ()))
