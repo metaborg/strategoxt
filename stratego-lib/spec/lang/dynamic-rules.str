@@ -854,7 +854,8 @@ strategies // generic fork-and-merge strategies
 
   fork-rule-sets :
     rulename -> (rulename, rs)
-    where dr-get-rule-set(|rulename); dr-start-change-set => rs
+    where dr-get-rule-set(|rulename)
+        ; dr-start-change-set => rs
 	; dr-start-change-set(|rulename)
 
   merge-rule-sets(merge) =
@@ -870,9 +871,9 @@ strategies // generic fork-and-merge strategies
 
   dr-fork-and-merge(merge, s1, s2 | rulenames) = 
     where(<map(fork-rule-sets)> rulenames => rs1)
-    ; s1
+    ; restore(s1, where(<map(discard-change-set(|<id>))> rulenames))
     ; where(<map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2)
-    ; s2
+    ; restore(s2, where(<map(discard-change-set(|<id>))> rulenames))
     ; where(<map(merge-rule-sets(merge))> rs2)
 
   dr-fork-and-merge(merge1, merge2, s1, s2 | rulenames1, rulenames2) = 
@@ -880,12 +881,24 @@ strategies // generic fork-and-merge strategies
       <map(fork-rule-sets)> rulenames1 => rs1a;
       <map(fork-rule-sets)> rulenames2 => rs1b
     )
-    ; s1
+    ; restore(
+        s1, 
+        where(
+          <map(discard-change-set(|<id>))> rulenames1;
+          <map(discard-change-set(|<id>))> rulenames2
+        )
+      )
     ; where(
         <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1a => rs2a;
         <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1b => rs2b
       )
-    ; s2
+    ; restore(
+        s2, 
+        where(
+          <map(discard-change-set(|<id>))> rulenames1;
+          <map(discard-change-set(|<id>))> rulenames2
+        )
+      )
     ; where(
         <map(merge-rule-sets(merge1))> rs2a;
         <map(merge-rule-sets(merge2))> rs2b
@@ -903,7 +916,7 @@ strategies // generic fix-point strategies
     where(<map(fork-rule-sets)> rulenames => rs)
     ; repeat(
         where(
-	  s 
+	  restore(s, where(<map(discard-change-set(|<id>))> rulenames))
           ; if <filter({?(rulename,<id>); <merge>(rulename, <id>)})> rs; [] 
             then 
 	      ?e; fail // no changes in any of the rules
@@ -912,15 +925,21 @@ strategies // generic fix-point strategies
             end
         )
       )
-    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
     ; !e
+    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
 
   dr-fix-and-merge(merge1, merge2, s | rulenames1, rulenames2) =
     where(<map(fork-rule-sets)> rulenames1 => rs1;
 	  <map(fork-rule-sets)> rulenames2 => rs2)
     ; repeat(
         where(
-	  s 
+          restore(
+            s, 
+            where(
+              <map(discard-change-set(|<id>))> rulenames1;
+              <map(discard-change-set(|<id>))> rulenames2
+            )
+          )
           ; if and(<filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
 	          ,<filter({?(rulename,<id>); <merge2>(rulename, <id>)})> rs2; [])
             then 
@@ -928,9 +947,9 @@ strategies // generic fix-point strategies
             end
         )
       )
+    ; !e
     ; where(<map(dr-commit-change-set(|<id>))> rulenames1
 	   ;<map(dr-commit-change-set(|<id>))> rulenames2)
-    ; !e
 
 strategies // fork with intersection and union
 
