@@ -1,3 +1,3 @@
 # generic rules
 %.runtestsuite : %.testsuite
-	$(SDF_TOOLS)/bin/parse-unit -i $< -p $(PARSE_UNIT_PTABLE)
+	$(SDF_TOOLS)/bin/parse-unit --no-heuristic-filters -i $< -p $(PARSE_UNIT_PTABLE)

@@ -21,7 +21,7 @@ TESTS = prop1 switch-semantics-test prop1-asfix
 prop1-asfix.c: prop1-asfix.str
 	$(SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c
 
-installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
+check-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check4
 
 check1 : Prop.str
