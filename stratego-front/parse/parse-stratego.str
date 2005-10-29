@@ -123,10 +123,14 @@ strategies
    * @type MetaData -> List(String)
    */  
   pass-filters =
-    if ?Meta(<fetch-elem(?HeuristicFilters(Off()))>) then
-      !["--no-heuristic-filters"]
+    if ?Meta(<fetch-elem(?HeuristicFilters(value))>) then
+      switch !value
+        case On():  !["--heuristic-filters", "on"]
+        case Off(): !["--heuristic-filters", "off"]
+        otherwise:  fatal-err(|"Illegal value of HeuristicFilters option: use On() or Off()")
+      end
     else
-      ![]
+      !["--heuristic-filters", "off"]
     end
 
 strategies
