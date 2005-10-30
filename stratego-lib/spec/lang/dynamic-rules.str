@@ -871,9 +871,9 @@ strategies // generic fork-and-merge strategies
 
   dr-fork-and-merge(merge, s1, s2 | rulenames) = 
     where(<map(fork-rule-sets)> rulenames => rs1)
-    ; restore(s1, where(<map(discard-change-set(|<id>))> rulenames))
+    ; restore(s1, where(<map(dr-discard-change-set(|<id>))> rulenames))
     ; where(<map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2)
-    ; restore(s2, where(<map(discard-change-set(|<id>))> rulenames))
+    ; restore(s2, where(<map(dr-discard-change-set(|<id>))> rulenames))
     ; where(<map(merge-rule-sets(merge))> rs2)
 
   dr-fork-and-merge(merge1, merge2, s1, s2 | rulenames1, rulenames2) = 
@@ -884,8 +884,8 @@ strategies // generic fork-and-merge strategies
     ; restore(
         s1, 
         where(
-          <map(discard-change-set(|<id>))> rulenames1;
-          <map(discard-change-set(|<id>))> rulenames2
+          <map(dr-discard-change-set(|<id>))> rulenames1;
+          <map(dr-discard-change-set(|<id>))> rulenames2
         )
       )
     ; where(
@@ -895,8 +895,8 @@ strategies // generic fork-and-merge strategies
     ; restore(
         s2, 
         where(
-          <map(discard-change-set(|<id>))> rulenames1;
-          <map(discard-change-set(|<id>))> rulenames2
+          <map(dr-discard-change-set(|<id>))> rulenames1;
+          <map(dr-discard-change-set(|<id>))> rulenames2
         )
       )
     ; where(
@@ -916,7 +916,7 @@ strategies // generic fix-point strategies
     where(<map(fork-rule-sets)> rulenames => rs)
     ; repeat(
         where(
-	  restore(s, where(<map(discard-change-set(|<id>))> rulenames))
+	  restore(s, where(<map(dr-discard-change-set(|<id>))> rulenames))
           ; if <filter({?(rulename,<id>); <merge>(rulename, <id>)})> rs; [] 
             then 
 	      ?e; fail // no changes in any of the rules
@@ -936,8 +936,8 @@ strategies // generic fix-point strategies
           restore(
             s, 
             where(
-              <map(discard-change-set(|<id>))> rulenames1;
-              <map(discard-change-set(|<id>))> rulenames2
+              <map(dr-discard-change-set(|<id>))> rulenames1;
+              <map(dr-discard-change-set(|<id>))> rulenames2
             )
           )
           ; if and(<filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
