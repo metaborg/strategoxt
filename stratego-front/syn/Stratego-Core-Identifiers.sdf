@@ -21,6 +21,7 @@ exports
 
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
+
   lexical restrictions
     Id   -/- [a-zA-Z0-9\'\-\_\*]
     LId  -/- [a-zA-Z0-9\'\-\_]
@@ -28,30 +29,39 @@ exports
     UCID -/- [a-zA-Z0-9\'\-\_]
 
   lexical syntax
-    "_"                 -> Id {reject}
-    "'"                 -> Id {reject}
-    "all" 		-> Id {reject}
-    "constructors" 	-> Id {reject}
-    "fail" 		-> Id {reject}
-    "id" 		-> Id {reject}
-    "in" 		-> Id {reject}
-    "let" 		-> Id {reject}
-    "module" 		-> Id {reject}
-    "not" 		-> Id {reject}
-    "one" 		-> Id {reject}
-    "overlays" 		-> Id {reject}
-    "prim" 		-> Id {reject}
-    "rules" 		-> Id {reject}
-    "script" 		-> Id {reject}
-    "signature" 	-> Id {reject}
-    "some" 		-> Id {reject}
-    "sorts" 		-> Id {reject}
-    "strategies" 	-> Id {reject}
-    "stratego" 		-> Id {reject}
-    "test" 		-> Id {reject}
-    "where" 		-> Id {reject}
+    "_"     -> Id {reject}
+    "'"     -> Id {reject}
+
+    Keyword -> Id   {reject}
+    Keyword -> LId  {reject}
+    Keyword -> LCID {reject}
+    Keyword -> UCID {reject}
+
   lexical restrictions
     "all" "constructors" "fail" "id" "in" "let" "module" "not" "one"
     "overlays" "prim" "rules" "script" "signature" "some"
     "sorts" "strategies" "stratego" "test" "where" 
     -/- [a-zA-Z0-9\'\-\_]
+
+  sorts Keyword
+  lexical syntax
+    "all"               -> Keyword
+    "constructors" 	-> Keyword
+    "fail" 		-> Keyword
+    "id" 		-> Keyword
+    "in" 		-> Keyword
+    "let" 		-> Keyword
+    "module" 		-> Keyword
+    "not" 		-> Keyword
+    "one" 		-> Keyword
+    "overlays" 		-> Keyword
+    "prim" 		-> Keyword
+    "rules" 		-> Keyword
+    "script" 		-> Keyword
+    "signature" 	-> Keyword
+    "some" 		-> Keyword
+    "sorts" 		-> Keyword
+    "strategies" 	-> Keyword
+    "stratego" 		-> Keyword
+    "test" 		-> Keyword
+    "where" 		-> Keyword
