@@ -15,6 +15,10 @@
  * of wrapper strategies, which perform bookkeeping of temporary
  * files, opened file descriptors, and similar, to ensure that
  * these are removed and freed upon program termination.
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl>
+ *
  */
 module xtc-proc
 imports xtc-rep 
@@ -250,7 +254,7 @@ strategies
    * If -i is not given, stdin is used. If -o is not given, stdout
    * is used
    *
-   * @param s       a -> b
+   * @param s       u -> v
    * @type    FILE(a) -> FILE(a)
    */
   xtc-io(s) =
@@ -311,8 +315,14 @@ strategies
     ; <copy-file> (stdin(), f)
     ; !FILE(f)
 
-  // XTC-OUTPUT : transform, and 'write' to output file
 
+  /**
+   * Applies the strategy s to the current term, then writes the result
+   * to output. The output file is taken from the -o option on the command
+   * line, if given, or defaults to stdout, if not.
+   *
+   * @param s    a -> FILE(c)
+   */
   xtc-output(s) =
     xtc-temp-files(
         s
@@ -351,12 +361,69 @@ strategies
   xtc-iowrap(extra-opts, s) = 
     xtc-io-wrap(extra-opts, s)
 
+  /**
+   * Option parsing wrapper for XTC programs that only read data. This
+   * strategy functions like xtc-io-wrap, except that it only exposes
+   * the -i option, and will not write any output to pipe (or file).
+   *
+   * Typically, s will start with a call to read-from.
+   *
+   * Example: xtc-input-wrap(read-from ; id) 
+   *
+   * @param s      FILE(a) -> b
+   * @type    List(option) -> _
+   */
   xtc-input-wrap(s) =
     xtc-input-wrap(fail,s)
 
+  /**
+   * Option parsing wrapper for XTC programs that only read data. This
+   * strategy functions like xtc-io-wrap, except that it only exposes
+   * the -i option, and will not write any output to pipe (or file).
+   *
+   * Typically, s will start with a call to read-from.
+   *
+   * Example: xtc-input-wrap(ArgOption(....), read-from ; id)
+   *
+   * @param extra-options _ -> Option or ArgOption
+   * @param s       FILE(a) -> b
+   * @type     List(option) -> _
+   */
   xtc-input-wrap(extra-options, s) = 
       option-wrap(extra-options <+ input-options, xtc-input(s))
 
+  /**
+   * Option parsing wrapper for XTC programs that only generate data. 
+   * This strategy functions like xtc-io-wrap, except that it only
+   * exposes the -o option, and will read any output from stdin
+   * (or file).
+   *
+   * Typically, s will will end with a call to write-to.
+   *
+   * Example: xtc-output-wrap(!"foo" ; write-to)
+   *
+   * @param s             a -> FILE(b)
+   * @type     List(option) -> _
+   */
+  xtc-output-wrap(s) =
+    xtc-output-wrap(fail,s)
+
+  /**
+   * Option parsing wrapper for XTC programs that only generate data. 
+   * This strategy functions like xtc-io-wrap, except that it only
+   * exposes the -o option, and will read any output from stdin
+   * (or file).
+   *
+   * Typically, s will end with a call to write-to.
+   *
+   * Example: xtc-output-wrap(!"foo" ; write-to)
+   *
+   * @param extra-options _ -> Option or ArgOption
+   * @param s             a -> FILE(b)
+   * @type     List(option) -> _
+   */
+  xtc-output-wrap(extra-options, s) = 
+      option-wrap(extra-options <+ output-options, xtc-output(s))
 
 
   // check tools upon which this tool depends 
