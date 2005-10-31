@@ -134,7 +134,7 @@ AC_DEFUN([XT_CHECK_XTC],
 
   if test "${XTC:+set}" = set; then
     AC_SUBST([XTC])
-  AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib -lstratego-xtc'])
+    AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib -lstratego-xtc'])
     AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
   else
     # Try to find XTC using pkgconfig.
@@ -227,6 +227,8 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
   AC_SUBST([STRATEGO_LIB], ['$(STRATEGOXT)'])
   AC_SUBST([C_TOOLS], ['$(STRATEGOXT)'])
 
+  AC_SUBST([STRATEGOXT_XTC], ['$(STRATEGOXT)/share/strategoxt/XTC'])
+
   AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(SRTS)/include'])
   AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
   AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib -lstratego-runtime -lm'])
@@ -251,6 +253,7 @@ AC_DEFUN([XT_CHECK_STRATEGOXT_UTILS],
     XT_PKG_STRATEGOXT_UTILS
 
     AC_SUBST([STRATEGOXT_UTILS])
+    AC_SUBST([STRATEGOXT_UTILS_XTC], ['$(STRATEGOXT_UTILS)/share/strategoxt-utils/XTC'])
   else
     AC_MSG_RESULT([no])
 
@@ -330,7 +333,7 @@ m4_popdef([AC_Var])dnl
 # XT_CHECK_PACKAGE(VARIABLE,MODULE,[WITNESS])
 #
 # Checks the existance of package 'MODULE' and sets the 
-# variables VARIABLE, VARIABLE_STRCFLAGS, VARIABLE_CFLAFS, and VARIABLE_LIBS.
+# variables VARIABLE, VARIABLE_STRCFLAGS, VARIABLE_XTC, VARIABLE_CFLAFS, and VARIABLE_LIBS.
 #
 # The optional WITNESS checks if the package is indeed 
 # installed at the location where the pkg-config file says it 
@@ -339,6 +342,7 @@ m4_popdef([AC_Var])dnl
 # ------------------
 AC_DEFUN([XT_CHECK_PACKAGE],
 [AC_ARG_VAR([$1][_STRCFLAGS], [Stratego compiler flags for $1, overriding pkg-config])dnl
+ AC_ARG_VAR([$1][_XTC], [XTC Repository for $1, overriding pkg-config])dnl
   PKG_CHECK_MODULES([$1],[$2])
 
   AC_MSG_CHECKING([for $1[]_STRCFLAGS])
@@ -347,6 +351,14 @@ AC_DEFUN([XT_CHECK_PACKAGE],
   else
     $1[]_STRCFLAGS=`$PKG_CONFIG --variable=strcflags "$2"`
     AC_MSG_RESULT([$$1[]_STRCFLAGS])
+  fi
+
+  AC_MSG_CHECKING([for $1[]_XTC])
+  if test "${$1[]_XTC:+set}" = set; then
+    AC_MSG_RESULT([explicitly set: $$1[]_XTC])
+  else
+    $1[]_XTC=`$PKG_CONFIG --variable=xtc_repo "$2"`
+    AC_MSG_RESULT([$$1[]_XTC])
   fi
 
   AC_MSG_CHECKING([prefix of package $2])
@@ -368,6 +380,8 @@ m4_ifval([$3],
   AC_SUBST([$1_CFLAGS])
   AC_SUBST([$1_LIBS])
   AC_SUBST([$1])
+  AC_SUBST([$1_STRCFLAGS])
+  AC_SUBST([$1_XTC])
 ])
 
 # XT_SVN_REVISION

@@ -1,4 +1,6 @@
 prefix=@prefix@
+xtc_repo=@REPOSITORY@
+strcxtcflags=--xtc-repo ${xtc_repo}
 
 Name: Stratego/XT
 Description: Stratego program transformation language and tools.
