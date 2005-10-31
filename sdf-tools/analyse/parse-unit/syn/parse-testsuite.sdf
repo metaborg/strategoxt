@@ -14,9 +14,12 @@ exports
     "testsuite" Name TopSort Test+ -> TestSuite {cons("parse-testsuite")}
     "topsort" Sort -> TopSort {cons("topsort")}
 
-    "test" Description Input Result -> Test {cons("parse-test")}
-    "test"             Input Result -> Test {cons("parse-test")}
+  %% The description syntax is very ambiguous if comments are allowed around it. So, we forbid comments.
+  syntax
+    "test" [\ ]+ <Description-CF> <LAYOUT?-CF> <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF> {ast("parse-test(<2>,<3>,<4>)")}
+    "test" [\ \t\n\r]+ <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF>  {ast("parse-test(<2>,<3>)")}
 
+  context-free syntax
     "->" "file" PathName -> Result {cons("file")}
     "->" ATerm           -> Result {cons("pattern")}
     "_"                  -> ATerm  {cons("wildcard")}
