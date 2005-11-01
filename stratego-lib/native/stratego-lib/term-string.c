@@ -207,7 +207,6 @@ ATerm SSL_strcat(ATerm str_term1, ATerm str_term2) {
 
 ATerm SSL_concat_strings(ATerm strings) {
   int result_length = 2;
-  int list_length;
   ATermList tail;
   char* result;
   char* current;
