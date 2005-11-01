@@ -303,8 +303,14 @@ rules
   stratego-to-abox : 
     Real(i) -> S(i)
 
-  stratego-to-abox : 
-    Str(i) -> |[ H hs=0 [ "\"" ~lit:i "\""] ]|
+  stratego-to-abox =
+    ?Str(i)
+    ; if <is-double-quoted> i then
+        !|[ ~lit:i ]|
+      else
+        !|[ H hs=0 [ "\"" ~lit:i "\""] ]|
+      end
+    
 
   stratego-to-abox : 
     Char(i) -> |[ H hs=0 [ "'" ~lit:i "'"] ]|
