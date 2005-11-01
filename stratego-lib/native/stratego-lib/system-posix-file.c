@@ -181,7 +181,7 @@ char* path_alloc(int *size) {
   if(pathmax == 0) {
     errno = 0;
     if( (pathmax = pathconf("/", _PC_PATH_MAX)) < 0) {
-      if(errno = 0) {
+      if(errno == 0) {
         pathmax = PATH_MAX_GUESS;
       } else {
         perror("path_alloc_fun error for _PC_PATH_MAX");
@@ -326,7 +326,6 @@ ATerm SSL_mkstemp(ATerm template) {
 ATerm SSL_mkdtemp(ATerm template) {
   char* result;
   ATerm term_result;
-  int fd;
 
   if(!ATisString(template)) return NULL;
   const char* str = AT_getString(template);
@@ -410,7 +409,7 @@ int permission_from_term(ATerm term) {
     result = F_OK;
   } else {
     ATfprintf(stderr, "** ERROR: not an access mode: %t \n", term);
-    _fail(term);
+    return -1;
   }
 
   return result;
@@ -426,18 +425,22 @@ int permissions_from_term(ATerm perms_term)
 
   if(!ATisList(perms_term)) {
     ATfprintf(stderr, "** ERROR: access invoked with %t as access mode, which is not a list.\n", perms_term);
-    _fail(perms_term);
+    return -1;
   }
 
   todo = (ATermList) perms_term;
 
   if(ATisEmpty(todo)) {
     ATfprintf(stderr, "** ERROR: access requires at least one permission &t .\n", perms_term);
-    _fail(perms_term);
+    return -1;
   }
 
   while(!ATisEmpty(todo)) {
-    amode = amode | permission_from_term(ATgetFirst(todo));
+    int permission = permission_from_term(ATgetFirst(todo));
+    if(-1 == permission) {
+      return -1;
+    }
+    amode = amode | permission;
     todo = ATgetNext(todo);
   }
 
@@ -451,7 +454,13 @@ ATerm SSL_access(ATerm path_term, ATerm perms_term) {
   if(!ATisString(path_term)) return NULL;
   const char* pathname  = AT_getString(path_term);
   int result = -1;
-  result = access(pathname, permissions_from_term(perms_term));
+  int permissions = permissions_from_term(perms_term);
+
+  if(-1 == permissions) {
+    return NULL;
+  }
+
+  result = access(pathname, permissions);
   if(result != 0) {
     _fail(path_term);
   }

@@ -21,7 +21,7 @@ ATerm SSL_fork(void) {
   return tresult;
 }
 
-void execv_args(ATerm argv, const char *str_args[]) {
+int execv_args(ATerm argv, const char *str_args[]) {
   int i = 0;
 
   /* remember to add first argument in Stratego part of the SSL */
@@ -30,7 +30,7 @@ void execv_args(ATerm argv, const char *str_args[]) {
     ATerm arg;
     if(i > 255) {
       ATfprintf(stderr, "** ERROR in SSL_execv(p): only 256 arguments are allowed.\n");
-      _fail((ATerm) ATempty);
+      return 1;
     }
 
     arg = ATgetFirst(args);
@@ -38,13 +38,14 @@ void execv_args(ATerm argv, const char *str_args[]) {
 
     if(!ATisString(arg)) {
       ATfprintf(stderr, "** ERROR in SSL_execvp: argument is not a string: %t \n", arg);
-      _fail((ATerm) ATempty);
+      return 1;
     }
 
     str_args[i++] = AT_getString(arg);
   }
 
   str_args[i] = NULL;
+  return 0;
 }
 
 ATerm SSL_execvp(ATerm file, ATerm argv) {
@@ -55,7 +56,10 @@ ATerm SSL_execvp(ATerm file, ATerm argv) {
     return NULL;
 
   str_args[0] = AT_getString(file);
-  execv_args(argv, &str_args[1]);
+  int err = execv_args(argv, &str_args[1]);
+  if(0 != err) {
+    return NULL;
+  }
 
   result = execvp(str_args[0], (char *const *) str_args);
   return (ATerm)ATmakeInt(result);
@@ -65,7 +69,10 @@ ATerm SSL_execv(ATerm file, ATerm argv) {
   const char *str_args[256];
   int result;
 
-  execv_args(argv, str_args);
+  int err = execv_args(argv, str_args);
+  if(0 != err) {
+    return NULL;
+  }
 
   if(!ATisString(file)) 
     return NULL;
