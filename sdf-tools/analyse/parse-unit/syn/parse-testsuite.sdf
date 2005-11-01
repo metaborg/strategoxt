@@ -16,8 +16,8 @@ exports
 
   %% The description syntax is very ambiguous if comments are allowed around it. So, we forbid comments.
   syntax
-    "test" [\ ]+ <Description-CF> <LAYOUT?-CF> <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF> {ast("parse-test(<2>,<3>,<4>)")}
-    "test" [\ \t\n\r]+ <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF>  {ast("parse-test(<2>,<3>)")}
+    "test" [\ ]+ <Description-CF> <LAYOUT?-CF> <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF> {cons("parse-test")}
+    "test" [\ \t\n\r]+ <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF>  {cons("parse-test")}
 
   context-free syntax
     "->" "file" PathName -> Result {cons("file")}

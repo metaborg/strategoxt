@@ -5,7 +5,6 @@ SUBDIRS = syn sig tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS     = parse-unit
-libexec_PROGRAMS = parse-parse-testsuite
 
 SCFLAGS        = --main main-$* 
 STRINCLUDES    = -I $(XTC)/share/xtc \
