@@ -142,3 +142,8 @@ test Switch case as branch body
            )
          )
        ])
+
+test fixed-point intersection union
+  "/R1\R2/* While(s,s)" 
+  -> DynRuleIntersectUnionFix(["R1"],["R2"],
+       Call(SVar("While"), [CallNoArgs(SVar("s")), CallNoArgs(SVar("s"))]))
