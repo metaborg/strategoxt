@@ -16,8 +16,14 @@ exports
 
   %% The description syntax is very ambiguous if comments are allowed around it. So, we forbid comments.
   syntax
-    "test" [\ ]+ <Description-CF> <LAYOUT?-CF> <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF> {cons("parse-test")}
+    "test" <Space-LEX> <Description-CF> <LAYOUT?-CF> <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF> {cons("parse-test")}
     "test" [\ \t\n\r]+ <Input-CF> <LAYOUT?-CF> <Result-CF> -> <Test-CF>  {cons("parse-test")}
+
+  lexical syntax
+    [\ ]+ -> Space
+
+  lexical restrictions
+    Space -/- [\ ]
 
   context-free syntax
     "->" "file" PathName -> Result {cons("file")}
