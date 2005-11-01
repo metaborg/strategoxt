@@ -43,16 +43,31 @@ exports
 
   sorts RuleNames
   context-free syntax
-
     {Id ","}*				  -> RuleNames
     "~" Term				  -> RuleNames {cons("RuleNames")}
 
     "/" RuleNames "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
-    "\\" RuleNames "/*" Strategy          -> Strategy {cons("DynRuleUnionFix")}
 
-    "/" RuleNames "\\" 
-        RuleNames "/*"  Strategy          -> Strategy {cons("DynRuleIntersectUnionFix")}
+  syntax
+    %% no space after RuleNames
+    "\\" <LAYOUT?-CF> <RuleNames-CF> "/*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleUnionFix")}
 
+    %% 1 space after RuleNames
+    "\\" <LAYOUT?-CF> <RuleNames-CF> " " "/*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleUnionFix")}
+
+    %% no space after RuleNames
+    "/"  <LAYOUT?-CF> <RuleNames-CF> <LAYOUT?-CF> "\\"
+        <LAYOUT?-CF> <RuleNames-CF> "" "/*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleIntersectUnionFix")}
+
+    %% 1 space after RuleNames
+    "/"  <LAYOUT?-CF> <RuleNames-CF> <LAYOUT?-CF> "\\"
+        <LAYOUT?-CF> <RuleNames-CF> " " "/*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleIntersectUnionFix")}
+
+  context-free syntax
     Strategy "/" RuleNames"\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
     Strategy "\\" RuleNames "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
 

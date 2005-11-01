@@ -147,19 +147,19 @@ test fixed-point intersection
   "/R1\* While(s, s)" -> DynRuleIntersectFix(["R1"], Call(_, _))
 
 test fixed-point union
-  "\R1/* While(s,s)" -> DynRuleUnionFix(["R1"], "", Call(_, _))
+  "\R1/* While(s,s)" -> DynRuleUnionFix(["R1"], Call(_, _))
 
 test fixed-point union: space is allowed around the RuleNames
-  "\ R1 /* While(s,s)" -> DynRuleUnionFix(["R1"], " ", Call(_, _))
+  "\ R1 /* While(s,s)" -> DynRuleUnionFix(["R1"], Call(_, _))
 
-test fixed-point union: space is allowed around the RuleNames
-  "\ R1  /* While(s,s)" -> DynRuleUnionFix(["R1"], "  ", Call(_, _))
+test fixed-point union: two spaces are not allwed after RuleNames
+  "\ R1  /* While(s,s)" fails
 
 test fixed-point union: comment is not allowed after RuleNames
   "\ R1 /* */ /* While(s,s)" fails
 
 test fixed-point union: comment is allowed after fixed-point union
-  "\ R1 /* /* */ While(s,s)" -> DynRuleUnionFix(["R1"], " ", Call(_, _))
+  "\ R1 /* /* */ While(s,s)" -> DynRuleUnionFix(["R1"], Call(_, _))
 
 test fixed-point intersection union
-  "/R1\R2/* While(s,s)" -> DynRuleIntersectUnionFix(["R1"],["R2"], "", Call(_, _))
+  "/R1\R2/* While(s,s)" -> DynRuleIntersectUnionFix(["R1"],["R2"], Call(_, _))
