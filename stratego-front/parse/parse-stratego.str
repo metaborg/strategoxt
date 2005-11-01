@@ -58,6 +58,7 @@ strategies
    */
   parse-module =
       ?file
+    ; xtc-ensure-file
     ; where( ?FILE(filename) )
     ; log(|Notice(), <concat-strings>["Parsing file ", filename])
     ; where( FILE(remove-extension => base) )
