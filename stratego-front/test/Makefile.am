@@ -1,6 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include Makefile.parse-unit
 
+SUBDIRS = pp
+
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS      = -m $*
 SDF2RTG_FLAGS   = -m $*

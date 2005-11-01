@@ -1,0 +1,4 @@
+module char-literal
+strategies
+
+  foo = !'2'
