@@ -24,15 +24,6 @@ signature
 
 strategies
 
-  //FIXME: delete these strategies when the baseline's libstrategolib
-  //       will contain the term/placeholder module.
-  fixme-get-placeholder =
-    ?t; prim("SSL_getPlaceholder", t)
-  fixme-is-placeholder =
-    ?t; prim("SSL_isPlaceholder", t)
-
-strategies
-
   implode-asfix = 
     io-wrap(implode-options, implode)
 
@@ -378,7 +369,7 @@ rules
     ; {| ReplacePlaceholder: 
         <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
       ; <alltd({ ph:
-           fixme-is-placeholder ; fixme-get-placeholder => ph
+           is-placeholder ; get-placeholder => ph
          ; (  ReplacePlaceholder 
            <+ log(| Error()
                   , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
