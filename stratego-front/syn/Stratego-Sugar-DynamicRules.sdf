@@ -54,18 +54,19 @@ exports
       -> <Strategy-CF> {cons("DynRuleUnionFix")}
 
     %% 1 space after RuleNames
-    "\\" <LAYOUT?-CF> <RuleNames-CF> " " "/*" <LAYOUT?-CF> <Strategy-CF>
+    "\\" <LAYOUT?-CF> <RuleNames-CF> " /*" <LAYOUT?-CF> <Strategy-CF>
       -> <Strategy-CF> {cons("DynRuleUnionFix")}
 
     %% no space after RuleNames
     "/"  <LAYOUT?-CF> <RuleNames-CF> <LAYOUT?-CF> "\\"
-        <LAYOUT?-CF> <RuleNames-CF> "" "/*" <LAYOUT?-CF> <Strategy-CF>
+        <LAYOUT?-CF> <RuleNames-CF> "/*" <LAYOUT?-CF> <Strategy-CF>
       -> <Strategy-CF> {cons("DynRuleIntersectUnionFix")}
 
     %% 1 space after RuleNames
     "/"  <LAYOUT?-CF> <RuleNames-CF> <LAYOUT?-CF> "\\"
-        <LAYOUT?-CF> <RuleNames-CF> " " "/*" <LAYOUT?-CF> <Strategy-CF>
+        <LAYOUT?-CF> <RuleNames-CF> " /*" <LAYOUT?-CF> <Strategy-CF>
       -> <Strategy-CF> {cons("DynRuleIntersectUnionFix")}
+
 
   context-free syntax
     Strategy "/" RuleNames"\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
@@ -74,13 +75,34 @@ exports
     Strategy "/" RuleNames "\\" 
                  RuleNames "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
 
+  priorities
+    <StrategyAngle-CF> <LAYOUT?-CF> <Term-CF> -> <Strategy-CF> {cons("BA")}
+  > {
+
+    %% no space after RuleNames
+    "\\" <LAYOUT?-CF> <RuleNames-CF> "/*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleUnionFix")}
+
+    %% 1 space after RuleNames
+    "\\" <LAYOUT?-CF> <RuleNames-CF> " /*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleUnionFix")}
+
+    %% no space after RuleNames
+    "/"  <LAYOUT?-CF> <RuleNames-CF> <LAYOUT?-CF> "\\"
+        <LAYOUT?-CF> <RuleNames-CF> "/*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleIntersectUnionFix")}
+
+    %% 1 space after RuleNames
+    "/"  <LAYOUT?-CF> <RuleNames-CF> <LAYOUT?-CF> "\\"
+        <LAYOUT?-CF> <RuleNames-CF> " /*" <LAYOUT?-CF> <Strategy-CF>
+      -> <Strategy-CF> {cons("DynRuleIntersectUnionFix")}
+
+    }
+  > <Strategy-CF> <LAYOUT?-CF> "=>" <LAYOUT?-CF> <Term-CF> -> <Strategy-CF> {cons("AM")}
+
   context-free priorities
     StrategyAngle Term 		          -> Strategy {cons("BA")}
-  > {"/" RuleNames "\\*" Strategy         -> Strategy {cons("DynRuleIntersectFix")}
-     "\\" RuleNames "/*" Strategy         -> Strategy {cons("DynRuleUnionFix")}
-     "/" RuleNames "\\" 
-         RuleNames "/*"  Strategy         -> Strategy {cons("DynRuleIntersectUnionFix")}
-    }
+  > "/" RuleNames "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
   > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
   > Strategy "/" RuleNames "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
   > Strategy "\\" RuleNames "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
@@ -88,8 +110,3 @@ exports
                  RuleNames "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
   > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
 
-  context-free syntax %% legacy Dynamic rules
-
-    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
-    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
-    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
