@@ -41,8 +41,8 @@ exports
     [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral {cons("more-chars")}
 
   %% empty is ok, but cannot be a complete ATerm.
-  context-free syntax  
-    "" -> ATerm {reject}
+  context-free syntax
+    ""-> ATerm {reject}
 
   %% allow function applications without arguments
   context-free syntax
@@ -50,15 +50,15 @@ exports
 
   sorts 
   syntax
-    "\""       <InputChars1-LEX> "\""       -> <Input-CF> {cons("string")}
-    "\"\""     <InputChars2-LEX> "\"\""     -> <Input-CF> {cons("string")}
-    "\"\"\""   <InputChars3-LEX> "\"\"\""   -> <Input-CF> {cons("string")}
-    "\"\"\"\"" <InputChars4-LEX> "\"\"\"\"" -> <Input-CF> {cons("string")}
+    <DQuote1-LEX> <InputChars1-LEX> <DQuote1-LEX> -> <Input-CF> {cons("string")}
+    <DQuote2-LEX> <InputChars2-LEX> <DQuote2-LEX> -> <Input-CF> {cons("string")}
+    <DQuote3-LEX> <InputChars3-LEX> <DQuote3-LEX> -> <Input-CF> {cons("string")}
+    <DQuote4-LEX> <InputChars4-LEX> <DQuote4-LEX> -> <Input-CF> {cons("string")}
 
-    "["    <InputChars21-LEX> "]"    -> <Input-CF> {cons("string")}
-    "[["   <InputChars22-LEX> "]]"   -> <Input-CF> {cons("string")}
-    "[[["  <InputChars23-LEX> "]]]"  -> <Input-CF> {cons("string")}
-    "[[[[" <InputChars24-LEX> "]]]]" -> <Input-CF> {cons("string")}
+    <Bracket1-LEX> <InputChars21-LEX> <CloseBracket1-LEX> -> <Input-CF> {cons("string")}
+    <Bracket2-LEX> <InputChars22-LEX> <CloseBracket2-LEX> -> <Input-CF> {cons("string")}
+    <Bracket3-LEX> <InputChars23-LEX> <CloseBracket3-LEX> -> <Input-CF> {cons("string")}
+    <Bracket4-LEX> <InputChars24-LEX> <CloseBracket4-LEX> -> <Input-CF> {cons("string")}
 
   sorts Name Description
   context-free syntax
@@ -73,23 +73,10 @@ exports
     ~[\n]+ -> EOLString
 
   sorts
-    InputChars1
-    InputChars2
-    InputChars3
-    InputChars4
-
-    DQuote1
-    DQuote2
-    DQuote3
-
-    InputChars21
-    InputChars22
-    InputChars23
-    InputChars24
-
-    Bracket1
-    Bracket2
-    Bracket3
+    InputChars1 InputChars2 InputChars3 InputChars4
+    DQuote1 DQuote2 DQuote3
+    InputChars21 InputChars22 InputChars23 InputChars24
+    Bracket1 Bracket2 Bracket3
 
   lexical syntax
     ~[\"]* -> InputChars1
@@ -97,18 +84,25 @@ exports
     (~[\"]  | DQuote1 | DQuote2)*            -> InputChars3
     (~[\"]  | DQuote1 | DQuote2 | DQuote3 )* -> InputChars4
 
-    "\""     -> DQuote1
-    "\"\""   -> DQuote2
-    "\"\"\"" -> DQuote3
+    "\""       -> DQuote1
+    "\"\""     -> DQuote2
+    "\"\"\""   -> DQuote3
+    "\"\"\"\"" -> DQuote4
 
     ~[\[]* -> InputChars21
     (~[\[]  | Bracket1)*                        -> InputChars22
     (~[\[]  | Bracket1 | Bracket2)*             -> InputChars23
     (~[\[]  | Bracket1 | Bracket2 | Bracket3 )* -> InputChars24
 
-    "["   -> Bracket1
-    "[["  -> Bracket2
-    "[[[" -> Bracket3
+    "["    -> Bracket1
+    "[["   -> Bracket2
+    "[[["  -> Bracket3
+    "[[[[" -> Bracket4
+
+    "]"    -> CloseBracket1
+    "]]"   -> CloseBracket2
+    "]]]"  -> CloseBracket3
+    "]]]]" -> CloseBracket4
 
   sorts PathName
   lexical syntax
@@ -117,21 +111,14 @@ exports
   lexical restrictions
     Sort      -/- [A-Za-z0-9\-]
     EOLString -/- ~[\n]
+
     DQuote1   -/- [\"]
     DQuote2   -/- [\"]
     DQuote3   -/- [\"]
 
-    "\""      -/- [\"]
-    "\"\""    -/- [\"]
-    "\"\"\""  -/- [\"]
-
     Bracket1   -/- [\[]
     Bracket2   -/- [\[]
     Bracket3   -/- [\[]
-
-    "["    -/- [\[]
-    "[["   -/- [\[]
-    "[[["  -/- [\[]
 
   sorts ShortCom LongCom CommChar Asterisk Eof
   lexical syntax

@@ -3,6 +3,7 @@ imports
   liblib
   strategoxt-xtc-tools
   parse-testsuite
+  parse-unit-io
   parse-unit-test-results
   parse-unit-options
   parse-unit-present
@@ -60,61 +61,7 @@ strategies
   try-get-parse-table =
     get-sglr-parse-table <+ fatal-err(|"No parse table specified")
 
-  read-parse-testsuite =
-    xtc-sglri(|"parse-testsuite.tbl", "TestSuite")
-    ; read-from
-    ; parse-testsuite(id, id, map(drop-whitespace))
-    ; parse-testsuite(id, id, map(try(add-description)))
-    ; parse-testsuite(id, id, map(ensure-test-input-in-file))
-    ; parse-testsuite(id, id, map(ensure-test-output-not-in-file))
-
-signature
-  constructors
-    parse-test : Description * Input * Result -> ParseTest
-    parse-test : Input * Result -> ParseTest
-
-rules
-
-  drop-whitespace :
-    parse-test(_, descr, input, result) -> parse-test(descr, input, result)
-
-  drop-whitespace :
-    parse-test(_, input, result) -> parse-test(input, result)
-
-  add-description :
-    parse-test(string(s), output) -> parse-test(description(s), string(s), output)
-
-  add-description :
-    parse-test(file(f), output) -> parse-test(description(f), file(f), output)
-
-/**
- * Ensures that the test input is in a file and makes it a complete path.
- */
-rules
-
-  ensure-test-input-in-file :
-    parse-test(d, string(s), o) -> parse-test(d, file(f), o)
-    where
-      <print-to> [s] => FILE(f)
-
-  ensure-test-input-in-file  =
-    parse-test(id, file(abs-test-file), id)
-
-
-  /**
-   * Ensures that the test output is not in a file.
-   */
-  ensure-test-output-not-in-file =
-    if ?parse-test(_, _, file(_)) then
-      read-test-output-to-pattern
-    end
-
-  read-test-output-to-pattern :
-    parse-test(desc, input, file(f)) -> parse-test(desc, input, pattern(p)) 
-      where <read-from;explode-aterm> FILE(f) => p
-            <+ if-verbose7(!f ; debug(!"Reading aterm result failed: "))
-    
-rules
+strategies
 
   parse-unit-exit-on-failure =
     ?TestResults(<id>)
