@@ -310,10 +310,14 @@ rules
       else
         !|[ H hs=0 [ "\"" ~lit:i "\""] ]|
       end
-    
 
-  stratego-to-abox : 
-    Char(i) -> |[ H hs=0 [ "'" ~lit:i "'"] ]|
+  stratego-to-abox =
+    ?Char(i)
+    ; if <is-single-quoted> i then
+        !|[ ~lit:i ]|
+      else
+        !|[ H hs=0 [ "'" ~lit:i "'"] ]|
+      end
 
   stratego-to-abox : 
     CharCong(i) -> S(i)
