@@ -1,23 +1,64 @@
-testsuite Stratego Comments
+testsuite Comments
 topsort Strategy
 
-test Simple /* */ block comment
-  "1 /*   */ " succeeds
+test basic end of line comment (1)
+  "// aa
+   id
+  " -> Id()
 
-test Simple (*  *) block comment
-  "1 (*   *) " succeeds
+test basic end of line comment (1)
+  "// aa id" fails
 
-test *) in /* */ comment
-  "1 /*  *)  */ " succeeds
+test basic long comment (1)
+  "/* */ id " -> Id()
 
-test */ in /* */ comment
-  "1 /*  */  */ " fails
+test Silly (1)
+  "/* \\ */ id" -> Id()
 
-test */ in (*  *) comment
-  "1 (*  */  *) " succeeds
+test /* anything */ is a comment (1)
+  "/* / * // * / exit */ id" -> Id()
 
-test *) in (*  *) comment
-  "1 (*  *)  *) " fails
+test /* anything */ is a comment (2)
+  "/* / * // * / exit */ id" -> Id()
 
-test Follow restriction on /*
-  "foo(/* */)" succeeds
+test /* */ comment can span multiple lines
+  "/* hello
+     bye
+    */ id
+  " -> Id()
+
+test // comment inside /* */ comment is ignored
+  "/* hello
+   // */ id" -> Id()
+
+test // comment inside // comment is ignored
+  "id // //
+  "
+  -> Id()
+
+test /* */ comment inside // comment is ignored
+  "// /*
+   //*/
+   id" -> Id()
+
+test /* or // inside /* */ comment is ignored
+  "/* comment /* // /* */ id"
+   -> Id()
+
+test /* or // inside /** */ comment is ignored
+  "/** comment /* // /* */ id"
+   -> Id
+
+test /* */ comments don't nest
+  "/* /* */ */ id" fails
+
+test /* */ comments don't nest in //
+  "// /*
+   */ id
+  " fails
+
+test /* must have matching */
+  "id /* " fails
+
+test /* must have matching */
+  "id /* *" fails
