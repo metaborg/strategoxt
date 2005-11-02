@@ -396,6 +396,27 @@ of more than 2 strings.
 
 (Rob Vermaas)
 
+---------+++ SUnit
+
+If the environment variable "ENABLE_COLORS" is set to "true", the
+sunit now prints error reports in red. This makes it much easier to
+find failing tests in a terminal.
+
+Add:
+export ENABLE_COLORS="true"
+to you .bashrc to make this work by default.
+
+(Martin Bravenboer)
+
+---------+++ ATerm command-line flags 
+
+Added -at-* flags to general-options. All flags starting with '-at' 
+are being ignored by option handling. -at flags are meant to be dealt
+by the ATerm library itself. See ATerm User manual for further 
+details.
+
+(Rob Vermaas)
+
 ---------++ Tools
 
 ---------+++ Man Pages
@@ -427,6 +448,28 @@ The Stratego pretty printer is now a manually built pretty-printer
 much nicer output than the old pp-table approach.
 
 (Rob Vermaas)
+
+---------+++ sglri
+
+Added an option --heuristic-filters <on|off>, as a more general 
+variant of --no-heuristic-filters.  Use the new 
+--heuristic-filters <on|off> option instead of --no-heuristic-filters. 
+
+(Martin Bravenboer)
+
+---------+++ parse-stratego
+
+Related to the new behaviour of sglri, there might be a problem for 
+programs using concrete object syntax (new ambiguities). So we have 
+the following behaviour for parse-stratego:
+
+In case of no .meta file (no concrete syntax), HeuristicFilters is 'off'.
+
+In case of a .meta file, 
+  * If no HeursiticFilters option is specified, default to 'on'
+  * If HeuristicFilters option is specified -> use specified value
+
+(Martin Bravenboer)
 
 ---------++ Stratego/XT Deployment and Build System
 
@@ -514,14 +557,14 @@ xtc is built before stratego-front.
 
 The full list of issues closed in this release is available at:
 
-   * http://www.stratego-language.org/Stratego/StrategoRelease016M1Issues
+   * http://www.stratego-language.org/Stratego/StrategoRelease016M
 
 ---------++!! Download and Installation
 
 The release page contains the source distributions, binary RPMs, and
 detailed instructions on how to install the distributions:
 
-   * http://www.stratego-language.org/Stratego/StrategoRelease016M1
+   * http://www.stratego-language.org/Stratego/StrategoRelease016
 
 ---------++!! Bugs and Known Problems
 
@@ -547,120 +590,4 @@ Other improvements, bug reports, and beta tests carried out by
    * Daniel Waddington
 
 Thanks!
-
-
------------------------------------------------------------------------
-RELEASE NOTES (per milestone)
------------------------------------------------------------------------
-
------------------------------------------------------------------------
-0.15 (= 0.16 M 0) -- finished  -- release notes
------------------------------------------------------------------------
-
-Bug
-
-[STR-220] - syntax priority issue: 's1 < s2 + s3 + s4' is ambiguous
-[STR-224] - Term projection in annotations is broken
-[STR-235] - Syntactical ambiguity with higher order arguments
-[STR-264] - collect-all: recurse to current term instead of children of current term
-[STR-290] - concat-strings seg fault
-[STR-293] - strc tests: Makefile.am must use XT_DARWIN
-[STR-318] - format-check fails when reporting incorrect types at top-level (start-symbols)
-[STR-322] - Concatenation of two iter-star-sep lists is not imploded.
-
-New Feature
-
-[STR-111] - pptable-diff: consider number of arguments in pp rule
-[STR-164] - Let: support rule syntax
-[STR-316] - Old style dynamic rules no longer supported
-
-Task
-
-[STR-5] - Automate creation of binary distributions for Microsoft Windows + Cygwin.
-[STR-58] - Stratego Core Language
-[STR-307] - Move stratego-desugar from stratego-front to strc-core
-[STR-313] - Build order of stratego-front and stratego-lib
-[STR-319] - Update meta-explode to Stratego-Sugar abstract syntax
-[STR-321] - List variables in concrete syntax and abstract syntax should have * suffix
-[STR-324] - Disable build of sig2rtg
-
-Improvement
-
-[STR-210] - Conc support: conc the Conc arguments in build.
-[STR-217] - Emacs mode: support fill-paragraph (alt-q) of xdoc comments
-[STR-219] - Emacs mode: abstract syntax buffer for concrete objects syntax 
-[STR-242] - Define native ssl functions as external definitions
-[STR-278] - ppgen: incorrect report of missing constructor
-[STR-279] - conc-strings: support tuples of >2 strings
-[STR-310] - remove obscure features
-
------------------------------------------------------------------------
-0.16 M 1 (bugs in 0.15) -- finished August 26, 2005 -- release notes
------------------------------------------------------------------------
-
-Bug
-
-[STR-85] - Sloppy variable-scope in let-strategies
-[STR-145] - Shared libraries are not shared at Cygwin: static linking is used.
-[STR-301] - Check implementation of quoted constructors
-[STR-326] - File foo not removed during configure
-[STR-327] - XT_CHECK_STRATEGOXT_UTILS should use pkgconfig.
-[STR-329] - use-def complains about unbound variables
-[STR-331] - stratego-warning: missing build operator
-[STR-335] - Typing bug with 0.15 strc
-[STR-338] - strc prints "SSL_printnl: argument not a list" to stderr for unclear reasons.
-[STR-343] - Linking problem for identity Stratego program at Mac OS X
-[STR-344] - Stratego libraries should declare interlibrary dependencies
-[STR-382] - rm-annotations does not remove annotations
-
-New Feature
-
-[STR-320] - Option for preferring .str files over .rtree files
-[STR-325] - Overlay bodies should be pure term expressions
-[STR-345] - stratego runtime libraries must be self-contained
-[STR-346] - Calling strategies by their name
-[STR-351] - checksum
-[STR-361] - autoxt: introduce support for pkg_STRCFLAGS variables
-[STR-371] - --statistics option
-[STR-375] - Support dynamic linking on Cygwin
-[STR-383] - standalone strc: don't use a search path for libraries
-
-Task
-
-[STR-243] - Restructure the native C code of the SSL
-[STR-292] - Check native code of strateg-lib for comparison to ATempty
-[STR-306] - Adapt pretty-printer to Stratego-Sugar syntax
-[STR-315] - Merge improvements to strc with strc-core
-[STR-376] - Replace prims for annotation manipulation by annotation match and build operations
-[STR-377] - Merge stratego-runtime and stratego-runtime-choice
-[STR-378] - strc --help: svn revision is 0 is tarball and buildfarm.
-[STR-379] - Fix compilation issues on Fedor Core 3 in data2xml-doc
-[STR-380] - Remove code from srts that is defined only for bootstrap reasons.
-[STR-396] - Inlude manual pages from Stratego/XT manual in Stratego/XT distribution
-
-Improvement
-
-[STR-328] - strc --version should provide SVN revision number
-[STR-332] - strc: --keep only keeps intermediate file if format checker fails
-[STR-347] - Configuration: support combined explicit and implicit configuration
-[STR-350] - Don't install the internal autoxt macros
-[STR-352] - Rewrite tool-doc to desugaring instead of overlays
-[STR-370] - Introduce STRCFLAGS. SCFLAGS is obsolete but supported.
-[STR-374] - Logging should not always print the current term
-[STR-384] - stratego-lib testsuite should use libraries in prefix.
-[STR-390] - Support make check on Cygwin
-[STR-391] - Support make check on Darwin
-[STR-392] - Check-constructor: pretty-print Stratego AST in error message.
-[STR-401] - Remove pkgconfig file of sdf2-bundle from strategoxt
-
-
------------------------------------------------------------------------
-0.16 M 2 (Dynamic rules inspected)
------------------------------------------------------------------------
-
-
-
------------------------------------------------------------------------
-0.16 M 3 (Stratego optimizer)
------------------------------------------------------------------------
 
