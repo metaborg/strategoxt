@@ -116,7 +116,8 @@ strategies
      in ?(<id>, _)
       ; ?IncludePathName(<qualify-pathname>)
       ; if file-exists then
-          include-pathname
+          if-verbose1(debug(!"  including "))
+        ; include-pathname
         else
           <fatal-error> ["pack-sdf: error: file ", <id>, " does not exist\n"]
         end
@@ -124,8 +125,7 @@ strategies
 
   include-pathname :
     file -> (file, tree)
-      where if-verbose1(debug(!"  including "))
-          ; <parse-sdf2-module-to-asfix> file => tree
+      where <parse-sdf2-module-to-asfix> file => tree
           ; get-module-name-from-asfix => mod
           ; <register-source-pathname(|mod)> file
 
