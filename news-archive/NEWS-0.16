@@ -419,7 +419,7 @@ find failing tests in a terminal.
 
 Add:
 export ENABLE_COLORS="true"
-to you .bashrc to make this work by default.
+to your .bashrc to make this work by default.
 
 (Martin Bravenboer)
 
@@ -468,10 +468,10 @@ much nicer output than the old pp-table approach.
 
 The default behaviour of sglri has been changed to disable the
 heuristic disambiguation filters of sglr: eagerness and injection
-count. Disabling the heuristic filters of sglr makes it much more
-clear when, why, and how ambiguities arise in a syntax
-definition. These ambiguities can then be solved by using one of the
-non-heuristic mechanism for disambiguation in SDF.
+count. Disabling the heuristic filters of sglr makes it much clearer
+when, why, and how ambiguities arise in a syntax definition. These
+ambiguities can then be solved by using one of the non-heuristic
+mechanism for disambiguation in SDF.
 
 If the disabling of heuristic filters causes new ambiguities in your
 syntax definition, then we advice you to fix the syntax definition, or
@@ -492,7 +492,6 @@ concrete object syntax more often rely on these heuristic filters. For
 this reason, we enable the heuristic filters if there is a =.meta=
 file. 
 
-
 So we have the following behaviour for parse-stratego:
 
    * In case of no .meta file (no concrete syntax), heuristic filters
@@ -509,7 +508,7 @@ So we have the following behaviour for parse-stratego:
 
 ---------++ Stratego/XT Deployment and Build System
 
----------++ New versions of ATerm Library and SDF Packages
+---------+++ New versions of ATerm Library and SDF Packages
 
 Stratego/XT 0.16 requires new versions of the ATerm library (2.4) and
 sdf2-bundle (2.3.3). Downloads for these packages are available from
@@ -518,12 +517,14 @@ the Stratego/XT 0.16 release page.
 It is no longer necessary to configure the ATerm library with the
 option =--with-gcc=.
 
-Also, it is no longer necessary to specifiy the locations of the ATerm
+Also, it is no longer necessary to specify the locations of the ATerm
 Library and sdf2-bundle to Stratego/XT. Stratego/XT will locate the
 packages using pkg-config if you do not explicitly specify locations
 for these packages.
 
----------++ AutoXT
+TODO: if they are in the PATH??
+
+---------+++ AutoXT
 
 Makefile.xt now supports the STRCFLAGS variable. The old SCFLAGS
 variable is still supported.
