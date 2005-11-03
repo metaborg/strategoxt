@@ -76,7 +76,7 @@ to verify the sanity of the compiler components.
 
 Term annotations were not originally supported in Stratego. The
 addition was handled by desugaring the matching and building of terms
-with annotions to calls to ATerm library functions using primitives in
+with annotations to calls to ATerm library functions using primitives in
 an early stage of compilation. The implicit presence of annotations
 made transformations within the compiler very fragile, and entailed
 that certain optimizations could not be defined properly.
