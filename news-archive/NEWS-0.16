@@ -2,8 +2,8 @@
 Stratego/XT 0.16 - released November 4th
 -----------------------------------------------------------------------
 
-Stratego/XT 0.16 introduces a major refactoring of the Stratego Language, 
-resulting from the Stratego Core project. 
+Stratego/XT 0.16 introduces a major refactoring of the Stratego
+Language, resulting from the Stratego Core project.
 
 The project comprises a cleanup of the language, removing obsolete
 language constructs, and a refactoring of the internal representation
@@ -11,31 +11,18 @@ of Stratego programs. In particular the abstract syntax of terms has
 been refactored in order to treat term annotations explicitly within
 the compiler.
 
-In addition, a large number of outstanding issues are addressed. 
+In addition, a large number of outstanding issues have been
+addressed.
 
+Last, but not least, we have been working on an extensive manual for
+Stratego/XT, covering all the aspects of the Stratego language, giving
+an overview of the Stratego Library, and the introducing the XT
+Transformation Tools. This new manual will be a very valuable resource
+for new and existing users.
 
 ---------++!! Summary of Changes
 
 %TOC%
-
----------++ Versioning
-
-The refactoring is being released in a number of milestone
-releases. The first was 0.15, subsequent releases are numbered 0.16M1,
-0.16M2, etc.
-
-We have introduced a new versioning scheme for unstable
-releases. Intermediate versions on the way to a new major release get
-an M n suffix indicating that the release is the n-th milestone
-towards the major release.
-
-This NEWS file presents the result of the entire operation, i.e., it
-discusses the integral set of changes since the previous major release
-(0.14).
-
-The release notes at the end of this file show the issues addressed in
-each milestone. (Although issues from later milestones may be included
-in earlier releases.)
 
 ---------++ Stratego Language
 
@@ -229,7 +216,9 @@ _Literate programming comments_ such as
   foo = ...
 \end{code}
 </verbatim>
-are no longer supported. Use standard comment delimiters instead.
+are no longer supported. Use standard comment delimiters instead. In
+the future, we we also remove the ML-style comments =(* *)=, which is
+deprecated in Stratego/XT 0.16.
 
 Other constructs that are discontinued are _strategy rules_ of
 the form
@@ -239,7 +228,13 @@ L :: s1 --> s2
 The thread traversal operator (can be expressed in the library),
 and threading and distributing congruence operators.
 
-TODO: overlays
+Overlays are no longer allowed to contain strategy applications. For
+example, 
+<verbatim>
+overlays
+  Foo(x) = Bar(<s> x)
+</verbatim>
+is no longer supported.
 
 (Eelco Visser)
 
@@ -270,17 +265,14 @@ specifying this.
 
 (Rob Vermaas)
 
----------+++ Dynamic Rules Inspected ***
-
-(Eelco Visser)
-
 ---------++ Stratego Core Compiler
 
 The Stratego compiler now compiles programs according to the
 Stratego-Sugar syntax definition. The front-end of the compiler is
-drastically refactored and simplified. The optimizer has been disabled
-in this release. Migration and improvement of the optimizer has been
-planned for release 0.15.4.
+drastically refactored and simplified. Some of the optimizer
+components have been disabled in this release and the default
+optimization level is =-O 2=. Migration and improvement of the
+remaining optimizer components has been planned for release 0.17M3.
 
 ---------+++ Format Checking
 
@@ -309,7 +301,7 @@ cannot be used as a normal constructor.
 
 (Eelco Visser)
 
----------+++ Translation Scheme I: Represent Failure by NULL ***
+---------+++ Translation Scheme I: Represent Failure by NULL
 
 The back-end of the compiler uses a new translation scheme. The old
 scheme used the C feature of setjmp/longjmp to deal with failing
@@ -338,6 +330,7 @@ the new version is the use of concrete syntax of Stratego and C almost
 everywhere. For example, the following rule defines the translation of
 the crucial guarded choice construct:
 
+<verbatim>
   TranslateStrat(|S,F) :
     |[ s1 < s2 + s3 ]| ->
     stm|[
@@ -350,6 +343,7 @@ the crucial guarded choice construct:
       }
     ]|
     where <not(Next)> S; new => x; new => F'
+</verbatim>
 
 An interesting feature of the implementation is the collection of code
 fragments using dynamic rules, and the synthesis of the target program
@@ -363,9 +357,29 @@ Library.
 
 (Eelco Visser)
 
+---------++ Versioning
+
+The refactoring has been being released in a number of milestone
+releases. The first was 0.15, subsequent releases were numbered
+0.16M1, 0.16M2, etc.
+
+We have introduced a new versioning scheme for unstable
+releases. Intermediate versions on the way to a new major release get
+an M n suffix indicating that the release is the n-th milestone
+towards the major release.
+
+This NEWS file presents the result of the entire operation, i.e., it
+discusses the integral set of changes since the previous major release
+(0.14).
+
+The release notes at the end of this file show the issues addressed in
+each milestone. (Although issues from later milestones may be included
+in earlier releases.)
+
 ---------++ Run-Time System
 
-Refactoring to support `represent failure by NULL' model.
+The Stratego Run-Time System has been refactord to support `represent
+failure by NULL' model.
 
 (Eelco Visser)
 
@@ -373,7 +387,8 @@ Refactoring to support `represent failure by NULL' model.
 
 ---------+++ Native code
 
-Refactoring to support `represent failure by NULL' model.
+The native code of the Stratego Library has been refactored to support
+the new `represent failure by NULL' model.
 
 (Eelco Visser)
 
@@ -441,7 +456,7 @@ has been deferred.
 
 (Eelco Visser)
 
----------+++ pp-stratego
+---------+++ Manually Built Pretty-Printer in pp-stratego
 
 The Stratego pretty printer is now a manually built pretty-printer
 (using Stratego-Box language). The new pretty-printer should give a 
@@ -449,25 +464,46 @@ much nicer output than the old pp-table approach.
 
 (Rob Vermaas)
 
----------+++ sglri
+---------+++ Heuristic Filters Disabled in sglri
 
-Added an option --heuristic-filters <on|off>, as a more general 
-variant of --no-heuristic-filters.  Use the new 
---heuristic-filters <on|off> option instead of --no-heuristic-filters. 
+The default behaviour of sglri has been changed to disable the
+heuristic disambiguation filters of sglr: eagerness and injection
+count. Disabling the heuristic filters of sglr makes it much more
+clear when, why, and how ambiguities arise in a syntax
+definition. These ambiguities can then be solved by using one of the
+non-heuristic mechanism for disambiguation in SDF.
+
+If the disabling of heuristic filters causes new ambiguities in your
+syntax definition, then we advice you to fix the syntax definition, or
+alternatively you can invoke =slgri= with an option to enable the
+heuristic filters. To this end, we have added the option
+--heuristic-filters <on|off>, as a more general variant of
+--no-heuristic-filters. Please use the new --heuristic-filters
+<on|off> option instead of --no-heuristic-filters.
 
 (Martin Bravenboer)
 
 ---------+++ parse-stratego
 
-Related to the new behaviour of sglri, there might be a problem for 
-programs using concrete object syntax (new ambiguities). So we have 
-the following behaviour for parse-stratego:
+Related to the new behaviour of sglri, Stratego programs are now
+parsed without the heuristic filters of sglr. For plain Stratego
+programs this is not a problem, but for Stratego programs that use
+concrete object syntax more often rely on these heuristic filters. For
+this reason, we enable the heuristic filters if there is a =.meta=
+file. 
 
-In case of no .meta file (no concrete syntax), HeuristicFilters is 'off'.
 
-In case of a .meta file, 
-  * If no HeursiticFilters option is specified, default to 'on'
-  * If HeuristicFilters option is specified -> use specified value
+So we have the following behaviour for parse-stratego:
+
+   * In case of no .meta file (no concrete syntax), heuristic filters
+     are disabled: 'off'.
+
+   * If there is a .meta file,
+      * If the .meta file does not specify the =HeursiticFilters= option,
+        then default to 'On', i.e. heuristic filters are enabled.
+
+      * If the .meta file specifies the HeuristicFilters option, then
+        parse-stratego uses that value.
 
 (Martin Bravenboer)
 
@@ -476,7 +512,7 @@ In case of a .meta file,
 ---------++ New versions of ATerm Library and SDF Packages
 
 Stratego/XT 0.16 requires new versions of the ATerm library (2.4) and
-sdf2-bundle (2.3.2). Downloads for these packages are available from
+sdf2-bundle (2.3.3). Downloads for these packages are available from
 the Stratego/XT 0.16 release page.
 
 It is no longer necessary to configure the ATerm library with the
@@ -503,9 +539,16 @@ have to be passed to the Stratego compiler to be able to use that
 package. Packages can also pass other arguments to strc using this
 variable, if necessary. This feature allows dependent packages to
 abstract more of the way they need to use a package. Hence, making the
-dependent packages more stable. The value of pkg_STRCFLAGS can be
-specified in the strcflags pkg-config variable. It is inspired by the
-pkg_CFLAGS and pkg_LIBS feature of pkg-config.
+dependent packages more stable.
+
+In addition to pkg_STRCFLAGS, AutoXT now also supports pkg_XTC, for
+example STRATEGOXT_XTC. In this way, dependent packages no longer need
+to know where the XTC repositories of the packages they use are
+locatied.
+
+The values of pkg_STRCFLAGS and pkg_XTC can be specified in the
+strcflags pkg-config variable. It is inspired by the pkg_CFLAGS and
+pkg_LIBS feature of pkg-config.
 
 The Autoconf macro XT_CHECK_STRATEGOXT_UTILS now supports pkg-config
 as well as explicit configuration.
@@ -557,7 +600,7 @@ xtc is built before stratego-front.
 
 The full list of issues closed in this release is available at:
 
-   * http://www.stratego-language.org/Stratego/StrategoRelease016M
+   * http://www.stratego-language.org/Stratego/StrategoRelease016Issues
 
 ---------++!! Download and Installation
 
@@ -582,11 +625,14 @@ The Stratego Core refactoring was carried out by
 
    * Eelco Visser
 
-Other improvements, bug reports, and beta tests carried out by
+Other developments, bug reports, and beta tests carried out by
 
    * Martin Bravenboer
    * Ron de Bruijn
+   * Valentin David
+   * Karl Trygve Kalleberg
    * Rob Vermaas
+   * Eelco Visser
    * Daniel Waddington
 
 Thanks!
