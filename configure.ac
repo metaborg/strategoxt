@@ -52,47 +52,20 @@ fi
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
 
-AC_ARG_ENABLE([xtc2],
-  AS_HELP_STRING([--enable-xtc2], [use the xtc2 library]),
-  [XTC2_ENABLED=$enable_xtc2],
-  [XTC2_ENABLED="no"]
-)
-AC_SUBST([XTC2_ENABLED])
-
 AC_MSG_CHECKING([in which order to build subpackages])
 PKGS="autoxt srts"
 if test "$xt_baseline" = "yes"; then
-  PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools stratego-lib"
-
-  if test "x$XTC2_ENABLED" = "xyes"; then
-    PKGS="$PKGS xtc2"
-    DIST_PKGS="$DIST_PKGS xtc"
-    XTC_DIR="xtc2"
-  else
-    PKGS="$PKGS xtc"
-    DIST_PKGS="$DIST_PKGS xtc2" 
-    XTC_DIR="xtc"
-  fi
+  PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools stratego-lib xtc"
 else
-  PKGS="$PKGS stratego-lib"
-
-  if test "x$XTC2_ENABLED" = "xyes"; then
-    PKGS="$PKGS xtc2"
-    DIST_PKGS="$DIST_PKGS xtc"
-    XTC_DIR="xtc2"
-  else
-    PKGS="$PKGS xtc"
-    DIST_PKGS="$DIST_PKGS xtc2" 
-    XTC_DIR="xtc"
-  fi
-
-  PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools"
+  PKGS="$PKGS stratego-lib xtc stratego-front asfix-tools strc-core gpp c-tools"
 fi
+
+XTC_DIR="xtc"
 
 PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
 AC_MSG_RESULT([$PKGS])
 
-DIST_PKGS="$PKGS $DIST_PKGS"
+DIST_PKGS="$PKGS"
 
 AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
@@ -129,7 +102,6 @@ AC_OUTPUT
 AB_CONFIG_PKG(autoxt, )
 AB_CONFIG_PKG(srts,   )
 AB_CONFIG_PKG(xtc,              --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(xtc2,             --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(strc-core,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(c-tools,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-front,   --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})

@@ -39,14 +39,10 @@ echo "bootstrap: using autoxt at $AUTOXT"
 $AUTOXT || exit 1
 mv ./autoxt.m4 ./config/  || exit 1
 
-# echo "WARNING: hack: using our own Makefile.xt and autoxt.m4"
-# cp ./autoxt/autoxt.m4 ./config/ || exit 1
-# cp ./autoxt/Makefile.xt . || exit 1
-
 autoreconf -ifv  || exit 1
 
 # Bootstrap the subpackages
-PKGS="autoxt srts xtc xtc2 strc-core gpp c-tools concrete-syntax \
+PKGS="autoxt srts xtc strc-core gpp c-tools concrete-syntax \
   aterm-front stratego-front asfix-tools sdf-front sdf-tools \
   stratego-regular xml-front stratego-lib "
 
