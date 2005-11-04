@@ -1,5 +1,5 @@
 AC_PREREQ([2.58])
-AC_INIT([aterm-front],[0.16M2],[stratego-bugs@cs.uu.nl])
+AC_INIT([aterm-front],[0.17M1],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
