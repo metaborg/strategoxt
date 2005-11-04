@@ -522,7 +522,19 @@ Library and sdf2-bundle to Stratego/XT. Stratego/XT will locate the
 packages using pkg-config if you do not explicitly specify locations
 for these packages.
 
-TODO: if they are in the PATH??
+If you install packages in non-standard locations, then pkg-config
+will only be able to find them if you add these locations to the
+PKG_CONFIG_PATH. For example, set PKG_CONFIG_PATH to
+<verbatim>
+export PKG_CONFIG_PATH=/opt/aterm/lib/pkgconfig:/opt/sdf2-bundle/lib/pkgconfig
+</verbatim>
+where the ATerm Library and the SDF2 Bundle are installed in
+=/opt/aterm= and =/opt/sdf2-bundle=. For more information see =man
+pkg-config=.
+
+This method of configuration can also be used for packages that use
+Stratego/XT. So, you don't have to specify the location of Stratego/XT
+to these packages.
 
 ---------+++ AutoXT
 
@@ -631,6 +643,7 @@ Other developments, bug reports, and beta tests carried out by
    * Martin Bravenboer
    * Ron de Bruijn
    * Valentin David
+   * Eelco Dolstra
    * Karl Trygve Kalleberg
    * Rob Vermaas
    * Eelco Visser
