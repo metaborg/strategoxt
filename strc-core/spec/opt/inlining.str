@@ -32,7 +32,7 @@ strategies
     ; map(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef))
 
   inline-sdef =
-    <+ DeclareInline(inline-sdef) 
+    DeclareInline(inline-sdef) 
     <+ (UndefineSDef <+ repeat(/* InlineCall0 <+ */ InlineCall))
        ; all(inline-sdef)
 
