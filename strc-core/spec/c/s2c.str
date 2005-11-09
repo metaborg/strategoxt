@@ -5,8 +5,8 @@ module s2c
 
 imports 
   liblib 
-  Stratego-Sugar 
-  automaton 
+  Stratego-Core
+  // automaton 
   C 
   C-simplify 
 
@@ -486,8 +486,8 @@ rules
   TranslateStrat(|S,F) :
     Match(Wld, trm) -> stm|[ goto ~id:S; ]|
 
-  TranslateStrat(|S,F) :
-    Match(BuildDefault(t), trm) -> stm|[ goto ~id:S; ]|
+//  TranslateStrat(|S,F) :
+//    Match(BuildDefault(t), trm) -> stm|[ goto ~id:S; ]|
 
   TranslateStrat(|S,F) :
     Match(As(t1,t2), trm) ->
@@ -720,7 +720,7 @@ rules
     (t, e1) -> e2
     where <(Op(id, map(Cache)); proper-list 
 	    + Anno(Cache, Cache) 
-	    + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
+	    + Int(id) + Str(id) + Real(id) /* + BuildDefault(id) */)> t
         ; new => base; <conc-strings>("term_", <id>) => x
 	; !Id(x) => e2
         ; rules( Cache : t -> e2 )
@@ -769,8 +769,8 @@ rules
     where <not(?PreTerm|[ Nil() ]|)> pt2
         ; <not(?Term|[ x ]|)> pt1
 
-  ConstructTerm :
-    |[ _ t ]| -> <construct-term> t
+//  ConstructTerm :
+//    |[ _ t ]| -> <construct-term> t
 
   ConstructTerm :
     PreTerm|[ c(t*) ]| -> 
