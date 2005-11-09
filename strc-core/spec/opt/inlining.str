@@ -32,14 +32,16 @@ strategies
     ; map(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef))
 
   inline-sdef =
-    rec x({| InlineCall, InlineCall0 :
-             (UndefineSDef <+ DeclareInline <+ repeat(/* InlineCall0 <+ */ InlineCall));
-	     all(x)
-          |})
+    <+ DeclareInline(inline-sdef) 
+    <+ (UndefineSDef <+ repeat(/* InlineCall0 <+ */ InlineCall))
+       ; all(inline-sdef)
 
-  DeclareInline = 
+  DeclareInline(x) = 
     ?Let(defs, s)
-    ; where(<map(local-inlinable(!s); AddSDef)> defs)
+    ; {| InlineCall, InlineCall0
+         : where(<map(local-inlinable(|s); AddSDef)> defs)
+	 ; Let(x, x)
+       |}
 
   UndefineSDef =
     ?SDefT(f,_,_,_);
@@ -81,12 +83,12 @@ strategies
     {| SubsArgCall1, SubsArgCall2 :
        ?(xs, ss, s)
        ; <zip(substitute-arg)> (xs, ss)
-       ; <topdown(try(SubsArgCall1 + SubsArgCall2))> s
+       ; <rec x(alltd(SubsArgCall1 <+ SubsArgCall2; x))> s
     |}
 
   substitute-arg =
     ?(VarDec(x, FunType([_],_)), s);
-    rules(SubsArgCall1 : CallT(SVar(x), [], []) -> <strename> s)
+    rules(SubsArgCall1 : CallT(SVar(x), [], []) -> /* <strename> */ s)
 
   substitute-arg =
     ?(VarDec(x, FunType([_,_|_],_)), CallT(SVar(y), [], []));
@@ -106,11 +108,11 @@ strategies
     // ; where(<not(fetch(?f))> dont-inline)
     // ; where(<debug(!"inlineable: ")> f )
 
-  local-inlinable(s1) =
+  local-inlinable(|s1) =
     ?SDefT(f, _, _, s2)
     ; where( 
 	<not(oncetd(?CallT(SVar(f),_,_)))> s2 // not recursive
-        ; <leq>(<occurrences(?CallT(SVar(f),_,_))> <s1>, 1) // used at most once
+        ; <leq>(<occurrences(?CallT(SVar(f),_,_))> s1, 1) // used at most once
       )
 
   body-to-inline = 
