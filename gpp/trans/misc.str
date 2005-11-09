@@ -16,15 +16,17 @@ strategies
    * element) are not removed.
    */
   flat-list =
-    rec x(
-      {a,xs:
-          []
-       <+ [[] | x]
-       <+ [is-list | id]; <conc; x> (<Hd>, <Tl>)
-       <+ [id | x]
-       }
-    )
+    ?[]
     
+  flat-list =    
+    ?[hd | tl]
+    ; ( !hd => []
+        ; ![[] | <flat-list> tl]
+     <+ !hd => [_ | _]
+        ; <conc; flat-list> (hd, tl)
+     <+ ![hd | <flat-list> tl]
+      )
+
   remove-trailing(s) =
     rec x (
       try(

@@ -5,18 +5,44 @@ module instantiate
 imports pp-table
 rules
 
-  instantiate:
-    (t, args) -> instantiated
-    where
-      <bottomup(try(Instantiate(|args) + flat-list ))> t => instantiated
+  instantiate =
+    ?(template, args)
+    ; <instantiate(|args)> template
 
-  Instantiate(|args) :
-    Arg(n) -> <index> (n, args)
-
-  Instantiate(|args) :
-    Arg2(n, m) -> <index> (m, list)
+  instantiate(|args) =
+    bottomup(
+      try(
+        ?Arg(_); Instantiate(|args)
+      + ?Arg2(_, _); Instantiate(|args)
+      + ?[_|_]; flat-list
+      )
+    )
+   
+  Instantiate(|args) =
+    FastInstantiate(|args) <+ SlowInstantiate(|args)
+    
+  FastInstantiate(|args) :
+    Arg(1) -> a
     where
-      <index> (n, args) => list
+      !args => [a | _]
+      
+  FastInstantiate(|args) :
+    Arg(2) -> a
+    where
+      !args => [_, a | _]
+      
+  FastInstantiate(|args) :
+    Arg(3) -> a
+    where
+      !args => [_, _, a | _]
+
+  SlowInstantiate(|args) :
+    Arg(n) -> <index(|n)> args
+
+  SlowInstantiate(|args) :
+    Arg2(n, m) -> <index(|m)> list
+    where
+      <index(|n)> args => list
 
 strategies
 
@@ -36,3 +62,24 @@ strategies
          ; [<instantiate> (pp-entry, [sym, sep]) | !xs;x ]
       }
     )
+
+strategies
+
+  /**
+   * @todo Move to Stratego Library
+   */    
+  index(|i) =
+    at-index(?t | <dec> i); !t
+
+  /**
+   * @todo Move to Stratego Library
+   */    
+  at-index(s | i) =
+    let next(|j) =
+          if !j => i then
+            [s | id]
+          else
+            [id | next(|<inc> j)]
+          end
+     in next(|0)
+    end

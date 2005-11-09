@@ -21,10 +21,15 @@ strategies
     + verbose-option
 
   ast2abox =
-      where(get-config-p; reverse; read-pp-tables)
+      where(
+        get-config-p
+        ; reverse
+        ; read-pp-tables
+        ; lookup-table(|"pp-table") => tbl
+      )
     ; xtc-io(
         xtc-io-transform(
-          trm2abox
+          trm2abox(|tbl)
         ; if is-list then
             !HV([], <id>)
           end
@@ -33,36 +38,39 @@ strategies
 
 strategies
 
-  trm2abox =
-       trm2abox-string
-    <+ trm2abox-int
-    <+ trm2abox-real
-    <+ trm2abox-list
-    <+ trm2abox-appl
+  trm2abox(|tbl) =
+       trm2abox-string(|tbl)
+    <+ trm2abox-int(|tbl)
+    <+ trm2abox-real(|tbl)
+    <+ trm2abox-list(|tbl)
+    <+ trm2abox-appl(|tbl)
     <+ log(|Error(),"Cannot rewrite to box: ", <id>) ; <exit>1
 
-  trm2abox-string =
-    is-string
-    ; !S(<id>)
+  trm2abox-string(|tbl) =
+    !S(<is-string>)
 
-  trm2abox-real =
-    is-real
-    ; !S(<real-to-string>)
+  trm2abox-real(|tbl) =
+    !S(<real-to-string>)
 
-  trm2abox-int =
-    is-int
-    ; !S(<int-to-string>)
+  trm2abox-int(|tbl) =
+    !S(<int-to-string>)
 
-  trm2abox-list =
-    is-list
-    ; map(trm2abox)
+  trm2abox-list(|tbl) =
+    map(trm2abox(|tbl))
 
-  trm2abox-appl =
-    ?f#( args )
+  trm2abox-appl(|tbl) =
+    ?f#(args)
     ; where(<length> args => arity)
-    ; <try-pp-table-get> (arity, [f]) => (path, abox)
-    ; <nzip( \ (x, y) -> <arg2abox> (x, [f], y) \ )> args => aboxes
-    ; <instantiate> (abox, aboxes)
+    ; <try-pp-table-get(|tbl)> (arity, [f]) => (path, template)
+    
+    ; let narg2abox(|n) =
+            arg2abox(|tbl, n, [f])
+       in <nmap(narg2abox | 1)> args => aboxes
+      end
+    ; <instantiate(|aboxes)> template
+
+  nmap(s : a * b -> c | i) =
+    [] + [s(|i) | nmap(s | <inc> i)]
 
 /**
  * Path is a list.
@@ -76,100 +84,87 @@ strategies
    * @param path  Path of the parent node
    * @param arg   Any term
    */
-  arg2abox =
-      ?(n, path, arg)
+  arg2abox(|tbl, n, path) =
+      ?arg
     ; <conc> (path, [n]) => new_path
-    ; ( pp-table-get => (full_path, template)
-        ; <symbol2abox> (<get-symbol> full_path, new_path, template, arg)
-      <+ <trm2abox> arg
+    ; ( <hashtable-get(|new_path)> tbl => (full_path, template)
+        ; <symbol2abox(|tbl, <get-symbol> full_path, new_path, template)> arg
+      <+ <trm2abox(|tbl)> arg
       )
 
 strategies
 
-  symbol2abox =
-       symbol2abox1
-    <+ symbol2abox2
-    <+ symbol2abox3
-    <+ symbol2abox4
-    <+ symbol2abox5
-    <+ symbol2abox6
-    <+ symbol2abox7
+  symbol2abox(|tbl, symbol, path, template) =
+       symbol2abox-alt(|tbl, path, template)
+       
+    <+ symbol2abox-opt(|tbl, path, template)
+    
+    <+ where(!symbol; (?"iter" + ?"iter-star"))
+       ; symbol2abox-iter(|tbl, path, template)
+       
+    <+ where(!symbol; (?"iter-sep" + ?"iter-star-sep"))
+       ; symbol2abox-iter-sep(|tbl, path, template)
+    
+    <+ where(!symbol => "seq")
+       ; symbol2abox-seq(|tbl, path, template)
 
   /**
    * Rule to format alt(n,[]), with empty list of arguments
    */
-  symbol2abox1 =
-      ?( alt, path, template, alt(n, []))
-    ; <instantiate> ([<index> (n, template)], [])
+  symbol2abox-alt(|tbl, path, template) =
+    ?alt(n, [])
+    ; <instantiate(|[])> [<index(|n)> (n, template)]
 
   /**
    * Rule to format alt(n,[arg]), with non-empty list of arguments
    */
-  symbol2abox2 =
-      ?( alt, path, template, alt(n, [arg]))
-    ; <arg2abox>(n, path, arg)
-    ; <instantiate> ([<index> (n, template)], [<id>])
+  symbol2abox-alt(|tbl, path, template) =
+    ?alt(n, [arg])
+    ; <arg2abox(|tbl, n, path)> arg => abox
+    ; <instantiate(|[abox])> [<index(|n)> template]
 
   /**
    * Rule to format optional: Some(x)
    */
-  symbol2abox3 =
-      ?( opt, path, template, Some(x) )
-    ; <arg2abox> (1, path, x)
-    ; <instantiate> (template, [<id>])
+  symbol2abox-opt(|tbl, path, template) =
+    ?Some(x)
+    ; <arg2abox(|tbl, 1, path)> x => abox
+    ; <instantiate(| [abox])> template
 
   /**
    * Rule to format optinal: None
    */
-  symbol2abox4 =
-      ?( opt, path, template, None())
-    ; ![]
+  symbol2abox-opt(|tbl, path, template) =
+    ?None(); ![]
 
   /**
    * Rule to format iter and iter-star list
    */
-  symbol2abox5 =
-      ( ?( "iter", path, template, lst ) + ?( "iter-star", path, template, lst ))
-    ; <map(<arg2abox> (1, path, <id>))> lst
-    ; <instantiate> (template, [<id>])
+  symbol2abox-iter(|tbl, path, template) =
+      map(arg2abox(|tbl, 1, path)) => abox
+    ; <instantiate(| [abox])> template
 
   /**
    * Rule to format iter-sep and iter-star-sep list
    */
-  symbol2abox6 :
-    ("iter-sep", path, template, lst) -> <symbol2abox6-helper> (path, template, lst)
-
-  symbol2abox6 :
-    ("iter-star-sep", path, template, lst) -> <symbol2abox6-helper> (path, template, lst)
-
-      symbol2abox6-helper =
-          ?(path, template, lst)
-        ; <map(<arg2abox> (1, path, <id>))> lst => aboxes
-        ; ( // For correct instantiation, we have to make sure that the 
-            // list of elements contains separators. In case the box template
-            //  contains only a single placeholder, we extend the listof elements
-            //  with "dummy" separators.
-            <collect'(?S(_)); length> template
-          ; ?1
-          ; !aboxes
-          ; rec x(
-                \ []     -> []  \
-             <+ \ [e]    -> [e] \
-             <+ \ [e | xs] -> [e, e|<x> xs] \
-            )
-          <+
-            !aboxes
-          )
-        ; instantiate-sep-list(|template)
+  symbol2abox-iter-sep(|tbl, path, template) =
+    map(arg2abox(|tbl, 1, path))
+    ; if <collect'(?S(_))> template => [_] then
+        rec x(
+           \ []     -> []  \
+        <+ \ [e]    -> [e] \
+        <+ \ [e | xs] -> [e, e| <x> xs] \
+        )
+      end
+    ; instantiate-sep-list(|template)
 
   /**
    * Rule ro format sequences
    */
-  symbol2abox7 =
-      ?( "seq", path, template, lst )
-    ; <TupleToList> lst
-    ; nzip( \ (n,t) -> <arg2abox> (n, path, t) \ )
-    ; <instantiate> (template, <id>)
+  symbol2abox-seq(|tbl, path, template) =
+    TupleToList
+    ; nzip( \ (n, t) -> <arg2abox(|tbl, n, path)> t \ ) => abox
+    ; <instantiate(|abox)> template
 
 rules
 
@@ -192,4 +187,4 @@ rules
   get-symbol :
     Path(cons-name, selectors) -> symbol
     where
-      <at-last([selector(id, ?symbol)])> selectors
+      <at-last(?[selector(_, symbol)])> selectors

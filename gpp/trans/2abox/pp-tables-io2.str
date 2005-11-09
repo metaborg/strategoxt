@@ -109,14 +109,20 @@ strategies
   pp-table-get =
      ?key
      ; <table-get> ("pp-table", key ) => (path, template)
-     ; where(
+     /* ; where(
          <path-to-string> path
          ; notify(!"obtaining: " )
-       )
+       ) */
   
   try-pp-table-get =
     pp-table-get 
     <+ log(|Error(),<concat-strings>["No pp entry found for: ",<write-to-string>]); fail
+
+  try-pp-table-get(|tbl) =
+    ?key
+    ; ( <hashtable-get(|key)> tbl
+        <+ log(|Error(),<concat-strings>["No pp entry found for: ",<write-to-string> key])
+           ; fail)
   
   pp-table-put =
      ?(key, value)
