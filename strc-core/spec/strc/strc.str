@@ -117,14 +117,9 @@ strategies
 	//    ; bound-unbound-vars
 	//    ; save-as3(!".opt11")
 	//    ; dead-var-elim
+	//    ; simplify3
         //    ; save-as3(!".opt12")
 	//  )
-	// SIMPLIFICATION
-        ; olevel1(
-	    simplify3
-            ; save-as1(!".opt13")
-            ; save-as1(!".opt14")
-          )
     | <concat-strings>["Optimization succeeded -O ",<get-config; int-to-string>"-O"]
     , 1
     )
