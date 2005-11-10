@@ -28,7 +28,7 @@ strategies
     Specification([id,Strategies(inline-sdefs)])
 
   inline-sdefs = 
-    map(/* simplify0; */ try(inlineable; AddSDef))
+    map(simplify0; try(inlineable; AddSDef))
     ; map(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef))
 
   inline-sdef =
@@ -58,7 +58,7 @@ strategies
     ?sdef@SDefT(f, _, _, _)
     ; rules(
       InlineCall : 
-        CallT(SVar(f), ss, ts) -> /* <simplify> */ s''
+        CallT(SVar(f), ss, ts) -> <simplify> s''
         where //debug(!"InlineCall: ") ;
 	     <strename> sdef => SDefT(f, xs, ys, s)
             ; <substitute-args> (xs, ss, s) => s'
