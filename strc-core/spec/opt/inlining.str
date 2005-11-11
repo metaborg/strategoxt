@@ -33,19 +33,22 @@ strategies
 
   inline-sdef =
     DeclareInline(inline-sdef) 
-    <+ (UndefineSDef <+ repeat(/* InlineCall0 <+ */ InlineCall))
-       ; all(inline-sdef)
+    <+ UndefineSDef(inline-sdef) 
+    <+ repeat(/* InlineCall0 <+ */ InlineCall); all(inline-sdef)
 
   DeclareInline(x) = 
     ?Let(defs, s)
-    ; {| InlineCall, InlineCall0
-         : where(<map(local-inlinable(!s); AddSDef)> defs)
+    ; {| InlineCall //, InlineCall0
+         : where(<map(local-inlinable(|s); AddSDef)> defs)
 	 ; Let(x, x)
        |}
 
-  UndefineSDef =
+  UndefineSDef(x) =
     ?SDefT(f,_,_,_)
-    ; rules( InlineCall :- CallT(SVar(f), ss, ts) )
+    ; {| InlineCall
+       : rules( InlineCall :- CallT(SVar(f), ss, ts) )
+       ; SDefT(id,id,id,x)
+       |}
 
   AddSDef =
     ?ExtSDefInl(f, as1, as2, s)
@@ -66,6 +69,7 @@ strategies
             ; rules(InlineCall :- CallT(SVar(f), _, _) )
 	    //; <debug(!"Inlining: ")> f
 
+/*
       InlineCall0 : 
         CallT(SVar(f), [], []) -> Let([SDefT(g, xs, ys, s)], CallT(SVar(g),[],[]))
         where ///debug(!"InlineCall (0,0): ") ;
@@ -74,6 +78,8 @@ strategies
             ; new => g
             ; rules(InlineCall :- CallT(SVar(f), _, _) )
 	    //; <debug(!"Inlining: ")> f
+*/
+
     )
 
   substitute-args = 
@@ -105,11 +111,11 @@ strategies
     // ; where(<not(fetch(?f))> dont-inline)
     // ; where(<debug(!"inlineable: ")> f )
 
-  local-inlinable(s1) =
+  local-inlinable(|s1) =
     ?SDefT(f, _, _, s2)
     ; where( 
 	<not(oncetd(?CallT(SVar(f),_,_)))> s2 // not recursive
-        ; <leq>(<occurrences(?CallT(SVar(f),_,_))> <s1>, 1) // used at most once
+        ; <leq>(<occurrences(?CallT(SVar(f),_,_))> s1, 1) // used at most once
       )
 
   body-to-inline = 
