@@ -15,6 +15,12 @@ imports Stratego-Amb stratlib stratego-laws rename-defs
 
  */
 
+// TODO: rephrase using concrete syntax
+
+// TODO: review inlining criteria, take properties of call site into account
+
+// TODO: measure the amount of inlining done and the effect on performance
+
 overlays
 
   dont-inline = []
@@ -117,6 +123,12 @@ strategies
 	<not(oncetd(?CallT(SVar(f),_,_)))> s2 // not recursive
         ; <leq>(<occurrences(?CallT(SVar(f),_,_))> s1, 1) // used at most once
       )
+
+  // Optimization:
+  // Note that the occurrences check above is potentially expensive since it requires
+  // a local traversal for each local definition; a separate occurrence analysis traversal
+  // may solve this. Since only few local definitions are used currently this is not a
+  // high priority problem.
 
   body-to-inline = 
     rec x(

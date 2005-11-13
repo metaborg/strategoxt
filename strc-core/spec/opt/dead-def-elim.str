@@ -55,10 +55,10 @@ strategies
     ; {| DefDead
        : DeclareDead
        ; Let(local-dead-def-elim, local-dead-def-elim)
-       ; try(DeleteDeadDefinitions)
+       ; DeleteDeadDefinitions
        |}
-    <+ DeclareNotDead
-    <+ all(local-dead-def-elim)
+    <+ try(DeclareNotDead)
+       ; all(local-dead-def-elim)
 
   DeclareDead =
     Let(map(DeclareDefDead), id)
