@@ -81,8 +81,9 @@ strategies
 	    worker-wrapper
             ; save-as6(!".opt2")
 	    ; do-inline
+            ; save-as6(!".opt3")
 	    ; dead-def-elim
-            ; save-as4(!".opt3")
+            ; save-as4(!".opt4")
 	    ; simplify1
           )
         //; define-congruences
