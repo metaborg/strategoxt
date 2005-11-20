@@ -6,49 +6,87 @@ strategies
 
   // count the number of escaping variables and functions per definition
 
-  find-escaping-variables =
-    fev-sdef
-    <+ fev-scope
-    <+ all(find-escaping-variables)
+  mark-escaping-variables =
+    alltd(SDefT(id,id,id,id); ev)
 
+strategies
 
-  fev-sdef =
-    ?SDefT(f, xs, ys, s)
-    ; {|
-       : where(SDefT(id, map(VarDec(dont-escape,id)), 
-                         map(VarDec(dont-escape,id)), 
-                         find-escaping-variables)
-       ; 
-
-       ; SDefT(id, map(VarDec(Escape,id)), map(VarDec(Escape,id)), id)
-       |}
-
-  fev-scope =
-    ?Scope(x*, s)
-    ; {| Escape
-       : Scope(map(dont-escape), find-escaping-variables)
-       ; Scope(map(Escape), id)
-       |}
-
-  
+  ev = 
+    ev-var
+    <+ ev-sdef
+    <+ ev-scope
+    <+ all(ev)
 
   // by default a variable does not escape
 
-  
-
-  dont-escape = ?x;
-   rules( Escape+x : VarDec(x, t) )
+  dont-escape = 
+    ?x
+    ; where( CurrentFrame => f )
+    ; rules(
+        VarEscape+x : x -> x
+        FrameOf     : x -> f
+        OffSet+x    :- x
+      )
 
   // if encountered in a nested definition it does escape
 
-   ?Var(x)
-   ; where(<not(eq)> (<CurrentFrame>, <FrameOf>))
-   ; rules( Escape.x : x -> x{"escapes"} )
+  ev-var = 
+   (?Var(x) <+ ?SVar(x)); ?y
+   ; debug(!"ev-var: ")
+
+   ; where(<not(eq)> (<CurrentFrame>, <FrameOf> x))
+   ; debug(!"ev-var escaping: ")
+
+   ; where(
+      <OffSet> x => off; debug(!"offset: ")
+      <+ <one(FrameOf => f); !<id>{}> y => f'
+         ; debug(!"frame: ")
+         ; NextOffSet => off
+         ; debug(!"next offset: ")
+	 ; inc => new-off
+         ; debug(!"new next offset: ")
+         ; rules( 
+             NextOffSet.f : f' -> new-off
+             OffSet.x : x -> off
+           )
+         ; where(<NextOffSet> f'; debug(!"NextOffSet: "))
+     )
+   ; rules( VarEscape.x : x -> x{("escapes", off)} )
+
+   ; one(\ z{t*} -> z{("offset", off), t*} \ )
+   ; debug(!"annotation: ")
 
 
-  // when encountering an SDef, start a new scope
+  // declare parameters of definitions and mark as escaping
+  // after traversing body of definition
 
-   ?SDefT(...)
-   ; {| Escape 
+  ev-sdef =
+    ?SDefT(f, xs, ys, s)
+    ; {| VarEscape, CurrentFrame, FrameOf, NextOffSet, OffSet
+       : rules( 
+           CurrentFrame : _ -> f
+           NextOffSet+f : Var(f) -> 0
+	   NextOffSet+f : SVar(f) -> 0
+         )
+       ; SDefT(id, map(VarDec(dont-escape,id)),
+                   map(VarDec(dont-escape,id)), ev)
+       ; SDefT(id, map(VarDec(VarEscape,id)), 
+                   map(VarDec(VarEscape,id)), id)
+       ; \ sdef -> sdef{(off1, off2)}
+           where <NextOffSet> Var(f) => off1
+	       ; <NextOffSet> SVar(f) => off2 \
+       |}
+
+  // declare local variables of a scope and mark as escaping
+  // after traversing body of scope
+
+  ev-scope =
+    ?Scope(x*, s)
+    ; {| VarEscape, FrameOf
+       : Scope(map(dont-escape), ev)
+       ; Scope(map(VarEscape), id)
+       |}
+
+
 
 

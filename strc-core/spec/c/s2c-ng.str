@@ -8,6 +8,7 @@ imports
   Stratego-Core
   C 
   C-simplify 
+  escaping-variables
 
 strategies
 
@@ -15,7 +16,7 @@ strategies
     io-wrap(s2c-options, compile)
  
   compile = 
-    find-escaping-variables
+    mark-escaping-variables
     ; init-term-caching
     ; init-frames
     ; TranslateSpec
@@ -396,13 +397,20 @@ rules
 	        // <map(!var-dec|[~id:<id> = NULL]|)> x*
 		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> x*)
 	       ]
+        ~stm*:<debug(!"escaping? "); filter(TranslateEscapingVarDec); debug(!"decs: ")> x*
         ~stm:(<translate-strat(|S,F)> s)
       }
     ]|
 
+  TranslateEscapingVarDec : 
+    x{("escapes", i)} -> stm|[
+      sl_init_var(~exp:IntConst(<try(int-to-string)>i), ~id:x{}); 
+    ]|
+   // add offset and declare dynamic rule to rewrite to the offset
+
   TranslateStrat(|S,F) :
     |[ s1; s2 ]| -> 
-    stm|[ 
+    stm|[
       { 
         ~stm:<translate-strat(|Next,F)>s1 
         ~stm:<translate-strat(|S,F)>s2 
