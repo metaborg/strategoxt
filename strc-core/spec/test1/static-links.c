@@ -177,7 +177,7 @@ int main(void)
 
   struct str_closure k = {foo_sl, NULL};
 
-  fprintf(stdout, "f2_sl(3) = %d\n", 
+  fprintf(stdout, "f3_sl(3) = %d\n", 
 	  f3_sl(NULL, &k, 3));
 
   return 0;
