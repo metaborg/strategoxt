@@ -1,0 +1,54 @@
+module escaping-variables
+imports Stratego-Core
+strategies
+
+  // mark variables and function arguments as escaping
+
+  // count the number of escaping variables and functions per definition
+
+  find-escaping-variables =
+    fev-sdef
+    <+ fev-scope
+    <+ all(find-escaping-variables)
+
+
+  fev-sdef =
+    ?SDefT(f, xs, ys, s)
+    ; {|
+       : where(SDefT(id, map(VarDec(dont-escape,id)), 
+                         map(VarDec(dont-escape,id)), 
+                         find-escaping-variables)
+       ; 
+
+       ; SDefT(id, map(VarDec(Escape,id)), map(VarDec(Escape,id)), id)
+       |}
+
+  fev-scope =
+    ?Scope(x*, s)
+    ; {| Escape
+       : Scope(map(dont-escape), find-escaping-variables)
+       ; Scope(map(Escape), id)
+       |}
+
+  
+
+  // by default a variable does not escape
+
+  
+
+  dont-escape = ?x;
+   rules( Escape+x : VarDec(x, t) )
+
+  // if encountered in a nested definition it does escape
+
+   ?Var(x)
+   ; where(<not(eq)> (<CurrentFrame>, <FrameOf>))
+   ; rules( Escape.x : x -> x{"escapes"} )
+
+
+  // when encountering an SDef, start a new scope
+
+   ?SDefT(...)
+   ; {| Escape 
+
+

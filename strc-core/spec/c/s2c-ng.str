@@ -4,9 +4,8 @@
 module s2c-ng
 
 imports 
-  liblib 
-  Stratego-Sugar 
-  automaton 
+  liblib
+  Stratego-Core
   C 
   C-simplify 
 
@@ -16,8 +15,9 @@ strategies
     io-wrap(s2c-options, compile)
  
   compile = 
-    init-term-caching
-    // ; init-frames
+    find-escaping-variables
+    ; init-term-caching
+    ; init-frames
     ; TranslateSpec
     ; c-simplify
 
@@ -66,6 +66,8 @@ rules
     !|[
 	// C includes specified on command-line or by default configuration
 	~ext-def*:incl
+
+	~ext-def*:[PpControl("#include \"static-links-include.h\"")]
 
         // legacy
 	~ext-def*: <if-lib(![],
@@ -212,31 +214,31 @@ strategies
  */
 strategies 
 
-  Translate = 
+  Translate = debug(!"Translate: "); 
     fragment(SDefToDeclaration|"FunctionSig")
     ; fragment(SDefToRegistration|"FunctionReg")
-    ; {| SuccessLabel, FailureLabel: fragment(TranslateDef|"FunctionDef") |}
+    ; {| SuccessLabel, FailureLabel: fragment(debug(!"translating: "); TranslateDef; debug(!"done: ")|"FunctionDef") |}
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
+    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <not(is-local-function)> f
         ; <map(TranslateVarDec)> [a1*,a2*] => ps
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec|[ static ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
+    dec|[ static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <is-local-function> f
         ; <map(TranslateVarDec)> [a1*,a2*] => ps
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
+    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <map(TranslateVarDec)> [a1*,a2*] => ps
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) ]| ->
-    dec|[ ATerm ~id:f (StrFramePtr sl, ~param-dec*:ps, ATerm t); ]|
+    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <map(TranslateVarDec)> [a1*,a2*] => ps
 
 
@@ -264,6 +266,9 @@ strategies
 
 strategies
 
+  init-frames =
+    rules( Frame :+ _ -> "_outermost")
+
   frame-of =
     FrameOf <+ !"_outermost"
 
@@ -275,9 +280,23 @@ strategies
   var-access =
     id    
 
-  static-link =
+  frame =
     ?f
     ; Frame
+
+  static-link =
+    debug(!"static-link: ");
+    where(frame-of => g)
+    ; debug(!"static-link a: ")
+    ; bigbagof-Frame
+    ; debug(!"static-link b: ")
+    ; take-until(?g)
+    ; debug(!"static-link c: ")
+    ; foldr(
+        !exp|[ sl ]|,
+	!exp|[ sl_up(~exp:<Snd>) ]|
+      )
+    ; debug(!"static-link d: ")
 
 /**
  * Translation of strategy definition to C function
@@ -290,18 +309,18 @@ signature
 strategies 
 
   TranslateDef :
-    Def|[ f(a1*|a2*) = s ]| ->
+    Def|[ f(a1*|a2*) = s ]| -> <try(make-static)> 
     |[ 
-       ATerm ~id:f(StrFramePtr sl, ~param-dec*:args, ATerm t)
+       ATerm ~id:f(StrSL sl, ~param-dec*:args, ATerm t)
        {
-	 sl_decl(0, 0, sl);
+	 sl_decl(sl);
          ~stm:stm;
 	 return(t);
          ~id:F : 
          return NULL;
        }
     ]|
-    where <not(is-local-function)> f;
+    where 
        {| Frame, FrameOf 
 	: Frame => g
 	; rules(
@@ -313,29 +332,13 @@ strategies
 	; <translate-strat(|Next, F)>s => stm
         |}
 
-  TranslateDef :
-    Def|[ f(a1*|a2*) = s ]| ->
-    |[ 
-       static ATerm ~id:f(StrFramePtr sl, ~param-dec*:args, ATerm t)
-       {
-	 sl_decl(0, 0, sl);
-         ~stm:stm;
-	 return(t);
-         ~id:F : 
-         return NULL;
-       }
-    ]|
-    where <is-local-function> f;
-       {| Frame, FrameOf 
-	: Frame => g
-	; rules(
-            Frame   :+ _ -> f
-	    FrameOf :  f -> g
-	  )
-	; <mapconcat(TranslateVarDec)> [a1*,a2*] => args
-	; <newname> "fail" => F
-	; <translate-strat(|Next, F)>s => stm
-        |}
+  make-static :
+    |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
+    <debug(!"static: ")> 
+    |[ static ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]|
+    where debug(!"make-static: ")
+	; <is-local-function> f
+	; debug(!"is local fun")
 
   is-local-function =
     explode-string
@@ -353,7 +356,7 @@ strategies
     VarDec(x, ConstType(_)) -> param-dec|[ ATerm ~id:x ]| 
 
   TranslateVarDec :
-    VarDec(x, FunType(ts,_)) -> param-dec|[ StrClosure x ]|
+    VarDec(x, FunType(ts,_)) -> param-dec|[ StrCL x ]|
 
 /* @todo
 
@@ -376,7 +379,7 @@ strategies
 rules 
 
   translate-strat(|S,F) =
-    TranslateStrat(|S,F) 
+    TranslateStrat(|S,F)
     <+ debug(!"TranslateStrat undefined: "); fail
 
   TranslateStrat(|S,F) :
@@ -386,12 +389,12 @@ rules
     Fail -> stm|[ goto ~id:F; ]|
 
   TranslateStrat(|S,F) :
-    Scope(xs, s) -> 
+    |[ {x* : s} ]| -> 
     stm|[ 
       {
 	~dec*:[Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-	        // <map(!var-dec|[~id:<id> = NULL]|)> xs
-		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> xs)
+	        // <map(!var-dec|[~id:<id> = NULL]|)> x*
+		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> x*)
 	       ]
         ~stm:(<translate-strat(|S,F)> s)
       }
@@ -431,10 +434,20 @@ rules
 
   TranslateStrat(|S,F) :
     Let(defs, s) -> 
-    Compound(<conc> (decs1, decs2), [<translate-strat(|S,F)>s])
-    where <map(SDefToDeclaration)> defs => decs1
-	; <map(TranslateDef)> defs => decs2
+    stm|[
+      {
+        ~dec*:closures
+        ~stm:stm
+      }
+    ]|
+    where <map(Translate)> defs 
+	; <map(MkClosure)> defs => closures
+	; <translate-strat(|S,F)> s => stm
 
+  MkClosure :
+    Def|[ f(a1*|a2*) = s ]| ->
+    dec|[ struct str_closure ~id:x = {&~id:f, &frame}; ]|
+    where <conc-strings>(f, "_cl") => x
 
 /**
  * Strategy calls
@@ -443,16 +456,20 @@ rules
 
   TranslateStrat(|S,F) :
     Strat|[ f(s* | t* ) ]| -> 
-    <check-unbound-args(|F,t*)>
+    <check-unbound-args(|F,t*); debug(!"call translated: ")>
     stm|[ 
       { 
-        t = f(~id:<static-link>f, ~exp*:args); 
+        t = f(~exp:<static-link>f, ~exp*:args); 
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
-    where <mapconcat(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
-        ; <map(topdown(try(construct-term)))> t* => args2
-        ; <concat>[args1, args2, [Id("t")]] => args
+    where debug(!"call a: ")
+	; <map(\ CallT(SVar(x),[],[]) -> Id(<conc-strings>(x, "_cl")) \ )> s* => args1
+        ; debug(!"call b: ")
+	; <map(topdown(try(construct-term)))> t* => args2
+        ; debug(!"call c: ")
+	; <concat>[args1, args2, [Id("t")]] => args
+        ; debug(!"call d: ")
 
   TranslateStrat(|S,F) :
     Strat|[ prim(~str:f, s* | t* ) ]| -> 
@@ -497,8 +514,8 @@ rules
   TranslateStrat(|S,F) :
     Match(Wld, trm) -> stm|[ goto ~id:S; ]|
 
-  TranslateStrat(|S,F) :
-    Match(BuildDefault(t), trm) -> stm|[ goto ~id:S; ]|
+//  TranslateStrat(|S,F) :
+//    Match(BuildDefault(t), trm) -> stm|[ goto ~id:S; ]|
 
   TranslateStrat(|S,F) :
     Match(As(t1,t2), trm) ->
@@ -527,6 +544,8 @@ rules
         }
       else if( x != ~exp:trm )
         goto ~id:F;
+      else
+        goto ~id:S;
     ]|
 
   TranslateStrat(|S,F) :
@@ -728,7 +747,7 @@ rules
     (t, e1) -> e2
     where <(Op(id, map(Cache)); proper-list 
 	    + Anno(Cache, Cache) 
-	    + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
+	    + Int(id) + Str(id) + Real(id) /* + BuildDefault(id) */ )> t
         ; new => base; <conc-strings>("term_", <id>) => x
 	; !Id(x) => e2
         ; rules( Cache : t -> e2 )
@@ -777,8 +796,8 @@ rules
     where <not(?PreTerm|[ Nil() ]|)> pt2
         ; <not(?Term|[ x ]|)> pt1
 
-  ConstructTerm :
-    |[ _ t ]| -> <construct-term> t
+//  ConstructTerm :
+//    |[ _ t ]| -> <construct-term> t
 
   ConstructTerm :
     PreTerm|[ c(t*) ]| -> 
