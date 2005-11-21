@@ -309,19 +309,23 @@ signature
 
 strategies 
 
+  // TODO: don't include sl_funs(0) / sl_vars(0)
+
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| -> <try(make-static)> 
     |[ 
        ATerm ~id:f(StrSL sl, ~param-dec*:args, ATerm t)
        {
 	 sl_decl(sl);
+         sl_funs(~exp:off1');
+         sl_vars(~exp:off2');
          ~stm:stm;
 	 return(t);
          ~id:F : 
          return NULL;
        }
     ]|
-    where 
+    where ?_{(off1,off2)};
        {| Frame, FrameOf 
 	: Frame => g
 	; rules(
@@ -332,6 +336,8 @@ strategies
 	; <newname> "fail" => F
 	; <translate-strat(|Next, F)>s => stm
         |}
+       ; !IntConst(<try(int-to-string)>off1) => off1'
+       ; !IntConst(<try(int-to-string)>off2) => off2'
 
   make-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 

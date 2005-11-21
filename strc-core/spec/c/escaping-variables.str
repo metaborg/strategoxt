@@ -45,10 +45,12 @@ strategies
          ; debug(!"next offset: ")
 	 ; inc => new-off
          ; debug(!"new next offset: ")
-         ; rules( 
+	 ; dr-print-rule-set(|"NextOffSet")
+         ; rules(
              NextOffSet.f : f' -> new-off
              OffSet.x : x -> off
            )
+	 ; dr-print-rule-set(|"NextOffSet")
          ; where(<NextOffSet> f'; debug(!"NextOffSet: "))
      )
    ; rules( VarEscape.x : x -> x{("escapes", off)} )
@@ -63,18 +65,19 @@ strategies
   ev-sdef =
     ?SDefT(f, xs, ys, s)
     ; {| VarEscape, CurrentFrame, FrameOf, NextOffSet, OffSet
-       : rules( 
-           CurrentFrame : _ -> f
-           NextOffSet+f : Var(f) -> 0
-	   NextOffSet+f : SVar(f) -> 0
+       : where(!Var(f) => f1; !SVar(f) => f2)
+       ; rules( 
+           CurrentFrame :+ _ -> f
+           NextOffSet+f : f1 -> 0
+	   NextOffSet+f : f2 -> 0
          )
        ; SDefT(id, map(VarDec(dont-escape,id)),
                    map(VarDec(dont-escape,id)), ev)
        ; SDefT(id, map(VarDec(VarEscape,id)), 
                    map(VarDec(VarEscape,id)), id)
        ; \ sdef -> sdef{(off1, off2)}
-           where <NextOffSet> Var(f) => off1
-	       ; <NextOffSet> SVar(f) => off2 \
+           where <NextOffSet> SVar(f) => off1
+	       ; <NextOffSet> Var(f) => off2 \
        |}
 
   // declare local variables of a scope and mark as escaping
@@ -87,6 +90,36 @@ strategies
        ; Scope(map(VarEscape), id)
        |}
 
+strategies
 
+  init-frames =
+    rules( Frame :+ _ -> "_outermost" )
 
+  frame-of =
+    FrameOf <+ !"_outermost"
 
+  function-pointer =
+    if not(frame-of => "_outermost") then
+      id
+    end
+
+  var-access =
+    id    
+
+  frame =
+    ?f
+    ; Frame
+
+  static-link =
+    debug(!"static-link: ");
+    where(frame-of => g)
+    ; debug(!"static-link a: ")
+    ; bigbagof-Frame
+    ; debug(!"static-link b: ")
+    ; take-until(?g)
+    ; debug(!"static-link c: ")
+    ; foldr(
+        !exp|[ sl ]|,
+	!exp|[ sl_up(~exp:<Snd>) ]|
+      )
+    ; debug(!"static-link d: ")
