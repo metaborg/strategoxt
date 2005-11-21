@@ -285,6 +285,14 @@ strategies
     ?f
     ; Frame
 
+/*
+  static-link' =
+     foldr(
+        !exp|[ sl ]|,
+	!exp|[ sl_up(~exp:<Snd>) ]|
+      )
+*/
+
   static-link =
     debug(!"static-link: ");
     where(frame-of => g)

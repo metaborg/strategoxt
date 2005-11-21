@@ -34,7 +34,8 @@ strategies
    (?Var(x) <+ ?SVar(x)); ?y
    ; debug(!"ev-var: ")
 
-   ; where(<not(eq)> (<CurrentFrame>, <FrameOf> x))
+   ; where(<not(eq)> (<CurrentFrame>, <FrameOf => f> x))
+   ; where(bigbagof-CurrentFrame; take-until(?f) => frames)
    ; debug(!"ev-var escaping: ")
 
    ; where(
@@ -55,7 +56,7 @@ strategies
      )
    ; rules( VarEscape.x : x -> x{("escapes", off)} )
 
-   ; one(\ z{t*} -> z{("offset", off), t*} \ )
+   ; one(\ z{t*} -> z{("offset", off, frames), t*} \ )
    ; debug(!"annotation: ")
 
 
@@ -90,6 +91,8 @@ strategies
        ; Scope(map(VarEscape), id)
        |}
 
+/*
+
 strategies
 
   init-frames =
@@ -123,3 +126,5 @@ strategies
 	!exp|[ sl_up(~exp:<Snd>) ]|
       )
     ; debug(!"static-link d: ")
+
+*/
