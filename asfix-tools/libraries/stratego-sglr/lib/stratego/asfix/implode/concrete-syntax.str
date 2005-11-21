@@ -1,0 +1,48 @@
+/**
+ * Implosion of concrete syntax.
+ */
+module stratego/asfix/implode/concrete-syntax
+imports
+  stratego/concrete-syntax/markers
+
+strategies
+
+  /**
+   * @todo Reuse existing strategies to get the constructor.
+   */
+  skip-concrete(impl) =
+    appl(
+      prod(
+        id
+      , cf(sort("StrategoTerm" <+ "StrategoStrategy"))
+      , attrs(one(term(cons(?cons))))
+      )
+    , oncetd(appl(prod(id,cf(oncetd(sort(id))),id),id); ?ap)
+    )
+    ; !cons
+    ; (  "ToTerm"; !ToTerm(ap)
+      <+ "ToStrategy"; !ToStrategy(ap)
+      <+ "ToBuild"; !ToBuild(ap)
+      )
+
+    ; rec skip(
+        alltd(
+           appl(prod(one(varsym(id)), id, id), id)
+           ; impl
+
+        <+ appl(prod(id, id, attrs(oncetd(cons("FromTerm" + "FromApp")))), id)
+           ; impl
+
+        <+ annotation(impl, skip)
+        )
+      )
+
+  /**
+   * @todo Reuse existing strategies to get the constructor.
+   */
+  annotation(impl, skip) =
+    ?appl(prod(_, _, attrs), <id>)
+    ; where(<oncetd(cons("WithAnno"))> attrs)
+    ; filter(not(is-ignorable-syntax); not(appl(prod(id, oncetd(lex(id)), id), id)))
+    ; ?[x|xs] 
+    ; !"WithAnno"#([<skip> x| <impl> xs])

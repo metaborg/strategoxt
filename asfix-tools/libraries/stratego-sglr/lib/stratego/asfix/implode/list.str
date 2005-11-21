@@ -1,0 +1,85 @@
+/**
+ * Implosion of AsFix lists.
+ */
+module stratego/asfix/implode/list
+
+/**
+ * Flatten list constructs
+ *
+ * Note: these rules are not used by implode-asfix: they are only
+ * applied in flat-list.
+ */
+rules
+
+  FlatList: 
+    appl(prod([cf(iter(_))],cf(iter-star(_)),_),[x]) -> <FlatList>x
+
+  FlatList: 
+    appl(prod([],cf(iter-star(_)),_),[]) -> []
+
+  FlatList: 
+    appl(prod(_,cf(iter(_)),_),[x]) -> [x]
+
+  FlatList: 
+    appl(prod(_,cf(iter(_)),_),[x|xs]) -> z
+    where
+      rec x (
+         \ appl(prod(_,cf(iter(_)),_),[a]) -> [a] \
+      <+ \ appl(prod(_,cf(iter(_)),_),[a,b]) -> <concat>[<x>a, <x>b] \
+      <+ \ appl(prod(_,cf(iter(_)),_),[a,w,b]) -> <concat>[<x>a,[w],<x>b] \
+      ) => z
+
+  FlatList: 
+    appl(prod([cf(iter-sep(_,_))],cf(iter-star-sep(_,_)),_),[x]) -> <FlatList>x
+
+  FlatList: 
+    appl(prod([], cf(iter-star-sep(_,_)),_),[]) -> []
+
+  FlatList: 
+    appl(prod(_,cf(iter-sep(_,_)),_),[x]) -> [x]
+
+  FlatList: 
+    appl(prod(_,cf(iter-sep(_,_)),_),[x|xs]) -> z
+    where
+      rec x (
+          \ appl(prod(_,cf(iter-sep(_,_)),_),[a]) -> [a] \
+       <+ \ appl(prod(_,cf(iter-sep(_,_)),_),[a,b,c]) -> <concat>[<x>a, [b],<x>c] \
+       <+ \ appl(prod(_,cf(iter-sep(_,_)),_),[a,w1,b,w2,c])
+	  -> <concat>[<x>a, [w1,b,w2],<x>c] \
+      ) => z
+
+rules
+
+  ImplodeOptionalList : 
+    appl(prod([], cf(opt(s)), _), []) -> []
+    where
+      <is-asfix-list> s
+
+  ImplodeOptionalList : 
+    appl(prod([cf(s)], cf(opt(s)), _), [x]) -> x
+    where
+      <is-asfix-list> s
+
+  ImplodeOptionalList : 
+    appl(prod([], opt(s), _), []) -> []
+    where
+      <is-asfix-list> s
+
+  ImplodeOptionalList : 
+    appl(prod([s], opt(s), _), [x]) -> x
+    where
+      <is-asfix-list> s
+
+strategies
+
+  is-list-sort =  
+    iter(id) +
+    iter-sep(id, id) +
+    iter-star(id) + 
+    iter-star-sep(id, id)
+
+  is-asfix-list = 
+    rec x(
+      is-list-sort
+    + seq(map(lit(id) + layout() + x))
+    )

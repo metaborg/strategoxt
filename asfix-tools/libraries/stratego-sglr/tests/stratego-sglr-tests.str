@@ -1,0 +1,332 @@
+/**
+ * Tests for the Stratego SGLR Library
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego-sglr-tests
+imports
+  libstratego-sglr
+  ExpId
+  ExpInt
+  error-support
+
+strategies
+
+  main-stratego-sglr-tests =
+    test-suite(!"Stratego SGLR Library",
+      open-close-tests
+    ; simple-parse-tests
+    ; advanced-parse-tests
+    ; filter-tests
+    ; config-tests
+    ; error-reporting-tests
+    )
+
+  open-close-tests = id
+    ; apply-test(!"Open and close a parse table"
+      , open-parse-table; ?ParseTable(_); close-parse-table
+      , <ReadFromFile> "ExpInt.tbl"
+      )
+
+  simple-parse-tests =
+      where(
+        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
+      ; <ReadFromFile> "ExpIntAmb.tbl"; open-parse-table => ambtbl
+      )
+
+    ; apply-and-check(!"Parse a simple expression"
+      , parse-string-pt(|tbl)
+      , !"1 + 1"
+      , is-parse-tree
+      )
+
+    ; apply-and-check(!"Parse a simple expression, second time."
+      , parse-string-pt(|tbl)
+      , !"2 + 3"
+      , is-parse-tree
+      )
+
+    ; apply-test(!"Parse and implode a simple expression"
+      , parse-string(|tbl)
+      , !"4 + 5"
+      , !Plus(Int("4"), Int("5"))
+      )
+
+    ; apply-test(!"A succesful parse must not result in a parse error."
+      , parse-string(|tbl)
+        ; not(get-parse-error)
+      , !"4 + 5"
+      , !Plus(Int("4"), Int("5"))
+      )
+
+    ; apply-and-check(!"A parse error must result in a parse error."
+      , not(parse-string(|tbl))
+        ; get-parse-error
+      , !"4 +"
+      , ?summary(_, _, _)
+      )
+
+    ; apply-test(!"Test that the parse error is removed if there is a succesful parse."
+      , where(
+          not(<parse-string(|tbl)> "4 +")
+          ; get-parse-error
+        )
+        ; parse-string(|tbl)
+        ; not(get-parse-error)
+      , !"4 + 5"
+      , !Plus(Int("4"), Int("5"))
+      )
+
+    ; apply-and-check(!"Parse an ambiguous string"
+      , parse-string(|ambtbl)
+      , !"4 + 5 + 6"
+      , ?amb(<id>)
+        ; ?[_, _]
+        ; fetch(?Plus(Plus(Int("4"), Int("5")), Int("6")))
+        ; fetch(?Plus(Int("4"), Plus(Int("5"), Int("6"))))
+      )
+
+    ; apply-and-check(!"Parse an ambiguous string result in an error with -A"
+      , set-ambiguity-is-error(true)
+        ; not(parse-string(|ambtbl))
+        ; get-parse-error
+      , !"4 + 5 + 6"
+      , ?summary(_, _, _)
+      )
+
+    ; set-default-sglr-config
+
+    ; {stream:
+        apply-test(!"Parse a simple expression from a stream."
+        , <fopen> (<id>, "r") => stream
+          ; parse-stream(|tbl)
+          ; where(<fclose> stream)
+        , !"test.exp"
+        , !Plus(Int("1"), Int("2"))
+        )
+      }
+
+    ; {stream:
+        apply-and-check(!"Parse a simple invalid expression from a stream."
+        , <fopen> (<id>, "r") => stream
+          ; not(parse-stream(|tbl))
+          ; get-parse-error
+          ; where(<fclose> stream)
+        , !"test-error.exp"
+        , ?summary(_, _, _)
+        )
+      }
+
+    ; apply-test(!"Parse a simple expression from a file."
+      , parse-file(|tbl)
+      , !"test.exp"
+      , !Plus(Int("1"), Int("2"))
+      )
+
+    ; apply-and-check(!"Parse a simple invalid expression from a file."
+      , not(parse-file(|tbl))
+        ; get-parse-error
+      , !"test-error.exp"
+      , ?summary(_, _, _)
+      )
+
+    ; where(
+        <close-parse-table> tbl
+      ; <close-parse-table> ambtbl
+      )
+
+
+  advanced-parse-tests =
+    where(
+      <ReadFromFile> "ExpId.tbl"  => fid
+    ; <ReadFromFile> "ExpInt.tbl" => fint
+    )
+
+    ; {tblint, tblid:
+        apply-test(!"Parse two expressions with same parse table"
+        ,   where(<open-parse-table> fint => tblint)
+          ; (parse-string(|tblint), parse-string(|tblint))
+          ; where(<close-parse-table> tblint)
+        , !("1 + 2", "3 + 4 ")
+        , !(Plus(Int("1"), Int("2")), Plus(Int("3"), Int("4")))
+        )
+      }
+
+    ; {tblint, tblid:
+        apply-test(!"Interleave parsing of with two different parse tables"
+        ,   where(<open-parse-table> fint => tblint)
+          ; where(<open-parse-table> fid  => tblid)
+          ; ( parse-string(|tblint)
+            , parse-string(|tblid)
+            , parse-string(|tblint)
+            , parse-string(|tblid)
+            )
+          ; where(<close-parse-table> tblint)
+          ; where(<close-parse-table> tblid)
+        , !("1 + 2", "a + b ", "3 + 4", "c + d")
+        , !( Plus(Int("1"), Int("2"))
+           , Plus(Var("a"), Var("b"))
+           , Plus(Int("3"), Int("4"))
+           , Plus(Var("c"), Var("d"))
+           )
+        )
+      }
+
+  filter-tests = id
+
+    ; apply-test(!"Check that the eagerness filter is disabled by default"
+      , set-default-filters
+        ; not(get-filter-eagerness)
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the eagerness filter can be enabled"
+      , set-filter-eagerness(true)
+        ; get-filter-eagerness
+      , !()
+      , !()
+      )
+
+    ; set-default-sglr-config
+
+    ; apply-test(!"Check that the injection count filter is disabled by default"
+      , set-default-filters
+        ; not(get-filter-injection-count)
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the injection count filter can be enabled"
+      , set-filter-injection-count(true)
+        ; get-filter-injection-count
+      , !()
+      , !()
+      )
+
+    ; set-default-sglr-config
+
+    ; apply-test(!"Check that the direct eagerness filter is enabled by default"
+      , set-default-filters
+        ; get-filter-direct-eagerness
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the direct eagerness filter can be disabled"
+      , set-filter-direct-eagerness(false)
+        ; not(get-filter-direct-eagerness)
+      , !()
+      , !()
+      )
+
+    ; set-default-sglr-config
+
+    ; apply-test(!"Check that the priority filter is enabled by default"
+      , set-default-filters
+        ; get-filter-priority
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the priority filter can be disabled"
+      , set-filter-priority(false)
+        ; not(get-filter-priority)
+      , !()
+      , !()
+      )
+
+    ; set-default-sglr-config
+
+
+    ; apply-test(!"Check that the associativity filter is enabled by default"
+      , set-default-filters
+        ; get-filter-associativity
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the associativity filter can be disabled"
+      , set-filter-associativity(false)
+        ; not(get-filter-associativity)
+      , !()
+      , !()
+      )
+
+    ; set-default-sglr-config
+
+    ; apply-test(!"Check that the reject filter is enabled by default"
+      , set-default-filters
+        ; get-filter-reject 
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the reject filter can be disabled"
+      , set-filter-reject(false)
+        ; not(get-filter-reject)
+      , !()
+      , !()
+      )
+
+  config-tests = id
+
+    ; set-default-sglr-config
+
+    ; apply-test(!"Check that ambiguities are not treated as errors by default"
+      , not(get-ambiguity-is-error)
+      , !()
+      , !()
+      )
+
+    ; apply-test(!"Check that the ambiguity errors can be enabled"
+      , set-ambiguity-is-error(true)
+        ; get-ambiguity-is-error
+      , !()
+      , !()
+      )
+
+    ; set-default-sglr-config
+
+  error-reporting-tests =
+      where(
+        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
+      ; <ReadFromFile> "ExpIntAmb.tbl"; open-parse-table => ambtbl
+      )
+
+    ; {summary :
+        apply-test(!"Test the reporting of a parse error."
+        , not(parse-string(|tbl))
+          ; where(get-parse-error => summary)
+          ; report-error-summary(|summary)
+          ; !()
+        , !"4 +"
+        , !()
+        )
+      }
+
+    ; {summary :
+        apply-test(!"Test the reporting of a parse error."
+        , not(parse-string(|tbl))
+          ; where(get-parse-error => summary)
+          ; !FILE("test-error.exp")
+          ; report-error-summary(|summary)
+          ; !()
+        , !"4 +"
+        , !()
+        )
+      }
+
+    ; {summary :
+        apply-test(!"Test the reporting of a parse error from a file."
+        , not(parse-file(|tbl))
+          ; where(get-parse-error => summary)
+          ; !FILE("test-error.exp")
+          ; report-error-summary(|summary)
+          ; !()
+        , !"test-error.exp"
+        , !()
+        )
+      }
+
+    ; where(<close-parse-table> tbl)

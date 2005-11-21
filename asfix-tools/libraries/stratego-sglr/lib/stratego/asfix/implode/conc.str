@@ -1,0 +1,51 @@
+/**
+ * Conc to Cons
+ *
+ * SDF2 lists are composed by means of a binary concatenation
+ * operator (\verb|A+ A+ -> A+|) that we translated to
+ * \verb|Conc| above. In abstract syntax trees we want to
+ * represent lists by \verb|Cons/Nil| structures. The following
+ * rules achieve this transformation.
+ *
+ * Note: these strategies are not used in the main implode-asfix.
+ */
+module stratego/asfix/implode/conc
+rules
+
+  CTC0 : Snoc(x, y) -> Conc(x, Ins(y))
+  CTC0 : [x | y] -> Conc(Ins(x), y)
+
+  CTC1 : Conc(Conc(x, y), z) -> Conc(x, Conc(y, z))
+
+  CTC1 : Conc( Conc( a, b, c ), d, e) ->
+         Conc( a, b, Conc( c, d, e ) )
+  CTC2 : Conc( x, y, z ) -> <concat>[x,[y],z]
+
+  CTC1 : Conc([], x) -> x
+  CTC1 : Conc(x, []) -> x
+
+  CTC2 : Conc(Ins(x), []) -> [x]
+  CTC2 : Conc(Ins(x), Ins(y)) -> [x, y]
+  CTC2 : Conc(Ins(x), [y | z]) -> [x, y | z]
+
+  CTC3 : Ins(x) -> [x]
+
+  CTC4 : Conc([x | y], z) -> Conc(Ins(x), Conc(y, z))
+
+signature
+  constructors
+    Ins  : a -> List(a)
+    Conc : List(a) * List(a) -> List(a)
+    Conc : List(a) * List(a) * List(a) -> List(a)
+
+    /**
+     * @todo Where is this Snoc coming from?
+     */
+    Snoc : List(a) * a -> List(a)
+
+strategies
+
+  conc-to-cons = 
+    rec x(repeat(CTC0 + CTC1 + Conc(CTC0, id)); 
+          (Conc(id, x) <+ all(x)); 
+          try(CTC2; Cons(x, id) + CTC3))

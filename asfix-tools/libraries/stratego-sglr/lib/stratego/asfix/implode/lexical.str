@@ -1,0 +1,52 @@
+/**
+ * Implosion of lexical syntax.
+ */
+module stratego/asfix/implode/lexical
+strategies
+
+  ImplodeLexical =
+    ?appl(prod([lex(_)],cf(_),_), _)
+    ; asfix-yield-appl
+
+  ImplodeLexical =
+    ?appl(prod(_,lex(_),_), _)
+    ; asfix-yield-appl
+
+  ImplodeLexical =
+    ?appl(prod(_,lit(_),_),_)
+    ; !lit(<asfix-yield-appl>)
+
+  ImplodeLexical =
+    ?appl(prod(_,varsym(cf(iter-star(_))),_),_)
+    ; !meta-listvar(<asfix-yield-appl>)
+
+  ImplodeLexical =
+    ?appl(prod(_,varsym(cf(iter-star-sep(_,_))),_),_)
+    ; !meta-listvar(<asfix-yield-appl>)
+
+  ImplodeLexical =
+    ?appl(prod(_,varsym(cf(iter(_))),_),_)
+    ; !meta-listvar(<asfix-yield-appl>)
+
+  ImplodeLexical =
+    ?appl(prod(_,varsym(cf(iter-sep(_,_))),_),_)
+    ; !meta-listvar(<asfix-yield-appl>)
+
+  ImplodeLexical =
+    ?appl(prod(_,varsym(_),_),_)
+    ; !meta-var(<asfix-yield-appl>)
+
+strategies
+
+  /**
+   * The yield of an AsFixTerm is the string consisting of the
+   * characters at the leaves of the tree.1
+   *
+   * @todo Reuse asfix yield? (Mind the annotations)
+   */
+  asfix-yield-appl =
+    ?appl(_, _){anno*}
+    ; rec x(?appl(_, <map(x); concat>) <+ ![<id>])
+    ; implode-string
+    ; ?s
+    ; !s{anno*}

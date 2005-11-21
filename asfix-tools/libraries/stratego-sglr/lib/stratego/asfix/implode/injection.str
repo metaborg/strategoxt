@@ -1,0 +1,54 @@
+/**
+ * Implosion of AsFix injections.
+ *
+ * Injections are nodes in a tree with a single child. Such nodes
+ * can be ignored if they only relate syntactic information
+ * instead of structural information. For instance, bracket nodes
+ * are only necessary for syntactic purposes.
+ * 	
+ * Note: the ?sort("<START>") is necessary because
+ * sort is also defined as a strategy operator that sorts
+ * lists.
+ */
+module stratego/asfix/implode/injection
+rules
+
+  ImplodeInjection : 
+    appl(p, [t]) -> t
+    where
+      <is-injection> p
+
+strategies
+
+  is-injection = 
+    ?prod(_, sort("<START>"), no-attrs())
+
+  /**
+   * @todo Improve the bracket detection.
+   */
+  is-injection = 
+    prod(id, id, oncetd("bracket" + bracket))
+
+  is-injection = 
+    ?prod([cf(iter(x))],cf(iter-star(x)),no-attrs())
+
+  is-injection = 
+    ?prod([cf(iter-sep(x,l))],cf(iter-star-sep(x,l)),no-attrs())
+
+  is-injection = 
+    prod([not(lit(id))]
+	 ,rec x(sort(id) + cf(x) + lex(x) 
+		+ iter(x) + iter-star(x) 
+		+ iter-sep(x,lit(id)) + iter-star-sep(x,lit(id)))
+	,not(oncetd(cons(id))))
+
+  is-injection =
+    prod([sort(id) + cf(sort(id))]
+        , is-injective-alt
+        ,not(oncetd(cons(id))))
+
+  is-injection = 
+    prod([varsym(id)],id,not(oncetd(cons(id))))
+
+  is-injective-alt = 
+    rec x(sort(id) + cf(x) + alt(x,x))

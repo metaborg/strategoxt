@@ -1,0 +1,229 @@
+/**
+ * Stratego Bindings for parsing using SGLR.
+ *
+ * All parse functions fail if there is a parse error. The ATerm
+ * representation of the parse error can be retreived separately using
+ * get-parse-error.
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/sglr/parse
+imports
+  libstrategolib
+
+/**
+ * Parse a string to an AST.
+ *
+ * @todo  Set the pt type to asfix2?
+ */
+strategies
+
+  /**
+   * @param ParseTable
+   * @type  String -> AST
+   */
+  parse-string(|tbl) =
+    parse-string(|tbl, None(), "string")
+
+  /**
+   * @param ParseTable
+   * @param String
+   * @type  String -> AST
+   */
+  parse-string(|tbl, start-symbol) =
+    parse-string(|tbl, start-symbol, "string")
+
+  /**
+   * @param ParseTable
+   * @param String or None
+   * @param String
+   * @type  String -> AST
+   */
+  parse-string(|tbl, start-symbol, path) =
+    parse-string-pt(|tbl, start-symbol, path)
+    ; implode-asfix
+
+/**
+ * Parse a string to a parse tree.
+ */
+strategies
+
+  /**
+   * @param ParseTable
+   * @type  String -> ParseTree
+   */
+  parse-string-pt(|tbl) =
+    parse-string-pt(|tbl, None(), "string")
+
+  /**
+   * @param ParseTable
+   * @param String
+   * @type  String -> ParseTree
+   */
+  parse-string-pt(|tbl, start-symbol) =
+    parse-string-pt(|tbl, start-symbol, "string")
+
+  /**
+   * @param ParseTable
+   * @param String or None
+   * @param String
+   * @type  String -> ParseTree
+   */
+  parse-string-pt(|tbl, start-symbol, path) =
+    where(!tbl => ParseTable(internal-tbl))
+    ; ?string
+    ; prim("STRSGLR_parse_string_pt", string, internal-tbl, start-symbol, path)
+
+/**
+ * Parse a stream to an AST.
+ *
+ * @todo  Set the pt type to asfix2?
+ */
+strategies
+
+  /**
+   * @param ParseTable
+   * @type  Stream -> AST
+   */
+  parse-stream(|tbl) =
+    parse-stream(|tbl, None(), "string")
+
+  /**
+   * @param ParseTable
+   * @param String
+   * @type  Stream -> AST
+   */
+  parse-stream(|tbl, start-symbol) =
+    parse-stream(|tbl, start-symbol, "string")
+
+  /**
+   * @param ParseTable
+   * @param String or None
+   * @param String
+   * @type  Stream -> AST
+   */
+  parse-stream(|tbl, start-symbol, path) =
+    parse-stream-pt(|tbl, start-symbol, path)
+    ; implode-asfix
+
+/**
+ * Parse a stream to a parse tree.
+ */
+strategies
+
+  /**
+   * @param ParseTable
+   * @type  Stream -> ParseTree
+   */
+  parse-stream-pt(|tbl) =
+    parse-stream-pt(|tbl, None(), "stream")
+
+  /**
+   * @param ParseTable
+   * @param String
+   * @type  Stream -> ParseTree
+   */
+  parse-stream-pt(|tbl, start-symbol) =
+    parse-stream-pt(|tbl, start-symbol, "stream")
+
+  /**
+   * @param ParseTable
+   * @param String or None
+   * @param String
+   * @type  Stream -> ParseTree
+   */
+  parse-stream-pt(|tbl, start-symbol, path) =
+    where(!tbl => ParseTable(internal-tbl))
+    ; ?Stream(stream)
+    ; prim("STRSGLR_parse_stream_pt", stream, internal-tbl, start-symbol, path)
+
+/**
+ * Parse a file to an AST.
+ *
+ * @todo Set the pt type to asfix2?
+ */
+strategies
+
+  /**
+   * @param ParseTable
+   * @type  String -> AST
+   */
+  parse-file(|tbl) =
+    ?path; parse-file(|tbl, None(), path)
+
+  /**
+   * @param ParseTable
+   * @param String
+   * @type  String -> AST
+   */
+  parse-file(|tbl, start-symbol) =
+    ?path; parse-file(|tbl, start-symbol, path)
+
+  /**
+   * @param ParseTable
+   * @param String or None
+   * @param String
+   * @type  String -> AST
+   */
+  parse-file(|tbl, start-symbol, path) =
+    parse-file-pt(|tbl, start-symbol, path)
+    ; implode-asfix
+
+/**
+ * Parse a file to a parse tree.
+ */
+strategies
+
+  /**
+   * @param ParseTable
+   * @type  String -> ParseTree
+   */
+  parse-file-pt(|tbl) =
+    ?path; parse-file-pt(|tbl, None(), path)
+
+  /**
+   * @param ParseTable
+   * @param String
+   * @type  String -> ParseTree
+   */
+  parse-file-pt(|tbl, start-symbol) =
+    ?path; parse-file-pt(|tbl, start-symbol, path)
+
+  /**
+   * @param ParseTable
+   * @param String or None
+   * @param String
+   * @type  String -> ParseTree
+   */
+  parse-file-pt(|tbl, start-symbol, path) =
+    where(!tbl => ParseTable(internal-tbl))
+    ; <fopen> (<id>, "r") => stream
+    ; finally(
+        parse-stream-pt(|tbl, start-symbol, path)
+      , <fclose> stream
+      )
+
+strategies
+
+  /**
+   * Returns the parser error from the last parse.
+   *
+   * Fails if the last parse did not fail.
+   */
+  get-parse-error =
+    prim("STRSGLR_get_parse_error")
+
+  /**
+   * Clears the current parse error.
+   *
+   * The current parse error is cleared when parsing a new input, so
+   * there is usually no reason to invoke this strategy.
+   */
+  clear-parse-error =
+    prim("STRSGLR_clear_parse_error")
+
+  /**
+   * Succeeds if the current term is a parse tree.
+   */
+  is-parse-tree =
+    ?t; prim("STRSGLR_is_parse_tree", t)

@@ -1,0 +1,47 @@
+/**
+ * Configuration of SGLR.
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/sglr/config
+imports
+   stratego/sglr/filter
+
+strategies
+
+  set-default-sglr-config =
+    where(prim("STRSGLR_set_default_config"))
+
+strategies
+
+  /**
+   * Set if ambiguities are to be treated as errors.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-ambiguity-is-error(s) =
+    if s then
+      where(prim("STRSGLR_set_ambiguity_error_on"))
+    else
+      where(prim("STRSGLR_set_ambiguity_error_off"))
+    end
+
+  /**
+   * Succeeds if ambiguities are treated as errors.
+   *
+   * @type  t -> t
+   */
+  get-ambiguity-is-error =
+    where(prim("STRSGLR_get_ambiguity_error"))
+
+strategies
+
+  /**
+   * @type ParseTreeFormat -> ParseTreeFormat
+  set-parse-tree-format = id
+   */
+
+signature
+  constructors
+    AsFix2   : ParseTreeFormat
+    AsFix2ME : ParseTreeFormat
