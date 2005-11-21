@@ -193,21 +193,21 @@ strategies
     OpDecl(c, t) ->
     stm*|[
       ~id:csym = ATmakeSymbol(~exp:StringLit([<double-quote>c']), 
-			      ~exp:IntConst(n), ATtrue);
+			      ~exp:<mk-int-const> ar, ATtrue);
       ATprotectSymbol(~id:csym);
     ]|
     where <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
-	; <Arity> t => ar; int-to-string => n
+	; <Arity> t => ar
         ; <ConstructorName> (c, ar) => csym
 
   InitConstructor :
     OpDecl(c, t) ->
     stm*|[
       ~id:csym = ATmakeSymbol(~exp:StringLit([<double-quote>c]), 
-			      ~exp:IntConst(n), ATfalse);
+			      ~exp:<mk-int-const> ar, ATfalse);
       ATprotectSymbol(~id:csym);
     ]|
-    where <Arity> t => ar; int-to-string => n
+    where <Arity> t => ar
         ; <ConstructorName> (c, ar) => csym
 
 /**
@@ -285,13 +285,11 @@ strategies
     ?f
     ; Frame
 
-/*
   static-link' =
      foldr(
         !exp|[ sl ]|,
 	!exp|[ sl_up(~exp:<Snd>) ]|
       )
-*/
 
   static-link =
     debug(!"static-link: ");
@@ -333,19 +331,19 @@ strategies
          return NULL;
        }
     ]|
-    where ?_{(off1,off2)};
-       {| Frame, FrameOf 
-	: Frame => g
-	; rules(
-            Frame   :+ _ -> f
-	    FrameOf :  f -> g
-	  )
-	; <mapconcat(TranslateVarDec)> [a1*,a2*] => args
-	; <newname> "fail" => F
-	; <translate-strat(|Next, F)>s => stm
-        |}
-       ; !IntConst(<try(int-to-string)>off1) => off1'
-       ; !IntConst(<try(int-to-string)>off2) => off2'
+    where ?_{(off1,off2)}
+        ; <mk-int-const> off1 => off1'
+        ; <mk-int-const> off2 => off2'
+        ; {| Frame, FrameOf 
+ 	   : Frame => g
+	   ; rules(
+               Frame   :+ _ -> f
+	       FrameOf :  f -> g
+	     )
+	   ; <mapconcat(TranslateVarDec)> [a1*,a2*] => args
+	   ; <newname> "fail" => F
+	   ; <translate-strat(|Next, F)>s => stm
+           |}
 
   make-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
@@ -418,7 +416,7 @@ rules
 
   TranslateEscapingVarDec : 
     x{("escapes", i)} -> stm|[
-      sl_init_var(~exp:IntConst(<try(int-to-string)>i), ~id:x{}); 
+      sl_init_var(~exp:<mk-int-const> i, ~id:x{}); 
     ]|
    // add offset and declare dynamic rule to rewrite to the offset
 
@@ -627,7 +625,7 @@ rules
       else 
         goto ~id:F;
     ]|
-    where !IntConst(<try(int-to-string)>i) => x'
+    where <mk-int-const> i => x'
 
   TranslateStrat(|S,F) :
     Match(Real(i),trm) -> 
@@ -659,7 +657,7 @@ rules
         ; <thread-map(\ (t,i) ->
              (
                <MatchArg1(|Next,F) <+ MatchArg2(|Next,F)> 
-                  (t, exp|[ ATgetArgument(~exp:trm,~exp:IntConst(<int-to-string>i)) ]|)
+                  (t, exp|[ ATgetArgument(~exp:trm,~exp:<mk-int-const> i) ]|)
              , <add>(i, 1)
              )
            \ )> (ts,0) => (match-args,_)
@@ -739,10 +737,10 @@ rules
       else  
         ~stm:s
     ]|
-    where <collect({?Var(<id>){t*}; where(<not(["bound"])> t* )})> t
+    where <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
 	; not([])
-	; foldr1(!exp|[ ~id:<Hd> == NULL ]|
-	        ,!exp|[ ~id:<Fst> == NULL || ~exp:<Snd> ]|) => e
+	; foldr1(!exp|[ ~exp:<Hd; ConstructVar> == NULL ]|
+	        ,!exp|[ ~exp:<Fst; ConstructVar> == NULL || ~exp:<Snd> ]|) => e
 
 /**
  * Term construction with constant term caching
@@ -782,7 +780,7 @@ rules
   ConstructTerm :
     Int(i) -> 
     exp|[ 
-      (ATerm)ATmakeInt(~exp:IntConst(<try(int-to-string)> i))
+      (ATerm)ATmakeInt(~exp:<mk-int-const> i)
     ]|
 
   ConstructTerm :
@@ -798,13 +796,20 @@ rules
     ]|
 
   ConstructVar :
-    Term|[ x ]| -> exp|[ ~id:x ]| 
+    Term|[ x ]| -> exp|[ ~id:x ]|
+    where !x => _{}
+
+  ConstructVar :
+    Term|[ x ]| -> exp|[ sl_readvar(~exp:<mk-int-const> off, ~exp:sl) ]|
+    where !x => _{("offset",off,levels)}
+	; <static-link'> levels => sl
 
   ConstructAnnoVar :
     |[ x{^pt2} ]| -> 
     exp|[ 
-      (ATerm) SRTS_setAnnotations(~id:x, ~exp:<construct-term> pt2)
+      (ATerm) SRTS_setAnnotations(~exp:e, ~exp:<construct-term> pt2)
     ]|
+    where <ConstructVar> Term|[ x ]| => e
 
   ConstructTerm :
     |[ pt1{^Nil()} ]| -> <construct-term> pt1
@@ -885,3 +890,5 @@ strategies
     [Stat(Assign(Id(x), AssignEq, e)),
      Stat(FunCall(Id("ATprotect"),[Address(Id(x))]))]
 
+   mk-int-const =
+    !IntConst(<try(int-to-string)>)

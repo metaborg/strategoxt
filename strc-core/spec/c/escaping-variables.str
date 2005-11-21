@@ -33,11 +33,13 @@ strategies
   ev-var = 
    (?Var(x) <+ ?SVar(x)); ?y
    ; debug(!"ev-var: ")
-
    ; where(<not(eq)> (<CurrentFrame>, <FrameOf => f> x))
-   ; where(bigbagof-CurrentFrame; take-until(?f) => frames)
+   ; where(
+       bigbagof-CurrentFrame
+       ; take-until(?f)
+       ; (init <+ debug(!"*** strange frames: ")) => frames
+     )
    ; debug(!"ev-var escaping: ")
-
    ; where(
       <OffSet> x => off; debug(!"offset: ")
       <+ <one(FrameOf => f); !<id>{}> y => f'
@@ -55,7 +57,6 @@ strategies
          ; where(<NextOffSet> f'; debug(!"NextOffSet: "))
      )
    ; rules( VarEscape.x : x -> x{("escapes", off)} )
-
    ; one(\ z{t*} -> z{("offset", off, frames), t*} \ )
    ; debug(!"annotation: ")
 
