@@ -44,3 +44,4 @@ AC_CONFIG_FILES([
   src/anno/Makefile
 ])
 AC_OUTPUT
+
