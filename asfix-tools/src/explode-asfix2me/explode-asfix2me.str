@@ -14,7 +14,6 @@
 module explode-asfix2me
 imports
   liblib
-  Sdf2
   asfix2me
 
 overlays 
