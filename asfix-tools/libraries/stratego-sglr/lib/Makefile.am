@@ -4,8 +4,8 @@ include $(wildcard *.dep)
 nobase_pkgdata_DATA = libstratego-sglr.rtree
 lib_LTLIBRARIES     = libstratego-sglr.la
 
-nodist_libstratego_sglr_la_SOURCES  = libstratego-sglr.c
-dist_libstratego_sglr_la_SOURCES = \
+libstratego_sglr_la_SOURCES = \
+  libstratego-sglr.c \
   native/stratego_sglr_filter.c \
   native/stratego_sglr_parse_table.c \
   native/stratego_sglr_parse.c

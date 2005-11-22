@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = sig lib src xtc test
+SUBDIRS           = libraries sig lib src xtc test
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt svn-revision stratego-sglr.pc.in
 CLEANFILES        = XTC
