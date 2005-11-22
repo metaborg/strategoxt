@@ -121,7 +121,7 @@ strategies
 
   custom-implode-option =
     ArgOption("--impl"
-    , where(<extend-config> (CustomImplodeOptions(), [<id>]))
-    , !"--impl <opt>     Pass <opt> to implode-asfix"
+    , id
+    , !"--impl <opt>     Pass <opt> to implode-asfix (obsolete: ignored)"
     )
 

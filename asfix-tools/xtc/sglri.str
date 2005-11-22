@@ -26,6 +26,7 @@ strategies
     + Option(fail, fail, !"")
 
     + custom-sglr-option
+    + custom-implode-option
     + Option(fail, fail, !"")
 
     + implode-asfix-options
