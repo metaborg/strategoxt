@@ -1,16 +1,20 @@
 module sglri
 imports
-  liblib
+  libstratego-sglr
+  libxtclib
   sglri-options
-  error-reporting
+  implode-asfix
 
 strategies
 
   main-sglri =
     init-sglr-options
     ; xtc-io-wrap(sglri-options,
-        parse-and-implode
-        <+ <xtc-exit> 1
+        if output(parse-and-implode) then
+          <xtc-exit> 0
+        else
+          <xtc-exit> 1
+        end
       )
 
   sglri-options =
@@ -24,12 +28,18 @@ strategies
     + Option(fail, fail, !"")
 
     + custom-sglr-option
-    + custom-implode-option
+
+    + Option(fail, fail, !"")
+
+    + implode-asfix-options
 
     + Option(fail, fail, !"")
 
 strategies
 
+  /**
+   * @type FILE -> AST
+   */
   parse-and-implode =
     let try-get-parse-table =
           <get-config> ParseTable() <+ fatal-err(|"No parse table specified")
@@ -41,27 +51,11 @@ strategies
             , <pass-custom-sglr-options> ()
             , <pass-sglr-verbose> ()
             ])
-    end;
-
-    let pass-binary-output =
-          if <get-config> "-b" then
-            !["-b"]
-          else
-            ![]
-          end
-
-     in implode-asfix(
-          <concat> [
-            <pass-custom-implode-options> ()
-          , <pass-binary-output> ()
-          , <pass-verbose> ()
-          ])
     end
+    ; read-from
+    ; implode-asfix-using-config
 
 strategies
-
-  implode-asfix(args) =
-    xtc-transform(!"implode-asfix", args)
 
   xtc-sglr-strict(|tbl, args) =
     ?input
@@ -95,6 +89,6 @@ strategies
     finally(
       read-from
       ; ?summary
-      ; <report-error-summary(|summary)> ()
+      ; <report-error-summary(|summary)> input
     , fail
     )

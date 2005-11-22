@@ -14,6 +14,9 @@ strategies
   main-implode-asfix = 
     io-wrap(implode-asfix-options, implode-asfix-using-config)
 
+  /**
+   * @warning This strategy is also used by sglri.
+   */
   implode-asfix-using-config =
     ?term
     ; if <get-config> "--lex"    then asfix-flat-lex end
@@ -31,6 +34,9 @@ strategies
         ; implode-asfix(<get-config>("--concrete"))
       )
 
+  /**
+   * @warning These options are also used by sglri.
+   */
   implode-asfix-options =
     Option( "--lex",    
 	where(<set-config>("--lex", <id>)),

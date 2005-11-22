@@ -1,8 +1,4 @@
 module sglri-options
-imports
-  liblib
-  error-reporting
-
 signature
   constructors
     CustomSglrOptions    : ConfigKey

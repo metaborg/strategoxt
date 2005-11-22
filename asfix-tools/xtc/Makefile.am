@@ -16,6 +16,7 @@ STRCFLAGS = --main main-$*
 LDADD    += $(SSL_LIBS)
 
 implode_asfix_LDADD = $(STRATEGO_SGLR)/lib/libstratego-sglr.la $(SSL_LIBS)
+sglri_LDADD = $(STRATEGO_SGLR)/lib/libstratego-sglr.la $(SSL_LIBS)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = visamb.c visamb.pp.af implode-asfix.c sglri.c
