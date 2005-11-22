@@ -6,9 +6,9 @@ TESTS = $(check_PROGRAMS)
 
 noinst_DATA = ExpId.tbl ExpId.str ExpInt.tbl ExpInt.str ExpIntAmb.tbl 
 
-STRINCLUDES = $(STRATEGO_SGLR_STRCFLAGS)
+STRINCLUDES = -I ../lib
 
-LDADD     += $(STRATEGO_SGLR_LIBS) $(SSL_LIBS) 
+LDADD     += ../lib/libstratego-sglr.la $(SSL_LIBS) 
 STRCFLAGS  = --main main-$* --format-check 0
 
 EXTRA_DIST = \

@@ -64,4 +64,4 @@ testsetclean:
 	PATH=$(PGEN)/bin:$${PATH} sdf2table -i $< -o $@
 
 %.out :
-	../implode-asfix $($(subst -,_,$*)_flags) -i $*.in -o $@
+	$(top_builddir)/xtc/implode-asfix $($(subst -,_,$*)_flags) -i $*.in -o $@

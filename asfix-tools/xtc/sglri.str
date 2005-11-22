@@ -6,7 +6,7 @@ imports
 
 strategies
 
-  sglri =
+  main-sglri =
     init-sglr-options
     ; xtc-io-wrap(sglri-options,
         parse-and-implode

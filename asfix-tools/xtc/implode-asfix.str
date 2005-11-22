@@ -24,7 +24,7 @@ signature
 
 strategies
 
-  implode-asfix = 
+  main-implode-asfix = 
     io-wrap(implode-options, implode)
 
   implode-options = 

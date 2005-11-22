@@ -9,6 +9,10 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
+# TODO: make a pkg-config file for sglr.
+AC_SUBST([SGLR_CFLAGS],['-I $(SGLR)/include'])
+AC_SUBST([SGLR_LIBS],['$(SGLR)/lib/libsglr.a -lmept -lErrorAPI'])
+
 AC_CONFIG_FILES([
   stratego-sglr.pc
   Makefile 
@@ -27,9 +31,6 @@ AC_CONFIG_FILES([
 
   src/templates/Makefile
   src/templates/data/Makefile
-
-  src/implode/Makefile
-  src/implode/data/Makefile
 
   src/asfix-yield/Makefile
   src/asfix-yield/data/Makefile
