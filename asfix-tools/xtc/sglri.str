@@ -20,19 +20,15 @@ strategies
   sglri-options =
       sglr-parse-table-option
     + sglr-start-symbol-option
-
     + Option(fail, fail, !"")
 
     + sglr-filter-option
-
     + Option(fail, fail, !"")
 
     + custom-sglr-option
-
     + Option(fail, fail, !"")
 
     + implode-asfix-options
-
     + Option(fail, fail, !"")
 
 strategies
