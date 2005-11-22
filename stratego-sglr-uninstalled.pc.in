@@ -1,0 +1,8 @@
+prefix=@prefix@
+
+Name: Stratego Library
+Description: Standard library for Stratego
+Version: @PACKAGE_VERSION@
+Libs: -L@abs_top_builddir@/stratego-lib/native/stratego-lib -L@abs_top_builddir@/stratego-lib/libraries -lstratego-lib -lstratego-lib-native
+Cflags: -I@abs_top_builddir@/stratego-lib/native
+Requires: aterm stratego-runtime

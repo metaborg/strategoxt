@@ -10,7 +10,9 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
+  stratego-sglr.pc
   Makefile 
+
   sig/Makefile 
   lib/Makefile
   xtc/Makefile

@@ -16,8 +16,8 @@ strategies
 	  ; try(where(<get-config> "--annotations")
                 ; annos-as-comment)
           )
-        ; xtc-transform(!"stratego2abox")
-        ; xtc-transform(!"abox2text", !<pass-verbose>)
+        ; xtc-transform(!"stratego2abox", !["-b"])
+        ; xtc-transform(!"abox2text", pass-verbose)
       )
     )
 

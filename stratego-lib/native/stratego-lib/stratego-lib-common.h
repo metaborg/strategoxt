@@ -3,6 +3,9 @@ FILE* stream_from_term_strict(ATerm) ;
 FILE* stream_from_term(ATerm) ;
 ATerm stream_to_term(FILE*) ;
 
+ATermTable hashtable_from_term(ATerm table);
+ATerm hashtable_to_term(ATermTable table);
+
 /* Integers */
 
 #define assert_is_int(t) if(ATgetType(t) != AT_INT) return NULL;
