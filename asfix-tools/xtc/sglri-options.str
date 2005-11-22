@@ -120,8 +120,8 @@ strategies
     <get-config> CustomImplodeOptions() <+ ![]
 
   custom-implode-option =
-    ArgOption("--impl"
-    , id
+    Option("--impl"
+    , obsolete(!"sglri: --impl option")
     , !"--impl <opt>     Pass <opt> to implode-asfix (obsolete: ignored)"
     )
 
