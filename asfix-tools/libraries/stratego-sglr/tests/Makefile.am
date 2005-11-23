@@ -4,7 +4,11 @@ include $(wildcard *.dep)
 check_PROGRAMS = stratego-sglr-tests
 TESTS = $(check_PROGRAMS)
 
-noinst_DATA = ExpId.tbl ExpId.str ExpInt.tbl ExpInt.str ExpIntAmb.tbl 
+noinst_DATA = \
+  ExpId.tbl ExpId.str \
+  ExpInt.tbl ExpInt.str \
+  ExpIntAmb.tbl \
+  ConcreteSyntax.tbl ConcreteSyntax.str
 
 STRINCLUDES = -I ../lib
 

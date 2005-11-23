@@ -1,5 +1,5 @@
 /**
- * Tests for the Stratego SGLR Library
+ * Tests for the Stratego SGLR Library.
  *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
@@ -8,6 +8,7 @@ imports
   libstratego-sglr
   ExpId
   ExpInt
+  ConcreteSyntax
   error-support
 
 strategies
@@ -20,6 +21,7 @@ strategies
     ; filter-tests
     ; config-tests
     ; error-reporting-tests
+    ; implode-tests
     )
 
   open-close-tests = id
@@ -329,4 +331,24 @@ strategies
         )
       }
 
+    ; where(<close-parse-table> tbl)
+    
+  implode-tests =
+      where(
+        <ReadFromFile> "ConcreteSyntax.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+      
+    ; apply-test(!"Implode a meta list variable."
+      , parse-string(|tbl)
+      , !"|[ f(e*) ]|"
+      , !ToTerm(Call("f", meta-listvar("e*")))
+      )
+      
+    ; apply-test(!"Implode a meta variable."
+      , parse-string(|tbl)
+      , !"|[ e ]|"
+      , !ToTerm(meta-var("e"))
+      )
+    
     ; where(<close-parse-table> tbl)
