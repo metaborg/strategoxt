@@ -77,15 +77,19 @@ strategies
   sglri-options =
       sglr-parse-table-option
     + sglr-start-symbol-option
-    + sglr-amb-option
     + Option(fail, fail, !"")
 
+    + Option(fail, fail, !"Parse options:")
+    + sglr-amb-option
     + sglr-filter-option
+    + Option(fail, fail, !"")
+
+    + Option(fail, fail, !"Implode options:")
+    + implode-asfix-options
     + Option(fail, fail, !"")
 
     + custom-sglr-option
     + custom-implode-option
     + Option(fail, fail, !"")
 
-    + implode-asfix-options
-    + Option(fail, fail, !"")
+    + Option(fail, fail, !"Input/Output options:")

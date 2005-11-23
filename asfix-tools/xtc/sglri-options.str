@@ -34,11 +34,11 @@ strategies
           case "on"  : set-ambiguity-is-error(false)
           otherwise  : fatal-err(|"Invalid value for option --amb: use on or off")
         end
-      , !"-a, --amb <on|off>    Enable ambiguities (default: on)"
+      , !"-a, --amb <on|off>            Enable ambiguities (default: on)"
       )
    <+ Option("-A"
       , set-ambiguity-is-error(true)
-      , !"-A                    Treat ambiguities as errors (alias of --amb off)"
+      , !"-A                            Treat ambiguities as errors (alias of --amb off)"
       )
 
   /**
