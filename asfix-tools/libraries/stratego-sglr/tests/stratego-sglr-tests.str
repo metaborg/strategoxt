@@ -339,12 +339,18 @@ strategies
       )
     ; set-default-sglr-config
       
-    ; apply-test(!"Implode a meta list variable."
+    ; apply-test(!"Implode a meta list variable (sep)."
       , parse-string(|tbl)
       , !"|[ f(e*) ]|"
       , !ToTerm(Call("f", meta-listvar("e*")))
       )
       
+    ; apply-test(!"Implode a meta list variable."
+      , parse-string(|tbl)
+      , !"|[ [ e* ] ]|"
+      , !ToTerm(List(meta-listvar("e*")))
+      )
+     
     ; apply-test(!"Implode a meta variable."
       , parse-string(|tbl)
       , !"|[ e ]|"

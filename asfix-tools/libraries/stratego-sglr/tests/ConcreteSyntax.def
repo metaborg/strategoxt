@@ -10,6 +10,7 @@ exports
   variables
     "e"[0-9\']*     -> Exp        {prefer}
     "e"[0-9\']* "*" -> {Exp ","}* {prefer}
+    "e"[0-9\']* "*" -> Exp*       {prefer}
   
   lexical syntax
     [\ \t\n]  -> LAYOUT
@@ -29,6 +30,7 @@ exports
     Exp "-"  Exp -> Exp  {left, cons("Minus")}
 
     Id "(" {Exp ","}* ")" -> Exp {cons("Call")}
+    "[" Exp* "]"          -> Exp {cons("List")}
 
   context-free priorities
     {left:

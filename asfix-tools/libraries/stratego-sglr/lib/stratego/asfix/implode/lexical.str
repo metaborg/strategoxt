@@ -17,11 +17,11 @@ strategies
     ; !lit(<asfix-yield-appl>)
 
   ImplodeLexical =
+    ImplodeLexicalListVar <+ ImplodeLexicalVar
+    
+  ImplodeLexicalListVar =
     ?appl(prod(_,varsym(cf(iter-star(_))),_),_)
     ; !meta-listvar(<asfix-yield-appl>)
-
-  ImplodeLexical =
-    ImplodeLexicalListVar <+ ImplodeLexicalVar
 
   ImplodeLexicalListVar =
     ?appl(prod(_,varsym(cf(iter-star-sep(_,_))),_),_)
