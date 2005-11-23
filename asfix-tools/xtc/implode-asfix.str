@@ -31,7 +31,7 @@ strategies
     ; if <get-config> "--pt"     then ?parsetree(<id>, _) end
     ; try(
         ?term
-        ; implode-asfix(<get-config>("--concrete"))
+        ; implode-asfix(not(<get-config>("--concrete")))
       )
 
   /**
