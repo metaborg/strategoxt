@@ -1,4 +1,4 @@
-module cs-test01.str
+module cs-test01
 imports Expressions sunit
 strategies
   

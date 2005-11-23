@@ -21,18 +21,21 @@ strategies
     ; !meta-listvar(<asfix-yield-appl>)
 
   ImplodeLexical =
+    ImplodeLexicalListVar <+ ImplodeLexicalVar
+
+  ImplodeLexicalListVar =
     ?appl(prod(_,varsym(cf(iter-star-sep(_,_))),_),_)
     ; !meta-listvar(<asfix-yield-appl>)
 
-  ImplodeLexical =
+  ImplodeLexicalListVar =
     ?appl(prod(_,varsym(cf(iter(_))),_),_)
     ; !meta-listvar(<asfix-yield-appl>)
 
-  ImplodeLexical =
+  ImplodeLexicalListVar =
     ?appl(prod(_,varsym(cf(iter-sep(_,_))),_),_)
     ; !meta-listvar(<asfix-yield-appl>)
 
-  ImplodeLexical =
+  ImplodeLexicalVar =
     ?appl(prod(_,varsym(_),_),_)
     ; !meta-var(<asfix-yield-appl>)
 
