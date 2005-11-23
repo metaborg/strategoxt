@@ -8,18 +8,76 @@ imports
 strategies
 
   main-sglri =
-    init-sglr-options
-    ; xtc-io-wrap(sglri-options,
-        if output(parse-and-implode) then
-          <xtc-exit> 0
-        else
-          <xtc-exit> 1
-        end
-      )
+    xtc-io-wrap(sglri-options,
+      if output(parse-and-implode) then
+        <xtc-exit> 0
+      else
+        <xtc-exit> 1
+      end
+    )
+
+  print-config =
+    if get-ambiguity-is-error then
+      say(!"ambiguities: off")
+    else
+      say(!"ambiguities: on")
+    end
+
+strategies
+
+  parse-and-implode =
+    ?input;
+    let try-get-parse-table =
+          <get-config> ParseTable()
+          ; ReadFromFile
+          ; open-parse-table
+          <+ fatal-err(|"No parse table specified")
+
+        try-get-start-symbol =
+          <get-config> StartSymbol() <+ !None()
+
+     in where(
+          try-get-parse-table => tbl
+        ; try-get-start-symbol => sort
+        )
+      ; open-input-stream => stream
+      ; ( finally(
+            parse-stream-pt(|tbl, sort, <path-of-input> input)
+          , <fclose> stream
+            ; <close-parse-table> tbl
+          ) <+ report-parse-error
+        )
+      ; implode-asfix-using-config
+    end
+
+strategies
+
+  path-of-input =
+    ?FILE(<id>)
+
+  path-of-input =
+    ?stdin(); !"stdin"
+
+  open-input-stream =
+    ?FILE(<id>); <fopen> (<id>, "r")
+
+  open-input-stream =
+    ?stdin(); stdin-stream
+
+  report-parse-error =
+    finally(
+      ?input
+      ; get-parse-error => summary
+      ; <report-error-summary(|summary)> input
+    , fail
+    )
+
+strategies
 
   sglri-options =
       sglr-parse-table-option
     + sglr-start-symbol-option
+    + sglr-amb-option
     + Option(fail, fail, !"")
 
     + sglr-filter-option
@@ -31,61 +89,3 @@ strategies
 
     + implode-asfix-options
     + Option(fail, fail, !"")
-
-strategies
-
-  /**
-   * @type FILE -> AST
-   */
-  parse-and-implode =
-    let try-get-parse-table =
-          <get-config> ParseTable() <+ fatal-err(|"No parse table specified")
-
-     in xtc-sglr-strict(|<try-get-parse-table> (),
-          <concat> [
-              ["-2"]
-            , <pass-sglr-start-symbol> ()
-            , <pass-custom-sglr-options> ()
-            , <pass-sglr-verbose> ()
-            ])
-    end
-    ; read-from
-    ; implode-asfix-using-config
-
-strategies
-
-  xtc-sglr-strict(|tbl, args) =
-    ?input
-    ; xtc-transform-always(id, report-sglri-error-summary(|input)
-      | "sglr", ["-p", tbl | args ])
-
-  xtc-transform-always(c, f| tool, args) =
-    ?FILE(f)
-    ; where(<xtc-new-file> f => g)
-    ; <conc> (args, ["-i", f, "-o", g])
-    ; if xtc-command-silent(|tool) then <c> FILE(g) else <f> FILE(g) end
-
-  xtc-transform-always(c, f | tool, args) =
-    ?stdin()
-    ; where(xtc-new-file => g)
-    ; <conc> (args, ["-o", g])
-    ; if xtc-command-silent(|tool) then <c> FILE(g) else <f> FILE(g) end
-
-  xtc-command-silent(|tool) =
-    where(<xtc-find-warning> tool => loc)
-    ; log(|Debug(),<concat-strings>["Invoking tool ", tool," at location ",loc," with arguments: "],<id>)
-    ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
-
-  /**
-   * Reports an sglri error summary to the stderr.
-   * Always fails.   
-   *
-   * @type  summary -> _
-   */
-  report-sglri-error-summary(|input) =
-    finally(
-      read-from
-      ; ?summary
-      ; <report-error-summary(|summary)> input
-    , fail
-    )

@@ -142,6 +142,10 @@ strategies
 
 strategies
 
+  set-heuristic-filters(s) =
+    set-filter-eagerness(s)
+    ; set-filter-injection-count(s) 
+
   /**
    * @type Filter -> Filter
   set-filter(s) = id

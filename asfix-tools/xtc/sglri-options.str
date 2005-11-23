@@ -1,127 +1,77 @@
 module sglri-options
 signature
   constructors
-    CustomSglrOptions    : ConfigKey
-    CustomImplodeOptions : ConfigKey
     ParseTable           : ConfigKey
     StartSymbol          : ConfigKey
 
 strategies
 
   /**
-   * Disable heuristic filters by default.
+   * Parse table
    */
-  init-sglr-options =
-    where(
-      <set-config> (CustomSglrOptions(), ["-fi", "-fe"])
-    )
-
-/**
- * Verbosity
- */
-strategies
-
-  pass-sglr-verbose =
-    ![]; if-verbose3(!["-v"])
-
-/**
- * Parse table
- */
-strategies
-
   sglr-parse-table-option =
     ArgOption("-p"
     , where(<set-config> (ParseTable(), <id>))
     , !"-p <file.tbl>         Use parse table <file.tbl> (required)"
     )
 
-  get-sglr-parse-table =
-    <get-config> ParseTable()
-
-/**
- * Start symbol
- */
-strategies
-
-  pass-sglr-start-symbol =
-    !["-s", <get-config> StartSymbol()] <+ ![]
-
+  /**
+   * Start symbol
+   */
   sglr-start-symbol-option =
     ArgOption("-s" + "--start"
     , where(<set-config> (StartSymbol(), <id>))
     , !"-s, --start <symbol>  Start parsing with <symbol>"
     )
 
-/**
- * Filters
- */
-strategies
+  /**
+   * Ambiguities configuration
+   */
+  sglr-amb-option =
+      ArgOption("-a" + "--amb"
+      , switch id
+          case "off" : set-ambiguity-is-error(true)
+          case "on"  : set-ambiguity-is-error(false)
+          otherwise  : fatal-err(|"Invalid value for option --amb: use on or off")
+        end
+      , !"-a, --amb <on|off>    Enable ambiguities (default: on)"
+      )
+   <+ Option("-A"
+      , set-ambiguity-is-error(true)
+      , !"-A                    Treat ambiguities as errors (alias of --amb off)"
+      )
 
+  /**
+   * Filters
+   */
   sglr-filter-option =
       ArgOption("--heuristic-filters"
       , switch id
-          case "off" : disable-heuristic-filters
-          case "on"  : enable-heuristic-filters
+          case "off" : set-heuristic-filters(false)
+          case "on"  : set-heuristic-filters(true)
           otherwise  : fatal-err(|"Invalid value for option --heurstic-filters: use on or off")
         end
       , !"--heuristic-filters <on|off>  Enable heuristic disambiguation filters (default: off)"
       )
-
     + Option("--no-heuristic-filters"
-      , disable-heuristic-filters
+      , set-heuristic-filters(false)
       , !"--no-heuristic-filters        Disable heuristic disambiguation filters (deprecated option)"
       )
 
-  enable-heuristic-filters =
-    apply-to-custom-sglr-options(
-      remove-all("-fi" + "-fe")
-    )
-
-  disable-heuristic-filters =
-    apply-to-custom-sglr-options(    
-      if not(fetch(?"-fi")) then
-        !["-fi" | <id>]
-      end
-    ; if not(fetch(?"-fe")) then
-        !["-fe" | <id>]
-      end
-    )
-
-  remove-all(s) =
-    filter(not(s))
-
-/**
- * Custom options.
- */
-strategies
-
-  pass-custom-sglr-options =
-    <get-config> CustomSglrOptions() <+ ![]
-
+  /**
+   * Custom sglr options.
+   */
   custom-sglr-option =
-    ArgOption("--sglr"
-    , where(<extend-config> (CustomSglrOptions(), [<id>]))
-    , !"--sglr <opt>     Pass <opt> to sglr"
+    Option("--sglr"
+    , obsolete(!"sglri: --sglr option")
+    , !"--sglr <opt>     Pass <opt> to sglr (obsolete: ignored)"
     )
 
-  apply-to-custom-sglr-options(s) = 
-    where(
-      <get-config> CustomSglrOptions()
-    ; s
-    ; <set-config> (CustomSglrOptions(), <id>)
-    )
-
-/**
- * Custom implode-asfix options
- */
-strategies
-
-  pass-custom-implode-options =
-    <get-config> CustomImplodeOptions() <+ ![]
-
+  /**
+   * Custom implode-asfix options
+   */
   custom-implode-option =
     Option("--impl"
     , obsolete(!"sglri: --impl option")
     , !"--impl <opt>     Pass <opt> to implode-asfix (obsolete: ignored)"
     )
-

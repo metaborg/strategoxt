@@ -33,13 +33,15 @@ static char* read_text_from_stream(FILE* stream);
  * We have to use the language mechanism, since SGLR cannot be used
  * without the sglr-interface: SGLR uses hard references to SG_etChar 
  */
-static void STRSGLR_ensure_init(void)
+void STRSGLR_ensure_init(void)
 {
   ATerm foo;
 
   static ATbool STRSGLR_init = ATfalse;
   if(STRSGLR_init)
     return;
+
+  STRSGLR_init = ATtrue;
 
   PT_initMEPTApi();
   PT_initAsFix2Api();
@@ -52,12 +54,12 @@ static void STRSGLR_ensure_init(void)
   none_term = (ATerm) ATmakeAppl(ATmakeAFun("None", 0, ATfalse));
   ATprotect(&none_term);
   ATprotect(&parse_error_term);
-
-  STRSGLR_init = ATtrue;
 }
 
 ATerm STRSGLR_set_default_config(void)
 {
+  STRSGLR_ensure_init();
+
   STRSGLR_set_default_filters();
   SG_CYCLE_ON();
   SG_ASFIX2_ON();
