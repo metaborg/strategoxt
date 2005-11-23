@@ -236,7 +236,7 @@ strategies
 
   report-failure =
       report-run-time
-    ; <printnl> (stderr, [<whoami> (), ": rewriting failed"])
+    ; <fprintnl> (stderr, [<whoami> (), ": rewriting failed"])
     ; <exit> 1
 
   /**
@@ -245,7 +245,7 @@ strategies
    */
   report-run-time = 
     if <geq>(<get-config> "--statistics", 1) then
-      <printnl> (stderr,
+      <fprintnl> (stderr,
         [<whoami> (), " (", <run-time>, " secs)"]
       )
     end

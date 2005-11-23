@@ -482,39 +482,3 @@ strategies
     ; explode-string
     ; try(at-suffix-rev(?['/' | name]); !name)
     ; implode-string
-
-/**
- * Old file administration
- */
-strategies
-
-  /**
-   * @obsolete use streams and fclose
-   */
-  close-file = 
-    ?name
-    ; obsolete(!"close-file; use streams and fclose")
-    ; prim("SSL_close_file", name)
-
-  /**
-   * @obsolete use fopen and streams
-   */
-  open-file =
-    ?(name, mode)
-    ; obsolete(!"open-file; use fopen and streams")
-    ; prim("SSL_open_file", name, mode)
-
-  /**
-   * @obsolete use <open-file> (file, mode)
-   */
-  open-file =
-    ?name; not(?(_, _))
-    ; obsolete(!"<open-file> file; use <open-file> (file, mode)")
-    ; <open-file> (name, "w")
-
-  /**
-   * @obsolote use fopen in append mode and streams
-   */
-  append-file =
-    obsolete(!"append-file; use fopen in append mode and streams")
-    ; <open-file> (<id>, "a")    

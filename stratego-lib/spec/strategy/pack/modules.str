@@ -27,6 +27,7 @@ imports
   lang/dynamic-rules
   util/config/common
   util/config/verbose
+
 strategies
 
   pack-options =
@@ -61,7 +62,6 @@ strategies
   create-dep-file(dep-base) :
     (outfile, files) -> (outfile, files)
     where <dep-base> outfile => out  
-	; <open-file> (<add-extension> (out, "dep"), "w") => dep
-	; <printnl> (dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
-	; <close-file> dep
-
+	; <fopen> (<add-extension> (out, "dep"), "w") => dep
+	; <fprintnl> (dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
+	; <fclose> dep

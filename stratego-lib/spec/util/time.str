@@ -235,7 +235,7 @@ strategies
     ; s
     ; where(
         <diff-times
-         ; <print> (stderr, [<msg>
+         ; <fprint> (stderr, [<msg>
                              , " user ", <self-children-user-time; ticks-to-seconds>
                              , " system ", <self-children-sys-time; ticks-to-seconds>
 			     , "\n"])> (<times>, start)

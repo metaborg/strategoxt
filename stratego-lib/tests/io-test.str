@@ -6,6 +6,7 @@ strategies
     test-suite(!"io-test",
       char-io-tests
       ; aterm-io-tests
+      ; fprint-tests
     )
 
   char-io-tests =
@@ -68,7 +69,37 @@ strategies
       , !None()
       , !None()
       )
-
+      
+  fprint-tests = id
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (stderr(), <id>); !()
+      , !["Hey"]
+      , !()
+      )
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (<stderr-stream> (), <id>); !()
+      , !["Hey", "He", "Hallo"]
+      , !()
+      )
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (stderr(), <id>); !()
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      , !()
+      )
+    ; apply-test(!"Debug"
+      , debug
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      )
+    ; apply-test(!"Debug with argument"
+      , debug(!"Hey")
+      , !["He", "Hallo", 1, 2, 3]
+      , !["He", "Hallo", 1, 2, 3]
+      )
+      
+      
+      
+      
   test-write-read-term =
       ?t
     ; <WriteToTextFile> ("test.aterm", t)
@@ -82,4 +113,3 @@ strategies
     ; <ReadFromFile> "test.aterm" => t
     ; <remove-file> "test.aterm"
     ; !t
-

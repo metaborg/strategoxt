@@ -2,7 +2,6 @@ includedir = $(prefix)/include/stratego-lib
 
 include_HEADERS = \
 	collection-hash-table-common.h  \
-	file-table.h \
 	stratego-lib.h \
 	system-io-dir.h \
 	system-io-term.h \
@@ -12,8 +11,6 @@ include_HEADERS = \
 	term-string.h \
 	collection-set-indexed.h \
 	stratego-lib-common.h  \
-	system-io-char.h \
-	system-io-file.h \
 	system-posix-error.h \
 	system-posix-process.h \
 	term-integer.h \
@@ -36,7 +33,6 @@ libstratego_lib_native_la_LDFLAGS = -avoid-version -no-undefined
 LIB_SOURCES = \
 	$(include_HEADERS) \
 	collection-hash-table-common.c \
-	file-table.c \
 	system-io-dir.c \
 	system-io-term.c \
 	system-posix-file.c \
@@ -45,8 +41,6 @@ LIB_SOURCES = \
 	term-string.c \
 	collection-set-indexed.c \
 	stratego-lib-common.c  \
-	system-io-char.c \
-	system-io-file.c \
 	system-posix-error.c \
 	system-posix-process.c \
 	term-integer.c \

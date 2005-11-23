@@ -126,7 +126,8 @@ strategies
    * @type Stream * [a] -> Stream
    */
   fprint =
-      ?(stream, <id>)
+    (?Stream(_) <+ stdio-stream, id)
+    ; ?(stream, <id>)
     ; map(
         where(
           is-string
@@ -142,37 +143,31 @@ strategies
    * @type Stream * [a] -> Stream
    */
   fprintnl =
-    fprint; <fputc> ('\n', <id>)
+    fprint; <fputc> ('\n', <?Stream(_) <+ stdio-stream>)
 
  /**
   * Prints terms to a file. If \verb|ti| is a string it is printed without 
   * quotes, otherwise it is printed as a term. \verb|printnl| has the same
   * behaviour, but also prints a newline after \verb|tn|.
   *
-  * Before printing to a file the file should be opened using
-  * <open-file>filename , which truncates the file, or creates
-  * it if it doesn't exist.  To append to a file, open the file
-  * with <append-file>filename .  The file is created if it
-  * doesn't exist.
-  * 
   * E.g. <print> (file, [t1,...,tn]) prints terms ti to file. Terms ti 
   * that are strings are printed without quotes  
+  *
+  * @obsolete use fprint
   */
-  print = 
-    ?(name, strs); where(prim("SSL_print", name, strs))
+  print =
+    ?(stream, strs)
+    ; obsolete(!"print: use fprint")
+    ; fprint
 
  /**
   * Same as print, but prints a newline at the end. 
   *
-  * E.g. <printnl> (file, [t1,...,tn])
+  * @obsolete use fprintnl
   */
-  printnl = 
-    ?(name, strs); where(prim("SSL_printnl", name, strs))
-
-strategies
-
-  print-strings-nl(out) =
-    where(<printnl> (<out>, <id>))
+  printnl =
+    ?(stream, strs)
+    ; obsolete(!"printnl: use fprintnl")
 
 strategies
 
@@ -183,7 +178,7 @@ strategies
    * @type  a -> a
    */
   debug = 
-    where(<printnl> (stderr, [<id>]))
+    where(<fprintnl> (stderr, [<id>]))
 
   /**
    * Prints the term produced by applying msg followed by the current term to stderr.
@@ -191,7 +186,7 @@ strategies
    * @type  a -> a
    */
   debug(msg) = 
-    where(<printnl> (stderr, [<msg>,<id>]))
+    where(<fprintnl> (stderr, [<msg>,<id>]))
 
 strategies
     
@@ -222,15 +217,15 @@ strategies
     debug(msg); (s; debug(!"succeeded: ") <+ debug(!"failed: "))
 
   /**
-   * Prints a list of terms to stderr using printnl.
+   * Prints a list of terms to stderr using fprintnl.
    *
    * @type List(a) -> List(a)
    */
   error = 
-    where(<printnl> (stderr, <id>))
+    where(<fprintnl> (stderr(), <id>))
 
   /**
-   * Prints a list of terms to stderr using printnl and exits with code 1.
+   * Prints a list of terms to stderr using fprintnl and exits with code 1.
    *
    * @type List(a) -> List(a)
    */
@@ -272,13 +267,10 @@ strategies
 strategies
 
   echo = 
-    where(<printnl> (stdout, <is-list <+ ![<id>]>))
+    where(<fprintnl> (stdout(), <is-list <+ ![<id>]>))
 
   echo(msg) = 
-    where(<printnl> (stdout, [<msg>,<id>]))
-
-  printchar = 
-    where(<printascii> (stdout, [<id>]))
+    where(<fprintnl> (stdout(), [<msg>,<id>]))
 
   printstring = 
-    where(<print> (stdout, [<id>]))
+    where(<fprint> (stdout(), [<id>]))

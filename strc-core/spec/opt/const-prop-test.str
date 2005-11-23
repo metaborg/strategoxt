@@ -62,14 +62,14 @@ strategies
                        ; !(w_3, i_4)}
                     ; !d_6} |)
        ; ?c_6
-       ; prim(SSL_printnl, | stderr(), Cons("mark-match after: ", Nil()))
+       ; prim(SSL_pfrintnl, | stderr(), Cons("mark-match after: ", Nil()))
        ; !c_6
        ; save_MarkVar_0_0(|)
        ; map_1_0({x_4, y_4 :
                   ?x_4
                   ; !"  "
                   ; ?y_4
-                  ; prim(SSL_printnl, | stderr(), Cons(y_4, Cons(x_4, Nil())))
+                  ; prim(SSL_fprintnl, | stderr(), Cons(y_4, Cons(x_4, Nil())))
                   ; !x_4} |)
        ; !Match(c_6)}
 

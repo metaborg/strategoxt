@@ -2,7 +2,6 @@
 #include <srts/stratego.h>
 
 #include "stratego-lib-common.h"
-#include "file-table.h"
 
 /**
  * ATerm IO on streams
@@ -76,63 +75,3 @@ ATerm SSL_write_term_to_string(ATerm term) {
   result_term = ATmakeString(result);
   return result_term;
 }
-
-ATerm SSL_print(ATerm file, ATerm str)
-{  
-  FILE *outfile;
-
-  if(ATisInt(file))
-    outfile = (FILE *)ATgetInt((ATermInt)file);
-  else
-    outfile = _SSL_file_table_lookup(file);
-  if(outfile == NULL) 
-    _fail(file);
-  //str = consnil_to_list(str);
-  if(ATgetType(str) != AT_LIST)
-    _fail(str);
-  while(!ATisEmpty((ATermList)str))
-    {
-      if(ATisString(ATgetFirst((ATermList)str)))
-	ATfprintf(outfile, "%s", t_string(ATgetFirst((ATermList)str)));
-      else if(ATisReal(ATgetFirst((ATermList)str)))
-	ATfprintf(outfile, "%.2f", ATgetReal((ATermReal)ATgetFirst((ATermList)str)));
-      else
-	ATfprintf(outfile, "%t", ATgetFirst((ATermList)str));
-      str = (ATerm)ATgetNext((ATermList)str);
-    }
-  return(str);
-}
-
-ATerm SSL_printnl(ATerm file, ATerm str)
-{  
-  FILE *outfile;
-
-  // ATfprintf(stderr, "SSL_printnl(%t, %t)\n", file, str);
-  if(ATisInt(file))
-    outfile = (FILE *)ATgetInt((ATermInt)file);
-  else
-    outfile = _SSL_file_table_lookup(file);
-
-  if(outfile == NULL) {
-    ATfprintf(stderr, "printnl: could not open file: %t\n", file);
-    _fail(file);
-  }
-  if(!(ATgetType(str) == AT_LIST)) {
-    ATfprintf(stderr, "SSL_printnl: argument not a list: %t\n", str);
-    _fail(str);
-  }
-  while(!ATisEmpty((ATermList)str))
-    {
-      if(ATisString(ATgetFirst((ATermList)str)))
-	ATfprintf(outfile, "%s", t_string(ATgetFirst((ATermList)str)));
-      else if(ATisReal(ATgetFirst((ATermList)str)))
-	ATfprintf(outfile, "%.2f", ATgetReal((ATermReal)ATgetFirst((ATermList)str)));
-      else
-	ATfprintf(outfile, "%t", ATgetFirst((ATermList)str));
-      str = (ATerm)ATgetNext((ATermList)str);
-    }
-  ATfprintf(outfile, "\n");
-  return(str);
-}
-
-

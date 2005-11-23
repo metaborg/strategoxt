@@ -14,12 +14,12 @@ strategies
 	, BuildMatch
 	, !Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
            Seq(Match(Op("TCons",[Var("f_0"),Op("TCons",[Var("g_0"),Op("TNil",[])])])),
-               Where(PrimT("SSL_printnl",[],[Var("f_0"),Var("g_0")]))))
+               Where(PrimT("SSL_fprintnl",[],[Var("f_0"),Var("g_0")]))))
 	, !Seq(Seqs([Seq(Build(Var("b_0")),Match(Var("f_0"))),
                      Seq(Build(Op("TCons",[Var("c_0"),Op("TNil",[])])),
 			 Match(Op("TCons",[Var("g_0"),Op("TNil",[])])))]),
                Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
-                   Where(PrimT("SSL_printnl",[],[Var("f_0"),Var("g_0")]))))
+                   Where(PrimT("SSL_fprintnl",[],[Var("f_0"),Var("g_0")]))))
 
 	)
 */
@@ -29,7 +29,7 @@ strategies
 	, simplify
 	, !Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
            Seq(Match(Op("TCons",[Var("f_0"),Op("TCons",[Var("g_0"),Op("TNil",[])])])),
-               Where(PrimT("SSL_printnl", [], [Var("f_0"),Var("g_0")]))))
+               Where(PrimT("SSL_fprintnl", [], [Var("f_0"),Var("g_0")]))))
 	, ?Scope([a_0],
 	   Seq(Build(Var("b_0")),
 	   Seq(Match(Var("f_0")),
@@ -37,7 +37,7 @@ strategies
 	   Seq(Match(Var("g_0")),
 	   Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
  	   Seq(Match(Var(a_0)),
-	   Seq(PrimT("SSL_printnl", [], [Var("f_0"),Var("g_0")]),
+	   Seq(PrimT("SSL_fprintnl", [], [Var("f_0"),Var("g_0")]),
 	       Build(Var(a_0))))))))))
 	)
 
@@ -46,10 +46,10 @@ strategies
 	, simplify
 	, !Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
            Seq(Match(Op("TCons",[Var("f_0"),Op("TCons",[Var("g_0"),Op("TNil",[])])])),
-               PrimT("SSL_printnl", [],[Var("f_0"),Var("g_0")])))
+               PrimT("SSL_fprintnl", [],[Var("f_0"),Var("g_0")])))
 	, !Seq(Build(Var("b_0")),
 	   Seq(Match(Var("f_0")),
 	   Seq(Build(Var("c_0")),
 	   Seq(Match(Var("g_0")),
-	       PrimT("SSL_printnl",[],[Var("f_0"),Var("g_0")])))))
+	       PrimT("SSL_fprintnl",[],[Var("f_0"),Var("g_0")])))))
 	)

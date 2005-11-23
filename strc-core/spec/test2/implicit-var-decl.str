@@ -7,4 +7,4 @@ strategies
 	parse-options(io-options);
 	?options;
 	option-defined(?Program(prog));
-	<printnl> (stdout, [prog, "\n", options])
+	<fprintnl> (stdout, [prog, "\n", options])

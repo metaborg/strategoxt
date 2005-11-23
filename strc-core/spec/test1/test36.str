@@ -14,19 +14,14 @@ strategies
     ; !foo
 
   fclose =
-    ?Stream(o)
-    ; prim("SSL_printnl", stdout, [o])
-   <+ ?p
-      ; prim("SSL_printnl", stdout, [p])
-
+    try(?Stream(o))
 
   gclose( | foo) =
     rec x(
     { bar : 
       !foo
       ; ?bar
-      ; prim("SSL_printnl", stdout, [bar])
     }
     )
-    
 
+  try(s) = s <+ id

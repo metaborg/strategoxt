@@ -1091,9 +1091,9 @@ strategies // debugging
       debug
     ; <iset-elements; debug(!"labels: ")> labelset
     ; <hashtable-keys> tbl
-	  ; map(where(<printnl>(stderr, ["  ", <id>, " -> " ]))
+	  ; map(where(<fprintnl>(stderr, ["  ", <id>, " -> " ]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
-                  ; map(<printnl>(stderr, ["    ", <id>]))
+                  ; map(<fprintnl>(stderr, ["    ", <id>]))
                  )
          )
     )
@@ -1105,9 +1105,9 @@ strategies // debugging
     ; <iset-elements; debug(!"labels: ")> labelset
     ; <iset-elements; debug(!"removed: ")> rmset
     ; <hashtable-keys> tbl
-    ; map(where(<printnl>(stderr, ["  ", <id>, " -> "]))
+    ; map(where(<fprintnl>(stderr, ["  ", <id>, " -> "]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
-                  ; map(<printnl>(stderr, ["    ", <id>]))
+                  ; map(<fprintnl>(stderr, ["    ", <id>]))
                  )
          )
     )

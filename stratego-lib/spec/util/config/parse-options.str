@@ -117,7 +117,7 @@ strategies
         ; about
         ; <exit> 0
       <+  fetch(Undefined(?option))
-        ; <printnl> (stderr(), ["Invalid option: ", option])
+        ; <fprintnl> (stderr(), ["Invalid option: ", option])
         ; usage
         ; <exit> 1
       )

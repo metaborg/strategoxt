@@ -65,25 +65,25 @@ strategies
           ?IncludeFromPath(<id>) + ?IncludePathName(<id>)
 
      in get-module-name => module-name
-      ; <printnl> (stderr(), ["pack-sdf: error: module ", module-name, " not found"])
+      ; <fprintnl> (stderr(), ["pack-sdf: error: module ", module-name, " not found"])
       ; <bagof-ImportedFrom> module-name
       ; if [] then
           id
         else if ?[mod] then
             <get-source-pathname <+ !"unknown location"> mod
-          ; <printnl> (stderr(), ["    imported from module ", mod, 
+          ; <fprintnl> (stderr(), ["    imported from module ", mod, 
                                 "\n      in file ", <id>])
         else
-            where(<printnl> (stderr(), ["    imported from:"]))
+            where(<fprintnl> (stderr(), ["    imported from:"]))
           ; map({mod1 :
               ?mod1
             ; (get-source-pathname <+ !"at unknown location")
-            ; <printnl> (stderr(),   ["      module ", mod1, 
+            ; <fprintnl> (stderr(),   ["      module ", mod1, 
                                     "\n        in file ", <id>])
             })
           end
         end
-      ; <printnl> (stderr(),   [""])
+      ; <fprintnl> (stderr(),   [""])
     end
 
   /**

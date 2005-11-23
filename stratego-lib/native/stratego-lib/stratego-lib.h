@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <unistd.h>
 
 #include "stratego-lib-common.h"
-#include "file-table.h" 
 
 #include "term-integer.h"  
 #include "term-real.h"
@@ -38,9 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include "system-posix-file.h"     
 #include "system-posix-error.h"
 #include "system-posix-process.h"
-#include "system-io-char.h"  
 #include "system-io-dir.h"
-#include "system-io-file.h"        
 #include "system-io-term.h"
 
 #include "collection-hash-table-common.h"  

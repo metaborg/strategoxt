@@ -48,7 +48,7 @@ strategies
        ; Fst
        ; path-to-string
        )
-     ; try(not([]);<printnl>(stderr, ["Obsolete entries: ", <id>]))
+     ; try(not([]);<fprintnl>(stderr, ["Obsolete entries: ", <id>]))
 
      /**
       * Find new pp entries by calculating the set difference:
@@ -60,7 +60,7 @@ strategies
        ; Fst
        ; path-to-string
        )
-     ; try(not([]);<printnl>(stderr, ["New entries: ", <id>]))
+     ; try(not([]);<fprintnl>(stderr, ["New entries: ", <id>]))
      ;
 
      /**
@@ -88,7 +88,7 @@ strategies
      <diff>(old-elements, new-elements);
      where(map( \(key,_,_) -> key \ ) => changed-ones);
      map(\ (_,path,_) -> <path-to-string>path \ );
-     try(not([]);<printnl>(stderr, ["Changed productions: ", <id>]))
+     try(not([]);<fprintnl>(stderr, ["Changed productions: ", <id>]))
       
      // Patch and prune old pp table if required
      ; if is-patch-enabled then
