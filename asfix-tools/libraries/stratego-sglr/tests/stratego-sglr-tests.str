@@ -22,6 +22,7 @@ strategies
     ; config-tests
     ; error-reporting-tests
     ; implode-tests
+    ; implode-tests-concrete
     )
 
   open-close-tests = id
@@ -358,3 +359,83 @@ strategies
       )
     
     ; where(<close-parse-table> tbl)
+
+  implode-tests-concrete =
+      where(
+        <ReadFromFile> "Concrete.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+
+    ; apply-and-check(!"Simple quotation with asfix content."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a ?>"
+      , ?ToTerm(appl(_, _))
+      )
+
+    ; apply-and-check(!"Meta variables are imploded."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? e ?>"
+      , ?ToTerm(meta-var("e"))
+      )
+
+    ; apply-and-check(!"Simple quotation with asfix content."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<! a !>"
+      , ?ToBuild(appl(_, _))
+      )
+
+    ; apply-and-check(!"Simple quotation with asfix content."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"< a >"
+      , ?ToStrategy(appl(_, _))
+      )
+
+    ; apply-test(!"Simple quotation with anti-quotation."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? ?> () <? ?>"
+      , !ToTerm(FromTerm(Empty()))
+      )
+
+    ; apply-test(!"Simple quotation with anti-quotation."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? !> () <! ?>"
+      , !ToTerm(FromApp(Empty()))
+      )
+
+    ; apply-and-check(!"WithAnno: term is not imploded."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a { () } ?>"
+      , ?ToTerm(WithAnno(appl(_, _), _))
+      )
+
+    ; apply-and-check(!"WithAnno: annotations are imploded."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a { () } ?>"
+      , ?ToTerm(WithAnno(_, [Empty()]))
+      )
+
+    ; apply-and-check(!"WithAnno: recursive ToTerm in annotations"
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a { <? b ?> } ?>"
+      , ?ToTerm(WithAnno(_, [ToTerm(appl(_, _))]))
+      )
+
+    ; where(<close-parse-table> tbl)
+
+signature
+  constructors
+    WithAnno : A * B -> C
+    ToTerm   : A -> B
+    FromTerm : A -> B
+    FromApp  : A -> B
+    Empty    : A
+    appl     : A * B -> C

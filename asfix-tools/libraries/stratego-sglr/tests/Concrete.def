@@ -1,0 +1,31 @@
+definition
+module Main
+exports
+  context-free start-symbols Term Exp 
+  sorts  Exp Term
+
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+
+  context-free syntax
+    "a"          -> Exp
+    "b"          -> Exp
+    Exp "or" Exp -> Exp {cons("Or")}
+
+  context-free syntax
+    "()" -> Term {cons("Empty")}
+
+    "<?" Exp "?>" -> Term {cons("ToTerm")}
+    "<!" Exp "!>" -> Term {cons("ToBuild")}
+    "<"  Exp ">"  -> Term {cons("ToStrategy")}
+
+    "?>" Term "<?" -> Exp {cons("FromTerm")}
+    "!>" Term "<!" -> Exp {cons("FromApp")}
+
+    Exp "{" Term* "}" -> Exp {cons("WithAnno")}
+
+  variables
+    "e" [0-9\']* -> Exp {prefer}
