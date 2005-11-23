@@ -27,17 +27,11 @@ strategies
 
   parse-and-implode =
     ?input;
-    let try-get-parse-table =
-          <get-config> ParseTable()
-          ; ReadFromFile
-          ; open-parse-table
-          <+ fatal-err(|"No parse table specified")
-
-        try-get-start-symbol =
+    let try-get-start-symbol =
           <get-config> StartSymbol() <+ !None()
 
      in where(
-          try-get-parse-table => tbl
+          try-open-parse-table => tbl
         ; try-get-start-symbol => sort
         )
       ; open-input-stream => stream
@@ -59,10 +53,23 @@ strategies
     ?stdin(); !"stdin"
 
   open-input-stream =
-    ?FILE(<id>); <fopen> (<id>, "r")
+    ?FILE(<id>)
+    ; (<fopen> (<id>, "r") <+ sglri-perror)
 
   open-input-stream =
     ?stdin(); stdin-stream
+    
+  try-open-parse-table =
+    (<get-config> ParseTable()
+       <+ log(|Critical(), "No parse table specified. Please use the -p option."); <xtc-exit> 1)
+    ; (<fopen> (<id>, "r") <+ sglri-perror) => stream
+    ; finally(read-from-stream, <fclose> stream)
+    ; open-parse-table
+    
+  sglri-perror = 
+    <conc-strings; perror; fail> ("sglri: ", <id>)
+
+strategies
 
   report-parse-error =
     finally(
