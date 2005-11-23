@@ -6,7 +6,11 @@
 module parse-unit-options
 imports 
   tool-doc
-  sglri-options
+
+signature
+  constructors
+    CustomSglrOptions    : ConfigKey
+    ParseTable           : ConfigKey
 
 strategies
 
@@ -42,6 +46,75 @@ strategies
   init-parse-unit-options =
     where(<set-verbosity> 1)
     ; init-sglr-options
+
+  init-sglr-options =
+    where(
+      <set-config> (CustomSglrOptions(), ["-fi", "-fe"])
+    )
+
+strategies
+
+  pass-custom-sglr-options =
+    <get-config> CustomSglrOptions() <+ ![]
+
+  apply-to-custom-sglr-options(s) = 
+    where(
+      <get-config> CustomSglrOptions()
+    ; s
+    ; <set-config> (CustomSglrOptions(), <id>)
+    )
+
+/**
+ * Parse table
+ */
+strategies
+
+  sglr-parse-table-option =
+    ArgOption("-p"
+    , where(<set-config> (ParseTable(), <id>))
+    , !"-p <file.tbl>         Use parse table <file.tbl> (required)"
+    )
+
+  get-sglr-parse-table =
+    <get-config> ParseTable()
+
+/**
+ * Filters
+ */
+strategies
+
+  sglr-filter-option =
+      ArgOption("--heuristic-filters"
+      , switch id
+          case "off" : disable-heuristic-filters
+          case "on"  : enable-heuristic-filters
+          otherwise  : fatal-err(|"Invalid value for option --heurstic-filters: use on or off")
+        end
+      , !"--heuristic-filters <on|off>  Enable heuristic disambiguation filters (default: off)"
+      )
+
+    + Option("--no-heuristic-filters"
+      , disable-heuristic-filters
+      , !"--no-heuristic-filters        Disable heuristic disambiguation filters (deprecated option)"
+      )
+
+  enable-heuristic-filters =
+    apply-to-custom-sglr-options(
+      remove-all("-fi" + "-fe")
+    )
+
+  disable-heuristic-filters =
+    apply-to-custom-sglr-options(    
+      if not(fetch(?"-fi")) then
+        !["-fi" | <id>]
+      end
+    ; if not(fetch(?"-fe")) then
+        !["-fe" | <id>]
+      end
+    )
+
+  remove-all(s) =
+    filter(not(s))
 
 strategies
 

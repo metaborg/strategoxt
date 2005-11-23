@@ -9,7 +9,6 @@ bin_PROGRAMS     = parse-unit
 SCFLAGS        = --main main-$* 
 STRINCLUDES    = -I $(XTC)/share/xtc \
                  -I $(ATERM_FRONT)/share/aterm-front \
-                 -I $(top_srcdir)/../asfix-tools/src/implode \
                  -I sig
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
