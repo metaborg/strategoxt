@@ -45,7 +45,7 @@ strategies
             parse-stream-pt(|tbl, sort, <path-of-input> input)
           , <fclose> stream
             ; <close-parse-table> tbl
-          ) <+ report-parse-error
+          ) <+ <report-parse-error> input
         )
       ; implode-asfix-using-config
     end
