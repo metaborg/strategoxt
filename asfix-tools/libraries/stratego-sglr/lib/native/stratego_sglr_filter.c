@@ -10,6 +10,7 @@ ATerm STRSGLR_set_default_filters(void)
 {
   STRSGLR_ensure_init();
 
+  SG_FILTER_ON();
   SG_FILTER_ASSOCIATIVITY_ON();
   SG_FILTER_DIRECTEAGERNESS_ON();
   SG_FILTER_PRIORITY_ON();
