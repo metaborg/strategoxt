@@ -19,7 +19,7 @@ sglrlib = \
   $(wildcard stratego/sdf/*.str) \
   $(wildcard stratego/sglr/*.str)
 
-EXTRA_DIST = $(sglrlib) $(wildcard native/*.h) $(wildcard native/*.c)
+EXTRA_DIST = $(sglrlib) $(wildcard native/*.h) $(wildcard native/*.c) libstratego-sglr.rtree
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
 
 libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native
