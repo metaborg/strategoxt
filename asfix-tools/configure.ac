@@ -21,6 +21,7 @@ AC_CONFIG_FILES([
   lib/Makefile
   xtc/Makefile
   test/Makefile
+  test/implode-asfix/Makefile
 
   libraries/Makefile
   libraries/stratego-sglr/Makefile

@@ -53,7 +53,7 @@ testsetclean:
 	(\
 	   echo 'set -e' ;\
 	   echo '${MAKE} tests.tbl $*.in' ;\
-	   echo '../implode-asfix $($(subst -,_,$*)_flags) -i $(srcdir)/$*.in -o $*.tested' ;\
+	   echo '$(top_builddir)/xtc/implode-asfix $($(subst -,_,$*)_flags) -i $(srcdir)/$*.in -o $*.tested' ;\
 	   echo 'diff $*.tested $(srcdir)/$*.out' ;\
 	) > $@ && chmod +x $@
 
