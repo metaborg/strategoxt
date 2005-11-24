@@ -22,6 +22,7 @@ strategies
     ; config-tests
     ; error-reporting-tests
     ; implode-tests
+    ; implode-tests-custom
     ; implode-tests-concrete
     )
 
@@ -360,6 +361,88 @@ strategies
     
     ; where(<close-parse-table> tbl)
 
+  implode-tests-custom =
+      where(
+        <ReadFromFile> "CustomImplode.tbl"; open-parse-table => tbl
+      )
+
+    ; apply-test(!"Custom implode 1"
+      , parse-string-pt(|tbl, "Iter")
+        ; custom-implode-1
+      , !"a b"
+      , !Iter(["a","b"])
+      )
+
+    ; apply-test(!"Custom implode 2"
+      , parse-string-pt(|tbl, "Iter-sep")
+        ; custom-implode-1
+      , !"a,b,c"
+      , !Iter-sep(["a",lit(","),"b",lit(","),"c"])
+      )
+
+    ; apply-test(!"Custom implode 3"
+      , parse-string-pt(|tbl, "Iter-star")
+        ; custom-implode-1
+      , !"a b c"
+      , !Iter-star(["a","b","c"])
+      )
+
+    ; apply-test(!"Custom implode 4"
+      , parse-string-pt(|tbl, "Iter-star-sep")
+        ; custom-implode-1
+      , !"a,b,c" 
+      , !Iter-star-sep(["a",lit(","),"b",lit(","),"c"])
+      )
+
+    ; apply-test(!"Custom implode 5"
+      , parse-string-pt(|tbl, "Nesting-iter-sep1")
+        ; custom-implode-1
+      , !"a b c; d e f; g h i"
+      , !Nesting-iter-sep1([["a","b","c"],lit(";"),["d","e","f"],lit(";"),["g","h","i"]])
+      )
+
+    ; apply-test(!"Custom implode 6"
+      , parse-string-pt(|tbl, "Nesting-iter-sep2")
+        ; custom-implode-1
+      , !"a A b B C D e E F g"
+      , !Nesting-iter-sep2([["a"],["A"],["b"],["B","C","D"],["e"],["E","F"],["g"]])
+      )
+
+    ; apply-test(!"Custom implode 7"
+      , parse-string-pt(|tbl, "Nesting-iter-star-sep")
+        ; custom-implode-1
+      , !"a b c; d e f; g h i"
+      , !Nesting-iter-star-sep([["a","b","c"],lit(";"),["d","e","f"],lit(";"),["g","h","i"]])
+      )
+
+    ; apply-test(!"Custom implode 8"
+      , parse-string-pt(|tbl, "Empty-iter-star-sep")
+        ; custom-implode-1
+      , !""
+      , !Empty-iter-star-sep([])
+      )
+
+    ; where(<close-parse-table> tbl)
+
+  custom-implode-1 =
+    asfix-flat-lex
+    ; asfix-remove-layout
+    ; asfix-flat-list
+    ; asfix-replace-appl
+    ; asfix-flat-injections
+    ; ?parsetree(<id>, _)
+
+  custom-implode-2 =
+    asfix-flat-lex
+    ; asfix-remove-layout
+    ; asfix-flat-list
+    ; asfix-remove-lit
+    ; asfix-replace-appl
+    ; asfix-flat-injections
+    ; asfix-flat-alt
+    ; asfix-remove-seq
+    ; ?parsetree(<id>, _)
+
   implode-tests-concrete =
       where(
         <ReadFromFile> "Concrete.tbl"; open-parse-table => tbl
@@ -459,3 +542,12 @@ signature
     FromApp  : A -> B
     Empty    : A
     appl     : A * B -> C
+
+    Iter : A -> B
+    Iter-sep : A -> B
+    Iter-star : A -> B
+    Iter-star-sep : A -> B
+    Nesting-iter-sep1 : A -> B
+    Nesting-iter-sep2 : A -> B
+    Nesting-iter-star-sep : A -> B
+    Empty-iter-star-sep : A -> B

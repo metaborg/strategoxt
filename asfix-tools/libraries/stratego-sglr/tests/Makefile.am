@@ -9,7 +9,8 @@ noinst_DATA = \
   ExpInt.tbl ExpInt.str \
   ExpIntAmb.tbl \
   ConcreteSyntax.tbl ConcreteSyntax.str \
-  Concrete.tbl
+  Concrete.tbl \
+  CustomImplode.tbl
 
 STRINCLUDES = -I ../lib
 
