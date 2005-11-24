@@ -373,6 +373,13 @@ strategies
       , ?ToTerm(appl(_, _))
       )
 
+    ; apply-and-check(!"Simple quotation with asfix content."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a or b ?>"
+      , ?ToTerm(appl(_, [appl(_, _), _, _, _, appl(_, _)]))
+      )
+
     ; apply-and-check(!"Meta variables are imploded."
       , parse-string-pt(|tbl)
         ; implode-asfix(false)
@@ -415,11 +422,24 @@ strategies
       , ?ToTerm(WithAnno(appl(_, _), _))
       )
 
+    ; apply-and-check(!"Simple quotation with anti-quotation."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a or ?> () <? ?>"
+      , ?ToTerm(appl(_, [_, _, _, _, FromTerm(Empty())]))
+      )
     ; apply-and-check(!"WithAnno: annotations are imploded."
       , parse-string-pt(|tbl)
         ; implode-asfix(false)
       , !"<? a { () } ?>"
       , ?ToTerm(WithAnno(_, [Empty()]))
+      )
+
+    ; apply-and-check(!"WithAnno: recursive ToTerm in annotations"
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<? a { <? b ?> } ?>"
+      , ?ToTerm(WithAnno(_, [ToTerm(appl(_, _))]))
       )
 
     ; apply-and-check(!"WithAnno: recursive ToTerm in annotations"
