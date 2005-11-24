@@ -332,17 +332,22 @@ strategies
        }
     ]|
     where ?_{(off1,off2)}
+	; debug(!"TranslateDef: ")
         ; <mk-int-const> off1 => off1'
         ; <mk-int-const> off2 => off2'
-        ; {| Frame, FrameOf 
+	; debug(!"off2: ")
+        ; {| Frame, FrameOf, ArgToCl
  	   : Frame => g
+	   ; debug(!"frame: ")
 	   ; rules(
                Frame   :+ _ -> f
 	       FrameOf :  f -> g
 	     )
-	   ; <mapconcat(TranslateVarDec)> [a1*,a2*] => args
+	   ; <map(debug(!"TranslateVarDec: "); TranslateVarDec; debug(!": "))> [a1*,a2*] => args
+	   ; debug(!"args: ")
 	   ; <newname> "fail" => F
 	   ; <translate-strat(|Next, F)>s => stm
+	   ; debug(!"body: ")
            |}
 
   make-static :
@@ -370,6 +375,7 @@ strategies
 
   TranslateVarDec :
     VarDec(x, FunType(ts,_)) -> param-dec|[ StrCL x ]|
+    where rules( ArgToCl : |[ x(|) ]| -> exp|[ x ]| )
 
 /* @todo
 
@@ -460,14 +466,17 @@ rules
         ~stm:stm
       }
     ]|
-    where <map(Translate)> defs 
-	; <map(MkClosure)> defs => closures
-	; <translate-strat(|S,F)> s => stm
+    where <map(Translate)> defs
+        ; {| ArgToCl
+	   : <map(MkClosure)> defs => closures
+	   ; <translate-strat(|S,F)> s => stm
+           |}
 
   MkClosure :
     Def|[ f(a1*|a2*) = s ]| ->
-    dec|[ struct str_closure ~id:x = {&~id:f, &frame}; ]|
+    dec|[ struct str_closure ~id:x = {&~id:f, &sl}; ]|
     where <conc-strings>(f, "_cl") => x
+	; rules( ArgToCl : |[ f(|) ]| -> exp|[ &x ]| )
 
 /**
  * Strategy calls
@@ -484,7 +493,7 @@ rules
       }
     ]|
     where debug(!"call a: ")
-	; <map(\ CallT(SVar(x),[],[]) -> Id(<conc-strings>(x, "_cl")) \ )> s* => args1
+	; <map(ArgToCl)> s* => args1
         ; debug(!"call b: ")
 	; <map(topdown(try(construct-term)))> t* => args2
         ; debug(!"call c: ")
