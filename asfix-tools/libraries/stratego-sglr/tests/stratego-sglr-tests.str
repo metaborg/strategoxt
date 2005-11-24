@@ -422,6 +422,41 @@ strategies
       , !Empty-iter-star-sep([])
       )
 
+    ; apply-test(!"Custom implode 9"
+      , parse-string-pt(|tbl, "Alt1a")
+        ; custom-implode-2
+      , !"A"
+      , !Alt1a(alt(2,["A"]))
+      )
+
+    ; apply-test(!"Custom implode 10"
+      , parse-string-pt(|tbl, "Alt2a")
+        ; custom-implode-2
+      , !"f a a A"
+      , !Alt2a("a",alt(1,[("a","A")]))
+      )
+
+    ; apply-test(!"Custom implode 11"
+      , parse-string-pt(|tbl, "Alt3a")
+        ; custom-implode-2
+      , !"noot"
+      , !"noot"
+      )
+
+    ; apply-test(!"Custom implode 12"
+      , parse-string-pt(|tbl, "Alt4a")
+        ; custom-implode-2
+      , !"A"
+      , !Alt4a("A")
+      )
+
+    ; apply-test(!"Custom implode 13"
+      , parse-string-pt(|tbl, "Var1")
+        ; custom-implode-2
+      , !"aap"
+      , !Var1("aap")
+      )
+
     ; where(<close-parse-table> tbl)
 
   custom-implode-1 =
@@ -551,3 +586,8 @@ signature
     Nesting-iter-sep2 : A -> B
     Nesting-iter-star-sep : A -> B
     Empty-iter-star-sep : A -> B
+
+    Alt1a : A -> B
+    Alt2a : A * B -> C
+    Alt4a : A -> B
+    Var1  : A -> B
