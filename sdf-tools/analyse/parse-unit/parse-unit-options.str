@@ -149,5 +149,5 @@ strategies
     <conc-strings> (<get-relative-prefix> "-i", <id>)
 
   get-relative-prefix =
-       get-config; get-path
-    <+ <conc-strings> (<getcwd>, "/")
+    (get-config; dirname <+ getcwd)
+    ; <conc-strings> (<id>, "/")
