@@ -34,7 +34,7 @@ libstratego_sglr_la_LIBADD   = \
   $(SGLR_LIBS) \
   $(ATERM_LIBS)
 
-libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
-	@$(STRC)/bin/strc -c --library -i $< -o libstratego-sglr.rtree \
+libstratego-sglr.rtree libstratego-sglr.c :
+	@$(STRC)/bin/strc -c --library -i stratego-sglr.str -o libstratego-sglr.rtree \
           --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1
 	rm libstratego-sglr.str
