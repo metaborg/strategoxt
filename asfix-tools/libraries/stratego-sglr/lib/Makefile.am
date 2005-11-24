@@ -29,7 +29,7 @@ libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_
 libstratego_sglr_la_CFLAGS   = -Wall
 libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined
 libstratego_sglr_la_LIBADD   = \
-  $(STRATEGO_LIB)/lib/libstratego-lib.la \
+  $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
   $(SGLR_LIBS) \
   $(ATERM_LIBS)
