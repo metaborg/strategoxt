@@ -10,10 +10,7 @@ strategies
     test-suite(!"file-test",
       dirname-tests
     ; file-props-tests
-    ; basename-tests
     ; base-filename-tests
-    ; get-path-tests
-    ; get-filename-tests
     ; getcwd-tests
     ; abspath-tests
     ; is-abspath-tests
@@ -53,40 +50,11 @@ strategies
       apply-and-fail(!"create? -- 1", can-create-file, !"/root/bla.txt")
     ; apply-test(!"create? -- 2", can-create-file, !"/tmp/bla.txt", !"/tmp/bla.txt")
 
-  basename-tests = 
-    apply-test(!"basename-test 1", basename, !"./number.r", !"./number")
-  ; apply-test(!"basename-test 2", basename, !"./number",   !"./number")
-  ; apply-test(!"basename-test 3", basename, !"/usr/bin/number.str", !"/usr/bin/number")
-
   base-filename-tests = 
     apply-test(!"base-filename-test 1", base-filename, !"./number.r", !"number.r")
   ; apply-test(!"base-filename-test 2", base-filename, !"./number",   !"number")
   ; apply-test(!"base-filename-test 3", base-filename, !"/usr/bin/number.str", !"number.str")
 
-  get-path-tests =
-    apply-test(!"get-path-test1"
-    , get-path
-    , !"/usr/local/bin/prog"
-    , !"/usr/local/bin/"
-    )
-  ; apply-test(!"get-path-test2"
-    , get-path
-    , !"prog"
-    , !""
-    )
-
-  get-filename-tests =
-    apply-test(!"get-filename-test1"
-    , get-filename
-    , !"/usr/local/bin/prog"
-    , !"prog"
-    )
-  ; apply-test(!"get-filename-test2"
-    , get-filename
-    , !"prog"
-    , !"prog"
-    )
-    
   file-extension-tests =
     apply-test(!"remove-extension 1", remove-extension, !"foo.str", !"foo")
   ; apply-test(!"remove-extension 2", remove-extension, !"foo", !"foo")
@@ -138,20 +106,6 @@ strategies
   ; apply-and-fail(!"has-extension 4", has-extension(|"str"), !"foo")
   ; apply-and-fail(!"has-extension 5", has-extension(|""), !"foo")
   ; apply-and-fail(!"has-extension 6", has-extension(|"str"), !"foo.str.rtree")
-  
-  ; apply-test(!"obsolete-has-extension 1", has-extension(!".str"), !"foo.str")
-  ; apply-test(!"obsolete-has-extension 2", has-extension(!".str"), !"foo.fred.str")  
-  ; apply-and-fail(!"obsolete-has-extension 3", has-extension(!".str"), !"foo.rtee")  
-  ; apply-and-fail(!"obsolete-has-extension 4", has-extension(!".str"), !"foo")
-  ; apply-and-fail(!"obsolete-has-extension 5", has-extension(!""), !"foo")
-  ; apply-and-fail(!"obsolete-has-extension 6", has-extension(!".str"), !"foo.str.rtree")
-  ; apply-test(!"obsolete-has-extension 7", has-extension(!"str"), !"foo.str")
-  ; apply-test(!"obsolete-has-extension 8", has-extension(!"str"), !"foo.fred.str")  
-  ; apply-and-fail(!"obsolete-has-extension 9", has-extension(!"str"), !"foo.rtee")  
-  ; apply-and-fail(!"obsolete-has-extension 10", has-extension(!"str"), !"foo")
-  ; apply-and-fail(!"obsolete-has-extension 11", has-extension(!""), !"foo")
-  ; apply-and-fail(!"obsolete-has-extension 12", has-extension(!"str"), !"foo.str.rtree")
-  
   
   ; apply-test(!"get-extension 1", get-extension, !"foo.str", !"str")
   ; apply-test(!"get-extension 2", get-extension, !"foo.fred.str", !"str")

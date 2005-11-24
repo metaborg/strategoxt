@@ -491,19 +491,6 @@ strategies
     )
 
   /**
-   * Checks if a string is quoted with the given character.
-   *
-   * @type (Char, String) -> (Char, String)
-   * @obsolete use is-quoted(|c)
-   */
-  is-quoted =
-    obsolete(!"<is-quoted> (c, s); use is-quoted(|c)")
-    ; where(
-        ?(c, <id>)
-        ; is-quoted(|c)
-      )
-
-  /**
    * Succeeds if a list of characters are quoted with the
    * character given by the term argument. That is, if the
    * first and last character of the list are both equal
@@ -514,17 +501,6 @@ strategies
    */
   is-quoted-chars(|c) =
     where(?[c | <last>]; ?c)
-
-  /**
-   * @type (Char, List(Char)) -> (Char, List(Char))
-   * @obsolete use is-quoted-chars(|c)
-   */
-  is-quoted-chars =
-    obsolete(!"<is-quoted-chars> (c, s); use is-quoted-chars(|c)")
-    ; where(
-        ?(c, <id>)
-      ; is-quoted-chars(|c)
-      )
 
 strategies
 

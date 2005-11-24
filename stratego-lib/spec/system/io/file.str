@@ -380,67 +380,6 @@ strategies
 strategies
 
   /**
-   * Strip extension from a pathname.
-   *
-   * @obsolete use remove-extension
-   *
-   * @warning  basename is not comparable to the basename of sh. 
-   *           sh's basename strips the direcrory an optionally the suffix.
-   *
-   * @type     String -> String
-   * @inc      basename-test
-   */
-  basename =
-    obsolete(!"basename; use remove-extension")
-    ; basename(id)
-
-  /**
-   * Strip extension from a pathname.
-   *
-   * @obsolete use test-extension(s); remove-extension   
-   *
-   * @warning basename is not comparable to the basename of sh. 
-   *          sh's basename strips the direcrory an optionally the suffix.
-   *
-   * @param    checks the extension
-   * @type     String -> String
-   */
-  basename(ext) =
-    obsolete(!"basename(ext); use test-extension(s); remove-extension")
-    ; explode-string
-    ; try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]))
-    ; implode-string
-    
-  /**
-   * Drops the current extension and replaces it with the specified extension.
-   *
-   * @obsolete  use guarantee-extension(|t)
-   * @type      String -> String
-   */
-  guarantee-extension(ext) =
-    obsolete(!"guarantee-extension(s); use guarantee-extension(|t)")
-    ; basename
-    ; <add-extension> (<id>, <ext> ())
-    
-  /**
-   * Checks whether the argument is a string that ends in ext.
-   *
-   * @obsolete  use has-extension(|t)
-   * @param     Strategy that produces a string for the extension.
-   * @type      String -> String
-   */
-  has-extension(ext) =
-    obsolete(!"has-extension(s); use has-extension(|t), without a dot in the extension argument.")
-    ; where(
-        ext
-        ; explode-string
-        ; try(?['.' | <id>])
-        ; implode-string
-        ; ?ext-term
-      )
-    ; has-extension(|ext-term)
-
-  /**
    * Creates a fresh file in the current directory.
    *
    * @obsolete  use new-temp-file or XTC temporary files
@@ -448,37 +387,3 @@ strategies
   new-file =
     obsolete(!"new-file; use new-temp-file or XTC temporary files")
     ; rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
-
-  /**
-   * @obsolete use XTC scoped temporary files
-   * @param    (String, a) -> b
-   * @type     a -> b
-   */
-  temp-file(s) =
-      obsolete(!"new-file; use XTC scoped temporary files")
-    ; where(new-file => f)
-    ; <finally(s, try(<remove-file> f))> (f, <id>)
-  
-  /**
-   * Path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
-   *
-   * @obsolete  use dir-name
-   * @inc       get-path-test
-   */
-  get-path = 
-    obsolete(!"get-path; use dirname")
-    ; explode-string
-    ; (rec x([id|x] <+ [47|![]]) <+ ![])
-    ; implode-string
-
-  /**
-   * File name from path "/usr/local/bin/prog" -> "prog"
-   *
-   * @obsolete  use base-filename
-   * @inc       get-filename-test
-   */
-  get-filename = 
-    obsolete(!"get-filename; use base-filename")
-    ; explode-string
-    ; try(at-suffix-rev(?['/' | name]); !name)
-    ; implode-string

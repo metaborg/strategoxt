@@ -49,7 +49,7 @@ strategies
 	+ ArgOption("-CL",       !Ignore) // \ (x,y) -> CLibDir(x)\ )
 	+ Option("-CC",          !CC )
 	+ Option("--norm",        !NORM )
-	+ ArgOption("-i",        \x -> Input(<basename> x)\ )
+	+ ArgOption("-i",        \x -> Input(<remove-extension> x)\ )
 	+ ArgOption("--main",    \x -> Main(x)\ )
 	+ ArgOption("-m",        \x -> Main(x)\ ) 
 	+ Option("--ast",        !AST )
