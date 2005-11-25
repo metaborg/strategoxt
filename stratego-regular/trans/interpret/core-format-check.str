@@ -1,6 +1,5 @@
 /**
  * @todo  Support nested trees or extend normalizer to remove them.
- *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-format-check
@@ -11,19 +10,21 @@ strategies
   main-core-format-check =
     filter(not(?"-at-verbose"));
     io-wrap(core-fc-options,
-      main-format-check
-    ; where(output(id))
-    ; <get-config> "--exit-code"
-    ; exit
+        where(new-hashtable => tbl)
+      ; where(new-iset => set)
+      ; main-format-check(|tbl, set)
+      ; where(output(id))
+      ; <get-config> "--exit-code"
+      ; exit
     )
 
-  main-format-check =
+  main-format-check(|tbl, set) =
       where(
         read-rtg-nf-config => rtg@RTG(Start(starts), _)
       ; generate-type-rules
       )
-    ; format-check
-    ; format-check-report(|<get-start-nonterms(!starts)>)
+    ; format-check(|tbl, set)
+    ; format-check-report(|<get-start-nonterms(!starts)>, tbl ,set)
 
   format-check-init =
     where(
@@ -55,10 +56,11 @@ strategies
    *
    * @type  starts  List(NonTerm)
    */
-  format-check =
-      where(<set-config> ("typetable", <new-hashtable> ()))
-    ; where(<set-config> ("typeset",   <new-iset> ()))
-    ; where(<repeat(Type)> "")
+  format-check(|tbl, set) =
+    where(
+      <repeat(Type(|tbl, set))> ""
+    ; <repeat(Type(|tbl, set))> 0
+    )
 
     ; if-fast-mode(
         topdown(
@@ -67,35 +69,36 @@ strategies
         )
       )
 
-  ; bottomup-consnil(
-       where(get-types)
+    ; bottomup-consnil(
+         where(get-types(|tbl, set))
 
-    <+ type-string
+      <+ repeat1(Type(|tbl, set))
+         ; report-types(|tbl, set)
 
-    <+ repeat1(Type)
-       ; report-types
+      <+ one-consnil(not(is-typed(|tbl, set)))
 
-    <+ one-consnil(not(is-typed))
+      <+ report-type-failure(id | tbl, set)
+      )
 
-    <+ report-type-failure(id)
-    )
+  type-string(|tbl, set) =
+    is-string; type-special(|"", tbl, set)
 
-  type-string =
-    is-string
-    ; ?s
+  type-int(|tbl, set) =
+    is-int; type-special(|0, tbl, set)
+
+  type-special(|special, tbl, set) =
+    ?t
     ; where(
-        <get-types> "" => types
-      ; <get-config> "typetable"
-      ; hashtable-put(|s, types)
+        <get-types(|tbl, set)> special => types
+      ; <hashtable-put(|t, types)> tbl
       ; <map({type:
           ?type
-        ; <get-config> "typeset"
-        ; iset-add(|(s, type))
+        ; <iset-add(|(t, type))> set
         })> types
       )
 
-  is-typed =
-    where(get-types => [_ | _])
+  is-typed(|tbl, set) =
+    where(get-types(|tbl, set) => [_ | _])
 
 /**
  * Define type rules for the productions of an RTG.
@@ -120,10 +123,11 @@ strategies
   generate-type-rule =
     ?ProdRule(b, [Ref(a)])
     ; rules(
-        InjUserType :+ t -> t
-          where <has-type(|a)> t
-              ; <not(has-type(|b))> t
-              ; <set-type(|b)> t
+        InjUserType(|tbl, set) :+ t -> t
+        where
+            <has-type(|a, tbl, set)> t
+          ; <not(has-type(|b, tbl, set))> t
+          ; <set-type(|b, tbl, set)> t
       )
 
   /**
@@ -132,11 +136,12 @@ strategies
   generate-type-rule =
     ?ProdRule(c, [Appl(ConsTerm(), [Ref(a), Ref(b)])])
     ; rules(
-        ListUserType :+ t@[hd | tl] -> t
-          where <not(has-type(|c))> t
-              ; <has-type(|b)> tl
-              ; <has-type(|a)> hd
-              ; <set-type(|c)> t
+        ListUserType(|tbl, set) :+ t@[hd | tl] -> t
+        where
+            <has-type(|b, tbl, set)> tl
+          ; <not(has-type(|c, tbl, set))> t
+          ; <has-type(|a, tbl, set)> hd
+          ; <set-type(|c, tbl, set)> t
       )
 
   /**
@@ -145,10 +150,11 @@ strategies
   generate-type-rule =
     ?ProdRule(c, [Appl(ConcTerm(), [Ref(a), Ref(b)])])
     ; rules(
-        ListUserType :+ t@Conc(t1, t2) -> t
-          where <has-type(|a)> t1
-              ; <has-type(|b)> t2
-              ; <new-type(|c)> t
+        ListUserType(|tbl, set) :+ t@Conc(t1, t2) -> t
+        where
+            <has-type(|a, tbl, set)> t1
+          ; <has-type(|b, tbl, set)> t2
+          ; <new-type(|c, tbl, set)> t
       )
 
   /**
@@ -157,8 +163,9 @@ strategies
   generate-type-rule =
     ?ProdRule(a, [Appl(NilTerm(), [])])
     ; rules(
-        ListUserType :+ [] -> []
-          where <new-type(|a)> []
+        ListUserType(|tbl, set) :+ [] -> []
+        where
+          <new-type(|a, tbl, set)> []
       )
 
   /**
@@ -167,9 +174,10 @@ strategies
   generate-type-rule =
     ?ProdRule(b, [Appl(SomeTerm(), [Ref(a)])])
     ; rules(
-        OptUserType :+ Some(t) -> Some(t)
-          where <has-type(|a)> t
-              ; <new-type(|b)> Some(t)
+        OptUserType(|tbl, set) :+ Some(t) -> Some(t)
+        where
+            <has-type(|a, tbl, set)> t
+          ; <new-type(|b, tbl, set)> Some(t)
       )
 
   /**
@@ -178,8 +186,9 @@ strategies
   generate-type-rule =
     ?ProdRule(a, [Appl(NoneTerm(), [])])
     ; rules(
-        OptUserType :+ None() -> None()
-          where <new-type(|a)> None()
+        OptUserType(|tbl, set) :+ None() -> None()
+        where
+          <new-type(|a, tbl, set)> None()
       )
 
   /**
@@ -189,10 +198,11 @@ strategies
     ?ProdRule(a, [Appl(TupleTerm(_), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        TupleUserType :+ t@""#(args) -> t
-          where <not(has-type(|a))> t
-              ; <list-has-type(|arg-types)> args
-              ; <set-type(|a)> t
+        TupleUserType(|tbl, set) :+ t@""#(args) -> t
+        where
+          <not(has-type(|a, tbl, set))> t
+          ; <list-has-type(|arg-types, tbl, set)> args
+          ; <set-type(|a, tbl, set)> t
       )
 
   /**
@@ -202,25 +212,26 @@ strategies
     ?ProdRule(a, [Appl(Term(f), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        ApplUserType :+ t@f#(args) -> t
-          where <not(has-type(|a))> t
-              ; <list-has-type(|arg-types)> args
-              ; <set-type(|a)> t
+        ApplUserType(|tbl, set) :+ t@f#(args) -> t
+        where
+            <not(has-type(|a, tbl, set))> t
+          ; <list-has-type(|arg-types, tbl, set)> args
+          ; <set-type(|a, tbl, set)> t
       )
 
   /**
    * @type  List(_) -> _
    * @type  as  List(NonTerm)
    */
-  list-has-type(|as) =
+  list-has-type(|as, tbl, set) =
     if ?[] then
       !as => []
     else
       ?[hd | tl]
     ; where(
         !as => [a | bs]
-      ; <has-type(|a)> hd
-      ; <list-has-type(|bs)> tl
+      ; <has-type(|a, tbl, set)> hd
+      ; <list-has-type(|bs, tbl, set)> tl
       )
     end
 
@@ -229,21 +240,23 @@ strategies
  */
 strategies
 
-  Type =
+  Type(|tbl, set) =
     where(
-      StandardType
-    + InjUserType
-    + ApplUserType
-    + TupleUserType
-    + ListUserType
-    + OptUserType
+      StandardType(|tbl, set)
+    + InjUserType(|tbl, set)
+    + ApplUserType(|tbl, set)
+    + TupleUserType(|tbl, set)
+    + ListUserType(|tbl, set)
+    + OptUserType(|tbl, set)
     )
 
-  StandardType =
-    is-int; new-type(|Int())
+  StandardType(|tbl, set) =
+    is-int
+    ; new-type(|Int(), tbl, set)
 
-  StandardType =
-    is-string; new-type(|String())
+  StandardType(|tbl, set) =
+    is-string
+    ; new-type(|String(), tbl, set)
 
 strategies
 
@@ -252,23 +265,19 @@ strategies
    *
    * @type  t -> t
    */
-  new-type(|nt) =
+  new-type(|nt, tbl, set) =
     ?term
     ; where(
-        not(has-type(|nt))
-      ; <get-config> "typetable"
-      ; hashtable-push(|term, nt)
-      ; <get-config> "typeset"
-      ; iset-add(|(term, nt))
+        not(has-type(|nt, tbl, set))
+      ; <hashtable-push(|term, nt)> tbl
+      ; <iset-add(|(term, nt))> set
       )
 
-  set-type(|nt) =
+  set-type(|nt, tbl, set) =
     ?term
     ; where(
-        <get-config> "typetable"
-      ; hashtable-push(|term, nt)
-      ; <get-config> "typeset"
-      ; iset-add(|(term, nt))
+        <hashtable-push(|term, nt)> tbl
+      ; <iset-add(|(term, nt))> set
       )
     
   /**
@@ -276,35 +285,50 @@ strategies
    *
    * @type  t -> t
    */
-  has-type(|nt) =
+  has-type(|nt, tbl, set) =
     ?term
+    ; not(is-string + is-int)
     ; where(
-        <get-config> "typeset"
-      ; iset-contains(|(term, nt))
+        <iset-contains(|(term, nt))> set
       )
 
-  retrieve-types =
-    get-types
+  has-type(|nt, tbl, set) =
+    is-int
+    ; where(<iset-contains(|(0, nt))> set)
+
+  has-type(|nt, tbl, set) =
+    is-string
+    ; where(<iset-contains(|("", nt))> set)
+
+  retrieve-types(|tbl, set) =
+    get-types(|tbl, set)
     <+ ?t
        ; where(
-           <get-config> "typetable"
-         ; hashtable-put(|t, [])
+           <hashtable-put(|t, [])> tbl
          )
        ; ![]
 
-  get-types =
+  get-types(|tbl, set) =
     ?t
-    ; <get-config> "typetable"
-    ; hashtable-get(|t)
+    ; not(is-string + is-int)
+    ; <hashtable-get(|t)> tbl
+
+  get-types(|tbl, set) =
+    is-int
+    ; <hashtable-get(|0)> tbl
+
+  get-types(|tbl, set) =
+    is-string
+    ; <hashtable-get(|"")> tbl
 
 /**
  * Reporting
  */
 strategies
 
- format-check-report(|starts) =
+ format-check-report(|starts, tbl, set) =
     where(
-     (get-types <+ ![]) => types
+     (get-types(|tbl, set) <+ ![]) => types
     ; if !types => [] then
         !1 // already reported <fatal-error> ["error: term cannot be typed."]
       else
@@ -326,10 +350,10 @@ strategies
     ; <set-config> ("--exit-code", <id>)
     )
 
-  report-types = if-verbose2(
+  report-types(|tbl, set) = if-verbose2(
     ?term
     ; where(
-        get-types
+        get-types(|tbl, set)
       ; switch id
           case ?[] :
             !["  Cannot type ", term]
@@ -342,7 +366,7 @@ strategies
      )
    )
   
-  report-type-failure(finally) =
+  report-type-failure(finally | tbl, set) =
     ?t
     ; where(
         <fprintnl> (<stderr-stream>, ["error: cannot type ", <write-to-string>])
@@ -351,7 +375,7 @@ strategies
         <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
       ; <all-consnil(
           where(
-            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; types-to-string>])
+            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types(|tbl, set); types-to-string>])
           )
         )> t
       else id end

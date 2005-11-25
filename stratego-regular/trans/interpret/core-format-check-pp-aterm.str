@@ -17,31 +17,33 @@ strategies
 strategies
 
   format-check-pp-aterm =
-    main-format-check
-    ; pp-aterm-types
+      where(new-hashtable => tbl)
+    ; where(new-iset => set)
+    ; main-format-check(|tbl, set)
+    ; pp-aterm-types(|tbl, set)
 
 strategies
 
-  pp-aterm-types =
-      ugly-print-type
+  pp-aterm-types(|tbl, set) =
+      ugly-print-type(|tbl, set)
     ; concat-content
 
 strategies
 
-  my-ugly-print =
+  my-ugly-print(|tbl, set) =
        UP-Int
     <+ UP-Real
     <+ UP-Str
-    <+ my-UP-List(ugly-print-type)
-    <+ UP-Tuple(ugly-print-type)
+    <+ my-UP-List(ugly-print-type(|tbl, set) | tbl, set)
+    <+ UP-Tuple(ugly-print-type(|tbl, set))
     <+ UP-Cnst	
-    <+ UP-App(ugly-print-type)
+    <+ UP-App(ugly-print-type(|tbl, set))
 
-  ugly-print-type =
-    ugly-print-type(my-ugly-print)
+  ugly-print-type(|tbl, set) =
+    ugly-print-type(my-ugly-print(|tbl, set) | tbl, set)
 
-  ugly-print-type(s) =
-    if is-typed <+ one-consnil(not(is-typed)) then
+  ugly-print-type(s|tbl, set) =
+    if is-typed(|tbl, set) <+ one-consnil(not(is-typed(|tbl, set))) then
       s
     else
       s => b
@@ -50,20 +52,20 @@ strategies
       ; !|[ H hs=0 [s2 s1 b s1 s2] ]|
     end
 
-  my-UP-List(s) =
-    my-pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
+  my-UP-List(s|tbl, set) =
+    my-pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]| | tbl, set)
     
 strategies
       
-  my-pp-generic-list(s, empty, before, after) =
+  my-pp-generic-list(s, empty, before, after | tbl, set) =
       where(<gt> (<term-size>, 10))
-    < my-generic-list-worstcase(s, empty, before, after)
-    + my-generic-list-nicecase(s, empty, before, after)
+    < my-generic-list-worstcase(s, empty, before, after | tbl, set)
+    + my-generic-list-nicecase(s, empty, before, after | tbl, set)
     
   my-pp-generic-list(s, empty, before, after) :
     [] -> <empty> ()
     
-  my-generic-list-nicecase(s, empty, before, after) :
+  my-generic-list-nicecase(s, empty, before, after | tbl, set) :
     [x | xs] -> |[
       H hs=0 [
         ~<before> ()
@@ -75,10 +77,10 @@ strategies
                 ugly-print-type(
                   ?[<id> | _]
                 ; ! |[ H hs=1 [ "," ~<s> ] ]|
-                )
+                | tbl, set)
               )> xs => tail
 
-  my-generic-list-worstcase(s, empty, before, after) :
+  my-generic-list-worstcase(s, empty, before, after | tbl, set) :
     [x | xs] -> |[
       V vs=0 [
         H hs=1 [
@@ -93,7 +95,7 @@ strategies
                ugly-print-type(
                  ?[<id> | _]
                ; ! |[ H hs=1 [ "," ~<s> ] ]|
-               )
+               | tbl, set)
              )> xs => tail
 
 strategies
@@ -104,8 +106,8 @@ strategies
   code-plain =
     <conc-strings> (<implode-string> [27], "[m")
 
-  is-typed = 
-    where(get-types; iset-elements => [_ | _])
+  is-typed(|tbl, set) = 
+    where(get-types(|tbl, set); iset-elements => [_ | _])
 
 strategies
 

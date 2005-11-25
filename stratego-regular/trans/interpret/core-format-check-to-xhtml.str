@@ -19,7 +19,13 @@ strategies
 strategies
 
   format-check-to-xhtml =
-    main-format-check
+    where(new-hashtable => tbl)
+  ; where(new-iset => set)
+  ; main-format-check(|tbl, set)
+  ; where(
+      <set-config> ("typetable", tbl)
+    ; <set-config> ("typeset", set)
+    )
   ; print-to-xhtml-doc
   ; where(output(id))
   ; <get-config> "--exit-code"
@@ -102,6 +108,9 @@ strategies
     <+ print-App
     )
 
+  is-typed = 
+    is-typed(|<get-config> "typetable", <get-config> "typeset")
+
   print-type(s) =
     if is-typed <+ one-consnil(not(is-typed)) then
       where(get-types-to-chardata => type)
@@ -169,7 +178,7 @@ rules
             > [x | xs] => children
 
   get-types-to-chardata =
-    retrieve-types
+    retrieve-types(|<get-config> "typetable", <get-config> "typeset")
   ; types-to-string
   ; xml-escape
 
