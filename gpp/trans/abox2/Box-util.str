@@ -2,12 +2,16 @@ module Box-util
 
 strategies
 
-  // :: List(S-Option) -> Int
-  hs-length = SOpt-value(?HS()) <+ !1
-  vs-length = SOpt-value(?VS()) <+ !0
-  is-length = SOpt-value(?IS()) <+ !0
+  /**
+   * @type List(S-Option) -> Int
+   */
+  hs-length = SOpt-value(|HS()) <+ !1
+  vs-length = SOpt-value(|VS()) <+ !0
+  is-length = SOpt-value(|IS()) <+ !0
 
-  SOpt-value(s) = fetch(SOpt(s, ?value)); <string-to-int> value
+  SOpt-value(|opt) =
+    fetch(?SOpt(opt, value))
+    ; <string-to-int> value
 
   SOpts-of-alignment : AL(sopts) -> sopts
   SOpts-of-alignment : AR(sopts) -> sopts
@@ -31,70 +35,17 @@ strategies
     }); 
     filter( not( R(id,[]) ) )
 
-/*
-strategies
-  // Make sure that all arguments of an A box are R boxes. Put boxes
-  // into new R boxes when needed
-  map-to-r-box =
-     ?xs;
-     !( xs, [], [] );
-     rec s ({ a1, a2, x, xs, ys, zs:
-        ?( [], [], zs ); !zs
-     <+
-        ?( [], ys, zs ) ; <conc>(zs, [R([], ys)])
-     <+
-        ?( [R(a1, a2)| xs], [], zs ) ;
-         <s>(xs, [], <conc>(zs, [R(a1,a2)]) )
-     <+
-        ?( [R(a1, a2)| xs], ys, zs ) ;
-        <s>( xs, [], <conc>(zs, [R([], ys), R(a1, a2)]))
-     <+
-        ?( [x|xs], ys, zs );
-        <s>( xs, <conc>(ys, [x]), zs )
-     })
-*/
-
-  // Calculate relative string length. That is, by taking new lines and
-  // current horizontal position into account
-  //
-  // <string-length'(x)>"my_string" => 9
-  // <string-length'(x)>"my\nstring" => 6 - x
-rel-string-length:
-    (str, xpos) -> length
-      where <string-tokenize> (['\n'], str)
-          ; (
-               ?[]; !0
-            <+
-               ?[<string-length>]
-            <+ <subt> (<last; string-length>, xpos)
-            ) => length
-
-/*
-  abox2text :
-    (V(sopt, xs ), xpos) -> result
-      where <vs-text> sopt => vs
-          ; <Ispace> sopt => is
-          ; <string-length> is => isl
-          ; <concat-strings> [vs, is, <copy-char> (xpos, ' ')] => vsep
-          ; < filter(not([] + id#([id,[]+[[]]])))
-            ; ( !(<?[]>, xpos)
-              +   [ <try-abox2text> (<id>, xpos) | map( <try-abox2text> (<id>, <add> (xpos, isl)))]
-                ; at-last([?(_, xpos2)])
-                ; <separate-by> (vsep, <map(Fst)>)
-                ; !(<id>, xpos2)
-              )
-            > xs => result
-
-  // Make sure that all arguments of an A box are R boxes. Put boxes
-  // into new R boxes when needed
-  map-to-r-box =
-     ?xs;
-     !( xs, [], [] );
-     rec s ({ a1, a2, x, xs, ys, zs:
-        ?( [], [], zs ); !zs
-     <+ ?( [], ys, zs ); <conc>(zs, [R([], ys)])
-     <+ ?( [R(a1, a2) | xs], [], zs ) ; <s> (xs, [], <conc> (zs, [R(a1, a2)] ))
-     <+ ?( [R(a1, a2) | xs], ys, zs ) ; <s> (xs, [], <conc> (zs, [R([], ys), R(a1, a2)] ))
-     <+ ?( [x         | xs], ys, zs ) ; <s> (xs, <conc> (ys, [x]), zs)
-     })
-*/
+  /**
+   * Calculate relative string length. That is, by taking new lines and
+   * current horizontal position into account
+   * 
+   * <string-length'(x)>"my_string" => 9
+   * <string-length'(x)>"my\nstring" => 6 - x
+   */
+  rel-string-length(|xpos) =
+    explode-string => chars
+    ; if at-suffix(?['\n' | tail]) then
+        <subt> (<length> tail, xpos)
+      else
+        <length> chars
+      end

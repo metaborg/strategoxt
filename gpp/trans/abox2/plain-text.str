@@ -6,6 +6,13 @@ strategies
   topdown-print-to :
     strings -> FILE(name)
       where xtc-new-file => name
-          ; <fopen> (name, "w") => stream
-          ; <topdown(try(is-string; where(<fputs> (<id>, stream))))> strings
+          ; <fopen> (name, "w") => Stream(stream)
+          ; <topdown(try(is-string; where(my-fputs(|stream))))> strings
           ; <fclose> stream
+
+  /**
+   * Writes a String to a Stream
+   * @type (String, Stream) -> Stream
+   */
+  my-fputs(|stream) =
+    ?str; prim("SSL_fputs", str, stream)
