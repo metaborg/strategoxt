@@ -2,17 +2,54 @@
 #include <stdio.h>
 
 /**
+ * Initialization
+ */
+static ATerm stdin_term  = NULL;
+static ATerm stdout_term = NULL;
+static ATerm stderr_term = NULL;
+
+static void (* SSL_initialize_next)(void) = NULL;
+
+static void SSL_initialize()
+{
+  AFun fun;
+
+  fun = ATmakeAFun("stdin", 0, ATfalse);
+  stdin_term = (ATerm) ATmakeAppl(fun);
+
+  fun = ATmakeAFun("stdout", 0, ATfalse);
+  stdout_term = (ATerm) ATmakeAppl(fun);
+
+  fun = ATmakeAFun("stderr", 0, ATfalse);
+  stderr_term = (ATerm) ATmakeAppl(fun);
+
+  ATprotect(&stdin_term);
+  ATprotect(&stdout_term);
+  ATprotect(&stderr_term);
+
+  if(SSL_initialize_next != NULL)
+    SSL_initialize_next();
+}
+
+static void register_init(void) __attribute__((constructor));
+static void register_init(void)
+{
+  SSL_initialize_next  = SRTS_stratego_initialize;
+  SRTS_stratego_initialize = &SSL_initialize;
+}
+
+/**
  * Old FILE* representations
  * bootstrap problem
  */
 FILE* stream_from_term_transitional(ATerm stream) {
   FILE* result = NULL;
 
-         if(ATmatch(stream, "stdout")) { // stdout
+  if(stream == stdout_term) {
     result = stdout;
-  } else if(ATmatch(stream, "stderr")) { // stderr
+  } else if(stream == stderr_term) {
     result = stderr;
-  } else if(ATmatch(stream, "stdin")) { // stdin
+  } else if(stream == stdin_term) {
     result = stdin;
   } else if(ATisInt(stream)) { // file pointer
     result = (FILE*) ATgetInt((ATermInt)stream);
