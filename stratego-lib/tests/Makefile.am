@@ -8,7 +8,6 @@ pkgtestsdata_DATA= $(wildcard *.str)
 
 check_PROGRAMS = \
   annotation-props-test \
-  apply-test \
   char-test \
   collect-test \
   dir-test \
@@ -65,10 +64,6 @@ PREFIX_CPPFLAGS      = -I $(prefix)/include -I $(ATERM)/include
 nodist_annotation_props_test_SOURCES = annotation-props-test.c 
 annotation_props_test_CPPFLAGS       = $(PREFIX_CPPFLAGS)
 annotation_props_test_LDADD          = $(PREFIX_LIBS)
-
-nodist_apply_test_SOURCES         = apply-test.c 
-apply_test_CPPFLAGS               = $(PREFIX_CPPFLAGS)
-apply_test_LDADD                  = $(NOSHARED_PREFIX_LIBS)
 
 nodist_char_test_SOURCES          = char-test.c 
 char_test_CPPFLAGS                = $(PREFIX_CPPFLAGS)
