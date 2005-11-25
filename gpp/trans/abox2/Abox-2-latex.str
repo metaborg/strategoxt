@@ -26,7 +26,7 @@ strategies
          ; (
             where(<get-config>"output"; "alltt" )
             <    // Produced alltt environment
-                 <try-abox2alltt;Fst> (<id>, 0)
+                 try-abox2alltt(|0); Fst
                ; <latex2text>ALLTT(<id>)
             +    // Produce boxenv environment
                  topdown(try(Abox2latex))
@@ -66,13 +66,16 @@ strategies
                     ; <latex2text> BOXENV(<BOXENV-args>, <id>);
                       collect-set(is-string); concat-strings)
 
-  try-abox2alltt = 
-        abox2alltt(try-abox2alltt) 
-     <+
-        abox2text(try-abox2alltt)
-     <+
-        log(|Error(),"invalid box:",<id>) ; <exit>1
+  try-abox2alltt(|xpos) =
+    where(get-width => width);
 
+    let local(|pos) =
+             abox2alltt(local | pos) 
+          <+ abox2text(local | pos, width)
+          <+ log(|Error(),"invalid box:", <id>)
+             ; <exit>1
+     in local(|xpos)
+    end
 
   BOXENV-args =
     <get-config> "--width"; ![<id>] <+ ![]
@@ -217,17 +220,17 @@ LatexComment =
    implode-string
 
 // Stuff for generating LaTeX alltt environment
-  abox2alltt(s):
+  abox2alltt(rec : t * t -> t | xpos):
     (FBOX(fo, b), xpos) -> (BOXFONT(fo, b'), xpos')
       where 
          <KW() + VAR() + NUM() + MATH()> fo
-         ; <s>(b,xpos) => (b',xpos')
+         ; <rec(|xpos)> b => (b',xpos')
 
-  abox2alltt(s):
-    (FBOX(F([]), b), xpos) -> <s>(b, xpos)
+  abox2alltt(rec : t * t -> t | xpos):
+    (FBOX(F([]), b), xpos) -> <rec(|xpos)> b
 
-  abox2alltt(s):
-    (FBOX(F([foption|xs]), b), xpos) -> (BOXFONT(fo, b'), xpos')
+  abox2alltt(rec : t * t -> t | xpos):
+    FBOX(F([foption|xs]), b) -> (BOXFONT(fo, b'), xpos')
     where 
      <   FFID(FM(), ?fo)
            <+ FFID(SE(), ?fo)
@@ -235,11 +238,11 @@ LatexComment =
            <+ FFID(SZ(), ?fo)
            <+ FFID(CL(), ?i ); !BOXCOLOR(i) => fo
           > foption;
-          <s>(FBOX(F(xs), b), xpos) => (b', xpos')
+          <rec(|xpos)> FBOX(F(xs), b) => (b', xpos')
           
   // S
-  abox2alltt(s) :
-     (S(s), xpos) -> (<alltt-string>s, <add> (xpos, <rel-string-length> (s, xpos)))
+  abox2alltt(rec : t * t -> t | xpos) :
+     S(s) -> (<alltt-string> s, <add> (xpos, <rel-string-length(|xpos)> s))
 
   alltt-string =
         latex-abbrev

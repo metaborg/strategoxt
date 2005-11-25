@@ -5,8 +5,7 @@ include $(wildcard *.dep)
 
 SUBDIRS = data
 
-libexec_PROGRAMS = Abox-2-text Abox-2-html
-# Abox-2-latex
+libexec_PROGRAMS = Abox-2-text Abox-2-html Abox-2-latex
 pkgdata_DATA     = boxstyle.css
 
 SCFLAGS          = --main io-$*
@@ -15,8 +14,8 @@ STRINCLUDES      = -I $(top_srcdir)/sig/pp-table \
                    -I $(XTC)/share/xtc
 LDADD += $(SSL_LIBS)
 
-# TESTS = Abox_2_latex1_check Abox_2_latex2_check Abox_2_latex3_check
-#        Abox_2_latex4_check Abox_2_latex5_check
+TESTS = Abox_2_latex1_check Abox_2_latex2_check Abox_2_latex3_check \
+        Abox_2_latex4_check Abox_2_latex5_check
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) boxstyle.css
 CLEANFILES       = $(wildcard *.dep) $(TESTS)
