@@ -155,10 +155,10 @@ strategies
    * @type  FILE -> AST
    */
   parse-xtc-file(|tbl) =
-    ?path; parse-xtc-file(|tbl, None(), path)
+    ?file; parse-xtc-file(|tbl, None(), <path-of-xtc-file> file)
 
   parse-xtc-file(|tbl, start-symbol) =
-    ?path; parse-xtc-file(|tbl, start-symbol, path)
+    ?file; parse-xtc-file(|tbl, start-symbol, <path-of-xtc-file> file)
 
   parse-xtc-file(|tbl, start-symbol, path) =
     parse-xtc-file-pt(|tbl, start-symbol, path)
@@ -175,10 +175,10 @@ strategies
 strategies
 
   parse-xtc-file-pt(|tbl) =
-    ?path; parse-xtc-file-pt(|tbl, None(), path)
+    ?file; parse-xtc-file-pt(|tbl, None(), <path-of-xtc-file> file)
 
   parse-xtc-file-pt(|tbl, start-symbol) =
-    ?path; parse-xtc-file-pt(|tbl, start-symbol, path)
+    ?file; parse-xtc-file-pt(|tbl, start-symbol, <path-of-xtc-file> file)
 
   parse-xtc-file-pt(|tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
@@ -186,15 +186,15 @@ strategies
     ; let open-stream =
             ?FILE(<id>); <fopen> (<id>, "r") + ?stdin(); stdin-stream
             
-          path-of-input =
-            ?FILE(<id>) + ?stdin(); !"stdin"
-            
        in open-stream => stream
           ; finally(
               parse-stream-pt(|tbl, start-symbol, path)
             , <fclose> stream
             )
       end
+      
+  path-of-xtc-file =
+    ?FILE(<is-string>) + ?stdin(); !"stdin"
 
 strategies
 
