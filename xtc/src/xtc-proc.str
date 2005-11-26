@@ -282,7 +282,7 @@ strategies
   /**
    * Writes a FILE to the output of this component. The output
    * is file is retrieved from the -o option given to the
-   * program; if -o was not given, stdou is used.
+   * program; if -o was not given, stdout is used.
    *
    * @type FILE -> FILE
    */
