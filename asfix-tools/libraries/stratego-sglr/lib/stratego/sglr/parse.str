@@ -14,61 +14,40 @@ imports
 /**
  * Parse a string to an AST.
  *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  String -> AST 
  * @todo  Set the pt type to asfix2?
  */
 strategies
 
-  /**
-   * @param ParseTable
-   * @type  String -> AST
-   */
   parse-string(|tbl) =
     parse-string(|tbl, None(), "string")
 
-  /**
-   * @param ParseTable
-   * @param String
-   * @type  String -> AST
-   */
   parse-string(|tbl, start-symbol) =
     parse-string(|tbl, start-symbol, "string")
 
-  /**
-   * @param ParseTable
-   * @param String or None
-   * @param String
-   * @type  String -> AST
-   */
   parse-string(|tbl, start-symbol, path) =
     parse-string-pt(|tbl, start-symbol, path)
     ; implode-asfix
 
 /**
  * Parse a string to a parse tree.
+ *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  String -> ParseTree 
  */
 strategies
 
-  /**
-   * @param ParseTable
-   * @type  String -> ParseTree
-   */
   parse-string-pt(|tbl) =
     parse-string-pt(|tbl, None(), "string")
 
-  /**
-   * @param ParseTable
-   * @param String
-   * @type  String -> ParseTree
-   */
   parse-string-pt(|tbl, start-symbol) =
     parse-string-pt(|tbl, start-symbol, "string")
 
-  /**
-   * @param ParseTable
-   * @param String or None
-   * @param String
-   * @type  String -> ParseTree
-   */
   parse-string-pt(|tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; ?string
@@ -77,61 +56,40 @@ strategies
 /**
  * Parse a stream to an AST.
  *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  Stream -> AST 
  * @todo  Set the pt type to asfix2?
  */
 strategies
 
-  /**
-   * @param ParseTable
-   * @type  Stream -> AST
-   */
   parse-stream(|tbl) =
     parse-stream(|tbl, None(), "string")
 
-  /**
-   * @param ParseTable
-   * @param String
-   * @type  Stream -> AST
-   */
   parse-stream(|tbl, start-symbol) =
     parse-stream(|tbl, start-symbol, "string")
 
-  /**
-   * @param ParseTable
-   * @param String or None
-   * @param String
-   * @type  Stream -> AST
-   */
   parse-stream(|tbl, start-symbol, path) =
     parse-stream-pt(|tbl, start-symbol, path)
     ; implode-asfix
 
 /**
  * Parse a stream to a parse tree.
+ *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  Stream -> ParseTree 
  */
 strategies
 
-  /**
-   * @param ParseTable
-   * @type  Stream -> ParseTree
-   */
   parse-stream-pt(|tbl) =
     parse-stream-pt(|tbl, None(), "stream")
 
-  /**
-   * @param ParseTable
-   * @param String
-   * @type  Stream -> ParseTree
-   */
   parse-stream-pt(|tbl, start-symbol) =
     parse-stream-pt(|tbl, start-symbol, "stream")
 
-  /**
-   * @param ParseTable
-   * @param String or None
-   * @param String
-   * @type  Stream -> ParseTree
-   */
   parse-stream-pt(|tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; ?Stream(stream)
@@ -140,61 +98,40 @@ strategies
 /**
  * Parse a file to an AST.
  *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  String -> AST
  * @todo Set the pt type to asfix2?
  */
 strategies
 
-  /**
-   * @param ParseTable
-   * @type  String -> AST
-   */
   parse-file(|tbl) =
     ?path; parse-file(|tbl, None(), path)
 
-  /**
-   * @param ParseTable
-   * @param String
-   * @type  String -> AST
-   */
   parse-file(|tbl, start-symbol) =
     ?path; parse-file(|tbl, start-symbol, path)
 
-  /**
-   * @param ParseTable
-   * @param String or None
-   * @param String
-   * @type  String -> AST
-   */
   parse-file(|tbl, start-symbol, path) =
     parse-file-pt(|tbl, start-symbol, path)
     ; implode-asfix
 
 /**
  * Parse a file to a parse tree.
+ *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  String -> ParseTree 
  */
 strategies
 
-  /**
-   * @param ParseTable
-   * @type  String -> ParseTree
-   */
   parse-file-pt(|tbl) =
     ?path; parse-file-pt(|tbl, None(), path)
 
-  /**
-   * @param ParseTable
-   * @param String
-   * @type  String -> ParseTree
-   */
   parse-file-pt(|tbl, start-symbol) =
     ?path; parse-file-pt(|tbl, start-symbol, path)
 
-  /**
-   * @param ParseTable
-   * @param String or None
-   * @param String
-   * @type  String -> ParseTree
-   */
   parse-file-pt(|tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; <fopen> (<id>, "r") => stream
@@ -202,6 +139,62 @@ strategies
         parse-stream-pt(|tbl, start-symbol, path)
       , <fclose> stream
       )
+      
+/**
+ * Parse an XTC file to an AST.
+ *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  FILE -> AST
+ * @todo Set the pt type to asfix2?
+ */
+strategies
+
+  /**
+   * @type  FILE -> AST
+   */
+  parse-xtc-file(|tbl) =
+    ?path; parse-xtc-file(|tbl, None(), path)
+
+  parse-xtc-file(|tbl, start-symbol) =
+    ?path; parse-xtc-file(|tbl, start-symbol, path)
+
+  parse-xtc-file(|tbl, start-symbol, path) =
+    parse-xtc-file-pt(|tbl, start-symbol, path)
+    ; implode-asfix
+
+/**
+ * Parse an XTC file to a parse tree.
+ *
+ * @param ParseTable
+ * @param String or None
+ * @param String
+ * @type  FILE -> ParseTree 
+ */
+strategies
+
+  parse-xtc-file-pt(|tbl) =
+    ?path; parse-xtc-file-pt(|tbl, None(), path)
+
+  parse-xtc-file-pt(|tbl, start-symbol) =
+    ?path; parse-xtc-file-pt(|tbl, start-symbol, path)
+
+  parse-xtc-file-pt(|tbl, start-symbol, path) =
+    where(!tbl => ParseTable(internal-tbl))
+    
+    ; let open-stream =
+            ?FILE(<id>); <fopen> (<id>, "r") + ?stdin(); stdin-stream
+            
+          path-of-input =
+            ?FILE(<id>) + ?stdin(); !"stdin"
+            
+       in open-stream => stream
+          ; finally(
+              parse-stream-pt(|tbl, start-symbol, path)
+            , <fclose> stream
+            )
+      end
 
 strategies
 
