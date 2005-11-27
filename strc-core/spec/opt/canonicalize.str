@@ -8,7 +8,8 @@ strategies
 
   canonicalize =
     canonicalize-sdef
-    <+ try(ImplementTraversalOps); canonicalize-call
+    <+ canonicalize-let
+    <+ try(ImplementTraversalOps); canonicalize-call; canonicalize
     <+ all(canonicalize)
 
   canonicalize-sdef :
@@ -18,14 +19,33 @@ strategies
            ; <canonicalize> s => s'
            |}
 
+  canonicalize-let :
+    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
+    where {| IsClosure
+           : <map(try(declare-closure-def))> def1* 
+	   ; <canonicalize> def1* => def2*
+           ; <canonicalize> s1 => s2
+           |}
+
   declare-closure =
     ?VarDec(f, t)
+    ; rules( IsClosure : |[ f(|) ]| )
+
+  declare-closure-def =
+    ?|[ f(|) = s ]|
     ; rules( IsClosure : |[ f(|) ]| )
 
   canonicalize-call :
     |[ f(s1*|t*) ]| -> |[ let def* in f(s2*|t*) end ]|
     where <map(IsClosure; !([],<id>) <+ lift-call-arg)> s1*
           ; unzip; (concat, id) => (def*, s2*)
+	  ; not(([],id))
+
+  canonicalize-call :
+    |[ prim(str,s1*|t*) ]| -> |[ let def* in prim(str,s2*|t*) end ]|
+    where <map(IsClosure; !([],<id>) <+ lift-call-arg)> s1*
+          ; unzip; (concat, id) => (def*, s2*)
+	  ; not(([],id))
 
   lift-call-arg :
     |[ s ]| -> ([|[ g(|) = s' ]|], |[ g(|) ]|)
