@@ -3,15 +3,15 @@ include $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
-libexec_PROGRAMS = s2c s2c-ng
+libexec_PROGRAMS = s2c s2c-ng escaping-variables
 
 #s2c-classic 
 
-check_PROGRAMS 	 = C-simplify-test 
+check_PROGRAMS 	 = C-simplify-test
 
 nodist_C_simplify_test_SOURCES = C-simplify-test.c
 
-BOOTCLEANFILES 	 = s2c.c s2c-ng.c C-simplify-test.c
+BOOTCLEANFILES 	 = s2c.c s2c-ng.c C-simplify-test.c escaping-variables.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 

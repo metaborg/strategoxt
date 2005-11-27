@@ -1,21 +1,155 @@
 module escaping-variables
-imports Stratego-Core
+imports liblib Stratego-Core
 strategies
 
   // mark variables and function arguments as escaping
 
   // count the number of escaping variables and functions per definition
 
+  escaping-variables = 
+    io-wrap(mark-escaping-variables)
+
   mark-escaping-variables =
-    alltd(SDefT(id,id,id,id); ev)
+    {| CurrentFrame, FrameOf
+     : init-current-frame
+     ; alltd(declare-frame-of)
+     ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev)
+     |}
+
+strategies
+
+  init-current-frame =
+    rules( CurrentFrame :+ _ -> "top-level" )
+
+  declare-frame-of =
+    ?|[ f(a1*|a2*) = s ]|
+    ; where( CurrentFrame => g )
+    ; rules( FrameOf : f -> g )
+
+strategies
+
+  ev = debug(!"in: "); (
+      ?Var(_) < escaping-var
+    + ?SVar(_) < escaping-var; try(Closure)
+    + ?SDefT(_,_,_,_) < ev-sdef
+    + ?Scope(_,_) < ev-scope
+    + ?Let(_,_) < ev-let
+    + all(ev)
+  ); debug(!"out: ")
+
+  ev-let :
+    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
+    where {| CurrentFrame, FrameOf, Closure
+           : <map(declare-frame-of)> def1*
+	   ; <ev> def1* => def2*
+	   ; <ev> s1 => s2
+           |}
+
+  ev-sdef :
+    |[ f(a1*|a2*) = s ]| -> (|[ f(a3*|a4*) = s' ]|){(off1, off2)}
+    where {| CurrentFrame
+           : rules( 
+               CurrentFrame :+ _ -> f
+             )
+	   ; <map(declare-str-arg(|f))> a1*
+	   ; <map(declare-trm-arg(|f))> a2*
+	   ; <ev> s => s'
+           ; <map(escaping-arg)> a1* => a3*
+	   ; <map(escaping-arg)> a2* => a4*
+	   ; !0 => off1
+	   ; !0 => off2
+           |}
+
+  ev-scope : 
+    |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|
+    where CurrentFrame => f
+	; {| FrameOf, Escapes
+           : <map(declare-local-var(|f))> x1*
+	   ; <ev> s1 => s2
+	   ; <map(Escapes)> x1* => x2*
+           |}
+
+  declare-str-arg(|f) =
+    ?Typedid|[ x : tp ]|
+    ; rules(
+        Closure   : SVar(x{t*}) -> SVar(x{"closure",t*})
+        FrameOf   : x -> f
+        Escapes+x : x -> x{"local"}
+      )
+
+  declare-trm-arg(|f) =
+    ?Typedid|[ x : tp ]|
+    ; where(<declare-local-var(|f)> x)
+
+  declare-local-var(|f) = ?x;
+    rules(
+      FrameOf   : x -> f
+      Escapes+x : x -> x{"local"}
+    )
+
+  escaping-arg :
+    Typedid|[ x : tp ]| -> Typedid|[ y : tp ]|
+    where <Escapes> x => y
+
+  escaping-var :
+    Var(x{t1*}){t2*} -> <debug(!"annotated: ")> Var(x{("frames", ys),t1*}){t2*}
+    where debug(!"escaping-var: ")
+	; <FrameOf> x => f
+	; debug(!"frame of: ")
+	; bigbagof-CurrentFrame 
+	; debug(!"frames: ")
+	; take-until(?f) => ys
+	; if <not(eq)> ([], ys) then
+            rules( Escapes.x : x -> x{"escapes"} )
+          end
+
+  escaping-var :
+    SVar(x{t1*}){t2*} -> SVar(x{("frames", ys),t1*}){t2*}
+    where <FrameOf> x => f
+	; bigbagof-CurrentFrame 
+	; take-until(?f) => ys
+	; if <not(eq)> ([], ys) then
+            rules( Escapes.x : x -> x{"escapes"} )
+          end
+
+/*
 
 strategies
 
   ev = 
-    ev-var
+    escaping-var
+    //<+ closure-strategy
+    //<+ local-strategy
+    //<+ toplevel-strategy
     <+ ev-sdef
     <+ ev-scope
+    <+ ev-let
     <+ all(ev)
+
+  // declare parameters of definitions and mark as escaping
+  // after traversing body of definition
+
+  ev-sdef :
+    |[ f(a1*|a2*) = s ]| -> (|[ f(a3*|a4*) = s' ]|){(off1, off2)}
+    where <dont-escape> f
+	; rules( IsClosure :- f )
+	; {| VarEscape, CurrentFrame, NextSVarOffSet, NextVarOffSet, 
+	     FrameOf, OffSet, IsClosure
+           : rules( 
+               CurrentFrame :+ _ -> f
+               NextVarOffSet+f : f -> 0
+	       NextSVarOffSet+f : f -> 0
+             )
+           ; <map(VarDec(dont-escape,id))> [a1*,a2*]
+           ; <ev> s => s'
+           ; <map(VarDec(VarEscape,id))> a1* => a3*
+           ; <map(VarDec(VarEscape,id))> a2* => a4*
+           ; <NextSVarOffSet> f => off1
+           ; <NextVarOffSet> f => off2
+           |}
+
+  init-current-frame =
+    rules( CurrentFrame :+ _ -> "top-level" )
 
   // by default a variable does not escape
 
@@ -26,71 +160,119 @@ strategies
         VarEscape+x : x -> x
         FrameOf     : x -> f
         OffSet+x    :- x
+        IsClosure   : x
       )
+
+*/
+
+/*
 
   // if encountered in a nested definition it does escape
 
-  ev-var = 
-   (?Var(x) <+ ?SVar(x)); ?y
-   ; debug(!"ev-var: ")
-   ; where(<not(eq)> (<CurrentFrame>, <FrameOf => f> x))
-   ; where(
-       bigbagof-CurrentFrame
-       ; take-until(?f)
-       ; (init <+ debug(!"*** strange frames: ")) => frames
-     )
-   ; debug(!"ev-var escaping: ")
-   ; where(
-      <OffSet> x => off; debug(!"offset: ")
-      <+ <one(FrameOf => f); !<id>{}> y => f'
-         ; debug(!"frame: ")
-         ; NextOffSet => off
-         ; debug(!"next offset: ")
-	 ; inc => new-off
-         ; debug(!"new next offset: ")
-	 ; dr-print-rule-set(|"NextOffSet")
-         ; rules(
-             NextOffSet.f : f' -> new-off
-             OffSet.x : x -> off
-           )
-	 ; dr-print-rule-set(|"NextOffSet")
-         ; where(<NextOffSet> f'; debug(!"NextOffSet: "))
-     )
-   ; rules( VarEscape.x : x -> x{("escapes", off)} )
-   ; one(\ z{t*} -> z{("offset", off, frames), t*} \ )
-   ; debug(!"annotation: ")
+  escaping-var :
+    Var(x{t1*}){t2*} -> Var(x{("offset", off, frames), t1*}){t2*}
+    where debug(!"ev-var: ")
+	; <FrameOf> x => f
+	; debug(!"frame: ")
+	; bigbagof-CurrentFrame
+	; debug(!"all frames: ")
+	; take-until(?f) => frames
+	; debug(!"frames: ")
+	; if <?[]> frames then
+	    !"local" => off
+	    ; debug(!"local: ")
+	  else if <OffSet> x => off then
+	    <debug(!"offset: ")> off
+          else
+            <NextVarOffSet> f => off
+            ; debug(!"next offset: ")
+ 	    ; inc => new-off
+            ; debug(!"new next offset: ")
+	    ; dr-print-rule-set(|"NextOffSet")
+            ; rules(
+                NextVarOffSet.f : f -> new-off
+                OffSet.x : x -> off
+              )
+	    ; dr-print-rule-set(|"NextOffSet")
+            ; <NextVarOffSet> f
+            ; debug(!"NextOffSet: ")
+          end end
+	; rules( VarEscape.x : x -> x{("escapes", off)} )
+	; debug(!"escaping-var: done")
+
+*/
+
+/*
 
 
-  // declare parameters of definitions and mark as escaping
-  // after traversing body of definition
+  closure-strategy :
+    SVar(x) -> SVar(x{"closure"})
+    where <IsClosure> x
 
-  ev-sdef =
-    ?SDefT(f, xs, ys, s)
-    ; {| VarEscape, CurrentFrame, FrameOf, NextOffSet, OffSet
-       : where(!Var(f) => f1; !SVar(f) => f2)
-       ; rules( 
-           CurrentFrame :+ _ -> f
-           NextOffSet+f : f1 -> 0
-	   NextOffSet+f : f2 -> 0
-         )
-       ; SDefT(id, map(VarDec(dont-escape,id)),
-                   map(VarDec(dont-escape,id)), ev)
-       ; SDefT(id, map(VarDec(VarEscape,id)), 
-                   map(VarDec(VarEscape,id)), id)
-       ; \ sdef -> sdef{(off1, off2)}
-           where <NextOffSet> SVar(f) => off1
-	       ; <NextOffSet> Var(f) => off2 \
-       |}
+  local-strategy :
+    SVar(f) -> SVar(f{"local"})
+    where debug(!"local-strategy: ")
+	; <debug; eq> (<CurrentFrame>, <FrameOf> f)
+
+  toplevel-strategy :
+    SVar(f) -> SVar(f{"toplevel", frames})
+    where <not(FrameOf)> f
+	; bigbagof-CurrentFrame => frames
+
+
+  ev-let :
+    |[ let def* in s end ]| -> s'
+    where {| FrameOf 
+           : all(ev) => s'
+	   |}
 
   // declare local variables of a scope and mark as escaping
   // after traversing body of scope
 
-  ev-scope =
-    ?Scope(x*, s)
-    ; {| VarEscape, FrameOf
-       : Scope(map(dont-escape), ev)
-       ; Scope(map(VarEscape), id)
-       |}
+  ev-scope :
+    |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|
+    where {| VarEscape, FrameOf
+           : <map(dont-escape)> x1*
+           ; <ev> s1 => s2
+           ; <map(VarEscape)> x1* => x2*
+           |}
+
+*/
+
+/*
+
+  escaping-var = 
+    (?Var(x) <+ ?SVar(x)); ?y
+    ; debug(!"ev-var: ")
+    ; where(<not(eq)> (<CurrentFrame>, <FrameOf => f> x))
+    ; where(
+        bigbagof-CurrentFrame
+        ; take-until(?f)
+        ; (init <+ debug(!"*** strange frames: ")) => frames
+      )
+    ; debug(!"ev-var escaping: ")
+    ; where(
+       <OffSet> x => off; debug(!"offset: ")
+       <+ <one(FrameOf => f); !<id>{}> y => f'
+          ; debug(!"frame: ")
+          ; NextOffSet => off
+          ; debug(!"next offset: ")
+ 	  ; inc => new-off
+          ; debug(!"new next offset: ")
+	  ; dr-print-rule-set(|"NextOffSet")
+          ; rules(
+              NextOffSet.f : f' -> new-off
+              OffSet.x : x -> off
+            )
+	  ; dr-print-rule-set(|"NextOffSet")
+          ; where(<NextOffSet> f'; debug(!"NextOffSet: "))
+      )
+    ; rules( VarEscape.x : x -> x{("escapes", off)} )
+    ; one(\ z{t*} -> z{("offset", off, frames), t*} \ )
+    ; debug(!"annotation: ")
+
+*/
+
 
 /*
 

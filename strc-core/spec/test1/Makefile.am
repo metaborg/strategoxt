@@ -10,7 +10,9 @@ AM_LDFLAGS = \
 
 AM_CFLAGS = \
   -I$(prefix)/include \
-  -I$(ATERM)/include
+  -I$(ATERM)/include \
+  -fdump-translation-unit \
+  -fdump-tree-original-raw
 
 STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
@@ -38,6 +40,7 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04 \
 		  let-test \
+		  nested-defs01 \
 		  cs-test01 \
 		  static-links
 
@@ -177,6 +180,8 @@ nodist_qcons_test04_SOURCES = qcons-test04.c
 
 nodist_let_test_SOURCES = let-test.c
 
+nodist_nested_defs01_SOURCES = nested_defs01.c
+
 nodist_cs_test01_SOURCES = cs-test01.c
 
 SDF2RTG_FLAGS = --main $*
@@ -205,3 +210,6 @@ ExpStratego.def : Expressions.sdf ExpStratego.sdf
 
 %.btree : %.str
 	$(top_srcdir)/../stratego-front/parse/parse-stratego -i $< -o $@ --assimilation on --verbose 4
+
+gcc-version : 
+	gcc --version

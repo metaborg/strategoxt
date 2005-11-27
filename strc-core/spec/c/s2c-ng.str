@@ -8,7 +8,7 @@ imports
   Stratego-Core
   C 
   C-simplify 
-  escaping-variables
+  // escaping-variables
 
 strategies
 
@@ -16,8 +16,8 @@ strategies
     io-wrap(s2c-options, compile)
  
   compile = 
-    mark-escaping-variables
-    ; init-term-caching
+    //mark-escaping-variables
+    init-term-caching
     ; init-frames
     ; TranslateSpec
     ; c-simplify
@@ -489,6 +489,40 @@ rules
     stm|[ 
       { 
         t = f(~exp:<static-link>f, ~exp*:args); 
+        if( t == NULL ) goto ~id:F; else goto ~id:S; 
+      }
+    ]|
+    where debug(!"call a: ")
+	; <map(ArgToCl)> s* => args1
+        ; debug(!"call b: ")
+	; <map(topdown(try(construct-term)))> t* => args2
+        ; debug(!"call c: ")
+	; <concat>[args1, args2, [Id("t")]] => args
+        ; debug(!"call d: ")
+
+  TranslateStrat(|S,F) :
+    Strat|[ ~id:f{"toplevel"}(s* | t* ) ]| -> 
+    <check-unbound-args(|F,t*); debug(!"call translated: ")>
+    stm|[ 
+      { 
+        t = f(~exp:<static-link>f, ~exp*:args); 
+        if( t == NULL ) goto ~id:F; else goto ~id:S; 
+      }
+    ]|
+    where debug(!"call a: ")
+	; <map(ArgToCl)> s* => args1
+        ; debug(!"call b: ")
+	; <map(topdown(try(construct-term)))> t* => args2
+        ; debug(!"call c: ")
+	; <concat>[args1, args2, [Id("t")]] => args
+        ; debug(!"call d: ")
+
+  TranslateStrat(|S,F) :
+    Strat|[ ~id:f{"closure"}(s* | t* ) ]| -> 
+    <check-unbound-args(|F,t*); debug(!"call translated: ")>
+    stm|[ 
+      { 
+        t = (cl_fun(~id:f))(cl_sl(~id:f), ~exp*:args); 
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|

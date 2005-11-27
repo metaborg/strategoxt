@@ -36,3 +36,6 @@ struct str_frame
 
 #define sl_fun(i,s)    ((*(((s)->funs)+i))->fun)
 #define sl_fun_sl(i,s) ((*(((s)->funs)+i))->sl)
+
+#define cl_fun(cl) (cl->fun)
+#define cl_sl(cl) (cl->sl)

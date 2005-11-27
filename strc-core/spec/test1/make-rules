@@ -248,11 +248,11 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 %.b1 : %.opt6
 	$(FC_CORE) -i $<
-	../opt/canonicalize -i $< -o $@ -b
+	../opt/lift-definitions -i $< -o $@ -b
 
 %.b2 : %.b1
 	$(FC_CORE) -i $<
-	../opt/lift-definitions -i $< -o $@ -b
+	../opt/canonicalize -i $< -o $@ -b
 
 %.b3 : %.b2
 	$(FC_CORE) -i $<
@@ -262,7 +262,11 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	$(FC_CORE) -i $<
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.ac : %.b4
+%.b5 : %.b4
+	$(FC_CORE) -i $<
+	../c/escaping-variables -i $< -o $@ -b
+
+%.ac : %.b5
 	$(FC_CORE) -i $<
 	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
@@ -274,7 +278,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	$(FC_CORE) -i $<
 	../c/s2c-ng -i $< -o $@  $(CINCLUDES) -b
 
-%.c.abox : %.ac
+%.c.abox : %.ac-ng
 	$(FC_C) -i $<
 	$(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
 
