@@ -4,72 +4,6 @@ imports Stratego-Core liblib C stratego-laws
 strategies
 
   canonicalize-io =
-    io-wrap(canonicalize)
-
-  canonicalize =
-    canonicalize-sdef
-    <+ canonicalize-let
-    <+ try(ImplementTraversalOps); canonicalize-call; canonicalize
-    <+ all(canonicalize)
-
-  canonicalize-sdef :
-    |[ f(a1*|a2*) = s ]| -> |[ f(a1*|a2*) = s' ]|
-    where {| IsClosure
-           : where(<map(declare-closure)> a1* )
-           ; <canonicalize> s => s'
-           |}
-
-  canonicalize-let :
-    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
-    where {| IsClosure
-           : <map(try(declare-closure-def))> def1* 
-	   ; <canonicalize> def1* => def2*
-           ; <canonicalize> s1 => s2
-           |}
-
-  declare-closure =
-    ?VarDec(f, t)
-    ; rules( IsClosure : |[ f(|) ]| )
-
-  declare-closure-def =
-    ?|[ f(|) = s ]|
-    ; rules( IsClosure : |[ f(|) ]| )
-
-  canonicalize-call :
-    |[ f(s1*|t*) ]| -> |[ let def* in f(s2*|t*) end ]|
-    where <map(IsClosure; !([],<id>) <+ lift-call-arg)> s1*
-          ; unzip; (concat, id) => (def*, s2*)
-	  ; not(([],id))
-
-  canonicalize-call :
-    |[ prim(str,s1*|t*) ]| -> |[ let def* in prim(str,s2*|t*) end ]|
-    where <map(IsClosure; !([],<id>) <+ lift-call-arg)> s1*
-          ; unzip; (concat, id) => (def*, s2*)
-	  ; not(([],id))
-
-  lift-call-arg :
-    |[ s ]| -> ([|[ g(|) = s' ]|], |[ g(|) ]|)
-    where new => g
-	; <canonicalize> s => s'
-
-
-
-  ImplementTraversalOp :
-    All(s) -> CallT(SVar("SRTS_all"),[s],[])
-
-  ImplementTraversalOps :
-    One(s) -> CallT(SVar("SRTS_one"),[s],[])
-
-  ImplementTraversalOps :
-    Some(s) -> CallT(SVar("SRTS_some"),[s],[])
-
-
-
-/*
-
-strategies
-
-  canonicalize-io =
     io-wrap(
       downup2(repeat(Canon + LiftPrimArgs + LiftCallArgs),repeat(Canon))
       ; simplify0
@@ -83,27 +17,22 @@ rules
   CallFailFun :
     Fail -> CallT(SVar("_Fail"),[],[])
 
-  Canon :
-    All(s) -> CallT(SVar("SRTS_all"),[s],[])
+(*
+ 
+  f(id)  f(g)
 
-  Canon :
-    One(s) -> CallT(SVar("SRTS_one"),[s],[])
+  f(x + y) -> let z = x + y in f(z)
 
-  Canon :
-    Some(s) -> CallT(SVar("SRTS_some"),[s],[])
-
-
-
+*)
 
   Canon =
     let
       canon-args = 
-        unzip(try(CallIdFun + CallFailFun)
-              ; ( CreateDef1 
-	          <+ not(CallT(SVar(id),[],[])); CreateDef2 
-	          <+ !(<id>,[])
-	          ))
-        ; (id, concat; not([]))
+        unzip(try(CallIdFun + CallFailFun); 
+              ( CreateDef1 
+	     <+ not(CallT(SVar(id),[],[])); CreateDef2 
+	     <+ split(id,![])
+	      )) ; (id,concat ; not([]))
     in
       ( ?CallT(f, args1, args2) 
       + ?CallDynamic(f, args1, args2)
@@ -120,10 +49,6 @@ rules
     s -> (CallT(SVar(f),[],[]), [SDefT(f,[],[],s)])
     where new => f
 
-
-
-
-
   Canon :
     CallT(f, args1, args2) -> CallT(f, args1', args2)
     where //<map(try(CallIdFun + CallFailFun))> args => args'
@@ -134,4 +59,40 @@ rules
     where //<map(try(CallIdFun + CallFailFun))> args => args'
       <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args1 => args1'
 
-*/
+  Canon :
+    All(s) -> CallT(SVar("SRTS_all"),[s],[])
+
+  Canon :
+    One(s) -> CallT(SVar("SRTS_one"),[s],[])
+
+  Canon :
+    Some(s) -> CallT(SVar("SRTS_some"),[s],[])
+
+  Canon :
+    Scope([],s) -> s
+
+  Canon :
+    Scope(xs,Scope(ys,s)) -> Scope(<conc>(xs,ys),s)
+
+  Canon : 
+    Seq(Id, s) -> s
+
+  Canon : 
+    Seq(s, Id) -> s
+
+  Canon :
+    Seq(Where(s), Build(t)) -> Seq(s, Build(t))
+
+  Canon :
+    Seq(Where(s1), Seq(Build(t), s2)) -> Seq(s1, Seq(Build(t), s2))
+
+  Canon :
+    SDefT(f, [], [], Rec(x, s)) ->
+    SDefT(f, [], [], <alltd(?CallT(SVar(x),[],[]); !CallT(SVar(f),[],[]))> s)
+
+  Canon :
+    Rec(x, s) -> Let([SDefT(x, [], [], s)], CallT(SVar(x),[],[]))
+
+//  Canon :
+//    SDef([DontInline],f,xs,s) -> SDef(f,xs,s)
+

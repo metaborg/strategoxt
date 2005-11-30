@@ -1,9 +1,9 @@
-module canonicalize
+module canonicalize-ng
 imports Stratego-Core liblib C stratego-laws
 
 strategies
 
-  canonicalize-io =
+  canonicalize-ng-io =
     io-wrap(canonicalize)
 
   canonicalize =

@@ -11,12 +11,13 @@ SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn/ \
 
 LDADD           += $(SSL_LIBS)
 
-libexec_PROGRAMS = simplify1 simplify2 simplify3		    \
-		   fusion inline dead-def-elim			    \
-		   lift-definitions canonicalize bound-unbound-vars \
-		   worker-wrapper				    \
-		   define-congruences defs-to-external-defs	    \
-		   const-prop dead-var-elim
+libexec_PROGRAMS = simplify1 simplify2 simplify3		   \
+		   fusion inline dead-def-elim			   \
+		   lift-definitions canonicalize canonicalize-ng   \
+		   bound-unbound-vars				   \
+		   worker-wrapper				   \
+		   define-congruences defs-to-external-defs	   \
+		   const-prop dead-var-elim			 
 
 #		   effects-analysis
 #		   dead-var-elim
