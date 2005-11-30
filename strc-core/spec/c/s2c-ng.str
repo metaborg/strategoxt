@@ -7,8 +7,7 @@ imports
   liblib
   Stratego-Core
   C 
-  C-simplify 
-  // escaping-variables
+  C-simplify
 
 strategies
 
@@ -16,9 +15,7 @@ strategies
     io-wrap(s2c-options, compile)
  
   compile = 
-    //mark-escaping-variables
     init-term-caching
-    ; init-frames
     ; TranslateSpec
     ; c-simplify
 
@@ -61,6 +58,7 @@ rules
       ; <bagof-Fragment> "FunctionSig"     => function-sigs
       ; <bagof-Fragment> "FunctionReg"     => function-regs
       ; <bagof-Fragment> "FunctionDef"     => function-defs
+      ; debug(!"function definitions: ")
       ; <bagof-Fragment> "ConstDecl"       => cnst-decls
       ; <bagof-Fragment; concat; reverse> "ConstInit"       => cnst-inits
     );
@@ -262,50 +260,6 @@ strategies
   
 
 /**
- * Frames
- */
-
-strategies
-
-  init-frames =
-    rules( Frame :+ _ -> "_outermost")
-
-  frame-of =
-    FrameOf <+ !"_outermost"
-
-  function-pointer =
-    if not(frame-of => "_outermost") then
-      id
-    end
-
-  var-access =
-    id    
-
-  frame =
-    ?f
-    ; Frame
-
-  static-link' =
-     foldr(
-        !exp|[ sl ]|,
-	!exp|[ sl_up(~exp:<Snd>) ]|
-      )
-
-  static-link =
-    debug(!"static-link: ");
-    where(frame-of => g)
-    ; debug(!"static-link a: ")
-    ; bigbagof-Frame
-    ; debug(!"static-link b: ")
-    ; take-until(?g)
-    ; debug(!"static-link c: ")
-    ; foldr(
-        !exp|[ sl ]|,
-	!exp|[ sl_up(~exp:<Snd>) ]|
-      )
-    ; debug(!"static-link d: ")
-
-/**
  * Translation of strategy definition to C function
  */
 
@@ -336,14 +290,10 @@ strategies
         ; <mk-int-const> off1 => off1'
         ; <mk-int-const> off2 => off2'
 	; debug(!"off2: ")
-        ; {| Frame, FrameOf, ArgToCl
- 	   : Frame => g
-	   ; debug(!"frame: ")
-	   ; rules(
-               Frame   :+ _ -> f
-	       FrameOf :  f -> g
-	     )
-	   ; <map(debug(!"TranslateVarDec: "); TranslateVarDec; debug(!": "))> [a1*,a2*] => args
+        ; {| ArgToCl
+	   : <map(debug(!"TranslateVarDec: ")
+		  ; TranslateVarDec
+		  ; debug(!": "))> [a1*,a2*] => args
 	   ; debug(!"args: ")
 	   ; <newname> "fail" => F
 	   ; <translate-strat(|Next, F)>s => stm
@@ -375,15 +325,7 @@ strategies
 
   TranslateVarDec :
     VarDec(x, FunType(ts,_)) -> param-dec|[ StrCL x ]|
-    where rules( ArgToCl : |[ x(|) ]| -> exp|[ x ]| )
-
-/* @todo
-
-    where Frame => g
-	; rules(
-	    VarAccess : Var(x) -> exp|[ sl_up ...
-          )
-*/
+    where rules( ArgToCl : |[ ~id:x{t*}(|) ]| -> exp|[ x ]| )
 
   TranslateType : 
     ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None)
@@ -474,9 +416,45 @@ rules
 
   MkClosure :
     Def|[ f(a1*|a2*) = s ]| ->
-    dec|[ struct str_closure ~id:x = {&~id:f, &sl}; ]|
+    dec|[ struct str_closure ~id:x = {&~id:f, &frame}; ]|
     where <conc-strings>(f, "_cl") => x
-	; rules( ArgToCl : |[ f(|) ]| -> exp|[ &x ]| )
+	; rules( ArgToCl : |[ ~id:f{t*}(|) ]| -> exp|[ &x ]| )
+
+
+
+/**
+ * Static links
+ */
+
+strategies
+
+  static-link =
+    static-link-top-level
+    <+ no-static-link
+
+  static-link-top-level :
+    x{"frames", "top-level", frames} -> e
+    where debug(!"static link: ")
+	; <frames-to-static-link> frames => e
+
+  frames-to-static-link =
+    (Tl <+ debug(!"frames-to-static-link error ***: "); <exit> 1);
+    foldr(!exp|[ sl ]|,
+	  !exp|[ sl_up(~exp:<Snd>) ]|)
+
+  no-static-link =
+    debug(!"no-static-link: ")
+    ; <exit> 1
+
+  mk-call : 
+    (f{("frames", "top-level", frames)}, args) -> 
+    exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
+    where <frames-to-static-link> frames => sl
+
+  mk-call : 
+    (f{"closure", t*}, args) -> 
+    exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]| 
+
 
 /**
  * Strategy calls
@@ -488,41 +466,7 @@ rules
     <check-unbound-args(|F,t*); debug(!"call translated: ")>
     stm|[ 
       { 
-        t = f(~exp:<static-link>f, ~exp*:args); 
-        if( t == NULL ) goto ~id:F; else goto ~id:S; 
-      }
-    ]|
-    where debug(!"call a: ")
-	; <map(ArgToCl)> s* => args1
-        ; debug(!"call b: ")
-	; <map(topdown(try(construct-term)))> t* => args2
-        ; debug(!"call c: ")
-	; <concat>[args1, args2, [Id("t")]] => args
-        ; debug(!"call d: ")
-
-  TranslateStrat(|S,F) :
-    Strat|[ ~id:f{"toplevel"}(s* | t* ) ]| -> 
-    <check-unbound-args(|F,t*); debug(!"call translated: ")>
-    stm|[ 
-      { 
-        t = f(~exp:<static-link>f, ~exp*:args); 
-        if( t == NULL ) goto ~id:F; else goto ~id:S; 
-      }
-    ]|
-    where debug(!"call a: ")
-	; <map(ArgToCl)> s* => args1
-        ; debug(!"call b: ")
-	; <map(topdown(try(construct-term)))> t* => args2
-        ; debug(!"call c: ")
-	; <concat>[args1, args2, [Id("t")]] => args
-        ; debug(!"call d: ")
-
-  TranslateStrat(|S,F) :
-    Strat|[ ~id:f{"closure"}(s* | t* ) ]| -> 
-    <check-unbound-args(|F,t*); debug(!"call translated: ")>
-    stm|[ 
-      { 
-        t = (cl_fun(~id:f))(cl_sl(~id:f), ~exp*:args); 
+        t = ~exp:(<debug(!"mk-call: "); mk-call; debug>(f, args)); 
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
@@ -577,9 +521,6 @@ rules
   TranslateStrat(|S,F) :
     Match(Wld, trm) -> stm|[ goto ~id:S; ]|
 
-//  TranslateStrat(|S,F) :
-//    Match(BuildDefault(t), trm) -> stm|[ goto ~id:S; ]|
-
   TranslateStrat(|S,F) :
     Match(As(t1,t2), trm) ->
     stm|[ 
@@ -591,25 +532,50 @@ rules
 
   TranslateStrat(|S,F) :
     Match(Var(x){"unbound"}, trm) ->
-    stm|[ { x = ~exp:trm; goto ~id:S; } ]|
+    stm|[ { ~exp:e = ~exp:trm; goto ~id:S; } ]|
+    where <VarToWriteRef> x => e
 
   TranslateStrat(|S,F) :
     Match(Var(x){"bound"}, trm) ->
-    stm|[ if( x == ~exp:trm ) goto ~id:S; else goto ~id:F; ]|
+    stm|[ 
+      if( ~exp:e == ~exp:trm ) 
+        goto ~id:S; 
+      else 
+        goto ~id:F; 
+     ]|
+    where <VarToReadRef> x => e
 
   TranslateStrat(|S,F) :
     Match(Var(x){"(un)bound"}, trm) ->
     stm|[ 
-      if( x == NULL )
+      if( ~exp:e1 == NULL )
         { 
-          x = ~exp:trm; 
+          ~exp:e2 = ~exp:trm; 
           goto ~id:S; 
         }
-      else if( x != ~exp:trm )
+      else if( ~exp:e1 != ~exp:trm )
         goto ~id:F;
       else
         goto ~id:S;
     ]|
+    where <VarToReadRef> x => e1
+	; <VarToWriteRef> x => e2
+
+  VarToWriteRef :
+    x{} -> exp|[ x ]|
+
+  VarToWriteRef : 
+    x{("frames",off,frames)} -> 
+    exp|[ sl_readvar(~exp:<mk-int-const>off, ~exp:sl) ]|
+    where <frames-to-static-link> frames => sl
+
+  VarToReadRef : 
+    x{} -> exp|[ x ]|
+
+  VarToReadRef : 
+    x{("frames",off,frames)} -> 
+    exp|[ sl_readvar(~exp:<mk-int-const>off, ~exp:sl) ]|
+    where <frames-to-static-link> frames => sl
 
   TranslateStrat(|S,F) :
     Match(Var(x){}, trm) -> <translate-strat(|S,F)> Match(Var(x){"(un)bound"}, trm)
@@ -839,13 +805,8 @@ rules
     ]|
 
   ConstructVar :
-    Term|[ x ]| -> exp|[ ~id:x ]|
-    where !x => _{}
-
-  ConstructVar :
-    Term|[ x ]| -> exp|[ sl_readvar(~exp:<mk-int-const> off, ~exp:sl) ]|
-    where !x => _{("offset",off,levels)}
-	; <static-link'> levels => sl
+    Term|[ x ]| -> e
+    where <VarToReadRef> x => e
 
   ConstructAnnoVar :
     |[ x{^pt2} ]| -> 
