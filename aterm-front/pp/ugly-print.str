@@ -4,7 +4,11 @@ imports Box pp-aterm-options
 strategies
 
   ugly-print =
-    has-annotation < ugly-print-with-anno + ugly-print-without-anno
+    if has-annos then
+      ugly-print-with-anno
+    else
+      ugly-print-without-anno
+    end
 
   ugly-print-without-anno =
      UP-Int
