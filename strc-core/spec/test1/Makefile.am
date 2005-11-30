@@ -180,7 +180,7 @@ nodist_qcons_test04_SOURCES = qcons-test04.c
 
 nodist_let_test_SOURCES = let-test.c
 
-nodist_nested_defs01_SOURCES = nested_defs01.c
+nodist_nested_defs01_SOURCES = nested-defs01.c
 
 nodist_cs_test01_SOURCES = cs-test01.c
 
