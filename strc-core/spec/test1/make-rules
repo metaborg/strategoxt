@@ -243,16 +243,13 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 #
 # BACK-END ###########################################################
 
-#%.b1 : %.f21
-#	../opt/canonicalize -i $< -o $@ -b
-
 %.b1 : %.opt6
 	$(FC_CORE) -i $<
-	../opt/lift-definitions -i $< -o $@ -b
+	../opt/canonicalize -i $< -o $@ -b
 
 %.b2 : %.b1
 	$(FC_CORE) -i $<
-	../opt/canonicalize -i $< -o $@ -b
+	../opt/lift-definitions -i $< -o $@ -b
 
 %.b3 : %.b2
 	$(FC_CORE) -i $<
@@ -262,11 +259,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	$(FC_CORE) -i $<
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.b5 : %.b4
-	$(FC_CORE) -i $<
-	../c/escaping-variables -i $< -o $@ -b
-
-%.ac : %.b5
+%.ac : %.b4
 	$(FC_CORE) -i $<
 	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
@@ -287,6 +280,44 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 %.c : %.c.abox 
 	$(GPP)/bin/abox2text -i $< -o $@
+
+# BACK-END ###########################################################
+
+
+%.b1-ng : %.opt6
+	$(FC_CORE) -i $<
+	../opt/lift-definitions -i $< -o $@ -b
+
+%.b2-ng : %.b1-ng
+	$(FC_CORE) -i $<
+	../opt/canonicalize-ng -i $< -o $@ -b
+
+%.b3-ng : %.b2-ng
+	$(FC_CORE) -i $<
+	../opt/simplify1 -i $< -o $@ -b
+
+%.b4-ng : %.b3-ng
+	$(FC_CORE) -i $<
+	../opt/bound-unbound-vars -i $< -o $@ -b
+
+%.b5-ng : %.b4-ng
+	$(FC_CORE) -i $<
+	../c/escaping-variables -i $< -o $@ -b
+
+%.ac-ng : %.b5-ng
+	$(FC_CORE) -i $<
+	../c/s2c-ng -i $< -o $@  $(CINCLUDES) -b
+
+%.c-ng.abox : %.ac-ng
+	$(FC_C) -i $<
+	$(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
+
+%.c-ng.abox.check : %.c-ng.abox
+	abox-format -i $< 
+
+%-ng.c : %.c-ng.abox 
+	$(GPP)/bin/abox2text -i $< -o $@
+
 
 # PARSING C PROGRAMS ###############################################
 
