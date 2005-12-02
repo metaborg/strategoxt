@@ -168,7 +168,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 %.opt0: %.f21
 	$(FC_CORE) -i $<
-	../opt/fusion  -i $< -o $@ -b --verbose 2
+	../opt/fusion  -i $< -o $@ -b --verbose 5
 
 # Inlining
 

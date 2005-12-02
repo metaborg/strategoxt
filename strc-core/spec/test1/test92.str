@@ -1,0 +1,461 @@
+module test92
+
+imports
+  libstrategolib
+  Stratego
+
+strategies
+
+  main =
+    io-wrap(parenthesize-Stratego)
+
+  parenthesize-Stratego =
+    innermost(StrategoParenthesize)
+
+
+rules
+
+  StrategoParenthesize :
+    Explode(t_0, t_1) -> Explode(Parenthetical(t_0), t_1)
+    where <(?AnnoList(_, _)
+            + ?As(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    Explode(t_0, t_1) -> Explode(t_0, Parenthetical(t_1))
+    where <(?AnnoList(_, _)
+            + ?As(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    AnnoCong(t_0, t_1) -> AnnoCong(Parenthetical(t_0), t_1)
+    where <(?Build(_)
+            + ?Match(_)
+            + ?BA(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    AnnoCong(t_0, t_1) -> AnnoCong(t_0, Parenthetical(t_1))
+    where <(?Build(_)
+            + ?Match(_)
+            + ?BA(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    ExplodeCong(t_0, t_1) -> ExplodeCong(Parenthetical(t_0), t_1)
+    where <(?Build(_)
+            + ?Match(_)
+            + ?BA(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    ExplodeCong(t_0, t_1) -> ExplodeCong(t_0, Parenthetical(t_1))
+    where <(?Build(_)
+            + ?Match(_)
+            + ?BA(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    AnnoList(t_0, t_1) -> AnnoList(Parenthetical(t_0), t_1)
+    where <(?As(_, _) + fail)> t_0
+
+  StrategoParenthesize :
+    AnnoList(t_0, t_1) -> AnnoList(t_0, Parenthetical(t_1))
+    where <(?As(_, _) + fail)> t_1
+
+  StrategoParenthesize :
+    Build(t_0) -> Build(Parenthetical(t_0))
+    where <(?BA(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    Match(t_0) -> Match(Parenthetical(t_0))
+    where <(?BA(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    BA(t_0, t_1) -> BA(Parenthetical(t_0), t_1)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    BA(t_0, t_1) -> BA(t_0, Parenthetical(t_1))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnionFix(_, _)
+            + ?DynRuleIntersectUnionFix(_, _, _)
+            + ?DynRuleIntersectFix(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleUnionFix(t_0, t_1) -> DynRuleUnionFix(Parenthetical(t_0), t_1)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    DynRuleUnionFix(t_0, t_1) -> DynRuleUnionFix(t_0, Parenthetical(t_1))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleIntersectUnionFix(t_0, t_1, t_2) -> DynRuleIntersectUnionFix(Parenthetical(t_0), t_1, t_2)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    DynRuleIntersectUnionFix(t_0, t_1, t_2) -> DynRuleIntersectUnionFix(t_0, Parenthetical(t_1), t_2)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleIntersectUnionFix(t_0, t_1, t_2) -> DynRuleIntersectUnionFix(t_0, t_1, Parenthetical(t_2))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_2
+
+  StrategoParenthesize :
+    DynRuleIntersectFix(t_0, t_1) -> DynRuleIntersectFix(Parenthetical(t_0), t_1)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    DynRuleIntersectFix(t_0, t_1) -> DynRuleIntersectFix(t_0, Parenthetical(t_1))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?AM(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    AM(t_0, t_1) -> AM(Parenthetical(t_0), t_1)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    AM(t_0, t_1) -> AM(t_0, Parenthetical(t_1))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleIntersect(t_0, t_1, t_2) -> DynRuleIntersect(Parenthetical(t_0), t_1, t_2)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    DynRuleIntersect(t_0, t_1, t_2) -> DynRuleIntersect(t_0, Parenthetical(t_1), t_2)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + ?DynRuleIntersect(_, _, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleIntersect(t_0, t_1, t_2) -> DynRuleIntersect(t_0, t_1, Parenthetical(t_2))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleUnion(_, _, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_2
+
+  StrategoParenthesize :
+    DynRuleUnion(t_0, t_1, t_2) -> DynRuleUnion(Parenthetical(t_0), t_1, t_2)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + ?DynRuleUnion(_, _, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    DynRuleUnion(t_0, t_1, t_2) -> DynRuleUnion(t_0, Parenthetical(t_1), t_2)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + ?DynRuleUnion(_, _, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleUnion(t_0, t_1, t_2) -> DynRuleUnion(t_0, t_1, Parenthetical(t_2))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + ?Seq(_, _)
+            + fail)> t_2
+
+  StrategoParenthesize :
+    DynRuleIntersectUnion(t_0, t_1, t_2, t_3) -> DynRuleIntersectUnion(Parenthetical(t_0), t_1, t_2, t_3)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?Seq(_, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    DynRuleIntersectUnion(t_0, t_1, t_2, t_3) -> DynRuleIntersectUnion(t_0, Parenthetical(t_1), t_2, t_3)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?Seq(_, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    DynRuleIntersectUnion(t_0, t_1, t_2, t_3) -> DynRuleIntersectUnion(t_0, t_1, Parenthetical(t_2), t_3)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?Seq(_, _)
+            + ?DynRuleIntersectUnion(_, _, _, _)
+            + fail)> t_2
+
+  StrategoParenthesize :
+    DynRuleIntersectUnion(t_0, t_1, t_2, t_3) -> DynRuleIntersectUnion(t_0, t_1, t_2, Parenthetical(t_3))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?Seq(_, _)
+            + fail)> t_3
+
+  StrategoParenthesize :
+    Seq(t_0, t_1) -> Seq(Parenthetical(t_0), t_1)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + ?Seq(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    Seq(t_0, t_1) -> Seq(t_0, Parenthetical(t_1))
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + fail)> t_1
+
+  StrategoParenthesize :
+    Choice(t_0, t_1) -> Choice(Parenthetical(t_0), t_1)
+    where <(?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?Choice(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    LChoice(t_0, t_1) -> LChoice(Parenthetical(t_0), t_1)
+    where <(?Choice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?LChoice(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    RChoice(t_0, t_1) -> RChoice(Parenthetical(t_0), t_1)
+    where <(?Choice(_, _)
+            + ?LChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + ?RChoice(_, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    GuardedLChoice(t_0, t_1, t_2) -> GuardedLChoice(Parenthetical(t_0), t_1, t_2)
+    where <(?Choice(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + fail)> t_0
+
+  StrategoParenthesize :
+    GuardedLChoice(t_0, t_1, t_2) -> GuardedLChoice(t_0, Parenthetical(t_1), t_2)
+    where <(?Choice(_, _)
+            + ?LChoice(_, _)
+            + ?RChoice(_, _)
+            + ?GuardedLChoice(_, _, _)
+            + fail)> t_1
+
+
+signature
+  constructors
+    Parenthetical : Unknown -> Unknown
