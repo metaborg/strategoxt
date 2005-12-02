@@ -10,9 +10,7 @@ AM_LDFLAGS = \
 
 AM_CFLAGS = \
   -I$(prefix)/include \
-  -I$(ATERM)/include \
-  -fdump-translation-unit \
-  -fdump-tree-original-raw
+  -I$(ATERM)/include 
 
 STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
