@@ -65,6 +65,13 @@ rules
   // Always valid?
  
   BottomupOverConstructor :     
+    |[ !t; bottomup_1_0(s|) ]| -> |[ !<bottomup_1_0(s|)> t ]|
+
+  BottomupOverConstructor :     
     Term|[ <bottomup_1_0(s|)> c(t1*){^pt} ]| -> Term|[ <s> c(t2*){^pt} ]|
     where <map(\ t -> Term|[ <bottomup_1_0(s|)> t ]| \ )> [t1*] => [t2*]
+
+  BottomupOverConstructor :     
+    Term|[ <bottomup_1_0(s|)> pt1{^pt2} ]| -> Term|[ <s> pt1{^pt2} ]|
+    where <Int(id) <+ Str(id) <+ Real(id)> pt1
 

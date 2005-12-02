@@ -10,22 +10,21 @@ strategies
   fusion-io = 
     io-wrap(
       declare-inline-rules
-      ; ( // check-library-definitions; // don't check, just assume semantics
-          alltd(innermost-fusion)
-
-// turn off outermost-fusion while it is not finished (EV)
-//        ; alltd(innermost-fusion + outermost-fusion)
-
-        ) <+ log(|Notice(),"No innermost here")
+      ; alltd(innermost-fusion)
+      // turn off outermost-fusion while it is not finished (EV)
+      //; alltd(innermost-fusion + outermost-fusion)
     )
 
-// Inlining strategy definitions
+strategies
+
+  /**
+   * Inlining strategy definitions
+   */
 
   declare-inline-rules =
-    Specification([Signature(id),
-                   Strategies(map(declare-inline-rule))])
+    alltd(Strategies(map(try(declare-inline-rule))))
 
-  declare-inline-rule =
+  declare-inline-rule = 
     ?|[ f(a1*|a2*) = s1 ]|;
     rules(
       InlineStrat :
@@ -39,56 +38,16 @@ strategies
   inline-rules = 
     rec x(try(
         Simplify
-	+ Choice(x, x)
-	+ LChoice(x, x) 
-        + GuardedLChoice(x, x, x)
-	+ Scope(id, Seq(Match(id),Build(id)))
-	+ Scope(id, Seq(Match(id),Seq(id,Build(id))))
-	+ InlineStrat; x
+        <+ GuardedLChoice(x, x, x)
+	<+ Scope(id, Seq(Match(id), id))
+	<+ InlineStrat; x
     ))
 
-// Check library definitions
-// note that other implementations might also be correct
+strategies
 
-  check-library-definitions =
-    check-that-try-is-try
-    ; check-that-innermost-is-innermost
-    ; check-that-bottomup-is-bottomup
-
-  check-that-try-is-try =
-    where(
-      new => x
-      ; (<InlineStrat> Strategy|[ try_1_0(x(|)|) ]|
-         <+ log(|Notice(),"No definition of try_1_0: ",<id>); fail)
-      ; (?|[ x(|) < id + id ]|
-         <+ log(|Notice(),"try is not try"); fail)
-      ; log(|Notice(),"try is try ")
-    )
-
-  check-that-innermost-is-innermost =
-    where(
-      new => x
-      ; (<InlineStrat> Strategy|[ innermost_1_0(x(|)|) ]|
-         <+ log(|Notice(),"No definition of innermost_1_0"); fail)
-      ; (?|[ bottomup_1_0(try_1_0(x(|); innermost_1_0(x(|)|)|)|) ]|
-         <+ {z: ?|[ bottomup_1_0(rec z(try_1_0(x(|); bottomup_1_0(z(|)|)|))|) ]|}
-         <+ {z: ?|[ bottomup_1_0(rec z(x(|); bottomup_1_0(z(|)|) <+ id)|)  ]|}
-         <+ log(|Notice(),"innermost is not innermost"); fail)
-      ; log(|Notice(),"innermost is innermost ")
-    )
-
-  check-that-bottomup-is-bottomup =
-    where(
-      new => x
-      ; (<InlineStrat> Strategy|[ bottomup_1_0(x(|)|) ]|
-         <+ log(|Notice(),"No definition of bottomup_1_0"); fail)
-   // ; ?|[ rec y(all(y(|)); x(|)) ]|
-      ; (?|[ all(bottomup_1_0(x(|)|)); x(|) ]|
-         <+ log(|Notice(),"bottomup is not bottomup"); fail)
-      ; log(|Notice(),"bottomup is bottomup")
-    )
-
-// The fusion strategy
+  /**
+   * The fusion strategy
+   */
 
   innermost-fusion = 
     ?|[ innermost_1_0(s1|) ]| 
@@ -103,7 +62,7 @@ strategies
     ; propagate-mark
 
     ; fuse-with-bottomup
-    ; alltd(BottomupToVarIsId-UnCond + BottomupToVarIsId-Cond <+ UnMark)
+    ; alltd(BottomupToVarIsId <+ UnMark)
 
     ; not(oncetd(?Strategy|[ mark(|) ]|)
           ; say(!"not all marks removed"))
@@ -127,19 +86,7 @@ strategies
 	+ SeqOverLChoiceR
 	+ SeqOverScopeR
 	+ AssociateR
-	+ IntroduceApp
 	+ BottomupOverConstructor
-    )
-
-  propagate-nf-assertion = 
-    is-innermost;
-    innermost(
-	SeqOverChoiceL
-	+ SeqOverLChoiceL
-	+ SeqOverScopeL 
-	+ AssociateL
-	+ IntroduceApp
-	+ NormalFormToBuildVars
     )
 
   // The following rule applies in the context of the transformation
@@ -148,48 +95,29 @@ strategies
   // originates in the left-hand side of the rewrite rule, we know
   // it is already in normal form.
 
-  bottomup-to-var-old =
-    ?bu
-  ; rules(
-      BottomupToVarIsId-UnCond :
-        |[ mark(|); ?t1; !t2 ]| -> |[ ?t1; !t3 ]|
-        where !bu => s
-            ; <tvars> t1 => vs
-            ; {| Replace : 
-                 map(!Var(<id>); {?t; rules(Replace : Term|[ <s> t ]| -> Term|[ t ]|)})
-                 ; <alltd(Replace)> t2 => t3 |}
-
-      BottomupToVarIsId-Cond :
-        |[ mark(|); ?t1; where(s); !t2 ]| -> |[ ?t1; where(s'); !t2 ]|
-        where !bu => s''
-            ; <tvars> t1 => vs
-            ; {| Replace : 
-                 map(!Var(<id>); {?t; rules(Replace : Term|[ <s''> t ]| -> Term|[ t ]|)})
-                 ; <alltd(Replace)> (s, t2) => (s', t3) |}
-   )
-
   bottomup-to-var = ?bu;
     rules(
-      BottomupToVarIsId-UnCond :
-        |[ mark(|); ?t1; !t2 ]| -> |[ ?t1; !t3 ]|
-        where <replace-application> (bu, t1, t2) => t3
-
-      BottomupToVarIsId-Cond :
-        |[ mark(|); ?t1; where(s); !t2 ]| -> |[ ?t1; where(s'); !t3 ]|
-        where <replace-application> (bu, t1, (s, t2)) => (s', t3)
+      BottomupToVarIsId :
+        |[ mark(|); ?t1; s ]| -> |[ ?t1; s' ]|
+        where <replace-application> (bu, t1, s) => s'
     )
 
    replace-application :
-     (s, t1, t2) -> t3
-     where {| Replace : 
-              <tvars; map({?x; rules(Replace : Term|[ <s> x ]| -> Term|[ x ]|)})> t1;
-              <alltd(Replace)> t2 => t3 
+     (s1, t1, s2) -> s3
+     where {| Replace
+            : <tvars; map({?x; rules(Replace : Term|[ <s> x ]| -> Term|[ x ]|)})> t1
+            ; <alltd(Replace)> s2 => s3 
            |}
 
   // remove mark
 
   UnMark :
     Strategy|[ mark(|) ]| -> Strategy|[ id ]|
+
+
+
+
+strategies // outermost fusion
 
   outermost-fusion :
     |[ outermost_1_0(s1|) ]| -> 
