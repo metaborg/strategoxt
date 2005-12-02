@@ -41,7 +41,13 @@ strategies // Desugaring Strategies
     topdown(
       try(desugarRule)
       ; repeat(
-          LiftPrimArgs + LiftCallArgs + LiftBuildApps + LiftMatchApps + Desugar
+          LiftPrimArgs
+	  <+ LiftCallArgs 
+	  <+ LiftTopLevelBuildApp
+	  <+ LiftBuildApps
+	  <+ LiftTopLevelMatchApp
+	  <+ LiftMatchApps 
+	  <+ Desugar
         )
     )
 
@@ -90,6 +96,9 @@ rules // Lift non-variable arguments to primitives.
 
 rules
 
+  LiftTopLevelBuildApp :
+    |[ !<s> t ]| -> |[ !t; s ]|
+
   LiftBuildApps : 
     |[ !t ]| -> s
     where {| AddApp
@@ -106,6 +115,9 @@ rules
     Term|[ <s> ]| -> Term|[ x ]|
     where new => x
         ; rules( AddApp :+ s' -> |[ {x : where(s => x); s'} ]| )
+
+  LiftTopLevelMatchApp :
+    |[ ?<s> t ]| -> |[ s; ?t ]|
 
   LiftMatchApps : 
     |[ ?t ]| -> s

@@ -64,8 +64,8 @@ rules
   // Note: Code duplication
   // Always valid?
  
-  BottomupOverConstructor :     
-    |[ !t; bottomup_1_0(s|) ]| -> |[ !<bottomup_1_0(s|)> t ]|
+//  BottomupOverConstructor :     
+//    |[ !t; bottomup_1_0(s|) ]| -> |[ !<bottomup_1_0(s|)> t ]|
 
   BottomupOverConstructor :     
     Term|[ <bottomup_1_0(s|)> c(t1*){^pt} ]| -> Term|[ <s> c(t2*){^pt} ]|

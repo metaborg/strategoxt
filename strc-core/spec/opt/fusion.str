@@ -86,6 +86,8 @@ strategies
 	+ SeqOverLChoiceR
 	+ SeqOverScopeR
 	+ AssociateR
+        + IntroduceApp
+        + ApptoApp
 	+ BottomupOverConstructor
     )
 
