@@ -62,6 +62,7 @@ strategies
     ; propagate-mark
 
     ; fuse-with-bottomup
+    ; mark-non-free-constructors(||[ x(|) ]|)
     ; alltd(BottomupToVarIsId <+ UnMark)
 
     ; not(oncetd(?Strategy|[ mark(|) ]|)
@@ -91,6 +92,45 @@ strategies
 	+ BottomupOverConstructor
     )
 
+  // Constructors for which there is no rule in the rule set
+
+  // Note only works if all rules start with a (non-variable) match; anything
+  // else
+
+  mark-non-free-constructors(|s) =
+    {| NotFree 
+     : alltd(mark-non-free-constructor1 
+             <+ mark-non-free-constructor2 
+             <+ mark-non-free-constructor3)
+     ; if not(Foo) then 
+	 log(|Notice(), "eliminating reductions of free terms")
+         ; topdown(try(FooBar(|s))) 
+       end
+     |}
+
+  mark-non-free-constructor1 =
+    ?|[ mark(|); ?c(t1*){^pt1}; s ]|
+    ; where( <length> t1* => n )
+    ; rules(
+        NotFree : PreTerm|[ c(t2*) ]| -> PreTerm|[ c(t2*) ]|
+	          where <length> t2* => n
+      )
+
+  mark-non-free-constructor2 =
+    ?|[ mark(|); ?pt1{^pt2}; s ]|
+    ; where(<not(?Var(_))> pt1)
+    ; rules( NotFree : |[ pt1 ]| )
+
+  mark-non-free-constructor3 =
+    ?|[ mark(|); s2 ]|
+    ; rules( Foo : _ )
+    ; log(|Notice(), "suspicious rule; cannot eliminate reductions of free terms")
+
+  FooBar(|s) :
+    Term|[ <s> pt1{^pt2} ]| -> Term|[ pt1{^pt2} ]|
+    where <not(NotFree)> pt1
+
+
   // The following rule applies in the context of the transformation
   // above, where we know that the bottomup is the application of the
   // normalisation strategy to all subterms. Since the variable
@@ -109,7 +149,7 @@ strategies
      where {| Replace
             : <tvars; map({?x; rules(Replace : Term|[ <s1> x ]| -> Term|[ x ]|)})> t1
             ; <alltd(Replace)> s2 => s3 
-           |}
+            |}
 
   // remove mark
 
