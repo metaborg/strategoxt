@@ -25,9 +25,14 @@ EXTRA_DIST = \
 
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
 
+# Workaround for issue https://bugs.cs.uu.nl/browse/STR-476
+if XT_DARWIN
+  AM_LDFLAGS += -single_module
+endif
+
 libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native
 libstratego_sglr_la_CFLAGS   = -Wall
-libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined
+libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_sglr_la_LIBADD   = \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
