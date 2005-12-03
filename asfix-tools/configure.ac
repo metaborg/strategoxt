@@ -11,7 +11,7 @@ AC_PROG_LIBTOOL
 
 # TODO: make a pkg-config file for sglr.
 AC_SUBST([SGLR_CFLAGS],['-I $(SGLR)/include'])
-AC_SUBST([SGLR_LIBS],['$(SGLR)/lib/libsglr.a -lmept -lErrorAPI'])
+AC_SUBST([SGLR_LIBS],['-L$(SGLR)/lib -lsglr -lmept -lErrorAPI'])
 
 AC_CONFIG_FILES([
   stratego-sglr.pc
