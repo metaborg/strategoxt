@@ -107,7 +107,7 @@ strategies
    replace-application :
      (s1, t1, s2) -> s3
      where {| Replace
-            : <tvars; map({?x; rules(Replace : Term|[ <s> x ]| -> Term|[ x ]|)})> t1
+            : <tvars; map({?x; rules(Replace : Term|[ <s1> x ]| -> Term|[ x ]|)})> t1
             ; <alltd(Replace)> s2 => s3 
            |}
 
