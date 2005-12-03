@@ -40,6 +40,8 @@ USA
  * Closures and static links.
  */
 
+/*
+
 typedef struct str_frame *StrStaticLink;
 
 typedef struct str_closure *StrClosure;
@@ -50,7 +52,7 @@ struct str_closure
   StrStaticLink sl;
 };
 
-struct str_frame 
+struct str_frame
 {
   StrStaticLink parent;
   ATerm **vars;  
@@ -63,7 +65,7 @@ struct str_frame
 
 #define sl_vars(n) \
   ATerm *sl_vars[n]; \
-  frame.vars = sl_vars; 
+  frame.vars = sl_vars;
 
 #define sl_funs(n) \
   StrClosure sl_funs[n]; \
@@ -79,6 +81,8 @@ struct str_frame
 
 #define sl_fun(i,s)    ((*(((s)->funs)+i))->fun)
 #define sl_fun_sl(i,s) ((*(((s)->funs)+i))->sl)
+
+*/
 
 
 /**
