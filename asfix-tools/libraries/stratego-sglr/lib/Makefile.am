@@ -27,7 +27,7 @@ CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrl
 
 # Workaround for issue https://bugs.cs.uu.nl/browse/STR-476
 if XT_DARWIN
-  AM_LDFLAGS += -single_module
+  AM_LDFLAGS += -static
 endif
 
 libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native
