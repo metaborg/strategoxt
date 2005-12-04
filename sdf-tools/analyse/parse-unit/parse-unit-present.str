@@ -3,7 +3,7 @@
  */
 module parse-unit-present
 imports
-  error-reporting
+  libstratego-sglr
 
 strategies
 
@@ -52,11 +52,11 @@ strategies
     )
 
   echo-parse-result :
-    ParseResult(_, Failure(Parse(summary))) -> ()
+    ParseResult(file, Failure(Parse(summary))) -> ()
     where
         <say(!"  - parsing failed")> ()
       ; <echo> "......................................................................."
-      ; report-error-summary(|summary)
+      ; <report-error-summary(|summary)> file
       ; <echo> "......................................................................."
 
   echo-parse-result :
