@@ -43,6 +43,10 @@ strategies
 
 rules
 
+  /**
+   * If this rule, which is not applicable, is removed, then the test
+   * succeeds. This might suggest that the bug is an arity problem.
+   */
   Java-15Parenthesize :
     Minus(t_0) -> Minus(Parenthetical(t_0))
     where <(?Minus(_, _)
