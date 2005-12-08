@@ -21,7 +21,7 @@ strategies
   needed-defs = 
     !( [ ("main", (0,0))
        , ("DYNAMIC-CALLS", (0,0))
-       ]
+       | <external-defs> ]
     , <sort-defs; check-ext-overload>
     , []
     )
@@ -65,6 +65,9 @@ strategies
 
   is-external-def =
     ?|[ external f(a1* | a2*) = s]|
+
+  external-defs = 
+    filter(is-external-def; DefinitionName)
 
   sdef-key-to-string :
     (f, (s, t)) -> <concat-strings> [f, "/", <int-to-string> s, "-", <int-to-string> t]
