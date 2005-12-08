@@ -112,14 +112,13 @@ strategies
     ?|[ mark(|); ?c(t1*){^pt1}; s ]|
     ; where( <length> t1* => n )
     ; rules(
-        NotFree : PreTerm|[ c(t2*) ]| -> PreTerm|[ c(t2*) ]|
-	          where <length> t2* => n
+        NotFree : (c, n)
       )
 
   mark-non-free-constructor2 =
     ?|[ mark(|); ?pt1{^pt2}; s ]|
     ; where(<not(?Var(_))> pt1)
-    ; rules( NotFree : |[ pt1 ]| )
+    ; rules( NotFree : (pt1, 0) )
 
   mark-non-free-constructor3 =
     ?|[ mark(|); s2 ]|
@@ -128,8 +127,12 @@ strategies
 
   FooBar(|s) :
     Term|[ <s> pt1{^pt2} ]| -> Term|[ pt1{^pt2} ]|
-    where <not(NotFree)> pt1
+    where <not(not-free)> pt1
 
+  not-free =
+    ?PreTerm|[ c(t*) ]|
+    ; <NotFree>(c, <length> t*)
+   <+ <NotFree>(<id>, 0)
 
   // The following rule applies in the context of the transformation
   // above, where we know that the bottomup is the application of the
