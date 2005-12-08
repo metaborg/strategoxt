@@ -58,7 +58,9 @@ strategies
     ; where(<bottomup-to-var> Strategy|[ bottomup_1_0(x(|)|) ]|)
 
     ; where(<inline-rules> s1 => s2)
-    ; !|[ bottomup_1_0(rec x((mark(|); s2); bottomup_1_0(x(|)|) < id + id)|) ]|
+    ; !|[ let x(|) = (mark(|); s2); bottomup_1_0(x(|)|) < id + id
+           in bottomup_1_0(x(|)|)
+          end ]|
     ; propagate-mark
 
     ; fuse-with-bottomup
