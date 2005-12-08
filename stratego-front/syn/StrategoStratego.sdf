@@ -7,40 +7,40 @@ exports
 
   context-free syntax
 
-              "|[" Module "]|" -> StrategoTerm {cons("ToTerm"),prefer}
-    "Module"  "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Module "]|" -> StrategoPreTerm {cons("ToTerm"),prefer}
+    "Module"  "|[" Module "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-              "|[" Decl   "]|" -> StrategoTerm {cons("ToTerm")}
-              "|[" Sdecl  "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Decl   "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Sdecl  "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-              "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
-    "Constr"  "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Opdecl "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Constr"  "|[" Opdecl "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-              "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
-    "Type"    "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Type   "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Type"    "|[" Type   "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-    "Sort"    "|[" Sort   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Sort"    "|[" Sort   "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-              "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
-    "Term"    "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Term   "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Term"    "|[" Term   "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-              "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
-    "Def"     "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Def    "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Def"     "|[" Def    "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-             "|[" Rule      "]|" -> StrategoTerm {cons("ToTerm")}
-    "Rule"   "|[" Rule      "]|" -> StrategoTerm {cons("ToTerm")}
-             "|[" StratRule "]|" -> StrategoTerm {cons("ToTerm")}
+             "|[" Rule      "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Rule"   "|[" Rule      "]|" -> StrategoPreTerm {cons("ToTerm")}
+             "|[" StratRule "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-               "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
-    "Strat"    "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
-    "Strategy" "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+               "|[" Strategy "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Strat"    "|[" Strategy "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Strategy" "|[" Strategy "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-    "O"        "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
-    "Overlay"  "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
+    "O"        "|[" Overlay  "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Overlay"  "|[" Overlay  "]|" -> StrategoPreTerm {cons("ToTerm")}
 
-    "Typedid" "|[" Typedid   "]|" -> StrategoTerm {cons("ToTerm")}
-%%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
-    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Typedid" "|[" Typedid   "]|" -> StrategoPreTerm {cons("ToTerm")}
+%%                 "|[" DynRuleDef   "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoPreTerm {cons("ToTerm")}
 
   context-free syntax
 
