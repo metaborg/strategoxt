@@ -7,7 +7,6 @@ CLEANFILES        = XTC
 libexec_SCRIPTS   = libtool
 
 ACLOCAL_AMFLAGS   = -I ../config
-XTC_IMPORT = $(STRATEGOXT)/share/strategoxt/XTC
 
 install-exec-hook: install-xtc
 
