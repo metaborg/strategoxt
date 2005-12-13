@@ -10,7 +10,8 @@ noinst_DATA = \
   ExpIntAmb.tbl \
   ConcreteSyntax.tbl ConcreteSyntax.str \
   Concrete.tbl \
-  CustomImplode.tbl
+  CustomImplode.tbl \
+  ConcreteSyntax2.tbl
 
 STRINCLUDES = -I ../lib
 

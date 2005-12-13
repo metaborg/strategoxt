@@ -24,6 +24,7 @@ strategies
     ; implode-tests
     ; implode-tests-custom
     ; implode-tests-concrete
+    ; implode-tests-conc
     )
 
   open-close-tests = id
@@ -568,6 +569,54 @@ strategies
       )
 
     ; where(<close-parse-table> tbl)
+
+  implode-tests-conc =
+      where(
+        <ReadFromFile> "ConcreteSyntax2.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+
+    ; apply-test(!"Conc test 1"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"e1*,e2*"
+      , !"Conc"#([meta-listvar("e1*"),meta-listvar("e2*")])
+      )
+
+    ; apply-test(!"Conc test 2"
+      , parse-string-pt(|tbl)
+        ; conc-test-fetch-top
+        ; appl(id, filter(not(is-ignorable-syntax)))
+        ; ReplConsConcTest(!"foo")
+      , !"e1*,e2*"
+      , !"Conc"#(["foo", "foo"])
+      )
+
+    ; apply-and-check(!"Conc test 3"
+      , parse-string-pt(|tbl)
+        ; conc-test-fetch-top
+        ; appl(id, filter(not(is-ignorable-syntax)))
+        ; ?appl(<id>, [_,_])
+      , !"e1*,e2*"
+      , is-conc
+      )
+
+    ; where(<close-parse-table> tbl)
+
+  conc-test-fetch-top =
+    oncetd(?appl(prod(_, cf(iter-star-sep(sort("Exp"), lit(","))), _), _); ?appl)
+    ; !appl
+
+  ReplConsConcTest(impl) =
+    ?appl(p, [t1,t2])
+    ; <is-conc> p
+    ; <impl> t1 => ts1
+    ; <impl> t2 => ts2
+    ; if <[] + [id|id]> ts2 then
+        <conc> (ts1, ts2)
+      else
+        !"Conc"#([ts1, ts2])
+      end
 
 signature
   constructors
