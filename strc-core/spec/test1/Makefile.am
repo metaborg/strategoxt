@@ -45,7 +45,6 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
 
 check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 
-# test71 implode-asfix
 # test26 global choice
 # test44 contexts
 
@@ -55,7 +54,6 @@ TESTS 		= $(check_PROGRAMS)
 test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
 test51_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test70_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
-test71_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test85_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test87_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test88_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -148,7 +146,6 @@ nodist_test67_SOURCES = test67.c
 nodist_test68_SOURCES = test68.c
 nodist_test69_SOURCES = test69.c
 nodist_test70_SOURCES = test70.c
-nodist_test71_SOURCES = test71.c
 nodist_test72_SOURCES = test72.c
 nodist_test73_SOURCES = test73.c
 nodist_test74_SOURCES = test74.c
