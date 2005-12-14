@@ -5,6 +5,6 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 CLEANFILES        = XTC
 EXTRA_DIST 	  = README Makefile.xt stratego-lib.pc.in svn-revision
 
-ACLOCAL_AMFLAGS   = -I ../config
+ACLOCAL_AMFLAGS   = -I ../config -I ./config
 
 pkgconfig_DATA = stratego-lib.pc

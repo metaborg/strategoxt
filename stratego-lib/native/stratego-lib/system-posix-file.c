@@ -288,6 +288,53 @@ ATerm SSL_open(ATerm pathname)
   return (ATerm) ATmakeInt(fd);
 }
 
+
+#ifdef HAVE_MKSTEMP_LIMIT /* for systems where mkstemp() is broken or allows few files
+                 per process before failing, we define our own: */
+static const unsigned char tempchars[] =
+"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+int __internal__mkstemp(char *template) {
+  
+  int i, fd, try, base, end;
+
+  end=strlen(template);
+  base=strlen(template)-6;
+
+  if(base<0) { /* the template did not have room for even "XXXXXX" */
+    errno = EINVAL;
+    return(-1);
+  }
+ 
+  for(i=base; i<end; i++)
+    if(template[i]!='X') {
+      errno = EINVAL;
+      return(-1);
+    } else {
+      template[i] = tempchars[rand()%(sizeof(tempchars)-1)];
+    }
+
+  /* we have now checked the template was well-formed, and have
+     already replaced it with a random string. we now try to open
+     that file for exclusive read/write: */ 
+
+  for(try=0; try<(1<<20); try++) { /* we try a million times.. */
+    if((fd=open(template, O_RDWR|O_CREAT|O_EXCL, 0600))>=0) {
+      return(fd); /* if we could grab the file, return it! */
+    } else { /* we were out of luck, so try a new name... */ 
+      for(i=base; i<end; i++) {
+        template[i] = tempchars[rand()%(sizeof(tempchars)-1)];
+      }
+    }
+  }
+
+  /* we give up. */
+  errno=EEXIST;
+  return(-1);
+}
+
+#endif /* HAVE_MKSTEMP_LIMIT */
+
 /**
  * mkstemp
  */
@@ -304,7 +351,13 @@ ATerm SSL_mkstemp(ATerm template) {
   result = (char*) malloc(strlen(str) + 1);
   strcpy(result, str);
 
+#ifndef HAVE_MKSTEMP_LIMIT /* for systems where mkstemp() can create hundreds of files per
+                  process, use it: */ 
   fd = mkstemp(result);
+#else
+  fd = __internal__mkstemp(result); /* otherwise, use our own */
+#endif /* HAVE_MKSTEMP_LIMIT */
+
   if(fd == -1) {
     _fail(template);
   }
@@ -591,5 +644,6 @@ ATerm SSL_pipe(void)
   }
   return (ATerm) ATempty;
 }
+
 
 
