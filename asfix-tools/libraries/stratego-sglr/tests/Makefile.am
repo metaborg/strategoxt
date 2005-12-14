@@ -24,6 +24,6 @@ EXTRA_DIST = \
   $(wildcard *.def) \
   $(wildcard *.exp)
 
-CLEANFILES = $(wildcard *.c) $(wildcard *.dep)
+CLEANFILES = $(wildcard *.c) $(wildcard *.dep) $(noinst_DATA)
 
 nodist_stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
