@@ -22,10 +22,9 @@ AC_CONFIG_FILES([
   xtc/Makefile
   test/Makefile
 
-  libraries/Makefile
-  libraries/stratego-sglr/Makefile
-  libraries/stratego-sglr/lib/Makefile
-  libraries/stratego-sglr/tests/Makefile
+  stratego-sglr/Makefile
+  stratego-sglr/lib/Makefile
+  stratego-sglr/tests/Makefile
 
   src/Makefile 
 

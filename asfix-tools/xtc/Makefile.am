@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 bin_PROGRAMS 	  = visamb implode-asfix sglri
 pkgdata_DATA 	  = visamb.pp.af
 
-STRATEGO_SGLR = $(top_srcdir)/libraries/stratego-sglr
+STRATEGO_SGLR = $(top_srcdir)/stratego-sglr
 
 STRINCLUDES = \
   -I $(STRATEGO_SGLR)/lib \

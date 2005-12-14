@@ -6,7 +6,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS = parse-unit
 
-STRATEGO_SGLR = $(top_builddir)/../asfix-tools/libraries/stratego-sglr
+STRATEGO_SGLR = $(top_builddir)/../asfix-tools/stratego-sglr
 parse_unit_LDADD = $(STRATEGO_SGLR)/lib/libstratego-sglr.la $(SSL_LIBS)
 
 STRCFLAGS   = --main main-$* 
