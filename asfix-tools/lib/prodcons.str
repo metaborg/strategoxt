@@ -38,8 +38,6 @@ module prodcons
 imports
   Sdf2
   verbalize-sdf
-  Literal-lib
-  Char-lib
   asfix-extra
 
 signature
@@ -67,14 +65,6 @@ rules
        <+ <syms2strs;strs2constr> syms => c
        <+ <conc;strs2constr>(<syms2strs>[sym],["dunno",<new>()]) => c
 
-  (*
-    where ( <lits2strs> syms => strs
-         <+ <syms2strs> syms => strs
-         <+ <conc>(<syms2strs>[sym],["dunno",<new>()]) => strs
-          )
-         ; <strs2constr> strs => c
-  *)
-
   mk-constr :
     prod-fun(c,_,_,_) 	-> <normalize-constr>c
 
@@ -92,20 +82,18 @@ strategies
 
   strs2constr
     = filter(not(empty-string))
-(*    ; test(Hd) *)
-(*    ; Cons(test(string-Hd;isUpper),id)*) (*First char of first string is Upper*)
-    ; Cons(test(string-Hd;isAlpha),id) (*First char of first string is Alpha*)
+    ; Cons(test(string-Hd;is-alpha),id) (*First char of first string is Alpha*)
     ; separate-by(!"-")
     ; concat-strings
 
 ; ?s;<not(is-subterm)>(s,["START","LCons","SCons","some","all","id","Cons","Nil","TCons","TNil","NL","L","Bracket"])
-    ; !s;escape;quote
+    ; !s;escape;double-quote
 
   string-Hd
     = explode-string;Hd
 
   normalize-constr
-    = try(test(not(de-quote)) ; quote)
+    = try(test(not(un-double-quote)) ; double-quote)
 
   empty-string
     = ?""
@@ -173,3 +161,13 @@ rules
   add-attributes :
     (prod-fun(fun,syms,sym,attrs(as')),as)
 	-> prod-fun(fun,syms,sym,attrs(<conc>(as',as)))
+
+strategies
+
+  uq2q =
+    explode-string
+    ; test(not(Hd;?34))         /* first char is NOT double-quote */
+    ; test(not(at-last(?[34]))) /* last char is NOT double-quote */
+    ; <concat> [[34], <id>, [34]]
+    ; implode-string
+

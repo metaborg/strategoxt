@@ -1,7 +1,6 @@
 module sdf-label
 imports
   Sdf2
-  Literal-lib
   verbalize-sdf
   AsFix
   liblib
@@ -74,7 +73,7 @@ strategies
     ; implode-string
 
   quote-sdf-keyword =
-    not(is-sdf-keyword) <+ quote
+    not(is-sdf-keyword) <+ double-quote
 
   is-sdf-keyword =
       "aliases"

@@ -47,7 +47,7 @@ strategies
 
   sdf-cons =
     alltd(lexical-syntax(id) <+ (is-prod; prodcons))
-  ; alltd(cons(try(de-quote)))
+  ; alltd(cons(try(un-double-quote)))
   ; if <get-config> "--modular" then
       uniquify-modular
     else

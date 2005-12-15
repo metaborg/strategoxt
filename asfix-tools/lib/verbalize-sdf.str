@@ -1,8 +1,6 @@
 module verbalize-sdf
 imports
   AsFix
-  Char-lib
-  Literal-lib
   Sdf2
 
 strategies
@@ -17,7 +15,7 @@ strategies
   sym2str
     = sym2strs;concat-strings
 
-  sym2str' (* Same as sym2str, except literals and labels are ignored) *)
+  sym2str' /* Same as sym2str, except literals and labels are ignored) */
     = Sym2Strs'; map(toAlphaNum <+ id); concat-strings; not(?"")
 
   lits2strs 
@@ -30,7 +28,7 @@ strategies
     ; (toAlphaNum <+ id)
 
   Lit2Str
-    = \lit(str)	-> <try(de-quote;de-escape)>str\
+    = \lit(str)	-> <try(un-double-quote;unescape)>str\
 
 
 strategies
@@ -51,8 +49,8 @@ strategies
   + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
   + \ alt(s1,s2)		-> <concat>[<x>s1,["or"],<x>s2] \
   + \ sort(str)			-> [str] \
-  + \ lit(str)			-> [<try(de-quote;de-escape)>str] \
-  + \ label(str,_)		-> [<try(de-quote;de-escape)>str] \
+  + \ lit(str)			-> [<try(un-double-quote;unescape)>str] \
+  + \ label(str,_)		-> [<try(un-double-quote;unescape)>str] \
   + \ layout			-> ["LAYOUT"] \
   )
 
@@ -93,8 +91,8 @@ strategies
   + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
   + \ alt(s1,s2)		-> <concat>[<x>s1,["|"],<x>s2] \
   + \ sort(str)			-> [str] \
-  + \ lit(str)			-> [<try(de-quote;de-escape)>str] \
-  + \ label(str,_)		-> [<try(de-quote;de-escape)>str] \
+  + \ lit(str)			-> [<try(un-double-quote;unescape)>str] \
+  + \ label(str,_)		-> [<try(un-double-quote;unescape)>str] \
  <+ \ layout			-> ["LAYOUT"] \
   )
 
@@ -114,34 +112,11 @@ rules
   toAlphaNum :  "-"	-> "minus"
   toAlphaNum :  "~"	-> "tilde"
 
-
   toAlphaNum :  "%"	-> "mod"
   toAlphaNum :  "<<"	-> "shift-left"
   toAlphaNum :  ">>"	-> "shift-right"
   toAlphaNum :  "!="	-> "not-equal"
 
-(*
-  toAlphaNum :  "."	-> "field"
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  ""	-> ""
-  toAlphaNum :  "("	-> ""
-  toAlphaNum :	")"	-> ""
-  toAlphaNum :  "{"	-> ""
-  toAlphaNum :  "}"     -> ""
-  toAlphaNum :  "["	-> ""
-  toAlphaNum :  "]"	-> ""
-  toAlphaNum :  "[["	-> ""
-  toAlphaNum :  "]]"	-> ""
-*)
   toAlphaNum :	"<"	-> "lt"
   toAlphaNum :	"<="	-> "le"
   toAlphaNum :  ">"	-> "gt"
@@ -165,9 +140,9 @@ rules
   toAlphaNum :  "^="    -> "assignExp" 
   toAlphaNum :  "|="    -> "assignOr" 
 
-
   toAlphaNum :	xs	-> ""
-                where <explode-string;not(map(isAlphaNumHyphen))>xs
+  where
+    <explode-string;not(map(is-alphanum + '-'))>xs
 
 strategies
 
