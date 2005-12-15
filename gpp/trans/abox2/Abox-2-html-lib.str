@@ -73,10 +73,10 @@ html-string =
    explode-string;
    listtd( try( replace-quotes ) );
    map(try(
-      \32 -> <explode-string>"&nbsp;" \  (* space *)
-   +  \38 -> <explode-string>"&amp;" \   (* & *)
-   +  \60 -> <explode-string>"&lt;" \    (* < *)
-   +  \62 -> <explode-string>"&gt;" \    (* > *)
+      \32 -> <explode-string>"&nbsp;" \
+   +  \38 -> <explode-string>"&amp;" \
+   +  \60 -> <explode-string>"&lt;" \
+   +  \62 -> <explode-string>"&gt;" \
    ));
    flat-list;
    implode-string

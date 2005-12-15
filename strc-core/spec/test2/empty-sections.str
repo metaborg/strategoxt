@@ -1,4 +1,4 @@
-(* all sections can be empty *)
+/* all sections can be empty */
 
 module empty-sections
 imports

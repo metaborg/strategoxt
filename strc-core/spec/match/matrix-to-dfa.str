@@ -28,7 +28,7 @@ rules
   MatrixScope :
     Matrix(ps, rows) -> 
     Let(sdefs, Scope(ps, Seq(Assign(Var([0])), Matrix(rows'))))
-    where <unzip((* Row(id,simplify-widen); *) RowLet(|ps)); (concat,id)> rows => (sdefs, rows')
+    where <unzip(/* Row(id,simplify-widen); */ RowLet(|ps)); (concat,id)> rows => (sdefs, rows')
 
   RowLet(|ps):
     Row(ts, s) -> ([], Row([], ts, s))

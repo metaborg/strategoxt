@@ -17,13 +17,13 @@ rules
   CallFailFun :
     Fail -> CallT(SVar("_Fail"),[],[])
 
-(*
+/*
  
   f(id)  f(g)
 
   f(x + y) -> let z = x + y in f(z)
 
-*)
+*/
 
   Canon =
     let

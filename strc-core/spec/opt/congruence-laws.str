@@ -37,7 +37,7 @@ rules
           <zip(\ ((x,y), s) -> Seq(Build(Var(x)), Seq(s, Match(Var(y)))) \ )> 
             (<zip(id)>(xs,ys), [s | ss]) => ss'
 
-(*
+/*
   Canon :
     Cong(c, ss) -> 
     Scope(<conc>(xs,ys), 
@@ -50,4 +50,4 @@ rules
   ApplyStrat : 
     s -> ((x,y),Seq(Build(Var(x)), Seq(s, Match(Var(y)))))
     where new => x; new => y
-*)
+*/

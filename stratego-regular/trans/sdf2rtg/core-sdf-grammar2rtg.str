@@ -574,12 +574,3 @@ strategies
     ; log(|severity, <conc-strings> ("  ", prodtxt))
     )
 
-(*
-  Sym2Strings = rec x(
-  + \ iter-n(sym,_)		-> <concat>[<x>sym,       ["n"]] \
-  + \ iter-sep-n(sym,sep,_)	-> <concat>[<x>sym,<x>sep,["n"]] \
-  + \ pair(s1,s2)		-> <concat>[<x>s1,["and"],<x>s2] \
-  + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
-  )
-*)
-

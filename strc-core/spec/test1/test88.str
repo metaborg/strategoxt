@@ -26,13 +26,13 @@ strategies
     ; topdown(
         {t,t2,x:
          test(!"c" ; ?t);
-         if DeclId(Id(test(?t))) (* works with O3 *) then
+         if DeclId(Id(test(?t))) /* works with O3 */ then
            debug(!"1st bang method matched ok:")
          else
            debug(!"no match: ")
          end;
          
-         if DeclId(Id(test(?t))) (* works with O3 *) then
+         if DeclId(Id(test(?t))) /* works with O3 */ then
            debug(!"2nd bang method matched ok:")
          else
            debug(!"no match: ")
@@ -51,13 +51,13 @@ strategies
 
   foo1 = 
     test(!"c" ; ?t);
-    if DeclId(Id(test(?t))) (* works with O3 *) then
+    if DeclId(Id(test(?t))) /* works with O3 */ then
       debug(!"1st bang method matched ok:")
     else
       debug(!"no match: ")
     end;
          
-    if DeclId(Id(test(?t))) (* works with O3 *) then
+    if DeclId(Id(test(?t))) /* works with O3 */ then
       debug(!"2nd bang method matched ok:")
     else
       debug(!"no match: ")

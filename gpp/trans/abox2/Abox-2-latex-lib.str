@@ -82,21 +82,21 @@ strategies
 
   escape-special-characters =
    map(try(
-            \32 -> <explode-string>"\\boxspace{}" \ (* space *)
-         +  \35 -> <explode-string>"\\#" \ (* # *)
-         +  \36 -> <explode-string>"\\$" \ (* $ *)
-         +  \37 -> <explode-string>"\\%" \ (* % *)
-         +  \38 -> <explode-string>"\\&" \ (* & *)
-         +  \45 -> <explode-string>"\\mbox{-}" \ (* - *)
-         +  \60 -> <explode-string>"\\ensuremath{<}" \ (* < *)
-         +  \62 -> <explode-string>"\\ensuremath{>}" \ (* > *)
-         +  \92 -> <explode-string>"\\ensuremath{\\backslash}" \ (* \ *)
-         +  \94 -> <explode-string>"\\^{}" \ (* ^ *)
-         +  \95 -> <explode-string>"\\_" \ (* _ *)
-         + \123 -> <explode-string>"\\{" \ (* { *)
-         + \124 -> <explode-string>"\\ensuremath{\\vert}" \ (* | *)
-         + \125 -> <explode-string>"\\}" \ (* } *)
-         + \126 -> <explode-string>"\\~{}" \ (* ~ *)
+            \32 -> <explode-string>"\\boxspace{}" \ /* space */
+         +  \35 -> <explode-string>"\\#" \
+         +  \36 -> <explode-string>"\\$" \
+         +  \37 -> <explode-string>"\\%" \
+         +  \38 -> <explode-string>"\\&" \
+         +  \45 -> <explode-string>"\\mbox{-}" \ /* - */
+         +  \60 -> <explode-string>"\\ensuremath{<}" \
+         +  \62 -> <explode-string>"\\ensuremath{>}" \
+         +  \92 -> <explode-string>"\\ensuremath{\\backslash}" \
+         +  \94 -> <explode-string>"\\^{}" \
+         +  \95 -> <explode-string>"\\_" \
+         + \123 -> <explode-string>"\\{" \
+         + \124 -> <explode-string>"\\ensuremath{\\vert}" \
+         + \125 -> <explode-string>"\\}" \
+         + \126 -> <explode-string>"\\~{}" \
         ))
    ; flat-list
 

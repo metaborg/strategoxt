@@ -55,14 +55,14 @@ strategies
              crush(![],union,id)
           <+ crush(![],union,x))
 
-(* // if we had strategy abstraction /\(x1,...,xn) -> s
+/* // if we had strategy abstraction /\(x1,...,xn) -> s
 
   free-vars(getvars, boundvars, boundin) = 
     collect(getvars
            ,/\ (x,nil) -> 
             {vs: where(boundvars => vs); 
                  boundin(split(x, !vs); diff, x, nil)})
-*)
+*/
 
   free-vars(getvars, boundvars
            , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term

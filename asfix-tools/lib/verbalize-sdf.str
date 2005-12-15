@@ -54,7 +54,7 @@ strategies
   + \ layout			-> ["LAYOUT"] \
   )
 
-  Sym2Strs' = rec x( (* Same as Sym2Strs, except that literals and labels are ignored *)
+  Sym2Strs' = rec x( /* Same as Sym2Strs, except that literals and labels are ignored */
     \ cf(sym)			-> <x> sym \
   + \ lex(sym)			-> <x> sym \
   + \ empty()			-> ["unit"] \

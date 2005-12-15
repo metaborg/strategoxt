@@ -82,7 +82,7 @@ strategies
 
   strs2constr
     = filter(not(empty-string))
-    ; Cons(test(string-Hd;is-alpha),id) (*First char of first string is Alpha*)
+    ; Cons(test(string-Hd;is-alpha),id) /*First char of first string is Alpha*/
     ; separate-by(!"-")
     ; concat-strings
 

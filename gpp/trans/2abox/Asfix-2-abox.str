@@ -271,7 +271,7 @@ get-pp-entry =
    (
       <pp-table-get>path; Snd
    <+
-(*
+/*
  No template exists; generate a new box template for the symbol and
  all its nested symbols.
  It works as follows:
@@ -288,7 +288,7 @@ get-pp-entry =
  6) We store all generated templates in case they don not already exist
  7) Finally, we retrieve the template that we were looking for
 
-*)
+*/
       <reverse>path;[?num| reverse=>p];
       !p;
       pp-table-get; Fst;
