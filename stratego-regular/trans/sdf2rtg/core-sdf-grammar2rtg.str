@@ -142,6 +142,15 @@ strategies
   ignore-prod =
     ?prod([varsym(cf(a))], cf(a), _)
 
+  /**
+   * Ignore lit -> lit | lit | lit productions
+   */
+  ignore-prod =
+    ?prod([lit(_)], cf(alt(lit(_), more)),attrs([]))
+    ; where(
+        <rec rec(lit(id) + alt(rec, rec))> more
+      )
+
   ignore-prod =
     ?prod([start()], sort("SURROGATE-START"), _)
 
