@@ -136,6 +136,12 @@ strategies
   ignore-prod =
     ?prod([a],  cf(a), _)
 
+  /**
+   * Ignore varsym -> context-free injections
+   */
+  ignore-prod =
+    ?prod([varsym(cf(a))], cf(a), _)
+
   ignore-prod =
     ?prod([start()], sort("SURROGATE-START"), _)
 
