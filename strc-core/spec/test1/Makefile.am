@@ -62,6 +62,7 @@ test91_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test92_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test93_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test94_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test95_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 bar.o 		: bar.c
 
@@ -169,8 +170,7 @@ nodist_test91_SOURCES = test91.c
 nodist_test92_SOURCES = test92.c
 nodist_test93_SOURCES = test93.c
 nodist_test94_SOURCES = test94.c
-
-
+nodist_test95_SOURCES = test95.c
 
 nodist_io_test10_SOURCES = io-test10.c
 nodist_io_test11_SOURCES = io-test11.c
