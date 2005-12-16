@@ -9,6 +9,9 @@ ATerm stream_to_term(FILE*);
 ATermTable hashtable_from_term(ATerm table);
 ATerm hashtable_to_term(ATermTable table);
 
+ATermIndexedSet indexedSet_from_term(ATerm set_term);
+ATerm indexedSet_to_term(ATermIndexedSet set);
+
 /* Integers */
 
 #define assert_is_int(t) if(ATgetType(t) != AT_INT) return NULL;

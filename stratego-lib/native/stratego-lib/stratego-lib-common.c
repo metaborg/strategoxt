@@ -111,7 +111,7 @@ ATermTable hashtable_from_term(ATerm table) {
   } else if(ATisInt(table)) {
     result = (ATermTable) ATgetInt((ATermInt)table);
   } else {
-    fprintf(stderr, "[srts | error] SRTS/table/table_from_term: not a blob or int\n");
+    fprintf(stderr, "[srts | error] SRTS/table/table_from_term: not blob \n");
     _fail(table);
   }
 
@@ -124,3 +124,30 @@ ATermTable hashtable_from_term(ATerm table) {
 ATerm hashtable_to_term(ATermTable table) {
   return AT_pointer_to_term((void*) table);
 }
+
+/**
+ * Returns a IndexedSet for a given ATerm
+ */
+ATermIndexedSet indexedSet_from_term(ATerm set_term) {
+  ATermIndexedSet result = NULL;
+
+  if(ATisBlob(set_term)) {
+    result = (ATermIndexedSet) AT_term_to_pointer(set_term);
+  }
+  else if(ATisInt(set_term)) {
+    result = (ATermIndexedSet) ATgetInt((ATermInt) set_term);
+  } else {
+    fprintf(stderr, "[srts | error] SRTS/sets/indexedSet_from_term: not a blob \n");
+    _fail(set_term);
+  }
+
+  return result;
+}
+
+/**
+ * Converts an IndexedSet to  a representation in an ATerm.
+ */
+ATerm indexedSet_to_term(ATermIndexedSet set) {
+  return AT_pointer_to_term((void*) set);
+}
+

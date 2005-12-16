@@ -1,37 +1,6 @@
 #include <srts/stratego.h>
 #include "stratego-lib-common.h"
 
-/*************************************************************************
- * IndexedSet <-> ATerm conversion
- */
-
-/**
- * Returns a IndexedSet for a given ATerm
- */
-ATermTable indexedSet_from_term(ATerm set_term) {
-  ATermIndexedSet result = NULL;
-
-  if(ATisInt(set_term)) {
-    result = (ATermIndexedSet) ATgetInt((ATermInt)set_term);
-  } else {
-    fprintf(stderr, "[srts | error] SRTS/sets/indexedSet_from_term: not an int\n");
-    _fail(set_term);
-  }
-
-  return result;
-}
-
-/**
- * Converts an IndexedSet to  a representation in an ATerm.
- */
-ATerm indexedSet_to_term(ATermIndexedSet set) {
-  /* TODO: use a Blob */
-  return (ATerm) ATmakeInt((int) set);
-}
-
-/**************************************************************************
- * IndexedSet primitives
- */
 ATerm SSL_indexedSet_create(ATerm initial_size_term, ATerm max_load_term) {
   assert_is_int(initial_size_term);
   assert_is_int(max_load_term);
