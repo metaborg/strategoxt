@@ -38,6 +38,26 @@ static void register_init(void)
   SRTS_stratego_initialize = &SSL_initialize;
 }
 
+ATerm AT_pointer_to_term(void* pointer) {
+  return (ATerm) ATmakeBlob(0, pointer);
+}
+
+void* AT_term_to_pointer(ATerm term) {
+  void* pointer = NULL;
+
+  if(ATisBlob(term)) {
+    if(ATgetBlobSize((ATermBlob) term) != 0) {
+      return NULL;
+    } else {
+      pointer = ATgetBlobData((ATermBlob) term);
+    }
+  } else {
+    return NULL;
+  }
+
+  return pointer;
+}
+
 /**
  * Old FILE* representations
  * bootstrap problem
@@ -61,34 +81,13 @@ FILE* stream_from_term_transitional(ATerm stream) {
 }
 
 /**
- * Converts the only real FILE* representation in an ATerm
- * to a FILE*. Doesn't try to be clever or helpful with handling
- * other representations.
- */
-FILE* stream_from_term_strict(ATerm term) {
-  FILE* result = NULL;
-
-  if(ATisBlob(term)) {
-    if(ATgetBlobSize((ATermBlob) term) != sizeof(FILE*)) {
-      _fail(term);
-    } else {
-      result = (FILE*) ATgetBlobData((ATermBlob) term);
-    }
-  } else {
-    _fail(term);
-  }
-
-  return result;
-}
-
-/**
  * Returns a FILE* for a given ATerm
  *
  * It handles all possible representations of streams in Stratego.
  */
 FILE* stream_from_term(ATerm stream) {
   if(ATisBlob(stream)) {
-    return stream_from_term_strict(stream);
+    return (FILE*) AT_term_to_pointer(stream);
   } else {
     return stream_from_term_transitional(stream);
   }
@@ -98,8 +97,6 @@ FILE* stream_from_term(ATerm stream) {
  * Converts a FILE* the a representation in an ATerm.
  */
 ATerm stream_to_term(FILE* stream) {
-  return (ATerm) ATmakeInt((int)stream) ; // ATmakeBlob(sizeof(FILE*),stream);
+  return AT_pointer_to_term((void*) stream);
 }
-
-
 

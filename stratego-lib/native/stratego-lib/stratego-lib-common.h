@@ -1,7 +1,10 @@
-FILE* stream_from_term_transitional(ATerm) ;
-FILE* stream_from_term_strict(ATerm) ;
-FILE* stream_from_term(ATerm) ;
-ATerm stream_to_term(FILE*) ;
+ATerm pointer_to_term(void* pointer);
+void* term_to_pointer(ATerm term);
+
+FILE* stream_from_term_transitional(ATerm);
+FILE* stream_from_term_strict(ATerm);
+FILE* stream_from_term(ATerm);
+ATerm stream_to_term(FILE*);
 
 ATermTable hashtable_from_term(ATerm table);
 ATerm hashtable_to_term(ATermTable table);
