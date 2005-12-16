@@ -8,6 +8,7 @@ strategies
       fileno-tests
     ; access-tests
     ; aterm-io-tests
+    ; file-stream-tests
     ; char-output-tests
     ; cwd-tests
     )
@@ -49,20 +50,6 @@ strategies
     // this used to result in a segmentation fault
     ; apply-test(!"access -- 3", try(<access> (<id>, [Read | []{1}])), !"/")
     ; apply-test(!"access -- 4", try(<access> (<id>, [Read]{1})), !"/")
-
-  /*
-      apply-and-fail(!"access --  1", <access> (<id>, [Write]), !"/proc/uptime")
-    ; apply-test(    !"access --  2", <access> (<id>, [Existence]), !"/proc/uptime", !"/proc/uptime")
-    ; apply-test(    !"access --  3", <access> (<id>, [Read]),  !"/proc/uptime", !"/proc/uptime")
-    ; apply-and-fail(!"access --  4", <access> (<id>, [Read, Write]),  !"/proc/uptime", !"/proc/uptime")
-    ; apply-and-fail(!"access --  5", <access> (<id>, []), !"/proc/uptime")
-    ; apply-and-fail(!"access --  6", <access> (<id>, 1), !"/proc/uptime")
-    ; apply-and-fail(!"access --  7", <access> (<id>, [Read]), !"/root")
-    ; apply-test(    !"access --  8", <access> (<id>, [Existence]), !"/root", !"/root")
-    ; apply-and-fail(!"access --  9", <access> (<id>, [Existence]), !"blablabla.blabla")
-    ; apply-test(    !"access -- 10", <access> (<id>, [Execute, Read, Write]), !"posix-file-test", !"posix-file-test")
-    ; apply-test(    !"access -- 11", <access> (<id>, [Existence]), !"posix-file-test", !"posix-file-test")
-  */
 
   aterm-io-tests =
       aterm-io-tests(write-in-baf-to-stream)
@@ -106,6 +93,20 @@ strategies
     ; apply-and-fail(!"fputs applied to a term that is not a stream"
       , <fputc> ("a", <id>)
       , !Stream("foo")
+      )
+
+    ; apply-test(!"Multiple open file streams"
+      ,   <fopen> ("test1.aterm", "w") => stream1
+        ; <fopen> ("test2.aterm", "w") => stream2
+        ; <write-in-text-to-stream> (stream1, "test1")
+        ; <write-in-text-to-stream> (stream2, "test2")
+        ; <fclose> stream1
+        ; <fclose> stream2
+        ; <ReadFromFile> "test1.aterm" => "test1"
+        ; <ReadFromFile> "test2.aterm" => "test2"
+        ; <remove-file> "test1.aterm"
+        ; <remove-file> "test2.aterm"
+      , !()
       )
 
   char-output-tests = id

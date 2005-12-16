@@ -100,3 +100,27 @@ ATerm stream_to_term(FILE* stream) {
   return AT_pointer_to_term((void*) stream);
 }
 
+/**
+ * Returns a ATermTable for a given ATerm
+ */
+ATermTable hashtable_from_term(ATerm table) {
+  ATermTable result = NULL;
+
+  if(ATisBlob(table)) {
+    result = (ATermTable) AT_term_to_pointer(table);
+  } else if(ATisInt(table)) {
+    result = (ATermTable) ATgetInt((ATermInt)table);
+  } else {
+    fprintf(stderr, "[srts | error] SRTS/table/table_from_term: not a blob or int\n");
+    _fail(table);
+  }
+
+  return result;
+}
+
+/**
+ * Converts an ATermTable to  a representation in an ATerm.
+ */
+ATerm hashtable_to_term(ATermTable table) {
+  return AT_pointer_to_term((void*) table);
+}

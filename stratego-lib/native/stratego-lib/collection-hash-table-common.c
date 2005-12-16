@@ -3,39 +3,6 @@
 
 ATermTable SSL_table_table = NULL;
 
-
-/**
- * Returns a ATermTable for a given ATerm
- */
-ATermTable hashtable_from_term(ATerm table) {
-  ATermTable result = NULL;
-
-  if(ATisBlob(table)) {
-    if(ATgetBlobSize((ATermBlob) table) != sizeof(ATermTable)) {
-      fprintf(stderr, "[srts | error] SRTS/table/table_from_term: size of blob is not equal to size of ATermTable\n");
-      _fail(table);
-    } else {
-      result = (ATermTable) ATgetBlobData((ATermBlob) table);
-    }
-  } else if(ATisInt(table)) {
-    result = (ATermTable) ATgetInt((ATermInt)table);
-  } else {
-    fprintf(stderr, "[srts | error] SRTS/table/table_from_term: not a blob or int\n");
-    _fail(table);
-  }
-
-  return result;
-}
-
-/**
- * Converts an ATermTable to  a representation in an ATerm.
- */
-ATerm hashtable_to_term(ATermTable table) {
-  return (ATerm) ATmakeInt((int) table);
-  //  return (ATerm) ATmakeBlob(sizeof(ATermTable),table) ;
-}
-
-
 /**************************************************************************
  * Table primitives
  */
