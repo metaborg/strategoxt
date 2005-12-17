@@ -3,6 +3,7 @@
  */
 module stratego/error-support/report
 imports
+  libxtclib
   error-support
 
 strategies
@@ -170,7 +171,3 @@ strategies
           <print-context-in-file> txt
         end
     end
-
-signature
-  constructors
-    FILE : String -> FILE

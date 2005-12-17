@@ -34,6 +34,7 @@ libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_
 libstratego_sglr_la_CFLAGS   = -Wall
 libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_sglr_la_LIBADD   = \
+  $(STRATEGO_XTC_LIBS) \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
   $(SGLR_LIBS) \
@@ -41,5 +42,5 @@ libstratego_sglr_la_LIBADD   = \
 
 libstratego-sglr.rtree libstratego-sglr.c :
 	@$(STRC)/bin/strc -c --library -i stratego-sglr.str -o libstratego-sglr.rtree \
-          --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1
+          --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(XTC_STRCFLAGS)
 	rm libstratego-sglr.str

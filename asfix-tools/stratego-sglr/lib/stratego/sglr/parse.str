@@ -10,6 +10,7 @@
 module stratego/sglr/parse
 imports
   libstrategolib
+  libxtclib
 
 /**
  * Parse a string to an AST.
