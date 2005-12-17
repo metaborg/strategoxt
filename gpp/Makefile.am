@@ -4,6 +4,5 @@ SUBDIRS           = syn sig trans xtc-tools tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt make_rules.tests svn-revision
-CLEANFILES        = XTC
 
 ACLOCAL_AMFLAGS = -I ../config

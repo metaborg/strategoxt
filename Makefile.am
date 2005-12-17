@@ -2,6 +2,8 @@ ACLOCAL_AMFLAGS = -I config
 
 SUBDIRS      = . news-archive manpages $(PKGS)
 DIST_SUBDIRS =   news-archive manpages $(DIST_PKGS)
+CLEANFILES   = $(BUILD_REPOSITORY)
+
 EXTRA_DIST   = \
   README svn-revision bootstrap Makefile.xt \
   strategoxt.spec.in strategoxt.spec \

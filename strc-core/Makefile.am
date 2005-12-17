@@ -3,7 +3,6 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS           = spec
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt svn-revision
-CLEANFILES        = XTC
 libexec_SCRIPTS   = libtool
 
 ACLOCAL_AMFLAGS   = -I ../config

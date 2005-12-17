@@ -159,7 +159,7 @@ AC_DEFUN([XT_CHECK_XTC],
 # Arguments for XTC repositories.
 AC_DEFUN([XT_WITH_XTC_ARGS],
 [
-  BUILD_XTC="XTC"
+  BUILD_XTC="BUILDTIME_XTC"
 
   XT_ARG_WITH2([repository],      [datadir/$PACKAGE/XTC], [FILE], [XTC Repository])
   XT_ARG_WITH2([build-repository],[BUILD_XTC],            [FILE], [Build-time XTC Repository])
