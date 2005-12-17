@@ -145,5 +145,4 @@ AB_CONFIG_PKG(stratego-regular, --with-repository=${REPOSITORY} --with-build-rep
 AB_CONFIG_PKG(xml-front,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 
 # AB_CONFIG_PKG(xtar,             --with-repository=${REPOSITORY})
-# AB_CONFIG_PKG(boxenv,           --with-repository=${REPOSITORY})
 
