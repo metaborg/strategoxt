@@ -111,13 +111,16 @@ strategies
 
   char-output-tests = id
 
-    ; apply-test(!"stdout char output test -- 1",
-        <write-to-stream> (<id>, "This is stdout (1)")
-      ; <fputs> ("This is stdout (2)\n", <id>)
-      ; <puts> "This is stdout (3)"
-      , stdout-stream
-      , stdout-stream
-      )
+    ; { stream :
+        where(stdout-stream => stream)
+      ; apply-test(!"stdout char output test -- 1",
+          <write-to-stream> (<id>, "This is stdout (1)")
+        ; <fputs> ("This is stdout (2)\n", <id>)
+//        ; <puts> "This is stdout (3)"
+        , !stream
+        , !stream
+        )
+      }
 
     ; apply-test(!"write a text file with fputc",
         <write-text-file-c> ("text-file.tmp", <id>)

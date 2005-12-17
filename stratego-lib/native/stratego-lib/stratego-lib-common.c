@@ -39,23 +39,44 @@ static void register_init(void)
 }
 
 ATerm AT_pointer_to_term(void* pointer) {
-  return (ATerm) ATmakeBlob(0, pointer);
+ void** blobdata;
+
+ if((blobdata = (void**) malloc(sizeof(void*))) == NULL) {
+   perror("malloc error for pointer_to_term");
+   return NULL;
+ }
+
+ *blobdata = pointer;
+ return (ATerm) ATmakeBlob(sizeof(void*), blobdata);
 }
 
 void* AT_term_to_pointer(ATerm term) {
-  void* pointer = NULL;
+  void** blobdata;
+  void* pointer;
 
   if(ATisBlob(term)) {
-    if(ATgetBlobSize((ATermBlob) term) != 0) {
+    if(ATgetBlobSize((ATermBlob) term) != sizeof(void*)) {
       return NULL;
-    } else {
-      pointer = ATgetBlobData((ATermBlob) term);
     }
+
+    blobdata = ATgetBlobData((ATermBlob) term);
+    pointer = *blobdata;
   } else {
-    return NULL;
+    pointer = NULL;
   }
 
   return pointer;
+}
+
+void AT_free_pointer_term(ATerm term) {
+  void** blobdata;
+
+  if(ATisBlob(term)) {
+    if(ATgetBlobSize((ATermBlob) term) == sizeof(void*)) {
+      blobdata = ATgetBlobData((ATermBlob) term);
+      free(blobdata);
+    }
+  }
 }
 
 /**
@@ -71,10 +92,12 @@ FILE* stream_from_term_transitional(ATerm stream) {
     result = stderr;
   } else if(stream == stdin_term) {
     result = stdin;
-  } else if(ATisInt(stream)) { // file pointer
-    result = (FILE*) ATgetInt((ATermInt)stream);
-  } else { // not a stream
-    _fail(stream);
+  } else if(ATisInt(stream)) {
+    fprintf(stderr, "error: obsolete stream representation used (integer).\n");
+    result = NULL;
+  } else {
+    fprintf(stderr, "error: invalid stream representation used.\n");
+    result = NULL;;
   }
 
   return result;
@@ -109,9 +132,10 @@ ATermTable hashtable_from_term(ATerm table) {
   if(ATisBlob(table)) {
     result = (ATermTable) AT_term_to_pointer(table);
   } else if(ATisInt(table)) {
-    result = (ATermTable) ATgetInt((ATermInt)table);
+    fprintf(stderr, "error: obsolete hashtable representation used (integer).\n");
+    result = NULL;
   } else {
-    fprintf(stderr, "[srts | error] SRTS/table/table_from_term: not blob \n");
+    fprintf(stderr, "error: invalid hashtable representation used.\n");
     _fail(table);
   }
 
@@ -133,12 +157,12 @@ ATermIndexedSet indexedSet_from_term(ATerm set_term) {
 
   if(ATisBlob(set_term)) {
     result = (ATermIndexedSet) AT_term_to_pointer(set_term);
-  }
-  else if(ATisInt(set_term)) {
-    result = (ATermIndexedSet) ATgetInt((ATermInt) set_term);
+  } else if(ATisInt(set_term)) {
+    fprintf(stderr, "error: obsolete set representation used (integer).\n");
+    result = NULL;
   } else {
-    fprintf(stderr, "[srts | error] SRTS/sets/indexedSet_from_term: not a blob \n");
-    _fail(set_term);
+    fprintf(stderr, "error: invalid set representation used.\n");
+    result = NULL;
   }
 
   return result;
