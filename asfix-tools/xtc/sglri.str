@@ -35,11 +35,10 @@ strategies
         ; try-get-start-symbol => sort
         )
       ; open-input-stream => stream
-      ; ( finally(
-            parse-stream-pt(|tbl, sort, <path-of-input> input)
-          , <fclose> stream
-            ; <close-parse-table> tbl
-          ) <+ <report-parse-error> input
+      ; finally(
+          parse-stream-pt(report-parse-error | tbl, sort, <path-of-input> input)
+        , <fclose> stream
+          ; <close-parse-table> tbl
         )
       ; implode-asfix-using-config
     end

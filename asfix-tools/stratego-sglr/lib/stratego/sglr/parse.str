@@ -71,7 +71,10 @@ strategies
     parse-stream(|tbl, start-symbol, "string")
 
   parse-stream(|tbl, start-symbol, path) =
-    parse-stream-pt(|tbl, start-symbol, path)
+    parse-stream(id|tbl, start-symbol, path)
+    
+  parse-stream(onfail|tbl, start-symbol, path) =
+    parse-stream-pt(onfail|tbl, start-symbol, path)
     ; implode-asfix
 
 /**
@@ -89,11 +92,14 @@ strategies
 
   parse-stream-pt(|tbl, start-symbol) =
     parse-stream-pt(|tbl, start-symbol, "stream")
-
+    
   parse-stream-pt(|tbl, start-symbol, path) =
+    parse-stream-pt(id|tbl, start-symbol, path)
+    
+  parse-stream-pt(onfail|tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; ?Stream(stream)
-    ; prim("STRSGLR_parse_stream_pt", stream, internal-tbl, start-symbol, path)
+    ; prim("STRSGLR_parse_stream_pt", onfail | stream, internal-tbl, start-symbol, path)
 
 /**
  * Parse a file to an AST.
@@ -131,7 +137,7 @@ strategies
 
   parse-file-pt(|tbl, start-symbol) =
     ?path; parse-file-pt(|tbl, start-symbol, path)
-
+    
   parse-file-pt(|tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; <fopen> (<id>, "r") => stream

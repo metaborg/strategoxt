@@ -131,7 +131,7 @@ ATerm STRSGLR_parse_string_pt(ATerm string_term, ATerm tbl_term, ATerm start_ter
  *
  * sort is allowed to be None.
  */
-ATerm STRSGLR_parse_stream_pt(ATerm stream_term, ATerm tbl_term, ATerm start_term, ATerm path_term)
+ATerm STRSGLR_parse_stream_pt(ATerm onfail(ATerm), ATerm stream_term, ATerm tbl_term, ATerm start_term, ATerm path_term)
 {
   char* text;
   ATerm result;
@@ -145,6 +145,10 @@ ATerm STRSGLR_parse_stream_pt(ATerm stream_term, ATerm tbl_term, ATerm start_ter
     return NULL;
 
   result = parse_string_pt(text, tbl_term, start_term, path_term);
+  if(result == NULL)
+  {
+    onfail(ATmakeString(text));
+  }
   free(text);
   return result;
 }
