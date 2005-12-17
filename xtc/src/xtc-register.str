@@ -34,13 +34,22 @@ strategies
 
   xtc-register =
       <get-config> "-t" => tools
-    ; log(|Debug(),"Tools :",<id>)
+    ; log(|Debug(), ["Tools : " | <separate-by(|", ")> tools])
+
     ; <get-config> "-V" => version
-    ; log(|Debug(),"Version :",<id>)
-    ; <get-config> "-l" => loc
-    ; log(|Debug(),"Location :",<id>)
+    ; log(|Debug(), ["Version : ", version])
+
+    ; if <get-config> "--path" then
+          <get-config> "--path" => path
+        ; log(|Debug(), ["Path : ", path])
+        ; xtc-register-path(|tools, version, path)
+      else
+          <get-config> "-l" => loc
+        ; log(|Debug(), ["Location : ", loc])
+        ; xtc-register(|tools, version, loc)
+      end
+
     ; !tools
-    ; xtc-register(|tools, version, loc)
 
   /**
    * @param  tools    String or List(String)
@@ -54,6 +63,19 @@ strategies
     ; (is-list <+ ![<id>])
     ; map(<table-union>(XTC, Tool(<id>), 
 	    [(version, <concat-strings>[loc,"/",<id>])]))
+    )
+
+  /**
+   * @param  tools    String or List(String)
+   * @param  version  String
+   * @param  path     Directory of tools
+   */
+  xtc-register-path(|tools, version, path) =
+    where(
+      xtc-load
+    ; !tools
+    ; (is-list <+ ![<id>])
+    ; map(<table-union> (XTC, Tool(<id>), [(version, path)]))
     )
 
   register-import =

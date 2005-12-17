@@ -38,7 +38,11 @@ strategies
 
   + ArgOption("-l" + "--location",
         where(<set-config>("-l", <id>)),
-        !"-l loc  | --location loc     Location of tool")
+        !"-l loc  | --location loc     Location of tool (directory)")
+
+  + ArgOption("-p" + "--path",
+        where(<set-config>("--path", <id>)),
+        !"-p path | --path path        Location of tool (full path)")
 
   + ArgOption("-V" + "--Version",
         where(<set-config>("-V", <id>)),
