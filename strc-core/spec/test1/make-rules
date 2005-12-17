@@ -3,7 +3,7 @@
 	   %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.s10 %.s11 %.s12 %.s13 
 
 CINCLUDES = \
-  --C-include "<srts/stratego.h>" \ 	 
+  --C-include "<srts/stratego.h>" \
   --C-include "<stratego-lib/stratego-lib.h>"
 
 # MAKE COPY OF SSL ####################################################

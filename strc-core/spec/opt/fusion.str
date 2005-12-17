@@ -28,11 +28,11 @@ strategies
     ?|[ f(a1*|a2*) = s1 ]|;
     rules(
       InlineStrat :
-        Strategy|[ f(s*|t*) ]| -> <simplify0> |[ { x* : s4; s3 } ]|
+        Strategy|[ f(s*|t*) ]| -> <simplify0> |[ { x* : where(s4); s3 } ]|
         where <strename> |[ f(a1*|a2*) = s1 ]| => |[ f(a3*|a4*) = s2 ]|
 	    ; <ssubs> (<map(?VarDec(<id>,_))> [a3*], [s*], s2) => s3
-	    ; <map(?VarDec(<id>,_))> a2* => x*
-	    ; !<zip(\ (t, y) -> |[ !t; ?y ]|\ ); seqs>(t*, x*) => s4
+	    ; <map(?VarDec(<id>,_))> a4* => x*
+	    ; <zip(\ (t, y) -> |[ !t; ?y ]|\ ); seqs>(t*, x*) => s4
     )
 
   inline-rules = 
