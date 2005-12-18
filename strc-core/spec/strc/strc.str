@@ -192,7 +192,7 @@ strategies // Compile generated C code
     where log(|Notice(), "Compiling C code")
 	; get-outfile(!".o") => ofile
 	; <call-backend>
-	   ("gcc", <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]])
+	   (<xtc-find> "cc", <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]])
 
   link-object-code :
     FILE(ofile) -> FILE(target)
