@@ -721,10 +721,10 @@ rules
     where <(Op(id, map(Cache)); proper-list 
 	    + Anno(Cache, Cache) 
 	    + Int(id) + Str(id) + Real(id) /* + BuildDefault(id) */)> t
-        ; new => base; <conc-strings>("term_", <id>) => x
-	; !Id(x) => e2
+        ; <newname> "term" => x
+        ; !Id(x) => e2
         ; rules( Cache : t -> e2 )
-        ; !(base, x, e1)
+        ; !(x, e1)
         ; fragment(DeclareTermId|"ConstDecl")
         ; fragment(InitTermId|"ConstInit")
 
@@ -828,11 +828,11 @@ strategies
       ; not(is-ListOp)
 
   DeclareTermId :
-    (base, x, e) ->
+    (x, e) ->
     c:dec|[ static ATerm ~id:x; ]|
 
   InitTermId :
-    (base, x, e) ->
+    (x, e) ->
     [Stat(Assign(Id(x), AssignEq, e)),
      Stat(FunCall(Id("ATprotect"),[Address(Id(x))]))]
 
