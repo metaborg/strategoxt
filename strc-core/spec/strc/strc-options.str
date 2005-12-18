@@ -237,7 +237,7 @@ strategies
   ]
 
   strc-version =
-    where(<printnl>(stdout, 
+    where(<fprintnl>(stdout(), 
 	  ["STRC ", <get-config> "VERSION", " (revision ", <svn-revision-number> (), ")\n\n",
 	  "Copyright (C) 1998-2005 Eelco Visser <visser@acm.org>\n",
 	  "\n",
