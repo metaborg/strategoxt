@@ -200,7 +200,7 @@ strategies // Compile generated C code
 	; (<get-config> "-o" <+ get-outfile(!"")) => target
 	; <call-backend>
 	    (<xtc-find> "libtool", [
-              "--mode=link", "gcc", ofile, "-o", target | <get-config> "-Xlinker"])
+              "--mode=link", <xtc-find> "cc", ofile, "-o", target | <get-config> "-Xlinker"])
 
 strategies
 
