@@ -429,8 +429,12 @@ rules
 strategies
 
   static-link =
-    static-link-top-level
+    static-link-local
+    <+ static-link-top-level
     <+ no-static-link
+
+  static-link-local :
+    x{"frames", "local", frames} -> exp|[ x ]|
 
   static-link-top-level :
     x{"frames", "top-level", frames} -> e
@@ -438,7 +442,7 @@ strategies
 	; <frames-to-static-link> frames => e
 
   frames-to-static-link =
-    (Tl <+ debug(!"frames-to-static-link error ***: "); <exit> 1);
+    (Tl <+ debug(!"frames-to-static-link error ***: "); fail);
     foldr(!exp|[ sl ]|,
 	  !exp|[ sl_up(~exp:<Snd>) ]|)
 
@@ -564,6 +568,9 @@ rules
   VarToWriteRef :
     x{} -> exp|[ x ]|
 
+  VarToWriteRef :
+    x{("frames", "local", _)} -> exp|[ x ]|
+
   VarToWriteRef : 
     x{("frames",off,frames)} -> 
     exp|[ sl_readvar(~exp:<mk-int-const>off, ~exp:sl) ]|
@@ -571,6 +578,9 @@ rules
 
   VarToReadRef : 
     x{} -> exp|[ x ]|
+
+  VarToReadRef :
+    x{("frames", "local", _)} -> exp|[ x ]|
 
   VarToReadRef : 
     x{("frames",off,frames)} -> 

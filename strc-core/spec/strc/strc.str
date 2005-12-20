@@ -150,7 +150,14 @@ strategies
 
 strategies
 
-  back-end =
+  back-end = 
+    if <get-config> "--ng" => "on" then
+      back-end-ng
+    else
+      back-end-classic
+    end
+
+  back-end-classic =
     log-timed(
       canonicalize
       ; save-as1(!".can")
@@ -168,6 +175,27 @@ strategies
           ; fc2(|"Stratego-Core", "be-buv")
 	)
       ; s2c
+      ; fc-c(|1,"be-c")
+      ; ac2abox
+      ; abox2text
+      ; rename-to(get-outfile(!".c"))
+    | "Back-end succeeded"
+    , 1 
+    )
+
+  back-end-ng =
+    log-timed(
+      lift-definitions
+      ; fc2(|"Stratego-Core", "be-lift")
+      ; canonicalize-ng
+      ; fc2(|"Stratego-Core", "be-can")
+      ; simplify1
+      ; fc3(|"Stratego-Core", "be-sim")
+      ; bound-unbound-vars
+      ; fc2(|"Stratego-Core", "be-buv")
+      ; escaping-variables
+      ; fc2(|"Stratego-Core", "be-esc")
+      ; s2c-ng
       ; fc-c(|1,"be-c")
       ; ac2abox
       ; abox2text
@@ -467,8 +495,10 @@ strategies // COMPILER COMPONENTS
   simplify2 		= comp(|"simplify2")
   simplify3 		= comp(|"simplify3")
   canonicalize 		= comp(|"canonicalize")
+  canonicalize-ng 	= comp(|"canonicalize")
   lift-definitions 	= comp(|"lift-definitions")
   bound-unbound-vars 	= comp(|"bound-unbound-vars")
+  escaping-variables 	= comp(|"escaping-variables")
 
 // EXPORT
 
@@ -487,9 +517,15 @@ strategies // COMPILER COMPONENTS
   ; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
     
   abox2text 	= comp-out(|"abox2text")
+
   s2c 		= comp(|"s2c",  
 	 		<concat>[
 			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
 			  <pass-library>
 			])
 
+  s2c-ng 	= comp(|"s2c-ng",  
+	 		<concat>[
+			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
+			  <pass-library>
+			])

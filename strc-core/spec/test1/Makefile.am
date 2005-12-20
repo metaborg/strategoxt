@@ -41,7 +41,8 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
 		  let-test \
 		  nested-defs01 \
 		  cs-test01 \
-		  static-links
+		  static-links \
+		  nested-defs01-ng test01-ng test02-ng
 
 check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 

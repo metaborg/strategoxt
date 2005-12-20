@@ -22,6 +22,7 @@ strategies
     ; <set-config> ("--statistics", 1)
     ; <set-config> ("-O", 2)
     ; <set-config> ("-I", [])
+    ; <set-config> ("--ng", "off")
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
 
@@ -160,6 +161,10 @@ strategies
   + ArgOption("-O",
         where(<set-config>("-O", <string-to-int; set-opt-level> )); !(),
 	!"-O n               Optimization level (0 = no optimization)" )
+
+  + ArgOption("--ng",
+        where(<set-config>("--ng", <id>); !()),
+	!"--ng on|off : use ng backend (default: off)" )
 
 
   + Option("--fusion",     
