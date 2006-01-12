@@ -4,6 +4,7 @@ strategies
 
   c-simplify =
     bottomup-l(repeat(Csimplify))
+    ; remove-unused-labels
     
 rules
 
@@ -49,3 +50,45 @@ rules
   Csimplify :
     Goto(Id(Next)) -> Compound([],[])
     //stm|[ goto ~id:Next; ]| -> stm|[ { } ]|
+
+strategies
+
+  /**
+   * Remove labels and gotos that are not used.
+   *
+   * @todo: RemoveDeadCode assumes that there are not labels in branches
+   * of conditionals that are jumped to from outside.
+   */
+
+  remove-unused-labels =
+    alltd(remove-labels-in-fundef)
+
+  remove-labels-in-fundef :
+    |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms1 } ]| -> 
+    |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms2 } ]|
+    where {| LabelUsed 
+           : <topdown-l(try(RemoveDeadCode); try(RemoveGoto))
+	     ; alltd(MarkGoto)
+             ; topdown-l(try(RemoveLabel <+ RemoveDeadCode))
+             > stms1 => stms2 
+           |}
+
+  MarkGoto =
+    ?stm|[ goto ~id:L; ]|
+    ; rules( LabelUsed : L )
+    ; debug(!"used: ")
+
+  RemoveLabel :
+    stm*|[ ~id:L : ~stm:s ~stm*:stms1 ]| -> <debug(!"left: ")> stms2
+    where debug(!"removed: ")
+	; <not(LabelUsed)> L
+	; <drop-until({L2,s2:?stm|[ ~id:L2 : ~stm:s2 ]|})> stms1 => stms2
+
+  RemoveDeadCode :
+    stm*|[ goto ~id:L; ~stm*:stms1 ]| -> 
+    stm*|[ goto ~id:L; ~stm*:stms2 ]|
+    where <drop-until({L2,s2:?stm|[ ~id:L2 : ~stm:s2 ]|})> stms1 => stms2
+
+  RemoveGoto :
+    stm*|[ goto ~id:L; ~id:L : ~stm:s ~stm*:stms ]| -> 
+    stm*|[             ~id:L : ~stm:s ~stm*:stms ]|
