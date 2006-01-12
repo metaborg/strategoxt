@@ -12,19 +12,19 @@ strategies
       ; test-recursive-call-nested-strategy
       ; test-pass-nested-strategy
 
-      ; test-local-term-arg
       ; test-local-strategy-arg
-
-      ; test-escaping-term-arg
       ; test-escaping-strategy-arg
-
-      ; test-pass-escaping-term-arg
       ; test-pass-escaping-strategy-arg
+
+      ; test-local-term-arg
+      ; test-escaping-term-arg
+      ; test-escaping-local-term-var
+      ; test-pass-escaping-term-arg
 
     )
 
-
-  // a simple strategy call; sl is sl of parent
+  // bar calls top-level strategy foo
+  // static link passed to foo is static link of bar
 
   test-call-top-level-strategy =
     apply-test(!"test-call-top-level-strategy"
@@ -36,11 +36,12 @@ strategies
 	, !|[ strategies 
                 ~id:"foo"{"local"}(|) = id 
                 ~id:"bar"{"local"}(|) = 
-                   ~id:"foo"{("frames","visible",["bar"])}(|)
+                   ~id:"foo"{Frames("visible",["bar"])}(|)
            ]|
     )
 
-  // 
+  // foo calls local strategy bar
+  // static link passed to bar is frame of foo
 
   test-call-nested-strategy =
     apply-test(!"test-call-nested-strategy"
@@ -54,10 +55,13 @@ strategies
 	, !|[ strategies 
                 ~id:"foo"{"local"}(|) = 
                   let ~id:"bar"{"local"}(|) = id
-                   in ~id:"bar"{("frames","visible",[])}(|)
+                   in ~id:"bar"{Frames("visible",[])}(|)
                   end
            ]|
     )
+
+  // nested strategy bar calls parent strategy foo
+  // static link of foo call is parent of static link of bar
 
   test-call-parent-in-nested-strategy =
     apply-test(!"test-call-nested-strategy"
@@ -71,11 +75,14 @@ strategies
 	, !|[ strategies 
                 ~id:"foo"{"local"}(|) = 
                   let ~id:"bar"{"local"}(|) = 
-                        ~id:"foo"{("frames","visible",["bar","foo"])}(|)
-                   in ~id:"bar"{("frames","visible",[])}(|)
+                        ~id:"foo"{Frames("visible",["bar","foo"])}(|)
+                   in ~id:"bar"{Frames("visible",[])}(|)
                   end
            ]|
     )
+
+  // recursive call to (nested) strategy bar
+  // static link of call to 
 
   test-recursive-call-nested-strategy =
     apply-test(!"test-recursive-call-nested-strategy"
@@ -89,8 +96,8 @@ strategies
 	, !|[ strategies 
                 ~id:"foo"{"local"}(|) = 
                   let ~id:"bar"{"local"}(|) = 
-                        ~id:"bar"{("frames","visible",["bar"])}(|) < id + id
-                   in ~id:"bar"{("frames","visible",[])}(|)
+                        ~id:"bar"{Frames("visible",["bar"])}(|) < id + id
+                   in ~id:"bar"{Frames("visible",[])}(|)
                   end
            ]|
     )
@@ -116,6 +123,8 @@ strategies
            ]|
     )
 
+  // foo binds term variable arg
+
   test-local-term-arg =
     apply-test(!"test-local-term-arg"
 	, mark-escaping-variables
@@ -128,6 +137,8 @@ strategies
            ]|
     )
 
+  // foo applies closure arg
+
   test-local-strategy-arg =
     apply-test(!"test-local-strategy-arg"
 	, mark-escaping-variables
@@ -139,6 +150,9 @@ strategies
                   ~id:"arg"{Frames("local",[])}(|)
            ]|
     )
+
+  // foo should store arg in frame
+  // bar retrieves arg from static link
 
   test-escaping-term-arg =
     apply-test(!"test-escaping-term-arg"
@@ -158,6 +172,32 @@ strategies
            ]|
     )
 
+  // foo should store arg in frame
+  // bar retrieves arg from static link
+
+  test-escaping-local-term-var =
+    apply-test(!"test-escaping-local-term-var"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|) = {arg :
+                  let bar(|) = ?arg
+                   in bar(|)
+                  end}
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|) = {~id:"arg"{"escapes"} : 
+                  let ~id:"bar"{"local"}(|) = 
+                        ?~id:"arg"{Frames("escapes",["bar"])}
+                   in ~id:"bar"{Frames("visible",[])}(|)
+                  end}
+           ]|
+    )
+
+  // argument arg of foo escapes and is passed as argument to baz
+  //
+  // foo should store arg in frame
+  // baz should retrieve arg from static link
+
   test-pass-escaping-term-arg =
     apply-test(!"test-pass-escaping-term-arg"
 	, mark-escaping-variables
@@ -171,7 +211,8 @@ strategies
 	, !|[ strategies 
                 ~id:"foo"{"local"}(|~id:"arg"{"escapes"}: ATerm) = 
                   let ~id:"bar"{"local"}(|) = 
-                        ~id:"baz"{"local"}(|~id:"arg"{Frames("escapes",["bar"])})
+                        ~id:"baz"{Frames("visible",["bar","foo"])}
+                            (|~id:"arg"{Frames("escapes",["bar"])})
                    in ~id:"bar"{Frames("visible",[])}(|)
                   end
                 ~id:"baz"{"local"}(|~id:"arg"{"local"}: ATerm) = 
@@ -179,8 +220,13 @@ strategies
            ]|
     )
 
+  // argument arg of foo is called in nested strategy bar.
+  //
+  // arg (which is a closure) needs to be stored in frame of foo
+  // bar should retrieve closure and apply it
+
   test-escaping-strategy-arg =
-    apply-test(!"test-escaping-term-arg"
+    apply-test(!"test-escaping-strategy-arg"
 	, mark-escaping-variables
 	, !|[ strategies 
                 foo(arg: ATerm -> ATerm|) = 
@@ -197,8 +243,16 @@ strategies
            ]|
     )
 
+  // arg is an escaping strategy argument that is passed on as argument to another
+  // strategy
+  //
+  // the closure that is passed into foo needs to be stored in the frame of foo
+  // so that bar can pick it up there and pass it on to baz
+  //
+  // "escapes" annotation means that arg should be stored in frame
+
   test-pass-escaping-strategy-arg =
-    apply-test(!"test-escaping-term-arg"
+    apply-test(!"test-pass-escaping-strategy-arg"
 	, mark-escaping-variables
 	, !|[ strategies 
                 foo(arg: ATerm -> ATerm|) = 
