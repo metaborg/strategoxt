@@ -271,6 +271,8 @@ strategies
 
   // TODO: don't include sl_funs(0) / sl_vars(0)
 
+  // TODO: insert escaping strategy arguments in frame
+
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| -> <try(make-static)> 
     |[ 
@@ -279,6 +281,7 @@ strategies
 	 sl_decl(sl);
          sl_funs(~exp:off1');
          sl_vars(~exp:off2');
+	 ~stm*:stms;
          ~stm:stm;
 	 return(t);
          ~id:F : 
@@ -295,6 +298,7 @@ strategies
 		  ; TranslateVarDec
 		  ; debug(!": "))> [a1*,a2*] => args
 	   ; debug(!"args: ")
+	   ; <filter(AddToFrame)> [a1*, a2*] => stms
 	   ; <newname> "fail" => F
 	   ; <translate-strat(|Next, F)>s => stm
 	   ; debug(!"body: ")
@@ -326,6 +330,14 @@ strategies
   TranslateVarDec :
     VarDec(x, FunType(ts,_)) -> param-dec|[ StrCL x ]|
     where rules( ArgToCl : |[ ~id:x{t*}(|) ]| -> exp|[ x ]| )
+
+  AddToFrame : 
+    VarDec(x{("escapes", off)}, FunType(_,_)) ->
+    stm|[ sl_init_fun(~exp:<mk-int-const>off, ~id:x); ]|
+
+  AddToFrame : 
+    VarDec(x{("escapes", off)}, ConstType(_)) ->
+    stm|[ sl_init_var(~exp:<mk-int-const>off, &~id:x); ]|
 
   TranslateType : 
     ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None)
@@ -388,7 +400,7 @@ rules
         ~stm:<translate-strat(|S,F)>s3
       }
     ]|
-    where <not(Next)> S; new => x; new => F'
+    where <not(Next)> S; <newname> "trm" => x; <newname> "label" => F'
 	
   TranslateStrat(|S,F) :
     |[ s1 < s2 + s3 ]| -> 
@@ -398,29 +410,30 @@ rules
         ~id:S' : ; 
       }
     ]|
-    where !S => Next; new => S'
+    where !S => Next; <newname> "label" => S'
 
   TranslateStrat(|S,F) :
-    Let(defs, s) -> 
+    |[ let ~*defs in s end ]| -> // Let(defs, s) -> 
     stm|[
       {
         ~dec*:closures
+        ~stm*:stms
         ~stm:stm
       }
     ]|
     where <map(Translate)> defs
         ; {| ArgToCl
-	   : <map(MkClosure)> defs => closures
+	   : <filter(MkClosure); unzip> defs => (closures, stms)
 	   ; <translate-strat(|S,F)> s => stm
            |}
 
   MkClosure :
     Def|[ f(a1*|a2*) = s ]| ->
-    dec|[ struct str_closure ~id:x = {&~id:f, &frame}; ]|
-    where <conc-strings>(f, "_cl") => x
+    (dec|[ struct str_closure ~id:x = {&~id:f, &frame}; ]|
+    ,stm|[ sl_init_fun(i, ~id:x); ]|)
+    where //<not(?_{"local"})> f
+	  <conc-strings; newname>(f, "_cl") => x
 	; rules( ArgToCl : |[ ~id:f{t*}(|) ]| -> exp|[ &x ]| )
-
-
 
 /**
  * Static links
@@ -431,6 +444,7 @@ strategies
   static-link =
     static-link-local
     <+ static-link-top-level
+    <+ static-link-visible
     <+ no-static-link
 
   static-link-local :
@@ -438,6 +452,11 @@ strategies
 
   static-link-top-level :
     x{"frames", "top-level", frames} -> e
+    where debug(!"static link: ")
+	; <frames-to-static-link> frames => e
+
+  static-link-visible :
+    x{"frames", "visible", frames} -> e
     where debug(!"static link: ")
 	; <frames-to-static-link> frames => e
 
@@ -456,8 +475,23 @@ strategies
     where <frames-to-static-link> frames => sl
 
   mk-call : 
-    (f{"closure", t*}, args) -> 
+    (f{("frames", "visible", [])}, args) -> 
+    exp|[ ~id:f{}(&frame,~exp*:args) ]|
+
+  mk-call : 
+    (f{("frames", "visible", frames)}, args) -> 
+    exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
+    where <not([]); frames-to-static-link> frames => sl
+
+  mk-call : 
+    (f{"closure", ("frames", "local", [])}, args) -> 
     exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]| 
+
+  mk-call :
+    (f{"closure", ("frames", off, frames)}, args) -> 
+    exp|[ (sl_fun(~exp:<mk-int-const>off, ~exp:sl))
+             (sl_fun_sl(~exp:<mk-int-const>off, ~exp:sl), ~exp*:args) ]| 
+    where <not([]); frames-to-static-link> frames => sl
 
 
 /**
@@ -598,7 +632,7 @@ rules
 	 ~stm:(<translate-strat(|Next,F)> Match(t1, Id(x)))
 	 ~stm:(<translate-strat(|S,F)> Match(t2, Id(y)))
        } ]|
-    where new => x; new => y
+    where <newname> "trm" => x; <newname> "trm" => y
 
   TranslateStrat(|S,F) =
     TranslateMatchNoAnno(|S,F)
@@ -620,7 +654,7 @@ rules
       } 
     ]|
     where <not(?PreTerm|[_]|)> pt2
-	; new => x
+	; <newname> "trm" => x
 
   /**
    * @todo  String constants should probably be cached, just like constructor names
@@ -695,7 +729,7 @@ rules
          ~stm:(<translate-strat(|S,F)> Match(t, Id(x)))
       } 
     ]|
-    where new => x
+    where <newname> "trm" => x
 
   TranslateStrat(|S,F) :
     Match(Op("Nil", []), trm) ->
@@ -874,7 +908,7 @@ rules
 
   check-aterm-list :
     e -> exp|[ (ATermList)x ]|
-    where new => x
+    where <newname> "trm" => x
 	; FailureLabel => F
 	; !(dec|[ ATerm ~id:x; ]|, 
             stm*|[ ~id:x = CheckATermList(~exp:e);

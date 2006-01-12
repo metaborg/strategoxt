@@ -7,11 +7,13 @@ libexec_PROGRAMS = s2c s2c-ng escaping-variables
 
 #s2c-classic 
 
-check_PROGRAMS 	 = C-simplify-test
+check_PROGRAMS 	 = C-simplify-test escaping-variables-test
 
 nodist_C_simplify_test_SOURCES = C-simplify-test.c
+nodist_escaping_variables_test_SOURCES = escaping-variables-test.c
 
-BOOTCLEANFILES 	 = s2c.c s2c-ng.c C-simplify-test.c escaping-variables.c
+BOOTCLEANFILES = s2c.c s2c-ng.c C-simplify-test.c escaping-variables.c \
+		 escaping-variables-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 

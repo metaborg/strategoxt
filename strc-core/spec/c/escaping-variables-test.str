@@ -1,0 +1,221 @@
+module escaping-variables-test
+imports escaping-variables
+
+strategies
+
+  escaping-variables-test = 
+    test-suite(!"escaping-variables-test",
+
+      test-call-top-level-strategy 
+      ; test-call-nested-strategy
+      ; test-call-parent-in-nested-strategy
+      ; test-recursive-call-nested-strategy
+      ; test-pass-nested-strategy
+
+      ; test-local-term-arg
+      ; test-local-strategy-arg
+
+      ; test-escaping-term-arg
+      ; test-escaping-strategy-arg
+
+      ; test-pass-escaping-term-arg
+      ; test-pass-escaping-strategy-arg
+
+    )
+
+
+  // a simple strategy call; sl is sl of parent
+
+  test-call-top-level-strategy =
+    apply-test(!"test-call-top-level-strategy"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|) = id 
+                bar(|) = foo(|) 
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|) = id 
+                ~id:"bar"{"local"}(|) = 
+                   ~id:"foo"{("frames","visible",["bar"])}(|)
+           ]|
+    )
+
+  // 
+
+  test-call-nested-strategy =
+    apply-test(!"test-call-nested-strategy"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|) = 
+                  let bar(|) = id
+                   in bar(|)
+                  end
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|) = 
+                  let ~id:"bar"{"local"}(|) = id
+                   in ~id:"bar"{("frames","visible",[])}(|)
+                  end
+           ]|
+    )
+
+  test-call-parent-in-nested-strategy =
+    apply-test(!"test-call-nested-strategy"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|) = 
+                  let bar(|) = foo(|)
+                   in bar(|)
+                  end
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|) = 
+                  let ~id:"bar"{"local"}(|) = 
+                        ~id:"foo"{("frames","visible",["bar","foo"])}(|)
+                   in ~id:"bar"{("frames","visible",[])}(|)
+                  end
+           ]|
+    )
+
+  test-recursive-call-nested-strategy =
+    apply-test(!"test-recursive-call-nested-strategy"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|) = 
+                  let bar(|) = bar(|) < id + id
+                   in bar(|)
+                  end
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|) = 
+                  let ~id:"bar"{"local"}(|) = 
+                        ~id:"bar"{("frames","visible",["bar"])}(|) < id + id
+                   in ~id:"bar"{("frames","visible",[])}(|)
+                  end
+           ]|
+    )
+
+  test-pass-nested-strategy =
+    apply-test(!"test-pass-nested-strategy"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|) = 
+                  let bar(|) = id
+                   in baz(bar(|)|)
+                  end
+                baz(aaa: ATerm -> ATerm|) = aaa(|)
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|) = 
+                  let ~id:"bar"{"local"}(|) = id
+                   in ~id:"baz"{Frames("visible",["foo"])}
+                        (~id:"bar"{Frames("visible",[])}(|)|)
+                  end
+                ~id:"baz"{"local"}(~id:"aaa"{"local"}: ATerm -> ATerm|) = 
+                  ~id:"aaa"{Frames("local",[])}(|)
+           ]|
+    )
+
+  test-local-term-arg =
+    apply-test(!"test-local-term-arg"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|arg: ATerm) = ?arg
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|~id:"arg"{"local"}: ATerm) = 
+                  ?~id:"arg"{Frames("local", [])}
+           ]|
+    )
+
+  test-local-strategy-arg =
+    apply-test(!"test-local-strategy-arg"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = arg(|)
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(~id:"arg"{"local"}: ATerm -> ATerm |) = 
+                  ~id:"arg"{Frames("local",[])}(|)
+           ]|
+    )
+
+  test-escaping-term-arg =
+    apply-test(!"test-escaping-term-arg"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|arg: ATerm) = 
+                  let bar(|) = ?arg
+                   in bar(|)
+                  end
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|~id:"arg"{"escapes"}: ATerm) = 
+                  let ~id:"bar"{"local"}(|) = 
+                        ?~id:"arg"{Frames("escapes",["bar"])}
+                   in ~id:"bar"{Frames("visible",[])}(|)
+                  end
+           ]|
+    )
+
+  test-pass-escaping-term-arg =
+    apply-test(!"test-pass-escaping-term-arg"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(|arg: ATerm) = 
+                  let bar(|) = baz(|arg)
+                   in bar(|)
+                  end
+                baz(|arg : ATerm) = ?arg
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(|~id:"arg"{"escapes"}: ATerm) = 
+                  let ~id:"bar"{"local"}(|) = 
+                        ~id:"baz"{"local"}(|~id:"arg"{Frames("escapes",["bar"])})
+                   in ~id:"bar"{Frames("visible",[])}(|)
+                  end
+                ~id:"baz"{"local"}(|~id:"arg"{"local"}: ATerm) = 
+                   ?~id:"arg"{Frames("local",[])}
+           ]|
+    )
+
+  test-escaping-strategy-arg =
+    apply-test(!"test-escaping-term-arg"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let bar(|) = arg(|)
+                   in bar(|)
+                  end
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(~id:"arg"{"escapes"}: ATerm -> ATerm |) = 
+                  let ~id:"bar"{"local"}(|) = 
+                        ~id:"arg"{Frames("escapes",["bar"])}(|)
+                   in ~id:"bar"{Frames("visible",[])}(|)
+                  end
+           ]|
+    )
+
+  test-pass-escaping-strategy-arg =
+    apply-test(!"test-escaping-term-arg"
+	, mark-escaping-variables
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let bar(|) = baz(arg(|)|)
+                   in bar(|)
+                  end
+                baz(arg: ATerm -> ATerm|) = arg(|)
+           ]|
+	, !|[ strategies 
+                ~id:"foo"{"local"}(~id:"arg"{"escapes"}: ATerm -> ATerm |) = 
+                  let ~id:"bar"{"local"}(|) = 
+                        ~id:"baz"{Frames("visible",["bar","foo"])}
+                          (~id:"arg"{Frames("escapes",["bar"])}(|)|)
+                   in ~id:"bar"{Frames("visible",[])}(|)
+                  end
+                ~id:"baz"{"local"}(~id:"arg"{"local"} : ATerm -> ATerm|) = 
+                    ~id:"arg"{Frames("local",[])}(|)
+           ]|
+    )
+
