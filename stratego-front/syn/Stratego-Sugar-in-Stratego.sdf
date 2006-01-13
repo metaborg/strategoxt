@@ -44,12 +44,13 @@ exports
 %%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
     "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
 
-    Strategy "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
-    Term     "~{" StrategoTerm "}" -> Term     {cons("WithAnno")}
-    Id       "~{" StrategoTerm "}" -> Id       {cons("WithAnno"),prefer}
+    Strategy "~{" {StrategoTerm ","}* "}" -> Strategy {cons("WithAnno")}
+    Term     "~{" {StrategoTerm ","}* "}" -> Term     {cons("WithAnno")}
+    Id       "~{" {StrategoTerm ","}* "}" -> Id       {cons("WithAnno"),prefer}
 
   context-free priorities
-    Strategy "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+    Id       "~{" {StrategoTerm ","}* "}" -> Id       {cons("WithAnno"),prefer}
+  > Strategy "~{" {StrategoTerm ","}*"}" -> Strategy {cons("WithAnno")}
   > StrategyAngle Term 		   -> Strategy {cons("BA")}
 
   context-free syntax
