@@ -1,6 +1,12 @@
 module escaping-variables-test
 imports escaping-variables frame-composition
 
+signature
+  constructors
+    InScope : Annotation
+    PassClosure : String -> Annotation
+    CreateClosure : String -> Annotation
+
 strategies
 
   apply-test(label, s1, s2, input, output1, output2) =
@@ -8,25 +14,170 @@ strategies
     //; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
 
   escaping-variables-test = 
-    test-suite(!"escaping-variables-test",
+    test-suite(!"escaping-variables-test", id
 
-        test-call-top-level-strategy 
-      ; test-call-nested-strategy
-      ; test-call-parent-in-nested-strategy
-      ; test-recursive-call-nested-strategy
+	; test-local-term-arg 
+  	; test-local-term-var 
+  	; test-escaping-term-arg 
+  	; test-escaping-local-term-var 
+  	; test-pass-escaping-term-arg 
 
-      ; test-pass-nested-strategy
+  	; test-call-top-level-strategy 
+  	; test-call-nested-strategy 
+  	; test-call-parent-in-nested-strategy 
+  	; test-recursive-call-nested-strategy 
 
-      ; test-local-strategy-arg
-      ; test-escaping-strategy-arg
-      ; test-pass-escaping-strategy-arg
+  	; test-pass-nested-strategy 
+  	; test-pass-nested-escaping-strategy 
+  	; test-pass-nested-escaping-strategy 
 
-      ; test-local-term-arg
-      ; test-escaping-term-arg
-      ; test-escaping-local-term-var
-      ; test-pass-escaping-term-arg
+  	; test-local-strategy-arg 
+  	; test-escaping-strategy-arg 
+  	; test-pass-escaping-strategy-arg 
 
     )
+
+
+strategies // term variables
+
+  // arg is a term argument of foo
+
+  test-local-term-arg =
+    apply-test(!"test-local-term-arg"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|arg: ATerm) = ?arg
+           ]|
+	, !|[ strategies 
+                foo~{}(|arg~{}: ATerm) = 
+                  ?~id:"arg"{Frames([])}
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,0)}(|arg~{}: ATerm) = 
+                  ?~id:"arg"{Frames([])}
+           ]|
+    )
+
+  // 
+
+  test-local-term-var =
+    apply-test(!"test-local-term-var"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|) = {arg: ?arg}
+           ]|
+	, !|[ strategies 
+                foo~{}(|) = 
+                  {arg~{}: ?~id:"arg"{Frames([])}}
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,0)}(|) = 
+                  {arg~{}: ?~id:"arg"{Frames([])}}
+           ]|
+    )
+
+
+
+  // foo should store arg in frame
+  // bar retrieves arg from static link
+
+  test-escaping-term-arg =
+    apply-test(!"test-escaping-term-arg"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|arg: ATerm) = 
+                  let bar(|) = ?arg
+                   in bar(|)
+                  end
+           ]|
+	, !|[ strategies 
+                foo~{}(|arg~{Escapes}: ATerm) = 
+                  let bar~{}(|) = 
+                        ?~id:"arg"{Frames(["bar"])}
+                   in bar~{Frames([])}(|)
+                  end
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,1)}(|arg~{Escapes, Offset(0)}: ATerm) = 
+                  let bar~{Offsets(0,0)}(|) = 
+                        ?~id:"arg"{Frames(["bar"]),Offset(0)}
+                   in bar~{Frames([])}(|)
+                  end
+           ]|
+    )
+
+  // foo should store arg in frame
+  // bar retrieves arg from static link
+
+  test-escaping-local-term-var =
+    apply-test(!"test-escaping-local-term-var"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|) = {arg :
+                  let bar(|) = ?arg
+                   in bar(|)
+                  end}
+           ]|
+	, !|[ strategies 
+                foo~{}(|) = {arg~{Escapes} : 
+                  let bar~{}(|) = 
+                        ?~id:"arg"{Frames(["bar"])}
+                   in bar~{Frames([])}(|)
+                  end}
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,1)}(|) = {arg~{Escapes,Offset(0)} : 
+                  let bar~{}(|) = 
+                        ?~id:"arg"{Frames(["bar"]),Offset(0)}
+                   in bar~{Frames([])}(|)
+                  end}
+           ]|
+    )
+
+  // argument arg of foo escapes and is passed as argument to baz
+  //
+  // foo should store arg in frame
+  // baz should retrieve arg from static link
+
+  test-pass-escaping-term-arg =
+    apply-test(!"test-pass-escaping-term-arg"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|arg: ATerm) = 
+                  let bar(|) = baz(|arg)
+                   in bar(|)
+                  end
+                baz(|arg : ATerm) = ?arg
+           ]|
+	, !|[ strategies 
+                foo~{}(|arg~{Escapes}: ATerm) = 
+                  let bar~{}(|) = 
+                        baz~{Frames(["bar","foo"])}
+                            (|arg~{Frames(["bar"])})
+                   in bar~{Frames([])}(|)
+                  end
+                baz~{}(|arg~{}: ATerm) = 
+                   ?~id:"arg"{Frames([])}
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,1)}(|arg~{Escapes,Offset(0)}: ATerm) = 
+                  let bar~{Offsets(0,0)}(|) = 
+                        baz~{Frames(["bar","foo"])}
+                            (|arg~{Frames(["bar"]),Offset(0)})
+                   in bar~{Frames([])}(|)
+                  end
+                baz~{Offsets(0,0)}(|arg~{}: ATerm) = 
+                   ?~id:"arg"{Frames([])}
+           ]|
+    )
+
+
+strategies // strategy variables
 
   // bar calls top-level strategy foo
   // static link passed to foo is static link of bar
@@ -40,14 +191,14 @@ strategies
                 bar(|) = foo(|) 
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|) = id 
-                bar~{"local"}(|) = 
-                   foo~{Frames("visible",["bar"])}(|)
+                foo~{}(|) = id 
+                bar~{}(|) = 
+                   foo~{Frames(["bar"])}(|)
            ]|
 	, !|[ strategies 
                 foo~{"local",Offsets(0,0)}(|) = id 
                 bar~{"local",Offsets(0,0)}(|) = 
-                   foo~{Frames("visible",["bar"])}(|)
+                   foo~{Frames(["bar"])}(|)
            ]|
     )
 
@@ -65,15 +216,15 @@ strategies
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|) = 
-                  let bar~{"local"}(|) = id
-                   in bar~{Frames("visible",[])}(|)
+                foo~{}(|) = 
+                  let bar~{}(|) = id
+                   in bar~{Frames([])}(|)
                   end
            ]|
 	, !|[ strategies 
                 foo~{"local",Offsets(0,0)}(|) = 
                   let bar~{"local",Offsets(0,0)}(|) = id
-                   in bar~{Frames("visible",[])}(|)
+                   in bar~{Frames([])}(|)
                   end
            ]|
     )
@@ -92,17 +243,17 @@ strategies
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|) = 
-                  let bar~{"local"}(|) = 
-                        foo~{Frames("visible",["bar","foo"])}(|)
-                   in bar~{Frames("visible",[])}(|)
+                foo~{}(|) = 
+                  let bar~{}(|) = 
+                        foo~{Frames(["bar","foo"])}(|)
+                   in bar~{Frames([])}(|)
                   end
            ]|
 	, !|[ strategies 
                 foo~{"local",Offsets(0,0)}(|) = 
                   let bar~{"local",Offsets(0,0)}(|) = 
-                        foo~{Frames("visible",["bar","foo"])}(|)
-                   in bar~{Frames("visible",[])}(|)
+                        foo~{Frames(["bar","foo"])}(|)
+                   in bar~{Frames([])}(|)
                   end
            ]|
     )
@@ -121,17 +272,17 @@ strategies
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|) = 
-                  let bar~{"local"}(|) = 
-                        bar~{Frames("visible",["bar"])}(|) < id + id
-                   in bar~{Frames("visible",[])}(|)
+                foo~{}(|) = 
+                  let bar~{}(|) = 
+                        bar~{Frames(["bar"])}(|) < id + id
+                   in bar~{Frames([])}(|)
                   end
            ]|
 	, !|[ strategies 
                 foo~{"local",Offsets(0,0)}(|) = 
                   let bar~{"local",Offsets(0,0)}(|) = 
-                        bar~{Frames("visible",["bar"])}(|) < id + id
-                   in bar~{Frames("visible",[])}(|)
+                        bar~{Frames(["bar"])}(|) < id + id
+                   in bar~{Frames([])}(|)
                   end
            ]|
     )
@@ -154,23 +305,84 @@ strategies
                 baz(aaa: ATerm -> ATerm|) = aaa(|)
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|) = 
-                  let bar~{"local"}(|) = id
-                   in baz~{Frames("visible",["foo"])}
-                        (bar~{Frames("visible",[])}(|)|)
+                foo~{}(|) = 
+                  let bar~{Closure("bar_cl")}(|) = id
+                   in baz~{Frames(["foo"])}
+                        (bar~{Frames([]),Closure("bar_cl")}(|)|)
                   end
-                baz~{"local"}(aaa~{"local"}: ATerm -> ATerm|) = 
-                  aaa~{Frames("local",[])}(|)
+                baz~{}(aaa~{}: ATerm -> ATerm|) = 
+                  aaa~{Frames([])}(|)
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(|) = 
-                  let bar~{"local",Offsets(0,0),Closure("bar_cl")}(|) = id
-                   in baz~{Frames("visible",["foo"])}
-                        (bar~{Frames("visible",[]),Closure("bar_cl")}(|)|)
+                foo~{Offsets(0,0)}(|) = 
+                  let bar~{Offsets(0,0)}(|) = id
+                   in baz~{Frames(["foo"])}
+                        (bar~{Frames([])}(|)|)
                   end
-                baz~{"local",Offsets(0,0)}(aaa~{"local"}: ATerm -> ATerm|) = 
-                  aaa~{Frames("local",[]),ApplyClosure}(|)
+                baz~{Offsets(0,0)}(aaa~{}: ATerm -> ATerm|) = 
+                  aaa~{Frames([])}(|)
            ]|
+    )
+
+  // closure of ar should be passed to baz
+  // foo should create closure for bar and pass it to baz
+  // the closure should be stored in the frame
+  // baz applies closure aaa
+
+  test-pass-nested-escaping-strategy =
+    apply-test(!"test-pass-nested-escaping-strategy"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|) = 
+                  let bar(|) = id
+                   in let bar2(|) = 
+                            baz(bar(|)|)
+                       in bar2(|)
+                      end
+                  end
+                baz(aaa: ATerm -> ATerm|) = aaa(|)
+           ]|
+	, !|[ strategies 
+                foo~{}(|) = 
+                  let bar~{Escapes,Closure("bar_cl")}(|) = id
+                   in let bar2(|) =
+		            baz~{Frames(["bar2","bar","foo"])}
+                              (bar~{Frames(["bar2"]),Closure("bar_cl")}(|)|)
+                       in bar2~{Frames([])}(|)
+                      end
+                  end
+                baz~{}(aaa~{}: ATerm -> ATerm|) = 
+                  aaa~{Frames([])}(|)
+           ]|
+	, !()
+    )
+
+
+  test-pass-nested-escaping-strategy =
+    apply-test(!"test-pass-nested-escaping-strategy"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|bbb : ATerm) = 
+                  let bar(|)  = ?bbb
+                      bar2(|) = baz(bar(|)|)
+                   in bar2(|)
+                  end
+                baz(aaa: ATerm -> ATerm|) = aaa(|)
+           ]|
+	, !|[ strategies 
+                foo~{}(|bbb~{Escapes} : ATerm) = 
+                  let bar~{Escapes,Closure("bar_cl")}(|) = 
+                        ?~id:"bbb"{Frames(["bar"])}
+                      bar2~{}(|) = 
+                        baz~{Frames(["bar2","foo"])}
+                          (bar~{Frames(["bar2"]),Closure("bar_cl")}(|)|)
+                   in bar2~{Frames([])}(|)
+                  end
+                baz~{}(aaa~{}: ATerm -> ATerm|) = aaa~{Frames([])}(|)
+           ]|
+	, !()
     )
 
 
@@ -184,12 +396,12 @@ strategies
                 foo(arg: ATerm -> ATerm|) = arg(|)
            ]|
 	, !|[ strategies 
-                foo~{"local"}(arg~{"local"}: ATerm -> ATerm |) = 
-                  arg~{Frames("local",[])}(|)
+                foo~{}(arg~{}: ATerm -> ATerm |) = 
+                  arg~{Frames([])}(|)
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(arg~{"local"}: ATerm -> ATerm |) = 
-                  arg~{Frames("local",[]),ApplyClosure}(|)
+                foo~{Offsets(0,0)}(arg~{}: ATerm -> ATerm |) = 
+                  arg~{Frames([]),ApplyClosure}(|)
            ]|
     )
 
@@ -211,19 +423,13 @@ strategies
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local"}(arg~{"escapes"}: ATerm -> ATerm |) = 
-                  let bar~{"local"}(|) = 
-                        arg~{Frames("escapes",["bar"])}(|)
-                   in bar~{Frames("visible",[])}(|)
+                foo~{}(arg~{Escapes}: ATerm -> ATerm |) = 
+                  let bar~{}(|) = 
+                        arg~{Frames(["bar"])}(|)
+                   in bar~{Frames([])}(|)
                   end
            ]|
-	, !|[ strategies 
-                foo~{"local",Offsets(1,0)}(arg~{"escapes", Offset(0)}: ATerm -> ATerm |) = 
-                  let bar~{"local",Offsets(0,0)}(|) = 
-                        arg~{Frames("escapes",["bar"],0)}(|)
-                   in bar~{Frames("visible",[])}(|)
-                  end
-           ]|
+	, !()
     )
 
   // arg is an escaping strategy argument that is passed on as argument to another
@@ -246,140 +452,14 @@ strategies
                 baz(arg: ATerm -> ATerm|) = arg(|)
            ]|
 	, !|[ strategies 
-                foo~{"local"}(arg~{"escapes"}: ATerm -> ATerm |) = 
-                  let bar~{"local"}(|) = 
-                        baz~{Frames("visible",["bar","foo"])}
-                          (arg~{Frames("escapes",["bar"])}(|)|)
-                   in bar~{Frames("visible",[])}(|)
+                foo~{}(arg~{Escapes}: ATerm -> ATerm |) = 
+                  let bar~{}(|) = 
+                        baz~{Frames(["bar","foo"])}
+                          (arg~{Frames(["bar"])}(|)|)
+                   in bar~{Frames([])}(|)
                   end
-                baz~{"local"}(arg~{"local"} : ATerm -> ATerm|) = 
-                  arg~{Frames("local",[])}(|)
+                baz~{}(arg~{} : ATerm -> ATerm|) = 
+                  arg~{Frames([])}(|)
            ]|
-	, !|[ strategies 
-                foo~{"local",Offsets(1,0)}(arg~{"escapes", Offset(0)}: ATerm -> ATerm |) = 
-                  let bar~{"local",Offsets(0,0)}(|) = 
-                        baz~{Frames("visible",["bar","foo"])}
-                          (arg~{Frames("escapes",["bar"],0),Closure("arg")}(|)|)
-                   in bar~{Frames("visible",[])}(|)
-                  end
-                baz~{"local",Offsets(0,0)}(arg~{"local"} : ATerm -> ATerm|) = 
-                  arg~{Frames("local",[]),ApplyClosure}(|)
-           ]|
-    )
-
-  // foo binds term variable arg
-
-  test-local-term-arg =
-    apply-test(!"test-local-term-arg"
-	, mark-escaping-variables
-	, annotate-frame-offsets
-	, !|[ strategies 
-                foo(|arg: ATerm) = ?arg
-           ]|
-	, !|[ strategies 
-                foo~{"local"}(|arg~{"local"}: ATerm) = 
-                  ?~id:"arg"{Frames("local", [])}
-           ]|
-	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(|arg~{"local"}: ATerm) = 
-                  ?~id:"arg"{Frames("local", [])}
-           ]|
-    )
-
-
-
-  // foo should store arg in frame
-  // bar retrieves arg from static link
-
-  test-escaping-term-arg =
-    apply-test(!"test-escaping-term-arg"
-	, mark-escaping-variables
-	, annotate-frame-offsets
-	, !|[ strategies 
-                foo(|arg: ATerm) = 
-                  let bar(|) = ?arg
-                   in bar(|)
-                  end
-           ]|
-	, !|[ strategies 
-                foo~{"local"}(|arg~{"escapes"}: ATerm) = 
-                  let bar~{"local"}(|) = 
-                        ?~id:"arg"{Frames("escapes",["bar"])}
-                   in bar~{Frames("visible",[])}(|)
-                  end
-           ]|
-	, !|[ strategies 
-                foo~{"local",Offsets(0,1)}(|arg~{"escapes", Offset(0)}: ATerm) = 
-                  let bar~{"local",Offsets(0,0)}(|) = 
-                        ?~id:"arg"{Frames("escapes",["bar"],0)}
-                   in bar~{Frames("visible",[])}(|)
-                  end
-           ]|
-    )
-
-  // foo should store arg in frame
-  // bar retrieves arg from static link
-
-  test-escaping-local-term-var =
-    apply-test(!"test-escaping-local-term-var"
-	, mark-escaping-variables
-	, annotate-frame-offsets
-	, !|[ strategies 
-                foo(|) = {arg :
-                  let bar(|) = ?arg
-                   in bar(|)
-                  end}
-           ]|
-	, !|[ strategies 
-                ~id:"foo"{"local"}(|) = {arg~{"escapes"} : 
-                  let ~id:"bar"{"local"}(|) = 
-                        ?~id:"arg"{Frames("escapes",["bar"])}
-                   in bar~{Frames("visible",[])}(|)
-                  end}
-           ]|
-	, !|[ strategies 
-                ~id:"foo"{"local",Offsets(0,1)}(|) = {arg~{"escapes", Offset(0)} : 
-                  let ~id:"bar"{"local",Offsets(0,0)}(|) = 
-                        ?~id:"arg"{Frames("escapes",["bar"], 0)}
-                   in bar~{Frames("visible",[])}(|)
-                  end}
-           ]|
-    )
-
-  // argument arg of foo escapes and is passed as argument to baz
-  //
-  // foo should store arg in frame
-  // baz should retrieve arg from static link
-
-  test-pass-escaping-term-arg =
-    apply-test(!"test-pass-escaping-term-arg"
-	, mark-escaping-variables
-	, annotate-frame-offsets
-	, !|[ strategies 
-                foo(|arg: ATerm) = 
-                  let bar(|) = baz(|arg)
-                   in bar(|)
-                  end
-                baz(|arg : ATerm) = ?arg
-           ]|
-	, !|[ strategies 
-                foo~{"local"}(|arg~{"escapes"}: ATerm) = 
-                  let bar~{"local"}(|) = 
-                        baz~{Frames("visible",["bar","foo"])}
-                            (|arg~{Frames("escapes",["bar"])})
-                   in bar~{Frames("visible",[])}(|)
-                  end
-                baz~{"local"}(|arg~{"local"}: ATerm) = 
-                   ?~id:"arg"{Frames("local",[])}
-           ]|
-	, !|[ strategies 
-                foo~{"local",Offsets(0,1)}(|arg~{"escapes",Offset(0)}: ATerm) = 
-                  let bar~{"local"}(|) = 
-                        baz~{Frames("visible",["bar","foo"])}
-                            (|arg~{Frames("escapes",["bar"],0)})
-                   in bar~{Frames("visible",[])}(|)
-                  end
-                baz~{"local"}(|arg~{"local"}: ATerm) = 
-                   ?~id:"arg"{Frames("local",[])}
-           ]|
+	, !()
     )

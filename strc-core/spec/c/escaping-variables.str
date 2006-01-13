@@ -1,27 +1,29 @@
+/**
+ * Annotate strategy invocations and term variable uses with the
+ * path to their defining frames, and annotate their declarations as
+ * escaping when applicable.
+ */
+
 module escaping-variables
 imports liblib Stratego-Core
 
 signature
   constructors
-    Frames : String * List(String) -> Frames
+    Frames  : String * List(String) -> Annotation
+    Frames  : List(String) -> Annotation
+    Escapes : Annotation
 
 strategies
-
-  // mark variables and function arguments as escaping
-
-  // count the number of escaping variables and functions per definition
 
   escaping-variables = 
     io-wrap(mark-escaping-variables)
 
   mark-escaping-variables =
-    {| CurrentFrame, FrameOf, VisibleDef
+    {| CurrentFrame, FrameOf, Escapes, Closure
      : init-current-frame
      ; alltd(declare-frame-of)
-     ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev; say(!""); debug(!"mev out: "))
+     ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev)
      |}
-
-strategies
 
   init-current-frame =
     rules( CurrentFrame :+ _ -> "top-level" )
@@ -30,48 +32,33 @@ strategies
     ?|[ f(a1*|a2*) = s ]|
     ; where( CurrentFrame => g )
     ; rules( 
-        FrameOf : f -> g 
-        VisibleDef : f
+        FrameOf   : f -> g 
+        Escapes+f :- f{t*}
+        Closure+f :- f{t*}
       )
 
-strategies
-
-  ev = debug(!"in: "); (
-      ?Var(_)         < foo(escaping-var)
-    + ?SVar(_)        < foo(escaping-var)
-    + ?SDefT(_,_,_,_) < foo(ev-sdef)
-    + ?Scope(_,_)     < foo(ev-scope)
-    + ?Let(_,_)       < foo(ev-let)
-    + all(ev)
-  ); debug(!"out: ")
-
-
-  foo(s) = 
-    s <+ debug(!"error: "); <exit> 1
+  ev = 
+    escaping-var <+ ev-sdef <+ ev-scope <+ ev-let 
+    <+ all(ev); try(args-should-be-closures)
 
   ev-let :
-    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
-    where {| FrameOf, Closure, VisibleDef, UsedAsArg
+    |[ let def1* in s1 end ]| -> |[ let def3* in s2 end ]|
+    where {| FrameOf, Escapes, Closure
            : <map(declare-frame-of)> def1*
 	   ; <ev> def1* => def2*
 	   ; <ev> s1 => s2
+	   ; <map(SDefT(try(Closure; try(Escapes)),id,id,id))> def2* => def3*
            |}
 
   ev-sdef :
-    |[ f(a1*|a2*) = s ]| -> |[ f'(a3*|a4*) = s' ]|
-    where {| CurrentFrame, Escapes, FrameOf
-           : rules( 
-               CurrentFrame :+ _ -> f
-               Escapes+f : f{t*} -> f{"local",t*}
-             )
-	   ; <map(declare-str-arg(|f))> a1*
-	   ; <map(declare-trm-arg(|f))> a2*
-	   ; debug(!"sdef :")
+    |[ f(a1*|a2*) = s ]| -> |[ f(a3*|a4*) = s' ]|
+    where {| CurrentFrame, Escapes, FrameOf, Closure
+           : rules( CurrentFrame :+ _ -> f )
+	   ; <map(declare-arg(|f))> a1*
+	   ; <map(declare-arg(|f))> a2*
 	   ; <ev> s => s'
-	   ; debug(!"sdef body:")
            ; <map(escaping-arg)> a1* => a3*
 	   ; <map(escaping-arg)> a2* => a4*
-	   ; <Escapes> f => f'
            |}
 
   ev-scope : 
@@ -79,72 +66,44 @@ strategies
     where CurrentFrame => f
 	; {| FrameOf, Escapes
            : <map(declare-local-var(|f))> x1*
-	   ; debug(!"scope decsa :")
 	   ; <ev> s1 => s2
-	   ; debug(!"scope body :")
-	   ; <map(Escapes)> x1* => x2*
-	   ; debug(!"scope decsb :")
+	   ; <map(try(Escapes))> x1* => x2*
            |}
 
-  declare-str-arg(|f) =
-    ?Typedid|[ x : tp ]|
-    ; rules(
-        FrameOf   : x -> f
-        Escapes+x : x{t*} -> x{"local",t*}
-      )
-
-  declare-trm-arg(|f) =
+  declare-arg(|f) =
     ?Typedid|[ x : tp ]|
     ; where(<declare-local-var(|f)> x)
-
-  declare-local-var(|f) = ?x;
-    rules(
-      FrameOf   : x -> f
-      Escapes+x : x{t*} -> x{"local",t*}
-    )
 
   escaping-arg :
     Typedid|[ x : tp ]| -> Typedid|[ y : tp ]|
     where <Escapes> x => y
 
-  escaping-var :
-    Var(x{t1*}){t2*} -> <debug(!"annotated: ")> Var(x{Frames(off, frames),t1*}){t2*}
-    where debug(!"escaping-var: ")
-	; <FrameOf> x => f
-	; debug(!"frame-of: ")
-	; bigbagof-CurrentFrame
-	; take-until(?f) => frames
-	; debug(!"frames: ")
-	; if <eq> ([], frames) then
-            !"local" => off
-          else 
-            !"escapes" => off
-            ; rules( 
-                Escapes.x : x{t*} -> x{"escapes",t*}
-              )
+  declare-local-var(|f) = ?x;
+    rules(
+      FrameOf   : x -> f
+      Escapes+x :- f{t*}
+    )
+
+  escaping-var =
+    Var(escaping-var-id) <+ SVar(escaping-var-id)
+
+  escaping-var-id :
+    x{t1*} -> x{Frames(frames),t1*}
+    where <frames-to-parent> x => frames
+	; if <not(eq)> ([], frames) then
+            rules( Escapes.x : x{t*} -> x{Escapes,t*} )
           end
 
-  escaping-var :
-    SVar(x{t1*}){t2*} -> <debug(!"annotated: ")> SVar(x{Frames(off, frames),t1*}){t2*}
-    where debug(!"escaping-var: ")
-	; <FrameOf> x => f
-	; debug(!"frame of: ")
-	; bigbagof-CurrentFrame 
-	; debug(!"frames: ")
-	; take-until(?f) => frames
-	; debug(!"frames: ")
-        ; if <VisibleDef> x then
-	    debug(!"visible: ")
-            ; !"visible" => off
-          else if <eq>(f, "top-level") then
-            debug(!"top-level: ")
-            ; !"top-level" => off
-	  else if <eq> ([], frames) then
-            debug(!"local: ")
-            ; !"local" => off
-          else 
-            !"escapes" => off
-            ; rules( 
-                Escapes.x : x{t*} -> x{"escapes",t*}
-              )
-          end end end
+  frames-to-parent =
+    where(FrameOf => f)
+    ; bigbagof-CurrentFrame
+    ; take-until(?f)
+
+  args-should-be-closures = 
+    CallT(id,map(arg-should-be-closure),id)
+
+  arg-should-be-closure :
+    |[ f~{t*}(|) ]| -> |[ f~{Closure(x)}(|) ]|
+    where <newname> f => x
+	; rules( Closure.f : f{t*} -> f{Closure(x),t*} )
+   

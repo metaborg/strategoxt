@@ -1,0 +1,150 @@
+module escaping-variables
+imports liblib Stratego-Core
+
+signature
+  constructors
+    Frames : String * List(String) -> Frames
+
+strategies
+
+  // mark variables and function arguments as escaping
+
+  // count the number of escaping variables and functions per definition
+
+  escaping-variables = 
+    io-wrap(mark-escaping-variables)
+
+  mark-escaping-variables =
+    {| CurrentFrame, FrameOf, VisibleDef
+     : init-current-frame
+     ; alltd(declare-frame-of)
+     ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev; say(!""); debug(!"mev out: "))
+     |}
+
+strategies
+
+  init-current-frame =
+    rules( CurrentFrame :+ _ -> "top-level" )
+
+  declare-frame-of =
+    ?|[ f(a1*|a2*) = s ]|
+    ; where( CurrentFrame => g )
+    ; rules( 
+        FrameOf : f -> g 
+        VisibleDef : f
+      )
+
+strategies
+
+  ev = debug(!"in: "); (
+      ?Var(_)         < foo(escaping-var)
+    + ?SVar(_)        < foo(escaping-var)
+    + ?SDefT(_,_,_,_) < foo(ev-sdef)
+    + ?Scope(_,_)     < foo(ev-scope)
+    + ?Let(_,_)       < foo(ev-let)
+    + all(ev)
+  ); debug(!"out: ")
+
+
+  foo(s) = 
+    s <+ debug(!"error: "); <exit> 1
+
+  ev-let :
+    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
+    where {| FrameOf, Closure, VisibleDef, UsedAsArg
+           : <map(declare-frame-of)> def1*
+	   ; <ev> def1* => def2*
+	   ; <ev> s1 => s2
+           |}
+
+  ev-sdef :
+    |[ f(a1*|a2*) = s ]| -> |[ f'(a3*|a4*) = s' ]|
+    where {| CurrentFrame, Escapes, FrameOf
+           : rules( 
+               CurrentFrame :+ _ -> f
+               Escapes+f : f{t*} -> f{"local",t*}
+             )
+	   ; <map(declare-str-arg(|f))> a1*
+	   ; <map(declare-trm-arg(|f))> a2*
+	   ; debug(!"sdef :")
+	   ; <ev> s => s'
+	   ; debug(!"sdef body:")
+           ; <map(escaping-arg)> a1* => a3*
+	   ; <map(escaping-arg)> a2* => a4*
+	   ; <Escapes> f => f'
+           |}
+
+  ev-scope : 
+    |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|
+    where CurrentFrame => f
+	; {| FrameOf, Escapes
+           : <map(declare-local-var(|f))> x1*
+	   ; debug(!"scope decsa :")
+	   ; <ev> s1 => s2
+	   ; debug(!"scope body :")
+	   ; <map(Escapes)> x1* => x2*
+	   ; debug(!"scope decsb :")
+           |}
+
+  declare-str-arg(|f) =
+    ?Typedid|[ x : tp ]|
+    ; rules(
+        FrameOf   : x -> f
+        Escapes+x : x{t*} -> x{"local",t*}
+      )
+
+  declare-trm-arg(|f) =
+    ?Typedid|[ x : tp ]|
+    ; where(<declare-local-var(|f)> x)
+
+  declare-local-var(|f) = ?x;
+    rules(
+      FrameOf   : x -> f
+      Escapes+x : x{t*} -> x{"local",t*}
+    )
+
+  escaping-arg :
+    Typedid|[ x : tp ]| -> Typedid|[ y : tp ]|
+    where <Escapes> x => y
+
+  escaping-var :
+    Var(x{t1*}){t2*} -> <debug(!"annotated: ")> Var(x{Frames(off, frames),t1*}){t2*}
+    where debug(!"escaping-var: ")
+	; <FrameOf> x => f
+	; debug(!"frame-of: ")
+	; bigbagof-CurrentFrame
+	; take-until(?f) => frames
+	; debug(!"frames: ")
+	; if <eq> ([], frames) then
+            !"local" => off
+          else 
+            !"escapes" => off
+            ; rules( 
+                Escapes.x : x{t*} -> x{"escapes",t*}
+              )
+          end
+
+  escaping-var :
+    SVar(x{t1*}){t2*} -> <debug(!"annotated: ")> SVar(x{Frames(off, frames),t1*}){t2*}
+    where debug(!"escaping-var: ")
+	; <FrameOf> x => f
+	; debug(!"frame of: ")
+	; bigbagof-CurrentFrame 
+	; debug(!"frames: ")
+	; take-until(?f) => frames
+	; debug(!"frames: ")
+        ; if <VisibleDef> x then
+	    debug(!"visible: ")
+            ; !"visible" => off
+          else if <eq>(f, "top-level") then
+            debug(!"top-level: ")
+            ; !"top-level" => off
+	  else if <eq> ([], frames) then
+            debug(!"local: ")
+            ; !"local" => off
+          else 
+            !"escapes" => off
+            ; rules( 
+                Escapes.x : x{t*} -> x{"escapes",t*}
+              )
+          end end end
