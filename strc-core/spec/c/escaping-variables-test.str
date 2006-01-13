@@ -5,7 +5,7 @@ strategies
 
   apply-test(label, s1, s2, input, output1, output2) =
     apply-test(<conc-strings>(<label>, "-1"), s1, input, output1)
-    ; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
+    //; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
 
   escaping-variables-test = 
     test-suite(!"escaping-variables-test",
@@ -218,7 +218,7 @@ strategies
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(1,0)}(arg~{"escapes"}: ATerm -> ATerm |) = 
+                foo~{"local",Offsets(1,0)}(arg~{"escapes", Offset(0)}: ATerm -> ATerm |) = 
                   let bar~{"local",Offsets(0,0)}(|) = 
                         arg~{Frames("escapes",["bar"],0)}(|)
                    in bar~{Frames("visible",[])}(|)
@@ -256,19 +256,16 @@ strategies
                   arg~{Frames("local",[])}(|)
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(1,0)}(arg~{"escapes"}: ATerm -> ATerm |) = 
+                foo~{"local",Offsets(1,0)}(arg~{"escapes", Offset(0)}: ATerm -> ATerm |) = 
                   let bar~{"local",Offsets(0,0)}(|) = 
                         baz~{Frames("visible",["bar","foo"])}
-                          (arg~{Frames("escapes",["bar"],Closure("arg"))}(|)|)
+                          (arg~{Frames("escapes",["bar"],0),Closure("arg")}(|)|)
                    in bar~{Frames("visible",[])}(|)
                   end
                 baz~{"local",Offsets(0,0)}(arg~{"local"} : ATerm -> ATerm|) = 
-                  arg~{Frames("local",[])}(|)
+                  arg~{Frames("local",[]),ApplyClosure}(|)
            ]|
     )
-
-
-
 
   // foo binds term variable arg
 
@@ -312,9 +309,9 @@ strategies
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|arg~{"escapes"}: ATerm) = 
-                  let bar~{"local"}(|) = 
-                        ?~id:"arg"{Frames("escapes",["bar"])}
+                foo~{"local",Offsets(0,1)}(|arg~{"escapes", Offset(0)}: ATerm) = 
+                  let bar~{"local",Offsets(0,0)}(|) = 
+                        ?~id:"arg"{Frames("escapes",["bar"],0)}
                    in bar~{Frames("visible",[])}(|)
                   end
            ]|
@@ -341,9 +338,9 @@ strategies
                   end}
            ]|
 	, !|[ strategies 
-                ~id:"foo"{"local"}(|) = {arg~{"escapes"} : 
-                  let ~id:"bar"{"local"}(|) = 
-                        ?~id:"arg"{Frames("escapes",["bar"])}
+                ~id:"foo"{"local",Offsets(0,1)}(|) = {arg~{"escapes", Offset(0)} : 
+                  let ~id:"bar"{"local",Offsets(0,0)}(|) = 
+                        ?~id:"arg"{Frames("escapes",["bar"], 0)}
                    in bar~{Frames("visible",[])}(|)
                   end}
            ]|
@@ -376,10 +373,10 @@ strategies
                    ?~id:"arg"{Frames("local",[])}
            ]|
 	, !|[ strategies 
-                foo~{"local"}(|arg~{"escapes"}: ATerm) = 
+                foo~{"local",Offsets(0,1)}(|arg~{"escapes",Offset(0)}: ATerm) = 
                   let bar~{"local"}(|) = 
                         baz~{Frames("visible",["bar","foo"])}
-                            (|arg~{Frames("escapes",["bar"])})
+                            (|arg~{Frames("escapes",["bar"],0)})
                    in bar~{Frames("visible",[])}(|)
                   end
                 baz~{"local"}(|arg~{"local"}: ATerm) = 

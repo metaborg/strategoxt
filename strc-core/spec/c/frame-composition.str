@@ -2,10 +2,11 @@ module frame-composition
 imports liblib Stratego-Core
 signature
   constructors
-    Offsets : Int * Int -> Annotation
-    Closure : String -> Annotation
+    Offsets      : Int * Int -> Annotation
+    Offset       : Int  -> Annotation
+    Closure      : String -> Annotation
     ApplyClosure : Annotation
-    Frames : String * List(String) * Int -> Annotation
+    Frames       : String * List(String) * Int -> Annotation
 
 strategies
 
