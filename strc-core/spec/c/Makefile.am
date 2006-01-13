@@ -17,12 +17,12 @@ BOOTCLEANFILES = s2c.c s2c-ng.c C-simplify-test.c escaping-variables.c \
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
-SCFLAGS 	 = --main $* --keep 0
+SCFLAGS 	 = --main $* --keep 0 --verbose 3
 
-STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	    \
-		   -I $(C_TOOLS)/share/c-tools		    \
-		   -I $(srcdir)/../../../stratego-front/syn \
+STRINCLUDES	 = -I $(srcdir)/../../../stratego-front/syn \
 	           -I $(srcdir)/../../../stratego-front/sig \
+		   -I $(srcdir)/../../../c-tools/syn	    \
+		   -I $(srcdir)/../../../c-tools/sig	    \
 	  	   -I ../match				    \
 	  	   -I ../opt				    \
 	  	   -I ../front				    \
