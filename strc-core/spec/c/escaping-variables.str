@@ -32,14 +32,15 @@ strategies
     ?|[ f(a1*|a2*) = s ]|
     ; where( CurrentFrame => g )
     ; rules( 
-        FrameOf   : f -> g 
+        FrameOf   : f -> g
         Escapes+f :- f{t*}
         Closure+f :- f{t*}
       )
 
-  ev = 
+  ev = //debug(!"in: "); (
     escaping-var <+ ev-sdef <+ ev-scope <+ ev-let 
     <+ all(ev); try(args-should-be-closures)
+  //); debug(!"out: ")
 
   ev-let :
     |[ let def1* in s1 end ]| -> |[ let def3* in s2 end ]|
@@ -57,8 +58,8 @@ strategies
 	   ; <map(declare-arg(|f))> a1*
 	   ; <map(declare-arg(|f))> a2*
 	   ; <ev> s => s'
-           ; <map(escaping-arg)> a1* => a3*
-	   ; <map(escaping-arg)> a2* => a4*
+           ; <map(try(escaping-arg))> a1* => a3*
+	   ; <map(try(escaping-arg))> a2* => a4*
            |}
 
   ev-scope : 
@@ -81,7 +82,7 @@ strategies
   declare-local-var(|f) = ?x;
     rules(
       FrameOf   : x -> f
-      Escapes+x :- f{t*}
+      Escapes+x :- x{t*}
     )
 
   escaping-var =
@@ -103,7 +104,8 @@ strategies
     CallT(id,map(arg-should-be-closure),id)
 
   arg-should-be-closure :
-    |[ f~{t*}(|) ]| -> |[ f~{Closure(x)}(|) ]|
-    where <newname> f => x
-	; rules( Closure.f : f{t*} -> f{Closure(x),t*} )
-   
+    |[ f~{t1*}(|) ]| -> |[ f~{Closure(x),t1*}(|) ]|
+    where <conc-strings> (f, "_cl") => x
+	; rules( Closure.f{} : f{t2*} -> f{Closure(x),t2*} )
+
+	// tricky: label should not have annotations, otherwise there is no match   

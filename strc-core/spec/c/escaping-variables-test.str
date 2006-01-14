@@ -308,7 +308,7 @@ strategies // strategy variables
                 foo~{}(|) = 
                   let bar~{Closure("bar_cl")}(|) = id
                    in baz~{Frames(["foo"])}
-                        (bar~{Frames([]),Closure("bar_cl")}(|)|)
+                        (bar~{Closure("bar_cl"),Frames([])}(|)|)
                   end
                 baz~{}(aaa~{}: ATerm -> ATerm|) = 
                   aaa~{Frames([])}(|)
@@ -348,7 +348,7 @@ strategies // strategy variables
                   let bar~{Escapes,Closure("bar_cl")}(|) = id
                    in let bar2(|) =
 		            baz~{Frames(["bar2","bar","foo"])}
-                              (bar~{Frames(["bar2"]),Closure("bar_cl")}(|)|)
+                              (bar~{Closure("bar_cl"),Frames(["bar2"])}(|)|)
                        in bar2~{Frames([])}(|)
                       end
                   end
@@ -377,7 +377,7 @@ strategies // strategy variables
                         ?~id:"bbb"{Frames(["bar"])}
                       bar2~{}(|) = 
                         baz~{Frames(["bar2","foo"])}
-                          (bar~{Frames(["bar2"]),Closure("bar_cl")}(|)|)
+                          (bar~{Closure("bar_cl"),Frames(["bar2"])}(|)|)
                    in bar2~{Frames([])}(|)
                   end
                 baz~{}(aaa~{}: ATerm -> ATerm|) = aaa~{Frames([])}(|)
