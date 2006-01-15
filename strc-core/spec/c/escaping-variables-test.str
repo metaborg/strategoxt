@@ -9,6 +9,16 @@ signature
 
 strategies
 
+/*
+
+  Frames([]) -> frame
+
+  Frames(["a"]) -> sl
+
+  Frames(["a","b"]) -> next(sl)
+
+*/
+
   apply-test(label, s1, s2, input, output1, output2) =
     apply-test(<conc-strings>(<label>, "-1"), s1, input, output1)
     //; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
@@ -311,7 +321,7 @@ strategies // strategy variables
                         (bar~{Closure("bar_cl"),Frames([])}(|)|)
                   end
                 baz~{}(aaa~{}: ATerm -> ATerm|) = 
-                  aaa~{Frames([])}(|)
+                  aaa~{Frames([]),ApplyClosure}(|)
            ]|
 	, !|[ strategies 
                 foo~{Offsets(0,0)}(|) = 
@@ -329,6 +339,7 @@ strategies // strategy variables
   // the closure should be stored in the frame
   // baz applies closure aaa
 
+/*
   test-pass-nested-escaping-strategy =
     apply-test(!"test-pass-nested-escaping-strategy"
 	, mark-escaping-variables
@@ -353,11 +364,11 @@ strategies // strategy variables
                       end
                   end
                 baz~{}(aaa~{}: ATerm -> ATerm|) = 
-                  aaa~{Frames([])}(|)
+                  aaa~{Frames([]),ApplyClosure}(|)
            ]|
 	, !()
     )
-
+*/
 
   test-pass-nested-escaping-strategy =
     apply-test(!"test-pass-nested-escaping-strategy"
@@ -380,7 +391,8 @@ strategies // strategy variables
                           (bar~{Closure("bar_cl"),Frames(["bar2"])}(|)|)
                    in bar2~{Frames([])}(|)
                   end
-                baz~{}(aaa~{}: ATerm -> ATerm|) = aaa~{Frames([])}(|)
+                baz~{}(aaa~{}: ATerm -> ATerm|) = 
+                  aaa~{Frames([]),ApplyClosure}(|)
            ]|
 	, !()
     )
@@ -397,14 +409,13 @@ strategies // strategy variables
            ]|
 	, !|[ strategies 
                 foo~{}(arg~{}: ATerm -> ATerm |) = 
-                  arg~{Frames([])}(|)
+                  arg~{Frames([]),ApplyClosure}(|)
            ]|
 	, !|[ strategies 
                 foo~{Offsets(0,0)}(arg~{}: ATerm -> ATerm |) = 
                   arg~{Frames([]),ApplyClosure}(|)
            ]|
     )
-
 
 
   // argument arg of foo is called in nested strategy bar.
@@ -425,7 +436,7 @@ strategies // strategy variables
 	, !|[ strategies 
                 foo~{}(arg~{Escapes}: ATerm -> ATerm |) = 
                   let bar~{}(|) = 
-                        arg~{Frames(["bar"])}(|)
+                        arg~{Frames(["bar"]),ApplyClosure}(|)
                    in bar~{Frames([])}(|)
                   end
            ]|
@@ -455,11 +466,11 @@ strategies // strategy variables
                 foo~{}(arg~{Escapes}: ATerm -> ATerm |) = 
                   let bar~{}(|) = 
                         baz~{Frames(["bar","foo"])}
-                          (arg~{Frames(["bar"])}(|)|)
+                          (arg~{Closure("arg"),Frames(["bar"])}(|)|)
                    in bar~{Frames([])}(|)
                   end
                 baz~{}(arg~{} : ATerm -> ATerm|) = 
-                  arg~{Frames([])}(|)
+                  arg~{Frames([]),ApplyClosure}(|)
            ]|
 	, !()
     )

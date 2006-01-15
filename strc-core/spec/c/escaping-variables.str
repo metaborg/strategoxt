@@ -12,6 +12,7 @@ signature
     Frames  : String * List(String) -> Annotation
     Frames  : List(String) -> Annotation
     Escapes : Annotation
+    ApplyClosure : Annotation
 
 strategies
 
@@ -32,14 +33,17 @@ strategies
     ?|[ f(a1*|a2*) = s ]|
     ; where( CurrentFrame => g )
     ; rules( 
-        FrameOf   : f -> g
-        Escapes+f :- f{t*}
-        Closure+f :- f{t*}
+        FrameOf     : f{t*} -> g
+        Escapes+f{} :- f{t*}
+        Closure+f{} :- f{t*}
       )
 
   ev = //debug(!"in: "); (
-    escaping-var <+ ev-sdef <+ ev-scope <+ ev-let 
-    <+ all(ev); try(args-should-be-closures)
+    escaping-var 
+    <+ ev-sdef 
+    <+ ev-scope 
+    <+ ev-let 
+    <+ try(CallIsClosure); all(ev); try(args-should-be-closures)
   //); debug(!"out: ")
 
   ev-let :
@@ -55,7 +59,7 @@ strategies
     |[ f(a1*|a2*) = s ]| -> |[ f(a3*|a4*) = s' ]|
     where {| CurrentFrame, Escapes, FrameOf, Closure
            : rules( CurrentFrame :+ _ -> f )
-	   ; <map(declare-arg(|f))> a1*
+	   ; <map(declare-arg(|f); apply-closure)> a1*
 	   ; <map(declare-arg(|f))> a2*
 	   ; <ev> s => s'
            ; <map(try(escaping-arg))> a1* => a3*
@@ -75,14 +79,21 @@ strategies
     ?Typedid|[ x : tp ]|
     ; where(<declare-local-var(|f)> x)
 
+  apply-closure =
+    ?Typedid|[ f : tp ]|
+    ; rules( 
+        CallIsClosure : 
+          |[ f~{t1*}(s*|t2*) ]| -> |[ f~{ApplyClosure,t1*}(s*|t2*) ]| 
+      )
+
   escaping-arg :
     Typedid|[ x : tp ]| -> Typedid|[ y : tp ]|
     where <Escapes> x => y
 
   declare-local-var(|f) = ?x;
     rules(
-      FrameOf   : x -> f
-      Escapes+x :- x{t*}
+      FrameOf     : x{t*} -> f
+      Escapes+x{} :- x{t*}
     )
 
   escaping-var =
@@ -92,7 +103,7 @@ strategies
     x{t1*} -> x{Frames(frames),t1*}
     where <frames-to-parent> x => frames
 	; if <not(eq)> ([], frames) then
-            rules( Escapes.x : x{t*} -> x{Escapes,t*} )
+            rules( Escapes.x{} : x{t*} -> x{Escapes,t*} )
           end
 
   frames-to-parent =
@@ -104,8 +115,12 @@ strategies
     CallT(id,map(arg-should-be-closure),id)
 
   arg-should-be-closure :
-    |[ f~{t1*}(|) ]| -> |[ f~{Closure(x),t1*}(|) ]|
-    where <conc-strings> (f, "_cl") => x
-	; rules( Closure.f{} : f{t2*} -> f{Closure(x),t2*} )
-
-	// tricky: label should not have annotations, otherwise there is no match   
+    |[ f~{t1*}(|) ]| -> |[ f~{Closure(x),t2*}(|) ]|
+    where if (<filter(not(?ApplyClosure()))> t1* => t2*) => t1* then
+	    <conc-strings> (f, "_cl") => x
+	    ; rules( Closure.f{} : f{t3*} -> f{Closure(x),t3*} )
+	      // tricky: label should not have annotations, otherwise there is no match
+          else
+	    !f{} => x
+	  end
+   
