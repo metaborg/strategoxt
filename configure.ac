@@ -62,7 +62,7 @@ AC_SUBST([XTC2_ENABLED])
 AC_MSG_CHECKING([in which order to build subpackages])
 PKGS="autoxt srts"
 if test "$xt_baseline" = "yes"; then
-  PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools stratego-lib"
+  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-lib"
 
   if test "x$XTC2_ENABLED" = "xyes"; then
     PKGS="$PKGS xtc2"
