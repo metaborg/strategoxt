@@ -1,5 +1,5 @@
 /**
- * This module contains generic one-pass traversals over term.
+ * This module contains generic one-pass traversals over terms.
  *
  * These traversals have been defined using the primitive term traversal
  * operators of Stratego, all, some and one, and the control operators of
@@ -175,9 +175,29 @@ strategies
  */
 strategies
 
+  /**
+   * Apply s along the spine of a term, in top down order. 
+   *
+   * A spine of a term is a chain of nodes from the root to some
+   * subterm. The traversal stops when 's' fails for all children
+   * of a node.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   */
   spinetd(s) = 
     s; try(one(spinetd(s)))
 
+  /**
+   * Apply s along the spine of a term, in bottom up order. 
+   *
+   * A spine of a term is a chain of nodes from the root to some
+   * subterm. The traversal stops when 's' fails for all children
+   * of a node.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   */
   spinebu(s) = 
     try(one(spinebu(s))); s
 
@@ -193,9 +213,23 @@ strategies
  */
 strategies
 
+  /** Apply s everywhere along all spines where s applies, in top down
+   * order.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term 
+   * @see   spinetd
+   */
   somespinetd(s) = 
     rec x(s; try(some(x)))
 
+  /** Apply s everywhere along all spines where s applies, in bottom
+   * up order.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term 
+   * @see   spinetd
+   */
   somespinebu(s) = 
     rec x(try(some(x)); s)
 
@@ -204,9 +238,23 @@ strategies
  */
 strategies
 
+  /** Apply s at one position inside a term, in top down order. Once
+   * s has succeeded, the traversal stops. If s never succeeds, this
+   * strategy fails.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term 
+   */
   oncetd(s) = 
     rec x(s <+ one(x))
 
+  /** Apply s at one position inside a term, in bottom up order. Once
+   * s has succeeded, the traversal stops. If s never succeeds, this
+   * strategy fails.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term 
+   */
   oncebu(s) = 
     rec x(one(x) <+ s)
 
@@ -222,9 +270,23 @@ strategies
  */	
 strategies
 
+  /** Apply s at some positions inside a term, at least once, in top
+   * down order. Once s succeeds, the traversal stopped.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   * @see oncetd
+   */
   sometd(s) = 
     rec x(s <+ some(x))
 
+  /** Apply s at some positions inside a term, at least once, in bottom
+   * up order. Once s succeeds, the traversal stopped.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   * @see oncetd
+   */
   somebu(s) = 
     rec x(some(x) <+ s)
 
@@ -235,6 +297,11 @@ strategies
  */
 strategies
 
+  /** Find all topmost applications of s. 
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   */
   alltd(s) = 
     rec x(s <+ all(x))
 
@@ -260,9 +327,21 @@ strategies
  */
 strategies
 
+  /** Apply s as many times as possible, but at least once, in bottom up
+   * order.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   */
   manybu(s) = 
     rec x(some(x); try(s) <+ s)
 
+  /** Apply s as many times as possible, but at least once, in top down
+   * order.
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   */
   manytd(s) = 
     rec x(s; all(try(x)) <+ some(x))
 
@@ -271,5 +350,10 @@ strategies
   somedownup(s) = 
     rec x(s; all(x); try(s) <+ some(x); try(s))
 
+  /** Apply s to a term in breadth first order. 
+   *
+   * @param s          Term -> Term
+   * @type  Term -> Term
+   */
   breadthfirst(s) = 
     rec x(all(s); all(x))
