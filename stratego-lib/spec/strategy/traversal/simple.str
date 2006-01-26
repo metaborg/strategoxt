@@ -1,13 +1,18 @@
 /**
- * The primitive term traversal operators of Stratego (all, some, one)
- * can be combined with the other control operators in a wide
- * variety of ways to define full term traversals.
- * This module defines a collection of the most common generic one-pass traversals
- * over terms.
+ * This module contains generic one-pass traversals over term.
+ *
+ * These traversals have been defined using the primitive term traversal
+ * operators of Stratego, all, some and one, and the control operators of
+ * language. This results is a wide variety of resuable term traversals.
  *
  * Term traversals can be categorized into classes according to
  * how much of the term they traverse and to which parts
- * of the term they modify.
+ * of the term they modify. Please read the annotated source code
+ * to see the breakdown.
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
  */
 module strategy/traversal/simple
 imports 
@@ -24,15 +29,53 @@ imports
  */
 strategies
 
+  /** Apply strategy s to each term in a top down, left to right, 
+   * (prefix) order.
+   *
+   * Note: new terms resulting from rewrites during the traversal will 
+   * also be traversed.
+   *
+   * @param s - the strategy to apply
+   * @type Term -> Term
+   */
   topdown(s) = 
     s; all(topdown(s))
 
+  /** Apply strategy s to each term in a bottom up, left to right, 
+   * (postfix) order.
+   *
+   * @param s - the strategy to apply
+   * @type Term -> Term
+   */
   bottomup(s) = 
     all(bottomup(s)); s
  
+  /** Apply strategy s to all terms going down then going up. The traversal
+   * will traverse the spine until a leaf is reached, then proceed to the
+   * other leaves, before it returns up the spine.
+   *
+   * Each term, including the leaves, will be visited in both the down and
+   * up directions.
+   * 
+   * @param s - the strategy to apply
+   * @type Term -> Term
+   */
   downup(s) = 
     s; all(downup(s)); s
 
+  /** Apply strategy s1 to all terms going down then apply s2 to all terms
+   * when going up. This strategy will traverse the spine until a leaf is
+   * reached, then proceed to the other leaves until none are left, before
+   * it returns up the spine.
+   *
+   * Each term, including the leaves, will be visited in both the down and
+   * up directions, with s1 then s2 applied to it, respectively.
+   * 
+   * @param s1 - the strategy applied on the way down
+   * @param s2 - the strategy applied on the way up
+   * @type Term -> Term
+   * @see downup
+   */
   downup(s1, s2) = 
     s1; all(downup(s1, s2)); s2
 
@@ -50,28 +93,65 @@ strategies
  */
 strategies
 
+  /** Apply strategy s to each term in a top down, left to right, (prefix)
+   * order, but stop traversal when stop succeeds.
+   *
+   * @param s         Term -> Term
+   * @param stop      (a -> a) * a -> a
+   * @type Term -> Term
+   * @see topdown
+   */
   topdownS(s, stop: (a -> a) * a -> a) = 
     s
     ; (stop(topdownS(s,stop)) <+ all(topdownS(s,stop)))
 
+  /** Apply strategy s to each term in a bottom up, left to right,  (postfix)
+   * order, but stop traversal when stop succeeds.
+   *
+   * @param s         Term -> Term
+   * @param stop      (a -> a) * a -> a
+   * @type Term -> Term
+   * @see bottomup
+   */
   bottomupS(s, stop: (a -> a) * a -> a) = 
     (stop(bottomupS(s, stop)) <+ all(bottomupS(s, stop)))
     ; s
 
+  /** Apply strategy s to all terms when going down then when going up,
+   * but stop traversal when stop succeeds.
+   *
+   * @param s         Term -> Term
+   * @param stop      (a -> a) * a -> a
+   * @type Term -> Term
+   * @see downup
+   */
   downupS(s, stop: (a -> a) * a -> a) = 
     s
     ; (stop(downupS(s, stop)) <+ all(downupS(s, stop))); s
 
+  /** Apply strategy s1 to all terms going down then apply s2 to all terms
+   * when going up, but stop travesal when stop succeeds.
+   *
+   * @param s1         Term -> Term
+   * @param s2         Term -> Term
+   * @param stop      (a -> a) * a -> a
+   * @type  Term -> Term
+   * @see downup
+   */
   downupS(s1, s2, stop: (a -> a) * a -> a) = 
     s1
     ; (stop(downupS(s1, s2, stop)) <+ all(downupS(s1, s2, stop)))
     ; s2
 
-
   /**
-   * The strategy 'don't-stop' is a unit for these traversals,
-   * i.e., topdown(s) is equivalent
-   * to topdown(s,don't-stop).
+   * A unit for topdownS, bottomupS and downupS. For example, 
+   * topdown(s) is equivalent to topdownS(s,don't-stop).
+   *
+   * @param s Term -> Term
+   * @type _ -> fail
+   * @see topdownS
+   * @see bottomupS
+   * @see downupS
    */
   don't-stop(s) =
     fail
