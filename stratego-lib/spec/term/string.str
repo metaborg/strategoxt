@@ -1,5 +1,12 @@
 /**
- * Operations on strings
+ * This module contains strategies for operating on strings.
+ *
+ * In Stratego, strings are primitive terms, separate from characters
+ * and character lists. It is recommended that all strings contain only
+ * ISO-8859-1 (Latin1) characters.
+ * 
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
  */
 module term/string
 imports 
@@ -42,14 +49,14 @@ strategies
   newname = ?prefix; prim("SSL_newname", prefix)
 
   /**
-   * Succeeds when the input term is a string.
+   * Predicate that checks if the supplied term is a string.
    *
    * @type String -> String
    */
   is-string	 = ?x; prim("SSL_is_string", x)
 
   /**
-   * Succeeds if applied to a printable character
+   * Predicate that checks if the supplied term is a printable character.
    *
    * @type Char -> Char
    */
@@ -441,19 +448,23 @@ strategies
 
 strategies 
 
- /**
+ /** Predicate that checks if a string is double quoted, i.e. quoted
+  * with double quotation marks (").
+  *
   * @inc is-double-quote 1
   * @inc is-double-quote 2
   * @inc is-double-quote 3
   * @inc is-double-quote 4
   * @inc is-double-quote 5
   * @inc is-double-quote 6
+  *
+  * @type   String -> String
   */
   is-double-quoted =
     is-quoted(|'"')
 
   /**
-   * Succeeds if the input string is quoted with single quotes.
+   * Predicate that checks a string is quoted with single quotes.
    * 
    * @type  String -> String
    */
@@ -461,8 +472,8 @@ strategies
     is-quoted(|'\'')
 
   /**
-   * Succeeds if the character list is double quoted. That is,
-   * if the first and last character are both double quotes.
+   * Predicate that checks if a character list is double quoted. That
+   * is, if the first and last character are both double quotes.
    *
    * @type List(Char) -> List(Char)
    */
@@ -470,7 +481,7 @@ strategies
     is-quoted-chars(|'"')
 
   /**
-   * Succeeds if the character list is single quoted. That is,
+   * Predicate that checks if a character list is single quoted. That is,
    * if the first and last character are both single quotes.
    *
    * @type List(Char) -> List(Char)
@@ -479,7 +490,9 @@ strategies
     is-quoted-chars(|'\'')
 
   /**
-   * Checks if a string is quoted with the given character.
+   * Predicate that checks if a string is quoted with the given character.
+   *
+   * The character c is the quotation character to check for.
    *
    * @param Char
    * @type  String -> String
@@ -491,10 +504,9 @@ strategies
     )
 
   /**
-   * Succeeds if a list of characters are quoted with the
-   * character given by the term argument. That is, if the
-   * first and last character of the list are both equal
-   * to c.
+   * Predicate that checks if a list of characters is quoted with
+   * the character given by the term argument. That is, if the
+   * first and last character of the list are both equal to c.
    *
    * @param Char
    * @type List(Char) -> List(Char)
