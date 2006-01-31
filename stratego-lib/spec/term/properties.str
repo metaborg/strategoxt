@@ -1,3 +1,11 @@
+/**
+ * This module contains strategies for checking local structural properties
+ * on terms.
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
+ *
+ */
 module term/properties
 imports 
   strategy/traversal/simple
