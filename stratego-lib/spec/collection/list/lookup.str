@@ -1,6 +1,20 @@
 /**
  * This module contains strategies for working on associative lists.
+ * 
  * Associative lists are on the form [(key1, value1), (key2, value2), ...]
+ * Each key must be unique for the strategies in this module to operate
+ * correctly. Any term can be used as key. 
+ *
+ * The associative lists must be created correctly by the application code;
+ * this module only contains strategies for searching associative lists.
+ *
+ * Keys may have annotations. These are considered to be part of the key,
+ * so identical term with differing annotations are effectively different
+ * keys.
+ * 
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
+ *
  */
 module collection/list/lookup
 imports 
@@ -11,6 +25,9 @@ strategies
   /**
    * Lookup the first value associated with a key in an associative
    * list. An associative list is a list of key-value pairs.
+   *
+   * Note: If multiple identical keys exist, only the value for the
+   * first will be retrieved.
    *
    * Example:
    *   <lookup> (2, [(1, "a"), (2, "b"), (3, "c")]) => "b"
