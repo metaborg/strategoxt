@@ -1,8 +1,11 @@
 /**
- * This module contains strategies for dealing with sets. In
- * this implementation, sets are encoded as lists, by excising
- * duplicates. The make-set strategy is used to make a set
- * from a list.
+ * This module contains strategies for dealing with sets.
+ *
+ * The strategies in this module assume that sets are encoded as lists.
+ * A list is converted to a set by excising duplicates, using the 
+ * make-set strategy .
+ *
+ * An implementation of indexed sets can be found in collection/set/indexed.
  *
  * Given this notion of sets, we can perform the traditional
  * set operations such as intersect (isect), union, one-way
@@ -10,6 +13,11 @@
  *
  * We can also check sets for equality (set-eq), strict and 
  * non-strict subset relation (subset and subseteq, respectively).
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
+ *
+ * @see collection/set/indexed
  */
 module collection/list/set
 imports 
@@ -270,7 +278,7 @@ strategies
   subseteq(eq) = subset-gen(eq, ?[] + ?[_|_])
 
   /**
-   * The general strategy for comparing two list sets.
+   * General strategy for comparing two list sets.
    *
    * Other strategies call this one to check for equality, subset or subseteq.
    *
