@@ -1,13 +1,12 @@
-/*
-
-	The primitive term traversal operators of Stratego (all, some, one)
-	can be combined with the other control operators in a wide
-	variety of ways to define full term traversals.
-	This module defines 
-	a collection of the most common generic one-pass traversals
-	over terms.
-
-*/
+/**
+ * This module defines a collection of generic one-pass traversals over
+ * lists.
+ *
+ * The primitive term traversal operators of Strateg -- all, some, one --
+ * can be combined with the other control operators in a wide variety
+ * of ways to define full term traversals.
+ *
+ */
 module strategy/traversal/list
 imports 
   strategy/conditional 

@@ -1,31 +1,75 @@
 /**
+ * This module contains general zipping strategies for arbitrary terms
+ * and tuples.
+ *
  * The zip strategy on lists takes a pair of lists and combines
  * the elements of the lists into a list of pairs. This can be
  * generalized by transforming a tuple of lists into a list of
  * tuples. This module further generalizes zip by allowing any
  * term structure instead of a list to be zipped.
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
+ *
  */
 module term/zip 
 imports collection/list/zip
 strategies
 
-  // zipping a pair of terms
-
+  /** Zips a two-element tuple of structurally similar terms recursively by 
+   * using the strategy leaf to detect leaves and node to post-transform 
+   * the result
+   *
+   * Example: <term-zip(add, id)> (N(1, N(2)), N(2, N(3))) => N(3,N(5))
+   *
+   * @param leaf       c -?> d
+   * @param node       d -> e
+   * @type             Tuple(a(c),a(c)) -> a(e)
+   * @see term-zip
+   */
   pair-term-zip-bu(leaf, node) = 
     rec x(leaf <+ TermZip(x); node)
 
 rules
 
+  /** Zips the argument lists of two terms of the same type, given as
+   * a two element tuple, using strategy s to combine each pair. 
+   *
+   * Example: <TermZip(id)> (Foo(1,2,3),Foo(4,5,6)) => Foo((1,4),(2,5),(3,6))
+   *
+   * @type s           Tuple(a,b) -> c
+   * @type             Tuple(a,a) -> a
+   * @see zip
+   * @see TermTupleZip
+   */
   TermZip(s) : 
     (f#(xs), f#(ys)) -> f#(<zip(s)>(xs, ys))
 
 strategies
 
-  // zipping a tuple of terms 
-
+  /** Zips a tuple of structurally similar terms recursively by using the
+   * strategy leaf to detect leaves and node to post-transform the result
+   *
+   * Example: <term-zip(add, id)> (N(1, N(2)), N(2, N(3))) => N(3,N(5))
+   *
+   * @param leaf       c -?> d
+   * @param node       d -> e
+   * @type             Tuple(a(c),a(c)) -> a(e)
+   */
   term-zip(leaf, node) = 
     rec x(leaf <+ TermTupleZip(x); node)
 
+  /** Zips the argument lists of an arbitrary length tuple of terms of the
+   * same type, using using strategy s to combine each pair. Note that
+   * all terms in the tuple must use the same constructor: both the name
+   * and arity must be equal. 
+   *
+   * Example: <TermZip(id)> (Foo(1,2),Foo(4,5),Foo(6,7)) => Foo((1,4,6),(2,5,7))
+   *
+   * @type s           Tuple(a,b) -> c
+   * @type             Tuple(a,a) -> a
+   * @see zip
+   */
   TermTupleZip(s) =
     tmap({xs: ?f#(xs); !xs});
     tuple-zip(s);
