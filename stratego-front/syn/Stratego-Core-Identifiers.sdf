@@ -38,10 +38,37 @@ exports
     Keyword -> UCID {reject}
 
   lexical restrictions
-    "all" "constructors" "fail" "id" "in" "let" "module" "not" "one"
-    "overlays" "prim" "rules" "script" "signature" "some"
-    "sorts" "strategies" "stratego" "test" "where" 
-    -/- [a-zA-Z0-9\'\-\_]
+    "all"
+    "case" // not reserved kw
+    "constructors"
+    "else" // not reserved kw
+    "end" // not reserved kw
+    "external" // not reserved kw
+    "fail"
+    "id"
+    "if" // not reserved kw
+    "in"
+    "imports" // not reserved kw
+    "let"
+    "module"
+    "not"
+    "one"
+    "overlays"
+    "otherwise" // not reserved kw
+    "prim"
+    "rec" // not reserved kw
+    "rules"
+    "script"
+    "signature"
+    "some"
+    "sorts"
+    "strategies"
+    "stratego"
+    "switch" // not reserved kw
+    "test"
+    "then" // not reserved kw
+    "where"
+      -/- [a-zA-Z0-9\'\-\_]
 
   sorts Keyword
   lexical syntax
