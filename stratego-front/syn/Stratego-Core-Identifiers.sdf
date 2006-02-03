@@ -39,24 +39,24 @@ exports
 
   lexical restrictions
     "all"
-    "case" // not reserved kw
+    "case" %% not reserved kw
     "constructors"
-    "else" // not reserved kw
-    "end" // not reserved kw
-    "external" // not reserved kw
+    "else" %% not reserved kw
+    "end" %% not reserved kw
+    "external" %% not reserved kw
     "fail"
     "id"
-    "if" // not reserved kw
+    "if" %% not reserved kw
     "in"
-    "imports" // not reserved kw
+    "imports" %% not reserved kw
     "let"
     "module"
     "not"
     "one"
     "overlays"
-    "otherwise" // not reserved kw
+    "otherwise" %% not reserved kw
     "prim"
-    "rec" // not reserved kw
+    "rec" %% not reserved kw
     "rules"
     "script"
     "signature"
@@ -64,9 +64,9 @@ exports
     "sorts"
     "strategies"
     "stratego"
-    "switch" // not reserved kw
+    "switch" %% not reserved kw
     "test"
-    "then" // not reserved kw
+    "then" %% not reserved kw
     "where"
       -/- [a-zA-Z0-9\'\-\_]
 
