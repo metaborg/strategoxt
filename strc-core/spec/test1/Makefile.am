@@ -38,6 +38,7 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05				 \
 		  test91 test92 test93 test94 test95 test96			 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
+                  test-chain01 test-chain02 test-chain03                         \
 		  let-test							 \
 		  nested-defs01							 \
 		  cs-test01							 \
@@ -68,6 +69,10 @@ test93_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test94_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test95_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test96_LDADD 	= $(STRATEGOLIB) $(STRATEGORUNLIBS)
+
+test_chain01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test_chain02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test_chain03_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 bar.o 		: bar.c
 
@@ -179,6 +184,10 @@ nodist_test93_SOURCES = test93.c
 nodist_test94_SOURCES = test94.c
 nodist_test95_SOURCES = test95.c
 nodist_test96_SOURCES = test96.c
+
+nodist_test_chain01_SOURCES = test-chain01.c
+nodist_test_chain02_SOURCES = test-chain02.c
+nodist_test_chain03_SOURCES = test-chain03.c
 
 nodist_io_test10_SOURCES = io-test10.c
 nodist_io_test11_SOURCES = io-test11.c

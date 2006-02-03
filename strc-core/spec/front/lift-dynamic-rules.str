@@ -221,15 +221,16 @@ strategies
         ; create-undefine-strategy(|f)
 
 
+/**
+ * Names of derived strategies
+ */
 strategies
 
-  // names of derived strategies
-
   _new(|f)             = <concat-strings> ["new-", f]
-  _bagof(|f)           = <concat-strings> ["bagof-", f]
   _undefine(|f)        = <concat-strings> ["undefine-", f]
   _aux(|f)             = <concat-strings> ["aux-", f]
   _once(|f)            = <concat-strings> ["once-", f]
+  _bagof(|f)           = <concat-strings> ["bagof-", f]
   _bigbagof(|f)        = <concat-strings> ["bigbagof-", f]
   _innermost-scope(|f) = <concat-strings> ["innermost-scope-", f]
 
@@ -337,6 +338,8 @@ rules
 	; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
 	; <create-once-rule(|x, aux-call, t3, stdkey)> drd
 	; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
+	; <create-chain-rule(|x, t3, stdkey)> drd
+	; <create-bigchain-rule(|x, t3, stdkey)> drd
 
 	; create-innermost-scope-strategy(|f)
 
@@ -400,7 +403,6 @@ strategies
    * key is the same as original (all variables in the pattern are context variables),
    * just use x (a variable matching the lhs) for lookup.
    */
-
   lookup-key(|x) :
     t1 -> t3
     where <dummify> t1 => t2
@@ -418,7 +420,6 @@ strategies
    * be called from an application rule that first looks up the closures
    * given the lhs.
    */
-
   create-aux-rule(|stdrule) =
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]|
     ; _aux(|f) => g
@@ -435,7 +436,6 @@ strategies
   /**
    * Create a call to f-aux given a variable x matching the lhs
    */
-
   aux-call(|x) : 
     |[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| -> Strat|[ g(s1*|t4*, x) ]|
     where 
@@ -445,7 +445,10 @@ strategies
       ; <tvars; map(!Var(<id>))> t1 => t3*
       ; <conc>(t2*, t3*) => t4*
 
-strategies // several flavours of applying dynamic rules
+/**
+ * Several flavours of applying dynamic rules
+ */
+strategies
 
   /**
    * f : apply dynamic rule. The arguments and lhs of the rule are
@@ -453,7 +456,6 @@ strategies // several flavours of applying dynamic rules
    * looking up the closures for the current key (t3) and finding
    * the first applicable rewriting using a call to aux-f (s).
    */
-
   create-base-rule(|x, s1, t3,stdkey) =
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]| 
     ; if is-new(|f, f, stdkey); try(is-new(|f, f, ())) then
@@ -469,7 +471,6 @@ strategies // several flavours of applying dynamic rules
    * scope with rules for f matching the key. Succeeds with empty 
    * list if there are no rules.
    */
-
   create-bagof-rule(|x, s1, t3,stdkey) =
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
     ; _bagof(|f) => g
@@ -484,7 +485,6 @@ strategies // several flavours of applying dynamic rules
   /**
    * bigbagof-f : produce all rewritings for f from all scopes.
    */
-
   create-bigbagof-rule(|x, s1, t3,stdkey) =
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
     ; _bigbagof(|f) => g
@@ -500,7 +500,6 @@ strategies // several flavours of applying dynamic rules
    * once-f : look up one occurrence of possibly many, produce the
    * result and delete it from the set of closures
    */
-
   create-once-rule(|x, s1, t3,stdkey) =
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
     ; _once(|f) => g
@@ -514,16 +513,55 @@ strategies // several flavours of applying dynamic rules
         ]|)
       end
 
-strategies 
+/**
+ * Chain
+ */
+strategies
 
-  // definitions that should be generated only once for each dynamic rules
+  /**
+   * chain-f : chain the current term through all f in most recent 
+   * scope with rules for f matching the key.
+   */
+  create-chain-rule(|x, t3, stdkey) =
+    create-chain-rule(|"chain", "dr-lookup-rule", x, t3, stdkey)
+
+  /**
+   * bigchain-f : chain the current term through all f from all scopes.
+   */
+  create-bigchain-rule(|x, t3, stdkey) =
+    create-chain-rule(|"bigchain", "dr-lookup-all-rules", x, t3, stdkey)
+
+  /**
+   * @param name of prefix
+   * @param name of dr-lookup strategy
+   */
+  create-chain-rule(|chain, lookup, x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; <concat-strings> [chain, "-", f] => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        where(
+          new => y
+          ; <aux-call(|y)> drd => s1
+          ; <tvars> t1 => x*
+        )
+        ; add-def(||[ 
+            g(a1*|a2*) =
+              ?x@t1
+              ; !(<~id:lookup(|~str:f, t3) <+ ![]>, <id>)
+              ; foldl({y, x*: ?(<id>, y@t1); s1 })
+          ]|)
+      end
+
+/**
+ * Definitions that should be generated only once for each dynamic rules
+ */
+strategies 
 
   /**
    * innermost-scope-f(s) : find label of first scope, going from most recent to
    * oldest, for which argument strategy s succeeds. Just an alias for
    * dr-get-first-scope-label(x|"f").
    */
-
   create-innermost-scope-strategy(|f) =
     _innermost-scope(|f) => g
     ; if is-new(|f, g, ()) then
@@ -534,7 +572,6 @@ strategies
   /**
    * new-f : locally undefine all rules that depend on x
    */
-
   create-new-strategy(|f) =
     if is-new(|f, "new", ()) then
       where(_new(|f) => f2; _bagof(|f) => f4
@@ -559,7 +596,6 @@ strategies
   /**
    * undefine-f : undefine all rules that depend on x
    */
-
   create-undefine-strategy(|f) = 
     if is-new(|f, "undefine", ()) then
       where(_undefine(|f) => f3; _bagof(|f) => f4; _aux(|f) => f5
@@ -611,7 +647,6 @@ strategies
   /**
    * Derive key from term by replacing non-context variables by a dummy.
    */
-
   dummify =
     // a hack to deal with list variables in lists in dr lhss
     topdown(try(
