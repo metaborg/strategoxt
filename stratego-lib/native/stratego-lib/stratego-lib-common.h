@@ -1,5 +1,5 @@
-ATerm pointer_to_term(void* pointer);
-void* term_to_pointer(ATerm term);
+ATerm AT_pointer_to_term(void* pointer);
+void* AT_term_to_pointer(ATerm term);
 
 FILE* stream_from_term_transitional(ATerm);
 FILE* stream_from_term_strict(ATerm);
