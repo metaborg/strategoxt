@@ -4,7 +4,7 @@ strategies
 
   c-simplify =
     bottomup-l(repeat(Csimplify))
-    ; remove-unused-labels
+    //; remove-unused-labels
     
 rules
 
