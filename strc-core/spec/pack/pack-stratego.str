@@ -90,6 +90,7 @@ strategies
      in ?(IncludePathName(<qualify-pathname>), _)
       ; if file-exists then
           include-pathname
+          ; (id,xtc-transform(!"report-ambs"))
           ; fc(|"Stratego-Sugar-Cong")
         else
           <fatal-error> ["pack-stratego: error: file ", <id>, " does not exist\n"]
@@ -117,6 +118,7 @@ strategies
            <+ include-from-xtc(|mod)
          )
       )> includes
+    ; (id,xtc-transform(!"report-ambs"))
     ; fc(|"Stratego-Sugar-Cong")
 
   fc(|format) =
