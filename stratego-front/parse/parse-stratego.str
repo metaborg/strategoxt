@@ -38,6 +38,66 @@ strategies
   + ArgOption("--assimilation", where(<set-config>("--assimilation", <id>)),
 	      !"--assimilation on/off : turn assimilation on or off (default: on)")
 
+  + Option(fail, fail, !"")
+  + Option(fail, fail, !"Preserving options:")
+
+  + preserve-comments-option
+  + preserve-positions-option
+
+  + Option(fail, fail, !"")
+  + Option(fail, fail, !"I/O options:")
+
+
+strategies
+
+  preserve-comments-option =
+    Option("--preserve-comments"
+    , <set-preserve-comments> "yes"
+    , !"--preserve-comments   
+                    Preserve source code comments as annotations of the abstract 
+                    syntax tree. [off]"
+    )
+
+  set-preserve-comments =
+    <set-config> ("preserve-comments", <id>)
+
+  must-preserve-comments =
+    <get-config> "preserve-comments" => "yes"
+
+  pass-preserve-comments =
+    if must-preserve-comments then 
+      !["--preserve-comments"]
+    else
+      ![]
+    end
+
+
+strategies
+
+  preserve-positions-option =
+    Option("--preserve-positions"
+    , <set-preserve-positions> "yes"
+    , !"--preserve-positions
+                    Preserve source code positions in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  set-preserve-positions =
+    <set-config> ("preserve-positions", <id>)
+
+  must-preserve-positions =
+    <get-config> "preserve-positions" => "yes"
+
+  pass-preserve-positions =
+    if must-preserve-positions then 
+      !["--preserve-positions"]
+    else
+      ![]
+    end
+
+
+strategies
+
   io-parse-stratego =
     xtc-io-wrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
@@ -71,6 +131,8 @@ strategies
            , <pass-filters> meta
            , <pass-sort> meta
            , <if <get-config> "--asfix" then !["--impl", "--concrete"] else ![] end>
+           , <pass-preserve-comments>
+           , <pass-preserve-positions>  
            ]
          ]
        )
