@@ -1,7 +1,19 @@
 /**
+ * This module contains strategies for operating on hashtables.
+ *
+ * It is important to note that hashtables do not have value semantics;
+ * all operations on hashtables will modify the existing hashtable.
+ * Therefore, when you pass a hashtable to a strategy, it will modify
+ * the hashtable by side-effect.
+ *
  * Hash tables support constant time storing and retrieving of 
- * values associated with keys. This module provides an interface
- * to the hash-table facility provided by the ATerm library.
+ * values associated with keys. This module wraps the hashtable
+ * facility provided by the ATerm library.
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - some documentation
+ *
  */
 module collection/hash-table/common 
 imports 
@@ -20,25 +32,31 @@ signature
  */
 strategies
 
-  /**
+  /** Create a new hashtable with default size and load.
+   * 
    * @type _ -> HashTable(K, V)
    */
   new-hashtable =
     new-hashtable(|117,75)
 
-  /**
+  /** Create a new hashtable with specified size and load.
+   * 
+   * @param initial_size - the initial capacity of the hashtable
+   * @param max_load - the load percentage at which the hashtable is expanded
    * @type _ -> HashTable(K, V)
    */
   new-hashtable(|initial_size, max_load) =
     prim("SSL_hashtable_create", initial_size, max_load); !Hashtable(<id>)
 
-  /**
+  /** Destroys and deallocates memory consumed by an existing hashtable.
+   *
    * @type HashTable(K, V) -> HashTable(K, V)
    */
   hashtable-destroy =
     ?Hashtable(tbl); prim("SSL_hashtable_destroy", tbl); !Hashtable(<id>)
 
-  /**
+  /** Clears the contents of an existing hashtable.
+   *
    * @type HashTable(K, V) -> HashTable(K, V)
    */
   hashtable-clear =
@@ -49,31 +67,42 @@ strategies
  */
 strategies
 
-  /**
+  /** Puts a new key, value pair into the hash table. If the key is
+   * already bound to a value, the old value will be replaced.
+   *
+   * @param key - any term can be used as a key
+   * @param value - any term can be used as a value
    * @type HashTable(K, V) -> HashTable(K, V)
    */
   hashtable-put(|key, value) =
     ?Hashtable(tbl); prim("SSL_hashtable_put", tbl, key, value); !Hashtable(<id>)
 
-  /**
+  /** Gets the value for a key. If the key does not exist, this strategy
+   * fails.
+   *
+   * @param key
    * @type HashTable(K, V) -> V
    */
   hashtable-get(|key) =
     ?Hashtable(tbl); prim("SSL_hashtable_get", tbl, key)
 
-  /**
+  /** Removes a key (with its associated value) from the hashtable. This
+   * strategy will succeed even if the key does not exist.
+   * 
    * @type HashTable(K, V) -> HashTable(K, V)
    */
   hashtable-remove(|key) =
     ?Hashtable(tbl); prim("SSL_hashtable_remove", tbl, key); !Hashtable(<id>)
   
-  /**
+  /** Get a list containing all keys of a hashtable.
+   *
    * @type HashTable(K, V) -> List(K)
    */
   hashtable-keys =
     ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
 
-  /**
+  /** Get a list containing all values of a hashtable
+   *
    * @type HashTable(K, V) -> List(V)
    */
   hashtable-values =
@@ -86,16 +115,19 @@ strategies
  */
 strategies
 
-  /**
-   * Gets the contents of a hashtable as a list of key-value tuples.
+  /** Get the contents of a hashtable as a list of key-value tuples.
+   *
+   * @type HashTable(K,V) -> List(Tuple(K,V), ...)
    */
   hashtable-getlist =
     ?htbl
   ; hashtable-keys
   ; map(\ x -> (x, <hashtable-get(|x)> htbl) \)
 
-  /**
-   * Puts a list of key-value tuples into a hashtable.
+  /** Put a list of key,value tuples into a hashtable.
+   *
+   * @param kv         List(Tuple(K, V), ...)
+   * @type HashTable(K, V) -> HashTable(K, V)
    */
   hashtable-putlist(|kv*) =
     ?htbl
@@ -105,17 +137,19 @@ strategies
     ?htbl
     ; where(<map(\ (key, value) -> <f(|key, value)> htbl \)> kv*)
 
-  /**
-   * Create a new hashtable and initialize it from a key-value pair list.
+  /** Create a new hashtable and initialize it from a key-value pair list.
+   *
+   * @type List(Tuple(K, V), ...) -> HashTable(K, V)
    */
   hashtable-init = 
     ?kv*
   ; new-hashtable(|<length>, 75)
   ; hashtable-putlist(|kv*)
 
-  /**
-   * Creates a new hashtable and copies the entire contents of the current
+  /** Create a new hashtable and copies the entire contents of the current
    * table into the new one.
+   *
+   * @type HashTable(K, V) -> HashTable(K,V)
    */
   hashtable-copy =
     hashtable-getlist
