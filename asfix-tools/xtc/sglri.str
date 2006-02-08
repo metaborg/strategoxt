@@ -40,6 +40,15 @@ strategies
         , <fclose> stream
           ; <close-parse-table> tbl
         )
+
+      ; if must-preserve-comments then
+          asfix-anno-comments(| [ "ShortCom", "LongCom"] )
+        end
+  
+      ; if must-preserve-positions then
+          xtc-transform(!"addPosInfo", !["-p", ""])
+        end
+
       ; implode-asfix-using-config
     end
 
@@ -98,4 +107,11 @@ strategies
     + custom-implode-option
     + Option(fail, fail, !"")
 
+    + Option(fail, fail, !"Preserving options:")
+
+    + preserve-comments-option
+    + preserve-positions-option
+
+    + Option(fail, fail, !"")
     + Option(fail, fail, !"Input/Output options:")
+

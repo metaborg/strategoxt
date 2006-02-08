@@ -75,3 +75,38 @@ strategies
     , obsolete(!"sglri: --impl option")
     , !"--impl <opt>     Pass <opt> to implode-asfix (obsolete: ignored)"
     )
+
+strategies
+
+  preserve-comments-option =
+    Option("--preserve-comments"
+    , <set-preserve-comments> "yes"
+    , !"--preserve-comments   
+                    Preserve source code comments as annotations of the abstract 
+                    syntax tree. [off]"
+    )
+
+  set-preserve-comments =
+    <set-config> ("preserve-comments", <id>)
+
+  must-preserve-comments =
+    <get-config> "preserve-comments" => "yes"
+
+strategies
+
+  preserve-positions-option =
+    Option("--preserve-positions"
+    , <set-preserve-positions> "yes"
+    , !"--preserve-positions
+                    Preserve source code positions in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  set-preserve-positions =
+    <set-config> ("preserve-positions", <id>)
+
+  must-preserve-positions =
+    <get-config> "preserve-positions" => "yes"
+
+
+
