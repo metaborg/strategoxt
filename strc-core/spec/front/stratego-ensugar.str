@@ -51,10 +51,11 @@ rules
   Ensugar =
     ?Op("Cons",[_,_])
     ; implode-cons
-    ; split-last
-    ; (  \ (elems, Op("Nil",[])) -> List(elems) \
+    ; split-last 
+    ; (  \ (elems, NoAnnoList(Op("Nil",[]))) -> List(elems) \ 
+      <+ \ (elems, Op("Nil",[])) -> List(elems) \ // XXX : Don't know for sure if this rule needs to stay, for now it stays..
       <+ \ (elems, last)         -> ListTail(elems, last) \
-      )
+      ) 
 
   implode-cons =
     \ Op("Cons",[e, tail]) -> [e | <implode-cons> tail] \
