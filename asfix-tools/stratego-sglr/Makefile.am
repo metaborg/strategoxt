@@ -1,4 +1,4 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = lib tests
+SUBDIRS           = justsglr lib tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)

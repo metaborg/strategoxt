@@ -26,18 +26,19 @@ EXTRA_DIST = \
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
 
 # Workaround for issue https://bugs.cs.uu.nl/browse/STR-476
-if XT_DARWIN
-  AM_LDFLAGS += -static
-endif
+# if XT_DARWIN
+#   AM_LDFLAGS += -static
+# endif
 
-libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native
+# libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native
+libstratego_sglr_la_CPPFLAGS = $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native -I ../justsglr
 libstratego_sglr_la_CFLAGS   = -Wall
 libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_sglr_la_LIBADD   = \
   $(STRATEGO_XTC_LIBS) \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
-  $(SGLR_LIBS) \
+  $(top_builddir)/stratego-sglr/justsglr/libjustsglr.la \
   $(ATERM_LIBS)
 
 libstratego-sglr.rtree libstratego-sglr.c :
