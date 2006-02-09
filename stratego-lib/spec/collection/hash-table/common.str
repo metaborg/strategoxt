@@ -160,37 +160,50 @@ strategies
  */
 strategies
 
-  /**
-   * Pushes value on top of the stack for key.
+  /** Pushes value on top of the stack for key.
    * Current term is the hashtable and remains untouched.
+   *
+   * @param key        t - the key used for lookup
+   * @param value      a - the value to insert
+   * @type  HashTable(K, V) -> HashTable(K, V)
    */
   hashtable-push(|key, value) =
     hashtable-put(|key, [value | <hashtable-get(|key) <+ ![]>])
 
-  /**
-   * Pushes values on top of the stack for key.
+  /** Pushes values on top of the stack for key.
    * Current term is the hashtable and remains untouched.
+   *
+   * @param key        t       - the key used for lookup
+   * @param value      List(a) - the values to insert
+   * @type  HashTable(K, V) -> HashTable(K, V')
    */
   hashtable-pushlist(|key, value) =
     hashtable-put(|key, <conc>(value, <hashtable-get(|key) <+ ![]>))
 
-  /**
-   * Pushes union of values and already present values 
-   * Current term is the hashtable and remains untouched.
+  /** Pushes union of values and already present values 
+   * Current term is the hashtable.
+   *
+   * @param key        t       - the key used for lookup
+   * @param value      List(a) - the values to insert
+   * @type  HashTable(K, V) -> HashTable(K, V')
    */
   hashtable-pushunion(|key, value) =
     hashtable-put(|key, <union>(value, <hashtable-get(|key) <+ ![]>))
 
-  /**
-   * Pops off the top element of the stack for key.
+  /** Pops off the top element of the stack for key.
    * Current term is the hashtable and remains untouched.
+   *
+   * @param key        t       - the key used for lookup
+   * @type  HashTable(K, (V, ...)) -> V
    */
   hashtable-pop(|key) =
     hashtable-put(|key, <hashtable-get(|key); Tl>)
 
-  /**
-   * Gets the top value from the stack for key (the stack remains untouched)
+  /** Gets the top value from the stack for key (the stack remains untouched)
    * Current term is the hashtable, output is the top value.
+   *
+   * @param key        t       - the key used for lookup
+   * @type  HashTable(K, (V, ...)) -> V
    */
   hashtable-peek(|key) =
     hashtable-get(|key); Hd
@@ -198,6 +211,9 @@ strategies
   /**
    * Gets the top value from the stack for key and pops it off the stack.
    * Current term is the hashtable, output is the top value.
+   *
+   * @param key        t       - the key used for lookup
+   * @type  HashTable(K, (V, ...)) -> V
    */
   hashtable-peekpop(|key) =
     where(hashtable-peek(|key) => val)
@@ -498,9 +514,10 @@ strategies // union merges
 
 strategies
 
-  /**
-   * Checks whether two hashtables have equal contents.
+  /** Checks whether two hashtables have equal contents.
    * This strategy uses the basic `eq` to compare the elements.
+   *
+   * @type Tuple(HashTable(K, V), HashTable(K,V)) -> _
    */
   hashtable-eq = 
     hashtable-eq(eq)
@@ -511,6 +528,8 @@ strategies
    *
    * @param test strategy that will compare two elements upon their equality.
    * @inc hashtable-eq
+   *
+   * @type Tuple(HashTable(K, V), HashTable(K,V)) -> _
    */
   hashtable-eq(eq) = ?(tbl1, tbl2);
     where((hashtable-keys => k*, hashtable-keys); set-eq)
@@ -523,6 +542,7 @@ strategies
 
   /**
    * Retrieves the primitive table-table as a Hashtable
+   *
    */
   table-hashtable =
     prim("SSL_table_hashtable"); !Hashtable(<id>)
