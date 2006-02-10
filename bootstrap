@@ -1,14 +1,18 @@
 #! /bin/sh
 
+if [ -z "$(which automake | grep .nix-profile)" ] ; then
 
-if [ -f /etc/gentoo-release ] ; then 
-	# Environment variables for our Gentoo friends.
-	export WANT_AUTOMAKE="1.8"
-	export WANT_AUTOCONF="2.59"
-#elif [ -f /etc/debian_version ] ; then
-#	# Environment variables for our Debian friends.
-#        export ACLOCAL=/usr/bin/aclocal-1.8
-#        export AUTOMAKE=/usr/bin/automake-1.8
+        # Automake not provided by Nix; try to find suitable native one.
+
+	if [ -f /etc/gentoo-release ] ; then 
+		# Environment variables for our Gentoo friends.
+		export WANT_AUTOMAKE="1.8"
+		export WANT_AUTOCONF="2.59"
+	elif [ -f /etc/debian_version ] ; then
+		# Environment variables for our Debian friends.
+	        export ACLOCAL=/usr/bin/aclocal-1.8
+	        export AUTOMAKE=/usr/bin/automake-1.8
+	fi
 fi
 
 # Determine autoxt to use.
