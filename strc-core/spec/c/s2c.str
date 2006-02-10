@@ -232,9 +232,15 @@ strategies
 strategies 
 
   Translate = 
-    fragment(SDefToDeclaration|"FunctionSig")
-    ; fragment(SDefToRegistration|"FunctionReg")
-    ; {| SuccessLabel, FailureLabel: fragment(TranslateDef|"FunctionDef") |}
+    SDefIgnore
+    <+ fragment(SDefToDeclaration|"FunctionSig")
+       ; fragment(SDefToRegistration|"FunctionReg")
+       ; {| SuccessLabel, FailureLabel: fragment(TranslateDef|"FunctionDef") |}
+
+  SDefIgnore =
+    ?Def|[ f(a1* | a2*) = s ]|
+    ; where( !f => "DYNAMIC_CALLS_0_0" )
+
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
