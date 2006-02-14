@@ -693,7 +693,7 @@ rules
     )
 
   stratego-to-abox :
-    AddScopeLabel(r,lbl) -> |[ H hs=0 [ ~r "+" ~lbl] ]| 
+    AddScopeLabel(s,lbl) -> |[ H hs=0 [ s "+" ~lbl] ]| 
    
   stratego-to-abox :
     UndefineDynRule(r,lhs) -> |[ V is=2 [H hs=1 [~r ":-"] ~lhs ] ]| 
