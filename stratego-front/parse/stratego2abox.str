@@ -821,7 +821,12 @@ rules
       <rule-names>ss1 => ss1'
     ; <rule-names>ss2 => ss2'
 
-  rule-names = separate-by-comma <+ \ RuleNames(names) -> |[ H hs=0 [ KW["~"] ~names ] ]| \
+  rule-names =
+    map( \ s -> box |[ s ]| where <is-string> s \ )
+    ; separate-by-comma
+
+  rule-names :
+    RuleNames(names) -> |[ H hs=0 [ KW["~"] ~names ] ]|
 
 rules
   
