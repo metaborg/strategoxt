@@ -12,7 +12,11 @@ AM_CFLAGS = \
   -I$(prefix)/include \
   -I$(ATERM)/include
 
-LDADD = -lstratego-lib-native -lstratego-runtime -lATerm -lm
+STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
+STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
+LDADD 		= $(STRATEGORUNLIBS)
+
+occan_LDADD     = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 if XT_DARWIN
 AM_LDFLAGS += -bind_at_load
@@ -30,7 +34,7 @@ check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  overlay-test-b					    \
 		  overloading-constructors-test overloading		    \
 		  prop rename-test tail	    \
-		  thread-test traversal-test twice unification-test 	  
+		  thread-test traversal-test twice unification-test occan
 
 TESTS 		= $(check_PROGRAMS)
 
@@ -76,5 +80,7 @@ nodist_thread_test_SOURCES = thread-test.c
 nodist_traversal_test_SOURCES = traversal-test.c
 nodist_twice_SOURCES = twice.c
 nodist_unification_test_SOURCES = unification-test.c
+nodist_occan_SOURCES = occan.c
+
 
 

@@ -1,0 +1,231 @@
+/**
+ * Occurrence analysis for a model of functional language
+ * 
+ * Authors: Eelco Visser & Jory van Zessen
+ */
+
+module occan
+imports libstrategolib
+
+signature
+  sorts Exp
+  constructors
+         : String -> Var
+    Var  : Var -> Exp
+    Lam  : Var * Exp -> Exp
+    App  : Exp * Exp -> Exp
+    Case : Exp * List(Alt) -> Exp
+    Let  : Var * Exp * Exp -> Exp
+    Alt  : Exp -> Exp
+    Skip : Exp
+
+signature
+  sorts Occ
+  constructors
+    Dead  : Occ
+    Once  : Occ
+    OnceL : Occ
+    ManyB : Occ
+    Many  : Occ
+
+strategies
+
+  main = 
+    test-suite(!"occan", id
+      	; test-dead
+	; test-once
+      	; test-many
+      	; test-once-in-case
+      	; test-manyb
+        ; test-manyb-once 
+        ; test-many-case
+  	//; test-oncel
+  	; test-once-in-lambda
+    )
+
+  test-dead =
+    apply-test(!"test-dead"
+	, occan
+	, !Let("a", Skip(), Skip())
+	, !Let("a"{Dead}, Skip(), Skip())
+    )
+  test-once =
+    apply-test(!"test-once"
+	, occan
+	, !Let("a", Skip(), Var("a"))
+	, !Let("a"{Once()}, Skip(), Var("a"))
+    )
+
+  test-many =
+    apply-test(!"test-many"
+	, occan
+	, !Let("a", Skip(), App(Var("a"), Var("a")))
+	, !Let("a"{Many()}, Skip(), App(Var("a"), Var("a")))
+    )
+
+
+  test-once-in-case =
+    apply-test(!"test-once-in-case"
+	, occan
+	, !Let("a", Skip(), Case(Skip(), [Alt(Var("a"))]))
+	, !Let("a"{Once()}, Skip(), Case(Skip(), [Alt(Var("a"))]))
+    )
+
+  test-many-case =
+    apply-test(!"test-many-case"
+	, occan
+	, !Let("a", Skip(), App(Case(Skip(), [Alt(Var("a"))]), Var("a")))
+	, !Let("a"{Many}, Skip(), App(Case(Skip(), [Alt(Var("a"))]), Var("a")))
+    )
+
+  test-nested-case =
+    apply-test(!"test-nested-case"
+	, occan
+	, !Let("a", Skip(), 
+             Case(Skip(), [Alt(Case(Skip(), [Alt(Var("a"))])), Alt(Var("a"))]))
+	, !Let("a"{ManyB}, Skip(), 
+             Case(Skip(), [Alt(Case(Skip(), [Alt(Var("a"))])), Alt(Var("a"))]))
+    )
+
+  test-manyb =
+    apply-test(!"test-manyb"
+	, occan
+	, !Let("a", Skip(), Case(Skip(), [Alt(Var("a")), Alt(Var("a"))]))
+	, !Let("a"{ManyB()}, Skip(), Case(Skip(), [Alt(Var("a")), Alt(Var("a"))]))
+    )
+
+  test-manyb-once =
+    apply-test(!"test-manyb-once"
+	, occan
+	, !Let("a", Skip(),
+            Let("b", Skip(),  
+               Case(Skip(), [Alt(Var("a")), Alt(App(Var("b"),Var("a")))])))
+	, !Let("a"{ManyB}, Skip(),
+            Let("b"{Once}, Skip(),  
+               Case(Skip(), [Alt(Var("a")), Alt(App(Var("b"),Var("a")))])))
+    )
+
+  test-oncel =
+    apply-test(!"test-oncel"
+	, occan
+	, !Let("a", Skip(), Lam("b"{Dead}, Var("a")))
+	, !Let("a"{OnceL}, Skip(), Lam("b", Var("a")))
+    )
+
+  test-once-in-lambda =
+    apply-test(!"test1"
+	, occan
+	, !Lam("a", Var("a"))
+	, !Lam("a"{Once}, Var("a"))
+    )
+
+rules
+
+  // the abstract domain for occurrence analysis
+
+  inc-occ : Dead  -> Once
+  inc-occ : Once  -> Many
+  inc-occ : ManyB -> Many
+  inc-occ : OnceL -> Many
+  inc-occ : Many  -> Many
+
+  merge-occ : (Dead, Once)  -> Once
+  merge-occ : (Once, Dead)  -> Once
+  merge-occ : (Once, Once)  -> ManyB
+  merge-occ : (Once, ManyB) -> ManyB
+  merge-occ : (ManyB, Once) -> ManyB
+
+strategies
+
+  occan = 
+    occan-let
+    <+ occan-var
+    <+ occan-lam
+    <+ occan-case
+    <+ all(occan)
+
+  // should keep track of nesting levels of lambdas
+  occan-lam:
+    Lam(x, e1) -> Lam(x{o}, e2)
+    where {| Occ, InLam
+           : rules( 
+               Occ+x : x -> Dead
+             )
+	   ; <occan> e1 => e2
+	   ; <Occ> x => o
+	   |}
+
+  occan-let :
+    Let(x, e1, e2) -> Let(x{o}, e3, e4)
+    where <occan> e1 => e3
+	; {| Occ
+           : rules( Occ+x : x -> Dead )
+	   ; <occan> e2 => e4
+	   ; <Occ> x => o
+	   |}
+
+  occan-var =
+    ?Var(x)
+    ; where(
+        <Occ> x => o1
+	; <inc-occ> o1 => o2
+ 	; rules( Occ.x : x -> o2 )
+      )
+  
+  occan-case :
+    Case(e1, alt1*) -> Case(e2, alt2*)
+    where <occan> e1 => e2
+	; <occan-alts> alt1* => alt2*
+
+  occan-alts :
+    [] -> []
+
+  occan-alts :
+    [Alt(e)] -> [Alt(<occan>e)]
+
+  occan-alts = 
+    ?[_,_|_]
+    ; merge-Occ([Alt(occan) | id], [id | occan-alts])
+
+strategies
+
+  // the following code should be generated
+
+  merge-Occ(s1, s2) =
+    where( 
+      dr-get-rule-set(|"Occ") => rs2 
+      ; dr-start-change-set(|"Occ")
+    )
+    ; s1
+    ; where(
+        dr-get-rule-set(|"Occ") => rs1
+        ; <dr-set-rule-set(|"Occ")> rs2
+        ; dr-start-change-set(|"Occ")
+      )
+    ; s2
+    ; merge-Occ-rulesets(|rs1)
+
+  merge-Occ-rulesets(|rs) =
+    where(
+      !rs => [ChangeSet(_,_,ht1)|_]
+      ; <hashtable-keys> ht1
+      ; map(<redef-occ>(<Fst>, <Snd; !(<id>, <merge-occ>(<occ-lookup(|rs)>, <Occ>))>))
+      ; dr-commit-change-set(|"Occ")
+    )
+
+  redef-occ =
+    ?(ht, (x, o)); rules( Occ.x : x -> o )
+
+    // Note: can scope label be derived from the label in the changeset (ht)?
+
+  occ-lookup(|rs) =
+    ?x
+    ; <dr-lookup-rule(|x)> rs
+    ; ?[<aux-Occ(|(),())>|_]
+
+
+
+
+
+
+
