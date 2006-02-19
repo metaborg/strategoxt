@@ -1,0 +1,31 @@
+/**
+ * @author  Martin Bravenboer
+ */
+module map-aterm
+imports
+  liblib
+
+strategies
+
+  io-map-aterm =
+    ?[_, prg | args]
+    ; ![]
+    ; where(
+        stdin-stream => stdinstream
+        ; STDERR_FILENO => stderrfd
+        ; <dup> stderrfd => stderr-orig
+        ; <dup2> (<open> "/dev/null", <STDERR_FILENO>)
+      )
+      
+    ; repeat(<conc> (<id>, [<read-from-stream> stdinstream]))
+    ; where(<dup2> (stderr-orig, <STDERR_FILENO>))
+
+    ; xtc-temp-files(
+        map({fd:
+          write-to
+          ; where(?FILE(<id>); open => fd)
+          ; <call(|Some(fd), None(), None())> (prg, args)
+        })
+      )
+
+    ; <exit> 0
