@@ -95,6 +95,11 @@ strategies
       , where(<set-config> ("--about", ()); <set-config> ("-v",()))
       , !"--version        Same as --about"
       )
+      
+/**
+ * Parse command-line options
+ */
+strategies
 
   /**
    * Invokes system-usage and system-about on help and about.
@@ -107,7 +112,7 @@ strategies
    * specified '-h' switch.
    */
   parse-options(s, usage, about) =
-      where(<table-put>("usage-table", "usage", []))
+    where(<table-put> ("usage-table", "usage", []))
     ; parse-options'(s <+ system-usage-switch <+ system-about-switch)
     ; try(
           where(<get-config> "--help")
@@ -128,9 +133,29 @@ strategies
    * specified by the user.
    */
   parse-options'(s)=
-    where(try(<s> "register-usage-info"))
-    ; [where(<set-config> ("program", <id>)); !Program(<id>)
-      | rec x(([] + s; [id|x]) <+ UndefinedOption)]
+    ?[program | args]
+    ; where(<set-config> ("program", program))
+    
+    ; where(id
+        // apply s to register the usage info    
+        ; try(<s> "register-usage-info")
+        
+        // apply s to perform the initial actions
+        ; try(<s> ("handle-init-action", args))
+     )
+     
+    // apply s to handle the command-line options
+    ; [!Program(<id>) | rec x(([] + s; [id|x]) <+ UndefinedOption)]
+     
+    ; where(id
+        // apply s to perform the default actions
+        ; try(<s> ("handle-default-action", args))
+        
+        // apply s to perform the check actions
+        ; try(<s> ("handle-check-action", args))
+      )
+
+strategies
 
   /**
    * Register useage info 's' by storing 's' in the table "usage-table".
@@ -226,7 +251,7 @@ rules
   ArgOption(is-flag, label, s) =
     "register-usage-info"
     ; register-usage(s)
-     
+    
 rules
 
   Arg2Option(is-flag, label) =
@@ -249,3 +274,135 @@ rules
 strategies
 
   option-defined(s) = fetch(s)
+  
+rules
+
+  /**
+   * The handlers argument of this ArgOption variant must be an OptionHandler.
+   */    
+  Option(is-flag, handlers | msg) :
+    [flag | rest] -> [<handlers> ("handle-user-action", flag) | rest]
+    where
+	  <is-flag> flag
+
+  /**
+   * Handle a special action, which is specified by a tuple.
+   */
+  Option(is-flag, handlers | msg) =
+    OptionHandlerHelper(is-flag, handlers)
+    
+rules
+
+  /**
+   * The handlers argument of this ArgOption variant must be an OptionHandler.
+   */    
+  ArgOption(is-flag, handlers | msg) :
+    [flag, arg | rest] -> [<handlers> ("handle-user-action", arg) | rest]
+    where
+	  <is-flag> flag
+
+  /**
+   * Handle a special action, which is specified by a tuple.
+   */
+  ArgOption(is-flag, handlers | msg) =
+    OptionHandlerHelper(is-flag, handlers)
+
+/**
+ * @param Initial action
+ * @param Handle user-specified option
+ * @param Default action (no user-specified option)
+ * @param Check action (applied before all options, can be used to very invalid combinations)
+ */
+strategies
+
+  OptionHandlerHelper(is-flag, handlers) =
+    ?("handle-default-action", args)
+    ; if not(<fetch(is-flag)> args) then
+        handlers
+      end
+    ; fail
+    
+  OptionHandlerHelper(is-flag, handlers) =
+    ?(action, _)
+    ; where(not(!action => "handle-default-action"))
+    ; handlers
+    ; fail
+      
+  OptionHandler(user) =
+    OptionHandler(id, user, id)
+
+  OptionHandler(init, user, default) =
+    ?("handle-init-action", args)
+    ; <init> args
+    
+  OptionHandler(init, user, default) =
+    ?("handle-user-action", arg)
+    ; <user> arg
+    
+  OptionHandler(init, user, default) =
+    ?("handle-default-action", args)
+    ; <default> args
+
+/**
+ * Checks for command-line options.
+ */
+strategies
+
+  /**
+   * The exit parameter can
+   * - be <exit> 1 for immediate failure
+   * - be <set-config> "--help" to report the usage and exit.
+   * - not fail: failure will silently be ignored
+   */
+  OptionCheck(exit, checks | msg) =
+    ?("handle-check-action", <id>)
+    ; ( checks
+        <+ <fprintnl> (stderr(), [msg])
+           ; exit
+      )
+    ; fail
+
+  /**
+   * Checks that this option is not used together with other options.
+   */
+  OptionNotCombinedCheck(is-flag, other-flags) =
+    where(
+      if fetch(is-flag) then
+        if fetch(other-flags) then
+          fail
+        end
+      end
+    )
+
+  /**
+   * Checks that this option is specified just once, or not at all.
+   */
+  OptionZeroOrOneCheck(is-flag) =
+    where(
+      filter(is-flag)
+      ; if ?[_, _ | _] then
+          fail          
+        end
+    )
+    
+  /**
+   * Checks that this option is used exactly once.
+   */    
+  OptionOneCheck(is-flag) =
+    where(
+      filter(is-flag)
+      ; if ?[] + ?[_, _ | _] then
+          fail
+        end
+    )
+    
+  /**
+   * Checks that this option is used one or more times.
+   */        
+  OptionOneOrMoreCheck(is-flag) =
+    where(
+      filter(is-flag)
+      ; if ?[] then
+          fail          
+        end
+    )

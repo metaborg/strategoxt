@@ -26,6 +26,7 @@ check_PROGRAMS = \
   list-set-test \
   list-sort-test \
   list-zip-test \
+  old-parse-options-test \
   parallel-test \
   parse-options-test \
   placeholder-test \
@@ -144,6 +145,10 @@ parallel_test_LDADD               = $(NOSHARED_PREFIX_LIBS)
 nodist_parse_options_test_SOURCES = parse-options-test.c 
 parse_options_test_CPPFLAGS       = $(PREFIX_CPPFLAGS)
 parse_options_test_LDADD          = $(NOSHARED_PREFIX_LIBS)
+
+nodist_old_parse_options_test_SOURCES = old-parse-options-test.c 
+old_parse_options_test_CPPFLAGS       = $(PREFIX_CPPFLAGS)
+old_parse_options_test_LDADD          = $(NOSHARED_PREFIX_LIBS)
 
 nodist_placeholder_test_SOURCES   = placeholder-test.c 
 placeholder_test_CPPFLAGS         = $(PREFIX_CPPFLAGS)
