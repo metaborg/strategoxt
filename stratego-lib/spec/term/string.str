@@ -6,7 +6,7 @@
  * ISO-8859-1 (Latin1) characters.
  * 
  * @author Eelco Visser <visser@acm.org>
- * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl>
  */
 module term/string
 imports 
@@ -793,7 +793,7 @@ strategies
   /**
    * Succeeds if the first String starts with the second String.
    *
-   * If the strategy succeeds, the current is left untouched.
+   * If the strategy succeeds, the current term is left untouched.
    *
    * Example: <string-starts-with(|"foo")> "foobar"
    *
@@ -803,9 +803,22 @@ strategies
     where(<left-match> (<explode-string>, <explode-string> start))
 
   /**
+   * Succeeds if the first String ends with the second String.
+   *
+   * If the strategy succeeds, the current term is left untouched.
+   *
+   * Example: <string-ends-with(|"bar")> "foobar"
+   *
+   * @type  String -> String
+   */
+  string-ends-with(|start) =
+    where(<right-match> (<explode-string>, <explode-string> start))
+
+
+  /**
    * Succeeds if the first list of terms starts with the second list of terms.
    *
-   * Returns the part that is left of the first list.
+   * Returns the suffix of the first list that is not matched.
    *
    * @type  (List(a), List(a)) -> List(a)
    */
@@ -816,6 +829,18 @@ strategies
       )
     ; Fst
 
+  /**
+   * Succeeds if the first list of terms ends with the second list of terms.
+   *
+   * Returns the prefix of the first list that is not matched.
+   *
+   * @type  (List(a), List(a)) -> List(a)
+   */
+  right-match = 
+      (reverse, reverse)
+    ; left-match
+    ; reverse
+    
  /**
   * @inc strcmp
   */
