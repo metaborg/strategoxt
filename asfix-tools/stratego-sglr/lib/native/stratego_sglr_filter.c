@@ -178,29 +178,3 @@ ATerm STRSGLR_get_filter_reject(void)
   else
     return NULL;
 }
-
-/**
- * Ambiguity
- */
-ATerm STRSGLR_set_ambiguity_error_on(void)
-{
-  STRSGLR_ensure_init();
-  SG_AMBIGUITY_ERROR_ON();
-  return (ATerm) ATempty;
-}
-
-ATerm STRSGLR_set_ambiguity_error_off(void)
-{
-  STRSGLR_ensure_init();
-  SG_AMBIGUITY_ERROR_OFF();
-  return (ATerm) ATempty;
-}
-
-ATerm STRSGLR_get_ambiguity_error(void)
-{
-  STRSGLR_ensure_init();
-  if(SG_AMBIGUITY_ERROR)
-    return (ATerm) ATempty;
-  else
-    return NULL;
-}

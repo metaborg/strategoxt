@@ -7,6 +7,7 @@ lib_LTLIBRARIES     = libstratego-sglr.la
 libstratego_sglr_la_SOURCES = \
   libstratego-sglr.c \
   native/stratego_sglr_filter.c \
+  native/stratego_sglr_config.c \
   native/stratego_sglr_parse_table.c \
   native/stratego_sglr_parse.c
 

@@ -386,8 +386,12 @@ ATerm SG_TermToToolbus(ATerm t)
     : t;
 }
 
+FILE *SG_Log = NULL;
 
-FILE  *SG_Log = NULL;
+FILE *SG_SetLog(FILE* stream)
+{
+  SG_Log = stream;
+}
 
 FILE  *SG_OpenLog(const char *prg, const char *fnam)
 {

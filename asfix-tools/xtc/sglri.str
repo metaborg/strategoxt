@@ -9,12 +9,20 @@ strategies
 
   main-sglri =
     xtc-io-wrap(sglri-options,
-      if output(parse-and-implode) then
-        <xtc-exit> 0
-      else
-        <xtc-exit> 1
-      end
-    )
+      where(additional-sglr-config)
+      ; if output(parse-and-implode) then
+          <xtc-exit> 0
+        else
+          <xtc-exit> 1
+        end
+      )
+      
+  additional-sglr-config =
+    if <geq> (<get-config> "--statistics", 1) then
+      set-sglr-log-statistics(true)
+      ; log-stream
+      ; set-sglr-log-stream
+    end
 
   print-config =
     if get-ambiguity-is-error then

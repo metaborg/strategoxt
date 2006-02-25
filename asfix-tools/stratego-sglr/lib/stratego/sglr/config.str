@@ -12,6 +12,9 @@ strategies
   set-default-sglr-config =
     where(prim("STRSGLR_set_default_config"))
 
+/**
+ * Ambiguities
+ */
 strategies
 
   /**
@@ -33,6 +36,35 @@ strategies
    */
   get-ambiguity-is-error =
     where(prim("STRSGLR_get_ambiguity_error"))
+
+/**
+ * Logging
+ */
+strategies
+
+  set-sglr-log-stream =
+    ?Stream(stream)
+    ; prim("STRSGLR_set_log_stream", stream)
+
+/**
+ * Statistics
+ */    
+strategies
+
+  /**
+   * Set if statistics are to be logged.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-sglr-log-statistics(s) =
+    if s then
+      where(prim("STRSGLR_set_log_statistics_on"))
+    else
+      where(prim("STRSGLR_set_log_statistics_off"))
+    end
+    
+  get-sglr-log-statistics =
+    where(prim("STRSGLR_get_log_statistics"))
 
 strategies
 

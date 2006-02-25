@@ -28,6 +28,11 @@ ATerm STRSGLR_set_ambiguity_error_on(void);
 ATerm STRSGLR_set_ambiguity_error_off(void);
 ATerm STRSGLR_get_ambiguity_error(void);
 
+ATerm STRSGLR_set_log_statistics_on(void);
+ATerm STRSGLR_set_log_statistics_off(void);
+ATerm STRSGLR_get_log_statistics(void);
+ATerm STRSGLR_set_log_stream(ATerm tstream);
+
 /**
  * Filters
  */
