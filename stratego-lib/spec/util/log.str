@@ -62,7 +62,10 @@ strategies
 strategies
 
   log-stream =
-    <get-config> "log-stream" <+ <stderr-stream> ()
+    <get-config> "log-stream"
+    <+ <getenv> "STRATEGO_LOG"
+       ; <fopen> (<id>, "a")
+    <+ <stderr-stream> ()
 
   set-log-stream =
     <set-config> ("log-stream", <id>)
