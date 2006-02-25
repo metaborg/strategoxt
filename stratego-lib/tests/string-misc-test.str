@@ -13,6 +13,8 @@ strategies
     ; test-indent-text
     ; test-trim-trailing
     ; test-get-all-lines
+    ; test-starts-with
+    ; test-ends-with
 
     ; test-shuffle-1
     ; test-shuffle-word-mids-1
@@ -73,6 +75,24 @@ strategies
         , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty will follow\n"
         , !["the first line","Second line, third will be empty","","This is the fourth, a final empty will follow",""])
 
+  test-starts-with = 
+     apply-test(!"test-string-starts-with-1"
+       , string-starts-with(|"foo")
+       , !"foobar"
+       , !"foobar")
+   ; apply-and-fail(!"test-string-starts-with-2"
+       , string-starts-with(|"foo")
+       , !"frobbar")
+
+  test-ends-with = 
+     apply-test(!"test-string-ends-with-1"
+       , string-ends-with(|"bar")
+       , !"foobar"
+       , !"foobar")
+   ; apply-and-fail(!"test-string-ends-with-2"
+       , string-ends-with(|"bar")
+       , !"foobaz")
+       
   test-shuffle-1 =
      testing(!"test-shuffle-1"
         , <shuffle> [1, 2, 3, 4, 5, 6, 7, 8, 9])
