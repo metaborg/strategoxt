@@ -18,7 +18,8 @@ strategies
    * @warning This strategy is also used by sglri.
    */
   implode-asfix-using-config =
-    ?term
+    where(times => timebefore)
+    ; ?term
     ; if <get-config> "--lex"    then asfix-flat-lex end
     ; if <get-config> "--layout" then asfix-remove-layout end
     ; if <get-config> "--nt"     then asfix-appl-to-sort end
@@ -32,6 +33,15 @@ strategies
     ; try(
         ?term
         ; implode-asfix(not(<get-config>("--concrete")))
+      )
+    ; where(
+        if <geq> (<get-config> "--statistics", 1) then
+          <diff-times> (<times> (), timebefore) => diff
+          ; <fprintnl> (<log-stream> (), [
+                "Implode parse tree: "
+              , <self-children-user-time; ticks-to-seconds; real-to-string(|6)>
+              ])
+        end
       )
 
   /**
