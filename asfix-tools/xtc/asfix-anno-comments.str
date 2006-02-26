@@ -1,0 +1,17 @@
+module asfix-anno-comments
+imports
+  libstratego-sglr
+  AsFix
+
+strategies
+
+ main-asfix-anno-comments = 
+    io-wrap(comment-sort-option,
+      asfix-anno-comments(|<get-config<+ !["Comment"]> "comment-sorts")
+    )
+
+  comment-sort-option = 
+    ArgOption("--sort"
+    , <extend-config> ("comment-sorts", [<id>])
+    , !"--sort name      Specify a comment sort. Multiple --sort options are allowed [Comment]"
+    )
