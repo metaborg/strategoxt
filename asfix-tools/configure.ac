@@ -40,8 +40,6 @@ AC_CONFIG_FILES([
 
   src/explode-asfix2me/Makefile
   src/explode-asfix2me/data/Makefile
-
-  src/anno/Makefile
 ])
 AC_OUTPUT
 
