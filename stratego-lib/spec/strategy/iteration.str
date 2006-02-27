@@ -41,6 +41,18 @@ strategies
     s; (c <+ repeat-until(s, c))
 
   /**
+   * Applies s repeatedly exactly n times. If s fails at some point during the n applications,
+   * the entire strategy fails. The result of the strategy is that of the nth application of s.
+   */
+  repeat(s | n) =
+    if <eq>(n, 0)
+    then
+      id
+    else
+      s; repeat(s|<dec>n)
+    end
+
+  /**
    * While c succeeds apply s.
    */
 
