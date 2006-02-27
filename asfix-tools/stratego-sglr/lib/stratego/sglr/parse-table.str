@@ -16,7 +16,10 @@ strategies
    */
   open-parse-table =
     ?tbl
-    ; prim("STRSGLR_open_parse_table", tbl) => internal
+    ; sglr-log-statistics(
+        prim("STRSGLR_open_parse_table", tbl) => internal
+      | "Loading parse table"
+      )
     ; !ParseTable(internal)
 
   /**
@@ -29,6 +32,23 @@ strategies
     ?ParseTable(internal)
     ; prim("STRSGLR_close_parse_table", internal)
     ; !()
+
+strategies
+
+  sglr-log-statistics(s | description) =
+    where(times => timebefore)
+    ; s
+    ; sglr-log-statistics(| timebefore, description)
+
+  sglr-log-statistics(| timebefore, description) =
+    where(
+      if <geq> (<get-config> "--statistics", 1) then
+        <diff-times> (<times> (), timebefore) => diff
+        ; <fprintnl> (<log-stream> (), [description, ": ",
+            <self-children-user-time; ticks-to-seconds; real-to-string(|6)>
+            ])
+      end
+    )
 
 /**
  * An open parse table is represented by a term in some internal

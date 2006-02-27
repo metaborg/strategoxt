@@ -79,7 +79,9 @@ strategies
     (<get-config> ParseTable()
        <+ log(|Critical(), "No parse table specified. Please use the -p option."); <xtc-exit> 1)
     ; (<fopen> (<id>, "r") <+ sglri-perror) => stream
-    ; finally(read-from-stream, <fclose> stream)
+    ; sglr-log-statistics(    
+        finally(read-from-stream, <fclose> stream)
+      | "Reading parse table")
     ; open-parse-table
     
   sglri-perror = 

@@ -18,31 +18,24 @@ strategies
    * @warning This strategy is also used by sglri.
    */
   implode-asfix-using-config =
-    where(times => timebefore)
-    ; ?term
-    ; if <get-config> "--lex"    then asfix-flat-lex end
-    ; if <get-config> "--layout" then asfix-remove-layout end
-    ; if <get-config> "--nt"     then asfix-appl-to-sort end
-    ; if <get-config> "--list"   then asfix-flat-list end
-    ; if <get-config> "--lit"    then asfix-remove-lit end
-    ; if <get-config> "--appl"   then asfix-replace-appl end
-    ; if <get-config> "--inj"    then asfix-flat-injections end
-    ; if <get-config> "--alt"    then asfix-flat-alt end
-    ; if <get-config> "--seq"    then asfix-remove-seq end
-    ; if <get-config> "--pt"     then ?parsetree(<id>, _) end
-    ; try(
-        ?term
-        ; implode-asfix(not(<get-config>("--concrete")))
-      )
-    ; where(
-        if <geq> (<get-config> "--statistics", 1) then
-          <diff-times> (<times> (), timebefore) => diff
-          ; <fprintnl> (<log-stream> (), [
-                "Implode parse tree: "
-              , <self-children-user-time; ticks-to-seconds; real-to-string(|6)>
-              ])
-        end
-      )
+    sglr-log-statistics(
+      ?term
+      ; if <get-config> "--lex"    then asfix-flat-lex end
+      ; if <get-config> "--layout" then asfix-remove-layout end
+      ; if <get-config> "--nt"     then asfix-appl-to-sort end
+      ; if <get-config> "--list"   then asfix-flat-list end
+      ; if <get-config> "--lit"    then asfix-remove-lit end
+      ; if <get-config> "--appl"   then asfix-replace-appl end
+      ; if <get-config> "--inj"    then asfix-flat-injections end
+      ; if <get-config> "--alt"    then asfix-flat-alt end
+      ; if <get-config> "--seq"    then asfix-remove-seq end
+      ; if <get-config> "--pt"     then ?parsetree(<id>, _) end
+      ; try(
+          ?term
+          ; implode-asfix(not(<get-config>("--concrete")))
+        )
+    | "Implode parse tree"
+    )
 
   /**
    * @warning These options are also used by sglri.

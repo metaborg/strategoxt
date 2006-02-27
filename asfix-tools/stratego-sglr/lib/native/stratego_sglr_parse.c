@@ -13,6 +13,7 @@
 #include <stratego-lib/stratego-lib-common.h>
 #include <sglr.h>
 #include <parse-table.h>
+#include <rsrc-usage.h>
 
 #include "stratego_sglr.h"
 #include "stratego_sglr_internal.h"
@@ -188,6 +189,8 @@ static char* read_text_from_stream(FILE* stream)
   int c = 0;
   int position = 0;
 
+  IF_STATISTICS(SG_Timer());
+
   if(fstat(fd, &statbuf) != 0)
     return NULL;
 
@@ -224,5 +227,7 @@ static char* read_text_from_stream(FILE* stream)
   }
 
   result[position] = '\0';
+  IF_STATISTICS(fprintf(SG_log(), "Reading stream of input: %.6f\n", SG_Timer()));
+
   return result;
 }
