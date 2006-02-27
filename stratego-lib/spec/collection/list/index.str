@@ -78,6 +78,23 @@ strategies
      in next(|0)
     end
 
+  /**
+   * Apply s to the list containing the elements
+   * from index i onwards from the original list.
+   * The first element has index 0.
+   * 
+   * @type List(a) -> List(a)
+   */
+  at-index-tail(s|i) =
+    let next(|j) =
+      if !j => i then
+        s
+      else
+        [id | next(|<inc> j)]
+      end
+    in next(|0)
+    end
+
 strategies
 
   /**

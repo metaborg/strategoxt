@@ -5,6 +5,7 @@
 module collection/list/common
 imports 
   collection/list/cons
+  collection/list/index
   term/integer
 
 strategies
@@ -911,6 +912,18 @@ strategies
     ; nzip0(id)
     ; drop-until(?(n,_))
     ; map(Snd)
+
+  /**
+   * Splits the list in two sublists, containing elements from 0 to
+   * n and from n onwards.
+   *
+   * Example: <split-at(|4)>[1,2,3,4,5,6,7,8,9] => ([1,2,3,4], [5,6,7,8,9])
+   *
+   * @type List(a) -> (List(a), List(a))
+   */
+  split-at(|n) =
+    at-index-tail(?tail; ![] | n)
+    ; !(<id>, tail)
 
 strategies
 
