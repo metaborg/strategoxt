@@ -662,6 +662,17 @@ strategies
   last = 
     rec x(Last <+ Tl; x)
 
+
+  /**
+   * Returns a list with the first and the last element of
+   * the input list. For the empty list and the singleton
+   * list, this is equivalent to id.
+   *
+   * @type List(a) -> List(a)
+   */
+  first-last =
+    [id | last; MkSingleton] <+ []
+
  /**
   * Returns a list of all elements of a list, except the last.
   * 
