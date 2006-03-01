@@ -4,30 +4,42 @@ strategies
 
   main = 
     test-suite(!"list-zip-test",
-        nzip0-test;
-	zip-test
-     )
+      nzip-tests
+    ; zip-tests
+    )
 
-  nzip0-test =
+  nzip-tests =
     apply-test(!"nzip0-test"
-	      ,nzip0(id)
-	      ,!["a","b","c"]
-	      ,![(0, "a"), (1, "b"), (2, "c")]
-              )
+    , nzip0(id)
+    , !["a","b","c"]
+    , ![(0, "a"), (1, "b"), (2, "c")]
+    )
 
-  zip-test =
+  zip-tests =
     apply-test(!"zip-test1"
-	      ,zip(Merge)
-	      ,!([ ("foo", 1), ("bar", 2) ], 
-		 [ ("foo", 11), ("bar", 12) ])
-	      ,![ ("foo", 1, 11), ("bar", 2, 12) ]
-              );
-    apply-test(!"zip-test2"
-	      ,zipPad(Merge, !("Unknown", "Unknown") )
-	      ,!([ ("foo", 1), ("bar", 2) ], 
-		 [ ("foo", 11), ("bar", 12), ("baz", 13) ])
-	      ,![ ("foo", 1, 11), ("bar", 2, 12), ("baz", "Unknown", 13) ]
-              )
+    , zip(Merge)
+    , !( [("foo", 1),  ("bar", 2)]
+       , [("foo", 11), ("bar", 12) ]
+       )
+    , ![ ("foo", 1, 11), ("bar", 2, 12) ]
+    )
+  ; apply-test(!"zip-test2"
+    , zipPad(Merge, !("Unknown", "Unknown") )
+    , !( [ ("foo", 1), ("bar", 2) ]
+       , [("foo", 11), ("bar", 12), ("baz", 13) ]
+       )
+    , ![ ("foo", 1, 11), ("bar", 2, 12), ("baz", "Unknown", 13) ]
+    )
+  ; apply-test(!"term argument zip"
+    , zip(zip-tester |[1, 2, 3])
+    , ![10, 100, 1000]
+    , ![11, 102, 1003]
+    )
+
+  zip-tester(|y) =
+    <add> (<id>, y)
+
+strategies
 
   Merge : (("Unknown", b), (c, d)) -> (c, b, d)
   Merge : ((a, b), ("Unknown", d)) -> (a, b, d)
