@@ -12,6 +12,7 @@ strategies
       ; test-remove
       ; test-clear
       ; test-elements
+      ; test-fixpoint
     )
 
 strategies
@@ -86,6 +87,38 @@ strategies
         ; iset-add(|4)
       | [1, 3, 4]
       )
+
+  test-fixpoint =
+    iset-apply-test(!"iset-fixpoint 1"
+    , iset-fixpoint(FixPointHelper)
+      ; iset-elements
+    , iset-add(|1)
+    | [1, 2, 3, 4]
+    )
+  ; iset-apply-test(!"iset-fixpoint 2"
+    , iset-fixpoint(FixPointHelper)
+      ; iset-elements
+    , iset-add(|1)
+      ; iset-add(|2)
+      ; iset-add(|3)
+      ; iset-add(|4)
+    | [1, 2, 3, 4]
+    )
+  ; iset-apply-test(!"iset-fixpoint 3"
+    , iset-fixpoint(FixPointHelper)
+      ; iset-elements
+    , id
+    | []
+    )
+  ; iset-apply-test(!"iset-fixpoint 4"
+    , iset-fixpoint(FixPointHelper)
+      ; iset-elements
+    , iset-add(|5)
+    | [5]
+    )
+
+  FixPointHelper : 1 -> [2, 3]
+  FixPointHelper : 3 -> [4]
 
 /**
  * Test abstractions

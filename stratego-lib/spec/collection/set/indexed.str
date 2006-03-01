@@ -158,6 +158,27 @@ strategies
     ?set1
   ; where(iset-subset(|set2))
   ; where(<iset-subset(|set1)> set2)
+  
+  /**
+   * Applies s to the elements of a Set until it no more elements are added to this set.
+   *
+   * @param a -> List(a)
+   * @type  Set(A) -> Set(A)
+   */
+  iset-fixpoint(s) =
+    ?set@IndexedSet(_)
+    ; repeat(
+        where(
+          iset-elements
+        ; list-some(
+            s
+          ; list-some({new:
+              ?new
+            ; <iset-add(fail|new)> set
+            })
+          )
+        )
+      )
 
 /**
  * Low-level set strategies (having knowledge of an index)
