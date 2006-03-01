@@ -100,7 +100,7 @@ strategies
 
   enable-heuristic-filters =
     apply-to-custom-sglr-options(
-      remove-all("-fi" + "-fe")
+      filter(not("-fi" + "-fe"))
     )
 
   disable-heuristic-filters =
@@ -112,9 +112,6 @@ strategies
         !["-fe" | <id>]
       end
     )
-
-  remove-all(s) =
-    filter(not(s))
 
 strategies
 
