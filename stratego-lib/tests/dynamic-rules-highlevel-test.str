@@ -19,6 +19,7 @@ strategies
   ; test-add-1
   ; test-add-bagof
   ; test-dr-fork-and-union
+  ; test-dr-ignore-state
   )
 
 // plain dynamic rule
@@ -237,4 +238,26 @@ strategies
     : rules( A : _ -> "a")
     ; dr-fork-and-union(rules(A : _ -> "b"), id | ["A"])
     ; bagof-A
+    |}
+
+  test-dr-ignore-state =
+    {| A, B :
+        rules( A : _ -> "a")
+      ; rules( B : _ -> "b")
+
+    ; apply-test(!"Ignore the state of a dynamic rule"
+      , dr-ignore-state(A <+ B | "A")
+      , !()
+      , !"b"
+      )
+    ; apply-test(!"Ignore the state of a dynamic rule"
+      , dr-ignore-state(B <+ A | "B")
+      , !()
+      , !"a"
+      )
+    ; apply-test(!"Ignore the state of a dynamic rule"
+      , dr-ignore-states(B <+ A <+ !"failed" | ["A", "B"])
+      , !()
+      , !"failed"
+      )
     |}
