@@ -17,6 +17,28 @@ strategies
    */
   filter(s) = 
     [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
+    
+strategies
+
+  /**
+   * Returns all elements in a list that satisfy s, as a list.
+   *
+   * @param s  a -> b
+   * @type     List(a) -> List(b)
+   */
+  retain-all(s) =
+    filter(s)
+    
+  /**
+   * Removes all elements from a list that satisfy s
+   *
+   * @param s  a -> b
+   * @type     List(a) -> List(b)
+   */
+  remove-all(s) =
+    filter(not(s))    
+
+strategies
 
   /**
    * Returns all elements in a list that satisfy s, as a list.
