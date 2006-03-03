@@ -47,19 +47,21 @@ rules
 strategies
 
   instantiate-list(|pp-entry) =
-    rec x(
+    rec rec(
       {sym,xs:
-        [] <+ ?[sym|xs]; [<instantiate> (pp-entry, [sym]) | !xs;x ]
+         []
+      <+ ?[sym|xs]
+         ; [<instantiate(|[sym])> pp-entry | <rec> xs ]
       }
     )
   
   instantiate-sep-list(|pp-entry) =
-    rec x(
+    rec rec(
       {sym,sep,xs:
          []
-      <+ [id]
-      <+ ?[sym,sep|xs]
-         ; [<instantiate> (pp-entry, [sym, sep]) | !xs;x ]
+      <+ ?[_]
+      <+ ?[sym, sep | xs]
+         ; [<instantiate(|[sym, sep])> pp-entry | <rec> xs ]
       }
     )
 

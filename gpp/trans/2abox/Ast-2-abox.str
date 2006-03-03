@@ -13,13 +13,11 @@ imports
 strategies
 
   io-Ast-2-abox =
-    option-wrap(ast2abox-options, ast2abox)
+    io-wrap(pp-options, ast2abox)
 
-  ast2abox-options =
-      io-options
-    + pp-options
-    + verbose-option
-
+  /**
+   * @todo Why not an io-wrap?
+   */
   ast2abox =
       where(
         get-config-p
@@ -27,14 +25,10 @@ strategies
         ; read-pp-tables
         ; lookup-table(|"pp-table") => tbl
       )
-    ; xtc-io(
-        xtc-io-transform(
-          trm2abox(|tbl)
-        ; if is-list then
-            !HV([], <id>)
-          end
-        )
-      )
+    ; trm2abox(|tbl)
+    ; if is-list then
+        !HV([], <id>)
+      end
 
 strategies
 
@@ -50,21 +44,20 @@ strategies
     !S(<is-string>)
 
   trm2abox-real(|tbl) =
-    !S(<real-to-string>)
+    !S(<is-real; real-to-string>)
 
   trm2abox-int(|tbl) =
-    !S(<int-to-string>)
+    !S(<is-int; int-to-string>)
 
   trm2abox-list(|tbl) =
-    map(trm2abox(|tbl))
+    is-list; map(trm2abox(|tbl))
 
   trm2abox-appl(|tbl) =
     ?f#(args)
     ; where(<length> args => arity)
-    ; <try-pp-table-get(|tbl)> (arity, [f]) => (path, template)
-    
-    ; let narg2abox(|n) =
-            arg2abox(|tbl, n, [f])
+    ; <try-pp-table-get(|tbl)> (arity, [f]) => (_, template)
+    ; ![f] => currentpath
+    ; let narg2abox(|n) = arg2abox(|tbl, n, currentpath)
        in <nmap(narg2abox | 1)> args => aboxes
       end
     ; <instantiate(|aboxes)> template
@@ -83,10 +76,12 @@ strategies
    * @param n     Integer: Argument index
    * @param path  Path of the parent node
    * @param arg   Any term
+   *   
+   * @todo Store get-symbol in the table.
    */
   arg2abox(|tbl, n, path) =
       ?arg
-    ; <conc> (path, [n]) => new_path
+    ; ![n | path] => new_path
     ; ( <hashtable-get(|new_path)> tbl => (full_path, template)
         ; <symbol2abox(|tbl, <get-symbol> full_path, new_path, template)> arg
       <+ <trm2abox(|tbl)> arg
@@ -113,7 +108,7 @@ strategies
    */
   symbol2abox-alt(|tbl, path, template) =
     ?alt(n, [])
-    ; <instantiate(|[])> [<index(|n)> (n, template)]
+    ; <instantiate(|[])> [<index(|n)> template]
 
   /**
    * Rule to format alt(n,[arg]), with non-empty list of arguments
@@ -127,9 +122,9 @@ strategies
    * Rule to format optional: Some(x)
    */
   symbol2abox-opt(|tbl, path, template) =
-    ?Some(x)
-    ; <arg2abox(|tbl, 1, path)> x => abox
-    ; <instantiate(| [abox])> template
+    ?Some(<id>)
+    ; arg2abox(|tbl, 1, path) => abox
+    ; <instantiate(|[abox])> template
 
   /**
    * Rule to format optinal: None
@@ -155,7 +150,7 @@ strategies
         <+ \ [e]    -> [e] \
         <+ \ [e | xs] -> [e, e| <x> xs] \
         )
-      end
+      end 
     ; instantiate-sep-list(|template)
 
   /**

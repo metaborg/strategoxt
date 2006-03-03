@@ -6,8 +6,8 @@ module misc
 strategies
 
   collect'(s) =
-    rec x(
-      s; ![<id>] <+  crush(![], conc, x)
+    rec rec(
+      s < ![<id>] +  crush(![], conc, rec)
     )
 
   /**
@@ -16,16 +16,22 @@ strategies
    * element) are not removed.
    */
   flat-list =
-    ?[]
+    flat-list(![])
     
-  flat-list =    
+  flat-list(cont) =  
+    ?[]; cont
+    
+  flat-list(cont) =
     ?[hd | tl]
-    ; ( !hd => []
-        ; ![[] | <flat-list> tl]
-     <+ !hd => [_ | _]
-        ; <conc; flat-list> (hd, tl)
-     <+ ![hd | <flat-list> tl]
-      )
+    ; if !hd => [] then
+        ![[] | <flat-list(cont)> tl]
+      else
+        if !hd => [_ | _] then
+          <flat-list(<flat-list(cont)> tl)> hd
+        else
+          ![hd | <flat-list(cont)> tl]
+        end
+      end
 
   remove-trailing(s) =
     rec x (

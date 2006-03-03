@@ -74,7 +74,7 @@ strategies
       <arity-of-template> value => arity
 
   mk-key-arity :
-    PP-Entry(Path(s1, s2), value) -> [s1 | xs]
+    PP-Entry(Path(s1, s2), value) -> <reverse> [s1 | xs]
     where
       <map(?selector(<id>, _))> s2 =>  xs
 
@@ -108,7 +108,7 @@ strategies
 
   pp-table-get =
      ?key
-     ; <table-get> ("pp-table", key ) => (path, template)
+     ; <table-get> ("pp-table", key )
      /* ; where(
          <path-to-string> path
          ; notify(!"obtaining: " )
