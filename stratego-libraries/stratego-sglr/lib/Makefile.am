@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-nobase_pkgdata_DATA = libstratego-sglr.rtree
-lib_LTLIBRARIES     = libstratego-sglr.la
+nobase_data_DATA = libstratego-sglr.rtree
+lib_LTLIBRARIES  = libstratego-sglr.la
 
 libstratego_sglr_la_SOURCES = \
   libstratego-sglr.c \
@@ -26,23 +26,26 @@ EXTRA_DIST = \
 
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
 
-# Workaround for issue https://bugs.cs.uu.nl/browse/STR-476
-# if XT_DARWIN
-#   AM_LDFLAGS += -static
-# endif
-
-# libstratego_sglr_la_CPPFLAGS = $(SGLR_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native
-libstratego_sglr_la_CPPFLAGS = $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) -I native -I ../justsglr
 libstratego_sglr_la_CFLAGS   = -Wall
 libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
-libstratego_sglr_la_LIBADD   = \
-  $(STRATEGO_XTC_LIBS) \
-  $(STRATEGO_LIB_LIBS) \
-  $(STRATEGO_RUNTIME_LIBS) \
+libstratego_sglr_la_CPPFLAGS = \
+  $(STRATEGO_LIB_UNINSTALLED_CFLAGS) \
+  $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
+  $(ATERM_CFLAGS) \
+  -I native -I ../justsglr
+
+libstratego_sglr_la_LIBADD = \
+  $(XTC_UNINSTALLED_LIBS) \
+  $(STRATEGO_LIB_UNINSTALLED_LIBS) \
+  $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) \
   $(top_builddir)/stratego-sglr/justsglr/libjustsglr.la \
   $(ATERM_LIBS)
 
+STRCLAGS = \
+  $(XTC_UNINSTALLED_STRCFLAGS) \
+  $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
+
 libstratego-sglr.rtree libstratego-sglr.c :
 	@$(STRC)/bin/strc -c --library -i stratego-sglr.str -o libstratego-sglr.rtree \
-          --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(XTC_STRCFLAGS)
+          --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sglr.str

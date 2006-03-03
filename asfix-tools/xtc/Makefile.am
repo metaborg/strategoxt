@@ -5,10 +5,8 @@ bin_PROGRAMS 	  = visamb implode-asfix sglri
 libexec_PROGRAMS  = asfix-anno-comments
 pkgdata_DATA 	  = visamb.pp.af
 
-STRATEGO_SGLR = $(top_srcdir)/stratego-sglr
-
 STRINCLUDES = \
-  -I $(STRATEGO_SGLR)/lib \
+  $(STRATEGO_SGLR_STRCFLAGS) \
   -I $(top_srcdir)/sig \
   -I $(top_srcdir)/lib \
   -I $(XTC)/share/xtc
@@ -16,9 +14,9 @@ STRINCLUDES = \
 STRCFLAGS = --main main-$*
 LDADD    += $(SSL_LIBS)
 
-implode_asfix_LDADD = $(STRATEGO_SGLR)/lib/libstratego-sglr.la $(SSL_LIBS)
-sglri_LDADD = $(STRATEGO_SGLR)/lib/libstratego-sglr.la $(SSL_LIBS)
-asfix_anno_comments_LDADD = $(STRATEGO_SGLR)/lib/libstratego-sglr.la $(SSL_LIBS)
+implode_asfix_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
+sglri_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
+asfix_anno_comments_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = visamb.c visamb.pp.af implode-asfix.c sglri.c

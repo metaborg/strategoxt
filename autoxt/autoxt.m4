@@ -135,6 +135,7 @@ AC_DEFUN([XT_CHECK_XTC],
   if test "${XTC:+set}" = set; then
     AC_SUBST([XTC])
     AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib -lstratego-xtc'])
+    AC_SUBST([XTC_STRCFLAGS], ['-I $(XTC)/share/xtc'])
     AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
   else
     # Try to find XTC using pkgconfig.
@@ -194,6 +195,7 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
     XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt],[bin/strc$EXEEXT])
     XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
     XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
+    XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr])
     XT_CHECK_PACKAGE([C_TOOLS],[c-tools],[bin/parse-c$EXEEXT])
   fi
 
@@ -225,14 +227,23 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
   AC_SUBST([STRATEGOXT])
   AC_SUBST([STRATEGO_RUNTIME], ['$(STRATEGOXT)'])
   AC_SUBST([STRATEGO_LIB], ['$(STRATEGOXT)'])
+  AC_SUBST([XTC], ['$(STRATEGOXT)'])
+  AC_SUBST([STRATEGO_SGLR], ['$(STRATEGOXT)'])
   AC_SUBST([C_TOOLS], ['$(STRATEGOXT)'])
 
   AC_SUBST([STRATEGOXT_XTC], ['$(STRATEGOXT)/share/strategoxt/XTC'])
 
   AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(SRTS)/include'])
-  AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
   AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib -lstratego-runtime -lm'])
+
+  AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
   AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib -lstratego-lib -lstratego-lib-native -lm'])
+  AC_SUBST([STRATEGO_LIB_STRCFLAGS], ['-I $(STRATEGO_LIB)/share/stratego-lib'])
+
+  # TODO: remove the asfix-tools import (bootstrap problem)
+  AC_SUBST([STRATEGO_SGLR_CFLAGS], [''])
+  AC_SUBST([STRATEGO_SGLR_LIBS], ['-L$(STRATEGO_SGLR)/lib -lstratego-sglr'])
+  AC_SUBST([STRATEGO_SGLR_STRCFLAGS], ['-I $(STRATEGO_SGLR)/share -I $(STRATEGO_SGLR)/share/asfix-tools'])
 ])
 
 # XT_CHECK_STRATEGOXT_UTILS

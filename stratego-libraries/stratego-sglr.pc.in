@@ -1,10 +1,8 @@
 prefix=@prefix@
-pkgdatadir=@datadir@/@PACKAGE@
-strcflags=-I ${pkgdatadir}
+strcflags=-I @datadir@
 
 Name: Stratego SGLR Library
 Description: Bindings of the SGLR library for Stratego.
 Version: @PACKAGE_VERSION@
 Libs: -L${prefix}/lib -lstratego-sglr
-Cflags: -I${prefix}/include 
 Requires: aterm stratego-runtime stratego-lib

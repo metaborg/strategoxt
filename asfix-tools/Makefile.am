@@ -1,9 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = stratego-sglr sig lib src xtc test
+SUBDIRS           = sig lib src xtc test
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST        = Makefile.xt svn-revision stratego-sglr.pc.in
+EXTRA_DIST        = Makefile.xt svn-revision
 
 ACLOCAL_AMFLAGS = -I ../config
-
-pkgconfig_DATA = stratego-sglr.pc

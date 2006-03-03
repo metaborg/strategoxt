@@ -73,6 +73,8 @@ if test "$xt_baseline" = "yes"; then
     DIST_PKGS="$DIST_PKGS xtc2" 
     XTC_DIR="xtc"
   fi
+
+  PKGS="$PKGS stratego-libraries"
 else
   PKGS="$PKGS stratego-lib"
 
@@ -86,7 +88,7 @@ else
     XTC_DIR="xtc"
   fi
 
-  PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools"
+  PKGS="$PKGS stratego-libraries stratego-front asfix-tools strc-core gpp c-tools"
 fi
 
 PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
@@ -129,20 +131,21 @@ AC_OUTPUT
 
 AB_CONFIG_PKG(autoxt, )
 AB_CONFIG_PKG(srts,   )
-AB_CONFIG_PKG(xtc,              --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(xtc2,             --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(strc-core,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(c-tools,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-front,   --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-lib,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(asfix-tools,      --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(gpp,              --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(concrete-syntax,  --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(aterm-front,      --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(sdf-front,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(sdf-tools,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-regular, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(xml-front,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(xtc2,               --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(c-tools,            --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(stratego-front,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(stratego-lib,       --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(asfix-tools,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(gpp,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(concrete-syntax,    --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(aterm-front,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(sdf-front,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(sdf-tools,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(stratego-regular,   --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(xml-front,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 
 # AB_CONFIG_PKG(xtar,             --with-repository=${REPOSITORY})
 
