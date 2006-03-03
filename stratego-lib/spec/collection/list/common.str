@@ -671,7 +671,7 @@ strategies
    * @type List(a) -> List(a)
    */
   first-last =
-    [id | last; MkSingleton] <+ []
+    [id | try(last; MkSingleton)] <+ []
 
  /**
   * Returns a list of all elements of a list, except the last.
