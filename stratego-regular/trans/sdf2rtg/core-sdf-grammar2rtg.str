@@ -564,11 +564,8 @@ strategies
   Symbol2String :
     parameterized-sort(x, params)  -> <concat-strings> [x, "_" | param-string]
     where
-      <map(sort2nonterm)> params => param-string
-
-  Symbol2String :
-    parameterized-sort(s, params) -> s
-      where <is-string> s
+      <is-string> x
+      ; <map(Symbol2String)> params => param-string
 
   Symbol2String :
     label(_,sym) -> <Symbol2String> sym
