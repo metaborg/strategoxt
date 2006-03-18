@@ -90,11 +90,6 @@ strategies
 
 strategies
 
-  sort2nonterm :
-    sort(x) -> rtg nonterm |[ x ]|
-
-strategies
-
   /**
    * Ignore layout productions.
    *
@@ -163,16 +158,29 @@ strategies
   ignore-prod =
     ?prod(_, _, attrs(attrs)); where(<contains-reject> attrs)
 
+
+  /**
+   * Ignore aux. productions
+   */
+  ignore-prod =
+    ?prod(_, _, attrs(attrs)); where(<contains-rtg(?ignore())> attrs)
+
   /**
    * Ignore a bracket production that injects A into A.
    */
   ignore-prod =
-    ?prod(syms, cf(sort(x)), attrs(attrs))
+    prod(?syms, cf(match-sort(?x)), ?attrs(attrs))
     ; where(
         <contains-bracket> attrs
       ; <not(get-cnstr-name)> attrs
       ; <syms2trees> syms => [ rtg |[ x ]| ]
       )
+
+  match-sort(s) =
+    sort(s)
+
+  match-sort(s) =
+    parameterized-sort(s, id)
 
   ignore-prod =
     is-start-prod
@@ -222,7 +230,7 @@ rules
    * Rewrite a bracket production which is not a 'real' injection.
    */
   inj2prodrule :
-    prod(syms, cf(sort(x)), attrs(attrs)) -> rtg |[ x -> A ]|
+    prod(syms, cf(<match-sort(?x)>), attrs(attrs)) -> rtg |[ x -> A ]|
       where <contains-bracket> attrs
           ; <not(get-cnstr-name)> attrs
           ; <syms2trees> syms => [ rtg |[ A ]| ]
@@ -458,15 +466,23 @@ strategies
 
 rules
 
-  sym2nonterm:
-    sort(x) -> rtg nonterm |[ x ]|
-
   sym2nonterm :
     sym -> rtg nonterm |[ x ]|
       where <get-nonterm-of> sym => x
 
-  sym2nonterm:
-    cf(sort(x)) -> rtg nonterm |[ x ]|
+  sym2nonterm =
+    sort2nonterm
+
+  sym2nonterm =
+    ?cf(<sort2nonterm>)
+
+  sort2nonterm :
+    sort(x) -> rtg nonterm |[ x ]|
+
+  sort2nonterm :
+    parameterized-sort(x, params) -> rtg nonterm |[ y ]|
+    where
+      Symbol2String => y
 
 strategies
 
@@ -486,7 +502,13 @@ strategies
    * @type  List(Attribute) ->? _
    */
   contains-reject =
-    one(?reject())
+    fetch(?reject())
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-rtg(s) =
+    fetch(term(rtg(where(s))))
 
 strategies
 
@@ -540,6 +562,15 @@ strategies
       where <is-string> s
 
   Symbol2String :
+    parameterized-sort(x, params)  -> <concat-strings> [x, "_" | param-string]
+    where
+      <map(sort2nonterm)> params => param-string
+
+  Symbol2String :
+    parameterized-sort(s, params) -> s
+      where <is-string> s
+
+  Symbol2String :
     label(_,sym) -> <Symbol2String> sym
 
   Symbol2String :
@@ -574,3 +605,7 @@ strategies
     ; log(|severity, <conc-strings> ("  ", prodtxt))
     )
 
+signature
+  constructors
+    rtg    : rtginfo -> rtg
+    ignore : rtginfo
