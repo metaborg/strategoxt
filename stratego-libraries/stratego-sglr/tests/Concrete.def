@@ -21,6 +21,8 @@ exports
     "()" -> StrategoTerm {cons("Empty")}
 
     "<?" Exp "?>" -> StrategoTerm {cons("ToTerm")}
+    "<%" Exp "%>" -> StrategoTerm {cons("ToMetaExpr")}
+
     "<!" Exp "!>" -> StrategoTerm {cons("ToBuild")}
     "<"  Exp ">"  -> StrategoTerm {cons("ToStrategy")}
 

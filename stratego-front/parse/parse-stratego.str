@@ -12,6 +12,7 @@ signature
     Syntax  : String -> MetaProperty
     TopSort : String -> MetaProperty
     HeuristicFilters : Switch -> MetaProperty
+    ImplodeQuotes    : Switch -> MetaProperty
     On  : Switch
     Off : Switch
 
@@ -130,7 +131,7 @@ strategies
            [ <pass-verbose> ()
            , <pass-filters> meta
            , <pass-sort> meta
-           , <if <get-config> "--asfix" then !["--impl", "--concrete"] else ![] end>
+           , <pass-implode-quotes> meta
            , <pass-preserve-comments>
            , <pass-preserve-positions>  
            ]
@@ -195,6 +196,24 @@ strategies
     else
       // FIXME: for now, heuristic filters are enabled for concrete object syntax.
       !["--heuristic-filters", "on"]
+    end
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  pass-implode-quotes =
+    if <get-config> "--asfix" then
+      !["--concrete"]    
+    else
+      if ?Meta(<fetch-elem(?ImplodeQuotes(value))>) then
+        switch !value
+          case On():  ![]
+          case Off(): !["--concrete"]
+          otherwise:  fatal-err(|"Illegal value of ImplodeQuotes otion: use On() or Off()")
+        end
+      else
+        ![]
+      end
     end
 
 strategies

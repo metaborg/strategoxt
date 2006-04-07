@@ -491,6 +491,13 @@ strategies
       , !"<? a ?>"
       , ?ToTerm(appl(_, _))
       )
+      
+    ; apply-and-check(!"Simple quotation with asfix content (ToMetaExpr)."
+      , parse-string-pt(|tbl)
+        ; implode-asfix(false)
+      , !"<% a %>"
+      , ?ToMetaExpr(appl(_, _))
+      )
 
     ; apply-and-check(!"Simple quotation with asfix content."
       , parse-string-pt(|tbl)
@@ -620,12 +627,13 @@ strategies
 
 signature
   constructors
-    WithAnno : A * B -> C
-    ToTerm   : A -> B
-    FromTerm : A -> B
-    FromApp  : A -> B
-    Empty    : A
-    appl     : A * B -> C
+    WithAnno   : A * B -> C
+    ToTerm     : A -> B
+    ToMetaExpr :  A -> B
+    FromTerm   : A -> B
+    FromApp    : A -> B
+    Empty      : A
+    appl       : A * B -> C
 
     Iter : A -> B
     Iter-sep : A -> B
