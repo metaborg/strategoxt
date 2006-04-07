@@ -23,6 +23,12 @@ rules
   Desugar : 
     |[ s => t ]| -> |[ s; ?t ]|
 
+//  Desugar :
+//   |[ t1 := t2 ]| -> |[ !t2; ?t1 ]|
+
+  Desugar :
+    Assign(t1, t2) -> Seq(Build(t2), Match(t1))
+
 // rules
 
   Desugar :

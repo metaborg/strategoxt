@@ -36,6 +36,7 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05				 \
 		  test75 test76 test77 test78 test79 test80 test81 test82 test83 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
+		  test97							 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03                         \
