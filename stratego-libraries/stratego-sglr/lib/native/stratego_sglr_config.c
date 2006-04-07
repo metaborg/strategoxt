@@ -33,6 +33,25 @@ ATerm STRSGLR_get_ambiguity_error(void)
 }
 
 /**
+ * Parse tree format
+ */
+ATerm STRSGLR_set_asfix2_format(void)
+{
+  STRSGLR_ensure_init();
+  SG_ASFIX2ME_OFF();
+  SG_ASFIX2_ON();
+  return (ATerm) ATempty;
+}
+
+ATerm STRSGLR_set_asfix2me_format(void)
+{
+  STRSGLR_ensure_init();
+  SG_ASFIX2_OFF();
+  SG_ASFIX2ME_ON();
+  return (ATerm) ATempty;
+}
+
+/**
  * Statistics
  */
 ATerm STRSGLR_set_log_statistics_on(void)

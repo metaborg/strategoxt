@@ -25,6 +25,7 @@ strategies
     ; implode-tests-custom
     ; implode-tests-concrete
     ; implode-tests-conc
+    ; asfix2me-tests
     )
 
   open-close-tests = id
@@ -577,8 +578,8 @@ strategies
 
     ; where(<close-parse-table> tbl)
 
-  implode-tests-conc =
-      where(
+  implode-tests-conc = id
+    ; where(
         <ReadFromFile> "ConcreteSyntax2.tbl"; open-parse-table => tbl
       )
     ; set-default-sglr-config
@@ -609,6 +610,59 @@ strategies
       )
 
     ; where(<close-parse-table> tbl)
+    
+  asfix2me-tests = id
+    ; where(
+        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
+      )
+
+    ; set-default-sglr-config
+    ; where(<set-parse-tree-format> AsFix2ME())
+
+    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2ME"
+      , parse-string-pt(|tbl)
+      , !"12 + 13"
+      ,   oncetd(?[49, 50])
+        ; oncetd(?[49, 51])
+      )
+
+    ; set-default-sglr-config      
+    ; where(set-asfix2me-format)
+    
+    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2ME"
+      , parse-string-pt(|tbl)
+      , !"12 + 13"
+      ,   oncetd(?[49, 50])
+        ; oncetd(?[49, 51])
+      )
+      
+    ; set-default-sglr-config
+    ; where(<set-parse-tree-format> AsFix2())
+
+    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2"
+      , parse-string-pt(|tbl)
+      , !"12 + 13"
+      ,   oncetd(?[49])
+        ; oncetd(?[50])
+        ; oncetd(?[51])
+        ; not(oncetd(?[49, 50]))
+        ; not(oncetd(?[49, 51]))
+      )
+
+    ; set-default-sglr-config      
+    ; where(set-asfix2-format)
+    
+    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2"
+      , parse-string-pt(|tbl)
+      , !"12 + 13"
+      ,   oncetd(?[49])
+        ; oncetd(?[50])
+        ; oncetd(?[51])
+        ; not(oncetd(?[49, 50]))
+        ; not(oncetd(?[49, 51]))        
+      )
+
+    ; set-default-sglr-config      
 
   conc-test-fetch-top =
     oncetd(?appl(prod(_, cf(iter-star-sep(sort("Exp"), lit(","))), _), _); ?appl)

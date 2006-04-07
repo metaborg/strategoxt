@@ -66,12 +66,35 @@ strategies
   get-sglr-log-statistics =
     where(prim("STRSGLR_get_log_statistics"))
 
+/**
+ * Parse tree format
+ */
 strategies
 
   /**
+   * Sets the parse tree format to the specific format.
+   *
    * @type ParseTreeFormat -> ParseTreeFormat
-  set-parse-tree-format = id
    */
+  set-parse-tree-format =
+    ?AsFix2()
+    ; set-asfix2-format
+
+  set-parse-tree-format =    
+    ?AsFix2ME()  
+    ; set-asfix2me-format
+
+  /**
+   * Sets the parse tree format to AsFix2
+   */
+  set-asfix2-format =
+    where(prim("STRSGLR_set_asfix2_format"))
+
+  /**
+   * Sets the parse tree format to AsFix2ME
+   */
+  set-asfix2me-format =
+    where(prim("STRSGLR_set_asfix2me_format"))
 
 signature
   constructors

@@ -33,6 +33,9 @@ ATerm STRSGLR_set_log_statistics_off(void);
 ATerm STRSGLR_get_log_statistics(void);
 ATerm STRSGLR_set_log_stream(ATerm tstream);
 
+ATerm STRSGLR_set_asfix2_format(void);
+ATerm STRSGLR_set_asfix2me_format(void);
+
 /**
  * Filters
  */
