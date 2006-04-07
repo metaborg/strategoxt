@@ -190,3 +190,20 @@ test priority of fixed-point intersection union wrt
 test priority of fixed-point union wrt left choice
   "s <+ \R/* While(s,s) <+ s" 
   -> LChoice(_, LChoice(DynRuleUnionFix(["R"], Call(_, _)), _))
+
+test asignment operator
+  "Foo(Bar(x), y) := z"
+  -> Assign(_,Var("z"))
+
+test asignment operator and application in lhs
+  "<s> Foo(y) := z"
+  -> Assign(App(_,_),Var("z"))
+
+test asignment operator and application in rhs
+  "Foo(y) := <s> z"
+  -> Assign(_,App(_,Var("z")))
+
+test assignment in rule condition
+  "(Foo(x) -> Bar(y) where y := <foobar> x)"
+  -> SRule(Rule(_,_,Assign(Var("y"), App(_,_))))
+

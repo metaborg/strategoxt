@@ -60,7 +60,7 @@ exports
     "{" Strategy "}"		  	  -> StrategyCurly {cons("StrategyCurly")}
 
     "("  ")" 		  		  -> Strategy {cons("EmptyTupleCong")}
-    "(" Strategy  ")" 		          -> Strategy {bracket}
+   "(" Strategy  ")" 		          -> Strategy {bracket}
     "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 
 %%    Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
@@ -95,6 +95,8 @@ exports
     "case" Strategy ":" Strategy          -> SwitchCase {cons("SwitchCase")}
 
     Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
+
+    Term ":=" Term			  -> Strategy {cons("Assign")}
 
   %% Priorities
 

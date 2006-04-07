@@ -4,6 +4,8 @@
    Env -- H hs=0["{" H[_1] "}"],
    Env.1:iter-sep -- H hs=0[_1 ","],
 
+   Assign -- H[_1 KW[":="] _2],
+
    OpQ.2:iter-star-sep                                -- _1 KW[","],
    OpQ                                                -- _1 KW["("] _2 KW[")"],
    OpDeclQ                                            -- _1 KW[":"] _2,
