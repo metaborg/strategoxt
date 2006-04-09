@@ -49,19 +49,10 @@ strategies
           + asfix-yield-quote-acc(yield | chars)
 
      in appl(!prod([], "yield", no-attrs()), yield(|[]); reverse)
-      + "WithAnno"#([asfix-yield-quote | id])
       + strsglr-metavar-cong(id)
       + strsglr-antiquote-cong(yield-asfix-quotes)
     end
     
-  /**
-   * WithAnno has no meaning in yielded quotes.
-   */
-  asfix-yield-quote-acc(rec : b * c -> d | chars1) :
-    "WithAnno"#([t | _]) -> chars2
-    where
-      <rec(|chars1)> t => chars2
-
   asfix-yield-quote-acc(rec : b * c -> d | chars1) :
     amb([x | _]) -> chars2
     where
