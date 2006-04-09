@@ -13,6 +13,7 @@ signature
     TopSort : String -> MetaProperty
     HeuristicFilters : Switch -> MetaProperty
     ImplodeQuotes    : Switch -> MetaProperty
+    YieldQuotes      : Switch -> MetaProperty
     On  : Switch
     Off : Switch
 
@@ -132,6 +133,7 @@ strategies
            , <pass-filters> meta
            , <pass-sort> meta
            , <pass-implode-quotes> meta
+           , <pass-yield-quotes> meta           
            , <pass-preserve-comments>
            , <pass-preserve-positions>  
            ]
@@ -214,6 +216,20 @@ strategies
       else
         ![]
       end
+    end
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  pass-yield-quotes =
+    if ?Meta(<fetch-elem(?YieldQuotes(value))>) then
+      switch !value
+        case On():  !["--yield-quotes"]
+        case Off(): ![]
+        otherwise:  fatal-err(|"Illegal value of YieldQuotes otion: use On() or Off()")
+      end
+    else
+      ![]
     end
 
 strategies

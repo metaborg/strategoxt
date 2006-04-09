@@ -32,8 +32,11 @@ strategies
       ; if <get-config> "--pt"     then ?parsetree(<id>, _) end
       ; try(
           ?term
-          ; implode-asfix(not(<get-config>("--concrete")))
+          ; implode-asfix(not(<get-config> ("--concrete")))
         )
+      ; if <get-config> "--yield-quotes" then
+          yield-asfix-quotes
+        end
     | "Implode parse tree"
     )
 
@@ -83,4 +86,12 @@ strategies
 
   + Option( "--concrete",
 	where(<set-config>("--concrete", <id>)),
-        !"--concrete       Skip concrete syntax parts for Stratego parsing")
+        !"--concrete   Do not implode quotes (concrete object syntax)")
+
+  + Option( "--yield-quotes",
+      where(
+	    <set-config>("--yield-quotes", <id>)
+	  ; <set-config>("--concrete", <id>)	    
+      )
+    , !"--yield-quotes  Yield quotes (concrete object syntax) to single applications"
+    )
