@@ -6,25 +6,11 @@ imports
   stratego/concrete-syntax/markers
 
 strategies
-
-  implode-asfix-is-antiquote-cons =
-      "FromTerm"
-    + "FromMetaExpr"
-    + "FromMetaListExpr"
-    + "FromStrategy"
-    + "FromApp"
-
-  implode-asfix-is-quote-cons =
-      "ToTerm"
-    + "ToMetaExpr"
-    + "ToMetaListExpr"
-    + "ToBuild"
-    + "ToStrategy"
     
   skip-concrete(impl) =
     ?appl(prod, args)
     ; <get-cons> prod => c
-    ; <implode-asfix-is-quote-cons> c
+    ; <strsglr-is-quote-cons> c
     ; where(<remove-all(is-ignorable-syntax)> args => [ap])
     ; !c#([ap])
     ; rec skip(
@@ -32,7 +18,7 @@ strategies
            appl(prod(one(varsym(id)), id, id), id)
            ; impl
 
-        <+ appl(where(get-cons; implode-asfix-is-antiquote-cons), id)
+        <+ appl(where(get-cons; strsglr-is-antiquote-cons), id)
            ; impl
 
         <+ annotation(impl, skip)
@@ -48,3 +34,43 @@ strategies
     ; filter(not(is-ignorable-syntax); not(appl(prod(id, oncetd(lex(id)), id), id)))
     ; ?[x|xs] 
     ; !"WithAnno"#([<skip> x| <impl> xs])
+
+/**
+ * Yielding of quotes. Should be applied after implosion.
+ */
+strategies
+
+  yield-asfix-quotes =
+    alltd(strsglr-quote-cong(asfix-yield-quote))
+
+  asfix-yield-quote =
+    let yield(|chars) =
+            asfix-yield-acc(yield | chars)
+          + asfix-yield-quote-acc(yield | chars)
+
+     in appl(!prod([], "yield", no-attrs()), yield(|[]); reverse)
+      + "WithAnno"#([asfix-yield-quote | id])
+      + strsglr-metavar-cong(id)
+      + strsglr-antiquote-cong(yield-asfix-quotes)
+    end
+    
+  /**
+   * WithAnno has no meaning in yielded quotes.
+   */
+  asfix-yield-quote-acc(rec : b * c -> d | chars1) :
+    "WithAnno"#([t | _]) -> chars2
+    where
+      <rec(|chars1)> t => chars2
+
+  asfix-yield-quote-acc(rec : b * c -> d | chars1) :
+    amb([x | _]) -> chars2
+    where
+      <rec(|chars1)> x => chars2
+
+  asfix-yield-quote-acc(rec : b * c -> d |chars1) =
+    strsglr-metavar-cong(id)
+    ; ![<id> | chars1]
+
+  asfix-yield-quote-acc(rec : b * c -> d |chars1) =
+    strsglr-antiquote-cong(yield-asfix-quotes)
+    ; ![<id> | chars1]

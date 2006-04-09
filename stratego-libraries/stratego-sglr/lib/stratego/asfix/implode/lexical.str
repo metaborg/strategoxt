@@ -44,12 +44,38 @@ strategies
   /**
    * The yield of an AsFixTerm is the string consisting of the
    * characters at the leaves of the tree.1
-   *
-   * @todo Reuse asfix yield? (Mind the annotations)
    */
   asfix-yield-appl =
-    ?appl(_, _){anno*}
-    ; rec x(?appl(_, <map(x); concat>) <+ ![<id>])
-    ; implode-string
-    ; ?s
-    ; !s{anno*}
+    let yield(|chars) =
+            asfix-yield-acc(yield | chars)
+
+        main-yield =
+          yield(|[])
+          ; reverse
+          
+     in ?appl(_, <id>){anno*}
+      ; yield(|[])
+      ; reverse
+      ; implode-string
+      ; ?s
+      ; !s{anno*}
+    end
+
+  asfix-yield-acc(rec : b * c -> d |chars1) :
+    appl(_, ts) -> chars2
+    where
+      <rec(|chars1)> ts => chars2
+
+  asfix-yield-acc(rec : b * c -> d |chars) :
+    [] -> chars
+
+  asfix-yield-acc(rec : b * c -> d |chars0) :
+    [x | xs] -> chars2
+    where
+      <rec(|chars0)> x => chars1
+    ; <rec(|chars1)> xs => chars2
+
+  asfix-yield-acc(rec : b * c -> d | chars) :
+    i -> [i | chars]
+    where
+      is-int

@@ -24,6 +24,7 @@ strategies
     ; implode-tests
     ; implode-tests-custom
     ; implode-tests-concrete
+    ; implode-tests-concrete-yield
     ; implode-tests-conc
     ; asfix2me-tests
     )
@@ -577,6 +578,85 @@ strategies
       )
 
     ; where(<close-parse-table> tbl)
+    
+    
+  implode-tests-concrete-yield =
+      where(
+        <ReadFromFile> "Concrete.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+     
+    ; let tester = 
+            parse-string-pt(|tbl)
+            ; implode-asfix(false)
+            ; yield-asfix-quotes
+    in
+    
+      apply-and-check(!"Simple yielded quotation with asfix content."
+      , tester
+      , !"<? a ?>"
+      , ?ToTerm(appl(_, <implode-string; ?"a">))
+      )
+      
+    ; apply-and-check(!"Simple yielded quotation with asfix content (ToMetaExpr)."
+      , tester
+      , !"<% a %>"
+      , ?ToMetaExpr(appl(_, ['a']))
+      )
+
+    ; apply-and-check(!"Simple yielded quotation with asfix content."
+      , tester
+      , !"<? a or b ?>"
+      , ?ToTerm(appl(_,  <implode-string; ?"a or b">))
+      )
+
+    ; apply-and-check(!"Meta variables are imploded yielded."
+      , tester
+      , !"<? e ?>"
+      , ?ToTerm(meta-var("e"))
+      )
+
+    ; apply-and-check(!"Simple quotation with asfix content yielded."
+      , tester
+      , !"<! a !>"
+      , ?ToBuild(appl(_, <implode-string; ?"a">))
+      )
+
+    ; apply-and-check(!"Simple quotation with asfix content yielded."
+      , tester
+      , !"< a >"
+      , ?ToStrategy(appl(_,  <implode-string; ?"a">))
+      )
+
+    ; apply-test(!"Simple quotation with anti-quotation yielded."
+      , tester
+      , !"<? ?> () <? ?>"
+      , !ToTerm(FromTerm(Empty()))
+      )
+      
+    ; apply-and-check(!"Simple quotation with anti-quotation yielded."
+      , tester
+      , !"<? a or ?> <? a or b ?> <? ?>"
+      , ?ToTerm(appl(_, ['a', ' ', 'o', 'r', ' ',
+           FromTerm(
+             ToTerm(appl(_, ['a', ' ', 'o', 'r', ' ', 'b']))
+           )]
+         ))
+      )
+
+    ; apply-test(!"Simple quotation with anti-quotation yielded."
+      , tester
+      , !"<? !> () <! ?>"
+      , !ToTerm(FromApp(Empty()))
+      )
+
+    ; apply-and-check(!"Simple quotation with anti-quotation yielded."
+      , tester
+      , !"<? a or ?> () <? ?>"
+      , ?ToTerm(appl(_, ['a', ' ', 'o', 'r', ' ', FromTerm(Empty())]))
+      )
+  end
+  
 
   implode-tests-conc = id
     ; where(
