@@ -20,7 +20,7 @@ imports
 
 strategies
 
-  io-sdf2ast-conflicts =
+  main-sdf2ast-conflicts =
     xtc-io-wrap(sdf-main-module-option,
       xtc-sdf2-normalize(|<get-sdf-main-module>)
     ; xtc-io-transform(

@@ -11,7 +11,7 @@ imports
 
 strategies
 
-  io-sdf-spread-cons =
+  main-sdf-spread-cons =
     io-wrap(sdf-spread-cons)
 
   sdf-spread-cons =
