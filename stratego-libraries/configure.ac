@@ -15,7 +15,8 @@ AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/../srts/src/libst
 
 AC_SUBST([STRATEGO_LIB_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/../libraries'])
 AC_SUBST([STRATEGO_LIB_UNINSTALLED_CFLAGS],['-I $(top_builddir)/../stratego-lib/native'])
-AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],['$(top_builddir)/../stratego-lib/libraries/libstratego-lib.la'])
+AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],
+  ['$(top_builddir)/../stratego-lib/libraries/libstratego-lib.la $(top_builddir)/../stratego-lib/native/stratego-lib/libstratego-lib-native.la'])
 
 AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/../libraries'])
 AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/../xtc/libraries/libstratego-xtc.la'])
