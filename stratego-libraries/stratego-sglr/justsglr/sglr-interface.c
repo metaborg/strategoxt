@@ -8,7 +8,6 @@
 #include <sys/stat.h>
 
 #include <aterm1.h>
-#include <atb-tool.h>
 #include <Error-utils.h>
 
 #include "sglr.h"
