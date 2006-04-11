@@ -14,7 +14,7 @@ imports
 
 strategies
 
-  io-gen-renamed-sdf-module =
+  main-gen-renamed-sdf-module =
     xtc-io-wrap(renaming-options,
       xtc-sdf2-normalize(|<get-sdf-main-module>)
     ; xtc-io-transform(

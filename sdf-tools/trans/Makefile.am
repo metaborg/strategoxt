@@ -1,11 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS     = gen-renamed-sdf-module sdf2parenthesize
+bin_PROGRAMS     = gen-sdf-mix gen-renamed-sdf-module sdf2parenthesize
 libexec_PROGRAMS = sdf2ast-conflicts sdf-spread-cons
 LDADD       += $(SSL_LIBS)
 
-SCFLAGS       = --main io-$* 
+SCFLAGS       = --main main-$* 
 STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(top_srcdir)/lib \
                 -I $(SDF_FRONT)/share/sdf-front \

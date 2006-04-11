@@ -1,0 +1,95 @@
+/**
+ * Generates a Mixin SDF module
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @since   0.17
+ */
+module gen-sdf-mix
+imports
+  Sdf2
+  libxtclib
+  sdf/tool/xtc
+  sdf/tool/options
+  sdf/grammar/utils
+
+strategies
+
+  main-gen-sdf-mix =
+    xtc-io-wrap(mix-options,
+      xtc-sdf2-normalize(|<get-sdf-main-module>)
+    ; xtc-io-transform(
+        error-if-empty-grammar(<xtc-exit> 1)
+      ; where(collect-layout-sorts => layout-sorts)
+      ; collect-sorts
+      ; <diff> (<id>, layout-sorts)
+      ; map(rename-sort)
+      ; create-module
+      )
+    ; xtc-pp-sdf2
+    )
+
+strategies
+
+  collect-layout-sorts =
+    ?grammar
+    ; new-hashtable => prods
+    ; <collect-om(?prod(_, _, _))> grammar
+    ; map({lhs, rhs: ?prod(lhs, rhs, _); <hashtable-pushlist(|rhs, lhs)> prods})
+    ; new-iset => result
+    ; iset-add(| A |[  LAYOUT ]| )
+    ; iset-add(| A |[ <LAYOUT-LEX> ]| )
+    ; iset-add(| A |[ <LAYOUT-CF> ]| )
+    ; iset-add(| A |[  LAYOUT? ]| )
+    ; iset-add(| A |[ <LAYOUT?-LEX> ]| )
+    ; iset-add(| A |[ <LAYOUT?-CF> ]| )
+    ; iset-fixpoint({a:?a; <hashtable-get(|a)> prods})
+    ; iset-elements
+    ; retain-all(
+        ?sort(_)
+      + ?lex(sort(_)); ?lex(<id>)
+      + ?cf(sort(<id>)); ?lex(<id>)
+      )
+
+
+/**
+ * Transformation
+ */
+strategies
+
+  collect-sorts =
+    collect(
+      \ p |[ A* -> S       $ ]| -> A |[ S ]| \
+    + \ p |[ A* -> <S-CF>  $ ]| -> A |[ S ]| \
+    + \ p |[ A* -> <S-LEX> $ ]| -> A |[ S ]| \
+    )
+
+  rename-sort :
+    A |[ S1 ]| -> ro |[ S1 => S1[[Ctx]] ]|
+
+  create-module :
+    ro* -> m |[
+      module Mid2[Ctx]
+      imports Mid1 [ ro* ]
+    ]|
+    where
+      get-sdf-main-module => Mid1
+      ; <get-config> SdfResultModuleFlag() => Mid2
+
+/**
+ * Options
+ */
+strategies
+
+  mix-options =
+    sdf-main-module-option
+  + sdf-result-module-option
+
+  sdf-result-module-option =
+    ArgOption("--name"
+    , where(<set-config> (SdfResultModuleFlag(), <id>))
+    , <concat-strings>   ["--name mod       ", "Name of the resulting module (required)"]
+    )
+
+signature
+  constructors
+    SdfResultModuleFlag : Flag

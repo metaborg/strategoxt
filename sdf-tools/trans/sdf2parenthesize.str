@@ -16,7 +16,7 @@ imports
 
 strategies
 
-  io-sdf2parenthesize =
+  main-sdf2parenthesize =
     xtc-io-wrap(
       parenthesize-options
     , sdf2parenthesize-usage
