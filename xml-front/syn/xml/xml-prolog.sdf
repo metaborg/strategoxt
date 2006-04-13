@@ -18,13 +18,13 @@ exports
     "encoding"   "=" EncodingValue   -> EncodingDecl   {cons("EncodingDecl")}
 
     "\"" YesNo "\"" -> StandaloneValue {cons("Standalone")}
-    "\'" YesNo "\'" -> StandaloneValue {cons("Standalone")}
+    "\'" YesNo "\'" -> StandaloneValue {cons("StandaloneSingle")}
 
     "\"" EncodingName "\"" -> EncodingValue {cons("Encoding")}
-    "\'" EncodingName "\'" -> EncodingValue {cons("Encoding")}
+    "\'" EncodingName "\'" -> EncodingValue {cons("EncodingSingle")}
 
     "\"" VersionNum "\"" -> VersionValue {cons("Version")}
-    "'"  VersionNum "'"  -> VersionValue {cons("Version")}
+    "'"  VersionNum "'"  -> VersionValue {cons("VersionSingle")}
 
   context-free syntax
 
