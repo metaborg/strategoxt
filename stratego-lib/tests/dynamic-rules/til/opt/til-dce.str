@@ -1,0 +1,84 @@
+module til-dce
+imports TIL til-eval liblib
+rules
+
+  ElimDecl : 
+    [Declaration(x) | st*] -> st*
+    where <not(VarUsed)> Var(x)
+
+  ElimDecl : 
+    [DeclarationTyped(x, t) | st*] -> st*
+    where <not(VarUsed)> Var(x)
+
+  ElimAssign :
+    Assign(x, e) -> Block([])
+    where <not(VarNeeded)> Var(x)
+
+  ElimIf :
+    IfElse(e, [], []) -> Block([])
+
+strategies
+
+  io-til-dce = 
+    io-wrap(dce-program)
+
+  dce-stat = 
+    ElimAssign
+    <+ dce-assign 
+    <+ dce-proccall
+    <+ dce-if; try(ElimIf)
+    <+ dce-block
+    <+ dce-while
+
+  dce-program = 
+    Program(dce-stats)
+
+  dce-block =
+    Block(dce-stats)
+
+  dce-stats = 
+    dce-stats-decl
+    <+ dce-stats-other 
+    <+ []
+
+  dce-stats-decl = 
+    (?[Declaration(x) | _] <+ ?[DeclarationTyped(x, t) | _])
+    ; {| VarNeeded, VarUsed 
+       : rules(
+           VarNeeded+x :- Var(x)
+           VarUsed+x   :- Var(x)
+         )
+       ; [id | dce-stats]
+       ; try(ElimDecl)
+       |}
+       
+  dce-stats-other =
+    [not(?Declaration(_) <+ ?DeclarationTyped(_, _)) | dce-stats]
+    ; [dce-stat | id]
+    ; try(?[Block([]) | <id>])
+
+  dce-assign = 
+    ?Assign(x, _)
+    ; rules( VarNeeded.x :- Var(x) )
+    ; Assign(id, declare-var-needed)
+
+  dce-proccall =
+    ProcCall(id, map(declare-var-needed))
+
+  declare-var-needed = 
+    alltd({x :
+      ?Var(x)
+      ; rules(
+          VarNeeded.x : Var(x)
+          VarUsed.x   : Var(x)
+         )
+    })
+
+  dce-if =
+    ?IfElse(_,_,_)
+    ; (IfElse(id,dce-stats,id) /VarNeeded,VarUsed\ IfElse(id,id,dce-stats))
+    ; IfElse(declare-var-needed, id, id)
+
+  dce-while =
+    ?While(_, _)
+    ; (\VarNeeded,VarUsed/* While(declare-var-needed, dce-stats))

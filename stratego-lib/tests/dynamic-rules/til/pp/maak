@@ -1,0 +1,8 @@
+# generate pretty-print table from syntax definition
+ppgen -i ../syn/TIL.def -o TIL.pp
+
+# generate program to insert parentheses
+sdf2parenthesize -i ../syn/TIL.def -o til-parenthesize.str -m TIL --lang TIL
+
+# compile the generated program
+strc -i til-parenthesize.str -I ../sig -m io-til-parenthesize -la stratego-lib

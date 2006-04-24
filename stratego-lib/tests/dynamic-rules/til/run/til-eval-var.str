@@ -1,0 +1,27 @@
+module til-eval-var
+imports til-eval-exp
+strategies
+
+  eval-declaration = 
+    (?Declaration(x) <+ ?DeclarationTyped(x, t))
+    ; rules( EvalVar+x :- Var(x) )
+
+  eval-assign = 
+    Assign(?x, eval-exp => val)
+    ; rules(EvalVar.x : Var(x) -> val)
+
+  EvalRead :
+    FunCall("read", []) -> String(x)
+    where stdin-stream; read-text-line => x
+
+  eval-write = 
+    ?ProcCall("write", [<eval-exp>])
+    ; ?String(<try(un-double-quote); try(unescape)>)
+    ; <fprint>(<stdout-stream>, [<id>])
+
+  VarUndefined =
+    ?Var(<id>)
+    ; fatal-err(|<concat-strings>["variable ", <id>, " used before being defined"])
+
+  eval-exp = 
+    eval-exp(EvalVar <+ VarUndefined <+ EvalRead)

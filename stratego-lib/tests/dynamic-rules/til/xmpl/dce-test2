@@ -1,0 +1,4 @@
+sglri -p ../syn/TIL.tbl -i dce-test2.til |\
+../sim/til-simplify |\
+../opt/til-dce |\
+ast2text -p ../pp/TIL-pretty.pp -o dce-test2.txt

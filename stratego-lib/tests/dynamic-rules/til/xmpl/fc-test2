@@ -1,0 +1,1 @@
+format-check --rtg ../sig/TIL.rtg -i test1-wrong.atil -s Program 2> test1-wrong.atil.fc

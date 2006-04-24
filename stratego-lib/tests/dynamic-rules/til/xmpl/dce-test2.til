@@ -1,0 +1,21 @@
+var x;
+var y;
+var z;
+var a;
+var b;
+z := readint();
+x := 1;
+y := 2;
+x := 3;
+a := 7;
+y := 3 + z;
+if y then
+  z := 8;
+  x := 3;
+else
+  x := 3;
+  z := 7 + z;
+end
+b := 7 + z;
+z := 10;
+writeint(b + 10);

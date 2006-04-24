@@ -1,0 +1,140 @@
+module dr-propconst-tests
+imports
+  dr-test-utils
+
+strategies
+
+  propconst-tests =
+    test-suite(!"Dynamic Rules Library -- Constant Propagation",
+      pc-basic-tests
+    ; pc-intersection-tests
+    ; pc-fix-and-intersect-tests
+    ; pc-break-tests
+    ; pc-break-to-label-tests
+    ; pc-continue-tests
+    ; pc-continue-to-label-tests
+    ; pc-exception-tests
+    )
+
+strategies
+
+  pc-basic-tests = id
+
+  ; apply-propconst-test(!"Check rule definition (top scope)" |
+      "var x; x := 0; f(x);",
+      "var x; x := 0; f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule redefinition with the same value (top scope)" |
+      "var x; x := 0; f(x); x := 0; f(x);",
+      "var x; x := 0; f(0); x := 0; f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule redefinition with a different value (top scope)" |
+      "var x; x := 0; f(x); x := 1; f(x);",
+      "var x; x := 0; f(0); x := 1; f(1);"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition (top scope)" |
+      "var x; var y; x := 0; f(x); x := y; f(x);",
+      "var x; var y; x := 0; f(0); x := y; f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition and redefinition with the same value (top scope)" |
+      "var x; var y; x := 0; f(x); x := y; f(x); x := 0; f(x);",
+      "var x; var y; x := 0; f(0); x := y; f(x); x := 0; f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition and redefinition with a different value (top scope)" |
+      "var x; var y; x := 0; f(x); x := y; f(x); x := 1; f(x);",
+      "var x; var y; x := 0; f(0); x := y; f(x); x := 1; f(1);"
+    )
+
+  ; apply-propconst-test(!"Check rule definition (across scope)" |
+      "var x; begin x := 0; f(x); end f(x);",
+      "var x; begin x := 0; f(0); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule redefinition with the same value (across scope)" |
+      "var x; x := 0; begin x := 0; f(x); end f(x);",
+      "var x; x := 0; begin x := 0; f(0); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule redefinition with a different value (across scope)" |
+      "var x; x := 0; begin x := 1; f(x); end f(x);",
+      "var x; x := 0; begin x := 1; f(1); end f(1);"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition (across scope)" |
+      "var x; var y; x := 0; begin x := y; f(x); end f(x);",
+      "var x; var y; x := 0; begin x := y; f(x); end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition and redefinition with the same value (across scope)" |
+      "var x; var y; x := 0; begin x := y; f(x); x := 1; f(x); end f(x);",
+      "var x; var y; x := 0; begin x := y; f(x); x := 1; f(1); end f(1);"
+    )
+
+  pc-intersection-tests = id
+
+  pc-fix-and-intersect-tests = id
+
+  ; apply-propconst-test(!"Check for (fails due to bug in library)..." |
+      "
+        var i; var x; var y;
+        i := 0; x := 1; y := 2; z := 3;
+        for i := x to x + y do
+          write(i);
+          write(x);
+          y := 1; // assign a different value
+          z := 3; // assign the same value
+        end
+        f(x, y, z, i);
+      ",
+      "
+        var i; var x; var y;
+        i := 0; x := 1; y := 2; z := 3;
+        for i := 1 to 3 do
+          write(i);
+          write(1);
+          y := 1; // assign a different value
+          z := 3; // assign the same value
+        end
+        f(1, y, 3, i);
+      ")
+
+  ; apply-propconst-test(!"Check while (fails due to bug in library)..." |
+      "
+        var i; var x; var y;
+        i := 0; x := 1; y := 2; z := 3;
+        while (i < x + y) do
+          write(i);
+          write(x);
+          y := 1; // assign a different value
+          z := 3; // assign the same value
+          i := i + 1;
+        end
+        f(x, y, z, i);
+      ",
+      "
+        var i; var x; var y;
+        i := 0; x := 1; y := 2; z := 3;
+        while (i < 1 + y) do
+          write(i);
+          write(1);
+          y := 1; // assign a different value
+          z := 3; // assign the same value
+          i := i + 1;
+        end
+        f(1, y, 3, i);
+      ")
+
+  pc-break-tests = id
+
+  pc-break-to-label-tests = id
+
+  pc-continue-tests = id
+
+  pc-continue-to-label-tests = id
+
+  pc-exception-tests = id

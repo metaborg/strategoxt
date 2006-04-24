@@ -1,0 +1,8 @@
+module dr-all-tests
+imports
+  dr-propconst-tests
+
+strategies
+
+  dr-all-tests-main =
+    propconst-tests

@@ -1,0 +1,5 @@
+(cd til/syn; ./maak-clean)
+(cd til/sig; ./maak-clean)
+
+rm -f *.c *.dep *.o dr-all-tests
+rm -rf .libs

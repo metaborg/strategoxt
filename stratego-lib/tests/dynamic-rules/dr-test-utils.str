@@ -1,0 +1,49 @@
+module dr-test-utils
+imports
+  libstrategolib
+  libxtclib
+  til/opt/til-propconst
+
+strategies
+
+  apply-propconst-test(name | in-program, out-program) =
+    apply-test(name, propconst, <parse-til>in-program, <parse-til>out-program)
+    
+  show-propconst-test(name | in-program, out-program) =
+    apply-and-show(name, propconst, <parse-til>in-program)
+
+strategies
+
+  parse-til =
+    xtc-sglri-til(|"til/syn/TIL.tbl", "Program")
+
+  xtc-sglri-til(|tbl, sort) =
+    xtc-transform-term-text(!"sglri", !["-A", "-p", tbl, "-s", sort])
+
+  xtc-transform-term-text(tool, args) =
+    print-to
+    ; xtc-transform-file(tool, args)
+    ; read-from
+
+strategies
+/*
+  separation-message(msg) =
+    
+    <concat>
+*/
+  /**
+   * Prints a separation message.
+   * Assuming fill-char is "=", the separation message will be
+   *   ======= msg =======
+   * The length indicates the desired length of the _entire_ message,
+   * including the fill characters. msg will be truncated to fit.
+   * The length must be >= 5, to allow for at least = M = (i.e., two
+   * separator chars, two spaces and the first letter of the message).
+   */
+/*
+  separation-message(| msg, fill-char, length) =
+    (<geq>(length, 5) < !length + !5)
+    ; <subt>(<id>, 4) => l
+    ; <string-length>msg => lm
+    ; (<l
+*/

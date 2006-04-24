@@ -1,0 +1,9 @@
+(cd til/syn; ./maak)
+(cd til/sig; ./maak)
+
+STRATEGOXT="/users/bdumitri/usr/strategoxt/current"
+XTC="/users/bdumitri/usr/strategoxt/current"
+INCL="-I $XTC/share/xtc -I til/syn -I til/sig -I til/sim -I til/opt"
+
+# compile
+strc -i dr-all-tests.str -m dr-all-tests-main $INCL -la stratego-xtc --xtc-repo $STRATEGOXT/share/strategoxt/XTC --format-check -1

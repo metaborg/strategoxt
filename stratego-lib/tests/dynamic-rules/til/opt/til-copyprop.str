@@ -1,0 +1,42 @@
+module til-copyprop
+imports til-opt-lib
+strategies
+
+  io-til-copyprop = 
+    io-wrap(copyprop)
+
+  copyprop = 
+    CopyProp
+    <+ copyprop-declaration
+    <+ copyprop-assign 
+    <+ copyprop-block
+    <+ copyprop-if
+    <+ copyprop-while
+    <+ all(copyprop)
+
+  copyprop-block =
+    Block({| CopyProp : map(copyprop) |})
+
+  copyprop-declaration = 
+    (?Declaration(x) <+ ?DeclarationTyped(x, t))
+    ; new-CopyProp(|x, x)
+
+  copyprop-assign = 
+    Assign(?x, copyprop => e)
+    ; undefine-CopyProp(|x)
+    ; where( innermost-scope-CopyProp => z )
+    ; if <?Var(y)> e then
+        rules( CopyProp.z : Var(x) -> Var(y) depends on [(x,x),(y,y)] )
+      end
+
+  copyprop-if =
+    IfElse(copyprop, id, id)
+    ; (IfElse(id, copyprop, id) /CopyProp\ IfElse(id,id,copyprop))
+
+  copyprop-while =
+    ?While(_, _)
+    ; (/CopyProp\* While(copyprop, copyprop))
+
+  innermost-scope-CopyProp = 
+    get-var-names => vars
+    ; innermost-scope-CopyProp(elem-of(|vars))

@@ -1,0 +1,43 @@
+module til-forward-subst
+imports til-opt-lib
+strategies
+
+  io-til-forward-subst = 
+    io-wrap(forward-subst)
+
+  forward-subst = 
+    ForwardSubst
+    <+ forward-subst-declaration
+    <+ forward-subst-assign 
+    <+ forward-subst-if
+    <+ forward-subst-block
+    <+ forward-subst-while
+    <+ all(forward-subst)
+
+  forward-subst-block =
+    Block({| ForwardSubst : map(forward-subst) |})
+
+  forward-subst-declaration = 
+    (?Declaration(x) <+ ?DeclarationTyped(x, t))
+    ; new-ForwardSubst(|x, x)
+
+  forward-subst-assign = 
+    Assign(?x, forward-subst => e)
+    ; undefine-ForwardSubst(|x)
+    ; if <not(is-var); is-pure-exp; not(contains(|Var(x)))> e then
+        where( innermost-scope-ForwardSubst => z )
+        ; where( get-var-dependencies => deps )
+        ; rules( ForwardSubst.z : Var(x) -> e depends on deps )
+      end
+
+  forward-subst-if =
+    IfElse(forward-subst, id, id)
+    ; (IfElse(id, forward-subst, id) /ForwardSubst\ IfElse(id,id,forward-subst))
+
+  forward-subst-while =
+    ?While(_, _)
+    ; (/ForwardSubst\* While(forward-subst, forward-subst))
+
+  innermost-scope-ForwardSubst = 
+    get-var-names => vars
+    ; innermost-scope-ForwardSubst(elem-of(|vars))
