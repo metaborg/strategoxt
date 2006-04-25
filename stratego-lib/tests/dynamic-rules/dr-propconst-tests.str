@@ -6,13 +6,21 @@ strategies
 
   propconst-tests =
     test-suite(!"Dynamic Rules Library -- Constant Propagation",
-      pc-basic-tests
+      where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Basic Tests"))
+    ; pc-basic-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Intersection Tests"))
     ; pc-intersection-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Fix and Intersect Tests"))
     ; pc-fix-and-intersect-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Break Tests"))
     ; pc-break-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Break to Label Tests"))
     ; pc-break-to-label-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Continue Tests"))
     ; pc-continue-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Continue to Label Tests"))
     ; pc-continue-to-label-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Exception Tests"))
     ; pc-exception-tests
     )
 
@@ -50,6 +58,56 @@ strategies
       "var x; var y; x := 0; f(0); x := y; f(x); x := 1; f(1);"
     )
 
+  ; apply-propconst-test(!"Check rule lookup after definition (top scope)" |
+      "var x; var y; var z; x := 0; y := 1; z := 2; f(x, y, z);",
+      "var x; var y; var z; x := 0; y := 1; z := 2; f(0, 1, 2);"
+    )
+
+  ; apply-propconst-test(!"Check rule lookup after redefinition (top scope)" |
+      "var x; var y; var z; x := 0; y := 1; z := 2; x := 0; y := 2; f(x, y, z);",
+      "var x; var y; var z; x := 0; y := 1; z := 2; x := 0; y := 2; f(0, 2, 2);"
+    )
+
+  ; apply-propconst-test(!"Check rule definition (nested scope)" |
+      "begin var x; x := 0; f(x); end",
+      "begin var x; x := 0; f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule redefinition with the same value (nested scope)" |
+      "begin var x; x := 0; f(x); x := 0; f(x); end",
+      "begin var x; x := 0; f(0); x := 0; f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule redefinition with a different value (nested scope)" |
+      "begin var x; x := 0; f(x); x := 1; f(x); end",
+      "begin var x; x := 0; f(0); x := 1; f(1); end"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition (nested scope)" |
+      "begin var x; var y; x := 0; f(x); x := y; f(x); end",
+      "begin var x; var y; x := 0; f(0); x := y; f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition and redefinition with the same value (nested scope)" |
+      "begin var x; var y; x := 0; f(x); x := y; f(x); x := 0; f(x); end",
+      "begin var x; var y; x := 0; f(0); x := y; f(x); x := 0; f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition and redefinition with a different value (nested scope)" |
+      "begin var x; var y; x := 0; f(x); x := y; f(x); x := 1; f(x); end",
+      "begin var x; var y; x := 0; f(0); x := y; f(x); x := 1; f(1); end"
+    )
+
+  ; apply-propconst-test(!"Check rule lookup after definition (nested scope)" |
+      "begin var x; var y; var z; x := 0; y := 1; z := 2; f(x, y, z); end",
+      "begin var x; var y; var z; x := 0; y := 1; z := 2; f(0, 1, 2); end"
+    )
+
+  ; apply-propconst-test(!"Check rule lookup after redefinition (nested scope)" |
+      "begin var x; var y; var z; x := 0; y := 1; z := 2; x := 0; y := 2; f(x, y, z); end",
+      "begin var x; var y; var z; x := 0; y := 1; z := 2; x := 0; y := 2; f(0, 2, 2); end"
+    )
+
   ; apply-propconst-test(!"Check rule definition (across scope)" |
       "var x; begin x := 0; f(x); end f(x);",
       "var x; begin x := 0; f(0); end f(0);"
@@ -71,8 +129,48 @@ strategies
     )
 
   ; apply-propconst-test(!"Check rule undefinition and redefinition with the same value (across scope)" |
+      "var x; var y; x := 0; begin x := y; f(x); x := 0; f(x); end f(x);",
+      "var x; var y; x := 0; begin x := y; f(x); x := 0; f(0); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule undefinition and redefinition with a different value (across scope)" |
       "var x; var y; x := 0; begin x := y; f(x); x := 1; f(x); end f(x);",
       "var x; var y; x := 0; begin x := y; f(x); x := 1; f(1); end f(1);"
+    )
+
+  ; apply-propconst-test(!"Check rule lookup after definition (across scope)" |
+      "var x; var y; var z; x := 0; y := 1; z := 2; begin f(x, y, z); end",
+      "var x; var y; var z; x := 0; y := 1; z := 2; begin f(0, 1, 2); end"
+    )
+
+  ; apply-propconst-test(!"Check rule lookup after redefinition (across scope)" |
+      "var x; var y; var z; x := 0; y := 1; z := 2; x := 0; y := 2; begin f(x, y, z); end",
+      "var x; var y; var z; x := 0; y := 1; z := 2; x := 0; y := 2; begin f(0, 2, 2); end"
+    )
+
+  ; apply-propconst-test(!"Check rule definitions with the same value (nested scopes)" |
+      "var x; x := 0; f(x); begin var x; x := 0; f(x); begin var x; x := 0; f(x); end f(x); end f(x);",
+      "var x; x := 0; f(0); begin var x; x := 0; f(0); begin var x; x := 0; f(0); end f(0); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule definitions with different values (nested scopes)" |
+      "var x; x := 0; f(x); begin var x; x := 1; f(x); begin var x; x := 1; f(x); end f(x); end f(x);",
+      "var x; x := 0; f(0); begin var x; x := 1; f(1); begin var x; x := 1; f(1); end f(1); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule definitions with different values (nested scopes)" |
+      "var x; x := 0; f(x); begin var x; x := 1; f(x); begin var x; x := 2; f(x); end f(x); end f(x);",
+      "var x; x := 0; f(0); begin var x; x := 1; f(1); begin var x; x := 2; f(2); end f(1); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule definitions/undefinitions with the same value (nested scopes)" |
+      "var x; x := 0; f(x); begin var x; x := 0; f(x); x := y; f(x); end f(x);",
+      "var x; x := 0; f(0); begin var x; x := 0; f(0); x := y; f(x); end f(0);"
+    )
+    
+  ; apply-propconst-test(!"Check rule definitions/undefinitions with different values (nested scopes)" |
+      "var x; x := 0; f(x); begin var x; x := 1; f(x); x := y; f(x); end f(x);",
+      "var x; x := 0; f(0); begin var x; x := 1; f(1); x := y; f(x); end f(0);"
     )
 
   pc-intersection-tests = id

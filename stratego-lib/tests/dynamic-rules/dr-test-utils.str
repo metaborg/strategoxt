@@ -7,10 +7,10 @@ imports
 strategies
 
   apply-propconst-test(name | in-program, out-program) =
-    apply-test(name, propconst, <parse-til>in-program, <parse-til>out-program)
+    apply-test(name, dr-ignore-state(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
     
   show-propconst-test(name | in-program, out-program) =
-    apply-and-show(name, propconst, <parse-til>in-program)
+    dr-ignore-state(apply-and-show(name, dr-ignore-state(propconst|"PropConst"), <parse-til>in-program))
 
 strategies
 
@@ -26,24 +26,29 @@ strategies
     ; read-from
 
 strategies
-/*
-  separation-message(msg) =
-    
-    <concat>
-*/
+
+  separation-message(|msg) =
+    separation-message(|msg, "=", 80)
+
   /**
    * Prints a separation message.
    * Assuming fill-char is "=", the separation message will be
    *   ======= msg =======
    * The length indicates the desired length of the _entire_ message,
    * including the fill characters. msg will be truncated to fit.
-   * The length must be >= 5, to allow for at least = M = (i.e., two
-   * separator chars, two spaces and the first letter of the message).
+   * If it truncation is necessary, "..." will be added at the end of
+   * the truncated msg. The length must be >= 8, to allow for at least
+   * = M... = (i.e., two separator chars, two spaces, the first letter
+   * of the message and three dots).
    */
-/*
-  separation-message(| msg, fill-char, length) =
-    (<geq>(length, 5) < !length + !5)
-    ; <subt>(<id>, 4) => l
-    ; <string-length>msg => lm
-    ; (<l
-*/
+  separation-message(|msg, fill-char, length) =
+    (<geq>(length, 8) < !length + !8)
+    ; <subt>(<id>, 7) => l
+    ; <subt>(l, <string-length>msg) => diff
+    ; (<lt>(diff, 0)
+       < <explode-string; take(|l); implode-string>msg
+         ; <concat-strings>[fill-char, " ", <id>, "... ", fill-char]
+       + <copy; concat-strings>(diff, fill-char)
+         ; <concat-strings>[fill-char, " ", msg, " ", <id>, fill-char]
+      )
+    ; say(id)
