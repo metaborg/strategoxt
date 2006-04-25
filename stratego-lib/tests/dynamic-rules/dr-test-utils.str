@@ -7,10 +7,10 @@ imports
 strategies
 
   apply-propconst-test(name | in-program, out-program) =
-    apply-test(name, dr-ignore-state(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
+    apply-test(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
     
   show-propconst-test(name | in-program, out-program) =
-    dr-ignore-state(apply-and-show(name, dr-ignore-state(propconst|"PropConst"), <parse-til>in-program))
+    apply-and-show(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
 
 strategies
 
@@ -27,8 +27,22 @@ strategies
 
 strategies
 
+  dr-ignore-state-cleanup(s|name) =
+    where(
+      dr-new-rule-set
+      ; dr-switch-rule-set(|name) => rs
+    )
+  ; s
+  ; where(
+      <dr-switch-rule-set(|name)>rs
+      ; map(dr-destroy-scope <+ dr-destroy-change-set)
+    )
+
   separation-message(|msg) =
     separation-message(|msg, "=", 80)
+
+  description-message(|msg) =
+    description-message(|msg, "=", 80)
 
   /**
    * Prints a separation message.
@@ -42,13 +56,34 @@ strategies
    * of the message and three dots).
    */
   separation-message(|msg, fill-char, length) =
+    custom-message(|msg, fill-char, fill-char, length)
+
+  /**
+   * Same as separation message, except that it only uses the fill-char
+   * as end-char (hence, the paramter name change), i.e. once at the
+   * beginning and once at the end of the line, filling the rest with
+   * spaces.
+   *
+   * Example:
+   *  separation-message(|"abc", "=", 20) =>
+   *   = abc ==============
+   *  description-message(|"abc", "=", 20) =>
+   *   = abc              =
+   */
+  description-message(|msg, end-char, length) =
+    custom-message(|msg, " ", end-char, length)
+
+  /**
+   * @internal
+   */
+  custom-message(|msg, fill-char, end-char, length) =
     (<geq>(length, 8) < !length + !8)
     ; <subt>(<id>, 7) => l
     ; <subt>(l, <string-length>msg) => diff
     ; (<lt>(diff, 0)
        < <explode-string; take(|l); implode-string>msg
-         ; <concat-strings>[fill-char, " ", <id>, "... ", fill-char]
+         ; <concat-strings>[end-char, " ", <id>, "... ", end-char]
        + <copy; concat-strings>(diff, fill-char)
-         ; <concat-strings>[fill-char, " ", msg, " ", <id>, fill-char]
+         ; <concat-strings>[end-char, " ", msg, " ", <id>, end-char]
       )
     ; say(id)

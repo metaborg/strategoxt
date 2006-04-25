@@ -9,6 +9,15 @@ strategies
       where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Basic Tests"))
     ; pc-basic-tests
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Intersection Tests"))
+    ; where(description-message(|"  notation in test names: rule before applying intersection"))
+    ; where(description-message(|"                          < rule in left branch"))
+    ; where(description-message(|"                          + rule in right branch"))
+    ; where(description-message(|"  (x,val) means rule with key x, and val decodes like this:"))
+    ; where(description-message(|"    - same letter means redefinition with the same value"))
+    ; where(description-message(|"    - different letter means redefinition with a different value"))
+    ; where(description-message(|"    - \"undef\" means undefinition of rule"))
+    ; where(description-message(|"    - \"none\" means no change to rule"))
+    ; where(description-message(|"    - \"empty\" means no rule is defined at that point"))
     ; pc-intersection-tests
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Fix and Intersect Tests"))
     ; pc-fix-and-intersect-tests
@@ -173,7 +182,306 @@ strategies
       "var x; x := 0; f(0); begin var x; x := 1; f(1); x := y; f(x); end f(0);"
     )
 
+strategies
+
   pc-intersection-tests = id
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,a) + (x,a)" |
+      "var x; x := 0; if c() then x := 0; else x := 0; end f(x);",
+      "var x; x := 0; if c() then x := 0; else x := 0; end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,a) + (x,b)" |
+      "var x; x := 0; if c() then x := 0; else x := 1; end f(x);",
+      "var x; x := 0; if c() then x := 0; else x := 1; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,b) + (x,a)" |
+      "var x; x := 0; if c() then x := 1; else x := 0; end f(x);",
+      "var x; x := 0; if c() then x := 1; else x := 0; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,b) + (x,c)" |
+      "var x; x := 0; if c() then x := 1; else x := 2; end f(x);",
+      "var x; x := 0; if c() then x := 1; else x := 2; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,a) + (x,none)" |
+      "var x; x := 0; if c() then x := 0; else dummy(); end f(x);",
+      "var x; x := 0; if c() then x := 0; else dummy(); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,none) + (x,a)" |
+      "var x; x := 0; if c() then dummy(); else x := 0; end f(x);",
+      "var x; x := 0; if c() then dummy(); else x := 0; end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,b) + (x,none)" |
+      "var x; x := 0; if c() then x := 1; else dummy(); end f(x);",
+      "var x; x := 0; if c() then x := 1; else dummy(); end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,none) + (x,b)" |
+      "var x; x := 0; if c() then dummy(); else x := 1; end f(x);",
+      "var x; x := 0; if c() then dummy(); else x := 1; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,none) + (x,none)" |
+      "var x; x := 0; if c() then dummy(); else dummy(); end f(x);",
+      "var x; x := 0; if c() then dummy(); else dummy(); end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,a) + (x,undef)" |
+      "var x; var y; x := 0; if c() then x := 0; else x := y; end f(x);",
+      "var x; var y; x := 0; if c() then x := 0; else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,undef) + (x,a)" |
+      "var x; var y; x := 0; if c() then x := y; else x := 0; end f(x);",
+      "var x; var y; x := 0; if c() then x := y; else x := 0; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,b) + (x,undef)" |
+      "var x; var y; x := 0; if c() then x := 1; else x := y; end f(x);",
+      "var x; var y; x := 0; if c() then x := 1; else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,undef) + (x,b)" |
+      "var x; var y; x := 0; if c() then x := y; else x := 1; end f(x);",
+      "var x; var y; x := 0; if c() then x := y; else x := 1; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,undef) + (x,undef)" |
+      "var x; var y; x := 0; if c() then x := y; else x := y; end f(x);",
+      "var x; var y; x := 0; if c() then x := y; else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,none) + (x,undef)" |
+      "var x; var y; x := 0; if c() then dummy(); else x := y; end f(x);",
+      "var x; var y; x := 0; if c() then dummy(); else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,a) < (x,undef) + (x,none)" |
+      "var x; var y; x := 0; if c() then x := y; else dummy(); end f(x);",
+      "var x; var y; x := 0; if c() then x := y; else dummy(); end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,a) + (x,a)" |
+      "var x; if c() then x := 0; else x := 0; end f(x);",
+      "var x; if c() then x := 0; else x := 0; end f(0);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,a) + (x,b)" |
+      "var x; if c() then x := 0; else x := 1; end f(x);",
+      "var x; if c() then x := 0; else x := 1; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,a) + (x,none)" |
+      "var x; if c() then x := 0; else dummy(); end f(x);",
+      "var x; if c() then x := 0; else dummy(); end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,none) + (x,a)" |
+      "var x; if c() then dummy(); else x := 0; end f(x);",
+      "var x; if c() then dummy(); else x := 0; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,none) + (x,none)" |
+      "var x; if c() then dummy(); else dummy(); end f(x);",
+      "var x; if c() then dummy(); else dummy(); end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,a) + (x,undef)" |
+      "var x; var y; if c() then x := 0; else x := y; end f(x);",
+      "var x; var y; if c() then x := 0; else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,undef) + (x,a)" |
+      "var x; var y; if c() then x := y; else x := 0; end f(x);",
+      "var x; var y; if c() then x := y; else x := 0; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,undef) + (x,undef)" |
+      "var x; var y; if c() then x := y; else x := y; end f(x);",
+      "var x; var y; if c() then x := y; else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,none) + (x,undef)" |
+      "var x; var y; if c() then dummy(); else x := y; end f(x);",
+      "var x; var y; if c() then dummy(); else x := y; end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set after (x,empty) < (x,undef) + (x,none)" |
+      "var x; var y; if c() then x := y; else dummy(); end f(x);",
+      "var x; var y; if c() then x := y; else dummy(); end f(x);"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,a) < (x,a) + (x,none)" |
+      "var x; x := 0; if c() then x := 0; f(x); else f(x); end",
+      "var x; x := 0; if c() then x := 0; f(0); else f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,a) < (x,b) + (x,none)" |
+      "var x; x := 0; if c() then x := 1; f(x); else f(x); end",
+      "var x; x := 0; if c() then x := 1; f(1); else f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,a) < (x,none) + (x,none)" |
+      "var x; x := 0; if c() then dummy(); f(x); else f(x); end",
+      "var x; x := 0; if c() then dummy(); f(0); else f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,a) < (x,undef) + (x,none)" |
+      "var x; var y; x := 0; if c() then x := y; f(x); else f(x); end",
+      "var x; var y; x := 0; if c() then x := y; f(x); else f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,a) < (x,none) + (x,a)" |
+      "var x; x := 0; if c() then f(x); else x := 0; f(x); end",
+      "var x; x := 0; if c() then f(0); else x := 0; f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,a) < (x,none) + (x,b)" |
+      "var x; x := 0; if c() then f(x); else x := 1; f(x); end",
+      "var x; x := 0; if c() then f(0); else x := 1; f(1); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,a) < (x,none) + (x,none)" |
+      "var x; x := 0; if c() then f(x); else dummy(); f(x); end",
+      "var x; x := 0; if c() then f(0); else dummy(); f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,a) < (x,none) + (x,undef)" |
+      "var x; var y; x := 0; if c() then f(x); else x := y; f(x); end",
+      "var x; var y; x := 0; if c() then f(0); else x := y; f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,empty) < (x,a) + (x,none)" |
+      "var x; if c() then x := 0; f(x); else f(x); end",
+      "var x; if c() then x := 0; f(0); else f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,empty) < (x,none) + (x,none)" |
+      "var x; if c() then dummy(); f(x); else f(x); end",
+      "var x; if c() then dummy(); f(x); else f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in right branch with (x,empty) < (x,undef) + (x,none)" |
+      "var x; var y; if c() then x := y; f(x); else f(x); end",
+      "var x; var y; if c() then x := y; f(x); else f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,empty) < (x,none) + (x,a)" |
+      "var x; if c() then f(x); else x := 0; f(x); end",
+      "var x; if c() then f(x); else x := 0; f(0); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,empty) < (x,none) + (x,none)" |
+      "var x; if c() then f(x); else dummy(); f(x); end",
+      "var x; if c() then f(x); else dummy(); f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in left branch with (x,empty) < (x,none) + (x,undef)" |
+      "var x; var y; if c() then f(x); else x := y; f(x); end",
+      "var x; var y; if c() then f(x); else x := y; f(x); end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,a) < (x,a)" |
+      "var x; x := 0; if c() then x := 0; if c() then x := 0; f(x); end end",
+      "var x; x := 0; if c() then x := 0; if c() then x := 0; f(0); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,a) < (x,b)" |
+      "var x; x := 0; if c() then x := 0; if c() then x := 1; f(x); end end",
+      "var x; x := 0; if c() then x := 0; if c() then x := 1; f(1); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,a) (fails due to bug in library)" |
+      "var x; x := 0; if c() then x := 1; if c() then x := 0; f(x); end end",
+      "var x; x := 0; if c() then x := 1; if c() then x := 0; f(0); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,b)" |
+      "var x; x := 0; if c() then x := 1; if c() then x := 1; f(x); end end",
+      "var x; x := 0; if c() then x := 1; if c() then x := 1; f(1); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,c)" |
+      "var x; x := 0; if c() then x := 1; if c() then x := 2; f(x); end end",
+      "var x; x := 0; if c() then x := 1; if c() then x := 2; f(2); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,none) < (x,a)" |
+      "var x; x := 0; if c() then if c() then x := 0; f(x); end end",
+      "var x; x := 0; if c() then if c() then x := 0; f(0); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,none) < (x,b)" |
+      "var x; x := 0; if c() then if c() then x := 1; f(x); end end",
+      "var x; x := 0; if c() then if c() then x := 1; f(1); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,a) < (x,none)" |
+      "var x; x := 0; if c() then x := 0; if c() then f(x); end end",
+      "var x; x := 0; if c() then x := 0; if c() then f(0); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,none)" |
+      "var x; x := 0; if c() then x := 1; if c() then f(x); end end",
+      "var x; x := 0; if c() then x := 1; if c() then f(1); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,none) < (x,none)" |
+      "var x; x := 0; if c() then if c() then f(x); end end",
+      "var x; x := 0; if c() then if c() then f(0); end end"
+    )
+
+// todo: undef & combination of undef/none
+
+/*
+  ; apply-propconst-test(!"Check complex intersection scenario #1" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := 0; f(0);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(x);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1); x := 1; f(1);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+*/
+
+strategies
 
   pc-fix-and-intersect-tests = id
 

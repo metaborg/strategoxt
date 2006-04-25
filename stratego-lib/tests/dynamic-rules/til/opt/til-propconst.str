@@ -10,7 +10,8 @@ strategies
     <+ propconst-declaration
     <+ propconst-assign
     <+ propconst-block
-    <+ propconst-if
+    <+ propconst-if-then
+    <+ propconst-if-then-else
     <+ propconst-while
     <+ propconst-for
     <+ all(propconst); try(EvalExp)
@@ -30,7 +31,12 @@ strategies
         rules( PropConst.x :- Var(x) )
       end
 
-  propconst-if =
+  propconst-if-then =
+    IfThen(propconst, id)
+    ; (EvalIf; propconst
+       <+ IfThen(id, {| PropConst: map(propconst) |}) /PropConst\ id)
+
+  propconst-if-then-else =
     IfElse(propconst, id, id)
     ; (EvalIf; propconst
        <+ IfElse(id, {| PropConst: map(propconst) |}, id) /PropConst\
