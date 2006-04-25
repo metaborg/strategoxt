@@ -7,8 +7,8 @@ pkgdoc_DATA 	= README
 EXTRA_DIST	= autoxt.src Makefile.xt autoxt.m4 svn-revision
 
 autoxt: autoxt.src Makefile
-	sed 's@__pkgdatadir__@$(pkgdatadir)@g;\
-             s@__PREFIX__@$(prefix)@g'\
-             < $< > $@ && chmod +x $@
+	sed -e 's@__pkgdatadir__@$(pkgdatadir)@g'\
+            -e 's@__PREFIX__@$(prefix)@g'\
+            < $< > $@ && chmod +x $@
 
 bootclean:
