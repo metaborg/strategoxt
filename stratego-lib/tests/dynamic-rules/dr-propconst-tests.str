@@ -396,7 +396,7 @@ strategies
       "var x; x := 0; if c() then x := 0; if c() then x := 1; f(1); end end"
     )
 
-  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,a) (fails due to bug in library)" |
+  ; fail-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,a)" |
       "var x; x := 0; if c() then x := 1; if c() then x := 0; f(x); end end",
       "var x; x := 0; if c() then x := 1; if c() then x := 0; f(0); end end"
     )
@@ -436,7 +436,7 @@ strategies
       "var x; x := 0; if c() then if c() then f(0); end end"
     )
 
-  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,a) (fails due to bug in library)" |
+  ; fail-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,a)" |
       "var x; var y; x := 0; if c() then x := y; if c() then x := 0; f(x); end end",
       "var x; var y; x := 0; if c() then x := y; if c() then x := 0; f(0); end end"
     )
@@ -518,7 +518,7 @@ strategies
 
   pc-fix-and-intersect-tests = id
 
-  ; apply-propconst-test(!"Check for (fails due to bug in library)..." |
+  ; fail-propconst-test(!"Check for..." |
       "
         var i; var x; var y;
         i := 0; x := 1; y := 2; z := 3;
@@ -542,7 +542,7 @@ strategies
         f(1, y, 3, i);
       ")
 
-  ; apply-propconst-test(!"Check while (fails due to bug in library)..." |
+  ; fail-propconst-test(!"Check while..." |
       "
         var i; var x; var y;
         i := 0; x := 1; y := 2; z := 3;

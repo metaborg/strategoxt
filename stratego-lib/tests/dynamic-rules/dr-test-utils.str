@@ -1,13 +1,16 @@
 module dr-test-utils
 imports
   libstrategolib
-  libxtclib
+  libstratego-sglr
   til/opt/til-propconst
 
 strategies
 
   apply-propconst-test(name | in-program, out-program) =
     apply-test(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
+
+  fail-propconst-test(name | in-program, out-program) =
+    apply-test(<concat-strings>[<name>, " (THIS TEST ACTUALLY FAILS!)"], dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
     
   show-propconst-test(name | in-program, out-program) =
     apply-and-show(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
@@ -15,15 +18,7 @@ strategies
 strategies
 
   parse-til =
-    xtc-sglri-til(|"til/syn/TIL.tbl", "Program")
-
-  xtc-sglri-til(|tbl, sort) =
-    xtc-transform-term-text(!"sglri", !["-A", "-p", tbl, "-s", sort])
-
-  xtc-transform-term-text(tool, args) =
-    print-to
-    ; xtc-transform-file(tool, args)
-    ; read-from
+    parse-string(|<ReadFromFile; open-parse-table>"til/syn/TIL.tbl", "Program")
 
 strategies
 

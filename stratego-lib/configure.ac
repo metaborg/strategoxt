@@ -20,5 +20,8 @@ AC_CONFIG_FILES([
   native/stratego-lib/Makefile
   libraries/Makefile
   tests/Makefile
+  tests/dynamic-rules/Makefile
+  tests/dynamic-rules/til/Makefile
+  tests/dynamic-rules/til/syn/Makefile
 ])
 AC_OUTPUT

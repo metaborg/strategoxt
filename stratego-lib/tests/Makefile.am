@@ -1,6 +1,9 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
+SUBDIRS = dynamic-rules
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+
 STRC=$(prefix)
 
 pkgtestsdatadir  = $(pkgdatadir)/tests

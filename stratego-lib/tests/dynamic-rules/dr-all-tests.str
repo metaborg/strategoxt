@@ -4,5 +4,5 @@ imports
 
 strategies
 
-  dr-all-tests-main =
+  main =
     propconst-tests
