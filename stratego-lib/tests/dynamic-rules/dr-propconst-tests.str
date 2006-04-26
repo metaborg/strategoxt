@@ -436,7 +436,40 @@ strategies
       "var x; x := 0; if c() then if c() then f(0); end end"
     )
 
-// todo: undef & combination of undef/none
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,a) (fails due to bug in library)" |
+      "var x; var y; x := 0; if c() then x := y; if c() then x := 0; f(x); end end",
+      "var x; var y; x := 0; if c() then x := y; if c() then x := 0; f(0); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,b)" |
+      "var x; var y; x := 0; if c() then x := y; if c() then x := 1; f(x); end end",
+      "var x; var y; x := 0; if c() then x := y; if c() then x := 1; f(1); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,a) < (x,undef)" |
+      "var x; var y; x := 0; if c() then x := 0; if c() then x := y; f(x); end end",
+      "var x; var y; x := 0; if c() then x := 0; if c() then x := y; f(x); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,undef)" |
+      "var x; var y; x := 0; if c() then x := 1; if c() then x := y; f(x); end end",
+      "var x; var y; x := 0; if c() then x := 1; if c() then x := y; f(x); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,undef)" |
+      "var x; var y; x := 0; if c() then x := y; if c() then x := y; f(x); end end",
+      "var x; var y; x := 0; if c() then x := y; if c() then x := y; f(x); end end"
+    )
+
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,none)" |
+      "var x; var y; x := 0; if c() then x := y; if c() then f(x); end end",
+      "var x; var y; x := 0; if c() then x := y; if c() then f(x); end end"
+    )
+    
+  ; apply-propconst-test(!"Check rule set in nested branch with (x,a) < (x,none) < (x,undef)" |
+      "var x; var y; x := 0; if c() then if c() then x := y; f(x); end end",
+      "var x; var y; x := 0; if c() then if c() then x := y; f(x); end end"
+    )
 
 /*
   ; apply-propconst-test(!"Check complex intersection scenario #1" |
