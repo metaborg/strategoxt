@@ -26,6 +26,7 @@ strategies
     ; implode-tests-concrete
     ; implode-tests-concrete-yield
     ; implode-tests-conc
+    ; implode-tests-ast-attributes    
     ; asfix2me-tests
     )
 
@@ -690,6 +691,50 @@ strategies
       )
 
     ; where(<close-parse-table> tbl)
+
+  implode-tests-ast-attributes = id
+    ; where(
+        <ReadFromFile> "AstAttributes.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+
+    ; apply-test(!"Ast node test 1"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"(1 + 2)"
+      , !Plus(Int("1"))
+      )
+
+    ; apply-test(!"Ast node test 2"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"(1 - 2)"
+      , !Minus(Int("2"))
+      )
+      
+    ; apply-test(!"Ast node test conc 1"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"f(1 | 2)"
+      , !Call("f", [Int("1"), Int("2")])
+      )
+      
+    ; apply-test(!"Ast node test conc 2"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"f(1 | 2, 3)"
+      , !Call("f", [Int("1"), Int("2"), Int("3")])
+      )
+      
+    ; apply-test(!"Ast node test conc 3"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"f(1, 2 & 3)"
+      , !Call("f", [Int("1"), Int("2"), Int("3")])
+      )
+
+    ; where(<close-parse-table> tbl)
+
     
   asfix2me-tests = id
     ; where(
@@ -782,3 +827,7 @@ signature
     Alt2a : A * B -> C
     Alt4a : A -> B
     Var1  : A -> B
+
+    Call : Id * List(Exp) -> B
+    Plus : A -> B    
+    Minus : A -> B

@@ -43,15 +43,26 @@ rules
     ; <map(impl)>ts => is
     ; {| ReplacePlaceholder: 
         <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
-      ; <alltd({ ph:
-           is-placeholder ; get-placeholder => ph
-         ; (  ReplacePlaceholder 
-           <+ log(| Error()
-                  , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
-                                    , <write-to-string>pattern]) ; <exit> 1 )
-         })>pattern => term
+      ; <rec rec(
+           alltd({ ph:
+             is-placeholder
+           < get-placeholder => ph
+             ; (  ReplacePlaceholder
+               <+ "conc"#([rec, rec])
+                  ; if "conc"#([is-list, is-list]) then
+                      \ "conc"#([xs, ys]) -> <conc> (xs, ys) \
+                    end
+               <+ log(| Error()
+                      , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
+                                        , <write-to-string>pattern]) ; <exit> 1 )
+           + fail
+           })
+         )>pattern => term
       |}
 
+  /**
+   * @todo Cache the parsed placeholders.
+   */
   get-ast-pattern : 
     prod(_, _, as) -> <read-from-string>x
     where <oncetd(?ast(x))> as

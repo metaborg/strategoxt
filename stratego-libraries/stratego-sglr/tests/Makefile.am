@@ -11,7 +11,8 @@ noinst_DATA = \
   ConcreteSyntax.tbl ConcreteSyntax.str \
   Concrete.tbl \
   CustomImplode.tbl \
-  ConcreteSyntax2.tbl
+  ConcreteSyntax2.tbl \
+  AstAttributes.tbl
 
 STRINCLUDES = -I ../lib
 
