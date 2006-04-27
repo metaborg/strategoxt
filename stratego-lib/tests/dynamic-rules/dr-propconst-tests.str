@@ -396,6 +396,7 @@ strategies
       "var x; x := 0; if c() then x := 0; if c() then x := 1; f(1); end end"
     )
 
+  // fails
   ; fail-propconst-test(!"Check rule set in nested branch with (x,a) < (x,b) < (x,a)" |
       "var x; x := 0; if c() then x := 1; if c() then x := 0; f(x); end end",
       "var x; x := 0; if c() then x := 1; if c() then x := 0; f(0); end end"
@@ -436,6 +437,7 @@ strategies
       "var x; x := 0; if c() then if c() then f(0); end end"
     )
 
+  // fails
   ; fail-propconst-test(!"Check rule set in nested branch with (x,a) < (x,undef) < (x,a)" |
       "var x; var y; x := 0; if c() then x := y; if c() then x := 0; f(x); end end",
       "var x; var y; x := 0; if c() then x := y; if c() then x := 0; f(0); end end"
@@ -471,6 +473,11 @@ strategies
       "var x; var y; x := 0; if c() then if c() then x := y; f(x); end end"
     )
 
+  // fails
+    // a - a - a
+    //       \ b
+    //   \ b - a
+    //       \ b
   ; fail-propconst-test(!"Check complex intersection scenario #1" |
       "var x; x := 0;
        if c() then
@@ -512,6 +519,10 @@ strategies
        f(x);"
     )
 
+    // a - a - a
+    //       \ a
+    //   \ b - b
+    //       \ b
   ; apply-propconst-test(!"Check complex intersection scenario #2" |
       "var x; x := 0;
        if c() then
@@ -553,6 +564,10 @@ strategies
        f(x);"
     )
 
+    // a - a - a
+    //       \ a
+    //   \ a - a
+    //       \ a
   ; apply-propconst-test(!"Check complex intersection scenario #3" |
       "var x; x := 0;
        if c() then
@@ -594,6 +609,11 @@ strategies
        f(0);"
     )
 
+  // fails
+    // a - b - a - b
+    //       \ a /
+    //   \ a - b
+    //       \ b
   ; fail-propconst-test(!"Check complex intersection scenario #4" |
       "var x; x := 0;
        if c() then
@@ -635,10 +655,1010 @@ strategies
        f(1);"
     )
 
+  // fails
+    // a - b - a
+    //       \ a
+    //   \ b - a
+    //       \ a
+  ; fail-propconst-test(!"Check complex intersection scenario #5" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1); x := 0; f(0);
+         end
+         f(0);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1); x := 0; f(0);
+         end
+         f(0);
+       end
+       f(0);"
+    )
+
+  // fails
+    // a - b - a - b
+    //       \ a /
+    //   \ b - a - b
+    //       \ a /
+  ; fail-propconst-test(!"Check complex intersection scenario #6" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x); x := 1; f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x); x := 1; f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1); x := 0; f(0);
+         end
+         f(0); x := 1; f(1);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1); x := 0; f(0);
+         end
+         f(0); x := 1; f(1);
+       end
+       f(1);"
+    )
+
+    // a - a - b
+    //       \ b
+    //   \ a - b
+    //       \ b
+  ; apply-propconst-test(!"Check complex intersection scenario #7" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := 1; f(1);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(1);
+       else
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := 1; f(1);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+    // a - b - c
+    //       \ c
+    //   \ b - c
+    //       \ c
+  ; apply-propconst-test(!"Check complex intersection scenario #8" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 2; f(x);
+         else
+           f(x); x := 2; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 2; f(x);
+         else
+           f(x); x := 2; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 2; f(2);
+         else
+           f(1); x := 2; f(2);
+         end
+         f(2);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 2; f(2);
+         else
+           f(1); x := 2; f(2);
+         end
+         f(2);
+       end
+       f(2);"
+    )
+
+    // a - b - c
+    //       \ c
+    //   \ c - b
+    //       \ b
+  ; apply-propconst-test(!"Check complex intersection scenario #9" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 2; f(x);
+         else
+           f(x); x := 2; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 2; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 2; f(2);
+         else
+           f(1); x := 2; f(2);
+         end
+         f(2);
+       else
+         f(0); x := 2; f(2);
+         if c() then
+           f(2); x := 1; f(1);
+         else
+           f(2); x := 1; f(1);
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+    // a - none - a
+    //          \ a
+    //   \ none - b
+    //          \ b
+  ; apply-propconst-test(!"Check complex intersection scenario #10" |
+      "var x; x := 0;
+       if c() then
+         f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x);
+       else
+         f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0);
+         if c() then
+           f(0); x := 0; f(0);
+         else
+           f(0); x := 0; f(0);
+         end
+         f(0);
+       else
+         f(0);
+         if c() then
+           f(0); x := 1; f(1);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+    // a - none - a
+    //          \ none
+    //   \ none - none
+    //          \ b
+  ; apply-propconst-test(!"Check complex intersection scenario #11" |
+      "var x; x := 0;
+       if c() then
+         f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x);
+         end
+         f(x);
+       else
+         f(x);
+         if c() then
+           f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0);
+         if c() then
+           f(0); x := 0; f(0);
+         else
+           f(0);
+         end
+         f(0);
+       else
+         f(0);
+         if c() then
+           f(0);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+    // a - a - none - b
+    //       \ none /
+    //   \ b - none - b
+    //       \ none /
+  ; apply-propconst-test(!"Check complex intersection scenario #12" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0);
+         else
+           f(0);
+         end
+         f(0); x := 1; f(1);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1);
+         else
+           f(1);
+         end
+         f(1); x := 1; f(1);
+       end
+       f(1);"
+    )
+
+  // fails
+    // a - a - none
+    //       \ a
+    //   \ b - a
+    //       \ none
+  ; fail-propconst-test(!"Check complex intersection scenario #13" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0);
+         else
+           f(0); x := 0; f(0);
+         end
+         f(0);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+    // a - none - a
+    //          \ b
+    //   \ a    - b
+    //          \ none
+  ; apply-propconst-test(!"Check complex intersection scenario #14" |
+      "var x; x := 0;
+       if c() then
+         f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0);
+         if c() then
+           f(0); x := 0; f(0);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(x);
+       else
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := 1; f(1);
+         else
+           f(0);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  // fails
+    // a - b - b
+    //       \ none
+    //   \ c - none
+    //       \ b
+  ; fail-propconst-test(!"Check complex intersection scenario #15" |
+      "var x; x := 0;
+       if c() then
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x);
+         end
+         f(x);
+       else
+         f(x); x := 2; f(x);
+         if c() then
+           f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       if c() then
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 1; f(1);
+         else
+           f(1);
+         end
+         f(1);  // here's the culprit, propconst (incorrectly) yields f(x)
+       else
+         f(0); x := 2; f(2);
+         if c() then
+           f(2);
+         else
+           f(2); x := 1; f(1);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  // fails
+    // a - undef - a
+    //           \ a
+    //   \ undef - b
+    //           \ b
+  ; fail-propconst-test(!"Check complex intersection scenario #16" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x);
+       else
+         f(x); x := y; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(0);
+         else
+           f(x); x := 0; f(0);
+         end
+         f(0);
+       else
+         f(0); x := y; f(x);
+         if c() then
+           f(x); x := 1; f(1);
+         else
+           f(x); x := 1; f(1);
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  // fails
+    // a - undef - a
+    //           \ undef
+    //   \ undef - undef
+    //           \ b
+  ; fail-propconst-test(!"Check complex intersection scenario #17" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x);
+       else
+         f(x); x := y; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(0);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x);
+       else
+         f(0); x := y; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := 1; f(1);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+    // a - a - undef - b
+    //       \ undef /
+    //   \ b - undef - b
+    //       \ undef /
+  ; apply-propconst-test(!"Check complex intersection scenario #18" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x); x := 1; f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x); x := 1; f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0); x := y; f(x);
+         end
+         f(x); x := 1; f(1);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := y; f(x);
+         else
+           f(1); x := y; f(x);
+         end
+         f(x); x := 1; f(1);
+       end
+       f(1);"
+    )
+
+  // fails
+    // a - a - undef
+    //       \ a
+    //   \ b - a
+    //       \ undef
+  ; fail-propconst-test(!"Check complex intersection scenario #19" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0); x := 0; f(0);
+         end
+         f(x);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 0; f(0);
+         else
+           f(1); x := y; f(x);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  // fails
+    // a - undef - a
+    //           \ b
+    //   \ a     - b
+    //           \ undef
+  ; fail-propconst-test(!"Check complex intersection scenario #20" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(0);
+         else
+           f(x); x := 1; f(1);
+         end
+         f(x);
+       else
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := 1; f(1);
+         else
+           f(0); x := y; f(x);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+    // a - b - b
+    //       \ undef
+    //   \ c - undef
+    //       \ b
+  ; apply-propconst-test(!"Check complex intersection scenario #21" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := 1; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x);
+       else
+         f(x); x := 2; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := 1; f(1);
+         else
+           f(1); x := y; f(x);
+         end
+         f(x);
+       else
+         f(0); x := 2; f(2);
+         if c() then
+           f(2); x := y; f(x);
+         else
+           f(2); x := 1; f(1);
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+    // a - undef - none  - b
+    //           \ b     /
+    //   \ b     - undef - b
+    //           \ none /
+  ; apply-propconst-test(!"Check complex intersection scenario #22" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := y; f(x);
+         if c() then
+           f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x); x := 1; f(x);
+       else
+         f(x); x := 1; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := y; f(x);
+         if c() then
+           f(x);
+         else
+           f(x); x := 1; f(1);
+         end
+         f(x); x := 1; f(1);
+       else
+         f(0); x := 1; f(1);
+         if c() then
+           f(1); x := y; f(x);
+         else
+           f(1);
+         end
+         f(x); x := 1; f(1);
+       end
+       f(1);"
+    )
+
+    // a - a    - undef - a
+    //          \ none  /
+    //   \ none - undef - b
+    //          \ a     /
+  ; apply-propconst-test(!"Check complex intersection scenario #23" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x);
+         end
+         f(x); x := 0; f(x);
+       else
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := 0; f(x);
+         end
+         f(x); x := 1; f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0);
+         end
+         f(x); x := 0; f(0);
+       else
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0); x := 0; f(0);
+         end
+         f(x); x := 1; f(1);
+       end
+       f(x);"
+    )
+
+  // fails
+    // a - undef - none - b
+    //           \ none /
+    //   \ undef - a    - b
+    //           \ none /
+  ; fail-propconst-test(!"Check complex intersection scenario #24" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := y; f(x);
+         if c() then
+           f(x);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(x);
+       else
+         f(x); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(x);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := y; f(x);
+         if c() then
+           f(x);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(1);
+       else
+         f(0); x := y; f(x);
+         if c() then
+           f(x); x := 0; f(0);
+         else
+           f(x);
+         end
+         f(x); x := 1; f(1);
+       end
+       f(1);"
+    )
+
+    // a - none - undef
+    //          \ b
+    //   \ none - undef - a
+    //          \ undef /
+  ; apply-propconst-test(!"Check complex intersection scenario #25" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := 1; f(x);
+         end
+         f(x);
+       else
+         f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x); x := 0; f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0); x := 1; f(1);
+         end
+         f(x);
+       else
+         f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0); x := y; f(x);
+         end
+         f(x); x := 0; f(0);
+       end
+       f(x);"
+    )
+
+    // a - a - none  - a
+    //       \ none  /
+    //   \ a - undef - a
+    //       \ undef /
+  ; apply-propconst-test(!"Check complex intersection scenario #26" |
+      "var x; var y; x := 0;
+       if c() then
+         f(x); x := 0; f(x);
+         if c() then
+           f(x);
+         else
+           f(x);
+         end
+         f(x); x := 0; f(x);
+       else
+         f(x); x := 0; f(x);
+         if c() then
+           f(x); x := y; f(x);
+         else
+           f(x); x := y; f(x);
+         end
+         f(x); x := 0; f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       if c() then
+         f(0); x := 0; f(0);
+         if c() then
+           f(0);
+         else
+           f(0);
+         end
+         f(0); x := 0; f(0);
+       else
+         f(0); x := 0; f(0);
+         if c() then
+           f(0); x := y; f(x);
+         else
+           f(0); x := y; f(x);
+         end
+         f(x); x := 0; f(0);
+       end
+       f(0);"
+    )
+
 strategies
 
   pc-fix-and-intersect-tests = id
 
+  // fails
   ; fail-propconst-test(!"Check for..." |
       "
         var i; var x; var y;
@@ -663,6 +1683,7 @@ strategies
         f(1, y, 3, i);
       ")
 
+  // fails
   ; fail-propconst-test(!"Check while..." |
       "
         var i; var x; var y;

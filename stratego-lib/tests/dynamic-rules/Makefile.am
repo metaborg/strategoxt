@@ -19,6 +19,7 @@ CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
 STRINCLUDES    	= -I $(top_srcdir)/libraries -I til/syn -I til/sim -I til/opt $(STRATEGO_SGLR_STRCFLAGS)
+STRCFLAGS       = --format-check -1
 
 nodist_dr_all_tests_SOURCES = dr-all-tests.c 
 dr_all_tests_CPPFLAGS       = -I $(prefix)/include -I $(ATERM)/include
