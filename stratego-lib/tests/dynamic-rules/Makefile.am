@@ -18,9 +18,14 @@ EXTRA_DIST     	= $(wildcard *.str)
 CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
-STRINCLUDES    	= -I $(top_srcdir)/libraries -I til/syn -I til/sim -I til/opt $(STRATEGO_SGLR_STRCFLAGS)
+STRSGLR = ../../../stratego-libraries/stratego-sglr/lib
+
+STRINCLUDES    	= -I $(top_srcdir)/libraries -I til/syn -I til/sim -I til/opt -I $(STRSGLR)
 STRCFLAGS       = --format-check -1
 
+PREFIX_LIBS          = -L$(prefix)/lib -lstratego-lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
+PREFIX_CPPFLAGS      = -I $(prefix)/include -I $(ATERM)/include
+
 nodist_dr_all_tests_SOURCES = dr-all-tests.c 
-dr_all_tests_CPPFLAGS       = -I $(prefix)/include -I $(ATERM)/include
-dr_all_tests_LDADD          = $(STRATEGO_SGLR_LIBS)
+dr_all_tests_CPPFLAGS       = -I $(prefix)/include -I $(ATERM)/include $(PREFIX_CPPFLAGS)
+dr_all_tests_LDADD          = $(STRSGLR)/libstratego-sglr.la $(PREFIX_LIBS)

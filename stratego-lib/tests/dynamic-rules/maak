@@ -1,5 +1,5 @@
-(cd til/syn; ./maak)
-(cd til/sig; ./maak)
+#(cd til/syn; ./maak)
+#(cd til/sig; ./maak)
 
 STRATEGOXT="/users/bdumitri/usr/strategoxt/current"
 XTC="/users/bdumitri/usr/strategoxt/current"

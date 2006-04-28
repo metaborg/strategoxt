@@ -9,6 +9,9 @@ strategies
   apply-propconst-test(name | in-program, out-program) =
     apply-test(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
 
+  applyf-propconst-test(name | in-program, out-program) =
+    apply-test(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
+
   fail-propconst-test(name | in-program, out-program) =
     apply-test(<concat-strings>[<name>, " (THIS TEST ACTUALLY FAILS!)"], dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
     
