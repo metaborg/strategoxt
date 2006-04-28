@@ -38,6 +38,40 @@ strategies
     where(prim("STRSGLR_get_ambiguity_error"))
 
 /**
+ * Cycle detection
+ */
+strategies
+
+  /**
+   * Set if cycles should be detected.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-cycle-detection(s) =
+    if s then
+      where(prim("STRSGLR_set_cycle_detection_on"))
+    else
+      where(prim("STRSGLR_set_cycle_detection_off"))
+    end
+
+/**
+ * Filtering
+ */
+strategies
+
+  /**
+   * Set if filtering is enabled.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filtering(s) =
+    if s then
+      where(prim("STRSGLR_set_filtering_on"))
+    else
+      where(prim("STRSGLR_set_filtering_off"))
+    end
+
+/**
  * Logging
  */
 strategies
