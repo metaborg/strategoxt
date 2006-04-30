@@ -457,19 +457,37 @@ strategies // looking up
    * Fetch the most recent definition for key.
    */
 
-  dr-lookup-rule(|key) =
-    dr-lookup-rule(fail | key)
+  // The "removed" parameter is now a list, which allows duplicates
+  // to be added. This is not wrong, but it is marginally inefficient.
+  // We actually need set-like behavior. Indexed sets, however, are
+  // not an option because of the check of whether or not "removed"
+  // contains key' in function look2. Since look2 is called later on,
+  // when a RuleScope is reached, "removed" will potentially contain
+  // some extra elements which should not be considered. This is the
+  // case because of the in-place update of indexed sets.
 
-  dr-lookup-rule(look | key) =
+  dr-lookup-rule(|key) =
+    dr-lookup-rule(fail | key, [])
+
+  dr-lookup-rule(look | key, removed) =
     ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
     ; (<look>(hptr, key)
-       <+ <hashtable-get(|key)> tbl
-       <+ <dr-lookup-rule(look | key)> rs)
+       <+ <not(fetch(?(hptr, key)))> removed
+          ; <hashtable-get(|key)> tbl
+       <+ <dr-lookup-rule(look | key, removed)> rs)
 
-  dr-lookup-rule(look1 | key) =
+  dr-lookup-rule(look1 | key, removed) =
     ?[ChangeSet(_, rmset, tbl) | rs]
-    ; let look2 = look1 <+ \ key' -> <hashtable-get(|key')> tbl \
-       in <dr-lookup-rule(look2 | key)> rs
+    ; let look2 = look1
+                  <+ {key':
+                      ?key'
+                      ; <not(fetch(?key'))> removed
+                      ; <hashtable-get(|key')> tbl
+                     }
+       in
+         <iset-elements> rmset
+         ; filter(?(_, key)) => keys
+         ; <dr-lookup-rule(look2 | key, <conc>(keys, removed))> rs
       end
 
   /**
@@ -478,23 +496,36 @@ strategies // looking up
    */
 
   dr-lookup-rule-pointer(|key) =
-    dr-lookup-rule-pointer(fail | key)
+    dr-lookup-rule-pointer(fail | key, [])
 
-  dr-lookup-rule-pointer(look | key) =
+  dr-lookup-rule-pointer(look | key, removed) =
     ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
     ; (<look>(hptr, key)
-       <+ <hashtable-get(|key)> tbl; !(<id>, key, tbl)
-       <+ <dr-lookup-rule-pointer(look | key)> rs)
+       <+ <not(fetch(?(hptr, key)))> removed
+          ; <hashtable-get(|key)> tbl
+          ; !(<id>, key, tbl)
+       <+ <dr-lookup-rule-pointer(look | key, removed)> rs)
 
-  dr-lookup-rule-pointer(look1 | key) =
-    ?[ChangeSet(_, _, tbl) | rs]
-    ; let look2 = look1 <+ \ key' -> <hashtable-get(|key'); !(<id>, key', tbl)> tbl \
-       in <dr-lookup-rule-pointer(look2 | key)> rs
+  dr-lookup-rule-pointer(look1 | key, removed) =
+    ?[ChangeSet(_, rmset, tbl) | rs]
+    ; let look2 = look1
+                  <+ {key':
+                      ?key'
+                      ; <not(fetch(?key'))> removed
+                      ; <hashtable-get(|key'); !(<id>, key', tbl)> tbl
+                     }
+       in
+         <iset-elements> rmset
+         ; filter(?(_, key)) => keys
+         ; <dr-lookup-rule-pointer(look2 | key, <conc>(keys, removed))> rs
       end
 
   /**
    * Fetch all definitions for key.
    */
+
+  // Should dr-lookup-all-rules be redefined as well to consider the
+  // remove sets of change sets?
 
   dr-lookup-all-rules(|key) =
     dr-lookup-all-rules(fail | key)
