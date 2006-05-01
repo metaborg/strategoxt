@@ -4,24 +4,132 @@ imports
   libstratego-sglr
   til/opt/til-propconst
 
+/**
+ * Test utils for the test suite of the dynamic rules library.
+ * 
+ * The fail-* version of test applications is used to
+ * allow committing of work in progress. If a test fails
+ * and is known to fail, apply-* is changed with fail-*
+ * before committing in order not to break the build.
+ *
+ * The applyf-* version of test applications is identical
+ * to the apply-* version and is used as a marker during
+ * work. This way we can easily switch back and forth between
+ * fail-* and applyf-* with the editor's find & replace.
+ *
+ * When this test suite is complete and all bugs are fixed
+ * and no further additions are expected, the fail-* and applyf-*
+ * versions can be dropped.
+ */
+
 strategies
 
   apply-propconst-test(name | in-program, out-program) =
     apply-test(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
 
   applyf-propconst-test(name | in-program, out-program) =
-    apply-test(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program, <parse-til>out-program)
+    apply-propconst-test(name | in-program, out-program)
 
   fail-propconst-test(name | in-program, out-program) =
-    apply-test(<concat-strings>[<name>, " (THIS TEST ACTUALLY FAILS!)"], dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
-    
+    apply-test(concat-fail(name), dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
+
   show-propconst-test(name | in-program, out-program) =
     apply-and-show(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
 
 strategies
 
+  apply-scope-test(name, s | result) =
+    apply-test(name, dr-ignore-state-cleanup(s|"Test"), !(), !result)
+    
+  applyf-scope-test(name, s | result) =
+    apply-scope-test(name, s | result)
+
+  fail-scope-test(name, s | result) =
+    apply-test(concat-fail(name), dr-ignore-state-cleanup(s|"Test"), !())
+
+strategies
+
   parse-til =
     parse-string(|<ReadFromFile; open-parse-table>"til/syn/TIL.tbl", "Program")
+
+/**
+ * Strategies for easier setup of scoping tests
+ */
+
+strategies
+
+  init-rule-set =
+    dr-get-rule-set(|"Test")
+
+  rule-scope =
+    dr-begin-scope(|"Test")
+
+  rule-scope(|label) =
+    rule-scope
+    ; dr-label-scope(|"Test", label)
+
+  rule-scope(|key, value) =
+    rule-scope
+    ; dr-set-rule(|"Test", key, value)
+
+  rule-scope(|label, key, value) =
+    rule-scope(|label)
+    ; dr-set-rule(|"Test", label, key, value)
+
+  change-set =
+    dr-start-change-set(|"Test")
+
+  change-set(|key, value) =
+    change-set
+    ; dr-set-rule(|"Test", key, value)
+
+  change-set(|label, key, value) =
+    change-set
+    ; dr-set-rule(|"Test", label, key, value)
+
+  change-set-vis(|key, value) =
+    change-set
+    ; dr-set-rule-vis(|"Test", key, value)
+
+  change-set-vis(|label, key, value) =
+    change-set
+    ; dr-set-rule-vis(|"Test", label, key, value)
+
+  set(|key, value) =
+    dr-set-rule(|"Test", key, value)
+
+  set(|label, key, value) =
+    dr-set-rule(|"Test", label, key, value)
+
+  set-vis(|key, value) =
+    dr-set-rule-vis(|"Test", key, value)
+
+  set-vis(|label, key, value) =
+    dr-set-rule-vis(|"Test", label, key, value)
+
+  add(|key, value) =
+    dr-add-rule(|"Test", key, value)
+
+  add(|label, key, value) =
+    dr-add-rule(|"Test", label, key, value)
+
+  add-vis(|key, value) =
+    dr-add-rule-vis(|"Test", key, value)
+
+  add-vis(|label, key, value) =
+    dr-add-rule-vis(|"Test", label, key, value)
+
+  lookup-rule(|key) =
+    dr-lookup-rule(|"Test", key)
+
+  lookup-all-rules(|key) =
+    dr-lookup-all-rules(|"Test", key)
+
+  lookup-rule-in-scope(|label, key) =
+    dr-lookup-rule-in-scope(|key, <get-first-scope-id(|label)>)
+
+  get-first-scope-id(|label) =
+    fetch-elem(RuleScope(iset-contains(|label), ?Hashtable(<id>)); ?RuleScope(_, <id>))
 
 strategies
 
@@ -35,6 +143,9 @@ strategies
       <dr-switch-rule-set(|name)>rs
       ; map(dr-destroy-scope <+ dr-destroy-change-set)
     )
+
+  concat-fail(name) =
+    <concat-strings>[<name>, " (THIS TEST ACTUALLY FAILS!)"]
 
   separation-message(|msg) =
     separation-message(|msg, "=", 80)

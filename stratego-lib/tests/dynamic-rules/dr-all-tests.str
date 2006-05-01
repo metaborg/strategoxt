@@ -1,8 +1,11 @@
 module dr-all-tests
 imports
   dr-propconst-tests
+  dr-scope-tests
 
 strategies
 
   main =
-    propconst-tests
+    id
+    ; scope-tests
+//    ; propconst-tests

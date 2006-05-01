@@ -2,6 +2,11 @@ module dr-propconst-tests
 imports
   dr-test-utils
 
+/**
+ * This test suite uses constant propagation for TIL programs
+ * as a real-life test of the dynamic rules library.
+ */
+
 strategies
 
   propconst-tests =

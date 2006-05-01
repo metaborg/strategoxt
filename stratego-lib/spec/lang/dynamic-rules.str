@@ -491,6 +491,32 @@ strategies // looking up
       end
 
   /**
+   * Version of dr-lookup-rule that looks for definition of a key
+   * in a particular scope. The expected scope id (scpid) is the
+   * pointer to the hashtable of a rule scope and is usually
+   * identified by means of a label, i.e., a label indicates the
+   * rule scope and the rule scope has a unique scope id.
+   */
+
+  dr-lookup-rule-in-scope(|key, scpid) =
+    dr-lookup-rule-in-scope-rs(|key, scpid)
+    <+ dr-lookup-rule-in-scope-cs(|key, scpid)
+
+  dr-lookup-rule-in-scope-rs(|key, scpid) =
+    ?[RuleScope(_, tbl@Hashtable(scpid)) | rs]      // if this is the right scope,
+    < <hashtable-get(|key)>tbl                      // then check for key
+    + (?[RuleScope(_, _) | rs]                      // else recurse
+       ; <dr-lookup-rule-in-scope(|key, scpid)>rs)
+
+  dr-lookup-rule-in-scope-cs(|key, scpid) =
+    ?[ChangeSet(_, rmset, tbl) | rs]
+    ; (<iset-contains(|(scpid, key))>rmset
+       < fail                                // key is marked for removal, so
+                                             // in effect it is not defined
+       + (<hashtable-get(|(scpid, key))>tbl
+          <+ <dr-lookup-rule-in-scope(|key, scpid)>rs))
+
+  /**
    * Fetch the most recent definition for key and return a pointer
    * to the table that defines it.
    */
@@ -582,10 +608,11 @@ strategies // setting a rule
     ; where(
         let set2(|scpid, tbl2, key, value) =
               set1(|scpid, tbl2, key, value)
-              <+ <dr-lookup-rule(|key)> rs => value
-//              <+ <hashtable-get(|key)> tbl2 => value
+              <+ <dr-lookup-rule-in-scope(|key, scpid)> rs => value
                  ; <hashtable-remove(|(scpid, key))> tbl1
+                 ; <iset-remove(|(scpid, key))> rmset
               <+ <hashtable-put(|(scpid, key), value)> tbl1
+                 ; <iset-remove(|(scpid, key))> rmset
          in if <iset-contains(|label)> labelset
             then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
                  ; set2(|hptr, tbl, key, value)
@@ -630,7 +657,7 @@ strategies // setting a rule
           set(|hptr, tbl, key, value)
           <+ <hashtable-put(|key, value)> tbl
         else
-          (rm(|hptr, tbl, key) <+ try(<hashtable-remove(|key)> tbl))
+          (rm(|hptr, tbl, key) <+ <hashtable-remove(|key)> tbl)
           ; <dr-set-in-rule-set-vis(set, rm | label, key, value)> rs
         end
       )
@@ -643,14 +670,15 @@ strategies // setting a rule
     ; where(
         let set2(|scpid, tbl2, key, value) =
               set1(|scpid, tbl2, key, value)
-              <+ <dr-lookup-rule(|key)> rs => value
-//              <+ <hashtable-get(|key)> tbl2 => value
+              <+ <dr-lookup-rule-in-scope(|key, scpid)> rs => value
                  ; <hashtable-remove(|(scpid, key))> tbl1
+                 ; <iset-remove(|(scpid, key))> rmset
               <+ <hashtable-put(|(scpid, key), value)> tbl1
+                 ; <iset-remove(|(scpid, key))> rmset
 
             rm2(|scpid, tbl2, key) =
               rm1(|scpid, tbl2, key)
-              <+ if <hashtable-get(|key)> tbl2 then
+              <+ if <dr-lookup-rule-in-scope(|key, scpid)> rs then
                    <hashtable-remove(|(scpid, key))> tbl1
                    ; <iset-add(|(scpid, key))> rmset
                  end
@@ -749,7 +777,7 @@ strategies // extending a rule
            add(|hptr, tbl, key, value)
            <+ <hashtable-push(|key, value)> tbl
         else
-          (rm(|hptr, tbl, key) <+ try(<hashtable-remove(|key)> tbl))
+          (rm(|hptr, tbl, key) <+ <hashtable-remove(|key)> tbl)
           ; <dr-add-to-rule-set-vis(add, rm| label, key, value)> rs
         end
       )
