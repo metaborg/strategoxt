@@ -50,7 +50,9 @@ strategies
 strategies
 
   parse-til =
-    parse-string(|<ReadFromFile; open-parse-table>"til/syn/TIL.tbl", "Program")
+    where(<ReadFromFile>"til/syn/TIL.tbl"; open-parse-table => pt)
+    ; parse-string(|pt, "Program")
+    ; where(<close-parse-table>pt)
 
 /**
  * Strategies for easier setup of scoping tests
