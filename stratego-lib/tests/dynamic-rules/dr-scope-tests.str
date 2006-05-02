@@ -102,7 +102,7 @@ strategies
       | [4]
     )
 
-  ; fail-scope-test(!"Check setting rule vis with different values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule vis with different values (RS CS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -124,7 +124,7 @@ strategies
       | [0]
     )
 
-  ; fail-scope-test(!"Check setting rule vis with similar values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule vis with similar values (RS CS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -135,7 +135,7 @@ strategies
       | [0]
     )
 
-    // test8
+    // mark 1
   ; apply-scope-test(!"Check setting rule in different scopes with the same value (RS RS CS CS) #1",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
@@ -204,7 +204,7 @@ strategies
       | [2]
     )
 
-  ; fail-scope-test(!"Check setting rule vis in different scopes with the same value (RS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with the same value (RS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; rule-scope(|"b", "x", 1)
@@ -224,7 +224,7 @@ strategies
       | [1]
     )
 
-  ; fail-scope-test(!"Check setting rule vis in different scopes with the same value (RS RS CS CS) #4",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with the same value (RS RS CS CS) #4",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; rule-scope(|"b", "x", 1)
@@ -243,7 +243,7 @@ strategies
       | [1]
     )
 
-  ; fail-scope-test(!"Check setting rule vis in different scopes with the same value (RS RS CS CS) #6",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with the same value (RS RS CS CS) #6",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; rule-scope(|"b", "x", 1)
@@ -252,7 +252,7 @@ strategies
       | [1]
     )
 
-    // test9
+    // mark 2
   ; apply-scope-test(!"Check setting rule vis when the definition to be removed is only in change set #1",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
@@ -263,7 +263,7 @@ strategies
       | [2]
     )
 
-  ; fail-scope-test(!"Check setting rule vis when the definition to be removed is only in change set #2",
+  ; apply-scope-test(!"Check setting rule vis when the definition to be removed is only in change set #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; rule-scope(|"b")
@@ -300,4 +300,76 @@ strategies
 strategies
 
   scope-lookup-tests = id
-  
+
+  ; apply-scope-test(!"Check looking up rule in scope #1",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"b")
+      ; change-set(|"b", "x", 1)
+      ; change-set-vis(|"a", "x", 2)
+      ; lookup-rule-in-scope(|"a", "x")
+      | [2]
+    )
+
+  ; apply-and-fail(!"Check looking up rule in scope #2",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"b")
+      ; change-set(|"b", "x", 1)
+      ; change-set-vis(|"a", "x", 2)
+      ; lookup-rule-in-scope(|"b", "x")
+      , !()
+    )
+
+  ; apply-scope-test(!"Check looking up rule in scope #3",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"b")
+      ; change-set(|"b", "x", 1)
+      ; change-set(|"a", "x", 2)
+      ; lookup-rule-in-scope(|"a", "x")
+      | [2]
+    )
+
+  ; apply-scope-test(!"Check looking up rule in scope #4",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"b")
+      ; change-set(|"b", "x", 1)
+      ; change-set(|"a", "x", 2)
+      ; lookup-rule-in-scope(|"b", "x")
+      | [1]
+    )
+
+  ; apply-scope-test(!"Check looking up rule in scope #5",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"b", "x", 1)
+      ; change-set(|"a", "x", 2)
+      ; lookup-rule-in-scope(|"a", "x")
+      | [2]
+    )
+
+  ; apply-scope-test(!"Check looking up rule in scope #6",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"b", "x", 1)
+      ; change-set(|"a", "x", 2)
+      ; lookup-rule-in-scope(|"b", "x")
+      | [1]
+    )
+
+  ; apply-scope-test(!"Check looking up rule in scope #7",
+      init-rule-set
+      ; rule-scope(|"a", "x", 0)
+      ; change-set(|"x", 1)
+      ; rule-scope(|"b", "x", 2)
+      ; change-set(|"a", "x", 3)
+      ; change-set(|"b", "x", 4)
+      ; rule-scope(|"c", "x", 5)
+      ; ![ <lookup-rule-in-scope(|"a", "x")>
+         , <lookup-rule-in-scope(|"b", "x")>
+         , <lookup-rule-in-scope(|"c", "x")>
+         ]
+      | [[3], [4], [5]]
+    )

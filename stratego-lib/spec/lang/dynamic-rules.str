@@ -422,6 +422,26 @@ strategies // change sets
   dr-apply-change(|tbl) :
     (key1@(scpid, key), rs) -> <dr-commit-to-rule-set(|scpid, key, <hashtable-get(|key1)> tbl)> rs
 
+
+  dr-commit-to-rule-set(|scpid, key, value) =
+    dr-commit-to-change-set(|scpid, key, value)
+    <+ dr-commit-to-rule-scope(|scpid, key, value)
+
+  dr-commit-to-change-set(|scpid, key, value) =
+    ?[ChangeSet(_, rmset, tbl) | rs]
+    ; where(
+        (<dr-lookup-rule-in-scope(|key, scpid)>rs => value
+         < <hashtable-remove(|(scpid, key))>tbl
+         + <hashtable-put(|(scpid, key), value)>tbl)
+        ; <iset-remove(|(scpid, key))>rmset
+      )
+
+  dr-commit-to-rule-scope(|scpid, key, value) =
+    ?[RuleScope(_, tbl@Hashtable(scpid)) | rs]
+    ; where(<hashtable-put(|key, value)>tbl)
+    <+ [RuleScope(id, id) | dr-commit-to-rule-set(|scpid, key, value) ]
+
+/*
   dr-commit-to-rule-set(|scpid, key, value) =
     fetch(
       dr-commit-to-change-set(|scpid, key, value)
@@ -429,11 +449,12 @@ strategies // change sets
 
   dr-commit-to-change-set(|scpid, key, value) =
     ?ChangeSet(_, _, tbl)
-  ; where(<hashtable-put(|(scpid, key), value)> tbl)
+    ; where(<hashtable-put(|(scpid, key), value)> tbl)
 
   dr-commit-to-rule-scope(|scpid, key, value) =
     ?RuleScope(_,tbl@Hashtable(scpid))
-  ; where(<hashtable-put(|key, value)> tbl)
+    ; where(<hashtable-put(|key, value)> tbl)
+*/
 
   dr-apply-removal :
     (key1@(scpid, key), rs) -> <dr-remove-from-rule-set(|scpid, key)> rs
@@ -550,21 +571,29 @@ strategies // looking up
    * Fetch all definitions for key.
    */
 
-  // Should dr-lookup-all-rules be redefined as well to consider the
-  // remove sets of change sets?
-
   dr-lookup-all-rules(|key) =
-    dr-lookup-all-rules(fail | key)
+    dr-lookup-all-rules(fail | key, [])
 
-  dr-lookup-all-rules(look | key) =
+  dr-lookup-all-rules(look | key, removed) =
     ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
-    ; <conc>(<<look>(hptr, key) <+ <hashtable-get(|key)> tbl <+ ![]>
-            ,<dr-lookup-all-rules(look | key) <+ ![]> rs)
+    ; <conc>(<<look>(hptr, key)
+              <+ <not(fetch(?(hptr, key)))> removed
+                 ; <hashtable-get(|key)> tbl
+              <+ ![]>
+            ,<dr-lookup-all-rules(look | key, removed) <+ ![]> rs)
 
-  dr-lookup-all-rules(look1 | key) =
-    ?[ChangeSet(_, _, tbl) | rs]
-    ; let look2 = look1 <+ \ key' -> <hashtable-get(|key')> tbl \
-       in <dr-lookup-all-rules(look2 | key)> rs
+  dr-lookup-all-rules(look1 | key, removed) =
+    ?[ChangeSet(_, rmset, tbl) | rs]
+    ; let look2 = look1
+                  <+ {key':
+                      ?key'
+                      ; <not(fetch(?key'))> removed
+                      ; <hashtable-get(|key')> tbl
+                     }
+       in
+         <iset-elements> rmset
+         ; filter(?(_, key)) => keys
+         ; <dr-lookup-all-rules(look2 | key, <conc>(keys, removed))> rs
       end
 
 strategies // setting a rule
@@ -637,7 +666,6 @@ strategies // setting a rule
    * undefining.
    */
 
-
   dr-set-in-rule-set-vis(|key, value) =
     dr-set-in-rule-set(|key, value)
 
@@ -691,13 +719,6 @@ strategies // setting a rule
             end
         end
       )
-
-  // TODO
-  // Note when removing entries from a change set, the removal is
-  // marked (currently with the string "removed"); this should be
-  // interpreted in change set committing; will only do this when
-  // it turns out that this operation is useful
-
 
 strategies // extending a rule
 

@@ -126,7 +126,8 @@ strategies
     dr-lookup-all-rules(|"Test", key)
 
   lookup-rule-in-scope(|label, key) =
-    dr-lookup-rule-in-scope(|key, <get-first-scope-id(|label)>)
+    dr-get-rule-set(|"Test")
+    ; dr-lookup-rule-in-scope(|key, <get-first-scope-id(|label)>)
 
   get-first-scope-id(|label) =
     fetch-elem(RuleScope(iset-contains(|label), ?Hashtable(<id>)); ?RuleScope(_, <id>))

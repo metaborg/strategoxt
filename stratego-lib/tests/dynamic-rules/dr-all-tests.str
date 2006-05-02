@@ -8,4 +8,4 @@ strategies
   main =
     id
     ; scope-tests
-//    ; propconst-tests
+    ; propconst-tests
