@@ -19,6 +19,14 @@ rules
     IfElse(e, [], []) -> Block([])
 
   ElimIf :
+    IfElse(e, th, []) -> IfThen(e, th)
+    where <not(?[])>th
+
+  ElimIf :
+    IfElse(e, [], el) -> IfElse(e, Block([]), el)
+    where <not(?[])>el
+
+  ElimIf :
     IfThen(e, []) -> Block([])
 
 strategies

@@ -90,8 +90,6 @@ strategies
       "var x; x := 0; if c() then x := 0; else dummy(); end f(x);"
     )
 
-///
-
   ; apply-dce-test(!"Check rule set for VarNeeded after empty < x + x" |
       "var x; x := 0; if c() then f(x); else f(x); end",
       "var x; x := 0; if c() then f(x); else f(x); end"
@@ -127,14 +125,44 @@ strategies
       "dummy();"
     )
 
-  ; fail-dce-test(!"Check rule set for VarNeeded after empty < none + undef" |
-      "var x; x := 0; if c() then dummy(); else x := 0; end dummy();",
-      "dummy();"
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < none + undef" |
+      "var x; x := 0; if c() then dummy(); else x := 0; dummy(); end dummy();",
+      "if c() then dummy(); else dummy(); end dummy();"
     )
 
-  ; fail-dce-test(!"Check rule set for VarNeeded after empty < undef + none" |
-      "var x; x := 0; if c() then x := 0; else dummy(); end dummy();",
-      "dummy();"
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < undef + none" |
+      "var x; x := 0; if c() then x := 0; dummy(); else dummy(); end dummy();",
+      "if c() then dummy(); else dummy(); end dummy();"
     )
 
   dce-fix-and-union-tests = id
+
+  ; apply-dce-test(!"Check rule set after x; [x]*" |
+      "var x; x := 0; while c() do f(x); end f(x);",
+      "var x; x := 0; while c() do f(x); end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set after x; [none]*" |
+      "var x; x := 0; while c() do dummy(); end f(x);",
+      "var x; x := 0; while c() do dummy(); end f(x);"
+    )
+
+  ; fail-dce-test(!"Check rule set after x; [undef]*" |
+      "var x; x := 0; while c() do x := 0; end f(x);",
+      "var x; x := 0; while c() do x := 0; end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set after empty; [x]*" |
+      "var x; x := 0; while c() do f(x); end",
+      "var x; x := 0; while c() do f(x); end"
+    )
+
+  ; apply-dce-test(!"Check rule set after empty; [none]*" |
+      "var x; x := 0; while c() do dummy(); end",
+      "while c() do dummy(); end"
+    )
+
+  ; apply-dce-test(!"Check rule set after empty; [undef]*" |
+      "var x; x := 0; while c() do x := 0; dummy(); end",
+      "while c() do dummy(); end"
+    )
