@@ -5,4 +5,4 @@ ppgen -i ../syn/TIL.def -o TIL.pp
 sdf2parenthesize -i ../syn/TIL.def -o til-parenthesize.str -m TIL --lang TIL
 
 # compile the generated program
-strc -i til-parenthesize.str -I ../sig -m io-til-parenthesize -la stratego-lib
+strc -i til-parenthesize.str -I ../syn -I ../sig -m io-til-parenthesize -la stratego-lib

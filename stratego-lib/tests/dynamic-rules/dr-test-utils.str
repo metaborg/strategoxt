@@ -3,6 +3,7 @@ imports
   libstrategolib
   libstratego-sglr
   til/opt/til-propconst
+  til/opt/til-dce
 
 /**
  * Test utils for the test suite of the dynamic rules library.
@@ -35,6 +36,20 @@ strategies
 
   show-propconst-test(name | in-program, out-program) =
     apply-and-show(name, dr-ignore-state-cleanup(propconst|"PropConst"), <parse-til>in-program)
+
+strategies
+
+  apply-dce-test(name | in-program, out-program) =
+    apply-test(name, dr-ignore-state-cleanup(dce-program|["VarNeeded", "VarUsed"]), <parse-til>in-program, <parse-til>out-program)
+
+  applyf-dce-test(name | in-program, out-program) =
+    apply-dce-test(name | in-program, out-program)
+
+  fail-dce-test(name | in-program, out-program) =
+    apply-test(concat-fail(name), dr-ignore-state-cleanup(dce-program|["VarNeeded", "VarUsed"]), <parse-til>in-program)
+
+  show-dce-test(name | in-program, out-program) =
+    apply-and-show(name, dr-ignore-state-cleanup(dce-program|["VarNeeded", "VarUsed"]), <parse-til>in-program)
 
 strategies
 
@@ -124,28 +139,33 @@ strategies
   lookup-rule(|key) =
     dr-lookup-rule(|"Test", key)
 
-  lookup-all-rules(|key) =
+  lookup-all-rules(| key) =
     dr-lookup-all-rules(|"Test", key)
 
-  lookup-rule-in-scope(|label, key) =
+  lookup-rule-in-scope(| label, key) =
     dr-get-rule-set(|"Test")
     ; dr-lookup-rule-in-scope(|key, <get-first-scope-id(|label)>)
 
-  get-first-scope-id(|label) =
+  get-first-scope-id(| label) =
     fetch-elem(RuleScope(iset-contains(|label), ?Hashtable(<id>)); ?RuleScope(_, <id>))
 
 strategies
 
-  dr-ignore-state-cleanup(s|name) =
-    where(
-      dr-new-rule-set
-      ; dr-switch-rule-set(|name) => rs
-    )
-  ; s
-  ; where(
-      <dr-switch-rule-set(|name)>rs
-      ; map(dr-destroy-scope <+ dr-destroy-change-set)
-    )
+  dr-ignore-state-cleanup(s | rname) =
+    where (<not(?[_] <+ ?[])>rname)
+    ; dr-ignore-state-cleanup(s|[rname])
+
+  dr-ignore-state-cleanup(s | rnames) =
+    where (<(?[_] <+ ?[])>rnames)
+    ; where(
+        <map(dr-new-rule-set)>rnames
+        ; zip(dr-switch-rule-set | rnames) => rss
+      )
+    ; s
+    ; where(
+        <zip(dr-switch-rule-set | rnames)>rss
+        ; map(map(dr-destroy-scope <+ dr-destroy-change-set))
+      )
 
   concat-fail(name) =
     <concat-strings>[<name>, " (THIS TEST ACTUALLY FAILS!)"]
