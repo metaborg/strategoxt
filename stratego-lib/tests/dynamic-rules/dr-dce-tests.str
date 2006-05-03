@@ -45,4 +45,96 @@ strategies
 
   dce-union-tests = id
 
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < x + x" |
+      "var x; x := 0; if c() then f(x); else f(x); end f(x);",
+      "var x; x := 0; if c() then f(x); else f(x); end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < x + none" |
+      "var x; x := 0; if c() then f(x); else dummy(); end f(x);",
+      "var x; x := 0; if c() then f(x); else dummy(); end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < none + x" |
+      "var x; x := 0; if c() then dummy(); else f(x); end f(x);",
+      "var x; x := 0; if c() then dummy(); else f(x); end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < none + none" |
+      "var x; x := 0; if c() then dummy(); else dummy(); end f(x);",
+      "var x; x := 0; if c() then dummy(); else dummy(); end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < x + undef" |
+      "var x; x := 0; if c() then f(x); else x := 0; end f(x);",
+      "var x; x := 0; if c() then f(x); else x := 0; end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < undef + x" |
+      "var x; x := 0; if c() then x := 0; else f(x); end f(x);",
+      "var x; x := 0; if c() then x := 0; else f(x); end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < undef + undef" |
+      "var x; x := 0; if c() then x := 0; else x := 0; end f(x);",
+      "var x; if c() then x := 0; else x := 0; end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < none + undef" |
+      "var x; x := 0; if c() then dummy(); else x := 0; end f(x);",
+      "var x; x := 0; if c() then dummy(); else x := 0; end f(x);"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after x < undef + none" |
+      "var x; x := 0; if c() then x := 0; else dummy(); end f(x);",
+      "var x; x := 0; if c() then x := 0; else dummy(); end f(x);"
+    )
+
+///
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < x + x" |
+      "var x; x := 0; if c() then f(x); else f(x); end",
+      "var x; x := 0; if c() then f(x); else f(x); end"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < x + none" |
+      "var x; x := 0; if c() then f(x); else dummy(); end",
+      "var x; x := 0; if c() then f(x); else dummy(); end"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < none + x" |
+      "var x; x := 0; if c() then dummy(); else f(x); end",
+      "var x; x := 0; if c() then dummy(); else f(x); end"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < none + none" |
+      "var x; x := 0; if c() then dummy(); else dummy(); end",
+      "if c() then dummy(); else dummy(); end"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < x + undef" |
+      "var x; x := 0; if c() then f(x); else dummy(); x := 0; end",
+      "var x; x := 0; if c() then f(x); else dummy(); end"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < undef + x" |
+      "var x; x := 0; if c() then dummy(); x := 0; else f(x); end",
+      "var x; x := 0; if c() then dummy(); else f(x); end"
+    )
+
+  ; apply-dce-test(!"Check rule set for VarNeeded after empty < undef + undef" |
+      "var x; x := 0; if c() then x := 0; else x := 0; end dummy();",
+      "dummy();"
+    )
+
+  ; fail-dce-test(!"Check rule set for VarNeeded after empty < none + undef" |
+      "var x; x := 0; if c() then dummy(); else x := 0; end dummy();",
+      "dummy();"
+    )
+
+  ; fail-dce-test(!"Check rule set for VarNeeded after empty < undef + none" |
+      "var x; x := 0; if c() then x := 0; else dummy(); end dummy();",
+      "dummy();"
+    )
+
   dce-fix-and-union-tests = id
