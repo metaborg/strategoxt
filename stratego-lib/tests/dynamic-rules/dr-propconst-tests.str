@@ -487,18 +487,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -506,18 +502,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := 0; f(0);
+         else        f(0); x := 1; f(1);
          end
          f(x);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := 1; f(1);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := 1; f(1);
          end
          f(x);
        end
@@ -532,18 +524,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -551,18 +539,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0); x := 0; f(0);
+         else        f(0); x := 0; f(0);
          end
          f(0);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 1; f(1);
-         else
-           f(1); x := 1; f(1);
+         if c() then f(1); x := 1; f(1);
+         else        f(1); x := 1; f(1);
          end
          f(1);
        end
@@ -577,18 +561,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        end
@@ -596,18 +576,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0); x := 0; f(0);
+         else        f(0); x := 0; f(0);
          end
          f(0);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0); x := 0; f(0);
+         else        f(0); x := 0; f(0);
          end
          f(0);
        end
@@ -622,18 +598,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x); x := 1; f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -641,18 +613,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := 0; f(0);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := 0; f(0);
          end
          f(0); x := 1; f(1);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 1; f(1);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := 1; f(1);
+         else        f(0); x := 1; f(1);
          end
          f(1);
        end
@@ -667,18 +635,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        end
@@ -686,18 +650,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := 0; f(0);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := 0; f(0);
          end
          f(0);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := 0; f(0);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := 0; f(0);
          end
          f(0);
        end
@@ -712,18 +672,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x); x := 1; f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x); x := 1; f(x);
        end
@@ -731,18 +687,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := 0; f(0);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := 0; f(0);
          end
          f(0); x := 1; f(1);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := 0; f(0);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := 0; f(0);
          end
          f(0); x := 1; f(1);
        end
@@ -757,18 +709,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -776,18 +724,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 1; f(1);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := 1; f(1);
+         else        f(0); x := 1; f(1);
          end
          f(1);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 1; f(1);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := 1; f(1);
+         else        f(0); x := 1; f(1);
          end
          f(1);
        end
@@ -802,18 +746,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 2; f(x);
-         else
-           f(x); x := 2; f(x);
+         if c() then f(x); x := 2; f(x);
+         else        f(x); x := 2; f(x);
          end
          f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 2; f(x);
-         else
-           f(x); x := 2; f(x);
+         if c() then f(x); x := 2; f(x);
+         else        f(x); x := 2; f(x);
          end
          f(x);
        end
@@ -821,18 +761,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 2; f(2);
-         else
-           f(1); x := 2; f(2);
+         if c() then f(1); x := 2; f(2);
+         else        f(1); x := 2; f(2);
          end
          f(2);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 2; f(2);
-         else
-           f(1); x := 2; f(2);
+         if c() then f(1); x := 2; f(2);
+         else        f(1); x := 2; f(2);
          end
          f(2);
        end
@@ -847,18 +783,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 2; f(x);
-         else
-           f(x); x := 2; f(x);
+         if c() then f(x); x := 2; f(x);
+         else        f(x); x := 2; f(x);
          end
          f(x);
        else
          f(x); x := 2; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -866,18 +798,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 2; f(2);
-         else
-           f(1); x := 2; f(2);
+         if c() then f(1); x := 2; f(2);
+         else        f(1); x := 2; f(2);
          end
          f(2);
        else
          f(0); x := 2; f(2);
-         if c() then
-           f(2); x := 1; f(1);
-         else
-           f(2); x := 1; f(1);
+         if c() then f(2); x := 1; f(1);
+         else        f(2); x := 1; f(1);
          end
          f(1);
        end
@@ -892,18 +820,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -911,18 +835,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0); x := 0; f(0);
+         else        f(0); x := 0; f(0);
          end
          f(0);
        else
          f(0);
-         if c() then
-           f(0); x := 1; f(1);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := 1; f(1);
+         else        f(0); x := 1; f(1);
          end
          f(1);
        end
@@ -937,18 +857,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x);
          end
          f(x);
        else
          f(x);
-         if c() then
-           f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -956,18 +872,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0);
+         if c() then f(0); x := 0; f(0);
+         else        f(0);
          end
          f(0);
        else
          f(0);
-         if c() then
-           f(0);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0);
+         else        f(0); x := 1; f(1);
          end
          f(x);
        end
@@ -982,18 +894,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x);
-         else
-           f(x);
+         if c() then f(x);
+         else        f(x);
          end
          f(x); x := 1; f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x);
-         else
-           f(x);
+         if c() then f(x);
+         else        f(x);
          end
          f(x); x := 1; f(x);
        end
@@ -1001,18 +909,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0);
-         else
-           f(0);
+         if c() then f(0);
+         else        f(0);
          end
          f(0); x := 1; f(1);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1);
-         else
-           f(1);
+         if c() then f(1);
+         else        f(1);
          end
          f(1); x := 1; f(1);
        end
@@ -1027,18 +931,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x);
          end
          f(x);
        end
@@ -1046,18 +946,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0);
+         else        f(0); x := 0; f(0);
          end
          f(0);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1);
+         if c() then f(1); x := 0; f(0);
+         else        f(1);
          end
          f(x);
        end
@@ -1072,18 +968,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x);
          end
          f(x);
        end
@@ -1091,18 +983,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0);
-         if c() then
-           f(0); x := 0; f(0);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := 0; f(0);
+         else        f(0); x := 1; f(1);
          end
          f(x);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 1; f(1);
-         else
-           f(0);
+         if c() then f(0); x := 1; f(1);
+         else        f(0);
          end
          f(x);
        end
@@ -1117,18 +1005,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x);
          end
          f(x);
        else
          f(x); x := 2; f(x);
-         if c() then
-           f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -1136,18 +1020,14 @@ strategies
       "var x; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 1; f(1);
-         else
-           f(1);
+         if c() then f(1); x := 1; f(1);
+         else        f(1);
          end
          f(1);  // here's the culprit, propconst (incorrectly) yields f(x)
        else
          f(0); x := 2; f(2);
-         if c() then
-           f(2);
-         else
-           f(2); x := 1; f(1);
+         if c() then f(2);
+         else        f(2); x := 1; f(1);
          end
          f(x);
        end
@@ -1162,18 +1042,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x); x := y; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -1181,18 +1057,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(0);
-         else
-           f(x); x := 0; f(0);
+         if c() then f(x); x := 0; f(0);
+         else        f(x); x := 0; f(0);
          end
          f(0);
        else
          f(0); x := y; f(x);
-         if c() then
-           f(x); x := 1; f(1);
-         else
-           f(x); x := 1; f(1);
+         if c() then f(x); x := 1; f(1);
+         else        f(x); x := 1; f(1);
          end
          f(1);
        end
@@ -1207,18 +1079,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x);
        else
          f(x); x := y; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -1226,18 +1094,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(0);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := 0; f(0);
+         else        f(x); x := y; f(x);
          end
          f(x);
        else
          f(0); x := y; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := 1; f(1);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := 1; f(1);
          end
          f(x);
        end
@@ -1252,18 +1116,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x); x := 1; f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x); x := 1; f(x);
        end
@@ -1271,18 +1131,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0); x := y; f(x);
+         if c() then f(0); x := y; f(x);
+         else        f(0); x := y; f(x);
          end
          f(x); x := 1; f(1);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := y; f(x);
-         else
-           f(1); x := y; f(x);
+         if c() then f(1); x := y; f(x);
+         else        f(1); x := y; f(x);
          end
          f(x); x := 1; f(1);
        end
@@ -1297,18 +1153,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x);
        end
@@ -1316,18 +1168,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0); x := y; f(x);
+         else        f(0); x := 0; f(0);
          end
          f(x);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 0; f(0);
-         else
-           f(1); x := y; f(x);
+         if c() then f(1); x := 0; f(0);
+         else        f(1); x := y; f(x);
          end
          f(x);
        end
@@ -1342,18 +1190,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x);
        end
@@ -1361,18 +1205,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(0);
-         else
-           f(x); x := 1; f(1);
+         if c() then f(x); x := 0; f(0);
+         else        f(x); x := 1; f(1);
          end
          f(x);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := 1; f(1);
-         else
-           f(0); x := y; f(x);
+         if c() then f(0); x := 1; f(1);
+         else        f(0); x := y; f(x);
          end
          f(x);
        end
@@ -1387,18 +1227,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := 1; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := 1; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x);
        else
          f(x); x := 2; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        end
@@ -1406,18 +1242,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := 1; f(1);
-         else
-           f(1); x := y; f(x);
+         if c() then f(1); x := 1; f(1);
+         else        f(1); x := y; f(x);
          end
          f(x);
        else
          f(0); x := 2; f(2);
-         if c() then
-           f(2); x := y; f(x);
-         else
-           f(2); x := 1; f(1);
+         if c() then f(2); x := y; f(x);
+         else        f(2); x := 1; f(1);
          end
          f(x);
        end
@@ -1432,18 +1264,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := y; f(x);
-         if c() then
-           f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x); x := 1; f(x);
        else
          f(x); x := 1; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x);
          end
          f(x); x := 1; f(x);
        end
@@ -1451,18 +1279,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := y; f(x);
-         if c() then
-           f(x);
-         else
-           f(x); x := 1; f(1);
+         if c() then f(x);
+         else        f(x); x := 1; f(1);
          end
          f(x); x := 1; f(1);
        else
          f(0); x := 1; f(1);
-         if c() then
-           f(1); x := y; f(x);
-         else
-           f(1);
+         if c() then f(1); x := y; f(x);
+         else        f(1);
          end
          f(x); x := 1; f(1);
        end
@@ -1477,18 +1301,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x);
          end
          f(x); x := 0; f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := 0; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := 0; f(x);
          end
          f(x); x := 1; f(x);
        end
@@ -1496,18 +1316,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0);
+         if c() then f(0); x := y; f(x);
+         else        f(0);
          end
          f(x); x := 0; f(0);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0); x := 0; f(0);
+         if c() then f(0); x := y; f(x);
+         else        f(0); x := 0; f(0);
          end
          f(x); x := 1; f(1);
        end
@@ -1522,18 +1338,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := y; f(x);
-         if c() then
-           f(x);
-         else
-           f(x);
+         if c() then f(x);
+         else        f(x);
          end
          f(x); x := 1; f(x);
        else
          f(x); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(x);
-         else
-           f(x);
+         if c() then f(x); x := 0; f(x);
+         else        f(x);
          end
          f(x); x := 1; f(x);
        end
@@ -1541,18 +1353,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := y; f(x);
-         if c() then
-           f(x);
-         else
-           f(x);
+         if c() then f(x);
+         else        f(x);
          end
          f(x); x := 1; f(1);
        else
          f(0); x := y; f(x);
-         if c() then
-           f(x); x := 0; f(0);
-         else
-           f(x);
+         if c() then f(x); x := 0; f(0);
+         else        f(x);
          end
          f(x); x := 1; f(1);
        end
@@ -1567,18 +1375,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := 1; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := 1; f(x);
          end
          f(x);
        else
          f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x); x := 0; f(x);
        end
@@ -1586,18 +1390,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0); x := 1; f(1);
+         if c() then f(0); x := y; f(x);
+         else        f(0); x := 1; f(1);
          end
          f(x);
        else
          f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0); x := y; f(x);
+         if c() then f(0); x := y; f(x);
+         else        f(0); x := y; f(x);
          end
          f(x); x := 0; f(0);
        end
@@ -1612,18 +1412,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(x); x := 0; f(x);
-         if c() then
-           f(x);
-         else
-           f(x);
+         if c() then f(x);
+         else        f(x);
          end
          f(x); x := 0; f(x);
        else
          f(x); x := 0; f(x);
-         if c() then
-           f(x); x := y; f(x);
-         else
-           f(x); x := y; f(x);
+         if c() then f(x); x := y; f(x);
+         else        f(x); x := y; f(x);
          end
          f(x); x := 0; f(x);
        end
@@ -1631,18 +1427,14 @@ strategies
       "var x; var y; x := 0;
        if c() then
          f(0); x := 0; f(0);
-         if c() then
-           f(0);
-         else
-           f(0);
+         if c() then f(0);
+         else        f(0);
          end
          f(0); x := 0; f(0);
        else
          f(0); x := 0; f(0);
-         if c() then
-           f(0); x := y; f(x);
-         else
-           f(0); x := y; f(x);
+         if c() then f(0); x := y; f(x);
+         else        f(0); x := y; f(x);
          end
          f(x); x := 0; f(0);
        end
@@ -1688,6 +1480,8 @@ strategies
       "var x; var y; while c() do x := y; end f(x);"
     )
 
+/////// basic in iteration
+
   ; apply-propconst-test(!"Check rule set in iteration (x,a); [(x,a)]*" |
       "var x; x := 1; while c() do f(x); x := 1; f(x); end",
       "var x; x := 1; while c() do f(1); x := 1; f(1); end"
@@ -1723,7 +1517,7 @@ strategies
       "var x; var y; while c() do f(x); x := y; f(x); end"
     )
 
-/////// (x,a) after
+/////// (x,a) after iteration
 
   ; apply-propconst-test(!"Check rule set after (x,a); [(x,a) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do x := 1; if c() then x := 1; else x := 1; end end f(x);",
@@ -1805,7 +1599,7 @@ strategies
       "var x; var y; x := 1; while c() do x := 1; if c() then x := y; else dummy(); end end f(x);"
     )
 
-/////// (x,a) in
+/////// (x,a) in iteration
 
   ; apply-propconst-test(!"Check rule set in iteration (x,a); [(x,a) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do f(x); x := 1; if c() then f(x); x := 1; f(x); else f(x); x := 1; f(x); end f(x); end",
@@ -1887,7 +1681,7 @@ strategies
       "var x; var y; x := 1; while c() do f(x); x := 1; if c() then f(1); x := y; f(x); else f(1); dummy(); f(1); end f(x); end"
     )
 
-/////// (x,b) after
+/////// (x,b) after iteration
 
     // mark 3
   ; apply-propconst-test(!"Check rule set after (x,a); [(x,b) < (x,a) + (x,a)]*" |
@@ -1970,7 +1764,7 @@ strategies
       "var x; var y; x := 1; while c() do x := 2; if c() then x := y; else dummy(); end end f(x);"
     )
 
-/////// (x,b) in
+/////// (x,b) in iteration
 
   ; apply-propconst-test(!"Check rule set in iteration (x,a); [(x,b) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do f(x); x := 2; if c() then f(x); x := 1; f(x); else f(x); x := 1; f(x); end f(x); end",
@@ -2052,7 +1846,7 @@ strategies
       "var x; var y; x := 1; while c() do f(x); x := 2; if c() then f(2); x := y; f(x); else f(2); dummy(); f(2); end f(x); end"
     )
 
-/////// (x,d) after
+/////// (x,d) after iteration
 
   ; apply-propconst-test(!"Check rule set after (x,a); [(x,d) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do x := 4; if c() then x := 1; else x := 1; end end f(x);",
@@ -2139,7 +1933,7 @@ strategies
       "var x; var y; x := 1; while c() do x := 4; if c() then x := y; else dummy(); end end f(x);"
     )
 
-/////// (x,d) in
+ /// (x,d) in iteration
 
   ; apply-propconst-test(!"Check rule set in iteration (x,a); [(x,d) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do f(x); x := 4; if c() then f(x); x := 1; f(x); else f(x); x := 1; f(x); end f(x); end",
@@ -2226,7 +2020,7 @@ strategies
       "var x; var y; x := 1; while c() do f(x); x := 4; if c() then f(4); x := y; f(x); else f(4); dummy(); f(4); end f(x); end"
     )
 
-/////// (x,none) after
+/////// (x,none) after iteration
 
   ; apply-propconst-test(!"Check rule set after (x,a); [(x,none) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do if c() then x := 1; else x := 1; end end f(x);",
@@ -2308,7 +2102,7 @@ strategies
       "var x; var y; x := 1; while c() do if c() then x := y; else dummy(); end end f(x);"
     )
 
-/////// (x,none) in
+/////// (x,none) in iteration
 
   ; apply-propconst-test(!"Check rule set in iteration (x,a); [(x,none) < (x,a) + (x,a)]*" |
       "var x; x := 1; while c() do f(x); if c() then x := 1; f(x); else x := 1; f(x); end f(x); end",
@@ -2390,7 +2184,7 @@ strategies
       "var x; var y; x := 1; while c() do f(x); if c() then x := y; f(x); else dummy(); f(x); end f(x); end"
     )
 
-/////// (x,undef) after
+/////// (x,undef) after iteration
 
   ; apply-propconst-test(!"Check rule set after (x,a); [(x,undef) < (x,a) + (x,a)]*" |
       "var x; var y; x := 1; while c() do x := y; if c() then x := 1; else x := 1; end end f(x);",
@@ -2472,7 +2266,7 @@ strategies
       "var x; var y; x := 1; while c() do x := y; if c() then x := y; else dummy(); end end f(x);"
     )
 
-/////// (x,undef) in
+/////// (x,undef) in iteration
 
   ; apply-propconst-test(!"Check rule set in iteration (x,a); [(x,undef) < (x,a) + (x,a)]*" |
       "var x; var y; x := 1; while c() do f(x); x := y; if c() then f(x); x := 1; f(x); else f(x); x := 1; f(x); end f(x); end",
@@ -2554,40 +2348,363 @@ strategies
       "var x; var y; x := 1; while c() do f(x); x := y; if c() then f(x); x := y; f(x); else f(x); dummy(); f(x); end f(x); end"
     )
 
-///////
+/////// non-structured tests
 
-  ; apply-propconst-test(!"Check while..." |
-      "
-        var i; var x; var y; var z;
-        i := 0; x := 1; y := 2; z := 3;
-        while (i < x + y) do
-          f(i);
-          f(x);
-          y := 1; // assign a different value
-          z := 3; // assign the same value
-          i := i + 1;
-        end
-        f(x, y, z, i);
-      ",
-      "
-        var i; var x; var y; var z;
-        i := 0; x := 1; y := 2; z := 3;
-        while (i < 1 + y) do
-          f(i);
-          f(1);
-          y := 1; // assign a different value
-          z := 3; // assign the same value
-          i := i + 1;
-        end
-        f(1, y, 3, i);
-      ")
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #1" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           if c() then x := 0;
+           else        x := 0;
+           end
+           f(x);
+         else
+           if c() then x := 0;
+           else        x := 0;
+           end
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           if c() then x := 0;
+           else        x := 0;
+           end
+           f(0);
+         else
+           if c() then x := 0;
+           else        x := 0;
+           end
+           f(0);
+         end
+         f(0);
+       end
+       f(0);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #2" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           if c() then x := 1;
+           else        x := 1;
+           end
+           f(x);
+         else
+           if c() then x := 1;
+           else        x := 1;
+           end
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           if c() then x := 1;
+           else        x := 1;
+           end
+           f(1);
+         else
+           if c() then x := 1;
+           else        x := 1;
+           end
+           f(1);
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #3" |
+      "var x; x := 0;
+       while c() do
+         f(x); x := 1;
+         if c() then
+           if c() then x := 0;
+           else        x := 0;
+           end
+           f(x);
+         else
+           if c() then x := 2;
+           else        x := 2;
+           end
+           f(x); x := 0;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         f(0); x := 1;
+         if c() then
+           if c() then x := 0;
+           else        x := 0;
+           end
+           f(0);
+         else
+           if c() then x := 2;
+           else        x := 2;
+           end
+           f(2); x := 0;
+         end
+         f(0);
+       end
+       f(0);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #4" |
+      "var x; x := 0;
+       while c() do
+         x := 1;
+         while c() do x := 1; end
+         f(x); x := 0;
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         x := 1;
+         while c() do x := 1; end
+         f(1); x := 0;
+       end
+       f(0);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #5" |
+      "var x; x := 0;
+       while c() do
+         x := 1;
+         while c() do x := 0; end
+         f(x); x := 0;
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         x := 1;
+         while c() do x := 0; end
+         f(x); x := 0;
+       end
+       f(0);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #6" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           x := 2;
+           while c() do x := 0; f(x); end
+           f(x); x := 1;
+         else
+           while c() do x := 0; f(x); end
+           f(x); x := 1;
+         end
+         f(x); x := 0;
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           x := 2;
+           while c() do x := 0; f(0); end
+           f(x); x := 1;
+         else
+           while c() do x := 0; f(0); end
+           f(0); x := 1;
+         end
+         f(1); x := 0;
+       end
+       f(0);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #7" |
+      "var x; var y; x := 0;
+       while c() do
+         if c() then
+           x := y;
+           while c() do x := 1; f(x); end
+           f(x); x := 0;
+         else
+           while c() do dummy(); end
+           f(x); x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       while c() do
+         if c() then
+           x := y;
+           while c() do x := 1; f(1); end
+           f(x); x := 0;
+         else
+           while c() do dummy(); end
+           f(x); x := 1;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #8" |
+      "var x; var y; x := 0;
+       while c() do
+         if c() then
+           while c() do dummy(); f(x); end
+           f(x); x := 0;
+         else
+           x := 0;
+           while c() do x := y; f(x); end
+           f(x); x := 1;
+         end
+         f(x); x := 0;
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       while c() do
+         if c() then
+           while c() do dummy(); f(0); end
+           f(0); x := 0;
+         else
+           x := 0;
+           while c() do x := y; f(x); end
+           f(x); x := 1;
+         end
+         f(x); x := 0;
+       end
+       f(0);"
+    )
+
+  ; apply-propconst-test(!"Check complex fix-and-intersect scenario #9" |
+      "var x; var y; x := 0;
+       while c() do
+         f(x); x := 1;
+         if c() then x := 1;
+         else
+           while c() do
+             f(x); if c() then x := 1; end
+           end
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 0;
+       while c() do
+         f(x); x := 1;
+         if c() then x := 1;
+         else
+           while c() do
+             f(1); if c() then x := 1; end
+           end
+           f(1);
+         end
+         f(1);
+       end
+       f(x);"
+    )
 
   pc-break-tests = id
 
+  ; fail-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       x := 1;
+       while c() do
+         if c() then
+           x := 2;
+           break;
+         end
+         x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       while c() do
+         if c() then
+           x := 2;
+           break;
+         end
+         x := 1;
+       end
+       f(x);"
+    )
+
   pc-break-to-label-tests = id
+
+  ; fail-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x;
+       x := 1;
+       l: while c() do
+         if c() then
+           x := 2;
+           break l;
+         end
+         x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l: while c() do
+         if c() then
+           x := 2;
+           break l;
+         end
+         x := 1;
+       end
+       f(x);"
+    )
 
   pc-continue-tests = id
 
+  ; fail-propconst-test(!"Check continuing iterative statement" |
+      "var x;
+       x := 1;
+       while c() do
+         if c() then
+           x := 2;
+           continue;
+         end
+         x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       while c() do
+         if c() then
+           x := 2;
+           continue;
+         end
+         x := 1;
+       end
+       f(x);"
+    )
+
   pc-continue-to-label-tests = id
+
+  ; fail-propconst-test(!"Check continuing to label iterative statement" |
+      "var x;
+       x := 1;
+       l: while c() do
+         if c() then
+           x := 2;
+           continue l;
+         end
+         x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l: while c() do
+         if c() then
+           x := 2;
+           continue l;
+         end
+         x := 1;
+       end
+       f(x);"
+    )
 
   pc-exception-tests = id
