@@ -9,5 +9,5 @@ strategies
   main =
     id
     ; scope-tests
-    ; propconst-tests
-    ; dead-code-elimination-tests
+//    ; propconst-tests
+//    ; dead-code-elimination-tests

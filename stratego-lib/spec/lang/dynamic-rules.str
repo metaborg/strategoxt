@@ -761,16 +761,17 @@ strategies // extending a rule
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
               <+ {values:
-                  ![value | <hashtable-get(|(scpid, key))> tbl1] => values
-                  ; if <hashtable-get(|key)> tbl2 => values then
+                  ![value | <hashtable-get(|(scpid, key)); ![]> tbl1] => values
+                  ; if (<dr-lookup-rule-in-scope(|key, scpid)> rs <+ ![]) => values then
                       <hashtable-remove(|(scpid, key))> tbl1
+                      ; <iset-remove(|(scpid, key))> rmset
                     else
                       <hashtable-put(|(scpid, key), values)> tbl1
-                    end }
-               <+ (<hashtable-get(|key)> tbl2 <+ ![])
-                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
+                      ; <iset-remove(|(scpid, key))> rmset
+                    end
+                 }
          in if <iset-contains(|label)> labelset then
-               <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
+               <fetch-elem(?RuleScope(_, tbl@Hashtable(hptr)))> rs
                ; add2(|hptr, tbl, key, value)
             else
                <dr-add-to-rule-set(add2 | label, key, value)> rs
@@ -786,7 +787,6 @@ strategies // extending a rule
    */
   dr-add-to-rule-set-vis(|label, key, value) =
     dr-add-to-rule-set-vis(dr-add-fail, dr-rm-fail | label, key, value)
-
 
   dr-add-to-rule-set-vis(
       add : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
@@ -812,24 +812,25 @@ strategies // extending a rule
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
               <+ {values:
-                  ![value | <hashtable-get(|(scpid, key))> tbl1] => values
-                  ; if <hashtable-get(|key)> tbl2 => values then
+                  ![value | <hashtable-get(|(scpid, key)); ![]> tbl1] => values
+                  ; if (<dr-lookup-rule-in-scope(|key, scpid)> rs <+ ![]) => values then
                       <hashtable-remove(|(scpid, key))> tbl1
+                      ; <iset-remove(|(scpid, key))> rmset
                     else
                       <hashtable-put(|(scpid, key), values)> tbl1
-                    end }
-               <+ (<hashtable-get(|key)> tbl2 <+ ![])
-                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
+                      ; <iset-remove(|(scpid, key))> rmset
+                    end
+                 }
 
             rm2(|scpid, tbl2, key) =
               rm1(|scpid, tbl2, key)
-              <+ if <hashtable-get(|key)> tbl2 then
+              <+ if <dr-lookup-rule-in-scope(|key, scpid)> rs then
                    <hashtable-remove(|(scpid, key))> tbl1
                    ; <iset-add(|(scpid, key))> rmset
                  end
 
          in if <iset-contains(|label)> labelset then
-              <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
+              <fetch-elem(?RuleScope(_, tbl@Hashtable(hptr)))> rs
               ; add2(|hptr, tbl, key, value)
             else
               <dr-add-to-rule-set-vis(add2, rm2 | label, key, value)> rs
