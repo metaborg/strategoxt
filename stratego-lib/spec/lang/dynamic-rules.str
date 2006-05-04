@@ -760,9 +760,10 @@ strategies // extending a rule
     ; where(
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
-              <+ {values:
-                  ![value | <hashtable-get(|(scpid, key)); ![]> tbl1] => values
-                  ; if (<dr-lookup-rule-in-scope(|key, scpid)> rs <+ ![]) => values then
+              <+ {values:  // this is when the hash table of the change
+                           // set already contains a binding for the key
+                  ![value | <hashtable-get(|(scpid, key))> tbl1] => values
+                  ; if <dr-lookup-rule-in-scope(|key, scpid)> rs => values then
                       <hashtable-remove(|(scpid, key))> tbl1
                       ; <iset-remove(|(scpid, key))> rmset
                     else
@@ -770,6 +771,11 @@ strategies // extending a rule
                       ; <iset-remove(|(scpid, key))> rmset
                     end
                  }
+                           // this is when the hash table of the change set
+                           // already does not already contain a binding for the key
+              <+ (<dr-lookup-rule-in-scope(|key, scpid)> rs <+ ![])
+                 ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
+
          in if <iset-contains(|label)> labelset then
                <fetch-elem(?RuleScope(_, tbl@Hashtable(hptr)))> rs
                ; add2(|hptr, tbl, key, value)
@@ -811,9 +817,10 @@ strategies // extending a rule
     ; where(
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
-              <+ {values:
-                  ![value | <hashtable-get(|(scpid, key)); ![]> tbl1] => values
-                  ; if (<dr-lookup-rule-in-scope(|key, scpid)> rs <+ ![]) => values then
+              <+ {values:  // this is when the hash table of the change
+                           // set already contains a binding for the key
+                  ![value | <hashtable-get(|(scpid, key))> tbl1] => values
+                  ; if <dr-lookup-rule-in-scope(|key, scpid)> rs => values then
                       <hashtable-remove(|(scpid, key))> tbl1
                       ; <iset-remove(|(scpid, key))> rmset
                     else
@@ -821,6 +828,10 @@ strategies // extending a rule
                       ; <iset-remove(|(scpid, key))> rmset
                     end
                  }
+                           // this is when the hash table of the change set
+                           // already does not already contain a binding for the key
+              <+ (<dr-lookup-rule-in-scope(|key, scpid)> rs <+ ![])
+                 ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
 
             rm2(|scpid, tbl2, key) =
               rm1(|scpid, tbl2, key)

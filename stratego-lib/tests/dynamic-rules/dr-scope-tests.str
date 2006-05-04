@@ -47,7 +47,7 @@ strategies
       | [1]
     )
 
-  ; apply-scope-test(!"Check setting rule with different values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check setting rule in different scopes with different values (RS CS RS CS CS) #1",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -58,7 +58,7 @@ strategies
       | [3]
     )
 
-  ; apply-scope-test(!"Check setting rule with different values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule in different scopes with different values (RS CS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -69,7 +69,7 @@ strategies
       | [3, 4]
     )
 
-  ; apply-scope-test(!"Check setting rule with similar values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check setting rule in different scopes with the same value (RS CS RS CS CS) #1",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -80,7 +80,7 @@ strategies
       | [1]
     )
 
-  ; apply-scope-test(!"Check setting rule with similar values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule in different scopes with the same value (RS CS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -91,7 +91,7 @@ strategies
       | [1, 0]
     )
 
-  ; apply-scope-test(!"Check setting rule vis with different values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with different values (RS CS RS CS CS) #1",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -102,7 +102,7 @@ strategies
       | [4]
     )
 
-  ; apply-scope-test(!"Check setting rule vis with different values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with different values (RS CS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -113,7 +113,7 @@ strategies
       | [4]
     )
 
-  ; apply-scope-test(!"Check setting rule vis with similar values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with the same value (RS CS RS CS CS) #1",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -124,7 +124,7 @@ strategies
       | [0]
     )
 
-  ; apply-scope-test(!"Check setting rule vis with similar values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check setting rule vis in different scopes with the same value (RS CS RS CS CS) #2",
       init-rule-set
       ; rule-scope(|"a", "x", 0)
       ; change-set(|"a", "x", 1)
@@ -296,249 +296,562 @@ strategies
       ; lookup-rule(|"x")
       | [3, 2, 1]
     )
-/*
-  ; apply-scope-test(!"Check adding rules (RS CS CS)",
-      init-rule-set
-      ; rule-scope(|"x", 1)
-      ; change-set(|"x", 2)
-      ; change-set(|"x", 1)
-      ; lookup-rule(|"x")
-      | [1]
-    )
 
   ; apply-scope-test(!"Check adding rules with label (RS CS CS)",
       init-rule-set
       ; rule-scope(|"a", "x", 1)
-      ; change-set(|"a", "x", 2)
-      ; change-set(|"a", "x", 1)
+      ; change-set
+      ; add(|"a", "x", 2)
+      ; change-set
+      ; add(|"a", "x", 3)
       ; lookup-rule(|"x")
-      | [1]
+      | [3, 2, 1]
     )
 
-  ; apply-scope-test(!"Check adding rules with different values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check adding rule with the same value (RS CS)",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 2)
-      ; change-set(|"b", "x", 3)
-      ; change-set(|"a", "x", 4)
+      ; rule-scope(|"x", 1)
+      ; add(|"x", 2)
+      ; change-set(|"x", 1)
+      ; add(|"x", 2)
       ; lookup-rule(|"x")
-      | [3]
+      | [2, 1]
     )
 
-  ; apply-scope-test(!"Check adding rules with different values (RS CS RS CS CS) #2",
+   ; apply-scope-test(!"Check adding rule with a different value (RS CS)",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 2)
-      ; change-set(|"b", "x", 3)
-      ; change-set(|"a", "x", 4)
+      ; rule-scope(|"x", 1)
+      ; change-set
+      ; add(|"x", 1)
+      ; lookup-rule(|"x")
+      | [1, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rule with the same value (RS CS CS)",
+      init-rule-set
+      ; rule-scope(|"x", 1)
+      ; add(|"x", 2)
+      ; change-set(|"x", 1)
+      ; add(|"x", 2)
+      ; change-set(|"x", 1)
+      ; add(|"x", 2)
+      ; lookup-rule(|"x")
+      | [2, 1]
+    )
+
+   ; apply-scope-test(!"Check adding rule with a different value (RS CS CS)",
+      init-rule-set
+      ; rule-scope(|"x", 1)
+      ; change-set
+      ; add(|"x", 1)
+      ; change-set
+      ; add(|"x", 1)
+      ; lookup-rule(|"x")
+      | [1, 1, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with different values (RS CS RS CS CS) #1",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 2)
+      ; change-set
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add(|"a", "x", 4)
+      ; lookup-rule(|"x")
+      | [3, 2]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with different values (RS CS RS CS CS) #2",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 2)
+      ; change-set
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add(|"a", "x", 4)
       ; lookup-all-rules(|"x")
-      | [3, 4]
+      | [3, 2, 4, 1, 0]
     )
 
-  ; apply-scope-test(!"Check adding rules with similar values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS CS RS CS CS) #1",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 0)
-      ; change-set(|"b", "x", 1)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
       ; change-set(|"a", "x", 0)
+      ; add(|"a", "x", 1)
       ; lookup-rule(|"x")
-      | [1]
+      | [1, 0]
     )
 
-  ; apply-scope-test(!"Check adding rules with similar values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS CS RS CS CS) #2",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 0)
-      ; change-set(|"b", "x", 1)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
       ; change-set(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; lookup-all-rules(|"x")
+      | [1, 0, 1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS CS RS CS CS) #3",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; lookup-rule(|"x")
+      | [2, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS CS RS CS CS) #4",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; lookup-all-rules(|"x")
+      | [2, 0, 1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS CS RS CS CS) #5",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; lookup-rule(|"x")
+      | [1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS CS RS CS CS) #6",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; lookup-all-rules(|"x")
+      | [1, 0, 1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules vis in different scopes with different values (RS CS RS CS CS) #1",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 2)
+      ; change-set
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add-vis(|"a", "x", 4)
+      ; lookup-rule(|"x")
+      | [4, 1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules vis in different scopes with different values (RS CS RS CS CS) #2",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 2)
+      ; change-set
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add-vis(|"a", "x", 4)
+      ; lookup-all-rules(|"x")
+      | [4, 1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS CS RS CS CS) #1",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 0)
+      ; add-vis(|"a", "x", 1)
+      ; lookup-rule(|"x")
+      | [1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS CS RS CS CS) #2",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 0)
+      ; add-vis(|"a", "x", 1)
       ; lookup-all-rules(|"x")
       | [1, 0]
     )
 
-  ; apply-scope-test(!"Check adding rules vis with different values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS CS RS CS CS) #3",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 2)
-      ; change-set(|"b", "x", 3)
-      ; change-set-vis(|"a", "x", 4)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 0)
+      ; add-vis(|"a", "x", 1)
       ; lookup-rule(|"x")
-      | [4]
+      | [1, 0]
     )
 
-  ; apply-scope-test(!"Check adding rules vis with different values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS CS RS CS CS) #4",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 2)
-      ; change-set(|"b", "x", 3)
-      ; change-set-vis(|"a", "x", 4)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 0)
+      ; add-vis(|"a", "x", 1)
       ; lookup-all-rules(|"x")
-      | [4]
+      | [1, 0]
     )
 
-  ; apply-scope-test(!"Check adding rules vis with similar values (RS CS RS CS CS) #1",
+  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS CS RS CS CS) #5",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 0)
-      ; change-set(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 0)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 0)
+      ; add-vis(|"a", "x", 1)
       ; lookup-rule(|"x")
-      | [0]
+      | [1, 0]
     )
 
-  ; apply-scope-test(!"Check adding rules vis with similar values (RS CS RS CS CS) #2",
+  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS CS RS CS CS) #6",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; change-set(|"a", "x", 1)
-      ; rule-scope(|"b", "x", 0)
-      ; change-set(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 0)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; change-set
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 0)
+      ; add-vis(|"a", "x", 1)
       ; lookup-all-rules(|"x")
-      | [0]
+      | [1, 0]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with different values (RS RS CS CS) #1",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add(|"b", "x", 4)
+      ; change-set
+      ; add(|"a", "x", 5)
+      ; add(|"a", "x", 6)
+      ; lookup-rule(|"x")
+      | [4, 3]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with different values (RS RS CS CS) #2",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add(|"b", "x", 4)
+      ; change-set
+      ; add(|"a", "x", 5)
+      ; add(|"a", "x", 6)
+      ; lookup-all-rules(|"x")
+      | [4, 3, 6, 5, 2, 1]
     )
 
   ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #1",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 2)
-      ; change-set(|"a", "x", 2)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; lookup-rule(|"x")
-      | [2]
+      | [2, 1]
     )
 
   ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #2",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 2)
-      ; change-set(|"a", "x", 2)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; lookup-all-rules(|"x")
-      | [2, 2]
+      | [2, 1, 2, 1]
     )
 
   ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #3",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 1)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
       ; change-set(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; lookup-rule(|"x")
-      | [1]
+      | [1, 0]
     )
 
   ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #4",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 1)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
       ; change-set(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; lookup-all-rules(|"x")
-      | [1, 1]
+      | [1, 0, 2, 1]
     )
 
   ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #5",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
       ; change-set(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; lookup-rule(|"x")
-      | [1]
+      | [2, 1]
     )
 
   ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #6",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
       ; change-set(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; lookup-all-rules(|"x")
-      | [1, 1]
+      | [2, 1, 2, 1]
     )
 
-  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS RS CS CS) #1",
-      init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 2)
-      ; change-set-vis(|"a", "x", 2)
-      ; lookup-rule(|"x")
-      | [2]
-    )
+//
 
-  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS RS CS CS) #2",
+  ; apply-scope-test(!"Check adding rules in different scopes with different values (RS RS CS CS) #1",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 2)
-      ; change-set-vis(|"a", "x", 2)
-      ; lookup-all-rules(|"x")
-      | [2]
-    )
-
-  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS RS CS CS) #3",
-      init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 1)
-      ; lookup-rule(|"x")
-      | [1]
-    )
-
-  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS RS CS CS) #4",
-      init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 1)
-      ; lookup-all-rules(|"x")
-      | [1]
-    )
-
-  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS RS CS CS) #5",
-      init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 1)
-      ; lookup-rule(|"x")
-      | [1]
-    )
-
-  ; apply-scope-test(!"Check adding rules vis in different scopes with the same value (RS RS CS CS) #6",
-      init-rule-set
-      ; rule-scope(|"a", "x", 0)
-      ; rule-scope(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 1)
-      ; lookup-all-rules(|"x")
-      | [1]
-    )
-
-  ; apply-scope-test(!"Check adding rules vis when the definition to be removed is only in change set #1",
-      init-rule-set
-      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; rule-scope(|"b")
-      ; change-set(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 2)
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add(|"b", "x", 4)
+      ; change-set
+      ; add(|"a", "x", 5)
+      ; add-vis(|"a", "x", 6)
       ; lookup-rule(|"x")
-      | [2]
+      | [6, 5, 2, 1]
     )
 
-  ; apply-scope-test(!"Check adding rules vis when the definition to be removed is only in change set #2",
+  ; apply-scope-test(!"Check adding rules in different scopes with different values (RS RS CS CS) #2",
       init-rule-set
-      ; rule-scope(|"a", "x", 0)
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
       ; rule-scope(|"b")
-      ; change-set(|"b", "x", 1)
-      ; change-set-vis(|"a", "x", 2)
+      ; add(|"b", "x", 3)
+      ; change-set
+      ; add(|"b", "x", 4)
+      ; change-set
+      ; add(|"a", "x", 5)
+      ; add-vis(|"a", "x", 6)
       ; lookup-all-rules(|"x")
-      | [2]
+      | [6, 5, 2, 1]
     )
-*/
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #1",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 1)
+      ; add-vis(|"a", "x", 2)
+      ; lookup-rule(|"x")
+      | [2, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #2",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 1)
+      ; add-vis(|"a", "x", 2)
+      ; lookup-all-rules(|"x")
+      | [2, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #3",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 1)
+      ; add-vis(|"a", "x", 2)
+      ; lookup-rule(|"x")
+      | [2, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #4",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 1)
+      ; add(|"a", "x", 2)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 0)
+      ; change-set
+      ; add(|"b", "x", 1)
+      ; change-set(|"a", "x", 1)
+      ; add-vis(|"a", "x", 2)
+      ; lookup-all-rules(|"x")
+      | [2, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #5",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 1)
+      ; add-vis(|"a", "x", 2)
+      ; lookup-rule(|"x")
+      | [2, 1]
+    )
+
+  ; apply-scope-test(!"Check adding rules in different scopes with the same value (RS RS CS CS) #6",
+      init-rule-set
+      ; rule-scope(|"a")
+      ; add(|"a", "x", 0)
+      ; add(|"a", "x", 1)
+      ; rule-scope(|"b")
+      ; add(|"b", "x", 1)
+      ; change-set
+      ; add(|"b", "x", 2)
+      ; change-set(|"a", "x", 1)
+      ; add-vis(|"a", "x", 2)
+      ; lookup-all-rules(|"x")
+      | [2, 1]
+    )
+
 strategies
 
   scope-lookup-tests = id

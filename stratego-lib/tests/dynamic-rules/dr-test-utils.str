@@ -136,6 +136,12 @@ strategies
   add-vis(|label, key, value) =
     dr-add-rule-vis(|"Test", label, key, value)
 
+  undef-rule(|key) =
+    dr-undefine-rule(|"Test", key)
+
+  undef-rule(|label, key) =
+    dr-undefine-rule(|"Test", label, key)
+
   lookup-rule(|key) =
     dr-lookup-rule(|"Test", key)
 
