@@ -253,7 +253,7 @@ strategies
 
   dr-symbolic-merge-rulesets(merge, aux, redef | rs, R) =
     where(
-      !rs => [ChangeSet(_,_,ht1)|_]
+      !rs => [ChangeSet(_,_,ht1,_)|_]
       ; <hashtable-keys> ht1
       ; map(Snd; !(<id>, <merge>(<dr-symbolic-lookup(aux|rs)>, <Occ>)); redef)
       ; dr-commit-change-set(|"Occ")
@@ -286,7 +286,7 @@ strategies
 
   merge-Occ-rulesets(|rs) =
     where(
-      !rs => [ChangeSet(_,_,ht1)|_]
+      !rs => [ChangeSet(_,_,ht1,_)|_]
       ; <hashtable-keys> ht1
       ; map(<redef-occ>(<Fst>, <Snd; !(<id>, <merge-occ>(<occ-lookup(|rs)>, <Occ>))>))
       ; dr-commit-change-set(|"Occ")
