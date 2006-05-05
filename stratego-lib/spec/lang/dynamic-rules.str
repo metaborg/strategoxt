@@ -2,6 +2,11 @@
  * A revised version of the pre-0.9.5 dynamic-rules-tools
  * Now using the new hash-tables, and implementing scoping
  * as a 'stack' of hashtables.
+ *
+ * @todo reuse ChangeSets when applying the fix point operator
+ * @todo provide constructs to handle do-while-like structures
+ *       issues: - a break inside the do-while
+ *               - propagation in the first run could be wrong
  */
 module lang/dynamic-rules
 
@@ -13,7 +18,10 @@ imports
 signature
   constructors
     RuleScope : IndexedSet * Hashtable -> RuleScope
-    ChangeSet : IndexedSet * IndexedSet * Hashtable -> RuleScope
+    ChangeSet : IndexedSet * IndexedSet * Hashtable * String -> RuleScope
+    Fix       : String * String -> Fix
+    BreakCS   : String * String -> BreakCS
+    Label     : Label
 
 /**
  * Currently active rule set
@@ -368,13 +376,13 @@ strategies // scope
 
   dr-label-scope(|label) =
     [ RuleScope(iset-add(|label), id)
-      + ChangeSet(iset-add(|label), id, id)
+      + ChangeSet(iset-add(|label), id, id, id)
     | id]
     // todo: distinction between rulescope and changeset necessary here or not??
 //    [RuleScope(labels, tbl) | scopes] -> [RuleScope([label | labels], tbl) | scopes]
 
    dr-get-scope-labels =
-     mapconcat(?RuleScope(<iset-elements>,_) + ?ChangeSet(<iset-elements>,_,_))
+     mapconcat(?RuleScope(<iset-elements>,_) + ?ChangeSet(<iset-elements>,_,_,_))
 
    /**
     * Get the first scope label for which s succeeds.
@@ -382,21 +390,21 @@ strategies // scope
 
    dr-get-first-scope-label(s) =
      fetch-elem(?RuleScope(<iset-elements; fetch-elem(s)>,_)
-                + ?ChangeSet(<iset-elements; fetch-elem(s)>,_,_))
+                + ?ChangeSet(<iset-elements; fetch-elem(s)>,_,_,_))
 
 strategies // change sets
 
   dr-new-change-set =
-    !ChangeSet(<new-iset>, <new-iset>, <new-hashtable>)
+    !ChangeSet(<new-iset>, <new-iset>, <new-hashtable>, "")
 
   dr-start-change-set =
     ![<dr-new-change-set> | <id>]
 
   dr-destroy-change-set =
-    ChangeSet(iset-destroy, iset-destroy, hashtable-destroy)
+    ChangeSet(iset-destroy, iset-destroy, hashtable-destroy, id)
 
   dr-commit-change-set :
-    [cs@ChangeSet(labelset, rmset, tbl) | rs] -> rs''
+    [cs@ChangeSet(labelset, rmset, tbl, slabel) | rs] -> rs''
     where <hashtable-keys> tbl
         ; foldr(<dr-commit-labels(|labelset)> rs
                , dr-apply-change(|tbl)) => rs'
@@ -405,11 +413,11 @@ strategies // change sets
         ; <dr-destroy-change-set> cs
 
   dr-discard-change-set :
-    [cs@ChangeSet(_,_,_) | rs] -> rs
+    [cs@ChangeSet(_,_,_,_) | rs] -> rs
     where <dr-destroy-change-set> cs
 
   dr-commit-labels(|labelset) =
-    [ ChangeSet(iset-union(|labelset), id, id)
+    [ ChangeSet(iset-union(|labelset), id, id, id)
       + RuleScope(iset-union(|labelset), id)
     | id]
 
@@ -428,7 +436,7 @@ strategies // change sets
     <+ dr-commit-to-rule-scope(|scpid, key, value)
 
   dr-commit-to-change-set(|scpid, key, value) =
-    ?[ChangeSet(_, rmset, tbl) | rs]
+    ?[ChangeSet(_, rmset, tbl, _) | rs]
     ; where(
         (<dr-lookup-rule-in-scope(|key, scpid)>rs => value
          < <hashtable-remove(|(scpid, key))>tbl
@@ -448,7 +456,7 @@ strategies // change sets
     + dr-commit-to-rule-scope(|scpid, key, value))
 
   dr-commit-to-change-set(|scpid, key, value) =
-    ?ChangeSet(_, _, tbl)
+    ?ChangeSet(_, _, tbl, _)
     ; where(<hashtable-put(|(scpid, key), value)> tbl)
 
   dr-commit-to-rule-scope(|scpid, key, value) =
@@ -465,7 +473,7 @@ strategies // change sets
     + dr-remove-from-rule-scope(|scpid, key))
 
   dr-remove-from-change-set(|scpid, key) =
-    ChangeSet(id, iset-add(|(scpid, key)), ?tbl)
+    ChangeSet(id, iset-add(|(scpid, key)), ?tbl, id)
   ; where(<hashtable-remove(|(scpid, key))> tbl)
 
   dr-remove-from-rule-scope(|scpid, key) =
@@ -498,7 +506,7 @@ strategies // looking up
        <+ <dr-lookup-rule(look | key, removed)> rs)
 
   dr-lookup-rule(look1 | key, removed) =
-    ?[ChangeSet(_, rmset, tbl) | rs]
+    ?[ChangeSet(_, rmset, tbl, _) | rs]
     ; let look2 = look1
                   <+ {key':
                       ?key'
@@ -530,7 +538,7 @@ strategies // looking up
        ; <dr-lookup-rule-in-scope(|key, scpid)>rs)
 
   dr-lookup-rule-in-scope-cs(|key, scpid) =
-    ?[ChangeSet(_, rmset, tbl) | rs]
+    ?[ChangeSet(_, rmset, tbl, _) | rs]
     ; (<iset-contains(|(scpid, key))>rmset
        < fail                                // key is marked for removal, so
                                              // in effect it is not defined
@@ -554,7 +562,7 @@ strategies // looking up
        <+ <dr-lookup-rule-pointer(look | key, removed)> rs)
 
   dr-lookup-rule-pointer(look1 | key, removed) =
-    ?[ChangeSet(_, rmset, tbl) | rs]
+    ?[ChangeSet(_, rmset, tbl, _) | rs]
     ; let look2 = look1
                   <+ {key':
                       ?key'
@@ -583,7 +591,7 @@ strategies // looking up
             ,<dr-lookup-all-rules(look | key, removed) <+ ![]> rs)
 
   dr-lookup-all-rules(look1 | key, removed) =
-    ?[ChangeSet(_, rmset, tbl) | rs]
+    ?[ChangeSet(_, rmset, tbl, _) | rs]
     ; let look2 = look1
                   <+ {key':
                       ?key'
@@ -633,7 +641,7 @@ strategies // setting a rule
 
   dr-set-in-rule-set(set1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm
            | label, key, value) =
-    ?[ChangeSet(labelset, rmset, tbl1) | rs]
+    ?[ChangeSet(labelset, rmset, tbl1, _) | rs]
     ; where(
         let set2(|scpid, tbl2, key, value) =
               set1(|scpid, tbl2, key, value)
@@ -694,7 +702,7 @@ strategies // setting a rule
       set1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
       rm1  : ATerm * Hashtable * ATerm * ATerm         -> ATerm
       | label, key, value)
-  = ?[ChangeSet(labelset, rmset, tbl1) | rs]
+  = ?[ChangeSet(labelset, rmset, tbl1, _) | rs]
     ; where(
         let set2(|scpid, tbl2, key, value) =
               set1(|scpid, tbl2, key, value)
@@ -756,7 +764,7 @@ strategies // extending a rule
 
   dr-add-to-rule-set(add1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm
              | label, key, value) =
-    ?[ChangeSet(labelset, rmset, tbl1) | rs]
+    ?[ChangeSet(labelset, rmset, tbl1, _) | rs]
     ; where(
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
@@ -813,7 +821,7 @@ strategies // extending a rule
       add1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
       rm1  : ATerm * Hashtable * ATerm * ATerm         -> ATerm
       | label, key, value)
-  = ?[ChangeSet(labelset, rmset, tbl1) | rs]
+  = ?[ChangeSet(labelset, rmset, tbl1, _) | rs]
     ; where(
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
@@ -872,10 +880,31 @@ strategies // intersection and union of rule-sets
       ior(<merge-rs> (rs1, tbl1, rs2, tbl2), <merge-rec> (rs1a, rs2a))
 
   dr-merge-rule-sets2(merge-cs, merge-rec) :
-    (rs1@[ChangeSet(labels1, rmset1, tbl1) | rs1a],
-     rs2@[ChangeSet(labels2, rmset2, tbl2) | rs2a]) -> rs1
+    (rs1@[cs1@ChangeSet(labels1, rmset1, tbl1, slabel1) | rs1a],
+     rs2@[cs2@ChangeSet(labels2, rmset2, tbl2, slabel2) | rs2a]) -> [cs | rs1a]
     where
-      ior(<merge-cs> (rs1, rmset1, tbl1, rs2, rmset2, tbl2), <merge-rec> (rs1a, rs2a))
+      // "ignore" & "ignore" have to be merged, with the "ignore" system label kept
+      // "" & "" is the normal merge
+//      debug(!"dr-merge-rule-sets2-1>")
+//      ; <dr-print-rule-set-msg(|"merge cs 1")>[cs1]
+//      ; <dr-print-rule-set-msg(|"merge cs 2")>[cs2]
+      <eq>(slabel1, slabel2)
+//      ; debug(!"dr-merge-rule-sets2-2>")
+      ; ior(<merge-cs> (rs1, rmset1, tbl1, rs2, rmset2, tbl2), <merge-rec> (rs1a, rs2a))
+//      ; debug(!"dr-merge-rule-sets2-3>")
+      ; !cs1 => cs
+//      ; debug(!"dr-merge-rule-sets2-4>")
+      <+ // slabel1 = "ignore" & slabel2 != "ignore", so we ignore cs1
+         <eq>(slabel1, "ignore")
+//         ; debug(!"dr-merge-rule-sets2-5>")
+         ; (<eq>(rs1a, rs2a)
+            < debug(!"dr-merge-rule-sets2-6>"); !cs2 => cs
+            + fatal-err(|"Merging of rulesets cannot continue because the non-ingnored change set is based on a different ruleset than the ignored change set."))
+      <+ // slabel1 != "ignore" & slabel2 = "ignore", so we ignore cs2
+         <eq>(slabel2, "ignore")
+//         ; debug(!"dr-merge-rule-sets2-7>")
+         ; !cs1 => cs
+//         ; debug(!"dr-merge-rule-sets2-8>")
 
   /**
    * Intersection of two rule-sets
@@ -894,8 +923,7 @@ strategies // intersection and union of rule-sets
       , {?(rs1, rmset1, tbl1, rs2, rmset2, tbl2)
          ; <apply-rm-set(|rmset2)> tbl1
          ; <iset-union(|rmset2)> rmset1
-         ; <hashtable-intersect-wempty(|tbl2, [])> tbl1
-        }
+         ; <hashtable-intersect-wempty(|tbl2, [])> tbl1}
     )
 
   apply-rm-set(|rmset) = ?tbl
@@ -923,8 +951,7 @@ strategies // intersection and union of rule-sets
          ; <apply-rm-set(|rmset1)> tbl2
          ; <iset-union(|rmset2)> rmset1
          ; <iset-union(|rmset1)> rmset2
-         ; <hashtable-intersect-symm-wempty-ignore-left(|[])> (tbl1, tbl2)
-        }
+         ; <hashtable-intersect-symm-wempty-ignore-left(|[])> (tbl1, tbl2)}
     )
 
   /**
@@ -952,8 +979,7 @@ strategies // intersection and union of rule-sets
              ![],
              \ (_,key) -> <dr-lookup-rule(|key)> rs1\,
              \ (_,key) -> <dr-lookup-rule(|key)> rs2\
-           )> (tbl1, tbl2)
-        }
+           )> (tbl1, tbl2)}
     )
 
   dr-union-rule-sets-symm =
@@ -966,8 +992,7 @@ strategies // intersection and union of rule-sets
          ; <apply-rm-set(|rmset1)> tbl2
          ; <iset-union(|rmset2)> rmset1
          ; <iset-union(|rmset1)> rmset2
-         ; <hashtable-union-symm-wempty(|[])> (tbl1, tbl2)
-        }
+         ; <hashtable-union-symm-wempty(|[])> (tbl1, tbl2)}
     )
 
 strategies // generic fork-and-merge strategies
@@ -1032,7 +1057,7 @@ strategies // generic fix-point strategies
    * @param merge :
    */
 
-  dr-fix-and-merge(merge, s | rulenames) =
+  dr-fix-and-merge-no-break(merge, s | rulenames) =
     where(<map(fork-rule-sets)> rulenames => rs)
     ; repeat(
         where(
@@ -1047,6 +1072,220 @@ strategies // generic fix-point strategies
       )
     ; !e
     ; where(<map(dr-commit-change-set(|<id>))> rulenames)
+
+  dr-fix-and-merge(merge, s | rulenames) =
+    dr-fix-and-merge-no-break(merge, s | rulenames)
+//    dr-fix-and-merge(merge, s | rulenames, "")
+
+  dr-fix-and-merge(merge, s | rulenames, label) =
+    {| Break :
+
+      // label the current scope with <label>
+      rules(Break+label : Label -> label)
+
+      // for each rule r in <rulenames> do
+      //     define a dynamic rule based on r and <label> which marks
+      //     the position of the change set for the fixed point
+      //     operator labeled with <label> in the ruleset of r
+      //     (these rules are used in dr-break)
+      ; where(
+          <map({rulename, pos :
+                ?rulename
+                ; dr-get-rule-set(|rulename)
+                ; length => pos
+                ; rules(Break.label : Fix(rulename, label) -> pos)
+              })>rulenames
+        )
+
+      ; dr-print-rule-set(|"Break")
+
+      ; where(<map(fork-rule-sets)> rulenames => rs)
+      ; repeat(
+          where(
+            restore(s, where(<map(dr-discard-change-set(|<id>))> rulenames))
+            ; if <filter({?(rulename, ruleset)
+                          ; debug(!"dr-fix-and-merge-5>")
+                          ; dr-print-rule-set(|rulename)
+                          ; (dr-get-rule-set(|rulename) => [ChangeSet(labels, rmset, tbl, "ignore") | _]
+                             < <iset-clear>labels
+                               ; <iset-clear>rmset
+                               ; <hashtable-clear>tbl
+                               ; debug(!"dr-fix-and-merge-6>")
+                               ; fail
+                             + debug(!"dr-fix-and-merge-7>")
+                               ;<merge>(rulename, ruleset))
+                        })> rs; []
+              then
+                debug(!"dr-fix-and-merge-8>");
+                ?e; fail // no changes in any of the rules
+              else
+                // when <bagof-Break>BreakCS(rulename, label) is called further
+                // below in this strategy, we need to be able to extract the
+                // elements in the list returned by bagof which were defined during
+                // the first run (from above) of the strategy s and the ones in the
+                // last run. For this, we need to make sure there will be some
+                // separators in that list which we can use to get what we need.
+                // The separator will be (), and here is the point where we add it
+                where(<map(rules(Break.label :+ BreakCS(<id>, label) -> ()))>rulenames)
+                ; debug(!"dr-fix-and-merge-9>")
+                ; id       // some rule changed; continue
+              end
+          )
+        )
+
+      ; dr-print-rule-set(|"Break")
+
+      // for each rule r in <rulenames> do
+      //     we want to intersect the current ruleset for rule r with some of the rulesets
+      //     returned by bagof-Break for r and the current <label>. We only want to use those
+      //     elements from bagof-Break that are from the first and the last run of strategy s
+      //     in the repeat from above. For that, we used () as a separator (see comment above).
+      //     We also have to check that the first change set from the current ruleset for r
+      //     is not marked as "ignore". If it is, then we replace the current ruleset with the
+      //     first one from the (already filtered) list returned by bagof-Break (it could have
+      //     been any other element of that list just as well) and then intersect that with
+      //     the rest of the list.
+      ; <map({rulename, rs, slabel :
+          ?rulename
+          ; debug(!"dr-fix-and-merge-10>")
+          ; dr-get-rule-set(|rulename) => [ChangeSet(_, _, _, slabel) | rs]
+          ; debug(!"dr-fix-and-merge-11>")
+          ; <bagof-Break>BreakCS(rulename, label)
+          ; debug(!"dr-fix-and-merge-12>")
+          ; list-tokenize(|[()])
+          ; debug(!"dr-fix-and-merge-13>")
+          ; first-last
+          ; debug(!"dr-fix-and-merge-14>")
+          ; concat
+          ; debug(!"dr-fix-and-merge-15>")
+          ; if <eq>(slabel, "ignore") then [dr-set-rule-set(|rulename) | id]; Tl else id end
+          ; debug(!"dr-fix-and-merge-16>")
+          ; map(<MkCons>(<id>, rs); try(<merge>(rulename, <id>)))
+          ; debug(!"dr-fix-and-merge-17>")
+        })>rulenames
+
+      ; !e
+      ; where(<map(dr-commit-change-set(|<id>))> rulenames)
+    |}
+
+  /**
+   * Returns the first and the last element in a list. For the empty
+   * list and the singleton list, this is equivalent with id.
+   */
+  first-last =
+    [id | try(last; MkSingleton)] <+ []
+
+  dr-break(| rulename) =
+    dr-break(| rulename, <Break>Label)
+
+  dr-break(| rulename, label) =
+    where(
+//      debug(!"dr-break-1>");
+      dr-get-rule-set(|rulename) => rs
+//      ; dr-print-rule-set(|rulename)
+//      ; debug(!"dr-break-2>")
+
+      // get the ruleset up to the fix point operator identified by <label> and the one from
+      // within the structure over which the fix point operator was applied
+      ; back-split-at(|<Break>Fix(rulename, label))
+//      ; dr-print-rule-set(|rulename)
+//      ; debug(!"dr-break-3>")
+
+      // add an empty change set to the ruleset up to the fix point operator
+//      ; (id, dr-start-change-set) => (inFixRs, baseRs)
+      ; ?(inFixRs, _)
+//   	; dr-print-rule-set(|rulename)
+//      ; debug(!"dr-break-4>")
+
+      // apply dr-commit-change-set the exact number of times needed to obtain a ruleset
+      // composed of the ruleset up to the fix point operator followed by a single change set
+      // (the empty one added above, now containing all the changes in the other change sets)
+      // and extract this change set
+//      ; <conc>(inFixRs, baseRs)
+//      ; debug(!"dr-break-5>")
+//      ; dr-print-rule-set(|rulename)
+//      ; repeat(dr-commit-change-set <+ ?[_ | <id>] | <length>inFixRs)
+//      ; debug(!"dr-break-6>")
+//      ; dr-print-rule-set(|rulename)
+//      ; ?[<id> | _]
+
+      ; <build-break-change-set>inFixRs
+      ; ?cs
+//      ; debug(!"dr-break-7>")
+//      ; dr-print-rule-set(|rulename)
+
+      // define the rule which will be used back at the application of the fix point operator
+      // to retrieve all the change sets pertaining to paths leading to a break
+      ; rules(Break.label :+ BreakCS(rulename, label) -> cs)
+//      ; debug(!"dr-break-8>")
+//      ; dr-print-rule-set(|rulename)
+
+      // go back to the active ruleset and mark the innermost change set with "ignore"
+      ; !rs
+//      ; debug(!"dr-break-9>")
+//      ; dr-print-rule-set(|rulename)
+      ; fetch(ChangeSet(id, id, id, !"ignore"))
+//      ; debug(!"dr-break-10>")
+//      ; dr-print-rule-set(|rulename)
+      ; dr-set-rule-set(|rulename)
+//      ; debug(!"dr-break-11>")
+//      ; dr-print-rule-set(|"Break")
+//      ; dr-print-rule-set(|rulename)
+    )
+
+  /**
+   * Splits a list in two, with the second part containing the last
+   * n elements and and first part containing all elements except the
+   * last n.
+   */
+  back-split-at(|n) =
+    foldr(!(([], []), 0)
+          , {x, l, r, m :
+             ?(x, ((l, r), m))
+             ; if <lt>(m, n)
+               then
+                 !((l, [x | r]), <inc>m)
+               else
+                 !(([x | l], r), m)
+               end})
+    ; ?(<id>, _)
+
+  build-break-change-set =
+//    debug(!"build-break-change-set-1>");
+    where(dr-new-change-set => cs@ChangeSet(labels, rmset, tbl, _))
+    ; where(reverse; take-until(?RuleScope(_, _)); map({ls : ?ChangeSet(ls,_,_,_); <iset-union(|ls)>labels}))
+    ; where(filter(?RuleScope(_, Hashtable(<id>))) => scpids)
+    ; filter(ChangeSet(id, id, id, id))
+//    ; debug(!"build-break-change-set-5>")
+    ; reverse-map({rmset1, tbl1 :
+           ?ChangeSet(_, rmset1, tbl1, _)
+//           ; debug(!"build-break-change-set-6>")
+           ; <hashtable-keys>tbl1
+//           ; debug(!"build-break-change-set-7>")
+           ; map({k, scpid, key, v :
+                  ?k@(scpid, key);
+                  try(<not(fetch-elem(?scpid))>scpids
+                      ; <hashtable-get(|k)>tbl1
+                      ; ?v
+//                      ; debug(!"build-break-change-set-7-1>")
+                      ; <hashtable-put(|k, v)>tbl)
+                })
+//           ; debug(!"build-break-change-set-8>")
+           ; <iset-elements>rmset1
+//           ; debug(!"build-break-change-set-9>")
+           ; map({k, scpid, key :
+                  ?k@(scpid, key)
+                  ; try(<not(fetch-elem(?scpid))>scpids; <iset-add(|k)>rmset)
+                })
+//           ; debug(!"build-break-change-set-10>")
+          })
+//    ; debug(!"build-break-change-set-11>")
+    ; <iset-elements>rmset
+//    ; debug(!"build-break-change-set-12>")
+    ; map({key : ?key; <hashtable-remove(|key)>tbl})
+//    ; debug(!"build-break-change-set-13>")
+    ; !cs
+//    ; debug(!"build-break-change-set-14>")
 
   dr-fix-and-merge(merge1, merge2, s | rulenames1, rulenames2) =
     where(<map(fork-rule-sets)> rulenames1 => rs1;
@@ -1107,6 +1346,10 @@ strategies // fix-point with intersection and union
   dr-fix-and-intersect(s | rulenames) =
     dr-fix-and-merge(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
                     , s | rulenames)
+
+  dr-fix-and-intersect(s | rulenames, label) =
+    dr-fix-and-merge(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+		    , s | rulenames, label)
 
   /**
    * Iterate union of two rule-sets
@@ -1173,7 +1416,7 @@ strategies // rule-set equality
         ?(RuleScope(lbl1, tbl1), RuleScope(lbl2, tbl2))
       ; <iset-eq(|lbl2)> lbl1
       ; <hashtable-eq> (tbl1, tbl2)
-    +   ?(ChangeSet(lbl1, rmset1, tbl1), ChangeSet(lbl2, rmset1, tbl2))
+    +   ?(ChangeSet(lbl1, rmset1, tbl1, _), ChangeSet(lbl2, rmset1, tbl2, _))
       ; <iset-eq(|lbl2)> lbl1
       ; <iset-eq(|rmset2)> rmset1
       ; <hashtable-eq> (tbl1, tbl2)
@@ -1205,6 +1448,11 @@ strategies // debugging
   dr-print-rule-set =
     where(map(dr-print-scope))
 
+  dr-print-rule-set-msg(|msg) =
+    where(!msg => "" <+ say(<concat-strings>["\n--- BEGIN(", msg,  ") ---"]))
+    ;  dr-print-rule-set
+    ; where(!msg => "" <+ say(<concat-strings>["--- END  (", msg,  ") ---\n"]))
+
   dr-print-scope =
     ?RuleScope(labelset, tbl)
   ; where(
@@ -1219,7 +1467,7 @@ strategies // debugging
     )
 
   dr-print-scope =
-    ?ChangeSet(labelset, rmset, tbl)
+    ?ChangeSet(labelset, rmset, tbl, slabel)
   ; where(
       debug
     ; <iset-elements; debug(!"labels: ")> labelset
@@ -1230,4 +1478,5 @@ strategies // debugging
                   ; map(<fprintnl>(stderr, ["    ", <id>]))
                  )
          )
+    ; <debug(!"system label: ")> slabel
     )
