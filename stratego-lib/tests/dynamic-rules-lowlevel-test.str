@@ -9,6 +9,7 @@ strategies
       ; test-dr-add-to-rule-set
       ; test-change-set
       ; test-dr-intersect-rule-sets
+//      ; test-break
     )
 
   test-dr-set-in-rule-set =
@@ -172,7 +173,6 @@ strategies
 	, !["value5","value1"]
 	)
 
-
   test-change-set =
     say(!"testing change-set");
     apply-and-check(!"test-change-set add rule"
@@ -282,6 +282,43 @@ strategies
     try(dr-intersect-rule-sets),
     !(rs1, rs2),
     <dr-eq-rule-sets> (rs1, rsi12))
+
+  test-break =
+    say(!"testing dr-break-related behaviour")
+    ; where(
+        dr-new-rule-set
+        ; dr-add-scope
+        ; dr-label-scope(|"a")
+        ; dr-add-scope
+        ; dr-label-scope(|"b")
+        ; dr-start-change-set
+        ; dr-add-to-rule-set(|"a", "y", 4)
+        ; dr-add-to-rule-set(|"a", "z", 2)
+        ; dr-add-to-rule-set(|"b", "bogus1", ())
+        ; dr-add-scope
+        ; dr-start-change-set
+        ; dr-add-to-rule-set(|"a", "x", 2)
+        ; dr-add-to-rule-set(|"a", "z", 3)
+        ; dr-add-to-rule-set(|"bogus2", ())
+        ; dr-add-to-rule-set(|"b", "bogus3", ())
+        ; dr-start-change-set
+        ; dr-add-to-rule-set(|"a", "x", 1)
+        ; dr-add-to-rule-set(|"a", "y", 3)
+        ; take(|5)
+        ; ?rs
+      )
+    ; apply-and-check(!"test that build-break-change-set works correctly"
+      , build-break-change-set
+      , !rs
+      , ?ChangeSet(_, _, tbl, _)
+        ; <hashtable-keys>tbl => keys
+        ; <fetch-elem(?(_, "x"))>keys => keyx
+        ; <eq>(<hashtable-get(|keyx)>tbl, [1])
+        ; <fetch-elem(?(_, "y"))>keys => keyy
+        ; <eq>(<hashtable-get(|keyy)>tbl, [3])
+        ; <fetch-elem(?(_, "z"))>keys => keyz
+        ; <eq>(<hashtable-get(|keyz)>tbl, [3])
+      )
 
 /*
 	; where(<dr-label-scope(|"A")> rs1 => rs1')

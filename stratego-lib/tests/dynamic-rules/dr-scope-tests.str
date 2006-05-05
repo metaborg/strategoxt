@@ -728,8 +728,6 @@ strategies
       | [2, 1, 2, 1]
     )
 
-//
-
   ; apply-scope-test(!"Check adding rules in different scopes with different values (RS RS CS CS) #1",
       init-rule-set
       ; rule-scope(|"a")

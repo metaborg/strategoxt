@@ -20,7 +20,7 @@ strategies
         Signature([
           Constructors(![
             OpDecl("DR_UNDEFINE", 
-	           FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
+                   FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
             , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))
             | <id>])
         ])
@@ -82,12 +82,12 @@ strategies
   lift-dynamic-rule-from-def :
     [def | defs] -> <conc> ([def' | rdefs], defs)
     where {| ContextVar, LiftedRules, CurrentDef
-	   : <def-tvars> def; DeclareContextVars
-	   ; <def-name> def => name
+           : <def-tvars> def; DeclareContextVars
+           ; <def-name> def => name
            ; rules( CurrentDef : () -> name )
            ; <lift-dynamic-rule> def => def'
-	   ; get-rules => rdefs
-	   |}
+           ; get-rules => rdefs
+           |}
 
   add-def(|def) =
     rules( LiftedRules :+ () -> def )
@@ -97,11 +97,11 @@ strategies
 
   def-tvars =
     <union> (<tvars>,
-	     <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
-	      <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
-	      <+ ![]
+             <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+              <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+              <+ ![]
              >
-	    )
+            )
 
   /**
    * Traverse to find dynamic rule definition.  Record all variables
@@ -204,8 +204,8 @@ strategies
     |[ rules( f(a1*|a2*).t1 : t2 -> t3 where s depends on t4 ) ]| ->
     |[ rules( f(a1*|a2*).t1 : t2 -> t3 where s )
        ; where( 
-	     !t1  => y0 // scope
-	   ; !t2' => y1 // left-hand side (should be the key)
+             !t1  => y0 // scope
+           ; !t2' => y1 // left-hand side (should be the key)
            ; !t4  => y2 // dependencies
            ; map({x1, x2: ?(x1,x2)
                    ; rules( 
@@ -215,7 +215,7 @@ strategies
          )
     ]|
     where new => x; new => x1; new => x2
-	; new => y0; new => y1; new => y2; new => z
+        ; new => y0; new => y1; new => y2; new => z
         ; <dummify> t2 => t2'
         ; create-new-strategy(|f)
         ; create-undefine-strategy(|f)
@@ -233,6 +233,8 @@ strategies
   _bagof(|f)           = <concat-strings> ["bagof-", f]
   _bigbagof(|f)        = <concat-strings> ["bigbagof-", f]
   _innermost-scope(|f) = <concat-strings> ["innermost-scope-", f]
+  _break(|f)           = ![<concat-strings> ["break-", f]
+                           , <concat-strings> ["break-to-label-", f]]
 
 strategies
 
@@ -321,27 +323,28 @@ rules
     drd@|[ rules(  f(a1*|a2*) : t1 -> t2 where s ) ]| -> 
     |[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|
     where <dummify> t1 => t1'
-	; <closure> drd => t*
-	; <dr-rename-vars> drd => stdrule
-	; <get-stamp>stdrule => stamp
+        ; <closure> drd => t*
+        ; <dr-rename-vars> drd => stdrule
+        ; <get-stamp>stdrule => stamp
 
-	; <create-aux-rule(|stdrule)> drd
+        ; <create-aux-rule(|stdrule)> drd
 
-	; new => x
-	; <aux-call(|x)> drd => aux-call
-	; <lookup-key(|x)> t1 => t3
-	; <dr-rename-vars> t3 => stdkey
+        ; new => x
+        ; <aux-call(|x)> drd => aux-call
+        ; <lookup-key(|x)> t1 => t3
+        ; <dr-rename-vars> t3 => stdkey
 
-	; detect-overlap(|f, t1, t3, stdkey, <CurrentDef>())
+        ; detect-overlap(|f, t1, t3, stdkey, <CurrentDef>())
 
-	; <create-base-rule(|x, aux-call, t3, stdkey)> drd
-	; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
-	; <create-once-rule(|x, aux-call, t3, stdkey)> drd
-	; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
-	; <create-chain-rule(|x, t3, stdkey)> drd
-	; <create-bigchain-rule(|x, t3, stdkey)> drd
+        ; <create-base-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-once-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-chain-rule(|x, t3, stdkey)> drd
+        ; <create-bigchain-rule(|x, t3, stdkey)> drd
+        ; <create-break-rules(|x, t3, stdkey)> drd
 
-	; create-innermost-scope-strategy(|f)
+        ; create-innermost-scope-strategy(|f)
 
 strategies // auxiliaries
 
@@ -391,8 +394,8 @@ strategies
   get-stamp :
     stdrule -> stamp
     where if not(<DrStamp> stdrule => stamp) then 
-	    // new => stamp
-	    <checksum> stdrule => stamp
+            // new => stamp
+            <checksum> stdrule => stamp
             ; rules( DrStamp : stdrule -> stamp )
           end
 
@@ -553,6 +556,26 @@ strategies
       end
 
 /**
+ * Break
+ */
+strategies
+
+  create-break-rules(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _break(|f) => [g1, g2]
+    ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
+        add-def(||[
+          g1(a1*|a2*) =
+            dr-break(|~str:f)
+        ]|)
+        ; new => x1
+        ; add-def(||[
+            g2(a1*|a2*, x1) =
+              dr-break(|~str:f, x1)
+          ]|)
+      end
+
+/**
  * Definitions that should be generated only once for each dynamic rules
  */
 strategies 
@@ -578,14 +601,14 @@ strategies
         ; add-def(||[ 
             f2(|scope, dep) = 
                 where(
-	          rules( f+scope )
-	          ; <f4> DR_UNDEFINE(dep)
-	          ; map({lhs, deps : 
+                  rules( f+scope )
+                  ; <f4> DR_UNDEFINE(dep)
+                  ; map({lhs, deps : 
                          ?(_, lhs, _)
                          ; dr-undefine-rule(|~str:f, lhs)
                         })
                   ; dr-undefine-rule(|~str:f, DR_UNDEFINE(dep))
-	        )
+                )
           ]|)
         ; add-def(||[ DYNAMIC_CALLS = f2(|"", "") ]|)
         // ; add-def(||[ dr-new(|scope, dep) = ?~str:f; f2(|scope, dep) ]|)
@@ -599,43 +622,43 @@ strategies
   create-undefine-strategy(|f) = 
     if is-new(|f, "undefine", ()) then
       where(_undefine(|f) => f3; _bagof(|f) => f4; _aux(|f) => f5
-	; add-def(||[ 
+        ; add-def(||[ 
             f3(|dep) = // undefine-f
-	      where(
+              where(
 
-		// find all rules that depend on dep
-		<f4> DR_UNDEFINE(dep)
+                // find all rules that depend on dep
+                <f4> DR_UNDEFINE(dep)
 
-		// remove each rule and related dependencies
-		; map({scope, lhs, deps: 
+                // remove each rule and related dependencies
+                ; map({scope, lhs, deps: 
                       ? (scope, lhs, deps)
 
-		      // undefine the rule with left-hand side lhs
+                      // undefine the rule with left-hand side lhs
                       ; dr-undefine-rule-vis(|~str:f, scope, lhs)
 
-		      // undefine each undefine rule related to dep for this dependency
-		      ; !deps
-		      ; map({scope2, dep2, undefine-dep2, closures: 
-			    ?(scope2, dep2)
+                      // undefine each undefine rule related to dep for this dependency
+                      ; !deps
+                      ; map({scope2, dep2, undefine-dep2, closures: 
+                            ?(scope2, dep2)
 
-			    // find all undefine rules for dependency y2
-			    ; !DR_UNDEFINE(dep2) => undefine-dep2
-			    ; <dr-lookup-rule(|~str:f, undefine-dep2)> undefine-dep2
+                            // find all undefine rules for dependency y2
+                            ; !DR_UNDEFINE(dep2) => undefine-dep2
+                            ; <dr-lookup-rule(|~str:f, undefine-dep2)> undefine-dep2
 
-			    // keep those closures that do not depend on dep
-			    ; filter(where({deps2:
-				f5(|dep2, undefine-dep2)
-				; ?(_,_,deps2)
-				; !deps2
-				; not(fetch(?(_,dep)))
-			      })) => closures
-	
-			    // put remaing closures back
-			    ; dr-set-rules-vis(|~str:f, scope2, undefine-dep2, closures)
+                            // keep those closures that do not depend on dep
+                            ; filter(where({deps2:
+                                f5(|dep2, undefine-dep2)
+                                ; ?(_,_,deps2)
+                                ; !deps2
+                                ; not(fetch(?(_,dep)))
+                              })) => closures
+        
+                            // put remaing closures back
+                            ; dr-set-rules-vis(|~str:f, scope2, undefine-dep2, closures)
                         })
-	           })
-	       )
-	    ]|)
+                   })
+               )
+            ]|)
         ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
         // ; add-def(||[ dr-undefine(|dep) = ?~str:f; f3(|dep) ]|)
         // note: problem with crossing module boundaries (see issue STR-346)
@@ -695,7 +718,7 @@ strategies
       <bagof-LeftHandSide> f
       ; if not(fetch(?(_,_,rnkey1,_))) then
           if fetch-elem(overlapping-keys(|rnkey1)) => (lhs2, key2, rnkey2, def2) then
-	    <overlap-error>(f, (lhs1, key1, rnkey1, def1), (lhs2, key2, rnkey2, def2))
+            <overlap-error>(f, (lhs1, key1, rnkey1, def1), (lhs2, key2, rnkey2, def2))
           else
             rules( LeftHandSide :+ f -> (lhs1, key1, rnkey1, def1) )
           end
@@ -759,12 +782,12 @@ strategies
   match-keys-neg :
     [(t1, t2) | ps] -> ps
     where <not(is-app <+ is-dummy)> t1
-	; <not(contains-dummy)> t2
+        ; <not(contains-dummy)> t2
 
   match-keys-neg :
     [(t1, t2) | ps] -> ps
     where <not(is-app <+ is-dummy)> t2
-	; <not(contains-dummy)> t1
+        ; <not(contains-dummy)> t1
 
   is-dummy = 
     ?Term|[ [DR_DUMMY()] ]|

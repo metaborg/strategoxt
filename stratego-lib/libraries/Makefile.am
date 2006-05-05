@@ -25,9 +25,9 @@ bootclean :
 libstrategolib.c : 
 	XTC_REPOSITORY=$(BUILD_REPOSITORY) \
 	$(top_srcdir)/../strc-core/spec/strc/strc -c --library \
-        -I $(top_srcdir)/ssl-compat \
-        -I $(top_srcdir)/spec \
-        -i ./strategolib.str -o libstrategolib.rtree \
+	-I $(top_srcdir)/ssl-compat \
+	-I $(top_srcdir)/spec \
+	-i ./strategolib.str -o libstrategolib.rtree \
 	--verbose 2 \
 	&& \
-        rm libstrategolib.str
+	rm libstrategolib.str
