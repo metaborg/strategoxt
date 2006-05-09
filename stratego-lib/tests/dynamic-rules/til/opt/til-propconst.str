@@ -14,7 +14,10 @@ strategies
     <+ propconst-if-then
     <+ propconst-if-then-else
     <+ propconst-while
+    <+ propconst-labeled-while
     <+ propconst-for
+    <+ propconst-break
+    <+ propconst-break-label
     <+ all(propconst); try(EvalExp)
 
   propconst-block =
@@ -47,9 +50,20 @@ strategies
     ?While(_, _)
     ; (/PropConst\* While(propconst, {| PropConst: map(propconst) |}))
 
-  // we assume a semantics for the for loop which evaluates the
-  // lower and upper bound only once, at the beginning of the loop
+  propconst-labeled-while =
+    Labeled(?label,
+      dr-fix-and-intersect(While(propconst, {| PropConst: map(propconst) |}) | ["PropConst"], label)
+    )
+
   propconst-for =
     For(?x, propconst, propconst, id)
     ; rules( PropConst.x :- Var(x) )
     ; (/PropConst\* For(id, id, id, {| PropConst: map(propconst) |}))
+
+  propconst-break =
+    ?Break(None)
+    ; break-PropConst
+
+  propconst-break-label =
+    ?Break(Some(label))
+    ; break-to-label-PropConst(|label)

@@ -3,7 +3,7 @@ imports TIL-expressions TIL-types
 exports 
   sorts Stat
   context-free syntax
-    "var" Id ";"	                                -> Stat {cons("Declaration")}
+    "var" Id ";"                                -> Stat {cons("Declaration")}
     "var" Id ":" Type ";"                       -> Stat {cons("DeclarationTyped")}
     Id ":=" Exp ";"                             -> Stat {cons("Assign")}
     "begin" Stat* "end"                         -> Stat {cons("Block")}

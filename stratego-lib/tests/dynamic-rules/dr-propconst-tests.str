@@ -2609,34 +2609,1174 @@ strategies
 
   pc-break-tests = id
 
-  ; fail-propconst-test(!"Check breaking out of iterative statement" |
+/////// non-structured tests
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #1" |
       "var x;
        x := 1;
        while c() do
-         if c() then
-           x := 2;
-           break;
-         end
+         if c() then x := 2; break; end
          x := 1;
        end
        f(x);",
       "var x;
        x := 1;
        while c() do
-         if c() then
-           x := 2;
-           break;
-         end
+         if c() then x := 2; break; end
          x := 1;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #2" |
+      "var x; x := 1; while c() do f(x); break; x := 2; end f(x);",
+      "var x; x := 1; while c() do f(1); break; x := 2; end f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #3" |
+      "var x; x := 1;
+       while c() do 
+         if c() then x := 1; break; end
+         f(x);
+         if c() then x := 1; break;
+         else
+           x := 1;
+           if c() then x := 3; else dummy(); break; f(x); end
+           f(x);
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do 
+         if c() then x := 1; break; end
+         f(1);
+         if c() then x := 1; break;
+         else
+           x := 1;
+           if c() then x := 3; else dummy(); break; f(1); end
+           f(3);
+         end
+         f(3); x := 1;
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #4" |
+      "var x; x := 1;
+       while c() do 
+         if c() then x := 1; break; end
+         f(x);
+         if c() then x := 1; break;
+         else
+           x := 1;
+           if c() then x := 3; else x := 2; break; f(x); end
+           f(x);
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do 
+         if c() then x := 1; break; end
+         f(1);
+         if c() then x := 1; break;
+         else
+           x := 1;
+           if c() then x := 3; else x := 2; break; f(2); end
+           f(3);
+         end
+         f(3); x := 1;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #5" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break; else x := 3; end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 2; break; else x := 3; end
+         f(3); x := 1;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #6" |
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; break; end
+         f(x,y);
+         if c() then x := 1; break; else x := 1; break; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(1,1);
+         if c() then y := 1; break; end
+         f(1,1);
+         if c() then x := 1; break; else x := 1; break; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(1,1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #7" |
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; break; end
+         f(x,y);
+         if c() then x := 1; break; else x := 1; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(1,y);
+         if c() then y := 1; break; end
+         f(1,y);
+         if c() then x := 1; break; else x := 1; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(1,y);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #8" |
+      "var x; var y; x := 1; y := 3;
+       while c() do
+         f(x,y);
+         if c() then y := 1; x := 2; break; end
+         f(x,y);
+         if c() then x := 1; break; else x := 1; end
+         if c() then y := 3; else y := 3; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 3;
+       while c() do
+         f(1,3);
+         if c() then y := 1; x := 2; break; end
+         f(1,3);
+         if c() then x := 1; break; else x := 1; end
+         if c() then y := 3; else y := 3; end
+       end
+       f(x,y);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #9" |
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; break; end
+         f(x,y);
+         if c() then x := 2; break; else x := 2; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; break; end
+         f(x,y);
+         if c() then x := 2; break; else x := 2; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #10" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break; else x := 2; end
+         if c() then x := 2; else if c() then break; else x := 2; end end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; break; else x := 2; end
+         if c() then x := 2; else if c() then break; else x := 2; end end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #11" |
+      "var x; x := 1;
+       while c() do
+         if c() then
+           if c() then
+             if c() then x := 1; break; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; break; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 1; break; end
+           else
+             if c() then x := 1; break; else dummy(); end
+           end
+         end
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         if c() then
+           if c() then
+             if c() then x := 1; break; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; break; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 1; break; end
+           else
+             if c() then x := 1; break; else dummy(); end
+           end
+         end
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement #12" |
+      "var x; x := 1;
+       while c() do
+         if c() then
+           if c() then
+             if c() then x := 1; break; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; break; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 1; break; end
+           else
+             if c() then x := 1; break; else dummy(); end
+           end
+         end
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         if c() then
+           if c() then
+             if c() then x := 1; break; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; break; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 1; break; end
+           else
+             if c() then x := 1; break; else dummy(); end
+           end
+         end
+       end
+       f(1);"
+    )
+
+/////// (x,a); [(x,none) < (x,?); break; + (x,?)]*
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 2; break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 3;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 3;
+         end
+         f(3);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; break;
+         else        dummy();
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then dummy(); break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 2; break;
+         else        dummy();
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then dummy(); break;
+         else        dummy();
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(1);
+         if c() then x := y; break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(1);
+         if c() then x := y; break;
+         else        dummy();
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+/////// (x,empty); [(x,none) < (x,?); break; + (x,?)]*
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 3;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := 3;
+         end
+         f(3);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then dummy(); break;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; break;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+/////// (x,a); [(x,none) < (x,?); break; + ((x,none) < (x,?) + (x,?); break;)]*
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else if c() then x := 1; else x := 1; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; break;
+         else if c() then x := 1; else x := 1; break; end
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 1; else x := 2; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 2; break;
+         else if c() then x := 1; else x := 2; break; end
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else if c() then x := 2; else x := 1; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else if c() then x := 2; else x := 1; break; end
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else if c() then x := 2; else x := 3; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break;
+         else if c() then x := 2; else x := 3; break; end
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 1; else x := 3; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 2; break;
+         else if c() then x := 1; else x := 3; break; end
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 2; else x := 2; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 2; else x := 2; break; end
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 3; else x := 4; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 3; else x := 4; break; end
+         end
+         f(3);
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking out of iterative statement" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 3; else x := 2; break; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; break;
+         else if c() then x := 3; else x := 2; break; end
+         end
+         f(3);
        end
        f(x);"
     )
 
   pc-break-to-label-tests = id
 
-  ; fail-propconst-test(!"Check breaking to label out of iterative statement" |
-      "var x;
-       x := 1;
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
        l: while c() do
          if c() then
            x := 2;
@@ -2645,8 +3785,7 @@ strategies
          x := 1;
        end
        f(x);",
-      "var x;
-       x := 1;
+      "var x; x := 1;
        l: while c() do
          if c() then
            x := 2;
@@ -2655,6 +3794,357 @@ strategies
          x := 1;
        end
        f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x;
+       x := 1;
+       l1: while c() do
+         if c() then x := 1; break l1; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           if c() then x := 2; break l2; end
+           f(x); x := 3;
+           l3: while c() do
+             if c() then x := 1; break l1; end
+             if c() then x := 2; break l2; end
+             if c() then x := 3; break l3; end
+             f(x); x := 3;
+           end
+           f(x); x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l1: while c() do
+         if c() then x := 1; break l1; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           if c() then x := 2; break l2; end
+           f(2); x := 3;
+           l3: while c() do
+             if c() then x := 1; break l1; end
+             if c() then x := 2; break l2; end
+             if c() then x := 3; break l3; end
+             f(3); x := 3;
+           end
+           f(3); x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x;
+       x := 1;
+       l1: while c() do
+         if c() then x := 1; break l1; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           if c() then x := 2; break l2; end
+           f(x); x := 3;
+           l3: while c() do
+             if c() then x := 4; break l1; end
+             if c() then x := 2; break l2; end
+             if c() then x := 3; break l3; end
+             f(x); x := 3;
+           end
+           f(x); x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l1: while c() do
+         if c() then x := 1; break l1; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           if c() then x := 2; break l2; end
+           f(2); x := 3;
+           l3: while c() do
+             if c() then x := 4; break l1; end
+             if c() then x := 2; break l2; end
+             if c() then x := 3; break l3; end
+             f(3); x := 3;
+           end
+           f(3); x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; break l1; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           if c() then x := 2; break l2; end
+           f(x); x := 3;
+           l3: while c() do
+             if c() then x := 1; break l1; end
+             if c() then x := 4; break l2; end
+             if c() then x := 3; break l3; end
+             f(x); x := 3;
+           end
+           f(x); x := 2;
+         end
+         f(x); x := 4;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; break l1; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           if c() then x := 1; break l1; end
+           if c() then x := 2; break l2; end
+           f(2); x := 3;
+           l3: while c() do
+             if c() then x := 1; break l1; end
+             if c() then x := 4; break l2; end
+             if c() then x := 3; break l3; end
+             f(3); x := 3;
+           end
+           f(3); x := 2;
+         end
+         f(x); x := 4;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; break l1; else x := 2; end
+           f(x); x := 1;
+           if c() then
+             x := 2;
+             if c() then break; else x := 1; break l1; end
+           else             
+             if c() then break l1; else f(x); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(1); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; break l1; else x := 2; end
+           f(2); x := 1;
+           if c() then
+             x := 2;
+             if c() then break; else x := 1; break l1; end
+           else             
+             if c() then break l1; else f(1); x := 2; end
+           end
+         end
+         f(2); x := 1;
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(x); x := 1;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; break l1; else x := 1; end
+           f(x); x := 1;
+           if c() then
+             x := 1;
+             if c() then break; else x := 1; break l1; end
+           else             
+             if c() then break l1; else f(x); x := 1; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(1); x := 1;
+         l2 : while c() do
+           f(1);
+           if c() then x := 1; break l1; else x := 1; end
+           f(1); x := 1;
+           if c() then
+             x := 1;
+             if c() then break; else x := 1; break l1; end
+           else             
+             if c() then break l1; else f(1); x := 1; end
+           end
+         end
+         f(1); x := 1;
+       end
+       f(1);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 2; break; else dummy(); end
+         f(x); x := 1;
+         l2 : while c() do
+           f(x);
+           if c() then x := 2; break l1; else x := 1; end
+           f(x); x := 2;
+           if c() then
+             x := 1;
+             if c() then break; else x := 2; break l1; end
+           else             
+             if c() then break l1; else f(x); x := 1; end
+           end
+         end
+         f(x); x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 2; break; else dummy(); end
+         f(x); x := 1;
+         l2 : while c() do
+           f(1);
+           if c() then x := 2; break l1; else x := 1; end
+           f(1); x := 2;
+           if c() then
+             x := 1;
+             if c() then break; else x := 2; break l1; end
+           else             
+             if c() then break l1; else f(2); x := 1; end
+           end
+         end
+         f(1); x := 2;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; break l1; else x := 2; end
+           f(x); x := 1;
+           if c() then
+             x := 2;
+             if c() then break; else break l1; end
+           else             
+             if c() then break l1; else f(x); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(1); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; break l1; else x := 2; end
+           f(2); x := 1;
+           if c() then
+             x := 2;
+             if c() then break; else break l1; end
+           else             
+             if c() then break l1; else f(1); x := 2; end
+           end
+         end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+
+  ; applyf-propconst-test(!"Check breaking to label out of iterative statement" |
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; break l1; else x := 2; end
+           f(x); x := 1;
+           if c() then
+             x := 2;
+             if c() then x := 3; break; else x := 1; break l1; end
+           else             
+             if c() then break l1; else f(x); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         if c() then x := 1; break; else dummy(); end
+         f(1); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; break l1; else x := 2; end
+           f(2); x := 1;
+           if c() then
+             x := 2;
+             if c() then x := 3; break; else x := 1; break l1; end
+           else             
+             if c() then break l1; else f(1); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(1);"
     )
 
   pc-continue-tests = id

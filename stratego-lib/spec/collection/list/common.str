@@ -910,6 +910,26 @@ strategies
     split-fetch(s)
 
   /**
+   * Splits a list in two, with the second part containing the last
+   * n elements and and first part containing all elements except the
+   * last n.
+   *
+   * @type List(a) -> (List(a), List(a))
+   * @param n - the number of elements to split at (counting from the back)
+   */
+  back-split-at(|n) =
+    foldr(!(([], []), 0)
+          , {x, l, r, m :
+             ?(x, ((l, r), m))
+             ; if <lt>(m, n)
+               then
+                 !((l, [x | r]), <inc>m)
+               else
+                 !(([x | l], r), m)
+               end})
+    ; ?(<id>, _)
+
+  /**
    * Drops a number of terms from the front of a list.
    *
    * The number is specified by the strategy argument, which should
