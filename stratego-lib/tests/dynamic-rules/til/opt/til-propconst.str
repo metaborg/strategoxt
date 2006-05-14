@@ -16,6 +16,7 @@ strategies
     <+ propconst-while
     <+ propconst-labeled-while
     <+ propconst-for
+    <+ propconst-labeled-stm
     <+ propconst-break
     <+ propconst-break-label
     <+ all(propconst); try(EvalExp)
@@ -59,6 +60,11 @@ strategies
     For(?x, propconst, propconst, id)
     ; rules( PropConst.x :- Var(x) )
     ; (/PropConst\* For(id, id, id, {| PropConst: map(propconst) |}))
+
+  propconst-labeled-stm =
+    Labeled(?label,
+      dr-label-intersect(propconst | ["PropConst"], label)
+    )
 
   propconst-break =
     ?Break(None)
