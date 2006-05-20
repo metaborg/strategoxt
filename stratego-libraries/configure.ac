@@ -25,6 +25,8 @@ AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['$(top_builddir)/../xtc/libraries/libstrat
 AC_CONFIG_FILES([
   Makefile
 
+  build-tools/Makefile
+
   stratego-sglr.pc
   stratego-sglr/Makefile
   stratego-sglr/justsglr/Makefile

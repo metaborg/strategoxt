@@ -1,0 +1,51 @@
+/**
+ * Generates a C program with a function that produces the
+ * given ATerm without any dependency on a file in the
+ * fule system.
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module cgen-aterm
+imports libstrategolib
+strategies
+
+  main-cgen-aterm =
+    input-wrap(
+      write-to-string
+    ; explode-string
+    ; where(print-header)
+    ; repeat(
+        splitmap(print-elem|15)
+      ; print-newline
+      ; Snd
+      <+ map(print-elem)
+      )
+    ; where(print-footer)
+    )
+
+strategies
+
+  print-header =
+    where(<fputs> ("
+#include <aterm1.h>
+
+ATerm STRGPP_get_parse_table(void) {
+  const char parsetable[] = {
+    ", <stdout-stream>)
+    )
+
+  print-footer =
+    where(<fputs> ("
+  0 };
+  return ATreadFromString(parsetable);
+}
+    ", <stdout-stream>)
+    ; print-newline
+    )
+
+  print-newline =
+    where(<fputs> ("\n", <stdout-stream>))
+
+  print-elem =
+    <fputs> (<int-to-string>, <stdout-stream>)
+    ; <fputs> (",", <stdout-stream>)
