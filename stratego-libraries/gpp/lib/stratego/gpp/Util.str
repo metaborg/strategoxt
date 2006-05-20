@@ -1,0 +1,91 @@
+module stratego/gpp/Util
+strategies
+
+  collect'(s) =
+    rec rec(
+      s < ![<id>] +  crush(![], conc, rec)
+    )
+
+  /**
+   * Try to flatten lists but do not change to total number of
+   * elements. This means that empty lists (containg for a single
+   * element) are not removed.
+   */
+  flat-list =
+    flat-list(![])
+    
+  flat-list(cont) =  
+    ?[]; cont
+    
+  flat-list(cont) =
+    ?[hd | tl]
+    ; if !hd => [] then
+        ![[] | <flat-list(cont)> tl]
+      else
+        if !hd => [_ | _] then
+          <flat-list(<flat-list(cont)> tl)> hd
+        else
+          ![hd | <flat-list(cont)> tl]
+        end
+      end
+
+  remove-trailing(s) =
+    rec x (
+      try(
+        [s | id]
+      ; ?[_| <x>]
+      )
+    )
+
+  notify(s) =
+    if-verbose5(debug(s))
+
+strategies
+
+  /**
+   * @type List(S-Option) -> Int
+   */
+  hs-length = SOpt-value(|HS()) <+ !1
+  vs-length = SOpt-value(|VS()) <+ !0
+  is-length = SOpt-value(|IS()) <+ !0
+
+  SOpt-value(|opt) =
+    fetch(?SOpt(opt, value))
+    ; <string-to-int> value
+
+  SOpts-of-alignment : AL(sopts) -> sopts
+  SOpts-of-alignment : AR(sopts) -> sopts
+  SOpts-of-alignment : AC(sopts) -> sopts
+
+  // Make sure that every element in the list occurs within a R box
+  // For instance:
+  //    [R([],[1,2,3]), a,b,c, R([],[4,5,6])]
+  // is tranformed to
+  //    [R([],[1,2,3]), R([],[a,b,c]), R([],[4,5,6])]
+  construct-rows =
+    split(id, ![]);
+    rec x ({a,b,xs,ys:
+      ?([],xs);![R([],<reverse>xs)]
+    <+
+      ?([R(a,b)|xs], ys);
+      ![R([],<reverse>ys), R(a,b)|<x>(xs, [] )]
+    <+
+     ?( [a|xs],ys);
+     <x>( xs, [a|ys])
+    }); 
+    filter( not( R(id,[]) ) )
+
+  /**
+   * Calculate relative string length. That is, by taking new lines and
+   * current horizontal position into account
+   * 
+   * <string-length'(x)>"my_string" => 9
+   * <string-length'(x)>"my\nstring" => 6 - x
+   */
+  rel-string-length(|xpos) =
+    explode-string => chars
+    ; if at-suffix(?['\n' | tail]) then
+        <subt> (<length> tail, xpos)
+      else
+        <length> chars
+      end

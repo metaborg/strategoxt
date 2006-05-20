@@ -30,5 +30,9 @@ AC_CONFIG_FILES([
   stratego-sglr/justsglr/Makefile
   stratego-sglr/lib/Makefile
   stratego-sglr/tests/Makefile
+
+  gpp/Makefile
+  gpp/lib/Makefile
+  gpp/tests/Makefile
 ])
 AC_OUTPUT

@@ -1,0 +1,74 @@
+/**
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module ast2text-tests
+imports
+  libstratego-gpp
+  libstratego-sglr
+
+strategies
+
+  main-ast2text-tests = 
+    test-suite(!"ast2text-tests",
+      xtc-temp-files(
+        selector-tests
+      )
+    )
+
+strategies
+
+  selector-tests =
+      ast2text-test(|"tuples 1", "Foo.pp"
+      , Foo(((1, 2), 3))
+      , "a(b(1 2) 3)"
+      )
+
+    ; ast2text-test(|"tuples 2", "Bar.pp"
+      , Bar([(), (), ()])
+      , "bar(tuple |tuple |tuple)"
+      )
+
+    ; ast2text-test(|"tuples 3", "Bar2.pp",
+        Bar([(1, 2), (3, 4), (5, 6)])
+      , "bar(1 2|3 4|5 6)"
+      )
+
+    ; ast2text-test(|"tuples 4", "DataType.pp",
+        DataType("list", [("cons", [1, 2]), ("nil", [])])
+      , "data list = cons 1 2 | nil"
+      )
+
+
+strategies
+
+  ast2text-test(|msg, pp, term, string) =
+    apply-test(!msg,
+      where(pptbl := <parse-pp-table-file> pp)
+      ; ast2abox(|[pptbl])
+      ; abox2text(|80)
+      ; flatten-list
+      ; concat-strings
+      // ; trim-chars(is-whitespace + '\n' + '\r')
+    , !term
+    , !string
+    )
+
+strategies
+
+  /**
+   * @todo This should be supported in the gpp library, but I don't
+   * want libstratego-gpp to depend on XTC ...
+   */
+  parse-pp-table-file =
+    where(
+      prim("STRGPP_get_parse_table")
+      ; tbl := <open-parse-table>
+    )
+    ; parse-file(|tbl)
+    ; where(<close-parse-table> tbl)
+
+signature
+  constructors
+    Foo : a -> b
+    Bar : a -> b
+    DataType : a * b -> c

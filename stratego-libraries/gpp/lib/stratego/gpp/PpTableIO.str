@@ -1,0 +1,110 @@
+/**
+ * @author Merijn de Jonge (mdjonge@cwi.nl)
+ */
+module stratego/gpp/PpTableIO
+
+/**
+ * @todo Fix this import (signature must be in library)
+ */
+imports
+  pp-table
+
+strategies
+
+  /**
+   * @type List(PpTable) -> HashTable
+   */
+  make-pp-hashtable =
+    where(tbl := <new-hashtable>)
+    ; map(
+        ?PP-Table(<id>)
+        ; reverse
+        ; map(makePPEntry; StoreEntry(|tbl))
+      )
+    ; !tbl
+
+  StoreEntry(|tbl) =
+     ?entry@PP-Entry(path, value)
+     ; <hashtable-put(|<mk-key-arity> entry, (path, value))> tbl
+     
+  /*  
+  StoreEntryIfNotExists = 
+    ?PP-Entry( path, value )
+    ; ( where(<table-get> ("pp-table", <mk-key-arity>))
+     <+ StoreEntry
+      )
+   */
+
+/**
+ * Pretty-printing of paths
+ */
+strategies
+
+  /**
+   * @type Path -> String
+   */
+  path-to-string = 
+    ?Path1(<id>)
+
+  /**
+   * @type Path -> String
+   */
+  path-to-string =
+    ?Path( s1, s2 )
+    ; < map( \ selector(a,b) -> [".", <int-to-string>a,":", b] \ )
+      ; concat
+      > s2 => s3
+    ; <concat-strings> [s1 | s3]
+
+/**
+ * Key of a pp entry.
+ */
+strategies
+
+  /**
+   * @type PP-Entry -> Key
+   */
+  mk-key-arity :
+    PP-Entry(Path1(s), value) -> (arity, [s])
+    where
+      <arity-of-template> value => arity
+
+  mk-key-arity :
+    PP-Entry(Path(s1, s2), value) -> <reverse> [s1 | xs]
+    where
+      <map(?selector(<id>, _))> s2 =>  xs
+
+  /**
+   * Determines the arity of a template by collecting the Arg nodes.
+   *
+   * @type BOX -> Int
+   */
+  arity-of-template =
+    collect(Arg(id)); length
+
+/**
+ * Desguaring of pp entries
+ */
+strategies
+  
+  makePPEntry =
+    topdown( try(MakePPTerm ) )
+
+  MakePPTerm =
+      Arg(string-to-int)
+    + Arg2(string-to-int, string-to-int)
+    + SOpt(id, id)
+    + S(un-double-quote; unescape)
+    + selector(string-to-int, id)
+
+/**
+ * Access to the pp table
+ */
+strategies
+
+  try-pp-table-get(|tbl) =
+    ?key
+    ; ( <hashtable-get(|key)> tbl
+        <+ log(|Error(),<concat-strings>["No pp entry found for: ",<write-to-string> key])
+           ; fail)
+  
