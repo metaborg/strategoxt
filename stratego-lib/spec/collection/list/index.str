@@ -16,14 +16,24 @@ strategies
 
  /**
   * Get the n-th element of a list.
-  *
   * The first element has index 1.
   *
   * @type (Int, List(a)) -> a
   * @inc test-index
   */
   index =
-    (dec, id); at-index(?t); !t
+    ?(i, <id>); index(|i)
+
+strategies
+
+  /**
+   * Get the i-th element of a list.
+   * The first element has index 1.
+   *
+   * @type List(a) -> a   
+   */    
+  index(|i) =
+    at-index(?t | <dec> i); !t
 
 strategies
 
@@ -67,8 +77,16 @@ strategies
    * @type (Int, List(a)) -> List(a)
    */
   at-index(s) =
-    ?(i, <id>);
-
+    ?(i, <id>)
+    ; at-index(s | i)
+    
+  /**
+   * Apply s at the specified index i.
+   * The first element has index 0.
+   *
+   * @type List(a)) -> List(a)
+   */
+  at-index(s | i) =
     let next(|j) =
           if !j => i then
             [s | id]
