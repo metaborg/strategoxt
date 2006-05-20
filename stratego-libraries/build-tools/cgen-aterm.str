@@ -7,40 +7,60 @@
  */
 module cgen-aterm
 imports libstrategolib
+signature
+  constructors
+    FunctionName : ConfigKey
+
 strategies
 
   main-cgen-aterm =
-    input-wrap(
+    input-wrap(functionname-option,
       write-to-string
-    ; explode-string
-    ; where(print-header)
-    ; repeat(
-        splitmap(print-elem|15)
-      ; print-newline
-      ; Snd
-      <+ map(print-elem)
+      ; explode-string
+      ; where(print-header)
+      ; repeat(
+          splitmap(print-elem|15)
+        ; print-newline
+        ; Snd
+        <+ map(print-elem)
+        )
+      ; where(print-footer)
       )
-    ; where(print-footer)
-    )
+
+  functionname-option =
+      ArgOption("--name"
+      , OptionHandler(<set-config> (FunctionName(), <id>))
+      | "--name           Function name for getting the ATerm"
+      )
+
+    + OptionCheck(<set-config> ("--help", ()),
+        OptionOneCheck("--name")
+      | "error: option --name is required"
+      )
 
 strategies
 
   print-header =
-    where(<fputs> ("
+    where(
+      <fputstrings> (["
 #include <aterm1.h>
 
-ATerm STRGPP_get_parse_table(void) {
-  const char parsetable[] = {
-    ", <stdout-stream>)
+ATerm ", <get-config> FunctionName(), "(void) {
+  static ATerm result = NULL;
+  static const char parsetable[] = {
+    "], <stdout-stream>)
     )
 
   print-footer =
     where(<fputs> ("
   0 };
-  return ATreadFromString(parsetable);
+
+  if(result == NULL) {
+    result = ATreadFromString(parsetable);
+  }
+  return result;
 }
     ", <stdout-stream>)
-    ; print-newline
     )
 
   print-newline =
@@ -49,3 +69,7 @@ ATerm STRGPP_get_parse_table(void) {
   print-elem =
     <fputs> (<int-to-string>, <stdout-stream>)
     ; <fputs> (",", <stdout-stream>)
+
+  fputstrings =
+    ?(strings, stream)
+    ; <map(<fputs> (<id>, stream))> strings
