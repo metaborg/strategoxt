@@ -34,9 +34,11 @@ strategies
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Break to Label Tests"))
     ; pc-break-to-label-tests
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Continue Tests"))
-    ; pc-continue-tests
+//    ; pc-continue-tests
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Continue to Label Tests"))
-    ; pc-continue-to-label-tests
+//    ; pc-continue-to-label-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Combined Break & Continue Tests"))
+//    ; pc-break-and-continue-tests
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Exception Tests"))
     ; pc-exception-tests
     )
@@ -2859,7 +2861,7 @@ strategies
            end
          else
            if c() then
-             if c() then dummy(); else x := 1; break; end
+             if c() then dummy(); else x := 2; break; end
            else
              if c() then x := 1; break; else dummy(); end
            end
@@ -2876,13 +2878,13 @@ strategies
            end
          else
            if c() then
-             if c() then dummy(); else x := 1; break; end
+             if c() then dummy(); else x := 2; break; end
            else
              if c() then x := 1; break; else dummy(); end
            end
          end
        end
-       f(1);"
+       f(x);"
     )
 
 /////// (x,a); [(x,none) < (x,?); break; + (x,?)]*
@@ -4506,35 +4508,1187 @@ strategies
 
   pc-continue-tests = id
 
-  ; fail-propconst-test(!"Check continuing iterative statement" |
+/////// non-structured tests
+
+  ; apply-propconst-test(!"Check continuing iterative statement #1" |
       "var x;
        x := 1;
        while c() do
-         if c() then
-           x := 2;
-           continue;
-         end
+         f(x);
+         if c() then x := 2; continue; end
          x := 1;
        end
        f(x);",
       "var x;
        x := 1;
        while c() do
-         if c() then
-           x := 2;
-           continue;
-         end
+         f(x);
+         if c() then x := 2; continue; end
          x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #2" |
+      "var x; x := 1; while c() do f(x); continue; x := 2; end f(x);",
+      "var x; x := 1; while c() do f(1); continue; x := 2; end f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #3" |
+      "var x; x := 1;
+       while c() do
+         if c() then x := 1; continue; end
+         f(x);
+         if c() then x := 1; continue;
+         else
+           x := 1;
+           if c() then x := 3; else dummy(); continue; f(x); end
+           f(x);
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         if c() then x := 1; continue; end
+         f(1);
+         if c() then x := 1; continue;
+         else
+           x := 1;
+           if c() then x := 3; else dummy(); continue; f(1); end
+           f(3);
+         end
+         f(3); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #4" |
+      "var x; x := 1;
+       while c() do
+         if c() then x := 1; continue; end
+         f(x);
+         if c() then x := 1; continue;
+         else
+           x := 1;
+           if c() then x := 3; else x := 2; continue; f(x); end
+           f(x);
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         if c() then x := 1; continue; end
+         f(x);
+         if c() then x := 1; continue;
+         else
+           x := 1;
+           if c() then x := 3; else x := 2; continue; f(2); end
+           f(3);
+         end
+         f(3); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #5" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue; else x := 3; end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue; else x := 3; end
+         f(3); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #6" |
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; continue; end
+         f(x,y);
+         if c() then x := 1; continue; else x := 1; continue; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(1,1);
+         if c() then y := 1; continue; end
+         f(1,1);
+         if c() then x := 1; continue; else x := 1; continue; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(1,1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #7" |
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; continue; end
+         f(x,y);
+         if c() then x := 1; continue; else x := 1; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(1,y);
+         if c() then y := 1; continue; end
+         f(1,y);
+         if c() then x := 1; continue; else x := 1; end
+         if c() then y := 3; else y := 2; end
+       end
+       f(1,y);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #8" |
+      "var x; var y; x := 1; y := 3;
+       while c() do
+         f(x,y);
+         if c() then y := 1; x := 2; continue; end
+         f(x,y);
+         if c() then x := 1; continue; else x := 1; end
+         f(x,y);
+         if c() then y := 3; else y := 3; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 3;
+       while c() do
+         f(x,y);
+         if c() then y := 1; x := 2; continue; end
+         f(x,y);
+         if c() then x := 1; continue; else x := 1; end
+         f(1,y);
+         if c() then y := 3; else y := 3; end
+       end
+       f(x,y);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #9" |
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; continue; end
+         f(x,y);
+         if c() then x := 2; continue; else x := 2; end
+         f(x,y);
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);",
+      "var x; var y; x := 1; y := 1;
+       while c() do
+         f(x,y);
+         if c() then y := 1; continue; end
+         f(x,y);
+         if c() then x := 2; continue; else x := 2; end
+         f(2,y);
+         if c() then y := 3; else y := 2; end
+       end
+       f(x,y);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #10" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue; else x := 2; end
+         if c() then x := 2; else if c() then continue; else x := 2; end end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue; else x := 2; end
+         if c() then x := 2; else if c() then continue; else x := 2; end end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #11" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then
+           if c() then
+             if c() then x := 1; continue; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; continue; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 1; continue; end
+           else
+             if c() then x := 1; continue; else dummy(); end
+           end
+         end
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then
+           if c() then
+             if c() then x := 1; continue; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; continue; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 1; continue; end
+           else
+             if c() then x := 1; continue; else dummy(); end
+           end
+         end
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #12" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then
+           if c() then
+             if c() then x := 1; continue; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; continue; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 2; continue; end
+           else
+             if c() then x := 1; continue; else dummy(); end
+           end
+         end
+       end
+       f(x); ",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then
+           if c() then
+             if c() then x := 1; continue; else dummy(); end
+           else
+             if c() then dummy(); else x := 1; continue; end
+           end
+         else
+           if c() then
+             if c() then dummy(); else x := 2; continue; end
+           else
+             if c() then x := 1; continue; else dummy(); end
+           end
+         end
+       end
+       f(x);"
+    )
+
+/////// (x,a); [(x,none) < (x,?); continue; + (x,?)]*
+
+  ; apply-propconst-test(!"Check continuing iterative statement #13" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #14" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #15" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #16" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #17" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 3;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 3;
+         end
+         f(3);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #18" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; continue;
+         else        dummy();
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #19" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then dummy(); continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #20" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #21" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #22" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then dummy(); continue;
+         else        dummy();
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #23" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #24" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #25" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #26" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #27" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #28" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #29" |
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y; x := 1;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+/////// (x,empty); [(x,none) < (x,?); continue; + (x,?)]*
+
+  ; apply-propconst-test(!"Check continuing iterative statement #30" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #31" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #32" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #33" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #34" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 3;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := 3;
+         end
+         f(3);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #35" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #36" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #37" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #38" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #39" |
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #40" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #41" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #42" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #43" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 2;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := 2;
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #44" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #45" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then dummy(); continue;
+         else        x := y;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #46" |
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; var y;
+       while c() do
+         f(x);
+         if c() then x := y; continue;
+         else        dummy();
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+/////// (x,a); [(x,none) < (x,?); continue; + ((x,none) < (x,?) + (x,?); continue;)]*
+
+  ; apply-propconst-test(!"Check continuing iterative statement #47" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else if c() then x := 1; else x := 1; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; continue;
+         else if c() then x := 1; else x := 1; continue; end
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #48" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 1; else x := 2; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 1; else x := 2; continue; end
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #49" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else if c() then x := 2; else x := 1; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else if c() then x := 2; else x := 1; continue; end
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #50" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else if c() then x := 2; else x := 3; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; continue;
+         else if c() then x := 2; else x := 3; continue; end
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #51" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 1; else x := 3; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 1; else x := 3; continue; end
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #52" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 2; else x := 2; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 2; else x := 2; continue; end
+         end
+         f(2);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #53" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 3; else x := 4; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 3; else x := 4; continue; end
+         end
+         f(3);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing iterative statement #54" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 3; else x := 2; continue; end
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 2; continue;
+         else if c() then x := 3; else x := 2; continue; end
+         end
+         f(3);
        end
        f(x);"
     )
 
   pc-continue-to-label-tests = id
 
-  ; fail-propconst-test(!"Check continuing to label iterative statement" |
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #1" |
       "var x;
        x := 1;
        l: while c() do
+         f(x);
          if c() then
            x := 2;
            continue l;
@@ -4545,6 +5699,7 @@ strategies
       "var x;
        x := 1;
        l: while c() do
+         f(x);
          if c() then
            x := 2;
            continue l;
@@ -4552,6 +5707,772 @@ strategies
          x := 1;
        end
        f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #2" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           if c() then x := 1; continue l1; end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         if c() then x := 1; continue; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           if c() then x := 1; continue l1; end
+           x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #3" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           if c() then x := 2; continue l1; end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           if c() then x := 2; continue l1; end
+           x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #4" |
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue l1; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; end
+           if c() then x := 2; continue l2; end
+           f(x); x := 3;
+           l3: while c() do
+             f(x);
+             if c() then x := 1; continue l1; end
+             if c() then x := 2; continue l2; end
+             if c() then x := 3; continue l3; end
+             f(x); x := 3;
+           end
+           f(x); x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(1);
+         if c() then x := 1; continue l1; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; continue l1; end
+           if c() then x := 2; continue l2; end
+           f(2); x := 3;
+           l3: while c() do
+             f(3);
+             if c() then x := 1; continue l1; end
+             if c() then x := 2; continue l2; end
+             if c() then x := 3; continue l3; end
+             f(3); x := 3;
+           end
+           f(3); x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #5" |
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue l1; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; end
+           if c() then x := 2; continue l2; end
+           f(x); x := 3;
+           l3: while c() do
+             f(x);
+             if c() then x := 4; continue l1; end
+             if c() then x := 2; continue l2; end
+             if c() then x := 3; continue l3; end
+             f(x); x := 3;
+           end
+           f(x); x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue l1; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; continue l1; end
+           if c() then x := 2; continue l2; end
+           f(2); x := 3;
+           l3: while c() do
+             f(3);
+             if c() then x := 4; continue l1; end
+             if c() then x := 2; continue l2; end
+             if c() then x := 3; continue l3; end
+             f(3); x := 3;
+           end
+           f(3); x := 2;
+         end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #6" |
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue l1; else x := 1; end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; end
+           if c() then x := 2; continue l2; end
+           f(x); x := 3;
+           l3: while c() do
+             f(x);
+             if c() then x := 1; continue l1; end
+             if c() then x := 4; continue l2; end
+             if c() then x := 3; continue l3; end
+             f(x); x := 3;
+           end
+           f(x); x := 2;
+         end
+         f(x); x := 4;
+       end
+       f(x);",
+      "var x;
+       x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue l1; else x := 1; end
+         f(1); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; end
+           if c() then x := 2; continue l2; end
+           f(x); x := 3;
+           l3: while c() do
+             f(3);
+             if c() then x := 1; continue l1; end
+             if c() then x := 4; continue l2; end
+             if c() then x := 3; continue l3; end
+             f(3); x := 3;
+           end
+           f(3); x := 2;
+         end
+         f(x); x := 4;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #7" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 2; end
+           f(x); x := 1;
+           if c() then
+             x := 2;
+             if c() then continue; else x := 1; continue l1; end
+           else             
+             if c() then continue l1; else f(x); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         if c() then x := 1; continue; else dummy(); end
+         f(1); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; continue l1; else x := 2; end
+           f(2); x := 1;
+           if c() then
+             x := 2;
+             if c() then continue; else x := 1; continue l1; end
+           else             
+             if c() then continue l1; else f(1); x := 2; end
+           end
+         end
+         f(2); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #8" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else dummy(); end
+         f(x); x := 1;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; end
+           f(x); x := 1;
+           if c() then
+             x := 1;
+             if c() then continue; else x := 1; continue l1; end
+           else             
+             if c() then continue l1; else f(x); x := 1; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         if c() then x := 1; continue; else dummy(); end
+         f(1); x := 1;
+         l2 : while c() do
+           f(1);
+           if c() then x := 1; continue l1; else x := 1; end
+           f(1); x := 1;
+           if c() then
+             x := 1;
+             if c() then continue; else x := 1; continue l1; end
+           else             
+             if c() then continue l1; else f(1); x := 1; end
+           end
+         end
+         f(1); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #9" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 2; continue; else dummy(); end
+         f(x); x := 1;
+         l2 : while c() do
+           f(x);
+           if c() then x := 2; continue l1; else x := 1; end
+           f(x); x := 2;
+           if c() then
+             x := 1;
+             if c() then continue; else x := 2; continue l1; end
+           else             
+             if c() then continue l1; else f(x); x := 1; end
+           end
+         end
+         f(x); x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 2; continue; else dummy(); end
+         f(x); x := 1;
+         l2 : while c() do
+           f(1);
+           if c() then x := 2; continue l1; else x := 1; end
+           f(1); x := 2;
+           if c() then
+             x := 1;
+             if c() then continue; else x := 2; continue l1; end
+           else             
+             if c() then continue l1; else f(2); x := 1; end
+           end
+         end
+         f(1); x := 2;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #10" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 2; end
+           f(x); x := 1;
+           if c() then
+             x := 2;
+             if c() then continue; else continue l1; end
+           else             
+             if c() then continue l1; else f(x); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(2);
+           if c() then x := 1; continue l1; else x := 2; end
+           f(2); x := 1;
+           if c() then
+             x := 2;
+             if c() then continue; else continue l1; end
+           else             
+             if c() then continue l1; else f(1); x := 2; end
+           end
+         end
+         f(2); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #11" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         if c() then x := 1; continue; else dummy(); end
+         f(x); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 2; end
+           f(x); x := 1;
+           if c() then
+             x := 2;
+             if c() then x := 3; continue; else x := 1; continue l1; end
+           else             
+             if c() then continue l1; else f(x); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         if c() then x := 1; continue; else dummy(); end
+         f(1); x := 2;
+         l2 : while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 2; end
+           f(2); x := 1;
+           if c() then
+             x := 2;
+             if c() then x := 3; continue; else x := 1; continue l1; end
+           else             
+             if c() then continue l1; else f(1); x := 2; end
+           end
+         end
+         f(x); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check continuing to label out of iterative statement #12" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         while c() do
+           f(x); x := 1; continue l1;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         while c() do
+           f(1); x := 1; continue l1;
+         end
+         x := 2;
+       end
+       f(1);"
+    )
+
+  pc-break-and-continue-tests = id
+
+  ; apply-propconst-test(!"Check break/continue scenario #1" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break; else x := 1; continue; end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; break; else x := 1; continue; end
+         x := 2;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #2" |
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(1);
+           if c() then x := 1; continue l1; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #3" |
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l2; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l2; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #4" |
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; break l2; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; break l2; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #5" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(x); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 1; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(1); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(1); if c() then x := 1; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(1);
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #6" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(x); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 1; break l2; end
+             if c() then x := 2; continue l3; end
+             if c() then x := 2; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x); x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(1); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 1; break l2; end
+             if c() then x := 2; continue l3; end
+             if c() then x := 2; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x); x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #7" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(x); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 2; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 2; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x);
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(1); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(1); if c() then x := 2; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 2; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(1);
+         end
+         f(x); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #8" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         l2: while c() do
+           f(1);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #9" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 2; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 2; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(x); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #10" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(1);"
     )
 
   pc-exception-tests = id
