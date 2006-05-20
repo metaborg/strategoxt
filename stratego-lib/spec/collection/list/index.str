@@ -133,6 +133,19 @@ strategies
   /** @internal */
   Ins2(r): (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
 
+
+strategies
+
+  /**
+   * Map a strategy over a list where the strategy takes the index as a term argument.
+   *
+   * @param Strategy to apply to all the elements of the list.
+   * @param The first index (e.g. 0 or 1)
+   * @type  List(a) -> List(b)
+   */
+  nmap(s : Int * a -> b | i) =
+    [] + [s(|i) | nmap(s | <inc> i)]
+    
   /**
    * Apply strategies that require some knowledge of the index of an element 
    * to the elements of the list.
@@ -144,12 +157,10 @@ strategies
    * @inc  test4a
    * @inc  test4b
    */
-  map-with-index(s) = 
-      !(1, <id>)
-    ; rec x(
-        \ (_, [])       -> [] \
-      + \ (i, [e | es]) -> [<s> (i, e) | <x> (<inc> i, es)] \
-      )
+  map-with-index(s) =
+    let apply(|i) = <s> (i, <id>)
+     in nmap(apply | 1)
+    end
 
   /**
    * Adds indices to the elements of a list.
