@@ -8,32 +8,39 @@ module stratego/gpp/PpTableIO
  */
 imports
   pp-table
+  libstratego-sglr
+
+strategies
+
+  /**
+   * Parse a pp table.
+   *
+   * @type String -> 
+   */
+  parse-pptable-file =
+    where(
+      prim("STRGPP_get_pptable_parsetable")
+      ; tbl := <open-parse-table>
+    )
+    ; finally(parse-file(|tbl), <close-parse-table> tbl)
 
 strategies
 
   /**
    * @type List(PpTable) -> HashTable
    */
-  make-pp-hashtable =
+  pptable-make-hashtable =
     where(tbl := <new-hashtable>)
     ; map(
         ?PP-Table(<id>)
         ; reverse
-        ; map(makePPEntry; StoreEntry(|tbl))
+        ; map(pptable-desugar-entry; pptable-store-entry(|tbl))
       )
     ; !tbl
 
-  StoreEntry(|tbl) =
+  pptable-store-entry(|tbl) =
      ?entry@PP-Entry(path, value)
-     ; <hashtable-put(|<mk-key-arity> entry, (path, value))> tbl
-     
-  /*  
-  StoreEntryIfNotExists = 
-    ?PP-Entry( path, value )
-    ; ( where(<table-get> ("pp-table", <mk-key-arity>))
-     <+ StoreEntry
-      )
-   */
+     ; <hashtable-put(|<pptable-make-key> entry, (path, value))> tbl
 
 /**
  * Pretty-printing of paths
@@ -64,12 +71,12 @@ strategies
   /**
    * @type PP-Entry -> Key
    */
-  mk-key-arity :
+  pptable-make-key :
     PP-Entry(Path1(s), value) -> (arity, [s])
     where
-      <arity-of-template> value => arity
+      <pptable-arity-of-template> value => arity
 
-  mk-key-arity :
+  pptable-make-key :
     PP-Entry(Path(s1, s2), value) -> <reverse> [s1 | xs]
     where
       <map(?selector(<id>, _))> s2 =>  xs
@@ -79,7 +86,7 @@ strategies
    *
    * @type BOX -> Int
    */
-  arity-of-template =
+  pptable-arity-of-template =
     collect(Arg(id)); length
 
 /**
@@ -87,22 +94,22 @@ strategies
  */
 strategies
   
-  makePPEntry =
-    topdown( try(MakePPTerm ) )
-
-  MakePPTerm =
-      Arg(string-to-int)
-    + Arg2(string-to-int, string-to-int)
-    + SOpt(id, id)
-    + S(un-double-quote; unescape)
-    + selector(string-to-int, id)
+  pptable-desugar-entry =
+    topdown(
+      try(
+        Arg(string-to-int)
+      + Arg2(string-to-int, string-to-int)
+      + S(un-double-quote; unescape)
+      + selector(string-to-int, id)
+      )
+    )
 
 /**
  * Access to the pp table
  */
 strategies
 
-  try-pp-table-get(|tbl) =
+  pptable-get-log(|tbl) =
     ?key
     ; ( <hashtable-get(|key)> tbl
         <+ log(|Error(),<concat-strings>["No pp entry found for: ",<write-to-string> key])

@@ -19,7 +19,7 @@ strategies
    * @type a -> Box
    */
   ast2abox(|pptables) =
-      where(tbl := <make-pp-hashtable> pptables)
+      where(tbl := <pptable-make-hashtable> pptables)
     ; trm2abox(|tbl)
     ; if is-list then
         !HV([], <id>)
@@ -53,12 +53,12 @@ strategies
   trm2abox-appl(|tbl) =
     ?f#(args)
     ; where(<length> args => arity)
-    ; <try-pp-table-get(|tbl)> (arity, [f]) => (_, template)
+    ; <pptable-get-log(|tbl)> (arity, [f]) => (_, template)
     ; ![f] => currentpath
     ; let narg2abox(|n) = arg2abox(|tbl, n, currentpath)
        in <nmap(narg2abox | 1)> args => aboxes
       end
-    ; <instantiate(|aboxes)> template
+    ; <gpp-instantiate(|aboxes)> template
 
   nmap(s : a * b -> c | i) =
     [] + [s(|i) | nmap(s | <inc> i)]
@@ -127,7 +127,7 @@ strategies
   symbol2abox-opt(|tbl, path, template) =
     ?Some(<id>)
     ; arg2abox(|tbl, 1, path) => abox
-    ; <instantiate(|[abox])> template
+    ; <gpp-instantiate(|[abox])> template
 
   /**
    * Rule to format optinal: None
@@ -140,7 +140,7 @@ strategies
    */
   symbol2abox-iter(|tbl, path, template) =
       map(arg2abox(|tbl, 1, path)) => abox
-    ; <instantiate(| [abox])> template
+    ; <gpp-instantiate(| [abox])> template
 
   /**
    * Rule to format iter-sep and iter-star-sep list
@@ -154,7 +154,7 @@ strategies
         <+ \ [e | xs] -> [e, e| <x> xs] \
         )
       end 
-    ; instantiate-sep-list(|template)
+    ; gpp-instantiate-sep-list(|template)
 
   /**
    * Rule ro format sequences
@@ -162,7 +162,7 @@ strategies
   symbol2abox-seq(|tbl, path, template) =
     TupleToList
     ; nzip( \ (n, t) -> <arg2abox(|tbl, n, path)> t \ ) => abox
-    ; <instantiate(|abox)> template
+    ; <gpp-instantiate(|abox)> template
 
 rules
 

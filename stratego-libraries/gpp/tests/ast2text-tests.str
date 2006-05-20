@@ -43,7 +43,7 @@ strategies
 
   ast2text-test(|msg, pp, term, string) =
     apply-test(!msg,
-      where(pptbl := <parse-pp-table-file> pp)
+      where(pptbl := <parse-pptable-file> pp)
       ; ast2abox(|[pptbl])
       ; abox2text(|80)
       ; flatten-list
@@ -52,20 +52,6 @@ strategies
     , !term
     , !string
     )
-
-strategies
-
-  /**
-   * @todo This should be supported in the gpp library, but I don't
-   * want libstratego-gpp to depend on XTC ...
-   */
-  parse-pp-table-file =
-    where(
-      prim("STRGPP_get_pptable_parsetable")
-      ; tbl := <open-parse-table>
-    )
-    ; parse-file(|tbl)
-    ; where(<close-parse-table> tbl)
 
 signature
   constructors
