@@ -13,9 +13,9 @@ imports
 strategies
 
   /**
-   * Parse a pp table.
+   * Parse a pp table from a file.
    *
-   * @type String -> 
+   * @type String -> PpTable
    */
   parse-pptable-file =
     where(
@@ -50,13 +50,13 @@ strategies
   /**
    * @type Path -> String
    */
-  path-to-string = 
+  pptable-path-to-string = 
     ?Path1(<id>)
 
   /**
    * @type Path -> String
    */
-  path-to-string =
+  pptable-path-to-string =
     ?Path( s1, s2 )
     ; < map( \ selector(a,b) -> [".", <int-to-string>a,":", b] \ )
       ; concat
@@ -109,6 +109,9 @@ strategies
  */
 strategies
 
+  /**
+   * Get an entry from the pp-table and log if the entry does not exist.
+   */
   pptable-get-log(|tbl) =
     ?key
     ; ( <hashtable-get(|key)> tbl
