@@ -61,7 +61,7 @@ strategies
    */
   parse-pp-table-file =
     where(
-      prim("STRGPP_get_parse_table")
+      prim("STRGPP_get_pptable_parsetable")
       ; tbl := <open-parse-table>
     )
     ; parse-file(|tbl)

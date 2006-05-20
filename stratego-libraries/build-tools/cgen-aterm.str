@@ -60,7 +60,7 @@ ATerm ", <get-config> FunctionName(), "(void) {
   }
   return result;
 }
-    ", <stdout-stream>)
+", <stdout-stream>)
     )
 
   print-newline =
