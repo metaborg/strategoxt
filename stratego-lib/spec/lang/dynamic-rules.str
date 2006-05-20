@@ -7,8 +7,14 @@
  * @todo provide constructs to handle do-while-like structures
  *       issues: - a break inside the do-while
  *               - propagation in the first run could be wrong
- * @todo investigate if BreakCS and Fix need (rulename, label)
+ * @todo investigate if BreakCS and SplitPos need (rulename, label)
          or if rulename + scoping of DR_BREAK suffices
+ * @todo remove code duplication in dr-break/dr-continue and
+ *       in dr-label/dr-merge-continue-change-sets once bug
+ *       STR-559 is solved
+ * @todo when we have a fork-and-merge, after the two change sets
+ *       are merged, one of them is lost and not discarded. This needs
+ *       to be fixed (unless the garbage collector takes care of this)
  */
 module lang/dynamic-rules
 
@@ -19,12 +25,14 @@ imports
   system/posix/file
 signature
   constructors
-    RuleScope : IndexedSet * Hashtable -> RuleScope
-    ChangeSet : IndexedSet * IndexedSet * Hashtable -> RuleScope
-    Fix       : String * String -> Fix
-    BreakCS   : String * String -> BreakCS
-    Label     : String -> Label
-    Ignore    : String -> Ignore
+    RuleScope  : IndexedSet * Hashtable -> RuleScope
+    ChangeSet  : IndexedSet * IndexedSet * Hashtable -> RuleScope
+    Label      : String -> Label
+    SplitPos   : String * String -> SplitPos
+    BreakCS    : String * String -> BreakCS
+    ContinueCS : String * String -> ContinueCS
+    IgnoreB    : String -> IgnoreB
+    IgnoreC    : String -> IgnoreC
 
 /**
  * Currently active rule set
@@ -410,8 +418,12 @@ strategies // change sets
     ?Hashtable(csid)
     ; hashtable-destroy
     ; try(
-        <DR_BREAK>Ignore(csid) => label
-        ; rules(DR_BREAK.label :- Ignore(csid))
+        <DR_BREAK>IgnoreB(csid) => labelb
+        ; rules(DR_BREAK.labelb :- IgnoreB(csid))
+      )
+    ; try(
+        <DR_BREAK>IgnoreC(csid) => labelc
+        ; rules(DR_BREAK.labelc :- IgnoreC(csid))
       )
 
   dr-commit-change-set =
@@ -429,10 +441,16 @@ strategies // change sets
         ; <iset-elements> rmset
         ; foldr(!rs', dr-apply-removal) => rs''
         ; try(
-            <DR_BREAK>Ignore(csid) => label
-            ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnext)))>rs''
-               ; rules(DR_BREAK.label : Ignore(csidnext) -> label)
+            <DR_BREAK>IgnoreB(csid) => labelb
+            ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextb)))>rs''
+               ; rules(DR_BREAK.labelb : IgnoreB(csidnextb) -> labelb)
                <+ fatal-err(|"dr-break was called outside of a fix and merge operator or a dr-label call"))
+          )
+        ; try(
+            <DR_BREAK>IgnoreC(csid) => labelc
+            ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextc)))>rs''
+               ; rules(DR_BREAK.labelc : IgnoreC(csidnextc) -> labelc)
+               <+ fatal-err(|"dr-continue was called outside of a fix and merge operator call"))
           )
         ; try(destroy; <dr-destroy-change-set> cs)
 
@@ -911,14 +929,31 @@ strategies // intersection and union of rule-sets
      rs2@[cs2@ChangeSet(labels2, rmset2, tbl2@Hashtable(csid2)) | rs2a]) -> [cs | rs1a]
     where
 
-      (<DR_BREAK>Ignore(csid1) < !"ignore" + !"") => slabel1
-      ; (<DR_BREAK>Ignore(csid2) < !"ignore" + !"") => slabel2
+      ((<DR_BREAK>IgnoreB(csid1) <+ <DR_BREAK>IgnoreC(csid1)) < !"ignore" + !"") => slabel1
+      ; ((<DR_BREAK>IgnoreB(csid2) <+ <DR_BREAK>IgnoreC(csid2)) < !"ignore" + !"") => slabel2
+
+      // if one branch had a break and one had a continue,
+      // we need to propagate the effect of continue (the
+      // "milder" of the two) in terms of marking the change
+      // set as ignored
+      ; try(
+          <DR_BREAK>IgnoreB(csid1) => lb1
+          ; <DR_BREAK>IgnoreC(csid2) => lc2
+          ; rules(DR_BREAK.lb1 :- IgnoreB(csid1))
+          ; dr-define-ignoreC(|csid1, lc2)
+        )
+      ; try(
+          <DR_BREAK>IgnoreB(csid2) => lb2
+          ; <DR_BREAK>IgnoreC(csid1) => lc1
+          ; rules(DR_BREAK.lb2 :- IgnoreB(csid2))
+          ; dr-define-ignoreC(|csid2, lc1)
+        )
 
       ; (// "ignore" & "ignore" have to be merged, with the "ignore" system label kept
          // "" & "" is the normal merge
          <eq>(slabel1, slabel2)
          ; ior(<merge-cs> (rs1, rmset1, tbl1, rs2, rmset2, tbl2), <merge-rec> (rs1a, rs2a))
-         ; !cs1 => cs
+         ; !cs1 => cs  
          <+ (<eq>(rs1a, rs2a)
              < (<eq>(slabel1, "ignore") // slabel1 = "ignore" & slabel2 != "ignore", so we ignore cs1
                 ; !cs2
@@ -1106,20 +1141,25 @@ strategies // generic fix-point strategies
   dr-fix-and-merge(merge, s | rulenames, label) =
     dr-label(merge, dr-fix-and-merge-break(merge, s | rulenames) | rulenames, label)
 
+  // notes:
+  //  - consider breaks+continues leading to composed top-most ignore change set
+  //  - keep just the last cs's from dr-break
   dr-fix-and-merge-break(merge, s | rulenames) =
     where(<map(fork-rule-sets)> rulenames => rs)
     ; repeat(
         where(
           restore(s, where(<map(dr-discard-change-set(|<id>))> rulenames))
-          ; if <filter({rulename, csid:
-                 ?(rulename, _)
+          ; if <filter({rulename, ruleset, csid:
+                 ?(rulename, ruleset)
                  // getting a change set marked as ignored here means that the
                  // loop _always_ ends with a break, so we might as well not have
                  // had a loop at all, since it will only be executed once
                  ; where(dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | _])
-                 ; if <DR_BREAK>Ignore(csid)
+                 ; if <DR_BREAK>IgnoreB(csid)
                    then fail
-                   else merge
+                   else
+                     <dr-merge-continue-change-sets(merge | <DR_BREAK>Label(rulename))>rulename
+                     ; <merge>(rulename, ruleset)
                    end
                })> rs; []
             then
@@ -1168,6 +1208,29 @@ strategies // generic fix-point strategies
     ; !e
     ; where(<map(dr-commit-change-set(|<id>))> rulenames)
 
+  dr-merge-continue-change-sets(merge | label) =
+    ?rulename
+    ; dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | rs]
+    ; <bagof-DR_BREAK>ContinueCS(rulename, label)
+    ; where(rules(DR_BREAK :- ContinueCS(rulename, label)))
+    ; if not(?[]); <DR_BREAK>IgnoreC(csid)
+      then
+        // discard and replace the current change set with the first
+        // one from the list returned by bagof-DR_BREAK (it could have
+        // been any other element of that list just as well)
+        where(dr-discard-change-set(|rulename))
+        ; [![<id> | rs]; dr-set-rule-set(|rulename) | id]; Tl
+      else id
+      end
+
+    // merge all the change sets (prepended to the common part of the ruleset)
+    ; map(![<id> | rs]; try(<merge>(rulename, <id>)))
+
+strategies // labeling statements, break, continue
+
+  /**
+   * @todo destroy the change sets introduced by calls to dr-break
+   */
   dr-label(merge, s | rulenames, label) =
     {| DR_BREAK :
 
@@ -1178,22 +1241,22 @@ strategies // generic fix-point strategies
                 ; rules(DR_BREAK : Label(rulename) -> label)
               })>rulenames)
 
-      // for each rule r in <rulenames> do
-      //     define a dynamic rule based on r and <label> which marks the position of
-      //     the change set for the fixed point operator labeled with <label> in the
-      //     ruleset of r (these rules are used in dr-break)
+      // for each rule r in <rulenames> define a dynamic rule which
+      // marks the position of the change set created below in the
+      // ruleset of r
       ; where(
           <map({rulename, pos:
                 ?rulename
                 ; dr-get-rule-set(|rulename)
                 ; length => pos
-                ; rules(DR_BREAK : Fix(rulename, label) -> pos)
+                ; rules(DR_BREAK : SplitPos(rulename, label) -> pos)
               })>rulenames
         )
 
       // we need a change set to collect all the changes
-      // to the rule set which do not end with a call to
-      // dr-break
+      // to the rule set which are created on control flow
+      // paths that do not end with a call to dr-break or
+      // dr-continue
       ; where(<map(dr-start-change-set(|<id>))>rulenames)
 
       // run the strategy and save the result
@@ -1207,7 +1270,7 @@ strategies // generic fix-point strategies
           ?rulename
           ; dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | rs]
           ; <bagof-DR_BREAK>BreakCS(rulename, label)
-          ; if <DR_BREAK>Ignore(csid)
+          ; if not(?[]); <DR_BREAK>IgnoreB(csid)
             then
               // discard replace the current change set with the first one from the list
               // returned by bagof-DR_BREAK (it could have been any other element of that
@@ -1222,18 +1285,16 @@ strategies // generic fix-point strategies
 
           // preserve the ignore property if <DR_BREAK>Ignore(csid)
           // maps to a label different from the current one
-          ; try(
-              <DR_BREAK>Ignore(csid) => cslbl
-              ; <not(eq)>(cslbl, label)
-              ; dr-get-rule-set(|rulename)
-              ; fetch(ChangeSet(id, id, ?Hashtable(csidnew)))
-              ; rules(DR_BREAK.label : Ignore(csidnew) -> cslbl)
-            )
- 
+//          ; try(
+//              <DR_BREAK>IgnoreB(csid) => cslbl
+//              ; <not(eq)>(cslbl, label)
+//              ; dr-get-rule-set(|rulename)
+//              ; fetch(ChangeSet(id, id, ?Hashtable(csidnew)))
+//              ; rules(DR_BREAK.label : IgnoreB(csidnew) -> cslbl)
+//            )
+
+          // commit the change sets created above
           ; dr-commit-change-set(|rulename)
-
-          // @TODO destroy the break change sets
-
         })>rulenames
 
       ; !e
@@ -1246,22 +1307,49 @@ strategies // generic fix-point strategies
     where(
       dr-get-rule-set(|rulename) => rs
 
-      // get the ruleset up to the fix point operator identified by <label> and the one from
-      // within the structure over which the fix point operator was applied
-      ; back-split-at(|<DR_BREAK>Fix(rulename, label))
+      // split the ruleset in two parts: the one before the
+      // labeled statement and the one after it
+      ; back-split-at(|<DR_BREAK>SplitPos(rulename, label))
 
-      // build the change set with a snapshot of the current ruleset within the fix point
-      // operator
-      ; dr-build-break-change-set => bcs
+      // build the change set with all the changes from
+      // the first part of the pair generated above...
+      ; dr-build-aggregated-change-set => bcs
 
-      // add to the rule which will be used back at the application of the fix point operator
-      // to retrieve all the change sets pertaining to paths leading to a break
+      // ... and add it to the rule which collects all
+      // the change sets pertaining to control flow paths
+      // that lead to a break
       ; rules(DR_BREAK.label :+ BreakCS(rulename, label) -> bcs)
 
       // go back to the active ruleset and mark the innermost change set as ignored
       ; !rs
       ; fetch(ChangeSet(id, id, ?Hashtable(csid)))
-      ; rules(DR_BREAK.label : Ignore(csid) -> label)
+      ; rules(DR_BREAK.label : IgnoreB(csid) -> label)
+    )
+
+  dr-continue(|rulename) =
+    dr-continue(|rulename, <DR_BREAK>Label(rulename))
+
+  dr-continue(|rulename, label) =
+    where(
+      dr-get-rule-set(|rulename) => rs
+
+      // split the ruleset in two parts: the one before the
+      // labeled statement and the one after it
+      ; back-split-at(|<DR_BREAK>SplitPos(rulename, label))
+
+      // build the change set with all the changes from
+      // the first part of the pair generated above...
+      ; dr-build-aggregated-change-set => ccs
+
+      // ... and add it to the rule which collects all
+      // the change sets pertaining to control flow paths
+      // that lead to a continue
+      ; rules(DR_BREAK.label :+ ContinueCS(rulename, label) -> ccs)
+
+      // go back to the active ruleset and mark the innermost change set as ignored
+      ; !rs
+      ; fetch(ChangeSet(id, id, ?Hashtable(csid)))
+      ; dr-define-ignoreC(|csid, label)
     )
 
   /**
@@ -1270,19 +1358,19 @@ strategies // generic fix-point strategies
    * change sets in the left member of the input pair which refer to
    * rule scopes in the right member of the input pair.
    */
-  dr-build-break-change-set =
+  dr-build-aggregated-change-set =
 
     // create the extra change set
-    (?inFixRs, dr-start-change-set => rs@[bcs@ChangeSet(_, rmset, tbl) | _])
+    (?sourceRs, dr-start-change-set => rs@[aggCs@ChangeSet(_, rmset, tbl) | _])
 
-    // commit all change sets in inFixRs to the extra change set
+    // commit all change sets in sourceRs to the extra change set
     ; <reverse-map(
         ![<id> | rs]
         ; try(dr-commit-change-set(fail))
-      )>inFixRs
+      )>sourceRs
 
-    // collect all the scope ids of the rule scopes in inFixRs
-    ; <filter(?RuleScope(_, Hashtable(<id>)))>inFixRs => scpids
+    // collect all the scope ids of the rule scopes in sourceRs
+    ; <filter(?RuleScope(_, Hashtable(<id>)))>sourceRs => scpids
 
     // remove all the elements from rmset that refer to rule scopes
     // whose scope id is part of scpids
@@ -1301,7 +1389,7 @@ strategies // generic fix-point strategies
       })
 
     // return the built change set
-    ; !bcs
+    ; !aggCs
 
   dr-fix-and-merge(merge1, merge2, s | rulenames1, rulenames2) =
     where(<map(fork-rule-sets)> rulenames1 => rs1;
@@ -1463,6 +1551,11 @@ strategies // n-way split
      in dr-fold-and-intersect([], [s|id], tl | rulenames)
     end
 
+strategies // workaround for overlapping lhhs in dynamic rule
+
+  dr-define-ignoreC(|csid, label) =
+    rules(DR_BREAK.label : IgnoreC(csid) -> label)
+
 strategies // rule-set equality
 
   dr-eq-rule-sets =
@@ -1533,7 +1626,7 @@ strategies // debugging
                  )
          )
     ; try(
-        <DR_BREAK>Ignore(csid) => label
+        <DR_BREAK>IgnoreB(csid) => label
         ; <fprintnl>(stderr, ["Change set is marked as ignored up to label ", label, "."])
       )
     )

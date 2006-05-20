@@ -235,6 +235,8 @@ strategies
   _innermost-scope(|f) = <concat-strings> ["innermost-scope-", f]
   _break(|f)           = ![<concat-strings> ["break-", f]
                            , <concat-strings> ["break-to-label-", f]]
+  _continue(|f)        = ![<concat-strings> ["continue-", f]
+                           , <concat-strings> ["continue-to-label-", f]]
 
 strategies
 
@@ -343,6 +345,7 @@ rules
         ; <create-chain-rule(|x, t3, stdkey)> drd
         ; <create-bigchain-rule(|x, t3, stdkey)> drd
         ; <create-break-rules(|x, t3, stdkey)> drd
+        ; <create-continue-rules(|x, t3, stdkey)> drd
 
         ; create-innermost-scope-strategy(|f)
 
@@ -556,7 +559,7 @@ strategies
       end
 
 /**
- * Break
+ * Break & Continue
  */
 strategies
 
@@ -572,6 +575,21 @@ strategies
         ; add-def(||[
             g2(a1*|a2*, x1) =
               dr-break(|~str:f, x1)
+          ]|)
+      end
+
+  create-continue-rules(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _continue(|f) => [g1, g2]
+    ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
+        add-def(||[
+          g1(a1*|a2*) =
+            dr-continue(|~str:f)
+        ]|)
+        ; new => x1
+        ; add-def(||[
+            g2(a1*|a2*, x1) =
+              dr-continue(|~str:f, x1)
           ]|)
       end
 

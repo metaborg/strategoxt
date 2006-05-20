@@ -19,6 +19,8 @@ strategies
     <+ propconst-labeled-stm
     <+ propconst-break
     <+ propconst-break-label
+    <+ propconst-continue
+    <+ propconst-continue-label
     <+ all(propconst); try(EvalExp)
 
   propconst-block =
@@ -73,3 +75,11 @@ strategies
   propconst-break-label =
     ?Break(Some(label))
     ; break-to-label-PropConst(|label)
+
+  propconst-continue =
+    ?Continue(None)
+    ; continue-PropConst
+
+  propconst-continue-label =
+    ?Continue(Some(label))
+    ; continue-to-label-PropConst(|label)
