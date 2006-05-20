@@ -13,7 +13,7 @@ rules
       try(
         ?Arg(_); gpp-Instantiate(|args)
       + ?Arg2(_, _); gpp-Instantiate(|args)
-      + ?[_|_]; flat-list
+      + ?[_|_]; gpp-flat-list
       )
     )
    

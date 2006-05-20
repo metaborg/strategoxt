@@ -80,31 +80,31 @@ strategies
   abox2text-HV(rec : t * t -> t | xpos, width) =
     ?HV(sopt, bs)
 
-    ; <hs-chars> sopt => hs-chars
+    ; <gpp-hs-chars> sopt => hs-chars
     ; <implode-string> hs-chars => hs
-    ; <vs-text> sopt => vs
+    ; <gpp-vs-text> sopt => vs
     ; <length> hs-chars => hsl
-    ; <add> (xpos, <is-length> sopt) => left-xpos
+    ; <add> (xpos, <gpp-is-length> sopt) => left-xpos
 
     ; !(bs, [([], xpos)])
     ; foldl(
-        hv-add-to-hbox(rec | hsl, width)
-        <+ hv-in-new-vbox(rec | hsl, left-xpos, width)
+        gpp-hv-add-to-hbox(rec | hsl, width)
+        <+ gpp-hv-in-new-vbox(rec | hsl, left-xpos, width)
       )
     ; reverse; map((reverse, id))
     ; map((<separate-by> (hs, <id>), id))
-    ; format-vbox(|sopt, xpos)
+    ; gpp-format-vbox(|sopt, xpos)
 
   /**
    * @type Box * [Int * [String]] -> [Int * [String]]
    */
-  hv-add-to-hbox(rec : t * t -> t | hsl, width) :
+  gpp-hv-add-to-hbox(rec : t * t -> t | hsl, width) :
     (box, [(strs, xpos) | vbs ]) -> [([ str | strs ], <add> (new-xpos, hsl)) | vbs]
     where
       <rec(|xpos)> box => (str, new-xpos)
       ; (<leq> (new-xpos, width) + (!width => 0))
         
-  hv-in-new-vbox(rec : t * t -> t | hsl, left-xpos, width) :
+  gpp-hv-in-new-vbox(rec : t * t -> t | hsl, left-xpos, width) :
     (box, vbs) -> [([str], <add> (new-xpos, hsl)) | vbs]
     where
       <rec(|left-xpos)> box => (str, new-xpos)
@@ -119,27 +119,27 @@ strategies
   abox2text-H(rec : t * t -> t | xpos, width) =
     ?H(sopt, bs)
 
-    ; <hs-chars> sopt => hschars
+    ; <gpp-hs-chars> sopt => hschars
     ; <implode-string> hschars => hs
     ; <length> hschars => hsl
-    ; <filter(is-real-hbox)> bs
+    ; <filter(gpp-is-real-hbox)> bs
 
     ; let rec-add(|pos) =
             rec(|pos); (id, <add> (hsl, <id>))
 
-       in my-thread-map(rec-add | xpos)
+       in gpp-thread-map(rec-add | xpos)
         ; (separate-by(|hs), id)
         ; try((not([]), <subt> (<id>, hsl)))
       end
 
-  my-thread-map(s: t * t -> t | t) :
+  gpp-thread-map(s: t * t -> t | t) :
     [] -> ([], t)
 
-  my-thread-map(s : t * t -> t | t) :
+  gpp-thread-map(s : t * t -> t | t) :
     [x | xs] -> ([y | ys], t'')
     where
       <s(|t)> x => (y, t')
-      ; <my-thread-map(s | t')> xs => (ys, t'')
+      ; <gpp-thread-map(s | t')> xs => (ys, t'')
 
 strategies
 
@@ -151,19 +151,19 @@ strategies
   abox2text-V(rec : t * t -> t | xpos, width) =
     ?V(sopt, bs)
 
-    ; <add> (xpos, <is-length> sopt) => left-xpos
-    ; <filter(is-real-vbox)> bs
+    ; <add> (xpos, <gpp-is-length> sopt) => left-xpos
+    ; <filter(gpp-is-real-vbox)> bs
     ; if ?[] then
         !([], xpos)
       else
-        do-vbox-children(rec | xpos, left-xpos)
-        ; format-vbox(|sopt, xpos)
+        gpp-do-vbox-children(rec | xpos, left-xpos)
+        ; gpp-format-vbox(|sopt, xpos)
       end
 
   /**
    * @type Int * Int * [BOX] -> [Strings * Int]
    */
-  do-vbox-children(rec : t * t -> t | xpos, left-xpos) :
+  gpp-do-vbox-children(rec : t * t -> t | xpos, left-xpos) :
     [b | bs] -> [<rec(|xpos)> b | <map(rec(|left-xpos))> bs]
 
 strategies
@@ -188,9 +188,9 @@ strategies
     ?A(AOPTIONS(aopt), sopt, bs)
 
     ; !bs
-    ; construct-rows
+    ; gpp-construct-rows
     ; map(?R(_, <id>))
-    ; to-matrix(|<length> aopt)
+    ; gpp-to-matrix(|<length> aopt)
     ; matrix-transpose
 
     ; reverse
@@ -199,16 +199,16 @@ strategies
     ; ?columns
 
     ; <zip> (aopt, columns) => column-tuples
-    ; <foldl(do-A-column(rec))> (column-tuples, (xpos, [])) => (last-xpos, str-columns)
+    ; <foldl(gpp-do-A-column(rec))> (column-tuples, (xpos, [])) => (last-xpos, str-columns)
 
     ; <reverse; matrix-transpose> str-columns
     ; map(!(<id>, last-xpos))
-    ; format-vbox(|sopt, xpos)
+    ; gpp-format-vbox(|sopt, xpos)
 
   /**
    * (A-OPTION * (Int * [BOX])) * (Int * [[Strs]]) -> Int * [[Strs]]
    */
-  do-A-column(rec : t * t -> t) :
+  gpp-do-A-column(rec : t * t -> t) :
     ((aopt, (index, bs)), (xpos, columns)) -> (<add> (<string-length> hs, max-xpos), [ new-column | columns ])
      where
          < map(rec(|xpos))
@@ -216,16 +216,16 @@ strategies
          ; (map(try(flatten-list; concat-strings)), list-max)
          > bs => (strings, max-xpos)
        ; <subt> (max-xpos, xpos) => max-width
-       ; (<gt> (index, 1) < <SOpts-of-alignment; hs-text> aopt + !"") => hs
+       ; (<gt> (index, 1) < <gpp-SOpts-of-alignment; gpp-hs-text> aopt + !"") => hs
        ; <map(
-            <align-column> (index, aopt, (' ', <id>, max-width))
+            <gpp-align-column> (index, aopt, (' ', <id>, max-width))
           ; <conc-strings> (<id>, hs)
          )> strings => new-column
 
-  align-column : (_, AR(_), t) -> <align-right>  t
-  align-column : (_, AC(_), t) -> <align-center> t
-  align-column : (1, AL(_), (_, s, _)) -> s
-  align-column : (i, AL(_), t) -> <align-left>   t
+  gpp-align-column : (_, AR(_), t) -> <align-right>  t
+  gpp-align-column : (_, AC(_), t) -> <align-center> t
+  gpp-align-column : (1, AL(_), (_, s, _)) -> s
+  gpp-align-column : (i, AL(_), t) -> <align-left>   t
     where <gt> (i, 1)
 
       // TODO: align cannot handle newlines in cells
@@ -235,10 +235,10 @@ strategies
    * Make sure that all R boxes have the same number of arguments. If
    * not, add empty boxes ([]) to make equal lengths.
    */
-  to-matrix(|nr-cols) =
-    map(FitToMax(|nr-cols))
+  gpp-to-matrix(|nr-cols) =
+    map(gpp-FitToMax(|nr-cols))
   
-  FitToMax(|nr-cols) =
+  gpp-FitToMax(|nr-cols) =
     ?lst
     ; where(length => my-length)
     ; <subt> (nr-cols, my-length) => diff
@@ -260,9 +260,6 @@ strategies
         ; <exit> 1
       )
 
-  warn-not-R =
-    log(|Error(), "All children of an A box must be R boxes: ", <id>) ; <exit>1
-
   // R, not as child of an A
   abox2text-R(rec : t * t -> t | xpos, width) :
     R(sopt, bs) -> <rec(|xpos)> HV(sopt, bs)
@@ -271,7 +268,7 @@ strategies
    * S
    */
   abox2text-S(rec : t * t -> t | xpos, width) :
-    S(s) -> (s, <add> (xpos, <rel-string-length(|xpos)> s))
+    S(s) -> (s, <add> (xpos, <gpp-rel-string-length(|xpos)> s))
 
   abox2text-C(rec : t * t -> t | xpos, width) :
     C(_,[S(s)]) -> (s, xpos)
@@ -302,60 +299,60 @@ strategies
   /**
    * @type List(S-Option) -> String
    */
-  hs-text =
-    hs-chars
+  gpp-hs-text =
+    gpp-hs-chars
     ; implode-string
 
-  hs-chars =
-    hs-length
-    ; my-copy(|' ')
+  gpp-hs-chars =
+    gpp-hs-length
+    ; gpp-copy(|' ')
 
   /**
    * @type List(S-Option) -> String
    */
-  vs-text =
-    vs-chars
+  gpp-vs-text =
+    gpp-vs-chars
     ; implode-string
 
-  vs-chars =
-    vs-chars(|[])
+  gpp-vs-chars =
+    gpp-vs-chars(|[])
 
-  vs-chars(|cont) =
-    vs-length
+  gpp-vs-chars(|cont) =
+    gpp-vs-length
     ; inc
-    ; my-copy(|'\n', cont)
+    ; gpp-copy(|'\n', cont)
 
   /**
    * @type List(S-Option) -> String
    */
-  is-text =
-    is-chars
+  gpp-is-text =
+    gpp-is-chars
     ; implode-string
 
-  is-chars =
-    is-chars(|[])
+  gpp-is-chars =
+    gpp-is-chars(|[])
 
-  is-chars(|cont) =
-    is-length
-    ; my-copy(|' ', cont)
+  gpp-is-chars(|cont) =
+    gpp-is-length
+    ; gpp-copy(|' ', cont)
 
 strategies
 
-  my-copy(|t) =
-    my-copy(|t, [])
+  gpp-copy(|t) =
+    gpp-copy(|t, [])
 
-  my-copy(|t, ts) =
+  gpp-copy(|t, ts) =
     \ 0 -> ts \
     <+ ?n
        ; <subt> (n, 1)
-       ; my-copy(|t, [t | ts])
+       ; gpp-copy(|t, [t | ts])
 
 strategies
 
   /**
    * @type Box ->? Box
    */
-  is-real-vbox =
+  gpp-is-real-vbox =
     not(
       ?[]
     + ?_#([_,[]])
@@ -365,7 +362,7 @@ strategies
   /**
    * @type Box ->? Box
    */
-  is-real-hbox =
+  gpp-is-real-hbox =
     not(?[] + ?H([],[]))
 
 strategies
@@ -375,10 +372,10 @@ strategies
    * @param Int
    * @type List((Strings, Int)) -> (List(Strings), Int)
    */
-  format-vbox(|sopt, xpos) :
+  gpp-format-vbox(|sopt, xpos) :
     strs -> (result, last-xpos)
     where
-      <vertical-sep(|xpos)> sopt => sep
+      <gpp-vertical-sep(|xpos)> sopt => sep
       ; <last> strs => (_, last-xpos)
       ; !strs
       // separate-by + Fst
@@ -394,11 +391,11 @@ strategies
    * @param Int
    * @type List(S-Option) -> String
    */
-  vertical-sep(|xpos) =
+  gpp-vertical-sep(|xpos) =
     ?sopt
-    ; <vs-chars(|
-         <is-chars(|
-            <my-copy(|' ')> xpos
+    ; <gpp-vs-chars(|
+         <gpp-is-chars(|
+            <gpp-copy(|' ')> xpos
          )> sopt
       )> sopt
     ; implode-string
