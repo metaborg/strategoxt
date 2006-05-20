@@ -60,9 +60,6 @@ strategies
       end
     ; <gpp-instantiate(|aboxes)> template
 
-  nmap(s : a * b -> c | i) =
-    [] + [s(|i) | nmap(s | <inc> i)]
-
 /**
  * Path is a list.
  * First element is the constructor name (string)
