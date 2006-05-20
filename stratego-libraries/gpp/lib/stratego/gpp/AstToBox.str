@@ -27,16 +27,14 @@ strategies
 
 strategies
 
-  /**
-   * @todo Drop the exit
-   */
   trm2abox(|tbl) =
        trm2abox-string(|tbl)
     <+ trm2abox-int(|tbl)
     <+ trm2abox-real(|tbl)
     <+ trm2abox-list(|tbl)
     <+ trm2abox-appl(|tbl)
-    <+ log(|Error(),"Cannot rewrite to box: ", <id>) ; <exit>1
+    <+ log(|Error(),"Cannot rewrite to box: ", <id>)
+       ; fail
 
   trm2abox-string(|tbl) =
     !S(<is-string>)
@@ -78,7 +76,7 @@ strategies
       ?arg
     ; ![n | path] => new_path
     ; ( <hashtable-get(|new_path)> tbl => (full_path, template)
-        ; <symbol2abox(|tbl, <get-symbol> full_path, new_path, template)> arg
+        ; <symbol2abox(|tbl, <pptable-path-get-symbol> full_path, new_path, template)> arg
       <+ <trm2abox(|tbl)> arg
       )
 
@@ -144,7 +142,7 @@ strategies
    */
   symbol2abox-iter-sep(|tbl, path, template) =
     map(arg2abox(|tbl, 1, path))
-    ; if <collect'(?S(_))> template => [_] then
+    ; if <collect-om(?S(_), conc)> template => [_] then
         rec x(
            \ []     -> []  \
         <+ \ [e]    -> [e] \
@@ -179,7 +177,7 @@ rules
    * The symbol of the SDF production is contained in the path of
    * pretty-print rules. Get-symbol returns the last symbol of a path.
    */
-  get-symbol :
+  pptable-path-get-symbol :
     Path(cons-name, selectors) -> symbol
     where
       <at-last(?[selector(_, symbol)])> selectors

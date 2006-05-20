@@ -1,11 +1,6 @@
 module stratego/gpp/Util
 strategies
-
-  collect'(s) =
-    rec rec(
-      s < ![<id>] +  crush(![], conc, rec)
-    )
-
+    
   /**
    * Try to flatten lists but do not change to total number of
    * elements. This means that empty lists (containg for a single
