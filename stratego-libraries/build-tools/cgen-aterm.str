@@ -57,6 +57,9 @@ ATerm ", <get-config> FunctionName(), "(void) {
 
   if(result == NULL) {
     result = ATreadFromString(parsetable);
+    if(result != NULL) {
+      ATprotect(&result);
+    }
   }
   return result;
 }
