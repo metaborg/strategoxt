@@ -135,7 +135,7 @@ AC_DEFUN([XT_CHECK_XTC],
   if test "${XTC:+set}" = set; then
     AC_SUBST([XTC])
     AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib -lstratego-xtc'])
-    AC_SUBST([XTC_STRCFLAGS], ['-I $(XTC)/share/xtc'])
+    AC_SUBST([XTC_STRCFLAGS], ['-I $(XTC)/share/xtc -I $(XTC)/share'])
     AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
   else
     # Try to find XTC using pkgconfig.
