@@ -14,17 +14,18 @@ noinst_DATA = \
   ConcreteSyntax2.tbl \
   AstAttributes.tbl
 
-STRINCLUDES = -I ../lib
 
-LDADD     += ../lib/libstratego-sglr.la $(SSL_LIBS) 
-STRCFLAGS  = --main main-$* --format-check 0
-
-EXTRA_DIST = \
-  $(wildcard *.str) \
-  $(wildcard *.meta) \
-  $(wildcard *.def) \
-  $(wildcard *.exp)
-
-CLEANFILES = $(wildcard *.c) $(wildcard *.dep) $(noinst_DATA)
+SCOMPILE = $(STRC_UNINSTALLED)
 
 nodist_stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
+stratego_sglr_tests_LDADD    = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
+stratego_sglr_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
+
+
+STRCFLAGS = \
+  --main main-$* --format-check 0 \
+  $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) \
+  $(STRATEGO_UNINSTALLED_STRCFLAGS)
+
+EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.def) $(wildcard *.exp)
+CLEANFILES = $(wildcard *.c) $(wildcard *.dep) $(noinst_DATA)
