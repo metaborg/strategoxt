@@ -37,12 +37,12 @@ rules
       !args => [_, _, a | _]
 
   SlowInstantiate(|args) :
-    Arg(n) -> <index(|n)> args
+    Arg(n) -> <tmp-index(|n)> args
 
   SlowInstantiate(|args) :
-    Arg2(n, m) -> <index(|m)> list
+    Arg2(n, m) -> <tmp-index(|m)> list
     where
-      <index(|n)> args => list
+      <tmp-index(|n)> args => list
 
 strategies
 
@@ -68,15 +68,15 @@ strategies
 strategies
 
   /**
-   * @todo Move to Stratego Library
+   * @todo Remove: bootstrap problem
    */    
-  index(|i) =
-    at-index(?t | <dec> i); !t
+  tmp-index(|i) =
+    tmp-at-index(?t | <dec> i); !t
 
   /**
-   * @todo Move to Stratego Library
-   */    
-  at-index(s | i) =
+   * @todo Remove: bootstrap problem
+   */
+  tmp-at-index(s | i) =
     let next(|j) =
           if !j => i then
             [s | id]

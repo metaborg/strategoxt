@@ -58,12 +58,15 @@ strategies
     ; <try-pp-table-get(|tbl)> (arity, [f]) => (_, template)
     ; ![f] => currentpath
     ; let narg2abox(|n) = arg2abox(|tbl, n, currentpath)
-       in <nmap(narg2abox | 1)> args => aboxes
+       in <tmp-nmap(narg2abox | 1)> args => aboxes
       end
     ; <instantiate(|aboxes)> template
 
-  nmap(s : a * b -> c | i) =
-    [] + [s(|i) | nmap(s | <inc> i)]
+  /**
+   * @todo Remove: bootstrap problem
+   */
+  tmp-nmap(s : a * b -> c | i) =
+    [] + [s(|i) | tmp-nmap(s | <inc> i)]
 
 /**
  * Path is a list.
@@ -108,7 +111,7 @@ strategies
    */
   symbol2abox-alt(|tbl, path, template) =
     ?alt(n, [])
-    ; <instantiate(|[])> [<index(|n)> template]
+    ; <instantiate(|[])> [<tmp-index(|n)> template]
 
   /**
    * Rule to format alt(n,[arg]), with non-empty list of arguments
@@ -116,7 +119,7 @@ strategies
   symbol2abox-alt(|tbl, path, template) =
     ?alt(n, [arg])
     ; <arg2abox(|tbl, n, path)> arg => abox
-    ; <instantiate(|[abox])> [<index(|n)> template]
+    ; <instantiate(|[abox])> [<tmp-index(|n)> template]
 
   /**
    * Rule to format optional: Some(x)
