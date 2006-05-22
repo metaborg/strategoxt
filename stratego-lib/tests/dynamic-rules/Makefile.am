@@ -18,7 +18,7 @@ EXTRA_DIST     	= $(wildcard *.str)
 CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
-STRSGLR = ../../../stratego-libraries/stratego-sglr/lib
+STRSGLR = ../../../stratego-libraries/sglr/lib
 
 STRINCLUDES    	= -I $(top_srcdir)/libraries -I til/syn -I til/sim -I til/opt -I $(STRSGLR)
 STRCFLAGS       = --format-check -1
