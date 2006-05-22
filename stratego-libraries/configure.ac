@@ -10,6 +10,7 @@ AC_PROG_INSTALL
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
+
 AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_builddir)/../srts/src'])
 AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/../srts/src/libstratego-runtime.la'])
 
@@ -23,6 +24,17 @@ AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/../xtc/libraries/libstratego-x
 
 AC_SUBST([STRATEGO_SGLR_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/stratego-sglr/lib'])
 AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/stratego-sglr/lib/libstratego-sglr.la'])
+
+AC_SUBST([STRATEGO_GPP_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/gpp/lib'])
+AC_SUBST([STRATEGO_GPP_UNINSTALLED_LIBS],['$(top_builddir)/gpp/lib/libstratego-gpp.la'])
+
+# Variable for compiling with local strc
+AC_SUBST([STRC_UNINSTALLED],['XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'])
+
+# Combinations of all libraries that are needed.
+AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
+AC_SUBST([STRATEGO_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)'])
+AC_SUBST([STRATEGO_UNINSTALLED_LIBS],['$(STRATEGO_LIB_UNINSTALLED_LIBS) $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) $(ATERM_LIBS)'])
 
 AC_CONFIG_FILES([
   Makefile

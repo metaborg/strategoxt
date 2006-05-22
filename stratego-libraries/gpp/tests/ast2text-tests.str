@@ -4,7 +4,6 @@
 module ast2text-tests
 imports
   libstratego-gpp
-  libstratego-sglr
 
 strategies
 

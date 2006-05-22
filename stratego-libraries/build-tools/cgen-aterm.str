@@ -15,16 +15,15 @@ strategies
 
   main-cgen-aterm =
     input-wrap(functionname-option,
-      write-to-string
-      ; explode-string
-      ; where(print-header)
+      tbl := <write-to-shared-string>
+      ; where(print-header(|tbl))
       ; repeat(
           splitmap(print-elem|15)
         ; print-newline
         ; Snd
-        <+ map(print-elem)
+        <+ map(print-elem); fail
         )
-      ; where(print-footer)
+      ; where(print-footer(|tbl)) 
       )
 
   functionname-option =
@@ -40,7 +39,7 @@ strategies
 
 strategies
 
-  print-header =
+  print-header(|tbl) =
     where(
       <fputstrings> (["
 #include <aterm1.h>
@@ -51,19 +50,19 @@ ATerm ", <get-config> FunctionName(), "(void) {
     "], <stdout-stream>)
     )
 
-  print-footer =
-    where(<fputs> ("
+  print-footer(|tbl) =
+    where(<fputstrings> (["
   0 };
 
   if(result == NULL) {
-    result = ATreadFromString(parsetable);
+      result = ATreadFromSharedString(parsetable, ", <length; int-to-string> tbl, ");
     if(result != NULL) {
       ATprotect(&result);
     }
   }
   return result;
 }
-", <stdout-stream>)
+"], <stdout-stream>)
     )
 
   print-newline =

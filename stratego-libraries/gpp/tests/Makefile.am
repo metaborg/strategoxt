@@ -5,11 +5,16 @@ check_PROGRAMS = abox2text-tests ast2text-tests
 
 STRCFLAGS = \
   --main main-$* \
-  -I ../lib \
-  -I ../../stratego-sglr/lib \
-  -I $(top_srcdir)/../gpp/syn/box
+  -I $(top_srcdir)/../gpp/syn/box \
+  $(STRATEGO_GPP_UNINSTALLED_STRCFLAGS) \
+  $(STRATEGO_UNINSTALLED_STRCFLAGS)
+  
+SCOMPILE = $(STRC_UNINSTALLED)
 
-LDADD += ../lib/libstratego-gpp.la ../../stratego-sglr/lib/libstratego-sglr.la $(SSL_LIBS) 
+abox2text_tests_LDADD    = $(STRATEGO_GPP_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
+abox2text_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
+ast2text_tests_LDADD     = $(STRATEGO_GPP_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
+ast2text_tests_CPPFLAGS  = $(STRATEGO_UNINSTALLED_CFLAGS)
 
 TESTS          = $(check_PROGRAMS)
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.pp)
