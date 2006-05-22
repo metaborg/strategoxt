@@ -1,0 +1,49 @@
+/**
+ * Main interface to the GPP library.
+ */
+module stratego/gpp/Main
+strategies
+
+  /**
+   * Format a box to a string.
+   *
+   * @type Box -> String
+   * @todo Improve performance.
+   */
+  box2text-string(|width) =
+    abox2text(|width)
+    ; flatten-list
+    ; concat-strings
+
+  /**
+   * Format a box and print the text to a stream.
+   *
+   * @type Box -> Stream
+   */
+  box2text-stream(|width, stream) =
+    abox2text(|width)
+    ; gpp-topdown-fputs(|stream)
+    ; !stream
+    
+strategies
+
+  /**
+   * Pretty-prints an ATerm to a Box using the given pretty-print tables.
+   *
+   * @param List(PpTable)
+   * @type a -> Box
+   */
+  ast2box(|pptables) =
+    ast2abox(|pptables)
+
+  /**
+   * Parse a pp table from a file.
+   *
+   * @type String -> PpTable
+   */
+  parse-pptable-file =
+    where(
+      prim("STRGPP_get_pptable_parsetable")
+      ; tbl := <open-parse-table>
+    )
+    ; finally(parse-file(|tbl), <close-parse-table> tbl)

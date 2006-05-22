@@ -1,5 +1,24 @@
 module stratego/gpp/Util
 strategies
+
+  gpp-topdown-fputs(|stream) =
+    where(Stream(pointer) := stream)
+    ; topdown(
+        try(
+          is-string
+          ; where(gpp-fputs(|pointer))
+        )
+      )
+
+  /**
+   * Writes a String to a Stream
+   *
+   * @type (String, Stream) -> Stream
+   */
+  gpp-fputs(|stream) =
+    ?str; prim("SSL_fputs", str, stream)
+
+strategies
     
   /**
    * Try to flatten lists but do not change to total number of

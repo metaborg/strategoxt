@@ -47,6 +47,7 @@ AC_CONFIG_FILES([
   stratego-sglr/lib/Makefile
   stratego-sglr/tests/Makefile
 
+  stratego-gpp.pc
   gpp/Makefile
   gpp/lib/Makefile
   gpp/tests/Makefile

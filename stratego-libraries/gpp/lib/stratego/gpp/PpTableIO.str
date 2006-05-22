@@ -13,20 +13,6 @@ imports
 strategies
 
   /**
-   * Parse a pp table from a file.
-   *
-   * @type String -> PpTable
-   */
-  parse-pptable-file =
-    where(
-      prim("STRGPP_get_pptable_parsetable")
-      ; tbl := <open-parse-table>
-    )
-    ; finally(parse-file(|tbl), <close-parse-table> tbl)
-
-strategies
-
-  /**
    * @type List(PpTable) -> HashTable
    */
   pptable-make-hashtable =

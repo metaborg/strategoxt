@@ -57,7 +57,7 @@ strategies
 
   abox2text-test(|msg, box, txt) =
     apply-test(!msg
-    , abox2text(|80); flatten-list; concat-strings
+    , box2text-string(|80)
     , !box
     , !txt
     )

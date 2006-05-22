@@ -43,11 +43,8 @@ strategies
   ast2text-test(|msg, pp, term, string) =
     apply-test(!msg,
       where(pptbl := <parse-pptable-file> pp)
-      ; ast2abox(|[pptbl])
-      ; abox2text(|80)
-      ; flatten-list
-      ; concat-strings
-      // ; trim-chars(is-whitespace + '\n' + '\r')
+      ; ast2box(|[pptbl])
+      ; box2text-string(|80)
     , !term
     , !string
     )
