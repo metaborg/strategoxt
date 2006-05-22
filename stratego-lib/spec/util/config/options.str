@@ -94,6 +94,37 @@ strategies
     ; ReadFromFile
     ; s
 
+/**
+ * Stream based wrappers
+ */
+strategies
+
+  /**
+   * Wraps a strategy into a strategy that handles input and output options.
+   * The strategy arguments is appied to a tuple of stream: the input and the output stream. 
+   *
+   * @param (Stream, Stream) -> _
+   */
+  io-stream-wrap(s) = 
+    io-stream-wrap(fail, s)
+
+  io-stream-wrap(extra-opts, s) =
+    io-stream-wrap(extra-opts, system-usage, system-about, s)
+
+  io-stream-wrap(extra-opts, usage, about, s) =
+    option-wrap(extra-opts <+ io-options,  usage, about, id, io-stream(s))
+
+  io-stream(s) =
+      fout := <get-config; <open-stream> (<id>, "w") <+ stdout-stream> "-o"
+    ; fin  := <get-config; <open-stream> (<id>, "r") <+ stdin-stream>  "-i"
+    ; if <s> (fin, fout) then
+        try(<fclose> fout); try(<fclose> fin)
+        ; report-success
+      else
+        try(<fclose> fout); try(<fclose> fin)     
+        ; report-failure
+      end
+
 strategies
 
   option-wrap(opts, s) =
