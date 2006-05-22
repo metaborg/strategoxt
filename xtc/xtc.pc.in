@@ -1,7 +1,7 @@
 prefix=@prefix@
 pkgdatadir=@datadir@/@PACKAGE@
 xtc=@prefix@/bin/xtc
-strcflags=-I ${pkgdatadir}
+strcflags=-I ${pkgdatadir} -I @datadir@
 
 Name: XTC
 Description: Transformation Tool Composition

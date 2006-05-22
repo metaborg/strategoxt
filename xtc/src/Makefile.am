@@ -4,21 +4,14 @@ include $(wildcard *.dep)
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS 	= xtc 
+pkgdata_DATA 	= xtc-lib.str xtc-dir.str
 
-#pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
-#		  xtc-proc.rtree xtc-register.rtree xtc-dir.rtree
+STRCFLAGS 	= --main $* -I $(srcdir) $(XTC_STRCFLAGS)
+xtc_LDADD       = $(XTC_LIBS) $(SSL_LIBS)
 
-pkgdata_DATA 	= xtc-lib.str xtc-rep.str \
-		  xtc-proc.str xtc-register.str xtc-dir.str
-
-SCFLAGS 	= --main $* $(XTCFLAGS)
-xtc_LDFLAGS     = $(AM_LDFLAGS) -static
-
-EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
-		  $(wildcard *.meta) $(pkgdata_DATA)
+EXTRA_DIST	= $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= $(wildcard *.c) 
-#$(pkgdata_DATA)
+BOOTCLEANFILES	= $(wildcard *.c)
 
 check_PROGRAMS  = test1 test2 test3
 
@@ -40,3 +33,6 @@ check2 :
 nodist_test1_SOURCES = test1.c 
 nodist_test2_SOURCES = test2.c 
 nodist_test3_SOURCES = test3.c
+test1_LDADD =  $(XTC_LIBS) $(SSL_LIBS)
+test2_LDADD =  $(XTC_LIBS) $(SSL_LIBS)
+test3_LDADD =  $(XTC_LIBS) $(SSL_LIBS)

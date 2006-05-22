@@ -1,5 +1,5 @@
 module xtc-query
-imports xtc-lib config
+imports xtc-lib
 strategies
 
   xtc-query = 

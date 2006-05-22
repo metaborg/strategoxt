@@ -18,10 +18,11 @@
  *
  * @author Eelco Visser <visser@acm.org>
  * @author Karl Trygve Kalleberg <karltk@cs.uu.nl>
- *
  */
-module xtc-proc
-imports xtc-rep 
+module stratego/xtc/Proc
+imports
+  libstrategolib
+  stratego/xtc/Register
 
 signature
   constructors

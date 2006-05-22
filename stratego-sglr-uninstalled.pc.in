@@ -3,5 +3,5 @@ prefix=@prefix@
 Name: Stratego SGLR Library
 Description: Bindings of the SGLR library for Stratego.
 Version: @PACKAGE_VERSION@
-Libs: @abs_top_builddir@/stratego-libraries/stratego-sglr/lib/libstratego-sglr.la
+Libs: @abs_top_builddir@/stratego-libraries/sglr/lib/libstratego-sglr.la
 Requires: aterm stratego-runtime stratego-lib

@@ -62,8 +62,9 @@ AC_SUBST([XTC2_ENABLED])
 AC_MSG_CHECKING([in which order to build subpackages])
 PKGS="autoxt srts"
 if test "$xt_baseline" = "yes"; then
-  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-lib"
+  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-lib stratego-libraries"
 
+  # there is no particular reason to build xtc last: no libstratego-xtc in there.
   if test "x$XTC2_ENABLED" = "xyes"; then
     PKGS="$PKGS xtc2"
     DIST_PKGS="$DIST_PKGS xtc"
@@ -73,10 +74,8 @@ if test "$xt_baseline" = "yes"; then
     DIST_PKGS="$DIST_PKGS xtc2" 
     XTC_DIR="xtc"
   fi
-
-  PKGS="$PKGS stratego-libraries"
 else
-  PKGS="$PKGS stratego-lib"
+  PKGS="$PKGS stratego-lib stratego-libraries"
 
   if test "x$XTC2_ENABLED" = "xyes"; then
     PKGS="$PKGS xtc2"
@@ -88,7 +87,7 @@ else
     XTC_DIR="xtc"
   fi
 
-  PKGS="$PKGS stratego-libraries stratego-front asfix-tools strc-core gpp c-tools"
+  PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools"
 fi
 
 PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"

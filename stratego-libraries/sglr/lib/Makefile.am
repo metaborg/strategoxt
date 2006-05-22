@@ -41,7 +41,7 @@ libstratego_sglr_la_LIBADD = \
   $(top_builddir)/sglr/justsglr/libjustsglr.la \
   $(ATERM_LIBS)
 
-STRCLAGS = \
+STRCFLAGS = \
   $(XTC_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
 

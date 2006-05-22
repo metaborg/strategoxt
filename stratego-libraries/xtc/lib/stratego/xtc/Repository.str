@@ -1,4 +1,4 @@
-module xtc-rep
+module stratego/xtc/Repository
 signature
   sorts XtcKey
   constructors

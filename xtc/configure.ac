@@ -13,7 +13,6 @@ AC_PROG_LIBTOOL
 AC_CONFIG_FILES([
   xtc.pc
   Makefile
-  libraries/Makefile
   src/Makefile
   tools/Makefile
 ])

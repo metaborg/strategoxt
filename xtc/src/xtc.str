@@ -1,5 +1,11 @@
 module xtc
-imports lib xtc-lib xtc-query xtc-call xtc-get
+imports
+  libstrategolib
+  xtc-lib
+  xtc-query
+  xtc-call
+  xtc-get
+
 strategies
 
   xtc = 
@@ -68,7 +74,7 @@ strategies
         where(<set-config> ("--verbose", <verbose-to-int>)),
         !"--verbose i                  Verbosity level i (default 1)")
 
-
+/*
   short-description(p) = 
     !["Usage: xtc [-r rep] register -t tool -V vers -l loc\n",
       "       xtc [-r rep] (import r)+\n",
@@ -77,3 +83,4 @@ strategies
   long-description(p)  = 
     !["The xtc command supports the registration of tools in an XTC repository\n",
       "and querying XTC repositories"]
+*/

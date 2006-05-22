@@ -1,5 +1,7 @@
-module xtc-register
-imports xtc-rep
+module stratego/xtc/Register
+imports
+  stratego/xtc/Repository
+
 strategies
 
   // Finding an entry in the repository

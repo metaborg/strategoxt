@@ -19,8 +19,8 @@ AC_SUBST([STRATEGO_LIB_UNINSTALLED_CFLAGS],['-I $(top_builddir)/../stratego-lib/
 AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],
   ['$(top_builddir)/../stratego-lib/libraries/libstratego-lib.la $(top_builddir)/../stratego-lib/native/stratego-lib/libstratego-lib-native.la'])
 
-AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/../libraries'])
-AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/../xtc/libraries/libstratego-xtc.la'])
+AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/xtc/lib'])
+AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/xtc/lib/libstratego-xtc.la'])
 
 AC_SUBST([STRATEGO_SGLR_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/sglr/lib'])
 AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/sglr/lib/libstratego-sglr.la'])
@@ -51,5 +51,9 @@ AC_CONFIG_FILES([
   gpp/Makefile
   gpp/lib/Makefile
   gpp/tests/Makefile
+
+  xtc/Makefile
+  xtc/lib/Makefile
+  xtc/tests/Makefile
 ])
 AC_OUTPUT

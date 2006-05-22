@@ -1,2 +1,0 @@
-module xtclib
-imports libstrategolib xtc-rep xtc-proc xtc-register

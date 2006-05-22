@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = build-tools sglr gpp
+SUBDIRS           = build-tools xtc sglr gpp 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt svn-revision stratego-sglr.pc.in stratego-gpp.pc.in
 

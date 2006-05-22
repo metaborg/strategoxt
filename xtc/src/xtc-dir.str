@@ -1,8 +1,4 @@
 module xtc-dir
-
-imports 
-  xtc-proc
-
 signature
   constructors
     Dir   : String              -> File // unexpanded directory

@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = libraries src tools
+SUBDIRS           = src tools
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt xtc.pc.in svn-revision
 
