@@ -101,7 +101,7 @@ strategies
   * @inc length-test
   */
   length = 
-    foldr(!0, add, !1)
+    ?t; prim("SSL_get_list_length", t)
 
   /**
    * Succeeds if the term is in the list.

@@ -75,3 +75,41 @@ ATerm SSL_write_term_to_string(ATerm term) {
   result_term = ATmakeString(result);
   return result_term;
 }
+
+ATerm SSL_write_term_to_binary_string(ATerm term) {
+  int i;
+  int length;
+  char* result = ATwriteToBinaryString(term, &length);
+  ATermList result_term = ATmakeList0();;
+
+  if(result == NULL) {
+    perror("SRTS/write_term_to_binary_string");
+    _fail(term);
+  }
+
+  for(i = length - 1; i >= 0; i--) {
+    ATerm next = (ATerm) ATmakeInt(result[i]);
+    result_term = ATinsert(result_term, next);
+  }
+
+  return (ATerm) result_term;
+}
+
+ATerm SSL_write_term_to_shared_string(ATerm term) {
+  int i;
+  int length;
+  char* result = ATwriteToSharedString(term, &length);
+  ATermList result_term = ATmakeList0();;
+
+  if(result == NULL) {
+    perror("SRTS/write_term_to_shared_string");
+    _fail(term);
+  }
+
+  for(i = length - 1; i >= 0; i--) {
+    ATerm next = (ATerm) ATmakeInt(result[i]);
+    result_term = ATinsert(result_term, next);
+  }
+
+  return (ATerm) result_term;
+}

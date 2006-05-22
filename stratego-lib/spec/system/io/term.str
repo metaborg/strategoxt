@@ -117,6 +117,22 @@ strategies
   write-to-string =
     ?t; prim("SSL_write_term_to_string", t)
 
+  /**
+   * Writes an ATerm to a binary string represented as a list of chars.
+   *
+   * @type a -> List(Char)
+   */
+  write-to-binary-string =
+    ?t; prim("SSL_write_term_to_binary_string", t)  
+
+  /**
+   * Writes an ATerm to a shared string represented as a list of chars.
+   *
+   * @type a -> List(Char)
+   */
+  write-to-shared-string =
+    ?t; prim("SSL_write_term_to_shared_string", t)  
+
 strategies
 
   /**

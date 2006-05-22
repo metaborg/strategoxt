@@ -2,6 +2,7 @@ includedir = $(prefix)/include/stratego-lib
 
 include_HEADERS = \
 	collection-hash-table-common.h  \
+	collection-list-common.h  \
 	stratego-lib.h \
 	system-io-dir.h \
 	system-io-term.h \
@@ -33,6 +34,7 @@ libstratego_lib_native_la_LDFLAGS = -avoid-version -no-undefined
 LIB_SOURCES = \
 	$(include_HEADERS) \
 	collection-hash-table-common.c \
+	collection-list-common.c \
 	system-io-dir.c \
 	system-io-term.c \
 	system-posix-file.c \
