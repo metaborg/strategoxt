@@ -1,5 +1,5 @@
 module xml-doc2abox
-imports xml-doc Box concrete-syntax liblib
+imports xml-doc Box liblib
 strategies
 
   main-xml-doc2abox =
@@ -7,7 +7,6 @@ strategies
 
   xml-doc2abox =
       topdown(try(repeat(xml-to-box)))
-    ; concat-content
 
 rules
 
