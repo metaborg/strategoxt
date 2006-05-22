@@ -38,7 +38,7 @@ libstratego_sglr_la_LIBADD = \
   $(XTC_UNINSTALLED_LIBS) \
   $(STRATEGO_LIB_UNINSTALLED_LIBS) \
   $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) \
-  $(top_builddir)/stratego-sglr/justsglr/libjustsglr.la \
+  $(top_builddir)/sglr/justsglr/libjustsglr.la \
   $(ATERM_LIBS)
 
 STRCLAGS = \

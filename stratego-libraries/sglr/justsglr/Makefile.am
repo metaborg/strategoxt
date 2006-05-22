@@ -55,3 +55,5 @@ libsglr = \
   sglr-interface.c forest.c parse-table.c parser.c \
   stack.c rsrc-usage.c stack-collect.c bitmap.c \
   ambi-tables.c marking.c posmap.c
+
+bootclean:

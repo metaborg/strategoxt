@@ -22,8 +22,8 @@ AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],
 AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/../libraries'])
 AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/../xtc/libraries/libstratego-xtc.la'])
 
-AC_SUBST([STRATEGO_SGLR_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/stratego-sglr/lib'])
-AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/stratego-sglr/lib/libstratego-sglr.la'])
+AC_SUBST([STRATEGO_SGLR_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/sglr/lib'])
+AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/sglr/lib/libstratego-sglr.la'])
 
 AC_SUBST([STRATEGO_GPP_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/gpp/lib'])
 AC_SUBST([STRATEGO_GPP_UNINSTALLED_LIBS],['$(top_builddir)/gpp/lib/libstratego-gpp.la'])
@@ -42,10 +42,10 @@ AC_CONFIG_FILES([
   build-tools/Makefile
 
   stratego-sglr.pc
-  stratego-sglr/Makefile
-  stratego-sglr/justsglr/Makefile
-  stratego-sglr/lib/Makefile
-  stratego-sglr/tests/Makefile
+  sglr/Makefile
+  sglr/justsglr/Makefile
+  sglr/lib/Makefile
+  sglr/tests/Makefile
 
   stratego-gpp.pc
   gpp/Makefile
