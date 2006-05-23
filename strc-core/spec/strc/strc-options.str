@@ -29,7 +29,7 @@ strategies
     // consider to include CFLAGS from the environment
     ; <set-config> ("-Xcc",
         [ "-I", <xtc-find-path> "SRTS-include"
-        , "-I", <xtc-find-path> "strategoxt-lib-include"
+        , "-I", <xtc-find-path> "stratego-lib-include"
         , "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")
         ])
 
