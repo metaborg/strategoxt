@@ -29,7 +29,7 @@ strategies
     // consider to include CFLAGS from the environment
     ; <set-config> ("-Xcc",
         [ "-I", <xtc-find-path> "SRTS-include"
-        , "-I", <xtc-find-path> "stratego-lib-include"
+        , "-I", <xtc-find-path> "strategoxt-lib-include"
         , "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")
         ])
 
@@ -50,7 +50,7 @@ strategies
   get-include-dirs =
     <conc> (<get-config> "-I"
            , ["-I", <xtc-find-path> "lib.rtree",
-              "-I", <xtc-find-path> "libstratego-lib.rtree",
+              "-I", <xtc-find-path> "strategoxt-datadir",
               "-I", <xtc-find-path> "Stratego.rtree",
               "-I", <xtc-find-path> "StrategoRenamed.sdf"]
            )
