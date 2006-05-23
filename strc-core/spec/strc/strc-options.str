@@ -50,6 +50,7 @@ strategies
   get-include-dirs =
     <conc> (<get-config> "-I"
            , ["-I", <xtc-find-path> "lib.rtree",
+              "-I", <xtc-find-path> "libstratego-lib.rtree",
               "-I", <xtc-find-path> "Stratego.rtree",
               "-I", <xtc-find-path> "StrategoRenamed.sdf"]
            )

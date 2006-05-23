@@ -39,6 +39,8 @@ install-data-local::
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libATerm.la -l $(ATERM)/lib -V X
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t SRTS-include -l $(prefix)/include -V X
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t stratego-lib-include -l $(prefix)/include -V X
+	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-lib.rtree -l $(prefix)/share -V $(VERSION)
+	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.rtree -l $(prefix)/share -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/stratego-lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
