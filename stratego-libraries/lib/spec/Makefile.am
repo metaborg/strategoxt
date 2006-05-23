@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
 
 pkgdatadir = $(datadir)/stratego-lib
-nobase_pkgdata_DATA = libstrategolib.rtree 
+nobase_pkgdata_DATA = libstrategolib.rtree $(strategolib:.str=.rtree)
 
 data_DATA = libstratego-lib.rtree
 
