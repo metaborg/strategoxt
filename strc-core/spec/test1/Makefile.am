@@ -185,6 +185,7 @@ nodist_test93_SOURCES = test93.c
 nodist_test94_SOURCES = test94.c
 nodist_test95_SOURCES = test95.c
 nodist_test96_SOURCES = test96.c
+nodist_test97_SOURCES = test97.c
 
 nodist_test_chain01_SOURCES = test-chain01.c
 nodist_test_chain02_SOURCES = test-chain02.c
