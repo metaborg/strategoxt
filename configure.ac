@@ -129,7 +129,7 @@ AC_OUTPUT
 
 AB_CONFIG_PKG(autoxt, )
 AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(xtc2,               --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+# AB_CONFIG_PKG(xtc2,               --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(c-tools,            --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-front,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
