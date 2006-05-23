@@ -1,0 +1,6 @@
+/**
+ * Obsolete: import libstratego-lib
+ */
+module libstrategolib
+imports
+  libstratego-lib

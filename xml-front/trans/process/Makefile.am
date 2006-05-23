@@ -14,15 +14,12 @@ STRINCLUDES = \
   -I $(top_srcdir)/lib \
   -I $(top_srcdir)/sig/xml-info \
   -I $(top_srcdir)/sig/xml \
-  -I $(SRTS)/share/srts \
   -I $(XTC)/share/xtc \
   -I $(XML_FRONT)/share/sdf/xml-front
-
-#  -I $(top_srcdir)/syn/xml 
 
 LDADD += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
-#$(wildcard *.rtree)
+

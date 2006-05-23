@@ -52,40 +52,40 @@ fi
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
 
-AC_ARG_ENABLE([xtc2],
-  AS_HELP_STRING([--enable-xtc2], [use the xtc2 library]),
-  [XTC2_ENABLED=$enable_xtc2],
-  [XTC2_ENABLED="no"]
-)
-AC_SUBST([XTC2_ENABLED])
+# AC_ARG_ENABLE([xtc2],
+#   AS_HELP_STRING([--enable-xtc2], [use the xtc2 library]),
+#   [XTC2_ENABLED=$enable_xtc2],
+#   [XTC2_ENABLED="no"]
+# )
+# AC_SUBST([XTC2_ENABLED])
 
 AC_MSG_CHECKING([in which order to build subpackages])
-PKGS="autoxt srts"
+PKGS="autoxt"
 if test "$xt_baseline" = "yes"; then
-  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-lib stratego-libraries"
+  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-libraries xtc"
 
   # there is no particular reason to build xtc last: no libstratego-xtc in there.
-  if test "x$XTC2_ENABLED" = "xyes"; then
-    PKGS="$PKGS xtc2"
-    DIST_PKGS="$DIST_PKGS xtc"
-    XTC_DIR="xtc2"
-  else
-    PKGS="$PKGS xtc"
-    DIST_PKGS="$DIST_PKGS xtc2" 
-    XTC_DIR="xtc"
-  fi
+  # if test "x$XTC2_ENABLED" = "xyes"; then
+  #   PKGS="$PKGS xtc2"
+  #   DIST_PKGS="$DIST_PKGS xtc"
+  #   XTC_DIR="xtc2"
+  # else
+  #   PKGS="$PKGS xtc"
+  #   DIST_PKGS="$DIST_PKGS xtc2" 
+  #   XTC_DIR="xtc"
+  # fi
 else
-  PKGS="$PKGS stratego-lib stratego-libraries"
+  PKGS="$PKGS stratego-libraries xtc"
 
-  if test "x$XTC2_ENABLED" = "xyes"; then
-    PKGS="$PKGS xtc2"
-    DIST_PKGS="$DIST_PKGS xtc"
-    XTC_DIR="xtc2"
-  else
-    PKGS="$PKGS xtc"
-    DIST_PKGS="$DIST_PKGS xtc2" 
-    XTC_DIR="xtc"
-  fi
+  # if test "x$XTC2_ENABLED" = "xyes"; then
+  #   PKGS="$PKGS xtc2"
+  #   DIST_PKGS="$DIST_PKGS xtc"
+  #   XTC_DIR="xtc2"
+  # else
+  #   PKGS="$PKGS xtc"
+  #   DIST_PKGS="$DIST_PKGS xtc2" 
+  #   XTC_DIR="xtc"
+  # fi
 
   PKGS="$PKGS stratego-front asfix-tools strc-core gpp c-tools"
 fi
@@ -97,7 +97,6 @@ DIST_PKGS="$PKGS $DIST_PKGS"
 
 AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
-AC_SUBST([XTC_DIR])
 
 AC_MSG_CHECKING([for the location of the xtc tool to be used])
 if test "$xt_baseline" = "yes"; then
@@ -129,13 +128,11 @@ AC_OUTPUT
 ### CONFIGURE SUBPACKAGES #####################################
 
 AB_CONFIG_PKG(autoxt, )
-AB_CONFIG_PKG(srts,   )
 AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(xtc2,               --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(c-tools,            --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-front,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-lib,       --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(asfix-tools,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(gpp,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
@@ -145,6 +142,3 @@ AB_CONFIG_PKG(sdf-front,          --with-repository=${REPOSITORY} --with-build-r
 AB_CONFIG_PKG(sdf-tools,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-regular,   --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(xml-front,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-
-# AB_CONFIG_PKG(xtar,             --with-repository=${REPOSITORY})
-

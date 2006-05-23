@@ -10,5 +10,4 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) parse-cs-lib.rtree
 
 SCFLAGS      = --main io-$* 
-STRINCLUDES  = -I $(XTC)/share/xtc \
-               -I $(SRTS)/share/srts 
+STRINCLUDES  = -I $(XTC)/share/xtc 

@@ -3,7 +3,20 @@ AC_INIT([stratego-libraries],[0.17M1],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
+AM_CONFIG_HEADER(config.h)
+
 XT_INTERNAL_USE_XT_PACKAGES
+XT_CHECK_MKSTEMP
+XT_CHECK_MPROTECT
+
+AC_CHECK_FUNCS([getpagesize mkdtemp])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([string.h])
+AC_CHECK_HEADERS([unistd.h])
+
+AC_C_INLINE
+AC_HEADER_STDC
+AC_TYPE_SIZE_T
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -11,13 +24,15 @@ AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
 
-AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_builddir)/../srts/src'])
-AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/../srts/src/libstratego-runtime.la'])
+AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_builddir)/runtime/lib'])
+AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/runtime/lib/libstratego-runtime.la'])
 
-AC_SUBST([STRATEGO_LIB_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/../stratego-lib/libraries'])
-AC_SUBST([STRATEGO_LIB_UNINSTALLED_CFLAGS],['-I $(top_builddir)/../stratego-lib/native'])
-AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],
-  ['$(top_builddir)/../stratego-lib/libraries/libstratego-lib.la $(top_builddir)/../stratego-lib/native/stratego-lib/libstratego-lib-native.la'])
+AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS],['-I $(top_builddir)/lib/native'])
+AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS],['$(top_builddir)/lib/native/stratego-lib/libstratego-lib-native.la'])
+
+AC_SUBST([STRATEGO_LIB_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/lib/spec'])
+AC_SUBST([STRATEGO_LIB_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS)'])
+AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],['$(top_builddir)/lib/spec/libstratego-lib.la $(STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS)'])
 
 AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/xtc/lib'])
 AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/xtc/lib/libstratego-xtc.la'])
@@ -55,5 +70,21 @@ AC_CONFIG_FILES([
   xtc/Makefile
   xtc/lib/Makefile
   xtc/tests/Makefile
+
+  stratego-lib.pc
+  lib/Makefile
+  lib/ssl-compat/Makefile
+  lib/spec/Makefile
+  lib/native/Makefile
+  lib/native/stratego-lib/Makefile
+  lib/tests/Makefile
+  lib/tests/dynamic-rules/Makefile
+  lib/tests/dynamic-rules/til/Makefile
+  lib/tests/dynamic-rules/til/syn/Makefile
+
+  stratego-runtime.pc
+  runtime/Makefile
+  runtime/lib/Makefile
+  runtime/lib/srts/Makefile
 ])
 AC_OUTPUT

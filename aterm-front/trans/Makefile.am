@@ -13,7 +13,7 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree)
 
 STRCFLAGS     = --main io-$*
-STRINCLUDES = -I $(top_srcdir)/sig -I $(SRTS)/share/srts
+STRINCLUDES = -I $(top_srcdir)/sig 
 
 LDADD = $(SSL_LIBS)
 
