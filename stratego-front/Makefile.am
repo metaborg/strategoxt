@@ -22,7 +22,7 @@ all-local::
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t SRTS-include -l `pwd`/srts/src -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l foo -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t cc -p $(CC) -V X
-	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t strategoxt-datadir -l $(prefix)/share -V $(VERSION)
+	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t strategoxt-datadir -l `pwd` -V $(VERSION)
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
 
 install-data-local::
