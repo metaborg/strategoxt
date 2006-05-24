@@ -1,0 +1,18 @@
+definition
+module Main
+exports
+  context-free start-symbols List ListSep Opt Expr
+  
+  context-free syntax
+    "$"+ -> List
+    "$"? -> Opt
+    {"$" ","}+ -> ListSep
+    
+    "$" Id -> Expr {cons("Id")}
+
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+    [a-zA-Z]+ -> Id
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]

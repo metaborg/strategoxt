@@ -14,7 +14,7 @@ strategies
 
   ImplodeLexical =
     ?appl(prod(_,lit(_),_),_)
-    ; !lit(<asfix-yield-appl>)
+    ; asfix-yield-appl
 
   ImplodeLexical =
     ImplodeLexicalListVar <+ ImplodeLexicalVar

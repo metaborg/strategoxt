@@ -201,14 +201,15 @@ strategies
    */
   prod2prodrule :
     p@prod(syms, sym, attrs(attrs)) -> rtg |[ A -> y(t*) ]|
-      where <sym2nonterm> sym => A
-          ; <syms2trees> syms => t*
-          ; ( <get-cnstr-name> attrs => y
-            <+ log-prod(|Error(), "No constructor name specified in production:", p)
-               ;    log(|Error(), "Resolution: please add a cons attribute to this production.")
-               ; if-verbose1(log(|Error(), "Production in abstract syntax: ", p))
-               ; <xtc-exit> 1
-            )
+    where
+        <sym2nonterm> sym => A
+      ; <syms2trees> syms => t*
+      ; ( <get-cnstr-name> attrs => y
+          <+ log-prod(|Error(), "No constructor name specified in production:", p)
+             ;    log(|Error(), "Resolution: please add a cons attribute to this production.")
+             ; if-verbose1(log(|Error(), "Production in abstract syntax: ", p))
+             ; <xtc-exit> 1
+        )
 
 /**
  * Injections
@@ -297,9 +298,35 @@ rules
    */
   listinj2prodrule :
     prod([a], iter(a), _) -> rtg |[ x1 -> <cons> (t, x2) ]|
-      where <sym2tree> a => t
-          ; <get-nonterm-of> iter(a) => x1
-          ; <get-nonterm-of> iter-star(a) => x2
+    where
+        <sym2tree> a => t
+      ; <get-nonterm-of> iter(a) => x1
+      ; <get-nonterm-of> iter-star(a) => x2
+
+  /**
+   *  A A+ -> A 2+
+   */
+  listinj2prodrule :
+    prod([cf(a), lt, nt1@cf(iter(a))], nt2@cf(iter-n(a, "2")), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
+    where
+        <sym2tree> a => t
+      ; <is-empty-sym> lt        
+      ; <get-nonterm-of> nt1 => x1
+      ; <get-nonterm-of> nt2 => x2
+     
+  /**
+   *  A A(n-1)+ -> An+
+   */      
+  listinj2prodrule :
+    prod([cf(a), lt, nt1@cf(iter-n(a, n1))], nt2@cf(iter-n(a, n2)), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
+    where
+        <string-to-int> n1 => i1
+      ; <string-to-int> n2 => i2
+      ; <subt> (i2, 1) => i1
+      ; <sym2tree> a => t
+      ; <is-empty-sym> lt     
+      ; <get-nonterm-of> nt1 => x1      
+      ; <get-nonterm-of> nt2 => x2
 
 /**
  * Iteration with Separator
@@ -334,6 +361,31 @@ rules
           ; <sym2tree> cf(a) => t
           ; <get-nonterm-of> nt => x
           ; <get-nonterm-of> cf(iter-star-sep(a, sep)) => x2
+
+  /**
+   *  A lit {A lit}+ -> {A lit}2+
+   */
+  listinj2prodrule :
+    prod([cf(a), lt1, lt2, lt3, nt1@cf(iter-sep(a, sep))], nt2@cf(iter-sep-n(a, sep, "2")), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
+    where
+        <sym2tree> a => t
+      ; <map(is-empty-sym)> [lt1, lt2, lt3, sep]
+      ; <get-nonterm-of> nt1 => x1
+      ; <get-nonterm-of> nt2 => x2
+     
+  /**
+   *  A lit {A lit}(n-1)+ -> An+
+   */      
+  listinj2prodrule :
+    prod([cf(a), lt1, lt2, lt3, nt1@cf(iter-sep-n(a, sep, n1))], nt2@cf(iter-sep-n(a, sep, n2)), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
+    where
+        <map(is-empty-sym)> [lt1, lt2, lt3, sep]
+      ; <string-to-int> n1 => i1
+      ; <string-to-int> n2 => i2
+      ; <subt> (i2, 1) => i1
+      ; <sym2tree> a => t
+      ; <get-nonterm-of> nt1 => x1      
+      ; <get-nonterm-of> nt2 => x2
 
 /**
  * Alternative
@@ -381,12 +433,13 @@ rules
  strategies
 
   get-nonterm-of =
-   ?key; is-nonterm-generator
+   ?key
+   ; is-nonterm-generator
    ; (  <table-get> ("generated-nonterms", key)
      <+ <table-get> ("generated-nonterms", cf(key))
      <+ <table-get> ("generated-nonterms", <?cf(<id>)> key)
      <+ sdf-symbol-to-string
-      ; where(<table-put> ("generated-nonterms", key, <id>))
+        ; where(<table-put> ("generated-nonterms", key, <id>))
      )
 
   is-seq-symbol =
@@ -403,6 +456,8 @@ rules
     + iter-sep(id, id)
     + iter-star(id)
     + iter(id)
+    + iter-n(id, id)
+    + iter-sep-n(id, id, id)
 
   is-nonterm-generator = 
       is-list-symbol
@@ -522,7 +577,7 @@ strategies
     ; newname
     <+ log-sym(|Warning(), "Cannot generate a nice name for symbol", <id>)
      ;     log(|Warning(), "  Please report this bug at ")
-     ;     log(|Warning(), "    - https://catamaran.labs.cs.uu.nl/jira/browse/STR")
+     ;     log(|Warning(), "    - https://bugs.cs.uu.nl/browse/STR")
      ;     log(|Warning(), "    - or martin@cs.uu.nl")
      ; new
      ;     log(|Warning(), "  Resolution: falling back to the ugly name ", <id>)
@@ -558,8 +613,15 @@ strategies
     iter-star-sep(sym, sep) -> <conc-strings> ("ListStarOf", <Symbol2String> sym)
 
   Symbol2String :
+    iter-n(sym, n) -> <conc-strings> ("List", n, "Of", <Symbol2String> sym)
+
+  Symbol2String :
+    iter-sep-n(sym, sep, n) -> <conc-strings> ("List", n, "Of", <Symbol2String> sym)
+
+  Symbol2String :
     sort(s) -> s
-      where <is-string> s
+    where
+      <is-string> s
 
   Symbol2String :
     parameterized-sort(x, params)  -> <concat-strings> [x, "_" | param-string]
@@ -589,6 +651,9 @@ strategies
   log-sym(|severity, msg, sym) =
     log-prod(|severity, msg, sym)
 
+  /**
+   * @todo Use libgpp
+   */
   log-prod(|severity, msg, prod) =
     where(
       xtc-temp-files(

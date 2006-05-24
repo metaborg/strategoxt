@@ -28,6 +28,7 @@ strategies
     ; implode-tests-conc
     ; implode-tests-ast-attributes    
     ; implode-tests-list
+    ; implode-tests-lexical    
     ; asfix2me-tests
     )
 
@@ -382,7 +383,7 @@ strategies
       , parse-string-pt(|tbl, "Iter-sep")
         ; custom-implode-1
       , !"a,b,c"
-      , !Iter-sep(["a",lit(","),"b",lit(","),"c"])
+      , !Iter-sep(["a", ",","b", ",","c"])
       )
 
     ; apply-test(!"Custom implode 3"
@@ -396,14 +397,14 @@ strategies
       , parse-string-pt(|tbl, "Iter-star-sep")
         ; custom-implode-1
       , !"a,b,c" 
-      , !Iter-star-sep(["a",lit(","),"b",lit(","),"c"])
+      , !Iter-star-sep(["a", ",","b", ",","c"])
       )
 
     ; apply-test(!"Custom implode 5"
       , parse-string-pt(|tbl, "Nesting-iter-sep1")
         ; custom-implode-1
       , !"a b c; d e f; g h i"
-      , !Nesting-iter-sep1([["a","b","c"],lit(";"),["d","e","f"],lit(";"),["g","h","i"]])
+      , !Nesting-iter-sep1([["a","b","c"], ";",["d","e","f"], ";", ["g","h","i"]])
       )
 
     ; apply-test(!"Custom implode 6"
@@ -417,7 +418,7 @@ strategies
       , parse-string-pt(|tbl, "Nesting-iter-star-sep")
         ; custom-implode-1
       , !"a b c; d e f; g h i"
-      , !Nesting-iter-star-sep([["a","b","c"],lit(";"),["d","e","f"],lit(";"),["g","h","i"]])
+      , !Nesting-iter-star-sep([["a","b","c"], ";",["d","e","f"], ";", ["g","h","i"]])
       )
 
     ; apply-test(!"Custom implode 8"
@@ -434,12 +435,14 @@ strategies
       , !Alt1a(alt(2,["A"]))
       )
 
+    /*
     ; apply-test(!"Custom implode 10"
       , parse-string-pt(|tbl, "Alt2a")
         ; custom-implode-2
       , !"f a a A"
       , !Alt2a("a",alt(1,[("a","A")]))
       )
+    */
 
     ; apply-test(!"Custom implode 11"
       , parse-string-pt(|tbl, "Alt3a")
@@ -781,6 +784,44 @@ strategies
 
     ; where(<close-parse-table> tbl)
 
+ implode-tests-lexical = id
+    ; where(
+        <ReadFromFile> "Lexical.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+
+    ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "List")
+      , !"$$$"
+      , !["$", "$", "$"]
+      )
+
+    ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "ListSep")
+      , !"$,$,$"
+      , !["$", "$", "$"]
+      )
+      
+    ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "Opt")
+      , !"$"
+      , !Some("$")
+      )
+
+    ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "Opt")
+      , !""
+      , !None()
+      )
+      
+    ; apply-test(!"Literal injection"
+      , parse-string(|tbl, "Expr")
+      , !"$x"
+      , !Id("x")
+      )
+
+    ; where(<close-parse-table> tbl)
+
     
   asfix2me-tests = id
     ; where(
@@ -880,3 +921,4 @@ signature
     Call : Id * List(Exp) -> B
     Plus : A -> B    
     Minus : A -> B
+    Id : A -> B

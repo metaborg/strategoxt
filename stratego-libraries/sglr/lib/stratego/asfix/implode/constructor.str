@@ -90,7 +90,29 @@ rules
     appl(p, [t]) -> [<impl>t]
     where
       <is-ins> p
-      
+
+/**
+ * In some case a present literal is relevant.
+ */
+rules
+
+  ReplConsIns(impl) : 
+    appl(prod([lit(x)], sym, _), []) -> t
+    where
+      t := <implode-constant-literal(|x)> sym
+
+  implode-constant-literal(|constant) =
+    rec rec(
+      ?cf(<rec>)
+    + ?lex(<rec>)
+    + \ iter(<rec>) -> [<id>] \
+    + \ iter-star(<rec>) -> [<id>] \
+    + \ iter-sep(<rec>, _) -> [<id>] \
+    + \ iter-star-sep(<rec>, _) -> [<id>] \
+    + \ opt(<rec>) -> Some(<id>) \
+    + \ lit(_) -> constant \
+    )
+
 /**
  * Iter-sep-n, which is normalized to a cons/nil construction.
  */
