@@ -11,6 +11,7 @@ noinst_DATA = \
   ConcreteSyntax.tbl ConcreteSyntax.str \
   Concrete.tbl \
   CustomImplode.tbl \
+  List.tbl \  
   ConcreteSyntax2.tbl \
   AstAttributes.tbl
 

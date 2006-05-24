@@ -90,6 +90,46 @@ rules
     appl(p, [t]) -> [<impl>t]
     where
       <is-ins> p
+      
+/**
+ * Iter-sep-n, which is normalized to a cons/nil construction.
+ */
+rules
+
+  /**
+   * iter-sep-n with a separator that is ignored.
+   */
+  ReplConsIns(impl) :
+    appl(p, [t1, t2]) -> t
+    where
+      <is-cons-tail> p
+      ; t1' := <impl> t1
+      ; t2' := <impl> t2
+      ; if <[] + ?[_| _]> t2' then
+          ![t1' | t2']
+        else
+          !"Conc"#([[t1'], t2'])
+        end
+      ; ?t
+      
+  /**
+   * iter-sep-n with a separator that is not ignored.
+   */
+  ReplConsIns(impl) :
+    appl(p, [t1, t2, t3]) -> t
+    where
+      <is-cons-tail> p
+      ; t1' := <impl> t1
+      ; t2' := <impl> t2
+      ; t3' := <impl> t3
+      ; if <[] + ?[_| _]> t3' then
+          ![t1', t2' | t3']
+        else
+          !"Conc"#([[t1', t2'], t3'])
+        end
+      ; ?t
+      
+rules
 
   ReplConsSome(impl) : 
     appl(p, [t]) -> Some(<impl>t)
@@ -116,27 +156,32 @@ rules
 
 strategies
 
-  is-nil  = ?prod([],cf(iter-star-sep(_,_)),_)
-  is-nil  = ?prod([],cf(iter-star(_)),_)
-  is-nil  = ?prod([],iter-star-sep(_,_),_)
-  is-nil  = ?prod([],iter-star(_),_)
+  is-nil  = ?prod([], cf(iter-star-sep(_, _)), _)
+  is-nil  = ?prod([], cf(iter-star(_)), _)
+  is-nil  = ?prod([], iter-star-sep(_, _), _)
+  is-nil  = ?prod([], iter-star(_), _)
 
   is-ins  = ?prod([cf(x)], cf(iter-sep(x,_)), _)
   is-ins  = ?prod([cf(x)], cf(iter(x)), _)
   is-ins  = ?prod([x], iter-sep(x,_), _)
   is-ins  = ?prod([x], iter(x), _)
 
-  is-conc = ?prod([_,_,_,_,_],cf(iter-sep(_,_)),_)
-  is-conc = ?prod([_,_,_],cf(iter(_)),_)
-  is-conc = ?prod([_,_,_],iter-sep(_,_),_)
-  is-conc = ?prod([_,_],iter(_),_)
-  is-conc = ?prod([_,_,_],cf(iter-star(_)),_)
-  is-conc = ?prod([_,_,_],iter-star(_),_)
+  is-conc = ?prod([_, _, _], cf(iter(_)), _)
+  is-conc = ?prod([_,    _],    iter(_), _)
+  is-conc = ?prod([_, _, _], cf(iter-star(_)), _)
+  is-conc = ?prod([_, _, _],    iter-star(_), _)
+  is-conc = ?prod([_, _, _, _, _], cf(iter-sep(_, _)), _)
+  is-conc = ?prod([_,    _,    _], iter-sep(_, _), _)
+  is-conc = ?prod([_, _, _, _, _], cf(iter-star-sep(_, _)), _)
+  is-conc = ?prod([_,    _,    _], cf(iter-star-sep(_, _)), _)
 
+  is-cons-tail = ?prod([_, _, _, _, _], cf(iter-sep-n(_, _, _)), _)
+  is-cons-tail = ?prod([_,    _,    _], cf(iter-n(_, _)), _)
 
-  is-conc = ?prod([_,_,_,_,_],cf(iter-star-sep(_,_)),_)
-  is-conc = ?prod([_,_,_],cf(iter-star-sep(_,_)),_)
-  is-conc = ?prod([_,_],cf(iter-star-sep(_,_)),_)
+  /**
+   * @todo Not sure what this case is for.
+   */
+  is-conc = ?prod([_, _], cf(iter-star-sep(_, _)), _)
 
   is-none = ?prod([], cf(opt(_)), _)
   is-none = ?prod([], opt(_), _)

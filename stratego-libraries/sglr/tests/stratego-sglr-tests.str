@@ -27,6 +27,7 @@ strategies
     ; implode-tests-concrete-yield
     ; implode-tests-conc
     ; implode-tests-ast-attributes    
+    ; implode-tests-list
     ; asfix2me-tests
     )
 
@@ -735,6 +736,51 @@ strategies
 
     ; where(<close-parse-table> tbl)
 
+
+  implode-tests-list = id
+    ; where(
+        <ReadFromFile> "List.tbl"; open-parse-table => tbl
+      )
+    ; set-default-sglr-config
+
+    ; apply-test(!"Iter-n"
+      , parse-string(|tbl, "IterN")
+      , !"a1 a2 a3"
+      , !IterN(["a1", "a2", "a3"])
+      )
+      
+    ; apply-test(!"Iter-n"
+      , parse-string(|tbl, "IterN")
+      , !"b1 b2 b3"
+      , !IterN(["b1", "b2", "b3"])
+      )
+      
+    ; apply-test(!"Iter-sep-n"
+      , parse-string(|tbl, "IterSepN")
+      , !"a1, a2, a3"
+      , !IterSepN(["a1", "a2", "a3"])
+      )
+      
+    ; apply-test(!"Iter-sep-n"
+      , parse-string(|tbl, "IterSepN")
+      , !"b1, b2, b3"
+      , !IterSepN(["b1", "b2", "b3"])
+      )
+      
+    ; apply-test(!"Iter-sep-n"
+      , parse-string(|tbl, "IterSepN")
+      , !"a1 a2 a3 a4 a5"
+      , !IterSepN(["a1", "a2", "a3", "a4", "a5"])
+      )
+      
+    ; apply-test(!"Iter-sep-n"
+      , parse-string(|tbl, "IterSepN")
+      , !"a1 b2 a3 b4 a5"
+      , !IterSepN(["a1", "b2", "a3", "b4", "a5"])
+      )
+
+    ; where(<close-parse-table> tbl)
+
     
   asfix2me-tests = id
     ; where(
@@ -822,6 +868,9 @@ signature
     Nesting-iter-sep2 : A -> B
     Nesting-iter-star-sep : A -> B
     Empty-iter-star-sep : A -> B
+    
+    IterN : A -> B
+    IterSepN : A -> B
 
     Alt1a : A -> B
     Alt2a : A * B -> C
