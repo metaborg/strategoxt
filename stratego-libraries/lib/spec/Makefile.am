@@ -6,7 +6,7 @@ nobase_pkgdata_DATA = libstrategolib.rtree $(strategolib:.str=.rtree)
 
 data_DATA = libstratego-lib.rtree
 
-EXTRA_DIST	= libstratego-lib.rtree  $(strategolib) $(nobase_pkgdata_DATA)
+EXTRA_DIST	= libstratego-lib.rtree libstrategolib.str $(strategolib) $(nobase_pkgdata_DATA)
 CLEANFILES      = $(wildcard *.dep)
 BOOTCLEANFILES 	= \
   $(strategolib:.str=.rtree) \

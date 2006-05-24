@@ -7,7 +7,7 @@ data_DATA    = libstratego-xtc.rtree
 xtcdata_DATA = libxtclib.rtree liblib.rtree
 
 lib_LTLIBRARIES = libstratego-xtc.la
-EXTRA_DIST      = $(xtclib:.str=.rtree) $(xtclib) libstratego-xtc.rtree libxtclib.rtree liblib.rtree
+EXTRA_DIST      = $(xtclib:.str=.rtree) $(xtclib) libstratego-xtc.rtree libxtclib.rtree liblib.rtree libxtclib.str liblib.str
 CLEANFILES      = $(wildcard *.dep)
 BOOTCLEANFILES  = libstratego-xtc.str libstratego-xtc.rtree libxtclib.rtree liblib.rtree libstratego-xtc.c
 
