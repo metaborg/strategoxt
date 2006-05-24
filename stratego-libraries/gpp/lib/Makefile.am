@@ -17,8 +17,8 @@ libstratego_gpp_la_LIBADD   = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINS
 
 STRCFLAGS = $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
-pp-table-aterm.c : $(top_builddir)/../gpp/syn/pp-table/pp-table.tbl
-	$(top_builddir)/build-tools/cgen-aterm --name STRGPP_get_pptable_parsetable -i $< > $@
+pp-table-aterm.c :
+	$(top_builddir)/build-tools/cgen-aterm --name STRGPP_get_pptable_parsetable -i $(top_builddir)/../gpp/syn/pp-table/pp-table.tbl > $@
 
 libstratego-gpp.rtree libstratego-gpp.c :
 	$(STRC_UNINSTALLED) -c --library -i stratego-gpp.str -o libstratego-gpp.rtree -O 2 --verbose 1 $(STRCFLAGS)
