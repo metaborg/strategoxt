@@ -3,7 +3,7 @@
  */
 module Asfix-2-abox
 imports
-  liblib
+  libstratego-xtc
   sdf-2-pp-lib
   lib-pp-table-args
   pp-tables-io

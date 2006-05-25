@@ -1,5 +1,6 @@
 module abox2latex
-imports liblib
+imports
+  libstratego-xtc
 
 strategies
 

@@ -65,4 +65,4 @@ strategies
 
   get-old-pp-table =
     <get-config> OldTable()
-    <+ <fatal-error>["please specify old table with --old switch"] 
+    <+ <fatal-error> ["please specify old table with --old switch"] 

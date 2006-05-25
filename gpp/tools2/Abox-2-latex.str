@@ -8,12 +8,11 @@
  */
 module Abox-2-latex
 imports
-  liblib
+  libstratego-gpp
   Box
   Box-util
   Abox-2-latex-lib
   plain-text
-  Abox-2-text
   misc
 
 strategies
@@ -67,7 +66,7 @@ strategies
                       collect-set(is-string); concat-strings)
 
   try-abox2alltt(|xpos) =
-    where(get-width => width);
+    where(<get-config> "--width" => width);
 
     let local(|pos) =
              abox2alltt(local | pos) 

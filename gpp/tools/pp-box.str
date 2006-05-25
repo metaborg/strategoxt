@@ -1,6 +1,10 @@
 module pp-box
-imports liblib strategoxt-xtc-tools parse-box
+imports
+  libstratego-xtc strategoxt-xtc-tools parse-box
 
+/**
+ * @todo Use libstratego-gpp
+ */
 strategies
 
   io-pp-box =
@@ -10,4 +14,3 @@ strategies
     ; xtc-abox-format
     ; xtc-abox2text
     )
-

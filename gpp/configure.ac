@@ -17,11 +17,7 @@ AC_CONFIG_FILES([
   sig/Makefile
   sig/box/Makefile
   sig/pp-table/Makefile 
-  trans/Makefile
-  trans/2abox/Makefile
-  trans/abox2/Makefile 
-  trans/abox2/data/Makefile 
-  xtc-tools/Makefile 
-  tests/Makefile 
+  tools/Makefile
+  tools2/Makefile 
 ])
 AC_OUTPUT

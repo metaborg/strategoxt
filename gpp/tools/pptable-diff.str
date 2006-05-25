@@ -1,6 +1,7 @@
 module pptable-diff
 imports
-  liblib
+  libstratego-xtc
+  core-pp-table-diff
   pp-table-diff-options
 
 strategies
@@ -13,15 +14,21 @@ strategies
     , ![] // dependencies
     , pptable-diff
     )
-
+    
   pptable-diff =
-    xtc-ensure-file
-    ; ( xtc-transform(!"core-pp-table-diff", <pass-pp-table-diff-options> ())
-      <+ <xtc-exit> 1 )
-
+    maybe-parse-pptable
+    ; core-pptable-diff(|<get-old-pp-table; read-pptable-file>)
+    ; write-to
     ; if is-patch-enabled + is-prune-enabled then
         xtc-transform(!"pp-pp-table", pass-verbose)
       end
+      
+  maybe-parse-pptable =
+    if ?FILE(file); <has-extension(|"pp")> file then
+      <parse-pptable-file> file
+    else
+      read-from
+    end
 
 strategies
 

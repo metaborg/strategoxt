@@ -3,7 +3,6 @@
  */
 module sdf-2-pp-lib
 imports
-  liblib
   pp-table
   Bracket-Symbol
   Sdf2

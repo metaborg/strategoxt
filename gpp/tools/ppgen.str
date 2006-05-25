@@ -1,5 +1,8 @@
 module ppgen
-imports liblib sdf/tool/xtc
+imports
+  libstratego-xtc
+  sdf-2-pp-table
+  sdf/tool/xtc
 
 signature
   constructors
@@ -10,16 +13,16 @@ signature
 strategies
   
   io-ppgen=
-    option-wrap(ppgen-options, xtc-io(ppgen))
+    xtc-io-wrap(ppgen-options, ppgen)
 
   ppgen = 
-      <pre-process-sdf> (<get-input-type>, <id>)
-    ; xtc-transform(!"sdf-2-pp-table", pass-verbose)
-    ; (
-        where(<get-config> "--output-type" => AST() )
-        <+
+    <pre-process-sdf> (<get-input-type>, <id>)
+    ; read-from
+    ; ppgenerate
+    ; write-to
+    ; if not(<get-config> "--output-type" => AST()) then
         xtc-transform(!"pp-pp-table", pass-verbose)
-      )
+      end
 
   pre-process-sdf : (PlainText(), f) -> <xtc-parse-sdf2-definition> f
   pre-process-sdf : (ParseTree(), f) -> <xtc-implode-asfix> f
@@ -41,19 +44,4 @@ strategies
       , where(<set-config> ("--output-type", AST()))
       ,	!"-t          Output is abstract syntax tree."
       )
-    + io-options
 
-/*
-usage:
-  ppgen [-A] [-a] [-h] [-i grammar] [-o file] [-v]
-
-where
-  -A          Input is parse tree.
-  -a          Input is abstract syntax tree.
-  -h          Displays usage information.
-  -i grammars Specifies SDF module or definition for whihc to generate a
-              pretty-print table.
-  -o file     Specifies the name of the resulting pretty-print table.
-  -S          Run silently.
-  -v          Run verbosely.
-*/

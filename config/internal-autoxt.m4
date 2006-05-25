@@ -33,6 +33,7 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
     XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
     XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr])
+    XT_CHECK_PACKAGE([STRATEGO_GPP],[stratego-gpp])
   fi
 
   # backward compatibitily

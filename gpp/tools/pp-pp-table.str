@@ -1,6 +1,9 @@
 module pp-pp-table
 imports liblib strategoxt-xtc-tools
 
+/**
+ * @todo Use libstratego-gpp
+ */
 strategies
 
   io-pp-pp-table =

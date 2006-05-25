@@ -196,6 +196,7 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
     XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
     XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
     XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr])
+    XT_CHECK_PACKAGE([STRATEGO_GPP],[stratego-gpp])
     XT_CHECK_PACKAGE([C_TOOLS],[c-tools],[bin/parse-c$EXEEXT])
   fi
 
@@ -229,6 +230,7 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
   AC_SUBST([STRATEGO_LIB], ['$(STRATEGOXT)'])
   AC_SUBST([XTC], ['$(STRATEGOXT)'])
   AC_SUBST([STRATEGO_SGLR], ['$(STRATEGOXT)'])
+  AC_SUBST([STRATEGO_GPP], ['$(STRATEGOXT)'])
   AC_SUBST([C_TOOLS], ['$(STRATEGOXT)'])
 
   AC_SUBST([STRATEGOXT_XTC], ['$(STRATEGOXT)/share/strategoxt/XTC'])
@@ -240,10 +242,13 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
   AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib -lstratego-lib -lstratego-lib-native -lm'])
   AC_SUBST([STRATEGO_LIB_STRCFLAGS], ['-I $(STRATEGO_LIB)/share/stratego-lib'])
 
-  # TODO: remove the asfix-tools import (bootstrap problem)
   AC_SUBST([STRATEGO_SGLR_CFLAGS], [''])
   AC_SUBST([STRATEGO_SGLR_LIBS], ['-L$(STRATEGO_SGLR)/lib -lstratego-sglr'])
-  AC_SUBST([STRATEGO_SGLR_STRCFLAGS], ['-I $(STRATEGO_SGLR)/share -I $(STRATEGO_SGLR)/share/asfix-tools'])
+  AC_SUBST([STRATEGO_SGLR_STRCFLAGS], ['-I $(STRATEGO_SGLR)/share'])
+
+  AC_SUBST([STRATEGO_GPP_CFLAGS], [''])
+  AC_SUBST([STRATEGO_GPP_LIBS], ['-L$(STRATEGO_GPP)/lib -lstratego-gpp'])
+  AC_SUBST([STRATEGO_GPP_STRCFLAGS], ['-I $(STRATEGO_GPP)/share'])
 ])
 
 # XT_CHECK_STRATEGOXT_UTILS

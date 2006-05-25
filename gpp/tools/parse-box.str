@@ -1,5 +1,6 @@
 module parse-box
-imports liblib strategoxt-xtc-tools Box
+imports
+  libstratego-xtc strategoxt-xtc-tools Box
 
 strategies
   
