@@ -2,12 +2,17 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 TBLS_DEFS = ATerms.def ATerms.tbl
+SIGS      = ATerms.str
 
 PGEN_FLAGS     = -m $*
 SDFINCLUDES    = -I $(ASF_LIBRARY)/share/asf-library/library
+SDF2RTG_FLAGS  = -m $*
 
 sdfdata_DATA   = $(TBLS_DEFS)
-EXTRA_DIST     = ATerms.sdf ATerms.def
+pkgdata_DATA   = ATerms.str
+EXTRA_DIST     = ATerms.sdf ATerms.def $(SIGS) $(pkgdata_DATA) 
 
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(TBLS_DEFS)
+BOOTCLEANFILES = $(TBLS_DEFS) $(SIGS) $(pkgdata_DATA)
+
+

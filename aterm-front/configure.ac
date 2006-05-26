@@ -11,12 +11,8 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([ 
   Makefile 
- 
   syn/Makefile
-  sig/Makefile
-  pp/Makefile
-  pp/tests/Makefile
-
-  trans/Makefile
+  tools/Makefile
+  tools/tests/Makefile
 ])
 AC_OUTPUT
