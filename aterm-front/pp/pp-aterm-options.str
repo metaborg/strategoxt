@@ -33,9 +33,6 @@ strategies
   set-max-term-size-config =
     <set-config> ("--max-term-size", <id>)
 
-  pass-max-term-size =
-    !["--max-term-size", <get-max-term-size-config; int-to-string>]
-
 /*
  * get, set and pass max-depth
  */
@@ -44,9 +41,6 @@ strategies
 
   set-max-depth-config =
     <set-config> ("--max-depth", <id>)
-
-  pass-max-depth =
-    !["--max-depth", <get-max-depth-config; int-to-string>] <+ ![]
 
 /*
  * get, set and pass unescaped-strings-option
@@ -57,8 +51,4 @@ strategies
   
   get-unescaped-strings-config =
     <get-config> "--unescaped"
-  
-  pass-unescaped-strings =
-      ![<get-unescaped-strings-config;!"--unescaped">]
-    <+ 
-      ![]
+ 
