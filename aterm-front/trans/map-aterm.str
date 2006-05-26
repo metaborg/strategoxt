@@ -3,7 +3,7 @@
  */
 module map-aterm
 imports
-  liblib
+  libstratego-xtc
 
 strategies
 

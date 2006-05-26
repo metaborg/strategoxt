@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer
  */
 module implode-aterm
-imports ATerms liblib explode-aterm
+imports ATerms libstratego-lib explode-aterm
 
 strategies
 
