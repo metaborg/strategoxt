@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 #include "collection-hash-table-common.h"  
 #include "collection-set-indexed.h"  
+#include "collection-list-common.h"
 
 #include "util-time.h"
 

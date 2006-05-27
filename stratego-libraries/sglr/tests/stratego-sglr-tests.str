@@ -819,6 +819,12 @@ strategies
       , !"$x"
       , !Id("x")
       )
+      
+    ; apply-test(!"Literal injection"
+      , parse-string(|tbl, "Inj")
+      , !"this"
+      , !"this"
+      )
 
     ; where(<close-parse-table> tbl)
 

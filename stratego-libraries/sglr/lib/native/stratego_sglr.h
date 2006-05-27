@@ -36,10 +36,16 @@ ATerm STRSGLR_set_log_stream(ATerm tstream);
 ATerm STRSGLR_set_asfix2_format(void);
 ATerm STRSGLR_set_asfix2me_format(void);
 
+ATerm STRSGLR_set_cycle_detection_on(void);
+ATerm STRSGLR_set_cycle_detection_off(void);
+
 /**
  * Filters
  */
 ATerm STRSGLR_set_default_filters(void);
+
+ATerm STRSGLR_set_filtering_on(void);
+ATerm STRSGLR_set_filtering_off(void);
 
 ATerm STRSGLR_set_filter_eagernes_on(void);
 ATerm STRSGLR_set_filter_eagernes_off(void);

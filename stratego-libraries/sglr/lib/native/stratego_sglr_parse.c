@@ -14,6 +14,7 @@
 #include <sglr.h>
 #include <parse-table.h>
 #include <rsrc-usage.h>
+#include <MEPT-utils.h>
 
 #include "stratego_sglr.h"
 #include "stratego_sglr_internal.h"
@@ -30,10 +31,6 @@ static ATerm none_term = NULL;
 ATerm SGparseStringUsingTable(parse_table* table, const char* sort, const char* string, const char* path);
 static char* read_text_from_stream(FILE* stream);
 
-/**
- * We have to use the language mechanism, since SGLR cannot be used
- * without the sglr-interface: SGLR uses hard references to SG_etChar 
- */
 void STRSGLR_ensure_init(void)
 {
   ATerm foo;

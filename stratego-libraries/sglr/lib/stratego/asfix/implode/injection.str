@@ -18,6 +18,15 @@ rules
     where
       <is-injection> p
 
+  /**
+   * Injection of a literal to a sort.
+   */
+  ImplodeInjection : 
+    appl(prod([lit(x)], sym, attrs), []) -> x
+    where
+      <asfix-is-sort + cf(asfix-is-sort)> sym
+      ; <not(oncetd(cons(id)))> attrs
+
 strategies
 
   is-injection = 

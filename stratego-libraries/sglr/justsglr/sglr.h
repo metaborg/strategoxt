@@ -97,6 +97,7 @@ void SG_PrintToken(FILE *out, token c);
 FILE *SG_OpenLog(const char *program, const char *fnam);
 FILE *SG_log(void);
 void  SGcloseLog(void);
+FILE *SG_SetLog(FILE* stream);
 
 void SG_ReportErrLine(int line, int col);
 int  SG_GetChar(void);

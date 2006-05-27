@@ -5,6 +5,7 @@
 
 #include "stratego_sglr.h"
 #include "stratego_sglr_internal.h"
+#include "stratego-lib/stratego-lib-common.h"
 
 /**
  * Ambiguity

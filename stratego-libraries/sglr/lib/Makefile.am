@@ -21,7 +21,7 @@ sglrlib = \
   $(wildcard stratego/sglr/*.str)
 
 EXTRA_DIST = \
-  $(sglrlib:.str=.rtree) $(sglrlib) libstratego-sglr.rtree \
+  $(sglrlib) libstratego-sglr.rtree \
   $(wildcard native/*.h) $(wildcard native/*.c)
 
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
@@ -45,7 +45,7 @@ STRCFLAGS = \
   $(XTC_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
 
-libstratego-sglr.rtree libstratego-sglr.c :
+libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
 	@$(STRC_UNINSTALLED) -c --library -i stratego-sglr.str -o libstratego-sglr.rtree \
           --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sglr.str
