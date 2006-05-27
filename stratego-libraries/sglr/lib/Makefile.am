@@ -21,7 +21,7 @@ sglrlib = \
   $(wildcard stratego/sglr/*.str)
 
 EXTRA_DIST = \
-  $(sglrlib) libstratego-sglr.rtree \
+  $(sglrlib) $(sglrlib:.str=.rtree) libstratego-sglr.rtree \
   $(wildcard native/*.h) $(wildcard native/*.c)
 
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)

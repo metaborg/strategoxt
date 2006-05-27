@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 nobase_data_DATA = libstratego-gpp.rtree
 lib_LTLIBRARIES  = libstratego-gpp.la
-EXTRA_DIST = $(gpplib) libstratego-gpp.rtree
+EXTRA_DIST = $(gpplib) $(gpplib:.str=.rtree) libstratego-gpp.rtree
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = pp-table-aterm.c libstratego-gpp.rtree libstratego-gpp.c $(gpplib:.str=.rtree)
 
