@@ -36,7 +36,26 @@ strategies
         DataType("list", [("cons", [1, 2]), ("nil", [])])
       , "data list = cons 1 2 | nil"
       )
+      
+    ; ast2text-test(|"alt 1", "Alt.pp"
+      , Foo(alt(1, []))
+      , "one"
+      )
 
+    ; ast2text-test(|"alt 2", "Alt.pp"
+      , Foo(alt(2, []))
+      , "two"
+      )
+      
+    ; ast2text-test(|"alt 3", "Alt.pp"
+      , Foo(alt(3, [Some(Fred())]))
+      , "three"
+      )
+      
+    ; ast2text-test(|"alt 3", "Alt.pp"
+      , Foo(alt(3, [None()]))
+      , ""
+      )
 
 strategies
 
@@ -54,3 +73,4 @@ signature
     Foo : a -> b
     Bar : a -> b
     DataType : a * b -> c
+    Fred : c

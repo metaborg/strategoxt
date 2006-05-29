@@ -82,15 +82,12 @@ strategies
 
 strategies
 
-  /**
-   * @todo Enable support for alt?
-   */
   symbol2abox(|tbl, symbol, path, template) =
-    /*
-       symbol2abox-alt(|tbl, path, template)
+       ?alt(_, _)
+       ; symbol2abox-alt(|tbl, path, template)
        
-    <+ */
-       symbol2abox-opt(|tbl, path, template)
+    <+ (?Some(_) + None())
+       ; symbol2abox-opt(|tbl, path, template)
     
     <+ where(!symbol; (?"iter" + ?"iter-star"))
        ; symbol2abox-iter(|tbl, path, template)
@@ -103,18 +100,18 @@ strategies
 
   /**
    * Rule to format alt(n,[]), with empty list of arguments
+   */
   symbol2abox-alt(|tbl, path, template) =
     ?alt(n, [])
-    ; <instantiate(|[])> [<index(|n)> template]
-   */
+    ; <gpp-instantiate(|[])> [<index(|n)> template]
+
   /**
    * Rule to format alt(n,[arg]), with non-empty list of arguments
-
+   */
   symbol2abox-alt(|tbl, path, template) =
     ?alt(n, [arg])
     ; <arg2abox(|tbl, n, path)> arg => abox
-    ; <instantiate(|[abox])> [<index(|n)> template]
-   */
+    ; <gpp-instantiate(|[abox])> [<index(|n)> template]
    
   /**
    * Rule to format optional: Some(x)
