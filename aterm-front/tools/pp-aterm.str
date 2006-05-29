@@ -21,6 +21,7 @@ strategies
     ?(<read-from-stream>, fout)
     ; pp-aterm2box
     ; box2text-stream(|80, fout)
+    ; <fputs> ("\n", fout)
     
   pp-aterm2box =
       if get-max-depth-config => depth then
