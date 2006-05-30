@@ -586,7 +586,8 @@ strategies
     ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
         add-def(||[
           g(a1*|a2*) =
-            dr-break-bp(|~str:f)
+//            dr-break-bp(|~str:f)
+              id
         ]|)
       end
 
