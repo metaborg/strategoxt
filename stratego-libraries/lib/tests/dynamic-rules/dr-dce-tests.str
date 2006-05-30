@@ -27,18 +27,8 @@ strategies
 //    ; where(description-message(|"                          ; [rule in iteration]*"))
 //    ; where(description-message(|"  (x,val) decodes as before"))
     ; dce-fix-and-union-tests
-/*
     ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Break Tests"))
-    ; pc-break-tests
-    ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Break to Label Tests"))
-    ; pc-break-to-label-tests
-    ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Continue Tests"))
-    ; pc-continue-tests
-    ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Continue to Label Tests"))
-    ; pc-continue-to-label-tests
-    ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Exception Tests"))
-    ; pc-exception-tests
-*/
+//    ; dce-break-tests
     )
 
 strategies
@@ -147,7 +137,7 @@ strategies
       "var x; x := 0; while c() do dummy(); end f(x);"
     )
 
-  ; fail-dce-test(!"Check rule set after x; [undef]*" |
+  ; apply-dce-test(!"Check rule set after x; [undef]*" |
       "var x; x := 0; while c() do x := 0; end f(x);",
       "var x; x := 0; while c() do x := 0; end f(x);"
     )
@@ -166,3 +156,17 @@ strategies
       "var x; x := 0; while c() do x := 0; dummy(); end",
       "while c() do dummy(); end"
     )
+/*
+  dce-break-tests = id
+
+  ; apply-dce-test(!"Check rule set after empty; [undef]*" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           f(x);
+         else
+           break;
+         end
+       end",
+
+    )*/

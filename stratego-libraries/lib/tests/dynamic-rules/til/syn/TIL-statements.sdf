@@ -14,3 +14,7 @@ exports
     "break" Id? ";"                             -> Stat {cons("Break")}
     "continue" Id? ";"                          -> Stat {cons("Continue")}
     Id ":" Stat                                 -> Stat {cons("Labeled")}
+
+    "try" Stat* Catch+ "end"                    -> Stat {cons("Try")}
+    "try" Stat* Catch* "finally" Stat* "end"    -> Stat {cons("Try")}
+    "catch" "(" Id ":" Id ")" Stat*             -> Catch {cons("Catch")}

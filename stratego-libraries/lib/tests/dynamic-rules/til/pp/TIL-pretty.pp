@@ -22,6 +22,8 @@
    Break.1:opt              -- KW[" "] _1,
    Continue                 -- H hs=0 [KW["continue"] _1 KW[";"]],
    Continue.1:opt           -- KW[" "] _1,
+   Catch                    -- KW["catch"] KW["("] _1 KW[":"] _2 KW[")"] _3,
+   Catch.3:iter-star        -- _1,
    Labeled                  -- H [H hs=0 [_1 KW[":"]] _2],
    True                     -- KW["true"],
    False                    -- KW["false"],
