@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */ 
 module rtg-ppfix
-imports liblib rtg
+imports libstratego-lib rtg
 
 strategies
 

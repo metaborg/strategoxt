@@ -1,5 +1,5 @@
 module sig2rtg-test
-imports liblib xtc-debug
+imports libstratego-xtc xtc-debug
 
 strategies 
 

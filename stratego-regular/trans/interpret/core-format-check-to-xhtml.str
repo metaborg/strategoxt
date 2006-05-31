@@ -4,7 +4,7 @@
  */
 module core-format-check-to-xhtml
 imports
-  liblib 
+  libstratego-lib 
   xml-doc
   core-format-check
   xml-text-tools

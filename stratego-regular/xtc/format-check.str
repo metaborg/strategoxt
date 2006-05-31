@@ -1,5 +1,5 @@
 module format-check
-imports liblib strategoxt-xtc-tools tool-doc regular-options regular-xtc-tools
+imports libstratego-xtc strategoxt-xtc-tools tool-doc regular-options regular-xtc-tools
 
 /**
  * Main program

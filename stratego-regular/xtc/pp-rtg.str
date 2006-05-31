@@ -1,5 +1,5 @@
 module pp-rtg
-imports liblib regular-xtc-tools
+imports libstratego-xtc regular-xtc-tools
 
 strategies
 

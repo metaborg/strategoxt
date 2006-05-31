@@ -1,5 +1,5 @@
 module parse-rtg
-imports liblib regular-xtc-tools
+imports libstratego-xtc regular-xtc-tools
 
 strategies
   

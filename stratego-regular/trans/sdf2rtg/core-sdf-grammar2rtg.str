@@ -9,7 +9,7 @@ imports
   Sdf2
   sdf-extra
   sdf/tool/xtc
-  liblib
+  libstratego-xtc
 
 
 strategies

@@ -1,5 +1,5 @@
 module rtg-ppfix-tests
-imports liblib rtg-ppfix
+imports libstratego-lib rtg-ppfix
 
 strategies 
 

@@ -4,7 +4,7 @@
  * @author Martin Bravenboer
  */
 module rtg-parsefix
-imports liblib rtg
+imports libstratego-lib rtg
 
 strategies
 

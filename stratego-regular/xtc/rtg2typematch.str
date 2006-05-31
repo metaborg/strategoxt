@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg2typematch
-imports liblib regular-xtc-tools module-option
+imports libstratego-xtc regular-xtc-tools module-option
 
 strategies
   

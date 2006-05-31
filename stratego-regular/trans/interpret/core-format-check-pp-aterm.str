@@ -3,7 +3,7 @@
  */
 module core-format-check-pp-aterm
 imports
-  liblib 
+  libstratego-lib 
   ugly-print
   core-format-check
 

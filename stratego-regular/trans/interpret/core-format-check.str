@@ -3,7 +3,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-format-check
-imports liblib regular-options rtg rtg-util
+imports libstratego-lib regular-options rtg rtg-util
 
 strategies
 

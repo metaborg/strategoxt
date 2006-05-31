@@ -5,7 +5,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg-reduce
-imports liblib rtg rtg-util
+imports libstratego-lib rtg rtg-util
 
 strategies
 
