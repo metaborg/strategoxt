@@ -1,5 +1,5 @@
 module visamb
-imports liblib
+imports libstratego-xtc
 
 strategies
 

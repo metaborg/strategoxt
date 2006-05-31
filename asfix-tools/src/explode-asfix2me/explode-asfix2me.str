@@ -13,7 +13,7 @@
  */
 module explode-asfix2me
 imports
-  liblib
+  libstratego-lib
   asfix2me
 
 overlays 

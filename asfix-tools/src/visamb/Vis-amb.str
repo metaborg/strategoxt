@@ -67,7 +67,7 @@ exports
 
 */
 module Vis-amb
-imports liblib AsFix
+imports libstratego-lib AsFix
 signature
   constructors
     amb-abbr : String * AbbrTree -> AmbAbbr

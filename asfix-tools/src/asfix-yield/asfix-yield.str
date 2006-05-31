@@ -1,5 +1,5 @@
 module asfix-yield
-imports liblib AsFix
+imports libstratego-lib AsFix
 strategies
 
   io-asfix-yield =
