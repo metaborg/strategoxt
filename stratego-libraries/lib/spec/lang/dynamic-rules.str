@@ -950,16 +950,64 @@ strategies // intersection and union of rule-sets
       ; (// "ignore" & "ignore" have to be merged, with the "ignore" system label kept
          // "" & "" is the normal merge
          <eq>(slabel1, slabel2)
-         ; ior(<merge-cs> (rs1, rmset1, tbl1, rs2, rmset2, tbl2), <merge-rec> (rs1a, rs2a))
-         ; !cs1 => cs  
-         <+ (<eq>(rs1a, rs2a)
-             < (<eq>(slabel1, "ignore") // slabel1 = "ignore" & slabel2 != "ignore", so we ignore cs1
-                ; !cs2
-                <+ <eq>(slabel2, "ignore") // slabel1 != "ignore" & slabel2 = "ignore", so we ignore cs2
-                   ; !cs1)
-               => cs
-             + fatal-err(|"Merging of rulesets cannot continue because the non-ingnored change set is based on a different ruleset than the ignored change set."))
+         < (ior(<merge-cs> (rs1, rmset1, tbl1, rs2, rmset2, tbl2), <merge-rec> (rs1a, rs2a))
+            ; !cs1 => cs)
+         + (<eq>(rs1a, rs2a)
+            < (<eq>(slabel1, "ignore") // slabel1 = "ignore" & slabel2 != "ignore", so we ignore cs1
+               ; !cs2
+               <+ <eq>(slabel2, "ignore") // slabel1 != "ignore" & slabel2 = "ignore", so we ignore cs2
+                  ; !cs1)
+              => cs
+            + fatal-err(|"Merging of rulesets cannot continue because the non-ingnored change set is based on a different ruleset than the ignored change set."))
         )
+
+  /**
+   * Fixes references in change set that point to rule scopes that will
+   * no longer be part of the merged ruleset. It is assumed that the references
+   * that point to rule scopes in rsbad have to be replaced with references to
+   * the corresponding (according to position) rule scopes in rsgood.
+   *
+   * Currently, the only case when this fix is necessary is when dr-break-bp
+   * is used.
+   */
+  dr-fix-change-set =
+    ?(cs@ChangeSet(_, rmset, tbl), rsgood, rsbad)
+    ; <filter(?RuleScope(_, Hashtable(<id>)))>rsgood => scpidsgood_
+    ; <filter(?RuleScope(_, Hashtable(<id>)))>rsgood => scpidsbad_
+    ; try(
+        // only do this if it is indeed the case
+        <not(eq)>(scpidsgood_, scpidsbad_)
+        ; try(
+            // sanity check
+            <not(eq)>(<length>scpidsgood_, <length>scpidsbad_)
+            ; fatal-err(|"Expected structurally matching rule sets!")
+          )
+
+        // some part of the rule sets might still be equal. Eliminate that
+        // part from both lists to avoid needless fixing
+        ; <eliminate-common-suffix>(scpidsgood_, scpidsbad_) => (scpidsgood, scpidsbad)
+
+        ; <iset-elements>rmset
+        ; map({key, scpid, k, idx :
+            ?key@(scpid, k)
+            ; try(
+                <get-index>(scpid, scpidsbad) => idx
+                ; <iset-remove(|key)>rmset
+                ; <iset-add(|(<index>(idx, scpidsgood), k))>rmset
+              )
+          })
+        ; <hashtable-keys>tbl
+        ; map({key, scpid, k, idx, val :
+            ?key@(scpid, k)
+            ; try(
+                <get-index>(scpid, scpidsbad) => idx
+                ; <hashtable-get(|key)>tbl => val
+                ; <hashtable-remove(|key)>tbl
+                ; <hashtable-put(|(<index>(idx, scpidsgood), k), val)>tbl
+              )
+          })
+      )
+    ; !cs
 
   /**
    * Intersection of two rule-sets
@@ -1317,6 +1365,47 @@ strategies // labeling statements, break, continue
       ; rules(DR_BREAK.label : IgnoreB(csid) -> label)
     )
 
+  dr-break-bp(|rulename) =
+    id
+
+/**
+  * This strategy doesn't work yet.
+  *
+  * Reason: replacing a number of change sets & rule scopes with
+  *         their clones introduces inconsistency issues during merging
+  *         that are way to difficult to solve.
+  *
+  * @todo: solve this. How? Probably have to build a single change set
+  *        that includes all the changes in the rule scopes, but cancels
+  *        those of the change sets (this refers to the part of the rule set
+  *        that is being cloned in the current implementation) and replace
+  *        the top-most change set with this built one.
+  *
+  
+  // dr-break version for backward propagation transformations
+  dr-break-bp(|rulename) =
+    where(
+      <DR_BREAK>Label(rulename) => label
+      ; dr-get-rule-set(|rulename)
+      ; back-split-at(|<DR_BREAK>SplitPos(rulename, label))
+      ; ?(inRs, outRs)
+      ; <map({scope, lbls :
+          (?ChangeSet(_, _, _); dr-new-change-set)
+          <+ \ RuleScope(labels, table) -> scope
+                 where dr-new-scope => scope@RuleScope(lbls, tbl)
+                       ; <iset-addlist(|<iset-elements>labels)>lbls
+                       ; <hashtable-keys>table 
+                       ; map({key, val :
+                           ?key
+                           ; <hashtable-get(|key)>table => val
+                           ; <hashtable-put(|key, val)>tbl
+                         }) \
+        })>inRs
+      ; <conc>(<id>, outRs)
+      ; dr-set-rule-set(|rulename)
+    )
+*/
+
   dr-continue(|rulename) =
     dr-continue(|rulename, <DR_BREAK>Label(rulename))
 
@@ -1404,6 +1493,13 @@ strategies // labeling statements, break, continue
     ; !e
     ; where(<map(dr-commit-change-set(|<id>))> rulenames1
            ;<map(dr-commit-change-set(|<id>))> rulenames2)
+
+strategies // transactional run of a strategy
+
+  dr-transaction(s | rulenames) =
+    where(<map(dr-start-change-set(|<id>))>rulenames)
+    ; restore(s, where(<map(dr-discard-change-set(|<id>))>rulenames))
+    ; where(<map(dr-commit-change-set(|<id>))>rulenames)
 
 strategies // fork with intersection and union
 

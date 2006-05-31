@@ -21,12 +21,12 @@ strategies
 //    ; where(description-message(|"    - \"undef\" means undefinition of rule"))
 //    ; where(description-message(|"    - \"none\" means no change to rule"))
 //    ; where(description-message(|"    - \"empty\" means no rule is defined at that point"))
-    ; dce-union-tests
+//    ; dce-union-tests
     ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Fix and Union Tests"))
 //    ; where(description-message(|"  notation in test names: rule before applying intersection"))
 //    ; where(description-message(|"                          ; [rule in iteration]*"))
 //    ; where(description-message(|"  (x,val) decodes as before"))
-    ; dce-fix-and-union-tests
+//    ; dce-fix-and-union-tests
     ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Break Tests"))
 //    ; dce-break-tests
     )
@@ -159,7 +159,90 @@ strategies
 /*
   dce-break-tests = id
 
-  ; apply-dce-test(!"Check rule set after empty; [undef]*" |
+  ; apply-dce-test(!"Check break scenario #1" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           x := 1;
+           break;
+         end
+         f(x);
+       end",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           break;
+         end
+         f(x);
+       end"
+    )
+
+  ; apply-dce-test(!"Check break scenario #2" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           x := 1;
+           break;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           x := 1;
+           break;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-dce-test(!"Check break scenario #3" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           x := 1;
+           break;
+           f(x);
+           x := 1;
+         end
+         f(x);
+       end",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           break;
+           f(x);
+           x := 1;
+         end
+         f(x);
+       end"
+    )
+
+  ; apply-dce-test(!"Check break scenario #4" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           f(x);
+         else
+           x := 1;
+           break;
+         end
+         f(x);
+       end",
       "var x; x := 0;
        while c() do
          if c() then
@@ -167,6 +250,58 @@ strategies
          else
            break;
          end
-       end",
+         f(x);
+       end"
+    )
 
-    )*/
+  ; apply-dce-test(!"Check break scenario #5" |
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy(); x := 1;
+         else
+           x := 1; break;
+         end
+         x := 2;
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         if c() then
+           dummy();
+         else
+           x := 1; break;
+         end
+         x := 2;
+         f(x);
+       end
+       f(x);"
+    )
+
+  ; apply-dce-test(!"Check break scenario #6" |
+      "var x; x := 0;
+       while c() do
+         var x;
+         if c() then
+           dummy(); x := 1;
+         else
+           x := 1; break;
+         end
+         x := 2;
+         f(x);
+       end
+       f(x);",
+      "var x; x := 0;
+       while c() do
+         var x;
+         if c() then
+           dummy(); x := 1;
+         else
+           break;
+         end
+         f(x);
+       end
+       f(x);"
+    )
+*/
