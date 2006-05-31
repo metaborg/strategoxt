@@ -5,7 +5,7 @@
  */
 module xtar
 imports
-  liblib
+  libstratego-xtc
   pack-sdf-options
   tool-doc
 
