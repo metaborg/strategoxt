@@ -1,5 +1,5 @@
 module pp-pp-table
-imports liblib strategoxt-xtc-tools
+imports libstratego-xtc strategoxt-xtc-tools
 
 /**
  * @todo Use libstratego-gpp

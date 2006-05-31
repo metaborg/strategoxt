@@ -26,7 +26,7 @@
 */
 module Abox-2-html
 imports 
-  liblib
+  libstratego-xtc
   Abox-2-html-lib
   Box
   Box-util
