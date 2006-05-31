@@ -8,7 +8,7 @@
  */
 
 module normalize-spec
-imports liblib Stratego-Sugar desugar 
+imports libstratego-lib Stratego-Sugar desugar 
 strategies
 
   normalize-spec-io = 

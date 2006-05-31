@@ -1,5 +1,5 @@
 module match-to-matrix-test
-imports liblib match-to-matrix matrix-to-dfa compile-match
+imports libstratego-lib match-to-matrix matrix-to-dfa compile-match
 strategies
 
   main = 

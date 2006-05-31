@@ -10,7 +10,7 @@ TODO
 */
 
 module effects-analysis
-imports liblib Stratego-Core
+imports libstratego-lib Stratego-Core
 signature
   constructors
     Env : List(Id) -> Env

@@ -4,7 +4,7 @@
 module s2c-ng
 
 imports 
-  liblib
+  libstratego-lib
   Stratego-Core
   C 
   C-simplify

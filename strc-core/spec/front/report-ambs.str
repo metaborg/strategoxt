@@ -1,6 +1,6 @@
 module report-ambs
 imports 
-  liblib
+  libstratego-xtc
   Stratego
 
 signature

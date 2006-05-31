@@ -1,5 +1,5 @@
 module build-match-laws-test
-imports liblib build-match-laws stratego-laws
+imports libstratego-lib build-match-laws stratego-laws
 strategies
 
   build-match-laws-test-io =

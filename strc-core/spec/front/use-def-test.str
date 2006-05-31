@@ -1,5 +1,5 @@
 module use-def-test
-imports use-def liblib
+imports use-def libstratego-lib
 strategies
 
   use-def-test-io =

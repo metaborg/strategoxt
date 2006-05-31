@@ -1,5 +1,5 @@
 module raise-annotations
-imports liblib Stratego-Sugar
+imports libstratego-lib Stratego-Sugar
 strategies
 
   raise-annotations-io =

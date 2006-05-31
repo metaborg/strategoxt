@@ -1,5 +1,5 @@
 module test87
-imports liblib
+imports libstratego-lib
 signature
   constructors
     ExtSDef : String * List(String) * List(String) -> SDef

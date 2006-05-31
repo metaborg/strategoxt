@@ -1,5 +1,5 @@
 module switch-semantics-test
-imports liblib
+imports libstratego-lib
 strategies
 
   main =

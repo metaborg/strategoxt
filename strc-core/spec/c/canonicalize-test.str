@@ -1,5 +1,5 @@
 module canonicalize-test
-imports canonicalize liblib
+imports canonicalize libstratego-lib
 strategies
 
   canonicalize-test = 

@@ -1,5 +1,5 @@
 module jtree-parenthesize
-imports liblib Java
+imports libstratego-lib Java
 strategies
   io-jtree-parenthesize =
     io-wrap(parenthesize-Java)

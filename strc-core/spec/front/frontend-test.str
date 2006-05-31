@@ -1,5 +1,5 @@
 module frontend-test
-imports liblib frontend
+imports libstratego-lib frontend
 strategies
 
   frontend-test = 

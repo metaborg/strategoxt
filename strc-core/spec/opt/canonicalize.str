@@ -1,5 +1,5 @@
 module canonicalize
-imports Stratego-Core liblib C stratego-laws
+imports Stratego-Core libstratego-lib C stratego-laws
 
 strategies
 

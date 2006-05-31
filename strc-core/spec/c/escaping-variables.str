@@ -5,7 +5,7 @@
  */
 module escaping-variables
 imports
-  liblib
+  libstratego-lib
   Stratego-Core
   frame-composition // necessary for the Closure constructor
 

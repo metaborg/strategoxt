@@ -1,5 +1,5 @@
 module test03
-imports liblib
+imports libstratego-lib
 strategies
 
    main =

@@ -1,5 +1,5 @@
 module lift-dynamic-rules
-imports liblib Stratego-Sugar
+imports libstratego-lib Stratego-Sugar
 
 stratlib
 

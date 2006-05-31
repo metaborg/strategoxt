@@ -3,7 +3,7 @@
 module stratego-laws
 
 imports 
-  liblib 
+  libstratego-lib 
   Stratego-Sugar
   desugar  
   scope-laws  

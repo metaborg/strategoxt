@@ -1,5 +1,5 @@
 module check-constructors-test
-imports liblib check-constructors 
+imports libstratego-lib check-constructors 
 
 strategies
 

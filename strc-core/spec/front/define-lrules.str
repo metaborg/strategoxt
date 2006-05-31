@@ -3,7 +3,7 @@
  */
 
 module define-lrules
-imports liblib Stratego-Sugar stratlib
+imports libstratego-lib Stratego-Sugar stratlib
 strategies
 
   define-lrules-io = 

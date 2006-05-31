@@ -1,5 +1,5 @@
 module test90
-imports liblib
+imports libstratego-lib
 
 signature
   constructors

@@ -9,7 +9,7 @@
  */
 
 module pack-stratego
-imports liblib Stratego pack-stratego-options
+imports libstratego-xtc Stratego pack-stratego-options
 strategies
 
   pack-stratego = 

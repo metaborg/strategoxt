@@ -1,5 +1,5 @@
 module matrix-test
-imports liblib matrix 
+imports libstratego-lib matrix 
 
 strategies
 

@@ -1,5 +1,5 @@
 module frame-composition
-imports liblib Stratego-Core
+imports libstratego-lib Stratego-Core
 signature
   constructors
     Offsets      : Int * Int -> Annotation

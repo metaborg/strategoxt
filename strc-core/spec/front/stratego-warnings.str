@@ -12,7 +12,7 @@
  */
 module stratego-warnings
 imports
-  liblib
+  libstratego-xtc
   error-reporting
   stratego-warnings-options
   Stratego-Sugar

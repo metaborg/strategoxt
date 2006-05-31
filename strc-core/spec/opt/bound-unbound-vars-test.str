@@ -1,5 +1,5 @@
 module bound-unbound-vars-test
-imports liblib bound-unbound-vars
+imports libstratego-lib bound-unbound-vars
 strategies
 
   bound-unbound-vars-test-io =

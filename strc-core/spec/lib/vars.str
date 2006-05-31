@@ -1,5 +1,5 @@
 module vars
-imports stratlib liblib
+imports stratlib libstratego-lib
 strategies
 
   main = io-wrap(vars(Add1, fail))

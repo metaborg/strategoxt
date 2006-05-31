@@ -3,7 +3,7 @@
  */
 
 module variables-to-constructors
-imports liblib Stratego-Sugar
+imports libstratego-lib Stratego-Sugar
 strategies
 
   variables-to-constructors-io = 

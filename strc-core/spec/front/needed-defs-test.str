@@ -1,5 +1,5 @@
 module needed-defs-test
-imports liblib needed-defs
+imports libstratego-lib needed-defs
 
 strategies
 

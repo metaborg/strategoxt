@@ -1,6 +1,6 @@
 module check-constructors
 imports
-  liblib
+  libstratego-lib
   Stratego-Sugar
   error-reporting
 

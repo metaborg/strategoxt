@@ -4,7 +4,7 @@
 module s2c-classic
 
 imports 
-  liblib 
+  libstratego-lib 
   Stratego-Sugar 
   automaton 
   C 

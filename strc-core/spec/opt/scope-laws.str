@@ -1,5 +1,5 @@
 module scope-laws
-imports Stratego liblib
+imports Stratego libstratego-lib
 
 rules
 

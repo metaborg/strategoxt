@@ -1,5 +1,5 @@
 module const-prop-test
-imports const-prop liblib
+imports const-prop libstratego-lib
 strategies
 
   const-prop-test-io =

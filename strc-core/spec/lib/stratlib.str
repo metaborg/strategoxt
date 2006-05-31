@@ -8,7 +8,7 @@
  */
 
 module stratlib
-imports liblib Stratego-Sugar
+imports libstratego-lib Stratego-Sugar
 
 //signature
 //  constructors

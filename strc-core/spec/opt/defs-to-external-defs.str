@@ -1,5 +1,5 @@
 module defs-to-external-defs
-imports liblib Stratego
+imports libstratego-lib Stratego
 strategies
 
   defs-to-external-defs-io =

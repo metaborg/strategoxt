@@ -6,7 +6,7 @@
  * problems when pretty-printing Stratego programs.
  */
 module stratego-ensugar
-imports Stratego-Amb liblib
+imports Stratego-Amb libstratego-lib
 
 strategies
  

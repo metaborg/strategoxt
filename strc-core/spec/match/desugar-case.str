@@ -1,5 +1,5 @@
 module desugar-case
-imports automaton liblib stratego-laws desugar
+imports automaton libstratego-lib stratego-laws desugar
 strategies
 
   desugar-case-io =

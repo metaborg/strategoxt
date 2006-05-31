@@ -1,5 +1,5 @@
 module fusion
-imports Stratego stratego-laws liblib stratego-laws fusion-rules
+imports Stratego stratego-laws libstratego-lib stratego-laws fusion-rules
 
 signature
   constructors
