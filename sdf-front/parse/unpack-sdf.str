@@ -6,7 +6,7 @@
  * @author  Martin Bravenboer
  */
 module unpack-sdf
-imports liblib sdf-xtc-tools Sdf2
+imports libstratego-xtc sdf-xtc-tools Sdf2
 
 strategies
 

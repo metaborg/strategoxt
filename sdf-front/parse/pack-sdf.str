@@ -12,7 +12,7 @@
 module pack-sdf
 imports
   pack-sdf-options
-  liblib
+  libstratego-xtc
   strategoxt-xtc-tools
   sdf/tool/xtc
   Sdf2

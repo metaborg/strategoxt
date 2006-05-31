@@ -7,7 +7,7 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module sdf-desugar
-imports Sdf2 liblib implode-aterm
+imports Sdf2 libstratego-lib implode-aterm
 strategies
 
   main-sdf-desugar =

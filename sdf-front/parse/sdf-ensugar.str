@@ -7,7 +7,7 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module sdf-ensugar
-imports Sdf2 liblib explode-aterm
+imports Sdf2 libstratego-lib explode-aterm
 strategies
 
   main-sdf-ensugar =
