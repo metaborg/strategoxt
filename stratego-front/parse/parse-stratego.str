@@ -1,6 +1,6 @@
 module parse-stratego
 imports
-  liblib
+  libstratego-xtc
   Stratego
 
 /**

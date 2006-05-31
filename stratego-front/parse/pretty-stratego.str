@@ -1,5 +1,5 @@
 module pretty-stratego
-imports liblib stratego-parenthesize parse-stratego
+imports libstratego-xtc stratego-parenthesize parse-stratego
 strategies
 
   io-pretty-stratego =

@@ -1,6 +1,6 @@
 module stratego2abox
 imports 
-  liblib
+  libstratego-lib
   Stratego-Sugar
   Box
 

@@ -1,5 +1,5 @@
 module pp-stratego
-imports liblib stratego-parenthesize
+imports libstratego-xtc stratego-parenthesize
 strategies
 
   io-pp-stratego =
