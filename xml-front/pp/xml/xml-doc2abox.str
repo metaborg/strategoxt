@@ -1,5 +1,5 @@
 module xml-doc2abox
-imports xml-doc Box liblib
+imports xml-doc Box libstratego-lib
 strategies
 
   main-xml-doc2abox =

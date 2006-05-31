@@ -3,7 +3,7 @@ imports
   xml-doc
   xml-info
   xml-text-tools
-  liblib
+  libstratego-lib
 
 strategies
 

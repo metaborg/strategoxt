@@ -1,5 +1,5 @@
 module str-xml-tests
-imports liblib xml-doc
+imports libstratego-lib xml-doc
 
 strategies
 

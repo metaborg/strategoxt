@@ -1,5 +1,5 @@
 module xml-aterm-tests
-imports liblib xml-info
+imports libstratego-xtc xml-info
 
 strategies
 

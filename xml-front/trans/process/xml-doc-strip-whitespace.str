@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
  */
 module xml-doc-strip-whitespace
-imports liblib xml-doc xml-whitespace
+imports libstratego-lib xml-doc xml-whitespace
 
 strategies
 

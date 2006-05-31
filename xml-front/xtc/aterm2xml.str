@@ -1,7 +1,7 @@
 module aterm2xml
 imports
   xml-front-options
-  liblib
+  libstratego-xtc
 
 strategies
 

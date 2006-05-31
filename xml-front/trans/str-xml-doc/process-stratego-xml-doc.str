@@ -1,5 +1,5 @@
 module process-stratego-xml-doc
-imports liblib xml-whitespace
+imports libstratego-lib xml-whitespace
 
 strategies
 

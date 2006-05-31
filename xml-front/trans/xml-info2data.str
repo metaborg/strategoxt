@@ -1,7 +1,7 @@
 module xml-info2data
 imports
   xml-info
-  liblib
+  libstratego-lib
   xml-front-options
 
 strategies
