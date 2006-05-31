@@ -8,7 +8,7 @@
 module sdf2parenthesize
 imports
   Stratego
-  liblib
+  libstratego-xtc
   strategoxt-xtc-tools
   ast-conflicts
   sdf/tool/options
@@ -105,7 +105,7 @@ strategies
   innermost-module :
     [] ->
       |[ module M1
-         imports liblib
+         imports libstratego-lib
          strategies
 
            f =
@@ -118,7 +118,7 @@ strategies
   innermost-module :
     rs@[_ | _] ->
       |[ module M1
-         imports liblib M2
+         imports libstratego-lib M2
          strategies
 
            f =

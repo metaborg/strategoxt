@@ -8,7 +8,7 @@ module sdf2ast-conflicts
 imports
   Stratego
   Sdf2
-  liblib
+  libstratego-xtc
   strategoxt-xtc-tools
   sdf-spread-cons
   ast-conflicts

@@ -4,7 +4,7 @@
  * @author Joost Visser (Joost.Visser@cwi.nl)
  */
 module sdf-rm-cons
-imports liblib Sdf2
+imports libstratego-lib Sdf2
 
 strategies
 

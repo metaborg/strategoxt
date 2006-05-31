@@ -7,7 +7,7 @@
 module gen-renamed-sdf-module
 imports
   Sdf2
-  liblib
+  libstratego-xtc
   sdf/tool/xtc
   sdf/tool/options
   sdf/grammar/utils

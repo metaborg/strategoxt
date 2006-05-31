@@ -3,7 +3,7 @@ imports
   Sdf2
   verbalize-sdf
   AsFix
-  liblib
+  libstratego-lib
 
 signature
    constructors

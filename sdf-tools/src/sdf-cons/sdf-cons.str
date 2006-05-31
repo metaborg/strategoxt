@@ -18,7 +18,7 @@
  *   - Upgrade to SDF2 syntax of PGEN 2.0
  */
 module sdf-cons
-imports liblib Sdf2 prodcons
+imports libstratego-lib Sdf2 prodcons
 strategies
 
   io-sdf-cons =

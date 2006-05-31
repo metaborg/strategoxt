@@ -1,6 +1,6 @@
 module parse-unit
 imports
-  liblib
+  libstratego-xtc
   strategoxt-xtc-tools
   parse-testsuite
   parse-unit-io
