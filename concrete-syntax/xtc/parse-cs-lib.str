@@ -1,5 +1,5 @@
 module parse-cs-lib
-imports liblib strategoxt-xtc-tools
+imports libstratego-xtc strategoxt-xtc-tools
 
 /**
  * Options
