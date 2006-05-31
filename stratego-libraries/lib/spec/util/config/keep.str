@@ -58,7 +58,12 @@ strategies
  */
 strategies
 
-  if-less-keep1(s|t) = 
+ /** 
+  * @obsolete
+  */ 
+  if-less-keep1(s|t) = if-less-keep(s|t)
+
+  if-less-keep(s|t) = 
     if <leq> (<get-keep> (), t) then
       s
     end
