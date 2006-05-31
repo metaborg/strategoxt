@@ -6,7 +6,7 @@ strategies
     option-wrap(pp-stratego-options <+ io-options,
       xtc-io(
         (where(<get-config> "--abstract")
-	 <+ xtc-transform(!"parse-stratego",pass-includes))
+	 <+ xtc-transform(!"parse-stratego",!["-b" | <pass-includes> ]))
          ; xtc-transform(!"stratego-ensugar")
 	//; try(where(<get-config> "--annotations")
         //      ; xtc-transform(!"annos-to-term"))

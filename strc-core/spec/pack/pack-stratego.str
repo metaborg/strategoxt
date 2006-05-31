@@ -201,7 +201,7 @@ strategies
      ?file
    ; <xtc-transform(!"parse-stratego",
 	 	     <concat>[<get-config < !["--asfix"] + ![]> "--asfix", 
-			      ["--desugaring", <get-config <+ !"off"> "--desugaring"],
+			      ["--desugaring", <get-config <+ !"off"> "--desugaring"], ["-b"],
                               <pass-verbose>, <pass-keep>, <pass-include-dirs>])>FILE(file)
    ; read-from
   <+ <fatal-error> ["parse error in ", <id>]

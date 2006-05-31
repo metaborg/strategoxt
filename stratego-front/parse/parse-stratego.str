@@ -157,6 +157,10 @@ strategies
         xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
       end
 
+    ; if not( <get-config>"-b" ) then
+        read-from ; write-to-text
+      end
+
 strategies
 
   check-module-name(|base) =
