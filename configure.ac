@@ -66,15 +66,6 @@ PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-r
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])
 
-AC_MSG_CHECKING([for the location of the xtc tool to be used])
-if test "$xt_baseline" = "yes"; then
-  XTC_PROG="$STRATEGOXT/bin/xtc"
-else
-  XTC_PROG="`pwd`/xtc/src/xtc"
-fi
-AC_MSG_RESULT([$XTC_PROG])
-AC_SUBST([XTC_PROG])
-
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
   Makefile 
@@ -91,7 +82,6 @@ AC_CONFIG_FILES([
 AC_OUTPUT
 
 ### CONFIGURE SUBPACKAGES #####################################
-
 AB_CONFIG_PKG(autoxt, )
 AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
