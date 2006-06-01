@@ -57,8 +57,11 @@ if test "$xt_baseline" = "yes"; then
   PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-libraries xtc"
 else
   PKGS="$PKGS stratego-libraries xtc stratego-front asfix-tools strc-core gpp c-tools"
-fi
 
+  # subpackages should pick up the -uninstalled pkgconfig descriptions.
+  PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export PKG_CONFIG_PATH
+fi
 PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])
@@ -68,13 +71,9 @@ if test "$xt_baseline" = "yes"; then
   XTC_PROG="$STRATEGOXT/bin/xtc"
 else
   XTC_PROG="`pwd`/xtc/src/xtc"
-
-  # subpackages should pick up the -uninstalled pkgconfig descriptions.
-  PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export PKG_CONFIG_PATH
 fi
-AC_SUBST([XTC_PROG])
 AC_MSG_RESULT([$XTC_PROG])
+AC_SUBST([XTC_PROG])
 
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
