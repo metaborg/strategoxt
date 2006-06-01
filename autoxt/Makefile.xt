@@ -155,6 +155,8 @@ relname:
 
 DREPOSITORY = $(DESTDIR)$(REPOSITORY)
 
+if XT_XTC_REGISTER
+
 install-data-local::
 	$(mkinstalldirs) `dirname $(DREPOSITORY)`
 	@$(XTC_PROG) -r $(DREPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE); \
@@ -221,5 +223,7 @@ all-local::
         done; \
 	echo "Tools registered in repository $(BUILD_REPOSITORY): $(bin_PROGRAMS) $(bin_SCRIPTS) $(libexec_PROGRAMS) $(libexec_SCRIPTS)" ; \
 	echo "Data registered in repository $(BUILD_REPOSITORY): $(pkgdata_DATA) $(sdfdata_DATA)"
+
+endif
 
 ###########################################################
