@@ -1,5 +1,12 @@
 module strc-options
-imports stratego-warnings-options
+imports
+  stratego-warnings-options
+
+signature
+  constructors
+    LibDir         : ConfigKey
+    DisableInstall : ConfigKey
+
 strategies
 
   command-line-options =
@@ -77,20 +84,35 @@ strategies
 	where(<set-config>("-m", <id>)); !(),
 	!"--main f | -m f    Main strategy to compile (default: main)\n")
 
-  + Option("--library" + "--lib",
-	where(<set-config>("--library", ())); !(),
-	!"--library | --lib  Build a library instead of an application\n")
-
   + ArgOption("--C-include",       
 	where(<post-extend-config>("--C-include", [<id>])); !(), 
 	!"--C-include h      Include header file h (\"file.h\" or <file.h>)")
 
-  // newline
+  /**
+   * Library options
+   */
   + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"Options for creating libraries:")
+  + ArgOption(fail, fail, !"")
+
+  + Option("--library" + "--lib",
+	where(<set-config>("--library", ())); !(),
+	!"--library | --lib  Build a library instead of an application")
+
+  + ArgOption("--libdir",
+        where(<set-config> (LibDir(), <id>)),
+        !"--libdir <dir>     If the output is a library, then it will will be installed in libdir.")
+
+  + Option("--disable-install",
+        where(<set-config> (DisableInstall(), ())),
+        !"--disable-install  If the output is a library, then don't install it in the libdir.")
 
   /**
    * C compiler flags
    */
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"C compiler options:")
+  + ArgOption(fail, fail, !"")
 
   + ArgOption("-Xcc",
 	where(<post-extend-config>("-Xcc", [<id>])); !(),
@@ -104,12 +126,12 @@ strategies
 	where(<post-extend-config>("-Xcc", [<conc-strings> ("-D", <id>)])); !(),
 	!"-CD name=def       Predefine name as a macro, with definition def.")
 
-  // newline
-  + ArgOption(fail, fail, !"")
-
   /**
    * Linker flags.
    */
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"Linker options:")
+  + ArgOption(fail, fail, !"")
 
   + ArgOption("-Xlinker",
 	where(<post-extend-config>("-Xlinker", [<id>])); !(),
@@ -127,8 +149,9 @@ strategies
 	where(<post-extend-config>("-Xlinker", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
 	!"-la <name>         Search the libtool library lib<name>.la when linking.")
 
-
   // newline
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"Configuration of Stratego Compiler:")
   + ArgOption(fail, fail, !"")
 
   + ArgOption("--xtc-repo",
@@ -141,15 +164,11 @@ strategies
 
   + Option("--ast",
 	where(<set-config>("--ast",())); !(),
-	!"--ast              Prouce abstract syntax tree of packed program" )
+	!"--ast              Produce abstract syntax tree of packed program" )
 
   + Option("-F",           
 	where(<set-config>("-F",())); !(),
 	!"-F                 Produce core after front-end" )
-
-//  + ArgOption("--keep",
-//        where(<set-config>("--keep", <string-to-int>)); !(),
-//	!"--keep n           Keep intermediate results (0 = keep nothing)" )
 
   + ArgOption("--format-check",
         where(<set-config>("--format-check", <string-to-int>)); !(),
@@ -157,7 +176,7 @@ strategies
 
   + Option("--prefer-str",
         where(<set-config> ("--prefer-str", "")); !(),
-        !"--prefer-str              Prefer .str files over .rtree files")
+        !"--prefer-str       Prefer .str files over .rtree files")
  
   + ArgOption("-O",
         where(<set-config>("-O", <string-to-int; set-opt-level> )); !(),
@@ -165,7 +184,7 @@ strategies
 
   + ArgOption("--ng",
         where(<set-config>("--ng", <id>); !()),
-	!"--ng on|off : use ng backend (default: off)" )
+	!"--ng on|off        Use ng backend (default: off)" )
 
 
   + Option("--fusion",     
@@ -174,7 +193,19 @@ strategies
 
   + ArgOption("--dr",
         err(|"--dr flag is deprecated; old dynamic rules are no longer supported"),
-	!"--dr : obsolete; old dynamic rules are no longer supported" )
+	!"--dr               Obsolete; old dynamic rules are no longer supported" )
+
+  + Option("--asfix",
+        where(<set-config>("--asfix",())); !(),
+        !"--asfix            Concrete syntax parts are not imploded")
+
+  + Option("--indent-c",    
+	where(<set-config> ("--indent-c",())); !(),         
+	!"--indent-c         Use this flag if you want the generated C code to use indentation.")
+
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"General options:")
+  + ArgOption(fail, fail, !"")
 
   + general-options
 
@@ -188,13 +219,6 @@ strategies
 
   + stratego-warnings-options
 
-  + Option("--asfix",
-       where(<set-config>("--asfix",())); !(),
-       !"--asfix            Concrete syntax parts are not imploded")
-
-  + Option("--indent-c",    
-	where(<set-config> ("--indent-c",())); !(),         
-	!"--indent-c        Use this flag if you want the generated C code to use indentation.")
 
 
   set-opt-level = 

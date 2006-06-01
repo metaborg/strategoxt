@@ -218,17 +218,63 @@ strategies // Compile generated C code
   c-to-object-code :
     FILE(cfile) -> FILE(ofile)
     where log(|Notice(), "Compiling C code")
-	; get-outfile(!".o") => ofile
+	; get-outfile(!".lo") => ofile
 	; <call-backend>
-	   (<xtc-find> "cc", <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]])
+	    (<xtc-find> "libtool", [
+              "--mode=compile", <xtc-find> "cc" | <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]]])
 
   link-object-code :
     FILE(ofile) -> FILE(target)
-    where log(|Notice(), "Linking object code")
-	; (<get-config> "-o" <+ get-outfile(!"")) => target
-	; <call-backend>
-	    (<xtc-find> "libtool", [
-              "--mode=link", <xtc-find> "cc", ofile, "-o", target | <get-config> "-Xlinker"])
+    where
+      log(|Notice(), "Linking object code")
+      ; (<get-config> "-o" <+ get-outfile(get-final-suffix)) => target
+      ; if-lib(link-library(|ofile, target), link-program(|ofile, target))
+
+  link-program(|ofile, target) =
+    <call-backend>
+      (<xtc-find> "libtool", [
+        "--mode=link", <xtc-find> "cc", ofile, "-o", target | <get-config> "-Xlinker"])
+
+/**
+ * Linking a library using libtool
+ */
+strategies
+
+  link-library(|ofile, target) =
+      <call>
+        (<xtc-find> "libtool", [
+          "--mode=link", <xtc-find> "cc", ofile, "-o", target, "-rpath", <libdir> target, "-avoid-version", "-no-undefined" | <get-config> "-Xlinker"])
+    ; if <get-config> DisableInstall() then
+        log(|Info(), ["Don't forget to install the library using: libtool --mode=install cp ", target, " ", <libinstallpath> target])
+      else
+        log(|Info(), "Installing library")
+        ; <call>
+            (<xtc-find> "libtool", ["--mode=install", "cp", target, <libinstallpath> target])
+      end
+      
+
+  /**
+   * Given a target, return the libdir.
+   * @type String -> String
+   */
+  libdir =
+    <get-config> LibDir()
+    ; abspath
+
+    <+ dirname
+       ; abspath
+
+  /**
+   * Given a target, return the location for installing the library.
+   *
+   * @type String -> String
+   */
+  libinstallpath =
+    <conc-strings> (<get-config> LibDir(), "/", <base-filename>)
+    ; abspath
+
+    <+ abspath
+
 
 strategies
 
@@ -423,12 +469,18 @@ strategies
     where <remove-extension> file => basein
         ; log(|Debug(),["Basename of input file: ",basein])
         ; <set-config> ("basein",  basein)
-        ; (<get-config; remove-extension> "-o" <+ !basein) => baseout
+        ; (<get-config; remove-extension> "-o" <+ !basein; if-lib(<conc-strings> ("lib", <id>))) => baseout
 	; log(|Debug(),["Basename of output file: ",baseout])
         ; <set-config> ("baseout", baseout)
 
   get-outfile(suffix) =
     <conc-strings>(<get-config> "baseout", <suffix>)
+
+  /**
+   * @todo Support for $(EXE)?
+   */
+  get-final-suffix =
+    if-lib(!".la", !"")
 
   dep-name =
     !["--dep", <<get-config> "-o" <+ <get-config> "baseout">]
