@@ -1,7 +1,0 @@
-#! /bin/sh
-
-rm -f autoxt.m4 Makefile.xt aclocal.m4
-ln -s __pkgdatadir__/autoxt.m4 .
-ln -s __pkgdatadir__/Makefile.xt
-
-

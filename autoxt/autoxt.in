@@ -1,0 +1,9 @@
+#! /bin/sh
+
+prefix="@prefix@"
+datadir="@datadir@"
+pkgdatadir="${datadir}/@PACKAGE@"
+
+rm -f autoxt.m4 Makefile.xt aclocal.m4
+ln -s "$pkgdatadir/autoxt.m4"
+ln -s "$pkgdatadir/Makefile.xt"
