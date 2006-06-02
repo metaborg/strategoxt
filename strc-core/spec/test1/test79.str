@@ -1,7 +1,6 @@
-module test79 // annotations-test
-
+module test79
 imports 
-  sunit
+  libstratego-lib
 
 signature
   sorts Exp Type
