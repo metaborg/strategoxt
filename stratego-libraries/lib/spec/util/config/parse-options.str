@@ -63,7 +63,6 @@
  */
 module util/config/parse-options
 imports 
-  lib 
   util/config/common
 
 signature
