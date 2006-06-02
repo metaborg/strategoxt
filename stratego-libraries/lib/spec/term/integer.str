@@ -2,6 +2,9 @@
  * Integer arithmetic and comparison.
  */
 module term/integer
+imports
+  lang/dynamic-rules
+
 strategies
 
   is-int = ?i; prim("SSL_is_int", i)
@@ -196,7 +199,6 @@ rules
 
   lt-inf = ?(<is-int>, Infinite) <+ (is-int, is-int); lt
 
-imports dynamic-rules
 strategies
 
   new-counter =
