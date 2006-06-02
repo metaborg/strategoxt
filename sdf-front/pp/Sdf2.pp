@@ -38,9 +38,11 @@
 
    priorities --
       V is=2 [KW["priorities"] _1],
+   priorities.1:iter-star-sep -- V vs=0 [_1 KW[","]],
 
    context-free-priorities -- 
       V is=2 [H[KW["context-free"] KW["priorities"]] _1],
+   context-free-priorities.1:iter-star-sep -- V vs=0 [_1 KW[","]],
 
    restrictions -- 
       V is=2[ KW["restrictions"] _1],
