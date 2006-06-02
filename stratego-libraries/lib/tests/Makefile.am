@@ -10,7 +10,6 @@ pkgtestsdatadir  = $(datadir)/stratego-lib/tests
 pkgtestsdata_DATA= $(wildcard *.str)
 
 check_PROGRAMS = \
-  annotation-props-test \
   char-test \
   collect-test \
   dir-test \
@@ -64,10 +63,6 @@ STRINCLUDES    	= -I $(top_srcdir)/lib/ssl-compat -I $(top_srcdir)/lib/spec -I $
 NOSHARED_PREFIX_LIBS = -L$(prefix)/lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
 PREFIX_LIBS          = -L$(prefix)/lib -lstratego-lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
 PREFIX_CPPFLAGS      = -I $(prefix)/include -I $(ATERM)/include
-
-nodist_annotation_props_test_SOURCES = annotation-props-test.c 
-annotation_props_test_CPPFLAGS       = $(PREFIX_CPPFLAGS)
-annotation_props_test_LDADD          = $(PREFIX_LIBS)
 
 nodist_char_test_SOURCES          = char-test.c 
 char_test_CPPFLAGS                = $(PREFIX_CPPFLAGS)
