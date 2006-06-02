@@ -23,6 +23,7 @@ all-local::
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l foo -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t cc -p $(CC) -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t strategoxt-datadir -l `pwd` -V $(VERSION)
+	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t lib.rtree -l `pwd` -V $(VERSION)
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
 
 install-data-local::
@@ -43,6 +44,7 @@ install-data-local::
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t strategoxt-datadir -l $(prefix)/share -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-lib.rtree -l $(prefix)/share -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.rtree -l $(prefix)/share -V $(VERSION)
+	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t lib.rtree -l $(prefix)/share/stratego-lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/stratego-lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
