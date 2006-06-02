@@ -1,4 +1,5 @@
 include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
 check_PROGRAMS = abox2text-tests ast2text-tests

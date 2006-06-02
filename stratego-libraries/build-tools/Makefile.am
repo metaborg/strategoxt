@@ -1,4 +1,5 @@
 include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
 noinst_PROGRAMS = cgen-aterm
@@ -11,6 +12,4 @@ cgen_aterm_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
-
-
 
