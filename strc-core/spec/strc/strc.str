@@ -278,12 +278,15 @@ strategies
 
 strategies
 
+  /**
+   * FIXME enable the silent backend calls if the STR-853 has been solved.
+   */
   call-backend =
     ?(tool,args)
   ; log(|Notice(),<separate-by(|" ") ; concat-strings>["Command:",tool|args])
-  ; if <geq>(<verbosity>,2) then
+  ; //if <geq>(<verbosity>,2) then
       call
-    else
+/*    else
       where(
         xtc-new-file => f
       ; open => fd
@@ -297,6 +300,7 @@ strategies
       ; fail
       )
     end
+*/
 
 strategies
 

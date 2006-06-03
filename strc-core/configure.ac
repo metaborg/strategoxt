@@ -6,14 +6,22 @@ AM_INIT_AUTOMAKE
 XT_INTERNAL_USE_XT_PACKAGES
 XT_TERM_DEFINE
 
+# FIXME: this should include the user variables LDFLAGS and CFLAGS.
+
 if test "$xt_darwin" = "yes"; then
   AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
             [((ATerm) ATmakeList1(ATmakeString("-bind_at_load")))],
             [Additional arguments to pass to the linker.])
+  AC_DEFINE([STRC_SYSTEM_CFLAGS()],
+            [((ATerm) ATmakeList1(ATmakeString("-fnested-functions")))],
+            [Additional arguments to pass to the c compiler.])
 else
   AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
             [((ATerm) ATmakeList0())],
             [Additional arguments to pass to the linker.])
+  AC_DEFINE([STRC_SYSTEM_CFLAGS()],
+            [((ATerm) ATmakeList0())],
+            [Additional arguments to pass to the c compiler.])
 fi
 
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE

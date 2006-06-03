@@ -15,7 +15,7 @@ BOOTCLEANFILES  = libstratego-xtc.str libstratego-xtc.rtree libxtclib.rtree libl
 xtclib = stratego-xtc.str $(wildcard stratego/xtc/*.str)
 
 libstratego_xtc_la_SOURCES = libstratego-xtc.c
-libstratego_xtc_la_CFLAGS  = -Wall
+libstratego_xtc_la_CFLAGS  = -Wall $(AM_CFLAGS)
 libstratego_xtc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_xtc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 libstratego_xtc_la_LIBADD   = $(STRATEGO_UNINSTALLED_LIBS)

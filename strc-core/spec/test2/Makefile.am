@@ -19,9 +19,11 @@ LDADD 		= $(STRATEGORUNLIBS)
 occan_LDADD     = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 if XT_DARWIN
-AM_LDFLAGS += -bind_at_load
+  AM_LDFLAGS += -bind_at_load
+  AM_CFLAGS += -fnested-functions
 else
-AM_LDFLAGS +=
+  AM_LDFLAGS +=
+  AM_CFLAGS +=
 endif
 
 check_PROGRAMS 	= arity-test as-pattern assignment			    \

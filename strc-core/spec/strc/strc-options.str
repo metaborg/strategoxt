@@ -33,11 +33,12 @@ strategies
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
 
-    // consider to include CFLAGS from the environment
+    // @todo consider to include CFLAGS from the environment
     ; <set-config> ("-Xcc",
         [ "-I", <xtc-find-path> "SRTS-include"
         , "-I", <xtc-find-path> "stratego-lib-include"
         , "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")
+        | <strc-system-cflags> ()
         ])
 
     ; <set-config> ("-Xlinker",
@@ -53,6 +54,9 @@ strategies
 
   strc-system-ldflags =
     <prim("STRC_SYSTEM_LDFLAGS")> ()
+
+  strc-system-cflags =
+    <prim("STRC_SYSTEM_CFLAGS")> ()
 
   get-include-dirs =
     <conc> (<get-config> "-I"

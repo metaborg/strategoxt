@@ -20,10 +20,15 @@ LDADD = $(STRATEGO_LIB_LIBS) $(STRATEGO_RUNTIME_LIBS) $(ATERM_LIBS)
 SSL_LIBS =  $(XTC_LIBS) $(STRATEGO_LIB_LIBS) $(STRATEGO_RUNTIME_LIBS) $(ATERM_LIBS)
 STRATEGORUNLIBS = $(STRATEGO_RUNTIME_LIBS)
 
+# FIXME: This is a bit sloppy, but nested functions will soon be removed
+# and we don't support compilers other then GCC anyway.
+
 if XT_DARWIN
   AM_LDFLAGS=-bind_at_load
+  AM_CFLAGS=-fnested-functions
 else
   AM_LDFLAGS=
+  AM_CFLAGS=
 endif
 
 SUFFIXES      = .str .cr .r .rtree .def .tbl .pp .sdf .rtg .rtg-nf

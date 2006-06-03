@@ -17,9 +17,11 @@ STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 LDADD 		= $(STRATEGORUNLIBS)
 
 if XT_DARWIN
-AM_LDFLAGS += -bind_at_load
+  AM_LDFLAGS += -bind_at_load
+  AM_CFLAGS += -fnested-functions
 else
-AM_LDFLAGS +=
+  AM_LDFLAGS +=
+  AM_CFLAGS +=
 endif
 
 check_PROGRAMS 	= test01 test02 test03 test04 test05				 \

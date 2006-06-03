@@ -18,7 +18,7 @@ strategies
     fork(child, id)
 
   fork(child, parent) =
-    ?t; fork; ?pid; (?0; <child> t <+ <parent> (pid, t))
+    ?t; fork; ?pid; (?0 < <child> t + <parent> (pid, t))
 
   fork-and-wait(child) =
     fork(child, ?(<waitpid>, t); warn-ifsignaled; ?WaitStatus(0,_,_); !t)
@@ -34,9 +34,19 @@ strategies
    * @type (String, List(String)) -> (String, List(String))
    */
   call =
-    call(id)
+    ?t; fork-and-wait(helper-call-child)
 
-  call(init-child) = 
+  /**
+   * This helper is used to avoid a nested function.
+   */
+  helper-call-child =
+    execvp
+    ; <exit> 1
+
+  /**
+   * @todo This call is broken on i686-darwin: see STR-853
+   */
+  call(init-child) =
     ?(prog,args)
     ; fork-and-wait(init-child; <execvp> (prog, args); <exit> 1)
 
