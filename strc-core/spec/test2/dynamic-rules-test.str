@@ -34,7 +34,7 @@ strategies
     where <map(new)> xs => ys
         ; <zip({?(x,y); rules(RenameVar : Var(x) -> Var(y))})> (xs, ys)
 
-  inline = 
+  my-inline = 
   rec i({| Inline :
     repeat(Subst)
     ; (Declare; all(i)
@@ -89,14 +89,14 @@ strategies
 
   test1 =
     apply-test(!"test1"
-	, inline
+	, my-inline
 	, !Let([Vdec("x", Int(1))], Call("g", [Var("x")]))
 	, !Let([Vdec("x", Int(1))], Call("g", [Int(1)]))
 	)
 
   test2 =
     apply-test(!"test2"
-	, inline
+	, my-inline
 	, !Let([Fdec("f", ["x"], Var("x"))],    
 	    Let([Fdec("g", ["x"], Plus(Int(1), Call("f", [Var("x")])))],
              Let([Vdec("x", Int(1))], Call("g", [Var("x")]))))
@@ -107,7 +107,7 @@ strategies
 
   test3 =
     apply-test(!"test3"
-	, inline
+	, my-inline
 	, !Let([Fdec("f", ["x"], Plus(Int(1), Var("x")))],    
 	   Let([Fdec("g", ["x"], Call("f", [Var("x")]))],
                Call("g", [Int(2)])))

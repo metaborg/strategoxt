@@ -18,17 +18,17 @@ strategies
 
 strategies
 
-  bottomup(s) =
+  my-bottomup(s) =
     rec x(all(x); s)
 
-  innermost(s) = 
-    bottomup(red(s))
+  my-innermost(s) = 
+    my-bottomup(red(s))
 
   red(s) = 
-    rec x(s; bottomup(x) <+ id)
+    rec x(s; my-bottomup(x) <+ id)
 
   nf(s) = 
-    bottomup(not(s))
+    my-bottomup(not(s))
 
 signature
   sorts Prop
@@ -45,7 +45,7 @@ signature
 strategies
 
  disj-nf = 
-   innermost(DAOL + DAOR + DN + DMA + DMO + T)
+   my-innermost(DAOL + DAOR + DN + DMA + DMO + T)
 
  T = T1 + T2 + T3 + T4 + T5 + T6 + T7 + T8 + T9 + T10 +
      T11 + T12 + T13 + T14 + T15 + T16 + T17 + T18 + T19
