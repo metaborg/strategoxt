@@ -46,7 +46,6 @@ check_PROGRAMS = \
   string-misc-test \
   substitution-test \
   tables-test \
-  template-test \
   term-zip-test \
   time-test \
   tuple-test \
@@ -101,7 +100,6 @@ nodist_string_test_SOURCES        = string-test.c
 nodist_string_misc_test_SOURCES   = string-misc-test.c 
 nodist_substitution_test_SOURCES  = substitution-test.c 
 nodist_tables_test_SOURCES        = tables-test.c
-nodist_template_test_SOURCES      = template-test.c 
 nodist_term_zip_test_SOURCES      = term-zip-test.c 
 nodist_time_test_SOURCES          = time-test.c 
 nodist_tuple_test_SOURCES         = tuple-test.c

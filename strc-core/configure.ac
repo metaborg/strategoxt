@@ -6,8 +6,8 @@ AM_INIT_AUTOMAKE
 XT_INTERNAL_USE_XT_PACKAGES
 XT_TERM_DEFINE
 
-AC_DEFINE_UNQUOTED([STRC_SYSTEM_LDFLAGS()],[((ATerm) ATmakeString("${STR_LDFLAGS} ${LDLAGS}"))], [Additional arguments to pass to the linker.])
-AC_DEFINE_UNQUOTED([STRC_SYSTEM_CFLAGS()],[((ATerm) ATmakeString("${STR_CFLAGS} ${CFLAGS}"))], [Additional arguments to pass to the C compiler.])
+AC_DEFINE_UNQUOTED([STRC_SYSTEM_LDFLAGS()],[((ATerm) ATmakeString("${STR_LDFLAGS}"))], [Additional arguments to pass to the linker.])
+AC_DEFINE_UNQUOTED([STRC_SYSTEM_CFLAGS()],[((ATerm) ATmakeString("${STR_CFLAGS}"))], [Additional arguments to pass to the C compiler.])
 
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
