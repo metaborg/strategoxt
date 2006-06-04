@@ -1,6 +1,5 @@
 module thread-test
-imports lib
-
+imports libstratego-lib
 signature
   constructors
     Ann  : Int * a -> a

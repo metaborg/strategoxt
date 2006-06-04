@@ -1,5 +1,5 @@
 module rename-test
-imports sunit rename
+imports libstratego-lib
 strategies
 
   main = 

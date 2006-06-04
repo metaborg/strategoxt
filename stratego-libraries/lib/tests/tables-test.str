@@ -2,7 +2,7 @@
  * Unit tests for table strategies
  */
 module tables-test
-imports sunit tables list-set
+imports libstratego-lib
 strategies
 
   main = 

@@ -1,5 +1,5 @@
 module implicit-var-decl
-imports lib
+imports libstratego-lib
 
 strategies
 

@@ -2,7 +2,7 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module posix-error-test
-imports sunit posix-error
+imports libstratego-lib
 
 strategies
 

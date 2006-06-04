@@ -1,7 +1,5 @@
 module test83
-imports 
-  list-cons
-  term/integer
+imports libstratego-lib
 strategies
 
   main = 

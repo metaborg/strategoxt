@@ -1,8 +1,5 @@
 module test81
-
-imports 
-  sunit
-
+imports libstratego-lib
 signature 
    constructors 
      "pp-tables-0" : Int -> Foo 

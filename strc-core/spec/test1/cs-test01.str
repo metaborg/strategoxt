@@ -1,5 +1,5 @@
 module cs-test01
-imports Expressions sunit
+imports Expressions libstratego-lib
 strategies
   
   main = 

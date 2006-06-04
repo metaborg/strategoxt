@@ -2,7 +2,7 @@
  * Testing for collect strategies.
  */
 module collect-test
-imports libstrategolib
+imports libstratego-lib
 
 strategies 
 

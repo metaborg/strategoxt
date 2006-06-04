@@ -3,7 +3,7 @@
  * handling. Please don't use this as an example.
  */
 module old-parse-options-test
-imports sunit parse-options
+imports libstratego-lib
 signature
   sorts Option
   constructors
@@ -59,7 +59,7 @@ strategies
 	+ Option("--trace-all",  !TraceAll; rules(TraceAllFuns : () -> ()))
 	+ ArgOption("-t",        \x -> Trace(x) where rules(TraceFun : x -> ()) \ )
 
-  io-options =
+  my-io-options =
 	Option("-S"+"--silent",       !Silent(),          !"-S|--silent      Silent execution")
 	+ ArgOption("--verbose",      !Verbose(<id>),     !"--verbose        Verbose execution")
 	+ Option("-v"+"--version",    !Version(),         !"-v|--version     Display prgram's version")
@@ -71,14 +71,14 @@ strategies
   test1 =
     apply-test(!"test1"
 	, where(<table-put>("usage-table", "usage", []));
-          parse-options'( sc-options <+ io-options + system-usage-switch)
+          parse-options'( sc-options <+ my-io-options + system-usage-switch)
 	, !["pack-stratego", "-I", ".", "-I", "..", "-CI", "-I/tmp/include"]
 	, ![Program("pack-stratego"),Ignore,Ignore,Ignore]
 	)
 
   test2 =
     apply-test(!"test2"
-	, parse-options(sc-options <+ io-options)
+	, parse-options(sc-options <+ my-io-options)
 	, !["pack-stratego", "-I", ".", "-I", "..", "-CI", "-I/tmp/include"]
 	, ![Program("pack-stratego"),Ignore,Ignore,Ignore] 
 	)

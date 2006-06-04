@@ -2,10 +2,7 @@
  * Unit tests for list-index
  */
 module list-index-test
-imports
-  sunit
-  list-index
-
+imports libstratego-lib
 strategies
 
   main = 

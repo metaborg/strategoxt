@@ -1,5 +1,5 @@
 module test46
-imports dynamic-rules
+imports libstratego-lib
 strategies
 
    main =

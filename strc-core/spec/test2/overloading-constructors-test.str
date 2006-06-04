@@ -1,6 +1,5 @@
 module overloading-constructors-test
-imports sunit
-
+imports libstratego-lib
 signature
   constructors
     True   : Exp

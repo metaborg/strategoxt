@@ -1,5 +1,5 @@
 module dynamic-rules-test
-imports dynamic-rules sunit
+imports libstratego-lib
 
 signature
   constructors

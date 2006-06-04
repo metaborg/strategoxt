@@ -6,7 +6,7 @@
  * is assumed to be canceled by build/match fusion.
  */
 module test54
-imports lib
+imports libstratego-lib
 signature
   constructors
     Nil   : List(a)

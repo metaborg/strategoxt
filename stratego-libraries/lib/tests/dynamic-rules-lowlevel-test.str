@@ -1,5 +1,5 @@
 module dynamic-rules-lowlevel-test
-imports libstrategolib
+imports libstratego-lib
 
 strategies
 

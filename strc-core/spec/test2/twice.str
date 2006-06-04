@@ -1,5 +1,5 @@
 module twice
-imports lib memo
+imports libstratego-lib
 signature
   constructors
     A : Term

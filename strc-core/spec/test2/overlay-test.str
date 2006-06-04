@@ -1,6 +1,5 @@
 module overlay-test
-imports sunit
-
+imports libstratego-lib
 signature
   sorts AsFixTerm
   constructors

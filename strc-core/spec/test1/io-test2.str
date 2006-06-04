@@ -1,5 +1,5 @@
 module io-test2
-imports lib
+imports libstratego-lib
 
 strategies
 

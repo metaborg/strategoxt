@@ -1,6 +1,5 @@
 module overloading
-imports list-cons tuple-cons
-imports simple-traversal
+imports libstratego-lib
 signature
   constructors
     A   : Term

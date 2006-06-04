@@ -2,7 +2,7 @@
  * Dynamic rules dummy as a tail of a cons.
  */
 module test67
-imports dynamic-rules
+imports libstratego-lib
 strategies
 
   main =

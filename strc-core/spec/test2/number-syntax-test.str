@@ -1,5 +1,5 @@
 module number-syntax-test
-imports list-cons
+imports libstratego-lib
 rules
 
   bla : 1 -> 2

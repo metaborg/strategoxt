@@ -1,5 +1,5 @@
 module prop
-imports sunit
+imports libstratego-lib
 strategies
 
   main = 

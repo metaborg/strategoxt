@@ -1,5 +1,5 @@
 module test18
-imports sunit
+imports libstratego-lib
 signature
   constructors
     A : Term

@@ -1,10 +1,7 @@
 // pattern match compilation test
 
 module test86
-
-imports 
-  sunit
-
+imports libstratego-lib
 signature
   constructors
     F : E * E -> E

@@ -1,5 +1,5 @@
 module match-automaton-test
-imports sunit
+imports libstratego-lib
 
 signature
   constructors

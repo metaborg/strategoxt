@@ -1,5 +1,5 @@
 module substitution-test
-imports sunit substitution
+imports libstratego-lib
 strategies
 
   main =

@@ -2,8 +2,7 @@
  * Test module for string-misc
  */
 module string-misc-test
-imports sunit string-misc
-
+imports libstratego-lib
 strategies
 
   main =

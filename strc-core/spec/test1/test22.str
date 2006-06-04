@@ -1,5 +1,5 @@
 module test22
-imports lib
+imports libstratego-lib
 signature
   constructors
     Foo: String -> Fnord

@@ -1,6 +1,5 @@
 module reals-test
-imports reals sunit
-
+imports libstratego-lib
 strategies 
 
   main = 

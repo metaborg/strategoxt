@@ -1,5 +1,5 @@
 module mkterm
-imports list-cons tuple-cons
+imports libstratego-lib
 signature
   constructors
     F : Term * Term * Term -> Term

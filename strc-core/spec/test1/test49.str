@@ -1,5 +1,5 @@
 module test49
-imports term-io
+imports libstratego-lib
 
 signature
   constructors

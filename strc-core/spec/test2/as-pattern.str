@@ -1,5 +1,5 @@
 module as-pattern
-imports sunit
+imports libstratego-lib
 
 signature
   constructors

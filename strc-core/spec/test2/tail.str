@@ -1,5 +1,5 @@
 module tail
-imports list-cons tuple-cons
+imports libstratego-lib
 rules
 
   RA : [x, y | z] -> [x, y, x | z]

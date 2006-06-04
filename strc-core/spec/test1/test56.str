@@ -1,5 +1,5 @@
 module test56
-imports list
+imports libstratego-lib
 strategies
 
    main =

@@ -1,5 +1,5 @@
 module test28
-imports sunit annotations
+imports libstratego-lib
 
 signature
   sorts Exp Type

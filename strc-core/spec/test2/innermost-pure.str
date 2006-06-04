@@ -1,5 +1,5 @@
 module innermost-pure
-imports sunit
+imports libstratego-lib
 signature
   sorts Nat
   constructors

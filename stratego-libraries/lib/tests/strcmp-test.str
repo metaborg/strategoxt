@@ -1,5 +1,5 @@
 module strcmp-test
-imports lib sunit string
+imports libstratego-lib
 strategies
 
 main = a

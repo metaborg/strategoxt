@@ -1,5 +1,5 @@
 module simple-traversal-test
-imports sunit simple-traversal
+imports libstratego-lib
 signature
   constructors
     F : Term * Term -> Term

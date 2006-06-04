@@ -1,10 +1,6 @@
-module test75
-
 // test for issue STR-260
-
-imports 
-  dynamic-rules 
-
+module test75
+imports  libstratego-lib
 signature
   constructors
     Foo : String -> Foo

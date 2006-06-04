@@ -1,6 +1,5 @@
 module traversal-test
-imports sunit lib
-
+imports libstratego-lib
 signature
   sorts Term
   constructors

@@ -1,5 +1,5 @@
 module list-misc-test
-imports sunit list-misc
+imports libstratego-lib
 
 strategies
 

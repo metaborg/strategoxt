@@ -1,5 +1,5 @@
 module io-test
-imports sunit io
+imports libstratego-lib
 strategies
 
   main = 
@@ -14,7 +14,7 @@ strategies
     ; apply-test(!"read-text-line 1"
       , !(<read-text-line>, <read-text-line>)
       , !stream
-      , !("module io-test", "imports sunit io")
+      , !("module io-test", "imports libstratego-lib")
       )
     ; where(<fclose> stream)
 

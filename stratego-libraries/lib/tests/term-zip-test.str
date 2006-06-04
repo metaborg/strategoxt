@@ -1,6 +1,5 @@
 module term-zip-test
-imports term-zip sunit
-
+imports libstratego-lib
 signature
   constructors
     Node : a * List(RoseTree(a)) -> RoseTree(a)

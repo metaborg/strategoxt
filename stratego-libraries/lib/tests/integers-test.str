@@ -1,5 +1,5 @@
 module integers-test
-imports sunit integers
+imports libstratego-lib
 strategies
 
   main = 

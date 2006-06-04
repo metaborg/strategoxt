@@ -1,5 +1,5 @@
 module test68
-imports spec list-cons
+imports libstratego-lib spec
 strategies
 
   main = !Fred("test")

@@ -1,5 +1,5 @@
 module list-filter-test
-imports sunit list-filter
+imports libstratego-lib
 strategies
 
   main = 

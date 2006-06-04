@@ -1,5 +1,5 @@
 module list-zip-test
-imports list-zip sunit
+imports libstratego-lib
 strategies
 
   main = 

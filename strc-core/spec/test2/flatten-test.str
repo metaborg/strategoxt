@@ -1,5 +1,5 @@
 module flatten-test
-imports lib pack pack-graph sunit
+imports libstratego-lib
 
 signature
   constructors

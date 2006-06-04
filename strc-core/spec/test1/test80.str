@@ -1,6 +1,5 @@
 module test80
-
-imports lib 
+imports libstratego-lib
 
 strategies 
 

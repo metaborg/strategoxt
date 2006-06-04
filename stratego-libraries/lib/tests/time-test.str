@@ -1,5 +1,5 @@
 module time-test
-imports sunit time
+imports libstratego-lib
 strategies
 
   main = profile(!"time for test: ",

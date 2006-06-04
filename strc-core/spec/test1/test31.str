@@ -1,9 +1,9 @@
 module test31
-imports sunit
+imports libstratego-lib
 strategies
 
   main =
-    test-suite(!"test29",
+    test-suite(!"test31",
       test1
     )
 

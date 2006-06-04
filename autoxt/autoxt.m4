@@ -54,7 +54,7 @@ AC_DEFUN([XT_CHECK_LINKING],
 
   AC_MSG_CHECKING([if linker needs extra options for Stratego programs])
   if test "$xt_darwin" = "yes"; then
-    STR_LDFLAGS= "${STR_LDFLAGS} -bind_at_load"
+    STR_LDFLAGS="${STR_LDFLAGS} -bind_at_load"
     AC_MSG_RESULT([yes, using -bind_at_load])
   else
     AC_MSG_RESULT([no])

@@ -1,5 +1,5 @@
 module parenthesize-test
-imports sunit parenthesize
+imports libstratego-lib
 strategies
 
   main = 

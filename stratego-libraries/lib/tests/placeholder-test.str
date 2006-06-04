@@ -1,7 +1,7 @@
 module placeholder-test
-imports sunit placeholder
-  
+imports libstratego-lib
 strategies
+
   main = 
     test-suite(!"Placeholder test suite",
       test-make-1

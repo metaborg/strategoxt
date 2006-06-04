@@ -1,5 +1,5 @@
 module test91
-imports libstrategolib
+imports libstratego-lib
 
 strategies
 

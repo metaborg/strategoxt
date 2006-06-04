@@ -1,5 +1,5 @@
 module test82
-imports collection/list/common list-cons
+imports libstratego-lib
 strategies
 
   main =

@@ -3,7 +3,7 @@
  */
 module test93
 imports
-  libstrategolib
+  libstratego-lib
 
 strategies
 

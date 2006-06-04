@@ -2,7 +2,7 @@
  * Tests for the system/io/file module.
  */
 module file-test
-imports libstrategolib
+imports libstratego-lib
 
 strategies 
 

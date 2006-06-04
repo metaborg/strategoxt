@@ -1,5 +1,5 @@
 module test74
-imports sunit
+imports libstratego-lib
 strategies
 
   main = 

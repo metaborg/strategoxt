@@ -1,5 +1,5 @@
 module posix-process-test
-imports sunit posix-process posix-signal
+imports libstratego-lib
 
 strategies
 
@@ -8,11 +8,15 @@ strategies
       kill-tests
     )
 
+  /**
+   * @todo SIGKILL cannot be used because of problems with overlays over library boundaries.
+   */
   kill-tests =
-    apply-test(!"kill own process", fork-wait-test(kill-myself), !(), !SIGKILL())
+    apply-test(!"kill own process", fork-wait-test(kill-myself), !(), !Signal("KILL",  9, "Kill"))
 
   kill-myself = 
-    <kill> (<get-pid>, SIGKILL())
+    <kill> (<get-pid>, Signal("KILL",  9, "Kill"))
 
   fork-wait-test(child) =
     fork(child, ?(<waitpid>, t); ?WaitStatus(_, <signal-from-number>, _))
+

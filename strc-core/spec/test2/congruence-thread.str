@@ -1,5 +1,5 @@
 module congruence-thread
-imports sunit
+imports libstratego-lib
 
 strategies
 

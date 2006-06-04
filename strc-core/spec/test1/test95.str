@@ -1,5 +1,5 @@
 module test95
-imports libstrategolib
+imports libstratego-lib
 signature
   constructors
           : a * b -> (a, b)

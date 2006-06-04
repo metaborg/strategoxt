@@ -1,6 +1,6 @@
 module test-chain02
 imports
-  libstrategolib
+  libstratego-lib
 
 strategies
 

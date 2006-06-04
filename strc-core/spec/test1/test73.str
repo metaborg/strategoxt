@@ -1,8 +1,5 @@
 module test73
-
-imports 
-  lang/dynamic-rules
-  sunit
+imports libstratego-lib
 strategies
   
     test1 = ( rules( a : _ -> 1 ) /~["a"]\ rules( a : _ -> 0 ) ) ; a 

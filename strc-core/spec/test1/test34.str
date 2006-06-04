@@ -1,5 +1,5 @@
 module test34
-imports option dynamic-rules io
+imports libstratego-lib
 
 strategies
 

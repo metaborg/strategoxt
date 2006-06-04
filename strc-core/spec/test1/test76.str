@@ -1,8 +1,5 @@
 module test76
-
-imports
-  sunit
-
+imports libstratego-lib
 strategies
 
   main =

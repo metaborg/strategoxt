@@ -1,5 +1,5 @@
 module test29
-imports sunit
+imports libstratego-lib
 signature
   sorts Exp Type
   constructors

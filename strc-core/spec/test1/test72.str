@@ -1,8 +1,5 @@
 module test72
-
-imports 
-  sunit
-
+imports libstratego-lib
 signature
   constructors
     Program : Block -> Program

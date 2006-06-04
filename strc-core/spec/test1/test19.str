@@ -1,6 +1,6 @@
 module test19
 imports
-   sunit
+   libstratego-lib
 
 signature
 constructors

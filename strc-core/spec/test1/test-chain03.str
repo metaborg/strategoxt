@@ -1,6 +1,6 @@
 module test-chain03
 imports
-  libstrategolib
+  libstratego-lib
 
 strategies
 

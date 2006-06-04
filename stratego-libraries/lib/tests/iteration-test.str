@@ -6,7 +6,7 @@
  *
  */
 module iteration-test
-imports sunit iteration
+imports libstratego-lib
 
 strategies
 

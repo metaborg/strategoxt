@@ -1,5 +1,5 @@
 module congruence-arguments
-imports list-cons
+imports libstratego-lib
 signature
   constructors
     If : a * b -> b

@@ -1,9 +1,5 @@
 module test77
-imports
-  list-cons
-  tuple-cons
-  dynamic-rules
-
+imports libstratego-lib
 signature
   constructors 
     Foo : Int * Int * Int -> Foo

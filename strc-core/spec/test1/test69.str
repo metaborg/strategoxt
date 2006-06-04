@@ -1,5 +1,5 @@
 module test69
-imports sunit
+imports libstratego-lib
 
 signature
   constructors

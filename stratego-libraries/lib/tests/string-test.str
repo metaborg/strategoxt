@@ -4,8 +4,7 @@
  * @copyright See bottom.
  */
 module string-test
-imports string sunit
-
+imports libstratego-lib
 strategies 
 
   main = 

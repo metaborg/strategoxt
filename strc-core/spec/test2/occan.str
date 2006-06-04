@@ -3,9 +3,8 @@
  * 
  * Authors: Eelco Visser & Jory van Zessen
  */
-
 module occan
-imports libstrategolib
+imports libstratego-lib
 
 signature
   sorts Exp

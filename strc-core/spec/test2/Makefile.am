@@ -37,6 +37,34 @@ include $(wildcard *.dep)
 
 bootinstall:
 
+overloading_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+match_automaton_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+traversal_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+match_arity_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+occan_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+improper_list_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+unification_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+innermost_pure_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+tail_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+arity_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+flatten_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+twice_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+overlay_test_b_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+as_pattern_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+prop_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+thread_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+rename_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+number_syntax_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+dynamic_rules_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+congruence_arguments_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+overloading_constructors_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+congruence_thread_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+overlay_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+mkterm_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+number_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+implicit_var_decl_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+
+
 nodist_arity_test_SOURCES = arity-test.c
 nodist_as_pattern_SOURCES = as-pattern.c
 nodist_assignment_SOURCES = assignment.c

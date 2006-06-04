@@ -1,5 +1,5 @@
 module test40
-imports list-misc string
+imports libstratego-lib
 strategies
 
   main = foldr(id, conc, explode-string)

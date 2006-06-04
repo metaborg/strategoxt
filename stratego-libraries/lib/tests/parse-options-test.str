@@ -1,6 +1,5 @@
 module parse-options-test
-imports
-  sunit parse-options
+imports libstratego-lib
 
 strategies
 

@@ -1,5 +1,5 @@
 module list-basic-test
-imports sunit list-basic
+imports libstratego-lib
 
 strategies
 

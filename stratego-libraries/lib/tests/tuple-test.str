@@ -1,5 +1,5 @@
 module tuple-test
-imports tuple sunit
+imports libstratego-lib
 strategies 
 
   main = 

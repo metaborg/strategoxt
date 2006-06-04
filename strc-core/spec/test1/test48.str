@@ -1,4 +1,4 @@
-module test48.r
+module test48
 strategies
 
   ALL(s) = 

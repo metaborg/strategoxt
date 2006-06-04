@@ -1,5 +1,5 @@
 module number-test
-imports sunit io term reals
+imports libstratego-lib
 rules
 
   Double : 0.6 -> 1.2

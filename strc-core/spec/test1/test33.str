@@ -1,5 +1,5 @@
-module dynrules
-imports list dynamic-rules io
+module test33
+imports libstratego-lib
 signature
   constructors
     Var  : String -> Exp
@@ -11,7 +11,7 @@ signature
 strategies
 
   main = 
-   <inline>
+   <my-inline>
       Let([Fdec("f", ["x"], Call("h", [Var("x")])), Vdec("y", Var("z"))]
 	 ,[Call("f", [Var("y")])])
    => Let([Fdec("f",["x"],Call("h",[Var("x")])),Vdec("y",Var("z"))],
@@ -26,7 +26,7 @@ strategies
         |}
   )
  
-  inline = 
+  my-inline = 
   rec i({| Subst, Inline :
            Declare; all(i)
            <+ Inline; i

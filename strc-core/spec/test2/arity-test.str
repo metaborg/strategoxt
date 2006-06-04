@@ -1,5 +1,5 @@
-module arity-test.r
-imports lib
+module arity-test
+imports libstratego-lib
 signature
   sorts Term
   constructors

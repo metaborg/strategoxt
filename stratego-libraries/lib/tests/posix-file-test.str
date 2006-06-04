@@ -1,5 +1,5 @@
 module posix-file-test
-imports sunit posix-file
+imports libstratego-lib
 
 strategies
 
@@ -44,12 +44,12 @@ strategies
     ; where(<remove-file> tmp-name)
 
   access-tests = 
-      apply-test(!"access -- 1", <access> (<id>, [Existence]), !"/", "/")
-    ; apply-test(!"access -- 2", try(<access> (<id>, [Read])), !"/")
+      apply-test(!"access -- 1", <access> (<id>, [F_OK()]), !"/", "/")
+    ; apply-test(!"access -- 2", try(<access> (<id>, [R_OK()])), !"/")
 
     // this used to result in a segmentation fault
-    ; apply-test(!"access -- 3", try(<access> (<id>, [Read | []{1}])), !"/")
-    ; apply-test(!"access -- 4", try(<access> (<id>, [Read]{1})), !"/")
+    ; apply-test(!"access -- 3", try(<access> (<id>, [R_OK() | []{1}])), !"/")
+    ; apply-test(!"access -- 4", try(<access> (<id>, [R_OK()]{1})), !"/")
 
   aterm-io-tests =
       aterm-io-tests(write-in-baf-to-stream)
@@ -129,7 +129,7 @@ strategies
       )
 
     ; apply-test(!"read a text file with fgetc",
-        read-text-file
+        my-read-text-file
       , !"text-file.tmp"
       , !"This is a test file\nIt can be removed."
       )
@@ -148,7 +148,7 @@ strategies
 
     ; where(<remove-file> "text-file.tmp")
 
-  read-text-file =
+  my-read-text-file =
     ?file
     ; <fopen> (file,"r") => stream
     ; read-text-from-stream
@@ -160,13 +160,6 @@ strategies
     ; rec x(![<fgetc> stream | <x> ()] <+ ![])
     ; where(<fclose> stream)
     ; implode-string
-
-  read-text-file =
-      ?file
-    ; <fopen> (file,"r") => stream
-    ; read-text-from-stream
-    ; where(<fclose> stream)
-
 
   write-text-file =
     ?(file, string)
