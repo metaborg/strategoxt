@@ -6,13 +6,8 @@ AM_INIT_AUTOMAKE
 XT_INTERNAL_USE_XT_PACKAGES
 XT_TERM_DEFINE
 
-AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
-  [((ATerm) ATmakeString("@STR_LDFLAGS@ @LDFLAGS@"))],
-  [Additional arguments to pass to the linker.])
-
-AC_DEFINE([STRC_SYSTEM_CFLAGS()],
-  [((ATerm) ATmakeString("@STR_CFLAGS@ @CFLAGS@"))],
-  [Additional arguments to pass to the C compiler.])
+AC_DEFINE_UNQUOTED([STRC_SYSTEM_LDFLAGS()],[((ATerm) ATmakeString("${STR_LDFLAGS} ${LDLAGS}"))], [Additional arguments to pass to the linker.])
+AC_DEFINE_UNQUOTED([STRC_SYSTEM_CFLAGS()],[((ATerm) ATmakeString("${STR_CFLAGS} ${CFLAGS}"))], [Additional arguments to pass to the C compiler.])
 
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
@@ -20,8 +15,6 @@ AC_SUBST(libexecdir)
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-
-AC_SUBST(CC)
 
 AC_CONFIG_FILES([
   Makefile 
