@@ -1,28 +1,14 @@
-SINCLUDES =					\
-  -I $(prefix)/share/stratego-lib		\
-  -I $(prefix)/share/srts			\
+SINCLUDES = \
+  -I $(prefix)/share/stratego-lib \
+  -I $(prefix)/share/srts \
   -I $(top_srcdir)/../asfix-tools/src/implode
 
-AM_LDFLAGS =					\
-  -L$(prefix)/lib				\
-  -L$(ATERM)/lib				\
-  -g
-
-AM_CFLAGS =					\
-  -I$(prefix)/include				\
-  -I$(ATERM)/include
+AM_LDFLAGS = -L$(prefix)/lib -L$(ATERM)/lib $(STR_LDFLAGS)
+AM_CFLAGS = -I$(prefix)/include -I$(ATERM)/include $(STR_CFLAGS)
 
 STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 LDADD 		= $(STRATEGORUNLIBS)
-
-if XT_DARWIN
-  AM_LDFLAGS += -bind_at_load
-  AM_CFLAGS += -fnested-functions
-else
-  AM_LDFLAGS +=
-  AM_CFLAGS +=
-endif
 
 check_PROGRAMS 	= test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \

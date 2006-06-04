@@ -52,11 +52,19 @@ strategies
     ; <set-config> ("--dr", "new")
   )
 
+  /**
+   * @todo This does not supported quoted options (with spaces)
+   */
   strc-system-ldflags =
     <prim("STRC_SYSTEM_LDFLAGS")> ()
+    ; string-tokenize(| ['\ ', '\n', '\r'])
 
+  /**
+   * @todo This does not supported quoted options (with spaces)
+   */
   strc-system-cflags =
     <prim("STRC_SYSTEM_CFLAGS")> ()
+    ; string-tokenize(| ['\ ', '\n', '\r'])
 
   get-include-dirs =
     <conc> (<get-config> "-I"

@@ -124,11 +124,17 @@ strategies
    */
   call(|opt-fdin, opt-fdout, opt-fderr) =
       ?(prog, args)
-      ; fork-and-wait(
-          <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
-        ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
-        ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
-        ; <execvp> (prog, args)
-        ; <exit> 1
-        )
+      ; !(prog, args, opt-fdin, opt-fdout, opt-fderr)
+      ; fork-and-wait(call-custom-fd-helper)
       ; !()
+
+  /**
+   * Workaround for issue STR-853: avoid the use of a nested function over a fork.
+   */
+  call-custom-fd-helper =
+    ?(prog, args, opt-fdin, opt-fdout, opt-fderr)
+    ; <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
+    ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
+    ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
+    ; <execvp> (prog, args)
+    ; <exit> 1

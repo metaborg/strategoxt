@@ -2,29 +2,14 @@ SINCLUDES = \
   -I $(prefix)/share/stratego-lib \
   -I $(prefix)/share/srts
 
-
-AM_LDFLAGS = \
-  -L$(prefix)/lib \
-  -L$(ATERM)/lib \
-  -g
-
-AM_CFLAGS = \
-  -I$(prefix)/include \
-  -I$(ATERM)/include
+AM_LDFLAGS = -L$(prefix)/lib -L$(ATERM)/lib $(STR_LDFLAGS)
+AM_CFLAGS = -I$(prefix)/include -I$(ATERM)/include $(STR_CFLAGS)
 
 STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 LDADD 		= $(STRATEGORUNLIBS)
 
 occan_LDADD     = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-
-if XT_DARWIN
-  AM_LDFLAGS += -bind_at_load
-  AM_CFLAGS += -fnested-functions
-else
-  AM_LDFLAGS +=
-  AM_CFLAGS +=
-endif
 
 check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  comment-test conditional-innermost congruence-arguments   \
@@ -83,6 +68,3 @@ nodist_traversal_test_SOURCES = traversal-test.c
 nodist_twice_SOURCES = twice.c
 nodist_unification_test_SOURCES = unification-test.c
 nodist_occan_SOURCES = occan.c
-
-
-

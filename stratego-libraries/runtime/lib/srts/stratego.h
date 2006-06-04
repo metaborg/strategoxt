@@ -118,7 +118,4 @@ void SRTS_init_mprotect(void);
 #define match_real(t, i) \
         ((ATgetType(t) == AT_REAL) && (ATgetInt((ATermReal)t) == i))
 
-//#define not_null(x) (x == NULL ? _fail(x) : x)
-
-
 #endif
