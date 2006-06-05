@@ -387,7 +387,7 @@ ATerm SG_TermToToolbus(ATerm t)
 
 FILE *SG_Log = NULL;
 
-FILE *SG_SetLog(FILE* stream)
+void SG_SetLog(FILE* stream)
 {
   SG_Log = stream;
 }
