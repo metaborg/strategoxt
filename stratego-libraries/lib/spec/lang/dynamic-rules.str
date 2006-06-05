@@ -236,6 +236,10 @@ strategies
     dr-get-rule-set(|name)
     ; dr-lookup-rule-pointer(|key)
 
+  dr-all-keys(|name) =
+    dr-get-rule-set(|name)
+    ; dr-all-keys(|[], <new-iset>)
+
   dr-set-rule(|name, key, value) =
     where(
       dr-get-rule-set(|name)
@@ -646,6 +650,30 @@ strategies // looking up
          ; filter(?(_, key)) => keys
          ; <dr-lookup-all-rules(look2 | key, <conc>(keys, removed))> rs
       end
+
+  /**
+   * Fetch all keys defined in a rule set.
+   */
+
+  dr-all-keys(|removed, result) =
+    ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
+    ; <partition(?(hptr, <id>))>removed => (localr, removed')
+    ; <hashtable-keys>tbl
+    ; filter({key: ?key; <not(fetch-elem(?key))>localr; !key}) => keys
+    ; <iset-addlist(|keys)>result
+    ; <dr-all-keys(|removed', result)>rs
+
+  dr-all-keys(|removed, result) =
+    ?[ChangeSet(_, rmset, tbl) | rs]
+    ; <iset-elements>rmset
+    ; <conc>(<id>, removed) => removed'
+    ; <hashtable-keys>tbl
+    ; filter({k, key: ?k@(_, key); <not(fetch-elem(?k))>removed'; !key}) => keys
+    ; <iset-addlist(|keys)>result
+    ; <dr-all-keys(|removed', result)>rs
+
+  dr-all-keys(|removed, result) =
+    ?[]; <iset-elements>result
 
 strategies // setting a rule
 

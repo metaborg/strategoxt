@@ -232,6 +232,7 @@ strategies
   _once(|f)            = <concat-strings> ["once-", f]
   _bagof(|f)           = <concat-strings> ["bagof-", f]
   _bigbagof(|f)        = <concat-strings> ["bigbagof-", f]
+  _allkeys(|f)         = <concat-strings> ["all-keys-", f]
   _innermost-scope(|f) = <concat-strings> ["innermost-scope-", f]
   _break(|f)           = ![<concat-strings> ["break-", f]
                            , <concat-strings> ["break-to-label-", f]]
@@ -345,6 +346,7 @@ rules
         ; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
         ; <create-chain-rule(|x, t3, stdkey)> drd
         ; <create-bigchain-rule(|x, t3, stdkey)> drd
+        ; <create-all-keys-rule(|x, t3, stdkey)> drd
         ; <create-break-rules(|x, t3, stdkey)> drd
         ; <create-break-bp-rules(|x, t3, stdkey)> drd
         ; <create-continue-rules(|x, t3, stdkey)> drd
@@ -518,6 +520,20 @@ strategies
              where dr-lookup-rule-pointer(|~str:f, t3) => (closures, key, tbl)
                  ; <split-fetch(s1; ?res); conc> closures => closures'
                  ; <hashtable-put(|key, closures')> tbl 
+        ]|)
+      end
+
+/**
+ * Getting all the keys defined for a rule
+ */
+
+  create-all-keys-rule(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _allkeys(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        add-def(||[
+          g(a1*|a2*) =
+            dr-all-keys(|~str:f)
         ]|)
       end
 

@@ -23,6 +23,12 @@ strategies
     ; scope-add-tests
     ; where(separation-message(|"Dynamic Rules Library -- Scoping -- Looking Up Rules Tests"))
     ; scope-lookup-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Scoping -- Getting All Keys Tests"))
+    ; where(description-message(|"  if implementation of indexed sets changes, these test"))
+    ; where(description-message(|"  might fail; just replace the lists that are expected"))
+    ; where(description-message(|"  with similar ones, but with the elements scrambled so"))
+    ; where(description-message(|"  that they match the new result"))
+    ; scope-keys-tests
     )
 
 strategies
@@ -925,4 +931,71 @@ strategies
          , <lookup-rule-in-scope(|"c", "x")>
          ]
       | [[3], [4], [5]]
+    )
+
+strategies
+
+  scope-keys-tests = id
+
+  ; apply-scope-test(!"Check getting all keys #1",
+      init-rule-set
+      ; rule-scope(|"x", 0)
+      ; dr-all-keys(|"Test")
+      | ["x"]
+    )
+
+  ; apply-scope-test(!"Check getting all keys #2",
+      init-rule-set
+      ; rule-scope(|"x", 0)
+      ; rule-scope(|"y", 0)
+      ; dr-all-keys(|"Test")
+      | ["y", "x"]
+    )
+
+  ; apply-scope-test(!"Check getting all keys #3",
+      init-rule-set      
+      ; rule-scope(|"x", 0)
+      ; rule-scope(|"y", 0)
+      ; change-set(|"x", 1)
+      ; dr-all-keys(|"Test")
+      | ["x", "y"]
+    )
+
+  ; apply-scope-test(!"Check getting all keys #4",
+      init-rule-set
+      ; rule-scope(|"a", "z", 0)
+      ; rule-scope(|"y", 0)
+      ; change-set(|"x", 1)
+      ; change-set(|"y", 0)
+      ; change-set-vis(|"a", "x", 0)
+      ; dr-all-keys(|"Test")
+      | ["x", "y", "z"]
+    )
+
+  ; apply-scope-test(!"Check getting all keys #5",
+      init-rule-set
+      ; rule-scope(|"a", "z", 0)
+      ; rule-scope(|"x", 0)
+      ; rule-scope(|"x", 1)
+      ; rule-scope(|"y", 1)
+      ; change-set(|"x", 0)
+      ; change-set(|"y", 0)
+      ; change-set-vis(|"a", "x", 1)
+      ; dr-all-keys(|"Test")
+      | ["x", "y", "z"]
+    )
+
+  ; apply-scope-test(!"Check getting all keys #6",
+      init-rule-set
+      ; rule-scope(|"x", 0)
+      ; set(|"y", 0)
+      ; set(|"z", 0)
+      ; rule-scope(|"x", 1)
+      ; set(|"y", 1)
+      ; set(|"z", 1)
+      ; change-set(|"a", 0)
+      ; set(|"b", 0)
+      ; set(|"c", 0)
+      ; dr-all-keys(|"Test")
+      | ["a", "b", "c", "x", "y", "z"]
     )
