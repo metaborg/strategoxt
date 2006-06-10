@@ -1,0 +1,33 @@
+module parse-sdf
+imports
+  libstratego-xtc sdf-xtc-tools
+
+strategies
+  
+  io-parse-sdf =
+    xtc-io-wrap(symbol-option,
+      if get-start-symbol => "Module" then
+        xtc-parse-sdf2-module
+      else
+        if get-start-symbol => "Definition" then
+          xtc-parse-sdf2-definition
+        else
+          xtc-sglri(|"Sdf2MoreStartSymbols.tbl", <get-start-symbol>)
+        end
+      end
+    ; xtc-transform(!"sdf-desugar", pass-verbose)
+    )
+
+strategies
+
+  symbol-option =
+    ArgOption("-s" + "--start-symbol"
+    , set-start-symbol
+    , !"-s|--start-symbol s     Start parsing with symbol s [Module]"
+    )
+
+  set-start-symbol =
+    <set-config> ("start-symbol", <id>)
+
+  get-start-symbol = 
+    <get-config> "start-symbol" <+ !"Module"

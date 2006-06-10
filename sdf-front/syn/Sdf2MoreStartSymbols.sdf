@@ -1,0 +1,5 @@
+module Sdf2MoreStartSymbols
+imports languages/sdf2/syntax/Sdf2
+hiddens
+  context-free start-symbols
+    SDF Module Symbol Production Grammar CharClass

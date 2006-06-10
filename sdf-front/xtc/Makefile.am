@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS   = parse-sdf-module parse-sdf-definition pp-sdf
+bin_PROGRAMS   = parse-sdf-module parse-sdf-definition pp-sdf parse-sdf
 pkgdata_DATA   = sdf-xtc-tools.str sdf-options.str
 #pkgdata_DATA   = sdf-xtc-tools.rtree sdf-options.rtree
 
