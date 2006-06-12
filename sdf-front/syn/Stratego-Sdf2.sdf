@@ -39,6 +39,8 @@ exports
     "A"  "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
     "A*" "|[" Symbols     "]|" -> StrategoTerm {cons("ToTerm")}
 
+    "cc" "|[" CharClass "]|" -> StrategoTerm {cons("ToTerm")}
+
          "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
     "ro" "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
 
@@ -72,6 +74,9 @@ exports
   variables %% section 7.4.1
 
     "S" [0-9\']* -> Sort {prefer}
+
+  variables %% section 7.4.2
+    "cc" [0-9\']* -> CharClass {prefer}
 
   variables %% section
 
