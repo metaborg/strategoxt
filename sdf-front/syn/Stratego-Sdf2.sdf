@@ -35,8 +35,9 @@ exports
          "|[" Productions "]|" -> StrategoTerm {cons("ToTerm")}
     "p*" "|[" Productions "]|" -> StrategoTerm {cons("ToTerm")}
 
-        "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
-    "A" "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
+         "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
+    "A"  "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
+    "A*" "|[" Symbols     "]|" -> StrategoTerm {cons("ToTerm")}
 
          "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
     "ro" "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
