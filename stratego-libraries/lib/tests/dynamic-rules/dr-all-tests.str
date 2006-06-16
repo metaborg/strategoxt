@@ -1,6 +1,7 @@
 module dr-all-tests
 imports
-  dr-propconst-tests
+  dr-propconst-tests-1
+  dr-propconst-tests-2
   dr-dce-tests
   dr-scope-tests
 
@@ -8,6 +9,9 @@ strategies
 
   main =
     id
+/*
     ; scope-tests
-    ; propconst-tests
+    ; propconst-tests-1
+    ; propconst-tests-2
     ; dead-code-elimination-tests
+*/

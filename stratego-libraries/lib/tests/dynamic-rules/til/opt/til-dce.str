@@ -41,7 +41,7 @@ strategies
     <+ dce-if-then; try(ElimIf)
     <+ dce-if-then-else; try(ElimIf)
     <+ dce-block
-//    <+ dce-break
+    <+ dce-break
     <+ dce-while
     <+ dce-for
 
@@ -63,11 +63,11 @@ strategies
            VarNeeded+x :- Var(x)
            VarUsed+x   :- Var(x)
          )
-//       ; dr-transaction(
-           ; [id | dce-stats]
-           ; try(ElimDecl)
-//         | ["VarNeeded", "VarUsed"])
-       |}
+         ; dr-transaction(
+             [id | dce-stats]
+             ; try(ElimDecl)
+           | ["VarNeeded", "VarUsed"])
+      |}
 
   dce-stats-other =
     [not(?Declaration(_) <+ ?DeclarationTyped(_, _)) | dce-stats]
@@ -101,12 +101,10 @@ strategies
     ; (IfElse(id, dce-stats, id) \VarNeeded,VarUsed/ IfElse(id, id, dce-stats))
     ; IfElse(declare-var-needed, id, id)
 
-/*
   dce-break =
     ?Break(None)
     ; break-bp-VarNeeded
     ; break-bp-VarUsed
-*/
 
   dce-while =
     ?While(_, _)

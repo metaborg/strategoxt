@@ -1,0 +1,365 @@
+module dr-propconst-tests-2
+imports
+  dr-test-utils
+
+/**
+ * This test suite uses constant propagation for TIL programs
+ * as a real-life test of the dynamic rules library.
+ */
+
+strategies
+
+  main =
+    propconst-tests-2
+
+  propconst-tests-2 =
+    test-suite(!"Dynamic Rules Library -- Constant Propagation (part 2)",
+      where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Combined Break & Continue Tests"))
+    ; pc-break-and-continue-tests
+    ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Exception Tests"))
+    ; pc-exception-tests
+    )
+
+strategies
+
+  pc-break-and-continue-tests = id
+
+  ; apply-propconst-test(!"Check break/continue scenario #1" |
+      "var x; x := 1;
+       while c() do
+         f(x);
+         if c() then x := 1; break; else x := 1; continue; end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         f(1);
+         if c() then x := 1; break; else x := 1; continue; end
+         x := 2;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #2" |
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(1);
+           if c() then x := 1; continue l1; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #3" |
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l2; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l2; else x := 1; break l1; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #4" |
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; break l2; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         l2: while c() do
+           f(x);
+           if c() then x := 1; continue l1; else x := 1; break l2; end
+           x := 2;
+         end
+         x := 2;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #5" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(x); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 1; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x);
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(1); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(1); if c() then x := 1; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(1);
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #6" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(x); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 1; break l2; end
+             if c() then x := 2; continue l3; end
+             if c() then x := 2; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x); x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(1); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 1; break l2; end
+             if c() then x := 2; continue l3; end
+             if c() then x := 2; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 1; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x); x := 1;
+         end
+         f(1);
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #7" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(x); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(x); if c() then x := 2; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 2; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(x);
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(x); if c() then x := 1; break; else x := 1; end
+         l2: while c() do
+           f(1); if c() then x := 1; continue l1; end
+           if c() then x := 1; break; end
+           if c() then x := 1; continue; end
+           l3: while c() do
+             f(1); if c() then x := 2; break l2; end
+             if c() then x := 1; continue l3; end
+             if c() then x := 1; break l1; end
+             if c() then x := 1; continue l2; end
+             if c() then x := 2; continue l1; end
+             if c() then x := 1; break l3; end
+           end
+           f(1);
+         end
+         f(x); x := 1;
+       end
+       f(x);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #8" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         l2: while c() do
+           f(1);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(1);
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #9" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 2; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 2; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 1;
+         end
+         f(x); x := 1;
+       end
+       f(1);"
+    )
+
+  ; apply-propconst-test(!"Check break/continue scenario #10" |
+      "var x; x := 1;
+       l1: while c() do
+         f(x);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       l1: while c() do
+         f(1);
+         l2: while c() do
+           f(x);
+           if c() then
+             if c() then x := 1; break; else x := 1; continue l1; end
+           else
+             if c() then
+               if c() then x := 1; continue; else x := 1; break l1; end
+             else
+               if c() then x := 1; break l1; end
+             end
+           end
+           x := 2;
+         end
+         f(x); x := 1;
+       end
+       f(1);"
+    )
+
+  pc-exception-tests = id

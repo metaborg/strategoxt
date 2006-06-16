@@ -1393,24 +1393,15 @@ strategies // labeling statements, break, continue
       ; rules(DR_BREAK.label : IgnoreB(csid) -> label)
     )
 
-  dr-break-bp(|rulename) =
-    id
-
 /**
-  * This strategy doesn't work yet.
+  * This implementation of the strategy doesn't work.
+  * (left here for reference purposes only)
   *
   * Reason: replacing a number of change sets & rule scopes with
   *         their clones introduces inconsistency issues during merging
   *         that are way to difficult to solve.
   *
-  * @todo: solve this. How? Probably have to build a single change set
-  *        that includes all the changes in the rule scopes, but cancels
-  *        those of the change sets (this refers to the part of the rule set
-  *        that is being cloned in the current implementation) and replace
-  *        the top-most change set with this built one.
-  *
-  
-  // dr-break version for backward propagation transformations
+
   dr-break-bp(|rulename) =
     where(
       <DR_BREAK>Label(rulename) => label
@@ -1432,7 +1423,50 @@ strategies // labeling statements, break, continue
       ; <conc>(<id>, outRs)
       ; dr-set-rule-set(|rulename)
     )
+
 */
+
+  // dr-break version for backward propagation transformations
+  dr-break-bp(|rulename) =
+    where(
+      <DR_BREAK>Label(rulename) => label
+      ; dr-get-rule-set(|rulename)
+      ; back-split-at(|<DR_BREAK>SplitPos(rulename, label))
+      
+      // here we make the assumption that we always have a
+      // change set as the first element in the rule set,
+      // which comes from the assumption that the user always
+      // uses dr-transaction with rule scopes in backward
+      // propagation transformations
+      ; ?([ChangeSet(_, rmset, tbl) | inRs], outRs)
+      ; <iset-clear>rmset
+      ; <hashtable-clear>tbl
+      ; <reverse>inRs
+      ; dr-build-bp-change-set(|rmset, tbl, outRs)
+    )
+
+  dr-build-bp-change-set(|rmset, tbl, ruleset) =
+    [?rs@RuleScope(_, _) | dr-build-bp-change-set(|rmset, tbl, [rs | ruleset])]
+    <+ []
+
+  dr-build-bp-change-set(|rmset, tbl, ruleset) =
+    ?[ChangeSet(_, rmset1, tbl1) | rest]
+    ; <iset-elements>rmset1
+    ; map({scpid, key, value :
+        ?(scpid, key)
+        ; try(
+            <dr-lookup-rule-in-scope(|key, scpid)>ruleset => value
+            ; <hashtable-put(|(scpid, key), value)>tbl
+          )
+      })
+    ; <hashtable-keys>tbl1
+    ; map({scpid, key, value :
+        ?(scpid, key)
+        ; (<dr-lookup-rule-in-scope(|key, scpid)>ruleset => value
+           < <hashtable-put(|(scpid, key), value)>tbl
+           + <iset-add(|(scpid, key))>rmset)
+      })
+    ; <dr-build-bp-change-set(|rmset, tbl, ruleset)>rest
 
   dr-continue(|rulename) =
     dr-continue(|rulename, <DR_BREAK>Label(rulename))

@@ -8,7 +8,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 # pkgtestsdatadir   = $(pkgdatadir)/tests/dynamic-rules
 # pkgtestsdata_DATA = $(wildcard *.str)
 
-check_PROGRAMS  = dr-all-tests
+check_PROGRAMS  = dr-scope-tests dr-propconst-tests-1 dr-propconst-tests-2 dr-dce-tests
 TESTS          	= $(check_PROGRAMS)
 EXTRA_DIST     	= $(wildcard *.str)
 CLEANFILES     	= $(wildcard *.dep)
@@ -20,3 +20,19 @@ STRCFLAGS       = --format-check -1
 nodist_dr_all_tests_SOURCES = dr-all-tests.c 
 dr_all_tests_CPPFLAGS       = $(STRATEGO_UNINSTALLED_CFLAGS)
 dr_all_tests_LDADD          = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LDADD)
+
+nodist_dr_scope_tests_SOURCES = dr-scope-tests.c 
+dr_scope_tests_CPPFLAGS       = $(STRATEGO_UNINSTALLED_CFLAGS)
+dr_scope_tests_LDADD          = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LDADD)
+
+nodist_dr_propconst_tests_1_SOURCES = dr-propconst-tests-1.c 
+dr_propconst_tests_1_CPPFLAGS       = $(STRATEGO_UNINSTALLED_CFLAGS)
+dr_propconst_tests_1_LDADD          = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LDADD)
+
+nodist_dr_propconst_tests_2_SOURCES = dr-propconst-tests-2.c 
+dr_propconst_tests_2_CPPFLAGS       = $(STRATEGO_UNINSTALLED_CFLAGS)
+dr_propconst_tests_2_LDADD          = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LDADD)
+
+nodist_dr_dce_tests_SOURCES = dr-dce-tests.c 
+dr_dce_tests_CPPFLAGS       = $(STRATEGO_UNINSTALLED_CFLAGS)
+dr_dce_tests_LDADD          = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LDADD)

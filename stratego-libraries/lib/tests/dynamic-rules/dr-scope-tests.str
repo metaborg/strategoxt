@@ -12,6 +12,9 @@ imports
 
 strategies
 
+  main =
+    scope-tests
+
   scope-tests =
     test-suite(!"Dynamic Rules Library -- Scoping",
       where(separation-message(|"Dynamic Rules Library -- Scoping -- Setting Rules Tests"))

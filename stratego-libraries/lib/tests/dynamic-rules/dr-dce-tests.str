@@ -9,6 +9,9 @@ imports
 
 strategies
 
+  main =
+    dead-code-elimination-tests
+
   dead-code-elimination-tests =
     test-suite(!"Dynamic Rules Library -- Dead Code Elimination",
       where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Union Tests"))
@@ -21,14 +24,14 @@ strategies
 //    ; where(description-message(|"    - \"undef\" means undefinition of rule"))
 //    ; where(description-message(|"    - \"none\" means no change to rule"))
 //    ; where(description-message(|"    - \"empty\" means no rule is defined at that point"))
-//    ; dce-union-tests
+    ; dce-union-tests
     ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Fix and Union Tests"))
 //    ; where(description-message(|"  notation in test names: rule before applying intersection"))
 //    ; where(description-message(|"                          ; [rule in iteration]*"))
 //    ; where(description-message(|"  (x,val) decodes as before"))
-//    ; dce-fix-and-union-tests
+    ; dce-fix-and-union-tests
     ; where(separation-message(|"Dynamic Rules Library -- Dead Code Elimination -- Break Tests"))
-//    ; dce-break-tests
+    ; dce-break-tests
     )
 
 strategies
@@ -156,7 +159,7 @@ strategies
       "var x; x := 0; while c() do x := 0; dummy(); end",
       "while c() do dummy(); end"
     )
-/*
+
   dce-break-tests = id
 
   ; apply-dce-test(!"Check break scenario #1" |
@@ -296,12 +299,51 @@ strategies
        while c() do
          var x;
          if c() then
-           dummy(); x := 1;
+           dummy();
          else
            break;
          end
+         x := 2;
          f(x);
        end
        f(x);"
     )
-*/
+
+  ; apply-dce-test(!"Check break scenario #7" |
+      "var x; var y; var z; y := 1;
+       while c() do
+         var x;
+         x := 1; y := 1; z := 1;
+         if c() then
+           var x;
+           if c() then x := 1; y := 1; break;
+           else        x := 1; z := 1;
+           end
+         else
+           var y;
+           if c() then y := 1; z := 1;
+           else        y := 1; z := 1; break;
+           end
+         end
+         f(x, y, z);
+       end
+       x := 1; z := 1;
+       f(x, y, z);",
+      "var x; var y; var z; y := 1;
+       while c() do
+         var x;
+         x := 1; y := 1;
+         if c() then
+           if c() then y := 1; break;
+           else        z := 1;
+           end
+         else
+           if c() then z := 1;
+           else        break;
+           end
+         end
+         f(x, y, z);
+       end
+       x := 1; z := 1;
+       f(x, y, z);"
+    )
