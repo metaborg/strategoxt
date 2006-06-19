@@ -10,7 +10,7 @@ SDFINCLUDES    = \
 	-I $(top_srcdir)/../stratego-front/syn
 
 sdfdata_DATA   = $(DEFS) $(TBLS)
-EXTRA_DIST     = $(DEFS) Sdf2.sdf Stratego-Sdf2.sdf
+EXTRA_DIST     = $(DEFS) Sdf2.sdf Stratego-Sdf2.sdf Sdf2MoreStartSymbols.sdf
 
 CLEANFILES     = $(TBLS)
 BOOTCLEANFILES = $(DEFS) $(wildcard *.dep)
