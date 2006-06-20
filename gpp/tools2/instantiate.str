@@ -37,12 +37,12 @@ rules
       !args => [_, _, a | _]
 
   SlowInstantiate(|args) :
-    Arg(n) -> <tmp-index(|n)> args
+    Arg(n) -> <index(|n)> args
 
   SlowInstantiate(|args) :
-    Arg2(n, m) -> <tmp-index(|m)> list
+    Arg2(n, m) -> <index(|m)> list
     where
-      <tmp-index(|n)> args => list
+      <index(|n)> args => list
 
 strategies
 
@@ -64,24 +64,3 @@ strategies
          ; [<instantiate(|[sym, sep])> pp-entry | <rec> xs ]
       }
     )
-
-strategies
-
-  /**
-   * @todo Remove: bootstrap problem
-   */    
-  tmp-index(|i) =
-    tmp-at-index(?t | <dec> i); !t
-
-  /**
-   * @todo Remove: bootstrap problem
-   */
-  tmp-at-index(s | i) =
-    let next(|j) =
-          if !j => i then
-            [s | id]
-          else
-            [id | next(|<inc> j)]
-          end
-     in next(|0)
-    end
