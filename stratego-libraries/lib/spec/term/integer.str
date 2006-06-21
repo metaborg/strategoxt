@@ -7,7 +7,10 @@ imports
 
 strategies
 
-  is-int = ?i; prim("SSL_is_int", i)
+  is-int =
+    ?i; prim("SSL_is_int", i)
+
+strategies
 
   /**
    * Adds two numbers (integer or real)
@@ -18,11 +21,19 @@ strategies
    * Adds two integers
    */
   addi = ?(x,y); prim("SSL_addi",x,y)
+  
+  /**
+   * Adds two integers
+   */  
+  int-add(|y) =
+    ?x; prim("SSL_addi", x, y)
 
   /**
    * Adds two reals
    */
   addr = ?(x,y); prim("SSL_addr",x,y)
+
+strategies
 
   /**
    * Subtracts two numbers (integer or real)
@@ -33,11 +44,19 @@ strategies
    * Subtracts two integers
    */
   subti = ?(x,y); prim("SSL_subti",x,y)
+  
+  /**
+   * Subtracts two integers
+   */
+  int-subt(|y) =
+    ?x; prim("SSL_subti", x, y)
 
   /**
    * Subtracts two reals
    */
   subtr = ?(x,y); prim("SSL_subtr",x,y)
+
+strategies
 
   /**
    * Multiplies two numbers (integer or real)
@@ -54,6 +73,8 @@ strategies
    */
   mulr  = ?(x,y); prim("SSL_mulr",x,y)
 
+strategies
+
   /**
    * Divides two numbers (integer or real)
    */
@@ -69,10 +90,14 @@ strategies
    */
   divr  = ?(x,y); prim("SSL_divr",x,y)
 
+strategies
+
   /**
    * Returns the modulo (remainder after division) of two numbers
    */
   mod = ?(x,y); prim("SSL_mod",x,y)
+
+strategies
 
   gt	= ?(x,y); test(prim("SSL_gti",x,y) <+ prim("SSL_gtr",x,y))
   gti	= ?(x,y); test(prim("SSL_gti",x,y))
@@ -81,6 +106,26 @@ strategies
   geq = ?(x,x) <+ gt
   lt  = not(geq)
   leq = not(gt)
+  
+strategies
+
+  /**
+   * @type Int -> Int
+   */
+  int-leq(|y) =
+    not(int-gt(|y))
+
+  /**
+   * @type Int -> Int
+   */
+  int-gt(|y) =
+    ?x; where(prim("SSL_gti",x,y))
+
+  /**
+   * @type Int -> Int
+   */
+  int-lt(|y) =
+    ?x; where(prim("SSL_lti", x, y))
 
 strategies
 
@@ -158,13 +203,31 @@ strategies
    * @type Int -> Int
    */
   inc = <add>  (<id>, 1)
-
+  
+  /**
+   * Increments an integer
+   *
+   * @type Int -> Int
+   */  
+  int-inc =
+    int-add(|1)
+    
   /**
    * Decrements a number.
    *
    * @type Int -> Int
    */
   dec = <subt> (<id>, 1)
+  
+  /**
+   * Decrements an integer.
+   *
+   * @type Int -> Int
+   */  
+  int-dec =
+    int-subt(|1)
+
+strategies
 
   log2 = 
     !(<id>, 0);

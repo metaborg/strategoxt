@@ -76,6 +76,15 @@ ATerm SSL_mod(ATerm x, ATerm y)
   return((ATerm) ATmakeInt(_get_int(x) % _get_int(y)));
 }
 
+ATerm SSL_lti(ATerm x, ATerm y)
+{ 
+  assert_is_int(x); 
+  assert_is_int(y);
+  if(_get_int(x) < _get_int(y))
+    return((ATerm) ATempty);
+  return NULL;
+}
+
 ATerm SSL_gti(ATerm x, ATerm y)
 { 
   assert_is_int(x); 

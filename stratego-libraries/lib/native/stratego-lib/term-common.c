@@ -9,8 +9,6 @@ ATerm SSL_mkterm(ATerm c, ATerm ts0)
   AFun fun;
   ATbool quoted;
 
-  //ATfprintf(stderr, "SSL_mkterm(%t,%t)\n", c, ts0);
-
   /*
   if(ATisThisString(c, "Nil") && ATgetLength(ts0) == 0)
     t = (ATerm) ATempty;
@@ -41,7 +39,6 @@ ATerm SSL_mkterm(ATerm c, ATerm ts0)
 	if(ATgetType(ts0) != AT_LIST)
 	  _fail(ts0);
 	
-	//ts = (ATermList) consnil_to_list_shallow(ts0);
 	ts = (ATermList) ts0;
 	
 	t = ((ATerm) ATmakeApplList(ATmakeSymbol(f, ATgetLength(ts), quoted), ts));
@@ -52,13 +49,12 @@ ATerm SSL_mkterm(ATerm c, ATerm ts0)
   default:
     _fail(c);
   }
-  //ATfprintf(stderr, "SSL_mkterm : %t\n", t);
+
   return t;
 }
 
 ATerm SSL_explode_term(ATerm t)
 {
-  //ATfprintf(stderr, "SSL_explode_term(%t)\n", t);
   switch(ATgetType(t)) {
   case AT_APPL :
     {
@@ -69,7 +65,6 @@ ATerm SSL_explode_term(ATerm t)
         t1 = ATmakeStringQ(ATgetName(sym));
       else
         t1 = ATmakeString(ATgetName(sym));
-      // ATfprintf(stderr, "exploded _term(%t)\n", t1);
   
       t = App2("", t1, (ATerm) ATgetArguments((ATermAppl)t)
 	       /* list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)) */
@@ -102,7 +97,7 @@ ATerm SSL_explode_term(ATerm t)
   default:
     _fail(t);
   }
-  //ATfprintf(stderr, "SSL_explode_term: %t\n", t);
+
   return(t);
 }
 
@@ -163,12 +158,14 @@ ATerm SSL_get_arguments(ATerm t)
   return(t);
 }
 
-ATerm SSL_address_lt(ATerm x, ATerm y) {
-  /* ATfprintf(stderr, "<address-lt> (%t,%t) (%d,%d): ", x, y, x, y); */
-
-  if((int)x < (int)y) {
+ATerm SSL_address_lt(ATerm x, ATerm y)
+{
+  if(x < y)
+  {
     return((ATerm) ATempty);
-  } else {
+  }
+  else
+  {
     _fail((ATerm) ATempty);
   }
 
@@ -177,7 +174,6 @@ ATerm SSL_address_lt(ATerm x, ATerm y) {
 
 ATerm SSL_address(ATerm t)
 {
-  /* ATfprintf(stderr, "<address> %t = %d\n", x, x); */
   return((ATerm)ATmakeInt((int)t));
 }
 

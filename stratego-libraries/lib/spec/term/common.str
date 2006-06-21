@@ -63,7 +63,11 @@ strategies
   * Note that this relation is valid in one session (but what happens after
   * rehashing), but not necessarily between two sessions.
   */
-  address-lt   = ?(t1,t2); prim("SSL_address_lt",t1,t2)
+  address-lt =
+    ?(t1,t2); prim("SSL_address_lt",t1,t2)
+    
+  address-lt(|t2) =
+    ?t1; prim("SSL_address_lt",t1,t2)
 
  /**
   * Give the address of a term. 
@@ -71,7 +75,8 @@ strategies
   * <address> t replaces t with its address (an integer).
   * This can be used to obtain a unique symbolic reference to a term.
   */
-  address      = ?t; prim("SSL_address",t)
+  address =
+    ?t; prim("SSL_address",t)
 
  /**
   * Give checksum of a term. Similar to atsum from aterm package.

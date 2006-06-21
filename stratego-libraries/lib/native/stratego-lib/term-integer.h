@@ -8,6 +8,7 @@ ATerm SSL_mulr(ATerm, ATerm) ;
 ATerm SSL_divi(ATerm, ATerm) ;
 ATerm SSL_divr(ATerm, ATerm) ;
 ATerm SSL_mod(ATerm, ATerm) ;
+ATerm SSL_lti(ATerm, ATerm) ;
 ATerm SSL_gti(ATerm, ATerm) ;
 ATerm SSL_gtr(ATerm, ATerm) ;
 ATerm SSL_int(ATerm) ;
