@@ -27,8 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <unistd.h>
 
 #include "stratego-lib-common.h"
+#include "lang-dynamic-rules.h"
 
-#include "term-integer.h"  
+#include "term-integer.h"
 #include "term-real.h"
 #include "term-string.h"        
 #include "term-common.h"

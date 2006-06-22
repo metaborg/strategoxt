@@ -37,15 +37,24 @@ signature
 strategies
 
   /**
+   * Retrieve the primitive dynamic rules hashtable.
+   */
+  dr-rule-sets-hashtable =
+    prim("SSL_dynamic_rules_hashtable")
+
+  /**
    * @type  _ -> List(RuleScope)
    */
   dr-get-rule-set(|name) =
-    <table-get> ("_rules", name)
+    prim("SSL_hashtable_get", <dr-rule-sets-hashtable>, name)
     <+ dr-new-rule-set
        ; dr-set-rule-set(|name)
 
   dr-set-rule-set(|name) =
-    where(<table-put> ("_rules", name, <id>))
+    where(
+      ?ruleset
+      ; prim("SSL_hashtable_put", <dr-rule-sets-hashtable>, name, ruleset)
+    )
 
   dr-switch-rule-set(|name) =
     where(dr-get-rule-set(|name) => rs)
