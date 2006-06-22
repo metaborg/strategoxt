@@ -52,9 +52,15 @@ exports
 
   variables %% section 7.1 (unfortunately no Unicode support in SDF ;) )
 
-    [ABC][0-9\']*      -> Symbol
-    [ABC][0-9\']* "*"  -> Symbol*
-    [ABC][0-9\']* "+"  -> Symbol+
+    SymbolMetaVar      -> Symbol
+    SymbolMetaVar "*"  -> Symbol*
+    SymbolMetaVar "+"  -> Symbol+
+
+  lexical syntax
+    [ABC][0-9\']* -> SymbolMetaVar
+    
+  lexical restrictions
+    SymbolMetaVar -/- [A-Za-z0-9]
 
   variables %% section 7.2
 
