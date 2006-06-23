@@ -231,6 +231,7 @@ strategies
   _aux(|f)             = <concat-strings> ["aux-", f]
   _once(|f)            = <concat-strings> ["once-", f]
   _bagof(|f)           = <concat-strings> ["bagof-", f]
+  _reversebagof(|f)    = <concat-strings> ["reverse-bagof-", f]  
   _bigbagof(|f)        = <concat-strings> ["bigbagof-", f]
   _allkeys(|f)         = <concat-strings> ["all-keys-", f]
   _innermost-scope(|f) = <concat-strings> ["innermost-scope-", f]
@@ -483,11 +484,18 @@ strategies
    */
   create-bagof-rule(|x, s1, t3,stdkey) =
     ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
-    ; _bagof(|f) => g
-    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+    ; _bagof(|f) => g1
+    ; _reversebagof(|f) => g2
+    ; <newname> "tail" => x2
+    ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
         add-def(||[ 
-           g(a1*|a2*) : 
+           g1(a1*|a2*) : 
              x@t1 -> <filter(s1)> closures
+             where (dr-lookup-rule(|~str:f, t3) <+ ![]) => closures
+        ]|)
+      ; add-def(||[
+           g2(a1*, x2 |a2*) :
+             x@t1 -> <reverse-filter(s1, x2)> closures
              where (dr-lookup-rule(|~str:f, t3) <+ ![]) => closures
         ]|)
       end

@@ -17,7 +17,13 @@ strategies
    */
   filter(s) = 
     [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
-    
+
+
+  filter(s, tail) = 
+    ?[]; tail
+    <+ [s | filter(s, tail)]
+    <+ ?[_ | <filter(s, tail)> ]
+
 strategies
 
   /**
@@ -49,6 +55,12 @@ strategies
    */
   reverse-filter(s) = 
     [] + [id | reverse-filter(s)]; ([s | id] <+ ?[_  | <id>])
+    
+  reverse-filter(s, tail) = 
+    ?[]; tail
+    + ?[x | xs]
+      ; <reverse-filter(s, tail)> xs
+      ; try(![<s> x | <id>])
 
   /** @internal */
   filter-gen(pred, cont : (term -> term) * term -> term) =
