@@ -30,7 +30,7 @@ rules
 strategies
 
   is-injection = 
-    ?prod(_, sort("<START>"), no-attrs())
+    ?prod(_, sort("<START>"), _)
 
   /**
    * @todo Improve the bracket detection.
@@ -39,17 +39,19 @@ strategies
     prod(id, id, oncetd("bracket" + bracket))
 
   is-injection = 
-    ?prod([cf(iter(x))],cf(iter-star(x)),no-attrs())
+    ?prod([cf(iter(x))],cf(iter-star(x)), attrs)
+    ; where(<not(oncetd(cons(id)))> attrs)
 
   is-injection = 
-    ?prod([cf(iter-sep(x,l))],cf(iter-star-sep(x,l)),no-attrs())
+    ?prod([cf(iter-sep(x,l))],cf(iter-star-sep(x,l)), attrs)
+    ; where(<not(oncetd(cons(id)))> attrs)    
 
   is-injection = 
     prod([not(lit(id))]
 	 ,rec x(asfix-is-sort + cf(x) + lex(x) 
 		+ iter(x) + iter-star(x) 
 		+ iter-sep(x,lit(id)) + iter-star-sep(x,lit(id)))
-	,not(oncetd(cons(id))))
+	, not(oncetd(cons(id))))
 
   is-injection =
     prod(
