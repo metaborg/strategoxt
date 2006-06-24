@@ -51,7 +51,6 @@ exports
     "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
 
   variables %% section 7.1 (unfortunately no Unicode support in SDF ;) )
-
     SymbolMetaVar      -> Symbol
     SymbolMetaVar "*"  -> Symbol*
     SymbolMetaVar "+"  -> Symbol+
@@ -63,11 +62,9 @@ exports
     SymbolMetaVar -/- [A-Za-z0-9]
 
   variables %% section 7.2
-
     "G" [0-9\']* -> Grammar
 
   variables %% section 7.3.1
-
     "attr" [0-9\']*     -> Attribute
     "attr" [0-9\']* "*" -> {Attribute ","}*
     "attr" [0-9\']* "+" -> {Attribute ","}+
@@ -78,18 +75,15 @@ exports
     "p" [0-9\']* "+" -> Production+
 
   variables %% section 7.4.1
-
     "S" [0-9\']* -> Sort {prefer}
 
   variables %% section 7.4.2
     "cc" [0-9\']* -> CharClass {prefer}
 
   variables %% section
-
     "L" -> Literal
 
   variables %% section 8.1.1
-
     "g" [0-9\']*      -> Group
     "gg" [0-9\']* "*" -> {Group ">"}*
     "gg" [0-9\']* "+" -> {Group ">"}+
@@ -98,28 +92,30 @@ exports
     "pr" [0-9\']* "*" -> {Priority ","}*
     "pr" [0-9\']* "+" -> {Priority ","}+
 
-    "as" [0-9\']*     -> Associativity
+    AssocMetaVar -> Associativity
+
+  lexical syntax
+    "as" [0-9\']* -> AssocMetaVar
+
+  lexical restrictions
+    AssocMetaVar -/- [A-Za-z0-9]
 
   variables %% section 8.4.1
-
     "restr" [0-9\']*     -> Restriction
     "restr" [0-9\']* "*" -> Restriction*
     "restr" [0-9\']* "+" -> Restriction+
 
   variables %% section 9.1.1
-
     "ro" [0-9\']*     -> Renaming
     "ro" [0-9\']* "*" -> Renaming*
     "ro" [0-9\']* "+" -> Renaming+
 
   variables %% section 9.2.1
-
     "al" [0-9\']*     -> Alias
     "al" [0-9\']* "*" -> Alias*
     "al" [0-9\']* "+" -> Alias+
 
   variables %% section 9.3.1
-
     "Mid" [0-9\']* -> ModuleId
     "M"   [0-9\']* -> ModuleName
     
@@ -139,4 +135,3 @@ exports
 
     "is" [0-9\']*     -> ImpSection
     "is" [0-9\']* "*" -> ImpSection*
-
