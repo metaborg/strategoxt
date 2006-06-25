@@ -47,8 +47,8 @@ exports
          "|[" Alias "]|" -> StrategoTerm {cons("ToTerm")}
     "al" "|[" Alias "]|" -> StrategoTerm {cons("ToTerm")}
 
-    "~"     StrategoTerm   -> Symbol {cons("FromTerm")}
-    "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
+    "~"     StrategoVar  -> Symbol {cons("FromTerm")}
+    "~sym:" StrategoTerm -> Symbol {cons("FromTerm")}
 
   variables %% section 7.1 (unfortunately no Unicode support in SDF ;) )
     SymbolMetaVar      -> Symbol
