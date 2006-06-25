@@ -81,7 +81,13 @@ exports
     "cc" [0-9\']* -> CharClass {prefer}
 
   variables %% section
-    "L" -> Literal
+    LiteralMetaVar -> Literal
+
+  lexical syntax    
+    "L" -> LiteralMetaVar
+    
+  lexical restrictions
+    LiteralMetaVar -/- [A-Za-z0-9]
 
   variables %% section 8.1.1
     "g" [0-9\']*      -> Group
