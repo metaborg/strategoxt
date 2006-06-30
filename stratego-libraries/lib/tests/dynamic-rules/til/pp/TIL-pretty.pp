@@ -24,6 +24,7 @@
    Continue.1:opt           -- KW[" "] _1,
    Catch                    -- V [V is=2 [H [KW["catch"] H hs=0 [KW["("] _1 KW[": "] _2 KW[")"]]] _3]],
    Catch.3:iter-star        -- _1,
+   Throw                    -- H hs=0 [KW["throw "] _1 KW[";"]],
    Labeled                  -- H [H hs=0 [_1 KW[":"]] _2],
    Try                      -- V [V is=2 [KW["try"] _1] _2 KW["end"]],
    Try.1:iter-star          -- _1,

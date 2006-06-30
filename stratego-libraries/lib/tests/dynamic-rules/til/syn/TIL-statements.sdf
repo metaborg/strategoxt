@@ -1,7 +1,7 @@
 module TIL-statements
 imports TIL-expressions TIL-types
 exports 
-  sorts Stat
+  sorts Stat Catch
   context-free syntax
     "var" Id ";"                                -> Stat {cons("Declaration")}
     "var" Id ":" Type ";"                       -> Stat {cons("DeclarationTyped")}
@@ -18,3 +18,4 @@ exports
     "try" Stat* Catch+ "end"                    -> Stat {cons("Try")}
     "try" Stat* Catch* "finally" Stat* "end"    -> Stat {cons("Try")}
     "catch" "(" Id ":" Id ")" Stat*             -> Catch {cons("Catch")}
+    "throw" Type ";"                            -> Stat {cons("Throw")}

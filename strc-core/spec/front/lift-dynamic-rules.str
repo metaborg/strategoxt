@@ -240,6 +240,7 @@ strategies
   _break_bp(|f)        = <concat-strings> ["break-bp-", f]
   _continue(|f)        = ![<concat-strings> ["continue-", f]
                            , <concat-strings> ["continue-to-label-", f]]
+  _throw(|f)           = <concat-strings> ["throw-", f]
 
 strategies
 
@@ -351,6 +352,7 @@ rules
         ; <create-break-rules(|x, t3, stdkey)> drd
         ; <create-break-bp-rules(|x, t3, stdkey)> drd
         ; <create-continue-rules(|x, t3, stdkey)> drd
+        ; <create-throw-rule(|x, t3, stdkey)> drd
 
         ; create-innermost-scope-strategy(|f)
 
@@ -585,7 +587,7 @@ strategies
       end
 
 /**
- * Break & Continue
+ * Break, Continue & Throw
  */
 strategies
 
@@ -626,6 +628,18 @@ strategies
         ; add-def(||[
             g2(a1*|a2*, x1) =
               dr-continue(|~str:f, x1)
+          ]|)
+      end
+
+  create-throw-rule(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _throw(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        new => x1
+        ; new => x2
+        ; add-def(||[
+            g(a1*, x1 | a2*, x2) =
+              dr-throw(x1 | x2, ~str:f)
           ]|)
       end
 

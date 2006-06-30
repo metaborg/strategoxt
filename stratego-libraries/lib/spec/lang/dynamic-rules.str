@@ -24,12 +24,21 @@ signature
   constructors
     RuleScope  : IndexedSet * Hashtable -> RuleScope
     ChangeSet  : IndexedSet * IndexedSet * Hashtable -> RuleScope
+
     Label      : String -> Label
     SplitPos   : String * String -> SplitPos
     BreakCS    : String * String -> BreakCS
     ContinueCS : String * String -> ContinueCS
     IgnoreB    : String -> IgnoreB
     IgnoreC    : String -> IgnoreC
+
+    Catch       : String * String -> Catch
+    Finally     : String -> Finally
+    TryBlock    : Int * String * [Catch] * Finally -> TryBlock
+    Structure   : String -> Structure
+    IgnoreT     : String -> IgnoreT
+    ThrowCS     : String * String -> ThrowCS
+    ExceptionCS : String * String -> ExceptionCS
 
 /**
  * Currently active rule set
@@ -436,6 +445,19 @@ strategies // change sets
         <DR_BREAK>IgnoreC(csid) => labelc
         ; rules(DR_BREAK.labelc :- IgnoreC(csid))
       )
+    ; try(
+        <DR_EXCEPTION>IgnoreT(csid)
+        ; rules(DR_EXCEPTION :- IgnoreT(csid))
+      )
+
+  dr-clone-change-set =
+    ?ChangeSet(labels1, rmset1, tbl1)
+    ; dr-new-change-set => cs@ChangeSet(labels2, rmset2, tbl2)
+    ; <iset-addlist(|<iset-elements>labels1)>labels2
+    ; <iset-addlist(|<iset-elements>rmset1)>rmset2
+    ; <hashtable-keys>tbl1
+    ; map({key : ?key; <hashtable-put(|key, <hashtable-get(|key)>tbl1)>tbl2})
+    ; !cs
 
   dr-commit-change-set =
     dr-commit-change-set(id)
@@ -454,14 +476,22 @@ strategies // change sets
         ; try(
             <DR_BREAK>IgnoreB(csid) => labelb
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextb)))>rs''
-               ; rules(DR_BREAK.labelb : IgnoreB(csidnextb) -> labelb)
+//               ; rules(DR_BREAK.labelb : IgnoreB(csidnextb) -> labelb)
+               ; dr-define-ignoreB(|csidnextb, labelb)
                <+ fatal-err(|"dr-break was called outside of a fix and merge operator or a dr-label call"))
           )
         ; try(
             <DR_BREAK>IgnoreC(csid) => labelc
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextc)))>rs''
-               ; rules(DR_BREAK.labelc : IgnoreC(csidnextc) -> labelc)
+//               ; rules(DR_BREAK.labelc : IgnoreC(csidnextc) -> labelc)
+               ; dr-define-ignoreC(|csidnextc, labelc)
                <+ fatal-err(|"dr-continue was called outside of a fix and merge operator call"))
+          )
+        ; try(
+            <DR_EXCEPTION>IgnoreT(csid)
+            ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextt)))>rs''
+               ; dr-define-ignoreT(|csidnextt)
+               <+ fatal-err(|"dr-throw was not called in the proper exception handling context"))
           )
         ; try(destroy; <dr-destroy-change-set> cs)
 
@@ -964,8 +994,8 @@ strategies // intersection and union of rule-sets
      rs2@[cs2@ChangeSet(labels2, rmset2, tbl2@Hashtable(csid2)) | rs2a]) -> [cs | rs1a]
     where
 
-      ((<DR_BREAK>IgnoreB(csid1) <+ <DR_BREAK>IgnoreC(csid1)) < !"ignore" + !"") => slabel1
-      ; ((<DR_BREAK>IgnoreB(csid2) <+ <DR_BREAK>IgnoreC(csid2)) < !"ignore" + !"") => slabel2
+      ((<DR_BREAK>IgnoreB(csid1) <+ <DR_BREAK>IgnoreC(csid1) <+ <DR_EXCEPTION>IgnoreT(csid1)) < !"ignore" + !"") => slabel1
+      ; ((<DR_BREAK>IgnoreB(csid2) <+ <DR_BREAK>IgnoreC(csid2) <+ <DR_EXCEPTION>IgnoreT(csid2)) < !"ignore" + !"") => slabel2
 
       // if one branch had a break and one had a continue,
       // we need to propagate the effect of continue (the
@@ -988,7 +1018,20 @@ strategies // intersection and union of rule-sets
          // "" & "" is the normal merge
          <eq>(slabel1, slabel2)
          < (ior(<merge-cs> (rs1, rmset1, tbl1, rs2, rmset2, tbl2), <merge-rec> (rs1a, rs2a))
-            ; !cs1 => cs)
+            ; !cs1 => cs
+            ; try(
+                <DR_EXCEPTION>IgnoreT(csid2)
+                ; dr-define-ignoreT(|csid1)
+              )
+            ; try(
+                <DR_BREAK>IgnoreB(csid2) => lb
+                ; dr-define-ignoreB(|csid1, lb)
+              )
+            ; try(
+                <DR_BREAK>IgnoreC(csid2) => lc
+                ; dr-define-ignoreC(|csid1, lc)
+              )
+           )
          + (<eq>(rs1a, rs2a)
             < (<eq>(slabel1, "ignore") // slabel1 = "ignore" & slabel2 != "ignore", so we ignore cs1
                ; !cs2
@@ -1004,8 +1047,7 @@ strategies // intersection and union of rule-sets
    * that point to rule scopes in rsbad have to be replaced with references to
    * the corresponding (according to position) rule scopes in rsgood.
    *
-   * Currently, the only case when this fix is necessary is when dr-break-bp
-   * is used.
+   * No longer used.
    */
   dr-fix-change-set =
     ?(cs@ChangeSet(_, rmset, tbl), rsgood, rsbad)
@@ -1283,7 +1325,7 @@ strategies // generic fix-point strategies
     ; <map({rulename, label:
         ?rulename
         ; <DR_BREAK>Label(rulename) => label
-        ; <bagof-DR_BREAK>BreakCS(rulename, label)
+        ; (<bagof-DR_BREAK>BreakCS(rulename, label) <+ ![])
         ; list-tokenize(|[()])
         ; first-last
         ; concat
@@ -1294,10 +1336,33 @@ strategies // generic fix-point strategies
     ; !e
     ; where(<map(dr-commit-change-set(|<id>))> rulenames)
 
+  dr-fix-and-merge(merge1, merge2, s | rulenames1, rulenames2) =
+    where(<map(fork-rule-sets)> rulenames1 => rs1;
+          <map(fork-rule-sets)> rulenames2 => rs2)
+    ; repeat(
+        where(
+          restore(
+            s,
+            where(
+              <map(dr-discard-change-set(|<id>))> rulenames1;
+              <map(dr-discard-change-set(|<id>))> rulenames2
+            )
+          )
+          ; if and(<filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
+                  ,<filter({?(rulename,<id>); <merge2>(rulename, <id>)})> rs2; [])
+            then
+              ?e; fail // no changes in any of the rules
+            end
+        )
+      )
+    ; !e
+    ; where(<map(dr-commit-change-set(|<id>))> rulenames1
+           ;<map(dr-commit-change-set(|<id>))> rulenames2)
+
   dr-merge-continue-change-sets(merge | label) =
     ?rulename
     ; dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | rs]
-    ; <bagof-DR_BREAK>ContinueCS(rulename, label)
+    ; (<bagof-DR_BREAK>ContinueCS(rulename, label) <+ ![])
     ; where(rules(DR_BREAK :- ContinueCS(rulename, label)))
     ; if not(?[]); <DR_BREAK>IgnoreC(csid)
       then
@@ -1355,7 +1420,7 @@ strategies // labeling statements, break, continue
       ; <map({rulename, rs, csid, csidnew, cslbl:
           ?rulename
           ; dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | rs]
-          ; <bagof-DR_BREAK>BreakCS(rulename, label)
+          ; (<bagof-DR_BREAK>BreakCS(rulename, label) <+ ![])
           ; if not(?[]); <DR_BREAK>IgnoreB(csid)
             then
               // discard replace the current change set with the first one from the list
@@ -1399,7 +1464,8 @@ strategies // labeling statements, break, continue
       // go back to the active ruleset and mark the innermost change set as ignored
       ; !rs
       ; fetch(ChangeSet(id, id, ?Hashtable(csid)))
-      ; rules(DR_BREAK.label : IgnoreB(csid) -> label)
+//      ; rules(DR_BREAK.label : IgnoreB(csid) -> label)
+      ; dr-define-ignoreB(|csid, label)
     )
 
 /**
@@ -1542,28 +1608,162 @@ strategies // labeling statements, break, continue
     // return the built change set
     ; !aggCs
 
-  dr-fix-and-merge(merge1, merge2, s | rulenames1, rulenames2) =
-    where(<map(fork-rule-sets)> rulenames1 => rs1;
-          <map(fork-rule-sets)> rulenames2 => rs2)
-    ; repeat(
-        where(
-          restore(
-            s,
-            where(
-              <map(dr-discard-change-set(|<id>))> rulenames1;
-              <map(dr-discard-change-set(|<id>))> rulenames2
-            )
-          )
-          ; if and(<filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
-                  ,<filter({?(rulename,<id>); <merge2>(rulename, <id>)})> rs2; [])
-            then
-              ?e; fail // no changes in any of the rules
-            end
-        )
+strategies // exception handling strategies
+
+  dr-init-exception-block(has-finally | catch-tags, rulenames) =
+    where(<map({rulename, tb :
+      ?rulename
+      ; !TryBlock(
+          <dr-get-rule-set(|rulename); length>
+          , <new>
+          , <map(!Catch(<new>, <id>))>catch-tags
+          , <has-finally < !Finally(<new>) + !Finally("")>) => tb
+      ; rules(DR_EXCEPTION :+ Structure(rulename) -> tb)
+      ; dr-start-change-set(|rulename)
+    })>rulenames)
+
+  dr-throw(eq-test | tag, rulename) =
+    where(
+      get-matching-try-block(eq-test | tag, rulename) => (pos, ID, catchID)
+      ; dr-get-rule-set(|rulename) => rs
+      ; back-split-at(|pos)
+      ; dr-build-aggregated-change-set => tcs
+      ; rules(DR_EXCEPTION :+ ThrowCS(rulename, ID) -> (tcs, catchID))
+      ; <fetch(ChangeSet(id, id, ?Hashtable(csid)))>rs
+      ; dr-define-ignoreT(|csid)
+    )
+
+  // checked
+  get-matching-try-block(eq-test | tag, rulename) =
+    (<bagof-DR_EXCEPTION>Structure(rulename) <+ ![])
+    ; where(
+        fetch-elem({pos, catches :
+          ?TryBlock(pos, _, catches, _)
+          ; <fetch-elem({cID, ctag : ?Catch(cID, ctag); <eq-test>(tag, ctag); !cID})>catches
+        }) => catchID
+        <+ fatal-err(|"dr-throw: Thrown exception does not match any catch clause")
       )
+    ; fetch-elem({pos, catches, fID :
+        ?TryBlock(pos, _, catches, Finally(fID))
+        ; (<fetch-elem({cID, ctag : ?Catch(cID, ctag); <eq-test>(tag, ctag); !cID})>catches
+           <+ <not(eq)>(fID, ""); !fID)
+        ; !(pos, <id>, catchID)
+      })
+
+  dr-complete-catch(merge, s | rulenames) =
+    ?term
+    
+//    ; debug(!"dr-complete-catch-1>")
+  
+    ; <map({rulename, cID, cs, rs, hd, tl :
+        ?rulename
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-1<")
+        ; (<DR_EXCEPTION>Structure(rulename) => TryBlock(_, _, [Catch(cID, _) | _], _)
+           <+ fatal-err(|"dr-complete-catch was called when no catch clause was active or when a finished exception block was not completed"))
+//        ; debug(!"dr-complete-catch-2>")
+        ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, _) | rs]
+           <+ fatal-err(|"dr-complete-catch was not called in a proper exception handling context"))
+//        ; debug(!"dr-complete-catch-3>")
+        ; try(
+            <bagof-DR_EXCEPTION>ThrowCS(rulename, cID) => [(hd, _) | tl]
+//            ; debug(!"dr-complete-catch-4>")
+            ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
+//            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-2<")
+//            ; debug(!"dr-complete-catch-5>")
+            ; <map(![<?(<id>, _)> | rs]; try(<merge>(rulename, <id>)))>tl
+//            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-3<")
+//            ; debug(!"dr-complete-catch-6>")
+          )
+//        ; debug(!"dr-complete-catch-7>")
+        ; !cs
+//        ; debug(!"dr-complete-catch-8>")
+      })>rulenames => css
+
+//    ; debug(!"dr-complete-catch-9>")
+    ; restore(<s>term => e,
+        <zip>(css, rulenames)
+        ; map({cs, rulename, rs :
+            ?(cs, rulename)
+            ; dr-get-rule-set(|rulename)
+            ; [dr-destroy-change-set | ?rs]
+            ; ![cs | rs]
+            ; dr-set-rule-set(|rulename)
+          })
+      )
+//    ; where(<map(dr-debug-rule-set(|<id>, ">dr-complete-catch-4<"))>rulenames)
+//    ; debug(!"dr-complete-catch-10>")
+
+    ; <zip>(css, rulenames)
+//    ; debug(!"dr-complete-catch-11>")
+    ; map({cs, rulename, pos, ID, cID, catches, fin, fID, cs', rs :
+        ?(cs, rulename)
+//        ; debug(!"dr-complete-catch-12>")
+        ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(pos, ID, [Catch(cID, _) | catches], fin@Finally(fID))
+           <+ fatal-err(|"dr-complete-catch: Unexpected failure here!"))
+//        ; debug(!"dr-complete-catch-13>")
+        ; rules(DR_EXCEPTION :+ Structure(rulename) -> TryBlock(pos, ID, catches, fin))
+        ; rules(DR_EXCEPTION :- ThrowCS(rulename, cID))
+//        ; debug(!"dr-complete-catch-14>")
+        ; (dr-get-rule-set(|rulename) => [cs'@ChangeSet(_, _, _) | rs]
+           <+ fatal-err(|"dr-complete-catch: A change set was expected here!"))
+//        ; debug(!"dr-complete-catch-15>")
+        ; (<eq>(fID, "")
+           < rules(DR_EXCEPTION :+ ExceptionCS(rulename, ID) -> cs')//; debug(!"dr-complete-catch-16>")
+           + rules(DR_EXCEPTION :+ ExceptionCS(rulename, fID) -> cs')//; debug(!"dr-complete-catch-17>"))
+//        ; debug(!"dr-complete-catch-18>")
+        ; ![cs | rs]
+//        ; debug(!"dr-complete-catch-19>")
+        ; dr-set-rule-set(|rulename)
+//        ; debug(!"dr-complete-catch-20>")
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-5<")
+      })
+
+//    ; debug(!"dr-complete-catch-21>")
     ; !e
-    ; where(<map(dr-commit-change-set(|<id>))> rulenames1
-           ;<map(dr-commit-change-set(|<id>))> rulenames2)
+//    ; debug(!"dr-complete-catch-22>")
+
+  dr-complete-finally(merge, s | rulenames) =
+    ?term
+    ; <s>term => e
+    ; !e
+
+  dr-complete-exception-block(merge | rulenames) =
+//    debug(!"dr-complete-exception-block-1>")
+    where(
+      <map({rulename, ID, cs, csid, rs, hd :
+        ?rulename
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-1<")
+//        ; debug(!"dr-complete-exception-block-2>")
+        ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(_, ID, [], _)
+           <+ fatal-err(|"dr-complete-exception-block was called before completing all catch clauses or in a non-proper exception handling context"))
+//        ; debug(!"dr-complete-exception-block-3>")
+        ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, Hashtable(csid)) | rs]
+           <+ fatal-err(|"dr-complete-exception-block was not called in a proper exception handling context"))
+//        ; debug(!"dr-complete-exception-block-4>")
+        ; (<bagof-DR_EXCEPTION>ExceptionCS(rulename, ID) <+ ![])
+//        ; debug(!"dr-complete-exception-block-5>")
+        ; where(try(
+            ?[hd | _]
+//            ; debug(!"dr-complete-exception-block-6>")
+            ; <DR_EXCEPTION>IgnoreT(csid)
+//            ; debug(!"dr-complete-exception-block-7>")
+            ; dr-discard-change-set(|rulename)
+//            ; debug(!"dr-complete-exception-block-8>")
+            ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
+//            ; debug(!"dr-complete-exception-block-9>")
+          ))
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-2<")
+        ; map(![<id> | rs]; try(<merge>(rulename, <id>)))
+//        ; debug(!"dr-complete-exception-block-10>")
+        ; rules(DR_EXCEPTION :- ExceptionCS(rulename, ID))
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-3<")
+//        ; debug(!"dr-complete-exception-block-11>")
+        ; dr-commit-change-set(|rulename)
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-4<")
+//        ; debug(!"dr-complete-exception-block-12>")
+      })>rulenames
+    )
+//    ; debug(!"dr-complete-exception-block-13>")
 
 strategies // transactional run of a strategy
 
@@ -1669,8 +1869,36 @@ strategies // label statements with intersection and union
    * !! argument to label iterative statements.          !!
    */
   dr-label-union(s | rulenames, label) =
-    dr-label(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+    dr-label(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
             , s | rulenames, label)
+
+strategies // exceptions
+
+  dr-complete-catch-intersect(s | rulenames) =
+    dr-complete-catch(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+                     , s | rulenames)
+
+  dr-complete-finally-intersect(s | rulenames) =
+    dr-complete-finally(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+                       , s | rulenames)
+
+  dr-complete-exception-block-intersect(|rulenames) =
+    dr-complete-exception-block(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+                               | rulenames)
+
+
+
+  dr-complete-catch-union(s | rulenames) =
+    dr-complete-catch(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+                     , s | rulenames)
+
+  dr-complete-finally-union(s | rulenames) =
+    dr-complete-finally(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+                       , s | rulenames)
+
+  dr-complete-exception-block-union(|rulenames) =
+    dr-complete-exception-block(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+                               | rulenames)
 
 strategies // n-way split
 
@@ -1719,8 +1947,14 @@ strategies // n-way split
 
 strategies // workaround for overlapping lhhs in dynamic rule
 
+  dr-define-ignoreB(|csid, label) =
+    rules(DR_BREAK.label : IgnoreB(csid) -> label)
+
   dr-define-ignoreC(|csid, label) =
     rules(DR_BREAK.label : IgnoreC(csid) -> label)
+
+  dr-define-ignoreT(|csid) =
+    rules(DR_EXCEPTION : IgnoreT(csid))
 
 strategies // rule-set equality
 

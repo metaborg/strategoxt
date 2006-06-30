@@ -21,6 +21,9 @@ strategies
     <+ propconst-break-label
     <+ propconst-continue
     <+ propconst-continue-label
+    <+ propconst-throw
+    <+ propconst-try-catch
+    <+ propconst-try-catch-finally
     <+ all(propconst); try(EvalExp)
 
   propconst-block =
@@ -83,3 +86,33 @@ strategies
   propconst-continue-label =
     ?Continue(Some(label))
     ; continue-to-label-PropConst(|label)
+
+  propconst-try-catch =
+    ?Try(tblock, cclauses)
+    ; dr-init-exception-block(fail | <get-catch-tags>cclauses, ["PropConst"])
+//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">1<")
+    ; <propconst>tblock => tblock'
+//    ; debug(!"2>")
+//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">2<")
+    ; <map(dr-complete-catch-intersect(propconst | ["PropConst"]))>cclauses => cclauses'
+//    ; debug(!"3>")
+//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">3<")
+    ; dr-complete-exception-block-intersect(|["PropConst"])
+//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">4<")
+    ; !Try(tblock', cclauses')
+
+  propconst-try-catch-finally =
+    ?Try(tblock, cclauses, fblock)
+    ; dr-init-exception-block(id | <get-catch-tags>cclauses, ["PropConst"])
+    ; <propconst>tblock => tblock'
+    ; <map(dr-complete-catch-intersect(propconst | ["PropConst"]))>cclauses => cclauses'
+    ; <dr-complete-finally-intersect(propconst | ["PropConst"])>fblock => fblock'
+    ; dr-complete-exception-block-intersect(|["PropConst"])
+    ; !Try(tblock', cclauses', fblock')
+
+  get-catch-tags =
+    map(?Catch(_, <id>, _))
+
+  propconst-throw =
+    ?Throw(TypeName(t))
+    ; throw-PropConst(eq | t)
