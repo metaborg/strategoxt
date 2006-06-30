@@ -1709,7 +1709,7 @@ strategies // exception handling strategies
 //        ; debug(!"dr-complete-catch-15>")
         ; (<eq>(fID, "")
            < rules(DR_EXCEPTION :+ ExceptionCS(rulename, ID) -> cs')//; debug(!"dr-complete-catch-16>")
-           + rules(DR_EXCEPTION :+ ExceptionCS(rulename, fID) -> cs')//; debug(!"dr-complete-catch-17>"))
+           + rules(DR_EXCEPTION :+ ExceptionCS(rulename, fID) -> cs'))//; debug(!"dr-complete-catch-17>")
 //        ; debug(!"dr-complete-catch-18>")
         ; ![cs | rs]
 //        ; debug(!"dr-complete-catch-19>")
