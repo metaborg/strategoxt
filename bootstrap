@@ -39,13 +39,13 @@ fi
 
 echo "bootstrap: using autoxt at $AUTOXT"
 
-$AUTOXT || exit 1
-mv ./autoxt.m4 ./config/  || exit 1
+# $AUTOXT || exit 1
+# mv ./autoxt.m4 ./config/  || exit 1
 
-# echo "WARNING: hack: using our own autoxt.m4"
-# cp ./autoxt/autoxt.m4 ./config/ || exit 1
-# echo "WARNING: hack: using our own Makefile.xt"
-# cp ./autoxt/Makefile.xt . || exit 1
+echo "WARNING: hack: using our own autoxt.m4"
+cp ./autoxt/autoxt.m4 ./config/ || exit 1
+echo "WARNING: hack: using our own Makefile.xt"
+cp ./autoxt/Makefile.xt . || exit 1
 
 autoreconf -ifv  || exit 1
 
