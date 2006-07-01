@@ -897,14 +897,18 @@ rules
     exp|[ 
       (ATerm)ATinsert(~exp:e, ~exp:<construct-term> t1)
     ]|
-    where <construct-term> t2
-	; if <not(Anno(is-ListOp,id))> t2 then 
-            check-aterm-list 
-          else if ?Id(_) then
+    where
+      <construct-term> t2
+      ; if <not(Anno(is-ListOp,id))> t2 then 
+          check-aterm-list 
+        else
+          if ?Id(_) then
 	    !|[ (ATermList) ~exp:<id> ]|
           else
             try(UncastATerm)
-          end end => e
+          end
+          ; try(CastATermListSetAnnotations)
+        end => e
 
   check-aterm-list :
     e -> exp|[ (ATermList)x ]|
@@ -917,6 +921,9 @@ rules
 
   CastATerm :
     e -> exp|[ (ATerm) ~exp:e ]|
+
+  CastATermListSetAnnotations :
+    exp |[ SRTS_setAnnotations(~exp:e1, ~exp:e2) ]| -> exp |[ (ATermList) SRTS_setAnnotations(~exp:e1, ~exp:e2) ]|
 
   UncastATerm :
     exp|[ (ATerm)~exp:e ]| -> e
