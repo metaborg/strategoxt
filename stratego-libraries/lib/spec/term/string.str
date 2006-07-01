@@ -1231,7 +1231,7 @@ strategies
    * @author Karl Trygve Kalleberg <karltk@stratego.org>
    */
   string-replace(|old, new) =
-      ![ [], <explode-string>, <explode-string> old ]
+      !([], <explode-string>, <explode-string> old)
     ; internal-string-replace(|<explode-string> old, <explode-string ; reverse> new)
     ; reverse
     ; implode-string
@@ -1240,28 +1240,29 @@ strategies
  
   /** @internal */
   internal-string-replace(|old, new) =
-      ?[ pre, [ hd | tl ], cur ]
+    ?(pre, [ hd | tl ], cur)
     ; (
-          !cur => [hd | ctl]
-        ; ![ pre, tl, ctl ]
+        !cur => [hd | ctl]
+        ; !(pre, tl, ctl)
         ; internal-string-replace-found(|old, new)
         ; internal-string-replace(|old, new)
        <+
-          ![ [ hd | pre ], tl, cur ]
+          !([ hd | pre ], tl, cur)
         ; internal-string-replace(|old, new)
       )
 
   /** @internal */
   internal-string-replace(|old, new):
-  [ pre, [], _ ] -> pre
+    (pre, [], _) -> pre
   
   /** @internal */
   internal-string-replace-found(|old, new) =
-      ?[ pre, [ hd | tl ], cur ]
+    ?(pre, [ hd | tl ], cur)
     ; !cur => [ hd | ctl ]
-    ; ![ pre, tl, ctl ]
+    ; !(pre, tl, ctl)
     ; internal-string-replace-found(|old, new)
 
   /** @internal */
   internal-string-replace-found(|old, new):
-  [ pre, rest, [] ] -> [ <concat> [ pre, new ], rest, old ]
+    (pre, rest, []) -> (<conc> (new, pre), rest, old)
+

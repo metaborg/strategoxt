@@ -263,21 +263,62 @@ strategies
   , !["2001","2000","1999","1998"]
   )
 
-   string-replace-test =
-     apply-test(!"string-replace-test-a"
-  , string-replace(|"foo","bar")
-  , !"foobarfoo"
-  , !"barbarbar"
-  )
-  ; apply-test(!"string-replace-test-b"
-  , string-replace(|"","bar")
-  , !"foobarfoo"
-  , !"foobarfoo"
-  )
-  ; apply-test(!"string-replace-test-c"
-  , string-replace(|"foo","")
-  , !"foobarfoo"
-  , !"bar"
-  )
-  
-  
+  string-replace-test = id
+    ; apply-test(!"string-replace-test-a"
+      , string-replace(|"foo","bar")
+      , !"foobarfoo"
+      , !"barbarbar"
+      )
+    ; apply-test(!"string-replace-test-b"
+      , string-replace(|"","bar")
+      , !"foobarfoo"
+      , !"foobarfoo"
+      )
+
+    ; apply-test(!"string-replace-test-c"
+      , string-replace(|"foo","")
+      , !"foobarfoo"
+      , !"bar"
+    )
+
+    ; apply-test(!"string-replace-test-d"
+      , string-replace(|"foo","bar")
+      , !"fooXfoo"
+      , !"barXbar"
+    )
+
+    ; apply-test(!"string-replace-test-e"
+      , string-replace(|"foo","bar")
+      , !"fredXfoo"
+      , !"fredXbar"
+    )
+
+    ; apply-test(!"string-replace-test-f"
+      , string-replace(|"foo","bar")
+      , !"fooXfred"
+      , !"barXfred"
+    )
+
+    ; apply-test(!"string-replace-test-g"
+      , string-replace(|"foo","bar")
+      , !"foofoo"
+      , !"barbar"
+    )
+
+    ; apply-test(!"string-replace-test-h"
+      , string-replace(|"foo","bar")
+      , !"fredfoo"
+      , !"fredbar"
+    )
+
+    ; apply-test(!"string-replace-test-i"
+      , string-replace(|"foo","bar")
+      , !"foofred"
+      , !"barfred"
+    )
+
+    ; apply-test(!"string-replace-test-j"
+      , string-replace(|"foo","bar")
+      , !"foo"
+      , !"bar"
+    )

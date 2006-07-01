@@ -59,7 +59,7 @@ BOOTCLEANFILES 	= $(wildcard *.c)
 
 STRINCLUDES = -I $(top_srcdir)/lib/spec
 AM_CPPFLAGS = $(PREFIX_CPPFLAGS)
-LDADD       = $(SSL_LIBS)
+LDADD       = $(PREFIX_LIBS)
 
 NOSHARED_PREFIX_LIBS = -L$(prefix)/lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
 PREFIX_LIBS          = -L$(prefix)/lib -lstratego-lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
