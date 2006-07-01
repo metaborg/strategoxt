@@ -7,6 +7,11 @@ static void SRTS_stratego_initialize_module()
   if(SRTS_stratego_initialize_next != NULL)
     SRTS_stratego_initialize_next();
 
+#ifdef DEFAULT_XTC_REPOSITORY
+  SRTS_default_xtc_repository = ATmakeString(DEFAULT_XTC_REPOSITORY);
+  ATprotect(&SRTS_default_xtc_repository);
+#endif
+
 #ifdef XTC_REPOSITORY
   SRTS_default_xtc_repository = XTC_REPOSITORY();
   ATprotect(&SRTS_default_xtc_repository);

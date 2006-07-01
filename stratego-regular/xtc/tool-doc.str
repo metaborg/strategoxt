@@ -217,7 +217,7 @@ rules
     Config(items) -> HSection("Configuration:", [DefList(items)])
 
   DesugarToolDoc :
-    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <prim("XTC_REPOSITORY")> ())
+    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <GetInternalDefaultXtcRepository> ())
 
   DesugarToolDoc :
     CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location> ())

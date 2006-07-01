@@ -167,7 +167,7 @@ strategies
   + ArgOption(fail, fail, !"")
 
   + ArgOption("--xtc-repo",
-	where(<extend-config>("-Xcc", [<concat-strings> ["-DXTC_REPOSITORY()=ATmakeString(\"", <id>, "\")"]])); !(),
+	where(<extend-config>("-Xcc", [<concat-strings> ["-DDEFAULT_XTC_REPOSITORY=\"", <id>, "\""]])); !(),
 	!"--xtc-repo file    Set default XTC repository in output program to file (default: none).")
 
   + Option("-c",          

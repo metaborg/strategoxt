@@ -20,6 +20,7 @@ AC_DEFUN([XT_SETUP],
   AC_REQUIRE([XT_DARWIN])
   AC_REQUIRE([XT_CHECK_NESTED_FUNCTIONS])
   AC_REQUIRE([XT_CHECK_LINKING])
+  AC_REQUIRE([XT_ENABLE_XTC_REGISTER])
 ])
 
 # XT_DARWIN
@@ -244,15 +245,15 @@ AC_DEFUN([XT_CHECK_XTC],
 # -----------------------
 AC_DEFUN([XT_DISABLE_XTC_REGISTER],
 [
-  xt_xtc_register="yes"
+  xt_xtc_register="no"
   AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "no"])
 ])
 
-# XT_DISABLE_XTC_REGISTER
+# XT_ENABLE_XTC_REGISTER
 # -----------------------
 AC_DEFUN([XT_ENABLE_XTC_REGISTER],
 [ 
-  xt_xtc_register="no"
+  xt_xtc_register="yes"
   AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "yes"])
 ])
 
@@ -271,10 +272,6 @@ AC_DEFUN([XT_WITH_XTC_ARGS],
     [[\\/]]* ) ;;
     *) BUILD_REPOSITORY=`pwd`/$BUILD_REPOSITORY ;;
   esac
-
-  AC_DEFINE([XTC_REPOSITORY()],
-            [ATmakeString("@REPOSITORY@")],
-            [Location of the XTC repository.])
 ])
 
 # XT_CHECK_STRATEGOXT
