@@ -1,4 +1,5 @@
 prefix=@prefix@
+datarootdir=@datarootdir@
 strcflags=-I @datadir@
 
 Name: Stratego GPP Library

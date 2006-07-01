@@ -1,4 +1,5 @@
 prefix=@prefix@
+datarootdir=@datarootdir@
 pkgdatadir=@datadir@/@PACKAGE@
 xtc=@prefix@/bin/xtc
 strcflags=-I ${pkgdatadir} -I @datadir@

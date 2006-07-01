@@ -1,4 +1,5 @@
 prefix=@prefix@
+datarootdir=@datarootdir@
 pkgdatadir=@datadir@/@PACKAGE@
 sdfdatadir=@datadir@/sdf/@PACKAGE@
 strcflags=-I ${pkgdatadir} -I ${sdfdatadir}
