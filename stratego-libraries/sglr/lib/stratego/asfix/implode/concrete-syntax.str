@@ -48,20 +48,20 @@ strategies
             asfix-yield-acc(yield | chars)
           + asfix-yield-quote-acc(yield | chars)
 
-     in appl(!prod([], "yield", no-attrs()), yield(|[]); reverse)
+     in appl(!prod([], "yield", no-attrs()), yield(|[]))
       + strsglr-metavar-cong(id)
       + strsglr-antiquote-cong(yield-asfix-quotes)
     end
     
-  asfix-yield-quote-acc(rec : b * c -> d | chars1) :
-    amb([x | _]) -> chars2
+  asfix-yield-quote-acc(rec : b * c -> d | acc) :
+    amb([x | _]) -> acc'
     where
-      <rec(|chars1)> x => chars2
+      acc' := <rec(|acc)> x
 
-  asfix-yield-quote-acc(rec : b * c -> d |chars1) =
+  asfix-yield-quote-acc(rec : b * c -> d | acc) =
     strsglr-metavar-cong(id)
-    ; ![<id> | chars1]
+    ; ![<id> | acc]
 
-  asfix-yield-quote-acc(rec : b * c -> d |chars1) =
+  asfix-yield-quote-acc(rec : b * c -> d | acc) =
     strsglr-antiquote-cong(yield-asfix-quotes)
-    ; ![<id> | chars1]
+    ; ![<id> | acc]

@@ -49,33 +49,28 @@ strategies
     let yield(|chars) =
             asfix-yield-acc(yield | chars)
 
-        main-yield =
-          yield(|[])
-          ; reverse
-          
      in ?appl(_, <id>){anno*}
       ; yield(|[])
-      ; reverse
       ; implode-string
       ; ?s
       ; !s{anno*}
     end
 
-  asfix-yield-acc(rec : b * c -> d |chars1) :
-    appl(_, ts) -> chars2
+  asfix-yield-acc(rec : b * c -> d | acc) :
+    appl(_, ts) -> acc'
     where
-      <rec(|chars1)> ts => chars2
+      acc' := <rec(|acc)> ts
 
-  asfix-yield-acc(rec : b * c -> d |chars) :
-    [] -> chars
+  asfix-yield-acc(rec : b * c -> d |acc) :
+    [] -> acc
 
-  asfix-yield-acc(rec : b * c -> d |chars0) :
-    [x | xs] -> chars2
+  asfix-yield-acc(rec : b * c -> d | acc) :
+    [x | xs] -> acc''
     where
-      <rec(|chars0)> x => chars1
-    ; <rec(|chars1)> xs => chars2
+      acc' := <rec(|acc)> xs
+    ; acc'' := <rec(|acc')> x
 
-  asfix-yield-acc(rec : b * c -> d | chars) :
-    i -> [i | chars]
+  asfix-yield-acc(rec : b * c -> d | acc) :
+    i -> [i | acc]
     where
       is-int
