@@ -8,12 +8,12 @@ signature
 strategies
 
   read-parse-testsuite =
-    xtc-transform(!"sglri", !["-p", <xtc-find> "parse-testsuite.tbl", "--start", "TestSuite", "--sglr", "-A" | <pass-verbose> ()])
+    xtc-transform(!"sglri", !["-p", <xtc-find> "parse-testsuite.tbl", "--start", "TestSuite", "--amb", "off" | <pass-verbose> ()])
     ; read-from
     ; parse-testsuite(id, id, map(drop-whitespace))
     ; topdown(try(drop-quotes))
     ; parse-testsuite(id, id, map(try(add-description)))
-    ; parse-testsuite(id, id, map(ensure-test-input-in-file))
+    ; parse-testsuite(id, id, map(ensure-test-input-absolute-path))
     ; parse-testsuite(id, id, map(ensure-test-output-not-in-file))
 
 rules
@@ -33,17 +33,15 @@ rules
   add-description :
     parse-test(file(f), output) -> parse-test(description(f), file(f), output)
 
-/**
- * Ensures that the test input is in a file and makes it a complete path.
- */
 rules
 
-  ensure-test-input-in-file :
-    parse-test(d, string(s), o) -> parse-test(d, file(f), o)
-    where
-      <print-to> [s] => FILE(f)
+  ensure-test-input-absolute-path =
+    ?parse-test(d, string(s), o)
 
-  ensure-test-input-in-file  =
+  /**
+   * If the test input is a file then make it a complete path.
+   */
+  ensure-test-input-absolute-path =
     parse-test(id, file(abs-test-file), id)
 
   /**
@@ -55,6 +53,7 @@ rules
     end
 
   read-test-output-to-pattern :
-    parse-test(desc, input, file(f)) -> parse-test(desc, input, pattern(p)) 
-      where <read-from;explode-aterm> FILE(f) => p
-            <+ if-verbose7(!f ; debug(!"Reading aterm result failed: "))
+    parse-test(desc, input, file(f)) -> parse-test(desc, input, pattern(p))
+    where
+      p := <read-from; explode-aterm> FILE(f)
+      <+ if-verbose7(!f ; debug(!"Reading aterm result failed: "))

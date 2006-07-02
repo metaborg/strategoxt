@@ -9,7 +9,7 @@ signature
     Failure     : Result
 
   constructors
-    ParseResult : TestResult * File -> ParseResult
+    ParseResult : Input * TestResult -> ParseResult
 
     Failure : Trace -> TestResult
     Success : File  -> TestResult
@@ -26,7 +26,6 @@ strategies
        create-test-result-simple
     <+ create-test-compare
     <+ !Failure()
-
 
   /**
    * failure & success -> failure
@@ -56,6 +55,6 @@ strategies
    * success & pattern -> compare
    */
   create-test-compare:
-    (ParseResult(_, Success(f@FILE(_))), pattern(p)) -> Success()
-      where <aterm-eq> (<read-from; explode-aterm> f, p)
-
+    (ParseResult(_, Success(ast)), pattern(p)) -> Success()
+    where
+      <aterm-eq> (<explode-aterm> ast, p)

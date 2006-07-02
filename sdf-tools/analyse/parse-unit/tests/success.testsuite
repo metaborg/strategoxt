@@ -15,3 +15,6 @@ test
 
 test multiplication has higher priority than addition
   "1 + 2 * 3" -> Plus(Int("1"), Mul(Int("2"), Int("3")))
+
+test multiplication has higher priority than addition
+  "1 + 2 * 3" -> Plus(_, Mul(_, _))

@@ -9,8 +9,7 @@ imports
 
 signature
   constructors
-    CustomSglrOptions    : ConfigKey
-    ParseTable           : ConfigKey
+    ParseTable : ConfigKey
 
 strategies
 
@@ -27,7 +26,7 @@ strategies
     <tool-doc>
       [ AutoProgram()
       , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
-      , GNU_LGPL("2003-2005", "Eelco Visser <visser@acm.org>")
+      , GNU_LGPL("2003-2006", "Stratego Software Foundation <stratego@cs.uu.nl>")
       , Config([
           DefaultXTCRepository()
         , CurrentXTCRepository()
@@ -44,74 +43,56 @@ strategies
     <+ single-ast-option
 
   init-parse-unit-options =
-    where(<set-verbosity> 1)
-    ; init-sglr-options
-
-  init-sglr-options =
     where(
-      <set-config> (CustomSglrOptions(), ["-fi", "-fe"])
-    )
-
-strategies
-
-  pass-custom-sglr-options =
-    <get-config> CustomSglrOptions() <+ ![]
-
-  apply-to-custom-sglr-options(s) = 
-    where(
-      <get-config> CustomSglrOptions()
-    ; s
-    ; <set-config> (CustomSglrOptions(), <id>)
+      <set-verbosity> 1
+      ; set-heuristic-filters(false)
+      ; set-ambiguity-is-error(true)
     )
 
 /**
- * Parse table
+ * @todo These options should really be in libstratego-sglr
+ * Warning: the default
  */
 strategies
 
+  /**
+   * Parse table
+   */
   sglr-parse-table-option =
     ArgOption("-p"
     , where(<set-config> (ParseTable(), <id>))
     , !"-p <file.tbl>         Use parse table <file.tbl> (required)"
     )
 
-  get-sglr-parse-table =
-    <get-config> ParseTable()
+  /**
+   * Ambiguities configuration
+  sglr-amb-option =
+      ArgOption("-a" + "--amb"
+      , switch id
+          case "off" : set-ambiguity-is-error(true)
+          case "on"  : set-ambiguity-is-error(false)
+          otherwise  : fatal-err(|"Invalid value for option --amb: use on or off")
+        end
+      , !"-a, --amb <on|off>            Enable ambiguities (default: off)"
+      )
+   */
 
-/**
- * Filters
- */
-strategies
-
+  /**
+   * Filters
+   */
   sglr-filter-option =
       ArgOption("--heuristic-filters"
       , switch id
-          case "off" : disable-heuristic-filters
-          case "on"  : enable-heuristic-filters
+          case "off" : set-heuristic-filters(false)
+          case "on"  : set-heuristic-filters(true)
           otherwise  : fatal-err(|"Invalid value for option --heurstic-filters: use on or off")
         end
       , !"--heuristic-filters <on|off>  Enable heuristic disambiguation filters (default: off)"
       )
-
     + Option("--no-heuristic-filters"
-      , disable-heuristic-filters
+      , set-heuristic-filters(false)
       , !"--no-heuristic-filters        Disable heuristic disambiguation filters (deprecated option)"
       )
-
-  enable-heuristic-filters =
-    apply-to-custom-sglr-options(
-      filter(not("-fi" + "-fe"))
-    )
-
-  disable-heuristic-filters =
-    apply-to-custom-sglr-options(    
-      if not(fetch(?"-fi")) then
-        !["-fi" | <id>]
-      end
-    ; if not(fetch(?"-fe")) then
-        !["-fe" | <id>]
-      end
-    )
 
 strategies
 

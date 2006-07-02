@@ -60,8 +60,7 @@ strategies
       ; <echo> "......................................................................."
 
   echo-parse-result :
-    ParseResult(_, Success(f)) -> <debug(!"  - succeeded: ")> t
-      where <read-from> f => t
+    ParseResult(_, Success(ast)) -> <debug(!"  - succeeded: ")> ast
 
   echo-expected :
     pattern(p) -> <implode-aterm; debug(!"  - expected:  ")> p

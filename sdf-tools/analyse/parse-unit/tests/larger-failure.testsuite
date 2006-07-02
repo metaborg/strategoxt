@@ -16,6 +16,9 @@ test
 test multiplication has higher priority than addition
   "1 + 2 * 3" -> Plus(Int("1"), Mul(Int("2"), Int("3")))
 
+test multiplication has higher priority than addition
+  "1 + 2 * 3" -> Plus(_, Mul(_, _))
+
 test
   "x" -> Var("x")
 
@@ -25,6 +28,8 @@ test
 test
   "x1" fails
 
-test
+test should fail
   "1 * 2 * 3" -> Mul(Int("1"), Mul(Int("2"), Int("3")))
 
+test should fail
+  "1 * 2 * 3" -> Mul(_, Mul(_, _))

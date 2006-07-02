@@ -1,7 +1,7 @@
 module parse-unit
 imports
   libstratego-xtc
-  strategoxt-xtc-tools
+  libstratego-sglr
   parse-testsuite
   parse-unit-io
   parse-unit-test-results
@@ -25,121 +25,104 @@ strategies
 
   parse-unit = 
     read-parse-testsuite
+    ; where(tbl := <try-open-parse-table>)
     ; if get-single-test then
-        do-single-test(|<get-single-test> ())
+        where(set-ambiguity-is-error(false))
+        ; do-single-test(|tbl, <get-single-test> ())
+        ; write-to-text
       else
-        do-full-testsuite
+        do-full-testsuite(|tbl)
+        ; <xtc-exit> 0
       end
-    ; <xtc-exit> 0
     <+ <xtc-exit> 1
 
-  do-full-testsuite =
+  do-full-testsuite(|tbl) =
     echo-start
     ; ?parse-testsuite(name(name), topsort(sort), <id>)
-    ; map-with-index(execute-test(|sort, <try-get-parse-table> ()))
+    ; map-with-index(execute-test(|sort, tbl))
     ; !TestResults(<id>)
     ; where(<echo-results> (name, <id>))
     ; parse-unit-exit-on-failure
-    ; write-to
-
-  /**
-   * Run a single test
-   */
-  do-single-test(|i) =
-    ?parse-testsuite(name(name), topsort(sort), <id>)
-    ; ( <index> (i, <id>)
-      ; ?parse-test(description(s), file(f), output)
-        <+ say(!"error: parse-unit: no such test."); fail)
-    ; where(<debug(!"test : ")> s)
-
-    ; !FILE(f)
-    ; sglr-asfix2(|sort, <try-get-parse-table> ())
-    ; if not(is-single-test-output-asfix2) then
-        xtc-implode-asfix
-      end
-
-  try-get-parse-table =
-    get-sglr-parse-table <+ fatal-err(|"No parse table specified")
-
-strategies
 
   parse-unit-exit-on-failure =
     ?TestResults(<id>)
     ; map(?Success())
-    <+ <exit> 1
+    <+ <xtc-exit> 1
 
-  execute-test(|sort, table) = 
-      ?(i, <id>); ?t
-    ; ?parse-test(description(n), file(f), expected)
-    ; <sglri(|sort, table)> FILE(f)
-    ; ?result
-    ; <create-test-result> (<id>, expected)
-    ; where(<echo-report> (i, t, result, <id>))
+  do-single-test(|tbl, i) =
+    ?parse-testsuite(name(name), topsort(sort), <id>)
+    ; ( <index> (i, <id>)
+      ; ?parse-test(description(s), input, output)
+        <+ say(!"error: parse-unit: no such test.")
+           ; fail
+      )
+    ; where(<debug(!"test : ")> s)
+    ; <parse-unit-parse(|tbl, sort)> input
+    ; ?ParseResult(_, Success(<id>))
+    ; if not(is-single-test-output-asfix2) then
+        implode-asfix
+      end
 
 strategies
 
   /**
-   * @type FILE -> FILE
+   * @type (Int, Input) -> Result
    */
-  sglr-asfix2(|sort, table) =
-    core-sglr(|<conc> (<pass-custom-sglr-options> (), ["-2", "-p", table, "-s", sort]))
-
-  /**
-   * @type FILE -> ParseResult
-   */
-  sglri(|sort, table) = 
-    core-sglri(|<conc> (<pass-custom-sglr-options> (), ["-2A", "-p", table, "-s", sort]))
-
-  /**
-   * @type FILE -> FILE
-   */
-  core-sglr(|options) =
-    ?FILE(pathname)
-    ; xtc-transform(!"sglr", !options)
-
-  /**
-   * @type FILE -> ParseResult
-   */
-  core-sglri(|options) =
-    ?input@FILE(_);
+  execute-test(|sort, tbl) = 
+      ?(i, <id>)
+    ; ?t@parse-test(description(n), <id>, expected)
+    ; parse-unit-parse(|tbl, sort)
+    ; parse-unit-implode
+    ; ?result
+    ; <create-test-result> (result, expected)
+    ; where(
+        <echo-report> (i, t, result, <id>)
+      )
 
 
-    let /**
-         * @type FILE ->parseResult
-         */
-        success =
-          xtc-transform(!"implode-asfix", !["-b"])
-          < !ParseResult(input, Success(<id>))
-          + !ParseResult(input, Failure(Implode(<id>)))
+strategies
 
-        failure =
-          !ParseResult(input, Failure(Parse(<read-from>)))
+  parse-unit-parse(|tbl, sort) =
+    ?input@file(f)
+    ; if pt := <parse-file-pt(|tbl, sort)> f then
+        !ParseResult(FILE(f), Success(pt))
+      else
+        !ParseResult(FILE(f), Failure(Parse(<get-parse-error>)))
+      end
 
-     in xtc-sglr-always(success, failure | options)
-      ; if-verbose7(debug(!"ParseResult: "))
+  parse-unit-parse(|tbl, sort) =
+    ?input@string(s)
+    ; if pt := <parse-string-pt(|tbl, sort)> s then
+        !ParseResult(s, Success(pt))
+      else
+        !ParseResult(s, Failure(Parse(<get-parse-error>)))
+      end
+
+  parse-unit-implode =
+    if ?ParseResult(input, Success(pt)) then
+      if ast := <implode-asfix> pt then
+        !ParseResult(input, Success(ast))
+       else
+         !ParseResult(input, Failure(Implode(pt)))
+       end
     end
 
 strategies
 
-  xtc-sglr-always(success, failure | options) =
-    xtc-transform-always(success, failure | "sglr", options)
-
-  /**
-   * Do not fail if the tool invocation fails (non-zero exit
-   * code). Instead, invoke <function>success</function> if the tool
-   * succeeds, and <function>failure</function> if the tool fails.
-   */
-  xtc-transform-always(success, failure | tool, args) =
-    ?FILE(f)
-    ; where(<xtc-new-file> f => g)
-    ; <conc> (args, ["-i", f, "-o", g])
-    ; if xtc-command-silent(|tool) then
-        <success> FILE(g)
-      else
-        <failure> FILE(g)
+  try-open-parse-table =
+    (<get-config> ParseTable()
+       <+ log(|Critical(), "No parse table specified. Please use the -p option."); <xtc-exit> 1)
+    ; stream := <fopen <+ parse-unit-perror> (<id>, "r")
+    ; sglr-log-statistics(    
+        finally(read-from-stream, <fclose> stream)
+      | "Reading parse table")
+    ; if not(?"parse-table"#(_)) then
+        log(|Critical(), "The specified parse table file does not contain a parse table")
+        ; <xtc-exit> 1
       end
+    ; open-parse-table
+    <+ log(|Critical(), "Could not open parse table")
 
-  xtc-command-silent(|tool) =
-    where(<xtc-find-warning> tool => loc)
-    ; log(|Debug(),<concat-strings>["Invoking tool ", tool," at location ",loc," with arguments: "],<id>)
-    ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
+
+  parse-unit-perror =
+    <conc-strings; perror; fail> ("parse-unit: ", <id>)
