@@ -7,6 +7,9 @@ test simple int literal
 test simple addition
   "2 + 3" -> Plus(Int("2"), Int("3"))
 
+test simple addition
+  "2 + 3" -> Plus(...)
+
 test addition is left associative
   "1 + 2 + 3" -> Plus(Plus(Int("1"), Int("2")), Int("3"))
 

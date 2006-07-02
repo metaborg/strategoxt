@@ -41,6 +41,8 @@ testfail() {
 
 suite=failure-1      testfail
 suite=failure-2      testfail
+suite=failure-3      testfail
+suite=failure-4      testfail
 suite=larger-failure testfail
 suite=success        testsuccess
 

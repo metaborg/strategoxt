@@ -10,12 +10,13 @@ strategies
 
   aterm-eq =
     rec x(
-      list-term-eq(x)
-    +  int-term-eq(x)
-    +  fun-term-eq(x)
-    + appl-term-eq(x)
-    +      afun-eq(x)
-    +  wildcard-eq(x)
+        list-term-eq(x)
+    +    int-term-eq(x)
+    +    fun-term-eq(x)
+    +   appl-term-eq(x)
+    +        afun-eq(x)
+    +    wildcard-eq(x)
+    + wildcardvar-eq(x)
     )
 
 rules
@@ -28,6 +29,22 @@ rules
 
   wildcard-eq(x) =
     (wildcard(), id)
+
+rules
+
+  wildcardvar-eq(x) =
+    ?(list(not-empty(wildcardvar())), list(not-empty(_)))
+
+  wildcardvar-eq(x) =
+    ?(list(not-empty(_)), list(not-empty(wildcardvar())))
+
+  wildcardvar-eq(x) =
+    ?(appl(s1, wildcardvar()), appl(s2, _))
+    ; where(<x> (s1, s2))
+
+  wildcardvar-eq(x) =
+    ?(appl(s1, _), appl(s2, wildcardvar()))
+    ; where(<x> (s1, s2))
 
 rules
 

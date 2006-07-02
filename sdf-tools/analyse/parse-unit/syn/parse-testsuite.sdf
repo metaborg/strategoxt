@@ -29,6 +29,7 @@ exports
     "->" "file" PathName -> Result {cons("file")}
     "->" ATerm           -> Result {cons("pattern")}
     "_"                  -> ATerm  {cons("wildcard")}
+    "..."                -> { ATerm ","}+ {cons("wildcardvar")}
 
     "fails"    -> Result {cons("failure")}
     "succeeds" -> Result {cons("success")}

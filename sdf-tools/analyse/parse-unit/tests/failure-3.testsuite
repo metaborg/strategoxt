@@ -1,0 +1,5 @@
+testsuite Expressions
+topsort Exp
+
+test should fail
+  "1 * 2 * 3" -> Mul(_, Mul(_, _))

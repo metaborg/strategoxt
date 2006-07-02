@@ -63,10 +63,13 @@ strategies
     ParseResult(_, Success(ast)) -> <debug(!"  - succeeded: ")> ast
 
   echo-expected :
-    pattern(p) -> <implode-aterm; debug(!"  - expected:  ")> p
+    pattern(p) -> <hack-aterm-pattern; implode-aterm; debug(!"  - expected:  ")> p
 
-  implode-appl :
-    wildcard() -> "_"
+  hack-aterm-pattern =
+    topdown(try(
+      \ wildcardvar() -> [fun(qlit("\"...\""))] \
+    + \ wildcard() -> fun(qlit("\"_\"")) \
+    ))
 
   echo-expected :
     success() ->  <say(!"  - should succeed")> ()
