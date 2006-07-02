@@ -10,6 +10,7 @@ imports
 signature
   constructors
     ParseTable : ConfigKey
+    TopSort    : ConfigKey
 
 strategies
 
@@ -32,6 +33,41 @@ strategies
         , CurrentXTCRepository()
         ])
       ]
+
+strategies
+
+  process-testsuite-options =
+    parse-testsuite(id, options(map(where(process-testsuite-option <+ unknown-testsuite-option))), id)
+    ; where(
+        if not(<get-config> TopSort()) then
+          log(|Critical(), "The options of the testsuite do not specify a topsort.")
+          ; <xtc-exit> 1
+        end
+      )
+
+  process-testsuite-option =
+    ?option("topsort", s)
+    ; <set-config> (TopSort(), s)
+
+  process-testsuite-option =
+    ?option("ambiguity", "fails")
+    ; set-ambiguity-is-error(true)
+
+  process-testsuite-option =
+    ?option("ambiguity", "succeeds")
+    ; set-ambiguity-is-error(false)
+
+  process-testsuite-option =
+    ?option("heuristic-filters", "off")
+    ; set-heuristic-filters(false)
+
+  process-testsuite-option =
+    ?option("heuristic-filters", "on")
+    ; set-heuristic-filters(true)
+
+  unknown-testsuite-option =
+    ?option(k, v)
+    ; log(|Warning(), ["Unknown option specified in testsuite: ", k, " ", v])
 
 strategies
 

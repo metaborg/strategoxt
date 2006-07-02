@@ -25,20 +25,24 @@ strategies
 
   parse-unit = 
     read-parse-testsuite
-    ; where(tbl := <try-open-parse-table>)
+    ; process-testsuite-options
+    ; where(
+        tbl := <try-open-parse-table>
+        ; sort := <get-config> TopSort()
+      )
     ; if get-single-test then
         where(set-ambiguity-is-error(false))
-        ; do-single-test(|tbl, <get-single-test> ())
+        ; do-single-test(|tbl, sort, <get-single-test> ())
         ; write-to-text
       else
-        do-full-testsuite(|tbl)
+        do-full-testsuite(|tbl, sort)
         ; <xtc-exit> 0
       end
     <+ <xtc-exit> 1
 
-  do-full-testsuite(|tbl) =
+  do-full-testsuite(|tbl, sort) =
     echo-start
-    ; ?parse-testsuite(name(name), topsort(sort), <id>)
+    ; ?parse-testsuite(name(name), _, <id>)
     ; map-with-index(execute-test(|sort, tbl))
     ; !TestResults(<id>)
     ; where(<echo-results> (name, <id>))
@@ -49,8 +53,8 @@ strategies
     ; map(?Success())
     <+ <xtc-exit> 1
 
-  do-single-test(|tbl, i) =
-    ?parse-testsuite(name(name), topsort(sort), <id>)
+  do-single-test(|tbl, sort, i) =
+    ?parse-testsuite(name(name), _, <id>)
     ; ( <index> (i, <id>)
       ; ?parse-test(description(s), input, output)
         <+ say(!"error: parse-unit: no such test.")

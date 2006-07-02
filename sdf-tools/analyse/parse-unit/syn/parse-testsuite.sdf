@@ -11,8 +11,17 @@ hiddens
 exports
   sorts TestSuite TopSort Test Input Result 
   context-free syntax
-    "testsuite" Name TopSort Test+ -> TestSuite {cons("parse-testsuite")}
-    "topsort" Sort -> TopSort {cons("topsort")}
+    "testsuite" Name Options Test+ -> TestSuite {cons("parse-testsuite")}
+    "topsort" Sort    -> Options {cons("topsort")}
+    "options" Option+ -> Options {cons("options")}
+    OptionValue OptionValue -> Option {cons("option")}
+
+  lexical syntax
+    ~[\ \t\n\r]+ -> OptionValue
+    "test"       -> OptionValue {reject}
+
+  lexical restrictions
+    OptionValue -/- ~[\ \t\n\r]
 
   %% The description syntax is very ambiguous if comments are allowed around it. So, we forbid comments.
   syntax

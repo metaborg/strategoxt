@@ -10,11 +10,15 @@ strategies
   read-parse-testsuite =
     xtc-transform(!"sglri", !["-p", <xtc-find> "parse-testsuite.tbl", "--start", "TestSuite", "--amb", "off" | <pass-verbose> ()])
     ; read-from
+    ; parse-testsuite(id, try(topsort-to-options), id)
     ; parse-testsuite(id, id, map(drop-whitespace))
     ; topdown(try(drop-quotes))
     ; parse-testsuite(id, id, map(try(add-description)))
     ; parse-testsuite(id, id, map(ensure-test-input-absolute-path))
     ; parse-testsuite(id, id, map(ensure-test-output-not-in-file))
+
+  topsort-to-options :
+    topsort(s) -> options([option("topsort", s)])
 
 rules
 

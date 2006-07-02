@@ -44,8 +44,10 @@ suite=failure-2      testfail
 suite=failure-3      testfail
 suite=failure-4      testfail
 suite=failure-5      testfail
+suite=failure-6      testfail
 suite=larger-failure testfail
 suite=success        testsuccess
+suite=success-2      testsuccess
 
 echo "===================================================================="
 echo "                        Parse-unit checks                           "

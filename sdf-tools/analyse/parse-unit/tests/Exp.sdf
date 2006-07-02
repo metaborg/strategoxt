@@ -18,6 +18,12 @@ exports
   
     Exp "+"  Exp -> Exp  {left, cons("Plus")}
     Exp "-"  Exp -> Exp  {left, cons("Minus")}
+
+    Id "(" {Exp ","}* ")" -> Exp {cons("Call")}
+
+    %% ambiguous on purpose
+    Exp "="  Exp -> Exp  {cons("Eq")}
+
   
   context-free priorities
     {left:
