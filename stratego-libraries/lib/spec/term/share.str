@@ -72,24 +72,24 @@ strategies
   inline-graph(always, mklet) = 
 	\ [(a, t) | graph] -> GraphLet(graph, t) \ ;
 	repeat(
-          inline; (GraphLet([(id,always) | id], id) + dead) <+ 
-          dead <+
-          dont-inline(mklet));
+          term-share-inline; (GraphLet([(id,always) | id], id) + term-share-dead) <+ 
+          term-share-dead <+
+          term-share-dont-inline(mklet));
 	\ GraphLet([], t) -> t \
 
 rules
 
-  inline : 
+  term-share-inline : 
 	GraphLet([(a, skel) | graph], t) ->
 	GraphLet([(a, skel) | graph], t')
 	where <oncetd((a -> skel))> t => t'
 
-  dead : 
+  term-share-dead : 
 	GraphLet([(a, skel) | graph], t) -> 
 	GraphLet(graph, t)
 	where <not(is-subterm)> (a, t)
 
-  dont-inline(mklet) : 
+  term-share-dont-inline(mklet) : 
 	GraphLet([(a, skel) | graph], t) -> 
 	GraphLet(graph, <mklet>(a, skel, t))
 
