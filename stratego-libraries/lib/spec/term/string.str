@@ -934,7 +934,7 @@ strategies
     ; map(implode-string)
 
   /**
-   * Gets all newline('\n')-separated lines in a string.
+   * Gets all newline(\n, \r\n or \r)-separated lines in a string.
    * If the string is ended by a newline, the last element of the returned list
    * is the empty string.
    *
@@ -942,7 +942,19 @@ strategies
    * @since 0.9.4
    */
   get-lines =
-    string-tokenize-keep-empty(|['\n'])
+    explode-string
+    ; let split-at-newlines = {tl: 
+            at-suffix(
+               (['\n'       | tl] -> [])
+            <+ (['\r', '\n' | tl] -> [])
+            <+ (['\r'       | tl] -> [])
+            )
+            ; ![<id> | <split-at-newlines> tl]
+            <+ ![<id>]
+          }
+       in split-at-newlines
+      end
+    ; map(implode-string)
 
   /**
    * Applies a strategy to all lines in a string.
