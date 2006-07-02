@@ -3,8 +3,6 @@ imports
   libstrategolib
   xtc-lib
   xtc-query
-  xtc-call
-  xtc-get
 
 strategies
 
@@ -14,7 +12,7 @@ strategies
     <+ xtc-main
 
   xtc-main = 
-    parse-options(xtc-options)
+    parse-options(xtc-options, xtc-usage, xtc-usage)
     ; xtc-location
     ; log(|Notice(),<conc-strings>("Using repository ",<id>))
     ; xtc-read
@@ -24,6 +22,21 @@ strategies
        <+ <get-config> "query"; xtc-query)
     ; <exit> 0
    <+ err(|"xtc failed! ")
+
+  xtc-xtc-get =
+    ?[self, "get" | args]
+    ; <fprint> (stdout, <map(xtc-find)> args)
+    ; <fprint> (stdout, ["\n"])
+    ; <exit> 0
+
+  xtc-xtc-call =
+    ?[self, "call", prog | args]
+    ; <execvp>(<xtc-find> prog, args)
+
+/**
+ * Options
+ */
+strategies
 
   xtc-options =
     ArgOption("-r" + "--repository",
@@ -70,17 +83,27 @@ strategies
         where(<set-config>("-R", ())),
         !"--Repository | -R            Location of repository\n")
 
+    // This option will never be handled: it's only for printing some info in --help
+  + ArgOption("get"
+      , fail
+      , !"get tool...                  Query the standard XTC repository for all the specified tools\n"
+    )
+
   + ArgOption("--verbose",
         where(<set-config> ("--verbose", <verbose-to-int>)),
         !"--verbose i                  Verbosity level i (default 1)")
 
-/*
-  short-description(p) = 
+
+strategies
+
+  xtc-usage =
+    default-system-usage(xtc-short-description, xtc-long-description)
+
+  xtc-short-description =
     !["Usage: xtc [-r rep] register -t tool -V vers -l loc\n",
       "       xtc [-r rep] (import r)+\n",
       "       xtc [-r rep] query (-a | -t tool [-V version]) [-L]"]
  
-  long-description(p)  = 
-    !["The xtc command supports the registration of tools in an XTC repository\n",
-      "and querying XTC repositories"]
-*/
+  xtc-long-description =
+    !["   The xtc command supports the registration of tools in an XTC repository\n",
+      "   and querying XTC repositories"]
