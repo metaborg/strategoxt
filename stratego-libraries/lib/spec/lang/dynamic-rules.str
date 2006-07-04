@@ -476,14 +476,12 @@ strategies // change sets
         ; try(
             <DR_BREAK>IgnoreB(csid) => labelb
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextb)))>rs''
-//               ; rules(DR_BREAK.labelb : IgnoreB(csidnextb) -> labelb)
                ; dr-define-ignoreB(|csidnextb, labelb)
                <+ fatal-err(|"dr-break was called outside of a fix and merge operator or a dr-label call"))
           )
         ; try(
             <DR_BREAK>IgnoreC(csid) => labelc
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextc)))>rs''
-//               ; rules(DR_BREAK.labelc : IgnoreC(csidnextc) -> labelc)
                ; dr-define-ignoreC(|csidnextc, labelc)
                <+ fatal-err(|"dr-continue was called outside of a fix and merge operator call"))
           )
@@ -1624,7 +1622,7 @@ strategies // exception handling strategies
 
   dr-throw(eq-test | tag, rulename) =
     where(
-      get-matching-try-block(eq-test | tag, rulename) => (pos, ID, catchID)
+      get-matching-id(eq-test | tag, rulename) => (pos, ID, catchID)
       ; dr-get-rule-set(|rulename) => rs
       ; back-split-at(|pos)
       ; dr-build-aggregated-change-set => tcs
@@ -1634,7 +1632,7 @@ strategies // exception handling strategies
     )
 
   // checked
-  get-matching-try-block(eq-test | tag, rulename) =
+  get-matching-id(eq-test | tag, rulename) =
     (<bagof-DR_EXCEPTION>Structure(rulename) <+ ![])
     ; where(
         fetch-elem({pos, catches :
@@ -1650,6 +1648,16 @@ strategies // exception handling strategies
         ; !(pos, <id>, catchID)
       })
 
+  get-matching-id(|catchID, rulename) =
+    (<bagof-DR_EXCEPTION>Structure(rulename) <+ ![])
+    ; fetch-elem({pos, catches, fID :
+        ?TryBlock(pos, _, catches, Finally(fID))
+        ; (<fetch-elem(?Catch(catchID, _); !catchID)>catches
+           <+ <not(eq)>(fID, ""); !fID)
+        ; !(pos, <id>)
+      })
+      <+ fatal-err(|"dr-complete-finally: Could not forward exception due to missing catch clause")
+
   dr-complete-catch(merge, s | rulenames) =
     ?term
     
@@ -1664,16 +1672,17 @@ strategies // exception handling strategies
         ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, _) | rs]
            <+ fatal-err(|"dr-complete-catch was not called in a proper exception handling context"))
 //        ; debug(!"dr-complete-catch-3>")
-        ; try(
-            <bagof-DR_EXCEPTION>ThrowCS(rulename, cID) => [(hd, _) | tl]
-//            ; debug(!"dr-complete-catch-4>")
-            ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
+        ; <bagof-DR_EXCEPTION>ThrowCS(rulename, cID)
+        ; if ?[(hd, _) | tl] then
+            <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
 //            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-2<")
 //            ; debug(!"dr-complete-catch-5>")
             ; <map(![<?(<id>, _)> | rs]; try(<merge>(rulename, <id>)))>tl
 //            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-3<")
 //            ; debug(!"dr-complete-catch-6>")
-          )
+          else
+            <dr-set-rule-set(|rulename)>[<dr-clone-change-set>cs | rs]
+          end
 //        ; debug(!"dr-complete-catch-7>")
         ; !cs
 //        ; debug(!"dr-complete-catch-8>")
@@ -1724,46 +1733,143 @@ strategies // exception handling strategies
 
   dr-complete-finally(merge, s | rulenames) =
     ?term
-    ; <s>term => e
+    
+//    ; debug(!"dr-complete-finally-1>")
+    
+    ; <map({rulename, tb, fID, cs, csid, rs, tcss, hd, tl :
+        ?rulename
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-finally-1<")
+//        ; debug(!"dr-complete-finally-2>")
+        ; (<once-DR_EXCEPTION>Structure(rulename) => tb@TryBlock(_, _, [], Finally(fID))
+           <+ fatal-err(|"dr-complete-finally was called when a catch clause was still active"))
+//        ; debug(!"dr-complete-finally-3>")
+        ; try(<eq>(fID, ""); fatal-err(|"dr-complete-finally was called when a finally clause was not active"))
+//        ; debug(!"dr-complete-finally-4>")
+        ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, Hashtable(csid)) | rs]
+           <+ fatal-err(|"dr-complete-finally was not called in a proper exception handling context"))
+//        ; debug(!"dr-complete-finally-5>")
+        ; (<bagof-DR_EXCEPTION>ThrowCS(rulename, fID) <+ ![]) => tcss
+//        ; debug(!"dr-complete-finally-6>")
+        ; (<bagof-DR_EXCEPTION>ExceptionCS(rulename, fID) <+ ![])
+//        ; debug(!"dr-complete-finally-7>")
+        ; <conc>(<id>, <map(?(<id>, _))>tcss)
+//        ; dr-print-rule-set-msg(|"Exception change sets")
+//        ; debug(!"dr-complete-finally-8>")
+        ; if ?[hd | tl]; <DR_EXCEPTION>IgnoreT(csid) then
+//            debug(!"dr-complete-finally-9>");
+            dr-discard-change-set(|rulename)
+//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-2<")
+//            ; debug(!"dr-complete-finally-10>")
+            ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
+//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-3<")
+//            ; debug(!"dr-complete-finally-11>")
+            ; <map(try(<merge>(rulename, <![<id> | rs]>)))>tl
+//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-4<")
+//            ; debug(!"dr-complete-finally-12>")
+          else
+//            debug(!"dr-complete-finally-13>");
+            where(<dr-set-rule-set(|rulename)>[<dr-clone-change-set>cs | rs])
+//            ; debug(!"dr-complete-finally-14>")
+            ; map(try(<merge>(rulename, <![<id> | rs]>)))
+//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-5<")
+//            ; debug(!"dr-complete-finally-15>")
+          end
+        ; !(tb, cs, rulename)
+//        ; debug(!"dr-complete-finally-16>")
+      })>rulenames => temp
+
+//    ; debug(!"dr-complete-finally-17>")
+
+    ; restore(<s>term => e,
+        <map({tb, cs, rulename, rs :
+          ?(tb, cs, rulename)
+          ; dr-get-rule-set(|rulename)
+          ; [dr-destroy-change-set | ?rs]
+          ; ![cs | rs]
+          ; dr-set-rule-set(|rulename)
+          ; rules(DR_EXCEPTION :+ Structure(rulename) -> tb)
+        })>temp
+      )
+
+//    ; debug(!"dr-complete-finally-18>")
+
+    ; <map({rulename, pos, ID, fID, csid, rs :
+        ?(TryBlock(pos, ID, [], Finally(fID)), _, rulename)
+//        ; debug(!"dr-complete-finally-19>")
+        ; rules(DR_EXCEPTION :+ Structure(rulename) -> TryBlock(pos, ID, [], Finally("")))
+        ; rules(DR_EXCEPTION :- ExceptionCS(rulename, fID))
+//        ; debug(!"dr-complete-finally-20>")
+        ; (dr-get-rule-set(|rulename) => rs@[ChangeSet(_, _, Hashtable(csid)) | _]
+           <+ fatal-err(|"dr-complete-finally: A change set was expected here!"))
+//        ; debug(!"dr-complete-finally-21>")
+        ; try(
+            <not(DR_EXCEPTION)>IgnoreT(csid)
+//            ; debug(!"dr-complete-finally-22>")
+            ; (<bagof-DR_EXCEPTION>ThrowCS(rulename, fID) <+ ![])
+//            ; debug(!"dr-complete-finally-24>")
+            ; map(?(_, <id>))
+//            ; debug(!"dr-complete-finally-25>")
+            ; make-set
+//            ; debug(!"dr-complete-finally-26>")
+            ; map({catchID, pos, nextID, tcs :
+                ?catchID
+//                ; debug(!"dr-complete-finally-27>")
+                ; get-matching-id(|catchID, rulename) => (pos, nextID)
+//                ; debug(!"dr-complete-finally-28>")
+                ; <back-split-at(|pos)>rs
+//                ; debug(!"dr-complete-finally-29>")
+                ; dr-build-aggregated-change-set => tcs
+//                ; debug(!"dr-complete-finally-30>")
+                ; rules(DR_EXCEPTION :+ ThrowCS(rulename, nextID) -> (tcs, catchID))
+//                ; debug(!"dr-complete-finally-31>")
+              })
+          )
+        ; rules(DR_EXCEPTION :- ThrowCS(rulename, fID))
+//        ; debug(!"dr-complete-finally-32>")
+      })>temp
+
+//    ; debug(!"dr-complete-finally-33>")
     ; !e
+//    ; debug(!"dr-complete-finally-34>")
 
   dr-complete-exception-block(merge | rulenames) =
 //    debug(!"dr-complete-exception-block-1>")
     where(
-      <map({rulename, ID, cs, csid, rs, hd :
+      <map({rulename, ID, csid, rs, hd, tl :
         ?rulename
 //        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-1<")
 //        ; debug(!"dr-complete-exception-block-2>")
-        ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(_, ID, [], _)
-           <+ fatal-err(|"dr-complete-exception-block was called before completing all catch clauses or in a non-proper exception handling context"))
+        ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(_, ID, [], Finally(""))
+           <+ fatal-err(|"dr-complete-exception-block was called before completing all catch clauses (and the finally clause) or in a non-proper exception handling context"))
 //        ; debug(!"dr-complete-exception-block-3>")
-        ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, Hashtable(csid)) | rs]
+        ; (dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | rs]
            <+ fatal-err(|"dr-complete-exception-block was not called in a proper exception handling context"))
 //        ; debug(!"dr-complete-exception-block-4>")
         ; (<bagof-DR_EXCEPTION>ExceptionCS(rulename, ID) <+ ![])
 //        ; debug(!"dr-complete-exception-block-5>")
-        ; where(try(
-            ?[hd | _]
-//            ; debug(!"dr-complete-exception-block-6>")
-            ; <DR_EXCEPTION>IgnoreT(csid)
+        ; if ?[hd | tl]; <DR_EXCEPTION>IgnoreT(csid) then
+//            debug(!"dr-complete-exception-block-6>");
+            dr-discard-change-set(|rulename)
 //            ; debug(!"dr-complete-exception-block-7>")
-            ; dr-discard-change-set(|rulename)
-//            ; debug(!"dr-complete-exception-block-8>")
             ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
+//            ; debug(!"dr-complete-exception-block-8>")
+            ; <map(![<id> | rs]; try(<merge>(rulename, <id>)))>tl
 //            ; debug(!"dr-complete-exception-block-9>")
-          ))
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-2<")
-        ; map(![<id> | rs]; try(<merge>(rulename, <id>)))
-//        ; debug(!"dr-complete-exception-block-10>")
+          else
+//            debug(!"dr-complete-exception-block-10>");
+            map(![<id> | rs]; try(<merge>(rulename, <id>)))
+//            ; debug(!"dr-complete-exception-block-11>")
+          end
+//        ; debug(!"dr-complete-exception-block-12>")
         ; rules(DR_EXCEPTION :- ExceptionCS(rulename, ID))
 //        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-3<")
-//        ; debug(!"dr-complete-exception-block-11>")
+//        ; debug(!"dr-complete-exception-block-13>")
         ; dr-commit-change-set(|rulename)
 //        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-4<")
-//        ; debug(!"dr-complete-exception-block-12>")
+//        ; debug(!"dr-complete-exception-block-14>")
       })>rulenames
     )
-//    ; debug(!"dr-complete-exception-block-13>")
+//    ; debug(!"dr-complete-exception-block-15>")
 
 strategies // transactional run of a strategy
 

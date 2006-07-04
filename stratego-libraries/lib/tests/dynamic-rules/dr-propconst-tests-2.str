@@ -15,9 +15,10 @@ strategies
   propconst-tests-2 =
     test-suite(!"Dynamic Rules Library -- Constant Propagation (part 2)",
       where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Combined Break & Continue Tests"))
-//    ; pc-break-and-continue-tests
+    ; pc-break-and-continue-tests
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Exception Tests"))
     ; pc-exception-tests
+    ; pc-exception-tests-fin
     )
 
 strategies
@@ -596,4 +597,361 @@ strategies
          f(x); x := 1;
        end
        f(x);"
+     )
+
+  pc-exception-tests-fin = id
+
+  ; apply-propconst-test(!"Exception test #7" |
+      "var x;
+       try
+         if c() then x := 1; throw F; else x := 2; throw E; end
+       catch (e: E)
+         f(x); x := 1;
+       catch (f: F)
+         f(x); x := 1;
+       finally
+         f(x); x := 2;
+       end
+       f(x);",
+      "var x;
+       try
+         if c() then x := 1; throw F; else x := 2; throw E; end
+       catch (e: E)
+         f(2); x := 1;
+       catch (f: F)
+         f(1); x := 1;
+       finally
+         f(1); x := 2;
+       end
+       f(2);"
+    )
+
+  ; apply-propconst-test(!"Exception test #8" |
+      "var x;
+       try
+         if c() then x := 1; throw F; else x := 2; throw E; end
+       catch (e: E)
+         f(x); x := 1;
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(x); x := 2;
+       end
+       f(x);",
+      "var x;
+       try
+         if c() then x := 1; throw F; else x := 2; throw E; end
+       catch (e: E)
+         f(2); x := 1;
+       catch (f: F)
+         f(1); x := 2;
+       finally
+         f(x); x := 2;
+       end
+       f(2);"
+    )
+
+  ; apply-propconst-test(!"Exception test #9" |
+      "var x;
+       try
+         if c() then x := 1; throw F; else x := 2; end
+         if c() then x := 2; throw E; else x := 2; end
+       catch (e: E)
+         f(x); x := 1;
+       catch (f: F)
+         f(x); x := 1;
+       finally
+         f(x); x := 2;
+       end
+       f(x);",
+      "var x;
+       try
+         if c() then x := 1; throw F; else x := 2; end
+         if c() then x := 2; throw E; else x := 2; end
+       catch (e: E)
+         f(2); x := 1;
+       catch (f: F)
+         f(1); x := 1;
+       finally
+         f(x); x := 2;
+       end
+       f(2);"
+    )
+
+  ; apply-propconst-test(!"Exception test #10" |
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 1; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(x);
+         end
+         f(x);
+         if c() then throw F; end
+         x := 2;
+       catch (e: E)
+         f(x);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(x);
+         end
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(x);
+       end
+       f(x);",
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 1; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(1);
+         end
+         f(1);
+         if c() then throw F; end
+         x := 2;
+       catch (e: E)
+         f(1);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(2);
+         end
+       catch (f: F)
+         f(1); x := 2;
+       finally
+         f(2);
+       end
+       f(2);"
+     )
+
+  ; apply-propconst-test(!"Exception test #11" |
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 1; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(x); x := 2;
+         end
+         f(x);
+         if c() then x := 1; throw F; end
+         x := 2;
+       catch (e: E)
+         f(x);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(x);
+         end
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(x);
+       end
+       f(x);",
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 1; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(1); x := 2;
+         end
+         f(2);
+         if c() then x := 1; throw F; end
+         x := 2;
+       catch (e: E)
+         f(2);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(2);
+         end
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(2);
+       end
+       f(2);"
+     )
+
+  ; apply-propconst-test(!"Exception test #12" |
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 2; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(x); if c() then x := 2; throw E; else x := 3; throw F; end
+         end
+       catch (e: E)
+         f(x);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(x);
+         end
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(x);
+       end
+       f(x);",
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 2; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(x); if c() then x := 2; throw E; else x := 3; throw F; end
+         end
+       catch (e: E)
+         f(2);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(2);
+         end
+       catch (f: F)
+         f(3); x := 2;
+       finally
+         f(2);
+       end
+       f(2);"
+     )
+
+  ; apply-propconst-test(!"Exception test #13" |
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 1; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(x); if c() then x := 3; throw F; end
+         end
+         f(x);
+         if c() then throw F; end
+         x := 2;
+       catch (e: E)
+         f(x);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(x);
+         end
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(x);
+       end
+       f(x);",
+      "var x;
+       try
+         x := 1;
+         try
+           if c() then x := 1; throw A; end
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw F; end
+           if c() then
+             if c() then x := 2; throw A; else x := 1; throw E; end
+           else
+             x := 1;
+           end
+         catch (a: A)
+           f(x); x := 1;
+           if c() then throw E; end
+         finally
+           f(1); if c() then x := 3; throw F; end
+         end
+         f(1);
+         if c() then throw F; end
+         x := 2;
+       catch (e: E)
+         f(1);
+         try
+           if c() then x := 2; throw B; else x := 2; end
+         catch (b: B)
+           f(2);
+         end
+       catch (f: F)
+         f(x); x := 2;
+       finally
+         f(2);
+       end
+       f(2);"
      )
