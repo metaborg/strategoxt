@@ -264,94 +264,94 @@ strategies
    */
 
   hashtable-merge(symm, iterate1, iterate2, remove, merge
-		 , default, change1, change2, lookup1, lookup2) :
+                 , default, change1, change2, lookup1, lookup2) :
     (tbl1, tbl2) -> tbl1
     where if iterate1 then
-	    <hashtable-keys> tbl1
-	    ; filter({key, val1, val2, val3: 
-	        ?key
-		; if <lookup2> key => val2 then 
+            <hashtable-keys> tbl1
+            ; filter({key, val1, val2, val3: 
+                ?key
+                ; if <lookup2> key => val2 then 
                     <hashtable-get(|key)> tbl1 => val1
                     ; <merge>(val1, val2) => val3
                     ; ior(
-			if <?val1> val3 then 
-			  fail // no change to tbl1
-			else
+                        if <?val1> val3 then 
+                          fail // no change to tbl1
+                        else
                           <hashtable-put(|key, val3)> tbl1; change1
-		        end
-	              , if symm; <?val2> val3 then 
-			  fail // no change to tbl2
- 		        else
+                        end
+                      , if symm; <?val2> val3 then 
+                          fail // no change to tbl2
+                         else
                           <hashtable-put(|key, val3)> tbl2; change2
                         end
-		      )
-		  else if <default> key => val2 then
+                      )
+                  else if <default> key => val2 then
                     <hashtable-get(|key)> tbl1 => val1
                     ; <merge>(val1, val2) => val3
                     ; ior(
-			if <?val1> val3 then 
-			  fail // no change to tbl1
-			else
+                        if <?val1> val3 then 
+                          fail // no change to tbl1
+                        else
                           <hashtable-put(|key, val3)> tbl1; change1
-		        end
-	              , if symm then 
+                        end
+                      , if symm then 
                           <hashtable-put(|key, val3)> tbl2; change2
                         end
-		      )
-	          else // lookup2 failed, no default
-		    if remove then 
-		      <hashtable-remove(|key)> tbl1;
-		      if symm then
-		        <hashtable-remove(|key)> tbl2; change2
-		      end		
-		    else 
-                      fail // no change to either table	    
-		    end
-		  end end
+                      )
+                  else // lookup2 failed, no default
+                    if remove then 
+                      <hashtable-remove(|key)> tbl1;
+                      if symm then
+                        <hashtable-remove(|key)> tbl2; change2
+                      end                
+                    else 
+                      fail // no change to either table            
+                    end
+                  end end
               })
-	  else ![] end => changes1
+          else ![] end => changes1
 
-	; if iterate2 then
+        ; if iterate2 then
 
-	    <hashtable-keys> tbl2
-	    ; filter({key, val1, val2, val3: 
-	        ?key
-	        ; if iterate1 then not(<hashtable-get(|key)>tbl1) end
-		; if <lookup1> key => val1 then 
+            <hashtable-keys> tbl2
+            ; filter({key, val1, val2, val3: 
+                ?key
+                ; if iterate1 then not(<hashtable-get(|key)>tbl1) end
+                ; if <lookup1> key => val1 then 
                     <hashtable-get(|key)> tbl2 => val2
                     ; <merge>(val1, val2) => val3
                     ; ior(if <?val1> val3 then 
-			    fail // no change to tbl1
-			  else 
-			    <hashtable-put(|key, val3)> tbl1; change1
-		          end
-	                ,if symm; <?val2> val3 then 
-			   fail // no change to tbl2
-			 else
+                            fail // no change to tbl1
+                          else 
+                            <hashtable-put(|key, val3)> tbl1; change1
+                          end
+                        ,if symm; <?val2> val3 then 
+                           fail // no change to tbl2
+                         else
                            <hashtable-put(|key, val3)> tbl2; change2
                          end
-		        )
-		  else if <default> key => val1 then 
+                        )
+                  else if <default> key => val1 then 
                     <hashtable-get(|key)> tbl2 => val2
                     ; <merge>(val1, val2) => val3
                     ; <hashtable-put(|key, val3)> tbl1
-	            ; if symm; <not(?val2)> val3 then 
+                    ; if symm; <not(?val2)> val3 then 
                         <hashtable-put(|key, val3)> tbl2
                       end
-		  else // lookup1 failed and no default
-		    if remove then 
-		      <hashtable-remove(|key)> tbl1;
-		      if symm then
-		        <hashtable-remove(|key)> tbl2; change2
-		      end	
-		    else 
-                      fail // no change to either table	    
-		    end
-		  end end
+                  else // lookup1 failed and no default
+                    if remove then 
+                      <hashtable-remove(|key)> tbl1;
+                      if symm then
+                        <hashtable-remove(|key)> tbl2; change2
+                      end        
+                    else 
+                      fail // no change to either table            
+                    end
+                  end end
               })
 
-	  else ![] end => changes2
-	  ; (<not([])> changes1 <+ <not([])> changes2)
+          else ![] end => changes2
+          ; (<not([])> changes1 <+ <not([])> changes2)
 
 
   /**
@@ -360,7 +360,7 @@ strategies
   hashtable-merge(symm, iterate1, iterate2, remove, merge, default, 
                   lookup1, lookup2) =
   hashtable-merge(symm, iterate1, iterate2, remove, merge, default, 
-	          change1-yes, change2-yes, lookup1, lookup2)
+                  change1-yes, change2-yes, lookup1, lookup2)
 
   /**
    * Merge hashtables creating a new one.
@@ -368,7 +368,7 @@ strategies
   hashtable-merge-func(iterate1, iterate2, remove, merge, default, lookup1, lookup2) : 
     (tbl1, tbl2) -> tbl3
     where <hashtable-copy> tbl1 => tbl3
-	; <hashtable-merge(symmetric-no, iterate1, iterate2, remove, merge, default, lookup1, lookup2)> (tbl3, tbl2)
+        ; <hashtable-merge(symmetric-no, iterate1, iterate2, remove, merge, default, lookup1, lookup2)> (tbl3, tbl2)
 
 strategies // intersection merges
 
@@ -385,14 +385,14 @@ strategies // intersection merges
     ?tbl1
     ; !(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-no, 
-	iterate1-yes, 
-	iterate2-no, 
-	remove-yes,	
-	isect, 
-	default-no, 
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	\ key -> <hashtable-get(|key)> tbl2 \
+        symmetric-no, 
+        iterate1-yes, 
+        iterate2-no, 
+        remove-yes,        
+        isect, 
+        default-no, 
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        \ key -> <hashtable-get(|key)> tbl2 \
      )
 
   /**
@@ -407,14 +407,14 @@ strategies // intersection merges
     ?tbl1
     ; !(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-no, 
-	iterate1-yes, 
-	iterate2-yes, 
-	remove-no,	
-	isect, 
-	!emptyElt, 
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	\ key -> <hashtable-get(|key)> tbl2 \
+        symmetric-no, 
+        iterate1-yes, 
+        iterate2-yes, 
+        remove-no,        
+        isect, 
+        !emptyElt, 
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        \ key -> <hashtable-get(|key)> tbl2 \
      )
 
   /**
@@ -429,14 +429,14 @@ strategies // intersection merges
   hashtable-intersect-symm-wempty(|emptyElt) =
     ?(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-yes,
-	iterate1-yes,
-	iterate2-yes,
-	remove-no,
-	isect,
-	!emptyElt,
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	\ key -> <hashtable-get(|key)> tbl2 \
+        symmetric-yes,
+        iterate1-yes,
+        iterate2-yes,
+        remove-no,
+        isect,
+        !emptyElt,
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        \ key -> <hashtable-get(|key)> tbl2 \
      )
 
   /**
@@ -451,16 +451,16 @@ strategies // intersection merges
   hashtable-intersect-symm-wempty-ignore-left(|emptyElt) =
     ?(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-yes,
-	iterate1-yes,
-	iterate2-yes,
-	remove-no,
-	isect,
-	!emptyElt,
-	change1-no,
-	change2-yes,
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	\ key -> <hashtable-get(|key)> tbl2 \
+        symmetric-yes,
+        iterate1-yes,
+        iterate2-yes,
+        remove-no,
+        isect,
+        !emptyElt,
+        change1-no,
+        change2-yes,
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        \ key -> <hashtable-get(|key)> tbl2 \
      )
 
 strategies // union merges
@@ -475,41 +475,41 @@ strategies // union merges
     ?tbl1
     ; !(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-no, 
-	iterate1-no, 
-	iterate2-yes, 
-	remove-no,	
-	union, 
-	![], 
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	fail
+        symmetric-no, 
+        iterate1-no, 
+        iterate2-yes, 
+        remove-no,        
+        union, 
+        ![], 
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        fail
      )
 
   hashtable-union-wempty(|tbl2, emptyElt) =
     ?tbl1
     ; !(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-no, 
-	iterate1-no, 
-	iterate2-yes, 
-	remove-no,	
-	union, 
-	!emptyElt, 
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	fail
+        symmetric-no, 
+        iterate1-no, 
+        iterate2-yes, 
+        remove-no,        
+        union, 
+        !emptyElt, 
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        fail
      )
 
   hashtable-union-symm-wempty(|emptyElt) =
     ?(tbl1, tbl2)
     ; hashtable-merge(
-	symmetric-yes, 
-	iterate1-yes, 
-	iterate2-yes, 
-	remove-no,	
-	union, 
-	!emptyElt, 
-	\ key -> <hashtable-get(|key)> tbl1 \,
-	\ key -> <hashtable-get(|key)> tbl2 \
+        symmetric-yes, 
+        iterate1-yes, 
+        iterate2-yes, 
+        remove-no,        
+        union, 
+        !emptyElt, 
+        \ key -> <hashtable-get(|key)> tbl1 \,
+        \ key -> <hashtable-get(|key)> tbl2 \
      )
 
 strategies
@@ -657,10 +657,10 @@ strategies
 
 
 /*
-	Symbol tables that deal with scoped bindings need to be able
-	to store multiple bindings for the same symbol. The following
-	table operations can be used to maintain a stack (list)
-	of values for each key.
+        Symbol tables that deal with scoped bindings need to be able
+        to store multiple bindings for the same symbol. The following
+        table operations can be used to maintain a stack (list)
+        of values for each key.
 */
 
 strategies

@@ -474,19 +474,22 @@ strategies // change sets
         ; <iset-elements> rmset
         ; foldr(!rs', dr-apply-removal) => rs''
         ; try(
-            <DR_BREAK>IgnoreB(csid) => labelb
+            destroy
+            ; <DR_BREAK>IgnoreB(csid) => labelb
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextb)))>rs''
                ; dr-define-ignoreB(|csidnextb, labelb)
                <+ fatal-err(|"dr-break was called outside of a fix and merge operator or a dr-label call"))
           )
         ; try(
-            <DR_BREAK>IgnoreC(csid) => labelc
+            destroy
+            ; <DR_BREAK>IgnoreC(csid) => labelc
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextc)))>rs''
                ; dr-define-ignoreC(|csidnextc, labelc)
                <+ fatal-err(|"dr-continue was called outside of a fix and merge operator call"))
           )
         ; try(
-            <DR_EXCEPTION>IgnoreT(csid)
+            destroy
+            ; <DR_EXCEPTION>IgnoreT(csid)
             ; (<fetch(ChangeSet(id, id, ?Hashtable(csidnextt)))>rs''
                ; dr-define-ignoreT(|csidnextt)
                <+ fatal-err(|"dr-throw was not called in the proper exception handling context"))
@@ -1660,9 +1663,9 @@ strategies // exception handling strategies
 
   dr-complete-catch(merge, s | rulenames) =
     ?term
-    
+
 //    ; debug(!"dr-complete-catch-1>")
-  
+
     ; <map({rulename, cID, cs, rs, hd, tl :
         ?rulename
 //        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-1<")
@@ -1673,22 +1676,25 @@ strategies // exception handling strategies
            <+ fatal-err(|"dr-complete-catch was not called in a proper exception handling context"))
 //        ; debug(!"dr-complete-catch-3>")
         ; <bagof-DR_EXCEPTION>ThrowCS(rulename, cID)
+//        ; debug(!"dr-complete-catch-4>")
+//        ; where(map(?(<id>, _)); debug(!"dr-complete-catch-4'>"); dr-print-rule-set-msg(|"Throw change sets"))
         ; if ?[(hd, _) | tl] then
+//            debug(!"dr-complete-catch-5>");
             <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
 //            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-2<")
-//            ; debug(!"dr-complete-catch-5>")
-            ; <map(![<?(<id>, _)> | rs]; try(<merge>(rulename, <id>)))>tl
-//            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-3<")
 //            ; debug(!"dr-complete-catch-6>")
+            ; <map(![<?(<id>, _)> | rs]; try(<merge>(rulename, <id>)))>tl
           else
+//            debug(!"dr-complete-catch-7>");
             <dr-set-rule-set(|rulename)>[<dr-clone-change-set>cs | rs]
           end
-//        ; debug(!"dr-complete-catch-7>")
-        ; !cs
+//        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-3<")
 //        ; debug(!"dr-complete-catch-8>")
+        ; !cs
+//        ; debug(!"dr-complete-catch-9>")
       })>rulenames => css
 
-//    ; debug(!"dr-complete-catch-9>")
+//    ; debug(!"dr-complete-catch-10>")
     ; restore(<s>term => e,
         <zip>(css, rulenames)
         ; map({cs, rulename, rs :
@@ -1700,36 +1706,36 @@ strategies // exception handling strategies
           })
       )
 //    ; where(<map(dr-debug-rule-set(|<id>, ">dr-complete-catch-4<"))>rulenames)
-//    ; debug(!"dr-complete-catch-10>")
+//    ; debug(!"dr-complete-catch-11>")
 
     ; <zip>(css, rulenames)
-//    ; debug(!"dr-complete-catch-11>")
+//    ; debug(!"dr-complete-catch-12>")
     ; map({cs, rulename, pos, ID, cID, catches, fin, fID, cs', rs :
         ?(cs, rulename)
-//        ; debug(!"dr-complete-catch-12>")
+//        ; debug(!"dr-complete-catch-13>")
         ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(pos, ID, [Catch(cID, _) | catches], fin@Finally(fID))
            <+ fatal-err(|"dr-complete-catch: Unexpected failure here!"))
-//        ; debug(!"dr-complete-catch-13>")
+//        ; debug(!"dr-complete-catch-14>")
         ; rules(DR_EXCEPTION :+ Structure(rulename) -> TryBlock(pos, ID, catches, fin))
         ; rules(DR_EXCEPTION :- ThrowCS(rulename, cID))
-//        ; debug(!"dr-complete-catch-14>")
+//        ; debug(!"dr-complete-catch-15>")
         ; (dr-get-rule-set(|rulename) => [cs'@ChangeSet(_, _, _) | rs]
            <+ fatal-err(|"dr-complete-catch: A change set was expected here!"))
-//        ; debug(!"dr-complete-catch-15>")
+//        ; debug(!"dr-complete-catch-16>")
         ; (<eq>(fID, "")
            < rules(DR_EXCEPTION :+ ExceptionCS(rulename, ID) -> cs')//; debug(!"dr-complete-catch-16>")
            + rules(DR_EXCEPTION :+ ExceptionCS(rulename, fID) -> cs'))//; debug(!"dr-complete-catch-17>")
-//        ; debug(!"dr-complete-catch-18>")
+//        ; debug(!"dr-complete-catch-17>")
         ; ![cs | rs]
-//        ; debug(!"dr-complete-catch-19>")
+//        ; debug(!"dr-complete-catch-18>")
         ; dr-set-rule-set(|rulename)
-//        ; debug(!"dr-complete-catch-20>")
+//        ; debug(!"dr-complete-catch-19>")
 //        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-5<")
       })
 
-//    ; debug(!"dr-complete-catch-21>")
+//    ; debug(!"dr-complete-catch-20>")
     ; !e
-//    ; debug(!"dr-complete-catch-22>")
+//    ; debug(!"dr-complete-catch-21>")
 
   dr-complete-finally(merge, s | rulenames) =
     ?term
@@ -2103,7 +2109,7 @@ strategies // debugging
 
   dr-print-rule-set-msg(|msg) =
     where(!msg => "" <+ say(<concat-strings>["\n--- BEGIN(", msg,  ") ---"]))
-    ;  dr-print-rule-set
+    ; dr-print-rule-set
     ; where(!msg => "" <+ say(<concat-strings>["--- END  (", msg,  ") ---\n"]))
 
   dr-print-scope =

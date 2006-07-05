@@ -90,15 +90,9 @@ strategies
   propconst-try-catch =
     ?Try(tblock, cclauses)
     ; dr-init-exception-block(fail | <get-catch-tags>cclauses, ["PropConst"])
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">1<")
     ; <propconst>tblock => tblock'
-//    ; debug(!"2>")
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">2<")
     ; <map(dr-complete-catch-intersect(propconst | ["PropConst"]))>cclauses => cclauses'
-//    ; debug(!"3>")
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">3<")
     ; dr-complete-exception-block-intersect(|["PropConst"])
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">4<")
     ; !Try(tblock', cclauses')
 
   propconst-try-catch-finally =
@@ -106,11 +100,8 @@ strategies
     ; dr-init-exception-block(id | <get-catch-tags>cclauses, ["PropConst"])
     ; <propconst>tblock => tblock'
     ; <map(dr-complete-catch-intersect(propconst | ["PropConst"]))>cclauses => cclauses'
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">1<")
     ; <dr-complete-finally-intersect(propconst | ["PropConst"])>fblock => fblock'
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">2<")
     ; dr-complete-exception-block-intersect(|["PropConst"])
-//    ; dr-debug-rule-set(|"DR_EXCEPTION", ">3<")
     ; !Try(tblock', cclauses', fblock')
 
   get-catch-tags =
