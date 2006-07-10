@@ -19,6 +19,7 @@ strategies
     ; where(separation-message(|"Dynamic Rules Library -- Constant Propagation -- Exception Tests"))
     ; pc-exception-tests
     ; pc-exception-tests-fin
+    ; pc-exception-tests-loop
     )
 
 strategies
@@ -1207,8 +1208,6 @@ strategies
        end"
      )
 
-//  pc-exception-tests-fin = id
-
   ; apply-propconst-test(!"Exception test #19" |
       "var x;
        try
@@ -1264,3 +1263,275 @@ strategies
        end"
      )
 
+  pc-exception-tests-loop = id
+
+  ; apply-propconst-test(!"Exception test #20" |
+      "var x; x := 1;
+       while c() do
+         try
+           if c() then x := 2; throw E; end
+           if c() then x := 3; throw F; end
+         catch (e: E)
+           f(x); x := 1;
+         catch (f: F)
+           f(x); x := 1;
+         end
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         try
+           if c() then x := 2; throw E; end
+           if c() then x := 3; throw F; end
+         catch (e: E)
+           f(2); x := 1;
+         catch (f: F)
+           f(3); x := 1;
+         end
+       end
+       f(1);"
+     )
+
+  ; apply-propconst-test(!"Exception test #21" |
+      "var x; x := 1;
+       while c() do
+         try
+           if c() then throw E; end
+           x := 2;
+         catch (e: E)
+           f(x); x := 1;
+         end
+       end
+       f(x);",
+      "var x; x := 1;
+       while c() do
+         try
+           if c() then throw E; end
+           x := 2;
+         catch (e: E)
+           f(x); x := 1;
+         end
+       end
+       f(x);"
+     )
+
+  ; apply-propconst-test(!"Exception test #22" |
+      "var x; x := 2;
+       try
+         while c() do
+           if c() then x := 1; throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(x); x := 2;
+       end
+       f(x);",
+      "var x; x := 2;
+       try
+         while c() do
+           if c() then x := 1; throw E; end
+           x := 2;
+         end
+         f(2);
+       catch (e: E)
+         f(1); x := 2;
+       end
+       f(2);"
+     )
+
+  ; apply-propconst-test(!"Exception test #23" |
+      "var x; x := 1;
+       try
+         while c() do
+           if c() then throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       try
+         while c() do
+           if c() then throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(x); x := 1;
+       end
+       f(x);"
+     )
+
+  ; apply-propconst-test(!"Exception test #24" |
+      "var x; x := 1;
+       try
+         while c() do
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       try
+         while c() do
+           if c() then x := 1; throw E; end
+           if c() then x := 1; throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(1); x := 1;
+       end
+       f(x);"
+     )
+
+  ; apply-propconst-test(!"Exception test #25" |
+      "var x; x := 1;
+       try
+         while c() do
+           if c() then x := 1; throw E; end
+           if c() then throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       try
+         while c() do
+           if c() then x := 1; throw E; end
+           if c() then throw E; end
+           x := 2;
+         end
+         f(x);
+       catch (e: E)
+         f(x); x := 1;
+       end
+       f(x);"
+     )
+
+  ; apply-propconst-test(!"Exception test #26" |
+      "var x; x := 1;
+       try
+         if c() then x := 2; throw E; end
+         while c() do
+           try
+             if c() then x := 2; throw E; end
+             if c() then x := 1; throw A; end
+             if c() then x := 1; throw B; end
+             if c() then x := 2; throw A; end
+           catch (a: A) f(x); x := 1;
+           catch (b: B) f(x); x := 1;
+           finally f(x); x := 2;
+           end
+         end
+         f(x);
+       catch (e: E) f(x);
+       end
+       f(x);",
+      "var x; x := 1;
+       try
+         if c() then x := 2; throw E; end
+         while c() do
+           try
+             if c() then x := 2; throw E; end
+             if c() then x := 1; throw A; end
+             if c() then x := 1; throw B; end
+             if c() then x := 2; throw A; end
+           catch (a: A) f(x); x := 1;
+           catch (b: B) f(1); x := 1;
+           finally f(x); x := 2;
+           end
+         end
+         f(x);
+       catch (e: E) f(2);
+       end
+       f(x);"
+     )
+
+  ; apply-propconst-test(!"Exception test #27" |
+      "var x; x := 1;
+       try
+         if c() then x := 2; throw E; end
+         while c() do
+           try
+             if c() then x := 2; throw E; end
+             if c() then x := 1; throw A; end
+             if c() then x := 1; throw B; end
+             if c() then x := 2; throw A; end
+           catch (a: A) f(x); x := 1;
+           catch (b: B) f(x); x := 1;
+           finally f(x); x := 1;
+           end
+         end
+         f(x);
+       catch (e: E) f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       try
+         if c() then x := 2; throw E; end
+         while c() do
+           try
+             if c() then x := 2; throw E; end
+             if c() then x := 1; throw A; end
+             if c() then x := 1; throw B; end
+             if c() then x := 2; throw A; end
+           catch (a: A) f(x); x := 1;
+           catch (b: B) f(1); x := 1;
+           finally f(x); x := 1;
+           end
+         end
+         f(1);
+       catch (e: E) f(x); x := 1;
+       end
+       f(1);"
+     )
+
+  ; apply-propconst-test(!"Exception test #28" |
+      "var x; x := 1;
+       try
+         if c() then x := 2; throw E; end
+         while c() do
+           try
+             if c() then x := 1; throw E; end
+             if c() then x := 1; throw A; end
+             if c() then x := 1; throw B; end
+             if c() then x := 1; throw A; end
+           catch (a: A) f(x); x := 2;
+           catch (b: B) f(x); x := 1;
+           finally f(x); x := 1;
+           end
+         end
+         f(x);
+       catch (e: E) f(x); x := 1;
+       end
+       f(x);",
+      "var x; x := 1;
+       try
+         if c() then x := 2; throw E; end
+         while c() do
+           try
+             if c() then x := 1; throw E; end
+             if c() then x := 1; throw A; end
+             if c() then x := 1; throw B; end
+             if c() then x := 1; throw A; end
+           catch (a: A) f(1); x := 2;
+           catch (b: B) f(1); x := 1;
+           finally f(x); x := 1;
+           end
+         end
+         f(1);
+       catch (e: E) f(x); x := 1;
+       end
+       f(1);"
+     )

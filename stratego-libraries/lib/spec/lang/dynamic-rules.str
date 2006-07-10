@@ -1283,6 +1283,12 @@ strategies // generic fix-point strategies
   //  - keep just the last cs's from dr-break
   dr-fix-and-merge-internal(merge, s | rulenames) =
     where(<map(fork-rule-sets)> rulenames => rs)
+    ; where(
+        prim("SSL_hashtable_get", <dr-rule-sets-hashtable>, "DR_EXCEPTION")
+        ; [RuleScope(iset-elements, hashtable-getlist)] => [RuleScope(labels, tbl)]
+        ; !0  => exRS
+        <+ !1 => exRS
+      )
     ; repeat(
         where(
           restore(s, where(<map(dr-discard-change-set(|<id>))> rulenames))
@@ -1313,6 +1319,12 @@ strategies // generic fix-point strategies
                       ; <DR_BREAK>Label(rulename) => label
                       ; rules(DR_BREAK :+ BreakCS(rulename, label) -> ())
                     })>rulenames)
+              ; where(try(
+                  <eq>(exRS, 0)
+                  ; dr-new-rule-set
+                  ; [RuleScope(iset-addlist(|labels), hashtable-putlist(|tbl))]
+                  ; dr-set-rule-set(|"DR_EXCEPTION")
+                ))
               ; id     // some rule changed; continue
             end
         )
@@ -1475,7 +1487,7 @@ strategies // labeling statements, break, continue
   *
   * Reason: replacing a number of change sets & rule scopes with
   *         their clones introduces inconsistency issues during merging
-  *         that are way to difficult to solve.
+  *         that are way too difficult to solve.
   *
 
   dr-break-bp(|rulename) =
@@ -1987,29 +1999,29 @@ strategies // label statements with intersection and union
 strategies // exceptions
 
   dr-complete-catch-intersect(s | rulenames) =
-    dr-complete-catch(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+    dr-complete-catch(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
                      , s | rulenames)
 
   dr-complete-finally-intersect(s | rulenames) =
-    dr-complete-finally(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+    dr-complete-finally(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
                        , s | rulenames)
 
   dr-complete-exception-block-intersect(|rulenames) =
-    dr-complete-exception-block(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+    dr-complete-exception-block(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
                                | rulenames)
 
 
 
   dr-complete-catch-union(s | rulenames) =
-    dr-complete-catch(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+    dr-complete-catch(\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
                      , s | rulenames)
 
   dr-complete-finally-union(s | rulenames) =
-    dr-complete-finally(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+    dr-complete-finally(\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
                        , s | rulenames)
 
   dr-complete-exception-block-union(|rulenames) =
-    dr-complete-exception-block(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+    dr-complete-exception-block(\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
                                | rulenames)
 
 strategies // n-way split
