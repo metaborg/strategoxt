@@ -4,6 +4,7 @@ imports
   libstratego-sglr
   til/opt/til-propconst
   til/opt/til-dce
+  til/opt/til-varunion
 
 /**
  * Test utils for the test suite of the dynamic rules library.
@@ -50,6 +51,20 @@ strategies
 
   show-dce-test(name | in-program, out-program) =
     apply-and-show(name, dr-ignore-state-cleanup(dce-program|["VarNeeded", "VarUsed"]), <parse-til>in-program)
+
+strategies
+
+  apply-varunion-test(name | in-program, out-program) =
+    apply-test(name, dr-ignore-state-cleanup(varunion|"VarUnion"), <parse-til>in-program, <parse-til>out-program)
+
+  applyf-varunion-test(name | in-program, out-program) =
+    apply-varunion-test(name | in-program, out-program)
+
+  fail-varunion-test(name | in-program, out-program) =
+    apply-test(concat-fail(name), dr-ignore-state-cleanup(varunion|"VarUnion"), <parse-til>in-program)
+  
+  show-varunion-test(name | in-program, out-program) =
+    apply-and-show(name, dr-ignore-state-cleanup(varunion|"VarUnion"), <parse-til>in-program)
 
 strategies
 
