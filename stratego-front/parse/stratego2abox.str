@@ -652,7 +652,7 @@ rules
             KW["end"]
           ] 
        ]|
-     , !|[ H [ KW["if"] ~condition KW["then"] ~then KW["then"] ~else KW["end"] ] ]|
+     , !|[ H [ KW["if"] ~condition KW["then"] ~then KW["else"] ~else KW["end"] ] ]|
      )
 
   stratego-to-abox =
