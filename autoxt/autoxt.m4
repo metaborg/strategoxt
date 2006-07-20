@@ -264,8 +264,10 @@ AC_DEFUN([XT_WITH_XTC_ARGS],
 [
   BUILD_XTC="BUILDTIME_XTC"
 
-  XT_ARG_WITH2([repository],      [datadir/$PACKAGE/XTC], [FILE], [XTC Repository])
-  XT_ARG_WITH2([build-repository],[BUILD_XTC],            [FILE], [Build-time XTC Repository])
+  XT_ARG_WITH2([repository],      [datadir/$PACKAGE/XTC],
+               [FILE], [XTC Repository])
+  XT_ARG_WITH2([build-repository],[BUILDTIME_XTC],
+               [FILE], [Build-time XTC Repository])
 
   # Make sure BUILD_REPOSITORY is an absolute path.
   case $BUILD_REPOSITORY in

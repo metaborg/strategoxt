@@ -1,3 +1,8 @@
+2006-07-20  Benoit Sigoure  <benoit.sigoure@lrde.epita.fr>
+
+	* autoxt.m4 (XT_WITH_XTC_ARGS): Indicate BUILDTIME_XTC as default
+	repository instead of BUILD_XTC (in ./configure --help).
+
 2005-10-21  Valentin David  <valentin.david@gmail.com>
 
 	* autoxt.m4 (XT_SVN_REVISION):
