@@ -4,7 +4,7 @@ imports Stratego Stratego-MetaTransition
 rules // combinations of match and build
 
   BuildMatch = 
-    MisMatch + BuildMatchFusion + BuildBuild + BuildPrim
+    MisMatch + BuildMatchFusion 
     + MatchIdem + BuildMatchIdem + MatchBuildIdemVar
 	// + MatchBuildIdem
     + BuildAlwaysSucceeds
@@ -37,12 +37,16 @@ rules // combinations of match and build
     Seq(Build(Anno(Op(f, ts1),pt1)),
         s))))
 
+  // BuildBuild only valid if !t1 is guaranteed to succeed
+
   BuildBuild :
     Seq(Build(t1), Build(t2)) -> Build(t2)
 
   BuildBuild :
     Seq(Build(t1), Seq(Build(t2), s)) -> Seq(Build(t2), s)
 
+
+  // BuildPrim only valid if !t1 is guaranteed to succeed
 
   BuildPrim :
     Seq(Build(t1), PrimT(f, ss, ts)) -> PrimT(f, ss, ts)
