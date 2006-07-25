@@ -30,9 +30,9 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05				 \
                   test-chain01 test-chain02 test-chain03                         \
 		  let-test							 \
 		  nested-defs01							 \
-		  cs-test01							 \
-		  static-links							 
+		  cs-test01							 
 
+#		  static-links							 \
 #		  nested-defs01-ng test01-ng test02-ng test03-ng test04-ng \
 #		  test05-ng test06-ng test07-ng test08-ng test09-ng test10-ng \
 #		  test11-ng
