@@ -274,7 +274,7 @@ strategies
     ?(c,n); rules( Counter : c -> n )
 
   get-counter =
-    Counter <+ <set-counter> (<id>,0)
+    Counter <+ <set-counter> (<id>, 0); !0
 
   next-counter =
     ?c; get-counter; inc; where(<set-counter> (c, <id>))
