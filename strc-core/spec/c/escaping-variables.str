@@ -19,7 +19,10 @@ signature
 strategies
 
   escaping-variables = 
-    io-wrap(mark-escaping-variables)
+    io-wrap(
+      mark-escaping-variables
+      ; annotate-frame-offsets
+    )
 
   mark-escaping-variables =
     {| CurrentFrame, FrameOf, Escapes, Closure
@@ -33,7 +36,7 @@ strategies
 
   declare-frame-of =
     ?|[ f(a1*|a2*) = s ]|
-    ; where( CurrentFrame => g )
+    ; where( g := <CurrentFrame> )
     ; rules( 
         FrameOf     : f{t*} -> g
         Escapes+f{} :- f{t*}

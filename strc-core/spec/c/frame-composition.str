@@ -16,77 +16,78 @@ strategies
     io-wrap(annotate-frame-offsets)
 
   annotate-frame-offsets = 
-id
-
-/*
     alltd(afo-sdef)
 
-  afo = 
+  afo = debug(!"afo in: "); (
     afo-let
     <+ afo-sdef
+    <+ afo-scope
+    <+ afo-var
+    <+ afo-call; all(afo)
+    <+ all(afo)
+  ); debug(!"afo out: ")
 
-  afo-let =
-    ?|[ let def* in s end ]|
-    ; {| OffSet 
-       : where(<map(try(offset-sdef))> def*)
-       ; all(afo) 
-       |}
+  afo-let :
+    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
+    where {| OffSet 
+           : def2* := <map(try(offset-sdef); afo)> def1*
+           ; s2 := <afo> s1
+           |}
 
-  afo-sdef =
-    ?|[ f(a1*|a2*) = s ]|
-    ; {| ScopedCounter, OffSet
-       : reset-scoped-counter(|"var")
-       ; reset-scoped-counter(|"svar")
-       ; where(<map(offset-arg("svar"))> a1*)
-       ; where(<map(offset-arg("var"))> a2*)
-       ; all(afo)
-       ; !<id>{OffSet(<get-scoped-counter(|"svar")>,<get-scoped-counter(|"var")>)}
-       |}
+  afo-sdef :
+    def1@|[ f1~{t*}(a1*|a2*) = s1 ]| -> |[ f1~{os,t*}(a3*|a4*) = s2 ]|
+    where debug(!"afo-sdef: ")
+	; {| ScopedCounter, OffSet
+           : reset-scoped-counter(|"svar")
+           ; reset-scoped-counter(|"var")
+	   ; !(<get-scoped-counter(|"svar")>,
+               <get-scoped-counter(|"var")>)
+	   ; debug(!"counters 1: ")
+           ; a3* := <map(try(offset-arg(|"svar")))> a1*
+           ; a4* := <map(try(offset-arg(|"var")))> a2*
+	   ; !(<get-scoped-counter(|"svar")>,
+               <get-scoped-counter(|"var")>)
+	   ; debug(!"counters 2: ")
+           ; s2  := <afo> s1
+           ; os  := Offsets(<get-scoped-counter(|"svar")>,
+                            <get-scoped-counter(|"var")>)
+           |}
+	; debug(!"afo-sdef out: ")
 
   afo-scope :
     |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|
-    where {| OffSet
-           : <map(offset-local-var(|"var"))> x1*
-           ; <afo> s1 => s2
+    where debug(!"afo-scope: ")
+	; {| OffSet
+           : x2* := <map(try(offset-local-var(|"var")))> x1*
+           ; s2  := <afo> s1
            |}
+	; debug(!"afo-scope out: ")
 
   offset-sdef :
-    |[ f~{t*}(a1*|a2*) = s ]| -> |[ f~{Offset(i),t*}(a1*|a2*) = s ]|
-    where <fetch(?Escapes)> t*
-	; next
+    |[ f1(a1* | a2*) = s ]| -> |[ f2(a1* | a2*) = s ]|
+    where f2 := <offset-local-var(|"svar")> f1
 
-  offset-str-arg(|c) =
-    ?Typedid|[ x~{t1*} : tp ]|
-    ; where(<offset-local-var(|c)> x)
+    // does the f1 also match with the annos? maybe use f1~{t*} same for f2
 
-  offset-trm-arg(|c) =
-    ?Typedid|[ x : tp ]|
-    ; where(<offset-local-var(|f)> x)
+  offset-arg(|c) :
+    Typedid|[ x1 : tp ]| -> Typedid|[ x2 : tp ]| 
+    where x2 := <offset-local-var(|c)> x1
 
-  offset-local-var(|f) = 
-    ?x{t1*}
-    ; where(<fetch(?Escapes())> t1*)
-    ; rules(
-        OffSet+x : x{t1*} -> x{OffSet(i),t1*}
-      )
+  offset-local-var(|c) :
+    x{t1*} -> x{Offset(i), t1*}
+    where debug(!"offset-local-var: ")
+	; <fetch(?Escapes())> t1*
+        ; i := <next-scoped-counter(|c)>
+	; debug(!"next offset: ")
+        ; rules( OffSet+x : x{t2*} -> x{Offset(i),t2*} )
 
   afo-call :
-    |[ f(s1* | t*) ]| -> |[ f(s2* | t*) ]|
-    where debug(!"afo-call: ")
-	; <map(mark-used-as-arg <+ debug(!"strange str arg: "); fail)> s1* => s2*
+    |[ f1(s* | t*) ]| -> |[ f2(s* | t*) ]|
+    where f2 := <OffSet> f1
 
-  mark-used-as-arg = debug(!"mark-used-as-arg 1: ");
-    ?CallT(f{t1*},[],[])
-    ; debug(!"mark-used-as-arg 2: ")
-    ; dr-print-rule-set(|"UsedAsArg")
-    ; rules( UsedAsArg : f{t2*} -> f{"used-as-arg", t2*} )
-    ; debug(!"mark-used-as-arg 3: ")
-
-  escaping-arg :
-    Typedid|[ x : tp ]| -> Typedid|[ y : tp ]|
-    where <Escapes> x => y
-
-*/
+  afo-var :
+    Term|[ x1 ]| -> Term|[ x2 ]|
+    where x2 := <OffSet> x1
 
 strategies
 
@@ -98,13 +99,13 @@ strategies
     new; reset-scoped-counter(|<id>)
 
   reset-scoped-counter(|c) =
-    where(<set-counter> (c, 0))
+    set-scoped-counter(|c,0)
 
   reset-scoped-counter(|c,l) = 
-    where(<set-counter(|l)> (c, 0))
+    set-scoped-counter(|c,0,l)
 
   enter-counter-scope(|c,l) =
-    rules( Counter+l )
+    rules( ScopedCounter+l )
 
   set-scoped-counter(|c,n) =
     rules( ScopedCounter : c -> n )
@@ -113,11 +114,15 @@ strategies
     rules( ScopedCounter.l : c -> n )
 
   get-scoped-counter(|c) =
-    <ScopedCounter> c <+ set-scoped-counter(|c,0)
+    <ScopedCounter> c <+ set-scoped-counter(|c,0); !0
 
-  next-scoped-counter =
-    ?c; get-scoped-counter; inc; where(<set-counter> (c, <id>))
+  /**
+   * return the current counter value and increment 
+   */
 
-  next-scoped-counter(|l) =
-    ?c; get-scoped-counter; inc; where(<set-counter(|l)> (c, <id>))
+  next-scoped-counter(|c) =
+    get-scoped-counter(|c); where(inc; set-scoped-counter(|c, <id>))
+
+  next-scoped-counter(|c,l) =
+    get-scoped-counter(|c); where(inc; set-scoped-counter(|c, <id>, l))
 

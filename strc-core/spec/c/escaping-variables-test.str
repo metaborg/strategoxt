@@ -21,10 +21,12 @@ strategies
 
   apply-test(label, s1, s2, input, output1, output2) =
     apply-test(<conc-strings>(<label>, "-1"), s1, input, output1)
-    //; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
+    ; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
 
   escaping-variables-test = 
     test-suite(!"escaping-variables-test", id
+ 
+        ; test-non-variable-def
 
 	; test-local-term-arg 
   	; test-local-term-var 
@@ -47,6 +49,24 @@ strategies
 
     )
 
+
+strategies // no variables
+
+
+  test-non-variable-def =
+    apply-test(!"test-non-variable-def"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|) = id
+           ]|
+	, !|[ strategies 
+                foo~{}(|) = id
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,0)}(|) = id
+           ]|
+    )
 
 strategies // term variables
 
@@ -111,9 +131,9 @@ strategies // term variables
                   end
            ]|
 	, !|[ strategies 
-                foo~{Offsets(0,1)}(|arg~{Escapes, Offset(0)}: ATerm) = 
+                foo~{Offsets(0,1)}(|arg~{Offset(0),Escapes}: ATerm) = 
                   let bar~{Offsets(0,0)}(|) = 
-                        ?~id:"arg"{Frames(["bar"]),Offset(0)}
+                        ?~id:"arg"{Offset(0),Frames(["bar"])}
                    in bar~{Frames([])}(|)
                   end
            ]|
@@ -140,9 +160,9 @@ strategies // term variables
                   end}
            ]|
 	, !|[ strategies 
-                foo~{Offsets(0,1)}(|) = {arg~{Escapes,Offset(0)} : 
-                  let bar~{}(|) = 
-                        ?~id:"arg"{Frames(["bar"]),Offset(0)}
+                foo~{Offsets(0,1)}(|) = {arg~{Offset(0),Escapes} : 
+                  let bar~{Offsets(0,0)}(|) = 
+                        ?~id:"arg"{Offset(0),Frames(["bar"])}
                    in bar~{Frames([])}(|)
                   end}
            ]|
@@ -175,10 +195,10 @@ strategies // term variables
                    ?~id:"arg"{Frames([])}
            ]|
 	, !|[ strategies 
-                foo~{Offsets(0,1)}(|arg~{Escapes,Offset(0)}: ATerm) = 
+                foo~{Offsets(0,1)}(|arg~{Offset(0),Escapes}: ATerm) = 
                   let bar~{Offsets(0,0)}(|) = 
                         baz~{Frames(["bar","foo"])}
-                            (|arg~{Frames(["bar"]),Offset(0)})
+                            (|arg~{Offset(0),Frames(["bar"])})
                    in bar~{Frames([])}(|)
                   end
                 baz~{Offsets(0,0)}(|arg~{}: ATerm) = 
@@ -206,8 +226,8 @@ strategies // strategy variables
                    foo~{Frames(["bar"])}(|)
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(|) = id 
-                bar~{"local",Offsets(0,0)}(|) = 
+                foo~{Offsets(0,0)}(|) = id 
+                bar~{Offsets(0,0)}(|) = 
                    foo~{Frames(["bar"])}(|)
            ]|
     )
@@ -232,8 +252,8 @@ strategies // strategy variables
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(|) = 
-                  let bar~{"local",Offsets(0,0)}(|) = id
+                foo~{Offsets(0,0)}(|) = 
+                  let bar~{Offsets(0,0)}(|) = id
                    in bar~{Frames([])}(|)
                   end
            ]|
@@ -260,8 +280,8 @@ strategies // strategy variables
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(|) = 
-                  let bar~{"local",Offsets(0,0)}(|) = 
+                foo~{Offsets(0,0)}(|) = 
+                  let bar~{Offsets(0,0)}(|) = 
                         foo~{Frames(["bar","foo"])}(|)
                    in bar~{Frames([])}(|)
                   end
@@ -289,8 +309,8 @@ strategies // strategy variables
                   end
            ]|
 	, !|[ strategies 
-                foo~{"local",Offsets(0,0)}(|) = 
-                  let bar~{"local",Offsets(0,0)}(|) = 
+                foo~{Offsets(0,0)}(|) = 
+                  let bar~{Offsets(0,0)}(|) = 
                         bar~{Frames(["bar"])}(|) < id + id
                    in bar~{Frames([])}(|)
                   end
@@ -325,12 +345,12 @@ strategies // strategy variables
            ]|
 	, !|[ strategies 
                 foo~{Offsets(0,0)}(|) = 
-                  let bar~{Offsets(0,0)}(|) = id
+                  let bar~{Offsets(0,0),Closure("bar_cl")}(|) = id
                    in baz~{Frames(["foo"])}
-                        (bar~{Frames([])}(|)|)
+                        (bar~{Closure("bar_cl"),Frames([])}(|)|)
                   end
                 baz~{Offsets(0,0)}(aaa~{}: ATerm -> ATerm|) = 
-                  aaa~{Frames([])}(|)
+                  aaa~{Frames([]),ApplyClosure}(|)
            ]|
     )
 
@@ -394,7 +414,18 @@ strategies // strategy variables
                 baz~{}(aaa~{}: ATerm -> ATerm|) = 
                   aaa~{Frames([]),ApplyClosure}(|)
            ]|
-	, !()
+	, !|[ strategies 
+                foo~{Offsets(1,1)}(|bbb~{Offset(0),Escapes} : ATerm) = 
+                  let bar~{Offsets(0,0),Offset(0),Escapes,Closure("bar_cl")}(|) = 
+                        ?~id:"bbb"{Offset(0),Frames(["bar"])}
+                      bar2~{Offsets(0,0)}(|) = 
+                        baz~{Frames(["bar2","foo"])}
+                          (bar~{Offset(0),Closure("bar_cl"),Frames(["bar2"])}(|)|)
+                   in bar2~{Frames([])}(|)
+                  end
+                baz~{Offsets(0,0)}(aaa~{}: ATerm -> ATerm|) = 
+                  aaa~{Frames([]),ApplyClosure}(|)
+           ]|
     )
 
 
@@ -440,7 +471,13 @@ strategies // strategy variables
                    in bar~{Frames([])}(|)
                   end
            ]|
-	, !()
+	, !|[ strategies 
+                foo~{Offsets(1,0)}(arg~{Offset(0),Escapes}: ATerm -> ATerm |) = 
+                  let bar~{Offsets(0,0)}(|) = 
+                        arg~{Offset(0),Frames(["bar"]),ApplyClosure}(|)
+                   in bar~{Frames([])}(|)
+                  end
+           ]|
     )
 
   // arg is an escaping strategy argument that is passed on as argument to another
@@ -472,5 +509,14 @@ strategies // strategy variables
                 baz~{}(arg~{} : ATerm -> ATerm|) = 
                   arg~{Frames([]),ApplyClosure}(|)
            ]|
-	, !()
+	, !|[ strategies 
+                foo~{Offsets(1,0)}(arg~{Offset(0),Escapes}: ATerm -> ATerm |) = 
+                  let bar~{Offsets(0,0)}(|) = 
+                        baz~{Frames(["bar","foo"])}
+                          (arg~{Offset(0),Closure("arg"),Frames(["bar"])}(|)|)
+                   in bar~{Frames([])}(|)
+                  end
+                baz~{Offsets(0,0)}(arg~{} : ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+           ]|
     )

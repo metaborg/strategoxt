@@ -52,15 +52,15 @@ rules
 
   ComposeTargetProgram =
     where(
-      GenerateIncludes => incl
-      ; <bagof-Fragment> "ConstructorDecl" => cnstr-decls
-      ; <bagof-Fragment; concat> "ConstructorInit" => cnstr-inits
-      ; <bagof-Fragment> "FunctionSig"     => function-sigs
-      ; <bagof-Fragment> "FunctionReg"     => function-regs
-      ; <bagof-Fragment> "FunctionDef"     => function-defs
+        incl          := <GenerateIncludes>
+      ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
+      ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
+      ; function-sigs := <bagof-Fragment> "FunctionSig"
+      ; function-regs := <bagof-Fragment> "FunctionReg"
+      ; function-defs := <bagof-Fragment> "FunctionDef"
       ; debug(!"function definitions: ")
-      ; <bagof-Fragment> "ConstDecl"       => cnst-decls
-      ; <bagof-Fragment; concat; reverse> "ConstInit"       => cnst-inits
+      ; cnst-decls    := <bagof-Fragment> "ConstDecl"
+      ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
     );
     !|[
 	// C includes specified on command-line or by default configuration
@@ -111,18 +111,19 @@ strategies
     !c:fun-def|[
 	static void register_strategies(void)
 	{
-		int initial_size = 117 ;
-		int max_load = 75;
-		if(strategy_table == NULL) 
-			strategy_table = ATtableCreate(initial_size,max_load);
-		~stm*:<id>
+	  int initial_size = 117 ;
+	  int max_load = 75;
+	  if(strategy_table == NULL) 
+	    strategy_table = ATtableCreate(initial_size,max_load);
+	  ~stm*:<id>
 	}
      ]|
 
 strategies
 
   GenerateIncludes =
-    <get-config; map(!PpControl(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include"
+    <get-config <+ ![]> "--C-include"
+    ; map(!PpControl(<conc-strings> ("#include ", <id>)))
 
   MainDef = 
     !c:fun-def|[ 
@@ -137,7 +138,8 @@ strategies
 
         in_term = ATempty; 
         for(i = argc - 1; i >= 0; i--) {
-          in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
+          in_term = ATinsert(in_term, 
+                             (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
         }
 
 	SRTS_stratego_initialize();
@@ -205,8 +207,8 @@ strategies
 			      ~exp:<mk-int-const> ar, ATfalse);
       ATprotectSymbol(~id:csym);
     ]|
-    where <Arity> t => ar
-        ; <ConstructorName> (c, ar) => csym
+    where ar   := <Arity> t
+        ; csym := <ConstructorName> (c, ar)
 
 /**
  * Prototypes for strategy definitions
@@ -222,23 +224,23 @@ strategies
     Def|[ f(a1* | a2*) = s ]| ->
     dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <not(is-local-function)> f
-        ; <map(TranslateVarDec)> [a1*,a2*] => ps
+        ; ps := <map(TranslateVarDec)> [a1*,a2*]
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
     dec|[ static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <is-local-function> f
-        ; <map(TranslateVarDec)> [a1*,a2*] => ps
+        ; ps := <map(TranslateVarDec)> [a1*,a2*]
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) = s ]| ->
     dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
-    where <map(TranslateVarDec)> [a1*,a2*] => ps
+    where ps := <map(TranslateVarDec)> [a1*,a2*]
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) ]| ->
     dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
-    where <map(TranslateVarDec)> [a1*,a2*] => ps
+    where ps := <map(TranslateVarDec)> [a1*,a2*]
 
 
 /**
@@ -257,7 +259,6 @@ strategies
            ~id:f
          ) ; 
        ]|
-  
 
 /**
  * Translation of strategy definition to C function
