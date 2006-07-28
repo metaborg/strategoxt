@@ -53,17 +53,14 @@ strategies
 	; <canonicalize> s => s'
 
 
+  ImplementTraversalOps :
+    |[ all(s) ]| -> |[ SRTS_all(s|) ]|
 
   ImplementTraversalOps :
-    All(s) -> CallT(SVar("SRTS_all"),[s],[])
+    |[ one(s) ]| -> |[ SRTS_one(s|) ]|
 
   ImplementTraversalOps :
-    One(s) -> CallT(SVar("SRTS_one"),[s],[])
-
-  ImplementTraversalOps :
-    Some(s) -> CallT(SVar("SRTS_some"),[s],[])
-
-
+    |[ some(s) ]| -> |[ SRTS_some(s|) ]|
 
 /*
 

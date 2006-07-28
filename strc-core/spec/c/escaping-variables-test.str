@@ -38,6 +38,7 @@ strategies
   	; test-call-nested-strategy 
   	; test-call-parent-in-nested-strategy 
   	; test-recursive-call-nested-strategy 
+	; test-recursive-call-nested-strategy-and-closure
 
   	; test-pass-nested-strategy 
   	; test-pass-nested-escaping-strategy 
@@ -45,6 +46,7 @@ strategies
 
   	; test-local-strategy-arg 
   	; test-escaping-strategy-arg 
+        ; test-pass-strategy-arg
   	; test-pass-escaping-strategy-arg 
 
     )
@@ -310,14 +312,68 @@ strategies // strategy variables
            ]|
 	, !|[ strategies 
                 foo~{Offsets(0,0)}(|) = 
-                  let bar~{Offsets(0,0)}(|) = 
+                  let bar~{Offsets(0,0)}(|) =  
                         bar~{Frames(["bar"])}(|) < id + id
                    in bar~{Frames([])}(|)
                   end
            ]|
     )
 
-  // closure of ar should be passed to baz
+  test-recursive-call-nested-strategy-and-closure =
+    apply-test(!"test-recursive-call-nested-strategy-and-closure"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|) = 
+                  let bar(|) = bar(|) < id + id
+                   in baz(bar(|)|)
+                  end
+                baz(aaa : ATerm -> ATerm | ) = id
+           ]|
+	, !|[ strategies 
+                foo~{}(|) = 
+                  let bar~{Escapes,Closure("bar_cl")}(|) = 
+                        bar~{Frames(["bar"])}(|) < id + id
+                   in baz~{Frames(["foo"])}(bar~{Closure("bar_cl"),Frames([])}(|)|)
+                  end
+                baz~{}(aaa : ATerm -> ATerm | ) = id
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(1,0)}(|) = 
+                  let bar~{Offsets(0,0),Offset(0),Escapes,Closure("bar_cl")}(|) = 
+                        bar~{Offset(0),Frames(["bar"])}(|) < id + id
+                   in baz~{Frames(["foo"])}
+                        (bar~{Offset(0),Closure("bar_cl"),Frames([])}(|)|)
+                  end
+                baz~{Offsets(0,0)}(aaa : ATerm -> ATerm | ) = id
+           ]|
+    )
+
+  test-pass-strategy-arg =
+    apply-test(!"test-pass-strategy-arg"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(arg : ATerm -> ATerm |) = 
+                  baz(arg(|)|)
+                baz(aaa: ATerm -> ATerm|) = aaa(|)
+           ]|
+	, !|[ strategies 
+                foo(arg : ATerm -> ATerm |) = 
+                  baz~{Frames(["foo"])}(~id:"arg"~{Closure("arg"),Frames([])}(|)|)
+                baz(aaa: ATerm -> ATerm|) = 
+                  ~id:"aaa"~{Frames([]),ApplyClosure}(|)
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,0)}(arg : ATerm -> ATerm |) = 
+                  ~id:"baz"~{Frames(["foo"])}
+                     (~id:"arg"~{Closure("arg"),Frames([])}(|)|)
+                baz~{Offsets(0,0)}(aaa: ATerm -> ATerm|) = 
+                  ~id:"aaa"~{Frames([]),ApplyClosure}(|)
+           ]|
+    )
+
+  // closure of bar should be passed to baz
   // foo should create closure for bar and pass it to baz
   // (no need to store the closure in the frame, since there are
   // no other places where it is referred to; closure does not escape)
@@ -358,37 +414,6 @@ strategies // strategy variables
   // foo should create closure for bar and pass it to baz
   // the closure should be stored in the frame
   // baz applies closure aaa
-
-/*
-  test-pass-nested-escaping-strategy =
-    apply-test(!"test-pass-nested-escaping-strategy"
-	, mark-escaping-variables
-	, annotate-frame-offsets
-	, !|[ strategies 
-                foo(|) = 
-                  let bar(|) = id
-                   in let bar2(|) = 
-                            baz(bar(|)|)
-                       in bar2(|)
-                      end
-                  end
-                baz(aaa: ATerm -> ATerm|) = aaa(|)
-           ]|
-	, !|[ strategies 
-                foo~{}(|) = 
-                  let bar~{Escapes,Closure("bar_cl")}(|) = id
-                   in let bar2(|) =
-		            baz~{Frames(["bar2","bar","foo"])}
-                              (bar~{Closure("bar_cl"),Frames(["bar2"])}(|)|)
-                       in bar2~{Frames([])}(|)
-                      end
-                  end
-                baz~{}(aaa~{}: ATerm -> ATerm|) = 
-                  aaa~{Frames([]),ApplyClosure}(|)
-           ]|
-	, !()
-    )
-*/
 
   test-pass-nested-escaping-strategy =
     apply-test(!"test-pass-nested-escaping-strategy"

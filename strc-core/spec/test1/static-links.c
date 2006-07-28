@@ -40,6 +40,8 @@ struct str_frame
 #define sl_fun(i,s)    ((*(((s)->funs)+i))->fun)
 #define sl_fun_sl(i,s) ((*(((s)->funs)+i))->sl)
 
+#define sl_fun_cl(i, s) (*(((s)->funs)+i))
+
 
 /* nested functions */
 

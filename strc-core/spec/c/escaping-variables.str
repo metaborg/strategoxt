@@ -9,12 +9,6 @@ imports
   Stratego-Core
   frame-composition // necessary for the Closure constructor
 
-signature
-  constructors
-    Frames  : String * List(String) -> Annotation
-    Frames  : List(String) -> Annotation
-    Escapes : Annotation
-    ApplyClosure : Annotation
 
 strategies
 

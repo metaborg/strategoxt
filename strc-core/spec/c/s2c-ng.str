@@ -8,6 +8,7 @@ imports
   Stratego-Core
   C 
   C-simplify
+  frames
 
 strategies
 
@@ -49,6 +50,12 @@ rules
   TranslateSpec = 
     alltd(Translate)
     ; ComposeTargetProgram
+
+  /**
+   * Compose the complete C program consisting of function definitions
+   * implementing the strategy definitions, auxiliary functions for
+   * initialization, and includes for libraries.
+   */
 
   ComposeTargetProgram =
     where(
@@ -277,7 +284,7 @@ strategies
   TranslateDef :
     Def|[ f(a1*|a2*) = s ]| -> <try(make-static)> 
     |[ 
-       ATerm ~id:f(StrSL sl, ~param-dec*:args, ATerm t)
+       ATerm ~id:f'(StrSL sl, ~param-dec*:args, ATerm t)
        {
 	 sl_decl(sl);
          sl_funs(~exp:off1');
@@ -289,21 +296,19 @@ strategies
          return NULL;
        }
     ]|
-    where ?_{(off1,off2)}
+    where f'{Offsets(off1,off2),t*} := f
 	; debug(!"TranslateDef: ")
         ; <mk-int-const> off1 => off1'
         ; <mk-int-const> off2 => off2'
 	; debug(!"off2: ")
-        ; {| ArgToCl
-	   : <map(debug(!"TranslateVarDec: ")
-		  ; TranslateVarDec
-		  ; debug(!": "))> [a1*,a2*] => args
-	   ; debug(!"args: ")
-	   ; <filter(AddToFrame)> [a1*, a2*] => stms
-	   ; <newname> "fail" => F
-	   ; <translate-strat(|Next, F)>s => stm
-	   ; debug(!"body: ")
-           |}
+        ; args := <map(debug(!"TranslateVarDec: ")
+		   ; TranslateVarDec
+		   ; debug(!": "))> [a1*,a2*]
+	; debug(!"args: ")
+	; stms := <filter(AddToFrame)> [a1*, a2*]
+	; F    := <newname> "fail"
+	; stm  := <translate-strat(|Next, F)> s
+	; debug(!"body: ")
 
   make-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
@@ -330,22 +335,23 @@ strategies
 
   TranslateVarDec :
     VarDec(x, FunType(ts,_)) -> param-dec|[ StrCL x ]|
-    where rules( ArgToCl : |[ ~id:x{t*}(|) ]| -> exp|[ x ]| )
 
   AddToFrame : 
-    VarDec(x{("escapes", off)}, FunType(_,_)) ->
-    stm|[ sl_init_fun(~exp:<mk-int-const>off, ~id:x); ]|
+    Typedid|[ x~{Offset(i),Escapes()} : tp ]| ->
+    stm|[ sl_init_fun(~exp:<mk-int-const>i, ~id:x); ]|
+    where FunType(_,_) := tp
 
   AddToFrame : 
-    VarDec(x{("escapes", off)}, ConstType(_)) ->
-    stm|[ sl_init_var(~exp:<mk-int-const>off, &~id:x); ]|
+    VarDec(x{Offset(i),Escapes()}, ConstType(_)) ->
+    stm|[ sl_init_var(~exp:<mk-int-const>i, &~id:x); ]|
 
   TranslateType : 
     ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None)
 
   TranslateType :
     FunType(ts, _) -> 
-    ParamDecl(TypeSpec([],TypeId("ATerm"),[]), Some(ParamList(<map(TranslateType)> ts)))
+    ParamDecl(TypeSpec([],TypeId("ATerm"),[]), 
+              Some(ParamList(<map(TranslateType)> ts)))
 
 /**
  * Strategy expressions
@@ -376,7 +382,7 @@ rules
     ]|
 
   TranslateEscapingVarDec : 
-    x{("escapes", i)} -> stm|[
+    x{Offset(i),Escapes()} -> stm|[
       sl_init_var(~exp:<mk-int-const> i, ~id:x{}); 
     ]|
    // add offset and declare dynamic rule to rewrite to the offset
@@ -414,7 +420,7 @@ rules
     where !S => Next; <newname> "label" => S'
 
   TranslateStrat(|S,F) :
-    |[ let ~*defs in s end ]| -> // Let(defs, s) -> 
+    |[ let ~*defs in s end ]| ->
     stm|[
       {
         ~dec*:closures
@@ -423,77 +429,86 @@ rules
       }
     ]|
     where <map(Translate)> defs
-        ; {| ArgToCl
-	   : <filter(MkClosure); unzip> defs => (closures, stms)
-	   ; <translate-strat(|S,F)> s => stm
-           |}
+        ; (closures, stms) := <filter(MkClosure); unzip; (concat,concat)> defs
+	; stm := <translate-strat(|S,F)> s
 
   MkClosure :
-    Def|[ f(a1*|a2*) = s ]| ->
-    (dec|[ struct str_closure ~id:x = {&~id:f, &frame}; ]|
-    ,stm|[ sl_init_fun(i, ~id:x); ]|)
-    where //<not(?_{"local"})> f
-	  <conc-strings; newname>(f, "_cl") => x
-	; rules( ArgToCl : |[ ~id:f{t*}(|) ]| -> exp|[ &x ]| )
+    Def|[ f~{Offsets(i,j),Closure(x)}(a1*|a2*) = s ]| ->
+    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
+     ,dec|[ StrCL ~id:x = &y; ]|]
+    , [])
+    where y := <new>
 
-/**
- * Static links
- */
+  MkClosure :
+    Def|[ f~{Offsets(i,j),Offset(k),Escapes,Closure(x)}(a1*|a2*) = s ]| ->
+    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
+     ,dec|[ StrCL ~id:x = &y; ]|]
+    ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
+    where y := <new>
 
-strategies
-
-  static-link =
-    static-link-local
-    <+ static-link-top-level
-    <+ static-link-visible
-    <+ no-static-link
-
-  static-link-local :
-    x{"frames", "local", frames} -> exp|[ x ]|
-
-  static-link-top-level :
-    x{"frames", "top-level", frames} -> e
-    where debug(!"static link: ")
-	; <frames-to-static-link> frames => e
-
-  static-link-visible :
-    x{"frames", "visible", frames} -> e
-    where debug(!"static link: ")
-	; <frames-to-static-link> frames => e
+strategies // computing the static link
 
   frames-to-static-link =
-    (Tl <+ debug(!"frames-to-static-link error ***: "); fail);
+    //(Tl <+ debug(!"frames-to-static-link error ***: "); fail);
     foldr(!exp|[ sl ]|,
 	  !exp|[ sl_up(~exp:<Snd>) ]|)
 
-  no-static-link =
-    debug(!"no-static-link: ")
-    ; <exit> 1
+strategies // calling and passing functions
+
+  // a function without annotations must be 
 
   mk-call : 
-    (f{("frames", "top-level", frames)}, args) -> 
+    (f{}, args) -> 
+    exp|[ ~id:f{}(~exp*:args) ]|
+
+  // f is a function, pass it its static link
+
+  mk-call : 
+    (f{Frames(frames)}, args) -> 
     exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
     where <frames-to-static-link> frames => sl
 
-  mk-call : 
-    (f{("frames", "visible", [])}, args) -> 
-    exp|[ ~id:f{}(&frame,~exp*:args) ]|
+  // f is a function, pass it its static link
+  // the offset is caused by another use of the function as
+  // a closure, it can be ignored in this instance
 
   mk-call : 
-    (f{("frames", "visible", frames)}, args) -> 
+    (f{Offset(i),Frames(frames)}, args) -> 
     exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
-    where <not([]); frames-to-static-link> frames => sl
+    where <frames-to-static-link> frames => sl
+
+  // f is a local variable (function argument) containing a closure
 
   mk-call : 
-    (f{"closure", ("frames", "local", [])}, args) -> 
-    exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]| 
+    (f{Frames([]),ApplyClosure()}, args) -> 
+    exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]|
 
-  mk-call :
-    (f{"closure", ("frames", off, frames)}, args) -> 
-    exp|[ (sl_fun(~exp:<mk-int-const>off, ~exp:sl))
-             (sl_fun_sl(~exp:<mk-int-const>off, ~exp:sl), ~exp*:args) ]| 
-    where <not([]); frames-to-static-link> frames => sl
+  // f is non-local variable containing a closure
 
+  mk-call : 
+    (f{Offset(i),Frames(frames),ApplyClosure()}, args) -> 
+    exp|[ (sl_fun(~exp:<mk-int-const>i, ~exp:sl))
+             (sl_fun_sl(~exp:<mk-int-const>i, ~exp:sl), ~exp*:args) ]| 
+    where sl := <frames-to-static-link> frames
+
+  // passing a local closure to a function 
+  // Note: this should be &x in case of a locally constructed closure,
+  // but plain x in the case when the closure is passed into the function
+  // may also be solved at the point of the definition of the closure, i.e.,
+  // create two variables, one that contains the storage of the closure,
+  // the second that contains its address
+  // ...
+  // fixed 
+
+  ArgToCl :
+    Strat|[ f~{Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
+
+  // passing a remote closure to a function
+
+  ArgToCl :
+    Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
+    exp|[ sl_fun_cl(~exp:<mk-int-const>i, ~exp:sl) ]|
+    where sl := <frames-to-static-link> frames
 
 /**
  * Strategy calls
@@ -505,17 +520,18 @@ rules
     <check-unbound-args(|F,t*); debug(!"call translated: ")>
     stm|[ 
       { 
-        t = ~exp:(<debug(!"mk-call: "); mk-call; debug>(f, args)); 
+        t = ~exp:call; 
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
     where debug(!"call a: ")
-	; <map(ArgToCl)> s* => args1
+	; args1 := <map(ArgToCl)> s*
         ; debug(!"call b: ")
-	; <map(topdown(try(construct-term)))> t* => args2
+	; args2 := <map(topdown(try(construct-term)))> t*
         ; debug(!"call c: ")
-	; <concat>[args1, args2, [Id("t")]] => args
+	; args := <concat>[args1, args2, [Id("t")]]
         ; debug(!"call d: ")
+	; call := <debug(!"mk-call: "); mk-call; debug>(f, args)
 
   TranslateStrat(|S,F) :
     Strat|[ prim(~str:f, s* | t* ) ]| -> 
@@ -604,22 +620,22 @@ rules
     x{} -> exp|[ x ]|
 
   VarToWriteRef :
-    x{("frames", "local", _)} -> exp|[ x ]|
+    x{Frames([])} -> exp|[ x ]|
 
   VarToWriteRef : 
-    x{("frames",off,frames)} -> 
-    exp|[ sl_readvar(~exp:<mk-int-const>off, ~exp:sl) ]|
+    x{Offset(i), Frames(frames)} -> 
+    exp|[ sl_readvar(~exp:<mk-int-const>i, ~exp:sl) ]|
     where <frames-to-static-link> frames => sl
 
   VarToReadRef : 
     x{} -> exp|[ x ]|
 
   VarToReadRef :
-    x{("frames", "local", _)} -> exp|[ x ]|
+    x{Frames([])} -> exp|[ x ]|
 
   VarToReadRef : 
-    x{("frames",off,frames)} -> 
-    exp|[ sl_readvar(~exp:<mk-int-const>off, ~exp:sl) ]|
+    x{Offset(i), Frames(frames)} -> 
+    exp|[ sl_readvar(~exp:<mk-int-const>i, ~exp:sl) ]|
     where <frames-to-static-link> frames => sl
 
   TranslateStrat(|S,F) :
