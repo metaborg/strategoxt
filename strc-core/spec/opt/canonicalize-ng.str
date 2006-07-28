@@ -54,7 +54,7 @@ strategies
 
 
 
-  ImplementTraversalOp :
+  ImplementTraversalOps :
     All(s) -> CallT(SVar("SRTS_all"),[s],[])
 
   ImplementTraversalOps :

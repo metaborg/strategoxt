@@ -1,0 +1,26 @@
+module canonicalize-ng-test
+imports canonicalize-ng 
+strategies
+
+  canonicalize-ng-test-io = 
+    test-suite(!"canonicalize-ng-test", id
+	; test-all-elimination
+    )
+
+  test-all-elimination = 
+    apply-and-check(!"test-all-elimination"
+	, canonicalize
+	, !|[ bottomup_1_0(e_1 : ATerm() -> ATerm()|) =
+                all(bottomup_1_0(e_1(|)|)); e_1(|)
+           ]|
+	, ?|[ bottomup_1_0(e_1 : ATerm() -> ATerm()|) =
+                let f(|) = bottomup_1_0(e_1(|)|)
+                 in SRTS_all(f(|)|)
+                end
+                ; e_1(|)
+           ]|
+	)
+
+
+
+ 

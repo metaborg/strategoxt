@@ -23,7 +23,7 @@ libexec_PROGRAMS = simplify1 simplify2 simplify3		   \
 #		   dead-var-elim
 #		   const-prop				    
 
-check_PROGRAMS 	 = bound-unbound-vars-test 
+check_PROGRAMS 	 = bound-unbound-vars-test canonicalize-ng-test
 
 #		   const-prop-test 
 
@@ -38,7 +38,7 @@ nodist_build_match_laws_test_SOURCES=build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES=bound-unbound-vars-test.c
 #nodist_const_prop_test_SOURCES=const-prop-test.c
 
-TESTS 		 = bound-unbound-vars-test 
+TESTS 		 = bound-unbound-vars-test canonicalize-ng-test
 #const-prop-test 
 
 CLEANFILES 	 = $(wildcard *.dep)
