@@ -40,8 +40,7 @@ classictests =									  \
 		  nested-defs01							  \
 		  cs-test01							 
 
-check_PROGRAMS 	= $(classictests) 
-#$(ngtests)
+check_PROGRAMS 	= $(classictests) $(ngtests)
 
 check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 
