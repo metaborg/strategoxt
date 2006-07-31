@@ -20,8 +20,10 @@ signature
 strategies
 
   parse-stratego-options =
-    ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
-	      !"-I p|--Include p   include modules from directory p") 
+    ArgOption("-I" + "--Include"
+    , where(<post-extend-config> ("-I", [<id>]))
+    , !"-I p|--Include p   include modules from directory p"
+    )
 
   + ArgOption("--syntax", where(<set-config>("--syntax", <id>)),
 	      !"--syntax syn        use syntax syn")
