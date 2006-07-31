@@ -5,11 +5,14 @@ bin_PROGRAMS     = gen-sdf-mix gen-renamed-sdf-module sdf2parenthesize
 libexec_PROGRAMS = sdf2ast-conflicts sdf-spread-cons
 LDADD       += $(SSL_LIBS)
 
-SCFLAGS       = --main main-$* 
+STRCFLAGS       = --main main-$*
 STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(top_srcdir)/lib \
-                -I $(SDF_FRONT)/share/sdf-front \
-                -I $(SDF_FRONT)/share/sdf/sdf-front
+                -I $(top_srcdir)/../sdf-front/syn \
+                -I $(SDF_FRONT)/share/sdf-front
+
+# FIXME: remove bootstrap problem workaround for STR-603
+# -I $(SDF_FRONT)/share/sdf/sdf-front
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)

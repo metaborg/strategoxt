@@ -7,7 +7,7 @@
 module gen-sdf-mix
 imports
   Sdf2
-  libxtclib
+  libstratego-xtc
   sdf/tool/xtc
   sdf/tool/options
   sdf/grammar/utils
@@ -16,18 +16,48 @@ strategies
 
   main-gen-sdf-mix =
     xtc-io-wrap(mix-options,
-      xtc-sdf2-normalize(|<get-sdf-main-module>)
+      where(
+        param* := <get-main-module-parameters>
+      )
+    ; xtc-sdf2-normalize(|<get-sdf-main-module>)
     ; xtc-io-transform(
         error-if-empty-grammar(<xtc-exit> 1)
       ; where(collect-layout-sorts => layout-sorts)
       ; collect-sorts
       ; <diff> (<id>, layout-sorts)
-      ; map(rename-sort)
-      ; create-module
+      ; where(ctx := "Ctx") // FIXME: STR-604, STR-605 <newname; string-as-chars(map(try( \ '_' -> '-' \ )))> "Ctx")
+      ; map(rename-sort(|ctx))
+      ; create-module(|ctx, param*)
       )
     ; xtc-pp-sdf2
     )
 
+/**
+ * Parameters of the main module need to become parameters of the mix module.
+ */
+strategies
+
+  get-main-module-parameters =
+    lookup-sdf-module(|<get-sdf-main-module>)
+    ; ( \ 'module(unparameterized(_), _, _) -> [] \
+      + \ 'module(parameterized(_, param*), _, _) -> param* \
+      )
+
+  lookup-sdf-module(|mod) =
+    xtc-parse-sdf2-definition
+    ; read-from
+    ; ?definition(<id>)
+    ; (
+      fetch-elem(
+        ?'module(parameterized(mod, _), _, _)
+        <+ ?'module(unparameterized(mod), _, _)
+      )
+      <+ log(|Error(), "Main module not found in syntax definition"))
+
+
+/**
+ * Layout sorts should not be renamed.
+ */
 strategies
 
   collect-layout-sorts =
@@ -50,25 +80,59 @@ strategies
       + ?cf(sort(<id>)); ?lex(<id>)
       )
 
-
 /**
  * Transformation
  */
 strategies
 
+  // cf(parameterized-sort("Expr", [sort("Ctx")]))
   collect-sorts =
     collect(
+      // kernel sort
       \ p |[ A* -> S       $ ]| -> A |[ S ]| \
+
+      // cf sort
     + \ p |[ A* -> <S-CF>  $ ]| -> A |[ S ]| \
+
+      // lex sort
     + \ p |[ A* -> <S-LEX> $ ]| -> A |[ S ]| \
+
+      // kernel parameterized sort
+    + \ p |[ A* -> S[[B+]] $ ]| -> A |[ S[[B+]] ]| \
+
+      // cf parameterized sort
+    + \ p |[ A* -> <S[[B+]]-CF> $ ]| -> A |[ S[[B+]] ]| \
+
+      // lex parameterized sort
+    + \ p |[ A* -> <S[[B+]]-LEX> $ ]| -> A |[ S[[B+]] ]| \
     )
 
-  rename-sort :
-    A |[ S1 ]| -> ro |[ S1 => S1[[Ctx]] ]|
+  /**
+   * Renames a plain sort.
+   *
+   * @param String - Name of new context parameter
+   */
+  rename-sort(|S) :
+    A |[ S1 ]| -> ro |[ S1 => S1[[S]] ]|
 
-  create-module :
+  /**
+   * Renames a parameterized sort.
+   *
+   * @param String - Name of new context parameter
+   */
+  rename-sort(|S) :
+    A |[ S1[[B+]] ]| -> ro |[ S1[[B+]] => S1[[S, B+]] ]|
+
+strategies
+
+  /**
+   * Produces the final module
+   * @param String - Name of new context parameter
+   * @param List(Symbol) - Additional module parameters
+   */
+  create-module(|S, A*) :
     ro* -> m |[
-      module Mid2[Ctx]
+      module Mid2[S A*]
       imports Mid1 [ ro* ]
     ]|
     where
