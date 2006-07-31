@@ -27,36 +27,26 @@ USA
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h>
 #include "stratego-config.h"
 #include "aterm-extension.h"  
-#include "stratego-choice.h"
 #include "stratego-dynamic-call.h"
 
-
-/**
- * Closures and static links.
- */
-
-/*
-
-typedef struct str_frame *StrStaticLink;
-
-typedef struct str_closure *StrClosure;
+typedef struct str_frame *StrSL;
+typedef struct str_closure *StrCL;
 
 struct str_closure 
 {
   ATerm (*fun)();
-  StrStaticLink sl;
+  StrSL sl;
 };
 
-struct str_frame
+struct str_frame 
 {
-  StrStaticLink parent;
+  StrSL parent;
   ATerm **vars;  
-  StrClosure *funs;
+  StrCL *funs;
 };
 
 #define sl_decl(par) \
@@ -65,13 +55,13 @@ struct str_frame
 
 #define sl_vars(n) \
   ATerm *sl_vars[n]; \
-  frame.vars = sl_vars;
+  frame.vars = sl_vars; 
 
 #define sl_funs(n) \
-  StrClosure sl_funs[n]; \
+  StrCL sl_funs[n]; \
   frame.funs = sl_funs;
 
-#define sl_init_var(i,x)  sl_vars[i] = &x;
+#define sl_init_var(i,x) sl_vars[i] = &x;
 #define sl_init_fun(i,cl) sl_funs[i] = cl;
 
 #define sl_up(sl) ((sl)->parent)
@@ -82,7 +72,10 @@ struct str_frame
 #define sl_fun(i,s)    ((*(((s)->funs)+i))->fun)
 #define sl_fun_sl(i,s) ((*(((s)->funs)+i))->sl)
 
-*/
+#define sl_fun_cl(i,s) (*(((s)->funs)+i))
+
+#define cl_fun(cl) (cl->fun)
+#define cl_sl(cl) (cl->sl)
 
 
 /**
@@ -92,17 +85,13 @@ struct str_frame
 extern void (* SRTS_stratego_initialize)(void);
 extern ATerm SRTS_default_xtc_repository;
 
-ATerm _Id(ATerm);
-ATerm _Fail(ATerm);
-ATerm _all(ATerm, ATerm f(ATerm));
-ATerm _one(ATerm, ATerm f(ATerm));
-ATerm _some(ATerm, ATerm f(ATerm));
+ATerm _Id(StrSL, ATerm);
+ATerm _Fail(StrSL, ATerm);
+ATerm SRTS_all(StrSL, StrCL, ATerm);
+ATerm SRTS_one(StrSL, StrCL, ATerm);
+ATerm SRTS_some(StrSL, StrCL, ATerm);
 
 #define _fail(x) return(NULL)
-
-#define SRTS_all(f, t)    _all(t, f)
-#define SRTS_one(f, t)    _one(t, f)
-#define SRTS_some(f, t)   _some(t, f)
 
 void SRTS_init_mprotect(void);
 

@@ -43,15 +43,16 @@ USA
 
 #define MakeInt(n) ((ATerm)ATmakeInt(n))
 
-ATerm SRTS_getAnnotations(ATerm t);
-ATerm SRTS_setAnnotations(ATerm t, ATerm ts);
+//  ATerm SRTS_getAnnotations(ATerm t);
+// ATerm SRTS_setAnnotations(ATerm t, ATerm ts);
 
 ATerm ATmakeString(const char *name);
 ATerm ATmakeStringQ(const char *name);
 ATbool ATisString(ATerm t);
 ATbool ATisThisString(ATerm t, const char *name);
-ATermList ATmap(ATermList l, ATerm (* f)(ATerm));
-ATbool AThasName(ATerm t, const char *name);
+
+// ATermList ATmap(ATermList l, ATerm (* f)(ATerm));
+// ATbool AThasName(ATerm t, const char *name);
 
 ATerm CheckATermList(ATerm t);
 

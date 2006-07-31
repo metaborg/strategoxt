@@ -11,15 +11,12 @@ libstratego_runtime_la_LDFLAGS = -avoid-version -no-undefined
 
 LIB_SOURCES = \
   stratego.c \
-  stratego-choice.c \
   aterm-extension.c \
-  mprotect.c \
   stratego-dynamic-call.c \
   srts/stratego.h \
-  srts/aterm-extension.h \
-  srts/mprotect.h \
-  srts/stratego-choice.h
+  srts/aterm-extension.h
 
-stratego.lo: srts/stratego-choice.h srts/stratego-config.h
+
+stratego.lo: srts/stratego-config.h
 
 bootclean:

@@ -24,11 +24,9 @@ USA
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h> 
 #include "srts/stratego.h"
-#include "srts/mprotect.h"
 
 void (* SRTS_stratego_initialize)(void) = NULL;
 ATerm SRTS_default_xtc_repository = NULL;
@@ -43,18 +41,19 @@ ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
     return SRTS_default_xtc_repository;
 }
 
-ATerm _Id(ATerm t) {
+ATerm _Id(StrSL sl, ATerm t) {
   return(t);
 }
 
-ATerm _Fail(ATerm t) {
+ATerm _Fail(StrSL sl, ATerm t) {
   return(NULL);
 }
 
 /**
  * Traversal combinators
  */
-ATerm _all(ATerm t, ATerm f(ATerm)) {
+ATerm SRTS_all(StrSL sl, StrCL f, ATerm t)
+{
   ATerm annos = ATgetAnnotations(t);
   switch(ATgetType(t))
     {
@@ -66,7 +65,7 @@ ATerm _all(ATerm t, ATerm f(ATerm)) {
         for(i = 0; i < arity; i++)
           {
             original = ATgetArgument(t, i);
-            new = f(original);
+            new = cl_fun(f)(cl_sl(f),original);
 	    if(new == NULL) 
 	      return NULL;
             kids[i] = new;
@@ -89,7 +88,7 @@ ATerm _all(ATerm t, ATerm f(ATerm)) {
     return(ATsetAnnotations(t, annos));
 }
 
-ATerm _one(ATerm t, ATerm f(ATerm))
+ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
 {
   ATerm annos = ATgetAnnotations(t);
   //ATfprintf(stderr, "_one(%t)\n", t);
@@ -101,7 +100,7 @@ ATerm _one(ATerm t, ATerm f(ATerm))
 	{
 	  ATerm original, new;
 	  original = ATgetArgument(t, i);
-	  new = f(original);
+	  new = cl_fun(f)(cl_sl(f),original);
 	  if(new == NULL) 
 	    continue;
 	  transformed++;
@@ -156,7 +155,7 @@ ATerm _one(ATerm t, ATerm f(ATerm))
     return(ATsetAnnotations(t, annos));
 }
 
-static ATermList _map_some(ATermList ts, ATerm f(ATerm), volatile int transformed)
+static ATermList _map_some(ATermList ts, StrCL f, volatile int transformed)
 {
   if(ATisEmpty(ts))
     {
@@ -168,7 +167,7 @@ static ATermList _map_some(ATermList ts, ATerm f(ATerm), volatile int transforme
   else 
     {
       ATerm t = ATgetFirst(ts), t_bak = t;
-      t = f(t);
+      t = cl_fun(f)(cl_sl(f),t);
       if(t != NULL)
 	transformed++;
       else
@@ -185,7 +184,7 @@ static ATermList _map_some(ATermList ts, ATerm f(ATerm), volatile int transforme
   return NULL;
 }
        
-ATerm _some(ATerm t, ATerm f(ATerm)) 
+ATerm SRTS_some(StrSL sl, StrCL f, ATerm t)
 {
   int transformed = 0;
   ATerm annos = ATgetAnnotations(t);
@@ -202,7 +201,7 @@ ATerm _some(ATerm t, ATerm f(ATerm))
       for(i = 0; i < arity; i++)
 	{
 	  ATerm t_arg = ATgetArgument(t, i);
-	  kids[i] = f(t_arg);
+	  kids[i] = cl_fun(f)(cl_sl(f),t_arg);
 	  if(kids[i] != NULL)
 	    transformed++;
 	  else
@@ -235,12 +234,4 @@ ATerm CheckATermList(ATerm t)
     return NULL;
   }
   return t;
-}
-
-void SRTS_init_mprotect(void)
-{
-#ifdef NEEDS_MPROTECT
-  do_mprotect();
-  set_segv_handler();
-#endif
 }

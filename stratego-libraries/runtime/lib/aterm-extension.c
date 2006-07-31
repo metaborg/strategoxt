@@ -25,7 +25,9 @@ USA
 #include <aterm2.h>
 #include <string.h>
 
-#define ATmakeSymbol ATmakeAFun
+// #define ATmakeSymbol ATmakeAFun
+
+/*
 
 ATerm SRTS_getAnnotations(ATerm t)
 {
@@ -57,6 +59,8 @@ ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
     }
 }
 
+*/
+
 ATerm ATmakeString(const char *name)
 {
   return (ATerm) ATmakeAppl0(ATmakeAFun(name, 0, ATtrue));
@@ -85,11 +89,13 @@ ATbool ATisThisString(ATerm t, const char *name)
          (strcmp(ATgetName(s), name) == 0);
 }
 
+/*
 ATbool AThasName(ATerm t, const char *name)
 {
   return (strcmp(ATgetName(ATgetSymbol(t)), name) == 0)
     && !(ATisQuoted(ATgetSymbol(t)));
 }
+*/
 
 /* Shortcuts */
 
@@ -132,49 +138,3 @@ ATerm AppN(const char *name, ATermList args)
 {
   return (ATerm) ATmakeApplList(ATmakeSymbol(name, ATgetLength(args), ATfalse), args);
 }
-
-/* Conversion from terms with list notation to lists with Cons/Nil and
-   back. 
-
-ATerm list_to_consnil_op(ATermList t)
-{
-  if (ATisEmpty((ATermList) t)) {
-    return ATmake("Op(\"Nil\",[])");
-  }
-  else
-    return ATmake("Op(\"Cons\", [<list>])",
-		  ATmakeList2(ATgetFirst(t),
-			      list_to_consnil_op(ATgetNext(t))));
-}
-
-ATerm list_to_consnil_op_tl(ATermList t, ATerm tl)
-{
-  if (ATisEmpty((ATermList) t)) {
-    return tl;
-  }
-  else
-    return ATmake("Op(\"Cons\", [<list>])",
-		  ATmakeList2(ATgetFirst(t),
-			      list_to_consnil_op_tl(ATgetNext(t), tl)));
-}
-
-
-ATerm list_cong_aux(ATermList t, ATerm tl)
-{
-  if(ATisEmpty(t))
-    return tl;
-  else 
-    return App2("Call", App1("SVar", ATmakeString("Cons")),
-		(ATerm) ATmakeList2(ATgetFirst(t), 
-				    list_cong_aux(ATgetNext(t), tl)));
-}
-
-ATerm list_cong(ATermList t, ATerm tl)
-{
-  if(ATisEmpty(t))
-    return tl;
-  else
-    return list_cong_aux(t, tl);
-}
-
-*/
