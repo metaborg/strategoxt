@@ -52,17 +52,34 @@ fi
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
 AC_MSG_CHECKING([in which order to build subpackages])
-PKGS="autoxt"
+
+##############################
+#PKGS="autoxt"
+#
+#if test "$xt_baseline" = "yes"; then
+#  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-libraries xtc"
+#else
+#  PKGS="$PKGS stratego-libraries xtc stratego-front asfix-tools strc-core gpp c-tools"
+#
+#  # subpackages should pick up the -uninstalled pkgconfig descriptions.
+#  PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+#  export PKG_CONFIG_PATH
+#fi
+#PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+##############################
+
+BPKGS="stratego-front asfix-tools strc-core gpp c-tools concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+
 if test "$xt_baseline" = "yes"; then
-  PKGS="$PKGS stratego-front asfix-tools c-tools strc-core gpp stratego-libraries xtc"
+  PKGS="autoxt xtc $BPKGS stratego-libraries"
 else
-  PKGS="$PKGS stratego-libraries xtc stratego-front asfix-tools strc-core gpp c-tools"
+  PKGS="autoxt stratego-libraries xtc $BPKGS "
 
   # subpackages should pick up the -uninstalled pkgconfig descriptions.
   PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
 fi
-PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])
 
