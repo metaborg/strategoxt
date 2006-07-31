@@ -14,8 +14,13 @@ strategies
     
   abox2text =
     ?(<read-from-stream>, fout)
-    ; box2text-stream(|<get-width>, fout)
+    ; try-box2text-stream(|<get-width>, fout)
     ; <fputs> ("\n", fout)
+
+  try-box2text-stream(|width, stream) =
+    try-abox2text(|0, width)
+    ; gpp-topdown-fputs(|stream)
+    ; !stream
 
   get-width =
     <get-config> "--width" <+ !80
