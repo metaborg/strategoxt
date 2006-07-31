@@ -551,7 +551,7 @@ strategies
   /**
    * Convert a list of characters to upper case.
    *
-   * Example: <explode-string ; upper-case-char ; implode-string> "stratego" => "STRATEGO"
+   * Example: <explode-string ; upper-case-chars ; implode-string> "stratego" => "STRATEGO"
    *
    * @type  List(Char) -> List(Char)
    */
