@@ -449,9 +449,9 @@ rules
 strategies // computing the static link
 
   frames-to-static-link =
-    //(Tl <+ debug(!"frames-to-static-link error ***: "); fail);
-    foldr(!exp|[ sl ]|,
-	  !exp|[ sl_up(~exp:<Snd>) ]|)
+    (Tl <+ debug(!"frames-to-static-link error ***: "); fail)
+    ; foldr(!exp|[ sl ]|,
+	    !exp|[ sl_up(~exp:<Snd>) ]|)
 
 strategies // calling and passing functions
 
@@ -464,18 +464,28 @@ strategies // calling and passing functions
   // f is a function, pass it its static link
 
   mk-call : 
+    (f{Frames([])}, args) -> 
+    exp|[ ~id:f{}(&frame,~exp*:args) ]|
+
+  // f is a function, pass it its static link
+
+  mk-call : 
     (f{Frames(frames)}, args) -> 
     exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
-    where <frames-to-static-link> frames => sl
+    where sl := <not([]); frames-to-static-link> frames
 
   // f is a function, pass it its static link
   // the offset is caused by another use of the function as
   // a closure, it can be ignored in this instance
 
   mk-call : 
+    (f{Offset(i),Frames([])}, args) -> 
+    exp|[ ~id:f{}(&frame,~exp*:args) ]|
+
+  mk-call : 
     (f{Offset(i),Frames(frames)}, args) -> 
     exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
-    where <frames-to-static-link> frames => sl
+    where <not([]); frames-to-static-link> frames => sl
 
   // f is a local variable (function argument) containing a closure
 
@@ -483,13 +493,20 @@ strategies // calling and passing functions
     (f{Frames([]),ApplyClosure()}, args) -> 
     exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]|
 
-  // f is non-local variable containing a closure
+  // f is a local variable containing a closure
+  // (but f also has escaping instances)
+
+  mk-call : 
+    (f{Offset(i),Frames([]),ApplyClosure()}, args) -> 
+    exp|[ (cl_fun(~id:f{})) (cl_sl(~id:f{}), ~exp*:args) ]|
+
+  // f is a non-local variable containing a closure
 
   mk-call : 
     (f{Offset(i),Frames(frames),ApplyClosure()}, args) -> 
     exp|[ (sl_fun(~exp:<mk-int-const>i, ~exp:sl))
              (sl_fun_sl(~exp:<mk-int-const>i, ~exp:sl), ~exp*:args) ]| 
-    where sl := <frames-to-static-link> frames
+    where sl := <not([]); frames-to-static-link> frames
 
   // passing a local closure to a function 
   // Note: this should be &x in case of a locally constructed closure,
@@ -503,12 +520,15 @@ strategies // calling and passing functions
   ArgToCl :
     Strat|[ f~{Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
 
+  ArgToCl :
+    Strat|[ f~{Offset(i),Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
+
   // passing a remote closure to a function
 
   ArgToCl :
     Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
     exp|[ sl_fun_cl(~exp:<mk-int-const>i, ~exp:sl) ]|
-    where sl := <frames-to-static-link> frames
+    where sl := <not([]); frames-to-static-link> frames
 
 /**
  * Strategy calls
@@ -623,9 +643,12 @@ rules
     x{Frames([])} -> exp|[ x ]|
 
   VarToWriteRef : 
+    x{Offset(i), Frames([])} -> exp|[ x ]|
+
+  VarToWriteRef : 
     x{Offset(i), Frames(frames)} -> 
     exp|[ sl_readvar(~exp:<mk-int-const>i, ~exp:sl) ]|
-    where <frames-to-static-link> frames => sl
+    where <not([]); frames-to-static-link> frames => sl
 
   VarToReadRef : 
     x{} -> exp|[ x ]|
@@ -633,10 +656,13 @@ rules
   VarToReadRef :
     x{Frames([])} -> exp|[ x ]|
 
+  VarToReadRef :
+    x{Offset(i), Frames([])} -> exp|[ x ]|
+
   VarToReadRef : 
     x{Offset(i), Frames(frames)} -> 
     exp|[ sl_readvar(~exp:<mk-int-const>i, ~exp:sl) ]|
-    where <frames-to-static-link> frames => sl
+    where <not([]); frames-to-static-link> frames => sl
 
   TranslateStrat(|S,F) :
     Match(Var(x){}, trm) -> <translate-strat(|S,F)> Match(Var(x){"(un)bound"}, trm)

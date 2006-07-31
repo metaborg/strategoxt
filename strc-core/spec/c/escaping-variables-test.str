@@ -487,6 +487,7 @@ strategies // strategy variables
                 foo(arg: ATerm -> ATerm|) = 
                   let bar(|) = arg(|)
                    in bar(|)
+                      ; arg(|)
                   end
            ]|
 	, !|[ strategies 
@@ -494,6 +495,7 @@ strategies // strategy variables
                   let bar~{}(|) = 
                         arg~{Frames(["bar"]),ApplyClosure}(|)
                    in bar~{Frames([])}(|)
+                      ; arg~{Frames([]),ApplyClosure}(|)
                   end
            ]|
 	, !|[ strategies 
@@ -501,6 +503,7 @@ strategies // strategy variables
                   let bar~{Offsets(0,0)}(|) = 
                         arg~{Offset(0),Frames(["bar"]),ApplyClosure}(|)
                    in bar~{Frames([])}(|)
+                      ; arg~{Offset(0),Frames([]),ApplyClosure}(|)
                   end
            ]|
     )
