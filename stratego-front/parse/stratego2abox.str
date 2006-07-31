@@ -295,6 +295,9 @@ rules
   stratego-to-abox : 
     AM(s,t) -> |[ H[ ~s KW["=>"] ~t ] ]|
 
+  stratego-to-abox : 
+    Assign(t1, t2) ->  H hs=1 [ ~t1 ":=" ~t2 ]
+
 rules
 
   stratego-to-abox : 
