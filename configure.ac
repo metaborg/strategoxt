@@ -68,7 +68,7 @@ AC_MSG_CHECKING([in which order to build subpackages])
 #PKGS="$PKGS concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
 ##############################
 
-BPKGS="stratego-front asfix-tools strc-core gpp c-tools concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+BPKGS="stratego-front asfix-tools gpp c-tools strc-core concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
 
 if test "$xt_baseline" = "yes"; then
   PKGS="autoxt xtc $BPKGS stratego-libraries"
