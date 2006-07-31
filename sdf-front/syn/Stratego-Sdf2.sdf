@@ -55,6 +55,9 @@ exports
     SymbolMetaVar "*"  -> Symbol*
     SymbolMetaVar "+"  -> Symbol+
 
+    SymbolMetaVar "*"  -> {Symbol ","}*
+    SymbolMetaVar "+"  -> {Symbol ","}+
+
   lexical syntax
     [ABC][0-9\']* -> SymbolMetaVar
     
