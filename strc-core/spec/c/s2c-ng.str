@@ -449,17 +449,17 @@ rules
 strategies // computing the static link
 
   frames-to-static-link =
-    (Tl <+ debug(!"frames-to-static-link error ***: "); fail)
+    (Tl <+ debug(!"*** frames-to-static-link error: "); <exit> 1)
     ; foldr(!exp|[ sl ]|,
 	    !exp|[ sl_up(~exp:<Snd>) ]|)
 
 strategies // calling and passing functions
 
-  // a function without annotations must be 
+  // a function without annotations must be a top-level function
 
   mk-call : 
-    (f{}, args) -> 
-    exp|[ ~id:f{}(~exp*:args) ]|
+    (f{}, args) -> ()
+    where debug(!"*** mk-call error: "); <exit> 1   
 
   // f is a function, pass it its static link
 

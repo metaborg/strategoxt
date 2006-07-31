@@ -45,20 +45,6 @@ ATerm SRTS_setAnnotations(ATerm t, ATerm ts) {
     return ATsetAnnotations(t, ts);
 }
 
-ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
-{
-  if(ATisEmpty(l))
-    return l;
-  else 
-    {
-      ATerm hd = f(ATgetFirst(l));
-      if(hd == NULL) return NULL;
-      ATermList tl = ATmap(ATgetNext(l), f);
-      if(tl == NULL) return NULL;
-      return ATinsert(tl, hd);
-    }
-}
-
 */
 
 ATerm ATmakeString(const char *name)

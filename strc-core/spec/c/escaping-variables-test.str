@@ -49,6 +49,7 @@ strategies
         ; test-pass-strategy-arg
   	; test-pass-escaping-strategy-arg 
 
+        ; test-id-as-arg
     )
 
 
@@ -548,3 +549,19 @@ strategies // strategy variables
                   arg~{Frames([]),ApplyClosure}(|)
            ]|
     )
+
+  test-id-as-arg =
+    apply-test(!"test-pass-escaping-strategy-arg"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(|) = 
+                  let z_9(|) = ?0{^Nil()}
+                   in _2_0(_Id(|), z_9(|)|)
+                  end
+                _2_0(S1 : ATerm -> ATerm, S2 : ATerm -> ATerm|) = 
+                  S1(|); S2(|)
+           ]|
+	, !()
+	, !()
+	)

@@ -151,10 +151,10 @@ strategies
 strategies
 
   back-end = 
-    if <get-config> "--ng" => "on" then
-      back-end-ng
-    else
+    if <get-config> "--ng" => "off" then
       back-end-classic
+    else
+      back-end-ng
     end
 
   back-end-classic =

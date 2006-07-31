@@ -29,7 +29,7 @@ strategies
     ; <set-config> ("--statistics", 1)
     ; <set-config> ("-O", 2)
     ; <set-config> ("-I", [])
-    ; <set-config> ("--ng", "off")
+    ; <set-config> ("--ng", "on")
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
 

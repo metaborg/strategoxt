@@ -3,14 +3,10 @@ includedir = $(prefix)/include/srts
 include_HEADERS = \
   stratego.h \
   aterm-extension.h \
-  stratego-choice.h \
   stratego-config.h \
   init-stratego-module.h \
   init-stratego-application.h \
   stratego-dynamic-call.h
-
-noinst_HEADERS = \
-  mprotect.h
 
 stratego-config.h : $(top_srcdir)/config.h
 	echo "#ifndef SRTS_STRATEGO_CONFIG_H"  > $@

@@ -50,6 +50,24 @@ ATerm _Fail(StrSL sl, ATerm t) {
 }
 
 /**
+ * auxiliary map function
+ */
+
+static ATermList ATmap(ATermList l, StrCL f)
+{
+  if(ATisEmpty(l))
+    return l;
+  else 
+    {
+      ATerm hd = cl_fun(f)(cl_sl(f),ATgetFirst(l));
+      if(hd == NULL) return NULL;
+      ATermList tl = ATmap(ATgetNext(l), f);
+      if(tl == NULL) return NULL;
+      return ATinsert(tl, hd);
+    }
+}
+
+/**
  * Traversal combinators
  */
 ATerm SRTS_all(StrSL sl, StrCL f, ATerm t)
@@ -88,6 +106,7 @@ ATerm SRTS_all(StrSL sl, StrCL f, ATerm t)
     return(ATsetAnnotations(t, annos));
 }
 
+
 ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
 {
   ATerm annos = ATgetAnnotations(t);
@@ -120,7 +139,7 @@ ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
       while(!ATisEmpty(suffix))
 	{
 	  ATerm original = ATgetFirst(suffix);
-	  ATerm new = f(original);
+	  ATerm new = cl_fun(f)(cl_sl(f),original);
 	  suffix = ATgetNext(suffix);
 	  if(new == NULL) 
 	    {
