@@ -95,8 +95,9 @@
    parameterized-sort            -- H hs=0 [_1 KW["[["] _2 KW["]]"]],
    parameterized-sort.2:iter-sep -- _1 KW[","],
 
-   unparameterized               -- _1,
-   parameterized                 -- H hs=0 [_1 KW["["] _2 KW["]"]],
+   unparameterized      -- _1,
+   parameterized        -- H hs=0 [_1 KW["["] H hs=1[_2] KW["]"]],
+   parameterized.2:iter -- _1,
 
    opt           -- H hs=0 [H[_1] KW["?"]],
    iter          -- H hs=0 [H[_1] KW["+"]],
