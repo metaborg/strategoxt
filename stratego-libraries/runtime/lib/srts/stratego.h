@@ -61,7 +61,7 @@ struct str_frame
   StrCL sl_funs[n]; \
   frame.funs = sl_funs;
 
-#define sl_init_var(i,x) sl_vars[i] = &x;
+#define sl_init_var(i,x) sl_vars[i] = &(x);
 #define sl_init_fun(i,cl) sl_funs[i] = cl;
 
 #define sl_up(sl) ((sl)->parent)

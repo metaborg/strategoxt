@@ -27,8 +27,6 @@ USA
 
 // #define ATmakeSymbol ATmakeAFun
 
-/*
-
 ATerm SRTS_getAnnotations(ATerm t)
 {
   ATerm annos = ATgetAnnotations(t);
@@ -44,8 +42,6 @@ ATerm SRTS_setAnnotations(ATerm t, ATerm ts) {
   else
     return ATsetAnnotations(t, ts);
 }
-
-*/
 
 ATerm ATmakeString(const char *name)
 {
