@@ -103,7 +103,8 @@ strategies
     where frames := <frames-to-parent> x
 	; if <not([])> frames then
             rules( Escapes.x{} : x{t*} -> x{Escapes,t*} )
-            <+ say(<concat-strings>["* warning: (escaping-var-id)", x, " not declared"])
+            <+ say(<concat-strings>
+                 ["* warning (escaping-var-id): ", x, " not declared"])
           end
 
   frames-to-parent =
@@ -112,15 +113,21 @@ strategies
     ; take-until(?f)
 
   args-should-be-closures = 
-    CallT(id,map(arg-should-be-closure),id)
+    CallT(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
 
   arg-should-be-closure :
-    |[ f~{t1*}(|) ]| -> |[ f~{Closure(x),t2*}(|) ]|
-    where if (<filter(not(?ApplyClosure()))> t1* => t2*) => t1* then
-	    x := <conc-strings> (f, "_cl")
-	    ; rules( Closure.f{} : f{t3*} -> f{Closure(x),t3*} )
-	      // tricky: label should not have annotations, otherwise there is no match          <+ say(<concat-strings>["* warning (arg-should-be-closure): ", f{}, " not declared"])
-          else
-	    x := f{}
-	  end
+    |[ f~{Frames(frames)}(|) ]| -> |[ f~{Closure(x),Frames(frames)}(|) ]|
+    where x := <conc-strings> (f, "_cl")
+	; rules( 
+            Closure.f{} : f{t3*} -> f{Closure(x),t3*} 
+	    // tricky: label should not have annotations, 
+            // otherwise there is no match
+          )
    
+  arg-should-be-closure :
+    |[ f~{Frames(frames),ApplyClosure()}(|) ]| -> 
+    |[ f~{Closure(f{}),Frames(frames)}(|) ]|
+
+  arg-should-be-closure-undeclared =
+    debug(!"* warning (arg-should-be-closure): not a local function")
+    ; <exit> 1

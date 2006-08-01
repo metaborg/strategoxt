@@ -4,11 +4,12 @@ strategies
 
   canonicalize-ng-test-io = 
     test-suite(!"canonicalize-ng-test", id
-	; test-all-elimination
+	; test-all-elimination1
+        ; test-all-elimination2
     )
 
-  test-all-elimination = 
-    apply-and-check(!"test-all-elimination"
+  test-all-elimination1 = 
+    apply-and-check(!"test-all-elimination1"
 	, canonicalize
 	, !|[ bottomup_1_0(e_1 : ATerm() -> ATerm()|) =
                 all(bottomup_1_0(e_1(|)|)); e_1(|)
@@ -20,7 +21,20 @@ strategies
                 ; e_1(|)
            ]|
 	)
-
-
-
  
+  test-all-elimination2 = 
+    apply-test(!"test-all-elimination2"
+	, canonicalize
+	, !|[ 
+              bottomup_1_0(h_1 : ATerm() -> ATerm()|) =
+                let t_0(|) = all(t_0(|)); h_1(|)
+                in t_0(|)
+               end
+           ]|
+	, !|[ 
+              bottomup_1_0(h_1 : ATerm() -> ATerm()|) =
+                let t_0(|) = SRTS_all(t_0(|)|); h_1(|)
+                in t_0(|)
+               end
+           ]|
+	)

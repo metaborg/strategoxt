@@ -9,7 +9,8 @@ strategies
   canonicalize =
     canonicalize-sdef
     <+ canonicalize-let
-    <+ try(ImplementTraversalOps); canonicalize-call; canonicalize
+    <+ ImplementTraversalOps; canonicalize
+    <+ canonicalize-call; canonicalize
     <+ all(canonicalize)
 
   canonicalize-sdef :
@@ -38,20 +39,26 @@ strategies
   canonicalize-call :
     |[ f(s1*|t*) ]| -> |[ let def* in f(s2*|t*) end ]|
     where <map(IsClosure; !([],<id>) <+ lift-call-arg)> s1*
-          ; unzip; (concat, id) => (def*, s2*)
-	  ; not(([],id))
+        ; unzip; (concat, id) => (def*, s2*)
+	; not(([],id))
 
   canonicalize-call :
     |[ prim(str,s1*|t*) ]| -> |[ let def* in prim(str,s2*|t*) end ]|
     where <map(IsClosure; !([],<id>) <+ lift-call-arg)> s1*
-          ; unzip; (concat, id) => (def*, s2*)
-	  ; not(([],id))
+        ; unzip; (concat, id) => (def*, s2*)
+	; not(([],id))
 
   lift-call-arg :
     |[ s ]| -> ([|[ g(|) = s' ]|], |[ g(|) ]|)
     where new => g
 	; <canonicalize> s => s'
 
+
+//  ImplementTraversalOps :
+//    |[ id ]| -> |[ _Id(|) ]|
+
+//  ImplementTraversalOps :
+//    |[ fail ]| -> |[ _Fail(|) ]|
 
   ImplementTraversalOps :
     |[ all(s) ]| -> |[ SRTS_all(s|) ]|
@@ -61,74 +68,3 @@ strategies
 
   ImplementTraversalOps :
     |[ some(s) ]| -> |[ SRTS_some(s|) ]|
-
-/*
-
-strategies
-
-  canonicalize-io =
-    io-wrap(
-      downup2(repeat(Canon + LiftPrimArgs + LiftCallArgs),repeat(Canon))
-      ; simplify0
-    )
-
-rules
-
-  CallIdFun :
-    Id -> CallT(SVar("_Id"),[],[])
-
-  CallFailFun :
-    Fail -> CallT(SVar("_Fail"),[],[])
-
-  Canon :
-    All(s) -> CallT(SVar("SRTS_all"),[s],[])
-
-  Canon :
-    One(s) -> CallT(SVar("SRTS_one"),[s],[])
-
-  Canon :
-    Some(s) -> CallT(SVar("SRTS_some"),[s],[])
-
-
-
-
-  Canon =
-    let
-      canon-args = 
-        unzip(try(CallIdFun + CallFailFun)
-              ; ( CreateDef1 
-	          <+ not(CallT(SVar(id),[],[])); CreateDef2 
-	          <+ !(<id>,[])
-	          ))
-        ; (id, concat; not([]))
-    in
-      ( ?CallT(f, args1, args2) 
-      + ?CallDynamic(f, args1, args2)
-      + ?PrimT(f, args1, args2) 
-      ) => c#(_) 
-    ; <canon-args>args1 => (args1', defs) 
-    ; !Let(defs, c#([f, args1', args2]))
-    end
-
-  CreateDef1 :
-    Let(defs,CallT(SVar(f),[],[])) -> (CallT(SVar(f),[],[]), defs)
-
-  CreateDef2 :
-    s -> (CallT(SVar(f),[],[]), [SDefT(f,[],[],s)])
-    where new => f
-
-
-
-
-
-  Canon :
-    CallT(f, args1, args2) -> CallT(f, args1', args2)
-    where //<map(try(CallIdFun + CallFailFun))> args => args'
-      <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args1 => args1'
-
-  Canon :
-    PrimT(f, args1, args2) -> PrimT(f, args1', args2)
-    where //<map(try(CallIdFun + CallFailFun))> args => args'
-      <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args1 => args1'
-
-*/

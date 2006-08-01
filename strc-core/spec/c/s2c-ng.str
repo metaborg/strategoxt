@@ -65,7 +65,7 @@ rules
       ; function-sigs := <bagof-Fragment> "FunctionSig"
       ; function-regs := <bagof-Fragment> "FunctionReg"
       ; function-defs := <bagof-Fragment> "FunctionDef"
-      ; debug(!"function definitions: ")
+      //; debug(!"function definitions: ")
       ; cnst-decls    := <bagof-Fragment> "ConstDecl"
       ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
     );
@@ -73,7 +73,7 @@ rules
 	// C includes specified on command-line or by default configuration
 	~ext-def*:incl
 
-	~ext-def*:[PpControl("#include \"static-links-include.h\"")]
+	// ~ext-def*:[PpControl("#include \"static-links-include.h\"")]
 
         // legacy
 	~ext-def*: <if-lib(![],
@@ -141,7 +141,7 @@ strategies
 
         ATinit(argc, argv, &out_term);
         init_constructors();
-        SRTS_init_mprotect();
+        // SRTS_init_mprotect(); // mprotect no longer needed
 
         in_term = ATempty; 
         for(i = argc - 1; i >= 0; i--) {
@@ -222,10 +222,15 @@ strategies
  */
 strategies 
 
-  Translate = debug(!"Translate: "); 
+  Translate = //debug(!"Translate: "); 
     fragment(SDefToDeclaration|"FunctionSig")
     ; fragment(SDefToRegistration|"FunctionReg")
-    ; {| SuccessLabel, FailureLabel: fragment(debug(!"translating: "); TranslateDef; debug(!"done: ")|"FunctionDef") |}
+    ; {| SuccessLabel, FailureLabel: fragment(
+		//debug(!"translating: ")
+		TranslateDef
+	        <+ debug(!"TranslateDef undefined: "); fail
+		// ; debug(!"done: ")
+		|"FunctionDef") |}
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
@@ -297,26 +302,24 @@ strategies
        }
     ]|
     where f'{Offsets(off1,off2),t*} := f
-	; debug(!"TranslateDef: ")
+	//; debug(!"TranslateDef: ")
         ; <mk-int-const> off1 => off1'
         ; <mk-int-const> off2 => off2'
-	; debug(!"off2: ")
-        ; args := <map(debug(!"TranslateVarDec: ")
-		   ; TranslateVarDec
-		   ; debug(!": "))> [a1*,a2*]
-	; debug(!"args: ")
+	//; debug(!"off2: ")
+        ; args := <map(TranslateVarDec)> [a1*,a2*]
+	//; debug(!"args: ")
 	; stms := <filter(AddToFrame)> [a1*, a2*]
 	; F    := <newname> "fail"
 	; stm  := <translate-strat(|Next, F)> s
-	; debug(!"body: ")
+	//; debug(!"body: ")
 
   make-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
-    <debug(!"static: ")> 
+    //<debug(!"static: ")> 
     |[ static ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]|
-    where debug(!"make-static: ")
-	; <is-local-function> f
-	; debug(!"is local fun")
+    where //debug(!"make-static: ");
+	  <is-local-function> f
+	//; debug(!"is local fun")
 
   is-local-function =
     explode-string
@@ -343,7 +346,7 @@ strategies
 
   AddToFrame : 
     VarDec(x{Offset(i),Escapes()}, ConstType(_)) ->
-    stm|[ sl_init_var(~exp:<mk-int-const>i, &~id:x); ]|
+    stm|[ sl_init_var(~exp:<mk-int-const>i, ~id:x); ]|
 
   TranslateType : 
     ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None)
@@ -360,7 +363,7 @@ rules
 
   translate-strat(|S,F) =
     TranslateStrat(|S,F)
-    <+ debug(!"TranslateStrat undefined: "); fail
+    <+ debug(!"*** translate-strat undefined: "); fail
 
   TranslateStrat(|S,F) :
     Id -> stm|[ goto ~id:S; ]|
@@ -376,7 +379,7 @@ rules
 	        // <map(!var-dec|[~id:<id> = NULL]|)> x*
 		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> x*)
 	       ]
-        ~stm*:<debug(!"escaping? "); filter(TranslateEscapingVarDec); debug(!"decs: ")> x*
+        ~stm*:<filter(TranslateEscapingVarDec)> x*
         ~stm:(<translate-strat(|S,F)> s)
       }
     ]|
@@ -385,7 +388,6 @@ rules
     x{Offset(i),Escapes()} -> stm|[
       sl_init_var(~exp:<mk-int-const> i, ~id:x{}); 
     ]|
-   // add offset and declare dynamic rule to rewrite to the offset
 
   TranslateStrat(|S,F) :
     |[ s1; s2 ]| -> 
@@ -432,6 +434,13 @@ rules
         ; (closures, stms) := <filter(MkClosure); unzip; (concat,concat)> defs
 	; stm := <translate-strat(|S,F)> s
 
+  // @TODO
+  // cater for closures for top-level functions, which will typically
+  // have the form 
+  //   |[ f1(|) = f2(|) ]|
+  // the only purpose of such local definitions is to allocate a closure
+  // in order to pass f2(|) on
+ 
   MkClosure :
     Def|[ f~{Offsets(i,j),Closure(x)}(a1*|a2*) = s ]| ->
     ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
@@ -537,21 +546,21 @@ rules
 
   TranslateStrat(|S,F) :
     Strat|[ f(s* | t* ) ]| -> 
-    <check-unbound-args(|F,t*); debug(!"call translated: ")>
+    <check-unbound-args(|F,t*)>
     stm|[ 
       { 
         t = ~exp:call; 
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
-    where debug(!"call a: ")
-	; args1 := <map(ArgToCl)> s*
-        ; debug(!"call b: ")
+    where //debug(!"call a: ");
+	  args1 := <map(ArgToCl)> s*
+        //; debug(!"call b: ")
 	; args2 := <map(topdown(try(construct-term)))> t*
-        ; debug(!"call c: ")
+        //; debug(!"call c: ")
 	; args := <concat>[args1, args2, [Id("t")]]
-        ; debug(!"call d: ")
-	; call := <debug(!"mk-call: "); mk-call; debug>(f, args)
+        //; debug(!"call d: ")
+	; call := <mk-call>(f, args)
 
   TranslateStrat(|S,F) :
     Strat|[ prim(~str:f, s* | t* ) ]| -> 

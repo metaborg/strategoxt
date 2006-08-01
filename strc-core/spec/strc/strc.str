@@ -551,7 +551,7 @@ strategies // COMPILER COMPONENTS
   simplify2 		= comp(|"simplify2")
   simplify3 		= comp(|"simplify3")
   canonicalize 		= comp(|"canonicalize")
-  canonicalize-ng 	= comp(|"canonicalize")
+  canonicalize-ng 	= comp(|"canonicalize-ng")
   lift-definitions 	= comp(|"lift-definitions")
   bound-unbound-vars 	= comp(|"bound-unbound-vars")
   escaping-variables 	= comp(|"escaping-variables")

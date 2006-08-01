@@ -49,7 +49,6 @@ strategies
         ; test-pass-strategy-arg
   	; test-pass-escaping-strategy-arg 
 
-        ; test-id-as-arg
     )
 
 
@@ -361,16 +360,16 @@ strategies // strategy variables
            ]|
 	, !|[ strategies 
                 foo(arg : ATerm -> ATerm |) = 
-                  baz~{Frames(["foo"])}(~id:"arg"~{Closure("arg"),Frames([])}(|)|)
+                  baz~{Frames(["foo"])}(arg~{Closure("arg"),Frames([])}(|)|)
                 baz(aaa: ATerm -> ATerm|) = 
-                  ~id:"aaa"~{Frames([]),ApplyClosure}(|)
+                  aaa~{Frames([]),ApplyClosure}(|)
            ]|
 	, !|[ strategies 
                 foo~{Offsets(0,0)}(arg : ATerm -> ATerm |) = 
-                  ~id:"baz"~{Frames(["foo"])}
-                     (~id:"arg"~{Closure("arg"),Frames([])}(|)|)
+                  baz~{Frames(["foo"])}
+                     (arg~{Closure("arg"),Frames([])}(|)|)
                 baz~{Offsets(0,0)}(aaa: ATerm -> ATerm|) = 
-                  ~id:"aaa"~{Frames([]),ApplyClosure}(|)
+                  aaa~{Frames([]),ApplyClosure}(|)
            ]|
     )
 
@@ -550,18 +549,3 @@ strategies // strategy variables
            ]|
     )
 
-  test-id-as-arg =
-    apply-test(!"test-pass-escaping-strategy-arg"
-	, mark-escaping-variables
-	, annotate-frame-offsets
-	, !|[ strategies 
-                foo(|) = 
-                  let z_9(|) = ?0{^Nil()}
-                   in _2_0(_Id(|), z_9(|)|)
-                  end
-                _2_0(S1 : ATerm -> ATerm, S2 : ATerm -> ATerm|) = 
-                  S1(|); S2(|)
-           ]|
-	, !()
-	, !()
-	)

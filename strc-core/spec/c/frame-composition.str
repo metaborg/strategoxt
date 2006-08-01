@@ -11,14 +11,14 @@ strategies
   annotate-frame-offsets = 
     alltd(afo-sdef)
 
-  afo = debug(!"afo in: "); (
+  afo = //debug(!"afo in: "); (
     afo-let
     <+ afo-sdef
     <+ afo-scope
     <+ afo-var
     <+ afo-call; all(afo)
     <+ all(afo)
-  ); debug(!"afo out: ")
+  //); debug(!"afo out: ")
 
   afo-let :
     |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
@@ -29,32 +29,32 @@ strategies
 
   afo-sdef :
     def1@|[ f1~{t*}(a1*|a2*) = s1 ]| -> |[ f1~{os,t*}(a3*|a4*) = s2 ]|
-    where debug(!"afo-sdef: ")
-	; {| ScopedCounter, OffSet
+    where //debug(!"afo-sdef: ");
+	  {| ScopedCounter, OffSet
            : reset-scoped-counter(|"svar")
            ; reset-scoped-counter(|"var")
 	   ; !(<get-scoped-counter(|"svar")>,
                <get-scoped-counter(|"var")>)
-	   ; debug(!"counters 1: ")
+	   //; debug(!"counters 1: ")
            ; a3* := <map(try(offset-arg(|"svar")))> a1*
            ; a4* := <map(try(offset-arg(|"var")))> a2*
 	   ; !(<get-scoped-counter(|"svar")>,
                <get-scoped-counter(|"var")>)
-	   ; debug(!"counters 2: ")
+	   //; debug(!"counters 2: ")
            ; s2  := <afo> s1
            ; os  := Offsets(<get-scoped-counter(|"svar")>,
                             <get-scoped-counter(|"var")>)
            |}
-	; debug(!"afo-sdef out: ")
+	//; debug(!"afo-sdef out: ")
 
   afo-scope :
     |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|
-    where debug(!"afo-scope: ")
-	; {| OffSet
+    where //debug(!"afo-scope: ");
+	  {| OffSet
            : x2* := <map(try(offset-local-var(|"var")))> x1*
            ; s2  := <afo> s1
            |}
-	; debug(!"afo-scope out: ")
+	//; debug(!"afo-scope out: ")
 
   offset-sdef :
     |[ f1(a1* | a2*) = s ]| -> |[ f2(a1* | a2*) = s ]|
@@ -68,10 +68,10 @@ strategies
 
   offset-local-var(|c) :
     x{t1*} -> x{Offset(i), t1*}
-    where debug(!"offset-local-var: ")
-	; <fetch(?Escapes())> t1*
+    where //debug(!"offset-local-var: ");
+	  <fetch(?Escapes())> t1*
         ; i := <next-scoped-counter(|c)>
-	; debug(!"next offset: ")
+	//; debug(!"next offset: ")
         ; rules( OffSet+x : x{t2*} -> x{Offset(i),t2*} )
 
   afo-call :
