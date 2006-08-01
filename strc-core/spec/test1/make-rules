@@ -51,10 +51,10 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 # FRONT-END ###########################################################
 
 %.tree : %.str 
-	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --verbose 6 --desugaring off 
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) ../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --verbose 6 --desugaring off 
 
 %.tree : %.rtree 
-	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) ../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
 %.tree : %.itree 
 	cp $< $@ 

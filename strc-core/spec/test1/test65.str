@@ -2,7 +2,7 @@
  * Nil/1 is a valid constructor name.
  */
 module test65
-imports list-cons
+imports collection/list/cons collection/tuple/cons
 strategies
 
   main =

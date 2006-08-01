@@ -1,7 +1,7 @@
 // testing tuples
 
 module test23
-imports tuple-cons list-cons
+imports collection/list/cons collection/tuple/cons
 strategies
 
   main = 

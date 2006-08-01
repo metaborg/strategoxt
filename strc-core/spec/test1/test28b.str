@@ -1,6 +1,6 @@
 module test28b
  
-imports list-cons
+imports collection/list/cons collection/tuple/cons
  
 signature 
   sorts Exp Type 

@@ -1,5 +1,5 @@
 module test11
-imports list-cons
+imports collection/list/cons collection/tuple/cons
 signature
   sorts Term
   constructors

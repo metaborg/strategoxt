@@ -1,5 +1,5 @@
 module test02
-imports list-cons
+imports collection/list/cons
 signature
   constructors
     Call : a * List(a) -> Call

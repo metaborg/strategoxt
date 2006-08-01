@@ -3,7 +3,7 @@
  */
 module test94
 imports
-  list-cons
+  collection/list/cons collection/tuple/cons
 
 strategies
   

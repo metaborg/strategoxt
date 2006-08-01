@@ -1,5 +1,5 @@
 module test14
-imports list-cons 
+imports collection/list/cons collection/tuple/cons
 signature
    constructors
      Add : Int * Int -> Exp

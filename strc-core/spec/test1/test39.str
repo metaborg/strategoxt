@@ -1,5 +1,5 @@
 module test39
-imports tuple-cons list-cons
+imports collection/list/cons collection/tuple/cons
 strategies
 
    main =

@@ -1,5 +1,5 @@
 module test28a
-imports list-cons tuple-cons
+imports collection/list/cons collection/tuple/cons
 signature
   sorts Exp Type
   constructors

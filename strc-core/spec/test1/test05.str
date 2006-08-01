@@ -1,9 +1,7 @@
 module test05
-imports list-cons tuple-cons
+imports collection/list/cons collection/tuple/cons
 signature
   constructors
-    Nil   : List(a)
-    Cons  : a * List(a) -> List(a)
     F     : a -> a
     F     : a * a -> a 
 

@@ -1,0 +1,52 @@
+module test99
+imports collection/list/cons
+
+//	system/posix/signal
+
+signature
+  constructors
+    Signal:        String * Int * String -> Signal
+    UnknownSignal: Int -> Signal
+
+overlays
+
+  SIGPOLL = Signal("POLL", 29, "Pollable event")
+
+strategies
+
+  main =
+     {:
+      Anno_Cong__(
+        Signal(
+          Anno_Cong__(?"POLL"{^_}, id|)
+        , Anno_Cong__(?29{^_}, id|)
+        , Anno_Cong__(?"Pollable event"{^_}, id|)
+        |
+        )
+      , id
+      |
+      )
+    }
+
+
+  main'' = SIGPOLL()
+
+  main' = 
+    <test1> [Signal("POLL", 29, "Pollable event")]
+    ; <test2> [Signal("POLL", 29, "Pollable event")]
+    ; <test3> [Signal("POLL", 29, "Pollable event")]
+//    ; signal-from-number
+//    ; ?AllSignals
+
+  test1 =
+    all(SIGPOLL())
+
+  test2 = 
+    ?[SIGPOLL()]
+
+  test3 = 
+    [?SIGPOLL()]
+
+
+  fetch-elem(s) = 
+    [s | id] <+ [id | fetch-elem(s)]

@@ -1,4 +1,5 @@
 SINCLUDES = \
+  -I $(top_srcdir)/../stratego-libraries/lib/spec \
   -I $(prefix)/share/stratego-lib \
   -I $(prefix)/share/srts \
   -I $(top_srcdir)/../asfix-tools/src/implode
@@ -11,37 +12,58 @@ STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 LDADD 		= $(STRATEGORUNLIBS)
 
 
-ngtests =							    \
-		  static-links test01-ng test02-ng test03-ng	    \
-		  test04-ng test05-ng test06-ng test07-ng test08-ng \
-		  test09-ng test10-ng test11-ng			    \
-		  nested-defs01-ng
 
-classictests =									  \
-		  test01 test02 test03 test04 test05				  \
-		  test06 test07 test08 test09 test10 test11 test12		  \
-		  test13 test14 test15 test16 test17 test18 test19		  \
-		  test20 test21 test22 test23 test24 test25			  \
-		  test27 test28a test28b test28 test29 test30 test31 test32	  \
-		  test33 test34 test35 test36 test37 test38 test39		  \
-		  test40 test41 test43 test45					  \
-		  test46 test47 test48 test49 test50 test51 test53		  \
-		  test54 test56 test57 test58 test59				  \
-		  test60 test61 test62 test63 test64 test65			  \
-                  test67 test68 test69 test70 test72 test73 test74		  \
-		  test75 test76 test77 test78 test79 test80 test81 test82 test83  \
-		  test84 test85 test86 test87 test88 test89 test90		  \
-		  test91 test92 test93 test94 test95 test96			  \
-		  test97 test98							  \
-		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	  \
-                  qcons-test01 qcons-test02 qcons-test03 qcons-test04		  \
-                  test-chain01 test-chain02 test-chain03			  \
-		  let-test							  \
-		  nested-defs01							  \
-		  cs-test01							 
+classictests =									 \
+		  test01 test02 test03 test04 test05				 \
+		  test06 test07 test08 test09 test10 test11 test12		 \
+		  test13 test14 test15 test16 test17 test18 test19		 \
+		  test20 test21 test22 test23 test24 test25			 \
+		  test27 test28a test28b test28 test29 test30 test31 test32	 \
+		  test33 test34 test35 test36 test37 test38 test39		 \
+		  test40 test41 test43 test45					 \
+		  test46 test47 test49 test50 test51 test53		 \
+		  test54 test56 test57 test58 test59				 \
+		  test60 test61 test62 test63 test64 test65			 \
+                  test67 test68 test69 test70 test72 test73 test74		 \
+		  test75 test76 test77 test78 test79 test80 test81 test82 test83 \
+		  test84 test85 test86 test87 test88 test89 test90		 \
+		  test91 test92 test93 test94 test95 test96			 \
+		  test97 test98	test99						 \
+		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
+                  qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
+                  test-chain01 test-chain02 test-chain03			 \
+		  let-test							 \
+		  nested-defs01							 \
+		  cs-test01							 \
+	          static-links
 
-check_PROGRAMS 	= $(classictests) 
-#$(ngtests)
+
+ngtests =									 \
+		  test01 test02 test03 test04 test05				 \
+		  test06 test07 test08 test09 test10 test11 test12		 \
+		  test13 test14 test15 test16 test17 test18 test19		 \
+		  test20 test21 test22 test23 test24 test25			 \
+		  test27 test28a test28b test29 test30 test31 test32	 \
+		  test34 test35 test36 test37 test38 test39		 \
+		  test40 test41 test43 test45					 \
+		  test46 test47 test49 test50 test51 test53		 \
+		  test54 test58 test59				 \
+		  test60 test61 test62 test63 test64 test65			 \
+                  test67 test68 test69 test70 test72 test73 test74		 \
+		  test75 test76 test77 test78 test79 test80 test81 test82 test83 \
+		  test84 test85 test86 test87 test88 test89 test90		 \
+		  test91 test92 test93 test94 test95 test96			 \
+		  test97 test98	test99						 \
+		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
+                  qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
+                  test-chain01 test-chain02 test-chain03			 \
+		  let-test							 \
+		  nested-defs01							 \
+		  cs-test01							 \
+	          static-links
+
+check_PROGRAMS 	= $(ngtests)
+#$(classictests) $(ngtests)
 
 check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 
@@ -228,6 +250,8 @@ nodist_test94_SOURCES = test94.c
 nodist_test95_SOURCES = test95.c
 nodist_test96_SOURCES = test96.c
 nodist_test97_SOURCES = test97.c
+nodist_test98_SOURCES = test98.c
+nodist_test99_SOURCES = test99.c
 
 nodist_test_chain01_SOURCES = test-chain01.c
 nodist_test_chain02_SOURCES = test-chain02.c

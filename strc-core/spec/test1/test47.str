@@ -1,5 +1,5 @@
 module test47
-imports tuple-cons list-cons
+imports collection/list/cons collection/tuple/cons
 strategies
 
   hd : [x | xs] -> x

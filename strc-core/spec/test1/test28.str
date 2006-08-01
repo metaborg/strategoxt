@@ -277,21 +277,21 @@ strategies
 
   test-all =
     apply-test(!"test-all(s)"
-	, all(id)
+	, all(?"a")
 	, !Var("a"){Int}
 	, !Var("a"){Int}
 	)
 
   test-some =
     apply-test(!"test-some(s)"
-	, some(id)
+	, some(?"a")
 	, !Var("a"){Int}
 	, !Var("a"){Int}
 	)
 
   test-one =
     apply-test(!"test-one(s)"
-	, one(id)
+	, one(?"a")
 	, !Var("a"){Int}
 	, !Var("a"){Int}
 	)
