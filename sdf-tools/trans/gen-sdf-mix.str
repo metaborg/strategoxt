@@ -16,7 +16,8 @@ strategies
 
   main-gen-sdf-mix =
     xtc-io-wrap(mix-options,
-      where(
+      xtc-ensure-file
+    ; where(
         param* := <get-main-module-parameters>
       )
     ; xtc-sdf2-normalize(|<get-sdf-main-module>)
