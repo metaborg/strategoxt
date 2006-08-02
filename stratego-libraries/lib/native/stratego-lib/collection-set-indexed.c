@@ -22,7 +22,7 @@ ATerm SSL_indexedSet_reset(ATerm set_term) {
   return set_term;
 }
 
-ATerm SSL_indexedSet_put(ATerm on_old(ATerm), ATerm set_term, ATerm elem) {
+ATerm SSL_indexedSet_put(StrCL on_old, ATerm set_term, ATerm elem) {
   ATerm result_term;
   ATbool new;
   ATermIndexedSet set = indexedSet_from_term(set_term);
@@ -33,7 +33,7 @@ ATerm SSL_indexedSet_put(ATerm on_old(ATerm), ATerm set_term, ATerm elem) {
   if(new) {
       return result_term;
   } else {
-      return on_old(result_term);
+    return cl_fun(on_old)(cl_sl(on_old),result_term);
   }
 }
 
