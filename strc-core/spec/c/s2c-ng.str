@@ -226,8 +226,10 @@ strategies
     is-closure-alloc
     <+ fragment(SDefToDeclaration|"FunctionSig")
        ; fragment(SDefToRegistration|"FunctionReg")
-       ; (fragment(TranslateDef|"FunctionDef") 
-	 <+ debug(!"TranslateDef undefined: "); fail)
+       ; (fragment(TranslateDef | "FunctionDef")
+	  <+ {?Def|[ external f(a1* | a2* ) ]|}
+	  <+ {?Def|[ external f(a1* | a2* ) = s ]|}
+          <+ debug(!"TranslateDef undefined: "); fail)
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
@@ -328,7 +330,8 @@ strategies
 
   is-local-function =
     explode-string
-    ; [is-alpha, '_' | list(is-num)]
+    ; ([is-alpha, '_' | list(is-num)]
+       <+ ['l', 'i', 'f', 't', 'e', 'd', '_' | list(is-num)])
 
   check-arg(|F) :
     VarDec(x, ConstType(_)) -> 
