@@ -118,6 +118,9 @@ strategies
   args-should-be-closures = 
     PrimT(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
 
+  args-should-be-closures = 
+    CallDynamic(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
+
   arg-should-be-closure :
     |[ f~{Frames(frames)}(|) ]| -> |[ f~{Closure(x),Frames(frames)}(|) ]|
     where x := <conc-strings> (f, "_cl")

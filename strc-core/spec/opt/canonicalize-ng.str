@@ -53,6 +53,10 @@ strategies
     |[ prim(str,s1*|t*) ]| -> |[ let def* in prim(str,s2*|t*) end ]|
     where (def*, s2*) := <canonicalize-call-args> s1*
 
+  canonicalize-call :
+    |[ call(t|s1*|t*) ]| -> |[ let def* in call(t|s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args> s1*
+
   canonicalize-call-args =
     map(canonicalize-call-arg)
     ; unzip

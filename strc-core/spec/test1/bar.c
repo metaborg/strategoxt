@@ -23,10 +23,10 @@ static void init_module_constant_terms(void)
 
 #include <srts/init-stratego-module.h>
 
-ATerm bar_1_0(ATerm s(ATerm), ATerm t)
+ATerm bar_1_0(StrSL sl, StrCL s, ATerm t)
 {
   ATfprintf(stderr, "bar_1_0(%t)\n", t);
-  t = s(t);
+  t = cl_fun(s)(cl_sl(s),t);
   t = (ATerm)ATmakeAppl2(sym__2, term_p_0, t);
   return(t);
 }

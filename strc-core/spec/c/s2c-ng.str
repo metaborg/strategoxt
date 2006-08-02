@@ -619,7 +619,9 @@ rules
     <check-unbound-args(|F,[tp,t*])>
     stm |[ 
       { 
-        t = (SRTS_lookup_function(~exp:e))(~exp*:args); 
+        t = (SRTS_lookup_function(~exp:e))(NULL,~exp*:args);
+        // Note: instead of NULL, a proper static link should
+        // be passed; but what *is* the proper static link?
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
@@ -627,6 +629,7 @@ rules
         ; args2 := <map(topdown(try(construct-term)))> t*
         ; args  := <concat>[args1, args2, [Id("t")]]
 	; e     := <topdown(try(construct-term))>tp
+
 
 /**
  * Matching
