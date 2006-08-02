@@ -6,6 +6,7 @@ strategies
     test-suite(!"canonicalize-ng-test", id
 	; test-all-elimination1
         ; test-all-elimination2
+	//; test-closure-alloc
     )
 
   test-all-elimination1 = 
@@ -36,5 +37,33 @@ strategies
                 let t_0(|) = SRTS_all(t_0(|)|); h_1(|)
                 in t_0(|)
                end
+           ]|
+	)
+
+  // TODO: find out why the check fails
+
+  test-closure-alloc = 
+    apply-and-check(!"test-closure-alloc"
+	, canonicalize
+	, !|[ 
+              strategies
+                foo(|) = 
+                  bar(id, baz(|)|)
+                bar(aaa : ATerm -> ATerm, bbb : ATerm -> ATerm|) = 
+                  aaa(|); bbb(|)
+	        baz(|) = 
+                  fail
+           ]|
+	, ?|[ 
+              strategies
+                foo(|) = 
+                  let f~{ClosureAlloc()}(|) = _Id(|)
+                      g~{ClosureAlloc()}(|) = baz(|)
+                   in bar(f(|), g(|)|)
+		  end
+                bar(aaa : ATerm -> ATerm, bbb : ATerm -> ATerm|) = 
+                  aaa(|); bbb(|)
+	        baz(|) = 
+                  fail
            ]|
 	)

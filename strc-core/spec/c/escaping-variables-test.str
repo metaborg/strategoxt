@@ -48,7 +48,10 @@ strategies
   	; test-escaping-strategy-arg 
         ; test-pass-strategy-arg
   	; test-pass-escaping-strategy-arg 
+	; test-pass-escaping-strategy-arg-to-prim
 
+	; test-pass-higher-order-strategy
+	; test-pass-escaping-higher-order-strategy
     )
 
 
@@ -549,3 +552,142 @@ strategies // strategy variables
            ]|
     )
 
+
+  test-pass-escaping-strategy-arg-to-prim =
+    apply-test(!"test-pass-escaping-strategy-arg-to-prim"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let bar(|) = prim("baz", arg(|)|)
+                   in bar(|)
+                  end
+                baz(arg: ATerm -> ATerm|) = arg(|)
+           ]|
+	, !|[ strategies 
+                foo~{}(arg~{Escapes}: ATerm -> ATerm |) = 
+                  let bar~{}(|) = 
+                        prim("baz", arg~{Closure("arg"),Frames(["bar"])}(|)|)
+                   in bar~{Frames([])}(|)
+                  end
+                baz~{}(arg~{} : ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(1,0)}(arg~{Offset(0),Escapes}: ATerm -> ATerm |) = 
+                  let bar~{Offsets(0,0)}(|) = 
+                        prim("baz", arg~{Offset(0),Closure("arg"),Frames(["bar"])}(|)|)
+                   in bar~{Frames([])}(|)
+                  end
+                baz~{Offsets(0,0)}(arg~{} : ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+           ]|
+    )
+
+  test-pass-higher-order-strategy =
+    apply-test(!"test-pass-higher-order-strategy"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let ddd~{ClosureAlloc()}(|) = baz(|)
+                   in aaa(ddd(|)|)
+                  end
+                baz(arg: ATerm -> ATerm|) = 
+                  arg(|)
+		aaa(bbb: (ATerm -> ATerm) * ATerm -> ATerm|) = 
+                  let ccc~{ClosureAlloc()}(|) = _Id(|)
+		   in bbb(ccc(|)|)
+		  end
+           ]|
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let ddd~{Closure("ddd_cl"),ClosureAlloc()}(|) = 
+                        baz~{Frames(["ddd","foo"])}(|)
+                   in aaa~{Frames(["foo"]),ApplyClosure}
+                        (ddd~{Closure("ddd_cl"),Frames([])}(|)|)
+                  end
+                baz(arg: ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+		aaa(bbb: (ATerm -> ATerm) * ATerm -> ATerm|) = 
+                  let ccc~{Closure("ccc_cl"),ClosureAlloc()}(|) = 
+                        _Id~{Frames(["ccc","aaa"])}(|)
+		   in bbb~{Frames([]),ApplyClosure}
+                        (ccc~{Closure("ccc_cl"),Frames([])}(|)|)
+		  end
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(0,0)}(arg: ATerm -> ATerm|) = 
+                  let ddd~{Offsets(0,0),Closure("ddd_cl"),ClosureAlloc()}(|) = 
+                        baz~{Frames(["ddd","foo"])}(|)
+                   in aaa~{Frames(["foo"]),ApplyClosure}
+                        (ddd~{Closure("ddd_cl"),Frames([])}(|)|)
+                  end
+                baz~{Offsets(0,0)}(arg: ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+		aaa~{Offsets(0,0)}(bbb: (ATerm -> ATerm) * ATerm -> ATerm|) = 
+                  let ccc~{Offsets(0,0),Closure("ccc_cl"),ClosureAlloc()}(|) = 
+                        _Id~{Frames(["ccc","aaa"])}(|)
+		   in bbb~{Frames([]),ApplyClosure}
+                        (ccc~{Closure("ccc_cl"),Frames([])}(|)|)
+		  end
+           ]|
+    )
+
+  test-pass-escaping-higher-order-strategy =
+    apply-test(!"test-pass-escaping-higher-order-strategy"
+	, mark-escaping-variables
+	, annotate-frame-offsets
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let ddd~{ClosureAlloc()}(|) = baz(|)
+                   in let eee(|) = aaa(ddd(|)|)
+                       in eee(|)
+                      end
+                  end
+                baz(arg: ATerm -> ATerm|) = 
+                  arg(|)
+		aaa(bbb: (ATerm -> ATerm) * ATerm -> ATerm|) = 
+                  let ccc~{ClosureAlloc()}(|) = _Id(|)
+		   in bbb(ccc(|)|)
+		  end
+           ]|
+	, !|[ strategies 
+                foo(arg: ATerm -> ATerm|) = 
+                  let ddd~{Escapes,Closure("ddd_cl"),ClosureAlloc()}(|) = 
+                        baz~{Frames(["ddd","foo"])}(|)
+                   in let eee(|) = 
+                            aaa~{Frames(["eee","foo"]),ApplyClosure}
+                              (ddd~{Closure("ddd_cl"),Frames(["eee"])}(|)|)
+                       in eee~{Frames([])}(|)
+                      end
+                  end
+                baz(arg: ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+		aaa(bbb: (ATerm -> ATerm) * ATerm -> ATerm|) = 
+                  let ccc~{Closure("ccc_cl"),ClosureAlloc()}(|) = 
+                        _Id~{Frames(["ccc","aaa"])}(|)
+		   in bbb~{Frames([]),ApplyClosure}
+                        (ccc~{Closure("ccc_cl"),Frames([])}(|)|)
+		  end
+           ]|
+	, !|[ strategies 
+                foo~{Offsets(1,0)}(arg: ATerm -> ATerm|) = 
+                  let ddd~{Offsets(0,0),Offset(0),Escapes,Closure("ddd_cl"),ClosureAlloc()}(|) = 
+                        baz~{Frames(["ddd","foo"])}(|)
+                   in let eee~{Offsets(0,0)}(|) = 
+                            aaa~{Frames(["eee","foo"]),ApplyClosure}
+                             (ddd~{Offset(0),Closure("ddd_cl"),Frames(["eee"])}(|)|)
+                       in eee~{Frames([])}(|)
+                      end
+                  end
+                baz~{Offsets(0,0)}(arg: ATerm -> ATerm|) = 
+                  arg~{Frames([]),ApplyClosure}(|)
+		aaa~{Offsets(0,0)}(bbb: (ATerm -> ATerm) * ATerm -> ATerm|) = 
+                  let ccc~{Offsets(0,0),Closure("ccc_cl"),ClosureAlloc()}(|) = 
+                        _Id~{Frames(["ccc","aaa"])}(|)
+		   in bbb~{Frames([]),ApplyClosure}
+                        (ccc~{Closure("ccc_cl"),Frames([])}(|)|)
+		  end
+           ]|
+    )

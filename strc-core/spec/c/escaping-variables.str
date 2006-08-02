@@ -57,7 +57,7 @@ strategies
   ev-sdef :
     |[ f(a1*|a2*) = s ]| -> |[ f(a3*|a4*) = s' ]|
     where {| CurrentFrame, Escapes, FrameOf, Closure
-           : rules( CurrentFrame :+ _ -> f )
+           : rules( CurrentFrame :+ _ -> f{} )
 	   ; <map(declare-arg(|f); apply-closure)> a1*
 	   ; <map(declare-arg(|f))> a2*
 	   ; <ev> s => s'
@@ -114,6 +114,9 @@ strategies
 
   args-should-be-closures = 
     CallT(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
+
+  args-should-be-closures = 
+    PrimT(id, map(arg-should-be-closure <+ arg-should-be-closure-undeclared), id)
 
   arg-should-be-closure :
     |[ f~{Frames(frames)}(|) ]| -> |[ f~{Closure(x),Frames(frames)}(|) ]|

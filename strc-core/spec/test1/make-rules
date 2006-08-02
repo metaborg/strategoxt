@@ -304,6 +304,9 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	$(FC_C) -i $<
 	$(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
 
+%.fcc : %
+	$(formatcheck)  -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -o /dev/null -i $<
+
 %.c.abox.check : %.c.abox
 	abox-format -i $< 
 

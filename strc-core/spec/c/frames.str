@@ -6,6 +6,7 @@ signature
     Closure      : String -> Annotation
     ApplyClosure : Annotation
     Frames       : String * List(String) * Int -> Annotation
+    ClosureAlloc : Annotation
 
 signature
   constructors

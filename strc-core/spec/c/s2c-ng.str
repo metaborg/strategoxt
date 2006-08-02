@@ -223,14 +223,11 @@ strategies
 strategies 
 
   Translate = //debug(!"Translate: "); 
-    fragment(SDefToDeclaration|"FunctionSig")
-    ; fragment(SDefToRegistration|"FunctionReg")
-    ; {| SuccessLabel, FailureLabel: fragment(
-		//debug(!"translating: ")
-		TranslateDef
-	        <+ debug(!"TranslateDef undefined: "); fail
-		// ; debug(!"done: ")
-		|"FunctionDef") |}
+    is-closure-alloc
+    <+ fragment(SDefToDeclaration|"FunctionSig")
+       ; fragment(SDefToRegistration|"FunctionReg")
+       ; (fragment(TranslateDef|"FunctionDef") 
+	 <+ debug(!"TranslateDef undefined: "); fail)
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
@@ -282,6 +279,10 @@ signature
 
 strategies 
 
+  is-closure-alloc = 
+    ?Def|[ f~{t*}(a1*|a2*) = s ]|
+    ; where(<fetch(?ClosureAlloc())> t*)
+
   // TODO: don't include sl_funs(0) / sl_vars(0)
 
   // TODO: insert escaping strategy arguments in frame
@@ -301,7 +302,10 @@ strategies
          return NULL;
        }
     ]|
-    where f'{Offsets(off1,off2),t*} := f
+    where 
+       {| SuccessLabel, FailureLabel
+        : f'{Offsets(off1,off2),t*} := f
+	; <not(fetch(?ClosureAlloc()))> t*
 	//; debug(!"TranslateDef: ")
         ; <mk-int-const> off1 => off1'
         ; <mk-int-const> off2 => off2'
@@ -312,6 +316,7 @@ strategies
 	; F    := <newname> "fail"
 	; stm  := <translate-strat(|Next, F)> s
 	//; debug(!"body: ")
+	|}
 
   make-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
@@ -442,23 +447,57 @@ rules
   // in order to pass f2(|) on
  
   MkClosure :
-    Def|[ f~{Offsets(i,j),Closure(x)}(a1*|a2*) = s ]| ->
+    Def|[ f~{Offsets(i,j),Closure(x)}(|) = s ]| ->
     ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     , [])
     where y := <new>
 
   MkClosure :
-    Def|[ f~{Offsets(i,j),Offset(k),Escapes,Closure(x)}(a1*|a2*) = s ]| ->
+    Def|[ f~{Offsets(i,j),Offset(k),Escapes,Closure(x)}(|) = s ]| ->
     ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
     where y := <new>
 
+  // allocate closure for a top-level function
+
+  MkClosure :
+    Def|[ f~{Offsets(0,0),Closure(x),ClosureAlloc()}(|)
+            = g~{Frames(frames)}(|) ]| ->
+    ([dec|[ struct str_closure ~id:y = {&~id:g, ~exp:sl}; ]|
+     ,dec|[ StrCL ~id:x = &y; ]|]
+    , [])
+    where ?def
+	; y := <new>
+	; frames' := <Tl> frames
+	; if <not([])> frames' then
+	    sl := <frames-to-static-link> frames'
+	  else
+            sl := |[ &frame ]|
+	    ; <debug(!"* warning (MkClosure) expects more than one frame: ")> def
+	  end
+
+  MkClosure :
+    Def|[ f~{Offsets(0,0),Offset(k),Escapes,Closure(x),ClosureAlloc()}(|) 
+          = g~{Frames(frames)}(|) ]| ->
+    ([dec|[ struct str_closure ~id:y = {&~id:f, ~exp:sl}; ]|
+     ,dec|[ StrCL ~id:x = &y; ]|]
+    ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
+    where ?def
+	; y := <new>
+	; frames' := <Tl> frames
+	; if <not([])> frames' then
+	    sl := <frames-to-static-link> frames'
+	  else
+            sl := |[ &frame ]|
+	    ; <debug(!"* warning (MkClosure) expects more than one frame: ")> def
+	  end
+
 strategies // computing the static link
 
   frames-to-static-link =
-    (Tl <+ debug(!"*** frames-to-static-link error: "); <exit> 1)
+    (Tl <+ debug(!"*** frames-to-static-link error: "); fail)
     ; foldr(!exp|[ sl ]|,
 	    !exp|[ sl_up(~exp:<Snd>) ]|)
 
@@ -571,9 +610,9 @@ rules
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
-    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
-        ; <map(topdown(try(construct-term)))> t* => args2
-        ; <conc>(args1, args2) => args
+    where args1 := <map(ArgToCl)> s*
+        ; args2 := <map(topdown(try(construct-term)))> t*
+        ; args  := <conc>(args1, args2)
 
   TranslateStrat(|S,F) :
     CallDynamic(tp,s*,t*) -> 
@@ -584,10 +623,10 @@ rules
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
-    where <mapconcat(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1 
-        ; <map(topdown(try(construct-term)))> t* => args2  
-        ; <concat>[args1, args2, [Id("t")]] => args 
-	; <topdown(try(construct-term))>tp => e
+    where args1 := <map(ArgToCl)> s*
+        ; args2 := <map(topdown(try(construct-term)))> t*
+        ; args  := <concat>[args1, args2, [Id("t")]]
+	; e     := <topdown(try(construct-term))>tp
 
 /**
  * Matching

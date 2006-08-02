@@ -6,6 +6,7 @@ SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn/ \
 	  -I $(srcdir)/../match			    \
 	  -I $(srcdir)/../lib			    \
 	  -I $(srcdir)/../front			    \
+	  -I $(srcdir)/../c			    \
 	  --main $*-io	
 #--ast	  --keep 10
 
