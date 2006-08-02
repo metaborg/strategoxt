@@ -29,7 +29,9 @@ strategies
     rules( CurrentFrame :+ _ -> "top-level" )
 
   declare-frame-of =
-    ?|[ f(a1*|a2*) = s ]|
+    (?|[ f(a1*|a2*) = s ]| 
+     <+ ?|[ external f(a1*|a2*) = s ]| 
+     <+ ?|[ external f(a1*|a2*) ]|)
     ; where( g := <CurrentFrame> )
     ; rules( 
         FrameOf     : f{t*} -> g
