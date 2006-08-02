@@ -290,13 +290,13 @@ strategies
   // TODO: insert escaping strategy arguments in frame
 
   TranslateDef :
-    Def|[ f(a1*|a2*) = s ]| -> <try(make-static)> 
+    Def|[ f~{t*}(a1*|a2*) = s ]| -> <try(make-static)> 
     |[ 
-       ATerm ~id:f'(StrSL sl, ~param-dec*:args, ATerm t)
+       ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
 	 sl_decl(sl);
-         sl_funs(~exp:off1');
-         sl_vars(~exp:off2');
+	 ~stm*:fini;
+	 ~stm*:vini;
 	 ~stm*:stms;
          ~stm:stm;
 	 return(t);
@@ -306,19 +306,31 @@ strategies
     ]|
     where 
        {| SuccessLabel, FailureLabel
-        : f'{Offsets(off1,off2),t*} := f
-	; <not(fetch(?ClosureAlloc()))> t*
-	//; debug(!"TranslateDef: ")
-        ; <mk-int-const> off1 => off1'
-        ; <mk-int-const> off2 => off2'
-	//; debug(!"off2: ")
+        : <not(fetch(?ClosureAlloc()))> t*
         ; args := <map(TranslateVarDec)> [a1*,a2*]
-	//; debug(!"args: ")
+	; fini := <init-sl-funs> t*
+	; vini := <init-sl-vars> t*
 	; stms := <filter(AddToFrame)> [a1*, a2*]
 	; F    := <newname> "fail"
 	; stm  := <translate-strat(|Next, F)> s
-	//; debug(!"body: ")
 	|}
+
+
+  init-sl-funs : 
+    [Offsets(0,j)|_] -> []
+
+  init-sl-funs : 
+    [Offsets(i,j)|_] -> [ stm|[ sl_funs(~exp:<mk-int-const>i); ]| ]
+    where <not(0)> i
+
+  init-sl-vars : 
+    [Offsets(i,0)|_] -> []
+
+  init-sl-vars : 
+    [Offsets(i,j)|_] -> [ stm|[ sl_vars(~exp:<mk-int-const>j); ]| ]
+    where <not(0)> j
+
+
 
   make-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
