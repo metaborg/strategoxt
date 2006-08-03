@@ -1,6 +1,7 @@
 #include <aterm2.h>
 #include <sglr.h>
 #include <parse-table.h>
+#include <srts/stratego.h>
 
 /**
  * Open and close tables
@@ -12,7 +13,7 @@ ATerm STRSGLR_close_parse_table(ATerm tbl_term);
  * Parsing
  */
 ATerm STRSGLR_parse_string_pt(ATerm string_term, ATerm tbl_term, ATerm start_symbol, ATerm path_term);
-ATerm STRSGLR_parse_stream_pt(ATerm onfail(ATerm), ATerm stream_term, ATerm tbl_term, ATerm start_symbol, ATerm path_term);
+ATerm STRSGLR_parse_stream_pt(StrCL onfail, ATerm stream_term, ATerm tbl_term, ATerm start_symbol, ATerm path_term);
 
 ATerm STRSGLR_get_parse_error(void);
 ATerm STRSGLR_clear_parse_error(void);
