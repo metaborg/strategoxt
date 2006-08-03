@@ -182,20 +182,30 @@ strategies
 strategies
 
   parse-xtc-file-pt(|tbl) =
-    ?file; parse-xtc-file-pt(|tbl, None(), <path-of-xtc-file> file)
+    ?file; parse-xtc-file-pt(fail, fail | tbl, None(), <path-of-xtc-file> file)
 
   parse-xtc-file-pt(|tbl, start-symbol) =
-    ?file; parse-xtc-file-pt(|tbl, start-symbol, <path-of-xtc-file> file)
+    ?file; parse-xtc-file-pt(fail, fail | tbl, start-symbol, <path-of-xtc-file> file)
 
   parse-xtc-file-pt(|tbl, start-symbol, path) =
+    parse-xtc-file-pt(fail, fail |tbl, start-symbol, path)
+
+  parse-xtc-file-pt(on-open-error, on-parse-error | tbl) =
+    ?file; parse-xtc-file-pt(on-open-error, on-parse-error |tbl, None(), <path-of-xtc-file> file)
+
+  parse-xtc-file-pt(on-open-error, on-parse-error |tbl, start-symbol) =
+    ?file; parse-xtc-file-pt(on-open-error, on-parse-error |tbl, start-symbol, <path-of-xtc-file> file)
+
+  parse-xtc-file-pt(on-open-error, on-parse-error |tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     
     ; let open-stream =
-            ?FILE(<id>); <fopen> (<id>, "r") + ?stdin(); stdin-stream
+            ?FILE(<id>); (<fopen> (<id>, "r") <+ on-open-error)
+            <+ ?stdin(); stdin-stream
             
        in open-stream => stream
           ; finally(
-              parse-stream-pt(|tbl, start-symbol, path)
+              parse-stream-pt(on-parse-error |tbl, start-symbol, path)
             , <fclose> stream
             )
       end
