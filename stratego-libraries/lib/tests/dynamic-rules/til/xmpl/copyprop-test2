@@ -1,4 +1,0 @@
-sglri -p ../syn/TIL.tbl -i copyprop-test2.til |\
-../sim/til-simplify |\
-../opt/til-copyprop |\
-ast2text -p ../pp/TIL-pretty.pp -o copyprop-test2.txt

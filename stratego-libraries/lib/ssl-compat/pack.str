@@ -1,3 +1,0 @@
-module pack
-imports strategy/pack/common
-

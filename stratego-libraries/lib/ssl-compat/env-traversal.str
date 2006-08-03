@@ -1,3 +1,0 @@
-module env-traversal
-imports strategy/traversal/environment
-

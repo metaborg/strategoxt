@@ -1,3 +1,0 @@
-INCL="-I ../sig"
-
-strc ${INCL} -i til-rename-vars.str -la stratego-lib -m io-til-rename-vars

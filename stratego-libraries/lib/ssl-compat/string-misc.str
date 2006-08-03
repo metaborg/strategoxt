@@ -1,3 +1,0 @@
-module string-misc
-imports term/string
-

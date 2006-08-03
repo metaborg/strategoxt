@@ -1,4 +1,0 @@
-sglri -p ../syn/TIL.tbl -i cse-test2.til |\
-../sim/til-simplify |\
-../opt/til-cse |\
-ast2text -p ../pp/TIL-pretty.pp -o cse-test2.txt

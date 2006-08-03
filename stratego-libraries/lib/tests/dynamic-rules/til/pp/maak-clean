@@ -1,2 +1,0 @@
-rm -f TIL.pp til-parenthesize.str til-parenthesize *.c *.dep *.o
-rm -rf .libs

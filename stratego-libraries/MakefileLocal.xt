@@ -1,4 +1,0 @@
-SCOMPILE = $(STRC_UNINSTALLED)
-
-.str.rtree :
-	$(ASFIX_TOOLS)/bin/sglri --amb off -p $(top_builddir)/../stratego-front/syn/Stratego.tbl -i $< -o $@

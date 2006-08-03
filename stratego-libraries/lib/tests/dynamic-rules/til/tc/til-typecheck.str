@@ -1,9 +1,0 @@
-module til-typecheck
-imports libstratego-lib til-typecheck-stats
-strategies
-
-  io-til-typecheck =
-    io-wrap(typecheck-program)
-    
-  typecheck-program =
-    Program(typecheck-stats)

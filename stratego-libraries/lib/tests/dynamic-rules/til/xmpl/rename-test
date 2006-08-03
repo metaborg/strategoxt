@@ -1,3 +1,0 @@
-sglri -p ../syn/TIL.tbl -i test1.til |\
-../renaming/til-rename-vars |\
-ast2text -p ../pp/TIL-pretty.pp -o test1.rn.txt

@@ -1,3 +1,0 @@
-module list-filter
-imports collection/list/filter 
-

@@ -1,3 +1,0 @@
-module int-list
-imports collection/list/integer
-

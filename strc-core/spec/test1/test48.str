@@ -1,8 +1,0 @@
-module test48
-strategies
-
-  ALL(s) = 
-    ?t; prim("SRTS_all", s | t)
-
-  main =
-    ALL(id)

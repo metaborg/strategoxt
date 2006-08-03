@@ -1,9 +1,0 @@
-module test03
-imports libstratego-lib
-strategies
-
-   main =
-     <mul> (1, 3)
-
-  add =
-    !"redefinition of external symbol"

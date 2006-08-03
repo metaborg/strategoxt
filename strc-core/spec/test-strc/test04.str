@@ -1,7 +1,0 @@
-module test04
-imports libstrategolib
-
-strategies
-
-  main =
-    <add> (1, 2)

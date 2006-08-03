@@ -1,8 +1,0 @@
-# abstract syntax term to text
-ast2text -p ../pp/TIL.pp -i test1.atil -o test1.txt1
-
-# test unparsed code
-sglri -p ../syn/TIL.tbl -i test1.txt1 | pp-aterm -o test1.atxt1
-
-# test if the terms are the same
-diff test1.atil test1.atxt1

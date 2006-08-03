@@ -1,5 +1,0 @@
-module stratego-xtc
-imports
-  stratego/xtc/Repository
-  stratego/xtc/Proc
-  stratego/xtc/Register

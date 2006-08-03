@@ -1,2 +1,0 @@
-# typecheck test1.til after parsing 
-../tc/til-typecheck -i test1.atil | pp-aterm > test1.tc

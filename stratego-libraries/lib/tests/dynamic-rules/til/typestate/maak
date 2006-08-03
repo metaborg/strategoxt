@@ -1,4 +1,0 @@
-INCL="-I ../sig -I ../sim -I ../opt"
-
-# compile typestate
-strc -i til-typestate.str ${INCL} -la stratego-lib -m io-til-typestate

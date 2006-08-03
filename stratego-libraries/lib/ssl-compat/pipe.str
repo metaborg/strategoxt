@@ -1,3 +1,0 @@
-module pipe
-imports system/io/pipe
-

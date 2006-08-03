@@ -1,3 +1,0 @@
-module tables
-imports collection/hash-table/common 
-

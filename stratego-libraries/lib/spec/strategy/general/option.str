@@ -1,9 +1,0 @@
-module strategy/general/option
-signature
-  sorts Option(a)
-  constructors
-    None : Option(a)
-    Some : a -> Option(a)
-strategies
-
-  option(s) = None + Some(s)

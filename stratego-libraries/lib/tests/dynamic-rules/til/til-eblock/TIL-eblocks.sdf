@@ -1,5 +1,0 @@
-module TIL-eblocks
-imports TIL
-exports
-  context-free syntax
-    "begin" Stat* "return" Exp ";" Stat* "end" -> Exp {cons("EBlock")}

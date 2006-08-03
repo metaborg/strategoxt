@@ -1,4 +1,0 @@
-sglri -p ../syn/TIL.tbl -i propconst-test2.til |\
-../sim/til-simplify |\
-../opt/til-propconst |\
-ast2text -p ../pp/TIL-pretty.pp -o propconst-test2.txt

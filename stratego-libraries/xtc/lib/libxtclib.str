@@ -1,6 +1,0 @@
-/**
- * Obsolete: import libstratego-xtc
- */
-module libxtclib
-imports
-  libstratego-xtc

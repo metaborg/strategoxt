@@ -1,6 +1,0 @@
-# a parse, check, parenthesize, pretty-print pipeline
-
-sglri -p ../syn/TIL.tbl -i $1           |\
-format-check --rtg ../sig/TIL.rtg       |\
-../pp/til-parenthesize                  |\
- ast2text -p ../pp/TIL-pretty.pp -o $2

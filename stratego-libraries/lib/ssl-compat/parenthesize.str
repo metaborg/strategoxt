@@ -1,3 +1,0 @@
-module parenthesize
-imports strategy/general/parenthesize 
-

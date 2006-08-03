@@ -1,3 +1,0 @@
-module scoped-finite-map
-imports collection/hash-table/scoped-finite-map
-
