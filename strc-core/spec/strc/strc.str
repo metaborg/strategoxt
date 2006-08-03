@@ -1,0 +1,587 @@
+/** 
+ * This module glues together the components that make up the Stratego
+ * compiler. It is based on XTC, the transformation tool composition
+ * model. 
+ */
+
+module strc
+imports libstratego-xtc strc-options
+strategies
+
+  strc = 
+    command-line-options
+    ; log-timed(compile | "Compilation succeeded", 1)
+    ; <exit> 0
+   <+ log(|Error(),["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+    ; <exit> 1
+
+strategies
+
+  compile =
+    xtc-input(
+      front-end
+      ; optimize
+      ; export-external-defs
+      ; back-end
+      ; c-compile
+    )
+
+  front-end =
+    log-timed(
+      get-infile
+      ; pack-stratego				; fc1(|"Stratego-Sugar-Cong", "pack")
+      ; output-ast
+      ; if-not-lib(add-main)
+      ; repair-types				; fc6(|"Stratego-Sugar-Cong", "fe-rep") // local
+      ; pre-desugar				; fc2(|"Stratego-Sugar-1", "fe-des1")   // local
+      ; combine-sections			; fc3(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
+      ; variables-to-constructors		; fc3(|"Stratego-Sugar-1", "fe-vtc")	// global analysis
+
+      ; raise-annotations			; fc2(|"Stratego-Sugar-2", "fe-ra1")    // local
+      ; define-lrules				; fc3(|"Stratego-Sugar-2", "fe-dlr")    // local
+      ; lift-dynamic-rules								// semi-local
+      ; stratego-desugar								// local
+      ; raise-annotations			; fc2(|"Stratego-Sugar-3", "fe-ra2")	// local
+
+      ; use-def										// local analysis (earlier)
+      ; check-constructors			; fc4(|"Stratego-Sugar-3", "fe-cc")	// global analysis (earlier)
+
+      ; expand-overlays				; fc3(|"Stratego-Sugar-3", "fe-eo")     // global
+      ; rules-to-sdefs				; fc3(|"Stratego-Sugar-3", "fe-rts")    // local
+      ; desugar-list-matching			; fc2(|"Stratego-Sugar-4", "fe-dlm")    // local
+      ; desugar-default-vardec			; fc3(|"Stratego-Sugar-4", "fe-ddv")    // local
+      ; introduce-congdefs			; fc3(|"Stratego-Sugar-4", "fe-cdf")    // global
+      ; rename-vars				; fc3(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
+      ; desugar 				; fc2(|"Stratego-Sugar-5", "fe-des")    // local
+
+      ; if-lib(extract-all, extract)		; fc3(|"Stratego-Sugar-5", "fe-extr")   // global
+
+      ; stratego-warnings			; fc5(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
+      ; rename-defs				; fc3(|"Stratego-Sugar-5", "fe-rnd")    // local
+      ; simplify1				; fc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
+      ; define-congruences			; fc1(|"Stratego-Core", "fe-cong")
+      ; output-frontend				
+    | "Front-end succeeded"
+    , 1
+    )
+
+  optimize =
+    log-timed( 
+      dbg(|"starting optimizer");
+	// INNERMOST FUSION
+        olevel1(
+	    try(where(not(<get-config> "--fusion"))
+		; fusion
+            	; save-as2(!".opt1")
+            )
+          )
+	// INLINING
+	// inline small definitions, congruences
+        ; olevel2(
+	    worker-wrapper
+            ; save-as6(!".opt2")
+	    ; do-inline
+            ; save-as6(!".opt3")
+	    ; dead-def-elim
+            ; save-as4(!".opt4")
+	    ; simplify1
+          )
+        //; define-congruences
+	// CONSTANT PROPAGATION
+        //; olevel5( 
+	//    const-prop
+	//    ; bound-unbound-vars
+	//    ; dead-var-elim
+	//    ; simplify3
+        //    ; save-as4(!".opt4")
+        //  )
+	// PATTERN MATCH COMPILATION
+        ; olevel3( 
+	    compile-match
+	    ; desugar-case
+            ; save-as2(!".opt5")
+	  )
+	// INLINING 
+        // inline local definitions introduced by pattern match compilation
+        ; olevel5(
+	   do-inline
+           ; save-as5(!".opt7")
+	   ; dead-def-elim
+           ; save-as5(!".opt8")
+          )
+	// CONSTANT PROPAGATION
+        //; olevel4(
+	//    simplify2 // lift term arguments from (prim) calls
+        //    ; save-as3(!".opt9")
+        //    ; const-prop
+	//    ; save-as3(!".opt10")
+	//    ; bound-unbound-vars
+	//    ; save-as3(!".opt11")
+	//    ; dead-var-elim
+	//    ; simplify3
+        //    ; save-as3(!".opt12")
+	//  )
+    | <concat-strings>["Optimization succeeded -O ",<get-config; int-to-string>"-O"]
+    , 1
+    )
+
+strategies
+
+  export-external-defs =
+    if-lib(where(
+      log-timed(
+        defs-to-external-defs
+	; where(
+	    <not(eq)>(<get-config>"baseout",<get-config>"basein")
+	    <+ <get-config>"baseout"
+	       ; debug(!"name for library same as name for base file: ")
+	       ; fail
+          )
+        ; copy-to(get-outfile(!".rtree") => file1)
+	; log(|Info(), ["Abstract syntax in '", file1, "'"])
+
+        ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
+        ; copy-to(get-outfile(!".str") => file2)
+	; log(|Info(), ["Concrete syntax in '", file2, "'"])
+      | "Export of externals succeeded"
+      , 1
+      )
+    ))
+
+strategies
+
+  back-end = 
+    if <get-config> "--ng" => "off" then
+      back-end-classic
+    else
+      back-end-ng
+    end
+
+  back-end-classic =
+    log-timed(
+      canonicalize
+      ; save-as1(!".can")
+      ; fc2(|"Stratego-Core", "be-can")
+      ; olevel1(
+          lift-definitions
+      	  ; save-as1(!".opt15")
+          ; simplify1
+      	  ; save-as1(!".opt16")
+          ; fc2(|"Stratego-Core", "be-lift")
+        )
+      ; olevel3(
+	  bound-unbound-vars
+      	  ; save-as3(!".opt17")
+          ; fc2(|"Stratego-Core", "be-buv")
+	)
+      ; s2c
+      ; fc-c(|1,"be-c")
+      ; ac2abox
+      ; abox2text
+      ; rename-to(get-outfile(!".c"))
+    | "Back-end succeeded"
+    , 1 
+    )
+
+  back-end-ng =
+    log-timed(
+      lift-definitions
+      ; fc2(|"Stratego-Core", "be-lift")
+      ; canonicalize-ng
+      ; fc2(|"Stratego-Core", "be-can")
+      ; simplify1
+      ; fc3(|"Stratego-Core", "be-sim")
+      ; bound-unbound-vars
+      ; fc2(|"Stratego-Core", "be-buv")
+      ; escaping-variables
+      ; fc2(|"Stratego-Core", "be-esc")
+      ; s2c-ng
+      ; fc-c(|1,"be-c")
+      ; ac2abox
+      ; abox2text
+      ; rename-to(get-outfile(!".c"))
+    | "Back-end succeeded"
+    , 1 
+    )
+
+strategies // Compile generated C code
+
+  c-compile =
+     where(<get-config> "-c")
+  <+ log-timed(
+       c-to-object-code 
+       ; link-object-code
+     | "C compilation succeeded"
+     , 1 
+     )
+
+  c-to-object-code :
+    FILE(cfile) -> FILE(ofile)
+    where log(|Notice(), "Compiling C code")
+	; get-outfile(!".lo") => ofile
+	; <call-backend>
+	    (<xtc-find> "libtool", [
+              "--mode=compile", <xtc-find> "cc" | <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]]])
+
+  link-object-code :
+    FILE(ofile) -> FILE(target)
+    where
+      log(|Notice(), "Linking object code")
+      ; (<get-config> "-o" <+ get-outfile(get-final-suffix)) => target
+      ; if-lib(link-library(|ofile, target), link-program(|ofile, target))
+
+  link-program(|ofile, target) =
+    <call-backend>
+      (<xtc-find> "libtool", [
+        "--mode=link", <xtc-find> "cc", ofile, "-o", target | <get-config> "-Xlinker"])
+
+/**
+ * Linking a library using libtool
+ */
+strategies
+
+  link-library(|ofile, target) =
+      <call>
+        (<xtc-find> "libtool", [
+          "--mode=link", <xtc-find> "cc", ofile, "-o", target, "-rpath", <libdir> target, "-avoid-version", "-no-undefined" | <get-config> "-Xlinker"])
+    ; if <get-config> DisableInstall() then
+        log(|Info(), ["Don't forget to install the library using: libtool --mode=install cp ", target, " ", <libinstallpath> target])
+      else
+        log(|Info(), "Installing library")
+        ; <call>
+            (<xtc-find> "libtool", ["--mode=install", "cp", target, <libinstallpath> target])
+      end
+      
+
+  /**
+   * Given a target, return the libdir.
+   * @type String -> String
+   */
+  libdir =
+    <get-config> LibDir()
+    ; abspath
+
+    <+ dirname
+       ; abspath
+
+  /**
+   * Given a target, return the location for installing the library.
+   *
+   * @type String -> String
+   */
+  libinstallpath =
+    <conc-strings> (<get-config> LibDir(), "/", <base-filename>)
+    ; abspath
+
+    <+ abspath
+
+
+strategies
+
+  /**
+   * FIXME enable the silent backend calls if the STR-853 has been solved.
+   */
+  call-backend =
+    ?(tool,args)
+  ; log(|Notice(),<separate-by(|" ") ; concat-strings>["Command:",tool|args])
+  ; //if <geq>(<verbosity>,2) then
+      call
+/*    else
+      where(
+        xtc-new-file => f
+      ; open => fd
+      )
+    ; ( call(|None,Some(fd),Some(fd))
+      ; <close>fd
+     <+ <close>fd
+      ; <read-text-file>f
+      ; log(|Error(),"Command failed :")
+      ; debug
+      ; fail
+      )
+    end
+*/
+
+strategies
+
+  // building a library
+
+  if-lib(s1, s2) = where(<get-config>"--library") < s1 + s2
+  if-lib(s)      = if-lib(s, id)
+  if-not-lib(s)  = if-lib(id, s)
+  pass-library   = if-lib(!["--library"], ![])
+
+strategies
+
+  // format checking
+
+  fc1(|format, phase) = fc(|format, 1, phase)
+  fc2(|format, phase) = fc(|format, 2, phase)
+  fc3(|format, phase) = fc(|format, 3, phase)
+  fc4(|format, phase) = fc(|format, 4, phase)
+  fc5(|format, phase) = fc(|format, 5, phase)
+  fc6(|format, phase) = fc(|format, 6, phase)
+
+  fc(|format, n, phase) =
+    if <geq>(<get-config> "--format-check", n) then
+      fc(|format, phase)
+    end
+    ; if-keep(save-as(!phase)|<inc>n)
+
+  fc-c(| n, phase) =
+    if <geq>(<get-config> "--format-check", n) then
+      fc(|"C", phase)
+    end
+    ; if-keep(
+        where(
+          copy-to(get-outfile(<conc-strings>(".",phase)) => file1)
+        ; log(|Info(), ["abstract syntax in '", file1, "'"] )
+        ; xtc-transform(!"pp-c")
+        ; copy-to(<conc-strings> (file1, ".txt") => file2)
+        ; log(|Info(), ["concrete syntax in '", file2, "'"])
+        )
+      | <inc>n
+      )
+
+  fc(|format, phase) =
+    where(
+      <concat-strings>[format, ".rtg-nf"]
+      ; xtc-find => format'
+    );
+    if not(log-timed( xtc-transform(!"format-check", 
+                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"])
+                | <concat-strings>["  FC '",format,"'"]
+                , 2
+                ))
+    then
+      if !phase => "pack" then
+        fatal-err(|<concat-strings>[
+          "\n  The result of packing your Stratego program resulted in a file\n",
+          "  with a wrong format. This is probably caused by the use of a\n",
+          "  .rtree file produced by an old version of Stratego, or by a \n",
+          "  concrete syntax embedding using an old syntax of Stratego.\n",
+          "  Recompile with the option '--format-check 1' to discover which\n",
+          "  module caused the problem."
+        ])
+      else
+	save-as(!<concat-strings>[".", phase, ".", format])
+	; ?FILE(name)
+	; fatal-err(| <concat-strings>[
+	    "file ", name, "does not satisfy format ", format, 
+	    "\nThis indicates a bug in the compiler\n",
+	    "Please notify stratego-bugs@cs.uu.nl"
+          ])
+      end
+      ; fail
+    end
+
+strategies
+
+  log-timed(s|msg,level) =
+    if <geq>(<get-config> "--statistics", level) then 
+      where(times => start)
+    ; s 
+    ; where(
+        <diff-times>(<times>,start)
+      ; <concat-strings>[ <align-left>(' ', msg, 27)
+                        , " : [user/system] = ["
+                        , <self-children-user-time; ticks-to-seconds ; real-to-string(|2)>
+                        , "s/"
+                        , <self-children-sys-time; ticks-to-seconds ; real-to-string(|2)>
+                        , "s]"
+                        ]
+      ; log(|Info(),<id>)
+      )
+    else
+      s
+    end
+
+  // save intermediate results
+
+  save-as(ext) = 
+    where(
+      copy-to(get-outfile(<conc-strings> (".sci", <ext>)) => file1)
+      ; log(|Info(), ["abstract syntax in '", file1, "'"] )
+      ; xtc-transform(!"stratego-parenthesize", pass-verbose)
+      ; xtc-transform(!"stratego2abox", pass-verbose)
+      ; xtc-transform(!"abox2text", pass-verbose)
+      ; copy-to(<conc-strings> (file1, ".txt") => file2)
+      ; log(|Info(), ["concrete syntax in '", file2, "'"])
+    )
+
+  save-as1(ext) = if-keep1(save-as(ext))
+  save-as2(ext) = if-keep2(save-as(ext))
+  save-as3(ext) = if-keep3(save-as(ext))
+  save-as4(ext) = if-keep4(save-as(ext))
+  save-as5(ext) = if-keep5(save-as(ext))
+  save-as6(ext) = if-keep6(save-as(ext))
+  save-as7(ext) = if-keep7(save-as(ext))
+  save-as8(ext) = if-keep8(save-as(ext))
+
+  output-ast =
+    if <get-config> "--ast" then
+       copy-to(get-outfile(!".ast") => file)
+       ; notice(|<concat-strings>["Abstract syntax saved in file `", file, "'"])
+       ; xtc-io-exit
+    end
+
+  output-frontend =
+    if <get-config> "-F" then
+      xtc-io-exit
+    end
+
+strategies
+
+  /**
+   * Adding main strategy
+   * 
+   * What happens if the specification already contains a main strategy? 
+   */
+
+  add-main =
+    try(
+      where(
+        <get-config> "-m" => m
+      ; log(|Notice(),["Main strategy is : ",m])
+      )
+      ; if-not-lib(
+          xtc-io-transform(try(AddMain(|m)))
+        )
+      )
+    ; save-as3(!".with-main")
+
+  AddMain(|main) : 
+    Specification(sects) -> 
+    Specification([ Strategies([SDef("main", [], Call(SVar(main), []))]) 
+                  | sects ])
+      where
+        <not("main")>main
+      ; <try(check-other-main)>sects
+
+  check-other-main =
+    fetch-elem( Strategies(fetch-elem(is-main)) + Rules(fetch-elem(is-main)) )
+  ; say(!"Adding main strategy even though one is already present!")
+
+  is-main =
+    ?SDef("main", [], _)
+  + ?RDef("main", [], _)
+ 
+strategies 
+
+  get-infile :
+    FILE(file) -> FILE(file)
+    where <remove-extension> file => basein
+        ; log(|Debug(),["Basename of input file: ",basein])
+        ; <set-config> ("basein",  basein)
+        ; (<get-config; remove-extension> "-o" <+ !basein; if-lib(<conc-strings> ("lib", <id>))) => baseout
+	; log(|Debug(),["Basename of output file: ",baseout])
+        ; <set-config> ("baseout", baseout)
+
+  get-outfile(suffix) =
+    <conc-strings>(<get-config> "baseout", <suffix>)
+
+  /**
+   * @todo Support for $(EXE)?
+   */
+  get-final-suffix =
+    if-lib(!".la", !"")
+
+  dep-name =
+    !["--dep", <<get-config> "-o" <+ <get-config> "baseout">]
+
+strategies // COMPILER COMPONENTS
+
+  comp-out(|f) =
+    log-timed(xtc-transform(!f, pass-verbose) | <comp-msg>f, 2)
+
+  comp(|f) =
+    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | <comp-msg>f, 2)
+
+  comp(|f,args) =
+    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | <comp-msg>f, 2)
+
+  comp-msg = <concat-strings>["  ",<id>]
+
+// FRONTEND
+
+  pack-stratego = 
+    comp(|"pack-stratego",<concat> [
+          <dep-name>, <get-include-dirs>, <pass-keep>,
+	  <get-config < !["--asfix"] + ![]> "--asfix",
+	  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check",
+	  <get-config < !["--prefer-str"] + ![]> "--prefer-str"
+    ])
+
+  pre-desugar			= comp(|"pre-desugar")
+  repair-types			= comp(|"repair-types")
+  combine-sections		= comp(|"combine-sections")
+  variables-to-constructors	= comp(|"variables-to-constructors")
+  raise-annotations		= comp(|"raise-annotations")
+  define-lrules			= comp(|"define-lrules")
+  lift-dynamic-rules		= comp(|"lift-dynamic-rules")
+  stratego-desugar		= comp(|"stratego-desugar")
+  use-def			= comp(|"use-def", <pass-maybe-unbound-warnings>)
+  check-constructors		= comp(|"check-constructors")
+  expand-overlays		= comp(|"expand-overlays")
+  rules-to-sdefs		= comp(|"rules-to-sdefs")
+  desugar-list-matching		= comp(|"desugar-list-matching")
+  desugar-default-vardec	= comp(|"desugar-default-vardec")
+  introduce-congdefs		= comp(|"introduce-congdefs")
+  rename-vars			= comp(|"rename-vars")
+  desugar			= comp(|"desugar")
+  extract-all			= comp(|"extract-all")
+  extract			= comp(|"extract")
+  stratego-warnings		= comp(|"stratego-warnings", <pass-warnings>)
+  rename-defs			= comp(|"rename-defs")
+  simplify1			= comp(|"simplify1")
+  define-congruences		= comp(|"define-congruences")
+
+
+// OPTIMIZER
+
+  fusion 		= comp(|"fusion")
+  do-inline 		= comp(|"inline")
+  dead-def-elim 	= comp(|"dead-def-elim", <if-lib(!["--only-local"],![])>)
+  compile-match 	= comp(|"compile-match")
+  desugar-case 		= comp(|"desugar-case")
+  const-prop 		= comp(|"const-prop")
+  bound-unbound-vars 	= comp(|"bound-unbound-vars")
+  dead-var-elim 	= comp(|"dead-var-elim")
+  worker-wrapper 	= comp(|"worker-wrapper")
+  simplify2 		= comp(|"simplify2")
+  simplify3 		= comp(|"simplify3")
+  canonicalize 		= comp(|"canonicalize")
+  canonicalize-ng 	= comp(|"canonicalize-ng")
+  lift-definitions 	= comp(|"lift-definitions")
+  bound-unbound-vars 	= comp(|"bound-unbound-vars")
+  escaping-variables 	= comp(|"escaping-variables")
+
+// EXPORT
+
+  defs-to-external-defs = comp(|"defs-to-external-defs", ["--no-inlining"])
+
+// BACK-END
+
+  ac2abox = 
+    where(
+      if <get-config>"--indent-c" then
+        !"C-pretty.pp.af"
+      else
+        !"C.pp.af"
+      end => pp-table 
+    )
+  ; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
+    
+  abox2text 	= comp-out(|"abox2text")
+
+  s2c 		= comp(|"s2c",  
+	 		<concat>[
+			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
+			  <pass-library>
+			])
+
+  s2c-ng 	= comp(|"s2c-ng",  
+	 		<concat>[
+			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
+			  <pass-library>
+			])

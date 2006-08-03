@@ -1,0 +1,26 @@
+/**
+ * Rename syntactic variables to nullary constructors if declared in the signature.
+ */
+
+module variables-to-constructors
+imports libstratego-lib Stratego-Sugar
+strategies
+
+  variables-to-constructors-io = 
+    io-wrap(variables-to-constructors)
+
+  variables-to-constructors =
+    {| VarToConst1, VarToConst2
+     : Specification(map(try(Signature([Constructors(map(try(DeclareVarToConst)))])
+			     + Overlays(map(try(DeclareVarToConst))))))
+     ; topdown(try(VarToConst1 <+ VarToConst2))
+     |}
+
+  DeclareVarToConst =
+    (?|[ x : srt ]| + ?Overlay|[ x() = t ]|)
+    //; debug(!"DeclareVarToConst: ")
+    ; rules( 
+        VarToConst1 : Term|[ x ]| -> Term|[ x() ]| 
+        VarToConst1 : Term|[ x{t*} ]| -> Term|[ x(){t*} ]| 
+        VarToConst2 : PreTerm|[ x ]| -> PreTerm|[ x() ]|  
+      )

@@ -1,0 +1,16 @@
+module frames
+signature
+  constructors
+    Offsets      : Int * Int -> Annotation
+    Offset       : Int  -> Annotation
+    Closure      : String -> Annotation
+    ApplyClosure : Annotation
+    Frames       : String * List(String) * Int -> Annotation
+    ClosureAlloc : Annotation
+
+signature
+  constructors
+    Frames  : String * List(String) -> Annotation
+    Frames  : List(String) -> Annotation
+    Escapes : Annotation
+    ApplyClosure : Annotation

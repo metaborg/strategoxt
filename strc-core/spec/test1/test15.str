@@ -1,0 +1,6 @@
+module test15
+imports collection/list/cons collection/tuple/cons
+strategies
+
+  main =
+    id

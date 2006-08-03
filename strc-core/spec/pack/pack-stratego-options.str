@@ -1,0 +1,123 @@
+module pack-stratego-options
+imports
+  libstratego-xtc
+  strategoxt-xtc-tools
+
+/**
+ * Options
+ */
+signature
+  constructors
+    IncludeDir : String -> IncludeVal
+    IncludeXTC : IncludeVal
+
+  constructors
+    IncludePathName : String -> Include
+    IncludeFromPath : String -> Include
+
+strategies
+
+  pack-stratego-options =
+      Option("--imports",
+	where(<set-config> ("--imports", ())); !(),
+	!"--imports            Produce a list of imported modules only")
+
+    + Option("--slack",
+	where(<set-config> ("--slack", ())); !(),
+	!"--slack              Continue when module is not found")
+
+    + Option("--asfix",
+        where(<set-config> ("--asfix", "")); !(),
+        !"--asfix              Do not implode the concrete syntax parts")
+ 
+    + Option("--prefer-str",
+        where(<set-config> ("--prefer-str", "")); !(),
+        !"--prefer-str              Prefer .str files over .rtree files")
+ 
+    + ArgOption("--desugaring", 
+        where(<set-config>("--desugaring", <id>)),
+        !"--desugaring on/off : turn desugaring on or off (default: off)")
+
+    + ArgOption("--format-check",
+        where(<set-config>("--format-check", <string-to-int>)); !(),
+	!"--format-check n   Format check intermediate results (0 = basic checking)" )
+
+    + include-from-dir-option
+    + dep-options
+
+  process-options =
+    where(
+      (<get-config> "-I" <+ ![])
+
+      /**
+       * XTC is the final search option
+       */
+    ; <conc> (<id>, [IncludeXTC()])
+      
+      /**
+       * The first search option is the directory of the input
+       * file, or the current directory if the input is stdin.
+       */
+    ; if <get-config> "-i" => input then
+        ![IncludeDir(<dirname> input) | <id>]
+      else 
+        ![IncludeDir(".") | <id>]
+      end
+
+    ; <set-config> ("-I", <id>)
+
+    ; if not(<get-config> "--format-check") then
+        <set-config> ("--format-check", 0)
+      end
+    )
+
+  if-prefer-str(s1, s2) =
+    if <get-config> "--prefer-str" then s1 else s2 end
+
+  report-options =
+    log(|Notice(), "include path: ", <get-config> "-I")
+
+  include-from-dir-option =
+    ArgOption("-I" + "--Include"
+    , where(<post-extend-config>("-I", [IncludeDir(<ensure-directory>)]))
+    , !"-I|--Include <dir>   Include modules from directory <dir>"
+    )
+
+  ensure-directory =
+    if not(file-exists) then
+      warn(|"directory specified with -I does not exist: ")
+    else
+      if not(filemode; isdir) then
+        warn(|"path specified with -I is a file, not a directory: ")
+      end
+    end
+
+  dep-options = 
+    ArgOption("--dep" + "-d" + "-dep"
+    , where(<set-config> ("-dep", <id>))
+    , !"--dep <file> | -d <file>  Write make dependencies to <file>"
+    )
+
+  /**
+   * Gets the include path from the config.
+   *
+   * The current working directory . is added to this path.
+   */
+  include-path =
+    <get-config> "-I" <+ ![]
+
+  depfile-from-config =
+    <get-config> "-dep"
+
+  maybe-create-depfile =
+    where(try(create-dep-file))
+
+  create-dep-file =
+    ?files
+    ; where(
+        depfile-from-config => outfile
+      ; <fopen> (<add-extension>(outfile,"dep"), "w") => stream
+      )
+    ; ![outfile | <separate-by(|" \\\n\t")> [":" | files]]
+    ; map(<fputs> (<id>, stream))
+    ; <fclose> stream

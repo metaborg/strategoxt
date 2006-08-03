@@ -1,0 +1,95 @@
+module canonicalize-ng
+imports Stratego-Core libstratego-lib C stratego-laws frames
+
+strategies
+
+  canonicalize-ng-io =
+    io-wrap(canonicalize)
+
+  canonicalize = //debug(!"in: "); (
+    canonicalize-sdef
+    <+ canonicalize-let
+    <+ ImplementTraversalOps; canonicalize
+    <+ canonicalize-call; canonicalize
+    <+ all(canonicalize)
+  //); debug(!"out: ")
+
+  canonicalize-sdef :
+    |[ f(a1*|a2*) = s ]| -> |[ f(a1*|a2*) = s' ]|
+    where {| IsClosure
+           : where(<map(declare-closure)> a1* )
+           ; <canonicalize> s => s'
+           |}
+
+  canonicalize-let :
+    |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
+    where {| IsClosure
+           : <map(try(declare-closure-def))> def1* 
+	   ; <canonicalize> def1* => def2*
+           ; <canonicalize> s1 => s2
+           |}
+
+  declare-closure =
+    ?VarDec(f{t1*}, t)
+    //; debug(!"declare-closure: ")
+    ; where( x := |[ f~{}(|) ]| )
+    ; rules( IsClosure : x )
+    //; debug(!"the rules: ")
+    //; dr-print-rule-set(|"IsClosure")
+
+  declare-closure-def =
+    ?|[ f~{t1*}(|) = s ]|
+    //; debug(!"declare-closure-def: ")
+    ; where( x := |[ f~{}(|) ]| )
+    ; rules( IsClosure : x )
+    //; debug(!"the rules: ")
+    //; dr-print-rule-set(|"IsClosure")
+
+  canonicalize-call :
+    |[ f(s1*|t*) ]| -> |[ let def* in f(s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args> s1*
+
+  canonicalize-call :
+    |[ prim(str,s1*|t*) ]| -> |[ let def* in prim(str,s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args> s1*
+
+  canonicalize-call :
+    |[ call(t|s1*|t*) ]| -> |[ let def* in call(t|s2*|t*) end ]|
+    where (def*, s2*) := <canonicalize-call-args> s1*
+
+  canonicalize-call-args =
+    map(canonicalize-call-arg)
+    ; unzip
+    ; (concat, id)
+    ; not(([],id))
+
+  canonicalize-call-arg =
+    try(id-to-Id <+ fail-to-Fail)
+    //; debug(!"canonicalize-call-arg: ")
+    ; (IsClosure; !([],<id>) <+ lift-call-arg)
+    //; debug(!"canonicalized: ")
+
+  lift-call-arg :
+    |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)
+    where //debug(!"lift-call-arg: ");
+	  g  := <newname> "lifted"
+	; s2 := <canonicalize> s1
+	; t* := <is-just-closure-allocation <+ ![]> s2
+
+  is-just-closure-allocation :
+    |[ f~{t*}(|) ]| -> [ClosureAlloc()]
+
+  id-to-Id :
+    |[ id ]| -> |[ _Id(|) ]|
+    
+  fail-to-Fail :
+    |[ fail ]| -> |[ _Fail(|) ]|
+
+  ImplementTraversalOps :
+    |[ all(s) ]| -> |[ SRTS_all(s|) ]|
+
+  ImplementTraversalOps :
+    |[ one(s) ]| -> |[ SRTS_one(s|) ]|
+
+  ImplementTraversalOps :
+    |[ some(s) ]| -> |[ SRTS_some(s|) ]|

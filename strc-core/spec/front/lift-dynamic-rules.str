@@ -1,0 +1,977 @@
+module lift-dynamic-rules
+imports libstratego-lib Stratego-Sugar
+
+stratlib
+
+strategies
+
+  lift-dynamic-rules-io =
+    io-wrap(lift-dynamic-rules-options, LiftDynamicRules)
+
+  lift-dynamic-rules-options =
+    ArgOption("--dr",
+      where(("old" + "new"); <set-config>("--dr", <id>)); !(),
+             !"--dr (old|new) : old dynamic rules are obsolete" )
+
+strategies
+
+  LiftDynamicRules =
+     Specification([
+        Signature([
+          Constructors(![
+            OpDecl("DR_UNDEFINE", 
+                   FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
+            , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))
+            | <id>])
+        ])
+      , id
+      , Strategies(define-rule-scope; lift-dynamic-rules-from-spec)
+      ])
+
+strategies
+
+  /**
+   * Desugar dynamic rule scopes {| ... : ... |} 
+   */
+
+  define-rule-scope =
+    topdown(repeat(DefDynRuleScope))
+
+  DefDynRuleScope :
+    |[ {| : s |} ]| -> |[ s ]|
+
+  DefDynRuleScope :
+    |[ {| ~t : s |} ]| -> |[ dr-scopes(s | t) ]|
+
+  /**
+   * Collect any labels for the head scope-id (uniquely) in one step.
+   * Only one real scope is thus created for each scope-id/rulename. 
+   */
+
+  DefDynRuleScope :
+    |[ {| x, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
+    where 
+       <partition(?LabeledDynRuleScopeId(x,_) 
+                  + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
+       ; <collect(?LabeledDynRuleScopeId(x,<id>))
+          ; map(!|[ rules(x + ~<id>) ]|)
+          ; seqs> sc1* => s1
+
+  DefDynRuleScope :
+    |[ {| x.t, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
+    where 
+       <partition(?LabeledDynRuleScopeId(x,_) 
+                  + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
+       ; <collect(?LabeledDynRuleScopeId(x,<id>))
+          ; ![t|<id>]; map(!|[ rules(x + ~<id>) ]|)
+          ; seqs> sc1* => s1
+
+
+strategies
+
+  /** 
+   * Lift dynamic rules from strategy definitions. One dynamic rule set
+   * is lifted out at a time, after which the process repeats; a
+   * definition may contain multiple dynamic rules, and a dynamic rule
+   * itself may contain dynamic rules.
+   */
+
+  lift-dynamic-rules-from-spec = 
+    listtd(repeat(lift-dynamic-rule-from-def))
+
+  lift-dynamic-rule-from-def :
+    [def | defs] -> <conc> ([def' | rdefs], defs)
+    where {| ContextVar, LiftedRules, CurrentDef
+           : <def-tvars> def; DeclareContextVars
+           ; <def-name> def => name
+           ; rules( CurrentDef : () -> name )
+           ; <lift-dynamic-rule> def => def'
+           ; get-rules => rdefs
+           |}
+
+  add-def(|def) =
+    rules( LiftedRules :+ () -> def )
+
+  get-rules = 
+    <bagof-LiftedRules> ()
+
+  def-tvars =
+    <union> (<tvars>,
+             <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+              <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+              <+ ![]
+             >
+            )
+
+  /**
+   * Traverse to find dynamic rule definition.  Record all variables
+   * that are declared in context using the dynamic rule ContextVar 
+   */
+
+  lift-dynamic-rule = 
+    rec x(
+      oncetd(
+        DesugarDynRuleDef; x
+        <+ SplitDynamicRule
+        <+ split-under-scope(x)
+      )
+    )
+
+    // note that only one dynamic rule is lifted at a time
+    // this may be too conservative (and unnecessarily expensive)
+
+  split-under-scope(f) :
+    |[ { x* : s } ]| -> |[ { x* : s' } ]|
+    where {| ContextVar : <DeclareContextVars> x*; <f> s => s' |}
+
+  DeclareContextVars =
+    map({?x; rules(ContextVar : x -> x)})
+
+strategies
+
+  /**
+   * Desugaring dynamic rules
+   */
+
+  DesugarDynRuleDef :
+    |[ rules() ]| -> |[ id ]|
+
+  // Multiple rules
+
+  DesugarDynRuleDef :
+    |[ rules(drd1 drd2 drd*) ]| -> 
+    |[ rules(drd1); rules(drd2 drd*) ]|
+
+  // Labeling the current scope
+
+  DesugarDynRuleDef :
+    |[ rules(     f(a1*|a2*)+t : r ) ]| -> 
+    |[ rules( f+t f(a1*|a2*)   : r ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules(     f(a1*|a2*)+t :+ r ) ]| -> 
+    |[ rules( f+t f(a1*|a2*)   :+ r  ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules(     f(a1*|a2*)+t :- t1 ) ]| -> 
+    |[ rules( f+t f(a1*|a2*)   :- t1 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules(     f(a1*|a2*)+t : t1 ) ]| -> 
+    |[ rules( f+t f(a1*|a2*)   : t1 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules(      f(a1*|a2*)+t1 : r depends on t2 ) ]| -> 
+    |[ rules( f+t1 f(a1*|a2*)    : r depends on t2 ) ]|
+
+  // Unconditional rules
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*) : t1 -> t2 ) ]| -> 
+    |[ rules( f(a1*|a2*) : t1 -> t2 where id ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*).t : t1 -> t2 ) ]| -> 
+    |[ rules( f(a1*|a2*).t : t1 -> t2 where id ) ]|
+
+  // Predicate rules
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*) : t  ) ]| -> 
+    |[ rules( f(a1*|a2*) : t' -> t' where id ) ]|
+    where <alltd(\ Wld() -> Var(<new>) \ )> t => t'
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*).t1 : t2 ) ]| -> 
+    |[ rules( f(a1*|a2*).t1 : t2' -> t2' where id ) ]|
+    where <alltd(\ Wld() -> Var(<new>) \ )> t2 => t2'
+
+  // Dependent dynamic rules
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*)    : t2 -> t3          depends on t4 ) ]| ->
+    |[ rules( f(a1*|a2*).() : t2 -> t3 where id depends on t4 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*)    : t2 -> t3 where s depends on t4 ) ]| ->
+    |[ rules( f(a1*|a2*).() : t2 -> t3 where s depends on t4 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*).t1 : t2 -> t3          depends on t4 ) ]| ->
+    |[ rules( f(a1*|a2*).t1 : t2 -> t3 where id depends on t4 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules( f(a1*|a2*).t1 : t2 -> t3 where s depends on t4 ) ]| ->
+    |[ rules( f(a1*|a2*).t1 : t2 -> t3 where s )
+       ; where( 
+             !t1  => y0 // scope
+           ; !t2' => y1 // left-hand side (should be the key)
+           ; !t4  => y2 // dependencies
+           ; map({x1, x2: ?(x1,x2)
+                   ; rules( 
+                       f(|).x1 :+ DR_UNDEFINE(x2) -> (y0, y1, y2) where id 
+                     )
+                 })
+         )
+    ]|
+    where new => x; new => x1; new => x2
+        ; new => y0; new => y1; new => y2; new => z
+        ; <dummify> t2 => t2'
+        ; create-new-strategy(|f)
+        ; create-undefine-strategy(|f)
+
+
+/**
+ * Names of derived strategies
+ */
+strategies
+
+  _new(|f)             = <concat-strings> ["new-", f]
+  _undefine(|f)        = <concat-strings> ["undefine-", f]
+  _aux(|f)             = <concat-strings> ["aux-", f]
+  _once(|f)            = <concat-strings> ["once-", f]
+  _bagof(|f)           = <concat-strings> ["bagof-", f]
+  _reversebagof(|f)    = <concat-strings> ["reverse-bagof-", f]  
+  _bigbagof(|f)        = <concat-strings> ["bigbagof-", f]
+  _allkeys(|f)         = <concat-strings> ["all-keys-", f]
+  _innermost-scope(|f) = <concat-strings> ["innermost-scope-", f]
+  _break(|f)           = ![<concat-strings> ["break-", f]
+                           , <concat-strings> ["break-to-label-", f]]
+  _break_bp(|f)        = <concat-strings> ["break-bp-", f]
+  _continue(|f)        = ![<concat-strings> ["continue-", f]
+                           , <concat-strings> ["continue-to-label-", f]]
+  _throw(|f)           = <concat-strings> ["throw-", f]
+
+strategies
+
+  /**
+   * Define dynamic rule API call for each rule form and call
+   * SplitDynamicRule(s) which does the actual splitting.
+   */
+
+  SplitDynamicRule :
+    |[ rules( f+t ) ]| -> |[ dr-label-scope(|~str:f, t) ]|
+
+  SplitDynamicRule :
+    |[ rules( f(a1*|a2*) : r ) ]|      -> <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> 
+    |[ rules( f(a1*|a2*) : r ) ]|
+
+  SplitDynamicRule : 
+    |[ rules( f(a1*|a2*).t : r ) ]|    -> <SplitDynamicRule(!|[ dr-set-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
+    |[ rules( f(a1*|a2*)   : r ) ]|
+
+  SplitDynamicRule :
+    |[ rules( f(a1*|a2*) :+ r ) ]|     -> <SplitDynamicRule(!|[ dr-add-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> 
+    |[ rules( f(a1*|a2*) :  r ) ]|
+
+  SplitDynamicRule :
+    |[ rules(  f(a1*|a2*).t :+ r ) ]|  -> <SplitDynamicRule(!|[ dr-add-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
+    |[ rules(  f(a1*|a2*)   :  r ) ]|
+
+  SplitDynamicRule :
+    |[ rules( f(a1*|a2*) :- t ) ]|     -> <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, ~<id>) ]|)> 
+    |[ rules( f(a1*|a2*) :- t ) ]|
+
+  SplitDynamicRule :
+    |[ rules( f(a1*|a2*).t1 :- t2 ) ]| -> <SplitDynamicRule(!|[ dr-undefine-rule-vis(|~str:f, t1, ~<id>) ]|)> 
+    |[ rules( f(a1*|a2*)    :- t2 ) ]|
+
+rules
+
+  /**
+   * rule undefinition; if this is the only use of the dynamic rule, dummy
+   * versions of all application rules should be created. 
+   */
+
+  SplitDynamicRule(saveclsr):
+    drd@|[ rules(  f(a1*|a2*) :- t1  ) ]| -> |[ where(~<saveclsr> t1') ]|
+    where 
+      <dummify> t1 => t1'
+      ; <create-undef-apply-rule(|f)> drd
+      ; <create-undef-apply-rule(|<_bagof(|f)>)> drd
+      ; <create-undef-apply-rule(|<_bigbagof(|f)>)> drd
+      ; <create-undef-apply-rule(|<_once(|f)>)> drd
+      ; create-innermost-scope-strategy(|f)
+      ; create-new-strategy(|f)
+      ; create-undefine-strategy(|f)
+
+  create-undef-apply-rule(|g) =
+    ?drd@|[ rules(  f(a1*|a2*) :- t1  ) ]|
+    ; if is-new(|f, g, ()) then
+        add-def(||[
+          g(a1*|a2*) = fail
+        ]|)
+      end
+
+rules
+
+  /**
+   * Split a dynamic rule into a call to assert which records a mapping
+   * from the left-hand side of the rule instantiated with the bindings to
+   * context variables to the set of bindings to the context variales not
+   * occurring in the left-hand side.
+   * 
+   * Notes:
+   *  - the stamp identifies the rule that introduced the binding, in order
+   *    to distinguish between dynamic rules with the same left-hand side
+   *    but different right-hand sides
+   *  - non-context variables are replaced with a dummy in the term that
+   *    is used as key in the table (dummify)
+   *  - if all variables in the lhs are context-variables, the lookup in the
+   *    table can simply use a pointer to the term matched on the lhs (efficient!)
+   * 
+   * Bug! Current translation scheme does not take extended match patterns
+   * into account. No contexts and term projects should be used in a
+   * dynamic rule.
+   */
+
+  SplitDynamicRule(saveclsr):
+    drd@|[ rules(  f(a1*|a2*) : t1 -> t2 where s ) ]| -> 
+    |[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|
+    where <dummify> t1 => t1'
+        ; <closure> drd => t*
+        ; <dr-rename-vars> drd => stdrule
+        ; <get-stamp>stdrule => stamp
+
+        ; <create-aux-rule(|stdrule)> drd
+
+        ; new => x
+        ; <aux-call(|x)> drd => aux-call
+        ; <lookup-key(|x)> t1 => t3
+        ; <dr-rename-vars> t3 => stdkey
+
+        ; detect-overlap(|f, t1, t3, stdkey, <CurrentDef>())
+
+        ; <create-base-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-bagof-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-once-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
+        ; <create-chain-rule(|x, t3, stdkey)> drd
+        ; <create-bigchain-rule(|x, t3, stdkey)> drd
+        ; <create-all-keys-rule(|x, t3, stdkey)> drd
+        ; <create-break-rules(|x, t3, stdkey)> drd
+        ; <create-break-bp-rules(|x, t3, stdkey)> drd
+        ; <create-continue-rules(|x, t3, stdkey)> drd
+        ; <create-throw-rule(|x, t3, stdkey)> drd
+
+        ; create-innermost-scope-strategy(|f)
+
+strategies // auxiliaries
+
+  /**
+   * Test where a generated definition called name for dynamic rule f and
+   * with other characteristics t, has been created before.
+   */
+
+  is-new(|f, name, t) =
+    if <IsCreated> (f, name, t) then 
+      fail 
+    else 
+      rules( IsCreated : (f, name, t) -> () )
+    end
+
+  /**
+   * From formal parameters to actual parameters.
+   */
+
+  strarg-to-call : DefaultVarDec(x) -> Call(SVar(x), [])
+  strarg-to-call : VarDec(x,_) -> Call(SVar(x), [])
+  trmarg-to-var  : DefaultVarDec(x) -> Var(x)
+  trmarg-to-var  : VarDec(x,_) -> Var(x)
+
+strategies
+
+  /**
+   *  Determine the context variables to be stored in the closure.
+   */
+
+  closure :
+    |[ rules(  f(a1*|a2*) : t1 -> t2 where s ) ]| -> t*
+    where
+      <tvars; map(!Var(<id>))> t1 => keys
+      ; <tvars; filter(test(ContextVar); !Var(<id>))> (t1, t2, s) => vals
+      ; <diff> (vals, keys) => t*
+
+  /**
+   * Get a stamp for a dynamic rule closure based on its standardized renaming,
+   * and memoize the stamp.
+   *
+   * Note: this is one of the places where dynamic rules are not modular. The
+   * stamp should really be based on a hash of the rule such that code generation
+   * does not depend on memoization.
+   */
+ 
+  get-stamp :
+    stdrule -> stamp
+    where if not(<DrStamp> stdrule => stamp) then 
+            // new => stamp
+            <checksum> stdrule => stamp
+            ; rules( DrStamp : stdrule -> stamp )
+          end
+
+  /**
+   * lookup-key derives from a term pattern (the lhs of the dynamic rule), the
+   * key used to store closures with. For this purpose, the term is dummified,
+   * i.e., all non-context variables are replaced by a dummy term. If the dummified 
+   * key is the same as original (all variables in the pattern are context variables),
+   * just use x (a variable matching the lhs) for lookup.
+   */
+  lookup-key(|x) :
+    t1 -> t3
+    where <dummify> t1 => t2
+        ; if <eq>(t1,t2) then !Var(x) else !t2 end => t3
+
+strategies
+
+  // Note: aux rule depends on rhs and condition, other rules depend
+  // only on the left-hand side and should only be generated once per lhs
+  // caching should be done by each generator
+
+  /**
+   * f-aux rewrites a closure to the original rhs of the rule after
+   * applying the original condition to the lhs. The f-aux rule should
+   * be called from an application rule that first looks up the closures
+   * given the lhs.
+   */
+  create-aux-rule(|stdrule) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]|
+    ; _aux(|f) => g
+    ; if is-new(|f, g, stdrule) then
+        <get-stamp> stdrule => stamp
+        ; <closure> drd => t*
+        ; new => x // holding entire lhs
+        ; <tvars; map(!DefaultVarDec(<id>))> t1 => a3* // variables in lhs
+        ; add-def(||[ 
+            g(a1*|a2*, a3*, x) : (~str:stamp, t*) -> t2 where <s> x 
+          ]|)
+      end
+
+  /**
+   * Create a call to f-aux given a variable x matching the lhs
+   */
+  aux-call(|x) : 
+    |[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| -> Strat|[ g(s1*|t4*, x) ]|
+    where 
+      _aux(|f) => g
+      ; <map(strarg-to-call)> a1* => s1*
+      ; <map(trmarg-to-var)> a2* => t2*
+      ; <tvars; map(!Var(<id>))> t1 => t3*
+      ; <conc>(t2*, t3*) => t4*
+
+/**
+ * Several flavours of applying dynamic rules
+ */
+strategies
+
+  /**
+   * f : apply dynamic rule. The arguments and lhs of the rule are
+   * the same, but the condition and rhs implement an indirection by
+   * looking up the closures for the current key (t3) and finding
+   * the first applicable rewriting using a call to aux-f (s).
+   */
+  create-base-rule(|x, s1, t3,stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]| 
+    ; if is-new(|f, f, stdkey); try(is-new(|f, f, ())) then
+        add-def(||[ 
+          f(a1*|a2*) : 
+            x@t1 -> <fetch-elem(s1)> closures
+            where dr-lookup-rule(|~str:f, t3) => closures 
+        ]|)
+      end
+
+  /**
+   * bagof-f : produce list of all rewritings for f in most recent 
+   * scope with rules for f matching the key. Succeeds with empty 
+   * list if there are no rules.
+   */
+  create-bagof-rule(|x, s1, t3,stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _bagof(|f) => g1
+    ; _reversebagof(|f) => g2
+    ; <newname> "tail" => x2
+    ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
+        add-def(||[ 
+           g1(a1*|a2*) : 
+             x@t1 -> <filter(s1)> closures
+             where (dr-lookup-rule(|~str:f, t3) <+ ![]) => closures
+        ]|)
+      ; add-def(||[
+           g2(a1*, x2 |a2*) :
+             x@t1 -> <reverse-filter(s1, x2)> closures
+             where (dr-lookup-rule(|~str:f, t3) <+ ![]) => closures
+        ]|)
+      end
+
+  /**
+   * bigbagof-f : produce all rewritings for f from all scopes.
+   */
+  create-bigbagof-rule(|x, s1, t3,stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _bigbagof(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        add-def(||[ 
+          g(a1*|a2*) : 
+            x@t1 -> <filter(s1)> closures
+            where (dr-lookup-all-rules(|~str:f, t3) <+ ![]) => closures
+        ]|)
+      end
+
+  /**
+   * once-f : look up one occurrence of possibly many, produce the
+   * result and delete it from the set of closures
+   */
+  create-once-rule(|x, s1, t3,stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _once(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        add-def(||[ 
+           g(a1*|a2*) : 
+             x@t1 -> res
+             where dr-lookup-rule-pointer(|~str:f, t3) => (closures, key, tbl)
+                 ; <split-fetch(s1; ?res); conc> closures => closures'
+                 ; <hashtable-put(|key, closures')> tbl 
+        ]|)
+      end
+
+/**
+ * Getting all the keys defined for a rule
+ */
+
+  create-all-keys-rule(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _allkeys(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        add-def(||[
+          g(a1*|a2*) =
+            dr-all-keys(|~str:f)
+        ]|)
+      end
+
+/**
+ * Chain
+ */
+strategies
+
+  /**
+   * chain-f : chain the current term through all f in most recent 
+   * scope with rules for f matching the key.
+   */
+  create-chain-rule(|x, t3, stdkey) =
+    create-chain-rule(|"chain", "dr-lookup-rule", x, t3, stdkey)
+
+  /**
+   * bigchain-f : chain the current term through all f from all scopes.
+   */
+  create-bigchain-rule(|x, t3, stdkey) =
+    create-chain-rule(|"bigchain", "dr-lookup-all-rules", x, t3, stdkey)
+
+  /**
+   * @param name of prefix
+   * @param name of dr-lookup strategy
+   */
+  create-chain-rule(|chain, lookup, x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; <concat-strings> [chain, "-", f] => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        where(
+          new => y
+          ; <aux-call(|y)> drd => s1
+          ; <tvars> t1 => x*
+        )
+        ; add-def(||[ 
+            g(a1*|a2*) =
+              ?x@t1
+              ; !(<~id:lookup(|~str:f, t3) <+ ![]>, <id>)
+              ; foldl({y, x*: ?(<id>, y@t1); s1 })
+          ]|)
+      end
+
+/**
+ * Break, Continue & Throw
+ */
+strategies
+
+  create-break-rules(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _break(|f) => [g1, g2]
+    ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
+        add-def(||[
+          g1(a1*|a2*) =
+            dr-break(|~str:f)
+        ]|)
+        ; new => x1
+        ; add-def(||[
+            g2(a1*|a2*, x1) =
+              dr-break(|~str:f, x1)
+          ]|)
+      end
+
+  create-break-bp-rules(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _break_bp(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        add-def(||[
+          g(a1*|a2*) =
+            dr-break-bp(|~str:f)
+        ]|)
+      end
+
+  create-continue-rules(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _continue(|f) => [g1, g2]
+    ; if is-new(|f, g1, stdkey); try(is-new(|f, g1, ())) then
+        add-def(||[
+          g1(a1*|a2*) =
+            dr-continue(|~str:f)
+        ]|)
+        ; new => x1
+        ; add-def(||[
+            g2(a1*|a2*, x1) =
+              dr-continue(|~str:f, x1)
+          ]|)
+      end
+
+  create-throw-rule(|x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; _throw(|f) => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        new => x1
+        ; new => x2
+        ; add-def(||[
+            g(a1*, x1 | a2*, x2) =
+              dr-throw(x1 | x2, ~str:f)
+          ]|)
+      end
+
+/**
+ * Definitions that should be generated only once for each dynamic rules
+ */
+strategies 
+
+  /**
+   * innermost-scope-f(s) : find label of first scope, going from most recent to
+   * oldest, for which argument strategy s succeeds. Just an alias for
+   * dr-get-first-scope-label(x|"f").
+   */
+  create-innermost-scope-strategy(|f) =
+    _innermost-scope(|f) => g
+    ; if is-new(|f, g, ()) then
+        new => x
+        ; add-def(||[ g(x|) = dr-get-first-scope-label(x| ~str:f) ]|)
+      end
+
+  /**
+   * new-f : locally undefine all rules that depend on x
+   */
+  create-new-strategy(|f) =
+    if is-new(|f, "new", ()) then
+      where(_new(|f) => f2; _bagof(|f) => f4
+        ; add-def(||[ 
+            f2(|scope, dep) = 
+                where(
+                  rules( f+scope )
+                  ; <f4> DR_UNDEFINE(dep)
+                  ; map({lhs, deps : 
+                         ?(_, lhs, _)
+                         ; dr-undefine-rule(|~str:f, lhs)
+                        })
+                  ; dr-undefine-rule(|~str:f, DR_UNDEFINE(dep))
+                )
+          ]|)
+        ; add-def(||[ DYNAMIC_CALLS = f2(|"", "") ]|)
+        // ; add-def(||[ dr-new(|scope, dep) = ?~str:f; f2(|scope, dep) ]|)
+        // note: problem with crossing module boundaries (see issue STR-346)
+      )
+    end
+
+  /**
+   * undefine-f : undefine all rules that depend on x
+   */
+  create-undefine-strategy(|f) = 
+    if is-new(|f, "undefine", ()) then
+      where(_undefine(|f) => f3; _bagof(|f) => f4; _aux(|f) => f5
+        ; add-def(||[ 
+            f3(|dep) = // undefine-f
+              where(
+
+                // find all rules that depend on dep
+                <f4> DR_UNDEFINE(dep)
+
+                // remove each rule and related dependencies
+                ; map({scope, lhs, deps: 
+                      ? (scope, lhs, deps)
+
+                      // undefine the rule with left-hand side lhs
+                      ; dr-undefine-rule-vis(|~str:f, scope, lhs)
+
+                      // undefine each undefine rule related to dep for this dependency
+                      ; !deps
+                      ; map({scope2, dep2, undefine-dep2, closures: 
+                            ?(scope2, dep2)
+
+                            // find all undefine rules for dependency y2
+                            ; !DR_UNDEFINE(dep2) => undefine-dep2
+                            ; <dr-lookup-rule(|~str:f, undefine-dep2)> undefine-dep2
+
+                            // keep those closures that do not depend on dep
+                            ; filter(where({deps2:
+                                f5(|dep2, undefine-dep2)
+                                ; ?(_,_,deps2)
+                                ; !deps2
+                                ; not(fetch(?(_,dep)))
+                              })) => closures
+        
+                            // put remaing closures back
+                            ; dr-set-rules-vis(|~str:f, scope2, undefine-dep2, closures)
+                        })
+                   })
+               )
+            ]|)
+        ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
+        // ; add-def(||[ dr-undefine(|dep) = ?~str:f; f3(|dep) ]|)
+        // note: problem with crossing module boundaries (see issue STR-346)
+      )
+    end
+
+strategies
+
+  /**
+   * Derive key from term by replacing non-context variables by a dummy.
+   */
+  dummify =
+    // a hack to deal with list variables in lists in dr lhss
+    topdown(try(
+      \ Op("Cons", [Var(ListVar(x)), Op("Nil", [])]) -> Var(ListVar(x)) \
+    ));
+    alltd(DummifyTerm)
+
+  /**
+   * The dummy must be a list, since it might be used as the tail
+   * of Cons.
+   */
+  DummifyTerm :
+    Term|[ x ]| -> Term|[ [DR_DUMMY()] ]| 
+    where <not(ContextVar)> x
+
+  DummifyTerm :
+    Term|[ x@t ]| -> <alltd(DummifyTerm)> Term|[ t ]|
+    where <not(ContextVar)> x
+
+  DummifyTerm :
+    Term|[ x@t ]| -> Term|[ x ]|
+    where <ContextVar> x
+
+  DummifyTerm :
+    Term|[ _ ]| -> Term|[ [DR_DUMMY()] ]|
+
+  DummifyTerm :
+    Term|[ <s> ]| -> |[ ( ~term*:<tvars; map(!Var(<id>))> s ) ]|
+
+  DummifyTerm :
+    Term|[ <s> t ]| -> |[ ( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|
+
+//  DummifyTerm =
+//    ?Term|[ <s> ]|
+//    ; fatal-err(|"root application in left-hand side of dynamic rule")
+
+//  DummifyTerm =
+//    ?Term|[ <s> t ]|
+//    ; fatal-err(|"term application in left-hand side of dynamic rule")
+
+strategies
+
+  detect-overlap(|f, lhs1, key1, rnkey1, def1) =
+  where(
+    if <not(?Term|[ DR_UNDEFINE(x) ]|)> lhs1 then
+      <bagof-LeftHandSide> f
+      ; if not(fetch(?(_,_,rnkey1,_))) then
+          if fetch-elem(overlapping-keys(|rnkey1)) => (lhs2, key2, rnkey2, def2) then
+            <overlap-error>(f, (lhs1, key1, rnkey1, def1), (lhs2, key2, rnkey2, def2))
+          else
+            rules( LeftHandSide :+ f -> (lhs1, key1, rnkey1, def1) )
+          end
+        end
+    end
+  )
+
+  overlapping-keys(|key) = 
+    where(
+      !(key, <?(_,_,<id>,_)>)
+      ; not(eq)
+      ; ![<id>]
+      ; listtd(repeat(match-keys-pos <+ match-keys-neg))
+      ; dbg(|"overlap: ")
+      ; not([])
+    )
+
+  match-keys-pos :
+    [(x, x) | ps ] -> ps
+
+  match-keys-pos :
+    [(Term|[ pt1{^pt2} ]|, Term|[ pt3{^pt4} ]|) | ps ] -> [(pt1, pt3),(pt2, pt4) | ps]
+
+  match-keys-pos :
+    [(PreTerm|[ c(t1*) ]|, PreTerm|[ c(t2*) ]|) | ps] ->  <conc>(<zip>(t1*, t2*), ps)
+
+  match-keys-pos :
+    [(PreTerm|[ c1(t1*) ]|, PreTerm|[ c2(t2*) ]|) | ps] ->  ps
+    where <not(eq)> (c1, c2)
+
+  match-keys-pos :
+    [(Term|[ x@t1 ]|, t2) | ps] -> [(Term|[ t1 ]|, t2) | ps]
+
+  match-keys-pos :
+    [(t1, Term|[ x@t2 ]|) | ps] -> [(t1, Term|[ t2 ]|) | ps]
+
+  match-keys-pos :
+    [(PreTerm|[ t1#(t2) ]|, PreTerm|[ t3#(t4) ]|) | ps] -> [(t1,t3),(t2,t4) | ps]
+
+  match-keys-pos :
+    [(PreTerm|[ ~str:str#(t2) ]|, PreTerm|[ c(t*) ]|) | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ ~str:str{^pt}#(t2) ]|, PreTerm|[ c(t*) ]|) | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ c(t*) ]|), PreTerm|[ ~str:str#(t2) ]| | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ c(t*) ]|), PreTerm|[ ~str:str{^pt}#(t2) ]| | ps] -> ps
+    where dbg(|""); <not(eq)> (str, c); dbg(|"not equal")
+
+  match-keys-pos :
+    [(PreTerm|[ t1#(t2) ]|, PreTerm|[ c(t*) ]|) | ps] -> 
+    [(t1, Str(c)), (t2, Op("List", t*)) | ps]
+    where <not(Str(id))> t1
+
+  match-keys-neg :
+    [(t1, t2) | ps] -> ps
+    where <not(is-app <+ is-dummy)> t1
+        ; <not(contains-dummy)> t2
+
+  match-keys-neg :
+    [(t1, t2) | ps] -> ps
+    where <not(is-app <+ is-dummy)> t2
+        ; <not(contains-dummy)> t1
+
+  is-dummy = 
+    ?Term|[ [DR_DUMMY()] ]|
+
+  is-app = 
+    ?PreTerm|[ c1(t1*) ]|
+
+  contains-dummy =
+    oncetd(is-dummy)
+
+  overlap-error =
+    ?(f, (lhs1, key1, rnkey1, (g,(gi,gj))), (lhs2, key2, rnkey2, (h,(hi,hj))))
+    ; dbg(|"overlap-eror: ")
+    ; !["** Error in dynamic rules\n",
+        " Overlapping left-hand sides for dynamic rule `", f, "'\n",
+        " In definition ", g, "(", <int-to-string> gi, ",", <int-to-string> gj, "): ",
+              <trm-to-string <+ err(|"construction not supported, please report")> lhs1, 
+              "\n",
+        " In definition ", h, "(", <int-to-string> hi, ",", <int-to-string> hj, "): ",
+              <trm-to-string <+ err(|"construction not supported, please report")> lhs2, 
+              "\n"
+      ]
+    ; dbg(|"msg: ")
+    ; <fprintnl>(stderr, <id>)
+    ; <exit> 1
+
+  trm-to-string = 
+    trm-to-string1 <+ trm-to-string2
+
+  trm-to-string1 :
+    Term|[ pt{^_} ]| -> <trm-to-string> pt
+
+  trm-to-string2 :
+    Term|[ pt ]| -> <trm-to-string> PreTerm|[ pt ]|
+
+  trm-to-string2 :
+    Term|[ pt{t*} ]| -> <concat-strings>[<trm-to-string>pt, "{", <trms-to-string> t*, "}"]
+
+  trm-to-string2 :
+    Term|[ pt1{^pt2} ]| -> <concat-strings>[<trm-to-string>pt1, "{^", <trm-to-string> pt2, "}"]
+
+  trm-to-string2 :
+    PreTerm|[ t1#(t2) ]| -> <concat-strings>[<trm-to-string>t1, "#(", <trm-to-string> t2, ")"]
+
+  trm-to-string2 :
+    Term|[ x ]| -> x
+
+  trm-to-string2 :
+    Term|[ lid ]| -> lid
+
+  trm-to-string2 :
+    Int(i) -> i
+
+  trm-to-string2 :
+    Term|[ x@t ]| -> <concat-strings>[x, "@", <trm-to-string> t]
+
+  trm-to-string2 :
+    PreTerm|[ _ ]| -> "_"
+
+  trm-to-string2 :
+    PreTerm|[ str ]| -> <concat-strings> ["\"", str, "\""]
+
+  trm-to-string2 :
+    PreTerm|[ str ]| -> <concat-strings> ["\"", str, "\""]
+
+  trm-to-string2 :
+    PreTerm|[ c(t*) ]| -> <concat-strings>[c, "(", <trms-to-string> t*, ")"]
+
+  trms-to-string :
+    [] -> ""
+
+  trms-to-string :
+    [t] -> <trm-to-string> t
+
+  trms-to-string :
+    [t1, t2 | t*] -> <concat-strings>[<trm-to-string> t1, ", ", <trms-to-string>[t2|t*]]
+
+
+strategies
+
+  def-name :
+    |[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| -> (f, (<length> a1*, <length> a2*))
+
+  def-name :
+    |[ f(a1*|a2*) : t1 -> t2 where s ]| -> (f, (<length> a1*, <length> a2*))
+
+  def-name :
+    |[ f(a1*|a2*) = s ]| -> (f, (<length> a1*, <length> a2*))
+
+  dr-rename-vars =
+    {| DRRenameVar
+     : where(<reset-counter> "DRVarNumber")
+     ; rec x(RenameVarTerm(DRRenameVar <+ NewNumberedVar, x) <+ all(x))
+     |}
+
+  RenameVarTerm(s, x) =
+    Var(ListVar(s; <strcat> (<id>, "*")) <+ s)
+    + SVar(s)
+    + VarDec(s, id)
+    + DefaultVarDec(s)
+    + Rec(s,x)
+    + SDefNoArgs(s,x)
+    + SDef(s,x,x)
+    + SDefT(s,x,x,x)
+    + Scope(map(s), x)
+
+  NewNumberedVar :
+    x -> y
+    where <next-counter> "DRVarNumber" => n
+        ; <strcat> ("v", <int-to-string> n) => y
+        ; rules(DRRenameVar: x -> y)
+
+
+/*
+
+Copyright (C) 2001-2005 Eelco Visser <visser@acm.org>
+
+*/
+

@@ -1,0 +1,8 @@
+module test09-lib
+imports
+  libstratego-lib
+
+strategies
+
+  add2 =
+    <add> (1, 2)

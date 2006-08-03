@@ -1,0 +1,19 @@
+module needed-constructors
+imports stratlib Stratego-MetaTransition
+strategies 
+
+  needed-constructors :
+    Specification([sig, ols, Strategies(sdefs)]) ->
+    Specification([sig', ols, Strategies(sdefs)])
+    where <topdown(try(DeclareConstructorNeeded))> sdefs
+	; <Signature([Constructors(filter(ConstructorNeeded))])> sig => sig'
+
+  DeclareConstructorNeeded =
+    ?Op(c, _)
+    ; rules(ConstructorNeeded : OpDecl(c, t) -> OpDecl(c, t))
+
+
+  DeclareConstructorNeeded =
+    ?Cong(c, _)
+    ; rules(ConstructorNeeded : OpDecl(c, t) -> OpDecl(c, t))
+

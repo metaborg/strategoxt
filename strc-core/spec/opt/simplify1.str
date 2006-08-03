@@ -1,0 +1,11 @@
+module simplify1
+imports stratego-laws opt-lib
+strategies
+
+  simplify1-io =
+    io-wrap(simplify1)
+
+  simplify1 =
+    try( \ Specification([x, y, z]) -> Specification([x, z]) \ )
+    ; apply-to-bodies(simplify)
+ 

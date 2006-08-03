@@ -1,0 +1,13 @@
+// extract: translate a specification to core Stratego and 
+// extract needed definitions
+
+module extract-all
+imports needed-defs
+strategies
+
+  extract-all-io = 
+    io-wrap(
+      Specification([id,id,Strategies(all-defs)])
+    )
+
+

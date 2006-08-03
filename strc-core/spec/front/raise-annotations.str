@@ -1,0 +1,163 @@
+module raise-annotations
+imports libstratego-lib Stratego-Sugar
+strategies
+
+  raise-annotations-io =
+    io-wrap(
+      raise-annotations
+    )
+
+  raise-annotations =
+    raise-annotations(raise-in-match, raise-in-build, raise-in-overlay)
+
+  raise-annotations(mch, bld, ovl) = 
+  rec raise(
+    alltd(
+        LabeledDynRuleScopeId(id, bld)
+      + AddLabelDynRuleId(raise, bld)
+      + LabeledDynRuleId(raise, bld)
+      + SetDynRuleMatch(raise, mch)
+      + UndefineDynRule(raise, mch)
+      + AddScopeLabel(id, bld)
+
+      + SetDynRuleDepends(raise, raise, bld)
+
+      + Rule(mch, bld, raise)
+      + RuleNoCond(mch, bld)
+      
+      + Overlay(id, id, ovl)
+      + OverlayNoArgs(id, ovl)
+
+      + AM(raise, mch)
+      + Prim(id, map(bld))
+      + BA(raise, bld)
+      + PrimT(id, map(raise), map(bld))
+
+      + Build(bld)
+      + Match(mch)
+
+      + CallT(id, map(raise), map(bld))
+      + CallDynamic(bld,map(raise),map(bld))
+    )
+  )
+
+  raise-in-match =
+    alltd(
+      (match-annolist-to-anno + match-no-anno); raise-in-match
+      <+ App(raise-annotations, raise-in-build)
+      <+ RootApp(raise-annotations)
+      <+ Anno(raise-in-match, try(rm-anno); raise-in-match)
+    )
+
+  raise-in-build =
+    alltd(
+      (build-annolist-to-anno + build-no-anno); raise-in-build
+      <+ App(raise-annotations, raise-in-build)
+      <+ RootApp(raise-annotations)
+      <+ Anno(raise-in-build, try(rm-anno); raise-in-build)
+    )
+
+  raise-in-overlay =
+    alltd(
+      (overlay-annolist-to-anno + overlay-no-anno); raise-in-overlay
+      <+ App(raise-annotations, raise-in-overlay)
+      <+ RootApp(raise-annotations)
+      <+ Anno(raise-in-overlay, try(rm-anno); raise-in-overlay)
+    )
+
+  match-annolist-to-anno :
+    |[ pt{} ]| -> |[ pt{^Nil()} ]|
+
+  match-annolist-to-anno :
+    |[ pt{t,t*} ]| -> |[ pt{^Cons(t,t')} ]|
+    where <foldr(!|[ Nil(){^_} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^_} ]| \ )> t* => t'
+
+  match-no-anno :
+    |[ pt ]| -> |[ pt{^_} ]|
+
+  build-annolist-to-anno :
+    |[ pt{} ]| -> |[ pt{^Nil()} ]|
+
+  build-annolist-to-anno :
+    |[ pt{t,t*} ]| -> |[ pt{^Cons(t,t')} ]|
+    where <foldr(!|[ Nil(){^Nil()} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^Nil()} ]| \ )> t* => t'
+
+  build-no-anno :
+    |[ pt ]| -> |[ pt{^Nil()} ]|
+
+  overlay-annolist-to-anno :
+    |[ pt{} ]| -> |[ pt{^Nil()} ]|
+
+  overlay-annolist-to-anno :
+    |[ pt{t,t*} ]| -> |[ pt{^Cons(t,t')} ]|
+    where <foldr(!|[ Nil(){^_ Nil()} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^_ Nil()} ]| \ )> t* => t'
+
+  overlay-no-anno :
+    |[ pt ]| -> |[ pt{^_ Nil()} ]|
+
+  rm-anno : 
+    |[ pt ]| -> PreTerm|[ pt ]|
+ 
+  rm-anno : 
+    |[ pt{^_} ]| -> PreTerm|[ pt ]|
+
+
+
+/* another implementation */
+
+  raise-annotations' = 
+    transform-mbo(annolist-to-anno + match-no-anno
+		 ,annolist-to-anno + build-no-anno
+		 ,annolist-to-anno + overlay-no-anno)
+
+  transform-mbo(mch, bld, ovl) = traverse(mch, bld, ovl)
+
+    in-match(mch, bld, ovl)  =
+      alltd(
+        mch; in-match(mch, bld, ovl)
+        + App(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + RootApp(traverse(mch, bld, ovl))
+      )
+
+    in-build(mch, bld, ovl) =
+      alltd(
+        bld; in-build(mch, bld, ovl)
+        + App(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + RootApp(traverse(mch, bld, ovl))
+      )
+
+    in-overlay(mch, bld, ovl) =
+      alltd(
+        ovl; in-overlay(mch, bld, ovl)
+        + App(traverse(mch, bld, ovl), in-overlay(mch, bld, ovl))
+        + RootApp(traverse(mch, bld, ovl))
+      )
+
+    traverse(mch, bld, ovl) =
+      alltd(
+          LabeledDynRuleScopeId(id, in-build(mch, bld, ovl))
+
+        + AddLabelDynRuleId(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + LabeledDynRuleId(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + AddScopeLabel(id, in-build(mch, bld, ovl))
+
+        + SetDynRuleMatch(traverse(mch, bld, ovl), in-match(mch, bld, ovl))
+        + UndefineDynRule(traverse(mch, bld, ovl), in-match(mch, bld, ovl))
+
+        + Rule(in-match(mch, bld, ovl), in-build(mch, bld, ovl), traverse(mch, bld, ovl))
+        + RuleNoCond(in-match(mch, bld, ovl), in-build(mch, bld, ovl))
+      
+        + Overlay(id, id, in-overlay(mch, bld, ovl))
+        + OverlayNoArgs(id, in-overlay(mch, bld, ovl))
+
+        + AM(traverse(mch, bld, ovl), in-match(mch, bld, ovl))
+        + Prim(id, map(in-build(mch, bld, ovl)))
+        + BA(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + PrimT(id, map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
+
+        + Build(in-build(mch, bld, ovl))
+        + Match(in-match(mch, bld, ovl))
+
+        + CallT(id, map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
+	+ CallDynamic(in-build(mch, bld, ovl), map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
+      )

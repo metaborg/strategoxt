@@ -1,0 +1,51 @@
+module desugar-case
+imports automaton libstratego-lib stratego-laws desugar
+strategies
+
+  desugar-case-io =
+    io-wrap(desugar-case) 
+
+  desugar-case =
+    topdown(repeat(DesugarAssign + DesugarCase + Optimize))
+
+  DesugarAssign :
+    Assign(Var(x), t) -> Seq(Build(t), Match(Var(x)))
+
+  DesugarAssign :
+    Assign(Var(x)) -> Match(Var(x))
+
+  DesugarCase :
+    Case(lab, x, alts, s) ->
+    Case(x, alts, s)
+
+  DesugarCase :
+    Case(Var(x), alts, s) ->
+    Seq(Build(Var(x)), Case(alts, s))
+
+  DesugarCase :
+    Case([], s) -> s
+
+  DesugarCase :
+    Case([Alt(Fun(c, n), xs, x, s1) | alts], s2) ->
+    GuardedLChoice(Match(Anno(Op(c, xs), x)), s1
+                  , Case(alts, s2))
+
+  DesugarCase :
+    Case([Alt(Str(str), xs, x, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Anno(Str(str), x)), s1
+                  , Case(alts, s2))
+
+  DesugarCase :
+    Case([Alt(Int(i), xs, x, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Anno(Int(i),x)), s1
+                  , Case(alts, s2))
+
+  DesugarCase :
+    Case([Alt(Real(i), xs, x, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Anno(Real(i), x)), s1
+                  , Case(alts, s2))
+
+  DesugarCase :
+    Case([Alt(Wld, xs, x, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Anno(Wld, x)), s1
+                  , Case(alts, s2))

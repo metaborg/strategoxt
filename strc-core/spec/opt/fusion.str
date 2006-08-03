@@ -1,0 +1,241 @@
+module fusion
+imports Stratego stratego-laws libstratego-lib stratego-laws fusion-rules
+
+signature
+  constructors
+    Mark : Strat
+
+strategies
+
+  fusion-io = 
+    io-wrap(
+      declare-inline-rules
+      ; alltd(innermost-fusion)
+      // turn off outermost-fusion while it is not finished (EV)
+      //; alltd(innermost-fusion + outermost-fusion)
+    )
+
+strategies
+
+  /**
+   * Inlining strategy definitions
+   */
+
+  declare-inline-rules =
+    alltd(Strategies(map(try(declare-inline-rule))))
+
+  declare-inline-rule = 
+    ?|[ f(a1*|a2*) = s1 ]|;
+    rules(
+      InlineStrat :
+        Strategy|[ f(s*|t*) ]| -> <simplify0> |[ { x* : where(s4); s3 } ]|
+        where <strename> |[ f(a1*|a2*) = s1 ]| => |[ f(a3*|a4*) = s2 ]|
+	    ; <ssubs> (<map(?VarDec(<id>,_))> [a3*], [s*], s2) => s3
+	    ; <map(?VarDec(<id>,_))> a4* => x*
+	    ; <zip(\ (t, y) -> |[ !t; ?y ]|\ ); seqs>(t*, x*) => s4
+    )
+
+  inline-rules = 
+    rec x(try(
+        Simplify
+        <+ GuardedLChoice(x, x, x)
+	<+ Scope(id, Seq(Match(id), id))
+	<+ InlineStrat; x
+    ))
+
+strategies
+
+  /**
+   * The fusion strategy
+   */
+
+  innermost-fusion = 
+    ?|[ innermost_1_0(s1|) ]| 
+    ; log(|Notice(),"Application of innermost found")
+
+    ; where(new => x)
+    ; where(<seq-over-choice> Strategy|[ bottomup_1_0(x(|)|) ]|)
+    ; where(<bottomup-to-var> Strategy|[ bottomup_1_0(x(|)|) ]|)
+
+    ; where(<inline-rules> s1 => s2)
+    ; !|[ let x(|) = (mark(|); s2); bottomup_1_0(x(|)|) < id + id
+           in bottomup_1_0(x(|)|)
+          end ]|
+    ; propagate-mark
+
+    ; fuse-with-bottomup
+    ; mark-non-free-constructors(||[ x(|) ]|)
+    ; alltd(BottomupToVarIsId <+ UnMark)
+
+    ; not(oncetd(?Strategy|[ mark(|) ]|)
+          ; say(!"not all marks removed"))
+    ; desugar
+    ; simplify
+    ; log(|Notice(),"Fused application of innermost")
+
+  // Propagate mark over choice
+
+  propagate-mark = 
+    innermost(
+	SeqOverChoiceL
+	+ SeqOverLChoiceL
+	+ SeqOverGChoiceL
+	+ SeqOverScopeL 
+    )
+
+  fuse-with-bottomup = 
+    innermost(
+	SeqOverChoiceR
+	+ SeqOverLChoiceR
+	+ SeqOverScopeR
+	+ AssociateR
+        + IntroduceApp
+        + ApptoApp
+	+ BottomupOverConstructor
+    )
+
+  // Constructors for which there is no rule in the rule set
+
+  // Note only works if all rules start with a (non-variable) match; anything
+  // else
+
+  mark-non-free-constructors(|s) =
+    {| NotFree 
+     : alltd(mark-non-free-constructor1 
+             <+ mark-non-free-constructor2 
+             <+ mark-non-free-constructor3)
+     ; if not(Foo) then 
+	 log(|Notice(), "eliminating reductions of free terms")
+         ; topdown(try(FooBar(|s))) 
+       end
+     |}
+
+  mark-non-free-constructor1 =
+    ?|[ mark(|); ?c(t1*){^pt1}; s ]|
+    ; where( <length> t1* => n )
+    ; rules(
+        NotFree : (c, n)
+      )
+
+  mark-non-free-constructor2 =
+    ?|[ mark(|); ?pt1{^pt2}; s ]|
+    ; where(<not(?Var(_))> pt1)
+    ; rules( NotFree : (pt1, 0) )
+
+  mark-non-free-constructor3 =
+    ?|[ mark(|); s2 ]|
+    ; rules( Foo : _ )
+    ; log(|Notice(), "suspicious rule; cannot eliminate reductions of free terms")
+
+  FooBar(|s) :
+    Term|[ <s> pt1{^pt2} ]| -> Term|[ pt1{^pt2} ]|
+    where <not(not-free)> pt1
+
+  not-free =
+    ?PreTerm|[ c(t*) ]|
+    ; <NotFree>(c, <length> t*)
+   <+ <NotFree>(<id>, 0)
+
+  // The following rule applies in the context of the transformation
+  // above, where we know that the bottomup is the application of the
+  // normalisation strategy to all subterms. Since the variable
+  // originates in the left-hand side of the rewrite rule, we know
+  // it is already in normal form.
+
+  bottomup-to-var = ?bu;
+    rules(
+      BottomupToVarIsId :
+        |[ mark(|); ?t1; s ]| -> |[ ?t1; s' ]|
+        where <replace-application> (bu, t1, s) => s'
+    )
+
+   replace-application :
+     (s1, t1, s2) -> s3
+     where {| Replace
+            : <tvars; map({?x; rules(Replace : Term|[ <s1> x ]| -> Term|[ x ]|)})> t1
+            ; <alltd(Replace)> s2 => s3 
+            |}
+
+  // remove mark
+
+  UnMark :
+    Strategy|[ mark(|) ]| -> Strategy|[ id ]|
+
+
+
+
+strategies // outermost fusion
+
+  outermost-fusion :
+    |[ outermost_1_0(s1|) ]| -> 
+    |[ let f = repeat(rec x(s2 <+ s3)); all(f) in f end ]|
+    where log(|Notice(),"Application of outermost found")
+	; new => x
+	; new => f
+	; <inline-rules> s1 => s2
+        ; derive-hnf-traversal(|x) => s3
+
+  derive-hnf-traversal(|x) =
+    collect-guards
+    ; debug(!"guards: ")
+    ; map(merge-terms(|x))
+//    ; foldr1(?[<id>], \ (s1, s2) -> |[ s1 <+ s2 ]|\ ) => s3
+
+  collect-guards = 
+  {|Guard :
+    rec y(
+      Choice(y, y) 
+      <+ LChoice(y, y) 
+      <+ Scope(id, y)
+      <+ Seq(y, id)
+      <+ Match({
+           ?t@|[ c(t*) ]|
+	   ; if <fetch({?|[c2(t2*)]|})> t* then
+               rules(
+	         Guard :+ () -> c 
+	         Guard :+ c -> t
+               )
+	     end
+         })
+     )
+     ; <bagof-Guard> ()
+     ; make-set
+     ; map(bagof-Guard)
+  |}
+
+  merge-terms(|x) =
+    ?[ |[ c(t*) ]| | _]
+    ; debug
+    ; map({t* : (|[ c(t*) ]| -> t* )})
+    ; debug
+    ; transpose
+    ; debug(!"transposed: ")
+    ; map(merge-subterms(|x))
+    ; !Cong(c, <id>)
+
+  transpose = 
+    map([]); ![] <+ ![<map(Hd)> | <map(Tl); transpose>]
+
+  merge-subterms(|x) :
+    t* -> |[ x(|); (s <+ try(x(|))) ]|
+    where 
+      <foldr(!|[fail]|, \ (s1,s2) -> |[ s1 <+ s2 ]| \, term-to-cong)> t* => s
+ 
+  term-to-cong :
+    |[ c(t*) ]| -> Cong(c, <map(!|[id]|)> t*)
+    where <map(Var(id))> t*
+
+/*
+
+  derive-hnf-traversal(|x) :
+    Term|[ c(t*) ]| -> Cong(c, <map(norm-subterm(|x))> t*)
+    where <fetch(?|[ c2(t2*) ]|)> t*
+
+  norm-subterm(|x) :
+    Term|[ x ]| -> |[ id ]|
+
+  norm-subterm(|x) :
+    Term|[ c(t*) ]| -> |[ x; (c(s1*) <+ try(x)) <+ c(s2*) ]|
+    where <map(!|[ id ]|)> t* => s1*
+    
+*/

@@ -1,0 +1,212 @@
+module const-prop
+imports Stratego-Amb stratlib Stratego-MetaTransition
+strategies
+
+  const-prop-io =
+    io-wrap(Specification([Signature(id),Strategies(map(const-prop))]))
+
+  const-prop =
+    {| CurrentTerm, Binding: cp |}
+
+  cp = 
+    prop-match
+    <+ prop-build
+    <+ prop-scope(cp)
+    <+ prop-call(cp)
+    <+ prop-traversal(cp)
+    <+ prop-seq(cp)
+    <+ prop-choice(cp)
+    <+ prop-let(cp)
+    <+ prop-rec(cp)
+    <+ prop-not(cp)
+    <+ prop-sdef(cp)
+    <+ all(cp)
+
+  exec-maybe(s) =
+    {| Binding :
+       where(UndefCurrentTerm)
+       ; s
+       ; where(UndefCurrentTerm) |}
+
+  prop-seq(cp) =
+    Seq(cp, cp)
+
+  prop-call(cp) =
+    ?CallT(_, _, _)
+    ; UndefCurrentTerm
+    ; CallT(id, map(exec-maybe(cp)), alltd(Binding; Var(id)))
+
+  prop-call(cp) =
+    ?PrimT(_, _, _)
+    ; UndefCurrentTerm
+    ; PrimT(id, map(exec-maybe(cp)), alltd(Binding; Var(id)))
+
+  prop-traversal(cp) =
+    (?All(_) + ?One(_) + ?Some(_))
+    ; UndefCurrentTerm
+    ; one(exec-maybe(cp))
+
+  prop-traversal(cp) =
+    ?Cong(_,_)
+    ; UndefCurrentTerm
+    ; Cong(id, map(exec-maybe(cp)))
+
+  prop-rec(cp) =
+    ? Rec(_,_)
+    ; Rec(id,  exec-maybe(cp))
+
+  prop-not(cp) =
+    ? Not(_)
+    ; UndefCurrentTerm
+    ; Not(exec-maybe(cp))
+
+  prop-scope(cp) =
+    ?Scope(xs, _)
+    ; {| Binding :
+	   where(<map({?x; rules(Binding :- Var(x))})> xs)
+           ; Scope(id, cp)
+	   ; if CurrentTerm; oncetd({x: ?Var(x); <fetch(?x)> xs}) then
+               UndefCurrentTerm
+		  // use dependent dynamic rules here
+	     end
+      |}
+    
+  prop-sdef(cp) =
+    ?SDefT(f, _, xs, _)
+    ; {| Binding :
+	   where(<map({?VarDec(x,_); rules(Binding :- Var(x))})> xs)
+           ; SDefT(id, id, id, UndefCurrentTerm; cp)
+      |}
+
+  prop-let(cp) =
+    Let(map({| Binding, CurrentTerm : UndefCurrentTerm; cp |}), cp)
+    
+  prop-build =
+    Build(alltd(Binding))
+    ; ?Build(t)
+    ; rules(CurrentTerm : _ -> t)
+
+  prop-match =
+    Match(alltd(Binding))
+    ; ?Match(t)
+    ; try(
+        where(CurrentTerm => ct)
+        ; (where(<prop-pattern-match> [(t, ct)]; map(try(introduce-binding)))
+           /*; Match(alltd(Binding)) */
+           <+ <if-verbose3(debug(!"no match with current term: "))> 
+		      ("strat: ", <id>, "current: ", ct)
+              ; !Fail)
+       <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
+	  ; rules(CurrentTerm : _ -> t)
+      )
+
+  introduce-binding =
+    ?(Var(x), t) 
+    ; where(<not(oncetd(?Wld + ?As(_,_)))> t)
+    ; rules(Binding : Var(x) -> t)
+
+  prop-pattern-match = 
+    for(\ pairs -> (pairs, []) \
+       ,\ ([], sbs) -> sbs \
+       ,
+        (UfIdem, id)
+	<+ //MatchVar(Var(id)) 
+	   UfVar(Var(id))
+	<+ (UfDecompose, id) 
+	<+ (AsMatch, id)
+	<+ (MatchWildCard, id)
+// TermIsVar can only be used after integration of
+// annotations in abstract syntax
+	<+ (TermIsVar(Var(id)), id)
+	<+ (TermIsVarIgnore(Var(id)), id)
+    )
+
+  TermIsVar(isvar) :
+    [(x,y) | ps] -> [(y, x) | ps]
+    where <not(isvar)> x; <isvar> y
+
+  TermIsVarIgnore(isvar) :
+    [(x,y) | ps] -> ps
+    where <not(isvar)> x; <isvar> y
+
+  MatchWildCard :
+    [(Wld, t) | ps] -> ps
+
+  AsMatch :
+    [(As(p1,p2),t) | ps] -> [(p1, t), (p2, t) | ps]
+
+  prop-choice(uv) =
+    ?Choice(_, _)
+    ; prop-abstract-choice(Choice(uv,id),Choice(id, uv))
+   <+
+    ?LChoice(_, _)
+    ; prop-abstract-choice(LChoice(uv,id),LChoice(id, uv))
+   <+
+    ?GuardedLChoice(_,_,_)
+    ; prop-abstract-choice(GuardedLChoice(uv,id,id);GuardedLChoice(id,uv,id)
+	           ,GuardedLChoice(id,id,uv))
+
+  prop-abstract-choice(left, right) =
+    left /CurrentTerm,Binding\ right
+
+
+  UndefCurrentTerm =
+    rules(CurrentTerm : _ -> Undefined)
+
+
+/*-----------------------------------------------------------------------
+
+    where(save-Binding => bnd0; save-CurrentTerm => trm0)
+    ; left
+    ; where(
+	save-Binding => bndL; <restore-Binding> bnd0
+        ; save-CurrentTerm => trm1; <restore-CurrentTerm> trm0
+      )
+    ; right
+    ; where(
+        <isect-Binding> bndL; <isect-CurrentTerm> trm1
+      )
+
+
+strategies // Dynamic rule manipulation
+
+  save-Binding =
+    <table-getlist> "Binding"
+
+  clean-Binding =
+    where(<table-destroy> "Binding";
+          <table-putlist>("Binding", []))
+
+  restore-Binding = ?tbl;
+    where(<table-destroy> "Binding";
+          <table-putlist>("Binding", tbl))
+
+  isect-Binding =
+     map(try(?(Scopes,_)
+        <+ {?(key, [Defined(_,val)|_]);
+            (where(<table-get> ("Binding", key) => [Defined(_,val)|_])
+             <+ !(key, [Undefined]))
+           }))
+    ; restore-Binding
+
+  save-CurrentTerm =
+    <table-getlist> "CurrentTerm"
+
+  clean-CurrentTerm =
+    where(<table-destroy> "CurrentTerm";
+          <table-putlist>("CurrentTerm", []))
+
+  restore-CurrentTerm = ?tbl;
+    where(<table-destroy> "CurrentTerm";
+          <table-putlist>("CurrentTerm", tbl))
+
+  isect-CurrentTerm =
+     map(try(?(Scopes,_)
+        <+ {?(key, [Defined(_,val)|_]);
+            (where(<table-get> ("CurrentTerm", key) => [Defined(_,val)|_])
+             <+ !(key, [Undefined]))
+           }))
+    ; restore-CurrentTerm
+
+*/
+

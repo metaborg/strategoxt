@@ -1,0 +1,76 @@
+module dead-def-elim
+imports Stratego stratlib
+strategies
+
+  dead-def-elim-io = 
+    io-wrap(only-local-option, dead-def-elim-spec)
+
+  only-local-option = 
+    Option("--only-local"
+	  ,where(<set-config>("--only-local", ()))
+	  ,!"--only-local        do not eliminate top-level definitions")
+
+  if-only-local(s1, s2) =
+    if <get-config> "--only-local" then s1 else s2 end
+
+strategies
+   
+  dead-def-elim-spec = 
+    Specification(
+      [id,
+       Strategies(
+         if-only-local(id, dead-def-elim)
+         ; map(local-dead-def-elim)
+       )
+      ]
+    )
+
+  dead-def-elim =
+    where(map(RegisterDefinition))
+    ; where(
+        <mark-needed-defs> "main_0_0"
+      ; <mark-needed-defs> "DYNAMIC_CALLS_0_0"
+      )
+    ; filter(
+        SDefT(DefNeeded,id,id,id) 
+        <+ ExtSDefInl(DefNeeded,id,id,id)
+        <+ ExtSDef(DefNeeded,id,id)
+      )
+
+  RegisterDefinition =
+    ?sdef
+    ; where( (?SDefT(<id>,_,_,_) <+ ?ExtSDefInl(<id>,_,_,_) <+ ?ExtSDef(<id>,_,_)) => f )
+    ; rules( Definition : f -> sdef )
+  
+  mark-needed-defs = 
+    DefNeeded 
+    <+ ?f; rules( DefNeeded : f -> f )
+        ; Definition
+        ; rec x(alltd(CallT(SVar(mark-needed-defs),x,x)))
+
+strategies 
+  
+  local-dead-def-elim =
+    Let(id,id)
+    ; {| DefDead
+       : DeclareDead
+       ; Let(local-dead-def-elim, local-dead-def-elim)
+       ; DeleteDeadDefinitions
+       |}
+    <+ try(DeclareNotDead)
+       ; all(local-dead-def-elim)
+
+  DeclareDead =
+    Let(map(DeclareDefDead), id)
+
+  DeclareDefDead =
+    ?SDefT(f, _, _, _)
+    ; rules( DefDead+f : SDefT(f, x, y, z) -> "1" )
+
+  DeleteDeadDefinitions =
+     Let(filter(not(DefDead => "1")), id)
+
+  DeclareNotDead =
+    ?CallT(SVar(f), _, _)
+    ; rules( DefDead.f : SDefT(f, x, y, z) -> "0" )
+  
