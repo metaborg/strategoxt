@@ -18,7 +18,6 @@ m4_pattern_forbid([^XT_])
 AC_DEFUN([XT_SETUP],
 [
   AC_REQUIRE([XT_DARWIN])
-  AC_REQUIRE([XT_CHECK_NESTED_FUNCTIONS])
   AC_REQUIRE([XT_CHECK_LINKING])
   AC_REQUIRE([XT_ENABLE_XTC_REGISTER])
 ])
@@ -62,62 +61,6 @@ AC_DEFUN([XT_CHECK_LINKING],
   fi
 
   AC_SUBST([STR_LDFLAGS])
-])
-
-# XT_CHECK_NESTED_FUNCTIONS
-# ---------
-# Figure out if the C compiler supports nested functions.
-AC_DEFUN([XT_CHECK_NESTED_FUNCTIONS],
-[
-  AC_REQUIRE([AC_PROG_CC])
-
-  AC_LANG_PUSH(C)
-  AC_MSG_CHECKING([if C compiler supports nested functions])
-  AC_COMPILE_IFELSE([
-#   include <stdlib.h>
-    int main(int argc, char* argv[])
-    {
-      void nested(void)
-      {
-        exit(0);
-      }      
-
-      nested();
-    }
-  ],[xt_nested_functions_support=yes],[xt_nested_functions_support=no])
-
-  if test "$xt_nested_functions_support" = "yes"; then
-    AC_MSG_RESULT([yes])
-  else
-    SAVE_CFLAGS="$CFLAGS"
-    CFLAGS="${CFLAGS} -fnested-functions"
-
-    AC_COMPILE_IFELSE([
-#     include <stdlib.h>
-      int main(int argc, char* argv[])
-      {
-        void nested(void)
-        {
-          exit(0);
-        }
-
-        nested();
-      }
-    ],[xt_nested_functions_support=yes],[xt_nested_functions_support=no])
-
-    CFLAGS="$SAVE_CFLAGS"
-
-    if test "$xt_nested_functions_support" = "yes"; then
-      AC_MSG_RESULT([yes, using -fnested-functions])
-      STR_CFLAGS="${STR_CFLAGS} -fnested-functions"
-    else
-      AC_MSG_RESULT([no])
-      AC_MSG_FAILURE([cannot compile nested functions. Please check if you're using gcc])
-    fi
-  fi
-
-  AC_LANG_POP
-  AC_SUBST([STR_CFLAGS])
 ])
 
 ############################################## FIND AND CHECK PACKAGES ##############################
