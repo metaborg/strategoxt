@@ -1,0 +1,70 @@
+/**
+ * All modules in the library are imported in lib. 
+ */
+module lib
+imports 
+ 
+	lang/dynamic-rules
+
+ // sequential control 
+
+	strategy/conditional
+	strategy/iteration
+
+ // pack
+
+	strategy/pack/common
+	strategy/pack/modules
+
+ // traversal
+
+	strategy/traversal/simple
+	strategy/traversal/list
+	strategy/traversal/fixpoint
+	strategy/traversal/environment
+	strategy/traversal/list-environment
+
+ // data types
+
+	list
+	collection/tuple/common
+	strategy/general/option
+        term/string
+	term/common
+	term/annotation
+	term/placeholder
+	term/share
+	term/zip
+	annotation-props
+ 	collection/list/integer
+	term/integer
+	term/real
+	collection/hash-table/common
+        collection/hash-table/nested
+        collection/hash-table/scoped-finite-map
+        collection/set/indexed
+        util/date-format
+
+ // system
+
+	io
+	system/io/process
+	memo
+	util/config/options
+	util/config/parse-options
+	util/log
+
+
+ // object variables
+
+	strategy/general/substitution
+	strategy/general/rename
+	strategy/general/unification
+	strategy/general/free-variables
+
+  // testing
+
+	util/sunit
+
+	strategy/pack/graph
+	strategy/general/parenthesize

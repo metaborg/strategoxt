@@ -1,0 +1,23 @@
+# collect modules 
+pack-sdf -I ../syn -i TIL-eblocks.sdf -o TIL-eblocks.def
+
+# generate parse table
+sdf2table -i TIL-eblocks.def -o TIL-eblocks.tbl -m TIL-eblocks
+
+# generate regular tree grammar from syntax definition
+sdf2rtg -i TIL-eblocks.def -o TIL-eblocks.rtg -m TIL-eblocks
+
+# generate Stratego signature from regular tree grammar
+rtg2sig -i TIL-eblocks.rtg -o TIL-eblocks.str 
+
+# generate pretty-print table from syntax definition
+ppgen -i TIL-eblocks.def -o TIL-eblocks.pp
+
+# generate program to insert parentheses
+sdf2parenthesize -i TIL-eblocks.def -o til-eblocks-parenthesize.str -m TIL-eblocks --lang TIL-eblocks
+
+# compile the generated program
+strc -i til-eblocks-parenthesize.str -I ../sig -m io-til-eblocks-parenthesize -la stratego-lib
+
+# compile simplifier
+strc -i til-eblock-desugar.str -m io-til-eblock-desugar -la stratego-lib

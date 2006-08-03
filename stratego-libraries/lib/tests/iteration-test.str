@@ -1,0 +1,157 @@
+/**
+ * Test iteration strategies.
+ *
+ * Various ideas for tests have been contributed by Program
+ * Transformation students.
+ *
+ */
+module iteration-test
+imports libstratego-lib
+
+strategies
+
+  main = 
+    test-suite(!"iteration test",
+      repeat-tests
+    ; repeatc-tests
+    ; repeat1-tests
+    ; repeat1c-tests
+    ; while-tests
+    ; do-while-tests
+    ; while-not-tests
+    ; for-tests
+    )
+
+  repeat-tests =
+      apply-test( !"repeat: tail"
+      , repeat(Tl)
+      , ![1,2,3,4,5]
+      , ![]
+      )
+    ; apply-test( !"repeat: fail is ok"
+      , repeat(fail)
+      , ![1,2,3,4,5]
+      , ![1,2,3,4,5]
+      )
+    ; apply-test(!"repeat: counter"
+      , repeat(lt; (inc, id))
+      , !(1,10)
+      , !(10,10)
+      )
+
+  repeatc-tests =
+      apply-test(!"repeat(s,c) test 1"
+      , repeat(Tl, ?[])
+      , ![1,2,3,4,5]
+      , ![]
+      )
+    ; apply-and-fail(!"repeat(s,c) test 2"
+      , repeat(fail, ?[])
+      , ![1,2,3,4,5]
+      )
+    ; apply-test(!"repeat(s,c) test 3"
+      , repeat(lt; (inc, id), add)
+      , !(1,10)
+      , !20
+      )
+
+  repeat1-tests =
+      apply-and-fail(!"repeat1: must succeed at least once"
+      , repeat1(Tl)
+      , ![]
+      )
+    ; apply-test(!"repeat1: tail", repeat1(Tl)
+      , ![1]
+      , ![]
+      )
+
+  repeat1c-tests =
+      apply-and-fail(!"repeat1(s,c): must succeed at least once"
+      , repeat1(Tl, ?[])
+      , ![]
+      )
+    ; apply-test(!"repeat1(s,c): tail"
+      , repeat1(Tl, ?[])
+      , ![1]
+      , ![]
+      )
+
+  while-tests = 
+      apply-test(!"while: condition failes, strategy fails"
+      , while(fail,fail)
+      , ![1,2]
+      , ![1,2]
+      )
+    ; apply-test(!"while: condition succeeds, strategy fails"
+      , while(id,fail)
+      , ![1,2]
+      , ![1,2]
+      )
+    ; apply-test(!"while: condition failes, strategy succeeds"
+      , while(fail, id)
+      , ![1,2]
+      , ![1,2]
+      )
+    ; apply-test(!"while: condition tail, strategie succeeds"
+      , while(Tl, id)
+      , ![1,2]
+      , ![]
+      )
+    ; apply-test(!"while: condition succeed, strategie tail"
+      , while(id, Tl)
+      , ![1,2]
+      , ![]
+      )
+
+  do-while-tests = 
+      apply-test(!"do-while: tail"
+      , do-while(Tl, not([]))
+      , ![1,2]
+      , ![]
+      )
+    ; apply-and-fail(!"do-while: must succeed at least once"
+      , do-while(Tl, not([]))
+      , ![]
+      )
+
+  while-not-tests =
+      apply-and-fail(!"while-not: while-not(s,c) not equal to while(s, not(c))"
+      , while-not(fail, fail)
+      , ![1,2]
+      )
+    ; apply-test(!"while-not: condition succeeds"
+      , while-not(id, Tl)
+      , ![1,2]
+      , ![1,2]
+      )
+    ; apply-and-fail(!"while-not: body succeeds, but condition never"
+      , while-not(fail, Tl)
+      , ![1,2]
+      )
+    ; apply-test( !"while-not: body succeeds, stopped by condition"
+      , while-not([], Tl)
+      , ![1,2]
+      , ![]
+      )
+
+  for-tests = 
+      apply-test(!"for: drop 3 items"
+      , for( !(0,<id>), where(<geq>(<Fst>,3)); Snd, (inc,Tl))
+      , ![1,2,3,4,5,6]
+      , ![4,5,6]
+      )
+    ; apply-and-fail( !"for: body failure"
+      , for( !(0,<id>), where(<geq>(<Fst>,3)); Snd, (inc,Tl))
+      , ![1,2]
+      )
+    ; apply-test(!"for: condition before body"
+      , for( id, id, fail)
+      , !1
+      , !1
+      )
+    ; apply-test(!"for: initialize first"
+      , for( !3, id, fail)
+      , !1
+      , !3
+      )
+

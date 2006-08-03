@@ -1,0 +1,113 @@
+/**
+ * Implosion of AsFix to an AST.
+ */
+module stratego/asfix/implode
+imports
+  libstrategolib
+  stratego/asfix/signature
+
+  stratego/asfix/implode/alternative
+  stratego/asfix/implode/constructor
+  stratego/asfix/implode/conc
+  stratego/asfix/implode/concrete-syntax
+  stratego/asfix/implode/injection
+  stratego/asfix/implode/layout
+  stratego/asfix/implode/lexical
+  stratego/asfix/implode/list
+  stratego/asfix/implode/sort
+  stratego/asfix/implode/tuple
+
+/**
+ * Main entry points for implosion of AsFix
+ */
+strategies
+
+  implode-asfix =
+    implode-asfix(true)
+
+  implode-asfix-skip-concrete-syntax =
+    implode-asfix(false)
+
+  /**
+   * @param Succeed if concrete syntax must be imploded.
+   */
+  implode-asfix(implode-concrete) =
+    ?parsetree(<id>, _)
+    ; rec x(
+         ImplodeLexical
+
+      <+ where(not(implode-concrete))
+         ; skip-concrete(x)
+
+      <+ appl(id, filter(not(is-ignorable-syntax)))
+         ; ( ImplodeOptionalList; x
+          <+ ReplCons(x)
+          <+ ImplodeInjection; x
+          <+ ImplodeTuple; x
+          <+ ImplodeAlternative; x)
+
+      <+ amb(map(x))
+
+      <+ all(x)
+      )
+
+/**
+ * Alternative entry-points used by implode-asfix
+ */
+strategies
+
+  /**
+   * Replace applications by application of sort symbol
+   */
+  asfix-appl-to-sort =
+    topdown(repeat(ApplToSort))
+
+  /**
+   * Flatten lexical sub trees in the parse tree
+   */
+  asfix-flat-lex =
+    downup2(try(ImplodeLexical), try(ImplodeLayout))
+  
+  /**
+   * Remove layout nodes from the parse tree
+   */
+  asfix-remove-layout =
+    topdown(try(
+      appl(prod(filter(not(is-layout')),id,id),filter(not(is-layout')))))
+   
+  /**
+   * Remove literal nodes from the parse tree
+   */
+  asfix-remove-lit =
+    topdown(try(is-list;filter(not(lit(id)))))
+
+  /**
+   * Flatten Alternatives: appl(alt(a,alt(b,alt(c,d))),[d]) -> alt(4,d)
+   */
+  asfix-flat-alt =
+    topdown(try(ImplodeAlternative))
+
+  /**
+   * Replace appl nodes with their cons attribute if available.
+   */
+  asfix-replace-appl =
+    topdown(try(appl(id,id); Cns))
+    ; conc-to-cons
+
+  /**
+   * Flatten injections in a parse tree
+   */
+  asfix-flat-injections =
+    bottomup(try(ImplodeInjection))
+
+  /**
+   * Flatten list constructs 
+   */
+  asfix-flat-list =
+    topdown(try(FlatList))
+
+  /**
+   * Replace sequence by tuples
+   */
+  asfix-remove-seq =
+    topdown(try(ImplodeTuple))

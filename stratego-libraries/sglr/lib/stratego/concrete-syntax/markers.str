@@ -1,0 +1,57 @@
+/**
+ * Standard transition markers to indicate quotations and
+ * anti-quotations.
+ */
+module stratego/concrete-syntax/markers
+signature
+  constructors
+    ToTerm         : Term -> Term
+    ToMetaExpr     : Term -> Term
+    ToMetaListExpr : Term -> Term
+    ToBuild        : Term -> Term
+    ToStrategy     : Term -> Term
+
+    FromTerm         : Term -> Term
+    FromMetaExpr     : Term -> Term
+    FromMetaListExpr : Term -> Term
+    FromStrategy     : Term -> Term
+    FromApp          : Term -> Term
+
+    meta-listvar : String -> Term
+    meta-var     : String -> Term
+
+strategies
+
+  strsglr-is-antiquote-cons =
+      "FromTerm"
+    + "FromMetaExpr"
+    + "FromMetaListExpr"
+    + "FromStrategy"
+    + "FromApp"
+    
+  strsglr-antiquote-cong(s) =
+      FromTerm(s)
+    + FromMetaExpr(s)
+    + FromMetaListExpr(s)
+    + FromStrategy(s)
+    + FromApp(s)
+    
+  strsglr-metavar-cong(s) =    
+      meta-var(s)
+    + meta-listvar(s)
+    
+strategies
+
+  strsglr-is-quote-cons =
+      "ToTerm"
+    + "ToMetaExpr"
+    + "ToMetaListExpr"
+    + "ToBuild"
+    + "ToStrategy"
+    
+  strsglr-quote-cong(s) =
+      ToTerm(s)
+    + ToMetaExpr(s)
+    + ToMetaListExpr(s)
+    + ToBuild(s)
+    + ToStrategy(s)

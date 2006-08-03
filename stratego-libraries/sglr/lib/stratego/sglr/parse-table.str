@@ -1,0 +1,103 @@
+/**
+ * Stratego Bindings for opening and closing parse tables.
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/sglr/parse-table
+imports
+  libstrategolib
+
+strategies
+
+  /**
+   * Open a parse table for use in parsing.
+   *
+   * @type SerializedParseTable -> ParseTable
+   */
+  open-parse-table =
+    ?tbl
+    ; sglr-log-statistics(
+        prim("STRSGLR_open_parse_table", tbl) => internal
+      | "Loading parse table"
+      )
+    ; !ParseTable(internal)
+
+  /**
+   * Close an open parse table.
+   * This releases the memory that the open parse table occupies.
+   *
+   * @type ParseTable -> ()
+   */
+  close-parse-table =
+    ?ParseTable(internal)
+    ; prim("STRSGLR_close_parse_table", internal)
+    ; !()
+
+  /**
+   * Succeeds if the table argument is open.
+   */
+  is-parse-table-open(|tbl) =
+    where(!tbl => ParseTable(_))
+
+/**
+ * Opening parse table with error reporting.
+ */
+strategies
+
+  open-parse-table-wrap-report-errors(s : OpenParseTable * a -> b | tbl) =
+    where(tbl' := <open-parse-table-report-errors> tbl)
+    ; finally(s(|tbl'), <close-parse-table> tbl')
+
+  /**
+   * @type String or SerializedParseTable -> ParseTable
+   */
+  open-parse-table-report-errors =
+    if is-string then
+      (<fopen> (<id>, "r") <+ strsglr-perror) => stream
+      ; sglr-log-statistics(
+          finally(read-from-stream, <fclose> stream)
+        | "Reading parse table")
+    else
+      ?"parse-table"#(_)
+      <+ log(|Error(), "open-parse-table strategy applied to a non-parse-table")
+         ; fail
+    end
+    ; open-parse-table
+
+strategies
+
+  /*
+   variant of sglr-log-statistics with (most likely) non-portable timer.
+  sglr-log-statistics(s | description) =
+    where(prim("STRSGLR_settimer"))
+    ; s
+    ; where(
+        prim("STRSGLR_gettimer") => time
+        ; if <geq> (<get-config> "--statistics", 1) then
+            <fprintnl> (<log-stream> (), [description, ": ", <int-to-string> time])
+        end
+      )
+  */
+
+  sglr-log-statistics(s | description) =
+    where(times => timebefore)
+    ; s
+    ; sglr-log-statistics(| timebefore, description)
+
+  sglr-log-statistics(| timebefore, description) =
+    where(
+      if <geq> (<get-config> "--statistics", 1) then
+        <diff-times> (<times> (), timebefore) => diff
+        ; <fprintnl> (<log-stream> (), [description, ": ",
+            <self-children-user-time; ticks-to-seconds; real-to-string(|6)>
+            ])
+      end
+    )
+
+/**
+ * An open parse table is represented by a term in some internal
+ * format, wrapped in a ParseTable constructor.
+ */
+signature
+  constructors
+    ParseTable : Internal -> ParseTable

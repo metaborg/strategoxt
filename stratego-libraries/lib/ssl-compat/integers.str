@@ -1,0 +1,5 @@
+/**
+ * Integer arithmetic and comparison.
+ */
+module integers
+imports term/integer

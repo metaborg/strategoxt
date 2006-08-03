@@ -1,0 +1,5 @@
+/**
+ * Strategies for operations on reals.
+ */
+module reals
+imports term/real

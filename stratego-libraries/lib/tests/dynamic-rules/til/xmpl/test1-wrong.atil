@@ -1,0 +1,6 @@
+Program(
+  [ Declaration("fact")
+  , Assig("fact", Int("1"))
+  , Assign("fact", Mul("x", Var("fact")))
+  ]
+)

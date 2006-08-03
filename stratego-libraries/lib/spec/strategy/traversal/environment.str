@@ -1,0 +1,58 @@
+/**
+ * Traversals that carry an environment.
+ */
+module strategy/traversal/environment
+rules
+
+  all-dist(s) : 
+    (t, env) -> <all(\x -> <s>(x,env)\)> t
+
+  one-dist(s) : 
+    (t, env) -> <one(\x -> <s>(x,env)\)> t
+
+  d(s) : 
+    (t, env) -> <s> t
+
+  t(s) : 
+    (t, env) -> (<s>t, env)
+
+  coll(s) : 
+    f#(xs) -> (f#(ys), zs)
+    where <unzip(s)> xs => (ys, zs)
+
+strategies
+
+  env-alltd(s) = 
+    rec x(s <+ all-dist(x))
+
+  env-topdown(s) = 
+    rec x(s; all-dist(x))
+
+  env-topdown(s, skip: (term -> term) * term -> term) = 
+    rec x(s; (skip(x) <+ all-dist(x)))
+
+  env-bottomup(s) = 
+    rec x(split(all-dist(x), Snd); s)
+
+/*
+  thread(s) :
+    (c#(ts), x) -> (c#(ts'), y)
+    where <thread-map(s)> (ts, x) => (ts', y)
+*/
+
+  thread-replacement(s) :
+    (c#(ts), x) -> (c#(ts'), y)
+    where <thread-map(s)> (ts, x) => (ts', y)
+
+  thread-alltd(s) = 
+    rec x(s <+ thread-replacement(x))
+
+  thread-bottomup(s) = 
+    rec x(thread-replacement(x); s)
+
+  count-bottomup(s) = 
+    !(<id>,0); thread-bottomup(try((s, inc)))
+
+  env-oncetd(s) = 
+    rec x(s <+ one-dist(x))
+

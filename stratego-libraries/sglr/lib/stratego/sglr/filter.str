@@ -1,0 +1,189 @@
+/**
+ * Stratego Bindings for controlling the filter settings of SGLR.
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/sglr/filter
+imports
+  libstrategolib
+
+strategies
+
+  /**
+   * Set the associativity filter.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filter-associativity(s) =
+    if s then
+      where(prim("STRSGLR_set_filter_associativity_on"))
+    else
+      where(prim("STRSGLR_set_filter_associativity_off"))
+    end
+
+  /**
+   * Succeeds if the associativity filter is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-associativity =
+    where(prim("STRSGLR_get_filter_associativity"))
+
+strategies
+
+  /**
+   * Set the direct eagerness filter.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filter-direct-eagerness(s) =
+    if s then
+      where(prim("STRSGLR_set_filter_direct_eagernes_on"))
+    else
+      where(prim("STRSGLR_set_filter_direct_eagernes_off"))
+    end
+
+  /**
+   * Succeeds if the direct eagerness filter is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-direct-eagerness =
+    where(prim("STRSGLR_get_filter_direct_eagernes"))
+
+strategies
+
+  /**
+   * Set the eagerness filter.
+   *
+   * @param true (success) or false (failure)
+   * @type  t -> t
+   */
+  set-filter-eagerness(s) =
+    if s then
+      where(prim("STRSGLR_set_filter_eagernes_on"))
+    else
+      where(prim("STRSGLR_set_filter_eagernes_off"))
+    end
+
+  /**
+   * Succeeds if the eagerness filter is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-eagerness =
+    where(prim("STRSGLR_get_filter_eagernes"))
+
+strategies
+
+  /**
+   * Set the injection count filter.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filter-injection-count(s) =
+    if s then
+      where(prim("STRSGLR_set_filter_injection_count_on"))
+    else
+      where(prim("STRSGLR_set_filter_injection_count_off"))
+    end
+
+  /**
+   * Succeeds if the injection-count filter is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-injection-count =
+    where(prim("STRSGLR_get_filter_injection_count"))
+
+strategies
+
+  /**
+   * Set the priority filter.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filter-priority(s) =
+    if s then
+      where(prim("STRSGLR_set_filter_priority_on"))
+    else
+      where(prim("STRSGLR_set_filter_priority_off"))
+    end
+
+  /**
+   * Succeeds if the priority filter is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-priority =
+    where(prim("STRSGLR_get_filter_priority"))
+
+strategies
+
+  /**
+   * Set the reject filter.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filter-reject(s) =
+    if s then
+      where(prim("STRSGLR_set_filter_reject_on"))
+    else
+      where(prim("STRSGLR_set_filter_reject_off"))
+    end
+
+  /**
+   * Succeeds if the priority filter is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-reject =
+    where(prim("STRSGLR_get_filter_reject"))
+
+strategies
+
+  set-heuristic-filters(s) =
+    set-filter-eagerness(s)
+    ; set-filter-injection-count(s) 
+
+  /**
+   * @type Filter -> Filter
+  set-filter(s) = id
+   */
+
+  /**
+   * @type Filter ->? Filter
+  get-filter(s) = id
+   */
+
+  /**
+   * @type Filter ->? Filter
+  is-filter-enabled =
+    get-filter(true)
+   */
+ 
+  /**
+   * @type List(Filter) -> List(Filter)
+  set-filters = id
+   */
+
+  /**
+   * @type a -> List(Filter)
+  get-filters = id
+   */
+
+  /**
+   * Set the filter configuration to the default: all filters enabled,
+   * except for the heuristic eagerness and injection count filters.
+   */
+  set-default-filters =
+    where(prim("STRSGLR_set_default_filters"))
+
+signature
+  constructors
+    AssociativityFilter   : Filter
+    DirectEagernessFilter : Filter
+    EagernessFilter       : Filter
+    InjectionCountFilter  : Filter
+    PriorityFilter        : Filter
+    RejectFilter          : Filter

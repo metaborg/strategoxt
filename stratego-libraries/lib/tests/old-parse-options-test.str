@@ -1,0 +1,84 @@
+/**
+ * Note: this testsuite only tests the old style of option
+ * handling. Please don't use this as an example.
+ */
+module old-parse-options-test
+imports libstratego-lib
+signature
+  sorts Option
+  constructors
+    Dir      : String -> Option
+    ExecDir  : String -> Option
+    InclDir  : String -> Option
+    CInclDir : String -> Option
+    CLibDir  : String -> Option
+    Input    : String -> Option
+    Main     : String -> Option
+    AST      : Option
+    Ignore   : Option
+    CC       : Option
+    NORM     : Option
+    FUSION   : Option
+    FRONTEND : Option
+    CSYNTAX  : Option
+    TraceAll : Option
+    Trace    : String -> Option
+
+    Silent  : Term 
+    Verbose : Term -> Term 
+    Version : Term
+    
+    DeclVersion : Term -> Term
+    
+    Output : Term -> Term
+    Binary : Term
+
+strategies
+
+  main = 
+    test-suite(!"old-parse-options-test",
+      test1;
+      test2
+    )
+
+  sc-options =
+	ArgOption("-e",          \x -> ExecDir(x)\ )
+	+ ArgOption("-I",        !Ignore) // \x -> InclDir(x)\ )
+	+ ArgOption("--Include", !Ignore) // \x -> InclDir(x)\ ) 
+	+ ArgOption("-CI",       !Ignore) // \ (x,y) -> CInclDir(x)\ )
+	+ ArgOption("-CL",       !Ignore) // \ (x,y) -> CLibDir(x)\ )
+	+ Option("-CC",          !CC )
+	+ Option("--norm",        !NORM )
+	+ ArgOption("-i",        \x -> Input(<remove-extension> x)\ )
+	+ ArgOption("--main",    \x -> Main(x)\ )
+	+ ArgOption("-m",        \x -> Main(x)\ ) 
+	+ Option("--ast",        !AST )
+	+ Option("-F",           !FRONTEND )
+	+ Option("--fusion",     !FUSION )
+	+ Option("--csyntax",	 !CSYNTAX )
+	+ Option("--trace-all",  !TraceAll; rules(TraceAllFuns : () -> ()))
+	+ ArgOption("-t",        \x -> Trace(x) where rules(TraceFun : x -> ()) \ )
+
+  my-io-options =
+	Option("-S"+"--silent",       !Silent(),          !"-S|--silent      Silent execution")
+	+ ArgOption("--verbose",      !Verbose(<id>),     !"--verbose        Verbose execution")
+	+ Option("-v"+"--version",    !Version(),         !"-v|--version     Display prgram's version")
+	+ ArgOption("@version",       !DeclVersion(<id>), !"@version         Unknown" )
+	+ ArgOption("-i" + "--input", !Input(<id>),       !"-i f|--input f   Read input from f")
+	+ ArgOption("-o"+"--output",  !Output(<id>),      !"-o f|--output f  Write output to f" )
+	+ Option("-b",                !Binary(),          !"-b               Write binary output")
+
+  test1 =
+    apply-test(!"test1"
+	, where(<table-put>("usage-table", "usage", []));
+          parse-options'( sc-options <+ my-io-options + system-usage-switch)
+	, !["pack-stratego", "-I", ".", "-I", "..", "-CI", "-I/tmp/include"]
+	, ![Program("pack-stratego"),Ignore,Ignore,Ignore]
+	)
+
+  test2 =
+    apply-test(!"test2"
+	, parse-options(sc-options <+ my-io-options)
+	, !["pack-stratego", "-I", ".", "-I", "..", "-CI", "-I/tmp/include"]
+	, ![Program("pack-stratego"),Ignore,Ignore,Ignore] 
+	)

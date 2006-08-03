@@ -1,0 +1,8 @@
+# pretty-print without parentheses
+ast2text -p ../pp/TIL-pretty.pp -i test2.atil -o test2.txt1
+
+# add parentheses to abstract syntax term
+../pp/til-parenthesize -i test2.atil | pp-aterm -o test2.atil.par
+
+# pretty-print without parentheses
+ast2text -p ../pp/TIL-pretty.pp -i test2.atil.par -o test2.txt2

@@ -1,0 +1,721 @@
+/**
+ * This module contains a strategies for workin on the XTC 
+ * universe. This includes composing components, passing data
+ * between components, and basic file handling.
+ *
+ * The XTC model is based around Unix pipes and ATerm stored
+ * as (temporary) files on disk. Each XT component is a 
+ * an executable program, which reads an ATerm as input
+ * (either from stdin or from a file), processes it, and then
+ * writes the result to another file (or stdout). 
+ * 
+ * The lowlevel details of creating temporary files, opening
+ * pipes, and executing components have been hidden behind the
+ * strategies found in this module. You will find many examples
+ * of wrapper strategies, which perform bookkeeping of temporary
+ * files, opened file descriptors, and similar, to ensure that
+ * these are removed and freed upon program termination.
+ *
+ * @author Eelco Visser <visser@acm.org>
+ * @author Karl Trygve Kalleberg <karltk@cs.uu.nl>
+ */
+module stratego/xtc/Proc
+imports
+  libstrategolib
+  stratego/xtc/Register
+
+signature
+  constructors
+    FILE : String -> File
+    DIR  : String -> File
+    TEMP : XtcKey
+
+    TempFiles : Table
+    TempDirs : Table
+
+strategies
+
+  // renaming files
+
+  /**
+   * Renames one file to another, on disk. If the new name
+   * is identical to the old, no action is taken. The old
+   * file can also be 'renamed' to stdout, in which case
+   * the content of the old file is written to stdout
+   * before the file is removed.
+   *
+   * @param name _ -> newname
+   * @type FILE(oldname) -> FILE(newname) or stdout
+   */
+  rename-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => oldname
+
+  /**
+   * @inc rename-to
+   */
+  rename-to(name) :
+    FILE(oldname) -> FILE(newname)
+    where name => newname
+	; not(stdout + ?oldname)
+        ; <rename-file>(oldname, newname)
+
+  /**
+   * @inc rename-to
+   */
+  rename-to(name) :
+    FILE(oldname) -> stdout
+    where name => stdout
+	; <copy-file> (oldname, stdout)
+	; <remove-file> oldname
+
+
+  /**
+   * Copies one file to another. If the new file has the same name
+   * as the old, no action is taken. In  addition to a real file,
+   * the new file can be stdout (or stderr). In this case, the contents
+   * of the old file will be written to stdout (or stderr) before the
+   * file is removed.
+   *
+   * @param name        _ -> b
+   * @type        FILE(a) -> FILE(b)
+   */
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => oldname
+
+  /**
+   * @inc copy-to
+   */
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => newname
+	; not(stdout + stderr + ?oldname)
+        ; <copy-file>(oldname, newname)
+
+  /**
+   * @inc copy-to
+   */
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => file
+        ; (stdout + stderr)
+	; <copy-file> (oldname, file)
+
+  /**
+   * Reads a term from a file. If the given file exists, it will be
+   * treated as an ATerm and its content will be returned, as a term.
+   *
+   * @type FILE -> t
+   */
+  read-from :
+    FILE(name) -> t
+    where <file-exists; ReadFromFile> name => t
+
+  /**
+   * Reads a term from a stdin. The input on stdin is assumed to be
+   * an ATerm. It will be parsed, and returned as a term.
+   *
+   * @type stdin -> t
+   */
+  read-from :
+    stdin -> t
+    where <ReadFromFile> stdin => t
+
+  /**
+   * Write a term to a temporary file, in binary. The name of the file
+   * is generated automatically, the term is written to it in the
+   * binary ATerm format (BAF), and a handle is returned by this 
+   * strategy.
+   *
+   * @type t -> FILE(name)
+   */
+  write-to :
+    t -> FILE(name)
+    where xtc-new-file => name
+        ; <WriteToBinaryFile> (name, t)
+
+  /**
+   * Write a term to a temporary file, as text. The name of the file
+   * is generated automatically, the term is written to it in the
+   * textual ATerm format (TAF), and a handle is returned by this 
+   * strategy.
+   *
+   * @type t -> FILE(name)
+   */
+  write-to-text :
+    t -> FILE(name)
+    where xtc-new-file => name
+        ; <WriteToTextFile> (name, t)
+
+  /**
+   * Writes a (list of) string(s) to a temporary file. A single
+   * string, or a list of strings is written to a text file. The
+   * file name is generated automatically, and returned by this
+   * strategy.
+   *
+   * @type  String or List(String) -> FILE
+   */
+  print-to :
+    strings -> FILE(name)
+    where
+      xtc-new-file => name
+      ; <fopen> (name, "w") => stream
+      ; if <is-string> strings then
+          ![strings]
+        else
+          !strings
+        end
+      ; <fprint> (stream, <id>)
+      ; <fclose> stream
+
+  /**
+   * Searches for an XT component, by name. The input to this
+   * strategy is the name of the component, as registered in
+   * the XTC registry. If found, a FILE representing its 
+   * location (path) is returned.
+   * 
+   * @type String -> FILE(String)
+   */
+  xtc-find-file = 
+    !FILE(<xtc-find>)
+
+  // XTC-TEMP-FILES : scoped temporary files
+
+  /**
+   * Creates a new and unique scoped temporary file.
+   *
+   * @type _ -> String
+   */
+  xtc-new-file =
+    new-temp-file => (f, fd)
+  ; where(
+      <assert(!TempFiles)> (f, ())
+    )
+  ; <close> fd
+  ; !f
+
+  /**
+   * Removes all temporary files created by this program. Each
+   * time the <tt>xtc-*</tt> strategies create a new temporary
+   * file, it will be tracked. Running this strategy will remove
+   * all files created so far.
+   *
+   * @type _ -> _
+   */
+  xtc-remove-temporaries =
+    where(
+      <table-get>(XTC, TEMP) => fs
+      ; map(try(remove-file))
+    )
+
+  /**
+   * Wrapper strategy that automatically cleans all temporary files
+   * created by s. This strategy is used to wrap a strategy <tt>s</tt>,
+   * which can create one or multiple temporary files. All temporary
+   * files will be cleaned up automatically, and the result of
+   * <tt>s</tt> will be returned.
+   *
+   * @param s  t -> u
+   * @type     t -> u
+   */
+  xtc-temp-files(s) = 
+    begin-scope(!TempFiles)
+    ; restore-always(s,
+        where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
+            ; <map(try(remove-file))> scope)
+        ; end-scope(!TempFiles)
+      )
+
+  /**
+   * Clean up temporary files and exit program. In normal operation,
+   * XT components create temporary files, which should be cleaned
+   * up on program exit. Calling this strategy instead of
+   * <tt>exit</tt> ensures that no files are left behind.
+   *
+   * @type Integer -> _
+   */
+  xtc-exit =
+    ?status
+    ; repeat( 
+        where(<table-get>(TempFiles, Scopes) => [scope | scopes]
+            ; <map(try(remove-file))> scope)
+        ; end-scope(!TempFiles)
+      )
+    ; exit
+
+
+  // XTC-IO : 'read' input file, transform, and 'write' to output file
+
+  /**
+   * High-level wrapper that reads a term from a file, transforms it
+   * using s, then writes the output back to a file. The input file
+   * is taken from the command line options given to the program
+   * (the -i option), and the output is taken from the -o option.
+   * If -i is not given, stdin is used. If -o is not given, stdout
+   * is used
+   *
+   * @param s       u -> v
+   * @type    FILE(a) -> FILE(a)
+   */
+  xtc-io(s) =
+    xtc-temp-files( 
+        (!FILE(<get-config> "-i") <+ !stdin)
+      ; s
+      ; xtc-write-output
+    )
+
+  // stop in the middle of a transformation pipeline, copying the
+  // current file to the output file.
+
+  /**
+   * Terminate the running program safely by flushing the current
+   * working file to output. The output file is determined from the
+   * -o option on the command line; if not given, stdout will be
+   * used. All temporary files will also be removed.
+   *
+   * @type t -> _
+   */
+  xtc-io-exit =
+    xtc-write-output
+    ; <xtc-exit> 0
+
+  /**
+   * Writes a FILE to the output of this component. The output
+   * is file is retrieved from the -o option given to the
+   * program; if -o was not given, stdout is used.
+   *
+   * @type FILE -> FILE
+   */
+  xtc-write-output =
+    ?FILE(_); copy-to(<get-config> "-o" <+ !stdout())
+
+  /**
+   * @type stdin -> FILE
+   */
+  xtc-write-output =
+    ?stdin(); <copy-file> (stdin(), <get-config <+ !stdout()> "-o")
+
+  /**
+   * Succeeds if the input term is a FILE
+   *
+   * @type FILE -> FILE
+   */
+  xtc-ensure-file =
+    ?FILE(_)
+
+  /**
+   * Succeeds if the input term is stdin, and it can be successfully
+   * copied to a FILE.
+   *
+   * @type stdin -> FILE
+   */
+  xtc-ensure-file =
+      ?stdin()
+    ; where(<xtc-new-file> () => f)
+    ; <copy-file> (stdin(), f)
+    ; !FILE(f)
+
+
+  /**
+   * Applies the strategy s to the current term, then writes the result
+   * to output. The output file is taken from the -o option on the command
+   * line, if given, or defaults to stdout, if not.
+   *
+   * @param s    a -> FILE(c)
+   */
+  xtc-output(s) =
+    xtc-temp-files(
+        s
+      ; copy-to(<get-config> "-o" <+ !stdout)
+    )
+
+  // XTC-INPUT : 'read' input file, transform
+
+  xtc-input(s) =
+    xtc-temp-files(
+        (!FILE(<get-config> "-i") <+ !stdin)
+      ; s
+    )
+
+
+  // io-wrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
+
+  xtc-io-wrap(s) = 
+    xtc-io-wrap(fail, s)
+
+  xtc-io-wrap(extra-opts, s) = 
+    option-wrap(extra-opts <+ io-options, xtc-io(s))
+
+  xtc-io-wrap(extra-opts, deps, s) = 
+    xtc-io-wrap(extra-opts, system-usage, system-about, deps, s)
+
+  xtc-io-wrap(extra-opts, usage, about, deps, s) = 
+    option-wrap(extra-opts <+ io-options <+ check-options(deps), usage, about, id,
+      xtc-check-dependencies
+      ; xtc-io(s)
+    )
+
+  xtc-iowrap(s) = 
+    xtc-io-wrap(s)
+
+  xtc-iowrap(extra-opts, s) = 
+    xtc-io-wrap(extra-opts, s)
+
+  /**
+   * Option parsing wrapper for XTC programs that only read data. This
+   * strategy functions like xtc-io-wrap, except that it only exposes
+   * the -i option, and will not write any output to pipe (or file).
+   *
+   * Typically, s will start with a call to read-from.
+   *
+   * Example: xtc-input-wrap(read-from ; id) 
+   *
+   * @param s      FILE(a) -> b
+   * @type    List(option) -> _
+   */
+  xtc-input-wrap(s) =
+    xtc-input-wrap(fail,s)
+
+  /**
+   * Option parsing wrapper for XTC programs that only read data. This
+   * strategy functions like xtc-io-wrap, except that it only exposes
+   * the -i option, and will not write any output to pipe (or file).
+   *
+   * Typically, s will start with a call to read-from.
+   *
+   * Example: xtc-input-wrap(ArgOption(....), read-from ; id)
+   *
+   * @param extra-options _ -> Option or ArgOption
+   * @param s       FILE(a) -> b
+   * @type     List(option) -> _
+   */
+  xtc-input-wrap(extra-options, s) = 
+      option-wrap(extra-options <+ input-options, xtc-input(s))
+
+  /**
+   * Option parsing wrapper for XTC programs that only generate data. 
+   * This strategy functions like xtc-io-wrap, except that it only
+   * exposes the -o option, and will read any output from stdin
+   * (or file).
+   *
+   * Typically, s will will end with a call to write-to.
+   *
+   * Example: xtc-output-wrap(!"foo" ; write-to)
+   *
+   * @param s             a -> FILE(b)
+   * @type     List(option) -> _
+   */
+  xtc-output-wrap(s) =
+    xtc-output-wrap(fail,s)
+
+  /**
+   * Option parsing wrapper for XTC programs that only generate data. 
+   * This strategy functions like xtc-io-wrap, except that it only
+   * exposes the -o option, and will read any output from stdin
+   * (or file).
+   *
+   * Typically, s will end with a call to write-to.
+   *
+   * Example: xtc-output-wrap(!"foo" ; write-to)
+   *
+   * @param extra-options _ -> Option or ArgOption
+   * @param s             a -> FILE(b)
+   * @type     List(option) -> _
+   */
+  xtc-output-wrap(extra-options, s) = 
+      option-wrap(extra-options <+ output-options, xtc-output(s))
+
+
+  // check tools upon which this tool depends 
+
+  /**
+   * Used to add the --check option to your XT component. This
+   * strategy should be composed with the other command line 
+   * options of your program, as given to io-wrap, xtc-io-wrap
+   * or option-wrap. It will add a --check option to the command
+   * line. It is intended to be used with xtc-check-dependencies.
+   *
+   * The deps parameter should be a list of components (names) 
+   * required by your program. This will be used by 
+   * xtc-check-dependencies.
+   *
+   * @param deps _ -> List(String)
+   * @type _ -> Option
+   */
+  check-options(deps) = 
+    Option("--check"
+    , where(<set-config>("--check", <deps>))
+    , !"--check        check tool dependencies"
+    )
+
+  /**
+   * Succeeds if all necessary components for the running program
+   * are available, and the user has specified --check. The 
+   * check-options strategy must have been added to the command line
+   * options of the running program, see check-options for details. 
+   * Additionally, xtc-check-dependencies will only run if the user
+   * specified --check on the command line when invoking the program.
+   *
+   * @type _ -> _
+   */
+  xtc-check-dependencies =
+    if(<get-config> "--check"
+      , filter(not(xtc-find-silent))
+        ; if(not([])
+            , debug(!"No XTC registration found for: "); <exit> 1
+	    , <echo> "All tools available"; <exit> 0)
+      )
+
+  // XTC-COMMAND
+  // Executing an external process
+  // a -> String :: List(String) -> List(String)
+
+  /**
+   * Invokes the XT component given by tool. The input term is
+   * a list of command line arguments that will be passed to the
+   * invoked component.
+   * 
+   * @param tool _ -> String
+   * @type List(a) -> Int
+   */
+  xtc-command(tool) = 
+      where(tool; xtc-find-warning => loc)
+    ; log(|Debug(),<concat-strings>["Invoking tool ",<tool>," at location ",loc," with arguments: "],<id>)
+    ; where(<call> (loc, <id>))
+
+  // Transparent transformation of terms and files by external processes
+
+  /**
+   * Invokes the XT component given by tool to transform the current term. 
+   * The tool strategy must give the name of the component to invoke. The
+   * The current term will be serialized to the invoked component, and the
+   * result of its execution will become the new current term. No command
+   * line arguments are given.
+   *
+   * @param tool _ -> String
+   * @type       t -> u 
+   */
+  xtc-transform(tool) =
+    xtc-transform(tool, ![])
+
+  /**
+   * Invokes the XT component given by tool to transform the current term. 
+   * The tool strategy must give the name of the component to invoke. The
+   * The current term will be serialized to the invoked component, and the
+   * result of its execution will become the new current term. The args
+   * parameter must return a list of arguments that will be given to the
+   * invoked component.
+   *
+   * @param tool _ -> String
+   * @type       t -> u 
+   */
+  xtc-transform(tool, args) =
+    (FILE(id) + stdin)
+    < xtc-transform-file(tool, args)
+    + xtc-transform-term(tool, args)
+
+
+strategies
+
+  xtc-transform-file =
+    ?(tool, args, file)
+
+  /**
+   * Transforms an existing file with an external process into a new file.
+   * The resulting file will be created automatically, and a handle will
+   * be returned by this strategy. The tool strategy must give the name
+   * of the component to invoke. No arguments will be passed to the
+   * transforming component.
+   *
+   * @param tool       _ -> n 
+   * @type       FILE(a) -> FILE(b)
+   */
+  xtc-transform-file(tool) =
+    xtc-transform-file(tool, ![])
+
+  /**
+   * Transforms an existing file with an external process into a new file.
+   * The resulting file will be created automatically, and a handle will
+   * be returned by this strategy.
+   *
+   * The tool strategy must give the name of the component to invoke. The
+   * args strategy must give a list of arguments to pass to the component.
+   *
+   * @param tool       _ -> n 
+   * @param args       _ -> List(arg)
+   * @type       FILE(a) -> FILE(b)
+   */
+  xtc-transform-file(tool, args) :
+    FILE(f) -> FILE(g)
+    where <xtc-new-file> f => g
+        ; <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
+
+  xtc-transform-file(tool, args) :
+    stdin -> FILE(g)
+    where xtc-new-file => g
+        ; <conc; xtc-command(tool)> (<args>, ["-o", g])
+
+  /**
+   * Transforms the current term with an external process. The current
+   * term will be serialized and handed off to the component identified
+   * by the tool strategy argument. The result of the component will
+   * be returned by this strategy.
+   *
+   * The tool strategy must give the name of the component to invoke. The 
+   * args strategy must give a list of arguments to pass to the component.
+   * @param tool       _ -> n 
+   * @param args       _ -> List(arg)
+   * @type             t -> u
+   */
+  xtc-transform-term(tool, args) = 
+    write-to
+    ; xtc-transform-file(tool, args)
+    ; read-from
+
+  /**
+   * Transforms a file with an internal strategy s. This strategy
+   * will open an external file, apply s to it, and write the
+   * result back to the file.
+   *
+   * @param s    a -> b
+   * @type    File -> File
+   */
+  xtc-io-transform(s) =
+    read-from; s; write-to
+
+  /**
+   * Transforms a file with an internal strategy s into a text file.
+   * This strategy will open an external file (which must be an ATerm),
+   * apply s to it, and print the result as a string back into the
+   * file.
+   *
+   * @param s    a -> b
+   * @type    File -> File
+   */
+  xtc-io-transform-text(s) =
+      read-from; s; print-to
+
+  /**
+   * Generates a new file using the component identified by tool. This
+   * strategy will invoke the component given by tool with no arguments,
+   * and write the resulting term to a new file. A handle to the new
+   * file will be returned. No arguments will be passed on to the
+   * invoked component (except the implicit -o).
+   *
+   * @param tool    _ -> name
+   * @type          _ -> FILE(b)
+   */
+  xtc-generate(tool) =
+    xtc-generate(tool, ![])
+
+  /**
+   * Generates a new file using the component identified by tool. This
+   * strategy will invoke the component given by tool with no arguments,
+   * and write the resulting term to a new file. A handle to the new
+   * file will be returned. The strategy args must produce a list of
+   * arguments which are passed to the invoked component.
+   *
+   * @param tool    _ -> name
+   * @type          _ -> FILE(b)
+   */
+  xtc-generate(tool, args) :
+    _ -> FILE(g)
+    where <xtc-new-file> () => g
+        ; <conc; xtc-command(tool)> (<args>, ["-o", g])
+
+
+strategies
+
+  /**
+   * Concatenates the content of a list of files and stores
+   * the result in a fresh File. Each file in the list can
+   * be a FILE, stdin, stdout, or stderr.
+   *
+   * @type List(FILE) -> FILE
+   */
+  xtc-cat:
+    in-files -> file
+      where xtc-new-file-name => file
+          ; <xtc-open-fd> file => fdout
+          ; <map(File-as-fd(<fdcopy> (<id>, fdout)))> in-files
+          ; <xtc-close-fd> fdout
+
+  /**
+   * Transform character chunks in text file. This strategy
+   * inherits the semantics of char-io/filter-text-file,
+   * where more is applied to each line (and must always
+   * suceed), while done must fail when the processing
+   * should stop.
+   *
+   * @param 
+   * @type   FILE(a) -> FILE(b)
+   *
+   * seealso char-io/filter-text-file
+   */
+
+  xtc-filter-text-file(more, done) :
+    FILE(f) -> FILE(g)
+    where <xtc-new-file> f => g
+	; <filter-text-file(more, done)> (f, g)
+
+  /**
+   * Opens a file, applies the strategy s the file descriptor,
+   * and ensures that the file descriptor is closed on return
+   * of s, regardless of outcome.  The strategy s will be 
+   * handed a file descriptor for the the FILE given to
+   * File-as-fd. The result of s will become the result
+   * of File-as-fd, and the file descriptor will always be
+   * closed, also when s fails.
+   *
+   * @param s  Int -> b 
+   * @type    FILE -> b
+   */
+  File-as-fd(s) =
+      xtc-open-fd => fd
+    ; finally(s, where(try(<xtc-close-fd> fd)))
+
+  /**
+   * Generates a new file name, but does not create the file on
+   * disk. As the file is not created on disk, another process
+   * may theoretically create it (and thus own it), thus causing
+   * a race condition. For this reason, you may prefer to us
+   * <tt>xtc-new-file</tt> instead.
+   * 
+   * @type _ -> FILE
+   */
+  xtc-new-file-name =
+      new-file => f
+    ; where(<assert(!TempFiles)> (f, ()))
+    ; !FILE(f)
+
+  /**
+   * Opens a file and returns a file descriptor. This strategy
+   * can be used to open any <tt>FILE</tt>s as well as
+   * <tt>stdin</tt>, <tt>stdout</tt> and <tt>stderr</tt>. The
+   * file descriptor should be closed with <tt>xtc-close-fd</tt>.
+   *
+   * @type FILE -> Int
+   */
+  xtc-open-fd =
+      \ FILE(s)  -> <open> s \
+    + \ stdin()  -> < STDIN_FILENO> () \
+    + \ stdout() -> <STDOUT_FILENO> () \
+    + \ stderr() -> <STDERR_FILENO> () \
+
+  /**
+   * Closes a file descriptor. This strategy can be used to close
+   * any file opened by <tt>xtc-open-fd</tt>, and also the
+   * standard files <tt>stdin</tt>, <tt>stdout</tt> and
+   * <tt>stderr</tt>.
+   *
+   * @type FILE -> Int
+   */
+  xtc-close-fd = 
+    finally(
+      ( where(<eq> (<id>, < STDIN_FILENO> ()))
+      + where(<eq> (<id>, <STDOUT_FILENO> ()))
+      + where(<eq> (<id>, <STDERR_FILENO> ()))
+      ) <+ close
+    , !())
+

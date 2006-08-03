@@ -1,0 +1,40 @@
+module TIL-expressions
+imports TIL-literals
+exports 
+  sorts Exp
+  context-free syntax
+    "true"       -> Exp {cons("True")}
+    "false"      -> Exp {cons("False")}
+    Id           -> Exp {cons("Var")}
+    Int          -> Exp {cons("Int")}
+    String       -> Exp {cons("String")}
+    Exp "*" Exp  -> Exp {cons("Mul"),assoc}
+    Exp "/" Exp  -> Exp {cons("Div"),assoc}
+    Exp "%" Exp  -> Exp {cons("Mod"),non-assoc}
+    Exp "+" Exp  -> Exp {cons("Add"),assoc}
+    Exp "-" Exp  -> Exp {cons("Sub"),left}
+    Exp "<" Exp  -> Exp {cons("Lt"),non-assoc}
+    Exp ">" Exp  -> Exp {cons("Gt"),non-assoc}
+    Exp "<=" Exp -> Exp {cons("Leq"),non-assoc}
+    Exp ">=" Exp -> Exp {cons("Geq"),non-assoc}
+    Exp "=" Exp  -> Exp {cons("Equ"),non-assoc}
+    Exp "!=" Exp -> Exp {cons("Neq"),non-assoc}
+    Exp "&" Exp  -> Exp {cons("And"),assoc}
+    Exp "|" Exp  -> Exp {cons("Or"),assoc}
+    "(" Exp ")"  -> Exp {bracket}
+  context-free priorities
+    {left: 
+       Exp "*" Exp -> Exp 
+       Exp "/" Exp -> Exp }
+  > {left: 
+       Exp "+" Exp -> Exp 
+       Exp "-" Exp -> Exp }
+  > {non-assoc: 
+       Exp "<" Exp  -> Exp 
+       Exp ">" Exp  -> Exp
+       Exp "<=" Exp -> Exp 
+       Exp ">=" Exp -> Exp
+       Exp "="  Exp -> Exp 
+       Exp "!=" Exp -> Exp }
+  > Exp "&" Exp  -> Exp
+  > Exp "|" Exp  -> Exp

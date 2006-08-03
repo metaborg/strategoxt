@@ -1,0 +1,135 @@
+module integers-test
+imports libstratego-lib
+strategies
+
+  main = 
+    test-suite(!"integers-test",
+      test1
+    ; test2
+    ; test3
+    ; lt-lt-test
+    ; dec-string-test
+    ; hex-string-test
+    ; bin-string-test
+    )
+
+  test1 =
+    apply-test(!"test1"
+	, leq
+	, !(5,5)
+	, !(5,5)
+	)
+
+  test2 =
+    apply-test(!"test2a"
+	, !(<divi>(<id>, 2), <mod; ?0>(<id>, 2))
+	, !16
+	, !(8,0)
+	);
+    apply-test(!"test2b"
+	, log2
+	, !16
+	, !4
+	);
+    apply-and-fail(!"test2c"
+	, log2
+	, !6
+	)
+
+  test3 =
+    apply-test(!"test3"
+	, addS
+	, !("5","3")
+	, !"8"
+	);
+    apply-test(!"test3"
+	, ltS
+	, !("3","5")
+	, !("3","5")
+	)
+
+  lt-lt-test =
+      apply-test(    !"x <= y <= z a", leq-leq, !(2, 3, 4), !(2, 3, 4))
+    ; apply-test(    !"x <  y <  z b",  lt-lt , !(2, 3, 4), !(2, 3, 4))
+    ; apply-test(    !"x <= y <= z c", leq-leq, !(2, 2, 2), !(2, 2, 2))
+    ; apply-and-fail(!"x <  y <= z d",  lt-leq, !(2, 2, 2))
+    ; apply-and-fail(!"x <= y <= z e", leq-leq, !(2, 1, 2))
+    ; apply-and-fail(!"x <= y <= z f", leq-leq, !(1, 2, 1))
+
+  dec-string-test =
+      apply-test(!"dec-string-test-a", dec-string-to-int, !"0", !0)
+    ; apply-test(!"dec-string-test-b", dec-string-to-int, !"1", !1)
+    ; apply-test(!"dec-string-test-c", dec-string-to-int, !"10", !10)
+    ; apply-test(!"dec-string-test-d", dec-string-to-int, !"100", !100)
+    ; apply-test(!"dec-string-test-e", dec-string-to-int, !"101", !101)
+    ; apply-test(!"dec-string-test-f", dec-string-to-int, !"34673", !34673)
+    ; apply-test(!"dec-string-test-g", dec-string-to-int, !"-0", !-0)
+    ; apply-test(!"dec-string-test-h", dec-string-to-int, !"-1", !-1)
+    ; apply-test(!"dec-string-test-i", dec-string-to-int, !"-10", !-10)
+    ; apply-test(!"dec-string-test-j", dec-string-to-int, !"-100", !-100)
+    ; apply-test(!"dec-string-test-k", dec-string-to-int, !"-101", !-101)
+    ; apply-test(!"dec-string-test-l", dec-string-to-int, !"-34673", !-34673)
+
+  hex-string-test =
+      apply-test(!"hex-string-test-a", hex-string-to-int, !"0", !0)
+    ; apply-test(!"hex-string-test-b", hex-string-to-int, !"1", !1)
+    ; apply-test(!"hex-string-test-c", hex-string-to-int, !"2", !2)
+    ; apply-test(!"hex-string-test-d", hex-string-to-int, !"3", !3)
+    ; apply-test(!"hex-string-test-e", hex-string-to-int, !"4", !4)
+    ; apply-test(!"hex-string-test-f", hex-string-to-int, !"5", !5)
+    ; apply-test(!"hex-string-test-g", hex-string-to-int, !"6", !6)
+    ; apply-test(!"hex-string-test-h", hex-string-to-int, !"7", !7)
+    ; apply-test(!"hex-string-test-i", hex-string-to-int, !"8", !8)
+    ; apply-test(!"hex-string-test-j", hex-string-to-int, !"9", !9)
+    ; apply-test(!"hex-string-test-k", hex-string-to-int, !"A", !10)
+    ; apply-test(!"hex-string-test-l", hex-string-to-int, !"B", !11)
+    ; apply-test(!"hex-string-test-m", hex-string-to-int, !"C", !12)
+    ; apply-test(!"hex-string-test-n", hex-string-to-int, !"D", !13)
+    ; apply-test(!"hex-string-test-o", hex-string-to-int, !"E", !14)
+    ; apply-test(!"hex-string-test-p", hex-string-to-int, !"F", !15)
+    ; apply-test(!"hex-string-test-q", hex-string-to-int, !"FF", !255)
+    ; apply-test(!"hex-string-test-r", hex-string-to-int, !"FFFF", !65535)
+
+  bin-string-test =
+      apply-test(!"bin-string-test-0a", bin-string-to-int, !"0", !0)
+    ; apply-test(!"bin-string-test-0b", bin-string-to-int, !"00", !0)
+    ; apply-test(!"bin-string-test-0c", bin-string-to-int, !"000", !0)
+    ; apply-test(!"bin-string-test-0d", bin-string-to-int, !"0000", !0)
+    ; apply-test(!"bin-string-test-0e", bin-string-to-int, !"00000", !0)
+    ; apply-test(!"bin-string-test-0f", bin-string-to-int, !"00000000000000", !0)
+
+    ; apply-test(!"bin-string-test-1a", bin-string-to-int, !"1", !1)
+    ; apply-test(!"bin-string-test-1b", bin-string-to-int, !"01", !1)
+    ; apply-test(!"bin-string-test-1c", bin-string-to-int, !"001", !1)
+    ; apply-test(!"bin-string-test-1d", bin-string-to-int, !"0001", !1)
+    ; apply-test(!"bin-string-test-1e", bin-string-to-int, !"00001", !1)
+    ; apply-test(!"bin-string-test-1f", bin-string-to-int, !"0000000000000001", !1)
+
+    ; apply-test(!"bin-string-test-2a", bin-string-to-int, !"11", !3)
+    ; apply-test(!"bin-string-test-2b", bin-string-to-int, !"111", !7)
+    ; apply-test(!"bin-string-test-2c", bin-string-to-int, !"1111", !15)
+    ; apply-test(!"bin-string-test-2d", bin-string-to-int, !"11111", !31)
+    ; apply-test(!"bin-string-test-2e", bin-string-to-int, !"111111", !63)
+    ; apply-test(!"bin-string-test-2f", bin-string-to-int, !"1111111", !127)
+    ; apply-test(!"bin-string-test-2g", bin-string-to-int, !"11111111", !255)
+    ; apply-test(!"bin-string-test-2h", bin-string-to-int, !"111111111", !511)
+    ; apply-test(!"bin-string-test-2i", bin-string-to-int, !"1111111111", !1023)
+    ; apply-test(!"bin-string-test-2j", bin-string-to-int, !"11111111111", !2047)
+
+    ; apply-test(!"bin-string-test-2k", bin-string-to-int, !"10", !2)
+    ; apply-test(!"bin-string-test-2l", bin-string-to-int, !"100", !4)
+    ; apply-test(!"bin-string-test-2m", bin-string-to-int, !"1000", !8)
+    ; apply-test(!"bin-string-test-2n", bin-string-to-int, !"10000", !16)
+    ; apply-test(!"bin-string-test-2o", bin-string-to-int, !"100000", !32)
+    ; apply-test(!"bin-string-test-2p", bin-string-to-int, !"1000000", !64)
+    ; apply-test(!"bin-string-test-2q", bin-string-to-int, !"10000000", !128)
+    ; apply-test(!"bin-string-test-2r", bin-string-to-int, !"100000000", !256)
+    ; apply-test(!"bin-string-test-2s", bin-string-to-int, !"1000000000", !512)
+    ; apply-test(!"bin-string-test-2t", bin-string-to-int, !"10000000000", !1024)
+    ; apply-test(!"bin-string-test-2u", bin-string-to-int, !"100000000000", !2048)
+
+    ; apply-test(!"bin-string-test-a", bin-string-to-int, !"1010", !10)
+    ; apply-test(!"bin-string-test-c", bin-string-to-int, !"10110000", !176)
+    ; apply-test(!"bin-string-test-b", bin-string-to-int, !"111100011", !483)
+    ; apply-test(!"bin-string-test-d", bin-string-to-int, !"101010101", !341)
+

@@ -1,0 +1,110 @@
+/**
+ * This module contains strategies for filtering and partitioning
+ * lists.
+ */
+module collection/list/filter
+imports 
+  collection/list/-
+strategies
+
+  /**
+   * Returns all elements in a list that satisfy s, as a list.
+   *
+   * @param s  a -> b
+   * @type     List(a) -> List(b)
+   *
+   * @inc test1
+   */
+  filter(s) = 
+    [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
+
+
+  filter(s, tail) = 
+    ?[]; tail
+    <+ [s | filter(s, tail)]
+    <+ ?[_ | <filter(s, tail)> ]
+
+strategies
+
+  /**
+   * Returns all elements in a list that satisfy s, as a list.
+   *
+   * @param s  a -> b
+   * @type     List(a) -> List(b)
+   */
+  retain-all(s) =
+    filter(s)
+    
+  /**
+   * Removes all elements from a list that satisfy s
+   *
+   * @param s  a -> b
+   * @type     List(a) -> List(b)
+   */
+  remove-all(s) =
+    filter(not(s))    
+
+strategies
+
+  /**
+   * Returns all elements in a list that satisfy s, as a list.
+   * Traverses the list in reverse order.
+   *
+   * @param s a -> b
+   * @type  List(a) -> List(b)
+   */
+  reverse-filter(s) = 
+    [] + [id | reverse-filter(s)]; ([s | id] <+ ?[_  | <id>])
+    
+  reverse-filter(s, tail) = 
+    ?[]; tail
+    + ?[x | xs]
+      ; <reverse-filter(s, tail)> xs
+      ; try(![<s> x | <id>])
+
+  /** @internal */
+  filter-gen(pred, cont : (term -> term) * term -> term) =
+    rec x([] + (pred; cont(x)) <+ Tl; x)
+
+  /** @internal */
+  filter-option-args(flag) =
+	let skip(s) = at-tail(s)
+	 in filter-gen([flag | id]; Tl, skip)
+	end
+
+  /** @internal */
+  filter-options(flag) = 
+	let skip(s) = at-tail(at-tail(s))
+     in filter-gen([flag | id], skip)
+    end
+
+  /** @internal */
+  list-some-filter(s) =
+    rec x([s| id]; [id| filter(s)] <+ [id| x]; Tl)
+
+ /**
+  * Partitions a list into a tuple of two lists.
+  *
+  * The argument s is applied to all elements of the list. The
+  * results of the succesful applications are returned in the first
+  * list. The terms to which s cannot be applied are returned in the
+  * second list.
+  *
+  * @param s   a -> b
+  * @type      List(a) -> (List(b), List(a)) 
+  *
+  * @inc test2
+  */
+  partition(s) = rec part(
+    \ [] -> ([],[]) \
+    + ({[s => x | id]; ?[_|<part>]; !([x | <Fst>], <Snd>)} <+
+       {[id =>x | id]; ?[_|<part>]; !(<Fst>, [x | <Snd>])})
+  )
+
+  /** @internal */
+  partition'(s) = rec part(
+    \ [] -> ([],[]) \
+    + \ [z | zs] -> <!([<s> z | xs], ys) <+ !(xs, [z | ys])>
+        where <part> zs => (xs, ys) \
+  )
+

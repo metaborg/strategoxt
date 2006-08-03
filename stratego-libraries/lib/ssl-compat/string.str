@@ -1,0 +1,3 @@
+module string
+imports term/string
+

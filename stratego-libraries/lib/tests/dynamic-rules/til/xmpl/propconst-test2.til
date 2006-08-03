@@ -1,0 +1,21 @@
+var x; 
+var y;
+var z; 
+var a; 
+var b;
+z := readint();
+x := 1;        // constant value
+y := 2;        // not constant
+x := 3;        // override
+a := x + 4;    // compute constant
+y := x + z;    // not constant
+if y then
+  z := 8;
+  x := z - 5;  // constant
+else
+  x := a - 4;  // constant
+  z := a + z;  // z is not constant
+end
+b := a + z;    // a still constant, z not
+z := a + x;
+writeint(b + z);

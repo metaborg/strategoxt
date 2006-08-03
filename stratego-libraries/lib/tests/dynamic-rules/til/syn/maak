@@ -1,0 +1,11 @@
+# collect modules 
+if [ ! -f TIL.def ]
+then
+  pack-sdf -i TIL.sdf -o TIL.def
+fi
+
+# generate parse table
+if [ ! -f TIL.tbl ]
+then
+  sdf2table -i TIL.def -o TIL.tbl -m TIL
+fi

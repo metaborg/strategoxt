@@ -1,0 +1,76 @@
+/**
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module ast2text-tests
+imports
+  libstratego-gpp
+
+strategies
+
+  main-ast2text-tests = 
+    test-suite(!"ast2text-tests",
+      xtc-temp-files(
+        selector-tests
+      )
+    )
+
+strategies
+
+  selector-tests =
+      ast2text-test(|"tuples 1", "Foo.pp"
+      , Foo(((1, 2), 3))
+      , "a(b(1 2) 3)"
+      )
+
+    ; ast2text-test(|"tuples 2", "Bar.pp"
+      , Bar([(), (), ()])
+      , "bar(tuple |tuple |tuple)"
+      )
+
+    ; ast2text-test(|"tuples 3", "Bar2.pp",
+        Bar([(1, 2), (3, 4), (5, 6)])
+      , "bar(1 2|3 4|5 6)"
+      )
+
+    ; ast2text-test(|"tuples 4", "DataType.pp",
+        DataType("list", [("cons", [1, 2]), ("nil", [])])
+      , "data list = cons 1 2 | nil"
+      )
+      
+    ; ast2text-test(|"alt 1", "Alt.pp"
+      , Foo(alt(1, []))
+      , "one"
+      )
+
+    ; ast2text-test(|"alt 2", "Alt.pp"
+      , Foo(alt(2, []))
+      , "two"
+      )
+      
+    ; ast2text-test(|"alt 3", "Alt.pp"
+      , Foo(alt(3, [Some(Fred())]))
+      , "three"
+      )
+      
+    ; ast2text-test(|"alt 3", "Alt.pp"
+      , Foo(alt(3, [None()]))
+      , ""
+      )
+
+strategies
+
+  ast2text-test(|msg, pp, term, string) =
+    apply-test(!msg,
+      where(pptbl := <parse-pptable-file> pp)
+      ; ast2box(|[pptbl])
+      ; box2text-string(|80)
+    , !term
+    , !string
+    )
+
+signature
+  constructors
+    Foo : a -> b
+    Bar : a -> b
+    DataType : a * b -> c
+    Fred : c

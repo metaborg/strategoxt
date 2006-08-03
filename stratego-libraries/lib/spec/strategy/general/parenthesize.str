@@ -1,0 +1,101 @@
+/**
+ * This module defines a generic strategy for placing parentheses in
+ * abstract syntax trees based on priority and associativity declarations. 
+ *
+ * Reference
+ *
+ * Eelco Visser. Syntax Definition for Language Prototyping. PhD Thesis,
+ * University of Amsterdam, 1997.
+ *
+ * Typical usage: (from module Tiger-Ensugar in the tiger/tiger-front
+ * package)
+ *
+ *  TigerParenthesize =
+ *    !Seq([<id>])
+ *
+ *  tiger-parenthesize =
+ *    parenthesize(TigerParenthesize, tiger-priorities)
+ *   
+ *  tiger-priorities =
+ *    ![(None,			["Uminus","FieldVar","Subscript"]),
+ *      (Some("left"),		["Power"]),
+ *      (Some("left"),		["Times","Divide"]),
+ *      (Some("left"),		["Plus","Minus"]),
+ *      (Some("non-assoc"),	["CPlus","CMinus","Eq","Neq","Gt","Lt","Geq","Leq"]),
+ *      (Some("left"),		["And"]),
+ *      (Some("left"),		["Or"]),
+ *      (None,			["Array"]),
+ *      (None,			["Assign"]),
+ *      (Some("right"),		["If","While","For"])]
+ *
+ */
+module strategy/general/parenthesize
+imports collection/list/common
+
+strategies
+
+  parenthesize(paren, prios) =
+    where(prios; init-parenthesation-rules)
+    ; bottomup(try(Disambiguate(paren)))
+
+  // assumes parenthesation rules are already generated
+
+  parenthesize(paren) =
+    bottomup(try(Disambiguate(paren)))
+
+  Disambiguate(paren) :
+    e@op#([l | args]) -> (op#([l' | <conc>(mid', [r'])]))
+    where <split-init-last> args => (mid, r)
+        ; <try(test(<RightAssoc> (e,<id>)); paren)> l => l'
+	; <map(test(<GreaterThan>(e,<id>)); paren)> mid => mid'
+        ; <try(test(<LeftAssoc>  (e,<id>)); paren)> r => r'
+
+  Disambiguate(paren) :
+    e@op#([l]) -> (op#([l']))
+    where <test(<GreaterThan>(e,<id>)); paren> l => l'
+
+/**
+ * Generation of the parenthesation rules.
+ */
+strategies
+
+  init-parenthesation-rules =
+    !([], <id>)
+    ; repeat(gen-left + gen-right + gen-non-assoc + gen-none)
+
+  gen-left :
+    (greater, [(Some("left"), ops) | rest]) -> (<conc>(ops, greater), rest)
+    where <for-each-pair(GenLeftAssoc)> (ops, ops)
+        ; <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
+
+  gen-right :
+    (greater, [(Some("right"), ops) | rest]) -> (<conc>(ops, greater), rest)
+    where <for-each-pair(GenRightAssoc)> (ops, ops)
+        ; <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
+
+  gen-non-assoc :
+    (greater, [(Some("non-assoc"), ops) | rest]) -> (<conc>(ops, greater), rest)
+    where <for-each-pair(GenLeftAssoc; GenRightAssoc)> (ops, ops)
+        ; <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
+
+  gen-none :
+    (greater, [(None, ops) | rest]) -> (<conc>(ops, greater), rest)
+    where <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
+
+  GenLeftAssoc =
+    ?(op1, op2)
+    ; rules(
+        LeftAssoc : (op1#(_), op2#(_)) -> ()
+      )
+     
+  GenRightAssoc =
+    ?(op1, op2)
+    ; rules(
+        RightAssoc : (op1#(_), op2#(_)) -> ()
+      )
+
+  GenGreaterThan =
+    ?(op1, op2)
+    ; rules(
+        GreaterThan : (op1#(_), op2#(_)) -> ()
+      )

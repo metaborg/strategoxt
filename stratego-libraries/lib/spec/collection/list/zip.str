@@ -1,0 +1,219 @@
+/**
+ * Zipping two lists into a list of pairs is a useful operation
+ * in many situations. There are many variants of zipping, for
+ * instance in the way lists of unequal length are treated. This
+ * module defines a collection of zip-like strategies for lists
+ * based on one underlying control scheme.
+ */
+module collection/list/zip
+imports 
+  collection/list/cons
+  collection/tuple/common
+
+strategies
+
+  /**
+   * Create the cartesian product of two lists, i.e., combine
+   * each element of the first list which each element from the second
+   * list. The strategy s is used to combine the pairs of elements
+   * <s>(x,y).
+   *
+   * Example: <cart(id)> ([1,2],[5,6]) => [(1,5),(1,6),(2,5),(2,6)]
+   *   
+   * @param s              a * b -> c
+   * @type     List(a) * List(b) -> List(c)
+   */
+  cart(s) : 
+    (xs, ys) -> 
+    <foldr(![], conc, \ x -> <map(\y -> <s>(x, y)\ )> ys\ )> xs
+
+  /**
+   * Creates the cartesian product of two lists and select only
+   * those combined elements <s>(x, y) that succeed.
+   *
+   * @param s              a * b -> c
+   * @type     List(a) * List(b) -> List(c)
+   */
+  join(s) : 
+    (xs, ys) -> 
+    <foldr(![], union, \x -> <filter(\y -> <s>(x, y)\ )> ys\ )> xs
+
+  /** @internal */
+  Skip(s) : ([x|xs], ys) -> (x, (xs, ys))
+
+strategies
+
+  /** @internal */
+  genzip(a, b, c, s) = 
+    rec x(a + b; (s, x); c)
+
+  /**
+   * Combines two lists into one by pairing up the elements from both lists.
+   * Both lists must be of equal length.
+   *
+   * Example: <zip> ([1,2], [3,4]) => [(1,3),(2,4)]
+   *
+   * @inc zip-test1
+   *
+   * @type List(a) * List(b) -> List(a * b)
+   */
+  zip  = zip(id)
+
+  /**
+   * Combines two lists into one by pairing up the elements from both lists,
+   * applying s to the pair. Starts at the beginning of the lists. Both lists
+   * must be of equal length.
+   *
+   * Example: <zip(add)> ([1,2], [3,4]) => [6,8]
+   *
+   * @param s              a * b -> c
+   * @type     List(a) * List(b) -> List(c)
+   */
+  zip(s)  = 
+    genzip(Zip1,   Zip2,   Zip3,   s)
+    
+  zip'(s) = 
+    genzip(Zip1a' <+ Zip1b',   Zip2,   Zip3,   s)
+
+  zipl(s) = 
+    genzip(Zip1a',   Zip2,   Zip3,   s)
+
+  zipr(s) = 
+    genzip(Zip1b',   Zip2,   Zip3,   s)
+
+  rest-zip(s) = 
+    genzip((?([],_) + ?(_,[])); ?(tla, tlb); ![], Zip2, Zip3, s);
+    \ pairs -> (tla, tlb, pairs) \
+    
+  /**
+   * Combines two lists into one by pairing up the elements from both lists.
+   * Both lists must be of equal length.
+   *  
+   * @param Strategy s(|y : b) : a -> c
+   * @param Second list : List(b)
+   * @type List(a) -> List(c)
+   */
+  zip(s : t * t -> t | ys) =
+    if ?[x | xtail] then
+      where(!ys => [y | ytail])
+      ; ![<s(|y)> x | <zip(s|ytail)> xtail]
+    else
+      ?[]
+    end
+    
+
+strategies
+
+  // :: [a * b] -> [a] * [b]
+  /**
+   * Splits a list of pairs into two separate lists. This strategy
+   * is the inverse of zip.
+   *
+   * Example: <unzip> [(1,2),(3,4)] => ([1,3],[2,4])
+   *
+   * @type     List(a * b) -> List(a) * List(b)
+   */
+  unzip = unzip(id)
+
+  /**
+   * Splits a list of pairs into two separate lists, applying s to
+   * the pair before splitting. This strategy
+   * is the inverse of zip.
+   *
+   * Example: <unzip((inc, inc))> [(1,2),(3,4)] => ([2,4],[3,5])
+   *
+   * @type     List(a * b) -> List(a) * List(b)
+   */
+  unzip(s) = 
+    genzip(UnZip1, UnZip3, UnZip2, s)
+
+ /**
+  * @inc nzip0-test
+  */
+  nzip0(s) = 
+    NZip00 ; genzip(NZip1,  NZip2,  NZip3,  s)
+  nzip(s) = 
+    NZip01 ; genzip(NZip1,  NZip2,  NZip3,  s)
+
+  lzip(s) = 
+    genzip(Zip1a', LZip2, Zip3, s)
+  rzip(s) = 
+    genzip(Zip1b', RZip2, Zip3, s)
+
+  zipFetch(s) = 
+    rec x(Zip2; ((s, id) <+ (id, x)))
+  lzipFetch(s) = 
+    rec x(LZip2; ((s, id) <+ (id, x)))
+  rzipFetch(s) = 
+    rec x(RZip2; ((s, id) <+ (id, x)))
+
+  /**
+   * Combines two lists, which may have different lengths, into one by pairing
+   * up the elements from both lists, applying s to the pair. Starts at the 
+   * beginning of the lists. The shorter list will be padded with the result
+   * the padding strategy.
+   *
+   * Example: <zipPad(id, !0)> ([1,2], [3,4,5]) => [(1,3),(2,4),(0,5)]
+   *
+   * @param s              a * b -> c
+   * @param padding            _ -> d
+   * @type     List(a) * List(b) -> List(c)
+   */
+  zipPad(s, padding) = 
+    rec x(Zip1 + Zip2; (s, x); Zip3 + 
+          ([], [id|id]); (![<padding>()|[]], id); x +
+          ([id|id], []); (id, ![<padding>()|[]]); x)
+
+  zip-tail = 
+    rec x(Zip1c + (Tl, Tl); x)
+  zipl-tail-match(s) = 
+    rec x(Zip1c + Zip2; (s, id); Snd; x)
+  zipr-tail-match(s) = 
+    rec x(Zip1c' + Zip2; (s, id); Snd; x)
+ 
+  zip-skip(pred, s) = 
+    rec x(Zip1 + (Skip(pred); (id, x) <+ Zip2; (s, x)); Zip3)
+
+rules
+    
+  /** @internal */
+  Zip1   : ([],[]) -> []
+  /** @internal */
+  Zip1a' : ([],_) -> []
+  /** @internal */
+  Zip1b' : (_,[]) -> []
+  /** @internal */
+  Zip1c  : ([],x) -> x
+  /** @internal */
+  Zip1c' : (x,[]) -> x
+  /** @internal */
+  Zip1d  : ([],[_|_]) -> []
+  /** @internal */
+  Zip2   : ([x|xs],[y|ys]) -> ((x, y), (xs, ys))
+
+  /** @internal */
+  LZip2  : ([x|xs], y) -> ((x, y), (xs, y))
+  /** @internal */
+  RZip2  : (x, [y|ys]) -> ((x, y), (x, ys))
+
+  /** @internal */
+  Zip3   : (x, xs) -> [x|xs]
+
+  /** @internal */
+  UnZip1 : [] -> ([], [])
+  /** @internal */
+  UnZip2 : ((x, y), (xs, ys)) -> ([x|xs], [y|ys])
+  /** @internal */
+  UnZip3 : [x |  xs] -> (x, xs)
+
+  /** @internal */
+  NZip00 : xs -> (0, xs)
+  /** @internal */
+  NZip01 : xs -> (1, xs)
+  /** @internal */
+  NZip1  : (n, []) -> []
+  /** @internal */
+  NZip2  : (n, [y|ys]) -> ((n, y), (<add> (n, 1), ys))
+  /** @internal */
+  NZip3  : (x, xs) -> [x| xs]
+    

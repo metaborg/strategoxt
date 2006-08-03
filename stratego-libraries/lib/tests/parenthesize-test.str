@@ -1,0 +1,71 @@
+module parenthesize-test
+imports libstratego-lib
+strategies
+
+  main = 
+    test-suite(!"parenthesize-test",
+      parenthesize-tests
+    )
+
+  parenthesize-tests =
+    apply-test(!"Unary construct"
+    , test-parenthesize
+    , !Uminus(Plus(Int(1), Int(2)))
+    , !Uminus(Paren(Plus(Int(1), Int(2))))
+    )
+  ; apply-test(!"Unary construct"
+    , test-parenthesize
+    , !Uminus(Uminus(Int(2)))
+    , !Uminus(Uminus(Int(2)))
+    )
+  ; apply-test(!"Binary construct"
+    , test-parenthesize
+    , !Times(Plus(Int(1), Int(2)), Or(Int(1), Int(2)))
+    , !Times(Paren(Plus(Int(1), Int(2))), Paren(Or(Int(1), Int(2))))
+    )
+  ; apply-test(!"Binary construct. left"
+    , test-parenthesize
+    , !Plus(Int(1), Plus(Int(2), Int(3)))
+    , !Plus(Int(1), Paren(Plus(Int(2), Int(3))))
+    )
+
+
+  test-parenthesize =
+    parenthesize(!Paren(<id>), test-priorities)
+   
+  test-priorities =
+     ![(None,			["Uminus","FieldVar","Subscript"]),
+       (Some("left"),		["Power"]),
+       (Some("left"),		["Times","Divide"]),
+       (Some("left"),		["Plus","Minus"]),
+       (Some("non-assoc"),	["CPlus","CMinus","Eq","Neq","Gt","Lt","Geq","Leq"]),
+       (Some("left"),		["And"]),
+       (Some("left"),		["Or"]),
+       (None,			["Array"]),
+       (None,			["Assign"]),
+       (Some("right"),		["If","While","For"])]
+
+signature
+  constructors
+    Paren  : Exp -> Exp
+
+    Uminus : Exp -> Exp
+    Power  : Exp * Exp -> Exp
+    Times  : Exp * Exp -> Exp
+    Divide : Exp * Exp -> Exp
+    Plus   : Exp * Exp -> Exp
+    Minus  : Exp * Exp -> Exp
+    CPlus  : Exp * Exp -> Exp
+    CMinus : Exp * Exp -> Exp
+    Eq     : Exp * Exp -> Exp
+    Neq    : Exp * Exp -> Exp
+    Gt     : Exp * Exp -> Exp
+    Lt     : Exp * Exp -> Exp
+    Geq    : Exp * Exp -> Exp
+    Leq    : Exp * Exp -> Exp
+    True   : Exp
+    False  : Exp
+    And    : Exp * Exp -> Exp
+    Or     : Exp * Exp -> Exp
+    Int    : Int -> Exp
+

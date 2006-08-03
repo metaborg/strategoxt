@@ -1,0 +1,26 @@
+/**
+ * Traversals that carry an environment.
+ */
+module strategy/traversal/list-environment
+imports 
+  strategy/traversal/environment
+  strategy/traversal/list
+rules
+
+  all-l-dist(s) : 
+    (t, env) -> <all-l(\x -> <s>(x,env)\)> t
+
+strategies
+
+  env-alltd-l(s) = 
+    rec x(s <+ all-l-dist(x))
+
+  env-topdown-l(s) = 
+    rec x(s; all-l-dist(x))
+
+  env-topdown-l(s, skip: (term -> term) * term -> term) = 
+    rec x(s; (skip(x) <+ all-l-dist(x)))
+
+  env-bottomup-l(s) = 
+    rec x(split(all-l-dist(x), Snd); s)
+

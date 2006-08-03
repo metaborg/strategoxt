@@ -1,0 +1,6 @@
+/**
+ * Stratego GPP Library
+ */
+module stratego-gpp
+imports
+  stratego/gpp/-

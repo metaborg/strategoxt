@@ -1,0 +1,3 @@
+module dynamic-rules-refactored
+imports lang/dynamic-rules
+

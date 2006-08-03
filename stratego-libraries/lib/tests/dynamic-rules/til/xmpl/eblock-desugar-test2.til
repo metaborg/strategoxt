@@ -1,0 +1,14 @@
+write(
+  begin
+    var x;
+    x := read();
+    return 
+      x + begin 
+            x := readint(); 
+            return x; 
+            x := x * 2; 
+          end + 1;
+    x := x + 1;
+    write(x);
+  end
+);

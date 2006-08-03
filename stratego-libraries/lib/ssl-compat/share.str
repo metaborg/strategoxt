@@ -1,0 +1,3 @@
+module share
+imports term/share
+

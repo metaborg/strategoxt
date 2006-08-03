@@ -1,0 +1,10 @@
+ATerm SSL_now_epoch_time() ;
+ATerm SSL_time() ;
+ATerm SSL_epoch2localtime() ;
+ATerm SSL_epoch2UTC(ATerm) ;
+ATerm SSL_epoch2UTC(ATerm) ;
+ATerm SSL_dtime() ;
+ATerm SSL_ClockToSeconds(ATerm) ;
+ATerm SSL_clock() ;
+ATerm SSL_times() ;
+ATerm SSL_TicksToSeconds(ATerm) ;

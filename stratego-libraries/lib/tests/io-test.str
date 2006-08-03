@@ -1,0 +1,115 @@
+module io-test
+imports libstratego-lib
+strategies
+
+  main = 
+    test-suite(!"io-test",
+      char-io-tests
+      ; aterm-io-tests
+      ; fprint-tests
+    )
+
+  char-io-tests =
+    where(<fopen> ("io-test.str", "r") => stream)
+    ; apply-test(!"read-text-line 1"
+      , !(<read-text-line>, <read-text-line>)
+      , !stream
+      , !("module io-test", "imports libstratego-lib")
+      )
+    ; where(<fclose> stream)
+
+  aterm-io-tests =
+      apply-test(!"ATerm IO -- 1"
+      , test-write-read-term
+      , !"Bla Bla Bla"
+      , !"Bla Bla Bla"
+      )
+    ; apply-test(!"ATerm IO -- 2"
+      , test-write-read-term
+      , !()
+      , !()
+      )
+    ; apply-test(!"ATerm IO -- 3"
+      , test-write-read-term
+      , !1
+      , !1
+      )
+    ; apply-test(!"ATerm IO -- 4"
+      , test-write-read-term
+      , !None()
+      , !None()
+      )
+    ; apply-test(!"ATerm from String -- 1"
+      , read-from-string
+      , !"[1,2,3]"
+      , ![1,2,3]
+      )
+    ; apply-test(!"ATerm to String -- 1"
+      , write-to-string
+      , ![1,2,3]
+      , !"[1,2,3]"
+      )
+   ;  apply-test(!"ATerm string IO -- 1"
+      , test-write-read-term-string
+      , !"Bla Bla Bla"
+      , !"Bla Bla Bla"
+      )
+    ; apply-test(!"ATerm string IO -- 2"
+      , test-write-read-term-string
+      , !()
+      , !()
+      )
+    ; apply-test(!"ATerm string IO -- 3"
+      , test-write-read-term-string
+      , !1
+      , !1
+      )
+    ; apply-test(!"ATerm string IO -- 4"
+      , test-write-read-term-string
+      , !None()
+      , !None()
+      )
+      
+  fprint-tests = id
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (stderr(), <id>); !()
+      , !["Hey"]
+      , !()
+      )
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (<stderr-stream> (), <id>); !()
+      , !["Hey", "He", "Hallo"]
+      , !()
+      )
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (stderr(), <id>); !()
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      , !()
+      )
+    ; apply-test(!"Debug"
+      , debug
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      )
+    ; apply-test(!"Debug with argument"
+      , debug(!"Hey")
+      , !["He", "Hallo", 1, 2, 3]
+      , !["He", "Hallo", 1, 2, 3]
+      )
+      
+      
+      
+      
+  test-write-read-term =
+      ?t
+    ; <WriteToTextFile> ("test.aterm", t)
+    ; <ReadFromFile> "test.aterm" => t
+    ; <remove-file> "test.aterm"
+    ; !t
+
+  test-write-read-term-string =
+      ?t
+    ; <WriteToTextFile> ("test.aterm", t)
+    ; <ReadFromFile> "test.aterm" => t
+    ; <remove-file> "test.aterm"
+    ; !t

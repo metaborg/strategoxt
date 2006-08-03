@@ -1,0 +1,122 @@
+/**
+ * Run-time process information
+ */
+module system/posix/process
+imports 
+  system/posix/signal 
+  util/config/verbose 
+  system/io/file 
+  system/io/dir 
+  system/io/pipe 
+  system/io/char 
+  system/io/term 
+
+strategies
+
+  /**
+   * Return process identifier of current process
+   *
+   * @type _ -> Int
+   */
+  get-pid = 
+    prim("SSL_get_pid")
+
+/**
+ * Process creation
+ */
+strategies   
+
+  /**
+   * Creates a child process almost equivalent to the parent process.
+   *
+   * The new process differs from the parent process
+   * only in its PID and PPID, and in the fact that resource  
+   * utilizations  are  set  to  0. File locks and pending signals are not
+   * inherited. 
+   *
+   * Fails if forking fails, in which case no child process is created.
+   * On success, the PID of the child process is returned  in  the  parent’s
+   * thread  of execution, and a 0 is returned in the child’s thread of exe‐
+   * cution.
+   *
+   * @type fork :: a -> Int
+   */
+  fork =
+    prim("SSL_fork")
+    
+  /**
+   * Replaces the current process image with a new  process image.
+   *
+   * @see      man execvp
+   * @warning  The first arugment is added in the runtime.
+   */
+  execvp = 
+    ?(file, argv)
+    ; prim("SSL_execvp", file, argv)
+    ; where(<conc-strings; perror; fail> ("SSL/execvp: Cannot execute file ", file))
+
+  /**
+   * Replaces the current process image with a new  process image.
+   *
+   * @see      man execv
+   * @warning  The first arugment is not added in the runtime.
+   * @warning  If the
+   */
+  execv = 
+    ?(file, argv)
+    ; prim("SSL_execv", file, argv)
+    ; where(<conc-strings; perror; fail> ("SSL/execv: Cannot execute file ", file))
+
+/**
+ * Process termination 
+ */
+strategies 
+
+  /**
+   * @type Int -> WaitStatus
+   */
+  waitpid =
+    ?pid; prim("SSL_waitpid", pid)
+    
+signature
+  constructors
+    /**
+     * Collects the information returned from a wait call.
+     *
+     * (1) Exit status or -1 if process did not terminate properly
+     * (2) Signal number or -1 if the process wasn't terminated because of a signal
+     * (3) Signal number or -1 if the process wasn't stopped
+     */
+    WaitStatus : Int * Int * Int -> WaitStatus
+    
+/**
+ * Terminating the Current Process
+ */
+strategies 
+ 
+
+  /**
+   * Abort execution with exit value n.
+   *
+   * @type Int -> _
+   */
+  exit = 
+    ?n; prim("SSL_exit", n)
+  
+/**
+ * Terminating Another Process 
+ */
+strategies
+ 
+  /**
+   * Sends the specified signal to the specified process.
+   *
+   * @fail fails on failure of the kill invocation
+   * @type Int * Signal -> Int * Signal
+   */
+  kill =
+    where(
+      ?(pid, <number-from-signal; ?sig>)
+    ; prim("SSL_kill", pid, sig)
+    )
+    

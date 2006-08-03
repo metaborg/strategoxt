@@ -1,0 +1,10 @@
+/**
+ * Stratego SGLR Library
+ */
+module stratego-sglr
+imports
+  stratego/asfix/-
+  stratego/concrete-syntax/-
+  stratego/error-support/-
+  stratego/sdf/-
+  stratego/sglr/-

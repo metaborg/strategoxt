@@ -1,0 +1,67 @@
+module stratego/asfix/anno
+imports libstratego-lib
+
+strategies
+  asfix-anno-comments = 
+    asfix-anno-comments(| ["Comment"] )
+
+  asfix-anno-comments(|s) =
+    {| get-comment-sorts :
+       rules( get-comment-sorts : _ -> s ) 
+     ; asfix-anno-topdown-consnil(try(AnnoComment))
+    |}
+
+  AnnoComment :
+    [ a1@appl(prod([cf(layout)], cf(opt(layout())), _), args)
+    , a2
+    | as ]
+      ->
+    [ a1, a2' | as ]
+    where
+      <fetch-comment> args => (comment,sort)
+      ; <try(oncetd({p:
+          has-cons; ?p{a*}; !p{(Comment(sort), comment), a*}
+         }))> a2 => a2'
+
+  fetch-comment =
+    where(get-comment-sorts => sortnames)
+    ; oncetd({sortname:
+      ?appl(prod(_, lex(sort(sortname)), _), _)
+      ; where(<fetch(?sortname)> sortnames => sort)
+      ; asfix-anno-yield
+      ; !(<id>,sortname) => s
+      })
+    ; !s
+
+  has-cons =
+    where(
+    ?appl(prod(_, _, <id>), _)
+    ; oncetd(?cons(_))
+    )
+
+strategies
+
+  asfix-anno-topdown-consnil(s) =
+    rec x(s; asfix-anno-all-consnil(x))
+
+  asfix-anno-all-consnil(s) =
+    if is-list then
+      [s | id]; [id | s] + []
+    else
+      all(s)
+    end
+
+rules
+  asfix-anno-Kids  : appl(p, ts) -> <concat> ts
+  asfix-anno-Kids' : x -> [x]
+
+strategies
+
+  asfix-anno-yield =
+    rec x((appl(id, map(x)); asfix-anno-Kids) <+ asfix-anno-Kids')
+    ; implode-string
+
+signature
+   constructors
+     Comment : String -> AnnoKey
+

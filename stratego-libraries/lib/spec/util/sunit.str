@@ -1,0 +1,161 @@
+/**
+ * sunit: Unit Testing Framework.
+ */
+module util/sunit
+imports 
+  system/io/file 
+  system/io/dir 
+  system/io/pipe 
+  system/io/char 
+  system/io/term 
+
+
+strategies
+
+  test-suite(name, tests) =
+    name
+    ; debug(!"test suite: ")
+    ; init-record
+    ; tests
+    ; report-test
+    ; check-for-failures
+
+  apply-test(name, s, in-term, out) =
+    do-test(name,
+            (sunit-create-input(in-term); s <+ <print-failure> "  strategy failed"; fail) => tmp;
+  	    sunit-create-output(out) => tmp'; 
+	    ((!tmp' => tmp)
+               <+ (<print-failure(|"  result not equal : ")> tmp;
+                   <print-failure(|"  expected         : ")> tmp'); fail))
+
+  apply-test(name, s, in-term) =
+    do-test(name,
+      (sunit-create-input(in-term); s <+ <print-failure> "  strategy failed"; fail)
+    )
+
+  apply-and-check(name, s, in-term, check) =
+    do-test(name,
+      (sunit-create-input(in-term); s  <+ <print-failure> "  application failed"; fail)
+      ; (check <+ (print-failure(|"  check failed: "); fail))
+    )
+
+  apply-and-fail(name, s, in-term) =
+    apply-and-fail(name, s, in-term, !())
+
+  apply-and-fail(name, s, in-term, out) =
+    do-test(name,
+	    ((sunit-create-input(in-term); not(s))
+             <+ <print-failure> "  succeeded (should fail)"; fail))
+
+  apply-and-show(name, s, in-term) =
+    do-test(name
+	   ,(sunit-create-input(in-term); s <+ <print-failure> "  strategy failed"; fail)
+            ; <debug> ["  succeeded; result: ", <id>]
+           )
+
+/**
+ * Term arguments variants of the old sunit strategies
+ */
+strategies
+
+  apply-test(s | name, in-term, out) =
+    apply-test(!name, s, !in-term, !out)
+
+  apply-test(s | name, in-term) =
+    apply-test(!name, s, !in-term)
+
+  apply-and-check(s | name, in-term, check) =
+    apply-and-check(!name, s, !in-term, !check)
+
+  apply-and-fail(s | name, in-term) =
+    apply-and-fail(!name, s, !in-term)
+
+  apply-and-fail(s | name, in-term, out) =
+    apply-and-fail(!name, s, !in-term, !out)
+
+  apply-and-show(s | name, in-term) =
+    apply-and-show(!name, s, !in-term)
+
+/**
+ * Internal helpers
+ */
+strategies
+
+  sunit-create-input(s) =
+    s <+ say(!"error: input strategy for this test failed"); fail
+
+  sunit-create-output(s) =
+    s <+ say(!"error: output strategy for this test failed"); fail
+
+  do-test(nr, s) =
+    where(nr; debug)
+    ; (where(s); record-success 
+       <+ record-failure)
+
+  testing(nr, s) =
+    do-test(nr, s; debug(!"  succeeded: ") 
+	   	<+ debug(!"  failed: "); fail)
+
+  do-test(s | nr) =
+    where(<debug>nr )
+  ; ( where(s) ; record-success <+ record-failure )
+
+/**
+ * Test results are stored in a tuple of two integers. This tuple is
+ * passed from test to test. (success, failure)
+ */
+strategies
+	
+  init-record =
+    !(0,0)
+
+  /**
+   * Internal: record a successful test
+   */
+  record-success =
+    (inc, id)
+
+  /**
+   * Internal: record a failed test
+   */
+  record-failure =
+    (id, inc)
+
+  /**
+   * Internal: fails if there was a failure
+   */
+  check-for-failures =
+    (id, 0)
+
+  /**
+   * Internal: report the number of successes and failures
+   */
+  report-test =
+    (debug(!"successes: "), debug(!"failures: "))
+    
+  print-failure =
+    sunit-failure-string
+    ; debug
+    
+  print-failure(|msg) =
+    debug(<sunit-failure-string> msg)
+
+strategies
+
+  /**
+   * @type String -> String
+   */
+  sunit-failure-string =
+    if <getenv> "ENABLE_COLORS" => "true" then
+      <concat-strings> [
+        <sunit-color-red>
+      , <id>
+      , <sunit-color-plain>
+      ]
+    end
+
+  sunit-color-red =
+    <conc-strings> (<implode-string> [27], "[01;31m")
+
+  sunit-color-plain =
+    <conc-strings> (<implode-string> [27], "[m")

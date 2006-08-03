@@ -1,0 +1,88 @@
+module stratego/xtc/Register
+imports
+  stratego/xtc/Repository
+
+strategies
+
+  // Finding an entry in the repository
+
+  xtc-find-warning = 
+    xtc-find 
+
+  xtc-find = 
+      ?tool
+    ; xtc-load
+    ; (xtc-find-version-loc <+ xtc-find-loc)
+    ; log(|Vomit(), ["Found ", tool, " at ", <id>])
+   <+ log(|Error(), ["No XTC registration for ", <id>, " found"])
+    ; fail
+
+  xtc-find-silent = 
+      xtc-load
+    ; (xtc-find-version-loc <+ xtc-find-loc)
+ 
+  xtc-find-version-loc :
+    (tool, version) -> loc
+    where <table-get>(XTC, Tool(tool)); fetch(?(version, loc))
+
+  xtc-find-loc :
+    tool -> loc
+    where <table-get> (XTC, Tool(tool)) => [(version, loc) | _]
+
+  xtc-find-path =
+    xtc-find; dirname
+
+  // Registering an entry
+
+  xtc-register =
+      <get-config> "-t" => tools
+    ; log(|Debug(), ["Tools : " | <separate-by(|", ")> tools])
+
+    ; <get-config> "-V" => version
+    ; log(|Debug(), ["Version : ", version])
+
+    ; if <get-config> "--path" then
+          <get-config> "--path" => path
+        ; log(|Debug(), ["Path : ", path])
+        ; xtc-register-path(|tools, version, path)
+      else
+          <get-config> "-l" => loc
+        ; log(|Debug(), ["Location : ", loc])
+        ; xtc-register(|tools, version, loc)
+      end
+
+    ; !tools
+
+  /**
+   * @param  tools    String or List(String)
+   * @param  version  String
+   * @param  loc      Directory of tools
+   */
+  xtc-register(|tools, version, loc) = 
+    where(
+      xtc-load
+    ; !tools
+    ; (is-list <+ ![<id>])
+    ; map(<table-union>(XTC, Tool(<id>), 
+	    [(version, <concat-strings>[loc,"/",<id>])]))
+    )
+
+  /**
+   * @param  tools    String or List(String)
+   * @param  version  String
+   * @param  path     Directory of tools
+   */
+  xtc-register-path(|tools, version, path) =
+    where(
+      xtc-load
+    ; !tools
+    ; (is-list <+ ![<id>])
+    ; map(<table-union> (XTC, Tool(<id>), [(version, path)]))
+    )
+
+  register-import =
+    <get-config> "import" => imports
+    ; log(|Vomit(),"Registering imports",<id>)
+    ; <get-config> "import" => reps
+    ; log(|Vomit(),"Importing",<id>)
+    ; <table-union> (XTC, Import, reps)

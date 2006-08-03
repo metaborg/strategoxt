@@ -1,0 +1,68 @@
+/**
+ * Character based in-/output.
+ */
+module system/io/char
+imports 
+  system/io/-
+
+strategies
+
+  /**
+   * Reads the contents of a textfile.
+   *
+   * @type String -> String
+   */
+  read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)
+
+  /**
+   * Reads all characters until EOF.
+   * The stream is not closed.
+   *
+   * @type Stream -> String
+   */
+  read-text-from-stream = 
+      ?stream
+    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+    ; implode-string
+
+  /**
+   * Reads the next line of text in stream.
+   * Line is ended by newline or EOF.
+   * 
+   * @type Stream -> String
+   */
+  read-text-line =
+    ?stream
+    ; rec x(![<fgetc; not('\n')> stream | <x> ()] <+ ![])
+    ; implode-string
+
+strategies
+
+  /**
+   * Filters the contents of a textfile character chunk by character chunk.
+   *
+   * 'done' determines when a chunk is complete
+   *        should fail to indicate completeness
+   *
+   * 'more' transforms current chunck after adding next character
+   *        should always succeed
+   *
+   * Note that the charachters in a chunk are in reverse order.
+   *
+   * @type (String, String) -> String
+   */
+  filter-text-file(more, done) : 
+    (filein, fileout) -> fileout
+    where <fopen>(filein, "r") => streamin
+        ; <fopen>(fileout, "w") => streamout
+        ; repeat(
+            for(![<fgetc> streamin]; more, done, ![<fgetc> streamin | <id>]; more)
+            ; reverse-map(<fputc> (<id>, streamout))
+          )
+        ; <fclose> streamin
+        ; <fclose> streamout
+

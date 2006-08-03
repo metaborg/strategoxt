@@ -1,0 +1,52 @@
+% Grammar for TP-Toy statement language
+
+program -> statement*
+
+statement ->  declaration
+           |  assignment_statement
+           |  if_statement
+           |  while_statement
+           |  for_statement
+           |  read_statement
+           |  write_statement
+
+% Untyped variables
+declaration -> "var" identifier ";"
+
+assignment_statement -> identifier ":=" expression ";"
+
+if_statement -> "if" expression "then" 
+                    statement* 
+                "end"
+             |  "if" expression "then" 
+                    statement* 
+                "else" 
+                    statement* 
+                "end"
+
+% While loop 
+while_statement -> "while" expression "do"
+                      statement* 
+                   "end"
+
+% Declaring for
+for_statement -> "for"  identifier ":=" expression "to" expression do
+                     statement*
+                 "end"
+
+read_statement -> "read" identifier ";"
+
+write_statement -> "write" expression ";"
+
+% Simple 
+expression -> primary
+           |  expression op expression
+
+primary -> identifier
+        |  integer
+        |  string
+        |  "(" expression ")"
+
+op -> "=" | "!="        % lowest priority       
+   |  "+" | "-"
+   |  "*" | "/"         % highest priority

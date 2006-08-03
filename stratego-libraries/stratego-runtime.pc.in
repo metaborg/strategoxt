@@ -1,0 +1,8 @@
+prefix=@prefix@
+
+Name: Stratego Runtime
+Description: Runtime support library for Stratego programs
+Version: @PACKAGE_VERSION@
+Requires: aterm
+Libs: -L${prefix}/lib -lstratego-runtime -lm
+Cflags: -I${prefix}/include

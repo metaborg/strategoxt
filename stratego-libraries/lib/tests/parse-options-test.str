@@ -1,0 +1,347 @@
+module parse-options-test
+imports libstratego-lib
+
+strategies
+
+  main = 
+    test-suite(!"parse-options-test",
+      simple-option-tests
+    ; default-option-tests
+    ; init-option-tests
+    ; check-option-tests
+    )
+
+strategies
+
+  option-test-wrap(s) =
+      where(
+        lookup-table(|"config") => config
+        ; <hashtable-clear> config
+      )
+    ; s
+    ; where(
+        <hashtable-clear> config
+      )
+
+  test-parse-options(s) =
+    parse-options'(s)
+    ; not(fetch(?Undefined(_)))
+    ; not(<get-config> "--help")
+
+  help-wanted =
+    <set-config> ("--help", ())
+
+strategies
+
+  foo-option =
+    Option("--foo"
+    , OptionHandler(<set-config> ("--foo", ()))
+    | "--foo Foo option"
+    )
+
+  bar-option =
+    Option("--bar"
+    , OptionHandler(<set-config> ("--bar", ()))
+    | "--bar Foo option"
+    )
+
+  fooarg-option =
+    ArgOption("--foo"
+    , OptionHandler(<set-config> ("--foo", <id>))
+    | "--foo <string> Foo option"
+    )
+
+  simple-option-tests = id
+    ; option-test-wrap(
+        apply-and-check(!"Simple command line option"
+        , test-parse-options(foo-option)
+        , !["./bla", "--foo"]
+        , <get-config> "--foo"
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-check(!"Simple command line option with an argument"
+        , test-parse-options(fooarg-option)
+        , !["./bla", "--foo", "bar"]
+        , <get-config> "--foo" => "bar"
+        )
+      )
+
+    ; option-test-wrap(
+        apply-test(!"No command line options"
+        , test-parse-options(fail)
+        , !["./bla"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"No command line options"
+        , test-parse-options(fail)
+        , !["./bla", "--bar"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Undefined command line option"
+        , test-parse-options(foo-option)
+        , !["./bla", "--bar"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Simple command line option with an argument"
+        , test-parse-options(fooarg-option)
+        , !["./bla", "--foo"]
+        )
+      )
+
+strategies
+
+  default-fooarg-option =
+    ArgOption("--foo"
+    , OptionHandler(
+        id
+      , <set-config> ("--foo", <id>)
+      , <set-config> ("--foo", "default")
+      )
+    | "--foo <string> Foo option"
+    )
+
+  default-option-tests = id
+    ; option-test-wrap(
+        apply-and-check(!"Command line option with default"
+        , test-parse-options(default-fooarg-option)
+        , !["./bla"]
+        , <get-config> "--foo" => "default"
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-check(!"Command line option with default"
+        , test-parse-options(default-fooarg-option)
+        , !["./bla", "--foo", "value"]
+        , <get-config> "--foo" => "value"
+        )
+      )
+
+strategies
+
+  init-fooarg-option =
+    ArgOption("--foo"
+    , OptionHandler(
+        <set-config> ("--foo", ["init"])
+      , <post-extend-config> ("--foo", [<id>])
+      , <set-config> ("--foo", ["default"])
+      )
+    | "--foo <string> Foo option"
+    )
+
+  init-option-tests = id
+    ; option-test-wrap(
+        apply-and-check(!"Command line option with init"
+        , test-parse-options(init-fooarg-option)
+        , !["./bla", "--foo", "value"]
+        , <get-config> "--foo" => ["init", "value"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-check(!"Command line option with init"
+        , test-parse-options(init-fooarg-option)
+        , !["./bla"]
+        , <get-config> "--foo" => ["default"]
+        )
+      )
+
+strategies
+
+  one-foo =
+    OptionCheck(<set-config> ("--help", ()),
+      OptionOneCheck("--foo")
+    | "error: option --foo is required"
+    )
+
+  one-foo-bar =
+    OptionCheck(<set-config> ("--help", ()),
+      OptionOneCheck("--foo")
+      ; OptionOneCheck("--bar")
+    | "error: option --foo and --bar are required"
+    )
+
+  foo-or-bar =
+    OptionCheck(<set-config> ("--help", ()),
+      OptionOneCheck("--foo")
+      + OptionOneCheck("--bar")
+    | "error: option --foo or --bar is required"
+    )
+
+  one-or-more-foo =
+    OptionCheck(<set-config> ("--help", ()),
+      OptionOneOrMoreCheck("--foo")
+    | "error: option --foo is required"
+    )
+
+  check-option-tests = id
+    ; check-one-option-tests
+    ; check-one-or-more-option-tests
+
+strategies
+
+  check-one-option-tests = id
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 1"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + one-foo
+          )
+        , !["./bla"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-check(!"Command line option check one 2 "
+        , where(try(<get-config> "--help"; debug(!"help --- ")));
+          test-parse-options(
+            foo-option
+          + bar-option
+          + one-foo
+          )
+        , !["./bla", "--foo"]
+        , <get-config> "--foo"
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 3"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + one-foo
+          )
+        , !["./bla", "--foo", "--foo"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 1"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + one-foo-bar
+          )
+        , !["./bla"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-test(!"Command line option check one 2 "
+        , where(try(<get-config> "--help"; debug(!"help --- ")));
+          test-parse-options(
+            foo-option
+          + bar-option
+          + one-foo-bar
+          )
+        , !["./bla", "--foo", "--bar"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 3"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + one-foo-bar
+          )
+        , !["./bla", "--foo", "--foo"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 1"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + foo-or-bar
+          )
+        , !["./bla"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-test(!"Command line option check one 2 "
+        , where(try(<get-config> "--help"; debug(!"help --- ")));
+          test-parse-options(
+            foo-option
+          + bar-option
+          + foo-or-bar
+          )
+        , !["./bla", "--foo", "--bar"]
+        )
+      )
+
+
+    ; option-test-wrap(
+        apply-test(!"Command line option check one 3 "
+        , where(try(<get-config> "--help"; debug(!"help --- ")));
+          test-parse-options(
+            foo-option
+          + bar-option
+          + foo-or-bar
+          )
+        , !["./bla", "--foo", "--bar", "--bar"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 4"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + foo-or-bar
+          )
+        , !["./bla", "--foo", "--foo"]
+        )
+      )
+
+strategies
+
+  check-one-or-more-option-tests = id
+    ; option-test-wrap(
+        apply-and-fail(!"Command line option check one 1"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + one-or-more-foo
+          )
+        , !["./bla"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-test(!"Command line option check one 2 "
+        , where(try(<get-config> "--help"; debug(!"help --- ")));
+          test-parse-options(
+            foo-option
+          + bar-option
+          + one-or-more-foo
+          )
+        , !["./bla", "--foo"]
+        )
+      )
+
+    ; option-test-wrap(
+        apply-test(!"Command line option check one 3"
+        , test-parse-options(
+            foo-option
+          + bar-option
+          + one-or-more-foo
+          )
+        , !["./bla", "--foo", "--foo"]
+        )
+      )
+
+
+//  OptionNotCombinedCheck(is-flag, other-flags | msg) =
+//  OptionZeroOrOneCheck(is-flag | msg) =

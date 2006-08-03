@@ -1,0 +1,292 @@
+/**
+ * Term input and output.
+ */
+module system/io/term
+imports 
+
+  system/io/char
+  system/io/pipe
+  system/io/term
+  system/io/dir
+  system/io/file
+  system/io/process
+
+  term/string 
+  term/integer
+  collection/list/common
+  strategy/conditional
+  util/config/options
+  
+/**
+ * Term input and output
+ */
+strategies
+
+  /**
+   * <ReadFromFile> file reads the term in file. 
+   * The file needs to be in textual or binary ATerm format.
+   * 
+   * @type File -> a
+   */
+  ReadFromFile =
+      ( <open-stream> (<id>, "r")
+      <+ <conc-strings; perror; fail> ("SSL/ReadFromFile ", <id>))
+    ; where(read-from-stream => trm)
+    ; fclose
+    ; !trm
+
+  /**
+   * <WriteToBinaryFile> (file, term) writes term to file in BAF format.i
+   *
+   * @type File * a -> a
+   */
+  WriteToBinaryFile = 
+    WriteToFile(write-in-baf-to-stream)
+
+  /**
+   * <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
+   *
+   * @type File * a -> a
+   */
+  WriteToTextFile = 
+    WriteToFile(write-in-text-to-stream; <fputc> ('\n', <id>))
+
+  /**
+   * <WriteToFile(s)> (file, term) writes term to file with the writer s.
+   *
+   * @type (Stream * a -> Stream) * File * a -> a
+   */
+  WriteToFile(writer) =
+      ?(<id>, trm)
+    ; <open-stream> (<id>, "w")
+    ; <writer> (<id>, trm)
+    ; fclose
+    ; !trm
+
+  open(file) = 
+    file; ReadFromFile
+
+  save(file) = 
+    <WriteToTextFile> (<file>, <id>)
+
+/**
+ * ATerm input and output with streams
+ *
+ * @TODO move to io module.
+ */
+strategies
+
+  /**
+   * Writes an ATerm to a Stream.
+   *
+   * @type Stream * _ -> Stream
+   */
+  write-to-stream =
+    write-in-baf-to-stream
+
+  write-in-baf-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_baf", stream, term); !Stream(<id>)
+
+  write-in-taf-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_taf", stream, term); !Stream(<id>)
+
+  write-in-text-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_text", stream, term); !Stream(<id>)
+
+  /**
+   * Reads an ATerm from a Stream
+   *
+   * @type Stream -> _
+   */
+  read-from-stream =
+    ?Stream(stream); prim("SSL_read_term_from_stream", stream)
+
+  /**
+   * Reads an ATerm from a String
+   *
+   * @type String -> _
+   */
+  read-from-string =
+    ?s; prim("SSL_read_term_from_string", s)
+
+  /**
+   * Writes an ATerm to a String
+   *
+   * @type a -> String
+   */
+  write-to-string =
+    ?t; prim("SSL_write_term_to_string", t)
+
+  /**
+   * Writes an ATerm to a binary string represented as a list of chars.
+   *
+   * @type a -> List(Char)
+   */
+  write-to-binary-string =
+    ?t; prim("SSL_write_term_to_binary_string", t)  
+
+  /**
+   * Writes an ATerm to a shared string represented as a list of chars.
+   *
+   * @type a -> List(Char)
+   */
+  write-to-shared-string =
+    ?t; prim("SSL_write_term_to_shared_string", t)  
+
+strategies
+
+  /**
+   * Prints the terms to a stream. If a term is a string it is printed 
+   * without quotes, otherwise it is printed as a term.
+   *
+   * @type Stream * [a] -> Stream
+   */
+  fprint =
+    (?Stream(_) <+ stdio-stream, id)
+    ; ?(stream, <id>)
+    ; map(
+        where(
+          is-string
+        < <fputs> (<id>, stream)
+        + <write-in-text-to-stream> (stream, <id>)
+        )
+      )
+    ; !stream
+
+  /**
+   * fprint, followed by a newline.
+   *
+   * @type Stream * [a] -> Stream
+   */
+  fprintnl =
+    fprint; <fputc> ('\n', <?Stream(_) <+ stdio-stream>)
+
+ /**
+  * Prints terms to a file. If \verb|ti| is a string it is printed without 
+  * quotes, otherwise it is printed as a term. \verb|printnl| has the same
+  * behaviour, but also prints a newline after \verb|tn|.
+  *
+  * E.g. <print> (file, [t1,...,tn]) prints terms ti to file. Terms ti 
+  * that are strings are printed without quotes  
+  *
+  * @obsolete use fprint
+  */
+  print =
+    ?(stream, strs)
+    ; obsolete(!"print: use fprint")
+    ; fprint
+
+ /**
+  * Same as print, but prints a newline at the end. 
+  *
+  * @obsolete use fprintnl
+  */
+  printnl =
+    ?(stream, strs)
+    ; obsolete(!"printnl: use fprintnl")
+
+strategies
+
+  /**
+   * Prints the current term to stderr without changing it.
+   * This is a useful strategy for debugging specifications (hence its name).
+   *
+   * @type  a -> a
+   */
+  debug = 
+    where(<fprintnl> (stderr, [<id>]))
+
+  /**
+   * Prints the term produced by applying msg followed by the current term to stderr.
+   *
+   * @type  a -> a
+   */
+  debug(msg) = 
+    where(<fprintnl> (stderr, [<msg>,<id>]))
+
+strategies
+    
+  debug-depth = 
+    debug-depth(!4, !"")
+
+  debug-depth(depth) = 
+    debug-depth(depth, !"")
+    
+  debug-depth(depth, s) = 
+    where(  
+      at-depth(depth, !"...")
+    ; debug(s)
+    )
+    
+strategies
+
+  /**
+   * Prints the term produced by applying msg to stderr.
+   *
+   * @param  term to print to stderr
+   * @type   a -> a
+   */
+  say(msg) = 
+    where(msg; debug)
+
+  trace(msg,s) =
+    debug(msg); (s; debug(!"succeeded: ") <+ debug(!"failed: "))
+
+  /**
+   * Prints a list of terms to stderr using fprintnl.
+   *
+   * @type List(a) -> List(a)
+   */
+  error = 
+    where(<fprintnl> (stderr(), <id>))
+
+  /**
+   * Prints a list of terms to stderr using fprintnl and exits with code 1.
+   *
+   * @type List(a) -> List(a)
+   */
+  fatal-error = 
+    where(error; <exit> 1)
+
+  /**
+   * Prints giving-up to stderr and exits with code 1.
+   *
+   * @type _ -> _
+   */
+  giving-up = 
+    <fatal-error>["giving-up"]
+
+  /**
+   * Logs an obsolete strategy message with the given message.
+   *
+   * @param Strategy that produces a string message.
+   * @type  a -> a
+   */
+  obsolete(msg) = 
+    log(|Warning(), <conc-strings> ("program uses obsolete strategy ", <msg> ()))
+
+  /**
+   * Tries to apply s and prints msg to stderr if this fails.
+   * Risky preserves the failure of s: if s fails, then risky will
+   * fail as well.
+   *
+   * @param Strategy that produces a string message
+   * @param Strategy to apply
+   * @type  a -> a
+   */
+  risky(msg, s) = 
+    restore(s, debug(msg))
+
+/**
+ * Print to the stdout. You usually don't want this.
+ */
+strategies
+
+  echo = 
+    where(<fprintnl> (stdout(), <is-list <+ ![<id>]>))
+
+  echo(msg) = 
+    where(<fprintnl> (stdout(), [<msg>,<id>]))
+
+  printstring = 
+    where(<fprint> (stdout(), [<id>]))

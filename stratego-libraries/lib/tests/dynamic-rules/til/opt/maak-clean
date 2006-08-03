@@ -1,0 +1,2 @@
+rm -f *.c *.dep *.o til-copyprop til-copyprop-rev til-cse til-dce til-forward-subst til-propconst
+rm -rf .libs

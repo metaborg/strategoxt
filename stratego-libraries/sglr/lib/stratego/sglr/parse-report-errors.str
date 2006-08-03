@@ -1,0 +1,51 @@
+/**
+ * @author Martin Bravenboer
+ * @author Eric Bouwers
+ */
+module stratego/sglr/parse-report-errors
+imports
+  stratego/sglr/parse
+
+strategies
+
+  /**
+   * @param String or SerializedParseTable -> ParseTable
+   * @param String or None
+   */
+  parse-xtc-file-pt-report-errors(|tbl, sort) =
+    if is-parse-table-open(|tbl) then
+      parse-xtc-file-pt(strsglr-perror, strsglr-report-parse-error | tbl, sort)
+    else
+      // open the parse table and call recursive
+      let parse(|tbl') = parse-xtc-file-pt-report-errors(|tbl', sort)
+       in open-parse-table-wrap-report-errors(parse| tbl)
+      end
+    end
+
+  /**
+   * @param String or SerializedParseTable -> ParseTable
+   * @param String or None
+   */
+  parse-xtc-file-report-errors(|tbl, sort) =
+    if is-parse-table-open(|tbl) then
+      parse-xtc-file-pt(strsglr-perror, strsglr-report-parse-error | tbl, sort)
+      ; implode-asfix
+    else
+      // open the parse table and call recursive
+      let parse(|tbl') = parse-xtc-file-report-errors(|tbl', sort)
+       in open-parse-table-wrap-report-errors(parse| tbl )
+      end
+    end
+
+strategies
+
+  strsglr-report-parse-error =
+    finally(
+      ?input
+      ; summary := <get-parse-error>
+      ; <report-error-summary(|summary)> input
+    , fail
+    )
+
+  strsglr-perror =
+    <conc-strings; perror; fail> (<whoami> (), ": ", <id>)

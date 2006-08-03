@@ -1,0 +1,80 @@
+/**
+ * Primitives for getting and setting term annotations.
+ *
+ * The preferred way to access annotations, however,
+ * is through the term syntax t1{t2}, which allows matching and
+ * building terms with annotations.
+ */
+module term/annotation
+signature
+  constructors
+    Anno : a * b -> a
+
+strategies
+
+  /**
+   * Alias of get-annotations.
+   *
+   * @inc test-get-annos
+   */
+  get-annos = 
+    get-annotations
+
+  /**
+   * Returns the list of annotations of the current term.
+   */
+  get-annotations :
+    t{t*} -> t*
+
+  /**
+   * Alias of set-annotations.
+   *
+   * @inc test-set-annos
+   */
+  set-annos = 
+    set-annotations
+
+  /**
+   * Sets the annotations of the given term t to the annotations a.
+   */
+  set-annotations :
+    (t, t*) -> t{t*}
+ 
+  set-anno :
+    (t1, t2) -> t1{t2}
+
+  /**
+   * @todo The xs variable is a hack for issue STR-382.
+   */
+  rm-annotations :
+    t -> t{}
+
+  /**
+   * Succeeds if a term has annotations.
+   *
+   * @inc test-has-annos
+   */
+  has-annos =
+    ?_{t,t*}
+
+  has-annotation = 
+    has-annos 
+
+  if-annotation(s1, s2) =
+    has-annotation < s1 + s2
+
+  strip-annos = 
+    bottomup(rm-annotations)
+
+  catch-annos = 
+    rec x(has-annotation < !Anno(<rm-annotations; all(x)>, <get-annotations>) + all(x))
+
+  /**
+   * Alias of preserve-annos
+   */
+  preserve-annotation(s) =
+    preserve-annos(s)
+
+  preserve-annos(s):
+    t{a*} -> r{a*}
+      where <s> t => r

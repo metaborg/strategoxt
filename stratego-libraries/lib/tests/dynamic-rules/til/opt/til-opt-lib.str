@@ -1,0 +1,33 @@
+module til-opt-lib
+imports libstratego-lib TIL til-eval
+strategies
+
+  contains(|x) =  // should be in stratego-lib
+    oncetd(?x)
+
+  elem-of(|xs) = // should be in stratego-lib
+    ?x; where(<fetch(?x)> xs)
+
+  get-var-names =
+    collect(?Var(<id>))
+
+  get-var-dependencies =
+    collect(?Var(<!(<id>,<id>)>))
+
+  EvalExp = 
+    EvalAdd <+ EvalMul <+ EvalSub <+ EvalDiv <+ EvalMod
+    <+ EvalLt <+ EvalGt <+ EvalEqu <+ EvalNeq
+
+  is-var = 
+    ?Var(_)
+
+  is-value = 
+    ?Int(_) <+ ?String(_)
+
+  is-pure-exp = 
+    ?Var(_) <+ ?Int(_) <+ ?String(_) 
+    <+ is-bin-op#([is-pure-exp, is-pure-exp])
+    
+  is-bin-op = 
+    ?"Or" <+ ?"And" <+ ?"Neq" <+ ?"Equ" <+ ?"Gt" <+ ?"Lt" <+ ?"Sub"
+    <+ ?"Add" <+ ?"Mod" <+ ?"Div" <+ ?"Mul"

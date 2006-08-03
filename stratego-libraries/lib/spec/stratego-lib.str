@@ -1,0 +1,73 @@
+module stratego-lib
+imports
+  collection/hash-table/common
+  collection/hash-table/nested
+  collection/hash-table/scoped-finite-map
+  collection/list/bag
+  collection/list/common
+  collection/list/cons
+  collection/list/filter
+  collection/list/index
+  collection/list/integer
+  collection/list/lookup
+  collection/list/set
+  collection/list/sort
+  collection/list/zip
+  collection/set/indexed
+  collection/tuple/common
+  collection/tuple/cons
+
+  lang/dynamic-rules
+
+  strategy/collect
+  strategy/conditional
+  strategy/general/free-variables
+  strategy/general/memo
+  strategy/general/option
+  strategy/general/parenthesize
+  strategy/general/rename
+  strategy/general/substitution
+  strategy/general/unification
+  strategy/iteration
+  strategy/pack/common
+  strategy/pack/graph
+  strategy/pack/modules
+
+  strategy/traversal/simple
+  strategy/traversal/list
+  strategy/traversal/fixpoint
+  strategy/traversal/environment
+  strategy/traversal/list-environment
+
+  system/io/char
+  system/io/dir
+  system/io/file
+  system/io/pipe
+  system/io/process
+  system/io/term
+
+  system/posix/error
+  system/posix/file
+  system/posix/process
+  system/posix/signal
+
+  term/annotation
+  term/common
+  term/integer
+  term/placeholder
+  term/properties
+  term/share
+  term/string
+  term/real
+  term/zip
+
+  util/config/common
+  util/config/keep
+  util/config/options
+  util/config/parse-options
+  util/config/verbose
+
+  util/date-format
+  util/log
+  util/sunit
+  util/time

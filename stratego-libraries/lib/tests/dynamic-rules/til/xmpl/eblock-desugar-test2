@@ -1,0 +1,17 @@
+#! /bin/sh -v 
+
+sglri -p ../til-eblock/TIL-eblocks.tbl -i eblock-desugar-test2.til |\
+../sim/til-simplify |\
+../renaming/til-rename-vars |\
+../til-eblock/til-eblock-desugar -o eblock-desugar-test2.des.til
+
+ast2text -p ../pp/TIL-pretty.pp \
+	-i eblock-desugar-test2.des.til \
+	-o eblock-desugar-test2.txt
+
+../opt/til-copyprop-rev -i eblock-desugar-test2.des.til |\
+../opt/til-forward-subst |\
+../opt/til-copyprop |\
+../opt/til-propconst |\
+../opt/til-dce |\
+ast2text -p ../pp/TIL-pretty.pp -o eblock-desugar-test2.cp.txt

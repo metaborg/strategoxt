@@ -1,0 +1,285 @@
+/**
+ * Handling command line options.
+ */
+module util/config/options
+imports 
+
+  system/io/char
+  system/io/pipe
+  system/io/term
+  system/io/dir
+  system/io/file
+  system/io/process
+  
+  util/config/parse-options 
+  util/config/common 
+  util/config/verbose 
+  util/config/keep 
+  util/time 
+  util/log
+
+  term/string
+strategies
+
+  /**
+   * Wraps a strategy into a strategy handling options and io of terms.
+   *
+   * @param  strategy to apply on the input term
+   */
+  io-wrap(s) = 
+    io-wrap(fail, s)
+
+  /**
+   * Wraps a strategy into a strategy handling options and io of terms.
+   *
+   * @param   extra options besides the default io-options
+   *          use fail if you have no additional options.
+   * @param   strategy to apply on the input term
+   */
+  io-wrap(extra-opts, s) =
+    io-wrap(extra-opts, system-usage, system-about, s)
+
+  /**
+   *
+   * @param   extra options besides the default io-options.
+   *          use fail if you have no additional options.
+   *
+   * @param   strategy to apply on the input term
+   */
+  io-wrap(extra-opts, usage, about, s) =
+    option-wrap(extra-opts <+ io-options,  usage, about, id, io(s))
+
+  output-wrap(s) =
+    output-wrap(fail, s)
+
+  output-wrap(extra-opts, s) =
+    option-wrap(extra-opts <+ output-options,  output(s))
+
+  input-wrap(s) =
+    input-wrap(fail, s)
+
+  input-wrap(extra-opts, s) =
+    option-wrap(extra-opts <+ input-options,  input(s))
+
+strategies
+
+  /**
+   * Wraps a strategy into a strategy that handles io options.
+   *
+   * Reads a term from the file specified by the -i option (or stdin).
+   * Writes to a file specified by the -o option (or stdout).
+   *
+   * @param   strategy to apply on the input term
+   */
+  io(s) =
+    input(output(s))
+
+ /**
+  * Wraps a strategy into a strategy that handles output options.
+  *
+  * Writes to a file specified by the -o option (or stdout).
+  */ 
+  output(s) =
+      s
+    ; !(<<get-config> "-o" <+ !stdout()>, <id>)
+    ; ( where(<get-config> "-b") < WriteToBinaryFile + WriteToTextFile )
+
+ /**
+  * Wraps a strategy into a strategy that handles input options.
+  *
+  * Reads a term from the file specified by the -i option (or stdin).
+  */ 
+  input(s) =
+      ( <get-config> "-i" <+ !stdin() )
+    ; ReadFromFile
+    ; s
+
+/**
+ * Stream based wrappers
+ */
+strategies
+
+  /**
+   * Wraps a strategy into a strategy that handles input and output options.
+   * The strategy arguments is appied to a tuple of stream: the input and the output stream. 
+   *
+   * @param (Stream, Stream) -> _
+   */
+  io-stream-wrap(s) = 
+    io-stream-wrap(fail, s)
+
+  io-stream-wrap(extra-opts, s) =
+    io-stream-wrap(extra-opts, system-usage, system-about, s)
+
+  io-stream-wrap(extra-opts, usage, about, s) =
+    option-wrap(extra-opts <+ io-options,  usage, about, id, io-stream(s))
+
+  io-stream(s) =
+      fout := <get-config; <open-stream> (<id>, "w") <+ stdout-stream> "-o"
+    ; fin  := <get-config; <open-stream> (<id>, "r") <+ stdin-stream>  "-i"
+    ; if <s> (fin, fout) then
+        try(<fclose> fout); try(<fclose> fin)
+        ; report-success
+      else
+        try(<fclose> fout); try(<fclose> fin)     
+        ; report-failure
+      end
+
+strategies
+
+  option-wrap(opts, s) =
+    option-wrap(opts, system-usage, id, s)
+
+  option-wrap(opts, usage, announce, s) =
+    option-wrap(opts, usage, system-about, announce, s)
+
+  /**
+   * Read options, display help, report success or failure, call strategy
+   */
+  option-wrap(opts, usage, about, announce, s) =
+    parse-options(opts, usage, about)
+    ; announce
+    ; (s; report-success <+ report-failure)
+
+strategies
+
+  /**
+   * Handles all common options for a transformation tool.
+   */
+  io-options =
+      input-option
+    + aterm-output-option
+    + general-options
+
+  input-options =
+      input-option
+    + general-options
+
+  output-options =
+      aterm-output-option
+    + general-options
+
+  general-options =
+      verbose-option
+    + keep-option
+    + statistics-option
+    + aterm-lib-options
+
+ /** 
+  * Allow all flag starting with -at-* (these are ATerm library flags)
+  */
+  aterm-lib-options =
+    Option(
+      string-starts-with(|"-at-")
+	  , id
+	  , fail
+    )
+
+
+
+  /**
+   * Option specifcation for level of keeping intermediate results.
+   */
+  keep-option =
+    ArgOption("-k" + "--keep"
+    , where(<set-config> ("--keep", <string-to-int>))
+    , !"-k i | --keep i  Keep intermediates (default 0)"
+    )
+
+  /**
+   * Option specifcation for level of statistics printing
+   */
+  statistics-option =
+    ArgOption("--statistics"
+    , where(<set-config> ("--statistics", <string-to-int>))
+    , !"--statistics i   Print statistics (default 0 = none)"
+    )
+
+  /**
+   * Option specifications for reading input.
+   *
+   * Defines -i.
+   */
+  input-option =
+    ArgOption("-i" + "--input"
+    , where(<set-config> ("-i",<id>))
+    , !"-i f|--input f   Read input from f"
+    )
+
+  /**
+   * Option specifications for writing output.
+   *
+   * Defines -o.
+   */
+  output-option =
+    ArgOption("-o" + "--output"
+    , where(<set-config> ("-o",<id>))
+    , !"-o f|--output f  Write output to f" 
+    )
+
+  /**
+   * Option specifications for ATerm output.
+   *
+   * Defines -b option for binary output.
+   */
+  aterm-output-option =
+      output-option
+    + Option("-b"
+      , where(<set-config> ("-b",()))
+      , !"-b               Write binary output"
+      )
+
+  /**
+   * Option specifications for verbosity.
+   *
+   * Defines -S, --silent, --verbose and -s.
+   */
+  verbose-option =
+      Option("-S"+"--silent"
+      , where(<set-verbosity> 0)
+      , !"-S|--silent      Silent execution (same as --verbose 0)"
+      )
+    + ArgOption("--verbose"
+      , where(verbose-to-int; set-verbosity)
+      , !"--verbose i      Verbosity level i (default 1)
+                    ( i as a number or as a verbosity descriptor:
+                      emergency, alert, critical, error, 
+                      warning, notice, info, debug, vomit )"
+      )
+
+strategies
+
+  verbose-to-int = 
+      string-to-level
+        <+
+      string-to-int
+  
+  need-help(u) =
+    <get-config> "--help"
+    ; u
+
+  if-not-silent(s) =
+    test(verbosity => 0) <+ s
+
+  report-success =
+      report-run-time
+    ; <exit> 0
+
+  report-failure =
+      report-run-time
+    ; <fprintnl> (stderr, [<whoami> (), ": rewriting failed"])
+    ; <exit> 1
+
+  /**
+   * Outputs the name of the program and the run time in seconds to
+   * stderr.
+   */
+  report-run-time = 
+    if <geq>(<get-config> "--statistics", 1) then
+      <fprintnl> (stderr,
+        [<whoami> (), " (", <run-time>, " secs)"]
+      )
+    end
+
+  whoami =
+    <get-config> "program"

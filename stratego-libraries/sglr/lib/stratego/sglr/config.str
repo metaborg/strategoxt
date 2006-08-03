@@ -1,0 +1,136 @@
+/**
+ * Configuration of SGLR.
+ *
+ * @author Martin Bravenboer
+ */
+module stratego/sglr/config
+imports
+   stratego/sglr/filter
+
+strategies
+
+  set-default-sglr-config =
+    where(prim("STRSGLR_set_default_config"))
+
+/**
+ * Ambiguities
+ */
+strategies
+
+  /**
+   * Set if ambiguities are to be treated as errors.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-ambiguity-is-error(s) =
+    if s then
+      where(prim("STRSGLR_set_ambiguity_error_on"))
+    else
+      where(prim("STRSGLR_set_ambiguity_error_off"))
+    end
+
+  /**
+   * Succeeds if ambiguities are treated as errors.
+   *
+   * @type  t -> t
+   */
+  get-ambiguity-is-error =
+    where(prim("STRSGLR_get_ambiguity_error"))
+
+/**
+ * Cycle detection
+ */
+strategies
+
+  /**
+   * Set if cycles should be detected.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-cycle-detection(s) =
+    if s then
+      where(prim("STRSGLR_set_cycle_detection_on"))
+    else
+      where(prim("STRSGLR_set_cycle_detection_off"))
+    end
+
+/**
+ * Filtering
+ */
+strategies
+
+  /**
+   * Set if filtering is enabled.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-filtering(s) =
+    if s then
+      where(prim("STRSGLR_set_filtering_on"))
+    else
+      where(prim("STRSGLR_set_filtering_off"))
+    end
+
+/**
+ * Logging
+ */
+strategies
+
+  set-sglr-log-stream =
+    ?Stream(stream)
+    ; prim("STRSGLR_set_log_stream", stream)
+
+/**
+ * Statistics
+ */    
+strategies
+
+  /**
+   * Set if statistics are to be logged.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-sglr-log-statistics(s) =
+    if s then
+      where(prim("STRSGLR_set_log_statistics_on"))
+    else
+      where(prim("STRSGLR_set_log_statistics_off"))
+    end
+    
+  get-sglr-log-statistics =
+    where(prim("STRSGLR_get_log_statistics"))
+
+/**
+ * Parse tree format
+ */
+strategies
+
+  /**
+   * Sets the parse tree format to the specific format.
+   *
+   * @type ParseTreeFormat -> ParseTreeFormat
+   */
+  set-parse-tree-format =
+    ?AsFix2()
+    ; set-asfix2-format
+
+  set-parse-tree-format =    
+    ?AsFix2ME()  
+    ; set-asfix2me-format
+
+  /**
+   * Sets the parse tree format to AsFix2
+   */
+  set-asfix2-format =
+    where(prim("STRSGLR_set_asfix2_format"))
+
+  /**
+   * Sets the parse tree format to AsFix2ME
+   */
+  set-asfix2me-format =
+    where(prim("STRSGLR_set_asfix2me_format"))
+
+signature
+  constructors
+    AsFix2   : ParseTreeFormat
+    AsFix2ME : ParseTreeFormat
