@@ -51,7 +51,7 @@ struct str_frame
 
 #define sl_decl(par) \
   struct str_frame frame; \
-  frame.parent = par; 
+  frame.parent = (par); 
 
 #define sl_vars(n) \
   ATerm *sl_vars[n]; \
