@@ -118,7 +118,7 @@ int f_sl2(StrStaticLink sl, int x)
 }
 
 
-/* nested functions with higher-order args */
+/* nested functions with higher-order args (no longer supported)
 
 int f2(int k(int), int x) 
 {
@@ -133,12 +133,12 @@ int f2(int k(int), int x)
   }
   return g2(x + 1);
 }
+ */
 
 int foo(int x)
 {
   return 2 * x;
 }
-
 
 /* lifted functions with higher-order args as closures using macros */
 
@@ -178,7 +178,7 @@ int main(void)
   // fprintf(stdout, "f(3) = %d\n", f(3));
   fprintf(stdout, "f_sl(3) = %d\n", f_sl(NULL, 3));
   fprintf(stdout, "f_sl2(3) = %d\n", f_sl2(NULL, 3));
-  fprintf(stdout, "f2(3) = %d\n", f2(foo, 3));
+  // fprintf(stdout, "f2(3) = %d\n", f2(foo, 3));
 
   struct str_closure k = {foo_sl, NULL};
 
