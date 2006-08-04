@@ -22,8 +22,18 @@ strategies
     {| CurrentFrame, FrameOf, Escapes, Closure
      : init-current-frame
      ; alltd(declare-frame-of)
+     ; where(runtime-defs; alltd(declare-frame-of))
      ; alltd({?|[ f( a1* | a2* ) = s ]|}; ev)
      |}
+
+  runtime-defs = !|[
+    strategies
+      external _Id(|)
+      external _Fail(|)
+      external SRTS_all(S : ATerm -> ATerm|)
+      external SRTS_one(S : ATerm -> ATerm|)
+      external SRTS_some(S : ATerm -> ATerm|)
+  ]|
 
   init-current-frame =
     rules( CurrentFrame :+ _ -> "top-level" )
@@ -131,7 +141,7 @@ strategies
 	    // tricky: label should not have annotations, 
             // otherwise there is no match
           )
-   
+
   arg-should-be-closure :
     |[ f~{Frames(frames),ApplyClosure()}(|) ]| -> 
     |[ f~{Closure(f{}),Frames(frames)}(|) ]|
