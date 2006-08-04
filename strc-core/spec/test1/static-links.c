@@ -43,7 +43,9 @@ struct str_frame
 #define sl_fun_cl(i, s) (*(((s)->funs)+i))
 
 
-/* nested functions */
+/* nested functions (no longer supported) */
+
+/* 
 
 int f(int x) 
 {
@@ -60,6 +62,7 @@ int f(int x)
   return g(x + 1);
 }
 
+*/
 
 /* lifted functions */
 
@@ -172,7 +175,7 @@ int foo_sl(StrStaticLink sl, int x)
 
 int main(void)
 {
-  fprintf(stdout, "f(3) = %d\n", f(3));
+  // fprintf(stdout, "f(3) = %d\n", f(3));
   fprintf(stdout, "f_sl(3) = %d\n", f_sl(NULL, 3));
   fprintf(stdout, "f_sl2(3) = %d\n", f_sl2(NULL, 3));
   fprintf(stdout, "f2(3) = %d\n", f2(foo, 3));
