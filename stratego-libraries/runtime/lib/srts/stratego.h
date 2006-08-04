@@ -31,7 +31,6 @@ USA
 #include <aterm2.h>
 #include "stratego-config.h"
 #include "aterm-extension.h"  
-#include "stratego-dynamic-call.h"
 
 typedef struct str_frame *StrSL;
 typedef struct str_closure *StrCL;
@@ -77,6 +76,7 @@ struct str_frame
 #define cl_fun(cl) (cl->fun)
 #define cl_sl(cl) (cl->sl)
 
+#include "stratego-dynamic-call.h"
 
 /**
  * Global variable that is used to construct a linked list

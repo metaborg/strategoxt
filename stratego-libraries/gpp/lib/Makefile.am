@@ -11,7 +11,7 @@ BOOTCLEANFILES = pp-table-aterm.c libstratego-gpp.rtree libstratego-gpp.c $(gppl
 gpplib = stratego-gpp.str $(wildcard stratego/gpp/*.str)
 
 libstratego_gpp_la_SOURCES = libstratego-gpp.c pp-table-aterm.c
-libstratego_gpp_la_CFLAGS   = -Wall $(AM_CFLAGS)
+libstratego_gpp_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_gpp_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_gpp_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 libstratego_gpp_la_LIBADD   = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)

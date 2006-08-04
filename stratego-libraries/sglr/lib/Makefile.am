@@ -27,7 +27,7 @@ EXTRA_DIST = \
 
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
 
-libstratego_sglr_la_CFLAGS   = -Wall $(AM_CFLAGS)
+libstratego_sglr_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_sglr_la_CPPFLAGS = \
   $(STRATEGO_LIB_UNINSTALLED_CFLAGS) \

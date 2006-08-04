@@ -6,8 +6,8 @@ lib_LTLIBRARIES = libstratego-runtime.la
 
 libstratego_runtime_la_SOURCES = $(LIB_SOURCES)
 libstratego_runtime_la_LIBADD  = $(ATERM_LIBS)
-libstratego_runtime_la_CFLAGS  = -Wall
-libstratego_runtime_la_LDFLAGS = -avoid-version -no-undefined
+libstratego_runtime_la_CFLAGS  = $(STR_CFLAGS)
+libstratego_runtime_la_LDFLAGS = -avoid-version -no-undefined $(STR_LDFLAGS)
 
 LIB_SOURCES = \
   stratego.c \

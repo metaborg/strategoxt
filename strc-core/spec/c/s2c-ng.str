@@ -115,16 +115,26 @@ rules
 strategies
 
   register-strategies-function =
-    !c:fun-def|[
-	static void register_strategies(void)
+    where(l := <length; int-to-string; !IntConst(<id>)>)
+    ; !c:fun-def|[
+        static void register_strategies(void)
 	{
 	  int initial_size = 117 ;
 	  int max_load = 75;
+          struct str_closure *closures;
+          int closures_index = 0;
+
 	  if(strategy_table == NULL) 
 	    strategy_table = ATtableCreate(initial_size,max_load);
+
+          closures = (struct str_closure *) malloc(sizeof(struct str_closure) * ~exp:l );
+          if(closures == NULL) {
+            perror("\"malloc error for registration of dynamic strategies\"");
+            exit(1);
+          }
 	  ~stm*:<id>
 	}
-     ]|
+      ]|
 
 strategies
 
@@ -264,11 +274,16 @@ strategies
     + ?Def|[ external f(a1* | a2*) = s ]|
     + ?Def|[ external f(a1* | a2*) ]| 
     )
-    ; !stm|[ 
-         SRTS_register_function( 
-           (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue)),
-           ~id:f
-         ) ; 
+    ; !stm|[
+        {
+          closures[closures_index].fun = &(~id:f);
+          closures[closures_index].sl = NULL;
+          SRTS_register_function(
+              (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue))
+            , &(closures[closures_index])
+            );
+          closures_index++;
+        }
        ]|
 
 /**
@@ -633,10 +648,9 @@ rules
     CallDynamic(tp,s*,t*) -> 
     <check-unbound-args(|F,[tp,t*])>
     stm |[ 
-      { 
-        t = (SRTS_lookup_function(~exp:e))(NULL,~exp*:args);
-        // Note: instead of NULL, a proper static link should
-        // be passed; but what *is* the proper static link?
+      {
+        StrCL ~id:f = SRTS_lookup_function(~exp:e);
+        t = cl_fun(~id:f)(cl_sl(~id:f), ~exp*:args);
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
@@ -644,7 +658,7 @@ rules
         ; args2 := <map(topdown(try(construct-term)))> t*
         ; args  := <concat>[args1, args2, [Id("t")]]
 	; e     := <topdown(try(construct-term))>tp
-
+        ; f     := <newname> "calldynamic"
 
 /**
  * Matching
