@@ -4,3 +4,5 @@
 module strc
 imports
   stratego/strc/-
+
+//  stratego/strc/front/-

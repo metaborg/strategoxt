@@ -1,0 +1,44 @@
+/**
+ * Translate rewrite rules to strategy definitions.
+ */
+
+module rules-to-sdefs
+imports Stratego-Sugar 
+	stratego/strc/lib/stratlib
+strategies
+
+  rules-to-sdefs =
+    alltd(Strategies(map(try(RDtoSD + DeclareVariables); replace-call-and-rdef)))
+
+rules
+
+  RDtoSD : 
+    RDef(f, xs, r) -> SDefT(f, xs, [], Scope(<tvars> r, SRule(r)))
+
+  RDtoSD : 
+    RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), SRule(r)))
+    where <declared-vars> ys => ys'
+        ; <tvars> r => vs
+
+  DeclareVariables :
+    SDef(f, xs, s) -> SDefT(f, xs, [], Scope(<tvars> s, s))
+
+  DeclareVariables :
+    SDefT(f, xs, ys, s) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), s))
+    where <declared-vars> ys => ys'
+        ; <tvars> s => vs
+
+//  ExpandCall :
+//    Call(f, ss) -> CallT(f, ss, [])
+
+  replace-call-and-rdef =
+    topdown(try(/* ExpandCall + */ let-rdef-to-sdef))
+
+  let-rdef-to-sdef = 
+    let 
+     rdef-to-sdef = 
+       \ RDef(f, xs, r)      -> SDefT(f, xs, [], SRule(r)) \
+     + \ RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, SRule(r)) \
+    in
+      Let(list(try(rdef-to-sdef)),id)
+    end

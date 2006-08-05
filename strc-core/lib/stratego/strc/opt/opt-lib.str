@@ -1,0 +1,9 @@
+module opt-lib
+imports Stratego
+strategies
+
+  apply-to-bodies(s) = 
+    Specification([id, id, Strategies(map(try(SDefT(id,id,id,s))))])
+
+  apply-to-bodies(s) = 
+    Specification([id, Strategies(map(try(SDefT(id,id,id,s))))])

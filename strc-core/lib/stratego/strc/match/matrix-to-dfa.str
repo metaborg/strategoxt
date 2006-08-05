@@ -1,0 +1,259 @@
+// Translating renamed matrix to automaton
+
+module matrix-to-dfa
+imports matrix stratego-laws desugar match-to-matrix DefaultStrat
+
+strategies
+
+  // scope rule fro MatrixSeenBefore should be improved; don't memo inside
+  // local functions; goto's from/to those functions don't work; this entails
+  // resetting the set of rules that are valid inside the let definitions
+
+  matrix-to-dfa = 
+    {| MatrixSeenBefore :
+       rec x(repeat(reduce-matrix + MatrixScope + Simplify); all(x))
+    |}
+
+  reduce-matrix = 
+    //MatrixSeenBefore 
+    fail
+    <+ MatrixRowsEmpty
+    <+ SkipWild
+    <+ ShiftColumn
+    <+ SingletonMatrix 
+    <+ Mixture
+
+rules
+
+  MatrixScope :
+    Matrix(ps, rows) -> 
+    Let(sdefs, Scope(ps, Seq(Assign(Var([0])), Matrix(rows'))))
+    where <unzip(/* Row(id,simplify-widen); */ RowLet(|ps)); (concat,id)> rows => (sdefs, rows')
+
+  RowLet(|ps):
+    Row(ts, s) -> ([], Row([], ts, s))
+    where <simple-strategy> s
+
+  RowLet(|ps) :
+    Row(ts1, s) -> 
+    ([SDefT(f, [], as, s)], Row([], ts1, CallT(SVar(f), [], ts2)))
+    where <not(simple-strategy)> s; new => f
+        //; <debug(!"RowLet: ")> Row(ts1, s)
+        ; < tvars-matrix
+          ; <isect>(<id>, ps)
+          ; unzip(!(VarDec(<id>,DefaultTerm), Var(<id>)))
+          > s => (as, ts2)
+        //; debug(!"Free variables: ")
+
+  tvars-matrix =
+    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8 + MatrixBind, tvars-matrix-boundin)
+
+  tvars-matrix-boundin(bnd, ubnd, ignore) = 
+    tboundin(bnd, ubnd, ignore) + Matrix(ignore, bnd)
+
+  MatrixBind :
+    Matrix(ps, rows) -> ps
+
+strategies
+
+  simple-strategy =
+    //debug(!"simple-strategy?: ");
+    rec x(
+      Id 
+      + Fail 
+      + Build(id)
+      + Assign(Var(id),Var(id))
+      + Match(Var(id))
+      + Prim(id,id) 
+      + CallT(id,id,id)
+      + Seq(x, x)
+      + map(x); seqs
+      + Scope(id, x)
+    )
+    //; debug(!"yes: ")
+
+rules
+
+  // Matrix has only one row
+
+  SingletonMatrix :
+    Matrix([Row(t1*, t2*, s)]) -> s'    
+    where <foldr(!s, !Seq(<Fst>,<Snd>), 
+                 !Seq(Build(<offset>), Match(<matrix-pat-to-term>)))> [t1*, t2*] => s'
+
+  matrix-pat-to-term =
+    ?As(Off(p), <id>)
+    ; topdown(try( 
+        \ As(Off(p), Wld) -> Var(p) \
+        <+ \ As(Off(p), t) -> As(Var(p), t) \
+        <+ \ Anno(pt1, As(Off(p), Anno(pt2, As(Off(p'), Wld)))) -> 
+           Anno(pt1, As(Var(p), pt2)) \
+      ))
+
+  // All rows are empty
+
+  MatrixRowsEmpty : 
+    Matrix(rows) -> <lchoices> states
+    where <map(\ Row([],[],s) -> s \ )> rows => states
+
+  // The next column contains only wildcards
+
+  SkipWild : 
+    Matrix(rows) -> Matrix(rows')
+    where <map(Row(id, ?[As(_,Wld)|<id>], id))> rows => rows'
+
+  // The next column contains a mixture of constructors and wildcards
+  // Move it to the first list for later consideration
+
+  ShiftColumn :
+    Matrix(rows) -> Matrix(rows')
+    where <not(map(Row([As(id,not(Wld))|id],id,id)))> rows;
+	  <map(ShiftColumnRow)> rows => rows'
+
+  ShiftColumnRow :
+    Row(ts1, [t | ts2], s) -> Row([t | ts1], ts2, s)
+
+  // The last column contains at least one constructor and possibly 
+  // a mixture of wildcards and constructors.
+  // The outedges are the constructors that are matched against.
+  // For each constructor there is a transition. The default state is
+  // the one reachable when none of the constructors match, i.e., reachable
+  // through a wildcard.
+
+  Mixture :
+    Matrix(rows) -> Case(label, Var(path), alts, def)
+    where //debug(!"a: ")
+	<get-row-path> rows => path
+	//; debug(!"b: ")
+	; <outedges> rows => cs
+	//; debug(!"c: ")
+	; <transitions> (rows, cs) => alts
+	//; debug(!"d: ")
+	; <default-state> rows => def
+	//; debug(!"e: ")
+	; new => label
+	//; debug(!"f: ")
+	; rules(MatrixSeenBefore : Matrix(rows) -> Continue(label))
+
+  get-row-path =
+    ?[Row([As(Off(<id>),_) | _], _, _) | _]
+
+strategies
+
+  // Get the outgoing edges for a state, i.e., the list of 
+  // constructor name and its arguments from the 
+  // first column of a row
+
+  outedges = 
+    filter(ConsArgs); uniq
+
+  offsets = 
+    map(offset)
+
+  offset :
+    As(Off(p), t) -> Var(p)
+
+rules
+
+  ConsArgs :
+    Row([As(_, Anno(Op(c,t*),pt))|_], _, _) -> 
+    (Fun(c, <length> t*), <offsets> [t*], <offset> pt)
+
+  ConsArgs :
+    Row([As(Off(p), Op(c,t*))|_], _, _) -> 
+    (Fun(c, <length> t*), <offsets> [t*], ["a" | p])
+
+  ConsArgs :
+    Row([As(_, Anno(Int(n),pt))|_], _, _) -> (Int(n), [], <offset> pt)
+
+  ConsArgs :
+    Row([As(_, Anno(Real(n),pt))|_], _, _) -> (Real(n), [], <offset> pt)
+
+  ConsArgs :
+    Row([As(_, Anno(Str(x),pt))|_], _, _) -> (Str(x), [], <offset> pt)
+
+  ConsArgs :
+    Row([As(_, Anno(Wld,pt))|_], _, _) -> (Wld , [], <offset> pt)
+
+strategies
+
+  // Compute the transitions
+
+  transitions = 
+    rzip(Transition)
+
+rules
+
+  Transition :
+    (rows, (c, args, ann)) -> Alt(c, args, ann, Matrix(rows'))
+    where <filter(ConsTransition(MatchCons(|c, args, ann)))> rows => rows'
+
+  // map a row onto the row of patterns left to match after the 
+  // given constructor is matched. Shift the new patterns to the
+  // list of unprocessed patterns on the right.
+
+  ConsTransition(match-cons) :
+    Row([As(_, t) | pats], pats', fin) -> 
+    Row(pats, <conc> (pats'', pats'), fin)
+    where <match-cons> t => pats''
+
+  MatchCons(|c', args, ann) :
+    Anno(Op(c, t*), pt) -> [t*,pt]
+    where !c' => Fun(c, ar); <eq> (<length> t*, ar)
+
+  MatchCons(|c', args, ann) :
+    Op(c, t*) -> [t*, As(Off(ann),Wld)]
+    where !c' => Fun(c, ar); <eq> (<length> t*, ar)
+
+  MatchCons(|c, args, ann) :
+    Anno(Str(x),pt) -> [pt]
+    where !c => Str(x); !args => []
+
+  MatchCons(|c, args, ann) :
+    Anno(Real(r),pt) -> [pt]
+    where !c => Real(r); !args => []
+
+  MatchCons(|c, args, ann) :
+    Anno(Int(n),pt) -> [pt]
+    where !c => Int(n); !args => []
+
+  MatchCons(|c, args, ann) :
+    Wld -> [t*, As(Off(ann),Wld)]
+    where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
+
+  MatchCons(|c, args, ann) :
+    Anno(Wld,pt) -> [t*, pt]
+    where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
+
+strategies
+
+  // Get the default state (reachable via wildcards)
+
+  default-state = 
+    filter(WildPat)
+    ; !Matrix(<id>)
+
+  WildPat :
+    Row([As(_, Wld) | pats], pats', fin) -> Row(pats, pats', fin)
+
+
+/*
+    Pattern match compilation for Stratego
+
+    Copyright (C) 2003, 2005 Eelco Visser <visser@acm.org>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+
+*/

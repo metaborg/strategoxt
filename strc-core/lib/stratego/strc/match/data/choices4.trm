@@ -1,0 +1,4 @@
+Choice(Seq(Match(Op("F",[Op("A",[]),Op("H",[])])),Build(Op("C",[]))),
+       Scope(["x_9"],
+             Seq(Match(Op("F",[Var("x_9"),Op("G",[Op("B",[]),Var("x_9")])])),
+                 Build(Op("B",[])))))

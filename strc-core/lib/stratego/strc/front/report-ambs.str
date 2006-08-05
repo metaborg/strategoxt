@@ -1,0 +1,45 @@
+module report-ambs
+imports 
+  libstratego-xtc
+  Stratego
+
+signature
+  constructors
+    amb : List(Term) -> Term
+
+strategies
+
+  report-ambs =
+    {| current-definition : 
+        try(where(definition))
+      ; ( report-amb <+ all(report-ambs) )
+    |}
+
+  definition =
+    ( ?SDef(<id>,_,_)
+    + ?SDefNoArgs(<id>,_)
+    + ?SDefT(<id>,_,_,_) 
+    ) => name 
+    ; rules( current-definition : _ -> ("strategy",name) )
+ 
+  definition =
+    ( ?RDef(<id>,_,_)
+    + ?RDefNoArgs(<id>,_)
+    + ?RDefT(<id>,_,_,_) 
+    ) => name 
+    ; rules( current-definition : _ -> ("rule",name) )
+
+  report-amb =
+    ?amb(_) 
+  ; where( current-definition => (type, name) )
+
+  ; xtc-temp-files( 
+      write-to
+    ; xtc-transform(!"pp-stratego",!["--abstract"])
+
+    ; FILE(read-text-file => pp)
+    )
+ 
+  ; log(|Error(),["Ambiguity found in ",type, " ",name])
+  ; say(!pp) 
+ 

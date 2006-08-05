@@ -1,0 +1,2 @@
+Matrix([Row([Op("F",[Op("A",[]), Var("x")])], 1),
+        Row([Op("F",[Var("y"),   Op("G", [Op("B",[]),Op("C",[])])])], 2)])

@@ -1,0 +1,8 @@
+module inline
+imports inlining libstratego-lib
+
+strategies
+
+  inline-io = io-wrap(inline-strategies)
+
+

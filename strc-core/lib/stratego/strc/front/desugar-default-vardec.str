@@ -1,0 +1,26 @@
+module desugar-default-vardec
+
+imports Stratego-Sugar 
+	stratego/strc/front/desugar 
+	stratego/strc/lib/stratlib
+
+rules // variable declarations
+
+  desugar-DefaultVarDec =
+    topdown(try(DesugarDefaultVarDec))
+
+  DesugarDefaultVarDec :
+    SDefT(f, s1, t1, s) -> SDefT(f, s2, t2, s)
+    where <map(try(MkFunType))> s1 => s2
+        ; <map(try(MkConstType))> t1 => t2
+
+  DesugarDefaultVarDec :
+    ExtSDef(f, s1, t1) -> ExtSDef(f, s2, t2)
+    where <map(try(MkFunType))> s1 => s2
+        ; <map(try(MkConstType))> t1 => t2
+
+  MkFunType :
+    DefaultVarDec(x)-> VarDec(x, DefaultStrat)
+
+  MkConstType :
+    DefaultVarDec(x)-> VarDec(x, DefaultTerm)
