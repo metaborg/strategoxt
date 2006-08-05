@@ -1,0 +1,6 @@
+/**
+ * Stratego Compiler Library
+ */
+module strc
+imports
+  stratego/strc/-

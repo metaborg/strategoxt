@@ -1,5 +1,5 @@
 AC_PREREQ([2.58])
-AC_INIT([strc-core],[0.17M1],[stratego-bugs@cs.uu.nl])
+AC_INIT([strc-core],[0.17M2],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
@@ -18,6 +18,10 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
   Makefile 
+
+  strc.pc
+  lib/Makefile
+
   spec/Makefile 
 
   spec/c/Makefile 
