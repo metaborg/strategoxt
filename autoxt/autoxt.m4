@@ -20,6 +20,10 @@ AC_DEFUN([XT_SETUP],
   AC_REQUIRE([XT_DARWIN])
   AC_REQUIRE([XT_CHECK_LINKING])
   AC_REQUIRE([XT_ENABLE_XTC_REGISTER])
+  AC_REQUIRE([XT_STRICT_ISO_C99])
+
+  AC_SUBST([STR_CFLAGS])
+  AC_SUBST([STR_LDFLAGS])
 ])
 
 # XT_DARWIN
@@ -44,6 +48,26 @@ AC_DEFUN([XT_DARWIN],
   AM_CONDITIONAL([XT_DARWIN], [test "$xt_darwin" = "yes"])
 ])
 
+# XT_STRICT_ISO_C99
+# -----------------
+AC_DEFUN([XT_STRICT_ISO_C99],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  if test "x$GCC" = "xyes"; then
+    STR_CFLAGS="${STR_CFLAGS} -std=c99 -Wall -pedantic -Wno-unused-label -Wno-unused-variable"
+  fi
+
+  AC_ARG_ENABLE([werror],
+    [AS_HELP_STRING([--enable-werror],[compile C sources using -Werror @<:@default=no@:>@])],
+    [enable_werror=yes],
+    [])
+
+  if test "x$enable_werror" = "xyes"; then
+    STR_CFLAGS="${STR_CFLAGS} -Werror"
+  fi
+])
+
 # XT_CHECK_LINKING
 # ---------
 # Figure out how to link Stratego programs. This should actually be checked, but
@@ -59,8 +83,6 @@ AC_DEFUN([XT_CHECK_LINKING],
   else
     AC_MSG_RESULT([no])
   fi
-
-  AC_SUBST([STR_LDFLAGS])
 ])
 
 ############################################## FIND AND CHECK PACKAGES ##############################

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <srts/stratego.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -184,6 +185,7 @@ ATerm SSL_getenv(ATerm name)
   return (ATerm)ATmakeString(value);
 }
 
+/*
 // Note: this auxiliary function need not be defined if setenv is
 // implemented; platform dependent.
 
@@ -207,7 +209,7 @@ static int ssl_aux_setenv( const char* name, const char* value, int overwrite )
    
    return status;
 }
- 
+*/
 
 ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite)
 {
@@ -215,11 +217,8 @@ ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite)
   if(!t_is_string(value)) _fail(value);
   if(!ATisInt(overwrite)) _fail(overwrite);
 
-  ssl_aux_setenv(ATgetName(ATgetSymbol(name)), 
-		 ATgetName(ATgetSymbol(value)), 
-		 ATgetInt((ATermInt)overwrite));
+  setenv(ATgetName(ATgetSymbol(name)), ATgetName(ATgetSymbol(value)), ATgetInt((ATermInt)overwrite));
 
   return (ATerm)ATempty;
 }
-
 

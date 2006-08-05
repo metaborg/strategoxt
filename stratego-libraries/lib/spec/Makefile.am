@@ -37,7 +37,7 @@ strategolib = \
 lib_LTLIBRARIES = libstratego-lib.la
 
 libstratego_lib_la_SOURCES  = libstratego-lib.c
-libstratego_lib_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)
+libstratego_lib_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS) -D_XOPEN_SOURCE=600
 libstratego_lib_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_lib_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_lib_la_LIBADD   = \

@@ -3,7 +3,7 @@ lib_LTLIBRARIES = libjustsglr.la
 
 libjustsglr_la_SOURCES = $(LIB_SOURCES)
 libjustsglr_la_LIBADD  = $(ATERM_LIBS)
-libjustsglr_la_CFLAGS  = $(STR_CFLAGS)
+libjustsglr_la_CFLAGS  = 
 libjustsglr_la_LDFLAGS = -avoid-version -no-undefined
 
 LIB_SOURCES = $(libErrorAPI) $(libmept) $(libsglr)

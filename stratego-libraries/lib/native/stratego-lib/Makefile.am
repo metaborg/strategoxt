@@ -23,7 +23,7 @@ lib_LTLIBRARIES = libstratego-lib-native.la
 
 libstratego_lib_native_la_SOURCES  = $(LIB_SOURCES)
 libstratego_lib_native_la_LIBADD   = $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) $(ATERM_LIBS) -lm
-libstratego_lib_native_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)
+libstratego_lib_native_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS) -D_XOPEN_SOURCE=600
 libstratego_lib_native_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_lib_native_la_LDFLAGS  = -avoid-version -no-undefined
 

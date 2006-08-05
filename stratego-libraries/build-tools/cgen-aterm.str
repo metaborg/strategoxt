@@ -46,7 +46,7 @@ strategies
 
 ATerm ", <get-config> FunctionName(), "_0_0(ATerm t) {
   static ATerm result = NULL;
-  static const char parsetable[] = {
+  static char parsetable[] = {
     "], <stdout-stream>)
     )
 

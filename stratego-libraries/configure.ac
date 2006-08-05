@@ -9,9 +9,6 @@ XT_INTERNAL_USE_XT_PACKAGES
 XT_CHECK_MKSTEMP
 XT_DISABLE_XTC_REGISTER
 
-# STR_CFLAGS="${STR_CFLAGS} -std=c99 -Wall -pedantic -Wno-unused-label -Wno-unused-variable -Werror"
-
-AC_CHECK_FUNCS([getpagesize mkdtemp])
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([string.h])
 AC_CHECK_HEADERS([unistd.h])
