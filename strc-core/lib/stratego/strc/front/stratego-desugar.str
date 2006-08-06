@@ -1,5 +1,7 @@
 module stratego-desugar
-imports libstratego-lib Stratego-Sugar desugar-hl
+imports libstratego-lib 
+	Stratego-Sugar 
+	stratego/strc/front/desugar-hl
 
 signature
   constructors

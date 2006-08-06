@@ -8,8 +8,8 @@ module desugar
 
 imports 
   Stratego-Sugar
-  stratego/strc/front/DefaultStrat 
-  stratego/strc/lib/stratlib 
+  stratego/strc/lib/stratlib
+  stratego/strc/front/DefaultStrat
   stratego/strc/front/stratego-desugar
   stratego/strc/front/desugar-hl
 

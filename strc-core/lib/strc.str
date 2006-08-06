@@ -3,6 +3,10 @@
  */
 module strc
 imports
-  stratego/strc/-
 
-//  stratego/strc/front/-
+  stratego/strc/lib/stratlib
+
+  stratego/strc/front/DefaultStrat
+  stratego/strc/front/desugar
+  stratego/strc/front/desugar-hl
+  stratego/strc/front/stratego-desugar

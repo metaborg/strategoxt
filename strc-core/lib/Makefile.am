@@ -10,19 +10,23 @@ BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree)
 
 strclib = \
 	strc.str \
-	$(wildcard stratego/strc/*.str) 
-
-#	$(wildcard stratego/strc/front/*.str) \
-#	$(wildcard stratego/strc/c/*.str) \
-#	$(wildcard stratego/strc/lib/*.str) \
-#	$(wildcard stratego/strc/match/*.str) \
-#	$(wildcard stratego/strc/opt/*.str)
+	$(wildcard stratego/strc/*.str) \
+	$(wildcard stratego/strc/front/*.str) \
+	$(wildcard stratego/strc/c/*.str) \
+	$(wildcard stratego/strc/lib/*.str) \
+	$(wildcard stratego/strc/match/*.str) \
+	$(wildcard stratego/strc/opt/*.str)
 
 libstrc_la_SOURCES  = libstrc.c 
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
 libstrc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstrc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 libstrc_la_LIBADD   = 
+
+STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn \
+                   -I $(top_srcdir)/../stratego-front/sig \
+                   -I $(top_srcdir)/../c-tools/syn        \
+                   -I $(top_srcdir)/../c-tools/sig        
 
 STRCFLAGS = 
 
