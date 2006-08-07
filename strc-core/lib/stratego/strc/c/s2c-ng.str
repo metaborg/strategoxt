@@ -12,9 +12,6 @@ imports
 
 strategies
 
-  s2c-ng = 
-    io-wrap(s2c-options, compile)
- 
   compile = 
     init-term-caching
     ; TranslateSpec
