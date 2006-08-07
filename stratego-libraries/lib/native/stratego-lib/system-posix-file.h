@@ -4,8 +4,10 @@
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
 
+/**
+ * note: POSIX XSI extension
+ */
 #define SSL_P_tmpdir() ((ATerm)ATmakeString(P_tmpdir))
-
 
 ATerm SSL_stdin_stream(void);
 ATerm SSL_stdout_stream(void);
@@ -32,7 +34,14 @@ ATerm SSL_rmdir(ATerm);
 ATerm SSL_creat(ATerm);
 ATerm SSL_open(ATerm);
 
+/**
+ * note: POSIX XSI extension.
+ */
 ATerm SSL_mkstemp(ATerm);
+
+/**
+ * note: non standard.
+ */
 ATerm SSL_mkdtemp(ATerm);
 
 ATerm SSL_close(ATerm);

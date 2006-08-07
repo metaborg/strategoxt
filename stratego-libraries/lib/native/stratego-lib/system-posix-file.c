@@ -26,6 +26,8 @@ ATerm SSL_stderr_stream() {
 
 /**
  * Terminal I/O
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_isatty(ATerm filedes) {
   int val;
@@ -39,6 +41,8 @@ ATerm SSL_isatty(ATerm filedes) {
 
 /**
  * fopen
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_fopen(ATerm pathname, ATerm mode) {
   if(!ATisString(pathname)) 
@@ -57,6 +61,8 @@ ATerm SSL_fopen(ATerm pathname, ATerm mode) {
 
 /**
  * fclose
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_fclose(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
@@ -74,6 +80,8 @@ ATerm SSL_fclose(ATerm stream_term) {
 
 /**
  * fflush
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_fflush(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
@@ -89,6 +97,8 @@ ATerm SSL_fflush(ATerm stream_term) {
 
 /**
  * fputs
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
@@ -110,6 +120,8 @@ ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
 
 /**
  * puts
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_puts(ATerm str_term) {
   if(!ATisString(str_term)) 
@@ -127,6 +139,8 @@ ATerm SSL_puts(ATerm str_term) {
 
 /**
  * fputc
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_fputc(ATerm char_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
@@ -146,6 +160,8 @@ ATerm SSL_fputc(ATerm char_term, ATerm stream_term) {
 
 /**
  * fgetc
+ *
+ * Note: mandatory in C89 and C99.
  */
 ATerm SSL_fgetc(ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
@@ -205,6 +221,8 @@ char* path_alloc(int *size) {
 
 /**
  * Return the current directory
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_getcwd(void) {
   ATerm term_result;
@@ -224,6 +242,8 @@ ATerm SSL_getcwd(void) {
 
 /**
  * chdir
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_chdir(ATerm pathname) {
   if(!ATisString(pathname)) return NULL;
@@ -234,6 +254,8 @@ ATerm SSL_chdir(ATerm pathname) {
 
 /**
  * Create drectory, if it does not already exist.
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 {
@@ -248,6 +270,8 @@ ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 
 /**
  * Deletes a directory, which must be empty.
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_rmdir(ATerm pathname)
 {
@@ -258,6 +282,8 @@ ATerm SSL_rmdir(ATerm pathname)
 
 /**
  * creat
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_creat(ATerm pathname)
 {
@@ -274,6 +300,8 @@ ATerm SSL_creat(ATerm pathname)
 
 /**
  * open
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_open(ATerm pathname)
 {
@@ -336,7 +364,7 @@ int __internal__mkstemp(char *template) {
 #endif /* HAVE_MKSTEMP_LIMIT */
 
 /**
- * mkstemp
+ * note: mandatory POSIX XSI extension.
  */
 ATerm SSL_mkstemp(ATerm template) {
   char* result;
@@ -375,6 +403,8 @@ ATerm SSL_mkstemp(ATerm template) {
  * directory name unique.  The directory is then created with
  * permissions 0700.  Since it will be modified, template must not be
  * a string constant, but should be declared as a character array.
+ *
+ * note: non standard.
  */
 ATerm SSL_mkdtemp(ATerm template) {
   char* result;
@@ -406,6 +436,8 @@ ATerm SSL_mkdtemp(ATerm template) {
 
 /**
  * close
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_close(ATerm fd) {
   assert_is_int(fd);
@@ -416,6 +448,8 @@ ATerm SSL_close(ATerm fd) {
 
 /**
  * dup
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_dup(ATerm oldfd) {
   assert_is_int(oldfd);
@@ -430,6 +464,8 @@ ATerm SSL_dup(ATerm oldfd) {
 
 /**
  * dup2
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
   assert_is_int(fromfd);
@@ -517,6 +553,8 @@ ATerm SSL_access(ATerm path_term, ATerm perms_term) {
 
 /**
  * fdopen
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_fdopen(ATerm fd, ATerm mode) {
   assert_is_int(fd);
@@ -532,6 +570,8 @@ ATerm SSL_fdopen(ATerm fd, ATerm mode) {
 
 /**
  * fileno
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_fileno(ATerm stream_term) {
   FILE* stream = NULL; 
@@ -552,6 +592,8 @@ ATerm SSL_fileno(ATerm stream_term) {
 
 /**
  * filemode
+ *
+ * Note: mandatory in POSIX Base.
  */
 ATerm SSL_filemode(ATerm pathname)
 {
@@ -613,6 +655,9 @@ ATerm SSL_S_ISSOCK(ATerm mode)
   return mode;
 }
 
+/**
+ * Note: mandatory in POSIX Base.
+ */
 ATerm SSL_pipe(void)
 {
   int fd[2], res;
@@ -638,6 +683,3 @@ ATerm SSL_pipe(void)
   }
   return (ATerm) ATempty;
 }
-
-
-

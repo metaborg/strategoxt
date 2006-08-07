@@ -161,6 +161,9 @@ ATerm SSL_link(ATerm existingpath, ATerm newpath)
   return newpath;
 }
 
+/**
+ * Note: mandatory in C89 and C99, not in BSD
+ */
 ATerm SSL_remove(ATerm pathname)
 {
   if(!t_is_string(pathname))
@@ -172,6 +175,9 @@ ATerm SSL_remove(ATerm pathname)
   return (ATerm) ATempty;
 }
 
+/**
+ * Note: mandatory in C89 and C99
+ */
 ATerm SSL_getenv(ATerm name)
 {
   char *value;
@@ -185,32 +191,13 @@ ATerm SSL_getenv(ATerm name)
   return (ATerm)ATmakeString(value);
 }
 
-/*
-// Note: this auxiliary function need not be defined if setenv is
-// implemented; platform dependent.
-
-static int ssl_aux_setenv( const char* name, const char* value, int overwrite )
-{
-   char* env_str;
-   char* buf;
-   int   status;
-      
-   env_str = getenv( name );
-   if( env_str != NULL && overwrite == 0 )
-      return 0;
-   
-   buf = (char*)malloc( strlen( name ) + strlen( value ) + 1 + 1);
-   if( buf == NULL )
-      return -1;
-   
-   sprintf( buf, "%s=%s", name, value );
-   
-   status = putenv( buf );
-   
-   return status;
-}
-*/
-
+/**
+ * Note: mandatory in POSIX Base
+ *
+ * Note: setenv is mandatory in POSIX these days. putenv is 
+ * is a POSIX XSI extension, so using setenv should in the future
+ * be more portable than using putenv.
+ */
 ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite)
 {
   if(!t_is_string(name)) _fail(name);
