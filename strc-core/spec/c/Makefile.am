@@ -3,9 +3,7 @@ include $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
-libexec_PROGRAMS = s2c s2c-ng escaping-variables
-
-#s2c-classic 
+libexec_PROGRAMS = s2c-ng escaping-variables
 
 check_PROGRAMS 	 = C-simplify-test escaping-variables-test
 
@@ -26,9 +24,15 @@ STRINCLUDES	 = -I $(srcdir)/../../../stratego-front/syn \
 	  	   -I ../match				    \
 	  	   -I ../opt				    \
 	  	   -I ../front				    \
-	  	   -I ../lib 
+	  	   -I ../lib 				    \
+		   -I $(top_srcdir)/lib
+
+LIB_STRC 	 = -L$(top_srcdir)/lib -lstrc
 
 LDADD           += $(SSL_LIBS)
+
+s2c_ng_LDADD	 	= $(LIB_STRC) $(SSL_LIBS)
+C_simplify_test_LDADD	= $(LIB_STRC) $(SSL_LIBS)	 
 
 TESTS = C-simplify-test escaping-variables-test
 #canonicalize-test

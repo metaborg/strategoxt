@@ -1,10 +1,7 @@
 module simplify2
-imports stratego-laws opt-lib
+imports libstrc
 strategies
 
   simplify2-io =
     io-wrap(simplify2)
-
-  simplify2 =
-    apply-to-bodies(lift-term-args; simplify)
  

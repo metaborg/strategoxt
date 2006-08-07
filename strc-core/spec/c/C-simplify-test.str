@@ -1,5 +1,5 @@
 module C-simplify-test
-imports C-simplify libstratego-lib
+imports libstratego-lib libstrc
 strategies
 
   C-simplify-test = 

@@ -1,5 +1,5 @@
 module escaping-variables-test
-imports escaping-variables frame-composition
+imports libstrc
 
 signature
   constructors

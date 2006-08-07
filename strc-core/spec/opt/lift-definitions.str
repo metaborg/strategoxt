@@ -1,44 +1,6 @@
 module lift-definitions
-imports stratlib stratego-laws
+imports libstrc
 strategies
 
   lift-definitions-io =
     io-wrap(lift-definitions)
-
-  lift-definitions =
-    declare-standard-strategies
-    ; Specification([id, Strategies(map(DeclareTopLevel); map(lift-sdefs <+ ![<id>]); concat)])
-
-  declare-standard-strategies =
-    where(
-      <map({?f; rules(TopLevel : f -> ())})> 
-      ["_id", "_fail"]
-    )
-
-  DeclareTopLevel =
-    ?SDefT(f, xs, ys, s)
-    ; rules(TopLevel : f -> ())
-
-  DeclareTopLevel =
-    ?ExtSDefInl(f, xs, ys, s)
-    ; rules(TopLevel : f -> ())
-
-  DeclareTopLevel =
-    ?ExtSDef(f, xs, ys)
-    ; rules(TopLevel : f -> ())
-
-  lift-sdefs :
-    SDefT(f, xs, ys, s) -> <conc>(defs, [SDefT(f, xs, ys, s')])
-    where <collect-split(LiftFromLet)> s => (s', defs)
-
-  LiftFromLet :
-    Let(defs, s) -> (Let(defs2, s), defs1)
-    where <partition(SuperCombinator)> defs => (defs1, defs2)
-	; <map(DeclareTopLevel)> defs1
-
-  SuperCombinator =
-    ?def@SDefT(f, xs, ys, s)
-    ; where(
-        <tvars> def => []
-        ; <svars; filter(not(TopLevel))> def => []
-      )
