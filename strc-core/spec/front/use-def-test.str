@@ -1,5 +1,5 @@
 module use-def-test
-imports use-def libstratego-lib
+imports libstratego-lib libstrc
 strategies
 
   use-def-test-io =

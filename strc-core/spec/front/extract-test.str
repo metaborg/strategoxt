@@ -1,5 +1,5 @@
 module extract-test
-imports libstratego-lib extract
+imports libstratego-lib libstrc
 strategies
 
   extract-test = 

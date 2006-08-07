@@ -5,27 +5,8 @@
  */
 
 module combine-sections
-imports libstratego-lib Stratego-Sugar
+imports libstratego-lib libstrc
 strategies
 
   combine-sections-io =
     io-wrap(combine-sections)
-
-  combine-sections =
-    Specification(
-      foldr(![Constructors([]),Overlays([]),Strategies([])]
-	   , InsertBSpec
-	   , try(GetConstructors + RulesToStrategies))
-      ; fetch(\ Constructors(decls) -> Signature([Constructors(decls)]) \ )
-    )
-
-  GetConstructors :
-    Signature(decls) -> 
-    Constructors(<filter(?Constructors(<id>)); concat> decls)
-
-  RulesToStrategies :
-    Rules(rd*) -> Strategies(rd*)
-
-  InsertBSpec =
-    ?(section#([decls1]), <id>)
-    ; fetch({decls2: (section#([decls2]) -> section#([<conc>(decls2,decls1)]))})

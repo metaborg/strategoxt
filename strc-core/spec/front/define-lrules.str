@@ -3,20 +3,8 @@
  */
 
 module define-lrules
-imports libstratego-lib Stratego-Sugar stratlib
+imports libstratego-lib libstrc
 strategies
 
   define-lrules-io = 
     io-wrap(define-lrules)
-
-  define-lrules = 
-    bottomup(try(DefLRule + DefScopeDefault))
-
-  DefLRule : 
-    |[ \ t1 -> t2 where s \ ]| ->
-    |[ { ~<tvars; map(try(?ListVar(<id>)))> t1 : (t1 -> t2 where s) } ]|
-
-  DefScopeDefault :
-    |[ { s } ]| -> |[ { ~<tvars> s : s } ]|
-
-

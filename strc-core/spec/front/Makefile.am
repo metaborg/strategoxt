@@ -7,7 +7,8 @@ STRINCLUDES = -I $(srcdir)/../../../stratego-front/syn	     \
 	           -I $(srcdir)/../../../stratego-front/sig/ \
 	   	   -I $(srcdir)/../match		     \
 	  	   -I $(srcdir)/../lib			     \
-	  	   -I $(srcdir)/../opt	
+	  	   -I $(srcdir)/../opt			     \
+		   -I $(top_srcdir)/lib
 
 SCFLAGS  	=  --main $*-io			\
 		   --verbose 1
@@ -39,6 +40,32 @@ libexec_PROGRAMS =				\
 	report-ambs
 
 LDADD           += $(SSL_LIBS)
+
+LIB_STRC = -L$(top_srcdir)/lib -lstrc
+
+repair_types_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
+pre_desugar_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+stratego_ensugar_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
+combine_sections_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
+variables_to_constructors_LDADD = $(LIB_STRC) $(SSL_LIBS)	
+raise_annotations_LDADD 	= $(LIB_STRC) $(SSL_LIBS)	
+define_lrules_LDADD 		= $(LIB_STRC) $(SSL_LIBS)	
+stratego_desugar_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
+use_def_LDADD 			= $(LIB_STRC) $(SSL_LIBS)			
+check_constructors_LDADD 	= $(LIB_STRC) $(SSL_LIBS)			
+expand_overlays_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
+rules_to_sdefs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)		
+desugar_list_matching_LDADD 	= $(LIB_STRC) $(SSL_LIBS)			
+desugar_default_vardec_LDADD 	= $(LIB_STRC) $(SSL_LIBS)			
+introduce_congdefs_LDADD 	= $(LIB_STRC) $(SSL_LIBS)			
+rename_defs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+desugar_LDADD 			= $(LIB_STRC) $(SSL_LIBS)		
+stratego_warnings_LDADD 	= $(LIB_STRC) $(SSL_LIBS)			
+extract_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
+extract_all_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+lift_dynamic_rules_LDADD 	= $(LIB_STRC) $(SSL_LIBS)                      
+report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+
 
 check_PROGRAMS   = use-def-test 
 

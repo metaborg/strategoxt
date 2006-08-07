@@ -1,5 +1,5 @@
 module pre-desugar
-imports stratego-desugar
+imports libstratego-lib libstrc 
 strategies
 
   pre-desugar-io =

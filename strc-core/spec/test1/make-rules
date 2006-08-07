@@ -85,7 +85,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 %.f6 : %.f5
 	$(FC_SUGAR2) -i $<
-	../front/lift-dynamic-rules -i $< -o $@ -b --dr new
+	../front/lift-dynamic-rules -i $< -o $@ -b
 
 %.f6a : %.f6
 	../front/stratego-desugar -i $< -o $@ -b

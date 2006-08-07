@@ -1,41 +1,6 @@
 module repair-types
-imports Stratego-Sugar stratlib
+imports libstrc
 strategies
 
   repair-types-io =
     io-wrap(try(sometd(RepairDefinition); where(explanation)))
-
-  RepairDefinition :
-    SDef(f, xs, s) -> SDef(f, xs', s)
-    where <map1(RepairVarDec(!"definition", !f))> xs => xs'
-
-  RepairDefinition :
-    SDefT(f, xs, ys, s) -> SDefT(f, xs', ys, s)
-    where <map1(RepairVarDec(!"definition", !f))> xs => xs'
-
-  RepairDefinition :
-    RDef(f, xs, s) -> RDef(f, xs', s)
-    where <map1(RepairVarDec(!"rule", !f))> xs => xs'
-
-  RepairDefinition :
-    RDefT(f, xs, ys, s) -> RDefT(f, xs', ys, s)
-    where <map1(RepairVarDec(!"rule", !f))> xs => xs'
-
-  RepairVarDec(def, op) :
-    VarDec(x, FunType([ConstType(t1) | ts@[FunType(_,_) | _]], t2)) ->
-    VarDec(x, FunType(<conc>(ts, [ConstType(t1)]), t2))
-    where err(| <concat-strings>["argument '", x, "' of ", <def>, " '", <op>, 
-	                         "' starts with constant type"] )
-	; <exit> 1
-	      
-  explanation =
-    <fprintnl>(stderr, ["
-** Warning: Starting with Stratego 0.9.3 the calling convention of
-   strategies has been changed such that the current term is the *last*
-   argument. For most strategy definitions this is not a problem. Only
-   strategies which explicitly declare the type of a higher-order
-   strategy argument are affected. The argument declarations should be
-   changed such that the current term is the last argument. This change
-   is currently done automatically by the compiler. In the future source
-   programs are expected to incorporate this change.
-"])

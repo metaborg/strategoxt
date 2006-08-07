@@ -3,7 +3,7 @@
  */
 
 module extract
-imports needed-defs desugar needed-constructors
+imports libstrc
 strategies
 
   extract-io = 
@@ -11,11 +11,6 @@ strategies
       Specification([id, id, Strategies(check-dynamic-calls ; needed-defs)])
       ; needed-constructors
     )
-
-  check-dynamic-calls =
-    if not( fetch-elem(?SDefT("DYNAMIC-CALLS", [], [], _)) ) then
-      ![ SDefT("DYNAMIC-CALLS", [], [], Fail) | <id> ]
-    end
 
 
 

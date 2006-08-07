@@ -1,5 +1,5 @@
 module frontend-test
-imports libstratego-lib frontend
+imports libstratego-lib libstrc
 strategies
 
   frontend-test = 

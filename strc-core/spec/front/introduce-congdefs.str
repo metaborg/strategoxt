@@ -3,7 +3,7 @@
  */
 
 module introduce-congdefs
-imports Stratego-Sugar desugar stratlib Stratego-Sugar-MetaTransition
+imports libstrc
 strategies
 
   introduce-congdefs-io = 
@@ -12,102 +12,3 @@ strategies
       ; AddCongruenceDefinitions
     )
 
-strategies
-
-  AddCongruenceDefinitions : 
-    Specification([
-      Signature(bsigs), 
-      Overlays(ols),
-      Strategies(sdefs)
-    ]) ->
-    Specification([
-      Signature(bsigs),
-      Overlays(ols),
-      Strategies(<conc> (<congdefs> bsigs, sdefs))
-    ])
-    where <map(try(RegisterCongDef))> sdefs
-
-  AddAnnoCongDef :
-    Specification([
-      Signature(bsigs), 
-      Overlays(ols),
-      Strategies(sdefs)
-    ]) ->
-    Specification([
-      Signature(bsigs), 
-      Overlays(ols),
-      Strategies([<AnnoCongDef> | sdefs])
-    ])
-    where <not(fetch(  ?SDefT("Anno_Cong__",_,_,_)
-		     + ?RDefT("Anno_Cong__",_,_,_)
-		     + ?ExtSDef("Anno_Cong__",_,_)
-		     + ?ExtSDefInl("Anno_Cong__",_,_,_)))> sdefs
-
-strategies
-
-  // avoid double definitions of congruences by registering already
-  // defined operators
-
-  RegisterCongDef =
-    ?ExtSDef(f, xs, []) 
-    ; where(<length> xs => n)
-    ; rules(CongDefined : (f, n) -> ())
-
-  RegisterCongDef =
-    ?ExtSDefInl(f, xs, [], _)
-    ; where(<length> xs => n)
-    ; rules(CongDefined : (f, n) -> ())
-
-  RegisterCongDef =
-    ?SDefT(f, xs, [], _)
-    ; where(<length> xs => n)
-    ; rules(CongDefined : (f, n) -> ())
-
-rules
-
-  /**
-   * Congruences from Signature
-   * Congruences are recognized by the parser as strategy calls; The
-   * following strategy generates strategy definitions from the
-   * signature; For instance, the operator declaration
-   *
-   * OpDecl("F", FunType([_, _], _))
-   * 
-   * is translated to the strategy definition
-   * 
-   * SDef("F", ["x1", "x2"], Cong("F", [SVar("x1"), SVar("x2")]))
-   * 
-   */
-
-  MkCongDef : 
-    OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, []))
-    where <not(CongDefined)> (f, 0)
-        ; rules(CongDefined : (f, 0) -> ())
-
-  MkCongDef : 
-    OpDecl(f, FunType(ts, t)) -> 
-    SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
-    where <length> ts => n
-        ; <not(CongDefined)> (f, n)
-        ; rules(CongDefined : (f, n) -> ())
-        ; <unzip(new; !(VarDec(<id>, DefaultStrat), <id>))> ts => (xdecs, xs)
-
-  MkCongDefs : 
-    Constructors(ods) -> <filter(MkCongDef)> ods
-
-strategies
-
-  congdefs = {| CongDefined : filter(MkCongDefs); concat |}
-
-  // Congruence over annotation
-
-  AnnoCongDef =
-    where(new => f1; new => f2; new => x1; new => x2; new => y1; new => y2)
-    ; !|[ Anno_Cong__(f1 : ATerm -> ATerm, f2 : ATerm -> ATerm|) =
-            {x1, x2, y1, y2 :
-             ?x1{^x2}
-             ; !x1; f1(|); ?y1
-             ; !x2; f2(|); ?y2
-             ; !y1{^y2}
-            }
-       ]|

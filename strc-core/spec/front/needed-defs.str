@@ -4,7 +4,7 @@
  */
 
 module needed-defs
-imports Stratego DefaultStrat desugar stratlib
+imports libstrc
 
 strategies
 
