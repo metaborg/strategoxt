@@ -1,5 +1,9 @@
 module inlining
-imports Stratego-Amb stratlib stratego-laws rename-defs
+
+imports Stratego-Amb 
+	stratego/strc/lib/stratlib 
+	stratego/strc/opt/stratego-laws 
+	stratego/strc/front/rename-defs
 
 /**
  * Inlining with Definition Environment

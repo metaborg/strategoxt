@@ -1,5 +1,8 @@
 module matrix
-imports Stratego automaton
+
+imports Stratego 
+	stratego/strc/match/automaton
+
 signature
   /* subsorts Matrix < Strat */
   constructors

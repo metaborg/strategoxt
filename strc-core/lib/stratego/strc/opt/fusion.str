@@ -1,19 +1,13 @@
 module fusion
-imports Stratego stratego-laws libstratego-lib stratego-laws fusion-rules
+
+imports Stratego   
+	stratego/strc/opt/stratego-laws 
+	libstratego-lib 
+	stratego/strc/opt/fusion-rules
 
 signature
   constructors
     Mark : Strat
-
-strategies
-
-  fusion-io = 
-    io-wrap(
-      declare-inline-rules
-      ; alltd(innermost-fusion)
-      // turn off outermost-fusion while it is not finished (EV)
-      //; alltd(innermost-fusion + outermost-fusion)
-    )
 
 strategies
 

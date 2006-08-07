@@ -1,5 +1,5 @@
 module bind-laws
-imports Stratego automaton
+imports Stratego stratego/strc/match/automaton
 strategies
 rules
 
@@ -42,11 +42,11 @@ rules
   Inline1 :
     Let([SDef(f, [], s)], Call(SVar(f), [])) -> s
 
-  InlineOld :
-    Let([SDef(f, [], s1)], s2) -> s2'
-    where <oncetd-stop(?Call(SVar(f),[]); !s1, 
-                  Case(id,id,id,id) + Matrix(id,id))> s2 => s2';
-          <not(is-subterm)> (Call(SVar(f),[]), s2')
+//  InlineOld :
+//    Let([SDef(f, [], s1)], s2) -> s2'
+//    where <oncetd-stop(?Call(SVar(f),[]); !s1, 
+//                  Case(id,id,id,id) + Matrix(id,id))> s2 => s2';
+//          <not(is-subterm)> (Call(SVar(f),[]), s2')
 
   Inline :
     Let(defs1, s1) -> Let(defs2, s2)

@@ -1,9 +1,6 @@
 module const-prop
-imports Stratego-Amb stratlib Stratego-MetaTransition
+imports Stratego-Amb stratego/strc/lib/stratlib Stratego-MetaTransition
 strategies
-
-  const-prop-io =
-    io-wrap(Specification([Signature(id),Strategies(map(const-prop))]))
 
   const-prop =
     {| CurrentTerm, Binding: cp |}

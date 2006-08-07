@@ -3,7 +3,8 @@
  */
 
 module congruence-laws
-imports Stratego-Sugar Stratego-Sugar-MetaTransition desugar
+imports Stratego-Sugar Stratego-Sugar-MetaTransition 
+	stratego/strc/front/desugar
 
 rules
 

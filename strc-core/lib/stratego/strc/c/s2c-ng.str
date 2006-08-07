@@ -7,8 +7,8 @@ imports
   libstratego-lib
   Stratego-Core
   C 
-  C-simplify
-  frames
+  stratego/strc/c/C-simplify
+  stratego/strc/c/frames
 
 strategies
 

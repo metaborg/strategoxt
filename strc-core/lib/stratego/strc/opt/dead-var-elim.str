@@ -1,10 +1,7 @@
 module dead-var-elim
-imports stratlib
+imports stratego/strc/lib/stratlib
 strategies
  
-  dead-var-elim-io =
-    io-wrap(dead-var-elim)
-
   dead-var-elim =
     Specification(
       [Signature(id),

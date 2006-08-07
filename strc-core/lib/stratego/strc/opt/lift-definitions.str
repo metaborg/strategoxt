@@ -1,5 +1,5 @@
 module lift-definitions
-imports stratlib stratego-laws
+imports stratego/strc/lib/stratlib stratego/strc/opt/stratego-laws
 strategies
 
   lift-definitions-io =

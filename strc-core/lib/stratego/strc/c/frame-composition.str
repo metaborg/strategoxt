@@ -1,5 +1,5 @@
 module frame-composition
-imports libstratego-lib Stratego-Core frames
+imports libstratego-lib Stratego-Core stratego/strc/c/frames
 
 strategies
 

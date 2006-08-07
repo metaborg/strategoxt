@@ -6,9 +6,9 @@ module s2c-classic
 imports 
   libstratego-lib 
   Stratego-Sugar 
-  automaton 
+  stratego/strc/match/automaton 
   C 
-  C-simplify 
+  stratego/strc/c/C-simplify 
 
 strategies
 

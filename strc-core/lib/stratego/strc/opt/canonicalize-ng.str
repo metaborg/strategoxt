@@ -1,10 +1,9 @@
 module canonicalize-ng
-imports Stratego-Core libstratego-lib C stratego-laws frames
+imports Stratego-Core libstratego-lib C 
+	stratego/strc/opt/stratego-laws 
+	stratego/strc/c/frames
 
 strategies
-
-  canonicalize-ng-io =
-    io-wrap(canonicalize)
 
   canonicalize = //debug(!"in: "); (
     canonicalize-sdef

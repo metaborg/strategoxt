@@ -8,7 +8,7 @@ imports
   Stratego-Core
   // automaton 
   C 
-  C-simplify 
+  stratego/strc/c/C-simplify 
 
 strategies
 

@@ -5,12 +5,12 @@ module stratego-laws
 imports 
   libstratego-lib 
   Stratego-Sugar
-  desugar  
-  scope-laws  
-  bind-laws 
-  idfail-laws
-  congruence-laws 
-  build-match-laws
+  stratego/strc/front/desugar  
+  stratego/strc/opt/scope-laws  
+  stratego/strc/opt/bind-laws 
+  stratego/strc/opt/idfail-laws
+  stratego/strc/opt/congruence-laws 
+  stratego/strc/opt/build-match-laws
 
 strategies
 

@@ -1,9 +1,6 @@
 module simplify1
-imports stratego-laws opt-lib
+imports stratego/strc/opt/stratego-laws stratego/strc/opt/opt-lib
 strategies
-
-  simplify1-io =
-    io-wrap(simplify1)
 
   simplify1 =
     try( \ Specification([x, y, z]) -> Specification([x, z]) \ )

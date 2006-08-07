@@ -1,13 +1,5 @@
 module canonicalize
-imports Stratego-Core libstratego-lib C stratego-laws
-
-strategies
-
-  canonicalize-io =
-    io-wrap(
-      downup2(repeat(Canon + LiftPrimArgs + LiftCallArgs),repeat(Canon))
-      ; simplify0
-    )
+imports Stratego-Core libstratego-lib C stratego/strc/opt/stratego-laws
 
 rules
 

@@ -1,9 +1,6 @@
 module simplify3
-imports stratego-laws opt-lib
+imports stratego/strc/opt/stratego-laws stratego/strc/opt/opt-lib
 strategies
-
-  simplify3-io =
-    io-wrap(simplify3)
 
   simplify3 =
     apply-to-bodies(simplify; remove-annotations-from-vars)

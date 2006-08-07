@@ -1,9 +1,9 @@
 module define-congruences
-imports stratego-laws opt-lib
-strategies
 
-  define-congruences-io =
-    io-wrap(apply-to-bodies(define-congruences))
+imports stratego/strc/opt/stratego-laws 
+	stratego/strc/opt/opt-lib
+
+strategies
 
   define-congruences =
     bottomup(repeat(DefineCongruences + Simplify))

@@ -1,7 +1,11 @@
 // Translating renamed matrix to automaton
 
 module matrix-to-dfa
-imports matrix stratego-laws desugar match-to-matrix DefaultStrat
+imports stratego/strc/match/matrix 
+	stratego/strc/opt/stratego-laws 
+	stratego/strc/front/desugar 
+	stratego/strc/match/match-to-matrix 
+	stratego/strc/front/DefaultStrat
 
 strategies
 

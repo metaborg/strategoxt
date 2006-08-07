@@ -2,9 +2,6 @@ module defs-to-external-defs
 imports libstratego-lib Stratego
 strategies
 
-  defs-to-external-defs-io =
-    io-wrap(dted-options, defs-to-external-defs)
-
   dted-options =
     Option("--no-inlining",
 	where(<set-config>("--no-inlining", ())),

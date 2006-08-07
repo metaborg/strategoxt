@@ -1,9 +1,6 @@
 module dead-def-elim
-imports Stratego stratlib
+imports Stratego stratego/strc/lib/stratlib
 strategies
-
-  dead-def-elim-io = 
-    io-wrap(only-local-option, dead-def-elim-spec)
 
   only-local-option = 
     Option("--only-local"

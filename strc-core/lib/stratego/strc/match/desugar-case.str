@@ -1,9 +1,9 @@
 module desugar-case
-imports automaton libstratego-lib stratego-laws desugar
+imports stratego/strc/match/automaton 
+	libstratego-lib 
+	stratego/strc/opt/stratego-laws 
+	stratego/strc/front/desugar
 strategies
-
-  desugar-case-io =
-    io-wrap(desugar-case) 
 
   desugar-case =
     topdown(repeat(DesugarAssign + DesugarCase + Optimize))
