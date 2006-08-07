@@ -1,5 +1,5 @@
 module bound-unbound-vars
-imports stratlib
+imports stratego/strc/lib/stratlib
 strategies
 
   bound-unbound-vars-io =

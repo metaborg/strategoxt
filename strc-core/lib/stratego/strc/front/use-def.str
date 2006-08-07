@@ -1,6 +1,6 @@
 module use-def
 imports Stratego-Sugar 
-	stratego/strc/front/stratlib 
+	stratego/strc/lib/stratlib 
 	stratego/strc/opt/bound-unbound-vars
 
 strategies

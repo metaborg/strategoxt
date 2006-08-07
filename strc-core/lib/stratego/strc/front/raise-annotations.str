@@ -103,10 +103,13 @@ strategies
 
 /* another implementation */
 
+/*
   raise-annotations' = 
     transform-mbo(annolist-to-anno + match-no-anno
 		 ,annolist-to-anno + build-no-anno
 		 ,annolist-to-anno + overlay-no-anno)
+
+*/
 
   transform-mbo(mch, bld, ovl) = traverse(mch, bld, ovl)
 
@@ -159,3 +162,4 @@ strategies
         + CallT(id, map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
 	+ CallDynamic(in-build(mch, bld, ovl), map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
       )
+

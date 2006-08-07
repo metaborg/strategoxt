@@ -13,8 +13,14 @@
 module stratego-warnings
 imports
   libstratego-xtc
-  error-reporting
+  stratego/strc/front/error-reporting
   Stratego-Sugar
+
+signature
+  constructors
+    ObsoleteWarning     : Str -> Warning
+    MissingBuildWarning : Index * Strategy -> Warning 
+    ConstructorWarning  : Str -> Warning
 
 strategies
 

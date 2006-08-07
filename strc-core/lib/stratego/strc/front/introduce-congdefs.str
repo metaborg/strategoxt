@@ -6,7 +6,7 @@ module introduce-congdefs
 
 imports Stratego-Sugar 
 	stratego/strc/front/desugar 
-	stratego/strc/front/stratlib 
+	stratego/strc/lib/stratlib 
 	Stratego-Sugar-MetaTransition
 
 strategies

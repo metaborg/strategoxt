@@ -11,6 +11,9 @@ signature
 
 strategies
  
+  stratego-desugar =
+    topdown(repeat(Desugar))
+
   pre-desugar =
     topdown(repeat(Desugar); try(DesugarOnce))
 
