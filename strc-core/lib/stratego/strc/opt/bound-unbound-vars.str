@@ -2,9 +2,6 @@ module bound-unbound-vars
 imports stratego/strc/lib/stratlib
 strategies
 
-  bound-unbound-vars-io =
-    io-wrap(mark-bound-unbound-vars)
-
   mark-bound-unbound-vars =
     if-verbose4(say(!"marking bound-unbound-vars"))
     ; Specification([id, id, Strategies(map(mark-buv))])
