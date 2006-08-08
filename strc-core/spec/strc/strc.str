@@ -19,7 +19,7 @@ strategies
 
   compile =
     xtc-input(
-      front-end
+      front-end-with-libstrc
       ; optimize
       ; export-external-defs
       ; back-end
@@ -548,7 +548,7 @@ strategies // COMPILER COMPONENTS
   define-congruences		= comp(|"define-congruences")
 
   lib-frontend =
-    comp("frontend", <concat>[<pass-main>, <pass-warnings>, <pass-library>])
+    comp(|"frontend", <concat>[<pass-main>, <pass-warnings>, <pass-library>])
 
   pass-main =
     !["--main", <get-config> "-m"] <+ ![]
