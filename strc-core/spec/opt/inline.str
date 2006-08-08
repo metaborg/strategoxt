@@ -1,5 +1,5 @@
 module inline
-imports inlining libstratego-lib
+imports inlining libstratego-lib libstrc
 
 strategies
 

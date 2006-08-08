@@ -2,9 +2,6 @@ module worker-wrapper
 imports Stratego stratego/strc/lib/stratlib
 strategies
 
-  worker-wrapper-io =
-    io-wrap(worker-wrapper-spec)
-
   worker-wrapper-spec =
     Specification([id,Strategies(foldr(id,conc, worker-wrapper <+ ![<id>]))])
 

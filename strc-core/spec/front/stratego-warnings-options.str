@@ -10,17 +10,9 @@
  *
  * @author Merijn de Jonge (m.de.jonge@tue.nl)
  */
-module stratego-warnings
-imports
-  libstratego-xtc
-  libstrc
+module stratego-warnings-options
 
-strategies
-
-  stratego-warnings-io = 
-    io-wrap(stratego-warnings-options, Stratego-warnings)
-
-imports Stratego-Sugar 
+imports Stratego-Sugar
 
 overlays
 

@@ -9,7 +9,7 @@ SCFLAGS = -I $(srcdir)/../../../stratego-front/syn/ \
 	  -I $(srcdir)/../front			    \
 	  --main $*	
 
-LDADD           += $(SSL_LIBS)
+LDADD          += $(SSL_LIBS)
 
 bin_PROGRAMS 	= strc
 

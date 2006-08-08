@@ -1,5 +1,5 @@
 module use-def
-imports libstrc stratego-warnings
+imports libstrc stratego-warnings-options
 strategies
 
   use-def-io =

@@ -17,7 +17,7 @@ LIB_STRC = -L$(top_srcdir)/lib -lstrc
 
 libexec_PROGRAMS = simplify1 simplify2 simplify3		   \
 		   fusion inline dead-def-elim			   \
-		   lift-definitions canonicalize canonicalize-ng   \
+		   lift-definitions canonicalize-ng   \
 		   bound-unbound-vars				   \
 		   worker-wrapper				   \
 		   define-congruences defs-to-external-defs	   \
@@ -52,6 +52,7 @@ lift_definitions_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 simplify1_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 simplify2_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 simplify3_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+worker_wrapper_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 
 nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES = bound-unbound-vars-test.c

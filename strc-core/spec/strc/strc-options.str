@@ -1,6 +1,5 @@
 module strc-options
-imports
-  stratego-warnings-options
+imports stratego-warnings-options
 
 signature
   constructors
