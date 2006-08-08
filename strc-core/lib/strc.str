@@ -33,6 +33,8 @@ imports
   stratego/strc/front/stratego-warnings
   stratego/strc/front/use-def
   stratego/strc/front/variables-to-constructors
+
+  stratego/strc/front/frontend
   
   stratego/strc/opt/bind-laws
   stratego/strc/opt/bound-unbound-vars

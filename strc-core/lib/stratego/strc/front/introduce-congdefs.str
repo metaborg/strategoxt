@@ -11,6 +11,10 @@ imports Stratego-Sugar
 
 strategies
 
+  introduce-congdefs =
+    try(AddAnnoCongDef)
+    ; AddCongruenceDefinitions
+
   AddCongruenceDefinitions : 
     Specification([
       Signature(bsigs), 

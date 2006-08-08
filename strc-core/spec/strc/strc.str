@@ -65,6 +65,17 @@ strategies
     , 1
     )
 
+  front-end-with-libstrc =
+    log-timed(
+      get-infile
+      ; pack-stratego				; fc1(|"Stratego-Sugar-Cong", "pack")
+      ; output-ast
+      ; lib-frontend
+      ; output-frontend				
+    | "Front-end succeeded"
+    , 1
+    )
+
   optimize =
     log-timed( 
       dbg(|"starting optimizer");
@@ -536,6 +547,11 @@ strategies // COMPILER COMPONENTS
   simplify1			= comp(|"simplify1")
   define-congruences		= comp(|"define-congruences")
 
+  lib-frontend =
+    comp("frontend", <concat>[<pass-main>, <pass-warnings>, <pass-library>])
+
+  pass-main =
+    !["--main", <get-config> "-m"] <+ ![]
 
 // OPTIMIZER
 

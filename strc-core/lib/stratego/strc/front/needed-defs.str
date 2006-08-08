@@ -107,14 +107,14 @@ strategies
     bagof-Definition
 
   Arities = 
-    bagof-Arity; make-set
+    bagof-OpArity; make-set
 
   RegisterDef = ?def; 
     where(
        <DefinitionName> def => (f, (n, m))
       ; rules(
           Definition :+ (f, (n, m)) -> def
-          Arity      :+ f -> (n, m)
+          OpArity      :+ f -> (n, m)
         )
       ; if <is-external-def> def then
           rules(

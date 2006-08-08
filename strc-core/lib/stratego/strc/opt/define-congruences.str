@@ -6,5 +6,7 @@ imports stratego/strc/opt/stratego-laws
 strategies
 
   define-congruences =
-    bottomup(repeat(DefineCongruences + Simplify))
-    ; simplify
+    apply-to-bodies(
+      bottomup(repeat(DefineCongruences + Simplify))
+      ; simplify
+    )

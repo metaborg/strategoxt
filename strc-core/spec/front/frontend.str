@@ -1,0 +1,17 @@
+module frontend
+imports libstrc stratego-warnings-options
+
+strategies
+
+  frontend-io = 
+    io-wrap(stratego-warnings-options <+ lib-option <+ main-option, frontend)
+
+  lib-option =
+    Option("--library" + "--lib",
+	where(<set-config>("--library", ())); !(),
+	!"--library | --lib  Build a library instead of an application")
+
+  main-option =
+    ArgOption("--main" + "-m",
+	where(<set-config>("-m", <id>)); !(),
+	!"--main f | -m f    Main strategy to compile (default: main)\n")

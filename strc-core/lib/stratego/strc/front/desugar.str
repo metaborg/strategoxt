@@ -15,6 +15,9 @@ imports
 
 strategies // Desugaring Strategies
 
+  desugar-top =
+    Specification([id,id,Strategies(desugar-spec)])
+
   /**
    * Desugar all definitions in specification
    *

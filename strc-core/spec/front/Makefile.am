@@ -36,8 +36,9 @@ libexec_PROGRAMS =				\
 	stratego-warnings			\
 	extract					\
 	extract-all				\
-	lift-dynamic-rules                      \
-	report-ambs
+	lift-dynamic-rules			\
+	report-ambs				\
+	frontend
 
 LDADD           += $(SSL_LIBS)
 
@@ -65,7 +66,7 @@ extract_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
 extract_all_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 lift_dynamic_rules_LDADD 	= $(LIB_STRC) $(SSL_LIBS)                      
 report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
-
+frontend_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
 
 check_PROGRAMS   = use-def-test 
 

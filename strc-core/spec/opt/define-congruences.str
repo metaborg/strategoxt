@@ -3,4 +3,4 @@ imports libstrc
 strategies
 
   define-congruences-io =
-    io-wrap(apply-to-bodies(define-congruences))
+    io-wrap(define-congruences)

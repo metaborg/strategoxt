@@ -246,8 +246,8 @@ strategies
   pass-maybe-unbound-warnings =
     <get-config>"--warning"
   ; fetch-elem("maybe-unbound-variables")
-  ; !["--maybe-unbound-warnings"]
- <+ !["--no-maybe-unbound-warnings"]
+  ; !["--warning", "maybe-unbound-variables"]
+ <+ !["--warning", "no-maybe-unbound-variables"]
 
   conflict-short-description(p) = 
       !["STRC compiles Stratego programs to C or executable code.\n",

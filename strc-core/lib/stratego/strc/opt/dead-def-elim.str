@@ -37,12 +37,12 @@ strategies
   RegisterDefinition =
     ?sdef
     ; where( (?SDefT(<id>,_,_,_) <+ ?ExtSDefInl(<id>,_,_,_) <+ ?ExtSDef(<id>,_,_)) => f )
-    ; rules( Definition : f -> sdef )
+    ; rules( NameToDefinition : f -> sdef )
   
   mark-needed-defs = 
     DefNeeded 
     <+ ?f; rules( DefNeeded : f -> f )
-        ; Definition
+        ; NameToDefinition
         ; rec x(alltd(CallT(SVar(mark-needed-defs),x,x)))
 
 strategies 

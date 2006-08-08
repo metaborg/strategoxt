@@ -17,5 +17,5 @@ strategies
       ![ SDefT("DYNAMIC-CALLS", [], [], Fail) | <id> ]
     end
 
-
-
+  extract-all =
+    Specification([id,id,Strategies(all-defs)])
