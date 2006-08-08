@@ -20,8 +20,9 @@ strclib = \
 libstrc_la_SOURCES  = libstrc.c 
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
 libstrc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
-libstrc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
-libstrc_la_LIBADD   = 
+
+libstrc_la_CPPFLAGS = $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
+libstrc_la_LIBADD   = $(STRATEGO_LIB_LIBS) $(STRATEGO_RUNTIME_LIBS) $(ATERM_LIBS)
 
 STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn \
                    -I $(top_srcdir)/../stratego-front/sig \
