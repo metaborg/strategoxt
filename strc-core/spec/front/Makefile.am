@@ -70,6 +70,8 @@ frontend_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
 
 check_PROGRAMS   = use-def-test 
 
+use_def_test_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.sci.*)
 
 BOOTCLEANFILES   = $(wildcard *.c)

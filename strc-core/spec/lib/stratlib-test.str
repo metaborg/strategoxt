@@ -1,5 +1,5 @@
 module stratlib-test
-imports stratlib libstratego-lib DefaultStrat
+imports libstrc libstratego-lib
 
 strategies
 

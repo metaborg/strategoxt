@@ -1,4 +1,4 @@
 module rename-vars
-imports stratlib
+imports libstrc
 strategies
   rename-vars = io-wrap(strename)
