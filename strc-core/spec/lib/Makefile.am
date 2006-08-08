@@ -6,9 +6,12 @@ SCFLAGS		 = -I $(srcdir)/../../../stratego-front/syn \
 	  	   -I $(srcdir)/../front		    \
 	  	   -I $(srcdir)/../match		    \
 	  	   -I $(srcdir)/../opt			    \
+		   -I $(top_srcdir)/lib			    \
 	 	   --main $*
 
-LDADD           += $(SSL_LIBS)
+LIB_STRC = -L$(top_srcdir)/lib -lstrc
+
+rename_vars_LDADD           = $(LIB_STRC) $(SSL_LIBS)
 
 libexec_PROGRAMS = rename-vars
 
@@ -19,7 +22,6 @@ libexec_PROGRAMS = rename-vars
 CLEANFILES 	 = $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str)  $(wildcard *.meta)
-
 
 
 BOOTCLEANFILES 	 = rename-vars.c stratlib-test.c
