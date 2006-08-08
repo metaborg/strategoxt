@@ -55,7 +55,7 @@ AC_DEFUN([XT_STRICT_ISO_C99],
   AC_REQUIRE([AC_PROG_CC])
 
   if test "x$GCC" = "xyes"; then
-    STR_CFLAGS="${STR_CFLAGS} -std=c99 -Wall -pedantic -Wno-unused-label -Wno-unused-variable"
+    STR_CFLAGS="${STR_CFLAGS} -std=c99 -Wall -pedantic -Wno-unused-label -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter"
   fi
 
   AC_ARG_ENABLE([werror],
