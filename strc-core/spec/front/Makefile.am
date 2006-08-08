@@ -40,8 +40,6 @@ libexec_PROGRAMS =				\
 	report-ambs				\
 	frontend
 
-LDADD           += $(SSL_LIBS)
-
 LIB_STRC = -L$(top_srcdir)/lib -lstrc
 
 repair_types_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
@@ -68,6 +66,8 @@ lift_dynamic_rules_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
 report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 frontend_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
 
+
+
 check_PROGRAMS   = use-def-test 
 
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.sci.*)
@@ -82,6 +82,8 @@ TESTS 		 = use-def-test
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
 
 nodist_use_def_test_SOURCES = use-def-test.c
+use_def_test_LDADD = $(LIB_STRC) $(SSL_LIBS)
+
 #nodist_raise_annotations_test_SOURCES = raise-annotations-test.c
 
 %.atree : %.str
