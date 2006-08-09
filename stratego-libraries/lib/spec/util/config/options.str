@@ -5,7 +5,6 @@ module util/config/options
 imports 
 
   system/io/char
-  system/io/pipe
   system/io/term
   system/io/dir
   system/io/file

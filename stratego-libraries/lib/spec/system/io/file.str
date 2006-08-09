@@ -1,13 +1,24 @@
 /**
- * The file module provides abstractions over the basic file system
- * operations in the module posix-file.
+ * Portable file operations.
  */
 module system/io/file
 imports 
-  system/posix/file 
   system/io/-
   collection/list/-
   term/string
+
+/**
+ * Stream and file representations
+ */
+signature
+  constructors
+    Stream    : ImplDep -> Stream
+
+    Path      : String -> FileLoc
+
+    stdin     : FileLoc
+    stdout    : FileLoc
+    stderr    : FileLoc
 
 /**
  * Abstractions for streams
@@ -32,44 +43,94 @@ strategies
   stdio-stream = ?stdout(); stdout-stream
   stdio-stream = ?stderr(); stderr-stream
 
+  /**
+   * Returns the Stream for stdin, stdout and stderr
+   *
+   * @type _ -> Stream
+   */
+  stdin-stream  = prim("SSL_stdin_stream") ; !Stream(<id>)
+  stdout-stream = prim("SSL_stdout_stream"); !Stream(<id>)
+  stderr-stream = prim("SSL_stderr_stream"); !Stream(<id>)
+
+/**
+ * Stream operations
+ */
 strategies
 
   /**
-   * @type  String -> String
+   * Opens the file whose name is the string pointed to by 
+   * pathname and returns a Stream associated with this file.
+   * For documentation on the mode string, see the man page of
+   * fopen.
+   *
+   * fails if the file couldn't be opened. 
+   *
+   * @type String * String -> Stream
    */
-  file-exists =
-    <access> (<id>, [F_OK()])
+  fopen =
+    ?(pathname, mode); prim("SSL_fopen", pathname, mode); !Stream(<id>)
 
   /**
-   * @type  String -> String
+   * Dissociates the named stream from its underlying file or set of functions.
+   * If the stream was being used for output, any buffered data is written 
+   * first, using fflush(3).
+   *
+   * @type Stream -> ()
    */
-  can-read-file =
-    <access> (<id>, [R_OK()])
-
-  is-readable = can-read-file
+  fclose =
+    ?Stream(stream); prim("SSL_fclose", stream)
+      <+ ?stream-old; prim("SSL_fclose", stream-old) // legacy
 
   /**
-   * @type  String -> String
+   * Forces a write of all user-space buffered data for the given Stream
+   *
+   * @type Stream -> Stream
    */
-  can-write-file =
-    <access> (<id>, [W_OK()])
+  fflush =
+    ?Stream(stream); prim("SSL_fflush", stream); !Stream(<id>)
+    <+ ?stream-old; prim("SSL_fflush", stream-old); !Stream(<id>) // legacy
 
-  is-writable = can-write-file
+/**
+ * Character output to stream
+ */
+strategies
 
   /**
-   * @type  String -> String
+   * Writes a String to a Stream
+   * @type (String, Stream) -> Stream
    */
-  can-execute-file =
-    <access> (<id>, [X_OK()])
-
-  is-executable = can-execute-file
+  fputs =
+    ?(str, Stream(stream)); prim("SSL_fputs", str, stream); !Stream(<id>)
 
   /**
-   * @type String -> String
-   * @inc  create?
+   * Writes a String to stdout with a trailing newline and returns stdout.
+   *
+   * @type String -> Stream
    */
-  can-create-file =
-    where(dirname; can-write-file)
+  puts =
+    ?str; prim("SSL_puts", str); !Stream(<id>)
+
+  /**
+   * Writes a Char to a Stream
+   *
+   * @type (Char, Stream) -> Stream
+   */
+  fputc =
+    ?(c, Stream(stream)); prim("SSL_fputc", c, stream); !Stream(<id>)
+
+/**
+ * Character input from stream
+ */
+strategies
+
+  /**
+   * fgetc() reads the next character from the stream and returns the 
+   * ASCII code of the character as an Int. Fails on end of file or error.
+   *
+   * @type Stream -> Char
+   */
+  fgetc = 
+    ?Stream(stream); prim("SSL_fgetc", stream)
 
 /**
  * Components of a pathname
@@ -108,17 +169,6 @@ strategies
                    shall be removed. */
               repeat(split-init-last; ?(<id>, '/'))
             ; (?[] < !['/'] + id))))))
-
-  /**
-   * Return the absolute path of a pathname.
-   *
-   * @type  String -> String
-   * @since 0.9.4
-   */
-  abspath =
-      is-abspath
-    < id
-    + <concat-strings> [<getcwd> (), "/", <id>]
 
   /**
    * Succeeds if the input pathname is an absolute path.
@@ -250,140 +300,3 @@ strategies
       ; <last; not(?'/' + '\')> base
       )
     ; <implode-string> ext
-    
-/**
- * Generate a new, not existing file name.
- */
-strategies
-
-  /**
-   * Safe, mkstemp based, creation of temporary file
-   * 
-   * @type _ -> (String, FileDescr)
-   */
-  new-temp-file =
-      <conc-strings> (<temp-dir>, "/StrategoXT")
-    ; mkstemp
-
-  /**
-   * Safe, mkdtemp based, creation of temporary directory
-   * 
-   * @type  _ -> String
-   */
-  new-temp-dir =
-      <conc-strings> (<temp-dir>, "/StrategoXT")
-    ; mkdtemp
-
-/**
- * find files in paths
- */
-strategies
-
-  /**
-   * Finds a file in a list of directories (a path).
-   *
-   * <find-path(strict|path)> f looks for a file with name f in the list of
-   * directories path. If the file is not found the behaviour depends on the
-   * strategy strict, if it succeeds a fatal-error is flagged, otherwise the
-   * strategy just fails.
-   *
-   * Example (when run in strategoxt root):
-   *   <find-in-path(id|["ssl/spec","ssl/tests"])> "file.str" => "ssl/spec/file.str"
-   */
-
-  find-in-path(strict|path) = 
-    ?file
-    ; ( file-exists
-      <+ <fetch-elem(<concat-strings; file-exists> [<id>,"/",file])> path
-      <+ if strict then <fatal-error> ["no such file: ", file] else fail end
-      )
-
-  /**
-   * Finds a file in a list of directories (a path).
-   *
-   * Differs from find-in-path/(0,0) in that it exits with fatal-error if file is
-   * not found.
-   *
-   * @param should build a list of paths in which the search is performed.
-   */
-
-  find-in-path(|path) =
-    find-in-path(id|path)
-
-  /**
-   * Finds a file in a list of directories (a path)
-   *
-   * @obsolete.
-   *
-   * This strategy operates on a tuple (f, [d*]) where f is the name of the file
-   * to be found, and d* are the directories to search in. The full path of the
-   * first match is the output term.
-   *
-   * Example (when run in strategoxt root):
-   *   <find-in-path> ("file.str", ["ssl/spec", "ssl/tests"]) => "ssl/spec/file.str"
-   */
-
-  find-in-path =
-    ?(file, path); <find-in-path(fail|path)> file
-
-  /** 
-   * @obsolete
-   */
-
-  find-in-path(mkpath) =
-    find-in-path(|<mkpath>)
-
-  /**
-   * Finds one file with a specific file extension in a list of directories.
-   *
-   * This strategy operates on a tuple (f, [d*]). The one file that will be
-   * searched for is determined by the basename of f and the requested file
-   * extension.
-   * Example:
-   *   <find-file(!"rtree")> ("file.str", ["."])
-   * searches for file.rtree in the current dir.
-   *
-   * @param should build the file extension as a string.
-   */
-
-  find-file(|ext, path) =
-    guarantee-extension(|ext)
-    ; find-in-path(fail|path)
-
-  find-file(|ext) =
-    ?(file, path)
-    ; <find-file(|ext, path)> file
-
-  /**
-   * @obsolete
-   */
-
-  find-file(ext) =
-    find-file(|<ext>)
-
-  /**
-   * Finds one file with a specific file extension in a list of directories.
-   *
-   * Differs from find-file/(1,0) in that it exits with fatal error if file is
-   * not found.
-   *
-   * @param should build a list of paths in which the search is performed.
-   * @param should build the file extension as a string.
-   */
-  find-file(mkpath, ext) =
-    guarantee-extension(|<ext>)
-    ; find-in-path(|<mkpath>)
-
-/**
- * Obsolete strategies
- */    
-strategies
-
-  /**
-   * Creates a fresh file in the current directory.
-   *
-   * @obsolete  use new-temp-file or XTC temporary files
-   */
-  new-file =
-    obsolete(!"new-file; use new-temp-file or XTC temporary files")
-    ; rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))

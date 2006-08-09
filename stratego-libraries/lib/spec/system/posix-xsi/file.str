@@ -1,0 +1,101 @@
+module system/posix-xsi/file
+
+/**
+ * Generate a new, not existing file name.
+ */
+strategies
+
+  /**
+   * Safe, mkstemp based, creation of temporary file
+   * 
+   * @type _ -> (String, FileDescr)
+   */
+  new-temp-file =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkstemp
+
+  /**
+   * Safe, mkdtemp based, creation of temporary directory
+   * 
+   * @type  _ -> String
+   */
+  new-temp-dir =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkdtemp
+
+strategies
+
+  temp-dir =
+    <getenv> "TMPDIR"
+    <+ P_tmpdir
+
+  P_tmpdir =
+    prim("SSL_P_tmpdir")
+
+  /**
+   * Creates a unique temporary file
+   *
+   * returns a fd if succesful, fails on error
+   * @type String -> String * Int
+   */
+  mkstemp =
+    <conc-strings> (<id>, "XXXXXX") => template
+    ; prim("SSL_mkstemp", template)
+    <+ <perror; fail> "SSL/mkstemp"
+ 
+  /**
+   * Creates a unique temporary directory
+   *
+   * returns a fd if succesful, fails on error
+   * @type String -> String
+   */
+  mkdtemp =
+    <conc-strings> (<id>, "XXXXXX") => template
+    ; prim("SSL_mkdtemp", template)
+    <+ <perror; fail> "SSL/mkdtemp"
+
+strategies
+
+ /** 
+  * rename renames a file, moving it between directories if required.
+  * Any  other  hard links to the file (as created using link(2)) are unaffected.
+  *
+  * If newpath already exists it will be atomically replaced (subject to  a
+  * few  conditions ~ see ERRORS below), so that there is no point at which
+  * another process attempting to access newpath will find it missing.
+  *
+  * If newpath exists but the operation fails for some reason rename  guarantees 
+  * to leave an instance of newpath in place.
+  *
+  * From 0.9.4 this implementation copies the file if the primitive rename 
+  * fails because of an XDEV error.
+  *
+  * @todo Make a plain ANSI C version for inclusion in C99 library.
+  */
+  rename-file =
+      ?(oldname, newname)
+    ; (  prim("SSL_rename", oldname, newname)
+      <+ ( get-last-error => ErrorNumber(<EXDEV> ())
+         < <copy-file> (oldname, newname)
+           ; <remove-file> oldname
+         + fail
+         )
+      )
+
+ /**
+  * Copy a file using memory mapped I/O. 
+  *
+  * If newname is a directory the file is copied to a file in the directory
+  * with the same base name as the old file.
+  */
+  copy-file =
+    ?(oldname, newname)
+    ; where(
+        if <file-exists; filemode; isdir> newname then
+          <concat-strings>[newname, "/", <base-filename> oldname]
+        else !newname end => newname'
+      )
+    ; prim("SSL_copy", oldname, newname')
+
+  fdcopy =
+    ?(fdin, fdout); prim("SSL_fdcopy", fdin, fdout)

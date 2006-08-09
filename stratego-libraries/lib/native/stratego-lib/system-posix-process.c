@@ -5,10 +5,13 @@
 
 #include "stratego-lib-common.h"
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_get_pid(void) {
   return((ATerm)ATmakeInt(getpid()));
 }
+#endif /* XT_STD_DISABLE_POSIX */
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_fork(void) {
   pid_t pid = fork();
   int result = (int) pid;
@@ -20,7 +23,9 @@ ATerm SSL_fork(void) {
 
   return tresult;
 }
+#endif /* XT_STD_DISABLE_POSIX */
 
+#ifndef XT_STD_DISABLE_POSIX
 int execv_args(ATerm argv, const char *str_args[]) {
   int i = 0;
 
@@ -47,7 +52,9 @@ int execv_args(ATerm argv, const char *str_args[]) {
   str_args[i] = NULL;
   return 0;
 }
+#endif /* XT_STD_DISABLE_POSIX */
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_execvp(ATerm file, ATerm argv) {
   const char *str_args[256];
   int result;
@@ -64,7 +71,9 @@ ATerm SSL_execvp(ATerm file, ATerm argv) {
   result = execvp(str_args[0], (char *const *) str_args);
   return (ATerm)ATmakeInt(result);
 }
+#endif /* XT_STD_DISABLE_POSIX */
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_execv(ATerm file, ATerm argv) {
   const char *str_args[256];
   int result;
@@ -80,7 +89,9 @@ ATerm SSL_execv(ATerm file, ATerm argv) {
   result = execv(AT_getString(file), (char *const *) str_args);
   return (ATerm) ATmakeInt(result);
 }
+#endif /* XT_STD_DISABLE_POSIX */
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_waitpid(ATerm pid) {
   int status;
   assert_is_int(pid);
@@ -90,6 +101,7 @@ ATerm SSL_waitpid(ATerm pid) {
     (ATerm)ATmakeInt(WIFSIGNALED(status) ? WTERMSIG(status) : -1),
     (ATerm)ATmakeInt(WIFSTOPPED(status)  ? WSTOPSIG(status) : -1));
 }
+#endif /* XT_STD_DISABLE_POSIX */
 
 ATerm SSL_exit(ATerm t)
 {
@@ -101,6 +113,7 @@ ATerm SSL_exit(ATerm t)
 }
 
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_kill(ATerm pid, ATerm sig) {
   int result = -1;
 
@@ -117,5 +130,4 @@ ATerm SSL_kill(ATerm pid, ATerm sig) {
 
   return (ATerm) ATmakeInt(result);
 }
-
-
+#endif /* XT_STD_DISABLE_POSIX */

@@ -1,0 +1,12 @@
+module stratego-lib-posix
+imports
+  stratego-lib-generic
+
+  system/posix/error
+  system/posix/file
+  system/posix/process
+  system/posix/signal
+
+  system/posix/file-abstractions
+  system/posix/pipe-abstractions
+  system/posix/process-abstractions

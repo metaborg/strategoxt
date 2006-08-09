@@ -1,7 +1,7 @@
-module system/io/pipe
+module system/posix/pipe-abstractions
 imports 
-  system/io/-
-  system/io/process
+  system/posix/file
+  system/posix/process
 
 strategies
 
@@ -56,11 +56,6 @@ strategies
     where <file-from-pipe> p => file
         ; <ReadFromFile> file => t
         ; <fclose> file
-
-  copy-pipe-to-file :
-    (Pipe(fd1, fd2), name) -> name
-    where <open>(name, "w") => fdout
-        ; <fdcopy> (fd1, fdout)
 
 strategies
 

@@ -2,81 +2,7 @@
  * Strategies for exploring directories.
  */
 module system/io/dir
-imports system/posix/error
-
 strategies
-
- /**
-  * The  readdir()  function  returns  a  pointer  to a dirent
-  * structure representing the next  directory  entry  in  the
-  * directory  stream  pointed  to by dir.  It returns NULL on
-  * reaching the end-of-file or if an error occurred. 
-  */
-  readdir = 
-    ?dir; prim("SSL_readdir", dir)
-
-  /*   These  functions  return  information  about the specified
-       file.  You do not need any access rights to  the  file  to
-       get  this  information  but  you need search rights to all
-       directories named in the path leading to the file. */
-
-  /* stat = 
-    ?file; prim("SSL_stat", file) */
-
-  modification-time =
-    ?file; prim("SSL_modification_time", file)
-
-  file-newer =
-    (modification-time, modification-time); gt
-
- /** 
-  * rename renames a file, moving it between directories if required.
-  * Any  other  hard links to the file (as created using link(2)) are unaffected.
-  *
-  * If newpath already exists it will be atomically replaced (subject to  a
-  * few  conditions ~ see ERRORS below), so that there is no point at which
-  * another process attempting to access newpath will find it missing.
-  *
-  * If newpath exists but the operation fails for some reason rename  guarantees 
-  * to leave an instance of newpath in place.
-  *
-  * From 0.9.4 this implementation copies the file if the primitive rename 
-  * fails because of an XDEV error.
-  */
-  rename-file =
-      ?(oldname, newname)
-    ; (  prim("SSL_rename", oldname, newname)
-//      <+ ( get-last-error => ErrorXDEV()
-      <+ ( get-last-error => ErrorNumber(<EXDEV> ())
-         < <copy-file> (oldname, newname)
-           ; <remove-file> oldname
-         + fail
-         )
-      )
-
- /**
-  * Copy a file using memory mapped I/O. 
-  *
-  * If newname is a directory the file is copied to a file in the directory
-  * with the same base name as the old file.
-  */
-  copy-file =
-    ?(oldname, newname)
-    ; where(
-        if <file-exists; filemode; isdir> newname then
-          <concat-strings>[newname, "/", <base-filename> oldname]
-        else !newname end => newname'
-      )
-    ; prim("SSL_copy", oldname, newname')
-
-  fdcopy =
-    ?(fdin, fdout); prim("SSL_fdcopy", fdin, fdout)
-
- /**
-  * link-file creats a hard link from file 'new' to file 'old'.
-  */
-  link-file =
-    ?(old, new); prim("SSL_link", old, new)
 
   /**
    * Removes a file from a directory.
@@ -92,13 +18,7 @@ strategies
   getenv = 
     ?name; prim("SSL_getenv", name)
 
- /**
-  * The  setenv() function adds the variable name to the 
-  * environment with the value value, if  name  does  not  already
-  * exist.   If  name  does exist in the environment, then its
-  * value is changed to value if  overwrite  is  non-zero;  if
-  * overwrite  is zero, then the value of name is not changed. 
-  */
-  setenv = 
-    ?(name, value, overwrite)
-    ; where(prim("SSL_setenv", name, value, overwrite))
+strategies
+
+  home-dir =
+    <getenv> "HOME"

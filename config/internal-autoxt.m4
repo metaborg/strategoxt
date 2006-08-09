@@ -63,7 +63,7 @@ AC_DEFUN([XT_INTERNAL_CHECK_PACKAGES],
 ])
 
 # XT_INTERNAL_USE_XT_PACKAGES
-# -------------------
+# ---------------------------
 AC_DEFUN([XT_INTERNAL_USE_XT_PACKAGES],
 [
   AC_REQUIRE([XT_SETUP])

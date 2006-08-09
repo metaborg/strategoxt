@@ -1,0 +1,3 @@
+module stratego-lib-c99
+imports
+  stratego-lib-generic

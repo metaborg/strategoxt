@@ -7,9 +7,21 @@ imports
   util/config/verbose 
   system/io/file 
   system/io/dir 
-  system/io/pipe 
   system/io/char 
   system/io/term 
+
+strategies
+
+ /**
+  * The  setenv() function adds the variable name to the 
+  * environment with the value value, if  name  does  not  already
+  * exist.   If  name  does exist in the environment, then its
+  * value is changed to value if  overwrite  is  non-zero;  if
+  * overwrite  is zero, then the value of name is not changed. 
+  */
+  setenv = 
+    ?(name, value, overwrite)
+    ; where(prim("SSL_setenv", name, value, overwrite))
 
 strategies
 
@@ -88,21 +100,7 @@ signature
      * (3) Signal number or -1 if the process wasn't stopped
      */
     WaitStatus : Int * Int * Int -> WaitStatus
-    
-/**
- * Terminating the Current Process
- */
-strategies 
- 
-
-  /**
-   * Abort execution with exit value n.
-   *
-   * @type Int -> _
-   */
-  exit = 
-    ?n; prim("SSL_exit", n)
-  
+      
 /**
  * Terminating Another Process 
  */
@@ -119,4 +117,3 @@ strategies
       ?(pid, <number-from-signal; ?sig>)
     ; prim("SSL_kill", pid, sig)
     )
-    

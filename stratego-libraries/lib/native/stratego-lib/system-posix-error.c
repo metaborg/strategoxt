@@ -25,8 +25,16 @@ ATerm SSL_strerror(ATerm errnum) {
   return (ATerm) ATmakeString(result);
 }
 
+/**
+ * @TODO Strictly speaking this function should not be available in C99 mode.
+ * if EXDEV is not defined, this will be a run-time error.
+ */
 ATerm SSL_EXDEV(void) {
+#ifdef EXDEV
   return ((ATerm) ATmakeInt(EXDEV));
+#else
+  fprintf(stderr, "error: error number EXDEV is not available on this system.");
+  return NULL;
+#endif
 }
-
 

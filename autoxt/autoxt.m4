@@ -20,6 +20,7 @@ AC_DEFUN([XT_SETUP],
   AC_REQUIRE([XT_DARWIN])
   AC_REQUIRE([XT_CHECK_LINKING])
   AC_REQUIRE([XT_ENABLE_XTC_REGISTER])
+  AC_REQUIRE([XT_STRICT_ISO_C99])
 
   AC_SUBST([STR_CFLAGS])
   AC_SUBST([STR_LDFLAGS])
@@ -54,9 +55,10 @@ AC_DEFUN([XT_STRICT_ISO_C99],
   AC_REQUIRE([AC_PROG_CC])
 
   if test "x$GCC" = "xyes"; then
-    STR_CFLAGS="${STR_CFLAGS} -std=c99 -Wall -pedantic -Wno-unused-label -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter"
+    STR_CFLAGS="${STR_CFLAGS} -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter"
   fi
 
+  # -Werror
   AC_ARG_ENABLE([werror],
     [AS_HELP_STRING([--enable-werror],[compile C sources using -Werror @<:@default=no@:>@])],
     [enable_werror=yes],
@@ -65,6 +67,53 @@ AC_DEFUN([XT_STRICT_ISO_C99],
   if test "x$enable_werror" = "xyes"; then
     STR_CFLAGS="${STR_CFLAGS} -Werror"
   fi
+
+  # Standards
+  AC_MSG_CHECKING([for the standard to conform to])
+  AC_ARG_WITH([std],
+    [AS_HELP_STRING([--with-std={C99|POSIX|POSIX+XSI}],[standard to conform to @<:@default=none@:>@])],
+    [xt_std_arg=$withval],
+    [])
+
+  if test "${xt_std_arg:+set}" = set; then
+    xt_std="${xt_std_arg}"
+  else
+    xt_std="none"
+    # TODO: if not specified, then maybe be conservative on platforms with known problems (WIN32 etc)
+  fi
+
+  if test "x${xt_std}" = "xC99"; then
+    xt_std="C99"
+    STR_CFLAGS="${STR_CFLAGS} -DXT_STD_DISABLE_POSIX -DXT_STD_DISABLE_POSIX_XSI"
+    if test "x$GCC" = "xyes"; then
+      STR_CFLAGS="${STR_CFLAGS} -std=c99 -pedantic"
+    fi
+  else
+    if test "x${xt_std}" = "xPOSIX"; then
+      xt_std="POSIX"
+      STR_CFLAGS="${STR_CFLAGS} -D_POSIX_C_SOURCE=200112L -DXT_STD_DISABLE_POSIX_XSI"
+    else
+      if test "x${xt_std}" = "xPOSIX+XSI"; then
+        xt_std="POSIX+XSI"
+        STR_CFLAGS="${STR_CFLAGS} -D_XOPEN_SOURCE=600"
+      else
+        if test "x${xt_std}" != "xnone"; then
+          AC_MSG_ERROR([illegal value for option --with-std. Please use C99, POSIX, or POSIX+XSI])
+        fi
+      fi
+    fi
+  fi
+  AC_MSG_RESULT([$xt_std])
+
+  m4_pattern_allow([^XT_STD_C99(_TRUE|_FALSE)?$])
+  m4_pattern_allow([^XT_STD_POSIX(_TRUE|_FALSE)?$])
+  m4_pattern_allow([^XT_STD_POSIX_XSI(_TRUE|_FALSE)?$])
+  m4_pattern_allow([^XT_STD_NONE(_TRUE|_FALSE)?$])
+
+  AM_CONDITIONAL([XT_STD_C99], [test "$xt_std" = "C99"])
+  AM_CONDITIONAL([XT_STD_POSIX], [test "$xt_std" = "POSIX"])
+  AM_CONDITIONAL([XT_STD_POSIX_XSI], [test "$xt_std" = "POSIX+XSI"])
+  AM_CONDITIONAL([XT_STD_NONE], [test "$xt_std" = "none"])
 ])
 
 # XT_CHECK_LINKING

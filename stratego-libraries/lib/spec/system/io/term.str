@@ -3,10 +3,7 @@
  */
 module system/io/term
 imports 
-
   system/io/char
-  system/io/pipe
-  system/io/term
   system/io/dir
   system/io/file
   system/io/process
@@ -16,7 +13,7 @@ imports
   collection/list/common
   strategy/conditional
   util/config/options
-  
+
 /**
  * Term input and output
  */

@@ -24,11 +24,11 @@ ATerm SSL_stderr_stream() {
   return stream_to_term(stderr);
 }
 
+
 /**
  * Terminal I/O
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_isatty(ATerm filedes) {
   int val;
   int result;
@@ -38,6 +38,7 @@ ATerm SSL_isatty(ATerm filedes) {
 
   return (ATerm) ATmakeInt(result);
 }
+#endif /* XT_STD */
 
 /**
  * fopen
@@ -177,7 +178,7 @@ ATerm SSL_fgetc(ATerm stream_term) {
 }
 
 
-
+#ifndef XT_STD_DISABLE_POSIX
 #define PATH_MAX_GUESS 1024
 
 /* From Advanced Programming in the Unix Environment */
@@ -186,7 +187,7 @@ ATerm SSL_fgetc(ATerm stream_term) {
 static int pathmax = PATH_MAX;
 #else
 static int pathmax = 0;
-#endif
+#endif /* PATH_MAX */
 
 /**
  * Allocate a string that can hold a path.
@@ -218,12 +219,13 @@ char* path_alloc(int *size) {
 
   return result;
 }
+#endif /* XT_STD */
+
 
 /**
  * Return the current directory
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_getcwd(void) {
   ATerm term_result;
   char *result;
@@ -239,24 +241,25 @@ ATerm SSL_getcwd(void) {
   free(result);
   return term_result;
 }
+#endif /* XT_STD */
 
 /**
  * chdir
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_chdir(ATerm pathname) {
   if(!ATisString(pathname)) return NULL;
   const char* dir = AT_getString(pathname);
   int result = chdir(dir);
   return (ATerm) ATmakeInt(result);
 }
+#endif
+
 
 /**
  * Create drectory, if it does not already exist.
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 {
   //int result = mkdir(AT_getString(pathname), permissions_from_term(mode));
@@ -267,24 +270,24 @@ ATerm SSL_mkdir(ATerm pathname, ATerm mode)
   int result = mkdir(AT_getString(pathname), 0700);
   return (ATerm) ATmakeInt(result);
 }
+#endif /* XT_STD */
 
 /**
  * Deletes a directory, which must be empty.
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_rmdir(ATerm pathname)
 {
   if(!ATisString(pathname)) return NULL;
   int result = rmdir(AT_getString(pathname));
   return (ATerm) ATmakeInt(result);
 }
+#endif /* XT_STD */
 
 /**
  * creat
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_creat(ATerm pathname)
 {
   int fd;
@@ -297,12 +300,12 @@ ATerm SSL_creat(ATerm pathname)
     }
   return (ATerm)ATmakeInt(fd);
 }
+#endif /* XT_STD */
 
 /**
  * open
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_open(ATerm pathname)
 {
   int fd;
@@ -315,8 +318,9 @@ ATerm SSL_open(ATerm pathname)
     }
   return (ATerm) ATmakeInt(fd);
 }
+#endif /* XT_STD */
 
-
+#ifndef XT_STD_DISABLE_POSIX_XSI
 #ifdef HAVE_MKSTEMP_LIMIT /* for systems where mkstemp() is broken or allows few files
                  per process before failing, we define our own: */
 static const unsigned char tempchars[] =
@@ -360,12 +364,14 @@ int __internal__mkstemp(char *template) {
   errno=EEXIST;
   return(-1);
 }
-
+#endif /* XT_STD */
 #endif /* HAVE_MKSTEMP_LIMIT */
+
 
 /**
  * note: mandatory POSIX XSI extension.
  */
+#ifndef XT_STD_DISABLE_POSIX_XSI
 ATerm SSL_mkstemp(ATerm template) {
   char* result;
   ATerm term_result;
@@ -395,6 +401,7 @@ ATerm SSL_mkstemp(ATerm template) {
 
   return term_result;
 }
+#endif /* XT_STD */
 
 /**
  * The mkdtemp() function generates a uniquely-named temporary
@@ -404,8 +411,10 @@ ATerm SSL_mkstemp(ATerm template) {
  * permissions 0700.  Since it will be modified, template must not be
  * a string constant, but should be declared as a character array.
  *
- * note: non standard.
+ * Note: non standard.
+ * Note: mktemp has been marked as legacy in SUSv3. Should be dropped.
  */
+#ifndef XT_STD_DISABLE_POSIX_XSI
 ATerm SSL_mkdtemp(ATerm template) {
   char* result;
   ATerm term_result;
@@ -433,24 +442,24 @@ ATerm SSL_mkdtemp(ATerm template) {
 
   return term_result;
 }
+#endif /* XT_STD */
 
 /**
  * close
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_close(ATerm fd) {
   assert_is_int(fd);
   if(close(_get_int(fd)) != 0) 
     _fail(fd);
   return (ATerm)ATmakeInt(0);
 }
+#endif /* XT_STD */
 
 /**
  * dup
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_dup(ATerm oldfd) {
   assert_is_int(oldfd);
   int fd = dup(_get_int(oldfd));
@@ -461,12 +470,12 @@ ATerm SSL_dup(ATerm oldfd) {
 
   return (ATerm) ATmakeInt(fd);
 }
+#endif /* XT_STD */
 
 /**
  * dup2
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
   assert_is_int(fromfd);
   assert_is_int(tofd);
@@ -478,6 +487,7 @@ ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
 
   return (ATerm) ATmakeInt(fd);
 }
+#endif /* XT_STD */
 
 int permission_from_term(ATerm term) {
   int result;
@@ -533,6 +543,7 @@ int permissions_from_term(ATerm perms_term)
 /**
  * access
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_access(ATerm path_term, ATerm perms_term) {
   if(!ATisString(path_term)) return NULL;
   const char* pathname  = AT_getString(path_term);
@@ -550,12 +561,12 @@ ATerm SSL_access(ATerm path_term, ATerm perms_term) {
 
   return path_term;
 }
+#endif /* XT_STD */
 
 /**
  * fdopen
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_fdopen(ATerm fd, ATerm mode) {
   assert_is_int(fd);
   if(!ATisString(mode)) return NULL;
@@ -567,12 +578,12 @@ ATerm SSL_fdopen(ATerm fd, ATerm mode) {
 
   return stream_to_term(result);
 }
+#endif /* XT_STD */
 
 /**
  * fileno
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_fileno(ATerm stream_term) {
   FILE* stream = NULL; 
   int fd;
@@ -589,12 +600,12 @@ ATerm SSL_fileno(ATerm stream_term) {
 
   return (ATerm) ATmakeInt(fd);
 }
+#endif /* XT_STD */
 
 /**
  * filemode
- *
- * Note: mandatory in POSIX Base.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_filemode(ATerm pathname)
 {
   struct stat buffer;
@@ -647,17 +658,25 @@ ATerm SSL_S_ISLNK(ATerm mode)
     _fail(mode);
   return mode;
 }
+#endif /* XT_STD */
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_S_ISSOCK(ATerm mode)
 {
+#ifdef S_ISSOCK
   if(!S_ISSOCK(ATgetInt((ATermInt)mode)))
     _fail(mode);
   return mode;
+#else 
+  fprintf(stderr, "error: S_ISSOCK is not available on this system.");
+  fprintf(stderr, "  This is a bug in the header files of your C library.");
+    _fail(mode);
+#endif /* HAVE_S_ISSOCK */
 }
+#endif /* XT_STD */
 
-/**
- * Note: mandatory in POSIX Base.
- */
+
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_pipe(void)
 {
   int fd[2], res;
@@ -683,3 +702,4 @@ ATerm SSL_pipe(void)
   }
   return (ATerm) ATempty;
 }
+#endif /* XT_STD */

@@ -1,4 +1,4 @@
-module stratego-lib
+module stratego-lib-generic
 imports
   collection/hash-table/common
   collection/hash-table/nested
@@ -39,17 +39,12 @@ imports
   strategy/traversal/environment
   strategy/traversal/list-environment
 
+  system/error
   system/io/char
   system/io/dir
   system/io/file
-  system/io/pipe
   system/io/process
   system/io/term
-
-  system/posix/error
-  system/posix/file
-  system/posix/process
-  system/posix/signal
 
   term/annotation
   term/common

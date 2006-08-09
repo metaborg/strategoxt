@@ -2,11 +2,14 @@
  * The primitive \verb|dtime| returns the CPU time in seconds
  * since the last call to \verb|dtime|. Can be used to time
  * strategies.
+ *
+ * @todo Check portability
  */
 module util/time
 imports 
-  system/posix/file
+  system/io/file
   util/log
+
 signature
   constructors
     EpochTime     : Int -> EpochTime

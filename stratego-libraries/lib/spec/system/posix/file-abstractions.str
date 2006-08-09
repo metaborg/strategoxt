@@ -1,0 +1,180 @@
+module system/posix/file-abstractions
+imports
+  system/posix/file
+
+strategies
+
+  /**
+   * Return the absolute path of a pathname.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   */
+  abspath =
+      is-abspath
+    < id
+    + <concat-strings> [<getcwd> (), "/", <id>]
+
+  file-newer =
+    (modification-time, modification-time); gt
+
+overlays
+
+  Read      = R_OK
+  Write     = W_OK
+  Execute   = X_OK
+  Existence = F_OK
+
+strategies
+
+  /**
+   * @type  String -> String
+   */
+  file-exists =
+    <access> (<id>, [F_OK()])
+
+  /**
+   * @type  String -> String
+   */
+  can-read-file =
+    <access> (<id>, [R_OK()])
+
+  is-readable = can-read-file
+
+  /**
+   * @type  String -> String
+   */
+  can-write-file =
+    <access> (<id>, [W_OK()])
+
+  is-writable = can-write-file
+
+  /**
+   * @type  String -> String
+   */
+  can-execute-file =
+    <access> (<id>, [X_OK()])
+
+  is-executable = can-execute-file
+
+  /**
+   * @type String -> String
+   * @inc  create?
+   */
+  can-create-file =
+    where(dirname; can-write-file)
+
+/**
+ * find files in paths
+ *
+ * @todo Create a file-exists based on fopen to make this code portable?
+ */
+strategies
+
+  /**
+   * Finds a file in a list of directories (a path).
+   *
+   * <find-path(strict|path)> f looks for a file with name f in the list of
+   * directories path. If the file is not found the behaviour depends on the
+   * strategy strict, if it succeeds a fatal-error is flagged, otherwise the
+   * strategy just fails.
+   *
+   * Example (when run in strategoxt root):
+   *   <find-in-path(id|["ssl/spec","ssl/tests"])> "file.str" => "ssl/spec/file.str"
+   */
+
+  find-in-path(strict|path) = 
+    ?file
+    ; ( file-exists
+      <+ <fetch-elem(<concat-strings; file-exists> [<id>,"/",file])> path
+      <+ if strict then <fatal-error> ["no such file: ", file] else fail end
+      )
+
+  /**
+   * Finds a file in a list of directories (a path).
+   *
+   * Differs from find-in-path/(0,0) in that it exits with fatal-error if file is
+   * not found.
+   *
+   * @param should build a list of paths in which the search is performed.
+   */
+
+  find-in-path(|path) =
+    find-in-path(id|path)
+
+  /**
+   * Finds a file in a list of directories (a path)
+   *
+   * @obsolete.
+   *
+   * This strategy operates on a tuple (f, [d*]) where f is the name of the file
+   * to be found, and d* are the directories to search in. The full path of the
+   * first match is the output term.
+   *
+   * Example (when run in strategoxt root):
+   *   <find-in-path> ("file.str", ["ssl/spec", "ssl/tests"]) => "ssl/spec/file.str"
+   */
+
+  find-in-path =
+    ?(file, path); <find-in-path(fail|path)> file
+
+  /** 
+   * @obsolete
+   */
+
+  find-in-path(mkpath) =
+    find-in-path(|<mkpath>)
+
+  /**
+   * Finds one file with a specific file extension in a list of directories.
+   *
+   * This strategy operates on a tuple (f, [d*]). The one file that will be
+   * searched for is determined by the basename of f and the requested file
+   * extension.
+   * Example:
+   *   <find-file(!"rtree")> ("file.str", ["."])
+   * searches for file.rtree in the current dir.
+   *
+   * @param should build the file extension as a string.
+   */
+
+  find-file(|ext, path) =
+    guarantee-extension(|ext)
+    ; find-in-path(fail|path)
+
+  find-file(|ext) =
+    ?(file, path)
+    ; <find-file(|ext, path)> file
+
+  /**
+   * @obsolete
+   */
+  find-file(ext) =
+    find-file(|<ext>)
+
+  /**
+   * Finds one file with a specific file extension in a list of directories.
+   *
+   * Differs from find-file/(1,0) in that it exits with fatal error if file is
+   * not found.
+   *
+   * @param should build a list of paths in which the search is performed.
+   * @param should build the file extension as a string.
+   */
+  find-file(mkpath, ext) =
+    guarantee-extension(|<ext>)
+    ; find-in-path(|<mkpath>)
+
+/**
+ * Obsolete strategies
+ */    
+strategies
+
+  /**
+   * Creates a fresh file in the current directory.
+   *
+   * @obsolete  use new-temp-file or XTC temporary files
+   */
+  new-file =
+    obsolete(!"new-file; use new-temp-file or XTC temporary files")
+    ; rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))

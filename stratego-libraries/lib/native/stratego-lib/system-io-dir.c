@@ -12,7 +12,10 @@
 /**
  * Read the entries from a directory and return a list
  * with all the names
+ *
+ * @TODO bug in glibc: function not under control of features.h
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_readdir(ATerm t) 
 {
   DIR *dir = NULL;
@@ -36,7 +39,12 @@ ATerm SSL_readdir(ATerm t)
 
   return (ATerm) entries;
 }
+#endif
 
+/**
+ * @TODO bug in glibc: function not under control of features.h
+ */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_modification_time(ATerm file)
 {
   struct stat buf;
@@ -47,6 +55,7 @@ ATerm SSL_modification_time(ATerm file)
 
   return (ATerm)ATmakeInt(buf.st_mtime);
 }
+#endif
 
 ATerm SSL_rename(ATerm oldname, ATerm newname)
 {
@@ -59,8 +68,11 @@ ATerm SSL_rename(ATerm oldname, ATerm newname)
   return newname;
 }
 
+/**
+ * @TODO bug in glibc: functions not under control of features.h
+ */
+#ifndef XT_STD_DISABLE_POSIX_XSI
 #define SSL_COPY_BUFSIZE 8192
-
 ATerm SSL_copy(ATerm oldname, ATerm newname)
 // copy file oldname to file newname using read and write
 {
@@ -121,7 +133,12 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
   close(fdout);
   return newname;
 }
+#endif /* XT_STD */
 
+/**
+ * @TODO bug in glibc: function write not under control of features.h
+ */
+#ifndef XT_STD_DISABLE_POSIX_XSI
 ATerm SSL_fdcopy(ATerm fdinA, ATerm fdoutA)
 {
   int fdin, fdout;
@@ -149,7 +166,12 @@ ATerm SSL_fdcopy(ATerm fdinA, ATerm fdoutA)
 
   return (ATerm) ATempty;
 }
+#endif
 
+/**
+ * @TODO bug in glibc: function not under control of features.h
+ */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_link(ATerm existingpath, ATerm newpath)
 {
   if(!t_is_string(existingpath) || !t_is_string(newpath))
@@ -160,6 +182,7 @@ ATerm SSL_link(ATerm existingpath, ATerm newpath)
 
   return newpath;
 }
+#endif
 
 /**
  * Note: mandatory in C89 and C99, not in BSD
@@ -198,6 +221,7 @@ ATerm SSL_getenv(ATerm name)
  * is a POSIX XSI extension, so using setenv should in the future
  * be more portable than using putenv.
  */
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite)
 {
   if(!t_is_string(name)) _fail(name);
@@ -208,4 +232,4 @@ ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite)
 
   return (ATerm)ATempty;
 }
-
+#endif

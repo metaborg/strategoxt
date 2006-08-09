@@ -19,7 +19,8 @@ imports
   collection/hash-table/common
   strategy/traversal/simple
   collection/set/indexed
-  system/posix/file
+  system/io/file
+
 signature
   constructors
     RuleScope  : IndexedSet * Hashtable -> RuleScope

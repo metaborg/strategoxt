@@ -5,10 +5,8 @@ module util/sunit
 imports 
   system/io/file 
   system/io/dir 
-  system/io/pipe 
   system/io/char 
   system/io/term 
-
 
 strategies
 

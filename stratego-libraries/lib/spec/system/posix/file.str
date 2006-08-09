@@ -1,128 +1,8 @@
 module system/posix/file
-imports term/string
+imports
+  system/posix/error
+  term/string
 
-/**
- * Stream and file representations
- */
-signature
-  constructors
-    Stream    : ImplDep -> Stream
-
-    Path      : String -> FileLoc
-
-    stdin     : FileLoc
-    stdout    : FileLoc
-    stderr    : FileLoc
-
-    /*
-    FileDescr : Int -> FileDescr
-    */
-
-/**
- * Standard streams
- */
-strategies
-
-  /**
-   * Returns the Stream for stdin, stdout and stderr
-   *
-   * @type _ -> Stream
-   */
-  stdin-stream  = prim("SSL_stdin_stream") ; !Stream(<id>)
-  stdout-stream = prim("SSL_stdout_stream"); !Stream(<id>)
-  stderr-stream = prim("SSL_stderr_stream"); !Stream(<id>)
-
-/**
- * Terminal I/O
- */
-strategies
-
-  /**
-   * Succeeds if file descriptor refers to a terminal device.
-   */
-  isatty =
-    ?filedes; prim("SSL_isatty", filedes) => 1
-
-/**
- * Stream operations
- */
-strategies
-
-  /**
-   * Opens the file whose name is the string pointed to by 
-   * pathname and returns a Stream associated with this file.
-   * For documentation on the mode string, see the man page of
-   * fopen.
-   *
-   * fails if the file couldn't be opened. 
-   *
-   * @type String * String -> Stream
-   */
-  fopen =
-    ?(pathname, mode); prim("SSL_fopen", pathname, mode); !Stream(<id>)
-
-  /**
-   * Dissociates the named stream from its underlying file or set of functions.
-   * If the stream was being used for output, any buffered data is written 
-   * first, using fflush(3).
-   *
-   * @type Stream -> ()
-   */
-  fclose =
-    ?Stream(stream); prim("SSL_fclose", stream)
-      <+ ?stream-old; prim("SSL_fclose", stream-old) // legacy
-
-  /**
-   * Forces a write of all user-space buffered data for the given Stream
-   *
-   * @type Stream -> Stream
-   */
-  fflush =
-    ?Stream(stream); prim("SSL_fflush", stream); !Stream(<id>)
-      <+ ?stream-old; prim("SSL_fflush", stream-old); !Stream(<id>) // legacy
-
-/**
- * Character output to stream
- */
-strategies
-
-  /**
-   * Writes a String to a Stream
-   * @type (String, Stream) -> Stream
-   */
-  fputs =
-    ?(str, Stream(stream)); prim("SSL_fputs", str, stream); !Stream(<id>)
-
-  /**
-   * Writes a String to stdout with a trailing newline and returns stdout.
-   *
-   * @type String -> Stream
-   */
-  puts =
-    ?str; prim("SSL_puts", str); !Stream(<id>)
-
-  /**
-   * Writes a Char to a Stream
-   *
-   * @type (Char, Stream) -> Stream
-   */
-  fputc =
-    ?(c, Stream(stream)); prim("SSL_fputc", c, stream); !Stream(<id>)
-
-/**
- * Character input from stream
- */
-strategies
-
-  /**
-   * fgetc() reads the next character from the stream and returns the 
-   * ASCII code of the character as an Int. Fails on end of file or error.
-   *
-   * @type Stream -> Char
-   */
-  fgetc = 
-    ?Stream(stream); prim("SSL_fgetc", stream)
-  
 /**
  * Standard file descriptors
  */
@@ -141,16 +21,51 @@ strategies
     prim("SSL_STDERR_FILENO")
 
 /**
- * Special directories
+ * Terminal I/O
  */
 strategies
 
-  temp-dir =
-    <getenv> "TMPDIR"
-    <+ P_tmpdir
+  /**
+   * Succeeds if file descriptor refers to a terminal device.
+   */
+  isatty =
+    ?filedes; prim("SSL_isatty", filedes) => 1
 
-  P_tmpdir =
-    prim("SSL_P_tmpdir")
+/**
+ * These  functions  return  information  about the specified
+ * file.  You do not need any access rights to  the  file  to
+ * get  this  information  but  you need search rights to all
+ * directories named in the path leading to the file.
+ */
+strategies
+
+  modification-time =
+    ?file; prim("SSL_modification_time", file)
+
+/**
+ * File operations
+ */
+strategies
+
+ /**
+  * link-file creats a hard link from file 'new' to file 'old'.
+  */
+  link-file =
+    ?(old, new); prim("SSL_link", old, new)
+
+/**
+ * Directories
+ */
+strategies
+
+ /**
+  * The  readdir()  function  returns  a  pointer  to a dirent
+  * structure representing the next  directory  entry  in  the
+  * directory  stream  pointed  to by dir.  It returns NULL on
+  * reaching the end-of-file or if an error occurred. 
+  */
+  readdir = 
+    ?dir; prim("SSL_readdir", dir)
 
   /**
    * Returns the current working directory.
@@ -166,9 +81,6 @@ strategies
   chdir =
     ?pathname; prim("SSL_chdir", pathname) => 0
     <+ <conc-strings; perror; fail> ("SSL/chdir: Cannot change current working directory to ", <id>)
-
-  home-dir =
-    <getenv> "HOME"
 
   /**
    * Create directory
@@ -211,28 +123,6 @@ strategies
     ?pathname; prim("SSL_open", pathname)
 
   /**
-   * Creates a unique temporary file
-   *
-   * returns a fd if succesful, fails on error
-   * @type String -> String * Int
-   */
-  mkstemp =
-    <conc-strings> (<id>, "XXXXXX") => template
-    ; prim("SSL_mkstemp", template)
-    <+ <perror; fail> "SSL/mkstemp"
- 
-  /**
-   * Creates a unique temporary directory
-   *
-   * returns a fd if succesful, fails on error
-   * @type String -> String
-   */
-  mkdtemp =
-    <conc-strings> (<id>, "XXXXXX") => template
-    ; prim("SSL_mkdtemp", template)
-    <+ <perror; fail> "SSL/mkdtemp"
-       
-  /**
    * Closing a file
    *
    * Deallocates a file descriptor   
@@ -267,12 +157,6 @@ signature
     R_OK: AccessPermission
     W_OK: AccessPermission
     X_OK: AccessPermission
-
-overlays
-  Read      = R_OK
-  Write     = W_OK
-  Execute   = X_OK
-  Existence = F_OK
     
 /**
  * Connecting high and low level file operations
@@ -300,7 +184,6 @@ strategies
    */
   fileno = 
     ?Stream(stream); prim("SSL_fileno", stream)
-
 
   /**
    * Mode of a file
