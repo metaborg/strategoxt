@@ -1,0 +1,9 @@
+module test10
+imports libstrategolib
+
+strategies
+
+  foo = ?x; rules( Foo : x -> (x, x) )
+
+  bar = undefine-Foo(|"baz")
+
