@@ -344,6 +344,8 @@ rules
         ; <create-continue-rules(|x, t3, stdkey)> drd
         ; <create-throw-rule(|x, t3, stdkey)> drd
 
+        ; create-dummy-undefine-strategy(|f)
+
         ; create-innermost-scope-strategy(|f)
 
 strategies // auxiliaries
@@ -724,9 +726,11 @@ strategies
     end
 
   create-dummy-undefine-strategy(|f) =
-    where(_undefine(|f) => f3)
-    ; add-def(||[ f3(|dep) = fail ]|)
-    ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
+    if is-new(|f, "undefine", "dummy") then
+      where(_undefine(|f) => f3)
+      ; add-def(||[ f3(|dep) = fail ]|)
+      ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
+    end
     
 strategies
 
