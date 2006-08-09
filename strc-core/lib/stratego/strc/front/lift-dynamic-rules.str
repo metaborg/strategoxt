@@ -283,7 +283,7 @@ rules
       ; <create-undef-apply-rule(|<_once(|f)>)> drd
       ; create-innermost-scope-strategy(|f)
       ; create-new-strategy(|f)
-      ; create-undefine-strategy(|f)
+      ; create-dummy-undefine-strategy(|f)
 
   create-undef-apply-rule(|g) =
     ?drd@|[ rules(  f(a1*|a2*) :- t1  ) ]|
@@ -723,6 +723,11 @@ strategies
       )
     end
 
+  create-dummy-undefine-strategy(|f) =
+    where(_undefine(|f) => f3)
+    ; add-def(||[ f3(|dep) = fail ]|)
+    ; add-def(||[ DYNAMIC_CALLS = f3(|"") ]|)
+    
 strategies
 
   /**
