@@ -33,8 +33,9 @@ libstratego_sglr_la_CPPFLAGS = \
   -I native -I ../justsglr \
   $(STRATEGO_LIB_UNINSTALLED_CFLAGS) \
   $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
-  $(ATERM_CFLAGS) \
-  -D_POSIX_C_SOURCE=200112L
+  $(ATERM_CFLAGS)
+
+#  -D_POSIX_C_SOURCE=200112L
 
 libstratego_sglr_la_LIBADD = \
   $(XTC_UNINSTALLED_LIBS) \
