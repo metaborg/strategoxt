@@ -74,8 +74,10 @@ fullstrategolib = \
   $(wildcard strategy/pack/*.str) \
   $(wildcard strategy/traversal/*.str) \
   $(wildcard strategy/general*.str) \
+  $(wildcard system/*.str) \
   $(wildcard system/io/*.str) \
   $(wildcard system/posix/*.str) \
+  $(wildcard system/posix-xsi/*.str) \
   $(wildcard term/*.str) \
   $(wildcard strategy/general*.str) \
   $(wildcard util/*.str) \
