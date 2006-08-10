@@ -34,18 +34,8 @@ strategies
    * @type (String, List(String)) -> (String, List(String))
    */
   call =
-    ?t; fork-and-wait(helper-call-child)
+    call(id)
 
-  /**
-   * This helper is used to avoid a nested function.
-   */
-  helper-call-child =
-    execvp
-    ; <exit> 1
-
-  /**
-   * @todo This call is broken on i686-darwin: see STR-853
-   */
   call(init-child) =
     ?(prog,args)
     ; fork-and-wait(init-child; <execvp> (prog, args); <exit> 1)
@@ -124,17 +114,11 @@ strategies
    */
   call(|opt-fdin, opt-fdout, opt-fderr) =
       ?(prog, args)
-      ; !(prog, args, opt-fdin, opt-fdout, opt-fderr)
-      ; fork-and-wait(call-custom-fd-helper)
+      ; fork-and-wait(
+          <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
+          ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
+          ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
+          ; <execvp> (prog, args)
+          ; <exit> 1
+        )
       ; !()
-
-  /**
-   * Workaround for issue STR-853: avoid the use of a nested function over a fork.
-   */
-  call-custom-fd-helper =
-    ?(prog, args, opt-fdin, opt-fdout, opt-fderr)
-    ; <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
-    ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
-    ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
-    ; <execvp> (prog, args)
-    ; <exit> 1
