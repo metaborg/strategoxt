@@ -4,6 +4,7 @@ AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
+m4_pattern_forbid([^XT_])
 m4_pattern_allow([^XT_XTC_REGISTER(_TRUE|_FALSE)?$])
 m4_pattern_allow([^XT_DIST_CHECK_SOURCES(_TRUE|_FALSE)?$])
 
