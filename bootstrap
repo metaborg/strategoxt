@@ -58,6 +58,7 @@ PKGS="autoxt xtc strc-core gpp c-tools concrete-syntax \
 
 for dir in $PKGS
 do 
+  cp autoxt.m4 stratego-libraries
   echo
   echo "bootstrap: bootstrapping in $dir"
   echo
