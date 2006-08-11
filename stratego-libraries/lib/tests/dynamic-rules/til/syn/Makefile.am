@@ -14,4 +14,5 @@ check_DATA = TIL.def TIL.tbl TIL.rtg TIL.rtree
 
 if XT_DIST_CHECK_SOURCES
 noinst_DATA = $(check_DATA)
+EXTRA_DIST += $(check_DATA)
 endif
