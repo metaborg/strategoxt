@@ -1,4 +1,5 @@
 include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
 EXTRA_DIST      = $(wildcard *.sdf)
@@ -9,4 +10,8 @@ SDF2RTG_FLAGS  = --main TIL
 
 TIL.def : $(wildcard *.sdf)
 
-check : TIL.def TIL.tbl TIL.rtg TIL.rtree
+check_DATA = TIL.def TIL.tbl TIL.rtg TIL.rtree
+
+if XT_DIST_CHECK_SOURCES
+noinst_DATA = $(check_DATA)
+endif

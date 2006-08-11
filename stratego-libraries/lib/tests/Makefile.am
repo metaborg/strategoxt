@@ -58,12 +58,8 @@ CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
 STRINCLUDES = -I $(top_srcdir)/lib/spec
-AM_CPPFLAGS = $(PREFIX_CPPFLAGS)
-LDADD       = $(PREFIX_LIBS)
-
-NOSHARED_PREFIX_LIBS = -L$(prefix)/lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
-PREFIX_LIBS          = -L$(prefix)/lib -lstratego-lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
-PREFIX_CPPFLAGS      = -I $(prefix)/include -I $(ATERM)/include
+AM_CPPFLAGS = $(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)
+LDADD       = $(STRATEGO_LIB_UNINSTALLED_LIBS) $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) $(ATERM_LIBS)
 
 if !XT_DIST_CHECK_SOURCES
 nodist_char_test_SOURCES          = char-test.c 
@@ -120,7 +116,7 @@ iteration_test_SOURCES     = iteration-test.c
 list_basic_test_SOURCES    = list-basic-test.c 
 list_filter_test_SOURCES   = list-filter-test.c
 list_index_test_SOURCES    = list-index-test.c
-misc_test_SOURCES     = list-misc-test.c
+list_misc_test_SOURCES     = list-misc-test.c
 list_set_test_SOURCES      = list-set-test.c 
 list_sort_test_SOURCES     = list-sort-test.c 
 list_zip_test_SOURCES      = list-zip-test.c 

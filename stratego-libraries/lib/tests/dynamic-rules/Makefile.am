@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-SUBDIRS = til
+SUBDIRS = til .
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 # pkgtestsdatadir   = $(pkgdatadir)/tests/dynamic-rules

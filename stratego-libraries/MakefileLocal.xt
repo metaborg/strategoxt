@@ -8,3 +8,6 @@ SCOMPILE = $(STRC_UNINSTALLED)
 
 .rtg.str :
 	$(RTG2SIG) --module `basename "$*"` -i $< -o $@
+
+.sdf.def :
+	$(PACKSDF) $(SDFINCLUDES) -i $< -o $@ --dep $*.dep
