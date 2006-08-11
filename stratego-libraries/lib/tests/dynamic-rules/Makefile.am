@@ -24,6 +24,13 @@ nodist_dr_propconst_tests_1_SOURCES = dr-propconst-tests-1.c
 nodist_dr_propconst_tests_2_SOURCES = dr-propconst-tests-2.c
 nodist_dr_dce_tests_SOURCES = dr-dce-tests.c
 nodist_dr_varunion_tests_SOURCES = dr-varunion-tests.c
+else
+dr_all_tests_SOURCES = dr-all-tests.c
+dr_scope_tests_SOURCES = dr-scope-tests.c
+dr_propconst_tests_1_SOURCES = dr-propconst-tests-1.c
+dr_propconst_tests_2_SOURCES = dr-propconst-tests-2.c
+dr_dce_tests_SOURCES = dr-dce-tests.c
+dr_varunion_tests_SOURCES = dr-varunion-tests.c
 endif
 
 dr_all_tests_CPPFLAGS       = $(STRATEGO_UNINSTALLED_CFLAGS)

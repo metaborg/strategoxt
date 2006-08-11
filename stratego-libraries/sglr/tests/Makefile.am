@@ -21,6 +21,8 @@ SCOMPILE = $(STRC_UNINSTALLED)
 
 if !XT_DIST_CHECK_SOURCES
 nodist_stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
+else
+stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
 endif
 
 stratego_sglr_tests_LDADD    = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
