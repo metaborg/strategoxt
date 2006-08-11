@@ -6,7 +6,7 @@ check_PROGRAMS = abox2text-tests ast2text-tests
 
 STRCFLAGS = \
   --main main-$* \
-  -I $(top_srcdir)/../gpp/syn/box \
+  $(BOXSYN_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_GPP_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
@@ -22,5 +22,7 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.pp)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
+if !XT_DIST_CHECK_SOURCES
 nodist_ast2text_tests_SOURCES = ast2text-tests.c
 nodist_abox2text_tests_SOURCES = abox2text-tests.c
+endif

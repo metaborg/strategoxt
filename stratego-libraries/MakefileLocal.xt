@@ -1,4 +1,10 @@
 SCOMPILE = $(STRC_UNINSTALLED)
 
 .str.rtree :
-	$(ASFIX_TOOLS)/bin/sglri --amb off -p $(top_builddir)/../stratego-front/syn/Stratego.tbl -i $< -o $@
+	$(SGLRI) --amb off -p $(STRATEGOTBL_UNINSTALLED) -i $< -o $@
+
+.def.rtg :
+	$(SDF2RTG) $(SDF2RTG_FLAGS) -i $< -o $@
+
+.rtg.str :
+	$(RTG2SIG) --module `basename "$*"` -i $< -o $@

@@ -251,8 +251,9 @@ AC_DEFUN([XT_CHECK_XTC],
     AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "yes"])
   fi
 
-  m4_pattern_allow([^XT_XTC_REGISTER(_TRUE|_FALSE)?$])
 ])
+
+m4_pattern_allow([^XT_XTC_REGISTER(_TRUE|_FALSE)?$])
 
 # XT_DISABLE_XTC_REGISTER
 # -----------------------
@@ -260,6 +261,7 @@ AC_DEFUN([XT_DISABLE_XTC_REGISTER],
 [
   xt_xtc_register="no"
   AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "no"])
+
 ])
 
 # XT_ENABLE_XTC_REGISTER

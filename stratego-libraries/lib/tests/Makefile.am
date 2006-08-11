@@ -65,6 +65,7 @@ NOSHARED_PREFIX_LIBS = -L$(prefix)/lib -lstratego-lib-native -lstratego-runtime 
 PREFIX_LIBS          = -L$(prefix)/lib -lstratego-lib -lstratego-lib-native -lstratego-runtime -L$(ATERM)/lib -lATerm -lm
 PREFIX_CPPFLAGS      = -I $(prefix)/include -I $(ATERM)/include
 
+if !XT_DIST_CHECK_SOURCES
 nodist_char_test_SOURCES          = char-test.c 
 nodist_collect_test_SOURCES       = collect-test.c
 nodist_dir_test_SOURCES           = dir-test.c
@@ -104,3 +105,4 @@ nodist_term_zip_test_SOURCES      = term-zip-test.c
 nodist_time_test_SOURCES          = time-test.c 
 nodist_tuple_test_SOURCES         = tuple-test.c
 nodist_unification_test_SOURCES   = unification-test.c
+endif

@@ -1,13 +1,61 @@
 AC_PREREQ([2.58])
 AC_INIT([stratego-libraries],[0.17M1],[stratego-bugs@cs.uu.nl])
-AC_CONFIG_AUX_DIR([../config])
+AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
+m4_pattern_allow([^XT_XTC_REGISTER(_TRUE|_FALSE)?$])
+m4_pattern_allow([^XT_DIST_CHECK_SOURCES(_TRUE|_FALSE)?$])
 
-XT_INTERNAL_USE_XT_PACKAGES
+XT_SETUP
+XT_WITH_XTC_ARGS
+XT_CHECK_ATERM
 XT_CHECK_MKSTEMP
 XT_DISABLE_XTC_REGISTER
+
+AC_ARG_ENABLE([baseline],
+  [AS_HELP_STRING([--enable-baseline], [Enable a baseline build @<:@no@:>@])],
+  [xt_baseline="$enableval"],
+  [xt_baseline="no"])
+
+AM_CONDITIONAL([XT_DIST_CHECK_SOURCES], [test "$xt_baseline" = "yes"])
+
+if test "$xt_baseline" = "yes"; then
+  XT_CHECK_SDF
+  XT_WITH_STRATEGOXT_ARG
+  AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
+  if test "${STRATEGOXT:+set}" = set; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+  fi
+  XT_PKG_STRATEGOXT
+
+  STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
+  BOX_UNINSTALLED_STRCFLAGS='-I $(STATEGOXT)/share/sdf/gpp'
+  PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/pp-table.tbl'
+  STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
+  SGLRI='$(STRATEGOXT)/bin/sglri'
+  RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
+  SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
+else
+  STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
+  BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
+  PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table/pp-table.tbl'
+  STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
+  SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
+  RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
+  SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
+fi
+
+AC_SUBST([STRC_UNINSTALLED])
+AC_SUBST([SGLRI])
+AC_SUBST([RTG2SIG])
+AC_SUBST([SDF2RTG])
+AC_SUBST([BOX_UNINSTALLED_STRCFLAGS])
+AC_SUBST([PPTABLETBL_UNINSTALLED])
+AC_SUBST([STRATEGOTBL_UNINSTALLED])
 
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([string.h])
@@ -21,7 +69,6 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
-
 
 AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_builddir)/runtime/lib'])
 AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/runtime/lib/libstratego-runtime.la'])
@@ -41,9 +88,6 @@ AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/sglr/lib/libstratego
 
 AC_SUBST([STRATEGO_GPP_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/gpp/lib'])
 AC_SUBST([STRATEGO_GPP_UNINSTALLED_LIBS],['$(top_builddir)/gpp/lib/libstratego-gpp.la'])
-
-# Variable for compiling with local strc
-AC_SUBST([STRC_UNINSTALLED],['XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'])
 
 # Combinations of all libraries that are needed.
 AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
