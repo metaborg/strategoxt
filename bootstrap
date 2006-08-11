@@ -54,7 +54,7 @@ PKGS="autoxt xtc strc-core gpp c-tools concrete-syntax \
   aterm-front stratego-front asfix-tools sdf-front sdf-tools \
   stratego-regular xml-front stratego-libraries"
 
-cp autoxt.m4 stratego-libraries/config
+cp ./config/autoxt.m4 stratego-libraries/config
 for dir in $PKGS
 do 
   echo
