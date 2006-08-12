@@ -1,4 +1,5 @@
 prefix=@prefix@
+datarootdir=@datarootdir@
 xtc_repo=@REPOSITORY@
 strcxtcflags=--xtc-repo ${xtc_repo}
 
