@@ -1,4 +1,5 @@
 STRPROGS = \
+  test10.str \
   test01.str \
   test02.str \
   test03.str \
@@ -7,8 +8,7 @@ STRPROGS = \
   test06.str \
   test07.str \
   test08.str \
-  test09.str \
-  test10.str
+  test09.str
 
 STRLIBS = \
   test09-lib.str 

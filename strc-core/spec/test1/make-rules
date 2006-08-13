@@ -159,6 +159,10 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 	$(FC_SUGAR_CONG) -i $<
 	../front/frontend -i $< -o $@
 
+%.lff : %.tree
+	$(FC_SUGAR_CONG) -i $<
+	../front/frontend --library -i $< -o $@
+
 # OPTIMIZE ###########################################################
 
 #%.s2.buv : %.s2
