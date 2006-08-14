@@ -4,8 +4,16 @@
  * escaping when applicable.
  */
 module escaping-variables
+
 imports
   libstratego-lib
+  libstrc
+
+strategies
+
+  escaping-variables-io = escaping-variables
+
+/*
   Stratego-Core
   frame-composition // necessary for the Closure constructor
 
@@ -149,3 +157,5 @@ strategies
   arg-should-be-closure-undeclared =
     debug(!"* warning (arg-should-be-closure): not a local function")
     ; <exit> 1
+
+*/

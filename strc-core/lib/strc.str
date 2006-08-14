@@ -50,7 +50,7 @@ imports
   stratego/strc/opt/fusion-rules
   stratego/strc/opt/fusion
   stratego/strc/opt/idfail-laws
-// stratego/strc/opt/inlining
+  stratego/strc/opt/inlining
   stratego/strc/opt/lift-definitions
   stratego/strc/opt/optimizer
   stratego/strc/opt/opt-lib
@@ -70,7 +70,7 @@ imports
   stratego/strc/match/matrix-to-dfa
   
   stratego/strc/c/C-simplify
-//  stratego/strc/c/escaping-variables
+  stratego/strc/c/escaping-variables
   stratego/strc/c/frame-composition
   stratego/strc/c/frames
   stratego/strc/c/s2c-ng

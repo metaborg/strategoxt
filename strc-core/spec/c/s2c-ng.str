@@ -9,6 +9,6 @@ imports
 
 strategies
 
-  s2c-ng = 
+  s2c-ng-io = 
     io-wrap(s2c-options, compile)
  

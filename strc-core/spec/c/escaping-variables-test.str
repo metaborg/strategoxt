@@ -1,5 +1,5 @@
 module escaping-variables-test
-imports escaping-variables libstratego-lib
+imports libstrc libstratego-lib
 
 signature
   constructors
@@ -23,7 +23,7 @@ strategies
     apply-test(<conc-strings>(<label>, "-1"), s1, input, output1)
     ; apply-test(<conc-strings>(<label>, "-2"), s2, output1, output2)
 
-  escaping-variables-test = 
+  escaping-variables-test-io = 
     test-suite(!"escaping-variables-test", id
  
         ; test-non-variable-def

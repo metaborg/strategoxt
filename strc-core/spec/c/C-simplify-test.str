@@ -2,7 +2,7 @@ module C-simplify-test
 imports libstratego-lib libstrc
 strategies
 
-  C-simplify-test = 
+  C-simplify-test-io = 
     test-suite(!"C-simplify-test",
 	test1;
 	test2

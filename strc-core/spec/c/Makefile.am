@@ -15,7 +15,7 @@ BOOTCLEANFILES = s2c.c s2c-ng.c C-simplify-test.c escaping-variables.c \
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
-SCFLAGS 	 = --main $* --keep 0 --verbose 1
+SCFLAGS 	 = --main $*-io --keep 0 --verbose 1
 
 STRINCLUDES	 = -I $(srcdir)/../../../stratego-front/syn \
 	           -I $(srcdir)/../../../stratego-front/sig \
@@ -32,7 +32,9 @@ LIB_STRC 	 = -L$(top_srcdir)/lib -lstrc
 LDADD           += $(SSL_LIBS)
 
 s2c_ng_LDADD	 	= $(LIB_STRC) $(SSL_LIBS)
-C_simplify_test_LDADD	= $(LIB_STRC) $(SSL_LIBS)	 
+C_simplify_test_LDADD	= $(LIB_STRC) $(SSL_LIBS)
+escaping_variables_LDADD = $(LIB_STRC) $(SSL_LIBS)
+escaping_variables_test_LDADD = $(LIB_STRC) $(SSL_LIBS)	 	 
 
 TESTS = C-simplify-test escaping-variables-test
 #canonicalize-test
