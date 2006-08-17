@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+autoxt
+cp autoxt.m4 config
+autoreconf -iv
