@@ -4,33 +4,36 @@
 
 module frontend
 
+imports
+  stratego/strc/strc/format-check
+
 strategies
 
   frontend = id
     ; if-not-lib(add-main)
-    ; repair-types		
-    ; pre-desugar			
-    ; combine-sections	
-    ; variables-to-constructors	
-    ; raise-annotations	
-    ; define-lrules		
-    ; LiftDynamicRules
-    ; stratego-desugar			
-    ; raise-annotations
-    ; spec-use-def				
-    ; CheckConstructors	
-    ; ExpandOverlays		
-    ; rules-to-sdefs		
-    ; desugar-list-matching
-    ; desugar-DefaultVarDec
-    ; introduce-congdefs
-    ; strename // rename-vars
-    ; desugar-top
-    ; if-lib(extract-all, extract)
- // ; stratego-warnings
-    ; rename-defs
-    ; simplify1
-    ; define-congruences
+    ; repair-types				; tfc6(|"Stratego-Sugar-Cong", "fe-rep") // local		
+    ; pre-desugar				; tfc2(|"Stratego-Sugar-1", "fe-des1")   // local
+    ; combine-sections				; tfc3(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
+    ; variables-to-constructors			; tfc3(|"Stratego-Sugar-1", "fe-vtc")	 // global analysis
+    ; raise-annotations				; tfc2(|"Stratego-Sugar-2", "fe-ra1")    // local
+    ; define-lrules				; tfc3(|"Stratego-Sugar-2", "fe-dlr")    // local
+    ; LiftDynamicRules									 // semi-local
+    ; stratego-desugar									 // local
+    ; raise-annotations				; tfc2(|"Stratego-Sugar-3", "fe-ra2")	 // local
+    ; spec-use-def									 // local analysis (earlier)				
+    ; CheckConstructors				; tfc4(|"Stratego-Sugar-3", "fe-cc")	 // global analysis (earlier)	
+    ; ExpandOverlays				; tfc3(|"Stratego-Sugar-3", "fe-eo")     // global		
+    ; rules-to-sdefs				; tfc3(|"Stratego-Sugar-3", "fe-rts")    // local		
+    ; desugar-list-matching			; tfc2(|"Stratego-Sugar-4", "fe-dlm")    // local
+    ; desugar-DefaultVarDec			; tfc3(|"Stratego-Sugar-4", "fe-ddv")    // local
+    ; introduce-congdefs			; tfc3(|"Stratego-Sugar-4", "fe-cdf")    // global
+    ; strename // rename-vars			; tfc3(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
+    ; desugar-top 				; tfc2(|"Stratego-Sugar-5", "fe-des")    // local
+    ; if-lib(extract-all, extract)		; tfc3(|"Stratego-Sugar-5", "fe-extr")	 // global
+ // ; stratego-warnings				; tfc5(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
+    ; rename-defs				; tfc3(|"Stratego-Sugar-5", "fe-rnd")    // local
+    ; simplify1					; tfc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
+    ; define-congruences			; tfc1(|"Stratego-Core", "fe-cong")
 
     // use-def			= comp(|"use-def", <pass-maybe-unbound-warnings>)
     // stratego-warnings	= comp(|"stratego-warnings", <pass-warnings>)
