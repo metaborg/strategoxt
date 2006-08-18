@@ -72,6 +72,7 @@ ATerm SSL_epoch2UTC(ATerm term) {
   return (ATerm) struct_tm2ATerm(tp);
 }
 
+#ifndef XT_STD_DISABLE_POSIX_XSI
 struct rusage rusage;
 
 double dtime(void)
@@ -96,6 +97,7 @@ ATerm SSL_dtime(void)
   dt = dtime();
   return((ATerm)ATmakeReal(dt));
 }
+#endif
 
 ATerm SSL_ClockToSeconds(ATerm t)
 {
@@ -107,6 +109,7 @@ ATerm SSL_clock(void)
   return (ATerm) ATmakeInt(clock());
 }
 
+#ifndef XT_STR_DISABLE_POSIX
 ATerm SSL_times(void)
 {
   struct tms ts;
@@ -119,7 +122,9 @@ ATerm SSL_times(void)
 			    (ATerm)ATmakeInt(ts.tms_cutime), 
 			    (ATerm)ATmakeInt(ts.tms_cstime));
 }
+#endif
 
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_TicksToSeconds(ATerm t)
 {
   long tps = sysconf(_SC_CLK_TCK);
@@ -132,3 +137,4 @@ ATerm SSL_TicksToSeconds(ATerm t)
 
   return (ATerm) ATmakeReal((double)ticks / (double)tps);
 }
+#endif

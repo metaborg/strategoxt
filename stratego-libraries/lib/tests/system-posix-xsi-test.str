@@ -1,0 +1,37 @@
+module system-posix-xsi-test
+imports libstratego-lib
+
+strategies
+
+  main = 
+    test-suite(!"system-posix-xsi",
+      cwd-tests
+      ; fileno-tests
+    )
+
+strategies
+
+  /**
+   * @todo  Enable tmp-dir check, but compare canonical pathnames.
+   */
+  cwd-tests =
+      where(getcwd => cwd)
+    ; apply-and-check(!"chdir to tmpdir", chdir; getcwd, temp-dir, debug)
+    ; apply-test(!"chdir to old cwd", chdir; getcwd, !cwd, !cwd)
+
+    //; apply-test(!"chdir to home dir", chdir; getcwd, home-dir, home-dir)
+
+strategies
+
+  fileno-tests =
+    where(new-temp-file => (tmp-name, tmp-fd))
+
+    ; apply-test(!"fileno on temp file"
+      ,   <fdopen> (tmp-fd, "w")
+        ; ?stream
+        ; <fileno> stream
+        ; where(<fclose> stream)
+      ,   !tmp-fd
+      )
+
+    ; where(<remove-file> tmp-name)

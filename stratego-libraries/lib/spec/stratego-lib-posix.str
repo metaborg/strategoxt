@@ -6,6 +6,7 @@ imports
   system/posix/file
   system/posix/process
   system/posix/signal
+  system/posix/time
 
   system/posix/file-abstractions
   system/posix/pipe-abstractions

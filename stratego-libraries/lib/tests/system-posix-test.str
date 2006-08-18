@@ -1,0 +1,121 @@
+module system-posix-test
+imports libstratego-lib
+
+strategies
+
+  main = 
+    test-suite(!"system-posix",
+      fileno-tests
+      ; access-tests
+      ; strerror-tests
+      ; perror-tests
+      ; getcwd-tests
+      ; abspath-tests
+      ; is-abspath-tests
+      ; file-props-tests
+      ; readdir-tests
+      ; kill-tests
+      ; times-tests
+    )
+
+strategies
+
+  times-tests =
+      apply-and-check(!"test1b"
+      , <call>("ls", []); times
+      , !()
+      , ?b; debug; (is-int,is-int,is-int,is-int)
+      )
+    ; apply-and-check(!"times and clock"
+      , times; test(clock; debug(!"clock: "))
+      , !()
+      , ?a; debug; (is-int,is-int,is-int,is-int)
+      )
+
+strategies
+
+  /**
+   * @todo SIGKILL cannot be used because of problems with overlays over library boundaries.
+   */
+  kill-tests =
+    apply-test(!"kill own process", fork-wait-test(kill-myself), !(), !Signal("KILL",  9, "Kill"))
+
+  kill-myself = 
+    <kill> (<get-pid>, Signal("KILL",  9, "Kill"))
+
+  fork-wait-test(child) =
+    fork(child, ?(<waitpid>, t); ?WaitStatus(_, <signal-from-number>, _))
+
+strategies
+
+  readdir-tests =
+    apply-test(!"readdir"
+    , readdir; fetch-elem(?"system-posix-test.c")
+    , !"."
+    , !"system-posix-test.c"
+    )
+
+strategies
+
+  file-props-tests =
+      apply-and-fail(!"create? -- 1", can-create-file, !"/root/bla.txt")
+    ; apply-test(!"create? -- 2", can-create-file, !"/tmp/bla.txt", !"/tmp/bla.txt")
+    ; apply-and-check(!"test2a"
+	, modification-time
+	, !"system-posix-test.str"
+	, debug; is-int
+	)
+    ; apply-and-check(!"test2b"
+	, file-newer
+	, !("system-posix-test.c", "system-posix-test.str")
+	, debug
+	)
+
+strategies
+
+  is-abspath-tests =
+      apply-test(!"is-abspath -- 1", is-abspath, !"/", !"/")
+    ; apply-test(!"is-abspath -- 2", is-abspath, !"/bla", !"/bla")
+    ; apply-and-fail(!"is-abspath -- 3", is-abspath, !"bla")
+    ; apply-and-fail(!"is-abspath -- 4", is-abspath, !"./bla")
+
+  getcwd-tests =
+      apply-test(!"getcwd -- 1", getcwd, !())
+
+  abspath-tests =
+      where(getcwd => cwd)
+    ; apply-test(!"abspath -- 1", abspath, !"/", !"/")
+    ; apply-test(!"abspath -- 2", abspath, !"/bla", !"/bla")
+    ; apply-test(!"abspath -- 3", abspath, !"bla", <conc-strings> (cwd, "/bla"))
+    ; apply-test(!"abspath -- 4", abspath, !"./bla", <conc-strings> (cwd, "/./bla"))
+
+
+strategies
+
+  fileno-tests =
+      apply-test(!"fileno on stdin  -- 1", fileno, stdin-stream, !0)
+    ; apply-test(!"fileno on stdin  -- 2", fileno, stdin-stream, STDIN_FILENO)
+    ; apply-test(!"fileno on stdout -- 1", fileno, stdout-stream, !1)
+    ; apply-test(!"fileno on stdout -- 2", fileno, stdout-stream, STDOUT_FILENO)
+    ; apply-test(!"fileno on stderr -- 1", fileno, stderr-stream, !2)
+    ; apply-test(!"fileno on stderr -- 2", fileno, stderr-stream, STDERR_FILENO)
+
+strategies
+
+  access-tests = 
+      apply-test(!"access -- 1", <access> (<id>, [F_OK()]), !"/", "/")
+    ; apply-test(!"access -- 2", try(<access> (<id>, [R_OK()])), !"/")
+
+    // this used to result in a segmentation fault
+    ; apply-test(!"access -- 3", try(<access> (<id>, [R_OK() | []{1}])), !"/")
+    ; apply-test(!"access -- 4", try(<access> (<id>, [R_OK()]{1})), !"/")
+
+strategies
+
+  strerror-tests =
+    apply-and-check(!"strerror on EXDEV", strerror, EXDEV, debug)
+
+  perror-tests =
+      where(try(<close> 200))
+    ; apply-test(!"perror 1", perror, !"foo")
+    ; apply-test(!"perror 2", perror, !())

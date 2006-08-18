@@ -1,0 +1,86 @@
+module system/posix/time
+strategies
+
+  /* The times() function stores the current process times in a quadruple 
+     (user time, system time, user time of children, system time of children)
+     See man 2 times for more information */
+  times = 
+    prim("SSL_times")
+
+  ticks-to-seconds = 
+    ?t; prim("SSL_TicksToSeconds", t)
+
+  diff-times :
+    ((a1, b1, c1, d1), (a2, b2, c2, d2)) -> 
+    (<subt>(a1, a2), <subt>(b1, b2), <subt>(c1, c2), <subt>(d1, d2))
+
+  add-times :
+    ((a1, b1, c1, d1), (a2, b2, c2, d2)) -> 
+    (<add>(a1, a2), <add>(b1, b2), <add>(c1, c2), <add>(d1, d2))
+
+  times-to-seconds :
+    (a, b, c, d) -> 
+    (<ticks-to-seconds> a, <ticks-to-seconds> b, <ticks-to-seconds> c, <ticks-to-seconds> d)
+
+  user-time :
+    (a, b, c, d) -> a
+
+  system-time :
+    (a, b, c, d) -> b
+
+  cuser-time :
+    (a, b, c, d) -> c
+
+  csystem-time :
+    (a, b, c, d) -> d
+
+  self-children-user-time :
+    (a, b, c, d) -> <add>(a, c)
+
+  self-children-sys-time :
+    (a, b, c, d) -> <add>(b, d)
+
+ /**
+  * Total run-time so far.
+  */
+  run-time =
+    times; crush(!0, add); ticks-to-seconds
+
+  /**
+   * Outputs the name of the program and the run time in seconds to
+   * stderr.
+   */
+  report-run-time = 
+    if <geq>(<get-config> "--statistics", 1) then
+      <fprintnl> (stderr,
+        [<whoami> (), " (", <run-time>, " secs)"]
+      )
+    end
+
+  profile(s) =
+    where(times => start)
+    ; s
+    ; !(<id>, <<diff-times> (<times>, start); crush(!0, add)>)
+
+  profile(msg, s) =
+    where(times => start)
+    ; s
+    ; where(
+        <diff-times
+         ; <fprint> (stderr, [<msg>
+                             , " user ", <self-children-user-time; ticks-to-seconds>
+                             , " system ", <self-children-sys-time; ticks-to-seconds>
+			     , "\n"])> (<times>, start)
+      )
+
+  profile'(msg, s) =
+    where(times => start)
+    ; s
+    ; where(
+	!(<times>, start)
+        ; diff-times
+        ; ![" user ",    <self-children-user-time; ticks-to-seconds>
+           , " system ", <self-children-sys-time;  ticks-to-seconds>]
+        ; msg
+      )
+

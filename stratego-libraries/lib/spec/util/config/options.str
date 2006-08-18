@@ -269,16 +269,5 @@ strategies
     ; <fprintnl> (stderr, [<whoami> (), ": rewriting failed"])
     ; <exit> 1
 
-  /**
-   * Outputs the name of the program and the run time in seconds to
-   * stderr.
-   */
-  report-run-time = 
-    if <geq>(<get-config> "--statistics", 1) then
-      <fprintnl> (stderr,
-        [<whoami> (), " (", <run-time>, " secs)"]
-      )
-    end
-
   whoami =
     <get-config> "program"

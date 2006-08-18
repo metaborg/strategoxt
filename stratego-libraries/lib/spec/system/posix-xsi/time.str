@@ -1,0 +1,5 @@
+module system/posix-xsi/time
+strategies
+
+  dtime = 
+    prim("SSL_dtime")

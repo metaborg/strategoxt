@@ -1,0 +1,359 @@
+module system-io-file-test
+imports libstratego-lib
+
+strategies
+
+  main = 
+    test-suite(!"system-io-file",
+      aterm-io-tests
+      ; char-io-tests
+      ; fprint-tests
+      ; file-stream-tests
+      ; char-output-tests
+      ; copy-file-tests
+      ; dirname-tests
+      ; base-filename-tests
+      ; file-extension-tests
+      ; getenv-tests
+    )
+
+strategies
+
+  getenv-tests =
+    apply-and-check(!"test3"
+    , getenv
+    , !"HOME"
+    , debug; is-string
+    )
+
+strategies
+
+  base-filename-tests = 
+    apply-test(!"base-filename-test 1", base-filename, !"./number.r", !"number.r")
+  ; apply-test(!"base-filename-test 2", base-filename, !"./number",   !"number")
+  ; apply-test(!"base-filename-test 3", base-filename, !"/usr/bin/number.str", !"number.str")
+
+  file-extension-tests =
+    apply-test(!"remove-extension 1", remove-extension, !"foo.str", !"foo")
+  ; apply-test(!"remove-extension 2", remove-extension, !"foo", !"foo")
+  ; apply-test(!"remove-extension 3", remove-extension, !"foo.rtree", !"foo")
+  ; apply-test(!"remove-extension 4", remove-extension, !"/bar/foo.str", !"/bar/foo")
+  ; apply-test(!"remove-extension 5", remove-extension, !"/bar/foo", !"/bar/foo")  
+  ; apply-test(!"remove-extension 6", remove-extension, !"/bar.foo/fred.str", !"/bar.foo/fred")  
+  ; apply-test(!"remove-extension 7", remove-extension, !"/bar.foo/fred", !"/bar.foo/fred")
+  ; apply-test(!"remove-extension 8", remove-extension, !"/bar.foo.str", !"/bar.foo")
+  ; apply-test(!"remove-extension 9", remove-extension, !"/bar.foo", !"/bar")
+  ; apply-test(!"remove-extension 10", remove-extension, !"/bar.foo.rtree", !"/bar.foo")
+  
+  ; apply-test(!"remove-extension 11", remove-extension, !"./bar/foo.str", !"./bar/foo")
+  ; apply-test(!"remove-extension 12", remove-extension, !"../bar/foo.str", !"../bar/foo")
+  ; apply-test(!"remove-extension 13", remove-extension, !"./bar/foo", !"./bar/foo")
+  ; apply-test(!"remove-extension 14", remove-extension, !"../bar/foo", !"../bar/foo")  
+  ; apply-test(!"remove-extension 15", remove-extension, !"./bar.foo/fred.str", !"./bar.foo/fred")
+  ; apply-test(!"remove-extension 16", remove-extension, !"../bar.foo/fred.str", !"../bar.foo/fred")
+  ; apply-test(!"remove-extension 17", remove-extension, !"./bar/../foo", !"./bar/../foo")
+  ; apply-test(!"remove-extension 18", remove-extension, !"../bar/../foo", !"../bar/../foo")
+  
+  ; apply-test(!"remove-extension 19", remove-extension, !"./bar/.foo.str", !"./bar/.foo")
+  ; apply-test(!"remove-extension 20", remove-extension, !"../bar/.foo.str", !"../bar/.foo")
+  ; apply-test(!"remove-extension 21", remove-extension, !"./bar/.foo", !"./bar/.foo")
+  ; apply-test(!"remove-extension 22", remove-extension, !"../bar/.foo", !"../bar/.foo")
+  ; apply-test(!"remove-extension 23", remove-extension, !"../bar/..", !"../bar/..")
+  
+  ; apply-test(!"guarantee-extension 1", guarantee-extension(|"str"), !"foo.str", !"foo.str")
+  ; apply-test(!"guarantee-extension 2", guarantee-extension(|"str"), !"foo", !"foo.str")
+  ; apply-test(!"guarantee-extension 3", guarantee-extension(|"str"), !"foo.rtree", !"foo.str")
+  ; apply-test(!"guarantee-extension 4", guarantee-extension(|"str"), !"/bar/foo.str", !"/bar/foo.str")
+  ; apply-test(!"guarantee-extension 5", guarantee-extension(|"str"), !"/bar/foo", !"/bar/foo.str")  
+  ; apply-test(!"guarantee-extension 6", guarantee-extension(|"str"), !"/bar/foo.rtree", !"/bar/foo.str")
+  ; apply-test(!"guarantee-extension 7", guarantee-extension(|"str"), !"/bar.foo.str", !"/bar.foo.str")
+  ; apply-test(!"guarantee-extension 9", guarantee-extension(|"str"), !"/bar.foo.rtree", !"/bar.foo.str")
+  
+  ; apply-test(!"guarantee-extension 10", guarantee-extension(|"str"), !"./foo.str", !"./foo.str")
+  ; apply-test(!"guarantee-extension 11", guarantee-extension(|"str"), !"../foo", !"../foo.str") 
+  ; apply-test(!"guarantee-extension 12", guarantee-extension(|"str"), !"./foo.rtree", !"./foo.str")
+  ; apply-test(!"guarantee-extension 13", guarantee-extension(|"str"), !"./bar/foo.str", !"./bar/foo.str")
+  ; apply-test(!"guarantee-extension 14", guarantee-extension(|"str"), !"./bar/foo", !"./bar/foo.str")
+  ; apply-test(!"guarantee-extension 15", guarantee-extension(|"str"), !".str", !".str.str")
+  ; apply-test(!"guarantee-extension 16", guarantee-extension(|"str"), !"..str", !"..str.str")
+  ; apply-test(!"guarantee-extension 17", guarantee-extension(|"str"), !"./.str", !"./.str.str")
+  
+  ; apply-test(!"has-extension 1", has-extension(|"str"), !"foo.str")
+  ; apply-test(!"has-extension 2", has-extension(|"str"), !"foo.fred.str")  
+  ; apply-and-fail(!"has-extension 3", has-extension(|"str"), !"foo.rtee")  
+  ; apply-and-fail(!"has-extension 4", has-extension(|"str"), !"foo")
+  ; apply-and-fail(!"has-extension 5", has-extension(|""), !"foo")
+  ; apply-and-fail(!"has-extension 6", has-extension(|"str"), !"foo.str.rtree")
+  
+  ; apply-test(!"get-extension 1", get-extension, !"foo.str", !"str")
+  ; apply-test(!"get-extension 2", get-extension, !"foo.fred.str", !"str")
+  ; apply-test(!"get-extension 3", get-extension, !"/foo/fred.str", !"str")
+  ; apply-and-fail(!"get-extension 4", get-extension, !"foo")
+  ; apply-and-fail(!"get-extension 5", get-extension, !"/foo.str/fred")
+    
+  ; apply-test(!"test-extension 1", test-extension(?"str"), !"foo.str")
+  ; apply-test(!"test-extension 2", test-extension(id), !"foo.str")
+  ; apply-and-fail(!"test-extension 3", test-extension(id), !"foo")
+  ; apply-test(!"test-extension 4", test-extension(?"str" + ?"rtree"), !"foo.str")
+  ; apply-test(!"test-extension 5", test-extension(?"str" + ?"rtree"), !"foo.rtree")
+
+strategies
+
+  dirname-tests =
+      apply-test(!"dirname -- 1", dirname, !"/", !"/")
+    ; apply-test(!"dirname -- 2", dirname, !"bla", !".")
+    ; apply-test(!"dirname -- 3", dirname, !"bla/", !".")
+    ; apply-test(!"dirname -- 4", dirname, !"/bla", !"/")
+    ; apply-test(!"dirname -- 5", dirname, !"/bla/", !"/")
+    ; apply-test(!"dirname -- 6", dirname, !"foo/bla", !"foo")
+    ; apply-test(!"dirname -- 7", dirname, !"foo/bla/", !"foo")
+    ; apply-test(!"dirname -- 8", dirname, !"/foo/bla", !"/foo")
+    ; apply-test(!"dirname -- 9", dirname, !"/foo/bla/", !"/foo")
+
+strategies
+
+  copy-file-tests =
+    apply-and-check(!"copy-file-test 1"
+    , where(<copy-file> (<id>, "copy-file-test.tmp"))
+      ; !(<my-read-text-file>, <my-read-text-file> "copy-file-test.tmp")
+      ; where(<remove-file> "copy-file-test.tmp")
+    , !"system-io-file-test.str"
+    , ?(s, s)
+    )
+
+strategies
+
+  char-io-tests =
+    where(<fopen> ("system-io-file-test.str", "r") => stream)
+    ; apply-test(!"read-text-line 1"
+      , !(<read-text-line>, <read-text-line>)
+      , !stream
+      , !("module system-io-file-test", "imports libstratego-lib")
+      )
+    ; where(<fclose> stream)
+
+strategies
+
+  fprint-tests = id
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (stderr(), <id>); !()
+      , !["Hey"]
+      , !()
+      )
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (<stderr-stream> (), <id>); !()
+      , !["Hey", "He", "Hallo"]
+      , !()
+      )
+    ; apply-test(!"Print something to stderr using fprintnl"
+      , <fprintnl> (stderr(), <id>); !()
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      , !()
+      )
+    ; apply-test(!"Debug"
+      , debug
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      , !["Hey", "He", "Hallo", 1, 2, 3]
+      )
+    ; apply-test(!"Debug with argument"
+      , debug(!"Hey")
+      , !["He", "Hallo", 1, 2, 3]
+      , !["He", "Hallo", 1, 2, 3]
+      )
+      
+  test-write-read-term =
+      ?t
+    ; <WriteToTextFile> ("test.aterm", t)
+    ; <ReadFromFile> "test.aterm" => t
+    ; <remove-file> "test.aterm"
+    ; !t
+
+  test-write-read-term-string =
+      ?t
+    ; <WriteToTextFile> ("test.aterm", t)
+    ; <ReadFromFile> "test.aterm" => t
+    ; <remove-file> "test.aterm"
+    ; !t
+
+strategies
+
+  aterm-io-tests =
+      aterm-io-tests(write-in-baf-to-stream)
+    ; aterm-io-tests(write-in-taf-to-stream)
+    ; aterm-io-tests(write-in-text-to-stream)
+    ; apply-test(!"ATerm IO -- 1"
+      , test-write-read-term
+      , !"Bla Bla Bla"
+      , !"Bla Bla Bla"
+      )
+    ; apply-test(!"ATerm IO -- 2"
+      , test-write-read-term
+      , !()
+      , !()
+      )
+    ; apply-test(!"ATerm IO -- 3"
+      , test-write-read-term
+      , !1
+      , !1
+      )
+    ; apply-test(!"ATerm IO -- 4"
+      , test-write-read-term
+      , !None()
+      , !None()
+      )
+    ; apply-test(!"ATerm from String -- 1"
+      , read-from-string
+      , !"[1,2,3]"
+      , ![1,2,3]
+      )
+    ; apply-test(!"ATerm to String -- 1"
+      , write-to-string
+      , ![1,2,3]
+      , !"[1,2,3]"
+      )
+   ;  apply-test(!"ATerm string IO -- 1"
+      , test-write-read-term-string
+      , !"Bla Bla Bla"
+      , !"Bla Bla Bla"
+      )
+    ; apply-test(!"ATerm string IO -- 2"
+      , test-write-read-term-string
+      , !()
+      , !()
+      )
+    ; apply-test(!"ATerm string IO -- 3"
+      , test-write-read-term-string
+      , !1
+      , !1
+      )
+    ; apply-test(!"ATerm string IO -- 4"
+      , test-write-read-term-string
+      , !None()
+      , !None()
+      )
+
+  aterm-io-tests(writer) =
+      apply-test(!"ATerm IO -- 1", write-read-term(writer), !"Bla Bla Bla", !"Bla Bla Bla")
+    // ; apply-test(!"ATerm IO -- 2", write-read-term(writer), !(), !()) TODO: fails ON TAF!
+    ; apply-test(!"ATerm IO -- 3", write-read-term(writer), !1, !1)
+    ; apply-test(!"ATerm IO -- 4", write-read-term(writer), !None(), !None())
+
+  write-read-term(writer) =
+    ?t
+    ; <fopen> ("test.aterm", "w")
+    ; <writer> (<id>, t)
+    ; fclose
+    ; <fopen> ("test.aterm", "r")
+    ; where(read-from-stream => t)
+    ; fclose
+    ; <remove-file> "test.aterm"
+    ; !t
+
+strategies
+
+  file-stream-tests = id
+
+    ; apply-and-fail(!"fputc applied to a term that is not a stream"
+      , <fputc> ('a', <id>)
+      , !()
+      )
+
+    ; apply-and-fail(!"fputc applied to a term that is not a stream"
+      , <fputc> ('a', <id>)
+      , !Stream("foo")
+      )
+
+    ; apply-and-fail(!"fputs applied to a term that is not a stream"
+      , <fputs> ("a", <id>)
+      , !()
+      )
+
+    ; apply-and-fail(!"fputs applied to a term that is not a stream"
+      , <fputc> ("a", <id>)
+      , !Stream("foo")
+      )
+
+    ; apply-test(!"Multiple open file streams"
+      ,   <fopen> ("test1.aterm", "w") => stream1
+        ; <fopen> ("test2.aterm", "w") => stream2
+        ; <write-in-text-to-stream> (stream1, "test1")
+        ; <write-in-text-to-stream> (stream2, "test2")
+        ; <fclose> stream1
+        ; <fclose> stream2
+        ; <ReadFromFile> "test1.aterm" => "test1"
+        ; <ReadFromFile> "test2.aterm" => "test2"
+        ; <remove-file> "test1.aterm"
+        ; <remove-file> "test2.aterm"
+      , !()
+      )
+
+strategies
+
+  char-output-tests = id
+
+    ; { stream :
+        where(stdout-stream => stream)
+      ; apply-test(!"stdout char output test -- 1",
+          <write-to-stream> (<id>, "This is stdout (1)")
+        ; <fputs> ("This is stdout (2)\n", <id>)
+//        ; <puts> "This is stdout (3)"
+        , !stream
+        , !stream
+        )
+      }
+
+    ; apply-test(!"write a text file with fputc",
+        <write-text-file-c> ("text-file.tmp", <id>)
+      , !"This is a test file\nIt can be removed."
+      , !()
+      )
+
+    ; apply-test(!"read a text file with fgetc",
+        my-read-text-file
+      , !"text-file.tmp"
+      , !"This is a test file\nIt can be removed."
+      )
+
+    ; apply-test(!"write a text file with fputs",
+        <write-text-file> ("text-file.tmp", <id>)
+      , !"This is a test file\nIt can be removed."
+      , !()
+      )
+
+    ; apply-test(!"read a text file with fgetc",
+        read-text-file-2
+      , !"text-file.tmp"
+      , !"This is a test file\nIt can be removed."
+      )
+
+    ; where(<remove-file> "text-file.tmp")
+
+
+strategies
+
+  my-read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)
+
+  read-text-file-2 =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+    ; where(<fclose> stream)
+    ; implode-string
+
+  write-text-file =
+    ?(file, string)
+    ; <fopen> (file, "w")
+    ; <fputs> (string, <id>)
+    ; fclose
+
+  write-text-file-c =
+    ?(file, string)
+    ; <fopen> (file, "w") => stream
+    ; <explode-string> string
+    ; map(<fputc> (<id>, stream))
+    ; where(<fclose> stream)
+    ; !()

@@ -16,10 +16,7 @@ strategies
    */
   open-parse-table =
     ?tbl
-    ; sglr-log-statistics(
-        prim("STRSGLR_open_parse_table", tbl) => internal
-      | "Loading parse table"
-      )
+    ; prim("STRSGLR_open_parse_table", tbl) => internal
     ; !ParseTable(internal)
 
   /**
@@ -54,45 +51,13 @@ strategies
   open-parse-table-report-errors =
     if is-string then
       (<fopen> (<id>, "r") <+ strsglr-perror) => stream
-      ; sglr-log-statistics(
-          finally(read-from-stream, <fclose> stream)
-        | "Reading parse table")
+      ; finally(read-from-stream, <fclose> stream)
     else
       ?"parse-table"#(_)
       <+ log(|Error(), "open-parse-table strategy applied to a non-parse-table")
          ; fail
     end
     ; open-parse-table
-
-strategies
-
-  /*
-   variant of sglr-log-statistics with (most likely) non-portable timer.
-  sglr-log-statistics(s | description) =
-    where(prim("STRSGLR_settimer"))
-    ; s
-    ; where(
-        prim("STRSGLR_gettimer") => time
-        ; if <geq> (<get-config> "--statistics", 1) then
-            <fprintnl> (<log-stream> (), [description, ": ", <int-to-string> time])
-        end
-      )
-  */
-
-  sglr-log-statistics(s | description) =
-    where(times => timebefore)
-    ; s
-    ; sglr-log-statistics(| timebefore, description)
-
-  sglr-log-statistics(| timebefore, description) =
-    where(
-      if <geq> (<get-config> "--statistics", 1) then
-        <diff-times> (<times> (), timebefore) => diff
-        ; <fprintnl> (<log-stream> (), [description, ": ",
-            <self-children-user-time; ticks-to-seconds; real-to-string(|6)>
-            ])
-      end
-    )
 
 /**
  * An open parse table is represented by a term in some internal
