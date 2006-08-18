@@ -1,0 +1,273 @@
+/** 
+ * Module flattening strategy for Stratego based on the generic graph
+ * flattening algorithm from the library.  The program handles
+ * command-line options for indicating paths to directories with
+ * library modules and finds modules based on such a path.  It writes
+ * dependencies for inclusion in a Makefile to the .r.dep file.
+ * Pack-stratego calls an external process (parse-mod) for parsing
+ * individual modules. 
+ */
+
+module pack-stratego
+
+imports 
+  libstratego-xtc 
+  Stratego 
+  stratego/strc/pack/pack-stratego-options
+
+strategies
+
+  pack-stratego-io = 
+    xtc-iowrap(
+      pack-stratego-options
+    , pack-process-options
+    ; pack-report-options
+    ; pack-stratego(|<pack-include-path>) => (files, spec)
+    ; <pack-maybe-create-depfile> files
+    ; <write-to> spec
+    )
+
+  pack-stratego(|mkpt) =
+      \ FILE(s) -> IncludePathName(s) \
+    ; !(<id>, mkpt, [])
+    ; graph-nodes-undef(
+        pack-stratego-parse-stratego
+      , pack-get-stratego-imports 
+      ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
+      , \ (n,x,xs) -> [x|xs] \
+      )
+    ; if ?(_, []) then
+       Fst
+       ; unzip
+       ; (id, pack-flatten-stratego)
+      else
+        if not(<get-config>"--slack") then
+          Snd 
+          ; map(pack-report-module-not-found)
+          ; <xtc-exit> 1
+        else 
+          Fst
+        ; unzip
+        ; (id, pack-flatten-stratego) 
+        end
+      end
+
+  pack-report-module-not-found =
+    let pack-get-module-name =
+          ?IncludeFromPath(<id>) + ?IncludePathName(<id>)
+
+     in pack-get-module-name => module-name
+      ; log(|Error(),<concat-strings>["module ", module-name, " not found"])
+      ; <bagof-ImportedFrom> module-name
+      ; if [] then
+          id
+        else if ?[mod] then
+            log(|Error(), <concat-strings>["    imported from file ", mod])
+        else
+            where(log(|Error(), "    imported from:"))
+          ; map({mod1 :
+              ?mod1
+            ; log(|Error(), <concat-strings>["      file ", mod1 ])
+            })
+          end
+        end
+      ; log(|Error(), "")
+    end
+
+
+strategies
+
+  /**
+   * Include from a fixed location
+   */
+  pack-stratego-parse-stratego =
+    let pack-qualify-pathname =
+            where(explode-string => cs)
+          ; if <pack-is-qualified> cs then
+              id
+            else
+              <implode-string> ['.', '/' | cs]
+            end
+  
+         pack-is-qualified =
+           ?['/' | _] + ?['.' | _ ]
+
+     in ?(IncludePathName(<pack-qualify-pathname>), _)
+      ; if file-exists then
+          pack-include-pathname
+          ; (id,xtc-transform(!"report-ambs"))
+          ; pack-fc(|"Stratego-Sugar-Cong")
+        else
+          <fatal-error> ["pack-stratego: error: file ", <id>, " does not exist\n"]
+        end
+    end
+
+  /**
+   * Include from some location in the include path
+   */
+  pack-stratego-parse-stratego =
+      ?(IncludeFromPath(<id>), includes)
+    ; guarantee-extension(|"str")
+    ; remove-extension => mod
+    ; <pack-if-prefer-str(
+        fetch-elem(
+           pack-include-from-dir(|mod)
+           <+ pack-include-from-dir-cached(|mod)
+           <+ pack-include-from-xtc(|mod)
+           <+ pack-include-from-xtc-cached(|mod)
+         )
+       , fetch-elem(
+           pack-include-from-dir-cached(|mod)
+           <+ pack-include-from-dir(|mod)
+           <+ pack-include-from-xtc-cached(|mod)
+           <+ pack-include-from-xtc(|mod)
+         )
+      )> includes
+    ; (id,xtc-transform(!"report-ambs"))
+    ; pack-fc(|"Stratego-Sugar-Cong")
+
+  pack-fc(|format) =
+  where(
+  if <geq>(<get-config> "--format-check", 1) then
+    ?(file, <id>);
+    where(
+      <concat-strings>[format, ".rtg-nf"]
+      ; xtc-find => format'
+    )
+    ; write-to
+    ; if not(xtc-transform(!"format-check", 
+                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
+    then
+	copy-to(!<concat-strings>[<base-filename> file, ".", "parse.", format] => name)
+	; log(|Error, 
+		<concat-strings>["\nfile `", file, "' does not satisfy format `", format,"'\n",
+		"See file `", name, "'\n",
+		"This problem may be caused by importing a file parsed with an old version of the Stratego syntax."])
+	; fail
+    else
+      id // debug(!"fc succeeded: ")
+    end
+  end
+  )
+
+strategies
+
+  pack-include-pathname :
+    file -> (file, tree)
+      where has-extension(|"rtree")
+          ; pack-log-include
+          ; <ReadFromFile> file => tree
+
+  pack-include-pathname :
+    file -> (file, tree)
+      where has-extension(|"str")
+          ; pack-log-include
+          ; <pack-parse-stratego> file => tree
+
+  pack-include-from-dir-cached(|mod) :
+    IncludeDir(dir) -> (file,<ReadFromFile> file)
+      where <concat-strings; file-exists> [dir,"/", mod, ".rtree"] => file
+          ; pack-log-include
+
+  pack-include-from-dir(|mod) :
+    IncludeDir(dir) -> <pack-include-pathname> file
+      where <concat-strings; file-exists> [dir,"/", mod, ".str"] => file
+
+  pack-include-from-xtc-cached(|mod) :
+    IncludeXTC() -> (file, tree)
+      where <conc-strings; xtc-find-loc> (mod, ".rtree") => file
+          ; pack-log-include-xtc
+          ; <ReadFromFile> file => tree
+
+  pack-include-from-xtc(|mod) :
+    IncludeXTC() -> (file, tree)
+      where <conc-strings; xtc-find-loc> (mod, ".str") => file
+          ; pack-log-include-xtc
+          ; <pack-parse-stratego> file => tree
+
+  pack-log-include =
+    ?file ; log(|Notice(),<conc-strings>("  including ",file))
+
+  pack-log-include-xtc =
+    ?file 
+    ; log(|Notice(),<concat-strings>["  including ",file," from XTC repository"])
+
+strategies
+
+  pack-include-dirs =
+    (<get-config> "-I" <+ ![])
+  ; filter(?IncludeDir(<id>))
+  ; uniq
+
+  pack-pass-include-dirs =
+    pack-include-dirs ; mapconcat(!["-I",<id>])
+
+  pack-parse-stratego =
+     ?file
+   ; <xtc-transform(!"parse-stratego",
+	 	     <concat>[<get-config < !["--asfix"] + ![]> "--asfix", 
+			      ["--desugaring", <get-config <+ !"off"> "--desugaring"], ["-b"],
+                              <pass-verbose>, <pass-keep>, <pack-pass-include-dirs>])>FILE(file)
+   ; read-from
+  <+ <fatal-error> ["parse error in ", <id>]
+
+  pack-get-stratego-imports =
+    ?(file, <?Specification(<id>) + ?Module(_,<id>)>)
+    ; filter(?Imports(<id>) ; mapconcat(pack-expand-import))
+    ; concat
+    ; where(
+        map({import:
+            ?import
+          ; rules(ImportedFrom :+ import -> file)
+        })
+      )
+
+  pack-flatten-stratego = 
+    map((?Specification(<id>) <+ ?Module(_,<id>)); filter(not(Imports(id))))
+    ; concat 
+    ; !Specification(<id>)
+
+  pack-expand-import = 
+    ![<is-string>]
+  + \ Import(i) -> [i] \ 
+  + ?ImportWildcard(<id>) => path
+  ; pack-search-subpath
+  ; mapconcat(pack-search-stratego-files(|path))
+  ; uniq
+
+  pack-search-subpath = 
+    ?path
+  ; pack-include-dirs 
+  ; filter( <concat-strings>[<id>,"/",path] ; where(readdir) )
+  ; switch id
+      case [] :
+        log(|Error(),<concat-strings>["No matching subdirectory found in includes for wildcard '",path,"/*'!"])
+      ; <xtc-exit>1
+      case ?[_,_|_] :
+        log(| Warning()
+            , <concat-strings>[ "Found more than one matching subdirectory found for '", path, "'!"]
+            , <id>) 
+      otherwise: 
+        id
+    end
+
+  pack-search-stratego-files(|path) =
+    ?dir
+  ; readdir
+  ; filter(
+      ( has-extension(|"rtree") 
+      + has-extension(|"str") 
+      + has-extension(|"r")
+      ) 
+    ; remove-extension
+    ; <concat-strings>[path,"/",<id>]
+    )
+  ; if [] then
+      log(|Warning(),<concat-strings>["No Stratego files found in directory '",dir,"'!"]) 
+    end
+    
+
+signature
+  constructors
+    Import         : String -> Import
+    ImportWildcard : String -> Import

@@ -2,13 +2,19 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 libexec_PROGRAMS = pack-stratego
+
+LIB_STRC = -L$(top_srcdir)/lib -lstrc
+
+pack_stratego_LDADD = $(LIB_STRC) $(SSL_LIBS)
+
 LDADD += $(SSL_LIBS)
 
-STRINCLUDES = \
-  -I $(srcdir)/../../../stratego-front/syn/ \
-  -I $(srcdir)/../../../stratego-front/sig/
+STRINCLUDES =					\
+  -I $(srcdir)/../../../stratego-front/syn/	\
+  -I $(srcdir)/../../../stratego-front/sig/	\
+		   -I $(top_srcdir)/lib		
 
-SCFLAGS = --main $* $(XTCFLAGS)
+SCFLAGS = --main $*-io $(XTCFLAGS)
 
 EXTRA_DIST     = pack-stratego.str pack-stratego-options.str
 CLEANFILES     = pack-stratego.dep $(wildcard *.dep) \
