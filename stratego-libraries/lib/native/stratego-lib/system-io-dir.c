@@ -68,14 +68,15 @@ ATerm SSL_rename(ATerm oldname, ATerm newname)
   return newname;
 }
 
+#define SSL_COPY_BUFSIZE 8192
+
 /**
  * @TODO bug in glibc: functions not under control of features.h
  */
-#ifndef XT_STD_DISABLE_POSIX_XSI
-#define SSL_COPY_BUFSIZE 8192
 ATerm SSL_copy(ATerm oldname, ATerm newname)
 // copy file oldname to file newname using read and write
 {
+#ifndef XT_STD_DISABLE_POSIX_XSI
   int fdin, fdout;
   int n; 
   char buf[SSL_COPY_BUFSIZE];
@@ -132,8 +133,66 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
   close(fdin);
   close(fdout);
   return newname;
+#else
+  FILE *fin, *fout;
+  char ch;
+
+  if(ATmatch(oldname, "stdin")) {
+    fin = stdin;
+  }
+  else if(!t_is_string(oldname)) {
+    _fail(oldname);
+  }
+  else if((fin = fopen(ATgetName(ATgetSymbol(oldname)), "r")) == NULL) {
+    perror("SSL_copy");
+    ATfprintf(stderr, "SSL_copy: cannot open input file %t\n", oldname);
+    _fail(oldname); 
+  }
+
+  if(ATmatch(newname, "stdout")) {
+    fout = stdout;
+  }
+  else if(ATmatch(newname, "stderr")) {
+    fout =  stderr;
+  }
+  else if(!t_is_string(newname)) {
+    _fail(newname);
+  }
+  else if((fout = fopen(ATgetName(ATgetSymbol(newname)), "w")) == NULL) {
+    perror("SSL_copy");
+    ATfprintf(stderr, "SSL_copy: cannot create output file %t\n", newname);
+    _fail(newname);
+  }
+
+  while(!feof(fin)) {
+    ch = fgetc(fin);
+    if(ferror(fin)) {
+      ATfprintf(stderr, "SSL_copy: error reading input file %t\n", oldname);
+      _fail(newname);
+    }
+
+    if(ch != EOF)
+      fputc(ch, fout);
+
+    if(ferror(fout)) {
+      ATfprintf(stderr, "SSL_copy: error writing output file %t\n", newname);
+      _fail(newname);
+    }
+  }
+
+  if(fclose(fin) == EOF) {
+    ATfprintf(stderr, "SSL_copy: error closing input file %t\n", oldname);
+    _fail(newname);
+  }
+
+  if(fclose(fout) == EOF) {
+    ATfprintf(stderr, "SSL_copy: error closing output file %t\n", oldname);
+    _fail(newname);
+  }
+
+  return newname;
+#endif
 }
-#endif /* XT_STD */
 
 /**
  * @TODO bug in glibc: function write not under control of features.h

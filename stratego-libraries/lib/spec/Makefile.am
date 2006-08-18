@@ -14,6 +14,8 @@ BOOTCLEANFILES 	= $(fullstrategolib:.str=.rtree) $(all_c) $(all_rtree)
 all_rtree = libstratego-lib-c99.rtree libstratego-lib-posix.rtree libstratego-lib-posix-xsi.rtree
 all_c     = libstratego-lib-c99.c libstratego-lib-posix.c libstratego-lib-posix-xsi.c
 
+alllibs : $(all_c) $(all_rtree)
+
 libstratego_lib_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)
 libstratego_lib_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_lib_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
@@ -76,6 +78,7 @@ fullstrategolib = \
   $(wildcard strategy/general*.str) \
   $(wildcard system/*.str) \
   $(wildcard system/io/*.str) \
+  $(wildcard system/c99/*.str) \
   $(wildcard system/posix/*.str) \
   $(wildcard system/posix-xsi/*.str) \
   $(wildcard term/*.str) \

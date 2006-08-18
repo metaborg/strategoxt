@@ -1,0 +1,34 @@
+/**
+ * Used for POSIX+XSI
+ */
+module stratego/xtc/posix-xsi/Proc
+strategies
+
+  /**
+   * Creates a new and unique scoped temporary file.
+   *
+   * @type _ -> String
+   */
+  xtc-new-file =
+    new-temp-file => (f, fd)
+  ; where(
+      <assert(!TempFiles)> (f, ())
+    )
+  ; <close> fd
+  ; !f
+
+strategies
+
+  /**
+   * Concatenates the content of a list of files and stores
+   * the result in a fresh File. Each file in the list can
+   * be a FILE, stdin, stdout, or stderr.
+   *
+   * @type List(FILE) -> FILE
+   */
+  xtc-cat:
+    in-files -> file
+      where xtc-new-file-name => file
+          ; <xtc-open-fd> file => fdout
+          ; <map(File-as-fd(<fdcopy> (<id>, fdout)))> in-files
+          ; <xtc-close-fd> fdout

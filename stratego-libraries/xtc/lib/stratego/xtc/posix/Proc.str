@@ -1,0 +1,236 @@
+/**
+ * Used for POSIX and POSIX+XSI
+ */
+module stratego/xtc/posix/Proc
+strategies
+
+  /**
+   * Reads a term from a file. If the given file exists, it will be
+   * treated as an ATerm and its content will be returned, as a term.
+   *
+   * @type FILE -> t
+   */
+  read-from :
+    FILE(name) -> t
+    where <file-exists; ReadFromFile> name => t
+
+strategies
+
+  // XTC-COMMAND
+  // Executing an external process
+  // a -> String :: List(String) -> List(String)
+
+  /**
+   * Invokes the XT component given by tool. The input term is
+   * a list of command line arguments that will be passed to the
+   * invoked component.
+   * 
+   * @param tool _ -> String
+   * @type List(a) -> Int
+   */
+  xtc-command(tool) = 
+      where(tool; xtc-find-warning => loc)
+    ; log(|Debug(),<concat-strings>["Invoking tool ",<tool>," at location ",loc," with arguments: "],<id>)
+    ; where(<call> (loc, <id>))
+
+  // Transparent transformation of terms and files by external processes
+
+  /**
+   * Invokes the XT component given by tool to transform the current term. 
+   * The tool strategy must give the name of the component to invoke. The
+   * The current term will be serialized to the invoked component, and the
+   * result of its execution will become the new current term. No command
+   * line arguments are given.
+   *
+   * @param tool _ -> String
+   * @type       t -> u 
+   */
+  xtc-transform(tool) =
+    xtc-transform(tool, ![])
+
+  /**
+   * Invokes the XT component given by tool to transform the current term. 
+   * The tool strategy must give the name of the component to invoke. The
+   * The current term will be serialized to the invoked component, and the
+   * result of its execution will become the new current term. The args
+   * parameter must return a list of arguments that will be given to the
+   * invoked component.
+   *
+   * @param tool _ -> String
+   * @type       t -> u 
+   */
+  xtc-transform(tool, args) =
+    (FILE(id) + stdin)
+    < xtc-transform-file(tool, args)
+    + xtc-transform-term(tool, args)
+
+
+strategies
+
+  xtc-transform-file =
+    ?(tool, args, file)
+
+  /**
+   * Transforms an existing file with an external process into a new file.
+   * The resulting file will be created automatically, and a handle will
+   * be returned by this strategy. The tool strategy must give the name
+   * of the component to invoke. No arguments will be passed to the
+   * transforming component.
+   *
+   * @param tool       _ -> n 
+   * @type       FILE(a) -> FILE(b)
+   */
+  xtc-transform-file(tool) =
+    xtc-transform-file(tool, ![])
+
+  /**
+   * Transforms an existing file with an external process into a new file.
+   * The resulting file will be created automatically, and a handle will
+   * be returned by this strategy.
+   *
+   * The tool strategy must give the name of the component to invoke. The
+   * args strategy must give a list of arguments to pass to the component.
+   *
+   * @param tool       _ -> n 
+   * @param args       _ -> List(arg)
+   * @type       FILE(a) -> FILE(b)
+   */
+  xtc-transform-file(tool, args) :
+    FILE(f) -> FILE(g)
+    where <xtc-new-file> f => g
+        ; <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
+
+  xtc-transform-file(tool, args) :
+    stdin -> FILE(g)
+    where xtc-new-file => g
+        ; <conc; xtc-command(tool)> (<args>, ["-o", g])
+
+  /**
+   * Transforms the current term with an external process. The current
+   * term will be serialized and handed off to the component identified
+   * by the tool strategy argument. The result of the component will
+   * be returned by this strategy.
+   *
+   * The tool strategy must give the name of the component to invoke. The 
+   * args strategy must give a list of arguments to pass to the component.
+   * @param tool       _ -> n 
+   * @param args       _ -> List(arg)
+   * @type             t -> u
+   */
+  xtc-transform-term(tool, args) = 
+    write-to
+    ; xtc-transform-file(tool, args)
+    ; read-from
+
+  /**
+   * Transforms a file with an internal strategy s. This strategy
+   * will open an external file, apply s to it, and write the
+   * result back to the file.
+   *
+   * @param s    a -> b
+   * @type    File -> File
+   */
+  xtc-io-transform(s) =
+    read-from; s; write-to
+
+  /**
+   * Transforms a file with an internal strategy s into a text file.
+   * This strategy will open an external file (which must be an ATerm),
+   * apply s to it, and print the result as a string back into the
+   * file.
+   *
+   * @param s    a -> b
+   * @type    File -> File
+   */
+  xtc-io-transform-text(s) =
+      read-from; s; print-to
+
+  /**
+   * Generates a new file using the component identified by tool. This
+   * strategy will invoke the component given by tool with no arguments,
+   * and write the resulting term to a new file. A handle to the new
+   * file will be returned. No arguments will be passed on to the
+   * invoked component (except the implicit -o).
+   *
+   * @param tool    _ -> name
+   * @type          _ -> FILE(b)
+   */
+  xtc-generate(tool) =
+    xtc-generate(tool, ![])
+
+  /**
+   * Generates a new file using the component identified by tool. This
+   * strategy will invoke the component given by tool with no arguments,
+   * and write the resulting term to a new file. A handle to the new
+   * file will be returned. The strategy args must produce a list of
+   * arguments which are passed to the invoked component.
+   *
+   * @param tool    _ -> name
+   * @type          _ -> FILE(b)
+   */
+  xtc-generate(tool, args) :
+    _ -> FILE(g)
+    where <xtc-new-file> () => g
+        ; <conc; xtc-command(tool)> (<args>, ["-o", g])
+
+strategies
+
+  /**
+   * Opens a file, applies the strategy s the file descriptor,
+   * and ensures that the file descriptor is closed on return
+   * of s, regardless of outcome.  The strategy s will be 
+   * handed a file descriptor for the the FILE given to
+   * File-as-fd. The result of s will become the result
+   * of File-as-fd, and the file descriptor will always be
+   * closed, also when s fails.
+   *
+   * @param s  Int -> b 
+   * @type    FILE -> b
+   */
+  File-as-fd(s) =
+      xtc-open-fd => fd
+    ; finally(s, where(try(<xtc-close-fd> fd)))
+
+  /**
+   * Opens a file and returns a file descriptor. This strategy
+   * can be used to open any <tt>FILE</tt>s as well as
+   * <tt>stdin</tt>, <tt>stdout</tt> and <tt>stderr</tt>. The
+   * file descriptor should be closed with <tt>xtc-close-fd</tt>.
+   *
+   * @type FILE -> Int
+   */
+  xtc-open-fd =
+      \ FILE(s)  -> <open> s \
+    + \ stdin()  -> < STDIN_FILENO> () \
+    + \ stdout() -> <STDOUT_FILENO> () \
+    + \ stderr() -> <STDERR_FILENO> () \
+
+  /**
+   * Closes a file descriptor. This strategy can be used to close
+   * any file opened by <tt>xtc-open-fd</tt>, and also the
+   * standard files <tt>stdin</tt>, <tt>stdout</tt> and
+   * <tt>stderr</tt>.
+   *
+   * @type FILE -> Int
+   */
+  xtc-close-fd = 
+    finally(
+      ( where(<eq> (<id>, < STDIN_FILENO> ()))
+      + where(<eq> (<id>, <STDOUT_FILENO> ()))
+      + where(<eq> (<id>, <STDERR_FILENO> ()))
+      ) <+ close
+    , !())
+
+  /**
+   * Generates a new file name, but does not create the file on
+   * disk. As the file is not created on disk, another process
+   * may theoretically create it (and thus own it), thus causing
+   * a race condition. For this reason, you may prefer to us
+   * <tt>xtc-new-file</tt> instead.
+   * 
+   * @type _ -> FILE
+   */
+  xtc-new-file-name =
+      new-file => f
+    ; where(<assert(!TempFiles)> (f, ()))
+    ; !FILE(f)

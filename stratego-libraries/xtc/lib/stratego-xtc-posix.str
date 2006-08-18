@@ -1,0 +1,10 @@
+module stratego-xtc-posix
+imports
+  libstratego-lib-posix
+  stratego/xtc/Repository
+  stratego/xtc/Proc
+  stratego/xtc/Register
+
+  stratego/xtc/posix/Proc
+  stratego/xtc/posix/Repository
+  stratego/xtc/c99/xtc-new-file

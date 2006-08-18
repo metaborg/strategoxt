@@ -1,0 +1,9 @@
+module stratego/xtc/c99/Repository
+strategies
+
+  read-repository-file =
+    ReadFromFile
+    <+ if not(<get-config> "register") then
+         log(|Error(), <concat-strings> ["repository ", <id> , " cannot be read."])
+       end
+       ; ![]

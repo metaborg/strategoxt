@@ -69,8 +69,6 @@ strategies
   *
   * From 0.9.4 this implementation copies the file if the primitive rename 
   * fails because of an XDEV error.
-  *
-  * @todo Make a plain ANSI C version for inclusion in C99 library.
   */
   rename-file =
       ?(oldname, newname)

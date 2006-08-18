@@ -3,5 +3,5 @@
  */
 module liblib
 imports
-  libstrategolib
+  libstratego-lib
   libstratego-xtc

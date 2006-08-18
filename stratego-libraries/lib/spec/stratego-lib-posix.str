@@ -10,3 +10,5 @@ imports
   system/posix/file-abstractions
   system/posix/pipe-abstractions
   system/posix/process-abstractions
+
+  system/c99/file

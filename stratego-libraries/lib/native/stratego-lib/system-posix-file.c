@@ -367,7 +367,6 @@ int __internal__mkstemp(char *template) {
 #endif /* XT_STD */
 #endif /* HAVE_MKSTEMP_LIMIT */
 
-
 /**
  * note: mandatory POSIX XSI extension.
  */
@@ -402,6 +401,15 @@ ATerm SSL_mkstemp(ATerm template) {
   return term_result;
 }
 #endif /* XT_STD */
+
+ATerm SSL_tmpnam(void) {
+  char* result = tmpnam(NULL);
+  if(result == NULL) {
+    return NULL;
+  } else {
+    return (ATerm) ATmakeString(result);
+  }
+}
 
 /**
  * The mkdtemp() function generates a uniquely-named temporary

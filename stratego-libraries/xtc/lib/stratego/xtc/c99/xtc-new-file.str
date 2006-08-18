@@ -1,0 +1,18 @@
+/**
+ * Used for C99 and POSIX.
+ */
+module stratego/xtc/c99/xtc-new-file
+strategies
+
+  /**
+   * Creates a new and unique scoped temporary file.
+   *
+   * @type _ -> String
+   */
+  xtc-new-file =
+    f := <tmpnam>
+    ; where(
+        stream := <fopen> (f, "w")
+      ; <assert(!TempFiles)> (f, ())
+      ; <fclose> stream
+      )

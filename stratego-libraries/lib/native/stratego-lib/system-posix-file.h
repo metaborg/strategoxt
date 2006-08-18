@@ -21,6 +21,7 @@ ATerm SSL_fputs(ATerm, ATerm);
 ATerm SSL_puts(ATerm);
 ATerm SSL_fputc(ATerm, ATerm);
 ATerm SSL_fgetc(ATerm);
+ATerm SSL_tmpnam(void);
 
 #ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_getcwd(void);

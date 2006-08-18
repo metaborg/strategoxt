@@ -38,19 +38,7 @@ strategies
     ; <table-put>(XTC, Imported(rep), [])
     ; log(|Vomit(),"Registered repository as imported")
 
-  read-repository-file = 
-    if can-read-file then
-      ReadFromFile
-    else
-      if file-exists then
-          log(|Error(), <conc-strings> ("no read permission for repository ", <id>))
-      else
-        if not(<get-config> "register") then
-          log(|Error(), <concat-strings> ["repository ", <id> , " does not exist"])
-        end
-      end
-      ; ![]
-    end
+  // read-repository-file =
 
   xtc-import = 
     where(
@@ -68,16 +56,3 @@ strategies
 	 ; xtc-import
     )
   ; log(|Vomit(),"Loaded repository ")
-
-  xtc-store =
-      log(|Vomit(),"Saving repository")
-    ; <get-config> "-r"
-    ; if can-write-repository then
-       <WriteToBinaryFile> (<id>, <table-getlist> XTC)
-      else
-        log(|Error(), <conc-strings> ("no write permission for repository ", <id>))
-      ; fail
-      end
-
-  can-write-repository =
-    file-exists < can-write-file + id

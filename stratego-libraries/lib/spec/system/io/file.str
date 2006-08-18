@@ -133,6 +133,14 @@ strategies
     ?Stream(stream); prim("SSL_fgetc", stream)
 
 /**
+ * tmpnam
+ */
+strategies
+
+  tmpnam =
+    prim("SSL_tmpnam")
+
+/**
  * Components of a pathname
  */
 strategies

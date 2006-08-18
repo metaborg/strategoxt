@@ -1,0 +1,15 @@
+/**
+ * Used for C99
+ */
+module stratego/xtc/c99/Proc
+strategies
+
+  /**
+   * Reads a term from a file. If the given file exists, it will be
+   * treated as an ATerm and its content will be returned, as a term.
+   *
+   * @type FILE -> t
+   */
+  read-from :
+    FILE(name) -> t
+    where <ReadFromFile> name => t
