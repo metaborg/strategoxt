@@ -1,0 +1,318 @@
+module parse-stratego
+imports
+  libstratego-xtc
+  Stratego
+
+/**
+ * Structure of meta files.
+ */
+signature
+  constructors
+    Meta    : List(MetaProperty) -> MetaData
+    Syntax  : String -> MetaProperty
+    TopSort : String -> MetaProperty
+    HeuristicFilters : Switch -> MetaProperty
+    ImplodeQuotes    : Switch -> MetaProperty
+    YieldQuotes      : Switch -> MetaProperty
+    On  : Switch
+    Off : Switch
+
+strategies
+
+  parse-stratego-options =
+    ArgOption("-I" + "--Include"
+    , where(<post-extend-config> ("-I", [<id>]))
+    , !"-I p|--Include p   include modules from directory p"
+    )
+
+  + ArgOption("--syntax", where(<set-config>("--syntax", <id>)),
+	      !"--syntax syn        use syntax syn")
+
+  + ArgOption("--default-syntax", where(<set-config>("--default-syntax", <id>)),
+	      !"--default-syntax syn        use syntax syn as default")
+
+  + Option("-silent", where(<set-config>("--verbose", 0)),
+	      !"-silent ")
+
+  + Option("--asfix", where(<set-config>("--asfix", 1)), !"--asfix")
+
+  + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
+	      !"--desugaring on/off : turn desugaring on or off (default: off)")
+
+  + ArgOption("--assimilation", where(<set-config>("--assimilation", <id>)),
+	      !"--assimilation on/off : turn assimilation on or off (default: on)")
+
+  + Option(fail, fail, !"")
+  + Option(fail, fail, !"Preserving options:")
+
+  + ps-preserve-comments-option
+  + ps-preserve-positions-option
+
+  + Option(fail, fail, !"")
+  + Option(fail, fail, !"I/O options:")
+
+
+strategies
+
+  ps-preserve-comments-option =
+    Option("--preserve-comments"
+    , <ps-set-preserve-comments> "yes"
+    , !"--preserve-comments   
+                    Preserve source code comments as annotations of the abstract 
+                    syntax tree. [off]"
+    )
+
+  ps-set-preserve-comments =
+    <set-config> ("preserve-comments", <id>)
+
+  ps-must-preserve-comments =
+    <get-config> "preserve-comments" => "yes"
+
+  ps-pass-preserve-comments =
+    if ps-must-preserve-comments then 
+      !["--preserve-comments"]
+    else
+      ![]
+    end
+
+
+strategies
+
+  ps-preserve-positions-option =
+    Option("--preserve-positions"
+    , <ps-set-preserve-positions> "yes"
+    , !"--preserve-positions
+                    Preserve source code positions in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  ps-set-preserve-positions =
+    <set-config> ("preserve-positions", <id>)
+
+  ps-must-preserve-positions =
+    <get-config> "preserve-positions" => "yes"
+
+  ps-pass-preserve-positions =
+    if ps-must-preserve-positions then 
+      !["--preserve-positions"]
+    else
+      ![]
+    end
+
+
+strategies
+
+  io-parse-stratego =
+    xtc-io-wrap(parse-stratego-options, 
+      where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
+      ; ps-parse-module
+      <+ <xtc-exit> 1
+    )
+
+  ps-find-in-includes(msg) =
+    <find-in-path> (<id>, <get-config> "-I")
+  ; log(|Notice(),<concat-strings>[<msg>,<id>])
+
+strategies
+
+  /**
+   * Parses a Stratego module.
+   *
+   * @type FILE -> FILE
+   */
+  ps-parse-module =
+      ?file
+    ; xtc-ensure-file
+    ; where( ?FILE(filename) )
+    ; log(|Notice(), <concat-strings>["Parsing file ", filename])
+    ; where( FILE(remove-extension => base) )
+    ; where( ps-get-meta => meta )
+    ; where( <ps-get-syntax ; ps-get-parse-table> meta => FILE(tbl) )
+
+    ; xtc-transform(!"sglri",
+        !["-b", "-p", tbl | <concat>
+           [ <pass-verbose> ()
+           , <ps-pass-filters> meta
+           , <ps-pass-sort> meta
+           , <ps-pass-implode-quotes> meta
+           , <ps-pass-yield-quotes> meta           
+           , <ps-pass-preserve-comments>
+           , <ps-pass-preserve-positions>  
+           ]
+         ]
+       )
+
+    ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
+
+    ; if not(<get-config> "--assimilation" => "off") then
+        xtc-transform(!"meta-explode",
+          !["-b" | <concat>
+             [ <pass-verbose>
+             , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
+             ]
+           ])
+      end
+
+    ; where(if-not-silent(read-from ; ps-check-module-name(|base)))
+
+    ; if <get-config> "--desugaring" => "on" then
+        xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
+      end
+
+    ; if not( <get-config>"-b" ) then
+        read-from ; write-to-text
+      end
+
+strategies
+
+  ps-check-module-name(|base) =
+    ?Module(n,_)
+    ; if not( !(<base-filename> base,<base-filename>n) => (x,x) ) then
+        log(|Warning(),<concat-strings>
+          ["Mismatch between basename of input file ("
+          , base
+          , ") and module name (", n,") specified"
+          ]
+        )
+      end
+
+  ps-check-module-name(|base) =
+    ?Specification(_)
+
+strategies
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  ps-pass-sort =
+    if ?Meta(<fetch-elem(?TopSort(s))>) then
+      !["--start", <!s; is-string>]
+    else
+      ![]
+    end
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  ps-pass-filters =
+    if ?Meta(<fetch-elem(?HeuristicFilters(value))>) then
+      switch !value
+        case On():  !["--heuristic-filters", "on"]
+        case Off(): !["--heuristic-filters", "off"]
+        otherwise:  fatal-err(|"Illegal value of HeuristicFilters option: use On() or Off()")
+      end
+    else
+      // FIXME: for now, heuristic filters are enabled for concrete object syntax.
+      !["--heuristic-filters", "on"]
+    end
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  ps-pass-implode-quotes =
+    if <get-config> "--asfix" then
+      !["--concrete"]    
+    else
+      if ?Meta(<fetch-elem(?ImplodeQuotes(value))>) then
+        switch !value
+          case On():  ![]
+          case Off(): !["--concrete"]
+          otherwise:  fatal-err(|"Illegal value of ImplodeQuotes otion: use On() or Off()")
+        end
+      else
+        ![]
+      end
+    end
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  ps-pass-yield-quotes =
+    if ?Meta(<fetch-elem(?YieldQuotes(value))>) then
+      switch !value
+        case On():  !["--yield-quotes"]
+        case Off(): ![]
+        otherwise:  fatal-err(|"Illegal value of YieldQuotes otion: use On() or Off()")
+      end
+    else
+      ![]
+    end
+
+strategies
+
+  /**
+   * Determines the syntax to be used.
+   *
+   * @type MetaData -> String
+   */
+  ps-get-syntax = 
+     ( /* first option: --syntax argument
+        <get-config> "--syntax"
+
+     <+ /* second option: meta file */
+        ?Meta(<fetch-elem(?Syntax(<id>))>)
+
+     <+ /* third option: --default syntax */
+        <get-config> "--default-syntax"
+
+     <+ /* final option: plain Stratego */
+        !"Stratego"
+      )
+    ; log(|Notice(),<concat-strings>["Using syntax ",<id>])
+
+  /**
+   * Returns the MetaData for a file.
+   *
+   * @type FILE -> MetaData
+   */
+  ps-get-meta = 
+    ( /* first option: meta file */
+       ?FILE(file)
+     ; FILE(guarantee-extension(|"meta"))
+     ; read-from
+     ; if not(Meta(is-list)) then
+         log(|Warning(),<concat-strings>["Meta data for file ", file, " not valid :"], <id>)
+       ; fail
+       end
+
+    <+ /* second option: legacy syn file */
+       FILE(guarantee-extension(|"syn"))
+     ; read-from => syntax#(_)
+     ; !Meta([Syntax(syntax)])
+
+    <+ /* final option: no metadata */
+       !Meta([
+          HeuristicFilters(Off())
+        ])
+     )
+   ; log(|Debug(),"Using meta data :", <id>)
+
+  /**
+   * @type String -> FILE
+   */
+  ps-get-parse-table =
+      ?syntax
+    ; log(|Debug(), <concat-strings>["Trying to find a parse table for ",syntax])
+    ; guarantee-extension(|"tbl") => tbl 
+    ; (ps-find-in-includes(!"Using parse table: ")
+      ; !FILE(<id>)
+
+     <+ log(|Debug(),<concat-strings>["Trying to generate a parse table for ",syntax])
+      ; <ps-get-syntax-definition> syntax
+      ; xtc-transform(!"sdf2table", !["-m", syntax])
+      ; rename-to(!tbl)
+      )
+
+  /**
+   * @type String -> FILE
+   */
+  ps-get-syntax-definition =
+      log(|Notice(),"Trying to find a SDF module or definition")
+    ; where(guarantee-extension(|"def") => def)
+    ; ( <ps-find-in-includes(!"Using syntax definition: ")> def
+      ; !FILE(<id>)
+
+     <+ !FILE(<guarantee-extension(|"sdf")>)
+      ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
+      ; rename-to(!def)
+      )

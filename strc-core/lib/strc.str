@@ -81,3 +81,5 @@ imports
 
   stratego/strc/pack/pack-stratego
   stratego/strc/pack/pack-stratego-options
+
+  stratego/strc/parse/parse-stratego

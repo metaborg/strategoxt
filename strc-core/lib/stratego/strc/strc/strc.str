@@ -77,6 +77,9 @@ strategies
       ; strc-pack-stratego			; fc1(|"Stratego-Sugar-Cong", "pack")
       ; strc-output-ast
       ; strc-lib-frontend
+      //; write-to
+      //; frontend
+      //; read-from
       ; strc-output-frontend				
     | "Front-end succeeded"
     , 1
