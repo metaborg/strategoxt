@@ -23,7 +23,7 @@ strategies
   afo-let :
     |[ let def1* in s1 end ]| -> |[ let def2* in s2 end ]|
     where {| OffSet 
-           : def2* := <map(try(offset-sdef); afo)> def1*
+           : def2* := <map(try(offset-sdef)); map(afo)> def1*
            ; s2 := <afo> s1
            |}
 
