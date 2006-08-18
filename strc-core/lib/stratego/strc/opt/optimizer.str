@@ -3,4 +3,91 @@ imports Stratego stratego/strc/opt/stratego-laws libstratego-lib
 
 strategies
 
-  optimizer = downup(repeat(simplify))
+  olevel(n, s) =
+    try(where(<geq>(<get-config> "-O", <n>)); s)
+
+  olevel1(s) = olevel(!1, s)
+  olevel2(s) = olevel(!2, s)
+  olevel3(s) = olevel(!3, s)
+  olevel4(s) = olevel(!4, s)
+  olevel5(s) = olevel(!5, s)
+  olevel6(s) = olevel(!6, s)
+
+strategies
+
+  fusion =
+    declare-inline-rules
+    ; alltd(innermost-fusion)
+    // turn off outermost-fusion while it is not finished (EV)
+    //; alltd(innermost-fusion + outermost-fusion)
+
+  do-inline = 
+    inline-strategies
+
+  dead-def-elim = 
+    if-lib(where(<set-config>("--only-local", ())))
+    ; dead-def-elim-spec
+
+  compile-match = 
+    apply-to-bodies(match-to-dfa)
+
+  bound-unbound-var = 
+    mark-bound-unbound-vars
+
+  optimizer =
+    olevel1(
+      try(where(not(<get-config> "--fusion"))
+      ; fusion
+      //; save-as2(!".opt1")
+      )
+    )
+
+    // INLINING
+    // inline small definitions, congruences
+    ; olevel2(
+	worker-wrapper-spec
+        //; save-as6(!".opt2")
+	; do-inline
+        //; save-as6(!".opt3")
+	; dead-def-elim
+        //; save-as4(!".opt4")
+	; simplify1
+      )
+    //; define-congruences
+
+    // CONSTANT PROPAGATION
+    //; olevel5( 
+    //    const-prop-spec
+    //    ; bound-unbound-vars
+    //    ; dead-var-elim
+    //    ; simplify3
+    //    ; save-as4(!".opt4")  
+    //  )
+
+    // PATTERN MATCH COMPILATION
+    ; olevel3(
+	compile-match
+	; desugar-case
+        //; save-as2(!".opt5")
+      )
+    // INLINING 
+    // inline local definitions introduced by pattern match compilation
+    ; olevel5(
+	do-inline
+        //; save-as5(!".opt7")
+	; dead-def-elim
+        //; save-as5(!".opt8")
+      )
+
+	// CONSTANT PROPAGATION
+        //; olevel4(
+	//    simplify2 // lift term arguments from (prim) calls
+        //    ; save-as3(!".opt9")
+        //    ; const-prop
+	//    ; save-as3(!".opt10")
+	//    ; bound-unbound-vars
+	//    ; save-as3(!".opt11")
+	//    ; dead-var-elim
+	//    ; simplify3
+        //    ; save-as3(!".opt12")
+	//  )

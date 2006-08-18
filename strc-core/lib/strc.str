@@ -31,6 +31,7 @@ imports
   stratego/strc/front/stratego-desugar
   stratego/strc/front/stratego-ensugar
   stratego/strc/front/stratego-warnings
+  stratego/strc/front/stratego-warnings-options
   stratego/strc/front/use-def
   stratego/strc/front/variables-to-constructors
 
@@ -40,7 +41,6 @@ imports
   stratego/strc/opt/bound-unbound-vars
   stratego/strc/opt/build-match-laws
   stratego/strc/opt/canonicalize-ng
-  stratego/strc/opt/canonicalize
   stratego/strc/opt/congruence-laws
   stratego/strc/opt/const-prop
   stratego/strc/opt/dead-def-elim
@@ -52,7 +52,6 @@ imports
   stratego/strc/opt/idfail-laws
   stratego/strc/opt/inlining
   stratego/strc/opt/lift-definitions
-  stratego/strc/opt/optimizer
   stratego/strc/opt/opt-lib
   stratego/strc/opt/scope-laws
   stratego/strc/opt/simplify1
@@ -62,6 +61,8 @@ imports
   stratego/strc/opt/traversal-laws
   stratego/strc/opt/worker-wrapper
   
+  stratego/strc/opt/optimizer
+
   stratego/strc/match/automaton
   stratego/strc/match/compile-match
   stratego/strc/match/desugar-case
@@ -74,4 +75,8 @@ imports
   stratego/strc/c/frame-composition
   stratego/strc/c/frames
   stratego/strc/c/s2c-ng
+
+  stratego/strc/strc/strc
+  stratego/strc/strc/strc-options
+
   

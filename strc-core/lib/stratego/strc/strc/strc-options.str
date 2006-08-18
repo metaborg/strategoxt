@@ -1,0 +1,295 @@
+module strc-options
+imports stratego/strc/front/stratego-warnings-options
+
+signature
+  constructors
+    LibDir         : ConfigKey
+    DisableInstall : ConfigKey
+
+strategies
+
+  strc-command-line-options =
+    strc-init-strc-config
+    ; parse-options(strc-options)
+    ; try(<get-config> "-v"
+          ; strc-version
+          ; <exit> 0)
+    ; (where(<get-config> "-i")
+       <+ <fatal-error> ["no main module specified"])
+    ; strc-announce
+    ; log(|Info(), ["Compiling '", <get-config>"-i", "'"])
+
+  strc-init-strc-config = 
+  where(
+    <set-config> ("VERSION", <strc-version-number>)
+    ; <set-config> ("--verbose", 1)
+    ; <set-config> ("--keep", 0)
+    ; <set-config> ("--format-check", 1)
+    ; <set-config> ("--statistics", 1)
+    ; <set-config> ("-O", 2)
+    ; <set-config> ("-I", [])
+    ; <set-config> ("--ng", "on")
+    ; <set-config> ("--C-include", 
+		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
+
+    // @todo consider to include CFLAGS from the environment
+    ; <set-config> ("-Xcc",
+        [ "-I", <xtc-find-path> "SRTS-include"
+        , "-I", <xtc-find-path> "stratego-lib-include"
+        , "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")
+        | <strc-system-cflags> ()
+        ])
+
+    ; <set-config> ("-Xlinker",
+        [ <xtc-find> "libstratego-lib-native.la"
+        , <xtc-find> "libstratego-runtime.la"
+        , <xtc-find> "libATerm.la"
+        , "-lm"
+        | <strc-system-ldflags> ()
+        ])
+
+    ; <set-config> ("--dr", "new")
+  )
+
+  /**
+   * @todo This does not supported quoted options (with spaces)
+   */
+  strc-system-ldflags =
+    <prim("STRC_SYSTEM_LDFLAGS")> ()
+    ; string-tokenize(| ['\ ', '\n', '\r'])
+
+  /**
+   * @todo This does not supported quoted options (with spaces)
+   */
+  strc-system-cflags =
+    <prim("STRC_SYSTEM_CFLAGS")> ()
+    ; string-tokenize(| ['\ ', '\n', '\r'])
+
+  strc-get-include-dirs =
+    <conc> (<get-config> "-I"
+           , ["-I", <xtc-find-path> "lib.rtree",
+              "-I", <xtc-find-path> "strategoxt-datadir",
+              "-I", <xtc-find-path> "Stratego.rtree",
+              "-I", <xtc-find-path> "StrategoRenamed.sdf"]
+           )
+
+  olevel(n, s) =
+    try(where(<geq>(<get-config> "-O", <n>)); s)
+
+  olevel1(s) = olevel(!1, s)
+  olevel2(s) = olevel(!2, s)
+  olevel3(s) = olevel(!3, s)
+  olevel4(s) = olevel(!4, s)
+  olevel5(s) = olevel(!5, s)
+  olevel6(s) = olevel(!6, s)
+
+  strc-options =
+    input-option
+  + output-option
+
+  + ArgOption("-I" + "--Include",        
+	where(<post-extend-config>("-I", ["-I", <id>])); !(),
+	!"-I d | --Include d Include modules from directory d")
+
+  + ArgOption("--main" + "-m",
+	where(<set-config>("-m", <id>)); !(),
+	!"--main f | -m f    Main strategy to compile (default: main)\n")
+
+  + ArgOption("--C-include",       
+	where(<post-extend-config>("--C-include", [<id>])); !(), 
+	!"--C-include h      Include header file h (\"file.h\" or <file.h>)")
+
+  /**
+   * Library options
+   */
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"Options for creating libraries:")
+  + ArgOption(fail, fail, !"")
+
+  + Option("--library" + "--lib",
+	where(<set-config>("--library", ())); !(),
+	!"--library | --lib  Build a library instead of an application")
+
+  + ArgOption("--libdir",
+        where(<set-config> (LibDir(), <id>)),
+        !"--libdir <dir>     If the output is a library, then it will will be installed in libdir.")
+
+  + Option("--disable-install",
+        where(<set-config> (DisableInstall(), ())),
+        !"--disable-install  If the output is a library, then don't install it in the libdir.")
+
+  /**
+   * C compiler flags
+   */
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"C compiler options:")
+  + ArgOption(fail, fail, !"")
+
+  + ArgOption("-Xcc",
+	where(<post-extend-config>("-Xcc", [<id>])); !(),
+	!"-Xcc <arg>         Pass <arg> on to the C compiler")
+
+  + ArgOption("-CI",
+	where(<post-extend-config>("-Xcc", ["-I", <id>])); !(),
+	!"-CI d              Include C headers from directory d")
+
+  + ArgOption("-CD",
+	where(<post-extend-config>("-Xcc", [<conc-strings> ("-D", <id>)])); !(),
+	!"-CD name=def       Predefine name as a macro, with definition def.")
+
+  /**
+   * Linker flags.
+   */
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"Linker options:")
+  + ArgOption(fail, fail, !"")
+
+  + ArgOption("-Xlinker",
+	where(<post-extend-config>("-Xlinker", [<id>])); !(),
+	!"-Xlinker <arg>     Pass <arg> on to the linker")
+
+  + ArgOption("-CL",
+	where(<post-extend-config>("-Xlinker", [<conc-strings> ("-L", <id>)])); !(),
+	!"-CL d              Include binary libraries from directory d")
+
+  + ArgOption("-Cl",
+	where(<post-extend-config>("-Xlinker", [<conc-strings> ("-l", <id>)])); !(),
+	!"-Cl <lib>          Search the library named <lib> when linking.")
+
+  + ArgOption("-la",
+	where(<post-extend-config>("-Xlinker", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
+	!"-la <name>         Search the libtool library lib<name>.la when linking.")
+
+  // newline
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"Configuration of Stratego Compiler:")
+  + ArgOption(fail, fail, !"")
+
+  + ArgOption("--xtc-repo",
+	where(<extend-config>("-Xcc", [<concat-strings> ["-DDEFAULT_XTC_REPOSITORY=\"", <id>, "\""]])); !(),
+	!"--xtc-repo file    Set default XTC repository in output program to file (default: none).")
+
+  + Option("-c",          
+	where(<set-config>("-c",())); !(),
+	!"-c                 Produce C code only (don't compile)" )
+
+  + Option("--ast",
+	where(<set-config>("--ast",())); !(),
+	!"--ast              Produce abstract syntax tree of packed program" )
+
+  + Option("-F",           
+	where(<set-config>("-F",())); !(),
+	!"-F                 Produce core after front-end" )
+
+  + ArgOption("--format-check",
+        where(<set-config>("--format-check", <string-to-int>)); !(),
+	!"--format-check n   Format check intermediate results (default 1 = basic checking, use 0 for no checking.)" )
+
+  + Option("--prefer-str",
+        where(<set-config> ("--prefer-str", "")); !(),
+        !"--prefer-str       Prefer .str files over .rtree files")
+ 
+  + ArgOption("-O",
+        where(<set-config>("-O", <string-to-int; strc-set-opt-level> )); !(),
+	!"-O n               Optimization level (0 = no optimization)" )
+
+  + ArgOption("--ng",
+        where(<set-config>("--ng", <id>); !()),
+	!"--ng on|off        Use ng backend (default: off)" )
+
+
+  + Option("--fusion",     
+	where(<toggle-config>("--fusion",())); !(),
+	!"--fusion           Toggle specialize applications of innermost (default: on)" )
+
+  + ArgOption("--dr",
+        err(|"--dr flag is deprecated; old dynamic rules are no longer supported"),
+	!"--dr               Obsolete; old dynamic rules are no longer supported" )
+
+  + Option("--asfix",
+        where(<set-config>("--asfix",())); !(),
+        !"--asfix            Concrete syntax parts are not imploded")
+
+  + Option("--indent-c",    
+	where(<set-config> ("--indent-c",())); !(),         
+	!"--indent-c         Use this flag if you want the generated C code to use indentation.")
+
+  + ArgOption(fail, fail, !"")
+  + ArgOption(fail, fail, !"General options:")
+  + ArgOption(fail, fail, !"")
+
+  + general-options
+
+  + Option("-h" + "--help",         
+	where(<set-config> ("--help",())); !(),         
+	!"-h | --help        Show help")
+
+  + Option("-v"+"--version",     
+	where(<set-config> ("-v",())); !(),         
+	!"-v | --version     Display program's version")
+
+  + stratego-warnings-options
+
+
+
+  strc-set-opt-level = 
+    id
+
+  strc-set-opt-level-old =
+    string-to-int
+  ; if <lt>(<id>,2) then
+      !2 ; log(|Warning(),"Optimization levels < 2 are broken, setting optimization level to 2.")
+    end
+      
+  strc-pass-dr = !["--dr", <get-config> "--dr"]
+
+  strc-pass-maybe-unbound-warnings =
+    <get-config>"--warning"
+  ; fetch-elem("maybe-unbound-variables")
+  ; !["--warning", "maybe-unbound-variables"]
+ <+ !["--warning", "no-maybe-unbound-variables"]
+
+  strc-conflict-short-description(p) = 
+      !["STRC compiles Stratego programs to C or executable code.\n",
+	"\n",
+	"Stratego is a language for program transformation based on the\n",
+	"paradigm of rewriting strategies.\n",
+	"\n",
+	"For documentation see http://www.stratego-language.org\n",  
+	"\n",
+	"Usage: ", <p>(), " -i file [options]"]
+
+  strc-conflict-long-description(p) = ![
+	"Examples:\n",
+	"Compile module M.str to an executable\n",
+	"  strc -i M\n",
+	"Use strategy foo as main strategy instead of main\n",
+	"  strc -i M --main foo\n",
+	"Compile module M.str to C code in file M.c\n",
+	"  strc -i M -c\n",
+	"Include modules from directory ../sig\n",
+	"  strc -i M -I ../sig\n",
+	"\n",  
+	"Note that strc is a whole program compiler, i.e, it\n",  
+	"compiles all (recursively) imported modules into\n",  
+	"a single C source file.\n",  
+	"\n",  
+	"Report bugs to <stratego-bugs@cs.uu.nl>\n"
+  ]
+
+  strc-version =
+    where(<fprintnl>(stdout(), 
+	  ["STRC ", <get-config> "VERSION", " (revision ", <svn-revision-number> (), ")\n\n",
+	  "Copyright (C) 1998-2005 Eelco Visser <visser@acm.org>\n",
+	  "\n",
+	  "This library is free software; you can redistribute it and/or\n",
+	  "modify it under the terms of the GNU Lesser General Public\n",
+	  "License as published by the Free Software Foundation; either\n",
+	  "version 2 of the License, or (at your option) any later version.\n"
+	  ]))
+
+  strc-version-number = prim("VERSION_TERM")
+  svn-revision-number = prim("SVN_REVISION_TERM")
+
+  strc-announce =
+    if-verbose2(strc-version)
