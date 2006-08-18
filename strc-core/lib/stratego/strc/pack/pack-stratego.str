@@ -17,6 +17,14 @@ imports
 
 strategies
 
+  pack-stratego-trm(|args) = 
+    where(<pack-stratego-options> args)
+    ; pack-process-options
+    ; pack-report-options
+    ; pack-stratego(|<pack-include-path>) => (files, spec)
+    ; <pack-maybe-create-depfile> files
+    ; !spec
+
   pack-stratego-io = 
     xtc-iowrap(
       pack-stratego-options
