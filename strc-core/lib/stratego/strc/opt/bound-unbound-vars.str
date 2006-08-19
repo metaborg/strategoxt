@@ -3,16 +3,16 @@ imports stratego/strc/lib/stratlib
 strategies
 
   mark-bound-unbound-vars =
+    mark-buv
+
+  mark-bound-unbound-vars-old =
     if-verbose4(say(!"marking bound-unbound-vars"))
-    ; Specification([id, id, Strategies(map(mark-buv))])
+    ; Specification(
+        {| MarkVar
+         : at-last(Strategies(map(mark-buv)))
+         |}
+      )
     ; if-verbose4(say(!"marked bound-unbound-vars"))
-
-
-  mark-bound-unbound-vars =
-    if-verbose4(say(!"marking bound-unbound-vars"))
-    ; Specification([id, Strategies(map(mark-buv))])
-    ; if-verbose4(say(!"marked bound-unbound-vars"))
-
 
   /**
    * Annotate variables with one of the annotations "bound",

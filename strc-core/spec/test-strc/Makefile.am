@@ -1,5 +1,4 @@
 STRPROGS = \
-  test10.str \
   test01.str \
   test02.str \
   test03.str \
@@ -8,7 +7,8 @@ STRPROGS = \
   test06.str \
   test07.str \
   test08.str \
-  test09.str
+  test09.str \
+  test10.str
 
 STRLIBS = \
   test09-lib.str 
@@ -16,7 +16,7 @@ STRLIBS = \
 TESTS = $(STRPROGS:.str=.str.sh)
 
 TESTS_ENVIRONMENT =\
-  STRC="../strc/strc --verbose 3" \
+  STRC="../strc/strc --verbose 3 --format-check 1 --keep 0" \
   STRATEGO_LIB="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS)

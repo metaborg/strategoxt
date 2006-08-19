@@ -13,6 +13,9 @@ imports
 strategies
 
   compile = 
+    stratego-to-c
+
+  stratego-to-c = 
     init-term-caching
     ; TranslateSpec
     ; c-simplify

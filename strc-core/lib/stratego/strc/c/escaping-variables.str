@@ -12,11 +12,12 @@ imports
 
 strategies
 
+  escaping-variables-io = 
+    io-wrap(escaping-variables)
+
   escaping-variables = 
-    io-wrap(
       mark-escaping-variables
       ; annotate-frame-offsets
-    )
 
   mark-escaping-variables =
     {| CurrentFrame, FrameOf, Escapes, Closure

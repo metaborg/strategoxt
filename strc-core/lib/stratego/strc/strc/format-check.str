@@ -17,6 +17,14 @@ strategies
       )
     end
 
+  tfc-c(|n, phase) =
+    if <geq>(<get-config> "--format-check", n) then
+      where(
+        write-to
+        ; fc-c(|n, phase)
+      )
+    end
+
 strategies
 
   // format checking

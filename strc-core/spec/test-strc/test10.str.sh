@@ -1,4 +1,4 @@
 #!/bin/sh
 
-${STRC} -i test10.str -c --library -o libtest10.rtree --verbose 2 || exit 1
+${STRC} -i test10.str -c --library -o libtest10.rtree || exit 1
 

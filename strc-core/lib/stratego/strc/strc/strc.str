@@ -48,83 +48,21 @@ strategies
     log-timed( 
       dbg(|"starting optimizer")
       ; optimizer
-      ; write-to
     | <concat-strings>["Optimization succeeded -O ",<get-config; int-to-string>"-O"]
     , 1
     )
-
-  strc-optimize-old =
-    log-timed( 
-      dbg(|"starting optimizer");
-	// INNERMOST FUSION
-        olevel1(
-	    try(where(not(<get-config> "--fusion"))
-		; strc-fusion
-            	; save-as2(!".opt1")
-            )
-          )
-	// INLINING
-	// inline small definitions, congruences
-        ; olevel2(
-	    strc-worker-wrapper
-            ; save-as6(!".opt2")
-	    ; strc-do-inline
-            ; save-as6(!".opt3")
-	    ; strc-dead-def-elim
-            ; save-as4(!".opt4")
-	    ; strc-simplify1
-          )
-        //; define-congruences
-	// CONSTANT PROPAGATION
-        //; olevel5( 
-	//    const-prop
-	//    ; bound-unbound-vars
-	//    ; dead-var-elim
-	//    ; simplify3
-        //    ; save-as4(!".opt4")
-        //  )
-	// PATTERN MATCH COMPILATION
-        ; olevel3( 
-	    strc-compile-match
-	    ; strc-desugar-case
-            ; save-as2(!".opt5")
-	  )
-	// INLINING 
-        // inline local definitions introduced by pattern match compilation
-        ; olevel5(
-	   strc-do-inline
-           ; save-as5(!".opt7")
-	   ; strc-dead-def-elim
-           ; save-as5(!".opt8")
-          )
-	// CONSTANT PROPAGATION
-        //; olevel4(
-	//    simplify2 // lift term arguments from (prim) calls
-        //    ; save-as3(!".opt9")
-        //    ; const-prop
-	//    ; save-as3(!".opt10")
-	//    ; bound-unbound-vars
-	//    ; save-as3(!".opt11")
-	//    ; dead-var-elim
-	//    ; simplify3
-        //    ; save-as3(!".opt12")
-	//  )
-    | <concat-strings>["Optimization succeeded -O ",<get-config; int-to-string>"-O"]
-    , 1
-    )
-
-strategies
 
   strc-export-external-defs =
     strc-if-lib(where(
       log-timed(
-        strc-defs-to-external-defs
+        defs-to-external-defs
 	; where(
 	    <not(eq)>(<get-config>"baseout",<get-config>"basein")
 	    <+ <get-config>"baseout"
 	       ; debug(!"name for library same as name for base file: ")
 	       ; fail
           )
+        ; write-to
         ; copy-to(strc-getoutfile(!".rtree") => file1)
 	; log(|Info(), ["Abstract syntax in '", file1, "'"])
 
@@ -140,18 +78,20 @@ strategies
 
   strc-back-end =
     log-timed(
-      strc-lift-definitions
-      ; fc2(|"Stratego-Core", "be-lift")
-      ; strc-canonicalize-ng
-      ; fc2(|"Stratego-Core", "be-can")
-      ; strc-simplify1
-      ; fc3(|"Stratego-Core", "be-sim")
-      ; strc-bound-unbound-vars
-      ; fc2(|"Stratego-Core", "be-buv")
-      ; strc-escaping-variables
-      ; fc2(|"Stratego-Core", "be-esc")
-      ; strc-s2c-ng
-      ; fc-c(|1,"be-c")
+      lift-definitions
+      ; tfc2(|"Stratego-Core", "be-lift")
+      ; canonicalize
+      ; tfc2(|"Stratego-Core", "be-can")
+      ; simplify1
+      ; tfc3(|"Stratego-Core", "be-sim")
+      ; mark-bound-unbound-vars
+      ; tfc2(|"Stratego-Core", "be-buv")
+      ; escaping-variables
+      ; tfc2(|"Stratego-Core", "be-esc")
+      ; stratego-to-c
+      ; tfc-c(|1,"be-c")
+
+      ; write-to
       ; strc-ac2abox
       ; strc-abox2text
       ; rename-to(strc-getoutfile(!".c"))
@@ -322,42 +262,6 @@ strategies
       ; xtc-io-exit
     end
 
-strategies
-
-  /**
-   * Adding main strategy
-   * 
-   * What happens if the specification already contains a main strategy? 
-   */
-
-  strc-add-main =
-    try(
-      where(
-        <get-config> "-m" => m
-      ; log(|Notice(),["Main strategy is : ",m])
-      )
-      ; if-not-lib(
-          xtc-io-transform(try(strc-AddMain(|m)))
-        )
-      )
-    ; save-as3(!".with-main")
-
-  strc-AddMain(|main) : 
-    Specification(sects) -> 
-    Specification([ Strategies([SDef("main", [], Call(SVar(main), []))]) 
-                  | sects ])
-      where
-        <not("main")>main
-      ; <try(strc-check-other-main)>sects
-
-  strc-check-other-main =
-    fetch-elem( Strategies(fetch-elem(strc-is-main)) + Rules(fetch-elem(strc-is-main)) )
-  ; say(!"Adding main strategy even though one is already present!")
-
-  strc-is-main =
-    ?SDef("main", [], _)
-  + ?RDef("main", [], _)
- 
 strategies 
 
   strc-get-infile :
@@ -397,14 +301,6 @@ strategies // COMPILER COMPONENTS
 
 // FRONTEND
 
-  strc-pack-stratego = 
-    comp(|"pack-stratego",<concat> [
-          <strc-dep-name>, <strc-get-include-dirs>, <pass-keep>,
-	  <get-config < !["--asfix"] + ![]> "--asfix",
-	  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check",
-	  <get-config < !["--prefer-str"] + ![]> "--prefer-str"
-    ])
-
   strc-pack-stratego-trm = 
     pack-stratego-trm(|<concat> [
           <strc-dep-name>, <strc-get-include-dirs>, <pass-keep>,
@@ -412,60 +308,6 @@ strategies // COMPILER COMPONENTS
 	  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check",
 	  <get-config < !["--prefer-str"] + ![]> "--prefer-str"
     ])
-
-
-  strc-pre-desugar		= comp(|"pre-desugar")
-  strc-repair-types		= comp(|"repair-types")
-  strc-combine-sections		= comp(|"combine-sections")
-  strc-variables-to-constructors= comp(|"variables-to-constructors")
-  strc-raise-annotations	= comp(|"raise-annotations")
-  strc-define-lrules		= comp(|"define-lrules")
-  strc-lift-dynamic-rules	= comp(|"lift-dynamic-rules")
-  strc-stratego-desugar		= comp(|"stratego-desugar")
-  strc-use-def			= comp(|"use-def", <strc-pass-maybe-unbound-warnings>)
-  strc-check-constructors	= comp(|"check-constructors")
-  strc-expand-overlays		= comp(|"expand-overlays")
-  strc-rules-to-sdefs		= comp(|"rules-to-sdefs")
-  strc-desugar-list-matching	= comp(|"desugar-list-matching")
-  strc-desugar-default-vardec	= comp(|"desugar-default-vardec")
-  strc-introduce-congdefs	= comp(|"introduce-congdefs")
-  strc-rename-vars		= comp(|"rename-vars")
-  strc-desugar			= comp(|"desugar")
-  strc-extract-all		= comp(|"extract-all")
-  strc-extract			= comp(|"extract")
-  strc-stratego-warnings	= comp(|"stratego-warnings", <pass-warnings>)
-  strc-rename-defs		= comp(|"rename-defs")
-  strc-simplify1		= comp(|"simplify1")
-  strc-define-congruences	= comp(|"define-congruences")
-
-  strc-lib-frontend =
-    comp(|"frontend", <concat>[<strc-pass-main>, <pass-warnings>, <strc-pass-library>])
-
-  strc-pass-main =
-    !["--main", <get-config> "-m"] <+ ![]
-
-// OPTIMIZER
-
-  strc-fusion			= comp(|"fusion")
-  strc-do-inline 		= comp(|"inline")
-  strc-dead-def-elim		= comp(|"dead-def-elim", <strc-if-lib(!["--only-local"],![])>)
-  strc-compile-match		= comp(|"compile-match")
-  strc-desugar-case 		= comp(|"desugar-case")
-  strc-const-prop 		= comp(|"const-prop")
-  strc-bound-unbound-vars 	= comp(|"bound-unbound-vars")
-  strc-dead-var-elim		= comp(|"dead-var-elim")
-  strc-worker-wrapper		= comp(|"worker-wrapper")
-  strc-simplify2 		= comp(|"simplify2")
-  strc-simplify3 		= comp(|"simplify3")
-  strc-canonicalize 		= comp(|"canonicalize")
-  strc-canonicalize-ng		= comp(|"canonicalize-ng")
-  strc-lift-definitions 	= comp(|"lift-definitions")
-  strc-bound-unbound-vars 	= comp(|"bound-unbound-vars")
-  strc-escaping-variables 	= comp(|"escaping-variables")
-
-// EXPORT
-
-  strc-defs-to-external-defs = comp(|"defs-to-external-defs", ["--no-inlining"])
 
 // BACK-END
 
@@ -479,16 +321,5 @@ strategies // COMPILER COMPONENTS
     )
   ; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
     
-  strc-abox2text = comp-out(|"abox2text")
-
-  strc-s2c 	= comp(|"s2c",  
-	 		<concat>[
-			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
-			  <strc-pass-library>
-			])
-
-  strc-s2c-ng 	= comp(|"s2c-ng",  
-	 		<concat>[
-			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
-			  <strc-pass-library>
-			])
+  strc-abox2text = 
+    comp-out(|"abox2text")
