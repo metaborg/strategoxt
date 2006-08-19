@@ -12,8 +12,6 @@ STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 LDADD 		= $(STRATEGORUNLIBS)
 
-
-
 classictests =									 \
 		  test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \
@@ -297,7 +295,7 @@ SDFINCLUDES = -I $(top_srcdir)/../stratego-front/syn
 .def.tbl :
 	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
 
-cs-test01.tree : ExpStratego.tbl Expressions.def Expressions.str
+cs-test01.c : ExpStratego.tbl Expressions.def Expressions.str
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf
 

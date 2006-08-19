@@ -319,7 +319,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 %.c.abox.check : %.c.abox
 	abox-format -i $< 
 
-%.c : %.c.abox 
+%.ccc : %.c.abox 
 	$(GPP)/bin/abox2text -i $< -o $@
 
 
@@ -333,9 +333,8 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 # USING INSTALLED STRC ###############################################
 
-%.ic: %.r
+%.c: %.str
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3
-	cp $*.c $@
 
 %.io: %.ic
 	$(CC) $(DEFS) $(CINCL) -g -c $*.c -O4
@@ -347,10 +346,10 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 
 #$(CC) -o $@ -g $*.o $($*OBJECTS) $(SCLibs)
 
-%.ilib: %.r
+%.ilib: %.str
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
 
-lib%.c : %.r
+lib%.c : %.str
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3 --library
 
 %.irun: %.ibin

@@ -18,12 +18,18 @@ imports
 strategies
 
   pack-stratego-trm(|args) = 
-    where(<pack-stratego-options> args)
+    where(id
+      ; incl := <get-config> "-I"
+      ; <set-config> ("-I", [])
+      ; <parse-options(pack-stratego-options <+ input-options, system-usage, id)> 
+          ["strc" | args]
+    )
     ; pack-process-options
     ; pack-report-options
     ; pack-stratego(|<pack-include-path>) => (files, spec)
     ; <pack-maybe-create-depfile> files
     ; !spec
+    ; where(<set-config>("-I", incl))
 
   pack-stratego-io = 
     xtc-iowrap(
@@ -41,7 +47,7 @@ strategies
     ; graph-nodes-undef(
         pack-stratego-parse-stratego
       , pack-get-stratego-imports 
-      ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
+        ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
     ; if ?(_, []) then
