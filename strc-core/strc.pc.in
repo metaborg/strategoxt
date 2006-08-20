@@ -6,4 +6,4 @@ Name: Stratego Compiler Library
 Description: Library for compilation of Stratego programs.
 Version: @PACKAGE_VERSION@
 Libs: -L${prefix}/lib -lstrc
-Requires: aterm stratego-runtime stratego-lib
+Requires: aterm stratego-runtime stratego-lib stratego-gpp

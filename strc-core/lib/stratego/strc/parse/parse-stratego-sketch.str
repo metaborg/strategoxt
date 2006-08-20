@@ -138,7 +138,7 @@ strategies
         ; ptbl := <open-parse-table-report-errors> tbl
         ; sort := <ps-get-sort> meta
 	; <ps-set-filtering> meta
-set-ambiguity-is-error(true)
+	// ; set-ambiguity-is-error(true)
 
         // <ps-pass-implode-quotes> meta
         // <ps-pass-yield-quotes> meta 
@@ -331,12 +331,10 @@ strategies
        ; fail
        end
 
-/*
     <+ /* second option: legacy syn file */
        FILE(guarantee-extension(|"syn"))
      ; read-from => syntax#(_)
      ; !Meta([Syntax(syntax)])
-*/
 
     <+ /* final option: no metadata */
        !Meta([

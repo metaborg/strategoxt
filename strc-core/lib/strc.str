@@ -79,6 +79,7 @@ imports
   stratego/strc/strc/strc
   stratego/strc/strc/strc-options
   stratego/strc/strc/format-check
+  stratego/strc/strc/compile-c
 
   stratego/strc/pack/pack-stratego
   stratego/strc/pack/pack-stratego-options

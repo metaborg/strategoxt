@@ -7,11 +7,13 @@
 module strc
 
 imports
-  libstratego-xtc 
   libstratego-lib
+  libstratego-xtc
+  libstratego-gpp
 
   stratego/strc/strc/strc-options
   stratego/strc/strc/format-check
+  stratego/strc/strc/compile-c
 
 strategies
 
@@ -90,111 +92,13 @@ strategies
       ; tfc2(|"Stratego-Core", "be-esc")
       ; stratego-to-c
       ; tfc-c(|1,"be-c")
-
-      ; write-to
       ; strc-ac2abox
       ; strc-abox2text
+      ; write-to
       ; rename-to(strc-getoutfile(!".c"))
     | "Back-end succeeded"
     , 1 
     )
-
-strategies // Compile generated C code
-
-  strc-c-compile =
-     where(<get-config> "-c")
-  <+ log-timed(
-       strc-c-to-object-code 
-       ; strc-link-object-code
-     | "C compilation succeeded"
-     , 1 
-     )
-
-  strc-c-to-object-code :
-    FILE(cfile) -> FILE(ofile)
-    where log(|Notice(), "Compiling C code")
-	; strc-getoutfile(!".lo") => ofile
-	; <strc-call-backend>
-	    (<xtc-find> "libtool", [
-              "--mode=compile", <xtc-find> "cc" | <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]]])
-
-  strc-link-object-code :
-    FILE(ofile) -> FILE(target)
-    where
-      log(|Notice(), "Linking object code")
-      ; (<get-config> "-o" <+ strc-getoutfile(strc-get-final-suffix)) => target
-      ; strc-if-lib(strc-link-library(|ofile, target), strc-link-program(|ofile, target))
-
-  strc-link-program(|ofile, target) =
-    <strc-call-backend>
-      (<xtc-find> "libtool", [
-        "--mode=link", <xtc-find> "cc", ofile, "-o", target | <get-config> "-Xlinker"])
-
-/**
- * Linking a library using libtool
- */
-strategies
-
-  strc-link-library(|ofile, target) =
-      <call>
-        (<xtc-find> "libtool", [
-          "--mode=link", <xtc-find> "cc", ofile, "-o", target, "-rpath", <strc-libdir> target, "-avoid-version", "-no-undefined" | <get-config> "-Xlinker"])
-    ; if <get-config> DisableInstall() then
-        log(|Info(), ["Don't forget to install the library using: libtool --mode=install cp ", target, " ", <strc-libinstallpath> target])
-      else
-        log(|Info(), "Installing library")
-        ; <call>
-            (<xtc-find> "libtool", ["--mode=install", "cp", target, <strc-libinstallpath> target])
-      end
-      
-
-  /**
-   * Given a target, return the libdir.
-   * @type String -> String
-   */
-  strc-libdir =
-    <get-config> LibDir()
-    ; abspath
-
-    <+ dirname
-       ; abspath
-
-  /**
-   * Given a target, return the location for installing the library.
-   *
-   * @type String -> String
-   */
-  strc-libinstallpath =
-    <conc-strings> (<get-config> LibDir(), "/", <base-filename>)
-    ; abspath
-    <+ abspath
-
-
-strategies
-
-  /**
-   * FIXME enable the silent backend calls if the STR-853 has been solved.
-   */
-  strc-call-backend =
-    ?(tool,args)
-  ; log(|Notice(),<separate-by(|" ") ; concat-strings>["Command:",tool|args])
-  ; //if <geq>(<verbosity>,2) then
-      call
-/*    else
-      where(
-        xtc-new-file => f
-      ; open => fd
-      )
-    ; ( call(|None,Some(fd),Some(fd))
-      ; <close>fd
-     <+ <close>fd
-      ; <read-text-file>f
-      ; log(|Error(),"Command failed :")
-      ; debug
-      ; fail
-      )
-    end
-*/
 
 strategies
 
@@ -289,13 +193,19 @@ strategies
 strategies // COMPILER COMPONENTS
 
   comp-out(|f) =
-    log-timed(xtc-transform(!f, pass-verbose) | <comp-msg>f, 2)
+    log-timed(
+      xtc-transform(!f, pass-verbose) 
+      | <comp-msg>f, 2)
 
   comp(|f) =
-    log-timed(xtc-transform(!f, !["-b" | <pass-verbose> ]) | <comp-msg>f, 2)
+    log-timed(
+       xtc-transform(!f, !["-b" | <pass-verbose> ])
+       | <comp-msg>f, 2)
 
   comp(|f,args) =
-    log-timed(xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) | <comp-msg>f, 2)
+    log-timed(
+      xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args]) 
+      | <comp-msg>f, 2)
 
   comp-msg = <concat-strings>["  ",<id>]
 
@@ -303,10 +213,10 @@ strategies // COMPILER COMPONENTS
 
   strc-pack-stratego-trm = 
     pack-stratego-trm(|<concat> [
-          <strc-dep-name>, <strc-get-include-dirs>, <pass-keep>,
-	  <get-config < !["--asfix"] + ![]> "--asfix",
-	  <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check",
-	  <get-config < !["--prefer-str"] + ![]> "--prefer-str"
+      <strc-dep-name>, <strc-get-include-dirs>, <pass-keep>,
+      <get-config < !["--asfix"] + ![]> "--asfix",
+      <get-config < !["--format-check", <int-to-string>] + ![]> "--format-check",
+      <get-config < !["--prefer-str"] + ![]> "--prefer-str"
     ])
 
 // BACK-END
@@ -318,8 +228,12 @@ strategies // COMPILER COMPONENTS
       else
         !"C.pp.af"
       end => pp-table 
-    )
-  ; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
+      ; pptbl := <xtc-find; ReadFromFile> pp-table
+    ) 
+  ; ast2box(|[pptbl])
+  //; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
     
   strc-abox2text = 
-    comp-out(|"abox2text")
+    // comp-out(|"abox2text")
+    where(fout := <fopen>(<xtc-new-file>,"w"))
+    ; box2text-stream(|80, fout)
