@@ -58,22 +58,22 @@ rules
   SingleListVar :
     Var(ListVar(x)) -> Var(x)
 
-  is-nil = 
+  is-nil-trm = 
     ?Term|[ Nil() ]| 
     + ?Term|[ Nil(){^pt} ]| 
     + ?PreTerm|[ Nil() ]|
 
   ListVarAsTail : 
     Term|[ Cons(lid, t){^pt} ]| -> Term|[ lid{^pt} ]|
-    where <is-nil> t
+    where <is-nil-trm> t
 
   ListVarAsTail : 
     PreTerm|[ Cons(lid, t) ]| -> PreTerm|[ lid ]|
-    where <is-nil> t
+    where <is-nil-trm> t
 
   ListVarInBuild : 
     Term|[ Cons(lid, t){^pt} ]| -> <desugar>Term|[ <makeConc(|)>(lid, t){^pt} ]|
-    where <not(is-nil)> t
+    where <not(is-nil-trm)> t
 
   ConcInMatch =
     ?Term|[ Conc(t1, t2){^pt} ]|
