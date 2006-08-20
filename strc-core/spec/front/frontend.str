@@ -1,5 +1,5 @@
 module frontend
-imports libstrc stratego-warnings-options
+imports libstrc 
 
 strategies
 
