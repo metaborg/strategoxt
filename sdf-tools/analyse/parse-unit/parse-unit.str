@@ -118,9 +118,7 @@ strategies
     (<get-config> ParseTable()
        <+ log(|Critical(), "No parse table specified. Please use the -p option."); <xtc-exit> 1)
     ; stream := <fopen <+ parse-unit-perror> (<id>, "r")
-    ; sglr-log-statistics(    
-        finally(read-from-stream, <fclose> stream)
-      | "Reading parse table")
+    ; finally(read-from-stream, <fclose> stream)
     ; if not(?"parse-table"#(_)) then
         log(|Critical(), "The specified parse table file does not contain a parse table")
         ; <xtc-exit> 1

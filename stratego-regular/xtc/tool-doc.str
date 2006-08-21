@@ -219,6 +219,8 @@ rules
   DesugarToolDoc :
     DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <GetInternalDefaultXtcRepository> ())
 
+  external GetInternalDefaultXtcRepository()
+
   DesugarToolDoc :
     CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location> ())
 
