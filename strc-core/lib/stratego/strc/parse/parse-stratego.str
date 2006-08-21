@@ -109,11 +109,6 @@ strategies
       <+ <xtc-exit> 1
     )
 
-  parse-stratego-trm(|args) =
-    where(<parse-options(parse-stratego-options <+ io-options)> ["strc" | args])
-    ; where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
-    ; ps-parse-module
-
   ps-find-in-includes(msg) =
     <find-in-path> (<id>, <get-config> "-I")
   ; log(|Notice(),<concat-strings>[<msg>,<id>])

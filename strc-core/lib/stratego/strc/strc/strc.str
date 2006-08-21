@@ -26,7 +26,7 @@ strategies
 
 strategies
 
-  strc-compile =
+  strc-compile = 
     xtc-input(
       strc-front-end
       ; strc-optimize
@@ -35,7 +35,7 @@ strategies
       ; strc-c-compile
     )
 
-  strc-front-end =
+  strc-front-end = 
     log-timed(
       strc-get-infile
       ; strc-pack-stratego-trm ; tfc1(|"Stratego-Sugar-Cong", "pack")
@@ -94,7 +94,6 @@ strategies
       ; tfc-c(|1,"be-c")
       ; strc-ac2abox
       ; strc-abox2text
-      ; write-to
       ; rename-to(strc-getoutfile(!".c"))
     | "Back-end succeeded"
     , 1 
@@ -112,11 +111,11 @@ strategies
 strategies
 
   log-timed(s|msg,level) =
-    if <geq>(<get-config> "--statistics", level) then 
-      where(times => start)
+    if <geq>(<get-config> "--statistics", level) then
+      where(times => starttime)
     ; s 
     ; where(
-        <diff-times>(<times>,start)
+        <diff-times>(<times>,starttime)
       ; <concat-strings>[ <align-left>(' ', msg, 27)
                         , " : [user/system] = ["
                         , <self-children-user-time; ticks-to-seconds ; real-to-string(|2)>
@@ -231,9 +230,15 @@ strategies // COMPILER COMPONENTS
       ; pptbl := <xtc-find; ReadFromFile> pp-table
     ) 
   ; ast2box(|[pptbl])
-  //; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
     
   strc-abox2text = 
-    // comp-out(|"abox2text")
-    where(fout := <fopen>(<xtc-new-file>,"w"))
+    where(id
+      ; file := <xtc-new-file>
+      ; fout := <fopen>(file,"w")
+    )
     ; box2text-stream(|80, fout)
+    ; where(<fclose> fout)
+    ; !FILE(file)
+
+  //; comp(|"ast2abox", ["-p", <xtc-find> pp-table ])
+    // comp-out(|"abox2text")

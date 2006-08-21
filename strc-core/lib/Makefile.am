@@ -8,15 +8,15 @@ EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) libstrc.rtree
 CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree)
 
-strclib = \
-	strc.str \
-	$(wildcard stratego/strc/*.str) \
-	$(wildcard stratego/strc/front/*.str) \
-	$(wildcard stratego/strc/c/*.str) \
-	$(wildcard stratego/strc/lib/*.str) \
-	$(wildcard stratego/strc/match/*.str) \
-	$(wildcard stratego/strc/opt/*.str) \
-	$(wildcard stratego/strc/pack/*.str) \
+strclib =					\
+	strc.str				\
+	$(wildcard stratego/strc/*.str)		\
+	$(wildcard stratego/strc/front/*.str)	\
+	$(wildcard stratego/strc/c/*.str)	\
+	$(wildcard stratego/strc/lib/*.str)	\
+	$(wildcard stratego/strc/match/*.str)	\
+	$(wildcard stratego/strc/opt/*.str)	\
+	$(wildcard stratego/strc/pack/*.str)	\
 	$(wildcard stratego/strc/parse/*.str)
 
 libstrc_la_SOURCES  = libstrc.c 

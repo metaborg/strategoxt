@@ -16,7 +16,16 @@ strategies
   DeclareVarToConst =
     (?|[ x : srt ]| + ?Overlay|[ x() = t ]|)
     ; rules( 
-        VarToConst1 : Term|[ x ]| -> Term|[ x() ]| 
-        VarToConst1 : Term|[ x{t*} ]| -> Term|[ x(){t*} ]| 
-        VarToConst2 : PreTerm|[ x ]| -> PreTerm|[ x() ]|  
+        VarToConst1 : 
+          Term|[ x ]| -> Term|[ x() ]|         
+          where warn-for-nullary-constructor-as-var(|x)
+        VarToConst1 : 
+          Term|[ x{t*} ]| -> Term|[ x(){t*} ]| 
+          where warn-for-nullary-constructor-as-var(|x)
+        VarToConst2 : 
+          PreTerm|[ x ]| -> PreTerm|[ x() ]|   
+          where warn-for-nullary-constructor-as-var(|x)
       )
+ 
+  warn-for-nullary-constructor-as-var(|x) =
+    log(|Warning(), ["Nullary constructor ", x, " used without parentheses"])

@@ -19,7 +19,7 @@ strategies
 
   pack-stratego-trm(|args) = 
     where(id
-      ; incl := <get-config> "-I"
+      ; incl := <get-config <+ ![]> "-I"
       ; <set-config> ("-I", [])
       ; <parse-options(pack-stratego-options <+ input-options, system-usage, id)> 
           ["strc" | args]
@@ -176,7 +176,7 @@ strategies
     file -> (file, tree)
       where has-extension(|"str")
           ; pack-log-include
-          ; <pack-parse-stratego-trm> file => tree
+          ; <pack-parse-stratego> file => tree
 
   pack-include-from-dir-cached(|mod) :
     IncludeDir(dir) -> (file,<ReadFromFile> file)
@@ -197,7 +197,7 @@ strategies
     IncludeXTC() -> (file, tree)
       where <conc-strings; xtc-find-loc> (mod, ".str") => file
           ; pack-log-include-xtc
-          ; <pack-parse-stratego-trm> file => tree
+          ; <pack-parse-stratego> file => tree
 
   pack-log-include =
     ?file ; log(|Notice(),<conc-strings>("  including ",file))
@@ -222,16 +222,6 @@ strategies
 	<concat>[<get-config < !["--asfix"] + ![]> "--asfix", 
 		 ["--desugaring", <get-config <+ !"off"> "--desugaring"], ["-b"],
                  <pass-verbose>, <pass-keep>, <pack-pass-include-dirs>])>FILE(file)
-   ; read-from
-  <+ <fatal-error> ["parse error in ", <id>]
-
-  pack-parse-stratego-trm =
-     ?file
-   ; !FILE(file)
-   ; parse-stratego-trm(|<concat>[
-       <get-config < !["--asfix"] + ![]> "--asfix", 
-       ["--desugaring", <get-config <+ !"off"> "--desugaring"], ["-b"],
-       <pass-verbose>, <pass-keep>, <pack-pass-include-dirs>])
    ; read-from
   <+ <fatal-error> ["parse error in ", <id>]
 
