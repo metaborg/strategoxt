@@ -1,6 +1,7 @@
 module asfix-anno-comments
 imports
   libstratego-sglr
+  libstratego-lib
   AsFix
 
 strategies

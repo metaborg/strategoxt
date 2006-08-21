@@ -1,7 +1,8 @@
 module sglri
 imports
   libstratego-sglr
-  libxtclib
+  libstratego-xtc
+  libstratego-lib
   sglri-options
   implode-asfix
 

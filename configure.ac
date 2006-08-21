@@ -104,7 +104,7 @@ AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-r
 AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(c-tools,            --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-front,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} --enable-uninstalled-baseline)
 AB_CONFIG_PKG(asfix-tools,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(gpp,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(concrete-syntax,    --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})

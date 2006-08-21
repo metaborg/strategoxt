@@ -4,6 +4,7 @@
 module abox2text-tests
 imports
   libstratego-gpp
+  libstratego-lib
 
 strategies
 

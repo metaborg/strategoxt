@@ -1,6 +1,9 @@
 module ast2text
 imports
-  libstratego-gpp abox2text ast2abox
+  libstratego-lib
+  libstratego-gpp
+  abox2text
+  ast2abox
 
 strategies
 

@@ -8,6 +8,7 @@
 module implode-asfix
 imports 
   libstratego-sglr 
+  libstratego-lib
 
 strategies
 

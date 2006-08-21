@@ -20,6 +20,11 @@ AC_ARG_ENABLE([baseline],
   [xt_baseline="$enableval"],
   [xt_baseline="no"])
 
+AC_ARG_ENABLE([uninstalled-baseline],
+  [AS_HELP_STRING([--enable-uninstalled-baseline], [Enable an uninstalled baseline build @<:@no@:>@])],
+  [xt_uninstalled_baseline="$enableval"],
+  [xt_uninstalled_baseline="no"])
+
 AM_CONDITIONAL([XT_DIST_CHECK_SOURCES], [test "$xt_baseline" = "yes"])
 
 if test "$xt_baseline" = "yes"; then
@@ -43,14 +48,18 @@ if test "$xt_baseline" = "yes"; then
   RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
   SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
 else
-  STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
-  BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
-  PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table/pp-table.tbl'
-  STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
-  SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
-  PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
-  RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
-  SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
+  if test "$xt_uninstalled_baseline" = "yes"; then
+    XT_CHECK_SDF
+
+    STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
+    BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
+    PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table/pp-table.tbl'
+    STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
+    SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
+    PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
+    RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
+    SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
+  fi
 fi
 
 AC_SUBST([STRC_UNINSTALLED])

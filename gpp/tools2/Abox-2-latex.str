@@ -8,6 +8,7 @@
  */
 module Abox-2-latex
 imports
+  libstratego-lib
   libstratego-gpp
   Box
   Box-util

@@ -1,6 +1,6 @@
 module dr-test-utils
 imports
-  libstrategolib
+  libstratego-lib
   libstratego-sglr
   til/opt/til-propconst
   til/opt/til-dce

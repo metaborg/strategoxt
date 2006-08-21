@@ -1,5 +1,6 @@
 module ast2abox
 imports
+  libstratego-lib
   libstratego-gpp
   lib-pp-table-args
 

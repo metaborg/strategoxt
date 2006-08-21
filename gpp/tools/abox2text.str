@@ -1,5 +1,6 @@
 module abox2text
 imports
+  libstratego-lib
   libstratego-gpp
 
 strategies

@@ -5,6 +5,7 @@
  */
 module stratego-sglr-tests
 imports
+  libstratego-lib
   libstratego-sglr
   ExpId
   ExpInt
