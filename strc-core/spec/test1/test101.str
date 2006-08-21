@@ -1,6 +1,5 @@
-
 module test101
-imports list-cons
+imports collection/list/cons
 strategies
 
   main =

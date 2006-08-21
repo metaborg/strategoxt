@@ -52,11 +52,11 @@ libstratego-lib-c99.c libstratego-lib-c99.rtree : $(fullstrategolib:.str=.rtree)
 	rm libstratego-lib-c99.str
 
 libstratego-lib-posix.c libstratego-lib-posix.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i ./stratego-lib-posix.str -o libstratego-lib-posix.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i ./stratego-lib-posix.str -o libstratego-lib-posix.rtree
 	rm libstratego-lib-posix.str
 
 libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i ./stratego-lib-posix-xsi.str -o libstratego-lib-posix-xsi.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i ./stratego-lib-posix-xsi.str -o libstratego-lib-posix-xsi.rtree
 	rm libstratego-lib-posix-xsi.str
 
 fullstrategolib = \
