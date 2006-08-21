@@ -7,6 +7,7 @@
 module gen-sdf-mix
 imports
   Sdf2
+  libstratego-lib
   libstratego-xtc
   sdf/tool/xtc
   sdf/tool/options

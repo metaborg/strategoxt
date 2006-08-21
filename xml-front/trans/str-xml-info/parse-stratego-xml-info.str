@@ -1,5 +1,7 @@
 module parse-stratego-xml-info
-imports libstratego-xtc strategoxt-xtc-tools
+imports 
+  libstratego-lib
+  libstratego-xtc strategoxt-xtc-tools
 
 strategies
 

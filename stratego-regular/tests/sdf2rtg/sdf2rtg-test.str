@@ -1,5 +1,7 @@
 module sdf2rtg-test
-imports libstratego-xtc xtc-debug
+imports 
+  libstratego-lib
+  libstratego-xtc xtc-debug
 
 strategies 
 

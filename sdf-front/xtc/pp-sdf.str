@@ -1,5 +1,7 @@
 module pp-sdf
-imports libstratego-xtc sdf-xtc-tools
+imports 
+  libstratego-lib
+  libstratego-xtc sdf-xtc-tools
 
 strategies
   

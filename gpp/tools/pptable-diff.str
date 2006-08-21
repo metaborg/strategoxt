@@ -1,5 +1,6 @@
 module pptable-diff
 imports
+  libstratego-lib
   libstratego-xtc
   core-pp-table-diff
   pp-table-diff-options

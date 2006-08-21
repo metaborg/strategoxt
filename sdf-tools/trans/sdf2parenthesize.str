@@ -7,6 +7,7 @@
  */
 module sdf2parenthesize
 imports
+  libstratego-lib
   Stratego
   libstratego-xtc
   strategoxt-xtc-tools

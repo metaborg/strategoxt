@@ -1,5 +1,6 @@
 module ppgen
 imports
+  libstratego-lib
   libstratego-xtc
   sdf-2-pp-table
   sdf/tool/xtc

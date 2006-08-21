@@ -1,5 +1,7 @@
 module apply-tests
-imports libstratego-xtc match-test1 build-test1
+imports 
+  libstratego-lib
+  libstratego-xtc match-test1 build-test1
 
 strategies
 

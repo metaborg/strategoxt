@@ -1,5 +1,6 @@
 module asfix2abox
 imports
+  libstratego-lib
   libstratego-xtc lib-pp-table-args
 
 strategies

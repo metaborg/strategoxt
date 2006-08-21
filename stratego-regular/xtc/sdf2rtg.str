@@ -1,5 +1,7 @@
 module sdf2rtg
-imports libstratego-xtc regular-xtc-tools tool-doc sdf-options
+imports 
+  libstratego-lib
+  libstratego-xtc regular-xtc-tools tool-doc sdf-options
 
 strategies
 

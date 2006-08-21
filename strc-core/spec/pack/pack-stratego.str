@@ -9,4 +9,7 @@
  */
 
 module pack-stratego
-imports libstratego-xtc libstrc
+imports 
+  libstratego-lib
+  libstratego-xtc 
+  libstrc

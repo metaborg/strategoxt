@@ -6,6 +6,7 @@
  */
 module gen-renamed-sdf-module
 imports
+  libstratego-lib
   Sdf2
   libstratego-xtc
   sdf/tool/xtc

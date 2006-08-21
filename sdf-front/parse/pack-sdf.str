@@ -11,6 +11,7 @@
  */
 module pack-sdf
 imports
+  libstratego-lib
   pack-sdf-options
   libstratego-xtc
   strategoxt-xtc-tools

@@ -1,5 +1,6 @@
 module aterm2xml
 imports
+  libstratego-lib
   xml-front-options
   libstratego-xtc
 

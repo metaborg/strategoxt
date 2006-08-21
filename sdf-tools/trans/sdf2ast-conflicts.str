@@ -6,6 +6,7 @@
  */
 module sdf2ast-conflicts
 imports
+  libstratego-lib
   Stratego
   Sdf2
   libstratego-xtc

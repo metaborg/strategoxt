@@ -12,6 +12,7 @@
  */
 module stratego-warnings
 imports
+  libstratego-lib
   libstratego-xtc
   libstrc
 

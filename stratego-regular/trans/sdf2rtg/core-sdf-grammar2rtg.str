@@ -5,6 +5,7 @@
  */
 module core-sdf-grammar2rtg
 imports
+  libstratego-lib
   rtg
   Sdf2
   sdf-extra

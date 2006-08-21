@@ -1,5 +1,7 @@
 module xml-aterm-tests
-imports libstratego-xtc xml-info
+imports 
+  libstratego-lib
+  libstratego-xtc xml-info
 
 strategies
 

@@ -1,5 +1,7 @@
 module format-check-tests
-imports libstratego-xtc
+imports 
+  libstratego-lib
+  libstratego-xtc
 
 strategies 
 

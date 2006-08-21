@@ -5,7 +5,10 @@
  */
 
 module strc
-imports libstratego-xtc strc-options
+imports 
+  libstratego-lib
+  libstratego-xtc 
+  strc-options
 strategies
 
   strc = 

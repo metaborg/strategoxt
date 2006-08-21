@@ -1,5 +1,7 @@
 module sig2rtg
-imports libstratego-xtc sig2-lib regular-xtc-tools
+imports 
+  libstratego-lib
+  libstratego-xtc sig2-lib regular-xtc-tools
 
 strategies
   

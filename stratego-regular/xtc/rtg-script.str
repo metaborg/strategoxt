@@ -1,5 +1,6 @@
 module rtg-script
 imports
+  libstratego-lib
   libstratego-xtc
   regular-xtc-tools
   rtg

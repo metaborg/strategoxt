@@ -1,5 +1,7 @@
 module parenthesize-tests
-imports parenthesize-Exp libstratego-xtc strategoxt-xtc-tools
+imports 
+  libstratego-lib
+  parenthesize-Exp libstratego-xtc strategoxt-xtc-tools
 
 strategies
 

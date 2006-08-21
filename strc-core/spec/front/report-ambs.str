@@ -1,6 +1,10 @@
 module report-ambs
+
 imports 
-  libstratego-xtc libstrc
+  libstratego-lib
+  libstratego-xtc 
+  libstrc
+
 strategies
 
   report-ambs-io = 

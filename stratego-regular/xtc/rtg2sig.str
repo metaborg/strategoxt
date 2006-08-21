@@ -5,6 +5,7 @@
  */
 module rtg2sig
 imports
+  libstratego-lib
   libstratego-xtc
   regular-xtc-tools
   strategoxt-xtc-tools
