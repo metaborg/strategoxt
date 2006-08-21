@@ -16,7 +16,7 @@ STRINCLUDES =					\
 
 SCFLAGS = --main $*-io $(XTCFLAGS)
 
-EXTRA_DIST     = pack-stratego.str pack-stratego-options.str
+EXTRA_DIST     = pack-stratego.str
 CLEANFILES     = pack-stratego.dep $(wildcard *.dep) \
 		 pack-stratego.tst1 pack-stratego.tst2
 BOOTCLEANFILES = pack-stratego.c 
