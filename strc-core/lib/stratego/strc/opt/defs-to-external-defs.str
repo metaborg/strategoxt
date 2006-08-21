@@ -25,7 +25,8 @@ strategies
     where <inlinable> s
 
   inlinable = 
-    where(not(<get-config>"--no-inlining"))
+    false
+    // where(not(<get-config>"--no-inlining"))
 
   UnmangleSVar :
     SVar(x) -> SVar(<unmangle>x)

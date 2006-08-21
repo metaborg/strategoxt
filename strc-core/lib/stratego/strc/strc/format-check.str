@@ -15,6 +15,8 @@ strategies
         write-to
         ; fc(|format, n, phase)
       )
+    else
+      if-keep(write-to; save-as(!phase)|<inc>n)
     end
 
   tfc-c(|n, phase) =
@@ -23,6 +25,8 @@ strategies
         write-to
         ; fc-c(|n, phase)
       )
+    else
+      if-keep(write-to; save-as(!phase)|<inc>n)
     end
 
 strategies
