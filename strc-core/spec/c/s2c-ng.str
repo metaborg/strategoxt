@@ -2,7 +2,6 @@
  * Compilation of Stratego programs to C 
  */
 module s2c-ng
-
 imports 
   libstratego-lib
   libstrc

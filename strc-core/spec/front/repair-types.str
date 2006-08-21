@@ -1,5 +1,8 @@
 module repair-types
-imports libstrc
+imports
+  libstrc
+  libstratego-lib
+
 strategies
 
   repair-types-io =

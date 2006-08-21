@@ -1,5 +1,5 @@
 module bound-unbound-vars
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   bound-unbound-vars-io =

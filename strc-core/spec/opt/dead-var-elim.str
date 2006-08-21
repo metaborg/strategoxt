@@ -1,5 +1,5 @@
 module dead-var-elim
-imports libstrc
+imports libstrc libstratego-lib
 strategies
  
   dead-var-elim-io =

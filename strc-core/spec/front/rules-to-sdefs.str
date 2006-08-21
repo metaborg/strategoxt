@@ -3,7 +3,7 @@
  */
 
 module rules-to-sdefs
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   rules-to-sdefs-io = 

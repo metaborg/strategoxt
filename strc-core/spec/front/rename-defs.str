@@ -1,5 +1,5 @@
 module rename-defs
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   rename-defs-io =

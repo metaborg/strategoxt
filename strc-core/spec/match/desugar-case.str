@@ -1,5 +1,5 @@
 module desugar-case
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   desugar-case-io =

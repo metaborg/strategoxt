@@ -1,5 +1,5 @@
 module compile-match
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   compile-match-io = 

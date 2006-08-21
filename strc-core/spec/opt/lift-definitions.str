@@ -1,5 +1,5 @@
 module lift-definitions
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   lift-definitions-io =

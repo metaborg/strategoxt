@@ -1,5 +1,5 @@
 module inlining
-imports Stratego-Amb libstrc
+imports Stratego-Amb libstrc libstratego-lib
 
 /**
  * Inlining with Definition Environment

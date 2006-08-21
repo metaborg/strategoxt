@@ -2,7 +2,7 @@
 // extract needed definitions
 
 module extract-all
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   extract-all-io = 

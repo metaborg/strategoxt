@@ -1,5 +1,5 @@
 module canonicalize-ng
-imports libstrc
+imports libstrc libstratego-lib
 
 strategies
 

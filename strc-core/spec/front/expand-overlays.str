@@ -1,5 +1,5 @@
 module expand-overlays
-imports libstrc
+imports libstrc libstratego-lib
 strategies
   
   expand-overlays-io = 

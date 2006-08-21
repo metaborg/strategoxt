@@ -3,9 +3,8 @@
  * compiler. It is based on XTC, the transformation tool composition
  * model. 
  */
-
 module strc
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   strc-io = strc-strc

@@ -3,11 +3,8 @@
  *
  * @author Eelco Visser 1998 - 2004
  */
-
 module desugar
-
-imports libstrc
-
+imports libstrc libstratego-lib
 strategies
 
   desugar-io =

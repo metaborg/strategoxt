@@ -1,5 +1,5 @@
 module canonicalize-ng-test
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   canonicalize-ng-test-io = 

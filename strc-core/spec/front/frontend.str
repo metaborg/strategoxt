@@ -1,6 +1,5 @@
 module frontend
-imports libstrc 
-
+imports libstrc  libstratego-lib
 strategies
 
   frontend-io = 

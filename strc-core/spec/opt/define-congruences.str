@@ -1,5 +1,5 @@
 module define-congruences
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   define-congruences-io =

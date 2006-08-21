@@ -1,5 +1,5 @@
 module dead-def-elim
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   dead-def-elim-io = 

@@ -1,5 +1,5 @@
 module desugar-default-vardec
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   desugar-default-vardec-io = 

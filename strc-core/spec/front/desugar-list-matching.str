@@ -3,7 +3,7 @@
  */
 
 module desugar-list-matching
-imports Stratego-Sugar libstrc
+imports Stratego-Sugar libstrc libstratego-lib
 strategies
 
   desugar-list-matching-io = 

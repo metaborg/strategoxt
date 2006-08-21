@@ -4,7 +4,7 @@
  */
 
 module needed-defs
-imports libstrc
+imports libstrc libstratego-lib
 
 strategies
 

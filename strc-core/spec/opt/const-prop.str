@@ -1,5 +1,5 @@
 module const-prop
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   const-prop-io =

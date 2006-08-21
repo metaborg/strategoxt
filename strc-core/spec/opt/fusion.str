@@ -1,5 +1,5 @@
 module fusion
-imports libstrc
+imports libstrc libstratego-lib
 
 strategies
 

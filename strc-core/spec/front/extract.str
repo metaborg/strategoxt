@@ -1,9 +1,8 @@
 /**
  * extract: translate a specification to core Stratego and extract needed definitions
  */
-
 module extract
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   extract-io = 

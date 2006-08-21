@@ -1,5 +1,5 @@
 module simplify3
-imports libstrc
+imports libstrc libstratego-lib
 strategies
 
   simplify3-io =
