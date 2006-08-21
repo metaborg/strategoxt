@@ -237,6 +237,8 @@ strategies // COMPILER COMPONENTS
       ; fout := <fopen>(file,"w")
     )
     ; box2text-stream(|80, fout)
+    ; <fputs> ("\n", fout)
+
     ; where(<fclose> fout)
     ; !FILE(file)
 
