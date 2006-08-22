@@ -13,6 +13,7 @@ strategies
   ; collect-all-tests
   ; crush-tests
   ; collect-legacy-tests
+  ; occurrences-tests
   )
 
 signature
@@ -29,6 +30,32 @@ signature
     Assign : Exp * Exp -> Exp
     Plus   : Exp * Exp -> Exp
     Var    : String -> Exp
+
+strategies
+
+  occurrences-tests = id
+    ; apply-test(!"om occurences test 1"
+      , om-occurrences(?Var(_))
+      , !Plus(Var(Var(Var("x"))), Var("z"))
+      , !2
+      )
+    ; apply-test(!"om occurences test 2"
+      , om-occurrences(?Var(_))
+      , !Var("z")
+      , !1
+      )
+    ; apply-test(!"occurences test 1"
+      , occurrences(?Var(_))
+      , !Plus(Var(Var(Var("x"))), Var("z"))
+      , !4
+      )
+    ; apply-test(!"occurences test 2"
+      , occurrences(?Var(_))
+      , !Var("z")
+      , !1
+      )
+
+
 
 strategies
 

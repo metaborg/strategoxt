@@ -116,8 +116,8 @@ strategies
 strategies
 
   om-occurrences(s) = 
-    s; !1 <+ crush(!0, add, occurrences(s))
+    if s then !1 else crush(!0, add, om-occurrences(s)) end
 
-  occurrences(s) = 
-    split(s; !1 <+ !0, crush(!0, add, occurrences(s))); add
+  occurrences(s) =
+    <add> (<if s then !1 else !0 end>, <crush(!0, add, occurrences(s))>)
 
