@@ -45,7 +45,7 @@ rules // string & int
 rules // constructor applications
 
   UP-Cnst : 
-    f#([]) -> |[ ~lit:f ]|
+    f#([]) -> |[ H hs=0[~lit:f "()"] ]|
 
   UP-App(s) =
       where(<gt> (<term-size>, <get-max-term-size-config>))
