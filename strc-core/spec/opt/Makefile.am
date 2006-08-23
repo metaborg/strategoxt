@@ -34,10 +34,10 @@ check_PROGRAMS 	 = bound-unbound-vars-test canonicalize-ng-test
 #build-match-laws-test fusion-test
 
 #bound_unbound_vars_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
-#bound_unbound_vars_test_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
+bound_unbound_vars_test_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
 #build_match_laws_test_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
 #canonicalize_ng_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
-#canonicalize_ng_test_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
+canonicalize_ng_test_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
 #const_prop_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 #const_prop_test_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 #dead_def_elim_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
@@ -54,7 +54,7 @@ check_PROGRAMS 	 = bound-unbound-vars-test canonicalize-ng-test
 #simplify3_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 #worker_wrapper_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 #
-#nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
+nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
 #nodist_bound_unbound_vars_test_SOURCES = bound-unbound-vars-test.c
 #nodist_const_prop_test_SOURCES = const-prop-test.c
 #nodist_fusion_test_SOURCES = fusion-test.c
