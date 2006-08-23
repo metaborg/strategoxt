@@ -15,7 +15,9 @@ SCFLAGS  	=  --main $*-io			\
 # 		--keep 10
 
 
-#libexec_PROGRAMS =				\
+libexec_PROGRAMS =				\
+	report-ambs				
+
 #	repair-types				\
 #	pre-desugar				\
 #        stratego-ensugar			\
@@ -37,9 +39,8 @@ SCFLAGS  	=  --main $*-io			\
 #	extract					\
 #	extract-all				\
 #	lift-dynamic-rules			\
-#	report-ambs				\
 #	frontend
-#
+
 LIB_STRC = -L$(top_srcdir)/lib -lstrc
 #
 #repair_types_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
@@ -63,7 +64,7 @@ LIB_STRC = -L$(top_srcdir)/lib -lstrc
 #extract_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
 #extract_all_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 #lift_dynamic_rules_LDADD 	= $(LIB_STRC) $(SSL_LIBS)                      
-#report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 #frontend_LDADD 			= $(LIB_STRC) $(SSL_LIBS)
 
 
