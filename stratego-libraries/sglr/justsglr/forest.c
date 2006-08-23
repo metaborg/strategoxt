@@ -1580,7 +1580,13 @@ tree SG_FilterTree(parse_table *pt, tree t)
    return newT; 
 }
 
-
+static ATbool SG_MatchProdOnTopSort(ATerm prod, char** prodsort) {
+  return
+    ATmatch(prod, "prod([cf(opt(layout)),cf(sort(<str>)),cf(opt(layout))], sort(\"<START>\"),no-attrs)", prodsort)
+    || ATmatch(prod, "prod([cf(sort(<str>))], sort(\"<START>\"),no-attrs)", prodsort)
+    || ATmatch(prod, "prod([lex(sort(<str>))], sort(\"<START>\"),no-attrs)", prodsort)
+    || ATmatch(prod, "prod([sort(<str>)], sort(\"<START>\"),no-attrs)", prodsort);
+}
 
 tree SG_SelectOnTopSort(parse_table *pt, tree t, const char *sort)
 {
@@ -1604,9 +1610,7 @@ tree SG_SelectOnTopSort(parse_table *pt, tree t, const char *sort)
       amb = ATgetFirst(allambs);
       l = SG_GetApplProdLabel((tree) amb);
       prod = (ATerm) SG_LookupProduction(pt, l);
-      if (ATmatch(prod, 
-                  "prod([cf(opt(layout)),cf(sort(<str>)),cf(opt(layout))],"
-                  "sort(\"<START>\"),no-attrs)", &prodsort)) {
+      if (SG_MatchProdOnTopSort(prod, &prodsort)) {
         if (!strcmp(prodsort, sort)) {
           newambs = ATinsert(newambs, amb);
         }
@@ -1628,10 +1632,8 @@ tree SG_SelectOnTopSort(parse_table *pt, tree t, const char *sort)
  */
     l = SG_GetApplProdLabel((tree) t);
     prod = (ATerm) SG_LookupProduction(pt, l);
-    if (ATmatch(prod, 
-                "prod([cf(opt(layout)),cf(sort(<str>)),cf(opt(layout))],"
-                "sort(\"<START>\"),no-attrs)", &prodsort)) {
-      if (!strcmp(prodsort, sort)) {
+    if(SG_MatchProdOnTopSort(prod, &prodsort)) {
+      if(!strcmp(prodsort, sort)) {
         return t;
       }
     }

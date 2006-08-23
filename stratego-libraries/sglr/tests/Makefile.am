@@ -8,6 +8,7 @@ TESTS = $(check_PROGRAMS)
 check_DATA = \
   ExpId.tbl ExpId.str \
   ExpInt.tbl ExpInt.str \
+  KernelStartSymbol.tbl KernelStartSymbol.str \
   ExpIntAmb.tbl \
   ConcreteSyntax.tbl ConcreteSyntax.str \
   Concrete.tbl \

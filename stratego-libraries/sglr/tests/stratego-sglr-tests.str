@@ -11,6 +11,7 @@ imports
   ExpInt
   ConcreteSyntax
   error-support
+  KernelStartSymbol
 
 strategies
 
@@ -19,6 +20,7 @@ strategies
       open-close-tests
     ; simple-parse-tests
     ; advanced-parse-tests
+    ; kernel-start-symbol
     ; filter-tests
     ; config-tests
     ; error-reporting-tests
@@ -182,6 +184,53 @@ strategies
            )
         )
       }
+
+  kernel-start-symbol =
+      where(
+        <ReadFromFile> "KernelStartSymbol.tbl"; open-parse-table => tbl
+      )
+
+    ; apply-test(!"Parse a kernel start symbol"
+      , parse-string(|tbl)
+      , !"   " // 3 spaces
+      , !InlineHTML([32,32,32])
+      )
+    ; apply-test(!"Parse a kernel start symbol"
+      , parse-string(|tbl, "InlineHTML")
+      , !"   " // 3 spaces
+      , !InlineHTML([32,32,32])
+      )
+
+    ; apply-test(!"Parse a kernel start symbol"
+      , parse-string(|tbl, "InlineHTML")
+      , !"  \n "
+      , !InlineHTML([32,32,10,32])
+      )
+
+    ; apply-test(!"Parse a kernel start symbol"
+      , parse-string(|tbl, "Word")
+      , !"abc"
+      , !Word([97,98,99])
+      )
+
+    ; apply-and-check(!"Parse a kernel start symbol"
+      , parse-string(|tbl)
+      , !"abc"
+      , ?amb(<id>)
+        ; ?[_, _]
+        ; fetch(?Word([97,98,99]))
+        ; fetch(?InlineHTML([97,98,99]))
+      )
+
+    ; apply-test(!"Parse a kernel start symbol"
+      , parse-string(|tbl, "InlineHTML")
+      , !"abc"
+      , !InlineHTML([97,98,99])
+      )
+
+    ; where(
+        <close-parse-table> tbl
+      )
 
   filter-tests = id
 
