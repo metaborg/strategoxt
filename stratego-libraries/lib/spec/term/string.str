@@ -526,21 +526,21 @@ strategies
 strategies 
 
  /**
-  * Succeeds if all the characters of this string are lowercase
+  * Converts all characters of this string to lower case
   *
   * @type  String -> String
   */
   lower-case = string-as-chars(lower-case-chars)
 
  /**
-  * Succeeds if all the characters of this string are uppercase
+  * Converts all characters of this string to upper case
   *
   * @inc upper-case-test
   */
   upper-case = string-as-chars(upper-case-chars)
 
   /**
-   * Convert a list of characters to lower case.
+   * Converts a list of characters to lower case.
    *
    * Example: <explode-string ; lower-case-char ; implode-string> "STRATEGO" => "stratego"
    *
@@ -549,7 +549,7 @@ strategies
   lower-case-chars = map(to-lower)
 
   /**
-   * Convert a list of characters to upper case.
+   * Converts a list of characters to upper case.
    *
    * Example: <explode-string ; upper-case-chars ; implode-string> "stratego" => "STRATEGO"
    *
