@@ -15,10 +15,10 @@ LIB_STRC = -L$(top_srcdir)/lib -lstrc
 
 LDADD           += $(SSL_LIBS)
 
-compile_match_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
-desugar_case_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
+#compile_match_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
+#desugar_case_LDADD 	= $(LIB_STRC) $(SSL_LIBS)
 
-libexec_PROGRAMS = compile-match desugar-case 
+#libexec_PROGRAMS = compile-match desugar-case 
 #check_PROGRAMS 	 = matrix-test
 
 CLEANFILES 	 = *.dep $(TESTS) 

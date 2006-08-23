@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
-libexec_PROGRAMS = s2c-ng escaping-variables
+#libexec_PROGRAMS = s2c-ng escaping-variables
 
 check_PROGRAMS 	 = C-simplify-test escaping-variables-test
 
@@ -31,9 +31,9 @@ LIB_STRC 	 = -L$(top_srcdir)/lib -lstrc
 
 LDADD           += $(SSL_LIBS)
 
-s2c_ng_LDADD	 	= $(LIB_STRC) $(SSL_LIBS)
+#s2c_ng_LDADD	 	= $(LIB_STRC) $(SSL_LIBS)
 C_simplify_test_LDADD	= $(LIB_STRC) $(SSL_LIBS)
-escaping_variables_LDADD = $(LIB_STRC) $(SSL_LIBS)
+#escaping_variables_LDADD = $(LIB_STRC) $(SSL_LIBS)
 escaping_variables_test_LDADD = $(LIB_STRC) $(SSL_LIBS)	 	 
 
 TESTS = C-simplify-test escaping-variables-test

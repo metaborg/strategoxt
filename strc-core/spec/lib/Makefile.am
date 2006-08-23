@@ -11,9 +11,9 @@ SCFLAGS		 = -I $(srcdir)/../../../stratego-front/syn \
 
 LIB_STRC = -L$(top_srcdir)/lib -lstrc
 
-rename_vars_LDADD           = $(LIB_STRC) $(SSL_LIBS)
+#rename_vars_LDADD           = $(LIB_STRC) $(SSL_LIBS)
 
-libexec_PROGRAMS = rename-vars
+#libexec_PROGRAMS = rename-vars
 
 # check_PROGRAMS 	 = stratlib-test
 # nodist_stratlib_test_SOURCES = stratlib-test.c
