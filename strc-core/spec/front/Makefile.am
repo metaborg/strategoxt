@@ -15,8 +15,7 @@ SCFLAGS  	=  --main $*-io			\
 # 		--keep 10
 
 
-libexec_PROGRAMS =				\
-	report-ambs				
+libexec_PROGRAMS = report-ambs stratego-ensugar
 
 #	repair-types				\
 #	pre-desugar				\
