@@ -559,12 +559,12 @@ AC_DEFUN([XT_TERM_DEFINE],
 [
   AC_REQUIRE([XT_SVN_REVISION])
 
-  AC_DEFINE([PACKAGE_NAME_TERM()],     [ATmakeString("@PACKAGE_NAME@")])
-  AC_DEFINE([PACKAGE_TARNAME_TERM()],  [ATmakeString("@PACKAGE_TARNAME@")])
-  AC_DEFINE([PACKAGE_VERSION_TERM()],  [ATmakeString("@PACKAGE_VERSION@")])
-  AC_DEFINE([VERSION_TERM()],          [ATmakeString("@VERSION@")])
-  AC_DEFINE([PACKAGE_BUGREPORT_TERM()],[ATmakeString("@PACKAGE_BUGREPORT@")])
-  AC_DEFINE([SVN_REVISION_TERM()],     [ATmakeString("@SVN_REVISION@")])
+  AC_DEFINE_UNQUOTED([PACKAGE_NAME_TERM()],     [((ATerm) ATmakeString("${PACKAGE_NAME}"))], [ATerm package name])
+  AC_DEFINE_UNQUOTED([PACKAGE_TARNAME_TERM()],  [((ATerm) ATmakeString("${PACKAGE_TARNAME}"))], [ATerm package tarname])
+  AC_DEFINE_UNQUOTED([PACKAGE_VERSION_TERM()],  [((ATerm) ATmakeString("${PACKAGE_VERSION}"))], [ATerm package version])
+  AC_DEFINE_UNQUOTED([VERSION_TERM()],          [((ATerm) ATmakeString("${VERSION}"))], [ATerm version])
+  AC_DEFINE_UNQUOTED([PACKAGE_BUGREPORT_TERM()],[((ATerm) ATmakeString("${PACKAGE_BUGREPORT}"))], [ATerm bugreport email address])
+  AC_DEFINE_UNQUOTED([SVN_REVISION_TERM()],     [((ATerm) ATmakeString("${SVN_REVISION}"))], [ATerm SVN revision])
 ])
 
 ############ TEST PACKAGES ########################################################
