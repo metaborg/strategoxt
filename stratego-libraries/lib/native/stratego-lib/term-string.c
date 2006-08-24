@@ -42,62 +42,33 @@ char newname_string[256] = "";
 ATerm SSL_newname(ATerm prefix)
 {
   int newname_counter;
-  char* prefix_string;
   char* prefix_base;
-  char* last_delim;
   ATerm count_key;
   ATerm last_value;
 
   if(SSL_newname_table == NULL)
     SSL_newname_table = ATtableCreate(15, 80);
 
-  prefix_string = ATgetName(ATgetSymbol(prefix));
-
-  /* Now try to trim off a trailing counter part, if applicable */
-  last_delim = strrchr(prefix_string, '_');
-
-  if (last_delim != NULL) {
-    int n = last_delim - prefix_string;
-     /* Check all chars after last '_' */
-    while (1) {
-      last_delim++;
-      if (*last_delim == '\0') {
-        /* All trailing chars checked, now use trimmed prefix as base */
-        prefix_base = (char*)malloc((n + 1) * sizeof(char));
-        strncpy(prefix_base, prefix_string, n);
-	prefix_base[n] = 0;
-        break;
-      } else if(!isdigit(*last_delim)) {
-        /* Invalid char, do not trim at all */
-        prefix_base = prefix_string;
-        break;
-      }
-    }
-  } else {
-    prefix_base = prefix_string;
-  }
-  /* The proper base prefix is now known for looking up counter. */
-  count_key = (ATerm) ATmakeString(prefix_base);
-  last_value = ATtableGet(SSL_newname_table, count_key);
+  prefix_base = ATgetName(ATgetSymbol(prefix));
+  last_value = ATtableGet(SSL_newname_table, prefix);
 
   if(last_value != NULL) {
-    newname_counter = ATgetInt((ATermInt)last_value);
+    newname_counter = ATgetInt((ATermInt) last_value);
   } else {
     newname_counter = -1;
   }
 
   newname_counter++;
-  sprintf(newname_string, "%s_%d", prefix_base, newname_counter);
+  sprintf(newname_string, "%s%d", prefix_base, newname_counter);
 
   while(AT_findSymbol(newname_string, 0, ATtrue)) {
     newname_counter++;
-    sprintf(newname_string, "%s_%d", prefix_base, newname_counter);
+    sprintf(newname_string, "%s%d", prefix_base, newname_counter);
   }
 
-  ATtablePut(SSL_newname_table, count_key, (ATerm)ATmakeInt(newname_counter));
+  ATtablePut(SSL_newname_table, prefix, (ATerm)ATmakeInt(newname_counter));
   return((ATerm) ATmakeAppl0(ATmakeSymbol(newname_string, 0, ATtrue)));
 }
-
 
 /* Strings */
 

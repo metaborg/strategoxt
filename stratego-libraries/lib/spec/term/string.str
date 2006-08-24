@@ -28,23 +28,24 @@ strategies
 
   /**
    * Generates a unique new string with user-defined prefix
-   * the form 's_d', where c is a string and d is a positive integer.
+   * the form 'sd', where s is a string and d is a positive integer.
    * The produced string is *always* unique across a program run.
    *
    * The prefix comes in front of an increasing number, which is
    * separately maintained and started at 0 for each prefix.
-   * Any trailing digits up to the rightmost '_' are trimmed from the
-   * prefix (allows feeding a previous newname result into newname again.)
    *
    * Examples (results are shown in comment)
-   *    <newname> "a"        // produces "a_0"
-   *  ; <newname> "b"        // produces "b_0"
-   *  ; newname              // produces "b_1"
-   *  ; <newname> "b_2"      // produces "b_3"
-   *  ; <newname> "b_1729"   // produces "b_4"
-   *  ; <newname> "b_a"      // produces "b_a_0"
-   *  ; <newname> "a_"       // produces "a_2"
-   *  ; <newname> "a_1"      // produces "a_3"
+   *     <newname; debug> "a"        // produces "a0"
+   *   ; <newname; debug> "a"        // produces "a1"
+   *   ; <newname; debug> "a"        // produces "a2"
+   *   ; <newname; debug> "b"        // produces "b0"
+   *   ; <newname; debug> "b"        // produces "b1"
+   *   ; <newname; debug> "b_2"      // produces "b_20"
+   *   ; <newname; debug> "b_2"      // produces "b_21"
+   *   ; <newname; debug> "b_a"      // produces "b_a0"
+   *   ; <newname; debug> "b_a"      // produces "b_a1"
+   *   ; <newname; debug> "a_"       // produces "a_0"
+   *   ; <newname; debug> "a_1"      // produces "a_10"
    */
   newname = ?prefix; prim("SSL_newname", prefix)
 
