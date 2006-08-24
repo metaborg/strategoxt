@@ -1,0 +1,13 @@
+/**
+ * Stratego RTG Library
+ */
+module stratego-rtg
+imports
+  stratego/rtg/format-check
+  stratego/rtg/normalize
+  stratego/rtg/parse
+  stratego/rtg/reduce
+  stratego/rtg/signature
+  stratego/rtg/util
+
+

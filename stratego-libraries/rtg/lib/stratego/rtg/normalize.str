@@ -1,0 +1,10 @@
+module stratego/rtg/normalize
+imports
+  stratego/rtg/reduce
+  stratego/rtg/util
+
+strategies
+
+  rtg-normalize =
+    rtg-reduce
+    ; rtg-group-productions

@@ -94,6 +94,7 @@ AC_CONFIG_FILES([
   stratego-lib-uninstalled.pc
   stratego-sglr-uninstalled.pc
   stratego-gpp-uninstalled.pc
+  stratego-rtg-uninstalled.pc
   xtc-uninstalled.pc
 ])
 AC_OUTPUT

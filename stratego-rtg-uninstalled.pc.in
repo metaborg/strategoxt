@@ -1,0 +1,7 @@
+prefix=@prefix@
+
+Name: Stratego RTG Library
+Description: Stratego Regular Tree Grammar Library.
+Version: @PACKAGE_VERSION@
+Libs: @abs_top_builddir@/stratego-libraries/rtg/lib/libstratego-rtg.la
+Requires: aterm stratego-runtime stratego-lib stratego-sglr

@@ -42,6 +42,7 @@ if test "$xt_baseline" = "yes"; then
   STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
   BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
   PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/pp-table.tbl'
+  RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
   STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
   SGLRI='$(STRATEGOXT)/bin/sglri'
   PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
@@ -54,6 +55,7 @@ else
     STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
     BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
     PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table/pp-table.tbl'
+    RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
     STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
     SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
     PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
@@ -69,6 +71,7 @@ AC_SUBST([RTG2SIG])
 AC_SUBST([SDF2RTG])
 AC_SUBST([BOX_UNINSTALLED_STRCFLAGS])
 AC_SUBST([PPTABLETBL_UNINSTALLED])
+AC_SUBST([RTGTBL_UNINSTALLED])
 AC_SUBST([STRATEGOTBL_UNINSTALLED])
 
 AC_CHECK_HEADERS([stdlib.h])
@@ -103,6 +106,9 @@ AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/sglr/lib/libstratego
 AC_SUBST([STRATEGO_GPP_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/gpp/lib'])
 AC_SUBST([STRATEGO_GPP_UNINSTALLED_LIBS],['$(top_builddir)/gpp/lib/libstratego-gpp.la'])
 
+AC_SUBST([STRATEGO_RTG_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/rtg/lib'])
+AC_SUBST([STRATEGO_RTG_UNINSTALLED_LIBS],['$(top_builddir)/rtg/lib/libstratego-rtg.la'])
+
 # Combinations of all libraries that are needed.
 AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
 AC_SUBST([STRATEGO_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)'])
@@ -123,6 +129,11 @@ AC_CONFIG_FILES([
   gpp/Makefile
   gpp/lib/Makefile
   gpp/tests/Makefile
+
+  stratego-rtg.pc
+  rtg/Makefile
+  rtg/lib/Makefile
+  rtg/tests/Makefile
 
   xtc/Makefile
   xtc/lib/Makefile

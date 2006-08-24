@@ -1,0 +1,150 @@
+module format-check-tests
+imports 
+  libstratego-lib
+  libstratego-rtg
+
+strategies 
+
+  main-format-check-tests = 
+    option-wrap(general-options,
+      test-suite(!"format-check",
+        int-list-tests
+      ; expression-tests(simple-inj)
+      ; expression-tests(quoted-exp)
+      ; string-star-tests
+      ; string-plus-tests
+      ; string-even-tests
+      ; string-opt-tests
+      ; tuple-stuff-tests
+      ; argument-tests
+      )
+    )
+
+  int-list-tests = 
+      apply-test(!"test: Simple int list", fc-int-list, ![1, 2, 3])
+    ; apply-test(!"test: Empty list",      fc-int-list, ![])
+    ; apply-test(!"test: Conc list 1",       fc-int-list, !"Conc"#([[], []]))
+    ; apply-test(!"test: Conc list 2",       fc-int-list, !"Conc"#([[1], [2]]))
+    ; apply-and-fail(!"test: Not an int-list a", fc-int-list, !["foo"])
+    ; apply-and-fail(!"test: Not an int-list b", fc-int-list, ![1, 2, "foo"])
+    ; apply-and-fail(!"test: Not an int-list c", fc-int-list, !["foo", 3, 4])
+    ; apply-and-fail(!"test: Not an int-list d", fc-int-list, !1)
+    ; apply-and-fail(!"test: Not an int-list e", fc-int-list, !"foo")
+    ; apply-and-fail(!"test: Not an int-list f", fc-int-list, !"Conc"#(["foo", []]))
+    ; apply-and-fail(!"test: Not an int-list g", fc-int-list, !"Conc"#([[], "foo"]))
+
+  argument-tests =
+          apply-test(!"test: Specify a start symbol a", simple-inj(|"Id"), !"Bla")
+    ; apply-and-fail(!"test: Specify a start symbol b", simple-inj(|"Id"), !1)
+    ;     apply-test(!"test: Specify a start symbol c", simple-inj(|"IntConst"), !1)
+    ;     apply-test(!"test: Specify a start symbol d", simple-inj(|"Exp"), !Plus(IntConst(2), IntConst(4)))
+    ; apply-and-fail(!"test: Specify a start symbol e", tuple-stuff(|"Int2"), !1)
+    ;     apply-test(!"test: Specify a start symbol f", tuple-stuff(|"Int2"), !(1, 2))
+
+  expression-tests(s) = 
+      apply-test(!"test: Simple injection 1", s, !"Bla")
+    ; apply-test(!"test: Simple injection 2", s, !3)
+    ; apply-test(!"test: Simple production ", s, !IntConst(3))
+    ; apply-test(!"test: Simple plus expression 1", s, !Plus(IntConst(2), IntConst(4)))
+    ; apply-test(!"test: Simple plus expression 2", s, !Plus(IntConst(2), Var("a")))
+
+    ; apply-and-fail(!"test: Incorrect IntConst", s, !IntConst("2"))
+    ; apply-and-fail(!"test: Incorrect Var", s, !Var(2))
+    ; apply-and-fail(!"test: Incorrect plus expression 1", s, !Plus(2, Var("a")))
+    ; apply-and-fail(!"test: Incorrect plus expression 2", s, !Plus(IntConst("2"), Var("a")))
+
+  tuple-stuff-tests =
+      apply-test(!"test: Tuple1, not head or last", tuple-stuff, !Tuple1(1, (2, 3), 4))
+    ; apply-test(!"test: Tuple2, head", tuple-stuff, !Tuple2((1, 2), 3))
+
+    ; apply-and-fail(! "Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 4))
+    ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 3, 4))
+    ; apply-and-fail(!"Incorrect Tuple2", tuple-stuff, !Tuple2(1, (2, 3)))
+
+    ; apply-test(!"Tuple3, last", tuple-stuff, !Tuple3(1, 2, (3, 4)))
+    ; apply-test(!"Tuple3, last", tuple-stuff, !Tuple3(1, 2, (3, 4, 5)))
+
+    ; apply-and-fail(!"Incorrect Tuple3", tuple-stuff, !Tuple3(1, 2, (3, 4, 5, 6)))
+    ; apply-and-fail(!"Incorrect Tuple3", tuple-stuff, !Tuple3(1, 2, 3, 5))
+
+   string-star-tests =
+      apply-test(!"Empty list", StringStar, ![])
+    ; apply-test(!"List with some elements", StringStar, !["Hello", "World"])
+    ; apply-and-fail(!"List with element of illegal type", StringStar, ![1])
+    ; apply-and-fail(!"List with element of illegal type", StringStar, !["Hello", 1, "World"])
+
+   string-plus-tests =
+      apply-and-fail(!"Empty list", StringPlus, ![])
+    ; apply-test(!"List with some elements", StringPlus, !["Hello"])
+    ; apply-test(!"List with some elements", StringPlus, !["Hello", "World"])
+    ; apply-and-fail(!"List with element of illegal type", StringPlus, ![1])
+    ; apply-and-fail(!"List with element of illegal type", StringPlus, !["Hello", 1, "World"])
+
+   string-even-tests =
+          apply-test(!"Empty list", StringEven, ![])
+    ; apply-and-fail(!"List with some elements", StringEven, !["Hello"])
+    ;     apply-test(!"List with some elements", StringEven, !["Hello", "World"])
+    ; apply-and-fail(!"List with element of illegal type", StringEven, ![1, 1])
+    ; apply-and-fail(!"List with element of illegal type", StringEven, !["Hello", 1, "World"])
+
+   string-opt-tests =
+      apply-test(!"Some String", StringOpt, !Some("String"))
+    ; apply-test(!"No String", StringOpt, !None())
+    ; apply-and-fail(!"Plain string", StringOpt, !"foo")
+    ; apply-and-fail(!"Some no-string", StringOpt, !Some(1))
+
+strategies
+
+  simple-inj =
+     test-format-check(|"SimpleInj.rtg")
+
+  simple-inj(|startnt) =
+     test-format-check(|"SimpleInj.rtg", startnt)
+
+  tuple-stuff =
+     test-format-check(|"TupleStuff.rtg")
+
+  tuple-stuff(|startnt) =
+     test-format-check(|"TupleStuff.rtg", startnt)
+
+  quoted-exp =
+     test-format-check(|"QuotedExp.rtg")
+
+  StringStar =
+     test-format-check(|"StringStar.rtg")
+
+  StringPlus =
+     test-format-check(|"StringPlus.rtg")
+
+  StringEven =
+     test-format-check(|"StringEven.rtg")
+
+  StringOpt =
+     test-format-check(|"StringOpt.rtg")
+
+  fc-int-list =
+     test-format-check(|"int-list.rtg")
+
+strategies
+
+  test-format-check(|rtg) =
+    where(rtgnf := <parse-rtg-file; rtg-normalize> rtg)
+    ; rtg-format-check(|rtgnf)
+
+  test-format-check(|rtg, startnt) =
+    where(rtgnf := <parse-rtg-file; rtg-normalize> rtg)
+    ; rtg-format-check(|rtgnf, [Nonterm(startnt)])
+  
+signature
+  constructors
+    Var      : Id -> Var
+    IntConst : IntConst -> Exp
+    Plus     : Exp * Exp -> Exp
+    Call     : Var * List(Exp) -> Exp
+
+    Tuple1   : Int * Tuple * Int -> Tuple
+    Tuple1   : Int * Int * Int * Int -> Tuple
+    Tuple2   : Tuple * Int -> Tuple
+    Tuple3   : Int * Int * Tuple -> Tuple
+    Tuple3   : Int * Int * Int * Int -> Tuple
+
