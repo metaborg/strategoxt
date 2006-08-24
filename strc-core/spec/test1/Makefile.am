@@ -1,8 +1,6 @@
 SINCLUDES = \
   -I $(top_srcdir)/../stratego-libraries/lib/spec \
   -I $(prefix)/share/stratego-lib \
-  -I $(prefix)/share/srts \
-  -I $(top_srcdir)/../asfix-tools/src/implode \
   -I $(top_srcdir)/lib
 
 AM_LDFLAGS = -L$(prefix)/lib -L$(ATERM)/lib $(STR_LDFLAGS)
