@@ -27,7 +27,7 @@ classictests =									 \
 		  test75 test76 test77 test78 test79 test80 test81 test82 test83 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
-		  test97 test98	test99 test100 test101				 \
+		  test97 test98	test99 test100 test101                           \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03			 \
@@ -52,7 +52,7 @@ ngtests =									 \
 		  test75 test76 test77 test78 test79 test80 test81 test82 test83 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
-		  test97 test98	test99 test100 test101				 \
+		  test97 test98	test99 test100 test101 test102 test 103          \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03			 \
@@ -137,6 +137,8 @@ test96_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test99_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 test100_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test102_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test103_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 test_chain01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test_chain02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -256,6 +258,9 @@ nodist_test97_SOURCES = test97.c
 nodist_test98_SOURCES = test98.c
 nodist_test99_SOURCES = test99.c
 nodist_test100_SOURCES = test100.c
+nodist_test101_SOURCES = test101.c
+nodist_test102_SOURCES = test102.c
+nodist_test103_SOURCES = test103.c
 
 nodist_test_chain01_SOURCES = test-chain01.c
 nodist_test_chain02_SOURCES = test-chain02.c
