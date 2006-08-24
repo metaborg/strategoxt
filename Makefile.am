@@ -12,7 +12,8 @@ EXTRA_DIST   = \
   stratego-runtime-uninstalled.pc.in \
   stratego-lib-uninstalled.pc.in \
   stratego-sglr-uninstalled.pc.in \
-  stratego-gpp-uninstalled.pc.in
+  stratego-gpp-uninstalled.pc.in \
+  stratego-rtg-uninstalled.pc.in
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = strategoxt.pc
