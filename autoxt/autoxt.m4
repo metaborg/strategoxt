@@ -245,12 +245,16 @@ AC_DEFUN([XT_CHECK_XTC],
     fi
   fi
 
+  AC_ARG_ENABLE([xtc],
+    [AS_HELP_STRING([--enable-xtc], [Enable XTC registration @<:@default=yes@:>@])],
+    [xt_xtc_register="$enableval"],
+    [xt_xtc_register="yes"])
+
   if test "${xt_xtc_register:+set}" = set; then
     AM_CONDITIONAL([XT_XTC_REGISTER], [test "$xt_xtc_register" = "yes"])
   else
     AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "yes"])
   fi
-
 ])
 
 m4_pattern_allow([^XT_XTC_REGISTER(_TRUE|_FALSE)?$])
@@ -261,7 +265,6 @@ AC_DEFUN([XT_DISABLE_XTC_REGISTER],
 [
   xt_xtc_register="no"
   AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "no"])
-
 ])
 
 # XT_ENABLE_XTC_REGISTER
@@ -289,6 +292,8 @@ AC_DEFUN([XT_WITH_XTC_ARGS],
     [[\\/]]* ) ;;
     *) BUILD_REPOSITORY=`pwd`/$BUILD_REPOSITORY ;;
   esac
+
+
 ])
 
 # XT_CHECK_STRATEGOXT
