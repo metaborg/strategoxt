@@ -20,7 +20,7 @@ strategies
     ; LiftDynamicRules									 // semi-local
     ; stratego-desugar									 // local
     ; raise-annotations				; tfc2(|"Stratego-Sugar-3", "fe-ra2")	 // local
-    ; spec-use-def									 // local analysis (earlier)				
+    ; spec-use-def									 // local analysis (earlier)
     ; CheckConstructors				; tfc4(|"Stratego-Sugar-3", "fe-cc")	 // global analysis (earlier)	
     ; ExpandOverlays				; tfc3(|"Stratego-Sugar-3", "fe-eo")     // global		
     ; rules-to-sdefs				; tfc3(|"Stratego-Sugar-3", "fe-rts")    // local		

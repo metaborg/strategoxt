@@ -1,0 +1,89 @@
+module model
+
+imports Stratego-Sugar
+
+signature
+  constructors
+    Definitions         : Label
+    ExternalDefinitions : Label
+    LocalDefinitions    : Label
+
+strategies
+
+  m-rm-def = ?sig
+    ; rules( ModDefinition :- sig )
+
+  m-add-def = 
+    m-add-def(|<m-def-signature>, <id>)
+
+  m-add-def(|sig, def) =
+    rules( 
+      ModDefinition :+ sig -> def
+      ModDefinition :+ Definitions() -> sig
+    );
+    if <is-external> def then
+      rules( ModDefinition :+ ExternalDefinitions() -> sig )
+    else
+      rules( ModDefinition :+ LocalDefinitions() -> sig )
+    end
+
+  m-get-def(|f, i, j) =
+    <ModDefinition> (f, i, j)
+
+  m-add-constructor(|c, i, cdec) =
+    rules( ModConstructor :+ (c, i) -> cdec )
+
+  m-get-constructor(|c, i) =
+    <ModConstructor> (c, i)
+
+  m-transform-local-defs(s) =
+    <bagof-ModDefinition> LocalDefinitions
+    ; map(m-transform-local-def(s))
+
+  m-transform-local-def(s) =
+    where(?sig
+    ; bagof-ModDefinition
+    ; where(<m-rm-def> sig)
+    ; s
+    ; map(m-add-def)
+    ) 
+
+strategies
+
+  model-to-spec =
+    !Specification(
+       [Signature([Constructors(<bagof-ModConstructor; map-concat>)]),
+        Overlays([]),
+        Stratgies(<bagof-ModDefinition; map-concat> Definitions())]
+     )
+     
+  to-model =
+    Specification(map(to-model))
+    <+ Signature(map(to-model))
+    <+ Sorts(map(to-model))
+    <+ Constructors(map(to-model))
+    <+ Overlays(map(to-model))
+    <+ Rules(map(to-model))
+    <+ Strategies(map(to-model))
+    <+ sort-to-model
+    <+ constructor-to-model
+    <+ strategy-def-to-model
+    <+ overlay-to-model
+    <+ log(|FatalError(), ["*** to-model: don't know how to model this: "])
+       ; <exit> 1
+ 
+  constructor-to-model =
+    fail
+
+  strategy-def-to-model =
+    fail
+
+  constructor-to-model =
+    fail
+
+  strategy-def-to-model =
+    fail
+
+  overlay-to-model =
+    fail
+

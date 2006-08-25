@@ -38,7 +38,8 @@ strategies
   strc-front-end = 
     log-timed(
       strc-get-infile
-      ; strc-pack-stratego-trm ; tfc1(|"Stratego-Sugar-Cong", "pack")
+      ; strc-pack-stratego-trm
+      ; tfc1(|"Stratego-Sugar-Cong", "pack")
       ; strc-output-ast
       ; frontend
       ; strc-output-frontend			
