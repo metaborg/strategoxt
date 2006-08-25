@@ -358,6 +358,7 @@ strategies
   is-local-function =
     explode-string
     ; ([is-alpha, '_' | list(is-num)]
+       <+ ['l', 'i', 'f', 't', 'e', 'd' | list(is-num)]
        <+ ['l', 'i', 'f', 't', 'e', 'd', '_' | list(is-num)])
 
   check-arg(|F) :
