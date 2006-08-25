@@ -150,7 +150,7 @@
    ArrayInitIncomplete.1:iter-sep                  -- _1 KW[","],
 
    AssignInit                                      -- _1,
-   TypeSpec                                        -- _1 _2 _3,
+   TypeSpec                                        -- H[_1 _2 _3],
    TypeSpec.1:iter-star                            -- _1,
    TypeSpec.2:bracket-symbol                       -- _1,
    TypeSpec.2:bracket-symbol.1:alt                 -- _1 _1 _1,

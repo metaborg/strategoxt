@@ -1,3 +1,8 @@
+2006-08-25 Merijn de Jonge <merijn.de.jonge@philips.com>
+	* pp/C.pp: Put TypeSpec in H box, because type specs like 
+           (long int)10
+          were pretty-printed as (longint)10.
+
 2003-04-30  Martin Bravenboer <martin@cs.uu.nl>
 
 	* sig/Makefile.am: generate signature with sdf2rtg | rtg2sig.
