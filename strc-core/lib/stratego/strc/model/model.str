@@ -7,34 +7,148 @@ signature
     Definitions         : Label
     ExternalDefinitions : Label
     LocalDefinitions    : Label
+    Constructors        : Label
+    Overlays            : Label
+
+  constructors
+    Inj : Constructor
+    Q   : String -> Constructor
+
+
+
+strategies // strategy definitions
+
+  /**
+   * Add mapping from a definition signature to the full definition,
+   * and maintain a collection of all definitions, all external, and
+   * all local definitions.
+   *
+   * Note: a definition is only added to the Definitions() collection
+   * if no definition with the same signature was already added (to
+   * ensure that each signature is listed only once). It is assumed
+   * that definitions for a signature are all either local or external.
+   * If this is not the case the ExternalDefinitions() and LocalDefinitions()
+   * collections become inconsistent.
+   */
+
+  m-add-def = ?def
+    ; where( sig := <m-def-signature> )
+    ; if <not(ModDefinition)> sig then
+        rules( ModDefinition :+ Definitions() -> sig )
+        ; if <is-external> def then
+            rules( ModDefinition :+ ExternalDefinitions() -> sig )
+          else
+            rules( ModDefinition :+ LocalDefinitions() -> sig )
+          end
+      end
+    ; rules( ModDefinition :+ sig -> def )
+
+  /**
+   * Remove all definitions for a given signature.
+   *
+   * @type : Signature or Def
+   */ 
+
+  m-rm-def = 
+    where( sig := <try(m-def-signature)> )
+    ; rules( ModDefinition :- sig )
+
+  m-get-all-definitions =
+    <bagof-ModDefinition> Definitions()
+    ; mapconcat(bagof-ModDefinition)
+
+  m-get-all-local-definitions =
+    <bagof-ModDefinition> LocalDefinitions()
+    ; map(ModDefinition)
+
+  m-get-all-external-definitionss =
+    <bagof-ModDefinition> ExternalDefinitions()
+    ; map(ModDefinition)
 
 strategies
 
-  m-rm-def = ?sig
-    ; rules( ModDefinition :- sig )
+  m-call-signature =
+    try(Desugar)
+    ; \CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
 
-  m-add-def = 
-    m-add-def(|<m-def-signature>, <id>)
+  m-def-signature =
+    try(Desugar)
+    ; (  \ SDefT(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \
+      <+ \ ExtSDef(f, xs, ys)       -> (f, <length>xs, <length>ys) \
+      <+ \ ExtSDefInl(f, xs, ys, s) -> (f, <length>xs, <length>ys) \
+      <+ \ RDefT(f, xs, ys, s)      -> (f, <length>xs, <length>ys) \ )
 
-  m-add-def(|sig, def) =
-    rules( 
-      ModDefinition :+ sig -> def
-      ModDefinition :+ Definitions() -> sig
-    );
-    if <is-external> def then
-      rules( ModDefinition :+ ExternalDefinitions() -> sig )
-    else
-      rules( ModDefinition :+ LocalDefinitions() -> sig )
-    end
+  is-external =
+    ?ExtSDef(_, _, _)
+    <+ ?ExtSDefInl(_, _, _, _)
 
-  m-get-def(|f, i, j) =
-    <ModDefinition> (f, i, j)
+strategies // constructors
 
-  m-add-constructor(|c, i, cdec) =
-    rules( ModConstructor :+ (c, i) -> cdec )
+  m-add-constructor = ?cdec
+    ; where( csig := <m-constr-signature> )
+    ; if <not(ModConstructor)> csig then
+        rules( 
+          ModConstructor :+ Constructors() -> csig
+          ModConstructor : csig -> cdec 
+        )
+      end
 
-  m-get-constructor(|c, i) =
-    <ModConstructor> (c, i)
+  m-get-all-constructors =
+    <bagof-ModConstructor> Constructors()
+    ; map(ModConstructor)
+
+strategies
+
+  m-constr-signature :
+    OpDeclInj( FunType([_],_)) -> (Inj(), 1)
+
+  m-constr-signature :
+    OpDeclQ(c, ConstType(x))   -> (Q(c), 0)
+
+  m-constr-signature :
+    OpDeclQ(c, FunType(ts, t)) -> (Q(c), <length> ts)
+
+  m-constr-signature :
+    OpDecl(c,  ConstType(x))   -> (c,    0)
+
+  m-constr-signature :
+    OpDecl(c,  FunType(ts, t)) -> (c,    <length> ts)
+
+
+
+strategies // overlays
+ 
+  m-add-overlay = ?odec
+   ; where( osig := <m-overlay-signature> )
+    ; if <not(ModOverlay)> osig then
+        rules( 
+          ModOverlay :+ Overlays() -> osig
+          ModOverlay : osig -> odec 
+        )
+      end
+
+  m-overlay-signature =
+    try(Desugar)
+    ; \ Overlay(c, xs, t) -> (c, <length> xs) \
+
+  m-get-all-overlays =
+    <bagof-ModOverlay> Overlays()
+    ; map(ModOverlay)
+
+strategies
+
+  /**
+   * Turn current term into model, apply transformation s in the
+   * context of the model, and replace the original term with the
+   * specification consisting of the transformed model.
+   */
+
+  m-transform(s) =
+    {| ModDefinition, ModConstructor
+     : to-model
+     ; s
+     ; model-to-spec
+     |}
 
   m-transform-local-defs(s) =
     <bagof-ModDefinition> LocalDefinitions
@@ -46,44 +160,48 @@ strategies
     ; where(<m-rm-def> sig)
     ; s
     ; map(m-add-def)
-    ) 
+    )
 
 strategies
 
   model-to-spec =
     !Specification(
-       [Signature([Constructors(<bagof-ModConstructor; map-concat>)]),
-        Overlays([]),
-        Stratgies(<bagof-ModDefinition; map-concat> Definitions())]
+       [Constructors(<m-get-all-constructors>),
+        Overlays(<m-get-all-overlays>),
+        Strategies(<m-get-all-definitions>)]
      )
-     
+
+  /**
+   * Create source model from AST.
+   *
+   * Note: Imports are currently not supported; assumed to be flattened
+   * (e.g, by pack-stratego). In the future this could be extended to
+   * represent a model of program modules and import relations.
+   */
+
   to-model =
     Specification(map(to-model))
+
     <+ Signature(map(to-model))
-    <+ Sorts(map(to-model))
+    <+ Sorts(id) // map(to-model))
     <+ Constructors(map(to-model))
+
     <+ Overlays(map(to-model))
     <+ Rules(map(to-model))
     <+ Strategies(map(to-model))
-    <+ sort-to-model
+
     <+ constructor-to-model
     <+ strategy-def-to-model
     <+ overlay-to-model
-    <+ log(|FatalError(), ["*** to-model: don't know how to model this: "])
-       ; <exit> 1
+
+    <+ fatal-err(|"*** to-model: don't know how to model this: ")
  
-  constructor-to-model =
-    fail
-
   strategy-def-to-model =
-    fail
+    m-add-def
 
   constructor-to-model =
-    fail
-
-  strategy-def-to-model =
-    fail
+    m-add-constructor
 
   overlay-to-model =
-    fail
+    m-add-overlay
 
