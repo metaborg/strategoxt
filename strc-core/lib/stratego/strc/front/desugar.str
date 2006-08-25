@@ -10,8 +10,6 @@ imports
   Stratego-Sugar
   stratego/strc/lib/stratlib
   stratego/strc/front/DefaultStrat
-  stratego/strc/front/stratego-desugar
-  stratego/strc/front/desugar-hl
 
 strategies // Desugaring Strategie
 
