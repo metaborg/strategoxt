@@ -17,8 +17,9 @@ strclib =					\
 	$(wildcard stratego/strc/match/*.str)	\
 	$(wildcard stratego/strc/opt/*.str)	\
 	$(wildcard stratego/strc/pack/*.str)	\
-	$(wildcard stratego/strc/parse/*.str)   \
-	$(wildcard stratego/strc/strc/*.str)
+	$(wildcard stratego/strc/parse/*.str)	\
+	$(wildcard stratego/strc/strc/*.str)	\
+	$(wildcard stratego/strc/model/*.str)
 
 libstrc_la_SOURCES  = libstrc.c 
 libstrc_la_CFLAGS   = $(AM_CFLAGS)

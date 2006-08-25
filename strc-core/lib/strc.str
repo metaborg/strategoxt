@@ -5,14 +5,14 @@ module strc
 
 imports
 
+//  stratego/strc/model/model
+
   stratego/strc/lib/stratlib
 
   stratego/strc/front/check-constructors
   stratego/strc/front/combine-sections
   stratego/strc/front/DefaultStrat
   stratego/strc/front/define-lrules
-  stratego/strc/front/desugar-default-vardec
-  stratego/strc/front/desugar-hl
   stratego/strc/front/desugar-list-matching
   stratego/strc/front/desugar
   stratego/strc/front/error-reporting
@@ -28,7 +28,6 @@ imports
   stratego/strc/front/repair-types
   stratego/strc/front/report-ambs
   stratego/strc/front/rules-to-sdefs
-  stratego/strc/front/stratego-desugar
   stratego/strc/front/stratego-ensugar
   stratego/strc/front/stratego-warnings
   stratego/strc/front/stratego-warnings-options
