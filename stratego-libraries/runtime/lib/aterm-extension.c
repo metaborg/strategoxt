@@ -29,6 +29,8 @@ USA
 
 ATerm SRTS_getAnnotations(ATerm t)
 {
+  if(t == NULL)
+    return NULL;
   ATerm annos = ATgetAnnotations(t);
   if(annos == NULL)
     return (ATerm) ATempty;
@@ -37,6 +39,8 @@ ATerm SRTS_getAnnotations(ATerm t)
 }
 
 ATerm SRTS_setAnnotations(ATerm t, ATerm ts) {
+  if(t == NULL || ts == NULL)
+    return NULL;
   if(ATisEmpty(ts))
     return AT_removeAnnotations(t);
   else
