@@ -39,7 +39,7 @@ ATerm SRTS_getAnnotations(ATerm t)
 }
 
 ATerm SRTS_setAnnotations(ATerm t, ATerm ts) {
-  if(t == NULL || ts == NULL)
+  if(t == NULL)
     return NULL;
   if(ATisEmpty(ts))
     return AT_removeAnnotations(t);
