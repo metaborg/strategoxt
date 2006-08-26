@@ -16,17 +16,17 @@ strategies
         ; fc(|format, n, phase)
       )
     else
-      if-keep(write-to; save-as(!phase)|<inc>n)
+      where(if-keep(write-to; save-as(!phase)|<inc>n))
     end
 
-  tfc-c(|n, phase) =
+  tfc-c(|n, phase) = 
     if <geq>(<get-config> "--format-check", n) then
       where(
         write-to
         ; fc-c(|n, phase)
       )
     else
-      if-keep(write-to; save-as(!phase)|<inc>n)
+      where(if-keep(write-to; save-as(!phase)|<inc>n))
     end
 
 strategies
