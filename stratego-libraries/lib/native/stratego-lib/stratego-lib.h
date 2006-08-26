@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #ifndef ST_PRIM
 #define ST_PRIM
 
-#include <unistd.h>
-
 #include "stratego-lib-common.h"
 #include "lang-dynamic-rules.h"
 

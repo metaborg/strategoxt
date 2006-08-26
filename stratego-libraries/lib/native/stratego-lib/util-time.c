@@ -1,16 +1,20 @@
 #include <srts/stratego.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 #include "stratego-lib-common.h"
 
 /* Time */
 
+#ifndef XT_STD_DISABLE_POSIX
 #include <unistd.h>
-#include <stdio.h>
 #include <sys/time.h>
-#include <sys/resource.h>
-#include <time.h>
 #include <sys/times.h>
+#endif
 
+#ifndef XT_STD_DISABLE_POSIX_XSI
+#include <sys/resource.h>
+#endif
 
 /* struct_tm conversion */
 ATerm struct_tm2ATerm(const struct tm *tp) {
@@ -109,7 +113,7 @@ ATerm SSL_clock(void)
   return (ATerm) ATmakeInt(clock());
 }
 
-#ifndef XT_STR_DISABLE_POSIX
+#ifndef XT_STD_DISABLE_POSIX
 ATerm SSL_times(void)
 {
   struct tms ts;

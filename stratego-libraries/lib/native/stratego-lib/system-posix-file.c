@@ -1,11 +1,14 @@
 #include <srts/stratego.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
+
+#ifndef XT_STD_DISABLE_POSIX
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <unistd.h>
+#endif
 
 #include "stratego-lib-common.h"
 
@@ -497,6 +500,7 @@ ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
 }
 #endif /* XT_STD */
 
+#ifndef XT_STD_DISABLE_POSIX
 int permission_from_term(ATerm term) {
   int result;
 
@@ -547,6 +551,7 @@ int permissions_from_term(ATerm perms_term)
 
   return amode;
 }
+#endif /* XT_STD */
 
 /**
  * access

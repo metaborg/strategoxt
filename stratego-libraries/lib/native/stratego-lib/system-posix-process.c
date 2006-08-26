@@ -1,7 +1,10 @@
 #include <srts/stratego.h>
+
+#ifndef XT_STD_DISABLE_POSIX
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
+#endif
 
 #include "stratego-lib-common.h"
 

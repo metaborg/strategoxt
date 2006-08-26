@@ -2,13 +2,21 @@
  $Id: rsrc-usage.c,v 1.10 2001/07/11 10:53:56 markvdb Exp $
  */
 
+#include <config.h>
 #include <unistd.h>
 #include <stdio.h>
+
+#if HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
+
+#if HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
+#endif
 
 int AT_calcAllocatedSize();
 
+#if HAVE_SYS_RESOURCE_H
 void printrusage(struct rusage *rusage)
 {
   fprintf(stderr, "maxrss %ld\n", rusage->ru_maxrss);
@@ -26,11 +34,15 @@ void printrusage(struct rusage *rusage)
   fprintf(stderr, "nvcsw %ld\n", rusage->ru_nvcsw);
   fprintf(stderr, "nivcsw %ld\n", rusage->ru_nivcsw);
 }
+#endif
 
+#if HAVE_SYS_RESOURCE_H
 struct rusage rsrc_usage;
+#endif
 
 double SG_Timer(void)
 {
+#if HAVE_SYS_RESOURCE_H
   static double cur = 0;
   double prev;
 
@@ -45,14 +57,17 @@ double SG_Timer(void)
 
   prev = cur - prev;
   return prev > 0 ? prev: 0;
+#else
+  return 0;
+#endif
 }
 
 struct rusage flt_rsrc_usage;
 
 void SG_PageFlt(long *maj, long *min)
 {
+#if HAVE_SYS_RESOURCE_H
   static long ma, mi, ma_prev, mi_prev;
-
 
   ma_prev = ma;
   mi_prev = mi;
@@ -65,6 +80,7 @@ void SG_PageFlt(long *maj, long *min)
 
   *maj = ma;
   *min = mi;
+#endif
 }
 
 long SG_Allocated(void)
@@ -80,9 +96,11 @@ long SG_Allocated(void)
 
 long SG_ResidentSetSize(void)
 {
+#if HAVE_SYS_RESOURCE_H
   getrusage(RUSAGE_SELF, &rsrc_usage);
 
   return rsrc_usage.ru_maxrss;
+#else
+  return 0;
+#endif
 }
-
-

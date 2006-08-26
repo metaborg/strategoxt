@@ -1,11 +1,14 @@
 #include <stdlib.h>
 #include <srts/stratego.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <stdio.h>
+
+#ifndef XT_STD_DISABLE_POSIX
 #include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 
 #include "system-posix-file.h"
 

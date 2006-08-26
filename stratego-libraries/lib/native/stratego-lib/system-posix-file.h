@@ -1,6 +1,7 @@
 #include <srts/stratego.h>
 
 #ifndef XT_STD_DISABLE_POSIX
+#include <unistd.h>
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
