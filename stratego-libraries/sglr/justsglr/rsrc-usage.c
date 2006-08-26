@@ -62,7 +62,9 @@ double SG_Timer(void)
 #endif
 }
 
+#if HAVE_SYS_RESOURCE_H
 struct rusage flt_rsrc_usage;
+#endif
 
 void SG_PageFlt(long *maj, long *min)
 {
