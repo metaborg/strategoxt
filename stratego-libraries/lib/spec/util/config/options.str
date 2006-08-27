@@ -114,15 +114,20 @@ strategies
     option-wrap(extra-opts <+ io-options,  usage, about, id, io-stream(s))
 
   io-stream(s) =
-      fout := <get-config; <open-stream> (<id>, "w") <+ stdout-stream> "-o"
-    ; fin  := <get-config; <open-stream> (<id>, "r") <+ stdin-stream>  "-i"
-    ; if <s> (fin, fout) then
-        try(<fclose> fout); try(<fclose> fin)
-        ; report-success
-      else
-        try(<fclose> fout); try(<fclose> fin)     
-        ; report-failure
-      end
+    let open =
+          open-stream <+ ?(<id>, _); perror; <exit> 1
+
+     in fin  := <get-config < <open> (<id>, "r") + stdin-stream> "-i"
+      ; fout := <get-config < <open> (<id>, "w") + stdout-stream> "-o"
+      ; if <s> (fin, fout) then
+          try(<fclose> fout); try(<fclose> fin)
+          ; report-success
+        else
+          try(<fclose> fout); try(<fclose> fin)     
+          ; try(<get-config> "-o"; remove-file)
+          ; report-failure
+        end
+    end
 
 strategies
 
