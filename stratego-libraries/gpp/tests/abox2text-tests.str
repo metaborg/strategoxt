@@ -12,6 +12,7 @@ strategies
     test-suite(!"abox2text-tests",
       hbox-tests
     ; vbox-tests
+    ; fbox-tests
     )
 
 strategies
@@ -52,7 +53,11 @@ strategies
       , "a\n  b"
       )
 
-
+  fbox-tests = id
+    ; abox2text-test(|"Simple font box"
+      , NUM ["0"]
+      , "0"
+      )
 
 strategies
 
