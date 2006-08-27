@@ -92,6 +92,7 @@ AC_CONFIG_FILES([
   strategoxt.pc
   stratego-runtime-uninstalled.pc
   stratego-lib-uninstalled.pc
+  stratego-xtc-uninstalled.pc
   stratego-sglr-uninstalled.pc
   stratego-gpp-uninstalled.pc
   stratego-rtg-uninstalled.pc

@@ -11,6 +11,7 @@ EXTRA_DIST   = \
   xtc-uninstalled.pc.in \
   stratego-runtime-uninstalled.pc.in \
   stratego-lib-uninstalled.pc.in \
+  stratego-xtc-uninstalled.pc.in \
   stratego-sglr-uninstalled.pc.in \
   stratego-gpp-uninstalled.pc.in \
   stratego-rtg-uninstalled.pc.in

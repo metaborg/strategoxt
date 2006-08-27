@@ -1,0 +1,7 @@
+prefix=@prefix@
+
+Name: stratego-xtc
+Description: Stratego Transformation Tool Composition Library
+Version: @PACKAGE_VERSION@
+Requires: stratego-lib
+Libs: -L@abs_top_builddir@/stratego-libraries/xtc/lib -lstratego-xtc

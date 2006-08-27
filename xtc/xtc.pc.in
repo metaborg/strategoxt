@@ -1,11 +1,6 @@
 prefix=@prefix@
-datarootdir=@datarootdir@
-pkgdatadir=@datadir@/@PACKAGE@
 xtc=@prefix@/bin/xtc
-strcflags=-I ${pkgdatadir} -I @datadir@
 
 Name: XTC
 Description: Transformation Tool Composition
 Version: @PACKAGE_VERSION@
-Requires: stratego-lib
-Libs: -L${prefix}/lib -lstratego-xtc

@@ -198,6 +198,15 @@ AC_DEFUN([XT_WITH_STRATEGOXT_ARG],
     [STRATEGOXT=$withval])
 ])
 
+# XT_WITH_STRATEGO_LIBRARIES_ARG
+# ------------------------------
+AC_DEFUN([XT_WITH_STRATEGO_LIBRARIES_ARG],
+[
+  AC_ARG_WITH([stratego-libraries],
+    [AS_HELP_STRING([--with-stratego-libraries=DIR], [use Stratego Libraries at DIR @<:@find with pkg-config@:>@])],
+    [STRATEGO_LIBRARIES=$withval])
+])
+
 # XT_CHECK_XTC
 # ------------
 AC_DEFUN([XT_CHECK_XTC],
@@ -225,8 +234,6 @@ AC_DEFUN([XT_CHECK_XTC],
 
   if test "${XTC:+set}" = set; then
     AC_SUBST([XTC])
-    AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib -lstratego-xtc'])
-    AC_SUBST([XTC_STRCFLAGS], ['-I $(XTC)/share/xtc -I $(XTC)/share'])
     AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
   else
     # Try to find XTC using pkgconfig.
@@ -293,7 +300,42 @@ AC_DEFUN([XT_WITH_XTC_ARGS],
     *) BUILD_REPOSITORY=`pwd`/$BUILD_REPOSITORY ;;
   esac
 
+])
 
+# XT_CHECK_STRATEGO_LIBRARIES
+# ---------------------------
+AC_DEFUN([XT_CHECK_STRATEGO_LIBRARIES],
+[
+  AC_REQUIRE([AC_PROG_CC])
+  AC_REQUIRE([XT_SETUP])
+  AC_REQUIRE([XT_WITH_STRATEGO_LIBRARIES_ARG])
+  AC_REQUIRE([XT_WITH_STRATEGOXT_ARG])
+
+  AC_MSG_CHECKING([whether location of Stratego Libraries is explicitly set])
+  if test "${STRATEGO_LIBRARIES:+set}" = set; then
+    AC_MSG_RESULT([yes])
+    XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES
+  else
+    if test "${STRATEGOXT:+set}" = set; then
+      AC_MSG_RESULT([yes, using --with-strategoxt])
+      STRATEGO_LIBRARIES="$STRATEGOXT"
+      XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES
+    else
+      AC_MSG_RESULT([no])
+
+      XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
+      XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
+      XT_CHECK_PACKAGE([STRATEGO_XTC],[stratego-xtc])
+      XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr])
+      XT_CHECK_PACKAGE([STRATEGO_GPP],[stratego-gpp])
+      XT_CHECK_PACKAGE([STRATEGO_RTG],[stratego-rtg])
+    fi
+  fi
+
+  # backward compatibitily
+  AC_SUBST([SRTS], ['$(STRATEGO_RUNTIME)'])
+  AC_SUBST([XTC_LIBS], ['$(STRATEGO_XTC_LIBS)'])
+  AC_SUBST([XTC_STRCFLAGS], ['$(STRATEGO_XTC_STRCFLAGS)'])
 ])
 
 # XT_CHECK_STRATEGOXT
@@ -302,6 +344,7 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
 [
   AC_REQUIRE([AC_PROG_CC])
   AC_REQUIRE([XT_WITH_STRATEGOXT_ARG])
+  AC_REQUIRE([XT_CHECK_STRATEGO_LIBRARIES])
   AC_REQUIRE([XT_CHECK_XTC])
 
   AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
@@ -313,16 +356,8 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
 
     # Try to find the Stratego/XT Packages using pkgconfig.
     XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt],[bin/strc$EXEEXT])
-    XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
-    XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
-    XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr])
-    XT_CHECK_PACKAGE([STRATEGO_GPP],[stratego-gpp])
-    XT_CHECK_PACKAGE([STRATEGO_RTG],[stratego-rtg])
     XT_CHECK_PACKAGE([C_TOOLS],[c-tools],[bin/parse-c$EXEEXT])
   fi
-
-  # backward compatibitily
-  AC_SUBST([SRTS], ['$(STRATEGO_RUNTIME)'])
 
   # These packages need pkg-config files.
   AC_SUBST([STRC], ['$(STRATEGOXT)'])
@@ -337,6 +372,42 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
   AC_SUBST([STRATEGO_REGULAR], ['$(STRATEGOXT)'])
 ])
 
+# XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES
+# -----------------------------
+# Don't invoke directly.
+# This macro is also used internally (see internal-autoxt.m4)
+AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES],
+[
+  AC_SUBST([STRATEGO_RUNTIME], ['$(STRATEGO_LIBRARIES)'])
+  AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(STRATEGO_RUNTIME)/include'])
+  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(STRATEGO_RUNTIME)/lib -lstratego-runtime -lm'])
+
+  AC_SUBST([STRATEGO_LIB], ['$(STRATEGO_LIBRARIES)'])
+  AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(STRATEGO_RUNTIME)/include -I$(ATERM)/include'])
+  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib -lstratego-lib -lstratego-lib-native -lm'])
+  AC_SUBST([STRATEGO_LIB_STRCFLAGS], ['-I $(STRATEGO_LIB)/share/stratego-lib'])
+
+  AC_SUBST([STRATEGO_XTC], ['$(STRATEGO_LIBRARIES)'])
+  AC_SUBST([STRATEGO_XTC_CFLAGS], [''])
+  AC_SUBST([STRATEGO_XTC_LIBS], ['-L$(STRATEGO_XTC)/lib -lstratego-xtc'])
+  AC_SUBST([STRATEGO_XTC_STRCFLAGS], ['-I $(STRATEGO_XTC)/share'])
+
+  AC_SUBST([STRATEGO_SGLR], ['$(STRATEGO_LIBRARIES)'])
+  AC_SUBST([STRATEGO_SGLR_CFLAGS], [''])
+  AC_SUBST([STRATEGO_SGLR_LIBS], ['-L$(STRATEGO_SGLR)/lib -lstratego-sglr'])
+  AC_SUBST([STRATEGO_SGLR_STRCFLAGS], ['-I $(STRATEGO_SGLR)/share'])
+
+  AC_SUBST([STRATEGO_GPP], ['$(STRATEGO_LIBRARIES)'])
+  AC_SUBST([STRATEGO_GPP_CFLAGS], [''])
+  AC_SUBST([STRATEGO_GPP_LIBS], ['-L$(STRATEGO_GPP)/lib -lstratego-gpp'])
+  AC_SUBST([STRATEGO_GPP_STRCFLAGS], ['-I $(STRATEGO_GPP)/share'])
+
+  AC_SUBST([STRATEGO_RTG], ['$(STRATEGO_LIBRARIES)'])
+  AC_SUBST([STRATEGO_RTG_CFLAGS], [''])
+  AC_SUBST([STRATEGO_RTG_LIBS], ['-L$(STRATEGO_RTG)/lib -lstratego-rtg'])
+  AC_SUBST([STRATEGO_RTG_STRCFLAGS], ['-I $(STRATEGO_RTG)/share'])
+])
+
 # XT_HANDLE_EXPLICIT_STRATEGOXT
 # -----------------------------
 # Don't invoke directly.
@@ -345,35 +416,10 @@ AC_DEFUN([XT_HANDLE_EXPLICIT_STRATEGOXT],
 [
   # Check the specified value of $STRATEGOXT
   XT_PKG_STRATEGOXT
-
   AC_SUBST([STRATEGOXT])
-  AC_SUBST([STRATEGO_RUNTIME], ['$(STRATEGOXT)'])
-  AC_SUBST([STRATEGO_LIB], ['$(STRATEGOXT)'])
   AC_SUBST([XTC], ['$(STRATEGOXT)'])
-  AC_SUBST([STRATEGO_SGLR], ['$(STRATEGOXT)'])
-  AC_SUBST([STRATEGO_GPP], ['$(STRATEGOXT)'])
   AC_SUBST([C_TOOLS], ['$(STRATEGOXT)'])
-
   AC_SUBST([STRATEGOXT_XTC], ['$(STRATEGOXT)/share/strategoxt/XTC'])
-
-  AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(SRTS)/include'])
-  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib -lstratego-runtime -lm'])
-
-  AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
-  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib -lstratego-lib -lstratego-lib-native -lm'])
-  AC_SUBST([STRATEGO_LIB_STRCFLAGS], ['-I $(STRATEGO_LIB)/share/stratego-lib'])
-
-  AC_SUBST([STRATEGO_SGLR_CFLAGS], [''])
-  AC_SUBST([STRATEGO_SGLR_LIBS], ['-L$(STRATEGO_SGLR)/lib -lstratego-sglr'])
-  AC_SUBST([STRATEGO_SGLR_STRCFLAGS], ['-I $(STRATEGO_SGLR)/share'])
-
-  AC_SUBST([STRATEGO_GPP_CFLAGS], [''])
-  AC_SUBST([STRATEGO_GPP_LIBS], ['-L$(STRATEGO_GPP)/lib -lstratego-gpp'])
-  AC_SUBST([STRATEGO_GPP_STRCFLAGS], ['-I $(STRATEGO_GPP)/share'])
-
-  AC_SUBST([STRATEGO_RTG_CFLAGS], [''])
-  AC_SUBST([STRATEGO_RTG_LIBS], ['-L$(STRATEGO_RTG)/lib -lstratego-rtg'])
-  AC_SUBST([STRATEGO_RTG_STRCFLAGS], ['-I $(STRATEGO_RTG)/share'])
 ])
 
 # XT_CHECK_STRATEGOXT_UTILS
@@ -422,6 +468,22 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   AC_REQUIRE([XT_SETUP])
   AC_REQUIRE([XT_CHECK_PACKAGES])
   AC_REQUIRE([XT_WITH_XTC_ARGS])
+])
+
+# XT_USE_BOOTSTRAP_XT_PACKAGES
+# ---------------------------
+AC_DEFUN([XT_USE_BASELINE_XT_PACKAGES],
+[
+  AC_ARG_ENABLE([bootstrap],
+    [AS_HELP_STRING([--enable-bootstrap], [Enable a bootstrap build @<:@no@:>@])],
+    [xt_bootstrap="$enableval"],
+    [xt_bootstrap="no"])
+
+  if test "$xt_bootstrap" = "yes"; then
+    XT_USE_XT_PACKAGES
+  else
+    XT_CHECK_STRATEGO_LIBRARIES
+  fi
 ])
 
 ################################### OBSOLETE MACROS ###################################

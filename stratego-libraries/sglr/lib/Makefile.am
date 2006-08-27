@@ -36,14 +36,14 @@ libstratego_sglr_la_CPPFLAGS = \
   $(ATERM_CFLAGS)
 
 libstratego_sglr_la_LIBADD = \
-  $(XTC_UNINSTALLED_LIBS) \
+  $(STRATEGO_XTC_UNINSTALLED_LIBS) \
   $(STRATEGO_LIB_UNINSTALLED_LIBS) \
   $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) \
   $(top_builddir)/sglr/justsglr/libjustsglr.la \
   $(ATERM_LIBS)
 
 STRCFLAGS = \
-  $(XTC_UNINSTALLED_STRCFLAGS) \
+  $(STRATEGO_XTC_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
 
 libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)

@@ -96,8 +96,8 @@ AC_SUBST([STRATEGO_LIB_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/lib/spec'])
 AC_SUBST([STRATEGO_LIB_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS)'])
 AC_SUBST([STRATEGO_LIB_UNINSTALLED_LIBS],['$(top_builddir)/lib/spec/libstratego-lib.la $(STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS)'])
 
-AC_SUBST([XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/xtc/lib'])
-AC_SUBST([XTC_UNINSTALLED_LIBS],['$(top_builddir)/xtc/lib/libstratego-xtc.la'])
+AC_SUBST([STRATEGO_XTC_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/xtc/lib'])
+AC_SUBST([STRATEGO_XTC_UNINSTALLED_LIBS],['$(top_builddir)/xtc/lib/libstratego-xtc.la'])
 
 AC_SUBST([STRATEGO_SGLR_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/sglr/lib'])
 AC_SUBST([STRATEGO_SGLR_UNINSTALLED_LIBS],['$(top_builddir)/sglr/lib/libstratego-sglr.la'])
@@ -134,6 +134,7 @@ AC_CONFIG_FILES([
   rtg/lib/Makefile
   rtg/tests/Makefile
 
+  stratego-xtc.pc
   xtc/Makefile
   xtc/lib/Makefile
   xtc/tests/Makefile

@@ -1,0 +1,10 @@
+prefix=@prefix@
+datarootdir=@datarootdir@
+xtc=@prefix@/bin/xtc
+strcflags=-I @datadir@
+
+Name: stratego-xtc
+Description: Stratego Transformation Tool Composition Library
+Version: @PACKAGE_VERSION@
+Requires: stratego-lib
+Libs: -L${prefix}/lib -lstratego-xtc

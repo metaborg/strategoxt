@@ -7,9 +7,10 @@ EXTRA_DIST = \
   stratego-rtg.pc.in \
   stratego-sglr.pc.in \
   stratego-gpp.pc.in \
+  stratego-xtc.pc.in \
   stratego-lib.pc.in \
   stratego-runtime.pc.in
 
 ACLOCAL_AMFLAGS = -I ./config
 
-pkgconfig_DATA = stratego-sglr.pc stratego-gpp.pc stratego-lib.pc stratego-runtime.pc stratego-rtg.pc
+pkgconfig_DATA = stratego-sglr.pc stratego-gpp.pc stratego-lib.pc stratego-xtc.pc tratego-runtime.pc stratego-rtg.pc
