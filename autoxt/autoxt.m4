@@ -472,7 +472,7 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
 
 # XT_USE_BOOTSTRAP_XT_PACKAGES
 # ---------------------------
-AC_DEFUN([XT_USE_BASELINE_XT_PACKAGES],
+AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
 [
   AC_ARG_ENABLE([bootstrap],
     [AS_HELP_STRING([--enable-bootstrap], [Enable a bootstrap build @<:@no@:>@])],
