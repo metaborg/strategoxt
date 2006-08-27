@@ -12,8 +12,7 @@ strategies
    */
   box2text-string(|width) =
     abox2text(|width)
-    ; flatten-list
-    ; concat-strings
+    ; (is-string <+  flatten-list; concat-strings)
 
   /**
    * Format a box and print the text to a stream.
