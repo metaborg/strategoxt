@@ -19,8 +19,18 @@ AC_DEFUN([XT_SETUP],
 [
   AC_REQUIRE([XT_DARWIN])
   AC_REQUIRE([XT_CHECK_LINKING])
-  AC_REQUIRE([XT_ENABLE_XTC_REGISTER])
   AC_REQUIRE([XT_STRICT_ISO_C99])
+
+  AC_ARG_ENABLE([xtc],
+    [AS_HELP_STRING([--enable-xtc], [Enable XTC registration @<:@default=yes@:>@])],
+    [xt_xtc_register="$enableval"],
+    [xt_xtc_register="yes"])
+
+  if test "${xt_xtc_register:+set}" = set; then
+    AM_CONDITIONAL([XT_XTC_REGISTER], [test "$xt_xtc_register" = "yes"])
+  else
+    AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "yes"])
+  fi
 
   AC_SUBST([STR_CFLAGS])
   AC_SUBST([STR_LDFLAGS])
@@ -250,17 +260,6 @@ AC_DEFUN([XT_CHECK_XTC],
       AC_MSG_RESULT([$XTC_PROG])
       AC_SUBST([XTC_PROG])
     fi
-  fi
-
-  AC_ARG_ENABLE([xtc],
-    [AS_HELP_STRING([--enable-xtc], [Enable XTC registration @<:@default=yes@:>@])],
-    [xt_xtc_register="$enableval"],
-    [xt_xtc_register="yes"])
-
-  if test "${xt_xtc_register:+set}" = set; then
-    AM_CONDITIONAL([XT_XTC_REGISTER], [test "$xt_xtc_register" = "yes"])
-  else
-    AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "yes"])
   fi
 ])
 
