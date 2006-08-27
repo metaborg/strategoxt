@@ -501,6 +501,7 @@ AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
 
     if test "${xt_xtc_register}" = "yes"; then
       XT_CHECK_XTC
+      XT_WITH_XTC_ARGS
     fi
   fi
 ])
