@@ -50,9 +50,12 @@ strategies
     parse-string-pt(|tbl, start-symbol, "string")
 
   parse-string-pt(|tbl, start-symbol, path) =
+    parse-string-pt(id |tbl, start-symbol, path)
+
+  parse-string-pt(onfail |tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; ?string
-    ; prim("STRSGLR_parse_string_pt", string, internal-tbl, start-symbol, path)
+    ; prim("STRSGLR_parse_string_pt", onfail | string, internal-tbl, start-symbol, path)
 
 /**
  * Parse a stream to an AST.

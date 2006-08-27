@@ -116,12 +116,20 @@ static ATerm parse_string_pt(const char* string, ATerm tbl_term, ATerm start_ter
  *
  * sort is allowed to be None.
  */
-ATerm STRSGLR_parse_string_pt(ATerm string_term, ATerm tbl_term, ATerm start_term, ATerm path_term)
+ATerm STRSGLR_parse_string_pt(StrCL onfail, ATerm string_term, ATerm tbl_term, ATerm start_term, ATerm path_term)
 {
-  if(AT_isString(string_term))
-    return parse_string_pt(AT_getString(string_term), tbl_term, start_term, path_term);
-  else
+  ATerm result;
+
+  if(!AT_isString(string_term)) {
     return NULL;
+  }
+
+  result = parse_string_pt(AT_getString(string_term), tbl_term, start_term, path_term);
+  if(result == NULL)
+  {
+    cl_fun(onfail)(cl_sl(onfail), string_term);
+  }
+  return result;
 }
 
 /**
