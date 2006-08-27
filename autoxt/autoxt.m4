@@ -351,7 +351,9 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
   if test "${STRATEGOXT:+set}" = set; then
     AC_MSG_RESULT([yes])
     XT_HANDLE_EXPLICIT_STRATEGOXT
+
   else
+
     AC_MSG_RESULT([no])
 
     # Try to find the Stratego/XT Packages using pkgconfig.
@@ -476,14 +478,25 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
 # ---------------------------
 AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
 [
+  AC_REQUIRE([XT_SETUP])
+
   AC_ARG_ENABLE([bootstrap],
     [AS_HELP_STRING([--enable-bootstrap], [Enable a bootstrap build @<:@no@:>@])],
     [xt_bootstrap="$enableval"],
     [xt_bootstrap="no"])
 
+  AC_MSG_CHECKING([whether bootstrap build is enabled])
   if test "$xt_bootstrap" = "yes"; then
-    XT_USE_XT_PACKAGES
+    AC_MSG_RESULT([yes])
+
+    XT_CHECK_ATERM
+    XT_CHECK_SDF
+    XT_CHECK_STRATEGOXT
+    XT_WITH_XTC_ARGS
   else
+    AC_MSG_RESULT([no])
+
+    XT_CHECK_ATERM
     XT_CHECK_STRATEGO_LIBRARIES
   fi
 ])
