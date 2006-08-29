@@ -5,14 +5,14 @@ module strc
 
 imports
 
-//  stratego/strc/model/model
+  stratego/strc/model/model
 
   stratego/strc/lib/stratlib
 
+  stratego/strc/front/add-main
   stratego/strc/front/check-constructors
   stratego/strc/front/combine-sections
   stratego/strc/front/DefaultStrat
-  stratego/strc/front/define-lrules
   stratego/strc/front/desugar-list-matching
   stratego/strc/front/desugar
   stratego/strc/front/error-reporting

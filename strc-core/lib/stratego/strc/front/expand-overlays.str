@@ -11,11 +11,15 @@ strategies
     |[ specification signature sdecl* overlays ol* strategies def1* ]| ->
     |[ specification signature sdecl* overlays ol* strategies def3* ]|
     where <map(DeclareExpandOverlay)> ol*
-	; <transform-mbo(
-	     ExpandOverlayInMatch; ElimBuildDefaultMatch,
-	     ExpandOverlayInBuild; ElimBuildDefaultBuild,
-	     fail)> def1* => def2*
+	; <expand-overlays-in-def> def1* => def2*
 	; <conc>(<filter(Overlay-to-Congdef)> ol*, def2*) => def3*
+
+  expand-overlays-in-def =
+    transform-mbo(
+      ExpandOverlayInMatch; ElimBuildDefaultMatch,
+      ExpandOverlayInBuild; ElimBuildDefaultBuild,
+      fail
+    )
 
   DeclareExpandOverlay =
     (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|)

@@ -15,6 +15,13 @@ signature
     Q   : String -> Constructor
 
 
+strategies
+
+  set-from-list(|lst) =
+    set := <new-iset>
+    ; iset-addlist(|lst)
+    ; iset-elements 
+    ; where(<iset-destroy> set)
 
 strategies // strategy definitions
 
@@ -54,16 +61,19 @@ strategies // strategy definitions
     ; rules( ModDefinition :- sig )
 
   m-get-all-definitions =
-    <bagof-ModDefinition> Definitions()
+    set-from-list(|<bagof-ModDefinition> Definitions())
     ; mapconcat(bagof-ModDefinition)
 
   m-get-all-local-definitions =
-    <bagof-ModDefinition> LocalDefinitions()
-    ; map(ModDefinition)
+    set-from-list(|<bagof-ModDefinition> LocalDefinitions())
+    ; mapconcat(ModDefinition)
 
   m-get-all-external-definitionss =
-    <bagof-ModDefinition> ExternalDefinitions()
-    ; map(ModDefinition)
+    set-from-list(|<bagof-ModDefinition> ExternalDefinitions())
+    ; mapconcat(ModDefinition)
+
+  m-reset-defs =
+    where(dr-new-rule-set; dr-set-rule-set(|"ModDefinition"))
 
 strategies
 
@@ -84,8 +94,8 @@ strategies
 
 strategies // constructors
 
-  m-add-constructor = ?cdec
-    ; where( csig := <m-constr-signature> )
+  m-add-constructor = ?cdec//; debug(!"m-add-constructor: ")
+    ; where( csig := <m-constr-signature> ) //; debug(!"signature: "))
     ; if <not(ModConstructor)> csig then
         rules( 
           ModConstructor :+ Constructors() -> csig
@@ -93,14 +103,26 @@ strategies // constructors
         )
       end
 
+  m-replace-constructor = ?odec
+   ; where( osig := <m-constr-signature> )
+    ; if <not(ModConstructor)> osig then
+        rules( 
+          ModConstructor :+ Constructors() -> osig
+        )
+      end
+      ; rules( ModConstructor : osig -> odec )
+
   m-get-all-constructors =
-    <bagof-ModConstructor> Constructors()
+    set-from-list(|<bagof-ModConstructor> Constructors())
     ; map(ModConstructor)
 
 strategies
 
   m-constr-signature :
-    OpDeclInj( FunType([_],_)) -> (Inj(), 1)
+    OpDeclInj(FunType(ts,_)) -> (Inj(), <length> ts)
+
+  m-constr-signature :
+    OpDeclInj(ConstType(_)) -> (Inj(), 0)
 
   m-constr-signature :
     OpDeclQ(c, ConstType(x))   -> (Q(c), 0)
@@ -118,21 +140,31 @@ strategies
 
 strategies // overlays
  
-  m-add-overlay = ?odec
+  m-add-overlay = ?odec//; debug(!"m-add-overlay: ")
    ; where( osig := <m-overlay-signature> )
     ; if <not(ModOverlay)> osig then
+        //debug(!"adding overlay: ");
         rules( 
           ModOverlay :+ Overlays() -> osig
           ModOverlay : osig -> odec 
         )
       end
 
+  m-replace-overlay = ?odec
+   ; where( osig := <m-overlay-signature> )
+    ; if <not(ModOverlay)> osig then
+        rules( 
+          ModOverlay :+ Overlays() -> osig
+        )
+      end
+      ; rules( ModOverlay : osig -> odec )
+
   m-overlay-signature =
     try(Desugar)
     ; \ Overlay(c, xs, t) -> (c, <length> xs) \
 
   m-get-all-overlays =
-    <bagof-ModOverlay> Overlays()
+    set-from-list(|<bagof-ModOverlay> Overlays())
     ; map(ModOverlay)
 
 strategies
@@ -151,8 +183,8 @@ strategies
      |}
 
   m-transform-local-defs(s) =
-    <bagof-ModDefinition> LocalDefinitions
-    ; map(m-transform-local-def(s))
+    set-from-list(|<bagof-ModDefinition> LocalDefinitions)
+    ; filter(not(m-transform-local-def(s))) => []
 
   m-transform-local-def(s) =
     where(?sig
@@ -162,11 +194,36 @@ strategies
     ; map(m-add-def)
     )
 
+  m-transform-overlays(s) =
+    set-from-list(|<bagof-ModOverlay> Overlays())
+    ; filter(not(m-transform-overlay(s))) => []
+
+  m-transform-overlay(s) =
+    where(?osig
+    ; ModOverlay
+    ; s
+    ; m-replace-overlay
+    )
+
+  m-transform-constructors(s) =
+    set-from-list(|<bagof-ModConstructor> Constructors())
+    ; filter(not(m-transform-constructor(s))) => []
+
+  m-transform-constructor(s) =
+    where( ModConstructor; s; m-replace-constructor )
+
+  m-declare-constructors(s) =
+    set-from-list(|<bagof-ModConstructor> Constructors())
+    ; map(m-declare-constructor(s))
+
+  m-declare-constructor(s) =
+    where( ModConstructor; s )
+
 strategies
 
   model-to-spec =
     !Specification(
-       [Constructors(<m-get-all-constructors>),
+       [Signature([Constructors(<m-get-all-constructors>)]),
         Overlays(<m-get-all-overlays>),
         Strategies(<m-get-all-definitions>)]
      )
@@ -204,4 +261,6 @@ strategies
 
   overlay-to-model =
     m-add-overlay
+
+
 

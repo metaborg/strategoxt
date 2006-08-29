@@ -3,6 +3,9 @@ imports Stratego-Sugar
 	stratego/strc/lib/stratlib
 strategies
 
+  m-repair-types =
+    try(RepairDefinition)
+
   repair-types = 
     try(sometd(RepairDefinition); where(explanation))
 
@@ -25,9 +28,8 @@ strategies
   RepairVarDec(def, op) :
     VarDec(x, FunType([ConstType(t1) | ts@[FunType(_,_) | _]], t2)) ->
     VarDec(x, FunType(<conc>(ts, [ConstType(t1)]), t2))
-    where err(| <concat-strings>["argument '", x, "' of ", <def>, " '", <op>, 
-	                         "' starts with constant type"] )
-	; <exit> 1
+    where fatal-err(| <concat-strings>["argument '", x, "' of ", <def>, " '", <op>, 
+	                               "' starts with constant type"] )
 	      
   explanation =
     <fprintnl>(stderr, ["

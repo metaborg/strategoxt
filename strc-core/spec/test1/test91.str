@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = <rewr> f(2000, empty)
+  main = <rewr> f(100, empty)
 
 signature
   sorts Domain Range Map
@@ -49,8 +49,6 @@ rules
                        lookup(I, mydiv(N,4))), I)
 
 strategies
-
-  main = io-wrap(rewr)
 
   rewr = innermost(I)
 

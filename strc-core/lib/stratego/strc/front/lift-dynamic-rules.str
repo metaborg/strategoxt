@@ -20,6 +20,12 @@ strategies
 
 strategies
 
+
+  dr-constructors =
+    ![OpDecl("DR_UNDEFINE", 
+             FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
+     , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))]
+
   /**
    * Desugar dynamic rule scopes {| ... : ... |} 
    */
@@ -67,11 +73,37 @@ strategies
    */
 
   lift-dynamic-rules-from-spec = 
-    listtd(repeat(lift-dynamic-rule-from-def))
+    listtd(repeat(lift-dynamic-rule-from-def-foo))
+
+  lift-dynamic-rule-from-def-foo :
+    [def | defs] -> [def' | <conc> (rdefs, defs)]
+    where <lift-dynamic-rule-from-def> def => (def', rdefs)
+
+  m-lift-dynamic-rules-from-spec = 
+    let expand-def = {defs :
+          \ [sig@(_,_,_) | xs] -> <conc>(defs, xs)
+            where defs := <bagof-ModDefinition> sig
+		//; debug(!"expansion: ")
+	        ; <m-rm-def> sig \ }
+
+     in set-from-list(|<bagof-ModDefinition> LocalDefinitions)
+        //; debug(!"lift-dynamic-rules-from-spec a: ")
+        ; listtd(
+            //debug(!"lift-dr-from-spec a: ");
+            try(expand-def)
+            //; debug(!"lift-dr-from-spec b: ")
+            ; repeat(lift-dynamic-rule-from-def-foo)
+            //; debug(!"lift-dr-from-spec c: ")
+          )
+	//; debug(!"lift-dr-from-spec c: ")
+        ; map(m-add-def)
+	//; debug(!"lift-dr-from-spec d: ")
+    end
 
   lift-dynamic-rule-from-def :
-    [def | defs] -> <conc> ([def' | rdefs], defs)
-    where {| ContextVar, LiftedRules, CurrentDef
+    def -> (def', rdefs)
+    where //debug(!"lift-dynamic-rules-from-def: ");
+	  {| ContextVar, LiftedRules, CurrentDef
            : <def-tvars> def; DeclareContextVars
            ; <def-name> def => name
            ; rules( CurrentDef : () -> name )

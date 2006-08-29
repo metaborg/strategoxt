@@ -10,10 +10,31 @@ strategies
     {| VarToConst1, VarToConst2
      : Specification(map(try(Signature([Constructors(map(try(DeclareVarToConst)))])
 			     + Overlays(map(try(DeclareVarToConst))))))
-     ; topdown(try(VarToConst1 <+ VarToConst2))
+     ; topdown(try(VarToConst))
      |}
 
-  DeclareVarToConst =
+  m-variables-to-constructors =
+    {| VarToConst1, VarToConst2
+     : m-get-all-constructors
+     ; map(try(DeclareVarToConst))
+     ; m-get-all-overlays
+     ; map(try(DeclareVarToConst))
+     ; m-transform-local-defs(topdown(try(VarToConst))) 
+     |}
+
+  m-declare-variables-to-constructors =
+     m-get-all-constructors
+     ; map(try(DeclareVarToConst))
+     ; m-get-all-overlays
+     ; map(try(DeclareVarToConst))
+  
+  m-variables-to-constructors-in-def = //debug(!"m-variables-to-constructors-in-def");
+     topdown(try(VarToConst))
+
+  VarToConst =
+    VarToConst1 <+ VarToConst2
+
+  DeclareVarToConst = //debug(!"DeclareVarToConst: "); 
     (?|[ x : srt ]| + ?Overlay|[ x() = t ]|)
     ; rules( 
         VarToConst1 : 

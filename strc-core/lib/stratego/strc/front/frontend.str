@@ -10,76 +10,129 @@ imports
 strategies
 
   frontend = id
-    ; if-not-lib(add-main)
-    ; repair-types				; tfc6(|"Stratego-Sugar-Cong", "fe-rep") // local		
-    ; pre-desugar				; tfc2(|"Stratego-Sugar-1", "fe-des1")   // local
-    ; combine-sections				; tfc3(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
-    ; variables-to-constructors			; tfc3(|"Stratego-Sugar-1", "fe-vtc")	 // global analysis
-    ; raise-annotations				; tfc2(|"Stratego-Sugar-2", "fe-ra1")    // local
-    ; define-lrules				; tfc3(|"Stratego-Sugar-2", "fe-dlr")    // local
-    ; LiftDynamicRules									 // semi-local
-    ; stratego-desugar									 // local
-    ; raise-annotations				; tfc2(|"Stratego-Sugar-3", "fe-ra2")	 // local
-    ; spec-use-def									 // local analysis (earlier)
-    ; CheckConstructors				; tfc4(|"Stratego-Sugar-3", "fe-cc")	 // global analysis (earlier)	
-    ; ExpandOverlays				; tfc3(|"Stratego-Sugar-3", "fe-eo")     // global		
-    ; rules-to-sdefs				; tfc3(|"Stratego-Sugar-3", "fe-rts")    // local		
-    ; desugar-list-matching			; tfc2(|"Stratego-Sugar-4", "fe-dlm")    // local
-    ; desugar-DefaultVarDec			; tfc3(|"Stratego-Sugar-4", "fe-ddv")    // local
-    ; introduce-congdefs			; tfc3(|"Stratego-Sugar-4", "fe-cdf")    // global
-    ; strename // rename-vars			; tfc3(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
-    ; desugar-top 				; tfc2(|"Stratego-Sugar-5", "fe-des")    // local
-    ; if-lib(extract-all, extract)		; tfc3(|"Stratego-Sugar-5", "fe-extr")	 // global
- // ; stratego-warnings				; tfc5(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
-    ; rename-defs				; tfc3(|"Stratego-Sugar-5", "fe-rnd")    // local
-    ; simplify1					; tfc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
-    ; define-congruences			; tfc1(|"Stratego-Core", "fe-cong")
+    //; if-not-lib(add-main)
+    //; repair-types			; tfc6(|"Stratego-Sugar-Cong", "fe-rep") // locals
+    //; pre-desugar			; tfc2(|"Stratego-Sugar-1", "fe-des1")   // local
+
+    //; debug(!"frontend a: ")
+    ; m-transform(id
+       //; debug(!"frontend b: ")
+       ; if-not-lib(m-add-main)
+       //; debug(!"frontend c1: ")
+
+       ; m-transform-constructors(
+           pre-desugar
+           ; try(DeclareVarToConst)
+	   ; try(TupleDecl + QuotedConstrDecl)
+           ; GenerateCheckRule
+         )
+
+       //; debug(!"frontend c2: ")
+
+       ; m-transform-overlays(id
+           ; pre-desugar
+           ; try(DeclareVarToConst)
+         )
+
+       ; m-transform-overlays(id
+           //debug(!"frontend c3: ");
+           ; m-variables-to-constructors-in-def
+           //; debug(!"frontend c4: ")
+           ; pre-desugar
+           //; debug(!"frontend c5: ")
+           ; not(def-use-def)
+           //; debug(!"frontend c6: ")
+           ; raise-annotations
+           //; debug(!"frontend c7: ")
+           ; GenerateCheckRule
+           //; debug(!"frontend c8: ")
+           ; DeclareExpandOverlay
+           //; debug(!"frontend c9: ")
+           ; where(Overlay-to-Congdef; m-add-def)
+           //; debug(!"frontend c10: ")
+         )
+
+       ; m-transform-overlays(
+           not(check-constructors)
+         )
+
+       //; debug(!"frontend d: ")
+
+       ; m-transform-local-defs(map(id
+	   //; debug(!"frontend e: ")
+           ; m-repair-types
+	   //; debug(!"frontend f: ")
+           ; pre-desugar		
+	         //; debug(!"frontend g: ")
+                 //; m-variables-to-constructors-in-def
+	         //; debug(!"frontend h: ")
+                 //; define-lrules
+	   //; debug(!"frontend i: ")
+           ; raise-annotations
+	   //; debug(!"frontend j: ")
+         ))
+
+       //; debug(!"frontend k: ")	
+
+     //; tfc3(|"Stratego-Sugar-1", "fe-vtc")
+
+     //; combine-sections		; tfc3(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
+     //; variables-to-constructors	; tfc3(|"Stratego-Sugar-1", "fe-vtc")	 // global analysis
+     //; raise-annotations		; tfc2(|"Stratego-Sugar-2", "fe-ra1")    // local
+     //; define-lrules			; tfc3(|"Stratego-Sugar-2", "fe-dlr")    // local
+
+       // ; LiftDynamicRules								 // semi-local
+ 
+       ; m-lift-dynamic-rules-from-spec 
+
+       //; debug(!"frontend l: ")
+	
+       ; m-transform-local-defs(map(id
+           //; debug(!"frontend m: ")	
+           ; stratego-desugar
+           //; debug(!"frontend o: ")	
+           ; raise-annotations
+           //; debug(!"frontend p: ")
+	   ; not(def-use-def)
+           //; debug(!"frontend q: ")
+           ; not(check-constructors)
+           //; debug(!"frontend qa: ")
+           ; expand-overlays-in-def
+           //; debug(!"frontend qb: ")
+         ))
+    )
+      //; debug(!"frontend r: ")	
+
+    //; stratego-desugar								 // local
+    //; raise-annotations			; tfc2(|"Stratego-Sugar-3", "fe-ra2")	 // local
+    //; spec-use-def								 // local analysis (earlier)
+
+    // ; CheckConstructors			; tfc4(|"Stratego-Sugar-3", "fe-cc")	 // global analysis (earlier)	
+
+    ; tfc1(|"Stratego-Sugar-3", "fe-cc")
+   
+    ; ExpandOverlays			; tfc3(|"Stratego-Sugar-3", "fe-eo")     // global		
+    //; debug(!"frontend s: ")	
+    ; rules-to-sdefs			; tfc3(|"Stratego-Sugar-3", "fe-rts")    // local		
+    //; debug(!"frontend t: ")	
+    ; desugar-list-matching		; tfc2(|"Stratego-Sugar-4", "fe-dlm")    // local
+    //; debug(!"frontend u: ")	
+    ; desugar-DefaultVarDec		; tfc3(|"Stratego-Sugar-4", "fe-ddv")    // local
+    //; debug(!"frontend v: ")	
+    ; introduce-congdefs		; tfc3(|"Stratego-Sugar-4", "fe-cdf")    // global
+    //; debug(!"frontend w: ")	
+    ; strename // rename-vars		; tfc3(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
+    //; debug(!"frontend x: ")	
+    ; desugar-top 			; tfc2(|"Stratego-Sugar-5", "fe-des")    // local
+    //; debug(!"frontend y: ")	
+    ; if-lib(extract-all, extract)	; tfc3(|"Stratego-Sugar-5", "fe-extr")	 // global
+ // ; stratego-warnings			; tfc5(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
+    //; debug(!"frontend z: ")	
+    ; rename-defs			; tfc3(|"Stratego-Sugar-5", "fe-rnd")    // local
+    //; debug(!"frontend za: ")	
+    ; simplify1				; tfc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
+    //; debug(!"frontend zb: ")	
+    ; define-congruences		; tfc1(|"Stratego-Core", "fe-cong")
 
     // use-def			= comp(|"use-def", <pass-maybe-unbound-warnings>)
     // stratego-warnings	= comp(|"stratego-warnings", <pass-warnings>)
-
-strategies
-
-  /**
-   * Adding main strategy
-   * 
-   * What happens if the specification already contains a main strategy? 
-   */
-
-  add-main =
-    try(
-      where(
-        <get-config> "-m" => m
-      ; log(|Notice(),["Main strategy is : ",m])
-      )
-      ; if-not-lib(
-          try(AddMain(|m))
-        )
-    )
-
-  AddMain(|main) : 
-    Specification(sects) -> 
-    Specification([ Strategies([SDef("main", [], Call(SVar(main), []))]) 
-                  | sects ])
-      where
-        <not("main")>main
-      ; <try(check-other-main)>sects
-
-  check-other-main =
-    fetch-elem( Strategies(fetch-elem(is-main)) + Rules(fetch-elem(is-main)) )
-  ; say(!"Adding main strategy even though one is already present!")
-
-  is-main =
-    ?SDef("main", [], _)
-  + ?RDef("main", [], _)
-
-    // note: check not exhaustive (also test SDefT)
-
-strategies
-
-  // building a library
-
-  if-lib(s1, s2) = if <get-config>"--library" then s1 else s2 end
-  if-lib(s)      = if-lib(s, id)
-  if-not-lib(s)  = if-lib(id, s)
-  pass-library   = if-lib(!["--library"], ![])
