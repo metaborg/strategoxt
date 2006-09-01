@@ -213,7 +213,7 @@ strategies
     ; ?[]
 
   m-transform-external-defs(s) = id
-    ; say(!"m-transform-local-defs")
+    //; say(!"m-transform-local-defs")
     ; m-get-all-external-def-sigs
     //; debug(!"local def sigs: ")
     ; filter(not(m-transform-def(s))
