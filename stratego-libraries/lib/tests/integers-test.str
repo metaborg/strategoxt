@@ -9,6 +9,7 @@ strategies
     ; test3
     ; lt-lt-test
     ; string-to-int-tests
+    ; mod-tests
     ; dec-string-test
     ; hex-string-test
     ; bin-string-test
@@ -77,7 +78,18 @@ strategies
       ; succeed(|"+123", 123)
       ; failure(|"0x1")
     end
-                 
+
+strategies
+
+  mod-tests =
+    let succeed(|x, y, z) =
+          apply-test(<conc-strings> ("mod for ", <write-to-string> x, " ", <write-to-string> y), mod, !(x, y), !z)
+
+     in succeed(|5, 2, 1)
+      ; succeed(|4, 2, 0)
+      ; succeed(|5.0, 2.0, 1.0)
+      ; succeed(|4.0, 2.0, 0.0)
+    end
 
 strategies
 

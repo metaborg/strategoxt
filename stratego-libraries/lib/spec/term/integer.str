@@ -78,7 +78,7 @@ strategies
   /**
    * Divides two numbers (integer or real)
    */
-  div   = ?(x,y); (prim("SSL_divi",x,y) <+ prim("SSL_divr",x,y))
+  div = ?(x,y); (prim("SSL_divi",x,y) <+ prim("SSL_divr",x,y))
 
   /**
    * Divides two integers
@@ -93,9 +93,22 @@ strategies
 strategies
 
   /**
-   * Returns the modulo (remainder after division) of two numbers
+   * Returns the modulo (remainder after division) of two integers or reals.
    */
-  mod = ?(x,y); prim("SSL_mod",x,y)
+  mod =
+    modi <+ modr
+
+  /**
+   * Returns the modulo (remainder after division) of two integers
+   */
+  modi =
+    ?(x,y); prim("SSL_modi",x,y)
+
+  /**
+   * Returns the modulo (remainder after division) of two floats
+   */
+  modr =
+    ?(x,y); prim("SSL_modr",x,y)
 
 strategies
 

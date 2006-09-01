@@ -69,11 +69,18 @@ ATerm SSL_divr(ATerm x, ATerm y)
   return((ATerm) ATmakeReal(_get_real(x) / _get_real(y)));
 }
 
-ATerm SSL_mod(ATerm x, ATerm y)
+ATerm SSL_modi(ATerm x, ATerm y)
 { 
-  assert_is_int(x); 
+  assert_is_int(x);
   assert_is_int(y);
   return((ATerm) ATmakeInt(_get_int(x) % _get_int(y)));
+}
+
+ATerm SSL_modr(ATerm x, ATerm y)
+{ 
+  assert_is_real(x);
+  assert_is_real(y);
+  return((ATerm) ATmakeReal(fmod(_get_real(x), _get_real(y))));
 }
 
 ATerm SSL_lti(ATerm x, ATerm y)
