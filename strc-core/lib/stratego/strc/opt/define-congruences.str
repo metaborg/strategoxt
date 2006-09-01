@@ -10,3 +10,7 @@ strategies
       bottomup(repeat(DefineCongruences + Simplify))
       ; simplify
     )
+
+  define-congruences-def =
+    bottomup(repeat(DefineCongruences + Simplify))
+    ; simplify

@@ -334,7 +334,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 # USING INSTALLED STRC ###############################################
 
 %.c: %.str
-	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3
+	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3 
 #--keep 10
 
 %.io: %.ic

@@ -10,7 +10,9 @@ strategies
 
   DeclareConstructorNeeded =
     ?Op(c, _)
-    ; rules(ConstructorNeeded : OpDecl(c, t) -> OpDecl(c, t))
+    ; rules(
+        ConstructorNeeded : OpDecl(c, t) -> OpDecl(c, t)
+      )
 
 
   DeclareConstructorNeeded =

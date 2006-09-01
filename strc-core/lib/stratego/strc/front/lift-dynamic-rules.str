@@ -86,7 +86,7 @@ strategies
 		//; debug(!"expansion: ")
 	        ; <m-rm-def> sig \ }
 
-     in set-from-list(|<bagof-ModDefinition> LocalDefinitions)
+     in m-get-all-local-def-sigs
         //; debug(!"lift-dynamic-rules-from-spec a: ")
         ; listtd(
             //debug(!"lift-dr-from-spec a: ");

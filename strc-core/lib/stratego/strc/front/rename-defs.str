@@ -13,6 +13,13 @@ strategies
     map(RenameSDef);
     map(topdown(try(RenameCall)))
 
+  rename-sdef =
+    RenameSDef
+    ; topdown(try(RenameCall))
+
+  rename-calls =
+    topdown(try(RenameCall))
+
 rules
 
   RenameSDef : 
@@ -20,7 +27,10 @@ rules
     where <length> args1 => n
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
-        ; rules(RenameVar : (x, (n,m)) -> y)
+        ; rules(
+            RenameVar : (x, (n,m)) -> y
+            CallSignature : y -> (y, n, m)
+          )
         ; (<HoArg> x; rules(HoArg :- x)
                    <+ rules(HoArg : x -> y))
 
@@ -29,7 +39,10 @@ rules
     where <length> args1 => n
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
-        ; rules(RenameVar : (x, (n,m)) -> y)
+        ; rules(
+            RenameVar : (x, (n,m)) -> y
+            CallSignature : y -> (y, n, m)
+          )
         ; (<HoArg> x; rules(HoArg :- x )
                    <+ rules(HoArg : x -> y))
 

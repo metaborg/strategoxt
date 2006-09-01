@@ -13,5 +13,5 @@ strategies
   doit(s : t * t -> t) =
     s(|[' '])
 
-  external string-tokenize(|w_66 : ATerm())
-  external string-tokenize(|w_67 : ATerm())
+  external string-tokenize(|x_0 : ATerm)
+  external string-tokenize(|y_0 : ATerm)

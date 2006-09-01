@@ -1,7 +1,8 @@
 module report-ambs
 imports 
+  libstratego-lib
   libstratego-xtc
-  Stratego
+  Stratego-Sugar
 
 signature
   constructors
@@ -10,36 +11,32 @@ signature
 strategies
 
   report-ambs =
-    {| current-definition : 
-        try(where(definition))
-      ; ( report-amb <+ all(report-ambs) )
-    |}
+    report-amb
+    <+ definition(report-ambs)
+    <+ all(report-ambs)
 
-  definition =
-    ( ?SDef(<id>,_,_)
-    + ?SDefNoArgs(<id>,_)
-    + ?SDefT(<id>,_,_,_) 
-    ) => name 
-    ; rules( current-definition : _ -> ("strategy",name) )
+  definition(s) =
+    (?SDef(name,_,_) <+ ?SDefNoArgs(name,_) <+ ?SDefT(name,_,_,_))
+    ; {| current-definition
+       : rules( current-definition : _ -> ("strategy", name) )
+       ; all(s)
+       |}
  
-  definition =
-    ( ?RDef(<id>,_,_)
-    + ?RDefNoArgs(<id>,_)
-    + ?RDefT(<id>,_,_,_) 
-    ) => name 
-    ; rules( current-definition : _ -> ("rule",name) )
+  definition(s) =
+    (?RDef(name,_,_) <+ ?RDefNoArgs(name,_) <+ ?RDefT(name,_,_,_))
+    ; {| current-definition
+       : rules( current-definition : _ -> ("strategy", name) )
+       ; all(s)
+       |}
 
   report-amb =
     ?amb(_) 
-  ; where( current-definition => (type, name) )
-
-  ; xtc-temp-files( 
-      write-to
-    ; xtc-transform(!"pp-stratego",!["--abstract"])
-
-    ; FILE(read-text-file => pp)
-    )
- 
-  ; log(|Error(),["Ambiguity found in ",type, " ",name])
-  ; say(!pp) 
+    ; where( current-definition => (type, name) )
+    ; xtc-temp-files( 
+        write-to
+        ; xtc-transform(!"pp-stratego",!["--abstract"])
+        ; FILE(read-text-file => pp)
+      )
+    ; log(|Error(),["Ambiguity found in ",type, " ",name])
+    ; say(!pp) 
  

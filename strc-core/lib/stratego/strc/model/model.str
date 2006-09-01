@@ -23,6 +23,9 @@ strategies
     ; iset-elements 
     ; where(<iset-destroy> set)
 
+  // TODO: use sets for indices instead of extended rules
+  // remove signatures from these sets when removing elements
+
 strategies // strategy definitions
 
   /**
@@ -36,17 +39,28 @@ strategies // strategy definitions
    * that definitions for a signature are all either local or external.
    * If this is not the case the ExternalDefinitions() and LocalDefinitions()
    * collections become inconsistent.
+
+     Note: Instead of maintaining an index of keys (signatures), the model
+     now relies on the dynamic rule left-hand sides using
+     dr-all-keys. It turned out undoable to maintain an index
+     containing *only* the currently active definitions. It might be
+     doable with a separate iset, but then dynamic rule scopes would
+     no longer be usable. The use of dr-all-keys does simplify the
+     implementation a lot though. A slight disadvantage is that keys
+     that have been undefined stay in the dynamic rule set as
+     undefined, hence the key shows up in the dr-all-keys list; but
+     the list can be simply filtered by checking if the rule is
+     defined on the key. (It might be useful to build this into the
+     semantics of dynamic rules.)
+
    */
 
   m-add-def = ?def
     ; where( sig := <m-def-signature> )
-    ; if <not(ModDefinition)> sig then
-        rules( ModDefinition :+ Definitions() -> sig )
-        ; if <is-external> def then
-            rules( ModDefinition :+ ExternalDefinitions() -> sig )
-          else
-            rules( ModDefinition :+ LocalDefinitions() -> sig )
-          end
+    ; if <is-external> def then
+        rules( IsExternal : sig )
+      else
+        rules( IsLocal : sig )
       end
     ; rules( ModDefinition :+ sig -> def )
 
@@ -54,23 +68,44 @@ strategies // strategy definitions
    * Remove all definitions for a given signature.
    *
    * @type : Signature or Def
+   *
+   * note that sig is not removed from index!
    */ 
 
   m-rm-def = 
     where( sig := <try(m-def-signature)> )
-    ; rules( ModDefinition :- sig )
+    ; rules( 
+        ModDefinition :- sig
+        IsLocal :- sig
+        IsExternal :- sig
+      )
+
+  m-get-all-def-sigs =
+    dr-all-keys(|"ModDefinition")
+    ; filter(where(ModDefinition))
+
+  m-get-all-local-def-sigs =
+    dr-all-keys(|"ModDefinition")
+    ; filter(IsLocal; where(ModDefinition))
+
+  m-get-all-external-def-sigs =
+    dr-all-keys(|"ModDefinition")    
+    ; filter(IsExternal; where(ModDefinition))
 
   m-get-all-definitions =
-    set-from-list(|<bagof-ModDefinition> Definitions())
-    ; mapconcat(bagof-ModDefinition)
+    dr-all-keys(|"ModDefinition")
+    ; filterconcat(bagof-ModDefinition)
 
   m-get-all-local-definitions =
-    set-from-list(|<bagof-ModDefinition> LocalDefinitions())
-    ; mapconcat(ModDefinition)
+    dr-all-keys(|"ModDefinition")    
+    ; filterconcat(IsLocal; bagof-ModDefinition)
 
   m-get-all-external-definitionss =
-    set-from-list(|<bagof-ModDefinition> ExternalDefinitions())
-    ; mapconcat(ModDefinition)
+    dr-all-keys(|"ModDefinition")
+    ; filterconcat(IsExternal; bagof-ModDefinition)
+
+  filterconcat(s) =
+    mapconcat(s <+ ![])
 
   m-reset-defs =
     where(dr-new-rule-set; dr-set-rule-set(|"ModDefinition"))
@@ -79,7 +114,7 @@ strategies
 
   m-call-signature =
     try(Desugar)
-    ; \CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
+    ; \CallT(SVar(f), as1, as2) -> [(f, <length> as1, <length> as2)]\
 
   m-def-signature =
     try(Desugar)
@@ -96,25 +131,19 @@ strategies // constructors
 
   m-add-constructor = ?cdec//; debug(!"m-add-constructor: ")
     ; where( csig := <m-constr-signature> ) //; debug(!"signature: "))
-    ; if <not(ModConstructor)> csig then
-        rules( 
-          ModConstructor :+ Constructors() -> csig
-          ModConstructor : csig -> cdec 
-        )
-      end
+    ; rules( ModConstructor : csig -> cdec )
 
-  m-replace-constructor = ?odec
-   ; where( osig := <m-constr-signature> )
-    ; if <not(ModConstructor)> osig then
-        rules( 
-          ModConstructor :+ Constructors() -> osig
-        )
-      end
-      ; rules( ModConstructor : osig -> odec )
+  m-rm-constructor = id
+    ; where( csig := <try(m-constr-signature)> )
+    ; rules( ModConstructor :- csig )
+
+  m-get-all-constructors-sigs =
+    dr-all-keys(|"ModConstructor")
+    ; filter(where(ModConstructor))
 
   m-get-all-constructors =
-    set-from-list(|<bagof-ModConstructor> Constructors())
-    ; map(ModConstructor)
+    dr-all-keys(|"ModConstructor")
+    ; filter(ModConstructor)
 
 strategies
 
@@ -142,30 +171,15 @@ strategies // overlays
  
   m-add-overlay = ?odec//; debug(!"m-add-overlay: ")
    ; where( osig := <m-overlay-signature> )
-    ; if <not(ModOverlay)> osig then
-        //debug(!"adding overlay: ");
-        rules( 
-          ModOverlay :+ Overlays() -> osig
-          ModOverlay : osig -> odec 
-        )
-      end
-
-  m-replace-overlay = ?odec
-   ; where( osig := <m-overlay-signature> )
-    ; if <not(ModOverlay)> osig then
-        rules( 
-          ModOverlay :+ Overlays() -> osig
-        )
-      end
-      ; rules( ModOverlay : osig -> odec )
+   ; rules( ModOverlay : osig -> odec )
 
   m-overlay-signature =
     try(Desugar)
     ; \ Overlay(c, xs, t) -> (c, <length> xs) \
 
   m-get-all-overlays =
-    set-from-list(|<bagof-ModOverlay> Overlays())
-    ; map(ModOverlay)
+    dr-all-keys(|"ModOverlay")
+    ; filter(ModOverlay)
 
 strategies
 
@@ -176,48 +190,67 @@ strategies
    */
 
   m-transform(s) =
-    {| ModDefinition, ModConstructor
+    {| ModDefinition, ModConstructor, ModOverlay, IsExternal, IsLocal
      : to-model
      ; s
      ; model-to-spec
      |}
 
-  m-transform-local-defs(s) =
-    set-from-list(|<bagof-ModDefinition> LocalDefinitions)
-    ; filter(not(m-transform-local-def(s))) => []
+  m-transform-no-overlays(s) =
+    {| ModDefinition, ModConstructor, ModOverlay, IsExternal, IsLocal
+     : to-model
+     ; s
+     ; model-to-spec-no-overlays
+     |}
 
-  m-transform-local-def(s) =
-    where(?sig
+  m-transform-local-defs(s) = id
+    //; say(!"m-transform-local-defs")
+    ; m-get-all-local-def-sigs
+    //; debug(!"local def sigs: ")
+    ; filter(not(m-transform-def(s))
+             ; debug(!"*** warning (m-transform-local-defs): "))
+    //; debug(!"transformed: ")
+    ; ?[]
+
+  m-transform-external-defs(s) = id
+    ; say(!"m-transform-local-defs")
+    ; m-get-all-external-def-sigs
+    //; debug(!"local def sigs: ")
+    ; filter(not(m-transform-def(s))
+             ; debug(!"*** warning (m-transform-external-defs): "))
+    //; debug(!"transformed: ")
+    ; ?[]
+
+  m-transform-def(s) =
+    where(id
+    //; debug(!"m-transform-local-def a: ")
     ; bagof-ModDefinition
-    ; where(<m-rm-def> sig)
+    //; debug(!"m-transform-local-def b: ")
+    ; [m-rm-def|id]
+    //; debug(!"m-transform-local-def c: ")
     ; s
+    //; debug(!"m-transform-local-def d: ")
     ; map(m-add-def)
+    //; debug(!"m-transform-local-def e: ")
     )
 
   m-transform-overlays(s) =
-    set-from-list(|<bagof-ModOverlay> Overlays())
+    m-get-all-overlays
     ; filter(not(m-transform-overlay(s))) => []
 
   m-transform-overlay(s) =
-    where(?osig
-    ; ModOverlay
-    ; s
-    ; m-replace-overlay
-    )
+    where(s; m-add-overlay)
 
   m-transform-constructors(s) =
-    set-from-list(|<bagof-ModConstructor> Constructors())
+    m-get-all-constructors
     ; filter(not(m-transform-constructor(s))) => []
 
   m-transform-constructor(s) =
-    where( ModConstructor; s; m-replace-constructor )
+    where(m-rm-constructor; s; m-add-constructor)
 
   m-declare-constructors(s) =
-    set-from-list(|<bagof-ModConstructor> Constructors())
-    ; map(m-declare-constructor(s))
-
-  m-declare-constructor(s) =
-    where( ModConstructor; s )
+    m-get-all-constructors
+    ; map(s)
 
 strategies
 
@@ -225,6 +258,12 @@ strategies
     !Specification(
        [Signature([Constructors(<m-get-all-constructors>)]),
         Overlays(<m-get-all-overlays>),
+        Strategies(<m-get-all-definitions>)]
+     )
+
+  model-to-spec-no-overlays = 
+    !Specification(
+       [Signature([Constructors(<m-get-all-constructors>)]),
         Strategies(<m-get-all-definitions>)]
      )
 
