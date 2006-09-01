@@ -148,19 +148,23 @@ ATerm SSL_int_to_string(ATerm x)
   return((ATerm) ATmakeString(buf));
 }
 
-ATerm SSL_string_to_int(ATerm x)
+ATerm SSL_string_to_int(ATerm t)
 { 
-  char *s, *p;
-  int k;
-  if(!ATmatch(x, "<str>", &s))
-    _fail(x);
+  const char *s = NULL;
+  char *end = NULL;
+  int k = 0;
 
+  if(!ATisString(t)) {
+    _fail(t);
+  }
+
+  s = AT_getString(t);
   errno = 0;
-  k = strtol(s, &p, 10);
-  if (*p || errno)
+  k = strtol(s, &end, 10);
+
+  if(*end || end == s || errno) {
     _fail(x);
+  }
 
   return((ATerm) ATmakeInt(k));
 }
-
-

@@ -8,6 +8,7 @@ strategies
     ; test2
     ; test3
     ; lt-lt-test
+    ; string-to-int-tests
     ; dec-string-test
     ; hex-string-test
     ; bin-string-test
@@ -47,6 +48,38 @@ strategies
 	, !("3","5")
 	, !("3","5")
 	)
+
+strategies
+
+  string-to-int-tests =
+    let failure(|s) =
+          apply-and-fail(<conc-strings> ("string-to-int fails for ", <write-to-string> s), string-to-int, !s)
+
+        succeed(|s, x) =
+          apply-test(<conc-strings> ("string-to-int: ", <write-to-string> s), string-to-int, !s, !x)
+
+     in failure(|"")
+      ; failure(|" ")
+      ; failure(|"   ")
+      ; succeed(|"0", 0)
+      ; succeed(|"10", 10)
+      ; succeed(|"101", 101)
+      ; succeed(|" 0", 0)
+      ; failure(|"0 ")
+      ; failure(|"a")
+      ; failure(|"abc")
+      ; failure(|"1abc")
+      ; failure(|"abc1")
+      ; failure(|" 1 abc")
+      ; succeed(|"-1", -1)
+      ; succeed(|" -1", -1)
+      ; succeed(|"+1", 1)
+      ; succeed(|"+123", 123)
+      ; failure(|"0x1")
+    end
+                 
+
+strategies
 
   lt-lt-test =
       apply-test(    !"x <= y <= z a", leq-leq, !(2, 3, 4), !(2, 3, 4))
