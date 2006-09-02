@@ -16,7 +16,10 @@ strategies
    */
 
   declare-inline-rules =
-    alltd(Strategies(map(try(declare-inline-rule))))
+    alltd(
+      Strategies(map(try(declare-inline-rule)))
+      ; try(add-bottomup)
+    )
 
   declare-inline-rule = 
     ?|[ f(a1*|a2*) = s1 ]|;
@@ -36,6 +39,16 @@ strategies
 	<+ Scope(id, Seq(Match(id), id))
 	<+ InlineStrat; x
     ))
+
+  add-bottomup :
+    Strategies(def*) -> Strategies([def | def*])
+    where <not(InlineStrat)> Strategy|[ bottomup_1_0(foo(|)) ]|
+	; def := |[
+            bottomup_1_0(S : ATerm -> ATerm|) =
+              all(bottomup_1_0(S(|)|)); S(|)
+          ]|
+
+    
 
 strategies
 
