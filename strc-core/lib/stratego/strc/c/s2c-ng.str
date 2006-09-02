@@ -1006,6 +1006,8 @@ rules
                , ~exp*:<map(construct-term)>t*
              )
     ]|
+    where
+      not(is-ListOp)
 
   ConstructTerm :
     Explode(t1, t2) -> 
