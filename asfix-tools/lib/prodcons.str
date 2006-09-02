@@ -48,30 +48,33 @@ rules
 
   prodcons :
     p -> <at-cons(<uq2q> c)> p
-    where <get-constr> p => c
+    where
+      c := <get-constr> p
 
   prodcons :
-    p -> <add-attributes>(p, [term(cons(<mk-constr> p))])
-    where <not(get-constr + is-bracket + is-reject + is-injection)> p 
+    p -> <add-attributes> (p, [term(cons(<mk-constr> p))])
+    where
+      <not(get-constr + is-bracket + is-reject + is-injection)> p 
 
   mk-constr :
-    prod([],sym,_) -> c
-    where <conc;strs2constr>(<syms2strs>[sym],["empty"]) => c
+    prod([], sym, _) -> c
+    where
+      c := <conc; strs2constr> (<syms2strs>[sym], ["empty"])
 
   mk-constr :
-    prod(syms,sym,_) -> c
-    where <lits2strs; strs2constr> syms => c
-       <+ <conc;strs2constr>(<syms2strs>[sym],<lits2strs;empty-test>syms) => c
-       <+ <syms2strs;strs2constr> syms => c
-       <+ <conc;strs2constr>(<syms2strs>[sym],["dunno",<new>()]) => c
+    prod(syms, sym, _) -> c
+    where
+      <lits2strs; strs2constr> syms => c
+      <+ <conc;strs2constr>(<syms2strs>[sym],<lits2strs;empty-test>syms) => c
+      <+ <syms2strs; strs2constr> syms => c
+      <+ <conc;strs2constr>(<syms2strs>[sym],["dunno",<new>()]) => c
 
   mk-constr :
-    prod-fun(c,_,_,_) 	-> <normalize-constr>c
+    prod-fun(c, _, _, _) -> <normalize-constr> c
 
   mk-constr' :
-    prod(syms,sym,_)	-> c
+    prod(syms, sym,_)	-> c
     where <conc;strs2constr>(<syms2strs>[sym],["dunno",<new>()]) => c
-
 
 strategies
 
@@ -80,14 +83,16 @@ strategies
           ; Hd
           )
 
-  strs2constr
-    = filter(not(empty-string))
+  strs2constr =
+    filter(not(empty-string))
     ; Cons(test(string-Hd;is-alpha),id) /*First char of first string is Alpha*/
     ; separate-by(!"-")
     ; concat-strings
-
-; ?s;<not(is-subterm)>(s,["START","LCons","SCons","some","all","id","Cons","Nil","TCons","TNil","NL","L","Bracket"])
-    ; !s;escape;double-quote
+    ; ?s
+    ; <not(is-subterm)> (s, ["START","LCons","SCons","some","all","id","Cons","Nil","TCons","TNil","NL","L","Bracket"])
+    ; !s
+    ; escape
+    ; double-quote
 
   string-Hd
     = explode-string;Hd
@@ -109,9 +114,7 @@ strategies
    */
   is-injection =
     prod([syntaxless-sort], id, id)
-  ; where(
-      <get-config> "--injections"
-    )
+    ; where(<get-config> "--injections")
 
   syntaxless-sort =
     rec x(
@@ -123,44 +126,55 @@ rules
 
   get-constr :
     prod(syms,sym,as) -> c
-    where <oncetd(?cons(c))> as
+    where
+      <oncetd(?cons(c))> as
+
   get-constr :
     prod-fun(f,syms,sym,as) -> c
-    where <oncetd(?cons(c))> as
+    where
+      <oncetd(?cons(c))> as
 
   get-mod:
     prod(syms,sym,as) -> c
-    where <oncetd(?'id(c))> as
+    where
+      <oncetd(?'id(c))> as
+
   get-mod:
     prod-fun(f,syms,sym,as) -> c
-    where <oncetd(?'id(c))> as
+    where
+      <oncetd(?'id(c))> as
 
   is-bracket :
     prod(syms,sym,as) -> ()
-    where <oncetd(?bracket())> as
+    where
+      <oncetd(?bracket())> as
+
   is-bracket :
     prod-fun(f,syms,sym,as) -> ()
-    where <oncetd(?bracket())> as 
+    where
+      <oncetd(?bracket())> as 
 
   is-reject :
     prod(syms,sym,as) -> ()
-    where <oncetd(?reject())> as
+    where
+      <oncetd(?reject())> as
+
   is-reject :
     prod-fun(f,syms,sym,as) -> ()
-    where <oncetd(?reject())> as 
+    where
+      <oncetd(?reject())> as 
 
   add-attributes :
-    (prod(syms,sym,no-attrs()),as)
-	-> prod(syms,sym,attrs(as))
+    (prod(syms,sym,no-attrs()),as) -> prod(syms,sym,attrs(as))
+
   add-attributes :
-    (prod(syms,sym,attrs(as')),as)
-	-> prod(syms,sym,attrs(<conc>(as',as)))
+    (prod(syms,sym,attrs(as')),as) -> prod(syms,sym,attrs(<conc>(as',as)))
+
   add-attributes :
-    (prod-fun(fun,syms,sym,no-attrs()),as)
-	-> prod-fun(fun,syms,sym,attrs(as))
+    (prod-fun(fun,syms,sym,no-attrs()),as) -> prod-fun(fun,syms,sym,attrs(as))
+
   add-attributes :
-    (prod-fun(fun,syms,sym,attrs(as')),as)
-	-> prod-fun(fun,syms,sym,attrs(<conc>(as',as)))
+    (prod-fun(fun,syms,sym,attrs(as')),as) -> prod-fun(fun,syms,sym,attrs(<conc>(as',as)))
 
 strategies
 
@@ -170,4 +184,3 @@ strategies
     ; test(not(at-last(?[34]))) /* last char is NOT double-quote */
     ; <concat> [[34], <id>, [34]]
     ; implode-string
-

@@ -14,7 +14,7 @@ TESTS         	 = sdf_cons_check sdf_cons_injections_check
 CLEANFILES  	 = sdf_cons_check sdf_cons_injections_check $(wildcard *.dep)
 
 SCFLAGS = --main io-$*
-STRINCLUDES = -I $(ASFIX_TOOLS)/share/asfix-tools 
+STRINCLUDES = -I ../../../asfix-tools/lib
 
 sdf_cons_check_prog    = sdf-cons
 sdf_cons_check_input   = data/test1.sdf.af

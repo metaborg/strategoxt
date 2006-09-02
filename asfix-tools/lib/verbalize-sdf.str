@@ -5,31 +5,39 @@ imports
 
 strategies
 
-  syms2strs 
-    = filter(sym2strs)
+  syms2strs =
+    filter(sym2strs)
     ; concat
 
-  sym2strs
-    = Sym2Strs; map(toAlphaNum <+ id)
+  sym2strs =
+    Sym2Strs
+    ; map(try(toAlphaNum))
 
-  sym2str
-    = sym2strs;concat-strings
+  sym2str =
+    sym2strs
+    ; concat-strings
 
-  sym2str' /* Same as sym2str, except literals and labels are ignored) */
-    = Sym2Strs'; map(toAlphaNum <+ id); concat-strings; not(?"")
+  /**
+   * Same as sym2str, except literals and labels are ignored)
+   */
+  sym2str' =
+    Sym2Strs'
+    ; map(toAlphaNum <+ id)
+    ; concat-strings
+    ; not(?"")
 
-  lits2strs 
-    = filter(lit2str)
+  lits2strs =
+    filter(lit2str)
 
-  lit2str
-    = list-ana(Lit2Str)
+  lit2str =
+    list-ana(Lit2Str)
     ; separate-by(!"-")
     ; concat-strings
-    ; (toAlphaNum <+ id)
+    ; try(toAlphaNum)
 
-  Lit2Str
-    = \lit(str)	-> <try(un-double-quote;unescape)>str\
 
+  Lit2Str :
+    lit(str) -> <try(un-double-quote;unescape)> str
 
 strategies
 
@@ -54,7 +62,10 @@ strategies
   + \ layout			-> ["LAYOUT"] \
   )
 
-  Sym2Strs' = rec x( /* Same as Sym2Strs, except that literals and labels are ignored */
+  /**
+   * Same as Sym2Strs, except that literals and labels are ignored
+   */
+  Sym2Strs' = rec x(
     \ cf(sym)			-> <x> sym \
   + \ lex(sym)			-> <x> sym \
   + \ empty()			-> ["unit"] \
@@ -97,52 +108,62 @@ strategies
   )
 
 rules
-  toAlphaNum :	","	-> "comma"
-  toAlphaNum :	":"	-> "colon"
-  toAlphaNum :	";"	-> "semicolon"
-  toAlphaNum : 	"+"	-> "plus"
-  toAlphaNum : 	"++"	-> "incr"
-  toAlphaNum :  "-"	-> "minus"
-  toAlphaNum : 	"--"	-> "decr"
-  toAlphaNum :  "*"	-> "times"
-  toAlphaNum :  "/"	-> "div"
-  toAlphaNum :  "&"	-> "address"
-  toAlphaNum :  "&&"	-> "and"
-  toAlphaNum :  "!"	-> "not"
-  toAlphaNum :  "-"	-> "minus"
-  toAlphaNum :  "~"	-> "tilde"
 
-  toAlphaNum :  "%"	-> "mod"
-  toAlphaNum :  "<<"	-> "shift-left"
-  toAlphaNum :  ">>"	-> "shift-right"
-  toAlphaNum :  "!="	-> "not-equal"
+  /**
+   * @note This order of application is rather strange (I don't think the fancy 
+   *   alphaNum can ever be invoked) but, this seems to have been the order of 
+   *   application. The rules are ambigious so we force the rule into this order 
+   *   of application.
+   */
+  toAlphaNum =
+    toAlphaNumGeneric <+ toAlphaNumFancy
 
-  toAlphaNum :	"<"	-> "lt"
-  toAlphaNum :	"<="	-> "le"
-  toAlphaNum :  ">"	-> "gt"
-  toAlphaNum :  ">="	-> "ge"
-  toAlphaNum :  "|"     -> "bar"
-  toAlphaNum :  "="	-> "equal"
-  toAlphaNum :  "=="	-> "equal"
-  toAlphaNum :  "||"    -> "or"
-  toAlphaNum :  ":="	-> "assign"
-  toAlphaNum :	"->"	-> "rightarrow"
-  toAlphaNum :  "=>"    -> "rightdoublearrow"
+  toAlphaNumFancy : ","	-> "comma"
+  toAlphaNumFancy : ":"	-> "colon"
+  toAlphaNumFancy : ";"	-> "semicolon"
+  toAlphaNumFancy : "+"	-> "plus"
+  toAlphaNumFancy : "++" -> "incr"
+  toAlphaNumFancy :  "-" -> "minus"
+  toAlphaNumFancy : "--" -> "decr"
+  toAlphaNumFancy : "*"	-> "times"
+  toAlphaNumFancy : "/"	-> "div"
+  toAlphaNumFancy : "&"	-> "address"
+  toAlphaNumFancy : "&&" -> "and"
+  toAlphaNumFancy : "!"	-> "not"
+  toAlphaNumFancy : "-"	-> "minus"
+  toAlphaNumFancy : "~"	-> "tilde"
 
-  toAlphaNum :  "*="    -> "assignMul" 
-  toAlphaNum :  "/="    -> "assignDiv" 
-  toAlphaNum :  "%="    -> "assignMod" 
-  toAlphaNum :  "+="    -> "assignPlus" 
-  toAlphaNum :  "-="    -> "assignMin" 
-  toAlphaNum :  "<<="   -> "assignSL" 
-  toAlphaNum :  ">>="   -> "assignSR" 
-  toAlphaNum :  "&="    -> "assignAnd" 
-  toAlphaNum :  "^="    -> "assignExp" 
-  toAlphaNum :  "|="    -> "assignOr" 
+  toAlphaNumFancy : "%"	-> "mod"
+  toAlphaNumFancy : "<<" -> "shift-left"
+  toAlphaNumFancy : ">>" -> "shift-right"
+  toAlphaNumFancy : "!=" -> "not-equal"
 
-  toAlphaNum :	xs	-> ""
+  toAlphaNumFancy : "<"  -> "lt"
+  toAlphaNumFancy : "<=" -> "le"
+  toAlphaNumFancy : ">"	 -> "gt"
+  toAlphaNumFancy : ">=" -> "ge"
+  toAlphaNumFancy : "|"  -> "bar"
+  toAlphaNumFancy : "="  -> "equal"
+  toAlphaNumFancy : "==" -> "equal"
+  toAlphaNumFancy : "||" -> "or"
+  toAlphaNumFancy : ":=" -> "assign"
+  toAlphaNumFancy : "->" -> "rightarrow"
+  toAlphaNumFancy : "=>" -> "rightdoublearrow"
+
+  toAlphaNumFancy :  "*=" -> "assignMul" 
+  toAlphaNumFancy :  "/=" -> "assignDiv" 
+  toAlphaNumFancy :  "%=" -> "assignMod" 
+  toAlphaNumFancy :  "+=" -> "assignPlus" 
+  toAlphaNumFancy :  "-=" -> "assignMin" 
+  toAlphaNumFancy :  "<<=" -> "assignSL" 
+  toAlphaNumFancy :  ">>=" -> "assignSR" 
+  toAlphaNumFancy :  "&=" -> "assignAnd" 
+  toAlphaNumFancy :  "^=" -> "assignExp" 
+  toAlphaNumFancy :  "|=" -> "assignOr" 
+
+  toAlphaNumGeneric : xs -> ""
   where
-    <explode-string;not(map(is-alphanum + '-'))>xs
+    <explode-string; not(map(is-alphanum + '-'))> xs
 
 strategies
 
@@ -152,9 +173,19 @@ strategies
            <+ Cons(id, \ tl -> Cons(<s>tl,<x>tl) \)
            )
 
-  list-ana(s)
-    = rec x((s;Singleton) <+ {xs:?_#(xs);!xs;filter(x);concat} <+ !Nil)
-  
+  list-ana(s) =
+    rec x(
+       (s;Singleton)
+
+    <+ {xs:
+         ?_#(xs)
+         ; !xs
+         ; filter(x)
+         ; concat
+       }
+    <+ ![]
+    )
+
   tfilter(s)
     = rec x(TNil + (TCons(s,x) <+ tTl ; x))
 
