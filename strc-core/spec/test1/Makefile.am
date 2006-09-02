@@ -4,7 +4,7 @@ SINCLUDES = \
   -I $(top_srcdir)/lib
 
 AM_LDFLAGS = -L$(prefix)/lib -L$(ATERM)/lib $(STR_LDFLAGS)
-AM_CFLAGS = -I$(prefix)/include -I$(ATERM)/include $(STR_CFLAGS)
+AM_CFLAGS = -I$(prefix)/include -I$(ATERM)/include $(STR_CFLAGS) -Werror
 
 STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib

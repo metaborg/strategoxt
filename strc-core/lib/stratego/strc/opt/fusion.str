@@ -42,7 +42,7 @@ strategies
 
   add-bottomup :
     Strategies(def*) -> Strategies([def | def*])
-    where <not(InlineStrat)> Strategy|[ bottomup_1_0(foo(|)) ]|
+    where <not(InlineStrat)> Strategy|[ bottomup_1_0(foo(|)|) ]|
 	; def := |[
             bottomup_1_0(S : ATerm -> ATerm|) =
               all(bottomup_1_0(S(|)|)); S(|)
