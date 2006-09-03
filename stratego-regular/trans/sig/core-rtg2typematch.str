@@ -5,6 +5,7 @@
  */
 module core-rtg2typematch
 imports libstratego-lib Stratego rtg module-option stratego-rtg
+	core-rtg2sig
 
 strategies
 

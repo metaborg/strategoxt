@@ -1,5 +1,6 @@
 module tool-doc2abox
 imports tool-doc Box libstratego-lib
+	libstratego-xtc
 
 strategies
 
