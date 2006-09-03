@@ -133,9 +133,7 @@ strategies
             case ?FILE(file) : 
                  <copy-file>(file, ".")
             case ?Dir(dir, files) : 
-	         compute-in-dir(<base-filename> dir,
-                   <map(cp)> files
-                 )
+	         compute-in-dir(<map(cp)> files | <base-filename> dir)
             case id : 
                  debug(!"not a file or directory: ")
             end
