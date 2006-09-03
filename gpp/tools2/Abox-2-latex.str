@@ -62,10 +62,10 @@ strategies
     ; map( \ [s1, s2] -> <table-put> ("latex-abbrevs", s1, s2) \ )
     ))
 
-  abox2latex = (id, load-latex-table
-                    ; topdown(try(Abox2latex))
-                    ; <latex2text> BOXENV(<BOXENV-args>, <id>);
-                      collect-set(is-string); concat-strings)
+//  abox2latex = (id, load-latex-table
+//                    ; topdown(try(Abox2latex))
+//                    ; <latex2text> BOXENV(<BOXENV-args>, <id>);
+//                      collect-set(is-string); concat-strings)
 
   try-abox2alltt(|xpos) =
     where(<get-config> "--width" => width);

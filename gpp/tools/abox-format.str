@@ -55,8 +55,8 @@ strategies
   S-Option =
     SOpt (Space-Symbol , is-string)
 
-  SOptb =
-    SOptb ( Space-Symbol , Box)
+//  SOptb =
+//    SOptb ( Space-Symbol , Box)
 
  Space-Symbol =
     VS + HS + IS

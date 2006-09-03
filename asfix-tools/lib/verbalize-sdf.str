@@ -186,8 +186,8 @@ strategies
     <+ ![]
     )
 
-  tfilter(s)
-    = rec x(TNil + (TCons(s,x) <+ tTl ; x))
+//  tfilter(s)
+//    = rec x(TNil + (TCons(s,x) <+ tTl ; x))
 
 rules
 

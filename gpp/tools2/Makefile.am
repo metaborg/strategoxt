@@ -5,7 +5,7 @@ bin_PROGRAMS     = asfix2abox abox2html abox2latex
 libexec_PROGRAMS = Asfix-2-abox Abox-2-html Abox-2-latex
 pkgdata_DATA     = boxstyle.css
 
-STRCFLAGS = --main io-$*
+STRCFLAGS = --main io-$* 
 STRINCLUDES = \
   -I $(XTC)/share/xtc \
   -I $(top_srcdir)/sig/pp-table \
