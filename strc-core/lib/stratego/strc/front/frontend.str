@@ -2,10 +2,6 @@
  * An xtc-less implementation of the compiler front-end.
  */
 
-// todo: check that all used strategies are defined
-
-// todo: eliminate strategies that are not used (needed defs)
-
 module frontend
 
 imports
@@ -13,239 +9,161 @@ imports
 
 strategies
 
-  frontend = id
-    //; if-not-lib(add-main)
-    //; repair-types			
-    // ; tfc6(|"Stratego-Sugar-Cong", "fe-rep") // locals
-    //; pre-desugar			
-    // ; tfc2(|"Stratego-Sugar-1", "fe-des1")   // local
+  frontend = 
+    m-transform-no-overlays(id
 
-    //; debug(!"frontend a: ")
-    ; m-transform-no-overlays(id
-       //; debug(!"frontend b: ")
-       ; if-not-lib(m-add-main)
-       //; debug(!"frontend c1: ")
+      // add some definitions and constructors
 
-       ; m-add-anno-cong-def
+      ; if-not-lib(m-add-main)
+      ; m-add-anno-cong-def
+      ; where(dr-constructors; map(m-add-constructor))
 
-       //; debug(!"frontend c2: ")
+      // desugar and check constructors
 
-       ; where(dr-constructors; map(m-add-constructor))
+      ; m-transform-constructors(id
+          ; pre-desugar
+          ; try(DeclareVarToConst)
+	  ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
+          ; GenerateCheckRule
+          ; try(where(m-MkCongDef; m-add-def))
+        )
 
-       //; debug(!"frontend c3: ")
+      // desugar and check overlays
 
-       ; m-transform-constructors(id
-	   //; debug(!"transform constr a: ")
-           ; pre-desugar
-	   //; debug(!"transform constr b: ")
-           ; try(DeclareVarToConst)
-	   //; debug(!"transform constr c: ")
-	   ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
-	   //; debug(!"transform constr d: ")
-           ; GenerateCheckRule
-	   //; debug(!"transform constr e: ")
-           ; try(where(m-MkCongDef; m-add-def))
-	   //; debug(!"transform constr f: ")
-         )
+      ; m-transform-overlays(id
+          ; pre-desugar
+          ; try(DeclareVarToConst)
+        )
 
-       //; debug(!"frontend c4: ")
+      ; m-transform-overlays(id
+          ; m-variables-to-constructors-in-def
+          ; pre-desugar
+          ; not(def-use-def)
+          ; raise-annotations
+          ; GenerateCheckRule
+          ; DeclareExpandOverlay
+          ; where(Overlay-to-Congdef; m-add-def)
+        )
 
-       ; m-transform-overlays(id
-           ; pre-desugar
-           ; try(DeclareVarToConst)
-         )
+      ; m-transform-overlays(
+          not(check-constructors)
+        )
 
-       ; m-transform-overlays(id
-           //; debug(!"frontend c5: ")
-           ; m-variables-to-constructors-in-def
-           //; debug(!"frontend c4: ")
-           ; pre-desugar
-           //; debug(!"frontend c5: ")
-           ; not(def-use-def)
-           //; debug(!"frontend c6: ")
-           ; raise-annotations
-           //; debug(!"frontend c7: ")
-           ; GenerateCheckRule
-           //; debug(!"frontend c8: ")
-           ; DeclareExpandOverlay
-           //; debug(!"frontend c9: ")
-           ; where(Overlay-to-Congdef; m-add-def)
-           //; debug(!"frontend c10: ")
-         )
+      // transform and check local definitions
 
-       ; m-transform-overlays(
-           not(check-constructors)
-         )
+      ; m-transform-local-defs(map(id
+          ; m-repair-types
+          ; pre-desugar		
+          ; raise-annotations
+        ))
 
-       //; debug(!"frontend d: ")
+      ; m-lift-dynamic-rules-from-spec 
 
-       ; m-transform-local-defs(map(id
-	   //; debug(!"frontend e: ")
-           ; m-repair-types
-	   //; debug(!"frontend f: ")
-           ; pre-desugar		
-	         //; debug(!"frontend g: ")
-                 //; m-variables-to-constructors-in-def
-	         //; debug(!"frontend h: ")
-                 //; define-lrules
-	   //; debug(!"frontend i: ")
-           ; raise-annotations
-	   //; debug(!"frontend j: ")
-         ))
+      ; check-calls
 
-       //; debug(!"frontend k: ")	
+      ; m-transform-local-defs(
+          map(id
+            ; stratego-desugar
+            ; raise-annotations
+	    ; not(def-use-def)
+            ; not(check-constructors)
+            ; expand-overlays-in-def
+            ; rules-to-sdefs-def
+            ; desugar-list-matching
+	    ; desugar-DefaultVarDec
+            ; strename
+            ; desugar-def
+          )
+        )
 
-     //; tfc3(|"Stratego-Sugar-1", "fe-vtc")
+      ; m-transform-local-defs(id
+          ; ![<joindefs>] 
+          ; [RenameSDef]
+        )
 
-     //; combine-sections		
-     //; tfc3(|"Stratego-Sugar-1", "fe-comb")   // global reorganization
-     //; variables-to-constructors	
-     // ; tfc3(|"Stratego-Sugar-1", "fe-vtc")	 // global analysis
-     //; raise-annotations		
-     // ; tfc2(|"Stratego-Sugar-2", "fe-ra1")    // local
-     //; define-lrules			
-     // ; tfc3(|"Stratego-Sugar-2", "fe-dlr")    // local
-     // ; LiftDynamicRules	// semi-local
- 
-       ; m-lift-dynamic-rules-from-spec 
+      ; m-transform-external-defs(id
+          ; if ?[_,_|_] then
+              warn(|"multiple external definitions with same signature")
+	      ; [id | ![]]
+            end
+          ; [RenameSDef
+             ; desugar-DefaultVarDec
+            ]
+        )
 
-       //; debug(!"frontend l: ")
-
-       ; m-transform-local-defs(
-           map(id
-             //; debug(!"frontend m: ")	
-             ; stratego-desugar
-             //; debug(!"frontend o: ")	
-             ; raise-annotations
-             //; debug(!"frontend p: ")
-	     ; not(def-use-def)
-             //; debug(!"frontend q: ")
-             ; not(check-constructors)
-             //; debug(!"frontend r: ")
-             ; expand-overlays-in-def
-             //; debug(!"frontend s: ")
-             ; rules-to-sdefs-def
-             //; debug(!"frontend t: ")
-             ; desugar-list-matching
-             //; debug(!"frontend u: ")
-	     ; desugar-DefaultVarDec
-             //; debug(!"frontend v: ")
-             ; strename
-             //; debug(!"frontend w: ")
-             ; desugar-def
-             //; debug(!"frontend x: ")
-             ; check-calls
-           )
-         )
-
-       ; m-transform-local-defs(id
-           //; debug(!"frontend y: ")
-           ; ![<joindefs>] 
-           //; debug(!"frontend z: ")
-           // ; stratego-warnings	
-           ; [id
-              //; debug(!"frontend a: ")
-              ; RenameSDef
-              //; debug(!"frontend b: ")
-             ]
-             //; debug(!"frontend e: ")
-         )
-
-       ; m-transform-external-defs(id
-           ; if ?[_,_|_] then
-                 warn(|"multiple external definitions with same signature")
-	         ; [id | ![]]
-               end
-	     //; debug(!"before renaming sdef: ")
-             ; [RenameSDef
-		//; debug(!"sdef renamed: ")
-                ; desugar-DefaultVarDec
-		//; debug(!"after desugar-DefaultVarDec: ")
-               ]
-         )
-
-       ; m-transform-local-defs(
-             [id
-              //; debug(!"frontend f: ")
-              ; rename-calls
-              //; debug(!"frontend g: ")
-              ; simplify
-              //; debug(!"frontend h: ")
-	      ; define-congruences-def
-              //; debug(!"frontend i: ")
-             ]
-         )
+      ; m-transform-local-defs(
+          [rename-calls
+           ; simplify
+	   ; define-congruences-def
+          ]
+        )
               
-       ; if-not-lib(remove-unused-defs)
-
-           //; debug(!"frontend j: ")
+      ; if-lib(remove-unused-external-defs, remove-unused-defs)
     )
-    //; debug(!"frontend k: ")
-
-    //; stratego-desugar		// local
-    //; raise-annotations			
-    //; tfc2(|"Stratego-Sugar-3", "fe-ra2")	 // local
-    //; spec-use-def		// local analysis (earlier)
-    // ; CheckConstructors			
-    //; tfc4(|"Stratego-Sugar-3", "fe-cc")	 // global analysis (earlier)
-    // ; tfc1(|"Stratego-Sugar-3", "fe-cc")
-    //; ExpandOverlays			
-    // ; tfc3(|"Stratego-Sugar-3", "fe-eo")     // global		
-    //; debug(!"frontend s: ")	
-    //; rules-to-sdefs			
-    //; tfc3(|"Stratego-Sugar-3", "fe-rts")    // local		
-    //; debug(!"frontend t: ")	
-    //; desugar-list-matching		
-    // ; tfc2(|"Stratego-Sugar-4", "fe-dlm")    // local
-    //; debug(!"frontend u: ")	
-    //; desugar-DefaultVarDec		
-    // ; tfc3(|"Stratego-Sugar-4", "fe-ddv")    // local
-    //; debug(!"frontend v: ")	
-    //; introduce-congdefs		
-    //; tfc3(|"Stratego-Sugar-4", "fe-cdf")    // global
-    //; debug(!"frontend w: ")	
-    //; strename // rename-vars		
-    //; tfc3(|"Stratego-Sugar-4", "fe-rnv")    // local (?)
-    //; debug(!"frontend x: ")	
-    //; desugar-top 			
-    //; tfc2(|"Stratego-Sugar-5", "fe-des")    // local
-    //; debug(!"frontend y: ")	
-    //; if-lib(extract-all, extract)	
-    //; tfc3(|"Stratego-Sugar-5", "fe-extr")	 // global
- // ; stratego-warnings			
-    //; tfc5(|"Stratego-Sugar-5", "fe-warn")   // local (earlier)
-    //; debug(!"frontend z: ")	
-    //; rename-defs		
-    //; tfc3(|"Stratego-Sugar-5", "fe-rnd")    // local
-    //; debug(!"frontend za: ")	
-    //; simplify1			
-    //; tfc3(|"Stratego-Sugar-Cong", "fe-sim") // global analysis
-    //; debug(!"frontend zb: ")	
-    //; define-congruences		
-
     ; tfc1(|"Stratego-Core", "fe-cong")
 
-    // use-def	= comp(|"use-def", <pass-maybe-unbound-warnings>)
-    // stratego-warnings = comp(|"stratego-warnings", <pass-warnings>)
+strategies
 
-  check-calls = 
+  check-calls =
+    where(
+      m-get-all-def-sigs
+      ; map(register-ho-arg)
+      ; filter(
+          bagof-ModDefinition
+          ; filter(not(check-calls-def))
+          ; not(?[])
+        )
+      ; ?[]
+    )
+
+  register-ho-arg =
+    ?sig@(f, _, _)
+    ; rules( CcHoArg :+ f -> sig )
+
+  check-calls-def = 
     where(id
       ; where(sig := <m-def-signature>)
       ; svars-arity
-      ; map(svar-arity-to-sig; CheckCall(|sig))
+      ; filter(svar-arity-to-sig; not(CheckCall(|sig)))
+      ; ?[]
     )
 
-  CheckCall(|dsig) =
+  CheckCall(|dsig) = 
     ?sig
     ; if <not(ModDefinition)> sig then
-        fatal-err(|["*** ", dsig, " calls non-existing ", sig])
+        if ?(f, 0, 0) then
+          <bagof-CcHoArg> f
+          ; if ?[] then
+              err(|["*** ", dsig, " calls non-existing ", sig])
+              ; fail
+            else if not(?[_]) then
+              err(|["*** ", dsig, " calls ", f, 
+                    " as higher-order arg, but there is there more",
+                    " than one definition for ", f])
+              ; fail
+            end end
+        else
+          err(|["*** ", dsig, " calls non-existing ", sig])
+          ; fail
+        end
       end
+
+  svar-arity-to-sig :
+    (x, (i, j)) -> (x, i, j)
+
+strategies
+
+  /**
+   * Remove all definitions that are not called from a
+   * definition called (indirectly) by main and remove 
+   * constructors that are not used in needed definitions.
+   */
 
   remove-unused-defs =
     {| DefIsNeedeed
      : where(id
-         ; <mark-used-defs> ("main_0_0", 0, 0)
-         ; <mark-used-defs> ("DYNAMIC_CALLS_0_0", 0, 0)
+         ; <mark-used-defs-and-constructors> ("main_0_0", 0, 0)
+         ; <mark-used-defs-and-constructors> ("DYNAMIC_CALLS_0_0", 0, 0)
          ; m-get-all-def-sigs
          ; map(DefIsNeeded <+ m-rm-def)
 	 ; m-get-all-constructors-sigs
@@ -253,21 +171,14 @@ strategies
        )
      |}
 
-  mark-used-defs = ?sig
-    //; debug(!"mark-used-defs: ")
+  mark-used-defs-and-constructors = ?sig
     ; if <not(DefIsNeeded)> sig then
-        //debug(!"marking as needed: "); 
         rules( DefIsNeeded : sig )
         ; bagof-ModDefinition
-	//; debug(!"definition: ")
         ; where(topdown(try(DeclareConstructorSigNeeded)))
         ; svars-arity
-        //; debug(!"calls: ")
-        ; map(?(<id>,_); CallSignature; mark-used-defs)
+        ; map(?(<id>,_); CallSignature; mark-used-defs-and-constructors)
       end
-
-  svar-arity-to-sig :
-    (x, (i, j)) -> (x, i, j)
 
   DeclareConstructorSigNeeded =
     ?Op(c, ts)
@@ -279,3 +190,30 @@ strategies
     ; where(sig := (c, <length> ts))
     ; rules( ConstructorSigNeeded : sig )
 
+  /**
+   * Remove external definitions that are not called from
+   * local definitions.
+   *
+   * This transformation is used for libraries, where all
+   * local definitions are needed, but not necessarily all
+   * external definitions.
+   */
+
+  remove-unused-external-defs =
+    {| DefIsNeedeed
+     : where(id
+         ; m-get-all-local-def-sigs
+         ; map(mark-used-defs)
+         ; <mark-used-defs> ("DYNAMIC_CALLS_0_0", 0, 0)
+         ; m-get-all-external-def-sigs
+         ; map(DefIsNeeded <+ m-rm-def)
+       )
+     |}
+
+  mark-used-defs = ?sig
+    ; if <not(DefIsNeeded)> sig then
+        rules( DefIsNeeded : sig )
+        ; bagof-ModDefinition
+        ; svars-arity
+        ; map(?(<id>,_); CallSignature; mark-used-defs)
+      end

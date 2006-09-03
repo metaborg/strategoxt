@@ -46,7 +46,7 @@ rules
 
   Bind0 : Scope(xs, s) -> xs
   Bind0 : LRule(Rule(t1, t2, s)) -> <tvars> t1
-  Bind1 : Let(defs, s2) -> <map(?SDef(<id>,_,_) + ?SDefT(<id>,_,_,_))> defs
+  Bind1 : Let(defs, s2) -> <map(?SDef(<id>,_,_) + ?SDefT(<id>,_,_,_) + ?RDef(<id>,_,_) + ?RDefT(<id>,_,_,_))> defs
   Bind2 : SDef(f, xs, s) -> <declared-vars> xs
   Bind3 : Rec(x, s) -> [x]
 
@@ -133,7 +133,9 @@ strategies
   spaste(nwvars) =
       Let(split(id,nwvars); 
           zip(\ (SDef(_,xs,s), f) -> SDef(f,xs,s)\ + 
-              \ (SDefT(_,xs,ys,s), f) -> SDefT(f,xs,ys,s)\)
+              \ (SDefT(_,xs,ys,s), f) -> SDefT(f,xs,ys,s)\ + 
+              \ (RDef(_,xs,s), f) -> RDef(f,xs,s)\ + 
+              \ (RDefT(_,xs,ys,s), f) -> RDefT(f,xs,ys,s)\)
          , id)
     + SDef(id,  split(id, nwvars); zip(ReplaceVar), id)
     + SDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
