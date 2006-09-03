@@ -23,17 +23,17 @@ strategies
  */
 strategies
 
-  pass-pp-table-diff-options =
-    <concat> [<pass-patch> (), <pass-prune>(), <pass-old-pp-table>()]
+//  pass-pp-table-diff-options =
+//    <concat> [<pass-patch> (), <pass-prune>(), <pass-old-pp-table>()]
 
-  pass-patch =
-    is-patch-enabled < !["--patch"] + ![]
+//  pass-patch =
+//    is-patch-enabled < !["--patch"] + ![]
 
-  pass-prune =
-    is-prune-enabled < !["--prune"] + ![]
+//  pass-prune =
+//    is-prune-enabled < !["--prune"] + ![]
 
-  pass-old-pp-table =
-    <get-config> OldTable() < ensure-pp-table-parsed; !["--old", <id>] + ![]
+//  pass-old-pp-table =
+//    <get-config> OldTable() < ensure-pp-table-parsed; !["--old", <id>] + ![]
 
 /**
  * Setting options
