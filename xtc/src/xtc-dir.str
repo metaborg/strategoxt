@@ -53,7 +53,7 @@ strategies
   compute-in-dir(s | dir) = 
     where(
       getcwd => cwd
-      ; dir
+      ; !dir
       ; if not(file-exists) then
           mkdir
         else if filemode; isdir then 
@@ -127,7 +127,7 @@ strategies
 
   copy-to-dir(|newdir) = 
     try(expand-dir-tree)
-    ; compute-in-dir(!newdir, 
+    ; compute-in-dir(
         rec cp({ 
           switch id 
             case ?FILE(file) : 
@@ -140,7 +140,7 @@ strategies
                  debug(!"not a file or directory: ")
             end
         })
-      )
+      |newdir)
 
   /**
    * Copy all files in directory 'from' for which 'select' succeeds to directory 'to'.
