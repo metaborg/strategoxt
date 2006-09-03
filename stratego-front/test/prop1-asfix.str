@@ -1,5 +1,5 @@
 module prop1-asfix
-imports AsFix list-cons tuple-cons string
+imports AsFix libstratego-lib
 rules
 
   DN : |[ ~ ~ p ]| -> |[ p ]|

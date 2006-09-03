@@ -1,5 +1,5 @@
 module prop1
-imports Prop list-cons tuple-cons
+imports Prop libstratego-lib
 rules
 
   DN : |[ ~ ~ p ]| -> |[ p ]|

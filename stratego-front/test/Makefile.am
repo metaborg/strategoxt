@@ -12,6 +12,7 @@ check_DATA      = PropStratego.tbl
 
 nodist_switch_semantics_test_SOURCES = switch-semantics-test.c
 switch_semantics_test_LDADD = $(SSL_LIBS)
+prop1_asfix__LDADD = $(SSL_LIBS)
 nodist_prop1_SOURCES = prop1.c
 nodist_prop1_asfix_SOURCES = prop1-asfix.c
 
