@@ -228,9 +228,9 @@ strategies
     // use-def	= comp(|"use-def", <pass-maybe-unbound-warnings>)
     // stratego-warnings = comp(|"stratego-warnings", <pass-warnings>)
 
-  check-calls =
+  check-calls = 
     where(id
-      ; sig := <m-def-signature> 
+      ; where(sig := <m-def-signature>)
       ; svars-arity
       ; map(svar-arity-to-sig; CheckCall(|sig))
     )
