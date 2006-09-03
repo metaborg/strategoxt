@@ -23,7 +23,7 @@ strategies
         ; Snd
         <+ map(print-elem); fail
         )
-      ; where(print-footer(|tbl)) 
+      ; where(print-footer(|tbl))
       )
 
   functionname-option =
