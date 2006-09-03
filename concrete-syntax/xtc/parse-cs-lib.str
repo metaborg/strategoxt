@@ -257,9 +257,9 @@ strategies
   meta-data-to-rule =
     where(?x@(prop#([val])); rules(MetaData : prop -> val))
 
-  rules-to-meta-data = 
-    <table-get-list> "MetaData"
-    ; !Meta(<filter(\ (prop@<is-string>, vals) -> prop#(vals) \ )>)
+//  rules-to-meta-data = 
+//    <table-get-list> "MetaData"
+//    ; !Meta(<filter(\ (prop@<is-string>, vals) -> prop#(vals) \ )>)
 
   // meta data as annotation
 
