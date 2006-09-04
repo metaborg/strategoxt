@@ -45,6 +45,7 @@ strategies
   Merge : ((a, b), ("Unknown", d)) -> (a, b, d)
   Merge : ((a, b),(c, d)) -> (a, b, d) where <not("Unknown")> a
 
+/*
   combinatory-test =
     apply-test(!"zip-test3"
 	      ,join'(Merge2)
@@ -52,6 +53,7 @@ strategies
 		 [ ("foo", 11), ("bar", 12), ("baz", 13) ])
 	      ,![ ("foo", 1, 11), ("baz", "Unknown", 13), ("bar", 2, 12)  ]
               )
+*/
 
   join'(merge1 : a * b -> c, merge2 : a -> c, merge3 : b -> c) : // List(a) * List(b) -> List(c)
     (xs, ys) -> 
