@@ -32,8 +32,8 @@ strategies
 
 strategies
 
-  test-prod2prodrule =
-      prod2prodrule
-    ; rtg-normalize-prodrule
+//  test-prod2prodrule =
+//      prod2prodrule
+//    ; rtg-normalize-prodrule
 
 
