@@ -3,8 +3,9 @@ imports libstratego-lib
 strategies
 
 main = a
+
 b=
-iowrap(
+io-wrap(
    <strncmp>(<explode-string>"baj", <explode-string>"bae",2)
 ;   debug(!"grr: ")
 ;   <strncmp>(<explode-string>"baj", <explode-string>"bee",2)

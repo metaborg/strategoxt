@@ -121,7 +121,7 @@ strategies
 
   change-set-vis(|key, value) =
     change-set
-    ; dr-set-rule-vis(|"Test", key, value)
+    ; dr-set-rule-vis(|"Test", (), key, value)
 
   change-set-vis(|label, key, value) =
     change-set
@@ -134,7 +134,7 @@ strategies
     dr-set-rule(|"Test", label, key, value)
 
   set-vis(|key, value) =
-    dr-set-rule-vis(|"Test", key, value)
+    dr-set-rule-vis(|"Test", (), key, value)
 
   set-vis(|label, key, value) =
     dr-set-rule-vis(|"Test", label, key, value)
@@ -146,7 +146,7 @@ strategies
     dr-add-rule(|"Test", label, key, value)
 
   add-vis(|key, value) =
-    dr-add-rule-vis(|"Test", key, value)
+    dr-add-rule-vis(|"Test", (), key, value)
 
   add-vis(|label, key, value) =
     dr-add-rule-vis(|"Test", label, key, value)
