@@ -283,6 +283,7 @@ strategies
     !(rs1, rs2),
     <dr-eq-rule-sets> (rs1, rsi12))
 
+/*
   test-break =
     say(!"testing dr-break-related behaviour")
     ; where(
@@ -319,6 +320,7 @@ strategies
         ; <fetch-elem(?(_, "z"))>keys => keyz
         ; <eq>(<hashtable-get(|keyz)>tbl, [3])
       )
+*/
 
 /*
 	; where(<dr-label-scope(|"A")> rs1 => rs1')
