@@ -9,4 +9,6 @@ check_PROGRAMS 	= asfix-abstractions-test
 TESTS 		= asfix-abstractions-test
 BOOTCLEANFILES 	= asfix-abstractions-test.c
 
+nodist_asfix_abstractions_test_LDADD = $(SSL_LIBS)
+
 nodist_asfix_abstractions_test_SOURCES=asfix-abstractions-test.c

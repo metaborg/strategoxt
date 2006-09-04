@@ -1,5 +1,5 @@
 module asfix-abstractions-test
-imports sunit asfix-abstractions
+imports libstratego-lib asfix-abstractions
 
 strategies
 
