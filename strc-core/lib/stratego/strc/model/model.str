@@ -129,8 +129,8 @@ strategies
 
 strategies // constructors
 
-  m-add-constructor = ?cdec//; debug(!"m-add-constructor: ")
-    ; where( csig := <m-constr-signature> ) //; debug(!"signature: "))
+  m-add-constructor = ?cdec
+    ; where( csig := <m-constr-signature> )
     ; rules( ModConstructor : csig -> cdec )
 
   m-rm-constructor = id
@@ -169,7 +169,7 @@ strategies
 
 strategies // overlays
  
-  m-add-overlay = ?odec//; debug(!"m-add-overlay: ")
+  m-add-overlay = ?odec
    ; where( osig := <m-overlay-signature> )
    ; rules( ModOverlay : osig -> odec )
 
@@ -204,34 +204,23 @@ strategies
      |}
 
   m-transform-local-defs(s) = id
-    //; say(!"m-transform-local-defs")
     ; m-get-all-local-def-sigs
-    //; debug(!"local def sigs: ")
     ; filter(not(m-transform-def(s))
-             ; debug(!"*** warning (m-transform-local-defs): "))
-    //; debug(!"transformed: ")
+             ; dbg(|"*** warning (m-transform-local-defs): "))
     ; ?[]
 
   m-transform-external-defs(s) = id
-    //; say(!"m-transform-local-defs")
     ; m-get-all-external-def-sigs
-    //; debug(!"local def sigs: ")
     ; filter(not(m-transform-def(s))
-             ; debug(!"*** warning (m-transform-external-defs): "))
-    //; debug(!"transformed: ")
+             ; dbg(|"*** warning (m-transform-external-defs): "))
     ; ?[]
 
   m-transform-def(s) =
     where(id
-    //; debug(!"m-transform-local-def a: ")
     ; bagof-ModDefinition
-    //; debug(!"m-transform-local-def b: ")
     ; [m-rm-def|id]
-    //; debug(!"m-transform-local-def c: ")
     ; s
-    //; debug(!"m-transform-local-def d: ")
     ; map(m-add-def)
-    //; debug(!"m-transform-local-def e: ")
     )
 
   m-transform-overlays(s) =

@@ -10,6 +10,7 @@ imports
   stratego/strc/lib/stratlib
 
   stratego/strc/front/add-main
+  stratego/strc/front/call-graph
   stratego/strc/front/check-constructors
   stratego/strc/front/combine-sections
   stratego/strc/front/DefaultStrat

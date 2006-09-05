@@ -1,5 +1,5 @@
 module test77
-imports lib
+imports libstrateg-lib
 
 strategies
 

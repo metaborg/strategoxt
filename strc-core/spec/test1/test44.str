@@ -1,3 +1,8 @@
+/**
+ * this is a test for contextual rules, which are obsolete since
+ * Stratego/XT 0.16
+ */
+
 module test44
 imports libstratego-lib
 strategies

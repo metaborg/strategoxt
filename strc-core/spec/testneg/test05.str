@@ -6,7 +6,7 @@
  * this test to fail for very obscure reasons.
  */
 module test66
-imports dynamic-rules
+imports libstratego-lib
 strategies
 
   main =

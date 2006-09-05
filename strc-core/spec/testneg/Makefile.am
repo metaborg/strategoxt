@@ -9,7 +9,10 @@ STRPROGS = \
   test04.str \
   test05.str \
   test06.str \
-  test07.str
+  test07.str \
+  test08.str \
+  test09.str \
+  test10.str
 
 TESTS = $(STRPROGS:.str=.str.sh)
 

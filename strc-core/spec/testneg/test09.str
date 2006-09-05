@@ -1,0 +1,8 @@
+module test09
+
+imports collection/list/cons  collection/tuple/cons 
+
+strategies
+
+  main =
+    !(_, 1)

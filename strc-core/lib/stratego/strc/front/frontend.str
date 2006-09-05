@@ -32,6 +32,7 @@ strategies
 
       ; m-transform-overlays(id
           ; pre-desugar
+          ; check-overlay
           ; try(DeclareVarToConst)
         )
 
@@ -68,6 +69,7 @@ strategies
 	    ; not(def-use-def)
             ; not(check-constructors)
             ; expand-overlays-in-def
+            ; check-patterns
             ; rules-to-sdefs-def
             ; desugar-list-matching
 	    ; desugar-DefaultVarDec
@@ -105,116 +107,30 @@ strategies
 
 strategies
 
-  check-calls =
+  check-patterns =
     where(
-      m-get-all-def-sigs
-      ; map(register-ho-arg)
-      ; filter(
-          bagof-ModDefinition
-          ; filter(not(check-calls-def))
-          ; not(?[])
-        )
-      ; ?[]
+      collect(check-match <+ check-build)
+      ; []
     )
 
-  register-ho-arg =
-    ?sig@(f, _, _)
-    ; rules( CcHoArg :+ f -> sig )
+  check-match =
+    Match(oncetd(fail
+      <+ ?BuildDefault(_) 
+      <+ ?BuildDefaultPT(_)
+    ))
+    ; err(|"build symbols in match pattern")
+  
+  check-build =
+    Build(oncetd(fail
+      <+ ?Wld() 
+      <+ ?As(_,_)
+      <+ ?BuildDefault(_) 
+      <+ ?BuildDefaultPT(_)
+    ))
+    ; err(|"match symbols in build pattern")
 
-  check-calls-def = 
-    where(id
-      ; where(sig := <m-def-signature>)
-      ; svars-arity
-      ; filter(svar-arity-to-sig; not(CheckCall(|sig)))
-      ; ?[]
-    )
-
-  CheckCall(|dsig) = 
-    ?sig
-    ; if <not(ModDefinition)> sig then
-        if ?(f, 0, 0) then
-          <bagof-CcHoArg> f
-          ; if ?[] then
-              err(|["*** ", dsig, " calls non-existing ", sig])
-              ; fail
-            else if not(?[_]) then
-              err(|["*** ", dsig, " calls ", f, 
-                    " as higher-order arg, but there is there more",
-                    " than one definition for ", f])
-              ; fail
-            end end
-        else
-          err(|["*** ", dsig, " calls non-existing ", sig])
-          ; fail
-        end
-      end
-
-  svar-arity-to-sig :
-    (x, (i, j)) -> (x, i, j)
-
-strategies
-
-  /**
-   * Remove all definitions that are not called from a
-   * definition called (indirectly) by main and remove 
-   * constructors that are not used in needed definitions.
-   */
-
-  remove-unused-defs =
-    {| DefIsNeedeed
-     : where(id
-         ; <mark-used-defs-and-constructors> ("main_0_0", 0, 0)
-         ; <mark-used-defs-and-constructors> ("DYNAMIC_CALLS_0_0", 0, 0)
-         ; m-get-all-def-sigs
-         ; map(DefIsNeeded <+ m-rm-def)
-	 ; m-get-all-constructors-sigs
-	 ; map(ConstructorSigNeeded <+ m-rm-constructor)
-       )
-     |}
-
-  mark-used-defs-and-constructors = ?sig
-    ; if <not(DefIsNeeded)> sig then
-        rules( DefIsNeeded : sig )
-        ; bagof-ModDefinition
-        ; where(topdown(try(DeclareConstructorSigNeeded)))
-        ; svars-arity
-        ; map(?(<id>,_); CallSignature; mark-used-defs-and-constructors)
-      end
-
-  DeclareConstructorSigNeeded =
-    ?Op(c, ts)
-    ; where(sig := (c, <length> ts))
-    ; rules( ConstructorSigNeeded : sig )
-
-  DeclareConstructorSigNeeded =
-    ?Cong(c, ts)
-    ; where(sig := (c, <length> ts))
-    ; rules( ConstructorSigNeeded : sig )
-
-  /**
-   * Remove external definitions that are not called from
-   * local definitions.
-   *
-   * This transformation is used for libraries, where all
-   * local definitions are needed, but not necessarily all
-   * external definitions.
-   */
-
-  remove-unused-external-defs =
-    {| DefIsNeedeed
-     : where(id
-         ; m-get-all-local-def-sigs
-         ; map(mark-used-defs)
-         ; <mark-used-defs> ("DYNAMIC_CALLS_0_0", 0, 0)
-         ; m-get-all-external-def-sigs
-         ; map(DefIsNeeded <+ m-rm-def)
-       )
-     |}
-
-  mark-used-defs = ?sig
-    ; if <not(DefIsNeeded)> sig then
-        rules( DefIsNeeded : sig )
-        ; bagof-ModDefinition
-        ; svars-arity
-        ; map(?(<id>,_); CallSignature; mark-used-defs)
-      end
+  check-overlay =
+    if oncetd(fail <+ ?Wld() <+ ?As(_,_)) then
+      err(|"match symbols in overlay pattern"); fail
+    end
+  
