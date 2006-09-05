@@ -69,12 +69,12 @@ strategies
 	    ; not(def-use-def)
             ; not(check-constructors)
             ; expand-overlays-in-def
-            ; check-patterns
             ; rules-to-sdefs-def
             ; desugar-list-matching
 	    ; desugar-DefaultVarDec
             ; strename
             ; desugar-def
+            ; check-patterns
           )
         )
 
