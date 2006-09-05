@@ -157,6 +157,12 @@ rules
 rules
 
   stratego-to-abox : 
+    ImportTerm(modname) -> |[ KW["import-term"] KW["("] ~t KW[")"] ]|
+    where t := S(modname)
+
+rules
+
+  stratego-to-abox : 
     Match(t) -> |[ H hs=0[ KW["?"] ~t ] ]|
 
   stratego-to-abox : 

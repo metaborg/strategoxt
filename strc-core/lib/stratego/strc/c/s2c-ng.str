@@ -661,6 +661,49 @@ rules
 	; e     := <topdown(try(construct-term))>tp
         ; f     := <newname> "calldynamic"
 
+  /**
+   * Import a term from a file.
+   *
+   * Note that the check may be left out if we are sure
+   * that the term creation always succeeds.
+   */ 
+
+  TranslateStrat(|S,F) :
+    ImportTerm(modname) -> 
+    stm|[ 
+      { 
+        t = f(); 
+        if( t == NULL ) goto ~id:F; else goto ~id:S; 
+      }
+    ]|
+    where f := <new>
+	; <fragment(CgenATerm(|f) | "FunctionDef")> modname
+	; fragment(!dec|[ static ATerm f(void); ]| |"FunctionSig")
+
+  CgenATerm(|f) :
+    filename -> 
+    |[ static ATerm f(void) 
+       {
+         static ATerm result = NULL;
+         static char term[] = { ~init*:chars, 0 };
+         if(result == NULL) {
+           result = ATreadFromBinaryString(term, ~exp:i);
+           if(result != NULL) {
+              ATprotect(&result);
+           }
+         }
+         return result;
+       }
+    ]|
+    where if <not(file-exists)> filename then
+	    err(|"importing term from non-existing file")
+	    ; fail
+	  end
+	; chars := <ReadFromFile
+                    ; write-to-binary-string
+                    ; map(!AssignInit(<mk-int-const>))> filename
+	; i := <length; mk-int-const> chars
+
 /**
  * Matching
  */

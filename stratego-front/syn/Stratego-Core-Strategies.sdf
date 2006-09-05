@@ -76,3 +76,5 @@ exports
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
 
+  context-free syntax
+    "import-term" "(" ModName ")" -> Strategy {cons("ImportTerm")}

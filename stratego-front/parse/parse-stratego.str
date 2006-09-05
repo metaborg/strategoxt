@@ -328,9 +328,9 @@ strategies
     alltd(expand-term-import)
 
   expand-term-import :
-    CallT("import-term", [], [Str(file)]) ->
-    PrimT("SRTS_import_term_from_file", [], [Str(file')])
-    where file' := <find-in-includes("including term from ")> file
+    ImportTerm(file) -> ImportTerm(file')
+    where dbg(|"importing term")
+	; file' := <find-in-includes("including term from ")> file
 
 	
 

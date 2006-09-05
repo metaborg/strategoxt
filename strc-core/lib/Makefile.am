@@ -41,5 +41,5 @@ STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn \
 STRCFLAGS = 
 
 libstrc.rtree libstrc.c : $(strclib:.str=.rtree)
-	$(STRC)/bin/strc -c --library -i strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS)
+	$(STRC)/bin/strc -c --library -i strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 	rm libstrc.str

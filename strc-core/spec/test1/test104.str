@@ -15,13 +15,9 @@ signature
 strategies
 
   main =
-   test1
-//    ; debug(!"the term: ")
-//    ; ?Foo(Bar(["a","b"]), (), (Baz(),Aap()))
+    test1
+    ; debug(!"the term: ")
+    ; ?Foo(Bar(["a","b"]), (), (Baz(),Aap()))
 
   test1 =
-    id
-
-//    import-term(|"./test104.trm")
-  
-
+    import-term(./test104.trm)

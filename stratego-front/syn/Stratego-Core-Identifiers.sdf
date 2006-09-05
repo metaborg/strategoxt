@@ -68,6 +68,7 @@ exports
     "test"
     "then" %% not reserved kw
     "where"
+    "import-term"
       -/- [a-zA-Z0-9\'\-\_]
 
   sorts Keyword
@@ -92,3 +93,4 @@ exports
     "stratego" 		-> Keyword
     "test" 		-> Keyword
     "where" 		-> Keyword
+    "import-term"	-> Keyword

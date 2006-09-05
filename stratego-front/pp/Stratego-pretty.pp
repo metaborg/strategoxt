@@ -20,6 +20,8 @@
    Definition                                         -- V  [_1],
    Definition.1:iter-star                             -- _1,
 
+   ImportTerm                          		      -- KW["import-term"] KW["("] _1 KW[")"],
+
    Module                                             -- V  [H  [KW["module"] _1] _2],
    Module.2:iter-star                                 -- _1,
    Specification                                      -- V vs=1 is=2 [H  [KW["specification"]] _1],

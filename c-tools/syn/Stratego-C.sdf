@@ -80,3 +80,6 @@ exports
 
     "~ext-def*:"   StrategoTerm -> ExternalDef+ {cons("FromTerm")}
 
+    "~init:" StrategoTerm -> Initializer {cons("FromTerm")}
+    "~init*:" StrategoTerm -> {Initializer ","}+ {cons("FromTerm")} 
+
