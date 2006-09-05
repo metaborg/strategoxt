@@ -1,3 +1,14 @@
+2006-09-05  Valentin David  <valentin@ii.uib.no>
+
+	* tools3/pp2c-box-to-c.meta, tools3/pp2c-box-to-c.str,
+	* tools3/pptools.c, tools3/Makefile.am, tools3/pp2c.str,
+	* tools3/pp2c-load-grammar.str:
+	New. Add tool for compile prett-print table into a faster C program.
+	For efficiency reasons, it pretty-prints on the fly. Thus, HV
+	ALT or tables are not handled.
+
+	* configure.ac, Makefile.am: Update.
+
 2005-03-11  Rene de Groot <rcgroot@cs.uu.nl>
         * trans/abox2/Abox-2-text.str, xtc-tools/abox2text.str:
         Added '-l' to avoid adding extra newlines when the target width 
