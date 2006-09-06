@@ -356,5 +356,5 @@ lib%.c : %.str
 %.irun: %.ibin
 	./$<
 
-%.trm: %
-	$(ATERM)/bin/baffle -wt -i $< -o $@
+#%.trm: %
+#	$(ATERM)/bin/baffle -wt -i $< -o $@
