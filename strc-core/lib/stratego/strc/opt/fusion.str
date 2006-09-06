@@ -18,7 +18,6 @@ strategies
   declare-inline-rules =
     alltd(
       Strategies(map(try(declare-inline-rule)))
-      ; try(add-bottomup)
     )
 
   declare-inline-rule = 
@@ -48,8 +47,6 @@ strategies
               all(bottomup_1_0(S(|)|)); S(|)
           ]|
 
-    
-
 strategies
 
   /**
@@ -65,9 +62,14 @@ strategies
     ; where(<bottomup-to-var> Strategy|[ bottomup_1_0(x(|)|) ]|)
 
     ; where(<inline-rules> s1 => s2)
-    ; !|[ let x(|) = (mark(|); s2); bottomup_1_0(x(|)|) < id + id
+    ; !|[ 
+          let bottomup_1_0(S : ATerm -> ATerm|) =
+                all(bottomup_1_0(S(|)|)); S(|)
+
+	      x(|) = (mark(|); s2); bottomup_1_0(x(|)|) < id + id
            in bottomup_1_0(x(|)|)
-          end ]|
+          end 
+      ]|
     ; propagate-mark
 
     ; fuse-with-bottomup
@@ -78,6 +80,7 @@ strategies
           ; say(!"not all marks removed"))
     ; desugar
     ; simplify
+    ; strename
     ; log(|Notice(),"Fused application of innermost")
 
   // Propagate mark over choice
