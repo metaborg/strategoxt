@@ -322,15 +322,6 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 %.ccc : %.c.abox 
 	$(GPP)/bin/abox2text -i $< -o $@
 
-
-# PARSING C PROGRAMS ###############################################
-
-%.af: %.c
-	sglr -p $(C_TOOLS)/share/cgen/c.tbl -i $< -o $@ 
-
-%.trm: %.af
-	implode-asfix -i $< -o $@
-
 # USING INSTALLED STRC ###############################################
 
 %.c: %.str
@@ -355,6 +346,3 @@ lib%.c : %.str
 
 %.irun: %.ibin
 	./$<
-
-#%.trm: %
-#	$(ATERM)/bin/baffle -wt -i $< -o $@
