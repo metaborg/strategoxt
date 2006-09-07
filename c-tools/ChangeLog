@@ -1,3 +1,13 @@
+2006-09-07  Valentin David  <valentin@ii.uib.no>
+
+	* pp/Makefile.am: Generate a C pretty-print library.
+
+	* pp/C.pp, pp/C-pretty.pp:
+	Make consistant to the syntax definition.
+
+	* syn/C-StructsAndUnions.sdf, syn/C-ParameterDeclarators.sdf:
+	Fix duplicated constructors.
+
 2006-08-25 Merijn de Jonge <merijn.de.jonge@philips.com>
 	* pp/C.pp: Put TypeSpec in H box, because type specs like 
            (long int)10

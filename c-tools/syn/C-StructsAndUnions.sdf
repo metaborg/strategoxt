@@ -15,7 +15,7 @@ exports
 
   context-free syntax
     TypeSpecifier  {MemberDeclarator   ","}+ ";" -> MemberDeclaration {cons("MemDecl")}
-    TypeQualifier+ {MemberIdDeclarator ","}+ ";" -> MemberDeclaration {cons("MemDecl")}
+    TypeQualifier+ {MemberIdDeclarator ","}+ ";" -> MemberDeclaration {cons("MemDecl1")}
 
   context-free syntax
     Declarator                  -> MemberDeclarator

@@ -13,5 +13,5 @@ exports
 
   context-free syntax
     TypeSpecifier  AbstractDeclarator? -> TypeName {cons("TypeName")}
-    TypeQualifier+ AbstractDeclarator? -> TypeName {cons("TypeName")}
+    TypeQualifier+ AbstractDeclarator? -> TypeName {cons("TypeName1")}
 

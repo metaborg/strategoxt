@@ -105,6 +105,9 @@ strategies
   + ArgOption(fail, fail, !"")
   + ArgOption(fail, fail, !"Options for creating libraries:")
   + ArgOption(fail, fail, !"")
+  + Option("--old-pp",
+	where(<set-config>("--old-pp", ())); !(),
+	!"--old-pp           Use old C pretty-printer.")
 
   + Option("--library" + "--lib",
 	where(<set-config>("--library", ())); !(),
