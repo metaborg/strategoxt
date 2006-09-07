@@ -227,14 +227,14 @@ strategies // COMPILER COMPONENTS
 // BACK-END
 
   strc-ac2text =
-/*    if where(<get-config>"--indent-c") then
+    if where(<get-config>"--indent-c") then
       pp-c-pretty
     else
       pp-c
-    end*/ strc-ac2abox
+    end
 
-//  external pp-c(|)
-//  external pp-c-pretty(|)
+  external pp-c(|)
+  external pp-c-pretty(|)
 
   strc-ac2abox =
     where(

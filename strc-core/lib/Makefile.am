@@ -31,9 +31,8 @@ libstrc_la_CPPFLAGS = $(STRATEGO_LIB_CFLAGS)			 \
 
 libstrc_la_LIBADD = $(STRATEGO_GPP_LIBS) $(XTC_LIBS)		\
 		    $(STRATEGO_LIB_LIBS)			\
-		    $(STRATEGO_RUNTIME_LIBS) $(ATERM_LIBS)
-#	\
-#		    -L$(C_TOOLS)/pp -lc-pp
+		    $(STRATEGO_RUNTIME_LIBS) $(ATERM_LIBS)	\
+		    -L$(C_TOOLS)/pp -lc-pp
 
 STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn \
                    -I $(top_srcdir)/../stratego-front/sig \
