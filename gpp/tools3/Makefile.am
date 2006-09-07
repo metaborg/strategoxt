@@ -13,4 +13,4 @@ STRINCLUDES	=				\
 LDADD		+= $(SSL_LIBS)
 EXTRA_DIST	= $(wildcard *.str) $(wildcard *.meta) pptools.c
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= $(wildcard *.c)
+BOOTCLEANFILES	= pp2c.c
