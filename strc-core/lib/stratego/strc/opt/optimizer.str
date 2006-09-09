@@ -1,3 +1,9 @@
+/**
+ * @author: Eelco Visser
+ *
+ * @todo: refactor to use source model
+ */
+
 module optimizer
 imports Stratego stratego/strc/opt/stratego-laws libstratego-lib
 
