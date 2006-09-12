@@ -20,13 +20,13 @@ strategies
         <+ <get-config> "import"; register-import)
        ; xtc-store
        <+ <get-config> "query"; xtc-query)
-    ; <exit> 0
+    ; (<get-config> "--exit-code" < exit + <exit> 0)
    <+ err(|"xtc failed! ")
 
   xtc-xtc-get =
     ?[self, "get" | args]
-    ; <fprint> (stdout, <map(xtc-find)> args)
-    ; <fprint> (stdout, ["\n"])
+    ; <fprint> (stdout(), <map(xtc-find)> args)
+    ; <fprint> (stdout(), ["\n"])
     ; <exit> 0
 
   xtc-xtc-call =

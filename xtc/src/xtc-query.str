@@ -20,21 +20,28 @@ strategies
 
   list-tool =
     ?(Tool(tool), <id>)
-    ; map({version,loc: ?(version, loc);
-           (<get-config> "-l"; <fprint> (stdout, [loc, "\n"])
-            <+ <fprint> (stdout, [tool, " (", version, ") : ", loc, "\n"]))})
+    ; map({version,loc:
+        ?(version, loc)
+        ; ( <get-config> "-l"
+            ; <fprint> (stdout(), [loc, "\n"])
+            <+ <fprint> (stdout(), [tool, " (", version, ") : ", loc, "\n"])
+          )
+      })
 
   tool-query =
     <get-config> "-t"
     ; xtc-import
-    ; map({tool: ?tool;
-           (  log(|Vomit(),<conc-strings>("Retrieving ",<id>))
-            ; <table-get> (XTC, Tool(tool)) => entries
-            ; <version-query <+ list-tool> (Tool(tool), entries)
-            <+ <fprint> (stdout, [tool, " : no registration", "\n"]))})
+    ; map({tool:
+        ?tool
+        ; (  log(|Vomit(),<conc-strings>("Retrieving ",<id>))
+          ; <table-get> (XTC, Tool(tool)) => entries
+          ; <version-query <+ list-tool> (Tool(tool), entries)
+          <+ <fprint> (stderr(), [tool, " : no registration", "\n"])
+             ; <set-config> ("--exit-code", 1)
+          )
+      })
 
   version-query =
     where(<get-config> "-V" => version)
     ; (?Tool(tool), fetch(?(version, loc)))
     ; <list-tool> (Tool(tool), [(version,loc)])
-
