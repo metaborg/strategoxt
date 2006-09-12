@@ -15,7 +15,6 @@ libexec_PROGRAMS = tool-doc2abox
 SCFLAGS        = --main main-$*
 STRINCLUDES = \
   -I $(top_srcdir)/lib \
-  -I $(top_srcdir)/sig \
   -I $(top_srcdir)/syn \
   -I $(top_srcdir)/pp \
   -I $(top_srcdir)/trans/interpret \

@@ -6,6 +6,7 @@ imports
   tool-doc
   sdf-options
   core-sdf-grammar2rtg
+  regular-xtc-tools
 
 strategies
 
