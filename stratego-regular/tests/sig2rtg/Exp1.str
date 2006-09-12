@@ -1,8 +1,0 @@
-module Exp1
-signature
-  constructors
-    Mul  : Exp * Exp -> Exp
-    Plus : Exp * Exp -> Exp
-    Var  : Id -> Exp
-         : String -> Id
-

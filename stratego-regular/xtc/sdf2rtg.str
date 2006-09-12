@@ -1,7 +1,11 @@
 module sdf2rtg
 imports 
   libstratego-lib
-  libstratego-xtc regular-xtc-tools tool-doc sdf-options
+  libstratego-xtc
+  pp-rtg
+  tool-doc
+  sdf-options
+  core-sdf-grammar2rtg
 
 strategies
 
@@ -10,7 +14,7 @@ strategies
       sdf-main-module-option
     , sdf2rtg-usage
     , sdf2rtg-about
-    , !["sdf2table", "implodePT", "sdf-desugar", "core-sdf-grammar2rtg"]
+    , !["sdf2table", "implodePT", "sdf-desugar"]
     , sdf2rtg
     )
 
@@ -18,45 +22,28 @@ strategies
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")
     ; xtc-transform(!"sdf-desugar", pass-verbose)
-    ; xtc-transform(!"core-sdf-grammar2rtg", pass-verbose)
+    ; read-from
+    ; core-sdf-grammar2rtg
     ; xtc-pp-rtg
     <+ <xtc-exit> 1
 
   sdf2rtg-usage =
-    <tool-doc> sdf2rtg-tool-doc
+    <tool-doc>
+      [ Usage("sdf2rtg [OPTIONS]")
+      , Summary(
+         "Generates an abstract syntax definition in the rtg language
+          from a SDF concrete syntax definition.")
+      , OptionUsage()
+      , AutoReportBugs()
+      ]
 
   sdf2rtg-about =
-    <tool-doc> sdf2rtg-tool-about
-
-overlays
-
-  sdf2rtg-tool-doc =
-    [ Usage("sdf2rtg [OPTIONS]")
-    , Summary(
-       "Generates an abstract syntax definition in the rtg language
-        from a SDF concrete syntax definition.")
-    , OptionUsage()
-    , Description([
-       "This is a test program to demonstrate use of 
-        parse-options and  generation of usage
-        info from option and switch specificatios.
-        These now contain usage info as additional
-        third argument."
-      ,"This is a test program to demonstrate use of 
-        parse-options and  generation of usage
-        info from option and switch specificatios.
-        These now contain usage info as additional
-        third argument."
-        ])
-    , AutoReportBugs()
-    ]
-
-  sdf2rtg-tool-about =
-    [ AutoProgram()
-    , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
-    , GNU_LGPL("2002-2005", "Stratego Software Foundation <stratego@cs.uu.nl>")
-    , Config([
-        DefaultXTCRepository()
-      , CurrentXTCRepository()
-      ]) 
-    ]
+    <tool-doc>
+      [ AutoProgram()
+      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+      , GNU_LGPL("2002-2005", "Stratego Software Foundation <stratego@cs.uu.nl>")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ]) 
+      ]

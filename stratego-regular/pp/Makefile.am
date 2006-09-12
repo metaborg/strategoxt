@@ -1,8 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-libexec_PROGRAMS = rtg-ppfix
-
 pptables    = rtg.pp
 pptables_af = rtg.pp.af
 

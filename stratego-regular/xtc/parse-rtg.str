@@ -1,9 +1,24 @@
 module parse-rtg
 imports 
   libstratego-lib
-  libstratego-xtc regular-xtc-tools
+  libstratego-rtg
+  libstratego-sglr
 
 strategies
   
   main-parse-rtg =
-    xtc-io-wrap(xtc-parse-rtg)
+    io-stream-wrap(
+      ?(fin, fout)
+      ; <my-parse-rtg-stream> fin
+      ; <write-to-stream> (fout, <id>)
+    )
+
+  my-parse-rtg-stream =
+    where(
+      STRRTG-get-rtg-parsetable
+      ; tbl := <open-parse-table>
+    )
+    ; finally(parse-stream(|tbl), <close-parse-table> tbl)
+    ; rtg-parsefix
+
+  external STRRTG-get-rtg-parsetable(|)

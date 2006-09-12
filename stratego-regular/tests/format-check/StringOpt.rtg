@@ -1,5 +1,0 @@
-regular tree grammar
-start StringOpt
-productions
-  StringOpt -> <some> (<string>)
-  StringOpt -> <none> ()

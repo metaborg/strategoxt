@@ -1,59 +1,25 @@
 module regular-xtc-tools
-imports strategoxt-xtc-tools
-
+imports pp-rtg
 strategies
-
-  xtc-rtg-front-end =
-      xtc-parse-rtg
-    ; xtc-rtg-reduce
-    ; xtc-rtg-group
-
-strategies
-
-  xtc-implode-irtg = 
-    xtc-transform(!"implode-irtg", pass-verbose)
-
-strategies
-
-  xtc-parse-rtg =
-      xtc-sglr(!"rtg.tbl", !"RTG")
-    ; xtc-implode-asfix
-    ; xtc-transform(!"rtg-parsefix", pass-verbose)
-
-  xtc-pp-rtg =
-      xtc-transform(!"rtg-ppfix", pass-verbose)
-    ; xtc-ast2abox(!["rtg.pp.af"])
-    ; xtc-abox2text
-
-  xtc-rtg-reduce = 
-    xtc-transform(!"rtg-reduce", pass-verbose)
-
-  xtc-rtg-normalize = 
-    xtc-transform(!"rtg-normalize", pass-verbose)
-
-  xtc-rtg-group = 
-    xtc-transform(!"rtg-group", pass-verbose)
-
-strategies
-
-  xtc-core-rtg2typematch(|modname : String) =
-    xtc-transform(!"core-rtg2typematch", <conc> (<pass-verbose>, ["--module", modname]))
-
-  xtc-core-rtg2sig(|modname : String) =
-    xtc-transform(!"core-rtg2sig", <conc> (<pass-verbose>, ["--module", modname]))
-
-strategies
-
-  xtc-pack-stratego =
-    xtc-pack-stratego(![])
-
-  xtc-pack-stratego(str-includes) =
-    xtc-transform(!"pack-stratego", <concat> 
-      [ <pass-keep> ()
-      , <pass-verbose> ()
-      , <<str-includes> (); <add-arg-flags> ("-I", <id>)> ()
-      ]
-    )
 
   xtc-pp-abstract-stratego =
     xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ()])
+
+  /**
+   * @type FILE -> RTG
+   */
+  xtc-rtg-front-end =
+    xtc-ensure-file
+    ; ?FILE(<id>)
+    ; parse-rtg-file
+    ; rtg-reduce
+    ; rtg-group-productions
+
+
+  /**
+   * @type RTG -> FILE
+   */
+  xtc-pp-rtg =
+    where(f := <xtc-new-file>)
+    ; pp-rtg-file(|f)
+    ; !FILE(f)

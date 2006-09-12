@@ -6,13 +6,18 @@
 module rtg2typematch
 imports 
   libstratego-lib
-  libstratego-xtc regular-xtc-tools module-option
+  libstratego-xtc
+  libstratego-rtg
+  regular-xtc-tools
+  module-option
+  core-rtg2typematch
 
 strategies
   
   main-rtg2typematch =
     xtc-io-wrap(module-option,
       xtc-rtg-front-end
-    ; xtc-core-rtg2typematch(|<guess-module-name>)
-    ; xtc-pp-abstract-stratego
+      ; core-rtg2typematch(|<guess-module-name>)
+      ; write-to
+      ; xtc-pp-abstract-stratego
     )

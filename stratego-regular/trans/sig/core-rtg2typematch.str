@@ -4,15 +4,15 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-rtg2typematch
-imports libstratego-lib Stratego rtg module-option stratego-rtg
-	core-rtg2sig
+imports
+  libstratego-lib
+  Stratego
+  stratego-rtg
+  core-rtg2sig
 
 strategies
 
-  main-core-rtg2typematch =
-    io-wrap(module-option, rtg2typematch(|<get-module-name>))
-
-  rtg2typematch(|modname) :
+  core-rtg2typematch(|modname) :
     RTG(Start(nts), ProdRules(prods)) ->
       |[
         module ~modname

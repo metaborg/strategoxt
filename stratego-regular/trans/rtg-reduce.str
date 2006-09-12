@@ -1,142 +1,14 @@
 /**
  * Removes non-terminals that are not productive or reachable.
  *
- * @see     TATA section 2.1.1
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg-reduce
-imports libstratego-lib rtg rtg-util
+imports
+  libstratego-lib
+  libstratego-rtg
 
 strategies
 
   main-rtg-reduce =
     io-wrap(rtg-reduce)
-
-  /**
-   * @type RTG -> RTG
-   */
-  rtg-reduce =
-      log(|Debug(), "Ungroup productions")
-    ; ungroup-productions
-
-    ; log(|Debug(), "Determine productive non terminals")
-    ; where(productive-nonterms => productive)
-
-    ; log(|Debug(), "Removing not productive non terminals")
-    ; RTG(
-        Start(filter(where(<elem> (<id>, productive))))
-      , ProdRules(filter(all-nonterms-in(|productive)))
-      )
-
-    ; log(|Debug(), "Determine reachable non terminals")
-    ; where(reachable-nonterms  => reachable)
-
-    ; log(|Debug(), "Removing not reachable non terminals")
-    ; RTG(id, ProdRules(filter(all-nonterms-in(|reachable))))
-
-    ; rtg-check-result
-
-  /**
-   * Exits when the result doesn't contain any productions or start symbols.
-   *
-   * @type RTG -> RTG
-   */
-  rtg-check-result =
-      try(
-        ?RTG(Start([]), ProdRules(_))
-      ; fatal-err(|"No productive start symbols left in rtg")
-      )
-    ; try(
-        ?RTG(Start(_), ProdRules([]))
-      ; fatal-err(|"No productions left in rtg")
-     )
-
-/**
- * Reachable
- */
-strategies
-
-  /**
-   * Returns the set of reachable non terminals in the rhg.
-   *
-   * @type RTG -> Set(NonTerm)
-   */
-  reachable-nonterms =
-    ?RTG(Start(starts), ProdRules(prods))
-    ; let
-          reach-0 = !starts
-
-          reach-n = {reach: ?reach;
-              <unions> [reach | <filter(\
-                  ProdRule(nt, rhs*) -> <collect-nonterms> rhs*
-                    where <elem> (nt, reach)
-                \)> prods]
-            }
-
-       in reach-0; set-inc-repeat(reach-n)
-      end
-
-strategies
-
-  /**
-   * Succeeds if all non-terminals in the production are in the specified
-   * set of non-terminals.
-   *
-   * @type ProdRule -> ProdRule
-   */
-  all-nonterms-in(|nts) =
-    where(collect-nonterms; all(<elem> (<id>, nts)))
-
-/**
- * Productive
- */
-strategies
-
-  /**
-   * Returns the set of productive non terminals in the rhg.
-   *
-   * @type RTG -> Set(NonTerm)
-   */
-  productive-nonterms =
-    ?rtg
-    ; <collect-nonterms> rtg => nts
-    ; let 
-          prod-0 = ![]
-    
-          prod-n = {productive: ?productive;
-                  <union> (productive, <filter(can-be-produced(|<id>, productive, rtg))> nts)
-            }
-
-       in prod-0; set-inc-repeat(prod-n)
-      end
-
-  /**
-   * Succeeds if the non-terminal can be produced by the rtg given the set of productive non-terminals.
-   */
-  can-be-produced(|nt : NonTerm, productive : Set(NonTerm), rhg : RHG) =
-    where(
-      <productions-of(|nt)> rhg
-    ; one(collect-nonterms; all(<elem> (<id>, productive)))
-    )
-
-strategies
-
-  /**
-   * Repeats s until the current set is no longer being extended.
-   *
-   * @type  Set(a) -> Set(a)
-   */
-  set-inc-repeat(s : Set(a) -> Set(a)) =
-    rec x( {l:
-        where(length => l)
-      ; s
-      ; (where(<gt> (<length>, l)) < x + id)
-    })
-
-  /**
-   * Collect all (not build in) non-terminals in a rhg (or anything else).
-   *
-   * @type RTG -> Set(NonTerm)
-   */
-  collect-nonterms =
-    collect(?Nonterm(_))

@@ -5,31 +5,28 @@
 module core-format-check-to-xhtml
 imports
   libstratego-lib 
+  libstratego-rtg
   xml-doc
-  core-format-check
   xml-text-tools
 
 strategies
 
-  main-core-format-check-to-xhtml =
-    io-wrap(core-fc-options,
-      format-check-to-xhtml
-    )
-
-strategies
-
-  format-check-to-xhtml =
-    where(new-hashtable => tbl)
-  ; where(new-iset => set)
-  ; main-format-check(|tbl, set)
-  ; where(
-      <set-config> ("typetable", tbl)
-    ; <set-config> ("typeset", set)
-    )
-  ; print-to-xhtml-doc
-  ; where(output(id))
-  ; <get-config> "--exit-code"
-  ; exit
+  core-format-check-xhtml(|rtg, starts) =
+      where(new-hashtable => tbl)
+    ; where(new-iset => set)
+    ; rtgfc-type(|rtg, tbl, set)
+    ; where(
+        if rtgfc-format-check-error(|starts, tbl, set) then
+          <set-config> ("--exit-code", 0)
+        else
+          <set-config> ("--exit-code", 1)
+        end
+      )
+    ; where(
+        <set-config> ("typetable", tbl)
+      ; <set-config> ("typeset", set)
+      )
+    ; print-to-xhtml-doc
 
 strategies
 
@@ -95,36 +92,35 @@ strategies
         </body>
       </html>
     <%
-    ; concat-content
 
   print-to-xhtml =
-    print-type(
-       print-Int
-    <+ print-Real
-    <+ print-Str
-    <+ print-List
-    <+ print-Tuple
-    <+ print-Cnst
-    <+ print-App
+    xhtml-print-type(
+       xhtml-print-Int
+    <+ xhtml-print-Real
+    <+ xhtml-print-Str
+    <+ xhtml-print-List
+    <+ xhtml-print-Tuple
+    <+ xhtml-print-Cnst
+    <+ xhtml-print-App
     )
 
-  is-typed = 
+  xhtml-is-typed = 
     is-typed(|<get-config> "typetable", <get-config> "typeset")
 
-  print-type(s) =
-    if is-typed <+ one-consnil(not(is-typed)) then
-      where(get-types-to-chardata => type)
+  xhtml-print-type(s) =
+    if xhtml-is-typed <+ one-consnil(not(xhtml-is-typed)) then
+      where(xhtml-get-types-to-chardata => type)
     ; s
-    ; wrap-in-attrs(| [@> class="typed" <@, @>onmouseover="displayType('<% !type %>'); stopHandling(event)"<@])
+    ; xhtml-wrap-in-attrs(| [@> class="typed" <@, @>onmouseover="displayType('<% !type %>'); stopHandling(event)"<@])
     else
       s
-    ; wrap-in-class(|"typo")
+    ; xhtml-wrap-in-class(|"typo")
     end
 
-  wrap-in-class(|class) =
-    wrap-in-attrs(| [@> class="<% !class %>" <@])
+  xhtml-wrap-in-class(|class) =
+    xhtml-wrap-in-attrs(| [@> class="<% !class %>" <@])
 
-  wrap-in-attrs(|att*) =
+  xhtml-wrap-in-attrs(|att*) =
     switch id
       case ?%><div><%= children :: * %></div><% :
         !%><div att*><% !children :: *%></div><%
@@ -141,16 +137,16 @@ rules
   /**
    * @todo  escape the string.
    */
-  print-Str :
+  xhtml-print-Str :
     s -> %>"<% !s :: cdata %>"<%
       where <is-string> s
 
-  print-Int :
+  xhtml-print-Int :
     x -> %><% !s :: cdata %><%
       where <is-int> x
           ; <int-to-string> x => s
 
-  print-Real :
+  xhtml-print-Real :
     x ->  %><% !s :: cdata %><%
       where <is-real> x
           ; <real-to-string> x => s
@@ -160,29 +156,29 @@ rules
  */
 rules 
 
-  print-Cnst : 
+  xhtml-print-Cnst : 
     f#([]) -> %><% !f :: cdata %>()<%
 
-  print-App =
+  xhtml-print-App =
     if <gt> (<term-size>, 8) then
-      print-App-worstcase
+      xhtml-print-App-worstcase
     else
-      print-App-nicecase
+      xhtml-print-App-nicecase
     end
 
-  print-App-nicecase:  
+  xhtml-print-App-nicecase:  
     f#([x | xs]) ->
       %><span><% !f :: cdata %>(<% !children :: content* %>)</span><%
       where < map(print-to-xhtml)
             ; <separate-by> (%>, <%, <id>)
             > [x | xs] => children
 
-  get-types-to-chardata =
-    retrieve-types(|<get-config> "typetable", <get-config> "typeset")
-  ; types-to-string
+  xhtml-get-types-to-chardata =
+    rtgfc-retrieve-types(|<get-config> "typetable", <get-config> "typeset")
+  ; rtgfc-types-to-string
   ; xml-escape
 
-  print-App-worstcase:  
+  xhtml-print-App-worstcase:  
     t@f#([x | xs]) ->
       %><div>
           <% !f :: cdata %>(
@@ -200,26 +196,26 @@ rules
 
 rules
          
-  print-Tuple =
-    ?""#(<id>); pp-generic-list(!%>()<%, !%>(<%, !%>)<%)
+  xhtml-print-Tuple =
+    ?""#(<id>); xhtml-pp-generic-list(!%>()<%, !%>(<%, !%>)<%)
             
-  print-List =
-    pp-generic-list(!%>[]<%, !%>[<%, !%>]<%)
+  xhtml-print-List =
+    xhtml-pp-generic-list(!%>[]<%, !%>[<%, !%>]<%)
     
 strategies
       
-  pp-generic-list(empty, before, after) =
+  xhtml-pp-generic-list(empty, before, after) =
     ?[_ | _];
     if <gt> (<term-size>, 10) then
-      generic-list-worstcase(empty, before, after)
+      xhtml-generic-list-worstcase(empty, before, after)
     else
-      generic-list-nicecase(empty, before, after)
+      xhtml-generic-list-nicecase(empty, before, after)
     end
     
-  pp-generic-list(empty, before, after) :
+  xhtml-pp-generic-list(empty, before, after) :
     [] -> <empty> ()
 
-  generic-list-nicecase(empty, before, after) :
+  xhtml-generic-list-nicecase(empty, before, after) :
     [x | xs] ->
       %><span><%
             before
@@ -227,7 +223,7 @@ strategies
             <print-to-xhtml> x
           %><%
              <map-consnil(
-                print-type(
+                xhtml-print-type(
                   ?[<id> | _]
                 ; print-to-xhtml
                 ; !%><span>, <% id %></span><%
@@ -238,7 +234,7 @@ strategies
             after
           %></span><%
 
-  generic-list-worstcase(empty, before, after) :
+  xhtml-generic-list-worstcase(empty, before, after) :
     [x | xs] -> 
       %><div>
           <div>
@@ -247,7 +243,7 @@ strategies
           </div>
           <% 
              <map-consnil(
-                print-type(
+                xhtml-print-type(
                   ?[<id> | _]
                 ; print-to-xhtml
                 ; !%><div>
@@ -259,8 +255,3 @@ strategies
            :: content* %>
           <div><% after %></div>
         </div><%
-
-strategies 
-
-  concat-content = 
-    bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))

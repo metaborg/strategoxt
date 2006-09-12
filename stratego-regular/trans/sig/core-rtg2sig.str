@@ -4,27 +4,25 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-rtg2sig 
-imports Stratego rtg rtg-util module-option stratego-rtg libstratego-lib
-
-strategies
-
-  main-core-rtg2sig =
-    io-wrap(module-option, rtg2sig)
+imports
+  Stratego
+  stratego-rtg
+  libstratego-lib
 
 strategies
 
   /**
    * @type  RTG -> StrategoModule
    */ 
-  rtg2sig =
-      group-productions
+  core-rtg2sig(|modulename) =
+      rtg-group-productions
     ; RTG(id, ProdRules(map(ProdRule(id, make-set))))
     ; RTG(id, ProdRules(filter(not(ignore-prodrule))))
-    ; ungroup-productions
+    ; rtg-ungroup-productions
 
     ; ?RTG(Start(starts), ProdRules(prods))
     ; !|[
-        module ~<get-module-name>
+        module ~modulename
         signature
           constructors
             ~*<map(prodrule-to-constr)> prods

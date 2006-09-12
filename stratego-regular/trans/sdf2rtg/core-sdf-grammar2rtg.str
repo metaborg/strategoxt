@@ -6,24 +6,18 @@
 module core-sdf-grammar2rtg
 imports
   libstratego-lib
-  rtg
+  libstratego-rtg
   Sdf2
   sdf-extra
   sdf/tool/xtc
   libstratego-xtc
-
-
-strategies
-
-  main-core-sdf-grammar2rtg =
-    io-wrap(grammar2rtg)
 
 strategies
 
   /**
    * @type  Grammar -> RTG
    */
-  grammar2rtg =
+  core-sdf-grammar2rtg =
     where(
       <table-create> "generated-nonterms"
     )

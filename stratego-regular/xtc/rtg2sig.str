@@ -8,9 +8,9 @@ imports
   libstratego-lib
   libstratego-xtc
   regular-xtc-tools
-  strategoxt-xtc-tools
   module-option
   tool-doc
+  core-rtg2sig
 
 strategies
   
@@ -21,7 +21,8 @@ strategies
     , rtg2sig-about
     , ![]
     , xtc-rtg-front-end
-      ; xtc-core-rtg2sig(|<guess-module-name>)
+      ; core-rtg2sig(|<guess-module-name>)
+      ; write-to
       ; xtc-pp-abstract-stratego
     )
 

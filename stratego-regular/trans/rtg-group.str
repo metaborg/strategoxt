@@ -6,9 +6,11 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg-group
-imports libstratego-lib rtg-util
+imports
+  libstratego-lib
+  libstratego-rtg
 
 strategies
 
   main-rtg-group =
-    io-wrap(group-productions)
+    io-wrap(rtg-group-productions)

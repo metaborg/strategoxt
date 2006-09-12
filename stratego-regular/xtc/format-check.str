@@ -1,66 +1,83 @@
 module format-check
 imports 
   libstratego-lib
-  libstratego-xtc strategoxt-xtc-tools tool-doc regular-options regular-xtc-tools
+  libstratego-xtc
+  libstratego-rtg
+  strategoxt-xtc-tools
+  tool-doc
+  regular-options
+  regular-xtc-tools
+  core-format-check-pp-aterm
+  core-format-check-to-xhtml
 
 /**
  * Main program
  */
 strategies
 
-  main-format-check = 
+  main-format-check =
     xtc-io-wrap(
       fc-options
     , fc-usage
     , fc-about 
-    , !["core-format-check"]
-    , if is-xhtml-mode then
-        format-check-to-xhtml
+    , ![]
+    , read-from
+      ; select-format-check
+      ; xtc-output(id)
+      ; get-exit-code
+      ; xtc-exit
+    )
+  
+  select-format-check =
+    let construct-start-nonterms =
+          get-start-nonterm; ![Nonterm(<id>)]
+          <+ ?RTG(Start(<id>), _)
+
+    in where(
+         rtg := <input-to-rtg-nf>
+       ; starts := <construct-start-nonterms> rtg
+       )
+     ; if is-xhtml-mode then
+        format-check-xhtml(|rtg, starts)
       else
         if is-vis-mode then
-          format-check-pp-aterm
+          format-check-pp-aterm(|rtg, starts)
         else
-          format-check
+          format-check-plain(|rtg, starts)
+          ; if <get-config> "-b" then write-to else write-to-text end
         end
       end
-    ; xtc-output(id)
-    ; get-exit-code
-    ; xtc-exit
-    )
-
-  format-check =
-    xtc-ensure-file
-    ; xtc-transform(!"core-format-check", 
-          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>, <pass-fast-mode>]
-      )
-    <+ <xtc-exit> 1
-
-
-  format-check-to-xhtml =
-    xtc-ensure-file
-    ; xtc-try-transform(!"core-format-check-to-xhtml",
-          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
-      )
-    ; xtc-transform(!"pp-xml-doc", pass-verbose)
-
-  format-check-pp-aterm =
-    xtc-ensure-file
-    ; xtc-transform(!"core-format-check-pp-aterm",
-          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
-      )
-    ; xtc-abox2text
-
-strategies
-
-  xtc-try-transform(tool, args) :
-    FILE(f) -> FILE(g)
-    where <xtc-new-file> f => g
-        ; ( <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
-          <+ where(<set-config> ("--exit-code", 1))
-          )
+   end
 
   get-exit-code =
     <get-config> "--exit-code" <+ !0
+
+
+strategies
+
+  format-check-plain(|rtg, starts) =
+    where(
+      if-fast-mode(
+        topdown(
+          try(is-string; !"")
+        ; try(is-int; !0)
+        )
+      )
+    ; rtg-format-check(true, true | rtg, starts)
+    ; <set-config> ("--exit-code", 0)
+    )
+    <+ <xtc-exit> 1
+
+  format-check-xhtml(|rtg, starts) =
+    core-format-check-xhtml(|rtg, starts)
+    ; write-to
+    ; xtc-transform(!"pp-xml-doc", pass-verbose)
+
+  format-check-pp-aterm(|rtg, starts) =
+    core-format-check-pp-aterm(|rtg, starts)
+    ; write-to
+    ; xtc-abox2text
+
 
 /**
  * Options
@@ -99,19 +116,10 @@ strategies
   set-vis-mode =
     <set-config> ("--vis", ())
 
+strategies
+
   fc-usage =
-    <tool-doc> fc-tool-doc()
-
-  fc-about =
-    <tool-doc> fc-tool-about()
-
-overlays
-
-  /**
-   * Do not edit the description here: instead edit the wiki topic and copy
-   * the description to the source code.
-   */
-  fc-tool-doc =
+    <tool-doc>
     [ Usage("format-check --rtg file [OPTIONS]")
     , Summary(
        "
@@ -162,13 +170,14 @@ format-check fails (exit code 1).
     , AutoReportBugs()
     ]
 
-  fc-tool-about =
-    [ AutoProgram()
-    , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
-    , GNU_LGPL("2002-2004", "Martin Bravenboer <martin@cs.uu.nl>")
-    , WebHome("http://www.program-transformation.org/Tools/FormatCheck")
-    , Config([
-        DefaultXTCRepository()
-      , CurrentXTCRepository()
-      ]) 
-    ]
+  fc-about =
+    <tool-doc>
+      [ AutoProgram()
+      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+      , GNU_LGPL("2002-2006", "Martin Bravenboer <martin@cs.uu.nl>")
+      , WebHome("http://www.program-transformation.org/Tools/FormatCheck")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ]) 
+      ]

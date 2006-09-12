@@ -2,8 +2,8 @@ module rtg-script
 imports
   libstratego-lib
   libstratego-xtc
+  libstratego-rtg
   regular-xtc-tools
-  rtg
   tool-doc
 
 signature
@@ -42,30 +42,25 @@ rules
 
   eval-command :
     (Read(file), ()) ->
-      <find-in-includes; xtc-parse-rtg> FILE(<conc-strings> (file, ".rtg"))
+      <conc-strings; find-in-includes; parse-rtg-file> (file, ".rtg")
 
   eval-command :
-    (Reduce(), file) ->
-      <xtc-rtg-reduce> file
+    (Reduce(), rtg) -> <rtg-reduce> rtg
 
   eval-command :
-    (Group(), file) ->
-      <xtc-rtg-group> file
+    (Group(), rtg) -> <rtg-group-productions> rtg
 
   eval-command :
-    (DeleteNonterm(s), file) ->
-      < read-from
-      ; RTG(
+    (DeleteNonterm(s), rtg) ->
+      < RTG(
           Start(filter(not(?Nonterm(s))))
         , ProdRules(filter(not(?ProdRule(Nonterm(s), _))))
         )
-      ; write-to
-      > file
+      > rtg
 
   eval-command :
-    (DeleteTerm(nt, t), file) -> 
-      < read-from
-      ; RTG(
+    (DeleteTerm(nt, t), rtg) -> 
+      < RTG(
           id
         , ProdRules(
             map(
@@ -74,13 +69,11 @@ rules
           ; filter(not(ProdRule(id, [])))
           )
         )
-      ; write-to
-      > file
+      > rtg
 
   eval-command :
-    (DeleteTerm(t), file) -> 
-      < read-from
-      ; RTG(
+    (DeleteTerm(t), rtg) -> 
+      < RTG(
           id
         , ProdRules(
             map(
@@ -89,19 +82,15 @@ rules
           ; filter(not(ProdRule(id, [])))
           )
         )
-      ; write-to
-      > file
+      > rtg
 
   eval-command :
-    (Include(cmds), file) ->
-      < read-from
-      ; RTG(Start(<union> (start, <id>)), ProdRules(<conc> (<id>, prod-rules)))
-      ; write-to
-      >  file
-
-        where <rtg-script-eval> cmds
-            ; read-from
-            ; ?RTG(Start(start), ProdRules(prod-rules))
+    (Include(cmds), rtg) ->
+      < RTG(Start(<union> (starts, <id>)), ProdRules(<conc> (<id>, prod-rules)))
+      >  rtg
+     where
+       <rtg-script-eval> cmds
+       ; ?RTG(Start(starts), ProdRules(prod-rules))
 
 strategies
 
@@ -112,22 +101,11 @@ strategies
     )
 
   /**
-   * @type File -> File
+   * @type File -> String
    */
   find-in-includes =
-    ?FILE(filename)
-    ; <find-in-path> (filename, <get-includes>)
-    ; !FILE(<id>)
-    <+ where(?FILE(<id>); <fatal-error> ["rtg-script: file '", <id>, "' not found"])
-
-  /**
-   * @type _ -> List(String)
-   */
-  pass-includes =
-    <get-config> "-I"
-    ; rec x(
-        [id | x]; !["-I" | <id>] <+ []
-      )
+    <find-in-path> (<id>, <get-includes>)
+    <+ where(<fatal-error> ["rtg-script: file '", <id>, "' not found"])
 
   get-includes =
     <conc> (<get-config> "-I", ["."]) <+ !["."]
@@ -136,19 +114,19 @@ strategies
 
   rtg-script-usage =
     <tool-doc>
-    [ Usage("rtg-script -i file [OPTIONS]")
-    , Summary("Produces an RTG by executing an RTG script")
-    , OptionUsage()
-    , AutoReportBugs()
-    ]
+      [ Usage("rtg-script -i file [OPTIONS]")
+      , Summary("Produces an RTG by executing an RTG script")
+      , OptionUsage()
+      , AutoReportBugs()
+      ]
 
   rtg-script-about =
     <tool-doc>
-    [ AutoProgram()
-    , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
-    , GNU_LGPL("2002-2004", "Martin Bravenboer <martin@cs.uu.nl>")
-    , Config([
-        DefaultXTCRepository()
-      , CurrentXTCRepository()
-      ]) 
-    ]
+      [ AutoProgram()
+      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+      , GNU_LGPL("2002-2006", "Martin Bravenboer <martin@cs.uu.nl>")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ]) 
+      ]

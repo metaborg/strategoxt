@@ -16,7 +16,6 @@ AC_CONFIG_FILES([
   Makefile
 
   syn/Makefile
-  sig/Makefile
   pp/Makefile
 
   lib/Makefile
@@ -33,9 +32,7 @@ AC_CONFIG_FILES([
   tests/syn/Makefile
   tests/syn/rtg/Makefile
   tests/syn/rtg/rtgs/Makefile
-
   tests/sdf2rtg/Makefile
-  tests/sig2rtg/Makefile
-  tests/format-check/Makefile
+
 ])
 AC_OUTPUT

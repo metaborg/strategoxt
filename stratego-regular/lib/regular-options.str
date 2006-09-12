@@ -2,17 +2,12 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module regular-options
-imports tool-doc
-
-
 strategies
+
   input-to-rtg-nf =
-    (  get-rtg-nf-config
-    <+ get-rtg-config; xtc-rtg-front-end
+    get-rtg-nf-config
+    <+ get-rtg-config
     <+ fatal-err(|"No tree grammar specified")
-     )
-   ; ?FILE(<id>)
-			    
 
 /**
  * rtg-nf options
@@ -26,22 +21,13 @@ strategies
     )
 
   /**
-   * Returns the specified rhg-nf or terminates execution if there was not rhg specified.
-   *
-   * @type  _ -> RHG
-   */
-  read-rtg-nf-config =
-      (<get-config> "--rtg-nf" <+ fatal-err(|"no rtg specified. Use --rtg-nf to specify an rtg."))
-    ; ReadFromFile
-    <+ fatal-err(|<conc-strings> ("cannot read rtg-nf from specified file: ", <id>))
-
-  /**
    * Returns the specified rtg-nf. Fails if there was not rhg specified.
    *
-   * @type  _ -> FILE
+   * @type  _ -> RTG
    */
   get-rtg-nf-config =
-    <get-config> "--rtg-nf"; !FILE(<id>)
+    <get-config> "--rtg-nf"
+    ; ReadFromFile
 
 strategies
 
@@ -54,10 +40,11 @@ strategies
   /**
    * Returns the specified rtg. Fails if there was not rtg specified.
    *
-   * @type  _ -> FILE
+   * @type  _ -> RTG
    */
   get-rtg-config =
-    <get-config> "--rtg"; !FILE(<id>)
+    <get-config> "--rtg"
+    ; <xtc-rtg-front-end> FILE(<id>)
 
 strategies
 
@@ -73,9 +60,6 @@ strategies
   get-start-nonterm = 
     <get-config> "start-nonterm"
 
-  pass-start-nonterm =
-    !["--start", <get-config> "start-nonterm"] <+ ![]
-
 strategies
 
   fast-option(|msg) =
@@ -89,17 +73,3 @@ strategies
 
   if-fast-mode(s) =
     if <get-config> "--fast" => "true" then s else id end
-
-  pass-fast-mode =
-    ![]
-    ; if-fast-mode(!["--fast"])
-
-/**
- * Workaround for tools that don't import xtc.
- */
-signature
-  constructors
-    FILE : String -> FILE
-
-
-

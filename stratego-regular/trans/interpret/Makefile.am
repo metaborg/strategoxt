@@ -1,22 +1,4 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-libexec_PROGRAMS = \
-  core-format-check\
-  core-format-check-pp-aterm \
-  core-format-check-to-xhtml 
-
-SCFLAGS     = --main main-$* 
-STRINCLUDES = -I $(top_srcdir)/sig \
-              -I $(top_srcdir)/lib \
-              -I $(top_srcdir)/xtc \
-              -I $(GPP)/share/sdf/gpp \
-              -I $(ATERM_FRONT)/share/aterm-front \
-              -I $(XML_FRONT)/share/xml-front \
-              -I $(XML_FRONT)/share/sdf/xml-front
-
-LDADD += $(SSL_LIBS)
-
-EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
-CLEANFILES       = $(wildcard *.dep)
-BOOTCLEANFILES   = $(wildcard *.c)
+EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta)

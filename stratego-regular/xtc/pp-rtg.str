@@ -1,9 +1,38 @@
 module pp-rtg
 imports 
   libstratego-lib
-  libstratego-xtc regular-xtc-tools
+  libstratego-gpp
+  libstratego-xtc
+  rtg-ppfix
 
 strategies
 
   main-pp-rtg =
-    xtc-io-wrap(xtc-pp-rtg)
+    io-stream-wrap(
+      ?(fin, fout)
+      ; <read-from-stream> fin
+      ; pp-rtg-stream(|fout)
+      ; !fout
+    )
+
+  pp-rtg-file(|path) =
+    let open =
+          open-stream <+ ?(<id>, _); perror; fail
+
+     in pp-rtg-box
+      ; where(fout := <open> (path, "w"))
+      ; finally(
+          box2text-stream(|80, fout)
+          ; <fputs> ("\n", fout)
+        , try(<fclose> fout)
+        )
+   end
+
+  pp-rtg-stream(|stream) =
+    pp-rtg-box
+    ; box2text-stream(|80, stream)
+    ; <fputs> ("\n", stream)
+
+  pp-rtg-box =
+    rtg-ppfix
+    ; ast2box(|[<xtc-find; ReadFromFile> "rtg.pp.af"])

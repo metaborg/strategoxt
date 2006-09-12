@@ -2,12 +2,11 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */ 
 module rtg-ppfix
-imports libstratego-lib rtg
+imports
+  libstratego-lib
+  libstratego-rtg
 
 strategies
-
-  main-rtg-ppfix =
-    io-wrap(rtg-ppfix)
 
   rtg-ppfix =
     topdown(

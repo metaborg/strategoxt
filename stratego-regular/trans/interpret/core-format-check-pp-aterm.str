@@ -5,28 +5,28 @@ module core-format-check-pp-aterm
 imports
   libstratego-lib 
   ugly-print
-  core-format-check
+  libstratego-rtg
 
 strategies
 
-  main-core-format-check-pp-aterm =
-    io-wrap(core-fc-options,
-      format-check-pp-aterm
-    )
-
-strategies
-
-  format-check-pp-aterm =
+  core-format-check-pp-aterm(|rtg, starts) =
       where(new-hashtable => tbl)
     ; where(new-iset => set)
-    ; main-format-check(|tbl, set)
+    ; rtgfc-type(|rtg, tbl, set)
+    ; where(rtgfc-format-check-report(|rtg, tbl, set))
+    ; where(
+        if rtgfc-format-check-error(|starts, tbl, set) then
+          <set-config> ("--exit-code", 0)
+        else
+          <set-config> ("--exit-code", 1)
+        end
+      )
     ; pp-aterm-types(|tbl, set)
 
 strategies
 
   pp-aterm-types(|tbl, set) =
-      ugly-print-type(|tbl, set)
-    ; concat-content
+    ugly-print-type(|tbl, set)
 
 strategies
 
@@ -107,9 +107,4 @@ strategies
     <conc-strings> (<implode-string> [27], "[m")
 
   is-typed(|tbl, set) = 
-    where(get-types(|tbl, set); iset-elements => [_ | _])
-
-strategies
-
-  concat-content =
-    bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
+    where(rtgfc-get-types(|tbl, set); ?[_ | _])
