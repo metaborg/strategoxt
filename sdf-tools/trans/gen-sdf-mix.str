@@ -27,7 +27,7 @@ strategies
       ; where(collect-layout-sorts => layout-sorts)
       ; collect-sorts
       ; <diff> (<id>, layout-sorts)
-      ; where(ctx := "Ctx") // FIXME: STR-604, STR-605 <newname; string-as-chars(map(try( \ '_' -> '-' \ )))> "Ctx")
+      ; where(ctx := <newname> "Ctx")
       ; map(rename-sort(|ctx))
       ; create-module(|ctx, param*)
       )
