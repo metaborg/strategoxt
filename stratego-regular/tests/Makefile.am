@@ -4,9 +4,8 @@ include $(wildcard *.dep)
 SUBDIRS           = . syn sdf2rtg
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-SCFLAGS        = --main main-$*
-STRINCLUDES    = -I $(top_srcdir)/pp \
-                 -I $(top_srcdir)/sig
+SCFLAGS = --main main-$*
+STRINCLUDES = -I $(top_srcdir)/pp $(STRATEGO_RTG_STRCFLAGS)
 
 check_PROGRAMS = rtg-ppfix-tests
 
@@ -16,4 +15,4 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
 nodist_rtg_ppfix_tests_SOURCES = rtg-ppfix-tests.c
-LDADD += $(SSL_LIBS)
+LDADD += $(STRATEGO_RTG_LIBS) $(SSL_LIBS)
