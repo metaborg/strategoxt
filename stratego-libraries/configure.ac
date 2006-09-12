@@ -44,8 +44,9 @@ if test "$xt_baseline" = "yes"; then
   PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/pp-table.tbl'
   RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
   STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
-  PARSESTRATEGO='$(STRATEGOXT)/bin/parse-stratego'
+  STRATEGOBOXTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/Stratego-Box.tbl'
   SGLRI='$(STRATEGOXT)/bin/sglri'
+  METAEXPLODE='$(STRATEGOXT)/bin/meta-explode'
   PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
   RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
   SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
@@ -58,8 +59,9 @@ else
     PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table/pp-table.tbl'
     RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
     STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
+    STRATEGOBOXTBL_UNINSTALLED='$(top_builddir)/../gpp/syn/box/Stratego-Box.tbl'
+    METAEXPLODE='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-front/parse/meta-explode'
     SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
-    PARSESTRATEGO='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../parse-stratego/parse/parse-stratego'
     PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
     RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
     SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
@@ -68,14 +70,15 @@ fi
 
 AC_SUBST([STRC_UNINSTALLED])
 AC_SUBST([PACKSDF])
-AC_SUBST([PARSESTRATEGO])
 AC_SUBST([SGLRI])
+AC_SUBST([METAEXPLODE])
 AC_SUBST([RTG2SIG])
 AC_SUBST([SDF2RTG])
 AC_SUBST([BOX_UNINSTALLED_STRCFLAGS])
 AC_SUBST([PPTABLETBL_UNINSTALLED])
 AC_SUBST([RTGTBL_UNINSTALLED])
 AC_SUBST([STRATEGOTBL_UNINSTALLED])
+AC_SUBST([STRATEGOBOXTBL_UNINSTALLED])
 
 AC_CHECK_HEADERS([stdlib.h string.h])
 AC_CHECK_HEADERS([unistd.h sys/time.h sys/resource.h])

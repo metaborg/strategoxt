@@ -3,8 +3,9 @@ include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
 # Hack for problem with .meta file.
-.str.rtree :
-	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ 
+stratego/tool-doc/PrettyPrint.rtree : stratego/tool-doc/PrettyPrint.str
+	$(SGLRI) --heuristic-filters on -p $(STRATEGOBOXTBL_UNINSTALLED) -i $< | $(METAEXPLODE) -o $@
+
 
 nobase_data_DATA = libstratego-tool-doc.rtree
 lib_LTLIBRARIES  = libstratego-tool-doc.la
