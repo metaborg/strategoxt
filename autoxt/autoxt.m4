@@ -207,14 +207,21 @@ AC_DEFUN([XT_WITH_STRATEGO_LIBRARIES_ARG],
     [STRATEGO_LIBRARIES=$withval])
 ])
 
+# XT_WITH_XTC_ARG
+# ------------------------------
+AC_DEFUN([XT_WITH_XTC_ARG],
+[
+  AC_ARG_WITH([xtc],
+    [AS_HELP_STRING([--with-xtc=DIR], [use XTC at DIR @<:@Stratego/XT or find with pkg-config@:>@])],
+    [XTC=$withval])
+])
+
 # XT_CHECK_XTC
 # ------------
 AC_DEFUN([XT_CHECK_XTC],
 [
   AC_REQUIRE([XT_WITH_STRATEGOXT_ARG])
-  AC_ARG_WITH([xtc],
-    [AS_HELP_STRING([--with-xtc=DIR], [use XTC at DIR @<:@Stratego/XT or find with pkg-config@:>@])],
-    [XTC=$withval])
+  AC_REQUIRE([XT_WITH_XTC_ARG])
 
   AC_MSG_CHECKING([whether location of XTC package is explicitly set])
   if test "${XTC:+set}" = set; then
@@ -344,7 +351,6 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
     XT_HANDLE_EXPLICIT_STRATEGOXT
 
   else
-
     AC_MSG_RESULT([no])
 
     # Try to find the Stratego/XT Packages using pkgconfig.
@@ -470,22 +476,60 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   AC_REQUIRE([XT_WITH_XTC_ARGS])
 ])
 
+m4_pattern_allow([^XT_BOOTSTRAP(_TRUE|_FALSE)?$])
+
 # XT_USE_BOOTSTRAP_XT_PACKAGES
 # ----------------------------
 AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
 [
   AC_REQUIRE([XT_SETUP])
+  AC_REQUIRE([XT_WITH_STRATEGOXT_ARG])
+  AC_REQUIRE([XT_WITH_XTC_ARG])
 
   AC_ARG_ENABLE([bootstrap],
-    [AS_HELP_STRING([--enable-bootstrap], [Enable a bootstrap build @<:@no@:>@])],
-    [xt_bootstrap="$enableval"],
-    [xt_bootstrap="no"])
+    [AS_HELP_STRING([--enable-bootstrap], [Enable a bootstrap build (requires Stratego/XT) @<:@default=no@:>@])],
+    [xt_bootstrap="$enableval"])
 
   AC_ARG_ENABLE([xtc],
-    [AS_HELP_STRING([--enable-xtc], [Enable XTC registration @<:@default=yes@:>@])],
-    [xt_xtc_register="$enableval"],
-    [xt_xtc_register="yes"])
+    [AS_HELP_STRING([--enable-xtc], [Enable XTC registration @<:@default=no@:>@])],
+    [xt_xtc_register="$enableval"])
+  
+  # If Stratego/XT is given, then enable bootstrap and XTC register
+  AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
+  if test "${STRATEGOXT:+set}" = set; then
+    AC_MSG_RESULT([yes])
 
+    if test "${xt_bootstrap:-set}" = set; then
+      xt_bootstrap="yes"
+    fi
+    if test "${xt_xtc_register:-set}" = set; then
+      xt_xtc_register="yes"
+    fi
+  else
+    AC_MSG_RESULT([no])
+
+    if test "${xt_bootstrap:-set}" = set; then
+      xt_bootstrap="no"
+    fi
+  fi
+
+  # If XTC is given, then enable XTC register
+  AC_MSG_CHECKING([whether location of XTC is explicitly set])
+  if test "${XTC:+set}" = set; then
+    AC_MSG_RESULT([yes])
+
+    if test "${xt_xtc_register:-set}" = set; then
+      xt_xtc_register="yes"
+    fi
+  else
+    AC_MSG_RESULT([no])
+
+    if test "${xt_xtc_register:-set}" = set; then
+      xt_xtc_register="no"
+    fi
+  fi
+
+  AM_CONDITIONAL([XT_BOOTSTRAP], [test "$xt_bootstrap" = "yes"])
   AC_MSG_CHECKING([whether bootstrap build is enabled])
   if test "$xt_bootstrap" = "yes"; then
     AC_MSG_RESULT([yes])
@@ -500,12 +544,7 @@ AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
     XT_CHECK_ATERM
     XT_CHECK_STRATEGO_LIBRARIES 
 
-    if test "${xt_xtc_register:+set}" = set; then
-      AM_CONDITIONAL([XT_XTC_REGISTER], [test "$xt_xtc_register" = "yes"])
-    else
-      AM_CONDITIONAL([XT_XTC_REGISTER], [test "yes" = "yes"])
-    fi
-
+    AM_CONDITIONAL([XT_XTC_REGISTER], [test "$xt_xtc_register" = "yes"])
     if test "${xt_xtc_register}" = "yes"; then
       XT_CHECK_XTC
       XT_WITH_XTC_ARGS
