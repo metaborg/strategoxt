@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 # Hack for problem with .meta file.
 .str.rtree :
-	$(top_builddir)/../stratego-front/parse/parse-stratego $(STRINCLUDES) -i $< -o $@ 
+	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ 
 
 nobase_data_DATA = libstratego-tool-doc.rtree
 lib_LTLIBRARIES  = libstratego-tool-doc.la

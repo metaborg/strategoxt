@@ -44,6 +44,7 @@ if test "$xt_baseline" = "yes"; then
   PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/pp-table.tbl'
   RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
   STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
+  PARSESTRATEGO='$(STRATEGOXT)/bin/parse-stratego'
   SGLRI='$(STRATEGOXT)/bin/sglri'
   PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
   RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
@@ -58,6 +59,7 @@ else
     RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
     STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
     SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
+    PARSESTRATEGO='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../parse-stratego/parse/parse-stratego'
     PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
     RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
     SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
@@ -66,6 +68,7 @@ fi
 
 AC_SUBST([STRC_UNINSTALLED])
 AC_SUBST([PACKSDF])
+AC_SUBST([PARSESTRATEGO])
 AC_SUBST([SGLRI])
 AC_SUBST([RTG2SIG])
 AC_SUBST([SDF2RTG])
