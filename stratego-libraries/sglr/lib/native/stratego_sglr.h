@@ -20,6 +20,8 @@ ATerm STRSGLR_clear_parse_error(void);
 
 ATerm STRSGLR_is_parse_tree(ATerm t);
 
+ATerm STRSGLR_anno_position_info(ATerm pt_term, ATerm path_term);
+
 /**
  * Configuration
  */

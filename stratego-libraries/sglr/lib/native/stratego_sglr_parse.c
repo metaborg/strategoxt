@@ -186,6 +186,22 @@ ATerm STRSGLR_clear_parse_error(void)
   return (ATerm) ATempty;
 }
 
+ATerm STRSGLR_anno_position_info(ATerm pt_term, ATerm path_term)
+{
+  PT_ParseTree pt;
+  const char* path;
+
+  if(!AT_isString(path_term)) {
+    return NULL;
+  }
+
+  path = AT_getString(path_term);
+  pt = PT_ParseTreeFromTerm(pt_term);
+  pt = PT_addParseTreePosInfoSome(path, pt, -1, ATfalse, ATfalse);
+
+  return PT_ParseTreeToTerm(pt);
+}
+
 static char* read_text_from_stream(FILE* stream)
 {
   char* result;

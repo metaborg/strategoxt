@@ -1,7 +1,22 @@
 module stratego/asfix/anno
 imports libstratego-lib
 
+/**
+ * Position information
+ */
 strategies
+
+  /**
+   * Annotates an AsFix parse tree with position information.
+   */
+  asfix-anno-position-info(|path) =
+    ?pt; prim("STRSGLR_anno_position_info", pt, path)
+
+/**
+ * Comments
+ */
+strategies
+
   asfix-anno-comments = 
     asfix-anno-comments(| ["Comment"] )
 
