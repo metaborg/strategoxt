@@ -1,0 +1,331 @@
+/**
+ * Offers facilities to show tool --help and --about information in a nice layout.
+ *
+ * The core tool-doc constructs are presentation oriented.
+ * You can use the sugar in this module to abstract from the presentation.
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego/tool-doc/Main
+imports
+  libstratego-lib
+  libstratego-xtc
+  libstratego-gpp
+
+strategies
+
+  /**
+   * Outputs formatted tool-doc to standard output.
+   *
+   * @type List(DocSection) -> List(DocSection)
+   */
+  tool-doc =
+    where(
+      topdown(repeat(DesugarToolDoc))
+      ; tool-doc2box
+      ; box2text-stream(|80, <stderr-stream>)
+      ; <fputc> ('\n', <stderr-stream>)
+    )
+
+/**
+ * Defines the core tool-doc language.
+ *
+ * Usually you don't want to use these constructs: the overlays
+ * in this module offer a more domain specific view on this language.
+ */
+signature 
+  constructors
+
+    HSection  : String * List(DocSection) -> DocSection
+    Paragraph : String -> DocSection
+    Line      : String -> DocSection
+
+    ItemList  : List(DocSection) -> DocSection
+    DefList   : List(Def)        -> DocSection
+    Def       : String * DocSection -> Def
+
+  constructors
+
+    HelpString  : String * String -> HelpString
+    HelpString  : List(String) * String -> HelpString
+
+/**
+ * Sugar for usage, summary, description
+ */
+signature
+  constructors
+  
+    /**
+     * Single line of text, prefixed by "Usage: ".
+     */
+    Usage   : String -> DocSection
+
+    /**
+     * Section with the heading "Summary".
+     */
+    Summary : String -> DocSection
+
+    /**
+     * Section of paragraphs with the heading "Description".
+     */
+    Description : List(String) -> DocSection
+
+    /**
+     * Definition list of the available options and their description.
+     *
+     * The available options are taken from the "usage-table", "usage" key.
+     * The value of this key is set by parse-options in the standard library.
+     * The value of the key must be a list of strings. These strings are
+     * converted to HelpStrings using the ensure-help-string strategy.
+     */
+    OptionUsage : DocSection
+    
+    /**
+     * Authors with the heading "Authors".
+     */
+    Authors : List(DocSection) -> DocSection
+
+    /**
+     * Author section with the heading "Author".
+     */
+    Author : DocSection -> DocSection
+
+    /**
+     * Section of the given name and e-mail adress.
+     */
+    Person : String * String -> DocSection
+    
+    /**
+     * Section of the given website.
+     */
+    WebHome : String -> DocSection
+
+    /**
+     * Bug reporting section using the information provided by Autoconf.
+     */
+    AutoReportBugs : DocSection
+
+    /**
+     * Bug reporting section from a given email address.
+     */
+    ReportBugs : String -> DocSection
+
+    /**
+     * Program section using the information provided by Autoconf.
+     */
+    AutoProgram : DocSection
+ 
+    /**
+     * Section with the name of the program, the package and the version.
+     */
+    Program : String * String * String -> DocSection
+    
+    /**
+     * Configuration section from a list of items.
+     */
+    Config : List(ConfigItem) -> DocSection
+
+    /**
+     * Config item for the default xtc repository.
+     */
+    DefaultXTCRepository : Def
+    
+    /**
+     * Config item for the currently configured xtc repository.
+     */
+    CurrentXTCRepository : Def
+    
+    /**
+     * Generic configuration item: key, value.
+     */
+    ConfigItem : String * String -> Def
+
+    /**
+     * Section of paragraphs with the license heading.
+     */
+    License : List(String) -> DocSection
+
+    /**
+     * GPL license section
+     *
+     * @param Year
+     * @param Author
+     */
+    GNU_GPL : String * String -> DocSection
+
+    /**
+     * Creates a LGPL license.
+     *
+     * @param Year
+     * @param Author     
+     */
+    GNU_LGPL : String * String -> DocSection
+    
+rules
+
+  DesugarToolDoc :
+    Usage(s) -> Line(<conc-strings> ("Usage: ", s))
+
+  DesugarToolDoc :
+    Summary(p) -> HSection("Summary:", [Paragraph(p)])
+
+  DesugarToolDoc :
+    Description(ps) -> HSection("Description:", <map(!Paragraph(<id>))> ps)
+
+  DesugarToolDoc :
+    OptionUsage() ->
+      HSection("Options:", [
+        DefList(
+          < table-get 
+          ; reverse
+          ; map(ensure-help-string)
+          ; filter( \ HelpString(f, d) -> Def(f, Paragraph(d)) \ )
+          > ("usage-table", "usage")
+        )
+    ])
+    
+  DesugarToolDoc :    
+    Authors(ps) -> HSection("Authors:", [ItemList(ps)])
+
+  DesugarToolDoc :
+    Author(p) -> HSection("Author:", [ItemList([p])])
+
+  DesugarToolDoc :
+    Person(name, mail) -> Paragraph(<concat-strings> [name, " <", mail, ">"])
+
+  DesugarToolDoc :
+    WebHome(s) -> HSection("Website:", [Line(s)])
+
+  DesugarToolDoc :
+    AutoReportBugs() -> ReportBugs(<SRTS-package-bugreport <+ !"not available"> ())
+
+  DesugarToolDoc :
+    ReportBugs(s) -> Paragraph(<concat-strings> ["Please report bugs to ", s])
+
+  DesugarToolDoc :
+    AutoProgram() ->
+      HSection(<get-config> "program", [
+        DefList(
+          [ Def("Package", Paragraph(<SRTS-package-name <+ !"not available"> ()))
+          , Def("Version", Paragraph(<SRTS-package-version <+ !"not available"> ()))
+          | <![Def("Revision", Paragraph(<SRTS-package-revision>))] <+ ![]>
+          ]
+        )
+      ])
+
+  DesugarToolDoc :
+    Program(name, package, version) ->
+      HSection(name, [
+        DefList([
+          Def("Package", Paragraph(package))
+        , Def("Version", Paragraph(version))
+        ])
+      ])
+
+  DesugarToolDoc :
+    Config(items) -> HSection("Configuration:", [DefList(items)])
+
+  DesugarToolDoc :
+    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <GetInternalDefaultXtcRepository <+ !"not available"> ())
+
+  DesugarToolDoc :
+    CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location <+ !"not available"> ())
+
+  external GetInternalDefaultXtcRepository(|)
+
+  DesugarToolDoc :
+    ConfigItem(k, v) -> Def(k, Line(v))
+
+  DesugarToolDoc :
+    License(ps) -> HSection("License:", <map(!Paragraph(<id>))> ps)
+    
+  DesugarToolDoc :    
+    GNU_GPL(year, author)
+      ->
+    License(
+      [ <concat-strings> ["Copyright (C) ", year, " ", author]
+      , "This program is free software; you can redistribute it and/or
+        modify it under the terms of the GNU General Public License as published by the 
+        Free Software Foundation; either version 2 of the License, or (at your option) 
+        any later version."
+      , "This program is distributed in the hope that it will be useful, but 
+        WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+        FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
+        details."
+      , "You should have received a copy of the GNU General Public License 
+        along with this program; if not, write to the Free Software Foundation, 
+        Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA"
+      ]
+    )
+
+  DesugarToolDoc :
+    GNU_LGPL(year, author)
+      ->
+    License(
+      [ <concat-strings> ["Copyright (C) ", year, " ", author]
+      , "This library is free software; you can redistribute it and/or modify 
+         it under the terms of the GNU Lesser General Public License as published by the 
+         Free Software Foundation; either version 2 of the License, or (at your option) 
+         any later version."
+      , "This library is distributed in the hope that it will be useful, but 
+         WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+         FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License 
+         for more details."
+      , "You should have received a copy of the GNU Lesser General Public 
+         License along with this library; if not, write to the Free Software Foundation, 
+         Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
+      ]
+    )
+    
+strategies
+
+  /**
+   * Returns the package name as defined by Autoconf.
+   *
+   * @type _ -> String
+   */
+  external SRTS-package-name(|)
+
+  /**
+   * Returns the package version as defined by Autoconf.
+   *
+   * @type _ -> String
+   */
+  external SRTS-package-version(|)
+
+  /**
+   * Returns the email address to send bug reports to as defined by Autoconf.
+   *
+   * @type _ -> String
+   */
+  external SRTS-package-bugreport(|)
+
+  /**
+   * Returns revision as defined by AutoXT.
+   *
+   * @type _ -> String
+   */
+  external SRTS-package-revision(|)
+
+strategies
+
+  /**
+   * Checks whether the current term is HelpString
+   *
+   * @type HelpString -> HelpString
+   */
+  ensure-help-string =
+    HelpString(is-string + is-list, is-string)
+
+  /**
+   * Converts a string to a HelpString by splitting it at the first two spaces.
+   *
+   * @type String -> HelpString
+   */
+  ensure-help-string :
+    s -> HelpString(flags, descr)
+      where <is-string> s 
+          ; <split-before> (s, "  ") => (flags, descr)
+
+  ensure-help-string :
+    "" -> HelpString("", "")

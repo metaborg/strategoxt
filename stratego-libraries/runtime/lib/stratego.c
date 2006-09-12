@@ -30,6 +30,10 @@ USA
 
 void (* SRTS_stratego_initialize)(void) = NULL;
 ATerm SRTS_default_xtc_repository = NULL;
+ATerm SRTS_package_name = NULL;
+ATerm SRTS_package_version = NULL;
+ATerm SRTS_package_bugreport = NULL;
+ATerm SRTS_package_revision = NULL;
 
 /**
  * For legacy reasons, this is an external function.
@@ -39,6 +43,34 @@ ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
     return NULL;
   else 
     return SRTS_default_xtc_repository;
+}
+
+ATerm SRTS_package_name_0_0(ATerm t) {
+  if(SRTS_package_name == NULL)
+    return NULL;
+  else 
+    return SRTS_package_name;
+}
+
+ATerm SRTS_package_version_0_0(ATerm t) {
+  if(SRTS_package_version == NULL)
+    return NULL;
+  else 
+    return SRTS_package_version;
+}
+
+ATerm SRTS_package_bugreport_0_0(ATerm t) {
+  if(SRTS_package_bugreport == NULL)
+    return NULL;
+  else 
+    return SRTS_package_bugreport;
+}
+
+ATerm SRTS_package_revision_0_0(ATerm t) {
+  if(SRTS_package_revision == NULL)
+    return NULL;
+  else 
+    return SRTS_package_revision;
 }
 
 ATerm _Id(StrSL sl, ATerm t) {

@@ -84,6 +84,12 @@ struct str_frame
  */
 extern void (* SRTS_stratego_initialize)(void);
 extern ATerm SRTS_default_xtc_repository;
+extern ATerm SRTS_package_name;
+extern ATerm SRTS_package_version;
+extern ATerm SRTS_package_revision;
+extern ATerm SRTS_package_bugreport;
+
+
 
 ATerm _Id(StrSL, ATerm);
 ATerm _Fail(StrSL, ATerm);

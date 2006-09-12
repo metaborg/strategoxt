@@ -1,0 +1,7 @@
+/**
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego-tool-doc
+imports
+  stratego/tool-doc/Main
+  stratego/tool-doc/PrettyPrint

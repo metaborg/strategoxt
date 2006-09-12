@@ -1,0 +1,47 @@
+module stratego/tool-doc/PrettyPrint
+imports
+  stratego/tool-doc/Main
+  libstratego-lib
+  libstratego-gpp
+
+strategies
+
+  tool-doc2box =
+    tool-doc-docsections-to-box
+
+strategies
+
+  tool-doc-docsections-to-box :
+    docsections -> box |[ V vs=1 [ ~*bs  ] ]|
+      where <map(tool-doc-try-docsection-to-box)> docsections => bs
+
+  tool-doc-try-docsection-to-box =
+    tool-doc-docsection-to-box <+ debug(!"Not a docsection: "); fail
+
+  tool-doc-docsection-to-box :
+    HSection(s, sections) -> box |[ V is=3 vs=0 [~lit:s V vs=1 [~*bs]] ]|
+      where <map(tool-doc-try-docsection-to-box)> sections => bs
+
+  tool-doc-docsection-to-box :
+    Paragraph(s) -> box |[ HV hs=1 vs=0 [ ~*tokens ] ]|
+      where < <string-tokenize> ([' ', '\n', '\r', '\t'], <id>)
+            ; map( !box |[ ~lit:<id> ]| )
+            > s => tokens
+
+  tool-doc-docsection-to-box :
+    Line(s) -> box |[ ~lit:s ]|
+
+  tool-doc-docsection-to-box :
+    ItemList(sections) -> box |[ V vs=0 [ ~*bs ] ]|
+      where <map(
+               tool-doc-try-docsection-to-box
+             ; !box |[ H hs=1 ["*" ~<id> ] ]|
+             )> sections => bs
+
+  tool-doc-docsection-to-box :
+    DefList(defs) -> box |[ A (l hs=2,l hs=0) [ ~*bs ] ]|
+      where <map(tool-doc-def-to-row)> defs => bs
+
+  tool-doc-def-to-row :
+    Def(k, v) -> box |[ R [ ~lit:k ~b ] ]|
+      where <tool-doc-try-docsection-to-box> v => b

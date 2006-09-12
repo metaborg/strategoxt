@@ -1,0 +1,7 @@
+prefix=@prefix@
+
+Name: Stratego Tool Documentation Library
+Description: Stratego Tool Documentation Library.
+Version: @PACKAGE_VERSION@
+Libs: @abs_top_builddir@/stratego-libraries/tool-doc/lib/libstratego-tool-doc.la
+Requires: aterm stratego-runtime stratego-lib stratego-gpp

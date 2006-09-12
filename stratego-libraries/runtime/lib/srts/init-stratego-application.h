@@ -16,6 +16,22 @@ static void SRTS_stratego_initialize_module()
   SRTS_default_xtc_repository = XTC_REPOSITORY();
   ATprotect(&SRTS_default_xtc_repository);
 #endif
+
+#ifdef PACKAGE_NAME
+  SRTS_package_name = ATmakeString(PACKAGE_NAME);
+#endif
+
+#ifdef PACKAGE_VERSION
+  SRTS_package_version = ATmakeString(PACKAGE_VERSION);
+#endif
+
+#ifdef PACKAGE_BUGREPORT
+  SRTS_package_bugreport = ATmakeString(PACKAGE_BUGREPORT);
+#endif
+
+#ifdef SVN_REVISION
+  SRTS_package_revision = ATmakeString(SVN_REVISION);
+#endif
 }
 
 static void register_init(void) __attribute__((constructor));
