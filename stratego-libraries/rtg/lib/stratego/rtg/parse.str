@@ -10,15 +10,18 @@ strategies
    * @type String -> RTG
    */
   parse-rtg-file =
-    where(
-      STRRTG-get-rtg-parsetable
-      ; tbl := <open-parse-table>
-    )
-    ; finally(parse-file(|tbl), <close-parse-table> tbl)
+    where(tbl := <get-rtg-parse-table>)
+    ; parse-file(|tbl)
     ; rtg-parsefix
 
-  external STRRTG-get-rtg-parsetable(|)
+  get-rtg-parse-table =
+    MemoRTGParseTable
+    <+ STRRTG-get-rtg-parsetable
+       ; open-parse-table
+       ; ?tbl
+       ; rules(MemoRTGParseTable: _ -> tbl)
 
+  external STRRTG-get-rtg-parsetable(|)
 
 strategies
 
