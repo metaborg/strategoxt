@@ -36,3 +36,10 @@ inline static double _get_real(ATerm t)
   else 
     return((double)_get_int(t));
 }
+
+
+ATerm SSL_table_keys_fold(StrCL f, ATerm result, ATerm tbl);
+ATerm SSL_table_values_fold(StrCL f, ATerm result, ATerm tbl);
+
+ATerm SSL_list_loop(StrCL f, ATerm t);
+ATerm SSL_list_fold(StrCL f, ATerm result, ATerm t);

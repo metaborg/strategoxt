@@ -10,6 +10,25 @@ imports
 
 strategies
 
+  /**
+   * Iterative loop over a list applying s to each element.
+   */
+
+  list-loop(s) =
+    ?xs; prim("SSL_list_loop", s | xs)
+
+  /**
+   * Iterative fold over a list applying s to each element and 
+   * accumulator acc from left to right.
+   *
+   * @type (b * a -> b) * b * List(a) -> b
+   */
+
+  list-fold(s | acc) =
+    ?xs; prim("SSL_list_fold", s | acc, xs)
+
+strategies
+
   /** @internal */
   Hd   : [x | _] -> x
   

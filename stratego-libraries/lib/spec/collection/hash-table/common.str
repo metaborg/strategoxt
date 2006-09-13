@@ -110,6 +110,30 @@ strategies
     ; hashtable-keys
     ; map({k: ?k; <hashtable-get(|k)> htbl})
 
+  /**
+   * Apply an iterative fold left (starting with first element) over
+   * the keys of a hash table; useful for applying an operation to each
+   * key without constructing a list of keys.
+   *
+   * @type (K * a -> a) * a * HashTable(K, V) -> a 
+   */
+
+  hashtable-fold-keys(s | t) = 
+    ?Hashtable(tbl)
+    ; prim("SSL_table_keys_fold", s | t, tbl)
+
+  /**
+   * Apply an iterative fold left (starting with first element) over
+   * the values of a hash table; useful for applying an operation to each
+   * value without constructing a list of values.
+   *
+   * @type (V * a -> a) * a * HashTable(K, V) -> a 
+   */
+
+  hashtable-fold-values(s | t) = 
+    ?Hashtable(tbl)
+    ; prim("SSL_table_values_fold", s | t, tbl)
+
 /**
  * Hashtable bulk operations
  */

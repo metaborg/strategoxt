@@ -43,6 +43,11 @@ endif
 
 libstratego-lib.rtree : lib$(stratego_lib_module).rtree
 	cp $< $@
+valgrind: do_exec(XTC_REPOSITORY=/home/visser/dev/strategoxt/BUILDTIME_XTC) failed: No such file or directory
+
+
+
+STRC_UNINSTALLED_CALLGRIND = XTC_REPOSITORY=$(BUILD_REPOSITORY) callgrind $(prefix)/bin/strc
 
 stratego-lib.str : Makefile
 	echo "module stratego-lib imports $(stratego_lib_module)" > $@

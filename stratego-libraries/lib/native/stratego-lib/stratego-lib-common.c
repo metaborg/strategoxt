@@ -175,3 +175,120 @@ ATerm indexedSet_to_term(ATermIndexedSet set) {
   return AT_pointer_to_term((void*) set);
 }
 
+ATerm SSL_list_loop(StrCL f, ATerm t)
+{
+  if(ATgetType(t) == AT_LIST) {
+    ATermList suffix = ATgetNext((ATermList) t);
+    while(!ATisEmpty(suffix))
+    {
+      ATerm result = cl_fun(f)(cl_sl(f), ATgetFirst(suffix));
+      if(result == NULL)
+      {
+        return NULL;
+      }
+
+      suffix = ATgetNext(suffix);
+    }
+
+    return t;
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+ATerm SSL_list_fold(StrCL f, ATerm result, ATerm t)
+{
+  if(ATgetType(t) == AT_LIST) {
+    ATermList suffix = ATgetNext((ATermList) t);
+    while(!ATisEmpty(suffix))
+    {
+      result = cl_fun(f)(cl_sl(f), result, ATgetFirst(suffix));
+      if(result == NULL)
+      {
+        return NULL;
+      }
+
+      suffix = ATgetNext(suffix);
+    }
+
+    return t;
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+/**
+ * Folds over hashtable keys and values. Allow iterating over contents
+ * of a hashtable without constructing a list of keys or values. Since
+ * the operation is a fold, one *can* construct a list of results, or
+ * any other composite computation.
+ *
+ * Note that this duplicates code from the ATerm library. Due to the
+ * encapsulation in the implementation of the ATerm table it is not
+ * possible to extend the ATerm library with this type of operation
+ * that requires knowledge of the implementation. That is, this
+ * code depends on implementation knowledge that is not in the 
+ * public interface of the library.
+ **/
+
+#define TABLE_SHIFT 13
+#define ELEMENTS_PER_TABLE (1<<TABLE_SHIFT)
+#define modELEMENTS_PER_TABLE(n) ((n) & (ELEMENTS_PER_TABLE-1))
+#define divELEMENTS_PER_TABLE(n) ((n) >> TABLE_SHIFT)
+
+struct _ATermTable
+{
+  long sizeMinus1;
+  long nr_entries; /* the number of occupied positions in the hashtable,
+                      including the elements that are explicitly marked
+                      as deleted */
+  long nr_deletions;
+  int max_load;
+  long max_entries;
+  long *hashtable; long nr_tables;
+  struct _ATerm ***keys;
+  long nr_free_tables;
+  long first_free_position;
+  long **free_table;
+  struct _ATerm ***values;
+};
+
+static ATerm tableGet(ATerm **tableindex, long n)
+{
+  assert(n>=0);
+  return tableindex[divELEMENTS_PER_TABLE(n)][modELEMENTS_PER_TABLE(n)];
+}
+
+static ATerm table_fold(StrCL f, ATerm result, ATerm **tableindex, long nr_entries)
+{
+  long i;
+  ATerm t;
+
+  if(result != NULL)
+    for(i=0; i<nr_entries; i++) {
+      t = tableGet(tableindex, i);
+      if (t != NULL) {
+        result = cl_fun(f)(cl_sl(f), result, t);
+        if( result == NULL ) 
+          break;
+      }
+    }
+  return result;
+}
+
+ATerm SSL_table_keys_fold(StrCL f, ATerm result, ATerm tbl)
+{
+  ATermTable table = hashtable_from_term(tbl);
+  return table_fold(f, result, table->keys, table->nr_entries);
+}
+
+ATerm SSL_table_values_fold(StrCL f, ATerm result, ATerm tbl)
+{
+  ATermTable table = hashtable_from_term(tbl);
+  return table_fold(f, result, table->values, table->nr_entries);
+}
