@@ -42,7 +42,7 @@ rules
 
   eval-command :
     (Read(file), ()) ->
-      <conc-strings; find-in-includes; parse-rtg-file> (file, ".rtg")
+      <conc-strings; find-in-includes; my-parse-rtg-file> (file, ".rtg")
 
   eval-command :
     (Reduce(), rtg) -> <rtg-reduce> rtg

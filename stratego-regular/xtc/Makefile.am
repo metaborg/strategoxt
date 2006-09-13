@@ -29,11 +29,13 @@ STRINCLUDES = \
   -I $(GPP)/share/sdf/gpp \
   -I $(GPP)/share/gpp \
   $(STRATEGO_XTC_STRCFLAGS) \
+  $(STRATEGO_SGLR_STRCFLAGS) \
   $(STRATEGO_RTG_STRCFLAGS)
 
 LDADD += \
   $(STRATEGO_RTG_LIBS) \
   $(STRATEGO_GPP_LIBS) \
+  $(STRATEGO_SGLR_LIBS) \
   $(SSL_LIBS)
 
 pkgdata_DATA   = regular-xtc-tools.str tool-doc.str Makefile.regular

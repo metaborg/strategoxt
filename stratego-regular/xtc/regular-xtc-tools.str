@@ -1,5 +1,8 @@
 module regular-xtc-tools
-imports pp-rtg
+imports
+  pp-rtg
+  libstratego-sglr
+
 strategies
 
   xtc-pp-abstract-stratego =
@@ -11,7 +14,7 @@ strategies
   xtc-rtg-front-end =
     xtc-ensure-file
     ; ?FILE(<id>)
-    ; parse-rtg-file
+    ; my-parse-rtg-file
     ; rtg-reduce
     ; rtg-group-productions
 
@@ -23,3 +26,22 @@ strategies
     where(f := <xtc-new-file>)
     ; pp-rtg-file(|f)
     ; !FILE(f)
+
+/**
+ * Bootstrap problem
+ */
+strategies
+
+  my-parse-rtg-file =
+    where(tbl := <my-get-rtg-parse-table>)
+    ; parse-file(|tbl)
+    ; rtg-parsefix
+
+  my-get-rtg-parse-table =
+    MyMemoRTGParseTable
+    <+ STRRTG-get-rtg-parsetable
+       ; open-parse-table
+       ; ?tbl
+       ; rules(MyMemoRTGParseTable: _ -> tbl)
+
+  external STRRTG-get-rtg-parsetable(|)
