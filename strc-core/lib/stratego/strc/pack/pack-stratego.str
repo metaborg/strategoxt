@@ -12,6 +12,7 @@ module pack-stratego
 
 imports 
   libstratego-xtc 
+  libstratego-rtg
   Stratego 
   stratego/strc/pack/pack-stratego-options
 
@@ -141,28 +142,28 @@ strategies
     ; pack-fc(|"Stratego-Sugar-Cong")
 
   pack-fc(|format) =
-  where(
-  if <geq>(<get-config> "--format-check", 1) then
-    ?(file, <id>);
     where(
-      <concat-strings>[format, ".rtg-nf"]
-      ; xtc-find => format'
+      if <geq>(<get-config> "--format-check", 1) then
+        ?(file, <id>)
+        ; where(
+          format' := <strc-rtgnf-by-simple-name> format
+          ; memoverbose := <verbosity>
+          ; <set-verbosity> 1
+        )
+        ; if not(strc-rtg-format-check(|format')) then
+            write-to
+	    ; copy-to(!<concat-strings>[<base-filename> file, ".", "parse.", format] => name)
+            ; log(|Error, 
+                <concat-strings>["\nfile `", file, "' does not satisfy format `", format,"'\n",
+                  "See file `", name, "'\n",
+                  "This problem may be caused by importing a file parsed with an old version of the Stratego syntax."])
+            ; fail
+          else
+            id // debug(!"fc succeeded: ")
+          end
+        ; where(<set-verbosity> memoverbose)
+      end
     )
-    ; write-to
-    ; if not(xtc-transform(!"format-check", 
-                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
-    then
-	copy-to(!<concat-strings>[<base-filename> file, ".", "parse.", format] => name)
-	; log(|Error, 
-		<concat-strings>["\nfile `", file, "' does not satisfy format `", format,"'\n",
-		"See file `", name, "'\n",
-		"This problem may be caused by importing a file parsed with an old version of the Stratego syntax."])
-	; fail
-    else
-      id // debug(!"fc succeeded: ")
-    end
-  end
-  )
 
 strategies
 
