@@ -1,0 +1,4 @@
+module stratego-aterm
+imports
+  stratego/aterm/PrettyPrint
+  stratego/aterm/Explode

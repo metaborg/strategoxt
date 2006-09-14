@@ -1,0 +1,96 @@
+/**
+ * @author  Martin Bravenboer
+ */
+module stratego/aterm/Explode
+imports
+  ATerms
+  libstratego-lib
+
+strategies
+
+  explode-aterm =
+    aterm-explode-list
+    <+ aterm-explode-int
+    <+ aterm-explode-fun
+    <+ aterm-explode-appl
+
+  implode-aterm =
+    aterm-implode-list
+    <+ aterm-implode-int
+    <+ aterm-implode-fun
+    <+ aterm-implode-appl
+
+rules
+
+  /**
+   * list
+   */
+  aterm-explode-list :
+    [x*]{} -> list(not-empty(<map(explode-aterm)> x*))
+
+  aterm-implode-list :
+    list(not-empty(x*)) -> <map(implode-aterm)> x*
+
+  /**
+   * integer
+   */
+  aterm-explode-int :
+    i{} -> constant(int(natural(<int-to-string> i)))
+    where
+      <is-int> i
+
+  aterm-implode-int :
+    constant(int(natural(s))) -> <string-to-int> s
+
+  /**
+   * just fun
+   */
+  aterm-explode-fun :
+    s#([]){} -> fun(<aterm-explode-afun> s)
+
+  aterm-implode-fun :
+    fun(s1) -> s2#([])
+    where
+      <aterm-implode-afun> s1 => s2
+
+  /**
+   * appl
+   */
+  aterm-explode-appl :
+    s#([x*]){} -> appl(<aterm-explode-afun> s, <map(explode-aterm)> x*)
+
+  aterm-implode-appl :
+    appl(s1, x*) -> s2#(<map(implode-aterm)> x*)
+    where
+      <aterm-implode-afun> s1 => s2
+
+  /**
+   * afun
+   */
+  aterm-explode-afun :
+    s -> uqlit(s)
+    where
+      <not(is-double-quoted)> s
+
+  aterm-explode-afun :
+    s -> qlit(s)
+    where
+      <is-double-quoted> s
+
+  aterm-implode-afun :
+    uqlit(s) -> s
+
+  aterm-implode-afun :
+    qlit(s) -> s
+
+  /**
+   * todo: annotations
+
+    placeholder           : ATerm -> ATerm
+    annotation            : List(ATerm) -> Ann
+    annotated-constant    : ACon * Ann -> ATerm
+    annotated-list        : ATermList * Ann -> ATerm
+    annotated-fun         : AFun * Ann -> ATerm
+    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
+    annotated-placeholder : ATerm * Ann -> ATerm
+    */

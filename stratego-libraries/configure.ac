@@ -149,6 +149,10 @@ AC_CONFIG_FILES([
   tool-doc/Makefile
   tool-doc/lib/Makefile
 
+  stratego-aterm.pc
+  aterm/Makefile
+  aterm/lib/Makefile
+
   stratego-lib.pc
   lib/Makefile
   lib/ssl-compat/Makefile
