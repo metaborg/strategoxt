@@ -12,6 +12,6 @@ stratego-config.h : $(top_srcdir)/config.h
 	echo "#ifndef SRTS_STRATEGO_CONFIG_H"  > $@
 	echo "#define SRTS_STRATEGO_CONFIG_H" >> $@
 	echo "" 			      >> $@
-	grep -v PACKAGE $< | grep -v VERSION | grep -v XTC >> $@
+	grep -v PACKAGE $< | grep -v REVISION | grep -v VERSION | grep -v XTC >> $@
 	echo "#endif" 			      >> $@
 	echo "" 			      >> $@
