@@ -15,7 +15,7 @@ strategies
     ; concat-strings-tests
     ; quote-tests
     ; padd-with-test
-    ; is-substring-test
+    ; is-substring-tests
     ; copy-char-test
     ; upper-case-test
     ; escape-tests
@@ -209,10 +209,36 @@ strategies
   upper-case-test = 
     apply-test(!"upper-case-test",upper-case,!"foOBaR",!"FOOBAR")
 
-  is-substring-test =
-    apply-test(!"is-substring-test",is-substring(!"foo"),
-  !"barfoofnord",id)
-  
+/**
+ * is-substring
+ */
+strategies
+
+  is-substring-tests = id
+    ; is-substring-test(|"foo", "barfoofnord")
+    ; is-substring-test(|"foo", "foo")
+    ; is-substring-test(|"foo", "barfoo")
+    ; is-substring-test(|"foo", "foobar")
+    ; is-substring-test(|"foo", "foofoo")
+    ; is-substring-test(|"f", "f")
+    ; is-substring-test(|"f", "foo")
+    ; not-is-substring-test(|"foo", "")
+    ; not-is-substring-test(|"f", "")
+    ; not-is-substring-test(|"foo", "fobar")
+
+  is-substring-test(|substring, string) = 
+    apply-test(!"is-substring-test"
+    , is-substring(!substring)
+    , !string
+    , id
+    )
+
+  not-is-substring-test(|substring, string) = 
+    apply-and-fail(!"is-substring-test"
+    , is-substring(!substring)
+    , !string
+    )
+
 strategies  
 
   string-tokenize-test =
