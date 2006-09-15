@@ -142,7 +142,6 @@ if XT_XTC_REGISTER
 
 install-data-local::
 	$(mkinstalldirs) `dirname $(DREPOSITORY)`
-	@$(XTC_PROG) -r $(DREPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE)
 	@for file in fordummy $(XTC_IMPORT) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  $(XTC_PROG) -r $(DREPOSITORY) import $$file ; \
@@ -175,7 +174,6 @@ install-exec-local::
 	@echo "Tools registered in repository $(DREPOSITORY): $(bin_PROGRAMS) $(bin_SCRIPTS) $(libexec_PROGRAMS) $(libexec_SCRIPTS)"
 
 all-local::
-	@$(XTC_PROG) -r $(BUILD_REPOSITORY) register -l "@abs_top_srcdir@" -V $(VERSION) -t $(PACKAGE)
 	@for file in fordummy $(XTC_IMPORT) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  $(XTC_PROG) -r $(BUILD_REPOSITORY) import $$file ; \
