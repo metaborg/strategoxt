@@ -20,7 +20,6 @@ AC_DEFUN([XT_SETUP],
   AC_REQUIRE([XT_DARWIN])
   AC_REQUIRE([XT_CHECK_LINKING])
   AC_REQUIRE([XT_STRICT_ISO_C99])
-  AC_REQUIRE([XT_ENABLE_XTC_REGISTER])
 
   AC_SUBST([STR_CFLAGS])
   AC_SUBST([STR_LDFLAGS])
@@ -257,6 +256,10 @@ AC_DEFUN([XT_CHECK_XTC],
       AC_MSG_RESULT([$XTC_PROG])
       AC_SUBST([XTC_PROG])
     fi
+  fi
+
+  if test "${xt_xtc_register:-set}" = set; then
+    XT_ENABLE_XTC_REGISTER
   fi
 ])
 
