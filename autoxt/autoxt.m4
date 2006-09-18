@@ -509,7 +509,6 @@ AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
   AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
   if test "${STRATEGOXT:+set}" = set; then
     AC_MSG_RESULT([yes])
-
     if test "${xt_bootstrap:-set}" = set; then
       xt_bootstrap="yes"
     fi
@@ -518,7 +517,6 @@ AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
     fi
   else
     AC_MSG_RESULT([no])
-
     if test "${xt_bootstrap:-set}" = set; then
       xt_bootstrap="no"
     fi
@@ -528,23 +526,17 @@ AC_DEFUN([XT_USE_BOOTSTRAP_XT_PACKAGES],
   AC_MSG_CHECKING([whether location of XTC is explicitly set])
   if test "${XTC:+set}" = set; then
     AC_MSG_RESULT([yes])
-
     if test "${xt_xtc_register:-set}" = set; then
       xt_xtc_register="yes"
     fi
   else
     AC_MSG_RESULT([no])
-
-    if test "${xt_xtc_register:-set}" = set; then
-      xt_xtc_register="no"
-    fi
   fi
 
   AM_CONDITIONAL([XT_BOOTSTRAP], [test "$xt_bootstrap" = "yes"])
   AC_MSG_CHECKING([whether bootstrap build is enabled])
   if test "$xt_bootstrap" = "yes"; then
     AC_MSG_RESULT([yes])
-
     XT_CHECK_ATERM
     XT_CHECK_SDF
     XT_CHECK_STRATEGOXT
