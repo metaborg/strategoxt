@@ -1647,7 +1647,6 @@ strategies // exception handling strategies
       ; dr-define-ignoreT(|csid)
     )
 
-  // checked
   get-matching-id(eq-test | tag, rulename) =
     (<bagof-DR_EXCEPTION>Structure(rulename) <+ ![])
     ; where(
@@ -1677,37 +1676,22 @@ strategies // exception handling strategies
   dr-complete-catch(merge, s | rulenames) =
     ?term
 
-//    ; debug(!"dr-complete-catch-1>")
-
     ; <map({rulename, cID, cs, rs, hd, tl :
         ?rulename
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-1<")
         ; (<DR_EXCEPTION>Structure(rulename) => TryBlock(_, _, [Catch(cID, _) | _], _)
            <+ fatal-err(|"dr-complete-catch was called when no catch clause was active or when a finished exception block was not completed"))
-//        ; debug(!"dr-complete-catch-2>")
         ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, _) | rs]
            <+ fatal-err(|"dr-complete-catch was not called in a proper exception handling context"))
-//        ; debug(!"dr-complete-catch-3>")
         ; <bagof-DR_EXCEPTION>ThrowCS(rulename, cID)
-//        ; debug(!"dr-complete-catch-4>")
-//        ; where(map(?(<id>, _)); debug(!"dr-complete-catch-4'>"); dr-print-rule-set-msg(|"Throw change sets"))
         ; if ?[(hd, _) | tl] then
-//            debug(!"dr-complete-catch-5>");
             <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
-//            ; dr-debug-rule-set(|rulename, ">dr-complete-catch-2<")
-//            ; debug(!"dr-complete-catch-6>")
             ; <map(![<?(<id>, _)> | rs]; try(<merge>(rulename, <id>)))>tl
           else
-//            debug(!"dr-complete-catch-7>");
             <dr-set-rule-set(|rulename)>[<dr-clone-change-set>cs | rs]
           end
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-3<")
-//        ; debug(!"dr-complete-catch-8>")
         ; !cs
-//        ; debug(!"dr-complete-catch-9>")
       })>rulenames => css
 
-//    ; debug(!"dr-complete-catch-10>")
     ; restore(<s>term => e,
         <zip>(css, rulenames)
         ; map({cs, rulename, rs :
@@ -1718,86 +1702,48 @@ strategies // exception handling strategies
             ; dr-set-rule-set(|rulename)
           })
       )
-//    ; where(<map(dr-debug-rule-set(|<id>, ">dr-complete-catch-4<"))>rulenames)
-//    ; debug(!"dr-complete-catch-11>")
 
     ; <zip>(css, rulenames)
-//    ; debug(!"dr-complete-catch-12>")
     ; map({cs, rulename, pos, ID, cID, catches, fin, fID, cs', rs :
         ?(cs, rulename)
-//        ; debug(!"dr-complete-catch-13>")
         ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(pos, ID, [Catch(cID, _) | catches], fin@Finally(fID))
            <+ fatal-err(|"dr-complete-catch: Unexpected failure here!"))
-//        ; debug(!"dr-complete-catch-14>")
         ; rules(DR_EXCEPTION :+ Structure(rulename) -> TryBlock(pos, ID, catches, fin))
         ; rules(DR_EXCEPTION :- ThrowCS(rulename, cID))
-//        ; debug(!"dr-complete-catch-15>")
         ; (dr-get-rule-set(|rulename) => [cs'@ChangeSet(_, _, _) | rs]
            <+ fatal-err(|"dr-complete-catch: A change set was expected here!"))
-//        ; debug(!"dr-complete-catch-16>")
         ; (<eq>(fID, "")
-           < rules(DR_EXCEPTION :+ ExceptionCS(rulename, ID) -> cs')//; debug(!"dr-complete-catch-16>")
-           + rules(DR_EXCEPTION :+ ExceptionCS(rulename, fID) -> cs'))//; debug(!"dr-complete-catch-17>")
-//        ; debug(!"dr-complete-catch-17>")
+           < rules(DR_EXCEPTION :+ ExceptionCS(rulename, ID) -> cs')
+           + rules(DR_EXCEPTION :+ ExceptionCS(rulename, fID) -> cs'))
         ; ![cs | rs]
-//        ; debug(!"dr-complete-catch-18>")
         ; dr-set-rule-set(|rulename)
-//        ; debug(!"dr-complete-catch-19>")
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-catch-5<")
       })
 
-//    ; debug(!"dr-complete-catch-20>")
     ; !e
-//    ; debug(!"dr-complete-catch-21>")
 
   dr-complete-finally(merge, s | rulenames) =
     ?term
     
-//    ; debug(!"dr-complete-finally-1>")
-    
     ; <map({rulename, tb, fID, cs, csid, rs, tcss, hd, tl :
         ?rulename
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-finally-1<")
-//        ; debug(!"dr-complete-finally-2>")
         ; (<once-DR_EXCEPTION>Structure(rulename) => tb@TryBlock(_, _, [], Finally(fID))
            <+ fatal-err(|"dr-complete-finally was called when a catch clause was still active"))
-//        ; debug(!"dr-complete-finally-3>")
         ; try(<eq>(fID, ""); fatal-err(|"dr-complete-finally was called when a finally clause was not active"))
-//        ; debug(!"dr-complete-finally-4>")
         ; (dr-get-rule-set(|rulename) => [cs@ChangeSet(_, _, Hashtable(csid)) | rs]
            <+ fatal-err(|"dr-complete-finally was not called in a proper exception handling context"))
-//        ; debug(!"dr-complete-finally-5>")
         ; (<bagof-DR_EXCEPTION>ThrowCS(rulename, fID) <+ ![]) => tcss
-//        ; debug(!"dr-complete-finally-6>")
         ; (<bagof-DR_EXCEPTION>ExceptionCS(rulename, fID) <+ ![])
-//        ; debug(!"dr-complete-finally-7>")
         ; <conc>(<id>, <map(?(<id>, _))>tcss)
-//        ; dr-print-rule-set-msg(|"Exception change sets")
-//        ; debug(!"dr-complete-finally-8>")
         ; if ?[hd | tl]; <DR_EXCEPTION>IgnoreT(csid) then
-//            debug(!"dr-complete-finally-9>");
             dr-discard-change-set(|rulename)
-//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-2<")
-//            ; debug(!"dr-complete-finally-10>")
             ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
-//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-3<")
-//            ; debug(!"dr-complete-finally-11>")
             ; <map(try(<merge>(rulename, <![<id> | rs]>)))>tl
-//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-4<")
-//            ; debug(!"dr-complete-finally-12>")
           else
-//            debug(!"dr-complete-finally-13>");
             where(<dr-set-rule-set(|rulename)>[<dr-clone-change-set>cs | rs])
-//            ; debug(!"dr-complete-finally-14>")
             ; map(try(<merge>(rulename, <![<id> | rs]>)))
-//            ; dr-debug-rule-set(|rulename, ">dr-complete-finally-5<")
-//            ; debug(!"dr-complete-finally-15>")
           end
         ; !(tb, cs, rulename)
-//        ; debug(!"dr-complete-finally-16>")
       })>rulenames => temp
-
-//    ; debug(!"dr-complete-finally-17>")
 
     ; restore(<s>term => e,
         <map({tb, cs, rulename, rs :
@@ -1810,85 +1756,50 @@ strategies // exception handling strategies
         })>temp
       )
 
-//    ; debug(!"dr-complete-finally-18>")
-
     ; <map({rulename, pos, ID, fID, csid, rs :
         ?(TryBlock(pos, ID, [], Finally(fID)), _, rulename)
-//        ; debug(!"dr-complete-finally-19>")
         ; rules(DR_EXCEPTION :+ Structure(rulename) -> TryBlock(pos, ID, [], Finally("")))
         ; rules(DR_EXCEPTION :- ExceptionCS(rulename, fID))
-//        ; debug(!"dr-complete-finally-20>")
         ; (dr-get-rule-set(|rulename) => rs@[ChangeSet(_, _, Hashtable(csid)) | _]
            <+ fatal-err(|"dr-complete-finally: A change set was expected here!"))
-//        ; debug(!"dr-complete-finally-21>")
         ; try(
             <not(DR_EXCEPTION)>IgnoreT(csid)
-//            ; debug(!"dr-complete-finally-22>")
             ; (<bagof-DR_EXCEPTION>ThrowCS(rulename, fID) <+ ![])
-//            ; debug(!"dr-complete-finally-24>")
             ; map(?(_, <id>))
-//            ; debug(!"dr-complete-finally-25>")
             ; make-set
-//            ; debug(!"dr-complete-finally-26>")
             ; map({catchID, pos, nextID, tcs :
                 ?catchID
-//                ; debug(!"dr-complete-finally-27>")
                 ; get-matching-id(|catchID, rulename) => (pos, nextID)
-//                ; debug(!"dr-complete-finally-28>")
                 ; <back-split-at(|pos)>rs
-//                ; debug(!"dr-complete-finally-29>")
                 ; dr-build-aggregated-change-set => tcs
-//                ; debug(!"dr-complete-finally-30>")
                 ; rules(DR_EXCEPTION :+ ThrowCS(rulename, nextID) -> (tcs, catchID))
-//                ; debug(!"dr-complete-finally-31>")
               })
           )
         ; rules(DR_EXCEPTION :- ThrowCS(rulename, fID))
-//        ; debug(!"dr-complete-finally-32>")
       })>temp
 
-//    ; debug(!"dr-complete-finally-33>")
     ; !e
-//    ; debug(!"dr-complete-finally-34>")
 
   dr-complete-exception-block(merge | rulenames) =
-//    debug(!"dr-complete-exception-block-1>")
     where(
       <map({rulename, ID, csid, rs, hd, tl :
         ?rulename
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-1<")
-//        ; debug(!"dr-complete-exception-block-2>")
         ; (<once-DR_EXCEPTION>Structure(rulename) => TryBlock(_, ID, [], Finally(""))
            <+ fatal-err(|"dr-complete-exception-block was called before completing all catch clauses (and the finally clause) or in a non-proper exception handling context"))
-//        ; debug(!"dr-complete-exception-block-3>")
         ; (dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | rs]
            <+ fatal-err(|"dr-complete-exception-block was not called in a proper exception handling context"))
-//        ; debug(!"dr-complete-exception-block-4>")
         ; (<bagof-DR_EXCEPTION>ExceptionCS(rulename, ID) <+ ![])
-//        ; debug(!"dr-complete-exception-block-5>")
         ; if ?[hd | tl]; <DR_EXCEPTION>IgnoreT(csid) then
-//            debug(!"dr-complete-exception-block-6>");
             dr-discard-change-set(|rulename)
-//            ; debug(!"dr-complete-exception-block-7>")
             ; <dr-set-rule-set(|rulename)>[<dr-clone-change-set>hd | rs]
-//            ; debug(!"dr-complete-exception-block-8>")
             ; <map(![<id> | rs]; try(<merge>(rulename, <id>)))>tl
-//            ; debug(!"dr-complete-exception-block-9>")
           else
-//            debug(!"dr-complete-exception-block-10>");
             map(![<id> | rs]; try(<merge>(rulename, <id>)))
-//            ; debug(!"dr-complete-exception-block-11>")
           end
-//        ; debug(!"dr-complete-exception-block-12>")
         ; rules(DR_EXCEPTION :- ExceptionCS(rulename, ID))
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-3<")
-//        ; debug(!"dr-complete-exception-block-13>")
         ; dr-commit-change-set(|rulename)
-//        ; dr-debug-rule-set(|rulename, ">dr-complete-exception-block-4<")
-//        ; debug(!"dr-complete-exception-block-14>")
       })>rulenames
     )
-//    ; debug(!"dr-complete-exception-block-15>")
 
 strategies // transactional run of a strategy
 
@@ -2117,13 +2028,13 @@ strategies // debugging
       <map(debug; dr-print-rule-set(|<id>))> names
     )
 
-  dr-print-rule-set =
-    where(map(dr-print-scope))
-
   dr-print-rule-set-msg(|msg) =
     where(!msg => "" <+ say(<concat-strings>["\n--- BEGIN(", msg,  ") ---"]))
     ; dr-print-rule-set
     ; where(!msg => "" <+ say(<concat-strings>["--- END  (", msg,  ") ---\n"]))
+
+  dr-print-rule-set =
+    where(map(dr-print-scope))
 
   dr-print-scope =
     ?RuleScope(labelset, tbl)
@@ -2159,3 +2070,105 @@ strategies // debugging
         ; <fprintnl>(stderr, ["Change set is marked as ignored (due to continue) up to label ", clabel, "."])
       )
     )
+
+strategies // friendlier debugging (numbers instead of ugly strings for hashtable ids)
+
+  dr-friendly-debug-rule-set(|name) = dr-friendly-debug-rule-set(|name, "")
+
+  dr-friendly-debug-rule-set(|name, msg) =
+    where(
+        (!msg => "" <+ say(!msg))
+      ; <debug(!"Ruleset for: ")> name
+      ; dr-friendly-print-rule-set(|name)
+    )
+
+  dr-friendly-print-rule-set(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-friendly-print-rule-set
+    )
+
+  dr-friendly-print-rule-sets(|names) =
+    where(
+      <map(debug; dr-friendly-print-rule-set(|<id>))> names
+    )
+
+  dr-friendly-print-rule-set-msg(|msg) =
+    where(!msg => "" <+ say(<concat-strings>["\n--- BEGIN(", msg,  ") ---"]))
+    ; dr-friendly-print-rule-set
+    ; where(!msg => "" <+ say(<concat-strings>["--- END  (", msg,  ") ---\n"]))
+
+  dr-friendly-print-rule-set =
+    where({| DRFriendlyName, DR_Count :
+      rules(
+        DRCount : "rs" -> 0
+        DRCount : "cs" -> 0
+      )
+      ; reverse-map({
+             ?RuleScope(_, Hashtable(rsid))
+             ; where(
+                 <DRCount>"rs" => idxrs; <inc>idxrs => idxrs'
+                 ; <concat-strings>["RuleScope(", <int-to-string>idxrs, ")"] => name
+               )
+             ; rules(
+                 DRFriendlyName : rsid -> name
+                 DRCount        : "rs" -> idxrs'
+               )
+          <+ ?ChangeSet(_, _, Hashtable(csid))
+             ; where(
+                 <DRCount>"cs" => idxcs; <inc>idxcs => idxcs'
+                 ; <concat-strings>["ChangeSet(", <int-to-string>idxcs, ")"] => name
+               )
+             ; rules(
+                 DRFriendlyName : csid -> name
+                 DRCount        : "cs" -> idxcs'
+               )
+        })
+        ; map(dr-friendly-print-scope)
+    |})
+
+  dr-friendly-print-rule-set-msg(|msg) =
+    where(!msg => "" <+ say(<concat-strings>["\n--- BEGIN(", msg,  ") ---"]))
+    ; dr-friendly-print-rule-set
+    ; where(!msg => "" <+ say(<concat-strings>["--- END  (", msg,  ") ---\n"]))
+
+  dr-friendly-print-scope =
+    ?RuleScope(labelset, tbl@Hashtable(rsid))
+    ; <DRFriendlyName>rsid
+    ; where(
+        debug
+        ; <iset-elements; debug(!"labels: ")> labelset
+        ; <hashtable-keys> tbl
+        ; map(
+            where(<fprintnl>(stderr, ["  ", <id>, " -> " ]))
+            ; where(
+                \ key -> <hashtable-get(|key)> tbl \
+                ; map(<fprintnl>(stderr, ["    ", <id>]))
+              )
+          )
+      )
+
+  dr-friendly-print-scope =
+    ?ChangeSet(labelset, rmset, tbl@Hashtable(csid))
+    ; <DRFriendlyName>csid
+    ; where(
+        debug
+        ; <iset-elements; debug(!"labels: ")> labelset
+        ; <iset-elements; debug(!"removed: ")> rmset
+        ; <hashtable-keys> tbl
+        ; map(
+            where((DRFriendlyName <+ id, id); <fprintnl>(stderr, ["  ", <id>, " -> "]))
+            ; where(
+                \ key -> <hashtable-get(|key)> tbl \
+                ; map(<fprintnl>(stderr, ["    ", <id>]))
+              )
+          )
+        ; try(
+            <DR_BREAK>IgnoreB(csid) => blabel
+            ; <fprintnl>(stderr, ["Change set is marked as ignored (due to break) up to label ", blabel, "."])
+          )
+        ; try(
+            <DR_BREAK>IgnoreC(csid) => clabel
+            ; <fprintnl>(stderr, ["Change set is marked as ignored (due to continue) up to label ", clabel, "."])
+          )
+      )
