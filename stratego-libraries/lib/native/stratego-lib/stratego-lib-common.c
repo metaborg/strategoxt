@@ -178,7 +178,8 @@ ATerm indexedSet_to_term(ATermIndexedSet set) {
 ATerm SSL_list_loop(StrCL f, ATerm t)
 {
   if(ATgetType(t) == AT_LIST) {
-    ATermList suffix = ATgetNext((ATermList) t);
+    ATermList suffix = (ATermList) t;
+
     while(!ATisEmpty(suffix))
     {
       ATerm result = cl_fun(f)(cl_sl(f), ATgetFirst(suffix));
@@ -201,7 +202,8 @@ ATerm SSL_list_loop(StrCL f, ATerm t)
 ATerm SSL_list_fold(StrCL f, ATerm result, ATerm t)
 {
   if(ATgetType(t) == AT_LIST) {
-    ATermList suffix = ATgetNext((ATermList) t);
+    ATermList suffix = (ATermList) t;
+
     while(!ATisEmpty(suffix))
     {
       result = cl_fun(f)(cl_sl(f), result, ATgetFirst(suffix));
