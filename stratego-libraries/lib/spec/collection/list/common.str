@@ -12,8 +12,10 @@ strategies
 
   /**
    * Iterative loop over a list applying s to each element.
+   *
+   * @param Strategy to apply to every element (a -> _)
+   * @type List(a) -> List(a)
    */
-
   list-loop(s) =
     ?xs; prim("SSL_list_loop", s | xs)
 
@@ -21,10 +23,13 @@ strategies
    * Iterative fold over a list applying s to each element and 
    * accumulator acc from left to right.
    *
-   * @type (b * a -> b) * b * List(a) -> b
+   * @param Strategy applied for folding. The current
+   *        intermediate result is a term argument. The next element
+   *        of the list is the current term.
+   * @param Initial value for folding (type: c)
+   * @type List(a) -> c
    */
-
-  list-fold(s | acc) =
+  list-fold(s : c * a -> c | acc) =
     ?xs; prim("SSL_list_fold", s | acc, xs)
 
 strategies

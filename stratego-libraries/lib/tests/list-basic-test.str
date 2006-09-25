@@ -18,8 +18,8 @@ strategies
     ; split-init-last-test
     ; for-each-pair-test
     ; list-loop-tests
+    ; list-fold-tests
     )
-
 
 strategies
 
@@ -220,4 +220,17 @@ strategies
       ; list-loop-test(|[1])
       ; list-loop-test(|[1, 2, 3])
       ; list-loop-test(|[1, 2, 3, 4])
+    end
+
+  list-fold-tests =
+    let add-helper(|x) = <add> (x, <id>)
+        mul-helper(|x) = <mul> (x, <id>)
+     in id
+
+    ; apply-test(!"list-fold 1", list-fold(add-helper | 0), ![], !0)
+    ; apply-test(!"list-fold 2", list-fold(add-helper | 0), ![1], !1)
+    ; apply-test(!"list-fold 3", list-fold(add-helper | 0), ![1, 2, 3, 4], !10)
+    ; apply-test(!"list-fold 4", list-fold(mul-helper | 1), ![1, 2, 3, 4], !24)
+    ; apply-test(!"list-fold 5", list-fold(mul-helper | 0), ![1, 2, 3, 4], !0)
+
     end

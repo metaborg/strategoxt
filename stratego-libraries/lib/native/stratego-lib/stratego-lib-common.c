@@ -215,7 +215,7 @@ ATerm SSL_list_fold(StrCL f, ATerm result, ATerm t)
       suffix = ATgetNext(suffix);
     }
 
-    return t;
+    return result;
   }
   else
   {
