@@ -1048,7 +1048,7 @@ strategies
    *
    * Example: <eliminate-common-suffix>([1,3,4], [1,2,4]) => ([1,3], [1,2])
    *
-   * (List(a), List(a)) -> (List(a), List(a))
+   * @type (List(a), List(a)) -> (List(a), List(a))
    */
   eliminate-common-suffix =
     ?([x | xs], [y | ys])
@@ -1058,3 +1058,17 @@ strategies
       else (![x | <id>], ![y | <id>])
       end
     <+ !([], [])
+
+  /**
+   * Returns the common prefix of two lists.
+   *
+   * Examples:
+   *  <common-prefix>([1,2,3], [1,2,4,5]) => [1,2]
+   *  <common-prefix>([1,2,3], [2,3,4]) => []
+   *
+   * @type (List(a), List(a)) -> List(a)
+   */
+  common-prefix =
+    ?([x | xs], [x | ys])
+    ; ![x | <common-prefix>(xs, ys)]
+    <+ ![]
