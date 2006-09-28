@@ -7,9 +7,7 @@ strategies
 
   main = 
     test-suite(!"tables-test",
-      test1
-    ; test2
-    ; test3
+      legacy-tests
 
     ; test-create
     ; test-put
@@ -27,29 +25,28 @@ strategies
     ; test-union
 
     ; test-eq
-
+    ; test-fold
     )
 
 strategies
-  test1 =
-    apply-and-check(!"legacy table-put"
-    , table-put
-    , !("bla", "key", "value")
-    , <table-get> ("bla", "key") => "value"
-    )
 
-  test2 =
-    apply-and-fail(!"legacy table-get"
-    , table-get
-    , !("blabla", "key")
-    )
+  legacy-tests = id
+    ; apply-and-check(!"legacy table-put"
+      , table-put
+      , !("bla", "key", "value")
+      , <table-get> ("bla", "key") => "value"
+      )
 
-  test3 =
-    apply-test(!"legacy table_keys"
-    , table-keys
-    , !"blablabla"
-    , ![]
-    )
+    ; apply-and-fail(!"legacy table-get"
+      , table-get
+      , !("blabla", "key")
+      )
+
+    ; apply-test(!"legacy table_keys"
+      , table-keys
+      , !"blablabla"
+      , ![]
+      )
 
 strategies
 
@@ -97,6 +94,67 @@ strategies
       , !["key"]
       )
     ; where(<hashtable-destroy> tbl)
+
+
+/**
+ * Hashtable folds
+ */
+strategies
+
+  test-fold =
+    let kv-mul-add(|k, v) = <add> (<id>, <mul> (k, v))
+     in
+
+    where(new-hashtable => tbl)
+
+    ; apply-test(!"hashtable-fold-keys 1"
+      , hashtable-fold-keys(int-add | 0)
+      , !tbl
+      , !0
+      )
+
+    ; apply-test(!"hashtable-fold-values 1"
+      , hashtable-fold-values(int-add | 0)
+      , !tbl
+      , !0
+      )
+
+    ; apply-test(!"hashtable-fold 1"
+      , hashtable-fold(kv-mul-add | 0)
+      , !tbl
+      , !0
+      )
+
+    ; where(
+        !tbl
+        ; hashtable-put(|1, 2)
+        ; hashtable-put(|2, 3)
+        ; hashtable-put(|3, 4)
+      )
+
+    ; apply-test(!"hashtable-fold-keys 2"
+      , hashtable-fold-keys(int-add | 0)
+      , !tbl
+      , !6
+      )
+
+    ; apply-test(!"hashtable-fold-values 2"
+      , hashtable-fold-values(int-add | 0)
+      , !tbl
+      , !9
+      )
+          
+    ; apply-test(!"hashtable-fold 2"
+      , hashtable-fold(kv-mul-add | 0)
+      , !tbl
+      , !20
+      )
+
+    ; where(<hashtable-destroy> tbl)
+
+    end
+
+strategies
 
   test-getlist =
     where(new-hashtable => tbl)

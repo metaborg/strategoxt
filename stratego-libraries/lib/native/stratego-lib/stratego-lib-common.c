@@ -275,12 +275,41 @@ static ATerm table_fold(StrCL f, ATerm result, ATerm **tableindex, long nr_entri
     for(i=0; i<nr_entries; i++) {
       t = tableGet(tableindex, i);
       if (t != NULL) {
-        result = cl_fun(f)(cl_sl(f), result, t);
+        result = cl_fun(f)(cl_sl(f), t, result);
         if( result == NULL ) 
           break;
       }
     }
   return result;
+}
+
+ATerm SSL_atermtable_fold(StrCL f, ATerm result, ATermTable tbl)
+{
+  ATerm **kindex = tbl->keys;
+  ATerm **vindex = tbl->values;
+  long nr_entries = tbl->nr_entries;
+  long i;
+  ATerm k;
+  ATerm v;
+
+  if(result != NULL) {
+    for(i = 0; i < nr_entries; i++) {
+      k = tableGet(kindex, i);
+      v = tableGet(vindex, i);
+      if(k != NULL && v != NULL) {
+        result = cl_fun(f)(cl_sl(f), k, v, result);
+        if(result == NULL)
+          break;
+      }
+    }
+  }
+
+  return result;
+}
+
+ATerm SSL_table_fold(StrCL f, ATerm result, ATerm tbl)
+{
+  return SSL_atermtable_fold(f, result, hashtable_from_term(tbl));
 }
 
 ATerm SSL_table_keys_fold(StrCL f, ATerm result, ATerm tbl)

@@ -55,7 +55,8 @@ strategies
   hashtable-destroy =
     ?Hashtable(tbl); prim("SSL_hashtable_destroy", tbl); !Hashtable(<id>)
 
-  /** Clears the contents of an existing hashtable.
+  /**
+   * Clears the contents of an existing hashtable.
    *
    * @type HashTable(K, V) -> HashTable(K, V)
    */
@@ -67,7 +68,8 @@ strategies
  */
 strategies
 
-  /** Puts a new key, value pair into the hash table. If the key is
+  /**
+   * Puts a new key, value pair into the hash table. If the key is
    * already bound to a value, the old value will be replaced.
    *
    * @param key - any term can be used as a key
@@ -77,7 +79,8 @@ strategies
   hashtable-put(|key, value) =
     ?Hashtable(tbl); prim("SSL_hashtable_put", tbl, key, value); !Hashtable(<id>)
 
-  /** Gets the value for a key. If the key does not exist, this strategy
+  /**
+   * Gets the value for a key. If the key does not exist, this strategy
    * fails.
    *
    * @param key
@@ -86,7 +89,8 @@ strategies
   hashtable-get(|key) =
     ?Hashtable(tbl); prim("SSL_hashtable_get", tbl, key)
 
-  /** Removes a key (with its associated value) from the hashtable. This
+  /**
+   * Removes a key (with its associated value) from the hashtable. This
    * strategy will succeed even if the key does not exist.
    * 
    * @type HashTable(K, V) -> HashTable(K, V)
@@ -94,14 +98,16 @@ strategies
   hashtable-remove(|key) =
     ?Hashtable(tbl); prim("SSL_hashtable_remove", tbl, key); !Hashtable(<id>)
   
-  /** Get a list containing all keys of a hashtable.
+  /**
+   * Get a list containing all keys of a hashtable.
    *
    * @type HashTable(K, V) -> List(K)
    */
   hashtable-keys =
     ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
 
-  /** Get a list containing all values of a hashtable
+  /**
+   * Get a list containing all values of a hashtable
    *
    * @type HashTable(K, V) -> List(V)
    */
@@ -115,10 +121,24 @@ strategies
    * the keys of a hash table; useful for applying an operation to each
    * key without constructing a list of keys.
    *
-   * @type (K * a -> a) * a * HashTable(K, V) -> a 
+   * @param (k, v) * a -> a
+   * @param a
+   * @type HashTable(k, v) -> a
    */
+  hashtable-fold(s : k * v * a -> a | t) = 
+    ?Hashtable(tbl)
+    ; prim("SSL_table_fold", s | t, tbl)
 
-  hashtable-fold-keys(s | t) = 
+  /**
+   * Apply an iterative fold left (starting with first element) over
+   * the keys of a hash table; useful for applying an operation to each
+   * key without constructing a list of keys.
+   *
+   * @param k * a -> a
+   * @param a
+   * @type HashTable(k, v) -> a 
+   */
+  hashtable-fold-keys(s : k * a -> a | t) = 
     ?Hashtable(tbl)
     ; prim("SSL_table_keys_fold", s | t, tbl)
 
@@ -127,10 +147,11 @@ strategies
    * the values of a hash table; useful for applying an operation to each
    * value without constructing a list of values.
    *
-   * @type (V * a -> a) * a * HashTable(K, V) -> a 
+   * @param v * a -> a
+   * @param a
+   * @type (v * a -> a) * a * HashTable(k, v) -> a 
    */
-
-  hashtable-fold-values(s | t) = 
+  hashtable-fold-values(s : v * a -> a | t) = 
     ?Hashtable(tbl)
     ; prim("SSL_table_values_fold", s | t, tbl)
 
@@ -139,16 +160,19 @@ strategies
  */
 strategies
 
-  /** Get the contents of a hashtable as a list of key-value tuples.
+  /**
+   * Get the contents of a hashtable as a list of key-value tuples.
    *
-   * @type HashTable(K,V) -> List(Tuple(K,V), ...)
+   * @type HashTable(k,v) -> List((k,v), ...)
    */
   hashtable-getlist =
     ?htbl
-  ; hashtable-keys
-  ; map(\ x -> (x, <hashtable-get(|x)> htbl) \)
+    ; let insert(|k, v) = ![(k, v) | <id>]
+       in hashtable-fold(insert | [])
+      end
 
-  /** Put a list of key,value tuples into a hashtable.
+  /**
+   * Put a list of key,value tuples into a hashtable.
    *
    * @param kv         List(Tuple(K, V), ...)
    * @type HashTable(K, V) -> HashTable(K, V)
@@ -161,7 +185,8 @@ strategies
     ?htbl
     ; where(<map(\ (key, value) -> <f(|key, value)> htbl \)> kv*)
 
-  /** Create a new hashtable and initialize it from a key-value pair list.
+  /**
+   * Create a new hashtable and initialize it from a key-value pair list.
    *
    * @type List(Tuple(K, V), ...) -> HashTable(K, V)
    */
@@ -170,7 +195,8 @@ strategies
   ; new-hashtable(|<length>, 75)
   ; hashtable-putlist(|kv*)
 
-  /** Create a new hashtable and copies the entire contents of the current
+  /**
+   * Create a new hashtable and copies the entire contents of the current
    * table into the new one.
    *
    * @type HashTable(K, V) -> HashTable(K,V)
