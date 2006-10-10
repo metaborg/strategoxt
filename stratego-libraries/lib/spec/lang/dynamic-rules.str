@@ -1300,7 +1300,9 @@ strategies // generic fix-point strategies
                  // had a loop at all, since it will only be executed once
                  ; where(dr-get-rule-set(|rulename) => [ChangeSet(_, _, Hashtable(csid)) | _])
                  ; if <DR_BREAK>IgnoreB(csid)
-                   then fail
+                   then
+                     <merge>(rulename, ruleset)
+                     ; fail
                    else
                      <dr-merge-continue-change-sets(merge | <DR_BREAK>Label(rulename))>rulename
                      ; <merge>(rulename, ruleset)

@@ -4164,7 +4164,7 @@ strategies
          end
          x := 2;
        end
-       f(1);"
+       f(x);"
     )
 
   ; apply-propconst-test(!"Check breaking to label out of non-iterative statement #1" |
