@@ -14,5 +14,8 @@ BOOTCLEANFILES = $(DEFS) pp-table.pp.af
 SDFINCLUDES    = -I $(top_srcdir)/syn/box
 PGEN_FLAGS     = -m $*
 
+.def.pp:
+	$(GPP)/bin/ppgen -i $< -o $@
+
 pp-table.def : pp-table.sdf pp-table-IntCon.sdf pp-table-PlaceHolder.sdf $(top_srcdir)/syn/box/Box.def 
 

@@ -10,8 +10,8 @@ if [ -z "$(which automake | grep .nix-profile)" ] ; then
 		export WANT_AUTOCONF="2.59"
 	elif [ -f /etc/debian_version ] ; then
 		# Environment variables for our Debian friends.
-	        export ACLOCAL=/usr/bin/aclocal-1.8
-	        export AUTOMAKE=/usr/bin/automake-1.8
+	        export ACLOCAL=/usr/bin/aclocal-1.9
+	        export AUTOMAKE=/usr/bin/automake-1.9
 	fi
 fi
 

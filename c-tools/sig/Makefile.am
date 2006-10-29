@@ -15,4 +15,4 @@ C.str : C.rtg
 	$(STRATEGO_REGULAR)/bin/rtg2sig -i $< -o $@
 
 C.def :
-	ln -s $(top_srcdir)/syn/C.def $@
+	ln -s $(top_builddir)/syn/C.def $@

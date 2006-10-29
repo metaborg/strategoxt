@@ -1,6 +1,6 @@
 SUBDIRS = srts
 
-AM_CPPFLAGS = -I. -I$(ATERM)/include -I$(srcdir) 
+AM_CPPFLAGS = -I. -I$(ATERM)/include -I$(srcdir) -Isrts
 
 lib_LTLIBRARIES = libstratego-runtime.la
 

@@ -14,11 +14,17 @@ libexec_PROGRAMS = tool-doc2abox
 
 SCFLAGS        = --main main-$*
 STRINCLUDES = \
+  -I $(top_builddir)/lib \
   -I $(top_srcdir)/lib \
+  -I $(top_builddir)/syn \
   -I $(top_srcdir)/syn \
+  -I $(top_builddir)/pp \
   -I $(top_srcdir)/pp \
+  -I $(top_builddir)/trans/interpret \
   -I $(top_srcdir)/trans/interpret \
+  -I $(top_builddir)/trans/sdf2rtg \
   -I $(top_srcdir)/trans/sdf2rtg \
+  -I $(top_builddir)/trans/sig \
   -I $(top_srcdir)/trans/sig \
   -I $(SDF_FRONT)/share/sdf-front \
   -I $(SDF_FRONT)/share/sdf/sdf-front \

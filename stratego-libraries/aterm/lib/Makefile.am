@@ -17,15 +17,18 @@ atermlib = stratego-aterm.str $(wildcard stratego/aterm/*.str)
 libstratego_aterm_la_SOURCES = libstratego-aterm.c
 libstratego_aterm_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_aterm_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
-libstratego_aterm_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
+libstratego_aterm_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
+	-I $(top_srcdir)/runtime/lib \
+	-I $(top_builddir)/runtime/lib/srts \
+	-I $(top_srcdir)/lib/native
 libstratego_aterm_la_LIBADD   = $(STRATEGO_GPP_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 
 STRCFLAGS = \
   $(STRATEGO_GPP_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
-STRINCLUDES = -I $(top_srcdir)/../aterm-front/syn
+STRINCLUDES = -I $(top_srcdir)/../aterm-front/syn -I $(top_builddir)/../gpp/syn/box
 
 libstratego-aterm.rtree libstratego-aterm.c : $(atermlib:.str=.rtree) 
-	$(STRC_UNINSTALLED) -c --library -i stratego-aterm.str -o libstratego-aterm.rtree --verbose 1 $(STRCFLAGS)
+	$(STRC_UNINSTALLED) $(STRINCLUDES) -c --library -i $(srcdir)/stratego-aterm.str -o libstratego-aterm.rtree --verbose 1 $(STRCFLAGS)
 	rm libstratego-aterm.str

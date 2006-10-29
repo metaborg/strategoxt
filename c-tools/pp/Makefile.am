@@ -14,8 +14,8 @@ libc_pp_la_CFLAGS  = $(STRATEGO_XTC_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RU
 libc_pp_la_LDFLAGS = -avoid-version -no-undefined $(AM_LDFLAGS)
 
 c-pp.c: C.pp ../syn/C.def
-	$(GPP)/bin/pp2c -i C.pp -p ../syn/C.def -n pp_c_0_0 -o c-pp.c
+	$(GPP)/bin/pp2c -i $(srcdir)/C.pp -p ../syn/C.def -n pp_c_0_0 -o c-pp.c
 
 c-pp-pretty.c: C-pretty.pp ../syn/C.def
-	$(GPP)/bin/pp2c -i C-pretty.pp -p ../syn/C.def -n pp_c_pretty_0_0 \
+	$(GPP)/bin/pp2c -i $(srcdir)/C-pretty.pp -p ../syn/C.def -n pp_c_pretty_0_0 \
 	  -o c-pp-pretty.c

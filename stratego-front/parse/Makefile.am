@@ -4,6 +4,7 @@ include $(wildcard *.dep)
 SCFLAGS 	= --main io-$*
 STRINCLUDES     = -I $(top_srcdir)/syn \
                   -I $(top_srcdir)/sig \
+                  -I . \
 		  -I $(GPP)/share/sdf/gpp \
 		  -I $(GPP)/share/gpp \
                   -I $(XTC)/share/xtc --verbose 1

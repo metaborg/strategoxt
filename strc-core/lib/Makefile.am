@@ -38,13 +38,17 @@ libstrc_la_LIBADD = \
   $(ATERM_LIBS)	\
   -L$(top_builddir)/../c-tools/pp -lc-pp
 
-STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn \
-                   -I $(top_srcdir)/../stratego-front/sig \
-                   -I $(top_srcdir)/../c-tools/syn        \
-                   -I $(top_srcdir)/../c-tools/sig
+STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn   \
+                   -I $(top_srcdir)/../stratego-front/sig   \
+                   -I $(top_srcdir)/../c-tools/syn          \
+                   -I $(top_srcdir)/../c-tools/sig          \
+		   -I $(top_builddir)/../stratego-front/syn \
+                   -I $(top_builddir)/../stratego-front/sig \
+                   -I $(top_builddir)/../c-tools/syn        \
+                   -I $(top_builddir)/../c-tools/sig
 
 STRCFLAGS =
 
 libstrc.rtree libstrc.c : $(strclib:.str=.rtree)
-	$(STRC)/bin/strc -c --library -i strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
+	$(STRC)/bin/strc -c --library -i $(srcdir)/strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 	rm libstrc.str

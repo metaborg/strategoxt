@@ -7,7 +7,7 @@ libexec_PROGRAMS = cgen-aterm
 STRCFLAGS           = --main main-$* $(STRATEGO_UNINSTALLED_STRCFLAGS)
 SCOMPILE            = $(STRC_UNINSTALLED)
 cgen_aterm_LDADD    = $(STRATEGO_UNINSTALLED_LIBS)
-cgen_aterm_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
+cgen_aterm_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) -I $(top_srcdir)/runtime/lib -I $(top_builddir)/runtime/lib/srts -I $(top_srcdir)/lib/native
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)

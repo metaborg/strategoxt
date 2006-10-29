@@ -16,7 +16,7 @@ all_c     = libstratego-lib-c99.c libstratego-lib-posix.c libstratego-lib-posix-
 
 alllibs : $(all_c) $(all_rtree)
 
-libstratego_lib_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)
+libstratego_lib_la_CPPFLAGS = $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS) -I$(top_srcdir)/runtime/lib -I$(top_srcdir)/lib/native -I$(top_builddir)/runtime/lib/srts
 libstratego_lib_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_lib_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_lib_la_LIBADD   = $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) $(STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS) $(ATERM_LIBS)
@@ -53,15 +53,15 @@ stratego-lib.str : Makefile
 	echo "module stratego-lib imports $(stratego_lib_module)" > $@
 
 libstratego-lib-c99.c libstratego-lib-c99.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i ./stratego-lib-c99.str -o libstratego-lib-c99.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-c99.str -o libstratego-lib-c99.rtree
 	rm libstratego-lib-c99.str
 
 libstratego-lib-posix.c libstratego-lib-posix.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i ./stratego-lib-posix.str -o libstratego-lib-posix.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-posix.str -o libstratego-lib-posix.rtree
 	rm libstratego-lib-posix.str
 
 libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i ./stratego-lib-posix-xsi.str -o libstratego-lib-posix-xsi.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-posix-xsi.str -o libstratego-lib-posix-xsi.rtree
 	rm libstratego-lib-posix-xsi.str
 
 fullstrategolib = \

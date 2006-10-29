@@ -10,5 +10,5 @@ BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA) Sdf2.def
 
 SDF2RTG_FLAGS = -m $*
 
-Sdf2.def : $(top_srcdir)/syn/Sdf2.def
+Sdf2.def : $(top_builddir)/syn/Sdf2.def
 	ln -s $< $@

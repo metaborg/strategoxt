@@ -11,4 +11,4 @@ BOOTCLEANFILES = $(SIGS)
 SDF2RTG_FLAGS    = -m $*
 
 pp-table.def : 
-	ln -s $(top_srcdir)/syn/pp-table/pp-table.def $@
+	ln -s $(top_builddir)/syn/pp-table/pp-table.def $@

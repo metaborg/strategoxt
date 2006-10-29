@@ -13,7 +13,10 @@ gpplib = stratego-gpp.str $(wildcard stratego/gpp/*.str)
 libstratego_gpp_la_SOURCES = libstratego-gpp.c pp-table-aterm.c
 libstratego_gpp_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_gpp_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
-libstratego_gpp_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
+libstratego_gpp_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
+	-I $(top_srcdir)/runtime/lib \
+	-I $(top_builddir)/runtime/lib/srts \
+	-I $(top_srcdir)/lib/native
 libstratego_gpp_la_LIBADD   = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 
 STRCFLAGS = $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) $(STRATEGO_UNINSTALLED_STRCFLAGS)
@@ -22,5 +25,5 @@ pp-table-aterm.c :
 	$(top_builddir)/build-tools/cgen-aterm --name STRGPP_get_pptable_parsetable -i $(PPTABLETBL_UNINSTALLED) > $@
 
 libstratego-gpp.rtree libstratego-gpp.c : $(gpplib:.str=.rtree) 
-	$(STRC_UNINSTALLED) -c --library -i stratego-gpp.str -o libstratego-gpp.rtree -O 2 --verbose 1 $(STRCFLAGS)
+	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-gpp.str -o libstratego-gpp.rtree -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-gpp.str

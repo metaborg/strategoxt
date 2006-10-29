@@ -8,7 +8,9 @@ LDADD       += $(SSL_LIBS)
 STRCFLAGS       = --main main-$*
 STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(top_srcdir)/lib \
+                -I $(top_builddir)/lib \
                 -I $(top_srcdir)/../sdf-front/syn \
+                -I $(top_builddir)/../sdf-front/syn \
                 -I $(SDF_FRONT)/share/sdf-front
 
 # FIXME: remove bootstrap problem workaround for STR-603

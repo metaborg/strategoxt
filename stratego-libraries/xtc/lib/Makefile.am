@@ -17,7 +17,7 @@ all_c     = libstratego-xtc-c99.c libstratego-xtc-posix.c libstratego-xtc-posix-
 
 alllibs : $(all_c) $(all_rtree)
 
-libstratego_xtc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
+libstratego_xtc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) -I $(top_srcdir)/lib/native/ -I $(top_srcdir)/runtime/lib -I $(top_builddir)/runtime/lib/srts
 libstratego_xtc_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_xtc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_xtc_la_LIBADD   = $(STRATEGO_UNINSTALLED_LIBS)
@@ -51,15 +51,15 @@ stratego-xtc.str : Makefile
 STRCFLAGS = $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
 libstratego-xtc-c99.c libstratego-xtc-c99.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i ./stratego-xtc-c99.str -o libstratego-xtc-c99.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-xtc-c99.str -o libstratego-xtc-c99.rtree $(STRCFLAGS)
 	rm libstratego-xtc-c99.str
 
 libstratego-xtc-posix.c libstratego-xtc-posix.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i ./stratego-xtc-posix.str -o libstratego-xtc-posix.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix.str -o libstratego-xtc-posix.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix.str
 
 libstratego-xtc-posix-xsi.c libstratego-xtc-posix-xsi.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i ./stratego-xtc-posix-xsi.str -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix-xsi.str -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix-xsi.str
 
 fullstrategoxtc = \

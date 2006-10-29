@@ -8,7 +8,7 @@ include_HEADERS = \
   init-stratego-application.h \
   stratego-dynamic-call.h
 
-stratego-config.h : $(top_srcdir)/config.h
+stratego-config.h : $(top_builddir)/config.h
 	echo "#ifndef SRTS_STRATEGO_CONFIG_H"  > $@
 	echo "#define SRTS_STRATEGO_CONFIG_H" >> $@
 	echo "" 			      >> $@

@@ -30,7 +30,11 @@ CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrl
 libstratego_sglr_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_sglr_la_CPPFLAGS = \
-  -I native -I ../justsglr \
+  -I $(srcdir)/native \
+  -I $(srcdir)/../justsglr \
+  -I $(top_srcdir)/runtime/lib \
+  -I $(top_builddir)/runtime/lib/srts \
+  -I $(top_srcdir)/lib/native \
   $(STRATEGO_LIB_UNINSTALLED_CFLAGS) \
   $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
   $(ATERM_CFLAGS)
@@ -47,6 +51,6 @@ STRCFLAGS = \
   $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
 
 libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
-	@$(STRC_UNINSTALLED) -c --library -i stratego-sglr.str -o libstratego-sglr.rtree \
+	@$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-sglr.str -o libstratego-sglr.rtree \
           --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sglr.str
