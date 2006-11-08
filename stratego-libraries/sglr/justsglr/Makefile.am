@@ -54,14 +54,18 @@ libmept = \
 
 libmeptheaders = \
   MEPT.h \
+  MEPT-args.h \
   MEPT-ambtracker.h \
   MEPT-annotations.h \
   MEPT-apply.h \
+  MEPT-characters.h \
   MEPT_dict.h \
   MEPT-flatten.h \
   MEPT-implode.h \
   MEPT-layout.h \
+  MEPT-length.h \
   MEPT-ordering.h \
+  MEPT-origins.h \
   MEPT-productions.h \
   MEPT-posinfo.h \
   MEPT-renaming.h \
