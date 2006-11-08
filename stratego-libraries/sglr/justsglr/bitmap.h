@@ -1,5 +1,5 @@
 /*
- $Id: bitmap.h,v 1.2 2001/07/11 10:53:55 markvdb Exp $
+ $Id: bitmap.h 5413 2001-07-11 10:53:56Z markvdb $
  */   
 
 #ifndef BITMAP_H

@@ -307,6 +307,34 @@ ATerm SSL_atermtable_fold(StrCL f, ATerm result, ATermTable tbl)
   return result;
 }
 
+/**
+ * nr_deletions is only increased, so nr_entries - nr_deletions does
+ * not seem to be reliable.
+ */
+static long table_size(ATerm **tableindex, long nr_entries)
+{
+  long i;
+  ATerm t;
+  long result = 0;
+  
+  for(i=0; i < nr_entries; i++) {
+    t = tableGet(tableindex, i);
+    if (t != NULL) {
+      result++;
+    }
+  }
+
+  return result;
+}
+
+long SSL_ATtableKeysSize(ATermTable table) {
+  return table_size(table->keys, table->nr_entries);
+}
+
+long SSL_ATindexedSetSize(ATermIndexedSet set) {
+  SSL_ATtableKeysSize(set);
+}
+
 ATerm SSL_table_fold(StrCL f, ATerm result, ATerm tbl)
 {
   return SSL_atermtable_fold(f, result, hashtable_from_term(tbl));

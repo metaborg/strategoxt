@@ -10,6 +10,8 @@
 #define SG_AVOID_AFUN        "avoid"
 #define SG_APROD_AFUN        "aprod"
 #define SG_AMB_AFUN          "amb"
+#define SG_CYCLE_AFUN        "cycle"
+#define SG_ARG_GTRPRIO_AFUN  "arg-gtr-prio"
 #define SG_GTRPRIO_AFUN      "gtr-prio"
 #define SG_SHIFT_AFUN        "shift"
 #define SG_REDUCE_AFUN       "reduce"
@@ -24,7 +26,7 @@
 #define SG_PARSETREE_AFUN    "parsetree"
 #define SG_TERM_AFUN         "term"
 #define SG_AMBIGUOUS_TREE_AFUN "ambiguous-tree"
-#define SG_PARSEERROR_AFUN   "summary"
+#define SG_PARSEERROR_AFUN   "error"
 #define SG_EOF_AFUN          "eof"
 #define SG_CYCLE_AFUN        "cycle"
 #define SG_AMBIGUITY_AFUN    "ambiguity"
@@ -37,14 +39,6 @@
 #define SG_LINE_AFUN         "line"
 #define SG_COL_AFUN          "col"
 #define SG_OFFSET_AFUN       "char"
-#define SG_LEFTPRIO_AFUN     "left-prio"
-#define SG_RIGHTPRIO_AFUN    "right-prio"
-#define SG_NONASSOCPRIO_AFUN "non-assoc-prio"
-
-/* Symbols */
-#define SG_LEFTPRIO_SYMBOL     "left-prio"
-#define SG_RIGHTPRIO_SYMBOL    "right-prio"
-#define SG_NONASSOCPRIO_SYMBOL "non-assoc-prio"
 
 /*  Attributes  */
 

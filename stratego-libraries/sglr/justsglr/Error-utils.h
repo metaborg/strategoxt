@@ -21,5 +21,7 @@ ERR_Error PERR_lowerError(PERR_Error error);
 ERR_Summary PERR_lowerSummary(PERR_Summary pSummary);
 
 void ERR_displaySummary(ERR_Summary summary);
+void ERR_fdisplaySummary(FILE *fp, ERR_Summary summary);
+void ERR_fdisplayError(FILE *fp, ERR_Error error, const char* producer);
 
 #endif

@@ -51,15 +51,15 @@ stratego-xtc.str : Makefile
 STRCFLAGS = $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
 libstratego-xtc-c99.c libstratego-xtc-c99.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-xtc-c99.str -o libstratego-xtc-c99.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-xtc-c99.rtree -o libstratego-xtc-c99.rtree $(STRCFLAGS)
 	rm libstratego-xtc-c99.str
 
 libstratego-xtc-posix.c libstratego-xtc-posix.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix.str -o libstratego-xtc-posix.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix.rtree -o libstratego-xtc-posix.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix.str
 
 libstratego-xtc-posix-xsi.c libstratego-xtc-posix-xsi.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix-xsi.str -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix-xsi.rtree -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix-xsi.str
 
 fullstrategoxtc = \

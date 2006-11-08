@@ -26,8 +26,16 @@ rules
    * list
    */
   aterm-explode-list :
+    [x*]{} -> list(<map(explode-aterm)> x*)
+
+  // FIXME SDF: bootstrap problem. Obsolete construct.
+  aterm-explode-list :
     [x*]{} -> list(not-empty(<map(explode-aterm)> x*))
 
+  aterm-implode-list :
+    list(x*) -> <map(implode-aterm)> x*
+
+  // FIXME SDF: bootstrap problem. Obsolete construct.
   aterm-implode-list :
     list(not-empty(x*)) -> <map(implode-aterm)> x*
 
@@ -68,20 +76,42 @@ rules
    * afun
    */
   aterm-explode-afun :
-    s -> uqlit(s)
+    s -> unquoted(s)
     where
       <not(is-double-quoted)> s
 
   aterm-explode-afun :
-    s -> qlit(s)
+    s -> quoted(s)
     where
       <is-double-quoted> s
 
+  /**
+   * FIXME SDF: used for old SDF
+   */
   aterm-implode-afun :
     uqlit(s) -> s
 
   aterm-implode-afun :
+    unquoted(s) -> s
+
+  /**
+   * FIXME SDF: used for old SDF
+   */
+  aterm-implode-afun :
     qlit(s) -> s
+
+  aterm-implode-afun :
+    quoted(s) -> s
+
+/**
+ * FIXME SDF: bootstrap problem, obsolete constructs.
+ */
+signature
+  constructors
+    constant : x -> x
+    qlit : x -> x
+    uqlit : x -> x
+    not-empty : x -> x
 
   /**
    * todo: annotations

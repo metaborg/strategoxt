@@ -1,4 +1,4 @@
-/*  $Id: parse-table.c,v 1.57.2.8 2005/09/12 09:55:40 markvdb Exp $  */
+/*  $Id: parse-table.c 16976 2005-11-10 13:40:12Z jurgenv $  */
 
 /*{{{  includes */
 
@@ -30,13 +30,13 @@
 
 token SG_EOF_Token;
 token SG_Zero_Token;
-AFun  SG_GtrPrio_AFun, SG_LeftPrio_AFun, SG_RightPrio_AFun, 
-      SG_NonAssocPrio_AFun,
+AFun  SG_ArgGtrPrio_AFun, 
+      SG_GtrPrio_AFun, 
       SG_Shift_AFun, SG_Reduce_AFun, 
       SG_ReduceLA_AFun, SG_Accept_AFun,
       SG_Appl_AFun, SG_Regular_AFun, SG_Reject_AFun,
       SG_Eager_AFun, SG_Uneager_AFun,
-      SG_Aprod_AFun, SG_Amb_AFun, SG_Range_AFun, SG_CharClass_AFun,
+      SG_Aprod_AFun, SG_Amb_AFun, SG_Cycle_AFun, SG_Range_AFun, SG_CharClass_AFun,
       SG_Action_AFun, SG_Goto_AFun, SG_PT5_AFun,
       SG_StateRec_AFun, SG_Label_AFun, SG_ParseTree_AFun, SG_Term_AFun,
       SG_ParseError_AFun, SG_EOF_Error_AFun,
@@ -46,7 +46,6 @@ AFun  SG_GtrPrio_AFun, SG_LeftPrio_AFun, SG_RightPrio_AFun,
       SG_SndValue_AFun, SG_Character_AFun, SG_Line_AFun, SG_Col_AFun,
       SG_Offset_AFun;
 
-ATerm SG_LeftPrio_Symbol, SG_RightPrio_Symbol, SG_NonAssocPrio_Symbol;
 
 /*}}}  */
 
@@ -69,11 +68,10 @@ void SG_InitPTGlobals(void)
   SG_AFUN_INIT(SG_Uneager_AFun,     ATmakeAFun(SG_AVOID_AFUN,       2, ATfalse));
   SG_AFUN_INIT(SG_Aprod_AFun,       ATmakeAFun(SG_APROD_AFUN,       1, ATfalse));
   SG_AFUN_INIT(SG_Amb_AFun,         ATmakeAFun(SG_AMB_AFUN,         1, ATfalse));
+  SG_AFUN_INIT(SG_Cycle_AFun,         ATmakeAFun(SG_CYCLE_AFUN,         2, ATfalse));
 
-  SG_AFUN_INIT(SG_GtrPrio_AFun,     ATmakeAFun(SG_GTRPRIO_AFUN,     2, ATfalse));
-  SG_AFUN_INIT(SG_LeftPrio_AFun,     ATmakeAFun(SG_LEFTPRIO_AFUN,    2, ATfalse));
-  SG_AFUN_INIT(SG_RightPrio_AFun,    ATmakeAFun(SG_RIGHTPRIO_AFUN,    2, ATfalse));
-  SG_AFUN_INIT(SG_NonAssocPrio_AFun, ATmakeAFun(SG_NONASSOCPRIO_AFUN, 2, ATfalse));
+  SG_AFUN_INIT(SG_GtrPrio_AFun,      ATmakeAFun(SG_GTRPRIO_AFUN,     2, ATfalse));
+  SG_AFUN_INIT(SG_ArgGtrPrio_AFun,   ATmakeAFun(SG_ARG_GTRPRIO_AFUN, 3, ATfalse));
 	
   SG_AFUN_INIT(SG_Shift_AFun,       ATmakeAFun(SG_SHIFT_AFUN,       1, ATfalse));
   SG_AFUN_INIT(SG_Reduce_AFun,      ATmakeAFun(SG_REDUCE_AFUN,      3, ATfalse));
@@ -91,7 +89,7 @@ void SG_InitPTGlobals(void)
   SG_AFUN_INIT(SG_Appl_AFun,        ATmakeAFun(SG_APPL_AFUN,        2, ATfalse));
   SG_AFUN_INIT(SG_ParseTree_AFun,   ATmakeAFun(SG_PARSETREE_AFUN,   2, ATfalse));
   SG_AFUN_INIT(SG_Term_AFun,        ATmakeAFun(SG_TERM_AFUN,        9, ATfalse));
-  SG_AFUN_INIT(SG_ParseError_AFun,  ATmakeAFun(SG_PARSEERROR_AFUN,  3, ATfalse));
+  SG_AFUN_INIT(SG_ParseError_AFun,  ATmakeAFun(SG_PARSEERROR_AFUN,  2, ATfalse));
 
   SG_AFUN_INIT(SG_EOF_Error_AFun,   ATmakeAFun(SG_EOF_AFUN,         0, ATfalse));
   SG_AFUN_INIT(SG_Too_Many_Ambiguities_Error_AFun, ATmakeAFun(SG_TOO_MANY_AMBS_AFUN,       0, ATfalse));
@@ -108,9 +106,7 @@ void SG_InitPTGlobals(void)
   SG_AFUN_INIT(SG_Col_AFun,         ATmakeAFun(SG_COL_AFUN,         1, ATfalse));
   SG_AFUN_INIT(SG_Offset_AFun,      ATmakeAFun(SG_OFFSET_AFUN,      1, ATfalse));
 
-  SG_ATRM_INIT(SG_LeftPrio_Symbol,     ATparse(SG_LEFTPRIO_SYMBOL));
-  SG_ATRM_INIT(SG_RightPrio_Symbol,    ATparse(SG_RIGHTPRIO_SYMBOL));
-  SG_ATRM_INIT(SG_NonAssocPrio_Symbol, ATparse(SG_NONASSOCPRIO_SYMBOL));
+
 
   inited = ATtrue;
 }
@@ -328,54 +324,84 @@ label SG_LookupLabel(parse_table *pt, production p)
 }
 
 /*}}}  */
+
+static void SG_registerProductionHasPriority(parse_table *pt, ATermInt l)
+{
+  ATindexedSetPut(SG_PT_PRODUCTION_HAS_PRIORITIES(pt), (ATerm)l, NULL);
+}
+
+ATbool SG_hasProductionPriority(parse_table *pt, ATermInt l)
+{
+  if (ATindexedSetGetIndex(SG_PT_PRODUCTION_HAS_PRIORITIES(pt), (ATerm)l) < 0) {
+    return ATfalse;
+  }
+  else {
+    return ATtrue;
+  } 
+}
+
 /*{{{  ATermList SG_LookupGtrPriority(parse_table *pt, label l) */
 
-ATermList SG_LookupGtrPriority(parse_table *pt, label l)
+ATermList SG_LookupGtrPriority(parse_table *pt, ATermInt l)
 {
-  return (ATermList) ATtableGet(SG_PT_GTR_PRIORITIES(pt), (ATerm)SG_GetATint(l, 0));
+  return (ATermList)ATtableGet(SG_PT_GTR_PRIORITIES(pt), (ATerm)l);
+}
+
+static void SG_StoreGtrPriority(parse_table *pt, ATermInt l1, ATermInt l2)
+{
+  ATermList value = SG_LookupGtrPriority(pt, l1);
+
+  if (value == NULL) {
+    SG_registerProductionHasPriority(pt, l1);
+    ATtablePut(SG_PT_GTR_PRIORITIES(pt), (ATerm) l1,
+               (ATerm) ATmakeList1((ATerm) l2));
+  } else {
+    ATtablePut(SG_PT_GTR_PRIORITIES(pt), (ATerm) l1,
+               (ATerm) ATinsert(value, (ATerm) l2));
+  }
 }
 
 /*}}}  */
-/*{{{  ATbool SG_IsLeftAssociative(parse_table *pt, label l) */
+/*{{{  ATermList SG_LookupArgGtrPriority(parse_table *pt, label l, int argNumber) */
 
-ATbool SG_IsLeftAssociative(parse_table *pt, label l)
+ATermList SG_LookupArgGtrPriority(parse_table *pt, ATermInt l, ATermInt argNumber)
 {
-	ATerm assoc = ATtableGet(SG_PT_ASSOCIATIVITIES(pt), (ATerm) SG_GetATint(l, 0));
-
-	return ATisEqual(assoc, SG_LeftPrio_Symbol);
+  ATerm key = (ATerm)ATmakeList2((ATerm)l, (ATerm)argNumber);
+  
+  return (ATermList)ATtableGet(SG_PT_ARG_GTR_PRIORITIES(pt), key);
 }
 
 /*}}}  */
-/*{{{  ATbool SG_IsRightAssociative(parse_table *pt, label l) */
 
-ATbool SG_IsRightAssociative(parse_table *pt, label l)
+static void SG_StoreArgGtrPriority(parse_table *pt, ATermInt l1, ATermInt argNumber,
+                                  ATermInt l2)
 {
-	ATerm assoc = ATtableGet(SG_PT_ASSOCIATIVITIES(pt), (ATerm) SG_GetATint(l, 0));
+  ATermList value = SG_LookupArgGtrPriority(pt, l1, argNumber);
+  ATerm key = (ATerm)ATmakeList2((ATerm)l1, (ATerm)argNumber);
 
-	return ATisEqual(assoc, SG_RightPrio_Symbol);
-}
-
-/*}}}  */
-/*{{{  ATbool SG_IsNonAssocAssociative(parse_table *pt, label l) */
-
-ATbool SG_IsNonAssocAssociative(parse_table *pt, label l)
-{
-	ATerm assoc = ATtableGet(SG_PT_ASSOCIATIVITIES(pt), (ATerm) SG_GetATint(l, 0));
-
-	return ATisEqual(assoc, SG_NonAssocPrio_Symbol);
+  if (value == NULL) {
+    SG_registerProductionHasPriority(pt, l1);
+    ATtablePut(SG_PT_ARG_GTR_PRIORITIES(pt), key, (ATerm) ATmakeList1((ATerm) l2));
+  } else {
+    ATtablePut(SG_PT_ARG_GTR_PRIORITIES(pt), key, (ATerm) ATinsert(value, (ATerm) l2));
+  }
 }
 
 /*}}}  */
 
 /* Error administration */
 
-static ERR_ErrorList ptErrorList;
+static ERR_ErrorList ptErrorList = NULL;
 
 /*{{{  void SG_InitParseTableErrorList() */
 void SG_InitParseTableErrorList()
 {
-  ptErrorList = ERR_makeErrorListEmpty();
   ERR_protectErrorList(&ptErrorList);
+
+  /* test for NULL, or we throw away messages when init is called twice */
+  if (ptErrorList == NULL) {
+    ptErrorList = ERR_makeErrorListEmpty();
+  }
 }
 
 /*}}}  */
@@ -391,24 +417,38 @@ ATbool SG_IsParseTableErrorListEmpty()
 
 void SG_addParseTableErrorError(const char *path, const char *contentDescription)
 {
-  ERR_Location posinfo = ERR_makeLocationFile(path);
-  ERR_Subject subject = ERR_makeSubjectLocalized(contentDescription, 
-						 posinfo);
-  ERR_Error error = ERR_makeErrorError("Parse Table error",
-	     		               ERR_makeSubjectListSingle(subject));
-  ptErrorList = ERR_makeErrorListMany(error, ptErrorList);
+  if (ERR_isErrorListEmpty(ptErrorList)) {
+    ERR_Subject subject;
+    ERR_Error error;
+
+    if (path != NULL) {
+      ERR_Location posinfo = ERR_makeLocationFile(path);
+      subject = ERR_makeSubjectLocalized(contentDescription, posinfo);
+    }
+    else {
+      subject = ERR_makeSubjectSubject(contentDescription);
+    }
+
+    error = ERR_makeErrorError("Parse Table error",
+			       ERR_makeSubjectListSingle(subject));
+    ptErrorList = ERR_makeErrorListMany(error, ptErrorList);
+  }
 }
 
 /*}}}  */
-/*{{{  ERR_Summary SG_makeParseTableErrorSummary(const char *prgname, const char *path) */
+/*{{{  ERR_Error SG_makeParseTableErrorError() */
 
-ERR_Summary SG_makeParseTableErrorSummary(const char *prgname, const char *path)
+ERR_Error SG_makeParseTableErrorError()
 {
-  if (!prgname) {
-    prgname = "sglr";
-  }
+  return ERR_getErrorListHead(ptErrorList);
+}
 
-  return ERR_makeSummarySummary(prgname, path, ptErrorList);
+/*}}}  */
+/*{{{  ERR_Summary SG_makeParseTableErrorSummary(const char *path) */
+
+ERR_Summary SG_makeParseTableErrorSummary(const char *path)
+{
+  return ERR_makeSummarySummary("sglr", path, ptErrorList);
 }
 
 /*}}}  */
@@ -884,7 +924,7 @@ void SG_AddPTGrammar(parse_table *pt, ATermList grammar)
 
 /*}}}  */
 
-enum SG_PRIORITIES { P_IGNORE, P_GTR, P_LEFT, P_RIGHT, P_NONASSOC };
+enum SG_PRIORITIES { P_IGNORE, P_ARGGTR, P_GTR };
 
 /*{{{  void SG_AddPTPriorities(parse_table *pt, register ATermList prios) */
 
@@ -893,7 +933,7 @@ void SG_AddPTPriorities(parse_table *pt, register ATermList prios)
   ATerm     prio;
   AFun      fun;
   ATermList args;
-  ATermInt  pr_num1, pr_num2;
+  ATermInt  pr_num1, pr_num2, arg_num;
   int       ptype = P_IGNORE;
 
   for (; !ATisEmpty(prios); prios = ATgetNext(prios)) {
@@ -901,57 +941,29 @@ void SG_AddPTPriorities(parse_table *pt, register ATermList prios)
     fun = ATgetAFun(prio);
     if(ATisEqualAFun(fun, SG_GtrPrio_AFun)) {
       ptype = P_GTR;
-    } else if(ATisEqualAFun(fun, SG_LeftPrio_AFun)) {
-      ptype = P_LEFT;
-    } else if(ATisEqualAFun(fun, SG_RightPrio_AFun)) {
-      ptype = P_RIGHT;
-    } else if(ATisEqualAFun(fun, SG_NonAssocPrio_AFun)) {
-      ptype = P_NONASSOC;
+    }
+    else if (ATisEqualAFun(fun, SG_ArgGtrPrio_AFun)) {
+      ptype = P_ARGGTR;
     } else {
       ptype = P_IGNORE;
     }
     if(ptype != P_IGNORE) {
-      ATermList prev;
 
       pt->has_priorities = ATtrue;
       args = ATgetArguments((ATermAppl) prio);
       pr_num1 = (ATermInt) ATelementAt(args, 0);
-      pr_num2 = (ATermInt) ATelementAt(args, 1);
       switch(ptype) {
         case P_GTR:
-          if (ATisEqual(pr_num1, pr_num2)) {
-            break;
-          }
-          if (!(prev = (ATermList) ATtableGet(SG_PT_GTR_PRIORITIES(pt),
-                                             (ATerm) pr_num1))) {
-            ATtablePut(SG_PT_GTR_PRIORITIES(pt), (ATerm) pr_num1,
-                       (ATerm) ATmakeList1((ATerm) pr_num2));
-          } else {
-            ATtablePut(SG_PT_GTR_PRIORITIES(pt), (ATerm) pr_num1,
-                       (ATerm) ATinsert(prev, (ATerm) pr_num2));
+          pr_num2 = (ATermInt) ATelementAt(args, 1);
+          if (!ATisEqual(pr_num1, pr_num2)) {
+            SG_StoreGtrPriority(pt, pr_num1, pr_num2);
           }
           break;
-        case P_LEFT:
-	/* register left associative productions */
-          if (ATisEqual(pr_num1, pr_num2)) {
-            ATtablePut(SG_PT_ASSOCIATIVITIES(pt), (ATerm) pr_num1, 
-                       SG_LeftPrio_Symbol);
-          }
+        case P_ARGGTR:
+          arg_num = (ATermInt) ATelementAt(args, 1);
+          pr_num2 = (ATermInt) ATelementAt(args, 2);
+          SG_StoreArgGtrPriority(pt, pr_num1, arg_num, pr_num2);
           break;
-        case P_RIGHT:
-	/* register right associative productions */
-          if (ATisEqual(pr_num1, pr_num2)) {
-            ATtablePut(SG_PT_ASSOCIATIVITIES(pt), (ATerm) pr_num1, 
-                       SG_RightPrio_Symbol);
-          }
-          break;
-	case P_NONASSOC:
-	/* register non-assoc  associative productions */
-	  if (ATisEqual(pr_num1, pr_num2)) {
-            ATtablePut(SG_PT_ASSOCIATIVITIES(pt), (ATerm) pr_num1,
-                       SG_NonAssocPrio_Symbol);
-	  }
-	  break;
         default:
           break;
       }
@@ -1022,7 +1034,9 @@ parse_table *SG_NewParseTable(state initial, size_t numstates, size_t numprods,
   if(!pt->injections) {
     ATerror("could not allocate %d booleans\n", numprods);
   }
+  pt->production_has_priorities   = ATindexedSetCreate(numprods, 75);
   pt->gtr_priorities   = ATtableCreate(numprods, 75);
+  pt->arg_gtr_priorities   = ATtableCreate(numprods, 75);
   pt->associativities   = ATtableCreate(numprods, 75);
 
   pt->has_priorities = pt->has_rejects  = ATfalse;
@@ -1092,7 +1106,9 @@ void SG_DiscardInjections(parse_table *pt)
 
 void SG_DiscardPriorities(parse_table *pt)
 {
+  ATindexedSetDestroy(pt->production_has_priorities);
   ATtableDestroy(pt->gtr_priorities);
+  ATtableDestroy(pt->arg_gtr_priorities);
   ATtableDestroy(pt->associativities);
 }
 
@@ -1135,7 +1151,7 @@ parse_table *SG_AddParseTable(language L, const char *FN, const char *inFile)
 
   t = ATreadFromFile(input_file);
 
-  pt = SG_BuildParseTable((ATermAppl) t, inFile, ATtrue);
+  pt = SG_BuildParseTable((ATermAppl) t, inFile);
 
   IF_STATISTICS(ATfprintf(SG_log(),
                         "Obtaining parse table for %t took %.6fs\n",
@@ -1160,7 +1176,7 @@ parse_table *SG_AddParseTable(language L, const char *FN, const char *inFile)
  */
 
 
-parse_table *SG_BuildParseTable(ATermAppl t, const char *path, ATbool forParsing)
+parse_table *SG_BuildParseTable(ATermAppl t, const char *path)
 {
   ATermList   prods, states;
   register ATermList sts, prios = ATempty;
@@ -1173,7 +1189,7 @@ parse_table *SG_BuildParseTable(ATermAppl t, const char *path, ATbool forParsing
   int         nrOfStates;
 
   SG_InitPTGlobals();  /*  Make sure the PT globals are initialised  */
-  SG_InitParseTableErrorList();
+  SG_InitParseTableErrorList(); 
 
   ptfun = ATgetAFun(t);
 
@@ -1185,10 +1201,11 @@ parse_table *SG_BuildParseTable(ATermAppl t, const char *path, ATbool forParsing
 
   version_nr = ATgetInt((ATermInt) ATgetArgument(t, 0));
 
-  if (version_nr != 4 && version_nr != 5) {
-    SG_addParseTableErrorError(path, "Invalid parse table version");
-    t = NULL;
-    return NULL;
+  if (version_nr < 4 || version_nr > 6) {
+    fprintf(stderr, "sglr: warning: parse table version %d might not be supported. (expecting 4-6).", version_nr);
+    // SG_addParseTableErrorError(path, "Invalid parse table version");
+    // t = NULL;
+    // return NULL;
   }
 
   initial_state = ATgetInt((ATermInt) ATgetArgument(t, 1));
@@ -1198,11 +1215,11 @@ parse_table *SG_BuildParseTable(ATermAppl t, const char *path, ATbool forParsing
   t = NULL;
 
   nrOfStates = ATgetLength(states);
+
   if (nrOfStates == 2 &&
       ATgetLength((ATermList)ATgetArgument(ATgetFirst(states), 2)) == 0 &&
       ATgetLength((ATermList)ATgetArgument(ATgetFirst(ATgetNext(states)), 
-					   2)) == 0 && 
-      forParsing) {
+					   2)) == 0) {
     SG_addParseTableErrorError(path, "No start state defined");
     return NULL;
   }
@@ -1314,7 +1331,10 @@ void SG_SaveParseTable(language L, parse_table *pt)
 
 parse_table *SG_LookupParseTable(language L, const char *inFile)
 {
+  int i = 0;
   static char contentDescription[1024];
+
+  SG_InitParseTableErrorList();
 
   IF_DEBUG(ATfprintf(SG_log(), "Request for language %t\n",
                      SG_SAFE_LANGUAGE(L)));
@@ -1328,7 +1348,7 @@ parse_table *SG_LookupParseTable(language L, const char *inFile)
     IF_DEBUG(ATfprintf(SG_log(),
                        "Table for language %t available\n", 
                        L))
-    return tables[0].table;
+    return tables[i].table;
   }
 
   sprintf(contentDescription, "Table for %s not stored", 

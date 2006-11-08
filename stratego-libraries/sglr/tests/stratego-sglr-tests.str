@@ -30,7 +30,6 @@ strategies
     ; implode-tests-concrete-yield
     ; implode-tests-conc
     ; implode-tests-ast-attributes    
-    ; implode-tests-list
     ; implode-tests-lexical    
     ; asfix2me-tests
     )
@@ -39,6 +38,10 @@ strategies
     ; apply-test(!"Open and close a parse table"
       , open-parse-table; ?ParseTable(_); close-parse-table
       , <ReadFromFile> "ExpInt.tbl"
+      )
+    ; apply-and-fail(!"Opening a non-parse table should fail graciously."
+      , open-parse-table
+      , !1
       )
 
   simple-parse-tests =
@@ -76,7 +79,7 @@ strategies
       , not(parse-string(|tbl))
         ; get-parse-error
       , !"4 +"
-      , ?summary(_, _, _)
+      , ?error(_, _)
       )
 
     ; apply-test(!"Test that the parse error is removed if there is a succesful parse."
@@ -104,7 +107,7 @@ strategies
         ; not(parse-string(|ambtbl))
         ; get-parse-error
       , !"4 + 5 + 6"
-      , ?summary(_, _, _)
+      , ?error(_, _)
       )
 
     ; set-default-sglr-config
@@ -126,7 +129,7 @@ strategies
           ; get-parse-error
           ; where(<fclose> stream)
         , !"test-error.exp"
-        , ?summary(_, _, _)
+        , ?error(_, _)
         )
       }
 
@@ -140,7 +143,7 @@ strategies
       , not(parse-file(|tbl))
         ; get-parse-error
       , !"test-error.exp"
-      , ?summary(_, _, _)
+      , ?error(_, _)
       )
 
     ; where(
@@ -298,23 +301,6 @@ strategies
 
     ; set-default-sglr-config
 
-
-    ; apply-test(!"Check that the associativity filter is enabled by default"
-      , set-default-filters
-        ; get-filter-associativity
-      , !()
-      , !()
-      )
-
-    ; apply-test(!"Check that the associativity filter can be disabled"
-      , set-filter-associativity(false)
-        ; not(get-filter-associativity)
-      , !()
-      , !()
-      )
-
-    ; set-default-sglr-config
-
     ; apply-test(!"Check that the reject filter is enabled by default"
       , set-default-filters
         ; get-filter-reject 
@@ -354,35 +340,35 @@ strategies
       ; <ReadFromFile> "ExpIntAmb.tbl"; open-parse-table => ambtbl
       )
 
-    ; {summary :
+    ; {error :
         apply-test(!"Test the reporting of a parse error."
         , not(parse-string(|tbl))
-          ; where(get-parse-error => summary)
-          ; report-error-summary(|summary)
+          ; where(get-parse-error => error)
+          ; report-error(|error)
           ; !()
         , !"4 +"
         , !()
         )
       }
 
-    ; {summary :
+    ; {error :
         apply-test(!"Test the reporting of a parse error."
         , not(parse-string(|tbl))
-          ; where(get-parse-error => summary)
+          ; where(get-parse-error => error)
           ; !FILE("test-error.exp")
-          ; report-error-summary(|summary)
+          ; report-error(|error)
           ; !()
         , !"4 +"
         , !()
         )
       }
 
-    ; {summary :
+    ; {error :
         apply-test(!"Test the reporting of a parse error from a file."
         , not(parse-file(|tbl))
-          ; where(get-parse-error => summary)
+          ; where(get-parse-error => error)
           ; !FILE("test-error.exp")
-          ; report-error-summary(|summary)
+          ; report-error(|error)
           ; !()
         , !"test-error.exp"
         , !()
@@ -785,51 +771,6 @@ strategies
         ; implode-asfix
       , !"f(1, 2 & 3)"
       , !Call("f", [Int("1"), Int("2"), Int("3")])
-      )
-
-    ; where(<close-parse-table> tbl)
-
-
-  implode-tests-list = id
-    ; where(
-        <ReadFromFile> "List.tbl"; open-parse-table => tbl
-      )
-    ; set-default-sglr-config
-
-    ; apply-test(!"Iter-n"
-      , parse-string(|tbl, "IterN")
-      , !"a1 a2 a3"
-      , !IterN(["a1", "a2", "a3"])
-      )
-      
-    ; apply-test(!"Iter-n"
-      , parse-string(|tbl, "IterN")
-      , !"b1 b2 b3"
-      , !IterN(["b1", "b2", "b3"])
-      )
-      
-    ; apply-test(!"Iter-sep-n"
-      , parse-string(|tbl, "IterSepN")
-      , !"a1, a2, a3"
-      , !IterSepN(["a1", "a2", "a3"])
-      )
-      
-    ; apply-test(!"Iter-sep-n"
-      , parse-string(|tbl, "IterSepN")
-      , !"b1, b2, b3"
-      , !IterSepN(["b1", "b2", "b3"])
-      )
-      
-    ; apply-test(!"Iter-sep-n"
-      , parse-string(|tbl, "IterSepN")
-      , !"a1 a2 a3 a4 a5"
-      , !IterSepN(["a1", "a2", "a3", "a4", "a5"])
-      )
-      
-    ; apply-test(!"Iter-sep-n"
-      , parse-string(|tbl, "IterSepN")
-      , !"a1 b2 a3 b4 a5"
-      , !IterSepN(["a1", "b2", "a3", "b4", "a5"])
       )
 
     ; where(<close-parse-table> tbl)

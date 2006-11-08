@@ -1,4 +1,6 @@
-#include <MEPT-utils.h>
+#include <MEPT-renaming.h>
+#include <MEPT-tree.h>
+#include <MEPT-symbols.h>
 #include <string.h>
 
 static
@@ -6,7 +8,6 @@ PT_Symbol renameInSymbol(PT_Symbol symbol,
                          PT_Symbol formalParam,
                          PT_Symbol actualParam);
 
-/*{{{  PT_Symbols renameInSymbols(PT_Symbols symbols, */
 
 static
 PT_Symbols renameInSymbols(PT_Symbols symbols,
@@ -26,8 +27,6 @@ PT_Symbols renameInSymbols(PT_Symbols symbols,
   }
 }
 
-/*}}}  */
-/*{{{  PT_Symbol renameInSymbol(PT_Symbol symbol, */
 
 static 
 PT_Symbol renameInSymbol(PT_Symbol symbol,
@@ -96,8 +95,6 @@ PT_Symbol renameInSymbol(PT_Symbol symbol,
   return symbol;
 }
 
-/*}}}  */
-/*{{{  PT_Args renameInArgs(PT_Args trees, */
 
 static
 PT_Args renameInArgs(PT_Args trees,
@@ -120,8 +117,6 @@ PT_Args renameInArgs(PT_Args trees,
   }
 }
 
-/*}}}  */
-/*{{{  PT_Production renameInProduction(PT_Production prod, */
 
 static
 PT_Production renameInProduction(PT_Production prod,
@@ -146,8 +141,6 @@ PT_Production renameInProduction(PT_Production prod,
   }
 }
 
-/*}}}  */
-/*{{{  PT_Tree PT_renameInTree(PT_Tree tree, */
 
 
 PT_Tree PT_renameInTree(PT_Tree tree,
@@ -157,47 +150,43 @@ PT_Tree PT_renameInTree(PT_Tree tree,
   if (PT_isTreeAppl(tree)) {
     PT_Production prod = PT_getTreeProd(tree);
     PT_Symbol     rhs = PT_getProductionRhs(prod);
-    PT_Args       args = PT_getTreeArgs(tree);
-
-  
-    PT_Production newProd = renameInProduction(prod, formalParam, actualParam);
-    PT_Symbol newRhs  = PT_getProductionRhs(newProd);
-    PT_Args       newArgs = renameInArgs(args, formalParam, actualParam);
     PT_Tree       newTree;
 
-    newTree = PT_setTreeArgs(PT_setTreeProd(tree, newProd), newArgs);
+    if (PT_isEqualSymbol(rhs, formalParam) && PT_isSymbolLit(actualParam)) {
+      newTree = PT_makeTreeLit(PT_getSymbolString(actualParam));
+    }
+    else if (PT_isEqualSymbol(rhs, formalParam) && PT_isSymbolCilit(actualParam)) 
+    {
+      newTree = PT_makeTreeCilit(PT_getSymbolString(actualParam));
+    }
+    else {
+      PT_Args       args = PT_getTreeArgs(tree);
+      PT_Production newProd = renameInProduction(prod, formalParam, 
+						 actualParam);
+      PT_Args newArgs = renameInArgs(args, formalParam, actualParam);
+      PT_Symbol newRhs  = PT_getProductionRhs(newProd);
 
-    /* Wrap new variable lists in a proper list production */
-    if (PT_isTreeVar(newTree) &&
-	(PT_isIterSymbol(newRhs) || PT_isIterSepSymbol(newRhs)) && 
-	!(PT_isIterSymbol(rhs) || PT_isIterSepSymbol(rhs))) {
-      PT_Production listProd = PT_makeProductionList(newRhs);
-      PT_Tree listTree = PT_makeTreeAppl(listProd,
-					 PT_makeArgsList(newTree,
-							 PT_makeArgsEmpty()));
-      newTree = listTree;
+      newTree = PT_setTreeArgs(PT_setTreeProd(tree, newProd), newArgs);
+    
+      /* Wrap new variable lists in a proper list production */
+
+      if (PT_isTreeVar(newTree) &&
+	  (PT_isIterSymbol(newRhs) || PT_isIterSepSymbol(newRhs)) && 
+	  !(PT_isIterSymbol(rhs) || PT_isIterSepSymbol(rhs))) {
+	PT_Production listProd = PT_makeProductionList(newRhs);
+	PT_Tree listTree = PT_makeTreeAppl(listProd,
+					   PT_makeArgsSingle(newTree));
+	newTree = listTree;
+      }
     }
 
     return newTree;
-  }
-  else if (PT_isTreeLit(tree)) {
-    if (PT_isSymbolLit(formalParam)) {
-      char *localStr = PT_getTreeString(tree);
-      char *formalStr = PT_getSymbolString(formalParam);
-
-      if (strcmp(localStr, formalStr) == 0) {
-        return PT_setTreeString(tree, PT_getSymbolString(actualParam));
-      }
-    }
-    return tree;
   }
   else {
     return tree;
   }
 }
 
-/*}}}  */
-/*{{{  PT_ParseTree PT_renameInParseTree(PT_ParseTree parsetree, PT_Symbol formalParam, */
 
 PT_ParseTree PT_renameInParseTree(PT_ParseTree parsetree, PT_Symbol formalParam,
                                   PT_Symbol actualParam)
@@ -209,4 +198,3 @@ PT_ParseTree PT_renameInParseTree(PT_ParseTree parsetree, PT_Symbol formalParam,
   return PT_setParseTreeTop(parsetree, tree);
 }
 
-/*}}}  */

@@ -11,10 +11,10 @@ ATerm STRSGLR_set_default_filters(void)
   STRSGLR_ensure_init();
 
   SG_FILTER_ON();
-  SG_FILTER_ASSOCIATIVITY_ON();
   SG_FILTER_DIRECTEAGERNESS_ON();
   SG_FILTER_PRIORITY_ON();
   SG_FILTER_REJECT_ON();
+  SG_FILTER_REMOVECYCLES_ON();
 
   SG_FILTER_EAGERNESS_OFF();
   SG_FILTER_INJECTIONCOUNT_OFF();
@@ -125,33 +125,6 @@ ATerm STRSGLR_get_filter_injection_count(void)
   else
     return NULL;
 }
-
-/**
- * Associativity
- */
-ATerm STRSGLR_set_filter_associativity_on(void)
-{
-  STRSGLR_ensure_init();
-  SG_FILTER_ASSOCIATIVITY_ON();
-  return (ATerm) ATempty;
-}
-
-ATerm STRSGLR_set_filter_associativity_off(void)
-{
-  STRSGLR_ensure_init();
-  SG_FILTER_ASSOCIATIVITY_OFF();
-  return (ATerm) ATempty;
-}
-
-ATerm STRSGLR_get_filter_associativity(void)
-{
-  STRSGLR_ensure_init();
-  if(SG_FILTER_ASSOCIATIVITY)
-    return (ATerm) ATempty;
-  else
-    return NULL;
-}
-
 
 /**
  * Reject

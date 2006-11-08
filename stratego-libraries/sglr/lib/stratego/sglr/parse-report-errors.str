@@ -42,8 +42,8 @@ strategies
   strsglr-report-parse-error =
     finally(
       ?input
-      ; summary := <get-parse-error>
-      ; <report-error-summary(|summary)> input
+      ; error := <get-parse-error>
+      ; <report-error(|error)> input
     , fail
     )
 

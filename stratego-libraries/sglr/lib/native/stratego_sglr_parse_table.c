@@ -26,8 +26,15 @@ ATerm STRSGLR_open_parse_table(ATerm tbl_term)
 {
   STRSGLR_ensure_init();
   SG_InitParseTableErrorList();
-  parse_table* tbl = SG_BuildParseTable((ATermAppl) tbl_term, "unknown", ATtrue);
-  return parse_table_to_term(tbl);
+  parse_table* tbl = SG_BuildParseTable((ATermAppl) tbl_term, "unknown");
+
+  if(tbl == NULL) {
+    ERR_displaySummary(SG_makeParseTableErrorSummary("unknown"));
+    return NULL;
+  }
+  else {
+    return parse_table_to_term(tbl);
+  }
 }
 
 /**

@@ -1,20 +1,69 @@
 #include "Error-utils.h"
+#include <ctype.h>
 
-/*{{{  static PERR_StrCon ERR_liftStrCon(const char *str) */
+/* note that the function below is copied from another lifting
+ * library. This kind of duplication can be avoided when apigen
+ * for C will support modular generation of API's.
+ */
+static PERR_LexStrCon ERR_makeLexStrCon(const char* str)
+{
+  int len = strlen(str);
+  int i;
+  PERR_LexStrCharChars list = PERR_makeLexStrCharCharsEmpty();
+
+  for (i = len - 1; i >= 0; i--) {
+    PERR_LexStrChar ch;
+
+    switch(str[i]) {
+      case '\n':
+        ch = PERR_makeLexStrCharNewline();
+        break;
+      case '\t':
+        ch = PERR_makeLexStrCharTab();
+        break;
+      case '"':
+        ch = PERR_makeLexStrCharQuote();
+        break;
+      case '\\':
+        ch = PERR_makeLexStrCharBackslash();
+        break;
+      default:
+        if (isprint((int) str[i])) {
+          ch = PERR_makeLexStrCharNormal(str[i]);
+        }
+        else {
+          int value = str[i];
+          int a, b, c;
+
+          c = value % 10;
+          value /= 10;
+          b = value % 10;
+          value /= 10;
+          a = value;
+
+          ch = PERR_makeLexStrCharDecimal(a,b,c);
+        }
+    }
+
+    list = PERR_makeLexStrCharCharsMany(ch, list);
+  }
+
+
+  return PERR_makeLexStrConDefault(list);
+}
 
 static PERR_StrCon ERR_liftStrCon(const char *str)
 {
-  ATerm quotedAppl = (ATerm) ATmakeAppl0(ATmakeAFun(str, 0, ATtrue));
-  return PERR_makeStrConDefault(ATwriteToString(quotedAppl));
+  return PERR_makeStrConLexToCf(ERR_makeLexStrCon(str));
 }
 
-/*}}}  */
 /*{{{  static PERR_NatCon ERR_liftNatCon(int natcon) */
 
 static PERR_NatCon ERR_liftNatCon(int natcon)
 {
-  ATerm atint = (ATerm) ATmakeInt(natcon);
-  return PERR_makeNatConDefault(ATwriteToString(atint));
+  static char string[1024];
+  sprintf(string, "%d", natcon);
+  return PERR_makeNatConLexToCf(PERR_makeLexNatConDigits(string));
 }
 
 /*}}}  */

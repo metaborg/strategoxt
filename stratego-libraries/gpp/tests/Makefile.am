@@ -29,3 +29,5 @@ else
 ast2text_tests_SOURCES = ast2text-tests.c
 abox2text_tests_SOURCES = abox2text-tests.c
 endif
+
+TESTS_ENVIRONMENT = XTC_REPOSITORY=$(BUILD_REPOSITORY)

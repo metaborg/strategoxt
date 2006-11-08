@@ -51,6 +51,6 @@ STRCFLAGS = \
   $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
 
 libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
-	@$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-sglr.str -o libstratego-sglr.rtree \
+	@$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-sglr.rtree -o libstratego-sglr.rtree \
           --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sglr.str

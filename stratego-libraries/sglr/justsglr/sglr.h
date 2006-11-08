@@ -1,4 +1,4 @@
-/*  $Id: sglr.h,v 1.39.2.2 2005/03/18 07:38:17 markvdb Exp $  */
+/*  $Id: sglr.h 20444 2006-10-10 08:48:10Z jurgenv $  */
 
 /*
  * The interface to the public SGLR functions
@@ -17,7 +17,6 @@ void SG_Dump_ATtable(ATermTable t, char *s);
 #include <aterm2.h>
 #include <MEPT.h>
 
-
 /*  Data structures: states, actions, character ranges and parse tables  */
 
 typedef int            state;
@@ -34,9 +33,7 @@ typedef ATermAppl forest;
 
 typedef ATerm language;
 
-/*
- Needed all the time...
- */
+typedef struct _apigen_prepared *SGLR_ParseTable;
 
 #define SG_MAX(a,b)     (a>b?a:b)
 /*
@@ -62,10 +59,6 @@ typedef ATerm language;
 #define SG_CHAR_CLASS_EOF (SG_CHAR_CLASS_TOP+1) /*  .. extended with EOF  */
 #define SG_PROD_START     (SG_CHAR_CLASS_EOF+1) /*  Start of prods  */
 
-/*
- Function prototypes
- */
-
 void  SGinitParser(ATbool toolbus_mode);
 void  SG_InitPTGlobals();
 void  SGshowMode(void);
@@ -73,13 +66,17 @@ void  SGshowMode(void);
 ATerm SGopenLanguage(language L, const char *FN, const char *inFile);
 ATerm SGopenLanguageFromTerm(language L, ATerm tbl, const char *inFile);
 
-ATerm SGparseString(const char *prgname, language L, const char *G, const char *S, const char *path);
-ATerm SGparseStringAsAsFix(const char *prgname, language L, const char *G, const char *S, const char *path);
+ATerm SGparseString(const char *input, SGLR_ParseTable parseTable, 
+		    const char *topSort, const char *path);
+ATerm SGparseStringAsAsFix(const char *input, SGLR_ParseTable parseTable,
+			   const char *topSort, const char *path);
 
-ATerm SGparseFile(const char *prgname, language L, const char *G, const char *FN);
 ATerm SGtermToFile(const char *prgname, ATerm t, const char *FN);
+ATerm SGparseFile(const char *prgname, language L, const char *G, const char *FN);
 ATerm SGparseFileUsingTable(const char *prg, const char *tbl, const char *sort,
                             const char *in, const char *out);
+
+ATerm SGparseStringWithLoadedTable(const char *prgname, language L, const char *input, const char *topSort, const char *path);
 
 ATbool SGisParseTree(ATerm t);
 ATbool SGisParseError(ATerm t);
@@ -124,7 +121,7 @@ enum SGmodeFlags {
   SG_BINARYFLAG,
   SG_SHOWSTACKFLAG, 
   SG_FILTERFLAG, 
-  SG_FILTER_ASSOCIATIVITYFLAG,
+  SG_FILTER_REMOVECYCLESFLAG,
   SG_FILTER_DIRECTEAGERNESSFLAG,
   SG_FILTER_EAGERNESSFLAG, 
   SG_FILTER_INJECTIONCOUNTFLAG,
@@ -133,7 +130,6 @@ enum SGmodeFlags {
   SG_ASFIX2MEFLAG,
   SG_STARTSYMBOLFLAG, 
   SG_GCFLAG, 
-  SG_CYCLEFLAG, 
   SG_AMBIGUITY_ERRORFLAG
 };
 
@@ -180,13 +176,6 @@ enum SGmodeFlags {
 #define SG_FILTER_ON()       (_SG_Mode |=  SG_BIT(SG_FILTERFLAG))
 #define SG_FILTER_OFF()      (_SG_Mode &= ~SG_BIT(SG_FILTERFLAG))
 
-#define SG_FILTER_ASSOCIATIVITY \
- (_SG_Mode  &  SG_BIT(SG_FILTER_ASSOCIATIVITYFLAG))
-#define SG_FILTER_ASSOCIATIVITY_ON() \
- (_SG_Mode |=  SG_BIT(SG_FILTER_ASSOCIATIVITYFLAG))
-#define SG_FILTER_ASSOCIATIVITY_OFF() \
- (_SG_Mode &= ~SG_BIT(SG_FILTER_ASSOCIATIVITYFLAG))
-
 #define SG_FILTER_PRIORITY \
  (_SG_Mode  &  SG_BIT(SG_FILTER_PRIORITYFLAG))
 #define SG_FILTER_PRIORITY_ON() \
@@ -212,6 +201,10 @@ enum SGmodeFlags {
 #define SG_FILTER_REJECT_ON()  (_SG_Mode |=  SG_BIT(SG_FILTER_REJECTFLAG)) 
 #define SG_FILTER_REJECT_OFF() (_SG_Mode &= ~SG_BIT(SG_FILTER_REJECTFLAG))
 
+#define SG_FILTER_REMOVECYCLES       (_SG_Mode  &  SG_BIT(SG_FILTER_REMOVECYCLESFLAG))
+#define SG_FILTER_REMOVECYCLES_ON()  (_SG_Mode |=  SG_BIT(SG_FILTER_REMOVECYCLESFLAG)) 
+#define SG_FILTER_REMOVECYCLES_OFF() (_SG_Mode &= ~SG_BIT(SG_FILTER_REMOVECYCLESFLAG))
+
 #define SG_FILTER_DIRECTEAGERNESS \
  (_SG_Mode  &  SG_BIT(SG_FILTER_DIRECTEAGERNESSFLAG))
 #define SG_FILTER_DIRECTEAGERNESS_ON() \
@@ -222,10 +215,6 @@ enum SGmodeFlags {
 #define SG_STARTSYMBOL       (_SG_Mode  &  SG_BIT(SG_STARTSYMBOLFLAG))
 #define SG_STARTSYMBOL_ON()  (_SG_Mode |=  SG_BIT(SG_STARTSYMBOLFLAG))
 #define SG_STARTSYMBOL_OFF() (_SG_Mode &= ~SG_BIT(SG_STARTSYMBOLFLAG))
-
-#define SG_CYCLE             (_SG_Mode  &  SG_BIT(SG_CYCLEFLAG))
-#define SG_CYCLE_ON()        (_SG_Mode |=  SG_BIT(SG_CYCLEFLAG))
-#define SG_CYCLE_OFF()       (_SG_Mode &= ~SG_BIT(SG_CYCLEFLAG))
 
 #define SG_AMBIGUITY_ERROR       (_SG_Mode  &  SG_BIT(SG_AMBIGUITY_ERRORFLAG))
 #define SG_AMBIGUITY_ERROR_ON()  (_SG_Mode |=  SG_BIT(SG_AMBIGUITY_ERRORFLAG))

@@ -43,9 +43,6 @@ endif
 
 libstratego-lib.rtree : lib$(stratego_lib_module).rtree
 	cp $< $@
-valgrind: do_exec(XTC_REPOSITORY=/home/visser/dev/strategoxt/BUILDTIME_XTC) failed: No such file or directory
-
-
 
 STRC_UNINSTALLED_CALLGRIND = XTC_REPOSITORY=$(BUILD_REPOSITORY) callgrind $(prefix)/bin/strc
 
@@ -53,15 +50,15 @@ stratego-lib.str : Makefile
 	echo "module stratego-lib imports $(stratego_lib_module)" > $@
 
 libstratego-lib-c99.c libstratego-lib-c99.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-c99.str -o libstratego-lib-c99.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-c99.rtree -o libstratego-lib-c99.rtree
 	rm libstratego-lib-c99.str
 
 libstratego-lib-posix.c libstratego-lib-posix.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-posix.str -o libstratego-lib-posix.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-posix.rtree -o libstratego-lib-posix.rtree
 	rm libstratego-lib-posix.str
 
 libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-posix-xsi.str -o libstratego-lib-posix-xsi.rtree
+	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-lib-posix-xsi.rtree -o libstratego-lib-posix-xsi.rtree
 	rm libstratego-lib-posix-xsi.str
 
 fullstrategolib = \

@@ -1,5 +1,5 @@
 /*
- $Id: posmap.h,v 1.1 2003/07/24 19:43:36 markvdb Exp $
+ $Id: posmap.h 10242 2003-07-24 19:43:37Z markvdb $
  */   
 
 #ifndef LENGTHMAP_H

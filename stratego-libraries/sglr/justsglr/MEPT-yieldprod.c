@@ -1,13 +1,27 @@
-/*
-    $Id: yieldProd.c,v 1.29 2003/10/07 14:11:14 markvdb Exp $
-*/
+/* $Id: yieldProd.c 17026 2005-11-17 09:12:07Z jurgenv $ */
 
+/** 
+ * \file
+ * Contains a mapping from abstract PT_Productions and PT_Symbols to
+ * a concrete string representation of SDF productions and SDF Symbols.
+ *
+ * Note: not only a one-to-one mapping from an abstract to a concrete
+ * representation is done. This functionality also entails some magic
+ * that undoes the effects of the SDF2 normalization phase.
+ *
+ * \todo: split the normalization undo functionality from the pt2sdf
+ * mapping functionality. Use the SDFME Api to construct a valid SDF
+ * production, then use an ASF+SDF specification to implement the inverse
+ * of normalization to a production, then use PT_yieldTree() to 
+ * finally yield a string.
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
 
-#include "MEPT-utils.h"
+#include "MEPT-yieldprod.h"
+#include "MEPT-symbols.h"
 
 #define VARIABLE "*variable*"
 
@@ -26,7 +40,7 @@ static int lengthOfInteger(int ch)
 static int lengthOfCharRange(PT_CharRange charRange)
 {
   if (PT_isCharRangeCharacter(charRange)) {
-    int ch = PT_getCharRangeInteger(charRange);
+    int ch = PT_getCharRangeStart(charRange);
     return lengthOfInteger(ch);  
   }
   else if (PT_isCharRangeRange(charRange)) {
@@ -61,7 +75,8 @@ lengthOfSymbol(PT_Symbol symbol)
   if (PT_isOptLayoutSymbol(symbol)) {
     return 0;
   }
-  if (PT_isSymbolLit(symbol)) {
+
+  if (PT_isSymbolLit(symbol) || PT_isSymbolCilit(symbol)) {
     char *str = PT_getSymbolString(symbol);
     return strlen(str) + 2;
   }
@@ -261,7 +276,7 @@ static int yieldCharRange(PT_CharRange charRange, int idx, char *buf, int bufSiz
   assert(idx <= bufSize);
 
   if (PT_isCharRangeCharacter(charRange)) {
-    int ch = PT_getCharRangeInteger(charRange);
+    int ch = PT_getCharRangeStart(charRange);
     idx = yieldInteger(ch, idx, buf, bufSize);
     return idx;
   }
@@ -305,15 +320,16 @@ yieldSymbol(PT_Symbol symbol, int idx, char *buf, int bufSize)
   if (PT_isOptLayoutSymbol(symbol)) {
     return idx;
   }
-  if (PT_isSymbolLit(symbol)) {
+  if (PT_isSymbolLit(symbol) || PT_isSymbolCilit(symbol)) {
+    ATbool ci = PT_isSymbolCilit(symbol);
     char *str = PT_getSymbolString(symbol);
     int len = strlen(str);
 
-    buf[idx++] = '"';
+    buf[idx++] = ci ? '\'' : '"';
     for (i = 0; i < len; i++) {
       buf[idx++] = str[i];
     }
-    buf[idx++] = '"';
+    buf[idx++] = ci ? '\'' : '"';
 
     return idx;
   }
@@ -606,8 +622,7 @@ yieldProd(PT_Production prod, int idx, char *buf, int bufSize)
   return idx;
 }
 
-char *PT_yieldProduction(PT_Production prod)
-{
+char *PT_yieldProduction(PT_Production prod) {
   static char *buffer = NULL;
   static int   bufferSize = 0;
   int          idx = 0;
@@ -627,8 +642,7 @@ char *PT_yieldProduction(PT_Production prod)
   return buffer;
 }
 
-char *PT_yieldSymbol(PT_Symbol symbol) 
-{
+char *PT_yieldSymbol(PT_Symbol symbol) {
   static char *buffer = NULL;
   static int   bufferSize = 0;
   int          idx = 0;
@@ -649,8 +663,7 @@ char *PT_yieldSymbol(PT_Symbol symbol)
   return buffer;
 }
 
-char *PT_yieldSymbolVisualVariables(PT_Symbol symbol)
-{
+char *PT_yieldSymbolVisualVariables(PT_Symbol symbol) {
   static char *buffer = NULL;
   static int   bufferSize = 0;
   int          idx = 0;

@@ -38,6 +38,9 @@ inline static double _get_real(ATerm t)
 }
 
 
+long SSL_ATtableKeysSize(ATermTable table);
+long SSL_ATindexedSetSize(ATermIndexedSet set);
+
 ATerm SSL_atermtable_fold(StrCL f, ATerm result, ATermTable tbl);
 ATerm SSL_table_fold(StrCL f, ATerm result, ATerm tbl);
 ATerm SSL_table_keys_fold(StrCL f, ATerm result, ATerm tbl);

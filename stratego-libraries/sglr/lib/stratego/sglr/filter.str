@@ -10,28 +10,6 @@ imports
 strategies
 
   /**
-   * Set the associativity filter.
-   *
-   * @param true (success) or false (failure)
-   */
-  set-filter-associativity(s) =
-    if s then
-      where(prim("STRSGLR_set_filter_associativity_on"))
-    else
-      where(prim("STRSGLR_set_filter_associativity_off"))
-    end
-
-  /**
-   * Succeeds if the associativity filter is enabled.
-   *
-   * @type  t -> t
-   */
-  get-filter-associativity =
-    where(prim("STRSGLR_get_filter_associativity"))
-
-strategies
-
-  /**
    * Set the direct eagerness filter.
    *
    * @param true (success) or false (failure)

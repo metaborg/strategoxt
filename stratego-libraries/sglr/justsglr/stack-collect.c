@@ -1,5 +1,5 @@
 /*
- * $Id: stack-collect.c,v 1.10 2001/07/11 10:53:56 markvdb Exp $
+ * $Id: stack-collect.c 5413 2001-07-11 10:53:56Z markvdb $
  */
 
 #include <assert.h>

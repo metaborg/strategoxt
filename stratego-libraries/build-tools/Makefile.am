@@ -13,3 +13,5 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
 
+cgen-aterm.c : cgen-aterm.rtree
+	$(STRC_UNINSTALLED) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -c

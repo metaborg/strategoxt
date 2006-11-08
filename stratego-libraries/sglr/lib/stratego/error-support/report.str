@@ -34,8 +34,15 @@ strategies
    * @type  a -> a
    */
   report-error(|producer, error) =
+    report-error(|error)
+
+  report-error(|error) =
     where(!error => error(err, [localized(descr, location)]))
     ; report-location(|err, descr, location)
+
+    <+ say(!"error: An error occured, but the error cannot be presented in a nice way. Please report this as a bug.")
+       ; where(<debug(!"       Structured error: ")> error)
+       ; fail
 
   /**
    * @param error Location

@@ -1,5 +1,5 @@
 /*
- $Id: rsrc-usage.h,v 1.6 2001/07/11 10:53:56 markvdb Exp $
+ $Id: rsrc-usage.h 5413 2001-07-11 10:53:56Z markvdb $
  */
 
 double SG_Timer(void);

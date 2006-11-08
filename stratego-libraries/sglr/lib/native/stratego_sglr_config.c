@@ -53,23 +53,6 @@ ATerm STRSGLR_set_asfix2me_format(void)
 }
 
 /**
- * Cycle Detection
- */
-ATerm STRSGLR_set_cycle_detection_on(void)
-{
-  STRSGLR_ensure_init();
-  SG_CYCLE_ON();
-  return (ATerm) ATempty;
-}
-
-ATerm STRSGLR_set_cycle_detection_off(void)
-{
-  STRSGLR_ensure_init();
-  SG_CYCLE_OFF();
-  return (ATerm) ATempty;
-}
-
-/**
  * Filtering
  */
 ATerm STRSGLR_set_filtering_on(void)

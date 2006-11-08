@@ -1,5 +1,5 @@
 /*
- $Id: forest.h,v 1.15 2004/02/09 17:11:20 jurgenv Exp $
+ $Id: forest.h 16976 2005-11-10 13:40:12Z jurgenv $
 
  Parse forests
 
@@ -27,7 +27,6 @@ typedef   ATermTable      multiset;
 #define SG_UNMARK(t)        CLR_MARK(t->header)
 #define SG_PROD_TO_NR(l)    (l-257)
 #define SG_NR_TO_PROD(l)    (ATmakeInt(ATgetInt((ATermInt)l)+257))
-#define SG_TOO_MANY_AMBS    10000
 
 int        SG_InjectionFilterSucceeded(int mode);
 int        SG_CountEagernessFilterSucceeded(int mode);
@@ -38,10 +37,6 @@ int        SG_AmbCalls(int Mode);
 int        SG_MaxNrAmb(int Mode);
 
 void       SG_Amb(parse_table *, tree, tree, size_t pos);
-
-enum       SG_CYCLEMODE { SG_CYCLE_ENCOUNTERED, SG_CYCLE_RESET };
-ATbool     SG_CycleEncountered(int Mode);
-ATermList  SG_CyclicTerm(parse_table *pt, forest t);
 
 tree       SG_FilterTree(parse_table *pt, tree t);
 tree       SG_SelectOnTopSort(parse_table *pt, tree t, const char *sort); 

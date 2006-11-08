@@ -28,7 +28,6 @@ static ATerm none_term = NULL;
 /**
  * Prototypes
  */
-ATerm SGparseStringUsingTable(parse_table* table, const char* sort, const char* string, const char* path);
 static char* read_text_from_stream(FILE* stream);
 
 void STRSGLR_ensure_init(void)
@@ -59,7 +58,6 @@ ATerm STRSGLR_set_default_config(void)
   STRSGLR_ensure_init();
 
   STRSGLR_set_default_filters();
-  SG_CYCLE_ON();
   SG_ASFIX2_ON();
   SG_AMBIGUITY_ERROR_OFF();
   return (ATerm) ATempty;
@@ -98,7 +96,8 @@ static ATerm parse_string_pt(const char* string, ATerm tbl_term, ATerm start_ter
     return NULL;
   }
 
-  result = SGparseStringUsingTable(tbl, start, string, path);
+  result = SGparseString(string, (SGLR_ParseTable) tbl, start, path);
+
   if(result != NULL)
   {
     if(SGisParseError(result))

@@ -1,7 +1,7 @@
 /*{{{  file header */
 
 /*
- $Id: stack.c,v 1.17 2003/08/08 07:50:19 markvdb Exp $
+ $Id: stack.c 10403 2003-08-08 07:50:19Z markvdb $
  */
 
 

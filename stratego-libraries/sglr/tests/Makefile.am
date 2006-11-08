@@ -13,10 +13,12 @@ check_DATA = \
   ConcreteSyntax.tbl ConcreteSyntax.str \
   Concrete.tbl \
   CustomImplode.tbl \
-  List.tbl \
   Lexical.tbl \
   ConcreteSyntax2.tbl \
   AstAttributes.tbl
+
+# FIXME SDF: the constructs A n+ and {A ","}n+ have been dropped.
+#  List.tbl 
 
 stratego-sglr-tests.c : $(check_DATA)
 

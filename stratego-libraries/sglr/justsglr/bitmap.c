@@ -1,5 +1,5 @@
 /*
- $Id: bitmap.c,v 1.3 2001/07/11 10:53:55 markvdb Exp $
+ $Id: bitmap.c 5413 2001-07-11 10:53:56Z markvdb $
  */   
 
 #include "bitmap.h"

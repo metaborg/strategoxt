@@ -1,4 +1,4 @@
-/*  $Id: parser.h,v 1.11 2004/02/09 17:11:20 jurgenv Exp $  */
+/*  $Id: parser.h 13104 2004-04-05 08:46:31Z jong $  */
 
 #ifndef _PARSER_H_
 #define _PARSER_H_  1
@@ -6,7 +6,9 @@
 #include "stack.h"
 
 forest SG_Parse(const char *path,
-                parse_table *pt, const char *sort, int(*getchar)(void), 
+                parse_table *parseTable,
+		const char *topSort,
+		int(*getchar)(void), 
 		size_t length);
 
 void   SG_ZeroStackHist(void);

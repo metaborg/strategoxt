@@ -1,4 +1,4 @@
-/*  $Id: parse-table.h,v 1.25.2.4 2005/03/18 07:38:17 markvdb Exp $  */
+/*  $Id: parse-table.h 16976 2005-11-10 13:40:12Z jurgenv $  */
 
 #ifndef _PARSE_TABLE_
 #define _PARSE_TABLE_  1
@@ -33,9 +33,11 @@ typedef struct _gototable {
   size_t     sizeclass;
 } gototable;
 
-typedef production *productiontable;
-typedef ATbool     *injectiontable;
-typedef ATermTable  prioritytable;
+typedef production      *productiontable;
+typedef ATbool          *injectiontable;
+typedef ATermTable       prioritytable;
+typedef ATermTable       argprioritytable;
+typedef ATermIndexedSet  productionset;
 
 typedef struct _parse_table  {
   state            initial;
@@ -45,7 +47,9 @@ typedef struct _parse_table  {
   gototable        gotos;
   productiontable  productions;
   injectiontable   injections;
+  productionset    production_has_priorities;
   prioritytable    gtr_priorities;
+  argprioritytable arg_gtr_priorities;
   prioritytable    associativities;
   ATbool           has_priorities;
   ATbool           has_rejects;
@@ -67,7 +71,7 @@ extern  AFun  SG_Regular_AFun, SG_Reject_AFun,
 #ifndef NO_EAGERNESS
 SG_Eager_AFun, SG_Uneager_AFun,
 #endif
-SG_Aprod_AFun, SG_Amb_AFun;
+SG_Aprod_AFun, SG_Amb_AFun, SG_Cycle_AFun;
 
 /*  Function prototypes  */
 
@@ -80,12 +84,11 @@ production    SG_LookupBracketProd(parse_table *pt, PT_Symbol r);
 label         SG_LookupLabel(parse_table *pt, production p);
 ATbool        SG_ProdIsInjection(parse_table *pt, label l);
 ATbool        SG_ProdIsUserDefinedInjection(parse_table *pt, label l);
-ATbool        SGGtrPriority(parse_table *pt, label l0, label l1);
-ATermList     SG_LookupGtrPriority(parse_table *pt, label l);
+ATbool        SGGtrPriority(parse_table *pt, int argNumber, label l0, label l1);
+ATbool        SG_hasProductionPriority(parse_table *pt, ATermInt l);
+ATermList     SG_LookupGtrPriority(parse_table *pt, ATermInt l);
+ATermList     SG_LookupArgGtrPriority(parse_table *pt, ATermInt l, ATermInt argNum);
 ATermInt      SG_GetATint(int l, size_t numprods);
-ATbool SG_IsLeftAssociative(parse_table *pt, label l);
-ATbool SG_IsRightAssociative(parse_table *pt, label l);
-ATbool SG_IsNonAssocAssociative(parse_table *pt, label l);
 
 actionkind    SG_ActionKind(action a);
 ATbool        SG_ReduceAction(action a);
@@ -109,10 +112,11 @@ ATbool        SG_PreferenceAction(action a);
 void SG_InitParseTableErrorList();
 void SG_addParseTableErrorError(const char *path, const char *desc);
 ATbool SG_IsParseTableErrorListEmpty();
-ERR_Summary SG_makeParseTableErrorSummary(const char *prgname, const char *path);
+ERR_Error SG_makeParseTableErrorError();
+ERR_Summary SG_makeParseTableErrorSummary(const char *path);
 
 parse_table  *SG_AddParseTable(language L, const char *FN, const char *inFile);
-parse_table  *SG_BuildParseTable(ATermAppl t, const char *path, ATbool forParsing);
+parse_table  *SG_BuildParseTable(ATermAppl t, const char *path);
 void          SG_DiscardParseTable(parse_table *pt);
 void          SG_SaveParseTable(language L, parse_table *pt);
 parse_table  *SG_LookupParseTable(language L, const char *path);
@@ -130,7 +134,9 @@ parse_table  *SG_LookupParseTable(language L, const char *path);
 #define       SG_PT_GOTOS(pt)           ((pt)->gotos)
 #define       SG_PT_PRODUCTIONS(pt)     ((pt)->productions)
 #define       SG_PT_INJECTIONS(pt)      ((pt)->injections)
+#define       SG_PT_PRODUCTION_HAS_PRIORITIES(pt)  ((pt)->production_has_priorities)
 #define       SG_PT_GTR_PRIORITIES(pt)  ((pt)->gtr_priorities)
+#define       SG_PT_ARG_GTR_PRIORITIES(pt)  ((pt)->arg_gtr_priorities)
 #define       SG_PT_ASSOCIATIVITIES(pt) ((pt)->associativities)
 #define       SG_PT_HAS_PRIORITIES(pt)  ((pt)->has_priorities)
 #define       SG_PT_HAS_REJECTS(pt)     ((pt)->has_rejects)

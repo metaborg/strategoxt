@@ -1,4 +1,4 @@
-/*  $Id: stack.h,v 1.9 2003/08/08 07:50:19 markvdb Exp $  */
+/*  $Id: stack.h 10403 2003-08-08 07:50:19Z markvdb $  */
 
 /*
  Graph Structured Stack

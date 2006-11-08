@@ -1,6 +1,6 @@
 #include "Error-utils.h"
 
-/*{{{  void initErrorApi()  */
+/*{{{  void ERR_initErrorApi()  */
 
 void initErrorApi() 
 {
