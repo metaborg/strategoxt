@@ -332,7 +332,7 @@ long SSL_ATtableKeysSize(ATermTable table) {
 }
 
 long SSL_ATindexedSetSize(ATermIndexedSet set) {
-  SSL_ATtableKeysSize(set);
+  return SSL_ATtableKeysSize(set);
 }
 
 ATerm SSL_table_fold(StrCL f, ATerm result, ATerm tbl)
