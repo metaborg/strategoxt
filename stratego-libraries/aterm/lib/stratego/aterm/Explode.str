@@ -112,6 +112,8 @@ signature
     qlit : x -> x
     uqlit : x -> x
     not-empty : x -> x
+    quoted: x -> x
+    unquoted: x -> x
 
   /**
    * todo: annotations
