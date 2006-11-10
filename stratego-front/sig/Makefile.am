@@ -5,16 +5,15 @@ treegrammars =					\
   Stratego.rtg					\
   Stratego-Amb.rtg				\
   Stratego-Core.rtg				\
-  Stratego-Sugar.rtg				
-
-#  Stratego-Sugar-1.rtg				
-#  Stratego-Sugar-2.rtg				
-#  Stratego-Sugar-3.rtg				
-#  Stratego-Sugar-4.rtg				
-#  Stratego-Sugar-5.rtg
-#  Stratego-Sugar-HL.rtg				
-#  Stratego-Core-Cong.rtg			
-#  Stratego-Sugar-Cong.rtg			
+  Stratego-Sugar.rtg				\
+  Stratego-Sugar-Cong.rtg			\
+  Stratego-Sugar-HL.rtg				\
+  Stratego-Core-Cong.rtg			\
+  Stratego-Sugar-1.rtg				\
+  Stratego-Sugar-2.rtg				\
+  Stratego-Sugar-3.rtg				\
+  Stratego-Sugar-4.rtg				\
+  Stratego-Sugar-5.rtg
 
 rtg_nfs = $(subst .rtg,.rtg-nf,$(treegrammars))
 sigs = $(subst .rtg,.str,$(treegrammars))
