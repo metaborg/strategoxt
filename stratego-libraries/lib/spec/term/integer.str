@@ -197,18 +197,22 @@ strategies
   next-random = prim("SSL_rand")
 
 strategies
+  
+  apply-int-to-str-tuple(s) =
+    (string-to-int, string-to-int) ; s ; int-to-string
 
-  addS  = (string-to-int, string-to-int); add; int-to-string
-  subtS = (string-to-int, string-to-int); subt; int-to-string
-  mulS  = (string-to-int, string-to-int); mul; int-to-string
-  divS  = (string-to-int, string-to-int); div; int-to-string
-  modS  = (string-to-int, string-to-int); mod; int-to-string
+  addS  = apply-int-to-str-tuple(add)
+  subtS = apply-int-to-str-tuple(subt)
+  mulS  = apply-int-to-str-tuple(mul)
+  divS  = apply-int-to-str-tuple(div)
+  modS  = apply-int-to-str-tuple(mod)
+  maxS  = apply-int-to-str-tuple(max)
+  minS  = apply-int-to-str-tuple(min)
+
   gtS   = where((string-to-int, string-to-int); gt)
   geqS  = where((string-to-int, string-to-int); geq)
   ltS   = where((string-to-int, string-to-int); lt)
   leqS  = where((string-to-int, string-to-int); leq)
-  maxS  = where((string-to-int, string-to-int); max)
-  minS  = where((string-to-int, string-to-int); min)
 
   /**
    * Increments a number.
