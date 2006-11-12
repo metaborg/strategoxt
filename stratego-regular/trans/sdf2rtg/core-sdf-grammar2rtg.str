@@ -534,13 +534,23 @@ rules
     where
       Symbol2String => y
 
+// FIXME: hack
+signature
+  constructors
+    default : Term -> Attribute
+
 strategies
 
   /**
    * @type  List(Attribute) -> String
    */
   get-cnstr-name =
-    fetch-elem(?term(cons(<id>)))
+    fetch-elem(
+      ?default(term(cons(<id>)))
+
+      // FIXME SDF: used for old SDF
+      <+ ?term(cons(<id>))
+    )
 
   /**
    * @type  List(Attribute) ->? _

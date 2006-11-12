@@ -2,7 +2,10 @@
  * @author  Martin Bravenboer
  */
 module explode-aterm
-imports ATerms libstratego-lib
+imports
+  ATerms
+  ATerms-obsolete
+  libstratego-lib
 
 strategies
 
@@ -29,8 +32,12 @@ rules
    * list
    */
   explode-list :
-    [x*]{} -> list(not-empty(<map(explode-aterm)> x*))
+    [x*]{} -> list(<map(explode-aterm)> x*)
 
+  implode-list :
+    list(x*) -> <map(implode-aterm)> x*
+
+  // FIXME SDF: bootstrap problem. Obsolete construct.
   implode-list :
     list(not-empty(x*)) -> <map(implode-aterm)> x*
 
@@ -52,7 +59,8 @@ rules
 
   implode-fun :
     fun(s1) -> s2#([])
-      where <implode-afun> s1 => s2
+    where
+      s2 := <implode-afun> s1
 
   /**
    * appl
@@ -62,24 +70,37 @@ rules
 
   implode-appl :
     appl(s1, x*) -> s2#(<map(implode-aterm)> x*)
-      where <implode-afun> s1 => s2
+    where
+      s2 := <implode-afun> s1
 
   /**
    * afun
    */
   explode-afun :
-    s -> uqlit(s)
+    s -> unquoted(s)
       where <not(is-double-quoted)> s
 
   explode-afun :
-    s -> qlit(s)
+    s -> quoted(s)
       where <is-double-quoted> s
 
+  /**
+   * FIXME SDF: used for old SDF
+   */
   implode-afun :
     uqlit(s) -> s
 
   implode-afun :
+    unquoted(s) -> s
+
+  /**
+   * FIXME SDF: used for old SDF
+   */
+  implode-afun :
     qlit(s) -> s
+
+  implode-afun :
+    quoted(s) -> s
 
   /**
    * todo: annotations

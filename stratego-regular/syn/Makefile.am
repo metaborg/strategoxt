@@ -9,7 +9,7 @@ EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS)
 
-SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn
 PGEN_FLAGS     = -m $*
 
 REUSED = rg-identifier.sdf rg-nonterm.sdf rg-term.sdf rg-layout.sdf

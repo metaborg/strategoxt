@@ -246,7 +246,7 @@ strategies
   skip-non-imports(search, ignore) =  
     parsetree(search,id)
     //<+ appl(prod(id, cf(sort("Module")),id),[id,id,id,search,id,search])
-    <+ appl(prod(id, cf(opt(layout) <+ 
+    <+ appl(prod(id, cf(opt(layout()) <+ 
                         sort("Productions" <+ "Symbols" <+ 
                              "Priorities" <+ "Restrictions" <+
                              "Aliases")), id); ignore, ignore)
@@ -279,18 +279,18 @@ strategies
    rec x(
    {w1, w2, m, m1, m2, xs:
       []; 
-      !(NoCfLayout, EmptyModuleIterStar, NoCfLayout)
+      !(NoCfLayout(), EmptyModuleIterStar(), NoCfLayout())
    <+ 
       [id];
       ?[Module_START(w1, m, w2)]; 
-      !(NoCfLayout, M-iter(m), NoCfLayout)
+      !(NoCfLayout(), M-iter(m), NoCfLayout())
    <+
       ?[m1,m2|xs];
       <concat-modules>( <x>[m1], <x>[m2|xs])
    }) => (w1, modules, w2);
-   !parsetree(SDF_START(NoCfLayout, 
+   !parsetree(SDF_START(NoCfLayout(), 
       Definition-overlay(
-         <concat-layout>[OptNewLine, w1], 
+         <concat-layout>[OptNewLine(), w1], 
          Module-s-overlay(NonEmptyModuleIterStar(modules))),w2),0)
 
 
@@ -358,7 +358,7 @@ overlays
    * M+ M+ -> M+ {left}
    */
   MM-iter(m1, w, m2) =
-    appl(prod([cf(iter(sort("Module"))),cf(opt(layout)),cf(iter(sort("Module")))],
+    appl(prod([cf(iter(sort("Module"))),cf(opt(layout())),cf(iter(sort("Module")))],
      cf(iter(sort("Module"))),attrs([assoc(left())])),[m1, w, m2])
 
   /**

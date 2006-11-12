@@ -179,12 +179,15 @@ AC_DEFUN([XT_CHECK_SDF],
   else
     AC_MSG_RESULT([no])
     # Try to find the SDF Packages using pkgconfig.
-    XT_CHECK_PACKAGE([SDF],[sdf2-bundle >= 2.3],[bin/sglr$EXEEXT])
+    XT_CHECK_PACKAGE([SDF],[sdf >= 2.5],[bin/sglr$EXEEXT])
   fi
 
   AC_SUBST([SGLR], ['$(SDF)'])
   AC_SUBST([PGEN], ['$(SDF)'])
   AC_SUBST([PT_SUPPORT], ['$(SDF)'])
+  AC_SUBST([SDF_LIBRARY], ['$(SDF)'])
+
+  # backward compatibitily
   AC_SUBST([ASF_LIBRARY], ['$(SDF)'])
 ])
 
@@ -727,15 +730,17 @@ AC_DEFUN([XT_PKG_PT_SUPPORT],
   XT_PROG_IMPLODEPT
 ])
 
-AC_DEFUN([XT_PKG_ASF_LIBRARY],
+AU_DEFUN([XT_PKG_ASF_LIBRARY], [XT_PKG_SDF_LIBRARY])
+
+AC_DEFUN([XT_PKG_SDF_LIBRARY],
 [
-  AC_MSG_CHECKING([for asf-library at $SDF/share/asf-library])
-  test -d "$SDF/share/asf-library"
+  AC_MSG_CHECKING([for sdf-library at $SDF/share/sdf-library])
+  test -d "$SDF/share/sdf-library"
   if test $? -eq 0; then
     AC_MSG_RESULT([yes])
   else
     AC_MSG_RESULT([no])
-    AC_MSG_ERROR([cannot find asf-library. Use --with-sdf.])
+    AC_MSG_ERROR([cannot find sdf-library. Use --with-sdf.])
   fi
 ])
 
@@ -744,7 +749,7 @@ AC_DEFUN([XT_PKG_SDF],
   XT_PKG_PGEN
   XT_PKG_SGLR
   XT_PKG_PT_SUPPORT
-  XT_PKG_ASF_LIBRARY
+  XT_PKG_SDF_LIBRARY
 ])
 
 AC_DEFUN([XT_PKG_STRATEGOXT],

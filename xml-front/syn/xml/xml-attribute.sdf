@@ -10,7 +10,7 @@ exports
   syntax
 
     "\"" DoubleQuotedPart* "\"" -> <AttValue-CF> {cons("DoubleQuoted")}
-    "\'" SingleQuotedPart* "\'" -> <AttValue-CF> {cons("SingleQuoted")}
+    "'"  SingleQuotedPart* "'" -> <AttValue-CF> {cons("SingleQuoted")}
 
     FooDoubleQuotedText -> DoubleQuotedPart {cons("Literal")}
     FooSingleQuotedText -> SingleQuotedPart {cons("Literal")}

@@ -9,9 +9,9 @@ exports
   lexical syntax
 
     "\"" ~[\"]* "\""     -> SystemLit
-    "\'" ~[\']* "\'"     -> SystemLit
+    "'"  ~[\']* "'"     -> SystemLit
     "\"" PubIDChar* "\"" -> PublicLit
-    "\'" PubIDChar* "\'" -> PublicLit
+    "'"  PubIDChar* "'" -> PublicLit
 
     [a-zA-Z0-9] -> PubIDChar
     [\ \n\13\-\'\(\)\+\,\.\/\:\=\?\;\!\*\#\@\$\_\%] -> PubIDChar
