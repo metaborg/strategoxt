@@ -5,7 +5,9 @@ TBLS_DEFS = ATerms.def ATerms.tbl
 SIGS      = ATerms.str
 
 PGEN_FLAGS     = -m $*
-SDFINCLUDES    = -I $(SDF_LIBRARY)/share/sdf-library/library
+
+# FIXME SDF: bootstrap problem, remove asf library include.
+SDFINCLUDES    = -I $(SDF_LIBRARY)/share/sdf-library/library -I $(ASF_LIBRARY)/share/asf-library/library
 SDF2RTG_FLAGS  = -m $*
 
 sdfdata_DATA   = $(TBLS_DEFS)
