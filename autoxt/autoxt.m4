@@ -744,12 +744,12 @@ AC_DEFUN([XT_PKG_SDF_LIBRARY],
   fi
 ])
 
+# FIXME SDF: bootstrap problem. Enable check for SDF library
 AC_DEFUN([XT_PKG_SDF],
 [
   XT_PKG_PGEN
   XT_PKG_SGLR
   XT_PKG_PT_SUPPORT
-  XT_PKG_SDF_LIBRARY
 ])
 
 AC_DEFUN([XT_PKG_STRATEGOXT],
