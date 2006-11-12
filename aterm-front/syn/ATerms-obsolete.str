@@ -1,0 +1,7 @@
+module ATerms-obsolete
+imports ATerms
+signature
+  constructors
+    qlit : String -> Fun
+    uqlit : String -> Fun
+    constant : String -> Fun
