@@ -113,3 +113,15 @@ rules
     annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
     annotated-placeholder : ATerm * Ann -> ATerm
     */
+
+/**
+ * FIXME SDF: bootstrap problem, obsolete constructs.
+ */
+signature
+  constructors
+    constant : x -> x
+    qlit : x -> x
+    uqlit : x -> x
+    not-empty : x -> x
+    quoted: x -> x
+    unquoted: x -> x
