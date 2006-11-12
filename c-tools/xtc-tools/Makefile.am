@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS     = parse-c pp-c
+libexec_PROGRAMS = pp-c
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 MOSTLYCLEANFILES = $(wildcard *.dep) $(wildcard *.o)
