@@ -100,3 +100,11 @@ rules
   afun-eq(x) = 
     ?(quoted(s), quoted(s))
 
+
+/**
+ * FIXME SDF bootstrap problem
+ */
+signature
+  constructors
+    quoted : x -> x
+    unquoted : x -> x
