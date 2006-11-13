@@ -12,7 +12,7 @@ TESTS_ENVIRONMENT =\
   VERBOSE="1"
 
 EXTRA_DIST     = ExpAmb.sdf Exp.def Exp-pretty.pp parenthesize-tests.str
-BOOTCLEANFILES = $(check_DATA) $(wildcard *.c) $(wildcard *.dep)
+BOOTCLEANFILES = $(check_DATA) $(wildcard *.c) $(wildcard *.dep) parenthesize-Exp.str Exp.str
 
 parenthesize-tests.c : parenthesize-Exp.str Exp.str
 

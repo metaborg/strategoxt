@@ -3,7 +3,9 @@ include $(wildcard *.dep)
 
 bin_PROGRAMS     = gen-sdf-mix gen-renamed-sdf-module sdf2parenthesize
 libexec_PROGRAMS = sdf2ast-conflicts sdf-spread-cons
-LDADD       += $(SSL_LIBS)
+LDADD += $(SSL_LIBS)
+
+sdf2ast_conflicts_SOURCES = sdf2ast-conflicts.c native/iset-trans-closure.c
 
 STRCFLAGS       = --main main-$*
 STRINCLUDES   = -I $(XTC)/share/xtc \

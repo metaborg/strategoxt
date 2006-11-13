@@ -31,7 +31,8 @@ strategies
     )
 
   core-sdf2conflicts =
-      sdf-spread-cons
+    sdf-spread-cons
+    ; topdown(try(Priority2Symbol))
     ; topdown(try(simple-group(Prod2Symbol <+ !NoSymbol())))
     ; <conc> (<chain-patterns>, <assoc-patterns>)
     ; filter(not(oncetd(?NoSymbol())))
@@ -47,16 +48,38 @@ strategies
 
   assoc-patterns = 
      collect(?assoc(_, _, _))
+   ; debug(!"assoc: ")
    ; filter(Assoc2Conflicts)
    ; concat
 
-  chain-patterns = 
-     collect(?chain([_, _]))
-   ; map( \ chain([simple-group(t1), simple-group(t2)]) -> (t1, t2) \ )
-   ; rel-transitive-closure
-   ; map( \ (t1, t2) -> chain([simple-group(t1), simple-group(t2)]) \ )
-   ; filter(Chain2Conflicts)
-   ; concat
+  chain-patterns =
+    chains := <collect(?chain([_, _]))>
+    ; map(debug(!"chain: "))
+    ; nodes := <new-iset>
+    ; edges := <new-hashtable>
+    ; <map(ignore-chain <+ define-chain(|nodes, edges) <+ cannot-handle-chain)> chains
+    ; hashgraph-transitive-closure(|nodes, edges)
+    ; <hashtable-getlist> edges
+    ; map(Chain2Conflicts)
+    ; concat
+
+  define-chain(|nodes, edges) =
+    ?chain([simple-group(sym1@Symbol(_, n)), simple-group(sym2)])
+    ; <iset-add(|sym1)> nodes
+    ; <iset-add(|sym2)> nodes
+    ; <hashtable-pushlist(|(sym1, sym2), <range; debug(!"range: ")> (0, n))> edges
+
+  define-chain(|nodes, edges) =
+    ?chain([with-arguments(simple-group(sym1), default([arg])), simple-group(sym2)])
+    ; <iset-add(|sym1)> nodes
+    ; <iset-add(|sym2)> nodes
+    ; <hashtable-push(|(sym1, sym2), <string-to-int> arg)> edges
+
+  ignore-chain =
+    oncetd(?NoSymbol())
+
+  cannot-handle-chain =
+    log(|Error(), "Cannot handle chain priority: ", <id>)
 
 rules
 
@@ -65,7 +88,6 @@ rules
    */
   Assoc2Conflicts :
     assoc(simple-group(sym1), left(), simple-group(sym2)) -> <AssocLeft2Conflicts(|sym1)> sym2
-
 
   Assoc2Conflicts :
     assoc(simple-group(sym1), assoc(), simple-group(sym2)) -> <AssocLeft2Conflicts(|sym1)> sym2
@@ -76,9 +98,6 @@ rules
   Assoc2Conflicts :
     assoc(simple-group(sym1), non-assoc(), simple-group(sym2)) -> <AllConflicts(|sym2)> sym1
 
-  Chain2Conflicts :
-    chain([simple-group(sym1), simple-group(sym2)]) -> <AllConflicts(|sym2)> sym1
-   
   /**
    * @type Symbol -> List(Conflict)
    */
@@ -93,14 +112,15 @@ rules
     sym1@Symbol(c, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
       where <range> (0, <dec> n) => is
 
-  /**
-   * Produce all patterns that have one p2 child
-   *
-   * @type  Symbol -> List(Conflict)
-   */
   AllConflicts(|sym2) :
     sym1@Symbol(x, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
-      where <range> (0, n) => is
+    where
+      is := <range> (0, n)
+
+  Chain2Conflicts :
+    ((sym1, sym2), args) -> <map(!SubtermConflict(sym1, <id>, sym2))> args 
+    where
+      debug(!"chain: ")
 
 strategies
 
@@ -109,50 +129,27 @@ strategies
    */
   Prod2Symbol :
     p@prod(syms, _, _) -> Symbol(x, n)
-      where <filter(not(is-empty-sym)); length> syms => n
-          ; <cons-of-prod> p => x
+    where
+      n := <filter(not(is-empty-sym)); length> syms
+      ; x := <cons-of-prod> p
+
+  Priority2Symbol :
+    chain([with-arguments(simple-group(p@prod(syms, _, _)), default([arg])), group2])
+      ->
+    chain([with-arguments(simple-group(p), default([arg'])), group2])
+    where
+      syms' :=
+        <add-indices; retain-all((id, not(is-empty-sym)); ?(<id>, _))> syms
+      ; arg' := 
+          <get-index; dec; int-to-string> (<string-to-int; inc> arg, syms')
+
+signature
+  constructors
+    with-arguments : Group * List(Argument) -> Group
 
 strategies
 
-  /**
-   * Port of imperative algorithm "Transitive-Closure" on page 563 of 
-   * "Introduction to Algorithms", Thomas Cormen.
-   */
-  rel-transitive-closure =
-    ?rel
-    ; rel-carrier => elems
-    ; <map(!(<id>, <id>))> elems => self-rel
-    ; <cart(id)> (elems, elems) => matrix
-    ; <foldl(
-        \ (k, last) -> 
-            <filter(
-                test(<rel-in> (<id>, last))
-              +   test(<rel-in> ((<Fst>, k), last))
-                ; test(<rel-in> ((k, <Snd>), last))
-            )> matrix \
-      )> (elems, <union> (rel, self-rel))
-    ; filter(not(eq))
- 
-  /**
-   * @type  (a * b) * Relation(a, b) -> fail?
-   */
-  rel-in =
-    where(elem)
+  hashgraph-transitive-closure(|nodes, edges) =
+    iset-transitive-closure(|<?IndexedSet(<id>)> nodes, <?Hashtable(<id>)> edges)
 
-  /**
-   * @type Relation(a, b) -> [a or b]
-   */
-  rel-carrier =
-    <union> (<rel-domain>, <rel-range>)
-
-  /**
-   * @type Relation(a, b) -> [a]
-   */
-  rel-domain =
-    map(Fst); make-set
-
-  /**
-   * @type Relation(a, b) -> [b]
-   */
-  rel-range =
-    map(Snd); make-set
+  external iset-transitive-closure(|nodes, edges)

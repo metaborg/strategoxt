@@ -20,9 +20,14 @@ strategies
     fetch-elem(
       ?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))]))
     + ?term(cons(<id>))
+    + ?default(term(cons(<id>)))
     + ?cons(<id>)
     )
 
 signature
   constructors
     cons : String -> Attribute
+    /**
+     * FIXME SDF: bootstrap problem
+     */
+    default : x -> x
