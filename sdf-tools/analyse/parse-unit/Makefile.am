@@ -9,10 +9,12 @@ bin_PROGRAMS = parse-unit
 parse_unit_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
 
 STRCFLAGS   = --main main-$* 
-STRINCLUDES = -I $(XTC)/share/xtc \
-              -I $(ATERM_FRONT)/share/aterm-front \
-              $(STRATEGO_SGLR_STRCFLAGS) \
-              -I sig
+STRINCLUDES = \
+  -I $(XTC)/share/xtc \
+  -I $(ATERM_FRONT)/share/aterm-front \
+  -I $(top_srcdir)/../aterm-front/syn \
+  $(STRATEGO_SGLR_STRCFLAGS) \
+  -I sig
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
