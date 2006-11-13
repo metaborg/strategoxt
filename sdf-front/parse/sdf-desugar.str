@@ -39,6 +39,13 @@ strategies
   Desugar :
     term(default(t)) -> term(t)
 
+/**
+ * FIXME SDF: bootstrap problem
+ */
+signature
+  constructors
+    default : x -> x
+
 rules
 
   DesugarOnce =
