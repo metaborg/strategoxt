@@ -4,7 +4,9 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module aterm-eq
-imports ATerms
+imports
+  ATerms
+  ATerms-obsolete
 
 strategies
 
@@ -80,10 +82,21 @@ rules
 
   /**
    * afun
+   *
+   * FIXME SDF: bootstrap problem, remove
    */
   afun-eq(x) = 
     ?(uqlit(s), uqlit(s))
 
   afun-eq(x) = 
+    ?(unquoted(s), unquoted(s))
+
+  /**
+   * FIXME SDF: bootstrap problem, remove
+   */
+  afun-eq(x) = 
     ?(qlit(s), qlit(s))
+
+  afun-eq(x) = 
+    ?(quoted(s), quoted(s))
 

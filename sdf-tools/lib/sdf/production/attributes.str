@@ -31,3 +31,8 @@ signature
      * FIXME SDF: bootstrap problem
      */
     default : x -> x
+    qlit : x -> x
+    uqlit : x -> x
+    not-empty : x -> x
+    quoted: x -> x
+    unquoted: x -> x

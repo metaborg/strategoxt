@@ -58,11 +58,12 @@ strategies
 
   /**
    * From a prod-fun we make a ordinary prod and call generate-pp-entries recursively.
-   */
-  generate-pp-entries =
+   * FIXME SDF: remove
+  genrate-pp-entries =
       ?prod-fun(fun, syms, sym, attrs)
     ; !prod( <concat> [[lit(fun), lit("(")], syms, [lit(")")]], sym, attrs )
     ; generate-pp-entries
+   */
 
 strategies
 
