@@ -38,7 +38,7 @@ strategies
       topdown(try(Bracket))
     ; topdown(try(DeBracket))
 
-  infix-op = alt(id, id) + pair(id,id) + is-list
+  infix-op = alt(id, id) + is-list
 
 rules
 

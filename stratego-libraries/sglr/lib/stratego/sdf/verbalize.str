@@ -24,7 +24,6 @@ strategies
     + \ iter-star-sep(sym,sep)  -> <concat> [["{"], <x> sym, <x> sep,["}*"]] \
     + \ iter-n(sym,_)           -> <concat> [<x> sym, ["n"]] \
     + \ iter-sep-n(sym,sep,_)   -> <concat> [<x> sym, <x> sep,["n"]] \
-    // FIXME SDF Bootstrap + \ pair(s1,s2)  -> <concat> [<x> s1, ["and"], <x> s2] \
     + \ func(ss,s)              -> <concat> [<filter(x);concat> ss, ["to"], <x> s] \
     + \ alt(s1,s2)              -> <concat> [<x>s1, ["|"], <x>s2] \
     + \ sort(str)               -> [str] \
