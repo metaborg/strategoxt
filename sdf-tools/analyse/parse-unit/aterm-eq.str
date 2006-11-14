@@ -35,8 +35,20 @@ rules
 rules
 
   wildcardvar-eq(x) =
+    ?(list(wildcardvar()), list(_))
+
+  wildcardvar-eq(x) =
+    ?(list(_), list(wildcardvar()))
+
+  /**
+   * FIXME SDF: remove, bootstrap problem
+   */
+  wildcardvar-eq(x) =
     ?(list(not-empty(wildcardvar())), list(not-empty(_)))
 
+  /**
+   * FIXME SDF: remove, bootstrap problem
+   */
   wildcardvar-eq(x) =
     ?(list(not-empty(_)), list(not-empty(wildcardvar())))
 
@@ -54,9 +66,20 @@ rules
    * list
    */
   list-term-eq(x) =
+    ?(list(xs1), list(xs2))
+    ; where(
+        <is-list> xs1
+      ; <is-list> xs2
+      ; <zip(x)> (xs1, xs2)
+      )
+
+  /**
+   * FIXME SDF: remove, bootstrap problem
+   */
+  list-term-eq(x) =
     ?(list(not-empty(xs1)), list(not-empty(xs2)))
     ; where(<zip(x)> (xs1, xs2))
- 
+
   /**
    * integer
    */
@@ -102,7 +125,7 @@ rules
 
 
 /**
- * FIXME SDF bootstrap problem
+ * FIXME SDF bootstrap problem, remove
  */
 signature
   constructors
