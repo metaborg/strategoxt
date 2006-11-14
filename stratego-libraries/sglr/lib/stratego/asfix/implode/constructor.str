@@ -113,44 +113,6 @@ rules
     + \ lit(_) -> constant \
     )
 
-/**
- * Iter-sep-n, which is normalized to a cons/nil construction.
- */
-rules
-
-  /**
-   * iter-sep-n with a separator that is ignored.
-   */
-  ReplConsIns(impl) :
-    appl(p, [t1, t2]) -> t
-    where
-      <is-cons-tail> p
-      ; t1' := <impl> t1
-      ; t2' := <impl> t2
-      ; if <[] + ?[_| _]> t2' then
-          ![t1' | t2']
-        else
-          !"Conc"#([[t1'], t2'])
-        end
-      ; ?t
-      
-  /**
-   * iter-sep-n with a separator that is not ignored.
-   */
-  ReplConsIns(impl) :
-    appl(p, [t1, t2, t3]) -> t
-    where
-      <is-cons-tail> p
-      ; t1' := <impl> t1
-      ; t2' := <impl> t2
-      ; t3' := <impl> t3
-      ; if <[] + ?[_| _]> t3' then
-          ![t1', t2' | t3']
-        else
-          !"Conc"#([[t1', t2'], t3'])
-        end
-      ; ?t
-      
 rules
 
   ReplConsSome(impl) : 
