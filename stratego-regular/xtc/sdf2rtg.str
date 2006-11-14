@@ -12,7 +12,7 @@ strategies
 
   main-sdf2rtg =
     xtc-io-wrap(
-      sdf-main-module-option
+      sdf-main-module-option + ignore-option
     , sdf2rtg-usage
     , sdf2rtg-about
     , !["sdf2table", "implodePT", "sdf-desugar"]
@@ -27,6 +27,12 @@ strategies
     ; core-sdf-grammar2rtg
     ; xtc-pp-rtg
     <+ <xtc-exit> 1
+
+  ignore-option =
+    Option("--ignore-missing-cons"
+    , <set-config> (IgnoreMissingCons(), ())
+    , !HelpString("--ignore-missing-cons", "Ignore productions that do not have a constructor (default: produce error)")
+    )
 
   sdf2rtg-usage =
     <tool-doc>
@@ -48,3 +54,7 @@ strategies
         , CurrentXTCRepository()
         ]) 
       ]
+
+signature
+  constructors
+    IgnoreMissingCons : Option

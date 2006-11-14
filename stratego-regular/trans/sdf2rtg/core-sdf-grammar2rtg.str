@@ -53,7 +53,7 @@ strategies
 
   grammar2prodrules :
     syntax(prods) ->
-      < filter(not(ignore-prod))
+      < remove-all(ignore-prod)
       ; map({p:
           ?p
         ; (  listinj2prodrule
@@ -68,6 +68,7 @@ strategies
           )
         ; where(try(<cycle-error> (p, <id>)))
         })
+      ; remove-all(?[])
       > prods
 
   grammar2prodrules =
@@ -195,16 +196,30 @@ strategies
    * @type Production -> ProdRule
    */
   prod2prodrule :
-    p@prod(syms, sym, attrs(attrs)) -> rtg |[ A -> y(t*) ]|
+    p@prod(syms, sym, attrs(attrs)) -> result
     where
         <sym2nonterm> sym => A
       ; <syms2trees> syms => t*
-      ; ( <get-cnstr-name> attrs => y
-          <+ log-prod(|Error(), "No constructor name specified in production:", p)
-             ;    log(|Error(), "Resolution: please add a cons attribute to this production.")
-             ; if-verbose1(log(|Error(), "Production in abstract syntax: ", p))
-             ; <xtc-exit> 1
-        )
+      ; if y := <get-cnstr-name> attrs then
+          !rtg |[ A -> y(t*) ]|
+        else
+          log-prod(|Error(), "No constructor name specified in production:", p)
+          ;    log(|Error(), "Resolution: please add a cons attribute to this production.")
+          ; if-verbose1(log(|Error(), "Production in abstract syntax: ", p))
+          ; if <get-config> IgnoreMissingCons() then
+              ![]
+            else
+              // FIXME SDF: http://sjofar.sen.cwi.nl:8080/show_bug.cgi?id=660
+                 <?prod([sort("Label"), lit(_), sort("Symbol")], sort("Symbol"), _)> p
+                 ; ![]
+
+              <+ <?prod([sort("Symbol"),lit(_),sort("Symbol")],sort("Symbol"), _)> p
+                 ; ![]
+
+              <+ <xtc-exit> 1
+            end
+         end
+       ; ?result
 
 /**
  * Injections
