@@ -6,7 +6,7 @@ SUBDIRS      	 = data
 libexec_PROGRAMS = sdf-bracket
 BOOTCLEANFILES 	 = sdf-bracket.c
 
-TESTS        	 = sdf_bracket_check
+# TESTS        	 = sdf_bracket_check
 CLEANFILES  	 = sdf_bracket_check $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 

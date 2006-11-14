@@ -9,11 +9,7 @@ A|B|C -> S {cons("S3")}
 A|B* -> S {cons("S4")}
 (A|B)* -> S {cons("S5")}
 
-(A#B)* -> S {cons("S6")}
-
 (A|B)?  -> S {cons("S7")}
-
-f A|B   -> S {cons("S8")}
 
 ( A (B|C) D) -> S {cons("S9")}
 
