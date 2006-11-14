@@ -33,14 +33,6 @@ strategies
   ; map(try(register-arg))
 
   register-arg =
-    ?(path, iter-sep-n(i, s, _))
-  ; <register-arg> (path, iter-sep(i, s))
-
-  register-arg =
-    ?(path, iter-n(i, _))
-  ; <register-arg> (path, iter(i))
-
-  register-arg =
     ?(path, iter-star-sep(i, s))
   ; <register-arg> (path, iter-sep(i, s))
 

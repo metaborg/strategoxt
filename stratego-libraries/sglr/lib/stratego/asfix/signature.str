@@ -36,8 +36,6 @@ signature
     layout                : Symbol
     varsym                : Symbol -> Symbol
     func                  : Symbols * Symbol -> Symbol
-    iter-sep-n            : Symbol * Symbol * Int -> Symbol
-    iter-n                : Symbol * Int -> Symbol
     iter-star-sep         : Symbol * Symbol -> Symbol
     iter-sep              : Symbol * Symbol -> Symbol
     iter-star             : Symbol -> Symbol

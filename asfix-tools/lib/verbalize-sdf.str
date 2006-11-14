@@ -51,8 +51,6 @@ strategies
   + \ iter-star(sym)		-> <x;at-end(!["s"])> sym \
   + \ iter-sep(sym,sep)		-> <concat>[<x>sym,<x>sep,["p"]] \
   + \ iter-star-sep(sym,sep)	-> <concat>[<x>sym,<x>sep,["s"]] \
-  + \ iter-n(sym,_)		-> <concat>[<x>sym,       ["n"]] \
-  + \ iter-sep-n(sym,sep,_)	-> <concat>[<x>sym,<x>sep,["n"]] \
   + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
   + \ alt(s1,s2)		-> <concat>[<x>s1,["or"],<x>s2] \
   + \ sort(str)			-> [str] \
@@ -75,8 +73,6 @@ strategies
   + \ iter-sep(sym,sep)		-> <concat>[<x>sym,<x>sep,["p"]] \
   + \ iter-star-sep(sym,sep)	-> <concat>[<x>sym,<x>sep,["s"]] \
 //  + \ iter-star-sep(sym,sep)	-> <filter(x);concat;at-end(!["s"])>[sym,sep] \
-  + \ iter-n(sym,_)		-> <concat>[<x>sym,       ["n"]] \
-  + \ iter-sep-n(sym,sep,_)	-> <concat>[<x>sym,<x>sep,["n"]] \
   + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
   + \ alt(s1,s2)		-> <concat>[<x>s1,["or"],<x>s2] \
   + \ sort(str)			-> [str] \
@@ -94,8 +90,6 @@ strategies
   + \ iter-star(sym)		-> <x;at-end(!["*"])> sym \
   + \ iter-sep(sym,sep)		-> <concat>[["{"], <x>sym, <x>sep, ["}+"]] \
   + \ iter-star-sep(sym,sep)	-> <concat>[["{"], <x>sym, <x>sep,["}*"]] \
-  + \ iter-n(sym,_)		-> <concat>[<x>sym,       ["n"]] \
-  + \ iter-sep-n(sym,sep,_)	-> <concat>[<x>sym,<x>sep,["n"]] \
   + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
   + \ alt(s1,s2)		-> <concat>[<x>s1,["|"],<x>s2] \
   + \ sort(str)			-> [str] \

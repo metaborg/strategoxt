@@ -119,14 +119,6 @@ symbol2abox(path) =
       [topdown(try( Arg(id);!Arg(1)))|id]
       }
    <+
-      // For iter-n, iter-sep-n, we ignore the last argument that specifies
-      // the number 'n'
-      (id, (id,
-                \ iter-sep-n(i,s,_) -> iter-sep-n(i,s) \ 
-                +
-                \ iter-n(i,_)    -> iter-n(i) \
-                )); x
-   <+
       {constr, selectors, n, s:
       
       ?((constr, selectors), (n, bracket-symbol(s)));
@@ -261,20 +253,3 @@ rules
 
   // Literals are pretty-printed as keywords
   Make : lit(s)  -> FBOX(KW, S(s))
-
-/*
-For generating pretty-print rules for iter-n and iter-sep-n, we ignore their
-last argument which specifies the number 'n'.
-  For example, 
-    {Foo ","}2+ 
-  is represented in AsFix as 
-    iter-sep-n(sort("Foo"),lit("\",\""),"2")).
-
-To that end we need define two additional constructors (iter-sep-n and
-iter-n) without the n-argument'
-*/
-signature
-   constructors
-      iter-sep-n: Iter * Sep -> Symbol
-      iter-n:     Iter       -> Symbol
-

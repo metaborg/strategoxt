@@ -298,31 +298,6 @@ rules
       ; <get-nonterm-of> iter(a) => x1
       ; <get-nonterm-of> iter-star(a) => x2
 
-  /**
-   *  A A+ -> A 2+
-   */
-  listinj2prodrule :
-    prod([cf(a), lt, nt1@cf(iter(a))], nt2@cf(iter-n(a, "2")), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
-    where
-        <sym2tree> a => t
-      ; <is-empty-sym> lt        
-      ; <get-nonterm-of> nt1 => x1
-      ; <get-nonterm-of> nt2 => x2
-     
-  /**
-   *  A A(n-1)+ -> An+
-   */      
-  listinj2prodrule :
-    prod([cf(a), lt, nt1@cf(iter-n(a, n1))], nt2@cf(iter-n(a, n2)), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
-    where
-        <string-to-int> n1 => i1
-      ; <string-to-int> n2 => i2
-      ; <subt> (i2, 1) => i1
-      ; <sym2tree> a => t
-      ; <is-empty-sym> lt     
-      ; <get-nonterm-of> nt1 => x1      
-      ; <get-nonterm-of> nt2 => x2
-
 /**
  * Iteration with Separator
  * Currently only separators that do not occur in the AST are supported.
@@ -356,31 +331,6 @@ rules
           ; <sym2tree> cf(a) => t
           ; <get-nonterm-of> nt => x
           ; <get-nonterm-of> cf(iter-star-sep(a, sep)) => x2
-
-  /**
-   *  A lit {A lit}+ -> {A lit}2+
-   */
-  listinj2prodrule :
-    prod([cf(a), lt1, lt2, lt3, nt1@cf(iter-sep(a, sep))], nt2@cf(iter-sep-n(a, sep, "2")), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
-    where
-        <sym2tree> a => t
-      ; <map(is-empty-sym)> [lt1, lt2, lt3, sep]
-      ; <get-nonterm-of> nt1 => x1
-      ; <get-nonterm-of> nt2 => x2
-     
-  /**
-   *  A lit {A lit}(n-1)+ -> An+
-   */      
-  listinj2prodrule :
-    prod([cf(a), lt1, lt2, lt3, nt1@cf(iter-sep-n(a, sep, n1))], nt2@cf(iter-sep-n(a, sep, n2)), _) -> rtg |[ x2 -> <cons> (t, x1) ]|
-    where
-        <map(is-empty-sym)> [lt1, lt2, lt3, sep]
-      ; <string-to-int> n1 => i1
-      ; <string-to-int> n2 => i2
-      ; <subt> (i2, 1) => i1
-      ; <sym2tree> a => t
-      ; <get-nonterm-of> nt1 => x1      
-      ; <get-nonterm-of> nt2 => x2
 
 /**
  * Alternative
@@ -451,8 +401,6 @@ rules
     + iter-sep(id, id)
     + iter-star(id)
     + iter(id)
-    + iter-n(id, id)
-    + iter-sep-n(id, id, id)
 
   is-nonterm-generator = 
       is-list-symbol
@@ -616,12 +564,6 @@ strategies
 
   Symbol2String :
     iter-star-sep(sym, sep) -> <conc-strings> ("ListStarOf", <Symbol2String> sym)
-
-  Symbol2String :
-    iter-n(sym, n) -> <conc-strings> ("List", n, "Of", <Symbol2String> sym)
-
-  Symbol2String :
-    iter-sep-n(sym, sep, n) -> <conc-strings> ("List", n, "Of", <Symbol2String> sym)
 
   Symbol2String :
     sort(s) -> s

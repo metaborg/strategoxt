@@ -197,9 +197,6 @@ strategies
   is-conc = ?prod([_, _, _, _, _], cf(iter-star-sep(_, _)), _)
   is-conc = ?prod([_,    _,    _], cf(iter-star-sep(_, _)), _)
 
-  is-cons-tail = ?prod([_, _, _, _, _], cf(iter-sep-n(_, _, _)), _)
-  is-cons-tail = ?prod([_,    _,    _], cf(iter-n(_, _)), _)
-
   /**
    * @todo Not sure what this case is for.
    */
