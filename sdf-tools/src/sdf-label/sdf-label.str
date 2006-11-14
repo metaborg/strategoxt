@@ -18,9 +18,7 @@ strategies
     alltd(dont-label <+ label-production)
 
   label-production =
-   ( prod(map(try(label-symbol)),id,id)
-   <+ prod-fun(id,map(try(label-symbol)),id,id)
-    )
+    prod(map(try(label-symbol)), id, id)
     ; warn-if-labels-not-unique
 
   dont-label =
@@ -29,9 +27,6 @@ strategies
     + lexical-priorities(id)
     + variables(id)
     + lexical-variables(id)
-    // + context-free-variables(id)
-    // + Imports(id)
-    // + Sorts(id)
 
   warn-if-labels-not-unique =
     if(
@@ -48,10 +43,7 @@ strategies
 
   get-argument-symbols =
     ?prod(<id>,_,_)
-
-  get-argument-symbols =
-    ?prod-fun(_,<id>,_,_)
-     
+    
   label-symbol =
       label(id,id)
    <+ \ sort(n) -> label(<sortname2label>n,sort(n)) \

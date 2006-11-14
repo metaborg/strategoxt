@@ -8,7 +8,6 @@ imports
   libstratego-lib
   libstratego-rtg
   Sdf2
-  sdf-extra
   sdf/tool/xtc
   libstratego-xtc
 
@@ -59,7 +58,6 @@ strategies
         ; (  listinj2prodrule
           <+ seq2prodrule
           <+ alt2prodrule
-          <+ prodfun2prodrule
           <+ var2prodrule
           <+ opt2prodrule
           <+ inj2prodrule
@@ -376,21 +374,7 @@ rules
     prod(_, varsym(sym), _) -> rtg |[ x -> meta-var(<string>) ]|
       where <sym2nonterm> sym => x
 
-/**
- * Special, marked, productions.
- */
-rules
-
-  /**
-   * Rewrite prod-fun. The constructor name of a prod-fun is its symbol, which must be a literal.
-   */
-  prodfun2prodrule :
-    prod([lit(y) | syms], sym, attrs(attrs)) -> rtg |[ A -> y(t*) ]|
-      where <fetch(?term(prod-fun()))> attrs
-          ; <sym2nonterm> sym => A
-          ; <syms2trees> syms => t*
-
- strategies
+strategies
 
   get-nonterm-of =
    ?key

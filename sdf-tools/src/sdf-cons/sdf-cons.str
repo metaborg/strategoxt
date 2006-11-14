@@ -102,6 +102,5 @@ rules
 
 strategies
 
-  is-prod
-    = prod(id,id,id)
-   <+ prod-fun(id,id,id,id)
+  is-prod =
+    ?prod(_, _, _)

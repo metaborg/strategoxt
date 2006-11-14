@@ -149,6 +149,11 @@
    seq                           -- KW["("] _1 _2 KW[")"],
    seq.2:iter                    -- _1,
 
+   with-arguments      -- V vs=0 [_1 _2],
+   default             -- H hs=0 ["<" _1 ">"],
+   default.1:iter-sep  -- H hs=0 [_1 ","],
+
+
    seq-symbol                    -- KW["("] _1 _2 KW[")"],
    seq-symbol.2:iter             -- _1,
 
@@ -180,7 +185,9 @@
    positive   -- KW["+"] _1,
    negative   -- KW["-"] _1,
    qlit       -- _1,
+   quoted     -- _1,
    uqlit      -- _1,
+   unquoted   -- _1,
    not-empty  -- KW["["] _1 KW["]"],
    not-empty.1:iter-star-sep  -- _1 KW[","],
    int      -- _1,
