@@ -6,7 +6,6 @@
 module aterm-eq
 imports
   ATerms
-  ATerms-obsolete
 
 strategies
 
