@@ -6,7 +6,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS = parse-unit
 
-parse_unit_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
+parse_unit_LDADD = $(STRATEGO_SGLR_LIBS) $(STRATEGO_ATERM_LIBS) $(SSL_LIBS)
 
 STRCFLAGS   = --main main-$* 
 STRINCLUDES = \

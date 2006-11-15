@@ -12,16 +12,15 @@ bin_PROGRAMS=\
 
 libexec_PROGRAMS = tool-doc2abox
 
-SCFLAGS        = --main main-$*
+STRCFLAGS        = --main main-$*
 
-
-# FIXME: the include of STRATEGO_REGULAR is an SDF bootstrap problem
-#  -I $(top_srcdir)/syn 
 STRINCLUDES = \
   -I $(top_builddir)/lib \
   -I $(top_srcdir)/lib \
   -I $(top_builddir)/pp \
   -I $(top_srcdir)/pp \
+  -I $(top_builddir)/syn \
+  -I $(top_srcdir)/syn \
   -I $(top_builddir)/trans/interpret \
   -I $(top_srcdir)/trans/interpret \
   -I $(top_builddir)/trans/sdf2rtg \

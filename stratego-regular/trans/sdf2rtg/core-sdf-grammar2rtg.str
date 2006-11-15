@@ -450,13 +450,6 @@ strategies
   sym2tree:
     label(_,sym) -> <sym2tree> sym
 
-  /*
-  sym2tree :
-    seq(sym, syms) -> rtg |[ ( t, t* ) ]|
-      where <sym2tree> sym => t
-          ; <syms2trees> syms => t*
-  */
-
   sym2tree:
     sym -> rtg |[ x ]|
       where <get-nonterm-of> sym => x
@@ -480,11 +473,6 @@ rules
     parameterized-sort(x, params) -> rtg nonterm |[ y ]|
     where
       Symbol2String => y
-
-// FIXME: hack
-signature
-  constructors
-    default : Term -> Attribute
 
 strategies
 

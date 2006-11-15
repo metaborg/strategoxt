@@ -3,12 +3,12 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-sglr
+  libstratego-aterm
   parse-testsuite
   parse-unit-io
   parse-unit-test-results
   parse-unit-options
   parse-unit-present
-  explode-aterm
 
 strategies
 

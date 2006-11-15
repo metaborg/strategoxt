@@ -24,7 +24,10 @@ exports
     %% ambiguous on purpose
     Exp "="  Exp -> Exp  {cons("Eq")}
 
-  
+  syntax
+    UnicodeEscape -> <Exp-CF>
+    "\\" [u]+ [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] -> UnicodeEscape {cons("UnicodeEscape")}
+
   context-free priorities
     {left:
       Exp "*"  Exp -> Exp

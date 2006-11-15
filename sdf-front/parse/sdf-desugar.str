@@ -18,35 +18,14 @@ strategies
   Desugar :
     no-attrs() -> attrs([])
 
-  /**
-   * FIXME SDF: qlit is an obsolete SDF constructor name
-   */
-  Desugar :
-    lit(qlit(s)) -> lit(<un-double-quote> s)
-
-  Desugar :
-    lit(quoted(s)) -> lit(<un-double-quote> s)
-
-  /**
-   * FIXME SDF: uqlit is an obsolete SDF constructor name
-   */
-  Desugar :
-    lit(uqlit(s)) -> lit(s)
-
-  Desugar :
-    lit(unquoted(s)) -> lit(s)
-
   Desugar :
     term(default(t)) -> term(t)
-
-/**
- * FIXME SDF: bootstrap problem
- */
-signature
-  constructors
-    default : x -> x
 
 rules
 
   DesugarOnce =
     term(implode-aterm)
+
+  DesugarOnce :
+    lit(s) -> lit(<un-double-quote> s)
+

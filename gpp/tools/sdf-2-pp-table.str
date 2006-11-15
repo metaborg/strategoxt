@@ -23,7 +23,7 @@ strategies
           cons(un-double-quote)
         + lit( un-double-quote)
         + sort(un-double-quote)
-        + \ lit(qlit(s)) -> lit(<un-double-quote> s) \
+        + \ lit(s) -> lit(<un-double-quote> s) \
         )
       )
    

@@ -4,7 +4,6 @@
 module explode-aterm
 imports
   ATerms
-  ATerms-obsolete
   libstratego-lib
 
 strategies
@@ -37,19 +36,15 @@ rules
   implode-list :
     list(x*) -> <map(implode-aterm)> x*
 
-  // FIXME SDF: bootstrap problem. Obsolete construct.
-  implode-list :
-    list(not-empty(x*)) -> <map(implode-aterm)> x*
-
   /**
    * integer
    */
   explode-int :
-    i{} -> constant(int(natural(<int-to-string> i)))
+    i{} -> int(natural(<int-to-string> i))
       where <is-int> i
 
   implode-int :
-    constant(int(natural(s))) -> <string-to-int> s
+    int(natural(s)) -> <string-to-int> s
 
   /**
    * just fun
@@ -84,20 +79,8 @@ rules
     s -> quoted(s)
       where <is-double-quoted> s
 
-  /**
-   * FIXME SDF: used for old SDF
-   */
-  implode-afun :
-    uqlit(s) -> s
-
   implode-afun :
     unquoted(s) -> s
-
-  /**
-   * FIXME SDF: used for old SDF
-   */
-  implode-afun :
-    qlit(s) -> s
 
   implode-afun :
     quoted(s) -> s
@@ -113,15 +96,3 @@ rules
     annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
     annotated-placeholder : ATerm * Ann -> ATerm
     */
-
-/**
- * FIXME SDF: bootstrap problem, obsolete constructs.
- */
-signature
-  constructors
-    constant : x -> x
-    qlit : x -> x
-    uqlit : x -> x
-    not-empty : x -> x
-    quoted: x -> x
-    unquoted: x -> x

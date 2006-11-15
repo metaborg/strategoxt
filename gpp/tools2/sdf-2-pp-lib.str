@@ -54,17 +54,6 @@ strategies
       ; <not(get-cnstr-name)> attrs
       )
 
-strategies    
-
-  /**
-   * From a prod-fun we make a ordinary prod and call generate-pp-entries recursively.
-   * FIXME SDF remove: bootstrap problem, obsolete construct.
-  generate-pp-entries =
-      ?prod-fun(fun, syms, sym, attrs)
-    ; !prod( <concat> [[lit(fun), lit("(")], syms, [lit(")")]], sym, attrs )
-    ; generate-pp-entries
-   */
-
 strategies
 
   number-nonterminals =

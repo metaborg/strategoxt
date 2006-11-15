@@ -40,18 +40,6 @@ rules
   wildcardvar-eq(x) =
     ?(list(_), list(wildcardvar()))
 
-  /**
-   * FIXME SDF: remove, bootstrap problem
-   */
-  wildcardvar-eq(x) =
-    ?(list(not-empty(wildcardvar())), list(not-empty(_)))
-
-  /**
-   * FIXME SDF: remove, bootstrap problem
-   */
-  wildcardvar-eq(x) =
-    ?(list(not-empty(_)), list(not-empty(wildcardvar())))
-
   wildcardvar-eq(x) =
     ?(appl(s1, wildcardvar()), appl(s2, _))
     ; where(<x> (s1, s2))
@@ -74,17 +62,10 @@ rules
       )
 
   /**
-   * FIXME SDF: remove, bootstrap problem
-   */
-  list-term-eq(x) =
-    ?(list(not-empty(xs1)), list(not-empty(xs2)))
-    ; where(<zip(x)> (xs1, xs2))
-
-  /**
    * integer
    */
   int-term-eq(x) =
-    ?(constant(int(natural(s))), constant(int(natural(s))))
+    ?(int(natural(s)), int(natural(s)))
 
   /**
    * just fun
@@ -103,31 +84,8 @@ rules
 
 rules
 
-  /**
-   * afun
-   *
-   * FIXME SDF: bootstrap problem, remove
-   */
-  afun-eq(x) = 
-    ?(uqlit(s), uqlit(s))
-
   afun-eq(x) = 
     ?(unquoted(s), unquoted(s))
 
-  /**
-   * FIXME SDF: bootstrap problem, remove
-   */
-  afun-eq(x) = 
-    ?(qlit(s), qlit(s))
-
   afun-eq(x) = 
     ?(quoted(s), quoted(s))
-
-
-/**
- * FIXME SDF bootstrap problem, remove
- */
-signature
-  constructors
-    quoted : x -> x
-    unquoted : x -> x

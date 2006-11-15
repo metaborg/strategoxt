@@ -17,9 +17,6 @@ check_DATA = \
   ConcreteSyntax2.tbl \
   AstAttributes.tbl
 
-# FIXME SDF: the constructs A n+ and {A ","}n+ have been dropped.
-#  List.tbl 
-
 stratego-sglr-tests.c : $(check_DATA)
 
 SCOMPILE = $(STRC_UNINSTALLED)

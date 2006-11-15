@@ -18,9 +18,6 @@ strategies
   Ensugar :
     attrs([]) -> no-attrs()
 
-  Ensugar :
-    lit(s) -> lit(qlit(<double-quote> s))
-
   /**
    * A seq where the second element is not a list, is a lookahead seq.
    */
@@ -43,6 +40,9 @@ signature
     seq-lookahead : a * a -> a
 
 strategies
+
+  EnsugarOnce :
+    lit(s) -> lit(<double-quote> s)
  
   EnsugarOnce =
     term(explode-aterm)

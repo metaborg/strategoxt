@@ -93,14 +93,11 @@ strategies
 
 strategies
 
-  /**
-   * @todo FIXME: bootstrap problem (drop "sglri")
-   */
   report-parse-error =
     finally(
       ?input
       ; get-parse-error => error
-      ; <report-error(|"sglri", error)> input
+      ; <report-error(|error)> input
     , fail
     )
 

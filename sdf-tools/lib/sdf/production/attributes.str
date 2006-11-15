@@ -18,7 +18,7 @@ strategies
    */
   get-cnstr-name =
     fetch-elem(
-      ?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))]))
+      ?term(appl(unquoted("cons"), [fun(quoted(<un-double-quote>))]))
     + ?term(cons(<id>))
     + ?default(term(cons(<id>)))
     + ?cons(<id>)
@@ -27,12 +27,3 @@ strategies
 signature
   constructors
     cons : String -> Attribute
-    /**
-     * FIXME SDF: bootstrap problem
-     */
-    default : x -> x
-    qlit : x -> x
-    uqlit : x -> x
-    not-empty : x -> x
-    quoted: x -> x
-    unquoted: x -> x

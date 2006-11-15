@@ -27,3 +27,6 @@ test variadic wildcards
 
 test variadic wildcards
   "f(1, 2, 3)" -> Call(_, [...])
+
+test integer values in patterns
+  "\u0061" -> UnicodeEscape([117],48,48,54,49)

@@ -67,8 +67,8 @@ strategies
 
   hack-aterm-pattern =
     topdown(try(
-      \ wildcardvar() -> [fun(qlit("\"...\""))] \
-    + \ wildcard() -> fun(qlit("\"_\"")) \
+      \ wildcardvar() -> [fun(quoted("\"...\""))] \
+    + \ wildcard() -> fun(quoted("\"_\"")) \
     ))
 
   echo-expected :
