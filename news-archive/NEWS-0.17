@@ -1,0 +1,85 @@
+-----------------------------------------------------------------------
+Stratego/XT 0.17 - released somewhere in 2006
+-----------------------------------------------------------------------
+
+---------++!! Summary of Changes
+
+%TOC%
+
+---------++ Stratego Compiler
+
+---------++ Stratego Language
+
+---------++ Stratego Libraries
+
+SGLR
+
+GPP
+
+RTG
+
+ATerm
+
+Tool Doc
+
+---------++ SDF
+
+Argument-specific priorities
+
+Case-insensitive keywords
+
+No prod-fun
+
+No unquoted literals
+
+Dynamic libraries
+
+More efficient installation of sdf2-bundle thanks to linking against
+uninstalled libraries
+
+(Meta-Environment and Martin Bravenboer)
+
+---------++ Deployment
+
+Microsoft Windows MinGW
+
+Stratego Libraries, C99, POSIX, POSIX+XSI
+
+Mac OS X installer
+
+---------++!! Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease017Issues
+
+---------++!! Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease017
+
+---------++!! Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://bugs.cs.uu.nl/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++!! Contributions
+
+Developments, bug reports, and beta tests carried out by
+
+   * Martin Bravenboer
+   * Valentin David
+   * Eelco Dolstra
+   * Karl Trygve Kalleberg
+   * Rob Vermaas
+   * Eelco Visser
+   * ...
+
+Thanks!
