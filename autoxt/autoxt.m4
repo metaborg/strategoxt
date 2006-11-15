@@ -179,7 +179,7 @@ AC_DEFUN([XT_CHECK_SDF],
   else
     AC_MSG_RESULT([no])
     # Try to find the SDF Packages using pkgconfig.
-    XT_CHECK_PACKAGE([SDF],[sdf >= 2.5],[bin/sglr$EXEEXT])
+    XT_CHECK_PACKAGE([SDF],[sdf2-bundle >= 2.4],[bin/sglr$EXEEXT])
   fi
 
   AC_SUBST([SGLR], ['$(SDF)'])
