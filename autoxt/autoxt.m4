@@ -364,7 +364,7 @@ AC_DEFUN([XT_CHECK_STRATEGOXT],
 
     # Try to find the Stratego/XT Packages using pkgconfig.
     XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt],[bin/strc$EXEEXT])
-    XT_CHECK_PACKAGE([C_TOOLS],[c-tools],[bin/parse-c$EXEEXT])
+    XT_CHECK_PACKAGE([C_TOOLS],[c-tools])
   fi
 
   # These packages need pkg-config files.
