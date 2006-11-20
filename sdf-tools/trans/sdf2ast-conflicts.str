@@ -48,13 +48,11 @@ strategies
 
   assoc-patterns = 
      collect(?assoc(_, _, _))
-   ; debug(!"assoc: ")
    ; filter(Assoc2Conflicts)
    ; concat
 
   chain-patterns =
     chains := <collect(?chain([_, _]))>
-    ; map(debug(!"chain: "))
     ; nodes := <new-iset>
     ; edges := <new-hashtable>
     ; <map(ignore-chain <+ define-chain(|nodes, edges) <+ cannot-handle-chain)> chains
@@ -64,13 +62,13 @@ strategies
     ; concat
 
   define-chain(|nodes, edges) =
-    ?chain([simple-group(sym1@Symbol(_, n)), simple-group(sym2)])
+    ?chain([simple-group(sym1@Symbol(s1, n)), simple-group(sym2@Symbol(s2, _))])
     ; <iset-add(|sym1)> nodes
     ; <iset-add(|sym2)> nodes
-    ; <hashtable-pushlist(|(sym1, sym2), <range; debug(!"range: ")> (0, n))> edges
+    ; <hashtable-pushlist(|(sym1, sym2), <range> (0, n))> edges
 
   define-chain(|nodes, edges) =
-    ?chain([with-arguments(simple-group(sym1), default([arg])), simple-group(sym2)])
+    ?chain([with-arguments(simple-group(sym1@Symbol(s1, _)), default([arg])), simple-group(sym2@Symbol(s2, _))])
     ; <iset-add(|sym1)> nodes
     ; <iset-add(|sym2)> nodes
     ; <hashtable-push(|(sym1, sym2), <string-to-int> arg)> edges
@@ -119,8 +117,6 @@ rules
 
   Chain2Conflicts :
     ((sym1, sym2), args) -> <map(!SubtermConflict(sym1, <id>, sym2))> args 
-    where
-      debug(!"chain: ")
 
 strategies
 

@@ -17,7 +17,11 @@ strategies
       exp-test(|"a + e")
 
     ; exp-test(|"b + (c + d)")
+    ; exp-test(|"(b + c) + d", "b + c + d")
+
     ; exp-test(|"b * (c + d)")
+    ; exp-test(|"(b + c) * d")
+    ; exp-test(|"b + c * d")
 
     ; exp-test(|"(b * c) + d", "b * c + d")
     ; exp-test(|"(b + c) + d", "b + c + d")

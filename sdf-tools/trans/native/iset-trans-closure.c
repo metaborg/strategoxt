@@ -50,7 +50,7 @@ static void transcloseMatrix(ATerm** matrix, int max) {
     for(j = 0;j < max; j++) {
       if(matrix[i][j]) {
         for(k = 0; k < max; k++) {
-          if(matrix[j][k] && i != k) {
+          if(matrix[j][k] && i != k && (matrix[i][k] == NULL)) {
             matrix[i][k] = matrix[i][j];
           }
         }
