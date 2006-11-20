@@ -30,3 +30,6 @@ test variadic wildcards
 
 test integer values in patterns
   "\u0061" -> UnicodeEscape([117],48,48,54,49)
+
+test support for tuples in patterns
+  "fun f(int x, double y)" -> FunDec("f", [("int", "x"), ("double", "y")])

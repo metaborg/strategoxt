@@ -24,6 +24,9 @@ exports
     %% ambiguous on purpose
     Exp "="  Exp -> Exp  {cons("Eq")}
 
+    %% tuple
+    "fun" Id "(" {(Id Id) ","}* ")" -> Exp {cons("FunDec")}
+
   syntax
     UnicodeEscape -> <Exp-CF>
     "\\" [u]+ [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] -> UnicodeEscape {cons("UnicodeEscape")}
