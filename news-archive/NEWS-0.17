@@ -8,19 +8,27 @@ Stratego/XT 0.17 - released somewhere in 2006
 
 ---------++ Stratego Compiler
 
+* No more nested functions
+
 ---------++ Stratego Language
+
+* Import aterm from file
 
 ---------++ Stratego Libraries
 
-SGLR
+* libstratego-sglr
 
-GPP
+* libstratego-gpp
 
-RTG
+* libstratego-rtg
 
-ATerm
+* libstratego-aterm
 
-Tool Doc
+* libstratego-tool-doc
+
+---------++ SDF
+
+* Fixes aterm aliasing problems for GCC 4.x
 
 ---------++ SDF
 
@@ -37,11 +45,13 @@ Dynamic libraries
 More efficient installation of sdf2-bundle thanks to linking against
 uninstalled libraries
 
+Fixes sed issues in GNU Make 3.81
+
 (Meta-Environment and Martin Bravenboer)
 
 ---------++ Deployment
 
-Microsoft Windows MinGW
+Native Microsoft Windows using MinGW
 
 Stratego Libraries, C99, POSIX, POSIX+XSI
 
