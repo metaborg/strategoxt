@@ -11,6 +11,6 @@ ATerm SSL_get_list_length(ATerm term)
   }
 
   list = (ATermList) term;
-  result = (ATerm) ATmakeInt(ATgetLength(term));
+  result = (ATerm) ATmakeInt(ATgetLength(list));
   return result;
 }
