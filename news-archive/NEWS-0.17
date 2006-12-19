@@ -26,11 +26,15 @@ Stratego/XT 0.17 - released somewhere in 2006
 
 * libstratego-tool-doc
 
----------++ SDF
+---------++ ATerm
+
+* ATerm 2.5
 
 * Fixes aterm aliasing problems for GCC 4.x
 
 ---------++ SDF
+
+* New SDF2 Bundle
 
 Argument-specific priorities
 
