@@ -1,6 +1,6 @@
 module xtc
 imports
-  libstrategolib
+  libstratego-lib
   xtc-lib
   xtc-query
 

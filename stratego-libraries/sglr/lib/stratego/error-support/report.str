@@ -3,7 +3,7 @@
  */
 module stratego/error-support/report
 imports
-  libxtclib
+  libstratego-xtc
   error-support
 
 strategies

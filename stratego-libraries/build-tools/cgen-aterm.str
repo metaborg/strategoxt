@@ -6,7 +6,7 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module cgen-aterm
-imports libstrategolib
+imports libstratego-lib
 signature
   constructors
     FunctionName : ConfigKey

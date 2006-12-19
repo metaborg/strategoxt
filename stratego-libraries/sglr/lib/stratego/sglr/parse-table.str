@@ -5,7 +5,7 @@
  */
 module stratego/sglr/parse-table
 imports
-  libstrategolib
+  libstratego-lib
 
 strategies
 

@@ -1,5 +1,5 @@
 /**
- * Obsolete: import libstratego-xtc or libstrategolib.
+ * Obsolete: import libstratego-xtc or libstratego-lib.
  */
 module liblib
 imports

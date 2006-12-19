@@ -1,5 +1,5 @@
 module til-run
-imports libstrategolib til-eval-stats
+imports libstratego-lib til-eval-stats
 strategies
 
   io-til-run = 

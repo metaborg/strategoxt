@@ -19,7 +19,7 @@
 module stratego/gpp/BoxToText
 imports
   Box
-  libstrategolib
+  libstratego-lib
   stratego/gpp/Util
 
 strategies

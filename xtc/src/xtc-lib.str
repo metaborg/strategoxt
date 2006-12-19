@@ -1,4 +1,4 @@
 module xtc-lib
 imports
-  libxtclib
+  libstratego-xtc
   xtc-dir

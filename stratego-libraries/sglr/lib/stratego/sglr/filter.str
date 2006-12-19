@@ -5,7 +5,7 @@
  */
 module stratego/sglr/filter
 imports
-  libstrategolib
+  libstratego-lib
 
 strategies
 

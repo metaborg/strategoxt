@@ -1,6 +1,6 @@
 module xml-info2xml-doc
 imports xml-doc xml-info xml-info-typematch xml-text-tools
-imports libstrategolib
+imports libstratego-lib
 
 strategies
 

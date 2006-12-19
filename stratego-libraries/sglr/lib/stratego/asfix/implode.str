@@ -3,7 +3,7 @@
  */
 module stratego/asfix/implode
 imports
-  libstrategolib
+  libstratego-lib
   stratego/asfix/signature
 
   stratego/asfix/implode/alternative
