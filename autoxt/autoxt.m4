@@ -155,7 +155,7 @@ AC_DEFUN([XT_CHECK_ATERM],
   else
     AC_MSG_RESULT([no])
     # Try to find the aterm library using pkgconfig.
-    XT_CHECK_PACKAGE([ATERM],[aterm >= 2.3],[lib/libATerm.a])
+    XT_CHECK_PACKAGE([ATERM],[aterm >= 2.5],[lib/libATerm.a])
   fi
 ])
 
