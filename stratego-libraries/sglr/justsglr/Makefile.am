@@ -91,6 +91,7 @@ libsglr = \
   stack-collect.c
 
 libsglrheaders = \
+  atb-tool.h \
   ambi-tables.h \
   bitmap.h \
   forest.h \
