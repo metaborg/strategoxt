@@ -12,17 +12,17 @@ strategies
 
   report-ambs =
     report-amb
-    <+ definition(report-ambs)
+    <+ report-amb-definition(report-ambs)
     <+ all(report-ambs)
 
-  definition(s) =
+  report-amb-definition(s) =
     (?SDef(name,_,_) <+ ?SDefNoArgs(name,_) <+ ?SDefT(name,_,_,_))
     ; {| current-definition
        : rules( current-definition : _ -> ("strategy", name) )
        ; all(s)
        |}
  
-  definition(s) =
+  report-amb-definition(s) =
     (?RDef(name,_,_) <+ ?RDefNoArgs(name,_) <+ ?RDefT(name,_,_,_))
     ; {| current-definition
        : rules( current-definition : _ -> ("strategy", name) )
