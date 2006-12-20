@@ -4,6 +4,7 @@
 module strc
 
 imports
+  libstratego-sglr
 
   stratego/strc/model/model
 

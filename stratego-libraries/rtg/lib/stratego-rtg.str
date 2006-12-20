@@ -3,6 +3,7 @@
  */
 module stratego-rtg
 imports
+  libstratego-xtc
   stratego/rtg/format-check
   stratego/rtg/normalize
   stratego/rtg/parse
