@@ -101,19 +101,6 @@ strategies
     )
 
   /**
-   * Ambiguities configuration
-  sglr-amb-option =
-      ArgOption("-a" + "--amb"
-      , switch id
-          case "off" : set-ambiguity-is-error(true)
-          case "on"  : set-ambiguity-is-error(false)
-          otherwise  : fatal-err(|"Invalid value for option --amb: use on or off")
-        end
-      , !"-a, --amb <on|off>            Enable ambiguities (default: off)"
-      )
-   */
-
-  /**
    * Filters
    */
   sglr-filter-option =
