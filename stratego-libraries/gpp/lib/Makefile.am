@@ -19,7 +19,11 @@ libstratego_gpp_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
 	-I $(top_srcdir)/lib/native
 libstratego_gpp_la_LIBADD   = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 
-STRCFLAGS = $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) $(STRATEGO_UNINSTALLED_STRCFLAGS)
+# XTC import is workaround for STR-673
+STRCFLAGS = \
+  $(STRATEGO_XTC_UNINSTALLED_STRCFLAGS) \
+  $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) \
+  $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
 pp-table-aterm.c :
 	$(top_builddir)/build-tools/cgen-aterm --name STRGPP_get_pptable_parsetable -i $(PPTABLETBL_UNINSTALLED) > $@
