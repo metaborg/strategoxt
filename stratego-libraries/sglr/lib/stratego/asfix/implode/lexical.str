@@ -43,7 +43,7 @@ strategies
 
   /**
    * The yield of an AsFixTerm is the string consisting of the
-   * characters at the leaves of the tree.1
+   * characters at the leaves of the tree.
    */
   asfix-yield-appl =
     let yield(|chars) =
