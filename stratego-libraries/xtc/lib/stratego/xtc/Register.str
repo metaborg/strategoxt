@@ -53,6 +53,8 @@ strategies
 
     ; !tools
 
+strategies
+
   /**
    * @param  tools    String or List(String)
    * @param  version  String
@@ -60,25 +62,60 @@ strategies
    */
   xtc-register(|tools, version, loc) = 
     where(
-      xtc-load
-    ; !tools
-    ; (is-list <+ ![<id>])
-    ; map(<table-union>(XTC, Tool(<id>), 
-	    [(version, <concat-strings>[loc,"/",<id>])]))
+      !tools
+      ; (is-list <+ ![<id>])
+      ; map({tool:
+          ?tool
+          ; xtc-register-path(|tool, version, <conc-strings> (loc, "/", tool))
+        })
     )
 
   /**
-   * @param  tools    String or List(String)
+   * @param  tools    List(String)
    * @param  version  String
    * @param  path     Directory of tools
    */
   xtc-register-path(|tools, version, path) =
     where(
-      xtc-load
-    ; !tools
-    ; (is-list <+ ![<id>])
-    ; map(<table-union> (XTC, Tool(<id>), [(version, path)]))
+      <is-list> tools
+      ; !tools
+      ; map({tool:
+          ?tool
+          ; xtc-register-path(|tool, version, path)
+        })
     )
+
+  /**
+   * @param  tools    String
+   * @param  version  String
+   * @param  path     Directory of tools
+   */
+  xtc-register-path(|tool, version, path) =
+    where(
+      <not(is-list)> tool
+      ; xtc-load
+      ; tbl := <lookup-table(|XTC())>
+      ; if val := <hashtable-get(|Tool(tool))> tbl then
+          !val
+
+          // remove existing entries for this path
+          ; remove-all(?(_, path))
+
+          // if the version already exists then replace, else insert
+          ; if fetch(?(version, _)) then
+              fetch(((version, _) -> (version, path)))
+            else
+              ![(version, path) | <id>]
+            end
+        else
+          ![(version, path)]
+        end
+
+      ; ?newval
+      ; <hashtable-put(|Tool(tool), newval)> tbl
+    )
+
+strategies
 
   register-import =
     <get-config> "import" => imports
