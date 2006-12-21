@@ -147,15 +147,27 @@ install-data-local::
 	  $(XTC_PROG) -r $(DREPOSITORY) import $$file ; \
 	  echo $(XTC_PROG) -r $(DREPOSITORY) import $$file ; \
 	done
-	@for file in fordummy $(pkgdata_DATA) $(nobase_pkgdata_DATA) ; do \
+	@for file in fordummy $(pkgdata_DATA) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  $(XTC_PROG) -r $(DREPOSITORY) register -l $(pkgdatadir) -V $(VERSION) -t `basename $$file` ; \
+	done
+	@for file in fordummy $(nobase_pkgdata_DATA) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  $(XTC_PROG) -r $(DREPOSITORY) register -l $(pkgdatadir) -V $(VERSION) -t $$file ; \
 	done
-	@for file in fordummy $(sdfdata_DATA) $(nobase_sdfdata_DATA) ; do \
+	@for file in fordummy $(sdfdata_DATA) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  $(XTC_PROG) -r $(DREPOSITORY) register -l $(sdfdatadir) -V $(VERSION) -t `basename $$file` ; \
+	done
+	@for file in fordummy $(nobase_sdfdata_DATA) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  $(XTC_PROG) -r $(DREPOSITORY) register -l $(sdfdatadir) -V $(VERSION) -t $$file ; \
 	done
-	@for file in fordummy $(data_DATA) $(nobase_data_DATA) ; do \
+	@for file in fordummy $(data_DATA) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  $(XTC_PROG) -r $(DREPOSITORY) register -l $(datadir) -V $(VERSION) -t `basename $$file` ; \
+	done
+	@for file in fordummy $(nobase_data_DATA) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  $(XTC_PROG) -r $(DREPOSITORY) register -l $(datadir) -V $(VERSION) -t $$file ; \
 	done
@@ -179,7 +191,12 @@ all-local::
 	  $(XTC_PROG) -r $(BUILD_REPOSITORY) import $$file ; \
 	  echo $(XTC_PROG) -r $(BUILD_REPOSITORY) import $$file ; \
 	done
-	@for file in fordummy $(data_DATA) $(nobase_data_DATA) $(pkgdata_DATA) $(nobase_pkgdata_DATA) $(sdfdata_DATA) $(nobase_sdfdata_DATA) $(bin_SCRIPTS) $(libexec_SCRIPTS); do \
+	@for file in fordummy $(data_DATA) $(pkgdata_DATA) $(sdfdata_DATA) $(bin_SCRIPTS) $(libexec_SCRIPTS); do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  if test -f "$$file"; then d="`pwd`"; else d="@abs_srcdir@"; fi; \
+	  $(XTC_PROG) -r $(BUILD_REPOSITORY) register -l "$$d" -V $(VERSION) -t `basename $$file` ; \
+	done
+	@for file in fordummy $(nobase_data_DATA) $(nobase_pkgdata_DATA) $(nobase_sdfdata_DATA) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  if test -f "$$file"; then d="`pwd`"; else d="@abs_srcdir@"; fi; \
 	  $(XTC_PROG) -r $(BUILD_REPOSITORY) register -l "$$d" -V $(VERSION) -t $$file ; \
