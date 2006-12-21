@@ -3,8 +3,8 @@
  */
 module core-format-check-pp-aterm
 imports
-  libstratego-lib 
-  ugly-print
+  libstratego-lib
+  libstratego-aterm  
   libstratego-rtg
 
 strategies
@@ -31,13 +31,13 @@ strategies
 strategies
 
   my-ugly-print(|tbl, set) =
-       UP-Int
-    <+ UP-Real
-    <+ UP-Str
+       aterm-UP-Int
+    <+ aterm-UP-Real
+    <+ aterm-UP-Str
     <+ my-UP-List(ugly-print-type(|tbl, set) | tbl, set)
-    <+ UP-Tuple(ugly-print-type(|tbl, set))
-    <+ UP-Cnst	
-    <+ UP-App(ugly-print-type(|tbl, set))
+    <+ aterm-UP-Tuple(ugly-print-type(|tbl, set))
+    <+ aterm-UP-Cnst	
+    <+ aterm-UP-App(ugly-print-type(|tbl, set) | 8)
 
   ugly-print-type(|tbl, set) =
     ugly-print-type(my-ugly-print(|tbl, set) | tbl, set)

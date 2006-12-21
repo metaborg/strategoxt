@@ -7,7 +7,7 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module sdf-desugar
-imports Sdf2 libstratego-lib implode-aterm
+imports Sdf2 libstratego-lib libstratego-aterm
 strategies
 
   main-sdf-desugar =
@@ -28,4 +28,3 @@ rules
 
   DesugarOnce :
     lit(s) -> lit(<un-double-quote> s)
-

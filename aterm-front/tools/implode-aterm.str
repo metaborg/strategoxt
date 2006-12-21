@@ -2,11 +2,8 @@
  * @author  Martin Bravenboer
  */
 module implode-aterm
-imports ATerms libstratego-lib explode-aterm
-
+imports libstratego-lib libstratego-aterm
 strategies
 
   io-implode-aterm =
     io-wrap(implode-aterm)
-
-
