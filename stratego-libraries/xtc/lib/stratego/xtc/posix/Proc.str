@@ -231,6 +231,7 @@ strategies
    * @type _ -> FILE
    */
   xtc-new-file-name =
-      new-file => f
+    obsolete(!"xtc-new-file-name; use xtc-new-file")
+    ; new-file => f
     ; where(<assert(!TempFiles)> (f, ()))
     ; !FILE(f)
