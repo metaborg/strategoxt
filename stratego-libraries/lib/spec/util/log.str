@@ -22,12 +22,12 @@ signature
 strategies
 
   debug-area(s|msg) =
-      log(|Debug, <conc-strings> ("entering area ", msg))
+      log(|Debug(), <conc-strings> ("entering area ", msg))
     ; s
-    ; log(|Debug, <conc-strings> ("leaving area ",  msg))
+    ; log(|Debug(), <conc-strings> ("leaving area ",  msg))
 
   risky(s|msg) =
-    risky(s|Error, msg)
+    risky(s|Error(), msg)
 
   risky(s|severity, msg) =
     restore(s, log(|severity, msg, <id>))

@@ -15,7 +15,7 @@ strategies
 
   // :: Int -> Signal
   signal-from-number = ?i;
-    ( <fetch-elem(?Signal(_, i, _))> AllSignals
+    ( <fetch-elem(?Signal(_, i, _))> AllSignals()
     <+ !UnknownSignal(i))
     
   // :: Signal -> Int    

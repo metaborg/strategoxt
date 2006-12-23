@@ -52,9 +52,7 @@ strategies
    */
   report-run-time = 
     if <geq>(<get-config> "--statistics", 1) then
-      <fprintnl> (stderr,
-        [<whoami> (), " (", <run-time>, " secs)"]
-      )
+      <fprintnl> (stderr(), [<whoami> (), " (", <run-time>, " secs)"])
     end
 
   profile(s) =
@@ -67,7 +65,7 @@ strategies
     ; s
     ; where(
         <diff-times
-         ; <fprint> (stderr, [<msg>
+         ; <fprint> (stderr(), [<msg>
                              , " user ", <self-children-user-time; ticks-to-seconds>
                              , " system ", <self-children-sys-time; ticks-to-seconds>
 			     , "\n"])> (<times>, start)

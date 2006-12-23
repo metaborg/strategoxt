@@ -9,7 +9,7 @@ signature
 strategies
 
   nestedtable-put(|keys, value) = 
-    let forward = try(?NewTable; !NestedTable(<new-hashtable>); !(<id>,<id>))
+    let forward = try(?NewTable(); !NestedTable(<new-hashtable>); !(<id>,<id>))
      in nestedtable-put(forward, id | keys, value)
     end
 
@@ -69,8 +69,8 @@ strategies // hidden
     [key1, key2 | keys] -> value
     where debug(!"nestedtable-put-aux: "); 
 	(<hashtable-get(|key1); forward> tbl1 => NestedTable(tbl2)
-           <+ <forward> NewTable => (x, NestedTable(tbl2))
+           <+ <forward> NewTable() => (x, NestedTable(tbl2))
               ; <hashtable-put(|key1, x)> tbl1
-	      ; <hashtable-push(|Tables, key1)
+	      ; <hashtable-push(|Tables(), key1)
 	      ; <changed> NestedTable(tbl1)> tbl1)
 	; <nestedtable-put-aux(forward, changed | tbl2, value)> [key2 | keys]

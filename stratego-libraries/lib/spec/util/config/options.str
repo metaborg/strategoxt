@@ -271,7 +271,7 @@ strategies
 
   report-failure =
       report-run-time
-    ; <fprintnl> (stderr, [<whoami> (), ": rewriting failed"])
+    ; <fprintnl> (stderr(), [<whoami> (), ": rewriting failed"])
     ; <exit> 1
 
   whoami =

@@ -20,10 +20,10 @@ strategies
 
 overlays
 
-  Read      = R_OK
-  Write     = W_OK
-  Execute   = X_OK
-  Existence = F_OK
+  Read      = R_OK()
+  Write     = W_OK()
+  Execute   = X_OK()
+  Existence = F_OK()
 
 strategies
 

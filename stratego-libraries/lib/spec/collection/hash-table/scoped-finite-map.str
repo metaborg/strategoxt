@@ -32,13 +32,13 @@ strategies
 
   begin-scope(ns) = //debug(!"begin-scope: ");
   where(ns => ns
-  ; <table-put>(ns, Scopes, [[] | <table-get <+ ![]>(ns, Scopes)])
+  ; <table-put>(ns, Scopes(), [[] | <table-get <+ ![]>(ns, Scopes())])
   )
 
   end-scope(ns) = //debug(!"end-scope: ");
   where(ns => ns
-  ; (<table-get; not(?[])>(ns, Scopes) <+ ![[]]) => [scope | scopes]
-  ; <table-put> (ns, Scopes, scopes)
+  ; (<table-get; not(?[])>(ns, Scopes()) <+ ![[]]) => [scope | scopes]
+  ; <table-put> (ns, Scopes(), scopes)
   ; <map( \ key -> <table-pop-rm>(ns, key) \ )> scope
   )
 
@@ -51,8 +51,8 @@ strategies
   assert(ns) = ?(key, val); //debug(!"assert: ");
   where(ns => ns
   ; <table-push>(ns, key, val)
-  ; (<table-get; not(?[])>(ns, Scopes) <+ ![[]]) => [scope | scopes]
-  ; <table-put>(ns, Scopes, [[key | scope] | scopes])
+  ; (<table-get; not(?[])>(ns, Scopes()) <+ ![[]]) => [scope | scopes]
+  ; <table-put>(ns, Scopes(), [[key | scope] | scopes])
   //; debug(!"asserted: ")
   )
 
@@ -71,12 +71,12 @@ strategies
 
   extend-assert(ns) = ?(key, val); //debug(!"assert: ");
   where(ns => ns
-  ; (<table-get; not(?[])>(ns, Scopes) <+ ![[]]) => [scope | scopes]
+  ; (<table-get; not(?[])>(ns, Scopes()) <+ ![[]]) => [scope | scopes]
   ; (<elem>(key, scope)
      ; <table-get>(ns, key) => [prevvals | morevals]
      ; <table-put>(ns, key, [[val | prevvals] | morevals])
     <+ <table-push>(ns, key, [val])
-       ; <table-put>(ns, Scopes, [[key | scope] | scopes])
+       ; <table-put>(ns, Scopes(), [[key | scope] | scopes])
      )
   //; debug(!"asserted: ")
   )
@@ -90,12 +90,12 @@ strategies
 
   extend-assert-undefined(ns) = ?key; //debug(!"assert: ");
   where(ns => ns
-  ; (<table-get; not(?[])>(ns, Scopes) <+ ![[]]) => [scope | scopes]
+  ; (<table-get; not(?[])>(ns, Scopes()) <+ ![[]]) => [scope | scopes]
   ; (<elem>(key, scope)
      ; <table-get>(ns, key) => [prevvals | morevals]
      ; <table-put>(ns, key, [[] | morevals])
     <+ <table-push>(ns, key, [])
-       ; <table-put>(ns, Scopes, [[key | scope] | scopes])
+       ; <table-put>(ns, Scopes(), [[key | scope] | scopes])
      )
   //; debug(!"asserted: ")
   )

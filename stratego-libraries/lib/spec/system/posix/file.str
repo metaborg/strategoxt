@@ -94,7 +94,7 @@ strategies
     )
 
   mkdir =
-    mkdir(|[Read, Write, Execute])
+    mkdir(|[Read(), Write(), Execute()])
 
   /**
    * Remove empty directory

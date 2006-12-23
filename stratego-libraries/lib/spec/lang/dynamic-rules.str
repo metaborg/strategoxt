@@ -2044,9 +2044,9 @@ strategies // debugging
       debug
     ; <iset-elements; debug(!"labels: ")> labelset
     ; <hashtable-keys> tbl
-          ; map(where(<fprintnl>(stderr, ["  ", <id>, " -> " ]))
+          ; map(where(<fprintnl>(stderr(), ["  ", <id>, " -> " ]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
-                  ; map(<fprintnl>(stderr, ["    ", <id>]))
+                  ; map(<fprintnl>(stderr(), ["    ", <id>]))
                  )
          )
     )
@@ -2058,18 +2058,18 @@ strategies // debugging
     ; <iset-elements; debug(!"labels: ")> labelset
     ; <iset-elements; debug(!"removed: ")> rmset
     ; <hashtable-keys> tbl
-    ; map(where(<fprintnl>(stderr, ["  ", <id>, " -> "]))
+    ; map(where(<fprintnl>(stderr(), ["  ", <id>, " -> "]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
-                  ; map(<fprintnl>(stderr, ["    ", <id>]))
+                  ; map(<fprintnl>(stderr(), ["    ", <id>]))
                  )
          )
     ; try(
         <DR_BREAK>IgnoreB(csid) => blabel
-        ; <fprintnl>(stderr, ["Change set is marked as ignored (due to break) up to label ", blabel, "."])
+        ; <fprintnl>(stderr(), ["Change set is marked as ignored (due to break) up to label ", blabel, "."])
       )
     ; try(
         <DR_BREAK>IgnoreC(csid) => clabel
-        ; <fprintnl>(stderr, ["Change set is marked as ignored (due to continue) up to label ", clabel, "."])
+        ; <fprintnl>(stderr(), ["Change set is marked as ignored (due to continue) up to label ", clabel, "."])
       )
     )
 
@@ -2142,10 +2142,10 @@ strategies // friendlier debugging (numbers instead of ugly strings for hashtabl
         ; <iset-elements; debug(!"labels: ")> labelset
         ; <hashtable-keys> tbl
         ; map(
-            where(<fprintnl>(stderr, ["  ", <id>, " -> " ]))
+            where(<fprintnl>(stderr(), ["  ", <id>, " -> " ]))
             ; where(
                 \ key -> <hashtable-get(|key)> tbl \
-                ; map(<fprintnl>(stderr, ["    ", <id>]))
+                ; map(<fprintnl>(stderr(), ["    ", <id>]))
               )
           )
       )
@@ -2159,18 +2159,18 @@ strategies // friendlier debugging (numbers instead of ugly strings for hashtabl
         ; <iset-elements; debug(!"removed: ")> rmset
         ; <hashtable-keys> tbl
         ; map(
-            where((DRFriendlyName <+ id, id); <fprintnl>(stderr, ["  ", <id>, " -> "]))
+            where((DRFriendlyName <+ id, id); <fprintnl>(stderr(), ["  ", <id>, " -> "]))
             ; where(
                 \ key -> <hashtable-get(|key)> tbl \
-                ; map(<fprintnl>(stderr, ["    ", <id>]))
+                ; map(<fprintnl>(stderr(), ["    ", <id>]))
               )
           )
         ; try(
             <DR_BREAK>IgnoreB(csid) => blabel
-            ; <fprintnl>(stderr, ["Change set is marked as ignored (due to break) up to label ", blabel, "."])
+            ; <fprintnl>(stderr(), ["Change set is marked as ignored (due to break) up to label ", blabel, "."])
           )
         ; try(
             <DR_BREAK>IgnoreC(csid) => clabel
-            ; <fprintnl>(stderr, ["Change set is marked as ignored (due to continue) up to label ", clabel, "."])
+            ; <fprintnl>(stderr(), ["Change set is marked as ignored (due to continue) up to label ", clabel, "."])
           )
       )

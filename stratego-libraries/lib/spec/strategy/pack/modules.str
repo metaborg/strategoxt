@@ -50,8 +50,8 @@ strategies
   pack-modules(pack : (term -> term) * term -> term, dep-base) =
     option-wrap(pack-options <+ io-options,
       (<get-config; filter(not("-I"))> "-I" <+ ![]) => path
-      ; (<get-config> "-i" <+ !stdin) => infile
-      ; (<get-config> "-o" <+ !stdout) => outfile
+      ; (<get-config> "-i" <+ !stdin()) => infile
+      ; (<get-config> "-o" <+ !stdout()) => outfile
       ; <pack(!path)> infile => (files, spec)
       ; (<get-config> "-b"; <WriteToBinaryFile>(outfile, spec)
          <+ <WriteToTextFile>(outfile, spec))

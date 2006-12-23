@@ -273,11 +273,13 @@ signature
 
 rules
 
-  add-inf1: (Infinite, _) -> Infinite
-  add-inf2: (_, Infinite) -> Infinite
-  add-inf = (add-inf1 + add-inf2) <+ add
+  add-inf =
+    let add-inf1: (Infinite(), _) -> Infinite()
+        add-inf2: (_, Infinite()) -> Infinite()
+     in (add-inf1 + add-inf2) <+ add
+    end
 
-  lt-inf = ?(<is-int>, Infinite) <+ (is-int, is-int); lt
+  lt-inf = ?(<is-int>, Infinite()) <+ (is-int, is-int); lt
 
 strategies
 

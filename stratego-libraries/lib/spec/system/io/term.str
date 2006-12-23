@@ -191,7 +191,7 @@ strategies
    * @type  a -> a
    */
   debug = 
-    where(<fprintnl> (stderr, [<id>]))
+    where(<fprintnl> (stderr(), [<id>]))
 
   /**
    * Prints the term produced by applying msg followed by the current term to stderr.
@@ -199,7 +199,7 @@ strategies
    * @type  a -> a
    */
   debug(msg) = 
-    where(<fprintnl> (stderr, [<msg>,<id>]))
+    where(<fprintnl> (stderr(), [<msg>,<id>]))
 
 strategies
     

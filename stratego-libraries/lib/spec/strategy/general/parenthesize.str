@@ -79,7 +79,7 @@ strategies
         ; <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
 
   gen-none :
-    (greater, [(None, ops) | rest]) -> (<conc>(ops, greater), rest)
+    (greater, [(None(), ops) | rest]) -> (<conc>(ops, greater), rest)
     where <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
 
   GenLeftAssoc =
