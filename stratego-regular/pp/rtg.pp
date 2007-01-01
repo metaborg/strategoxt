@@ -24,12 +24,18 @@
    TupleTerm -- H hs=0 ["<(" _1 ")>"],
    String    -- KW["<string>"],
    Int       -- KW["<int>"],
-   NilTerm   -- KW["<nil>"],
-   ConsTerm  -- KW["<cons>"],
-   ConcTerm  -- KW["<conc>"],
-   SomeTerm  -- KW["<some>"],
-   NoneTerm  -- KW["<none>"],
-   Term      -- _1,
+
+   StringTerm -- KW["<string>"],
+   IntTerm    -- KW["<int>"],
+   NilTerm    -- KW["<nil>"],
+   ConsTerm   -- KW["<cons>"],
+   ConcTerm   -- KW["<conc>"],
+   SomeTerm   -- KW["<some>"],
+   NoneTerm   -- KW["<none>"],
+   Term       -- _1,
+
+   Set        -- H hs=0[ "{" _1 "}"],
+   Set.1:iter-star-sep -- _1 KW[","],
 
    Bracket          -- H hs=0 ["(" _1 ")"]
 ]

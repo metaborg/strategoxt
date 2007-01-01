@@ -12,5 +12,8 @@ exports
     "<some>" -> Term {cons("SomeTerm")}
     "<none>" -> Term {cons("NoneTerm")}
 
+    "<string>" -> Term {cons("StringTerm")}
+    "<int>"    -> Term {cons("IntTerm")}
+
   lexical syntax
     [0-9]+   -> IntConst

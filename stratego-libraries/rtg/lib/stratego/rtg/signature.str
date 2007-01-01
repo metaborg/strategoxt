@@ -26,6 +26,7 @@ signature
     String    : NonTerm
     Int       : NonTerm
     Nonterm   : NonTermId -> NonTerm
+    Set       : List(NonTerm) -> NonTerm
 
     Term      : Id -> Term
 
@@ -65,6 +66,19 @@ signature
      */
     TupleTerm : Int -> Term
 
+    /**
+     * Integer terminal.
+     *
+     * Cannot have arguments.
+     */
+    IntTerm : Term
+
+    /**
+     * String terminal
+     *
+     * Cannot have arguments.
+     */
+    StringTerm : Term
 
     /**
      * [xs*, xs*]. A conc terminal application must 
@@ -75,4 +89,3 @@ signature
     SomeTerm : Term
 
     NoneTerm : Term
-    
