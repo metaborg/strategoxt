@@ -110,9 +110,7 @@ strategies
      in listtd(try(Uniq))
     end
 
-  /** @internal */
-  qsort(swap) : 
-    [] -> []
+strategies
 
   /**
    * Sort a list using the quick-sort algorithm.
@@ -122,8 +120,25 @@ strategies
    * @param  swap  (a, a)  -> _
    * @type         List(a) -> List(a)
    */
-  qsort(swap) : 
-    [x|xs] -> <concat>[<qsort(swap)> a, [x], <qsort(swap)> b]
-    where <filter(where(<swap>(<id>,x)))> xs => a
-        ; <filter(where(<not(swap)>(<id>,x)))> xs => b
+  qsort(swap) =
+    let swapper(|a2) = <swap> (<id>, a2)
+     in quick-sort(swapper)
+    end
 
+/**
+ * Quick-sort without tuples and concats.
+ */
+strategies
+
+  quick-sort(swap : a * a -> b) =
+    quick-sort(swap | [])
+
+  quick-sort(swap : a * a -> b | tail) : 
+    [] -> tail
+
+  quick-sort(swap: a * a -> b | tail) : 
+    [x | xs] -> <quick-sort(swap | [x | tail'])> smaller
+    where
+        smaller := <retain-all(where(swap(|x)))> xs => a
+      ; bigger := <remove-all(where(swap(|x)))> xs
+      ; tail' := <quick-sort(swap | tail)> bigger

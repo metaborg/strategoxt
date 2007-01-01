@@ -95,10 +95,20 @@ strategies
   *
   * @inc test2
   */
-  partition(s) = rec part(
+  partition(s) =
+    partition(s, id)
+
+ /**
+  * Partitions a list into a tuple of two lists.
+  *
+  * @param s1   a -> b
+  * @param s2   a -> c
+  * @type      List(a) -> (List(b), List(c))
+  */
+  partition(s1, s2) = rec part(
     \ [] -> ([],[]) \
-    + ({[s => x | id]; ?[_|<part>]; !([x | <Fst>], <Snd>)} <+
-       {[id =>x | id]; ?[_|<part>]; !(<Fst>, [x | <Snd>])})
+    + ({[s1 => x | id]; ?[_|<part>]; !([x | <Fst>], <Snd>)} <+
+       {[s2 => x | id]; ?[_|<part>]; !(<Fst>, [x | <Snd>])})
   )
 
   /** @internal */

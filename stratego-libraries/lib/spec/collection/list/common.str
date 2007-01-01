@@ -1072,3 +1072,65 @@ strategies
     ?([x | xs], [x | ys])
     ; ![x | <common-prefix>(xs, ys)]
     <+ ![]
+
+
+strategies
+
+strategies
+
+  /**
+   * Returns a list of combinations by choosing one element from every 
+   * list, in every possible combination.
+   * 
+   * Examples:
+   *
+   *   $ <list-combinations> [[1, 2]]
+   *   [[1],[2]]
+   *
+   *   $ <list-combinations> [[1, 2], []]
+   *   []
+   *
+   *   $ <list-combinations> [[1, 2], ["a", "b"]]
+   *   [[1,"a"],[2,"a"],[1,"b"],[2,"b"]]
+   *
+   *   $ <list-combinations> []
+   *   [[]]
+   *  
+   * @type List(List(a)) -> List(List(a))
+   */
+  list-combinations =
+    let step = fail
+          <+ \ [] -> [[]] \
+
+          <+ \ [[] | _] -> [] \
+
+          <+ {xs :
+               ?[xs | <step>]
+               ; map-intermediate(|xs)
+             }
+
+        map-intermediate(|xs) = fail
+          <+ \ [] -> [] \
+
+          <+ {intermediate, tail, tail' :
+               ?[intermediate | tail]
+               ; tail' :=  <map-intermediate(|xs)> tail
+               ; <map-xs(|intermediate, tail')> xs
+             }
+
+        /**
+         * This is just a foldr, but Stratego does not support 
+         * specialization of map-xs to an intermediate without 
+         * introducing tuples, which means that we cannot
+         * use a generic fold.
+         */
+        map-xs(|intermediate, tail) = fail
+          <+ \ [] -> tail \
+
+          <+ {x:
+               ?[x | <id>]
+               ; map-xs(|intermediate, tail)
+               ; ![[x | intermediate] | <id>]
+             }
+    in step 
+   end

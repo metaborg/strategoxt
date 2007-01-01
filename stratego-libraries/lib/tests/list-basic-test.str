@@ -19,6 +19,7 @@ strategies
     ; for-each-pair-test
     ; list-loop-tests
     ; list-fold-tests
+    ; list-combinations-tests
     )
 
 strategies
@@ -234,3 +235,34 @@ strategies
     ; apply-test(!"list-fold 5", list-fold(mul-helper | 0), ![1, 2, 3, 4], !0)
 
     end
+
+strategies
+
+  list-combinations-tests = id
+    ; list-combination-test(|"list-combinations 1"
+      , [[1, 2]]
+      , [[1],[2]]
+      )
+    ; list-combination-test(|"list-combinations 2"
+      , [[1, 2], []]
+      , []
+      )
+    ; list-combination-test(|"list-combinations 3"
+      , []
+      , [[]]
+      )
+    ; list-combination-test(|"list-combinations 4"
+      , [[1, 2], ["a", "b"]]
+      , [[1,"a"],[2,"a"],[1,"b"],[2,"b"]]
+      )
+    ; list-combination-test(|"list-combinations 5"
+      , [[1, 2], ["a", "b"], [()]]
+      , [[1,"a",()],[2,"a",()],[1,"b",()],[2,"b",()]]
+      )
+
+  list-combination-test(|msg, input, output) =
+    apply-and-check(!msg
+    , list-combinations
+    , !input
+    , <set-eq> (<id>, output)
+    )
