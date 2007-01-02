@@ -41,6 +41,7 @@ check_PROGRAMS = \
   substitution-test \
   tables-test \
   term-zip-test \
+  term-common-test \
   tuple-test \
   unification-test \
   system-io-file-test
@@ -98,6 +99,7 @@ nodist_string_misc_test_SOURCES   = string-misc-test.c
 nodist_substitution_test_SOURCES  = substitution-test.c 
 nodist_tables_test_SOURCES        = tables-test.c
 nodist_term_zip_test_SOURCES      = term-zip-test.c 
+nodist_term_common_test_SOURCES   = term-common-test.c 
 nodist_tuple_test_SOURCES         = tuple-test.c
 nodist_unification_test_SOURCES   = unification-test.c
 
@@ -135,6 +137,7 @@ string_misc_test_SOURCES   = string-misc-test.c
 substitution_test_SOURCES  = substitution-test.c 
 tables_test_SOURCES        = tables-test.c
 term_zip_test_SOURCES      = term-zip-test.c 
+term_common_test_SOURCES   = term-common-test.c 
 tuple_test_SOURCES         = tuple-test.c
 unification_test_SOURCES   = unification-test.c
 

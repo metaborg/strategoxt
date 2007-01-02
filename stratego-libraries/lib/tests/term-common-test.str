@@ -1,0 +1,50 @@
+module term-comment-test
+imports libstratego-lib
+
+strategies
+
+  main =
+    test-suite(!"term-common-test",
+        get-constructor-tests
+      ; get-argumeMnts-tests
+    )
+
+  get-constructor-tests = id
+    ; apply-test(!"get-constructor 1"
+      , get-constructor
+      , !C()
+      , !"C"
+      )
+    ; apply-test(!"get-constructor 2"
+      , get-constructor
+      , !B(1)
+      , !"B"
+      )
+    ; apply-test(!"get-constructor 3"
+      , get-constructor
+      , !A(1, 2)
+      , !"A"
+      )
+
+  get-arguments-tests = id
+    ; apply-test(!"get-arguments 1"
+      , get-arguments
+      , !C()
+      , ![]
+      )
+    ; apply-test(!"get-arguments 2"
+      , get-arguments
+      , !B(1)
+      , ![1]
+      )
+    ; apply-test(!"get-arguments 3"
+      , get-arguments
+      , !A(1, 2)
+      , ![1, 2]
+      )
+
+signature
+  constructors
+    A : Int * Int -> A
+    B : Int -> A
+    C : A
