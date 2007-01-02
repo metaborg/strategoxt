@@ -1,4 +1,4 @@
-module term-comment-test
+module term-common-test
 imports libstratego-lib
 
 strategies
@@ -6,7 +6,8 @@ strategies
   main =
     test-suite(!"term-common-test",
         get-constructor-tests
-      ; get-argumeMnts-tests
+      ; get-arguments-tests
+      ; get-appl-arguments-tests
     )
 
   get-constructor-tests = id
@@ -42,6 +43,24 @@ strategies
       , !A(1, 2)
       , ![1, 2]
       )
+
+  get-appl-arguments-tests = id
+    ; apply-test(!"get-appl-arguments 1"
+      , get-appl-arguments
+      , !C()
+      , ![]
+      )
+    ; apply-test(!"get-appl-arguments 2"
+      , get-appl-arguments
+      , !B(1)
+      , ![1]
+      )
+    ; apply-test(!"get-appl-arguments 3"
+      , get-appl-arguments
+      , !A(1, 2)
+      , ![1, 2]
+      )
+
 
 signature
   constructors

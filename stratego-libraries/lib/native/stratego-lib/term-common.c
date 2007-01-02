@@ -165,17 +165,16 @@ ATerm SSL_get_appl_arguments_map(StrCL f, ATerm t)
   }
   else {
     ATermAppl appl = (ATermAppl) t;
-    unsigned int max = ATgetArity(ATgetSymbol(appl)) - 1;
-    unsigned int i;
+    unsigned int i = ATgetArity(ATgetSymbol(appl));
     ATermList result = ATempty;
 
-    for(i = max; i >= 0; i--) {
-      ATerm t = cl_fun(f)(cl_sl(f), ATgetArgument(appl, i));
-      if(t == NULL) {
+    for(;i > 0; i--) {
+      ATerm t2 = cl_fun(f)(cl_sl(f), ATgetArgument(appl, i-1));
+      if(t2 == NULL) {
         return NULL;
       }
 
-      result = ATinsert(result, t);
+      result = ATinsert(result, t2);
     }
 
     return (ATerm) result;
