@@ -158,6 +158,30 @@ ATerm SSL_get_arguments(ATerm t)
   return(t);
 }
 
+ATerm SSL_get_appl_arguments_map(StrCL f, ATerm t)
+{
+  if(ATgetType(t) != AT_APPL) {
+    return NULL;
+  }
+  else {
+    ATermAppl appl = (ATermAppl) t;
+    unsigned int max = ATgetArity(ATgetSymbol(appl)) - 1;
+    unsigned int i;
+    ATermList result = ATempty;
+
+    for(i = max; i >= 0; i--) {
+      ATerm t = cl_fun(f)(cl_sl(f), ATgetArgument(appl, i));
+      if(t == NULL) {
+        return NULL;
+      }
+
+      result = ATinsert(result, t);
+    }
+
+    return (ATerm) result;
+  }
+}
+
 ATerm SSL_address_lt(ATerm x, ATerm y)
 {
   if(x < y)
