@@ -61,6 +61,21 @@ strategies
       , ![1, 2]
       )
 
+    ; apply-test(!"get-appl-arguments 4"
+      , get-appl-arguments(inc)
+      , !C()
+      , ![]
+      )
+    ; apply-test(!"get-appl-arguments 5"
+      , get-appl-arguments(inc)
+      , !B(1)
+      , ![2]
+      )
+    ; apply-test(!"get-appl-arguments 6"
+      , get-appl-arguments(inc)
+      , !A(1, 2)
+      , ![2, 3]
+      )
 
 signature
   constructors
