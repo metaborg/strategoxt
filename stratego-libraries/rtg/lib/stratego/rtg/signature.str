@@ -27,6 +27,7 @@ signature
     Int       : NonTerm
     Nonterm   : NonTermId -> NonTerm
     Set       : List(NonTerm) -> NonTerm
+    Generated : TreeFN -> NonTerm
 
     Term      : Id -> Term
 

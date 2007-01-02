@@ -24,13 +24,22 @@ imports
 strategies
 
   parse-string(|tbl) =
-    parse-string(|tbl, None(), "string")
+    parse-string(id|tbl)
 
   parse-string(|tbl, start-symbol) =
-    parse-string(|tbl, start-symbol, "string")
+    parse-string(id | tbl, start-symbol)
 
   parse-string(|tbl, start-symbol, path) =
-    parse-string-pt(|tbl, start-symbol, path)
+    parse-string(id | tbl, start-symbol, path)
+
+  parse-string(on-parse-error | tbl) =
+    parse-string(on-parse-error | tbl, None(), "string")
+
+  parse-string(on-parse-error | tbl, start-symbol) =
+    parse-string(on-parse-error | tbl, start-symbol, "string")
+
+  parse-string(on-parse-error | tbl, start-symbol, path) =
+    parse-string-pt(on-parse-error | tbl, start-symbol, path)
     ; implode-asfix
 
 /**
@@ -44,18 +53,24 @@ strategies
 strategies
 
   parse-string-pt(|tbl) =
-    parse-string-pt(|tbl, None(), "string")
+    parse-string-pt(id | tbl)
 
   parse-string-pt(|tbl, start-symbol) =
-    parse-string-pt(|tbl, start-symbol, "string")
+    parse-string-pt(id | tbl, start-symbol)
 
   parse-string-pt(|tbl, start-symbol, path) =
-    parse-string-pt(id |tbl, start-symbol, path)
+    parse-string-pt(id | tbl, start-symbol, path)
 
-  parse-string-pt(onfail |tbl, start-symbol, path) =
+  parse-string-pt(on-parse-error | tbl) =
+    parse-string-pt(on-parse-error | tbl, None(), "string")
+
+  parse-string-pt(on-parse-error | tbl, start-symbol) =
+    parse-string-pt(on-parse-error | tbl, start-symbol, "string")
+
+  parse-string-pt(on-parse-error |tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; ?string
-    ; prim("STRSGLR_parse_string_pt", onfail | string, internal-tbl, start-symbol, path)
+    ; prim("STRSGLR_parse_string_pt", on-parse-error | string, internal-tbl, start-symbol, path)
 
 /**
  * Parse a stream to an AST.
@@ -69,16 +84,22 @@ strategies
 strategies
 
   parse-stream(|tbl) =
-    parse-stream(|tbl, None(), "string")
+    parse-stream(fail | tbl)
 
   parse-stream(|tbl, start-symbol) =
-    parse-stream(|tbl, start-symbol, "string")
+    parse-stream(fail | tbl, start-symbol)
 
   parse-stream(|tbl, start-symbol, path) =
-    parse-stream(id|tbl, start-symbol, path)
+    parse-stream(fail | tbl, start-symbol, path)
+
+  parse-stream(on-parse-error |tbl) =
+    parse-stream(on-parse-error | tbl, None(), "string")
+
+  parse-stream(on-parse-error | tbl, start-symbol) =
+    parse-stream(on-parse-error | tbl, start-symbol, "string")
     
-  parse-stream(onfail|tbl, start-symbol, path) =
-    parse-stream-pt(onfail|tbl, start-symbol, path)
+  parse-stream(on-parse-error | tbl, start-symbol, path) =
+    parse-stream-pt(on-parse-error | tbl, start-symbol, path)
     ; implode-asfix
 
 /**
@@ -91,19 +112,25 @@ strategies
  */
 strategies
 
-  parse-stream-pt(|tbl) =
-    parse-stream-pt(|tbl, None(), "stream")
+  parse-stream-pt(| tbl) =
+    parse-stream-pt(id | tbl)
 
-  parse-stream-pt(|tbl, start-symbol) =
-    parse-stream-pt(|tbl, start-symbol, "stream")
+  parse-stream-pt(| tbl, start-symbol) =
+    parse-stream-pt(id | tbl, start-symbol)
+
+  parse-stream-pt(| tbl, start-symbol, path) =
+    parse-stream-pt(id | tbl, start-symbol, path)
+
+  parse-stream-pt(on-parse-error | tbl) =
+    parse-stream-pt(on-parse-error | tbl, None(), "stream")
+
+  parse-stream-pt(on-parse-error | tbl, start-symbol) =
+    parse-stream-pt(on-parse-error | tbl, start-symbol, "stream")
     
-  parse-stream-pt(|tbl, start-symbol, path) =
-    parse-stream-pt(id|tbl, start-symbol, path)
-    
-  parse-stream-pt(onfail|tbl, start-symbol, path) =
+  parse-stream-pt(on-parse-error | tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
     ; ?Stream(stream)
-    ; prim("STRSGLR_parse_stream_pt", onfail | stream, internal-tbl, start-symbol, path)
+    ; prim("STRSGLR_parse_stream_pt", on-parse-error | stream, internal-tbl, start-symbol, path)
 
 /**
  * Parse a file to an AST.
@@ -117,15 +144,23 @@ strategies
 strategies
 
   parse-file(|tbl) =
-    ?path; parse-file(|tbl, None(), path)
+    parse-file(fail, fail | tbl)
 
   parse-file(|tbl, start-symbol) =
-    ?path; parse-file(|tbl, start-symbol, path)
+    parse-file(fail, fail | tbl, start-symbol)
 
   parse-file(|tbl, start-symbol, path) =
-    parse-file-pt(|tbl, start-symbol, path)
-    ; implode-asfix
+    parse-file(fail, fail | tbl, start-symbol, path)
 
+  parse-file(on-open-error, on-parse-error | tbl) =
+    ?path; parse-file(on-open-error, on-parse-error | tbl, None(), path)
+
+  parse-file(on-open-error, on-parse-error | tbl, start-symbol) =
+    ?path; parse-file(on-open-error, on-parse-error | tbl, start-symbol, path)
+
+  parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
+    parse-file-pt(on-open-error, on-parse-error | tbl, start-symbol, path)
+    ; implode-asfix
 /**
  * Parse a file to a parse tree.
  *
@@ -137,16 +172,25 @@ strategies
 strategies
 
   parse-file-pt(|tbl) =
-    ?path; parse-file-pt(|tbl, None(), path)
+    parse-file-pt(fail, fail | tbl)
 
   parse-file-pt(|tbl, start-symbol) =
-    ?path; parse-file-pt(|tbl, start-symbol, path)
+    parse-file-pt(fail, fail | tbl, start-symbol)
     
   parse-file-pt(|tbl, start-symbol, path) =
+    parse-file-pt(fail, fail | tbl, start-symbol, path)
+
+  parse-file-pt(on-open-error, on-parse-error | tbl) =
+    ?path; parse-file-pt(on-open-error, on-parse-error | tbl, None(), path)
+
+  parse-file-pt(on-open-error, on-parse-error | tbl, start-symbol) =
+    ?path; parse-file-pt(on-open-error, on-parse-error | tbl, start-symbol, path)
+
+  parse-file-pt(on-open-error, on-parse-error | tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
-    ; <fopen> (<id>, "r") => stream
+    ; (<fopen> (<id>, "r") => stream <+ on-open-error; fail)
     ; finally(
-        parse-stream-pt(|tbl, start-symbol, path)
+        parse-stream-pt(on-parse-error | tbl, start-symbol, path)
       , <fclose> stream
       )
       
@@ -165,13 +209,22 @@ strategies
    * @type  FILE -> AST
    */
   parse-xtc-file(|tbl) =
-    ?file; parse-xtc-file(|tbl, None(), <path-of-xtc-file> file)
+    parse-xtc-file(fail, fail | tbl)
 
   parse-xtc-file(|tbl, start-symbol) =
-    ?file; parse-xtc-file(|tbl, start-symbol, <path-of-xtc-file> file)
+    parse-xtc-file(fail, fail | tbl, start-symbol)
 
   parse-xtc-file(|tbl, start-symbol, path) =
-    parse-xtc-file-pt(|tbl, start-symbol, path)
+    parse-xtc-file(fail, fail | tbl, start-symbol, path)
+
+  parse-xtc-file(on-open-error, on-parse-error | tbl) =
+    ?file; parse-xtc-file(on-open-error, on-parse-error | tbl, None(), <path-of-xtc-file> file)
+
+  parse-xtc-file(on-open-error, on-parse-error | tbl, start-symbol) =
+    ?file; parse-xtc-file(on-open-error, on-parse-error | tbl, start-symbol, <path-of-xtc-file> file)
+
+  parse-xtc-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
+    parse-xtc-file-pt(on-open-error, on-parse-error | tbl, start-symbol, path)
     ; implode-asfix
 
 /**

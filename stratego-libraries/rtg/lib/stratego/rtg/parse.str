@@ -11,7 +11,12 @@ strategies
    */
   parse-rtg-file =
     where(tbl := <get-rtg-parse-table>)
-    ; parse-file(|tbl)
+    ; parse-file(strsglr-perror, strsglr-report-parse-error | <get-rtg-parse-table>)
+    ; rtg-parsefix
+
+  parse-rtg-stream =
+    where(tbl := <get-rtg-parse-table>)
+    ; parse-stream(strsglr-report-parse-error | <get-rtg-parse-table>)
     ; rtg-parsefix
 
   get-rtg-parse-table =
