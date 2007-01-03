@@ -36,7 +36,7 @@ libstrc_la_LIBADD = \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
   $(ATERM_LIBS)	\
-  -L$(top_builddir)/../c-tools/pp -lc-pp
+  $(top_builddir)/../c-tools/pp/libc-pp.la
 
 STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn   \
                    -I $(top_srcdir)/../stratego-front/sig   \
