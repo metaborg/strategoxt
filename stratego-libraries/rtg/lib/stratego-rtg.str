@@ -5,7 +5,7 @@ module stratego-rtg
 imports
   libstratego-xtc
   stratego/rtg/format-check
-  stratego/rtg/normalize
+  stratego/rtg/simplify
   stratego/rtg/parse
   stratego/rtg/reduce
   stratego/rtg/signature

@@ -1,0 +1,125 @@
+/**
+ * Implements Determinization Algorithm DET of TATA (page 24)
+ *
+ * @author Martin Bravenboer
+ */
+module rtg-determinize
+imports
+  libstratego-lib libstratego-rtg
+
+strategies
+
+  main-rtg-determinize =
+    io-wrap(
+      rtg-reduce
+      ; rtg-ungroup-productions
+      ; rtg-determinize
+    )
+
+strategies
+
+  rtg-determinize =
+    ?RTG(Start(states-start), ProdRules(trans))
+
+    ; topdown(try(
+          ?Ref(<id>)
+        + rtgdet-normalize-none
+        + rtgdet-normalize-some
+        + rtgdet-normalize-conc
+      ))
+
+    ; where(
+          state-states-d-tbl := <new-hashtable>
+        ; states-d-set := <new-iset>
+        ; trans-d-set := <new-iset>
+        ; reverse-trans-tbl := <new-hashtable>
+      )
+
+    ; init-reverse-trans(|reverse-trans-tbl)
+
+    ; <hashtable-keys> reverse-trans-tbl
+    ; repeat(
+        map1(where(rtg-determinize-step(|state-states-d-tbl, states-d-set, reverse-trans-tbl, trans-d-set)))
+      )
+
+    ; states-d := <iset-elements> states-d-set
+    ; states-start-d := <rtg-determinize-start-states(|states-start)> states-d
+    // {s in states-d | s /\ states-start != empty-set}
+    ; trans-d := <iset-elements> trans-d-set
+    ; !RTG(Start(states-start-d), ProdRules(trans-d))
+
+  rtgdet-normalize-none :
+    Appl(Term("None"), []) -> Appl(NoneTerm(), [])
+
+  rtgdet-normalize-some :
+    Appl(Term("Some"), [t]) -> Appl(SomeTerm(), [t])
+
+  rtgdet-normalize-conc :
+    Appl(Term("Conc"), [t1, t2]) -> Appl(ConcTerm(), [t1, t2])
+
+  rtg-determinize-start-states(|states-start) =
+    retain-all(rtg-determinize-start-state(|states-start))
+
+  rtg-determinize-start-state(|states-start) =
+    where(<isect> (<try(?Set(<id>))>, states-start); not(?[]))
+
+  /**
+   * @param Hashtable(State, List(State))
+   * @param Hashtable(State, List(State))
+   * @param IndexedSet(Transition)
+   */
+  rtg-determinize-step(|state-states-d, states-d, reverse-trans, trans-d) =
+    ?a@Appl(f, qs)
+
+    ; let get-states-d(|t) =
+            <hashtable-get(|t)> state-states-d <+ ![]
+
+          add-state-d(|q, s) = {ss:
+              ( <hashtable-get(|q)> state-states-d <+ ![])
+              ; ss := <fetch(?s) <+ ![s | <id>]>
+              ; <hashtable-put(|q, ss)> state-states-d
+              ; <iset-add(|s)> states-d
+            }
+
+          add-transition-d(|s) = {p:
+              p := ProdRule(s, [Appl(f, <id>)])
+              ; <iset-add(fail | p)> trans-d
+            }
+
+          // TODO make-set can be more efficient (list is sorted)
+          make-unique-state =
+            quick-sort(term-address-lt)
+            ; !Set(<make-set>)
+
+          get-states-to = {s:
+              ?s; <hashtable-get(|s)> reverse-trans
+            }
+
+       in id
+        //; debug(!"appl ------------------ ")
+        ; s1n  := <map( \ q -> <get-states-d(|q)> () \ )> qs
+        ; s1n' := <list-combinations> s1n
+
+        // TODO: this is too expensive
+        ; qss := <map(mapconcat(?Set(<id>)); make-set); list-combinations> s1n
+        ; to := <retain-all(!Appl(f, <id>); get-states-to); ?[_ | _]; concat> qss
+        ; s  := <make-unique-state> to
+
+        ; <map1(add-transition-d(|s))> s1n'
+
+        ; <map( \ q -> <add-state-d(|q, s)> () \ )> to
+      end
+
+strategies
+
+  init-reverse-trans(|tbl) =
+    where(
+      ?RTG(Start(states-start), ProdRules(<id>))
+      ; map(init-reverse-trans(|tbl))
+    )
+
+  init-reverse-trans(|tbl) =
+    where(
+      ?ProdRule(q, [Appl(f, qs)])
+      ; <hashtable-push(|Appl(f, qs), q)> tbl
+    )
