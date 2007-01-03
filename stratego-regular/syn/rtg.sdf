@@ -20,3 +20,10 @@ exports
     NonTerm -> TreeFN {cons("Ref")}
 
     "." Term AnnoTreeFN -> Labelled {cons("Labelled")}
+
+  %%%
+   %% Special non-terminals used for tracing purposes
+   %%%
+  context-free syntax
+    "{" {NonTerm ","}+ "}" -> NonTerm {cons("Set")}
+    "<<" TreeFN ">>"       -> NonTerm {cons("Generated")}

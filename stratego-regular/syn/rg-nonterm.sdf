@@ -6,5 +6,3 @@ exports
     Id         -> NonTerm {cons("Nonterm")}
     "<string>" -> NonTerm {cons("String")}
     "<int>"    -> NonTerm {cons("Int")}
-
-    "{" {NonTerm ","}+ "}" -> NonTerm {cons("Set")}

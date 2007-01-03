@@ -34,6 +34,7 @@
    NoneTerm   -- KW["<none>"],
    Term       -- _1,
 
+   Generated  -- H hs=0[ "<<" _1 ">>"],
    Set        -- H hs=0[ "{" _1 "}"],
    Set.1:iter-star-sep -- _1 KW[","],
 
