@@ -1,0 +1,14 @@
+/**
+ * Convert a normalized RTG to a deterministic RTG (DFTA)
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module rtg-determinize
+imports
+  libstratego-lib
+  libstratego-rtg
+
+strategies
+
+  main-rtg-determinize =
+    io-wrap(rtg-determinize)
