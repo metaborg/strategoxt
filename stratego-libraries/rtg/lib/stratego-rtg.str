@@ -4,6 +4,7 @@
 module stratego-rtg
 imports
   libstratego-xtc
+  stratego/rtg/dfta-accept
   stratego/rtg/format-check
   stratego/rtg/simplify
   stratego/rtg/parse
