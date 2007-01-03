@@ -1,0 +1,128 @@
+/**
+ * Implements simplification to a normalized tree grammar (Section 2.1 TATA)
+ *
+ * After applying this transformation every production has the
+ * from A -> f(A1 ... A2) or A -> f()
+ * 
+ * @author Martin Bravenboer
+ */
+module rtg-normalize
+imports
+  libstratego-lib libstratego-rtg
+
+strategies
+
+  main-rtg-normalize =
+    io-wrap(
+      rtg-reduce
+      ; rtg-ungroup-productions
+      ; rtg-normalize'
+    )
+
+  rtg-normalize' =
+    rtg-remove-nested-trees
+    ; rtg-remove-injection-rules
+
+strategies
+
+  rtg-remove-nested-trees =
+    RTG(
+      Start(id)
+    , ProdRules(
+        listtd(repeat(rtg-lift-nested-tree))
+      )
+    )
+
+  rtg-lift-nested-tree :
+    [ProdRule(a, [Appl(f, ts)]) | ps]
+      ->
+    [ProdRule(a, [Appl(f, ts')]), ProdRule(t', [t]) | ps]
+    where
+      ts' := <fetch((
+        Appl(g, ts2) -> t'
+        where
+          ?t; t' := <rtg-nested-tree-to-nonterm> t
+        ))> ts
+
+  rtg-nested-tree-to-nonterm :
+    a@Appl(f, ts) -> Ref(Generated(a))
+
+strategies
+
+  /**
+   * @todo Rather inefficient: need transitive closure implementation
+   *       with tracing of the transitivity.
+   */
+  rtg-remove-injection-rules :
+    RTG(Start(starts), ProdRules(prodrules))
+      ->
+    RTG(Start(starts), ProdRules(prodrules'))
+    where
+      let create-hashtable = {tbl:
+              tbl := <new-hashtable>
+              ; <map(add-production-to-tbl(|tbl))> prodrules
+              ; !tbl
+            }
+
+          add-production-to-tbl(|tbl) = {a, p:
+              ?p@ProdRule(a, _)
+              ; <hashtable-push(|a, p)> tbl
+            }
+
+          is-normalized =
+            ProdRule(id, [Appl(id, map(Ref(id)))])
+
+          is-injection =
+            ProdRule(id, [Ref(id)])
+
+          ensure-injection =
+            is-injection
+            <+ log(|Error(), "expected injection production", <id>)
+               ; fail
+
+          remove-injection(|ps, tbl) = {a, b, tail, ps' :
+              ?[ProdRule(a, [Ref(b)]) | tail]
+              ; ps' := <hashtable-get(|b); map(make-inlined(|a))> tbl
+              ; <iset-addlist(|<retain-all(is-normalized)> ps')> ps
+              ; <remove-all(is-normalized)> ps'
+              ; map(ensure-injection)
+              ; <conc> (<id>, tail)
+            }
+
+          make-inlined(|a) =
+            \ ProdRule(b, [alt]) -> ProdRule(a, [alt]) \
+
+       in tbl := <create-hashtable>
+        ; ps := <new-iset>
+        ; finally(
+              <iset-addlist(|<retain-all(is-normalized)> prodrules)> ps
+
+            ; <remove-all(is-normalized)> prodrules
+            ; map(ensure-injection)
+            ; repeat(remove-injection(|ps, tbl))
+            ; (?[] <+ ?[<id> | _]; debug(!"cannot remove injection: "); fail)
+
+            ; prodrules' := <iset-elements> ps
+
+          ,   <iset-destroy> ps
+            ; <hashtable-destroy> tbl
+          )
+      end
+
+
+/**
+ * rhs is supplied to support sequences of injections.
+
+  is-nonterm =
+    Ref(id) + Inlined(id, rec))
+
+  is-normalized-appl =
+   + Inlined(id, is-normalized-appl)
+
+
+  <substitute-nonterm(|Inlined(b, alt))> rhs
+  ])
+
+   substitute-nonterm(|t) =
+  rec rec(Ref(id); !t <+ Inlined(id, rec))
+*/
