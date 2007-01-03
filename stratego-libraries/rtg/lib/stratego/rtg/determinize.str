@@ -3,18 +3,10 @@
  *
  * @author Martin Bravenboer
  */
-module rtg-determinize
+module stratego/rtg/determinize
 imports
-  libstratego-lib libstratego-rtg
-
-strategies
-
-  main-rtg-determinize =
-    io-wrap(
-      rtg-reduce
-      ; rtg-ungroup-productions
-      ; rtg-determinize
-    )
+  stratego/rtg/signature
+  libstratego-lib
 
 strategies
 
@@ -35,7 +27,7 @@ strategies
         ; reverse-trans-tbl := <new-hashtable>
       )
 
-    ; init-reverse-trans(|reverse-trans-tbl)
+    ; rtgdet-init-reverse-trans(|reverse-trans-tbl)
 
     ; <hashtable-keys> reverse-trans-tbl
     ; repeat(
@@ -44,7 +36,6 @@ strategies
 
     ; states-d := <iset-elements> states-d-set
     ; states-start-d := <rtg-determinize-start-states(|states-start)> states-d
-    // {s in states-d | s /\ states-start != empty-set}
     ; trans-d := <iset-elements> trans-d-set
     ; !RTG(Start(states-start-d), ProdRules(trans-d))
 
@@ -96,7 +87,6 @@ strategies
             }
 
        in id
-        //; debug(!"appl ------------------ ")
         ; s1n  := <map( \ q -> <get-states-d(|q)> () \ )> qs
         ; s1n' := <list-combinations> s1n
 
@@ -112,13 +102,13 @@ strategies
 
 strategies
 
-  init-reverse-trans(|tbl) =
+  rtgdet-init-reverse-trans(|tbl) =
     where(
       ?RTG(Start(states-start), ProdRules(<id>))
-      ; map(init-reverse-trans(|tbl))
+      ; map(rtgdet-init-reverse-trans(|tbl))
     )
 
-  init-reverse-trans(|tbl) =
+  rtgdet-init-reverse-trans(|tbl) =
     where(
       ?ProdRule(q, [Appl(f, qs)])
       ; <hashtable-push(|Appl(f, qs), q)> tbl

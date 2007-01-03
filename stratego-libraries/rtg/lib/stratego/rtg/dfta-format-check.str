@@ -1,27 +1,12 @@
 /**
- * Checks if the input term is accepted by the given Deterministic Finite 
- * Tree Automaton (DFTA).
+ * Format check a term against a DFTA
  *
  * @author Martin Bravenboer
  */
-module rtg-format-check
+module stratego/rtg/dfta-format-check
 imports
-  libstratego-lib libstratego-rtg
-
-signature
-  constructors
-    Failure : Failure
-
-strategies
-
-  main =
-    input-wrap(fc-options, dfta-format-check(true, true |<get-config; open-dfta> "--dfta"))
-
-  fc-options =
-    ArgOption("--dfta"
-    , <set-config> ("--dfta", <ReadFromFile>)
-    , !"--dfta <file>    Format check using dfta in <file>"
-    )
+  stratego/rtg/dfta-accept
+  libstratego-lib
 
 strategies
 
@@ -77,7 +62,10 @@ strategies
       )
 
   /**
-   * TODO: the start symbol might be a member of the set.
+   * Report an error if the final state is not a start state.
+   *
+   * @param DFTA
+   * @type State -> State
    */
   dftafc-report-start(|dfta) =
     ?state
@@ -101,6 +89,12 @@ strategies
       ; <set-config> ("--exit-code", <id>)
       )
 
+  /**
+   * Report the failure of format checking a term.
+   *
+   * @param the checked term.
+   * @type State -> State
+   */
   dftafc-report-failure(|t) =
     ?Appl(_, arg-states)
     ; where(
@@ -123,14 +117,28 @@ strategies
         end
       )
 
+  dftafc-get-arguments =
+    ( ?[x | xs]
+    < ![x, xs]
+    + ?[]
+    < ![]
+    + is-int
+    < ![]
+    + is-string
+    < ![]
+    + get-appl-arguments
+    )
+
+/**
+ * Pretty-printing for error reporting.
+ */
+rules
+
   dftafc-state-to-string =
     ?Set(<dftafc-states-to-string>) <+ rtg-to-string
-    
 
   dftafc-states-to-string =
     map(dftafc-state-to-string); separate-by(!", "); concat-strings
-
-rules
 
   rtg-to-string :
     Nonterm(s) -> s
@@ -176,137 +184,3 @@ rules
 
   rtg-to-string :
     TupleTerm(x) -> <conc-strings> ("<(", <int-to-string> x, ")>")
-
-strategies
-
-  /**
-   * The result of dtfa-accept is a state. The strategy does not check
-   * if this state is one of the start states of the DFTA.
-   */
-  dfta-accept(fail-hook : t * Appl -> a | dfta) =
-    where(!dfta => DFTA(set, tbl))
-    ; let transition(|t) = dfta-accept-transition(fail-hook | tbl, t)
-       in bottomup-reconstruct(transition, dfta-accept-reconstruct)
-      end
-
-  dfta-accept-transition(fail-hook : t * Appl -> a | tbl, t) = id
-    ; ?a
-    ; <hashtable-get(|a)> tbl
-    <+ fail-hook(|t)
-       ; !Failure()
-
-/**
- * Explode determines the next transition.
- */
-strategies
-
-  dfta-accept-reconstruct(|args) =
-       dfta-accept-explode-int(|args)
-    <+ dfta-accept-explode-string(|args)
-    <+ dfta-accept-explode-nil(|args)
-    <+ dfta-accept-explode-cons(|args)
-    <+ dfta-accept-explode-conc(|args)
-    <+ dfta-accept-explode-some(|args)
-    <+ dfta-accept-explode-none(|args)
-    <+ dfta-accept-explode-appl(|args)
-
-  dfta-accept-explode-nil(|args) =
-    ?[]
-    ; !Appl(NilTerm(), [])
-
-  dfta-accept-explode-cons(|args) =
-    ?[_ | _]
-    ; !Appl(ConsTerm(), args)
-
-  dfta-accept-explode-conc(|args) =
-    ?Conc(_, _)
-    ; !Appl(ConcTerm(), args)
-
-  dfta-accept-explode-none(|args) =
-    ?None()
-    ; !Appl(NoneTerm(), [])
-
-  dfta-accept-explode-some(|args) =
-    ?Some(_)
-    ; !Appl(SomeTerm(), args)
-
-  dfta-accept-explode-appl(|args) = id
-    ; where(f := <get-constructor>)
-    ; if f := "" then
-        !Appl(TupleTerm(<length> args), args)
-      else
-        !Appl(Term(f), args)
-      end
-
-  dfta-accept-explode-int(|args) =
-    is-int
-    ; !Appl(IntTerm(), [])
-
-  dfta-accept-explode-string(|args) =
-    is-string
-    ; !Appl(StringTerm(), [])
-
-/**
- * Open an RTG to a simple representation of a tree automata.
- */
-strategies
-
-  is-dfta =
-    ?DFTA(_, _)
-
-  /**
-   * @todo We really need garbage collection for hashtables.
-   */
-  open-dfta =
-    ?RTG(Start(start-states), ProdRules(<id>))
-    ; where(
-          tbl := <new-hashtable>
-      )
-    ; map({a, q:
-        ?ProdRule(q, [a@Appl(_, _)])
-        ; <hashtable-put(|a, q)> tbl
-        <+ debug(!"internal error: cannot create type rule for ")
-           ; fail
-      })
-    ; !DFTA(start-states, tbl)
-
-  dfta-destroy =
-    DFTA(id, hashtable-destroy)
-
-signature
-  constructors
-    DFTA : List(State) * Hashtable -> DFTA
-
-strategies
-
-  /**
-   * Bottom traversal where the current term is reconstructed
-   * from the arguments using a custom strategy.
-   */
-  bottomup-reconstruct(s, reconstruct : List(b) * a -> c) =
-    ?t
-    ; ( ?[x | xs]
-      < ![<bottomup-reconstruct(s, reconstruct)> x, <bottomup-reconstruct(s, reconstruct)> xs]
-      + ?[]
-      < ![]
-      + is-int
-      < ![]
-      + is-string
-      < ![]
-      + get-appl-arguments(bottomup-reconstruct(s, reconstruct))
-      )
-    ; ?args
-    ; <reconstruct(|args)> t
-    ; s(|t)
-
-  dftafc-get-arguments =
-    ( ?[x | xs]
-    < ![x, xs]
-    + ?[]
-    < ![]
-    + is-int
-    < ![]
-    + is-string
-    < ![]
-    + get-appl-arguments
-    )

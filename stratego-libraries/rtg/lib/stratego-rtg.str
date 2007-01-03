@@ -4,12 +4,12 @@
 module stratego-rtg
 imports
   libstratego-xtc
+  stratego/rtg/determinize
   stratego/rtg/dfta-accept
+  stratego/rtg/dfta-format-check
   stratego/rtg/format-check
   stratego/rtg/simplify
   stratego/rtg/parse
   stratego/rtg/reduce
   stratego/rtg/signature
   stratego/rtg/util
-
-
