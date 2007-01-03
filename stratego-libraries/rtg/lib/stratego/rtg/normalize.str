@@ -6,22 +6,10 @@
  * 
  * @author Martin Bravenboer
  */
-module rtg-normalize
+module stratego/rtg/normalize
 imports
-  libstratego-lib libstratego-rtg
-
-strategies
-
-  main-rtg-normalize =
-    io-wrap(
-      rtg-reduce
-      ; rtg-ungroup-productions
-      ; rtg-normalize'
-    )
-
-  rtg-normalize' =
-    rtg-remove-nested-trees
-    ; rtg-remove-injection-rules
+  stratego/rtg/signature
+  libstratego-lib
 
 strategies
 
@@ -108,21 +96,3 @@ strategies
             ; <hashtable-destroy> tbl
           )
       end
-
-
-/**
- * rhs is supplied to support sequences of injections.
-
-  is-nonterm =
-    Ref(id) + Inlined(id, rec))
-
-  is-normalized-appl =
-   + Inlined(id, is-normalized-appl)
-
-
-  <substitute-nonterm(|Inlined(b, alt))> rhs
-  ])
-
-   substitute-nonterm(|t) =
-  rec rec(Ref(id); !t <+ Inlined(id, rec))
-*/

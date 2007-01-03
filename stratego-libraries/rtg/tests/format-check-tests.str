@@ -128,11 +128,11 @@ strategies
 strategies
 
   test-format-check(|rtg) =
-    where(rtgnf := <parse-rtg-file; rtg-normalize> rtg)
+    where(rtgnf := <parse-rtg-file; rtg-normalize-rtg-nf> rtg)
     ; rtg-format-check(|rtgnf)
 
   test-format-check(|rtg, startnt) =
-    where(rtgnf := <parse-rtg-file; rtg-normalize> rtg)
+    where(rtgnf := <parse-rtg-file; rtg-normalize-rtg-nf> rtg)
     ; rtg-format-check(|rtgnf, [Nonterm(startnt)])
   
 signature

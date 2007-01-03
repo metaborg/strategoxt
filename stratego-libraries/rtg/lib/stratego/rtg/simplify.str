@@ -1,10 +1,51 @@
 module stratego/rtg/simplify
 imports
+  stratego/rtg/determinize
+  stratego/rtg/normalize
   stratego/rtg/reduce
   stratego/rtg/util
 
 strategies
 
-  rtg-normalize =
-    rtg-reduce
+  /**
+   * Convert an RTG to a normalized, deterministic RTG (DFTA)
+   *
+   * @type RTG -> RTG
+   */
+  rtg2dfta = id
+    ; rtg-normalize
+    ; rtg-determinize
+
+  /**
+   * Normalizes an RTG to TATA's normalized regular tree grammar.
+   *
+   * @type RTG -> RTG
+   */
+  rtg-normalize = id
+    ; rtg-upgrade-string-int
+    ; rtg-reduce
+    ; rtg-ungroup-productions
+    ; rtg-remove-nested-trees
+    ; rtg-remove-injection-rules
+    ; rtg-reduce
+    ; rtg-ungroup-productions
+
+  /**
+   * Normalizes an RTG to deprecated rtg-nf format.
+   *
+   * @type RTG -> RTG
+   */
+  rtg-normalize-rtg-nf = id
+    ; rtg-reduce
     ; rtg-group-productions
+
+/**
+ * Upgrade legacy features
+ */
+strategies
+
+  rtg-upgrade-string-int =
+    topdown(try(
+        \ Ref(String()) -> Appl(StringTerm(), []) \
+      + \ Ref(Int())    -> Appl(IntTerm(), []) \
+    ))
