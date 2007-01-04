@@ -3,7 +3,9 @@ include $(wildcard *.dep)
 
 SUBDIRS           = sig sdf2rtg interpret
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-libexec_PROGRAMS  = rtg-reduce rtg-group
+
+bin_PROGRAMS = rtg2dfta
+libexec_PROGRAMS  = rtg-reduce rtg-group rtg-normalize rtg-determinize
 
 STRCFLAGS = --main main-$* 
 STRINCLUDES = $(STRATEGO_RTG_STRCFLAGS)
