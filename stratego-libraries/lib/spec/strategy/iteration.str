@@ -8,35 +8,30 @@ strategies
   /**
    * Repeatedly apply s until it fails.
    */
-
   repeat(s) =
     try(s; repeat(s))
 
   /** 
    * Repeatedly apply s until it fails and terminate with application of c.
    */ 
-
   repeat(s, c) =
     (s; repeat(s, c)) <+ c
 
   /**
    * Repeatedly apply s (at least once) and terminate with application of c.
    */ 
-
   repeat1(s, c) = 
     s; (repeat1(s, c) <+ c)
 
   /**
    * Repeatedly apply s (at least once).
    */ 
-
   repeat1(s) = 
     repeat1(s, id)
 
   /**
    * Repeatedly apply s until c succeeds.
    */
-
   repeat-until(s, c) = 
     s; (c <+ repeat-until(s, c))
 
@@ -56,21 +51,18 @@ strategies
   /**
    * While c succeeds apply s.
    */
-
   while(c, s) = 
     try(c; s; while(c, s))
 
   /**
    * While c does not succeed apply s.
    */
-
   while-not(c, s) = 
     c <+ (s; while-not(c, s))
 
   /**
    * Apply s at least once and then repeat while c succeeds.
    */
-
   do-while(s, c) =
     s; while(c, s)
 
@@ -78,18 +70,14 @@ strategies
    * Repeat application of s after initialization with i 
    * while c fails.
    */
-
   for(i, c, s) = 
     i; while-not(c, s)
 
   /**
    * Apply s for each integer from low to up (inclusive).
    */
-
   for(s : Int * a -> a | low, up) =
     if <leq>(low, up) then
       s(|low)
       ; for(s | <inc>low, up)
     end
-
-

@@ -28,7 +28,7 @@ SSL_LIBS = $(ATERM_LIBS) $(STRATEGO_XTC_LIBS) $(STRATEGO_LIB_LIBS) $(STRATEGO_RU
 STRATEGORUNLIBS = $(STRATEGO_RUNTIME_LIBS)
 
 
-SUFFIXES      = .str .cr .r .rtree .def .tbl .pp .sdf .rtg .rtg-nf
+SUFFIXES      = .str .cr .r .rtree .def .tbl .pp .sdf .rtg .rtg-nf .dfta
 
 SCOMPILE      = $(STRC)/bin/strc
 PARSESTRATEGO = $(STRATEGO_FRONT)/bin/parse-stratego
@@ -125,6 +125,9 @@ bootclean-recursive :
 	$(STRATEGO_REGULAR)/bin/parse-rtg -i $< | \
 	$(STRATEGO_REGULAR)/libexec/rtg-reduce | \
 	$(STRATEGO_REGULAR)/libexec/rtg-group -o $@
+
+.rtg.dfta :
+	$(STRATEGO_REGULAR)/bin/rtg2dfta -i $< -o $@
 
 ###########################################################
 #

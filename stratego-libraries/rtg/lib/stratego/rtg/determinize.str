@@ -25,18 +25,36 @@ strategies
         ; states-d-set := <new-iset>
         ; trans-d-set := <new-iset>
         ; reverse-trans-tbl := <new-hashtable>
+        ; symbol-tbl := <new-hashtable>
       )
 
     ; rtgdet-init-reverse-trans(|reverse-trans-tbl)
+    ; rtgdet-init-symbol-tbl(|symbol-tbl)
 
     ; <hashtable-keys> reverse-trans-tbl
-    ; repeat(
-        map1(where(rtg-determinize-step(|state-states-d-tbl, states-d-set, reverse-trans-tbl, trans-d-set)))
+    ; strrtg-repeat(
+        strrtg-list-loop1(
+          rtg-determinize-step(|
+              state-states-d-tbl
+            , states-d-set
+            , reverse-trans-tbl
+            , symbol-tbl
+            , trans-d-set)
+        )
       )
 
     ; states-d := <iset-elements> states-d-set
     ; states-start-d := <rtg-determinize-start-states(|states-start)> states-d
     ; trans-d := <iset-elements> trans-d-set
+
+    ; where(
+          <iset-destroy> states-d-set
+        ; <iset-destroy> trans-d-set
+        ; <hashtable-destroy> state-states-d-tbl
+        ; <hashtable-destroy> reverse-trans-tbl
+        ; <hashtable-destroy> symbol-tbl
+      )
+
     ; !RTG(Start(states-start-d), ProdRules(trans-d))
 
   rtgdet-normalize-none :
@@ -59,7 +77,7 @@ strategies
    * @param Hashtable(State, List(State))
    * @param IndexedSet(Transition)
    */
-  rtg-determinize-step(|state-states-d, states-d, reverse-trans, trans-d) =
+  rtg-determinize-step(|state-states-d, states-d, reverse-trans, symbol-tbl, trans-d) =
     ?a@Appl(f, qs)
 
     ; let get-states-d(|t) =
@@ -86,17 +104,28 @@ strategies
               ?s; <hashtable-get(|s)> reverse-trans
             }
 
+          appl-matches-s1n(|s1n) = {f, qs:
+              where(
+                ?Appl(f, qs)
+                ; !(qs, s1n)
+                ; zip({q, s: ?(q, s); <fetch(?Set(<id>); fetch(?q))> s})
+              )
+            }
+
        in id
         ; s1n  := <map( \ q -> <get-states-d(|q)> () \ )> qs
         ; s1n' := <list-combinations> s1n
 
-        // TODO: this is too expensive
-        ; qss := <map(mapconcat(?Set(<id>)); make-set); list-combinations> s1n
-        ; to := <retain-all(!Appl(f, <id>); get-states-to); ?[_ | _]; concat> qss
+        // find all applications of this symbol in the RTG
+        ; <hashtable-get(|Appl(f, <length> qs))> symbol-tbl
+
+        // for every application check if it matches s1n
+        ; as := <retain-all(appl-matches-s1n(|s1n))>
+        ; to := <mapconcat(get-states-to)> as
         ; s  := <make-unique-state> to
 
-        ; <map1(add-transition-d(|s))> s1n'
-
+        ; <length> s1n'
+        ; <strrtg-list-loop1(add-transition-d(|s))> s1n'
         ; <map( \ q -> <add-state-d(|q, s)> () \ )> to
       end
 
@@ -113,3 +142,26 @@ strategies
       ?ProdRule(q, [Appl(f, qs)])
       ; <hashtable-push(|Appl(f, qs), q)> tbl
     )
+
+/**
+ * Table that maps Symbols to their Applications
+ */
+strategies
+
+  rtgdet-init-symbol-tbl(|tbl) =
+    where(
+      ?RTG(Start(states-start), ProdRules(<id>))
+      ; map(rtgdet-init-symbol-tbl(|tbl))
+    )
+
+  rtgdet-init-symbol-tbl(|tbl) =
+    where(
+      ?ProdRule(_, [a@Appl(f, qs)])
+      ; <hashtable-push(|Appl(f, <length> qs), a)> tbl
+    )
+
+strategies
+
+  external strrtg-repeat(s |)
+
+  external strrtg-list-loop1(s |)

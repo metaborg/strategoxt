@@ -10,7 +10,7 @@ BOOTCLEANFILES = rtg-aterm.c libstratego-rtg.rtree libstratego-rtg.c $(rtglib:.s
 
 rtglib = stratego-rtg.str $(wildcard stratego/rtg/*.str)
 
-libstratego_rtg_la_SOURCES = libstratego-rtg.c rtg-aterm.c
+libstratego_rtg_la_SOURCES = libstratego-rtg.c rtg-aterm.c libstratego-rtg-native.c
 libstratego_rtg_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_rtg_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_rtg_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
