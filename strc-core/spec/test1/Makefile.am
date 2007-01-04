@@ -26,7 +26,7 @@ tests =									 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
 		  test97 test98	test99 test100 test101 test102 test103		 \
-		  test104 test105 test106					 \
+		  test104 test105 test106 test107				 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03			 \
@@ -37,7 +37,7 @@ tests =									 \
 
 check_PROGRAMS 	= $(tests)
 
-check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
+check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl 
 
 # test26 global choice
 # test44 contexts
@@ -114,6 +114,7 @@ test103_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test104_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test105_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test106_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test107_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 test_chain01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test_chain02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -127,7 +128,7 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 
 EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) Expressions.sdf \
              ExpStratego.sdf make-rules io-test*.in bar.c	  \
-             static-links-include.h $(wildcard *.trm)
+             static-links-include.h $(wildcard *.trm) Java-15.tbl
 
 include make-rules
 #include $(wildcard *.dep)
@@ -239,6 +240,7 @@ nodist_test103_SOURCES = test103.c
 nodist_test104_SOURCES = test104.c
 nodist_test105_SOURCES = test105.c
 nodist_test106_SOURCES = test106.c
+nodist_test107_SOURCES = test107.c
 
 nodist_test_chain01_SOURCES = test-chain01.c
 nodist_test_chain02_SOURCES = test-chain02.c

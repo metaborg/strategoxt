@@ -21,7 +21,7 @@ strclib =					\
 	$(wildcard stratego/strc/strc/*.str)	\
 	$(wildcard stratego/strc/model/*.str)
 
-libstrc_la_SOURCES  = libstrc.c
+libstrc_la_SOURCES  = libstrc.c libstrc-native.c
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
 libstrc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 

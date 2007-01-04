@@ -1,7 +1,6 @@
 /**
  * Test for issue STR-577: support import of an ATerm from a file
  */
-
 module test104
 imports libstratego-lib
 
@@ -17,7 +16,7 @@ strategies
   main =
     test1
     ; debug(!"the term: ")
-    ; ?Foo(Bar(["a","b"]), (), (Baz(),Aap()))
+    ; ?Foo(Bar(["a","b"]), None(), (Baz(),Aap()))
 
   test1 =
     import-term(./test104.trm)

@@ -690,9 +690,9 @@ rules
     |[ static ATerm f(void) 
        {
          static ATerm result = NULL;
-         static char term[] = { ~init*:chars, 0 };
+         static unsigned char term[] = { ~init*:chars };
          if(result == NULL) {
-           result = ATreadFromBinaryString(term, ~exp:i);
+           result = ATreadFromBinaryString((char *) term, ~exp:i);
            if(result != NULL) {
               ATprotect(&result);
            }
@@ -700,14 +700,17 @@ rules
          return result;
        }
     ]|
-    where if <not(file-exists)> filename then
-	    err(|"importing term from non-existing file")
-	    ; fail
-	  end
-	; chars := <ReadFromFile
-                    ; write-to-binary-string
-                    ; map(!AssignInit(<mk-int-const>))> filename
-	; i := <length; mk-int-const> chars
+    where
+      if <not(file-exists)> filename then
+        err(|"importing term from non-existing file")
+	; fail
+      end
+      ; <ReadFromFile> filename
+      ; (charshack, length) := <strc-cgen-aterm>
+      ; chars := [AssignInit(IntConst(charshack))]
+      ; i := <mk-int-const> length
+
+  external strc-cgen-aterm(|)
 
 /**
  * Matching
