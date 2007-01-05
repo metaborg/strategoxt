@@ -330,8 +330,5 @@ strategies
   expand-term-import :
     ImportTerm(file) -> ImportTerm(file')
     where dbg(|"importing term")
-	; file' := <find-in-includes("including term from ")> file
-
-	
-
-	 
+	; file' := <find-in-includes(!"including term from ")> file
+        <+ fatal-err(|["file for imported term not found in include path: ", file])
