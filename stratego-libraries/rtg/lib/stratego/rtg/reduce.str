@@ -20,7 +20,7 @@ strategies
     ; rtg-ungroup-productions
 
     ; log(|Debug(), "Determine productive non terminals")
-    ; where(rtg-productive-nonterms => productive)
+    ; where(productive := <rtg-productive-nonterms>)
 
     ; log(|Debug(), "Removing not productive non terminals")
     ; RTG(
@@ -141,4 +141,4 @@ strategies
    * @type RTG -> Set(NonTerm)
    */
   rtg-collect-nonterms =
-    collect(?Nonterm(_))
+    collect(?Nonterm(_) + ?Set(_) + ?Generated(_))
