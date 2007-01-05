@@ -41,7 +41,7 @@ if test "$xt_baseline" = "yes"; then
 
   STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
   BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
-  PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/pp-table.tbl'
+  PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp'
   RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
   STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
   STRATEGOBOXTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/Stratego-Box.tbl'
@@ -56,7 +56,7 @@ else
 
     STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
     BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
-    PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table/pp-table.tbl'
+    PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table'
     RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
     STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
     STRATEGOBOXTBL_UNINSTALLED='$(top_builddir)/../gpp/syn/box/Stratego-Box.tbl'

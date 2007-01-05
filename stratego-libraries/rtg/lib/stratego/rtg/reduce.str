@@ -141,4 +141,4 @@ strategies
    * @type RTG -> Set(NonTerm)
    */
   rtg-collect-nonterms =
-    collect(?Nonterm(_) + ?Set(_) + ?Generated(_))
+    collect(?Nonterm(_)) //  + ?Set(_) + ?Generated(_))

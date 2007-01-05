@@ -7,7 +7,6 @@
  * Pack-stratego calls an external process (parse-mod) for parsing
  * individual modules. 
  */
-
 module pack-stratego
 
 imports 
@@ -66,6 +65,7 @@ strategies
         ; (id, pack-flatten-stratego) 
         end
       end
+    ; (id, expand-term-imports(|mkpt))
 
   pack-report-module-not-found =
     let pack-get-module-name =
@@ -280,7 +280,33 @@ strategies
   ; if [] then
       log(|Warning(),<concat-strings>["No Stratego files found in directory '",dir,"'!"]) 
     end
-    
+
+strategies
+
+  expand-term-imports(|includes) =
+    alltd(expand-term-import(|includes))
+
+  expand-term-import(|includes) :
+    ImportTerm(file) -> ImportTerm(file')
+    where
+      file' := <pack-find-from(|includes)> file
+
+  pack-find-from(|includes) =
+    ?file
+    ; ( <fetch-elem(pack-find-from-dir(|file))> includes
+     <+ log(|Error(), ["file ", file, " for imported term not found"])
+        ; <xtc-exit> 1
+      )
+
+  pack-find-from-dir(|file) =
+    ?IncludeDir(dir)
+    ; <concat-strings; file-exists> [dir,"/", file]
+    ; where(pack-log-include)
+
+  pack-find-from-xtc(|file) =
+    ?IncludeXTC()
+    ; <xtc-find-loc> file
+    ; where(pack-log-include-xtc)
 
 signature
   constructors

@@ -42,10 +42,8 @@ strategies
    */
   parse-pptable-file =
     where(
-      STRGPP-get-pptable-parsetable
+      import-term(pp-table.tbl)
       ; tbl := <open-parse-table>
     )
     ; finally(parse-file(|tbl), <close-parse-table> tbl)
-
-  external STRGPP-get-pptable-parsetable(|)
 

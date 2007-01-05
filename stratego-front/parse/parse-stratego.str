@@ -143,12 +143,6 @@ strategies
          ]
        )
 
-    ; read-from
-
-    ; expand-term-imports
-
-    ; write-to
-
     ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
 
     ; if not(<get-config> "--assimilation" => "off") then
@@ -323,12 +317,3 @@ strategies
       ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
       ; rename-to(!def)
       )
-
-  expand-term-imports =
-    alltd(expand-term-import)
-
-  expand-term-import :
-    ImportTerm(file) -> ImportTerm(file')
-    where dbg(|"importing term")
-	; file' := <find-in-includes(!"including term from ")> file
-        <+ fatal-err(|["file for imported term not found in include path: ", file])
