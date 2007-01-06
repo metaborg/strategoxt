@@ -87,7 +87,13 @@ strategies
    * @param RTG
    */
   rtgfc-type(|rtg, tbl, set) =
-    {| rtgfc-InjUserType, rtgfc-ListUserType, rtgfc-OptUserType, rtgfc-TupleUserType, rtgfc-ApplUserType :
+    {| rtgfc-InjUserType
+     , rtgfc-ListUserType
+     , rtgfc-OptUserType
+     , rtgfc-TupleUserType
+     , rtgfc-IntAppl
+     , rtgfc-StringAppl
+     , rtgfc-ApplUserType :
       where(<rtgfc-generate-type-rules> rtg)
       ; rtgfc-format-check(|tbl, set)
     |}
@@ -159,7 +165,58 @@ strategies
     rtg-ungroup-productions
     ; ?RTG(Start(_), ProdRules(<id>))
     ; map(rtgfc-generate-type-rule <+ debug(!"internal error: cannot create type rule for "); fail)
+    ; if oncetd(?Ref(Int())) then
+        rtgfc-generate-type-rule-deprecated-int
+      end
+    ; if oncetd(?Ref(String())) then
+        rtgfc-generate-type-rule-deprecated-string
+      end
 
+  /**
+   * Int application
+   */
+  rtgfc-generate-type-rule =
+    ?ProdRule(a, [Appl(IntTerm(), [])])
+    ; rules(
+        rtgfc-IntAppl(|tbl, set) :+ t -> t
+        where
+          <is-int> t
+          ; rtgfc-new-type(|a, tbl, set)
+      )
+
+  /**
+   * String application
+   */
+  rtgfc-generate-type-rule =
+    ?ProdRule(a, [Appl(StringTerm(), [])])
+    ; rules(
+        rtgfc-StringAppl(|tbl, set) :+ t -> t
+        where
+          <is-string> t
+          ; rtgfc-new-type(|a, tbl, set)
+      )
+
+  /**
+   * Deprecated
+   */
+  rtgfc-generate-type-rule-deprecated-int =
+    rules(
+      rtgfc-IntAppl(|tbl, set) :+ t -> t
+      where
+        <is-int> t
+        ; rtgfc-new-type(|Int(), tbl, set)
+    )
+
+  /**
+   * Deprecated
+   */
+  rtgfc-generate-type-rule-deprecated-string =
+    rules(
+      rtgfc-StringAppl(|tbl, set) :+ t -> t
+      where
+        <is-string> t
+        ; rtgfc-new-type(|String(), tbl, set)
+    )
 
   /**
    * Injection
@@ -286,21 +343,14 @@ strategies
 
   rtgfc-Type(|tbl, set) =
     where(
-      rtgfc-StandardType(|tbl, set)
+      rtgfc-IntAppl(|tbl, set)
+    + rtgfc-StringAppl(|tbl, set)
     + rtgfc-InjUserType(|tbl, set)
     + rtgfc-ApplUserType(|tbl, set)
     + rtgfc-TupleUserType(|tbl, set)
     + rtgfc-ListUserType(|tbl, set)
     + rtgfc-OptUserType(|tbl, set)
     )
-
-  rtgfc-StandardType(|tbl, set) =
-    is-int
-    ; rtgfc-new-type(|Int(), tbl, set)
-
-  rtgfc-StandardType(|tbl, set) =
-    is-string
-    ; rtgfc-new-type(|String(), tbl, set)
 
 strategies
 
@@ -449,18 +499,17 @@ strategies
       else id end
     ; finally
 
-  rtgfc-types-to-string =
-    map(rtgfc-nonterm-to-string); separate-by(!", "); concat-strings
+  rtgfc-nonterm-to-string =
+    ?Set(<rtgfc-types-to-string>) <+ rtg-to-string
 
-  rtgfc-nonterm-to-string :
+  rtgfc-types-to-string =
+    map(rtg-to-string); separate-by(!", "); concat-strings
+
+  rtg-to-string :
     Int() -> "<int>"
 
-  rtgfc-nonterm-to-string :
+  rtg-to-string :
     String() -> "<string>"
-
-  rtgfc-nonterm-to-string :
-    Nonterm(s) -> s
-
 
 strategies
 

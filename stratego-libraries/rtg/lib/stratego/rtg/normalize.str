@@ -21,6 +21,11 @@ strategies
       )
     )
 
+  /**
+   * This might introduces duplicate rules, but the remove-inject-rules 
+   * simplifications turns the productions into a set anyway, so we
+   * ignore this.
+   */
   rtg-lift-nested-tree :
     [ProdRule(a, [Appl(f, ts)]) | ps]
       ->

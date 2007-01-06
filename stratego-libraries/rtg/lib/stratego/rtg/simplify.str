@@ -35,7 +35,7 @@ strategies
    *
    * @type RTG -> RTG
    */
-  rtg-normalize-rtg-nf = id
+  rtg-normalize-deprecated = id
     ; rtg-reduce
     ; rtg-group-productions
 

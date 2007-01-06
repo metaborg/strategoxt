@@ -11,4 +11,9 @@ imports
 strategies
 
   main-rtg-normalize =
-    io-wrap(rtg-normalize)
+    io-stream-wrap(
+      ?(<id>, fout)
+      ; parse-rtg-stream
+      ; rtg-normalize
+      ; <write-to-stream> (fout, <id>)
+    )

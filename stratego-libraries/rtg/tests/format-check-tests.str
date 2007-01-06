@@ -8,17 +8,22 @@ strategies
   main-format-check-tests = 
     option-wrap(general-options,
       test-suite(!"format-check",
-        int-list-tests
-      ; expression-tests(simple-inj)
-      ; expression-tests(quoted-exp)
-      ; string-star-tests
-      ; string-plus-tests
-      ; string-even-tests
-      ; string-opt-tests
-      ; tuple-stuff-tests
-      ; argument-tests
+        format-check-tests
+        ; rules(UseDeprecatedNormalizer: _ -> ())
+        ; format-check-tests
       )
     )
+
+  format-check-tests =
+      int-list-tests
+    ; expression-tests(simple-inj)
+    ; expression-tests(quoted-exp)
+    ; string-star-tests
+    ; string-plus-tests
+    ; string-even-tests
+    ; string-opt-tests
+    ; tuple-stuff-tests
+    ; argument-tests
 
   int-list-tests = 
       apply-test(!"test: Simple int list", fc-int-list, ![1, 2, 3])
@@ -128,13 +133,27 @@ strategies
 strategies
 
   test-format-check(|rtg) =
-    where(rtgnf := <parse-rtg-file; rtg-normalize-rtg-nf> rtg)
-    ; rtg-format-check(|rtgnf)
+    where(
+      rtg' := <parse-rtg-file> rtg
+      ; if UseDeprecatedNormalizer then
+          rtgnf := <rtg-normalize-deprecated> rtg'
+        else
+          rtgnf := <rtg-normalize> rtg'
+        end
+    )
+    ; where(rtg-format-check(|rtgnf))
 
   test-format-check(|rtg, startnt) =
-    where(rtgnf := <parse-rtg-file; rtg-normalize-rtg-nf> rtg)
-    ; rtg-format-check(|rtgnf, [Nonterm(startnt)])
-  
+    where(
+      rtg' := <parse-rtg-file> rtg
+      ; if UseDeprecatedNormalizer then
+          rtgnf := <rtg-normalize-deprecated> rtg'
+        else
+          rtgnf := <rtg-normalize> rtg'
+        end
+    )
+    ; where(rtg-format-check(|rtgnf,  [Nonterm(startnt)]))
+
 signature
   constructors
     Var      : Id -> Var
