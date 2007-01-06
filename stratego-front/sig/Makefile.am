@@ -69,8 +69,8 @@ $(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Sugar.def Strateg
 %.str : %.rtg
 	$(STRATEGO_REGULAR)/bin/rtg2sig -i $< -o $@
 
-%.rtg : %.rtg-script Stratego-Sugar.rtg Cong*.rtg
-	$(STRATEGO_REGULAR)/bin/rtg-script -i $< -o $@
+%.rtg : $(srcdir)/%.rtg-script Stratego-Sugar.rtg $(srcdir)/Cong*.rtg
+	$(STRATEGO_REGULAR)/bin/rtg-script -i $< -o $@ -I $(srcdir)
 
 Stratego-Sugar-2.rtg : Stratego-Sugar-1.rtg
 Stratego-Sugar-3.rtg : Stratego-Sugar-2.rtg

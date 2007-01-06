@@ -48,9 +48,10 @@ libstratego_sglr_la_LIBADD = \
 
 STRCFLAGS = \
   $(STRATEGO_XTC_UNINSTALLED_STRCFLAGS) \
-  $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)
+  $(STRATEGO_LIB_UNINSTALLED_STRCFLAGS) \
+  -I $(srcdir)
 
 libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
-	@$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-sglr.rtree -o libstratego-sglr.rtree \
+	@$(STRC_UNINSTALLED) -c --library -i stratego-sglr.rtree -o libstratego-sglr.rtree \
           --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sglr.str

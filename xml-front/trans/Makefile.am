@@ -8,9 +8,9 @@ libexec_PROGRAMS  = xml-info2data data2xml-doc
 SCFLAGS       = --main main-$*
 
 STRINCLUDES   = -I $(top_srcdir)/lib \
-                -I $(top_srcdir)/sig/xml-info \
-                -I $(top_srcdir)/sig/xml \
-                -I $(top_srcdir)/syn/xml \
+                -I $(top_builddir)/sig/xml-info \
+                -I $(top_builddir)/sig/xml \
+                -I $(top_builddir)/syn/xml \
                 -I $(top_srcdir)/trans/process
 
 

@@ -55,7 +55,7 @@ libstratego-lib.rtree : lib$(stratego_lib_module).rtree
 
 STRC_UNINSTALLED_CALLGRIND = XTC_REPOSITORY=$(BUILD_REPOSITORY) callgrind $(prefix)/bin/strc
 
-STRCFLAGS = --verbose 2
+STRCFLAGS = --verbose 2 -I $(srcdir)
 
 stratego-lib.str : Makefile
 	echo "module stratego-lib imports $(stratego_lib_module)" > $@
@@ -69,7 +69,7 @@ libstratego-lib-posix.c libstratego-lib-posix.rtree : $(fullstrategolib:.str=.rt
 	rm libstratego-lib-posix.str
 
 libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i $(srcdir)/stratego-lib-posix-xsi.rtree -o libstratego-lib-posix-xsi.rtree
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib-posix-xsi.rtree
 	rm libstratego-lib-posix-xsi.str
 
 fullstrategolib = \

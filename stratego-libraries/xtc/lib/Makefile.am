@@ -48,7 +48,7 @@ libstratego-xtc.rtree : lib$(stratego_xtc_module).rtree
 stratego-xtc.str : Makefile
 	echo "module stratego-xtc imports $(stratego_xtc_module)" > $@
 
-STRCFLAGS = $(STRATEGO_UNINSTALLED_STRCFLAGS)
+STRCFLAGS = $(STRATEGO_UNINSTALLED_STRCFLAGS) -I $(srcdir)
 
 libstratego-xtc-c99.c libstratego-xtc-c99.rtree : $(fullstrategoxtc:.str=.rtree)
 	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $(srcdir)/stratego-xtc-c99.rtree -o libstratego-xtc-c99.rtree $(STRCFLAGS)
@@ -59,7 +59,7 @@ libstratego-xtc-posix.c libstratego-xtc-posix.rtree : $(fullstrategoxtc:.str=.rt
 	rm libstratego-xtc-posix.str
 
 libstratego-xtc-posix-xsi.c libstratego-xtc-posix-xsi.rtree : $(fullstrategoxtc:.str=.rtree)
-	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-xtc-posix-xsi.rtree -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
+	$(STRC_UNINSTALLED) -c --library -i stratego-xtc-posix-xsi.rtree -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix-xsi.str
 
 fullstrategoxtc = \
