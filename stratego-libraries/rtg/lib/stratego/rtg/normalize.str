@@ -27,13 +27,13 @@ strategies
     [ProdRule(a, [Appl(f, ts')]), ProdRule(t', [t]) | ps]
     where
       ts' := <fetch((
-        Appl(g, ts2) -> t'
+        Appl(g, ts2) -> Ref(t')
         where
           ?t; t' := <rtg-nested-tree-to-nonterm> t
         ))> ts
 
   rtg-nested-tree-to-nonterm :
-    a@Appl(f, ts) -> Ref(Generated(a))
+    a@Appl(f, ts) -> Generated(a)
 
 strategies
 

@@ -1,5 +1,9 @@
 /**
- * @todo  Support nested trees or extend normalizer to remove them.
+ * Format check a term against an RTG
+ *
+ * This format checker supports any normalized RTG (defined by TATA),
+ * including non-deterministic ones. The checker also supports injections.
+ *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module stratego/rtg/format-check
