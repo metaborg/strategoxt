@@ -53,6 +53,14 @@ Fixes sed issues in GNU Make 3.81
 
 (Meta-Environment and Martin Bravenboer)
 
+---------++ Performance
+
+---------+++ Format-checking
+
+* DFTA (rtg2dfta)
+
+* Normalized RTG (rtg-normalize)
+
 ---------++ Deployment
 
 Native Microsoft Windows using MinGW
