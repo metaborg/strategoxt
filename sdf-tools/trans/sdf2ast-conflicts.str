@@ -10,142 +10,117 @@ imports
   Stratego
   Sdf2
   libstratego-xtc
-  strategoxt-xtc-tools
-  sdf-spread-cons
   ast-conflicts
-
-  sdf/grammar/utils
+  sdf-spread-cons
   sdf/tool/options
-  sdf/tool/xtc
   sdf/symbol/implode
+  sdf/tool/xtc
 
 strategies
 
   main-sdf2ast-conflicts =
-    xtc-io-wrap(sdf-main-module-option,
-      xtc-sdf2-normalize(|<get-sdf-main-module>)
-    ; xtc-io-transform(
-        error-if-empty-grammar(<xtc-exit> 1)
-      ; core-sdf2conflicts
-      )
+    xtc-io-wrap(sdf-main-module-option + tbl-option,
+      if not(<get-config> "--tbl" + FILE(has-extension(|"tbl"))) then
+        xtc-transform(!"sdf2table", !["-m", <get-sdf-main-module> | <pass-v-verbose>])
+      end
+      ; read-from
+      ; ?parse-table(_, _, labels, _, priorities(<id>))
+      ; core-sdf2conflicts(|labels)
+      ; write-to
     )
 
-  core-sdf2conflicts =
-    sdf-spread-cons
-    ; topdown(try(Priority2Symbol))
-    ; topdown(try(simple-group(Prod2Symbol <+ !NoSymbol())))
-    ; <conc> (<chain-patterns>, <assoc-patterns>)
-    ; filter(not(oncetd(?NoSymbol())))
+  tbl-option =
+    Option("--tbl"
+    , <set-config> ("--tbl", ())
+    , !"--tbl            Input is a parse table"
+    )  
 
-signature
- constructors
-   NoSymbol : Symbol
-
-/**
- * Produce conflict patterns from SDF definitions.
- */  
-strategies
-
-  assoc-patterns = 
-     collect(?assoc(_, _, _))
-   ; filter(Assoc2Conflicts)
-   ; concat
-
-  chain-patterns =
-    chains := <collect(?chain([_, _]))>
-    ; nodes := <new-iset>
-    ; edges := <new-hashtable>
-    ; <map(ignore-chain <+ define-chain(|nodes, edges) <+ cannot-handle-chain)> chains
-    ; hashgraph-transitive-closure(|nodes, edges)
-    ; <hashtable-getlist> edges
-    ; map(Chain2Conflicts)
+  core-sdf2conflicts(|labels) = id
+    ; lookup-labels(|labels)
+    ; check-empty-table
+    ; retain-all(all-prods-have-cons)
+    ; map(Priority2Conflicts <+ log(|Error(), "Could not handle priority", <id>); fail)
     ; concat
 
-  define-chain(|nodes, edges) =
-    ?chain([simple-group(sym1@Symbol(s1, n)), simple-group(sym2@Symbol(s2, _))])
-    ; <iset-add(|sym1)> nodes
-    ; <iset-add(|sym2)> nodes
-    ; <hashtable-pushlist(|(sym1, sym2), <range> (0, n))> edges
+  check-empty-table =
+    if ?[arg-gtr-prio(
+           prod([cf(layout()), cf(layout())], cf(layout()), _)
+         , 1
+         , prod([cf(layout()), cf(layout())], cf(layout()), _))
+        ]
+    then
+      log(|Error(), "No priorities in parse table. Did you specify the right main module?")
+      ; <xtc-exit> 1
+    end
 
-  define-chain(|nodes, edges) =
-    ?chain([with-arguments(simple-group(sym1@Symbol(s1, _)), default([arg])), simple-group(sym2@Symbol(s2, _))])
-    ; <iset-add(|sym1)> nodes
-    ; <iset-add(|sym2)> nodes
-    ; <hashtable-push(|(sym1, sym2), <string-to-int> arg)> edges
+strategies
 
-  ignore-chain =
-    oncetd(?NoSymbol())
+  lookup-labels(|labels) =
+    {| LookupLabel :
+      where(<map(define-label)> labels)
+      ; map(LookupLabels <+ log(|Error(), "Could not find labels for priority", <id>); fail)
+    |}
 
-  cannot-handle-chain =
-    log(|Error(), "Cannot handle chain priority: ", <id>)
+  define-label =
+    ?label(prod, nr)
+    ; rules(LookupLabel: nr -> prod)
+
+  LookupLabels =
+    gtr-prio(LookupLabel, LookupLabel)
+
+  LookupLabels =
+    arg-gtr-prio(LookupLabel, id, LookupLabel)
+
+  /**
+   * @type Priority -> Priority
+   */
+  all-prods-have-cons =
+    ?arg-gtr-prio(p1, _, p2)
+    ; where(<cons-of-prod> p1; <cons-of-prod> p2)
+
+  all-prods-have-cons =
+    ?gtr-prio(p1, p2)
+    ; where(<cons-of-prod> p1; <cons-of-prod> p2)
 
 rules
 
-  /**
-   * @type Priority -> List(Conflict)
-   */
-  Assoc2Conflicts :
-    assoc(simple-group(sym1), left(), simple-group(sym2)) -> <AssocLeft2Conflicts(|sym1)> sym2
-
-  Assoc2Conflicts :
-    assoc(simple-group(sym1), assoc(), simple-group(sym2)) -> <AssocLeft2Conflicts(|sym1)> sym2
-
-  Assoc2Conflicts :
-    assoc(simple-group(sym1), right(), simple-group(sym2)) -> <AssocRight2Conflicts(|sym1)> sym2
-
-  Assoc2Conflicts :
-    assoc(simple-group(sym1), non-assoc(), simple-group(sym2)) -> <AllConflicts(|sym2)> sym1
-
-  /**
-   * @type Symbol -> List(Conflict)
-   */
-  AssocLeft2Conflicts(|sym2) :
-    sym1@Symbol(c, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
-      where <range> (1, n) => is
-
-  /**
-   * @type Symbol -> List(Conflict)
-   */
-  AssocRight2Conflicts(|sym2) :
-    sym1@Symbol(c, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
-      where <range> (0, <dec> n) => is
-
-  AllConflicts(|sym2) :
-    sym1@Symbol(x, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
+  Priority2Conflicts :
+    gtr-prio(p1, p2) -> <map(!SubtermConflict(sym1, <id>, sym2))> args
     where
-      is := <range> (0, n)
+      sym1@Symbol(_, n) := <Prod2Symbol> p1
+      ; sym2 := <Prod2Symbol> p2
+      ; args := <range> (0, n)
 
-  Chain2Conflicts :
-    ((sym1, sym2), args) -> <map(!SubtermConflict(sym1, <id>, sym2))> args 
+  Priority2Conflicts =
+    ?arg-gtr-prio(p1, arg, p2)
+    ; sym1 := <Prod2Symbol> p1
+    ; sym2 := <Prod2Symbol> p2
+    ; arg' := <arg-for-symbol(|p1)> arg
+    ; if arg' := () then
+        ![]
+      else
+        ![SubtermConflict(sym1, arg', sym2)]
+      end
 
-strategies
-
-  /**
-   * Rewrites a prod to a Symbol.
-   */
   Prod2Symbol :
     p@prod(syms, _, _) -> Symbol(x, n)
     where
       n := <filter(not(is-empty-sym)); length> syms
       ; x := <cons-of-prod> p
 
-  Priority2Symbol :
-    chain([with-arguments(simple-group(p@prod(syms, _, _)), default([arg])), group2])
-      ->
-    chain([with-arguments(simple-group(p), default([arg'])), group2])
-    where
-      syms' :=
-        <add-indices; retain-all((id, not(is-empty-sym)); ?(<id>, _))> syms
-      ; arg' := 
-          <get-index; dec; int-to-string> (<string-to-int; inc> arg, syms')
+strategies
+
+  /**
+   * @type Int -> Int
+   */
+  arg-for-symbol(|p) =
+    ?arg
+    ; prod(syms, _, _) := p
+    ; syms' := <add-indices; retain-all((id, not(is-empty-sym)); ?(<id>, _))> syms
+    ; (<get-index; dec> (<inc> arg, syms') <+ !())
 
 signature
   constructors
-    with-arguments : Group * List(Argument) -> Group
-
-strategies
-
-  hashgraph-transitive-closure(|nodes, edges) =
-    iset-transitive-closure(|<?IndexedSet(<id>)> nodes, <?Hashtable(<id>)> edges)
-
-  external iset-transitive-closure(|nodes, edges)
+    gtr-prio : Int * Int -> Priority
+    arg-gtr-prio : Int * Int * Int -> Priority
+    parse-table : Int * Int * Labels * States * Priorities -> ParseTable

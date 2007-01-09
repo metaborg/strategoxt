@@ -16,8 +16,8 @@ BOOTCLEANFILES = $(check_DATA) $(wildcard *.c) $(wildcard *.dep) parenthesize-Ex
 
 parenthesize-tests.c : parenthesize-Exp.str Exp.str
 
-parenthesize-Exp.str : Exp.def
-	$(bindir)/sdf2parenthesize -i $< -o $@ -m Exp
+parenthesize-Exp.str : Exp.tbl
+	$(bindir)/sdf2parenthesize -i $< -o $@
 
 PGEN_FLAGS    = -m $*
 SDF2RTG_FLAGS = -m $*
