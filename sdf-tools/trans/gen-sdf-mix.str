@@ -27,6 +27,7 @@ strategies
       ; where(collect-layout-sorts => layout-sorts)
       ; collect-sorts
       ; <diff> (<id>, layout-sorts)
+      ; remove-all(is-main-module-param(|param*))
       ; where(ctx := <newname> "Ctx")
       ; map(rename-sort(|ctx))
       ; create-module(|ctx, param*)
@@ -56,6 +57,8 @@ strategies
       )
       <+ log(|Error(), "Main module not found in syntax definition"))
 
+  is-main-module-param(|param*) =
+    where(?sym; <fetch(?sym)> param*)
 
 /**
  * Layout sorts should not be renamed.
@@ -135,10 +138,21 @@ strategies
   create-module(|S, A*) :
     ro* -> m |[
       module Mid2[S A*]
-      imports Mid1 [ ro* ]
+      imports Mid1[A*] [ ro* ]
     ]|
     where
-      get-sdf-main-module => Mid1
+      [_ | _] := A*
+      ; get-sdf-main-module => Mid1
+      ; <get-config> SdfResultModuleFlag() => Mid2
+
+  create-module(|S, A*) :
+    ro* -> m |[
+      module Mid2[S A*]
+      imports Mid1[ ro* ]
+    ]|
+    where
+      [] := A*
+      ; get-sdf-main-module => Mid1
       ; <get-config> SdfResultModuleFlag() => Mid2
 
 /**
