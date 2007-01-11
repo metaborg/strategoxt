@@ -16,5 +16,6 @@ AC_CONFIG_FILES([
   pp/Makefile
   parse/Makefile
   xtc/Makefile
+  tests/Makefile
 ])
 AC_OUTPUT

@@ -1,0 +1,5 @@
+module Stratego-Sdf2-tests
+imports Stratego-Sdf2
+hiddens
+  context-free start-symbols
+    StrategoTerm SDF Module Symbol Production Grammar CharClass

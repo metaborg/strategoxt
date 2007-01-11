@@ -1,0 +1,38 @@
+testsuite Symbols
+topsort Symbol
+
+test
+  "cc" -> char-class(meta-var("cc"))
+
+test
+  "cc0" -> char-class(meta-var("cc0"))
+
+test
+  "cc1" -> char-class(meta-var("cc1"))
+
+test
+  "cc123" -> char-class(meta-var("cc123"))
+
+test
+  "L" -> lit(meta-var("L"))
+
+test
+  "L0" -> lit(meta-var("L0"))
+
+test
+  "L012" -> lit(meta-var("L012"))
+
+test
+  "A" -> meta-var("A")
+
+test
+  "A1" -> meta-var("A1")
+
+test
+  "S" -> sort(meta-var("S"))
+
+test
+  "S1" -> sort(meta-var("S1"))
+
+test
+  "L:S" -> label(quoted(meta-var("L")),sort(meta-var("S")))
