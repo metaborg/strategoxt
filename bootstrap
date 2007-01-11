@@ -63,10 +63,12 @@ do
   cd $dir
   if test "$dir" != "autoxt"
   then
+    rm -f Makefile.xt
     cp ../Makefile.xt . 
   fi
   if test -e "../svn-revision"
   then
+    rm -f 
     cp ../svn-revision .
   fi
   autoreconf -ifv || exit 1

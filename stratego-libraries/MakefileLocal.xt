@@ -1,5 +1,3 @@
-SCOMPILE = $(STRC_UNINSTALLED)
-
 .str.rtree :
 	$(SGLRI) --amb off -p $(STRATEGOTBL_UNINSTALLED) -i $< -o $@
 

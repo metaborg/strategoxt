@@ -30,7 +30,6 @@ STRATEGORUNLIBS = $(STRATEGO_RUNTIME_LIBS)
 
 SUFFIXES      = .str .cr .r .rtree .def .tbl .pp .sdf .rtg .rtg-nf .dfta
 
-SCOMPILE      = $(STRC)/bin/strc
 PARSESTRATEGO = $(STRATEGO_FRONT)/bin/parse-stratego
 
 pkgconfigdir  = $(libdir)/pkgconfig
