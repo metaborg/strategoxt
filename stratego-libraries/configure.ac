@@ -40,8 +40,6 @@ if test "$xt_baseline" = "yes"; then
   XT_PKG_STRATEGOXT
 
   STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
-  SCOMPILE="$STRC_UNINSTALLED"
-  AC_SUBST([SCOMPILE])
   BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
   PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp'
   RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
@@ -69,6 +67,9 @@ else
     SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
   fi
 fi
+
+SCOMPILE="$STRC_UNINSTALLED"
+AC_SUBST([SCOMPILE])
 
 AC_SUBST([STRC_UNINSTALLED])
 AC_SUBST([PACKSDF])
