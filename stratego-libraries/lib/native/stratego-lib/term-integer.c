@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
+#include <ctype.h>
 #include "stratego-lib-common.h"
 
 ATerm SSL_is_int(ATerm t)
@@ -169,7 +170,13 @@ ATerm SSL_string_to_int(ATerm t)
   errno = 0;
   k = strtol(s, &end, 10);
 
-  if(*end || end == s || errno) {
+  if(end == s || errno) {
+    _fail(x);
+  }
+
+  while(isspace(*end)) end++;
+
+  if(*end) {
     _fail(x);
   }
 
