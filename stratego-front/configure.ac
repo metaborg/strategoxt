@@ -17,5 +17,8 @@ AC_CONFIG_FILES([
   parse/Makefile
   test/Makefile
   test/pp/Makefile
+  test/syn/Makefile
+  test/syn/Stratego/Makefile
+  test/syn/StrategoStratego/Makefile
 ])
 AC_OUTPUT

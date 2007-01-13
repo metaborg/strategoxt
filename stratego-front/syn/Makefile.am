@@ -7,18 +7,15 @@ DEFS = \
   Stratego-Core.def \
   Stratego-Sugar.def \
   Stratego-Amb.def \
-  StrategoForTesting.def \
-  StrategoStrategoForTesting.def \
   Stratego-Sugar-in-Stratego.def \
-  Stratego-Core-in-Stratego.def 
+  Stratego-Core-in-Stratego.def \
+  StrategoMix.def
 
 TBLS = \
   Stratego.tbl \
   StrategoStratego.tbl \
   Stratego-Core.tbl \
   Stratego-Sugar.tbl \
-  StrategoForTesting.tbl \
-  StrategoStrategoForTesting.tbl \
   Stratego-Sugar-in-Stratego.tbl \
   Stratego-Core-in-Stratego.tbl
 
@@ -28,7 +25,7 @@ sdfdata_DATA = \
   StrategoRenamed.sdf \
   $(wildcard *.sdf)			       
 
-EXTRA_DIST     = $(DEFS) StrategoRenamed.sdf $(wildcard *.sdf)
+EXTRA_DIST     = $(DEFS) StrategoRenamed.sdf StrategoMix.sdf $(wildcard *.sdf) 
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) StrategoRenamed.sdf
 
@@ -37,14 +34,13 @@ PGEN_FLAGS = -m $*
 %Renamed.sdf: %.def
 	$(SDF_TOOLS)/bin/gen-renamed-sdf-module -i $< -o $@ --main $* --name $*Renamed --prefix Stratego
 
-StrategoForTesting.def : \
-  StrategoForTesting.sdf \
-  Stratego.def 
+StrategoMix.sdf : Stratego.def
+	$(SDF_TOOLS)/bin/gen-sdf-mix -i $< --main Stratego --name StrategoMix -o $@
 
-StrategoStrategoForTesting.def : \
-  StrategoStrategoForTesting.sdf \
-  StrategoForTestingRenamed.sdf \
-  StrategoStratego.def
+StrategoStratego.def : \
+  StrategoMix.sdf \
+  StrategoStratego.sdf \
+  Stratego.def
 
 Stratego.def : \
   Stratego-Sugar.def
@@ -71,11 +67,6 @@ Stratego-Core.def : \
   Stratego-Core-Terms.sdf \
   Stratego-Core-Layout.sdf \
   Stratego-Core-Identifiers.sdf	 
-
-StrategoStratego.def : \
-  StrategoStratego.sdf \
-  StrategoRenamed.sdf \
-  Stratego.def
 
 Stratego-Amb.def : \
   Stratego.def \

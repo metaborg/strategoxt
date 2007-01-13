@@ -1,103 +1,121 @@
 module StrategoStratego
-imports Stratego StrategoRenamed
+imports
+  StrategoMix[Host]
+  StrategoMix[Object]
+
 hiddens
-  context-free start-symbols StrategoModule
+  context-free start-symbols Module[[Host]]
 
 exports
-
   context-free syntax
 
-              "|[" Module "]|" -> StrategoPreTerm {cons("ToTerm"),prefer}
-    "Module"  "|[" Module "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Module[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm"),prefer}
+    "Module"  "|[" Module[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-              "|[" Decl   "]|" -> StrategoPreTerm {cons("ToTerm")}
-              "|[" Sdecl  "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Decl[[Object]]   "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+              "|[" Sdecl[[Object]]  "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-              "|[" Opdecl "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Constr"  "|[" Opdecl "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Opdecl[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Constr"  "|[" Opdecl[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-              "|[" Type   "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Type"    "|[" Type   "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Type[[Object]]   "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Type"    "|[" Type[[Object]]   "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-    "Sort"    "|[" Sort   "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Sort"    "|[" Sort[[Object]]   "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-              "|[" Term   "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Term"    "|[" Term   "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Term[[Object]]   "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Term"    "|[" Term[[Object]]   "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-              "|[" Def    "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Def"     "|[" Def    "]|" -> StrategoPreTerm {cons("ToTerm")}
+              "|[" Def[[Object]]    "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Def"     "|[" Def[[Object]]    "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-             "|[" Rule      "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Rule"   "|[" Rule      "]|" -> StrategoPreTerm {cons("ToTerm")}
-             "|[" StratRule "]|" -> StrategoPreTerm {cons("ToTerm")}
+             "|[" Rule[[Object]]      "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Rule"   "|[" Rule[[Object]]      "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+             "|[" StratRule[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-               "|[" Strategy "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Strat"    "|[" Strategy "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Strategy" "|[" Strategy "]|" -> StrategoPreTerm {cons("ToTerm")}
+               "|[" Strategy[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Strat"    "|[" Strategy[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Strategy" "|[" Strategy[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-    "O"        "|[" Overlay  "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "Overlay"  "|[" Overlay  "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "O"        "|[" Overlay[[Object]]  "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "Overlay"  "|[" Overlay[[Object]]  "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
-    "Typedid" "|[" Typedid   "]|" -> StrategoPreTerm {cons("ToTerm")}
-%%                 "|[" DynRuleDef   "]|" -> StrategoPreTerm {cons("ToTerm")}
-    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoPreTerm {cons("ToTerm")}
+    "Typedid"    "|[" Typedid[[Object]]    "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+                 "|[" DynRuleDef[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef[[Object]] "]|" -> PreTerm[[Host]] {cons("ToTerm")}
 
   context-free syntax
+    "~"         Term[[Host]] -> ModName[[Object]]          {cons("FromTerm")}
 
-    %% From Term
+    "~"         Term[[Host]] -> Term[[Object]]             {cons("FromTerm")}
+    "~term:"    Term[[Host]] -> Term[[Object]]             {cons("FromTerm")}
+    %%"~term*:" Term[[Host]] -> {Term[[Object]] ","}*      {cons("FromTerm")}
+    "~term*:"   Term[[Host]] -> {Term[[Object]] ","}+      {cons("FromTerm")}
+    "~"         Term[[Host]] -> {ID[[Object]]   ","}+      {cons("FromTerm")}
 
-    "~"         StrategoTerm -> ModName          {cons("FromTerm")}
+    "~"         Term[[Host]] -> Strategy[[Object]]         {cons("FromTerm")}
+    "~strat:"   Term[[Host]] -> Strategy[[Object]]         {cons("FromTerm")}
+    "~*"        Term[[Host]] -> {Strategy[[Object]] ","}+  {cons("FromTerm")}
+    "~strat*:"  Term[[Host]] -> {Strategy[[Object]] ","}+  {cons("FromTerm")}
 
-    "~"         StrategoTerm -> Term             {cons("FromTerm")}
-    "~term:"    StrategoTerm -> Term             {cons("FromTerm")}
-    %%"~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
-    "~term*:"   StrategoTerm -> {Term ","}+      {cons("FromTerm")}
-    "~"         StrategoTerm -> {ID   ","}+      {cons("FromTerm")}
+    "~srt:"     Term[[Host]] -> Sort[[Object]] {cons("FromTerm")}
+    "~srtvar:"  Term[[Host]] -> LCID[[Object]] {cons("FromTerm")}
+    "~srtid:"   Term[[Host]] -> UCID[[Object]] {cons("FromTerm")}
 
-    "~"         StrategoTerm -> Strategy         {cons("FromTerm")}
-    "~strat:"   StrategoTerm -> Strategy         {cons("FromTerm")}
-    "~*"        StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
-    "~strat*:"  StrategoTerm -> {Strategy ","}+  {cons("FromTerm")}
+    "~id:"    Term[[Host]] -> Id[[Object]]        {cons("FromTerm")}
+    "~int:"   Term[[Host]] -> Int[[Object]]       {cons("FromTerm")}
+    "~str:"   Term[[Host]] -> String[[Object]]    {cons("FromTerm")}
 
-    "~srt:"     StrategoTerm -> Sort {cons("FromTerm")}
-    "~srtvar:"  StrategoTerm -> LCID {cons("FromTerm")}
-    "~srtid:"   StrategoTerm -> UCID {cons("FromTerm")}
+    Id[[Object]] "/" Id[[Object]] -> Id[[Object]] {cons("ManglePrefix")}
+    Id[[Object]] "\\" Id[[Object]] -> Id[[Object]] {cons("MangleSuffix")}
 
-    "~id:"    StrategoTerm -> Id        {cons("FromTerm")}
-    "~int:"   StrategoTerm -> Int       {cons("FromTerm")}
-    "~str:"   StrategoTerm -> String    {cons("FromTerm")}
+    "~"   Term[[Host]] -> Def[[Object]]       {cons("FromTerm")}
+    "~*"  Term[[Host]] -> Def[[Object]]+      {cons("FromTerm")}
 
-    Id "/" Id -> Id {cons("ManglePrefix")}
-    Id "\\" Id -> Id {cons("MangleSuffix")}
+    "~*"  Term[[Host]] -> Opdecl[[Object]]+      {cons("FromTerm")}
+    "~*"  Term[[Host]] -> {Type[[Object]] "*"}+  {cons("FromTerm")}
 
-    "~"   StrategoTerm -> Def       {cons("FromTerm")}
-    "~*"  StrategoTerm -> Def+      {cons("FromTerm")}
+    "~*"          Term[[Host]] -> {Typedid[[Object]] ","}+   {cons("FromTerm")}
+    "~typed-id*:" Term[[Host]] -> {Typedid[[Object]] ","}+   {cons("FromTerm")}
 
-    "~*"  StrategoTerm -> Opdecl+      {cons("FromTerm")}
-    "~*"  StrategoTerm -> {Type "*"}+  {cons("FromTerm")}
-
-    "~*"          StrategoTerm -> {Typedid ","}+   {cons("FromTerm")}
-    "~typed-id*:" StrategoTerm -> {Typedid ","}+   {cons("FromTerm")}
-
+  %%%
+   %% Hacks
+   %%
+   %% Why are these hacks nessary? What do they do?
+   %%%
   context-free syntax 
-
-    %% Hacks
-
-    "<" StrategoStrategy ">" -> StrategoStrategyAngle {bracket}
-    "(" StrategoStrategy ")" -> StrategoStrategy {bracket,prefer}
+    "<" Strategy[[Host]] ">" -> StrategyAngle[[Host]] {bracket}
+    "(" Strategy[[Host]] ")" -> Strategy[[Host]] {bracket,prefer}
 
   variables
-    [xyzfglc][0-9\']*       -> Id       {prefer}
-    [xyzfgl][0-9\']*  "*"   -> {Id ","}+ {prefer}
-    "xs"[0-9\']*            -> {Id ","}+ {prefer,obsolete}
+    [xyzfglc][0-9\']*       -> Id[[Object]]       {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {Id[[Object]] ","}+ {prefer}
+    "xs"[0-9\']*            -> {Id[[Object]] ","}+ {prefer,obsolete}
 
-    [xyzfgl][0-9\']*  "*"   -> {ID ","}+ {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {ID[[Object]] ","}+ {prefer}
 
-    [t][0-9\']*           -> Term     {prefer}
-    [t][0-9\']*   "*"     -> {Term ","}+     {prefer}
-    "ts"[0-9\']*          -> {Term ","}+     {prefer,obsolete}
 
-    "t:"Id                -> Term     {prefer}
+%%%
+ %% Terms
+ %%%
+
+  variables
+    TermMetaVar[[Host]]     -> Term[[Object]]        {prefer}
+    TermListMetaVar[[Host]] -> {Term[[Object]] ","}+ {prefer}
+    TermListMetaVar[[Host]] -> {Term[[Object]] ","}+ {prefer,obsolete}
+
+  lexical syntax
+    [t][0-9\']*      -> TermMetaVar[[Host]]
+    "t:"Id[[Object]] -> TermMetaVar[[Host]]
+    [t][0-9\']*  "*" -> TermListMetaVar[[Host]]
+    "ts"[0-9\']*     -> TermListMetaVar[[Host]]
+
+    TermMetaVar[[Host]]     -> MetaVar[[Host]]
+    TermListMetaVar[[Host]] -> MetaVar[[Host]]
+
+%%%
+ %% Cleanup
+ %%%
 
   variables
     "str"[0-9\']* -> String
@@ -106,56 +124,55 @@ exports
     "str"[0-9\']* -> Id {reject}
 
   variables
-    "s"[0-9\']*           -> Strategy {prefer}
-    "ss"[0-9\']*          -> {Strategy ","}+ {prefer,obsolete}
-    "s"[0-9\']*   "*"     -> {Strategy ","}+ {prefer}
+    "s"[0-9\']*           -> Strategy[[Object]] {prefer}
+    "ss"[0-9\']*          -> {Strategy[[Object]] ","}+ {prefer,obsolete}
+    "s"[0-9\']*   "*"     -> {Strategy[[Object]] ","}+ {prefer}
 
-    [r][0-9\']*           -> Rule {prefer}
+    [r][0-9\']*           -> Rule[[Object]] {prefer}
 
-    "rd"[0-9\']*          -> RuleDef {prefer}
-    "rd"[0-9\']*  "*"     -> RuleDef* {prefer}
+    "rd"[0-9\']*          -> RuleDef[[Object]] {prefer}
+    "rd"[0-9\']*  "*"     -> RuleDef[[Object]]* {prefer}
 
-    "a"[0-9\']*           -> Typedid        {prefer}
-    "a"[0-9\']*   "*"     -> {Typedid ","}+ {prefer}
-    "as"[0-9\']*          -> {Typedid ","}+ {prefer,obsolete}
+    "a"[0-9\']*           -> Typedid[[Object]]        {prefer}
+    "a"[0-9\']*   "*"     -> {Typedid[[Object]] ","}+ {prefer}
+    "as"[0-9\']*          -> {Typedid[[Object]] ","}+ {prefer,obsolete}
 
-    "tp"[0-9\']*          -> Type 
-    "tp"[0-9\']*  "*"     -> {Type "*"}+  
+    "tp"[0-9\']*          -> Type[[Object]] 
+    "tp"[0-9\']*  "*"     -> {Type[[Object]] "*"}+  
 
-    "srt" [0-9\']*        -> Sort         {prefer}
-    "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
-    "srt" [xyz] [0-9\']*  -> UCID         {prefer}
+    "srt" [0-9\']*        -> Sort[[Object]]         {prefer}
+    "srt" [0-9\']* "*"    -> {Sort[[Object]] ","}*  {prefer}
+    "srt" [xyz] [0-9\']*  -> UCID[[Object]]         {prefer}
 
-    "M"   [0-9\']*        -> ModName {prefer}
+    "M"   [0-9\']*        -> ModName[[Object]] {prefer}
 
-    "sc" [0-9\']*         -> SwitchCase {prefer}
-    "sc" [0-9\']* "*"     -> SwitchCase* {prefer}
+    "sc" [0-9\']*         -> SwitchCase[[Object]] {prefer}
+    "sc" [0-9\']* "*"     -> SwitchCase[[Object]]* {prefer}
 
   variables
-    "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
-    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}+ {prefer}
+    "sc" [0-9\']*         -> DynRuleScopeId[[Object]]        {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId[[Object]] ","}+ {prefer}
 
-    "dr" [0-9\']*         -> DynRuleId {prefer}
+    "dr" [0-9\']*         -> DynRuleId[[Object]] {prefer}
 
-    "drd"[0-9\']*         -> DynRuleDef {prefer}
-    "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
+    "drd"[0-9\']*         -> DynRuleDef[[Object]] {prefer}
+    "drd"[0-9\']*  "*"    -> DynRuleDef[[Object]]+ {prefer}
+
+%%%
+ %%
+ %% Disambiguation
+ %%%
 
   lexical syntax
-    "xs"[0-9\']*          -> Id  {reject}
+    MetaVar[[Host]] -> Id[[Object]]  {reject}
+    MetaVar[[Host]] -> LId[[Object]] {reject}
 
-    [t][0-9\']*           -> Id  {reject}
-    "ts"[0-9\']*          -> Id  {reject}  
+    "xs"[0-9\']*          -> Id[[Object]]  {reject}
 
-    [s][0-9\']*           -> Id  {reject}
-    "ss"[0-9\']*          -> Id  {reject}
+    [s][0-9\']*           -> Id[[Object]]  {reject}
+    "ss"[0-9\']*          -> Id[[Object]]  {reject}
 
-    [r][0-9\']*           -> Id  {reject}
+    [r][0-9\']*           -> Id[[Object]]  {reject}
  
-    "a"[0-9\']*           -> Id  {reject}
-    "as"[0-9\']*          -> Id  {reject} 
-
-  lexical syntax
-    StrategoShortCom 	-> LAYOUT {prefer}
-    StrategoLongCom 	-> LAYOUT {prefer}
-    StrategoVeryLongCom -> LAYOUT {prefer}
-    StrategoWs 		-> LAYOUT {prefer}
+    "a"[0-9\']*           -> Id[[Object]]  {reject}
+    "as"[0-9\']*          -> Id[[Object]]  {reject} 

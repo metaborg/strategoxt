@@ -1,6 +1,4 @@
 module Stratego-Stratego-C
 imports Stratego-C StrategoStratego
 hiddens
-  context-free start-symbols StrategoModule
-
-
+  context-free start-symbols Module[[Host]]

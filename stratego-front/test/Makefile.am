@@ -1,7 +1,6 @@
 include $(top_srcdir)/Makefile.xt
-include Makefile.parse-unit
 
-SUBDIRS = pp
+SUBDIRS = pp syn
 
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS      = -m $*
@@ -15,9 +14,6 @@ switch_semantics_test_LDADD = $(SSL_LIBS)
 prop1_asfix__LDADD = $(SSL_LIBS)
 nodist_prop1_SOURCES = prop1.c
 nodist_prop1_asfix_SOURCES = prop1-asfix.c
-
-TESTSUITES        = strategies.testsuite dynrules.testsuite comments.testsuite
-PARSE_UNIT_PTABLE = $(top_srcdir)/syn/StrategoForTesting.tbl
 
 TESTS = prop1 switch-semantics-test prop1-asfix
 
@@ -50,7 +46,4 @@ check4 : Prop.str
 	$(srcdir)/../parse/parse-stratego -i prop2.str -o prop2.rtree
 
 CLEANFILES = PropStratego.def PropStratego.tbl $(wildcard *.rtree)
-
-EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf) \
-	     $(wildcard *.cr) $(wildcard *.syn) $(wildcard *.testsuite) Makefile.parse-unit
-
+EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)
