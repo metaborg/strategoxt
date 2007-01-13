@@ -3,14 +3,15 @@ include $(wildcard *.dep)
 
 DEFS = \
   Stratego.def \
+  StrategoMix.def \
+  EmbeddedStratego.def \
+  EmbeddedStrategoMix.def \
   StrategoStratego.def \
   Stratego-Core.def \
   Stratego-Sugar.def \
   Stratego-Amb.def \
   Stratego-Sugar-in-Stratego.def \
-  Stratego-Core-in-Stratego.def \
-  StrategoMix.def \
-  EmbeddedStrategoMix.def
+  Stratego-Core-in-Stratego.def
 
 TBLS = \
   Stratego.tbl \
