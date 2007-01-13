@@ -5,6 +5,6 @@ imports
 exports
   context-free start-symbols Strategy PreTerm Term
   context-free syntax
-    Strategy[[Host]] -> Strategy
-    PreTerm[[Host]] -> PreTerm
-    Term[[Host]] -> Term
+    Strategy[[StrategoHost]] -> Strategy
+    PreTerm[[StrategoHost]] -> PreTerm
+    Term[[StrategoHost]] -> Term

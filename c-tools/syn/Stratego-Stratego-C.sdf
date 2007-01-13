@@ -1,4 +1,8 @@
 module Stratego-Stratego-C
-imports Stratego-C StrategoStratego
+imports
+  Stratego-C
+  StrategoRenamed
+  EmbeddedStrategoMix[StrategoObject StrategoPreTerm]
+
 hiddens
-  context-free start-symbols Module[[Host]]
+  context-free start-symbols StrategoModule
