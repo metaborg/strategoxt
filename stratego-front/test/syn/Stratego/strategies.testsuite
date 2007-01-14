@@ -207,3 +207,20 @@ test assignment in rule condition
   "(Foo(x) -> Bar(y) where y := <foobar> x)"
   -> SRule(Rule(_,_,Assign(Var("y"), App(_,_))))
 
+test priority of guarded left choice and choice (STR-683)
+  "s0 < s1 <+ s2 + s3" ->  GuardedLChoice(_, LChoice(_, _), _)
+
+test priority of guarded left choice and choice (STR-683)
+  "s0 < (s1 <+ s2) + s3" -> GuardedLChoice(_, LChoice(_, _), _)
+
+test priority of guarded left choice and choice
+  "s0 < s1 + s2 + s3" ->  GuardedLChoice(_, _, Choice(_, _))
+
+test priority of guarded left choice and choice
+  "s0 < s1 + s2 <+ s3" ->  GuardedLChoice(_, _, LChoice(_, _))
+
+test priority of guarded left choice and choice
+  "s0 <+ s1 < s2 + s3" -> LChoice(_, GuardedLChoice(_, _, _))
+
+test associativity of guarded left choice
+  "s0 < s1 + s2 < s3 + s4" -> GuardedLChoice(_, _, GuardedLChoice(_, _, _))
