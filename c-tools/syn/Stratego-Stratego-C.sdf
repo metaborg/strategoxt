@@ -2,7 +2,7 @@ module Stratego-Stratego-C
 imports
   Stratego-C
   StrategoRenamed
-  EmbeddedStrategoMix[StrategoObject StrategoPreTerm]
+  EmbeddedStrategoMix[StrategoObject StrategoPreTerm StrategoTerm]
 
 hiddens
   context-free start-symbols StrategoModule

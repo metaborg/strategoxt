@@ -1,75 +1,75 @@
-module EmbeddedStratego[E]
+module EmbeddedStratego[E1 E2]
 imports Stratego
 exports
   context-free syntax
 
-              "|[" Module "]|" -> E {cons("ToTerm"),prefer}
-    "Module"  "|[" Module "]|" -> E {cons("ToTerm")}
+              "|[" Module "]|" -> E1 {cons("ToTerm"),prefer}
+    "Module"  "|[" Module "]|" -> E1 {cons("ToTerm")}
 
-              "|[" Decl   "]|" -> E {cons("ToTerm")}
-              "|[" Sdecl  "]|" -> E {cons("ToTerm")}
+              "|[" Decl   "]|" -> E1 {cons("ToTerm")}
+              "|[" Sdecl  "]|" -> E1 {cons("ToTerm")}
 
-              "|[" Opdecl "]|" -> E {cons("ToTerm")}
-    "Constr"  "|[" Opdecl "]|" -> E {cons("ToTerm")}
+              "|[" Opdecl "]|" -> E1 {cons("ToTerm")}
+    "Constr"  "|[" Opdecl "]|" -> E1 {cons("ToTerm")}
 
-              "|[" Type   "]|" -> E {cons("ToTerm")}
-    "Type"    "|[" Type   "]|" -> E {cons("ToTerm")}
+              "|[" Type   "]|" -> E1 {cons("ToTerm")}
+    "Type"    "|[" Type   "]|" -> E1 {cons("ToTerm")}
 
-    "Sort"    "|[" Sort   "]|" -> E {cons("ToTerm")}
+    "Sort"    "|[" Sort   "]|" -> E1 {cons("ToTerm")}
 
-              "|[" Term   "]|" -> E {cons("ToTerm")}
-    "Term"    "|[" Term   "]|" -> E {cons("ToTerm")}
+              "|[" Term   "]|" -> E1 {cons("ToTerm")}
+    "Term"    "|[" Term   "]|" -> E1 {cons("ToTerm")}
 
-              "|[" Def    "]|" -> E {cons("ToTerm")}
-    "Def"     "|[" Def    "]|" -> E {cons("ToTerm")}
+              "|[" Def    "]|" -> E1 {cons("ToTerm")}
+    "Def"     "|[" Def    "]|" -> E1 {cons("ToTerm")}
 
-             "|[" Rule      "]|" -> E {cons("ToTerm")}
-    "Rule"   "|[" Rule      "]|" -> E {cons("ToTerm")}
-             "|[" StratRule "]|" -> E {cons("ToTerm")}
+             "|[" Rule      "]|" -> E1 {cons("ToTerm")}
+    "Rule"   "|[" Rule      "]|" -> E1 {cons("ToTerm")}
+             "|[" StratRule "]|" -> E1 {cons("ToTerm")}
 
-               "|[" Strategy "]|" -> E {cons("ToTerm")}
-    "Strat"    "|[" Strategy "]|" -> E {cons("ToTerm")}
-    "Strategy" "|[" Strategy "]|" -> E {cons("ToTerm")}
+               "|[" Strategy "]|" -> E1 {cons("ToTerm")}
+    "Strat"    "|[" Strategy "]|" -> E1 {cons("ToTerm")}
+    "Strategy" "|[" Strategy "]|" -> E1 {cons("ToTerm")}
 
-    "O"        "|[" Overlay  "]|" -> E {cons("ToTerm")}
-    "Overlay"  "|[" Overlay  "]|" -> E {cons("ToTerm")}
+    "O"        "|[" Overlay  "]|" -> E1 {cons("ToTerm")}
+    "Overlay"  "|[" Overlay  "]|" -> E1 {cons("ToTerm")}
 
-    "Typedid"    "|[" Typedid    "]|" -> E {cons("ToTerm")}
-    "DynRuleDef" "|[" DynRuleDef "]|" -> E {cons("ToTerm")}
+    "Typedid"    "|[" Typedid    "]|" -> E1 {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef "]|" -> E1 {cons("ToTerm")}
 
   context-free syntax
-    "~"         E -> ModName          {cons("FromTerm")}
+    "~"         E2 -> ModName          {cons("FromTerm")}
 
-    "~"         E -> Term             {cons("FromTerm")}
-    "~term:"    E -> Term             {cons("FromTerm")}
-    %%"~term*:" E -> {Term ","}*      {cons("FromTerm")}
-    "~term*:"   E -> {Term ","}+      {cons("FromTerm")}
-    "~"         E -> {ID   ","}+      {cons("FromTerm")}
+    "~"         E2 -> Term             {cons("FromTerm")}
+    "~term:"    E2 -> Term             {cons("FromTerm")}
+    %%"~term*:" E2 -> {Term ","}*      {cons("FromTerm")}
+    "~term*:"   E2 -> {Term ","}+      {cons("FromTerm")}
+    "~"         E2 -> {ID   ","}+      {cons("FromTerm")}
 
-    "~"         E -> Strategy         {cons("FromTerm")}
-    "~strat:"   E -> Strategy         {cons("FromTerm")}
-    "~*"        E -> {Strategy ","}+  {cons("FromTerm")}
-    "~strat*:"  E -> {Strategy ","}+  {cons("FromTerm")}
+    "~"         E2 -> Strategy         {cons("FromTerm")}
+    "~strat:"   E2 -> Strategy         {cons("FromTerm")}
+    "~*"        E2 -> {Strategy ","}+  {cons("FromTerm")}
+    "~strat*:"  E2 -> {Strategy ","}+  {cons("FromTerm")}
 
-    "~srt:"     E -> Sort {cons("FromTerm")}
-    "~srtvar:"  E -> LCID {cons("FromTerm")}
-    "~srtid:"   E -> UCID {cons("FromTerm")}
+    "~srt:"     E2 -> Sort {cons("FromTerm")}
+    "~srtvar:"  E2 -> LCID {cons("FromTerm")}
+    "~srtid:"   E2 -> UCID {cons("FromTerm")}
 
-    "~id:"    E -> Id     {cons("FromTerm")}
-    "~int:"   E -> Int    {cons("FromTerm")}
-    "~str:"   E -> String {cons("FromTerm")}
+    "~id:"    E2 -> Id     {cons("FromTerm")}
+    "~int:"   E2 -> Int    {cons("FromTerm")}
+    "~str:"   E2 -> String {cons("FromTerm")}
 
     Id "/" Id -> Id {cons("ManglePrefix")}
     Id "\\" Id -> Id {cons("MangleSuffix")}
 
-    "~"   E -> Def       {cons("FromTerm")}
-    "~*"  E -> Def+      {cons("FromTerm")}
+    "~"   E2 -> Def       {cons("FromTerm")}
+    "~*"  E2 -> Def+      {cons("FromTerm")}
 
-    "~*"  E -> Opdecl+      {cons("FromTerm")}
-    "~*"  E -> {Type "*"}+  {cons("FromTerm")}
+    "~*"  E2 -> Opdecl+      {cons("FromTerm")}
+    "~*"  E2 -> {Type "*"}+  {cons("FromTerm")}
 
-    "~*"          E -> {Typedid ","}+   {cons("FromTerm")}
-    "~typed-id*:" E -> {Typedid ","}+   {cons("FromTerm")}
+    "~*"          E2 -> {Typedid ","}+   {cons("FromTerm")}
+    "~typed-id*:" E2 -> {Typedid ","}+   {cons("FromTerm")}
 
   %%%
    %% Hacks

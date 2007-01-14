@@ -24,3 +24,5 @@ test Rule definition is not ambiguous with dyn rule
 test Rule definition is not ambiguous with dyn rule
   "DynRuleDef |[ Foo : 1 -> 2 ]|" -> ToTerm(SetDynRule(...))
 
+test Id anti-quotation bug
+  [[ |[ ~id:""(id, id) ]| ]] -> ToTerm(Call(SVar(FromTerm(NoAnnoList(Str("\"\"")))),[Id,Id]))

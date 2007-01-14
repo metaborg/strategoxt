@@ -21,7 +21,7 @@ prop1-asfix.c: prop1-asfix.str
 	$(SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c
 
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
-check: check1 check1-asfix check2 check3 check4
+check: check1 check1-asfix check2 check3 check4 check5
 
 check1 : Prop.str
 	$(MAKE) clean
@@ -41,9 +41,13 @@ check3 : Prop.str
 
 check4 : Prop.str
 	$(MAKE) clean
-	ls
 	$(MAKE) PropStratego.def
 	$(srcdir)/../parse/parse-stratego -i prop2.str -o prop2.rtree
+
+check5 :
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) $(srcdir)/../parse/parse-stratego \
+	  -i anti-quote-preterm.str -I $(top_builddir)/syn -o anti-quote-preterm.rtree
+	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c
 
 CLEANFILES = PropStratego.def PropStratego.tbl $(wildcard *.rtree)
 EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)
