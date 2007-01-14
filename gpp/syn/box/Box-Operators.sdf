@@ -21,8 +21,13 @@
 %% adapted.
 
 module Box-Operators
+exports
 
-   exports
+  %% Deprecated, but used by Transformers.
+  context-free syntax
+    BOX* -> BOX-LIST
+
+  exports
       sorts SPACE-SYMBOL S-OPTION
 
       context-free syntax
