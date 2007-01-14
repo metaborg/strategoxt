@@ -17,3 +17,10 @@ test Match any term
 
 test Match a constructor
   "|[ ?x(t*) ]|" -> ToTerm(Match(NoAnnoList(Op(meta-var("x"), meta-listvar("t*")))))
+
+test Rule definition is not ambiguous with dyn rule
+  "|[ Foo : 1 -> 2 ]|" -> ToTerm(RDefNoArgs(...))
+
+test Rule definition is not ambiguous with dyn rule
+  "DynRuleDef |[ Foo : 1 -> 2 ]|" -> ToTerm(SetDynRule(...))
+
