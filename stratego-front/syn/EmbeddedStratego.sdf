@@ -35,7 +35,6 @@ exports
     "Overlay"  "|[" Overlay  "]|" -> E {cons("ToTerm")}
 
     "Typedid"    "|[" Typedid    "]|" -> E {cons("ToTerm")}
-                 "|[" DynRuleDef "]|" -> E {cons("ToTerm")}
     "DynRuleDef" "|[" DynRuleDef "]|" -> E {cons("ToTerm")}
 
   context-free syntax
