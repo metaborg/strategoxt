@@ -16,11 +16,9 @@ SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn \
 PGEN_FLAGS     = -m $*
 
 Box.def : Box-Atoms.sdf Box-Base.sdf Box-Disambiguation.sdf \
-		      Box-Layout.sdf Box-Lists.sdf Box-Literal.sdf \
-		      Box-Operators.sdf Box.sdf
+          Box-Layout.sdf Box-Literal.sdf Box-Operators.sdf Box.sdf
 
 .def.pp:
 	$(GPP)/bin/ppgen -i $< -o $@
 
 Stratego-Box.def : Stratego-Box.sdf Box.def
-

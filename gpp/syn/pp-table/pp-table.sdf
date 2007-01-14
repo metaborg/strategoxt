@@ -6,7 +6,7 @@ exports
   context-free syntax
     "[" {PP-Entry ","}* "]" -> PP-Table {cons("PP-Table")}
 
-    Path "--" BOX-LIST -> PP-Entry {cons("PP-Entry")}
+    Path "--" BOX* -> PP-Entry {cons("PP-Entry")}
 
     ConsName                     -> Path {cons("Path1")}
     ConsName "." {Selector "."}+ -> Path {cons("Path")}

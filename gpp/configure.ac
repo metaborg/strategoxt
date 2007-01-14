@@ -20,5 +20,9 @@ AC_CONFIG_FILES([
   tools/Makefile
   tools2/Makefile
   tools3/Makefile
+
+  test/Makefile
+  test/Box/Makefile
+  test/StrategoBox/Makefile
 ])
 AC_OUTPUT

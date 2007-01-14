@@ -1,25 +1,3 @@
-%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
-%%%                    Eelco Visser <visser@acm.org>,
-%%%                    Joost Visser <jvisser@cwi.nl>
-%%%
-%%% This program is free software; you can redistribute it and/or modify
-%%% it under the terms of the GNU General Public License as published by
-%%% the Free Software Foundation; either version 2, or (at your option)
-%%% any later version.
-%%%
-%%% This program is distributed in the hope that it will be useful,
-%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
-%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%%% GNU General Public License for more details.
-%%%
-%%% You should have received a copy of the GNU General Public License
-%%% along with this program; if not, write to the Free Software
-%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-%%% 02111-1307, USA.
-%%%
-%%% $Id: Box-Operators.sdf,v 1.1 2003/01/03 07:23:38 stratego Exp $
-
-%% \noindent
 %% Expressions over the BOX language can be constructed by
 %% \emph{composing} boxes using BOX operators. These operators
 %% specify the relative positioning of boxes. BOX supports several of these
@@ -37,6 +15,7 @@
 %% cross referencing.
 %%
 %% \subsection{Space Options}
+%%
 %% Space options are used to adapt the amount of layout between boxes. The
 %% horizontal, vertical, and indentation offset between boxes can be
 %% adapted.
@@ -44,17 +23,12 @@
 module Box-Operators
 
    exports
-      sorts SPACE-SYMBOL S-OPTION S-OPTIONS
+      sorts SPACE-SYMBOL S-OPTION
 
       context-free syntax
          SPACE-SYMBOL "=" NatCon -> S-OPTION     {cons("SOpt")}
          SPACE-SYMBOL "=" BOX    -> S-OPTION     {cons("SOptB")}
-      
-      aliases
-         S-OPTION*               -> S-OPTIONS
 
-%%
-%% \noindent
 %% Below all supported space options are defined. The \textsf{hs} option is
 %% used to define the horizontal layout between boxes. The \textsf{vs}
 %% option defines the amount of vertical layout between boxes (the number of
@@ -63,7 +37,7 @@ module Box-Operators
 %% combination of space option and BOX operator makes sense. E.g.\ the
 %% modification of the vertical offset in combination of the \textsf{H}
 %% operator does not make any sense.
-%%
+
       context-free syntax
          "vs"                    -> SPACE-SYMBOL {cons("VS")}
          "hs"                    -> SPACE-SYMBOL {cons("HS")}
@@ -86,26 +60,23 @@ module Box-Operators
 %% lines occupied is minimized. Because the \textsf{HV} is a combination of
 %% the \textsf{H} and \textsf{V} operators, it supports all space
 %% options of these operators (\textsf{hs}, \textsf{vs}, and \textsf{is}).
-%%
+
    exports
       context-free syntax
-         "H" S-OPTIONS "[" BOX-LIST "]"  -> BOX {cons("H")}
-         "V" S-OPTIONS "[" BOX-LIST "]"  -> BOX {cons("V")}
-         "HV" S-OPTIONS "[" BOX-LIST "]" -> BOX {cons("HV")}
+         "H" S-OPTION*  "[" BOX* "]"  -> BOX {cons("H")}
+         "V" S-OPTION*  "[" BOX* "]"  -> BOX {cons("V")}
+         "HV" S-OPTION* "[" BOX* "]" -> BOX {cons("HV")}
 
-%%
-%% \noindent
 %% The \textsf{ALT} operator is used to choose between two alternative BOX
 %% expressions depending on the available width. When its first argument
 %% fits on the current line, that BOX expression is used. Otherwise, the
 %% \textsf{ALT} operator chooses the second alternative. No space options
 %% are supported by this operator.
+
    exports
       context-free syntax
          "ALT" "[" BOX BOX "]" -> BOX {cons("ALT")}
 
-%%
-%% \noindent
 %% Alignments are implemented by means of two BOX operators: \textsf{A} and
 %% \textsf{R}. The arguments of the \textsf{A} operator are \textsf{R}
 %% boxes. Each \textsf{R} BOX represents a row, each element of an
@@ -124,26 +95,27 @@ module Box-Operators
 %% formatting (not based on the \textsf{A} operator) of alignments within an
 %% \textsf{ALT} operator. The \textsf{R} operator therefore supports all
 %% space options of the \textsf{HV} operator.
+
    exports
       sorts A-OPTION A-OPTIONS
 
       context-free syntax
-         "A" A-OPTIONS S-OPTIONS "[" BOX-LIST "]" -> BOX       {cons("A")}
-         "R" S-OPTIONS "[" BOX-LIST "]"           -> BOX       {cons("R")}
-%%
-%% \noindent
+         "A" A-OPTIONS S-OPTION* "[" BOX* "]" -> BOX       {cons("A")}
+         "R" S-OPTION* "[" BOX* "]"           -> BOX       {cons("R")}
+
 %% Justification of columns and horizontal layout between columns can be
 %% specified using A-OPTIONS. An A-OPTION is composed of an alignment
 %% indicator (\textsf{l} for left, \textsf{r} for right, and \textsf{c} for
 %% centered alignment), and space options (only the \textsf{hs} option is
 %% supported).
-%%
-         "l" S-OPTIONS                            -> A-OPTION  {cons("AL")}
-         "c" S-OPTIONS                            -> A-OPTION  {cons("AC")}
-         "r" S-OPTIONS                            -> A-OPTION  {cons("AR")}
+
+         "l" S-OPTION*                            -> A-OPTION  {cons("AL")}
+         "c" S-OPTION*                            -> A-OPTION  {cons("AC")}
+         "r" S-OPTION*                            -> A-OPTION  {cons("AR")}
          "(" {A-OPTION ","}* ")"                  -> A-OPTIONS {cons("AOPTIONS")}
 
 %%\subsection{Non-Positional BOX Operators}
+%%
 %% There are four different types of non-positional BOX operators: font
 %% operators to change the textual appearance of BOX expressions, cross
 %% reference operators to create links between boxes, the comment operator
@@ -157,8 +129,9 @@ module Box-Operators
 %% (\textsf{se}), font shape (\textsf{sh}), font size (\textsf{sz}), and
 %% font color (\textsf{cl}). The most general font operator is \textsf{F}.
 %% By means of font parameters the desired font can be controlled.
+
    exports
-      sorts FID FONT-PARAM F-OPTION F-OPTIONS FONT-OPERATOR
+      sorts FID FONT-PARAM F-OPTION FONT-OPERATOR
 
       lexical syntax
          [A-Za-z]+ -> FID
@@ -167,11 +140,8 @@ module Box-Operators
          FONT-PARAM "=" NatCon     -> F-OPTION      {cons("FNAT")}
          FONT-PARAM "=" FID        -> F-OPTION      {cons("FFID")}
 
-      aliases
-         F-OPTION*                 -> F-OPTIONS
-
       context-free syntax
-         "F" F-OPTIONS             -> FONT-OPERATOR {cons("F")}
+         "F" F-OPTION*             -> FONT-OPERATOR {cons("F")}
          FONT-OPERATOR "[" BOX "]" -> BOX           {cons("FBOX")}
          "fn"                      -> FONT-PARAM    {cons("FN")}
          "fm"                      -> FONT-PARAM    {cons("FM")}
@@ -180,14 +150,12 @@ module Box-Operators
          "sz"                      -> FONT-PARAM    {cons("SZ")}
          "cl"                      -> FONT-PARAM    {cons("CL")}
 
-%%
-%% \noindent
 %% By using the \textsf{F} font operator, fonts are defined statically.
 %% BOX also support fonts to be defined dynamically using special
 %% font operators.  These operators are used to format specific language
 %% constructs like keywords and variables. The mapping from these
 %% operators to fonts is deferred to the back-ends.
-%%
+
    exports
       context-free syntax
          "KW"   -> FONT-OPERATOR {cons("KW")}
@@ -195,7 +163,6 @@ module Box-Operators
          "NUM"  -> FONT-OPERATOR {cons("NUM")}
          "MATH" -> FONT-OPERATOR {cons("MATH")}
 
-%% \noindent
 %% The \textsf{LBL} operator is used to label BOX terms. A labeled BOX term
 %% can be refered to using the \textsf{REF} operator.  The first argument of
 %% the \textsf{LBL} and \textsf{REF} operators denote the name of the label.
@@ -203,24 +170,20 @@ module Box-Operators
 %% label. The second argument of the \textsf{REF} operator denotes the BOX
 %% containing the reference. Both operators do not support any space
 %% options.
-%%
+
    exports
       context-free syntax
          "LBL" "[" BoxLiteral BOX "]" -> BOX {cons("LBL")}
          "REF" "[" BoxLiteral BOX "]" -> BOX {cons("REF")}
 
-%%
-%% \noindent
 %% Comments can be formatted using the \textsf{C} operator. The operator
 %% supports the \textsf{is} space option to denote the indentation level of
 %% comments.
-%%
+
    exports
       context-free syntax
-         "C" S-OPTIONS "[" BOX-LIST "]" -> BOX {cons("C")}
+         "C" S-OPTION* "[" BOX* "]" -> BOX {cons("C")}
 
-%%
-%% \noindent
 %% The \textsf{L} operator  is used to construct horizontal bars of fixed
 %% \emph{or} variable width. A bar of fixed width can be constructed by
 %% specifying its width as a fixed number. A bar of variable width can be
@@ -228,7 +191,7 @@ module Box-Operators
 %% second argument of the \textsf{L} operator specifies the symbol of which
 %% the bar should be constructed. The \textsf{L} operator does not support
 %% any space options.
-%%
+
    exports
       context-free syntax
          "L" "[" BOX BOX "]"    -> BOX {cons("L")}
