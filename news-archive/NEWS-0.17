@@ -14,6 +14,8 @@ Stratego/XT 0.17 - released somewhere in 2006
 
 * Import aterm from file
 
+* Improved embedding of languages (no more layout problems)
+
 ---------++ Stratego Libraries
 
 * libstratego-sglr
@@ -50,6 +52,8 @@ More efficient installation of sdf2-bundle thanks to linking against
 uninstalled libraries
 
 Fixes sed issues in GNU Make 3.81
+
+New feature: . priorities.
 
 (Meta-Environment and Martin Bravenboer)
 
