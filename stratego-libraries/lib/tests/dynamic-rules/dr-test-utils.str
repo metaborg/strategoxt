@@ -80,9 +80,13 @@ strategies
 strategies
 
   parse-til =
-    where(<ReadFromFile>"til/syn/TIL.tbl"; open-parse-table => pt)
-    ; parse-string(|pt, "Program")
-    ; where(<close-parse-table>pt)
+    parse-string(|<get-til-parse-table>, "Program")
+
+  get-til-parse-table =
+    MemoTILParseTable
+    <+ <ReadFromFile>"til/syn/TIL.tbl"
+       ; open-parse-table => pt
+       ; rules(MemoTILParseTable : _ -> pt)
 
 /**
  * Strategies for easier setup of scoping tests
