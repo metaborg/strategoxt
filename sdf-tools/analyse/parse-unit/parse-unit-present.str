@@ -52,11 +52,11 @@ strategies
     )
 
   echo-parse-result :
-    ParseResult(file, Failure(Parse(summary))) -> ()
+    ParseResult(file, Failure(Parse(error))) -> ()
     where
         <say(!"  - parsing failed")> ()
       ; <echo> "......................................................................."
-      ; <report-error-summary(|summary)> file
+      ; <report-error(|error)> file
       ; <echo> "......................................................................."
 
   echo-parse-result :
