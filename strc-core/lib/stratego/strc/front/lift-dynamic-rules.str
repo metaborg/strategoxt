@@ -427,7 +427,9 @@ strategies
  
   get-stamp :
     stdrule -> stamp
-    where if not(<DrStamp> stdrule => stamp) then 
+    where if <DrStamp> stdrule => stamp then
+            id
+          else
             // new => stamp
             <checksum> stdrule => stamp
             ; rules( DrStamp : stdrule -> stamp )
