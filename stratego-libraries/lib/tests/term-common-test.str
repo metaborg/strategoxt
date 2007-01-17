@@ -8,6 +8,7 @@ strategies
         get-constructor-tests
       ; get-arguments-tests
       ; get-appl-arguments-tests
+      ; checksum-tests
     )
 
   get-constructor-tests = id
@@ -75,6 +76,18 @@ strategies
       , get-appl-arguments(inc)
       , !A(1, 2)
       , ![2, 3]
+      )
+
+  checksum-tests = id
+    ; apply-test(!"checksum 1"
+      , (checksum, checksum)
+      , !(C(), C())
+      , {x: ?(x, x) }
+      )
+    ; apply-test(!"checksum 2"
+      , (checksum, checksum)
+      , !(B(1),B(2))
+      , {x,y: ?(x, y) ; not(!x => y) }
       )
 
 signature
