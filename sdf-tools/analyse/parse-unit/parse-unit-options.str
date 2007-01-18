@@ -65,6 +65,14 @@ strategies
     ?option("heuristic-filters", "on")
     ; set-heuristic-filters(true)
 
+  process-testsuite-option =
+    ?option("post-parse-priority-filter", "off")
+    ; set-filter-priority(false)
+
+  process-testsuite-option =
+    ?option("post-parse-priority-filter", "on")
+    ; set-filter-priority(true)
+
   unknown-testsuite-option =
     ?option(k, v)
     ; log(|Warning(), ["Unknown option specified in testsuite: ", k, " ", v])
