@@ -1,0 +1,58 @@
+module annotation-test
+imports
+  libstratego-lib
+
+strategies
+
+ main =
+    test-suite(!"string-test",
+      get-annotation-tests
+    ; set-annotation-tests
+    ; rm-annotation-tests
+    ; has-annotation-tests
+    ; if-annotation-tests
+    ; strip-annotation-tests
+    ; preserve-annotation-tests
+    ; catch-annotation-tests
+    )
+
+  get-annotation-tests =
+      apply-test(!"get-annos-1", get-annos, !1{1}, ![1])
+    ; apply-test(!"get-annos-2", get-annos, !1{1,2}, ![1,2])
+    ; apply-test(!"get-annotations-1", get-annotations, !1{1}, ![1])
+    ; apply-test(!"get-annotations-2", get-annotations, !1{1,2}, ![1,2])
+
+  set-annotation-tests = 
+      apply-test(!"set-annos-1", set-annos, !(1,[1]), !1{1})
+    ; apply-test(!"set-annos-2", set-annos, !(1,[1,2]), !1{1,2})
+    ; apply-test(!"set-annotations-1", set-annotations, !(1,[1]), !1{1})
+    ; apply-test(!"set-annotations-2", set-annotations, !(1,[1,2]), !1{1,2})
+
+  rm-annotation-tests = 
+      apply-test(!"rm-annotations-1", rm-annotations, !1{1}, !1)
+    ; apply-test(!"rm-annotations-2", rm-annotations, !1{1,2}, !1)
+
+  has-annotation-tests = 
+      apply-test(!"has-annos-1", has-annos, !1{1}, !1{1})
+    ; apply-and-fail(!"has-annos-2", has-annos, !1)
+    ; apply-test(!"has-annotations-1", has-annotation, !1{1}, !1{1})
+    ; apply-and-fail(!"has-annotations-2", has-annotation, !1)
+
+  if-annotation-tests = 
+      apply-test(!"if-annotations-1", if-annotation(!10,!20), !1{1}, !10)
+    ; apply-test(!"if-annotations-2", if-annotation(!10,!20), !1, !20)
+
+  strip-annotation-tests =
+      apply-test(!"strip-annos-1", strip-annos, ![1{1},2{2}], ![1,2])
+    ; apply-test(!"strip-annos-2", strip-annos, ![1,2], ![1,2])
+
+  preserve-annotation-tests = 
+      apply-test(!"preserve-annos-1", preserve-annos(\1 -> 2\), !1{1}, !2{1})
+    ; apply-test(!"preserve-annos-2", preserve-annos(\1 -> 2\), !1, !2)
+    ; apply-test(!"preserve-annotation-1", preserve-annotation(\1 -> 2\), !1{1}, !2{1})
+    ; apply-test(!"preserve-annotation-2", preserve-annotation(\1 -> 2\), !1, !2)
+
+
+  catch-annotation-tests = 
+      apply-test(!"catch-annos-1", catch-annos, ![1{1},2{2}], ![Anno(1,[1]),Anno(2,[2])])
+    ; apply-test(!"catch-annos-2", catch-annos, ![1, 2], ![1,2])

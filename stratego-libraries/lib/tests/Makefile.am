@@ -11,6 +11,7 @@ pkgtestsdatadir  = $(datadir)/stratego-lib/tests
 pkgtestsdata_DATA= $(wildcard *.str)
 
 check_PROGRAMS = \
+  annotation-test \
   char-test \
   collect-test \
   dynamic-rules-lowlevel-test \
