@@ -104,6 +104,9 @@ strategies
   ignore-prod = 
     ?prod(_,lit(_), _)
 
+  ignore-prod = 
+    ?prod(_,ci-lit(_), _)
+
   ignore-prod =
     ?prod([lex(iter-star(char-class(_)))], cf(iter-star(char-class(_))), _)
 
@@ -422,6 +425,7 @@ strategies
    * @type  Symbol -> Symbol
    */
   is-empty-sym = ?lit(_)
+  is-empty-sym = ?ci-lit(_)
   is-empty-sym = ?layout()
   is-empty-sym = opt(is-empty-sym)
   is-empty-sym = cf(is-empty-sym)
@@ -541,6 +545,9 @@ strategies
     lit(_) -> "Lit"
 
   Symbol2String :
+    ci-lit(_) -> "CaseInsensitiveLit"
+
+  Symbol2String :
     iter(sym) -> <conc-strings> ("ListPlusOf", <Symbol2String> sym)
 
   Symbol2String :
@@ -571,7 +578,7 @@ strategies
 
   Symbol2String :
     seq(sym, syms) ->
-      < filter(not(?lit(_)))
+      < filter(not(?lit(_) + ?ci-lit(_)))
       ; map(Symbol2String)
       ; <separate-by> ("_", <id>)
       ; concat-strings
@@ -605,3 +612,13 @@ signature
   constructors
     rtg    : rtginfo -> rtg
     ignore : rtginfo
+
+
+    /**
+     * FIXME: bootstrap problem
+
+    cilit : String -> Tree
+
+    // WTF?
+    ci-lit : String -> Tree
+     */

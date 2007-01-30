@@ -21,6 +21,7 @@ strategies
     ; apply-and-check(!"FunProgram.def", xtc-transform(!"sdf2rtg", !["--main", "FunProgram"]), !FILE("FunProgram.def"), xtc-debug-text)
     ; apply-and-check(!"Tuple.def", xtc-transform(!"sdf2rtg", !["--main", "Tuple"]), !FILE("Tuple.def"), xtc-debug-text)
     ; apply-and-check(!"OptAlt.def", xtc-transform(!"sdf2rtg", !["--main", "OptAlt"]), !FILE("OptAlt.def"), xtc-debug-text)
+    ; apply-and-check(!"Literals.def", xtc-transform(!"sdf2rtg"), !FILE("Literals.def"), xtc-debug-text)
 
 /** TODO: restore after the introduction of user definable desugarings
   productions =
