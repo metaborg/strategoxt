@@ -36,6 +36,9 @@ rules
 
 rules
 
+  /**
+   * Handles the experimental ast annotations.
+   */
   ReplAstPattern(impl) : 
     appl(p, ts){a*} -> term{a*}
     where
@@ -101,6 +104,11 @@ rules
     where
       t := <implode-constant-literal(|x)> sym
 
+  ReplConsIns(impl) : 
+    appl(prod([cilit(x)], sym, _), []) -> t
+    where
+      t := <implode-constant-literal(|x)> sym
+
   implode-constant-literal(|constant) =
     rec rec(
       ?cf(<rec>)
@@ -111,6 +119,7 @@ rules
     + \ iter-star-sep(<rec>, _) -> [<id>] \
     + \ opt(<rec>) -> Some(<id>) \
     + \ lit(_) -> constant \
+    + \ cilit(_) -> constant \
     )
 
 rules

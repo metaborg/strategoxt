@@ -5,10 +5,6 @@
  * can be ignored if they only relate syntactic information
  * instead of structural information. For instance, bracket nodes
  * are only necessary for syntactic purposes.
- * 	
- * Note: the ?sort("<START>") is necessary because
- * sort is also defined as a strategy operator that sorts
- * lists.
  */
 module stratego/asfix/implode/injection
 rules
@@ -23,6 +19,15 @@ rules
    */
   ImplodeInjection : 
     appl(prod([lit(x)], sym, attrs), []) -> x
+    where
+      <asfix-is-sort + cf(asfix-is-sort)> sym
+      ; <not(oncetd(cons(id)))> attrs
+
+  /**
+   * Injection of a case insensitive literal to a sort.
+   */
+  ImplodeInjection : 
+    appl(prod([cilit(x)], sym, attrs), []) -> x
     where
       <asfix-is-sort + cf(asfix-is-sort)> sym
       ; <not(oncetd(cons(id)))> attrs

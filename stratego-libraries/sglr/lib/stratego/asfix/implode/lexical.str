@@ -17,6 +17,10 @@ strategies
     ; asfix-yield-appl
 
   ImplodeLexical =
+    ?appl(prod(_,cilit(_),_),_)
+    ; asfix-yield-appl
+
+  ImplodeLexical =
     ImplodeLexicalListVar <+ ImplodeLexicalVar
     
   ImplodeLexicalListVar =

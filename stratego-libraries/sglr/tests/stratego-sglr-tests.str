@@ -788,9 +788,21 @@ strategies
       )
 
     ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "ListCase")
+      , !"dollar Dollar dollar"
+      , !["dollar", "dollar", "dollar"]
+      )
+
+    ; apply-test(!"Repeated literals (STR-546)"
       , parse-string(|tbl, "ListSep")
       , !"$,$,$"
       , !["$", "$", "$"]
+      )
+
+    ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "ListSepCase")
+      , !"dollar,DOLLAR,dollaR"
+      , !["dollar", "dollar", "dollar"]
       )
       
     ; apply-test(!"Repeated literals (STR-546)"
@@ -800,21 +812,63 @@ strategies
       )
 
     ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "OptCase")
+      , !"dollar"
+      , !Some("dollar")
+      )
+
+    ; apply-test(!"Repeated literals (STR-546)"
       , parse-string(|tbl, "Opt")
       , !""
       , !None()
       )
+
+    ; apply-test(!"Repeated literals (STR-546)"
+      , parse-string(|tbl, "OptCase")
+      , !""
+      , !None()
+      )
       
-    ; apply-test(!"Literal injection"
+    ; apply-test(!"Ignore literals"
       , parse-string(|tbl, "Expr")
       , !"$x"
       , !Id("x")
       )
-      
+
+    ; apply-test(!"Ignore case-insensitive literals"
+      , parse-string(|tbl, "ExprCase")
+      , !"DOLLAR x"
+      , !Id("x")
+      )
+
+    ; apply-test(!"Ignore case-insensitive literals"
+      , parse-string(|tbl, "ExprCase")
+      , !"dollar x"
+      , !Id("x")
+      )
+
     ; apply-test(!"Literal injection"
       , parse-string(|tbl, "Inj")
       , !"this"
       , !"this"
+      )
+
+    ; apply-test(!"Literal injection"
+      , parse-string(|tbl, "InjCase")
+      , !"TRUE"
+      , !"true"
+      )
+
+    ; apply-test(!"Literal injection"
+      , parse-string(|tbl, "InjCase")
+      , !"True"
+      , !"true"
+      )
+
+    ; apply-test(!"Case insensitive literal"
+      , parse-string(|tbl, "ExprCase")
+      , !"true"
+      , !True()
       )
 
     ; where(<close-parse-table> tbl)
@@ -919,3 +973,4 @@ signature
     Plus : A -> B    
     Minus : A -> B
     Id : A -> B
+    True : A

@@ -149,6 +149,9 @@
    seq                           -- KW["("] _1 _2 KW[")"],
    seq.2:iter                    -- _1,
 
+   seq                           -- KW["("] _1 KW[")"],
+   seq.1:iter                    -- _1,
+
    with-arguments      -- V vs=0 [_1 _2],
    default             -- H hs=0 ["<" _1 ">"],
    default.1:iter-sep  -- H hs=0 [_1 ","],

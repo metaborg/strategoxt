@@ -17,11 +17,22 @@ strategies
     ?appl(prod(_, lit(_), _), _)
 
   /**
+   * Case insensitive literals can be ignored.
+   *
+   * @todo This is questionable: you cannot preserve the case of a literal in this way.
+   */
+  is-ignorable-syntax =
+    ?appl(prod(_, cilit(_), _), _)
+
+  /**
    * In AsFix2ME, literals can occur directly as arguments of an
    * application. For this reason, we include literals in the possible 
    */
   is-ignorable-syntax =
     ?lit(_)
+
+  is-ignorable-syntax =
+    ?cilit(_)
 
 strategies
 

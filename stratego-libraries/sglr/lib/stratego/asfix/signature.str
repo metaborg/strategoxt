@@ -5,6 +5,7 @@ signature
 
     amb                   : List(Tree) -> Tree
     lit                   : String -> Tree
+    cilit                 : String -> Tree
     char                  : NatCon -> Tree
     appl                  : Production * Args -> Tree
 
