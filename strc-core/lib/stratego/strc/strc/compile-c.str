@@ -2,7 +2,6 @@
  * Strategies for compiling a (generated) C file to object code and
  * linking it.
  */
-
 module compile-c
 
 imports
@@ -26,7 +25,7 @@ strategies // Compile generated C code
 	; strc-getoutfile(!".lo") => ofile
 	; <strc-call-backend>
 	    (<xtc-find> "libtool", [
-              "--mode=compile", <xtc-find> "cc" | <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]]])
+              "--mode=compile", "--tag=CC", <get-config> "--cc" | <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]]])
 
   strc-link-object-code :
     FILE(ofile) -> FILE(target)
@@ -38,7 +37,7 @@ strategies // Compile generated C code
   strc-link-program(|ofile, target) =
     <strc-call-backend>
       (<xtc-find> "libtool", [
-        "--mode=link", <xtc-find> "cc", ofile, "-o", target | <get-config> "-Xlinker"])
+        "--mode=link", "--tag=CC", <get-config> "--ld", ofile, "-o", target | <get-config> "-Xlinker"])
 
 /**
  * Linking a library using libtool
@@ -48,7 +47,7 @@ strategies
   strc-link-library(|ofile, target) =
       <call>
         (<xtc-find> "libtool", [
-          "--mode=link", <xtc-find> "cc", ofile, "-o", target, "-rpath", <strc-libdir> target, "-avoid-version", "-no-undefined" | <get-config> "-Xlinker"])
+          "--mode=link", "--tag=CC", <get-config> "--ld", ofile, "-o", target, "-rpath", <strc-libdir> target, "-avoid-version", "-no-undefined" | <get-config> "-Xlinker"])
     ; if <get-config> DisableInstall() then
         log(|Info(), ["Don't forget to install the library using: libtool --mode=install cp ", target, " ", <strc-libinstallpath> target])
       else

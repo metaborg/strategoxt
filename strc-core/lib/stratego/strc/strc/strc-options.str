@@ -11,6 +11,7 @@ strategies
   strc-command-line-options =
     strc-init-strc-config
     ; parse-options(strc-options)
+    ; strc-post-process-strc-config
     ; try(<get-config> "-v"
           ; strc-version
           ; <exit> 0)
@@ -49,7 +50,15 @@ strategies
         ])
 
     ; <set-config> ("--dr", "new")
+    ; <set-config> ("--cc", <xtc-find> "cc")
   )
+
+  strc-post-process-strc-config =
+    where(
+      if not(<get-config> "--ld") then
+        <set-config> ("--ld", <get-config> "--cc")
+      end
+    )
 
   /**
    * @todo This does not supported quoted options (with spaces)
@@ -128,6 +137,10 @@ strategies
   + ArgOption(fail, fail, !"C compiler options:")
   + ArgOption(fail, fail, !"")
 
+  + ArgOption("--cc",
+	where(<set-config>("--cc", <id>)); !(),
+	!"--cc <path>        Use C compiler at <path>")
+
   + ArgOption("-Xcc",
 	where(<post-extend-config>("-Xcc", [<id>])); !(),
 	!"-Xcc <arg>         Pass <arg> on to the C compiler")
@@ -146,6 +159,10 @@ strategies
   + ArgOption(fail, fail, !"")
   + ArgOption(fail, fail, !"Linker options:")
   + ArgOption(fail, fail, !"")
+
+  + ArgOption("--ld",
+	where(<set-config>("--ld", <id>)); !(),
+	!"--ld <path>        Use linker at <path> (default: C compiler)")
 
   + ArgOption("-Xlinker",
 	where(<post-extend-config>("-Xlinker", [<id>])); !(),
