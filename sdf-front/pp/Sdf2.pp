@@ -153,6 +153,7 @@
    seq.1:iter                    -- _1,
 
    with-arguments      -- V vs=0 [_1 _2],
+   non-transitive      -- H hs=1 [_1 "."],
    default             -- H hs=0 ["<" _1 ">"],
    default.1:iter-sep  -- H hs=0 [_1 ","],
 
