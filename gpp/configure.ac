@@ -1,5 +1,5 @@
-AC_PREREQ([2.58])
-AC_INIT([gpp],[0.17M1],[stratego-bugs@cs.uu.nl])
+AC_PREREQ([2.61])
+AC_INIT([gpp],[0.17],[stratego@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 

@@ -197,7 +197,10 @@ ATerm SSL_address_lt(ATerm x, ATerm y)
 
 ATerm SSL_address(ATerm t)
 {
-  return((ATerm)ATmakeInt((int)t));
+  char buf[32];
+  sprintf(buf, "%p", (void*) t);
+
+  return((ATerm) ATmakeString(buf));
 }
 
 ATerm SSL_checksum(ATerm t) {
