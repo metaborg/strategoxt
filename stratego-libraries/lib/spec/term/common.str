@@ -78,15 +78,21 @@ strategies
   */
   address-lt =
     ?(t1,t2); prim("SSL_address_lt",t1,t2)
-    
+   
+  /**
+   * Compare the address of two terms and succeeds if the address of the current
+   * term is smaller than the address of the argument.
+   */ 
   term-address-lt(|t2) =
     ?t1; prim("SSL_address_lt",t1,t2)
 
  /**
   * Give the address of a term. 
   *
-  * <address> t replaces t with its address (an integer).
+  * <address> t replaces t with its address (represented as a string).
   * This can be used to obtain a unique symbolic reference to a term.
+  *
+  * @type t -> String
   */
   address =
     ?t; prim("SSL_address",t)
