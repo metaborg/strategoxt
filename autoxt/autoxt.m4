@@ -52,7 +52,6 @@ AC_DEFUN([XT_DARWIN],
 # -----------------
 AC_DEFUN([XT_C_TYPE_CHARACTERISTICS],
 [
-  AC_CHECK_ALIGNOF([void *])
   AC_CHECK_SIZEOF([void *])
   AC_CHECK_SIZEOF([int])
   AC_CHECK_SIZEOF([long])
