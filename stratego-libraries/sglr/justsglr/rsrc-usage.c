@@ -2,7 +2,6 @@
  $Id: rsrc-usage.c,v 1.10 2001/07/11 10:53:56 markvdb Exp $
  */
 
-#include <config.h>
 #include <unistd.h>
 #include <stdio.h>
 

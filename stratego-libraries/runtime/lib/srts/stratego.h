@@ -29,7 +29,6 @@ USA
 #include <string.h>
 #include <assert.h>
 #include <aterm2.h>
-#include "stratego-config.h"
 #include "aterm-extension.h"  
 
 typedef struct str_frame *StrSL;
