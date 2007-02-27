@@ -164,8 +164,16 @@
    CondChoice -- V vs=0 [
      H hs=1 [KW["if"] _1]
      H hs=1 [KW["then"] _2]
-     H hs=1 [KW["else"] _3] KW["end"]
+     H hs=1 [KW["else"] _3]
+     KW["end"]
    ],
+
+   IfThen -- V vs=0 [
+     H hs=1 [KW["if"] _1]
+     H hs=1 [KW["then"] _2]
+     KW["end"]
+   ],
+
 
    SwitchChoiceNoOtherwise                --  V[V is=2[H[KW["switch"] _1] _2] KW["end"]],
 
