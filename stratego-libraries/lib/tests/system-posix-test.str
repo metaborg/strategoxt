@@ -57,8 +57,8 @@ strategies
 
 strategies
 
-  file-props-tests =
-      apply-and-fail(!"create? -- 1", can-create-file, !"/root/bla.txt")
+  file-props-tests = id
+    // ; apply-and-fail(!"create? -- 1", can-create-file, !"/root/bla.txt")
     ; apply-test(!"create? -- 2", can-create-file, !"/tmp/bla.txt", !"/tmp/bla.txt")
     ; apply-and-check(!"test2a"
 	, modification-time
