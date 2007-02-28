@@ -38,22 +38,23 @@ Stratego/XT 0.17 - released somewhere in 2006
 
 * New SDF2 Bundle
 
-Argument-specific priorities
+- Fixes gcc optimization bugs at x86-64
+- Fixes sed issues in GNU Make 3.81
 
-Case-insensitive keywords
+* Argument-specific priorities
 
-No prod-fun
+* New feature: . priorities.
 
-No unquoted literals
+* Case-insensitive keywords
 
-Dynamic libraries
+* No prod-fun
 
-More efficient installation of sdf2-bundle thanks to linking against
+* No unquoted literals
+
+* Dynamic libraries
+
+* More efficient installation of sdf2-bundle thanks to linking against
 uninstalled libraries
-
-Fixes sed issues in GNU Make 3.81
-
-New feature: . priorities.
 
 (Meta-Environment and Martin Bravenboer)
 
