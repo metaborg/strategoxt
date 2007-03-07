@@ -28,3 +28,6 @@ rules
 
   DesugarOnce :
     lit(s) -> lit(<un-double-quote> s)
+
+  DesugarOnce :
+    ci-lit(s) -> ci-lit(<un-single-quote> s)
