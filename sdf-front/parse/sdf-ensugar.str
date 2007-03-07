@@ -44,6 +44,9 @@ strategies
   EnsugarOnce :
     lit(s) -> lit(<double-quote> s)
  
+ EnsugarOnce :
+    ci-lit(s) -> ci-lit(<single-quote> s)
+ 
   EnsugarOnce =
     term(explode-aterm)
 

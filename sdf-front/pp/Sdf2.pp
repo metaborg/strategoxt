@@ -88,7 +88,8 @@
    prod-fun.2:iter-star-sep -- H hs=0[ _1 KW[","]],
 
    label -- H hs=0[_1 ":" _2],
-   lit   -- _1,
+   lit    -- _1,
+   ci-lit -- _1,
 
    sorts -- H [ KW["sorts"] HV[_1]],
    sort  -- _1,
