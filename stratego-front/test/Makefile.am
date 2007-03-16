@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS = pp syn
+SUBDIRS = pp syn .
 
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS      = -m $*
@@ -18,31 +18,29 @@ nodist_prop1_asfix_SOURCES = prop1-asfix.c
 TESTS = prop1 switch-semantics-test prop1-asfix
 
 prop1-asfix.c: prop1-asfix.str
-	$(SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c
+	$(SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
 
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
-check: check1 check1-asfix check2 check3 check4 check5
+check: check1 check1-asfix check2 check3 check5
 
-check1 : Prop.str
+check1 : Prop.str 
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --asfix
+	$(MAKE) PropStratego.tbl
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --asfix -I .
 
 check1-asfix : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop-asfix.rtree
+	$(MAKE) PropStratego.tbl
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop-asfix.rtree -I .
 
 check2 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop2.str -o prop2.rtree
+	$(MAKE) PropStratego.tbl
+	$(srcdir)/../parse/parse-stratego -i prop2.str -o prop2.rtree -I .
 
 check3 : Prop.str
 	$(MAKE) clean
 	$(srcdir)/../parse/parse-stratego -i prop3.str -o prop3.rtree
-
-check4 : Prop.str
-	$(MAKE) clean
-	$(MAKE) PropStratego.def
-	$(srcdir)/../parse/parse-stratego -i prop2.str -o prop2.rtree
 
 check5 :
 	XTC_REPOSITORY=$(BUILD_REPOSITORY) $(srcdir)/../parse/parse-stratego \
