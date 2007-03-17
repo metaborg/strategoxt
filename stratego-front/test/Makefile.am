@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS = pp syn .
+SUBDIRS = pp syn
 
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS      = -m $*
@@ -17,7 +17,8 @@ nodist_prop1_asfix_SOURCES = prop1-asfix.c
 
 TESTS = prop1 switch-semantics-test prop1-asfix
 
-prop1-asfix.c: prop1-asfix.str
+prop1.c : PropStratego.tbl
+prop1-asfix.c: prop1-asfix.str PropStratego.tbl
 	$(SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
 
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
