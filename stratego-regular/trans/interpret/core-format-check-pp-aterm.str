@@ -62,7 +62,7 @@ strategies
     < my-generic-list-worstcase(s, empty, before, after | tbl, set)
     + my-generic-list-nicecase(s, empty, before, after | tbl, set)
     
-  my-pp-generic-list(s, empty, before, after) :
+  my-pp-generic-list(s, empty, before, after | tbl, set) :
     [] -> <empty> ()
     
   my-generic-list-nicecase(s, empty, before, after | tbl, set) :
