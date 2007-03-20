@@ -6,6 +6,10 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS = parse-unit
 
+UNINSTALLED_LIB = \
+  $(top_srcdir)/../stratego-libraries/sglr/lib/libstratego-sglr.la \
+  $(top_srcdir)/../stratego-libraries/aterm/lib/libstratego-aterm.la
+
 parse_unit_LDADD = $(STRATEGO_SGLR_LIBS) $(STRATEGO_ATERM_LIBS) $(SSL_LIBS)
 
 STRCFLAGS   = --main main-$* 
@@ -21,4 +25,3 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
 LDADD += $(SSL_LIBS)
-

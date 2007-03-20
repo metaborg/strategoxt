@@ -116,6 +116,9 @@ AC_SUBST([STRATEGO_GPP_UNINSTALLED_LIBS],['$(top_builddir)/gpp/lib/libstratego-g
 AC_SUBST([STRATEGO_RTG_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/rtg/lib'])
 AC_SUBST([STRATEGO_RTG_UNINSTALLED_LIBS],['$(top_builddir)/rtg/lib/libstratego-rtg.la'])
 
+AC_SUBST([STRATEGO_ATERM_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/aterm/lib'])
+AC_SUBST([STRATEGO_ATERM_UNINSTALLED_LIBS],['$(top_builddir)/aterm/lib/libstratego-aterm.la'])
+
 # Combinations of all libraries that are needed.
 AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
 AC_SUBST([STRATEGO_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)'])
@@ -154,6 +157,7 @@ AC_CONFIG_FILES([
   stratego-aterm.pc
   aterm/Makefile
   aterm/lib/Makefile
+  aterm/tests/Makefile
 
   stratego-lib.pc
   lib/Makefile

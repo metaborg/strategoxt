@@ -45,8 +45,8 @@ strategies
         try(
           ?Failure()
         ; <concat-strings; echo> ["* ERROR: test ", <int-to-string> i, " (", n, ")"]
-        ; <echo-parse-result> result
-        ; <echo-expected> expected
+        ; try(<echo-parse-result> result)
+        ; try(<echo-expected> expected)
         )
       )
     )
@@ -60,10 +60,20 @@ strategies
       ; <echo> "......................................................................."
 
   echo-parse-result :
-    ParseResult(_, Success(ast)) -> <debug(!"  - succeeded: ")> ast
+    ParseResult(_, Success(ast)) ->
+      < where(<fprint> (<stderr-stream>, ["  - succeeded: "]))
+      ; <write-in-text-to-stream> (<stderr-stream>, <id>)
+      ; <fprint> (<stderr-stream>, ["\n"])
+      > ast
 
   echo-expected :
-    pattern(p) -> <hack-aterm-pattern; implode-aterm; debug(!"  - expected:  ")> p
+    pattern(p) ->
+      < hack-aterm-pattern
+      ; implode-aterm
+      ; where(<fprint> (<stderr-stream>, ["  - expected:  "]))
+      ; <write-in-text-to-stream> (<stderr-stream>, <id>)
+      ; <fprint> (<stderr-stream>, ["\n"])
+      > p
 
   hack-aterm-pattern =
     topdown(try(

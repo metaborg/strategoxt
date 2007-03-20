@@ -9,13 +9,15 @@ imports
 strategies
 
   explode-aterm =
-    aterm-explode-list
+       aterm-explode-annotated
+    <+ aterm-explode-list
     <+ aterm-explode-int
     <+ aterm-explode-fun
     <+ aterm-explode-appl
 
   implode-aterm =
-    aterm-implode-list
+       aterm-implode-annotated
+    <+ aterm-implode-list
     <+ aterm-implode-int
     <+ aterm-implode-fun
     <+ aterm-implode-appl
@@ -84,13 +86,13 @@ rules
     quoted(s) -> s
 
   /**
-   * todo: annotations
+   * Anotations
+   */
+  aterm-explode-annotated :
+    t{^as@[_ | _]} -> annotated(<explode-aterm> t{}, default(<map(explode-aterm)> as))
 
-    placeholder           : ATerm -> ATerm
-    annotation            : List(ATerm) -> Ann
-    annotated-constant    : ACon * Ann -> ATerm
-    annotated-list        : ATermList * Ann -> ATerm
-    annotated-fun         : AFun * Ann -> ATerm
-    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
-    annotated-placeholder : ATerm * Ann -> ATerm
-    */
+  aterm-implode-annotated :
+    annotated(t, default(ts)) -> t'{^ts'}
+    where 
+      t'  := <implode-aterm> t
+    ; ts' := <map(implode-aterm)> ts
