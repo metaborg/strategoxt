@@ -830,8 +830,7 @@ strategies
    * @type List(a) -> List(a)
    */
   take(isn) = 
-    where(isn => n)
-    ; nzip0(id); take-until(?(n,_)); map(Snd)
+    take(|<isn>)
 
   /**
    * Returns the first n elements of a list, fails

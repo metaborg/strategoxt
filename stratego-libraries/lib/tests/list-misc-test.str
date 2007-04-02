@@ -77,12 +77,73 @@ strategies
       , !["a", ("b", [1, 2]), "d", "c"]
       )
 
-  take-test =
-    apply-test(!"take-test"
-        , take(!3)
-	, !["a","b","c","d","e"]
-	, !["a","b","c"]
-    )
+  take-test = id
+    ; apply-test(!"take 3 of a list of more than 3 elements"
+      , take(!3)
+      , !["a","b","c","d","e"]
+      , !["a","b","c"]
+      )
+    ; apply-test(!"take 0 returns the empty list"
+      , take(!0)
+      , !["a","b","c"]
+      , ![]
+      )
+    ; apply-test(!"take 1 returns the first element"
+      , take(!1)
+      , !["a","b","c"]
+      , !["a"]
+      )
+    ; apply-test(!"take 1 returns the first element"
+      , take(!1)
+      , !["a"]
+      , !["a"]
+      )
+    ; apply-test(!"take 3 of a list of 3 elements returns the list"
+      , take(!3)
+      , !["a","b","c"]
+      , !["a","b","c"]
+      )
+    ; apply-and-fail(!"take 3 fails on a list of two elements"
+      , take(!3)
+      , !["a","b"]
+      )
+    ; apply-and-fail(!"take 3 fails on the empty list"
+      , take(!3)
+      , ![]
+      )
+    ; apply-test(!"take 3 of a list of more than 3 elements"
+      , take(|3)
+      , !["a","b","c","d","e"]
+      , !["a","b","c"]
+      )
+    ; apply-test(!"take 0 returns the empty list"
+      , take(|0)
+      , !["a","b","c"]
+      , ![]
+      )
+    ; apply-test(!"take 1 returns the first element"
+      , take(|1)
+      , !["a","b","c"]
+      , !["a"]
+      )
+    ; apply-test(!"take 1 returns the first element"
+      , take(|1)
+      , !["a"]
+      , !["a"]
+      )
+    ; apply-test(!"take 3 of a list of 3 elements returns the list"
+      , take(|3)
+      , !["a","b","c"]
+      , !["a","b","c"]
+      )
+    ; apply-and-fail(!"take 3 fails on a list of two elements"
+      , take(|3)
+      , !["a","b"]
+      )
+    ; apply-and-fail(!"take 3 fails on the empty list"
+      , take(|3)
+      , ![]
+      )
 
   drop-test =
     apply-test(!"drop-test"
