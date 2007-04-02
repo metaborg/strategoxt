@@ -39,7 +39,7 @@ strategies
    * Removes all elements from a list that satisfy s
    *
    * @param s  a -> b
-   * @type     List(a) -> List(b)
+   * @type     List(a) -> List(a)
    */
   remove-all(s) =
     filter(not(s))    
