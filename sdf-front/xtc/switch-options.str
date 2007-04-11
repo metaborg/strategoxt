@@ -11,12 +11,12 @@ strategies
   if-switch(switch, strat) =
     if-switch(switch, start, id)
     
-  if-switch(switch, then, else) =
-    if( where(<switch; construct-long-switch> () => sw)
-      ; where(<eval-config-switch> sw)
-    , then
-    , else
-    )
+  if-switch(switch, then-s, else-s) =
+    if <switch; construct-long-switch> (); eval-config-switch then
+      then-s
+    else
+      else-s
+    end
     
   eval-config-switch =
     get-config < ?"on" + id

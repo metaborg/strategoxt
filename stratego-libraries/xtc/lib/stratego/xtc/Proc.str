@@ -445,12 +445,16 @@ strategies
    * @type _ -> _
    */
   xtc-check-dependencies =
-    if(<get-config> "--check"
-      , filter(not(xtc-find-silent))
-        ; if(not([])
-            , debug(!"No XTC registration found for: "); <exit> 1
-	    , <echo> "All tools available"; <exit> 0)
-      )
+    if check := <get-config> "--check" then
+      <filter(not(xtc-find-silent))> check
+      ; if not(?[]) then
+          debug(!"No XTC registration found for: ")
+          ; <exit> 1
+        else
+          <echo> "All tools available"
+          ; <exit> 0
+        end
+    end
 
 strategies
 
