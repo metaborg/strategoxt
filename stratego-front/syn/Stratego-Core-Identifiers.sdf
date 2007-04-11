@@ -41,12 +41,12 @@ exports
     "all"
     "case" %% not reserved kw
     "constructors"
-    "else"
-    "end"
+    "else" %% not reserved kw
+    "end" %% not reserved kw
     "external" %% not reserved kw
     "fail"
     "id"
-    "if"
+    "if" %% not reserved kw
     "in"
     "imports" %% not reserved kw
     "let"
@@ -75,11 +75,8 @@ exports
   lexical syntax
     "all"               -> Keyword
     "constructors" 	-> Keyword
-    "else" 		-> Keyword
-    "end" 		-> Keyword
     "fail" 		-> Keyword
     "id" 		-> Keyword
-    "if" 		-> Keyword
     "in" 		-> Keyword
     "let" 		-> Keyword
     "module" 		-> Keyword
