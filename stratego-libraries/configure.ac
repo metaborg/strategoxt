@@ -41,6 +41,8 @@ if test "$xt_baseline" = "yes"; then
   STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
   BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
   PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp'
+  SDFTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/sdf-front'
+  SDFPPTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf-front'
   RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
   STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
   STRATEGOBOXTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/Stratego-Box.tbl'
@@ -56,6 +58,8 @@ else
     STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
     BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
     PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table'
+    SDFTBL_UNINSTALLED='$(top_builddir)/../sdf-front/syn'
+    SDFPPTBL_UNINSTALLED='$(top_builddir)/../sdf-front/pp'
     RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
     STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
     STRATEGOBOXTBL_UNINSTALLED='$(top_builddir)/../gpp/syn/box/Stratego-Box.tbl'
@@ -79,6 +83,8 @@ AC_SUBST([SDF2RTG])
 AC_SUBST([BOX_UNINSTALLED_STRCFLAGS])
 AC_SUBST([PPTABLETBL_UNINSTALLED])
 AC_SUBST([RTGTBL_UNINSTALLED])
+AC_SUBST([SDFTBL_UNINSTALLED])
+AC_SUBST([SDFPPTBL_UNINSTALLED])
 AC_SUBST([STRATEGOTBL_UNINSTALLED])
 AC_SUBST([STRATEGOBOXTBL_UNINSTALLED])
 
@@ -119,6 +125,9 @@ AC_SUBST([STRATEGO_RTG_UNINSTALLED_LIBS],['$(top_builddir)/rtg/lib/libstratego-r
 AC_SUBST([STRATEGO_ATERM_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/aterm/lib'])
 AC_SUBST([STRATEGO_ATERM_UNINSTALLED_LIBS],['$(top_builddir)/aterm/lib/libstratego-aterm.la'])
 
+AC_SUBST([STRATEGO_SDF_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/sdf/lib'])
+AC_SUBST([STRATEGO_SDF_UNINSTALLED_LIBS],['$(top_builddir)/sdf/lib/libstratego-sdf.la'])
+
 # Combinations of all libraries that are needed.
 AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
 AC_SUBST([STRATEGO_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)'])
@@ -144,6 +153,10 @@ AC_CONFIG_FILES([
   rtg/Makefile
   rtg/lib/Makefile
   rtg/tests/Makefile
+
+  stratego-sdf.pc
+  sdf/Makefile
+  sdf/lib/Makefile
 
   stratego-xtc.pc
   xtc/Makefile

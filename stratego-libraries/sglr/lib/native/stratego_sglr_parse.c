@@ -201,6 +201,24 @@ ATerm STRSGLR_anno_position_info(ATerm pt_term, ATerm path_term)
   return PT_ParseTreeToTerm(pt);
 }
 
+ATerm STRSGLR_implode_parsetree(ATerm t)
+{
+  return PT_implodeParseTree(
+    PT_ParseTreeFromTerm(t),
+    ATtrue, /* cons */
+    ATtrue, /* layout */
+    ATtrue, /* literals */
+    ATtrue, /* injections */
+    ATtrue, /* parsetree */
+    ATtrue, /* implode lexicals */
+    ATfalse, /* don't keep annotations */
+    ATtrue, /* alt */
+    ATtrue, /* seq */
+    ATtrue, /* opt */
+    ATfalse /* layout placeholder */
+    );
+}
+
 static char* read_text_from_stream(FILE* stream)
 {
   char* result;

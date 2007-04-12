@@ -1,0 +1,6 @@
+/**
+ * SDF abstract syntax definition.
+ */
+module stratego/sdf/syntax
+imports
+  Sdf2

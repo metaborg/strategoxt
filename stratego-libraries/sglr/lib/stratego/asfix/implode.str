@@ -51,6 +51,16 @@ strategies
       <+ all(x)
       )
 
+strategies
+
+  /**
+   * Implodes a slight variant of the asfix format, similar to
+   * the command-line implodePT tool. Don't use this imploder,
+   * unless you know you need it.
+   */
+  implode-parsetree =
+    ?t; prim("STRSGLR_implode_parsetree", t)
+
 /**
  * Alternative entry-points used by implode-asfix
  */

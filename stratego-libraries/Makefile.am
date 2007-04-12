@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS = runtime lib build-tools xtc sglr gpp rtg tool-doc aterm
+SUBDIRS = runtime lib build-tools xtc sglr gpp rtg tool-doc aterm sdf
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST = \
   Makefile.xt MakefileLocal.xt svn-revision \
@@ -8,6 +8,7 @@ EXTRA_DIST = \
   stratego-tool-doc.pc.in \
   stratego-aterm.pc.in \
   stratego-sglr.pc.in \
+  stratego-sdf.pc.in \
   stratego-gpp.pc.in \
   stratego-xtc.pc.in \
   stratego-lib.pc.in \
@@ -18,6 +19,7 @@ ACLOCAL_AMFLAGS = -I ./config
 pkgconfig_DATA = \
   stratego-sglr.pc \
   stratego-gpp.pc \
+  stratego-sdf.pc \
   stratego-lib.pc \
   stratego-xtc.pc \
   stratego-runtime.pc \
