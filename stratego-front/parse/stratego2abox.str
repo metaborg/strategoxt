@@ -43,43 +43,43 @@ strategies
 rules
 
   stratego-to-abox : 
-    Module(name,declarations) -> |[ V vs=1 [ H[ KW["module"] ~lit:name ] V vs=2 [ ~*declarations ] ] ]|
+    Module(name,declarations) -> V vs=1 [ H[ KW["module"] ~lit:name ] V vs=2 [ ~*declarations ] ]
 
   stratego-to-abox : 
-    Specification(declarations) -> |[ V vs=1 [ KW["specification"] V vs=2 [ ~*declarations ] ] ]|
+    Specification(declarations) -> V vs=1 [ KW["specification"] V vs=2 [ ~*declarations ] ]
 
 
 rules
 
   stratego-to-abox : 
-    Imports(imports) -> |[ V is=2 [ KW["imports"] V vs=0[ ~*imports ]  ] ]|
+    Imports(imports) -> V is=2 [ KW["imports"] V vs=0[ ~*imports ]  ]
     
   stratego-to-abox : 
     Import(name) -> S(name)
     
   stratego-to-abox : 
-    ImportWildcard(name) -> |[ H hs=0 [ ~lit:name KW["/"] KW["-"] ] ]| 
+    ImportWildcard(name) -> H hs=0 [ ~lit:name KW["/"] KW["-"] ]
     
 
 rules
 
   stratego-to-abox : 
-    Strategies(decs) -> |[ V is=2 [ KW["strategies"] V vs=1 [ ~*decs ]  ] ]|
+    Strategies(decs) -> V is=2 [ KW["strategies"] V vs=1 [ ~*decs ]  ]
   
   stratego-to-abox : 
-    Rules(decs) -> |[ V is=2 vs=1 [ KW["rules"] V vs=1 [ ~*decs ]  ] ]|
+    Rules(decs) -> V is=2 vs=1 [ KW["rules"] V vs=1 [ ~*decs ]  ]
 
   stratego-to-abox : 
-    Overlays(decs) -> |[ V is=2 [ KW["overlays"] V vs=1 [ ~*decs ]  ] ]|
+    Overlays(decs) -> V is=2 [ KW["overlays"] V vs=1 [ ~*decs ]  ]
 
   stratego-to-abox : 
-    Signature(decs) -> |[ V is=2 [ KW["signature"] V vs=1 [ ~*decs ]  ] ]|
+    Signature(decs) -> V is=2 [ KW["signature"] V vs=1 [ ~*decs ]  ]
   
   stratego-to-abox : 
-    Sorts(decs) -> |[ V is=2 [ KW["sorts"] H hs=1 [ ~*decs ]  ] ]|
+    Sorts(decs) -> V is=2 [ KW["sorts"] H hs=1 [ ~*decs ]  ]
 
   stratego-to-abox : 
-    Constructors(decs) -> |[ V is=2 [ KW["constructors"] A (l hs=1, l hs=1, l hs=1) [ ~*decs ]  ] ]|
+    Constructors(decs) -> V is=2 [ KW["constructors"] A (l hs=1, l hs=1, l hs=1) [ ~*decs ]  ]
 
 
 rules
@@ -108,22 +108,22 @@ rules
     SortNoArgs(name) -> S(name)
 
   stratego-to-abox : 
-    Sort(name,arg) -> |[ H hs=0[~lit:name KW["("] ~arg' KW[")"]] ]|
+    Sort(name,arg) -> H hs=0[~lit:name KW["("] ~arg' KW[")"]]
     where
       <separate-by-comma>arg => arg'
 
   stratego-to-abox : 
-    SortList(arg) -> |[ H [ KW["["] ~arg' KW["]"] ] ]|
+    SortList(arg) -> H [ KW["["] ~arg' KW["]"] ]
     where
       <separate-by-comma>arg => arg'
 
   stratego-to-abox : 
-    SortListTl(arg,tail) -> |[ H [ KW["["] ~arg' KW["|"] ~tail KW["]"] ] ]|
+    SortListTl(arg,tail) -> H [ KW["["] ~arg' KW["|"] ~tail KW["]"] ]
     where
       <separate-by-comma>arg => arg'
 
   stratego-to-abox : 
-    SortTuple(arg) -> |[ H[ KW["("] ~arg' KW[")"] ] ]|
+    SortTuple(arg) -> H[ KW["("] ~arg' KW[")"] ]
     where
       <separate-by-comma>arg => arg'
 
@@ -131,7 +131,7 @@ rules
     ConstType(sort) -> sort
 
   stratego-to-abox : 
-    FunType(lhs,rhs) -> |[ H [ "(" ~lhs' KW["->"] ~rhs ")" ] ]|
+    FunType(lhs,rhs) -> H [ "(" ~lhs' KW["->"] ~rhs ")" ]
     where
       <separate-by-star>lhs => lhs'
 
@@ -146,46 +146,47 @@ rules
 rules
 
   stratego-to-abox :  
-   Some(s) -> |[ H hs=0 [KW["some"] KW["("] ~s KW[")"]] ]|
+   Some(s) -> H hs=0 [KW["some"] KW["("] ~s KW[")"]]
 
   stratego-to-abox : 
-   One(s) -> |[ H hs=0 [KW["one"] KW["("] ~s KW[")"]] ]|
+   One(s) -> H hs=0 [KW["one"] KW["("] ~s KW[")"]]
 
   stratego-to-abox : 
-   All(s) -> |[ H hs=0 [KW["all"] KW["("] ~s KW[")"]] ]|
+   All(s) -> H hs=0 [KW["all"] KW["("] ~s KW[")"]]
 
 rules
 
   stratego-to-abox : 
-    ImportTerm(modname) -> |[ KW["import-term"] KW["("] ~t KW[")"] ]|
-    where t := S(modname)
+    ImportTerm(modname) -> H hs=0 [ KW["import-term"] KW["("] ~t KW[")"] ]
+    where
+      t := S(modname)
 
 rules
 
   stratego-to-abox : 
-    Match(t) -> |[ H hs=0[ KW["?"] ~t ] ]|
+    Match(t) -> H hs=0[ KW["?"] ~t ]
 
   stratego-to-abox : 
-    Build(t) -> |[ H hs=0[ KW["!"] ~t ] ]|
-
-rules
-
-  stratego-to-abox :
-    BuildDefault(t) -> |[ H hs=0 [ KW["_"] ~t ] ]|
-
-  stratego-to-abox :
-    BuildDefaultPT(t) -> |[ H hs=0 [ KW["_"] ~t ] ]|
+    Build(t) -> H hs=0[ KW["!"] ~t ]
 
 rules
 
   stratego-to-abox :
-    As(v,t) -> |[ H hs=0 [ ~v "@" ~t ] ]|
+    BuildDefault(t) -> H hs=0 [ KW["_"] ~t ]
+
+  stratego-to-abox :
+    BuildDefaultPT(t) -> H hs=0 [ KW["_"] ~t ]
+
+rules
+
+  stratego-to-abox :
+    As(v,t) -> H hs=0 [ ~v "@" ~t ]
    
   stratego-to-abox :
-    Explode(c,cs) -> |[ H hs=0[ ~c "#" "(" ~cs ")" ] ]|
+    Explode(c,cs) -> H hs=0[ ~c "#" "(" ~cs ")" ]
 
   stratego-to-abox :
-    ExplodeCong(c,cs) -> |[ H hs=0[ ~c "#" "(" ~cs ")" ] ]|
+    ExplodeCong(c,cs) -> H hs=0[ ~c "#" "(" ~cs ")" ]
 
 rules
 
@@ -233,13 +234,13 @@ rules
     )
 
   stratego-to-abox : 
-    Not(s) -> |[ H hs=0 [ KW["not"] KW["("] ~s KW[")"] ] ]|
+    Not(s) -> H hs=0 [ KW["not"] KW["("] ~s KW[")"] ]
 
   stratego-to-abox : 
-    Where(s) -> |[ H hs=0 [ KW["where"] KW["("] ~s KW[")"] ] ]|
+    Where(s) -> H hs=0 [ KW["where"] KW["("] ~s KW[")"] ]
 
   stratego-to-abox : 
-    Test(s) -> |[ H hs=0 [ KW["test"] KW["("] ~s KW[")"] ] ]|
+    Test(s) -> H hs=0 [ KW["test"] KW["("] ~s KW[")"] ]
 
 rules
 
@@ -282,24 +283,24 @@ rules
     )
 
   stratego-to-abox : 
-    Op(name,[]) -> |[ H hs=0[ ~lit:name "(" ")" ] ]|
+    Op(name,[]) -> H hs=0[ ~lit:name "(" ")" ]
 
   stratego-to-abox : 
-    CongQ(name,[]) -> |[ H hs=0[ ~lit:name "(" ")" ] ]|
+    CongQ(name,[]) -> H hs=0[ ~lit:name "(" ")" ]
 
 rules
 
   stratego-to-abox : 
-    BA(s,t) -> |[ H hs=1[ H hs=0[ "<" ~s ">" ] ~t ] ]|
+    BA(s,t) -> H hs=1[ H hs=0[ "<" ~s ">" ] ~t ]
 
   stratego-to-abox : 
-    RootApp(s) -> |[ H hs=0[ "<" ~s ">" ] ]|
+    RootApp(s) -> H hs=0[ "<" ~s ">" ]
 
   stratego-to-abox : 
-    App(s,t) -> |[ H[H hs=0[KW["<"] ~s KW[">"]] ~t] ]|
+    App(s,t) -> H[H hs=0[KW["<"] ~s KW[">"]] ~t]
 
   stratego-to-abox : 
-    AM(s,t) -> |[ H[ ~s KW["=>"] ~t ] ]|
+    AM(s,t) -> H[ ~s KW["=>"] ~t ]
 
   stratego-to-abox : 
     Assign(t1, t2) ->  H hs=1 [ ~t1 ":=" ~t2 ]
@@ -334,7 +335,7 @@ rules
 rules
 
   stratego-to-abox : 
-    ListTail(arg,tail) -> |[ H hs=0[ KW["["] ~arg' KW["|"] ~tail KW["]"] ] ]|
+    ListTail(arg,tail) -> H hs=0[ KW["["] ~arg' KW["|"] ~tail KW["]"] ]
     where
       <separate-by-comma>arg => arg'
 
@@ -423,7 +424,7 @@ rules
     ; <separate-by-comma>argt => argt'
   
   stratego-to-abox : 
-   ExtSDef(name,args,argt) -> |[ H [ KW["external"] H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] ]  ]|
+   ExtSDef(name,args,argt) -> H [ KW["external"] H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] ]
     where
       <separate-by-comma>args => args'
     ; <separate-by-comma>argt => argt'
