@@ -14,6 +14,7 @@ EXTRA_DIST   = \
   stratego-xtc-uninstalled.pc.in \
   stratego-sglr-uninstalled.pc.in \
   stratego-gpp-uninstalled.pc.in \
+  stratego-sdf-uninstalled.pc.in \
   stratego-rtg-uninstalled.pc.in
 
 pkgconfigdir=$(libdir)/pkgconfig

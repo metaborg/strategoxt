@@ -81,6 +81,7 @@ AC_CONFIG_FILES([
   stratego-sglr-uninstalled.pc
   stratego-gpp-uninstalled.pc
   stratego-rtg-uninstalled.pc
+  stratego-sdf-uninstalled.pc
   stratego-tool-doc-uninstalled.pc
   stratego-aterm-uninstalled.pc
   xtc-uninstalled.pc
