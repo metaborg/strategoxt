@@ -40,27 +40,46 @@ rules
    * Handles the experimental ast annotations.
    */
   ReplAstPattern(impl) : 
-    appl(p, ts){a*} -> term{a*}
+    appl(p, ts){a*} -> term{c*}
     where
       <get-ast-pattern> p => pattern 
     ; <map(impl)>ts => is
     ; {| ReplacePlaceholder: 
         <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
-      ; <rec rec(
-           alltd({ ph:
-             is-placeholder
-           < get-placeholder => ph
-             ; (  ReplacePlaceholder
-               <+ "conc"#([rec, rec])
-                  ; if "conc"#([is-list, is-list]) then
-                      \ "conc"#([xs, ys]) -> <conc> (xs, ys) \
-                    end
-               <+ log(| Error()
-                      , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
-                                        , <write-to-string>pattern]) ; <exit> 1 )
-           + fail
+      ; !pattern
+      ; rec rec(
+           alltd({ ph, t1, t2, a*, b*, c*:
+             if is-placeholder then
+               ?_{a*}
+               ; get-placeholder => ph
+               ; (  ReplacePlaceholder
+                 <+ "conc"#([rec, rec])
+                    ; if "conc"#([is-list, is-list]) then
+                        \ "conc"#([xs, ys]) -> <conc> (xs, ys) \
+                      end
+                 <+ log(| Error()
+                        , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
+                                          , <write-to-string>pattern]) ; <exit> 1 )
+               ; if not([] := a*) then
+                   \ t1{b*} -> t1{c*} where c* := <conc> (<map(rec)> a*, b*) \
+                 end
+             else
+               ?_{^[_ | _]}
+               ; \ t1{a*} -> t2{b*} where b* := <map(rec)> a*; t2 := <rec> t1{^[]} \
+             end
            })
-         )>pattern => term
+         )
+      ; ?term{b*}
+      ; if [] := a* then
+          !b*
+        else
+          if [] := b* then
+            <conc> (a*, b*)
+          else
+            !a*
+          end
+        end
+      ; ?c*
       |}
 
   /**

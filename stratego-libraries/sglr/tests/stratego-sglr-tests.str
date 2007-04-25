@@ -773,6 +773,54 @@ strategies
       , !Call("f", [Int("1"), Int("2"), Int("3")])
       )
 
+    ; apply-test(!"Ast attribute with annotations (1)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno a b c"
+      , !Foo("a", "b", "c")
+      )
+
+    ; apply-test(!"Ast attribute with annotations (2)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno b c"
+      , !Foo("b"){"c"}
+      )
+
+    ; apply-test(!"Ast attribute with annotations (3)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno b c d"
+      , !Foo("b"){"c", "d"}
+      )
+
+    ; apply-test(!"Ast attribute with annotations (4)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno c d"
+      , !Foo("c"){Id("d")}
+      )
+
+    ; apply-test(!"Ast attribute with annotations (5)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno d e"
+      , !"d"{"e"}
+      )
+
+    ; apply-test(!"Ast attribute with annotations (6)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno c d e"
+      , !Foo(1{"c"}, 2{"d"}, 3{"e"})
+      )
+
+    ; apply-test(!"Ast attribute with annotations (7)"
+      , parse-string-pt(|tbl)
+        ; implode-asfix
+      , !"anno e"
+      , !"e"{1, 2}
+      )
     ; where(<close-parse-table> tbl)
 
  implode-tests-lexical = id
@@ -974,3 +1022,7 @@ signature
     Minus : A -> B
     Id : A -> B
     True : A
+    
+    Foo : A -> A
+    Foo : A * A -> A
+    Foo : A * A * A -> A
