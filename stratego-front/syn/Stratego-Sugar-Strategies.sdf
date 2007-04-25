@@ -101,23 +101,28 @@ exports
   %% Priorities
 
   context-free priorities
-    { Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
-      Strategy "#" StrategyParen          -> Strategy {cons("ExplodeCong")}
+    { Strategy StrategyCurly		  -> Strategy
+      Strategy "#" StrategyParen          -> Strategy
     }
-  > { "!" Term 				  -> Strategy {cons("Build")}
-      "?" Term 				  -> Strategy {cons("Match")}
+  > { "!" Term 				  -> Strategy
+      "?" Term 				  -> Strategy
     }
-  > StrategyAngle Term 		          -> Strategy {cons("BA")}
-  > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
-  > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
+  > StrategyAngle Term 		          -> Strategy
+  > Strategy "=>" Term 		  	  -> Strategy
+  > Strategy ";" Strategy 		  -> Strategy
   > {right: 
-     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
-     Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
-     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
+     Strategy "+" Strategy 		  -> Strategy
+     Strategy "<+" Strategy 		  -> Strategy
+     Strategy "+>" Strategy 		  -> Strategy
      
      Strategy "<" StrategyMid 
-              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
+              "+" Strategy 		  -> Strategy
     }
-    ,
+
+  context-free priorities
     Strategy 				  -> StrategyMid
-  > Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right}
+  > Strategy "+" Strategy 		  -> Strategy
+
+  context-free priorities
+    Strategy StrategyCurly -> Strategy
+  .> Term ":=" Term -> Strategy

@@ -224,3 +224,6 @@ test priority of guarded left choice and choice
 
 test associativity of guarded left choice
   "s0 < s1 + s2 < s3 + s4" -> GuardedLChoice(_, _, GuardedLChoice(_, _, _))
+
+test STR-714: amb with annotations in := operator
+  "a := 1{2}" -> Assign(_, AnnoList(_, _))
