@@ -14,6 +14,11 @@ hiddens
   context-free start-symbols StrategoModule
 
 exports
+  %% HACK
+  context-free syntax
+    Group "." -> Group {non-assoc,cons("non-transitive")}
+
+
   context-free syntax
 
         "|[" SDF "]|" -> StrategoTerm {cons("ToTerm")}
