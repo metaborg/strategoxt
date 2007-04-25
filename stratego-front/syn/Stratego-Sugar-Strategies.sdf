@@ -124,5 +124,7 @@ exports
   > Strategy "+" Strategy 		  -> Strategy
 
   context-free priorities
-    Strategy StrategyCurly -> Strategy
-  .> Term ":=" Term -> Strategy
+    { Strategy StrategyCurly      -> Strategy
+      Strategy "#" StrategyParen  -> Strategy
+    }
+    .> Term ":=" Term -> Strategy

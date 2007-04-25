@@ -227,3 +227,6 @@ test associativity of guarded left choice
 
 test STR-714: amb with annotations in := operator
   "a := 1{2}" -> Assign(_, AnnoList(_, _))
+
+test STR-714: amb with annotations in := operator
+  "a := x#([])" -> Assign(_, NoAnnoList(_))
