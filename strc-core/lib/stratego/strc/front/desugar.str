@@ -208,6 +208,7 @@ rules
   Desugar :
     RDec(f, ss) -> RDecT(f, ss, [])
 
+  /*
   Desugar :
     |[ rules( dr := t ) ]| -> |[ where({y : !t; ?y; rules( dr : _ -> y )}) ]| 
     where y := <newname> "globvar"
@@ -215,6 +216,7 @@ rules
   Desugar :
     |[ rules( dr :+= t ) ]| -> |[ where({y : !t; ?y; rules( dr :+ _ -> y )}) ]| 
     where y := <newname> "globvar"
+  */
 
   Desugar :
     DynRuleIntersectFix(rulenames, s) -> 

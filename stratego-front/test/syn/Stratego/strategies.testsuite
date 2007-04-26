@@ -230,3 +230,12 @@ test STR-714: amb with annotations in := operator
 
 test STR-714: amb with annotations in := operator
   "a := x#([])" -> Assign(_, NoAnnoList(_))
+
+test Global variable syntax
+  "rules(Foo := [1, 2, 3])" -> GenDynRules([DynRuleAssign(_, _)])
+
+test Global variable syntax
+  "rules(Foo := <conc> (xs, ys))" -> GenDynRules([DynRuleAssign(_, _)])
+
+test Global variable syntax
+  "rules(Foo :+= 1)" -> GenDynRules([DynRuleAssignAdd(_, NoAnnoList(Int("1")))])
