@@ -213,6 +213,10 @@ rules
     where y := <newname> "globvar"
 
   Desugar :
+    |[ rules( dr :+= t ) ]| -> |[ where({y : !t; ?y; rules( dr :+ _ -> y )}) ]| 
+    where y := <newname> "globvar"
+
+  Desugar :
     DynRuleIntersectFix(rulenames, s) -> 
     CallT(SVar("dr-fix-and-intersect"), [s], [<mk-rulenames> rulenames])
 
