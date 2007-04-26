@@ -25,6 +25,8 @@ exports
     DynRuleId ":+"  Rule        -> DynRuleDef {cons("AddDynRule")}
     DynRuleId ":"   Term        -> DynRuleDef {cons("SetDynRuleMatch")}
 
+    DynRuleId ":="   Term       -> DynRuleDef {cons("DynRuleAssign")}
+
     DynRuleId ":"   Rule "depends" "on" Term -> DynRuleDef {cons("SetDynRuleDepends")}
 
     RuleDec "." Term            -> DynRuleId {cons("LabeledDynRuleId")}
