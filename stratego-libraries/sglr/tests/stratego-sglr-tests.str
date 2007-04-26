@@ -17,7 +17,8 @@ strategies
 
   main-stratego-sglr-tests =
     test-suite(!"Stratego SGLR Library",
-      open-close-tests
+    id
+    ; open-close-tests
     ; simple-parse-tests
     ; advanced-parse-tests
     ; kernel-start-symbol
@@ -32,6 +33,7 @@ strategies
     ; implode-tests-ast-attributes    
     ; implode-tests-lexical    
     ; asfix2me-tests
+    ; asfix-anno-position-info-tests
     )
 
   open-close-tests = id
@@ -376,6 +378,52 @@ strategies
       }
 
     ; where(<close-parse-table> tbl)
+
+/**
+ * Position info
+ */
+strategies
+
+  asfix-anno-position-info-tests =
+      where(
+        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
+      )
+
+    ; apply-test(!"Parse a simple expression"
+      , parse-string-pt(|tbl)
+        ; asfix-anno-position-info(|"")
+        ; implode-asfix
+        ; strip-non-string-annos
+      , !"1 + 2"
+      , !Plus(
+           Int("1"{[pos-info(),area-in-file("",area(1,0,1,1,0,1))]})
+         , Int("2"{[pos-info(),area-in-file("",area(1,4,1,5,4,1))]})
+         )
+      )
+
+    ; apply-test(!"Parse a simple expression"
+      , parse-string-pt(|tbl)
+        ; asfix-anno-position-info(|"")
+        ; implode-asfix
+        ; strip-non-string-annos
+      , !"1 + 234"
+      , !Plus(
+           Int("1"{[pos-info(),area-in-file("",area(1,0,1,1,0,1))]})
+         , Int("234"{[pos-info(),area-in-file("",area(1,4,1,7,4,3))]})
+         )
+      )
+
+    ; where(
+        <close-parse-table> tbl
+      )
+
+  strip-non-string-annos =
+    topdown(if not(is-string) then rm-annotations end)
+
+/**
+ * Implode
+ */
+strategies
     
   implode-tests =
       where(
@@ -1026,3 +1074,5 @@ signature
     Foo : A -> A
     Foo : A * A -> A
     Foo : A * A * A -> A
+
+    pos-info : AnnoKey

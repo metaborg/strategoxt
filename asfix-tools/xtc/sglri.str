@@ -55,7 +55,7 @@ strategies
         end
   
       ; if must-preserve-positions then
-          xtc-transform(!"addPosInfo", !["-p", ""])
+          asfix-anno-position-info(|"")
         end
 
       ; implode-asfix-using-config

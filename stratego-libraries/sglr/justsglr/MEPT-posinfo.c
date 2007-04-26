@@ -22,6 +22,7 @@
 #include <MEPT-layout.h>
 #include <MEPT-visitors.h>
 #include <MEPT-yield.h>
+#include <Error.h>
 
 #define POS_INFO_ANNO "pos-info"
 #define UNLIMITED_DEPTH -1
@@ -126,14 +127,23 @@ static ATerm PT_makePosInfo(const char *path, int line1, int col1,
                                               int line2, int col2,
                                               int offset, int length)
 {
-  LOC_Area area = LOC_makeAreaArea(line1, col1, line2, col2, offset, length);
-  LOC_Location location = LOC_makeLocationAreaInFile(path, area);
+  // area = LOC_makeAreaArea(line1, col1, line2, col2, offset, length);
+  ATerm area = (ATerm) ATmakeAppl6(ERR_afun10,
+      (ATerm) ATmakeInt(line1)
+    , (ATerm) ATmakeInt(col1)
+    , (ATerm) ATmakeInt(line2)
+    , (ATerm) ATmakeInt(col2)
+    , (ATerm) ATmakeInt(offset)
+    , (ATerm) ATmakeInt(length));
 
-  return (ATerm) location;
+  // location = LOC_makeLocationAreaInFile(path, area);
+  ATerm location = (ATerm) ATmakeAppl2(ERR_afun9, (ATerm) ATmakeAppl(ATmakeAFun(path, 0, ATtrue)), area);
+
+  return location;
 }
 
 
-static PT_Tree PT_setTreePosInfo(PT_Tree tree, const char *path, 
+static PT_Tree PT_setTreePosInfo(volatile PT_Tree tree, const char *path, 
 			  int start_line, int start_col, 
                           int to_line, int to_col,
                           int offset, int length)
