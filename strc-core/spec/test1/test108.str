@@ -41,7 +41,7 @@ strategies
     /**
      * RHS is evaluated at definition time.
      */
-    ; {| Foo :
+    ; {| Foo, Bar :
         rules(Bar := "a")
       ; rules(Foo := <Bar>)
       ; rules(Bar := "b")
@@ -57,3 +57,12 @@ strategies
       ; bagof-Foo => [3, 2, 1]
       |}
 
+    /**
+     * Multiple definition
+     */
+    ; {| Foo, Bar, Fred :
+        rules(Bar := "a" Foo := 1 Fred := (2, "c"))
+      ; Bar => "a"
+      ; Foo => 1
+      ; Fred => (2, "c")
+      |}

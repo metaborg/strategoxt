@@ -158,11 +158,10 @@ strategies
   DesugarDynRuleDef :
     |[ rules() ]| -> |[ id ]|
 
-  /* Multiple rules moved to front/desugar.str
+  // Multiple rules moved to front/desugar.str
   DesugarDynRuleDef :
     |[ rules(drd1 drd2 drd* ) ]| -> 
     |[ rules(drd1); rules(drd2 drd* ) ]|
-   */
 
   // Labeling the current scope
 

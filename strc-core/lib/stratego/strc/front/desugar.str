@@ -214,7 +214,7 @@ rules
 rules
 
   Desugar :
-    |[ rules(drd1 drd2 drd*) ]| -> |[ rules(drd1); rules(drd2 drd*) ]|
+    |[ rules(drd1 drd2 drd* ) ]| -> |[ rules(drd1); rules(drd2 drd* ) ]|
 
   Desugar :
     |[ rules( dr := t ) ]| -> |[ where({y : !t; ?y; rules( dr : _ -> y )}) ]| 
