@@ -713,6 +713,12 @@ rules
 
   stratego-to-abox :
     AddDynRule(r,rl) -> |[ V is=2 [H hs=1 [~r ":+"] ~rl ] ]| 
+    
+  stratego-to-abox :
+    DynRuleAssign(r,rhs) -> H hs=1 [~r ":=" ~rhs]
+    
+  stratego-to-abox :
+    DynRuleAssignAdd(r,rhs) -> H hs=1 [~r ":+=" ~rhs]
 
   stratego-to-abox :
     SetDynRuleMatch(r,lhs) -> |[ V is=2 [H hs=1 [~r ":" ] ~lhs ] ]| 
