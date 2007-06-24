@@ -3,7 +3,9 @@ include $(wildcard *.dep)
 
 SCFLAGS 	= --main io-$*
 STRINCLUDES     = -I $(top_srcdir)/syn \
+		  -I $(top_builddir)/syn \
                   -I $(top_srcdir)/sig \
+                  -I $(top_builddir)/sig \
                   -I . \
 		  -I $(GPP)/share/sdf/gpp \
 		  -I $(GPP)/share/gpp \
