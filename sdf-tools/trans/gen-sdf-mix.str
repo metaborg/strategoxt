@@ -26,7 +26,9 @@ strategies
         error-if-empty-grammar(<xtc-exit> 1)
       ; where(collect-layout-sorts => layout-sorts)
       ; collect-sorts
-      ; <diff> (<id>, layout-sorts)
+      ; if not(<get-config> MixLayout()) then
+          <diff> (<id>, layout-sorts)
+        end
       ; remove-all(is-main-module-param(|param*))
       ; where(ctx := <newname> "Ctx")
       ; map(rename-sort(|ctx))
@@ -161,8 +163,9 @@ strategies
 strategies
 
   mix-options =
-    sdf-main-module-option
-  + sdf-result-module-option
+      sdf-main-module-option
+    + sdf-result-module-option
+    + include-layout-option
 
   sdf-result-module-option =
     ArgOption("--name"
@@ -170,6 +173,13 @@ strategies
     , <concat-strings>   ["--name mod       ", "Name of the resulting module (required)"]
     )
 
+  include-layout-option =
+    Option("--include-layout"
+    , where(<set-config> (MixLayout(), ()))
+    , !"--include-layout        Rename layout"
+    )
+
 signature
   constructors
     SdfResultModuleFlag : Flag
+    MixLayout : Flag
