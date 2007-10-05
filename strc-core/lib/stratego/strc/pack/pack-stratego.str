@@ -62,7 +62,7 @@ strategies
         else 
           Fst
         ; unzip
-        ; (id, pack-flatten-stratego) 
+        ; (id, pack-flatten-stratego)
         end
       end
     ; (id, expand-term-imports(|mkpt))
@@ -217,7 +217,9 @@ strategies
   pack-pass-include-dirs =
     pack-include-dirs ; mapconcat(!["-I",<id>])
 
-  pack-parse-stratego =
+  // old version using parse-stratego as external tool
+
+  pack-parse-stratego-old =
      ?file
    ; <xtc-transform(!"parse-stratego",
 	<concat>[<get-config < !["--asfix"] + ![]> "--asfix", 
@@ -225,6 +227,17 @@ strategies
                  <pass-verbose>, <pass-keep>, <pack-pass-include-dirs>])>FILE(file)
    ; read-from
   <+ <fatal-error> ["parse error in ", <id>]
+
+  // new version calling parse-stratego as library strategy
+
+  pack-parse-stratego =
+     ?file
+   ; !FILE(file)
+   ; (parse-stratego-trm(|
+	      <concat> [<get-config < !["--asfix"] + ![]> "--asfix", 
+		            ["--desugaring", <get-config <+ !"off"> "--desugaring"],
+                    <pack-pass-include-dirs>])
+      <+ <fatal-error> ["parse error in ", file])
 
   pack-get-stratego-imports =
     ?(file, <?Specification(<id>) + ?Module(_,<id>)>)

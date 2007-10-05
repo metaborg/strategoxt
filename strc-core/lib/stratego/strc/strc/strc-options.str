@@ -12,14 +12,21 @@ strategies
     strc-init-strc-config
     ; parse-options(strc-options)
     ; strc-post-process-strc-config
-    ; try(<get-config> "-v"
-          ; strc-version
-          ; <exit> 0)
-    ; (where(<get-config> "-i")
-       <+ <fatal-error> ["no main module specified"])
+    ; display-version
+    ; main-module-required
     ; strc-announce
-    ; log(|Info(), ["Compiling '", <get-config>"-i", "'"])
+    ; log(|Info(), ["Compiling '", <get-config> "-i", "'"])
 
+  display-version =
+    try(<get-config> "-v"
+        ; strc-version
+        ; <exit> 0)
+        
+  main-module-required =
+    if not(<get-config> "-i") then <fatal-error> ["no main module specified"] end
+    
+strategies
+    
   strc-init-strc-config = 
   where(
     <set-config> ("VERSION", <strc-version-number>)
@@ -29,7 +36,6 @@ strategies
     ; <set-config> ("--statistics", 1)
     ; <set-config> ("-O", 2)
     ; <set-config> ("-I", [])
-    ; <set-config> ("--ng", "on")
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
 
@@ -213,18 +219,9 @@ strategies
         where(<set-config>("-O", <string-to-int; strc-set-opt-level> )); !(),
 	!"-O n               Optimization level (0 = no optimization)" )
 
-  + ArgOption("--ng",
-        where(<set-config>("--ng", <id>); !()),
-	!"--ng on|off        Use ng backend (default: off)" )
-
-
   + Option("--fusion",     
 	where(<toggle-config>("--fusion",())); !(),
 	!"--fusion           Toggle specialize applications of innermost (default: on)" )
-
-  + ArgOption("--dr",
-        err(|"--dr flag is deprecated; old dynamic rules are no longer supported"),
-	!"--dr               Obsolete; old dynamic rules are no longer supported" )
 
   + Option("--asfix",
         where(<set-config>("--asfix",())); !(),

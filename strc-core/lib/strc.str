@@ -86,3 +86,4 @@ imports
   stratego/strc/pack/pack-stratego-options
 
   stratego/strc/parse/parse-stratego
+  stratego/strc/parse/meta-explode
