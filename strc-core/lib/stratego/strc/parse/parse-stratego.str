@@ -201,13 +201,13 @@ strategies
     ; where( FILE( remove-extension => base ) )
     ; where( ps-get-meta => meta )
     ; where( tbl := <strc-memo-open-parse-table(<ps-get-syntax; ps-get-parse-table; read-from> meta)> )
-    ; dbg(|"parse table read")
-    ; where( path := <path-of-xtc-file> ; dbg(|"path-of-xtc-file") )
+      // @todo inline table for basic Stratego parse table (to avoid the read-from for each module)
+    ; where( path := <path-of-xtc-file> )
     ; where( <ps-set-filters> meta )
+    ; where( srt := <ps-get-sort> meta )
     
     // @todo how to pass these options to the sglr library strategies?
     //
-    //       , <ps-pass-sort> meta
     //       , <ps-pass-implode-quotes> meta
     //       , <ps-pass-yield-quotes> meta   
     //       , <ps-pass-preserve-comments>
@@ -215,39 +215,23 @@ strategies
     //       ]
     //   )
     
-    ; parse-xtc-file(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, "Module", path)
-
-    ; dbg(|"parsed")
+    ; parse-xtc-file(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)
     
     ; if-keep1(where(write-to; copy-to(<guarantee-extension(|"atree")> base)))
 
     ; if not(<get-config> "--assimilation" => "off") then
         meta-explode(<get-config> "--asfix")
-        ; dbg(|"meta-exploded")
       end
 
     ; where(if-not-silent(ps-check-module-name(|base); say(!"module-name-checked")))
 
     ; if <get-config> "--desugaring" => "on" then
         stratego-desugar
-        ; dbg(|"desugared")
       end
 
 /**
  * Main parsing strategies.
  */
-strategies
-
-
-   
-  /**
-   * use this to include the standard Stratego syntax
-   * Returns an open parse table for the given sort.
-   *
-   * @type Sort -> OpenParseTable
-   */
-  //get-webdsl-parse-table =
-  //  <jfr-memo-open-parse-table(import-term(WebDSL.tbl))> "WebDSL.tbl"
 
 strategies
 
@@ -268,6 +252,19 @@ strategies
 strategies
 
   /**
+   * @type MetaData -> Sort
+   * 
+   * note: default value is None(), since start-symbol of Stratego syntax may get renamed in case 
+   * of concrete syntax embeddings
+   */  
+  ps-get-sort =
+    if ?Meta(<fetch-elem(?TopSort(s))>); <is-string> s then
+      !s
+    else
+      !None()
+    end
+
+  /**
    * @type MetaData -> List(String)
    */  
   ps-pass-sort =
@@ -280,16 +277,19 @@ strategies
   /**
    * @type MetaData 
    */  
-  ps-set-filters =
+  ps-set-filters = 
     if ?Meta(<fetch-elem(?HeuristicFilters(value))>) then
       switch !value
         case On():  set-heuristic-filters(true)
+                    ; dbg(|"heuristic filters set")
         case Off(): set-heuristic-filters(false)
+                    ; dbg(|"heuristic filters not set")
         otherwise:  fatal-err(|"Illegal value of HeuristicFilters option: use On() or Off()")
       end
     else
       // FIXME: for now, heuristic filters are enabled for concrete object syntax.
       set-heuristic-filters(true)
+      ; dbg(|"heuristic filters set")
     end
 
   /**
