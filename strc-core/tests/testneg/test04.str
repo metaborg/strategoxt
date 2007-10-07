@@ -1,0 +1,21 @@
+module test77
+imports libstrateg-lib
+
+strategies
+
+  main = 
+    testbagof
+    ; dr-print-rule-set(|"R")
+
+  testbagof =
+    rules(R:+ "foo" -> "bar")
+    ; where(
+        <bagof-R> "foo"
+        ; debug(!"<bagof-R> foo: ")
+        ; <R> "foo"
+        ; debug(!"<R> foo: ")
+      )
+
+  unused-strat =
+    where(!"something" => m)
+    ; rules(R:+ m -> "boom")

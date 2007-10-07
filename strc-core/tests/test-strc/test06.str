@@ -1,0 +1,8 @@
+module test06
+strategies
+
+  main =
+    GetInternalDefaultXtcRepository
+    ; ?"foo"
+
+  external GetInternalDefaultXtcRepository(|)

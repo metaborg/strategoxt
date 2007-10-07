@@ -1,0 +1,13 @@
+module test02
+imports list-cons tuple-cons
+strategies
+
+   main = <Foo> ("ah", "a")
+
+rules
+
+   Foo1 : (s1, s2) -> <Bar> [s1, s]  
+
+   Foo2 : (s1, s2) -> <Bar(|s3)> [s1, s]  
+
+   Bar : [x, y] -> [y, x]

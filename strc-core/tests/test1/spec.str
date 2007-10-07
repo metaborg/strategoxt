@@ -1,0 +1,4 @@
+specification
+signature
+  constructors
+    Fred : String -> Fred

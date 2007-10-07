@@ -24,23 +24,12 @@ AC_CONFIG_FILES([
   
   tools/Makefile
 
-  spec/Makefile 
+  tests/Makefile
+  tests/test1/Makefile 
+  tests/test2/Makefile 
+  tests/testneg/Makefile
+  tests/test-strc/Makefile
 
-  spec/c/Makefile 
-  spec/front/Makefile 
-  spec/front/data/Makefile 
-  spec/match/Makefile 
-  spec/match/data/Makefile 
-  spec/opt/Makefile 
-  spec/strc/Makefile 
-  spec/pack/Makefile 
-
-  spec/lib/Makefile 
-
-  spec/test1/Makefile 
-  spec/test2/Makefile 
-  spec/testneg/Makefile
-  spec/test-strc/Makefile
 ])
 
 AC_OUTPUT
