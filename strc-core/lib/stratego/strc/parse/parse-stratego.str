@@ -115,10 +115,11 @@ strategies
     ; ps-parse-module-trm
     ; where(<set-config>("-I", incl))
     
-  io-parse-stratego =
+  parse-stratego-io =
     xtc-io-wrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
-      ; ps-parse-module
+      ; ps-parse-module-trm
+      ; write-to
       <+ <xtc-exit> 1
     )
 
@@ -133,6 +134,7 @@ strategies
    *
    * @type FILE -> FILE
    */
+   /*
   ps-parse-module =
       ?file
     ; xtc-ensure-file
@@ -175,7 +177,8 @@ strategies
     ; if not( <get-config>"-b" ) then
         read-from ; write-to-text
       end
-      
+    */
+    
 strategies
 
   /**
@@ -194,28 +197,26 @@ strategies
    * @type FILE -> FILE
    */
   ps-parse-module-trm =
-      ?file
-    ; xtc-ensure-file
-    ; where( ?FILE(filename) )
+      file@FILE(filename) := <xtc-ensure-file>
     ; log(|Notice(), <concat-strings>["Parsing file ", filename])
-    ; where( FILE( remove-extension => base ) )
-    ; where( ps-get-meta => meta )
-    ; where( tbl := <strc-memo-open-parse-table(<ps-get-syntax; ps-get-parse-table; read-from> meta)> )
-      // @todo inline table for basic Stratego parse table (to avoid the read-from for each module)
-    ; where( path := <path-of-xtc-file> )
-    ; where( <ps-set-filters> meta )
-    ; where( srt := <ps-get-sort> meta )
+    ; where(id
+      ; base := <remove-extension> filename
+      ; path := <path-of-xtc-file> file
+      ; meta := <ps-get-meta> file
+      ; tbl  := <ps-get-syntax; ps-get-parse-table> meta
     
-    // @todo how to pass these options to the sglr library strategies?
-    //
-    //       , <ps-pass-implode-quotes> meta
-    //       , <ps-pass-yield-quotes> meta   
-    //       , <ps-pass-preserve-comments>
-    //       , <ps-pass-preserve-positions>  
-    //       ]
-    //   )
+      // sglr settings
+      ; <ps-set-filters> meta
+      ; srt := <ps-get-sort> meta
     
-    ; parse-xtc-file(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)
+      // meta-explode options (?)
+      ; <ps-set-implode-quotes> meta
+      ; <ps-set-yield-quotes> meta   
+      ; ps-set-preserve-comments
+      ; ps-set-preserve-positions
+      )
+    
+    ; <parse-xtc-file(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
     
     ; if-keep1(where(write-to; copy-to(<guarantee-extension(|"atree")> base)))
 
@@ -264,15 +265,17 @@ strategies
       !None()
     end
 
-  /**
+  /*
    * @type MetaData -> List(String)
    */  
+  /*
   ps-pass-sort =
     if ?Meta(<fetch-elem(?TopSort(s))>) then
       !["--start", <!s; is-string>]
     else
       ![]
     end
+  */
     
   /**
    * @type MetaData 
@@ -292,9 +295,10 @@ strategies
       ; dbg(|"heuristic filters set")
     end
 
-  /**
+  /*
    * @type MetaData -> List(String)
-   */  
+   */
+  /*  
   ps-pass-filters =
     if ?Meta(<fetch-elem(?HeuristicFilters(value))>) then
       switch !value
@@ -306,9 +310,11 @@ strategies
       // FIXME: for now, heuristic filters are enabled for concrete object syntax.
       !["--heuristic-filters", "on"]
     end
-    
+   */
+   
   /**
    * @type MetaData -> List(String)
+   * @todo what is the semantics of this paramater?
    */  
   ps-set-implode-quotes =
     if <get-config> "--asfix" then
@@ -325,9 +331,10 @@ strategies
       end
     end
     
-  /**
+  /*
    * @type MetaData -> List(String)
-   */  
+   */
+   /*  
   ps-pass-implode-quotes =
     if <get-config> "--asfix" then
       !["--concrete"]    
@@ -342,11 +349,14 @@ strategies
         ![]
       end
     end
+   */
+
 
   /**
    * @type MetaData -> List(String)
+   * @todo what is the semantics of this configuration option?
    */  
-  ps-pass-yield-quotes =
+  ps-set-yield-quotes =
     if ?Meta(<fetch-elem(?YieldQuotes(value))>) then
       switch !value
         case On():  !["--yield-quotes"]
@@ -356,28 +366,23 @@ strategies
     else
       ![]
     end
+    
+  /*
+   * @type MetaData -> List(String)
+   */  
+  /*
+  ps-pass-yield-quotes =
+    if ?Meta(<fetch-elem(?YieldQuotes(value))>) then
+      switch !value
+        case On():  !["--yield-quotes"]
+        case Off(): ![]
+        otherwise:  fatal-err(|"Illegal value of YieldQuotes otion: use On() or Off()")
+      end
+    else
+      ![]
+    end */
 
 strategies
-
-  /**
-   * Determines the syntax to be used.
-   *
-   * @type MetaData -> String
-   */
-  ps-get-syntax = 
-     ( /* first option: --syntax argument
-        <get-config> "--syntax"
-
-     <+ /* second option: meta file */
-        ?Meta(<fetch-elem(?Syntax(<id>))>)
-
-     <+ /* third option: --default syntax */
-        <get-config> "--default-syntax"
-
-     <+ /* final option: plain Stratego */
-        !"Stratego"
-      )
-    ; log(|Notice(),<concat-strings>["Using syntax ",<id>])
 
   /**
    * Returns the MetaData for a file.
@@ -390,15 +395,9 @@ strategies
      ; FILE(guarantee-extension(|"meta"))
      ; read-from
      ; if not(Meta(is-list)) then
-         log(|Warning(),<concat-strings>["Meta data for file ", file, " not valid :"], <id>)
+         log(|Warning(),<concat-strings>["Meta data for file ", file, " not well-formed :"], <id>)
        ; fail
        end
-
-    //<+ /* second option: legacy syn file */
-    //   FILE(guarantee-extension(|"syn"))
-    // ; read-from => syntax#(_)
-    // ; !Meta([Syntax(syntax)])
-
     <+ /* final option: no metadata */
        !Meta([
           HeuristicFilters(Off())
@@ -407,31 +406,37 @@ strategies
    ; log(|Debug(),"Using meta data :", <id>)
 
   /**
-   * @type String -> FILE
+   * Determines the syntax to be used.
+   *
+   * @type MetaData -> String
    */
-  ps-get-parse-table =
-      ?syntax
-    ; log(|Debug(), <concat-strings>["Trying to find a parse table for ",syntax])
-    ; guarantee-extension(|"tbl") => tbl 
-    ; (ps-find-in-includes(!"Using parse table: ")
-      ; !FILE(<id>)
-
-     //<+ log(|Debug(),<concat-strings>["Trying to generate a parse table for ",syntax])
-     // ; <ps-get-syntax-definition> syntax
-     // ; xtc-transform(!"sdf2table", !["-m", syntax])
-     // ; rename-to(!tbl)
+  ps-get-syntax = 
+     ( /* first option: meta file */
+        ?Meta(<fetch-elem(?Syntax(<id>))>)
+     <+ /* second option: --default syntax */
+        <get-config> "--default-syntax"
+     <+ /* final option: plain Stratego */
+        !"Stratego"
       )
+    ; log(|Notice(),<concat-strings>["Using syntax ",<id>])
 
   /**
    * @type String -> FILE
    */
-  //ps-get-syntax-definition =
-  //    log(|Notice(),"Trying to find a SDF module or definition")
-  //  ; where(guarantee-extension(|"def") => def)
-  //  ; ( <ps-find-in-includes(!"Using syntax definition: ")> def
-  //    ; !FILE(<id>)
-  //
-  //   <+ !FILE(<guarantee-extension(|"sdf")>)
-  //    ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
-  //    ; rename-to(!def)
-  //    )
+  ps-get-parse-table =
+    (/* standard syntax definition */
+      ? "Stratego"
+      ; import-term(Stratego.tbl)
+      
+    <+ /* custom parse table based on meta file */
+      ?syntax
+      ; log(|Debug(), <concat-strings>["Trying to find a parse table for ",syntax])
+      ; guarantee-extension(|"tbl")
+      ; ps-find-in-includes(!"Using parse table: ")
+      ; !FILE(<id>)
+      ; read-from
+    )
+    ; ?tbl
+    ; strc-memo-open-parse-table(!tbl)
+    
+    // @todo inline table for basic Stratego parse table (to avoid the read-from for each module)

@@ -5,8 +5,8 @@ include $(wildcard *.dep)
 nobase_data_DATA = libstrc.rtree
 lib_LTLIBRARIES  = libstrc.la
 EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) libstrc.rtree
-CLEANFILES 	 = $(wildcard *.dep)
-BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree)
+CLEANFILES 	 = $(wildcard *.dep) stratego/strc/parse/Stratego.tbl
+BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) stratego/strc/parse/Stratego.tbl
 
 strclib =					\
 	strc.str				\
@@ -49,6 +49,10 @@ STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn   \
 
 STRCFLAGS =
 
-libstrc.rtree libstrc.c : $(strclib:.str=.rtree)
+libstrc.rtree libstrc.c : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tbl
 	$(STRC)/bin/strc -c --library -i $(srcdir)/strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 	rm libstrc.str
+
+stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
+	cp $< $@
+	
