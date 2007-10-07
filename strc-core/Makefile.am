@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = lib tests
+SUBDIRS           = lib tools tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt svn-revision
 libexec_SCRIPTS   = libtool
