@@ -25,6 +25,7 @@ AC_CONFIG_FILES([
   tools/Makefile
 
   tests/Makefile
+  tests/unit/Makefile
   tests/test1/Makefile 
   tests/test2/Makefile 
   tests/testneg/Makefile

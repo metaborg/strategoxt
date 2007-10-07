@@ -1,0 +1,11 @@
+/**
+ * Annotate strategy invocations and term variable uses with the
+ * path to their defining frames, and annotate their declarations as
+ * escaping when applicable.
+ */
+module escaping-variables
+
+imports
+  libstratego-lib
+  libstrc
+

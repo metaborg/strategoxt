@@ -1,0 +1,183 @@
+module use-def-test
+imports libstratego-lib libstrc
+strategies
+
+  use-def-test-io =
+    test-suite(!"use-def-test",
+      test1;
+      test2;
+      test3;
+      test4;
+      test5;
+      test6;
+      test7;
+      test8;
+      test9;
+      test10;
+      test11;
+      test13;
+      test14
+    )
+
+  test1 = 
+    apply-and-fail(!"test1"
+	, Strategies(defs-use-def)
+	, !|[ strategies 
+                P(|) = ?F(p, q); !F(p,H(q,q'))
+	        Q(|) = (?F(p, q) + ?G(p)); !H(p,q)
+	        R(|) = ?F(p, q); !F(p,H(q))
+           ]|
+	)
+
+  test2 = 
+    apply-test(!"test2a"
+	, not(def-use-def)
+	, !|[ P(|) = ?F(p, q); !F(p,H(q)) ]|
+	);
+    apply-and-fail(!"test2b"
+	, not(def-use-def)
+	, !|[ P(|) = ?F(p,q); !F(q,G(p,p')) ]|
+	)
+
+  test3 = 
+    apply-test(!"test3a"
+	, not(def-use-def)
+	, !|[ P(|) = ?F(p, q); {q: ?q; !F(p,H(q)) } ]|
+	);
+    apply-and-fail(!"test3b"
+	, not(def-use-def)
+	, !|[ P(|) = ?F(p,q); {q: !F(q,G(p,p')) } ]|
+	)
+
+  test4 = 
+    apply-and-fail(!"test4a"
+	, not(def-use-def)
+	, !|[ P(|) = ?v; !F("SomeVar", <{v: !v; Q()}>) ]|
+	);
+    apply-test(!"test4b"
+	, not(def-use-def)
+	, !|[ P(|) = ?v; !F("SomeVar", <Q()> v) ]|
+	);
+    apply-and-fail(!"test4c"
+	, not(def-use-def)
+	, !|[ P(|) = !F("SomeVar", <{v: !v; Q()}>) ]|
+	)
+
+  test5 = 
+    apply-test(!"test5a"
+	, not(def-use-def)
+	, !|[ P(|) = (?F(p, q) + ?G(p)); !H(p) ]|
+	);
+    apply-test(!"test5b"
+	, not(def-use-def)
+	, !|[ P(|) = (?F(p, q) + ?G(p)); !H(p,q) ]|
+	)
+
+  test6 = 
+    apply-test(!"test6a"
+	, not(def-use-def)
+	, !|[ P(|) = ((Q() <+ R()); ?p); !F(p) ]|
+	);
+    apply-test(!"test6b"
+	, not(def-use-def)
+	, !|[ P(|) = (Q() <+ R(); ?p); !F(p) ]|
+	)
+
+  test7 = 
+    apply-test(!"test7a"
+	, not(def-use-def)
+	, !|[ P(|) = ?F(p,q) < !H(q) + ?G(p); !H(p) ]|
+	);
+    apply-test(!"test7b"
+	, not(def-use-def)
+	, !|[ P(|) = (?F(p,q) < !H(p) + ?G(p)); !H(p,q) ]|
+	);
+    apply-and-fail(!"test7c"
+	, not(def-use-def)
+	, !|[ P(|) = ?F(p,q) < !H(p) + (?G(p); !H(p,q)) ]|
+	)
+
+  test8 = 
+    apply-test(!"test8a"
+	, not(def-use-def)
+	, !|[ P(|) : F(p,q) -> H(q, q') where !p; Q(); ?q' ]|
+	);
+    apply-and-fail(!"test8b"
+	, not(def-use-def)
+	, !|[ P(|) : F(p,q) -> H(q, q') where id ]|
+	)
+
+
+  test9 = 
+    apply-test(!"test9a"
+	, not(def-use-def)
+	, !|[ P(|) = \ F(p,q) -> H(q, q') where !p; Q(); ?q' \ ]|
+	);
+    apply-and-fail(!"test9b"
+	, not(def-use-def)
+	, !|[ P(|) = \ F(p,q) -> H(q, q') where id \ ]|
+	)
+
+  test10 = 
+    apply-and-fail(!"test10a"
+	, Overlays(defs-use-def)
+	, !|[ overlays
+		F(p, q) = H(G(p, "a"), q)
+	        L(p, q) = K(p, "b", q')
+           ]|
+	);
+    apply-test(!"test10b"
+	, Overlays(defs-use-def)
+	, !|[ overlays
+		F(p, q) = H(G(p, "a"), q)
+	        L(p, q) = K(p, "b", q)
+           ]|
+	)
+
+  test11 = 
+    apply-test(!"test11a"
+	, not(def-use-def)
+	, !|[ P(|) = ?Cons(X, L)
+	            ; {YS: ?Cons(Y, YS)}
+	            ; !Cons(Y, Cons(X, L))
+	   ]|
+	);
+    apply-test(!"test11b"
+	, Strategies(defs-use-def)
+	, !|[ strategies
+	        LSort(S) :
+	          Cons(X, L) -> Cons(Y, Cons(X, L'))
+	          where !L; at-suffix({YS: ?Cons(Y, YS); where(<S()> Tup(X, Y)); !YS}); ?L'
+	   ]|
+	)
+
+  test13 = 
+    apply-test(!"test13a"
+	, not(def-use-def)
+	, !|[ G(|) = let F(|X : a) = !X in F(|"a") end ]|
+	);
+    apply-and-fail(!"test13b"
+	, not(def-use-def)
+	, !|[ G(|) = all(!X) ]|
+	); 
+    apply-and-fail(!"test13c"
+	, not(def-use-def)
+	, !|[ G(|) = let helper = id in all(!X) end ]|
+	) 
+
+
+  test14 = 
+    apply-test(!"test14a"
+	, not(def-use-def)
+	, !|[ UnEscape(|C) : ['\', C | cs ] -> [C  | cs ] ]|
+	);
+    apply-and-fail(!"test14b"
+	, not(def-use-def)
+	, !|[ testing-main(|) = rob(|X) ]|
+	);
+    apply-test(!"test14c"
+	, not(def-use-def)
+	, !|[ testing-main(|) = ?X; rob(|X) ]|
+	)
+
+
