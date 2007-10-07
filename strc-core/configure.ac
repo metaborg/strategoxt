@@ -21,6 +21,8 @@ AC_CONFIG_FILES([
 
   strc.pc
   lib/Makefile
+  
+  tools/Makefile
 
   spec/Makefile 
 

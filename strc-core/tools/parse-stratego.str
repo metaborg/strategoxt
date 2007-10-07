@@ -1,0 +1,5 @@
+module parse-stratego
+imports 
+  libstratego-lib
+  libstratego-xtc 
+  libstrc
