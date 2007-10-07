@@ -55,7 +55,7 @@ else
   if test "$xt_uninstalled_baseline" = "yes"; then
     XT_CHECK_SDF
 
-    STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/spec/strc/strc'
+    STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/tools/strc'
     BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
     PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table'
     SDFTBL_UNINSTALLED='$(top_builddir)/../sdf-front/syn'
