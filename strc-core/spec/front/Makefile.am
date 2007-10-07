@@ -15,7 +15,7 @@ SCFLAGS  	=  --main $*-io			\
 # 		--keep 10
 
 
-libexec_PROGRAMS = report-ambs stratego-ensugar
+#libexec_PROGRAMS = report-ambs stratego-ensugar
 
 #	repair-types				\
 #	pre-desugar				\
@@ -44,8 +44,8 @@ LIB_STRC = -L$(top_srcdir)/lib -lstrc
 #repair_types_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
 #pre_desugar_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 
-stratego_ensugar_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
-report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+#stratego_ensugar_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
+#report_ambs_LDADD 		= $(LIB_STRC) $(SSL_LIBS)
 
 #combine_sections_LDADD 		= $(LIB_STRC) $(SSL_LIBS)			
 #variables_to_constructors_LDADD = $(LIB_STRC) $(SSL_LIBS)	
