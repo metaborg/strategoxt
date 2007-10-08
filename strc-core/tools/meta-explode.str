@@ -1,0 +1,7 @@
+module meta-explode
+imports libstratego-lib libstrc
+strategies
+
+    meta-explode-io = io-meta-explode
+
+

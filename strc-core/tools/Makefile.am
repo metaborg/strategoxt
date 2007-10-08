@@ -11,8 +11,11 @@ LDADD      = $(LIB_STRC) $(SSL_LIBS)
 
 #strc_LDADD      = $(LIB_STRC) $(SSL_LIBS)
 
-bin_PROGRAMS 	 = strc parse-stratego
-libexec_PROGRAMS = pack-stratego report-ambs stratego-ensugar
+bin_PROGRAMS 	 = strc parse-stratego pp-stratego pretty-stratego 
+
+libexec_PROGRAMS = pack-stratego report-ambs stratego-ensugar \
+		   meta-explode stratego2abox stratego-parenthesize
+
 
 EXTRA_DIST      = $(wildcard *.str)
 CLEANFILES 	= $(wildcard *.dep)

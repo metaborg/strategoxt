@@ -17,9 +17,11 @@ strclib =					\
 	$(wildcard stratego/strc/match/*.str)	\
 	$(wildcard stratego/strc/opt/*.str)	\
 	$(wildcard stratego/strc/pack/*.str)	\
+	$(wildcard stratego/strc/pp/*.str)	\
 	$(wildcard stratego/strc/parse/*.str)	\
 	$(wildcard stratego/strc/strc/*.str)	\
-	$(wildcard stratego/strc/model/*.str)
+	$(wildcard stratego/strc/model/*.str)   \
+  	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
@@ -45,7 +47,9 @@ STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn   \
 		   -I $(top_builddir)/../stratego-front/syn \
                    -I $(top_builddir)/../stratego-front/sig \
                    -I $(top_builddir)/../c-tools/syn        \
-                   -I $(top_builddir)/../c-tools/sig
+                   -I $(top_builddir)/../c-tools/sig        \
+	           -I $(GPP)/share/sdf/gpp
+
 
 STRCFLAGS =
 
@@ -55,4 +59,7 @@ libstrc.rtree libstrc.c : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tb
 
 stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
 	cp $< $@
-	
+
+stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front/syn/Stratego.def
+	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego
+

@@ -1,0 +1,4 @@
+module stratego2abox
+strategies
+
+  stratego2abox-io = io-stratego2abox 

@@ -1,0 +1,6 @@
+module pretty-stratego
+imports libstratego-lib libstrc
+strategies
+
+  pretty-stratego-io = io-pretty-stratego
+
