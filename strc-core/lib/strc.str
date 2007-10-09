@@ -87,3 +87,7 @@ imports
 
   stratego/strc/parse/parse-stratego
   stratego/strc/parse/meta-explode
+
+  stratego/strc/pp/pp-stratego
+  stratego/strc/pp/stratego-parenthesize
+  stratego/strc/pp/stratego2abox
