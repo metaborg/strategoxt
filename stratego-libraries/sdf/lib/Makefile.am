@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-nobase_data_DATA = libstratego-sdf.rtree
+nobase_data_DATA = libstratego-sdf.rtree libstratego-sdf.ctree
 lib_LTLIBRARIES  = libstratego-sdf.la
 EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree) libstratego-sdf.rtree
 CLEANFILES = $(wildcard *.dep) 
@@ -34,3 +34,7 @@ STRCFLAGS = \
 libstratego-sdf.rtree libstratego-sdf.c : $(sdflib:.str=.rtree) 
 	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-sdf.str -o libstratego-sdf.rtree -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sdf.str
+
+libstratego-sdf.ctree : $(sdflib:.str=.rtree) 
+	$(STRC_UNINSTALLED) -F -c --library -i $(srcdir)/stratego-sdf.str -o libstratego-sdf.ctree -O 2 \
+	  --verbose 1 $(STRCFLAGS)

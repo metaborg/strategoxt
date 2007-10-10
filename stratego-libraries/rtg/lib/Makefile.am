@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-nobase_data_DATA = libstratego-rtg.rtree
+nobase_data_DATA = libstratego-rtg.rtree libstratego-rtg.ctree
 lib_LTLIBRARIES  = libstratego-rtg.la
 EXTRA_DIST = $(rtglib) $(rtglib:.str=.rtree) libstratego-rtg.rtree
 CLEANFILES = $(wildcard *.dep) 
@@ -30,3 +30,7 @@ rtg-aterm.c :
 libstratego-rtg.rtree libstratego-rtg.c : $(rtglib:.str=.rtree) 
 	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-rtg.str -o libstratego-rtg.rtree --verbose 1 $(STRCFLAGS)
 	rm libstratego-rtg.str
+
+libstratego-rtg.ctree : $(rtglib:.str=.rtree) 
+	$(STRC_UNINSTALLED) -c -F --library -i $(srcdir)/stratego-rtg.str -o libstratego-rtg.ctree \
+	  --verbose 1 $(STRCFLAGS)

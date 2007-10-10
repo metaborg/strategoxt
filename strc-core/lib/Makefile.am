@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 #include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-nobase_data_DATA = libstrc.rtree
+nobase_data_DATA = libstrc.rtree libstrc.ctree
 lib_LTLIBRARIES  = libstrc.la
 EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) libstrc.rtree
 CLEANFILES 	 = $(wildcard *.dep) stratego/strc/parse/Stratego.tbl
@@ -58,6 +58,10 @@ STRCFLAGS =
 
 libstrc.rtree libstrc.c : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tbl
 	$(STRC)/bin/strc -c --library -i $(srcdir)/strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
+	rm libstrc.str
+
+libstrc.ctree : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tbl
+	$(STRC)/bin/strc -F -c --library -i $(srcdir)/strc.str -o libstrc.ctree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 	rm libstrc.str
 
 stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl

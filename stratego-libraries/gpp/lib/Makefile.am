@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-nobase_data_DATA = libstratego-gpp.rtree
+nobase_data_DATA = libstratego-gpp.rtree libstratego-gpp.ctree
 lib_LTLIBRARIES  = libstratego-gpp.la
 EXTRA_DIST = $(gpplib) $(gpplib:.str=.rtree) libstratego-gpp.rtree
 CLEANFILES = $(wildcard *.dep) 
@@ -29,3 +29,7 @@ STRCFLAGS = \
 libstratego-gpp.rtree libstratego-gpp.c : $(gpplib:.str=.rtree) 
 	$(STRC_UNINSTALLED) -c --library -i $(srcdir)/stratego-gpp.str -o libstratego-gpp.rtree -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-gpp.str
+
+libstratego-gpp.ctree : $(gpplib:.str=.rtree) 
+	$(STRC_UNINSTALLED) -c -F --library -i $(srcdir)/stratego-gpp.str -o libstratego-gpp.ctree \
+	  -O 2 --verbose 1 $(STRCFLAGS)

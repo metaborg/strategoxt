@@ -3,7 +3,7 @@ include $(top_srcdir)/MakefileLocal.xt
 
 pkgdatadir = $(datadir)/stratego-lib
 
-nobase_pkgdata_DATA = stratego-lib.str $(fullstrategolib:.str=.rtree)
+nobase_pkgdata_DATA = stratego-lib.str $(fullstrategolib:.str=.rtree) libstratego-lib.ctree
 data_DATA = libstratego-lib.rtree
 lib_LTLIBRARIES = libstratego-lib.la
 
@@ -71,6 +71,9 @@ libstratego-lib-posix.c libstratego-lib-posix.rtree : $(fullstrategolib:.str=.rt
 libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:.str=.rtree)
 	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib-posix-xsi.rtree
 	rm libstratego-lib-posix-xsi.str
+
+libstratego-lib.ctree: $(fullstrategolib:.str=.rtree)
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -F -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib.ctree
 
 fullstrategolib = \
   libstrategolib.str \

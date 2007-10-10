@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-nobase_data_DATA = libstratego-sglr.rtree
+nobase_data_DATA = libstratego-sglr.rtree libstratego-sglr.ctree
 lib_LTLIBRARIES  = libstratego-sglr.la
 
 libstratego_sglr_la_SOURCES = \
@@ -55,3 +55,7 @@ libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
 	@$(STRC_UNINSTALLED) -c --library -i stratego-sglr.rtree -o libstratego-sglr.rtree \
           --C-include "\"stratego_sglr.h\"" -O 2 --verbose 1 $(STRCFLAGS)
 	rm libstratego-sglr.str
+
+libstratego-sglr.ctree : $(sglrlib:.str=.rtree)
+	@$(STRC_UNINSTALLED) -c -F --library -i stratego-sglr.rtree -o libstratego-sglr.ctree \
+          -O 2 --verbose 1 $(STRCFLAGS)
