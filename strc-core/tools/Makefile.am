@@ -3,9 +3,10 @@ include $(wildcard *.dep)
 
 SCFLAGS = \
 	  -I $(top_srcdir)/lib \
+	  -I $(top_builddir)/lib \
 	  --main $*-io	
 
-LIB_STRC        = -L$(top_srcdir)/lib -lstrc
+LIB_STRC        = -L$(top_builddir)/lib -L$(top_srcdir)/lib -lstrc
 
 LDADD      = $(LIB_STRC) $(SSL_LIBS)
 

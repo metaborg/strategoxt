@@ -40,7 +40,10 @@ libstrc_la_LIBADD = \
   $(ATERM_LIBS)	\
   $(top_builddir)/../c-tools/pp/libc-pp.la
 
-STRINCLUDES      = -I $(top_srcdir)/../stratego-front/syn   \
+STRINCLUDES      = \
+                   -I $(top_srcdir)/lib                     \
+                   -I $(top_builddir)/lib                   \
+		   -I $(top_srcdir)/../stratego-front/syn   \
                    -I $(top_srcdir)/../stratego-front/sig   \
                    -I $(top_srcdir)/../c-tools/syn          \
                    -I $(top_srcdir)/../c-tools/sig          \
@@ -58,8 +61,10 @@ libstrc.rtree libstrc.c : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tb
 	rm libstrc.str
 
 stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
+	mkdir -p $(top_builddir)/lib/stratego/strc/parse
 	cp $< $@
 
 stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front/syn/Stratego.def
+	mkdir -p $(top_builddir)/lib/stratego/strc/pp
 	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego
 
