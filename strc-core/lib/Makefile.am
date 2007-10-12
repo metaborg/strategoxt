@@ -21,7 +21,7 @@ strclib =					\
 	$(wildcard stratego/strc/parse/*.str)	\
 	$(wildcard stratego/strc/strc/*.str)	\
 	$(wildcard stratego/strc/model/*.str)   \
-  	$(wildcard stratego/strc/pp/*.str)
+  	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
