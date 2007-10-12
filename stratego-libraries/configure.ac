@@ -63,7 +63,7 @@ else
     RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
     STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
     STRATEGOBOXTBL_UNINSTALLED='$(top_builddir)/../gpp/syn/box/Stratego-Box.tbl'
-    METAEXPLODE='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-front/parse/meta-explode'
+    METAEXPLODE='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/tools/meta-explode'
     SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
     PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
     RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
