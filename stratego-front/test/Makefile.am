@@ -24,27 +24,29 @@ prop1-asfix.c: prop1-asfix.str PropStratego.tbl
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check5
 
+parsestratego = $(top_srcdir)/../strc-core/tools/parse-stratego
+
 check1 : Prop.str 
 	$(MAKE) clean
 	$(MAKE) PropStratego.tbl
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --asfix -I .
+	$(parsestratego) -i prop1.str -o prop.rtree --asfix -I .
 
 check1-asfix : Prop.str
 	$(MAKE) clean
 	$(MAKE) PropStratego.tbl
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop-asfix.rtree -I .
+	$(parsestratego) -i prop1.str -o prop-asfix.rtree -I .
 
 check2 : Prop.str
 	$(MAKE) clean
 	$(MAKE) PropStratego.tbl
-	$(srcdir)/../parse/parse-stratego -i prop2.str -o prop2.rtree -I .
+	$(parsestratego) -i prop2.str -o prop2.rtree -I .
 
 check3 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop3.str -o prop3.rtree
+	$(parsestratego) -i prop3.str -o prop3.rtree
 
 check5 :
-	XTC_REPOSITORY=$(BUILD_REPOSITORY) $(srcdir)/../parse/parse-stratego \
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) $(parsestratego) \
 	  -i anti-quote-preterm.str -I $(top_builddir)/syn -o anti-quote-preterm.rtree
 	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c
 
