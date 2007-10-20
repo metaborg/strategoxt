@@ -19,7 +19,7 @@ TESTS = prop1 switch-semantics-test prop1-asfix
 
 prop1.c : PropStratego.tbl
 prop1-asfix.c: prop1-asfix.str PropStratego.tbl
-	$(SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
+	$(top_srcdir)/../strc-core/tools/strc $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
 
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check5
