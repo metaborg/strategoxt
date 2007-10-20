@@ -219,14 +219,14 @@ strategies
 
   // old version using parse-stratego as external tool
 
-  pack-parse-stratego-old =
-     ?file
-   ; <xtc-transform(!"parse-stratego",
-	<concat>[<get-config < !["--asfix"] + ![]> "--asfix", 
-		 ["--desugaring", <get-config <+ !"off"> "--desugaring"], ["-b"],
-                 <pass-verbose>, <pass-keep>, <pack-pass-include-dirs>])>FILE(file)
-   ; read-from
-  <+ <fatal-error> ["parse error in ", <id>]
+  //pack-parse-stratego-old =
+  //   ?file
+  // ; <xtc-transform(!"parse-stratego",
+//	<concat>[<get-config < !["--asfix"] + ![]> "--asfix", 
+//		 ["--desugaring", <get-config <+ !"off"> "--desugaring"], ["-b"],
+ //                <pass-verbose>, <pass-keep>, <pack-pass-include-dirs>])>FILE(file)
+ //  ; read-from
+ // <+ <fatal-error> ["parse error in ", <id>]
 
   // new version calling parse-stratego as library strategy
 

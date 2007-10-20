@@ -134,50 +134,50 @@ strategies
    *
    * @type FILE -> FILE
    */
-   /*
-  ps-parse-module =
-      ?file
-    ; xtc-ensure-file
-    ; where( ?FILE(filename) )
-    ; log(|Notice(), <concat-strings>["Parsing file ", filename])
-    ; where( FILE(remove-extension => base) )
-    ; where( ps-get-meta => meta )
-    ; where( <ps-get-syntax ; ps-get-parse-table> meta => FILE(tbl) )
-
-    ; xtc-transform(!"sglri",
-        !["-b", "-p", tbl | <concat>
-           [ <pass-verbose> ()
-           , <ps-pass-filters> meta
-           , <ps-pass-sort> meta
-           , <ps-pass-implode-quotes> meta
-           , <ps-pass-yield-quotes> meta           
-           , <ps-pass-preserve-comments>
-           , <ps-pass-preserve-positions>  
-           ]
-         ]
-       )
-
-    ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
-
-    ; if not(<get-config> "--assimilation" => "off") then
-        xtc-transform(!"meta-explode",
-          !["-b" | <concat>
-             [ <pass-verbose>
-             , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
-             ]
-           ])
-      end
-
-    ; where(if-not-silent(read-from ; ps-check-module-name(|base)))
-
-    ; if <get-config> "--desugaring" => "on" then
-        xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
-      end
-
-    ; if not( <get-config>"-b" ) then
-        read-from ; write-to-text
-      end
-    */
+  // /*
+  //ps-parse-module =
+  //    ?file
+ //   ; xtc-ensure-file
+  //  ; where( ?FILE(filename) )
+ //   ; log(|Notice(), <concat-strings>["Parsing file ", filename])
+  //  ; where( FILE(remove-extension => base) )
+ //   ; where( ps-get-meta => meta )
+ //   ; where( <ps-get-syntax ; ps-get-parse-table> meta => FILE(tbl) )
+//
+ //   ; xtc-transform(!"sglri",
+ //       !["-b", "-p", tbl | <concat>
+ //          [ <pass-verbose> ()
+ //          , <ps-pass-filters> meta
+ //          , <ps-pass-sort> meta
+ //          , <ps-pass-implode-quotes> meta
+ //          , <ps-pass-yield-quotes> meta           
+ //          , <ps-pass-preserve-comments>
+ //          , <ps-pass-preserve-positions>  
+ //          ]
+ //        ]
+ //      )
+//
+ //   ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
+//
+ //   ; if not(<get-config> "--assimilation" => "off") then
+ //       xtc-transform(!"meta-explode",
+ //         !["-b" | <concat>
+ //            [ <pass-verbose>
+ //            , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
+ //            ]
+ //          ])
+ //     end
+//
+ //   ; where(if-not-silent(read-from ; ps-check-module-name(|base)))
+//
+ //   ; if <get-config> "--desugaring" => "on" then
+ //       xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
+ //     end
+//
+//    ; if not( <get-config>"-b" ) then
+//        read-from ; write-to-text
+//      end
+//    */
     
 strategies
 
