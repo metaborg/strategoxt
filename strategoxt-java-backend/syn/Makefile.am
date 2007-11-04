@@ -1,11 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-sdfdata_DATA 	= Stratego-Stratego-Java-15.tbl $(wildcard *.sdf) 
+sdfdata_DATA 	= #Stratego-Stratego-Java-15.tbl $(wildcard *.sdf) 
 
 SDFINCLUDES     = \
 	-I ${STRATEGO_FRONT}/share/sdf/stratego-front \
-	-Idef ${JAVA_FRONT}/share/sdf/java-front/Stratego-Java-EBlock.def  
+	-Idef ${JAVA_FRONT}/share/java-front/Stratego-Java-EBlock.def  
 
 CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
 BOOTCLEANFILES	= $(wildcard *.def) 

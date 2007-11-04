@@ -1,0 +1,19 @@
+
+Currently, there is no source distribution of this project. A checkout from SVN
+may be built using the typical Automake process.
+
+First, run 
+
+  ./bootstrap
+
+(if you are not on Gentoo or Debian, you must adjust the env vars to select automake 
+ and aclocal manually, see the bootstrap script for a hint).
+
+Apart from Stratego/XT and Java Front, you will need the aterm-1.6.jar. It may be 
+found at the CWI build site: http://homepages.cwi.nl/~daybuild/releases/ 
+
+Also, you will need a Java Development Kit (JDK). Once installed, run:
+
+  ./configure --with-aterm-java=<path to aterm-1.6.jar> --with-jdk=<path to a JDK>
+
+After this, you should be good to make and install. 

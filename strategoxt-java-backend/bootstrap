@@ -2,8 +2,14 @@
 
 set -e
 
-export WANT_AUTOMAKE="1.8"
-export WANT_AUTOCONF="2.59"
+if [ -e /etc/debian_version ] ; then
+	export ACLOCAL=/usr/bin/aclocal-1.9
+	export AUTOMAKE=/usr/bin/automake-1.9
+else 
+	# Assume Gentoo, of course
+	export WANT_AUTOMAKE="1.8"
+	export WANT_AUTOCONF="2.59"
+fi
 
 autoxt
 auto-java-front

@@ -1,8 +1,14 @@
 /**
- * Compilation of Stratego programs to Java
+ * Java backend for the Stratego compiler
+ *
+ * @author Karl Trygve Kalleberg
  */
 module s2j
-imports Stratego liblib Java-15 Java-EBlock 
+imports 
+  Stratego-Core 
+  libstratego-lib
+  Java-15 
+  Java-EBlock 
 
 signature
   constructors 
@@ -10,42 +16,42 @@ signature
 
 strategies
 
-  io-s2j = 
-    io-wrap(compile)
+  io-s2j = io-wrap(compile-spec)
  
 rules
  
-  compile :
+  compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
-     |[ import aterm.ATerm;
-	import aterm.AFun;
+     |[ 
+     import aterm.ATerm;
+	 import aterm.AFun;
 		
-        public class MyStrategoProgram implements SRTS.StrategoProgram {
+     public class MyStrategoProgram implements SRTS.StrategoProgram {
 
-	  private aterm.pure.PureFactory atermFactory; 
+  	 private aterm.pure.PureFactory atermFactory; 
 	  
-	  private ATerm not_null(ATerm term) throws Failure
-          {
-                if(term == null) throw new Failure() ;
-                return term;
-          }
-	  public MyStrategoProgram() {
-	  	atermFactory = new aterm.pure.PureFactory();		
-	  }
+	 private ATerm not_null(ATerm term) throws Failure {
+        if(term == null) throw new Failure();
+        return term;
+     }
+     
+	 public MyStrategoProgram() {
+	   atermFactory = new aterm.pure.PureFactory();		
+	 }
 	  
-	  public static void main(String args[]) {
+	 public static void main(String args[]) {
 	  	MyStrategoProgram p = new MyStrategoProgram();
-	  }
+	 }
 
-          ~*function-defs
-        }
+     ~*function-defs
+     }
      ]|
      where 
        <map(translate-definition)> defs => function-defs
+
 rules
-  translate-definition :
-     |[ x( a1* | a2* ) = s ]|
-      -> class-body-dec |[ 
+  translate-definition:
+    SDefT(x, a1*, a2*, s) -> class-body-dec |[ 
             static ATerm x(param*, ATerm term) 
             {
               stm
@@ -53,18 +59,28 @@ rules
             }
          ]|
     where
-      <map(translate-parameter)> a1* => args1
-    ; <map(translate-parameter)> a2* => args2
+      prelude(|"translate-definition")
+//      <map(translate-parameter)> a1* => args1
+//    ; <map(translate-parameter)> a2* => args2
+    ; ![] => args1 => args2
     ; <conc> (args1,args2) => param*
     ; <translate-body> s => stm
+
 
   // XXX: add Strategy parameter
   translate-parameter :
     VarDec(x,ConstType(_)) -> param |[ ATerm x ]|
-
+  where prelude(|"translate-parameter")
+  
 strategies
-  translate-body = topdown(repeat(translate-strategy))
+  prelude(|msg) = log(|Debug(), msg)
+  
+  translate-body = 
+    prelude(|"translate-body") 
+    ; topdown(repeat(translate-strategy))
 
+  translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
+  
   translate-strategy :
     Id() -> bstm |[ {} ]|
 
@@ -72,10 +88,10 @@ strategies
     Fail() -> bstm |[ throw new Failure() ; ]|
 
   translate-strategy :
-    |[ s1 ; s2 ]| -> bstm |[ { ~stm:s1 ~stm:s2 } ]|
+    Seq(s1, s2) -> bstm |[ { ~stm:s1 ~stm:s2 } ]|
 
   translate-strategy :
-    |[ s1 < s2 + s3 ]| ->
+    GuardedLChoice(s1, s2, s3) ->
       bstm |[ 
         { ATerm x = term ;
           boolean y = false ;
@@ -101,7 +117,7 @@ strategies
 
 
   translate-strategy :
-    Strat |[ x(s* | t*) ]| ->
+    CallT(x, s*, t*) ->
       bstm |[ term = x(e*,term) ; ]|
       where
         <map(id)>s* => args1
@@ -113,6 +129,7 @@ strategies
     where 
       <construct-term> t => e
 
+  
 strategies
   
   construct-term =
