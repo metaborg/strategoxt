@@ -31,8 +31,8 @@ PGEN_FLAGS = -m $*
 
 GEN_MODS = StrategoRenamed.sdf StrategoMix.sdf EmbeddedStrategoMix.sdf
 
-%Renamed.sdf: %.def
-	$(SDF_TOOLS)/bin/gen-renamed-sdf-module -i $< -o $@ --main $* --name $*Renamed --prefix Stratego
+StrategoRenamed.sdf: Stratego.def
+	$(SDF_TOOLS)/bin/gen-renamed-sdf-module -i $< -o $@ --main Stratego --name StrategoRenamed --prefix Stratego
 
 StrategoMix.sdf : Stratego.def
 	$(SDF_TOOLS)/bin/gen-sdf-mix -i $< --main Stratego --name StrategoMix -o $@
