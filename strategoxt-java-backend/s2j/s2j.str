@@ -52,11 +52,15 @@ rules
 
 rules
   translate-definition:
-    SDefT(x, a1*, a2*, s) -> type-dec |[ 
+    SDefT(x, strats*, terms*, s) -> type-dec |[ 
             public static class x extends Strategy {
               public final static x instance = new x();
               public ATerm apply(param*, ATerm term) {
-                stm
+                try {
+                  stm
+                } catch(Failure f) {
+                  return null;
+                }
                 return term;
               }
             }
@@ -68,17 +72,20 @@ rules
 //            }
     where
       prelude(|"translate-definition")
-//      <map(translate-parameter)> a1* => args1
-//    ; <map(translate-parameter)> a2* => args2
-    ; ![] => args1 => args2
-    ; <conc> (args1,args2) => param*
+    ; <map(translate-parameter)> strats* => strats'
+    ; <map(translate-parameter)> terms* => terms'
+    ; <conc> (strats', terms') => param*
     ; <translate-body> s => stm
 
 
   // XXX: add Strategy parameter
   translate-parameter :
-    VarDec(x,ConstType(_)) -> param |[ ATerm x ]|
-  where prelude(|"translate-parameter")
+  VarDec(x, ConstType(_)) -> param |[ final ATerm x ]|
+  where prelude(|"translate-parameter - term")
+  
+  translate-parameter : 
+  VarDec(x, FunType(_, _)) -> param |[ final Strategy x ]|
+  where prelude(|"translate-parameter - strategy")
   
 strategies
   prelude(|msg) = log(|Debug(), msg)
@@ -95,10 +102,10 @@ strategies
     <map(\ x -> bstm |[ ATerm x ; ]| \)> vars => vars'
     
   translate-Id :
-    Id() -> bstm |[ term = term; ]|
+    Id() -> stm |[ term = term; ]|
 
   translate-Fail :
-    Fail() -> bstm |[ throw new Failure() ; ]|
+    Fail() -> stm |[ throw new Failure() ; ]|
 
   translate-Seq :
     Seq(s1, s2) -> bstm |[ { ~stm:s1 ~stm:s2 } ]|
@@ -108,20 +115,16 @@ strategies
       bstm |[ 
         { ATerm x = term ;
           boolean y = false ;
-          try 
-          {
+          try {
             ~stm:s1
-	        y = true ;
-          }
-          catch(Failure f)
-          {
-            term = x ;
+            y = true;
+          } catch(Failure f) {
+            term = x;
             ~stm:s3
           }
-          if (y) 
-          {
+          if(y) {
             ~stm:s2
-          } 
+          }
         }
       ]|
       where
@@ -142,33 +145,47 @@ strategies
     <+ translate-Let
   
   translate-Let: 
-    Let(_, _) -> bstm |[ Let(); ]|
+  Let(defs, body) -> Block(<conc> (defs', [body]))
+  where
+    <map(translate-definition)> defs => defs'
+ 
   
   translate-CallT = 
     do-translate-CallT 
-    <+ \ CallT(_, _, _) -> bstm |[ CallT(); ]| \
+    <+ \ CallT(_, _, _) -> stm |[ CallT(); ]| \
+  
+  make-strategy-class : 
+  (x, s) -> bstm |[ 
+        static final class x extends Strategy { 
+          public final static x instance = new x();
+          public ATerm apply(ATerm term) { 
+            try { ~bstm:s } catch(Failure f) { return null; } return term; 
+          }
+        } 
+    ]|
   
   do-translate-CallT:
     CallT(SVar(x), s*, t*) ->
-      bstm |[ term = x.instance.apply(e*,term) ; ]|
+      Block( <conc> (bodies, [ stm |[ term = x.instance.apply(e*,term) ; ]| ]) )
       where
         // FIXME do actual lifting
-        <map(!ExprName(Id(<new>())))> s* => args1
+        <map(\ x -> (<new>(), <translate-strategy> x) \)> s* => args1
+      ; <map(make-strategy-class)> args1 => bodies
       ; <map(construct-term)>t* => args2
-      ; <conc>(args1,args2) => e*
+      ; <conc> (<map(!ExprName(Id(<Fst>)))> args1, args2) => e*
 
   translate-PrimT :
-    PrimT(_, _, _) -> bstm |[ PrimT(); ]|
+    PrimT(_, _, _) -> stm |[ PrimT(); ]|
     
   translate-Match:
-    Match(_, _) -> bstm |[ Match(); ]|
+    Match(_, _) -> stm |[ Match(); ]|
     
   translate-Build = 
     do-translate-Build 
-    <+ \ Build(t) -> bstm |[ Build(); ]| \
+    <+ \ Build(t) -> stm |[ Build(); ]| \
   
   do-translate-Build:
-    Build(t) -> bstm |[ term = e ; ]|
+    Build(t) -> stm |[ term = e ; ]|
     where 
       <construct-term> t => e
 
@@ -271,7 +288,7 @@ strategies
       where !Float(i) => f
 
   Pattern2Stm(|z) :
-    Wld() -> stm |[ ; ]|
+    Wld() -> stm |[ Wld(); ]|
 
   Pattern2Stm(|z) :
     Var(x) -> stm |[ x = z; ]|
