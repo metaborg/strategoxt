@@ -44,6 +44,7 @@ rules
 	 }
 
      ~*function-defs
+
      }
      ]|
      where 
@@ -51,13 +52,20 @@ rules
 
 rules
   translate-definition:
-    SDefT(x, a1*, a2*, s) -> class-body-dec |[ 
-            static ATerm x(param*, ATerm term) 
-            {
-              stm
-              return term ;
+    SDefT(x, a1*, a2*, s) -> type-dec |[ 
+            public static class x extends Strategy {
+              public final static x instance = new x();
+              public ATerm apply(param*, ATerm term) {
+                stm
+                return term;
+              }
             }
          ]|
+//            static ATerm x(param*, ATerm term) 
+//            {
+//              stm
+//              return term ;
+//            }
     where
       prelude(|"translate-definition")
 //      <map(translate-parameter)> a1* => args1
@@ -81,16 +89,21 @@ strategies
 
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
-  translate-strategy :
-    Id() -> bstm |[ {} ]|
+  translate-Scope : 
+  Scope(vars, e) -> Block(<conc> (vars', [e]))
+  where
+    <map(\ x -> bstm |[ ATerm x ; ]| \)> vars => vars'
+    
+  translate-Id :
+    Id() -> bstm |[ term = term; ]|
 
-  translate-strategy :
+  translate-Fail :
     Fail() -> bstm |[ throw new Failure() ; ]|
 
-  translate-strategy :
+  translate-Seq :
     Seq(s1, s2) -> bstm |[ { ~stm:s1 ~stm:s2 } ]|
 
-  translate-strategy :
+  translate-GuardedLChoice :
     GuardedLChoice(s1, s2, s3) ->
       bstm |[ 
         { ATerm x = term ;
@@ -98,7 +111,7 @@ strategies
           try 
           {
             ~stm:s1
-	    y = true ;
+	        y = true ;
           }
           catch(Failure f)
           {
@@ -116,15 +129,45 @@ strategies
       ; new => y
 
 
-  translate-strategy :
-    CallT(x, s*, t*) ->
-      bstm |[ term = x(e*,term) ; ]|
+  translate-strategy = 
+    translate-CallT 
+    <+ translate-Build
+    <+ translate-Seq
+    <+ translate-PrimT
+    <+ translate-Id
+    <+ translate-Fail
+    <+ translate-GuardedLChoice
+    <+ translate-Scope
+    <+ translate-Match
+    <+ translate-Let
+  
+  translate-Let: 
+    Let(_, _) -> bstm |[ Let(); ]|
+  
+  translate-CallT = 
+    do-translate-CallT 
+    <+ \ CallT(_, _, _) -> bstm |[ CallT(); ]| \
+  
+  do-translate-CallT:
+    CallT(SVar(x), s*, t*) ->
+      bstm |[ term = x.instance.apply(e*,term) ; ]|
       where
-        <map(id)>s* => args1
+        // FIXME do actual lifting
+        <map(!ExprName(Id(<new>())))> s* => args1
       ; <map(construct-term)>t* => args2
       ; <conc>(args1,args2) => e*
 
-  translate-strategy :
+  translate-PrimT :
+    PrimT(_, _, _) -> bstm |[ PrimT(); ]|
+    
+  translate-Match:
+    Match(_, _) -> bstm |[ Match(); ]|
+    
+  translate-Build = 
+    do-translate-Build 
+    <+ \ Build(t) -> bstm |[ Build(); ]| \
+  
+  do-translate-Build:
     Build(t) -> bstm |[ term = e ; ]|
     where 
       <construct-term> t => e
@@ -150,13 +193,13 @@ rules
 
 rules
   construct-preterm :
-    Int(i) -> |[ (ATerm) atermFactory.makeInt(i) ]|
+    Int(i) -> expr |[ (ATerm) atermFactory.makeInt(i) ]|
 
   construct-preterm :
-    Str(s) -> |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~s",0,true)) ]|
+    Str(s) -> expr |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~s",0,true)) ]|
 
   construct-preterm :
-    Real(s) -> |[ (ATerm) atermFactory.makeReal(~float:f) ]|
+    Real(s) -> expr |[ (ATerm) atermFactory.makeReal(~float:f) ]|
     where
       !Float(s) => f
 
@@ -169,7 +212,7 @@ rules
     end
 
   construct-preterm :
-    Op(c,t*) -> |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~c",i,false),e) ]|
+    Op(c,t*) -> expr |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~c",i,false),e) ]|
     where 
       <length ; int-to-string> t* => i
     ; <list-to-term-array> t* => e
@@ -185,7 +228,7 @@ strategies
       ; !bstm |[ x[j] = e ; ]|
       }
     ) => bstm*
-  ; !|[ {| ATerm[] x ; bstm* | x |} ]|
+  ; !expr |[ PreEBlock() ]| //{| ATerm[] x ; bstm* | x |} ]|
     
 
 
