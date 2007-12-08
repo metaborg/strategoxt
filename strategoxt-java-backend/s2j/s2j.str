@@ -25,22 +25,18 @@ rules
      |[ 
      import aterm.ATerm;
 	 import aterm.AFun;
-		
-     public class MyStrategoProgram implements SRTS.StrategoProgram {
-
-  	 private aterm.pure.PureFactory atermFactory; 
-	  
-	 private ATerm not_null(ATerm term) throws Failure {
-        if(term == null) throw new Failure();
-        return term;
-     }
      
-	 public MyStrategoProgram() {
-	   atermFactory = new aterm.pure.PureFactory();		
-	 }
-	  
+     import org.strategoxt.core.Runtime;
+     import org.strategoxt.core.Strategy; 
+     import org.strategoxt.core.Failure;
+         
+     import static org.strategoxt.core.Runtime.atermFactory;
+     import static org.strategoxt.core.Term.nonNull;
+     		
+     public class Main {
+
 	 public static void main(String args[]) {
-	  	MyStrategoProgram p = new MyStrategoProgram();
+        main_0_0.instance.apply(Runtime.prepareCLIArgs(args));
 	 }
 
      ~*function-defs
@@ -185,77 +181,90 @@ strategies
     <+ \ Build(t) -> stm |[ Build(); ]| \
   
   do-translate-Build:
-    Build(t) -> stm |[ term = e ; ]|
+    Build(t) -> Block(<conc> (be, [ bstm |[ term = x; ]| ] ))
     where 
-      <construct-term> t => e
+      <construct-term> t => (Block(be), x)
+    ; debug(!"do-translate-Build")
 
   
 strategies
   
   construct-term =
-    let construct = construct-list <+ construct-preterm
-    in
-      ?Anno(<construct>,_)
-    end
+  ?Anno(<construct-list <+ construct-preterm <+ debug(!"construct-term failed")> ,_)
+  ; debug(!"construct-term ")
 
 rules
   construct-list :
-    Op("Nil",[]) -> |[ atermFactory.makeList() ]|
+  Op("Nil",[]) -> (bstm |[ ATerm x = atermFactory.makeList(); ]|, x)
+  where
+    x := <new>
   
   construct-list :
-    Op("Cons",[head,Anno(tail,_)]) -> |[ e2.insert(e1) ]|
-    where
-      <construct-term>head => e1
-    ; <construct-list>tail => e2
+  Op("Cons",[head,Anno(tail,_)]) -> |[ e2.insert(e1) ]|
+  where
+    e1 := <construct-term> head
+  ; e2 := <construct-list> tail
+  ; x := <new>
 
 rules
   construct-preterm :
-    Int(i) -> expr |[ (ATerm) atermFactory.makeInt(i) ]|
+  Int(i) -> (bstm |[ ATerm x = atermFactory.makeInt(i); ]|, x)
+  where
+    x := <new>
 
   construct-preterm :
-    Str(s) -> expr |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~s",0,true)) ]|
+  Str(s) -> (bstm |[ ATerm x = atermFactory.makeAppl(atermFactory.makeAFun("~s",0,true)); ]|, x)
+  where
+    x := <new>
 
   construct-preterm :
-    Real(s) -> expr |[ (ATerm) atermFactory.makeReal(~float:f) ]|
-    where
-      !Float(s) => f
+  Real(s) -> (bstm |[ ATerm x = atermFactory.makeReal(~float:f); ]|, x)
+  where
+    f := Float(s)
+  ; x := <new>
 
   construct-preterm =
     ?Var(x){b}
   ; if !b => "bound" then
-      !expr |[ x ]|
+      !(stm |[ x; ]|, x)
     else
-      !expr |[ not_null(x) ]|
+      !(stm |[ not_null(x); ]|, x)
     end
 
   construct-preterm :
-    Op(c,t*) -> expr |[ (ATerm) atermFactory.makeAppl(atermFactory.makeAFun("~c",i,false),e) ]|
-    where 
-      <length ; int-to-string> t* => i
-    ; <list-to-term-array> t* => e
+  Op(c,t*) -> (Block( 
+       <conc> (be, 
+       [ bstm |[ ATerm x1 = atermFactory.makeAppl(atermFactory.makeAFun("~c",i,false), x); ]| ]))
+      , x1)
+  where 
+    <length ; int-to-string> t* => i
+  ; x1 := <new>
+  ; debug(!"gonna list-to-term-array ")
+  ; <list-to-term-array> t* => (Block(be), x)
+  ; debug(!"construct-preterm Op ")
 
 strategies
   list-to-term-array =
     where( new => x )
   ; map-with-index(
-      {i,j,t,e:
+      {i,j,t,e,x1:
         ?(i,t)
-      ; <dec ; int-to-string>i => j
-      ; <construct-term>t => e
-      ; !bstm |[ x[j] = e ; ]|
+      ; <dec ; int-to-string> i => j
+      ; <construct-term> t => (e, x1)
+      ; !bstm |[ { e ; x[j] = x1; } ]|
       }
-    ) => bstm*
-  ; !expr |[ PreEBlock() ]| //{| ATerm[] x ; bstm* | x |} ]|
-    
+    ) => bstmts*
+  ; !(Block([ bstm |[ ATerm[] x; ]| | bstmts* ]), x)
+  ; debug(!"list-term-to-array ")
 
 
 // matching
 strategies
 
-  translate-strategy :
+  do-translate-Match :
     Match(t) -> Match(t,expr |[ term ]| )
 
-  translate-strategy :
+  do-translate-Match :
     Match(pattern, e1)
       -> bstm |[
            {
