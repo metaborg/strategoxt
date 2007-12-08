@@ -36,7 +36,12 @@ rules
      public class Main {
 
 	 public static void main(String args[]) {
-        main_0_0.instance.apply(Runtime.prepareCLIArgs(args));
+        ATerm term = main_0_0.instance.apply(Runtime.prepareCLIArgs(args));
+        if(term == null) { 
+          System.err.println("Rewriting failed!"); 
+          System.exit(1); 
+        }
+        else { System.out.println(term); }
 	 }
 
      ~*function-defs
@@ -247,14 +252,17 @@ strategies
   list-to-term-array =
     where( new => x )
   ; map-with-index(
-      {i,j,t,e,x1:
+      {i,j,t,s,x1:
         ?(i,t)
       ; <dec ; int-to-string> i => j
-      ; <construct-term> t => (e, x1)
-      ; !bstm |[ { e ; x[j] = x1; } ]|
+      ; <debug(!"will construct term from ")> t
+      ; <construct-term> t => (s, x1)
+      ; debug(!"constructed term ")
+      ; !bstm |[ { ~stm:s x[j] = x1; } ]|
       }
     ) => bstmts*
-  ; !(Block([ bstm |[ ATerm[] x; ]| | bstmts* ]), x)
+  ; length ; int-to-string => n
+  ; !(Block([ bstm |[ ATerm[] x = new ATerm[~deci:n]; ]| | bstmts* ]), x)
   ; debug(!"list-term-to-array ")
 
 
