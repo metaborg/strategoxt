@@ -53,10 +53,15 @@ rules
                ?_{a*}
                ; get-placeholder => ph
                ; (  ReplacePlaceholder
+
                  <+ "conc"#([rec, rec])
                     ; if "conc"#([is-list, is-list]) then
                         \ "conc"#([xs, ys]) -> <conc> (xs, ys) \
                       end
+
+                 <+ ?"yield"#([<ReplacePlaceholder>])
+                    ; asfix-yield-appl
+
                  <+ log(| Error()
                         , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
                                           , <write-to-string>pattern]) ; <exit> 1 )
