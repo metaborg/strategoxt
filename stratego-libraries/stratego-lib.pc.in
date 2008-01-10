@@ -1,7 +1,7 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
 pkgdatadir=@datadir@/@PACKAGE@
-strcflags=-I ${pkgdatadir} -I @datadir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-lib.la
 
 Name: Stratego Library
 Description: Standard library for Stratego
