@@ -217,11 +217,11 @@ strategies
 	, !rs1
 	, !["value4"]
 	)
-    ; where(
-        <dr-save-rule-set> rs1
-	; say(!"rule-set rs1: ")
-        ; map(debug(!"  "))
-      )
+    //; where(
+    //    <dr-save-rule-set> rs1
+    //  ; say(!"rule-set rs1: ")
+    //    ; map(debug(!"  "))
+    // )
     ; apply-and-check(!"test-change-set commit change set"
 	, dr-commit-change-set
 	, !rs1
