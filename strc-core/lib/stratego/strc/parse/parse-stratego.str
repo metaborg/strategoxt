@@ -216,7 +216,8 @@ strategies
       ; ps-set-preserve-positions
       )
     
-    ; <parse-xtc-file(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
+    ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
+    ; implode-asfix(not(<get-config> "--asfix"))
     
     ; if-keep1(where(write-to; copy-to(<guarantee-extension(|"atree")> base)))
 
