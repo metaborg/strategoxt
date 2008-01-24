@@ -5,8 +5,8 @@ include $(wildcard *.dep)
 nobase_data_DATA = libstrc.rtree libstrc.ctree
 lib_LTLIBRARIES  = libstrc.la
 EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)
-CLEANFILES 	 = $(wildcard *.dep) stratego/strc/parse/Stratego.tbl
-BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) stratego/strc/parse/Stratego.tbl
+CLEANFILES 	 = $(wildcard *.dep) # stratego/strc/parse/Stratego.tbl
+BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) # stratego/strc/parse/Stratego.tbl
 
 strclib =					\
 	strc.str				\
@@ -56,18 +56,19 @@ STRINCLUDES      = \
 
 STRCFLAGS =
 
-libstrc.rtree libstrc.c : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tbl
+# stratego/strc/parse/Stratego.tbl
+libstrc.rtree libstrc.c : $(strclib:.str=.rtree) 
 	$(STRC)/bin/strc -c --library -i $(srcdir)/strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 	rm libstrc.str
 
-libstrc.ctree : $(strclib:.str=.rtree) stratego/strc/parse/Stratego.tbl
+# stratego/strc/parse/Stratego.tbl
+libstrc.ctree : $(strclib:.str=.rtree) 
 	$(STRC)/bin/strc -F -c --library -i $(srcdir)/strc.str -o libstrc.ctree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 
-stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
-	mkdir -p $(top_builddir)/lib/stratego/strc/parse
-	cp $< $@
+# stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
+# 	mkdir -p $(top_builddir)/lib/stratego/strc/parse
+# 	cp $< $@
 
 stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front/syn/Stratego.def
 	mkdir -p $(top_builddir)/lib/stratego/strc/pp
 	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego
-
