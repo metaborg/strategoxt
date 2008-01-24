@@ -25,12 +25,12 @@ AC_CONFIG_FILES([
   tools/Makefile
 
   tests/Makefile
-  tests/unit/Makefile
   tests/test1/Makefile 
   tests/test2/Makefile 
   tests/testneg/Makefile
   tests/test-strc/Makefile
-
 ])
+
+#  tests/unit/Makefile
 
 AC_OUTPUT
