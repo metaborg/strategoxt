@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 nobase_data_DATA = libstratego-sdf.rtree libstratego-sdf.ctree
 lib_LTLIBRARIES  = libstratego-sdf.la
-EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree) libstratego-sdf.rtree
+EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-sdf.rtree libstratego-sdf.c $(sdflib:.str=.rtree)
 

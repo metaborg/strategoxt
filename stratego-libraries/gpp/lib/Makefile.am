@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 nobase_data_DATA = libstratego-gpp.rtree libstratego-gpp.ctree
 lib_LTLIBRARIES  = libstratego-gpp.la
-EXTRA_DIST = $(gpplib) $(gpplib:.str=.rtree) libstratego-gpp.rtree
+EXTRA_DIST = $(gpplib) $(gpplib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-gpp.rtree libstratego-gpp.c $(gpplib:.str=.rtree)
 

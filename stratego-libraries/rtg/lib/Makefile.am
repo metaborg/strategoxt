@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 nobase_data_DATA = libstratego-rtg.rtree libstratego-rtg.ctree
 lib_LTLIBRARIES  = libstratego-rtg.la
-EXTRA_DIST = $(rtglib) $(rtglib:.str=.rtree) libstratego-rtg.rtree
+EXTRA_DIST = $(rtglib) $(rtglib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = rtg-aterm.c libstratego-rtg.rtree libstratego-rtg.c $(rtglib:.str=.rtree)
 
