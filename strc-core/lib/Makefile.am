@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 nobase_data_DATA = libstrc.rtree libstrc.ctree
 lib_LTLIBRARIES  = libstrc.la
-EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) libstrc.rtree
+EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES 	 = $(wildcard *.dep) stratego/strc/parse/Stratego.tbl
 BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) stratego/strc/parse/Stratego.tbl
 
@@ -21,7 +21,7 @@ strclib =					\
 	$(wildcard stratego/strc/parse/*.str)	\
 	$(wildcard stratego/strc/strc/*.str)	\
 	$(wildcard stratego/strc/model/*.str)   \
-  	stratego/strc/pp/stratego-parenthesize.str
+	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
