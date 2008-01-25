@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = . syn pp sig parse test
+SUBDIRS 	  = . syn pp sig test
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST 	  = Makefile.xt svn-revision
 

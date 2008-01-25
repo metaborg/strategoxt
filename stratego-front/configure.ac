@@ -14,7 +14,6 @@ AC_CONFIG_FILES([
   syn/Makefile
   pp/Makefile
   sig/Makefile
-  parse/Makefile
   test/Makefile
   test/pp/Makefile
   test/syn/Makefile
