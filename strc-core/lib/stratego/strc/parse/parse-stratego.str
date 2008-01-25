@@ -176,7 +176,7 @@ strategies
         end
       end
 
-    ; where(if-not-silent(ps-check-module-name(|base); say(!"module-name-checked")))
+    ; where(if-not-silent(ps-check-module-name(|base)))
 
     ; if <get-config> "--desugaring" => "on" then
         stratego-desugar
