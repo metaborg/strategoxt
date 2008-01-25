@@ -73,14 +73,6 @@ strategies
   ps-must-preserve-comments =
     <get-config> "preserve-comments" => "yes"
 
-  ps-pass-preserve-comments =
-    if ps-must-preserve-comments then 
-      !["--preserve-comments"]
-    else
-      ![]
-    end
-
-
 strategies
 
   ps-preserve-positions-option =
@@ -96,14 +88,6 @@ strategies
 
   ps-must-preserve-positions =
     <get-config> "preserve-positions" => "yes"
-
-  ps-pass-preserve-positions =
-    if ps-must-preserve-positions then 
-      !["--preserve-positions"]
-    else
-      ![]
-    end
-
 
 strategies
 
@@ -133,58 +117,6 @@ strategies
 strategies
 
   /**
-   * Parses a Stratego module.
-   *
-   * @type FILE -> FILE
-   */
-  // /*
-  //ps-parse-module =
-  //    ?file
- //   ; xtc-ensure-file
-  //  ; where( ?FILE(filename) )
- //   ; log(|Notice(), <concat-strings>["Parsing file ", filename])
-  //  ; where( FILE(remove-extension => base) )
- //   ; where( ps-get-meta => meta )
- //   ; where( <ps-get-syntax ; ps-get-parse-table> meta => FILE(tbl) )
-//
- //   ; xtc-transform(!"sglri",
- //       !["-b", "-p", tbl | <concat>
- //          [ <pass-verbose> ()
- //          , <ps-pass-filters> meta
- //          , <ps-pass-sort> meta
- //          , <ps-pass-implode-quotes> meta
- //          , <ps-pass-yield-quotes> meta           
- //          , <ps-pass-preserve-comments>
- //          , <ps-pass-preserve-positions>  
- //          ]
- //        ]
- //      )
-//
- //   ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
-//
- //   ; if not(<get-config> "--assimilation" => "off") then
- //       xtc-transform(!"meta-explode",
- //         !["-b" | <concat>
- //            [ <pass-verbose>
- //            , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
- //            ]
- //          ])
- //     end
-//
- //   ; where(if-not-silent(read-from ; ps-check-module-name(|base)))
-//
- //   ; if <get-config> "--desugaring" => "on" then
- //       xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
- //     end
-//
-//    ; if not( <get-config>"-b" ) then
-//        read-from ; write-to-text
-//      end
-//    */
-    
-strategies
-
-  /**
    * @todo Maybe this should be in libstratego-sglr
    */
   strc-memo-open-parse-table(gettbl) =
@@ -211,21 +143,37 @@ strategies
       // sglr settings
       ; <ps-set-filters> meta
       ; srt := <ps-get-sort> meta
-    
-      // meta-explode options (?)
-      ; <ps-set-implode-quotes> meta
-      ; <ps-set-yield-quotes> meta   
-      ; ps-set-preserve-comments
-      ; ps-set-preserve-positions
       )
     
     ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
-    ; implode-asfix(not(<get-config> "--asfix"))
+
+    ; if <ps-must-preserve-comments> meta then
+        asfix-anno-comments(| [ "ShortCom", "LongCom"] )
+      end
+  
+    ; if <ps-must-preserve-positions> meta then
+        asfix-anno-position-info(|"")
+      end
+
+    ; if <ps-must-preserve-asfix-in-quotes> meta then
+        implode-asfix-skip-concrete-syntax
+      else
+        implode-asfix
+      end
+
+    ; if <ps-must-yield-quotes> meta then
+        yield-asfix-quotes
+      end
     
     ; if-keep1(where(write-to; copy-to(<guarantee-extension(|"atree")> base)))
 
     ; if not(<get-config> "--assimilation" => "off") then
-        meta-explode(<get-config> "--asfix")
+        // FIXME (from martin) : I have no idea what this does exactly in meta-explode
+        if <ps-must-preserve-asfix-in-quotes> meta then
+          meta-explode(true)
+        else
+          meta-explode(false)
+        end
       end
 
     ; where(if-not-silent(ps-check-module-name(|base); say(!"module-name-checked")))
@@ -269,18 +217,6 @@ strategies
       !None()
     end
 
-  /*
-   * @type MetaData -> List(String)
-   */  
-  /*
-  ps-pass-sort =
-    if ?Meta(<fetch-elem(?TopSort(s))>) then
-      !["--start", <!s; is-string>]
-    else
-      ![]
-    end
-  */
-    
   /**
    * @type MetaData 
    */  
@@ -299,93 +235,50 @@ strategies
       ; dbg(|"heuristic filters set")
     end
 
-  /*
-   * @type MetaData -> List(String)
-   */
-  /*  
-  ps-pass-filters =
-    if ?Meta(<fetch-elem(?HeuristicFilters(value))>) then
-      switch !value
-        case On():  !["--heuristic-filters", "on"]
-        case Off(): !["--heuristic-filters", "off"]
-        otherwise:  fatal-err(|"Illegal value of HeuristicFilters option: use On() or Off()")
-      end
-    else
-      // FIXME: for now, heuristic filters are enabled for concrete object syntax.
-      !["--heuristic-filters", "on"]
-    end
-   */
+strategies
    
   /**
-   * @type MetaData -> List(String)
-   * @todo what is the semantics of this paramater?
-   */  
-  ps-set-implode-quotes =
-    if <get-config> "--asfix" then
-      !["--concrete"]    
-    else
-      if ?Meta(<fetch-elem(?ImplodeQuotes(value))>) then
-        switch !value
-          case On():  ![]
-          case Off(): !["--concrete"]
-          otherwise:  fatal-err(|"Illegal value of ImplodeQuotes otion: use On() or Off()")
-        end
-      else
-        ![]
-      end
-    end
-    
-  /*
-   * @type MetaData -> List(String)
+   * Succeeds if AsFix in quotations should not be imploded.
+   * AsFix in quotes must be preserved with the --asfix command-line option.
    */
-   /*  
-  ps-pass-implode-quotes =
-    if <get-config> "--asfix" then
-      !["--concrete"]    
-    else
-      if ?Meta(<fetch-elem(?ImplodeQuotes(value))>) then
-        switch !value
-          case On():  ![]
-          case Off(): !["--concrete"]
-          otherwise:  fatal-err(|"Illegal value of ImplodeQuotes otion: use On() or Off()")
-        end
-      else
-        ![]
-      end
-    end
-   */
-
+  ps-must-preserve-asfix-in-quotes =
+    where(<get-config> "--asfix")
 
   /**
-   * @type MetaData -> List(String)
-   * @todo what is the semantics of this configuration option?
-   */  
-  ps-set-yield-quotes =
+   * Succeeds if AsFix in quotations should not be imploded.
+   * AsFix in quotes must be preserved when the quotes will not be imploded.
+   */
+  ps-must-preserve-asfix-in-quotes =
+    where(
+      ?Meta(<fetch-elem(?ImplodeQuotes(value))>)
+      ; switch !value
+          case On():  fail
+          case Off(): id
+          otherwise:  fatal-err(|"Illegal value of ImplodeQuotes otion: use On() or Off()")
+        end
+    )
+
+  /**
+   * Succeeds if AsFix in quotations should not be imploded.
+   * Implementation detail: if quotes are to be yielded, then they should not
+   * be imploded either.
+   */
+  ps-must-preserve-asfix-in-quotes =
+    ps-must-yield-quotes
+
+strategies
+
+  ps-must-yield-quotes =
     if ?Meta(<fetch-elem(?YieldQuotes(value))>) then
       switch !value
-        case On():  !["--yield-quotes"]
-        case Off(): ![]
+        case On():  true
+        case Off(): false
         otherwise:  fatal-err(|"Illegal value of YieldQuotes otion: use On() or Off()")
       end
     else
-      ![]
+      false
     end
     
-  /*
-   * @type MetaData -> List(String)
-   */  
-  /*
-  ps-pass-yield-quotes =
-    if ?Meta(<fetch-elem(?YieldQuotes(value))>) then
-      switch !value
-        case On():  !["--yield-quotes"]
-        case Off(): ![]
-        otherwise:  fatal-err(|"Illegal value of YieldQuotes otion: use On() or Off()")
-      end
-    else
-      ![]
-    end */
-
 strategies
 
   /**

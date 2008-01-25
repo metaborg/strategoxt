@@ -32,7 +32,7 @@ tests =									 \
                   test-chain01 test-chain02 test-chain03			 \
 		  let-test							 \
 		  nested-defs01							 \
-		  cs-test01							 \
+		  cs-test01 cs-test02 cs-test03					 \
 	          static-links
 
 check_PROGRAMS 	= $(tests)
@@ -45,6 +45,8 @@ check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 TESTS 		= $(check_PROGRAMS)
 
 cs_test01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+cs_test02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+cs_test03_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 io_test10_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 io_test11_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 io_test1_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -265,6 +267,8 @@ nodist_let_test_SOURCES = let-test.c
 nodist_nested_defs01_SOURCES = nested-defs01.c
 
 nodist_cs_test01_SOURCES = cs-test01.c
+nodist_cs_test02_SOURCES = cs-test02.c
+nodist_cs_test03_SOURCES = cs-test03.c
 
 SDF2RTG_FLAGS = --main $*
 PGEN_FLAGS = -m $*
@@ -283,6 +287,7 @@ SDFINCLUDES = -I $(top_srcdir)/../stratego-front/syn
 	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
 
 cs-test01.c : ExpStratego.tbl Expressions.def Expressions.str
+cs-test02.c : ExpStratego.tbl
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf
 
