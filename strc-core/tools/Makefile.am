@@ -22,5 +22,3 @@ libexec_PROGRAMS = pack-stratego report-ambs stratego-ensugar \
 EXTRA_DIST      = $(wildcard *.str) strcflags
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
-EXTRA_DIST 	= $(wildcard *.str)
-
