@@ -44,6 +44,9 @@ strategies
   + ArgOption("--assimilation", where(<set-config>("--assimilation", <id>)),
 	      !"--assimilation on/off : turn assimilation on or off (default: on)")
 
+  + ArgOption("-la", id,
+              !"-la <name>         Ignored (for command-line compatibility with strc).")
+
   + Option(fail, fail, !"")
   + Option(fail, fail, !"Preserving options:")
 
