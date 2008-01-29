@@ -91,7 +91,7 @@ strategies
 
 strategies
 
-  parse-stratego-trm(|args) = debug(!"parse-stratego-trm: "); dbg(|["parse-stratego-trm"]); 
+  parse-stratego-trm(|args) = dbg(|["parse-stratego-trm"]); 
     where(id
       ; incl := <get-config <+ ![]> "-I"
       ; <set-config> ("-I", [])
