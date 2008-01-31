@@ -1,2 +1,45 @@
 module pp-stratego
-imports libstrc
+imports
+  libstratego-lib
+  libstratego-xtc 
+  libstrc
+
+strategies
+
+  pp-stratego-io =
+    option-wrap(pp-stratego-options <+ io-options,
+      xtc-io(
+        (where(<get-config> "--abstract")
+	 <+ xtc-transform(!"parse-stratego",!["-b" | <pass-includes> ]))
+         ; xtc-transform(!"stratego-ensugar")
+	//; try(where(<get-config> "--annotations")
+        //      ; xtc-transform(!"annos-to-term"))
+        ; xtc-io-transform(
+            parenthesize-Stratego
+          ; topdown(try(\ Parenthetical(s) -> ParenStrat(s) \ ))
+	  ; try(where(<get-config> "--annotations")
+                ; annos-as-comment)
+          )
+        ; xtc-transform(!"stratego2abox", !["-b"])
+        ; xtc-transform(!"abox2text", pass-verbose)
+      )
+    )
+
+  pp-stratego-options =
+    Option("-a" + "--abstract", where(<set-config>("--abstract", ())),
+              !"-a | --abstract  source is abstract syntax")
+
+  + Option("--annotations", where(<set-config>("--annotations", ())),
+              !"--annotations    print annotations on abstract syntax")
+
+  + ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
+	      !"-I p|--Include p   include modules from directory p") 
+
+  + ArgOption("-p" , where(<set-config>("-p", <id>)),
+	      !"-p file   use pptable in file instead of Stratego-pretty.pp")
+
+  + ArgOption("-la", id,
+              !"-la <name>         Ignored (for command-line compatibility with strc).")
+
+  pass-includes =
+    <get-config<+![]> "-I" ; foldr(id, conc, !["-I", <id>])
