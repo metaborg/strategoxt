@@ -9,6 +9,7 @@ strategies
     ; default-option-tests
     ; init-option-tests
     ; check-option-tests
+    ; extra-option-tests
     )
 
 strategies
@@ -342,6 +343,25 @@ strategies
         )
       )
 
+strategies
+
+  extra-option-tests = id
+    ; option-test-wrap(
+        apply-test(!"General command line option without options"
+        , test-parse-options(general-options)
+        , !["./bla"]; debug
+        )
+      )
+
+    ; option-test-wrap(
+        apply-and-check(!"General command line option with options"
+        , test-parse-options(general-options)
+        , !["./bla", "--verbose", "1", "--keep", "2", "--statistics", "3"]; debug
+        , verbosity => 1
+        ; get-keep => 2
+        ; get-statistics => 3
+        )
+      )
 
 //  OptionNotCombinedCheck(is-flag, other-flags | msg) =
 //  OptionZeroOrOneCheck(is-flag | msg) =

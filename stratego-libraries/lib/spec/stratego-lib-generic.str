@@ -59,6 +59,7 @@ imports
   util/config/common
   util/config/keep
   util/config/options
+  util/config/stats
   util/config/parse-options
   util/config/verbose
 
