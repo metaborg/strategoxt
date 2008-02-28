@@ -8,19 +8,19 @@ EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES 	 = $(wildcard *.dep) # stratego/strc/parse/Stratego.tbl
 BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) # stratego/strc/parse/Stratego.tbl
 
-strclib =					\
-	strc.str				\
-	$(wildcard stratego/strc/*.str)		\
-	$(wildcard stratego/strc/front/*.str)	\
-	$(wildcard stratego/strc/c/*.str)	\
-	$(wildcard stratego/strc/lib/*.str)	\
-	$(wildcard stratego/strc/match/*.str)	\
-	$(wildcard stratego/strc/opt/*.str)	\
-	$(wildcard stratego/strc/pack/*.str)	\
-	$(wildcard stratego/strc/pp/*.str)	\
-	$(wildcard stratego/strc/parse/*.str)	\
-	$(wildcard stratego/strc/strc/*.str)	\
-	$(wildcard stratego/strc/model/*.str)   \
+strclib =						\
+	strc.str					\
+	$(wildcard $(srcdir)/stratego/strc/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/front/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/c/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/lib/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/match/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/opt/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/pack/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/pp/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/parse/*.str)	\
+	$(wildcard $(srcdir)stratego/strc/strc/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/model/*.str)	\
 	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c
