@@ -314,12 +314,12 @@ strategies
     |[ 
        ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
-	 sl_decl(sl);
-	 ~stm*:fini;
-	 ~stm*:vini;
-	 ~stm*:stms;
+         sl_decl(sl);
+         ~stm*:fini;
+         ~stm*:vini;
+         ~stm*:stms;
          ~stm:stm;
-	 return(t);
+         return(t);
          ~id:F : 
          return NULL;
        }

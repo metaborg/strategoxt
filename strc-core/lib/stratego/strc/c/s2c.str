@@ -121,7 +121,7 @@ rules
 	// function definitions themselves
 	~ext-def*:function-defs
 
-        ~ext-def*:<if-lib(![], ![<register-strategies-function>function-regs])>
+    ~ext-def*:<if-lib(![], ![<register-strategies-function>function-regs])>
 
 	~ext-def*:<if-lib(![], ![<MainDef>])>
     ]|
@@ -309,7 +309,7 @@ strategies
        ATerm ~id:f(~param-dec*:args, ATerm t)
        {
          ~stm:stm;
-	 return(t);
+         return(t);
          ~id:F : 
          return NULL;
        }
@@ -382,10 +382,10 @@ rules
     <+ debug(!"TranslateStrat undefined: "); fail
 
   TranslateStrat(|S,F) :
-    Id -> stm|[ goto ~id:S; ]|
+    Id() -> stm|[ goto ~id:S; ]|
 
   TranslateStrat(|S,F) :
-    Fail -> stm|[ goto ~id:F; ]|
+    Fail() -> stm|[ goto ~id:F; ]|
 
   TranslateStrat(|S,F) :
     Scope(xs, s) -> 
@@ -413,7 +413,7 @@ rules
     stm|[
       {
         ATerm ~id:x = t;
-	~stm:<translate-strat(|Next,F')>s1
+        ~stm:<translate-strat(|Next,F')>s1
         ~stm:<translate-strat(|S,F)>s2
         ~id:F' : t = ~id:x; 
         ~stm:<translate-strat(|S,F)>s3
@@ -674,7 +674,7 @@ rules
     stm|[
       { 
         ~dec*:decs
-	~stm*:stms
+        ~stm*:stms
         t = ~exp:e;
         goto ~id:S;
       }

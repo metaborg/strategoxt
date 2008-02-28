@@ -173,7 +173,7 @@ rules
     ; giving-up
 
   choices = 
-    foldr(!Fail, !Choice(<Fst>,<Snd>))
+    foldr(!Fail(), !Choice(<Fst>,<Snd>))
 
 rules
 

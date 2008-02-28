@@ -95,7 +95,7 @@ strategies
            /*; Match(alltd(Binding)) */
            <+ <if-verbose3(debug(!"no match with current term: "))> 
 		      ("strat: ", <id>, "current: ", ct)
-              ; !Fail)
+              ; !Fail())
        <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
 	  ; rules(CurrentTerm : _ -> t)
       )
