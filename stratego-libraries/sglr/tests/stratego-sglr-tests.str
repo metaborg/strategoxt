@@ -1,7 +1,7 @@
 /**
  * Tests for the Stratego SGLR Library.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module stratego-sglr-tests
 imports

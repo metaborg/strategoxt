@@ -1,7 +1,7 @@
 /**
  * Generates a description of conflicts in an AST from an SDF syntax definition.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.11
  */
 module sdf2ast-conflicts

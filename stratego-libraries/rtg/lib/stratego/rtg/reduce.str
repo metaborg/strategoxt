@@ -2,7 +2,7 @@
  * Removes non-terminals that are not productive or reachable.
  *
  * @see     TATA section 2.1.1
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module stratego/rtg/reduce
 imports

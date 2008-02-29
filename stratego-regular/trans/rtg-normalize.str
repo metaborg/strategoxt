@@ -1,7 +1,7 @@
 /**
  * Normalizes an RTG to TATA's normalized regular tree grammar.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module rtg-normalize
 imports

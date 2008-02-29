@@ -7,7 +7,7 @@
  * @authors    Merijn de Jonge <mdejonge@cwi.nl>
  *             Eelco Visser <visser@acm.org>
  *             Joost Visser <jvisser@cwi.nl>
- *             Martin Bravenboer <martin@cs.uu.nl>
+ *             Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module pack-sdf
 imports

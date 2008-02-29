@@ -1,7 +1,7 @@
 /**
  * Generates an SDF module with renamings for all sorts in the input SDF definition.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.9.5
  */
 module gen-renamed-sdf-module

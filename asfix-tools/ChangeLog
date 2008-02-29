@@ -8,7 +8,7 @@
 	* src/implode/implode-asfix.str: Fix implosion skipping of
 	concrete syntax part when using a StrategoStrategy.
 
-2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
+2005-01-12  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/implode/sglri.str: don't report rewriting failed if parsing
 	failed.
@@ -16,7 +16,7 @@
 	* src/implode/sglri-error-reporting.str: even more fancy error
 	report: file, line, column, 2-line quote from file.
 	
-2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
+2005-01-12  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/implode/sglri.str: dead code elimination and cleanup.
 
@@ -27,12 +27,12 @@
 
 	* src/implode/sglri.str: pass the verbosity to sglr.
 
-2004-11-27  Martin Bravenboer <martin@cs.uu.nl>
+2004-11-27  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/implode/sglri.str: added the --no-heuristic-filters option
 	to disable the heuristic filters of sglr.
 
-2004-09-02  Martin Bravenboer <martin@cs.uu.nl>
+2004-09-02  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/anno/asfix-anno-comments.str: a new asfix to asfix tool that
 	preserves comments that were of the input source code by putting
@@ -105,7 +105,7 @@
 	This tool was inspired by pleasant discussions on source to source
 	transformations with Karl Trygve.
 
-2004-09-01  Martin Bravenboer <martin@cs.uu.nl>
+2004-09-01  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/implode/implode-asfix.str: implode-asfix now supports
 	preservation of annotations in AsFix trees. This means that
@@ -120,7 +120,7 @@
 	If you want full annotation preservation, use AsFix2ME output of
 	sglr (don't use -2 ) and implode the tree with implodePT.
 
-2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-30  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* sig/*: added a clean signature of AsFix.
 	
@@ -132,7 +132,7 @@
 	* Makefile.am: added autoxt.m4 to EXTRA_DIST
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I .
 
-2004-02-19  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-19  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/implode/implode-asfix.str: *not* funny: after checking
 	every possible mistake I could make I observed that implode-asfix
@@ -152,7 +152,7 @@
 	* src/implode/implode-asfix.str: Bugs in implosion using separate
 	phases. Not clear why these went undetected.
 
-2003-011-30  Martin Bravenboer  <martin@cs.uu.nl>
+2003-011-30  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/implode/sglri.str: fixed the --sglr and --impl
 	arguments. extend-config should be invoked with of the new value

@@ -10,26 +10,26 @@
 	* parse/meta-explode.str:
 	Fix --asfix option. Disable layout deleting into ToBuild trees.
 
-2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
+2005-01-12  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* parse/parse-stratego.str: use sglri for parsing: the stratego
 	compiler now uses the fancy error reporting of sglri.
 	
-2005-01-02  Martin Bravenboer <martin@cs.uu.nl>
+2005-01-02  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Identifiers.sdf: allow a / separator between parts
 	of a ModName. Allowing the / provides basic support for
 	hierarchical module names, e.g. 'module jls/conversions/Boxing'
 	and 'imports jls/conversions/Boxing'.
 	
-2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
+2004-10-16  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Identifiers.sdf: disabling the heurstic filters
 	revealed a problem in the Stratego syntax definition: _ can be an
 	indentifier as well as a wildcard. I've added a reject of "_" to
 	Id.
 	
-2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
+2004-10-16  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* parse/parse-stratego.str: refactoring, documentation, etc.
 
@@ -43,14 +43,14 @@
 	* parse/parse-stratego.str: no more warning of no Syntax is
 	available in a meta file.
 
-2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
+2004-09-25  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Strategies.sdf: added the if-then construct: if s1
 	then s2 end.
 
 	* parse/stratego-desugar.str: desugaring of if-then.
 
-2004-09-02  Martin Bravenboer <martin@cs.uu.nl>
+2004-09-02  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Terms.sdf: added the AnnoTail construct, which
 	allows you to compose annotations in a way similar to lists: 
@@ -58,12 +58,12 @@
 
 	* parse/stratego-desugar.str: desugaring of AnnoTail.
 
-2004-07-27  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-27  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* parse/stratego-desugar.str: improved desugaring of StratRules
 	without conditions.
 	
-2004-06-29  Martin Bravenboer <martin@cs.uu.nl>
+2004-06-29  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	Improved pretty-printing of Stratego using the sdf2parenthesize
 	generator.
@@ -90,7 +90,7 @@
 
 	- stratego-ensugar can be compiled separately
 	
-2004-05-26  Martin Bravenboer <martin@cs.uu.nl>
+2004-05-26  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Layout.sdf: *) in /* */ is now allowed and vice
 	versa. This allows commenting strategies that contain *), for
@@ -155,7 +155,7 @@
 
 	* syn/StrategoStratego.sdf: Concrete syntax for new dynamic rules.
 
-2004-04-11  Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-11  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-DynamicRules.sdf: Syntax for new dynamic rules.
 	It is imported by Stratego.sdf.
@@ -165,14 +165,14 @@
 	DynamicRules.sdf for compatibility purposes, the rest fits within
 	the new syntax.
 
-2004-04-10  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-10  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/*: generate the renamed SDF modules.
 
 	* syn/Stratego.sdf: removed Stratego-Script from syntax
 	definition.
 	
-2004-04-07  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-07  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* test/strategies.testsuite: ParseUnit testsuite for
 	Strategies. Especially the if-then-else construct is now
@@ -187,7 +187,7 @@
 	Stratego. This module defines more sorts, which is required for
 	testing smaller parts of a syntax definition.
 	
-2004-04-06  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-06  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Strategies.sdf: add the if-then-else
 	strategy. Semantics:
@@ -202,7 +202,7 @@
 
 	* sig/stratego-ext.str: removed
 
-2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-22  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Stratego-Identifiers.sdf: removed lexical follow restriction
 	of . for Id.
@@ -217,7 +217,7 @@
 2004-02-22  Merijn de Jonge  <mdejonge@cs.uu.nl>
 	* added syn/Stratego-Core.{def,tbl} to EXTRA_DIST
 
-2004-02-13  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-13  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* parse/parse-stratego.str: invoke implode-asfix with -b.
 	
@@ -236,7 +236,7 @@
 
 	* parse/stratego-ensugar.str: ensugaring PrimT
 
-2003-12-13  Martin Bravenboer <martin@cs.uu.nl>
+2003-12-13  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* parse/stratego-ensugar.str: added ensugaring of
 	annotations. stratego-desugar desugars annotations to one
@@ -259,7 +259,7 @@
 	operator, but no implementation is generated for such definitions.
 	External definitions can not be overloaded.
 
-2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-05  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/parse-stratego.str: parse-stratego applies pack-sdf and
 	must no longer apply asfix-yield.

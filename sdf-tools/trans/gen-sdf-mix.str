@@ -1,7 +1,7 @@
 /**
  * Generates a Mixin SDF module
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.17
  */
 module gen-sdf-mix

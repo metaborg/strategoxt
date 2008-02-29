@@ -1,4 +1,4 @@
-2005-03-12  Martin Bravenboer  <martin@cs.uu.nl>
+2005-03-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/sdf2parenthesize.str: --lang was used for several purposes
 	(signature, prefix of rules and more), which leads to problems
@@ -14,29 +14,29 @@
 	* trans/sdf2parenthesize.str: using tool-doc for more attractive
 	help and about.
 
-2005-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+2005-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/sdf2parenthesize.str: the --lang and --omod are now
 	optional. The values default to the basenem of -i and -o. This
 	makes the tool much easier to invoke. The -m is still required.
 
-2005-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+2005-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* lib/*: started collecting generic SDF utils in an sdf library
 	for Stratego/XT.
 	
-2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+2005-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/tests/*: implemented a badly needed testsuite
 	for parse-unit.
 
-2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+2005-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/parse-unit.str: fixed the testing of
 	testsuites with 'succeeds' and 'fails' output checks. Output
 	checks are not always patterns.
 	
-2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+2005-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/parse-unit.str: fallback to abstract input is
 	no longer supported. Use --abstract-input to disable parsing of
@@ -50,7 +50,7 @@
 	libexec programs. There is no reason to provide this tool to an
 	ordinary user by default.
 	
-2005-01-22  Martin Bravenboer  <martin@cs.uu.nl>
+2005-01-22  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/parse-unit.str: set the default verbosity to
 	1 in parse-unit. It will now by default show the test result. Use
@@ -61,7 +61,7 @@
 	feature, but they mess up the command-line if they are enabled by
 	default.
 	
-2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-09-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/parse-unit.str: parse-unit now has an option
 	to parse a single test and write the the result to the output. In
@@ -73,7 +73,7 @@
 
 	The --asfix2 flag can be used to produce asfix2 instead of an AST.
 
-2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-09-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/parse-unit.str: parse-unit now parses the
 	testsuite, so it accepts testsuites concrete syntax. No more
@@ -82,7 +82,7 @@
 	can be used to declare that you are passing a testsuite in
 	abstract syntax.
 
-2004-08-08  Martin Bravenboer  <martin@cs.uu.nl>
+2004-08-08  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/parse-unit.str: added the
 	--no-heuristic-filters flag to disable the heuristic -fi
@@ -90,7 +90,7 @@
 	sglr. Maybe this should be done by default, but it might break
 	stuff.
 
-2004-07-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-07-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/sdf2ast-conflicts.str: separate tool for producing a list
 	of conflict information from an SDF syntax
@@ -134,7 +134,7 @@
 	code with the pretty-printer of java-front, which uses the
 	sdf2parenthesize tools for printing parentheses.
 	
-2004-05-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/sdf2parenthesize.str: new tool to generate a Stratego
 	transformation tool that adds the necessary parentheses to an
@@ -213,19 +213,19 @@
 
 	Bug reports are welcome.
 	
-2004-05-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/sdf-spread-cons.str: new tool to annotate all equivalent
 	productions with a constructor, if one of them has a
 	constructor. Not really monkey proof at the moment, but well,
 	Stratego users are no monkeys!
 
-2004-05-01  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-01  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/sdf: Kodak Moment! This was the sdf.cons pp-table, def and
 	.tbl (AKA SDF variant 3). They are no longer used.
 	
-2004-05-01  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-01  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Updated to most recent SDF:
 	- sdf-doc
@@ -238,22 +238,22 @@
 	- sdf-regularize
 	- sdf-imports
 
-2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-23  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/sdf-cons/sdf-cons.str: upgraded to new SDF syntax.
 	
-2004-04-20  Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-20  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/sdf-bracket/sdf-bracket.str:
 	- removed GPL license.
 	- don't remove the top level term if it is not the accepted
 	grammar identifier (sdf 2.1)
 	
-2004-02-24  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-24  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/sdf-normalize/*: removed.
 
-2004-02-24  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-24  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/*: parse-unit now supports wildcards in the
 	specifications of expected results in a testsuite. In error
@@ -266,7 +266,7 @@
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
 	autoreconf can find autoxt.m4
 
-2004-02-19  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-19  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/gen-renamed-sdf-module.str: since we are now using the
 	constructors of the SDF2 syntax definition in PGEN 2.0 it is
@@ -275,12 +275,12 @@
 	improvement. implodePT is used because the output of the
 	normalizer is AsFix2ME.
 
-2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-18  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/pack-sdf/pack-sdf.str: now parses sdf modules using the new
 	SDF2 syntax definition of pgen 2.0. 
 
-2004-02-15  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-15  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/*: added [ ] delimiters for test input. This
 	is useful for testing typical string literals in programming
@@ -304,7 +304,7 @@
 	----------------------------------------------------
 
 
-2004-02-15  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-15  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* analyse/parse-unit/*: designed a concrete syntax for parse-unit
 	testsuites. Parse-unit is now ready for the technology push.
@@ -338,7 +338,7 @@
 	are not supported in the implementation. Implementing wildcards in
 	parse-unit is a to do.
 
-2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/gen-renamed-sdf-module.str: a simple collect over the AST
 	of an SDF definition is not really correct: the definition might
@@ -352,7 +352,7 @@
 	for example rename a module that is itself a renamer as well. How
 	useful.
 
-2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* trans/gen-renamed-sdf-module.str: tool to generate a RenamedLang
 	module, which renames all sorts in an SDF syntax definition to
@@ -373,12 +373,12 @@
 
 	Yes, yes, the scheme option is ridiculous ;) .
 
-2004-02-04  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-04  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/parse-unit/parse-unit.str: parse unit now fails with exit
 	code 1 if one of the tests fails.
 
-2004-02-01  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-01  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/parse-unit/parse-unit.str: binary output for sglr and
 	implode-asfix is *much* faster. It also solves a problem in the
@@ -386,7 +386,7 @@
 	segmentation fault after reading about 500 files. Binary aterms
 	don't have this problem for some reason.
 
-2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-05  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/pack-sdf/pack-sdf.str: support multiple output formts using
 	the -of (or --output-format) flag. By default pack-sdf from now
@@ -398,7 +398,7 @@
 	the .defs are already included. If this file is removed the
 	package will also need the updated Makefile.xt.
 	
-2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-05  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* src/pack-sdf/pack-sdf.str: refactored the entry point (no
 	asfix/text/ast changes yet)
@@ -414,7 +414,7 @@
 
 	* tohtml-sdf: minor modifucation due to change in tohtml tool
 
-2003-02-28  Martin Bravenboer  <martin@cs.uu.nl>
+2003-02-28  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Moved pretty-print table from src/sdf to pp. Renamed to Sdf2.pp
 

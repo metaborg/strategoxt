@@ -1,22 +1,22 @@
-2005-02-13  Martin Bravenboer <martin@cs.uu.nl>
+2005-02-13  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* tools/stratego-xt-xtc-tools.str: added xtc-sglri.
 	
-2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-04  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/xtc-proc.str: xtc-io-wrap now has a variant that takes an
 	explicit usage and about argument. These strategies are used if
 	the users requests for help or information about the program. The
 	changes are backwards compatible.
 
-2003-05-27  Martin Bravenboer <martin@cs.uu.nl>
+2003-05-27  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/xtc-register.str: added an xtc-register strategy that takes
 	arguments (not from config).
 
 	* src/xtc-register.str: load XTC repository in register.
 
-2003-05-01  Martin Bravenboer <martin@cs.uu.nl>
+2003-05-01  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* tools/stratego-xt-xtc-tools: removed xtc-parse-sdf and
 	xtc-pack-sdf. xtc-parse-sdf is not used and applied the third
@@ -24,7 +24,7 @@
 	not just 2). xtc-pack-sdf performs an implosion, which is
 	incorrect, so apparently it isn't used as well.
 
-2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
+2003-12-25  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/xtc-proc.str: updated xtc-io and xtc-output to invoke
 	xtc-write-output. xtc-write-output can also handle the stdin() as
@@ -42,7 +42,7 @@
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
 	autoreconf can find autoxt.m4
 
-2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
+2003-12-25  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/xtc-proc.str: using mkstemp for the creation of temporary
 	files.

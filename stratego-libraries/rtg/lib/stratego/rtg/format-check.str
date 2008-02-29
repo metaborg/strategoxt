@@ -4,7 +4,7 @@
  * This format checker supports any normalized RTG (defined by TATA),
  * including non-deterministic ones. The checker also supports injections.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module stratego/rtg/format-check
 imports

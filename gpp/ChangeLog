@@ -14,7 +14,7 @@
         Added '-l' to avoid adding extra newlines when the target width 
         is not limited. Implemented as setting width to zero.
 
-2005-01-30  Martin Bravenboer <martin@cs.uu.nl>
+2005-01-30  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc-tools/ast2abox.str: pass the verbose option to ast2abox.
 
@@ -32,7 +32,7 @@
 	* Bug fix: abox2latex didn't process the '-t' command line switch
 	correctly.
 
-2004-07-03  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-03  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* Most tools in GPP now use separate compilation.
 	
@@ -50,7 +50,7 @@
 	* trans2abox/sdf-2-pp-lib.str: get-cnstr-name failed to retrieve
 	constructor name from asfix terms.
 
-2004-04-08  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-08  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/2abox/sdf-2-pp-table.str: do not produce a warning message
 	for reject, bracket and injection productions. The warning
@@ -66,7 +66,7 @@
 	* xtc-tools/ppgen.str: use the new SDF syntax (pgen 2.0) by
 	parsing the input with parse-sdf2-definition in sdf-xtc-tools.
 
-2004-03-27  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-27  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/2abox/pp-table-io2.str: alternative storage of pp entries
 	in a table. The key includes the arity of the constructor of the
@@ -89,7 +89,7 @@
 	* Bug fix in sdf-2-pp-lib.str: pretty-print table generator now
 	generates syntactically correct entries for all SDF2 constructs
 
-2004-03-05  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-05  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Box/Makefile.am:
 	- install Box.pp in pkgdata_DATA

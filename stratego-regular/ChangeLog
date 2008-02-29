@@ -1,4 +1,4 @@
-2005-07-22  Martin Bravenboer <martin@cs.uu.nl>
+2005-07-22  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/tool-doc.str: updated tool-doc to use desugaring rewrite
 	rules instead of overlays. Tool-doc was using strategy
@@ -12,7 +12,7 @@
 	constructors does not change the syntax of the tool-doc
 	descriptions.
 	
-2005-01-21  Martin Bravenboer <martin@cs.uu.nl>
+2005-01-21  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/rtg2sig.str: improved the --help and --about by using
 	tool-doc.
@@ -20,16 +20,16 @@
 	* xtc/rtg2sig.str: use the basename of -i as the third alternative
 	for the name of the Stratego module.
 	
-2004-11-27  Martin Bravenboer <martin@cs.uu.nl>
+2004-11-27  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character
 	classes.
 	
-2004-08-29  Martin Bravenboer <martin@cs.uu.nl>
+2004-08-29  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/rg-layout.sdf: added comments to RTG.
 	
-2004-07-28  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-28  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/format-check.str: new --fast option. This option will
 	improve the speed of format checking, but will reduce the quality
@@ -43,13 +43,13 @@
 	The --xhtml and --vis mode have not been updated yet. Will do this
 	tonight.
 
-2004-07-22  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-22  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/format-check.str: new --vis option for showing the format
 	error in a pp-aterm at the command-line. Format-errors will be in
 	pretty-printed in red if the terminal supports colors.
 	
-2004-07-21  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-21  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/rtg-script.str: new tool for processing RTGs. The tool is
 	subject to any change that you can imagine, but the basic
@@ -58,7 +58,7 @@
 	-I yet), Reduce, Group, and DeleteNonterm. More functionanility is
 	on the way.
 
-2004-07-20  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-20  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/format-check.str: format-check has a new feature to report
 	the results of format-checking in an HTML document. This document
@@ -69,7 +69,7 @@
 	produce the HTML output. There is still some minor work to do: fix
 	a few bugs, and make some things more fancy.
 
-2004-07-17  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-17  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/format-check.str: improved --help documentation using
 	tool-doc.
@@ -81,7 +81,7 @@
 	* tests/format-check/format-check-tests.str: lots of tests for the
 	format checker.
 
-2004-07-17  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-17  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/interpret/core-format-check.str: new implementation of the
 	RTG format checker. The format checker now uses a bottom-up
@@ -98,7 +98,7 @@
 	Notice that his bottom-up algorithm will not be able to say
 	something about 'expected' types.
 	
-2004-07-03  Martin Bravenboer <martin@cs.uu.nl>
+2004-07-03  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/sdf2rtg/core-sdf-grammar2rtg.str: In PGEN 2.2 sort
 	declarations are no longer in available in kernel
@@ -110,12 +110,12 @@
 	* trans/sdf2rt/core-sdf-grammar2rtg.str: fail if no start symbols
 	are available in the resulting RTG.
 
-2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-30  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* sdf2rtg: Improved support for non-trivial regular
 	expressions. Stuff like optional alternatives is now supported.
 	
-2004-04-29  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-29  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/sdf2rtg/core-sdf-grammar2rtg.str: implemeted for
 	seq. Thanks to Arthur, who is fond of using less used
@@ -125,7 +125,7 @@
 
 	* trans/sig/stratego-rtg.str: mapping of RTG tuples to Stratego.
 	
-2004-04-21  Martin Bravenboer <martin@cs.uu.nl>
+2004-04-21  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/sig/core-sig-apply-param-sorts: a tool for removing
 	parameterized sorts from a Stratego specification. The tool
@@ -143,7 +143,7 @@
 
 	* pp/rtg.pp: fix in the pretty-print of tuples.
 
-2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-24  Martin Bravenboer <martin.bravenboer@gmail.com>
 	
 	* Solved bug in bracket ignore strategies
 
@@ -152,12 +152,12 @@
 	* Ignore injections from syntax sort into context-free syntax
 	sort.
 
-2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-24  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* The List and Opt non-terminals are now history. Removed from
 	syntax, signatures and tools.
 	
-2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-24  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* The built-in opt and list non-terminals are no longer used. They
 	have been replaced by several built-in terminals: Cons, Conc, Nil,
@@ -169,12 +169,12 @@
 	aliases, and so on. I've test support for the more advanced SDF
 	features using the Stratego-Java syntax definition.
 
-2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-24  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* More fixes for accepting the output of the pgen sdf
 	normalizer.
 	
-2004-03-21  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-21  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/interpret/*: implemented interpretation of an ATerm
 	against an RTG.
@@ -184,7 +184,7 @@
 
 	* xtc/aterm2irtg.str: returns an IRTG given an RTG and an ATerm.
 	
-2004-03-20  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-20  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* Rewritten core-sdf-grammar2rtg.str to concrete syntax for
 	RTG. Very attractive. I should use concrete syntax for SDF there
@@ -194,7 +194,7 @@
 
 	* All languages (RTG, RHG and regexp) now use CamelCase constructors.
 	
-2004-03-20  Martin Bravenboer <martin@cs.uu.nl>
+2004-03-20  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* Moving constructors names to CamelCase. IRTG is my first
 	victim. XmlTools is probably broken now.
@@ -203,7 +203,7 @@
 
 	* Setup of testsuite for AsFix to IRTG
 	
-2004-02-18  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-18  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/sdf2rtg/core-sdf2rtg: added labelled literal as a symbol
 	that is to be ignored.
@@ -217,7 +217,7 @@
 	* trans/asfix/asfix2irtg: started implementation of AsFix2 and
 	AsFix2ME to irtg.
 
-2004-02-16  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-16  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/sdf2rtg/*: rewritten to produce rtg.
 
@@ -226,23 +226,23 @@
 	* xtc/Makefile.regular: changed Makerules to process rtg instead
 	of rhg.
 	
-2004-02-16  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-16  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/rtg-group.str: group rtg productions for the same
 	non-terminal.
 
-2004-02-16  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-16  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/rtg-reduce.str: removes not productive and not reachable
 	non-terminals from an rtg.
 
-2004-02-04  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-04  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/auto-docbook.str: install docbook.m4 and Makefile.docbook
 
 	* xtc/auto-regular.str: install Makefile.regular
 
-2004-01-01  Martin Bravenboer <martin@cs.uu.nl>
+2004-01-01  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/irhg2irtg.str: some dirty hacks to force 'list' to be
 	recognized as constructor name.

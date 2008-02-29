@@ -3,7 +3,7 @@
  * given ATerm without any dependency on a file in the
  * fule system.
  *
- * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module cgen-aterm
 imports libstratego-lib

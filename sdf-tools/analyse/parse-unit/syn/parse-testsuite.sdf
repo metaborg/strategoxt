@@ -1,7 +1,7 @@
 %%%
  %% Syntax definition of parse-unit testsuites
  %%
- %% @author Martin Bravenboer <martin@cs.uu.nl>
+ %% @author Martin Bravenboer <martin.bravenboer@gmail.com>
  %%%
 module parse-testsuite
 imports languages/aterm/syntax/ATerms

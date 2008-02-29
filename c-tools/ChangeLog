@@ -13,11 +13,11 @@
            (long int)10
           were pretty-printed as (longint)10.
 
-2003-04-30  Martin Bravenboer <martin@cs.uu.nl>
+2003-04-30  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* sig/Makefile.am: generate signature with sdf2rtg | rtg2sig.
 
-2003-04-30  Martin Bravenboer <martin@cs.uu.nl>
+2003-04-30  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/C-Keywords.sdf: keyword productions must be lexical,
 	otherwise the Keyword -> Id {reject}, which is lexical, doesn't
@@ -43,13 +43,13 @@
 	* Changed list antiquotation declarations to produce + lists
 	instead of *
 
-2003-03-12  Martin Bravenboer <martin@cs.uu.nl>
+2003-03-12  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/C-Constants.sdf: corrected lexical syntax of Hex and added
 	suffixes to IntLiterals. All reported by Stefaan Himpe.
 
 	* syn/C-Expressions.sdf: fixed typo in AndExp.
 
-2002-11-23  Martin Bravenboer <martin@cs.uu.nl>
+2002-11-23  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* Small changes to configure.in to profit from new autotools.

@@ -1,7 +1,7 @@
 /**
  * Converts a normalized SDF grammar in abstract syntax to an RTG in abstract syntax.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module core-sdf-grammar2rtg
 imports
@@ -522,7 +522,7 @@ strategies
     <+ log-sym(|Warning(), "Cannot generate a nice name for symbol", <id>)
      ;     log(|Warning(), "  Please report this bug at ")
      ;     log(|Warning(), "    - https://bugs.cs.uu.nl/browse/STR")
-     ;     log(|Warning(), "    - or martin@cs.uu.nl")
+     ;     log(|Warning(), "    - or martin.bravenboer@gmail.com")
      ; new
      ;     log(|Warning(), "  Resolution: falling back to the ugly name ", <id>)
 

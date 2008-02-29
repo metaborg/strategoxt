@@ -8,7 +8,7 @@
 	* autoxt.m4 (XT_SVN_REVISION):
 	Fix svn revision retrieving when using a different build directory.
 
-2005-07-26  Martin Bravenboer <martin@cs.uu.nl>
+2005-07-26  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: added support for pkg_STRCFLAGS to XT_CHECK_PACKAGE,
 	similar to pkg_LIBS and pkg_CFLAGS. This means that you can now
@@ -20,7 +20,7 @@
 	* Makefile.xt: added support for STRCFLAGS as a modern alternative
 	of SCFLAGS. SCFLAGS are still supported.
 	
-2005-07-21  Martin Bravenboer <martin@cs.uu.nl>
+2005-07-21  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: major cleanup and update of autoxt.m4 that merges
 	explicit (--with-*) and implicit (pkg-config) configuration.
@@ -72,7 +72,7 @@
 	Fix the quotation when checking whether $BUILD_REPOSITORY is an
 	absolute path.
 
-2005-01-29   Martin Bravenboer  <martin@cs.uu.nl>
+2005-01-29   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Makefile.xt: changed the name and location of shared
 	libraries.
@@ -95,7 +95,7 @@
 	stratego-lib-native and stratego-lib are now located in the SSL
 	instead of the SRTS.
 	
-2004-12-25   Martin Bravenboer  <martin@cs.uu.nl>
+2004-12-25   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: USE_XT_PACKAGES is obsolete and should be replaced by
 	in your configure.ac files by XT_USE_XT_PACKAGES. Thanks to Akim
@@ -111,7 +111,7 @@
 	generated. This ensures that BUILD_REPOSITORY will contain correct
 	tot non-generated build scripts.
 
-2004-09-25   Martin Bravenboer  <martin@cs.uu.nl>
+2004-09-25   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: applied the improved autoxt.m4, which was contributed
 	by Akim. The main improvement is a concise XT_ARG_WITH macro that
@@ -123,19 +123,19 @@
 	- AC_DEFINES should have a (), since they are applied as
 	functions.
 
-2004-07-27   Martin Bravenboer  <martin@cs.uu.nl>
+2004-07-27   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m3: added XT_PRE_RELEASE. This macro extends the VERSION
 	variable with pre${SVN_REVISION}.
 	
-2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-27   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: added XT_PKG_STRATEGOXT, which checks if the
 	(not) specified location of strategoxt is ok. Should not be used
 	in StrategoXT packages: use it in packages that depend on
 	StrategoXT.
 
-2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-27   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: added XT_SETUP where all stuff can be invoked that
 	always has to be done in configure to be able to build a Stratego
@@ -151,7 +151,7 @@
 	of Darwin use lazy invocation of initializers by default. This
 	does not work for Stratego programs that use separate compilation.
 
-2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-27   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: added a set of macros for checking package
 	dependencies:
@@ -172,7 +172,7 @@
 	- XT_PROG_BAFFLE
 	- XT_LIB_ATERM
 
-2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-27   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Makefile.xt: implemented support for build-time XTC
 	repositories. The bin_PROGRAMS, pkgdata_DATA and so on are now
@@ -192,7 +192,7 @@
 
 	* Makefile.xt: removed rule for producing the ancient xtc-conf.h.
 
-2004-06-25   Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-25   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Makefile.xt: Added the new stratego-choice library to LDADD and
 	and STRATEGORUNLIBS. This library is the default choice point
@@ -209,7 +209,7 @@
 	* Makefile.xt: Fixed generation of pretty-print tables during 
 	'make distcheck'.
 
-2004-03-26   Martin Bravenboer  <martin@cs.uu.nl>
+2004-03-26   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Added the XT_TERM_DEFINE macro, which defines ATerm variants for
 	PACKAGE_NAME, PACKAGE_VERSION, etc.
@@ -222,14 +222,14 @@
         * Makefile.xt: touch pretty-print table when grammar has changed
           and pretty-print table is consistent
 
-2003-12-11  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-11  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* autoxt.m4: added improved DETECT_SVN_REVISION AC macro. It
 	determines the SVN revision of the source tree using svn status |
 	awk or svn-revision. Arthur van Dam contributed to the fetching of
 	the correct revision.
 
-2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-05  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Makefile.xt: In the .sdf.def rule applying asfix-yield is no
 	longer required becayse pack-sdf now outputs SDF concrete syntax

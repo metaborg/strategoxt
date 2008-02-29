@@ -2,7 +2,7 @@
  * Generates a Stratego module that puts Parenthetical constructors at
  * the right places.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.11
  */
 module sdf2parenthesize
@@ -252,7 +252,7 @@ strategies
           , Def("Revision", Paragraph(<prim("SVN_REVISION_TERM")> ()))
           ])
         ])
-      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+      , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
       , GNU_LGPL("2004-2005", "Stratego Software Foundation <stratego@cs.uu.nl>")
       , Config([
           DefaultXTCRepository()

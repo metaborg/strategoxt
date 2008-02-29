@@ -2,7 +2,7 @@
  * Interface to ATerm's IndexedSets.
  *
  * @since   0.11
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module collection/set/indexed
 

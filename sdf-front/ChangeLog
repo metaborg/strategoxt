@@ -1,10 +1,10 @@
-2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-09-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/pack-sdf.str: fixed the support for creating a dependency
 	file. Makefile.xt will instruct pack-sdf to do this, so there is
 	no longer a need to specify dependencies of SDF files.
 	
-2004-08-04  Martin Bravenboer  <martin@cs.uu.nl>
+2004-08-04  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/pack-sdf.str: improved error reporting for missing
 	modules. Usually, the module is not really missing, but the name
@@ -31,7 +31,7 @@
 	invoke xtc-exit to remove scoped temporary files. I've replace
 	some fatal-errors with printnl and xtc-exit, but not all yet.
 	
-2004-07-31  Martin Bravenboer  <martin@cs.uu.nl>
+2004-07-31  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/pack-sdf.str: pack-sdf now checks if module name in an SDF
 	module file, corresponds to the filename.
@@ -51,7 +51,7 @@
 	* pp/Sdf2.pp: Add a pp rule for a sdf-bracket extra constructor
 	i.e. "bracket-symbol".
 
-2004-06-04  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-04  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* pp/Sdf2-pgen2.1.pp: Rename as ...
 	* pp/Sdf2.pp: The one and only Sdf2 pretty print table.
@@ -67,13 +67,13 @@
 	* parse/unpack-sdf.str: Rename mkdir because it is defined into the
 	ssl too.
 
-2004-05-30  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-30  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* syn/Makefile.am: removed the SDF syntax definition modules from
 	our Subversion repository and distribution. It is now directly
 	obtained from the ASF Library.
 	
-2004-05-28  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-28  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/pack-sdf.str: pack-sdf now supports the "-Idef Foo.def"
 	flag. This flag can be used to import SDF modules (.sdf) from an
@@ -87,7 +87,7 @@
 	output tree is false. Specially the constructor of the definition
 	which is "Definition" but should be "definition".
 	
-2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-23  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/sdf-desugar.str: implode aterm attributes.
 
@@ -96,7 +96,7 @@
 	* xtc/*: parse-sdf modules now apply sdf-desugar and
 	sdf-ensugar. This should not break existing tools. I hope.
 	
-2004-03-27  Martin Bravenboer  <martin@cs.uu.nl>
+2004-03-27  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/unpack-sdf.str: moved from sdf-tools to sdf-front.
 	- now uses the new sdf syntax definition
@@ -109,13 +109,13 @@
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
 	autoreconf can find autoxt.m4
 
-2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-18  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* xtc/parse-sdf-module.str: now uses the new sdf syntax.
 
 	* xtc/parse-sdf-definition.str: idem
 
-2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-18  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* syn/version-2.1/*: renamed the embedding of SDF 2.1 in Stratego
 	to Stratego-Sdf2-Syntax because SDF syntax definition has the same
@@ -130,7 +130,7 @@
 	* syn/version-pgen-2.0/embeddings/stratego:embedding of the new
 	SDF syntax in Stratego.
 	
-2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-18  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* parse/pack-sdf.str: moved from sdf-tools to sdf-front.
 
@@ -144,12 +144,12 @@
 	the build process because stratego-regular is not yet in
 	StrategoXT.
 	
-2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* xtc/sdf-options.str: moved common sdf related command line
 	options and utils from stratego-regular to sdf-front.
 
-2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-13  Martin Bravenboer  <martin.bravenboer@gmail.com>
 	
 	* pp/Sdf2.pp: improved the pretty printing of renamings using
 	those sexy A/R boxes. Result:
@@ -164,14 +164,14 @@
                     TypeDec              => JavaTypeDec
 	            ....
 	
-2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* syn/version-2.1/Module-Sdf-Syntax.sdf: missing constructor for
 	the renamed import module.
 
 	* pp/Sdf2.pp: many missing pretty print rules for renamed modules.
 
-2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+2004-02-12  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* syn/*: added the pgen 2.0 syntax definition for SDF as the first
 	step into upgrading to the most recent sdf version. sdf-front now

@@ -1,7 +1,7 @@
 #     							-*- Autoconf -*-
 # serial 3
 #
-# Author: Martin Bravenboer <martin@cs.uu.nl>
+# Author: Martin Bravenboer <martin.bravenboer@gmail.com>
 #
 
 # XT_ left in configure is the sign a macro was not defined, or there was a typo

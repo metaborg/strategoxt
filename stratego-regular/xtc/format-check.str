@@ -173,8 +173,8 @@ format-check fails (exit code 1).
   fc-about =
     <tool-doc>
       [ AutoProgram()
-      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
-      , GNU_LGPL("2002-2006", "Martin Bravenboer <martin@cs.uu.nl>")
+      , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
+      , GNU_LGPL("2002-2006", "Martin Bravenboer <martin.bravenboer@gmail.com>")
       , WebHome("http://www.program-transformation.org/Tools/FormatCheck")
       , Config([
           DefaultXTCRepository()

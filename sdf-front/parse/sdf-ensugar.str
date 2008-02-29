@@ -4,7 +4,7 @@
  *   - add double quotes in String literals: cons, lit
  *   - replace attrs([]) by no-attrs
  *
- * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module sdf-ensugar
 imports Sdf2 libstratego-lib libstratego-aterm

@@ -1,7 +1,7 @@
 /**
  * Rewrites RTG to Typematching strategies
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module rtg2typematch
 imports 

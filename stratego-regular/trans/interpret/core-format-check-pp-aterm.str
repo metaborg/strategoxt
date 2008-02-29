@@ -1,5 +1,5 @@
 /**
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module core-format-check-pp-aterm
 imports

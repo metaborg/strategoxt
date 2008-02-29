@@ -2,7 +2,7 @@
 	* pp/*.str : pretty-printed aterms by default escape special 
 	characters so pp-aterm output is an aterm again.
 
-2004-05-30   Martin Bravenboer <martin@cs.uu.nl>
+2004-05-30   Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/Makefile.am: ATerm syntax definition is now directly
 	obtained from the ASF Library. There is no longer an ATerm syntax
@@ -18,17 +18,17 @@
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
 	autoreconf can find autoxt.m4
 
-2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-15  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/implode-aterm.str: undo explode-aterm.
 
-2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-15  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/explode-aterm.str: tool to explode an aterm to the
 	signature of the aterm syntax definition. Annotations have not yet
 	been implemented.
 	
-2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-15  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* syn/*.sdf: upgraded aterm syntax definition to latest definition
 	in the ASF library. I modified the modules at a few points:
@@ -40,7 +40,7 @@
 
 	* sig/Makefile.am: generate the new signatures.
 
-2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
+2003-12-09  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* src/atermdiff/apply.str: removed, is in the SSL.
 

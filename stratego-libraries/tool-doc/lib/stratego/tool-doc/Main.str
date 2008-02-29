@@ -4,7 +4,7 @@
  * The core tool-doc constructs are presentation oriented.
  * You can use the sugar in this module to abstract from the presentation.
  *
- * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module stratego/tool-doc/Main
 imports

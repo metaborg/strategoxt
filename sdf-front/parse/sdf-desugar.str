@@ -4,7 +4,7 @@
  *   - remove double quotes in String literals: cons, lit
  *   - replace no-attrs by attrs([])
  *
- * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module sdf-desugar
 imports Sdf2 libstratego-lib libstratego-aterm

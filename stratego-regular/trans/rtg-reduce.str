@@ -1,7 +1,7 @@
 /**
  * Removes non-terminals that are not productive or reachable.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module rtg-reduce
 imports

@@ -1,7 +1,7 @@
 /**
  * Tests explodes ATerms for equivalence with wildcards.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module aterm-eq
 imports

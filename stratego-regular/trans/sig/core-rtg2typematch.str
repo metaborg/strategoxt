@@ -1,7 +1,7 @@
 /**
  * Generates type matching strategies in Stratego from an RTG.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module core-rtg2typematch
 imports

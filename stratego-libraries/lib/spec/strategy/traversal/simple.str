@@ -11,7 +11,7 @@
  * to see the breakdown.
  *
  * @author Eelco Visser <visser@acm.org>
- * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
  */
 module strategy/traversal/simple

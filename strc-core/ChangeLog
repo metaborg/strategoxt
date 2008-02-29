@@ -3,7 +3,7 @@
 	* strc-core/spec/strc/strc.str: Fix redefinition external "inline"
 	strategy.
 
-2004-08-01 Martin Bravenboer  <martin@cs.uu.nl>
+2004-08-01 Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* strc-core/spec/strc/strc-options.str: standalone strc: pass
 	absolute paths to libtool .la ibraries instead of composing a
@@ -99,7 +99,7 @@
 	    only where needed. For instance, the rules in desugar-hl
 	    are the only ones widely used.
 
-2004-07-06  Martin Bravenboer  <martin@cs.uu.nl>
+2004-07-06  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/front/stratego-warnings.str: use separate options module.
 
@@ -110,7 +110,7 @@
 
 	* spec/strc/strc-options.str: import stratego-warnings-options.
 
-2004-06-27  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-27  Martin Bravenboer  <martin.bravenboer@gmail.com>
 	
 	* spec/strc/strc-options.str: added the -CD option. This option
 	can be used to define macros.
@@ -122,7 +122,7 @@
 	stand-alone compiler (some holds for the separate compilation
 	options btw).
 	
-2004-06-27  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-27  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/strc/strc-options.str: added the -Cl option. This option
 	can be used to specify libraries to search during linking.
@@ -132,7 +132,7 @@
 
 	* spec/test-strc/*: tests for the -Cl and -la options.
 	
-2004-06-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/strc/strc-options.str: added "--choice-lib file" option for
 	specifying the the choice point library to use. The "--cpl"
@@ -140,7 +140,7 @@
 	available in the XTC repository. Thus, tools that require the CPL
 	can now compiled at the command-line with strc.
 	
-2004-06-25  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-25  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/test1/Makefile.am: disabled test26. This test uses the
 	global choice, which can no longer be linked with the standard
@@ -155,7 +155,7 @@
 	* spec/test2/Makefile.am: removed LD_LIBRARY_PATH, since this
 	is not required when using libtool for linking.
 	
-2004-06-20  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-20  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* Makefile.am: install libtool as an libexec program.
 
@@ -164,14 +164,14 @@
 	STR-125. libtool shows the GCC invocation, I guess these should be
 	hidden be changing stderr, since --silent doesn't work.
 	
-2004-06-04  Martin Bravenboer  <martin@cs.uu.nl>
+2004-06-04  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/strc/strc-options.str: -L dir should be -Ldir.
 
 	* spec/strc/strc-options.str: -CL dir arguments should be passed
 	as -Ldir.
 	
-2004-05-28  Martin Bravenboer  <martin@cs.uu.nl>
+2004-05-28  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/s2c/s2c.str: declare local functions. Solves STR-52.
 
@@ -198,7 +198,7 @@
 	(Note: the rule-id can use all the same labeling constructs as other
 	dynrule defs)
 
-2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-23  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/testneg/*: added negative regression tests. The solutions
 	is based on the negative tests in the cxx-grammar package of the
@@ -265,7 +265,7 @@
 	* front/dr-old-to-new.str: Converts legacy constructs like
 	`extend rules' and ` .. -> Undefined' to new DR-constructs.
 
-2004-04-10   Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-10   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* front/dr-new-to-old.str: Converts dynamic rules that are parsed
 	into the new abstract syntax, into old-style constructs.
@@ -290,12 +290,12 @@
 	The same holds for the concrete (.txt) files.
 	This makes cleanup of intermediate files easier (`rm *.sci.*`).
 
-2004-04-06   Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-06   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/pack/pack-stratego.str: (STR-43) pack-stratego now starts
 	searching for files to include at the first -I, not the last one.
 
-2004-03-22   Martin Bravenboer  <martin@cs.uu.nl>
+2004-03-22   Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/front/spec-to-sdefs.str: more controlled application of
 	desugaring of DefaultVarDec to the default type for strategy and
@@ -324,7 +324,7 @@
 	rewrites lhs to all rhss in the current scope, i.e., produces a
 	list of all 'values' of lhs.
 
-2003-12-28  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-28  Martin Bravenboer  <martin.bravenboer@gmail.com>
 
 	* spec/si/primitives.str: abstract syntax of the generated rules
 	was incorrect. Rewritten to concrete object syntax to fix the

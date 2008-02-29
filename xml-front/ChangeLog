@@ -1,4 +1,4 @@
-2004-11-05  Martin Bravenboer <martin@cs.uu.nl>
+2004-11-05  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
 	and the --very-explicit mode now use the XML namespace
@@ -17,7 +17,7 @@
 
 	* tests/xml-aterm-tests.str: much more tests.
 
-2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
+2004-09-25  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* tests/xml-aterm-tests.str: aterm2xml | xml2aterm roundtrip
 	testsuite.
@@ -25,7 +25,7 @@
 	* trans/data2xml.str: in explicit mode, Some and None should be
 	explictly represented in XML.
 	
-2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
+2004-09-25  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/aterm2xml.str: composes data2xml-doc and pp-xml-doc into a
 	single aterm to xml tool. This tool uses the --explicit mode of
@@ -42,16 +42,16 @@
 
 	* trans/xml-info2data.str: added support for the --explicit mode.
 	
-2004-05-28  Martin Bravenboer <martin@cs.uu.nl>
+2004-05-28  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* Moved into StrategoXT
 	
-2004-02-04  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-04  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* lib/meta-syn.str: xtc files should no longer be closed since
 	they are not kept open bij new-temp-file.
 
-2004-02-04  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-04  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* xtc/auto-xml-tools.str: install Makefile.xml-tools and
 	xml-tools.m4 in the current directory.
@@ -60,7 +60,7 @@
 
 	* bootstrap: use auto-regular
 
-2003-10-04  Martin Bravenboer <martin@cs.uu.nl>
+2003-10-04  Martin Bravenboer <martin.bravenboer@gmail.com>
 
 	* configure.ac and various Makefile.ams: use AC_PROG_LN_S and the
 	LN_S variabele for creating symlinks.

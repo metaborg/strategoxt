@@ -1,7 +1,7 @@
 /**
  * Converts an RTG in concrete syntax to Stratego in concrete syntax.
  *
- * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module rtg2sig
 imports
@@ -44,8 +44,8 @@ strategies
   rtg2sig-about =
     <tool-doc>
       [ AutoProgram()
-      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
-      , GNU_LGPL("2002-2005", "Martin Bravenboer <martin@cs.uu.nl>")
+      , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
+      , GNU_LGPL("2002-2005", "Martin Bravenboer <martin.bravenboer@gmail.com>")
       , Config([
           DefaultXTCRepository()
         , CurrentXTCRepository()

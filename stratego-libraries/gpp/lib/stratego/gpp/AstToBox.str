@@ -2,7 +2,7 @@
  * Pretty-print an ATerm to a Box using the given pretty-print tables.
  *
  * @author Merijn de Jonge <mdjonge@cs.uu.nl>
- * @author Martin Bravenboer <martin@cs.uu.nl>
+ * @author Martin Bravenboer <martin.bravenboer@gmail.com>
  */
 module stratego/gpp/AstToBox
 imports
