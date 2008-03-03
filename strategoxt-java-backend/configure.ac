@@ -26,7 +26,8 @@ XT_ARG_WITH_JAR([aterm-java],[ATERM],[aterm.jar],[aterm-1.6.jar])
 AC_CONFIG_FILES([
   Makefile
   syn/Makefile
-  s2j/Makefile
+  src/Makefile
+  src/str/Makefile
   xtc/Makefile
 ])
 AC_OUTPUT

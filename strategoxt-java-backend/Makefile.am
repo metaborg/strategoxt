@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 ACLOCAL_AMFLAGS = -I .
 
-SUBDIRS           = syn s2j xtc
+SUBDIRS           = syn src xtc
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = bootstrap Makefile.xt
