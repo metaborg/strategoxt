@@ -13,7 +13,8 @@ imports
 signature
   constructors 
     Match : a * a -> a
-
+    Next : Term
+    
 strategies
 
   io-s2j = io-wrap(compile-spec)
@@ -57,26 +58,23 @@ rules
             public static class x extends Strategy {
               public final static x instance = new x();
               public ATerm apply(param*, ATerm term) {
-                try {
-                  stm
-                } catch(Failure f) {
-                  return null;
-                }
+                int nextState = 1;
+                Root:
+                while(true)
+                  switch(nextState) {
+                  case 0: return null;
+                  case 1: ~bstm:blocks
+                  }
                 return term;
               }
             }
          ]|
-//            static ATerm x(param*, ATerm term) 
-//            {
-//              stm
-//              return term ;
-//            }
     where
       prelude(|"translate-definition")
     ; <map(translate-parameter)> strats* => strats'
     ; <map(translate-parameter)> terms* => terms'
     ; <conc> (strats', terms') => param*
-    ; <translate-body> s => stm
+    ; !Block(<translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s) => blocks
 
 
   // XXX: add Strategy parameter
@@ -91,9 +89,14 @@ rules
 strategies
   prelude(|msg) = log(|Debug(), msg)
   
-  translate-body = 
+  verify-SwitchGroup(|stratname) = ?SwitchGroup(_, _) <+ log(|Error(), [ stratname, ": not a SwitchGroup!" ])
+  
+  /** @type Strategy -> List(SwitchGroup) */
+  translate-body(|S,F) = 
     prelude(|"translate-body") 
-    ; topdown(repeat(translate-strategy))
+    ; topdown(repeat(translate-strategy(|S,F)))
+    ; //verify-SwitchGroup(|"translate-body")
+      debug(!"after translate-body :")
 
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
@@ -102,45 +105,95 @@ strategies
   where
     <map(\ x -> bstm |[ ATerm x ; ]| \)> vars => vars'
     
-  translate-Id :
-    Id() -> stm |[ term = term; ]|
+  /** @type Id -> Stm */
+  translate-Id(|S,F) :
+    Id() -> <Goto> S
+  where prelude(|"translate-Id")
+    
+  /** @type Id -> Stm */
+  translate-Fail(|S,F) :
+    Fail() -> <Goto> F
+  where prelude(|"translate-Fail")
 
-  translate-Fail :
-    Fail() -> stm |[ throw new Failure() ; ]|
-
-  translate-Seq :
-    Seq(s1, s2) -> bstm |[ { ~stm:s1 ~stm:s2 } ]|
-
-  translate-GuardedLChoice :
+  /** @type Seq -> Stm */
+  translate-Seq(|S, F) :
+    Seq(s1, s2) -> 
+    bstm |[ 
+      { 
+        ~stm:<translate-strategy(|Next(), F)> s1 
+        ~stm:<translate-strategy(|Next(), F)> s2 
+      } 
+    ]|
+  where prelude(|"translate-Seq")
+  
+  translate-GuardedLChoice(|S,F) :
     GuardedLChoice(s1, s2, s3) ->
-      bstm |[ 
-        { ATerm x = term ;
-          boolean y = false ;
-          try {
-            ~stm:s1
-            y = true;
-          } catch(Failure f) {
-            term = x;
-            ~stm:s3
-          }
-          if(y) {
-            ~stm:s2
-          }
-        }
-      ]|
-      where
-        new => x
-      ; new => y
+      bstm* |[
+      nextState = ~n0;
+      ~id:label:
+      while(true)
+      switch(nextState) {
+          case ~n0: 
+            ATerm ~x = term ; 
+            ~stm:<translate-strategy(|n1, n2)> s1 ;
+          case ~n1: 
+            ~stm:<translate-strategy(|S, F)> s2 ;
+            ~stm:<Goto> S
+          case ~n2: 
+            term = ~<!ExprName(x)>; 
+            ~stm:<translate-strategy(|S, F)> s2 ; 
+            ~stm:<Goto> S
+      }
+    ]|
+   where prelude(|"translate-GuardedLChoice")
+       ; <not(Next())> S
+       ; !Id(<newname> "trm") => x
+       ; newlabel => label
+       ; !(label, <newcase>) => n0
+       ; !(label, <newcase>) => n1
+       ; !(label, <newcase>) => n2
 
+  translate-GuardedLChoice(|S,F) :
+    GuardedLChoice(s1, s2, s3) ->
+    bstm* |[ {
+      nextState = 0;
+      ~id:label:
+      while(true)
+      switch(nextState) {
+        case 0: 
+          ATerm ~x = term ; 
+          ~stm:<translate-strategy(|Next(), (label, Lit(Deci("2"))))> s1
+        case 1: 
+          ~stm:<translate-strategy(|S, F)> s2 ;
+           break;
+        case 2: term = ~<!ExprName(x)>; 
+           ~stm:<translate-strategy(|S, F)> s2 ; 
+           break;
+       }
+       }
+    ]|
+  where prelude(|"translate-GuardedLChoice") 
+      ; !S => Next()
+      ; !Id(<newname> "trm") => x
+      ; newlabel => label
 
-  translate-strategy = 
+  /** @type -> Lit(Deci(String))) */
+  newcase = !Lit(Deci("1001"))
+  newlabel = !Id(<newname> "label")
+
+  goto(|label) = <Goto> label 
+  
+  Goto: Next() -> Empty()
+  Goto: (scopeLabel, caseNumber) -> bstm |[ { ns = ~caseNumber; break ~scopeLabel; } ]|
+  
+  translate-strategy(|S,F) = 
     translate-CallT 
     <+ translate-Build
-    <+ translate-Seq
+    <+ translate-Seq(|S,F)
     <+ translate-PrimT
-    <+ translate-Id
-    <+ translate-Fail
-    <+ translate-GuardedLChoice
+    <+ translate-Id(|S,F)
+    <+ translate-Fail(|S,F)
+    <+ translate-GuardedLChoice(|S,F) ; debug(!"after guarded choice: ")
     <+ translate-Scope
     <+ translate-Match
     <+ translate-Let
@@ -148,11 +201,13 @@ strategies
   translate-Let: 
   Let(defs, body) -> Block(<conc> (defs', [body]))
   where
-    <map(translate-definition)> defs => defs'
+      prelude(|"translate-Let")
+    ; <map(translate-definition)> defs => defs'
  
   
   translate-CallT = 
-    do-translate-CallT 
+    prelude(|"translate-CallT")
+    ; do-translate-CallT 
     <+ \ CallT(_, _, _) -> stm |[ CallT(); ]| \
   
   make-strategy-class : 
@@ -170,7 +225,7 @@ strategies
       Block( <conc> (bodies, [ stm |[ term = x.instance.apply(e*,term) ; ]| ]) )
       where
         // FIXME do actual lifting
-        <map(\ x -> (<new>(), <translate-strategy> x) \)> s* => args1
+        <map(\ x -> (<new>(), <translate-strategy(|0,1)> x) \)> s* => args1 // FIXME correct S,F
       ; <map(make-strategy-class)> args1 => bodies
       ; <map(construct-term)>t* => args2
       ; <conc> (<map(!ExprName(Id(<Fst>)))> args1, args2) => e*
@@ -195,8 +250,7 @@ strategies
 strategies
   
   construct-term =
-  ?Anno(<construct-list <+ construct-preterm <+ debug(!"construct-term failed")> ,_)
-  ; debug(!"construct-term ")
+    ?Anno(<construct-list <+ construct-preterm <+ debug(!"construct-term failed")> ,_)
 
 rules
   construct-list :
@@ -244,9 +298,7 @@ rules
   where 
     <length ; int-to-string> t* => i
   ; x1 := <new>
-  ; debug(!"gonna list-to-term-array ")
   ; <list-to-term-array> t* => (Block(be), x)
-  ; debug(!"construct-preterm Op ")
 
 strategies
   list-to-term-array =
@@ -255,15 +307,12 @@ strategies
       {i,j,t,s,x1:
         ?(i,t)
       ; <dec ; int-to-string> i => j
-      ; <debug(!"will construct term from ")> t
       ; <construct-term> t => (s, x1)
-      ; debug(!"constructed term ")
       ; !bstm |[ { ~stm:s x[j] = x1; } ]|
       }
     ) => bstmts*
   ; length ; int-to-string => n
   ; !(Block([ bstm |[ ATerm[] x = new ATerm[~deci:n]; ]| | bstmts* ]), x)
-  ; debug(!"list-term-to-array ")
 
 
 // matching
@@ -274,11 +323,10 @@ strategies
 
   do-translate-Match :
     Match(pattern, e1)
-      -> bstm |[
-           {
+      -> switch-group |[
+        case 0: 
              ATerm x1 = e1;
              bstm
-           }
          ]|
     where
       <newname> "term" => x1
