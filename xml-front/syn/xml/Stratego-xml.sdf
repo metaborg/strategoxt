@@ -1,104 +1,104 @@
 module Stratego-xml
-imports xml StrategoRenamed
+imports xml StrategoMix[StrategoHost]
 hiddens
-  context-free start-symbols StrategoModule
+  context-free start-symbols Module[[StrategoHost]]
 
 exports
 
   %% Term Quotation
   context-free syntax
-    "%>" Document "<%" -> StrategoTerm     {cons("ToTerm"), avoid}
+    "%>" Document "<%" -> Term[[StrategoHost]]     {cons("ToTerm"), avoid}
 
-    "@>" Attribute  "<@" -> StrategoTerm   {cons("ToTerm"), prefer}
-    "@>" Attribute* "<@" -> StrategoTerm   {cons("ToTerm")}
+    "@>" Attribute  "<@" -> Term[[StrategoHost]]   {cons("ToTerm"), prefer}
+    "@>" Attribute* "<@" -> Term[[StrategoHost]]   {cons("ToTerm")}
 
   syntax
-    "%>" <Content-CF>  "<%" -> <StrategoTerm-CF> {cons("ToTerm"), prefer}
-    "%>" <Content-CF>* "<%" -> <StrategoTerm-CF> {cons("ToTerm")}
+    "%>" <Content-CF>  "<%" -> <Term[[StrategoHost]]-CF> {cons("ToTerm"), prefer}
+    "%>" <Content-CF>* "<%" -> <Term[[StrategoHost]]-CF> {cons("ToTerm")}
 
-    "%>" <Content-CF>* "<%" <LAYOUT?-CF> "::" <LAYOUT?-CF> "*" -> <StrategoTerm-CF> {cons("ToTerm")}
+    "%>" <Content-CF>* "<%" <LAYOUT?-CF> "::" <LAYOUT?-CF> "*" -> <Term[[StrategoHost]]-CF> {cons("ToTerm")}
 
   %% Congruence Quotation
   context-free syntax  
-    "%>" Document "<%" -> StrategoStrategy {cons("ToStrategy"), avoid}
+    "%>" Document "<%" -> Strategy[[StrategoHost]] {cons("ToStrategy"), avoid}
 
   syntax
-    "%>" <Content-CF>  "<%" -> <StrategoStrategy-CF> {cons("ToStrategy"), prefer}
-    "%>" <Content-CF>* "<%" -> <StrategoStrategy-CF> {cons("ToStrategy")}
+    "%>" <Content-CF>  "<%" -> <Strategy[[StrategoHost]]-CF> {cons("ToStrategy"), prefer}
+    "%>" <Content-CF>* "<%" -> <Strategy[[StrategoHost]]-CF> {cons("ToStrategy")}
 
   %% Content Anti Quotation
   context-free syntax
 
-    "<%=" StrategoTerm                 "%>" -> Content {cons("FromTerm")}
-    "<%=" StrategoTerm "::" "content"  "%>" -> Content {cons("FromTerm")}
+    "<%=" Term[[StrategoHost]]                 "%>" -> Content {cons("FromTerm")}
+    "<%=" Term[[StrategoHost]] "::" "content"  "%>" -> Content {cons("FromTerm")}
 
-    "<%"  StrategoStrategy                 "%>" -> Content {cons("FromApp")}
-    "<%"  StrategoStrategy "::" "content"  "%>" -> Content {cons("FromApp")}
+    "<%"  Strategy[[StrategoHost]]                 "%>" -> Content {cons("FromApp")}
+    "<%"  Strategy[[StrategoHost]] "::" "content"  "%>" -> Content {cons("FromApp")}
 
   syntax
 
-    "<%=" <LAYOUT?-CF> <StrategoTerm-CF>    <LAYOUT?-CF> "::" <LAYOUT?-CF> "*"        <LAYOUT?-CF> "%>" -> <Content-CF>* {cons("FromTerm")}
-    "<%" <LAYOUT?-CF> <StrategoStrategy-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "*"        <LAYOUT?-CF> "%>" -> <Content-CF>* {cons("FromApp")}
-    "<%" <LAYOUT?-CF> <StrategoStrategy-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "content*" <LAYOUT?-CF> "%>" -> <Content-CF>* {cons("FromApp")}
+    "<%=" <LAYOUT?-CF> <Term[[StrategoHost]]-CF>    <LAYOUT?-CF> "::" <LAYOUT?-CF> "*"        <LAYOUT?-CF> "%>" -> <Content-CF>* {cons("FromTerm")}
+    "<%" <LAYOUT?-CF> <Strategy[[StrategoHost]]-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "*"        <LAYOUT?-CF> "%>" -> <Content-CF>* {cons("FromApp")}
+    "<%" <LAYOUT?-CF> <Strategy[[StrategoHost]]-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "content*" <LAYOUT?-CF> "%>" -> <Content-CF>* {cons("FromApp")}
 
   %% Character Data Anti Quotation
   syntax
 
-    "<%" <LAYOUT?-CF> <StrategoStrategy-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "cdata" <LAYOUT?-CF> "%>"
+    "<%" <LAYOUT?-CF> <Strategy[[StrategoHost]]-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "cdata" <LAYOUT?-CF> "%>"
       -> FooCharDataText {cons("FromApp")}
 
-    "<%=" <LAYOUT?-CF> <StrategoTerm-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "cdata" <LAYOUT?-CF> "%>"
+    "<%=" <LAYOUT?-CF> <Term[[StrategoHost]]-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "cdata" <LAYOUT?-CF> "%>"
       -> FooCharDataText {cons("FromTerm")}
 
   %% Anti quotation for attributes
   context-free syntax
 
-    "<@"  StrategoStrategy          "@>" -> Attribute  {cons("FromApp")}
-    "<@"  StrategoStrategy "::" "*" "@>" -> Attribute* {cons("FromApp")}
+    "<@"  Strategy[[StrategoHost]]          "@>" -> Attribute  {cons("FromApp")}
+    "<@"  Strategy[[StrategoHost]] "::" "*" "@>" -> Attribute* {cons("FromApp")}
 
-    "<@="  StrategoTerm          "@>" -> Attribute  {cons("FromTerm")}
-    "<@="  StrategoTerm "::" "*" "@>" -> Attribute* {cons("FromTerm")}
+    "<@="  Term[[StrategoHost]]          "@>" -> Attribute  {cons("FromTerm")}
+    "<@="  Term[[StrategoHost]] "::" "*" "@>" -> Attribute* {cons("FromTerm")}
 
   syntax
     %% obsolete
-    "<"  <StrategoTerm-CF> -> <Attribute-CF>  {cons("FromTerm")}
-    "<*" <StrategoTerm-CF> -> <Attribute*-CF> {cons("FromTerm")}
+    "<"  <Term[[StrategoHost]]-CF> -> <Attribute-CF>  {cons("FromTerm")}
+    "<*" <Term[[StrategoHost]]-CF> -> <Attribute*-CF> {cons("FromTerm")}
 
   %% Attribute Value Anti Quotation
   context-free syntax
 
-    "<@"  StrategoStrategy "@>" -> AttValue   {cons("FromApp")}
-    "<@=" StrategoTerm     "@>" -> AttValue   {cons("FromTerm")}
+    "<@"  Strategy[[StrategoHost]] "@>" -> AttValue   {cons("FromApp")}
+    "<@=" Term[[StrategoHost]]     "@>" -> AttValue   {cons("FromTerm")}
 
     %% obsolete
-    "<%"  StrategoStrategy "%>" -> AttValue   {cons("FromApp")}
-    "<%=" StrategoTerm     "%>" -> AttValue   {cons("FromTerm")}
+    "<%"  Strategy[[StrategoHost]] "%>" -> AttValue   {cons("FromApp")}
+    "<%=" Term[[StrategoHost]]     "%>" -> AttValue   {cons("FromTerm")}
 
   %% Attribute Character Data Anti Quotation
   syntax
 
-    "<%" <LAYOUT?-CF> <StrategoStrategy-CF> <LAYOUT?-CF> "%>"
+    "<%" <LAYOUT?-CF> <Strategy[[StrategoHost]]-CF> <LAYOUT?-CF> "%>"
       -> FooDoubleQuotedText {cons("FromApp")}
 
-    "<%=" <LAYOUT?-CF> <StrategoTerm-CF> <LAYOUT?-CF> "%>"
+    "<%=" <LAYOUT?-CF> <Term[[StrategoHost]]-CF> <LAYOUT?-CF> "%>"
       -> FooDoubleQuotedText {cons("FromTerm")}
 
-    "<%" <LAYOUT?-CF> <StrategoStrategy-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "cdata" <LAYOUT?-CF> "%>"
+    "<%" <LAYOUT?-CF> <Strategy[[StrategoHost]]-CF> <LAYOUT?-CF> "::" <LAYOUT?-CF> "cdata" <LAYOUT?-CF> "%>"
       -> FooDoubleQuotedText {cons("FromApp")}
 
-    "<" <StrategoTerm-CF> -> FooDoubleQuotedText {cons("FromTerm")}
+    "<" <Term[[StrategoHost]]-CF> -> FooDoubleQuotedText {cons("FromTerm")}
 
   %% Anti quotation for element. This anti quotation is only used if anti quotation
   %% is used for the root element of an document.
   context-free syntax
 
-    "<%" StrategoStrategy "%>" -> Element {cons("FromApp"), avoid}
+    "<%" Strategy[[StrategoHost]] "%>" -> Element {cons("FromApp"), avoid}
 
   %% Name Anti-Quotation
   syntax
 
-    "<"   <StrategoTerm-CF> -> <NCName-CF> {cons("FromTerm")}
-    "~n:" <StrategoTerm-CF> -> <NCName-CF> {cons("FromTerm")}
+    "<"   <Term[[StrategoHost]]-CF> -> <NCName-CF> {cons("FromTerm")}
+    "~n:" <Term[[StrategoHost]]-CF> -> <NCName-CF> {cons("FromTerm")}
 
   variables
     "@"    [0-9]*     -> Attribute
