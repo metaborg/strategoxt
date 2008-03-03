@@ -329,19 +329,16 @@ strategies
     |[ 
        ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
-         static const char *strategy_name = ~exp:<!StringLit([<double-quote> f])>;
-         const unsigned short tracing_index = __tracing_table_counter++;
+         __tracing_table[__tracing_table_counter++] = ~exp:<!StringLit([<double-quote> f])>;
          sl_decl(sl);
          ~stm*:fini;
          ~stm*:vini;
          ~stm*:stms;
          ~stm:stm; 
-         __tracing_table[tracing_index] = NULL;
-         __tracing_table_counter = tracing_index;
+         __tracing_table[--__tracing_table_counter] = NULL;
          return(t);
          ~id:F : 
-         __tracing_table[tracing_index] = strategy_name;
-         __tracing_table_counter = tracing_index;
+         --__tracing_table_counter;
          return NULL;
        }
     ]|
@@ -465,7 +462,7 @@ rules
     stm|[
       {
         ATerm ~id:x = t;
-	~stm:<translate-strat(|Next,F')>s1
+        ~stm:<translate-strat(|Next,F')>s1
         ~stm:<translate-strat(|S,F)>s2
         ~id:F' : t = ~id:x; 
         ~stm:<translate-strat(|S,F)>s3
