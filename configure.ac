@@ -57,8 +57,10 @@ BPKGS="stratego-front asfix-tools gpp c-tools strc-core concrete-syntax xml-fron
 
 if test "$xt_baseline" = "yes"; then
   PKGS="autoxt xtc $BPKGS stratego-libraries"
+  LIBARGS="--enable-baseline"
 else
   PKGS="autoxt stratego-libraries xtc $BPKGS "
+  LIBARGS="--enable-uninstalled-baseline"
 
   # subpackages should pick up the -uninstalled pkgconfig descriptions.
   PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
@@ -94,7 +96,7 @@ AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-r
 AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(c-tools,            --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(stratego-front,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} --enable-baseline)
+AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} ${LIBARGS})
 AB_CONFIG_PKG(asfix-tools,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(gpp,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
 AB_CONFIG_PKG(concrete-syntax,    --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
