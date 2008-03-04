@@ -63,7 +63,7 @@ rules
                 while(true)
                   switch(nextState) {
                   case 0: return null;
-                  case 1: ~bstm:blocks
+                  case 1: ~stm:body
                   }
                 return term;
               }
@@ -74,7 +74,7 @@ rules
     ; <map(translate-parameter)> strats* => strats'
     ; <map(translate-parameter)> terms* => terms'
     ; <conc> (strats', terms') => param*
-    ; !Block(<translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s) => blocks
+    ; <translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s => body
 
 
   // XXX: add Strategy parameter
@@ -187,8 +187,8 @@ strategies
   Goto: (scopeLabel, caseNumber) -> bstm |[ { ns = ~caseNumber; break ~scopeLabel; } ]|
   
   translate-strategy(|S,F) = 
-    translate-CallT 
-    <+ translate-Build
+    translate-CallT(|S,F)
+    <+ translate-Build(|S,F)
     <+ translate-Seq(|S,F)
     <+ translate-PrimT
     <+ translate-Id(|S,F)
@@ -205,9 +205,11 @@ strategies
     ; <map(translate-definition)> defs => defs'
  
   
-  translate-CallT = 
-    prelude(|"translate-CallT")
-    ; do-translate-CallT 
+  translate-CallT(|S,F) = 
+      ?CallT(_, _, _)
+    ; prelude(|"translate-CallT")
+    ; do-translate-CallT(|S,F)
+    ; debug(!"post-do-translate-CallT ")
     <+ \ CallT(_, _, _) -> stm |[ CallT(); ]| \
   
   make-strategy-class : 
@@ -220,9 +222,21 @@ strategies
         } 
     ]|
   
-  do-translate-CallT:
+  do-translate-CallT(|S,F):
     CallT(SVar(x), s*, t*) ->
-      Block( <conc> (bodies, [ stm |[ term = x.instance.apply(e*,term) ; ]| ]) )
+      Block(<concat>
+	         [ bodies | 
+	             bstm |[ 
+	             { 
+	               term = x.instance.apply(e*,term) ; 
+	               if(term == null) 
+	                 ~<Goto> F
+	               else
+	                 ~<Goto> S
+	             }
+	             ]|
+	         ] 
+           )
       where
         // FIXME do actual lifting
         <map(\ x -> (<new>(), <translate-strategy(|0,1)> x) \)> s* => args1 // FIXME correct S,F
@@ -236,17 +250,281 @@ strategies
   translate-Match:
     Match(_, _) -> stm |[ Match(); ]|
     
-  translate-Build = 
-    do-translate-Build 
-    <+ \ Build(t) -> stm |[ Build(); ]| \
-  
-  do-translate-Build:
-    Build(t) -> Block(<conc> (be, [ bstm |[ term = x; ]| ] ))
-    where 
-      <construct-term> t => (Block(be), x)
-    ; debug(!"do-translate-Build")
+  translate-Build(|S,F) = 
+      ?Build(_)
+    ; prelude(|"translate-Build")
+    ; do-translate-Build(|S,F)
+    
+/* ================================ Build  */
 
+    
+  do-translate-Build(|S,F):
+    Build(t) -> 
+    <check-unbound-args(|F,t)>
+    bstm|[
+      { 
+        ~decs ;
+        ~stms ;
+        term = ~expr:e ; 
+        ~<Goto> S;
+      }
+    ]|
+    where {| CheckList, FailureLabel
+	   : rules( FailureLabel : _ -> F )
+	   ; <construct-term> t => e
+	   ; bagof-CheckList; unzip; (id, reverse; concat) => (decs, stms)
+	   |}
+
+  check-unbound-args(|F,t) =
+    try(CheckUnboundArgs(|F,t))
+
+  CheckUnboundArgs(|F,t) :
+    s -> 
+    stm|[ 
+      if(~expr:e)
+        ~<Goto> F;
+      else  
+        ~stm:s
+    ]|
+    where <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
+	; not([])
+	; foldr1(!expr|[ ~expr:<Hd; ConstructVar> == NULL ]|
+	        ,!expr|[ ~expr:<Fst; ConstructVar> == NULL || ~expr:<Snd> ]|) => e
+
+/**
+ * Term construction with constant term caching
+ */
+rules 
+
+  init-term-caching =
+    where(
+       !Op("Nil", []) => t1
+       ; !Anno(Op("Nil", []),Op("Nil", [])) => t2
+       ; !expr|[ (ATerm) ATempty ]| => e
+    )
+    ; rules( Cache : t1 -> e )
+    ; rules( Cache : t2 -> e )
+
+  construct-term = prelude(|"construct-term");
+       Cache 
+    <+ ConstructAnnoVar
+    <+ ConstructVar
+    <+ !(<id>, <ConstructTerm>)
+       ; (CacheConstant <+ Snd)
+
+  CacheConstant :
+    (t, e1) -> e2
+    where <(Op(id, map(Cache)); proper-list 
+	    + Anno(Cache, Cache) 
+	    + Int(id) + Str(id) + Real(id) )> t
+        ; <newname> "term" => x	    
+        ; !Id(x) => e2
+        ; rules( Cache : t -> e2 )
+        ; !(x, e1)
+        ; fragment(DeclareTermId|"ConstDecl")
+        ; fragment(InitTermId|"ConstInit")
+
+// helpers
+
+strategies
+    
+  is-ListOp =
+    ?Op("Nil", []) + ?Op("Cons", [_, _])
+
+  proper-list =
+    Op("Nil", [])
+    + Op("Cons", [id, proper-list])
+    + Op(id, id)
+      ; not(is-ListOp)
+
+  DeclareTermId :
+    (x, e) ->
+    bstm|[ ATerm ~id:x; ]|
+
+  InitTermId :
+    (x, e) -> bstm*|[ x = e; ATprotect(x); ]|
+
+   mk-int-const = prelude(|"mk-int-const") ;
+    !Lit(Deci(<try(int-to-string)>))
+    
+
+rules
+
+  ConstructTerm :
+    Int(i) -> 
+    expr|[ 
+      (ATerm)ATmakeInt(~expr:<mk-int-const> i)
+    ]|
+    where prelude(|"ConstructTerm")
+  ConstructTerm :
+    Real(x) -> 
+    expr|[ 
+      (ATerm)ATmakeReal(~expr:Lit(Float(<try(real-to-string)> x)))
+    ]|
+    where prelude(|"ConstructTerm")
+
+  ConstructTerm :
+    Str(x) -> 
+    expr|[ 
+      (ATerm)ATmakeAppl(ATmakeSymbol(~expr:Lit(String([Chars(<escape; double-quote> x)])), 0, ATtrue)) 
+    ]|
+    where prelude(|"ConstructTerm - Str")
+
+  ConstructVar :
+    x@Var(_){} -> e
+    where prelude(|"ConstructVar") ;
+      <VarToReadRef> x => e
+
+  ConstructAnnoVar :
+    Anno(Var(x), pt2) -> 
+    expr|[ 
+      (ATerm) SRTS_setAnnotations(~expr:e, ~expr:<construct-term> pt2)
+    ]|
+    where prelude(|"ConstructAnnoVar") ; 
+      <ConstructVar> Var(x) => e
+
+  ConstructTerm :
+    Anno(pt1, Op("Nil", [])) -> <construct-term> pt1
+    where prelude(|"ConstructTerm - pt1, Op(Nil, )") ; 
+      <not(?Var(_))> pt1
+
+  ConstructTerm :
+    Anno(pt1, pt2) -> 
+    expr|[ 
+      (ATerm) SRTS_setAnnotations(~expr:<construct-term> pt1, ~expr:<construct-term> pt2)
+    ]|
+    where prelude(|"ConstructTerm - pt1{pt2}") ; 
+          <not(?Op("Nil", []))> pt2
+        ; <not(?Var(_))> pt1
+
+//  ConstructTerm :
+//    |[ _ t ]| -> <construct-term> t
+
+  ConstructTerm :
+    Op(c, t*) -> 
+    expr|[ 
+      (ATerm)ATmakeAppl(
+               ~id:<ConstructorName>(c, <length> t*) 
+               , ~<map(construct-term)> t*
+             )
+    ]|
+    where prelude(|"ConstructTerm - Op(c, t*)") ; 
+      not(is-ListOp)
+
+  ConstructTerm :
+    Explode(t1, t2) -> 
+    expr|[ 
+      SSL_mkterm(~expr:<construct-term> t1, ~expr:<construct-term> t2) 
+    ]|
+
+  ConstructTerm :
+    Op("Nil", []) -> expr|[ (ATerm)ATempty ]|
+  where prelude(|"ConstructTerm - Op(Nil, [])")
+
+  ConstructTerm :
+    Op("Cons", [t1, t2]) -> 
+    expr|[ 
+      (ATerm)ATinsert(~expr:e, ~expr:<construct-term> t1)
+    ]|
+    where prelude(|"ConstructTerm - Cons");
+      <construct-term> t2
+      ; if <not(Anno(is-ListOp,id))> t2 then 
+          check-aterm-list 
+        else
+          if ?Id(_) then
+	    !|[ (ATermList) ~expr:<id> ]|
+          else
+            try(UncastATerm)
+          end
+          ; try(CastATermListSetAnnotations)
+        end => e
+
+  check-aterm-list :
+    e -> expr|[ (ATermList)x ]|
+    where <newname> "trm" => x
+	; FailureLabel => F
+	; !(bstm|[ ATerm ~x; ]|, 
+        bstm*|[ ~id:x = CheckATermList(~expr:e);
+                if(x == NULL) ~<Goto> F; ]|) => stms
+	; rules( CheckList :+ _ -> stms )
+
+  CastATerm :
+    e -> expr|[ (ATerm) ~expr:e ]|
+
+  CastATermListSetAnnotations :
+    expr|[ SRTS_setAnnotations(~expr:e1, ~expr:e2) ]| -> expr|[ (ATermList) SRTS_setAnnotations(~expr:e1, ~expr:e2) ]|
+
+  UncastATerm :
+    expr|[ (ATerm)~expr:e ]| -> e
+
+
+  VarToReadRef : 
+    x{} -> expr|[ x ]|
+
+  VarToReadRef :
+    x{Frames([])} -> expr|[ x ]|
+
+  VarToReadRef :
+    x{Offset(i), Frames([])} -> expr|[ x ]|
+
+  VarToReadRef : 
+    x{Offset(i), Frames(frames)} -> 
+    expr|[ sl_readvar(~expr:<mk-int-const> i, ~expr:sl) ]|
+    where <not([]); frames-to-static-link> frames => sl
+
+signature
+  constructors
   
+    Offset: Int -> Term
+    Frames: List(Term) -> Term
+    
+/**
+ * Signatures
+ */
+strategies
+
+  Translate =
+      fragment(DeclareConstructor|"ConstructorDecl")
+    ; fragment(InitConstructorQ <+ InitConstructor|"ConstructorInit")
+
+  DeclareConstructor :
+    OpDecl(c, t) -> bstm|[ Symbol ~id:csym; ]|
+    where <Arity> t => n
+        ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
+        ; rules(ConstructorName : (c, n) -> csym)
+
+  Arity : 
+    ConstType(t) -> 0
+
+  Arity : 
+    FunType(ts, t) -> <length> ts
+
+  InitConstructorQ :
+    OpDecl(c, t) ->
+    bstm*|[
+      ~id:csym = ATmakeSymbol(~expr:Lit(String([Chars(<double-quote> c')])), 
+			                  ~expr:<mk-int-const> ar,
+			                  ATtrue);
+      ATprotectSymbol(~id:csym);
+    ]|
+    where <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
+        ; <Arity> t => ar
+        ; <ConstructorName> (c, ar) => csym
+
+  InitConstructor :
+    OpDecl(c, t) ->
+    bstm*|[
+      ~id:csym = ATmakeSymbol(~expr:Lit(String([Chars(<double-quote> c)])), 
+                              ~expr:<mk-int-const> ar, 
+                              ATfalse);
+      ATprotectSymbol(~id:csym);
+    ]|
+    where ar   := <Arity> t
+        ; csym := <ConstructorName> (c, ar)
+
+
+
+/*  
 strategies
   
   construct-term =
@@ -313,7 +591,7 @@ strategies
     ) => bstmts*
   ; length ; int-to-string => n
   ; !(Block([ bstm |[ ATerm[] x = new ATerm[~deci:n]; ]| | bstmts* ]), x)
-
+*/
 
 // matching
 strategies
@@ -406,3 +684,23 @@ strategies
     ; concat => bstm*
 
 
+/**
+ * Fragments
+ */
+
+strategies
+
+  fragment(s|tp) =
+    where(s; ?x; rules( Fragment :+ tp -> x ))
+
+/**
+ * Frames
+ */
+ 
+strategies
+ 
+  frames-to-static-link =
+    (Tl <+ debug(!"*** frames-to-static-link error: "); fail)
+    ; foldr(!expr|[ sl ]|,
+	    !expr|[ sl_up(~expr:<Snd>) ]|)
+    
