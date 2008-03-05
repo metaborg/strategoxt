@@ -1,3 +1,3 @@
-package org.strategoxt.core;
+package org.strategoxt.lang;
 
 public class Failure extends RuntimeException {}
