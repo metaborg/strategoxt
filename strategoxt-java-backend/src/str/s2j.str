@@ -13,7 +13,6 @@ imports
 
 signature
   constructors 
-    Match : a * a -> a
     Next : Term
     
 strategies
@@ -33,6 +32,7 @@ rules
          
      import static org.strategoxt.lang.Runtime.termFactory;
      import static org.strategoxt.lang.Term.nonNull;
+     import static org.strategoxt.lang.Term.checkTermList;
      		
      public class Main {
 
@@ -96,22 +96,22 @@ rules
   where prelude(|"translate-parameter - strategy")
   
 strategies
-  prelude(|msg) = log(|Debug(), msg)
+  prelude(|msg) = where(?x#(_) ; log(|Debug(), [ msg, " : ", x ]))
   
   verify-SwitchGroup(|stratname) = ?SwitchGroup(_, _) <+ log(|Error(), [ stratname, ": not a SwitchGroup!" ])
   
   /** @type Strategy -> List(SwitchGroup) */
   translate-body(|S,F) = 
     prelude(|"translate-body") 
-    ; topdown(repeat(translate-strategy(|S,F)))
+    ; translate-strategy(|S,F)
     ; //verify-SwitchGroup(|"translate-body")
       debug(!"after translate-body :")
 
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
-  translate-Scope : 
-  Scope(vars, e) -> Block(<conc> (vars', [e]))
-  where
+  translate-Scope(|S, F) : 
+  Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy(|S,F)> e]))
+  where prelude(|"translate-Scope") ;
     <map(\ x -> bstm |[ IStrategoTerm x ; ]| \)> vars => vars'
     
   /** @type Id -> Stm */
@@ -134,6 +134,8 @@ strategies
       } 
     ]|
   where prelude(|"translate-Seq")
+   ; <debug(!"s1")> s1
+   ; <debug(!"s2")> s2
   
   translate-GuardedLChoice(|S,F) :
     GuardedLChoice(s1, s2, s3) ->
@@ -193,33 +195,26 @@ strategies
   goto(|label) = <Goto> label 
   
   Goto: Next() -> Empty()
-  Goto: (scopeLabel, caseNumber) -> bstm |[ { ns = ~caseNumber; break ~scopeLabel; } ]|
+  Goto: (scopeLabel, caseNumber) -> bstm |[ { nextState = ~caseNumber; break ~scopeLabel; } ]|
   
   translate-strategy(|S,F) = 
-    translate-CallT(|S,F)
+       ( translate-CallT(|S,F)
     <+ translate-Build(|S,F)
     <+ translate-Seq(|S,F)
     <+ translate-PrimT
     <+ translate-Id(|S,F)
     <+ translate-Fail(|S,F)
     <+ translate-GuardedLChoice(|S,F) ; debug(!"after guarded choice: ")
-    <+ translate-Scope
+    <+ translate-Scope(|S,F)
     <+ translate-Match
-    <+ translate-Let
+    <+ translate-Let(|S,F) ) ; debug(!"translated ")
   
-  translate-Let: 
-  Let(defs, body) -> Block(<conc> (defs', [body]))
+  translate-Let(|S,F): 
+  Let(defs, body) -> Block(<conc> (defs', [<translate-strategy(|S,F)> body]))
   where
       prelude(|"translate-Let")
     ; <map(translate-definition)> defs => defs'
  
-  
-  translate-CallT(|S,F) = 
-      ?CallT(_, _, _)
-    ; prelude(|"translate-CallT")
-    ; do-translate-CallT(|S,F)
-    ; debug(!"post-do-translate-CallT ")
-    <+ \ CallT(_, _, _) -> stm |[ CallT(); ]| \
   
   make-strategy-class : 
   (x, s) -> bstm |[ 
@@ -231,7 +226,7 @@ strategies
         } 
     ]|
   
-  do-translate-CallT(|S,F):
+  translate-CallT(|S,F):
     CallT(SVar(x), s*, t*) ->
       Block(<concat>
 	         [ bodies | 
@@ -239,14 +234,14 @@ strategies
 	             { 
 	               term = x.instance.apply(e*,term) ; 
 	               if(term == null) 
-	                 ~<Goto> F
+	                 ~stm:<Goto> F
 	               else
-	                 ~<Goto> S
+	                 ~stm:<Goto> S
 	             }
 	             ]|
 	         ] 
            )
-      where
+      where prelude(|"translate-CallT"); 
         // FIXME do actual lifting
         <map(\ x -> (<new>(), <translate-strategy(|0,1)> x) \)> s* => args1 // FIXME correct S,F
       ; <map(make-strategy-class)> args1 => bodies
@@ -255,28 +250,25 @@ strategies
 
   translate-PrimT :
     PrimT(_, _, _) -> stm |[ PrimT(); ]|
+  where prelude(|"translate-PrimT")
     
   translate-Match:
-    Match(_, _) -> stm |[ Match(); ]|
+    Match(_) -> stm |[ Match(); ]|
+  where prelude(|"translate-Match")
     
-  translate-Build(|S,F) = 
-      ?Build(_)
-    ; prelude(|"translate-Build")
-    ; do-translate-Build(|S,F)
-    
+   
 /* ================================ Build  */
 
-    
-  do-translate-Build(|S,F):
+  translate-Build(|S,F):
     Build(t) -> 
     <check-unbound-args(|F,t)>
     Block(bstm*|[
         ~*decs;
         ~*stms;
         term = ~expr:e;
-        ~<Goto> S;
+        ~stm:<Goto> S
     ]|)
-    where prelude(|"do-translate-Build")
+    where prelude(|"translate-Build")
        ; {| CheckList, FailureLabel : 
 	     rules( FailureLabel : _ -> F )
 	   ; <construct-term> t => e
@@ -292,14 +284,14 @@ strategies
     s -> 
     stm|[ 
       if(~expr:e)
-        ~<Goto> F;
+        ~stm:<Goto> F
       else  
         ~stm:s
     ]|
     where <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
 	; not([])
-	; foldr1(!expr|[ ~expr:<Hd; ConstructVar> == NULL ]|
-	        ,!expr|[ ~expr:<Fst; ConstructVar> == NULL || ~expr:<Snd> ]|) => e
+	; foldr1(!expr|[ ~expr:<Hd; ConstructVar> == null ]|
+	        ,!expr|[ ~expr:<Fst; ConstructVar> == null || ~expr:<Snd> ]|) => e
 
 /**
  * Term construction with constant term caching
@@ -310,7 +302,7 @@ rules
     where(
        !Op("Nil", []) => t1
        ; !Anno(Op("Nil", []),Op("Nil", [])) => t2
-       ; !expr|[ atermFactory.getEmptyList() ]| => e
+       ; !expr|[ atermFactory.makeList() ]| => e
     )
     ; rules( Cache : t1 -> e )
     ; rules( Cache : t2 -> e )
@@ -379,7 +371,7 @@ rules
   ConstructTerm :
     Str(x) -> 
     expr|[ 
-      termFactory.makeAppl(termFactory.makeConstructor(~expr:Lit(String([Chars(<escape; double-quote> x)])), 0, ATtrue)) 
+      termFactory.makeString(~expr:Lit(String([Chars(<escape> x)])))
     ]|
     where prelude(|"ConstructTerm - Str")
 
@@ -387,6 +379,7 @@ rules
     x@Var(_){} -> e
     where prelude(|"ConstructVar") ;
       <VarToReadRef> x => e
+      ; debug(!"var to read ref: ")
 
   ConstructAnnoVar :
     Anno(Var(x), pt2) -> 
@@ -432,13 +425,13 @@ rules
     where prelude(|"ConstructTerm - Explode")
 
   ConstructTerm :
-    Op("Nil", []) -> expr|[ termFactory.getEmptyList() ]|
+    Op("Nil", []) -> expr|[ termFactory.makeList() ]|
   where prelude(|"ConstructTerm - Op(Nil, [])")
 
   ConstructTerm :
     Op("Cons", [t1, t2]) -> 
     expr|[ 
-      ((IStrategoList)(~expr:e)).insert(~expr:<construct-term> t1)
+      ((IStrategoList)(~expr:e)).prepend(~expr:<construct-term> t1)
     ]|
     where prelude(|"ConstructTerm - Cons");
       <construct-term> t2
@@ -454,12 +447,13 @@ rules
         end => e
 
   check-aterm-list :
-    e -> expr|[ (IStrategoList)x ]|
-    where <newname> "trm" => x
+    e -> expr|[ (IStrategoList)~id:x ]|
+    where prelude(|"check-aterm-list")
+    ; !Id(<newname> "trm") => x
 	; FailureLabel => F
-	; !(bstm|[ IStrategoTerm ~x; ]|, 
-        bstm*|[ ~id:x = CheckATermList(~expr:e);
-                if(x == NULL) ~<Goto> F; ]|) => stms
+	; !(bstm|[ IStrategoList ~id:x; ]|, 
+        bstm*|[ ~id:x = checkTermList((IStrategoList)~expr:e);
+                if(~id:x == null) ~stm:<Goto> F ]|) => stms
 	; rules( CheckList :+ _ -> stms )
 
   CastATerm :
@@ -473,16 +467,16 @@ rules
 
 
   VarToReadRef : 
-    x{} -> expr|[ x ]|
+    Var(x){} -> expr|[ x ]|
 
   VarToReadRef :
-    x{Frames([])} -> expr|[ x ]|
+    Var(x){Frames([])} -> expr|[ x ]|
 
   VarToReadRef :
-    x{Offset(i), Frames([])} -> expr|[ x ]|
+    Var(x){Offset(i), Frames([])} -> expr|[ x ]|
 
   VarToReadRef : 
-    x{Offset(i), Frames(frames)} -> 
+    Var(x){Offset(i), Frames(frames)} -> 
     expr|[ sl_readvar(~expr:<mk-int-const> i, ~expr:sl) ]|
     where <not([]); frames-to-static-link> frames => sl
 
