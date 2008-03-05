@@ -19,7 +19,7 @@ strclib =						\
 	$(wildcard $(srcdir)/stratego/strc/pack/*.str)	\
 	$(wildcard $(srcdir)/stratego/strc/pp/*.str)	\
 	$(wildcard $(srcdir)/stratego/strc/parse/*.str)	\
-	$(wildcard $(srcdir)stratego/strc/strc/*.str)	\
+	$(wildcard $(srcdir)/stratego/strc/strc/*.str)	\
 	$(wildcard $(srcdir)/stratego/strc/model/*.str)	\
 	stratego/strc/pp/stratego-parenthesize.str
 
@@ -51,7 +51,7 @@ STRINCLUDES      = \
                    -I $(top_builddir)/../stratego-front/sig \
                    -I $(top_builddir)/../c-tools/syn        \
                    -I $(top_builddir)/../c-tools/sig        \
-	           -I $(GPP)/share/sdf/gpp
+	           -I $(GPP)/share/sdf/gpp	
 
 
 STRCFLAGS =
