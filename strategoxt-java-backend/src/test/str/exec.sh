@@ -18,5 +18,5 @@ echo -e "\E[47;34m=========[ compiling - javac ]====\E[0m"
 javac -cp ../../java:${libs} Main.java || die "javac failed"
 
 echo -e "\E[47;34m=================[ executing ]====\E[0m"
-java -cp ../../java:${libs}:. Main || "execution failed"
+java -cp ../../java:${libs}:. Main || die "execution failed"
 

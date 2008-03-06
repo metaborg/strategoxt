@@ -13,7 +13,8 @@ imports
 
 signature
   constructors 
-    Next : Term
+    Next  : Term
+    Match : Term * Exp -> Exp
     
 strategies
 
@@ -44,7 +45,9 @@ rules
      
 	 public static void main(String args[]) {
 	    preInit();
-        IStrategoTerm term = main_0_0.instance.apply(Runtime.prepareCLIArgs(args));
+	    IStrategoTerm zz = Runtime.prepareCLIArgs(args);
+	    System.out.println(zz);
+        IStrategoTerm term = main_0_0.instance.apply(zz);
         if(term == null) { 
           System.err.println("Rewriting failed!"); 
           System.exit(1); 
@@ -195,10 +198,11 @@ strategies
   goto(|label) = <Goto> label 
   
   Goto: Next() -> Empty()
-  Goto: (scopeLabel, caseNumber) -> bstm |[ { nextState = ~caseNumber; break ~scopeLabel; } ]|
+  Goto: (scopeLabel, caseNumber) -> bstm |[ { nextState = ~caseNumber; continue ~scopeLabel; } ]|
   
   translate-strategy(|S,F) = 
-       ( translate-CallT(|S,F)
+       ( 
+       translate-CallT(|S,F)
     <+ translate-Build(|S,F)
     <+ translate-Seq(|S,F)
     <+ translate-PrimT
@@ -206,8 +210,9 @@ strategies
     <+ translate-Fail(|S,F)
     <+ translate-GuardedLChoice(|S,F) ; debug(!"after guarded choice: ")
     <+ translate-Scope(|S,F)
-    <+ translate-Match
-    <+ translate-Let(|S,F) ) ; debug(!"translated ")
+    <+ translate-Match(|S,F)
+    <+ translate-Let(|S,F) 
+       ) ; debug(!"translated ")
   
   translate-Let(|S,F): 
   Let(defs, body) -> Block(<conc> (defs', [<translate-strategy(|S,F)> body]))
@@ -252,11 +257,7 @@ strategies
     PrimT(_, _, _) -> stm |[ PrimT(); ]|
   where prelude(|"translate-PrimT")
     
-  translate-Match:
-    Match(_) -> stm |[ Match(); ]|
-  where prelude(|"translate-Match")
-    
-   
+  
 /* ================================ Build  */
 
   translate-Build(|S,F):
@@ -531,8 +532,218 @@ strategies
 /* ================================ Match */
 strategies
 
-  do-translate-Match :
-    Match(t) -> stm|[ MatchT(); ]|
+  translate-Match(|S,F) :
+    Match(t) -> <translate-Match(|S,F)> Match(t, ExprName(Id("term")))
+  where prelude(|"translate-Match - Match/1");
+    <debug> t
+
+  translate-Match(|S,F) :
+    Match(Wld(), trm) -> <Goto> S
+  where prelude(|"translate-Match - Match(Wld,trm)")
+
+  translate-Match(|S,F) :
+    Match(As(t1,t2), trm) ->
+    stm|[ 
+      { 
+        ~stm:(<translate-Match(|Next(),F)> Match(t1,trm))
+        ~stm:(<translate-Match(|S,F)> Match(t2,trm))
+      }
+    ]|
+  where prelude(|"translate-Match - Match(As(t1,t2), trm)")
+
+  translate-Match(|S,F) :
+    Match(Var(x){"unbound"}, trm) ->
+    stm|[ { ~e = ~expr:trm; ~stm:<Goto> S } ]|
+  where prelude(|"translate-Match - Match(Var(x){unbound}, trm)");
+    <VarToWriteRef> x => e
+
+
+  translate-Match(|S,F) :
+    Match(Var(x){"bound"}, trm) ->
+    stm|[ 
+      if( ~expr:e == ~expr:trm ) 
+        ~stm:<Goto> S
+      else 
+        ~stm:<Goto> S
+     ]|
+    where prelude(|"translate-Match - Match(Var(x){bound}, trm)");
+      <VarToReadRef> x => e
+
+  translate-Match(|S,F) :
+    Match(Var(x){"(un)bound"}, trm) ->
+    stm|[ 
+      if( ~expr:e1 == NULL )
+        { 
+          ~e2 = ~expr:trm; 
+          ~stm:<Goto> S
+        }
+      else if( ~expr:e1 != ~expr:trm )
+        ~stm:<Goto> F
+      else
+        ~stm:<Goto> S
+    ]|
+    where prelude(|"translate-Match - Match(Var(x){(un)bound})");
+      <VarToReadRef> x => e1
+	; <VarToWriteRef> x => e2
+
+  VarToWriteRef :
+    x{} -> expr|[ x ]|
+
+  VarToWriteRef :
+    x{Frames([])} -> expr|[ x ]|
+
+  VarToWriteRef : 
+    x{Offset(i), Frames([])} -> expr|[ x ]|
+
+  VarToWriteRef : 
+    x{Offset(i), Frames(frames)} -> 
+    expr|[ sl_readvar(~expr:<mk-int-const> i, ~expr:sl) ]|
+    where <not([]); frames-to-static-link> frames => sl
+
+  translate-Match(|S,F) :
+    Match(Var(x){}, trm) -> <translate-Match(|S,F)> Match(Var(x){"(un)bound"}, trm)
+  where prelude(|"translate-Match - Match(Var(x){}")
+
+  translate-Match(|S,F) :
+    Match(Explode(t1, t2), Id(trm)) ->
+    stm|[ 
+    {
+      ATerm ~id:x, ~id: y;
+	 ~id:x = SSL_get_constructor(~id:trm);
+	 ~id:y = SSL_get_arguments(~id:trm);
+	 ~stm:(<translate-Match(|Next(),F)> Match(t1, x))
+	 ~stm:(<translate-Match(|S,F)> Match(t2, y))
+     } ]|
+    where prelude(|"translate-Match - Match(Explode)") ;
+          !Id(<newname> "trm") => x
+        ; !Id(<newname> "trm") => y
+
+  translate-Match(|S,F) =
+       TranslateMatchNoAnno(|S,F)
+    <+ TranslateMatchAnno(|S,F)
+
+  TranslateMatchNoAnno(|S,F) :
+    Match(Anno(pt1, Wld()), trm) -> <translate-Match(|S,F)> Match(pt1, trm)
+  where prelude(|"TranslateMatchNoAnno - Match(pt1{^_}")
+    
+
+  TranslateMatchAnno(|S,F) :
+    Match(Anno(pt1, pt2), Id(trm)) -> 
+    stm|[ 
+      { 
+        ATerm ~id:x; 
+        ~id:x = (ATerm)ATgetAnnotations(~id:trm);
+        if(~id:x == NULL) 
+           ~id:x = (ATerm) ATempty;
+        ~stm:(<translate-Match(|Next(),F)> Match(Var(pt1), Id(trm)))
+        ~stm:(<translate-Match(|S,F)> Match(Var(pt2), Id(x)))
+      } 
+    ]|
+    where prelude(|"TranslateMatchAnno - Match(ptr1{^pt2})");
+          <not(?Wld())> pt2
+        ; !Id(<newname> "trm") => x
+
+  /**
+   * @todo  String constants should probably be cached, just like constructor names
+   */
+  translate-Match(|S,F) :
+    Match(Str(x), trm) -> 
+    stm|[
+      if((~expr:trm).getTermType() == IStrategoTerm.STRING && ((IStrategoString)(~expr:trm)).getValue().equals(~expr:x'))
+        ~stm:<Goto> S
+      else 
+        ~stm:<Goto> F
+    ]|
+  where prelude(|"translate-Match - Match(Str)");
+        !Lit(String([Chars(<escape> x)])) => x'
+
+  translate-Match(|S,F) :
+    Match(Int(i), trm) -> 
+    stm|[
+      if(((~expr:trm).getTermType() == IStrategoTerm.INT) && ((IStrategoInt)~expr:trm).getValue() == ~expr:x')
+        ~stm:<Goto> S
+      else 
+        ~stm:<Goto> F
+    ]|
+  where prelude(|"translate-Match - Match(Int)");
+        <mk-int-const> i => x'
+
+  translate-Match(|S,F) :
+    Match(Real(i),trm) -> 
+    stm|[
+      if(((~expr:trm).getTermType() == IStrategoTerm.REAL) && (((IStrategoReal)~expr:trm).getValue() == ~expr:x'))
+        ~stm:<Goto> S
+      else 
+        ~stm:<Goto> F
+    ]|
+  where prelude(|"translate-Match - Match(Real)");
+        !Lit(Float(<try(real-to-string)> i)) => x'
+
+  /**
+   * Translate a match of an Op, but not a Cons/2 or Nil/0.
+   */
+  translate-Match(|S,F) :
+    Match(op@Op(c, ts), trm) ->
+    stm|[
+      if( match_cons(~expr:trm, ~id:cname) )
+        { 
+          ~bstm*:match-args
+          ~stm:<Goto> S
+        }
+      else
+        ~stm:<Goto> F
+    ]|
+  where prelude(|"translate-Match - Match(Op)");
+       <not(is-ListOp)> op
+     ; <ConstructorName> (c, <length> ts) => cname
+     ; <thread-map(\ (t,i) ->
+             (
+               <MatchArg1(|Next(),F) <+ MatchArg2(|Next(),F)> 
+                  (t, expr|[ ATgetArgument(~expr:trm,~expr:<mk-int-const> i) ]|)
+             , <add>(i, 1)
+             )
+           \ )> (ts,0) => (match-args,_)
+
+  MatchArg1(|S,F) : 
+    (Var(x){t*}, trm) -> <translate-Match(|S,F)> Match(Var(x){t*}, trm)
+  where prelude(|"MatchArg1")
+    
+
+  MatchArg2(|S,F) : 
+    (t, trm) -> 
+    stm|[ 
+      { 
+         ATerm x = ~expr:trm; 
+         ~stm:(<translate-Match(|S,F)> Match(t, Id(x)))
+      } 
+    ]|
+  where prelude(|"MatchArg1");
+        <newname> "trm" => x
+
+  translate-Match(|S,F) :
+    Match(Op("Nil", []), trm) ->
+    stm|[
+      if((ATgetType(~expr:trm) == AT_LIST) && ATisEmpty(~expr:trm))
+        ~<Goto> S
+      else 
+        ~<Goto> F
+    ]|
+  where prelude(|"translate-Match - Match(Op(Nil))")
+
+  translate-Match(|S,F) :
+    Match(Op("Cons", [hd, tl]), trm) ->
+    stm|[
+      if((ATgetType(~expr:trm) == AT_LIST) && !(ATisEmpty(~expr:trm)))
+        { 
+          ~bstm*:match-args 
+          ~stm:<Goto> S
+        }
+      else
+        ~stm:<Goto> S
+    ]|
+    where <map(MatchArg1(|Next(),F) <+ MatchArg2(|Next(),F))> 
+	   [(hd, expr|[ ATgetFirst((ATermList)~expr:trm) ]|), 
+            (tl, expr|[ (ATerm)ATgetNext((ATermList)~expr:trm) ]|)] => match-args
 
 /**
  * Fragments
