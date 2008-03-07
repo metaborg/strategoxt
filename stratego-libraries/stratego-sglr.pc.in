@@ -1,6 +1,6 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
-strcflags=-I @datadir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-sglr.la
 
 Name: Stratego SGLR Library
 Description: Bindings of the SGLR library for Stratego.

@@ -1,6 +1,6 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
-strcflags=-I @datadir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-tool-doc.la
 
 Name: Stratego Tool Documentation Library
 Description: Stratego Tool Documentation Library.

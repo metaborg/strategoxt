@@ -1,6 +1,6 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
-strcflags=-I @datadir@
+strcflags=-I @datadir@  -la ${prefix}/lib/libstratego-sdf.la
 
 Name: Stratego SDF Library
 Description: Stratego SDF Library.

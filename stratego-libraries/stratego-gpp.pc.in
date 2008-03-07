@@ -1,6 +1,6 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
-strcflags=-I @datadir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-gpp.la
 
 Name: Stratego GPP Library
 Description: Generic Pretty-Printing Library.
