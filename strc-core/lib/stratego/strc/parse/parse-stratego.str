@@ -324,8 +324,9 @@ strategies
       ; ps-find-in-includes(!"Using parse table: ")
       ; !FILE(<id>)
       ; read-from
+
+    <+ <error> ["cannot find the parse table for syntax \"", <id>, "\" in the include path"]
+       ; fail
     )
     ; ?tbl
     ; strc-memo-open-parse-table(!tbl)
-    
-    // @todo inline table for basic Stratego parse table (to avoid the read-from for each module)
