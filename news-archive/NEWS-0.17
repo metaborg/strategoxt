@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
-Stratego/XT 0.17 - released somewhere in 2006
+Stratego/XT 0.17 - released somewhen in 2008
 -----------------------------------------------------------------------
 
 ---------++!! Summary of Changes
@@ -9,6 +9,8 @@ Stratego/XT 0.17 - released somewhere in 2006
 ---------++ Stratego Compiler
 
 * No more nested functions
+
+* Stack traces
 
 ---------++ Stratego Language
 

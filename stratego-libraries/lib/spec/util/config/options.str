@@ -1,5 +1,10 @@
 /**
- * Handling command line options.
+ * This module contains strategies for handling command line options
+ * and simple serialization/unserialization of ATerms. These strategies
+ * are particularly useful for writing command line tools in Stratego
+ * that may be connected into pipelines by the standard Unix piping
+ * mechanism.
+ *
  */
 module util/config/options
 imports 
@@ -100,7 +105,7 @@ strategies
 
   /**
    * Wraps a strategy into a strategy that handles input and output options.
-   * The strategy arguments is appied to a tuple of stream: the input and the output stream. 
+   * The strategy arguments is applied to a tuple of streams: the input and the output stream. 
    *
    * @param (Stream, Stream) -> _
    */
@@ -123,9 +128,10 @@ strategies
           try(<fclose> fout); try(<fclose> fin)
           ; report-success
         else
-          try(<fclose> fout); try(<fclose> fin)     
+            prim("SSL_stacktrace_get_all_frame_names") => trace
+          ; try(<fclose> fout); try(<fclose> fin)     
           ; try(<get-config> "-o"; remove-file)
-          ; report-failure
+          ; <report-failure> trace
         end
     end
 
@@ -143,7 +149,7 @@ strategies
   option-wrap(opts, usage, about, announce, s) =
     parse-options(opts, usage, about)
     ; announce
-    ; (s; report-success <+ report-failure)
+    ; (s; report-success <+ prim("SSL_stacktrace_get_all_frame_names") ; report-failure)
 
 strategies
 
@@ -269,9 +275,19 @@ strategies
       report-run-time
     ; <exit> 0
 
+  /** 
+   * Report the failure of this program. Must be applied to a list of
+   * strings obtained by calling the SSL_stacktrace_get_all_frame_names
+   * directly after the failure occurred (without any intervening calls
+   * to any rules/strategies).
+   *
+   * @type List(String) -> _
+   */
   report-failure =
-      report-run-time
-    ; <fprintnl> (stderr(), [<whoami> (), ": rewriting failed"])
+      ?stacktrace
+    ; report-run-time
+    ; <fprintnl> (stderr(), [<whoami> (), ": rewriting failed, trace:"])
+    ; <reverse ; map(<fprintnl> (stderr(), ["\t", <id>]))> stacktrace
     ; <exit> 1
 
   whoami =

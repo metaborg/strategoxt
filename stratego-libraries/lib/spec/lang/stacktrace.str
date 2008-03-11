@@ -1,0 +1,50 @@
+/**
+ * This module provides some basic strategies for inspecting
+ * the runtime stack of strategies. 
+ *
+ * There are numerous caveats to be aware of:
+ * 
+ * <ul>
+ * <li>Because of inlining, the trace might not contain all 
+ *     strategies which are on the stack.</li>
+ * <li>If libraries compiled with other compilers are called,
+ *     stack frames from strategies here will be invisible.</li>
+ * <li>Lifted strategies will appear in the trace, but the names
+ *     might be non-instructive, depending on the compiler version
+ *     used.</li>
+ * </ul>
+ *
+ * @author Karl Trygve Kalleberg <karltk@strategoxt.org>
+ * 
+ */
+module lang/stacktrace
+
+strategies
+
+  /**
+   * Return a list of all the current stack frame namess. A stack
+   * frame name is the name of the rule or strategy on a given 
+   * stack frame. The list might not be complete; refer to the module 
+   * documentation for lang/stacktrace for details.
+   *
+   * @type -> List(String)
+   */
+  stacktrace-get-all-frame-names = prim("SSL_stacktrace_get_all_frame_namess")
+  
+  /**
+   * Return the name of the currently active stack frame. This 
+   * strategy returns the name of the strategy that calls 
+   * stacktrace-get-current-frame, with certain restrictions,
+   * see the lang/stacktrace module documentation.
+   *
+   * @type -> String
+   */
+  stacktrace-get-current-frame-name = prim("SSL_stacktrace_get_current_frame_name")
+
+  /**
+   * Return the index (depth) of the current stack, including the call to this
+   * strategy.
+   *
+   * @type -> Int
+   */
+  stacktrace-get-current-frame-index = prim("SSL_stacktrace_get_current_frame_index")

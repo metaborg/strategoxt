@@ -5,6 +5,7 @@ include_HEADERS = \
   collection-list-common.h  \
   collection-set-indexed.h \
   lang-dynamic-rules.h \
+  lang-stacktrace.h \
   stratego-lib.h \
   system-io-dir.h \
   system-io-term.h \
@@ -33,6 +34,7 @@ LIB_SOURCES = \
   collection-list-common.c \
   collection-set-indexed.c \
   lang-dynamic-rules.c \
+  lang-stacktrace.c \
   system-io-dir.c \
   system-io-term.c \
   system-posix-file.c \

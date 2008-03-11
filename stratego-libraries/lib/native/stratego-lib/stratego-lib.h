@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 #include "stratego-lib-common.h"
 #include "lang-dynamic-rules.h"
+#include "lang-stacktrace.h"
 
 #include "term-integer.h"
 #include "term-real.h"
@@ -44,6 +45,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include "collection-list-common.h"
 
 #include "util-time.h"
+
+
 
 #endif
 
