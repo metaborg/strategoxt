@@ -22,5 +22,5 @@ ATerm SSL_stacktrace_get_current_frame_name() {
 }
 
 ATerm SSL_stacktrace_get_current_frame_index() {
-	return ATmakeInt(__tracing_table_counter);
+	return (ATerm)ATmakeInt(__tracing_table_counter);
 }
