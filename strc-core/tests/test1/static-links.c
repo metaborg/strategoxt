@@ -4,7 +4,7 @@ typedef struct str_frame *StrStaticLink;
 
 typedef struct str_closure *StrClosure;
 
-const char * __tracing_table [TRACING_TABLE_SIZE];
+const char * __tracing_table [65535];
 unsigned short __tracing_table_counter;
 
 struct str_closure 
