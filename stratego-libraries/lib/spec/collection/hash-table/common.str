@@ -32,14 +32,16 @@ signature
  */
 strategies
 
-  /** Create a new hashtable with default size and load.
+  /**
+   * Create a new hashtable with default size and load.
    * 
    * @type _ -> HashTable(K, V)
    */
   new-hashtable =
     new-hashtable(|117,75)
 
-  /** Create a new hashtable with specified size and load.
+  /**
+   * Create a new hashtable with specified size and load.
    * 
    * @param initial_size - the initial capacity of the hashtable
    * @param max_load - the load percentage at which the hashtable is expanded
@@ -48,7 +50,8 @@ strategies
   new-hashtable(|initial_size, max_load) =
     prim("SSL_hashtable_create", initial_size, max_load); !Hashtable(<id>)
 
-  /** Destroys and deallocates memory consumed by an existing hashtable.
+  /**
+   * Destroys and deallocates memory consumed by an existing hashtable.
    *
    * @type HashTable(K, V) -> HashTable(K, V)
    */
@@ -210,7 +213,8 @@ strategies
  */
 strategies
 
-  /** Pushes value on top of the stack for key.
+  /**
+   * Pushes value on top of the stack for key.
    * Current term is the hashtable and remains untouched.
    *
    * @param key        t - the key used for lookup
@@ -220,7 +224,8 @@ strategies
   hashtable-push(|key, value) =
     hashtable-put(|key, [value | <hashtable-get(|key) <+ ![]>])
 
-  /** Pushes values on top of the stack for key.
+  /**
+   * Pushes values on top of the stack for key.
    * Current term is the hashtable and remains untouched.
    *
    * @param key        t       - the key used for lookup
@@ -230,7 +235,8 @@ strategies
   hashtable-pushlist(|key, value) =
     hashtable-put(|key, <conc>(value, <hashtable-get(|key) <+ ![]>))
 
-  /** Pushes union of values and already present values 
+  /**
+   * Pushes union of values and already present values 
    * Current term is the hashtable.
    *
    * @param key        t       - the key used for lookup
@@ -240,7 +246,8 @@ strategies
   hashtable-pushunion(|key, value) =
     hashtable-put(|key, <union>(value, <hashtable-get(|key) <+ ![]>))
 
-  /** Pops off the top element of the stack for key.
+  /**
+   * Pops off the top element of the stack for key.
    * Current term is the hashtable and remains untouched.
    *
    * @param key        t       - the key used for lookup
@@ -249,7 +256,8 @@ strategies
   hashtable-pop(|key) =
     hashtable-put(|key, <hashtable-get(|key); Tl>)
 
-  /** Gets the top value from the stack for key (the stack remains untouched)
+  /**
+   * Gets the top value from the stack for key (the stack remains untouched)
    * Current term is the hashtable, output is the top value.
    *
    * @param key        t       - the key used for lookup
@@ -312,7 +320,6 @@ strategies
    * @todo : with a proper partial evaluator for Stratego this strategy can be
    *         used to create appropriately specialized algorithms.
    */
-
   hashtable-merge(symm, iterate1, iterate2, remove, merge
                  , default, change1, change2, lookup1, lookup2) :
     (tbl1, tbl2) -> tbl1
@@ -564,7 +571,8 @@ strategies // union merges
 
 strategies
 
-  /** Checks whether two hashtables have equal contents.
+  /**
+   * Checks whether two hashtables have equal contents.
    * This strategy uses the basic `eq` to compare the elements.
    *
    * @type Tuple(HashTable(K, V), HashTable(K,V)) -> _
