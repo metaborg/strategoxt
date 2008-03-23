@@ -11,7 +11,7 @@ StrCL SRTS_lookup_function(ATerm name) {
   ATerm res = ATtableGet(strategy_table,name);
 
   if(res == NULL) {
-    _fail(name);
+    return NULL;
   }
 
   return (StrCL) ATgetBlobData((ATermBlob) res);

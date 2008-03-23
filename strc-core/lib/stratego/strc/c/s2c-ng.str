@@ -674,8 +674,14 @@ rules
     stm |[ 
       {
         StrCL ~id:f = SRTS_lookup_function(~exp:e);
+        if(~id:f == NULL) {
+          goto ~id:F;
+        }
         t = cl_fun(~id:f)(cl_sl(~id:f), ~exp*:args);
-        if( t == NULL ) goto ~id:F; else goto ~id:S; 
+        if( t == NULL )
+          goto ~id:F;
+        else
+          goto ~id:S; 
       }
     ]|
     where args1 := <map(ArgToCl)> s*
