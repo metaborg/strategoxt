@@ -1,0 +1,19 @@
+module lazy
+imports
+  libstratego-lib
+
+strategies
+  lazy-scope(s) =
+    prim("LAZY_scope", s | <id>)
+
+  new-lazy-value =
+    prim("LAZY_new_value")
+
+  bind-lazy-value(s | ns, nt, v) =
+    prim("LAZY_bind_value", s | ns, nt, v, <id>)
+
+  lazy(s) = lazy(s | <new-lazy-value => v>); !v
+  lazy(s | v) = bind-lazy-value(s | 0, 0, v)
+
+  get-value(v) =
+    prim("LAZY_call", v |)

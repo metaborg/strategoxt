@@ -1,0 +1,3 @@
+module stratego-lazy
+imports
+  stratego/-

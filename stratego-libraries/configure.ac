@@ -128,6 +128,10 @@ AC_SUBST([STRATEGO_ATERM_UNINSTALLED_LIBS],['$(top_builddir)/aterm/lib/libstrate
 AC_SUBST([STRATEGO_SDF_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/sdf/lib'])
 AC_SUBST([STRATEGO_SDF_UNINSTALLED_LIBS],['$(top_builddir)/sdf/lib/libstratego-sdf.la'])
 
+AC_SUBST([STRATEGO_LAZY_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/lazy/lib --C-include "\"stratego-lazy.h\""'])
+AC_SUBST([STRATEGO_LAZY_UNINSTALLED_CFLAGS],['-I $(top_builddir)/lazy/lib/native'])
+AC_SUBST([STRATEGO_LAZY_UNINSTALLED_LIBS],['$(top_builddir)/lazy/lib/libstratego-lazy.la'])
+
 # Combinations of all libraries that are needed.
 AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
 AC_SUBST([STRATEGO_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)'])
@@ -187,5 +191,10 @@ AC_CONFIG_FILES([
   runtime/Makefile
   runtime/lib/Makefile
   runtime/lib/srts/Makefile
+
+  stratego-lazy.pc
+  lazy/Makefile
+  lazy/lib/Makefile
+  lazy/tests/Makefile
 ])
 AC_OUTPUT

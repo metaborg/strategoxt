@@ -1,0 +1,250 @@
+/**
+ * Tests for the Stratego Lazy Library.
+ *
+ * @author  Nicolas Pierron <nicolas.b.pierron@gmail.com>
+ */
+module stratego-lazy-tests
+imports
+  libstratego-lib
+  libstratego-lazy
+
+strategies
+  main-stratego-lazy-tests =
+    test-suite(!"Stratego Lazy Library",
+    id
+    ; value-tests
+    ; strategy-tests
+    ; cache-tests
+    ; crash-tests
+    ; backtrack-tests
+    )
+
+strategies
+  value-tests = id
+  ; {apply-test(!"Create only"
+    , new-lazy-value
+    , !()
+    )}
+
+  ; {apply-test(!"Create & Bind"
+    , new-lazy-value => v
+    ; bind-lazy-value(!1 | 0, 0, v)
+    , !()
+    )}
+
+  ; {apply-test(!"Create & Bind 2"
+    , new-lazy-value => v
+    ; lazy(!1 | v)
+    , !()
+    )}
+
+  ; {apply-test(!"Create & Bind 3"
+    , lazy(!1)
+    , !()
+    )}
+
+  ; {apply-test(!"Eval Lazy value"
+    , get-value(lazy(!1)) => 1
+    , !()
+    )}
+
+  ; {apply-test(!"Eval Lazy value 2"
+    , get-value(<lazy(id)> 1 => v) => 1
+    , !()
+    )}
+
+strategies
+  apply-and-add(s | i) = <add> (<s>, i)
+
+  strategy-tests = id
+  ; {apply-test(!"Bind strategy"
+    , bind-lazy-value(int-add | 0, 1, <new-lazy-value => v>)
+    , !2
+    )}
+
+  ; {apply-test(!"Bind & Eval strategy with a term"
+    , bind-lazy-value(int-add | 0, 1, <new-lazy-value => v>)
+    ; prim("LAZY_call", !v | 3) => 5 // = 2 + 3
+    , !2
+    )}
+
+  ; {apply-test(!"Bind & Eval strategy with a strategy"
+    , bind-lazy-value(map | 1, 0, <new-lazy-value => v>)
+    ; prim("LAZY_call", !v, inc |) => [2, 3, 4]
+    , ![1, 2, 3]
+    )}
+
+  ; {apply-test(!"Bind & Eval strategy with a strategy and a term"
+    , bind-lazy-value(apply-and-add | 1, 1, <new-lazy-value => v>)
+    ; prim("LAZY_call", !v, inc | 1) => 3
+    , !1
+    )}
+
+strategies
+  not-2-times =
+    not(Seen) => i
+  ; rules(Seen: i -> i)
+
+  cache-tests = id
+  ; {{|Seen: apply-and-fail(!"Test the testing system"
+    , where(not-2-times => 0)
+    ; where(not-2-times => 0)
+    , !0
+    ) |}}
+
+  ; {{|Seen: apply-test(!"Cache value"
+    , lazy(not-2-times) => v
+    ; <get-value(!v)> 1 => 0
+    ; <get-value(!v)> 1 => 0
+    , !0
+    ) |}}
+
+  ; {{|Seen: apply-test(!"Cache strategy"
+    , bind-lazy-value(map | 1, 0, <new-lazy-value => v>)
+    ; <prim("LAZY_call", !v, not-2-times |)> [0] => [1]
+    ; <prim("LAZY_call", !v, not-2-times |)> [0] => [1]
+    , ![1]
+    )|}}
+
+strategies
+  crash-tests = id
+  ; {apply-and-fail(!"Eval unbound lazy value"
+    , new-lazy-value => v
+    ; get-value(!v)
+    , !()
+    )}
+
+  ; {apply-and-fail(!"Bind two times"
+    , new-lazy-value => v
+    ; lazy(!0 | v)
+    ; lazy(!1 | v)
+    , !()
+    )}
+
+  ; {apply-and-fail(!"Bind two times in different scopes"
+    , new-lazy-value => v
+    ; lazy-scope( lazy(!1 | v) )
+    ; lazy(!2 | v)
+    , !1
+    )}
+
+  ; {apply-and-fail(!"Bind two times in different scopes 2"
+    , new-lazy-value => v
+    ; lazy(!1 | v)
+    ; lazy-scope( lazy(!2 | v) )
+    , !1
+    )}
+
+  ; {apply-and-fail(!"Bind two times in different scopes 3"
+    , new-lazy-value => v
+    ; lazy-scope( lazy(!1 | v) )
+    ; lazy-scope( lazy(!2 | v) )
+    , !1
+    )}
+
+strategies
+  eval-current-term = ?v; get-value(!v)
+
+  backtrack-tests = id
+  ; {apply-test(!"Bind & Eval in a scope"
+    , lazy-scope(
+        lazy(!1) => v
+      ; get-value(!v) => 1
+      )
+    , !()
+    )}
+
+  ; {apply-test(!"Bind outside the scope & Eval in the scope"
+    , lazy(!1) => v
+    ; lazy-scope(
+        get-value(!v) => 1
+      )
+    , !()
+    )}
+
+  ; {apply-test(!"Bind in the scope & Eval outside the scope"
+    , lazy-scope(
+        lazy(!1) => v
+      )
+    ; get-value(!v) => 1
+    , !()
+    )}
+
+  ; {apply-test(!"Bind & Eval in two different scopes"
+    , lazy-scope( lazy(!1) => v )
+    ; lazy-scope( get-value(!v) => 1 )
+    , !()
+    )}
+
+  ; {apply-test(!"Bind & Eval in two different scopes 2"
+    , lazy-scope( lazy(!1) => v )
+    ; get-value(!v) => 1
+    ; lazy-scope( get-value(!v) => 1 )
+    , !()
+    )}
+
+  ; {{|Seen: apply-test(!"No failure keep the cache"
+    , lazy-scope(
+        lazy(not-2-times) => v
+      ; get-value(!v) => 1
+      )
+    ; get-value(!v) => 1
+    , !1
+    )|}}
+
+  ; {{|Seen: apply-test(!"No failure keep the cache 2"
+    , lazy-scope( lazy(not-2-times) => v )
+    ; get-value(!v) => 1
+    ; lazy-scope( get-value(!v) => 1 )
+    , !1
+    )|}}
+
+  ; {apply-test(!"Failure remove bindings"
+    , new-lazy-value => v
+    ; try(lazy-scope( lazy(!1 | v); fail ))
+    ; lazy(!2 | v)
+    ; get-value(!v) => 2
+    , !1
+    )}
+
+  ; {apply-and-fail(!"Failure remove bindings 2"
+    , new-lazy-value => v
+    ; try(lazy-scope( lazy(!1 | v); fail ))
+    ; get-value(!v) => 1
+    , !1
+    )}
+
+  ; {apply-test(!"Failure does not remove outer-scope bindings"
+    , new-lazy-value => v
+    ; lazy(!1 | v)
+    ; try(lazy-scope( fail ))
+    ; get-value(!v) => 1
+    , !1
+    )}
+
+  ; {apply-test(!"Failure remove inner-scope cache"
+    , new-lazy-value => v1
+    ; new-lazy-value => v2
+    ; <lazy(eval-current-term | v1)> v2
+    ; try(lazy-scope(
+        lazy(!1 | v2)
+      ; get-value(!v1) => 1 // add cache information
+      ; fail
+      ))
+    ; lazy-scope( lazy(!2 | v2) )
+    ; get-value(!v1) => 2 // check if the value is re-evaluated
+    , !1
+    )}
+
+  ; {{|Seen: apply-test(!"Failure does not remove outer-scope cache"
+    , new-lazy-value => v1
+    ; new-lazy-value => v2
+    ; <lazy(eval-current-term | v1)> v2
+    ; <lazy(not-2-times | v2)> 1
+    ; try(lazy-scope(
+        get-value(!v1) => 1 // add cache information
+      ; fail
+      ))
+    ; get-value(!v1) => 1 // check if the value is cached
+    , !1
+    )|}}

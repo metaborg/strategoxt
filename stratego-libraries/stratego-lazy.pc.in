@@ -1,0 +1,10 @@
+prefix=@prefix@
+datarootdir=@datarootdir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-lazy.la --C-include "\"stratego-lazy/stratego-lazy.h\""
+
+Name: Stratego Lazy Library
+Description: Lazy support for Stratego programs.
+Version: @PACKAGE_VERSION@
+Libs: -L${prefix}/lib -lstratego-lazy
+Cflags: -I${prefix}/include
+Requires: aterm
