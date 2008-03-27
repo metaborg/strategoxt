@@ -1,0 +1,175 @@
+// should be moved to the stratego-lib
+module stratego/utils/messages
+imports
+  libstratego-lib
+
+/**
+ * Handle error messages when errors could be reported more than one time.
+ *
+ * serverity * identifier * (message | message * value)
+ *   severity		see stratego-lib/utils/log.
+ *   identifier		uniq identifier to not repeat the same
+ *			message many times.
+ *   message		string or list of string.
+ */
+
+rules
+  /**
+   * Display a message which is contained in a string or a list of string.
+   * Returns the value of the severity.
+   *
+   * @type              Severity * Key * (String | List(String)) -> Int
+   */
+  DisplayMessage: (severity, _, msg) -> <verbose-level> severity
+    where <try(unescape + some(unescape))> msg
+        ; log(|severity, <id>)
+
+  /**
+   * Display a message which is contained in a string or a list of string
+   * with its associated term. Returns the value of the severity.
+   *
+   * @type              Severity * Key * ( (String | List(String)) * Term) -> Int
+   */
+  DisplayMessage: (severity, _, (msg, value)) -> <verbose-level> severity
+    where <try(unescape + some(unescape))> msg
+        ; log(|severity, <id>, value)
+
+strategies
+  /**
+   * Returns the list of messages collected until now.
+   *
+   * @type              _ -> List(Severity * Key * Message)
+   */
+  get-messages =
+    Messages <+ ![]
+
+  /**
+   * Scopes messages. Therefore you should probably call 'display-messages'
+   * inside of the strategy 's'.
+   *
+   * @type a            _ -> _
+   * @type              _ -> List(Severity * Key * Message)
+   */
+  scope-messages(s) =
+    {|Messages:
+      s
+    |}
+
+  /**
+   * Add an error message with a specific key to be able to
+   * overwrite previous error messages if one have the same key
+   * and severity.
+   *
+   * @type              Severity * Key * Message -> _
+   */
+  add-message =
+    ?(severity, ident, message)
+  ; rules(Messages := <
+      get-messages
+    ; one-or-add(
+        (?severity, ?ident, !message)
+      | (severity, ident, message)
+      )
+    >)
+
+  /**
+   * Add a message with a specific key to be able to overwrite
+   * previous error messages. Register the severity level of the
+   * registered message.
+   *
+   * @type severity     Severity
+   * @type              Key * Message -> _
+   */
+  add-message-severity(|severity) =
+    \ (ident, message) -> (severity, ident, message) \
+  ; add-message
+  ; add-severity(|severity)
+
+  /**
+   * Add an error message with a uniq key.
+   *
+   * @type              Key * Message -> _
+   */
+  add-error =
+    add-message-severity(|Error())
+
+  /**
+   * Add a warning message with a uniq key.
+   *
+   * @type              Key * Message -> _
+   */
+  add-warning =
+    add-message-severity(|Warning())
+
+
+  /**
+   * Add a vomit message with a uniq key.
+   *
+   * @type              Key * Message -> _
+   */
+  add-vomit =
+    add-message-severity(|Vomit())
+
+
+  /**
+   * Add a ICE message if the previous severity message reported
+   * is not a error.
+   *
+   * @type              Key * Message -> _
+   */
+  add-error(|previous-severity) =
+    if <lt> (0, <verbose-level> previous-severity) then
+      // if there is no error message since the reset
+      (id, !["ICE: " | <id>])
+    ; add-message-severity(|Critical())
+    else
+      add-error
+    end
+
+/**
+ * Message servity is stored to be able to detect the presence of local
+ * errors messages.
+ */
+strategies
+  reset-severity =
+    rules(MessageSeverity := Vomit())
+
+  get-severity =
+    MessageSeverity <+ !Vomit()
+
+  add-severity(|severity) =
+    rules(MessageSeverity := <
+      where(
+        <verbose-level <+ !-10> severity => new-level
+      ; get-severity => old-severity
+      ; (verbose-level <+ !-10) => old-level
+      )
+    ; ( <gt> (new-level, old-level) < !severity + !old-severity )
+    >)
+
+  scope-severity(s) =
+    {|MessageSeverity:
+      s
+    |}
+
+strategies
+  display-messages(|exit-severity) =
+    where(
+      <verbose-level> exit-severity => exit-level
+    ; get-messages
+    ; retain-all(
+        DisplayMessage
+      ; <leq> (<id>, exit-level)
+      )
+    ; ( ?[] < id + <exit> 1 )
+    )
+
+  default-display-messages =
+    where (
+      (ExitSeverity <+ !Error()) => exit-severity
+    )
+  ; display-messages(|exit-severity)
+
+  set-exit-severity =
+    ?s
+  ; rules(ExitSeverity := s)

@@ -1,0 +1,59 @@
+module basic
+imports
+  stratego/native
+
+strategies
+  /**
+   * Test if the current term is a valid reference representation.
+   * Fails if it is not a reference.
+   *
+   * type: Ref -> Ref
+   */
+  is-ref = Ref(id)
+
+  /**
+   * Apply the strategy 's' on the content of the reference and set
+   * the new reference value with the result of the strategy.
+   * This strategy fail only if the strategy 's' fail or if the
+   * reference is invalid.
+   * 
+   * s: _ -> _
+   * type: Ref -> Ref
+   */
+  apply-on-ref(s) =
+    bind-ref(| <deref-ref; s> )
+
+  /**
+   * Apply the strategy 's' on the content of the reference
+   * This strategy fail only if the strategy 's' fail or if the
+   * reference is invalid.
+   * 
+   * s: _ -> _
+   * type: Ref -> Ref
+   */
+  where-on-ref(s) =
+    where(deref-ref; s)
+
+strategies
+  /**
+   * This strategy is used to create and bind a reference to the
+   * current term value. It returns the created reference.
+   * Fails only if there is no enough memory.
+   *
+   * type: Value -> Ref on Value
+   */
+  create-bind-ref =
+    ?e
+  ; create-ref
+  ; bind-ref(| e )
+
+  /**
+   * This strategy is used to get the value of the input reference and
+   * destroy the reference. The reference is no longer valid.
+   *
+   * type: Ref on Value -> Value
+   */
+  deref-destroy-ref =
+    ?r
+  ; deref-ref
+  ; where(<destroy-ref> r)

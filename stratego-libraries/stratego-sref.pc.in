@@ -1,0 +1,9 @@
+prefix=@prefix@
+datarootdir=@datarootdir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-sref.la
+
+Name: Stratego Simple References Library
+Description: Boxed pointer support for Stratego.
+Version: @PACKAGE_VERSION@
+Libs: -L${prefix}/lib -lstratego-sref
+Requires: aterm stratego-lib

@@ -1,0 +1,75 @@
+/**
+ * Tests for the Stratego Simple Reference Library.
+ *
+ * @author  Nicolas Pierron <nicolas.b.pierron@gmail.com>
+ */
+module stratego-sref-tests
+imports
+  libstratego-lib
+  libstratego-sref
+
+strategies
+  main-stratego-sref-tests =
+    test-suite(!"Stratego Simple Reference Library", id
+    ; test-00
+    ; test-01
+    ; test-02
+    ; test-03
+    ; test-04
+    ; test-05
+    ; test-06
+    ; test-07
+    )
+
+  apply-test(name, s) =
+    apply-test(name, s, !())
+
+strategies
+  test-00 = apply-test(!"Create",
+    create-ref // memory leak
+  )
+
+  test-01 = apply-test(!"Create & Destroy",
+    create-ref
+  ; destroy-ref
+  )
+
+  test-02 = apply-test(!"Bind",
+    create-ref
+  ; bind-ref(| "a" )
+  ; destroy-ref
+  )
+
+  test-03 = apply-test(!"Dereference",
+    create-ref
+  ; bind-ref(| "a" )
+  ; where(deref-ref => "a")
+  ; destroy-ref
+  )
+
+  test-04 = apply-test(!"Create & Bind",
+    !"a"
+  ; create-bind-ref
+  ; where(deref-ref => "a")
+  ; destroy-ref
+  )
+
+  test-05 = apply-test(!"Dereference & Destroy",
+    create-ref
+  ; bind-ref(| "a" )
+  ; deref-destroy-ref => "a"
+  )
+
+  test-06 = apply-test(!"Is-Ref",
+    create-ref
+  ; is-ref
+  ; destroy-ref
+  )
+
+  test-07 = apply-test(!"Apply-on-ref",
+    create-ref
+  ; bind-ref(| "a" )
+  ; apply-on-ref( \ "a" -> "b" \ )
+  ; where(deref-ref => "b")
+  ; destroy-ref
+  )

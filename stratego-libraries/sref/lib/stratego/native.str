@@ -1,0 +1,45 @@
+module stratego/native
+
+signature
+  sorts Ref
+  constructors
+    Ref: Int -> Ref
+
+strategies
+  /**
+   * type: _ -> Ref
+   */
+  create-ref =
+    prim("SREF_create")
+
+  /**
+   * Destroy the reference and return an invalid reference to unsure
+   * there is no mistake.
+   *
+   * type: Ref -> Invalid Ref
+   */
+  destroy-ref =
+    ?r
+  ; prim("SREF_destroy", r)
+
+  /**
+   * Take the value of a reference. The reference stay valid after
+   * this operation.
+   *
+   * type: Ref -> Value
+   */
+  deref-ref =
+    ?r
+  ; prim("SREF_deref", r)
+
+  // Take care the Ref binding have side-effect in a gard-choice.
+  /**
+   * Define the new value of a reference. This could be use to
+   * modify the value of a reference without changing the reference.
+   *
+   * val: Value
+   * type: Ref -> Ref
+   */
+  bind-ref(| val ) =
+    ?r
+  ; prim("SREF_bind", val, r)

@@ -1,0 +1,95 @@
+/**
+ * Used to add a queue container which work in constant time inside
+ * Stratego. ( FIFO )
+ * You should take care of side-effect caused by the references.
+ */
+module stratego/utils/queue
+imports
+  stratego/native
+  stratego/basic
+
+signature
+  sorts Queue
+  constructors
+    Queue: Ref * Ref -> Queue
+    QCons: Term * Ref -> Term
+
+/**
+ * A queue is a couple of two references. The first reference
+ * represent the head of the list and the second reference represent the
+ * end of the list.
+ *
+ * The notation use is the QCons where the first term is an element of
+ * the queue and where the second term is the tail. The tail has no
+ * end. The end is define as the second term of the queue constructor.
+ */
+strategies
+  /**
+   * Create a new empty queue
+   *
+   * @type      _ -> Queue
+   */
+  queue-create =
+    create-ref
+  ; !Queue(<id>, <id>)
+
+  /**
+   * Succeeded only if the queue is empty
+   *
+   * @type      Queue -> Queue
+   */
+  queue-is-empty =
+    ?Queue(r, r)
+
+  /**
+   * Add a new element in the queue.
+   *
+   * @type      a * Queue -> Queue
+   */
+  queue-push =
+    ?(e, <id>)
+  ; Queue(
+      id
+    , bind-ref(| QCons(e, <create-ref => t> ) )
+    ; !t
+    )
+
+  /**
+   * If the queue is empty this strategy fail.
+   * Otherwise it takes and removes the first element of the queue.
+   *
+   * @type      Queue -> a * Queue
+   */
+  queue-pop =
+    ?Queue(h, t)
+  ; if queue-is-empty then
+      fail
+    else
+      <deref-destroy-ref> h
+    ; ?QCons(<id>, h')
+    ; !(<id>, Queue(h', t))
+    end
+
+  /**
+   * Take a Queue and free all elements contains in it before
+   * destroying the queue.
+   *
+   * @type      Queue -> _
+   */
+  queue-destroy =
+    rec x (queue-pop; ?(_, <id>); x <+ id)
+  ; ?Queue(_, r)
+  ; <destroy-ref> r
+
+  /**
+   * Take a Queue and free all elements by applying destroy on them before
+   * destroying the queue.
+   *
+   * destroy: A strategy used to destroy elements contains in the queue
+   *
+   * @type      Queue -> _
+   */
+  queue-destroy( destroy ) =
+    rec x (queue-pop; ?(<try(destroy)>, <id>); x <+ id)
+  ; ?Queue(_, r)
+  ; <destroy-ref> r

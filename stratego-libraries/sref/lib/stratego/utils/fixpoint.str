@@ -1,0 +1,92 @@
+module stratego/utils/fixpoint
+imports
+  stratego/utils/queue
+  stratego/utils/messages
+
+strategies
+  /**
+   * Mark and push an element in the queue except if it is already in
+   * the queue.
+   *
+   * @type is-mark      a -> _
+   * @type mark         a -> a
+   * @type              a * Queue -> Queue
+   */
+  fixpoint-queue-push(is-mark, mark) =
+    ?(e, q)
+  ; if <not(is-mark)> e then
+      (mark, id)
+    ; queue-push
+    else
+      !q
+    end
+
+strategies
+  /**
+   * Set the default error display of errors. (see next definition)
+   * 
+   * @type mark         a -> a
+   * @type unmark       a -> a
+   * @type s            a * Queue -> Queue
+   * @type              List(a) -> List(a)
+   */
+  fixpoint(mark, unmark, s) =
+    fixpoint(mark, unmark, s, default-display-messages)
+
+  /**
+   * Run a fixpoint algorithms on elements.
+   * The strategy 's' is used to compute each element one by one. This
+   * strategy can add a symbol in the queue to process it a second time.
+   * Build a queue of symbols and execute 'fixpoint-each(s)'
+   * 
+   * @type mark         a -> a
+   * @type unmark       a -> a
+   * @type s            a * Queue -> Queue
+   * @type disp-msg     Queue -> Queue
+   * @type              List(a) -> List(a)
+   */
+  fixpoint(mark, unmark, s, disp-msg) =
+    where (
+      foldr(queue-create, queue-push, mark)
+    ; scope-messages(
+        scope-severity(
+          fixpoint-each(unmark, s, disp-msg)
+        )
+      )
+    ; queue-destroy
+    )
+
+  /**
+   * Run the fixpoint algorithms on elements.
+   *
+   * @type unmark       a -> a
+   * @type s            a * Queue -> Queue
+   * @type disp-msg     Queue -> Queue
+   * @type              List(a) -> Queue
+   */
+  fixpoint-each(unmark, s, disp-msg) =
+    rec rec(
+      if not(queue-is-empty) then
+        queue-pop
+      ; (unmark, id)
+      ; s
+      ; rec
+      else
+        disp-msg
+      end
+    )
+
+strategies
+  /**
+   * Used to add a sequence between two parts of concurrent
+   * algorithms. This is useful to reduce the number of fix-point
+   * algorithms to run.
+   *
+   * @type s1           a * Queue -> Queue
+   * @type s2           a * Queue -> Queue
+   * @type              a * Queue -> Queue
+   */
+  seq-fixpoint(s1, s2) =
+    ?(e, <id>)
+  ; <s1> (e, <id>)
+  ; <s2> (e, <id>)

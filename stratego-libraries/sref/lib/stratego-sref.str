@@ -1,0 +1,10 @@
+/**
+ * This module is used to make an easiest way to use references
+ * Warning: Binding existing references in a strategy which could fail
+ * can produce side-effects.
+ */
+module ref
+
+imports
+  stratego/-
+  stratego/utils/-
