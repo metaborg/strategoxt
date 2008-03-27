@@ -118,3 +118,22 @@ strategies
         where <part> zs => (xs, ys) \
   )
 
+  /**
+   * Do the same as:
+   *   partition(s1) => (b, a)
+   * ; <partition(s2, s3)> b => (c, d)
+   * ; !(c, d, a)
+   * 
+   * @param s1  a -> b
+   * @param s2  b -> c
+   * @param s3  b -> d
+   * @type      List(a) -> List(c) * List(d) * List(a)
+   */
+  partition2(s1, s2, s3) = rec part(
+    \ [] -> ([], [], []) \
+  + ( [s1 | id]
+    < {[s2 => x | id]; ?[_|<part>]; !([x | <Fst>], <Snd>, <Third>)}
+   <+ {[s3 => x | id]; ?[_|<part>]; !(<Fst>, [x | <Snd>], <Third>)}
+    + {[id => x | id]; ?[_|<part>]; !(<Fst>, <Snd>, [x | <Third>])}
+    )
+  )

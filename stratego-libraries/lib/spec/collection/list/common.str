@@ -309,6 +309,41 @@ strategies
     rec x([s2] <+ [s1 | x])
 
   /**
+   * Check if a term exists otherwise it add it in the list.
+   *
+   * @param v   b
+   * @type      List(a) -> List(a or b)
+   */
+  one-or-add(|v) =
+    one-or-add(?v, !v)
+
+  /**
+   * Apply the strategy 's' to one element of the list otherwise add a
+   * 'default' element and apply 's' on it.
+   *
+   * @param s           a -> b
+   * @param default     a
+   * @type              List(a) -> List(a or b)
+   */
+  one-or-add(s | default) =
+    one-or-add(s, <s> default)
+
+  /**
+   * Apply the strategy 's' to one element of the list otherwise use
+   * the 'default' strategy to create a new element.
+   *
+   * @param s           a -> b
+   * @param default     a
+   * @type              List(a) -> List(a or b)
+   */
+  one-or-add(s, default) =
+    rec x(
+      [s | id]
+   <+ [id | x]
+   <+ \ [] -> [<default>] \
+    )
+
+  /**
    * Applies a strategy to a list in bottom up order. That is to say,
    * the strategy s will be applied to successively longer excerpts
    * of the list, starting from the end. 
