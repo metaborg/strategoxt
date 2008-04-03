@@ -37,6 +37,16 @@ imports
   stratego/strc/front/variables-to-constructors
 
   stratego/strc/front/frontend
+
+  stratego/strc/ag-front/basic-stratego-templates
+  stratego/strc/ag-front/normalize-semantic-rules
+  stratego/strc/ag-front/register-productions
+  stratego/strc/ag-front/register-symbols
+  stratego/strc/ag-front/strag-2-graph
+  stratego/strc/ag-front/stratego-attributes
+  stratego/strc/ag-front/stratego-eval
+
+  stratego/strc/ag-front/ag-frontend
   
   stratego/strc/opt/bind-laws
   stratego/strc/opt/bound-unbound-vars

@@ -1,0 +1,17 @@
+module noname_ko_3
+signature
+  sorts A B C
+  constructors
+  : C
+  : C -> B
+  : B -> A
+
+attributes
+  @ (C)():
+    root.ok := root.foo
+
+  @ (C -> B)(c):
+    c.foo := root.foo // add
+
+  @ (B -> A)(b):
+    b.foo := 42

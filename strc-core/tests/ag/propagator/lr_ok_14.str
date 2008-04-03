@@ -1,0 +1,21 @@
+module lr_ok_14
+signature
+  sorts A B C
+  constructors
+  : C
+  : C * C -> C
+  : C -> B
+  : B -> A
+
+attributes
+  @ (C)():
+    root.lr_test_syn := 42
+
+  @ (C * C -> C)(l, r):
+    root.lr_test_syn := r.lr_test_syn // add
+
+  @ (C -> B)(c):
+    root.lr_test_syn := c.lr_test_syn // add
+
+  @ (B -> A)(b):
+    root.ok := b.lr_test_syn

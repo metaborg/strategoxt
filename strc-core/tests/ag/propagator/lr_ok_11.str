@@ -1,0 +1,29 @@
+module lr_ok_11
+signature
+  sorts A B ListB
+  constructors
+  : B
+  : B -> ListB
+  : ListB * ListB -> ListB
+  : ListB
+  : ListB -> A
+
+attributes
+  @ (B)():
+    root.lr_test_syn := root.lr_test_inh
+
+  @ (B -> ListB)(b):
+    root.lr_test_syn := b.lr_test_syn // add
+    b.lr_test_inh := root.lr_test_inh // add
+
+  @ (ListB * ListB -> ListB)(f, s):
+    root.lr_test_syn := s.lr_test_syn // add
+    s.lr_test_inh := f.lr_test_syn    // add
+    f.lr_test_inh := root.lr_test_inh // add
+
+  @ (ListB)():
+    root.lr_test_syn := root.lr_test_inh // add
+
+  @ (ListB -> A)(l):
+    l.lr_test_inh := 42
+    root.ok := l.lr_test_syn

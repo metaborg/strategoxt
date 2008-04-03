@@ -1,0 +1,17 @@
+module bu_ok_4
+signature
+  sorts A B C
+  constructors
+  : C
+  : C * B -> B
+  : B -> A
+
+attributes
+  @ (C)():
+    root.bu_test := 42
+
+  @ (C * B -> B)(c, b):                               // add
+    root.bu_test := <concat> [c.bu_test, b.bu_test] // add
+
+  @ (B -> A)(b):
+    root.ok := b.bu_test

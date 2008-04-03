@@ -1,0 +1,13 @@
+module td_ok_0
+signature
+  sorts A B
+  constructors
+  : B
+  : B -> A
+
+attributes
+  @ (B)():
+    root.ok := root.td_test
+
+  @ (B -> A)(b):
+    b.td_test := 42

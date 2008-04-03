@@ -1,0 +1,53 @@
+module stratego/strc/ag-front/normalize-semantic-rules
+imports
+  libstratego-lib
+  Stratego
+
+rules
+  DesugarACall: ACallNoArgs(n) -> ACallT(n, [], [])
+  DesugarACall: ACall(n, ls)   -> ACallT(n, ls, [])
+
+  DesugarADef: ADefNoArgs(n) -> ADefT(n, [], [])
+  DesugarADef: ADef(n, ls)   -> ADefT(n, ls, [])
+
+strategies
+  separate-attribute-def =
+    ?SemanticRulesNoCond(t, <id>)
+  ; map(!SemanticRulesNoCond(t, [<desugar-attribute-manipulation>]))
+
+  separate-attribute-def =
+    ?SemanticRules(t, c, <id>)
+  ; map(!SemanticRules(t, c, [<desugar-attribute-manipulation>]))
+
+  desugar-attribute-manipulation =
+    topdown(try(DesugarACall + DesugarADef))
+
+strategies
+  on-semantic-rule-agterm(s) =
+    SemanticRulesNoCond(s, id)
+  + SemanticRules(s, id, id)
+
+  on-semantic-rule-code(s) =
+    SemanticRulesNoCond(id, s)
+  + SemanticRules(id, s, s)
+
+  replace-variable-by-attributes = {|ReplaceVar:
+    where(on-semantic-rule-agterm(topdown(try({i:
+      ( ?Term |[ ~id: i ]|
+      + ?Term |[ ~id: i @ ~term: _ ]|
+      )
+    ; rules(ReplaceVar:+ Term |[ ~id: i ]| -> Term |[ local.~id: i ]|)
+    }))))
+  |}
+
+strategies
+  normalize-semantic-rules =
+    Specification(map(
+      Attributes(
+        mapconcat(
+          restore(separate-attribute-def
+          , err(|"Cannot separate attribute definitions."))
+        )
+      )
+    + not(?Attributes(_))
+    ))

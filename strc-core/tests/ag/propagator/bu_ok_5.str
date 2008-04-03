@@ -1,0 +1,39 @@
+module bu_ok_5
+signature
+  sorts A B C D E F Lex0 Lex1
+  constructors
+  : Lex0
+  : Lex1
+  : Lex0 -> F
+  : F -> B
+  : Lex1 -> E
+  : E -> D
+  : D -> C
+  : C * C -> C
+  : C * B -> B
+  : B -> A
+
+attributes
+  @ (Lex0 -> F)(_):
+    root.bu_test := [0]
+
+  @ (F -> B)(f):
+    root.bu_test := f.bu_test // add
+
+  @ (Lex1 -> E)(_):
+    root.bu_test := [1]
+
+  @ (E -> D)(e):
+    root.bu_test := e.bu_test // add
+
+  @ (D -> C)(d):
+    root.bu_test := d.bu_test // add
+
+  @ (C * C -> C)(l, r):
+    root.bu_test := <concat> [l.bu_test, r.bu_test] // add
+
+  @ (C * B -> B)(c, b):
+    root.bu_test := <concat> [c.bu_test, b.bu_test] // add
+
+  @ (B -> A)(b):
+    root.ok := b.bu_test

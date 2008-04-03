@@ -8,36 +8,43 @@ EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES 	 = $(wildcard *.dep) # stratego/strc/parse/Stratego.tbl
 BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) # stratego/strc/parse/Stratego.tbl
 
-strclib =						\
-	strc.str					\
-	$(wildcard $(srcdir)/stratego/strc/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/front/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/c/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/lib/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/match/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/opt/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/pack/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/pp/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/parse/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/strc/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/model/*.str)	\
+strclib =							\
+	strc.str						\
+	$(wildcard $(srcdir)/stratego/strc/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/front/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/c/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/lib/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/match/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/opt/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/pack/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/pp/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/parse/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/strc/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/model/*.str)		\
+	$(wildcard $(srcdir)/stratego/strc/ag-front/*.str)	\
 	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c
 libstrc_la_CFLAGS   = $(AM_CFLAGS)
 libstrc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 
-libstrc_la_CPPFLAGS = $(STRATEGO_LIB_CFLAGS)			 \
-		      $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) \
-		      $(STRATEGO_GPP_CFLAGS)
+libstrc_la_CPPFLAGS =				\
+  $(STRATEGO_LIB_CFLAGS)			\
+  $(STRATEGO_RUNTIME_CFLAGS)			\
+  $(ATERM_CFLAGS)				\
+  $(STRATEGO_GPP_CFLAGS)			\
+  $(STRATEGO_SREF_CFLAGS)			\
+  $(STRATEGO_AG_CFLAGS)
 
-libstrc_la_LIBADD = \
-  $(STRATEGO_GPP_LIBS) \
-  $(STRATEGO_RTG_LIBS) \
-  $(STRATEGO_XTC_LIBS) \
-  $(STRATEGO_LIB_LIBS) \
-  $(STRATEGO_RUNTIME_LIBS) \
-  $(ATERM_LIBS)	\
+libstrc_la_LIBADD =				\
+  $(STRATEGO_GPP_LIBS)				\
+  $(STRATEGO_RTG_LIBS)				\
+  $(STRATEGO_XTC_LIBS)				\
+  $(STRATEGO_LIB_LIBS)				\
+  $(STRATEGO_RUNTIME_LIBS)			\
+  $(STRATEGO_SREF_LIBS)				\
+  $(STRATEGO_AG_LIBS)				\
+  $(ATERM_LIBS)					\
   $(top_builddir)/../c-tools/pp/libc-pp.la
 
 STRINCLUDES      = \
@@ -51,7 +58,7 @@ STRINCLUDES      = \
                    -I $(top_builddir)/../stratego-front/sig \
                    -I $(top_builddir)/../c-tools/syn        \
                    -I $(top_builddir)/../c-tools/sig        \
-	           -I $(GPP)/share/sdf/gpp	
+	           -I $(GPP)/share/sdf/gpp
 
 
 STRCFLAGS =

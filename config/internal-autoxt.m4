@@ -42,8 +42,8 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     XT_CHECK_PACKAGE([STRATEGO_TOOL_DOC],[stratego-tool-doc])
     XT_CHECK_PACKAGE([STRATEGO_ATERM],[stratego-aterm])
   #  XT_CHECK_PACKAGE([STRATEGO_LAZY],[stratego-lazy])
-  #  XT_CHECK_PACKAGE([STRATEGO_SREF],[stratego-sref])
-  #  XT_CHECK_PACKAGE([STRATEGO_AG],[stratego-ag])
+    XT_CHECK_PACKAGE([STRATEGO_SREF],[stratego-sref])
+    XT_CHECK_PACKAGE([STRATEGO_AG],[stratego-ag])
   fi
 
   # backward compatibitily

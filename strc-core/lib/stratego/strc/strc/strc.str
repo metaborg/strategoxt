@@ -41,6 +41,7 @@ strategies
       ; strc-pack-stratego-trm
       ; tfc1(|"Stratego-Sugar-Cong", "pack")
       ; strc-output-ast
+      ; ag-frontend
       ; frontend
       ; strc-output-frontend
     | "Front-end succeeded"

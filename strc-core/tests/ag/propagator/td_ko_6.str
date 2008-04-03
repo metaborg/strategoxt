@@ -1,0 +1,24 @@
+module td_ko_6
+signature
+  sorts Z A B C D
+  constructors
+  : D
+  : C
+  : D -> B
+  : C -> B
+  : B -> A
+  : A -> Z
+
+attributes
+  @ (D)():
+    local.ok := root.td_test
+
+  @ (C)():
+    local.ok := root.td_test
+
+  @ (C -> B)(_):
+    // Synthesize an inherited attribute
+    root.td_test := 666
+
+  @ (A -> Z)(a):
+    a.td_test := 42

@@ -1,0 +1,20 @@
+module bu_ok_6
+signature
+  sorts A B C
+  constructors
+  : B
+  : B -> C
+  : C -> A
+  : A * B -> A
+attributes
+  @ (B)():
+    root.bu_test := 42
+
+  @ (B -> C)(b):
+    root.bu_test := b.bu_test // add
+
+  @ (C -> A)(c):
+    root.bu_test := c.bu_test // add
+
+  @ (A * B -> A)(a, _):
+    root.bu_test := a.bu_test

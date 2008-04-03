@@ -1,0 +1,73 @@
+module stratego/strc/ag-front/register-symbols
+imports
+  libstratego-lib
+  libstratego-ag
+  Stratego
+
+signature
+  constructors
+    List: SymbProperty
+
+strategies
+  is-list-symbol =
+    where (
+      get-symbol-properties
+    ; one(?List())
+    )
+
+  set-is-list-symbol =
+    edit-symbol-properties(
+      one-or-add(|List())
+    )
+
+rules
+//  GetSortName: SortVar(_) -> "'v"
+  GetSortName: SortNoArgs(n) -> <cify> n
+  GetSortName: Sort(n, l)
+    -> <flatten-list; concat-strings> [<cify> n, "'o", <map(GetSortName)> l, "c'"]
+
+  get-sort-name =
+    restore(GetSortName
+    , err(|"Cannot fetch the name of the following sort: ")
+    )
+
+  desugar-sorts =
+    topdown(try( \ SortNoArgs(n) -> Sort(n, []) \ ))
+
+strategies
+  not-handle-sort =
+    SortVar(id)
+  + SortList(id)
+  + SortListTl(id, id)
+  + SortTuple(id)
+
+  is-sort =
+    SortNoArgs(id) // should no longer appear in the desugared version
+  + Sort("List", map(is-sort))
+  + Sort(id, [])
+
+  // name conflict with stratego-libraries/sglr/lib/stratego/asfix/implode/list.str
+  is-list-sort' = ?Sort("List", [_])
+
+  register-symbol =
+    restore(
+      ?sort
+    ; get-sort-name => name 
+    ; <desugar-sorts> sort => desugared-sort
+    ; new-symbol => this
+    ; set-symbol-name(| name )
+    ; if <is-list-sort'> sort then set-is-list-symbol end
+    ; rules(Sort2Ref:+ sort -> this)
+    ; rules(Sort2Ref:+ desugared-sort -> this)
+    ; where(<dbg(|"register symbol: ")> (sort, name, this))
+    , err(|"Cannot register the following sort as a symbol:")
+    )
+
+  sort-2-ref =
+    Sort2Ref <+ register-symbol
+
+  // register only once each sort name.
+  register-symbols = where(
+    collect( is-sort )
+  ; map(register-symbol)
+  )

@@ -1,0 +1,149 @@
+module stratego/strc/ag-front/strag-2-graph
+imports
+  libstratego-lib
+  libstratego-ag
+  Stratego
+
+imports
+  stratego/strc/ag-front/stratego-attributes
+
+// register semantic-rules & attributes
+signature
+  constructors
+    UnknowProd: ProdRef
+    ProdSymb  : SymbRef -> ProdRef
+    TermType  : ProdRef * List(String) * Option(List(TermType)) -> TermType
+
+rules
+  GetTermType: As(Var(n), t) -> TermType(p, [n | names], children)
+    where <GetTermType> t => TermType(p, names, children)
+
+  GetTermType: Tuple(l) -> TermType(UnknowProd(), [], Some(<map(GetTermType)> l))
+  GetTermType: term@Op(name, l) -> type
+    where
+      <bagof-ProdName2Ref> name => prods
+    ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
+    ; <unify-prod-with-term-type> (prods, type')
+    ; get-unified-term-type(|term) => type
+
+
+  GetTermType: term@OpInj(t, l) -> type
+    where
+      <get-opdecl-sorts> OpDeclInj(t) => (ls, <Rsymb-pd>)
+    ; filter(not(get-production-name); where(Rprod-u => ls)) => prods
+    ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
+    ; <unify-prod-with-term-type> (prods, type')
+    ; get-unified-term-type(|t) => type
+
+  GetTermType: Var(n) -> TermType(UnknowProd(), [n], None())
+  GetTermType: Wld() -> TermType(UnknowProd(), [], None())
+
+  GetTermType: NoAnnoList(t) -> <GetTermType> t
+
+  // Those are not terms !
+  GetTermType: AGMatch(t) -> <GetTermType> t
+  GetTermType: AGRewrite(f,t) -> <err(|"AGRewrite is not yet handle by GetTermType."); GetTermType> t
+
+  get-term-type =
+    GetTermType
+ <+ err(|"Cannot find the ''type'' of the following term: ")
+  ; fail
+
+strategies
+  get-unified-term-type(|t) =
+   ?[<id>]
+ <+ ( [] + [id, id | id] )
+  ; err(|["Cannot determine the type of the following term: ", t])
+  ; fail
+
+  unify-prod-with-term-type =
+    ?(prods, type@TermType(p, names, children))
+  ; switch !p
+      case !children => None():
+        ![type]
+      case UnknowProd():
+        <foldr(![], conc
+        , ![TermType(<id>, names, <unify-children(|children)>)]
+       <+ [unify-with-injection(|type)]
+       <+ ![]
+        )> prods
+      case ![p] => prods:
+        ![type]
+      otherwise:
+        fail
+    end
+
+  unify-with-injection(|type) =
+    Rprod-u => [s]
+  ; <unify-prod-with-term-type> (<Rsymb-pd> s, type) => [<id>]
+
+  unify-children(|children) =
+    !(<Rprod-u>, <?Some(<id>)> children)
+  ; zip({
+      ?(s, type@TermType(p, _, _))
+    ; if <Rprod-p> p => [s] then
+        !type
+      else
+        <unify-prod-with-term-type> (<Rsymb-pd> s, type) => [<id>]
+      end
+    })
+  ; !Some(<id>)
+
+strategies
+  get-term-type-production =
+    ?TermType(<id>, _, _)
+
+  get-term-type-labels =
+    ?TermType(_, <id>, _)
+
+  get-term-type-children =
+    ?TermType(_, _, <id>)
+  ; ( ?Some(<id>) + \ None() -> [] \ )
+
+strategies
+  get-term-type-main-labels =
+    !(<get-term-type-production; ![<Rprod-p => [<id>]> | <Rprod-u>]>
+    , [<id> | <get-term-type-children>]
+    )
+  ; zip
+  ; map-with-index({
+      ?(i, (s, <id>))
+    ; !(<dec> i, <get-term-type-labels>, s)
+    })
+
+  find-production =
+    ?term
+  ; dbg(|"try to find this production: ")
+  ; get-term-type => type
+  ; dbg(|"with this type: ")
+  ; !(<get-term-type-production>, <get-term-type-main-labels>)
+
+// TODO:
+// - handle rules with conditions
+// - handle rewriting strategies
+// - handle AG rewriting rules
+strategies
+  is-semantic-rule-collection =
+    ?SemanticRulesNoCond(_, _)
+  + ?SemanticRules(_, _, _)
+
+  register-semantic-rule =
+    restore(
+      where(
+        ?SemanticRulesNoCond(<id>, _)
+      ; find-production => (prod, labels)
+      )
+    ; where(
+        ?SemanticRulesNoCond(_, [<id>])
+      ; escape-stratego-attributes(|labels) => code
+      ; new-rule(fetch-produce, fetch-uses | code, prod)
+      ; where(<dbg(|"register rule: ")> (<id>, prod, code))
+      )
+    , err(|"Cannot register the following semantic rule:")
+    )
+
+  register-semantic-rules =
+    where(
+      collect( is-semantic-rule-collection )
+    ; map(register-semantic-rule)
+    )

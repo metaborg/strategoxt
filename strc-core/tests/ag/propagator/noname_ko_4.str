@@ -1,0 +1,32 @@
+module noname_ko_4
+// this test is used to check the abscence of propagation and also the
+// corectness of error messages.
+signature
+  sorts A B C D E
+  constructors
+  : E
+  : D
+  : D * E -> C
+  : D * E -> B
+  : C -> A
+  : B -> A
+attributes
+  @ (E)():
+    root.ok := root.foo
+
+  @ (D)():
+    root.ok := root.foo
+
+  @ (D * E -> C)(d, e):
+    d.foo := root.foo // add
+    e.foo := root.foo // add
+
+  @ (D * E -> B)(d, e):
+    d.foo := root.foo // add
+    e.foo := root.foo // add
+
+  @ (C -> A)(c):
+    c.foo := 21
+
+  @ (B -> A)(b):
+    b.foo := 42

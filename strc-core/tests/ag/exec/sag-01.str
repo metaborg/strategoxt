@@ -1,0 +1,136 @@
+module sag-01
+imports
+  libstratego-lib
+  libstratego-lazy
+
+// Knuth binary numbers AST node
+signature
+  sorts Num List Bit
+
+signature
+  constructors
+    Number  : List -> Num
+    Number  : List * List -> Num
+    Seq     : List * Bit -> List
+            : Bit -> List
+    BitZero : Bit
+    BitOne  : Bit
+
+// Knuth binary numbers
+attributes
+  @ Number(ip):
+    root.value  := ip.value
+    ip.scale    := 0
+
+  @ Number(ip,fp):
+    root.value  := <add> (ip.value, fp.value)
+    ip.scale    := 0
+    fp.scale    := <subt> (0, fp.length)
+
+  @ Seq(l, b):
+    root.value  := <add> (l.value, b.value)
+    root.length := <inc> l.length
+    b.scale     := root.scale
+    l.scale     := <inc> root.scale
+
+  @ (Bit -> List)(b):
+    root.value  := b.value
+    root.length := 1
+    b.scale     := root.scale
+
+  @ BitZero():
+    root.value  := 0
+
+  @ BitOne():
+    root.value  := <exp2> root.scale
+
+/* What I want to do:
+
+  // node / term / rewriting (also with concrete syntax)
+  @ SimpleClass(b) -> ComplexClass(b):
+  @ SimpleClass(b) -> ComplexClass(b):
+    // Conditions of applications can depends on 'old' and 'new' at the same time
+    where (id)
+
+    // term attributes
+    root.error := <concat> [old.error, new.error]
+    new.foo_inh := old.foo_syn
+
+    // strategies attributes
+    root.lookup = new.lookup <+ old.lookup
+
+*/
+
+strategies
+  exp2 =
+    switch id
+      case 0: !1
+      case <gt> (<id>, 0): <mulr> (<dec; exp2>, 2)
+      case <lt> (<id>, 0): <divr> (<inc; exp2>, 2)
+      otherwise: fail
+    end
+
+// Strings of Knuth binary numbers
+attributes
+  @ Number(ip):
+    root.string := ip.string
+
+  @ r@Number(ip,fp):
+    r.string    := <concat-strings> [ip.string, ".", fp.string]
+
+  @ Seq(l, b):
+    root.string := <concat-strings> [l.string, b.string]
+
+  @ r @ (Bit -> List)(b):
+    r.string    := b.string
+
+  @ BitZero():
+    root.string := "0"
+
+  @ BitOne():
+    root.string := "1"
+
+strategies
+  get-lazy-attribute(|name) =
+    id{one( ?(name, v) )} => tree
+  ; !v
+ <+ <debug-computed-tree(!"No attribute named % on %: ")> (name, <id>)
+  ; fail
+
+  get-attribute(|name) =
+    get-lazy-attribute(|name)
+  ; ?v
+  ; get-value(!v)
+
+  debug-computed-tree(s) = {|Rename:
+    where(
+      rec rec(
+        all(rec)
+      ; id{
+         all({
+           ( id
+           , Rename <+ <newname> "Lazy" => n; rules(Rename:+ x -> n)
+           )
+        <+ id
+         })
+        }
+      )
+    ; debug(s)
+    )
+  |}
+
+  eval-number =
+    debug(!"input: ")
+  ; compute-Num
+     // get.value should be better here !
+  ; where(get-attribute(|"string") => string)
+  ; where(get-attribute(|"value") => value)
+  ; <concat-strings> [string, " = ", <real-to-string> value]
+  ; debug(!"output: ")
+
+  sag-01 =
+    option-wrap(
+      general-options
+    , <eval-number> Number(Seq(Seq(BitOne(), BitZero()), BitOne()))
+    ; <eval-number> Number(Seq(Seq(BitOne(), BitZero()), BitOne()), Seq(Seq(BitZero(), BitOne()), BitOne()))
+    )

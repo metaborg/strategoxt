@@ -1,0 +1,48 @@
+module stratego/strc/ag-front/ag-frontend
+imports
+  libstratego-lib
+  libstratego-sref
+  libstratego-ag
+  Stratego
+  stratego/strc/ag-front/normalize-semantic-rules
+  stratego/strc/ag-front/strag-2-graph
+  stratego/strc/ag-front/stratego-eval
+
+strategies
+  replace-ag = {|Any2Text:
+    where(
+      register-dummy-display
+    ; restore(register-symbols
+      , err(|"Cannot register sorts."))
+    ; restore(normalize-semantic-rules
+      , err(|"Cannot normalize semantic rules."))
+    ; restore(register-productions
+      , err(|"Cannot register constructors declarations."))
+    ; restore(register-semantic-rules
+      , err(|"Cannot register attribute declarations."))
+    ; restore(flag-user-rules
+      , err(|"Cannot flag user rules."))
+    ; if-keep1(export-graph(strc-getoutfile(!".sci.ag-front.loaded")))
+    ; restore(symbol-fixpoint(seq-fixpoint(bu-checks, lr-checks))
+      , err(|"Cannot propagate flags."))
+    ; if-keep1(export-graph(strc-getoutfile(!".sci.ag-front.flags")))
+    ; restore(propagate(attribute-propagator)
+      , err(|"Cannot propagate attributes."))
+    ; if-keep1(export-productions(strc-getoutfile(!".sci.ag-front.attributes")))
+    )
+  ; Specification(
+      <conc> (
+        < restore(stratego-ag-evaluator
+          , err(|"Cannot generate the evaluator."))
+        ; remove-all(Strategies([]))
+        >
+      , < remove-all(?Attributes(_)) >
+      )
+    )
+  ; if-keep1(where(write-to; save-as(!".ag-front.trm")))
+  |}
+
+  ag-frontend =
+    if <get-config> "--ag" then
+      debug-area( replace-ag | "replace-ag")
+    end

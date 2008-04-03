@@ -1,0 +1,11 @@
+module noname_ok_0
+signature
+  sorts A B
+  constructors
+  : B
+  : B -> A
+
+attributes
+  @ (B)():
+    root.foo := 42
+    root.ok := root.foo

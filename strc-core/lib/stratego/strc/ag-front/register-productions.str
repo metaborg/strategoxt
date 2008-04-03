@@ -1,0 +1,70 @@
+module stratego/strc/ag-front/register-production
+imports
+  libstratego-lib
+  libstratego-ag
+  Stratego
+
+imports
+  stratego/strc/ag-front/register-symbols
+
+rules
+  GetOpDeclName: OpDecl(n, _) -> n
+
+  get-opdecl-name = GetOpDeclName
+
+  GetTypeSorts: FunType(a, r) -> (<map(GetTypeSorts)> a, s)
+    where <GetTypeSorts> r => ([], s)
+
+  GetTypeSorts: ConstType(s) -> ([], s)
+
+  GetOpDeclSorts: OpDecl(_, t) -> <GetTypeSorts> t
+  GetOpDeclSorts: OpDeclInj(t) -> <GetTypeSorts> t
+
+  get-opdecl-sorts =
+    GetOpDeclSorts
+  ; normalize-sorts-type
+  ; (map(sort-2-ref), sort-2-ref)
+ <+ err(|"Cannot find the ''type'' of this constructor declaration: ")
+  ; fail
+
+  normalize-sorts-type =
+    (map( \ ([], s) -> s \ ), id )
+ <+ err(|"Cannot normalized the ''type'': ")
+  ; fail
+
+strategies
+  is-opdecl =
+    OpDecl(id, id)
+  + OpDeclInj(id)
+
+  implicit-productions =
+    dr-all-keys(|"Sort2Ref")
+  ; mapconcat({
+      ?l@ Sort |[ List(~srt: e) ]|
+    ; ![|[ : ~srt: l ]|
+      , |[ : ~srt: e * ~srt: l -> ~srt: l ]|
+      ]
+   <+ ![]
+    })
+
+  register-production =
+    restore(
+      ?opdecl
+    ; get-opdecl-sorts => (uses, produce)
+    ; new-production(| uses, produce ) => this
+    ; if <get-opdecl-name> opdecl => name then
+        set-production-name(|name)
+      ; rules(ProdName2Ref:+ name -> this)
+      ; where(<dbg(|"register production: ")> (opdecl, name, this))
+      else
+        rules(ProdName2Ref:+ "" -> this)
+      ; where(<dbg(|"register production: ")> (opdecl, this))
+      end
+    , err(|"Cannot register the following constructor declaration as a production:")
+    )
+
+  register-productions = where(
+    <union> (<implicit-productions>, <collect(is-opdecl)>)
+  ; remove-all(oncetd(not-handle-sort))
+  ; map(register-production)
+  )

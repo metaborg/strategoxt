@@ -1,0 +1,25 @@
+module messy_ok_01
+// Check the propagation of BU and LR attributes
+
+signature
+  sorts Prog Stm StmList
+  constructors
+  Prog: StmList -> Prog
+  Decl: StmList -> Stm
+  Use : Stm
+
+      : Stm * StmList -> StmList
+      : StmList
+
+attributes
+  @ Prog(s):
+    s.lr_env_inh := []
+    root.ok := s.bu_errors
+
+  @ Decl(s):
+    root.lr_env_syn := <!s.lr_env_syn; !root.lr_env_inh>
+    root.bu_errors := s.bu_errors
+
+  @ Use():
+    root.bu_errors := []
+    root.lr_env_syn := root.lr_env_inh

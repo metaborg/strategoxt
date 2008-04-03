@@ -1,0 +1,17 @@
+module td_ko_5
+// not allowed by the propagation rules but can probably be handled.
+signature
+  sorts A B C D
+  constructors
+  : D
+  : D -> C
+  : C -> B
+  : B -> A
+
+attributes
+  @ (D -> C)(d):
+    // you should fetch it from root or defined it.
+    root.ok := d.td_test
+
+  @ (B -> A)(b):
+    b.td_test := 42

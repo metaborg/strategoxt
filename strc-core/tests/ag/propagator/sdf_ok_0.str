@@ -1,0 +1,20 @@
+module sdf_ok_0
+signature
+  sorts
+    DeclList
+    Decl
+
+  constructors
+attributes
+    l:{Decl ","}+ -> DeclList
+        l.a := !42
+
+    l:{Decl ","}+ "," r:{Decl ","}+ -> {Decl ","}+
+        l.a := !root.a
+        r.a := !root.a
+
+    d:Decl -> {Decl ","}+
+        d.a := !root.a
+
+    "a" -> Decl
+        root.ok := !root.a

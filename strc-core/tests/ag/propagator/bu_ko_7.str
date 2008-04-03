@@ -1,0 +1,29 @@
+module bu_ko_7
+signature
+  sorts A B C D E Lex0 Lex1
+  constructors
+  : Lex0
+  : Lex1
+  : Lex0 -> E
+  : Lex1 -> B
+  : E -> C
+  : B * C -> C
+  : C -> D
+  : D -> A
+
+attributes
+  @ (Lex1 -> B)(_):
+    root.bu_test := [1]
+
+  @ (E -> C)(_):
+    // Cannot be inserted automatically (error prone pattern)
+    root.bu_test := [] // add
+
+  @ (B * C -> C)(b, c):
+    root.bu_test := <concat> [b.bu_test, c.bu_test] // add
+
+  @ (C -> D)(c):
+    root.bu_test := c.bu_test // add
+
+  @ (D -> A)(d):
+    root.ok := d.bu_test

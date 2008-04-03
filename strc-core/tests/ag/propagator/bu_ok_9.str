@@ -1,0 +1,28 @@
+module bu_ok_9
+// Check if attributes are fighting for the order.
+// If it is the case this test cause an infinite loop.
+signature
+  sorts Start Tmp A B
+  constructors
+    // small cycle
+    Cycle1: A -> B
+    Cycle2: B -> A
+
+          : A -> Tmp
+    Start : Tmp -> Start
+
+    // problems
+          : B
+          : A
+
+attributes
+  // nothing important
+  @ Start(tmp):
+    root.ok := [tmp.bu_test0, tmp.bu_test1]
+
+  // spread flags
+  @ (A)():
+    root.bu_test0 := 0
+
+  @ (B)():
+    root.bu_test1 := 1

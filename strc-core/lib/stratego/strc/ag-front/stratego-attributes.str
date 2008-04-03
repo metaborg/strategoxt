@@ -1,0 +1,260 @@
+module stratego/strc/ag-front/stratego-attributes
+imports
+  libstratego-lib
+  libstratego-ag
+  Stratego
+
+imports
+  stratego/strc/ag-front/basic-stratego-templates
+
+signature
+  constructors
+        : AttributeType -> AttrProperty
+    Type: AttributeKind * Int * Int -> AttributeType
+
+    Term: AttributeKind
+    Stra: AttributeKind
+
+strategies
+  merge-attribute-type(|t) =
+    edit-attribute-properties(
+      one-or-add(?Type(_, _, _) => type | t)
+    ; where(type := t)
+    )
+
+  get-attribute-type =
+    get-attribute-properties
+  ; fetch-elem(?Type(_, _, _))
+
+  is-term-attribute =
+    where(get-attribute-type => Type(Term(), _, _))
+
+  is-stra-attribute =
+    where(get-attribute-type => Type(Stra(), _, _))
+
+strategies
+  xor(s1, s2) =
+    test(s1) < test(s2) + test(not(s2))
+
+  find-or-create-attribute(is-local, is-produced | name, type) =
+    ?symb
+  ; restore(
+      Rsymb-od
+    ; one-or-add(
+        test(get-attribute-name => name)
+      ; xor(is-local, is-attribute-local) => this
+      ; dbg(|"Found a similar attribute.")
+
+      , new-attribute(| symb )
+      ; set-attribute-name(| name )
+      ; if is-local then set-attribute-as-local end
+      ; set-attribute-flags(is-produced) => this
+      ; dbg(|"Create a new attribute.")
+      )
+    ; !this
+    , err(|[
+        "Cannot create or merge the attribute named ", name
+      , " on the sort ", <Any2Text> symb
+      ])
+    )
+  ; restore(merge-attribute-type(| type )
+    , <err(|[
+        "Cannot merge types for the attribute named ", name
+      , " on the sort ", <Any2Text> symb
+      ])> (<get-attribute-type <+ !"no-type">, type)
+    )
+
+signature
+  constructors
+    : String -> TopDownIdentifier
+    : String -> BottomUpIdentifier
+    : String -> LeftToRightIdentifier
+
+strategies
+  /** Add flags on attributes to specify to propagate this attributes
+   * if it is needed.
+   *
+   * @type is-produced  _ -> _
+   * @type              AttrRef -> AttrRef
+   */
+  set-attribute-flags(is-produced) =
+    switch get-attribute-name
+      case td-match-name => td-id:
+        add-attribute-td-flag(|td-id)
+      case bu-match-name => bu-id:
+        add-attribute-bu-flag(|bu-id)
+      case lr-match-name; (lr-is-name-syn + lr-is-name-inh) => lr-id:
+        add-attribute-lr-flag(is-produced | lr-id)
+      otherwise:
+        id
+    end
+
+strategies
+  /** Copy the attribute on the symbol specified as input.
+   *
+   * @type              AttrKey * ProdRef * SymbLabel -> EmbeddedLanguage
+   */
+  copy-attribute-on =
+    ?(key, prod, lbl)
+  ; <get-attrkey-attrref> key => attr
+  ; where(<guess-attribute-name> (attr, lbl) => name)
+  ; !LabeledId(<guess-label-sym-name> lbl, name)
+
+
+  /** Generate a name from an attribute and the label that specify the
+   * target symbol
+   *
+   * @type              AttrRef * SymbLabel -> String
+   */
+  guess-attribute-name =
+    (where(get-lr-attribute-id => basename), ?lbl)
+  ; <lr-add-suffix(<is-produced-label> lbl)> basename
+
+  /** @idem */
+  guess-attribute-name =
+    (where(get-bu-attribute-id => name), id)
+  ; !name
+
+  /** @idem */
+  guess-attribute-name =
+    (where(get-td-attribute-id => name), id)
+  ; !name 
+
+  // look at: generate-production-labels
+  guess-label-sym-name =
+    \ Label(0) -> Root() \
+ <+ \ Label(i) -> TermLabel(i) \ // hum ..., strange StrategoId
+
+strategies
+  /** Fetch the attribute produced by this code.
+   *
+   * @type              ProdRef * EmbeddedLanguage -> AttrKey
+   */
+  fetch-produce =
+    ?(_, ADefTerm(ADefT(<is-attrkey>, _, _), _))
+  + ?(_, ADefStrategy(ADefT(<is-attrkey>, _, _), _))
+
+  /** Fetch the attributes used by this code.
+   *
+   * @type              ProdRef * EmbeddedLanguage -> List(AttrKey)
+   */
+  fetch-uses =
+    ?(_, ADefTerm(_, <collect(is-attrkey)>))
+  + ?(_, ADefStrategy(_, <collect(is-attrkey)>))
+
+strategies
+  suffix-int(|name) =
+    <conc-strings> (name, <int-to-string>)
+
+  generate-stratego-attribute-def(to-labeledid) =
+    ?(<id>, body)
+  ; where(get-attrkey-attrref; get-attribute-type => Type(k, ls, lt))
+  ; !ADefT(<to-labeledid>
+     , <range; map(!Strat |[ ~id: <suffix-int(|"arg's")> ]|)> ls
+     , <range; map(!Term  |[ ~id: <suffix-int(|"arg't")> ]|)> lt
+     )
+  ; if !k => Term() then
+      !ADefTerm(<id>, body)
+    else
+      !ADefStrategy(<id>, body)
+    end
+
+  generate-stratego-attribute-call(to-labeledid) =
+    where(get-attrkey-attrref; get-attribute-type => Type(k, ls, lt))
+  ; !ACallT(<to-labeledid>
+     , <range; map(!Strat |[ ~id: <suffix-int(|"arg's")> ]|)> ls
+     , <range; map(!Term  |[ ~id: <suffix-int(|"arg't")> ]|)> lt
+     )
+  ; if !k => Term() then
+      !ACallTerm(<id>)
+    else
+      !ACallStrategy(<id>)
+    end
+
+  /**
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   */
+  create-strategy = debug-area(
+    ?(prod, target, sources)
+  ; <map({lbl: ?lbl
+    ; <generate-stratego-attribute-call(
+        <copy-attribute-on> (target, prod, lbl)
+      )> target
+    })> sources
+  ; if <get-attrkey-attrref; is-term-attribute> target then
+      concat-terms // should offer the possibility to change that
+    else
+      create-choice-with-backtracking // bis
+    end
+  ; <generate-stratego-attribute-def(!target)> (target, <id>)
+  ; dbg(|"Rule = ")
+  | "create-strategy")
+
+
+  /** Succeed if the 2 input rules are similar */
+  similar-code = eq
+
+strategies
+  is-stratego-attribute = LabeledId(id, id)
+  is-stratego-attribute-local = LabeledId(Local(), id)
+
+  find-attribute-index-and-symbol(| labels ) =
+    ( Root() + Local() )
+  ; <?[<id> | _]> labels
+ <+ ?TermLabel(name)
+  ; <fetch-elem( (id, one(?name), id) )> labels
+ <+ err-msg(|["Identifier \"",<id> , "\" not bound in an attribute grammar section."])
+
+
+  stratego-attribute-2-attrkey(is-produced | type, labels ) =
+    ?attr@LabeledId(<id>, name)
+  ; find-attribute-index-and-symbol(| labels ) => (index, _, on)
+  ; <find-or-create-attribute(
+      <is-stratego-attribute-local> attr
+    , is-produced
+    | name
+    , type
+    )> on => this
+  ; create-key(| Label(index), this )
+  ; where(<dbg(|"register attribute:")> (name, <id>))
+ <+ err(|"Cannot convert the following attribute to an AttrKey: ")
+
+  escape-stratego-attribute-def(|kind, labels) =
+    ADefT(id, where(length => ls), where(length => lt))
+  ; ADefT(stratego-attribute-2-attrkey(true | Type(kind, ls, lt), labels ), id, id)
+
+  escape-stratego-attribute-call(|kind, labels) =
+    ACallT(id, where(length => ls), where(length => lt))
+  ; ACallT(stratego-attribute-2-attrkey(false | Type(kind, ls, lt), labels ), id, id)
+
+  escape-stratego-attributes(|labels) =
+    topdown(try(
+      ACallTerm(escape-stratego-attribute-call(|Term(), labels))
+    + ACallStrategy(escape-stratego-attribute-call(|Stra(), labels))
+    + ADefTerm(escape-stratego-attribute-def(|Term(), labels), id)
+    + ADefStrategy(escape-stratego-attribute-def(|Stra(), labels), id)
+    ))
+
+  // look at: guess-label-sym-name
+  generate-production-labels =
+    ?prod
+  ; Rprod-u
+  ; map-with-index( \ (i, <id>) -> (i, [i], <id>) \ )
+  ; ![(0, [], <Rprod-p => [<id>]> prod) | <id>]
+
+  create-strategy-attr =
+    ?(prod, <id>)
+  ; escape-stratego-attributes(|<generate-production-labels> prod)
+
+strategies
+  is-rewrite-production = fail
+
+  attribute-propagator(|attr, symb, label) =
+    ?(prod, _)
+  ; if not(<is-rewrite-production> prod) then
+      lr-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label)
+    + bu-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label)
+    + td-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label)
+    else
+      fail
+    end

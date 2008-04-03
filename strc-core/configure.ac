@@ -29,6 +29,9 @@ AC_CONFIG_FILES([
   tests/test2/Makefile 
   tests/testneg/Makefile
   tests/test-strc/Makefile
+  tests/ag/Makefile
+  tests/ag/propagator/Makefile
+  tests/ag/exec/Makefile
 ])
 
 #  tests/unit/Makefile

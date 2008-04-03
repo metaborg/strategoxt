@@ -1,0 +1,22 @@
+module lr_ko_15
+signature
+  sorts A B C D ListB
+  constructors
+  : C
+  : C -> B
+  : D
+  : D -> B
+  : B -> ListB
+  : ListB * ListB -> ListB
+  : ListB -> A
+
+attributes
+  @ (C -> B)(_):
+    root.lr_test_syn := 42
+
+  @ (D -> B)(_):
+    local.ok := root.lr_test_inh
+
+  @ (ListB -> A)(b):
+    root.ok := b.lr_test_syn
+    // should failed because b.lr_test_inh is not defined.

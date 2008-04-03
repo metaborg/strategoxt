@@ -231,6 +231,10 @@ strategies
 	where(<set-config> ("--indent-c",())); !(),         
 	!"--indent-c         Use this flag if you want the generated C code to use indentation.")
 
+  + Option("--ag",
+	where(<toggle-config>("--ag",())); !(),
+	!"--ag               Toggle attribute grammars in Stratego (default: off)")
+
   + ArgOption(fail, fail, !"")
   + ArgOption(fail, fail, !"General options:")
   + ArgOption(fail, fail, !"")

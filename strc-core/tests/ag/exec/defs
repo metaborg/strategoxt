@@ -1,0 +1,9 @@
+: ${VERBOSE=0}
+: ${KEEP=0}
+
+ulimit -t 10 # timeout = 10 sec
+if test -n "$VERBOSE" -a "$VERBOSE" -gt 0; then
+  set -x
+else
+  exec >/dev/null 2>&1
+fi

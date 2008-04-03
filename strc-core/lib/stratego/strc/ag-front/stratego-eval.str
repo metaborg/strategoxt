@@ -1,0 +1,357 @@
+module stratego/strc/ag-front/stratego-eval
+imports
+  libstratego-lib
+  libstratego-ag
+
+imports
+  stratego/strc/ag-front/basic-stratego-templates
+
+strategies
+  /**
+   * @type      AttrKey -> String
+   */
+  attrkey-2-string =
+    ?AttrKey(lbl, attrref)
+  ; <get-attribute-name> attrref => name
+  ; switch id
+      case <is-attribute-local> attrref:
+        !"local"
+      case <is-produced-label> lbl:
+        !"root"
+      otherwise:
+        <?Label(<id>)> lbl
+      ; <conc-strings> ("symb", <int-to-string>)
+    end => label-name
+  ; <concat-strings> [label-name, "-", name]
+
+  /**
+   * @type      AttrRef -> String
+   */
+  root-attrref-2-string =
+    root-attrref-2-attrkey
+  ; attrkey-2-string
+
+  /**
+   * @type      AttrRef -> AttrKey
+   */
+  root-attrref-2-attrkey =
+    !AttrKey(Label(0),<id>)
+
+  /**
+   * @type      AttrKey -> String
+   */
+  attrkey-2-name = ?AttrKey(_, <get-attribute-name>)
+
+  /**
+   * @type      AttrKey -> Term
+   */
+  attrkey-2-term =
+    !Term |[
+       (~str: <attrkey-2-name>, ~id: <attrkey-2-string>)
+    ]|
+
+  /**
+   * @type      List(AttrKey) -> List(AttrKey)
+   */
+  filter-attrkey(|i) =
+    filter(?AttrKey(Label(i), _))
+
+  /**
+   * @type      SymbRef -> String
+   */
+  symbol-2-compute-name =
+    <concat-strings> ["compute-", <get-symbol-name>]
+
+strategies
+  /**
+   * @type      SymbRef -> String * List() * List()
+  symbol-2-strategy-type =
+
+strategies
+  /** Apply a strategy used to be appliied on children of the node.
+   * @type s    Int * SymbRef -> Strategy
+   * @type      ProdRef -> Strategy
+   */
+  manipulate-children(s) = restore(
+    ?prod
+  ; if Rprod-p => [p]; <is-list-symbol> p then
+      Rprod-u => children
+    ; map-with-index(s)
+    ; switch !children
+        case at-init(not(?p), ?p):
+          !|[ [~strat*: <at-last(![])> | ~strat: <last>] ]|
+        otherwise:
+          !|[ [~strat*: <id>] ]|
+      end
+    else
+      switch Rprod-u => children
+        case []:
+          !|[ id ]|
+        case [id]:
+          !children => [<!(1, <id>)>]
+        ; s
+        ; if <get-production-name> prod => name then
+            !|[ ~id:name(~strat: <id>) ]|
+          end
+        otherwise:
+          !children
+        ; map-with-index(s)
+        ; where(<get-production-name <+ !""> prod => name)
+        ; !|[ ~id:name(~strat*: <id>) ]|
+      end
+    end
+  , Any2Text
+  ; err(|"Cannot generate a pattern to match this contructor:")
+  )
+
+strategies
+  /**
+   * @type      AttrKey -> Strategy
+   */
+  create-attribute = restore(
+    !|[ where(new-lazy-value => ~id: <attrkey-2-string>) ]|
+  , err-msg(|["Cannot create an attribute for ", <Any2Text>]))
+
+  /**
+   * @type      AttrKey * List(AttrKey) -> Strategy
+   */
+  alias-attributes = restore(
+    ( attrkey-2-string => i
+    , map(attrkey-2-string)
+    ; alias-identifers => t
+    )
+  ; !|[ where(!~id: i => ~term: t) ]|
+  , err-msg(|[
+      "Cannot alias attribute ", <Fst; Any2Text>
+    , " with ", <Snd; Any2Text>, "."
+  ]))
+
+  /**
+   * @type      RuleRef * List(AttrKey) * List(AttrKey) -> Strategy
+   */
+  create-lazy-strategy = restore(
+    ?(<id>, [produce], uses)
+  ; dbg(|[
+      "Try to translate the semantic rule ", <Any2Text>
+    , " on the constructor '", <Rrule-o => [<Any2Text>]>, "'."
+    ])
+  ; where(<attrkeys-2-strlist> uses => dep-list)
+  ; where(<attrkey-2-string> produce => bind)
+  ; rule-to-stratego-code(|bind, dep-list)
+  , err-msg(|[
+      "Cannot translate the semantic rule ", <Fst; Any2Text>
+    , " on the constructor '", <Fst; Rrule-o => [<Any2Text>]>, "'."
+  ]))
+
+rules
+  ACall2Strategy(is-strategy):
+    ACallT(k, ls, lt) -> |[ prim("LAZY_call", ~strat*: ls' | ~term*: lt') ]|
+    where
+      ![ |[ !~id: <attrkey-2-string> k ]| | ls] => ls'
+    ; <if <is-strategy> k then
+        at-end(![ |[ <id> ]| ])
+      end> lt => lt'
+
+
+  extract-called-term =
+    oncetd(
+      ?ACallTerm(c@ACallT(k, _, _))
+    ; <conc-strings> (<attrkey-2-string> k, "'") => v
+    ; !Term |[ ~id: v ]|
+    ) => t'
+  ; <ACall2Strategy(false)> c => s
+  ; !(v, s, t')
+
+  ReplaceACall:
+    |[ !~term: t ]| ->
+    |[ {~id:v: where(s => ~id:v); !~term: t'} ]|
+      where <extract-called-term> t => (v, s, t')
+
+  ReplaceACall:
+    |[ ?~term: t ]| ->
+    |[ {~id:v: where(s => ~id:v); ?~term: t'} ]|
+      where <extract-called-term> t => (v, s, t')
+
+  ReplaceACall:
+    |[ ~id: f (~strat*: ls | ~term*: t ) ]| ->
+    |[ {~id:v: where(s => ~id:v); ~id: f (~strat*: ls | ~term*: t' )} ]|
+      where <extract-called-term> t => (v, s, t')
+
+  ReplaceACall:
+    ACallStrategy(<id>) -> <ACall2Strategy(true)>
+
+
+  DesugarStratego: Strat |[ !<s> t ]| -> |[ !t; s ]|
+  DesugarStratego: Strat |[ <s> t ]| -> |[ !t; s ]|
+
+
+  ADef2SDef(is-strategy | body, bind, dep-list):
+    ADefT(k, ls, lt) -> (|[ // definition
+      f (~typed-id*: ls | ~typed-id*: lt' ) =
+        ?(tree@<id>, ~term: dep-list)
+      ; ~strat: body'
+    ]|, |[ // instanciation
+      where(
+        < bind-lazy-value(~id: f | ~int: is, ~int: it, ~id: bind)
+        > (tree, ~term: dep-list)
+      )
+    ]|)
+      where
+        if <is-strategy> k then
+          <at-end(![ Typedid |[ arg'current'term ]| ])> lt => lt'
+        ; <desugar-attributes-calls> body
+        ; !Strat |[ !arg'current'term ; ~strat: <id> ]| => body'
+        else
+          !lt => lt'
+        ; <desugar-attributes-calls> body => body'
+        end
+      ; <newname> "lifted-ag" => f
+      ; <length; int-to-string> ls => is
+      ; <length; int-to-string> lt' => it
+
+  ADef2SDef(|bind, dep-list):
+    ADefTerm(<id>, t)
+    -> <ADef2SDef(false | |[ !t ]|, bind, dep-list)>
+
+  ADef2SDef(|bind, dep-list):
+    ADefStrategy(<id>, s)
+    -> <ADef2SDef(true | s, bind, dep-list)>
+
+strategies
+  rule-to-stratego-code(|bind, dep-list) =
+    get-rule-code
+  ; ADef2SDef(|bind, dep-list) => (sdef, lazy-bind)
+  ; restore(
+      not(<oncetd(is-attrkey)> sdef)
+    , err(|"Cannot remove all attribute variables:")
+    )
+  ; rules(LiftedStrategies :+= sdef)
+  ; !lazy-bind
+
+  desugar-attributes-calls =
+    innermost(DesugarStratego <+ ReplaceACall)
+
+  attrkeys-2-strlist =
+    map(
+      attrkey-2-string
+    ; !Term |[ ~id:<id> ]|
+    )
+  ; !Term |[ [~term*: <id>] ]|
+
+strategies
+  /**
+   * @type      List(AttrRef) -> Strategy
+   */
+  fetch-attributes = restore(
+    map(
+      root-attrref-2-attrkey
+    ; Dupl
+    ; (attrkey-2-term, id)
+    )
+  ; where(
+      // if not in the right order or not declared
+      map(!|[
+        one(?~term: <Fst>)
+     <+ ![(~str: <Snd; attrkey-2-name>, <new-lazy-value => ~id: <Snd; attrkey-2-string>>) | <id>]
+      ]|)
+    ; concat-statements => fetch-one-by-one
+    )
+  ; where(!|[ ?[~term*: <map(Fst)>] ]| => fetch-all)
+  ; !|[
+      id{ ~fetch-all <+ ~fetch-one-by-one }
+    ]|
+  , Any2Text
+  ; err(|"Cannot generate a pattern to match those attributes:")
+  )
+
+  /**
+   * @type      ProdRef * List(AttrKey) -> Strategy
+   */
+  add-attributes-on-children =
+    ?(prod@<id>, attrkeys)
+  ; manipulate-children({i:
+      ?(i, _)
+    ; <filter-attrkey(|i)> attrkeys
+    ; map(attrkey-2-term)
+    ; !|[ id{![~term*: <id>]} ]|
+    })
+
+strategies
+  typedid-name = ?Typedid |[ ~id: <id> ]|
+  strategy-name =  ?Strat |[ ~id: <id> ]|
+  term-name =  ?Term |[ ~id: <id> ]|
+
+  /**
+   * @type      RuleRef -> _
+   */
+  is-copy-rule = where (
+    get-rule-code
+  ; ( ?ADefTerm(def, ACallTerm(call))
+    + ?ADefStrategy(def, ACallStrategy(call))
+    )
+  ; <?ADefT(_, <map(typedid-name) => ls>, <map(typedid-name) => lt>)> def
+  ; <?ACallT(_, <map(strategy-name) => ls>, <map(term-name) => lt>)> call
+  )
+
+strategies
+  /**
+   * @type      ProdRef -> Statement
+   */
+  match-production =
+    manipulate-children(!|[ id ]|)
+
+  /**
+   * @type      ProdRef -> Strategy
+   */
+  children-traversal =
+    manipulate-children({
+      ?(i, <id>)
+    ; if Rsymb-pd => [] then
+        !|[ id ]|
+      else
+        symbol-2-compute-name
+      ; !Strat |[ ~id: <id> ]|
+      end
+    })
+  ; !|[ ~<id> => tree ]|
+
+strategies
+  /** Create a strategy.
+   *
+   * @type      SymbRef * Strategy -> SDecl
+   */
+  declare-strategy =
+    ?(symb, body)
+  ; !|[
+      ~id:<symbol-2-compute-name> symb =
+        ~strat: body
+    ]|
+
+
+strategies
+  stratego-ag-evaluator = debug-area({|LiftedStrategies:
+    evaluator-gen(
+      fetch-attributes
+    , production-handler(
+        match-production
+      , attribute-handler(
+          is-copy-rule
+        , create-attribute
+        , alias-attributes
+        , create-lazy-strategy
+        , concat-statements
+        )
+      , add-attributes-on-children
+      , children-traversal
+      , concat-statements
+      )
+    , create-choice-with-backtracking
+    , concat-statements
+    , declare-strategy
+    )
+    // import libstratego-lazy
+  ; ![|[ strategies ~* <id> ]|
+    , |[ strategies ~* <bagof-LiftedStrategies> ]|
+    ]
+  |}
+  | "stratego-ag-evaluator" )

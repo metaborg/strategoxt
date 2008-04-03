@@ -1,0 +1,13 @@
+module bu_ok_0
+signature
+  sorts A B
+  constructors
+    : B
+    : B -> A
+
+attributes
+  @ (B)():
+    root.bu_test := 42
+
+  @ (B -> A)(b):
+    root.ok := b.bu_test

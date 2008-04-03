@@ -1,0 +1,62 @@
+module stratego/strc/ag-front/basic-stratego-templates
+imports
+  libstratego-lib
+
+strategies
+  /** Create a choice with backtracking.
+   *
+   * @type empty-stra           Strategy
+   * @type conc-strategies      Strategy * Strategy -> Strategy
+   * @type                      List(Strategy) -> Strategy
+   */
+  concat-strategies( empty-stra, conc-strategies ) =
+    \ [] -> <empty-stra> \
+  + \ [s] -> s \
+  + foldr1( conc-strategies )
+
+  /** Create a choice with backtracking.
+   *
+   * @type      List(Strategy) -> Strategy
+   */
+  create-choice-with-backtracking =
+    concat-strategies( !|[ fail ]|, \ (s1, s2) -> |[ s1 + s2 ]| \ )
+
+  /** Create a sequence of statements.
+   *
+   * @type      List(Strategy) -> Strategy
+   */
+  concat-statements =
+    concat-strategies( !|[ id ]|, \ (s1, s2) -> |[ s1 ; s2 ]| \ )
+
+strategies
+  /** Create the Term to concatenate a list of Terms.
+   *
+   * @type empty-term           Term
+   * @type concat-strategy      Term * Term -> Term
+   * @type                      List(Term) -> Term
+   */
+  concat-terms(|empty-term, concat-strategy) =
+    \ []  -> empty-term \
+  + \ [t] -> t \
+  + \ lt  -> Term |[ <~strat: concat-strategy> [~term*: lt ] ]| \
+
+  /** Create the Term to concatenate a list of Terms.
+   *
+   * @type      List(Term) -> Term
+   */
+  concat-terms =
+    concat-terms(|
+      Term |[ [] ]|
+    , Strat |[ concat ]|
+    )
+
+strategies
+  /** Create list of aliases.
+   *
+   * @type      List(String) -> Term
+   */
+  alias-identifers =
+    foldr(
+      !|[ _ ]|
+    , \ (i, t) -> |[ ~id: i @ ~term: t ]| \
+    )

@@ -1,0 +1,18 @@
+module td_ok_3
+signature
+  sorts A B C
+  constructors
+  : C
+  : C * B -> B
+  : B -> A
+
+attributes
+  @ (C)():
+    root.ok := root.td_test
+
+  @ (C * B -> B)(c, b):
+    b.td_test := root.td_test
+    c.td_test := root.td_test
+
+  @ (B -> A)(b):
+    b.td_test := 42
