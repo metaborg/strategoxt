@@ -1,0 +1,40 @@
+module Stratego-Sugar-AG
+imports
+  Stratego-Sugar-Terms
+  Stratego-Sugar-Strategies
+
+exports
+  context-free syntax
+    Term                                -> AGTerm {cons("AGMatch")}
+    Term "->" Term                      -> AGTerm {cons("AGRewrite")}
+
+
+    "@" AGTerm ":" AttrDef*                  -> SRDef  {cons("SemanticRulesNoCond")}
+    "@" AGTerm ":" "where" Strategy AttrDef* -> SRDef {cons("SemanticRules")}
+
+
+    LabeledIdDef ":=" Term              -> AttrDef {cons("ADefTerm")}
+    LabeledIdDef "=" Strategy           -> AttrDef {cons("ADefStrategy")}
+
+    LabeledId                           -> LabeledIdDef {cons("ADefNoArgs")}
+    LabeledId "(" {Typedid ","}* ")"    -> LabeledIdDef {cons("ADef")}
+    LabeledId "(" {Typedid ","}* "|" {Typedid ","}* ")"
+                                        -> LabeledIdDef {cons("ADefT")}
+
+
+    LabeledIdCall                       -> Term         {cons("ACallTerm")}
+    LabeledIdCall                       -> Strategy     {cons("ACallStrategy")}
+
+    LabeledId                           -> LabeledIdCall {cons("ACallNoArgs")}
+    LabeledId "(" {Strategy ","}* ")"   -> LabeledIdCall {cons("ACall")}
+    LabeledId "(" {Strategy ","}* "|" {Term ","}* ")"
+                                        -> LabeledIdCall {cons("ACallT")}
+
+
+    TermLabel "." Id                    -> LabeledId {cons("LabeledId")}
+
+    "root"                              -> TermLabel {cons("Root")}
+    "local"                             -> TermLabel {cons("Local")}
+    "new"                               -> TermLabel {cons("NewTree")}
+    "old"                               -> TermLabel {cons("OldTree")}
+    Id                                  -> TermLabel {cons("TermLabel"),avoid}

@@ -12,6 +12,7 @@ exports
     "rules" 		-> ModName {reject}
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
+    "attributes" 	-> ModName {reject}
 
   sorts Id LId LCID UCID
   lexical syntax
@@ -63,6 +64,7 @@ exports
     "some"
     "sorts"
     "strategies"
+    "attributes"
     "stratego"
     "switch" %% not reserved kw
     "test"
@@ -90,6 +92,7 @@ exports
     "some" 		-> Keyword
     "sorts" 		-> Keyword
     "strategies" 	-> Keyword
+    "attributes" 	-> Keyword
     "stratego" 		-> Keyword
     "test" 		-> Keyword
     "where" 		-> Keyword

@@ -242,6 +242,44 @@
    OverlayNoArgs                                      -- _1 KW["="] _2,
    Overlay                                            -- V is=2 [H  [_1 KW["("] _2 KW[")"] KW["="]] _3],
    Overlay.2:iter-star-sep                            -- H hs=0 [_1 KW[","]],
-   Mark                                               -- "@mark@"
+   Mark                                               -- "@mark@",
+
+   OpInj                                              -- KW["("] _1 KW[")"] KW["("] _2 KW[")"],
+   OpInj.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
+
+   AGMatch                                            -- _1,
+   AGRewrite                                          -- H [_1 KW["->"] _2],
+
+   Attributes                                         -- V is=2 [KW["attributes"] _1],
+   Attributes.1:iter-star                             -- _1,
+   SemanticRulesNoCond                                -- V is=2 [H hs=0 [KW["@"] _1 KW[":"]] _2],
+   SemanticRulesNoCond.2:iter-star                    -- _1,
+   SemanticRules                                      -- V is=2 [H hs=0 [KW["@"] _1 KW[":"]] H [KW["where"] _2] _3],
+   SemanticRules.3:iter-star                          -- _1,
+
+   ADefTerm                                           -- H [_1 KW[":="] _2],
+   ADefStrategy                                       -- V is=2 [H [_1 KW["="]] _2],
+   ADefNoArgs                                         -- _1,
+   ADef                                               -- H hs=0 [_1 KW["("] H  [_2] KW[")"]],
+   ADef.2:iter-star-sep                               -- H hs=0 [_1 KW[","]],
+   ADefT                                              -- H hs=0 [_1 KW["("] H  [_2 KW["|"] _3] KW[")"]],
+   ADefT.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
+   ADefT.3:iter-star-sep                              -- H hs=0 [_1 KW[","]],
+
+   ACallTerm                                          -- _1,
+   ACallStrategy                                      -- _1,
+   ACallNoArgs                                        -- _1,
+   ACall                                              -- H hs=0 [_1 KW["("] H  [_2] KW[")"]],
+   ACall.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
+   ACallT                                             -- H hs=0 [_1 KW["("] H  [_2 KW["|"] _3] KW[")"]],
+   ACallT.2:iter-star-sep                             -- H hs=0 [_1 KW[","]],
+   ACallT.3:iter-star-sep                             -- H hs=0 [_1 KW[","]],
+
+   LabeledId                                          -- H hs=0 [_1 KW["."] _2],
+   Root                                               -- KW["root"],
+   Local                                              -- KW["local"],
+   NewTree                                            -- KW["new"],
+   OldTree                                            -- KW["old"],
+   TermLabel                                          -- _1
 ]
 

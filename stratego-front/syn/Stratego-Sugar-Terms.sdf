@@ -1,5 +1,6 @@
 module Stratego-Sugar-Terms
 imports
+  Stratego-Sugar-Signatures
   Stratego-Core-Terms
   Stratego-Sugar-Strategies
 
@@ -28,6 +29,9 @@ exports
     "(" {Term ","}* ")" 	 -> PreTerm {cons("Tuple")}
     "[" {Term ","}* "]" 	 -> PreTerm {cons("List")}
     "[" {Term ","}* "|" Term "]" -> PreTerm {cons("ListTail")}
+
+    "(" Type ")" "(" {Term ","}* ")"
+                                 -> PreTerm {cons("OpInj")}
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}

@@ -23,6 +23,12 @@ exports
               "|[" Def    "]|" -> E1 {cons("ToTerm")}
     "Def"     "|[" Def    "]|" -> E1 {cons("ToTerm")}
 
+              "|[" SRDef  "]|" -> E1 {cons("ToTerm")}
+    "SRDef"   "|[" SRDef  "]|" -> E1 {cons("ToTerm")}
+
+              "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
+    "AttrDef" "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
+
              "|[" Rule      "]|" -> E1 {cons("ToTerm")}
     "Rule"   "|[" Rule      "]|" -> E1 {cons("ToTerm")}
              "|[" StratRule "]|" -> E1 {cons("ToTerm")}
@@ -46,6 +52,10 @@ exports
     "~term*:"   E2 -> {Term ","}+      {cons("FromTerm")}
     "~"         E2 -> {ID   ","}+      {cons("FromTerm")}
 
+    "~"         E2 -> AGTerm           {cons("FromTerm")}
+    "~li:"      E2 -> LabeledId        {cons("FromTerm")}
+    "~lid:"     E2 -> LabeledIdDef     {cons("FromTerm")}
+
     "~"         E2 -> Strategy         {cons("FromTerm")}
     "~strat:"   E2 -> Strategy         {cons("FromTerm")}
     "~*"        E2 -> {Strategy ","}+  {cons("FromTerm")}
@@ -64,6 +74,12 @@ exports
 
     "~"   E2 -> Def       {cons("FromTerm")}
     "~*"  E2 -> Def+      {cons("FromTerm")}
+
+    "~"   E2 -> SRDef     {cons("FromTerm")}
+    "~*"  E2 -> SRDef+    {cons("FromTerm")}
+
+    "~"   E2 -> AttrDef   {cons("FromTerm")}
+    "~*"  E2 -> AttrDef+  {cons("FromTerm")}
 
     "~*"  E2 -> Opdecl+      {cons("FromTerm")}
     "~*"  E2 -> {Type "*"}+  {cons("FromTerm")}

@@ -81,6 +81,8 @@ rules
   stratego-to-abox : 
     Constructors(decs) -> V is=2 [ KW["constructors"] A (l hs=1, l hs=1, l hs=1) [ ~*decs ]  ]
 
+  stratego-to-abox :
+    Attributes(decs) -> V is=2 [ KW["attributes"] V vs=1 [ ~*decs ]  ]
 
 rules
 
@@ -269,21 +271,29 @@ rules
   get-max-term-size-config = !15
 
   stratego-to-abox =
-    ( ?Op(f,[x | xs]) + ?CongQ(f,[x | xs]) + ?OpQ(f,[x|xs]) )
+    ( ?Op(f,[x | xs])
+    + ?CongQ(f,[x | xs])
+    + ?OpQ(f,[x | xs])
+    + ?OpInj(<id>,[x | xs]); !|[ H hs=0 [ "(" ~<id> ")" ] ]| => t
+    )
+  ; try(!|[ ~lit: f ]| => t)
   ; where( <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => children )
   ; worstcase-nicecase(
       !|[  V vs=0 [
-            H hs=0 [ ~lit:f "(" ]
+            H hs=0 [ ~t "(" ]
             H hs=1 [" " ~x ]
             ~*children
             ")"
           ]
       ]|
-    , !|[ H hs=0 [ ~lit:f "(" ~x ~*children ")"] ]|
+    , !|[ H hs=0 [ ~t "(" ~x ~*children ")"] ]|
     )
 
   stratego-to-abox : 
     Op(name,[]) -> H hs=0[ ~lit:name "(" ")" ]
+
+  stratego-to-abox : 
+    OpInj(name,[]) -> H hs=0[ ~lit:name "(" ")" ]
 
   stratego-to-abox : 
     CongQ(name,[]) -> H hs=0[ ~lit:name "(" ")" ]
@@ -912,6 +922,95 @@ rules
   stratego-to-abox :
     ParenStrat(s) -> |[ H hs=0[KW["("] ~s KW[")"]] ]|
  
+
+// AG extension
+rules
+  stratego-to-abox :
+   AGMatch(t) -> t
+
+  stratego-to-abox :
+   AGRewrite(lhs, rhs) -> |[ H [~lhs KW["->"] ~rhs] ]|
+
+
+
+  stratego-to-abox :
+    SemanticRulesNoCond(match,decl) -> |[
+      V is=2 [H hs=0 [KW["@"] ~match KW[":"]]
+        ~*decl
+      ]
+    ]|
+
+  stratego-to-abox :
+    SemanticRules(match,condition,decl) -> |[
+      V is=2 [H hs=0 [KW["@"] ~match KW[":"]]
+        H [KW["where"] ~condition]
+        ~*decl
+      ]
+    ]|
+
+rules
+  stratego-to-abox :
+    ADefTerm(attribute, term) -> H [~attribute KW[":="] ~term]
+
+  stratego-to-abox :
+    ADefStrategy(attribute, strat) ->
+      V is=2 [H [~attribute KW["="]]
+        ~strat
+      ]
+
+  stratego-to-abox :
+    ACallTerm(attribute) -> attribute
+
+  stratego-to-abox :
+    ACallStrategy(attribute) -> attribute
+
+rules
+  stratego-to-abox : 
+   ADefNoArgs(name) -> |[ ~lit:name ]|
+
+  stratego-to-abox : 
+   ADef(name,args) -> |[ H hs=0[ ~lit:name ~args' ] ]|
+    where
+      <list-to-args> args => args'
+      
+  stratego-to-abox : 
+   ADefT(name,args,argt) -> |[ H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] ]|
+    where
+      <separate-by-comma> args => args'
+    ; <separate-by-comma> argt => argt'
+
+  stratego-to-abox : 
+   ACallNoArgs(name) -> |[ ~lit:name ]|
+
+  stratego-to-abox : 
+   ACall(name,args) -> |[ H hs=0[ ~lit:name ~args' ] ]|
+    where
+      <list-to-args> args => args'
+      
+  stratego-to-abox : 
+   ACallT(name,args,argt) -> |[ H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] ]|
+    where
+      <separate-by-comma> args => args'
+    ; <separate-by-comma> argt => argt'
+
+rules
+  stratego-to-abox :
+    LabeledId(label, i) -> |[ H hs=0 [~label KW["."] ~i] ]|
+
+  stratego-to-abox :
+    Root -> KW["root"]
+
+  stratego-to-abox :
+    Local -> KW["local"]
+
+  stratego-to-abox :
+    NewTree -> KW["new"]
+
+  stratego-to-abox :
+    OldTree -> KW["old"]
+
+  stratego-to-abox :
+    TermLabel(label) -> label
 
 /**
  * Rewrites a list of boxes to a single box, where the elements are

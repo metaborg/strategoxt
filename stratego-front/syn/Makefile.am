@@ -61,6 +61,7 @@ Stratego-Sugar.def : \
   Stratego-Sugar-Terms.sdf \
   Stratego-Sugar-DynamicRules.sdf \
   Stratego-Sugar-Rules.sdf \
+  Stratego-Sugar-AG.sdf \
   Stratego-Sugar-Layout.sdf
 
 Stratego-Core.def : \

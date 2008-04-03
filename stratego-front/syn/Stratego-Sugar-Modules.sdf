@@ -5,6 +5,7 @@ imports
   Stratego-Sugar-Signatures
   Stratego-Sugar-Overlays
   Stratego-Sugar-Rules
+  Stratego-Sugar-AG
 
 exports 
 
@@ -12,5 +13,6 @@ exports
   context-free syntax
     "rules" Def* 		-> Decl {cons("Rules")}
     "overlays" Overlay* 	-> Decl {cons("Overlays")}
+    "attributes" SRDef*         -> Decl {cons("Attributes")}
 
     RuleDef 			-> Def 
