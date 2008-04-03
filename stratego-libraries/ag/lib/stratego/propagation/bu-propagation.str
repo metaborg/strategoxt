@@ -1,0 +1,132 @@
+module stratego/propagation/bu-propagation
+imports
+  stratego/graph/attributes
+  stratego/graph/symbols
+  stratego/graph/productions
+  stratego/graph/hybrid-logic
+
+  stratego/propagation/propagator
+
+signature
+  constructors
+    Bu: BottomUpIdentifier -> PropagationFlag
+
+strategies
+  is-bu-flag = ?Bu(_)
+  get-bu-id = ?Bu(<id>)
+
+  bu-merge = simple-merge
+
+strategies
+  bu-flags-merge = flags-merge(bu-merge)
+
+  get-bu-flags = get-flags(is-bu-flag)
+
+  build-bu-flag = !Bu(<get-bu-attribute-id>)
+
+strategies
+  /** Check that the attribute is a bottom-up attribute
+   *
+   * @type              AttrRef -> BottomUpIdentifier
+   */
+  get-bu-attribute-id =
+    get-attribute-properties
+  ; fetch-elem(get-bu-id)
+
+  is-bu-symbol(|bu-id) =
+    where(
+      get-symbol-properties
+    ; one(test(get-bu-id => bu-id))
+    )
+
+strategies
+  /** Use to mark all symbols which have to use a specific bottom-up
+   * attribute. This strategy have to be use in a fixpoint algorithms
+   * on symbols before the propagator.
+   *
+   * Look add the symbol property Bu with the name of the attribute in
+   * order to ensure that the synthesized symbol could have a
+   * bottom-up attribute.
+   *
+   * @type get-bu-id    AttrRef -> BottomUpIdentifier
+   * @type              SymbRef * Queue -> Queue
+   */
+  bu-checks =
+    propagate-flags(
+      bu-flags-merge
+    , build-bu-flag
+    , get-bu-flags
+    , Rsymb-ud
+    , Rprod-p
+    )
+
+strategies
+  /** Get all rule patterns to define the bottom-up attribute.
+   *
+   * @type td-id        TopDownIdentifier
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef -> List(AttrKey * List(SymbLabel))
+   */
+  get-bu-rule-patterns(|bu-id, attr, symb, label) =
+    ?prod
+  ; get-production-symbols
+  ; if ?[_] /* for rules like "  -> S* " */ then
+      ![]
+    else // else this could be error-prone
+      filter(
+        (id, test(is-bu-symbol(|bu-id)))
+      ; ?(<id>, _)
+      ; not(is-produced-label)
+      )
+      // Common un-seen mistake.
+    ; not(?[]) // Used to produce a propagation error.
+    end
+  ; ![(<create-key(|Label(0), attr)>, <id>)]
+
+  /** Propagation rule for bottom-up attributes.
+   *
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type attr                 AttrRef
+   * @type symb                 SymbRef
+   * @type label                SymbLabel
+   * @type                      ProdRef * Queue -> Queue
+   */
+  bu-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label) =
+    generic-propagation-rule(get-bu-attribute-id, get-bu-rule-patterns
+    , create-rule
+    , create-rule-attr
+    , fetch-produce
+    , fetch-uses
+    , similar-code
+    | attr
+    , symb
+    , label
+    )
+
+// useful strategies
+strategies
+  bu-match-name =
+    match-attr-name(| "bu_" )
+
+  add-attribute-bu-flag(|bu-id) =
+    edit-attribute-properties(
+      one-or-add(|Bu(bu-id))
+    )
+
+  /** Stratego rule generation ...
+   */
+/*
+  create-strategy =
+    ?(prod, target, sources)
+  ; map()
+  ; ( \ []    -> Strat |[ ![] ]| \
+   <+ \ [a]   -> Strat |[ !~term: a ]| \
+   <+ \ l     -> Strat |[ <concat> [~term*: l ] ]| \
+    )
+*/

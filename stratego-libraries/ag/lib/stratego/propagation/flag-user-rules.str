@@ -1,0 +1,61 @@
+module stratego/propagation/flag-user-rules
+imports
+  libstratego-lib
+
+imports
+  stratego/graph/rules
+  stratego/graph/hybrid-logic
+
+signature
+  constructors
+    User: RuleProperty
+
+strategies
+  is-user-defined =
+    where(
+      get-rule-properties
+    ; one(User())
+    )
+
+  add-user-defined =
+    edit-rule-properties(
+      one-or-add(|User())
+    )
+
+  if-user-defined(s) = /// FIXME: remove it
+    is-user-defined
+  < s
+  + id
+
+strategies
+  flag-user-rules =
+    where(
+      Rall(all-rules, add-user-defined)
+    )
+
+strategies
+  /**
+   * Great message ouput comming from stratego-lib/utils/log.
+   */
+  stats(|msg : String) =
+    where(
+      <try(not(is-list) ; ![<id>])> msg
+    ; map(is-string <+ write-to-string)
+    ; <concat-strings ; log-puts> ["[ ", <log-src>, " | stats ] " | <id> ]
+    ; <log-puts> "\n"
+    )
+
+  count-user-rules =
+    where(
+      all-rules
+    ; foldr(
+        !(0, 0)
+      , ( (is-user-defined, id) < (id, (inc, id)) + (id, (id, inc)) )
+      ; ?(_, <id>)
+      ) => (user-defined, auto-added)
+    ; stats(|["attribute rules stats:"
+      , "\n\tUser : ", user-defined
+      , "\n\tAdded: ", auto-added
+      , "\n\tTotal: ", <addi> (user-defined, auto-added)
+      ])
+    )

@@ -1,0 +1,127 @@
+module stratego/graph/symbols
+imports
+  libstratego-lib
+  libstratego-sref
+
+// extract productions
+signature
+  sorts SymbRef Symb SymbProperty
+  constructors
+        : Ref -> SymbRef
+    Symb: List(SymbProperty) * List(ProdRef) * List(ProdRef) * List(AttrRef) -> Symb
+
+    Name: String -> SymbProperty
+
+/**
+ * Collection of strategies to manipulate Symbols.
+ */
+strategies
+  is-symbol = where-on-ref( Symb(id, id, id, id) )
+
+  // List(SymbPropery)
+  edit-symbol-properties(s) =
+    apply-on-ref( Symb(s, id, id, id) )
+
+  get-symbol-properties =
+    where-on-ref( ?Symb(x, _, _, _) ); !x
+
+  set-symbol-properties(|x) =
+    edit-symbol-properties(!x)
+
+
+  // List(ProdRef)
+  edit-symbol-produces-d(s) =
+    apply-on-ref( Symb(id, s, id, id) )
+
+  get-symbol-produces-d =
+    where-on-ref( ?Symb(_, x, _, _) ); !x
+
+  set-symbol-produces-d(|x) =
+    edit-symbol-produces-d(!x)
+
+
+  // List(ProdRef)
+  edit-symbol-uses-d(s) =
+    apply-on-ref( Symb(id, id, s, id) )
+
+  get-symbol-uses-d =
+    where-on-ref( ?Symb(_, _, x, _) ); !x
+
+  set-symbol-uses-d(|x) =
+    edit-symbol-uses-d(!x)
+
+
+  // List(AttrRef)
+  edit-symbol-on-d(s) =
+    apply-on-ref( Symb(id, id, id, s) )
+
+  get-symbol-on-d =
+    where-on-ref( ?Symb(_, _, _, x) ); !x
+
+  set-symbol-on-d(|x) =
+    edit-symbol-on-d(!x)
+
+// Manipulates special properties of attributes
+strategies
+  // fetch the name the attribute (fails if it is an unnamed attribute).
+  get-symbol-name =
+    get-symbol-properties
+  ; one( ?Name(name) )
+  ; !name
+
+  // define the name of an attribute.
+  set-symbol-name(|name) =
+    edit-symbol-properties(
+      one-or-add(Name(!name) | Name(""))
+    )
+
+// manipulates pointers safely
+strategies
+  new-symbol =
+    <create-bind-ref> Symb([], [], [], []) => this
+  ; where(<table-put> ("SymbCollection", this, this))
+
+  del-symbol =
+    ?this
+  ; where(get-symbol-produces-d => [])
+  ; where(get-symbol-uses-d => [])
+  ; where(get-symbol-on-d => [])
+  ; destroy-ref
+  ; <table-remove> ("SymbCollection", this)
+  ; !1
+
+  all-symbols =
+    <table-keys> "SymbCollection"
+
+strategies
+  add-symbol-produces-d(| p ) =
+    edit-symbol-produces-d(
+      one-or-add(| p )
+    )
+
+  del-symbol-produces-d(| p ) =
+    edit-symbol-produces-d(
+      remove-all( ?p )
+    )
+
+
+  add-symbol-uses-d(| p ) =
+    edit-symbol-uses-d(
+      one-or-add(| p )
+    )
+
+  del-symbol-uses-d(| p ) =
+    edit-symbol-uses-d(
+      remove-all( ?p )
+    )
+
+
+  add-symbol-on-d(| a ) =
+    edit-symbol-on-d(
+      one-or-add(| a )
+    )
+
+  del-symbol-on-d(| a ) =
+    edit-symbol-on-d(
+      remove-all( ?a )
+    )

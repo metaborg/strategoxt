@@ -1,0 +1,123 @@
+module stratego/graph/productions
+imports
+  libstratego-lib
+  libstratego-sref
+
+imports
+  stratego/graph/symbols
+
+signature
+  sorts ProdRef Prod ProfProperty SymbLabel
+  constructors
+          : Ref -> ProdRef
+    Prod  : List(ProdProperty) * List(SymbRef) * SymbRef * List(RuleRef) -> Prof
+
+    Name  : String -> ProdProperty
+
+    Label : Int -> SymbLabel
+
+strategies
+  is-production = where-on-ref( Prod(id, id, id, id) )
+
+
+  edit-production-properties(s) =
+    apply-on-ref( Prod(s, id, id, id) )
+
+  get-production-properties =
+    where-on-ref( ?Prod(x, _, _, _) ); !x
+
+
+  edit-production-uses(s) =
+    apply-on-ref( Prod(id, s, id, id) )
+
+  get-production-uses =
+    where-on-ref( ?Prod(_, x, _, _) ); !x
+
+
+  edit-production-produce(s) =
+    apply-on-ref( Prod(id, id, s, id) )
+
+  get-production-produce =
+    where-on-ref( ?Prod(_, _, x, _) ); !x
+
+
+  edit-production-on-d(s) =
+    apply-on-ref( Prod(id, id, id, s) )
+
+  get-production-on-d =
+    where-on-ref( ?Prod(_, _, _, x) ); !x
+
+// Manipulates special properties of attributes
+strategies
+  // fetch the name the attribute (fails if it is an unnamed production).
+  get-production-name =
+    get-production-properties
+  ; one( ?Name(name) )
+  ; !name
+
+  // define the name of an attribute.
+  set-production-name(|name) =
+    edit-production-properties(
+      one-or-add(Name(!name) | Name(""))
+    )
+
+// manipulates pointers safely
+strategies
+  new-production(| uses, produce ) =
+    where(
+      <map(is-symbol)> uses
+    ; <is-symbol> produce
+    )
+  ; <create-bind-ref> Prod([], uses, produce, []) => this
+  ; restore( // FIXME: not safe ...
+      where(
+        <map(add-symbol-uses-d(| this ))> uses
+      ; <add-symbol-produces-d(| this )> produce
+      )
+    , destroy-ref
+    )
+  ; where(<table-put> ("ProdCollection", this, this))
+
+  del-production =
+    ?this
+  ; where(get-production-on-d => [])
+  ; where(
+      get-production-uses
+    ; map(del-symbol-uses-d(| this ))
+    )
+  ; where(
+      get-production-produce
+    ; del-symbol-produces-d(| this )
+    )
+  ; destroy-ref
+  ; <table-remove> ("ProdCollection", this)
+  ; !1
+
+  all-productions =
+    <table-keys> "ProdCollection"
+
+strategies
+  add-production-on-d(| sr ) =
+    edit-production-on-d(
+      one-or-add(| sr )
+    )
+
+  del-production-on-d(| sr ) =
+    edit-production-on-d(
+      remove-all( ?sr )
+    )
+
+// Labels manipulation
+strategies
+  // 0 = Root symbol
+  // > 0 = index in the use list
+  is-produced-label = Label(0)
+
+  get-symbol-from-label(| label ) =
+    if <is-produced-label> label then
+      get-production-produce
+    else
+      where(<?Label(i)> label)
+    ; get-production-uses
+    ; index(|i)
+    end

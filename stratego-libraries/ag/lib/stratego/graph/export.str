@@ -1,0 +1,31 @@
+module stratego/graph/export
+imports
+  libstratego-lib
+
+imports
+  stratego/graph/display
+
+strategies
+  export-graph(file) =
+    where (
+      <conc> (<all-symbols>, <all-productions>)
+    ; map(Any2DetailText)
+    ; separate-by(|<unescape> "\n\n")
+    ; <WriteToFile(fprint)> (<file>, <id>)
+    )
+
+  export-productions(file) =
+    where (
+      all-productions
+    ; map(Any2DetailText)
+    ; separate-by(|<unescape> "\n\n")
+    ; <WriteToFile(fprint)> (<file>, <id>)
+    )
+
+  export-symbols(file) =
+    where (
+      all-symbols
+    ; map(Any2DetailText)
+    ; separate-by(|<unescape> "\n\n")
+    ; <WriteToFile(fprint)> (<file>, <id>)
+    )

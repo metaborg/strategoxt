@@ -1,0 +1,249 @@
+module stratego/propagation/lr-propagation
+imports
+  stratego/graph/attributes
+  stratego/graph/symbols
+  stratego/graph/productions
+  stratego/graph/hybrid-logic
+
+  stratego/propagation/propagator
+
+signature
+  constructors
+    LrInh: LeftToRightIdentifier -> PropagationFlag
+    LrSyn: LeftToRightIdentifier -> PropagationFlag
+
+strategies
+  is-lr-inh-flag = ?LrInh(_)
+  is-lr-syn-flag = ?LrSyn(_)
+
+  get-lr-inh-id = ?LrInh(<id>)
+  get-lr-syn-id = ?LrSyn(<id>)
+  get-lr-id = get-lr-syn-id + get-lr-inh-id
+
+  lr-inh-merge = simple-merge
+  lr-syn-merge = simple-merge
+
+strategies
+  lr-inh-flags-merge = flags-merge(lr-inh-merge)
+  lr-syn-flags-merge = flags-merge(lr-syn-merge)
+
+  get-lr-inh-flags = get-flags(is-lr-inh-flag)
+  get-lr-syn-flags = get-flags(is-lr-syn-flag)
+
+  build-lr-inh-flag = !LrInh(<get-lr-inh-attribute-id>)
+  build-lr-syn-flag = !LrSyn(<get-lr-syn-attribute-id>)
+
+  is-lr-inh-attribute = where(Rattr-ud; not([]))
+  is-lr-syn-attribute = where(Rattr-pd; not([]))
+
+  get-lr-inh-attribute-id =
+    where(get-lr-attribute-id => lr-id)
+  ; is-lr-inh-attribute
+  ; !lr-id
+
+  get-lr-syn-attribute-id =
+    where(get-lr-attribute-id => lr-id)
+  ; is-lr-syn-attribute
+  ; !lr-id
+
+strategies
+  get-lr-attribute-id =
+    get-attribute-properties
+  ; fetch-elem(get-lr-id)
+    
+
+  is-lr-syn-symbol(|lr-id) =
+    where(
+      get-symbol-properties
+    ; one(test(get-lr-syn-id => lr-id))
+    )
+
+  is-lr-inh-symbol(|lr-id) =
+    where(
+      get-symbol-properties
+    ; one(test(get-lr-inh-id => lr-id))
+    )
+
+strategies
+  /**
+   * Flag propagation.
+   *
+   * type: Symbol Ref * Symbol Queue -> Symbol Queue
+   */
+  lr-inh-checks = // not used
+    propagate-flags(
+      lr-inh-flags-merge
+    , build-lr-inh-flag
+    , get-lr-inh-flags
+    , Rsymb-ud
+    , Rprod-p
+    )
+
+  lr-syn-checks =
+    propagate-flags(
+      lr-syn-flags-merge
+    , build-lr-syn-flag
+    , get-lr-syn-flags
+    , Rsymb-ud
+    , Rprod-p
+    )
+
+  lr-checks =
+    lr-syn-checks
+//    seq-fixpoint-checks(lr-inh-checks, lr-syn-checks)
+
+strategies
+  /**
+   * Check if the LR property on a symbol is coherent with the
+   * evaluation of 's'
+   */
+  lr-have-property(expect-inh-attribute | lr-id) =
+    if expect-inh-attribute then
+      id // is-lr-inh-symbol(|lr-id)
+    else
+      is-lr-syn-symbol(|lr-id)
+    end
+
+strategies
+  /**
+   * for each element which verify 's', find the nearest element on
+   * the left which verify the predicate 'p'.
+   *
+   * examples:
+   * <find-previous((id, is-even), ?3)> [1,2,3,4,3,5,3,6,7,8,9,3]
+   *   => [(3,8), (3,4), (3,4), (3,2)]
+   * <find-previous((id, is-odd) , ?3)> [1,2,3,4,3,5,3,6,7,8,9,3]
+   *   => [(3,9), (3,5), (3,3), (3,1)]
+   *
+   * @type p            b * a -> c
+   * @type s            a -> b
+   * @type              List(a) -> List(c)
+   */
+  find-previous(p, s) =
+    reverse
+  ; rec rec({t:
+      ?[]
+   <+ \ [_] -> [] \
+   <+ [s | ?t]
+    ; ![<id> | <rec> t]
+   <+ ?[_ | <rec>]
+    })
+  ; filter({elem:
+      ?[elem | <id>]
+    ; fetch-elem(<p> (elem, <id>))
+    })
+
+strategies
+  /**
+   * prod =
+   *        A
+   *      / | \
+   *     /  |  \
+   *    B   C   D
+   *
+   * <get-cyclic-rules-names> prod
+   *   => [(Label(0), A), (Label(1), B), (Label(2), C), (Label(3), D), (Label(0), A)]
+   *
+   * @type              ProdRef -> List(SymbLabel * SymbRef)
+   */
+  get-cyclic-production-symbols =
+    get-production-symbols
+  ; [?h | id]
+  ; [id | at-end(![h])]
+
+
+  /** Get all rule patterns to define the left-to-right attribute.
+   *
+   * @type td-id        TopDownIdentifier
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef -> List(AttrKey * List(SymbLabel))
+   */
+  get-lr-rule-patterns(|lr-id, attr, symb, label) =
+    ?prod
+  ; get-cyclic-production-symbols
+  ; find-previous({lhs-lbl,lhs-ref,rhs-lbl,rhs-ref:
+      // check the right to use/produce an LR-attribute.
+        ?((lhs-lbl, lhs-ref) // target symbol
+        , (rhs-lbl, rhs-ref) // source symbol
+        )
+      ; where(// lhs.attr := rhs.attr
+        // check if the left hand side (target symbol) have an input
+        // flag depending on its position in the production.
+          <lr-have-property(<not(is-produced-label)> lhs-lbl | lr-id)> lhs-ref
+        // check if the right hand side (source symbol) have an output
+        // flag depending on its position in the production.
+        ; <lr-have-property(<is-produced-label> rhs-lbl | lr-id)> rhs-ref
+        )
+      }
+    // the target is a couple like: SymbLabel * SymbRef.
+    , ?(label ,symb)
+    )
+  ; map({lbl:
+      ( Fst => lbl; create-key(|lbl, attr), ![<Fst>] )
+    })
+
+
+  /** Propagation rule for left-to-right attributes.
+   *
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type attr                 AttrRef
+   * @type symb                 SymbRef
+   * @type label                SymbLabel
+   * @type                      ProdRef * Queue -> Queue
+   */
+  lr-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label) =
+    generic-propagation-rule(get-lr-attribute-id, get-lr-rule-patterns
+    , create-rule
+    , create-rule-attr
+    , fetch-produce
+    , fetch-uses
+    , similar-code
+    | attr
+    , symb
+    , label
+    )
+
+// useful strategies
+strategies
+  lr-is-name-syn =
+    string-as-chars(
+      at-suffix(['_','s','y','n']; ![])
+    )
+
+  lr-is-name-inh =
+    string-as-chars(
+      at-suffix(['_','i','n','h']; ![])
+    )
+
+  /**
+   * Add a suffix to the attribute name as describe by the evaluation
+   * of 's'.
+   */
+  lr-add-suffix(expect-inh-attribute) =
+    string-as-chars(
+      if expect-inh-attribute then
+        at-end(!['_','i','n','h'])
+      else
+        at-end(!['_','s','y','n'])
+      end
+    )
+
+  lr-match-name =
+    match-attr-name(| "lr_" )
+
+  add-attribute-lr-flag(is-produced | lr-id) =
+    if is-produced then /* is-lr-syn-attribute */
+      edit-attribute-properties(
+        one-or-add(|LrSyn(lr-id))
+      )
+    else
+      edit-attribute-properties(
+        one-or-add(|LrInh(lr-id))
+      )
+    end

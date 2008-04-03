@@ -1,0 +1,230 @@
+module stratego/graph/attributes
+imports
+  libstratego-lib
+  libstratego-sref
+
+imports
+  stratego/graph/symbols
+  stratego/graph/productions
+
+signature
+  sorts AttrKey AttrRef AttrProperty SRDir SRuleRef
+  constructors
+    AttrKey: SymbLabel * AttrRef -> AttrKey
+
+    /**
+     * Define attributes:
+     * - properties: name, local, dependencies
+     * - "produced by" list
+     * - "used by" list
+     * - the symbol on which the attribute is.
+     */
+         : Ref -> AttrRef
+    Attr : List(AttrProperty) * List(RuleDir) * List(RuleDir) * SymbRef -> Attr
+
+    // name of the attribute
+    Name : AttrName -> AttrProperty
+         : String -> AttrName
+
+    // the attribute is defined as local
+    Local: AttrProperty
+
+    // dependencies between attribute on a symbol.
+    Dep  : List(AttrRef) * List(AttrRef) -> AttrProperty
+
+    // if the attribute is used or produced as synthesized or inherited by a
+    // semantic rule.
+    Syn  : RuleRef -> RuleDir
+    Inh  : RuleRef -> RuleDir
+
+/**
+ * Fetch attribute properties
+ */
+strategies
+  is-attrkey = AttrKey(id, id)
+
+  is-attribute = where-on-ref( Attr(id, id, id, id) )
+
+  // List(AttrProperty)
+  edit-attribute-properties(s) =
+    apply-on-ref( Attr(s, id, id, id) )
+
+  get-attribute-properties =
+    where-on-ref( ?Attr(x, _, _, _) ); !x
+
+  set-attribute-properties(|x) =
+    edit-attribute-properties(!x)
+
+  // List(RuleDir)
+  edit-attribute-produce-d(s) =
+    apply-on-ref( Attr(id, s, id, id) )
+
+  get-attribute-produce-d =
+    where-on-ref( ?Attr(_, x, _, _) ); !x
+
+  set-attribute-produce-d(|x) =
+    edit-attribute-produce-d(!x)
+
+  // List(RuleDir)
+  edit-attribute-use-d(s) =
+    apply-on-ref( Attr(id, id, s, id) )
+
+  get-attribute-use-d =
+    where-on-ref( ?Attr(_, _, x, _) ); !x
+
+  set-attribute-use-d(|x) =
+    edit-attribute-use-d(!x)
+
+  // SymbRef
+  edit-attribute-on(s) =
+    apply-on-ref( Attr(id, id, id, s) )
+
+  get-attribute-on =
+    where-on-ref( ?Attr(_, _, _, x) ); !x
+
+  set-attribute-on(|x) =
+    edit-attribute-use-d(!x)
+
+// Manipulates special properties of attributes
+strategies
+  get-attrkey-label = ?AttrKey(<id>, _)
+  get-attrkey-attrref = ?AttrKey(_, <id>)
+
+  // fails if the attribute is not local.
+  is-attribute-local =
+    get-attribute-properties
+  ; one( ?Local() )
+
+  // define the attribute as a local attribute.
+  set-attribute-as-local =
+    edit-attribute-properties(
+      one-or-add(| Local() )
+    )
+
+  // fetch the name the attribute (fails if it is an unnamed attribute).
+  get-attribute-name =
+    get-attribute-properties
+  ; one( ?Name(name) )
+  ; !name
+
+  // define the name of an attribute.
+  set-attribute-name(|name) =
+    edit-attribute-properties(
+      one-or-add(Name(!name) | Name(""))
+    )
+
+
+  // get the list of dependencies of the attribute.
+  get-attribute-dependencies =
+    get-attribute-properties
+  ; ( one( ?Dep(d, _) )
+    ; !d
+   <+ ![]
+    )
+
+  // add a new element in the list of dependencies of the attribute.
+  add-attribute-dependencies(|attr) =
+    edit-attribute-properties(
+      one-or-add(
+        Dep( one-or-add(|attr) , id )
+      | Dep([], [])
+      )
+    )
+
+  // get the inverse list of dependencies of the attribute.
+  get-attribute-dependencies-d =
+    get-attribute-properties
+  ; ( one( ?Dep(_, d) )
+    ; !d
+   <+ ![]
+    )
+
+  // add a new element in the inverse list of dependencies of the attribute.
+  add-attribute-dependencies-d(|attr) =
+    edit-attribute-properties(
+      one-or-add(
+        Dep( id, one-or-add(|attr) )
+      | Dep([], [])
+      )
+    )
+
+// manipulates pointers safely
+strategies
+  new-attribute(| on ) =
+    where(<is-symbol> on)
+  ; <create-bind-ref> Attr([], [], [], on) => this
+  ; restore(
+      where(<add-symbol-on-d(| this )> on)
+    , destroy-ref
+    )
+  ; where(<table-put> ("AttrCollection", this, this))
+
+  del-attribute =
+    ?this
+  ; where(get-attribute-produce-d => [])
+  ; where(get-attribute-use-d => [])
+  ; where(get-attribute-on; del-symbol-on-d(| this ))
+  ; destroy-ref
+  ; <table-remove> ("AttrCollection", this)
+  ; !1
+
+  all-attributes =
+    <table-keys> "AttrCollection"
+
+  create-key(|lbl, attrref) =
+    !AttrKey(lbl, attrref)
+
+// attributes are manipulated by semantic rules
+// add or delete an AttrKey
+strategies
+  key-is-on-root =
+    AttrKey(is-produced-label, id)
+
+  add-attribute-produce-d(| sr ) =
+    where(
+      ?k@AttrKey(_, <id>)
+    ; edit-attribute-produce-d(
+        if <key-is-on-root> k then
+          one-or-add(| Syn(sr) )
+        else
+          one-or-add(| Inh(sr) )
+        end
+      )
+    )
+
+  del-attribute-produce-d(| sr ) =
+    where(
+      ?k@AttrKey(_, <id>)
+    ; edit-attribute-produce-d(
+        if <key-is-on-root> k then
+          remove-all( ?Syn(sr) )
+        else
+          remove-all( ?Inh(sr) )
+        end
+      )
+    )
+
+
+  add-attribute-use-d(| sr ) =
+    where(
+      ?k@AttrKey(_, <id>)
+    ; edit-attribute-use-d(
+        if <key-is-on-root> k then
+          one-or-add(| Inh(sr) )
+        else
+          one-or-add(| Syn(sr) )
+        end
+      )
+    )
+
+  del-attribute-use-d(| sr ) =
+    where(
+      ?k@AttrKey(_, <id>)
+    ; edit-attribute-use-d(
+        if <key-is-on-root> k then
+          remove-all( ?Inh(sr) )
+        else
+          remove-all( ?Syn(sr) )
+        end
+      )
+    )

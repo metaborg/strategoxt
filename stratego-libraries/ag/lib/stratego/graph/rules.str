@@ -1,0 +1,108 @@
+module stratego/graph/rules
+imports
+  libstratego-lib
+  libstratego-sref
+
+imports
+  stratego/graph/productions
+  stratego/graph/attributes
+
+signature
+  sorts RuleRef Rule RuleProperty Code EmbeddedLanguage
+  constructors
+        : Ref -> RuleRef
+    Rule: List(RuleProperty) * List(AttrKey) * AttrKey * ProdRef -> Rule
+
+    Code: EmbeddedLanguage -> RuleProperty
+
+strategies
+  is-rule = where-on-ref( Rule(id, id, id, id) )
+
+  // List(RuleProperty)
+  edit-rule-properties(s) =
+    apply-on-ref( Rule(s, id, id, id) )
+
+  get-rule-properties =
+    where-on-ref( ?Rule(x, _, _, _) ); !x
+
+  // List(AttrKey)
+  edit-rule-uses(s) =
+    apply-on-ref( Rule(id, s, id, id) )
+
+  get-rule-uses =
+    where-on-ref( ?Rule(_, x, _, _) ); !x
+
+  // AttrKey
+  edit-rule-produce(s) =
+    apply-on-ref( Rule(id, id, s, id) )
+
+  get-rule-produce =
+    where-on-ref( ?Rule(_, _, x, _) ); !x
+
+  // ProdRef
+  edit-rule-on(s) =
+    apply-on-ref( Rule(id, id, id, s) )
+
+  get-rule-on =
+    where-on-ref( ?Rule(_, _, _, x) ); !x
+
+// Manipulates special properties of attributes
+strategies
+  // fetch the code the attribute.
+  get-rule-code =
+    get-rule-properties
+  ; one( ?Code(code) )
+  ; !code
+
+  /* internal */
+  // can modify the code but not the dependencies!
+  // define the code of an attribute.
+  add-rule-code(|code) =
+    edit-rule-properties(
+      one-or-add(Code(!code) | Code("dummy"))
+    )
+
+// manipulates pointers safely
+strategies
+  new-rule(fetch-produce, fetch-uses | code, on ) =
+    where(
+      <fetch-produce> (on, code) => produce
+    ; <fetch-uses> (on, code) => uses
+    )
+  ; new-rule(| produce, uses, code, on )
+
+  new-rule(| produce, uses, code, on ) =
+    where(<is-production> on)
+  ; where(<is-attrkey> produce; <map(is-attrkey)> uses)
+  ; <create-bind-ref> Rule([], uses, produce, on) => this
+  ; restore( // FIXME: not safe ...
+      where(<add-production-on-d(| this )> on)
+    ; add-rule-code(| code )
+    ; where(
+        <map(add-attribute-use-d(| this ))> uses
+      ; <add-attribute-produce-d(| this )> produce
+      )
+    , destroy-ref
+    )
+  ; where(<table-put> ("RuleCollection", this, this))
+
+  del-rule =
+    ?this
+  ; where(
+      get-rule-on
+    ; del-production-on-d(| this )
+    )
+  ; where(
+      get-rule-uses
+    ; map(del-attribute-use-d(| this ))
+    )
+  ; where(
+      get-rule-produce
+    ; del-attribute-produce-d(| this )
+    )
+  ; destroy-ref
+  ; <table-remove> ("RuleCollection", this)
+  ; !1
+
+  all-rules =
+    <table-keys> "RuleCollection"

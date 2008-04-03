@@ -1,0 +1,149 @@
+module stratego/graph/display
+imports
+  stratego/graph/symbols
+  stratego/graph/productions
+  stratego/graph/attributes
+  stratego/graph/rules
+  stratego/graph/hybrid-logic
+
+strategies
+  /** Register a list of dummy rules that should be overload by your
+   * own system to get more acruate messages.
+   */
+  register-dummy-display =
+    rules(
+      Any2Text:+ input -> output
+        where < // sed -n 's,^  \(.*\) =.*,      + \1,p'
+        dummy-text-2-text
+      + dummy-symbol-2-text
+      + dummy-symbol-list-2-text
+      + dummy-production-2-text
+      + dummy-production-label-2-text
+      + dummy-attrkey-2-text
+      + dummy-attrkey-list-2-text
+      + dummy-attribute-2-text
+      + dummy-attribute-list-2-text
+      + dummy-rule-2-text
+     <+ !"/no-display/"
+      > input => output
+
+      Any2DetailText:+ input -> output
+        where <
+        dummy-production-2-detail-text
+      + dummy-symbol-2-detail-text
+      + dummy-attribute-2-detail-text
+     <+ Any2Text
+        > input => output
+    )
+
+strategies
+  dummy-text-2-text = is-string
+
+  dummy-list-2-text(disp | sep) =
+    map(disp)
+  ; filter(not(""))
+  ; separate-by(|sep)
+  ; concat-strings
+
+  dummy-symbol-2-text =
+    get-symbol-name
+
+  dummy-symbol-2-detail-text =
+    is-symbol
+  ; ![<Any2Text>
+    , <unescape> ": "
+    , <get-symbol-properties; write-to-string>
+    | < Rsymb-od; map(Any2DetailText)
+      ; !["" | <id>]
+      ; separate-by(|<unescape> "\n\t")
+      >
+    ]
+  ; concat-strings
+
+  dummy-symbol-list-2-text =
+    dummy-list-2-text(is-symbol; Any2Text | " ")
+
+  dummy-production-2-text =
+    <concat-strings> [
+      <<conc-strings> (<get-production-name>, ": ") <+ !"">
+    , <Rprod-u; Any2Text>
+    , " -> "
+    , <Rprod-p; Any2Text>
+    ]
+
+  dummy-production-2-detail-text =
+    is-production
+  ; ![<Any2Text> | <Rprod-od; map(Any2Text)>]
+  ; separate-by(|<unescape> "\n\t")
+  ; concat-strings
+
+  dummy-production-label-2-text =
+    ?Label(<
+       if 0 then
+         !"root"
+       else
+         <conc-strings> ("symb", <int-to-string>)
+       end
+     >)
+
+  dummy-attrkey-2-text =
+    ?AttrKey(l, a)
+  ; <concat-strings> [<Any2Text> l, ".", <Any2Text> a]
+
+  dummy-attrkey-list-2-text =
+    dummy-list-2-text(is-attrkey; Any2Text | ", ")
+
+  dummy-attribute-2-text =
+    get-attribute-name
+
+  dummy-attribute-2-detail-text =
+    is-attribute
+  ; ![<Any2Text>
+    , <unescape> ": "
+    , <get-attribute-properties; write-to-string>
+    ]
+  ; concat-strings
+
+  dummy-attribute-list-2-text =
+    dummy-list-2-text(is-attribute; Any2Text | " ")
+
+  dummy-rule-2-text =
+    <concat-strings> [
+      <Rrule-p-key; Any2Text>
+    , " <- ["
+    , <Rrule-u-key; Any2Text>
+    , "]"
+    ]
+
+strategies
+  /** Display a tree from a dependency tree, see dependencies-2-text
+   */
+  display-tree =
+    where(<unescape> "\n    " => indent)
+  ; display-tree(|indent)
+  ; <concat-strings> [indent, <id>]
+
+  /** Bis */
+  display-tree(|indent) =
+    \ (r, c) -> [r | c] \
+  ; [id | [] + at-init(
+      display-tree(| <concat-strings> [indent, "|  "] )
+    , display-tree(| <concat-strings> [indent, "   "] )
+    )]
+  ; separate-by(| <concat-strings> [indent, "+- "] )
+  ; concat-strings
+
+  /** Nice display of dependencies.
+   *
+   * @type      b * s@List(a * s) -> String
+   */
+  dependencies-2-text(on) =
+    ( Any2Text
+    , rec rec(map(
+        ( <concat-strings> [<on; Any2Text>, " {", <Any2Text>, "}"]
+        , rec
+        )
+      ))
+    )
+  ; display-tree
+ <+ <unescape> "\ndependencies-2-text: Not working ... sad :("

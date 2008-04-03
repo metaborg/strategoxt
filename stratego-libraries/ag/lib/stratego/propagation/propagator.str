@@ -1,0 +1,442 @@
+// TODO: should ask the propagation for AttrKey * ProdRef instead of AttrRef * SymbRef * ProdRef
+// This would ease the code implementation and give better error messages.
+module stratego/propagation/propagator
+imports
+  stratego/graph/symbols
+  stratego/graph/productions
+  stratego/graph/attributes
+  stratego/graph/symbol-fixpoint
+  stratego/graph/hybrid-logic
+  stratego/graph/paths
+
+  stratego/propagation/flag-user-rules
+
+signature
+  sorts PropagationFlag
+  constructors
+      : PropagationFlag -> SymbProperty
+      : PropagationFlag -> AttrProperty
+
+strategies
+  /** Propagate all attributes that are required. Fails
+   * if an error occur in the process.
+   * 
+   * @type propagate-attribute  ProdRef * Queue -> Queue
+   * @type      _ -> _
+   */
+  propagate(propagate-attribute) =
+    symbol-fixpoint(propagator-checks(propagate-attribute))
+
+strategies
+  /** Backtrack to retrieve the propagation process by followwing semantic
+   * rules.
+   *
+   * @type prod         ProdRef
+   * @type              AttrRef -> String
+   */
+  // FIXME: should propably be moved to another file
+  backtrack-to-user-rules(|prod) =
+    <conc> (<Rattr-pd>, <Rattr-ud>)
+  ; find-all-shortest-paths-to(is-user-defined, Rrule-p => [<Rattr-ud>])
+  ; !(prod, <id>)
+  ; dependencies-2-text(Rrule-o => [<id>])
+
+
+  /** Report error messages if some attributes are not defined as
+   * expected.
+   *
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef * Queue -> Queue
+   */
+  check-missing-propagation-rule(|attr, symb, label) =
+    ?(prod, <id>)
+  ; where(
+      <get-production-symbols> prod // FIXME: no longer used.
+    ; list-loop(try(
+        ?(label, symb)
+      ; not(<is-already-produce(| label, prod )> attr)
+      ; !["No definition of \"", <create-key(|label, attr); Any2Text>
+        , "\" on the production:\n\t", <Any2DetailText> prod
+        , "\n\n  Needed to satisfy:", <backtrack-to-user-rules(|prod)> attr
+        ]
+      ; <add-error> ((prod, label, attr), <id>)
+      ))
+    )
+
+  /** Wrapper over the strategy 'propagation-rule' and produce an error
+   * message if no 'propagation-rule' have succeeded.
+   *
+   * @type propagate-attribute  ProdRef * Queue -> Queue
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef * Queue -> Queue
+   */
+  propagate-attribute-wrapper(
+    propagate-attribute: AttrRef * SymbRef * SymbLabel * (ProdRef, Queue) -> Queue
+  | attr, symb, label) =
+    where(
+      ?(<id>, _)
+    ; dbg(|["Propagate ", <create-key(|label, attr); Any2Text>, " on ", <Any2Text>])
+    )
+  ; ( propagate-attribute(|attr, symb, label)
+   <+ check-missing-propagation-rule(|attr, symb, label)
+    )
+
+
+  /** Satisfy the need of the existence of all synthesized productions.
+   * The returned queue should contains all rules which have been
+   * modified by the propagation rule.
+   *
+   * @type propa        ProdRef * Queue -> Queue
+   * @type symb         SymbRef
+   * @type              AttrRef * Queue -> Queue
+   */
+  need-all-prod-d-s(propa | symb) =
+    ?(attr@<id>, queue)
+  ; <Rsymb-pd> symb
+  ; if not([]) then
+      foldr(!queue, propagate-attribute-wrapper(propa | attr, symb, Label(0)))
+    ; where( // Verify if the expression is satisfied
+        <expr-attr-all-pds> attr
+     <+ !["the attribute \"", <Any2Text> attr
+        , "\" is not synthesized by some productions producing the symbol \""
+        , <Any2Text> symb , "\"."
+        ]
+      ; <add-error> ((symb, attr), <id>)
+      )
+    else
+      <add-error> ((symb, attr), [
+        "Cannot propagate the attribute \"", <Any2Text> attr
+      , "\" on the symbol \"", <Any2Text> symb
+      , "\" since the previous symbol is not produced."
+      ])
+    ; !queue
+    end
+
+  /** Satisfy the need of the existence of all inherited productions.
+   * The returned queue should contains all rules which have been
+   * modified by the propagation rule.
+   *
+   * @type propa        ProdRef * Queue -> Queue
+   * @type symb         SymbRef
+   * @type              AttrRef * Queue -> Queue
+   */
+  need-all-prod-d-i(propa | symb) =
+    ?(attr@<id>, queue)
+  ; <Rsymb-ud> symb
+    // should have something like Rsymb-ud-lbl instead of the following.
+  ; mapconcat({prod:
+      ?prod
+    ; Rprod-u
+    ; map-with-index(id)
+    ; filter( (!Label(<id>), ?symb; !prod) )
+    })
+  ; if not([]) then
+      foldr(
+        !queue
+      , {l, p, q: ?((l, p), q); !(p, q)
+      ; propagate-attribute-wrapper(propa | attr, symb, l)
+      })
+    ; where( // Verify if the expression is satisfied
+        <expr-attr-all-pdi> attr
+     <+ !["the attribute \"", <Any2Text> attr
+        , "\" is not inherited by some productions using the symbol \""
+        , <Any2Text> symb , "\"."
+        ]
+      ; <add-error> ((symb, attr), <id>)
+      )
+    else
+      <add-error> ((symb, attr), [
+        "Cannot propagate the attribute \"", <Any2Text> attr
+      , "\" on the symbol \"", <Any2Text> symb
+      , "\" since the previous symbol is not used."
+      ])
+    ; !queue
+    end
+
+  /** @internal
+   * @type              SymbRef * AttrRef -> _
+   */
+  error-produce-syn-and-inh =
+    where(
+      ?key@(symb, attr)
+    ; !["The attribute \"", <Any2Text> attr
+      , "\" on the symbol \"", <Any2Text> symb
+      , "\" is produce as synthesized attribute and as inherited attribute."
+      ]
+    ; <add-error> (key, <id>)
+    )
+
+strategies
+  /** Check & Apply the propagation from the current attribute.
+   *
+   * @type propa        ProdRef * Queue -> Queue
+   * @type              AttrRef * Queue -> Queue
+   */
+  propagator-checks-attribute(propa | symb) =
+    ?(attr, queue@<id>)
+  ; where(
+      try(<expr-attr-exists-pds> attr; ?pds)
+    ; try(<expr-attr-exists-pdi> attr; ?pdi)
+    ; try(<expr-attr-exists-uds> attr; ?uds)
+    ; try(<expr-attr-exists-udi> attr; ?udi)
+    ; try(<expr-attr-udi-impl-pds> attr; ?udi-impl-pds)
+    )
+  ; switch id
+      case !pds; !pdi:
+        where(<error-produce-syn-and-inh> (symb, attr))
+      case not(!pdi); not(!uds); !pds; !udi-impl-pds: // local attribute
+        id
+      case !pdi: <need-all-prod-d-i(propa | symb)> (attr, <id>)
+      case !pds: <need-all-prod-d-s(propa | symb)> (attr, <id>)
+      case !udi: <need-all-prod-d-i(propa | symb)> (attr, <id>)
+      case !uds: <need-all-prod-d-s(propa | symb)> (attr, <id>)
+      otherwise:
+        // If an attribute appears magically on the graph.
+        !["ICE: the propagation of the attribute \"", <Any2Text> attr
+        , "\" is not handle by the attribute propagator on the symbol \""
+        , <Any2Text> symb , "\"."
+        ]
+      ; <add-message-severity(|Critical())> ((symb, attr), <id>)
+      ; !queue
+    end
+
+  /**
+   * Check & Apply the propagation on the current Symbol.
+   *
+   * @type propa        ProdRef * Queue -> Queue
+   * @type              SymbRef * Queue -> Queue
+   */
+  propagator-checks(propa) =
+    ?(symb@<id>, queue)
+  ; Rsymb-od
+  ; foldr(!queue, propagator-checks-attribute(propa | symb))
+
+strategies
+  /**
+   * Get the list to convert a reference to a symbol name inside the
+   * current production.
+   * The labels order is very important.
+   *
+   * @type      ProdRef -> List(Label * SymbRef)
+   */
+//  get-rules-name =
+  get-production-symbols =
+    ![< Rprod-p => [<!(Label(0), <id>)>] >
+    | < Rprod-u
+      ; map-with-index( (!Label(<id>), id) )
+      >
+    ]
+
+  /**
+   * Look inside a production if an attribute is already produce in
+   * which case the propagation should not be done by the propagator.
+   * If there is a production of this attribute, it returns the
+   * strategy used to defined the attribute.
+   * Fail if no definition exists.
+   *
+   * @type lbl          SymbLabel
+   * @type prod         ProdRef
+   * @type              AttrRef -> RuleRef
+   */
+  is-already-produce(|lbl, prod) =
+    ?attr
+  ; <Rone(Rprod-od
+    , Rall(Rrule-p-key
+      , where(get-attrkey-label => lbl)
+      ; where(get-attrkey-attrref => attr)
+      )
+    ; ?rule
+    )> prod
+  ; !rule
+
+/*
+  is-already-produce(| attr-rule, prod ) =
+    ?attribute-rule(_, <id>, _)
+  ; ?attribute(label, attr-ns, attr-name)
+  ; <is-already-produce(| attr-name, attr-ns, prod )> label
+*/
+
+  /**
+   * Push all related symbol of the strategy inside the queue to visit
+   * all symbols related to this strategy (in case of add/modification
+   * of this strategy)
+   *
+   * @type prod         ProdRef
+   * @type              RuleRef * Queue -> Queue
+   */
+  push-related-symbols-in-queue(| prod ) =
+    ?(rule@<id>, queue)
+  ; Rrule-u
+  ; map(Rattr-o => [<id>])
+  ; foldr(!queue, symbol-fixpoint-push)
+
+/*
+  ; if one(is-symb-not-used) then
+      map(try({symb,attr:
+        is-symb-not-used => symb
+      ; <Rrule-p> rule => [attr]
+      ; !["Try to add an attribute on that cannot be defined on the symbol \""
+        , <Any2Text> symb
+        , "\" from the production:\n\t", <Any2DetailText> production
+        , "\n\n  Needed to satisfy:"
+        , <backtrack-to-user-rules(|prod)> attr
+        ]
+      ; <add-error> ((prod, symb), <id>)
+      }))
+    ; !queue
+    else
+*/
+
+  /** Add and register a new strategy on a production.
+   * Add in the queue all symbols related to this modification.
+   *
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type                      (ProdRef * EmbeddedLanguage) * Queue -> Queue
+   */
+  add-propagated-rule(create-rule-attr, fetch-produce, fetch-uses, similar-code) =
+    ?((prod, rule-code), queue)
+    // already exists
+  ; <fetch-produce> (prod, rule-code) => produce
+  ; <get-attrkey-label> produce => lbl
+  ; <get-attrkey-attrref> produce => attr
+  ; if <is-already-produce(|lbl, prod)> attr => this then
+      if <is-user-defined> this; <similar-code> (<get-rule-code> this, rule-code) then
+        !["Useless code (can be generated) written for "
+        , "\"",<Any2Text> produce, "\" on:\n\t"
+        , <Any2Text> prod
+        ]
+      ; <add-warning> ((prod, produce), <id>)
+      end
+    ; !queue
+    else
+      // create new attributes (not before)
+      <create-rule-attr> (prod, rule-code) => code
+    ; <fetch-uses> (prod, code) => uses
+    ; new-rule(| produce, uses, code, prod ) => this
+    ; <push-related-symbols-in-queue(| prod )> (this, queue)
+    end
+
+  /** Create all rules needed.
+   *
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type prod                 ProdRef
+   * @type                      List(AttrKey * List(SymbLabel)) * Queue -> Queue
+   */
+  add-propagated-rules(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | prod) =
+    ?(<id>, queue)
+  ; not([])
+  ; foldr(
+      !queue
+    , add-propagated-rule(create-rule-attr, fetch-produce, fetch-uses, similar-code)
+    , !(prod, <{p,us:
+        ?(p,us)
+      ; <create-rule> (prod, p, us)
+      }>)
+    )
+
+
+  /** Propagation rule for any attributes.
+   *
+   * @type get-propa-id         AttrRef -> PropagationId
+   * @type get-rule-patterns    (PropagationId, AttrRef, SymbRef) * ProdRef
+   *                            -> List(AttrKey * List(SymbLabel))
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type attr                 AttrRef
+   * @type symb                 SymbRef
+   * @type label                SymbLabel
+   * @type                      ProdRef * Queue -> Queue
+   */
+  generic-propagation-rule(get-propa-id, get-rule-patterns
+  , create-rule
+  , create-rule-attr
+  , fetch-produce
+  , fetch-uses
+  , similar-code
+  | attr
+  , symb
+  , label
+  ) =
+    ?(prod@<id>, queue)
+  ; where(<get-propa-id> attr => propa-id)
+  ; get-rule-patterns(|propa-id, attr, symb, label)
+  ; !(<id>, queue)
+  ; add-propagated-rules(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | prod)
+
+
+// sef of common strategies used by propagations.
+// should remove a lot of things and used common strategies
+strategies
+  // see LMerge.
+  InPlaceMerge(s):
+    [x | l] -> l'
+    where <at-suffix( [<s> (x, <id>) | id] )> l => l'
+
+  simple-merge = \ (e, e) -> e \
+
+  flags-merge(merge) =
+    ?(init, <id>)
+  ; foldr(!init,
+      \ (h,t) -> [h|t] \
+    ; try(InPlaceMerge(merge))
+    )
+
+  get-flags(is-flag) =
+    get-symbol-properties
+  ; filter(is-flag)
+
+  match-attr-name(| prefix ) =
+    try(get-attribute-name)
+  ; string-starts-with(| prefix )
+
+  /**
+   * Propagates flags over the grammar.
+   *
+   * flags-merge: List(Flag) * List(Flag) -> List(Flag)
+   * build-flag: Attribute -> Flag
+   * get-flags: Symbol -> List(Flag)
+   * get-related-prod: Symbol -> List(Production)
+   * get-related-symb: Production -> List(Symbol)
+   * 
+   * type: Symbol Ref * Symbol Queue -> Symbol Queue
+   */
+  propagate-flags(flags-merge, build-flag, get-flags, get-related-prod, get-related-symb) =
+    ?(symbol@<id>, queue)
+    // Update local flags
+  ; edit-symbol-properties(
+      <flags-merge> (
+        <id>
+      , <Rsymb-od; filter(build-flag)> symbol
+      )
+    )
+    // Fetch local flags
+  ; <get-flags> symbol => flags
+  ; if !flags => [] then // optimized
+      !queue
+    else
+    // Propagate these flags to the related productions.
+      !symbol
+    ; get-related-prod
+    ; mapconcat(get-related-symb;
+        // Keep modified symbols
+        filter(edit-symbol-properties(
+          <not(eq); Fst> (<flags-merge> (<id>, flags), <id>)
+        ))
+      )
+    // Add modified symbol in the queue.
+    ; foldr(!queue, symbol-fixpoint-push)
+    end

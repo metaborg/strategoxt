@@ -1,0 +1,38 @@
+module stratego/graph/paths
+imports
+  libstratego-lib
+
+strategies
+  /**
+   * Follow the 'next' relation to find all shortest paths to nodes
+   * that satisfy the predicate 's'.
+   *
+   * @type next a -> List(a)
+   * @type s    a -> _
+   * @type      List(a) -> s@List(a * s)
+   */
+  find-all-shortest-paths-to(s, next) = {|Seen:
+    map(![<id>])
+  ; repeat({fixpoint:
+      ?fixpoint
+    ; filter({stra,hist:
+        if [ s | id ] then
+          ![<id>]
+        else
+          ?hist@[<id> | _]
+        ; not(Seen) => stra
+        ; rules(Seen: stra -> stra)
+        ; next
+        ; map( ![<id> | hist] )
+        end
+      })
+    ; concat
+    ; not(?fixpoint)
+    })
+  ; map(reverse)
+  ; rec rec(listtd(try({x:
+      ?[ [x | _] | _ ]
+    ; partition( ?[x | <id>] )
+    ; ![ (x, <Fst; remove-all([]); rec>) | <Snd>]
+    })))
+  |}

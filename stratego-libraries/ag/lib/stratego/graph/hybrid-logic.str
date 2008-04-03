@@ -1,0 +1,212 @@
+/**
+ * This file define all strategies related to the hybrid logic.
+ */
+module stratego/graph/hybrid-logic
+imports
+  libstratego-lib
+
+imports
+  stratego/graph/symbols
+  stratego/graph/productions
+  stratego/graph/attributes
+  stratego/graph/rules
+
+/**
+ * Check the validity of the expression.
+ *
+ * the strategies are provided by imported modules:
+ * - is-symbol
+ * - is-production
+ * - is-attribtue
+ * - is-rule
+ */
+
+/**
+ * 'all-*' strategies are used to fetch the list of all production,
+ * symbols, strategies, symbol contain in the attribute grammar.
+ *
+ * \forall is-production   -> all-productions
+ * \forall is-symbol       -> all-symbols
+ * \forall is-strategy     -> all-strategies
+ * \forall is-attribute    -> all-attributes
+ */
+
+/**
+ * Define usual operators
+ *
+ * \not \phi               -> hl-not(phi)
+ * \phi \and \psy          -> hl-and(phi, psy)
+ * \phi \or \psy           -> hl-or(phi, psy)
+ * \phi \impl \psy         -> hl-impl(phi, psy)
+ *
+ * phi: Node -> _
+ * psy: Node -> _
+ * 
+ * type: Node -> _
+ */
+strategies
+  hl-not(s) = not(s)
+
+  hl-or(s1, s2) = s1 <+ s2
+
+  hl-and(s1, s2) = where(s1); s2
+
+  hl-impl(s1, s2) = where(s1) < s2 + id
+
+
+/**
+ * Reachable strategies are used to return a list of node reachable by
+ * following a specific relation.
+ *
+ * Nodes could be: {node-type}
+ *  - a production.             {prod}
+ *  - a symbol.                 {symb}
+ *  - a rule.                   {rule}
+ *  - an attribute.             {attr}
+ * 
+ * Relations could be: {relation}
+ *  - Produce                   {p}
+ *  - Use                       {u}
+ *  - On                        {o}
+ *  - Depend                    {d}
+ *
+ * Properties could be: {property}
+ *  - Dager                     {d} // follow the inverse relation
+ *  - Inhertited                {i}
+ *  - Synthesized               {s}
+ *
+ * The syntax is the following:
+ *  - R{node-type}-{relation}{property}
+ *
+ * @type                        a {node-type} -> List(b {node-type})
+ */
+strategies
+  // Symbols
+  Rsymb-pd = get-symbol-produces-d
+  Rsymb-ud = get-symbol-uses-d
+  Rsymb-od = get-symbol-on-d
+
+  // Productions
+  Rprod-p = ![<get-production-produce>]
+  Rprod-u = get-production-uses
+  Rprod-od = get-production-on-d
+
+  // Attributes
+  Rattr-pd-dir = get-attribute-produce-d
+
+  Rattr-pd = Rattr-pd-dir; map(?Inh(<id>) + ?Syn(<id>))
+  Rattr-pdi = Rattr-pd-dir; filter(?Inh(<id>))
+  Rattr-pds = Rattr-pd-dir; filter(?Syn(<id>))
+
+  Rattr-ud-dir = get-attribute-use-d
+
+  Rattr-ud = Rattr-ud-dir; map(?Inh(<id>) + ?Syn(<id>))
+  Rattr-udi = Rattr-ud-dir; filter(?Inh(<id>))
+  Rattr-uds = Rattr-ud-dir; filter(?Syn(<id>))
+
+  Rattr-o = ![<get-attribute-on>]
+
+  Rattr-d = get-attribute-dependencies
+  Rattr-dd = get-attribute-dependencies-d
+
+  // Rules
+  Rrule-p-key = ![<get-rule-produce>]
+
+  Rrule-p = Rrule-p-key; map(get-attrkey-attrref)
+  Rrule-pi = Rrule-p-key; filter(not(key-is-on-root); get-attrkey-attrref)
+  Rrule-ps = Rrule-p-key; filter(key-is-on-root; get-attrkey-attrref)
+
+  Rrule-u-key = get-rule-uses
+
+  Rrule-u = Rrule-u-key; map(get-attrkey-attrref)
+  Rrule-ui = Rrule-u-key; filter(key-is-on-root; get-attrkey-attrref)
+  Rrule-us = Rrule-u-key; filter(not(key-is-on-root); get-attrkey-attrref)
+
+  Rrule-o = ![<get-rule-on>]
+
+/**
+ * Define the operator box and diamond from the hybrid logic language.
+ * In hybrid logic those operators have a relation and are followed by
+ * an expression.
+ * The relation have been replaced by a strategy to fetch a list
+ * of node reachable from a relation.
+ *
+ * relation:    Node -> List(Node)
+ * expr:        Node -> a : an hybrid logic expression (in Stratego)
+ *
+ * type: Node -> List(a)
+ */
+strategies
+  /**
+   * Check if the expression is true for all reachable nodes.
+   * Usually called "Box"
+   */
+  Rall(relation, expr) =
+    relation
+  ; map(expr)
+
+  /**
+   * Check if the expression is true for one reachable node.
+   * Usually called "Diamond"
+   */
+  Rone(relation, expr) =
+    relation
+  ; one(expr)
+
+/**
+ * Some useful hybrid logic expressions
+ * See the following report:
+ *   http://publications.lrde.epita.fr/200706-Seminar-Pierron
+ */
+strategies
+  is-symb-not-used = Rall(Rsymb-ud, false)
+
+  expr-attr-exists-uds = Rone(Rattr-uds, true)
+  expr-attr-exists-udi = Rone(Rattr-udi, true)
+  expr-attr-exists-pds = Rone(Rattr-pds, true)
+  expr-attr-exists-pdi = Rone(Rattr-pdi, true)
+
+  expr-attr-udi-impl-pds =
+    ?a
+  ; Rall(Rattr-udi
+    , Rall(Rrule-o
+      , Rone(Rprod-od
+        , Rone(Rrule-ps, ?a)
+        )
+      )
+    )
+
+  expr-attr-all-pds =
+    ?a
+  ; Rall(Rattr-o
+    , Rall(Rsymb-pd
+      , Rone(Rprod-od
+        , Rone(Rrule-ps, ?a)
+        )
+      )
+    )
+
+  // need a counter to check that all inherited production have the right
+  // number of production
+  expr-attr-all-pdi =
+    ?a
+  ; Rall(Rattr-o
+    , {s: ?s
+    ; Rall(Rsymb-ud
+      , {p:
+        ?p
+      ; Rprod-u
+      ; map-with-index(id)
+      ; filter({i: ?(i, s); create-key(|Label(i), a) })
+      ; map({k:
+          ?k
+        ; <Rone(Rprod-od, Rall(Rrule-p-key, ?k ) )> p
+        })
+      })
+    })
+
+  expr-attr-is-local =
+    hl-and(
+      hl-not(hl-or(expr-attr-exists-uds, expr-attr-exists-pds))
+    , expr-attr-udi-impl-pds
+    )

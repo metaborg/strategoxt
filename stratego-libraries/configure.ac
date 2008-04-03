@@ -135,6 +135,9 @@ AC_SUBST([STRATEGO_LAZY_UNINSTALLED_LIBS],['$(top_builddir)/lazy/lib/libstratego
 AC_SUBST([STRATEGO_SREF_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/sref/lib'])
 AC_SUBST([STRATEGO_SREF_UNINSTALLED_LIBS],['$(top_builddir)/sref/lib/libstratego-sref.la'])
 
+AC_SUBST([STRATEGO_AG_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/ag/lib'])
+AC_SUBST([STRATEGO_AG_UNINSTALLED_LIBS],['$(top_builddir)/ag/lib/libstratego-ag.la'])
+
 # Combinations of all libraries that are needed.
 AC_SUBST([STRATEGO_UNINSTALLED_STRCFLAGS],['$(STRATEGO_LIB_UNINSTALLED_STRCFLAGS)'])
 AC_SUBST([STRATEGO_UNINSTALLED_CFLAGS],['$(STRATEGO_LIB_UNINSTALLED_CFLAGS) $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) $(ATERM_CFLAGS)'])
@@ -204,5 +207,9 @@ AC_CONFIG_FILES([
   sref/Makefile
   sref/lib/Makefile
   sref/tests/Makefile
+
+  stratego-ag.pc
+  ag/Makefile
+  ag/lib/Makefile
 ])
 AC_OUTPUT

@@ -1,0 +1,9 @@
+prefix=@prefix@
+datarootdir=@datarootdir@
+strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-ag.la
+
+Name: Stratego Attribute Grammar Library
+Description: Language indenpendent Attribute Grammar support.
+Version: @PACKAGE_VERSION@
+Libs: -L${prefix}/lib -lstratego-ag
+Requires: aterm stratego-sref

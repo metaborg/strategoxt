@@ -1,0 +1,106 @@
+module stratego/propagation/td-propagation
+imports
+  stratego/graph/attributes
+  stratego/graph/productions
+  stratego/graph/hybrid-logic
+
+  stratego/propagation/propagator
+
+signature
+  sorts TopDownIdentifier
+  constructors
+    Td: TopDownIdentifier -> PropagationFlag
+
+strategies
+  is-td-flag = ?Td(_)
+  get-td-id = ?Td(<id>)
+  
+  td-merge = simple-merge
+
+strategies
+  td-flags-merge = flags-merge(td-merge)
+
+  get-td-flags = get-flags(is-td-flag)
+
+  /** Create a top-down flag from an attribute reference.
+   *
+   * @type get-td-id    AttrRef -> TopDownIdentifier
+   * @type              AttrRef -> PropagationFlag
+   */
+  build-td-flag = !Td(<get-td-attribute-id>)
+
+  /** Check that the attribute is a top-down attribute
+   *
+   * @type              AttrRef -> TopDownIdentifier
+   */
+  get-td-attribute-id =
+    get-attribute-properties
+  ; fetch-elem(get-td-id)
+
+strategies
+  /** Propagate top-down flags. (not used)
+   *
+   * @type get-td-id    AttrRef -> TopDownIdentifier
+   * @type              SymbRef * Queue -> Queue
+   */
+  td-checks =
+    propagate-flags(
+      td-flags-merge
+    , build-td-flag
+    , get-td-flags
+    , Rsymb-pd
+    , Rprod-u
+    )
+
+strategies
+  /** Get all rule patterns to define the top-down attribute.
+   *
+   * @type td-id        TopDownIdentifier
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef -> List(AttrKey * List(SymbLabel))
+   */
+  get-td-rule-patterns(|td-id, attr, symb, label) =
+    ?prod
+  ; get-production-symbols
+  ; filter(
+      ?(<id>, symb)
+    ; not(is-produced-label)
+    ; create-key(|<id>, attr)
+    ; !(<id>, [Label(0)])
+    )
+
+  /** Propagation rule for top-down attributes.
+   *
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type attr                 AttrRef
+   * @type symb                 SymbRef
+   * @type label                SymbLabel
+   * @type                      ProdRef * Queue -> Queue
+   */
+  td-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label) =
+    generic-propagation-rule(get-td-attribute-id, get-td-rule-patterns
+    , create-rule
+    , create-rule-attr
+    , fetch-produce
+    , fetch-uses
+    , similar-code
+    | attr
+    , symb
+    , label
+    )
+
+// useful strategies
+strategies
+  td-match-name =
+    match-attr-name(| "td_" )
+
+  add-attribute-td-flag(|td-id) =
+    edit-attribute-properties(
+      one-or-add(|Td(td-id))
+    )

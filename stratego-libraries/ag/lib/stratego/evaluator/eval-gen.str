@@ -1,0 +1,212 @@
+module stratego/evaluator/eval-gen
+imports
+  libstratego-lib
+
+imports
+  stratego/graph/symbols
+  stratego/graph/productions
+  stratego/graph/attributes
+  stratego/graph/rules
+  stratego/graph/hybrid-logic
+
+strategies
+  /**
+   * @type      ProdRef -> List(AttrKey)
+   */
+  get-all-root-attrkeys =
+    Rprod-p
+  ; ?[<Rsymb-od>]
+  ; map( !AttrKey(Label(0), <id>) )
+
+  /**
+   * @type      ProdRef -> List(AttrKey)
+   */
+  get-all-children-attrkeys =
+    Rprod-u
+  ; map-with-index({
+      ?(i, <Rsymb-od>)
+    ; map( !AttrKey(Label(i), <id>) )
+    })
+  ; concat
+
+  /**
+   * @type      ProdRef -> List(AttrKey)
+   */
+  get-all-production-attrkeys =
+    <conc> (
+      <get-all-root-attrkeys>
+    , <get-all-children-attrkeys>
+    )
+
+strategies
+  /**
+   * Used to create an evaluator that do only one traversal of the tree.
+   *
+   * @type fetch-attributes                     List(AttrRef) -> Statement
+   * @type handle-production                    ProdRef -> Statement
+   * @type create-choice-with-backtracking      List(Statement) -> Statement
+   * @type concat-statements                    List(Statement) -> Statement
+   * @type declare-function                     SymbRef * Statement -> Function
+   *
+   * @type                                      _ -> List(Function)
+   */
+  evaluator-gen(
+    fetch-attributes
+  , handle-production
+  , create-choice-with-backtracking
+  , concat-statements
+  , declare-function
+  ) = debug-area(
+    all-symbols
+  ; map({
+      ?symb
+    ; where(
+        Rsymb-od
+      ; remove-all(where(is-attribute-local))
+      ; fetch-attributes => fetch
+      )
+    ; where(
+        Rsymb-pd
+        // optionnal sort
+      ; map( handle-production )
+      ; create-choice-with-backtracking => body
+      )
+    ; <declare-function> (
+        symb
+      , <concat-statements> [fetch, body]
+      )
+    })
+  | "evaluator-gen")
+
+  /**
+   * Used to handle a production traversal.
+   *
+   * @type production-2-pattern-matching        ProdRef -> Statement
+   * @type is-copy-rule                         RuleRef -> _
+   * @type create-attribute                     AttrKey -> Statement
+   * @type alias-attributes                     AttrKey * List(AttrKey) -> Statement
+   * @type add-attributes-on-children           ProdRef * List(AttrKey) -> Statement
+   * @type children-traversal                   ProdRef -> Statement
+   * @type create-lazy-function                 RuleRef -> Statement
+   * @type concat-statements                    List(Statement) -> Statement
+   *
+   * @type                                      ProdRef -> Statement
+   */
+  production-handler(
+    production-2-pattern-matching
+  , attribute-handler
+  , add-attributes-on-children
+  , children-traversal
+  , concat-statements
+  ) = debug-area(
+    where(production-2-pattern-matching => match)
+  ; where(get-all-children-attrkeys => all-children-attributes)
+  ; where(
+      <attribute-handler> (<id>, all-children-attributes)
+         => (attribute-creation, attribute-definition)
+    )
+  ; <concat; concat-statements> [
+      [match]
+    , attribute-creation
+    , [<add-attributes-on-children> (<id>, all-children-attributes)]
+    , [<children-traversal>]
+    , attribute-definition
+    ]
+  | "production-handler")
+
+strategies
+  /**
+   * Used to create definition of attributes
+   *
+   * @type is-copy-rule                         RuleRef -> _
+   * @type create-attribute                     AttrKey -> Statement
+   * @type alias-attributes                     AttrKey * List(AttrKey) -> Statement
+   * @type create-lazy-function                 RuleRef * List(AttrKey) * List(AttrKey) -> Statement
+   * @type concat-statements                    List(Statement) -> Statement
+   *
+   * @type                                      ProdRef * List(AttrKey) -> Statement * Statement
+   */
+  attribute-handler(
+    is-copy-rule
+  , create-attribute
+  , alias-attributes
+  , create-lazy-function
+  , concat-statements
+  ) = debug-area(
+    ?(prod@<id>, all-children-attributes)
+  ; where(
+      get-all-root-attrkeys
+    ; remove-all(get-attrkey-attrref; is-attribute-local) => fetched-attributes
+    )
+  ; where(
+      Rprod-od
+    ; map( !(<id>, <Rrule-p-key>, <Rrule-u-key>) ) => sem-rules
+    )
+  ; <partition( (where(is-copy-rule), [id], [id]) )> sem-rules
+  ; ( <separate-aliasable-attributes> (fetched-attributes, <id>), id )
+  ; \ ((a, na), nc) -> (a, <conc> (na, nc)) \
+  ; ( add-missing-attributes-creation(|all-children-attributes)
+    ; map({a:
+        ?a
+      ; ![]
+      ; if <Snd; not([])> a then
+          ![<alias-attributes> a | <id>]
+        end
+      ; if <Fst; not(key-is-on-root)> a then
+          ![<Fst; create-attribute> a | <id>]
+        end
+      ; concat-statements
+      })
+    , map(create-lazy-function)
+    )
+  ; ?(attribute-creation, attribute-definition) // useless
+  | "attribute-handler")
+
+
+  /** @internal
+   * @type all-children-attributes      List(AttrKey)
+   * @type      List(AttrKey * List(AttrKey)) -> List(AttrKey * List(AttrKey))
+   */
+  add-missing-attributes-creation(|all-children-attributes) =
+    where(mapconcat(MkCons) => bound-attr)
+  ; at-end(
+      <filter({a:
+        ?a
+      ; not(<one(?a)> bound-attr)
+      ; !(<id>, [])
+      })> all-children-attributes
+    )
+
+  /** Partition semantic rules that could be aliased. The input term is the
+   * list of already bound attributes with the list of copy rules. The output
+   * is a couple the contains a list of aliases and a list of non-aliasbale
+   * copy rules.
+   *
+   * @type      List(a) * List(b * [a] * [a]) -> List(a * List(a)) * List(b * [a] * [a])
+   */
+  separate-aliasable-attributes =
+    ([], [])
+
+  separate-aliasable-attributes =
+    \ ([], copy-rules@[(_, [a], [_]) | _]) -> ([a], copy-rules) \
+  ; separate-aliasable-attributes
+
+  separate-aliasable-attributes =
+    ?([a | bound-attributes], <id>)
+  ; partition2(
+      {b:
+        ( (id, [?a], [?b]) + (id, [?b], [?a]) )
+      ; !(b, <id>)
+      }
+    , Fst; not(<elem> (<id>, bound-attributes))
+    , Snd
+    ) => (aliases, un-aliasable, <id>)
+  ; !(<conc> (aliases, bound-attributes), <id>)
+  ; separate-aliasable-attributes
+  ; ( partition(
+        (<elem> (<id>, aliases), id)
+      ; Snd
+      )
+    ; ![(a, <concat> [aliases |<Fst>]) | <Snd>]
+    , <conc> (un-aliasable, <id>)
+    )

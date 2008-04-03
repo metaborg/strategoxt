@@ -1,0 +1,58 @@
+module stratego/graph/symbol-fixpoint
+imports
+  libstratego-lib
+  libstratego-sref
+
+imports
+  stratego/graph/symbols
+
+signature
+  constructors
+    /** @internal */
+    Mark: SymbProperty
+
+strategies
+  /** @internal */
+  symbol-fixpoint-mark-symbol =
+    edit-symbol-properties(
+      one-or-add(| Mark() )
+    )
+
+  /** @internal */
+  symbol-fixpoint-is-mark-symbol =
+    get-symbol-properties
+  ; one( ?Mark() )
+
+  /** @internal */
+  symbol-fixpoint-unmark-symbol =
+    edit-symbol-properties(
+      at-suffix( ?[Mark() | <id>] )
+    )
+
+strategies
+  /** Iterate on symbols references until a fixpoint is reached.
+   * The strategy 's' is used to do this fix-point by pushing new nodes
+   * inside the queue with the strategy 'symbol-fixpoint-push'.
+   *
+   * @type s    SymbRef * Queue -> Queue
+   * @type      a -> a
+   */
+  symbol-fixpoint(s) =
+    where(
+      all-symbols
+    ; fixpoint(
+        symbol-fixpoint-mark-symbol
+      , symbol-fixpoint-unmark-symbol
+      , s
+      )
+    )
+
+  /** Add a symbol reference inside of the queue used for the fix-point.
+   *
+   * @type      SymbRef * Queue -> Queue
+   */
+  symbol-fixpoint-push =
+    fixpoint-queue-push(
+      symbol-fixpoint-is-mark-symbol
+    , symbol-fixpoint-mark-symbol
+    )

@@ -1,0 +1,5 @@
+module stratego-ag
+imports
+  stratego/graph/-
+  stratego/propagation/-
+  stratego/evaluator/-
