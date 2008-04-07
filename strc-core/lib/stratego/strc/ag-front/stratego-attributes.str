@@ -146,12 +146,13 @@ strategies
   suffix-int(|name) =
     <conc-strings> (name, <int-to-string>)
 
+  // If you change the name of the arguments, report to "merge-code" comment.
   generate-stratego-attribute-def(to-labeledid) =
     ?(<id>, body)
   ; where(get-attrkey-attrref; get-attribute-type => Type(k, ls, lt))
   ; !ADefT(<to-labeledid>
-     , <range; map(!Strat |[ ~id: <suffix-int(|"arg's")> ]|)> ls
-     , <range; map(!Term  |[ ~id: <suffix-int(|"arg't")> ]|)> lt
+     , <range; map(!Typedid |[ ~id: <suffix-int(|"arg's")> ]|)> ls
+     , <range; map(!Typedid |[ ~id: <suffix-int(|"arg't")> ]|)> lt
      )
   ; if !k => Term() then
       !ADefTerm(<id>, body)
@@ -159,6 +160,7 @@ strategies
       !ADefStrategy(<id>, body)
     end
 
+  // generate the same arguments as generate-stratego-attribute-def
   generate-stratego-attribute-call(to-labeledid) =
     where(get-attrkey-attrref; get-attribute-type => Type(k, ls, lt))
   ; !ACallT(<to-labeledid>
@@ -194,10 +196,12 @@ strategies
   /** Merge two semantic rules.
    * Also used to report useless written code when there is no merging involved.
    *
+   * Caution: expect that RenameAttributeArgs and
+   * generate-stratego-attribute-def are generating the same name of
+   * arguments.
+   *
    * @type      ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
    */
-  // FIXME: should rename all variables when registering a strategy and uniq
-  // names for the arguments
   merge-code = debug-area(
     ?(_, this, code)
   ; <get-rule-code> this

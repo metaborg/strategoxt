@@ -145,7 +145,7 @@ strategies
 
 rules
   ACall2Strategy(is-strategy):
-    ACallT(k, ls, lt) -> |[ prim("LAZY_call", ~strat*: ls' | ~term*: lt') ]|
+    ACallT(k, ls, lt) -> |[ prim("\"LAZY_call\"", ~strat*: ls' | ~term*: lt') ]|
     where
       ![ |[ !~id: <attrkey-2-string> k ]| | ls] => ls'
     ; <if <is-strategy> k then

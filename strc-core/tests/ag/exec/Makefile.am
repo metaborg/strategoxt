@@ -26,7 +26,8 @@ STRCFLAGS = --ag				\
 Stratego_AG =																		\
 	sag-01.str																		\
 	lookup-01.str																	\
-	extend.str
+	extend.str																		\
+	extend-args.str
 
 
 $(TESTS): $(srcdir)/check.sh
