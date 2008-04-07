@@ -91,19 +91,19 @@ strategies
    * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
    * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
    * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
-   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type merge-code           ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
    * @type attr                 AttrRef
    * @type symb                 SymbRef
    * @type label                SymbLabel
    * @type                      ProdRef * Queue -> Queue
    */
-  bu-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label) =
+  bu-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label) =
     generic-propagation-rule(get-bu-attribute-id, get-bu-rule-patterns
     , create-rule
     , create-rule-attr
     , fetch-produce
     , fetch-uses
-    , similar-code
+    , merge-code
     | attr
     , symb
     , label

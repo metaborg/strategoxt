@@ -1,0 +1,46 @@
+module extend
+imports
+  libstratego-lib
+  libstratego-lazy
+
+signature
+  sorts Stm StmList Prog
+
+signature
+  constructors
+    Root: Node -> Root
+    Node: Node * Node -> Node
+    Leaf: Node
+
+attributes
+  @ Root(n):
+    n.lr_termsize_inh := 0
+    root.lr_termsize_syn := n.lr_termsize_syn
+
+  @ Node(lhs, rhs):
+    root.lr_termsize_syn := <inc> default
+
+  @ Leaf():
+    root.lr_termsize_syn := <inc> default
+
+strategies
+  compute-String = id
+
+  get-lazy-attribute(|name) =
+    id{one( ?(name, v) )} => tree
+  ; !v
+
+  get-attribute(|name) =
+    get-lazy-attribute(|name)
+  ; ?v
+  ; get-value(!v)
+
+  get-termsize =
+    debug(!"input: ")
+  ; compute-Root
+  ; get-attribute(|"lr_termsize_syn")
+  ; debug(!"output: ")
+
+  extend =
+    <get-termsize> Root(Node(Leaf(),Node(Leaf(),Leaf())))
+  ; <exit> 0

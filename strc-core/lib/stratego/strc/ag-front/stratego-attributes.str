@@ -191,6 +191,38 @@ strategies
   | "create-strategy")
 
 
+  /** Merge two semantic rules.
+   * Also used to report useless written code when there is no merging involved.
+   *
+   * @type      ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
+   */
+  // FIXME: should rename all variables when registering a strategy and uniq
+  // names for the arguments
+  merge-code = debug-area(
+    ?(_, this, code)
+  ; <get-rule-code> this
+  ; ( ADefTerm(id,
+        where(!code => ADefTerm(_, t))
+      ; sometd( \ Term |[ default ]| -> t \ )
+      )
+    + ADefStrategy(id,
+        where(!code => ADefStrategy(_, s))
+      ; sometd( \ Strat |[ default ]| -> s \ )
+      )
+    )
+  ; dbg(|"Merged code =")
+ <+ ?(prod, this, rule-code)
+  ; dbg(|"No merge.")
+  ; if <is-user-defined> this; <similar-code> (<get-rule-code> this, rule-code) then
+      !["Useless code (can be generated) written for "
+      , "\"",<Rrule-p => [<?produce>]; Any2Text> this, "\" on:\n\t"
+      , <Any2Text> prod
+      ]
+    ; <add-warning> ((prod, produce), <id>)
+    end
+  ; fail
+  | "merge-code")
+
   /** Succeed if the 2 input rules are similar */
   similar-code = eq
 
@@ -217,6 +249,7 @@ strategies
     )> on => this
   ; create-key(| Label(index), this )
   ; where(<dbg(|"register attribute:")> (name, <id>))
+ <+ is-attrkey
  <+ err(|"Cannot convert the following attribute to an AttrKey: ")
 
   escape-stratego-attribute-def(|kind, labels) =
@@ -252,9 +285,9 @@ strategies
   attribute-propagator(|attr, symb, label) =
     ?(prod, _)
   ; if not(<is-rewrite-production> prod) then
-      lr-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label)
-    + bu-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label)
-    + td-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, similar-code | attr, symb, label)
+      lr-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
+    + bu-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
+    + td-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     else
       fail
     end

@@ -23,9 +23,10 @@ STRCFLAGS = --ag				\
 	$(STRATEGO_LAZY_STRCFLAGS)		\
 	$(STRATEGO_LIB_STRCFLAGS)
 
-Stratego_AG =					\
-	sag-01.str				\
-	lookup-01.str
+Stratego_AG =																		\
+	sag-01.str																		\
+	lookup-01.str																	\
+	extend.str
 
 
 $(TESTS): $(srcdir)/check.sh
@@ -33,6 +34,9 @@ $(TESTS): $(srcdir)/check.sh
 	  echo $(LN_S) -f $(srcdir)/check.sh $$i; \
 	  $(LN_S) -f $(srcdir)/check.sh $$i; \
 	done
+
+verify:
+	$(TESTS_ENVIRONMENT) ./$(SRC)
 
 TESTS = $(Stratego_AG:.str=.ts)
 

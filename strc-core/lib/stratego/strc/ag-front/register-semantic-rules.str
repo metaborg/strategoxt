@@ -1,4 +1,4 @@
-module stratego/strc/ag-front/strag-2-graph
+module stratego/strc/ag-front/register-semantic-rules
 imports
   libstratego-lib
   libstratego-ag
@@ -23,17 +23,22 @@ rules
     where
       <bagof-ProdName2Ref> name => prods
     ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
-    ; <unify-prod-with-term-type> (prods, type')
-    ; get-unified-term-type(|term) => type
-
+    ; < unify-prod-with-term-type => [<id>]
+     <+ (map(Any2Text), id)
+      ; err(|["Cannot find one unification solution for the term ", term, "."]); fail
+      > (prods, type') => type
 
   GetTermType: term@OpInj(t, l) -> type
     where
-      <get-opdecl-sorts> OpDeclInj(t) => (ls, <Rsymb-pd>)
+      <get-opdecl-sorts> OpDeclInj(t) => (ls, s@<Rsymb-pd>)
     ; filter(not(get-production-name); where(Rprod-u => ls)) => prods
     ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
-    ; <unify-prod-with-term-type> (prods, type')
-    ; get-unified-term-type(|t) => type
+    ; < unify-prod-with-term-type => [<id>]
+     <+ where(!t => ConstType(_))
+      ; !TermType(ProdSymb(s), [], Some(<map(GetTermType)> l))
+     <+ (map(Any2Text), id)
+      ; err(|["Cannot find one unification solution for the term ", term, "."]); fail
+      > (prods, type') => type
 
   GetTermType: Var(n) -> TermType(UnknowProd(), [n], None())
   GetTermType: Wld() -> TermType(UnknowProd(), [], None())
@@ -50,65 +55,86 @@ rules
   ; fail
 
 strategies
-  get-unified-term-type(|t) =
-   ?[<id>]
- <+ ( [] + [id, id | id] )
-  ; err(|["Cannot determine the type of the following term: ", t])
-  ; fail
-
   unify-prod-with-term-type =
     ?(prods, type@TermType(p, names, children))
   ; switch !p
+      case UnknowProd(); !children => None():
+        where(<foldr(![], union, Rprod-p)> prods => [s])
+      ; ![TermType(ProdSymb(s), names, None())]
       case !children => None():
         ![type]
-      case UnknowProd():
-        <foldr(![], conc
-        , ![TermType(<id>, names, <unify-children(|children)>)]
-       <+ [unify-with-injection(|type)]
-       <+ ![]
-        )> prods
       case ![p] => prods:
         ![type]
+      case ?ProdSymb(s):
+        <some(Rprod-p => [s])> prods
+      ; ![type]
+      case UnknowProd():
+        <mapconcat(
+          ![TermType(<id>, names, <unify-children(|children)>)]
+       <+ unify-with-injection(|type)
+       <+ ![]
+        )> prods
       otherwise:
         fail
     end
 
   unify-with-injection(|type) =
     Rprod-u => [s]
-  ; <unify-prod-with-term-type> (<Rsymb-pd> s, type) => [<id>]
+  ; <Rsymb-pd> s
+  ; filter(
+      where(Rprod-u => [_])
+    ; where(get-production-name => "")
+    )
+  ; if <get-term-type-children; (?[] + ?[_, _| _])> type then
+      <unify-prod-with-term-type> (<id>, type)
+    else
+      <unify-prod-with-term-type> (<id>, TermType(UnknowProd(), [], Some([type])))
+    end
 
   unify-children(|children) =
     !(<Rprod-u>, <?Some(<id>)> children)
   ; zip({
-      ?(s, type@TermType(p, _, _))
-    ; if <Rprod-p> p => [s] then
+      ?(s, type@TermType(p, n, c))
+    ; if <ProdSymb(?s) + Rprod-p => [s]> p then
         !type
       else
-        <unify-prod-with-term-type> (<Rsymb-pd> s, type) => [<id>]
+        <Rsymb-pd> s => prods
+      ; if !prods => []; !c => None() then
+          !TermType(ProdSymb(s), n, c)
+        else
+          <unify-prod-with-term-type> (prods, type) => [<id>]
+        end
       end
     })
   ; !Some(<id>)
 
 strategies
   get-term-type-production =
+    ?TermType(<is-production>, _, _)
+ <+ err(|"get-term-type-production"); fail
+
+  get-term-type-symbol =
     ?TermType(<id>, _, _)
+  ; ( ?ProdSymb(<id>)
+    + Rprod-p => [<id>]
+    )
+  ; is-symbol
+ <+ err(|"get-term-type-symbol"); fail
 
   get-term-type-labels =
     ?TermType(_, <id>, _)
+ <+ err(|"get-term-type-labels"); fail
 
   get-term-type-children =
-    ?TermType(_, _, <id>)
-  ; ( ?Some(<id>) + \ None() -> [] \ )
+    ?TermType(_, _, <?Some(<id>)>)
+ <+ err(|"get-term-type-children"); fail
 
 strategies
   get-term-type-main-labels =
-    !(<get-term-type-production; ![<Rprod-p => [<id>]> | <Rprod-u>]>
-    , [<id> | <get-term-type-children>]
-    )
-  ; zip
+    ![<id> | <get-term-type-children>]
   ; map-with-index({
-      ?(i, (s, <id>))
-    ; !(<dec> i, <get-term-type-labels>, s)
+      ?(i, <id>)
+    ; !(<dec> i, <get-term-type-labels>, <get-term-type-symbol>)
     })
 
   find-production =
@@ -117,6 +143,7 @@ strategies
   ; get-term-type => type
   ; dbg(|"with this type: ")
   ; !(<get-term-type-production>, <get-term-type-main-labels>)
+  ; dbg(|"with this production and labels: ")
 
 // TODO:
 // - handle rules with conditions

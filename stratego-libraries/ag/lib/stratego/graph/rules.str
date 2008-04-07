@@ -55,9 +55,8 @@ strategies
   ; !code
 
   /* internal */
-  // can modify the code but not the dependencies!
-  // define the code of an attribute.
-  add-rule-code(|code) =
+  // can modify the code but not the dependencies! use modify-rule.
+  set-rule-code(|code) =
     edit-rule-properties(
       one-or-add(Code(!code) | Code("dummy"))
     )
@@ -77,7 +76,7 @@ strategies
   ; <create-bind-ref> Rule([], uses, produce, on) => this
   ; restore( // FIXME: not safe ...
       where(<add-production-on-d(| this )> on)
-    ; add-rule-code(| code )
+    ; set-rule-code(| code )
     ; where(
         <map(add-attribute-use-d(| this ))> uses
       ; <add-attribute-produce-d(| this )> produce
@@ -85,6 +84,16 @@ strategies
     , destroy-ref
     )
   ; where(<table-put> ("RuleCollection", this, this))
+
+  modify-rule(fetch-uses | code) =
+    ?this
+  ; where(get-rule-uses; map(del-attribute-use-d(| this )))
+  ; set-rule-code(| code )
+  ; where(
+      <fetch-uses> (<get-rule-on>, code) => uses
+    ; map(is-attrkey; add-attribute-use-d(| this ))
+    )
+  ; edit-rule-uses(!uses)
 
   del-rule =
     ?this

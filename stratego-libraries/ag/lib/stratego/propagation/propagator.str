@@ -245,10 +245,10 @@ strategies
   is-already-produce(|lbl, prod) =
     ?attr
   ; <Rone(Rprod-od
-    , Rall(Rrule-p-key
+    , where(Rall(Rrule-p-key
       , where(get-attrkey-label => lbl)
       ; where(get-attrkey-attrref => attr)
-      )
+      ))
     ; ?rule
     )> prod
   ; !rule
@@ -297,24 +297,23 @@ strategies
    * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
    * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
    * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
-   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type merge-code           ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
    * @type                      (ProdRef * EmbeddedLanguage) * Queue -> Queue
    */
-  add-propagated-rule(create-rule-attr, fetch-produce, fetch-uses, similar-code) =
+  add-propagated-rule(create-rule-attr, fetch-produce, fetch-uses, merge-code) =
     ?((prod, rule-code), queue)
     // already exists
   ; <fetch-produce> (prod, rule-code) => produce
   ; <get-attrkey-label> produce => lbl
   ; <get-attrkey-attrref> produce => attr
   ; if <is-already-produce(|lbl, prod)> attr => this then
-      if <is-user-defined> this; <similar-code> (<get-rule-code> this, rule-code) then
-        !["Useless code (can be generated) written for "
-        , "\"",<Any2Text> produce, "\" on:\n\t"
-        , <Any2Text> prod
-        ]
-      ; <add-warning> ((prod, produce), <id>)
+      if <merge-code> (prod, this, rule-code) => code' then
+        <create-rule-attr> (prod, code') => code''
+      ; <modify-rule(fetch-uses | code'')> this
+      ; <push-related-symbols-in-queue(| prod )> (<id>, queue)
+      else
+        !queue
       end
-    ; !queue
     else
       // create new attributes (not before)
       <create-rule-attr> (prod, rule-code) => code
@@ -329,16 +328,16 @@ strategies
    * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
    * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
    * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
-   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type merge-code           ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
    * @type prod                 ProdRef
    * @type                      List(AttrKey * List(SymbLabel)) * Queue -> Queue
    */
-  add-propagated-rules(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | prod) =
+  add-propagated-rules(create-rule, create-rule-attr, fetch-produce, fetch-uses, merge-code | prod) =
     ?(<id>, queue)
   ; not([])
   ; foldr(
       !queue
-    , add-propagated-rule(create-rule-attr, fetch-produce, fetch-uses, similar-code)
+    , add-propagated-rule(create-rule-attr, fetch-produce, fetch-uses, merge-code)
     , !(prod, <{p,us:
         ?(p,us)
       ; <create-rule> (prod, p, us)
@@ -355,7 +354,7 @@ strategies
    * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
    * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
    * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
-   * @type similar-code         EmbeddedLanguage * EmbeddedLanguage -> _
+   * @type merge-code           ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
    * @type attr                 AttrRef
    * @type symb                 SymbRef
    * @type label                SymbLabel
@@ -366,7 +365,7 @@ strategies
   , create-rule-attr
   , fetch-produce
   , fetch-uses
-  , similar-code
+  , merge-code
   | attr
   , symb
   , label
@@ -375,7 +374,7 @@ strategies
   ; where(<get-propa-id> attr => propa-id)
   ; get-rule-patterns(|propa-id, attr, symb, label)
   ; !(<id>, queue)
-  ; add-propagated-rules(create-rule, create-rule-attr, fetch-produce, fetch-uses, similar-code | prod)
+  ; add-propagated-rules(create-rule, create-rule-attr, fetch-produce, fetch-uses, merge-code | prod)
 
 
 // sef of common strategies used by propagations.

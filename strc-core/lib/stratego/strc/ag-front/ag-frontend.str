@@ -5,7 +5,9 @@ imports
   libstratego-ag
   Stratego
   stratego/strc/ag-front/normalize-semantic-rules
-  stratego/strc/ag-front/strag-2-graph
+  stratego/strc/ag-front/register-symbols
+  stratego/strc/ag-front/register-productions
+  stratego/strc/ag-front/register-semantic-rules
   stratego/strc/ag-front/stratego-eval
 
 strategies
