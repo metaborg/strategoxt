@@ -27,7 +27,10 @@ Stratego_AG =																		\
 	sag-01.str																		\
 	lookup-01.str																	\
 	extend.str																		\
-	extend-args.str
+	extend-args.str																\
+	cond-01.str																		\
+	cond-02.str																		\
+	cond-03.str
 
 
 $(TESTS): $(srcdir)/check.sh
@@ -37,11 +40,12 @@ $(TESTS): $(srcdir)/check.sh
 	done
 
 verify:
-	$(TESTS_ENVIRONMENT) ./$(SRC)
+	$(TESTS_ENVIRONMENT) ./$(SRC).ts
 
 TESTS = $(Stratego_AG:.str=.ts)
 
-XFAIL_TESTS =
+XFAIL_TESTS =																		\
+	cond-03.ts
 
 TESTS_ENVIRONMENT = MAKE="$(MAKE)" AM_MAKEFLAGS="$(AM_MAKEFLAGS)" \
 		SRCDIR="$(srcdir)" KEEP=$(KEEP) VERBOSE=$(VERBOSE)

@@ -11,7 +11,7 @@ clean(){
 
 clean true
 
-make $name KEEP=$KEEP VERBOSE=$VERBOSE
+make $name KEEP=$KEEP VERBOSE=$VERBOSE && ./$name
 res=$?
 
 clean false

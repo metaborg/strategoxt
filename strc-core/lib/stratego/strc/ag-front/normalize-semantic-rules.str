@@ -6,6 +6,16 @@ imports
 imports
   stratego/strc/ag-front/stratego-attributes
 
+rules
+  DesugarSemanticRuleCond:
+    |[ @ ~sr : where s ~* defs ]| ->[
+      |[ @ ~sr : where !local.c ~* defs ]|
+    , |[ @ ~sr : local.c := <s> ]|
+    ]
+    where
+      <not(?|[ !~li: _(|) ]|)> s
+    ; <newname> "condition" => c
+
 // bad renaming method, but at least it is simple and works except if some
 // names are already used. (which means not in a normal code)
 // If you change the name of the argument, report to "merge-code" comment.
@@ -48,18 +58,12 @@ rules
 
 strategies
   separate-attribute-def =
-    ?SemanticRulesNoCond(t, <id>)
-  ; map(!SemanticRulesNoCond(t, [<
-      desugar-attribute-manipulation
-    ; RenameAttributeArgs
-    >]))
+    ?|[ @ ~sr : ~* <id> ]|
+  ; map(!|[ @ ~sr : ~<RenameAttributeArgs> ]|)
 
   separate-attribute-def =
-    ?SemanticRules(t, c, <id>)
-  ; map(!SemanticRules(t, c, [<
-      desugar-attribute-manipulation
-    ; RenameAttributeArgs
-    >]))
+    ?|[ @ ~sr : where s ~* <id> ]|
+  ; map(!|[ @ ~sr : where s ~<RenameAttributeArgs> ]|)
 
 strategies
   on-semantic-rule-agterm(s) =
@@ -83,7 +87,9 @@ strategies
   normalize-semantic-rules =
     Specification(map(
       Attributes(
-        mapconcat(
+        mapconcat(DesugarSemanticRuleCond <+ ![<id>])
+      ; desugar-attribute-manipulation
+      ; mapconcat(
           restore(separate-attribute-def
           , err(|"Cannot separate attribute definitions."))
         )

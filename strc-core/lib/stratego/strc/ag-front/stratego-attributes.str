@@ -192,7 +192,7 @@ strategies
   ; dbg(|"Rule = ")
   | "create-strategy")
 
-
+strategies
   /** Merge two semantic rules.
    * Also used to report useless written code when there is no merging involved.
    *
@@ -215,20 +215,67 @@ strategies
       )
     )
   ; dbg(|"Merged code =")
- <+ ?(prod, this, rule-code)
-  ; dbg(|"No merge.")
-  ; if <is-user-defined> this; <similar-code> (<get-rule-code> this, rule-code) then
-      !["Useless code (can be generated) written for "
-      , "\"",<Rrule-p => [<?produce>]; Any2Text> this, "\" on:\n\t"
-      , <Any2Text> prod
-      ]
-    ; <add-warning> ((prod, produce), <id>)
-    end
-  ; fail
   | "merge-code")
 
-  /** Succeed if the 2 input rules are similar */
-  similar-code = eq
+strategies
+  // "id; .." are used to specify that the user have bound the default value,
+  // otherwise it would have been removed by "remove-unbound-default-calls".
+  merge-with-default-rule =
+    ?(this, AttrDef |[ ~lid: _ := t2 ]|)
+  ; <get-rule-code> this
+  ; ?AttrDef |[ ~lid: p := <s1 <+ s'> ]|
+  ; restore(<?Strat |[ !default ]|> s'
+    , err(|"Cannot add multiple semantic rules without conditions.")
+    )
+  ; !AttrDef |[ ~lid: p := <s1 <+ id; !t2> ]| => code
+  ; <modify-rule(fetch-uses | code)> this
+
+  merge-with-default-rule =
+    ?(this, AttrDef |[ ~lid: _ = s2 ]|)
+  ; <get-rule-code> this
+  ; ?AttrDef |[ ~lid: p = s1 <+ s' ]|
+  ; restore(<?Strat |[ default ]|> s'
+    , err(|"Cannot add multiple semantic rules without conditions.")
+    )
+  ; !AttrDef |[ ~lid: p = s1 <+ id; s2 ]| => code
+  ; <modify-rule(fetch-uses | code)> this
+
+  merge-with-conditional-rule =
+    ?(this, c, AttrDef |[ ~lid: _ := t2 ]|)
+  ; <get-rule-code> this
+  ; ?AttrDef |[ ~lid: p := <s1 <+ s'> ]|
+  ; !AttrDef |[ ~lid: p := <(s1 + ~strat: c; !t2) <+ s'> ]| => code
+  ; <modify-rule(fetch-uses | code)> this
+
+  merge-with-conditional-rule =
+    ?(this, c, AttrDef |[ ~lid: _ = s2 ]|)
+  ; <get-rule-code> this
+  ; ?AttrDef |[ ~lid: p = s1 <+ s' ]|
+  ; !AttrDef |[ ~lid: p = (s1 + ~strat: c; s2) <+ s' ]| => code
+  ; <modify-rule(fetch-uses | code)> this
+
+  new-default-rule =
+    ?(<id>, prod)
+  ; ( ?AttrDef |[ ~lid: d := t ]|
+    ; !AttrDef |[ ~lid: d := <fail <+ !default> ]|
+    + ?AttrDef |[ ~lid: d = s ]|
+    ; !AttrDef |[ ~lid: d = fail <+ default ]|
+    ) => code
+  ; new-rule(fetch-produce, fetch-uses | code, prod)
+
+  remove-unbound-default-calls =
+    ?this
+  ; get-rule-code
+  ; ?AttrDef |[ ~lid: p := <s1 <+ !default> ]|
+  ; !AttrDef |[ ~lid: p := <s1> ]| => code
+  ; <modify-rule(fetch-uses | code)> this
+
+  remove-unbound-default-calls =
+    ?this
+  ; get-rule-code
+  ; ?AttrDef |[ ~lid: p = s1 <+ default ]|
+  ; !AttrDef |[ ~lid: p = s1 ]| => code
+  ; <modify-rule(fetch-uses | code)> this
 
 strategies
   is-stratego-attribute = LabeledId(id, id)
@@ -255,6 +302,7 @@ strategies
   ; where(<dbg(|"register attribute:")> (name, <id>))
  <+ is-attrkey
  <+ err(|"Cannot convert the following attribute to an AttrKey: ")
+  ; fail
 
   escape-stratego-attribute-def(|kind, labels) =
     ADefT(id, where(length => ls), where(length => lt))

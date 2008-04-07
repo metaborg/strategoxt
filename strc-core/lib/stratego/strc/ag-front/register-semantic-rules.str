@@ -138,7 +138,7 @@ strategies
     })
 
   find-production =
-    ?term
+    get-semantic-rule-agterm
   ; dbg(|"try to find this production: ")
   ; get-term-type => type
   ; dbg(|"with this type: ")
@@ -154,18 +154,47 @@ strategies
     ?SemanticRulesNoCond(_, _)
   + ?SemanticRules(_, _, _)
 
+  get-semantic-rule-agterm =
+    ?|[ @ ~<id> : ~*_ ]|
+  + ?|[ @ ~<id> : where s ~*_ ]|
+
+  get-semantic-rule-condition =
+    ?|[ @ ~_ : where ~<id> ~*_ ]|
+
+  get-semantic-rule-rule =
+    ?|[ @ ~_ : ~<id> ]|
+  + ?|[ @ ~_ : where s ~<id> ]|
+
+
   register-semantic-rule =
     restore(
-      where(
-        ?SemanticRulesNoCond(<id>, _)
-      ; find-production => (prod, labels)
+      ?sr
+    ; <find-production> sr => (prod, labels)
+    ; < get-semantic-rule-rule
+      ; escape-stratego-attributes(|labels)
+      > sr => code
+    ; <fetch-produce> (prod, code) => p
+    ; <Rprod-od> prod
+    ; filter(test(get-rule-produce => p)) // Rrule-p-key ?!
+    ; not(?[_, _| _]; err-msg(|"ICE: from register-semantic-rule."))
+    ; ( ?[<id>]
+      ; where(Any2Text; dbg(|"existing register rule:"))
+     <+ <new-default-rule> (code, prod)
+      ; where(Any2Text; dbg(|"register a new default rule:"))
+      ) => this
+    ; restore(
+        if <get-semantic-rule-condition> sr => s then
+          <escape-stratego-attributes(|labels)> s => s'
+        ; <merge-with-conditional-rule> (this, s', code)
+        else
+          <merge-with-default-rule> (this, code)
+        end
+      , <err(|[
+          "Cannot merge the following rule with "
+        , <Any2Text> this, "."
+        ])> code
       )
-    ; where(
-        ?SemanticRulesNoCond(_, [<id>])
-      ; escape-stratego-attributes(|labels) => code
-      ; new-rule(fetch-produce, fetch-uses | code, prod)
-      ; where(<dbg(|"register rule: ")> (<id>, prod, code))
-      )
+    ; where(<dbg(|"register rule: ")> (<id>, <Any2Text> prod, <get-rule-code>))
     , err(|"Cannot register the following semantic rule:")
     )
 
@@ -173,4 +202,6 @@ strategies
     where(
       collect( is-semantic-rule-collection )
     ; map(register-semantic-rule)
+    ; all-rules
+    ; list-loop(try(remove-unbound-default-calls))
     )

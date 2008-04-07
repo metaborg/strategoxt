@@ -1,0 +1,43 @@
+module cond-01
+imports
+  libstratego-lib
+  libstratego-lazy
+
+signature
+  constructors
+    Node: Node * Node -> Node
+    Leaf: Node
+
+attributes
+  @ Node(lhs, rhs):
+    where <gt> (lhs.maxdepth, rhs.maxdepth)
+    root.maxdepth := <inc> lhs.maxdepth
+
+  @ Node(lhs, rhs):
+    where <not(gt)> (lhs.maxdepth, rhs.maxdepth)
+    root.maxdepth := <inc> rhs.maxdepth
+
+  @ Leaf():
+    root.maxdepth := 0
+
+strategies
+  compute-String = id
+
+  get-lazy-attribute(|name) =
+    id{one( ?(name, v) )} => tree
+  ; !v
+
+  get-attribute(|name) =
+    get-lazy-attribute(|name) => v
+  ; get-value(!v)
+
+  get-maxdepth =
+    debug(!"input: ")
+  ; compute-Node
+  ; get-attribute(|"maxdepth")
+  ; debug(!"output: ")
+
+  cond-01 =
+    <get-maxdepth> Node(Leaf(),Node(Leaf(),Leaf()))
+  ; <get-maxdepth> Node(Leaf(),Node(Node(Leaf(),Leaf()),Leaf()))
+  ; <exit> 0
