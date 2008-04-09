@@ -104,7 +104,7 @@ rules
 	     ![PpControl("#include <srts/init-stratego-application.h>")]
 	   )>
 	   
-	~ext-def*:<if-lib(![<tracing-table-sig>, <tracing-table-counter-sig>], ![<tracing-table-decl>, <tracing-table-counter-decl>])>
+	~ext-def*:<![<tracing-table-sig>, <tracing-table-counter-sig>]>
 	
 	// signatures of all generated functions
 	~ext-def*:function-sigs
@@ -120,10 +120,8 @@ rules
 strategies
 
   tracing-table-sig  = !c:dec|[ extern const char *__tracing_table[]; ]|
-  tracing-table-decl = !c:dec|[ const char * __tracing_table[TRACING_TABLE_SIZE]; ]|
 
   tracing-table-counter-sig  = !c:dec|[ extern unsigned short __tracing_table_counter; ]|
-  tracing-table-counter-decl = !c:dec|[ unsigned short __tracing_table_counter; ]|
 
   register-strategies-function =
     where(l := <length; int-to-string; !IntConst(<id>)>)

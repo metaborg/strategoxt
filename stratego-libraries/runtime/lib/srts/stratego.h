@@ -112,7 +112,6 @@ void SRTS_init_mprotect(void);
 #define match_real(t, i) \
         ((ATgetType(t) == AT_REAL) && (ATgetInt((ATermReal)t) == i))
 
-
 #define TRACING_TABLE_SIZE 65536
 
 #endif

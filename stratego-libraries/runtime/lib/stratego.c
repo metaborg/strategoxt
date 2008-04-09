@@ -35,6 +35,9 @@ ATerm SRTS_package_version = NULL;
 ATerm SRTS_package_bugreport = NULL;
 ATerm SRTS_package_revision = NULL;
 
+const char * __tracing_table [TRACING_TABLE_SIZE];
+unsigned short __tracing_table_counter;
+
 /**
  * For legacy reasons, this is an external function.
  */
