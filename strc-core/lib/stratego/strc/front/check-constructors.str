@@ -27,8 +27,15 @@ rules
   QuotedConstrDecl :
     OpDeclQ(s, type) -> OpDecl(<escape> s, type)
 
+  QuotedConstrDecl :
+    ExtOpDeclQ(s, type) -> ExtOpDecl(<escape> s, type)
+
   TupleDecl :
     OpDeclInj(tp@FunType(args,res)) -> OpDecl("", tp)
+    where <TupleType> args => res
+
+  TupleDecl :
+    ExtOpDeclInj(tp@FunType(args,res)) -> ExtOpDecl("", tp)
     where <TupleType> args => res
 
   TupleDecl :
@@ -36,9 +43,18 @@ rules
     OpDecl("", ConstType(Sort("Tuple", [Sort("Nil", [])])))
 
   TupleDecl :
+    ExtOpDeclInj(ConstType(Sort("Tuple", [Sort("Nil", [])]))) ->
+    ExtOpDecl("", ConstType(Sort("Tuple", [Sort("Nil", [])])))
+
+  TupleDecl :
     OpDeclInj(FunType([ConstType(SortVar(x))],ConstType(SortVar(x)))) ->
     OpDecl("", FunType([ConstType(SortVar(x))],
 		 ConstType(Sort("Tuple",[Sort("Cons", [SortVar(x), Sort("Nil", [])])]))))
+
+  TupleDecl :
+    ExtOpDeclInj(FunType([ConstType(SortVar(x))],ConstType(SortVar(x)))) ->
+    ExtOpDecl("", FunType([ConstType(SortVar(x))],
+		   ConstType(Sort("Tuple",[Sort("Cons", [SortVar(x), Sort("Nil", [])])]))))
 
   TupleType =
     !ConstType(Sort("Tuple", 
@@ -48,8 +64,9 @@ rules
 
   CheckCons = Op(id,length); CheckConsN
 
+
   GenerateCheckRule =
-    ?OpDecl(c, ConstType(t))
+    (?OpDecl(c, ConstType(t)) <+ ?ExtOpDecl(c, ConstType(t)))
     ; where(!0 => n)
     ; rules(
         CheckConsN : Op(c, n) -> Op(c, [])
@@ -57,7 +74,7 @@ rules
       )
 
   GenerateCheckRule =
-    ?OpDecl(c, FunType(ts, t))
+    (?OpDecl(c, FunType(ts, t)) <+ ?ExtOpDecl(c, FunType(ts, t)))
     ; where(<length> ts => n)
     ; rules(
         CheckConsN : Op(c, n) -> Op(c, [])
@@ -67,7 +84,7 @@ rules
    * Just ignore injections: no check rule is required for them.
    */
   GenerateCheckRule =
-    ?OpDeclInj(_) 
+    ?OpDeclInj(_) <+ ?ExtOpDeclInj(_) 
 
   GenerateCheckRule =
     ?Overlay(c, xs, t)

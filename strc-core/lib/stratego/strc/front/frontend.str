@@ -24,7 +24,7 @@ strategies
           ; pre-desugar
           ; try(DeclareVarToConst)
 	  ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
-          ; GenerateCheckRule
+          ; (GenerateCheckRule <+ debug(!"GenerateCheckRule fails: "))
           ; try(where(m-MkCongDef; m-add-def))
         )
 
