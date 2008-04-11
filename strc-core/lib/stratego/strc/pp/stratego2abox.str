@@ -88,6 +88,9 @@ rules
   ( ?OpDecl(name,rhs)
   + ?OpDeclInj(rhs) ; !"" => name
   + ?OpDeclQ(name,rhs)
+  + ?ExtOpDecl(name,rhs)
+  + ?ExtOpDeclInj(rhs) ; !"" => name
+  + ?ExtOpDeclQ(name,rhs)
   )
   ; !rhs => FunType(lhs,rhs')
   ; <separate-by-star>lhs => lhs'
@@ -98,6 +101,9 @@ rules
   ( ?OpDecl(name,rhs)
   + ?OpDeclInj(rhs) ; !"" => name
   + ?OpDeclQ(name,rhs)
+  + ?ExtOpDecl(name,rhs)
+  + ?ExtOpDeclInj(rhs) ; !"" => name
+  + ?ExtOpDeclQ(name,rhs)
   )
   ; !|[ R [~lit:name KW[":"] H hs=1 [~rhs] ] ]|
 
