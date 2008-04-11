@@ -110,7 +110,8 @@ strategies
      in ?(IncludePathName(<pack-qualify-pathname>), _)
       ; if file-exists then
           pack-include-pathname
-          ; (id,xtc-transform(!"report-ambs"))
+          ; (id,report-ambs)
+            // (id, xtc-transform(!"report-ambs")) // EV
           ; pack-fc(|"Stratego-Sugar-Cong")
         else
           <fatal-error> ["pack-stratego: error: file ", <id>, " does not exist\n"]
