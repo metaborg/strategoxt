@@ -203,8 +203,12 @@ strategies
  */
 strategies
 
+  DesugarOpDecl :
+    ExtOpDecl(c, t) -> OpDecl(c, t)
+
   Translate =
-    fragment(DeclareConstructor|"ConstructorDecl")
+    try(DesugarOpDecl)
+    ; fragment(DeclareConstructor|"ConstructorDecl")
     ; fragment(InitConstructorQ <+ InitConstructor|"ConstructorInit")
 
   DeclareConstructor :
@@ -253,7 +257,7 @@ strategies
        ; (fragment(TranslateDef | "FunctionDef")
 	  <+ {?Def|[ external f(a1* | a2* ) ]|}
 	  <+ {?Def|[ external f(a1* | a2* ) = s ]|}
-          <+ debug(!"TranslateDef undefined: "); fail)
+          <+ dbg(|"TranslateDef undefined: "); fail)
 
   SDefIgnore =
     ?Def|[ f(a1* | a2*) = s ]|
@@ -420,7 +424,7 @@ rules
 
   translate-strat(|S,F) =
     TranslateStrat(|S,F)
-    <+ debug(!"*** translate-strat undefined: "); fail
+    <+ dbg(|"*** translate-strat undefined: "); fail
 
   TranslateStrat(|S,F) :
     Id -> stm|[ goto ~id:S; ]|
@@ -527,7 +531,7 @@ rules
 	    sl := <frames-to-static-link> frames'
 	  else
             sl := |[ &frame ]|
-	    ; <debug(!"* warning (MkClosure) expects more than one frame: ")> def
+	    ; <dbg(|"* warning (MkClosure) expects more than one frame: ")> def
 	  end
 
   MkClosure :
@@ -543,13 +547,13 @@ rules
 	    sl := <frames-to-static-link> frames'
 	  else
             sl := |[ &frame ]|
-	    ; <debug(!"* warning (MkClosure) expects more than one frame: ")> def
+	    ; <dbg(|"* warning (MkClosure) expects more than one frame: ")> def
 	  end
 
 strategies // computing the static link
 
   frames-to-static-link =
-    (Tl <+ debug(!"*** frames-to-static-link error: "); fail)
+    (Tl <+ err(|"*** frames-to-static-link error: "); fail)
     ; foldr(!exp|[ sl ]|,
 	    !exp|[ sl_up(~exp:<Snd>) ]|)
 
@@ -559,7 +563,7 @@ strategies // calling and passing functions
 
   mk-call : 
     (f{}, args) -> ()
-    where debug(!"*** mk-call error: "); <exit> 1   
+    where err(|"*** mk-call error: "); <exit> 1   
 
   // f is a function, pass it its static link
 

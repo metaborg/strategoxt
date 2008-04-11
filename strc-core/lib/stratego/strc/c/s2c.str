@@ -193,8 +193,13 @@ strategies
  */
 strategies
 
-  Translate =
-    fragment(DeclareConstructor|"ConstructorDecl")
+
+  DesugarOpDecl :
+    ExtOpDecl(c, t) -> OpDecl(c, t)
+
+  Translate = 
+    try(DesugarOpDecl)
+    ; fragment(DeclareConstructor|"ConstructorDecl")
     ; fragment(InitConstructorQ <+ InitConstructor|"ConstructorInit")
 
   DeclareConstructor :

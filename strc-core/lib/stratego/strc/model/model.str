@@ -148,10 +148,10 @@ strategies // constructors
 strategies
 
   m-constr-signature :
-    OpDeclInj(FunType(ts,_)) -> (Inj(), <length> ts)
+    OpDeclInj(FunType(ts,_))   -> (Inj(), <length> ts)
 
   m-constr-signature :
-    OpDeclInj(ConstType(_)) -> (Inj(), 0)
+    OpDeclInj(ConstType(_))    -> (Inj(), 0)
 
   m-constr-signature :
     OpDeclQ(c, ConstType(x))   -> (Q(c), 0)
@@ -165,6 +165,25 @@ strategies
   m-constr-signature :
     OpDecl(c,  FunType(ts, t)) -> (c,    <length> ts)
 
+strategies
+
+  m-constr-signature :
+    ExtOpDeclInj(FunType(ts,_))   -> (Inj(), <length> ts)
+
+  m-constr-signature :
+    ExtOpDeclInj(ConstType(_))    -> (Inj(), 0)
+
+  m-constr-signature :
+    ExtOpDeclQ(c, ConstType(x))   -> (Q(c), 0)
+
+  m-constr-signature :
+    ExtOpDeclQ(c, FunType(ts, t)) -> (Q(c), <length> ts)
+
+  m-constr-signature :
+    ExtOpDecl(c,  ConstType(x))   -> (c,    0)
+
+  m-constr-signature :
+    ExtOpDecl(c,  FunType(ts, t)) -> (c,    <length> ts)
 
 
 strategies // overlays

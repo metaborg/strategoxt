@@ -56,8 +56,13 @@
    SortTuple.1:iter-star-sep                          -- _1 KW[","],
    Star                                               -- KW["*"],
    StarStar                                           -- KW["**"],
+
    OpDecl    					      -- R [_1 KW[":"] H hs=1 [_2]],
    OpDeclInj 					      -- R ["" KW[":"] H hs=1 [_1]],
+   ExtOpDecl                           		      -- R [H hs=1 [KW["external"] _1]KW[":"] H hs=1 [_2]],
+   ExtOpDeclQ                                         -- R [H hs=1 [KW["external"] _1]KW[":"] H hs=1 [_2]],
+   ExtOpDeclInj                                       -- R [H hs=1 [KW["external"]] KW[":"] H hs=1 [_1]],
+
    ConstType                                          -- _1,
    FunType                                            -- _1 KW["->"] _2,
    FunType.1:iter-sep                                 -- _1 KW["*"],
