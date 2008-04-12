@@ -3,6 +3,7 @@ module report-ambs
 imports 
   libstratego-lib
   libstratego-xtc 
+  libstratego-sglr
   libstrc
 
 strategies
