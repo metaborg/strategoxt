@@ -35,7 +35,9 @@ strategies
     VarToConst1 <+ VarToConst2
 
   DeclareVarToConst = //debug(!"DeclareVarToConst: "); 
-    (?|[ x : srt ]| + ?Overlay|[ x() = t ]|)
+    (?|[ x : srt ]| + 
+     ?ExtOpDecl(x, ConstType(_)) + /* ?|[ external x : srt ]| */ 
+     ?Overlay|[ x() = t ]|)
     ; rules( 
         VarToConst1 : 
           Term|[ x ]| -> Term|[ x() ]|         
