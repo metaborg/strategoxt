@@ -369,6 +369,8 @@ rules
         ; <create-bigbagof-rule(|x, aux-call, t3, stdkey)> drd
         ; <create-chain-rule(|x, t3, stdkey)> drd
         ; <create-bigchain-rule(|x, t3, stdkey)> drd
+        ; <create-fold-rule(|x, t3, stdkey)> drd
+        ; <create-bigfold-rule(|x, t3, stdkey)> drd
         ; <create-all-keys-rule(|x, t3, stdkey)> drd
         ; <create-break-rules(|x, t3, stdkey)> drd
         ; <create-break-bp-rules(|x, t3, stdkey)> drd
@@ -608,6 +610,46 @@ strategies
               ?x@t1
               ; !(<~id:lookup(|~str:f, t3) <+ ![]>, <id>)
               ; foldl({y, x*: ?(<id>, y@t1); s1 })
+          ]|)
+      end
+
+/**
+ * Fold
+ */
+strategies
+
+  /**
+   * fold-f : fold the current term through all f in most recent 
+   * scope with rules for f matching the key.
+   */
+  create-fold-rule(|x, t3, stdkey) =
+    create-fold-rule(|"fold", "dr-lookup-rule", x, t3, stdkey)
+
+  /**
+   * bigfold-f : fold the current term through all f from all scopes.
+   */
+  create-bigfold-rule(|x, t3, stdkey) =
+    create-fold-rule(|"bigfold", "dr-lookup-all-rules", x, t3, stdkey)
+
+  /**
+   * @param name of prefix
+   * @param name of dr-lookup strategy
+   */
+  create-fold-rule(|fold, lookup, x, t3, stdkey) =
+    ?drd@|[ rules( f(a1*|a2*) : t1 -> t2 where s2 ) ]|
+    ; <concat-strings> [fold, "-", f] => g
+    ; if is-new(|f, g, stdkey); try(is-new(|f, g, ())) then
+        where(
+          new => y
+          ; <aux-call(|y)> drd => s1
+          ; <tvars> t1 => x*
+          ; y' := <newname> "fold"
+        )
+        ; add-def(||[ 
+            g(y' : (T -> T) * T -> T, a1*|a2*) =
+              ?x@t1
+              ; !(<~id:lookup(|~str:f, t3) <+ ![]>, <id>)
+              ; y'({y, x*: ?(<id>, y@t1); s1 })
           ]|)
       end
 
