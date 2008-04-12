@@ -24,7 +24,7 @@ strclib =						\
 	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c
-libstrc_la_CFLAGS   = $(AM_CFLAGS)
+libstrc_la_CFLAGS   = $(AM_CFLAGS) -O0
 libstrc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 
 libstrc_la_CPPFLAGS = $(STRATEGO_LIB_CFLAGS)			 \

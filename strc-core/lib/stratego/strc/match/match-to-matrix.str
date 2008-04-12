@@ -11,10 +11,10 @@ strategies
 
   match-to-matrix =
   (
-    if Choice(id, id) + LChoice(id, id) + GuardedLChoice(id, Id, id) then
+    if Choice(id, id) + LChoice(id, id) + GuardedLChoice(id, Id(), id) then
       rec x(
         LChoice(x, x)
-        <+ GuardedLChoice(x, Id, x)
+        <+ GuardedLChoice(x, Id(), x)
         <+ rec y(
              Seq(y, match-to-matrix)
              <+ Scope(id, y)
@@ -32,7 +32,7 @@ strategies
 rules
 
   ExpandId :
-    Id -> Scope([x], Seq(Match(Var(x)), Build(Var(x))))
+    Id() -> Scope([x], Seq(Match(Var(x)), Build(Var(x))))
     where new => x
 
   MatchToMatrix : 
@@ -47,7 +47,7 @@ rules
     Matrix(ps, <map(\ Row(ts, s) -> Row(ts, Scope(xs, s)) \ )> rows)
 
   MatrixMerge : 
-    GuardedLChoice(Matrix(ps, rows), Id, s2) ->
+    GuardedLChoice(Matrix(ps, rows), Id(), s2) ->
     LChoice(Matrix(ps, rows), s2)
 
 //  MatrixMerge : 

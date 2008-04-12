@@ -143,10 +143,10 @@ rules
 
 rules
   stratego-to-abox : 
-    Fail -> |[ KW["fail"] ]|
+    Fail() -> |[ KW["fail"] ]|
 
   stratego-to-abox : 
-    Id -> |[ KW["id"] ]|
+    Id() -> |[ KW["id"] ]|
 
 
 rules
@@ -411,7 +411,7 @@ strategies
 rules
 
   stratego-to-abox : 
-    Wld  -> |[ "_" ]|
+    Wld()  -> |[ "_" ]|
 
 rules
 
@@ -643,7 +643,7 @@ rules
     RealCong(i) -> S(i)
 
   stratego-to-abox : 
-    EmptyTupleCong -> |[ H hs=0 [KW["("] KW[")"]] ]|
+    EmptyTupleCong() -> |[ H hs=0 [KW["("] KW[")"]] ]|
 
 
 rules

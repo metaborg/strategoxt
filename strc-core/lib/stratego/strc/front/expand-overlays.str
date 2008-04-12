@@ -68,7 +68,7 @@ rules
 
   Overlay-to-Congdef :
     Overlay(f, xs, t) -> SDefT(f, xdecs, [], s)
-    where <map(!VarDec(<id>, DefaultStrat))> xs => xdecs
+    where <map(!VarDec(<id>, DefaultStrat()))> xs => xdecs
 	; <term-to-cong <+ <fatal-err(|"Cannot generate congruence definition from overlay definition")> [f, "(", <length; int-to-string> xs, ")"]; fail> t => s
 
   term-to-cong : 
@@ -83,20 +83,20 @@ rules
     where <not(?BuildDefault(_))> pt2
 
   term-to-cong : 
-    BuildDefault(x) -> Id
+    BuildDefault(x) -> Id()
 
   preterm-to-cong : 
     Op(f, ts) -> CallT(SVar(f), <map(term-to-cong)> ts, [])
 
   preterm-to-cong : 
-    Str(x) -> Match(Anno(Str(x), Wld))
+    Str(x) -> Match(Anno(Str(x), Wld()))
 
   preterm-to-cong : 
-    Int(x) -> Match(Anno(Int(x), Wld))
+    Int(x) -> Match(Anno(Int(x), Wld()))
 
   preterm-to-cong : 
-    Real(x) -> Match(Anno(Real(x), Wld))
+    Real(x) -> Match(Anno(Real(x), Wld()))
 
   preterm-to-cong : 
-    BuildDefaultPT(x) -> Id
+    BuildDefaultPT(x) -> Id()
 

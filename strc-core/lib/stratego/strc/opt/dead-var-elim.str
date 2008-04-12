@@ -44,7 +44,7 @@ strategies
       |}
 
   DeclareDead =
-    ?x; rules(ElimVar : Var(x) -> Wld)
+    ?x; rules(ElimVar : Var(x) -> Wld())
 
   EliminateFromScope =
     Scope(filter(not(!Var(<id>); ElimVar)), id)

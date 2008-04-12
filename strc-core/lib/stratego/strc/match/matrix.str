@@ -19,7 +19,7 @@ strategies
   term-to-matrix =
     not(oncetd(?Explode(_,_)))
     ; ! As(Off([]), [<id>])
-    ; topdown(try(?As(Wld, <id>)))
+    ; topdown(try(?As(Wld(), <id>)))
     ; topdown(try(Propagate))
     ; collect-substitutions
     ; \ (ts, s) -> Matrix(<collect-offsets> ts, 
@@ -52,7 +52,7 @@ rules
 
   Propagate :
     As(Off(path), Op(f, ts)) -> 
-    As(Off(path), Anno(Op(f, As(Off(path), ts)), As(Off(["a" | path]), Wld)))
+    As(Off(path), Anno(Op(f, As(Off(path), ts)), As(Off(["a" | path]), Wld())))
 
   Propagate :
     As(Off(path), Anno(Int(n),pt)) -> 
@@ -76,7 +76,7 @@ rules
     As(Off(path), As(Var(x), t)) -> As(Var(x), As(Off(path), t))
 
   Propagate :
-    As(Off(path), BuildDefault(t)) -> As(Off(path), Wld)
+    As(Off(path), BuildDefault(t)) -> As(Off(path), Wld())
 
   Propagate :
     As(Off(path), ts) -> ts'
@@ -104,10 +104,10 @@ strategies
 rules
 
   IgnoreVar : 
-    As(Off(path), Var(x)) -> As(Off(path), Wld) where <is-list> path
+    As(Off(path), Var(x)) -> As(Off(path), Wld()) where <is-list> path
 
   IgnoreVar : 
-    As(Off(path), Anno(Var(x),pt)) -> As(Off(path), Anno(Wld,pt)) where <is-list> path
+    As(Off(path), Anno(Var(x),pt)) -> As(Off(path), Anno(Wld(),pt)) where <is-list> path
 
   CollectSubst : 
     As(Off(path), Var(x)) -> [Assign(Var(x), Var(path))]

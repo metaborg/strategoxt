@@ -107,7 +107,7 @@ strategies
     SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
     where <length> ts => n
         ; <not(ModDefinition)> (f, n, 0)
-        ; <unzip(new; !(VarDec(<id>, DefaultStrat), <id>))> ts => (xdecs, xs)
+        ; <unzip(new; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
 
 strategies
 

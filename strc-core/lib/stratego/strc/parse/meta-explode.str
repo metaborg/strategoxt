@@ -16,7 +16,7 @@ rules
   // There is no Wld/0 in asfix so this not buggy.
 
   Clean :
-    Op("Wld",[]) -> Wld
+    Op("Wld",[]) -> Wld()
 
   Clean : 
     Op(i,[]) -> NoAnnoList(Int(<int-to-string> i))
@@ -38,7 +38,7 @@ strategies
          ; {layout_var:
              appl(prod([cf(layout)], cf(opt(layout)), id),
                   oncetd(?meta-var(layout_var)))
-           < !meta-var(layout_var) + try(not(build); !Wld)})
+           < !meta-var(layout_var) + try(not(build); !Wld())})
     ))
                                                                                
   asfix-option =

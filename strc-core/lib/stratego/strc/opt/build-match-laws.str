@@ -24,7 +24,7 @@ rules // combinations of match and build
   ->
     Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
     Seq(Build(Anno(pt1,Op("Nil",[]))), 
-    Seq(Match(Anno(pt2,Wld)),
+    Seq(Match(Anno(pt2,Wld())),
         Build(Anno(Op(f, ts1), pt1)))))
 
   BuildMatchFusion :
@@ -33,7 +33,7 @@ rules // combinations of match and build
   ->
     Seq(<zip(\ (t1,t2) -> Seq(Build(t1), Match(t2)) \ ); seqs> (ts1, ts2), 
     Seq(Build(Anno(pt1,Op("Nil",[]))), 
-    Seq(Match(Anno(pt2,Wld)),
+    Seq(Match(Anno(pt2,Wld())),
     Seq(Build(Anno(Op(f, ts1),pt1)),
         s))))
 
@@ -81,13 +81,13 @@ rules // combinations of match and build
 rules // other rules 
 
   MatchSimplify = 
-    AsMatchWld
+    AsMatchWld()
 
   MatchAs :
     Match(As(p1, p2)) -> Seq(Match(p2), Match(p1))
 
-  AsMatchWld :
-    As(Wld, t) -> t
+  AsMatchWld() :
+    As(Wld(), t) -> t
 
   WhereSavesCurrentTerm :
     Where(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))

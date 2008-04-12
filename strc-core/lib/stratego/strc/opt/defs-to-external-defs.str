@@ -55,7 +55,7 @@ strategies // exported strategies
 strategies // exported constructors
 
   filter-exported-constructors =
-    map(try(OpDeclToExtOpDecl))
+    filter(OpDeclToExtOpDecl)
 
   OpDeclToExtOpDecl :
     OpDeclInj(t) ->  ExtOpDeclInj(t)

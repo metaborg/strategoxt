@@ -9,11 +9,11 @@ imports Stratego-Sugar Stratego-Sugar-MetaTransition
 rules
 
   MatchingCongruence :
-    Cong(f, ss) -> Match(Anno(Op(f, ts), Wld))
-    where <map(\ Match(t) -> t \ + \ Id -> Wld \ )> ss => ts
+    Cong(f, ss) -> Match(Anno(Op(f, ts), Wld()))
+    where <map(\ Match(t) -> t \ + \ Id -> Wld() \ )> ss => ts
 
   MatchingCongruence :
-    Cong(f, []) -> Match(Anno(Op(f, []), Wld))
+    Cong(f, []) -> Match(Anno(Op(f, []), Wld()))
 
   TransformingCongruence :
     Cong(f, ss) -> 

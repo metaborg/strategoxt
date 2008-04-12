@@ -352,7 +352,7 @@ strategies
         ; vini := <init-sl-vars> t*
         ; stms := <filter(AddToFrame)> [a1*, a2*]
         ; F    := <newname> "fail"
-        ; stm  := <translate-strat(|Next, F)> s
+        ; stm  := <translate-strat(|Next(), F)> s
        |}
 
 
@@ -454,7 +454,7 @@ rules
     |[ s1; s2 ]| -> 
     stm|[
       { 
-        ~stm:<translate-strat(|Next,F)>s1 
+        ~stm:<translate-strat(|Next(),F)>s1 
         ~stm:<translate-strat(|S,F)>s2 
       }  
     ]|
@@ -464,13 +464,13 @@ rules
     stm|[
       {
         ATerm ~id:x = t;
-        ~stm:<translate-strat(|Next,F')>s1
+        ~stm:<translate-strat(|Next(),F')>s1
         ~stm:<translate-strat(|S,F)>s2
         ~id:F' : t = ~id:x; 
         ~stm:<translate-strat(|S,F)>s3
       }
     ]|
-    where <not(Next)> S; <newname> "trm" => x; <newname> "label" => F'
+    where <not(Next())> S; <newname> "trm" => x; <newname> "label" => F'
 	
   TranslateStrat(|S,F) :
     |[ s1 < s2 + s3 ]| -> 
@@ -480,7 +480,7 @@ rules
         ~id:S' : ; 
       }
     ]|
-    where !S => Next; <newname> "label" => S'
+    where !S => Next(); <newname> "label" => S'
 
   TranslateStrat(|S,F) :
     |[ let ~*defs in s end ]| ->
@@ -510,7 +510,7 @@ rules
     where y := <new>
 
   MkClosure :
-    Def|[ f~{Offsets(i,j),Offset(k),Escapes,Closure(x)}(|) = s ]| ->
+    Def|[ f~{Offsets(i,j),Offset(k),Escapes(),Closure(x)}(|) = s ]| ->
     ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
@@ -535,7 +535,7 @@ rules
 	  end
 
   MkClosure :
-    Def|[ f~{Offsets(0,0),Offset(k),Escapes,Closure(x),ClosureAlloc()}(|) 
+    Def|[ f~{Offsets(0,0),Offset(k),Escapes(),Closure(x),ClosureAlloc()}(|) 
           = g~{Frames(frames)}(|) ]| ->
     ([dec|[ struct str_closure ~id:y = {&~id:f, ~exp:sl}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
@@ -752,13 +752,13 @@ rules
     Match(t) -> <translate-strat(|S,F)> Match(t, Id("t"))
 
   TranslateStrat(|S,F) :
-    Match(Wld, trm) -> stm|[ goto ~id:S; ]|
+    Match(Wld(), trm) -> stm|[ goto ~id:S; ]|
 
   TranslateStrat(|S,F) :
     Match(As(t1,t2), trm) ->
     stm|[ 
       { 
-        ~stm:(<translate-strat(|Next,F)> Match(t1,trm))
+        ~stm:(<translate-strat(|Next(),F)> Match(t1,trm))
         ~stm:(<translate-strat(|S,F)> Match(t2,trm))
       }
     ]|
@@ -830,7 +830,7 @@ rules
     |[ { ATerm ~id:x, ~id: y;
 	 ~id:x = SSL_get_constructor(~id:trm);
 	 ~id:y = SSL_get_arguments(~id:trm);
-	 ~stm:(<translate-strat(|Next,F)> Match(t1, Id(x)))
+	 ~stm:(<translate-strat(|Next(),F)> Match(t1, Id(x)))
 	 ~stm:(<translate-strat(|S,F)> Match(t2, Id(y)))
        } ]|
     where <newname> "trm" => x; <newname> "trm" => y
@@ -850,7 +850,7 @@ rules
         ~id:x = (ATerm)ATgetAnnotations(~id:trm);
         if(~id:x == NULL) 
            ~id:x = (ATerm) ATempty;
-        ~stm:(<translate-strat(|Next,F)> Match(pt1, Id(trm)))
+        ~stm:(<translate-strat(|Next(),F)> Match(pt1, Id(trm)))
         ~stm:(<translate-strat(|S,F)> Match(pt2, Id(x)))
       } 
     ]|
@@ -910,7 +910,7 @@ rules
 	; <ConstructorName> (c, <length> ts) => cname
         ; <thread-map(\ (t,i) ->
              (
-               <MatchArg1(|Next,F) <+ MatchArg2(|Next,F)> 
+               <MatchArg1(|Next(),F) <+ MatchArg2(|Next(),F)> 
                   (t, exp|[ ATgetArgument(~exp:trm,~exp:<mk-int-const> i) ]|)
              , <add>(i, 1)
              )
@@ -954,7 +954,7 @@ rules
       else
         goto ~id:F;
     ]|
-    where <map(MatchArg1(|Next,F) <+ MatchArg2(|Next,F))> 
+    where <map(MatchArg1(|Next(),F) <+ MatchArg2(|Next(),F))> 
 	   [(hd, exp|[ ATgetFirst((ATermList)~exp:trm) ]|), 
             (tl, exp|[ (ATerm)ATgetNext((ATermList)~exp:trm) ]|)] => match-args
 

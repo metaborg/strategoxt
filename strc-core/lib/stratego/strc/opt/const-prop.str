@@ -96,13 +96,13 @@ strategies
            <+ <if-verbose3(debug(!"no match with current term: "))> 
 		      ("strat: ", <id>, "current: ", ct)
               ; !Fail())
-       <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
+       <+ where(<not(oncetd(?Wld() + ?As(_,_)))> t)
 	  ; rules(CurrentTerm : _ -> t)
       )
 
   introduce-binding =
     ?(Var(x), t) 
-    ; where(<not(oncetd(?Wld + ?As(_,_)))> t)
+    ; where(<not(oncetd(?Wld() + ?As(_,_)))> t)
     ; rules(Binding : Var(x) -> t)
 
   prop-pattern-match = 
@@ -130,7 +130,7 @@ strategies
     where <not(isvar)> x; <isvar> y
 
   MatchWildCard :
-    [(Wld, t) | ps] -> ps
+    [(Wld(), t) | ps] -> ps
 
   AsMatch :
     [(As(p1,p2),t) | ps] -> [(p1, t), (p2, t) | ps]

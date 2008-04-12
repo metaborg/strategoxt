@@ -131,6 +131,14 @@ strategies // constructors
 
   m-add-constructor = ?cdec
     ; where( csig := <m-constr-signature> )
+    ; where( try(
+        cdec' := <ModConstructor> csig 
+        ; if <not(eq)> (cdec, cdec') then
+            warn(|<concat-strings>[
+               "Declaration of constructor ", <Fst>csig, "/", <Snd>csig,
+	       " overrides external constructor declaration"])
+          end
+      ) )
     ; rules( ModConstructor : csig -> cdec )
 
   m-rm-constructor = id

@@ -62,7 +62,7 @@ strategies
 	; where(
 	    <not(eq)>(<get-config>"baseout",<get-config>"basein")
 	    <+ <get-config>"baseout"
-	       ; debug(!"name for library same as name for base file: ")
+	       ; warn(|<concat-strings>["Name for library same as name for base file", <id>])
 	       ; fail
           )
         ; write-to

@@ -78,7 +78,7 @@ rules // Match, Build, Scope
 
   Analyze :
     |[ ?t ]| -> |[ ?t ~{[ sf, "m", "p", Env(xs)]} ]|
-    where <(?Var(_){"unbound"} + ?Wld); !"s" <+ !"sf"> t => sf
+    where <(?Var(_){"unbound"} + ?Wld()); !"s" <+ !"sf"> t => sf
 	; <collect(?Var(<id>){"unbound"} + ?Var(<id>){"(un)bound"})> t => xs
 
   Analyze :

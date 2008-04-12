@@ -154,7 +154,7 @@ strategies
         ; if not(strc-rtg-format-check(|format')) then
             write-to
 	    ; copy-to(!<concat-strings>[<base-filename> file, ".", "parse.", format] => name)
-            ; log(|Error, 
+            ; log(|Error(), 
                 <concat-strings>["\nfile `", file, "' does not satisfy format `", format,"'\n",
                   "See file `", name, "'\n",
                   "This problem may be caused by importing a file parsed with an old version of the Stratego syntax."])

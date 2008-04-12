@@ -63,8 +63,8 @@ strategies
   simple-strategy =
     //debug(!"simple-strategy?: ");
     rec x(
-      Id 
-      + Fail 
+      Id() 
+      + Fail()
       + Build(id)
       + Assign(Var(id),Var(id))
       + Match(Var(id))
@@ -88,9 +88,9 @@ rules
   matrix-pat-to-term =
     ?As(Off(p), <id>)
     ; topdown(try( 
-        \ As(Off(p), Wld) -> Var(p) \
+        \ As(Off(p), Wld()) -> Var(p) \
         <+ \ As(Off(p), t) -> As(Var(p), t) \
-        <+ \ Anno(pt1, As(Off(p), Anno(pt2, As(Off(p'), Wld)))) -> 
+        <+ \ Anno(pt1, As(Off(p), Anno(pt2, As(Off(p'), Wld())))) -> 
            Anno(pt1, As(Var(p), pt2)) \
       ))
 
@@ -104,14 +104,14 @@ rules
 
   SkipWild : 
     Matrix(rows) -> Matrix(rows')
-    where <map(Row(id, ?[As(_,Wld)|<id>], id))> rows => rows'
+    where <map(Row(id, ?[As(_,Wld())|<id>], id))> rows => rows'
 
   // The next column contains a mixture of constructors and wildcards
   // Move it to the first list for later consideration
 
   ShiftColumn :
     Matrix(rows) -> Matrix(rows')
-    where <not(map(Row([As(id,not(Wld))|id],id,id)))> rows;
+    where <not(map(Row([As(id,not(Wld()))|id],id,id)))> rows;
 	  <map(ShiftColumnRow)> rows => rows'
 
   ShiftColumnRow :
@@ -177,7 +177,7 @@ rules
     Row([As(_, Anno(Str(x),pt))|_], _, _) -> (Str(x), [], <offset> pt)
 
   ConsArgs :
-    Row([As(_, Anno(Wld,pt))|_], _, _) -> (Wld , [], <offset> pt)
+    Row([As(_, Anno(Wld(),pt))|_], _, _) -> (Wld() , [], <offset> pt)
 
 strategies
 
@@ -206,7 +206,7 @@ rules
     where !c' => Fun(c, ar); <eq> (<length> t*, ar)
 
   MatchCons(|c', args, ann) :
-    Op(c, t*) -> [t*, As(Off(ann),Wld)]
+    Op(c, t*) -> [t*, As(Off(ann),Wld())]
     where !c' => Fun(c, ar); <eq> (<length> t*, ar)
 
   MatchCons(|c, args, ann) :
@@ -222,12 +222,12 @@ rules
     where !c => Int(n); !args => []
 
   MatchCons(|c, args, ann) :
-    Wld -> [t*, As(Off(ann),Wld)]
-    where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
+    Wld() -> [t*, As(Off(ann),Wld())]
+    where <map(\ Var(p) -> As(Off(p), Wld())\ )> args => t*
 
   MatchCons(|c, args, ann) :
-    Anno(Wld,pt) -> [t*, pt]
-    where <map(\ Var(p) -> As(Off(p), Wld)\ )> args => t*
+    Anno(Wld(),pt) -> [t*, pt]
+    where <map(\ Var(p) -> As(Off(p), Wld())\ )> args => t*
 
 strategies
 
@@ -238,7 +238,7 @@ strategies
     ; !Matrix(<id>)
 
   WildPat :
-    Row([As(_, Wld) | pats], pats', fin) -> Row(pats, pats', fin)
+    Row([As(_, Wld()) | pats], pats', fin) -> Row(pats, pats', fin)
 
 
 /*

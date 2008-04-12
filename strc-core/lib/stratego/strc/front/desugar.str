@@ -84,7 +84,7 @@ rules // Lift non-variable arguments to primitives.
       ; <unzip(LiftPrimArg);(concat, unzip(id))> [t|ts] => (xs, (s, [t'|ts']))
 
   LiftPrimArg :
-    Var(x) -> ([], (Id, Var(x)))
+    Var(x) -> ([], (Id(), Var(x)))
 
   LiftPrimArg :
     t -> ([x], (Where(Seq(Build(t), Match(Var(x)))), Var(x)))
@@ -159,7 +159,7 @@ strategies
 
   pureterm = not(topdown(Con(id, id, id) + App(id, id)))
 
-  buildterm = not(topdown(Con(id, id, id) + Wld))
+  buildterm = not(topdown(Con(id, id, id) + Wld()))
 
 rules
 
@@ -319,7 +319,7 @@ rules
     OverlayNoArgs(f, t) -> Overlay(f, [], t)
 
   Desugar :
-    RuleNoCond(l, r) 	-> Rule(l, r, Id)
+    RuleNoCond(l, r) 	-> Rule(l, r, Id())
 
   Desugar :
     ParenStrat(x) -> x
@@ -490,7 +490,7 @@ rules // varyadic operators
 
   MkSeq : (s1, s2) -> Seq(s1, s2)
 
-  seqs = foldr(!Id, MkSeq)
+  seqs = foldr(!Id(), MkSeq)
 
 
 rules // variable declarations
@@ -509,10 +509,10 @@ rules // variable declarations
         ; <map(try(MkConstType))> t1 => t2
 
   MkFunType :
-    DefaultVarDec(x)-> VarDec(x, DefaultStrat)
+    DefaultVarDec(x)-> VarDec(x, DefaultStrat())
 
   MkConstType :
-    DefaultVarDec(x)-> VarDec(x, DefaultTerm)
+    DefaultVarDec(x)-> VarDec(x, DefaultTerm())
 
 /**
  * Define explicit variable scopes for \ ... \ rules.

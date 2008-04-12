@@ -16,7 +16,7 @@ imports Stratego-Sugar
 
 overlays
 
-  AllWarnings = [
+  AllWarnings() = [
      ("debug-arguments", "        missing build operator", "on"), 
      ("obsolete-strategy-calls", "obsolete strategies", "on"), 
      ("maybe-unbound-variables", "unbound variables", "off"),
@@ -29,7 +29,7 @@ strategies
     ArgOption("--warning" + "-W"
     , switch id
         case "all"  :
-          <set-config> ("--warning", <map(Fst)> AllWarnings)
+          <set-config> ("--warning", <map(Fst)> AllWarnings())
 
         case explode-string => ['n', 'o', '-' | wchars] :
           <implode-string> wchars => wstring 
@@ -52,13 +52,13 @@ strategies
     )
 
   get-default-warnings =
-    <filter(\ (warning,_,"on") -> warning \)>AllWarnings
+    <filter(\ (warning,_,"on") -> warning \)>AllWarnings()
 
   get-all-warnings =
-    <map(Fst)> AllWarnings
+    <map(Fst)> AllWarnings()
     
   warning-exists = 
-    ?warning ; <fetch-elem(?(warning,_,_))>AllWarnings
+    ?warning ; <fetch-elem(?(warning,_,_))>AllWarnings()
 
   Display-possible-warnings = 
      map( \ (s,txt,df) -> <concat-strings> ["                      ",s, "  ", txt, " [ ",df," ]\n"] \ )
