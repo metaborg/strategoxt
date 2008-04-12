@@ -1,5 +1,8 @@
 module pp-xml-info
-imports libstratego-xtc
+
+imports 
+  libstratego-lib
+  libstratego-xtc
 
 strategies
 
