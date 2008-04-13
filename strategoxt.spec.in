@@ -35,7 +35,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 %{_datadir}
 %doc
-%{_prefix}/man/
 
 %changelog
 * Thu Jan  2 2003 Eelco Visser <visser@cs.uu.nl> 0.9beta9-1
