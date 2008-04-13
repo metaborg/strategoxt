@@ -8,12 +8,14 @@ if [ -z "$(which automake | grep .nix-profile)" ] ; then
 		# Environment variables for our Gentoo friends.
 		export WANT_AUTOMAKE="1.8"
 		export WANT_AUTOCONF="2.59"
-	elif [ -f /etc/debian_version ] ; then
-		# Environment variables for our Debian friends.
-	        export ACLOCAL=/usr/bin/aclocal-1.10
-	        export AUTOMAKE=/usr/bin/automake-1.10
-	fi
+        fi
 fi
+
+#	elif [ -f /etc/debian_version ] ; then
+#		# Environment variables for our Debian friends.
+#	        export ACLOCAL=/usr/bin/aclocal-1.9
+#	        export AUTOMAKE=/usr/bin/automake-1.9
+#	fi
 
 # Determine autoxt to use.
 if test -z "$STRATEGOXT_BASELINE"; then
