@@ -31,9 +31,10 @@ Stratego/XT 0.17 - released April 2008
    * [STR-653] - new operator: an Ensure-Seq operator
 
 ---------++ Stratego Libraries
+
    * [STR-571] - Distribute stratego-libraries for deploying Stratego/XT applications without Stratego/XT
 
-* libsstratego-lib
+* libstratego-lib
 
    * [STR-512] - Option handling: support initial actions
    * [STR-513] - Option handling: support check actions
