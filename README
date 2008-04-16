@@ -3,7 +3,7 @@
 |    /|\    | strategoxt
 |   / | \   | 
 |  /  |  \  | stratego@cs.uu.nl
-| /_\/_\/_\ | http://stratego-language.org
+| /_\/_\/_\ | http://strategoxt.org
 `-----------'
 
 Description: 
@@ -63,7 +63,7 @@ Description:
   The Stratego system has been available as free software since March
   1999. Since April 2000 the distribution is available from
 
-    http://www.stratego-language.org
+    http://www.strategoxt.org
 
   Since December 2002, the Stratego distribution is integrated with
   the distribution of the XT package of transformation tools that
@@ -81,7 +81,7 @@ Bug reports:
   stratego-bugs@cs.uu.nl
 
 
-Copyright (C) 1998-2007 Eelco Visser
+Copyright (C) 1998-2008 Eelco Visser
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public

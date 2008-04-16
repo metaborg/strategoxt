@@ -174,7 +174,7 @@ format-check fails (exit code 1).
     <tool-doc>
       [ AutoProgram()
       , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
-      , GNU_LGPL("2002-2006", "Martin Bravenboer <martin.bravenboer@gmail.com>")
+      , GNU_LGPL("2002-2008", "Martin Bravenboer <martin.bravenboer@gmail.com>")
       , WebHome("http://www.program-transformation.org/Tools/FormatCheck")
       , Config([
           DefaultXTCRepository()

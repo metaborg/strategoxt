@@ -3,7 +3,7 @@
 |    /|\    | sdf-tools 
 |   / | \   | 
 |  /  |  \  | stratego@cs.uu.nl
-| /_\/_\/_\ | http://stratego-language.org
+| /_\/_\/_\ | http://strategoxt.org
 `-----------'
 
 Description: 
@@ -21,7 +21,7 @@ Bug reports:
   stratego-bugs@cs.uu.nl
 
 
-Copyright (C) 1998-2004 
+Copyright (C) 1998-2008
                     Merijn de Jonge <mdejonge@cs.uu.nl>
                     Eelco Visser <visser@acm.org>
                     Joost Visser <jvisser@cwi.nl>

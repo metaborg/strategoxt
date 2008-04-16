@@ -48,7 +48,7 @@ strategies
     <tool-doc>
       [ AutoProgram()
       , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
-      , GNU_LGPL("2002-2005", "Stratego Software Foundation <stratego@cs.uu.nl>")
+      , GNU_LGPL("2002-2008", "Stratego Software Foundation <stratego@cs.uu.nl>")
       , Config([
           DefaultXTCRepository()
         , CurrentXTCRepository()
