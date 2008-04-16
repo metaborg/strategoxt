@@ -3,7 +3,7 @@
 |    /|\    | aterm-tools 
 |   / | \   | 
 |  /  |  \  | stratego@cs.uu.nl
-| /_\/_\/_\ | http://stratego-language.org
+| /_\/_\/_\ | http://strategoxt.org
 `-----------'
 
 Description: 
@@ -12,7 +12,7 @@ Description:
 
   For more information,
 
-    http://www.stratego-language.org/Stratego/AsfixTools
+    http://www.program-transformation.org/Tools/AsFixTools
 
 
 Bug reports:
