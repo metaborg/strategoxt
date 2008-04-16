@@ -1,0 +1,65 @@
+module stratego/propagation/default-propagation
+imports
+  stratego/graph/attributes
+  stratego/graph/productions
+
+  stratego/propagation/propagator
+
+signature
+  constructors
+    DefaultValue: PropagationFlag
+
+strategies
+  get-default-value =
+    ?DefaultValue()
+
+  /** Check that the attribute is a top-down attribute
+   *
+   * @type              AttrRef -> TopDownIdentifier
+   */
+  get-default-attribute-value =
+    get-attribute-properties
+  ; fetch-elem(get-default-value)
+
+  /** Get all rule patterns to define the top-down attribute.
+   *
+   * @type default-id   _
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef -> List(AttrKey * List(SymbLabel))
+   */
+  get-default-rule-patterns(|default-id, attr, symb, label) =
+    ?prod
+  ; ![(create-key(|label, attr), [])]
+
+  /** Propagation rule for top-down attributes.
+   *
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type merge-code           ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
+   * @type attr                 AttrRef
+   * @type symb                 SymbRef
+   * @type label                SymbLabel
+   * @type                      ProdRef * Queue -> Queue
+   */
+  default-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label) =
+    generic-propagation-rule(get-default-attribute-code, get-default-rule-patterns
+    , create-rule
+    , create-rule-attr
+    , fetch-produce
+    , fetch-uses
+    , merge-code
+    | attr
+    , symb
+    , label
+    )
+
+// useful strategies
+strategies
+  add-attribute-default-value-flag =
+    edit-attribute-properties(
+      one-or-add(|DefaultValue())
+    )
