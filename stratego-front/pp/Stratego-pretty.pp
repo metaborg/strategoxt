@@ -280,6 +280,16 @@
    Local                                              -- KW["local"],
    NewTree                                            -- KW["new"],
    OldTree                                            -- KW["old"],
-   TermLabel                                          -- _1
-]
+   TermLabel                                          -- _1,
 
+   Propagation                                        -- V is=2 [KW["propagation"] _1],
+   Propagation.1:iter-star                            -- _1,
+   PPath                                              -- _1 KW[":"] _2,
+   PStra                                              -- _1 KW["="] _2,
+
+   DefaultValue                                       -- KW["default-value"],
+   BU                                                 -- KW["bottom-up"],
+   TD                                                 -- KW["top-down"],
+   LR                                                 -- KW["left-to-right"],
+   RL                                                 -- KW["right-to-left"]
+]

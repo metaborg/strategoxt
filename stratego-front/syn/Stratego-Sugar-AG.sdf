@@ -38,3 +38,16 @@ exports
     "new"                               -> TermLabel {cons("NewTree")}
     "old"                               -> TermLabel {cons("OldTree")}
     Id                                  -> TermLabel {cons("TermLabel"),avoid}
+
+
+    "propagation" PropDef*              -> SRDef {cons("Propagation")}
+
+    Id ":" PropPath                     -> PropDef {cons("PPath")}
+    Id "=" Strategy                     -> PropDef {cons("PStra")}
+
+    %% Should find a way to define those propagation paths in Stratego
+    "default-value"                     -> PropPath {cons("DefaultValue")}
+    "bottom-up"                         -> PropPath {cons("BU")}
+    "top-down"                          -> PropPath {cons("TD")}
+    "left-to-right"                     -> PropPath {cons("LR")}
+    "right-to-left"                     -> PropPath {cons("RL")}

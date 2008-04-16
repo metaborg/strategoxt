@@ -28,6 +28,7 @@ exports
 
               "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
     "AttrDef" "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
+    "PropDef" "|[" PropDef "]|" -> E1 {cons("ToTerm")}
 
              "|[" Rule      "]|" -> E1 {cons("ToTerm")}
     "Rule"   "|[" Rule      "]|" -> E1 {cons("ToTerm")}
@@ -55,6 +56,7 @@ exports
     "~"         E2 -> AGTerm           {cons("FromTerm")}
     "~li:"      E2 -> LabeledId        {cons("FromTerm")}
     "~lid:"     E2 -> LabeledIdDef     {cons("FromTerm")}
+    "~"         E2 -> PropPath         {cons("FromTerm")}
 
     "~"         E2 -> Strategy         {cons("FromTerm")}
     "~strat:"   E2 -> Strategy         {cons("FromTerm")}
@@ -80,6 +82,9 @@ exports
 
     "~"   E2 -> AttrDef   {cons("FromTerm")}
     "~*"  E2 -> AttrDef+  {cons("FromTerm")}
+
+    "~"   E2 -> PropDef   {cons("FromTerm")}
+    "~*"  E2 -> PropDef+  {cons("FromTerm")}
 
     "~*"  E2 -> Opdecl+      {cons("FromTerm")}
     "~*"  E2 -> {Type "*"}+  {cons("FromTerm")}
