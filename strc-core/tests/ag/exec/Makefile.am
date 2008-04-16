@@ -30,7 +30,8 @@ Stratego_AG =																		\
 	extend-args.str																\
 	cond-01.str																		\
 	cond-02.str																		\
-	cond-03.str
+	cond-03.str																		\
+	propagation.str
 
 
 $(TESTS): $(srcdir)/check.sh

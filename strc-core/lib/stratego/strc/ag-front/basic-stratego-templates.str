@@ -40,6 +40,9 @@ strategies
   + \ [t] -> t \
   + \ lt  -> Term |[ <~strat: concat-strategy> [~term*: lt ] ]| \
 
+  concat-terms(|concat-strategy) =
+    !Term |[ <~strat: concat-strategy> [~term*: <is-list> ] ]|
+
   /** Create the Term to concatenate a list of Terms.
    *
    * @type      List(Term) -> Term

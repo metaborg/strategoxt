@@ -1,0 +1,59 @@
+module propagation
+imports
+  libstratego-lib
+  libstratego-lazy
+
+signature
+  constructors
+    Root : Node1 -> Root
+    Node1: Node2 -> Node1
+    Node2: Node3 * Node3 -> Node2
+    Node3: Leaf -> Node3
+
+    Leaf1: Leaf
+    Leaf2: Leaf
+
+attributes
+  propagation
+    test-default: default-value
+    test-default = !0
+
+    test-bu: bottom-up
+    test-bu = sum
+
+    test-td: top-down
+    test-td = ?[<inc>]
+
+  @ Root(n):
+    n.test-td := -2
+    root.test-bu := n.test-bu
+
+  @ Node3(l):
+    root.test-bu := l.test-default
+
+  @ Leaf2():
+    root.test-default := root.test-td
+
+strategies
+  compute-String = id
+
+  get-lazy-attribute(|name) =
+    id{one( ?(name, v) )} => tree
+  ; !v
+
+  get-attribute(|name) =
+    get-lazy-attribute(|name)
+  ; ?v
+  ; get-value(!v)
+
+  get-something =
+    debug(!"input: ")
+  ; compute-Root
+  ; get-attribute(|"test-bu")
+  ; debug(!"output: ")
+
+  propagation = // Leaf2 = +1
+    <get-something> Root(Node1(Node2(Node3(Leaf1()), Node3(Leaf1())))) => 0
+  ; <get-something> Root(Node1(Node2(Node3(Leaf1()), Node3(Leaf2())))) => 1
+  ; <get-something> Root(Node1(Node2(Node3(Leaf2()), Node3(Leaf2())))) => 2
+  ; <exit> 0

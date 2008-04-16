@@ -48,7 +48,8 @@ strategies
       , new-attribute(| symb )
       ; set-attribute-name(| name )
       ; if is-local then set-attribute-as-local end
-      ; set-attribute-flags(is-produced) => this
+      ; set-attribute-flags(is-produced)
+      ; set-attribute-strategy => this
       ; dbg(|"Create a new attribute.")
       )
     ; !this
@@ -71,7 +72,8 @@ signature
     : String -> LeftToRightIdentifier
 
 strategies
-  /** Add flags on attributes to specify to propagate this attributes
+  /**
+   * Add flags on attributes to specify to propagate this attributes
    * if it is needed.
    *
    * @type is-produced  _ -> _
@@ -79,15 +81,38 @@ strategies
    */
   set-attribute-flags(is-produced) =
     switch get-attribute-name
-      case td-match-name => td-id:
+      case test(PropPath => TD() + td-match-name) => td-id:
         add-attribute-td-flag(|td-id)
-      case bu-match-name => bu-id:
+      case test(PropPath => BU() + bu-match-name) => bu-id:
         add-attribute-bu-flag(|bu-id)
-      case lr-match-name; (lr-is-name-syn + lr-is-name-inh) => lr-id:
+      case (lr-is-name-syn + lr-is-name-inh); where(PropPath => LR() + lr-match-name) => lr-id:
         add-attribute-lr-flag(is-produced | lr-id)
+      case PropPath => DefaultValue:
+        add-attribute-default-value-flag
       otherwise:
         id
     end
+
+signature
+  constructors
+    PropStra: Strategy -> AttrProperty
+
+strategies
+  /**
+   * Add the strategy used to propagate value as property of the attribute.
+   *
+   * @type              AttrRef -> AttrRef
+   */
+  set-attribute-strategy =
+    if get-attribute-name; PropStra => s then
+      edit-attribute-properties(
+        one-or-add(PropStra(!s) | PropStra(|[ fail ]|))
+      )
+    end
+
+  get-attribute-strategy =
+    get-attribute-properties
+  ; fetch-elem(?PropStra(<id>))
 
 strategies
   /** Copy the attribute on the symbol specified as input.
@@ -184,9 +209,17 @@ strategies
       )> target
     })> sources
   ; if <get-attrkey-attrref; is-term-attribute> target then
-      concat-terms // should offer the possibility to change that
+      if <get-attrkey-attrref; get-attribute-strategy> target => s then
+        concat-terms(|s)
+      else
+        concat-terms // should offer the possibility to change that
+      end
     else
-      create-choice-with-backtracking // bis
+      if <get-attrkey-attrref; get-attribute-strategy> target => s then
+        warn-msg(|"Propagation strategy are not handle in the case of strategy attribute.")
+      ; warn-msg(|"Use default propagation strategy.")
+      end
+    ; create-choice-with-backtracking // bis
     end
   ; <generate-stratego-attribute-def(!target)> (target, <id>)
   ; dbg(|"Rule = ")
@@ -340,6 +373,7 @@ strategies
       lr-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     + bu-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     + td-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
+    + default-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     else
       fail
     end

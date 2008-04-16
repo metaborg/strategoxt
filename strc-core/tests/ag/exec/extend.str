@@ -4,9 +4,6 @@ imports
   libstratego-lazy
 
 signature
-  sorts Stm StmList Prog
-
-signature
   constructors
     Root: Node -> Root
     Node: Node * Node -> Node
