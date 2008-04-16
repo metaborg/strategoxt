@@ -244,14 +244,14 @@ strategies
     ?(this, c, AttrDef |[ ~lid: _ := t2 ]|)
   ; <get-rule-code> this
   ; ?AttrDef |[ ~lid: p := <s1 <+ s'> ]|
-  ; !AttrDef |[ ~lid: p := <(s1 + ~strat: c; !t2) <+ s'> ]| => code
+  ; !AttrDef |[ ~lid: p := <(s1 + where(~strat: c); !t2) <+ s'> ]| => code
   ; <modify-rule(fetch-uses | code)> this
 
   merge-with-conditional-rule =
     ?(this, c, AttrDef |[ ~lid: _ = s2 ]|)
   ; <get-rule-code> this
   ; ?AttrDef |[ ~lid: p = s1 <+ s' ]|
-  ; !AttrDef |[ ~lid: p = (s1 + ~strat: c; s2) <+ s' ]| => code
+  ; !AttrDef |[ ~lid: p = (s1 + where(~strat: c); s2) <+ s' ]| => code
   ; <modify-rule(fetch-uses | code)> this
 
   new-default-rule =
