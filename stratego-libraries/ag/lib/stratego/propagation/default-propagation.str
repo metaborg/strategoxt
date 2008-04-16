@@ -31,7 +31,8 @@ strategies
    */
   get-default-rule-patterns(|default-id, attr, symb, label) =
     ?prod
-  ; ![(create-key(|label, attr), [])]
+  ; create-key(|label, attr)
+  ; ![(<id>, [])]
 
   /** Propagation rule for top-down attributes.
    *
@@ -46,7 +47,7 @@ strategies
    * @type                      ProdRef * Queue -> Queue
    */
   default-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label) =
-    generic-propagation-rule(get-default-attribute-code, get-default-rule-patterns
+    generic-propagation-rule(get-default-attribute-value, get-default-rule-patterns
     , create-rule
     , create-rule-attr
     , fetch-produce
