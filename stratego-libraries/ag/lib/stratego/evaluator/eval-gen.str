@@ -25,7 +25,7 @@ strategies
     Rprod-u
   ; map-with-index({
       ?(i, <Rsymb-od>)
-    ; map( !AttrKey(Label(i), <id>) )
+    ; filter( !AttrKey(Label(i), <not(is-attribute-local)>) )
     })
   ; concat
 
@@ -135,7 +135,7 @@ strategies
   ) = debug-area(
     ?(prod@<id>, all-children-attributes)
   ; where(
-      get-all-root-attrkeys
+      get-all-root-attrkeys => all-root-attributes
     ; remove-all(get-attrkey-attrref; is-attribute-local) => fetched-attributes
     )
   ; where(
@@ -145,14 +145,16 @@ strategies
   ; <partition( (where(is-copy-rule), [id], [id]) )> sem-rules
   ; ( <separate-aliasable-attributes> (fetched-attributes, <id>), id )
   ; \ ((a, na), nc) -> (a, <conc> (na, nc)) \
-  ; ( add-missing-attributes-creation(|all-children-attributes)
+  ; ( add-missing-attributes-creation(|
+        <conc> (all-root-attributes, all-children-attributes)
+      )
     ; map({a:
         ?a
       ; ![]
       ; if <Snd; not([])> a then
           ![<alias-attributes> a | <id>]
         end
-      ; if <Fst; not(key-is-on-root)> a then
+      ; if <Fst; not(<elem> (<id>, fetched-attributes))> a then
           ![<Fst; create-attribute> a | <id>]
         end
       ; concat-statements
