@@ -3,14 +3,14 @@
 |    /|\    | xtc  -- transformation tool composition
 |   / | \   | 
 |  /  |  \  | stratego@cs.uu.nl
-| /_\/_\/_\ | http://stratego-language.org
+| /_\/_\/_\ | http://strategoxt.org
 `-----------'
 
 Description: 
 
   For more information,
 
-    http://www.stratego-language.org/Stratego/XTC
+    http://www.strategoxt.org/Stratego/XTC
 
 
 Bug reports:

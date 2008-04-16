@@ -3,7 +3,7 @@
 |    /|\    | concrete-syntax
 |   / | \   | 
 |  /  |  \  | stratego@cs.uu.nl
-| /_\/_\/_\ | http://stratego-language.org
+| /_\/_\/_\ | http://strategoxt.org
 `-----------'
 
 Description
@@ -63,7 +63,7 @@ Description
 
 For more information,
 
-  http://www.stratego-language.org/Stratego/ConcreteSyntaxPackage
+  http://www.strategoxt.org/Stratego/ConcreteSyntaxPackage
 
 
 Bug reports:
