@@ -28,13 +28,11 @@ strategies
     ?|[ @ ~sr : where s ~* <id> ]|
   ; map(!|[ @ ~sr : where s ~<id> ]|)
 
-  separate-attribute-def =
-    ?|[ propagation ~* <id> ]|
-  ; map(!|[ propagation ~<id> ]|)
-
   split-attribute-definition =
     mapconcat(
-      separate-attribute-def
+      { ?|[ @ ~path x ]| + ?|[ @ ~path x = s ]| }
+    ; ![<id>]
+   <+ separate-attribute-def
    <+ err(|"Cannot separate attribute definitions.")
     ; fail
     )

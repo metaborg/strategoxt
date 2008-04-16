@@ -14,15 +14,9 @@ signature
     Leaf2: Leaf
 
 attributes
-  propagation
-    test-default: default-value
-    test-default = !0
-
-    test-bu: bottom-up
-    test-bu = sum
-
-    test-td: top-down
-    test-td = ?[<inc>]
+  @ default-value test-default = !0
+  @ bottom-up test-bu = sum
+  @ top-down test-td = ?[<inc>]
 
   @ Root(n):
     n.test-td := -2

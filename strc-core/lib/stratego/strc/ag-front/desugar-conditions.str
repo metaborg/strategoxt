@@ -6,27 +6,30 @@ imports
 // desugar semantic rules conditions
 /*
   @ Node(lhs, rhs):
-    where <gt> (lhs.value, rhs.value)
-    root.value := 1
+    where <gt> (lhs.value, rhs.value) => res
+    root.value := res
 
 is desugared to:
 
   @ Node(lhs, rhs):
-    where !local.condition0
-    root.value := 1
+    where !local.condition0 => [res]
+    root.value := res
 
   @ Node(lhs, rhs):
-    local.condition0 := <gt> (lhs.value, rhs.value)
+    local.condition0 := <gt> (lhs.value, rhs.value) => res; ![res]
 */
 rules
   DesugarSemanticRuleCond:
     |[ @ ~sr : where s ~* defs ]| -> [
-      |[ @ ~sr : where !local.c(|) ~* defs ]|
-    , |[ @ ~sr : local.c(|) := <s> ]|
+      |[ @ ~sr : where !local.c(|) => [~term*: fv] ~* defs ]|
+    , |[ @ ~sr : local.c(|) := <s; ![~term*: fv]> ]|
     ]
     where
-      <not(?|[ !~li: _(|) ]|)> s
+      <not(
+        ?|[ !~li: _(|) => [~term*:_] ]|
+      )> s
     ; <newname> "condition" => c
+    ; <tvars> s => fv
 
   desugar-semantic-rule-cond =
     mapconcat(

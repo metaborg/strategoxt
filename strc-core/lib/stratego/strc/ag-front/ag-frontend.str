@@ -16,10 +16,10 @@ strategies
       register-dummy-display
     ; restore(register-symbols
       , err(|"Cannot register sorts."))
-    ; restore(normalize-semantic-rules
-      , err(|"Cannot normalize semantic rules."))
     ; restore(register-productions
       , err(|"Cannot register constructors declarations."))
+    ; restore(normalize-semantic-rules
+      , err(|"Cannot normalize semantic rules."))
     ; restore(register-semantic-rules
       , err(|"Cannot register attribute declarations."))
     ; restore(flag-user-rules
@@ -31,6 +31,8 @@ strategies
     ; restore(propagate(attribute-propagator)
       , err(|"Cannot propagate attributes."))
     ; if-keep1(export-productions(strc-getoutfile(!".sci.ag-front.attributes")))
+    ; restore(clean-semantic-rules
+      , err(|"Cannot clean semantic rules."))
     )
   ; Specification(
       <conc> (

@@ -10,13 +10,6 @@ imports
 
 // register semantic-rules & attributes
 strategies
-  get-term-type-main-labels =
-    ![<id> | <get-term-type-children>]
-  ; map-with-index({
-      ?(i, <id>)
-    ; !(<dec> i, <get-term-type-labels>, <get-term-type-symbol>)
-    })
-
   find-production =
     get-semantic-rule-agterm
   ; dbg(|"try to find this production: ")
@@ -79,18 +72,23 @@ strategies
     )
 
   register-attribute-propagation =
-    switch ?|[ propagation ~<id> ]|
-      case ?PropDef |[ x : ~path ]|:
-        rules(PropPath: x -> path)
-      case ?PropDef |[ x = s ]|:
-        rules(PropStra: x -> s)
-    end
+    ?|[ @ ~path x ]|
+  ; rules(PropPath: x -> path)
+
+  register-attribute-propagation =
+    ?|[ @ ~path x = s ]|
+  ; rules(PropPath: x -> path)
+  ; rules(PropStra: x -> s)
 
   register-semantic-rules =
     where(alltd(register-attribute-propagation))
   ; where(
       collect( is-semantic-rule-collection )
     ; map(register-semantic-rule)
-    ; all-rules
+    )
+
+  clean-semantic-rules =
+    where(
+      all-rules
     ; list-loop(try(remove-unbound-default-calls))
     )

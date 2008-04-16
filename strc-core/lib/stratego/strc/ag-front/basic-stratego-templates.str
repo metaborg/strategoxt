@@ -63,3 +63,9 @@ strategies
       !|[ _ ]|
     , \ (i, t) -> |[ ~id: i @ ~term: t ]| \
     )
+
+  alias-identifers(|t) =
+    foldr(
+      !t
+    , \ (i, t) -> |[ ~id: i @ ~term: t ]| \
+    )

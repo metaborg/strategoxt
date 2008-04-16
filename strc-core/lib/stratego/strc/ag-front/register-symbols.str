@@ -59,6 +59,7 @@ strategies
     ; if <is-list-sort'> sort then set-is-list-symbol end
     ; rules(Sort2Ref:+ sort -> this)
     ; rules(Sort2Ref:+ desugared-sort -> this)
+    ; rules(SortRef2Sort:+ this -> desugared-sort)
     ; where(<dbg(|"register symbol: ")> (sort, name, this))
     , err(|"Cannot register the following sort as a symbol:")
     )

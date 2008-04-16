@@ -3,30 +3,31 @@ imports
   libstratego-lib
   Stratego
 
+imports
+  stratego/strc/ag-front/get-term-type
 
-// desugar terms depth
+// desugar-matched-variables is required to ensure that the term is correct.
 /*
   @ Node(Node(l, _), Node(_, r)):
-    where !root.cond(|)
-    r.env := l.env
+    where s
+    r.env(|) := l.env(|)
 
 is desugared to:
 
   @ Node(symb1, symb2):
-    where !root.cond(|)
-    symb2.tmp1 := symb1.tmp0
+    where s
+    // the user code stay on this production
+    symb2.tmp1(|) := symb1.tmp0(|)
 
-    // should not exists is there is no where clause
-    symb1.tmp2 := 1
-    symb2.tmp3 := 1
+    // spread the condition
+    symb2.tmp1_cond(|) := []
 
-  @ Node(l, _):
-    where !root.tmp2(|)
-    root.tmp0 := l.env
+  @ Node(l, _): // no conditions because no user attribute are defined
+    root.tmp0(|) := l.env(|)
 
-  @ Node(_, r):
-    where !root.tmp3(|)
-    r.env := root.tmp1
+  @ Node(_, r): // a condition because one user attribute is defined
+    where !root.tmp1_cond(|)
+    r.env(|) := root.tmp1(|)
 
   propagation
     tmp0: default-value
@@ -35,9 +36,226 @@ is desugared to:
     tmp1: default-value
     tmp1 = fail
 
-    tmp2: default-value
-    tmp2 = fail
-
-    tmp3: default-value
-    tmp3 = fail
+    tmp1_cond: default-value
+    tmp1_cond = fail
 */
+rules
+  ReplaceMatchedTerm(|agt):
+    |[ @ ~_: ~*defs ]| -> |[ @ ~agt: ~*defs ]|
+
+  ReplaceMatchedTerm(|agt):
+    |[ @ ~_: where s ~*defs ]| -> |[ @ ~agt: where s ~*defs ]|
+
+  AddSRCondition(|s, other-defs):
+    |[ @ ~agt: ~*defs ]| -> |[ @ ~agt: where s ~*defs ~*other-defs ]|
+
+  AddSRCondition(|s, other-defs):
+    |[ @ ~agt: where s' ~*defs ]| -> |[ @ ~agt: where s; s' ~*defs ~*other-defs ]|
+
+strategies
+  agterm-to-term =
+    ?AGMatch(<id>)
+  ; bottomup(
+      try(\ OpInj(_, l) -> Tuple(l) \)
+    ; try(\ Tuple([e]) -> e \)
+    )
+
+  term-type-to-root-symbol-term =
+    get-term-type-symbol => s
+  ; !OpInj(ConstType(<SortRef2Sort> s), [])
+
+  term-type-to-root-term = memo(
+    test(not(get-term-type-production))
+  ; term-type-to-root-symbol-term
+  ; !AGMatch(<id>)
+  )
+
+  term-type-to-children-terms =
+    get-term-type-children
+  ; map-with-index({
+      ?(index, child)
+      // "'symbx" is not a valid stratego identifier, but it does not appear
+      // in the generated code.
+    ; ![<conc-strings> ("'symb", <int-to-string> index)
+      | <get-term-type-labels> child]
+    ; alias-identifers(|<term-type-to-root-symbol-term> child)
+    })
+
+  term-type-to-root-term = memo(
+    where(get-term-type-production => p)
+  ; if <get-production-name> p => name; not("") then
+      !NoAnnoList(Op(name, <term-type-to-children-terms>))
+    else
+      !NoAnnoList(OpInj(
+        FunType(
+          < get-term-type-children
+          ; map(get-term-type-symbol; SortRef2Sort)
+          >
+        , <get-term-type-symbol>
+        )
+      , <term-type-to-children-terms>
+      ))
+    end
+  ; !AGMatch(<id>)
+  )
+
+  matched-term-attribute =
+    ?(agterm, type)
+  ; <agterm-to-term> agterm => t
+  ; ![] => fv // fixme: should move this in the evaluator
+  ; <newname> "matched" => f
+  ; !(|[@ ~<term-type-to-root-term> type :
+          local.f (|) := <\ t -> [~term*: fv] \>
+      ]|
+    , Strat |[ !local.f (|) => [~term*: fv] ]|
+    )
+ <+ err(|"Cannot generate the condition to match the current term.")
+  ; fail
+
+strategies
+  find-labels-in-term-type(| term-index, term-type ) =
+    <elem> (<?TermLabel(<id>)>, <get-term-type-labels> term-type)
+  ; ![(term-index, term-type)]
+ <+ ?lbl
+  ; ![(term-index, term-type)
+    | < get-term-type-children
+      ; add-indices
+      ; fetch-elem({child-index, child-type:
+          ?(child-index, child-type)
+        ; <find-labels-in-term-type(| child-index, child-type )> lbl
+        })
+      > term-type
+    ]
+
+  find-labels-in-term-type(| term-type ) =
+    ( Root() + Local() )
+  ; ![(1, term-type)]
+ <+ find-labels-in-term-type(| 1, term-type )
+ <+ ?lbl; !term-type
+  ; err(|["Identifier \"",lbl , "\" not bound in an attribute section."])
+  ; fail
+
+strategies
+  rename-with-child-index(|i) =
+    LabeledId(!TermLabel(<conc-strings> ("'symb", <int-to-string> i)), id)
+
+  handle-condition-attributes =
+    list-loop({ca:
+      if ?(ca, Type(Term(), 0, 0), 0, 1) then
+        rules(ConditionAttrDefinitions :+= |[ ~li: ca (|) := [] ]|)
+      end
+    })
+
+  register-inner-term-copy-rules(is-produced | term-type, child-index, cond-attr) =
+    unzip({child-attr, type, user, cond, n', ca, ra:
+      ?(child-attr, type, user, cond)
+    ; where(<newname> "tmp" => n')
+    ; <rename-with-child-index(|child-index)> child-attr => ca
+    ; !LabeledId(Root(), n') => ra
+    ; split(
+        !(ra, type, user, cond)
+      , if is-produced then
+          <create-copy-rule> (ca, ra, type)
+        else
+          <create-copy-rule> (ra, ca, type)
+        end
+      )
+    }) => (al', attrdefs)
+  ; !attrdefs
+  ; if !cond-attr => Some(c) then
+      dbg(|"Create rules with condition:");
+      list-loop(
+        rules(AttrDefinitions :+= |[
+          @ ~<Snd; term-type-to-root-term> term-type :
+            where !root.c (|) => []
+            ~ <id>
+        ]|)
+      )
+    ; ![(LabeledId(Root(), c), Type(Term(), 0, 0), 0, 1) | al']
+    else
+      dbg(|"Create rules without condition:");
+      list-loop(
+        rules(AttrDefinitions :+= |[
+          @ ~<Snd; term-type-to-root-term> term-type :
+            ~ <id>
+        ]|)
+      )
+    ; !al'
+    end => al
+  ; list-loop({
+      ?(LabeledId(_, x), _, _, _)
+    ; rules(AttrDefinitions :+= |[
+        @ default-value x = fail
+      ]|)
+    })
+
+  create-inner-term-copy-rules(is-produced | root) =
+    \ (t, (al, tl@[(i, _)|_])) -> (al', [t | tl])
+      where
+        ![t | tl] => root
+      ; dbg(|"Is root.")
+      ; <if !root => [_,_,_|_] then
+          map( (rename-with-child-index(|i), id, id, id) )
+        end> al => al'
+    \
+
+  create-inner-term-copy-rules(is-produced | root) =
+    ?(t, (<id>, tl@[(i, _)| _]))
+  ; where(not(![t | tl] => root))
+  ; dbg(|"Not root.")
+  ; register-inner-term-copy-rules(is-produced | t, i, <
+      !None()
+    ; if is-produced; !tl => [_] then
+        !Some(<newname> "tmp")
+      end
+    ; dbg(|"Condition attribute:")
+    >)
+  ; !(<id>, [t | tl])
+
+  create-inner-term-copy-rules(is-produced | root) =
+    \ (t, (al, [])) -> (al, [t]) \
+
+  alias-attribute(is-produced | type, term-type) =
+    ?attr@LabeledId(lbl, name)
+  ; <find-labels-in-term-type(| term-type )> lbl => traversal
+  ; where(id => root)
+  ; where(Tl; Hd => (child-index, _))
+  ; foldr(
+      !([(attr, type, 1, 0)], [])
+    , create-inner-term-copy-rules(is-produced | root)
+    ) => (<id>, _)
+  ; handle-condition-attributes
+  ; fetch-elem(?(<id>, type, 1, 0))
+
+  alias-attributes(|term-type) =
+    edit-stratego-attributes(alias-attribute | term-type)
+ <+ err(|"Cannot alias attributes.")
+  ; fail
+
+strategies
+  desugar-matched-term = {|AttrDefinitions, ConditionAttrDefinitions:
+    ?sr
+  ; (?|[ @~<id>: where ~_ ~*_ ]| + ?|[ @~<id>: ~*_ ]|) => agt
+  ; <get-term-type> agt => type
+  ; if <get-term-type-children; one(get-term-type-children)> type then
+      <matched-term-attribute> (agt, type) => (match, cond)
+    ; <alias-attributes(|type)> sr
+    ; ReplaceMatchedTerm(|<term-type-to-root-term> type)
+    ; AddSRCondition(|cond, <bagof-ConditionAttrDefinitions>)
+    ; ![match, <id> | <bagof-AttrDefinitions>]
+    ; dbg(|"All desugared rules by desugar-matched-term:")
+   <+ err(|"Cannot desugar the matched term of")
+    ; fail
+    else
+      ![sr]
+    end
+  |}
+
+  desugar-matched-terms =
+    memo-scope(
+      mapconcat(
+        { ?|[ @ ~path x ]| + ?|[ @ ~path x = s ]| }
+      ; ![<id>]
+     <+ desugar-matched-term
+      )
+    )

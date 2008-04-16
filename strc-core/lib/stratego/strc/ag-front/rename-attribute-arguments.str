@@ -3,6 +3,27 @@ imports
   libstratego-lib
   Stratego
 
+strategies
+  generate-arguments-names =
+    ( range; unzip(
+        suffix-int(|"arg's")
+      ; split(!Typedid |[ ~id: <id> ]|, !Strat |[ ~id: <id> ]|)
+      )
+    , range; unzip(
+        suffix-int(|"arg't")
+      ; split(!Typedid |[ ~id: <id> ]|, !Term |[ ~id: <id> ]|)
+      )
+    )
+
+  create-copy-rule =
+    ?(to, from, Type(k, ls, lt))
+  ; <generate-arguments-names> (ls, lt) => ((a1*, s*), (a2*, t*))
+  ; if !k => Term() then 
+      !|[ ~li:to(a1* | a2*) := ~li:from(s* | t*) ]|
+    else
+      !|[ ~li:to(a1* | a2*) = ~li:from(s* | t*) ]|
+    end
+
 // bad renaming method, but at least it is simple and works except if some
 // names are already used. (which means not in a normal code)
 // If you change the name of the argument, report to "merge-code" comment.
@@ -11,27 +32,24 @@ rules
     -> AttrDef |[ ~li: f (a1'* | a2'*) =
       let dummy(a1* | a2*) = s in dummy(s* | t*) end ]|
   where
-    <length; range; unzip(
-      suffix-int(|"arg's")
-    ; split(!Typedid |[ ~id: <id> ]|, !Strat |[ ~id: <id> ]|)
-    )> a1* => (a1'*, s*)
-  ; <length; range; unzip(
-      suffix-int(|"arg't")
-    ; split(!Typedid |[ ~id: <id> ]|, !Term |[ ~id: <id> ]|)
-    )> a2* => (a2'*, t*)
+    !(<length> a1*, <length> a2*)
+  ; not((0, 0))
+  ; generate-arguments-names => ((a1'*, s*), (a2'*, t*))
+
+  RenameAttributeArgs:
+    def@AttrDef |[ ~li: f (|) = s ]| -> def
+
 
   RenameAttributeArgs: AttrDef |[ ~li: f (a1* | a2*) := t ]|
     -> AttrDef |[ ~li: f (a1'* | a2'*) :=
       <let dummy(a1* | a2*) = !t in dummy(s* | t*) end> ]|
   where
-    <length; range; unzip(
-      suffix-int(|"arg's")
-    ; split(!Typedid |[ ~id: <id> ]|, !Strat |[ ~id: <id> ]|)
-    )> a1* => (a1'*, s*)
-  ; <length; range; unzip(
-      suffix-int(|"arg't")
-    ; split(!Typedid |[ ~id: <id> ]|, !Term |[ ~id: <id> ]|)
-    )> a2* => (a2'*, t*)
+    !(<length> a1*, <length> a2*)
+  ; not((0, 0))
+  ; generate-arguments-names => ((a1'*, s*), (a2'*, t*))
+
+  RenameAttributeArgs:
+    def@AttrDef |[ ~li: f (|) := t ]| -> def
 
   rename-attribute-arguments =
     alltd(RenameAttributeArgs)

@@ -211,6 +211,7 @@ strategies
   ; if <get-attrkey-attrref; is-term-attribute> target then
       if <get-attrkey-attrref; get-attribute-strategy> target => s then
         concat-terms(|s)
+      ; try(\ Term |[ <fail> [~term*:_] ]| -> Term |[ <fail> ]| \)
       else
         concat-terms // should offer the possibility to change that
       end
@@ -238,6 +239,7 @@ strategies
   merge-code = debug-area(
     ?(_, this, code)
   ; <get-rule-code> this
+  ; dbg(|"Original code =")
   ; ( ADefTerm(id,
         where(!code => ADefTerm(_, t))
       ; sometd( \ Term |[ default ]| -> t \ )
@@ -251,64 +253,79 @@ strategies
   | "merge-code")
 
 strategies
+  add-end-case(|c, s) =
+    ?|[ switch id sc* otherwise: s' end ]|
+  ; <at-end(![Case |[ case ~strat: c: s ]|])> sc* => sc'*
+  ; !|[ switch id sc'* otherwise: s' end ]|
+
+  replace-default-case(|s', s) =
+    ?|[ switch id sc* otherwise: s' end ]|
+  ; !|[ switch id sc* otherwise: s  end ]|
+ <+ err(|"Cannot add multiple semantic rules without conditions.")
+  ; fail
+
+  edit-semantic-rule-code(edit) =
+    ?this
+  ; get-rule-code
+  ; ( ?AttrDef |[ ~lid: d := <~strat: <id>> ]|
+    ; edit
+    ; !AttrDef |[ ~lid: d := <~strat: <id>> ]|
+    + ?AttrDef |[ ~lid: d = ~strat: <id> ]|
+    ; edit
+    ; !AttrDef |[ ~lid: d = ~strat: <id> ]|
+    ) => code
+  ; <modify-rule(fetch-uses | code)> this
+
+
   // "id; .." are used to specify that the user have bound the default value,
   // otherwise it would have been removed by "remove-unbound-default-calls".
   merge-with-default-rule =
-    ?(this, AttrDef |[ ~lid: _ := t2 ]|)
-  ; <get-rule-code> this
-  ; ?AttrDef |[ ~lid: p := <s1 <+ s'> ]|
-  ; restore(<?Strat |[ !default ]|> s'
-    , err(|"Cannot add multiple semantic rules without conditions.")
+    ?(<id>, AttrDef |[ ~lid: _ := t ]|)
+  ; edit-semantic-rule-code(
+      replace-default-case(|Strat |[ !default ]|, |[ id; !t ]|)
     )
-  ; !AttrDef |[ ~lid: p := <s1 <+ id; !t2> ]| => code
-  ; <modify-rule(fetch-uses | code)> this
 
   merge-with-default-rule =
-    ?(this, AttrDef |[ ~lid: _ = s2 ]|)
-  ; <get-rule-code> this
-  ; ?AttrDef |[ ~lid: p = s1 <+ s' ]|
-  ; restore(<?Strat |[ default ]|> s'
-    , err(|"Cannot add multiple semantic rules without conditions.")
+    ?(<id>, AttrDef |[ ~lid: _ = s ]|)
+  ; edit-semantic-rule-code(
+      replace-default-case(|Strat |[ default ]|, |[ id; s ]|)
     )
-  ; !AttrDef |[ ~lid: p = s1 <+ id; s2 ]| => code
-  ; <modify-rule(fetch-uses | code)> this
 
   merge-with-conditional-rule =
-    ?(this, c, AttrDef |[ ~lid: _ := t2 ]|)
-  ; <get-rule-code> this
-  ; ?AttrDef |[ ~lid: p := <s1 <+ s'> ]|
-  ; !AttrDef |[ ~lid: p := <(s1 + where(~strat: c); !t2) <+ s'> ]| => code
-  ; <modify-rule(fetch-uses | code)> this
+    ?(<id>, c, AttrDef |[ ~lid: _ := t ]|)
+  ; edit-semantic-rule-code(
+      add-end-case(| c, |[ !t ]| )
+    )
 
   merge-with-conditional-rule =
-    ?(this, c, AttrDef |[ ~lid: _ = s2 ]|)
-  ; <get-rule-code> this
-  ; ?AttrDef |[ ~lid: p = s1 <+ s' ]|
-  ; !AttrDef |[ ~lid: p = (s1 + where(~strat: c); s2) <+ s' ]| => code
-  ; <modify-rule(fetch-uses | code)> this
+    ?(<id>, c, AttrDef |[ ~lid: _ = s ]|)
+  ; edit-semantic-rule-code(
+      add-end-case(| c, s )
+    )
 
   new-default-rule =
     ?(<id>, prod)
   ; ( ?AttrDef |[ ~lid: d := t ]|
-    ; !AttrDef |[ ~lid: d := <fail <+ !default> ]|
+    ; !AttrDef |[ ~lid: d := <switch id otherwise: !default end> ]|
     + ?AttrDef |[ ~lid: d = s ]|
-    ; !AttrDef |[ ~lid: d = fail <+ default ]|
+    ; !AttrDef |[ ~lid: d = switch id otherwise: default end ]|
     ) => code
   ; new-rule(fetch-produce, fetch-uses | code, prod)
 
+  // TODO:
+  // try to find if one condition is less important compare to another
+  // retrieve the information by looking inside the attributes code.
   remove-unbound-default-calls =
-    ?this
-  ; get-rule-code
-  ; ?AttrDef |[ ~lid: p := <s1 <+ !default> ]|
-  ; !AttrDef |[ ~lid: p := <s1> ]| => code
-  ; <modify-rule(fetch-uses | code)> this
-
-  remove-unbound-default-calls =
-    ?this
-  ; get-rule-code
-  ; ?AttrDef |[ ~lid: p = s1 <+ default ]|
-  ; !AttrDef |[ ~lid: p = s1 ]| => code
-  ; <modify-rule(fetch-uses | code)> this
+    edit-semantic-rule-code(
+      try(\ |[ switch id sc* otherwise: !default end ]|
+         -> |[ switch id sc* end ]| \
+        + \ |[ switch id sc* otherwise: default end ]|
+         -> |[ switch id sc* end ]| \)
+    ; try(\ |[ switch id case s1: s2 end ]|
+         -> |[ where(s1); s2 ]| \
+        + \ |[ switch id otherwise: id; s end ]|
+         -> |[ s ]| \)
+    )
 
 strategies
   is-stratego-attribute = LabeledId(id, id)
@@ -319,7 +336,12 @@ strategies
   ; <?[<id> | _]> labels
  <+ ?TermLabel(name)
   ; <fetch-elem( (id, one(?name), id) )> labels
- <+ err-msg(|["Identifier \"",<id> , "\" not bound in an attribute grammar section."])
+ <+ if ?TermLabel(name) then
+      err-msg(|["Label identifier \"",name , "\" not bound."])
+    else
+      err-msg(|["Label \"",<id> , "\" not bound."])
+    end
+  ; fail
 
 
   stratego-attribute-2-attrkey(is-produced | type, labels ) =
@@ -335,23 +357,13 @@ strategies
   ; where(<dbg(|"register attribute:")> (name, <id>))
  <+ is-attrkey
  <+ err(|"Cannot convert the following attribute to an AttrKey: ")
+  ; rules(ERROR := 1)
   ; fail
 
-  escape-stratego-attribute-def(|kind, labels) =
-    ADefT(id, where(length => ls), where(length => lt))
-  ; ADefT(stratego-attribute-2-attrkey(true | Type(kind, ls, lt), labels ), id, id)
-
-  escape-stratego-attribute-call(|kind, labels) =
-    ACallT(id, where(length => ls), where(length => lt))
-  ; ACallT(stratego-attribute-2-attrkey(false | Type(kind, ls, lt), labels ), id, id)
-
-  escape-stratego-attributes(|labels) =
-    topdown(try(
-      ACallTerm(escape-stratego-attribute-call(|Term(), labels))
-    + ACallStrategy(escape-stratego-attribute-call(|Stra(), labels))
-    + ADefTerm(escape-stratego-attribute-def(|Term(), labels), id)
-    + ADefStrategy(escape-stratego-attribute-def(|Stra(), labels), id)
-    ))
+  escape-stratego-attributes(|labels) = {|ERROR:
+    edit-stratego-attributes(stratego-attribute-2-attrkey | labels)
+  ; not(ERROR)
+  |}
 
   // look at: guess-label-sym-name
   generate-production-labels =
@@ -363,6 +375,23 @@ strategies
   create-strategy-attr =
     ?(prod, <id>)
   ; escape-stratego-attributes(|<generate-production-labels> prod)
+
+strategies
+  edit-stratego-attribute-call(s | kind, labels) =
+    ACallT(id, where(length => ls), where(length => lt))
+  ; ACallT(s(false | Type(kind, ls, lt), labels ), id, id)
+
+  edit-stratego-attribute-def(s | kind, labels) =
+    ADefT(id, where(length => ls), where(length => lt))
+  ; ADefT(s(true | Type(kind, ls, lt), labels ), id, id)
+
+  edit-stratego-attributes(s | labels) =
+    topdown(try(
+      ACallTerm(edit-stratego-attribute-call(s | Term(), labels))
+    + ACallStrategy(edit-stratego-attribute-call(s | Stra(), labels))
+    + ADefTerm(edit-stratego-attribute-def(s | Term(), labels), id)
+    + ADefStrategy(edit-stratego-attribute-def(s | Stra(), labels), id)
+    ))
 
 strategies
   is-rewrite-production = fail

@@ -43,7 +43,6 @@ imports
   stratego/strc/ag-front/desugar-attribute-references
   stratego/strc/ag-front/desugar-conditions
   stratego/strc/ag-front/desugar-matched-terms
-  stratego/strc/ag-front/desugar-matched-variables
   stratego/strc/ag-front/rename-attribute-arguments
   stratego/strc/ag-front/split-attribute-definitions
   stratego/strc/ag-front/normalize-semantic-rules

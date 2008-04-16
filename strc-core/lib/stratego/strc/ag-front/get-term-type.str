@@ -33,8 +33,8 @@ rules
     ; filter(not(get-production-name); where(Rprod-u => ls)) => prods
     ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
     ; < unify-prod-with-term-type => [<id>]
-     <+ where(!t => ConstType(_))
-      ; !TermType(ProdSymb(s), [], Some(<map(GetTermType)> l))
+     <+ where(!ls => [])
+      ; !TermType(ProdSymb(s), [], None())
      <+ (map(Any2Text), id)
       ; err(|["Cannot find one unification solution for the term ", term, "."]); fail
       > (prods, type') => type
@@ -110,7 +110,6 @@ strategies
 strategies
   get-term-type-production =
     ?TermType(<is-production>, _, _)
- <+ err(|"get-term-type-production"); fail
 
   get-term-type-symbol =
     ?TermType(<id>, _, _)
@@ -118,12 +117,16 @@ strategies
     + Rprod-p => [<id>]
     )
   ; is-symbol
- <+ err(|"get-term-type-symbol"); fail
 
   get-term-type-labels =
     ?TermType(_, <id>, _)
- <+ err(|"get-term-type-labels"); fail
 
   get-term-type-children =
     ?TermType(_, _, <?Some(<id>)>)
- <+ err(|"get-term-type-children"); fail
+
+  get-term-type-main-labels =
+    ![<id> | <get-term-type-children>]
+  ; map-with-index({
+      ?(i, <id>)
+    ; !(<dec> i, <get-term-type-labels>, <get-term-type-symbol>)
+    })

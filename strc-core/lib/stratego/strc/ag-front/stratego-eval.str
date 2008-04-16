@@ -185,6 +185,7 @@ rules
     ACallStrategy(<id>) -> <ACall2Strategy(true)>
 
 
+  DesugarStratego: Strat |[ !<s> ]| -> Strat |[ s ]|
   DesugarStratego: Strat |[ !<s> t ]| -> |[ !t; s ]|
   DesugarStratego: Strat |[ <s> t ]| -> |[ !t; s ]|
 
@@ -192,12 +193,12 @@ rules
   ADef2SDef(is-strategy | body, bind, dep-list):
     ADefT(k, ls, lt) -> (|[ // definition
       f (~typed-id*: ls | ~typed-id*: lt' ) =
-        ?(tree@<id>, ~term: dep-list)
+        ?(root@<id>, ~term: dep-list)
       ; ~strat: body'
     ]|, |[ // instanciation
       where(
         < bind-lazy-value(~id: f | ~int: is, ~int: it, ~id: bind)
-        > (tree, ~term: dep-list)
+        > (root, ~term: dep-list)
       )
     ]|)
       where
@@ -209,7 +210,7 @@ rules
           !lt => lt'
         ; <desugar-attributes-calls> body => body'
         end
-      ; <newname> "lifted-ag" => f
+      ; <newname> <conc-strings> ("lifted-", bind) => f
       ; <length; int-to-string> ls => is
       ; <length; int-to-string> lt' => it
 
@@ -290,8 +291,9 @@ strategies
    */
   is-copy-rule = where (
     get-rule-code
-  ; ( ?ADefTerm(def, ACallTerm(call))
-    + ?ADefStrategy(def, ACallStrategy(call))
+  ; ( ?AttrDef |[ ~lid: def := <!~lic: call> ]|
+    + ?AttrDef |[ ~lid: def := ~lic: call ]|
+    + ?AttrDef |[ ~lid: def = ~lic: call ]|
     )
   ; <?ADefT(_, <map(typedid-name) => ls>, <map(typedid-name) => lt>)> def
   ; <?ACallT(_, <map(strategy-name) => ls>, <map(term-name) => lt>)> call
@@ -317,7 +319,7 @@ strategies
       ; !Strat |[ ~id: <id> ]|
       end
     })
-  ; !|[ ~<id> => tree ]|
+  ; !|[ ~<id> => root ]|
 
 strategies
   /** Create a strategy.
