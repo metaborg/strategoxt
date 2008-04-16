@@ -281,6 +281,11 @@ fewer and smaller dependencies as compared with Cygwin.
 Binaries created for MinGW can be deployed to Microsoft Windows users
 without any dependencies.
 
+For this purpose, the =stratego-libraries= package is also available
+separately from Stratego/XT as source tarball and native Microsoft
+Windows binaries. If you already have Stratego/XT, then there is no
+need to install the =stratego-libraries=.
+
 ---------+++ OSX support
 
 Stratego/XT 0.17 now fully supports OSX on <nop>PowerPC as well as Intel CPUs.
