@@ -294,10 +294,8 @@
    OldTree                                            -- KW["old"],
    TermLabel                                          -- _1,
 
-   Propagation                                        -- V is=2 [KW["propagation"] _1],
-   Propagation.1:iter-star                            -- _1,
-   PPath                                              -- _1 KW[":"] _2,
-   PStra                                              -- _1 KW["="] _2,
+   PropaNoStrat                                       -- H [KW["@"] _1 _2],
+   Propa                                              -- V is=2 [H [KW["@"] _1 _2 KW["="] _3]],
 
    DefaultValue                                       -- KW["default-value"],
    BU                                                 -- KW["bottom-up"],

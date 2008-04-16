@@ -37,6 +37,7 @@ exports
                "|[" Strategy "]|" -> E1 {cons("ToTerm")}
     "Strat"    "|[" Strategy "]|" -> E1 {cons("ToTerm")}
     "Strategy" "|[" Strategy "]|" -> E1 {cons("ToTerm")}
+    "Case"     "|[" SwitchCase "]|" -> E1 {cons("ToTerm")}
 
     "O"        "|[" Overlay  "]|" -> E1 {cons("ToTerm")}
     "Overlay"  "|[" Overlay  "]|" -> E1 {cons("ToTerm")}
@@ -56,6 +57,7 @@ exports
     "~"         E2 -> AGTerm           {cons("FromTerm")}
     "~li:"      E2 -> LabeledId        {cons("FromTerm")}
     "~lid:"     E2 -> LabeledIdDef     {cons("FromTerm")}
+    "~lic:"     E2 -> LabeledIdCall    {cons("FromTerm")}
     "~"         E2 -> PropPath         {cons("FromTerm")}
 
     "~"         E2 -> Strategy         {cons("FromTerm")}

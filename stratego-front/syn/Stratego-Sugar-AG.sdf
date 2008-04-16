@@ -40,10 +40,8 @@ exports
     Id                                  -> TermLabel {cons("TermLabel"),avoid}
 
 
-    "propagation" PropDef*              -> SRDef {cons("Propagation")}
-
-    Id ":" PropPath                     -> PropDef {cons("PPath")}
-    Id "=" Strategy                     -> PropDef {cons("PStra")}
+    "@" PropPath Id                     -> SRDef {cons("PropaNoStrat")}
+    "@" PropPath Id "=" Strategy        -> SRDef {cons("Propa")}
 
     %% Should find a way to define those propagation paths in Stratego
     "default-value"                     -> PropPath {cons("DefaultValue")}
