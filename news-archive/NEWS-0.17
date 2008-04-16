@@ -89,7 +89,37 @@ a lot easier and speedup the Stratego compiler.
 
 ---------++ Stratego Language
 
----------+++ Dynamic rules
+--------+++ Dynamic rules
+
+---------++++ Improved flow-sensitive transformations
+
+Thanks to Bogdan Dumitriu, the dynamic rule facility of Stratego has been 
+extended to deal with additional control flow constructs, including break, 
+break to label, continue and exceptions (try-catch-finally). Some of the
+dynamic rule strategies, such as =dr-fix-and-intersect= and =dr-fix-and-union=
+have been extended to work with labels, and new dynamic rule prefixes =break-= 
+and =break-to-label-= are introduced. 
+
+A
+<a href="ftp://ftp.stratego-language.org/pub/stratego/SUD06/sud06-bogdan.pdf">presentation</a> 
+from Stratego User Days 2006 provides a high-level walk-through. 
+
+
+---------++++ Scoped global variables
+
+Stratego now supports *scoped* global variables. In the context of a dynamic rules section one
+can now write
+<pre>
+    rules( Foo := &lt;compute&gt; )
+</pre>
+which abbreviates the following commonly used programming pattern:
+<pre>
+    x := &lt;compute&gt;
+    ; rules( Foo : _ -> x )
+</pre>
+The value bound in the assignment can be retrieved by the application &lt;Foo&gt;. 
+The usual scoping features of dynamic rules apply to global variable as well.
+For more information see this [[http://blog.eelcovisser.net/index.php?/archives/53-Global-Variables.html][blog]].
 
 ---------+++ External Constructor Declarations
 
