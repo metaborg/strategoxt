@@ -4,95 +4,21 @@ imports
   Stratego
 
 imports
-  stratego/strc/ag-front/stratego-attributes
-
-rules
-  DesugarSemanticRuleCond:
-    |[ @ ~sr : where s ~* defs ]| ->[
-      |[ @ ~sr : where !local.c ~* defs ]|
-    , |[ @ ~sr : local.c := <s> ]|
-    ]
-    where
-      <not(?|[ !~li: _(|) ]|)> s
-    ; <newname> "condition" => c
-
-// bad renaming method, but at least it is simple and works except if some
-// names are already used. (which means not in a normal code)
-// If you change the name of the argument, report to "merge-code" comment.
-rules
-  RenameAttributeArgs: AttrDef |[ ~li: f (a1* | a2*) = s ]|
-    -> AttrDef |[ ~li: f (a1'* | a2'*) =
-      let dummy(a1* | a2*) = s in dummy(s* | t*) end ]|
-  where
-    <length; range; unzip(
-      suffix-int(|"arg's")
-    ; split(!Typedid |[ ~id: <id> ]|, !Strat |[ ~id: <id> ]|)
-    )> a1* => (a1'*, s*)
-  ; <length; range; unzip(
-      suffix-int(|"arg't")
-    ; split(!Typedid |[ ~id: <id> ]|, !Term |[ ~id: <id> ]|)
-    )> a2* => (a2'*, t*)
-
-  RenameAttributeArgs: AttrDef |[ ~li: f (a1* | a2*) := t ]|
-    -> AttrDef |[ ~li: f (a1'* | a2'*) :=
-      <let dummy(a1* | a2*) = !t in dummy(s* | t*) end> ]|
-  where
-    <length; range; unzip(
-      suffix-int(|"arg's")
-    ; split(!Typedid |[ ~id: <id> ]|, !Strat |[ ~id: <id> ]|)
-    )> a1* => (a1'*, s*)
-  ; <length; range; unzip(
-      suffix-int(|"arg't")
-    ; split(!Typedid |[ ~id: <id> ]|, !Term |[ ~id: <id> ]|)
-    )> a2* => (a2'*, t*)
-
-rules
-  DesugarACall: ACallNoArgs(n) -> ACallT(n, [], [])
-  DesugarACall: ACall(n, ls)   -> ACallT(n, ls, [])
-
-  DesugarADef: ADefNoArgs(n) -> ADefT(n, [], [])
-  DesugarADef: ADef(n, ls)   -> ADefT(n, ls, [])
-
-  desugar-attribute-manipulation =
-    topdown(try(DesugarACall + DesugarADef))
-
-strategies
-  separate-attribute-def =
-    ?|[ @ ~sr : ~* <id> ]|
-  ; map(!|[ @ ~sr : ~<RenameAttributeArgs> ]|)
-
-  separate-attribute-def =
-    ?|[ @ ~sr : where s ~* <id> ]|
-  ; map(!|[ @ ~sr : where s ~<RenameAttributeArgs> ]|)
-
-strategies
-  on-semantic-rule-agterm(s) =
-    SemanticRulesNoCond(s, id)
-  + SemanticRules(s, id, id)
-
-  on-semantic-rule-code(s) =
-    SemanticRulesNoCond(id, s)
-  + SemanticRules(id, s, s)
-
-  replace-variable-by-attributes = {|ReplaceVar:
-    where(on-semantic-rule-agterm(topdown(try({i:
-      ( ?Term |[ ~id: i ]|
-      + ?Term |[ ~id: i @ ~term: _ ]|
-      )
-    ; rules(ReplaceVar:+ Term |[ ~id: i ]| -> Term |[ local.~id: i ]|)
-    }))))
-  |}
+  stratego/strc/ag-front/desugar-attribute-references
+  stratego/strc/ag-front/desugar-conditions
+  stratego/strc/ag-front/desugar-matched-terms
+  stratego/strc/ag-front/desugar-matched-variables
+  stratego/strc/ag-front/rename-attribute-arguments
+  stratego/strc/ag-front/split-attribute-definitions
 
 strategies
   normalize-semantic-rules =
     Specification(map(
       Attributes(
-        mapconcat(DesugarSemanticRuleCond <+ ![<id>])
-      ; desugar-attribute-manipulation
-      ; mapconcat(
-          restore(separate-attribute-def
-          , err(|"Cannot separate attribute definitions."))
-        )
+        desugar-attribute-references
+      ; rename-attribute-arguments
+      ; desugar-semantic-rule-cond
+      ; split-attribute-definition
       )
     + not(?Attributes(_))
     ))

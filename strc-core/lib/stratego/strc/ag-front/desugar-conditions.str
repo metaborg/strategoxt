@@ -1,0 +1,35 @@
+module desugar-conditions
+imports
+  libstratego-lib
+  Stratego
+
+// desugar semantic rules conditions
+/*
+  @ Node(lhs, rhs):
+    where <gt> (lhs.value, rhs.value)
+    root.value := 1
+
+is desugared to:
+
+  @ Node(lhs, rhs):
+    where !local.condition0
+    root.value := 1
+
+  @ Node(lhs, rhs):
+    local.condition0 := <gt> (lhs.value, rhs.value)
+*/
+rules
+  DesugarSemanticRuleCond:
+    |[ @ ~sr : where s ~* defs ]| -> [
+      |[ @ ~sr : where !local.c(|) ~* defs ]|
+    , |[ @ ~sr : local.c(|) := <s> ]|
+    ]
+    where
+      <not(?|[ !~li: _(|) ]|)> s
+    ; <newname> "condition" => c
+
+  desugar-semantic-rule-cond =
+    mapconcat(
+      DesugarSemanticRuleCond
+   <+ ![<id>]
+    )

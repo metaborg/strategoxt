@@ -1,0 +1,40 @@
+module split-attribute-definitions
+imports
+  libstratego-lib
+  Stratego
+
+/*
+  @ Node(lhs, rhs):
+    where !local.cond(|)
+    root.a := 1
+    root.b := 2
+
+is desugared to:
+
+  @ Node(lhs, rhs):
+    where !local.cond(|)
+    root.a := 1
+
+  @ Node(lhs, rhs):
+    where !local.cond(|)
+    root.b := 2
+*/
+strategies
+  separate-attribute-def =
+    ?|[ @ ~sr : ~* <id> ]|
+  ; map(!|[ @ ~sr : ~<id> ]|)
+
+  separate-attribute-def =
+    ?|[ @ ~sr : where s ~* <id> ]|
+  ; map(!|[ @ ~sr : where s ~<id> ]|)
+
+  separate-attribute-def =
+    ?|[ propagation ~* <id> ]|
+  ; map(!|[ propagation ~<id> ]|)
+
+  split-attribute-definition =
+    mapconcat(
+      separate-attribute-def
+   <+ err(|"Cannot separate attribute definitions.")
+    ; fail
+    )

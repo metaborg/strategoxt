@@ -1,0 +1,43 @@
+module desugar-matched-terms
+imports
+  libstratego-lib
+  Stratego
+
+
+// desugar terms depth
+/*
+  @ Node(Node(l, _), Node(_, r)):
+    where !root.cond(|)
+    r.env := l.env
+
+is desugared to:
+
+  @ Node(symb1, symb2):
+    where !root.cond(|)
+    symb2.tmp1 := symb1.tmp0
+
+    // should not exists is there is no where clause
+    symb1.tmp2 := 1
+    symb2.tmp3 := 1
+
+  @ Node(l, _):
+    where !root.tmp2(|)
+    root.tmp0 := l.env
+
+  @ Node(_, r):
+    where !root.tmp3(|)
+    r.env := root.tmp1
+
+  propagation
+    tmp0: default-value
+    tmp0 = fail
+
+    tmp1: default-value
+    tmp1 = fail
+
+    tmp2: default-value
+    tmp2 = fail
+
+    tmp3: default-value
+    tmp3 = fail
+*/

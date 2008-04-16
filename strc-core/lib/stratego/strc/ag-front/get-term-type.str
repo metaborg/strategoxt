@@ -1,0 +1,129 @@
+module get-term-type
+imports
+  libstratego-lib
+  libstratego-ag
+  Stratego
+
+imports
+  stratego/strc/ag-front/stratego-attributes
+
+signature
+  constructors
+    UnknowProd: ProdRef
+    ProdSymb  : SymbRef -> ProdRef
+    TermType  : ProdRef * List(String) * Option(List(TermType)) -> TermType
+
+rules
+  GetTermType: As(Var(n), t) -> TermType(p, [n | names], children)
+    where <GetTermType> t => TermType(p, names, children)
+
+  GetTermType: Tuple(l) -> TermType(UnknowProd(), [], Some(<map(GetTermType)> l))
+  GetTermType: term@Op(name, l) -> type
+    where
+      <bagof-ProdName2Ref> name => prods
+    ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
+    ; < unify-prod-with-term-type => [<id>]
+     <+ (map(Any2Text), id)
+      ; err(|["Cannot find one unification solution for the term ", term, "."]); fail
+      > (prods, type') => type
+
+  GetTermType: term@OpInj(t, l) -> type
+    where
+      <get-opdecl-sorts> OpDeclInj(t) => (ls, s@<Rsymb-pd>)
+    ; filter(not(get-production-name); where(Rprod-u => ls)) => prods
+    ; where(!TermType(UnknowProd(), [], Some(<map(GetTermType)> l)) => type')
+    ; < unify-prod-with-term-type => [<id>]
+     <+ where(!t => ConstType(_))
+      ; !TermType(ProdSymb(s), [], Some(<map(GetTermType)> l))
+     <+ (map(Any2Text), id)
+      ; err(|["Cannot find one unification solution for the term ", term, "."]); fail
+      > (prods, type') => type
+
+  GetTermType: Var(n) -> TermType(UnknowProd(), [n], None())
+  GetTermType: Wld() -> TermType(UnknowProd(), [], None())
+
+  GetTermType: NoAnnoList(t) -> <GetTermType> t
+
+  // Those are not terms !
+  GetTermType: AGMatch(t) -> <GetTermType> t
+  GetTermType: AGRewrite(f,t) -> <err(|"AGRewrite is not yet handle by GetTermType."); GetTermType> t
+
+  get-term-type =
+    GetTermType
+ <+ err(|"Cannot find the ''type'' of the following term: ")
+  ; fail
+
+strategies
+  unify-prod-with-term-type =
+    ?(prods, type@TermType(p, names, children))
+  ; switch !p
+      case UnknowProd(); !children => None():
+        where(<foldr(![], union, Rprod-p)> prods => [s])
+      ; ![TermType(ProdSymb(s), names, None())]
+      case !children => None():
+        ![type]
+      case ![p] => prods:
+        ![type]
+      case ?ProdSymb(s):
+        <some(Rprod-p => [s])> prods
+      ; ![type]
+      case UnknowProd():
+        <mapconcat(
+          ![TermType(<id>, names, <unify-children(|children)>)]
+       <+ unify-with-injection(|type)
+       <+ ![]
+        )> prods
+      otherwise:
+        fail
+    end
+
+  unify-with-injection(|type) =
+    Rprod-u => [s]
+  ; <Rsymb-pd> s
+  ; filter(
+      where(Rprod-u => [_])
+    ; where(get-production-name => "")
+    )
+  ; if <get-term-type-children; (?[] + ?[_, _| _])> type then
+      <unify-prod-with-term-type> (<id>, type)
+    else
+      <unify-prod-with-term-type> (<id>, TermType(UnknowProd(), [], Some([type])))
+    end
+
+  unify-children(|children) =
+    !(<Rprod-u>, <?Some(<id>)> children)
+  ; zip({
+      ?(s, type@TermType(p, n, c))
+    ; if <ProdSymb(?s) + Rprod-p => [s]> p then
+        !type
+      else
+        <Rsymb-pd> s => prods
+      ; if !prods => []; !c => None() then
+          !TermType(ProdSymb(s), n, c)
+        else
+          <unify-prod-with-term-type> (prods, type) => [<id>]
+        end
+      end
+    })
+  ; !Some(<id>)
+
+strategies
+  get-term-type-production =
+    ?TermType(<is-production>, _, _)
+ <+ err(|"get-term-type-production"); fail
+
+  get-term-type-symbol =
+    ?TermType(<id>, _, _)
+  ; ( ?ProdSymb(<id>)
+    + Rprod-p => [<id>]
+    )
+  ; is-symbol
+ <+ err(|"get-term-type-symbol"); fail
+
+  get-term-type-labels =
+    ?TermType(_, <id>, _)
+ <+ err(|"get-term-type-labels"); fail
+
+  get-term-type-children =
+    ?TermType(_, _, <?Some(<id>)>)
+ <+ err(|"get-term-type-children"); fail

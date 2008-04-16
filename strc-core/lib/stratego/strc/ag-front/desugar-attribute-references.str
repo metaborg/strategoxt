@@ -1,0 +1,22 @@
+module desugar-attribute-references
+// desugar attribute manipulation
+/*
+  @ Node(lhs, rhs):
+    root.a := lhs.b(s)
+
+is desugared to:
+
+  @ Node(lhs, rhs):
+    where !local.cond(|)
+    root.a(|) := root.b(s|)
+*/
+rules
+  DesugarACall: ACallNoArgs(n) -> ACallT(n, [], [])
+  DesugarACall: ACall(n, ls)   -> ACallT(n, ls, [])
+
+  DesugarADef: ADefNoArgs(n) -> ADefT(n, [], [])
+  DesugarADef: ADef(n, ls)   -> ADefT(n, ls, [])
+
+  desugar-attribute-references =
+    topdown(try(DesugarACall + DesugarADef))
+

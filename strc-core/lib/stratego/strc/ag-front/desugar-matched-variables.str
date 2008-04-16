@@ -1,0 +1,47 @@
+module desugar-matched-variables
+imports
+  libstratego-lib
+  Stratego
+
+/*
+  @ Node(Node(l, m), r):
+    root.h := <max> (l.h, r.h)
+    root.new := Node(l, Node(m, r))
+
+is desugared to:
+
+  @ Node(_, _):
+    local.matched0(|) := <\ Node(Node(l, m), r) -> [l,m,r] \>
+
+  @ Node(Node(l, m), r):
+    where !local.matched0(|)
+    root.h := <add> (l.h, r.h)
+    root.new := <!local.matched0(|) => [l,m,r]; !Node(l, Node(m, r))>
+*/
+rules
+  DesugarMatchedVariables:
+    |[ @ t :  ~*defs ]| -> [
+      |[ @ t : where !local.~id: n (|)  ~*defs' ]|
+    , |[ @ t': local.~id: n  (|) := <\ t -> t2 \> ]|
+    ]
+    where
+      desugar-matched-variables-escaping(|t, defs) => (n, t', t2, defs')
+
+  DesugarMatchedVariables:
+    |[ @ t : where s  ~*defs ]| -> [
+      |[ @ t : where !local.~id: n (|); s  ~*defs' ]|
+    , |[ @ t': local.~id: n  (|) := <\ t -> t2 \> ]|
+    ]
+    where
+      desugar-matched-variables-escaping(|t, defs) => (n, t', t2, defs')
+
+strategies
+  desugar-matched-variables-escaping(|t, defs) =
+    <newname> "matched" => n
+  ; fail
+
+  desugar-matched-variables =
+    mapconcat(
+      DesugarMatchedVariables
+   <+ ![<?|[ propagation ~*_ ]|>]
+    )
