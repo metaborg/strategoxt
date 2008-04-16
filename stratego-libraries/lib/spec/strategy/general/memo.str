@@ -21,3 +21,19 @@ strategies
     t -> t'
     where ( <Memo> t => t' )
        <+ ( <s> t => t'; rules(Memo: t -> t') )
+
+  /**
+   * Base scheme of the memoization.
+   * example:
+   *   map(
+   *     where(memo-var(<new-name> "foo", ?v, !v))
+   *   ; <concat-strings> [v, "_", <id>]
+   *   )
+   *
+   * @param s           a -> b
+   * @param match       b -> b
+   * @param build       a -> b
+   * @type              a -> b
+   */
+  memo-var(s, match, build) =
+    build <+ s; match

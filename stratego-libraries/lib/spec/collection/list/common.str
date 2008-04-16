@@ -311,6 +311,15 @@ strategies
   /**
    * Check if a term exists otherwise it add it in the list.
    *
+   * @type      b * List(a) -> List(a or b)
+   */
+  one-or-add =
+    ?(v, <id>)
+  ; one-or-add(?v, !v)
+
+  /**
+   * Check if a term exists otherwise it add it in the list.
+   *
    * @param v   b
    * @type      List(a) -> List(a or b)
    */
