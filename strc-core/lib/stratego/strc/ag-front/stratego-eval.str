@@ -68,7 +68,7 @@ strategies
   symbol-2-strategy-type =
 
 strategies
-  /** Apply a strategy used to be appliied on children of the node.
+  /** Apply a strategy used to be applied on children of the node.
    * @type s    Int * SymbRef -> Strategy
    * @type      ProdRef -> Strategy
    */
@@ -86,7 +86,11 @@ strategies
     else
       switch Rprod-u => children
         case []:
-          !|[ id ]|
+          if <get-production-name> prod => name then
+            !Strat |[ ~id:name() ]|
+          else
+            !|[ id ]|
+          end
         case [id]:
           !children => [<!(1, <id>)>]
         ; s
