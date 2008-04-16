@@ -4,38 +4,40 @@ Stratego/XT 0.17 - released April 2008
 
 ---------++!! Summary of Changes
 
-Stratego/XT 0.17 introduces a major improvements across the board, including 
-language additions, a new compiler library, numerous improvements to the compiler,
-significant changes to the library handling, new libraries for parsing, pretty 
-printing and term validation, 64-bit support, stack traces and more.
+Stratego/XT 0.17 introduces a major improvements across the board,
+including language additions, a new compiler library, numerous
+improvements to the compiler, significant changes to the library
+handling, new libraries for parsing, pretty printing and term
+validation, 64-bit support, stack traces and more.
 
-For this release, over 200 outstanding issues have been addressed, much thanks
-to the efforts of external bug reporters and contributors.
+For this release, over 200 outstanding issues have been addressed,
+much thanks to the efforts of external bug reporters and contributors.
 
-The manual has been updated to reflect the changes made to the language and 
-libraries, and the new libraries come with up-to-date source code documentation.
-
+The manual has been updated to reflect the changes made to the
+language and libraries, and the new libraries come with up-to-date
+source code documentation.
 
 %TOC%
 
-
 ---------++ Stratego Compiler
 
----------+++ Nested functions
+---------+++ Standard C: Dropped GCC's nested functions
 
-The backend has been changed so that the GCC-specific nested functions feature 
-is no longer required. This makes the C-code a lot more portable across 
-GCC-supported platforms, since nested functions are not reliably supported on 
-all architectures, notably not on MIPS. This allows Stratego to use other C 
-compilers for than GCC for the generation of platform-specific binary code.
+The backend has been changed so that the GCC-specific nested functions
+feature is no longer required. This makes the C-code a lot more
+portable across GCC-supported platforms, since nested functions are
+not reliably supported on all architectures, notably not on MIPS and
+OSX/Intel. Furthermore, this allows Stratego to use other C compilers
+for than GCC for the generation of platform-specific binary code.
 
    * [<a href="http://bugs.strategoxt.org/browse/STR-697">STR-697</a>] - Standalone strc; allow users to override --cc and ---ld
    * [<a href="http://bugs.strategoxt.org/browse/STR-119">STR-119</a>] - Replace GCC nested functions by stack-allocated closures as structs
 
 ---------+++ Stack traces on "rewriting failed"
 
-The compiler backend and supporting runtime code has been modified to provide 
-full stack traces for the dreaded "rewriting failed" situations. 
+The compiler backend and supporting runtime code have been modified to
+provide full stack traces for the dreaded "rewriting failed"
+situations.
 
 Consider the following program:
 
@@ -61,39 +63,57 @@ prog: rewriting failed, trace:
         zap_0_0 
 </verbatim>
 
-This also works when you use =io-wrap= and friends, but there are some 
-caveats: 
+This also works when you use =io-wrap= and friends, but there are some
+caveats:
 
-   * Only code compiled with the new compiler will show up in the stack 
-     trace: if you call old libraries, stack frames for those strategies will 
-     be invisble.
+   * Only code compiled with the new compiler will show up in the
+     stack trace: if you call old libraries, stack frames for those
+     strategies will be invisble.
  
-   * =let=-blocks and other reasons for lifting will show up as =lifted_X= frames.
+   * =let=-blocks and other reasons for lifting will show up as
+     =lifted_X= frames.
 
-A tiny set of stack introspection strategies for debugging purposes has also 
-been introduced.
+A tiny set of stack introspection strategies for debugging purposes
+has also been introduced.
 
 ---------+++ Compiler library
 
-The compiler has been librarified. Program analysis and transformation tools which
-work on Stratego code may now be based on the Stratego compiler library. The intent
-is to make meta-programming with Stratego a lot easier.
+The compiler has been librarified. Program analysis and transformation
+tools which work on Stratego code may now be based on the Stratego
+compiler library. The intent is to make meta-programming with Stratego
+a lot easier and speedup the Stratego compiler.
 
-   * [<a href="http://bugs.strategoxt.org/browse/STR-311">STR-311</a>] - strc-lib : a library for compilation (meta-programming) Stratego
+   * [<a href="http://bugs.strategoxt.org/browse/STR-311">STR-311</a>]
+     - strc-lib : a library for compilation (meta-programming)
+     Stratego
 
 ---------++ Stratego Language
 
 ---------+++ Dynamic rules
 
+---------+++ External Constructor Declarations
 
 ---------+++ Assignment operator
 
-An assignment operator has been added to the language.
+An assignment operator has been added to the language as a more
+attractive syntax for the common pattern =s => t=. In the assignment
+operator, the variable name is now before the right-hand side. Also,
+the right-hand side is a term pattern.
 
 <verbatim>
-  s = 
-    t := !1
+  get-signature(|file) :
+    Method(_, returntype, name, types, _, _) -> MethodSignature(cn, returntype, name, types)
+    where
+      cn := <get-classname> file
 </verbatim>
+
+This used to be written as:
+<verbatim>
+  <get-classname> file => cn
+</verbatim>
+
+Note that this is a purely syntactic change: the variable can only be
+assigned to once.
 
    * [<a href="http://bugs.strategoxt.org/browse/STR-550">STR-550</a>] - Assignment operator
 
@@ -110,39 +130,42 @@ The =let= construct now allows the defition of rules in addition to strategies:
 
 ---------+++ Import ATerm from file
 
-A new language construct called =import-term= was added which allows the embedding 
-of terms (data) directly into the program.
+A new language construct called =import-term= was added which allows
+the embedding of terms (data) directly into the program.
 
 <verbatim>
   get-pp-table = import-term(pptable.trm)
 </verbatim>
 
-This removes the need for external data files, and may ease deployment in some 
-situations significantly, at the cost of proportionately bigger program files.
+This removes the need for external data files, such as parse and
+pretty-print tables. The resulting executable is self-contained, thus
+making deployment of your program transformation tools easier.
 
    * [<a href="http://bugs.strategoxt.org/browse/STR-577">STR-577</a>] - Stratego: support import of an ATerm from a file
 
-
 ---------++ Stratego Libraries
 
-A new discipline for library naming and usage is introduces in 0.17. The standard
-library is now named =libstratego-lib=, whereas the XTC library is named
-=libstratego-xtc=. Additional libraries have been added for parsing, pretty 
-printing and term validation, see below.
+A new discipline for library naming and usage is introduces in
+0.17. The standard library is now named =libstratego-lib=, whereas the
+XTC library is named =libstratego-xtc=. Additional libraries have been
+added for parsing, pretty printing and term validation, see below.
 
 ---------+++ Migrating from XTC to libraries
 
-To avoid the term serialization paid when composing transformation pipelines 
-using XTC, the compiler and all supporting tools have been rearchitected to
-as libraries in addition to the familiar XTC components.
+To avoid the term serialization paid when composing transformation
+pipelines using XTC, the compiler and all supporting tools have been
+rearchitected to as libraries in addition to the familiar XTC
+components.
 
-For Stratego/XT users, the most significant change is that the SGLR parser,
-the various RTG tools and the GPP tools are now available as libraries, 
-respectively named =libstratego-sglr=, =libstratego-rtg= and =libstratego-gpp=.
+For Stratego/XT users, the most significant change is that the SGLR
+parser, the various RTG tools and the GPP tools are now available as
+libraries, respectively named =libstratego-sglr=, =libstratego-rtg=
+and =libstratego-gpp=.
 
-The librarification allows parse tables to be loaded once, at startup, and 
-used repeatedly when multiple files must be parsed (when using XTC, the parse
-table is loaded by the =sglr= child process every time a file must be parsed). 
+The librarification allows parse tables to be loaded once, at startup,
+and used repeatedly when multiple files must be parsed (when using
+XTC, the parse table is loaded by the =sglr= child process every time
+a file must be parsed).
 
 Consider the following program:
 
@@ -157,11 +180,11 @@ strategies
     ; <parse-string(|tbl)> "a+b"
 </verbatim>
 
-It assumes the existence of a parse table (=Exp.tbl=). This table be included
-into the program using the =import-term= construct (introduced above). The
-call to =open-parse-table= will register the parse table with the 
-=libstratego-sglr= library, and subsequent calls to =parse-string= will not
-need to reload the parse table.
+It assumes the existence of a parse table (=Exp.tbl=). This table be
+included into the program using the =import-term= construct
+(introduced above). The call to =open-parse-table= will register the
+parse table with the =libstratego-sglr= library, and subsequent calls
+to =parse-string= will not need to reload the parse table.
 
 Compiling and executing the program:
 
@@ -174,24 +197,55 @@ Plus(Var("a"),Var("b"))
 The resulting program =foo= is now fully self-contained. It does not need
 the =Exp.tbl= file to execute.
 
-(The =strcflags= is an alias for =pkg-config --variable=strcflags=.)
+API documentation for the Stratego Libraries is available from the
+Documentation page on the Stratego/XT website.
+
+---------+++ strcflags
+
+The new tool =strcflags= makes it no longer necessary to know all the
+details of how to invoke the Stratego compiler when you're using a
+certain library. Given the name of a package or Stratego library, the
+tool returns the flags (such as include paths) for strc.
+
+Example:
+<verbatim>
+$ strc -i foo.str $(strcflags stratego-lib)
+</verbatim>
+
+You can also specify multiple packages. For example, if you're using
+java-front, then you usually using the Stratego library as well.
+
+<verbatim>
+$ strc -i foo.str $(strcflags stratego-lib java-front)
+</verbatim>
+
+The tool strcflags is a simple wrapper around the tool =pkg-config=,
+which we are using for configuring Stratego/XT packages when building
+packages from source.
+
+To support strcflags with your own packages, add a declaration of a
+variable =strcflags= to the pkg-config =.pc= files.
 
 ---------+++ Easy library creation
 
-Creating libraries using the Stratego compiler has never been easier. By using
-the =--library= option to the compiler, all necessary library files will be 
-created.
+Creating libraries using the Stratego compiler has never been
+easier. By using the =--library= option to the compiler, all necessary
+library files will be created.
 
 <verbatim>
 $ strc -i foo.str --library
 </verbatim>
 
-The resulting output includes static and dynamic libraries, as well as libtool
-support files:
+The resulting output includes static and dynamic libraries, as well as
+libtool support files:
 
 <verbatim>
-libfoo.a  libfoo.c  libfoo.dep  libfoo.la  libfoo.lo  libfoo.o  libfoo.rtree  libfoo.so 
+libfoo.a  libfoo.c  libfoo.la  libfoo.lo  libfoo.o  libfoo.rtree  libfoo.so 
 </verbatim>
+
+This option is intended for creating libraries that are not part of an
+autoconf/automake package, similar to invoking =strc= to compile a
+program all the way to an executable.
 
 ---------++ Deployment
 
@@ -200,28 +254,44 @@ Stratego/XT.
 
 ---------+++ Standards-compliant libraries
 
-The Stratego libraries expose various features from the underlying platform 
-Stratego/XT executes on. In 0.17, the library has been refactored so that the 
-dependence on platforms is clearer, and this gives rise to several variants of 
-the library, including one for C99, POSIX and one for POSIX+XSI. The great 
-majority of Stratego/XT programs, use the high-level strategies for file and 
-term I/O, and these programs will be unaffected.
+The Stratego libraries expose various features from the underlying
+platform Stratego/XT executes on. In 0.17, the library has been
+refactored so that the dependence on platforms is clearer, and this
+gives rise to several variants of the library, including one for C99,
+POSIX and one for POSIX+XSI. The great majority of Stratego/XT
+programs, use the high-level strategies for file and term I/O, and
+these programs will be unaffected.
+
+The main benefit of this change is that we can now build all the
+Stratego libraries on platforms that only support functions from
+standard C99 (i.e. not full POSIX). This enables the deployment of
+Stratego applications on such platforms. Some strategies from the
+Stratego library are only available in the POSIX and POSIX+XSI
+extensions. The name of the modules defining these strategies reflect
+this.
 
    * [STR-613] - Stratego library: Allow creation of library for specific standard (C99, POSIX, POSIX XSI)
 
+---------+++ Native Windows Support (MinGW)
 
----------+++ MinGW support on Microsoft Windows
+Stratego/XT now supports compiling natively on Microsoft Windows using
+MinGW.  This results in a smaller footprint because of significantly
+fewer and smaller dependencies as compared with Cygwin.
 
-Stratego/XT now supports compiling natively on Microsoft Windows using MinGW. 
-This results in a smaller footprint because of significantly fewer and smaller 
-dependencies as compared with Cygwin.
+Binaries created for MinGW can be deployed to Microsoft Windows users
+without any dependencies.
+
+---------+++ OSX support
+
+Stratego/XT 0.17 now fully supports OSX on <nop>PowerPC as well as Intel CPUs.
 
 ---------+++ x86-64 support
 
-Thanks to patches from Eelco Dolstra, the ATerm library now supports 64-bit machines, 
-and the final blocker preventing Stratego/XT running on 64-bit is now removed. This
-means 64-bit support is finally here. Binary packages for 64-bit Linux distributions
-are provided for your convenience.
+Thanks to patches from Eelco Dolstra, the ATerm library now supports
+64-bit machines, and the final blocker preventing Stratego/XT running
+on 64-bit is now removed. This means 64-bit support is finally
+here. Binary packages for 64-bit Linux distributions are provided for
+your convenience.
 
    * [<a href="http://bugs.strategoxt.org/browse/STR-698">STR-698</a>] - x86_64 support
 
@@ -268,5 +338,3 @@ Developments, bug reports, and beta tests carried out by
 Thanks!
 
 ---------------------------------------------------------------------------------
-
-
