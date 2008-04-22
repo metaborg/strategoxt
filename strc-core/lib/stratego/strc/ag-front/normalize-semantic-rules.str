@@ -16,7 +16,7 @@ strategies
       Attributes(
         desugar-attribute-references
       ; rename-attribute-arguments
-      ; desugar-semantic-rule-cond
+      ; desugar-conditions
       ; desugar-matched-terms
       ; split-attribute-definition
       )

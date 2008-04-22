@@ -19,6 +19,9 @@ is desugared to:
     local.condition0 := <gt> (lhs.value, rhs.value) => res; ![res]
 */
 rules
+  DesugarAGRewriteNoCond:
+    |[ @ t1 -> t2 : ~* defs ]| -> |[ @ t1 -> t2 where id : ~* defs ]|
+
   DesugarSemanticRuleCond:
     |[ @ ~sr : where s ~* defs ]| -> [
       |[ @ ~sr : where !local.c(|) => [~term*: fv] ~* defs ]|
@@ -31,8 +34,8 @@ rules
     ; <newname> "condition" => c
     ; <tvars> s => fv
 
-  desugar-semantic-rule-cond =
+  desugar-conditions =
     mapconcat(
-      DesugarSemanticRuleCond
-   <+ ![<id>]
+      try(DesugarAGRewriteNoCond)
+    ; (DesugarSemanticRuleCond <+ ![<id>])
     )
