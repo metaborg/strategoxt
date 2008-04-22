@@ -156,7 +156,6 @@ rules
         at-end(![ |[ <id> ]| ])
       end> lt => lt'
 
-
   extract-called-term =
     oncetd(
       ?ACallTerm(c@ACallT(k, _, _))
@@ -272,7 +271,7 @@ strategies
   /**
    * @type      ProdRef * List(AttrKey) -> Strategy
    */
-  add-attributes-on-children =
+  add-attributes-on-children = debug-area(
     ?(prod@<id>, attrkeys)
   ; manipulate-children({i:
       ?(i, _)
@@ -280,6 +279,7 @@ strategies
     ; map(attrkey-2-term)
     ; !|[ id{![~term*: <id>]} ]|
     })
+  | "add-attributes-on-children")
 
 strategies
   typedid-name = ?Typedid |[ ~id: <id> ]|
@@ -303,33 +303,54 @@ strategies
   /**
    * @type      ProdRef -> Strategy
    */
-  match-production =
+  match-production = debug-area(
     if is-production-rewrite then
-      where(Rprod-u => [_, _])
-    ; !|[ {anno: id{?anno; ![]}; (!(<id>, <id>)){!anno} } ]|
+      !|[ {anno:
+            id{?anno; ![]}
+          ; !(~term*: <Rprod-u; map(!Term |[ <id> ]|)>)
+          ; id{!anno}
+          }
+       ]|
     else
       manipulate-children(!|[ id ]|)
     end
     ; !|[ ?root; ~<id> ]|
+  | "match-production")
 
   /**
    * @type      ProdRef -> Strategy
    */
-  children-traversal =
-    if is-production-rewrite then
+  children-traversal = debug-area(
+    ?p
+  ; if is-production-rewrite then // FIXME: this is ugly and messy
       where(
-        Rprod-u
-      ; [symbol-2-compute-name, symbol-2-compute-name]
-      ; [!Strat |[ ~id:<id> ]|, !Strat |[ ~id:<id> ]|]
-      ; ?[s1, s2]
+        Rprod-u => cs
+      ; map-with-index(
+          <conc-strings> ("child-anno-", <Fst; int-to-string>)
+        ) => vars
       )
-    ; where(get-production-rewrite-properties => [RewriteRule(_, s, _)])
+    ; where(get-production-rewrite-properties => as)
+    ; <zip(
+        (id, !Strat |[ ~id: <symbol-2-compute-name> ]|)
+      )> (as, cs)
+    ; map-with-index({(
+        (i, (s1, s2)) -> [s1, |[ id{!~id: v } ]|, s2]
+          where
+            v := <conc-strings> ("child-anno-", <int-to-string> i)
+      )})
+    ; concat
+    ; concat-statements
+    ; desugar-attributes-calls
+    // FIXME: LabeledId should all be handle by the front-end.
+    ; alltd( \
+        Build(ACallTerm(ACallT(LabeledId(Root(), n), [], [])))
+     -> |[ prim("\"LAZY_call\"", !~id: <conc-strings> ("root-", n) |) ]|
+      \ )
     ; !Strat |[
-        {lhs-a,rhs-a: // foldl ?
-          (id{?lhs-a}, id{?rhs-a}); !root
-        ; { s }
-        ; where(!root; id{!lhs-a}; s1)
-        ; id{!rhs-a}; s2
+        {~vars:
+          id#([~strat*: <map(!|[ id{?~id: <id>} ]|)> vars])
+        ; !root
+        ; ~strat: <id>
         }
       ]|
     else
@@ -343,6 +364,7 @@ strategies
         end
       })
     end
+    | "children-traversal")
 
 strategies
   /** Create a strategy.

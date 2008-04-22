@@ -19,9 +19,7 @@ strategies
   ; dbg(|"with this production and labels: ")
 
 // TODO:
-// - handle rules with conditions
-// - handle rewriting strategies
-// - handle AG rewriting rules
+// - handle inherited productions to optimize and remove the merging feature.
 strategies
   is-semantic-rule-collection =
     ?|[ @ ~_ : ~*_ ]|
@@ -38,7 +36,19 @@ strategies
     ?|[ @ ~_ : ~<id> ]|
   + ?|[ @ ~_ : where s ~<id> ]|
 
+  fetch-right-most-label =
+    fetch-uses
+  ; map( ?AttrKey(Label(<id>), _) )
+  ; list-max
+  ; inc
 
+  get-semantic-rule-pattern-condition(| prod, code ) =
+    get-semantic-rule-agterm => l
+  ; <fetch-right-most-label> (prod, code) => i
+  ; <add-indices> l
+  ; fetch-elem(?(i, AGMatch |[ t where ~<id> ]|))
+
+strategies
   register-semantic-rule =
     restore(
       ?sr
@@ -56,7 +66,11 @@ strategies
       ; where(Any2Text; dbg(|"register a new default rule:"))
       ) => this
     ; restore(
-        if <get-semantic-rule-condition> sr => s then
+        if ![]
+         ; try(![<get-semantic-rule-condition> sr | <id>])
+         ; try(![<get-semantic-rule-pattern-condition(| prod, code )> sr | <id>])
+         ; not([]); concat-statements => s
+        then
           <escape-stratego-attributes(|labels)> s => s'
         ; <merge-with-conditional-rule> (this, s', code)
         else

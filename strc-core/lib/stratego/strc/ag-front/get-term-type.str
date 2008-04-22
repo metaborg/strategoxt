@@ -45,11 +45,19 @@ rules
   GetTermType: NoAnnoList(t) -> <GetTermType> t
 
   // Those are not terms !
-  GetTermType: AGMatch(t) -> <GetTermType> t
-  GetTermType: r@AGRewrite(_,_,_) -> TermType(p, [], Some([ty1, ty2]))
+  GetTermType: AGMatch |[ t ]| -> <GetTermType> AGMatch |[ t where id ]|
+  GetTermType: AGMatch |[ t where s ]| -> (ty, s)
+    where <GetTermType> t => ty
+
+  GetTermType: AGTerm |[ ~m: m ]| -> ty
+    where <GetTermType> m => (ty, s)
+
+  GetTermType: AGTerm |[ ~m*: m ]| -> TermType(p, [], Some(term-type*))
     where
-      <register-rewrite-production> r => p
-    ; get-production-rewrite-properties => [RewriteRule(ty1, _, ty2)]
+      <not([id])> m
+    ; <map(GetTermType)> m
+    ; where(unzip => (term-type*, s*))
+    ; register-rewrite-production => p
 
   get-term-type =
     GetTermType
@@ -133,3 +141,82 @@ strategies
       ?(i, <id>)
     ; !(<dec> i, <get-term-type-labels>, <get-term-type-symbol>)
     })
+
+rules
+  TermType2AliasTerm(this): TermType(p, names@[_ | _], children)
+    -> <
+     dbg(|"enter TermType2AliasTerm");
+     alias-identifers(| <this> TermType(p, [], children) )
+   ; dbg(|"leave TermType2AliasTerm")
+   > names
+
+rules
+  TermType2ChildTerm: _ -> <
+      dbg(|"enter TermType2ChildTerm")
+    ; fail
+    >
+
+  TermType2ChildTerm: TermType(UnknowProd(), [], _)
+    -> Term |[ _ ]|
+
+  TermType2ChildTerm: this@TermType(_, [], _)
+    -> Term |[ (srt)() ]|
+      where <get-term-type-symbol; SortRef2Sort> this => srt
+
+  TermType2ChildTerm: this@TermType(_, [_| _], _)
+    -> <TermType2AliasTerm(TermType2ChildTerm)> this
+
+  TermType2ChildTerm: _ -> <
+      dbg(|"fails TermType2ChildTerm")
+    ; fail
+    >
+
+rules
+  TermType2Term(child): _ -> <
+      dbg(|"enter TermType2Term")
+    ; fail
+    >
+
+  TermType2Term(child): TermType(p, [], Some(l))
+    -> Term |[ (tp)(~term*: <map(child)> l) ]|
+      where
+        <test(get-production-name < "" + id)> p
+      ; <Rprod-p => [<SortRef2Sort; !Type |[ ~srt:<id> ]|>]> p => srt
+      ; <Rprod-u; map(SortRef2Sort; !Type |[ ~srt:<id> ]|)> p => srt*
+      ; tp := FunType(srt*, srt)
+
+  TermType2Term(child): TermType(p, [], Some(l))
+    -> Term |[ ~id: <get-production-name; not("")> p (
+                 ~term*: <map(child)> l
+               )
+       ]|
+
+  TermType2Term(child): this@TermType(_, [], None())
+    -> <TermType2ChildTerm> this
+
+  TermType2Term(child): this@TermType(_, [_| _], _)
+    -> <TermType2AliasTerm(TermType2Term(child))> this
+
+  TermType2Term(child): _ -> <
+      dbg(|"fails TermType2Term")
+    ; fail
+    >
+
+strategies
+  TermType2RootTerm =
+    TermType2Term(TermType2ChildTerm)
+
+  add-term-type-children-labels(|basename) =
+    dbg(|"enter add-term-type-children-labels");
+    TermType(id, id,
+      None()
+    + Some(map-with-index({index:
+        ?(index, <id>)
+      ; TermType(
+          id
+        , ![<conc-strings> (basename, <int-to-string> index) | <id>]
+        , id
+        )
+      }))
+    )
+  ; dbg(|"leave add-term-type-children-labels")

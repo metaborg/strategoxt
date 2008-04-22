@@ -21,11 +21,9 @@ attributes
   @ Leaf(_):
     root.collect-min := <?Leaf(<id>)>
 
-  @ old@Leaf(_) -> new@Leaf(n)
-      where
-        test(get-attribute(|"rewrite-flag")) // should be done at the early beginning
-      ; get-attribute(|"spread-min") => n
-  : old.rewrite-flag := <fail>
+  @ old@Leaf(_) where !root.rewrite-flag
+ -> new@Leaf(n) where !root.spread-min => n
+  : old.rewrite-flag := <fail> // non-assoc
     new.rewrite-flag := <fail>
     root.collect-min := old.collect-min
 
@@ -41,6 +39,7 @@ strategies
   rewrite-tree =
     debug(!"input: ")
   ; compute-Root
+  ; strip-annos
   ; debug(!"output: ")
 
   rewrite-01 =
@@ -49,5 +48,6 @@ strategies
   ; <rewrite-tree> Root(Node(Node(Leaf(1),Leaf(2)),Leaf(3)))
   ; <rewrite-tree> Root(Node(Leaf(1),Node(Leaf(2),Leaf(3))))
   ; <rewrite-tree> Root(Node(Node(Leaf(1),Leaf(2)),Node(Leaf(3),Leaf(4))))
+  ; <rewrite-tree> Root(Node(Node(Leaf(4),Leaf(1)),Node(Leaf(3),Leaf(2))))
   ; <rewrite-tree> Root(Node(Leaf(0),Node(Node(Leaf(1),Leaf(2)),Node(Leaf(3),Leaf(4)))))
   ; <exit> 0

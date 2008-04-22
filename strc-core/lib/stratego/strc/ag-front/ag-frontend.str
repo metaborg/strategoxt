@@ -18,8 +18,7 @@ strategies
       , err(|"Cannot register sorts."))
     ; restore(register-productions
       , err(|"Cannot register constructors declarations."))
-    ; restore(normalize-semantic-rules
-      , err(|"Cannot normalize semantic rules."))
+    ; normalize-semantic-rules
     ; restore(register-semantic-rules
       , err(|"Cannot register attribute declarations."))
     ; restore(flag-user-rules

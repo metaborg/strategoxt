@@ -1,6 +1,7 @@
 module desugar-matched-terms
 imports
   libstratego-lib
+  libstratego-ag // should not appear here
   Stratego
 
 imports
@@ -46,74 +47,116 @@ rules
   ReplaceMatchedTerm(|agt):
     |[ @ ~_: where s ~*defs ]| -> |[ @ ~agt: where s ~*defs ]|
 
-  AddSRCondition(|s, other-defs):
-    |[ @ ~agt: ~*defs ]| -> |[ @ ~agt: where s ~*defs ~*other-defs ]|
+  AddSRCondition(|s):
+    |[ @ ~agt: ~*defs ]| -> |[ @ ~agt: where s ~*defs ]|
 
-  AddSRCondition(|s, other-defs):
-    |[ @ ~agt: where s' ~*defs ]| -> |[ @ ~agt: where s; s' ~*defs ~*other-defs ]|
+  AddSRCondition(|s):
+    |[ @ ~agt: where s' ~*defs ]| -> |[ @ ~agt: where s; s' ~*defs ]|
+
+  AddAttrDef(|other-defs):
+    |[ @ ~agt: ~*defs ]| -> |[ @ ~agt: ~*defs ~*other-defs ]|
+
+  AddAttrDef(|other-defs):
+    |[ @ ~agt: where s ~*defs ]| -> |[ @ ~agt: where s ~*defs ~*other-defs ]|
+
+rules
+  remove-injections =
+    bottomup(try(
+      \ OpInj(ConstType(_), []) -> Wld() \
+    + \ OpInj(_, l) -> Tuple(l) \
+    ; try(\ Tuple([e]) -> e \)
+    ))
+
+  agterm-to-term =
+    remove-injections
+
+  match-2-build =
+    topdown(try(
+      \ As(_, t) -> t \
+    ))
+  ; not(oncetd(?Wld()))
+ <+ err(|"Cannot convert he follwing to a build pattern:")
+  ; fail
+
+rules
+  TermType2AGMatch: t -> AGMatch |[ t' ]|
+    where
+    dbg(|"enter TermType2AGMatch");
+ t' := <TermType2RootTerm> t
+    ; dbg(|"leave TermType2AGMatch")
+
+  TermType2AGTerm: t -> AGTerm |[ ~m: m ]|
+    where
+      !t
+    ; dbg(|"enter TermType2AGTerm")
+    ; not(
+        get-term-type-production
+      ; is-production-rewrite
+      )
+    ; add-term-type-children-labels(|"'symb")
+    ; TermType2AGMatch => m
+    ; dbg(|"leave TermType2AGTerm")
+
+  TermType2AGTerm: t -> AGTerm |[ ~m*: m* ]|
+    where
+      !t
+    ; where(
+        get-term-type-production
+      ; is-production-rewrite
+      )
+    ; add-term-type-children-labels(|"'symb")
+    ; get-term-type-children
+    ; map(TermType2AGMatch) => m*
 
 strategies
-  agterm-to-term =
-    ( \ AGTerm |[ t ]| -> t \
-    + \ AGTerm |[ t1 -> t2 where s ]| -> Term |[ (t1, t2) ]| \
+  // fixme: to make variable accessible from any other attribute we have
+  // to put the stack in the heap to handle a correct delay call with
+  // references to outerscope variables.
+  replace-precondition =
+    (try(\ AGMatch |[ t1 ]| -> AGMatch |[ t1 where id ]| \), id)
+  ; ?(AGMatch |[ t1 where s ]| , n@(sr, s', t, _))
+  ; <agterm-to-term> t1 => t'
+  ; <match-2-build> t' => t''
+  ; <newname> "matched" => f
+//  ; <(AddAttrDef(|[
+//        |[ local.f(|) := <s'; \ t -> t'' where s \> ]|
+//      ])
+//    , !|[ !local.f(|) ]|
+  ; <(\ |[ @ ~sr : ~*defs ]| -> |[ @ ~sr : ]| \
+    , !|[ id ]|
+    , !t'
+    , at-end(![|[\ t -> t'' where s \ ]|])
+    )> n
+
+  initial-precondition(|type) =
+    try(\ AGMatch |[ t ]| -> AGMatch |[ t where id ]| \)
+  ; ?AGMatch |[ t where s ]|
+  ; <agterm-to-term> t => t'
+  ; <newname> "matched" => f
+  ; !(|[@ ~<TermType2AGTerm> type:
+          local.f(|) := <where(s); ?t'>
+      ]|
+    , |[ !local.f(|) ]|
+    , t'
+    , [|[ where(s); ?t' ]|]
     )
-  ; bottomup(
-      try(\ OpInj(_, l) -> Tuple(l) \)
-    ; try(\ Tuple([e]) -> e \)
-    )
 
-  term-type-to-root-symbol-term =
-    get-term-type-symbol => s
-  ; !OpInj(ConstType(<SortRef2Sort> s), [])
-
-  term-type-to-root-term = memo(
-    test(not(get-term-type-production))
-  ; term-type-to-root-symbol-term
-  ; !AGMatch(<id>)
-  )
-
-  term-type-to-children-terms =
-    get-term-type-children
-  ; map-with-index({
-      ?(index, child)
-      // "'symbx" is not a valid stratego identifier, but it does not appear
-      // in the generated code.
-    ; ![<conc-strings> ("'symb", <int-to-string> index)
-      | <get-term-type-labels> child]
-    ; alias-identifers(|<term-type-to-root-symbol-term> child)
-    })
-
-  term-type-to-root-term = memo(
-    switch get-term-type-production => p
-      case get-production-name; not("") => name:
-        !AGMatch(NoAnnoList(Op(name, <term-type-to-children-terms>)))
-      case is-production-rewrite:
-        where(term-type-to-children-terms => [t1, t2])
-      ; where(<get-production-rewrite-properties> p => [RewriteRule(_, s, _)])
-      ; !AGTerm |[ t1 -> t2 where s ]|
-      otherwise: // injection
-        !AGMatch(NoAnnoList(OpInj(
-          FunType(
-            < get-term-type-children
-            ; map(get-term-type-symbol; SortRef2Sort)
-            >
-          , <get-term-type-symbol>
-          )
-        , <term-type-to-children-terms>
-        )))
-    end
-  )
-
+  // fixme: the traversal should be done here !!
+  // to do so we need to access variable of the outer-scope of the delay call definition.
   matched-term-attribute =
     ?(agterm, type)
-  ; <agterm-to-term> agterm => t
-  ; ![] => fv // fixme: should move this in the evaluator
-  ; <newname> "matched" => f
-  ; !(|[@ ~<term-type-to-root-term> type :
-          local.f (|) := <\ t -> [~term*: fv] \>
-      ]|
-    , Strat |[ !local.f (|) => [~term*: fv] ]|
-    )
+  ; <?AGTerm |[ ~m*: <id> ]|> agterm
+  ; <foldl(replace-precondition)> (
+      <Tl>
+    , <Hd; initial-precondition(|type)>
+    ) => (sr, last, _, ls)
+  ; if <get-term-type-production> type => p; is-production-rewrite then
+      <set-production-as-rewrite(|
+        // fixme: many rewrite with the same type and different conditions.
+        ls
+      )> p
+    end
+  ; !(sr, last)
  <+ err(|"Cannot generate the condition to match the current term.")
   ; fail
 
@@ -171,7 +214,7 @@ strategies
       dbg(|"Create rules with condition:");
       list-loop(
         rules(AttrDefinitions :+= |[
-          @ ~<Snd; term-type-to-root-term> term-type :
+          @ ~<Snd; TermType2AGTerm> term-type :
             where !root.c (|) => []
             ~ <id>
         ]|)
@@ -181,7 +224,7 @@ strategies
       dbg(|"Create rules without condition:");
       list-loop(
         rules(AttrDefinitions :+= |[
-          @ ~<Snd; term-type-to-root-term> term-type :
+          @ ~<Snd; TermType2AGTerm> term-type :
             ~ <id>
         ]|)
       )
@@ -244,9 +287,11 @@ strategies
   ; <get-term-type> agt => type
   ; if <get-term-type-children; one(get-term-type-children)> type then
       <matched-term-attribute> (agt, type) => (match, cond)
+    ; <?|[ @~<id>: ~*_ ]|> match => root-agt
     ; <alias-attributes(|type)> sr
-    ; ReplaceMatchedTerm(|<term-type-to-root-term> type)
-    ; AddSRCondition(|cond, <bagof-ConditionAttrDefinitions>)
+    ; ReplaceMatchedTerm(|root-agt)
+    ; AddAttrDef(|<bagof-ConditionAttrDefinitions>)
+    ; AddSRCondition(|cond)
     ; ![match, <id> | <bagof-AttrDefinitions>]
     ; dbg(|"All desugared rules by desugar-matched-term:")
    <+ err(|"Cannot desugar the matched term of")

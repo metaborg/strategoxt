@@ -59,8 +59,9 @@ strategies
    * @type      List(String) -> Term
    */
   alias-identifers =
-    foldr(
-      !|[ _ ]|
+    \ []  -> |[ _ ]| \
+  + foldr1(
+      \ [i] -> Term |[ ~id: i ]| \
     , \ (i, t) -> |[ ~id: i @ ~term: t ]| \
     )
 
