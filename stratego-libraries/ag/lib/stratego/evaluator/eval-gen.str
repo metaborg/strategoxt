@@ -89,6 +89,8 @@ strategies
    * @type children-traversal                   ProdRef -> Statement
    * @type create-lazy-function                 RuleRef -> Statement
    * @type concat-statements                    List(Statement) -> Statement
+   * @type create-production
+   *    Statement * Statement * Statement * List(Statement) * List(Statement) -> Statement
    *
    * @type                                      ProdRef -> Statement
    */
@@ -97,7 +99,7 @@ strategies
   , attribute-handler
   , add-attributes-on-children
   , children-traversal
-  , concat-statements
+  , create-production
   ) = debug-area(
     where(production-2-pattern-matching => match)
   ; where(get-all-children-attrkeys => all-children-attributes)
@@ -105,13 +107,13 @@ strategies
       <attribute-handler> (<id>, all-children-attributes)
          => (attribute-creation, attribute-definition)
     )
-  ; <concat; concat-statements> [
-      [match]
+  ; <create-production> (
+      match
+    , <add-attributes-on-children> (<id>, all-children-attributes)
+    , <children-traversal>
     , attribute-creation
-    , [<add-attributes-on-children> (<id>, all-children-attributes)]
-    , [<children-traversal>]
     , attribute-definition
-    ]
+    )
   | "production-handler")
 
 strategies
