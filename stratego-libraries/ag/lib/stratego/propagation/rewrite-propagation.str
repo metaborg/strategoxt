@@ -1,0 +1,83 @@
+module stratego/propagation/rewrite-propagation
+imports
+  stratego/graph/attributes
+  stratego/graph/productions
+
+  stratego/propagation/propagator
+
+signature
+  constructors
+    Rewrite: List(RewriteProperty) -> ProdProperty
+
+strategies
+  is-production-rewrite =
+    where(
+      get-production-properties
+    ; one( ?Rewrite(_) )
+    )
+
+  get-production-rewrite-properties =
+    get-production-properties
+  ; fetch-elem( ?Rewrite(<id>) )
+
+  set-production-as-rewrite(|prop) =
+    edit-production-properties(
+      one-or-add( Rewrite(!prop) | Rewrite([]) )
+    )
+
+strategies
+  /** All attributes are handled by the rewrite propagation.
+   * This propagation only depends on the production
+   *
+   * @type              AttrRef -> AttrRef
+   */
+  get-rewrite-attribute-id =
+    id
+
+  /** Get all rule patterns to define the top-down attribute.
+   *
+   * @type default-id   _
+   * @type attr         AttrRef
+   * @type symb         SymbRef
+   * @type label        SymbLabel
+   * @type              ProdRef -> List(AttrKey * List(SymbLabel))
+   */
+  get-rewrite-rule-patterns(|rewrite-id, attr, symb, label) =
+    ?prod
+  ; is-production-rewrite
+  ; if is-produced-label then
+      get-production-symbols
+    ; last; Fst
+      // synthesized values are values coming from the rewrote tree.
+    ; !(<create-key(|label, attr)>, [<id>])
+    else
+      // inherited values are coming from the context of the rewriting.
+      !(<create-key(|label, attr)>, [Label(0)])
+    end
+  ; ![<id>]
+
+  /** Propagation rule for rewriting productions.
+   * This propagation should be the first one to test because others does
+   * not check if it is not a rewrite production.
+   *
+   * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
+   * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
+   * @type fetch-produce        ProdRef * EmbeddedLanguage -> AttrKey
+   * @type fetch-uses           ProdRef * EmbeddedLanguage -> List(AttrKey)
+   * @type merge-code           ProdRef * RuleRef * EmbeddedLanguage -> EmbeddedLanguage
+   * @type attr                 AttrRef
+   * @type symb                 SymbRef
+   * @type label                SymbLabel
+   * @type                      ProdRef * Queue -> Queue
+   */
+  rewrite-propagation(create-rule, create-rule-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label) =
+    generic-propagation-rule(get-rewrite-attribute-id, get-rewrite-rule-patterns
+    , create-rule
+    , create-rule-attr
+    , fetch-produce
+    , fetch-uses
+    , merge-code
+    | attr
+    , symb
+    , label
+    )

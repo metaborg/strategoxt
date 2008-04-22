@@ -15,7 +15,7 @@ strategies
 
   /** Check that the attribute is a top-down attribute
    *
-   * @type              AttrRef -> TopDownIdentifier
+   * @type              AttrRef -> PropagationFlag
    */
   get-default-attribute-value =
     get-attribute-properties
@@ -34,7 +34,7 @@ strategies
   ; create-key(|label, attr)
   ; ![(<id>, [])]
 
-  /** Propagation rule for top-down attributes.
+  /** Propagation rule for default value propagation.
    *
    * @type create-rule          ProdRef * AttrKey * List(SymbLabel) -> EmbeddedLanguage
    * @type create-rule-attr     EmbeddedLanguage -> EmbeddedLanguage
