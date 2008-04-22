@@ -54,7 +54,9 @@ rules
 
 strategies
   agterm-to-term =
-    ?AGMatch(<id>)
+    ( \ AGTerm |[ t ]| -> t \
+    + \ AGTerm |[ t1 -> t2 where s ]| -> Term |[ (t1, t2) ]| \
+    )
   ; bottomup(
       try(\ OpInj(_, l) -> Tuple(l) \)
     ; try(\ Tuple([e]) -> e \)
@@ -82,21 +84,24 @@ strategies
     })
 
   term-type-to-root-term = memo(
-    where(get-term-type-production => p)
-  ; if <get-production-name> p => name; not("") then
-      !NoAnnoList(Op(name, <term-type-to-children-terms>))
-    else
-      !NoAnnoList(OpInj(
-        FunType(
-          < get-term-type-children
-          ; map(get-term-type-symbol; SortRef2Sort)
-          >
-        , <get-term-type-symbol>
-        )
-      , <term-type-to-children-terms>
-      ))
+    switch get-term-type-production => p
+      case get-production-name; not("") => name:
+        !AGMatch(NoAnnoList(Op(name, <term-type-to-children-terms>)))
+      case is-production-rewrite:
+        where(term-type-to-children-terms => [t1, t2])
+      ; where(<get-production-rewrite-properties> p => [RewriteRule(_, s, _)])
+      ; !AGTerm |[ t1 -> t2 where s ]|
+      otherwise: // injection
+        !AGMatch(NoAnnoList(OpInj(
+          FunType(
+            < get-term-type-children
+            ; map(get-term-type-symbol; SortRef2Sort)
+            >
+          , <get-term-type-symbol>
+          )
+        , <term-type-to-children-terms>
+        )))
     end
-  ; !AGMatch(<id>)
   )
 
   matched-term-attribute =

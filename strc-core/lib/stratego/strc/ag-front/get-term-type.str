@@ -46,7 +46,10 @@ rules
 
   // Those are not terms !
   GetTermType: AGMatch(t) -> <GetTermType> t
-  GetTermType: AGRewrite(f,t,c) -> <err(|"AGRewrite is not yet handle by GetTermType."); GetTermType> t
+  GetTermType: r@AGRewrite(_,_,_) -> TermType(p, [], Some([ty1, ty2]))
+    where
+      <register-rewrite-production> r => p
+    ; get-production-rewrite-properties => [RewriteRule(ty1, _, ty2)]
 
   get-term-type =
     GetTermType

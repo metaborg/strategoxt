@@ -301,25 +301,48 @@ strategies
 
 strategies
   /**
-   * @type      ProdRef -> Statement
+   * @type      ProdRef -> Strategy
    */
   match-production =
-    manipulate-children(!|[ id ]|)
+    if is-production-rewrite then
+      where(Rprod-u => [_, _])
+    ; !|[ {anno: id{?anno; ![]}; (!(<id>, <id>)){!anno} } ]|
+    else
+      manipulate-children(!|[ id ]|)
+    end
+    ; !|[ ?root; ~<id> ]|
 
   /**
    * @type      ProdRef -> Strategy
    */
   children-traversal =
-    manipulate-children({
-      ?(i, <id>)
-    ; if Rsymb-pd => [] then
-        !|[ id ]|
-      else
-        symbol-2-compute-name
-      ; !Strat |[ ~id: <id> ]|
-      end
-    })
-  ; !|[ ~<id> => root ]|
+    if is-production-rewrite then
+      where(
+        Rprod-u
+      ; [symbol-2-compute-name, symbol-2-compute-name]
+      ; [!Strat |[ ~id:<id> ]|, !Strat |[ ~id:<id> ]|]
+      ; ?[s1, s2]
+      )
+    ; where(get-production-rewrite-properties => [RewriteRule(_, s, _)])
+    ; !Strat |[
+        {lhs-a,rhs-a: // foldl ?
+          (id{?lhs-a}, id{?rhs-a}); !root
+        ; { s }
+        ; where(!root; id{!lhs-a}; s1)
+        ; id{!rhs-a}; s2
+        }
+      ]|
+    else
+      manipulate-children({
+        ?(i, <id>)
+      ; if Rsymb-pd => [] then
+          !|[ id ]|
+        else
+          symbol-2-compute-name
+        ; !Strat |[ ~id: <id> ]|
+        end
+      })
+    end
 
 strategies
   /** Create a strategy.
@@ -333,11 +356,37 @@ strategies
         ~strat: body
     ]|
 
+  create-production =
+    ?(match
+    , populate-children
+    , traverse-children
+    , create-attribute*
+    , bind-attribute*
+    )
+  ; !Strat |[
+      lazy-scope(
+        ~<concat-statements> [
+          match
+        , create-attribute*
+        , populate-children
+        , bind-attribute*
+        , traverse-children
+        ]
+      )
+    ]|
+    // local attributes could have a root-* name
+  ; !|[ {~<tvars; remove-all(string-starts-with(|"root-"))>: ~strat: <id> } ]|
+
+strategies
+  sort-productions =
+    partition(test(is-production-rewrite))
+  ; conc
 
 strategies
   stratego-ag-evaluator = debug-area({|LiftedStrategies:
     evaluator-gen(
       fetch-attributes
+    , sort-productions
     , production-handler(
         match-production
       , attribute-handler(
@@ -349,7 +398,7 @@ strategies
         )
       , add-attributes-on-children
       , children-traversal
-      , concat-statements
+      , create-production
       )
     , create-choice-with-backtracking
     , concat-statements

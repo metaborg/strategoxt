@@ -1,0 +1,53 @@
+module rewrite-01
+imports
+  libstratego-lib
+  libstratego-lazy
+
+signature
+  constructors
+    Root: Node -> Root
+    Node: Node * Node -> Node
+    Leaf: Integer -> Node
+
+attributes
+  @ bottom-up collect-min = list-min
+  @ top-down spread-min
+  @ top-down rewrite-flag
+
+  @ Root(n):
+    n.spread-min := n.collect-min
+    n.rewrite-flag := 1
+
+  @ Leaf(_):
+    root.collect-min := <?Leaf(<id>)>
+
+  @ old@Leaf(_) -> new@Leaf(n)
+      where
+        test(get-attribute(|"rewrite-flag")) // should be done at the early beginning
+      ; get-attribute(|"spread-min") => n
+  : old.rewrite-flag := <fail>
+    new.rewrite-flag := <fail>
+    root.collect-min := old.collect-min
+
+strategies
+  get-lazy-attribute(|name) =
+    id{one( ?(name, v) )} => tree
+  ; !v
+
+  get-attribute(|name) =
+    get-lazy-attribute(|name) => v
+  ; get-value(!v)
+
+  rewrite-tree =
+    debug(!"input: ")
+  ; compute-Root
+  ; debug(!"output: ")
+
+  rewrite-01 =
+    <rewrite-tree> Root(Leaf(1))
+  ; <rewrite-tree> Root(Node(Leaf(1),Leaf(2)))
+  ; <rewrite-tree> Root(Node(Node(Leaf(1),Leaf(2)),Leaf(3)))
+  ; <rewrite-tree> Root(Node(Leaf(1),Node(Leaf(2),Leaf(3))))
+  ; <rewrite-tree> Root(Node(Node(Leaf(1),Leaf(2)),Node(Leaf(3),Leaf(4))))
+  ; <rewrite-tree> Root(Node(Leaf(0),Node(Node(Leaf(1),Leaf(2)),Node(Leaf(3),Leaf(4)))))
+  ; <exit> 0

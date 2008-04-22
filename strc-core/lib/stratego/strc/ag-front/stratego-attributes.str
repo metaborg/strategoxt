@@ -394,15 +394,13 @@ strategies
     ))
 
 strategies
-  is-rewrite-production = fail
-
   attribute-propagator(|attr, symb, label) =
     ?(prod, _)
-  ; if not(<is-rewrite-production> prod) then
+  ; if <is-production-rewrite> prod then
+      rewrite-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
+    else
       lr-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     + bu-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     + td-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
     + default-propagation(create-strategy, create-strategy-attr, fetch-produce, fetch-uses, merge-code | attr, symb, label)
-    else
-      fail
     end

@@ -55,10 +55,10 @@ strategies
     ; if <get-opdecl-name> opdecl => name then
         set-production-name(|name)
       ; rules(ProdName2Ref:+ name -> this)
-      ; where(<dbg(|"register production: ")> (opdecl, name, this))
+      ; where(<dbg(|"register production:")> (opdecl, name, this))
       else
         rules(ProdName2Ref:+ "" -> this)
-      ; where(<dbg(|"register production: ")> (opdecl, this))
+      ; where(<dbg(|"register production:")> (opdecl, this))
       end
     , err(|"Cannot register the following constructor declaration as a production:")
     )
@@ -68,3 +68,42 @@ strategies
   ; remove-all(oncetd(not-handle-sort))
   ; map(register-production)
   )
+
+signature
+  constructors
+    RewriteRule: TermType * Strategy * TermType -> RewriteProperty
+
+strategies
+  register-rewrite-production =
+    restore(
+      try( \ AGTerm |[ t1 -> t2 ]| -> AGTerm |[ t1 -> t2 where id ]| \ )
+    ; ?r@AGTerm |[ t1 -> t2 where s ]|
+    ; <get-term-type> t1 => ty1
+    ; <get-term-type> t2 => ty2
+    ; <topdown(try(
+        ?As(_, <id>) + ?OpInj(_, [<id>])
+      ))> t2 => t2'
+    ; switch !(ty1, ty2)
+        case (get-term-type-children, get-term-type-children):
+          !|[ ?t1; s; !t2' ]|
+        case (get-term-type-children, id):
+          !|[ ?t1; s ]|
+        case (id, get-term-type-children):
+          !|[ s; !t2' ]|
+        otherwise:
+          !s
+      end => s'
+    ; dbg(|"5")
+    ; <get-term-type-symbol> ty1 => s1
+    ; dbg(|"6")
+    ; <get-term-type-symbol> ty2 => s2
+    ; dbg(|"7")
+    ; memo-var(id
+      , new-production(| [s1, s2], s2 ) => this
+      ; set-production-as-rewrite(|[RewriteRule(ty1, s', ty2)])
+      ; rules(ProdName2Ref:+ (s1, s', s2) -> this)
+      ; where(<dbg(|"register rewrite production:")> (r, this))
+      , <ProdName2Ref> (s1, s', s2)
+      )
+    , err(|"Cannot register the following rewriting declaration as a production:")
+    )

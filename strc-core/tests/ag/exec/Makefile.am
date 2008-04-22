@@ -33,7 +33,8 @@ Stratego_AG =																		\
 	cond-03.str																		\
 	propagation.str																\
 	terms-01.str																	\
-	terms-02.str
+	terms-02.str																	\
+	rewrite-01.str
 
 
 $(TESTS): $(srcdir)/check.sh
