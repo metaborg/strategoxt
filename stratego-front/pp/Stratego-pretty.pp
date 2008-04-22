@@ -279,8 +279,6 @@
    LabeledId                                          -- H hs=0 [_1 KW["."] _2],
    Root                                               -- KW["root"],
    Local                                              -- KW["local"],
-   NewTree                                            -- KW["new"],
-   OldTree                                            -- KW["old"],
    TermLabel                                          -- _1,
 
    PropaNoStrat                                       -- H [KW["@"] _1 _2],

@@ -1006,16 +1006,10 @@ rules
     LabeledId(label, i) -> |[ H hs=0 [~label KW["."] ~i] ]|
 
   stratego-to-abox :
-    Root -> KW["root"]
+    Root() -> KW["root"]
 
   stratego-to-abox :
-    Local -> KW["local"]
-
-  stratego-to-abox :
-    NewTree -> KW["new"]
-
-  stratego-to-abox :
-    OldTree -> KW["old"]
+    Local() -> KW["local"]
 
   stratego-to-abox :
     TermLabel(label) -> label

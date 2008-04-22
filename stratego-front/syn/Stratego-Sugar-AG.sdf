@@ -36,8 +36,6 @@ exports
 
     "root"                              -> TermLabel {cons("Root")}
     "local"                             -> TermLabel {cons("Local")}
-    "new"                               -> TermLabel {cons("NewTree")}
-    "old"                               -> TermLabel {cons("OldTree")}
     Id                                  -> TermLabel {cons("TermLabel"),avoid}
 
 
