@@ -248,7 +248,8 @@
    OpInj.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
 
    AGMatch                                            -- _1,
-   AGRewrite                                          -- H [_1 KW["->"] _2],
+   AGRewriteNoCond                                    -- H [_1 KW["->"] _2],
+   AGRewrite                                          -- V is=2 [H [_1 KW["->"] _2] H [KW["where"] _3]],
 
    Attributes                                         -- V is=2 [KW["attributes"] _1],
    Attributes.1:iter-star                             -- _1,
@@ -283,7 +284,7 @@
    TermLabel                                          -- _1,
 
    PropaNoStrat                                       -- H [KW["@"] _1 _2],
-   Propa                                              -- V is=2 [H [KW["@"] _1 _2 KW["="] _3]],
+   Propa                                              -- V is=2 [H [KW["@"] _1 _2 KW["="]] _3],
 
    DefaultValue                                       -- KW["default-value"],
    BU                                                 -- KW["bottom-up"],

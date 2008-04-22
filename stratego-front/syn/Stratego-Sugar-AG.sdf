@@ -6,7 +6,8 @@ imports
 exports
   context-free syntax
     Term                                -> AGTerm {cons("AGMatch")}
-    Term "->" Term                      -> AGTerm {cons("AGRewrite")}
+    Term "->" Term                      -> AGTerm {cons("AGRewriteNoCond")}
+    Term "->" Term "where" Strategy     -> AGTerm {cons("AGRewrite")}
 
 
     "@" AGTerm ":" AttrDef*                  -> SRDef  {cons("SemanticRulesNoCond")}

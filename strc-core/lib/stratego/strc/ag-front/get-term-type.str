@@ -46,7 +46,7 @@ rules
 
   // Those are not terms !
   GetTermType: AGMatch(t) -> <GetTermType> t
-  GetTermType: AGRewrite(f,t) -> <err(|"AGRewrite is not yet handle by GetTermType."); GetTermType> t
+  GetTermType: AGRewrite(f,t,c) -> <err(|"AGRewrite is not yet handle by GetTermType."); GetTermType> t
 
   get-term-type =
     GetTermType

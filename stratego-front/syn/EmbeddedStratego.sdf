@@ -28,7 +28,7 @@ exports
 
               "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
     "AttrDef" "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
-    "PropDef" "|[" PropDef "]|" -> E1 {cons("ToTerm")}
+    "AGTerm"  "|[" AGTerm  "]|" -> E1 {cons("ToTerm")}
 
              "|[" Rule      "]|" -> E1 {cons("ToTerm")}
     "Rule"   "|[" Rule      "]|" -> E1 {cons("ToTerm")}

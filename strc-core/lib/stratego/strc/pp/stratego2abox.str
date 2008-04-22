@@ -929,8 +929,10 @@ rules
    AGMatch(t) -> t
 
   stratego-to-abox :
-   AGRewrite(lhs, rhs) -> |[ H [~lhs KW["->"] ~rhs] ]|
+   AGRewriteNoCond(lhs, rhs) -> H [~lhs KW["->"] ~rhs]
 
+  stratego-to-abox :
+   AGRewrite(lhs, rhs, cond) -> V is=2 [H [~lhs KW["->"] ~rhs] H [KW["where"] ~cond]]
 
 
   stratego-to-abox :
@@ -947,6 +949,12 @@ rules
         ~*decl
       ]
     ]|
+
+  stratego-to-abox :
+    PropaNoStrat(path, var) -> |[ H [KW["@"] ~path ~var] ]|
+
+  stratego-to-abox :
+    Propa(path, var, s) -> |[ V is =2 [H [KW["@"] ~path ~var KW["="]] ~s] ]|
 
 rules
   stratego-to-abox :
@@ -1011,6 +1019,21 @@ rules
 
   stratego-to-abox :
     TermLabel(label) -> label
+
+  stratego-to-abox :
+    DefaultValue() -> KW["default-value"]
+
+  stratego-to-abox :
+    BU() -> KW["bottom-up"]
+
+  stratego-to-abox :
+    TD() -> KW["top-down"]
+
+  stratego-to-abox :
+    LR() -> KW["left-to-right"]
+
+  stratego-to-abox :
+    RL() -> KW["right-to-left"]
 
 /**
  * Rewrites a list of boxes to a single box, where the elements are
