@@ -5,12 +5,11 @@ imports
 
 exports
   context-free syntax
-    Term                                -> AGTerm {cons("AGMatch")}
-    Term "->" Term                      -> AGTerm {cons("AGRewriteNoCond")}
-    Term "->" Term "where" Strategy     -> AGTerm {cons("AGRewrite")}
+    Term                                -> AGMatch {cons("AGMatchNoCond")}
+    Term "where" Strategy               -> AGMatch {cons("AGMatch")}
+    {AGMatch "->"}+                     -> AGTerm  {cons("AGTerm")}
 
-
-    "@" AGTerm ":" AttrDef*                  -> SRDef  {cons("SemanticRulesNoCond")}
+    "@" AGTerm ":" AttrDef*                  -> SRDef {cons("SemanticRulesNoCond")}
     "@" AGTerm ":" "where" Strategy AttrDef* -> SRDef {cons("SemanticRules")}
 
 

@@ -926,13 +926,13 @@ rules
 // AG extension
 rules
   stratego-to-abox :
-   AGMatch(t) -> t
+   AGMatch(t, c) -> V is=2 [~t H [KW["where"] ~c]]
 
   stratego-to-abox :
-   AGRewriteNoCond(lhs, rhs) -> H [~lhs KW["->"] ~rhs]
+   AGMatchNoCond(t) -> t
 
   stratego-to-abox :
-   AGRewrite(lhs, rhs, cond) -> V is=2 [H [~lhs KW["->"] ~rhs] H [KW["where"] ~cond]]
+   AGTerm(agt*) -> <separate-by-arrow> agt*
 
 
   stratego-to-abox :
@@ -1077,6 +1077,17 @@ rules
          ?[b1 | <x>]
        ; ?b2
        ; !H hs=1 [H hs=1 [b1 "*"] b2]
+       }
+    )
+
+  separate-by-arrow =
+    rec x(
+      ?[<id>]
+    <+ \ [] -> H hs=0 [] \
+    <+ {b1, b2:
+         ?[b1 | <x>]
+       ; ?b2
+       ; !V is=0 [H [b1 "->"] b2]
        }
     )
 

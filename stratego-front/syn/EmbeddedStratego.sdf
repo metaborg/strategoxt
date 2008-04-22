@@ -28,6 +28,7 @@ exports
 
               "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
     "AttrDef" "|[" AttrDef "]|" -> E1 {cons("ToTerm")}
+    "AGMatch" "|[" AGMatch "]|" -> E1 {cons("ToTerm")}
     "AGTerm"  "|[" AGTerm  "]|" -> E1 {cons("ToTerm")}
 
              "|[" Rule      "]|" -> E1 {cons("ToTerm")}
@@ -55,6 +56,8 @@ exports
     "~"         E2 -> {ID   ","}+      {cons("FromTerm")}
 
     "~"         E2 -> AGTerm           {cons("FromTerm")}
+    "~m:"       E2 -> AGMatch          {cons("FromTerm")}
+    "~m*:"      E2 -> {AGMatch "->"}+  {cons("FromTerm")}
     "~li:"      E2 -> LabeledId        {cons("FromTerm")}
     "~lid:"     E2 -> LabeledIdDef     {cons("FromTerm")}
     "~lic:"     E2 -> LabeledIdCall    {cons("FromTerm")}

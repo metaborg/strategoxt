@@ -92,7 +92,6 @@ exports
     "some" 		-> Keyword
     "sorts" 		-> Keyword
     "strategies" 	-> Keyword
-    "attributes" 	-> Keyword
     "stratego" 		-> Keyword
     "test" 		-> Keyword
     "where" 		-> Keyword

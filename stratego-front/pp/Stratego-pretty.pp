@@ -247,9 +247,10 @@
    OpInj                                              -- KW["("] _1 KW[")"] KW["("] _2 KW[")"],
    OpInj.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
 
-   AGMatch                                            -- _1,
-   AGRewriteNoCond                                    -- H [_1 KW["->"] _2],
-   AGRewrite                                          -- V is=2 [H [_1 KW["->"] _2] H [KW["where"] _3]],
+   AGMatch                                            -- V is=2 [_1 H[KW["where"] _2]],
+   AGMatchNoCond                                      -- _1,
+   AGTerm                                             -- _1,
+   AGTerm.1:iter-sep                                  -- _1 KW["->"],
 
    Attributes                                         -- V is=2 [KW["attributes"] _1],
    Attributes.1:iter-star                             -- _1,
