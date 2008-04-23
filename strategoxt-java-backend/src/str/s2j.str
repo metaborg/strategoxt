@@ -5,7 +5,7 @@
  * @author Eelco Visser
  */
 module s2j
-imports 
+imports
   Stratego-Core 
   libstratego-lib
   Java-15 
@@ -42,7 +42,12 @@ rules
      private static void preInit() {
        ~*cnst-inits
      }
-     
+
+	 public static String testMain(String input) {
+	    preInit();
+        return main_0_0.instance.apply(Runtime.termFactory.parseFromString(input));
+     }
+        
 	 public static void main(String args[]) {
 	    preInit();
 	    IStrategoTerm zz = Runtime.prepareCLIArgs(args);
