@@ -29,9 +29,9 @@ public class LanguageTestSuite extends TestCase {
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		
 		Class<?> c = cl.loadClass(testFile);
-		Method m = c.getMethod("testFail", String.class, String.class);
+		Method m = c.getMethod("testMain", String.class);
 		
 		Object s = m.invoke(null, from);
-		
+		assertNull(s);
 	}
 }
