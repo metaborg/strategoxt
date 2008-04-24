@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = str
+SUBDIRS           = str test
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 

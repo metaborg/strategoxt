@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: strc_java
+Bundle-SymbolicName: strc_java
+Bundle-Version: 1.0.0
+Export-Package: org.strategoxt,
+ org.strategoxt.compiler.tests,
+ org.strategoxt.lang,
+ org.strategoxt.lang.terms,
+ org.strategoxt.lang.terms.aterms
+Require-Bundle: org.spoofax.aterm

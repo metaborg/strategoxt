@@ -19,7 +19,7 @@ public class LanguageTestSuite extends TestCase {
 		
 		Object s = m.invoke(null, from);
 		ATermFactory af = new PureFactory();
-		System.out.println("result = " + s);
+		System.out.println("result = " + s + ", expected = " + to);
 		ATerm got = af.parse((String)s);
 		ATerm wanted = af.parse(to);
 		assertTrue(got.equals(wanted));
@@ -28,7 +28,7 @@ public class LanguageTestSuite extends TestCase {
 	protected void fail(String testFile, String from) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		
-		Class<?> c = cl.loadClass(testFile);
+		Class<?> c = cl.loadClass("org.strategoxt.compiler.tests.cases." + testFile);
 		Method m = c.getMethod("testMain", String.class);
 		
 		Object s = m.invoke(null, from);

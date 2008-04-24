@@ -128,3 +128,14 @@ AC_DEFUN([XT_USE_JDK], [
   AC_SUBST([JAVAC])
   AC_SUBST([JAR])
 ])
+
+# Check for the Stratego Language test suite
+AC_DEFUN([XT_USE_LANGUAGE_TESTS],
+[
+  AC_ARG_WITH([language-tests],
+    [AS_HELP_STRING([--with-language-tests=DIR], [use Stratego language tests at DIR @<:@find with pkg-config@:>@])],
+    [LANGUAGE_TESTS=$withval])
+
+  AC_SUBST([LANGUAGE_TESTS])
+])
+

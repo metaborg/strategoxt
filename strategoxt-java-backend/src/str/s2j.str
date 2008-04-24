@@ -25,6 +25,7 @@ rules
   compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
      |[ 
+     package org.strategoxt.compiler.tests.cases;
      
      import org.strategoxt.lang.Runtime;
      import org.strategoxt.lang.Strategy; 
@@ -34,18 +35,21 @@ rules
      import static org.strategoxt.lang.Runtime.termFactory;
      import static org.strategoxt.lang.Term.nonNull;
      import static org.strategoxt.lang.Term.checkTermList;
+     import static org.strategoxt.lang.Term.matchConstructor;
      		
      public class Main {
 
      ~*cnst-decls
+     ~*cnstr-decls
      
      private static void preInit() {
        ~*cnst-inits
+       ~*cnstr-inits
      }
 
 	 public static String testMain(String input) {
 	    preInit();
-        return main_0_0.instance.apply(Runtime.termFactory.parseFromString(input));
+        return main_0_0.instance.apply(Runtime.termFactory.parseFromString(input)).toString();
      }
         
 	 public static void main(String args[]) {
@@ -65,7 +69,10 @@ rules
      }
      ]|
      where 
-        <map(translate-definition)> defs => function-defs
+        alltd(Translate)
+      ; <map(translate-definition)> defs => function-defs
+      ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
+      ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
       ; cnst-decls    := <bagof-Fragment> "ConstDecl"
       ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
 
@@ -120,7 +127,7 @@ strategies
   translate-Scope(|S, F) : 
   Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy(|S,F)> e]))
   where prelude(|"translate-Scope") ;
-    <map(\ x -> bstm |[ IStrategoTerm x ; ]| \)> vars => vars'
+    <map(\ x -> bstm |[ IStrategoTerm x = null; ]| \)> vars => vars'
     
   /** @type Id -> Stm */
   translate-Id(|S,F) :
@@ -217,12 +224,14 @@ strategies
     <+ translate-Scope(|S,F)
     <+ translate-Match(|S,F)
     <+ translate-Let(|S,F) 
+    <+ fail
        ) ; debug(!"translated ")
   
   translate-Let(|S,F): 
   Let(defs, body) -> Block(<conc> (defs', [<translate-strategy(|S,F)> body]))
   where
       prelude(|"translate-Let")
+    ; debug
     ; <map(translate-definition)> defs => defs'
  
   
@@ -338,8 +347,9 @@ rules
 
 strategies
     
-  is-ListOp =
-    ?Op("Nil", []) + ?Op("Cons", [_, _])
+  is-ListOp = ?Op("Nil", []) + ?Op("Cons", [_, _])
+
+  is-TupleOp = ?Op("", _)
 
   proper-list =
     Op("Nil", [])
@@ -365,26 +375,26 @@ rules
     expr|[ 
       termFactory.makeInt(~expr:<mk-int-const> i)
     ]|
-    where prelude(|"ConstructTerm - Int")
+  where prelude(|"ConstructTerm - Int")
 
   ConstructTerm :
     Real(x) -> 
     expr|[ 
       termFactory.makeReal(~expr:Lit(Float(<try(real-to-string)> x)))
     ]|
-    where prelude(|"ConstructTerm - Real")
+  where prelude(|"ConstructTerm - Real")
 
   ConstructTerm :
     Str(x) -> 
     expr|[ 
       termFactory.makeString(~expr:Lit(String([Chars(<escape> x)])))
     ]|
-    where prelude(|"ConstructTerm - Str")
+  where prelude(|"ConstructTerm - Str")
 
   ConstructVar :
     x@Var(_){} -> e
-    where prelude(|"ConstructVar") ;
-      <VarToReadRef> x => e
+  where prelude(|"ConstructVar") ;
+        <VarToReadRef> x => e
       ; debug(!"var to read ref: ")
 
   ConstructAnnoVar :
@@ -392,44 +402,46 @@ rules
     expr|[ 
       termFactory.setAnnotations(~expr:e, ~expr:<construct-term> pt2)
     ]|
-    where prelude(|"ConstructAnnoVar") ; 
-      <ConstructVar> Var(x) => e
+  where prelude(|"ConstructAnnoVar") ; 
+        <ConstructVar> Var(x) => e
 
   ConstructTerm :
     Anno(pt1, Op("Nil", [])) -> <construct-term> pt1
-    where prelude(|"ConstructTerm - pt1, Op(Nil, )") ; 
-      <not(?Var(_))> pt1
+  where prelude(|"ConstructTerm - pt1, Op(Nil, [])") ; 
+        <not(?Var(_))> pt1
 
   ConstructTerm :
     Anno(pt1, pt2) -> 
     expr|[ 
       termFactory.setAnnotations(~expr:<construct-term> pt1, ~expr:<construct-term> pt2)
     ]|
-    where prelude(|"ConstructTerm - pt1{pt2}") ; 
-          <not(?Op("Nil", []))> pt2
-        ; <not(?Var(_))> pt1
+  where prelude(|"ConstructTerm - pt1{pt2}") ; 
+        <not(?Op("Nil", []))> pt2
+      ; <not(?Var(_))> pt1
 
 //  ConstructTerm :
 //    |[ _ t ]| -> <construct-term> t
 
   ConstructTerm :
-    Op(c, t*) -> 
-    expr|[ 
-      termFactory.makeAppl(
-               ~id:<ConstructorName>(c, <length> t*) 
-               , ~<map(construct-term)> t*
-             )
-    ]|
-    where prelude(|"ConstructTerm - Op(c, t*)") ; 
-      not(is-ListOp)
-
+    Op(c, t*) -> expr|[ termFactory.makeAppl(~*[cn | args]) ]|
+  where prelude(|"ConstructTerm - Op(c, t*)") ; debug ;
+        not(is-ListOp + is-TupleOp)
+      ; cn := ExprName(Id(<ConstructorName> (c, <length> t*)))
+      ; args := <map(construct-term)> t*
+      ; debug(!"not listop")
+    
   ConstructTerm :
     Explode(t1, t2) -> 
     expr|[ 
       SSL_mkterm(~expr:<construct-term> t1, ~expr:<construct-term> t2) 
     ]|
-    where prelude(|"ConstructTerm - Explode")
+  where prelude(|"ConstructTerm - Explode")
 
+  ConstructTerm : 
+    Op("", args) -> expr|[ termFactory.makeTuple(~*args') ]|
+  where prelude(|"ConstructTerm - Op(\"\", [...])") ;
+        <map(construct-term)> args => args'
+    
   ConstructTerm :
     Op("Nil", []) -> expr|[ termFactory.makeList() ]|
   where prelude(|"ConstructTerm - Op(Nil, [])")
@@ -439,8 +451,8 @@ rules
     expr|[ 
       ((IStrategoList)(~expr:e)).prepend(~expr:<construct-term> t1)
     ]|
-    where prelude(|"ConstructTerm - Cons");
-      <construct-term> t2
+  where prelude(|"ConstructTerm - Cons");
+        <construct-term> t2
       ; if <not(Anno(is-ListOp,id))> t2 then 
           check-aterm-list 
         else
@@ -454,13 +466,14 @@ rules
 
   check-aterm-list :
     e -> expr|[ (IStrategoList)~id:x ]|
-    where prelude(|"check-aterm-list")
-    ; !Id(<newname> "trm") => x
-	; FailureLabel => F
-	; !(bstm|[ IStrategoList ~id:x; ]|, 
-        bstm*|[ ~id:x = checkTermList((IStrategoList)~expr:e);
-                if(~id:x == null) ~stm:<Goto> F ]|) => stms
-	; rules( CheckList :+ _ -> stms )
+  where prelude(|"check-aterm-list") ;
+       !Id(<newname> "trm") => x
+	 ; FailureLabel => F
+	 ; stms := 
+	     (bstm |[ IStrategoList ~id:x; ]|, 
+          bstm*|[ ~id:x = checkTermList((IStrategoList)~expr:e);
+                  if(~id:x == null) ~stm:<Goto> F ]|)
+     ; rules( CheckList :+ _ -> stms )
 
   CastATerm :
     e -> expr|[ (IStrategoTerm) ~expr:e ]|
@@ -471,20 +484,19 @@ rules
   UncastATerm :
     expr|[ (IStrategoTerm)~expr:e ]| -> e
 
-
   VarToReadRef : 
-    Var(x){} -> expr|[ x ]|
+    Var(x){} -> ExprName(Id(x))
 
   VarToReadRef :
-    Var(x){Frames([])} -> expr|[ x ]|
+    Var(x){Frames([])} -> ExprName(Id(x))
 
   VarToReadRef :
-    Var(x){Offset(i), Frames([])} -> expr|[ x ]|
+    Var(x){Offset(i), Frames([])} -> ExprName(Id(x))
 
   VarToReadRef : 
     Var(x){Offset(i), Frames(frames)} -> 
     expr|[ sl_readvar(~expr:<mk-int-const> i, ~expr:sl) ]|
-    where <not([]); frames-to-static-link> frames => sl
+  where <not([]); frames-to-static-link> frames => sl
 
 signature
   constructors
@@ -502,9 +514,10 @@ strategies
     ; fragment(InitConstructorQ <+ InitConstructor|"ConstructorInit")
 
   DeclareConstructor :
-    OpDecl(c, t) -> bstm|[ Symbol ~id:csym; ]|
-    where <Arity> t => n
-        ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
+    OpDecl(c, t) -> class-body-dec|[ static IStrategoConstructor ~id:Id(csym); ]|
+    where prelude(|"DeclareConstructor") ;
+          <Arity> t => n
+        ; csym := <concat-strings> ["sym_", <cify> c, "_", <int-to-string> n]
         ; rules(ConstructorName : (c, n) -> csym)
 
   Arity : 
@@ -527,12 +540,11 @@ strategies
   InitConstructor :
     OpDecl(c, t) ->
     bstm*|[
-      ~id:csym = ATmakeSymbol(~expr:Lit(String([Chars(<double-quote> c)])), 
-                              ~expr:<mk-int-const> ar, 
-                              ATfalse);
+      ~id:csym = termFactory.makeConstructor(~expr:Lit(String([Chars(c)])), 
+                                             ~expr:<mk-int-const> ar);
     ]|
     where ar   := <Arity> t
-        ; csym := <ConstructorName> (c, ar)
+        ; csym := Id(<ConstructorName> (c, ar))
 
 /* ================================ Match */
 strategies
@@ -577,31 +589,32 @@ strategies
   translate-Match(|S,F) :
     Match(Var(x){"(un)bound"}, trm) ->
     stm|[ 
-      if( ~expr:e1 == NULL )
+      if( ~expr:e1 == null )
         { 
           ~e2 = ~expr:trm; 
           ~stm:<Goto> S
         }
-      else if( ~expr:e1 != ~expr:trm )
+      else if( !(~expr:e1).equals(~expr:trm) )
         ~stm:<Goto> F
       else
         ~stm:<Goto> S
     ]|
     where prelude(|"translate-Match - Match(Var(x){(un)bound})");
-      <VarToReadRef> x => e1
-	; <VarToWriteRef> x => e2
+      e1 := <VarToReadRef> Var(x)
+	; e2 := <VarToWriteRef ; ?ExprName(<id>)> Var(x)
+	; <debug> (e1, e2)
 
   VarToWriteRef :
-    x{} -> expr|[ x ]|
+    Var(x){} -> ExprName(Id(x))
 
   VarToWriteRef :
-    x{Frames([])} -> expr|[ x ]|
+    Var(x){Frames([])} -> ExprName(Id(x))
 
   VarToWriteRef : 
-    x{Offset(i), Frames([])} -> expr|[ x ]|
+    Var(x){Offset(i), Frames([])} -> ExprName(Id(x))
 
   VarToWriteRef : 
-    x{Offset(i), Frames(frames)} -> 
+    Var(x){Offset(i), Frames(frames)} -> 
     expr|[ sl_readvar(~expr:<mk-int-const> i, ~expr:sl) ]|
     where <not([]); frames-to-static-link> frames => sl
 
@@ -690,7 +703,7 @@ strategies
   translate-Match(|S,F) :
     Match(op@Op(c, ts), trm) ->
     stm|[
-      if( match_cons(~expr:trm, ~id:cname) )
+      if( matchConstructor(~expr:trm, ~id:cname) )
         { 
           ~bstm*:match-args
           ~stm:<Goto> S
@@ -700,11 +713,11 @@ strategies
     ]|
   where prelude(|"translate-Match - Match(Op)");
        <not(is-ListOp)> op
-     ; <ConstructorName> (c, <length> ts) => cname
+     ; cname := Id(<ConstructorName> (c, <length> ts))
      ; <thread-map(\ (t,i) ->
              (
                <MatchArg1(|Next(),F) <+ MatchArg2(|Next(),F)> 
-                  (t, expr|[ ATgetArgument(~expr:trm,~expr:<mk-int-const> i) ]|)
+                  (t, expr|[ ((IStrategoAppl)~expr:trm).getSubterm(~expr:<mk-int-const> i) ]|)
              , <add>(i, 1)
              )
            \ )> (ts,0) => (match-args,_)

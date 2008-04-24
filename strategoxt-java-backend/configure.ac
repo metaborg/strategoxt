@@ -14,13 +14,14 @@ XT_PRE_RELEASE
 
 XT_USE_XT_PACKAGES
 XT_USE_JAVA_FRONT
-XT_USE_JDK
+#XT_USE_JDK
 XT_TERM_DEFINE 
+XT_USE_LANGUAGE_TESTS
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
-XT_ARG_WITH_JAR([aterm-java],[ATERM],[aterm.jar],[aterm-1.6.jar])
+#XT_ARG_WITH_JAR([aterm-java],[ATERM],[aterm.jar],[aterm-1.6.jar])
 
 ### OUTPUT #############################
 AC_CONFIG_FILES([
@@ -28,6 +29,8 @@ AC_CONFIG_FILES([
   syn/Makefile
   src/Makefile
   src/str/Makefile
+  src/test/Makefile
   xtc/Makefile
+  tests/Makefile
 ])
 AC_OUTPUT
