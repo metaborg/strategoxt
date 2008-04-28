@@ -5,7 +5,7 @@ JAVAFILES  = $(patsubst %.ctree,%.java,$(TESTFILES))
 
 nobase_pkgdata_DATA = $(JAVAFILES)
 
-%.java : %.ctree
+%.java : %.ctree ../str/s2j
 	../str/s2j -i $< | pp-java -o $@
 
 x:

@@ -32,6 +32,7 @@ public class LanguageTestSuite extends TestCase {
 		Method m = c.getMethod("testMain", String.class);
 		
 		Object s = m.invoke(null, from);
+		System.out.println("result = " + s + ", expected = null");
 		assertNull(s);
 	}
 }
