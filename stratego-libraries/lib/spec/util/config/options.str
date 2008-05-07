@@ -284,9 +284,12 @@ strategies
    * @type List(String) -> _
    */
   report-failure =
+    report-failure(exit)
+  
+  report-failure(exit) =
       ?stacktrace
     ; report-run-time
-    ; <fprintnl> (stderr(), [<whoami> (), ": rewriting failed, trace:"])
+    ; <fprintnl> (stderr(), [<log-src> (), ": rewriting failed, trace:"])
     ; <reverse ; map(<fprintnl> (stderr(), ["\t", <id>]))> stacktrace
     ; <exit> 1
 

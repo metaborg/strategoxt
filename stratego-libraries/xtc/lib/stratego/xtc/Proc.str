@@ -286,6 +286,8 @@ strategies
         (!FILE(<get-config> "-i") <+ !stdin())
       ; s
       ; xtc-write-output
+      <+ prim("SSL_stacktrace_get_all_frame_names")
+         ; report-failure(xtc-exit)
     )
 
   // stop in the middle of a transformation pipeline, copying the

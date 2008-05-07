@@ -15,7 +15,7 @@ exports
 
   sorts Rule
 
-  sorts StrategyParen StrategyCurly StrategyAngle Mod
+  sorts StrategyParen StrategyCurly StrategyAngle
   context-free syntax
 
     %% Abstraction
