@@ -1,9 +1,9 @@
 include $(top_srcdir)/Makefile.xt
 #include $(wildcard *.dep)
 
-libexec_PROGRAMS = s2j
+libexec_PROGRAMS = s2j backend-simplify foo
 
-LDADD += $(SSL_LIBS)
+LDADD += $(SSL_LIBS) -lstrc 
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../../syn
 
