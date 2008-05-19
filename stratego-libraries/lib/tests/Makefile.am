@@ -8,7 +8,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 STRC=$(prefix)
 
 pkgtestsdatadir  = $(datadir)/stratego-lib/tests
-pkgtestsdata_DATA= $(wildcard *.str)
+pkgtestsdata_DATA= $(call srcwildcard,*.str)
 
 check_PROGRAMS = \
   annotation-test \
@@ -60,7 +60,7 @@ check_PROGRAMS +=  system-posix-test system-posix-xsi-test
 endif
 
 TESTS          	= $(check_PROGRAMS)
-EXTRA_DIST     	= $(wildcard *.str)
+EXTRA_DIST     	= $(call srcwildcard,*.str)
 
 CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)

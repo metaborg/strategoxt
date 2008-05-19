@@ -21,7 +21,7 @@ LIB_STRC = -L$(top_srcdir)/lib -lstrc
 
 CLEANFILES 	 = $(wildcard *.dep)
 
-EXTRA_DIST 	 = $(wildcard *.str)  $(wildcard *.meta)
+EXTRA_DIST 	 = $(call srcwildcard,*.str)  $(call srcwildcard,*.meta)
 
 
 BOOTCLEANFILES 	 = rename-vars.c stratlib-test.c

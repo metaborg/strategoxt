@@ -1,3 +1,3 @@
 include $(top_srcdir)/Makefile.xt
 
-EXTRA_DIST = $(wildcard *.c)
+EXTRA_DIST = $(call srcwildcard,*.c)

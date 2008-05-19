@@ -4,8 +4,8 @@ include $(wildcard *.dep)
 DEFS = rtg.def Stratego-rtg.def
 TBLS = rtg.tbl Stratego-rtg.tbl
 
-sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
-EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
+sdfdata_DATA   = $(TBLS) $(DEFS) $(call srcwildcard,*.sdf)
+EXTRA_DIST     = $(DEFS) $(call srcwildcard,*.sdf)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS)
 

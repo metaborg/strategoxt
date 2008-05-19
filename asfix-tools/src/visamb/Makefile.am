@@ -15,7 +15,7 @@ STRINCLUDES = \
 
 LDADD += $(SSL_LIBS)
 
-EXTRA_DIST 	 = $(wildcard *.str)
+EXTRA_DIST 	 = $(call srcwildcard,*.str)
 BOOTCLEANFILES   = Vis-amb.c
 CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)
 

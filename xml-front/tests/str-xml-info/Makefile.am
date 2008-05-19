@@ -12,7 +12,7 @@ STRINCLUDES    = -I $(XML_FRONT)/share/xml-front \
 
 LDADD         += $(SSL_LIBS)
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.strxml) $(wildcard *.xhtml)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.strxml) $(call srcwildcard,*.xhtml)
 CLEANFILES     = $(wildcard *.dep) $(wildcard *.rtree)
 BOOTCLEANFILES = $(wildcard *.c) 
 

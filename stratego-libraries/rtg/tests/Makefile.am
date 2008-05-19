@@ -13,7 +13,7 @@ dfta_accept_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 dfta_accept_tests_LDADD = $(STRATEGO_RTG_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.rtg)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)

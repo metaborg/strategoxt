@@ -53,4 +53,4 @@ check5 :
 	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c
 
 CLEANFILES = PropStratego.def PropStratego.tbl $(wildcard *.rtree)
-EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)
+EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.sdf)

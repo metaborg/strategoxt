@@ -19,6 +19,6 @@ libexec_PROGRAMS = pack-stratego report-ambs stratego-ensugar \
 		   meta-explode stratego2abox stratego-parenthesize
 
 
-EXTRA_DIST      = $(wildcard *.str) strcflags
+EXTRA_DIST      = $(call srcwildcard,*.str) strcflags
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)

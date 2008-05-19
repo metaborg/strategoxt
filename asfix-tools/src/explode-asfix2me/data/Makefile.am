@@ -1,4 +1,4 @@
-EXTRA_DIST=$(wildcard *.in) $(wildcard *.correct)
+EXTRA_DIST=$(TESTSET_IN) $(TESTSET_CORRECT)
 
 TESTS = test1.sh test2.sh test3.sh test4.sh test5.sh test6.sh \
 	test7.sh test8.sh test9.sh test10.sh
@@ -28,5 +28,3 @@ testset: $(TESTSET_IN) $(TESTSET_CORRECT)
 	   echo "diff $*.out $(srcdir)/$*.correct" ;\
 	) > $@ \
 	&& chmod +x $@
-	
-	

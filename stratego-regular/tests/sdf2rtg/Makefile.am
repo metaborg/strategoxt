@@ -17,7 +17,8 @@ SDFINCLUDES    = -I $(top_srcdir)/syn \
 PGEN_FLAGS     = -m $*
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)  $(wildcard *.def)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) \
+  $(call srcwildcard,*.sdf)  $(wildcard *.def)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) Stratego-Sdf2-rtg.tbl

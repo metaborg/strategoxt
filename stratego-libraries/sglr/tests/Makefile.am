@@ -33,7 +33,7 @@ STRCFLAGS = \
   $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
-EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.def) $(wildcard *.exp)
+EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.def) $(call srcwildcard,*.exp)
 CLEANFILES = $(wildcard *.c) $(wildcard *.dep) $(noinst_DATA)
 
 if XT_DIST_CHECK_SOURCES

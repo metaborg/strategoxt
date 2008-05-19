@@ -12,7 +12,7 @@ bin_PROGRAMS = \
 pkgdata_DATA   = xml-xtc-tools.str
 #pkgdata_DATA   = xml-xtc-tools.rtree
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.c) $(pkgdata_DATA)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(wildcard *.c) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
 #xml-xtc-tools.rtree

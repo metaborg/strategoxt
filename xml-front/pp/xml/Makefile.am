@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 pkgdata_DATA   = xml-doc.pp.af
 libexec_PROGRAMS   = xml-doc2abox 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA) xml-doc.pp
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(pkgdata_DATA) xml-doc.pp
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) xml-doc.pp.af
 

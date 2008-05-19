@@ -136,43 +136,84 @@ AC_SUBST([STRATEGO_UNINSTALLED_LIBS],['$(STRATEGO_LIB_UNINSTALLED_LIBS) $(STRATE
 
 AC_CONFIG_FILES([
   Makefile
+])
 
+AC_CONFIG_FILES([
   build-tools/Makefile
+])
 
+AC_CONFIG_FILES([
   stratego-sglr.pc
   sglr/Makefile
   sglr/justsglr/Makefile
   sglr/lib/Makefile
   sglr/tests/Makefile
+],[
+  AS_MKDIR_P(sglr/lib/native)
+  AS_MKDIR_P(sglr/lib/stratego/sdf)
+  AS_MKDIR_P(sglr/lib/stratego/asfix/implode)
+  AS_MKDIR_P(sglr/lib/stratego/sglr)
+  AS_MKDIR_P(sglr/lib/stratego/error-support)
+  AS_MKDIR_P(sglr/lib/stratego/concrete-syntax)
+])
 
+AC_CONFIG_FILES([
   stratego-gpp.pc
   gpp/Makefile
   gpp/lib/Makefile
   gpp/tests/Makefile
+],[
+  AS_MKDIR_P(gpp/lib/stratego/gpp)
+])
 
+AC_CONFIG_FILES([
   stratego-rtg.pc
   rtg/Makefile
   rtg/lib/Makefile
   rtg/tests/Makefile
+],[
+  AS_MKDIR_P(rtg/lib/stratego/rtg)
+])
 
+AC_CONFIG_FILES([
   stratego-sdf.pc
   sdf/Makefile
   sdf/lib/Makefile
+],[
+  AS_MKDIR_P(sdf/lib/stratego/sdf)
+])
 
+AC_CONFIG_FILES([
   stratego-xtc.pc
   xtc/Makefile
   xtc/lib/Makefile
   xtc/tests/Makefile
+],[
+  AS_MKDIR_P(xtc/tests)
+  AS_MKDIR_P(xtc/lib/stratego/xtc/posix-xsi)
+  AS_MKDIR_P(xtc/lib/stratego/xtc/c99)
+  AS_MKDIR_P(xtc/lib/stratego/xtc/posix)
+])
 
+AC_CONFIG_FILES([
   stratego-tool-doc.pc
   tool-doc/Makefile
   tool-doc/lib/Makefile
+],[
+  AS_MKDIR_P(tool-doc/lib/stratego/tool-doc)
+])
 
+AC_CONFIG_FILES([
   stratego-aterm.pc
   aterm/Makefile
   aterm/lib/Makefile
   aterm/tests/Makefile
+],[
+  AS_MKDIR_P(aterm/tests)
+  AS_MKDIR_P(aterm/lib/stratego/aterm)
+])
 
+AC_CONFIG_FILES([
   stratego-lib.pc
   lib/Makefile
   lib/ssl-compat/Makefile
@@ -183,10 +224,42 @@ AC_CONFIG_FILES([
   lib/tests/dynamic-rules/Makefile
   lib/tests/dynamic-rules/til/Makefile
   lib/tests/dynamic-rules/til/syn/Makefile
+],[
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/opt)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/renaming)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/til-eblock)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/typestate)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/sig)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/til-goto)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/sim)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/pp)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/syn)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/run)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/tc)
+  AS_MKDIR_P(lib/tests/dynamic-rules/til/xmpl)
+  AS_MKDIR_P(lib/ssl-compat)
+  AS_MKDIR_P(lib/native/stratego-lib)
+  AS_MKDIR_P(lib/spec/util/config)
+  AS_MKDIR_P(lib/spec/collection/list)
+  AS_MKDIR_P(lib/spec/collection/hash-table)
+  AS_MKDIR_P(lib/spec/collection/tuple)
+  AS_MKDIR_P(lib/spec/collection/set)
+  AS_MKDIR_P(lib/spec/term)
+  AS_MKDIR_P(lib/spec/system/posix-xsi)
+  AS_MKDIR_P(lib/spec/system/io)
+  AS_MKDIR_P(lib/spec/system/c99)
+  AS_MKDIR_P(lib/spec/system/posix)
+  AS_MKDIR_P(lib/spec/strategy/pack)
+  AS_MKDIR_P(lib/spec/strategy/general)
+  AS_MKDIR_P(lib/spec/strategy/traversal)
+  AS_MKDIR_P(lib/spec/lang)
+])
 
+AC_CONFIG_FILES([
   stratego-runtime.pc
   runtime/Makefile
   runtime/lib/Makefile
   runtime/lib/srts/Makefile
 ])
+
 AC_OUTPUT

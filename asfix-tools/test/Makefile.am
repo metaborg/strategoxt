@@ -4,7 +4,7 @@ STRINCLUDES = \
   -I $(top_srcdir)/sig \
   -I $(top_srcdir)/lib
 
-EXTRA_DIST   	= $(wildcard *.str)
+EXTRA_DIST   	= $(call srcwildcard,*.str)
 check_PROGRAMS 	= asfix-abstractions-test
 TESTS 		= asfix-abstractions-test
 BOOTCLEANFILES 	= asfix-abstractions-test.c

@@ -4,10 +4,10 @@ include $(wildcard *.dep)
 TBLS = Box.tbl Stratego-Box.tbl 
 DEFS = Box.def Stratego-Box.def
 
-sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
+sdfdata_DATA   = $(TBLS) $(DEFS) $(call srcwildcard,*.sdf)
 pkgdata_DATA   = Box.pp Box.pp.af
 
-EXTRA_DIST     = $(DEFS) $(wildcard *.sdf) $(pkgdata_DATA)
+EXTRA_DIST     = $(DEFS) $(call srcwildcard,*.sdf) $(pkgdata_DATA)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) Box.pp.af
 

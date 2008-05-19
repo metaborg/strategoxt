@@ -10,7 +10,7 @@ explode_implode_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 explode_implode_tests_LDADD = $(STRATEGO_ATERM_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 

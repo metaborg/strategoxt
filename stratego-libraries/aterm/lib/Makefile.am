@@ -12,7 +12,7 @@ EXTRA_DIST = $(atermlib) $(atermlib:.str=.rtree) libstratego-aterm.rtree
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-aterm.rtree libstratego-aterm.c $(atermlib:.str=.rtree)
 
-atermlib = stratego-aterm.str $(wildcard stratego/aterm/*.str)
+atermlib = stratego-aterm.str $(call srcwildcard,stratego/aterm/*.str)
 
 libstratego_aterm_la_SOURCES = libstratego-aterm.c
 libstratego_aterm_la_CFLAGS   = $(AM_CFLAGS)

@@ -10,6 +10,14 @@
 #
 ###########################################################
 #
+# Gnu Make Macros
+#
+
+pathwildcard = $(patsubst $1/%,%,$(wildcard $(patsubst %,$1/%,$2)))
+srcwildcard = $(call pathwildcard,$(srcdir),$1)
+
+###########################################################
+#
 # Variables
 #
 

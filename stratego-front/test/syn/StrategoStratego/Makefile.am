@@ -11,7 +11,7 @@ PARSE_UNIT_PTABLE = StrategoStrategoForTesting.tbl
 
 check_DATA = StrategoStrategoForTesting.tbl
 CLEANFILES = StrategoStrategoForTesting.def StrategoStrategoForTesting.tbl
-EXTRA_DIST = StrategoStrategoForTesting.sdf $(wildcard *.testsuite)
+EXTRA_DIST = StrategoStrategoForTesting.sdf $(call srcwildcard,*.testsuite)
 
 SDFINCLUDES = -Idef $(top_builddir)/syn/StrategoStratego.def
 PGEN_FLAGS  = -m $*

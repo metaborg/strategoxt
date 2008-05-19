@@ -14,16 +14,16 @@ libstratego_sglr_la_SOURCES = \
 
 sglrlib = \
   stratego-sglr.str \
-  $(wildcard stratego/asfix/*.str) \
-  $(wildcard stratego/asfix/implode/*.str) \
-  $(wildcard stratego/concrete-syntax/*.str) \
-  $(wildcard stratego/error-support/*.str) \
-  $(wildcard stratego/sdf/*.str) \
-  $(wildcard stratego/sglr/*.str)
+  $(call srcwildcard,stratego/asfix/*.str) \
+  $(call srcwildcard,stratego/asfix/implode/*.str) \
+  $(call srcwildcard,stratego/concrete-syntax/*.str) \
+  $(call srcwildcard,stratego/error-support/*.str) \
+  $(call srcwildcard,stratego/sdf/*.str) \
+  $(call srcwildcard,stratego/sglr/*.str)
 
 EXTRA_DIST = \
   $(sglrlib) $(sglrlib:.str=.rtree) $(nobase_data_DATA) \
-  $(wildcard native/*.h) $(wildcard native/*.c)
+  $(call srcwildcard,native/*.h) $(call srcwildcard,native/*.c)
 
 CLEANFILES = $(wildcard *.dep) libstratego-sglr.rtree libstratego-sglr.c $(sglrlib:.str=.rtree)
 

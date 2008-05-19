@@ -78,23 +78,23 @@ fullstrategolib = \
   stratego-lib-c99.str \
   stratego-lib-posix.str \
   stratego-lib-posix-xsi.str \
-  $(wildcard collection/*.str) \
-  $(wildcard collection/hash-table/*.str) \
-  $(wildcard collection/list/*.str) \
-  $(wildcard collection/set/*.str) \
-  $(wildcard collection/tuple/*.str) \
-  $(wildcard lang/*.str) \
-  $(wildcard strategy/*.str) \
-  $(wildcard strategy/general/*.str) \
-  $(wildcard strategy/pack/*.str) \
-  $(wildcard strategy/traversal/*.str) \
-  $(wildcard strategy/general*.str) \
-  $(wildcard system/*.str) \
-  $(wildcard system/io/*.str) \
-  $(wildcard system/c99/*.str) \
-  $(wildcard system/posix/*.str) \
-  $(wildcard system/posix-xsi/*.str) \
-  $(wildcard term/*.str) \
-  $(wildcard strategy/general*.str) \
-  $(wildcard util/*.str) \
-  $(wildcard util/config/*.str)
+  $(call srcwildcard,collection/*.str) \
+  $(call srcwildcard,collection/hash-table/*.str) \
+  $(call srcwildcard,collection/list/*.str) \
+  $(call srcwildcard,collection/set/*.str) \
+  $(call srcwildcard,collection/tuple/*.str) \
+  $(call srcwildcard,lang/*.str) \
+  $(call srcwildcard,strategy/*.str) \
+  $(call srcwildcard,strategy/general/*.str) \
+  $(call srcwildcard,strategy/pack/*.str) \
+  $(call srcwildcard,strategy/traversal/*.str) \
+  $(call srcwildcard,strategy/general*.str) \
+  $(call srcwildcard,system/*.str) \
+  $(call srcwildcard,system/io/*.str) \
+  $(call srcwildcard,system/c99/*.str) \
+  $(call srcwildcard,system/posix/*.str) \
+  $(call srcwildcard,system/posix-xsi/*.str) \
+  $(call srcwildcard,term/*.str) \
+  $(call srcwildcard,strategy/general*.str) \
+  $(call srcwildcard,util/*.str) \
+  $(call srcwildcard,util/config/*.str)

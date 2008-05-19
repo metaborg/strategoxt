@@ -10,7 +10,7 @@ STRINCLUDES = -I $(top_srcdir)/pp $(STRATEGO_RTG_STRCFLAGS)
 check_PROGRAMS = rtg-ppfix-tests
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 

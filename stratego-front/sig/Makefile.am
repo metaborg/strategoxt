@@ -38,9 +38,9 @@ BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree) \
 
 pkgdata_DATA    = $(signatures:.str=.rtree)
 EXTRA_DIST      = \
-  $(wildcard *.rtg-script) \
+  $(call srcwildcard,*.rtg-script) \
   Cong.rtg \
-  $(wildcard *.str) \
+  $(call srcwildcard,*.str) \
   $(wildcard *.rtree) \
   $(pkgdata_DATA) \
   Stratego.def

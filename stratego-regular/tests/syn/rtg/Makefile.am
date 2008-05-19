@@ -3,13 +3,10 @@ include $(top_srcdir)/tests/syn/Makefile.parse-unit
 
 SUBDIRS           = rtgs
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST        = $(wildcard *.testsuite)
+EXTRA_DIST        = $(TESTSUITES)
 
-TESTSUITES = \
-  rtgs.testsuite \
-  tree.testsuite \
-  nonterms.testsuite
+TESTSUITES = $(call srcwildcard,*.testsuite)
 
-PARSE_UNIT_PTABLE = $(top_srcdir)/syn/rtg.tbl
+PARSE_UNIT_PTABLE = $(top_builddir)/syn/rtg.tbl
 
 installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)

@@ -8,7 +8,7 @@ EXTRA_DIST = $(rtglib) $(rtglib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = rtg-aterm.c libstratego-rtg.rtree libstratego-rtg.c $(rtglib:.str=.rtree)
 
-rtglib = stratego-rtg.str $(wildcard stratego/rtg/*.str)
+rtglib = stratego-rtg.str $(call srcwildcard,stratego/rtg/*.str)
 
 libstratego_rtg_la_SOURCES = libstratego-rtg.c rtg-aterm.c libstratego-rtg-native.c
 libstratego_rtg_la_CFLAGS   = $(AM_CFLAGS)

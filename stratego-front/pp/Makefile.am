@@ -19,12 +19,11 @@ BOOTCLEANFILES = $(wildcard *.af) $(wildcard *.c)		    \
 		 Stratego.pp.af Stratego-Sugar.pp Stratego-Core.pp  \
                  Stratego.def Stratego-Core.def Stratego-Sugar.def
 
-EXTRA_DIST 	=						    \
-		$(wildcard *.pp)				    \
-		$(wildcard *.pp.af)				    \
-		$(wildcard *.str)				    \
-		$(wildcard *.c)					    \
-		$(wildcard *.h.in) 
+EXTRA_DIST 	= \
+		$(call srcwildcard,*.pp) \
+		$(wildcard *.pp.af) \
+		$(call srcwildcard,*.str) \
+		$(wildcard *.c)
 
 Stratego.def : 
 	rm -f $@

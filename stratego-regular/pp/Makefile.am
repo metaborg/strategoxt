@@ -5,7 +5,7 @@ pptables    = rtg.pp
 pptables_af = rtg.pp.af
 
 pkgdata_DATA   = $(pptables_af)
-EXTRA_DIST     = $(pptables) $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(pptables) $(pkgdata_DATA) $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(pptables_af) $(wildcard *.c) $(wildcard *.rtree)
 

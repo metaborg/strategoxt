@@ -4,10 +4,10 @@ include $(wildcard *.dep)
 DEFS = C.def Stratego-C.def Stratego-Stratego-C.def Stratego-Sugar-and-C-in-Stratego.def
 TBLS = C.tbl Stratego-C.tbl Stratego-Stratego-C.tbl Stratego-Sugar-and-C-in-Stratego.tbl
 
-sdfdata_DATA 	= $(TBLS) $(DEFS) $(wildcard *.sdf)
+sdfdata_DATA 	= $(TBLS) $(DEFS) $(call srcwildcard,*.sdf)
 CLEANFILES	= $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES	= $(DEFS)
-EXTRA_DIST   	= $(DEFS) $(wildcard *.sdf)
+EXTRA_DIST   	= $(DEFS) $(call srcwildcard,*.sdf)
 
 SDFINCLUDES  	= -I $(top_srcdir)/../stratego-front/syn
 PGEN_FLAGS   	= -m $*

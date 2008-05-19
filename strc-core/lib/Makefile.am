@@ -10,17 +10,17 @@ BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(gpplib:.str=.rtree) # stratego/strc
 
 strclib =						\
 	strc.str					\
-	$(wildcard $(srcdir)/stratego/strc/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/front/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/c/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/lib/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/match/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/opt/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/pack/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/pp/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/parse/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/strc/*.str)	\
-	$(wildcard $(srcdir)/stratego/strc/model/*.str)	\
+	$(call srcwildcard,stratego/strc/*.str)	\
+	$(call srcwildcard,stratego/strc/front/*.str)	\
+	$(call srcwildcard,stratego/strc/c/*.str)	\
+	$(call srcwildcard,stratego/strc/lib/*.str)	\
+	$(call srcwildcard,stratego/strc/match/*.str)	\
+	$(call srcwildcard,stratego/strc/opt/*.str)	\
+	$(call srcwildcard,stratego/strc/pack/*.str)	\
+	$(call srcwildcard,stratego/strc/pp/*.str)	\
+	$(call srcwildcard,stratego/strc/parse/*.str)	\
+	$(call srcwildcard,stratego/strc/strc/*.str)	\
+	$(call srcwildcard,stratego/strc/model/*.str)	\
 	stratego/strc/pp/stratego-parenthesize.str
 
 libstrc_la_SOURCES  = libstrc.c libstrc-native.c

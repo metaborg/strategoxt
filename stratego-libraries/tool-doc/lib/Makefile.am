@@ -13,7 +13,7 @@ EXTRA_DIST = $(tooldoclib) $(tooldoclib:.str=.rtree) libstratego-tool-doc.rtree
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-tool-doc.rtree libstratego-tool-doc.c $(tooldoclib:.str=.rtree)
 
-tooldoclib = stratego-tool-doc.str $(wildcard stratego/tool-doc/*.str)
+tooldoclib = stratego-tool-doc.str $(call srcwildcard,stratego/tool-doc/*.str)
 
 libstratego_tool_doc_la_SOURCES = libstratego-tool-doc.c
 libstratego_tool_doc_la_CFLAGS   = $(AM_CFLAGS)

@@ -27,7 +27,7 @@ CLEANFILES 	 = *.dep $(TESTS)
 #matrix-test 
 # 		   match-to-matrix-test
 
-EXTRA_DIST 	 = $(wildcard *.str)
+EXTRA_DIST 	 = $(call srcwildcard,*.str)
 
 BOOTCLEANFILES 	 = compile-match.c desugar-case.c
 

@@ -1,6 +1,6 @@
 PARSE=XTC_REPOSITORY="$(BUILD_REPOSITORY)" $(XTC)/bin/xtc call parse-stratego
 PP=XTC_REPOSITORY="$(BUILD_REPOSITORY)" $(XTC)/bin/xtc call pp-stratego
-FILES=$(wildcard *.str)
+FILES=$(call srcwildcard,*.str)
 
 EXTRA_DIST = $(FILES)
 

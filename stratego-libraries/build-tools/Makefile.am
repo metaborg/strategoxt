@@ -10,7 +10,7 @@ cgen_aterm_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
   $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
   -I $(top_srcdir)/lib/native
 
-EXTRA_DIST     = cgen-aterm.rtree $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = cgen-aterm.rtree $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
 

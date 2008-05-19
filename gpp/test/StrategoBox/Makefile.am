@@ -6,7 +6,7 @@ PARSE_UNIT_PTABLE = Main.tbl
 
 check_DATA = Main.tbl
 CLEANFILES = Main.def Main.tbl
-EXTRA_DIST = Main.sdf $(wildcard *.testsuite)
+EXTRA_DIST = Main.sdf $(call srcwildcard,*.testsuite)
 
 SDFINCLUDES = -Idef $(top_builddir)/syn/box/Stratego-Box.def
 

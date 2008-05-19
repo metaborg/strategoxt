@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 TBL = Stratego-Sdf2-tests
 
-EXTRA_DIST = $(wildcard *.testsuite) $(TBL).sdf
+EXTRA_DIST = $(call srcwildcard,*.testsuite) $(TBL).sdf
 TESTSUITES = symbols.testsuite
 
 check : $(TESTSUITES:.testsuite=.runtestsuite)

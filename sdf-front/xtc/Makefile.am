@@ -12,6 +12,6 @@ STRINCLUDES = \
 
 LDADD         += $(SSL_LIBS)
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtree) 
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(wildcard *.rtree) 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree) 

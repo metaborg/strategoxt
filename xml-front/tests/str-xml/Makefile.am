@@ -9,7 +9,7 @@ SCFLAGS       = --main main-$*
 STRINCLUDES   = -I $(top_srcdir)/sig/xml \
                 -I $(top_srcdir)/syn/xml
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 

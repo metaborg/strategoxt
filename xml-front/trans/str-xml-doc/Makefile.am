@@ -13,6 +13,6 @@ STRINCLUDES = \
 
 LDADD += $(SSL_LIBS) 
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)

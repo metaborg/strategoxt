@@ -81,7 +81,7 @@ TESTS 		 = use-def-test
 #frontend-test 
 #extract-test
 
-EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST 	 = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 
 nodist_use_def_test_SOURCES = use-def-test.c
 use_def_test_LDADD = $(LIB_STRC) $(SSL_LIBS)

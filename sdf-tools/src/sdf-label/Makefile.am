@@ -10,4 +10,4 @@ CLEANFILES  	 = $(wildcard *.dep)
 SCFLAGS     = --main io-$*
 STRINCLUDES = -I $(ASFIX_TOOLS)/share/asfix-tools
 
-EXTRA_DIST  = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST  = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)

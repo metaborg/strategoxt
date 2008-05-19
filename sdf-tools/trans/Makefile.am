@@ -13,7 +13,7 @@ STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(top_builddir)/../sdf-front/syn \
                 -I $(SDF_FRONT)/share/sdf-front
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 

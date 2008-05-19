@@ -10,7 +10,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 check_PROGRAMS  = dr-scope-tests dr-propconst-tests-1 dr-propconst-tests-2 dr-dce-tests dr-varunion-tests
 TESTS          	= $(check_PROGRAMS)
-EXTRA_DIST     	= $(wildcard *.str)
+EXTRA_DIST     	= $(call srcwildcard,*.str)
 CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 

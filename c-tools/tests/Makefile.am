@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS           = translation-units
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST        = $(wildcard *.testsuite)
+EXTRA_DIST        = $(call srcwildcard,*.testsuite)
 
 TESTSUITES = \
   translation-units.testsuite \

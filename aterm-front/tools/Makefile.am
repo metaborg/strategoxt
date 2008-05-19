@@ -7,7 +7,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 bin_PROGRAMS     = pp-aterm map-aterm
 libexec_PROGRAMS = explode-aterm implode-aterm
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
 

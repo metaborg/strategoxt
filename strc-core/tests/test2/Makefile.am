@@ -30,7 +30,7 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
 		  *.dep *.c *.out
 
-EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) prop.res
+EXTRA_DIST 	= $(call srcwildcard,*.str) $(call srcwildcard,*.meta) prop.res
 
 include $(srcdir)/../test1/make-rules
 include $(wildcard *.dep)

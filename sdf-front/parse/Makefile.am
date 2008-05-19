@@ -13,7 +13,7 @@ STRINCLUDES = \
   -I $(top_builddir)/../aterm-front/syn \
   $(STRATEGO_ATERM_STRCFLAGS)
 
-EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
+EXTRA_DIST       = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(pkgdata_DATA)
 CLEANFILES       = $(wildcard *.dep)
 BOOTCLEANFILES   = $(wildcard *.c) pack-sdf-options.rtree
 

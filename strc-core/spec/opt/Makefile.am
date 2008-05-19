@@ -68,4 +68,4 @@ TESTS 		 = bound-unbound-vars-test canonicalize-ng-test
 
 CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = $(wildcard *.c)
-EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST 	 = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)

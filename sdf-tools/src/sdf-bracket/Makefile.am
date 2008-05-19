@@ -9,7 +9,7 @@ BOOTCLEANFILES 	 = sdf-bracket.c
 # TESTS        	 = sdf_bracket_check
 CLEANFILES  	 = sdf_bracket_check $(wildcard *.dep)
 
-EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
+EXTRA_DIST 	 = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) 
 
 SCFLAGS     =  --main io-$*
 STRINCLUDES = \

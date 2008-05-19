@@ -9,7 +9,7 @@ libexec_PROGRAMS = \
 EXTRA_DIST = \
   Sdf2.pp $(pkgdata_DATA) \
   core-sdf-parenthesize.str \
-  $(wildcard *.meta)
+  $(call srcwildcard,*.meta)
 
 CLEANFILES = $(wildcard *.dep)
 

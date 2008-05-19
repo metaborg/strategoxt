@@ -16,7 +16,7 @@ ast2text_tests_LDADD     = $(STRATEGO_GPP_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALL
 ast2text_tests_CPPFLAGS  = $(STRATEGO_UNINSTALLED_CFLAGS)
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.pp)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.pp)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 

@@ -11,7 +11,7 @@ LDADD         += $(SSL_LIBS)
 SCFLAGS       = --main main-$* 
 STRINCLUDES   = -I $(top_srcdir)/sig/xml-info 
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 

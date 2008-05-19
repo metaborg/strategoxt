@@ -20,4 +20,4 @@ asfix_anno_comments_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = visamb.c visamb.pp.af implode-asfix.c sglri.c
-EXTRA_DIST     = $(wildcard *.str) visamb.pp visamb.pp.af
+EXTRA_DIST     = $(call srcwildcard,*.str) visamb.pp visamb.pp.af

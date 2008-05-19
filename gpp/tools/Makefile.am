@@ -21,7 +21,7 @@ STRINCLUDES = -I $(XTC)/share/xtc \
               -I $(SDF_TOOLS)/share/sdf-tools \
               $(STRATEGO_GPP_STRCFLAGS)
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
 

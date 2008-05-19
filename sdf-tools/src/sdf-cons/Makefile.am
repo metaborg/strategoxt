@@ -8,7 +8,7 @@ libexec_PROGRAMS = sdf-cons sdf-rm-cons
 BOOTCLEANFILES 	 = sdf-cons.c sdf-rm-cons.c
 LDADD           += $(SSL_LIBS)
 
-EXTRA_DIST  	 = KNOWN-BUGS $(wildcard *.str) $(wildcard *.meta) 
+EXTRA_DIST  	 = KNOWN-BUGS $(call srcwildcard,*.str) $(call srcwildcard,*.meta) 
 
 TESTS         	 = sdf_cons_check sdf_cons_injections_check 
 CLEANFILES  	 = sdf_cons_check sdf_cons_injections_check $(wildcard *.dep)

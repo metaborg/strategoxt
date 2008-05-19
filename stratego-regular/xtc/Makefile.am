@@ -50,6 +50,6 @@ LDADD += \
 
 pkgdata_DATA   = regular-xtc-tools.str tool-doc.str Makefile.regular
 
-EXTRA_DIST     = $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(pkgdata_DATA) $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 

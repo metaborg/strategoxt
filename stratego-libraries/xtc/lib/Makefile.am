@@ -68,7 +68,7 @@ fullstrategoxtc = \
   stratego-xtc-c99.str \
   stratego-xtc-posix.str \
   stratego-xtc-posix-xsi.str \
-  $(wildcard stratego/xtc/*.str) \
-  $(wildcard stratego/xtc/c99/*.str) \
-  $(wildcard stratego/xtc/posix/*.str) \
-  $(wildcard stratego/xtc/posix-xsi/*.str)
+  $(call srcwildcard,stratego/xtc/*.str) \
+  $(call srcwildcard,stratego/xtc/c99/*.str) \
+  $(call srcwildcard,stratego/xtc/posix/*.str) \
+  $(call srcwildcard,stratego/xtc/posix-xsi/*.str)

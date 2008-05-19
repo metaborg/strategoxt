@@ -8,7 +8,7 @@ EXTRA_DIST = $(gpplib) $(gpplib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-gpp.rtree libstratego-gpp.c $(gpplib:.str=.rtree)
 
-gpplib = stratego-gpp.str $(wildcard stratego/gpp/*.str)
+gpplib = stratego-gpp.str $(call srcwildcard,stratego/gpp/*.str)
 
 libstratego_gpp_la_SOURCES = libstratego-gpp.c
 libstratego_gpp_la_CFLAGS   = $(AM_CFLAGS)

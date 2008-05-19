@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-ATERM_FILES = $(wildcard *.aterm)
+ATERM_FILES = $(call srcwildcard,*.aterm)
 EXTRA_DIST  = $(ATERM_FILES)
 
 installcheck-local:

@@ -8,7 +8,7 @@ EXTRA_DIST = $(sdflib) $(sdflib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-sdf.rtree libstratego-sdf.c $(sdflib:.str=.rtree)
 
-sdflib = stratego-sdf.str $(wildcard stratego/sdf/*.str)
+sdflib = stratego-sdf.str $(call srcwildcard,stratego/sdf/*.str)
 
 libstratego_sdf_la_SOURCES = libstratego-sdf.c
 libstratego_sdf_la_CFLAGS   = $(AM_CFLAGS)
