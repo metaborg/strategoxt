@@ -13,5 +13,5 @@ check_DATA = StrategoStrategoForTesting.tbl
 CLEANFILES = StrategoStrategoForTesting.def StrategoStrategoForTesting.tbl
 EXTRA_DIST = StrategoStrategoForTesting.sdf $(wildcard *.testsuite)
 
-SDFINCLUDES = -Idef $(top_srcdir)/syn/StrategoStratego.def
+SDFINCLUDES = -Idef $(top_builddir)/syn/StrategoStratego.def
 PGEN_FLAGS  = -m $*
