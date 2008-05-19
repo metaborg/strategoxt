@@ -63,4 +63,5 @@ install-data-local::
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-tool-doc.la -l $(prefix)/lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.rtree -l $(prefix)/share -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.la -l $(prefix)/lib -V $(VERSION)
+	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstrc.la -l $(prefix)/lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t cc -p $(CC) -V X
