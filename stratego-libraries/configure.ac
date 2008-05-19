@@ -100,8 +100,15 @@ AC_PROG_INSTALL
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
-AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_srcdir)/runtime/lib'])
-AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/runtime/lib/libstratego-runtime.la'])
+if test "$xt_baseline" = "yes"; then
+  AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(STRATEGOXT)/include'])
+  AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(STRATEGOXT)/lib/libstratego-runtime.la'])
+else
+  if test "$xt_uninstalled_baseline" = "yes"; then
+    AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_srcdir)/runtime/lib'])
+    AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/runtime/lib/libstratego-runtime.la'])
+  fi
+fi
 
 AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS],['-I $(top_builddir)/lib/native'])
 AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS],['$(top_builddir)/lib/native/stratego-lib/libstratego-lib-native.la'])

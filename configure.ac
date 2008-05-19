@@ -61,15 +61,35 @@ if test -z "$getopt"; then
 fi
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
+COMPILER_GEN=$srcdir/compiler_generation
+BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
+
+if test -r $BASELINE_GEN then
+  . $BASELINE_GEN
+  xt_baseline_generation=$compiler_generation
+else
+  xt_baseline_generation=0
+fi
+
+. $COMPILER_GEN
+xt_compiler_generation=$compiler_generation
+xt_minimal_generation=$baseline_generation
+xt_lib_first = $modify_library
+
+AC_MSG_CHECKING([check if the compiler can be bootstrap])
+if $modify_library && $modify_compiler then
+  AC_MSG_RESULT([no])
+  exit 1
+fi
+AC_MSG_RESULT([yes])
+
 AC_MSG_CHECKING([check baseline compiler generation])
 if test "$xt_gencheck" = "yes"; then
   AC_MSG_RESULT([yes])
-  SOURCE_GEN=$srcdir/compiler_generation
-  BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
   AC_MSG_CHECKING([identical compiler generation])
-  if \! test -r $BASELINE_GEN -a "$(cat $BASELINE_GEN)" = "$(cat SOURCE_GEN)"; then
+  if test $xt_compiler_generation -ne $xt_baseline_generation; then
     AC_MSG_RESULT([no])
-    xt_bootstrap="yes"
+    xt_bootstrap = "yes"
   else
     AC_MSG_RESULT([yes])
   fi
@@ -77,9 +97,39 @@ else
   AC_MSG_RESULT([no])
 fi
 
+if test "$xt_bootstrap" = "yes"; then
+  AC_MSG_CHECKING([can bootstrap])
+  if test $xt_minimal_generation -leq $xt_baseline_generation; then
+    AC_MSG_CHECKING([yes])
+  else
+    AC_MSG_CHECKING([no])
+    exit 1
+  fi
+fi
+
 AC_MSG_CHECKING([in which order to build subpackages])
 
-BPKGS="stratego-front asfix-tools gpp c-tools strc-core concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+LIB_PKGS  = "stratego-libraries"
+STRC_PKGS = "xtc stratego-front asfix-tools gpp c-tools strc-core"
+BASE_PKGS = "concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+# should care about the bootstrap variable.
+if test "$xt_bootstrap" = "yes"; then
+  if $xt_lib_first; then
+    PKGS="autoxt $LIB_PKGS $STRC_PKGS $LIB_PKGS $BASE_PKGS"
+  else
+    PKGS="autoxt $STRC_PKGS $LIB_PKGS $STRC_PKGS $BASE_PKGS"
+  fi
+else
+  PKGS="autoxt $LIB_PKGS $STRC_PKGS $BASE_PKGS"
+
+  # subpackages should pick up the -uninstalled pkgconfig descriptions.
+  PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export PKG_CONFIG_PATH
+fi
+LIBARGS="--enable-uninstalled-baseline"
+
+# old -*-*-*-*-*-*-*-*-*-*- old
+BPKGS= $STRC_PKGS $BASE_PKGS
 # should care about the bootstrap variable.
 if test "$xt_baseline" = "yes"; then
   PKGS="autoxt xtc $BPKGS stratego-libraries"

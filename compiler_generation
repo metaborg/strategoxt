@@ -1,1 +1,23 @@
-1000
+# -*- Sh -*-
+
+# Bootstrap the compiler in case of a different compiler
+# generation. The compiler generation should be incremented if the
+# generated C code of the baseline compiler is not compatible with the
+# generated C code of the new compiler or if the compiler depends on
+# features added in a library.
+compiler_generation = 17700
+
+# Minimal compiler generation that could be used to bootstrap the
+# current source.
+baseline_generation = 0
+
+# Modifications summary:
+# - library, true only if a library modification is required for the
+#   new compiler.
+# - compiler, true only if a compiler modification modified the
+#   generated C code.
+#
+# Only one of them can be true. This variables are used to determine
+# the compilation order.
+modify_library = false
+modify_compiler = false
