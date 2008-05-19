@@ -43,17 +43,13 @@ libstrc_la_LIBADD = \
   $(ATERM_LIBS)	\
   $(top_builddir)/../c-tools$(USE_STAGE)/pp/libc-pp.la
 
-STRINCLUDES      =																			\
-  -I $(top_srcdir)/lib																	\
-  -I $(top_builddir)/lib																\
-  -I $(top_srcdir)/../stratego-front/syn								\
-  -I $(top_srcdir)/../stratego-front/sig								\
-  -I $(top_srcdir)/../c-tools/syn												\
-  -I $(top_srcdir)/../c-tools/sig												\
-  -I $(top_builddir)/../stratego-front$(USE_STAGE)/syn	\
-  -I $(top_builddir)/../stratego-front$(USE_STAGE)/sig	\
-  -I $(top_builddir)/../c-tools$(USE_STAGE)/syn					\
-  -I $(top_builddir)/../c-tools$(USE_STAGE)/sig					\
+STRINCLUDES = \
+  -I $(top_srcdir)/lib \
+  -I $(top_builddir)/lib \
+  -I $(top_builddir)/../stratego-front$(USE_STAGE)/syn \
+  -I $(top_builddir)/../stratego-front$(USE_STAGE)/sig \
+  -I $(top_builddir)/../c-tools$(USE_STAGE)/syn \
+  -I $(top_builddir)/../c-tools$(USE_STAGE)/sig \
   -I $(GPP)/share/sdf/gpp
 
 
