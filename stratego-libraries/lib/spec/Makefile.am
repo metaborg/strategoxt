@@ -18,7 +18,6 @@ alllibs : $(all_c) $(all_rtree)
 
 libstratego_lib_la_CPPFLAGS = \
   $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
-  $(STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS) \
   $(ATERM_CFLAGS) \
   -I$(top_srcdir)/lib/native
 
@@ -26,7 +25,6 @@ libstratego_lib_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_lib_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_lib_la_LIBADD   = \
   $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) \
-  $(STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS) \
   $(ATERM_LIBS)
 
 if XT_STD_C99
