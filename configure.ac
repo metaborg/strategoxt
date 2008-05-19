@@ -29,6 +29,16 @@ AC_ARG_WITH([strategoxt],
    xt_baseline="no"
   ])
 
+AC_ARG_ENABLE([bootstrap],
+  [AS_HELP_STRING([--enable-bootstrap], [Enable the bootstrap of the compiler @<:@no@:>@])],
+  [xt_bootstrap="$enableval"],
+  [xt_bootstrap="no"])
+
+AC_ARG_ENABLE([generation-check],
+  [AS_HELP_STRING([--enable-generation-check], [Enable a generation check @<:@yes@:>@])],
+  [xt_gencheck="$enableval"],
+  [xt_gencheck="yes"])
+
 AC_MSG_CHECKING([whether a baseline Stratego/XT is used])
 if test "$xt_baseline" = "yes"; then
   AC_MSG_RESULT([yes])
@@ -51,10 +61,26 @@ if test -z "$getopt"; then
 fi
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
+AC_MSG_CHECKING([check baseline compiler generation])
+if test "$xt_gencheck" = "yes"; then
+  AC_MSG_RESULT([yes])
+  SOURCE_GEN=$srcdir/compiler_generation
+  BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
+  AC_MSG_CHECKING([identical compiler generation])
+  if \! test -r $BASELINE_GEN -a "$(cat $BASELINE_GEN)" = "$(cat SOURCE_GEN)"; then
+    AC_MSG_RESULT([no])
+    xt_bootstrap="yes"
+  else
+    AC_MSG_RESULT([yes])
+  fi
+else
+  AC_MSG_RESULT([no])
+fi
+
 AC_MSG_CHECKING([in which order to build subpackages])
 
 BPKGS="stratego-front asfix-tools gpp c-tools strc-core concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
-
+# should care about the bootstrap variable.
 if test "$xt_baseline" = "yes"; then
   PKGS="autoxt xtc $BPKGS stratego-libraries"
   LIBARGS="--enable-baseline"

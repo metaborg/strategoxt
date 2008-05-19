@@ -20,6 +20,9 @@ EXTRA_DIST   = \
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = strategoxt.pc
 
+# Identify the generation of the Stratego compiler.
+pkgdata_DATA = compiler_generation
+
 relname:
 	echo -n $(distdir) > relname
 
