@@ -4,7 +4,7 @@ if [ -z "$(which automake | grep .nix-profile)" ] ; then
 
         # Automake not provided by Nix; try to find suitable native one.
 
-	if [ -f /etc/gentoo-release ] ; then 
+	if [ -f /etc/gentoo-release ] ; then
 		# Environment variables for our Gentoo friends.
 		export WANT_AUTOMAKE="1.8"
 		export WANT_AUTOCONF="2.59"
@@ -58,7 +58,7 @@ PKGS="autoxt xtc strc-core gpp c-tools concrete-syntax \
 
 cp ./config/autoxt.m4 stratego-libraries/config
 for dir in $PKGS
-do 
+do
   echo
   echo "bootstrap: bootstrapping in $dir"
   echo
@@ -66,11 +66,11 @@ do
   if test "$dir" != "autoxt"
   then
     rm -f Makefile.xt
-    cp ../Makefile.xt . 
+    cp ../Makefile.xt .
   fi
   if test -e "../svn-revision"
   then
-    rm -f 
+    rm -f
     cp ../svn-revision .
   fi
   autoreconf -ifv || exit 1
