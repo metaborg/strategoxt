@@ -29,6 +29,38 @@ AC_CONFIG_FILES([
   tests/test2/Makefile 
   tests/testneg/Makefile
   tests/test-strc/Makefile
+],[
+  AS_MKDIR_P(lib/stratego/strc/parse)
+  AS_MKDIR_P(lib/stratego/strc/match)
+  AS_MKDIR_P(lib/stratego/strc/opt)
+  AS_MKDIR_P(lib/stratego/strc/front)
+  AS_MKDIR_P(lib/stratego/strc/strc)
+  AS_MKDIR_P(lib/stratego/strc/c)
+  AS_MKDIR_P(lib/stratego/strc/lib)
+  AS_MKDIR_P(lib/stratego/strc/model)
+  AS_MKDIR_P(lib/stratego/strc/pack)
+  AS_MKDIR_P(lib/stratego/strc/pp)
+
+  AS_MKDIR_P(tools)
+
+  AS_MKDIR_P(spec/testneg)
+  AS_MKDIR_P(spec/test2)
+  AS_MKDIR_P(spec/match/data)
+  AS_MKDIR_P(spec/opt)
+  AS_MKDIR_P(spec/front/data)
+  AS_MKDIR_P(spec/front/attic)
+  AS_MKDIR_P(spec/strc)
+  AS_MKDIR_P(spec/c)
+  AS_MKDIR_P(spec/lib)
+  AS_MKDIR_P(spec/test-strc)
+  AS_MKDIR_P(spec/pack)
+  AS_MKDIR_P(spec/test1)
+
+  AS_MKDIR_P(tests/testneg)
+  AS_MKDIR_P(tests/test2)
+  AS_MKDIR_P(tests/test-strc)
+  AS_MKDIR_P(tests/test1)
+  AS_MKDIR_P(tests/unit)
 ])
 
 #  tests/unit/Makefile
