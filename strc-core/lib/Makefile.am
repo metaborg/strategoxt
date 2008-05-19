@@ -2,9 +2,6 @@ include $(top_srcdir)/Makefile.xt
 #include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
-# FIXME: move this line elsewhere
-USE_STAGE=@USE_STAGE@
-
 nobase_data_DATA = libstrc.rtree libstrc.ctree
 lib_LTLIBRARIES  = libstrc.la
 EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)

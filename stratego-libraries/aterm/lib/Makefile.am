@@ -27,8 +27,6 @@ STRCFLAGS = \
   $(STRATEGO_GPP_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
-# FIXME: move this line elsewhere
-USE_STAGE=@USE_STAGE@
 STRINCLUDES = -I $(top_srcdir)/../aterm-front/syn -I $(top_builddir)/../gpp$(USE_STAGE)/syn/box
 
 libstratego-aterm.rtree libstratego-aterm.c : $(atermlib:.str=.rtree) 

@@ -11,8 +11,6 @@ EXTRA_DIST     = $(DEFS) $(wildcard *.sdf) $(pkgdata_DATA)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) Box.pp.af
 
-# FIXME: move this line elsewhere
-USE_STAGE=@USE_STAGE@
 SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn \
                  -I $(top_builddir)/../stratego-front$(USE_STAGE)/syn
 PGEN_FLAGS     = -m $*
