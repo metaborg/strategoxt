@@ -76,6 +76,7 @@ xt_compiler_generation=$compiler_generation
 xt_minimal_generation=$baseline_generation
 xt_lib_first=$modify_library
 
+
 AC_MSG_CHECKING([check if the compiler can be bootstrap])
 if $modify_library && $modify_compiler; then
   AC_MSG_RESULT([no])
@@ -89,7 +90,7 @@ if test "$xt_gencheck" = "yes"; then
   AC_MSG_CHECKING([identical compiler generation])
   if test $xt_compiler_generation -ne $xt_baseline_generation; then
     AC_MSG_RESULT([no])
-    xt_bootstrap = "yes"
+    xt_bootstrap="yes"
   else
     AC_MSG_RESULT([yes])
   fi
@@ -99,10 +100,10 @@ fi
 
 if test "$xt_bootstrap" = "yes"; then
   AC_MSG_CHECKING([can bootstrap])
-  if test $xt_minimal_generation -leq $xt_baseline_generation; then
-    AC_MSG_CHECKING([yes])
+  if test "$xt_minimal_generation" -le "$xt_baseline_generation"; then
+    AC_MSG_RESULT([yes])
   else
-    AC_MSG_CHECKING([no])
+    AC_MSG_RESULT([no])
     exit 1
   fi
 fi
@@ -116,6 +117,9 @@ BASE_PKGS="concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-re
 STAGE1_LIB_PKGS=""
 STAGE1_STRC_PKGS=""
 STAGE1_PKGNAMES=""
+STAGE1_SUFFIX="-stage1"
+
+STAGE2_SUFFIX=""
 # should care about the bootstrap variable.
 if test "$xt_bootstrap" = "yes"; then
   STAGE1_STRC_PKGS=$STRC_PKGS
@@ -123,7 +127,7 @@ if test "$xt_bootstrap" = "yes"; then
     STAGE1_LIB_PKGS=$LIB_PKGS
   fi
   for subpkgname in $STAGE1_LIB_PKGS $STAGE1_STRC_PKGS; do
-    STAGE1_PKGNAMES="$STAGE1_PKGNAMES ${subpkgname}-stage1"
+    STAGE1_PKGNAMES="$STAGE1_PKGNAMES $subpkgname$STAGE1_SUFFIX"
   done
 fi
 
@@ -131,6 +135,8 @@ PKGS="autoxt $STAGE1_PKGNAMES $LIB_PKGS $STRC_PKGS $BASE_PKGS"
 
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])
+AC_SUBST([STAGE1_SUFFIX])
+AC_SUBST([STAGE2_SUFFIX])
 
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
@@ -139,44 +145,70 @@ AC_CONFIG_FILES([
   manpages/Makefile
   strategoxt.spec
   strategoxt.pc
-  stratego-runtime-uninstalled.pc
-  stratego-lib-uninstalled.pc
-  stratego-xtc-uninstalled.pc
-  stratego-sglr-uninstalled.pc
-  stratego-gpp-uninstalled.pc
-  stratego-rtg-uninstalled.pc
-  stratego-sdf-uninstalled.pc
-  stratego-tool-doc-uninstalled.pc
-  stratego-aterm-uninstalled.pc
-  xtc-uninstalled.pc
 ])
+
+AC_CONFIG_FILES([
+  stratego-runtime-uninstalled.pc:stage2.pc.in:stratego-runtime-uninstalled.pc.in
+  stratego-lib-native-uninstalled.pc:stage2.pc.in:stratego-lib-uninstalled.pc.in
+  stratego-lib-uninstalled.pc:stage2.pc.in:stratego-lib-uninstalled.pc.in
+  stratego-xtc-uninstalled.pc:stage2.pc.in:stratego-xtc-uninstalled.pc.in
+  stratego-sglr-uninstalled.pc:stage2.pc.in:stratego-sglr-uninstalled.pc.in
+  stratego-gpp-uninstalled.pc:stage2.pc.in:stratego-gpp-uninstalled.pc.in
+  stratego-rtg-uninstalled.pc:stage2.pc.in:stratego-rtg-uninstalled.pc.in
+  stratego-sdf-uninstalled.pc:stage2.pc.in:stratego-sdf-uninstalled.pc.in
+  stratego-tool-doc-uninstalled.pc:stage2.pc.in:stratego-tool-doc-uninstalled.pc.in
+  stratego-aterm-uninstalled.pc:stage2.pc.in:stratego-aterm-uninstalled.pc.in
+  xtc-uninstalled.pc:stage2.pc.in:xtc-uninstalled.pc.in
+])
+
+if test "$xt_bootstrap" = "yes"; then
+  AC_CONFIG_FILES([
+    stratego-runtime-stage1-uninstalled.pc:stage1.pc.in:stratego-runtime-uninstalled.pc.in
+    stratego-lib-native-stage1-uninstalled.pc:stage1.pc.in:stratego-lib-uninstalled.pc.in
+    stratego-lib-stage1-uninstalled.pc:stage1.pc.in:stratego-lib-uninstalled.pc.in
+    stratego-xtc-stage1-uninstalled.pc:stage1.pc.in:stratego-xtc-uninstalled.pc.in
+    stratego-sglr-stage1-uninstalled.pc:stage1.pc.in:stratego-sglr-uninstalled.pc.in
+    stratego-gpp-stage1-uninstalled.pc:stage1.pc.in:stratego-gpp-uninstalled.pc.in
+    stratego-rtg-stage1-uninstalled.pc:stage1.pc.in:stratego-rtg-uninstalled.pc.in
+    stratego-sdf-stage1-uninstalled.pc:stage1.pc.in:stratego-sdf-uninstalled.pc.in
+    stratego-tool-doc-stage1-uninstalled.pc:stage1.pc.in:stratego-tool-doc-uninstalled.pc.in
+    stratego-aterm-stage1-uninstalled.pc:stage1.pc.in:stratego-aterm-uninstalled.pc.in
+    xtc-stage1-uninstalled.pc:stage1.pc.in:xtc-uninstalled.pc.in
+  ])
+fi
+
 AC_OUTPUT
 
 ### CONFIGURE SUBPACKAGES #####################################
 AB_CONFIG_PKG(autoxt, )
 
+STAGE1_ARGS=""
+USE_STAGE_ARG=""
 if test "$xt_bootstrap" = "yes"; then
   if $xt_lib_first; then
-    AB_CONFIG_PKG_SUFFIX("$STAGE1_LIB_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} --enable-baseline)
-    STAGE1_ARGS="--enable-baseline --with-lib-stage1-builddir"
-  else
-    STAGE1_ARGS="--enable-baseline"
+    AB_CONFIG_PKG_SUFFIX("$STAGE1_LIB_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} --enable-baseline $STAGE1_ARGS)
   fi
+  STAGE1_ARGS="--enable-baseline $STAGE1_ARGS"
+  USE_STAGE_ARG="--with-use-stage=-stage1"
 
-  AB_CONFIG_PKG_SUFFIX("$STAGE1_STRC_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE1_ARGS)
+  AB_CONFIG_PKG_SUFFIX("$STAGE1_STRC_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE1_ARGS $USE_STAGE_ARG)
 
   # subpackages should pick up the stage1 pkgconfig descriptions.
   PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
 
   # FIXME: Should specify the pathes in the build-dir (strc-core-stage1 ...)
-  STAGE2_ARGS="--with-stage1-builddir"
+  STAGE2_ARGS=""
+  USE_STAGE_ARG="--with-use-stage=-stage1"
 else
   STAGE2_ARGS="--enable-baseline"
 fi
 
 # FIXME: STAGE2_ARGS are not handled yet
-AB_CONFIG_PKG("$LIB_PKGS",  --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
+AB_CONFIG_PKG("$LIB_PKGS",  --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS $USE_STAGE_ARG)
+
+# stage 2
+USE_STAGE_ARG="--with-use-stage="
 
 AB_CONFIG_PKG("$STRC_PKGS", --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
 

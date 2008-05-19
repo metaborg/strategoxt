@@ -3,6 +3,5 @@ prefix=@prefix@
 Name: Stratego Library
 Description: Standard library for Stratego
 Version: @PACKAGE_VERSION@
-Libs: -L@abs_top_builddir@/stratego-libraries/lib/native/stratego-lib -L@abs_top_builddir@/stratego-libraries/lib/spec -lstratego-lib -lstratego-lib-native
-Cflags: -I@abs_top_builddir@/stratego-libraries/lib/native
-Requires: aterm stratego-runtime
+Libs: -L@abs_top_builddir@/stratego-libraries${stage}/lib/spec -lstratego-lib
+Requires: aterm stratego-runtime${stage} stratego-lib-native${stage}

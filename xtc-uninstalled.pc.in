@@ -4,5 +4,5 @@ xtc=@abs_top_builddir@/xtc/src/xtc
 Name: XTC
 Description: Transformation Tool Composition
 Version: @PACKAGE_VERSION@
-Requires: stratego-lib
-Libs: -L@abs_top_builddir@/stratego-libraries/xtc/lib -lstratego-xtc
+Requires: stratego-lib${stage}
+Libs: -L@abs_top_builddir@/stratego-libraries${stage}/xtc/lib -lstratego-xtc

@@ -3,5 +3,5 @@ prefix=@prefix@
 Name: Stratego SDF Library
 Description: Stratego SDF Library.
 Version: @PACKAGE_VERSION@
-Libs: @abs_top_builddir@/stratego-libraries/sdf/lib/libstratego-sdf.la
-Requires: aterm stratego-runtime stratego-lib stratego-sglr stratego-gpp stratego-aterm
+Libs: @abs_top_builddir@/stratego-libraries${stage}/sdf/lib/libstratego-sdf.la
+Requires: aterm stratego-runtime${stage} stratego-lib${stage} stratego-sglr${stage} stratego-gpp${stage} stratego-aterm${stage}

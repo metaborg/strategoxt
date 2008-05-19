@@ -3,5 +3,5 @@ prefix=@prefix@
 Name: Stratego ATerm Library
 Description: Stratego ATerm Library.
 Version: @PACKAGE_VERSION@
-Libs: @abs_top_builddir@/stratego-libraries/aterm/lib/libstratego-aterm.la
-Requires: aterm stratego-runtime stratego-lib stratego-gpp
+Libs: @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/libstratego-aterm.la
+Requires: aterm stratego-runtime${stage} stratego-lib${stage} stratego-gpp${stage}

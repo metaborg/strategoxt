@@ -24,51 +24,52 @@ AC_ARG_ENABLE([uninstalled-baseline],
   [xt_uninstalled_baseline="$enableval"],
   [xt_uninstalled_baseline="no"])
 
+AC_ARG_WITH([use-stage], [],
+  [USE_STAGE=$withval],
+  [USE_STAGE=])
+AC_SUBST([USE_STAGE])
+
 AM_CONDITIONAL([XT_DIST_CHECK_SOURCES], [test "$xt_baseline" = "yes"])
 
-if test "$xt_baseline" = "yes"; then
-  XT_CHECK_SDF
-  XT_WITH_STRATEGOXT_ARG
-  AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
-  if test "${STRATEGOXT:+set}" = set; then
-    AC_MSG_RESULT([yes])
-  else
-    AC_MSG_RESULT([no])
-    XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
-  fi
-  XT_PKG_STRATEGOXT
-
-  STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
-  BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
-  PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp'
-  SDFTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/sdf-front'
-  SDFPPTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf-front'
-  RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
-  STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
-  STRATEGOBOXTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/Stratego-Box.tbl'
-  SGLRI='$(STRATEGOXT)/bin/sglri'
-  METAEXPLODE='$(STRATEGOXT)/libexec/strc-core/meta-explode'
-  PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
-  RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
-  SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
+XT_CHECK_SDF
+XT_WITH_STRATEGOXT_ARG
+AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
+if test "${STRATEGOXT:+set}" = set; then
+  AC_MSG_RESULT([yes])
 else
-  if test "$xt_uninstalled_baseline" = "yes"; then
-    XT_CHECK_SDF
+  AC_MSG_RESULT([no])
+  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+fi
+XT_PKG_STRATEGOXT
 
-    STRC_UNINSTALLED='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/tools/strc'
-    BOX_UNINSTALLED_STRCFLAGS='-I $(top_builddir)/../gpp/syn/box'
-    PPTABLETBL_UNINSTALLED='$(top_builddir)/../gpp/syn/pp-table'
-    SDFTBL_UNINSTALLED='$(top_builddir)/../sdf-front/syn'
-    SDFPPTBL_UNINSTALLED='$(top_builddir)/../sdf-front/pp'
-    RTGTBL_UNINSTALLED='$(top_builddir)/../stratego-regular/syn/rtg.tbl'
-    STRATEGOTBL_UNINSTALLED='$(top_builddir)/../stratego-front/syn/Stratego.tbl'
-    STRATEGOBOXTBL_UNINSTALLED='$(top_builddir)/../gpp/syn/box/Stratego-Box.tbl'
-    METAEXPLODE='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../strc-core/tools/meta-explode'
-    SGLRI='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../asfix-tools/xtc/sglri'
-    PACKSDF='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../sdf-front/parse/pack-sdf'
-    RTG2SIG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/rtg2sig'
-    SDF2RTG='XTC_REPOSITORY=$(BUILD_REPOSITORY) $(top_builddir)/../stratego-regular/xtc/sdf2rtg'
-  fi
+STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
+BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
+PPTABLETBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp'
+SDFTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/sdf-front'
+SDFPPTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf-front'
+RTGTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl'
+STRATEGOTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/stratego-front/Stratego.tbl'
+STRATEGOBOXTBL_UNINSTALLED='$(STRATEGOXT)/share/sdf/gpp/Stratego-Box.tbl'
+SGLRI='$(STRATEGOXT)/bin/sglri'
+METAEXPLODE='$(STRATEGOXT)/libexec/strc-core/meta-explode'
+PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
+RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
+SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
+
+if test "${USE_STAGE:+set}" = set; then
+  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../strc-core$USE_STAGE/tools/strc"
+  BOX_UNINSTALLED_STRCFLAGS="-I \$(top_builddir)/../gpp$USE_STAGE/syn/box"
+  PPTABLETBL_UNINSTALLED="\$(top_builddir)/../gpp$USE_STAGE/syn/pp-table"
+#  SDFTBL_UNINSTALLED="\$(top_builddir)/../sdf-front$USE_STAGE/syn"
+#  SDFPPTBL_UNINSTALLED="\$(top_builddir)/../sdf-front$USE_STAGE/pp"
+#  RTGTBL_UNINSTALLED="\$(top_builddir)/../stratego-regular$USE_STAGE/syn/rtg.tbl"
+  STRATEGOTBL_UNINSTALLED="\$(top_builddir)/../stratego-front$USE_STAGE/syn/Stratego.tbl"
+  STRATEGOBOXTBL_UNINSTALLED="\$(top_builddir)/../gpp$USE_STAGE/syn/box/Stratego-Box.tbl"
+  METAEXPLODE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../strc-core$USE_STAGE/tools/meta-explode"
+  SGLRI="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../asfix-tools$USE_STAGE/xtc/sglri"
+#  PACKSDF="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../sdf-front$USE_STAGE/parse/pack-sdf"
+#  RTG2SIG="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../stratego-regular$USE_STAGE/xtc/rtg2sig"
+#  SDF2RTG="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../stratego-regular$USE_STAGE/xtc/sdf2rtg"
 fi
 
 SCOMPILE="$STRC_UNINSTALLED"
@@ -100,17 +101,10 @@ AC_PROG_INSTALL
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
-if test "$xt_baseline" = "yes"; then
-  AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(STRATEGOXT)/include'])
-  AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(STRATEGOXT)/lib/libstratego-runtime.la'])
-else
-  if test "$xt_uninstalled_baseline" = "yes"; then
-    AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_srcdir)/runtime/lib'])
-    AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/runtime/lib/libstratego-runtime.la'])
-  fi
-fi
+AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_CFLAGS],['-I $(top_srcdir)/runtime/lib'])
+AC_SUBST([STRATEGO_RUNTIME_UNINSTALLED_LIBS],['$(top_builddir)/runtime/lib/libstratego-runtime.la'])
 
-AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS],['-I $(top_builddir)/lib/native'])
+AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_CFLAGS],['-I $(top_srcdir)/lib/native'])
 AC_SUBST([STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS],['$(top_builddir)/lib/native/stratego-lib/libstratego-lib-native.la'])
 
 AC_SUBST([STRATEGO_LIB_UNINSTALLED_STRCFLAGS],['-I $(top_builddir)/lib/spec'])

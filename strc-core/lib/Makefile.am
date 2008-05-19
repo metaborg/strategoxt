@@ -2,6 +2,9 @@ include $(top_srcdir)/Makefile.xt
 #include $(top_srcdir)/MakefileLocal.xt
 include $(wildcard *.dep)
 
+# FIXME: move this line elsewhere
+USE_STAGE=@USE_STAGE@
+
 nobase_data_DATA = libstrc.rtree libstrc.ctree
 lib_LTLIBRARIES  = libstrc.la
 EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)
@@ -38,20 +41,20 @@ libstrc_la_LIBADD = \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
   $(ATERM_LIBS)	\
-  $(top_builddir)/../c-tools/pp/libc-pp.la
+  $(top_builddir)/../c-tools$(USE_STAGE)/pp/libc-pp.la
 
-STRINCLUDES      = \
-                   -I $(top_srcdir)/lib                     \
-                   -I $(top_builddir)/lib                   \
-		   -I $(top_srcdir)/../stratego-front/syn   \
-                   -I $(top_srcdir)/../stratego-front/sig   \
-                   -I $(top_srcdir)/../c-tools/syn          \
-                   -I $(top_srcdir)/../c-tools/sig          \
-		   -I $(top_builddir)/../stratego-front/syn \
-                   -I $(top_builddir)/../stratego-front/sig \
-                   -I $(top_builddir)/../c-tools/syn        \
-                   -I $(top_builddir)/../c-tools/sig        \
-	           -I $(GPP)/share/sdf/gpp	
+STRINCLUDES      =																			\
+  -I $(top_srcdir)/lib																	\
+  -I $(top_builddir)/lib																\
+  -I $(top_srcdir)/../stratego-front/syn								\
+  -I $(top_srcdir)/../stratego-front/sig								\
+  -I $(top_srcdir)/../c-tools/syn												\
+  -I $(top_srcdir)/../c-tools/sig												\
+  -I $(top_builddir)/../stratego-front$(USE_STAGE)/syn	\
+  -I $(top_builddir)/../stratego-front$(USE_STAGE)/sig	\
+  -I $(top_builddir)/../c-tools$(USE_STAGE)/syn					\
+  -I $(top_builddir)/../c-tools$(USE_STAGE)/sig					\
+  -I $(GPP)/share/sdf/gpp
 
 
 STRCFLAGS =
@@ -69,6 +72,6 @@ libstrc.ctree : $(strclib:.str=.rtree)
 # 	mkdir -p $(top_builddir)/lib/stratego/strc/parse
 # 	cp $< $@
 
-stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front/syn/Stratego.def
+stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front$(USE_STAGE)/syn/Stratego.def
 	mkdir -p $(top_builddir)/lib/stratego/strc/pp
 	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego
