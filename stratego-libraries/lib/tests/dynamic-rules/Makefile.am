@@ -14,7 +14,7 @@ EXTRA_DIST     	= $(call srcwildcard,*.str)
 CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
-STRINCLUDES    	= -I til/syn -I til/sim -I til/opt $(STRATEGO_UNINSTALLED_STRCFLAGS) $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS)
+STRINCLUDES    	= -I til/syn -I $(srcdir)/til/sim -I $(srcdir)/til/opt $(STRATEGO_UNINSTALLED_STRCFLAGS) $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS)
 STRCFLAGS       = --format-check -1
 
 if !XT_DIST_CHECK_SOURCES

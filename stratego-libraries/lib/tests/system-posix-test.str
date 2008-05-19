@@ -67,7 +67,7 @@ strategies
 	)
     ; apply-and-check(!"test2b"
 	, file-newer
-	, !("system-posix-test.c", "system-posix-test.str")
+	, !("system-posix-test", "system-posix-test.c")
 	, debug
 	)
 

@@ -20,42 +20,42 @@ strategies
 strategies
 
   selector-tests =
-      ast2text-test(|"tuples 1", "Foo.pp"
+      ast2text-test(|"tuples 1", "Foo.bld.pp"
       , Foo(((1, 2), 3))
       , "a(b(1 2) 3)"
       )
 
-    ; ast2text-test(|"tuples 2", "Bar.pp"
+    ; ast2text-test(|"tuples 2", "Bar.bld.pp"
       , Bar([(), (), ()])
       , "bar(tuple |tuple |tuple)"
       )
 
-    ; ast2text-test(|"tuples 3", "Bar2.pp",
+    ; ast2text-test(|"tuples 3", "Bar2.bld.pp",
         Bar([(1, 2), (3, 4), (5, 6)])
       , "bar(1 2|3 4|5 6)"
       )
 
-    ; ast2text-test(|"tuples 4", "DataType.pp",
+    ; ast2text-test(|"tuples 4", "DataType.bld.pp",
         DataType("list", [("cons", [1, 2]), ("nil", [])])
       , "data list = cons 1 2 | nil"
       )
       
-    ; ast2text-test(|"alt 1", "Alt.pp"
+    ; ast2text-test(|"alt 1", "Alt.bld.pp"
       , Foo(alt(1, []))
       , "one"
       )
 
-    ; ast2text-test(|"alt 2", "Alt.pp"
+    ; ast2text-test(|"alt 2", "Alt.bld.pp"
       , Foo(alt(2, []))
       , "two"
       )
       
-    ; ast2text-test(|"alt 3", "Alt.pp"
+    ; ast2text-test(|"alt 3", "Alt.bld.pp"
       , Foo(alt(3, [Some(Fred())]))
       , "three"
       )
       
-    ; ast2text-test(|"alt 3", "Alt.pp"
+    ; ast2text-test(|"alt 3", "Alt.bld.pp"
       , Foo(alt(3, [None()]))
       , ""
       )

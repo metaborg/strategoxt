@@ -117,14 +117,14 @@ strategies
     , where(<copy-file> (<id>, "copy-file-test.tmp"))
       ; !(<my-read-text-file>, <my-read-text-file> "copy-file-test.tmp")
       ; where(<remove-file> "copy-file-test.tmp")
-    , !"system-io-file-test.str"
+    , !"system-io-file-test.str.bld"
     , ?(s, s)
     )
 
 strategies
 
   char-io-tests =
-    where(<fopen> ("system-io-file-test.str", "r") => stream)
+    where(<fopen> ("system-io-file-test.str.bld", "r") => stream)
     ; apply-test(!"read-text-line 1"
       , !(<read-text-line>, <read-text-line>)
       , !stream

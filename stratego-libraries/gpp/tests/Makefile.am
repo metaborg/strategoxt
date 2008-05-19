@@ -20,11 +20,17 @@ EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call src
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
+pp_files = $(call srcwildcard,*.pp)
+BUILT_SOURCES = $(pp_files:.pp=.bld.pp)
+
+%.bld.pp: %.pp
+	$(LN_S) $< $@
+
 if !XT_DIST_CHECK_SOURCES
-nodist_ast2text_tests_SOURCES = ast2text-tests.c
+nodist_ast2text_tests_SOURCES = ast2text-tests.c $(BUILT_SOURCES)
 nodist_abox2text_tests_SOURCES = abox2text-tests.c
 else
-ast2text_tests_SOURCES = ast2text-tests.c
+ast2text_tests_SOURCES = ast2text-tests.c $(BUILT_SOURCES)
 abox2text_tests_SOURCES = abox2text-tests.c
 endif
 

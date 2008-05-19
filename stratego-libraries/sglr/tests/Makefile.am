@@ -19,10 +19,16 @@ check_DATA = \
 
 stratego-sglr-tests.c : $(check_DATA)
 
+expression_files = $(call srcwildcard,*.exp)
+BUILT_SOURCES = $(expression_files:.exp=.bld.exp)
+
+%.bld.exp: %.exp
+	$(LN_S) $< $@
+
 if !XT_DIST_CHECK_SOURCES
-nodist_stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
+nodist_stratego_sglr_tests_SOURCES = stratego-sglr-tests.c $(BUILT_SOURCES)
 else
-stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
+stratego_sglr_tests_SOURCES = stratego-sglr-tests.c $(BUILT_SOURCES)
 endif
 
 stratego_sglr_tests_LDADD    = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
@@ -30,6 +36,7 @@ stratego_sglr_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 
 STRCFLAGS = \
   --main main-$* --format-check 0 \
+	-I $(builddir) \
   $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
