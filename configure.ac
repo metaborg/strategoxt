@@ -64,7 +64,7 @@ fi
 COMPILER_GEN=$srcdir/compiler_generation
 BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
 
-if test -r $BASELINE_GEN then
+if test -r $BASELINE_GEN; then
   . $BASELINE_GEN
   xt_baseline_generation=$compiler_generation
 else
@@ -77,7 +77,7 @@ xt_minimal_generation=$baseline_generation
 xt_lib_first = $modify_library
 
 AC_MSG_CHECKING([check if the compiler can be bootstrap])
-if $modify_library && $modify_compiler then
+if $modify_library && $modify_compiler; then
   AC_MSG_RESULT([no])
   exit 1
 fi
