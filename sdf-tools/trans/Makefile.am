@@ -10,7 +10,6 @@ STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(top_srcdir)/lib \
                 -I $(top_builddir)/lib \
                 -I $(SDF_FRONT)/share/sdf/sdf-front \
-                -I $(top_srcdir)/../sdf-front/syn \
                 -I $(top_builddir)/../sdf-front/syn \
                 -I $(SDF_FRONT)/share/sdf-front
 

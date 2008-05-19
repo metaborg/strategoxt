@@ -9,8 +9,8 @@ pkgdata_DATA     = pack-sdf-options.str
 STRCFLAGS = --main main-$* --verbose 3
 STRINCLUDES = \
   -I $(top_srcdir)/sig \
-  -I $(top_srcdir)/../sdf-tools/lib \
-  -I $(top_srcdir)/../aterm-front/syn \
+  -I $(top_builddir)/../sdf-tools/lib \
+  -I $(top_builddir)/../aterm-front/syn \
   $(STRATEGO_ATERM_STRCFLAGS)
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)

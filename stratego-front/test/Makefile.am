@@ -17,14 +17,16 @@ nodist_prop1_asfix_SOURCES = prop1-asfix.c
 
 TESTS = prop1 switch-semantics-test prop1-asfix
 
+# Warning: the make check can only occur after the build of strc-core.
 prop1.c : PropStratego.tbl
 prop1-asfix.c: prop1-asfix.str PropStratego.tbl
-	$(top_srcdir)/../strc-core/tools/strc $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
+	$(top_builddir)/../strc-core$(CURRENT_STAGE)/tools/strc $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
 
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check5
 
-parsestratego = $(top_srcdir)/../strc-core/tools/parse-stratego
+# Warning: the make check can only occur after the build of strc-core.
+parsestratego = $(top_builddir)/../strc-core$(CURRENT_STAGE)/tools/parse-stratego
 
 check1 : Prop.str 
 	$(MAKE) clean

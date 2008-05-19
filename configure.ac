@@ -192,7 +192,7 @@ while test $xt_current_stage -le $xt_num_stage; do
   if $xt_lib_first; then
     for pkgcname in $LIB_PKGCONFIG_FILES; do
       xt_pkgfile=$pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc:stage$xt_current_stage.pc.in:$pkgcname-uninstalled.pc.in
-      AC_CONFIG_FILES([$xt_pkgfile:empty.pc.in],, [xt_pkgfile=$xt_pkgfile])
+      AC_CONFIG_FILES([$xt_pkgfile1:empty.pc.in],, [xt_pkgfile1=$xt_pkgfile])
     done
   else
     xt_lib_first=true
@@ -200,7 +200,7 @@ while test $xt_current_stage -le $xt_num_stage; do
 
   for pkgcname in $STRC_PKGCONFIG_FILES; do
     xt_pkgfile=$pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc:stage$xt_current_stage.pc.in:$pkgcname-uninstalled.pc.in
-    AC_CONFIG_FILES([$xt_pkgfile:empty.pc.in],, [xt_pkgfile=$xt_pkgfile])
+    AC_CONFIG_FILES([$xt_pkgfile2:empty.pc.in],, [xt_pkgfile2=$xt_pkgfile])
   done
 
   xt_current_stage=$(($xt_current_stage + 1))

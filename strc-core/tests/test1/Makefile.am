@@ -297,10 +297,10 @@ ExpStratego.def : Expressions.sdf ExpStratego.sdf
 
 
 %.atree : %.str
-	$(top_srcdir)/../stratego-front/parse/parse-stratego -i $< -o $@ --assimilation off --verbose 4
+	$(top_builddir)/tools/parse-stratego -i $< -o $@ --assimilation off --verbose 4
 
 %.btree : %.str
-	$(top_srcdir)/../stratego-front/parse/parse-stratego -i $< -o $@ --assimilation on --verbose 4
+	$(top_builddir)/tools/parse-stratego -i $< -o $@ --assimilation on --verbose 4
 
 gcc-version : 
 	gcc --version
