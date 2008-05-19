@@ -3,11 +3,6 @@ AC_INIT([strc-core],[0.17],[stratego@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
-AC_ARG_WITH([use-stage], [],
-  [USE_STAGE=$withval],
-  [USE_STAGE=])
-AC_SUBST([USE_STAGE])
-
 XT_INTERNAL_USE_XT_PACKAGES
 XT_TERM_DEFINE
 

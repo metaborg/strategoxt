@@ -30,7 +30,8 @@ STRCFLAGS = \
   $(STRATEGO_GPP_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
-STRINCLUDES = -I $(top_srcdir)/../gpp/syn/box -I $(top_builddir)/../gpp$(USE_STAGE)/syn/box
+# FIXME: $(top_srcdir)/../ is not safe !!!
+STRINCLUDES =  -I $(top_srcdir)/../gpp/syn/box -I $$(dirname $(STRATEGOBOXTBL_UNINSTALLED))
 
 libstratego-tool-doc.rtree libstratego-tool-doc.c : $(tooldoclib:.str=.rtree) 
 	$(STRC_UNINSTALLED) $(STRINCLUDES) -c --library -i $(srcdir)/stratego-tool-doc.str -o libstratego-tool-doc.rtree --verbose 1 $(STRCFLAGS)

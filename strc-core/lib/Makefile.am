@@ -38,15 +38,15 @@ libstrc_la_LIBADD = \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS) \
   $(ATERM_LIBS)	\
-  $(top_builddir)/../c-tools$(USE_STAGE)/pp/libc-pp.la
+  $(top_builddir)/../c-tools$(CURRENT_STAGE)/pp/libc-pp.la
 
 STRINCLUDES = \
   -I $(top_srcdir)/lib \
   -I $(top_builddir)/lib \
-  -I $(top_builddir)/../stratego-front$(USE_STAGE)/syn \
-  -I $(top_builddir)/../stratego-front$(USE_STAGE)/sig \
-  -I $(top_builddir)/../c-tools$(USE_STAGE)/syn \
-  -I $(top_builddir)/../c-tools$(USE_STAGE)/sig \
+  -I $(top_builddir)/../stratego-front$(CURRENT_STAGE)/syn \
+  -I $(top_builddir)/../stratego-front$(CURRENT_STAGE)/sig \
+  -I $(top_builddir)/../c-tools$(CURRENT_STAGE)/syn \
+  -I $(top_builddir)/../c-tools$(CURRENT_STAGE)/sig \
   -I $(GPP)/share/sdf/gpp
 
 
@@ -65,6 +65,6 @@ libstrc.ctree : $(strclib:.str=.rtree)
 # 	mkdir -p $(top_builddir)/lib/stratego/strc/parse
 # 	cp $< $@
 
-stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front$(USE_STAGE)/syn/Stratego.def
+stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front$(CURRENT_STAGE)/syn/Stratego.def
 	mkdir -p $(top_builddir)/lib/stratego/strc/pp
 	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego

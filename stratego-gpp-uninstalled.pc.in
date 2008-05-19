@@ -4,4 +4,4 @@ Name: Stratego GPP Library
 Description: Generic Pretty-Printing Library.
 Version: @PACKAGE_VERSION@
 Libs: @abs_top_builddir@/stratego-libraries${stage}/gpp/lib/libstratego-gpp.la
-Requires: aterm stratego-runtime ${stage}stratego-lib${stage} stratego-sglr${stage}
+Requires: aterm stratego-runtime${stage} stratego-lib${stage} stratego-sglr${stage}

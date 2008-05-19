@@ -114,29 +114,68 @@ LIB_PKGS="stratego-libraries"
 STRC_PKGS="xtc stratego-front asfix-tools gpp c-tools strc-core"
 BASE_PKGS="concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
 
-STAGE1_LIB_PKGS=""
-STAGE1_STRC_PKGS=""
-STAGE1_PKGNAMES=""
-STAGE1_SUFFIX="-stage1"
+LIB_PKGCONFIG_FILES="stratego-runtime stratego-lib-native stratego-lib stratego-xtc stratego-sglr stratego-gpp stratego-rtg stratego-sdf stratego-tool-doc stratego-aterm"
 
-STAGE2_SUFFIX=""
-# should care about the bootstrap variable.
+STRC_PKGCONFIG_FILES="xtc"
+
+# subpackages should pick up the stage1 pkgconfig descriptions.
+PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export PKG_CONFIG_PATH
+
+# determine the number of stages
 if test "$xt_bootstrap" = "yes"; then
-  STAGE1_STRC_PKGS=$STRC_PKGS
-  if $xt_lib_first; then
-    STAGE1_LIB_PKGS=$LIB_PKGS
-  fi
-  for subpkgname in $STAGE1_LIB_PKGS $STAGE1_STRC_PKGS; do
-    STAGE1_PKGNAMES="$STAGE1_PKGNAMES $subpkgname$STAGE1_SUFFIX"
-  done
+  xt_num_stage=2
+else
+  xt_num_stage=1
+  xt_lib_first=true
 fi
 
-PKGS="autoxt $STAGE1_PKGNAMES $LIB_PKGS $STRC_PKGS $BASE_PKGS"
+# compute the list of packages to build
+STAGE_SUFFIX="-stage"
+PKGS="autoxt"
+UNINSTALLED_PKGCONFIG_FILES=""
+
+
+xt_lib_first_save=$xt_lib_first
+xt_current_stage=1
+while test $xt_current_stage -le $xt_num_stage; do
+  STAGE_PKGS=
+  STAGE_PKGCONFIG_FILES=
+  if $xt_lib_first; then
+    STAGE_PKGS="$LIB_PKGS"
+    STAGE_PKGCONFIG_FILES="$LIB_PKGCONFIG_FILES"
+  else
+    xt_lib_first=true
+  fi
+
+  STAGE_PKGS="$STAGE_PKGS $STRC_PKGS"
+  STAGE_PKGCONFIG_FILES="$STAGE_PKGCONFIG_FILES${STAGE_PKGCONFIG_FILES+: }$STRC_PKGCONFIG_FILES"
+
+  CURRENT_STAGE_SUFFIX="${STAGE_SUFFIX}${xt_current_stage}"
+  for subpkgname in $STAGE_PKGS; do
+    PKGS="$PKGS ${subpkgname}${CURRENT_STAGE_SUFFIX}"
+  done
+
+  for pkgcname in $STAGE_PKGCONFIG_FILES; do
+    UNINSTALLED_PKGCONFIG_FILES="$UNINSTALLED_PKGCONFIG_FILES $pkgcname${CURRENT_STAGE_SUFFIX}-uninstalled.pc"
+  done
+
+  xt_current_stage=$(($xt_current_stage + 1))
+done
+xt_lib_first=$xt_lib_first_save
+
+PKGS="$PKGS $BASE_PKGS"
+
 
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])
-AC_SUBST([STAGE1_SUFFIX])
-AC_SUBST([STAGE2_SUFFIX])
+AC_SUBST([UNINSTALLED_PKGCONFIG_FILES])
+
+# define suffix for pkgconfig files
+AC_SUBST([STAGE1_SUFFIX],[${STAGE_SUFFIX}1])
+AC_SUBST([STAGE2_SUFFIX],[${STAGE_SUFFIX}2])
+
+AC_SUBST([STAGE_FILE], [stage1.pc.in stage2.pc.in])
 
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
@@ -147,69 +186,54 @@ AC_CONFIG_FILES([
   strategoxt.pc
 ])
 
-AC_CONFIG_FILES([
-  stratego-runtime-uninstalled.pc:stage2.pc.in:stratego-runtime-uninstalled.pc.in
-  stratego-lib-native-uninstalled.pc:stage2.pc.in:stratego-lib-uninstalled.pc.in
-  stratego-lib-uninstalled.pc:stage2.pc.in:stratego-lib-uninstalled.pc.in
-  stratego-xtc-uninstalled.pc:stage2.pc.in:stratego-xtc-uninstalled.pc.in
-  stratego-sglr-uninstalled.pc:stage2.pc.in:stratego-sglr-uninstalled.pc.in
-  stratego-gpp-uninstalled.pc:stage2.pc.in:stratego-gpp-uninstalled.pc.in
-  stratego-rtg-uninstalled.pc:stage2.pc.in:stratego-rtg-uninstalled.pc.in
-  stratego-sdf-uninstalled.pc:stage2.pc.in:stratego-sdf-uninstalled.pc.in
-  stratego-tool-doc-uninstalled.pc:stage2.pc.in:stratego-tool-doc-uninstalled.pc.in
-  stratego-aterm-uninstalled.pc:stage2.pc.in:stratego-aterm-uninstalled.pc.in
-  xtc-uninstalled.pc:stage2.pc.in:xtc-uninstalled.pc.in
-])
+xt_lib_first_save=$xt_lib_first
+xt_current_stage=1
+while test $xt_current_stage -le $xt_num_stage; do
+  if $xt_lib_first; then
+    for pkgcname in $LIB_PKGCONFIG_FILES; do
+      xt_pkgfile=$pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc:stage$xt_current_stage.pc.in:$pkgcname-uninstalled.pc.in
+      AC_CONFIG_FILES([$xt_pkgfile:empty.pc.in],, [xt_pkgfile=$xt_pkgfile])
+    done
+  else
+    xt_lib_first=true
+  fi
 
-if test "$xt_bootstrap" = "yes"; then
-  AC_CONFIG_FILES([
-    stratego-runtime-stage1-uninstalled.pc:stage1.pc.in:stratego-runtime-uninstalled.pc.in
-    stratego-lib-native-stage1-uninstalled.pc:stage1.pc.in:stratego-lib-uninstalled.pc.in
-    stratego-lib-stage1-uninstalled.pc:stage1.pc.in:stratego-lib-uninstalled.pc.in
-    stratego-xtc-stage1-uninstalled.pc:stage1.pc.in:stratego-xtc-uninstalled.pc.in
-    stratego-sglr-stage1-uninstalled.pc:stage1.pc.in:stratego-sglr-uninstalled.pc.in
-    stratego-gpp-stage1-uninstalled.pc:stage1.pc.in:stratego-gpp-uninstalled.pc.in
-    stratego-rtg-stage1-uninstalled.pc:stage1.pc.in:stratego-rtg-uninstalled.pc.in
-    stratego-sdf-stage1-uninstalled.pc:stage1.pc.in:stratego-sdf-uninstalled.pc.in
-    stratego-tool-doc-stage1-uninstalled.pc:stage1.pc.in:stratego-tool-doc-uninstalled.pc.in
-    stratego-aterm-stage1-uninstalled.pc:stage1.pc.in:stratego-aterm-uninstalled.pc.in
-    xtc-stage1-uninstalled.pc:stage1.pc.in:xtc-uninstalled.pc.in
-  ])
-fi
+  for pkgcname in $STRC_PKGCONFIG_FILES; do
+    xt_pkgfile=$pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc:stage$xt_current_stage.pc.in:$pkgcname-uninstalled.pc.in
+    AC_CONFIG_FILES([$xt_pkgfile:empty.pc.in],, [xt_pkgfile=$xt_pkgfile])
+  done
+
+  xt_current_stage=$(($xt_current_stage + 1))
+done
+xt_lib_first=$xt_lib_first_save
 
 AC_OUTPUT
 
 ### CONFIGURE SUBPACKAGES #####################################
+
+
 AB_CONFIG_PKG(autoxt, )
 
-STAGE1_ARGS=""
-USE_STAGE_ARG=""
-if test "$xt_bootstrap" = "yes"; then
+COMMON_ARGS="--with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY}"
+STRC_STAGE_ARGS="--enable-baseline"
+LIB_STAGE_ARGS=""
+
+xt_lib_first_save=$xt_lib_first
+xt_current_stage=1
+while test $xt_current_stage -le $xt_num_stage; do
+  CURRENT_STAGE_ARG="--with-current-stage=${STAGE_SUFFIX}$xt_current_stage"
   if $xt_lib_first; then
-    AB_CONFIG_PKG_SUFFIX("$STAGE1_LIB_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} --enable-baseline $STAGE1_ARGS)
+    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARG)
+    LIB_STAGE_ARG="--with-use-lib-stage=-stage$xt_current_stage"
+  else
+    xt_lib_first=true
   fi
-  STAGE1_ARGS="--enable-baseline $STAGE1_ARGS"
-  USE_STAGE_ARG="--with-use-stage=-stage1"
 
-  AB_CONFIG_PKG_SUFFIX("$STAGE1_STRC_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE1_ARGS $USE_STAGE_ARG)
+  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARG)
+  STRC_STAGE_ARG="--with-use-strc-stage=-stage$xt_current_stage"
 
-  # subpackages should pick up the stage1 pkgconfig descriptions.
-  PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export PKG_CONFIG_PATH
+  xt_current_stage=$(($xt_current_stage + 1))
+done
+xt_lib_first=$xt_lib_first_save
 
-  # FIXME: Should specify the pathes in the build-dir (strc-core-stage1 ...)
-  STAGE2_ARGS=""
-  USE_STAGE_ARG="--with-use-stage=-stage1"
-else
-  STAGE2_ARGS="--enable-baseline"
-fi
-
-# FIXME: STAGE2_ARGS are not handled yet
-AB_CONFIG_PKG("$LIB_PKGS",  --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS $USE_STAGE_ARG)
-
-# stage 2
-USE_STAGE_ARG="--with-use-stage="
-
-AB_CONFIG_PKG("$STRC_PKGS", --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
-
-AB_CONFIG_PKG("$BASE_PKGS", --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
+AB_CONFIG_PKG("$BASE_PKGS", $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS)

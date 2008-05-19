@@ -12,7 +12,7 @@ CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) Box.pp.af
 
 SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn \
-                 -I $(top_builddir)/../stratego-front$(USE_STAGE)/syn
+                 -I $(top_builddir)/../stratego-front$(CURRENT_STAGE)/syn
 PGEN_FLAGS     = -m $*
 
 Box.def : Box-Atoms.sdf Box-Base.sdf Box-Disambiguation.sdf \

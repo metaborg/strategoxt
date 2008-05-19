@@ -10,6 +10,7 @@ EXTRA_DIST   = \
   strategoxt.pc.in \
   xtc-uninstalled.pc.in \
   stratego-runtime-uninstalled.pc.in \
+  stratego-lib-native-uninstalled.pc.in \
   stratego-lib-uninstalled.pc.in \
   stratego-xtc-uninstalled.pc.in \
   stratego-sglr-uninstalled.pc.in \
@@ -49,3 +50,11 @@ bootstep :
 
 svnignore :
 	svn propset -R svn:ignore -F svn-ignore .
+
+# Extra work because automake cannot generate those rules due to the loop
+# inside of AC_CONFIG_FILES in the configure.ac
+DISTCLEAN_FILES = $(UNINSTALLED_PKGCONFIG_FILES)
+%-stage1-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/stage1.pc.in $(srcdir)/%-uninstalled.pc.in $(srcdir)/empty.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+%-stage2-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/stage2.pc.in $(srcdir)/%-uninstalled.pc.in $(srcdir)/empty.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@

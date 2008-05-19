@@ -10,6 +10,28 @@ m4_pattern_forbid([^XT_])
 
 ################################### INTERNAL STRATEGOXT MACROS #######################
 
+# XT_USE_STAGE
+# ------------
+# Check which stage to use to compile a sub-package.
+AC_DEFUN([XT_CHECK_STAGE],
+[
+  AC_ARG_WITH([use-lib-stage], [],
+    [USE_STAGE=$withval],
+    [USE_STAGE=])
+  AC_SUBST([LIB_STAGE])
+
+  AC_ARG_WITH([use-strc-stage], [],
+    [USE_STAGE=$withval],
+    [USE_STAGE=])
+  AC_SUBST([STRC_STAGE])
+
+  AC_ARG_WITH([current-stage], [],
+    [CURRENT_STAGE=$withval],
+    [CURRENT_STAGE=])
+  AC_SUBST([CURRENT_STAGE])
+])
+
+
 # XT_INTERNAL_CHECK_STRATEGOXT
 # ----------------------------
 # Check for Stratego/XT in Stratego/XT itself.
@@ -18,29 +40,57 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   AC_REQUIRE([XT_WITH_STRATEGOXT_ARG])
   AC_REQUIRE([XT_CHECK_XTC])
 
-  AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
-  if test "${STRATEGOXT:+set}" = set; then
+  AC_REQUIRE([XT_CHECK_STAGE])
+  AC_MSG_CHECKING([whether a stage of the compiler is explicitly set])
+  if test "${STRC_STAGE:+set}" = set; then
     AC_MSG_RESULT([yes])
-    XT_HANDLE_EXPLICIT_STRATEGOXT
-
-    STRATEGO_LIBRARIES="$STRATEGOXT"
-    XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES
-  else
-    AC_MSG_RESULT([no])
 
     # Try to find the Stratego/XT Packages using pkgconfig.
     #
     # No witnesses are used here, since some packages might not
     # yet be installed.
-    XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
-    XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
-    XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
-    XT_CHECK_PACKAGE([STRATEGO_XTC],[stratego-xtc])
-    XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr])
-    XT_CHECK_PACKAGE([STRATEGO_GPP],[stratego-gpp])
-    XT_CHECK_PACKAGE([STRATEGO_RTG],[stratego-rtg])
-    XT_CHECK_PACKAGE([STRATEGO_TOOL_DOC],[stratego-tool-doc])
-    XT_CHECK_PACKAGE([STRATEGO_ATERM],[stratego-aterm])
+  #  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+  else
+    AC_MSG_RESULT([no])
+
+    AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
+    if test "${STRATEGOXT:+set}" = set; then
+      AC_MSG_RESULT([yes])
+      XT_HANDLE_EXPLICIT_STRATEGOXT
+    else
+      AC_MSG_RESULT([no])
+      AC_MSG_ERROR([neither stage nor baseline specified.])
+    fi
+  fi
+
+  AC_MSG_CHECKING([whether a stage of the libraries is explicitly set])
+  if test "${LIB_STAGE:+set}" = set; then
+    AC_MSG_RESULT([yes])
+
+    # Try to find the Stratego/XT Packages using pkgconfig.
+    #
+    # No witnesses are used here, since some packages might not
+    # yet be installed.
+    XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_XTC],[stratego-xtc$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_SGLR],[stratego-sglr$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_GPP],[stratego-gpp$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_RTG],[stratego-rtg$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_TOOL_DOC],[stratego-tool-doc$LIB_STAGE])
+    XT_CHECK_PACKAGE([STRATEGO_ATERM],[stratego-aterm$LIB_STAGE])
+  else
+    AC_MSG_RESULT([no])
+
+    AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
+    if test "${STRATEGOXT:+set}" = set; then
+      AC_MSG_RESULT([yes])
+      STRATEGO_LIBRARIES="$STRATEGOXT"
+      XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES
+    else
+      AC_MSG_RESULT([no])
+      AC_MSG_ERROR([neither stage nor baseline specified.])
+    fi
   fi
 
   # backward compatibitily
