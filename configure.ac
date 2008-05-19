@@ -74,7 +74,7 @@ fi
 . $COMPILER_GEN
 xt_compiler_generation=$compiler_generation
 xt_minimal_generation=$baseline_generation
-xt_lib_first = $modify_library
+xt_lib_first=$modify_library
 
 AC_MSG_CHECKING([check if the compiler can be bootstrap])
 if $modify_library && $modify_compiler; then
@@ -109,40 +109,25 @@ fi
 
 AC_MSG_CHECKING([in which order to build subpackages])
 
-LIB_PKGS  = "stratego-libraries"
-STRC_PKGS = "xtc stratego-front asfix-tools gpp c-tools strc-core"
-BASE_PKGS = "concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+LIB_PKGS="stratego-libraries"
+STRC_PKGS="xtc stratego-front asfix-tools gpp c-tools strc-core"
+BASE_PKGS="concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
+
+STAGE1_LIB_PKGS=""
+STAGE1_STRC_PKGS=""
+STAGE1_PKGNAMES=""
 # should care about the bootstrap variable.
 if test "$xt_bootstrap" = "yes"; then
+  STAGE1_STRC_PKGS=$STRC_PKGS
   if $xt_lib_first; then
-    PKGS="autoxt $LIB_PKGS $STRC_PKGS $LIB_PKGS $BASE_PKGS"
-  else
-    PKGS="autoxt $STRC_PKGS $LIB_PKGS $STRC_PKGS $BASE_PKGS"
+    STAGE1_LIB_PKGS=$LIB_PKGS
   fi
-else
-  PKGS="autoxt $LIB_PKGS $STRC_PKGS $BASE_PKGS"
-
-  # subpackages should pick up the -uninstalled pkgconfig descriptions.
-  PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export PKG_CONFIG_PATH
+  for subpkgname in $STAGE1_LIB_PKGS $STAGE1_STRC_PKGS; do
+    STAGE1_PKGNAMES="$STAGE1_PKGNAMES ${subpkgname}-stage1"
+  done
 fi
-LIBARGS="--enable-uninstalled-baseline"
 
-# old -*-*-*-*-*-*-*-*-*-*- old
-BPKGS= $STRC_PKGS $BASE_PKGS
-# should care about the bootstrap variable.
-if test "$xt_baseline" = "yes"; then
-  PKGS="autoxt xtc $BPKGS stratego-libraries"
-  LIBARGS="--enable-baseline"
-else
-  PKGS="autoxt stratego-libraries xtc $BPKGS "
-  LIBARGS="--enable-uninstalled-baseline"
-
-  # subpackages should pick up the -uninstalled pkgconfig descriptions.
-  PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export PKG_CONFIG_PATH
-fi
-LIBARGS="--enable-uninstalled-baseline"
+PKGS="autoxt $STAGE1_PKGNAMES $LIB_PKGS $STRC_PKGS $BASE_PKGS"
 
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])
@@ -169,16 +154,30 @@ AC_OUTPUT
 
 ### CONFIGURE SUBPACKAGES #####################################
 AB_CONFIG_PKG(autoxt, )
-AB_CONFIG_PKG(xtc,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(strc-core,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(c-tools,            --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-front,     --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-libraries, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} ${LIBARGS})
-AB_CONFIG_PKG(asfix-tools,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(gpp,                --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(concrete-syntax,    --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(aterm-front,        --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(sdf-front,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(sdf-tools,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(stratego-regular,   --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
-AB_CONFIG_PKG(xml-front,          --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY})
+
+if test "$xt_bootstrap" = "yes"; then
+  if $xt_lib_first; then
+    AB_CONFIG_PKG_SUFFIX("$STAGE1_LIB_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} --enable-baseline)
+    STAGE1_ARGS="--enable-baseline --with-lib-stage1-builddir"
+  else
+    STAGE1_ARGS="--enable-baseline"
+  fi
+
+  AB_CONFIG_PKG_SUFFIX("$STAGE1_STRC_PKGS", -stage1, --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE1_ARGS)
+
+  # subpackages should pick up the stage1 pkgconfig descriptions.
+  PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export PKG_CONFIG_PATH
+
+  # FIXME: Should specify the pathes in the build-dir (strc-core-stage1 ...)
+  STAGE2_ARGS="--with-stage1-builddir"
+else
+  STAGE2_ARGS="--enable-baseline"
+fi
+
+# FIXME: STAGE2_ARGS are not handled yet
+AB_CONFIG_PKG("$LIB_PKGS",  --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
+
+AB_CONFIG_PKG("$STRC_PKGS", --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
+
+AB_CONFIG_PKG("$BASE_PKGS", --with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} $STAGE2_ARGS)
