@@ -66,6 +66,7 @@ else
   PKG_CONFIG_PATH="`pwd`:${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
 fi
+LIBARGS="--enable-uninstalled-baseline"
 
 AC_MSG_RESULT([$PKGS])
 AC_SUBST([PKGS])

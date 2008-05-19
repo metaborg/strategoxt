@@ -14,8 +14,7 @@ libstratego_rtg_la_SOURCES = libstratego-rtg.c rtg-aterm.c libstratego-rtg-nativ
 libstratego_rtg_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_rtg_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_rtg_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
-	-I $(top_srcdir)/runtime/lib \
-	-I $(top_builddir)/runtime/lib/srts \
+  $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
 	-I $(top_srcdir)/lib/native
 libstratego_rtg_la_LIBADD   = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 

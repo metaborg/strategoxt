@@ -17,7 +17,7 @@ all_c     = libstratego-xtc-c99.c libstratego-xtc-posix.c libstratego-xtc-posix-
 
 alllibs : $(all_c) $(all_rtree)
 
-libstratego_xtc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) -I $(top_srcdir)/lib/native/ -I $(top_srcdir)/runtime/lib -I $(top_builddir)/runtime/lib/srts
+libstratego_xtc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) -I $(top_srcdir)/lib/native/ $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS)
 libstratego_xtc_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_xtc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_xtc_la_LIBADD   = $(STRATEGO_UNINSTALLED_LIBS)

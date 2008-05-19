@@ -18,8 +18,7 @@ libstratego_aterm_la_SOURCES = libstratego-aterm.c
 libstratego_aterm_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_aterm_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_aterm_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
-	-I $(top_srcdir)/runtime/lib \
-	-I $(top_builddir)/runtime/lib/srts \
+  $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
 	-I $(top_srcdir)/lib/native
 libstratego_aterm_la_LIBADD   = $(STRATEGO_GPP_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 

@@ -32,8 +32,6 @@ libstratego_sglr_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_sglr_la_CPPFLAGS = \
   -I $(srcdir)/native \
   -I $(srcdir)/../justsglr \
-  -I $(top_srcdir)/runtime/lib \
-  -I $(top_builddir)/runtime/lib/srts \
   -I $(top_srcdir)/lib/native \
   $(STRATEGO_LIB_UNINSTALLED_CFLAGS) \
   $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \

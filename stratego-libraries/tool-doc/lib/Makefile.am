@@ -19,8 +19,7 @@ libstratego_tool_doc_la_SOURCES = libstratego-tool-doc.c
 libstratego_tool_doc_la_CFLAGS   = $(AM_CFLAGS)
 libstratego_tool_doc_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_tool_doc_la_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS) \
-	-I $(top_srcdir)/runtime/lib \
-	-I $(top_builddir)/runtime/lib/srts \
+  $(STRATEGO_RUNTIME_UNINSTALLED_CFLAGS) \
 	-I $(top_srcdir)/lib/native
 libstratego_tool_doc_la_LIBADD   =  $(STRATEGO_XTC_UNINSTALLED_LIBS) $(STRATEGO_GPP_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 
