@@ -37,7 +37,6 @@ ATerm SSL_new(void)
  */
 
 ATermTable SSL_newname_table = NULL;
-char newname_string[256] = "";
 
 ATerm SSL_newname(ATerm prefix)
 {
@@ -46,12 +45,21 @@ ATerm SSL_newname(ATerm prefix)
   ATerm count_key;
   ATerm last_value;
 
+  /* Initial buffer size */
+  static int bufferSize = 256;
+  static char* buffer = NULL;
+
+  /* Allocate initial buffer */
+  if(buffer == NULL) {
+    buffer = (char*) malloc(bufferSize); 
+    assert(buffer != NULL);
+  }
+
   if(SSL_newname_table == NULL)
     SSL_newname_table = ATtableCreate(15, 80);
 
-  prefix_base = ATgetName(ATgetSymbol(prefix));
+  /* get the previous value of this prefix */
   last_value = ATtableGet(SSL_newname_table, prefix);
-
   if(last_value != NULL) {
     newname_counter = ATgetInt((ATermInt) last_value);
   } else {
@@ -59,15 +67,33 @@ ATerm SSL_newname(ATerm prefix)
   }
 
   newname_counter++;
-  sprintf(newname_string, "%s%d", prefix_base, newname_counter);
 
-  while(AT_findSymbol(newname_string, 0, ATtrue)) {
-    newname_counter++;
-    sprintf(newname_string, "%s%d", prefix_base, newname_counter);
+  /* prepare a buffer to write the new name to */
+  prefix_base = ATgetName(ATgetSymbol(prefix));
+
+  // MB: let's assume more than 10 digits is unlikely ...
+  int necessarySize = strlen(prefix_base) + 10; 
+  if(necessarySize >= bufferSize )
+  {
+    // MB: we might see even bigger strings, so multiply by 2.
+    necessarySize = necessarySize * 2;
+
+    buffer = (char*)realloc(buffer, necessarySize);
+    assert(buffer != NULL);
+    bufferSize = necessarySize;
   }
 
+  /* write to the buffer until we've found a name that does not exist */
+  sprintf(buffer, "%s%d", prefix_base, newname_counter);
+
+  while(AT_findSymbol(buffer, 0, ATtrue)) {
+    newname_counter++;
+    sprintf(buffer, "%s%d", prefix_base, newname_counter);
+  }
+
+  /* remember that we've seen this number */
   ATtablePut(SSL_newname_table, prefix, (ATerm)ATmakeInt(newname_counter));
-  return((ATerm) ATmakeAppl0(ATmakeSymbol(newname_string, 0, ATtrue)));
+  return((ATerm) ATmakeAppl0(ATmakeSymbol(buffer, 0, ATtrue)));
 }
 
 /* Strings */
@@ -229,5 +255,3 @@ ATerm SSL_strlen(ATerm str_term) {
   const char* str = AT_getString(str_term);
   return (ATerm) ATmakeInt(strlen(str));
 }
-
-
