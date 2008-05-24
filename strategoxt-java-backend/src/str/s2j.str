@@ -92,16 +92,19 @@ rules
      ]|
   where 
       alltd(JavaTranslate)
-    ; function-defs := <map(translate-definition)> defs
+    ; function-defs := <map(translate-outer-definition)> defs
     ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
     ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
     ; cnst-decls    := <bagof-Fragment> "ConstDecl"
     ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
 
 rules
-  translate-definition:
+  translate-inner-definition = translate-any-definition(|[Final()])
+  translate-outer-definition = translate-any-definition(|[Public(), Static()])
+  
+  translate-any-definition(|modifiers):
     SDefT(x, strats*, terms*, s) -> type-dec |[ 
-            public static class x extends Strategy {
+            mod* class x extends Strategy {
               public final static x instance = new x();
               public IStrategoTerm apply(param*, IStrategoTerm term) {
                 int nextState = 1;
@@ -116,7 +119,8 @@ rules
             }
          ]|
     where
-      prelude(|"translate-definition")
+      prelude(|"translate-any-definition")
+    ; with(mod*    := modifiers) 
     ; with(strats' := <map(translate-parameter)> strats*)
     ; with(terms'  := <map(translate-parameter)> terms*)
     ; with(param*  := <conc> (strats', terms'))
@@ -182,13 +186,13 @@ strategies
       switch(nextState) {
           case ~n0: 
            ~x = term ; 
-            ~stm:<translate-strategy(|n1, n2)> s1 ;
+            ~stm:<translate-strategy(|n1, n2)> s1
           case ~n1: 
-            ~stm:<translate-strategy(|S, F)> s2 ;
+            ~stm:<translate-strategy(|S, F)> s2
             ~stm:<Goto> S
           case ~n2: 
             term = ~<!ExprName(x)>; 
-            ~stm:<translate-strategy(|S, F)> s2 ; 
+            ~stm:<translate-strategy(|S, F)> s2
             ~stm:<Goto> S
       }
     ]|)
@@ -258,15 +262,22 @@ strategies
   where
       prelude(|"translate-Let")
     ; debug
-    ; with(defs' := <map(translate-definition ; !ClassDecStm(<id>))> defs)
+    ; with(defs' := <map(translate-inner-definition ; !ClassDecStm(<id>))> defs)
  
   
   make-strategy-class : 
-  (x, s) -> bstm |[ 
-        static final class x extends Strategy { 
+  (x, body) -> bstm |[ 
+        final class x extends Strategy { 
           public final static x instance = new x();
           public IStrategoTerm apply(IStrategoTerm term) { 
-            try { ~bstm:s } catch(Failure f) { return null; } return term; 
+            int nextState = 1;
+            Root:
+            while(true)
+              switch(nextState) {
+                case 0: return null;
+                case 1: ~stm:body break Root;
+              }
+              return term;
           }
         } 
     ]|
@@ -281,7 +292,7 @@ strategies
       ; <debug(!"args1  ")> args1
       ; <debug(!"bodies ")> bodies
       ; <debug(!"args2  ")> args2
-      ; with(e*     := <conc> (<map(!ExprName(Id(<Fst>)))> args1, args2))
+      ; with(e*     := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2))
       ; <debug(!"e*     ")> e*
       ; <debug(!"F      ")> F
       ; <debug(!"S      ")> S
