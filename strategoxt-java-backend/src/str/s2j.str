@@ -31,7 +31,7 @@ rules
     s 
   <+ 
       frames  := [ "With-expression failed:" | 
-                   <prim("SSL_stacktrace_get_all_frame_names")> ]
+                   <prim("SSL_stacktrace_get_all_frame_names") ; reverse> ]
     ; spacing := <length ; dec ; upto ; map(!"\n\t")> frames
     ; s       := <zip(conc-strings)> (frames,spacing)
     ; <fprint> (stderr(), s)
@@ -117,10 +117,10 @@ rules
          ]|
     where
       prelude(|"translate-definition")
-    ; strats' := <map(translate-parameter)> strats*
-    ; terms'  := <map(translate-parameter)> terms*
-    ; param*  := <conc> (strats', terms')
-    ; body    := <translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s
+    ; with(strats' := <map(translate-parameter)> strats*)
+    ; with(terms'  := <map(translate-parameter)> terms*)
+    ; with(param*  := <conc> (strats', terms'))
+    ; with(body    := <translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s)
 
   // XXX: add Strategy parameter
   translate-parameter :
@@ -140,8 +140,8 @@ strategies
   translate-body(|S,F) = 
     prelude(|"translate-body") 
     ; translate-strategy(|S,F)
-    ; //verify-SwitchGroup(|"translate-body")
-      debug(!"after translate-body :")
+    //; //verify-SwitchGroup(|"translate-body")
+      //debug(!"after translate-body :")
 
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
@@ -251,14 +251,14 @@ strategies
     <+ translate-Let(|S,F) ; fc
 //    <+ debug(!"translate-strategy failed ") ; fail
        ) 
-    ; debug(!"translated ")
+//    ; debug(!"translated ")
 
   translate-Let(|S,F): 
   Let(defs, body) -> Block(<conc> (defs', [<translate-strategy(|S,F)> body]))
   where
       prelude(|"translate-Let")
     ; debug
-    ; <map(translate-definition ; !ClassDecStm(<id>))> defs => defs'
+    ; with(defs' := <map(translate-definition ; !ClassDecStm(<id>))> defs)
  
   
   make-strategy-class : 
@@ -275,53 +275,54 @@ strategies
     CallT(SVar(x), s*, t*) -> Block(call)
       where prelude(|"translate-CallT"); 
         // FIXME do actual lifting
-        args1  := <map(\ x -> (<new>(), <translate-strategy(|S,F)> x) \)> s*
-      ; bodies := <map(make-strategy-class)> args1
-      ; args2  := <map(java-construct-term)> t* => args2
+        with(args1  := <map(\ x -> (<new>(), <translate-strategy(|S,F)> x) \)> s*)
+      ; with(bodies := <map(make-strategy-class)> args1)
+      ; with(args2  := <map(java-construct-term)> t* => args2)
       ; <debug(!"args1  ")> args1
       ; <debug(!"bodies ")> bodies
       ; <debug(!"args2  ")> args2
-      ; <conc> (<map(!ExprName(Id(<Fst>)))> args1, args2) => e*
+      ; with(e*     := <conc> (<map(!ExprName(Id(<Fst>)))> args1, args2))
       ; <debug(!"e*     ")> e*
       ; <debug(!"F      ")> F
       ; <debug(!"S      ")> S
-      ; y := bstm* |[ 
+      ; with(y := bstm* |[ 
 	               term = x.instance.apply(e*,term); 
 	               if(term == null) 
 	                 ~stm:<Goto> F
 	               else
 	                 ~stm:<Goto> S
-	             ]|
+	             ]|)
       ; <debug(!"y      ")> y
-      ; call   := <concat> [ bodies, y ]
+      ; with(call   := <concat> [ bodies, y ])
 
   java-ArgToCl :
-    CallT(f{Closure(x), Frames([])}, [], []) -> expr|[ x ]|
+    CallT(SVar(f{Closure(x), Frames([])}), [], []) -> expr|[ x ]|
 //    Strat|[ f~{Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
 
   java-ArgToCl :
-    CallT(f{Offset(i),Closure(x),Frames([])}, [], []) -> expr|[ x ]|
+    CallT(SVar(f{Offset(i),Closure(x),Frames([])}), [], []) -> expr|[ x ]|
 //    Strat|[ f~{Offset(i),Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
 
   // passing a remote closure to a function
 
   java-ArgToCl :
 //    Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
-    CallT(f{Offset(i),Closure(x),Frames(frames)}, [], []) ->
+    CallT(SVar(f{Offset(i),Closure(x),Frames(frames)}), [], []) ->
     expr|[ sl_fun_cl(~expr:<mk-int-const> i, ~expr:sl) ]|
-  where 
-    sl := <not([]); java-frames-to-static-link> frames
+  where prelude(|"java-ArgToCl") ;
+    with(sl := <not([]); java-frames-to-static-link> frames)
 
 
   translate-PrimT(|S,F) :
     PrimT(f, s*, t*) -> 
-    <check-unbound-args(|F,t*)>  
+    <java-check-unbound-args(|F,t*)>  
     Block(bstm* |[ 
       term = SSL.~id:Id(f)(~*args); 
       if(term == null) ~<Goto> F else ~<Goto> S
     ]|)
   where prelude(|"translate-PrimT") ;
-        with(args1 := <map(java-ArgToCl)> s*)
+        <debug(!"s* ")> s*
+      ; with(args1 := <map(java-ArgToCl)> s*)
       ; <debug(!"foo ")> t*
       ; with(args2 := <with(map(java-construct-term))> t*)
       ; <debug(!"zap ")> args2
@@ -331,7 +332,7 @@ strategies
 
   translate-Build(|S,F):
     Build(t) -> 
-    <check-unbound-args(|F,t)> 
+    <java-check-unbound-args(|F,t)> 
     Block(bstm*|[
                ~*decs
                ~*stms
@@ -348,7 +349,7 @@ strategies
       |} 
 
   java-check-unbound-args(|F,t) =
-    try(CheckUnboundArgs(|F,t))
+    try(java-CheckUnboundArgs(|F,t))
 
   java-CheckUnboundArgs(|F,t) :
     s -> 
@@ -414,7 +415,7 @@ strategies
   java-InitTermId :
     (x, e) -> bstm*|[ x = e; ]|
 
-   java-mk-int-const = prelude(|"mk-int-const") ;
+  java-mk-int-const = prelude(|"mk-int-const") ;
     !Lit(Deci(<try(int-to-string)>))
     
 
@@ -519,7 +520,7 @@ rules
 	          if ?Id(_) then
 	            !|[ (IStrategoList) ~expr:<id> ]|
 	          else
-	            try(UncastATerm)
+	            try(java-UncastATerm)
 	          end
 	          ; try(java-CastATermListSetAnnotations)
 	        end => e)
@@ -558,7 +559,7 @@ rules
     Var(x{Offset(i), Frames(frames)}) -> 
     expr|[ sl_readvar(~expr:<java-mk-int-const> i, ~expr:sl) ]|
   where 
-    <not([]); java-frames-to-static-link> frames => sl
+    with(sl := <not([]); java-frames-to-static-link> frames)
 
 signature
   constructors
@@ -644,25 +645,33 @@ strategies
      ]|
   where 
       prelude(|"translate-Match - Match(Var(x){bound}, trm)")
-    ; with(e := <java-VarToReadRef> x)
+    ; with(e := <java-VarToReadRef> Var(x))
 
   translate-Match(|S,F) :
-    Match(Var(x){"(un)bound"}, trm) ->
+    Match(Var(x){"(un)bound"}, expr) ->
     stm|[ 
-      if( ~expr:e1 == null )
-        { 
-          ~e2 = ~expr:trm; 
+      if(~expr:e1 == null) {
+          lhs = ~expr:expr;
           ~stm:<Goto> S
-        }
-      else if( !(~expr:e1).equals(~expr:trm) )
+      } else if(!(~expr:e1).equals(~expr:expr)) {
         ~stm:<Goto> F
-      else
+      } else
         ~stm:<Goto> S
     ]|
   where 
       prelude(|"translate-Match - Match(Var(x){(un)bound})")
-    ; e1 := <java-VarToReadRef> Var(x)
-	; e2 := <java-VarToWriteRef ; ?ExprName(<id>)> Var(x)
+    ; <debug(!"XX ")> Var(x)
+    ; with(e1 := <java-VarToReadRef> Var(x))
+    ; <debug(!"PP")> ()
+	; with(e2 := <java-VarToWriteRef> x)
+	; if !e2 => ExprName(_) then
+        lhs := e2
+	  else
+        lhs := e2
+	  end
+    ; <debug(!"e1 ")> e1
+    ; <debug(!"e2 ")> e2
+    ; <debug(!"lhs  ")> lhs
 
   java-VarToWriteRef :
     x{} -> ExprName(Id(x))
@@ -675,11 +684,11 @@ strategies
 
   java-VarToWriteRef : 
     x{Offset(i), Frames(frames)} -> 
-    expr|[ sl_readvar(~expr:<java-mk-int-const> i, ~expr:sl) ]|
+    expr|[ sl_readvar(~expr:<java-mk-int-const> i, ~expr:sl).var ]|
   where 
     <not([]); java-frames-to-static-link> frames => sl
 
-  java-frames-to-static-link =
+  java-frames-to-static-link = prelude(|"java-frames-to-static-link") ; 
     (Tl <+ err(|"*** frames-to-static-link error: "); fail)
     ; foldr(!expr|[ sl ]|,
 	        !expr|[ sl_up(~expr:<Snd>) ]|)
@@ -687,98 +696,105 @@ strategies
   translate-Match(|S,F) :
     Match(Var(x){}, trm) -> <translate-Match(|S,F)> Match(Var(x){"(un)bound"}, trm)
   where prelude(|"translate-Match - Match(Var(x){}")
+    ; <debug(!"ZZ ")> x
 
   translate-Match(|S,F) :
-    Match(Explode(t1, t2), Id(trm)) ->
+    Match(Explode(t1, t2), expr) ->
     stm|[ 
     {
-      IStrategoTerm ~id:x, ~id: y;
-	 ~id:x = SSL_get_constructor(~id:trm);
-	 ~id:y = SSL_get_arguments(~id:trm);
-	 ~stm:(<translate-Match(|Next(),F)> Match(t1, x))
-	 ~stm:(<translate-Match(|S,F)> Match(t2, y))
+      IStrategoTerm ~id:n0, ~id:n1;
+	 ~id:n0 = SSL_get_constructor(~expr:expr);
+	 ~id:n1 = SSL_get_arguments(~expr:expr);
+	 ~stm:(<translate-Match(|Next(),F)> Match(t1, ExprName(n0)))
+	 ~stm:(<translate-Match(|S     ,F)> Match(t2, ExprName(n1)))
      } ]|
   where
       prelude(|"translate-Match - Match(Explode)") 
-    ; x := Id(<newname> "trm")
-    ; y := Id(<newname> "trm")
+    ; with(!expr => ExprName(Id(_)))
+    ; with(n0 := Id(<newname> "trm"))
+    ; with(n1 := Id(<newname> "trm"))
 
   translate-Match(|S,F) =
-       translate-MatchNoAnno(|S,F)
-    <+ translate-MatchAnno(|S,F)
+       ( translate-MatchNoAnno(|S,F)
+      <+ translate-MatchAnno(|S,F) ) 
+      ; where(<debug> "after anno matching")
 
   translate-MatchNoAnno(|S,F) :
-    Match(Anno(pt1, Wld()), trm) -> <translate-Match(|S,F)> Match(pt1, trm)
-  where prelude(|"TranslateMatchNoAnno - Match(pt1{^_}")
-    
+    Match(Anno(pt1, Wld()), expr) -> <translate-Match(|S,F)> Match(pt1, expr)
+  where prelude(|"translate-MatchNoAnno - Match(pt1{^_}")
 
   translate-MatchAnno(|S,F) :
-    Match(Anno(pt1, pt2), ExprName(Id(trm))) -> 
+    Match(Anno(pt1, pt2), expr) -> 
     stm|[ 
       { 
         ATerm ~id:x; 
-        ~id:x = (ATerm)ATgetAnnotations(~id:Id(trm));
+        ~id:x = (ATerm)ATgetAnnotations(~expr:expr);
         if(~id:x == NULL) 
            ~id:x = (ATerm) ATempty;
-        ~stm:(<translate-Match(|Next(),F)> Match(Var(pt1), ExprName(Id(trm))))
-        ~stm:(<translate-Match(|S,F)> Match(Var(pt2), ExprName(Id(x))))
+        ~stm:stm0
+        ~stm:stm1
       } 
     ]|
   where 
-      prelude(|"TranslateMatchAnno - Match(pt1{^pt2})")
+      prelude(|"translate-MatchAnno - Match(pt1{^pt2})")
     ; <not(?Wld())> pt2
-    ; with(x := Id(<newname> "trm"))
+    ; <debug(!"pt1 ")> pt1
+    ; <debug(!"pt2 ")> pt2
+    ; with(x    := Id(<newname> "trm"))
+    ; with(stm0 := <translate-Match(|Next(),F)> Match(pt1, expr))
+    ; with(stm1 := <translate-Match(|S     ,F)> Match(pt2, ExprName(x)))
 
   /**
    * @todo  String constants should probably be cached, just like constructor names
    */
   translate-Match(|S,F) :
-    Match(Str(x), trm) -> 
+    Match(Str(x), expr) -> 
     stm|[
-      if((~expr:trm).getTermType() == IStrategoTerm.STRING && ((IStrategoString)(~id:trm)).getValue().equals(~expr:x'))
+      if((~expr:expr).getTermType() == IStrategoTerm.STRING && ((IStrategoString)(~expr:expr)).getValue().equals(~expr:x'))
         ~stm:<Goto> S
       else 
         ~stm:<Goto> F
     ]|
   where
       prelude(|"translate-Match - Match(Str)")
-    ; with(!trm => ExprName(Id(_)))
+    ; with(!expr => ExprName(Id(_)))
     ; with(x' := Lit(String([Chars(<escape> x)])))
 
   translate-Match(|S,F) :
-    Match(Int(i), trm) -> 
+    Match(Int(i), expr) -> 
     stm|[
-      if((~expr:trm).getTermType() == IStrategoTerm.INT && ((IStrategoInt)~id:trm).getValue() == ~expr:x')
+      if((~expr:expr).getTermType() == IStrategoTerm.INT && ((IStrategoInt)~expr:expr).getValue() == ~expr:x')
         ~stm:<Goto> S
       else 
         ~stm:<Goto> F
     ]|
   where 
       prelude(|"translate-Match - Match(Int)")
-    ; <debug(!"zz ")> trm
-    ; with(!trm => ExprName(Id(_)))
+    ; <debug(!"zz ")> expr
+    ; with(!expr => ExprName(Id(_)))
     ; with(x' := <java-mk-int-const> i)
+    ; debug(!"xx ")
 
   translate-Match(|S,F) :
-    Match(Real(i),trm) -> 
+    Match(Real(i),expr) -> 
     stm|[
-      if((~expr:trm).getTermType() == IStrategoTerm.REAL && ((IStrategoReal)~id:trm).getValue() == ~expr:x')
+      if((~expr:expr).getTermType() == IStrategoTerm.REAL && ((IStrategoReal)~expr:expr).getValue() == ~expr:x')
         ~stm:<Goto> S
       else 
         ~stm:<Goto> F
     ]|
   where 
       prelude(|"translate-Match - Match(Real)")
-    ; with(!trm => ExprName(Id(_)))
+    ; with(!expr => ExprName(Id(_)))
     ; with(x' := Lit(Float(<try(real-to-string)> i)))
 
   /**
    * Translate a match of an Op, but not a Cons/2 or Nil/0.
    */
   translate-Match(|S,F) :
-    Match(op@Op(c, ts), trm) ->
+    Match(op@Op(c, ts), expr) ->
     stm|[
-      if( matchConstructor(~expr:trm, ~id:cname) )
+      if( matchConstructor(~expr:expr, ~id:cname) )
         { 
           ~bstm*:match-args
           ~stm:<Goto> S
@@ -792,43 +808,44 @@ strategies
      ; with((match-args, _) := <thread-map(\ (t,i) ->
              (
                <java-MatchArg1(|Next(),F) <+ java-MatchArg2(|Next(),F)> 
-                  (t, expr|[ ~expr:trm.getSubterm(~expr:<java-mk-int-const> i) ]|)
+                  (t, expr|[ (~expr:expr).getSubterm(~expr:<java-mk-int-const> i) ]|)
              , <add>(i, 1)
              )
            \ )> (ts,0))
 
   java-MatchArg1(|S,F) : 
-    (Var(x){t*}, trm) -> <translate-Match(|S,F)> Match(Var(x){t*}, trm)
+    (Var(x){t*}, expr) -> <translate-Match(|S,F)> Match(Var(x){t*}, expr)
   where 
       prelude(|"java-MatchArg1")
     
 
   java-MatchArg2(|S,F) : 
-    (t, trm) -> 
+    (t, expr) -> 
     stm|[ 
       { 
-         IStrategoTerm x = ~expr:trm; 
-         ~stm:(<translate-Match(|S,F)> Match(t, Id(x)))
+         IStrategoTerm x = ~expr:expr; 
+         ~stm:(<translate-Match(|S,F)> Match(t, ExprName(Id(x))))
       } 
     ]|
   where
-      prelude(|"java-MatchArg1")
+      prelude(|"java-MatchArg2")
     ; with(x := <newname> "trm")
 
   translate-Match(|S,F) :
-    Match(Op("Nil", []), trm) ->
+    Match(Op("Nil", []), expr) ->
     stm|[
-      if((~id:trm).getTermType() == IStrategoTerm.LIST && ((IStrategoList)~id:trm).isEmpty())
+      if((~expr:expr).getTermType() == IStrategoTerm.LIST && ((IStrategoList)~expr:expr).isEmpty())
         ~<Goto> S
       else 
         ~<Goto> F
     ]|
   where prelude(|"translate-Match - Match(Op(Nil))")
 
+
   translate-Match(|S,F) :
-    Match(Op("Cons", [hd, tl]), trm) ->
+    Match(Op("Cons", [hd, tl]), expr) ->
     stm|[
-      if((~id:trm).getTermType() == IStrategoTerm.LIST && !((IStrategoList)~id:trm).isEmpty())
+      if((~expr:expr).getTermType() == IStrategoTerm.LIST && !((IStrategoList)~expr:expr).isEmpty())
         { 
           ~bstm*:match-args 
           ~stm:<Goto> S
@@ -838,5 +855,5 @@ strategies
     ]|
   where 
     <map(java-MatchArg1(|Next(),F) <+ java-MatchArg2(|Next(),F))> 
-	   [ (hd, expr|[ ((IStrategoList)~expr:trm).head() ]|)
-	   , (tl, expr|[ ((IStrategoList)~expr:trm).tail() ]|) ] => match-args
+	   [ (hd, expr|[ ((IStrategoList)~expr:expr).head() ]|)
+	   , (tl, expr|[ ((IStrategoList)~expr:expr).tail() ]|) ] => match-args
