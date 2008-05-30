@@ -18,6 +18,7 @@ signature
   constructors 
     Next  : Term
     Match : Term * Exp -> Exp
+    Filename : Str -> Term
     
 strategies
 
@@ -40,8 +41,24 @@ rules
   java-backend = 
       where(<xtc-find ; parse-rtg-file> "Java-15.rtg" => rtg)
     ; rules( java-rtg := rtg )
+    ; extract-meta
     ; java-compile-spec
       
+  extract-meta = 
+     ?_{Meta(metas)}
+    ; where(rules(metas := metas))
+  
+  meta-filename = 
+      <metas>()
+    ; filter(\ Filename(n) -> n \)
+    ; Hd
+
+  compute-classname = 
+      meta-filename 
+    ; base-filename 
+    ; remove-extension 
+    ; !Id(<id>)
+    
   java-compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
      |[ 
@@ -52,16 +69,19 @@ rules
      import org.strategoxt.lang.Failure;
      import org.strategoxt.lang.terms.*;
      import org.strategoxt.runtime.ssl.SSL;
+
+     import static org.strategoxt.runtime.ssl.SRTS.*;
          
      import static org.strategoxt.lang.Runtime.termFactory;
      import static org.strategoxt.lang.Term.nonNull;
      import static org.strategoxt.lang.Term.checkTermList;
      import static org.strategoxt.lang.Term.matchConstructor;
      		
-     public class Main {
+     public class ~id:name {
 
      ~*cnst-decls
      ~*cnstr-decls
+     ~*lifted-defs
      
      private static void preInit() {
        ~*cnst-inits
@@ -92,14 +112,17 @@ rules
      ]|
   where 
       alltd(JavaTranslate)
-    ; function-defs := <map(translate-outer-definition)> defs
-    ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
-    ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
-    ; cnst-decls    := <bagof-Fragment> "ConstDecl"
-    ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
+    ; with(name          := <compute-classname> ())
+    ; with(function-defs := <map(translate-outer-definition)> defs)
+    ; with(lifted-defs   := <bagof-Fragment> "LiftedDef")
+    ; with(cnstr-decls   := <bagof-Fragment> "ConstructorDecl")
+    ; with(cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit")
+    ; with(cnst-decls    := <bagof-Fragment> "ConstDecl")
+    ; with(cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit")
+    
 
 rules
-  translate-inner-definition = translate-any-definition(|[Final()])
+  translate-inner-definition = translate-any-definition(|[Final(), Static()])
   translate-outer-definition = translate-any-definition(|[Public(), Static()])
   
   translate-any-definition(|modifiers):
@@ -258,16 +281,15 @@ strategies
 //    ; debug(!"translated ")
 
   translate-Let(|S,F): 
-  Let(defs, body) -> Block(<conc> (defs', [<translate-strategy(|S,F)> body]))
+  Let(defs, body) -> Block([<translate-strategy(|S,F)> body])
   where
       prelude(|"translate-Let")
     ; debug
-    ; with(defs' := <map(translate-inner-definition ; !ClassDecStm(<id>))> defs)
+    ; <map(fragment(translate-inner-definition | "LiftedDef"))> defs
  
-  
   make-strategy-class : 
-  (x, body) -> bstm |[ 
-        final class x extends Strategy { 
+  (x, body) -> type-dec |[ 
+        static final class x extends Strategy { 
           public final static x instance = new x();
           public IStrategoTerm apply(IStrategoTerm term) { 
             int nextState = 1;
@@ -287,24 +309,24 @@ strategies
       where prelude(|"translate-CallT"); 
         // FIXME do actual lifting
         with(args1  := <map(\ x -> (<new>(), <translate-strategy(|S,F)> x) \)> s*)
-      ; with(bodies := <map(make-strategy-class)> args1)
+      ; <map(fragment(make-strategy-class|"LiftedDef"))> args1
+//      ; with(bodies := <map(make-strategy-class)> args1)
       ; with(args2  := <map(java-construct-term)> t* => args2)
       ; <debug(!"args1  ")> args1
-      ; <debug(!"bodies ")> bodies
+//      ; <debug(!"bodies ")> bodies
       ; <debug(!"args2  ")> args2
       ; with(e*     := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2))
       ; <debug(!"e*     ")> e*
       ; <debug(!"F      ")> F
       ; <debug(!"S      ")> S
-      ; with(y := bstm* |[ 
+      ; with(call := bstm* |[ 
 	               term = x.instance.apply(e*,term); 
 	               if(term == null) 
 	                 ~stm:<Goto> F
 	               else
 	                 ~stm:<Goto> S
 	             ]|)
-      ; <debug(!"y      ")> y
-      ; with(call   := <concat> [ bodies, y ])
+      ; <debug(!"call      ")> call
 
   java-ArgToCl :
     CallT(SVar(f{Closure(x), Frames([])}), [], []) -> expr|[ x ]|
