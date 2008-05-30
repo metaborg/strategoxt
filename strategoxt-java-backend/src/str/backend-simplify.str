@@ -1,0 +1,25 @@
+module backend-simplify
+imports
+  libstratego-lib
+  libstrc
+  
+signature
+ constructors
+   Meta: List(Term) -> Term
+   Filename: Str -> Term
+  
+strategies
+
+  io-backend-simplify = io-wrap(backend-simplify)
+  
+  backend-simplify = 
+       lift-definitions
+     ; canonicalize
+     ; simplify1
+     ; mark-bound-unbound-vars
+     ; escaping-variables
+     ; tag-with-filename
+  
+  tag-with-filename = 
+       where(filename := <get-config> "-i")
+     ; !<id>{Meta([Filename(filename)])}  
