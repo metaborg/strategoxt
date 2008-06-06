@@ -44,7 +44,7 @@ strategies
     where <not(InlineStrat)> Strategy|[ bottomup_1_0(foo(|)|) ]|
 	; def := |[
             bottomup_1_0(S : ATerm -> ATerm|) =
-              all(bottomup_1_0(S(|)|)); S(|)
+              all-l(bottomup_1_0(S(|)|)); S(|)
           ]|
 
 strategies
