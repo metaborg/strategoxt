@@ -18,8 +18,7 @@ EXTRA_DIST   = \
   stratego-sdf-uninstalled.pc.in \
   stratego-rtg-uninstalled.pc.in \
   stage1.pc.in \
-  stage2.pc.in \
-  empty.pc.in
+  stage2.pc.in
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = strategoxt.pc
@@ -57,7 +56,7 @@ svnignore :
 # Extra work because automake cannot generate those rules due to the loops of
 # AC_CONFIG_FILES inside in the configure.ac
 DISTCLEAN_FILES = $(UNINSTALLED_PKGCONFIG_FILES)
-%-stage1-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/stage1.pc.in $(srcdir)/%-uninstalled.pc.in $(srcdir)/empty.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-%-stage2-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/stage2.pc.in $(srcdir)/%-uninstalled.pc.in $(srcdir)/empty.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
+%-stage1-uninstalled.pc: stage1.pc %-uninstalled.pc
+	cat > $@ -- $^
+%-stage2-uninstalled.pc: stage2.pc %-uninstalled.pc
+	cat > $@ -- $^

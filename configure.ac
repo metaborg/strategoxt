@@ -179,35 +179,51 @@ AC_SUBST([STAGE_FILE], [stage1.pc.in stage2.pc.in])
 
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
-  Makefile 
+  Makefile
   news-archive/Makefile
   manpages/Makefile
   strategoxt.spec
   strategoxt.pc
+
+  stratego-aterm-uninstalled.pc
+  stratego-gpp-uninstalled.pc
+  stratego-lib-native-uninstalled.pc
+  stratego-lib-uninstalled.pc
+  stratego-rtg-uninstalled.pc
+  stratego-runtime-uninstalled.pc
+  stratego-sdf-uninstalled.pc
+  stratego-sglr-uninstalled.pc
+  stratego-tool-doc-uninstalled.pc
+  stratego-xtc-uninstalled.pc
+  xtc-uninstalled.pc
+  stage1.pc
+  stage2.pc
 ])
+
+AC_OUTPUT
+
+### UNINSTALLED PKG-CONFIG #####################################
 
 xt_lib_first_save=$xt_lib_first
 xt_current_stage=1
 while test $xt_current_stage -le $xt_num_stage; do
   if $xt_lib_first; then
     for pkgcname in $LIB_PKGCONFIG_FILES; do
-      xt_pkgfile=$pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc:stage$xt_current_stage.pc.in:$pkgcname-uninstalled.pc.in
-      AC_CONFIG_FILES([$xt_pkgfile1:empty.pc.in],, [xt_pkgfile1=$xt_pkgfile])
+      cat  > $pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc \
+      -- stage$xt_current_stage.pc $pkgcname-uninstalled.pc
     done
   else
     xt_lib_first=true
   fi
 
   for pkgcname in $STRC_PKGCONFIG_FILES; do
-    xt_pkgfile=$pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc:stage$xt_current_stage.pc.in:$pkgcname-uninstalled.pc.in
-    AC_CONFIG_FILES([$xt_pkgfile2:empty.pc.in],, [xt_pkgfile2=$xt_pkgfile])
+    cat  > $pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc \
+    -- stage$xt_current_stage.pc $pkgcname-uninstalled.pc
   done
 
   xt_current_stage=$(($xt_current_stage + 1))
 done
 xt_lib_first=$xt_lib_first_save
-
-AC_OUTPUT
 
 ### CONFIGURE SUBPACKAGES #####################################
 
