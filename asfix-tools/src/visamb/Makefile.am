@@ -25,8 +25,10 @@ visamb1_check_prog    = Vis-amb
 visamb1_check_input   = data/input.test.tree
 visamb1_check_output  = data/input.test.tree.out
 visamb1_check_correct = data/input.test.tree.out.correct
+visamb1_check_dir     = $(srcdir)
 
 visamb2_check_prog    = Vis-amb
 visamb2_check_input   = data/input.exp.tree
 visamb2_check_output  = data/input.exp.tree.out
 visamb2_check_correct = data/input.exp.tree.out.correct
+visamb2_check_dir     = $(srcdir)
