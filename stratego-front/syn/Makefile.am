@@ -27,7 +27,7 @@ EXTRA_DIST     = $(DEFS) $(GEN_MODS) $(call srcwildcard,*.sdf)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) $(GEN_MODS)
 
-SDFINCLUDES = -I $(srcdir)
+SDFINCLUDES = -I $(srcdir) -I $(builddir)
 PGEN_FLAGS  = -m $*
 
 GEN_MODS = StrategoRenamed.sdf StrategoMix.sdf EmbeddedStrategoMix.sdf
