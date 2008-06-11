@@ -16,13 +16,13 @@ m4_pattern_forbid([^XT_])
 AC_DEFUN([XT_CHECK_STAGE],
 [
   AC_ARG_WITH([use-lib-stage], [],
-    [USE_STAGE=$withval],
-    [USE_STAGE=])
+    [LIB_STAGE=$withval],
+    [LIB_STAGE=])
   AC_SUBST([LIB_STAGE])
 
   AC_ARG_WITH([use-strc-stage], [],
-    [USE_STAGE=$withval],
-    [USE_STAGE=])
+    [STRC_STAGE=$withval],
+    [STRC_STAGE=])
   AC_SUBST([STRC_STAGE])
 
   AC_ARG_WITH([current-stage], [],
