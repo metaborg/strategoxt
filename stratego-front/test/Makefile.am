@@ -28,29 +28,29 @@ check: check1 check1-asfix check2 check3 check5
 # Warning: the make check can only occur after the build of strc-core.
 parsestratego = $(top_builddir)/../strc-core$(CURRENT_STAGE)/tools/parse-stratego
 
-check1 : Prop.str 
+check1 : prop1.str Prop.str 
 	$(MAKE) clean
 	$(MAKE) PropStratego.tbl
-	$(parsestratego) -i prop1.str -o prop.rtree --asfix -I .
+	$(parsestratego) -i $< -o prop.rtree --asfix -I . -I $(srcdir)
 
-check1-asfix : Prop.str
+check1-asfix : prop1.str Prop.str
 	$(MAKE) clean
 	$(MAKE) PropStratego.tbl
-	$(parsestratego) -i prop1.str -o prop-asfix.rtree -I .
+	$(parsestratego) -i $< -o prop-asfix.rtree -I . -I $(srcdir)
 
-check2 : Prop.str
+check2 : prop2.str Prop.str
 	$(MAKE) clean
 	$(MAKE) PropStratego.tbl
-	$(parsestratego) -i prop2.str -o prop2.rtree -I .
+	$(parsestratego) -i $< -o prop2.rtree -I . -I $(srcdir)
 
-check3 : Prop.str
+check3 : prop3.str Prop.str
 	$(MAKE) clean
-	$(parsestratego) -i prop3.str -o prop3.rtree
+	$(parsestratego) -i $< -o prop3.rtree -I $(srcdir)
 
-check5 :
+check5 : anti-quote-preterm.str
 	XTC_REPOSITORY=$(BUILD_REPOSITORY) $(parsestratego) \
-	  -i anti-quote-preterm.str -I $(top_builddir)/syn -o anti-quote-preterm.rtree
-	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c
+	  -i $< -I $(top_builddir)/syn -o anti-quote-preterm.rtree -I $(srcdir)
+	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c -I $(srcdir)
 
 CLEANFILES = PropStratego.def PropStratego.tbl $(wildcard *.rtree)
 EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.sdf)
