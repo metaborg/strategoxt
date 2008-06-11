@@ -17,6 +17,9 @@ SDFINCLUDES    = -I $(top_srcdir)/syn \
 PGEN_FLAGS     = -m $*
 
 TESTS          = $(check_PROGRAMS)
+
+TESTS_ENVIRONMENT = SRCDIR="$(srcdir)"
+
 EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) \
   $(call srcwildcard,*.sdf)  $(wildcard *.def)
 

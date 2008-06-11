@@ -13,15 +13,20 @@ strategies
       )
     )
 
+  srcfile(|f) =
+    !f
+  ; try(<concat-strings> [<getenv> "SRCDIR", "/", <id>])
+  ; !FILE(<id>)
+
   full-applications =
-      apply-and-check(!"Exp1.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
-    ; apply-and-check(!"Exp2.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
-    ; apply-and-check(!"Exp3.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
-    ; apply-and-check(!"Cycle.def", xtc-transform(!"sdf2rtg", !["--main", "Cycle"]), !FILE("Cycle.def"), xtc-debug-text)
-    ; apply-and-check(!"FunProgram.def", xtc-transform(!"sdf2rtg", !["--main", "FunProgram"]), !FILE("FunProgram.def"), xtc-debug-text)
-    ; apply-and-check(!"Tuple.def", xtc-transform(!"sdf2rtg", !["--main", "Tuple"]), !FILE("Tuple.def"), xtc-debug-text)
-    ; apply-and-check(!"OptAlt.def", xtc-transform(!"sdf2rtg", !["--main", "OptAlt"]), !FILE("OptAlt.def"), xtc-debug-text)
-    ; apply-and-check(!"Literals.def", xtc-transform(!"sdf2rtg"), !FILE("Literals.def"), xtc-debug-text)
+      apply-and-check(!"Exp1.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), srcfile(|"Exp1.def"), xtc-debug-text)
+    ; apply-and-check(!"Exp2.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), srcfile(|"Exp1.def"), xtc-debug-text)
+    ; apply-and-check(!"Exp3.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), srcfile(|"Exp1.def"), xtc-debug-text)
+    ; apply-and-check(!"Cycle.def", xtc-transform(!"sdf2rtg", !["--main", "Cycle"]), srcfile(|"Cycle.def"), xtc-debug-text)
+    ; apply-and-check(!"FunProgram.def", xtc-transform(!"sdf2rtg", !["--main", "FunProgram"]), srcfile(|"FunProgram.def"), xtc-debug-text)
+    ; apply-and-check(!"Tuple.def", xtc-transform(!"sdf2rtg", !["--main", "Tuple"]), srcfile(|"Tuple.def"), xtc-debug-text)
+    ; apply-and-check(!"OptAlt.def", xtc-transform(!"sdf2rtg", !["--main", "OptAlt"]), srcfile(|"OptAlt.def"), xtc-debug-text)
+    ; apply-and-check(!"Literals.def", xtc-transform(!"sdf2rtg"), srcfile(|"Literals.def"), xtc-debug-text)
 
 /** TODO: restore after the introduction of user definable desugarings
   productions =
