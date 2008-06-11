@@ -19,10 +19,13 @@ parenthesize-tests.c : parenthesize-Exp.str Exp.str
 parenthesize-Exp.str : Exp.tbl
 	$(bindir)/sdf2parenthesize -i $< -o $@
 
+Exp.def: Exp.src.def
+	$(LN_S) $< $@
+
 PGEN_FLAGS    = -m $*
 SDF2RTG_FLAGS = -m $*
 SCFLAGS       = --main io-$*
-STRINCLUDES   = -I $(XTC)/share/xtc
+STRINCLUDES   = -I $(XTC)/share/xtc -I $(builddir)
 LDADD        += $(SSL_LIBS)
 
 nodist_parenthesize_tests_SOURCES = parenthesize-tests.c

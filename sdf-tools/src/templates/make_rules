@@ -32,9 +32,10 @@ diff :
 	(\
 	  prog=./$($(*)_check_prog) ;\
 	  input=$($(*)_check_input) ;\
-	  if [ "a$${input}" != "a" ]; then input="-i $(srcdir)/$${input}"; fi ;\
+    dir=$($(*)_check_dir) ;\
+	  if [ "a$${input}" != "a" ]; then input="-i $${dir}/$${input}"; fi ;\
 	  output=$($(*)_check_output) ;\
-	  correct=$(srcdir)/$($(*)_check_correct) ;\
+	  correct=$${dir}//$($(*)_check_correct) ;\
 	  switches="$($(*)_check_switches)" ;\
 	  echo set -e ;\
 	  echo $${prog} $${switches} $${input} -o $${output};\
@@ -47,9 +48,10 @@ diff :
 	(\
 	  prog=./$($(*)_check_prog) ;\
 	  input=$($(*)_check_input) ;\
-	  if [ "a$${input}" != "a" ]; then input="-i $(srcdir)/$${input}"; fi ;\
+    dir=$($(*)_check_dir) ;\
+	  if [ "a$${input}" != "a" ]; then input="-i $${dir}//$${input}"; fi ;\
 	  output=$($(*)_check_output) ;\
-	  correct=$(srcdir)/$($(*)_check_correct) ;\
+	  correct=$${dir}//$($(*)_check_correct) ;\
 	  switches="$($(*)_check_switches)" ;\
 	  echo set -e;\
 	  echo "$${prog} -o /dev/null $${switches} $${input} 2>$${output}";\

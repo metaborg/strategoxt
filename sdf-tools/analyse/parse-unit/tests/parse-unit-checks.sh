@@ -5,6 +5,8 @@ PASS=0
 REPORT=""
 IFS=''
 
+: ${SRCDIR=.}
+
 incfail() {
   FAIL=$(($FAIL+1))
 }
@@ -18,7 +20,7 @@ appendreport() {
 }
 
 testsuccess() {
-  ${PARSE_UNIT} -i $suite.testsuite -p Exp.tbl --verbose $VERBOSE
+  ${PARSE_UNIT} -i $SRCDIR/$suite.testsuite -p Exp.tbl --verbose $VERBOSE
   if test $? -eq 1; then
     incfail
     line="* FAIL: testsuite $suite failed (should succeed)" appendreport
@@ -29,7 +31,7 @@ testsuccess() {
 }
 
 testfail() {
-  ${PARSE_UNIT} -i $suite.testsuite -p Exp.tbl --verbose $VERBOSE
+  ${PARSE_UNIT} -i $SRCDIR/$suite.testsuite -p Exp.tbl --verbose $VERBOSE
   if test $? -eq 0; then
     incfail
     line="* FAIL: testsuite $suite succeeded (should fail)" appendreport

@@ -21,3 +21,4 @@ sdf_bracket_check_prog    = sdf-bracket
 sdf_bracket_check_input   = data/sdf-bracket.sdf.af
 sdf_bracket_check_output  = data/sdf-bracket.sdf.af.out
 sdf_bracket_check_correct = data/sdf-bracket.sdf.af.correct
+sdf_bracket_check_dir     = $(srcdir)

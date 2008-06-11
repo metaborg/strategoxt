@@ -8,6 +8,7 @@ TESTS = $(check_SCRIPTS)
 
 TESTS_ENVIRONMENT =\
   PARSE_UNIT="$(prefix)/bin/parse-unit$(EXEEXT)"\
+  SRCDIR=$(srcdir) \
   VERBOSE="1"
 
 EXTRA_DIST = $(check_SCRIPTS) Exp.sdf $(call srcwildcard,*.testsuite)
