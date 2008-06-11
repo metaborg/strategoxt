@@ -237,16 +237,16 @@ LIB_STAGE_ARGS=""
 xt_lib_first_save=$xt_lib_first
 xt_current_stage=1
 while test $xt_current_stage -le $xt_num_stage; do
-  CURRENT_STAGE_ARG="--with-current-stage=${STAGE_SUFFIX}$xt_current_stage"
+  CURRENT_STAGE_ARGS="--with-current-stage=${STAGE_SUFFIX}$xt_current_stage"
   if $xt_lib_first; then
-    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARG)
-    LIB_STAGE_ARG="--with-use-lib-stage=-stage$xt_current_stage"
+    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS)
+    LIB_STAGE_ARGS="--with-use-lib-stage=-stage$xt_current_stage"
   else
     xt_lib_first=true
   fi
 
-  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARG)
-  STRC_STAGE_ARG="--with-use-strc-stage=-stage$xt_current_stage"
+  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS)
+  STRC_STAGE_ARGS="--with-use-strc-stage=-stage$xt_current_stage"
 
   xt_current_stage=$(($xt_current_stage + 1))
 done
