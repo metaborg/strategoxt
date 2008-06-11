@@ -132,9 +132,13 @@ strategies
 
 strategies
 
+  goto-rtgdir =
+    where(<try(getenv; chdir)> "RTGDIR")
+
   test-format-check(|rtg) =
     where(
-      rtg' := <parse-rtg-file> rtg
+      goto-rtgdir
+      ; rtg' := <parse-rtg-file> rtg
       ; if UseDeprecatedNormalizer then
           rtgnf := <rtg-normalize-deprecated> rtg'
         else
@@ -145,7 +149,8 @@ strategies
 
   test-format-check(|rtg, startnt) =
     where(
-      rtg' := <parse-rtg-file> rtg
+      goto-rtgdir
+      ; rtg' := <parse-rtg-file> rtg
       ; if UseDeprecatedNormalizer then
           rtgnf := <rtg-normalize-deprecated> rtg'
         else

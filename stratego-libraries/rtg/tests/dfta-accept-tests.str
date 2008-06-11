@@ -5,7 +5,7 @@ imports
 
 strategies 
 
-  main-dfta-accept-tests = 
+  main-dfta-accept-tests = goto-rtgdir;
     option-wrap(general-options,
       test-suite(!"dfta-accept",
         int-list-tests
@@ -134,8 +134,11 @@ strategies
 
 strategies
 
+  goto-rtgdir =
+    where(<try(getenv; chdir)> "RTGDIR")
+
   test-dfta-format-check(|rtg) =
-    where(dfta := <parse-rtg-file; rtg2dfta; open-dfta> rtg)
+    where(dfta := <goto-rtgdir; parse-rtg-file; rtg2dfta; open-dfta> rtg)
     ; dfta-format-check(|dfta)
     ; where(<dfta-destroy> dfta)
  
