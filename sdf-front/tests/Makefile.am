@@ -14,5 +14,5 @@ check : $(TESTSUITES:.testsuite=.runtestsuite)
 
 check_DATA  = $(TBL).tbl
 PGEN_FLAGS  = -m $*
-SDFINCLUDES = -Idef $(top_srcdir)/syn/Stratego-Sdf2.def
+SDFINCLUDES = -Idef $(top_builddir)/syn/Stratego-Sdf2.def
 CLEANFILES  = $(TBL).tbl
