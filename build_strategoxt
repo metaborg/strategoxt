@@ -1,0 +1,134 @@
+#!/bin/sh
+
+usage(){
+  echo 1>&2 "
+Usage:
+  $0
+     (-s <step> | -d <step>)*
+     [--baseline <path>]
+     [--srcdir <path>] [--builddir <path>]
+     [--instdir <path> | --prefix <path>]
+     [--help] [--verbose]
+
+Options:
+
+  This program compiles the Stratego/XT repository.  It gives the
+  opportunity to compile and install it without much effort.  All the
+  compilation process is devided in steps which could be enable or disables.
+
+  -s <step> | -d <step>
+
+    These commands are used to skip (s) or do (d) a step.  By default all
+    steps are done when the script is called.  The list of steps that could
+    be activated or not is:
+
+      - bootstrap
+      - configure
+      - build
+      - install
+      - check
+      - all (all previous steps)
+
+   The order of these commands is important.
+
+  --baseline    Baseline used to compile [$STRATEGOXT_BASELINE]
+  --srcdir      Source directory [$srcdir]
+  --builddir    Build directory [$builddir]
+  --instdir     Install directory [$instdir]
+  --prefix      (same as --instdir)
+
+  --help        Display the usage of this tool.
+  --verbose     Show all steps of the compilation (recommended) [$verbose]
+"
+  exit 1
+}
+
+: ${srcdir=$(pwd)}
+: ${builddir=$srcdir/_build}
+: ${instdir=$srcdir/_inst}
+: ${STRATEGOXT_BASELINE=$HOME/.nix-profile/}
+
+verbose=false
+
+all_steps="bootstrap configure build install check"
+action_id=0
+for step in $all_steps; do
+  eval skip_${step}=0
+  eval do_${step}=0
+done
+
+argfun=""
+for arg; do
+  if test -z "$argfun"; then
+    case $arg in
+      -s) argfun="step_skip";;
+      -d) argfun="step_do";;
+      --srcdir) argfun="set_srcdir";;
+      --builddir) argfun="set_builddir";;
+      --instdir|--prefix) argfun="set_instdir";;
+      --baseline) argfun="set_STRATEGOXT_BASELINE";;
+      --verbose) verbose=true;;
+      --help) usage;;
+    esac
+  else
+    case $argfun in
+      set_*)
+        var=$(echo $argfun | sed 's,^set_,,')
+        eval $var=$arg
+        ;;
+      step_*)
+        action_id=$(($action_id + 1))
+        action=$(echo $argfun | sed 's,^step_,,')
+        case $arg in
+          all)
+            for step in $all_steps; do
+              eval ${action}_${step}=$action_id
+            done
+            ;;
+          bootstrap|configure|build|install|check)
+            eval ${action}_${arg}=$action_id
+            ;;
+          *) usage;;
+        esac
+    esac
+    argfun=""
+  fi
+done
+
+if $verbose; then
+  set -x -e
+fi
+
+export STRATEGOXT_BASELINE
+export PKG_CONFIG_PATH=$STRATEGOXT_BASELINE/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+
+should_do(){
+  local step=$1
+  test $(eval echo \$do_$step) -ge $(eval echo \$skip_$step)
+}
+
+if should_do bootstrap; then
+  cd $srcdir
+  ./bootstrap
+fi
+
+if should_do configure; then
+  mkdir -p $builddir
+  cd $builddir
+  $srcdir/configure --enable-werror --with-strategoxt=$STRATEGOXT_BASELINE --prefix=$instdir $extra_configure
+fi
+
+if should_do build; then
+  cd $builddir
+  make all $extra_build
+fi
+
+if should_do install; then
+  cd $builddir
+  make install $extra_install
+fi
+
+if should_do check; then
+  cd $builddir
+  make check $extra_check
+fi
