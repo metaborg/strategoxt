@@ -25,6 +25,8 @@ check_PROGRAMS 	= arity-test as-pattern assignment			    \
 
 TESTS 		= $(check_PROGRAMS)
 
+TESTS_ENVIRONMENT = SRCDIR="$(srcdir)/"
+
 
 CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \

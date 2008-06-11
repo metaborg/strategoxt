@@ -44,6 +44,8 @@ check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
 
 TESTS 		= $(check_PROGRAMS)
 
+TESTS_ENVIRONMENT = SRCDIR="$(srcdir)/"
+
 cs_test01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test03_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)

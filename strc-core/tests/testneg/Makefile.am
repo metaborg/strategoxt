@@ -16,8 +16,10 @@ STRPROGS = \
 
 TESTS = $(STRPROGS:.str=.str.sh)
 
+TESTS_ENVIRONMENT = MAKE="$(MAKE)"
+
 $(TESTS): testfail
-	for i in $(STRPROGS); do ln -fs $(srcdir)/$< $$i.sh; done
+	for i in $(STRPROGS); do ln -fs $< $$i.sh; done
 
 EXTRA_DIST  = $(TESTS) testfail accept-success.list
 

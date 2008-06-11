@@ -5,7 +5,7 @@ INPUT=${0%.str.sh}
 rm -f ${INPUT}.o ${INPUT}.c ${INPUT}.ac ${INPUT}.s[0-9]* ${INPUT}.f* ${INPUT}.c.abox \
   ${INPUT}.tree ${INPUT}.mtree ${INPUT}.rtree ${INPUT}.txt ${INPUT}.s5fused ${INPUT}.dep ${INPUT}.out
 
-if ! make ${INPUT}.c; then
+if ! ${MAKE} ${INPUT}.c; then
   echo " ** RESULT $0: stratego compilation failed, which is ok"
   exit 0
 fi

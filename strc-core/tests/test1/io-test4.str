@@ -7,8 +7,11 @@ signature
  
 strategies 
 
+  srcdir =
+    try(<conc-strings> (<getenv> "SRCDIR", <id>))
+
   main = 
-    <conc>(<id>, ["-i", "io-test4.in", "-o", "io-test4.out"])
+    <conc>(<id>, ["-i", <srcdir> "io-test4.in", "-o", "io-test4.out"])
     ; io-wrap( 
         ?x
         ; debug(!"input: ")

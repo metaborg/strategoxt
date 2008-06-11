@@ -7,13 +7,16 @@ strategies
         test1
     )
 
+  srcdir =
+    try(<conc-strings> (<getenv> "SRCDIR", <id>))
+
   test1 = 
     apply-test(!"test1"
               ,disj-nf
 
               ,!And(And(Or(Or(Atom("d_0"),Atom("a")),Or(Or(Atom("c_0"),Atom("a")),False)),Atom("b")),And(And(Or(Or(Atom("b_0"),Atom("a")),Or(Or(Atom("a_0"),Atom("a")),False)),Atom("b")),True))
 
-              ,open(!"prop.res") 
+              ,open(<srcdir> "prop.res") 
               )
 
 strategies

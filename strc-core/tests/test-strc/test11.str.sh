@@ -1,3 +1,3 @@
 #!/bin/sh
 
-${STRC} -i test11.str --cc ${CC} || exit 1
+${STRC} -i "${SRCDIR}/test11.str" -o test11 --cc ${CC} || exit 1
