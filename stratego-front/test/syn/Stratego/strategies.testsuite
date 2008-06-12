@@ -239,3 +239,6 @@ test Global variable syntax
 
 test Global variable syntax
   "rules(Foo :+= 1)" -> GenDynRules([DynRuleAssignAdd(_, NoAnnoList(Int("1")))])
+  
+test Strategy identifier with underscore
+  "let a = b := <c> _d = e in id end" -> Let([SDefNoArgs("a",Assign(Var("b"),RootApp(CallNoArgs(SVar("c"))))),SDefNoArgs("_d",CallNoArgs(SVar("e")))],Id)

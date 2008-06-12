@@ -4,7 +4,7 @@ imports
   Stratego-Core-Constants
 
 exports
-  sorts ID Var
+  sorts ID Var Wld
   context-free syntax
     Id 				-> Var  {cons("Var")}
     Id				-> ID
@@ -15,8 +15,9 @@ exports
     Var 			 -> PreTerm 
     Var 			 -> Term {prefer}
 
-    "_" 			 -> PreTerm {cons("Wld")}
-    "_" 			 -> Term {cons("Wld"),prefer}
+    "_" 			 -> Wld {cons("Wld")}
+    Wld 			 -> PreTerm
+    Wld 			 -> Term {prefer}
 
     Int 			 -> PreTerm {cons("Int")}
     Real 			 -> PreTerm {cons("Real")}

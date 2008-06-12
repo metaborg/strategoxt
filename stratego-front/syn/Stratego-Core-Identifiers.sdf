@@ -13,7 +13,7 @@ exports
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
 
-  sorts Id LId LCID UCID
+  sorts Id LId LCID UCID Wld
   lexical syntax
     [a-zA-Z\_] [a-zA-Z0-9\'\-\_]*     -> Id
     [a-zA-Z\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
@@ -70,6 +70,9 @@ exports
     "where"
     "import-term"
       -/- [a-zA-Z0-9\'\-\_]
+  
+  context-free restrictions
+    Wld -/- [a-zA-Z0-9\'\-\_]
 
   sorts Keyword
   lexical syntax
