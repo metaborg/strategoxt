@@ -35,8 +35,8 @@ strategies
     rec x(try(
         Simplify
         <+ GuardedLChoice(x, x, x)
-	<+ Scope(id, Seq(Match(id), id))
-	<+ InlineStrat; x
+	    <+ Scope(id, Seq(Match(id), id))
+	    <+ InlineStrat; x
     ))
 
   add-bottomup :
@@ -64,9 +64,9 @@ strategies
     ; where(<inline-rules> s1 => s2)
     ; !|[ 
           let bottomup_1_0(S : ATerm -> ATerm|) =
-                all(bottomup_1_0(S(|)|)); S(|)
+                all-l(bottomup_1_0(S(|)|)); S(|)
 
-	      x(|) = (mark(|); s2); bottomup_1_0(x(|)|) < id + id
+	          x(|) = (mark(|); s2); bottomup_1_0(x(|)|) < id + id
            in bottomup_1_0(x(|)|)
           end 
       ]|
@@ -87,21 +87,21 @@ strategies
 
   propagate-mark = 
     innermost(
-	SeqOverChoiceL
-	+ SeqOverLChoiceL
-	+ SeqOverGChoiceL
-	+ SeqOverScopeL 
+	  SeqOverChoiceL
+	  + SeqOverLChoiceL
+	  + SeqOverGChoiceL
+	  + SeqOverScopeL 
     )
 
   fuse-with-bottomup = 
     innermost(
-	SeqOverChoiceR
-	+ SeqOverLChoiceR
-	+ SeqOverScopeR
-	+ AssociateR
-        + IntroduceApp
-        + ApptoApp
-	+ BottomupOverConstructor
+	  SeqOverChoiceR
+	  + SeqOverLChoiceR
+	  + SeqOverScopeR
+	  + AssociateR
+      + IntroduceApp
+      + ApptoApp
+	  + BottomupOverConstructor
     )
 
   // Constructors for which there is no rule in the rule set
@@ -171,18 +171,15 @@ strategies
   UnMark :
     Strategy|[ mark(|) ]| -> Strategy|[ id ]|
 
-
-
-
 strategies // outermost fusion
 
   outermost-fusion :
     |[ outermost_1_0(s1|) ]| -> 
     |[ let f = repeat(rec x(s2 <+ s3)); all(f) in f end ]|
     where log(|Notice(),"Application of outermost found")
-	; new => x
-	; new => f
-	; <inline-rules> s1 => s2
+        ; new => x
+        ; new => f
+        ; <inline-rules> s1 => s2
         ; derive-hnf-traversal(|x) => s3
 
   derive-hnf-traversal(|x) =

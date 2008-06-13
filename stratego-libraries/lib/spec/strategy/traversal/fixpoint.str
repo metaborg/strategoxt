@@ -22,11 +22,17 @@ strategies
     repeat(oncebu(s))
 
   innermost(s)  = 
-    bottomup(try(s; innermost(s)))
+    bottomup-l(try(s; innermost(s)))
 
+  /**
+   * @obsolete
+   */
   innermost-old(s) =
     rec x(all(x); (s; x <+ id))
-
+    
+  /**
+   * @obsolete
+   */
   pseudo-innermost3(s) =
     rec x(all(x); rec y(try(s; all(all(all(y); y); y); y)))
 

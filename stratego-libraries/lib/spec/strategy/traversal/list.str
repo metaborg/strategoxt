@@ -27,7 +27,7 @@ strategies
 
 */
 
-  all-l(s) = [s | s] <+ all(s)
+  all-l(s) = ?[_|_] < [s | s] + all(s)
 
 
   topdown-l(s) = 
