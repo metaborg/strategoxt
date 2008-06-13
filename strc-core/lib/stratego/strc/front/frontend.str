@@ -23,7 +23,7 @@ strategies
       ; m-transform-constructors(id
           ; pre-desugar
           ; try(DeclareVarToConst)
-	  ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
+	      ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
           ; (GenerateCheckRule <+ dbg(|"GenerateCheckRule fails: "))
           ; try(where(m-MkCongDef; m-add-def))
         )
@@ -66,12 +66,12 @@ strategies
           map(id
             ; stratego-desugar
             ; raise-annotations
-	    ; not(def-use-def)
+	        ; not(def-use-def)
             ; not(check-constructors)
             ; expand-overlays-in-def
             ; rules-to-sdefs-def
             ; desugar-list-matching
-	    ; desugar-DefaultVarDec
+	        ; desugar-DefaultVarDec
             ; strename
             ; desugar-def
             ; check-patterns
@@ -97,7 +97,7 @@ strategies
       ; m-transform-local-defs(
           [rename-calls
            ; simplify
-	   ; define-congruences-def
+	       ; define-congruences-def
           ]
         )
               
