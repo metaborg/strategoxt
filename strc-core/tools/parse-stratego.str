@@ -8,7 +8,7 @@ strategies
 
   parse-stratego-io =
     xtc-io-wrap(parse-stratego-options, 
-      where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
+      where(<post-extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
       ; ps-parse-module-trm
       ; write-to
       <+ <xtc-exit> 1
