@@ -49,7 +49,8 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     #
     # No witnesses are used here, since some packages might not
     # yet be installed.
-  #  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+    #  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+    SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
   else
     AC_MSG_RESULT([no])
 

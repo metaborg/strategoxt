@@ -54,12 +54,12 @@ STRCFLAGS =
 
 # stratego/strc/parse/Stratego.tbl
 libstrc.rtree libstrc.c : $(strclib:.str=.rtree) 
-	$(STRC)/bin/strc -c --library -i $(srcdir)/strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
+	$(SCOMPILE) -c --library -i $(srcdir)/strc.str -o libstrc.rtree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 	rm libstrc.str
 
 # stratego/strc/parse/Stratego.tbl
 libstrc.ctree : $(strclib:.str=.rtree) 
-	$(STRC)/bin/strc -F -c --library -i $(srcdir)/strc.str -o libstrc.ctree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
+	$(SCOMPILE) -F -c --library -i $(srcdir)/strc.str -o libstrc.ctree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 
 # stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
 # 	mkdir -p $(top_builddir)/lib/stratego/strc/parse

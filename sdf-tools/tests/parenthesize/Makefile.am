@@ -8,7 +8,7 @@ TESTS          = $(check_PROGRAMS) sdf2parenthesize-checks.sh
 
 TESTS_ENVIRONMENT =\
   SDF2PARENTHESIZE="$(bindir)/sdf2parenthesize$(EXEEXT)"\
-  STRC="$(STRC)/bin/strc"\
+  STRC="$(SCOMPILE)"\
   VERBOSE="1"
 
 EXTRA_DIST     = ExpAmb.sdf Exp.def Exp-pretty.pp parenthesize-tests.str
