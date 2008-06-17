@@ -8,7 +8,7 @@ Usage:
      [--baseline <path>]
      [--srcdir <path>] [--builddir <path>]
      [--instdir <path> | --prefix <path>]
-     [--help] [--verbose]
+     [--help] [--verbose] [--fast]
 
 Options:
 
@@ -38,7 +38,8 @@ Options:
   --prefix      (same as --instdir)
 
   --help        Display the usage of this tool.
-  --verbose     Show all steps of the compilation (recommended) [$verbose]
+  --verbose     Show all steps of the compilation. (recommended) [$verbose]
+  --fast        Compiles without optimizations.
 "
   exit 1
 }
@@ -49,6 +50,7 @@ Options:
 : ${STRATEGOXT_BASELINE=$HOME/.nix-profile/}
 
 verbose=false
+fast=false
 
 all_steps="bootstrap configure build install check"
 action_id=0
@@ -68,6 +70,7 @@ for arg; do
       --instdir|--prefix) argfun="set_instdir";;
       --baseline) argfun="set_STRATEGOXT_BASELINE";;
       --verbose) verbose=true;;
+      --fast) fast=true;;
       --help) usage;;
     esac
   else
@@ -115,7 +118,8 @@ fi
 if should_do configure; then
   mkdir -p $builddir
   cd $builddir
-  $srcdir/configure --enable-werror --with-strategoxt=$STRATEGOXT_BASELINE --prefix=$instdir $extra_configure
+  $srcdir/configure --enable-werror --with-strategoxt=$STRATEGOXT_BASELINE \
+    --prefix=$instdir ${fast:+CFLAGS="-O0 -g"} $extra_configure
 fi
 
 if should_do build; then
