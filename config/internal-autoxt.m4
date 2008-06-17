@@ -46,6 +46,8 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
 
   AC_REQUIRE([XT_CHECK_STAGE])
   AC_MSG_CHECKING([whether a stage of the compiler is explicitly set])
+
+  POST_SCOMPILE=""
   if test "${STRC_STAGE:+set}" = set; then
     AC_MSG_RESULT([yes])
 
@@ -77,7 +79,10 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
       xt_libs="$xt_libs -dlopen \$(top_builddir)/../$l"
     done
 
-    SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
+    POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
+
+    # POST_SCOMPILE should be at the end of the strc command line
+    SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc $POST_SCOMPILE"
   else
     AC_MSG_RESULT([no])
 
