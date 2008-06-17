@@ -54,7 +54,31 @@ RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
 SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
 
 if test "${STRC_STAGE:+set}" = set; then
-  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
+  xt_lib_list="strc-core${STRC_STAGE}/lib/libstrc.la"
+  xt_lib_list="c-tools${STRC_STAGE}/pp/libc-pp.la $xt_lib_list"
+
+  if test "${LIB_STAGE:+set}" = set; then
+    # should be retrieved from pkg-config files (factor the work)
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/xtc/lib/libstratego-xtc.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/lib/native/stratego-lib/libstratego-lib-native.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/lib/spec/libstratego-lib.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/rtg/lib/libstratego-rtg.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/sdf/lib/libstratego-sdf.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/runtime/lib/libstratego-runtime.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/aterm/lib/libstratego-aterm.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/sglr/justsglr/libjustsglr.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/sglr/lib/libstratego-sglr.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/gpp/lib/libstratego-gpp.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/tool-doc/lib/libstratego-tool-doc.la"
+  fi
+
+  xt_libs=""
+  for l in $xt_lib_list; do
+    xt_libs="$xt_libs -dlopen \$(top_builddir)/../$l"
+  done
+
+  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
+
   BOX_UNINSTALLED_STRCFLAGS="-I \$(top_builddir)/../gpp${STRC_STAGE}/syn/box"
   PPTABLETBL_UNINSTALLED="\$(top_builddir)/../gpp${STRC_STAGE}/syn/pp-table"
 #  SDFTBL_UNINSTALLED="\$(top_builddir)/../sdf-front/syn"

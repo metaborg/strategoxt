@@ -6,11 +6,9 @@ SCFLAGS = \
 	  -I $(top_builddir)/lib \
 	  --main $*-io	
 
-LIB_STRC        = -L$(top_builddir)/lib -L$(top_srcdir)/lib -lstrc
+LIB_STRC        = -L$(top_builddir)/lib -lstrc
 
 LDADD      = $(LIB_STRC) $(SSL_LIBS)
-
-#strc_LDADD      = $(LIB_STRC) $(SSL_LIBS)
 
 bin_SCRIPTS      = strcflags
 bin_PROGRAMS 	 = strc parse-stratego pp-stratego
