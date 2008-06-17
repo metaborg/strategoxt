@@ -233,23 +233,30 @@ AB_CONFIG_PKG(autoxt, )
 COMMON_ARGS="--with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY}"
 STRC_STAGE_ARGS="--enable-baseline"
 LIB_STAGE_ARGS=""
+LINK_STAGE_ARGS=""
+NEW_LINK_STAGE_ARGS=""
 
 xt_lib_first_save=$xt_lib_first
 xt_current_stage=1
 while test $xt_current_stage -le $xt_num_stage; do
+  LINK_STAGE_ARGS="$NEW_LINK_STAGE_ARGS"
   CURRENT_STAGE_ARGS="--with-current-stage=${STAGE_SUFFIX}$xt_current_stage"
   if $xt_lib_first; then
-    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS)
+    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
     LIB_STAGE_ARGS="--with-use-lib-stage=-stage$xt_current_stage"
+    NEW_LINK_STAGE_ARGS="--with-link-lib-stage=-stage$xt_current_stage"
   else
     xt_lib_first=true
   fi
 
-  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS)
+  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
   STRC_STAGE_ARGS="--with-use-strc-stage=-stage$xt_current_stage"
 
   xt_current_stage=$(($xt_current_stage + 1))
 done
 xt_lib_first=$xt_lib_first_save
 
-AB_CONFIG_PKG("$BASE_PKGS", $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS)
+LINK_STAGE_ARGS="$NEW_LINK_STAGE_ARGS"
+
+
+AB_CONFIG_PKG("$BASE_PKGS", $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $LINK_STAGE_ARGS)

@@ -15,6 +15,10 @@ AC_DEFUN([XT_CHECK_STAGE],
     [STRC_STAGE=])
   AC_SUBST([STRC_STAGE])
 
+  AC_ARG_WITH([link-lib-stage], [],
+    [LINK_STAGE=$withval],
+    [LINK_STAGE=])
+
   AC_ARG_WITH([current-stage], [],
     [CURRENT_STAGE=$withval],
     [CURRENT_STAGE=])

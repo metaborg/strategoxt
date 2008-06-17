@@ -25,6 +25,10 @@ AC_DEFUN([XT_CHECK_STAGE],
     [STRC_STAGE=])
   AC_SUBST([STRC_STAGE])
 
+  AC_ARG_WITH([link-lib-stage], [],
+    [LINK_STAGE=$withval],
+    [LINK_STAGE=])
+
   AC_ARG_WITH([current-stage], [],
     [CURRENT_STAGE=$withval],
     [CURRENT_STAGE=])
@@ -53,19 +57,19 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     xt_lib_list="strc-core${STRC_STAGE}/lib/libstrc.la"
     xt_lib_list="c-tools${STRC_STAGE}/pp/libc-pp.la $xt_lib_list"
 
-    if test "${LIB_STAGE:+set}" = set; then
+    if test "${LINK_STAGE:+set}" = set; then
       # should be retrieved from pkg-config files (factor the work)
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/xtc/lib/libstratego-xtc.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/lib/native/stratego-lib/libstratego-lib-native.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/lib/spec/libstratego-lib.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/rtg/lib/libstratego-rtg.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/sdf/lib/libstratego-sdf.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/runtime/lib/libstratego-runtime.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/aterm/lib/libstratego-aterm.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/sglr/justsglr/libjustsglr.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/sglr/lib/libstratego-sglr.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/gpp/lib/libstratego-gpp.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LIB_STAGE}/tool-doc/lib/libstratego-tool-doc.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/xtc/lib/libstratego-xtc.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/lib/native/stratego-lib/libstratego-lib-native.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/lib/spec/libstratego-lib.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/rtg/lib/libstratego-rtg.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/sdf/lib/libstratego-sdf.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/runtime/lib/libstratego-runtime.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/aterm/lib/libstratego-aterm.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/sglr/justsglr/libjustsglr.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/sglr/lib/libstratego-sglr.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/gpp/lib/libstratego-gpp.la"
+      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/tool-doc/lib/libstratego-tool-doc.la"
     fi
 
     xt_libs=""
