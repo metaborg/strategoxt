@@ -325,7 +325,7 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 # USING INSTALLED STRC ###############################################
 
 %.c: %.str
-	../../tools/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3
+	$(CURRENT_SCOMPILE) $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3
 #--keep 10
 
 %.io: %.ic
@@ -339,10 +339,10 @@ FC_C          = $(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg
 #$(CC) -o $@ -g $*.o $($*OBJECTS) $(SCLibs)
 
 %.ilib: %.str
-	../../tools/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
+	$(CURRENT_SCOMPILE) $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
 
 lib%.c : %.str
-	../../tools/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3 --library
+	$(CURRENT_SCOMPILE) $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3 --library
 
 %.irun: %.ibin
 	./$<

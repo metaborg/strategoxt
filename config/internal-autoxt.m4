@@ -35,6 +35,43 @@ AC_DEFUN([XT_CHECK_STAGE],
   AC_SUBST([CURRENT_STAGE])
 ])
 
+# XT_STAGED_SCOMPILE
+# ------------------
+# Define a variable which contains the code to use to call a staged "strc".
+AC_DEFUN([XT_STAGED_SCOMPILE],
+[
+  xt_strc_stage=$2
+  xt_link_stage=$3
+  xt_lib_list="strc-core${xt_strc_stage}/lib/libstrc.la"
+  xt_lib_list="c-tools${xt_strc_stage}/pp/libc-pp.la $xt_lib_list"
+
+  if test "${xt_link_stage:+set}" = set; then
+    # should be retrieved from pkg-config files (factor the work)
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/xtc/lib/libstratego-xtc.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/lib/native/stratego-lib/libstratego-lib-native.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/lib/spec/libstratego-lib.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/rtg/lib/libstratego-rtg.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/sdf/lib/libstratego-sdf.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/runtime/lib/libstratego-runtime.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/aterm/lib/libstratego-aterm.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/sglr/justsglr/libjustsglr.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/sglr/lib/libstratego-sglr.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/gpp/lib/libstratego-gpp.la"
+    xt_lib_list="$xt_lib_list stratego-libraries${xt_link_stage}/tool-doc/lib/libstratego-tool-doc.la"
+  fi
+
+  xt_libs=""
+  for l in $xt_lib_list; do
+    xt_libs="$xt_libs -dlopen \$(top_builddir)/../$l"
+  done
+
+  POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
+
+  # POST_SCOMPILE should be at the end of the strc command line
+  $1SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
+  $1PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
+])
+
 
 # XT_INTERNAL_CHECK_STRATEGOXT
 # ----------------------------
@@ -56,33 +93,7 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     # No witnesses are used here, since some packages might not
     # yet be installed.
     #  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
-    xt_lib_list="strc-core${STRC_STAGE}/lib/libstrc.la"
-    xt_lib_list="c-tools${STRC_STAGE}/pp/libc-pp.la $xt_lib_list"
-
-    if test "${LINK_STAGE:+set}" = set; then
-      # should be retrieved from pkg-config files (factor the work)
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/xtc/lib/libstratego-xtc.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/lib/native/stratego-lib/libstratego-lib-native.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/lib/spec/libstratego-lib.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/rtg/lib/libstratego-rtg.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/sdf/lib/libstratego-sdf.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/runtime/lib/libstratego-runtime.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/aterm/lib/libstratego-aterm.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/sglr/justsglr/libjustsglr.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/sglr/lib/libstratego-sglr.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/gpp/lib/libstratego-gpp.la"
-      xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/tool-doc/lib/libstratego-tool-doc.la"
-    fi
-
-    xt_libs=""
-    for l in $xt_lib_list; do
-      xt_libs="$xt_libs -dlopen \$(top_builddir)/../$l"
-    done
-
-    POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
-
-    # POST_SCOMPILE should be at the end of the strc command line
-    SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc $POST_SCOMPILE"
+    XT_STAGED_SCOMPILE([],[${STRC_STAGE}],[${LINK_STAGE}])
   else
     AC_MSG_RESULT([no])
 
@@ -126,6 +137,8 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     fi
   fi
 
+  XT_STAGED_SCOMPILE([CURRENT_],[${CURRENT_STAGE}],[${LIB_STAGE}])
+
   # backward compatibitily
   AC_SUBST([SRTS], ['$(STRATEGO_RUNTIME)'])
   AC_SUBST([XTC_LIBS], ['$(STRATEGO_XTC_LIBS)'])
@@ -147,6 +160,9 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     SCOMPILE='$(STRC)/bin/strc'
   fi
   AC_SUBST([SCOMPILE])
+  AC_SUBST([CURRENT_SCOMPILE])
+  AC_SUBST([PARSE_STRATEGO])
+  AC_SUBST([CURRENT_PARSE_STRATEGO])
 ])
 
 # XT_INTERNAL_CHECK_PACKAGES

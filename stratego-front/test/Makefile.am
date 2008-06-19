@@ -20,13 +20,13 @@ TESTS = prop1 switch-semantics-test prop1-asfix
 # Warning: the make check can only occur after the build of strc-core.
 prop1.c : PropStratego.tbl
 prop1-asfix.c: prop1-asfix.str PropStratego.tbl
-	$(top_builddir)/../strc-core$(CURRENT_STAGE)/tools/strc $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
+	$(CURRENT_SCOMPILE) $(STRINCLUDES) --asfix $(SCFLAGS) -i $< -o $@ -c -I .
 
 check-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check5
 
 # Warning: the make check can only occur after the build of strc-core.
-parsestratego = $(top_builddir)/../strc-core$(CURRENT_STAGE)/tools/parse-stratego
+parsestratego = $(CURRENT_PARSE_STRATEGO)
 
 check1 : prop1.str Prop.str 
 	$(MAKE) clean
@@ -48,7 +48,7 @@ check3 : prop3.str Prop.str
 	$(parsestratego) -i $< -o prop3.rtree -I $(srcdir)
 
 check5 : anti-quote-preterm.str
-	XTC_REPOSITORY=$(BUILD_REPOSITORY) $(parsestratego) \
+	$(parsestratego) \
 	  -i $< -I $(top_builddir)/syn -o anti-quote-preterm.rtree -I $(srcdir)
 	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c -I $(srcdir)
 
