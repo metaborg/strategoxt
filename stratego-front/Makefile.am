@@ -19,13 +19,14 @@ all-local::
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t baffle -l $(ATERM)/bin -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t ATERM -l $(ATERM) -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libATerm.la -l $(ATERM)/lib -V X
-	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t SRTS-include -l `pwd`/srts/src -V X
-	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l foo -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t cc -p $(CC) -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t strategoxt-datadir -l `pwd` -V $(VERSION)
 	if test -n "${LIB_STAGE}"; then \
-	  f=../stratego-libraries${LIB_STAGE}/lib/ssl-compat/lib.rtree; \
-	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t $$(basename $$f) -l "$$(dirname $$(pwd)/$$f)" -V $(VERSION); \
+	  lib_srcdir=$$(cd $(top_srcdir)/../stratego-libraries; pwd); \
+	  lib_builddir=$$(cd ../stratego-libraries${LIB_STAGE}; pwd); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t SRTS-include -l $$lib_srcdir/runtime/lib/ -V X; \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l $$lib_srcdir/lib/native/ -V X; \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t lib.rtree -l $$lib_builddir/lib/ssl-compat/ -V $(VERSION); \
 	fi
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
 
