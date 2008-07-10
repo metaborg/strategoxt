@@ -111,7 +111,7 @@ fi
 AC_MSG_CHECKING([in which order to build subpackages])
 
 LIB_PKGS="stratego-libraries"
-STRC_PKGS="xtc stratego-front asfix-tools gpp c-tools strc-core"
+STRC_PKGS="stratego-front xtc asfix-tools gpp c-tools strc-core"
 BASE_PKGS="concrete-syntax xml-front aterm-front sdf-front sdf-tools stratego-regular"
 
 LIB_PKGCONFIG_FILES="stratego-runtime stratego-lib-native stratego-lib stratego-xtc stratego-sglr stratego-gpp stratego-rtg stratego-sdf stratego-tool-doc stratego-aterm"
