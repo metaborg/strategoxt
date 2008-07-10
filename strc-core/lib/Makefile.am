@@ -67,4 +67,5 @@ libstrc.ctree : $(strclib:.str=.rtree)
 
 stratego/strc/pp/stratego-parenthesize.str : $(top_builddir)/../stratego-front$(CURRENT_STAGE)/syn/Stratego.def
 	mkdir -p $(top_builddir)/lib/stratego/strc/pp
+	XTC_REPOSITORY=$(SDF_FRONT)/share/strategoxt/XTC \
 	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego

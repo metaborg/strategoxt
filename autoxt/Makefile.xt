@@ -88,6 +88,7 @@ bootclean-recursive :
 #
 
 .sdf.def : 
+	XTC_REPOSITORY=$(SDF_FRONT)/share/strategoxt/XTC \
 	$(SDF_FRONT)/bin/pack-sdf $(SDFINCLUDES) -i $< -o $@ --dep $*.dep
 
 .def.tbl :
@@ -99,6 +100,7 @@ bootclean-recursive :
 #
 
 %.pp.af : %.pp
+	XTC_REPOSITORY=$(GPP)/share/strategoxt/XTC \
 	$(GPP)/bin/parse-pp-table -i $< -o $@
 
 ## Generation of pretty-print tables.
@@ -106,7 +108,8 @@ bootclean-recursive :
 ## pretty-print table and a newly created one. The build is
 ## terminated when inconsistencies are detected.
 .def.pp :
-	@if [ ! -f ${srcdir}/$@ ]; then \
+	@XTC_REPOSITORY=$(GPP)/share/strategoxt/XTC; \
+	if [ ! -f ${srcdir}/$@ ]; then \
            $(GPP)/bin/ppgen -i $< -o $@ ;\
         else \
            $(GPP)/bin/parse-pp-table -i ${srcdir}/$@ -o $@.af ;\
