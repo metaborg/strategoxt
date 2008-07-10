@@ -62,12 +62,12 @@ strategies
     ; apply-test(!"create? -- 2", can-create-file, !"/tmp/bla.txt", !"/tmp/bla.txt")
     ; apply-and-check(!"test2a"
 	, modification-time
-	, !"system-posix-test.str"
+	, !"system-posix-test.c"
 	, debug; is-int
 	)
     ; apply-and-check(!"test2b"
 	, file-newer
-	, !("system-posix-test", "system-posix-test.c")
+	, !("system-posix-test.c", "Makefile")
 	, debug
 	)
 
