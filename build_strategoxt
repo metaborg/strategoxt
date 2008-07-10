@@ -4,11 +4,12 @@ usage(){
   echo 1>&2 "
 Usage:
   $0
-     (-s <step> | -d <step>)*
+     [-s <step> | -d <step>]*
      [--baseline <path>]
      [--srcdir <path>] [--builddir <path>]
      [--instdir <path> | --prefix <path>]
      [--help] [--verbose] [--fast] [-k]
+     [--gnumake <path>]
 
 Options:
 
@@ -38,9 +39,11 @@ Options:
   --prefix      (same as --instdir)
 
   --help        Display the usage of this tool.
-  --verbose     Show all steps of the compilation. (recommended) [$verbose]
-  --fast        Compiles without optimizations.
-  -k            Keep building even if they are errors.
+  --verbose     Show all steps of the compilation. [$verbose]
+  --fast        Compiles without optimizations. [$fast]
+  -k            Keep building even if they are errors. [$keep]
+  --gnu-make    Path to the gnu-make tool. [$make]
+
 "
   exit 1
 }
@@ -53,12 +56,14 @@ Options:
 verbose=false
 fast=false
 keep=false
+help=false
+make=make
 
 all_steps="bootstrap configure build install check"
 action_id=0
 for step in $all_steps; do
-  eval skip_${step}=0
-  eval do_${step}=0
+  eval skip_${step}=$action_id
+  eval do_${step}=$action_id
 done
 
 argfun=""
@@ -74,7 +79,8 @@ for arg; do
       --verbose) verbose=true;;
       --fast) fast=true;;
       -k) keep=true;;
-      --help) usage;;
+      --help) help=true;;
+      --gnu-make) argfun="set_make";;
     esac
   else
     case $argfun in
@@ -101,11 +107,12 @@ for arg; do
   fi
 done
 
-if $verbose; then
-  set -x
-else
-  set +x
-fi
+##
+## Process options
+##
+
+# Display usage if help = true
+$help && usage
 
 err=0
 if $keep; then
@@ -114,6 +121,13 @@ else
   set -e
   unset keep
 fi
+
+# Enable verbose if verbose = true
+$verbose && set -x || set +x
+
+##
+## Stratego/XT compilation
+##
 
 export STRATEGOXT_BASELINE
 export PKG_CONFIG_PATH=$STRATEGOXT_BASELINE/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
@@ -139,19 +153,19 @@ fi
 
 if should_do build; then
   cd $builddir
-  make all ${keep:+-k} $extra_build
+  "$make" all ${keep:+-k} $extra_build
   err=$(($? + $err))
 fi
 
 if should_do install; then
   cd $builddir
-  make install ${keep:+-k} $extra_install
+  "$make" install ${keep:+-k} $extra_install
   err=$(($? + $err))
 fi
 
 if should_do check; then
   cd $builddir
-  make check ${keep:+-k} $extra_check
+  "$make" check ${keep:+-k} $extra_check
   err=$(($? + $err))
 fi
 
