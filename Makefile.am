@@ -2,7 +2,10 @@ ACLOCAL_AMFLAGS = -I config
 
 SUBDIRS      = . news-archive manpages $(PKGS)
 DIST_SUBDIRS =   news-archive manpages $(PKGS)
-CLEANFILES   = $(BUILD_REPOSITORY)
+CLEANFILES   = \
+	$(BUILD_REPOSITORY) \
+	$(BUILD_REPOSITORY)-stage1 \
+	$(BUILD_REPOSITORY)-stage2
 
 EXTRA_DIST   = \
   README svn-revision bootstrap Makefile.xt \

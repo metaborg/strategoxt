@@ -29,6 +29,7 @@ all-local::
 	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t lib.rtree -l $$lib_builddir/lib/ssl-compat/ -V $(VERSION); \
 	fi
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
+	cp $(BUILD_REPOSITORY) "$(BUILD_REPOSITORY)$(CURRENT_STAGE)"
 
 install-data-local::
 	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`
