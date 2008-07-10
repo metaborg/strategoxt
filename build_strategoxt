@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 usage(){
   echo 1>&2 "
@@ -8,7 +8,7 @@ Usage:
      [--baseline <path>]
      [--srcdir <path>] [--builddir <path>]
      [--instdir <path> | --prefix <path>]
-     [--help] [--verbose] [--fast]
+     [--help] [--verbose] [--fast] [-k]
 
 Options:
 
@@ -40,6 +40,7 @@ Options:
   --help        Display the usage of this tool.
   --verbose     Show all steps of the compilation. (recommended) [$verbose]
   --fast        Compiles without optimizations.
+  -k            Keep building even if they are errors.
 "
   exit 1
 }
@@ -51,6 +52,7 @@ Options:
 
 verbose=false
 fast=false
+keep=false
 
 all_steps="bootstrap configure build install check"
 action_id=0
@@ -71,6 +73,7 @@ for arg; do
       --baseline) argfun="set_STRATEGOXT_BASELINE";;
       --verbose) verbose=true;;
       --fast) fast=true;;
+      -k) keep=true;;
       --help) usage;;
     esac
   else
@@ -99,7 +102,17 @@ for arg; do
 done
 
 if $verbose; then
-  set -x -e
+  set -x
+else
+  set +x
+fi
+
+err=0
+if $keep; then
+  set +e
+else
+  set -e
+  unset keep
 fi
 
 export STRATEGOXT_BASELINE
@@ -113,6 +126,7 @@ should_do(){
 if should_do bootstrap; then
   cd $srcdir
   ./bootstrap
+  err=$(($? + $err))
 fi
 
 if should_do configure; then
@@ -120,19 +134,25 @@ if should_do configure; then
   cd $builddir
   $srcdir/configure --enable-werror --with-strategoxt=$STRATEGOXT_BASELINE \
     --prefix=$instdir ${fast:+CFLAGS="-O0 -g"} $extra_configure
+  err=$(($? + $err))
 fi
 
 if should_do build; then
   cd $builddir
-  make all $extra_build
+  make all ${keep:+-k} $extra_build
+  err=$(($? + $err))
 fi
 
 if should_do install; then
   cd $builddir
-  make install $extra_install
+  make install ${keep:+-k} $extra_install
+  err=$(($? + $err))
 fi
 
 if should_do check; then
   cd $builddir
-  make check $extra_check
+  make check ${keep:+-k} $extra_check
+  err=$(($? + $err))
 fi
+
+test $err -eq 0
