@@ -1,0 +1,12 @@
+module dyn-test01
+imports libstratego-lib
+strategies
+  delayed-build =
+    ?t
+  ; dyn(!t||)
+
+  main =
+    <delayed-build> 1 => b1
+  ; <delayed-build> 2 => b2
+  ; call(b1||); ?1
+  ; call(b2||); ?2

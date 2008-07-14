@@ -10,14 +10,14 @@ STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
 STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 LDADD 		= $(STRATEGORUNLIBS)
 
-tests =									 \
+tests =										 \
 		  test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \
 		  test13 test14 test15 test16 test17 test18 test19		 \
 		  test20 test21 test22 test23 test24 test25			 \
 		  test27 test28a test28b test28 test29 test30 test31 test32	 \
 		  test33 test34 test35 test36 test37 test38 test39		 \
-		  test40 test41 test43 test45				 \
+		  test40 test41 test43 test45				 	 \
 		  test46 test47 test49 test50 test51 test53			 \
 		  test54 test56 test57 test58 test59				 \
 		  test60 test61 test62 test63 test64 test65			 \
@@ -33,7 +33,8 @@ tests =									 \
 		  let-test							 \
 		  nested-defs01							 \
 		  cs-test01 cs-test02 cs-test03 cs-test04			 \
-	          static-links
+		  static-links							 \
+		  dyn-test01 dyn-test02
 
 check_PROGRAMS 	= $(tests)
 
@@ -46,6 +47,8 @@ TESTS 		= $(check_PROGRAMS)
 
 TESTS_ENVIRONMENT = SRCDIR="$(srcdir)/"
 
+dyn_test01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+dyn_test02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test03_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -273,6 +276,9 @@ nodist_cs_test01_SOURCES = cs-test01.c
 nodist_cs_test02_SOURCES = cs-test02.c
 nodist_cs_test03_SOURCES = cs-test03.c
 nodist_cs_test04_SOURCES = cs-test04.c
+
+nodist_dyn_test01_SOURCES = dyn-test01.c
+nodist_dyn_test02_SOURCES = dyn-test02.c
 
 SDF2RTG_FLAGS = --main $*
 PGEN_FLAGS = -m $*

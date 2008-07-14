@@ -1,0 +1,24 @@
+module dyn-test02
+imports libstratego-lib
+strategies
+  pipe-with-var =
+    !(<dyn(?t||)>, <dyn(!t||)>)
+
+  main =
+    pipe-with-var => (m, b)
+
+  ; !1
+  ; not(call(b||))
+  ; ?1
+
+  ; !2
+  ; call(m||)
+  ; ?2
+
+  ; !3
+  ; call(b||)
+  ; ?2
+
+  ; !4
+  ; not(call(m||))
+  ; ?4
