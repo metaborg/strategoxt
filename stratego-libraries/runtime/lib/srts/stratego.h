@@ -75,6 +75,7 @@ struct str_frame
   ATerm *sl_vars;                               \
   const long nb = n;                            \
   frame->vars = malloc(nb * sizeof(ATerm));     \
+  memset(frame->vars, 0, nb * sizeof(ATerm));   \
   ATprotectArray(frame->vars, nb);              \
   sl_vars = frame->vars;
 
