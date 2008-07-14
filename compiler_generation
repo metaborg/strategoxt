@@ -5,11 +5,11 @@
 # generated C code of the baseline compiler is not compatible with the
 # generated C code of the new compiler or if the compiler depends on
 # features added in a library.
-compiler_generation=17700
+compiler_generation=18016
 
 # Minimal compiler generation that could be used to bootstrap the
 # current source.
-baseline_generation=0
+baseline_generation=17700
 
 # Modifications summary:
 # - library, true only if a library modification is required for the
@@ -20,4 +20,4 @@ baseline_generation=0
 # Only one of them can be true. This variables are used to determine
 # the compilation order.
 modify_library=false
-modify_compiler=false
+modify_compiler=true
