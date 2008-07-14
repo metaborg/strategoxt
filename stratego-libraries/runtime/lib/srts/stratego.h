@@ -45,7 +45,6 @@ struct str_frame
   StrSL parent;
   ATerm *vars;
   StrCL funs;
-  long  refs;
 };
 
 #define sl_decl(par)                            \
@@ -61,43 +60,45 @@ struct str_frame
   struct str_closure sl_funs[n];                \
   frame->funs = sl_funs;
 
-#define sl_end()
+
+#define HPFR_MAGIC 0x48704672 /* HpFr */
+typedef struct str_heap_frame *StrHSl;
+
+struct str_heap_frame
+{
+  struct str_frame frame; // must be the first field
+  unsigned int magic;
+  ATermBlob funs;
+};
 
 
-#define sl_heap_decl(par)                                   \
-  register StrSL frame = malloc(sizeof(struct str_frame));  \
-  frame->parent = (par);                                    \
-  frame->refs = 1;                                          \
-  frame->vars = NULL;                                       \
-  frame->funs = NULL;
+#define sl_heap_decl(par)                                  \
+  register StrSL frame;                                    \
+  ATermBlob hf_blob;                                       \
+  StrHSl hf = malloc(sizeof(struct str_heap_frame));       \
+  hf->magic = HPFR_MAGIC;                                  \
+  hf->funs = NULL;                                         \
+  frame = &hf->frame;                                      \
+  frame->parent = (par);                                   \
+  frame->vars = NULL;                                      \
+  frame->funs = NULL;                                      \
+  hf_blob = ATmakeBlob(sizeof(struct str_heap_frame), hf);
 
-#define sl_heap_vars(n)                         \
-  ATerm *sl_vars;                               \
-  const long nb = n;                            \
-  frame->vars = malloc(nb * sizeof(ATerm));     \
-  memset(frame->vars, 0, nb * sizeof(ATerm));   \
-  ATprotectArray(frame->vars, nb);              \
+#define sl_heap_vars(n)                              \
+  ATerm *sl_vars;                                    \
+  const long nb_vars = n;                            \
+  frame->vars = malloc(nb_vars * sizeof(ATerm));     \
+  memset(frame->vars, 0, nb_vars * sizeof(ATerm));   \
+  ATprotectArray(frame->vars, nb_vars);              \
   sl_vars = frame->vars;
 
-#define sl_heap_funs(n)                                   \
-  struct str_closure *sl_funs;                            \
-  frame->funs = malloc((n) * sizeof(struct str_closure)); \
+#define sl_heap_funs(n)                                    \
+  struct str_closure *sl_funs;                             \
+  const long funs_size = (n) * sizeof(struct str_closure); \
+  frame->funs = malloc(funs_size);                         \
+  memset(frame->funs, 0, funs_size);                       \
+  hf->funs = ATmakeBlob(funs_size, frame->funs);           \
   sl_funs = frame->funs;
-
-#define sl_heap_end()                           \
-  do {                                          \
-    if(0 == --frame->refs)                      \
-    {                                           \
-      if (NULL != frame->vars)                  \
-      {                                         \
-        ATunprotectArray(frame->vars);          \
-        free(frame->vars);                      \
-      }                                         \
-      if (NULL != frame->funs)                  \
-        free(frame->funs);                      \
-      free(frame);                              \
-    }                                           \
-  } while(0)
 
 
 #define sl_init_var(i,x) sl_vars[i] = x;

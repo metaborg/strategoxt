@@ -336,12 +336,10 @@ strategies
          ~stm*:fini;
          ~stm*:vini;
          ~stm*:stms;
-         ~stm:stm; 
-         sl_heap_end();
+         ~stm:stm;
          __tracing_table[--__tracing_table_counter] = NULL;
          return(t);
-         ~id:F : 
-         sl_heap_end();
+         ~id:F :
          --__tracing_table_counter;
          return NULL;
        }
