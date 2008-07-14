@@ -16,3 +16,8 @@ StrCL SRTS_lookup_function(ATerm name) {
 
   return (StrCL) ATgetBlobData((ATermBlob) res);
 }
+
+ATerm SRTS_dyn(StrSL sl, StrCL cl, ATerm ns, ATerm nt, ATerm t)
+{
+  return t;
+}

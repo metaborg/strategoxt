@@ -56,6 +56,11 @@ strategies
     |[ call(t|s1*|t*) ]| -> |[ let def* in call(t|s2*|t*) end ]|
     where (def*, s2*) := <canonicalize-call-args> s1*
 
+  // TODO: introduce delayed strategy definition.
+  canonicalize-call :
+    |[ dyn(s1||) ]| -> |[ let def* in STRS_dyn(s2 | 0, 0) end ]|
+    where (def*, [s2]) := <canonicalize-call-args> [s1]
+
   canonicalize-call-args =
     map(canonicalize-call-arg)
     ; unzip

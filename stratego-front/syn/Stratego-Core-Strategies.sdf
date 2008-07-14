@@ -13,6 +13,7 @@ exports
     SVar "(" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallT")}
 
     "call" "(" Term "|" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallDynamic")}
+    "dyn" "(" Strategy "|" {Typedid ","}* "|" {Typedid ","}* ")" -> Strategy {cons("DeclDynamic")}
 
 
   sorts StrategyDef

@@ -141,6 +141,10 @@
    CallDynamic.2:iter-star-sep -- H hs=0 [_1 KW[","]],
    CallDynamic.3:iter-star-sep -- H hs=0 [_1 KW[","]],
 
+   DeclDynamic                 -- H hs=0 [KW["dyn"] KW["("] _1 KW["|"] _2 KW["|"] _3 KW[")"]],
+   DeclDynamic.2:iter-star-sep -- H hs=0 [_1 KW[","]],
+   DeclDynamic.3:iter-star-sep -- H hs=0 [_1 KW[","]],
+
 
    Match                                              -- H hs=0 [KW["?"] _1],
    Build                                              -- H hs=0 [KW["!"] _1],
