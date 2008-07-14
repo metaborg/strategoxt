@@ -71,6 +71,7 @@ imports
   stratego/strc/match/matrix
   stratego/strc/match/matrix-to-dfa
   
+  stratego/strc/c/annotate-heap-frames
   stratego/strc/c/C-simplify
   stratego/strc/c/escaping-variables
   stratego/strc/c/frame-composition

@@ -1,0 +1,150 @@
+/**
+ * Annotate strategy declaration if they have to use a heap frame instead of
+ * a stack frame.
+ *
+ * A frame must be an heap frame if one of its variable can be used in a
+ * sub-frame that is used dynamically.  A strategy argument should be in the
+ * heap if the argument is used inside a sub-frame that can be used
+ * dynamically.
+ */
+module annotate-heap-frames
+imports
+  libstratego-lib
+  Stratego-Core
+  stratego/strc/c/frame-composition
+
+strategies
+
+  annotate-heap-frames-io =
+    io-wrap(annotate-heap-frames)
+
+  annotate-heap-frames =
+    {|CurrentFrame, CurrentClosure
+    , VarOf, UsedInFrame
+    , IsHeapFrame, IsHeapArgument, IsHeapClosure
+    : create-heap-frames-constraints
+    ; add-heap-frame-annotations
+    |}
+
+  init-heap-closure =
+    where(topdown(try({
+      ?|[ f(a1* | a2*) = s ]|
+    ; rules(IsHeapClosure: f{} -> f{}
+        where rules(IsHeapClosure:- f{}); fail
+      )
+    })))
+
+  create-heap-frames-constraints =
+    alltd(hfc)
+
+  hfc =
+    where(
+      hfc-dyn
+      <+ hfc-var
+      <+ hfc-sdef
+      <+ hfc-scope
+      <+ hfc-call
+      <+ all(hfc)
+    )
+
+  hfc-dyn = {| CurrentClosure
+  : ?|[ dyn( s |a1*|a2*) ]|
+  ; rules(CurrentClosure := ("SRTS_dyn", 0))
+  ; <hfc> s
+  |}
+
+  hfc-var =
+    ( ?Var(<id>) + ?SVar(<id>) )
+  ; ?x
+  ; CurrentFrame => f
+  ; set-hfc-used-in-frame(|x)
+
+  hfc-sdef = {| CurrentFrame
+  : ?|[ f(a1* | a2*) = s ]|
+  ; rules(
+      IsHeapFrame: f{} -> f{}
+        where
+          <bagof-VarOf> f{}
+        ; one(is-used-in-heap-closure(|f{}))
+      CurrentFrame :+= f{}
+    )
+  ; <map-with-index({i,x,tp:
+      ?(i, <id>)
+    ; ?Typedid|[ x : tp ]|
+    ; rules(
+        IsHeapArgument: (f{}, i) -> (f{}, i)
+          where <is-used-in-heap-closure(|f{})> x
+      )
+    ; <set-hfc-varof(|f)> x
+    })> a1*
+  ; <map({x,tp:
+      ?Typedid|[ x : tp ]|
+    ; <set-hfc-varof(|f)> x
+    })> a2*
+  ; <hfc> s
+  |}
+
+  is-used-in-heap-closure(|f) =
+    bagof-UsedInFrame
+  ; one(
+      not(?f)
+    ; IsHeapClosure
+    )
+
+  hfc-call =
+    ?|[ f(s* | t*) ]|
+  ; try(frame-condition-as-closure(|f{}))
+  ; <visit-closures(|f{})> s*
+  ; <map(hfc)> t*
+
+  frame-condition-as-closure(|f) =
+    switch CurrentClosure
+      case ?("SRTS_dyn", 0):
+        rules(IsHeapClosure: f -> f
+          where rules(IsHeapClosure: f -> f)
+        )
+      case ?(g, i):
+        <newname> "hcl-" => hcl-id
+      ; rules(
+          IsHeapClosure:+ f -> f
+            where is-heap-closure(
+              <IsHeapArgument> (g, i)
+            | hcl-id, f{})
+        )
+    end
+
+  visit-closures(|f) =
+    map-with-index({i,s: {| CurrentClosure
+    : ?(i, s)
+    ; rules(CurrentClosure := (f, i))
+    ; <hfc> s
+    |}})
+
+  hfc-scope =
+    ?|[ {x*: s} ]|
+  ; CurrentFrame => f
+  ; <map(set-hfc-varof(|f))> x*
+  ; <hfc> s
+
+  is-heap-closure(s|hcl-id, f) = {| VisitIsHeapClosure
+  : <not(VisitIsHeapClosure)> hcl-id
+  ; rules(VisitIsHeapClosure: hcl-id -> hcl-id)
+  ; s
+  ; rules(IsHeapClosure: f -> f)
+  |}
+
+  set-hfc-varof(|f) =
+    ?x
+  ; rules(VarOf:+ f{} -> x{})
+
+  set-hfc-used-in-frame(|x) =
+    ?f
+  ; rules(UsedInFrame:+ x{} -> f{})
+
+  add-heap-frame-annotations =
+    alltd({(
+      |[ f~{t*}(a1*|a2*) = s1 ]| -> |[ f~{HeapFrame(),t*}(a1*|a2*) = s2 ]|
+        where
+          <IsHeapFrame> f{}
+        ; s2 := <add-heap-frame-annotations> s1
+    )})

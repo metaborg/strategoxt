@@ -91,6 +91,8 @@ strategies
       ; tfc2(|"Stratego-Core", "be-buv")
       ; escaping-variables
       ; tfc2(|"Stratego-Core", "be-esc")
+      ; annotate-heap-frames
+      ; tfc2(|"Stratego-Core", "be-ahf")
       ; stratego-to-c
       ; tfc-c(|1,"be-c")
       ; log-timed(

@@ -5,12 +5,15 @@ signature
     Offset       : Int  -> Annotation
     Closure      : String -> Annotation
     ApplyClosure : Annotation
-    Frames       : String * List(String) * Int -> Annotation
     ClosureAlloc : Annotation
 
 signature
   constructors
-    Frames  : String * List(String) -> Annotation
     Frames  : List(String) -> Annotation
     Escapes : Annotation
     ApplyClosure : Annotation
+
+signature
+  constructors
+    HeapFrame   : Annotation
+    HeapClosure : List(Int) -> Annotation
