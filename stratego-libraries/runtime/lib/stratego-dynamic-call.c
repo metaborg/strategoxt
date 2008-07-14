@@ -19,7 +19,7 @@ struct str_heap_closure
   unsigned int magic;
   struct str_closure cl;
   unsigned int ns, nt;
-  ATermBlob sl;
+  ATerm sl;
 };
 
 ATermTable strategy_table ;
@@ -41,11 +41,10 @@ StrCL SRTS_lookup_function(ATerm name) {
 
 ATerm SRTS_dyn(StrCL cl, unsigned int ns, unsigned int nt) {
   StrHCl dl;
+  ATerm *blobs;
 
   dl = malloc(sizeof(struct str_heap_closure));
-  if (NULL == dl)
-  {
-    fprintf(stderr, "*** STRS_dyn: not enough memory.\n");
+  if (NULL == dl) {
     return NULL;
   }
 
@@ -54,8 +53,8 @@ ATerm SRTS_dyn(StrCL cl, unsigned int ns, unsigned int nt) {
   dl->ns = ns;
   dl->nt = nt;
 
-  /** Warning: This cast relies on the generated code. */
-  dl->sl = ATmakeBlob(sizeof(struct str_heap_frame), (StrHSl) cl->sl);
+  InitBlobCollection(dl->sl);
+  DependsOnFrame(cl->sl);
 
   return (ATerm) ATmakeBlob(sizeof(struct str_heap_closure), dl);
 }
@@ -63,7 +62,7 @@ ATerm SRTS_dyn(StrCL cl, unsigned int ns, unsigned int nt) {
 static StrHCl Blob2HeapClosure(ATerm b) {
   StrHCl dl;
 
-  if(NULL == b || !ATisBlob(b) || !ATgetBlobSize(b) != sizeof(struct str_heap_closure))
+  if(NULL == b || !ATisBlob(b) || ATgetBlobSize(b) != sizeof(struct str_heap_closure))
     return NULL;
 
   dl = (StrHCl) ATgetBlobData((ATermBlob) b);
@@ -93,6 +92,7 @@ static ATbool heap_closure_destructor(ATermBlob b) {
   if(NULL == dl)
     return ATfalse;
 
+  ATunprotect(&dl->sl);
   free(dl);
 
   return ATtrue;
@@ -101,12 +101,13 @@ static ATbool heap_closure_destructor(ATermBlob b) {
 static ATbool heap_frame_destructor(ATermBlob b) {
   StrHSl hf;
   ATerm *vars;
+  struct str_closure *funs;
 
   if(NULL == b || !ATisBlob(b) || !ATgetBlobSize(b) != sizeof(struct str_heap_closure))
     return ATfalse;
 
   hf = (StrHSl) ATgetBlobData(b);
-  if(hf->magic != HPFR_MAGIC)
+  if(hf->frame.this != (ATerm) b)
     return ATfalse;
 
   vars = hf->frame.vars;
@@ -115,11 +116,11 @@ static ATbool heap_frame_destructor(ATermBlob b) {
     free(vars);
   }
 
-  /**
-   * hf->frame.funs is not freed because it is register in Blob.
-   * The default destruction of a Blob free the data of the Blob if no
-   * destructor are defined.
-   */
+  funs = hf->frame.funs;
+  if(funs != NULL)
+    free(funs);
+
+  ATunprotect(&hf->blobs);
   free(hf);
 
   return ATtrue;

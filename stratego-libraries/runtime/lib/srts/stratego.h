@@ -45,12 +45,15 @@ struct str_frame
   StrSL parent;
   ATerm *vars;
   StrCL funs;
+  ATerm this;
 };
 
 #define sl_decl(par)                            \
   struct str_frame sframe;                      \
-  register StrSL frame = &sframe;               \
-  frame->parent = (par);
+  StrSL frame = &sframe;                        \
+  ATerm *blobs = NULL;                          \
+  frame->parent = (par);                        \
+  frame->this = NULL;
 
 #define sl_vars(n)                              \
   ATerm sl_vars[n];                             \
@@ -61,48 +64,59 @@ struct str_frame
   frame->funs = sl_funs;
 
 
-#define HPFR_MAGIC 0x48704672 /* HpFr */
 typedef struct str_heap_frame *StrHSl;
 
 struct str_heap_frame
 {
   struct str_frame frame; // must be the first field
-  unsigned int magic;
-  ATermBlob funs;
+  ATerm blobs;            // protected frames.
 };
 
+#define InitBlobCollection(c)                   \
+  blobs = (ATerm*) &(c);                        \
+  *blobs = (ATerm) ATmakeList0();               \
+  ATprotect(blobs);
 
-#define sl_heap_decl(par)                                  \
-  register StrSL frame;                                    \
-  ATermBlob hf_blob;                                       \
-  StrHSl hf = malloc(sizeof(struct str_heap_frame));       \
-  hf->magic = HPFR_MAGIC;                                  \
-  hf->funs = NULL;                                         \
-  frame = &hf->frame;                                      \
-  frame->parent = (par);                                   \
-  frame->vars = NULL;                                      \
-  frame->funs = NULL;                                      \
-  hf_blob = ATmakeBlob(sizeof(struct str_heap_frame), hf);
+#define DependsOnFrame(sl)                                    \
+  if (blobs != NULL && sl != NULL && sl->this != NULL) {      \
+    *blobs = (ATerm) ATinsert((ATermList) *blobs, sl->this);  \
+  };
 
-#define sl_heap_vars(n)                              \
-  ATerm *sl_vars;                                    \
-  const long nb_vars = n;                            \
-  frame->vars = malloc(nb_vars * sizeof(ATerm));     \
-  memset(frame->vars, 0, nb_vars * sizeof(ATerm));   \
-  ATprotectArray(frame->vars, nb_vars);              \
+#define sl_heap_decl(par)                                   \
+  StrSL frame;                                              \
+  ATermBlob hf_blob;                                        \
+  ATerm *blobs = NULL;                                      \
+  StrHSl hf = malloc(sizeof(struct str_heap_frame));        \
+  InitBlobCollection(hf->blobs);                            \
+  frame = &hf->frame;                                       \
+  frame->parent = (par);                                    \
+  frame->vars = NULL;                                       \
+  frame->funs = NULL;                                       \
+  if (frame->parent) { DependsOnFrame(frame->parent); }     \
+  hf_blob = ATmakeBlob(sizeof(struct str_heap_frame), hf);  \
+  frame->this = (ATerm) hf_blob;                            \
+  do {} while (0)
+
+#define sl_heap_vars(n)                             \
+  ATerm *sl_vars;                                   \
+  const long nb_vars = n;                           \
+  frame->vars = malloc(nb_vars * sizeof(ATerm));    \
+  memset(frame->vars, 0, nb_vars * sizeof(ATerm));  \
+  ATprotectArray(frame->vars, nb_vars);             \
   sl_vars = frame->vars;
 
-#define sl_heap_funs(n)                                    \
-  struct str_closure *sl_funs;                             \
-  const long funs_size = (n) * sizeof(struct str_closure); \
-  frame->funs = malloc(funs_size);                         \
-  memset(frame->funs, 0, funs_size);                       \
-  hf->funs = ATmakeBlob(funs_size, frame->funs);           \
+#define sl_heap_funs(n)                                     \
+  struct str_closure *sl_funs;                              \
+  const long funs_size = (n) * sizeof(struct str_closure);  \
+  frame->funs = malloc(funs_size);                          \
+  memset(frame->funs, 0, funs_size);                        \
   sl_funs = frame->funs;
 
 
 #define sl_init_var(i,x) sl_vars[i] = x;
-#define sl_init_fun(i,cl) sl_funs[i] = *cl;
+#define sl_init_fun(i,cl)                       \
+  sl_funs[i] = *cl;                             \
+  DependsOnFrame(cl_sl(cl));
 
 #define sl_up(sl) ((sl)->parent)
 
