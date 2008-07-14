@@ -58,8 +58,8 @@ strategies
 
   // TODO: introduce delayed strategy definition.
   canonicalize-call :
-    |[ dyn(s1||) ]| -> |[ let def* in STRS_dyn(s2 | 0, 0) end ]|
-    where (def*, [s2]) := <canonicalize-call-args> [s1]
+    |[ dyn(s1|a1*|a2*) ]| -> |[ let def* in dyn(s2|a1*|a2*) end ]|
+    where (def*, s2) := <canonicalize-call-arg> (s1, a1*, a2*)
 
   canonicalize-call-args =
     map(canonicalize-call-arg)
@@ -68,13 +68,29 @@ strategies
     ; not(([],id))
 
   canonicalize-call-arg =
-    try(id-to-Id <+ fail-to-Fail)
+    not( (id, id, id) )
+    ; try(id-to-Id <+ fail-to-Fail)
     //; debug(!"canonicalize-call-arg: ")
     ; (IsClosure; !([],<id>) <+ lift-call-arg)
     //; debug(!"canonicalized: ")
 
+  canonicalize-call-arg =
+    (id, [], [])
+    < Fst; canonicalize-call-arg
+    + id
+    //; debug(!"canonicalize-call-arg: ")
+    ; (IsClosure; !([],<Fst>) <+ lift-call-arg)
+    //; debug(!"canonicalized: ")
+
   lift-call-arg :
     |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)
+    where //debug(!"lift-call-arg: ");
+	  g  := <newname> "lifted"
+	; s2 := <canonicalize> s1
+	; t* := <is-just-closure-allocation <+ ![]> s2
+
+  lift-call-arg :
+    (|[ s1 ]|, a1*, a2*) -> ([|[ g~{t*}(a1*|a2*) = s2 ]|], |[ g(|) ]|)
     where //debug(!"lift-call-arg: ");
 	  g  := <newname> "lifted"
 	; s2 := <canonicalize> s1

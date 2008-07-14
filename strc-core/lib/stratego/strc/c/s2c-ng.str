@@ -661,13 +661,16 @@ rules
         ; args  := <conc>(args1, args2)
 
   TranslateStrat(|S,F) :
-    CallDynamic(tp,s*,t*) -> 
-    <check-unbound-args(|F,[tp,t*])>
+    Strat|[ call(t | s* | t*) ]| -> 
+    <check-unbound-args(|F,[t,t*])>
     stm |[ 
       {
         StrCL ~id:f = SRTS_lookup_function(~exp:e);
         if(~id:f == NULL) {
-          goto ~id:F;
+          f = SRTS_call(~exp:e, ~exp:ns, ~exp:nt);
+          if(~id:f == NULL) {
+            goto ~id:F;
+          }
         }
         t = cl_fun(~id:f)(cl_sl(~id:f), ~exp*:args);
         if( t == NULL )
@@ -679,8 +682,22 @@ rules
     where args1 := <map(ArgToCl)> s*
         ; args2 := <map(topdown(try(construct-term)))> t*
         ; args  := <concat>[args1, args2, [Id("t")]]
-	; e     := <topdown(try(construct-term))>tp
+        ; e     := <topdown(try(construct-term))> t
+        ; ns    := <length; mk-int-const> s*
+        ; nt    := <length; mk-int-const> t*
         ; f     := <newname> "calldynamic"
+
+  TranslateStrat(|S,F) :
+    Strat|[ dyn(s | a1* | a2*) ]| -> 
+    stm |[
+      {
+        t = SRTS_dyn(~exp:cl, ~exp:ns, ~exp:nt);
+        if( t == NULL ) goto ~id:F; else goto ~id:S;
+      }
+    ]|
+    where cl    := <ArgToCl> s
+        ; ns    := <length; mk-int-const> a1*
+        ; nt    := <length; mk-int-const> a2*
 
   /**
    * Import a term from a file.
