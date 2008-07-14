@@ -332,16 +332,16 @@ strategies
        ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
          __tracing_table[__tracing_table_counter++] = ~exp:<!StringLit([<double-quote> f])>;
-         sl_decl(sl);
+         sl_heap_decl(sl);
          ~stm*:fini;
          ~stm*:vini;
          ~stm*:stms;
          ~stm:stm; 
-         sl_end();
+         sl_heap_end();
          __tracing_table[--__tracing_table_counter] = NULL;
          return(t);
          ~id:F : 
-         sl_end();
+         sl_heap_end();
          --__tracing_table_counter;
          return NULL;
        }
@@ -362,14 +362,14 @@ strategies
     [Offsets(0,j)|_] -> []
 
   init-sl-funs : 
-    [Offsets(i,j)|_] -> [ stm|[ sl_funs(~exp:<mk-int-const>i); ]| ]
+    [Offsets(i,j)|_] -> [ stm|[ sl_heap_funs(~exp:<mk-int-const>i); ]| ]
     where <not(0)> i
 
   init-sl-vars : 
     [Offsets(i,0)|_] -> []
 
   init-sl-vars : 
-    [Offsets(i,j)|_] -> [ stm|[ sl_vars(~exp:<mk-int-const>j); ]| ]
+    [Offsets(i,j)|_] -> [ stm|[ sl_heap_vars(~exp:<mk-int-const>j); ]| ]
     where <not(0)> j
 
 

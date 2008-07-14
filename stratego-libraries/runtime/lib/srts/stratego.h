@@ -45,6 +45,7 @@ struct str_frame
   StrSL parent;
   ATerm *vars;
   StrCL funs;
+  long  refs;
 };
 
 #define sl_decl(par)                            \
@@ -61,6 +62,39 @@ struct str_frame
   frame->funs = sl_funs;
 
 #define sl_end()
+
+
+#define sl_heap_decl(par)                                   \
+  register StrSL frame = malloc(sizeof(struct str_frame));  \
+  frame->parent = (par);                                    \
+  frame->refs = 1;                                          \
+  frame->vars = NULL;                                       \
+  frame->funs = NULL;
+
+#define sl_heap_vars(n)                         \
+  do {                                          \
+    const long nb = n;                          \
+    frame->vars = malloc(nb * sizeof(ATerm));   \
+    ATprotectArray(frame->vars, nb);            \
+  } while(0)
+
+#define sl_heap_funs(n)                                   \
+  frame->funs = malloc((n) * sizeof(struct str_closure));
+
+#define sl_heap_end()                           \
+  do {                                          \
+    if(0 == --frame->refs)                      \
+    {                                           \
+      if (NULL != frame->vars)                  \
+      {                                         \
+        ATunprotectArray(frame->vars);          \
+        free(frame->vars);                      \
+      }                                         \
+      if (NULL != frame->funs)                  \
+        free(frame->funs);                      \
+      free(frame);                              \
+    }                                           \
+  } while(0)
 
 
 #define sl_init_var(i,x) sl_vars[i] = x;
