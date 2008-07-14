@@ -327,20 +327,20 @@ strategies
   // TODO: insert escaping strategy arguments in frame
 
   TranslateDef :
-    Def|[ f~{t*}(a1*|a2*) = s ]| -> <try(make-static)> 
-    |[ 
+    Def|[ f~{t*}(a1*|a2*) = s ]| -> <
+      tracing-table
+    ; try(heap-frame(|t*))
+    ; try(make-static)
+    > |[
        ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
-         __tracing_table[__tracing_table_counter++] = ~exp:<!StringLit([<double-quote> f])>;
-         sl_heap_decl(sl);
+         sl_decl(sl);
          ~stm*:fini;
          ~stm*:vini;
          ~stm*:stms;
          ~stm:stm;
-         __tracing_table[--__tracing_table_counter] = NULL;
          return(t);
          ~id:F :
-         --__tracing_table_counter;
          return NULL;
        }
     ]|
@@ -348,8 +348,9 @@ strategies
        {| SuccessLabel, FailureLabel
         : <not(fetch(?ClosureAlloc()))> t*
         ; args := <map(TranslateVarDec)> [a1*,a2*]
-        ; fini := <init-sl-funs> t*
-        ; vini := <init-sl-vars> t*
+        ; off  := <fetch-elem(?Offsets(_,_))> t*
+        ; fini := <init-sl-funs> off
+        ; vini := <init-sl-vars> off
         ; stms := <filter(AddToFrame)> [a1*, a2*]
         ; F    := <newname> "fail"
         ; stm  := <translate-strat(|Next(), F)> s
@@ -357,19 +358,61 @@ strategies
 
 
   init-sl-funs : 
-    [Offsets(0,j)|_] -> []
+    Offsets(0,j) -> []
 
   init-sl-funs : 
-    [Offsets(i,j)|_] -> [ stm|[ sl_heap_funs(~exp:<mk-int-const>i); ]| ]
+    Offsets(i,j) -> [ stm|[ sl_funs(~exp:<mk-int-const>i); ]| ]
     where <not(0)> i
 
   init-sl-vars : 
-    [Offsets(i,0)|_] -> []
+    Offsets(i,0) -> []
 
   init-sl-vars : 
-    [Offsets(i,j)|_] -> [ stm|[ sl_heap_vars(~exp:<mk-int-const>j); ]| ]
+    Offsets(i,j) -> [ stm|[ sl_vars(~exp:<mk-int-const>j); ]| ]
     where <not(0)> j
 
+
+  heap-frame(|t*) :
+    |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms1 } ]|
+ -> |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms2 } ]|
+    where
+      <fetch-elem(?HeapFrame())> t*
+    ; stms2 := <map(try(stack-frame-2-heap-frame))> stms1
+
+  stack-frame-2-heap-frame :
+    stm|[ sl_decl(~exp: e); ]| -> stm|[ sl_heap_decl(~exp: e); ]|
+
+  stack-frame-2-heap-frame :
+    stm|[ sl_funs(~exp: e); ]| -> stm|[ sl_heap_funs(~exp: e); ]|
+
+  stack-frame-2-heap-frame :
+    stm|[ sl_vars(~exp: e); ]| -> stm|[ sl_heap_vars(~exp: e); ]|
+
+
+  tracing-table :
+    |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms1 } ]|
+ -> |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms2 } ]|
+    where
+      id // if tracing table
+    ; stms2 := <
+        tracing-table-init(|f)
+      ; listbu(try(tracing-table-return))
+      > stms1
+
+  tracing-table-init(|f) :
+    <is-list> -> [
+      stm|[ __tracing_table[__tracing_table_counter++] = ~exp:<!StringLit([<double-quote> f])>; ]|
+    | <id> ]
+
+  tracing-table-return :
+    [stm|[ return(t); ]| | _] -> [
+      stm|[ __tracing_table[--__tracing_table_counter] = NULL; ]|
+    | <id> ]
+
+  tracing-table-return :
+    [stm|[ return NULL; ]| | _] -> [
+      stm|[ --__tracing_table_counter; ]|
+    | <id> ]
 
 
   make-static :
