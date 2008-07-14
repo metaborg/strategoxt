@@ -72,14 +72,16 @@ struct str_frame
   frame->funs = NULL;
 
 #define sl_heap_vars(n)                         \
-  do {                                          \
-    const long nb = n;                          \
-    frame->vars = malloc(nb * sizeof(ATerm));   \
-    ATprotectArray(frame->vars, nb);            \
-  } while(0)
+  ATerm *sl_vars;                               \
+  const long nb = n;                            \
+  frame->vars = malloc(nb * sizeof(ATerm));     \
+  ATprotectArray(frame->vars, nb);              \
+  sl_vars = frame->vars;
 
 #define sl_heap_funs(n)                                   \
-  frame->funs = malloc((n) * sizeof(struct str_closure));
+  struct str_closure *sl_funs;                            \
+  frame->funs = malloc((n) * sizeof(struct str_closure)); \
+  sl_funs = frame->funs;
 
 #define sl_heap_end()                           \
   do {                                          \
