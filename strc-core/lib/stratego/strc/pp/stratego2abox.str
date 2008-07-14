@@ -375,6 +375,10 @@ rules // tuples and list
 
 strategies
 
+  pp-generic-list(s, before, after) =
+    let empty = !|[ H hs=0 [ ~<before> () ~<after> () ] ]|
+    in pp-generic-list(s, empty, before, after) end
+
   pp-generic-list(s, empty, before, after) =
       where(<gt> (<term-size>, 15))
     < generic-list-worstcase(s, empty, before, after)
@@ -546,6 +550,16 @@ rules
     CallDynamic(f,[],[]) -> |[ H [ "call" "(" ~f "|" "|" ")" ] ]|
 
 
+  stratego-to-abox :
+    DeclDynamic(s, as1, as2) -> |[ H hs=0 [ "dyn" ~args ] ]|
+    where
+      <pp-generic-list(id, !|[ "(" ]|
+      , <pp-generic-list(id, !|[ "|" ]|
+        , <pp-generic-list(id, !|[ "|" ]|
+          , !|[ ")" ]|
+          )> as2
+        )> as1
+      )> [s] => args
 
   stratego-to-abox : 
     Call(name,[]) -> name
