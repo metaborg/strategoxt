@@ -474,7 +474,9 @@ strategies
         ; <implode-string> cs => x'
 
   DesugarOnce :
-    CallDynamic(t1,s*,t*) -> CallDynamic(Term |[ <conc-strings>(<cify>t1,t2) ]|,s*,t*)
+    CallDynamic(t1,s*,t*) -> CallDynamic(
+      Term |[ <is-string < <conc-strings> (<cify>,t2) + id> t1 ]|
+    , s*, t*)
     where 
       <length>s* ; int-to-string => i
     ; <length>t* ; int-to-string => j
