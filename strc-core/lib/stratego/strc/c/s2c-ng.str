@@ -337,9 +337,11 @@ strategies
          ~stm*:vini;
          ~stm*:stms;
          ~stm:stm; 
+         sl_end();
          __tracing_table[--__tracing_table_counter] = NULL;
          return(t);
          ~id:F : 
+         sl_end();
          --__tracing_table_counter;
          return NULL;
        }
@@ -436,18 +438,25 @@ rules
     |[ {x* : s} ]| -> 
     stm|[ 
       {
-	~dec*:[Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-	        // <map(!var-dec|[~id:<id> = NULL]|)> x*
-		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> x*)
-	       ]
-        ~stm*:<filter(TranslateEscapingVarDec)> x*
+        ~dec*: <
+            ( !stm|[ { ATerm ~var-dec*: <not([])> var-dec*; } ]|
+              <+ !stm|[ { } ]|
+            )
+            ; ?stm|[ { ~dec*: <id> } ]|
+          >
+        ~stm*: escaped-var*
         ~stm:(<translate-strat(|S,F)> s)
       }
     ]|
+    where
+      (escaped-var*, var-dec*) := <partition(
+        TranslateEscapingVarDec
+      , !var-dec |[ ~id: <id{![]}> = NULL ]|
+      )> x*
 
   TranslateEscapingVarDec : 
     x{Offset(i),Escapes()} -> stm|[
-      sl_init_var(~exp:<mk-int-const> i, ~id:x{}); 
+      sl_init_var(~exp:<mk-int-const> i, NULL); 
     ]|
 
   TranslateStrat(|S,F) :
@@ -504,14 +513,14 @@ rules
  
   MkClosure :
     Def|[ f~{Offsets(i,j),Closure(x)}(|) = s ]| ->
-    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
+    ([dec|[ struct str_closure ~id:y = {&~id:f, frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     , [])
     where y := <new>
 
   MkClosure :
     Def|[ f~{Offsets(i,j),Offset(k),Escapes(),Closure(x)}(|) = s ]| ->
-    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
+    ([dec|[ struct str_closure ~id:y = {&~id:f, frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
     where y := <new>
@@ -530,7 +539,7 @@ rules
 	; if <not([])> frames' then
 	    sl := <frames-to-static-link> frames'
 	  else
-            sl := |[ &frame ]|
+            sl := exp|[ frame ]|
 	    ; <dbg(|"* warning (MkClosure) expects more than one frame: ")> def
 	  end
 
@@ -546,16 +555,17 @@ rules
 	; if <not([])> frames' then
 	    sl := <frames-to-static-link> frames'
 	  else
-            sl := |[ &frame ]|
+            sl := exp|[ frame ]|
 	    ; <dbg(|"* warning (MkClosure) expects more than one frame: ")> def
 	  end
 
 strategies // computing the static link
 
   frames-to-static-link =
-    (Tl <+ err(|"*** frames-to-static-link error: "); fail)
+    Tl
     ; foldr(!exp|[ sl ]|,
 	    !exp|[ sl_up(~exp:<Snd>) ]|)
+    <+ !exp|[ frame ]|
 
 strategies // calling and passing functions
 
@@ -568,28 +578,18 @@ strategies // calling and passing functions
   // f is a function, pass it its static link
 
   mk-call : 
-    (f{Frames([])}, args) -> 
-    exp|[ ~id:f{}(&frame,~exp*:args) ]|
-
-  // f is a function, pass it its static link
-
-  mk-call : 
     (f{Frames(frames)}, args) -> 
     exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
-    where sl := <not([]); frames-to-static-link> frames
+    where sl := <frames-to-static-link> frames
 
   // f is a function, pass it its static link
   // the offset is caused by another use of the function as
   // a closure, it can be ignored in this instance
 
   mk-call : 
-    (f{Offset(i),Frames([])}, args) -> 
-    exp|[ ~id:f{}(&frame,~exp*:args) ]|
-
-  mk-call : 
     (f{Offset(i),Frames(frames)}, args) -> 
     exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
-    where <not([]); frames-to-static-link> frames => sl
+    where <frames-to-static-link> frames => sl
 
   // f is a local variable (function argument) containing a closure
 
@@ -597,20 +597,13 @@ strategies // calling and passing functions
     (f{Frames([]),ApplyClosure()}, args) -> 
     exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]|
 
-  // f is a local variable containing a closure
-  // (but f also has escaping instances)
-
-  mk-call : 
-    (f{Offset(i),Frames([]),ApplyClosure()}, args) -> 
-    exp|[ (cl_fun(~id:f{})) (cl_sl(~id:f{}), ~exp*:args) ]|
-
   // f is a non-local variable containing a closure
 
   mk-call : 
     (f{Offset(i),Frames(frames),ApplyClosure()}, args) -> 
     exp|[ (sl_fun(~exp:<mk-int-const>i, ~exp:sl))
              (sl_fun_sl(~exp:<mk-int-const>i, ~exp:sl), ~exp*:args) ]| 
-    where sl := <not([]); frames-to-static-link> frames
+    where sl := <frames-to-static-link> frames
 
   // passing a local closure to a function 
   // Note: this should be &x in case of a locally constructed closure,
@@ -624,15 +617,12 @@ strategies // calling and passing functions
   ArgToCl :
     Strat|[ f~{Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
 
-  ArgToCl :
-    Strat|[ f~{Offset(i),Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
-
   // passing a remote closure to a function
 
   ArgToCl :
     Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
     exp|[ sl_fun_cl(~exp:<mk-int-const>i, ~exp:sl) ]|
-    where sl := <not([]); frames-to-static-link> frames
+    where sl := <frames-to-static-link> frames
 
 /**
  * Strategy calls
@@ -801,12 +791,9 @@ rules
     x{Frames([])} -> exp|[ x ]|
 
   VarToWriteRef : 
-    x{Offset(i), Frames([])} -> exp|[ x ]|
-
-  VarToWriteRef : 
     x{Offset(i), Frames(frames)} -> 
-    exp|[ sl_readvar(~exp:<mk-int-const>i, ~exp:sl) ]|
-    where <not([]); frames-to-static-link> frames => sl
+    exp|[ sl_writevar(~exp:<mk-int-const>i, ~exp:sl) ]|
+    where <frames-to-static-link> frames => sl
 
   VarToReadRef : 
     x{} -> exp|[ x ]|
@@ -814,13 +801,10 @@ rules
   VarToReadRef :
     x{Frames([])} -> exp|[ x ]|
 
-  VarToReadRef :
-    x{Offset(i), Frames([])} -> exp|[ x ]|
-
   VarToReadRef : 
     x{Offset(i), Frames(frames)} -> 
     exp|[ sl_readvar(~exp:<mk-int-const>i, ~exp:sl) ]|
-    where <not([]); frames-to-static-link> frames => sl
+    where <frames-to-static-link> frames => sl
 
   TranslateStrat(|S,F) :
     Match(Var(x){}, trm) -> <translate-strat(|S,F)> Match(Var(x){"(un)bound"}, trm)
