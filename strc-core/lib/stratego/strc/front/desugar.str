@@ -510,6 +510,11 @@ rules // variable declarations
     where <map(try(MkFunType))> s1 => s2
         ; <map(try(MkConstType))> t1 => t2
 
+  DesugarDefaultVarDec :
+    DeclDynamic(s, s1, t1) -> DeclDynamic(s, s2, t2)
+    where <map(try(MkFunType))> s1 => s2
+        ; <map(try(MkConstType))> t1 => t2
+
   MkFunType :
     DefaultVarDec(x)-> VarDec(x, DefaultStrat())
 

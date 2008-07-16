@@ -67,6 +67,9 @@ rules
   Bind8 : RDefT(f, xs, ys, s) -> <declared-vars> ys
   Bind8 : RDecT(f, xs, ys)    -> <declared-vars> ys
 
+  Bind11 : DeclDynamic(s, xs, ys) -> <declared-vars> xs
+  Bind12 : DeclDynamic(s, xs, ys) -> <declared-vars> ys
+
 strategies
 
   Bind9  = dynrule-sargs(declared-vars)
@@ -109,6 +112,7 @@ strategies
     + ExtSDefInl(id, id, split(id, nwvars); zip(ReplaceVar), id)
     + RDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
     + dynrule-cong(id, id, split(id, nwvars); zip(ReplaceVar), id, id, id)
+    + DeclDynamic(id, id, split(id, nwvars); zip(ReplaceVar))
 
   ReplaceVar :
     (VarDec(x,t), y) -> VarDec(y,t)
@@ -129,6 +133,7 @@ strategies
     + dynrule-cong(ignore, bnd)
 
     + GenDynRules(bnd)
+    + DeclDynamic(bnd, ignore, ignore)
 
   spaste(nwvars) =
       Let(split(id,nwvars); 
@@ -145,6 +150,7 @@ strategies
     + RDecT(id, split(id, nwvars); zip(ReplaceVar), id)
     + dynrule-cong(id, split(id, nwvars); zip(ReplaceVar), id, id, id, id)
     + Rec(nwvars; Hd, id)
+    + DeclDynamic(id, split(id, nwvars); zip(ReplaceVar), id)
 
   sboundin(bnd, ubnd, ignore) =
       Let(bnd, bnd)
@@ -156,6 +162,7 @@ strategies
     + RDecT(ignore, ignore, ignore)
     + dynrule-cong(ignore, bnd)
     + Rec(ignore, bnd)
+    + DeclDynamic(bnd, ignore, ignore)
 
 // Free Variables and Renaming
 
@@ -165,20 +172,20 @@ strategies
     map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
 
   tvars = 
-    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8 + Bind10, tboundin)
+    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8 + Bind10 + Bind12, tboundin)
 
   svars = 
-    free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin)
+    free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9 + Bind11, sboundin)
 
   trename = 
-    rename(Var, Bind0 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
+    rename(Var, Bind0 + Bind6 + Bind8 + Bind10 + Bind12, tboundin, tpaste)
 
   srename = 
-    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin, spaste)
+    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9 + Bind11, sboundin, spaste)
 
   svars-arity = 
     free-vars2(\CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
-              ,Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9
+              ,Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9 + Bind11
               ,sboundin
               ,{f:?((f,_),f)})
 
@@ -186,7 +193,7 @@ strategies
     trename ; srename
 
   tsubstitute = 
-    substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
+    substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8 + Bind10 + Bind12, tboundin, tpaste)
 
   tsubs = 
     substitute(IsVar)

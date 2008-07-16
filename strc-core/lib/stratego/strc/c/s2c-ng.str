@@ -600,6 +600,12 @@ rules
 	    ; <dbg(|"* warning (MkClosure) expects more than one frame: ")> def
 	  end
 
+  // used for dynamic called strategies (same closure generation)
+  // |[ let f(s|t) = .. in dyn(f(s|t)|s|t) end ]|
+  MkClosure :
+    Def|[ f~{t*}(a1*|a2*) = s ]| -> <MkClosure> Def|[ f~{t*}(|) = s ]|
+    where <not(?[])> a1* + <not(?[])> a2*
+
 strategies // computing the static link
 
   frames-to-static-link =

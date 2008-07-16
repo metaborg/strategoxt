@@ -136,6 +136,17 @@ strategies
     //; debug(!"callt b: ")
     //; dr-print-rule-set(|"MarkVar")
 
+  mark-call :
+    DeclDynamic(s,as1,as2) -> DeclDynamic(s',as1,as2)
+    where
+      <map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))> as2 => as2'
+	  ; {| MarkVar :
+        (all-keys-MarkVar <+ ![])
+      ; map(?Var(<id>); DeclareMaybeUnbound)
+      ; <map(IntroduceBound)> as2'
+      ; <mark-buv> s => s'
+      |}
+
   mark-prim =
     PrimT(id,id,id)
     ; fork-MarkVar(id, PrimT(id, id, map(mark-build-vars)); PrimT(id, mark-buv, id))

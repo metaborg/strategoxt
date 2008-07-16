@@ -1,0 +1,17 @@
+module dyn-test03
+imports libstratego-lib
+strategies
+  delayed-at-index =
+    ?start
+  ; dyn(
+      switch !start
+        case "tail": at-index-tail(s|i)
+        case "head": at-index(s|i)
+      end
+    |s|i)
+
+  main =
+    <delayed-at-index> "head" => at-index-hd
+  ; <delayed-at-index> "tail" => at-index-tl
+  ; [0,1,[],3,4] := <call( at-index-hd | ![] |2)> [0,1,2,3,4]
+  ; [0,1]        := <call( at-index-tl | ![] |2)> [0,1,2,3,4]

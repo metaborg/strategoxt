@@ -34,7 +34,7 @@ tests =										 \
 		  nested-defs01							 \
 		  cs-test01 cs-test02 cs-test03 cs-test04			 \
 		  static-links							 \
-		  dyn-test01 dyn-test02
+		  dyn-test01 dyn-test02 dyn-test03
 
 check_PROGRAMS 	= $(tests)
 
@@ -49,6 +49,7 @@ TESTS_ENVIRONMENT = SRCDIR="$(srcdir)/"
 
 dyn_test01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 dyn_test02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+dyn_test03_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 cs_test03_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -279,6 +280,7 @@ nodist_cs_test04_SOURCES = cs-test04.c
 
 nodist_dyn_test01_SOURCES = dyn-test01.c
 nodist_dyn_test02_SOURCES = dyn-test02.c
+nodist_dyn_test03_SOURCES = dyn-test03.c
 
 SDF2RTG_FLAGS = --main $*
 PGEN_FLAGS = -m $*
