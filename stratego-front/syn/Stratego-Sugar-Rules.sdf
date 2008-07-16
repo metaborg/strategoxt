@@ -11,7 +11,11 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDefT")}
 
-  sorts Rule
+  sorts Rule RuleCond
   context-free syntax
-    Term "->" Term 		    		-> Rule {cons("RuleNoCond")}
-    Term "->" Term "where" Strategy 		-> Rule {cons("Rule")}
+    Term "->" Term           	    -> Rule {cons("RuleNoCond")} %% backward comp.
+    Term "->" Term "where" Strategy -> Rule {cons("Rule")}       %% backward comp.
+    Term "->" Term RuleCond+	    -> Rule {cons("Rule"), avoid}
+
+    "where" Strategy -> RuleCond {cons("WhereClause")}
+    "with"  Strategy -> RuleCond {cons("WithClause")}

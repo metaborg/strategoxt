@@ -465,7 +465,20 @@ rules
     RuleNoCond(lhs,rhs) -> |[ H hs=1 [ ~lhs "->" ~rhs ] ]|
 
   stratego-to-abox : 
+    Rule(lhs,rhs,condition) -> |[ V [ H hs=1 [ ~lhs "->" ~rhs ] ~condition ] ]|
+    where
+      <is-list> condition
+
+  stratego-to-abox : 
     Rule(lhs,rhs,condition) -> |[ V [ H hs=1 [ ~lhs "->" ~rhs ] H[ KW["where"] ~condition ] ] ]|
+    where
+      not(<is-list> condition)
+
+  stratego-to-abox :
+    WhereClause(s) -> |[ H hs=1 [ KW["where"] ~s ] ]|
+
+  stratego-to-abox :
+    WithClause(s) -> |[ H hs=1 [ KW["with"] ~s ] ]|
 
   stratego-to-abox : 
    LRule(r) -> |[ H[ "\\" ~r "\\" ] ]|

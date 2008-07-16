@@ -26,7 +26,7 @@ tests =									 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
 		  test97 test98	test99 test100 test101 test102 test103		 \
-		  test104 test105 test106 test107 test108			 \
+		  test104 test105 test106 test107 test108 test109		 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03			 \
@@ -246,6 +246,7 @@ nodist_test105_SOURCES = test105.c
 nodist_test106_SOURCES = test106.c
 nodist_test107_SOURCES = test107.c
 nodist_test108_SOURCES = test108.c
+nodist_test109_SOURCES = test109.c
 
 nodist_test_chain01_SOURCES = test-chain01.c
 nodist_test_chain02_SOURCES = test-chain02.c

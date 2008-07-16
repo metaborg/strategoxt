@@ -164,7 +164,25 @@ strategies
 rules
 
   RtoS : |[ (t1 -> t2 where s) ]| -> |[ ?t1; where(s); !t2 ]|
-         where <pureterm> t1 ; <buildterm> t2
+         where
+           not(<is-list> s);
+           <pureterm> t1 ; <buildterm> t2
+
+  // |[ (t1 -> t2 cond*) ]| ->
+  RtoS : SRule(Rule(t1, t2, cond*)) -> |[ ?t1; s_conds; !t2 ]|
+         where
+           annos := <get-annos>
+         ; <pureterm> t1
+         ; <buildterm> t2
+         ; s_conds := <CtoS(!annos; getfirst(?Id(<id>)))> cond*
+
+  CtoS(name) : [] -> Id()
+  CtoS(name) : [WhereClause(s) | cond*] -> Seq(Where(s),  <CtoS(name)> cond*)
+  CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
+         where
+           message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule \"", <name>, "\"")
+         ; with := Strat |[ with(s | ~str:message {^[]}) ]|
+           <+ with := Strat |[ with(s) ]|
 
 strategies // Desugaring single rules
 
@@ -524,8 +542,10 @@ strategies
     bottomup(try(DefLRule + DefScopeDefault))
 
   DefLRule : 
-    |[ \ t1 -> t2 where s \ ]| ->
-    |[ { ~<tvars; map(try(?ListVar(<id>)))> t1 : (t1 -> t2 where s) } ]|
+    //|[ \ t1 -> t2 cond* \ ]| ->
+    //|[ { ~<tvars; map(try(?ListVar(<id>)))> t1 : (t1 -> t2 cond*) } ]|
+    LRule(Rule(t1, t2, cond*)) ->
+    |[ { ~<tvars; map(try(?ListVar(<id>)))> t1 : ~SRule(Rule(t1, t2, cond*)) } ]|
 
   DefScopeDefault :
     |[ { s } ]| -> |[ { ~<tvars> s : s } ]|
