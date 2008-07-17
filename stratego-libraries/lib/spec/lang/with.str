@@ -1,0 +1,24 @@
+/**
+ * This module provides some basic strategies for specifying
+ * run-time verified strategies.
+ *
+ * @author Lennart Kats <lennart add lclnet.nl>
+ * 
+ */
+module lang/with
+
+imports
+  util/log
+  strategy/conditional
+
+strategies
+
+  with(s) = with(s |"Internal error: with clause failed unexpectedly")
+
+  with(s|message) =
+    where(s)
+    <+ log(|Critical(), message, <id>)
+     ; prim("SSL_stacktrace_get_all_frame_names")
+     ; try(?["with_1_1" | <id>])
+     ; report-failure
+
