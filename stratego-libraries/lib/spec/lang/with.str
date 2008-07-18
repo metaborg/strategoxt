@@ -1,5 +1,5 @@
 /**
- * This module provides some basic strategies for specifying
+ * This module provides a basic strategy for specifying
  * run-time verified strategies.
  *
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -13,8 +13,15 @@ imports
 
 strategies
 
-  with(s) = with(s |"Internal error: with clause failed unexpectedly")
-
+  /**
+   * Evaluate a strategy s, or, on failure, end with a fatal error.
+   *
+   * This strategy is used internally by the with(s) strategy, which
+   * fails with a message reporting the name of the current strategy/rule.
+   *
+   * @note In future revisions, a facility may be provided to "catch"
+   *       failures caused by with clauses and this strategy.
+   */
   with(s|message) =
     where(s)
     <+ log(|Critical(), message, <id>)

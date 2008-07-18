@@ -195,6 +195,7 @@
    Rec                                                -- H  [KW["rec"] _1 KW["("] _2 KW[")"]],
    Not                                                -- H hs=0 [KW["not"] KW["("] _1 KW[")"]],
    Where                                              -- H hs=0 [KW["where"] KW["("] _1 KW[")"]],
+   With                                               -- H hs=0 [KW["with"] KW["("] _1 KW[")"]],
    Test                                               -- H hs=0 [KW["test"] KW["("] _1 KW[")"]],
    Bagof                                              -- H hs=0 [KW["bagof"] KW["("] _1 KW[")"]],
    PrimNoArgs                                         -- H hs=0 [KW["prim"] KW["("] _1 KW[")"]],

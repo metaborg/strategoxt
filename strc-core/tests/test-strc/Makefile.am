@@ -11,7 +11,9 @@ STRPROGS = \
   test10.str \
   test11.str \
   test12.str \
-  test13.str
+  test13.str \
+  test14.str \
+  test15.str
 
 STRLIBS = \
   test09-lib.str 
