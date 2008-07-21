@@ -246,6 +246,9 @@ rules
     Where(s) -> H hs=0 [ KW["where"] KW["("] ~s KW[")"] ]
 
   stratego-to-abox : 
+    With(s) -> H hs=0 [ KW["with"] KW["("] ~s KW[")"] ]
+
+  stratego-to-abox : 
     Test(s) -> H hs=0 [ KW["test"] KW["("] ~s KW[")"] ]
 
 rules
