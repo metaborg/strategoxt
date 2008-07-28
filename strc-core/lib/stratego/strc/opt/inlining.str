@@ -28,6 +28,8 @@ imports Stratego-Amb
 overlays
 
   dont-inline = []
+  
+  INLINE_MAX_TERM_SIZE = 50
 
   // create a user-definable list of function that should not and/or functions
   // that should be inlined.
@@ -136,8 +138,8 @@ strategies
 
   body-to-inline = 
     rec x(
-        Id
-	+ Fail
+        Id()
+	+ Fail()
 	+ CallT(SVar(id),id,id)
 	+ PrimT(SVar(id),id,id)
 	+ Build(id)
@@ -152,4 +154,4 @@ strategies
 	+ Cong(id,id)
 //        + Rec(id, id)
     );
-    where(<leq>(<term-size>, 50))
+    where(<leq>(<term-size>, INLINE_MAX_TERM_SIZE()))
