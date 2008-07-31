@@ -60,6 +60,9 @@ if test -z "$getopt"; then
   AC_MSG_ERROR([getopt is required])
 fi
 
+DISTCHECK_CONFIGURE_FLAGS="--enable-werror --with-strategoxt=$BASELINE PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+AC_SUBST([DISTCHECK_CONFIGURE_FLAGS])
+
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
 COMPILER_GEN=$srcdir/compiler_generation
 BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
