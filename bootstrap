@@ -68,6 +68,12 @@ do
     rm -f Makefile.xt
     cp ../Makefile.xt .
   fi
+  if test \! -d config
+  then
+    mkdir config
+  fi
+  rm -f config/libtool_execute
+  cp ../config/libtool_execute ./config
   if test -e "../svn-revision"
   then
     rm -f
