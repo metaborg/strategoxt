@@ -24,7 +24,7 @@ STRCFLAGS = \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
 rtg-aterm.c :
-	libtool --mode=execute \
+	$(LIBTOOL) --mode=execute \
 	-dlopen $(top_builddir)/lib/spec/libstratego-lib.la \
 	-dlopen $(top_builddir)/runtime/lib/libstratego-runtime.la \
 	$(top_builddir)/build-tools/cgen-aterm --name STRRTG_get_rtg_parsetable -i $(RTGTBL_UNINSTALLED) > $@

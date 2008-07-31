@@ -68,8 +68,8 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
   POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
 
   # POST_SCOMPILE should be at the end of the strc command line
-  $1SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
-  $1PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
+  $1SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
+  $1PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
 ])
 
 

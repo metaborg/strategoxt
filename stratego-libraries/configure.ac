@@ -77,7 +77,7 @@ if test "${STRC_STAGE:+set}" = set; then
     xt_libs="$xt_libs -dlopen \$(top_builddir)/../$l"
   done
 
-  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
+  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
 
   BOX_UNINSTALLED_STRCFLAGS="-I \$(top_builddir)/../gpp${STRC_STAGE}/syn/box"
   PPTABLETBL_UNINSTALLED="\$(top_builddir)/../gpp${STRC_STAGE}/syn/pp-table"
