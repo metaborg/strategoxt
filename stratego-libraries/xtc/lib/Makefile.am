@@ -4,11 +4,11 @@ include $(wildcard *.dep)
 
 pkgdatadir = $(datadir)/xtc
 
-nobase_pkgdata_DATA =  stratego-xtc.str $(strategoxtc:.str=.rtree) $(all_rtree)
+nobase_pkgdata_DATA = $(strategoxtc:.str=.rtree) $(all_rtree)
 data_DATA = libstratego-xtc.rtree
 lib_LTLIBRARIES = libstratego-xtc.la
 
-EXTRA_DIST	    = $(nobase_pkgdata_DATA)
+EXTRA_DIST	    = $(nobase_pkgdata_DATA) $(fullstrategoxtc) $(all_c) $(all_rtree)
 CLEANFILES      = $(wildcard *.dep) libstratego-xtc.rtree stratego-xtc.str
 BOOTCLEANFILES 	= $(strategoxtc:.str=.rtree) $(all_c) $(all_rtree)
 
@@ -50,14 +50,18 @@ stratego-xtc.str : Makefile
 
 STRCFLAGS = $(STRATEGO_UNINSTALLED_STRCFLAGS) -I $(srcdir)
 
+# double targets: -c --library
+libstratego-xtc-c99.c: libstratego-xtc-c99.rtree; true
 libstratego-xtc-c99.rtree : stratego-xtc-c99.str $(strategoxtc:.str=.rtree)
 	$(STRC_UNINSTALLED) --verbose 2 -c --library -i $< -o libstratego-xtc-c99.rtree $(STRCFLAGS)
 	rm libstratego-xtc-c99.str
 
+libstratego-xtc-posix.c: libstratego-xtc-posix.rtree; true
 libstratego-xtc-posix.rtree : stratego-xtc-posix.str $(strategoxtc:.str=.rtree)
 	$(STRC_UNINSTALLED) -c --library -i $< -o libstratego-xtc-posix.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix.str
 
+libstratego-xtc-posix-xsi.c: libstratego-xtc-posix-xsi.rtree; true
 libstratego-xtc-posix-xsi.rtree : stratego-xtc-posix-xsi.str $(strategoxtc:.str=.rtree)
 	$(STRC_UNINSTALLED) -c --library -i $< -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix-xsi.str

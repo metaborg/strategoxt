@@ -30,11 +30,7 @@ staticsignatures =				\
 signatures = $(autogensignatures) $(staticsignatures)
 
 CLEANFILES	= $(wildcard *.atree)
-BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree) \
-                  Stratego.def \
-                  Stratego-Core.def \
-                  Stratego-Sugar.def \
-                  Stratego-Amb.def 
+BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree)
 
 pkgdata_DATA    = $(signatures:.str=.rtree)
 EXTRA_DIST      = \
@@ -42,24 +38,9 @@ EXTRA_DIST      = \
   Cong.rtg \
   $(call srcwildcard,*.str) \
   $(wildcard *.rtree) \
-  $(pkgdata_DATA) \
-  Stratego.def
+  $(pkgdata_DATA)
 
-Stratego.def: 
-	rm -f Stratego.def
-	ln -s ../syn/Stratego.def .
-
-Stratego-Core.def: 
-	rm -f Stratego-Core.def
-	ln -s ../syn/Stratego-Core.def .
-
-Stratego-Sugar.def: 
-	rm -f Stratego-Sugar.def
-	ln -s ../syn/Stratego-Sugar.def .
-
-Stratego-Amb.def: 
-	rm -f Stratego-Amb.def
-	ln -s ../syn/Stratego-Amb.def .
+VPATH += $(top_builddir)/syn/ $(top_srcdir)/syn/
 
 $(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Sugar.def Stratego-Amb.def
 
