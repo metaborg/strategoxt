@@ -108,6 +108,7 @@ if test "$xt_bootstrap" = "yes"; then
   fi
 fi
 
+### CONFIGURATION OF STAGES #######################################
 AC_MSG_CHECKING([in which order to build subpackages])
 
 LIB_PKGS="stratego-libraries"
@@ -118,27 +119,27 @@ LIB_PKGCONFIG_FILES="stratego-runtime stratego-lib-native stratego-lib stratego-
 
 STRC_PKGCONFIG_FILES="xtc"
 
-# subpackages should pick up the stage1 pkgconfig descriptions.
+# subpackages should pick up the staged pkgconfig descriptions.
 PKG_CONFIG_PATH="$(pwd):${ATERM}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 export PKG_CONFIG_PATH
 
 # determine the number of stages
+xt_max_stage=2
 if test "$xt_bootstrap" = "yes"; then
-  xt_num_stage=2
+  xt_start_at_stage=1
 else
-  xt_num_stage=1
+  xt_start_at_stage=2
   xt_lib_first=true
 fi
 
-# compute the list of packages to build
 STAGE_SUFFIX="-stage"
 PKGS="autoxt"
 UNINSTALLED_PKGCONFIG_FILES=""
 
-
 xt_lib_first_save=$xt_lib_first
-xt_current_stage=1
-while test $xt_current_stage -le $xt_num_stage; do
+xt_current_stage=$xt_start_at_stage
+while test $xt_current_stage -le $xt_max_stage; do
+
   STAGE_PKGS=
   STAGE_PKGCONFIG_FILES=
   if $xt_lib_first; then
@@ -151,7 +152,12 @@ while test $xt_current_stage -le $xt_num_stage; do
   STAGE_PKGS="$STAGE_PKGS $STRC_PKGS"
   STAGE_PKGCONFIG_FILES="$STAGE_PKGCONFIG_FILES${STAGE_PKGCONFIG_FILES+: }$STRC_PKGCONFIG_FILES"
 
+  # No suffix for the last stage
   CURRENT_STAGE_SUFFIX="${STAGE_SUFFIX}${xt_current_stage}"
+  if test $xt_current_stage -eq $xt_max_stage; then
+    CURRENT_STAGE_SUFFIX=""
+  fi
+
   for subpkgname in $STAGE_PKGS; do
     PKGS="$PKGS ${subpkgname}${CURRENT_STAGE_SUFFIX}"
   done
@@ -172,10 +178,10 @@ AC_SUBST([PKGS])
 AC_SUBST([UNINSTALLED_PKGCONFIG_FILES])
 
 # define suffix for pkgconfig files
-AC_SUBST([STAGE1_SUFFIX],[${STAGE_SUFFIX}1])
-AC_SUBST([STAGE2_SUFFIX],[${STAGE_SUFFIX}2])
+AC_SUBST([STAGE1_SUFFIX],["${STAGE_SUFFIX}1"])
+AC_SUBST([STAGE2_SUFFIX],[""])
 
-AC_SUBST([STAGE_FILE], [stage1.pc.in stage2.pc.in])
+AC_SUBST([STAGE_FILE], ["stage1.pc.in stage2.pc.in"])
 
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
@@ -185,17 +191,17 @@ AC_CONFIG_FILES([
   strategoxt.spec
   strategoxt.pc
 
-  stratego-aterm-uninstalled.pc
-  stratego-gpp-uninstalled.pc
-  stratego-lib-native-uninstalled.pc
-  stratego-lib-uninstalled.pc
-  stratego-rtg-uninstalled.pc
-  stratego-runtime-uninstalled.pc
-  stratego-sdf-uninstalled.pc
-  stratego-sglr-uninstalled.pc
-  stratego-tool-doc-uninstalled.pc
-  stratego-xtc-uninstalled.pc
-  xtc-uninstalled.pc
+  stratego-aterm-template.pc
+  stratego-gpp-template.pc
+  stratego-lib-native-template.pc
+  stratego-lib-template.pc
+  stratego-rtg-template.pc
+  stratego-runtime-template.pc
+  stratego-sdf-template.pc
+  stratego-sglr-template.pc
+  stratego-tool-doc-template.pc
+  stratego-xtc-template.pc
+  xtc-template.pc
   stage1.pc
   stage2.pc
 ])
@@ -205,20 +211,26 @@ AC_OUTPUT
 ### UNINSTALLED PKG-CONFIG #####################################
 
 xt_lib_first_save=$xt_lib_first
-xt_current_stage=1
-while test $xt_current_stage -le $xt_num_stage; do
+xt_current_stage=$xt_start_at_stage
+while test $xt_current_stage -le $xt_max_stage; do
+  # No suffix for the last stage
+  CURRENT_STAGE_SUFFIX="${STAGE_SUFFIX}${xt_current_stage}"
+  if test $xt_current_stage -eq $xt_max_stage; then
+    CURRENT_STAGE_SUFFIX=""
+  fi
+
   if $xt_lib_first; then
     for pkgcname in $LIB_PKGCONFIG_FILES; do
-      cat  > $pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc \
-      -- stage$xt_current_stage.pc $pkgcname-uninstalled.pc
+      cat  > $pkgcname${CURRENT_STAGE_SUFFIX}-uninstalled.pc \
+      -- stage$xt_current_stage.pc $pkgcname-template.pc
     done
   else
     xt_lib_first=true
   fi
 
   for pkgcname in $STRC_PKGCONFIG_FILES; do
-    cat  > $pkgcname$STAGE_SUFFIX$xt_current_stage-uninstalled.pc \
-    -- stage$xt_current_stage.pc $pkgcname-uninstalled.pc
+    cat  > $pkgcname${CURRENT_STAGE_SUFFIX}-uninstalled.pc \
+    -- stage$xt_current_stage.pc $pkgcname-template.pc
   done
 
   xt_current_stage=$(($xt_current_stage + 1))
@@ -237,23 +249,31 @@ LINK_STAGE_ARGS=""
 NEW_LINK_STAGE_ARGS=""
 
 xt_lib_first_save=$xt_lib_first
-xt_current_stage=1
-while test $xt_current_stage -le $xt_num_stage; do
-  CURRENT_STAGE_ARGS="--with-current-stage=${STAGE_SUFFIX}$xt_current_stage"
-  if test $xt_current_stage -lt $xt_num_stage; then
+xt_current_stage=$xt_start_at_stage
+while test $xt_current_stage -le $xt_max_stage; do
+  # No suffix for the last stage.
+  CURRENT_STAGE_SUFFIX="${STAGE_SUFFIX}${xt_current_stage}"
+  if test $xt_current_stage -eq $xt_max_stage; then
+    CURRENT_STAGE_SUFFIX=""
+  fi
+
+  CURRENT_STAGE_ARGS="--with-current-stage=${CURRENT_STAGE_SUFFIX}"
+  if test $xt_current_stage -lt $xt_max_stage; then
+    # do not check intermediate stages.
     CURRENT_STAGE_ARGS="$CURRENT_STAGE_ARGS --disable-stage-check"
   fi
+
   LINK_STAGE_ARGS="$NEW_LINK_STAGE_ARGS"
   if $xt_lib_first; then
-    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
-    LIB_STAGE_ARGS="--with-use-lib-stage=-stage$xt_current_stage"
-    NEW_LINK_STAGE_ARGS="--with-link-lib-stage=-stage$xt_current_stage"
+    AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${CURRENT_STAGE_SUFFIX}, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
+    LIB_STAGE_ARGS="--with-use-lib-stage=${CURRENT_STAGE_SUFFIX}"
+    NEW_LINK_STAGE_ARGS="--with-link-lib-stage=${CURRENT_STAGE_SUFFIX}"
   else
     xt_lib_first=true
   fi
 
-  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
-  STRC_STAGE_ARGS="--with-use-strc-stage=-stage$xt_current_stage"
+  AB_CONFIG_PKG_SUFFIX("$STRC_PKGS", ${CURRENT_STAGE_SUFFIX}, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
+  STRC_STAGE_ARGS="--with-use-strc-stage=${CURRENT_STAGE_SUFFIX}"
 
   xt_current_stage=$(($xt_current_stage + 1))
 done
