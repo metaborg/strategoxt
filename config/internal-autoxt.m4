@@ -30,8 +30,10 @@ AC_DEFUN([XT_CHECK_STAGE],
     [LINK_STAGE=])
 
   AC_ARG_WITH([current-stage], [],
-    [CURRENT_STAGE=$withval],
-    [CURRENT_STAGE=])
+    [CURRENT_STAGE=$withval
+     xt_current_stage_set=yes],
+    [CURRENT_STAGE=
+     xt_current_stage_set=no])
   AC_SUBST([CURRENT_STAGE])
 
   AC_ARG_ENABLE([stage-check], [],
@@ -77,7 +79,7 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
   # The variable xt_xtc_repo_stage contains the XTC repository which must be
   # used.  This file is a copy of BUILDTIME_XTC done when enterring in the
   # compilation of stratego-front.
-  if test "${CURRENT_STAGE:+set}" = "set" -a "${CURRENT_STAGE}" != "${xt_strc_stage}"; then
+  if test "${xt_current_stage_set}" = "yes" -a "${CURRENT_STAGE}" != "${xt_strc_stage}"; then
     # in a staged compilation: used the previous stage.
     xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${xt_strc_stage}"
   else
