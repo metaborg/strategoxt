@@ -37,7 +37,7 @@ AC_DEFUN([XT_CHECK_STAGE],
 
 # XT_STAGED_SCOMPILE
 # ------------------
-# Define a variable which contains the code to use to call a staged "strc".
+# Define a variable which contains the code to call a staged "strc".
 AC_DEFUN([XT_STAGED_SCOMPILE],
 [
   xt_strc_stage=$2
@@ -67,9 +67,21 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
 
   POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
 
+  # The variable xt_xtc_repo_stage contain the XTC repository which must be
+  # used.  This file is a copy of BUILDTIME_XTC done when enterring in the
+  # compilation of stratego-front.
+  if test "${CURRENT_STAGE:+set}" = set; then
+    xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE)"
+  else
+    xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)"
+  fi
+
+  # "env" is required to interpret the command line after a shell variable
+  # expansion. (see strc-core/tests/test-strc)
+
   # POST_SCOMPILE should be at the end of the strc command line
-  $1SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
-  $1PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
+  $1SCOMPILE="env $xt_set_xtc_repo \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
+  $1PARSE_STRATEGO="env $xt_set_xtc_repo \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
 ])
 
 

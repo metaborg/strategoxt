@@ -20,7 +20,7 @@ TESTS = $(STRPROGS:.str=.str.sh)
 TESTS_ENVIRONMENT =\
   SRCDIR="$(srcdir)" \
   CC="$(CC)" \
-  STRC="../../tools/strc --verbose 3 --format-check 1 --keep 0" \
+  STRC="$(CURRENT_SCOMPILE) --verbose 3 --format-check 1 --keep 0" \
   STRATEGO_LIB="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS)
