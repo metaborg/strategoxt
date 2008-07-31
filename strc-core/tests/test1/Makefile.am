@@ -133,7 +133,7 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.dep *test*.c *.out *.ttxt *.txt *.b[0-9]*  *.opt*
 
 EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) Expressions.sdf \
-             ExpStratego.sdf make-rules io-test*.in bar.c	  \
+             ExpStratego.sdf make-rules $(call srcwildcard,io-test*.in) bar.c	  \
              static-links-include.h $(call srcwildcard,*.trm) Java-15.tbl
 
 include make-rules
