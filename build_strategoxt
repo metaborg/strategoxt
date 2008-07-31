@@ -28,6 +28,7 @@ Options:
       - build
       - install
       - check
+      - distcheck
       - all (all previous steps)
 
    The order of these commands is important.
@@ -59,7 +60,7 @@ keep=false
 help=false
 make=make
 
-all_steps="bootstrap configure build install check"
+all_steps="bootstrap configure build install check distcheck"
 action_id=0
 for step in $all_steps; do
   eval skip_${step}=$action_id
@@ -97,7 +98,7 @@ for arg; do
               eval ${action}_${step}=$action_id
             done
             ;;
-          bootstrap|configure|build|install|check)
+          bootstrap|configure|build|install|check|distcheck)
             eval ${action}_${arg}=$action_id
             ;;
           *) usage;;
@@ -166,6 +167,12 @@ fi
 if should_do check; then
   cd $builddir
   "$make" check ${keep:+-k} $extra_check
+  err=$(($? + $err))
+fi
+
+if should_do distcheck; then
+  cd $builddir
+  "$make" distcheck ${keep:+-k} $extra_distcheck
   err=$(($? + $err))
 fi
 
