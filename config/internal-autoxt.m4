@@ -12,7 +12,7 @@ m4_pattern_forbid([^XT_])
 
 # XT_USE_STAGE
 # ------------
-# Check which stage to use to compile a sub-package.
+# Check which stages are used to compile a sub-package.
 AC_DEFUN([XT_CHECK_STAGE],
 [
   AC_ARG_WITH([use-lib-stage], [],
@@ -33,7 +33,14 @@ AC_DEFUN([XT_CHECK_STAGE],
     [CURRENT_STAGE=$withval],
     [CURRENT_STAGE=])
   AC_SUBST([CURRENT_STAGE])
+
+  AC_ARG_ENABLE([stage-check], [],
+    [xt_stage_check="$enableval"],
+    [xt_stage_check="yes"])
+  AM_CONDITIONAL([XT_STAGE_CHECK], [test "$xt_stage_check" = "yes"])
 ])
+
+m4_pattern_allow([^XT_STAGE_CHECK(_TRUE|_FALSE)?$])
 
 # XT_STAGED_SCOMPILE
 # ------------------
@@ -67,12 +74,14 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
 
   POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
 
-  # The variable xt_xtc_repo_stage contain the XTC repository which must be
+  # The variable xt_xtc_repo_stage contains the XTC repository which must be
   # used.  This file is a copy of BUILDTIME_XTC done when enterring in the
   # compilation of stratego-front.
-  if test "${CURRENT_STAGE:+set}" = set; then
-    xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE)"
+  if test "${CURRENT_STAGE:+set}" = "set" -a "${CURRENT_STAGE}" != "${xt_strc_stage}"; then
+    # in a staged compilation: used the previous stage.
+    xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${xt_strc_stage}"
   else
+    # for base packages and tests.
     xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)"
   fi
 

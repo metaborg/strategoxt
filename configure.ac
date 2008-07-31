@@ -239,8 +239,11 @@ NEW_LINK_STAGE_ARGS=""
 xt_lib_first_save=$xt_lib_first
 xt_current_stage=1
 while test $xt_current_stage -le $xt_num_stage; do
-  LINK_STAGE_ARGS="$NEW_LINK_STAGE_ARGS"
   CURRENT_STAGE_ARGS="--with-current-stage=${STAGE_SUFFIX}$xt_current_stage"
+  if test $xt_current_stage -lt $xt_num_stage; then
+    CURRENT_STAGE_ARGS="$CURRENT_STAGE_ARGS --disable-stage-check"
+  fi
+  LINK_STAGE_ARGS="$NEW_LINK_STAGE_ARGS"
   if $xt_lib_first; then
     AB_CONFIG_PKG_SUFFIX("$LIB_PKGS", ${STAGE_SUFFIX}$xt_current_stage, $COMMON_ARGS $LIB_STAGE_ARGS $STRC_STAGE_ARGS $CURRENT_STAGE_ARGS $LINK_STAGE_ARGS)
     LIB_STAGE_ARGS="--with-use-lib-stage=-stage$xt_current_stage"

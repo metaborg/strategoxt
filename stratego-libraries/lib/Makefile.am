@@ -1,4 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS = native spec ssl-compat tests 
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+BUILDDIRS         = native spec ssl-compat
+TESTSDIRS         = tests
+
+SUBDIRS           = $(BUILDDIRS)
+if XT_STAGE_CHECK
+SUBDIRS 	       += $(TESTSDIRS)
+endif
+
+BOOTCLEAN_SUBDIRS = $(BUILDDIRS) $(TESTSDIRS)

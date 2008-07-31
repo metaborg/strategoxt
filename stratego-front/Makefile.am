@@ -1,7 +1,14 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = . syn pp sig test
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+BUILDDIRS = . syn pp sig
+TESTSDIRS = test
+
+SUBDIRS = $(BUILDDIRS)
+if XT_STAGE_CHECK
+SUBDIRS 	  += $(TESTSDIRS)
+endif
+
+BOOTCLEAN_SUBDIRS = $(BUILDDIRS) $(TESTSDIRS)
 EXTRA_DIST 	  = Makefile.xt svn-revision
 
 ACLOCAL_AMFLAGS = -I ../config

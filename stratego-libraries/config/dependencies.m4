@@ -23,4 +23,11 @@ AC_DEFUN([XT_CHECK_STAGE],
     [CURRENT_STAGE=$withval],
     [CURRENT_STAGE=])
   AC_SUBST([CURRENT_STAGE])
+
+  AC_ARG_ENABLE([stage-check], [],
+    [xt_stage_check="$enableval"],
+    [xt_stage_check="yes"])
+  AM_CONDITIONAL([XT_STAGE_CHECK], [test "$xt_stage_check" = "yes"])
 ])
+
+m4_pattern_allow([^XT_STAGE_CHECK(_TRUE|_FALSE)?$])
