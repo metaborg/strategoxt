@@ -247,6 +247,17 @@ strategies
 
   + stratego-warnings-options
 
+  /**
+   * test suite temporary solution until libtool handle:
+   * "libtool --mode=execute .. strc .. file.la"
+   */
+  + ArgOption("-o-la",
+	where(<set-config>("-o", <add-extension> (<id>, "la"))); !(),
+	fail)
+  + ArgOption("-la-la",
+	where(<post-extend-config>("-Xlinker", [<add-extension; file-exists <+ <exit> 1> (<id>, "la")])); !(),
+	fail)
+
 
 
   strc-set-opt-level = 
