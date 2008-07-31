@@ -152,3 +152,5 @@ endif
 # Used by some tests.
 $(builddir)/system-io-file-test.str.bld: $(srcdir)/system-io-file-test.str
 	$(LN_S) $< $@
+
+system-posix-test.c: Makefile
