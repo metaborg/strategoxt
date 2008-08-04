@@ -1,7 +1,8 @@
 prefix=@prefix@
+strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/rtg/lib -la @abs_top_builddir@/stratego-libraries${stage}/rtg/lib/libstratego-rtg.la
 
 Name: Stratego RTG Library
 Description: Stratego Regular Tree Grammar Library.
 Version: @PACKAGE_VERSION@
-Libs: @abs_top_builddir@/stratego-libraries${stage}/rtg/lib/libstratego-rtg.la
+Libs: -L@abs_top_builddir@/stratego-libraries${stage}/rtg/lib -lstratego-rtg
 Requires: aterm stratego-runtime${stage} stratego-lib${stage} stratego-sglr${stage}

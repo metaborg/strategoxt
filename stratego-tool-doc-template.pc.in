@@ -1,7 +1,8 @@
 prefix=@prefix@
+strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib -la @abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib/libstratego-tool-doc.la
 
 Name: Stratego Tool Documentation Library
 Description: Stratego Tool Documentation Library.
 Version: @PACKAGE_VERSION@
-Libs: @abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib/libstratego-tool-doc.la
+Libs: -L@abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib -lstratego-tool-doc
 Requires: aterm stratego-runtime${stage} stratego-lib${stage} stratego-gpp${stage}

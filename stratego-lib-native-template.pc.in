@@ -1,4 +1,5 @@
 prefix=@prefix@
+strcflags=-la @abs_top_builddir@/stratego-libraries${stage}/lib/native/stratego-lib/libstratego-lib-native.la
 
 Name: Native Stratego Library
 Description: Native standard library for Stratego

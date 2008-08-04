@@ -1,5 +1,5 @@
 prefix=@prefix@
-strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/lib/spec -la @abs_top_builddir@/stratego-libraries${stage}/lib/speclibstratego-lib.la
+strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/lib/spec -la @abs_top_builddir@/stratego-libraries${stage}/lib/spec/libstratego-lib.la
 
 Name: Stratego Library
 Description: Standard library for Stratego

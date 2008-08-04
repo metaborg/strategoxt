@@ -1,7 +1,8 @@
 prefix=@prefix@
+strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/ -la @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/libstratego-aterm.la
 
 Name: Stratego ATerm Library
 Description: Stratego ATerm Library.
 Version: @PACKAGE_VERSION@
-Libs: @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/libstratego-aterm.la
+Libs: -L@abs_top_builddir@/stratego-libraries${stage}/aterm/lib/ -lstratego-aterm
 Requires: aterm stratego-runtime${stage} stratego-lib${stage} stratego-gpp${stage}
