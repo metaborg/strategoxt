@@ -10,8 +10,18 @@ TESTSUITES = \
 PARSE_UNIT_PTABLE = StrategoStrategoForTesting.tbl
 
 check_DATA = StrategoStrategoForTesting.tbl
-CLEANFILES = StrategoStrategoForTesting.def StrategoStrategoForTesting.tbl
+CLEANFILES = StrategoStrategoForTesting.def StrategoStrategoForTesting.tbl StrategoStratego.def
 EXTRA_DIST = StrategoStrategoForTesting.sdf $(call srcwildcard,*.testsuite)
 
-SDFINCLUDES = -Idef $(top_builddir)/syn/StrategoStratego.def
+SDFINCLUDES = -Idef StrategoStratego.def
 PGEN_FLAGS  = -m $*
+
+StrategoStratego.def:
+	-rm -f $@
+	if test -e $(top_srcdir)/syn/StrategoStratego.def; then \
+	  $(LN_S) $(top_srcdir)/syn/StrategoStratego.def $@; \
+	else \
+	  $(LN_S) $(top_builddir)/syn/StrategoStratego.def $@; \
+	fi
+
+StrategoStrategoForTesting.tbl: StrategoStratego.def

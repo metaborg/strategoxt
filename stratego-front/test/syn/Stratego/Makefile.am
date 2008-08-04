@@ -6,7 +6,7 @@ TESTSUITES        = strategies.testsuite dynrules.testsuite comments.testsuite
 PARSE_UNIT_PTABLE = StrategoForTesting.tbl
 
 check_DATA = StrategoForTesting.tbl
-CLEANFILES = StrategoForTesting.def StrategoForTesting.tbl
+CLEANFILES = StrategoForTesting.def StrategoForTesting.tbl Stratego.def
 EXTRA_DIST = StrategoForTesting.sdf $(call srcwildcard,*.testsuite)
 
 SDFINCLUDES = -Idef Stratego.def
