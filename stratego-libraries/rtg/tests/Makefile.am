@@ -26,4 +26,4 @@ format_check_tests_SOURCES = format-check-tests.c
 dfta_accept_tests_SOURCES = dfta-accept-tests.c
 endif
 
-TESTS_ENVIRONMENT = RTGDIR="$(srcdir)"
+TESTS_ENVIRONMENT = RTGDIR="$(abs_srcdir)"
