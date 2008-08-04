@@ -40,6 +40,14 @@ libstrc_la_LIBADD = \
   $(ATERM_LIBS)	\
   $(top_builddir)/../c-tools$(CURRENT_STAGE)/pp/libc-pp.la
 
+STRCFLAGS= \
+  $(STRATEGO_GPP_STRCFLAGS) \
+  $(STRATEGO_RTG_STRCFLAGS) \
+  $(STRATEGO_XTC_STRCFLAGS) \
+  $(STRATEGO_LIB_STRCFLAGS) \
+  $(STRATEGO_RUNTIME_STRCFLAGS)
+
+
 STRINCLUDES = \
   -I $(top_srcdir)/lib \
   -I $(top_builddir)/lib \

@@ -55,11 +55,11 @@ PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
 RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
 SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
 
-if test "${STRC_STAGE:+set}" = set; then
+if test "${xt_strc_stage_set}" = yes; then
   xt_lib_list="strc-core${STRC_STAGE}/lib/libstrc.la"
   xt_lib_list="c-tools${STRC_STAGE}/pp/libc-pp.la $xt_lib_list"
 
-  if test "${LINK_STAGE:+set}" = set; then
+  if test "${xt_link_stage_set}" = yes; then
     # should be retrieved from pkg-config files (factor the work)
     xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/xtc/lib/libstratego-xtc.la"
     xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/lib/native/stratego-lib/libstratego-lib-native.la"
