@@ -1,5 +1,8 @@
 module pp-c
-imports liblib strategoxt-xtc-tools
+imports 
+  libstratego-lib
+  libstratego-xtc
+  strategoxt-xtc-tools
 
 strategies
 
