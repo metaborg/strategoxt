@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS = runtime lib build-tools xtc sglr gpp rtg tool-doc aterm sdf
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST = \
-  Makefile.xt MakefileLocal.xt svn-revision \
+  Makefile.xt MakefileLocal.xt svn-revision config/libtool_execute \
   stratego-rtg.pc.in \
   stratego-tool-doc.pc.in \
   stratego-aterm.pc.in \

@@ -10,7 +10,7 @@ endif
 
 BOOTCLEAN_SUBDIRS = $(BUILDDIRS) $(TESTSDIRS)
 DIST_SUBDIRS      = $(BUILDDIRS) $(TESTSDIRS)
-EXTRA_DIST 	  = Makefile.xt c-tools.pc.in svn-revision
+EXTRA_DIST 	  = Makefile.xt c-tools.pc.in svn-revision config/libtool_execute
 
 ACLOCAL_AMFLAGS = -I ../config
 
