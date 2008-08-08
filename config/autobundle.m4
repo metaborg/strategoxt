@@ -128,7 +128,7 @@ if test "$no_recursion" != yes; then
     ac_dir=$ac_dir$subbuilddirs_suffix
     # <<<<
 
-    ac_msg="=== configuring in $ac_dir (`pwd`/$ac_dir)"
+    ac_msg="=== configuring $ac_srcdir in $ac_dir (`pwd`/$ac_dir)"
     _AS_ECHO_LOG([$ac_msg])
     _AS_ECHO([$ac_msg])
     AS_MKDIR_P(["$ac_dir"])
