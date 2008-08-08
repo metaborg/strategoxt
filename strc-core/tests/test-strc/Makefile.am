@@ -26,3 +26,7 @@ TESTS_ENVIRONMENT =\
   STRATEGO_LIB="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS)
+
+check: ; true
+check-am: ; true
+installcheck-local: check-TESTS
