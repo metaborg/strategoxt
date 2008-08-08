@@ -80,10 +80,12 @@ Stratego-Amb.def : \
 Stratego-Sugar-in-Stratego.def : \
   Stratego.def \
   Stratego-Sugar.def \
+  StrategoRenamed.sdf \
   Stratego-Sugar-in-Stratego.sdf
 
 Stratego-Core-in-Stratego.def :\
   Stratego.def \
   Stratego-Core.def \
+  StrategoRenamed.sdf \
   Stratego-Core-in-Stratego.sdf
 
