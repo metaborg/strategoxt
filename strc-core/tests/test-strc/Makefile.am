@@ -27,6 +27,6 @@ TESTS_ENVIRONMENT =\
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS)
 
-check: ; true
 check-am: ; true
-installcheck-local: check-TESTS
+installcheck-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS

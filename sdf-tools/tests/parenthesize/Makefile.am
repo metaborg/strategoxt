@@ -32,6 +32,8 @@ LDADD        += $(SSL_LIBS)
 
 nodist_parenthesize_tests_SOURCES = parenthesize-tests.c
 
-check: ; true
 check-am: ; true
-installcheck-local: check-TESTS
+installcheck-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS) \
+	  $(dist_check_SCRIPTS) $(check_DATA)
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
