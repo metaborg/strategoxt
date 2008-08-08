@@ -32,7 +32,7 @@ stratego_sglr_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 
 STRCFLAGS = \
   --main main-$* --format-check 0 \
-	-I $(builddir) \
+	-I $(top_builddir)/sglr/tests \
   $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 

@@ -47,8 +47,6 @@ check_PROGRAMS = \
   unification-test \
   system-io-file-test
 
-BUILT_SOURCES = system-io-file-test.str.bld
-
 if XT_STD_POSIX
 check_PROGRAMS +=  system-posix-test
 endif
@@ -153,7 +151,10 @@ endif
 
 
 # Used by some tests.
-$(builddir)/system-io-file-test.str.bld: $(srcdir)/system-io-file-test.str
+system-io-file-test.str.bld: system-io-file-test.str
 	$(LN_S) $< $@
 
+## ensure that system-posix-test.c is older than Makefile
 system-posix-test.c: Makefile
+
+TESTS_ENVIRONMENT = SRCDIR="$(abs_srcdir)"

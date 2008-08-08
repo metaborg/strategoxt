@@ -25,7 +25,7 @@ Exp.def: Exp.src.def
 PGEN_FLAGS    = -m $*
 SDF2RTG_FLAGS = -m $*
 SCFLAGS       = --main io-$*
-STRINCLUDES   = -I $(XTC)/share/xtc -I $(builddir)
+STRINCLUDES   = -I $(XTC)/share/xtc -I $(top_builddir)/tests/parenthesize
 LDADD        += $(SSL_LIBS)
 
 nodist_parenthesize_tests_SOURCES = parenthesize-tests.c
