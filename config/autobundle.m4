@@ -125,6 +125,13 @@ if test "$no_recursion" != yes; then
     test -d "$srcdir/$ac_dir" || continue
     # diff autoconf 2.61: status.m4 >>>>
     _AC_SRCDIRS(["$ac_dir"])
+    # $ac_srcdir can be '.' when the build directory is identical to the
+    # source directory.  In this case '.' will refer to the build directory
+    # instead of the source directory.
+    if test "$ac_srcdir" = .; then
+      # Relative path
+      ac_srcdir=$ac_top_build_prefix$srcdir$ac_dir_suffix
+    fi
     ac_dir=$ac_dir$subbuilddirs_suffix
     # <<<<
 
