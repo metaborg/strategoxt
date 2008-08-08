@@ -5,7 +5,8 @@ exports
   sorts Document Element Content
   context-free syntax
 
-    Prologue Element Epilogue -> Document {cons("Document")}
+    %% avoid when Prologue and Epilogue are empty
+    Prologue Element Epilogue -> Document {cons("Document"),avoid}
 
     "<" QName Attribute* "/>" -> Element {cons("EmptyElement")}
 
@@ -15,7 +16,10 @@ exports
   syntax
 
     CharData      -> <Content-CF>
-    CDataSection  -> <Content-CF>
+    CDataSection  -> <Content-CF> %% CDataSection is not defined
+
+    %% see content.testsuite (test and entity in element)
+    <Content-CF>  -> <Content-CF>+ {prefer}
 
     "<"
     <LAYOUT?-CF> <QName-CF> <LAYOUT?-CF> <Attribute*-CF> <LAYOUT?-CF>

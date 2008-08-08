@@ -5,7 +5,7 @@ exports
   context-free syntax
     ExternalDef+ -> TranslationUnit {cons("TranslationUnit")}
 
-    FunDef      -> ExternalDef
+    FunDef      -> ExternalDef {avoid}
     Declaration -> ExternalDef
 
     FunDefTypeSpec FunDefDecl CompoundStm -> FunDef {cons("FunDef")}
