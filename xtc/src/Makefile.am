@@ -6,8 +6,18 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 bin_PROGRAMS 	= xtc 
 pkgdata_DATA 	= xtc-lib.str xtc-dir.str
 
-STRCFLAGS 	= --main $* -I $(srcdir) $(XTC_STRCFLAGS)
-xtc_LDADD       = $(XTC_LIBS) $(SSL_LIBS)
+STRCFLAGS 	= --main $* -I $(srcdir) \
+  $(STRATEGO_XTC_STRCFLAGS) \
+  $(STRATEGO_LIB_STRCFLAGS) \
+  $(STRATEGO_RUNTIME_STRCFLAGS)
+xtc_CFLAGS	= \
+  $(STRATEGO_XTC_CFLAGS) \
+  $(STRATEGO_LIB_CFLAGS) \
+  $(STRATEGO_RUNTIME_CFLAGS)
+xtc_LDADD       = \
+  $(STRATEGO_XTC_LIBS) \
+  $(STRATEGO_LIB_LIBS) \
+  $(STRATEGO_RUNTIME_LIBS)
 
 EXTRA_DIST	= $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES	= $(wildcard *.dep)
@@ -31,8 +41,19 @@ check2 :
 	./xtc -r TEST_REPOSITORY2 query -t sglr
 
 nodist_test1_SOURCES = test1.c 
+test1_LDADD = \
+  $(STRATEGO_XTC_LIBS) \
+  $(STRATEGO_LIB_LIBS) \
+  $(STRATEGO_RUNTIME_LIBS)
+
 nodist_test2_SOURCES = test2.c 
+test2_LDADD = \
+  $(STRATEGO_XTC_LIBS) \
+  $(STRATEGO_LIB_LIBS) \
+  $(STRATEGO_RUNTIME_LIBS)
+
 nodist_test3_SOURCES = test3.c
-test1_LDADD =  $(XTC_LIBS) $(SSL_LIBS)
-test2_LDADD =  $(XTC_LIBS) $(SSL_LIBS)
-test3_LDADD =  $(XTC_LIBS) $(SSL_LIBS)
+test3_LDADD = \
+  $(STRATEGO_XTC_LIBS) \
+  $(STRATEGO_LIB_LIBS) \
+  $(STRATEGO_RUNTIME_LIBS)
