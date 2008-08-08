@@ -21,17 +21,13 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
 pp_files = $(call srcwildcard,*.pp)
-BUILT_SOURCES = $(pp_files:.pp=.bld.pp)
-
-%.bld.pp: %.pp
-	$(LN_S) $< $@
 
 if !XT_DIST_CHECK_SOURCES
-nodist_ast2text_tests_SOURCES = ast2text-tests.c $(BUILT_SOURCES)
+nodist_ast2text_tests_SOURCES = ast2text-tests.c
 nodist_abox2text_tests_SOURCES = abox2text-tests.c
 else
-ast2text_tests_SOURCES = ast2text-tests.c $(BUILT_SOURCES)
+ast2text_tests_SOURCES = ast2text-tests.c
 abox2text_tests_SOURCES = abox2text-tests.c
 endif
 
-TESTS_ENVIRONMENT = XTC_REPOSITORY=$(BUILD_REPOSITORY)
+TESTS_ENVIRONMENT = XTC_REPOSITORY="$(BUILD_REPOSITORY)" SRCDIR="$(abs_srcdir)"
