@@ -1,3 +1,7 @@
+## From Makefile.xt (EXTRA_DIST)
+pathwildcard = $(patsubst $1/%,%,$(wildcard $(patsubst %,$1/%,$2)))
+srcwildcard = $(call pathwildcard,$(srcdir),$1)
+
 SINCLUDES = \
   -I $(top_srcdir)/../stratego-libraries/lib/spec \
   -I $(prefix)/share/stratego-lib \
