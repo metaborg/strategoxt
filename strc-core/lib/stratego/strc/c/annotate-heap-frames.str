@@ -2,7 +2,7 @@
  * Annotate strategy declaration if they have to use a heap frame instead of
  * a stack frame.
  *
- * A frame must be an heap frame if one of its variable can be used in a
+ * A frame must be a heap frame if one of its variable can be used in a
  * sub-frame that is used dynamically.  A strategy argument should be in the
  * heap if the argument is used inside a sub-frame that can be used
  * dynamically.
