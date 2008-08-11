@@ -24,12 +24,17 @@ strategies // exported strategies
     )    
 
   DefToExtDef :
-    SDefT(f, a1*, a2*, s) -> ExtSDef(<unmangle>f, a1*, a2*)
+    SDefT(f, a1*, a2*, s) -> ExtSDef(<unmangle>f, a3*, a4*)
+    where
+      a3* := <export-var-type-anno> a1*
+    ; a4* := <export-var-type-anno> a2*
 
   DefToExtDefInl :
     SDefT(f, a1*, a2*, s) -> 
-    ExtSDefInl(<unmangle>f, a1*, a2*, <topdown(try(UnmangleSVar))> s)
+    ExtSDefInl(<unmangle>f, a3*, a4*, <topdown(try(UnmangleSVar))> s)
     where <inlinable> s
+    ; a3* := <export-var-type-anno> a1*
+    ; a4* := <export-var-type-anno> a2*
 
   inlinable = 
     false
@@ -65,3 +70,15 @@ strategies // exported constructors
 
   OpDeclToExtOpDecl :
     OpDecl(c, t) -> ExtOpDecl(c, t)
+
+strategies // exported type annotations
+
+  is-type-anno =
+    ?HeapType()
+
+  RestoreTypeAnnotation :
+    t{a*} -> TypeAnno(t, a'*)
+    where <filter(is-type-anno); not([])> a* => a'*
+
+  export-var-type-anno =
+    map(try(VarDec(id, try(RestoreTypeAnnotation))))
