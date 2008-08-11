@@ -4,8 +4,8 @@ include $(wildcard *.dep)
 ATERM_FILES = $(call srcwildcard,*.aterm)
 EXTRA_DIST  = $(ATERM_FILES)
 
-installcheck-local:
-	for file in fordummy $(ATERM_FILES) ; do \
-	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+installcheck-local: $(ATERM_FILES)
+	for file in fordummy $^ ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  $(ATERM_FRONT)/bin/pp-aterm -i $$file ; \
-        done
+	done

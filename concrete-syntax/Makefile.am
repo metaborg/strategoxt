@@ -4,7 +4,7 @@ SUBDIRS           = xtc
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt \
-		    svn-revision concrete-syntax.spec.in
+		    svn-revision concrete-syntax.spec.in config/libtool_execute
 ACLOCAL_AMFLAGS   = -I ../config
 
 ignore : ignore-svn ignore-targets

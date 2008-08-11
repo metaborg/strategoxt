@@ -25,4 +25,4 @@ asfix_yield2_check_prog    = asfix-yield
 asfix_yield2_check_input   = data/aterms.tree
 asfix_yield2_check_output  = data/aterms.txt
 asfix_yield2_check_correct = data/aterms.def
-asfix_yield2_check_dir     = $(builddir)
+asfix_yield2_check_dir     = $(top_builddir)/src/asfix-yield

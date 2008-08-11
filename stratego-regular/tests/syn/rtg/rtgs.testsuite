@@ -22,5 +22,7 @@ test Labelled content model
 test Optional labelled content model
   file rtgs/Exp-7.rtg succeeds
 
-test Optional and required labelled content model
-  file rtgs/Exp-8.rtg succeeds
+// pierron: I don't know what is the expected result.
+//////
+// test Optional and required labelled content model
+//   file rtgs/Exp-8.rtg succeeds

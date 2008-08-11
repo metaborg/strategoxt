@@ -17,10 +17,16 @@ STRLIBS = \
 
 TESTS = $(STRPROGS:.str=.str.sh)
 
+# Something is missing to make this tests work with
+# $(CURRENT_SCOMPILE) instead of the installed version on MacOsX.
 TESTS_ENVIRONMENT =\
   SRCDIR="$(srcdir)" \
   CC="$(CC)" \
-  STRC="../../tools/strc --verbose 3 --format-check 1 --keep 0" \
+  STRC="$(bindir)/strc --verbose 3 --format-check 1 --keep 0" \
   STRATEGO_LIB="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS)
+
+check-am: ; true
+installcheck-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS

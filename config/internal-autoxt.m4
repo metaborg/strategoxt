@@ -12,32 +12,47 @@ m4_pattern_forbid([^XT_])
 
 # XT_USE_STAGE
 # ------------
-# Check which stage to use to compile a sub-package.
+# Check which stages are used to compile a sub-package.
 AC_DEFUN([XT_CHECK_STAGE],
 [
   AC_ARG_WITH([use-lib-stage], [],
-    [LIB_STAGE=$withval],
-    [LIB_STAGE=])
+    [LIB_STAGE=$withval
+     xt_lib_stage_set=yes],
+    [LIB_STAGE=
+     xt_lib_stage_set=no])
   AC_SUBST([LIB_STAGE])
 
   AC_ARG_WITH([use-strc-stage], [],
-    [STRC_STAGE=$withval],
-    [STRC_STAGE=])
+    [STRC_STAGE=$withval
+     xt_strc_stage_set=yes],
+    [STRC_STAGE=
+     xt_strc_stage_set=no])
   AC_SUBST([STRC_STAGE])
 
   AC_ARG_WITH([link-lib-stage], [],
-    [LINK_STAGE=$withval],
-    [LINK_STAGE=])
+    [LINK_STAGE=$withval
+     xt_link_stage_set=yes],
+    [LINK_STAGE=
+     xt_link_stage_set=no])
 
   AC_ARG_WITH([current-stage], [],
-    [CURRENT_STAGE=$withval],
-    [CURRENT_STAGE=])
+    [CURRENT_STAGE=$withval
+     xt_current_stage_set=yes],
+    [CURRENT_STAGE=
+     xt_current_stage_set=no])
   AC_SUBST([CURRENT_STAGE])
+
+  AC_ARG_ENABLE([stage-check], [],
+    [xt_stage_check="$enableval"],
+    [xt_stage_check="yes"])
+  AM_CONDITIONAL([XT_STAGE_CHECK], [test "$xt_stage_check" = "yes"])
 ])
+
+m4_pattern_allow([^XT_STAGE_CHECK(_TRUE|_FALSE)?$])
 
 # XT_STAGED_SCOMPILE
 # ------------------
-# Define a variable which contains the code to use to call a staged "strc".
+# Define a variable which contains the code to call a staged "strc".
 AC_DEFUN([XT_STAGED_SCOMPILE],
 [
   xt_strc_stage=$2
@@ -67,9 +82,25 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
 
   POST_SCOMPILE="$POST_SCOMPILE -I \$(top_srcdir)/../stratego-libraries/lib/spec"
 
+  # The variable xt_xtc_repo_stage contains the XTC repository which must be
+  # used.  This file is a copy of BUILDTIME_XTC done when enterring in the
+  # compilation of stratego-front.
+  if test "${xt_current_stage_set}" = "yes" -a "${CURRENT_STAGE}" != "${xt_strc_stage}"; then
+    # in a staged compilation: used the previous stage.
+    xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${xt_strc_stage}"
+  else
+    # for base packages and tests.
+    xt_set_xtc_repo="XTC_REPOSITORY=\$(BUILD_REPOSITORY)"
+  fi
+
+  # "env" is required to interpret the command line after a shell variable
+  # expansion. (see strc-core/tests/test-strc)
+  xt_libtool_execute="env $xt_set_xtc_repo \$(top_srcdir)/config/libtool_execute \$(LIBTOOL) -- ${xt_libs}"
+
+
   # POST_SCOMPILE should be at the end of the strc command line
-  $1SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
-  $1PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY)\$(STRC_STAGE) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
+  $1SCOMPILE="${xt_libtool_execute} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
+  $1PARSE_STRATEGO="${xt_libtool_execute} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
 ])
 
 
@@ -85,7 +116,7 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   AC_MSG_CHECKING([whether a stage of the compiler is explicitly set])
 
   POST_SCOMPILE=""
-  if test "${STRC_STAGE:+set}" = set; then
+  if test "${xt_strc_stage_set}" = yes; then
     AC_MSG_RESULT([yes])
 
     # Try to find the Stratego/XT Packages using pkgconfig.
@@ -108,7 +139,7 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   fi
 
   AC_MSG_CHECKING([whether a stage of the libraries is explicitly set])
-  if test "${LIB_STAGE:+set}" = set; then
+  if test "${xt_lib_stage_set}" = yes; then
     AC_MSG_RESULT([yes])
 
     # Try to find the Stratego/XT Packages using pkgconfig.
@@ -156,8 +187,14 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   AC_SUBST([CONCRETE_SYNTAX], ['$(STRATEGOXT)'])
   AC_SUBST([XML_FRONT], ['$(STRATEGOXT)'])
   AC_SUBST([STRATEGO_REGULAR], ['$(STRATEGOXT)'])
+
   if test "x$SCOMPILE" = x; then
     SCOMPILE='$(STRC)/bin/strc'
+  fi
+
+  if test "${xt_strc_stage_set}" = no; then
+    SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${CURRENT_STAGE} $SCOMPILE"
+    PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${CURRENT_STAGE} $PARSE_STRATEGO"
   fi
   AC_SUBST([SCOMPILE])
   AC_SUBST([CURRENT_SCOMPILE])

@@ -27,3 +27,12 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) Stratego-Sdf2-rtg.tbl
 
 nodist_sdf2rtg_test_SOURCES = sdf2rtg-test.c
+
+check: ; true
+check-am: ;true
+intallcheck-local: check-TESTS
+
+SDF_FRONT=$(prefix)
+STRATEGO_FRONT=$(prefix)
+STRATEGO_REGULAR=$(prefix)
+XTC=$(prefix)

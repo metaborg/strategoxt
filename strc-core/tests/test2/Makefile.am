@@ -1,15 +1,18 @@
+include $(srcdir)/../test1/make-rules
+include $(wildcard *.dep)
+
 SINCLUDES = \
   -I $(prefix)/share/stratego-lib \
   -I $(prefix)/share/srts
 
-AM_LDFLAGS = -L$(prefix)/lib -L$(ATERM)/lib $(STR_LDFLAGS)
-AM_CFLAGS = -I$(prefix)/include -I$(ATERM)/include $(STR_CFLAGS)
+#AM_LDFLAGS = -L$(prefix)/lib -L$(ATERM)/lib $(STR_LDFLAGS)
+#AM_CFLAGS = -I$(prefix)/include -I$(ATERM)/include $(STR_CFLAGS)
 
-STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
-STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
-LDADD 		= $(STRATEGORUNLIBS)
+#STRATEGORUNLIBS = -lstratego-lib-native -lstratego-runtime -lATerm -lm
+#STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
+#LDADD 		= $(STRATEGORUNLIBS)
 
-occan_LDADD     = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+occan_LDADD     = $(STRATEGO_LIB_LIBS)
 
 check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  comment-test conditional-innermost congruence-arguments   \
@@ -34,37 +37,34 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 
 EXTRA_DIST 	= $(call srcwildcard,*.str) $(call srcwildcard,*.meta) prop.res
 
-include $(srcdir)/../test1/make-rules
-include $(wildcard *.dep)
-
 bootinstall:
 
-overloading_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-match_automaton_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-traversal_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-match_arity_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-occan_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-improper_list_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-unification_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-innermost_pure_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-tail_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-arity_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-flatten_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-twice_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-overlay_test_b_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-as_pattern_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-prop_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-thread_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-rename_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-number_syntax_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-dynamic_rules_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-congruence_arguments_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-overloading_constructors_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-congruence_thread_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-overlay_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-mkterm_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-number_test_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
-implicit_var_decl_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+overloading_LDADD = $(STRATEGO_LIB_LIBS)
+match_automaton_test_LDADD = $(STRATEGO_LIB_LIBS)
+traversal_test_LDADD = $(STRATEGO_LIB_LIBS)
+match_arity_LDADD = $(STRATEGO_LIB_LIBS)
+occan_LDADD = $(STRATEGO_LIB_LIBS)
+improper_list_test_LDADD = $(STRATEGO_LIB_LIBS)
+unification_test_LDADD = $(STRATEGO_LIB_LIBS)
+innermost_pure_LDADD = $(STRATEGO_LIB_LIBS)
+tail_LDADD = $(STRATEGO_LIB_LIBS)
+arity_test_LDADD = $(STRATEGO_LIB_LIBS)
+flatten_test_LDADD = $(STRATEGO_LIB_LIBS)
+twice_LDADD = $(STRATEGO_LIB_LIBS)
+overlay_test_b_LDADD = $(STRATEGO_LIB_LIBS)
+as_pattern_LDADD = $(STRATEGO_LIB_LIBS)
+prop_LDADD = $(STRATEGO_LIB_LIBS)
+thread_test_LDADD = $(STRATEGO_LIB_LIBS)
+rename_test_LDADD = $(STRATEGO_LIB_LIBS)
+number_syntax_test_LDADD = $(STRATEGO_LIB_LIBS)
+dynamic_rules_test_LDADD = $(STRATEGO_LIB_LIBS)
+congruence_arguments_LDADD = $(STRATEGO_LIB_LIBS)
+overloading_constructors_test_LDADD = $(STRATEGO_LIB_LIBS)
+congruence_thread_LDADD = $(STRATEGO_LIB_LIBS)
+overlay_test_LDADD = $(STRATEGO_LIB_LIBS)
+mkterm_LDADD = $(STRATEGO_LIB_LIBS)
+number_test_LDADD = $(STRATEGO_LIB_LIBS)
+implicit_var_decl_LDADD = $(STRATEGO_LIB_LIBS)
 
 
 nodist_arity_test_SOURCES = arity-test.c

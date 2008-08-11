@@ -1,4 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = lib tests
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+BUILDDIRS         = lib
+TESTSDIRS         = tests
+
+SUBDIRS           = $(BUILDDIRS)
+if XT_STAGE_CHECK
+SUBDIRS 	       += $(TESTSDIRS)
+endif
+
+BOOTCLEAN_SUBDIRS = $(BUILDDIRS) $(TESTSDIRS)

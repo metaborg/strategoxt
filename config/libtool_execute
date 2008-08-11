@@ -1,0 +1,26 @@
+#! /bin/sh
+
+libtool=""
+while test "$1" != "--"; do
+  libtool="$libtool
+  $1"
+  shift
+done
+shift
+
+ltargs=""
+while test "$1" == "-dlopen"; do
+  ltargs="$ltargs
+  $1
+  $2"
+  shift
+  shift
+done
+prog="$1"
+shift
+
+# Relies on the bug to get around it ..
+ltprog=$($libtool --mode=execute echo "$prog")
+
+# Patch the environment before executing the program.
+env $(env -i "PATH=$PATH" $libtool --mode=execute $ltargs env) "$ltprog" "$@"

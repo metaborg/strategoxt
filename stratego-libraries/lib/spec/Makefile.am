@@ -3,13 +3,16 @@ include $(top_srcdir)/MakefileLocal.xt
 
 pkgdatadir = $(datadir)/stratego-lib
 
-nobase_pkgdata_DATA = stratego-lib.str $(fullstrategolib:.str=.rtree) libstratego-lib.ctree
+nobase_pkgdata_DATA = $(strategolib:.str=.rtree) $(all_rtree) \
+  libstratego-lib.ctree \
+  libstrategolib.rtree
+
 data_DATA = libstratego-lib.rtree
 lib_LTLIBRARIES = libstratego-lib.la
 
-EXTRA_DIST	= $(all_rtree) $(fullstrategolib) $(nobase_pkgdata_DATA)
+EXTRA_DIST	    = $(nobase_pkgdata_DATA) $(fullstrategolib) $(all_c) $(all_rtree)
 CLEANFILES      = $(wildcard *.dep) libstratego-lib.rtree stratego-lib.str
-BOOTCLEANFILES 	= $(fullstrategolib:.str=.rtree) $(all_c) $(all_rtree)
+BOOTCLEANFILES 	= $(strategolib:.str=.rtree) $(all_c) $(all_rtree)
 
 all_rtree = libstratego-lib-c99.rtree libstratego-lib-posix.rtree libstratego-lib-posix-xsi.rtree
 all_c     = libstratego-lib-c99.c libstratego-lib-posix.c libstratego-lib-posix-xsi.c
@@ -25,6 +28,7 @@ libstratego_lib_la_CFLAGS   = $(STR_CFLAGS)
 libstratego_lib_la_LDFLAGS  = -avoid-version -no-undefined $(AM_LDFLAGS)
 libstratego_lib_la_LIBADD   = \
   $(STRATEGO_RUNTIME_UNINSTALLED_LIBS) \
+  $(STRATEGO_LIB_NATIVE_UNINSTALLED_LIBS) \
   $(ATERM_LIBS)
 
 if XT_STD_C99
@@ -57,20 +61,25 @@ STRCFLAGS = --verbose 2 -I $(srcdir)
 stratego-lib.str : Makefile
 	echo "module stratego-lib imports $(stratego_lib_module)" > $@
 
-libstratego-lib-c99.c libstratego-lib-c99.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i $(srcdir)/stratego-lib-c99.rtree -o libstratego-lib-c99.rtree
-	rm libstratego-lib-c99.str
+# double targets: -c --library
+libstratego-lib-c99.c: libstratego-lib-c99.rtree; true
+libstratego-lib-c99.rtree : stratego-lib-c99.str $(strategolib:.str=.rtree)
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i $< -o libstratego-lib-c99.rtree
+	rm -f libstratego-lib-c99.str
 
-libstratego-lib-posix.c libstratego-lib-posix.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i $(srcdir)/stratego-lib-posix.rtree -o libstratego-lib-posix.rtree
-	rm libstratego-lib-posix.str
+libstratego-lib-posix.c: libstratego-lib-posix.rtree; true
+libstratego-lib-posix.rtree : stratego-lib-posix.str $(strategolib:.str=.rtree)
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i $< -o libstratego-lib-posix.rtree
+	rm -f libstratego-lib-posix.str
 
-libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib-posix-xsi.rtree
-	rm libstratego-lib-posix-xsi.str
+libstratego-lib-posix-xsi.c: libstratego-lib-posix-xsi.rtree; true
+libstratego-lib-posix-xsi.rtree : stratego-lib-posix-xsi.str $(strategolib:.str=.rtree)
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -c --library -i $< -o libstratego-lib-posix-xsi.rtree
+	rm -f libstratego-lib-posix-xsi.str
 
-libstratego-lib.ctree: $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) $(STRCFLAGS) -F -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib.ctree
+libstratego-lib.c: libstratego-lib.ctree; true
+libstratego-lib.ctree: stratego-lib-posix-xsi.rtree
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -F -c --library -i $< -o $@
 
 fullstrategolib = \
   libstrategolib.str \
@@ -78,6 +87,9 @@ fullstrategolib = \
   stratego-lib-c99.str \
   stratego-lib-posix.str \
   stratego-lib-posix-xsi.str \
+  $(strategolib)
+
+strategolib = \
   $(call srcwildcard,collection/*.str) \
   $(call srcwildcard,collection/hash-table/*.str) \
   $(call srcwildcard,collection/list/*.str) \

@@ -6,8 +6,10 @@ check_PROGRAMS = parenthesize-tests
 dist_check_SCRIPTS = sdf2parenthesize-checks.sh
 TESTS          = $(check_PROGRAMS) sdf2parenthesize-checks.sh
 
+SDF2PARENTHESIZE=$(bindir)/sdf2parenthesize$(EXEEXT)
+
 TESTS_ENVIRONMENT =\
-  SDF2PARENTHESIZE="$(bindir)/sdf2parenthesize$(EXEEXT)"\
+  SDF2PARENTHESIZE="$(SDF2PARENTHESIZE)"\
   STRC="$(SCOMPILE)"\
   VERBOSE="1"
 
@@ -17,7 +19,7 @@ BOOTCLEANFILES = $(check_DATA) $(wildcard *.c) $(wildcard *.dep) parenthesize-Ex
 parenthesize-tests.c : parenthesize-Exp.str Exp.str
 
 parenthesize-Exp.str : Exp.tbl
-	$(bindir)/sdf2parenthesize -i $< -o $@
+	$(SDF2PARENTHESIZE) -i $< -o $@
 
 Exp.def: Exp.src.def
 	$(LN_S) $< $@
@@ -25,7 +27,13 @@ Exp.def: Exp.src.def
 PGEN_FLAGS    = -m $*
 SDF2RTG_FLAGS = -m $*
 SCFLAGS       = --main io-$*
-STRINCLUDES   = -I $(XTC)/share/xtc -I $(builddir)
+STRINCLUDES   = -I $(XTC)/share/xtc -I $(top_builddir)/tests/parenthesize
 LDADD        += $(SSL_LIBS)
 
 nodist_parenthesize_tests_SOURCES = parenthesize-tests.c
+
+check-am: ; true
+installcheck-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS) \
+	  $(dist_check_SCRIPTS) $(check_DATA)
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS

@@ -56,6 +56,12 @@ PKGS="autoxt xtc strc-core gpp c-tools concrete-syntax \
   aterm-front stratego-front asfix-tools sdf-front sdf-tools \
   stratego-regular xml-front stratego-libraries"
 
+# if you are not using subversion.
+if test \! -e svn-revision
+then
+  echo 0 > svn-revision
+fi
+
 cp ./config/autoxt.m4 stratego-libraries/config
 for dir in $PKGS
 do
@@ -68,6 +74,12 @@ do
     rm -f Makefile.xt
     cp ../Makefile.xt .
   fi
+  if test \! -d config
+  then
+    mkdir config
+  fi
+  rm -f config/libtool_execute
+  cp ../config/libtool_execute ./config
   if test -e "../svn-revision"
   then
     rm -f

@@ -1,8 +1,15 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = . syn pp sig test
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST 	  = Makefile.xt svn-revision
+BUILDDIRS = . syn pp sig
+TESTSDIRS = test
+
+SUBDIRS = $(BUILDDIRS)
+if XT_STAGE_CHECK
+SUBDIRS 	  += $(TESTSDIRS)
+endif
+
+BOOTCLEAN_SUBDIRS = $(BUILDDIRS) $(TESTSDIRS)
+EXTRA_DIST 	  = Makefile.xt svn-revision config/libtool_execute
 
 ACLOCAL_AMFLAGS = -I ../config
 
@@ -29,7 +36,7 @@ all-local::
 	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t lib.rtree -l $$lib_builddir/lib/ssl-compat/ -V $(VERSION); \
 	fi
 	$(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
-	cp $(BUILD_REPOSITORY) "$(BUILD_REPOSITORY)$(CURRENT_STAGE)"
+	test "x$(CURRENT_STAGE)" == "x" || cp "$(BUILD_REPOSITORY)" "$(BUILD_REPOSITORY)$(CURRENT_STAGE)"
 
 install-data-local::
 	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`

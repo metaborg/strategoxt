@@ -120,7 +120,7 @@ strategies
         , <fopen> (<id>, "r") => stream
           ; parse-stream(|tbl)
           ; where(<fclose> stream)
-        , !"test.bld.exp"
+        , <srcdir> "test.exp"
         , !Plus(Int("1"), Int("2"))
         )
       }
@@ -131,21 +131,21 @@ strategies
           ; not(parse-stream(|tbl))
           ; get-parse-error
           ; where(<fclose> stream)
-        , !"test-error.bld.exp"
+        , <srcdir> "test-error.exp"
         , ?error(_, _)
         )
       }
 
     ; apply-test(!"Parse a simple expression from a file."
       , parse-file(|tbl)
-      , !"test.bld.exp"
+      , <srcdir> "test.exp"
       , !Plus(Int("1"), Int("2"))
       )
 
     ; apply-and-check(!"Parse a simple invalid expression from a file."
       , not(parse-file(|tbl))
         ; get-parse-error
-      , !"test-error.bld.exp"
+      , <srcdir> "test-error.exp"
       , ?error(_, _)
       )
 
@@ -358,7 +358,7 @@ strategies
         apply-test(!"Test the reporting of a parse error."
         , not(parse-string(|tbl))
           ; where(get-parse-error => error)
-          ; !FILE("test-error.bld.exp")
+          ; !FILE(<srcdir> "test-error.exp")
           ; report-error(|error)
           ; !()
         , !"4 +"
@@ -370,10 +370,10 @@ strategies
         apply-test(!"Test the reporting of a parse error from a file."
         , not(parse-file(|tbl))
           ; where(get-parse-error => error)
-          ; !FILE("test-error.bld.exp")
+          ; !FILE(<srcdir> "test-error.exp")
           ; report-error(|error)
           ; !()
-        , !"test-error.bld.exp"
+        , <srcdir> "test-error.exp"
         , !()
         )
       }
@@ -1038,6 +1038,9 @@ strategies
       else
         !"Conc"#([ts1, ts2])
       end
+
+  srcdir =
+    try(<concat-strings> [<getenv> "SRCDIR", "/", <id>])
 
 signature
   constructors

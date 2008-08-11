@@ -27,7 +27,7 @@ EXTRA_DIST     = $(DEFS) $(GEN_MODS) $(call srcwildcard,*.sdf)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) $(GEN_MODS)
 
-SDFINCLUDES = -I $(srcdir) -I $(builddir)
+SDFINCLUDES = -I $(srcdir) -I $(top_builddir)/syn
 PGEN_FLAGS  = -m $*
 
 GEN_MODS = StrategoRenamed.sdf StrategoMix.sdf EmbeddedStrategoMix.sdf
@@ -80,10 +80,12 @@ Stratego-Amb.def : \
 Stratego-Sugar-in-Stratego.def : \
   Stratego.def \
   Stratego-Sugar.def \
+  StrategoRenamed.sdf \
   Stratego-Sugar-in-Stratego.sdf
 
 Stratego-Core-in-Stratego.def :\
   Stratego.def \
   Stratego-Core.def \
+  StrategoRenamed.sdf \
   Stratego-Core-in-Stratego.sdf
 

@@ -16,27 +16,12 @@ pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp			\
 
 BOOTCLEANFILES = $(wildcard *.af) $(wildcard *.c)		    \
 		 Stratego.pp StrategoStratego.pp		    \
-		 Stratego.pp.af Stratego-Sugar.pp Stratego-Core.pp  \
-                 Stratego.def Stratego-Core.def Stratego-Sugar.def
+		 Stratego.pp.af Stratego-Sugar.pp Stratego-Core.pp
 
 EXTRA_DIST 	= \
 		$(call srcwildcard,*.pp) \
-		$(wildcard *.pp.af) \
+		$(wildcard *.pp) $(wildcard *.pp.af) \
 		$(call srcwildcard,*.str) \
 		$(wildcard *.c)
 
-Stratego.def : 
-	rm -f $@
-	ln -s ../syn/$@ .
-
-Stratego-Core.def : 
-	rm -f $@
-	ln -s ../syn/$@ .
-
-Stratego-Sugar.def : 
-	rm -f $@
-	ln -s ../syn/$@ .
-
-
-
-
+VPATH += $(top_builddir)/syn/

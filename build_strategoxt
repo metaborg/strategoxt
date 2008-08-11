@@ -26,11 +26,20 @@ Options:
       - bootstrap
       - configure
       - build
-      - install
       - check
-      - all (all previous steps)
+      - install
+      - installcheck
+      - dist
+      - distcheck
 
-   The order of these commands is important.
+    The two following are set of steps:
+
+      - all (all previous steps)
+      - checks (check installcheck distcheck)
+
+    The order of these commands is important and the latest command have the
+    priority.  The options ' -s all -d build ' will skip all steps and only
+    run the command 'make all' on the build directory.
 
   --baseline    Baseline used to compile [$STRATEGOXT_BASELINE]
   --srcdir      Source directory [$srcdir]
@@ -59,9 +68,10 @@ keep=false
 help=false
 make=make
 
-all_steps="bootstrap configure build install check"
+steps_all="bootstrap configure build check install installcheck dist distcheck"
+steps_checks="check installcheck distcheck"
 action_id=0
-for step in $all_steps; do
+for step in $steps_all; do
   eval skip_${step}=$action_id
   eval do_${step}=$action_id
 done
@@ -92,12 +102,12 @@ for arg; do
         action_id=$(($action_id + 1))
         action=$(echo $argfun | sed 's,^step_,,')
         case $arg in
-          all)
-            for step in $all_steps; do
+          all|checks)
+            for step in $(eval echo \$steps_$arg); do
               eval ${action}_${step}=$action_id
             done
             ;;
-          bootstrap|configure|build|install|check)
+          bootstrap|configure|build|check|install|installcheck|dist|distcheck)
             eval ${action}_${arg}=$action_id
             ;;
           *) usage;;
@@ -137,6 +147,16 @@ should_do(){
   test $(eval echo \$do_$step) -ge $(eval echo \$skip_$step)
 }
 
+make_cmd(){
+  local step=$1
+  local cmd=$2
+  if should_do $step; then
+    cd $builddir
+    "$make" ${cmd:-$step} ${keep:+-k} $(eval echo \$extra_$step)
+    err=$(($? + $err))
+  fi
+}
+
 if should_do bootstrap; then
   cd $srcdir
   ./bootstrap
@@ -151,22 +171,11 @@ if should_do configure; then
   err=$(($? + $err))
 fi
 
-if should_do build; then
-  cd $builddir
-  "$make" all ${keep:+-k} $extra_build
-  err=$(($? + $err))
-fi
-
-if should_do install; then
-  cd $builddir
-  "$make" install ${keep:+-k} $extra_install
-  err=$(($? + $err))
-fi
-
-if should_do check; then
-  cd $builddir
-  "$make" check ${keep:+-k} $extra_check
-  err=$(($? + $err))
-fi
+make_cmd build all
+make_cmd check
+make_cmd install
+make_cmd installcheck
+make_cmd dist
+make_cmd distcheck
 
 test $err -eq 0

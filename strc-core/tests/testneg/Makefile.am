@@ -21,7 +21,7 @@ TESTS_ENVIRONMENT = MAKE="$(MAKE)"
 $(TESTS): testfail
 	for i in $(STRPROGS); do ln -fs $< $$i.sh; done
 
-EXTRA_DIST  = $(TESTS) testfail accept-success.list
+EXTRA_DIST  = $(STRPROGS) $(TESTS) testfail accept-success.list
 
 test03_LDADD = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib $(STRATEGORUNLIBS)
 

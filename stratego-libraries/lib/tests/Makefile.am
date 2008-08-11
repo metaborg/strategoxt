@@ -47,8 +47,6 @@ check_PROGRAMS = \
   unification-test \
   system-io-file-test
 
-BUILT_SOURCES = system-io-file-test.str.bld
-
 if XT_STD_POSIX
 check_PROGRAMS +=  system-posix-test
 endif
@@ -144,11 +142,19 @@ term_common_test_SOURCES   = term-common-test.c
 tuple_test_SOURCES         = tuple-test.c
 unification_test_SOURCES   = unification-test.c
 
-system_io_file_test_SOURCES = system-io-file-test.c system-io-file-test.str.bld
+system_io_file_test_SOURCES = system-io-file-test.c
+nodist_system_io_file_test_SOURCES = system-io-file-test.str.bld
+
 system_posix_test_SOURCES = system-posix-test.c
 system_posix_xsi_test_SOURCES = system-posix-xsi-test.c
 endif
 
+
 # Used by some tests.
-$(builddir)/system-io-file-test.str.bld: $(srcdir)/system-io-file-test.str
+system-io-file-test.str.bld: system-io-file-test.str
 	$(LN_S) $< $@
+
+## ensure that system-posix-test.c is older than Makefile
+system-posix-test.c: Makefile
+
+TESTS_ENVIRONMENT = SRCDIR="$(abs_srcdir)"

@@ -16,3 +16,5 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
 nodist_xml_aterm_tests_SOURCES = xml-aterm-tests.c
+
+TESTS_ENVIRONMENT = XTC_REPOSITORY="$(BUILD_REPOSITORY)"

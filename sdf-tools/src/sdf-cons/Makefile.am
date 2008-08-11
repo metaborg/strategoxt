@@ -20,11 +20,11 @@ sdf_cons_check_prog    = sdf-cons
 sdf_cons_check_input   = data/test1.sdf.af
 sdf_cons_check_output  = data/test1.cons.sdf.af
 sdf_cons_check_correct = data/test1-correct.sdf.af
-sdf_cons_check_dir     = $(builddir)
+sdf_cons_check_dir     = $(top_builddir)/src/sdf-cons
 
 sdf_cons_injections_check_prog     = sdf-cons 
 sdf_cons_injections_check_switches = --injections
 sdf_cons_injections_check_input    = data/sdf-cons-injections.sdf.af
 sdf_cons_injections_check_output   = data/sdf-cons-injections.cons.sdf.af
 sdf_cons_injections_check_correct  = data/sdf-cons-injections-correct.sdf.af
-sdf_cons_injections_check_dir      = $(builddir)
+sdf_cons_injections_check_dir      = $(top_builddir)/src/sdf-cons

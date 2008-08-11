@@ -5,10 +5,10 @@ SIGS = pp-table.str
 
 pkgdata_DATA   = $(SIGS)
 EXTRA_DIST     = $(SIGS) $(pkgdata_DATA) 
-CLEANFILES     = pp-table.def
 BOOTCLEANFILES = $(SIGS) 
 
 SDF2RTG_FLAGS    = -m $*
 
-pp-table.def : 
-	ln -s $(top_builddir)/syn/pp-table/pp-table.def $@
+VPATH += \
+  $(top_builddir)/syn/pp-table/ \
+  $(top_srcdir)/syn/pp-table/

@@ -1,4 +1,5 @@
 prefix=@prefix@
+strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/xtc/lib -la @abs_top_builddir@/stratego-libraries${stage}/xtc/lib/libstratego-xtc.la
 
 Name: stratego-xtc
 Description: Stratego Transformation Tool Composition Library

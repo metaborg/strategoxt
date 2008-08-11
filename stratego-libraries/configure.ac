@@ -12,7 +12,9 @@ XT_PRE_RELEASE
 XT_WITH_XTC_ARGS
 XT_CHECK_ATERM
 XT_CHECK_MKSTEMP
-XT_DISABLE_XTC_REGISTER
+
+XT_ENABLE_XTC_REGISTER
+XT_CHECK_XTC
 
 AC_ARG_ENABLE([baseline],
   [AS_HELP_STRING([--enable-baseline], [Enable a baseline build @<:@no@:>@])],
@@ -53,11 +55,11 @@ PACKSDF='$(STRATEGOXT)/bin/pack-sdf'
 RTG2SIG='$(STRATEGOXT)/bin/rtg2sig'
 SDF2RTG='$(STRATEGOXT)/bin/sdf2rtg'
 
-if test "${STRC_STAGE:+set}" = set; then
+if test "${xt_strc_stage_set}" = yes; then
   xt_lib_list="strc-core${STRC_STAGE}/lib/libstrc.la"
   xt_lib_list="c-tools${STRC_STAGE}/pp/libc-pp.la $xt_lib_list"
 
-  if test "${LINK_STAGE:+set}" = set; then
+  if test "${xt_link_stage_set}" = yes; then
     # should be retrieved from pkg-config files (factor the work)
     xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/xtc/lib/libstratego-xtc.la"
     xt_lib_list="$xt_lib_list stratego-libraries${LINK_STAGE}/lib/native/stratego-lib/libstratego-lib-native.la"
@@ -77,7 +79,7 @@ if test "${STRC_STAGE:+set}" = set; then
     xt_libs="$xt_libs -dlopen \$(top_builddir)/../$l"
   done
 
-  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) libtool --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
+  STRC_UNINSTALLED="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(LIBTOOL) --mode=execute ${xt_libs} \$(top_builddir)/../strc-core${STRC_STAGE}/tools/strc"
 
   BOX_UNINSTALLED_STRCFLAGS="-I \$(top_builddir)/../gpp${STRC_STAGE}/syn/box"
   PPTABLETBL_UNINSTALLED="\$(top_builddir)/../gpp${STRC_STAGE}/syn/pp-table"

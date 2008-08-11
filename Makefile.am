@@ -8,18 +8,19 @@ CLEANFILES   = \
 	$(BUILD_REPOSITORY)-stage2
 
 EXTRA_DIST   = \
-  README svn-revision bootstrap Makefile.xt \
+  README svn-revision compiler_generation \
+  bootstrap Makefile.xt \
   strategoxt.spec.in strategoxt.spec \
   strategoxt.pc.in \
-  xtc-uninstalled.pc.in \
-  stratego-runtime-uninstalled.pc.in \
-  stratego-lib-native-uninstalled.pc.in \
-  stratego-lib-uninstalled.pc.in \
-  stratego-xtc-uninstalled.pc.in \
-  stratego-sglr-uninstalled.pc.in \
-  stratego-gpp-uninstalled.pc.in \
-  stratego-sdf-uninstalled.pc.in \
-  stratego-rtg-uninstalled.pc.in \
+  xtc-template.pc.in \
+  stratego-runtime-template.pc.in \
+  stratego-lib-native-template.pc.in \
+  stratego-lib-template.pc.in \
+  stratego-xtc-template.pc.in \
+  stratego-sglr-template.pc.in \
+  stratego-gpp-template.pc.in \
+  stratego-sdf-template.pc.in \
+  stratego-rtg-template.pc.in \
   stage1.pc.in \
   stage2.pc.in
 
@@ -59,7 +60,7 @@ svnignore :
 # Extra work because automake cannot generate those rules due to the loops of
 # AC_CONFIG_FILES inside in the configure.ac
 DISTCLEAN_FILES = $(UNINSTALLED_PKGCONFIG_FILES)
-%-stage1-uninstalled.pc: stage1.pc %-uninstalled.pc
+%-stage1-uninstalled.pc: stage1.pc %-template.pc
 	cat > $@ -- $^
-%-stage2-uninstalled.pc: stage2.pc %-uninstalled.pc
+%-stage2-uninstalled.pc: stage2.pc %-template.pc
 	cat > $@ -- $^

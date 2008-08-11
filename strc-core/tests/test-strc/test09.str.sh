@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 # Compile a library
 ${STRC} -i "${SRCDIR}/test09-lib.str" -o libtest09-lib.la --library -la stratego-lib || exit 1
