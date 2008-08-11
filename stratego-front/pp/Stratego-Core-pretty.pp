@@ -79,5 +79,8 @@
    OpDeclInj                 -- KW[":"] _1,
    ConstType                 -- _1,
    FunType                   -- _1 KW["->"] _2,
-   FunType.1:iter-sep        -- _1 KW["*"]
+   FunType.1:iter-sep        -- _1 KW["*"],
+   TypeAnno                  -- _1 KW["{"] _2 KW["}"],
+   TypeAnno.2:iter-star-sep  -- _1 KW[","],
+   HeapType                  -- KW["heap"]
 ]

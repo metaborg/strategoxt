@@ -37,6 +37,10 @@ exports
     FunType			-> Type
     ConstType			-> Type
 
+    Type "{" {TypeAnno ","}* "}" -> Type {non-assoc,cons("TypeAnno")}
+
+    "heap"	                -> TypeAnno {cons("HeapType")}
+
   %%%
    %% Restriction is required for the Sort* in Sdecl: List(a) is
    %% ambiguous.

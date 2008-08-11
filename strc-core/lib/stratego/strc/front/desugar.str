@@ -429,6 +429,8 @@ rules
     SortTuple(xs) -> 
     Sort("Tuple", [<foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs])
 
+  Desugar :
+    TypeAnno(t, a*) -> t{a*}
 
 // Characters
 
