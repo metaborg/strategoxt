@@ -169,7 +169,8 @@ ATerm SSL_get_appl_arguments_map(StrCL f, ATerm t)
     ATermList result = ATempty;
 
     for(;i > 0; i--) {
-      ATerm t2 = cl_fun(f)(cl_sl(f), ATgetArgument(appl, i-1));
+      ATerm t2;
+      res_cl_call_1(t2, f, ATgetArgument(appl, i-1));
       if(t2 == NULL) {
         return NULL;
       }

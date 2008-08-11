@@ -1,0 +1,25 @@
+module exlib-test2
+imports libstratego-lib
+
+signature
+  constructors
+    Succ: Num -> Num
+    Zero: Num
+
+strategies
+  DYNAMIC-CALLS = gt
+
+  gt =
+    where(rec x (
+      ?(Succ(x), Succ(y))
+    ; <x> (x, y)
+    + ?(Succ(_), Zero())
+    ))
+
+  // in the libstratego-lib:
+  //
+  // geq = ?(x,x) <+ gt
+
+  main =
+    <geq> (2, 1)
+  ; <geq> (Succ(Succ(Zero())), Succ(Zero()))

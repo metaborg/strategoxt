@@ -41,10 +41,24 @@ strategies
 
   print-header(|tbl) =
     where(
-      <fputstrings> (["
+      <get-config> FunctionName()
+    ; <fputstrings> (["
 #include <aterm1.h>
+#include <srts/stratego.h>
 
-ATerm ", <get-config> FunctionName(), "_0_0(ATerm t) {
+static ATerm ", <id>, "_0_0(StrSL sl, ATerm t);
+static void init_module_constructors() {}
+static void init_module_constant_terms() {}
+static void register_strategies() {
+  static struct str_funlink fl = { &", <id>, "_0_0, NULL };
+  static struct str_closure cl = { &fl , NULL };
+  SRTS_register_function((ATerm)ATmakeAppl0(ATmakeSymbol(\"", <id>, "_0_0\", 0, ATtrue)), &cl);
+}
+static void init_strategies() {}
+
+#include <srts/init-stratego-module.h>
+
+static ATerm ", <id>, "_0_0(StrSL sl, ATerm t) {
   static ATerm result = NULL;
   static char parsetable[] = {
     "], <stdout-stream>)

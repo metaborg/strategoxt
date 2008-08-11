@@ -28,6 +28,12 @@ USA
 #include <aterm2.h> 
 #include "srts/stratego.h"
 
+ATerm GetInternalDefaultXtcRepository_0_0(StrSL sl, ATerm t);
+ATerm SRTS_package_name_0_0(StrSL sl, ATerm t);
+ATerm SRTS_package_version_0_0(StrSL sl, ATerm t);
+ATerm SRTS_package_bugreport_0_0(StrSL sl, ATerm t);
+ATerm SRTS_package_revision_0_0(StrSL sl, ATerm t);
+
 void (* SRTS_stratego_initialize)(void) = NULL;
 ATerm SRTS_default_xtc_repository = NULL;
 ATerm SRTS_package_name = NULL;
@@ -35,41 +41,81 @@ ATerm SRTS_package_version = NULL;
 ATerm SRTS_package_bugreport = NULL;
 ATerm SRTS_package_revision = NULL;
 
+static void init_module_constructors() {}
+static void init_module_constant_terms() {}
+static void register_strategies()
+{
+  unsigned int i = 10;
+  static struct str_closure cl[10];
+  static struct str_funlink fl[10] = {
+    { &_Id, NULL }, { &_Fail, NULL },
+    { &SRTS_all, NULL }, { &SRTS_one, NULL }, { &SRTS_some, NULL },
+    { &GetInternalDefaultXtcRepository_0_0, NULL },
+    { &SRTS_package_name_0_0, NULL },
+    { &SRTS_package_version_0_0, NULL },
+    { &SRTS_package_bugreport_0_0, NULL },
+    { &SRTS_package_revision_0_0, NULL }
+  };
+  static const char *name[10] = {
+    "_Id", "_Fail",
+    "SRTS_all", "SRTS_one", "SRTS_some",
+    "GetInternalDefaultXtcRepository_0_0",
+    "SRTS_package_name_0_0",
+    "SRTS_package_version_0_0",
+    "SRTS_package_bugreport_0_0",
+    "SRTS_package_revision_0_0"
+  };
+
+  assert(strategy_table != NULL);
+  while(i--) {
+    cl[i].fl = &fl[i];
+    cl[i].sl = NULL;
+    SRTS_register_function(
+      (ATerm)ATmakeAppl0(ATmakeSymbol(name[i], 0, ATtrue)),
+      &(cl[i])
+    );
+  }
+}
+
+static void init_strategies() {}
+
+#include "srts/init-stratego-module.h"
+
 const char * __tracing_table [TRACING_TABLE_SIZE];
 unsigned short __tracing_table_counter;
 
 /**
  * For legacy reasons, this is an external function.
  */
-ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
+ATerm GetInternalDefaultXtcRepository_0_0(StrSL sl, ATerm t) {
   if(SRTS_default_xtc_repository == NULL)
     return NULL;
   else 
     return SRTS_default_xtc_repository;
 }
 
-ATerm SRTS_package_name_0_0(ATerm t) {
+ATerm SRTS_package_name_0_0(StrSL sl, ATerm t) {
   if(SRTS_package_name == NULL)
     return NULL;
   else 
     return SRTS_package_name;
 }
 
-ATerm SRTS_package_version_0_0(ATerm t) {
+ATerm SRTS_package_version_0_0(StrSL sl, ATerm t) {
   if(SRTS_package_version == NULL)
     return NULL;
   else 
     return SRTS_package_version;
 }
 
-ATerm SRTS_package_bugreport_0_0(ATerm t) {
+ATerm SRTS_package_bugreport_0_0(StrSL sl, ATerm t) {
   if(SRTS_package_bugreport == NULL)
     return NULL;
   else 
     return SRTS_package_bugreport;
 }
 
-ATerm SRTS_package_revision_0_0(ATerm t) {
+ATerm SRTS_package_revision_0_0(StrSL sl, ATerm t) {
   if(SRTS_package_revision == NULL)
     return NULL;
   else 
@@ -94,7 +140,8 @@ static ATermList ATmap(ATermList l, StrCL f)
     return l;
   else 
     {
-      ATerm hd = cl_fun(f)(cl_sl(f),ATgetFirst(l));
+      ATerm hd;
+      res_cl_call_1(hd, f, ATgetFirst(l));
       if(hd == NULL) return NULL;
       ATermList tl = ATmap(ATgetNext(l), f);
       if(tl == NULL) return NULL;
@@ -118,7 +165,7 @@ ATerm SRTS_all(StrSL sl, StrCL f, ATerm t)
         for(i = 0; i < arity; i++)
           {
             original = ATgetArgument(t, i);
-            new = cl_fun(f)(cl_sl(f),original);
+            res_cl_call_1(new, f, original);
 	    if(new == NULL) 
 	      return NULL;
             kids[i] = new;
@@ -154,7 +201,7 @@ ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
 	{
 	  ATerm original, new;
 	  original = ATgetArgument(t, i);
-	  new = cl_fun(f)(cl_sl(f),original);
+	  res_cl_call_1(new, f, original);
 	  if(new == NULL) 
 	    continue;
 	  transformed++;
@@ -174,7 +221,8 @@ ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
       while(!ATisEmpty(suffix))
 	{
 	  ATerm original = ATgetFirst(suffix);
-	  ATerm new = cl_fun(f)(cl_sl(f),original);
+	  ATerm new;
+    res_cl_call_1(new, f, original);
 	  suffix = ATgetNext(suffix);
 	  if(new == NULL) 
 	    {
@@ -221,7 +269,7 @@ static ATermList _map_some(ATermList ts, StrCL f, volatile int transformed)
   else 
     {
       ATerm t = ATgetFirst(ts), t_bak = t;
-      t = cl_fun(f)(cl_sl(f),t);
+      res_cl_call_1(t, f, t);
       if(t != NULL)
 	transformed++;
       else
@@ -255,7 +303,7 @@ ATerm SRTS_some(StrSL sl, StrCL f, ATerm t)
       for(i = 0; i < arity; i++)
 	{
 	  ATerm t_arg = ATgetArgument(t, i);
-	  kids[i] = cl_fun(f)(cl_sl(f),t_arg);
+	  res_cl_call_1(kids[i], f, t_arg);
 	  if(kids[i] != NULL)
 	    transformed++;
 	  else

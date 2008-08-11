@@ -1,22 +1,55 @@
 #include <srts/stratego.h>
 #include <stratego-lib/stratego-lib.h>
 
-ATerm strrtg_repeat_1_0(StrSL sl, StrCL f, ATerm t)
+static ATerm strrtg_repeat_1_0(StrSL sl, StrCL f, ATerm t);
+static ATerm strrtg_list_loop1_1_0(StrSL sl, StrCL f, ATerm t);
+
+
+static void init_module_constructors() {}
+static void init_module_constant_terms() {}
+static void register_strategies() {
+  unsigned int i = 2;
+  static struct str_closure cl[2];
+  static struct str_funlink fl[2] = {
+    { &strrtg_repeat_1_0, NULL },
+    { &strrtg_list_loop1_1_0, NULL }
+  };
+  static const char *name[2] = {
+    "strrtg_repeat_1_0",
+    "strrtg_list_loop1_1_0"
+  };
+
+  assert(strategy_table != NULL);
+  while(i--) {
+    cl[i].fl = &fl[i];
+    cl[i].sl = NULL;
+    SRTS_register_function(
+      (ATerm)ATmakeAppl0(ATmakeSymbol(name[i], 0, ATtrue)),
+      &(cl[i])
+    );
+  }
+}
+static void init_strategies() {}
+
+#include <srts/init-stratego-module.h>
+
+
+static ATerm strrtg_repeat_1_0(StrSL sl, StrCL f, ATerm t)
 {
   ATerm result = t;
   ATerm next;
 
-  next = cl_fun(f)(cl_sl(f), t);
+  res_cl_call_1(next, f, t);
   while(next != NULL)
   {
     result = next;
-    next = cl_fun(f)(cl_sl(f), result);
+    res_cl_call_1(next, f, result);
   }
 
   return result;
 }
 
-ATerm strrtg_list_loop1_1_0(StrSL sl, StrCL f, ATerm t)
+static ATerm strrtg_list_loop1_1_0(StrSL sl, StrCL f, ATerm t)
 {
   if(ATgetType(t) == AT_LIST) {
     ATbool success = ATfalse;
@@ -24,7 +57,8 @@ ATerm strrtg_list_loop1_1_0(StrSL sl, StrCL f, ATerm t)
 
     while(!ATisEmpty(suffix))
     {
-      ATerm result = cl_fun(f)(cl_sl(f), ATgetFirst(suffix));
+      ATerm result;
+      res_cl_call_1(result, f, ATgetFirst(suffix));
       if(result != NULL)
         success = ATtrue;
       

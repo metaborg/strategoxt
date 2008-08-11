@@ -71,6 +71,8 @@ rules
       //; debug(!"function definitions: ")
       ; cnst-decls    := <bagof-Fragment> "ConstDecl"
       ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
+      ; function-call := <bagof-Fragment; make-set> "FunctionCall"
+      ; function-init := <bagof-Fragment; make-set> "FunctionInit"
     );
     !|[
 	// C includes specified on command-line or by default configuration
@@ -96,6 +98,14 @@ rules
 	{
 	  ~stm*:cnst-inits
 	}
+	
+	// signatures of all generated functions
+	~ext-def*:function-sigs
+  ~ext-def*:[<register-strategies-function>function-regs]
+	
+	// function links of all called functions
+	~ext-def*:function-call
+  ~ext-def*:[<init-strategies-function>function-init]
 
 	// include functions for calling the initialization functions
 	~ext-def*:
@@ -105,14 +115,9 @@ rules
 	   )>
 	   
 	~ext-def*:<![<tracing-table-sig>, <tracing-table-counter-sig>]>
-	
-	// signatures of all generated functions
-	~ext-def*:function-sigs
 
 	// function definitions themselves
 	~ext-def*:function-defs
-
-        ~ext-def*:<if-lib(![], ![<register-strategies-function>function-regs])>
 
 	~ext-def*:<if-lib(![], ![<MainDef>])>
     ]|
@@ -127,22 +132,51 @@ strategies
     where(l := <length; int-to-string; !IntConst(<id>)>)
     ; !c:fun-def|[
         static void register_strategies(void)
-	{
-      int initial_size = 117 ;
-      int max_load = 75;
-      struct str_closure *closures;
-      int closures_index = 0;
+        {
+          int initial_size = 117;
+          int max_load = 75;
+          struct str_closure *closures;
+          struct str_funlink *funlinks;
+          int closures_index = 0;
 
-	  if(strategy_table == NULL) 
-	    strategy_table = ATtableCreate(initial_size,max_load);
+          if(strategy_table == NULL)
+            strategy_table = ATtableCreate(initial_size,max_load);
 
           closures = (struct str_closure *) malloc(sizeof(struct str_closure) * ~exp:l );
-          if(closures == NULL) {
-            perror("\"malloc error for registration of dynamic strategies\"");
+          funlinks = (struct str_funlink *) malloc(sizeof(struct str_funlink) * ~exp:l );
+          if(closures == NULL || funlinks == NULL) {
+            perror("\"malloc error for registration of strategies\"");
             exit(1);
           }
-	  ~stm*:<id>
-	}
+          ~stm*:<id>
+        }
+      ]|
+
+  init-strategies-function =
+    where(l := <filter(oncetd(?"funlinks_index")); length; int-to-string; !IntConst(<id>)>)
+    ; !c:fun-def|[
+        static void init_strategies(void)
+        {
+          int funlinks_index = 0;
+          struct str_funlink *funlinks = NULL;
+          char *missing = NULL;
+          StrCL cl = NULL;
+  
+          if(~exp:l) {
+            funlinks = (struct str_funlink *) malloc(sizeof(struct str_funlink) * ~exp:l);
+            if(funlinks == NULL) {
+              perror("\"malloc error for initialision of strategies\"");
+              exit(1);
+            }
+          }
+
+       	  ~stm*:<id>
+
+          if(missing) {
+            ATfprintf(stderr, "\"Function '%s' not found.\\n\"", missing);
+            exit(1);
+          }
+  	    }
       ]|
 
 strategies
@@ -171,7 +205,6 @@ strategies
         SRTS_stratego_initialize();
         memset(__tracing_table, 0, sizeof(unsigned short) * TRACING_TABLE_SIZE);
         __tracing_table_counter = 0;
-        register_strategies();
         out_term = main_0_0(NULL, (ATerm)in_term); 
         
         if(out_term != NULL)
@@ -252,12 +285,12 @@ strategies
   Translate = //debug(!"Translate: "); 
     SDefIgnore
     <+ is-closure-alloc
-    <+ fragment(SDefToDeclaration|"FunctionSig")
+    <+ (fragment(SDefToDeclaration|"FunctionSig")
        ; fragment(SDefToRegistration|"FunctionReg")
-       ; (fragment(TranslateDef | "FunctionDef")
+       ; fragment(TranslateDef | "FunctionDef")
 	  <+ {?Def|[ external f(a1* | a2* ) ]|}
 	  <+ {?Def|[ external f(a1* | a2* ) = s ]|}
-          <+ dbg(|"TranslateDef undefined: "); fail)
+          <+ dbg(|"Translate undefined: "); fail)
 
   SDefIgnore =
     ?Def|[ f(a1* | a2*) = s ]|
@@ -265,24 +298,7 @@ strategies
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
-    where <not(is-local-function)> f
-        ; ps := <map(TranslateVarDec)> [a1*,a2*]
-
-  SDefToDeclaration :
-    Def|[ f(a1* | a2*) = s ]| ->
     dec|[ static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
-    where <is-local-function> f
-        ; ps := <map(TranslateVarDec)> [a1*,a2*]
-
-  SDefToDeclaration :
-    Def|[ external f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
-    where ps := <map(TranslateVarDec)> [a1*,a2*]
-
-  SDefToDeclaration :
-    Def|[ external f(a1* | a2*) ]| ->
-    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where ps := <map(TranslateVarDec)> [a1*,a2*]
 
 
@@ -292,21 +308,24 @@ strategies
 strategies
 
   SDefToRegistration =
-    ( ?Def|[ f(a1*|a2*) = s ]|
-    + ?Def|[ external f(a1* | a2*) = s ]|
-    + ?Def|[ external f(a1* | a2*) ]| 
-    )
-    ; !stm|[
-        {
-          closures[closures_index].fun = &(~id:f);
-          closures[closures_index].sl = NULL;
-          SRTS_register_function(
-              (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue))
-            , &(closures[closures_index])
-            );
-          closures_index++;
-        }
-       ]|
+    ?Def|[ f(a1*|a2*) = s ]|
+    ; if <is-local-function> f then
+        !stm|[ {} ]|
+      else
+        !stm|[
+          {
+            funlinks[closures_index].fun = &(~id:f);
+            funlinks[closures_index].next = NULL;
+            closures[closures_index].fl = &funlinks[closures_index];
+            closures[closures_index].sl = NULL;
+            SRTS_register_function(
+                (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue))
+              , &(closures[closures_index])
+              );
+            closures_index++;
+          }
+        ]|
+      end
 
 /**
  * Translation of strategy definition to C function
@@ -385,6 +404,13 @@ strategies
     ; ([is-alpha, '_' | list(is-num)]
        <+ ['l', 'i', 'f', 't', 'e', 'd' | list(is-num)]
        <+ ['l', 'i', 'f', 't', 'e', 'd', '_' | list(is-num)])
+
+  is-language-primitive-function =
+    explode-string
+    ; ([is-alpha, '_' | list(is-num)]
+       <+ ['l', 'i', 'f', 't', 'e', 'd' | list(is-num)]
+       <+ ['l', 'i', 'f', 't', 'e', 'd', '_' | list(is-num)])
+
 
   check-arg(|F) :
     VarDec(x, ConstType(_)) -> 
@@ -504,28 +530,31 @@ rules
  
   MkClosure :
     Def|[ f~{Offsets(i,j),Closure(x)}(|) = s ]| ->
-    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
+    ([dec|[ struct str_closure ~id:y = {~id:fl, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     , [])
     where y := <new>
+  ; fl := <DeclareCall> f
 
   MkClosure :
     Def|[ f~{Offsets(i,j),Offset(k),Escapes(),Closure(x)}(|) = s ]| ->
-    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
+    ([dec|[ struct str_closure ~id:y = {~id:fl, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
     where y := <new>
+  ; fl := <DeclareCall> f
 
   // allocate closure for a top-level function
 
   MkClosure :
     Def|[ f~{Offsets(0,0),Closure(x),ClosureAlloc()}(|)
             = g~{Frames(frames)}(|) ]| ->
-    ([dec|[ struct str_closure ~id:y = {&~id:g, ~exp:sl}; ]|
+    ([dec|[ struct str_closure ~id:y = {~id:fl, ~exp:sl}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     , [])
     where ?def
 	; y := <new>
+  ; fl := <DeclareCall> g
 	; frames' := <Tl> frames
 	; if <not([])> frames' then
 	    sl := <frames-to-static-link> frames'
@@ -537,11 +566,12 @@ rules
   MkClosure :
     Def|[ f~{Offsets(0,0),Offset(k),Escapes(),Closure(x),ClosureAlloc()}(|) 
           = g~{Frames(frames)}(|) ]| ->
-    ([dec|[ struct str_closure ~id:y = {&~id:f, ~exp:sl}; ]|
+    ([dec|[ struct str_closure ~id:y = {~id:fl, ~exp:sl}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
     where ?def
 	; y := <new>
+  ; fl := <DeclareCall> f
 	; frames' := <Tl> frames
 	; if <not([])> frames' then
 	    sl := <frames-to-static-link> frames'
@@ -549,6 +579,61 @@ rules
             sl := |[ &frame ]|
 	    ; <dbg(|"* warning (MkClosure) expects more than one frame: ")> def
 	  end
+
+rules
+  FunctionLink :
+    f -> fl
+    where fl := <conc-strings> (f, "_fl")
+
+  DeclareCall :
+    f -> fl
+    where
+    fl := <FunctionLink>f
+  ; !(f, fl)
+  ; fragment(DeclareCallDecl|"FunctionCall")
+  ; fragment(DeclareCallInit|"FunctionInit")
+
+  DeclareCallDecl :
+    (f, fl) -> dec|[ static StrFL ~id:fl; ]|
+
+  DeclareCallInit :
+    (f, fl) -> stm|[
+      {
+        cl = SRTS_lookup_function(
+          (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue))
+        );
+        if(!cl)
+          missing = ~id:<double-quote>f;
+        else
+          ~id:fl = cl_fl(cl);
+      }
+    ]|
+    where <not(is-local-function)> f
+
+  DeclareCallInit :
+    (f, fl) -> stm|[
+      {
+        cl = SRTS_lookup_function(
+          (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue))
+        );
+        if(!cl)
+          missing = ~id:<double-quote>f;
+        else
+          ~id:fl = cl_fl(cl);
+      }
+    ]|
+    where <not(is-local-function)> f
+
+  DeclareCallInit :
+    (f, fl) -> stm|[
+      {
+        funlinks[funlinks_index].fun = &(~id:f);
+        funlinks[funlinks_index].next = NULL;
+        ~id:fl = &(funlinks[funlinks_index]);
+        funlinks_index++;
+      }
+    ]|
+    where <is-local-function> f
 
 strategies // computing the static link
 
@@ -559,6 +644,20 @@ strategies // computing the static link
 
 strategies // calling and passing functions
 
+  mk-choice-call :
+    (fl, sl, args) -> stm|[
+      {
+        ATerm _r;
+        const StrSL _sl = ~exp:sl;
+        StrFL _fl = ~exp:fl;
+        do {
+          _r = fl_fun(_fl)(_sl, ~exp*:args);
+          _fl = fl_next(_fl);
+        } while(!_r && _fl);
+        t = _r;
+      }
+    ]|
+
   // a function without annotations must be a top-level function
 
   mk-call : 
@@ -568,48 +667,62 @@ strategies // calling and passing functions
   // f is a function, pass it its static link
 
   mk-call : 
-    (f{Frames([])}, args) -> 
-    exp|[ ~id:f{}(&frame,~exp*:args) ]|
+    (f{Frames([])}, args) -> <mk-choice-call> (
+      exp|[ ~id:fl{} ]|, exp|[ &frame ]|, args
+    )
+    where fl := <DeclareCall> f
 
   // f is a function, pass it its static link
 
   mk-call : 
-    (f{Frames(frames)}, args) -> 
-    exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
+    (f{Frames(frames)}, args) -> <mk-choice-call> (
+      exp|[ ~id:fl{} ]|, sl, args
+    )
     where sl := <not([]); frames-to-static-link> frames
+    ; fl := <DeclareCall> f
 
   // f is a function, pass it its static link
   // the offset is caused by another use of the function as
   // a closure, it can be ignored in this instance
 
   mk-call : 
-    (f{Offset(i),Frames([])}, args) -> 
-    exp|[ ~id:f{}(&frame,~exp*:args) ]|
+    (f{Offset(i),Frames([])}, args) -> <mk-choice-call> (
+      exp|[ ~id:fl{} ]|, exp|[ &frame ]|, args
+    )
+    where fl := <DeclareCall> f
 
   mk-call : 
-    (f{Offset(i),Frames(frames)}, args) -> 
-    exp|[ ~id:f{}(~exp:sl,~exp*:args) ]|
+    (f{Offset(i),Frames(frames)}, args) -> <mk-choice-call> (
+      exp|[ ~id:fl{} ]|, sl, args
+    )
     where <not([]); frames-to-static-link> frames => sl
+    ; fl := <DeclareCall> f
 
   // f is a local variable (function argument) containing a closure
 
   mk-call : 
-    (f{Frames([]),ApplyClosure()}, args) -> 
-    exp|[ (cl_fun(~id:f{}))(cl_sl(~id:f{}), ~exp*:args) ]|
+    (f{Frames([]),ApplyClosure()}, args) -> <mk-choice-call> (
+      exp|[ cl_fl(~id:f{}) ]|, exp|[ cl_sl(~id:f{}) ]|, args
+    )
 
   // f is a local variable containing a closure
   // (but f also has escaping instances)
 
   mk-call : 
-    (f{Offset(i),Frames([]),ApplyClosure()}, args) -> 
-    exp|[ (cl_fun(~id:f{})) (cl_sl(~id:f{}), ~exp*:args) ]|
+    (f{Offset(i),Frames([]),ApplyClosure()}, args) ->
+    <mk-choice-call> (
+      exp|[ cl_fl(~id:f{}) ]|, exp|[ cl_sl(~id:f{}) ]|, args
+    )
 
   // f is a non-local variable containing a closure
 
   mk-call : 
-    (f{Offset(i),Frames(frames),ApplyClosure()}, args) -> 
-    exp|[ (sl_fun(~exp:<mk-int-const>i, ~exp:sl))
-             (sl_fun_sl(~exp:<mk-int-const>i, ~exp:sl), ~exp*:args) ]| 
+    (f{Offset(i),Frames(frames),ApplyClosure()}, args) ->
+    <mk-choice-call> (
+      exp|[ sl_cl_fl(~exp:<mk-int-const>i, ~exp:sl) ]|
+    , exp|[ sl_cl_sl(~exp:<mk-int-const>i, ~exp:sl) ]|
+    , args
+    )
     where sl := <not([]); frames-to-static-link> frames
 
   // passing a local closure to a function 
@@ -631,7 +744,7 @@ strategies // calling and passing functions
 
   ArgToCl :
     Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
-    exp|[ sl_fun_cl(~exp:<mk-int-const>i, ~exp:sl) ]|
+    exp|[ sl_cl(~exp:<mk-int-const>i, ~exp:sl) ]|
     where sl := <not([]); frames-to-static-link> frames
 
 /**
@@ -644,7 +757,7 @@ rules
     <check-unbound-args(|F,t*)>
     stm|[ 
       { 
-        t = ~exp:call; 
+        ~stm:call; 
         if( t == NULL ) goto ~id:F; else goto ~id:S; 
       }
     ]|
@@ -679,7 +792,7 @@ rules
         if(~id:f == NULL) {
           goto ~id:F;
         }
-        t = cl_fun(~id:f)(cl_sl(~id:f), ~exp*:args);
+        ~stm: call
         if( t == NULL )
           goto ~id:F;
         else
@@ -689,8 +802,9 @@ rules
     where args1 := <map(ArgToCl)> s*
         ; args2 := <map(topdown(try(construct-term)))> t*
         ; args  := <concat>[args1, args2, [Id("t")]]
-	; e     := <topdown(try(construct-term))>tp
+        ; e     := <topdown(try(construct-term))>tp
         ; f     := <newname> "calldynamic"
+        ; call  := <mk-choice-call> (exp|[ cl_fl(~id:f) ]|, exp|[ cl_sl(~id:f) ]|, args)
 
   /**
    * Import a term from a file.

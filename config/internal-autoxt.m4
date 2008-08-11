@@ -101,6 +101,7 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
   # POST_SCOMPILE should be at the end of the strc command line
   $1SCOMPILE="${xt_libtool_execute} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
   $1PARSE_STRATEGO="${xt_libtool_execute} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
+  $1PP2C="${xt_libtool_execute} \$(top_builddir)/../gpp${xt_strc_stage}/tools3/pp2c"
 ])
 
 
@@ -192,6 +193,11 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
     SCOMPILE='$(STRC)/bin/strc'
   fi
 
+  if test "x$PP2C" = x; then
+    # due to a file which is override in the BUILDTIME_XTC.
+    PP2C="XTC_REPOSITORY=\$(GPP)/share/strategoxt/XTC \$(GPP)/bin/pp2c"
+  fi
+
   if test "${xt_strc_stage_set}" = no; then
     SCOMPILE="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${CURRENT_STAGE} $SCOMPILE"
     PARSE_STRATEGO="XTC_REPOSITORY=\$(BUILD_REPOSITORY)${CURRENT_STAGE} $PARSE_STRATEGO"
@@ -200,6 +206,8 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   AC_SUBST([CURRENT_SCOMPILE])
   AC_SUBST([PARSE_STRATEGO])
   AC_SUBST([CURRENT_PARSE_STRATEGO])
+  AC_SUBST([PP2C])
+  AC_SUBST([CURRENT_PP2C])
 ])
 
 # XT_INTERNAL_CHECK_PACKAGES

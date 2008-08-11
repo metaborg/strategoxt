@@ -35,10 +35,4 @@ strategies
     ; pptable-to-c
     ; write-to
     ; xtc-transform(!"pp-c")
-    ; where(
-        <xtc-new-file> ()
-      ; <copy-file> (<xtc-find> "pptools.c", <id>)
-      ; !FILE(<id>) => pptools
-      )
-    ; <xtc-cat> [pptools, <id>]
     )

@@ -1,0 +1,15 @@
+module exlib-test1
+imports libstratego-lib
+
+signature
+  constructors
+    Succ: Num -> Num
+    Zero: Num
+
+strategies
+  is-int =
+    rec x (Succ(x) + Zero())
+
+  main =
+    <is-int> 1
+  ; <is-int> Succ(Zero())

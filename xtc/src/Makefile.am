@@ -23,6 +23,8 @@ EXTRA_DIST	= $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES	= $(wildcard *.dep)
 BOOTCLEANFILES	= $(wildcard *.c)
 
+if XT_STAGE_CHECK
+
 check_PROGRAMS  = test1 test2 test3
 
 check: check1 check2
@@ -57,3 +59,5 @@ test3_LDADD = \
   $(STRATEGO_XTC_LIBS) \
   $(STRATEGO_LIB_LIBS) \
   $(STRATEGO_RUNTIME_LIBS)
+
+endif

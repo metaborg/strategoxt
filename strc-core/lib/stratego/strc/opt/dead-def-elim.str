@@ -25,7 +25,8 @@ strategies
   dead-def-elim =
     where(map(RegisterDefinition))
     ; where(
-        <mark-needed-defs> "main_0_0"
+        map(try(MarkExtensionsAsNeeded))
+      ; <mark-needed-defs> "main_0_0"
       ; <mark-needed-defs> "DYNAMIC_CALLS_0_0"
       )
     ; filter(
@@ -38,6 +39,12 @@ strategies
     ?sdef
     ; where( (?SDefT(<id>,_,_,_) <+ ?ExtSDefInl(<id>,_,_,_) <+ ?ExtSDef(<id>,_,_)) => f )
     ; rules( NameToDefinition : f -> sdef )
+
+  // ExtSDefInl could be either a small function drop out of a library or a
+  // user function which extend a library function.
+  MarkExtensionsAsNeeded =
+    ?ExtSDefInl(f,_,_,_)
+    ; where(<mark-needed-defs> f)
   
   mark-needed-defs = 
     DefNeeded 

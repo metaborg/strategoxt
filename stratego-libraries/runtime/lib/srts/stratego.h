@@ -33,10 +33,18 @@ USA
 
 typedef struct str_frame *StrSL;
 typedef struct str_closure *StrCL;
+typedef struct str_funlink *StrFL;
+typedef ATerm (*StrFun)();
+
+struct str_funlink
+{
+  StrFun fun;
+  StrFL next;
+};
 
 struct str_closure 
 {
-  ATerm (*fun)();
+  StrFL fl;
   StrSL sl;
 };
 
@@ -67,13 +75,36 @@ struct str_frame
 #define sl_readvar(i,s)  (*sl_writevar(i,s))
 #define sl_writevar(i,s) (*(((s)->vars)+i))
 
-#define sl_fun(i,s)    ((*(((s)->funs)+i))->fun)
-#define sl_fun_sl(i,s) ((*(((s)->funs)+i))->sl)
+#define sl_cl(i,s) (*(((s)->funs)+i))
 
-#define sl_fun_cl(i,s) (*(((s)->funs)+i))
+#define sl_cl_fl(i,s) cl_fl((*(((s)->funs)+i)))
+#define sl_cl_sl(i,s) cl_sl((*(((s)->funs)+i)))
 
-#define cl_fun(cl) (cl->fun)
+#define cl_fl(cl) (cl->fl)
 #define cl_sl(cl) (cl->sl)
+
+#define fl_fun(fl) (fl->fun)
+#define fl_next(fl) (fl->next)
+
+#define COMMA ,
+
+#define res_cl_call_1(var, cl, arg)             \
+{                                               \
+  ATerm r_;                                     \
+  const StrCL cl_ = cl;                         \
+  const StrSL sl_ = cl_sl(cl_);                 \
+  StrFL fl_ = cl_fl(cl_);                       \
+  do {                                          \
+    r_ = fl_fun(fl_)(sl_, arg);                 \
+    fl_ = fl_next(fl_);                         \
+  } while(!r_ && fl_);                          \
+  var = r_;                                     \
+}
+
+#define res_cl_call_2(var, cl, arg1, arg2) \
+  res_cl_call_1(var, cl, arg1 COMMA arg2)
+#define res_cl_call_3(var, cl, arg1, arg2, arg3) \
+  res_cl_call_1(var, cl, arg1 COMMA arg2 COMMA arg3)
 
 #include "stratego-dynamic-call.h"
 

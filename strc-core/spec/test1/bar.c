@@ -26,7 +26,7 @@ static void init_module_constant_terms(void)
 ATerm bar_1_0(StrSL sl, StrCL s, ATerm t)
 {
   ATfprintf(stderr, "bar_1_0(%t)\n", t);
-  t = cl_fun(s)(cl_sl(s),t);
+  res_cl_call_1(t, s, t);
   t = (ATerm)ATmakeAppl2(sym__2, term_p_0, t);
   return(t);
 }

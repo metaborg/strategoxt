@@ -79,7 +79,7 @@ strategies
 
 strategies
 
-  check-ext-overload =
+  check-ext-overload = id <+ // enable library extension
     let helper =
           DefinitionName
           ; if ExtDefinition then
@@ -162,15 +162,33 @@ rules
   JoinDefsExt =
     where(map(
       ?ExtSDef(f, <length => i>, <length => j>) 
-    + ?ExtSDefInl(f, <length => i>, <length => j>, s)
     ))
-    ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
+    ; Hd
 
   JoinDefsExt =
-    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
-    ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"error: redefining external definition: ")> f
-    ; giving-up
+    ?defs
+    ; fetch(?ExtSDef(f, _, _) + ?ExtSDefInl(f, _, _, _))
+    ; fetch(?SDefT(f, xs1, xs2, _))
+    ; <map(VarDec(new,id))> xs1 => ys1
+    ; <map(VarDec(new,id))> xs2 => ys2
+    ; <map(\ VarDec(y, t) -> SVar(y) \ )> ys1 => ys1'
+    ; <map(\ VarDec(y, t) -> Var(y) \ )> ys2 => ys2'
+    ; <filter(
+        RenameDefinition(|ys1', ys2')
+      + RenameExtDefinition(|ys1', ys2')
+      )> defs => ss
+    ; !SDefT(f, ys1, ys2, <choices> ss)
+
+  RenameExtDefinition(|ys1, ys2) :
+    ExtSDefInl(_, xs1, xs2, s1) -> s3
+    where <map(\ VarDec(x2,_) -> x2 \ )> xs2 => zs2
+	; <tsubs> (zs2, ys2, s1) => s2
+	; {| RenameSVar :
+             <zip({?(VarDec(x1,_), y1)
+                   ; rules( RenameSVar : SVar(x1) -> y1 ) }
+              )> (xs1, ys1)
+	     ; <alltd(RenameSVar)> s2 => s3
+          |}
 
   choices = 
     foldr(!Fail(), !Choice(<Fst>,<Snd>))

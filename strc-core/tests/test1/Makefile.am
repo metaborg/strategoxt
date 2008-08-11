@@ -32,7 +32,8 @@ tests =									 \
 		  let-test							 \
 		  nested-defs01							 \
 		  cs-test01 cs-test02 cs-test03 cs-test04			 \
-	          static-links
+	          static-links \
+		  exlib-test1 exlib-test2
 
 check_PROGRAMS 	= $(tests)
 
@@ -124,6 +125,9 @@ test108_LDADD = $(STRATEGO_LIB_LIBS)
 test_chain01_LDADD = $(STRATEGO_LIB_LIBS)
 test_chain02_LDADD = $(STRATEGO_LIB_LIBS)
 test_chain03_LDADD = $(STRATEGO_LIB_LIBS)
+
+exlib_test1_LDADD = $(STRATEGO_LIB_LIBS)
+exlib_test2_LDADD = $(STRATEGO_LIB_LIBS)
 
 bar.o 		: bar.c
 
@@ -269,6 +273,9 @@ nodist_cs_test01_SOURCES = cs-test01.c
 nodist_cs_test02_SOURCES = cs-test02.c
 nodist_cs_test03_SOURCES = cs-test03.c
 nodist_cs_test04_SOURCES = cs-test04.c
+
+nodist_exlib_test1_SOURCES = exlib-test1.c
+nodist_exlib_test2_SOURCES = exlib-test2.c
 
 SDF2RTG_FLAGS = --main $*
 PGEN_FLAGS = -m $*

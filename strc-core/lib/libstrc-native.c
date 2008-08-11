@@ -1,6 +1,50 @@
+/**
+ * This file has to be compatible with the two versions of the C code
+ * generated because it used with the stage1 (old compilation) and with the
+ * last stage (new compilation).
+ *
+ * To solve this problem you must prefer prim notation instead of fake
+ * externals.
+ */
 #include <srts/stratego.h>
 #include <stratego-lib/stratego-lib.h>
 
+// new compiler generation
+#ifdef cl_fl
+
+static ATerm strc_cgen_aterm_0_0(StrSL sl, ATerm t);
+
+
+static void init_module_constructors() {}
+static void init_module_constant_terms() {}
+static void register_strategies() {
+  unsigned int i = 1;
+  static struct str_closure cl[1];
+  static struct str_funlink fl[1] = {
+    { &strc_cgen_aterm_0_0, NULL }
+  };
+  static const char *name[1] = {
+    "strc_cgen_aterm_0_0"
+  };
+
+  assert(strategy_table != NULL);
+  while(i--) {
+    cl[i].fl = &fl[i];
+    cl[i].sl = NULL;
+    SRTS_register_function(
+      (ATerm)ATmakeAppl0(ATmakeSymbol(name[i], 0, ATtrue)),
+      &(cl[i])
+    );
+  }
+}
+static void init_strategies() {}
+
+#include <srts/init-stratego-module.h>
+#endif
+
+#ifdef cl_fl
+static
+#endif
 ATerm strc_cgen_aterm_0_0(StrSL sl, ATerm t)
 {
   int length = 0;

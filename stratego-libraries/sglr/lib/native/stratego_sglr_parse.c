@@ -126,7 +126,8 @@ ATerm STRSGLR_parse_string_pt(StrCL onfail, ATerm string_term, ATerm tbl_term, A
   result = parse_string_pt(AT_getString(string_term), tbl_term, start_term, path_term);
   if(result == NULL)
   {
-    cl_fun(onfail)(cl_sl(onfail), string_term);
+    ATerm t;
+    res_cl_call_1(t, onfail, string_term);
   }
   return result;
 }
@@ -152,7 +153,8 @@ ATerm STRSGLR_parse_stream_pt(StrCL onfail, ATerm stream_term, ATerm tbl_term, A
   result = parse_string_pt(text, tbl_term, start_term, path_term);
   if(result == NULL)
   {
-    cl_fun(onfail)(cl_sl(onfail), ATmakeString(text));
+    ATerm t;
+    res_cl_call_1(t, onfail, ATmakeString(text));
   }
   free(text);
   return result;

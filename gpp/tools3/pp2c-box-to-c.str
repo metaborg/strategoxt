@@ -2,7 +2,7 @@ module pp2c-box-to-c
 imports
   libstratego-lib
   libstratego-xtc
-  C pp-table
+  C pp-table pptools
 
 strategies
 
@@ -234,17 +234,27 @@ strategies
   main-fun =
     <get-config> "-n"
   ; !ext-def*|[
+       ATerm ~id:<id> (StrSL sl, ATerm t);
+       static void register_strategies() {
+         static struct str_funlink fl = { &(~id:<id>), NULL };
+         static struct str_closure cl = { &fl, NULL };
+         SRTS_register_function(
+           (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>, 0, ATtrue))
+         , &cl
+         );
+       }
+       #include <srts/init-stratego-module.h>
        ATerm ~id:<id> (StrSL sl, ATerm t)
        {
          ATerm out;
          static int was_init = 0;
+         struct str_closure xtc_new_file_0_0_cls = {
+           xtc_new_file_0_0_fl, NULL
+         };
+         StrCL xtc_new_file_0_0_cl = &xtc_new_file_0_0_cls;
 
-         if (!was_init) {
-           init();
-           was_init = 1;
-         }
          init_stack();
-         out = xtc_new_file_0_0(NULL, t);
+         res_cl_call_1(out, xtc_new_file_0_0_cl, t);
          if (out == NULL)
            return NULL;
          stream = fopen(ATgetName(ATgetAFun(out)), "\"w\"");
@@ -260,10 +270,15 @@ strategies
   main-fun =
     not(<get-config> "-n")
   ; !ext-def*|[
+       static void register_strategies(){}
+       #include <srts/init-stratego-application.h>
        static int mymain(int argc, char *argv[])
          {
            ATerm t;
-           init();
+
+           SRTS_stratego_initialize();
+           memset(__tracing_table, 0, sizeof(unsigned short) * TRACING_TABLE_SIZE);
+           __tracing_table_counter = 0;
            init_stack();
            if (argc == 2) {
              FILE *f = fopen(argv[1], "\"r\"");
@@ -351,7 +366,12 @@ strategies
   ; <cons-var> l => cons-var-name
   ; <GetSwitchStm> ls => otherwise
 
-  GetInitFun: l -> ext-def*|[ static void init_cons(void) { ~stm*: stms } ]|
+  GetInitFun: l -> ext-def*|[
+    static void init_module_constructors(void) {
+      init_constructors_begin();
+      ~stm*: stms
+    }
+  ]|
   where
     <map(GetInitStm); concat> l => stms
 
@@ -386,4 +406,4 @@ strategies
   ; where(map(GetVar); concat => vars)
   ; <concat> [vars, init, <choice-decl>, <map(fun-decl)> funs,
               funs, choice, <main-fun>]
-  ; !c:translation-unit|[ ~ext-def*: <id> ]|
+  ; add-pptools

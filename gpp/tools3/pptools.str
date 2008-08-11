@@ -1,10 +1,14 @@
+module pptools
+strategies
+  add-pptools = !c:translation-unit|[
 #include <aterm2.h>
 #include <string.h>
 #include <stdlib.h>
 #include <srts/stratego.h>
 #include <stratego-lib/stratego-lib.h>
 
-ATerm xtc_new_file_0_0(StrSL, ATerm);
+static
+StrFL xtc_new_file_0_0_fl;
 
 enum dirs {H, V};
 
@@ -70,18 +74,15 @@ static
 void print_string(char *str)
 {
   next();
-  hpos += fprintf(stream, "%s", str);
+  hpos += fprintf(stream, "\"%s\"", str);
 }
 
 static
 void print_int(int i)
 {
   next();
-  hpos += fprintf(stream, "%d", i);
+  hpos += fprintf(stream, "\"%d\"", i);
 }
-
-static
-void init_cons(void);
 
 static
 void init_stack(void)
@@ -96,19 +97,18 @@ void init_stack(void)
 }
 
 static
-void init(void)
+void init_constructors_begin(void)
 {
   current = malloc(sizeof(struct position));
 
-  AltFun = ATmakeAFun("alt", 2, ATfalse);
+  AltFun = ATmakeAFun("\"alt\"", 2, ATfalse);
   ATprotectAFun(AltFun);
-  SomeFun = ATmakeAFun("Some", 1, ATfalse);
+  SomeFun = ATmakeAFun("\"Some\"", 1, ATfalse);
   ATprotectAFun(SomeFun);
-  NoneFun = ATmakeAFun("None", 0, ATfalse);
+  NoneFun = ATmakeAFun("\"None\"", 0, ATfalse);
   ATprotectAFun(NoneFun);
-  AmbFun = ATmakeAFun("amb", 1, ATfalse);
+  AmbFun = ATmakeAFun("\"amb\"", 1, ATfalse);
   ATprotectAFun(AmbFun);
-  init_cons();
 }
 
 static
@@ -139,6 +139,31 @@ static
 void unexpected(ATerm tree, int n, char *str)
 {
   ATfprintf(stderr,
-   "The %dth argument was expected to be %s\n%a\n", n, str, tree);
+   "\"The %dth argument was expected to be %s\\n%a\\n\"", n, str, tree);
   exit(1);
 }
+
+static
+void init_module_constructors(void);
+
+static
+void init_module_constant_terms(void)
+{
+}
+
+static
+void init_strategies(void)
+{
+  StrCL cl = SRTS_lookup_function(
+    (ATerm) ATmakeAppl0(ATmakeSymbol("\"xtc_new_file_0_0\"", 0, ATtrue))
+  );
+
+  if(!cl) {
+    fprintf(stderr, "\"Function xtc_new_file_0_0 not found.\\n\"");
+    exit(1);
+  }
+  xtc_new_file_0_0_fl = cl_fl(cl);
+}
+
+~ext-def*: <id>
+]|

@@ -2,10 +2,10 @@ CLEANFILES = *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
              libtest*.c \
              *.dep *test*.c *.out *.sh
 
+# test03 is now valid.
 STRPROGS = \
   test01.str \
   test02.str \
-  test03.str \
   test04.str \
   test05.str \
   test06.str \

@@ -33,7 +33,8 @@ ATerm SSL_indexedSet_put(StrCL on_old, ATerm set_term, ATerm elem) {
   if(new) {
       return result_term;
   } else {
-    return cl_fun(on_old)(cl_sl(on_old),result_term);
+    res_cl_call_1(result_term, on_old, result_term);
+    return result_term;
   }
 }
 

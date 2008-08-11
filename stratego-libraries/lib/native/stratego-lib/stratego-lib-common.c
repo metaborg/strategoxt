@@ -182,7 +182,8 @@ ATerm SSL_list_loop(StrCL f, ATerm t)
 
     while(!ATisEmpty(suffix))
     {
-      ATerm result = cl_fun(f)(cl_sl(f), ATgetFirst(suffix));
+      ATerm result;
+      res_cl_call_1(result, f, ATgetFirst(suffix));
       if(result == NULL)
       {
         return NULL;
@@ -206,7 +207,7 @@ ATerm SSL_list_fold(StrCL f, ATerm result, ATerm t)
 
     while(!ATisEmpty(suffix))
     {
-      result = cl_fun(f)(cl_sl(f), result, ATgetFirst(suffix));
+      res_cl_call_2(result, f, result, ATgetFirst(suffix));
       if(result == NULL)
       {
         return NULL;
@@ -275,7 +276,7 @@ static ATerm table_fold(StrCL f, ATerm result, ATerm **tableindex, long nr_entri
     for(i=0; i<nr_entries; i++) {
       t = tableGet(tableindex, i);
       if (t != NULL) {
-        result = cl_fun(f)(cl_sl(f), t, result);
+        res_cl_call_2(result, f, t, result);
         if( result == NULL ) 
           break;
       }
@@ -297,7 +298,7 @@ ATerm SSL_atermtable_fold(StrCL f, ATerm result, ATermTable tbl)
       k = tableGet(kindex, i);
       v = tableGet(vindex, i);
       if(k != NULL && v != NULL) {
-        result = cl_fun(f)(cl_sl(f), k, v, result);
+        res_cl_call_3(result, f, k, v, result);
         if(result == NULL)
           break;
       }

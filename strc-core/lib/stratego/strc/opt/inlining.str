@@ -38,8 +38,7 @@ strategies
     Specification([id,Strategies(inline-sdefs)])
 
   inline-sdefs = 
-    map(simplify0; try(inlineable; AddSDef))
-    ; map(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef))
+    map(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ simplify0; inline-sdef)
 
   inline-sdef =
     DeclareInline(inline-sdef) 
@@ -47,9 +46,9 @@ strategies
     <+ repeat(/* InlineCall0 <+ */ InlineCall); all(inline-sdef)
 
   DeclareInline(x) = 
-    ?Let(defs, s)
+    ?s@Let(defs, _)
     ; {| InlineCall //, InlineCall0
-         : where(<map(local-inlinable(|s); AddSDef)> defs)
+         : where(<map(try((local-inlinable(|s) + inlinable) ; AddSDef))> defs)
 	 ; Let(x, x)
        |}
 
