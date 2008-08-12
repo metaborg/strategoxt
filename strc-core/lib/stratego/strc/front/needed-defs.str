@@ -126,13 +126,31 @@ strategies
 strategies
 
   /**
+   * Mark Extra Needed Definitions
+   *
+   * Mark with the DYNAMIC-CALLS strategy every strategy that have to be kept.
+   */
+
+  mark-extra-needed = id
+  ; ?defs
+  ; if JoinExtendDefs => new-defs then id
+    ; Hd
+    ; (f, (n, m)) := <DefinitionName>
+    ; s*          := <range; map(!Strat|[ id ]|)> n
+    ; t*          := <range; map(!Term|[ 1 ]|)> m
+    ; ![ |[ DYNAMIC-CALLS = f(s*|t*) ]| | new-defs ]
+    end
+
+strategies
+
+  /**
    * Joining Definitions
    *
    * Join multiple definitions for the same strategy operator into one
    * definition by unifying the list of formal strategy parameters.
    */
 
-  joindefs = 
+  joindefs =
     JoinDefs1 <+ JoinDefs2 <+ JoinDefsExt
 
 rules
@@ -165,19 +183,18 @@ rules
     ))
     ; Hd
 
-  JoinDefsExt =
+  JoinExtendDefs =
     ?defs
-    ; fetch(?ExtSDef(f, _, _) + ?ExtSDefInl(f, _, _, _))
-    ; fetch(?SDefT(f, xs1, xs2, _))
-    ; <map(VarDec(new,id))> xs1 => ys1
-    ; <map(VarDec(new,id))> xs2 => ys2
-    ; <map(\ VarDec(y, t) -> SVar(y) \ )> ys1 => ys1'
-    ; <map(\ VarDec(y, t) -> Var(y) \ )> ys2 => ys2'
-    ; <filter(
-        RenameDefinition(|ys1', ys2')
-      + RenameExtDefinition(|ys1', ys2')
-      )> defs => ss
-    ; !SDefT(f, ys1, ys2, <choices> ss)
+    ; filter(
+        ?ExtSDef(_, _, _)
+      ; try(?exists)
+      ; fail
+      + \ ExtSDefInl(f, xs1, xs2, s) -> SDefT(f, xs1, xs2, s) \
+      ; try(?exists)
+      + ?SDefT(_, _, _, _)
+      )
+    ; where(!exists)
+    ; not([])
 
   RenameExtDefinition(|ys1, ys2) :
     ExtSDefInl(_, xs1, xs2, s1) -> s3

@@ -7,8 +7,6 @@ signature
     Zero: Num
 
 strategies
-  DYNAMIC-CALLS = gt
-
   gt =
     where(rec x (
       ?(Succ(x), Succ(y))

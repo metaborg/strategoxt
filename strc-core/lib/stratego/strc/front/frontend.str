@@ -60,6 +60,10 @@ strategies
 
       ; m-lift-dynamic-rules-from-spec 
 
+      ; m-transform-external-defs(id
+          ; mark-extra-needed
+        )
+
       ; check-calls
 
       ; m-transform-local-defs(
