@@ -20,12 +20,12 @@ strategies
    * fails with a message reporting the name of the current strategy/rule.
    *
    * @note In future revisions, a facility may be provided to "catch"
-   *       failures caused by with clauses and this strategy.
+   *       failures raised by with clauses and uses of this strategy.
    */
   with(s|message) =
     where(s)
-    <+ log(|Critical(), message, <id>)
+    <+ ?term
      ; prim("SSL_stacktrace_get_all_frame_names")
      ; try(?["with_1_1" | <id>])
-     ; report-failure
+     ; report-failure(log(|Critical(), message, term); exit)
 
