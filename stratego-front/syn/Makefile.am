@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -23,9 +24,9 @@ TBLS = \
 
 sdfdata_DATA = $(TBLS) $(DEFS) $(GEN_MODS) $(call srcwildcard,*.sdf)
 
-EXTRA_DIST     = $(DEFS) $(GEN_MODS) $(call srcwildcard,*.sdf)
-CLEANFILES     = $(TBLS) $(wildcard *.dep)
-BOOTCLEANFILES = $(DEFS) $(GEN_MODS)
+XT_BUILD_DIST  = $(DEFS) $(GEN_MODS)
+EXTRA_DIST    += $(call srcwildcard,*.sdf)
+CLEANFILES    += $(TBLS) $(wildcard *.dep)
 
 SDFINCLUDES = -I $(srcdir) -I $(top_builddir)/syn
 PGEN_FLAGS  = -m $*

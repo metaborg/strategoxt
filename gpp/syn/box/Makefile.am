@@ -1,15 +1,16 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-TBLS = Box.tbl Stratego-Box.tbl 
+TBLS = $(DEFS:.def=.tbl)
 DEFS = Box.def Stratego-Box.def
 
 sdfdata_DATA   = $(TBLS) $(DEFS) $(call srcwildcard,*.sdf)
 pkgdata_DATA   = Box.pp Box.pp.af
 
-EXTRA_DIST     = $(DEFS) $(call srcwildcard,*.sdf) $(pkgdata_DATA)
-CLEANFILES     = $(TBLS) $(wildcard *.dep)
-BOOTCLEANFILES = $(DEFS) Box.pp.af
+XT_BUILD_DIST  = $(DEFS) Box.pp Box.pp.af
+EXTRA_DIST    += $(call srcwildcard,*.sdf)
+CLEANFILES    += $(TBLS) $(wildcard *.dep)
 
 SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn \
                  -I $(top_builddir)/../stratego-front$(CURRENT_STAGE)/syn

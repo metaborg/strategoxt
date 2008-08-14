@@ -1,5 +1,5 @@
 prefix=@prefix@
-strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/ -la @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/libstratego-aterm.la
+strcflags=-I @abs_top_builddist@/stratego-libraries${stage}/aterm/lib/ -la @abs_top_builddir@/stratego-libraries${stage}/aterm/lib/libstratego-aterm.la
 
 Name: Stratego ATerm Library
 Description: Stratego ATerm Library.

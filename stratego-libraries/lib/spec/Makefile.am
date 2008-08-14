@@ -1,5 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
+include $(top_srcdir)/Internal.mk
 
 pkgdatadir = $(datadir)/stratego-lib
 
@@ -10,9 +11,9 @@ nobase_pkgdata_DATA = $(strategolib:.str=.rtree) $(all_rtree) \
 data_DATA = libstratego-lib.rtree
 lib_LTLIBRARIES = libstratego-lib.la
 
-EXTRA_DIST	    = $(nobase_pkgdata_DATA) $(fullstrategolib) $(all_c) $(all_rtree)
-CLEANFILES      = $(wildcard *.dep) libstratego-lib.rtree stratego-lib.str
-BOOTCLEANFILES 	= $(strategolib:.str=.rtree) $(all_c) $(all_rtree)
+XT_BUILD_DIST   = $(nobase_pkgdata_DATA) $(all_c)
+EXTRA_DIST	   += $(fullstrategolib)
+CLEANFILES     += $(wildcard *.dep) stratego-lib.str
 
 all_rtree = libstratego-lib-c99.rtree libstratego-lib-posix.rtree libstratego-lib-posix-xsi.rtree
 all_c     = libstratego-lib-c99.c libstratego-lib-posix.c libstratego-lib-posix-xsi.c
@@ -58,7 +59,7 @@ STRC_UNINSTALLED_CALLGRIND = XTC_REPOSITORY=$(BUILD_REPOSITORY) callgrind $(pref
 
 STRCFLAGS = --verbose 2 -I $(srcdir)
 
-stratego-lib.str : Makefile
+stratego-lib.str :
 	echo "module stratego-lib imports $(stratego_lib_module)" > $@
 
 # double targets: -c --library
@@ -78,7 +79,7 @@ libstratego-lib-posix-xsi.rtree : stratego-lib-posix-xsi.str $(strategolib:.str=
 	rm -f libstratego-lib-posix-xsi.str
 
 libstratego-lib.c: libstratego-lib.ctree; true
-libstratego-lib.ctree: stratego-lib-posix-xsi.rtree
+libstratego-lib.ctree: libstratego-lib-posix-xsi.rtree
 	$(STRC_UNINSTALLED) $(STRCFLAGS) -F -c --library -i $< -o $@
 
 fullstrategolib = \
@@ -100,13 +101,12 @@ strategolib = \
   $(call srcwildcard,strategy/general/*.str) \
   $(call srcwildcard,strategy/pack/*.str) \
   $(call srcwildcard,strategy/traversal/*.str) \
-  $(call srcwildcard,strategy/general*.str) \
+  $(call srcwildcard,strategy/general/*.str) \
   $(call srcwildcard,system/*.str) \
   $(call srcwildcard,system/io/*.str) \
   $(call srcwildcard,system/c99/*.str) \
   $(call srcwildcard,system/posix/*.str) \
   $(call srcwildcard,system/posix-xsi/*.str) \
   $(call srcwildcard,term/*.str) \
-  $(call srcwildcard,strategy/general*.str) \
   $(call srcwildcard,util/*.str) \
   $(call srcwildcard,util/config/*.str)

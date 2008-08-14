@@ -1,5 +1,5 @@
 prefix=@prefix@
-strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib -la @abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib/libstratego-tool-doc.la
+strcflags=-I @abs_top_builddist@/stratego-libraries${stage}/tool-doc/lib -la @abs_top_builddir@/stratego-libraries${stage}/tool-doc/lib/libstratego-tool-doc.la
 
 Name: Stratego Tool Documentation Library
 Description: Stratego Tool Documentation Library.

@@ -21,6 +21,8 @@ AC_DEFUN([XT_CHECK_STAGE],
     [LIB_STAGE=
      xt_lib_stage_set=no])
   AC_SUBST([LIB_STAGE])
+  LIB_STAGE_SET=$xt_lib_stage_set
+  AC_SUBST([LIB_STAGE_SET])
 
   AC_ARG_WITH([use-strc-stage], [],
     [STRC_STAGE=$withval
@@ -112,6 +114,19 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   AC_REQUIRE([XT_WITH_STRATEGOXT_ARG])
   AC_REQUIRE([XT_CHECK_XTC])
 
+  AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
+  if test "${STRATEGOXT:+set}" = set; then
+    AC_MSG_RESULT([yes])
+    if test "$STRATEGOXT" == "no"; then
+      STRATEGOXT=
+      AC_MSG_NOTICE([The build will fail if this is not a distributed version.])
+    fi
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_NOTICE([The build will fail if this is not a distributed version.])
+  fi
+  AM_CONDITIONAL([XT_USE_BASELINE], [test "x${STRATEGOXT}" != "x"])
+
   AC_REQUIRE([XT_CHECK_STAGE])
   AC_MSG_CHECKING([whether a stage of the compiler is explicitly set])
 
@@ -128,13 +143,9 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   else
     AC_MSG_RESULT([no])
 
-    AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
     if test "${STRATEGOXT:+set}" = set; then
-      AC_MSG_RESULT([yes])
+      AC_MSG_NOTICE([Use the baseline to set compiler configuration.])
       XT_HANDLE_EXPLICIT_STRATEGOXT
-    else
-      AC_MSG_RESULT([no])
-      AC_MSG_ERROR([neither stage nor baseline specified.])
     fi
   fi
 
@@ -157,14 +168,10 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   else
     AC_MSG_RESULT([no])
 
-    AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
     if test "${STRATEGOXT:+set}" = set; then
-      AC_MSG_RESULT([yes])
+      AC_MSG_NOTICE([Use the baseline to set libraries configuration.])
       STRATEGO_LIBRARIES="$STRATEGOXT"
       XT_HANDLE_EXPLICIT_STRATEGO_LIBRARIES
-    else
-      AC_MSG_RESULT([no])
-      AC_MSG_ERROR([neither stage nor baseline specified.])
     fi
   fi
 
@@ -201,6 +208,8 @@ AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
   AC_SUBST([PARSE_STRATEGO])
   AC_SUBST([CURRENT_PARSE_STRATEGO])
 ])
+
+m4_pattern_allow([^XT_USE_BASELINE(_TRUE|_FALSE)?$])
 
 # XT_INTERNAL_CHECK_PACKAGES
 # --------------------------

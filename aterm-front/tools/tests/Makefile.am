@@ -7,5 +7,5 @@ EXTRA_DIST  = $(ATERM_FILES)
 installcheck-local: $(ATERM_FILES)
 	for file in fordummy $^ ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
-	  $(ATERM_FRONT)/bin/pp-aterm -i $$file ; \
+	  $(bindir)/pp-aterm -i $$file ; \
 	done

@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -9,6 +10,6 @@ STRINCLUDES      = -I $(top_srcdir)/sig
 
 LDADD += $(SSL_LIBS)
 
-EXTRA_DIST  	= explode-asfix2me.str
-BOOTCLEANFILES 	= explode-asfix2me.c
-CLEANFILES	= $(wildcard *.dep)
+XT_BUILD_DIST 	= explode-asfix2me.c
+EXTRA_DIST  	 += explode-asfix2me.str
+CLEANFILES	   += $(wildcard *.dep)

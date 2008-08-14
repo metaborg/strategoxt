@@ -12,8 +12,6 @@ SINCLUDES = \
 #STRATEGOLIB     = -L$(prefix)/lib -lstratego-lib
 #LDADD 		= $(STRATEGORUNLIBS)
 
-occan_LDADD     = $(STRATEGO_LIB_LIBS)
-
 check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  comment-test conditional-innermost congruence-arguments   \
 		  congruence-thread dynamic-rules-test empty-sections	    \

@@ -4,11 +4,11 @@ if [ -z "$(which automake | grep .nix-profile)" ] ; then
 
         # Automake not provided by Nix; try to find suitable native one.
 
-	if [ -f /etc/gentoo-release ] ; then
-		# Environment variables for our Gentoo friends.
-		export WANT_AUTOMAKE="1.8"
-		export WANT_AUTOCONF="2.59"
-        fi
+  if [ -f /etc/gentoo-release ] ; then
+    # Environment variables for our Gentoo friends.
+    export WANT_AUTOMAKE="1.8"
+    export WANT_AUTOCONF="2.59"
+  fi
 fi
 
 #	elif [ -f /etc/debian_version ] ; then
@@ -41,6 +41,9 @@ fi
 
 echo "bootstrap: using autoxt at $AUTOXT"
 
+# -Wno-portability, is to don't get messages on gnu-make extensions.
+AUTORECONF_FLAGS=" -ifv -Wno-portability"
+
 # $AUTOXT || exit 1
 # mv ./autoxt.m4 ./config/  || exit 1
 
@@ -49,7 +52,7 @@ cp ./autoxt/autoxt.m4 ./config/ || exit 1
 echo "WARNING: hack: using our own Makefile.xt"
 cp ./autoxt/Makefile.xt . || exit 1
 
-autoreconf -ifv  || exit 1
+autoreconf $AUTORECONF_FLAGS || exit 1
 
 # Bootstrap the subpackages
 PKGS="autoxt xtc strc-core gpp c-tools concrete-syntax \
@@ -62,6 +65,7 @@ then
   echo 0 > svn-revision
 fi
 
+copy_files="config/libtool_execute Internal.mk svn-revision"
 cp ./config/autoxt.m4 stratego-libraries/config
 for dir in $PKGS
 do
@@ -69,22 +73,24 @@ do
   echo "bootstrap: bootstrapping in $dir"
   echo
   cd $dir
+
   if test "$dir" != "autoxt"
   then
     rm -f Makefile.xt
     cp ../Makefile.xt .
   fi
-  if test \! -d config
-  then
-    mkdir config
-  fi
-  rm -f config/libtool_execute
-  cp ../config/libtool_execute ./config
-  if test -e "../svn-revision"
-  then
-    rm -f
-    cp ../svn-revision .
-  fi
-  autoreconf -ifv || exit 1
+
+  for f in ${copy_files}
+  do
+    fdir=$(dirname $f)
+    if test \! -d "$fdir"
+    then
+      mkdir -p "$fdir"
+    fi
+    rm -f "$f"
+    cp "../$f" "$f"
+  done
+
+  autoreconf $AUTORECONF_FLAGS || exit 1
   cd ..
 done

@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -29,18 +30,16 @@ staticsignatures =				\
 
 signatures = $(autogensignatures) $(staticsignatures)
 
-CLEANFILES	= $(wildcard *.atree)
-BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree)
+
+XT_BUILD_DIST   = $(autogensignatures) $(signatures:.str=.rtree)
 
 pkgdata_DATA    = $(signatures:.str=.rtree)
-EXTRA_DIST      = \
+EXTRA_DIST     += \
   $(call srcwildcard,*.rtg-script) \
-  Cong.rtg \
   $(call srcwildcard,*.str) \
-  $(wildcard *.rtree) \
-  $(pkgdata_DATA)
+  Cong.rtg
 
-VPATH += $(top_builddir)/syn/ $(top_srcdir)/syn/
+VPATH += $(top_builddist)/syn/
 
 $(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Sugar.def Stratego-Amb.def
 
@@ -50,7 +49,7 @@ $(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Sugar.def Strateg
 %.str : %.rtg
 	$(STRATEGO_REGULAR)/bin/rtg2sig -i $< -o $@
 
-%.rtg : $(srcdir)/%.rtg-script Stratego-Sugar.rtg $(srcdir)/Cong*.rtg
+%.rtg : $(srcdir)/%.rtg-script Stratego-Sugar.rtg Cong.rtg
 	$(STRATEGO_REGULAR)/bin/rtg-script -i $< -o $@ -I $(srcdir)
 
 Stratego-Sugar-2.rtg : Stratego-Sugar-1.rtg

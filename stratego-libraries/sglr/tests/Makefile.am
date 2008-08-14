@@ -1,16 +1,15 @@
 include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/MakefileLocal.xt
+include $(top_srcdir)/Internal.mk
 include $(wildcard *.dep)
 
 check_PROGRAMS = stratego-sglr-tests
 TESTS = $(check_PROGRAMS)
 
+DEF_FILES = ExpId.def ExpInt.def KernelStartSymbol.def ConcreteSyntax.def
 check_DATA = \
-  ExpId.tbl ExpId.str \
-  ExpInt.tbl ExpInt.str \
-  KernelStartSymbol.tbl KernelStartSymbol.str \
+  $(DEF_FILES:.def=.tbl) $(DEF_FILES:.def=.str) \
   ExpIntAmb.tbl \
-  ConcreteSyntax.tbl ConcreteSyntax.str \
   Concrete.tbl \
   CustomImplode.tbl \
   Lexical.tbl \
@@ -21,12 +20,6 @@ stratego-sglr-tests.c : $(check_DATA)
 
 expression_files = $(call srcwildcard,*.exp)
 
-if !XT_DIST_CHECK_SOURCES
-nodist_stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
-else
-stratego_sglr_tests_SOURCES = stratego-sglr-tests.c
-endif
-
 stratego_sglr_tests_LDADD    = $(STRATEGO_SGLR_UNINSTALLED_LIBS) $(STRATEGO_UNINSTALLED_LIBS)
 stratego_sglr_tests_CPPFLAGS = $(STRATEGO_UNINSTALLED_CFLAGS)
 
@@ -36,11 +29,8 @@ STRCFLAGS = \
   $(STRATEGO_SGLR_UNINSTALLED_STRCFLAGS) \
   $(STRATEGO_UNINSTALLED_STRCFLAGS)
 
-EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.def) $(call srcwildcard,*.exp)
-CLEANFILES = $(wildcard *.c) $(wildcard *.dep) $(noinst_DATA)
-
-if XT_DIST_CHECK_SOURCES
-EXTRA_DIST += $(check_DATA)
-endif
+XT_BUILD_DIST = $(DEF_FILES:.def=.str)
+EXTRA_DIST   += $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.def) $(call srcwildcard,*.exp)
+CLEANFILES   += $(DEF_FILES:.def=.tbl) $(wildcard *.c) $(wildcard *.dep) $(noinst_DATA)
 
 TESTS_ENVIRONMENT = SRCDIR="$(abs_srcdir)"

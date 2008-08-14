@@ -1,6 +1,3 @@
-pathwildcard = $(patsubst $1/%,%,$(wildcard $(patsubst %,$1/%,$2)))
-srcwildcard = $(call pathwildcard,$(srcdir),$1)
-
 .str.rtree :
 	$(SGLRI) --amb off -p $(STRATEGOTBL_UNINSTALLED) -i $< -o $@
 

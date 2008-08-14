@@ -1,2 +1,5 @@
+
+PARSE_UNIT=XTC_REPOSITORY="$(BUILD_REPOSITORY)" $(top_builddir)/../sdf-tools/analyse/parse-unit/parse-unit
+
 %.runtestsuite : %.testsuite
-	$(SDF_TOOLS)/bin/parse-unit -i $< -p $(PARSE_UNIT_PTABLE)
+	$(PARSE_UNIT) -i $< -p $(PARSE_UNIT_PTABLE)

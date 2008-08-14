@@ -1,6 +1,6 @@
 prefix=@prefix@
 # FIXME: do not use ${prefix}/share/sdf/gpp
-strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/gpp/lib -I ${prefix}/share/sdf/gpp -la @abs_top_builddir@/stratego-libraries${stage}/gpp/lib/libstratego-gpp.la
+strcflags=-I @abs_top_builddist@/stratego-libraries${stage}/gpp/lib -I ${prefix}/share/sdf/gpp -la @abs_top_builddir@/stratego-libraries${stage}/gpp/lib/libstratego-gpp.la
 
 Name: Stratego GPP Library
 Description: Generic Pretty-Printing Library.

@@ -1,8 +1,7 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 
-#ASFIX_LIB    	= $(subst .str,.rtree,$(wildcard *.str))
-ASFIX_LIB    	= $(call srcwildcard,*.str)
-EXTRA_DIST   	= $(ASFIX_LIB)
-pkgdata_DATA 	= $(ASFIX_LIB)
-#BOOTCLEANFILES 	= $(ASFIX_LIB)
-
+ASFIX_LIB     = $(call srcwildcard,*.str)
+XT_BUILD_DIST = $(ASFIX_LIB:.str=.rtree)
+XT_EXTRA_DIST = $(ASFIX_LIB)
+pkgdata_DATA  = $(ASFIX_LIB:.str=.rtree)

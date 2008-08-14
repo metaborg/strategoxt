@@ -1,4 +1,5 @@
 include $(srcdir)/../templates/make_rules
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -15,9 +16,9 @@ STRINCLUDES = \
 
 LDADD += $(SSL_LIBS)
 
-EXTRA_DIST 	 = $(call srcwildcard,*.str)
-BOOTCLEANFILES   = Vis-amb.c
-CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)
+XT_BUILD_DIST    = Vis-amb.c
+EXTRA_DIST 	    += $(call srcwildcard,*.str)
+CLEANFILES      += visamb1_check visamb2_check $(wildcard *.dep)
 
 TESTS            = visamb1_check visamb2_check
 

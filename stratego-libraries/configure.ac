@@ -11,10 +11,13 @@ XT_SETUP
 XT_PRE_RELEASE
 XT_WITH_XTC_ARGS
 XT_CHECK_ATERM
+XT_CHECK_SDF
 XT_CHECK_MKSTEMP
 
 XT_ENABLE_XTC_REGISTER
 XT_CHECK_XTC
+
+XT_CHECK_STAGE
 
 AC_ARG_ENABLE([baseline],
   [AS_HELP_STRING([--enable-baseline], [Enable a baseline build @<:@no@:>@])],
@@ -26,20 +29,21 @@ AC_ARG_ENABLE([uninstalled-baseline],
   [xt_uninstalled_baseline="$enableval"],
   [xt_uninstalled_baseline="no"])
 
-XT_CHECK_STAGE
-
 AM_CONDITIONAL([XT_DIST_CHECK_SOURCES], [test "$xt_baseline" = "yes"])
 
-XT_CHECK_SDF
-XT_WITH_STRATEGOXT_ARG
 AC_MSG_CHECKING([whether location of Stratego/XT is explicitly set])
 if test "${STRATEGOXT:+set}" = set; then
   AC_MSG_RESULT([yes])
+  if test "$STRATEGOXT" != "no"; then
+    XT_PKG_STRATEGOXT
+  fi
 else
   AC_MSG_RESULT([no])
   XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
 fi
-XT_PKG_STRATEGOXT
+
+m4_pattern_allow([^XT_USE_BASELINE(_TRUE|_FALSE)?$])
+AM_CONDITIONAL([XT_USE_BASELINE], [test "x${STRATEGOXT}" != "x"])
 
 STRC_UNINSTALLED='$(STRATEGOXT)/bin/strc'
 BOX_UNINSTALLED_STRCFLAGS='-I $(STRATEGOXT)/share/sdf/gpp'
@@ -90,9 +94,12 @@ if test "${xt_strc_stage_set}" = yes; then
   STRATEGOBOXTBL_UNINSTALLED="\$(top_builddir)/../gpp${STRC_STAGE}/syn/box/Stratego-Box.tbl"
   METAEXPLODE="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../strc-core${STRC_STAGE}/tools/meta-explode"
   SGLRI="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../asfix-tools${STRC_STAGE}/xtc/sglri"
-#  PACKSDF="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../sdf-front/parse/pack-sdf"
-#  RTG2SIG="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../stratego-regular/xtc/rtg2sig"
-#  SDF2RTG="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../stratego-regular/xtc/sdf2rtg"
+
+  if test "x$STRATEGOXT" = "x"; then
+    PACKSDF="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../sdf-front/parse/pack-sdf"
+    RTG2SIG="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../stratego-regular/xtc/rtg2sig"
+    SDF2RTG="XTC_REPOSITORY=\$(BUILD_REPOSITORY) \$(top_builddir)/../stratego-regular/xtc/sdf2rtg"
+  fi
 fi
 
 SCOMPILE="$STRC_UNINSTALLED"

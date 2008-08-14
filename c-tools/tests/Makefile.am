@@ -1,4 +1,5 @@
 include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/tests/Makefile.parse-unit
 
 SUBDIRS           = translation-units
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
@@ -9,9 +10,4 @@ TESTSUITES = \
   expressions.testsuite \
   statements.testsuite
 
-PARSE_UNIT_PTABLE = $(sdfdatadir)/C.tbl
-
-installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
-
-%.runtestsuite : %.testsuite
-	$(SDF_TOOLS)/bin/parse-unit -i $< -p $(PARSE_UNIT_PTABLE)
+PARSE_UNIT_PTABLE = $(top_builddir)/syn/C.tbl

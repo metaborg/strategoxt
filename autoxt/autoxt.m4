@@ -245,7 +245,7 @@ AC_DEFUN([XT_CHECK_XTC],
 
   # Try value of --with-strategoxt
   AC_MSG_CHECKING([whether location of XTC package is set explicity by the location of Stratego/XT])
-  if test "${STRATEGOXT:+set}" = set; then
+  if test "${STRATEGOXT:+set}" = set -a "${STRATEGOXT}" != no; then
     AC_MSG_RESULT([yes])
     XTC=$STRATEGOXT
   else
@@ -253,8 +253,10 @@ AC_DEFUN([XT_CHECK_XTC],
   fi
 
   if test "${XTC:+set}" = set; then
-    AC_SUBST([XTC])
-    AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
+    if test "${XTC}" != no; then
+      AC_SUBST([XTC])
+      AC_SUBST([XTC_PROG], ['$(XTC)/bin/xtc'])
+    fi
   else
     # Try to find XTC using pkgconfig.
     # We are not using a witness here, since xtc might not be installed yet

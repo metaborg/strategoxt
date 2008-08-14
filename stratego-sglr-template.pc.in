@@ -1,5 +1,5 @@
 prefix=@prefix@
-strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/sglr/lib -la @abs_top_builddir@/stratego-libraries${stage}/sglr/lib/libstratego-sglr.la
+strcflags=-I @abs_top_builddist@/stratego-libraries${stage}/sglr/lib -la @abs_top_builddir@/stratego-libraries${stage}/sglr/lib/libstratego-sglr.la
 
 Name: Stratego SGLR Library
 Description: Bindings of the SGLR library for Stratego.

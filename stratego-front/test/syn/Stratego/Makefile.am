@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(top_srcdir)/test/syn/Makefile.parse-unit
 include $(wildcard *.dep)
@@ -5,19 +6,16 @@ include $(wildcard *.dep)
 TESTSUITES        = strategies.testsuite dynrules.testsuite comments.testsuite
 PARSE_UNIT_PTABLE = StrategoForTesting.tbl
 
-check_DATA = StrategoForTesting.tbl
-CLEANFILES = StrategoForTesting.def StrategoForTesting.tbl Stratego.def
-EXTRA_DIST = StrategoForTesting.sdf $(call srcwildcard,*.testsuite)
+check_DATA     = StrategoForTesting.tbl
+XT_BUILD_DIST  = StrategoForTesting.def
+CLEANFILES    += StrategoForTesting.tbl Stratego.def
+EXTRA_DIST    += StrategoForTesting.sdf $(call srcwildcard,*.testsuite)
 
 SDFINCLUDES = -Idef Stratego.def
 PGEN_FLAGS  = -m $*
 
-Stratego.def:
-	-rm -f $@
-	if test -e $(top_srcdir)/syn/Stratego.def; then \
-	  $(LN_S) $(top_srcdir)/syn/Stratego.def $@; \
-	else \
-	  $(LN_S) $(top_builddir)/syn/Stratego.def $@; \
-	fi
+Stratego.def: $(top_builddist)/syn/Stratego.def
+	-@rm -f $@
+	$(LN_S) $< $@
 
-StrategoForTesting.tbl: Stratego.def
+StrategoForTesting.def: Stratego.def

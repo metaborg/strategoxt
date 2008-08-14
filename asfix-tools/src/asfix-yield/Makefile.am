@@ -1,4 +1,5 @@
 include $(srcdir)/../templates/make_rules
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -8,9 +9,9 @@ bin_PROGRAMS     = asfix-yield
 LDADD           += $(SSL_LIBS)
 
 TESTS          = asfix_yield1_check asfix_yield2_check
-CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield
-BOOTCLEANFILES = asfix-yield.c
-EXTRA_DIST     = $(call srcwildcard,*.str)
+CLEANFILES    += asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield
+XT_BUILD_DIST  = asfix-yield.c
+EXTRA_DIST    += $(call srcwildcard,*.str)
 
 SCFLAGS        = --main io-$*
 STRINCLUDES    = -I $(top_srcdir)/sig
@@ -25,4 +26,4 @@ asfix_yield2_check_prog    = asfix-yield
 asfix_yield2_check_input   = data/aterms.tree
 asfix_yield2_check_output  = data/aterms.txt
 asfix_yield2_check_correct = data/aterms.def
-asfix_yield2_check_dir     = $(top_builddir)/src/asfix-yield
+asfix_yield2_check_dir     = $(top_builddist)/src/asfix-yield

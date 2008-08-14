@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -18,6 +19,6 @@ implode_asfix_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
 sglri_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
 asfix_anno_comments_LDADD = $(STRATEGO_SGLR_LIBS) $(SSL_LIBS)
 
-CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = visamb.c visamb.pp.af implode-asfix.c sglri.c
-EXTRA_DIST     = $(call srcwildcard,*.str) visamb.pp visamb.pp.af
+CLEANFILES    += $(wildcard *.dep)
+XT_BUILD_DIST  = visamb.c visamb.pp.af implode-asfix.c sglri.c
+EXTRA_DIST    += $(call srcwildcard,*.str) visamb.pp

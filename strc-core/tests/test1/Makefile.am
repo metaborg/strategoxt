@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include make-rules
 #include $(wildcard *.dep)
 
@@ -36,7 +37,16 @@ tests =									 \
 
 check_PROGRAMS 	= $(tests)
 
-check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl 
+check_DATA = ExpStratego.tbl Expressions.str Expressions.tbl
+XT_BUILD_DIST = ExpStratego.def Expressions.str Expressions.rtg Expressions.def
+
+CLEANFILES += *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
+		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
+		  *.dep *test*.c *.out *.ttxt *.txt *.b[0-9]*  *.opt*
+
+EXTRA_DIST += $(call srcwildcard,*.str) $(call srcwildcard,*.meta) Expressions.sdf \
+             ExpStratego.sdf make-rules $(call srcwildcard,io-test*.in) bar.c	  \
+             static-links-include.h $(call srcwildcard,*.trm) Java-15.tbl
 
 # test26 global choice
 # test44 contexts
@@ -71,9 +81,9 @@ test34_LDADD = $(STRATEGO_LIB_LIBS)
 test37_LDADD = $(STRATEGO_LIB_LIBS)
 test38_LDADD = $(STRATEGO_LIB_LIBS)
 test40_LDADD = $(STRATEGO_LIB_LIBS)
-test44_LDADD = $(STRATEGO_LIB_LIBS)
+#test44_LDADD = $(STRATEGO_LIB_LIBS)
 test46_LDADD = $(STRATEGO_LIB_LIBS)
-test48_LDADD = $(STRATEGO_LIB_LIBS)
+#test48_LDADD = $(STRATEGO_LIB_LIBS)
 test49_LDADD = $(STRATEGO_LIB_LIBS)
 test50_LDADD = bar.o $(STRATEGO_LIB_LIBS)
 test51_LDADD = $(STRATEGO_LIB_LIBS)
@@ -127,14 +137,6 @@ test_chain03_LDADD = $(STRATEGO_LIB_LIBS)
 
 bar.o 		: bar.c
 
-CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
-		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
-		  *.dep *test*.c *.out *.ttxt *.txt *.b[0-9]*  *.opt*
-
-EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) Expressions.sdf \
-             ExpStratego.sdf make-rules $(call srcwildcard,io-test*.in) bar.c	  \
-             static-links-include.h $(call srcwildcard,*.trm) Java-15.tbl
-
 bootinstall:
 
 nodist_test01_SOURCES = test01.c
@@ -184,7 +186,7 @@ nodist_test43_SOURCES = test43.c
 nodist_test45_SOURCES = test45.c
 nodist_test46_SOURCES = test46.c
 nodist_test47_SOURCES = test47.c
-nodist_test48_SOURCES = test48.c
+#nodist_test48_SOURCES = test48.c
 nodist_test49_SOURCES = test49.c
 nodist_test50_SOURCES = test50.c
 nodist_test51_SOURCES = test51.c

@@ -5,8 +5,6 @@ include $(wildcard *.dep)
 SUBDIRS = . dynamic-rules
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-STRC=$(prefix)
-
 pkgtestsdatadir  = $(datadir)/stratego-lib/tests
 pkgtestsdata_DATA= $(call srcwildcard,*.str)
 
@@ -148,11 +146,6 @@ nodist_system_io_file_test_SOURCES = system-io-file-test.str.bld
 system_posix_test_SOURCES = system-posix-test.c
 system_posix_xsi_test_SOURCES = system-posix-xsi-test.c
 endif
-
-
-# Used by some tests.
-system-io-file-test.str.bld: system-io-file-test.str
-	$(LN_S) $< $@
 
 ## ensure that system-posix-test.c is older than Makefile
 system-posix-test.c: Makefile

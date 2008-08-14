@@ -1,4 +1,4 @@
-AC_PREREQ([2.60])
+AC_PREREQ(2.62)
 AC_INIT([strategoxt],[0.17],[stratego@cs.uu.nl])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE
@@ -6,7 +6,7 @@ AM_INIT_AUTOMAKE
 # XT_ or AB_ left in configure is the sign a macro was not defined, or
 # there was a typo in a macro invocation.
 m4_pattern_forbid([^(AB|XT)_])
-m4_pattern_forbid([^USE_XT_PACKAGES$])
+m4_pattern_forbid([^XT_USE_XT_PACKAGES$])
 
 # set the prefix immediately to the default prefix
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
@@ -16,21 +16,17 @@ XT_SVN_REVISION
 XT_PRE_RELEASE
 
 ### DEPENDENCIES ##################################################
+PKGS=""
 
 XT_CHECK_ATERM
 XT_CHECK_SDF
 
 AC_ARG_WITH([strategoxt],
-  [AS_HELP_STRING([--with-strategoxt=DIR], [use Stratego/XT baseline at DIR @<:@prefix@:>@])],
-  [BASELINE=$withval
-   xt_baseline="yes"
-  ],
-  [BASELINE=$prefix
-   xt_baseline="no"
-  ])
+  [AS_HELP_STRING([--with-strategoxt=DIR], [use Stratego/XT baseline at DIR])],
+  [BASELINE=$withval],[BASELINE=])
 
 AC_ARG_ENABLE([bootstrap],
-  [AS_HELP_STRING([--enable-bootstrap], [Enable the bootstrap of the compiler @<:@no@:>@])],
+  [AS_HELP_STRING([--enable-bootstrap], [Force the bootstrap of the compiler @<:@no@:>@])],
   [xt_bootstrap="$enableval"],
   [xt_bootstrap="no"])
 
@@ -39,7 +35,24 @@ AC_ARG_ENABLE([generation-check],
   [xt_gencheck="$enableval"],
   [xt_gencheck="yes"])
 
-AC_MSG_CHECKING([whether a baseline Stratego/XT is used])
+XT_WITH_XTC_ARG
+XT_WITH_XTC_ARGS
+
+## End of options.
+
+if test "${BASELINE}" = "no"; then
+  xt_baseline="no"
+  BASELINE=
+else
+  xt_baseline="yes"
+  if test "x${BASELINE}" = "x"; then
+    AC_MSG_NOTICE([as no Stratego/XT baseline is specified, the option --without-strategoxt will be passed to sub-packages.])
+    xt_baseline="no"
+    ac_configure_args="$ac_configure_args --without-strategoxt"
+  fi
+fi
+
+AC_MSG_CHECKING([whether a Stratego/XT baseline is used])
 if test "$xt_baseline" = "yes"; then
   AC_MSG_RESULT([yes])
   # Check the specified value of $STRATEGOXT
@@ -49,7 +62,53 @@ else
   AC_MSG_RESULT([no])
 fi
 
-XT_WITH_XTC_ARGS
+AC_MSG_CHECKING([whether location of XTC package is explicitly set])
+if test "${XTC:+set}" = set; then
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+  if test "$xt_baseline" = "no"; then
+    AC_MSG_NOTICE([as a Stratego/XT baseline is not used, XTC will use a fake-baseline.])
+    XTC=no
+  fi
+fi
+
+AC_MSG_CHECKING([whether a XTC fake-baseline is used])
+if test "${XTC}" = "no"; then
+  AC_MSG_RESULT([yes])
+  AC_MSG_NOTICE([override user configuration option to use the fake-baseline version.])
+  XTC="$(pwd)/fake-baseline"
+  COMMON_ARGS="--with-xtc=${XTC}"
+
+  ## hacky stuff to do not pass the option to sub packages
+  #AC_MSG_CHECKING([old command options])
+  #AC_MSG_RESULT([$ac_configure_args])
+  #AC_MSG_CHECKING([new command options])
+  eval "set x $ac_configure_args"
+  ac_configure_args=""
+  shift
+  for ac_arg
+  do
+  #AC_MSG_CHECKING([if the argument "$ac_arg" is kept])
+  case $ac_arg in
+    *-xtc | *-xtc=*)
+      #AC_MSG_RESULT([no])
+      ;; # remove option
+    *)
+      #AC_MSG_RESULT([yes])
+      case $ac_arg in
+      *\'*) ac_arg=`echo "$ac_arg" | sed "s/'/'\\\\\\\\''/g"` ;;
+      esac
+      ac_configure_args="$ac_configure_args '$ac_arg'" ;;
+    esac
+  done
+  #AC_MSG_RESULT([$ac_configure_args])
+
+  AC_MSG_NOTICE([will first compile prerequisite for xtc.])
+  PKGS="stratego-libraries xtc $PKGS"
+else
+  AC_MSG_RESULT([no])
+fi
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
@@ -60,55 +119,63 @@ if test -z "$getopt"; then
   AC_MSG_ERROR([getopt is required])
 fi
 
-DISTCHECK_CONFIGURE_FLAGS="--enable-werror --with-strategoxt=$BASELINE PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+# ensure PKG_CONFIG_PATH is correct
+DISTCHECK_CONFIGURE_FLAGS="--enable-werror --without-strategoxt --without-xtc 'PKG_CONFIG_PATH=$PKG_CONFIG_PATH'"
+if test -n "$CFLAGS"; then
+  DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS 'CFLAGS=$CFLAGS'"
+fi
 AC_SUBST([DISTCHECK_CONFIGURE_FLAGS])
 
 ### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
-COMPILER_GEN=$srcdir/compiler_generation
-BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
+if test "$xt_baseline" = "yes"; then
+  COMPILER_GEN=$srcdir/compiler_generation
+  BASELINE_GEN=$BASELINE/share/strategoxt/compiler_generation
 
-if test -r $BASELINE_GEN; then
-  . $BASELINE_GEN
-  xt_baseline_generation=$compiler_generation
-else
-  xt_baseline_generation=0
-fi
-
-. $COMPILER_GEN
-xt_compiler_generation=$compiler_generation
-xt_minimal_generation=$baseline_generation
-xt_lib_first=$modify_library
-
-
-AC_MSG_CHECKING([check if the compiler can be bootstrap])
-if $modify_library && $modify_compiler; then
-  AC_MSG_RESULT([no])
-  exit 1
-fi
-AC_MSG_RESULT([yes])
-
-AC_MSG_CHECKING([check baseline compiler generation])
-if test "$xt_gencheck" = "yes"; then
-  AC_MSG_RESULT([yes])
-  AC_MSG_CHECKING([identical compiler generation])
-  if test $xt_compiler_generation -ne $xt_baseline_generation; then
-    AC_MSG_RESULT([no])
-    xt_bootstrap="yes"
+  if test -r $BASELINE_GEN; then
+    . $BASELINE_GEN
+    xt_baseline_generation=$compiler_generation
   else
-    AC_MSG_RESULT([yes])
+    xt_baseline_generation=0
   fi
-else
-  AC_MSG_RESULT([no])
-fi
 
-if test "$xt_bootstrap" = "yes"; then
-  AC_MSG_CHECKING([can bootstrap])
-  if test "$xt_minimal_generation" -le "$xt_baseline_generation"; then
-    AC_MSG_RESULT([yes])
-  else
+  . $COMPILER_GEN
+  xt_compiler_generation=$compiler_generation
+  xt_minimal_generation=$baseline_generation
+  xt_lib_first=$modify_library
+
+
+  AC_MSG_CHECKING([check if the compiler can be bootstrap])
+  if $modify_library && $modify_compiler; then
     AC_MSG_RESULT([no])
     exit 1
   fi
+  AC_MSG_RESULT([yes])
+
+  AC_MSG_CHECKING([check baseline compiler generation])
+  if test "$xt_gencheck" = "yes"; then
+    AC_MSG_RESULT([yes])
+    AC_MSG_CHECKING([identical compiler generation])
+    if test $xt_compiler_generation -ne $xt_baseline_generation; then
+      AC_MSG_RESULT([no])
+      xt_bootstrap="yes"
+    else
+      AC_MSG_RESULT([yes])
+    fi
+  else
+    AC_MSG_RESULT([no])
+  fi
+
+  if test "$xt_bootstrap" = "yes"; then
+    AC_MSG_CHECKING([can bootstrap])
+    if test "$xt_minimal_generation" -le "$xt_baseline_generation"; then
+      AC_MSG_RESULT([yes])
+    else
+      AC_MSG_RESULT([no])
+      exit 1
+    fi
+  fi
+else
+  xt_bootstrap=no
 fi
 
 ### CONFIGURATION OF STAGES #######################################
@@ -136,7 +203,7 @@ else
 fi
 
 STAGE_SUFFIX="-stage"
-PKGS="autoxt"
+PKGS="autoxt $PKGS"
 UNINSTALLED_PKGCONFIG_FILES=""
 
 xt_lib_first_save=$xt_lib_first
@@ -186,8 +253,18 @@ AC_SUBST([STAGE2_SUFFIX],[""])
 
 AC_SUBST([STAGE_FILE], ["stage1.pc.in stage2.pc.in"])
 
+
+if test "$xt_baseline" = "no"; then
+  abs_top_builddist=$abs_top_srcdir
+else
+  abs_top_builddist=$abs_top_builddir
+fi
+AC_SUBST([abs_top_builddist])
+
 ### OUTPUT #####################################################
 AC_CONFIG_FILES([
+  fake-baseline/bin/xtc
+
   Makefile
   news-archive/Makefile
   manpages/Makefile
@@ -207,6 +284,8 @@ AC_CONFIG_FILES([
   xtc-template.pc
   stage1.pc
   stage2.pc
+],[
+  chmod a+x fake-baseline/bin/xtc
 ])
 
 AC_OUTPUT
@@ -242,14 +321,21 @@ xt_lib_first=$xt_lib_first_save
 
 ### CONFIGURE SUBPACKAGES #####################################
 
-
 AB_CONFIG_PKG(autoxt, )
 
-COMMON_ARGS="--with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY}"
-STRC_STAGE_ARGS="--enable-baseline"
+COMMON_ARGS="--with-repository=${REPOSITORY} --with-build-repository=${BUILD_REPOSITORY} ${COMMON_ARGS}"
+STRC_STAGE_ARGS=""
 LIB_STAGE_ARGS=""
 LINK_STAGE_ARGS=""
 NEW_LINK_STAGE_ARGS=""
+
+if test "$xt_baseline" = "no"; then # checks should be run with its own files.
+  # No suffix for the last stage.
+  CURRENT_STAGE_SUFFIX=""
+  LIB_STAGE_ARGS="--with-use-lib-stage=${CURRENT_STAGE_SUFFIX}"
+  STRC_STAGE_ARGS="--with-use-strc-stage=${CURRENT_STAGE_SUFFIX}"
+  NEW_LINK_STAGE_ARGS="--with-link-lib-stage=${CURRENT_STAGE_SUFFIX}"
+fi
 
 xt_lib_first_save=$xt_lib_first
 xt_current_stage=$xt_start_at_stage

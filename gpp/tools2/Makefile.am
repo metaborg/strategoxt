@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -13,9 +14,9 @@ STRINCLUDES = \
   -I $(SDF_TOOLS)/share/sdf-tools \
   $(STRATEGO_GPP_STRCFLAGS)
 
-EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) boxstyle.css
-CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) 
+EXTRA_DIST    += $(call srcwildcard,*.str) $(call srcwildcard,*.meta) boxstyle.css
+CLEANFILES    += $(wildcard *.dep)
+XT_BUILD_DIST  = $(wildcard *.c)
 
 LDADD += $(SSL_LIBS)
 

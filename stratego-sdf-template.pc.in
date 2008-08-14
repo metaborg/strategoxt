@@ -1,5 +1,5 @@
 prefix=@prefix@
-strcflags=-I @abs_top_builddir@/stratego-libraries${stage}/sdf/lib -la @abs_top_builddir@/stratego-libraries${stage}/sdf/lib/libstratego-sdf.la
+strcflags=-I @abs_top_builddist@/stratego-libraries${stage}/sdf/lib -la @abs_top_builddir@/stratego-libraries${stage}/sdf/lib/libstratego-sdf.la
 
 Name: Stratego SDF Library
 Description: Stratego SDF Library.

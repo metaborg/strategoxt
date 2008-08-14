@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# find top_builddir
+top_builddir=$(pwd)
+while test "$top_builddir" != "/" -a \! -e "$top_builddir/fake-baseline/bin/xtc"; do
+  top_builddir=$(dirname $top_builddir)
+done
+
+test "$top_builddir" != "/" || exit 1
+
+if test -e "$top_builddir/xtc/src/xtc"; then
+  # should be retrieved from pkg-config files (factor the work)
+  xt_lib_list="$xt_lib_list stratego-libraries/xtc/lib/libstratego-xtc.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/lib/native/stratego-lib/libstratego-lib-native.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/lib/spec/libstratego-lib.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/rtg/lib/libstratego-rtg.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/sdf/lib/libstratego-sdf.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/runtime/lib/libstratego-runtime.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/aterm/lib/libstratego-aterm.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/sglr/justsglr/libjustsglr.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/sglr/lib/libstratego-sglr.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/gpp/lib/libstratego-gpp.la"
+  xt_lib_list="$xt_lib_list stratego-libraries/tool-doc/lib/libstratego-tool-doc.la"
+
+  xt_libs=""
+  for l in $xt_lib_list; do
+    xt_libs="$xt_libs -dlopen $top_builddir/$l"
+  done
+
+  $top_builddir/fake-baseline/bin/@top_srcdir@/config/libtool_execute /bin/sh "$top_builddir/libtool" -- $xt_libs \
+    "$top_builddir/xtc/src/xtc" "$@"
+fi

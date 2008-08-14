@@ -1,4 +1,5 @@
 include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/Internal.mk
 include $(wildcard *.dep)
 
 TBLS_DEFS = ATerms.def ATerms.tbl
@@ -10,9 +11,7 @@ SDF2RTG_FLAGS  = -m $*
 
 sdfdata_DATA   = $(TBLS_DEFS)
 pkgdata_DATA   = ATerms.str
-EXTRA_DIST     = ATerms.sdf ATerms.def $(SIGS) $(pkgdata_DATA) 
 
-CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(TBLS_DEFS) $(SIGS) ATerms.str
-
-
+XT_BUILD_DIST  =  ATerms.def $(SIGS)
+EXTRA_DIST    += ATerms.sdf
+CLEANFILES    += $(wildcard *.dep) ATerms.tbl

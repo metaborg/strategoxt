@@ -1,8 +1,8 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 
 SIGS  = AsFix.str error-support.str asfix2me.str
-RSIGS = AsFix.rtree error-support.rtree asfix2me.rtree
 
-pkgdata_DATA   = $(RSIGS)
-EXTRA_DIST     = $(SIGS) $(RSIGS) 
-BOOTCLEANFILES = $(RSIGS)
+XT_EXTRA_DIST  = $(SIGS)
+XT_BUILD_DIST  = $(SIGS:.str=.rtree)
+pkgdata_DATA   = $(SIGS:.str=.rtree)

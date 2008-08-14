@@ -4,7 +4,7 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS = pp syn
 
-SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SDFINCLUDES     = -I $(top_srcdir)/syn -I $(top_builddir)/syn
 PGEN_FLAGS      = -m $*
 SDF2RTG_FLAGS   = -m $*
 
@@ -26,7 +26,7 @@ check-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: $(asfix_check_prog) $(ast_check_prog) check1 check1-asfix check2 check3 check5
 
 # Warning: the make check can only occur after the build of strc-core.
-# SCOMPILE=$(CURRENT_SCOMPILE)
+SCOMPILE=$(CURRENT_SCOMPILE)
 
 # Warning: the make check can only occur after the build of strc-core.
 parsestratego = $(CURRENT_PARSE_STRATEGO)
@@ -54,6 +54,20 @@ check5 : anti-quote-preterm.str
 	$(parsestratego) \
 	  -i $< -I $(top_builddir)/syn -o anti-quote-preterm.rtree -I $(srcdir)
 	$(SCOMPILE) -i anti-quote-preterm.rtree -c -o anti-quote-preterm.c -I $(srcdir)
+
+## Redefined because the baseline is not always used.
+.sdf.def :
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) \
+	$(top_builddir)/../sdf-front/parse/pack-sdf $(SDFINCLUDES) -i $< -o $@ --dep $*.dep
+
+.def.rtg :
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) \
+	$(top_builddir)/../stratego-regular/xtc/sdf2rtg $(SDF2RTG_FLAGS) -i $< -o $@
+
+.rtg.str :
+	XTC_REPOSITORY=$(BUILD_REPOSITORY) \
+	$(top_builddir)/../stratego-regular/xtc/rtg2sig --module `basename "$*"` -i $< -o $@
+
 
 CLEANFILES = $(check_DATA) $(wildcard *.def) $(wildcard *.tbl) $(wildcard *.rtree) $(wildcard *.c)
 EXTRA_DIST = $(call srcwildcard,*.str) $(call srcwildcard,*.meta) $(call srcwildcard,*.sdf)

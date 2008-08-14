@@ -4,12 +4,11 @@ SUBDIRS      = . news-archive manpages $(PKGS)
 DIST_SUBDIRS =   news-archive manpages $(PKGS)
 CLEANFILES   = \
 	$(BUILD_REPOSITORY) \
-	$(BUILD_REPOSITORY)-stage1 \
-	$(BUILD_REPOSITORY)-stage2
+	$(BUILD_REPOSITORY)-stage1
 
 EXTRA_DIST   = \
   README svn-revision compiler_generation \
-  bootstrap Makefile.xt \
+  bootstrap Makefile.xt Internal.mk \
   strategoxt.spec.in strategoxt.spec \
   strategoxt.pc.in \
   xtc-template.pc.in \
@@ -22,7 +21,9 @@ EXTRA_DIST   = \
   stratego-sdf-template.pc.in \
   stratego-rtg-template.pc.in \
   stage1.pc.in \
-  stage2.pc.in
+  stage2.pc.in \
+	config/libtool_execute \
+  fake-baseline/bin/xtc.in
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = strategoxt.pc

@@ -28,15 +28,38 @@ all-local::
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libATerm.la -l $(ATERM)/lib -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t cc -p $(CC) -V X
 	$(XTC_PROG) register -r $(BUILD_REPOSITORY) -t strategoxt-datadir -l `pwd` -V $(VERSION)
-	if test -n "${LIB_STAGE}"; then \
+	if test "${LIB_STAGE_SET}" = yes; then \
 	  lib_srcdir=$$(cd $(top_srcdir)/../stratego-libraries; pwd); \
 	  lib_builddir=$$(cd ../stratego-libraries${LIB_STAGE}; pwd); \
+	  lib_builddist=$$lib_builddir; \
+	  if test "$(top_srcdir)" == "$(top_builddist)"; then \
+	    lib_builddist=$$lib_srcdir; \
+	  fi; \
 	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t SRTS-include -l $$lib_srcdir/runtime/lib/ -V X; \
 	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t stratego-lib-include -l $$lib_srcdir/lib/native/ -V X; \
 	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t lib.rtree -l $$lib_builddir/lib/ssl-compat/ -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-lib-native.la -l $$lib_builddir/lib/native/stratego-lib/ -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-runtime.la -l $$lib_builddir/runtime/lib/ -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstrategolib.rtree -l $$lib_builddist/lib/spec -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-lib.rtree -l $$lib_builddist/lib/spec -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-lib.la -l $$lib_builddir/lib/spec -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-sglr.rtree -l $$lib_builddist/sglr/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-sglr.la -l $$lib_builddir/sglr/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-gpp.rtree -l $$lib_builddist/gpp/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-gpp.la -l $$lib_builddir/gpp/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-rtg.rtree -l $$lib_builddist/rtg/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-rtg.la -l $$lib_builddir/rtg/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-aterm.rtree -l $$lib_builddist/aterm/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-aterm.la -l $$lib_builddir/aterm/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-tool-doc.rtree -l $$lib_builddist/tool-doc/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-tool-doc.la -l $$lib_builddir/tool-doc/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-xtc.rtree -l $$lib_builddist/xtc/lib -V $(VERSION); \
+	  $(XTC_PROG) register -r $(BUILD_REPOSITORY) -t libstratego-xtc.la -l $$lib_builddir/xtc/lib -V $(VERSION); \
 	fi
-	$(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
+	test "x$(STRATEGOXT)" == "x" || $(XTC_PROG) -r $(BUILD_REPOSITORY) import $(STRATEGOXT)/share/strategoxt/XTC
 	test "x$(CURRENT_STAGE)" == "x" || cp "$(BUILD_REPOSITORY)" "$(BUILD_REPOSITORY)$(CURRENT_STAGE)"
+
+
 
 install-data-local::
 	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`

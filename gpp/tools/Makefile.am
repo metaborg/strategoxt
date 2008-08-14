@@ -1,3 +1,4 @@
+include $(top_srcdir)/Internal.mk
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
@@ -11,7 +12,7 @@ bin_PROGRAMS = \
   ast2text \
   abox2text \
   pptable-diff
-  
+
 libexec_PROGRAMS = \
   abox-format
 
@@ -21,9 +22,9 @@ STRINCLUDES = -I $(XTC)/share/xtc \
               -I $(SDF_TOOLS)/share/sdf-tools \
               $(STRATEGO_GPP_STRCFLAGS)
 
-EXTRA_DIST     = $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
-CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) 
+EXTRA_DIST    += $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
+CLEANFILES    += $(wildcard *.dep)
+XT_BUILD_DIST  = $(wildcard *.c)
 
 LDADD += $(SSL_LIBS)
 
