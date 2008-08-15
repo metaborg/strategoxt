@@ -9,7 +9,7 @@ sdfdata_DATA   = $(TBLS) $(DEFS) $(call srcwildcard,*.sdf)
 pkgdata_DATA   = pp-table-pretty.pp pp-table-pretty.pp.af
 
 XT_BUILD_DIST  = $(DEFS) $(pkgdata_DATA)
-EXTRA_DIST    += $(call srcwildcard,*.sdf)
+EXTRA_DIST    += $(call srcwildcard,*.sdf) pp-table-pretty.pp
 CLEANFILES    += $(TBLS) $(wildcard *.dep)
 
 SDFINCLUDES    = -I $(top_builddist)/syn/box

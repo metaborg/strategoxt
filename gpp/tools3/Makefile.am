@@ -3,7 +3,6 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 bin_PROGRAMS	= pp2c
-pkgdata_DATA	= pptools.c
 
 STRCFLAGS	= --main $*
 
@@ -14,4 +13,4 @@ STRINCLUDES	=				\
 LDADD         += $(SSL_LIBS)
 EXTRA_DIST    += $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES    += $(wildcard *.dep)
-XT_BUILD_DIST  = pp2c.c pptools.c
+XT_BUILD_DIST  = pp2c.c
