@@ -12,6 +12,11 @@ strategies
   asfix-anno-position-info(|path) =
     ?pt; prim("STRSGLR_anno_position_info", pt, path)
 
+/*
+  asfix-anno-location =
+    ?pt; prim("STRSGLR_anno_location", pt)
+*/
+
 /**
  * Comments
  */
@@ -27,7 +32,7 @@ strategies
     |}
 
   AnnoComment :
-    [ a1@appl(prod([cf(layout)], cf(opt(layout())), _), args)
+    [ a1@appl(prod([cf(layout())], cf(opt(layout())), _), args)
     , a2
     | as ]
       ->

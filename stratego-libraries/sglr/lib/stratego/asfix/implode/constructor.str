@@ -109,7 +109,7 @@ rules
       <is-nil> p
 
   ReplConsNone(impl) : 
-    appl(p, []) -> None
+    appl(p, []) -> None()
     where
       <is-none> p
 
