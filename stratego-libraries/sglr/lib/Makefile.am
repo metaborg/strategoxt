@@ -10,7 +10,8 @@ libstratego_sglr_la_SOURCES = \
   native/stratego_sglr_filter.c \
   native/stratego_sglr_config.c \
   native/stratego_sglr_parse_table.c \
-  native/stratego_sglr_parse.c
+  native/stratego_sglr_parse.c \
+  native/position-info.c
 
 sglrlib = \
   stratego-sglr.str \

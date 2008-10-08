@@ -5,7 +5,7 @@ exports
   sorts IntConst Exp
   
   lexical syntax
-    [\ \t\n]  -> LAYOUT
+    [\ \r\t\n]  -> LAYOUT
     [0-9]+    -> IntConst
   
   context-free syntax

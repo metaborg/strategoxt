@@ -1,5 +1,8 @@
 module stratego/asfix/anno
 imports libstratego-lib
+signature
+  constructors
+    Location: FirstLine * FirstColumn * LastLine * LastColumn -> Location
 
 /**
  * Position information
@@ -12,10 +15,8 @@ strategies
   asfix-anno-position-info(|path) =
     ?pt; prim("STRSGLR_anno_position_info", pt, path)
 
-/*
   asfix-anno-location =
     ?pt; prim("STRSGLR_anno_location", pt)
-*/
 
 /**
  * Comments
