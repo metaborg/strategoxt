@@ -15,6 +15,12 @@ strategies
   asfix-anno-position-info(|path) =
     ?pt; prim("STRSGLR_anno_position_info", pt, path)
 
+  /**
+   * Annotates an AsFix parse tree with locations.
+   *
+   * Format: Location(firstLine, firstColumn, lastLine, lastColumn).
+   * Lines and columns both start at 1.
+   */
   asfix-anno-location =
     ?pt; prim("STRSGLR_anno_location", pt)
 
