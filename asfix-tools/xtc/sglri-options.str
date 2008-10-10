@@ -108,5 +108,24 @@ strategies
   must-preserve-positions =
     <get-config> "preserve-positions" => "yes"
 
+strategies
+
+  preserve-locations-option =
+    Option("--preserve-locations"
+    , <set-preserve-locations> "yes"
+    , !"--preserve-locations
+                    Preserve source code locations in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  set-preserve-locations =
+    <set-config> ("preserve-locations", <id>)
+
+  must-preserve-locations =
+    <get-config> "preserve-locations" => "yes"
+
+
+
+
 
 

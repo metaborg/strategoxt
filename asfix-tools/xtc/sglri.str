@@ -58,6 +58,10 @@ strategies
           asfix-anno-position-info(|"")
         end
 
+      ; if must-preserve-locations then
+          asfix-anno-location
+        end
+
       ; implode-asfix-using-config
     end
 
@@ -125,6 +129,7 @@ strategies
 
     + preserve-comments-option
     + preserve-positions-option
+    + preserve-locations-option
 
     + Option(fail, fail, !"")
     + Option(fail, fail, !"Input/Output options:")
