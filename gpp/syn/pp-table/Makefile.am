@@ -8,7 +8,7 @@ DEFS = pp-table.def
 sdfdata_DATA   = $(TBLS) $(DEFS) $(call srcwildcard,*.sdf)
 pkgdata_DATA   = pp-table-pretty.pp pp-table-pretty.pp.af
 
-XT_BUILD_DIST  = $(DEFS) $(pkgdata_DATA)
+XT_BUILD_DIST  = $(DEFS) pp-table-pretty.pp.af
 EXTRA_DIST    += $(call srcwildcard,*.sdf) pp-table-pretty.pp
 CLEANFILES    += $(TBLS) $(wildcard *.dep)
 
