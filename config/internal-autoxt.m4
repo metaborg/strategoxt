@@ -103,6 +103,7 @@ AC_DEFUN([XT_STAGED_SCOMPILE],
   # POST_SCOMPILE should be at the end of the strc command line
   $1SCOMPILE="${xt_libtool_execute} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/strc $POST_SCOMPILE"
   $1PARSE_STRATEGO="${xt_libtool_execute} \$(top_builddir)/../strc-core${xt_strc_stage}/tools/parse-stratego $POST_SCOMPILE"
+  $1PP2C="${xt_libtool_execute} \$(top_builddir)/../gpp${xt_strc_stage}/tools3/pp2c"
 ])
 
 
