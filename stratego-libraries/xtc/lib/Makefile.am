@@ -5,7 +5,7 @@ include $(wildcard *.dep)
 pkgdatadir = $(datadir)/xtc
 
 nobase_pkgdata_DATA =  stratego-xtc.str $(fullstrategoxtc:.str=.rtree)
-data_DATA = libstratego-xtc.rtree
+data_DATA = libstratego-xtc.rtree libstratego-xtc.ctree
 lib_LTLIBRARIES = libstratego-xtc.la
 
 EXTRA_DIST	= $(all_rtree) $(fullstrategoxtc) $(nobase_pkgdata_DATA)
@@ -61,6 +61,9 @@ libstratego-xtc-posix.c libstratego-xtc-posix.rtree : $(fullstrategoxtc:.str=.rt
 libstratego-xtc-posix-xsi.c libstratego-xtc-posix-xsi.rtree : $(fullstrategoxtc:.str=.rtree)
 	$(STRC_UNINSTALLED) -c --library -i stratego-xtc-posix-xsi.rtree -o libstratego-xtc-posix-xsi.rtree $(STRCFLAGS)
 	rm libstratego-xtc-posix-xsi.str
+
+libstratego-xtc.ctree : $(fullstrategoxtc:.str=.rtree)
+	$(STRC_UNINSTALLED) -F --library -i $(srcdir)/stratego-xtc-posix-xsi.rtree -o libstratego-xtc.ctree $(STRCFLAGS)
 
 fullstrategoxtc = \
   libxtclib.str \
