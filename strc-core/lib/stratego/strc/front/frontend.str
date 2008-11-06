@@ -40,6 +40,7 @@ strategies
           ; m-variables-to-constructors-in-def
           ; pre-desugar
           ; not(def-use-def)
+          ; not(check-where-with)
           ; raise-annotations
           ; GenerateCheckRule
           ; DeclareExpandOverlay
@@ -58,7 +59,7 @@ strategies
           ; raise-annotations
         ))
 
-      ; m-lift-dynamic-rules-from-spec 
+      ; m-lift-dynamic-rules-from-spec
 
       ; check-calls
 
@@ -128,6 +129,17 @@ strategies
       <+ ?BuildDefaultPT(_)
     ))
     ; err(|"match symbols in build pattern")
+
+  check-where-with =
+    sometd({ x:
+      ( SetDynRule(?x, not(only-uses-where))
+      + AddDynRule(?x, not(only-uses-where))
+      )
+      ; err(|<conc-strings> ("dynamic rule may only use 'where' conditions in rule ", x))
+    })
+
+  only-uses-where =
+    [] + [WhereClause(id)] + not(is-list)
 
   check-overlay =
     if oncetd(fail <+ ?Wld() <+ ?As(_,_)) then

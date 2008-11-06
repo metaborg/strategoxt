@@ -158,6 +158,8 @@ exports
     "sdecl" [0-9\']* "*"  -> Sdecl*
     "ol" [0-9\']*         -> Overlay
     "ol" [0-9\']* "*"     -> Overlay*
+    
+    "cond" [0-9\']* "*"   -> RuleCond+
 
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
@@ -186,6 +188,8 @@ exports
  
     "a"[0-9\']*           -> Id  {reject}
     "as"[0-9\']*          -> Id  {reject} 
+    
+    "cond" [0-9\']* "*"   -> Id  {reject}
 
   lexical syntax
     StrategoShortCom 	-> LAYOUT {prefer}

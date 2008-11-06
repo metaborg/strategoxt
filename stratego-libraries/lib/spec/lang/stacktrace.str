@@ -48,3 +48,12 @@ strategies
    * @type -> Int
    */
   stacktrace-get-current-frame-index = prim("SSL_stacktrace_get_current_frame_index")
+  
+  print-stacktrace =
+    where(
+      prim("SSL_stacktrace_get_all_frame_names")
+    ; try(?["print_stacktrace_0_0" | <id>])
+    ; reverse
+    ; list-loop(<fprintnl> (stderr(), ["\t", <id>]))
+    )
+

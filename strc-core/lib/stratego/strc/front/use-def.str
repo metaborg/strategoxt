@@ -53,26 +53,28 @@ strategies
       )
 
   rdef-ud =
-    ?|[ f(as) : t1 -> t2 where s ]|
+    // ?|[ f(a*) : t1 -> t2 cond* ]|
+    ?RDef(f, _, Rule(t1, t2, cond*))
     ; where(
         rules(
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg]
 	  MakeWarning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
 	; or(<bind-vars> t1,
-          or(<unbound-vars> s,
+          or(<unbound-vars> cond*,
              <use-vars> t2))
       )
 
   rdef-ud =
-    ?|[ f(a1* | a2*) : t1 -> t2 where s ]|
+    // ?|[ f(a1* | a2*) : t1 -> t2 cond* ]|
+    ?RDefT(f, t , _, Rule(t1, t2, cond*))
     ; where(
         rules( 
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg] 
 	  MakeWarning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
 	; or(<bind-vars> t1,
-          or(<unbound-vars> s,
+          or(<unbound-vars> cond*,
              <use-vars> t2))
       )
 

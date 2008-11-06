@@ -38,6 +38,7 @@ exports
 
     "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
     "where" "(" Strategy ")" 		  -> Strategy {cons("Where")}
+    "with"  "(" Strategy ")" 		  -> Strategy {cons("With"), prefer}
     "test"  "(" Strategy ")" 		  -> Strategy {cons("Test")}
 
     %% Primitives
