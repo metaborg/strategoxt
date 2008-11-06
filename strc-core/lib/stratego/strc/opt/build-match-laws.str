@@ -5,8 +5,8 @@ rules // combinations of match and build
 
   BuildMatch = 
     MisMatch + BuildMatchFusion 
-    + MatchIdem + BuildMatchIdem + MatchBuildIdemVar
-	// + MatchBuildIdem
+    + MatchIdem + BuildMatchIdem + MatchBuildIdemVar + BuildMatchIdemVar
+	// + MatchBuildIdem + BuildBuild
     + BuildAlwaysSucceeds
 
 
@@ -70,7 +70,15 @@ rules // combinations of match and build
 // not valid as long as annotations are not taken into account
 //  MatchBuildIdem :
 //    Seq(Match(t), Build(t)) -> Match(t)
-    
+  
+  BuildMatchIdemVar :
+    Seq(Match(Var(x)), Seq(Match(t), Seq(Build(Var(x)), s))) ->
+    Seq(Match(Var(x)), Seq(Match(t),                    s))
+  
+  BuildMatchIdemVar :
+    Seq(Match(Var(x)), Seq(Match(t), Build(Var(x)))) ->
+    Seq(Match(Var(x)),     Match(t))
+ 
   MatchBuildIdemVar :
     Seq(Match(Var(x)), Build(Var(x))) -> Match(Var(x))
 

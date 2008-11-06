@@ -812,8 +812,8 @@ strategies
    *
    * @type  String -> String
    */
-  string-ends-with(|start) =
-    where(<right-match> (<explode-string>, <explode-string> start))
+  string-ends-with(|end) =
+    where(<right-match> (<explode-string>, <explode-string> end))
 
 
   /**

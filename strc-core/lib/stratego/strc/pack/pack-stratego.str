@@ -139,7 +139,7 @@ strategies
            <+ pack-include-from-xtc(|mod)
          )
       )> includes
-    ; (id,xtc-transform(!"report-ambs"))
+    ; (id, report-ambs)
     ; pack-fc(|"Stratego-Sugar-Cong")
 
   pack-fc(|format) =

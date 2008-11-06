@@ -30,6 +30,7 @@ strategies
     xtc-input(
       strc-front-end
       ; strc-optimize
+      ; strc-output-frontend
       ; strc-export-external-defs
       ; strc-back-end
       ; strc-c-compile
@@ -42,7 +43,6 @@ strategies
       ; tfc1(|"Stratego-Sugar-Cong", "pack")
       ; strc-output-ast
       ; frontend
-      ; strc-output-frontend
     | "Front-end succeeded"
     , 1
     )
