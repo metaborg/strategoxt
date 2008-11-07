@@ -15,6 +15,11 @@ STRPROGS = \
   test14.str \
   test15.str
 
+EXPECTEDRESULTS = \
+  test13.str.expected \
+  test14.str.expected \ 
+  test15.str.expected
+
 STRLIBS = \
   test09-lib.str 
 
@@ -25,4 +30,4 @@ TESTS_ENVIRONMENT =\
   STRC="../../tools/strc --verbose 3 --format-check 1 --keep 0" \
   STRATEGO_LIB="$(prefix)"
 
-EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS)
+EXTRA_DIST  = $(TESTS) $(STRPROGS) $(STRLIBS) $(EXPECTEDRESULTS)
