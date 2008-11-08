@@ -11,6 +11,6 @@ STRINCLUDES	=				\
   -I ../tools
 
 LDADD         += $(SSL_LIBS)
-EXTRA_DIST    += $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
+EXTRA_DIST    += pptools.c $(call srcwildcard,*.str) $(call srcwildcard,*.meta)
 CLEANFILES    += $(wildcard *.dep)
 XT_BUILD_DIST  = pp2c.c
