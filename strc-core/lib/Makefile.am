@@ -4,7 +4,8 @@ include $(wildcard *.dep)
 
 nobase_data_DATA = libstrc.rtree libstrc.ctree
 lib_LTLIBRARIES  = libstrc.la
-EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA)
+EXTRA_DIST 	 = $(strclib) $(strclib:.str=.rtree) $(nobase_data_DATA) \
+  $(foreach file,$(strclib:.str=.meta),$(call srcwildcard,$(file)))
 CLEANFILES 	 = $(wildcard *.dep) # stratego/strc/parse/Stratego.tbl
 BOOTCLEANFILES 	 = libstrc.rtree libstrc.c $(strclib:.str=.rtree) # stratego/strc/parse/Stratego.tbl
 
