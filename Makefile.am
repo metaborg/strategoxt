@@ -47,7 +47,8 @@ install-%: %
 bootclean :
 	@for dir in $(PKGS); do \
 	   (cd $$dir && $(MAKE) bootclean) ; \
-	done
+	done; \
+	$(MAKE) clean-generic
 
 bootstep :
 	$(MAKE) bootclean 
