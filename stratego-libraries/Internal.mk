@@ -38,8 +38,8 @@ CLEANFILES += $(XT_BUILD_DIST)
 top_builddist = $(top_builddir)
 bdwildcard = $(wildcard $1)
 else
-BOOTCLEANFILES += $(XT_BUILD_DIST)
 top_builddist = $(top_srcdir)
 bdwildcard = $(call srcwildcard,$1)
 endif
+BOOTCLEANFILES += $(XT_BUILD_DIST)
 EXTRA_DIST = $(XT_EXTRA_DIST) $(XT_BUILD_DIST)
