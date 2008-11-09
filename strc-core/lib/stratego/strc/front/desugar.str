@@ -181,7 +181,7 @@ rules
   CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
     where
       message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule \"", <name>, "\"")
-    ; with := Strat |[ with(s | ~str:message {^[]}) ]|
+    ; with := Strat |[ where(s <+ report-with-failure(|~str:message {^[]})) ]|
       <+ with := With(s)
 
 strategies // "with" strategy
@@ -197,7 +197,7 @@ strategies // "with" strategy
   ; rules(WithContext := <conc-strings> ("strategy \"", f, "\""))
   
   Desugar:
-    With(s) -> |[ with(s |~str:message) ]|
+    With(s) -> |[ where(s <+ report-with-failure(|~str:message {^[]})) ]|
                where
                  message := <conc-strings> ("Internal error: with clause failed unexpectedly in ", <WithContext>)
                  <+ message := "Internal error: with clause failed unexpectedly"

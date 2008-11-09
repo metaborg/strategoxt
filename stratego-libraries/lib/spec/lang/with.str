@@ -14,18 +14,18 @@ imports
 strategies
 
   /**
-   * Evaluate a strategy s, or, on failure, end with a fatal error.
-   *
-   * This strategy is used internally by the with(s) strategy, which
-   * fails with a message reporting the name of the current strategy/rule.
+   * Evaluate a strategy s, or, if s fails, end with a fatal error.
    *
    * @note In future revisions, a facility may be provided to "catch"
    *       failures raised by with clauses and uses of this strategy.
    */
   with(s|message) =
-    where(s)
-    <+ ?term
-     ; prim("SSL_stacktrace_get_all_frame_names")
-     ; try(?["with_1_1" | <id>])
-     ; report-failure(log(|Critical(), message, term); exit)
+    where(s <+ report-with-failure(|message))
+  
+  report-with-failure(|message) =
+      ?term
+    ; prim("SSL_stacktrace_get_all_frame_names")
+    ; try(?["report_with_failure_0_1" | <id>])
+    ; try(?["with_1_1" | <id>])
+    ; report-failure(log(|Critical(), message, term); exit)
 

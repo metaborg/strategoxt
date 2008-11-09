@@ -13,7 +13,8 @@ STRPROGS = \
   test12.str \
   test13.str \
   test14.str \
-  test15.str
+  test15.str \
+  test16.str
 
 EXPECTEDRESULTS = \
   test13.str.expected \
