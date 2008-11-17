@@ -94,7 +94,7 @@ use in the right-hand side of a rule:
   desugar:
     |[ e1 + e2 ]| -> |[ x_add(e1, e2) ]|
     where
-      <typeof> e1 => Int();
+      <typeof> e1 => Int()
     ; <typeof> e2 => Int()
     with
       x_add := <new-add-operation> (e1, e2)
