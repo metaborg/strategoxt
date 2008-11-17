@@ -77,11 +77,47 @@ caveats:
      stack trace: if you call old libraries, stack frames for those
      strategies will be invisble.
  
-   * =let=-blocks and other reasons for lifting will show up as
+   * =let= blocks and other reasons for lifting will show up as
      =lifted_X= frames.
 
 A tiny set of stack introspection strategies for debugging purposes
 has also been introduced.
+
+---------+++ A new "with" construct for rewrite rules
+
+A new =with= construct has been added for rewrite rules, which makes
+use of the stack tracing feature above. A =with= clause works much
+like a regular =where= clause, and can be used to assign variables for
+use in the right-hand side of a rule:
+
+<verbatim>
+  desugar:
+    |[ e1 + e2 ]| -> |[ x_add(e1, e2) ]|
+    where
+      <typeof> e1 => Int();
+    ; <typeof> e2 => Int()
+    with
+      x_add := <new-add-operation> (e1, e2)
+</verbatim>
+
+However, unlike the =where= clause, its operations are not allowed to
+fail, or a run-time error will be reported with a stack trace. Thus,
+this addition allows Stratego programmers to explicitly distinguish
+between _conditions_ of a rule (the =where= clause) and _operations_
+that must always succeed (the =with= clause). This helps in
+readability and in debugging errors in rewrite rules. Any failures
+inside a =with= clause are considered programmer errors: the contract
+specified by the =with= clause is then not satisfied (for example, a
+rule may require some dynamic rule to be defined). By immediately
+reporting such errors, this feature allows them to be quickly
+identified, avoiding problems that are only detected in the result of
+a transformation (e.g., after some rules did not fire in a
+topdown(try(s)) strategy).
+
+For every rewrite rule, an unrestricted number of =with= and =where=
+clauses can be used. In strategies, ==with== can be used as a strategy
+invocation, similar to =where= (e.g., =with(&lt;may-not-fail&gt; t)=).
+
 
 ---------+++ Compiler library
 
@@ -493,3 +529,4 @@ Developments, bug reports, and beta tests carried out by
 Thanks!
 
 ---------------------------------------------------------------------------------
+
