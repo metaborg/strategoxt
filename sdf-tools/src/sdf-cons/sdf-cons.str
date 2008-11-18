@@ -47,7 +47,10 @@ strategies
 
   sdf-cons =
     alltd(lexical-syntax(id) <+ (is-prod; prodcons))
-  ; alltd(cons(try(un-double-quote)))
+  ; alltd(cons(try(un-double-quote)
+               // Remove suffix numbers since uniquify
+               // expect constructors not to have any.
+             ; string-as-chars(at-suffix(map(is-num); ![]))))
   ; if <get-config> "--modular" then
       uniquify-modular
     else
