@@ -1,0 +1,6 @@
+module test17
+
+imports libstratego-lib
+
+strategies
+  main = rules(Foo: 1 -> 2 with 3); <Foo> 1

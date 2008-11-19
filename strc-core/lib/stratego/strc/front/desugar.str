@@ -174,15 +174,20 @@ rules
            annos := <get-annos>
          ; <pureterm> t1
          ; <buildterm> t2
-         ; s_conds := <CtoS(!annos; getfirst(?Id(<id>)))> cond*
+         ; s_conds := <CtoS(<rule-traced-name> annos)> cond*
 
   CtoS(name) : [] -> Id()
   CtoS(name) : [WhereClause(s) | cond*] -> Seq(Where(s),  <CtoS(name)> cond*)
   CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
     where
-      message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule \"", <name>, "\"")
+      message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule ", <name>)
     ; with := Strat |[ where(s <+ report-with-failure(|~str:message {^[]})) ]|
       <+ with := With(s)
+
+  rule-traced-name:
+    annos -> <conc-strings> ("\"", name, "\"")
+    where
+      name := <getfirst(?Id(<id>))>
 
 strategies // "with" strategy
 
@@ -202,6 +207,28 @@ strategies // "with" strategy
                  message := <conc-strings> ("Internal error: with clause failed unexpectedly in ", <WithContext>)
                  <+ message := "Internal error: with clause failed unexpectedly"
       
+
+strategies // "with" in dynamic rules
+
+  Desugar:
+    SetDynRule(name, Rule(l, r, w)) -> SetDynRule(name, Rule(l, r, w'))
+    where
+      w' := <CtoS(<dyn-rule-traced-name> name)> w
+
+  Desugar:
+    AddDynRule(name, Rule(l, r, w)) -> AddDynRule(name, Rule(l, r, w'))
+    where
+      w' := <CtoS(<dyn-rule-traced-name> name)> w
+
+  Desugar:
+    SetDynRuleDepends(name, Rule(l, r, w), d) -> SetDynRuleDepends(name, Rule(l, r, w'), d)
+    where
+      w' := <CtoS(<dyn-rule-traced-name> name)> w
+
+  dyn-rule-traced-name =
+    oncetd(is-string => name)
+  ; <conc-strings> ("\"", name, "\"")
+  ; try(<conc-strings> (<id>, ", defined in ", <WithContext>))
 
 strategies // Desugaring single rules
 

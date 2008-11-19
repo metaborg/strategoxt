@@ -87,8 +87,8 @@ has also been introduced.
 
 A new =with= construct has been added for rewrite rules, which makes
 use of the stack tracing feature above. A =with= clause works much
-like a regular =where= clause, and can be used to assign variables for
-use in the right-hand side of a rule:
+like a regular =where= clause, and can for example be used to assign
+variables for use in the right-hand side of a rule:
 
 <verbatim>
   desugar:

@@ -461,16 +461,15 @@ rules
       <separate-by-comma>args => args'
     ; <separate-by-comma>argt => argt'
 
-
 rules
 
   stratego-to-abox : 
     RuleNoCond(lhs,rhs) -> |[ H hs=1 [ ~lhs "->" ~rhs ] ]|
 
   stratego-to-abox : 
-    Rule(lhs,rhs,condition) -> |[ V [ H hs=1 [ ~lhs "->" ~rhs ] ~condition ] ]|
+    Rule(lhs,rhs,conditions) -> |[ V [ H hs=1 [ ~lhs "->" ~rhs ] ~*conditions ] ]|
     where
-      <is-list> condition
+      <is-list> conditions
 
   stratego-to-abox : 
     Rule(lhs,rhs,condition) -> |[ V [ H hs=1 [ ~lhs "->" ~rhs ] H[ KW["where"] ~condition ] ] ]|
