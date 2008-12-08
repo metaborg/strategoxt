@@ -39,6 +39,12 @@ strategies
  */
 strategies
 
+  /**
+   * Returns the modification time of a file in sections since
+   * epoch.
+   *
+   * @type String -> Int 
+   */
   modification-time =
     ?file; prim("SSL_modification_time", file)
 
