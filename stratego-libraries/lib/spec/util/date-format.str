@@ -38,13 +38,17 @@ imports
 
 strategies
 
-  // :: [String] * ComponentTime -> String
+  /**
+   * @type List(String) * ComponentTime -> String
+   */
   date-format:
     (ps, t) -> <map(<date-pattern-to-string <+ Fst> (<id>, t)); concat-strings> ps
 
 strategies
 
-  // :: String * ComponentTime -> String
+  /**
+   * @type String * ComponentTime -> String
+   */
   date-pattern-to-string =
       ?(p, _)
     ; date-pattern-to-int
@@ -52,7 +56,9 @@ strategies
 
 rules
 
-  // :: String * ComponentTime -> Int
+  /**
+   * @type String * ComponentTime -> Int
+   */
 
   /* year */
   date-pattern-to-int : ("yyyy", ComponentTime(Date(y, _, _), _, _)) -> y
@@ -61,14 +67,28 @@ rules
   /* month */
   date-pattern-to-int    : ("M",    ComponentTime(Date(_, m, _), _, _)) -> <month2index; inc> m
   date-pattern-to-int    : ("MM",   ComponentTime(Date(_, m, _), _, _)) -> <month2index; inc> m
+
+  /**
+   * @type String * ComponentTime -> String
+   */
+
+  /* month */
   date-pattern-to-string : ("MMM",  ComponentTime(Date(_, m, _), _, _)) -> <month2abbr> m
   date-pattern-to-string : ("MMMM", ComponentTime(Date(_, m, _), _, _)) -> <month2text> m
 
+  /**
+   * @type String * ComponentTime -> Int
+   */
   /* day of */
   date-pattern-to-int    : ("d",    ComponentTime(Date(_, _, d), _, _)) -> d
   date-pattern-to-int    : ("dd",   ComponentTime(Date(_, _, d), _, _)) -> d
   date-pattern-to-int    : ("D",    ComponentTime(_, _, Dupl(_, dy)))   -> dy
   date-pattern-to-int    : ("DD",   ComponentTime(_, _, Dupl(_, dy)))   -> dy
+
+  /**
+   * @type String * ComponentTime -> String
+   */
+  /* day of */
   date-pattern-to-string : ("EEE",  ComponentTime(_, _, Dupl(dw, _)))   -> <day-of-week2abbr> dw
   date-pattern-to-string : ("EEEE", ComponentTime(_, _, Dupl(dw, _)))   -> <day-of-week2text> dw
 
@@ -79,6 +99,9 @@ rules
   date-pattern-to-string : ("a", ComponentTime(_, DayTime(h, _, _), _)) -> "p.m."
       where <leq-leq> (12, h, 23)
 
+  /**
+   * @type String * ComponentTime -> Int
+   */
   /* hour */
   date-pattern-to-int : ("HH", ComponentTime(_, DayTime(h, _, _), _)) -> h
   date-pattern-to-int : ("kk", ComponentTime(_, DayTime(h, _, _), _)) -> <inc> h
