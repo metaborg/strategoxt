@@ -20,12 +20,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 USA
 
 */
- 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include <aterm2.h> 
+#include <aterm2.h>
 #include "srts/stratego.h"
 
 void (* SRTS_stratego_initialize)(void) = NULL;
@@ -44,35 +44,35 @@ unsigned short __tracing_table_counter;
 ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
   if(SRTS_default_xtc_repository == NULL)
     return NULL;
-  else 
+  else
     return SRTS_default_xtc_repository;
 }
 
 ATerm SRTS_package_name_0_0(ATerm t) {
   if(SRTS_package_name == NULL)
     return NULL;
-  else 
+  else
     return SRTS_package_name;
 }
 
 ATerm SRTS_package_version_0_0(ATerm t) {
   if(SRTS_package_version == NULL)
     return NULL;
-  else 
+  else
     return SRTS_package_version;
 }
 
 ATerm SRTS_package_bugreport_0_0(ATerm t) {
   if(SRTS_package_bugreport == NULL)
     return NULL;
-  else 
+  else
     return SRTS_package_bugreport;
 }
 
 ATerm SRTS_package_revision_0_0(ATerm t) {
   if(SRTS_package_revision == NULL)
     return NULL;
-  else 
+  else
     return SRTS_package_revision;
 }
 
@@ -92,7 +92,7 @@ static ATermList ATmap(ATermList l, StrCL f)
 {
   if(ATisEmpty(l))
     return l;
-  else 
+  else
     {
       ATerm hd = cl_fun(f)(cl_sl(f),ATgetFirst(l));
       if(hd == NULL) return NULL;
@@ -119,7 +119,7 @@ ATerm SRTS_all(StrSL sl, StrCL f, ATerm t)
           {
             original = ATgetArgument(t, i);
             new = cl_fun(f)(cl_sl(f),original);
-	    if(new == NULL) 
+	    if(new == NULL)
 	      return NULL;
             kids[i] = new;
             if(original != new) changed++;
@@ -135,10 +135,10 @@ ATerm SRTS_all(StrSL sl, StrCL f, ATerm t)
         }
       break;
     }
-  if(annos == NULL)
+  if(annos == NULL || t == NULL)
     return t;
   else
-    return(ATsetAnnotations(t, annos));
+	return ATsetAnnotations(t, annos);
 }
 
 
@@ -155,7 +155,7 @@ ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
 	  ATerm original, new;
 	  original = ATgetArgument(t, i);
 	  new = cl_fun(f)(cl_sl(f),original);
-	  if(new == NULL) 
+	  if(new == NULL)
 	    continue;
 	  transformed++;
 	  if(new != original)
@@ -176,7 +176,7 @@ ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
 	  ATerm original = ATgetFirst(suffix);
 	  ATerm new = cl_fun(f)(cl_sl(f),original);
 	  suffix = ATgetNext(suffix);
-	  if(new == NULL) 
+	  if(new == NULL)
 	    {
 	      prefix = ATinsert(prefix, original);
 	      continue;
@@ -203,10 +203,10 @@ ATerm SRTS_one(StrSL sl, StrCL f, ATerm t)
   default:
     return NULL;
   }
-  if(annos == NULL)
+  if(annos == NULL || t == NULL)
     return t;
   else
-    return(ATsetAnnotations(t, annos));
+	return ATsetAnnotations(t, annos);
 }
 
 static ATermList _map_some(ATermList ts, StrCL f, volatile int transformed)
@@ -214,30 +214,30 @@ static ATermList _map_some(ATermList ts, StrCL f, volatile int transformed)
   if(ATisEmpty(ts))
     {
       if(transformed > 0)
-	return ts;
-      else 
-	return NULL;
+        return ts;
+      else
+        return NULL;
     }
-  else 
+  else
     {
       ATerm t = ATgetFirst(ts), t_bak = t;
       t = cl_fun(f)(cl_sl(f),t);
       if(t != NULL)
-	transformed++;
+        transformed++;
       else
-	t = t_bak;
+        t = t_bak;
       ts = _map_some(ATgetNext(ts), f, transformed);
       if(ts == NULL)
-	return NULL;
+        return NULL;
       else
-	{
-	  ts = ATinsert(ts, t);
-	  return ts;
-	}
+      {
+	    ts = ATinsert(ts, t);
+	    return ts;
+	  }
     }
   return NULL;
 }
-       
+
 ATerm SRTS_some(StrSL sl, StrCL f, ATerm t)
 {
   int transformed = 0;
@@ -253,18 +253,18 @@ ATerm SRTS_some(StrSL sl, StrCL f, ATerm t)
       ATerm kids[arity];
       //ATfprintf(stderr, "_some(%t) : AT_APPL\n", t);
       for(i = 0; i < arity; i++)
-	{
-	  ATerm t_arg = ATgetArgument(t, i);
-	  kids[i] = cl_fun(f)(cl_sl(f),t_arg);
-	  if(kids[i] != NULL)
-	    transformed++;
-	  else
-	    kids[i] = t_arg;
-	}
+      {
+	    ATerm t_arg = ATgetArgument(t, i);
+	    kids[i] = cl_fun(f)(cl_sl(f),t_arg);
+	    if(kids[i] != NULL)
+	      transformed++;
+	    else
+	      kids[i] = t_arg;
+	  }
       if(transformed > 0)
-	t = (ATerm) ATmakeApplArray(c, kids);
+        t = (ATerm) ATmakeApplArray(c, kids);
       else
-	return NULL;
+        return NULL;
     }
   break;
   case AT_LIST :
@@ -275,10 +275,10 @@ ATerm SRTS_some(StrSL sl, StrCL f, ATerm t)
   default :
     return NULL;
   }
-  if(annos == NULL)
+  if(annos == NULL || t == NULL)
     return t;
   else
-    return(ATsetAnnotations(t, annos));
+	return ATsetAnnotations(t, annos);
 }
 
 ATerm CheckATermList(ATerm t)

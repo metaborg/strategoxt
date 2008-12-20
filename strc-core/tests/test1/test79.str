@@ -280,8 +280,14 @@ strategies
   test-all-some-one-suite =
     test-suite(!"All, some and one primitives",
       test-all
+    ; test-all-2
+    ; test-all-3
     ; test-some
+    ; test-some-2
+    ; test-some-3
     ; test-one
+    ; test-one-2
+    ; test-one-3
     )
 
   test-all =
@@ -291,6 +297,21 @@ strategies
 	, !Var("a"){Int}
 	)
 
+  // STR-761
+  test-all-2 =
+    apply-test(!"test-all-2(s)"
+	, all(id)
+	, !["A"]{0} 
+	, !["A"]{0}
+	)
+
+  // STR-761
+  test-all-3 =
+    apply-and-fail(!"test-all-3(s)"
+	, all(fail)
+	, !["A"]{0} 
+	)
+
   test-some =
     apply-test(!"test-some(s)"
 	, some(id)
@@ -298,11 +319,41 @@ strategies
 	, !Var("a"){Int}
 	)
 
+  // STR-761
+  test-some-2 =
+    apply-test(!"test-some-2(s)"
+	, some(id)
+	, !["A"]{0}
+	, !["A"]{0}
+	)
+
+  // STR-761
+  test-some-3 =
+    apply-and-fail(!"test-some-3(s)"
+	, some(fail)
+	, !["A"]{0}
+	)
+
   test-one =
     apply-test(!"test-one(s)"
 	, one(id)
 	, !Var("a"){Int}
 	, !Var("a"){Int}
+	)
+
+  // STR-761
+  test-one-2 =
+    apply-test(!"test-one-2(s)"
+	, one(id)
+	, !["A"]{0}
+	, !["A"]{0}
+	)
+
+  // STR-761
+  test-one-3 =
+    apply-and-fail(!"test-one-3(s)"
+	, one(fail)
+	, !["A"]{0}
 	)
 
   // ----------------------------------------------------------------
