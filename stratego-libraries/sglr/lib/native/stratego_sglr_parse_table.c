@@ -1,3 +1,9 @@
+/**
+ *
+ * @author Martin Bravenboer
+ * @author Karl Trygve Kalleberg
+ */
+
 #include <stdio.h>
 #include <aterm2.h>
 #include <sglr.h>
@@ -33,7 +39,7 @@ ATerm STRSGLR_open_parse_table(ATerm tbl_term)
     return NULL;
   }
   else {
-    return parse_table_to_term(tbl);
+    return activate_parse_table(parse_table_to_term(tbl));
   }
 }
 
@@ -50,7 +56,9 @@ ATerm STRSGLR_close_parse_table(ATerm tbl_term)
   }
   else
   {
-    SG_DiscardParseTable(tbl);
+    // STR-762: we cannot discard the parse table until all refs are dead
+    // so we put it in the elderly home, waiting for it to die.
+    inactivate_parse_table(tbl_term);
     result = (ATerm) ATempty;
   }
 

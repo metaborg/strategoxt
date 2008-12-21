@@ -3,6 +3,7 @@
  * using the "language" hacks.
  *
  * @author Martin Bravenboer
+ * @author Karl Trygve Kalleberg
  */
 
 #include <sys/types.h>
@@ -24,11 +25,53 @@
  */
 static ATerm parse_error_term = NULL;
 static ATerm none_term = NULL;
+static ATerm *inactive_parse_tables;
+static int num_inactive_parse_tables = 0;
+static ATermList active_parse_tables = NULL;
 
 /**
  * Prototypes
  */
 static char* read_text_from_stream(FILE* stream);
+
+/**
+ * Parse tables must be killed using SG_DiscardParseTable. This must
+ * be done after the last parse table blob has died, and cannot be
+ * done when the parse table is closed (because dangling refs might
+ * remain). This callback ensures that's done propely.
+ */
+ATbool parse_table_blob_destructor(ATermBlob t) {
+  int i;
+  for(i = 0; i < num_inactive_parse_tables; i++) {
+    if(inactive_parse_tables[i] == (ATerm)t)
+      break; 
+  }
+  if(i < num_inactive_parse_tables) {
+    inactive_parse_tables[i] = inactive_parse_tables[num_inactive_parse_tables - 1];
+    num_inactive_parse_tables--;
+    SG_DiscardParseTable(parse_table_from_term((ATerm)t));
+    return ATtrue;
+  }
+  return ATfalse;
+}
+
+/**
+ * When a parse table is opened, we keep track of it as 'active'.
+ */
+ATerm activate_parse_table(ATerm t) {
+  active_parse_tables = ATinsert(active_parse_tables, t);
+  return t;
+}
+
+/**
+ * When a parse table is closed again, we move it to an 'inactive' list.
+ * Our blob_destructor() will only destruct inactive parse tables. 
+ */
+void inactivate_parse_table(ATerm t) {
+  active_parse_tables = ATremoveElement(active_parse_tables,  t);
+  assert(num_inactive_parse_tables < MAX_INACTIVE_PARSE_TABLES);
+  inactive_parse_tables[num_inactive_parse_tables++] = t;
+}
 
 void STRSGLR_ensure_init(void)
 {
@@ -40,6 +83,9 @@ void STRSGLR_ensure_init(void)
 
   STRSGLR_init = ATtrue;
 
+ 
+  ATregisterBlobDestructor(parse_table_blob_destructor);
+
   PT_initMEPTApi();
   PT_initAsFix2Api();
   initErrorApi();
@@ -49,8 +95,13 @@ void STRSGLR_ensure_init(void)
   foo = STRSGLR_set_default_config();
 
   none_term = (ATerm) ATmakeAppl(ATmakeAFun("None", 0, ATfalse));
+  active_parse_tables = ATmakeList(0);
+  inactive_parse_tables = malloc(sizeof(ATerm*) * MAX_INACTIVE_PARSE_TABLES);
+  num_inactive_parse_tables = 0;
+
   ATprotect(&none_term);
   ATprotect(&parse_error_term);
+  ATprotect((ATerm*)&active_parse_tables);
 }
 
 ATerm STRSGLR_set_default_config(void)
