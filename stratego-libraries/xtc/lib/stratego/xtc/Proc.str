@@ -17,7 +17,7 @@
  * these are removed and freed upon program termination.
  *
  * @author Eelco Visser <visser@acm.org>
- * @author Karl Trygve Kalleberg <karltk@cs.uu.nl>
+ * @author Karl Trygve Kalleberg <karltk@strategoxt.org>
  */
 module stratego/xtc/Proc
 imports

@@ -12,7 +12,7 @@
  *
  * @author Eelco Visser <visser@acm.org>
  * @author Martin Bravenboer <martin.bravenboer@gmail.com>
- * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - some documentation
+ * @author Karl Trygve Kalleberg <karltk@strategoxt.org> - some documentation
  *
  */
 module collection/hash-table/common 

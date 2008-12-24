@@ -12,7 +12,7 @@
  *
  * @author Eelco Visser <visser@acm.org>
  * @author Martin Bravenboer <martin.bravenboer@gmail.com>
- * @author Karl Trygve Kalleberg <karltk@cs.uu.nl> - documentation
+ * @author Karl Trygve Kalleberg <karltk@strategoxt.org> - documentation
  */
 module strategy/traversal/simple
 imports 

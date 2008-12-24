@@ -6,7 +6,7 @@
  * ISO-8859-1 (Latin1) characters.
  * 
  * @author Eelco Visser <visser@acm.org>
- * @author Karl Trygve Kalleberg <karltk@cs.uu.nl>
+ * @author Karl Trygve Kalleberg <karltk@strategoxt.org>
  */
 module term/string
 imports 
