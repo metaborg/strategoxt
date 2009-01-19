@@ -96,7 +96,7 @@ strategies
       ; incl := <get-config <+ ![]> "-I"
       ; <set-config> ("-I", [])
       ; <parse-options(parse-stratego-options <+ input-options, system-usage, id)> 
-          ["strc" | args]
+          [<whoami <+ !"strc"> | args]
       ; where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
     )
     ; ps-parse-module-trm

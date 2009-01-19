@@ -22,7 +22,7 @@ strategies
       ; incl := <get-config <+ ![]> "-I"
       ; <set-config> ("-I", [])
       ; <parse-options(pack-stratego-options <+ input-options, system-usage, id)> 
-          ["strc" | args]
+          [<whoami <+ !"strc"> | args]
     )
     ; pack-process-options
     ; pack-report-options
