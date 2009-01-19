@@ -33,8 +33,10 @@ exports
         "|[" Section  "]|" -> StrategoTerm {cons("ToTerm")}
     "s" "|[" Section  "]|" -> StrategoTerm {cons("ToTerm")}
 
-        "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
-    "G" "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
+         "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
+         "|[" Grammar* "]|" -> StrategoTerm {cons("ToTerm")}
+    "G"  "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
+    "G*" "|[" Grammar* "]|" -> StrategoTerm {cons("ToTerm")}
 
     "is" "|[" ImpSection "]|" -> StrategoTerm {cons("ToTerm")}
 
