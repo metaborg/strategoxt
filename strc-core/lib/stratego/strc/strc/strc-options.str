@@ -230,6 +230,9 @@ strategies
   + Option("--indent-c",    
 	where(<set-config> ("--indent-c",())); !(),         
 	!"--indent-c         Use this flag if you want the generated C code to use indentation.")
+  + Option("--dump-aterms",    
+	where(<set-config> ("--dump-aterms",())); !(),         
+	!"--dump-aterms      Use this flag if you want to dump ATerms for all imported modules (for analysis) in dump.aterm.")
 
   + ArgOption(fail, fail, !"")
   + ArgOption(fail, fail, !"General options:")

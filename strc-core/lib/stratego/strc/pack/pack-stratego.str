@@ -46,6 +46,14 @@ strategies
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(
         pack-stratego-parse-stratego
+        ; if <get-config> "--dump-aterms" then
+            where({fn, trm: 
+                ?(fn, trm)
+                ; if <string-ends-with(|".str")> fn then
+                    rules ( StrAsts :+= (fn, trm) )
+                  end
+                })
+          end
       , pack-get-stratego-imports 
         ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \

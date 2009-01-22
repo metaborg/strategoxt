@@ -51,6 +51,20 @@ strategies
           not(check-constructors)
         )
 
+      // plug in dump of asts
+      ; if <get-config> "--dump-aterms" then 
+          where(
+            <debug> "Going to write to file"
+            ; if <get-config> "-i" then
+                fp := <fopen <+ debug(!"Could not open file")> (<concat-strings> [<get-config> "-i", ".aterm"], "w")
+              else
+                fp := <fopen <+ debug(!"Could not open file")> ("dump.aterm", "w")
+              end
+            ; <fprint <+ debug(!"Could not write to file")> (fp, [<bagof-StrAsts>])
+            ; <fclose> fp
+          )
+        end
+
       // transform and check local definitions
 
       ; m-transform-local-defs(map(id
