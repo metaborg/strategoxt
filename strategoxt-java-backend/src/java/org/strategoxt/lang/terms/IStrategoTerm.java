@@ -1,7 +1,7 @@
 /*
  * Created on 30. aug. 2006
  *
- * Copyright (c) 2006-2008, Karl Trygve Kalleberg <karltk@ii.uib.no>
+ * Copyright (c) 2006-2008, Karl Trygve Kalleberg <karltk@strategoxt.org>
  * 
  * Licensed under the GNU General Public License, v2
  */
