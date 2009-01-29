@@ -3,7 +3,6 @@
  * run-time verified strategies.
  *
  * @author Lennart Kats <lennart add lclnet.nl>
- * 
  */
 module lang/with
 
@@ -20,12 +19,21 @@ strategies
    *       failures raised by with clauses and uses of this strategy.
    */
   with(s|message) =
-    where(s <+ report-with-failure(|message))
+    where(s <+ report-with-failure(|message, <prim("SSL_stacktrace_get_all_frame_names")>))
   
+  /**
+   * @internal
+   */
   report-with-failure(|message) =
       ?term
     ; prim("SSL_stacktrace_get_all_frame_names")
-    ; try(?["report_with_failure_0_1" | <id>])
-    ; try(?["with_1_1" | <id>])
+    ; report-failure(log(|Critical(), message, term); exit)
+  
+  /**
+   * @internal
+   */
+  report-with-failure(|message, trace) =
+      ?term
+    ; !trace
     ; report-failure(log(|Critical(), message, term); exit)
 
