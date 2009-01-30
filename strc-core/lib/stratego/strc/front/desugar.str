@@ -417,12 +417,22 @@ rules
     where new => x; new => x'; new => y; new => y'
 
   Desugar :
-    ListCongNoTail(ts) -> 
-    <foldr(!Call(SVar("Nil"),[]),\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
+    ListCongNoTail(ts) -> <foldr(!|[ ?[] ]|, DesugarConsArgs)> ts
 
   Desugar :
-    ListCong(ts,t) -> 
-    <foldr(!t,\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
+    ListCong(ss,s) -> <foldr(!s, DesugarConsArgs)> ss
+  
+  DesugarConsArgs:
+    (s1, s2) -> // Call(SVar("Cons"),[t1,t2])
+    |[
+      {x, y, x', y', z:
+       ?[x | y]{^z};
+       !x; s1; ?x';
+       !y; s2; ?y';
+       ![x' | y']{^z}
+      }
+    ]|
+    where new => x; new => y; new => x'; new => y'; new => z
 
   Desugar :
     StrCong(x) -> Match(NoAnnoList(Str(x)))
