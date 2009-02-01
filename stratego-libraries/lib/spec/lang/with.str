@@ -22,6 +22,7 @@ strategies
     where(s <+ report-with-failure(|message, <prim("SSL_stacktrace_get_all_frame_names")>))
   
   /**
+   * @obsolete
    * @internal
    */
   report-with-failure(|message) =
