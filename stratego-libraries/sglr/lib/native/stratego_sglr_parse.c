@@ -101,7 +101,7 @@ void STRSGLR_ensure_init(void)
 
   ATprotect(&none_term);
   ATprotect(&parse_error_term);
-  ATprotect((ATerm*)&active_parse_tables);
+  ATprotectList(&active_parse_tables);
 }
 
 ATerm STRSGLR_set_default_config(void)
