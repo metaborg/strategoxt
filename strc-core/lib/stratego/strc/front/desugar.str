@@ -181,11 +181,23 @@ rules
   CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
     where
       message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule ", <name>)
-    ; with := Strat |[ where(s <+ report-with-failure(|~str:message {^[]}, <prim("SSL_stacktrace_get_all_frame_names",|)>)) ]|
-      <+ with := With(s)
+    ; x := <new>
+    ; with := Strat |[
+        where(
+          s
+          <+ { x: ?x
+           ; prim("SSL_stacktrace_get_all_frame_names",|)
+           ; report-failure(
+               log(|Critical(){^[]}, ~str:message {^[]}, x)
+             ; exit(|)
+             )
+             }
+        )
+      ]|
+      <+ with := With(s) // <name> failed
 
   rule-traced-name:
-    annos -> <conc-strings> ("\"", name, "\"")
+    annos -> <conc-strings> ("'", name, "'")
     where
       name := <getfirst(?Id(<id>))>
 
@@ -195,23 +207,30 @@ strategies // "with" strategy
 
   RecordName =
     ?RDefT(f, _, _, _)
-  ; rules(WithContext := <conc-strings> ("rule \"", f, "\""))
+  ; rules(WithContext := <conc-strings> ("rule '", f, "'"))
 
   RecordName =
     ?SDefT(f, _, _, _)
-  ; rules(WithContext := <conc-strings> ("strategy \"", f, "\""))
+  ; rules(WithContext := <conc-strings> ("strategy '", f, "'"))
   
   Desugar:
     With(s) ->
     |[ where(
          s
-         <+ report-with-failure(|~str:message {^[]}, <prim("SSL_stacktrace_get_all_frame_names",|)>)
+         <+ { x: ?x
+          ; prim("SSL_stacktrace_get_all_frame_names",|)
+          ; report-failure(
+              log(|Critical(){^[]}, ~str:message {^[]}, x)
+            ; exit(|)
+            )
+            }
        )
     ]|
     where
-      message := <conc-strings> ("Internal error: with clause failed unexpectedly in ", <WithContext>)
+      x := <new>
+    ; (  message := <conc-strings> ("Internal error: with clause failed unexpectedly in ", <WithContext>)
       <+ message := "Internal error: with clause failed unexpectedly"
-      
+      )
 
 strategies // "with" in dynamic rules
 
@@ -232,7 +251,7 @@ strategies // "with" in dynamic rules
 
   dyn-rule-traced-name =
     oncetd(is-string => name)
-  ; <conc-strings> ("\"", name, "\"")
+  ; <conc-strings> ("'", name, "'")
   ; try(<conc-strings> (<id>, ", defined in ", <WithContext>))
 
 strategies // Desugaring single rules

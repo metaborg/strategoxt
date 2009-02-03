@@ -2,5 +2,5 @@
 identity crisis: rewriting failed, trace:
 	main_0_0
 	foo_0_0
-[ identity crisis | critical ] Internal error: with clause failed unexpectedly in rule "foo"
+[ identity crisis | critical ] Internal error: with clause failed unexpectedly in rule 'foo'
            0
