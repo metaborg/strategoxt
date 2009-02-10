@@ -64,7 +64,7 @@ strategies
    * applying s to the pair. Starts at the beginning of the lists. Both lists
    * must be of equal length.
    *
-   * Example: <zip(add)> ([1,2], [3,4]) => [6,8]
+   * Example: <zip(add)> ([1,2], [3,4]) => [4,6]
    *
    * @param s              a * b -> c
    * @type     List(a) * List(b) -> List(c)
