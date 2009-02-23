@@ -282,6 +282,9 @@ strategies
    * to any rules/strategies).
    *
    * @type List(String) -> _
+   *
+   * @param exit
+   *          The exit strategy to use, e.g., xtc-exit.
    */
   report-failure =
     report-failure(exit)
@@ -291,6 +294,19 @@ strategies
     ; report-run-time
     ; <fprintnl> (stderr(), [<log-src> (), ": rewriting failed, trace:"])
     ; <reverse ; map(<fprintnl> (stderr(), ["\t", <id>]))> stacktrace
+    ; <exit> 1
+  
+  /**
+   * Report the failure of this program, without showing a stack trace.
+   *
+   * @see report-failure
+   * @see fatal-err(|msg)
+   */
+  report-failure-no-trace =
+    report-failure-no-trace(exit)
+  
+  report-failure-no-trace(exit) =
+      <fprintnl> (stderr(), [<log-src> (), ": rewriting failed"])
     ; <exit> 1
 
   whoami =
