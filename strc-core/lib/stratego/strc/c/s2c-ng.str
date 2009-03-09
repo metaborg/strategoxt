@@ -332,6 +332,7 @@ strategies
        ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
          __tracing_table[__tracing_table_counter++] = ~exp:<!StringLit([<double-quote> f])>;
+         __tracing_table[__tracing_table_counter] = NULL;
          sl_decl(sl);
          ~stm*:fini;
          ~stm*:vini;
