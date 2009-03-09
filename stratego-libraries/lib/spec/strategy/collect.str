@@ -196,6 +196,14 @@ strategies
     rec x(some(x); crush(![],union,[s|id] <+ ![])
           <+ ![<s>] )
     <+ ![]
+
+strategies
+
+  /**
+   * collect a single, outermost value from a tree.
+   */
+  collect-one(s) =
+    oncetd(s; ?t); !t
    
 strategies // TODO: where should we put this?
 
