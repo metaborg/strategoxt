@@ -1,4 +1,0 @@
-module xtc-lib
-imports
-  libstratego-xtc
-  xtc-dir

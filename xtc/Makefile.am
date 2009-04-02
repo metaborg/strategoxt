@@ -1,9 +1,15 @@
 include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-SUBDIRS           = src tools
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST        = Makefile.xt xtc.pc.in svn-revision
+bin_PROGRAMS = strc-java
 
-ACLOCAL_AMFLAGS = -I ../config
-pkgconfig_DATA  = xtc.pc
+LDADD += $(SSL_LIBS)
+
+STRINCLUDES    = -I $(XTC)/share/xtc 
+
+SCFLAGS        = --main io-$*
+
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.syn) 
+CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.c) $(wildcard *.o)
+BOOTCLEANFILES = $(wildcard *.c) 
 

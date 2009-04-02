@@ -1,6 +1,0 @@
-module test15
-
-imports libstratego-lib
-
-strategies
-  main : a -> a with 1

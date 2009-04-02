@@ -1,6 +1,0 @@
-module dynrule-assign
-strategies
-
-  main =
-    rules(Foo := 1);
-    rules(Bar :+= 2 Baz := 3)

@@ -1,9 +1,0 @@
-module xml-whitespace
-
-exports
-  lexical syntax
-    [\ \t\n\13] -> LAYOUT
-
-  context-free restrictions
-    LAYOUT? -/- [\ \t\n\13]
-

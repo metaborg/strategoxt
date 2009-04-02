@@ -1,9 +1,0 @@
-prefix=@prefix@
-datarootdir=@datarootdir@
-strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-rtg.la
-
-Name: Stratego RTG Library
-Description: Stratego Regular Tree Grammar Library.
-Version: @PACKAGE_VERSION@
-Libs: -L${prefix}/lib -lstratego-rtg
-Requires: aterm stratego-runtime stratego-lib stratego-sglr

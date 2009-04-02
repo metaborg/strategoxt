@@ -1,6 +1,0 @@
-module pp-table-IntCon
-
-exports
-  sorts NatCon
-  lexical syntax
-    [0-9]+ -> NatCon

@@ -1,2 +1,0 @@
-# compile til-simplify
-strc -i til-run.str -I ../sig -I ../sim -la stratego-lib -m io-til-run

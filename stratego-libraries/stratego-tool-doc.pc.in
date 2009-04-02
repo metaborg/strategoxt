@@ -1,9 +1,0 @@
-prefix=@prefix@
-datarootdir=@datarootdir@
-strcflags=-I @datadir@ -la ${prefix}/lib/libstratego-tool-doc.la
-
-Name: Stratego Tool Documentation Library
-Description: Stratego Tool Documentation Library.
-Version: @PACKAGE_VERSION@
-Libs: -L${prefix}/lib -lstratego-tool-doc
-Requires: aterm stratego-runtime stratego-lib stratego-gpp

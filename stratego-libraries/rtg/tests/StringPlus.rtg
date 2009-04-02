@@ -1,6 +1,0 @@
-regular tree grammar
-start StringPlus
-productions
-  StringPlus -> <cons> (<string>, StringStar)
-  StringStar -> StringPlus
-  StringStar -> <nil> ()
