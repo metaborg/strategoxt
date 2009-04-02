@@ -2,6 +2,7 @@
  * Java backend for the Stratego compiler
  *
  * @author Karl Trygve Kalleberg
+ * @author Lennart Kats
  * @author Eelco Visser
  */
 module s2j
@@ -26,18 +27,16 @@ strategies
  
 rules
  
-  fc = rtg-format-check(true, true|<java-rtg>()) <+ ?x ; where(err(|["Bad term : ", x])) ; fail
-  
-  with(s) = 
-    s 
-  <+ 
-      frames  := [ "With-expression failed:" | 
-                   <prim("SSL_stacktrace_get_all_frame_names") ; reverse> ]
-    ; spacing := <length ; dec ; upto ; map(!"\n\t")> frames
-    ; s       := <zip(conc-strings)> (frames,spacing)
-    ; <fprint> (stderr(), s)
-    ; <exit> 1
-  
+  fc =
+    with(
+      rtg-format-check(true, true|<java-rtg>())
+    <+
+      ?x
+    ; where(err(|["Bad term : ", x]))
+    ; fail
+    | "Internal error: resulting term is not well-formed"
+    )
+    
   java-backend = 
       where(<xtc-find ; parse-rtg-file> "Java-15.rtg" => rtg)
     ; rules( java-rtg := rtg )
@@ -56,69 +55,70 @@ rules
   compute-classname = 
       meta-filename 
     ; base-filename 
-    ; remove-extension 
-    ; !Id(<id>)
+    ; remove-extension
     
   java-compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
      |[ 
-     package org.strategoxt.compiler.tests.cases;
+     package pkgname;
      
-     import org.strategoxt.lang.Runtime;
      import org.strategoxt.lang.Strategy; 
-     import org.strategoxt.lang.Failure;
-     import org.strategoxt.lang.terms.*;
-     import org.strategoxt.runtime.ssl.SSL;
-
-     import static org.strategoxt.runtime.ssl.SRTS.*;
+     import org.strategoxt.lang.IStrategy; 
+     import org.strategoxt.lang.Context;
+     import org.spoofax.interpreter.terms.*;
          
-     import static org.strategoxt.lang.Runtime.termFactory;
      import static org.strategoxt.lang.Term.nonNull;
      import static org.strategoxt.lang.Term.checkTermList;
      import static org.strategoxt.lang.Term.matchConstructor;
+     
+     // TODO: Use static imports for libraries
+     //       e.g., import static org.strategoxt.strategolib.*;
      		
-     public class ~id:name {
+     @SuppressWarnings("unused")
+     public class x_name {
 
      ~*cnst-decls
      ~*cnstr-decls
      ~*lifted-defs
      
-     private static void preInit() {
-       ~*cnst-inits
+     private static void preInit(ITermFactory termFactory) {
        ~*cnstr-inits
+       ~*cnst-inits
      }
 
 	 public static String testMain(String input) {
-	    preInit();
-        final IStrategoTerm result = main_0_0.instance.apply(Runtime.termFactory.parseFromString(input));
+	    Context context = new Context();
+	    preInit(context.getFactory());
+	    IStrategoTerm result = main_0_0.getInstance().invoke(context, context.getFactory().parseFromString(input));
         return result == null ? null : result.toString();
      }
         
 	 public static void main(String args[]) {
-	    preInit();
-	    IStrategoTerm zz = Runtime.prepareCLIArgs(args);
-	    System.out.println(zz);
-        IStrategoTerm term = main_0_0.instance.apply(zz);
-        if(term == null) { 
-          System.err.println("Rewriting failed!"); 
+	    Context context = new Context();
+	    preInit(context.getFactory());
+	    IStrategoTerm result = context.invokeStrategyCLI(main_0_0.getInstance(), "~x_name", args);
+        if (result == null) {
+          System.err.println("Rewriting failed"); 
           System.exit(1); 
+        } else {
+          System.out.println(result);
         }
-        else { System.out.println(term); }
 	 }
 
      ~*function-defs
 
      }
      ]|
-  where 
+  with 
       alltd(JavaTranslate)
-    ; with(name          := <compute-classname> ())
-    ; with(function-defs := <map(translate-outer-definition)> defs)
-    ; with(lifted-defs   := <bagof-Fragment> "LiftedDef")
-    ; with(cnstr-decls   := <bagof-Fragment> "ConstructorDecl")
-    ; with(cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit")
-    ; with(cnst-decls    := <bagof-Fragment> "ConstDecl")
-    ; with(cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit")
+    ; x_name        := <compute-classname> ()
+    ; pkgname       := PackageName([Id("org.strategoxt.compiler.tests.cases")])
+    ; function-defs := <map(translate-outer-definition)> defs
+    ; lifted-defs   := <bagof-Fragment> "LiftedDef"
+    ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
+    ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
+    ; cnst-decls    := <bagof-Fragment> "ConstDecl"
+    ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
     
 
 rules
@@ -128,8 +128,22 @@ rules
   translate-any-definition(|modifiers):
     SDefT(x, strats*, terms*, s) -> type-dec |[ 
             mod* class x extends Strategy {
-              public final static x instance = new x();
-              public IStrategoTerm apply(param*, IStrategoTerm term) {
+              private static x instance = new x();
+              
+              protected x() {}
+              
+              public static final x getInstance() {
+                return instance;
+              }
+              
+              public static final void setInstance(x strategy) {
+                instance = strategy;
+              }
+              
+              public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
+                // TODO: if (instance != this) instance.invoke(term, arg*);
+                ITermFactory termFactory = context.getFactory();
+              
                 int nextState = 1;
                 Root:
                 while(true)
@@ -139,15 +153,26 @@ rules
                   }
                 return term;
               }
+              
+              @Override
+              public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
+                  IStrategoTerm[] targs) {
+                // FIXME: Pass strategy and term args
+                return invoke(context, term);
+              }
             }
          ]|
-    where
+    with
       prelude(|"translate-any-definition")
-    ; with(mod*    := modifiers) 
-    ; with(strats' := <map(translate-parameter)> strats*)
-    ; with(terms'  := <map(translate-parameter)> terms*)
-    ; with(param*  := <conc> (strats', terms'))
-    ; with(body    := <translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s)
+    ; mod*    := modifiers
+    ; strats' := <map(translate-parameter)> strats*
+    ; terms'  := <map(translate-parameter)> terms*
+    ; param*  := <conc> (strats', terms')
+    ; body    := <translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s
+  
+  translate-any-definition(|modifiers):
+    ExtSDef(_, _, _) -> Semicolon()
+    where prelude(|"translate-any-definition")
 
   // XXX: add Strategy parameter
   translate-parameter :
@@ -282,7 +307,7 @@ strategies
 
   translate-Let(|S,F): 
   Let(defs, body) -> Block([<translate-strategy(|S,F)> body])
-  where
+  with
       prelude(|"translate-Let")
     ; debug
     ; <map(fragment(translate-inner-definition | "LiftedDef"))> defs
@@ -290,8 +315,14 @@ strategies
   make-strategy-class : 
   (x, body) -> type-dec |[ 
         static final class x extends Strategy { 
-          public final static x instance = new x();
-          public IStrategoTerm apply(IStrategoTerm term) { 
+          private static final x instance = new x();
+          
+          public static final x getInstance() {
+            return instance;
+          }
+          
+          @Override
+          public IStrategoTerm invoke(Context context, IStrategoTerm term) { 
             int nextState = 1;
             Root:
             while(true)
@@ -301,32 +332,39 @@ strategies
               }
               return term;
           }
+          
+          @Override
+          public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs, IStrategy[] targs) {
+            invoke(context, term);
+          }
         } 
     ]|
   
   translate-CallT(|S,F):
     CallT(SVar(x), s*, t*) -> Block(call)
-      where prelude(|"translate-CallT"); 
-        // FIXME do actual lifting
-        with(args1  := <map(\ x -> (<new>(), <translate-strategy(|S,F)> x) \)> s*)
-      ; <map(fragment(make-strategy-class|"LiftedDef"))> args1
-//      ; with(bodies := <map(make-strategy-class)> args1)
-      ; with(args2  := <map(java-construct-term)> t* => args2)
-      ; <debug(!"args1  ")> args1
-//      ; <debug(!"bodies ")> bodies
-      ; <debug(!"args2  ")> args2
-      ; with(e*     := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2))
-      ; <debug(!"e*     ")> e*
-      ; <debug(!"F      ")> F
-      ; <debug(!"S      ")> S
-      ; with(call := bstm* |[ 
-	               term = x.instance.apply(e*,term); 
-	               if(term == null) 
-	                 ~stm:<Goto> F
-	               else
-	                 ~stm:<Goto> S
-	             ]|)
-      ; <debug(!"call      ")> call
+    with
+      prelude(|"translate-CallT"); 
+      // FIXME do actual lifting
+      args1  := <map(\ x -> (<newname> "lifted", <translate-strategy(|S,F)> x) \)> s*
+    ; <map(fragment(make-strategy-class|"LiftedDef"))> args1
+//  ; bodies := <map(make-strategy-class)> args1
+    ; args2  := <map(java-construct-term)> t* => args2
+    ; <debug(!"args1  ")> args1
+//  ; <debug(!"bodies ")> bodies
+    ; <debug(!"args2  ")> args2
+    ; e*  := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2)
+    ; <debug(!"e*     ")> e*
+    ; <debug(!"F      ")> F
+    ; <debug(!"S      ")> S
+      // TODO: Call invokeDynamic as required
+    ; call := bstm* |[ 
+	             term = x.getInstance().invoke(e*,term); 
+	             if(term == null) 
+	               ~stm:<Goto> F
+	             else
+	               ~stm:<Goto> S
+	           ]|
+    ; <debug(!"call      ")> call
 
   java-ArgToCl :
     CallT(SVar(f{Closure(x), Frames([])}), [], []) -> expr|[ x ]|
@@ -342,24 +380,24 @@ strategies
 //    Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
     CallT(SVar(f{Offset(i),Closure(x),Frames(frames)}), [], []) ->
     expr|[ sl_fun_cl(~expr:<mk-int-const> i, ~expr:sl) ]|
-  where prelude(|"java-ArgToCl") ;
-    with(sl := <not([]); java-frames-to-static-link> frames)
+  with prelude(|"java-ArgToCl") ;
+    sl := <not([]); java-frames-to-static-link> frames
 
 
   translate-PrimT(|S,F) :
     PrimT(f, s*, t*) -> 
     <java-check-unbound-args(|F,t*)>  
     Block(bstm* |[ 
-      term = SSL.~id:Id(f)(~*args); 
-      if(term == null) ~<Goto> F else ~<Goto> S
+      term = context.invokePrimitive("~f", term, new IStrategy[] { ~*args1 }, new IStrategoTerm[] { ~*args2 });
+      if (term == null) ~<Goto> F else ~<Goto> S
     ]|)
-  where prelude(|"translate-PrimT") ;
-        <debug(!"s* ")> s*
-      ; with(args1 := <map(java-ArgToCl)> s*)
-      ; <debug(!"foo ")> t*
-      ; with(args2 := <with(map(java-construct-term))> t*)
-      ; <debug(!"zap ")> args2
-      ; with(args  := <with(conc)> (args1, args2))
+  with prelude(|"translate-PrimT") ;
+       <debug(!"s* ")> s*
+     ; args1 := <map(java-ArgToCl)> s*
+     ; <debug(!"foo ")> t*
+     ; args2 := <map(java-construct-term)> t*
+     ; <debug(!"zap ")> args2
+     ; args  := <conc> (args1, args2)
   
 /* ================================ Build  */
 
@@ -478,15 +516,15 @@ rules
 
   java-ConstructVar :
     x@Var(_) -> e
-  where 
+  with 
       prelude(|"java-ConstructVar") 
-    ; with(e := <java-VarToReadRef> x)
+    ; e := <java-VarToReadRef> x
     ; debug(!"var to read ref: ")
 
   java-ConstructAnnoVar :
     Anno(Var(x), pt2) -> 
     expr|[ 
-      termFactory.setAnnotations(~expr:e, ~expr:<java-construct-term> pt2)
+      termFactory.annotateTerm(~expr:e, ~expr:<java-construct-term> pt2)
     ]|
   where
       prelude(|"java-ConstructAnnoVar") 
@@ -514,8 +552,9 @@ rules
   java-ConstructTerm :
     Op(c, t*) -> expr|[ termFactory.makeAppl(~*[cn | args]) ]|
   where
+      not(is-ListOp + is-TupleOp)
+  with
       prelude(|"java-ConstructTerm - Op(c, t*)")
-    ; not(is-ListOp + is-TupleOp)
     ; cn   := ExprName(Id(<java-ConstructorName> (c, <length> t*)))
     ; args := <map(java-construct-term)> t*
     ; debug(!"not listop")
@@ -525,12 +564,12 @@ rules
     expr|[ 
       SSL_mkterm(~expr:<java-construct-term> t1, ~expr:<java-construct-term> t2) 
     ]|
-  where 
+  with 
       prelude(|"java-ConstructTerm - Explode")
 
   java-ConstructTerm : 
     Op("", args) -> expr|[ termFactory.makeTuple(~*args') ]|
-  where
+  with
       prelude(|"java-ConstructTerm - Op(\"\", [...])") 
     ; args' := <map(java-construct-term)> args
     
@@ -543,10 +582,9 @@ rules
     expr|[ 
       ((IStrategoList)(~expr:e)).prepend(~expr:<java-construct-term> t1)
     ]|
-  where 
+  with
       prelude(|"java-ConstructTerm - Cons")
-    ; with(
-       <java-construct-term> t2
+    ; <java-construct-term> t2
 	    ; if <not(Anno(is-ListOp,id))> t2 then 
 	        java-check-aterm-list 
 	      else
@@ -556,7 +594,7 @@ rules
 	            try(java-UncastATerm)
 	          end
 	          ; try(java-CastATermListSetAnnotations)
-	        end => e)
+	        end => e
 
   java-check-aterm-list :
     e -> expr|[ (IStrategoList)~id:x ]|
@@ -591,8 +629,8 @@ rules
   java-VarToReadRef : 
     Var(x{Offset(i), Frames(frames)}) -> 
     expr|[ sl_readvar(~expr:<java-mk-int-const> i, ~expr:sl) ]|
-  where 
-    with(sl := <not([]); java-frames-to-static-link> frames)
+  with
+    sl := <not([]); java-frames-to-static-link> frames
 
 signature
   constructors
@@ -643,30 +681,32 @@ strategies
 strategies
 
   translate-Match(|S,F) :
-    Match(t) -> <translate-Match(|S,F)> Match(t, ExprName(Id("term")))
-  where prelude(|"translate-Match - Match/1");
-    <debug(!"term ")> t
+    Match(t) -> result
+  with prelude(|"translate-Match - Match/1")
+     ; <debug(!"term ")> t
+     ; result := <translate-Match(|S,F)> Match(t, ExprName(Id("term")))
 
   translate-Match(|S,F) :
     Match(Wld(), trm) -> <Goto> S
-  where prelude(|"translate-Match - Match(Wld,trm)")
+  with prelude(|"translate-Match - Match(Wld,trm)")
 
   translate-Match(|S,F) :
     Match(As(t1,t2), trm) ->
     stm|[ 
       { 
-        ~stm:(<translate-Match(|Next(),F)> Match(t1,trm))
-        ~stm:(<translate-Match(|S,F)> Match(t2,trm))
+        stm_match1
+        stm_match2
       }
     ]|
-  where prelude(|"translate-Match - Match(As(t1,t2), trm)")
+  with prelude(|"translate-Match - Match(As(t1,t2), trm)")
+     ; stm_match1 := <translate-Match(|Next(),F)> Match(t1,trm)
+     ; stm_match2 := <translate-Match(|S,F)> Match(t2,trm)
 
   translate-Match(|S,F) :
     Match(Var(x){"unbound"}, trm) ->
     stm|[ { ~e = ~expr:trm; ~stm:<Goto> S } ]|
-  where prelude(|"translate-Match - Match(Var(x){unbound}, trm)");
+  with prelude(|"translate-Match - Match(Var(x){unbound}, trm)");
     ExprName(e) := <java-VarToWriteRef> x
-
 
   translate-Match(|S,F) :
     Match(Var(x){"bound"}, trm) ->
@@ -676,9 +716,9 @@ strategies
       else 
         ~stm:<Goto> S
      ]|
-  where 
+  with
       prelude(|"translate-Match - Match(Var(x){bound}, trm)")
-    ; with(e := <java-VarToReadRef> Var(x))
+    ; e := <java-VarToReadRef> Var(x)
 
   translate-Match(|S,F) :
     Match(Var(x){"(un)bound"}, expr) ->
@@ -691,12 +731,12 @@ strategies
       } else
         ~stm:<Goto> S
     ]|
-  where 
+  with 
       prelude(|"translate-Match - Match(Var(x){(un)bound})")
     ; <debug(!"XX ")> Var(x)
-    ; with(e1 := <java-VarToReadRef> Var(x))
+    ; e1 := <java-VarToReadRef> Var(x)
     ; <debug(!"PP")> ()
-	; with(e2 := <java-VarToWriteRef> x)
+	; e2 := <java-VarToWriteRef> x
 	; if !e2 => ExprName(_) then
         lhs := e2
 	  else
@@ -728,7 +768,7 @@ strategies
 
   translate-Match(|S,F) :
     Match(Var(x){}, trm) -> <translate-Match(|S,F)> Match(Var(x){"(un)bound"}, trm)
-  where prelude(|"translate-Match - Match(Var(x){}")
+  with prelude(|"translate-Match - Match(Var(x){}")
     ; <debug(!"ZZ ")> x
 
   translate-Match(|S,F) :
@@ -741,11 +781,11 @@ strategies
 	 ~stm:(<translate-Match(|Next(),F)> Match(t1, ExprName(n0)))
 	 ~stm:(<translate-Match(|S     ,F)> Match(t2, ExprName(n1)))
      } ]|
-  where
-      prelude(|"translate-Match - Match(Explode)") 
-    ; with(!expr => ExprName(Id(_)))
-    ; with(n0 := Id(<newname> "trm"))
-    ; with(n1 := Id(<newname> "trm"))
+  with
+      !expr => ExprName(Id(_))
+    ; prelude(|"translate-Match - Match(Explode)") 
+    ; n0 := Id(<newname> "trm")
+    ; n1 := Id(<newname> "trm")
 
   translate-Match(|S,F) =
        ( translate-MatchNoAnno(|S,F)
@@ -753,29 +793,28 @@ strategies
       ; where(<debug> "after anno matching")
 
   translate-MatchNoAnno(|S,F) :
-    Match(Anno(pt1, Wld()), expr) -> <translate-Match(|S,F)> Match(pt1, expr)
-  where prelude(|"translate-MatchNoAnno - Match(pt1{^_}")
+    Match(Anno(pt1, Wld()), expr) -> result
+    with prelude(|"translate-MatchNoAnno - Match(pt1{^_}")
+       ; result := <translate-Match(|S,F)> Match(pt1, expr)
 
   translate-MatchAnno(|S,F) :
     Match(Anno(pt1, pt2), expr) -> 
     stm|[ 
       { 
-        ATerm ~id:x; 
-        ~id:x = (ATerm)ATgetAnnotations(~expr:expr);
-        if(~id:x == NULL) 
-           ~id:x = (ATerm) ATempty;
         ~stm:stm0
+        IStrategoList ~id:x = ~expr.getAnnotations();
         ~stm:stm1
       } 
     ]|
   where 
+      <not(Wld)> pt2
+  with
       prelude(|"translate-MatchAnno - Match(pt1{^pt2})")
-    ; <not(?Wld())> pt2
     ; <debug(!"pt1 ")> pt1
     ; <debug(!"pt2 ")> pt2
-    ; with(x    := Id(<newname> "trm"))
-    ; with(stm0 := <translate-Match(|Next(),F)> Match(pt1, expr))
-    ; with(stm1 := <translate-Match(|S     ,F)> Match(pt2, ExprName(x)))
+    ; x    := Id(<newname> "trm")
+    ; stm0 := <translate-Match(|Next(),F)> Match(pt1, expr)
+    ; stm1 := <translate-Match(|S     ,F)> Match(pt2, ExprName(x))
 
   /**
    * @todo  String constants should probably be cached, just like constructor names
@@ -788,10 +827,10 @@ strategies
       else 
         ~stm:<Goto> F
     ]|
-  where
-      prelude(|"translate-Match - Match(Str)")
-    ; with(!expr => ExprName(Id(_)))
-    ; with(x' := Lit(String([Chars(<escape> x)])))
+  with
+      !expr => ExprName(Id(_))
+    ; prelude(|"translate-Match - Match(Str)")
+    ; x' := Lit(String([Chars(<escape> x)]))
 
   translate-Match(|S,F) :
     Match(Int(i), expr) -> 
@@ -801,11 +840,11 @@ strategies
       else 
         ~stm:<Goto> F
     ]|
-  where 
-      prelude(|"translate-Match - Match(Int)")
+  with
+      !expr => ExprName(Id(_))
+    ; prelude(|"translate-Match - Match(Int)")
     ; <debug(!"zz ")> expr
-    ; with(!expr => ExprName(Id(_)))
-    ; with(x' := <java-mk-int-const> i)
+    ; x' := <java-mk-int-const> i
     ; debug(!"xx ")
 
   translate-Match(|S,F) :
@@ -816,10 +855,10 @@ strategies
       else 
         ~stm:<Goto> F
     ]|
-  where 
-      prelude(|"translate-Match - Match(Real)")
-    ; with(!expr => ExprName(Id(_)))
-    ; with(x' := Lit(Float(<try(real-to-string)> i)))
+  with
+      !expr => ExprName(Id(_))
+    ; prelude(|"translate-Match - Match(Real)")
+    ; x' := Lit(Float(<try(real-to-string)> i))
 
   /**
    * Translate a match of an Op, but not a Cons/2 or Nil/0.
@@ -827,7 +866,7 @@ strategies
   translate-Match(|S,F) :
     Match(op@Op(c, ts), expr) ->
     stm|[
-      if( matchConstructor(~expr:expr, ~id:cname) )
+      if( matchConstructor(~expr:expr, e_cname) )
         { 
           ~bstm*:match-args
           ~stm:<Goto> S
@@ -835,21 +874,30 @@ strategies
       else
         ~stm:<Goto> F
     ]|
-  where prelude(|"translate-Match - Match(Op)");
+  where
        <not(is-ListOp)> op
-     ; with(cname := Id(<java-ConstructorName> (c, <length> ts)))
-     ; with((match-args, _) := <thread-map(\ (t,i) ->
+  with
+       prelude(|"translate-Match - Match(Op)");
+       e_cname := ExprName(Id(<java-ConstructorName> (c, <length> ts)))
+     <+
+       <is-TupleOp> op;
+       e_cname := Lit(Null())
+     <+
+       <fatal-err(|"Undeclared constructor")> (c, <length> ts)
+  with
+       (match-args, _) := <thread-map(\ (t,i) ->
              (
                <java-MatchArg1(|Next(),F) <+ java-MatchArg2(|Next(),F)> 
                   (t, expr|[ (~expr:expr).getSubterm(~expr:<java-mk-int-const> i) ]|)
              , <add>(i, 1)
              )
-           \ )> (ts,0))
+           \ )> (ts,0)
 
   java-MatchArg1(|S,F) : 
-    (Var(x){t*}, expr) -> <translate-Match(|S,F)> Match(Var(x){t*}, expr)
-  where 
+    (Var(x){t*}, expr) -> result
+  with 
       prelude(|"java-MatchArg1")
+    ; result := <translate-Match(|S,F)> Match(Var(x){t*}, expr)
     
 
   java-MatchArg2(|S,F) : 
@@ -857,12 +905,13 @@ strategies
     stm|[ 
       { 
          IStrategoTerm x = ~expr:expr; 
-         ~stm:(<translate-Match(|S,F)> Match(t, ExprName(Id(x))))
+         stm
       } 
     ]|
-  where
+  with
       prelude(|"java-MatchArg2")
-    ; with(x := <newname> "trm")
+    ; x   := <newname> "trm"
+    ; stm := <translate-Match(|S,F)> Match(t, ExprName(Id(x)))
 
   translate-Match(|S,F) :
     Match(Op("Nil", []), expr) ->
@@ -872,7 +921,7 @@ strategies
       else 
         ~<Goto> F
     ]|
-  where prelude(|"translate-Match - Match(Op(Nil))")
+  with prelude(|"translate-Match - Match(Op(Nil))")
 
 
   translate-Match(|S,F) :
@@ -886,7 +935,7 @@ strategies
       else
         ~stm:<Goto> F
     ]|
-  where 
+  with 
     <map(java-MatchArg1(|Next(),F) <+ java-MatchArg2(|Next(),F))> 
 	   [ (hd, expr|[ ((IStrategoList)~expr:expr).head() ]|)
 	   , (tl, expr|[ ((IStrategoList)~expr:expr).tail() ]|) ] => match-args
