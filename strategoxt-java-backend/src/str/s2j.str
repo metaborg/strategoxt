@@ -148,7 +148,7 @@ rules
               @Override
               public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
                   IStrategoTerm[] targs) {
-                // FIXME: Pass strategy and term args
+                // XXX: Pass strategy and term args
                 return invoke(context, term);
               }
             }
@@ -273,6 +273,8 @@ strategies
   newcase  = !Lit(Deci("1001"))
   newlabel = !Id(<newname> "label")
   newloop  = !Id(<newname> "loop")
+
+  // TODO: Use labeled (block,) break and continue instead of switch to simulate gotos
 
   goto(|label) = <Goto> label 
   
@@ -700,7 +702,7 @@ strategies
       if( ~expr:e == ~expr:trm ) 
         ~stm:<Goto> S
       else 
-        ~stm:<Goto> S
+        ~stm:<Goto> F
      ]|
   with
       prelude(|"translate-Match - Match(Var(x){bound}, trm)")

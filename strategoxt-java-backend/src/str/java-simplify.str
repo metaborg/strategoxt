@@ -25,6 +25,9 @@ strategies
   
   java-simplify-stm :
     If(e, s1, Empty()) -> If(e, s1)
+  
+  java-simplify-stm :
+    |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
 
 strategies
 
