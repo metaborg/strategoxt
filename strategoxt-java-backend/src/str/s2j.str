@@ -138,7 +138,7 @@ rules
               
                 Fail: {
                   ~stm:body;
-                  return term;
+                  if (true) return term;
                 };
                 return null;
               }
@@ -264,7 +264,7 @@ strategies
           public IStrategoTerm invoke(Context context, IStrategoTerm term) { 
             Fail: {
               ~stm:body;
-              return term;
+              if (true) return term;
             }
             return null;
           }

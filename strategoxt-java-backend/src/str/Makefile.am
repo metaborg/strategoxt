@@ -1,5 +1,5 @@
 include $(top_srcdir)/Makefile.xt
-#include $(wildcard *.dep)
+# include $(wildcard *.dep)
 
 libexec_PROGRAMS = s2j backend-simplify
 
@@ -7,17 +7,23 @@ LDADD += $(SSL_LIBS) -lstrc
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../../syn
 
-SCFLAGS        = --main io-$* -O 0
+STRCFLAGS        = --main io-$* -O 0 --format-check 0
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.syn) 
 CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.c) $(wildcard *.o)
 BOOTCLEANFILES = $(wildcard *.c) 
 
+XTC_IMPORT = $(JAVA_FRONT_XTC)
+
 # command-line testing
 
 CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:.
 
-s2j.c : s2j.str $(wildcard *.str) $(wildcard lib/*.str)
+s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str)
+	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) \
+	            -la stratego-lib -la stratego-rtg -la stratego-xtc -la $(STRATEGOXT)/lib/libstrc.la \
+	            --main io-s2j --xtc-repo $(JAVA_FRONT_XTC) \
+	            -i $< -o $@
 
 %.ctree : %.str
 	strc -F --library -la stratego-lib -i $< -o $@
@@ -30,7 +36,7 @@ s2j.c : s2j.str $(wildcard *.str) $(wildcard lib/*.str)
 
 %.java : %.ajava
 	pp-java -i $< -o $@ || \
-	    (format-check -i $< --rtg ~/.nix-profile/share/java-front/Java-15.rtg --vis && exit 1)
+	    (format-check -i $< --rtg $(JAVA_FRONT)/share/java-front/Java-15.rtg --vis && exit 1)
 
 %.class : %.java
 	javac -cp $(CLASSPATH) $<
