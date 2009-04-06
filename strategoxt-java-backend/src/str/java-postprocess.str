@@ -40,7 +40,7 @@ strategies
     [Empty() | s*] -> s*
     
   java-simplify-stm :
-    Block([ExprStm(s)]) -> ExprStm(s)
+    [Block([ExprStm(s)]) | s*] -> [ExprStm(s) | s*]
   
   java-simplify-stm :
     Block([s, Block(s*)]) -> Block([s | s*])
