@@ -133,7 +133,7 @@ rules
               public static x instance = new x();
               
               public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
-                // TODO: if (instance != this) instance.invoke(term, arg*);
+                // TODO: if (instance != this) instance.invoke(context, term, arg*);
                 ITermFactory termFactory = context.getFactory();
               
                 Fail: {
@@ -270,8 +270,9 @@ strategies
           }
           
           @Override
-          public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs, IStrategy[] targs) {
-            invoke(context, term);
+          public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
+              IStrategoTerm[] targs) {
+            return invoke(context, term);
           }
         } 
     ]|
@@ -290,9 +291,9 @@ strategies
     ; <kdebug(!"args2  ")> args2
     ; e*  := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2)
     ; <kdebug(!"e*     ")> e*
-      // TODO: Call invokeDynamic as required
+      // FIXME: Call invokeDynamic as required
     ; call := bstm* |[ 
-	             term = x.instance.invoke(e*,term); 
+	             term = x.instance.invoke(context, term, e*); 
 	             if(term == null) 
 	               break Fail;
 	           ]|
@@ -469,7 +470,7 @@ rules
   java-ConstructTerm :
     Anno(pt1, pt2) -> 
     expr|[ 
-      termFactory.setAnnotations(~expr:<java-construct-term> pt1, ~expr:<java-construct-term> pt2)
+      termFactory.annotateTerm(~expr:<java-construct-term> pt1, (IStrategoList) ~expr:<java-construct-term> pt2)
     ]|
   where 
       prelude(|"java-ConstructTerm - pt1{pt2}")
@@ -544,7 +545,8 @@ rules
     e -> expr|[ (IStrategoTerm) ~expr:e ]|
 
   java-CastATermListSetAnnotations :
-    expr|[ termFactory.setAnnotations(~expr:e1, ~expr:e2) ]| -> expr|[ (IStrategoList) termFactory.setAnnotations(~expr:e1, ~expr:e2) ]|
+    expr|[                 termFactory.annotateTerm(~expr:e1, (IStrategoList) ~expr:e2) ]| ->
+    expr|[ (IStrategoList) termFactory.annotateTerm(~expr:e1, (IStrategoList) ~expr:e2) ]|
 
   java-UncastATerm :
     expr|[ (IStrategoTerm)~expr:e ]| -> e

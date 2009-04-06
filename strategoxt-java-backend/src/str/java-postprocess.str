@@ -56,14 +56,20 @@ strategies
     where
       <not(?Block(_))> s*
   
+  java-simplify-stm:
+    [Block(s1*) | s2*] -> [s1*, s2*]
+    where
+      <list-loop(is-Stm)> s1*
+  
   java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
 
 strategies
 
-  /*
+  /**
    * Determines if a Java construct is a non-declaration statement.
    *
+   */
   is-Stm =
     ?Try(_, _, _)
     + ?Try(_, _)
@@ -86,4 +92,3 @@ strategies
     + ?Labeled(_, _)
     + ?Empty()
     + ?Block(_)
-  */
