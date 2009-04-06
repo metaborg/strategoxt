@@ -1,0 +1,56 @@
+/**
+ * Java output flattening and simplification.
+ */
+module java-simplify
+
+imports
+  Java-EBlock
+
+strategies
+
+  java-simplify =
+    bottomup-consnil(repeat(java-simplify-stm))
+  
+  java-simplify-stm :
+    [Empty() | s*] -> s*
+    
+  java-simplify-stm :
+    Block([ExprStm(s)]) -> ExprStm(s)
+  
+  java-simplify-stm :
+    Block([s, Block(s*)]) -> Block([s | s*])
+  
+  java-simplify-stm :
+    Block(Block(s*)) -> Block(s*)
+  
+  java-simplify-stm :
+    If(e, s1, Empty()) -> If(e, s1)
+
+strategies
+
+  /*
+   * Determines if a Java construct is a non-declaration statement.
+   *
+  is-Stm =
+    ?Try(_, _, _)
+    + ?Try(_, _)
+    + ?Synchronized(_, _)
+    + ?Throw(_)
+    + ?Return(_)
+    + ?Continue(_)
+    + ?Break(_)
+    + ?ForEach(_, _, _)
+    + ?For(_, _, _, _)
+    + ?For(_, _, _, _)
+    + ?DoWhile(_, _)
+    + ?While(_, _)
+    + ?Switch(_, _)
+    + ?AssertStm(_, _)
+    + ?AssertStm(_)
+    + ?If(_, _, _)
+    + ?If(_, _)
+    + ?ExprStm(_)
+    + ?Labeled(_, _)
+    + ?Empty()
+    + ?Block(_)
+  */

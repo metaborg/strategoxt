@@ -17,6 +17,8 @@ BOOTCLEANFILES = $(wildcard *.c)
 
 CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:.
 
+s2j.c : s2j.str $(wildcard *.str) $(wildcard lib/*.str)
+
 %.ctree : %.str
 	strc -F --library -la stratego-lib -i $< -o $@
 

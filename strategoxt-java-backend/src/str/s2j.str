@@ -7,13 +7,14 @@
  */
 module s2j
 imports
-  Stratego-Core 
-  libstratego-lib
-  Java-15 
-  Java-EBlock 
   libstrc
   libstratego-xtc
   libstratego-rtg
+  libstratego-lib
+
+  java-simplify
+  
+  Java-EBlock
 
 signature
   constructors 
@@ -42,6 +43,7 @@ rules
     ; rules( java-rtg := rtg )
     ; extract-meta
     ; java-compile-spec
+    ; java-simplify
       
   extract-meta = 
      ?_{Meta(metas)}
@@ -89,14 +91,14 @@ rules
 	 public static String testMain(String input) {
 	    Context context = new Context();
 	    preInit(context.getFactory());
-	    IStrategoTerm result = main_0_0.getInstance().invoke(context, context.getFactory().parseFromString(input));
+	    IStrategoTerm result = main_0_0.instance.invoke(context, context.getFactory().parseFromString(input));
         return result == null ? null : result.toString();
      }
         
 	 public static void main(String args[]) {
 	    Context context = new Context();
 	    preInit(context.getFactory());
-	    IStrategoTerm result = context.invokeStrategyCLI(main_0_0.getInstance(), "~x_name", args);
+	    IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
         if (result == null) {
           System.err.println("Rewriting failed"); 
           System.exit(1); 
@@ -119,7 +121,6 @@ rules
     ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
     ; cnst-decls    := <bagof-Fragment> "ConstDecl"
     ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
-    
 
 rules
   translate-inner-definition = translate-any-definition(|[Final(), Static()])
@@ -128,17 +129,7 @@ rules
   translate-any-definition(|modifiers):
     SDefT(x, strats*, terms*, s) -> type-dec |[ 
             mod* class x extends Strategy {
-              private static x instance = new x();
-              
-              protected x() {}
-              
-              public static final x getInstance() {
-                return instance;
-              }
-              
-              public static final void setInstance(x strategy) {
-                instance = strategy;
-              }
+              public static x instance = new x();
               
               public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
                 // TODO: if (instance != this) instance.invoke(term, arg*);
@@ -174,7 +165,6 @@ rules
     ExtSDef(_, _, _) -> Semicolon()
     where prelude(|"translate-any-definition")
 
-  // XXX: add Strategy parameter
   translate-parameter :
   VarDec(x, ConstType(_)) -> param |[ final IStrategoTerm x ]|
   where prelude(|"translate-parameter - term")
@@ -315,11 +305,7 @@ strategies
   make-strategy-class : 
   (x, body) -> type-dec |[ 
         static final class x extends Strategy { 
-          private static final x instance = new x();
-          
-          public static final x getInstance() {
-            return instance;
-          }
+          public static final x instance = new x();
           
           @Override
           public IStrategoTerm invoke(Context context, IStrategoTerm term) { 
@@ -358,7 +344,7 @@ strategies
     ; <debug(!"S      ")> S
       // TODO: Call invokeDynamic as required
     ; call := bstm* |[ 
-	             term = x.getInstance().invoke(e*,term); 
+	             term = x.instance.invoke(e*,term); 
 	             if(term == null) 
 	               ~stm:<Goto> F
 	             else
