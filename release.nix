@@ -29,14 +29,14 @@ let
         pkgs.libtool
       ] ++ defaultBuildInputs pkgs;
 
-  makeStrategoXTTarball = name : strategoxtSrc : strategoxtBaseline : officialRelease :  
+  makeStrategoXTTarball = name : src : baseline : official :  
     pkgs.releaseTools.makeSourceTarball {
       name = name;
       version = builtins.readFile ./version;
 
-      src = strategoxtSrc;
+      src = src;
 
-      configureFlags = " --with-strategoxt=${strategoxtBaseline} --enable-werror";
+      configureFlags = " --with-strategoxt=${baseline} --enable-werror";
 
       buildInputs = defaultSvnBuildInputs pkgs ;
 
@@ -45,7 +45,7 @@ let
       useTempPrefix = false;
       tarballs = "*.tar.gz";
 
-      inherit officialRelease;
+      officialRelease = official;
     };
 
   jobs = rec {
