@@ -135,14 +135,11 @@ rules
                 // TODO: if (instance != this) instance.invoke(term, arg*);
                 ITermFactory termFactory = context.getFactory();
               
-                int nextState = 1;
-                Root:
-                while(true)
-                  switch(nextState) {
-                  case 0: return null;
-                  case 1: ~stm:body; break Root;
-                  }
-                return term;
+                Fail: {
+                  ~stm:body;
+                  return term;
+                };
+                return null;
               }
               
               @Override
@@ -159,7 +156,7 @@ rules
     ; strats' := <map(translate-parameter)> strats*
     ; terms'  := <map(translate-parameter)> terms*
     ; param*  := <conc> (strats', terms')
-    ; body    := <translate-body(|Next(), (Id("Root"), Lit(Deci("0"))))> s
+    ; body    := <translate-body> s
   
   translate-any-definition(|modifiers):
     ExtSDef(_, _, _) -> Semicolon()
@@ -176,129 +173,78 @@ rules
 strategies
   prelude(|msg) = where(?x#(_) ; log(|Debug(), [ msg, " : ", x ]))
   
-  verify-SwitchGroup(|stratname) = ?SwitchGroup(_, _) <+ log(|Error(), [ stratname, ": not a SwitchGroup!" ])
-  
-  /** @type Strategy -> List(SwitchGroup) */
-  translate-body(|S,F) = 
+  /** @type Strategy -> Stm */
+  translate-body = 
     prelude(|"translate-body") 
-    ; translate-strategy(|S,F)
-    //; //verify-SwitchGroup(|"translate-body")
-      //debug(!"after translate-body :")
+    ; translate-strategy
 
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
-  translate-Scope(|S, F) : 
-  Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy(|S,F)> e]))
+  translate-Scope : 
+  Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy> e]))
   where prelude(|"translate-Scope") ;
     <map(\ x -> bstm |[ IStrategoTerm x = null; ]| \)> vars => vars'
     
   /** @type Id -> Stm */
-  translate-Id(|S,F) :
-    Id() -> <Goto> S
-  where prelude(|"translate-Id")
+  translate-Id :
+    Id() -> Empty()
+    where prelude(|"translate-Id")
     
   /** @type Id -> Stm */
-  translate-Fail(|S,F) :
-    Fail() -> <Goto> F
-  where prelude(|"translate-Fail")
+  translate-Fail :
+    Fail() -> |[ break Fail; ]|
+    where prelude(|"translate-Fail")
 
   /** @type Seq -> Stm */
-  translate-Seq(|S, F) :
+  translate-Seq :
     Seq(s1, s2) -> 
-    bstm |[ 
+    bstm |[
       { 
-        ~stm:<translate-strategy(|Next(), F)> s1 
-        ~stm:<translate-strategy(|Next(), F)> s2 
+        ~stm:<translate-strategy> s1 
+        ~stm:<translate-strategy> s2 
       } 
     ]|
-  where prelude(|"translate-Seq")
+  with prelude(|"translate-Seq")
 
   /** @type GuardedLChoice -> Block */  
-  translate-GuardedLChoice(|S,F) :
+  translate-GuardedLChoice :
     GuardedLChoice(s1, s2, s3) ->
-      Block(bstm* |[
-      nextState = ~n0;
-      IStrategoTerm ~x = null ; 
-      ~id:label:
-      while(true)
-      switch(nextState) {
-          case ~n0: 
-           ~x = term ; 
-            ~stm:<translate-strategy(|n1, n2)> s1
-          case ~n1: 
-            ~stm:<translate-strategy(|S, F)> s2
-            ~stm:<Goto> S
-          case ~n2: 
-            term = ~<!ExprName(x)>; 
-            ~stm:<translate-strategy(|S, F)> s2
-            ~stm:<Goto> S
+    Block(bstm* |[
+      IStrategoTerm x_termcopy = term; 
+      Success: {
+        Fail: {
+           stm_s1;
+           break Success;
+        }
+        stm_s2
       }
+      term = x_termcopy;
+      stm_s3
     ]|)
-   where prelude(|"translate-GuardedLChoice")
-     ; <not(Next())> S
-     ; x     := Id(<newname> "trm")
-     ; label := <newlabel>
-     ; n0    := (label, <newcase>)
-     ; n1    := (label, <newcase>)
-     ; n2    := (label, <newcase>)
+   with prelude(|"translate-GuardedLChoice")
+     ; x_termcopy := <newname> "term"
+     ; stm_s1 := <translate-strategy> s1
+     ; stm_s2 := <translate-strategy> s2
+     ; stm_s3 := <translate-strategy> s3
 
-  translate-GuardedLChoice(|S,F) :
-    GuardedLChoice(s1, s2, s3) ->
-    Block(bstm* |[ {
-      nextState = 0;
-      IStrategoTerm ~x = null ;
-      boolean ~id:loop = true; 
-      ~id:label:
-      while(~expr:ExprName(loop))
-      switch(nextState) {
-        case 0: 
-          ~x = term ; 
-          ~stm:<translate-strategy(|Next(), (label, Lit(Deci("2"))))> s1
-        case 1: 
-          ~stm:<translate-strategy(|S, F)> s2 ;
-           break;
-        case 2: term = ~<!ExprName(x)>; 
-           ~stm:<translate-strategy(|S, F)> s2 ; 
-           break;
-       }
-       }
-    ]|)
-  where prelude(|"translate-GuardedLChoice") 
-    ; !S => Next()
-    ; x     := Id(<newname> "trm")
-    ; label := <newlabel> ()
-    ; loop  := <newloop> ()
-
-  /** @type -> Lit(Deci(String))) */
-  newcase  = !Lit(Deci("1001"))
-  newlabel = !Id(<newname> "label")
-  newloop  = !Id(<newname> "loop")
-
-  // TODO: Use labeled (block,) break and continue instead of switch to simulate gotos
-
-  goto(|label) = <Goto> label 
-  
-  Goto: Next() -> Empty()
-  Goto: (scopeLabel, caseNumber) -> bstm |[ { nextState = ~caseNumber; continue ~scopeLabel; } ]|
-  
-  translate-strategy(|S,F) = 
+  translate-strategy = 
        ( 
-       translate-CallT(|S,F) ; fc
-    <+ translate-Build(|S,F) ; fc
-    <+ translate-Seq(|S,F) ; fc
-    <+ translate-PrimT(|S,F) ; fc
-    <+ translate-Id(|S,F) ; fc
-    <+ translate-Fail(|S,F) ; fc
-    <+ translate-GuardedLChoice(|S,F) ; fc
-    <+ translate-Scope(|S,F) ; fc
-    <+ translate-Match(|S,F) ; fc
-    <+ translate-Let(|S,F) ; fc
+       translate-CallT ; fc
+    <+ translate-Build ; fc
+    <+ translate-Seq ; fc
+    <+ translate-PrimT ; fc
+    <+ translate-Id ; fc
+    <+ translate-Fail ; fc
+    <+ translate-GuardedLChoice ; fc
+    <+ translate-Scope ; fc
+    <+ translate-Match ; fc
+    <+ translate-Let ; fc
 //    <+ debug(!"translate-strategy failed ") ; fail
        ) 
 //    ; debug(!"translated ")
 
-  translate-Let(|S,F): 
-  Let(defs, body) -> Block([<translate-strategy(|S,F)> body])
+  translate-Let: 
+  Let(defs, body) -> Block([<translate-strategy> body])
   with
       prelude(|"translate-Let")
     ; debug
@@ -311,14 +257,11 @@ strategies
           
           @Override
           public IStrategoTerm invoke(Context context, IStrategoTerm term) { 
-            int nextState = 1;
-            Root:
-            while(true)
-              switch(nextState) {
-                case 0: return null;
-                case 1: ~stm:body break Root;
-              }
+            Fail: {
+              ~stm:body;
               return term;
+            }
+            return null;
           }
           
           @Override
@@ -328,12 +271,12 @@ strategies
         } 
     ]|
   
-  translate-CallT(|S,F):
+  translate-CallT:
     CallT(SVar(x), s*, t*) -> Block(call)
     with
       prelude(|"translate-CallT"); 
       // FIXME do actual lifting
-      args1  := <map(\ x -> (<newname> "lifted", <translate-strategy(|S,F)> x) \)> s*
+      args1  := <map(\ x -> (<newname> "lifted", <translate-strategy> x) \)> s*
     ; <map(fragment(make-strategy-class|"LiftedDef"))> args1
 //  ; bodies := <map(make-strategy-class)> args1
     ; args2  := <map(java-construct-term)> t* => args2
@@ -342,15 +285,11 @@ strategies
     ; <debug(!"args2  ")> args2
     ; e*  := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2)
     ; <debug(!"e*     ")> e*
-    ; <debug(!"F      ")> F
-    ; <debug(!"S      ")> S
       // TODO: Call invokeDynamic as required
     ; call := bstm* |[ 
 	             term = x.instance.invoke(e*,term); 
 	             if(term == null) 
-	               ~stm:<Goto> F
-	             else
-	               ~stm:<Goto> S
+	               break Fail;
 	           ]|
     ; <debug(!"call      ")> call
 
@@ -372,12 +311,12 @@ strategies
     sl := <not([]); java-frames-to-static-link> frames
 
 
-  translate-PrimT(|S,F) :
+  translate-PrimT :
     PrimT(f, s*, t*) -> 
-    <java-check-unbound-args(|F,t*)>  
+    <java-check-unbound-args(|t*)>  
     Block(bstm* |[ 
       term = context.invokePrimitive("~f", term, new IStrategy[] { ~*args1 }, new IStrategoTerm[] { ~*args2 });
-      if (term == null) ~<Goto> F else ~<Goto> S
+      if (term == null) break Fail;
     ]|)
   with prelude(|"translate-PrimT") ;
        <debug(!"s* ")> s*
@@ -389,34 +328,32 @@ strategies
   
 /* ================================ Build  */
 
-  translate-Build(|S,F):
+  translate-Build:
     Build(t) -> 
-    <java-check-unbound-args(|F,t)> 
+    <java-check-unbound-args(|t)> 
     Block(bstm*|[
                ~*decs
                ~*stms
-               term = ~expr:e;
-               ~stm:<Goto> S
+               term = e;
                ]|)
   where prelude(|"translate-Build")
-    ; {| java-CheckList, java-FailureLabel : 
-	     rules( java-FailureLabel : _ -> F )
-	   ; <java-construct-term> t => e
+    ; {| java-CheckList :
+	     <java-construct-term> t => e
 	   ; debug(!"term ")
 	   ; bagof-java-CheckList; unzip; (id, reverse; concat) => (decs, stms)
 	   ; debug(!"bagof-CheckList ")
       |} 
 
-  java-check-unbound-args(|F,t) =
-    try(java-CheckUnboundArgs(|F,t))
+  java-check-unbound-args(|t) =
+    try(java-CheckUnboundArgs(|t))
 
-  java-CheckUnboundArgs(|F,t) :
-    s -> 
+  java-CheckUnboundArgs(|t) :
+    stm -> 
     stm|[ 
-      if(~expr:e)
-        ~stm:<Goto> F
+      if (e)
+        break Fail;
       else  
-        ~stm:s
+        stm
     ]|
     where prelude(|"CheckUnboundArgs") ;
       <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
@@ -512,7 +449,7 @@ rules
   java-ConstructAnnoVar :
     Anno(Var(x), pt2) -> 
     expr|[ 
-      termFactory.annotateTerm(~expr:e, ~expr:<java-construct-term> pt2)
+      termFactory.annotateTerm(e, ~expr:<java-construct-term> pt2)
     ]|
   where
       prelude(|"java-ConstructAnnoVar") 
@@ -565,6 +502,7 @@ rules
     Op("Nil", []) -> expr|[ termFactory.makeList() ]|
   where prelude(|"java-ConstructTerm - Op(Nil, [])")
 
+  // TODO: use factory instead of IStrategoList.prepend
   java-ConstructTerm :
     Op("Cons", [t1, t2]) -> 
     expr|[ 
@@ -585,15 +523,16 @@ rules
 	        end => e
 
   java-check-aterm-list :
-    e -> expr|[ (IStrategoList)~id:x ]|
+    e -> expr|[ (IStrategoList) x ]|
   where 
       prelude(|"java-check-aterm-list") 
-    ; x := Id(<newname> "trm")
-	; F := <java-FailureLabel> ()
+    ; x := <newname> "list"
     ; stms := 
-	     (bstm |[ IStrategoList ~id:x; ]|, 
-          bstm*|[ ~id:x = checkTermList(~expr:e);
-                  if(~id:x == null) ~stm:<Goto> F ]|)
+	     ( bstm |[ IStrategoList x; ]|
+         , bstm*|[
+             x = checkTermList(e);
+             if (x == null) break Fail;
+           ]|)
     ; rules( java-CheckList :+ _ -> stms )
 
   java-CastATerm :
@@ -668,17 +607,17 @@ strategies
 /* ================================ Match */
 strategies
 
-  translate-Match(|S,F) :
+  translate-Match :
     Match(t) -> result
   with prelude(|"translate-Match - Match/1")
      ; <debug(!"term ")> t
-     ; result := <translate-Match(|S,F)> Match(t, ExprName(Id("term")))
+     ; result := <translate-Match> Match(t, ExprName(Id("term")))
 
-  translate-Match(|S,F) :
-    Match(Wld(), trm) -> <Goto> S
+  translate-Match :
+    Match(Wld(), trm) -> Empty()
   with prelude(|"translate-Match - Match(Wld,trm)")
 
-  translate-Match(|S,F) :
+  translate-Match :
     Match(As(t1,t2), trm) ->
     stm|[ 
       { 
@@ -687,37 +626,32 @@ strategies
       }
     ]|
   with prelude(|"translate-Match - Match(As(t1,t2), trm)")
-     ; stm_match1 := <translate-Match(|Next(),F)> Match(t1,trm)
-     ; stm_match2 := <translate-Match(|S,F)> Match(t2,trm)
+     ; stm_match1 := <translate-Match> Match(t1,trm)
+     ; stm_match2 := <translate-Match> Match(t2,trm)
 
-  translate-Match(|S,F) :
+  translate-Match :
     Match(Var(x){"unbound"}, trm) ->
-    stm|[ { ~e = ~expr:trm; ~stm:<Goto> S } ]|
+    stm|[ ~e = ~expr:trm; ]|
   with prelude(|"translate-Match - Match(Var(x){unbound}, trm)");
     ExprName(e) := <java-VarToWriteRef> x
 
-  translate-Match(|S,F) :
+  translate-Match :
     Match(Var(x){"bound"}, trm) ->
     stm|[ 
-      if( ~expr:e == ~expr:trm ) 
-        ~stm:<Goto> S
-      else 
-        ~stm:<Goto> F
+      if(!e.equals(~expr:trm)) 
+        break Fail;
      ]|
   with
       prelude(|"translate-Match - Match(Var(x){bound}, trm)")
     ; e := <java-VarToReadRef> Var(x)
 
-  translate-Match(|S,F) :
-    Match(Var(x){"(un)bound"}, expr) ->
+  translate-Match :
+    Match(Var(x){"(un)bound"}, e) ->
     stm|[ 
-      if(~expr:e1 == null) {
-          lhs = ~expr:expr;
-          ~stm:<Goto> S
-      } else if(!(~expr:e1).equals(~expr:expr)) {
-        ~stm:<Goto> F
-      } else
-        ~stm:<Goto> S
+      if(e1 == null)
+        lhs = e;
+      else if(!e1.equals(e))
+        break Fail;
     ]|
   with 
       prelude(|"translate-Match - Match(Var(x){(un)bound})")
@@ -754,44 +688,44 @@ strategies
     ; foldr(!expr|[ sl ]|,
 	        !expr|[ sl_up(~expr:<Snd>) ]|)
 
-  translate-Match(|S,F) :
-    Match(Var(x){}, trm) -> <translate-Match(|S,F)> Match(Var(x){"(un)bound"}, trm)
+  translate-Match :
+    Match(Var(x){}, trm) -> <translate-Match> Match(Var(x){"(un)bound"}, trm)
   with prelude(|"translate-Match - Match(Var(x){}")
     ; <debug(!"ZZ ")> x
 
-  translate-Match(|S,F) :
-    Match(Explode(t1, t2), expr) ->
+  translate-Match :
+    Match(Explode(t1, t2), e) ->
     stm|[ 
     {
       IStrategoTerm ~id:n0, ~id:n1;
-	 ~id:n0 = SSL_get_constructor(~expr:expr);
-	 ~id:n1 = SSL_get_arguments(~expr:expr);
-	 ~stm:(<translate-Match(|Next(),F)> Match(t1, ExprName(n0)))
-	 ~stm:(<translate-Match(|S     ,F)> Match(t2, ExprName(n1)))
+	 ~id:n0 = SSL_get_constructor(e);
+	 ~id:n1 = SSL_get_arguments(e);
+	 ~stm:(<translate-Match> Match(t1, ExprName(n0)))
+	 ~stm:(<translate-Match> Match(t2, ExprName(n1)))
      } ]|
   with
-      !expr => ExprName(Id(_))
+      !e => ExprName(Id(_))
     ; prelude(|"translate-Match - Match(Explode)") 
     ; n0 := Id(<newname> "trm")
     ; n1 := Id(<newname> "trm")
 
-  translate-Match(|S,F) =
-       ( translate-MatchNoAnno(|S,F)
-      <+ translate-MatchAnno(|S,F) ) 
+  translate-Match =
+       ( translate-MatchNoAnno
+      <+ translate-MatchAnno ) 
       ; where(<debug> "after anno matching")
 
-  translate-MatchNoAnno(|S,F) :
-    Match(Anno(pt1, Wld()), expr) -> result
+  translate-MatchNoAnno :
+    Match(Anno(pt1, Wld()), e) -> result
     with prelude(|"translate-MatchNoAnno - Match(pt1{^_}")
-       ; result := <translate-Match(|S,F)> Match(pt1, expr)
+       ; result := <translate-Match> Match(pt1, e)
 
-  translate-MatchAnno(|S,F) :
-    Match(Anno(pt1, pt2), expr) -> 
+  translate-MatchAnno :
+    Match(Anno(pt1, pt2), e) -> 
     stm|[ 
       { 
-        ~stm:stm0
-        IStrategoList ~id:x = ~expr.getAnnotations();
-        ~stm:stm1
+        stm0
+        IStrategoList x = e.getAnnotations();
+        stm1
       } 
     ]|
   where 
@@ -800,67 +734,62 @@ strategies
       prelude(|"translate-MatchAnno - Match(pt1{^pt2})")
     ; <debug(!"pt1 ")> pt1
     ; <debug(!"pt2 ")> pt2
-    ; x    := Id(<newname> "trm")
-    ; stm0 := <translate-Match(|Next(),F)> Match(pt1, expr)
-    ; stm1 := <translate-Match(|S     ,F)> Match(pt2, ExprName(x))
+    ; x    := <newname> "annos"
+    ; stm0 := <translate-Match> Match(pt1, e)
+    ; stm1 := <translate-Match> Match(pt2, ExprName(Id(x)))
 
   /**
    * @todo  String constants should probably be cached, just like constructor names
    */
-  translate-Match(|S,F) :
-    Match(Str(x), expr) -> 
+  translate-Match :
+    Match(Str(str), e) -> 
     stm|[
-      if((~expr:expr).getTermType() == IStrategoTerm.STRING && ((IStrategoString)(~expr:expr)).getValue().equals(~expr:x'))
-        ~stm:<Goto> S
-      else 
-        ~stm:<Goto> F
+      if (e.getTermType() != IStrategoTerm.STRING
+         || !e_str.equals(((IStrategoString) e).stringValue()))
+        break Fail;
     ]|
   with
-      !expr => ExprName(Id(_))
+      !e => ExprName(Id(_))
     ; prelude(|"translate-Match - Match(Str)")
-    ; x' := Lit(String([Chars(<escape> x)]))
+    ; e_str := Lit(String([Chars(<escape> str)]))
 
-  translate-Match(|S,F) :
-    Match(Int(i), expr) -> 
+  translate-Match :
+    Match(Int(i), e) -> 
     stm|[
-      if((~expr:expr).getTermType() == IStrategoTerm.INT && ((IStrategoInt)~expr:expr).getValue() == ~expr:x')
-        ~stm:<Goto> S
-      else 
-        ~stm:<Goto> F
+      if (e.getTermType() != IStrategoTerm.INT
+         || e_int != ((IStrategoInt) e).intValue())
+        break Fail;
     ]|
   with
-      !expr => ExprName(Id(_))
+      !e => ExprName(Id(_))
     ; prelude(|"translate-Match - Match(Int)")
-    ; <debug(!"zz ")> expr
-    ; x' := <java-mk-int-const> i
+    ; <debug(!"zz ")> e
+    ; e_int := <java-mk-int-const> i
     ; debug(!"xx ")
 
-  translate-Match(|S,F) :
-    Match(Real(i),expr) -> 
+  translate-Match :
+    Match(Real(r), e) -> 
     stm|[
-      if((~expr:expr).getTermType() == IStrategoTerm.REAL && ((IStrategoReal)~expr:expr).getValue() == ~expr:x')
-        ~stm:<Goto> S
-      else 
-        ~stm:<Goto> F
+      if (e.getTermType() != IStrategoTerm.REAL 
+          || e_real != ((IStrategoReal) e).realValue())
+        break Fail;
     ]|
   with
-      !expr => ExprName(Id(_))
+      !e => ExprName(Id(_))
     ; prelude(|"translate-Match - Match(Real)")
-    ; x' := Lit(Float(<try(real-to-string)> i))
+    ; e_real := Lit(Float(<try(real-to-string)> r))
 
   /**
    * Translate a match of an Op, but not a Cons/2 or Nil/0.
    */
-  translate-Match(|S,F) :
-    Match(op@Op(c, ts), expr) ->
+  translate-Match :
+    Match(op@Op(c, ts), e) ->
     stm|[
-      if( matchConstructor(~expr:expr, e_cname) )
-        { 
-          ~bstm*:match-args
-          ~stm:<Goto> S
-        }
-      else
-        ~stm:<Goto> F
+      if (matchConstructor(e, e_cname)) {
+        ~bstm*:match-args
+      } else {
+        break Fail;
+      }
     ]|
   where
        <not(is-ListOp)> op
@@ -875,55 +804,52 @@ strategies
   with
        (match-args, _) := <thread-map(\ (t,i) ->
              (
-               <java-MatchArg1(|Next(),F) <+ java-MatchArg2(|Next(),F)> 
-                  (t, expr|[ (~expr:expr).getSubterm(~expr:<java-mk-int-const> i) ]|)
+               <java-MatchArg1 <+ java-MatchArg2> 
+                  (t, expr|[ e.getSubterm(~expr:<java-mk-int-const> i) ]|)
              , <add>(i, 1)
              )
            \ )> (ts,0)
 
-  java-MatchArg1(|S,F) : 
-    (Var(x){t*}, expr) -> result
+  java-MatchArg1 : 
+    (Var(x){t*}, e) -> result
   with 
       prelude(|"java-MatchArg1")
-    ; result := <translate-Match(|S,F)> Match(Var(x){t*}, expr)
-    
+    ; result := <translate-Match> Match(Var(x){t*}, e)
 
-  java-MatchArg2(|S,F) : 
-    (t, expr) -> 
+  java-MatchArg2 : 
+    (t, e) -> 
     stm|[ 
       { 
-         IStrategoTerm x = ~expr:expr; 
+         IStrategoTerm x = e; 
          stm
       } 
     ]|
   with
       prelude(|"java-MatchArg2")
-    ; x   := <newname> "trm"
-    ; stm := <translate-Match(|S,F)> Match(t, ExprName(Id(x)))
+    ; x   := <newname> "arg"
+    ; stm := <translate-Match> Match(t, ExprName(Id(x)))
 
-  translate-Match(|S,F) :
-    Match(Op("Nil", []), expr) ->
+  translate-Match :
+    Match(Op("Nil", []), e) ->
     stm|[
-      if((~expr:expr).getTermType() == IStrategoTerm.LIST && ((IStrategoList)~expr:expr).isEmpty())
-        ~<Goto> S
-      else 
-        ~<Goto> F
+      if (e.getTermType() != IStrategoTerm.LIST
+          || !((IStrategoList) e).isEmpty())
+        break Fail;
     ]|
   with prelude(|"translate-Match - Match(Op(Nil))")
 
 
-  translate-Match(|S,F) :
-    Match(Op("Cons", [hd, tl]), expr) ->
+  translate-Match :
+    Match(Op("Cons", [hd, tl]), e) ->
     stm|[
-      if((~expr:expr).getTermType() == IStrategoTerm.LIST && !((IStrategoList)~expr:expr).isEmpty())
-        { 
+      if (e.getTermType() == IStrategoTerm.LIST
+          && !((IStrategoList) e).isEmpty()) {
           ~bstm*:match-args 
-          ~stm:<Goto> S
-        }
-      else
-        ~stm:<Goto> F
+      } else {
+        break Fail;
+      }
     ]|
   with 
-    <map(java-MatchArg1(|Next(),F) <+ java-MatchArg2(|Next(),F))> 
-	   [ (hd, expr|[ ((IStrategoList)~expr:expr).head() ]|)
-	   , (tl, expr|[ ((IStrategoList)~expr:expr).tail() ]|) ] => match-args
+    <map(java-MatchArg1 <+ java-MatchArg2)> 
+	   [ (hd, expr|[ ((IStrategoList) e).head() ]|)
+	   , (tl, expr|[ ((IStrategoList) e).tail() ]|) ] => match-args
