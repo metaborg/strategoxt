@@ -1,10 +1,35 @@
 /**
- * Java output flattening and simplification.
+ * Java output postprocessing
  */
-module java-simplify
+module java-postprocess
 
 imports
   Java-EBlock
+
+strategies
+
+  java-relabel =
+    rec rec(
+      java-relabel-stm
+    <+
+      all(rec)
+    )
+  
+  java-relabel-stm :
+    |[ x_label: { bstm* } ]| -> |[ x_label': { bstm'* } ]|
+    with
+      x_label' := <newname> x_label
+    ; {| Relabel:
+        rules(
+          Relabel: x_label -> x_label'
+        )
+      ; bstm'* := <java-relabel> bstm*
+      |}
+   
+   java-relabel-stm :
+     x_label -> x_label'
+     where
+       x_label' := <Relabel> x_label
 
 strategies
 
@@ -25,6 +50,11 @@ strategies
   
   java-simplify-stm :
     If(e, s1, Empty()) -> If(e, s1)
+    
+  java-simplify-stm :
+    Labeled(l, s*) -> Labeled(l, Block(s*)) // must contain Block
+    where
+      <not(?Block(_))> s*
   
   java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|

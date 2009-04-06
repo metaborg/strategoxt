@@ -12,7 +12,7 @@ imports
   libstratego-rtg
   libstratego-lib
 
-  java-simplify
+  java-postprocess
   
   Java-EBlock
 
@@ -44,6 +44,7 @@ rules
     ; extract-meta
     ; java-compile-spec
     ; java-simplify
+    ; java-relabel
       
   extract-meta = 
      ?_{Meta(metas)}
