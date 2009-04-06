@@ -174,6 +174,10 @@ rules
 strategies
   prelude(|msg) = where(?x#(_) ; log(|Debug(), [ msg, " : ", x ]))
   
+  kdebug(s) = log(|Notice(), [<s>, <id>])
+  
+  kdebug = log(|Notice(), [<id>])
+  
   /** @type Strategy -> Stm */
   translate-body = 
     prelude(|"translate-body") 
@@ -240,15 +244,15 @@ strategies
     <+ translate-Scope ; fc
     <+ translate-Match ; fc
     <+ translate-Let ; fc
-//    <+ debug(!"translate-strategy failed ") ; fail
+//    <+ kdebug(!"translate-strategy failed ") ; fail
        ) 
-//    ; debug(!"translated ")
+//    ; kdebug(!"translated ")
 
   translate-Let: 
   Let(defs, body) -> Block([<translate-strategy> body])
   with
       prelude(|"translate-Let")
-    ; debug
+    ; kdebug
     ; <map(fragment(translate-inner-definition | "LiftedDef"))> defs
  
   make-strategy-class : 
@@ -281,18 +285,18 @@ strategies
     ; <map(fragment(make-strategy-class|"LiftedDef"))> args1
 //  ; bodies := <map(make-strategy-class)> args1
     ; args2  := <map(java-construct-term)> t* => args2
-    ; <debug(!"args1  ")> args1
-//  ; <debug(!"bodies ")> bodies
-    ; <debug(!"args2  ")> args2
+    ; <kdebug(!"args1  ")> args1
+//  ; <kdebug(!"bodies ")> bodies
+    ; <kdebug(!"args2  ")> args2
     ; e*  := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2)
-    ; <debug(!"e*     ")> e*
+    ; <kdebug(!"e*     ")> e*
       // TODO: Call invokeDynamic as required
     ; call := bstm* |[ 
 	             term = x.instance.invoke(e*,term); 
 	             if(term == null) 
 	               break Fail;
 	           ]|
-    ; <debug(!"call      ")> call
+    ; <kdebug(!"call      ")> call
 
   java-ArgToCl :
     CallT(SVar(f{Closure(x), Frames([])}), [], []) -> expr|[ x ]|
@@ -320,11 +324,11 @@ strategies
       if (term == null) break Fail;
     ]|)
   with prelude(|"translate-PrimT") ;
-       <debug(!"s* ")> s*
+       <kdebug(!"s* ")> s*
      ; args1 := <map(java-ArgToCl)> s*
-     ; <debug(!"foo ")> t*
+     ; <kdebug(!"foo ")> t*
      ; args2 := <map(java-construct-term)> t*
-     ; <debug(!"zap ")> args2
+     ; <kdebug(!"zap ")> args2
      ; args  := <conc> (args1, args2)
   
 /* ================================ Build  */
@@ -340,9 +344,9 @@ strategies
   where prelude(|"translate-Build")
     ; {| java-CheckList :
 	     <java-construct-term> t => e
-	   ; debug(!"term ")
+	   ; kdebug(!"term ")
 	   ; bagof-java-CheckList; unzip; (id, reverse; concat) => (decs, stms)
-	   ; debug(!"bagof-CheckList ")
+	   ; kdebug(!"bagof-CheckList ")
       |} 
 
   java-check-unbound-args(|t) =
@@ -358,11 +362,11 @@ strategies
     ]|
     where prelude(|"CheckUnboundArgs") ;
       <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
-    ; debug(!"unbound ")
+    ; kdebug(!"unbound ")
 	; not([])
 	; foldr1(!expr|[ ~expr:<Hd; java-ConstructVar> == null ]|
 	        ,!expr|[ ~expr:<Fst; java-ConstructVar> == null || ~expr:<Snd> ]|) => e
-    ; debug(!"expr ")
+    ; kdebug(!"expr ")
 
 /**
  * Term construction with constant term caching
@@ -388,7 +392,7 @@ rules
 
   java-CacheConstant :
     (t, e1) -> e2
-  where prelude(|"CacheConstant") ; <debug> (t, "->", e1) ;
+  where prelude(|"CacheConstant") ; <kdebug> (t, "->", e1) ;
       <(Op(id, map(java-Cache)); proper-list 
             + Anno(java-Cache, java-Cache) 
             + Int(id) + Str(id) + Real(id) )> t
@@ -445,7 +449,7 @@ rules
   with 
       prelude(|"java-ConstructVar") 
     ; e := <java-VarToReadRef> x
-    ; debug(!"var to read ref: ")
+    ; kdebug(!"var to read ref: ")
 
   java-ConstructAnnoVar :
     Anno(Var(x), pt2) -> 
@@ -483,7 +487,7 @@ rules
       prelude(|"java-ConstructTerm - Op(c, t*)")
     ; cn   := ExprName(Id(<java-ConstructorName> (c, <length> t*)))
     ; args := <map(java-construct-term)> t*
-    ; debug(!"not listop")
+    ; kdebug(!"not listop")
     
   java-ConstructTerm :
     Explode(t1, t2) -> 
@@ -611,7 +615,7 @@ strategies
   translate-Match :
     Match(t) -> result
   with prelude(|"translate-Match - Match/1")
-     ; <debug(!"term ")> t
+     ; <kdebug(!"term ")> t
      ; result := <translate-Match> Match(t, ExprName(Id("term")))
 
   translate-Match :
@@ -656,18 +660,18 @@ strategies
     ]|
   with 
       prelude(|"translate-Match - Match(Var(x){(un)bound})")
-    ; <debug(!"XX ")> Var(x)
+    ; <kdebug(!"XX ")> Var(x)
     ; e1 := <java-VarToReadRef> Var(x)
-    ; <debug(!"PP")> ()
+    ; <kdebug(!"PP")> ()
 	; e2 := <java-VarToWriteRef> x
 	; if !e2 => ExprName(_) then
         lhs := e2
 	  else
         lhs := e2
 	  end
-    ; <debug(!"e1 ")> e1
-    ; <debug(!"e2 ")> e2
-    ; <debug(!"lhs  ")> lhs
+    ; <kdebug(!"e1 ")> e1
+    ; <kdebug(!"e2 ")> e2
+    ; <kdebug(!"lhs  ")> lhs
 
   java-VarToWriteRef :
     x{} -> ExprName(Id(x))
@@ -692,7 +696,7 @@ strategies
   translate-Match :
     Match(Var(x){}, trm) -> <translate-Match> Match(Var(x){"(un)bound"}, trm)
   with prelude(|"translate-Match - Match(Var(x){}")
-    ; <debug(!"ZZ ")> x
+    ; <kdebug(!"ZZ ")> x
 
   translate-Match :
     Match(Explode(t1, t2), e) ->
@@ -713,7 +717,7 @@ strategies
   translate-Match =
        ( translate-MatchNoAnno
       <+ translate-MatchAnno ) 
-      ; where(<debug> "after anno matching")
+      ; where(<kdebug> "after anno matching")
 
   translate-MatchNoAnno :
     Match(Anno(pt1, Wld()), e) -> result
@@ -733,8 +737,8 @@ strategies
       <not(Wld)> pt2
   with
       prelude(|"translate-MatchAnno - Match(pt1{^pt2})")
-    ; <debug(!"pt1 ")> pt1
-    ; <debug(!"pt2 ")> pt2
+    ; <kdebug(!"pt1 ")> pt1
+    ; <kdebug(!"pt2 ")> pt2
     ; x    := <newname> "annos"
     ; stm0 := <translate-Match> Match(pt1, e)
     ; stm1 := <translate-Match> Match(pt2, ExprName(Id(x)))
@@ -764,9 +768,9 @@ strategies
   with
       !e => ExprName(Id(_))
     ; prelude(|"translate-Match - Match(Int)")
-    ; <debug(!"zz ")> e
+    ; <kdebug(!"zz ")> e
     ; e_int := <java-mk-int-const> i
-    ; debug(!"xx ")
+    ; kdebug(!"xx ")
 
   translate-Match :
     Match(Real(r), e) -> 
