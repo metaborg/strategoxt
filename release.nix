@@ -30,7 +30,7 @@ let
       ] ++ defaultBuildInputs pkgs;
 
   makeStrategoXTTarball = name : strategoxtSrc : strategoxtBaseline : officialRelease :  
-      pkgs.releaseTools.makeSourceTarball {
+    pkgs.releaseTools.makeSourceTarball {
       name = name;
       version = builtins.readFile ./version;
 
@@ -67,7 +67,7 @@ let
         name = "strategoxt";
         src = tarball;
  
-        buildInputs = defaultSvnBuildInputs pkgs ;
+        buildInputs = defaultBuildInputs pkgs ;
 
       };
 
