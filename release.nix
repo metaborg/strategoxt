@@ -5,6 +5,7 @@
 }:
 
 let
+
   i686pkgs = import nixpkgs { system = "i686-linux"; };
 
   pkgs = import nixpkgs {};
