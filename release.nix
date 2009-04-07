@@ -6,8 +6,6 @@
 
 let
 
-  i686pkgs = import nixpkgs { system = "i686-linux"; };
-
   pkgs = import nixpkgs {};
 
   strategoxtBaseline =
@@ -34,48 +32,49 @@ let
         pkgs.libtool
       ] ++ defaultBuildInputs pkgs;
 
-  makeStrategoXTTarball = name : src : baseline : official :  
-    i686pkgs.releaseTools.makeSourceTarball {
+  makeStrategoXTTarball = name : baseline :
+    pkgs.releaseTools.makeSourceTarball {
       name = name;
       version = builtins.readFile ./version;
 
-      src = src;
+      src = strategoxtSrc;
 
       configureFlags = " --with-strategoxt=${baseline} --enable-werror";
 
-      buildInputs = defaultSvnBuildInputs i686pkgs ;
+      buildInputs = defaultSvnBuildInputs pkgs ;
 
       doCheck = false;
       dontInstall = false;
       useTempPrefix = false;
       tarballs = "*.tar.gz";
 
-      officialRelease = official;
+      inherit officialRelease;
     };
 
   svn_tarball_run1 = 
-    makeStrategoXTTarball "strategoxt-tarball1" strategoxtSrc strategoxtBaseline officialRelease ;
+    makeStrategoXTTarball "strategoxt-tarball1" strategoxtBaseline;
 
   svn_tarball_run2 = 
-    makeStrategoXTTarball "strategoxt-tarball2" strategoxtSrc svn_tarball_run1 officialRelease ;
+    makeStrategoXTTarball "strategoxt-tarball2" svn_tarball_run1;
+
+  systemPkgs = import nixpkgs {inherit system;};
 
   jobs = rec {
 
     tarball = 
-      makeStrategoXTTarball "strategoxt-tarball" strategoxtSrc svn_tarball_run2 officialRelease ; 
+      makeStrategoXTTarball "strategoxt-tarball" svn_tarball_run2; 
 
     build =
-      { tarball ? jobs.tarball {}
-      , system ? "i686-linux"
+      { tarball ? jobs.tarball
       }:
  
-      with import nixpkgs {inherit system;};
+      with systemPkgs ;
 
       releaseTools.nixBuild {
         name = "strategoxt";
         src = tarball;
  
-        buildInputs = defaultBuildInputs pkgs ;
+        buildInputs = defaultBuildInputs systemPkgs ;
 
       };
 
