@@ -1,11 +1,12 @@
 { nixpkgs ? ../nixpkgs
 , officialRelease ? false
 , strategoxtSrc ? {outPath = ./. ; rev = 1234;}
+, system ? "i686-linux"
 }:
 
 let
 
-  pkgs = import nixpkgs { };
+  pkgs = import nixpkgs { inherit system; };
 
   strategoxtBaseline =
     pkgs.stdenv.mkDerivation {
@@ -63,7 +64,6 @@ let
 
     build =
       { tarball ? jobs.tarball {}
-      , system ? "i686-linux"
       }:
  
       with import nixpkgs {inherit system;};
