@@ -11,8 +11,8 @@ let
     pkgs.stdenv.mkDerivation {
       name = "strategoxt-baseline";
       src = pkgs.fetchurl {
-              url = "http://releases.strategoxt.org/strategoxt/strategoxt-0.17pre18222-xi157j0s/strategoxt-0.17pre18222.tar.gz";
-              sha256 = "1d8cd6bc0d24281edef302434277f74dbe5ccac8493e410af5cce9cef5ec43d4";
+              url = "http://releases.strategoxt.org/strategoxt/strategoxt-0.17pre18583-i573smdl/strategoxt-0.17pre18583.tar.gz";
+              sha256 = "4769d82a62d1c53fc3f4631ddef489e638ff2361a2eceb1226f2b56ab45b7784";
             };
 
       buildInputs = defaultBuildInputs pkgs ;
