@@ -1,5 +1,7 @@
 /**
- * Java output postprocessing
+ * Java output postprocessing.
+ *
+ * @author Lennart Kats
  */
 module java-postprocess
 

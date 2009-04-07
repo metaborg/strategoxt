@@ -1,0 +1,85 @@
+/**
+ * Lifting of local variables.
+ *
+ * @author Lennart Kats
+ */
+module variable-lifting
+
+rules
+ 
+  collect-lifted-tvars =
+    tvars
+  ; list-loop({
+      x := <strip-annos>
+    ; rules(IsLiftedTVar: x)
+    })
+  
+  collect-lifted-svars =
+    svars
+  
+  lifted-vars-to-constructor(|x_name) :
+    (svar*, tvar*) ->
+    |[ public x_name(param_svar*, param_tvar*) {
+         bstm*
+       }
+    ]|
+    with
+      param_svar* := <map(\x -> param |[ IStrategy x ]|\)> svar*
+    ; param_tvar* := <map(\x -> param |[ ITermReference x ]|\)> tvar*
+    ; var*        := <conc> (tvar*, svar*)
+    ; bstm* := <map(\x -> |[ this.x = x; ]|\)> var*
+ 
+  /*
+  collect-lifted-vars =
+    collect-lifted-vars-scope
+  <+
+    collect-lifted-vars-var
+  <+
+    crush(![], union, collect-lifted-vars)
+
+  collect-lifted-vars-scope:
+    SDefT(
+
+  collect-lifted-vars-scope:
+    Scope(x*, body) -> results
+    with
+      {| IsLocalVar:
+        !x*
+      ; list-loop({ ?x; rules(IsLocalVar: x) })
+      ; results := <collect-lifted-vars> body
+      |}
+  
+  collect-lifted-vars-scope:
+    ScopeDefault(body) -> []
+          
+  collect-lifted-vars-var:
+    Var(x) -> [x]
+    where
+      <not(IsLocalVar)> x
+    with
+      x' := <strip-annos> x
+    ; rules(
+        IsLiftedVar: y -> y
+        where
+          <strip-annos> y => x'
+      )
+  */
+
+rules
+
+  replace-lifted-vars =
+    alltd(
+      replace-lifted-vars-assign
+    + replace-lifted-vars-access
+    )
+  
+  replace-lifted-vars-assign:
+    |[ x = e ]| -> |[ x.set(e') ]|
+    where
+      <IsLiftedTVar> x
+    ; e' := <replace-lifted-vars> e
+  
+  replace-lifted-vars-access:
+    expr |[ x ]| -> |[ x.get() ]|
+    where
+      <IsLiftedTVar> x

@@ -6,6 +6,7 @@
  * @author Eelco Visser
  */
 module s2j
+
 imports
   libstrc
   libstratego-xtc
@@ -13,6 +14,7 @@ imports
   libstratego-lib
 
   java-postprocess
+  variable-lifting
   
   Java-EBlock
 
@@ -21,6 +23,11 @@ signature
     Next  : Term
     Match : Term * Exp -> Exp
     Filename : Str -> Term
+
+overlays
+
+  MAX_STATIC_TARGS = 5
+  MAX_STATIC_SARGS = 3
     
 strategies
 
@@ -30,30 +37,30 @@ rules
  
   fc =
     with(
-      rtg-format-check(true, true|<java-rtg>())
-    <+
-      ?x
-    ; where(err(|["Bad term : ", x]))
-    ; fail
+      verbosity => oldverbosity
+    ; <set-verbosity> 1
+    )
+  ; with(
+      rtg-format-check(true, true|<JavaRTG>)
+    ; <set-verbosity> oldverbosity
     | "Internal error: resulting term is not well-formed"
     )
+      
     
   java-backend = 
-      where(<xtc-find ; parse-rtg-file> "Java-15.rtg" => rtg)
-    ; rules( java-rtg := rtg )
+      rules(JavaRTG := <import-term(Java-15.rtg.af)>)
     ; extract-meta
     ; java-compile-spec
     ; java-simplify
     ; java-relabel
-      
+     
   extract-meta = 
      ?_{Meta(metas)}
-    ; where(rules(metas := metas))
+    ; rules(Metas := metas)
   
   meta-filename = 
-      <metas>()
-    ; filter(\ Filename(n) -> n \)
-    ; Hd
+      Metas
+    ; getfirst(?Filename(<id>))
 
   compute-classname = 
       meta-filename 
@@ -66,7 +73,8 @@ rules
      package pkgname;
      
      import org.strategoxt.lang.Strategy; 
-     import org.strategoxt.lang.IStrategy; 
+     import org.strategoxt.lang.IStrategy;
+     import org.strategoxt.lang.ITermReference; 
      import org.strategoxt.lang.Context;
      import org.spoofax.interpreter.terms.*;
          
@@ -124,52 +132,101 @@ rules
     ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
 
 rules
-  translate-inner-definition = translate-any-definition(|[Final(), Static()])
-  translate-outer-definition = translate-any-definition(|[Public(), Static()])
   
-  translate-any-definition(|modifiers):
-    SDefT(x, strats*, terms*, s) -> type-dec |[ 
-            mod* class x extends Strategy {
-              public static x instance = new x();
-              
-              public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
-                // TODO: if (instance != this) instance.invoke(context, term, arg*);
-                ITermFactory termFactory = context.getFactory();
-              
-                Fail: {
-                  ~stm:body;
-                  if (true) return term;
-                };
-                return null;
-              }
-              
-              @Override
-              public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
-                  IStrategoTerm[] targs) {
-                // XXX: Pass strategy and term args
-                return invoke(context, term);
-              }
-            }
-         ]|
+  translate-outer-definition :
+    SDefT(x, strats*, terms*, s) -> type-dec |[
+       public static class x extends Strategy {
+         public static x instance = new x();
+         
+         public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
+           ITermFactory termFactory = context.getFactory();
+           Fail: {
+             ~stm:body;
+             if (true) // (avoid unreachable stm error)
+               return term;
+           };
+           return null;
+         }
+         
+         @Override
+         public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
+             IStrategoTerm[] targs) {
+           // TODO: Pass strategy and term args
+           return invoke(context, term);
+         }
+       }
+    ]|
     with
-      prelude(|"translate-any-definition")
-    ; mod*    := modifiers
+      prelude(|"translate-outer-definition")
     ; strats' := <map(translate-parameter)> strats*
     ; terms'  := <map(translate-parameter)> terms*
     ; param*  := <conc> (strats', terms')
     ; body    := <translate-body> s
+
+
+  translate-inner-definition :
+    SDefT(x, strats*, terms*, s) -> type-dec |[
+       protected static final class x extends Strategy {
+         ~instance-field*
+         ~lifted-tfield*
+         ~lifted-sfield*
+         ~constructor*
+                  
+         public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
+           ITermFactory termFactory = context.getFactory();
+           Fail: {
+             ~stm:body;
+             if (true)  // (avoid unreachable stm error)
+               return term;
+           };
+           return null;
+         }
+         
+         @Override
+         public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
+             IStrategoTerm[] targs) {
+           // TODO: Pass strategy and term args
+           return invoke(context, term);
+         }
+       }
+    ]|
+    with
+      prelude(|"translate-inner-definition")
+    ; lifted-tvar*   := <collect-lifted-tvars>
+    ; lifted-svar*   := <collect-lifted-svars>
+    ; lifted-tfield* := <map(\x -> |[ private final ITermReference x; ]|\)> lifted-tvar*
+    //; debug(!"LIFTED-TFS:  ")
+    ; lifted-sfield* := <map(\x -> |[ private final IStrategy x;     ]|\)> lifted-svar*
+    //; debug(!"LIFTED-SFS:  ")
+    ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
+    //; debug(!"LIFTED-ARGS: ")
+    ; rules(LiftedArgs: x -> lifted-args)
+    ; <debug(!"SET LIFTED ARGS:")> (x, lifted-args)
+    with
+      if !lifted-tvar* => lifted-svar* => [] then
+        instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|
+      ; constructor*    := []
+      else
+        instance-field* := []
+      ; constructor*    := [<lifted-vars-to-constructor(|x)> (lifted-svar*, lifted-tvar*)]
+      end
+    with
+      strats' := <map(translate-parameter)> strats*
+    ; terms'  := <map(translate-parameter)> terms*
+    ; param*  := <conc> (strats', terms')
+    ; body    := <translate-body> s
   
-  translate-any-definition(|modifiers):
+  translate-outer-definition :
     ExtSDef(_, _, _) -> Semicolon()
-    where prelude(|"translate-any-definition")
+    where prelude(|"translate-outer-definition")
 
   translate-parameter :
-  VarDec(x, ConstType(_)) -> param |[ final IStrategoTerm x ]|
-  where prelude(|"translate-parameter - term")
+    VarDec(x, ConstType(_)) -> param |[ final IStrategoTerm x ]|
+    where prelude(|"translate-parameter - term")
   
   translate-parameter : 
-  VarDec(x, FunType(_, _)) -> param |[ final Strategy x ]|
-  where prelude(|"translate-parameter - strategy")
+    VarDec(x, FunType(_, _)) -> param |[ final Strategy x ]|
+    where prelude(|"translate-parameter - strategy")
   
 strategies
   prelude(|msg) = where(?x#(_) ; log(|Debug(), [ msg, " : ", x ]))
@@ -186,9 +243,9 @@ strategies
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
   translate-Scope : 
-  Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy> e]))
-  where prelude(|"translate-Scope") ;
-    <map(\ x -> bstm |[ IStrategoTerm x = null; ]| \)> vars => vars'
+    Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy> e]))
+    where prelude(|"translate-Scope") ;
+          <map(\ x -> bstm |[ IStrategoTerm x = null; ]| \)> vars => vars'
     
   /** @type Id -> Stm */
   translate-Id :
@@ -209,7 +266,7 @@ strategies
         ~stm:<translate-strategy> s2 
       } 
     ]|
-  with prelude(|"translate-Seq")
+    with prelude(|"translate-Seq")
 
   /** @type GuardedLChoice -> Block */  
   translate-GuardedLChoice :
@@ -234,7 +291,9 @@ strategies
 
   translate-strategy = 
        ( 
-       translate-CallT ; fc
+       translate-CallT-local ; fc
+    <+ translate-CallT-recursive ; fc
+    <+ translate-CallT-global ; fc
     <+ translate-Build ; fc
     <+ translate-Seq ; fc
     <+ translate-PrimT ; fc
@@ -243,61 +302,104 @@ strategies
     <+ translate-GuardedLChoice ; fc
     <+ translate-Scope ; fc
     <+ translate-Match ; fc
-    <+ translate-Let ; fc
-//    <+ kdebug(!"translate-strategy failed ") ; fail
+    <+ translate-Let; fc
+    <+ kdebug(!"translate-strategy failed "); fail // ensures stack trace is cut off
        ) 
 //    ; kdebug(!"translated ")
 
-  translate-Let: 
-  Let(defs, body) -> Block([<translate-strategy> body])
-  with
+  translate-Let : 
+    Let(defs, body) -> Block([body'])
+    with
       prelude(|"translate-Let")
     ; kdebug
     ; <map(fragment(translate-inner-definition | "LiftedDef"))> defs
- 
-  make-strategy-class : 
-  (x, body) -> type-dec |[ 
-        static final class x extends Strategy { 
-          public static final x instance = new x();
-          
-          @Override
-          public IStrategoTerm invoke(Context context, IStrategoTerm term) { 
-            Fail: {
-              ~stm:body;
-              if (true) return term;
-            }
-            return null;
-          }
-          
-          @Override
-          public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
-              IStrategoTerm[] targs) {
-            return invoke(context, term);
-          }
-        } 
+    ; body' := <translate-strategy> body
+
+  translate-CallT-local:
+    CallT(SVar(x), s*, t*) -> bstm |[
+      { term = e_instance.invoke(context, term, e_s*, e_t*);
+	    if (term == null) 
+	      break Fail;
+      }
     ]|
-  
-  translate-CallT:
-    CallT(SVar(x), s*, t*) -> Block(call)
     with
-      prelude(|"translate-CallT"); 
-      // FIXME do actual lifting
-      args1  := <map(\ x -> (<newname> "lifted", <translate-strategy> x) \)> s*
-    ; <map(fragment(make-strategy-class|"LiftedDef"))> args1
-//  ; bodies := <map(make-strategy-class)> args1
-    ; args2  := <map(java-construct-term)> t* => args2
-    ; <kdebug(!"args1  ")> args1
-//  ; <kdebug(!"bodies ")> bodies
-    ; <kdebug(!"args2  ")> args2
-    ; e*  := <conc> (<map(!Field(ExprName(Id(<Fst>)),Id("instance")))> args1, args2)
-    ; <kdebug(!"e*     ")> e*
-      // FIXME: Call invokeDynamic as required
-    ; call := bstm* |[ 
-	             term = x.instance.invoke(context, term, e*); 
-	             if(term == null) 
-	               break Fail;
-	           ]|
-    ; <kdebug(!"call      ")> call
+      debug(!"CALLT: ")
+    where
+      <get-annos> x
+    ; getfirst(?Closure(_) + ?ApplyClosure())
+    with
+      debug(!"CALLT-local: ")
+    with
+      prelude(|"translate-CallT")
+    ; e_instance := <lifted-call-to-instance>
+    ; e_s*       := <map(lifted-strategy-to-instance)> s*
+    ; e_t*       := <map(java-construct-term)> t*
+
+  translate-CallT-recursive:
+    CallT(SVar(x), s*, t*) -> bstm |[
+      { term = invoke(context, term, e_s*, e_t*);
+	    if (term == null) 
+	      break Fail;
+      }
+    ]|
+    where
+      <get-annos> x
+    ; x' := <strip-annos> x
+    ; getfirst(?Frames(x))
+    with
+      debug(!"CALLT-recursive: ")
+    with
+      prelude(|"translate-CallT")
+    ; e_s*  := <map(lifted-strategy-to-instance)> s*
+    ; e_t*  := <map(java-construct-term)> t*
+
+  translate-CallT-global:
+    CallT(SVar(x), s*, t*) -> bstm |[
+      { term = x.instance.invoke(context, term, e_s*, e_t*);
+	    if (term == null) 
+	      break Fail;
+      }
+    ]|
+    with
+      debug(!"CALLT-global: ")
+    with
+      prelude(|"translate-CallT")
+    ; e_s*  := <map(lifted-strategy-to-instance)> s*
+    ; e_t*  := <map(java-construct-term)> t*
+  
+  lifted-strategy-to-instance =
+    SVar(id) // pass (potentially parameterizable) svars as-is
+  <+
+    with(
+      !SDefT(<newname => x> "lifted", [], [], <id>)
+    ; fragment(translate-inner-definition | "LiftedDef")
+    ; debug(!"LIFTED: ")
+    )
+  ; !CallT(SVar(x), [], [])
+  ; lifted-call-to-instance
+  
+  lifted-call-to-instance =
+    lifted-call-to-instance-with-args
+  <+
+    lifted-call-to-instance-no-args
+  
+  lifted-call-to-instance-with-args :
+    CallT(SVar(x), _, _) ->  |[ new x(e_arg*) ]|
+    with
+      lifted-arg* := <LiftedArgs> x
+    where
+      !lifted-arg* => [_ | _]
+    with
+      e_arg* := <map(\x -> expr |[ x ]|\)> lifted-arg*
+  
+  lifted-call-to-instance-no-args :
+    CallT(SVar(x), _, _) ->  |[ x.instance ]|
+  
+  is-dynamic-signature(|s*, t*) =
+    where(
+      <leq> (<length> s*, MAX_STATIC_SARGS());
+      <leq> (<length> t*, MAX_STATIC_TARGS())
+    )
 
   java-ArgToCl :
     CallT(SVar(f{Closure(x), Frames([])}), [], []) -> expr|[ x ]|
