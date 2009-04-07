@@ -5,6 +5,7 @@
 }:
 
 let
+  i686pkgs = import nixpkgs { system = "i686-linux"; };
 
   pkgs = import nixpkgs { inherit system; };
 
@@ -33,7 +34,7 @@ let
       ] ++ defaultBuildInputs pkgs;
 
   makeStrategoXTTarball = name : src : baseline : official :  
-    pkgs.releaseTools.makeSourceTarball {
+    i686pkgs.releaseTools.makeSourceTarball {
       name = name;
       version = builtins.readFile ./version;
 
@@ -41,7 +42,7 @@ let
 
       configureFlags = " --with-strategoxt=${baseline} --enable-werror";
 
-      buildInputs = defaultSvnBuildInputs pkgs ;
+      buildInputs = defaultSvnBuildInputs i686pkgs ;
 
       doCheck = false;
       dontInstall = false;
