@@ -7,7 +7,7 @@
 let
   i686pkgs = import nixpkgs { system = "i686-linux"; };
 
-  pkgs = import nixpkgs { inherit system; };
+  pkgs = import nixpkgs {};
 
   strategoxtBaseline =
     pkgs.stdenv.mkDerivation {
@@ -65,6 +65,7 @@ let
 
     build =
       { tarball ? jobs.tarball {}
+      , system ? "i686-linux"
       }:
  
       with import nixpkgs {inherit system;};
