@@ -50,16 +50,16 @@ let
       officialRelease = official;
     };
 
-#  svn_tarball1 = { strategoxtSrc ? {outPath = ./. ; rev = 1234;}, officialRelease ? false }:
-#    makeStrategoXTTarball "strategoxt-tarball1" strategoxtSrc strategoxtBaseline officialRelease ;
+  svn_tarball_run1 = 
+    makeStrategoXTTarball "strategoxt-tarball1" strategoxtSrc strategoxtBaseline officialRelease ;
 
-#  svn_tarball2 = { strategoxtSrc ? {outPath = ./. ; rev = 1234;}, officialRelease ? false }:
-#    makeStrategoXTTarball "strategoxt-tarball2" strategoxtSrc svn_tarball1 officialRelease ;
+  svn_tarball_run2 = 
+    makeStrategoXTTarball "strategoxt-tarball2" strategoxtSrc svn_tarball_run1 officialRelease ;
 
   jobs = rec {
 
     tarball = 
-      makeStrategoXTTarball "strategoxt-tarball" strategoxtSrc strategoxtBaseline officialRelease ; 
+      makeStrategoXTTarball "strategoxt-tarball" strategoxtSrc svn_tarball_run2 officialRelease ; 
 
     build =
       { tarball ? jobs.tarball {}
