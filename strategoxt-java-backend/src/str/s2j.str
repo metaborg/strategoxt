@@ -15,6 +15,7 @@ imports
 
   java-postprocess
   variable-lifting
+  variable-access
   
   Java-EBlock
 
@@ -23,6 +24,8 @@ signature
     Next  : Term
     Match : Term * Exp -> Exp
     Filename : Str -> Term
+    Offset: Int -> Term
+    Frames: List(Term) -> Term
 
 overlays
 
@@ -36,6 +39,8 @@ strategies
 rules
  
   fc =
+    id
+    /*
     with(
       verbosity => oldverbosity
     ; <set-verbosity> 1
@@ -45,6 +50,7 @@ rules
     ; <set-verbosity> oldverbosity
     | "Internal error: resulting term is not well-formed"
     )
+    */
       
     
   java-backend = 
@@ -74,6 +80,7 @@ rules
      
      import org.strategoxt.lang.Strategy; 
      import org.strategoxt.lang.IStrategy;
+     import org.strategoxt.lang.TermReference; 
      import org.strategoxt.lang.ITermReference; 
      import org.strategoxt.lang.Context;
      import org.spoofax.interpreter.terms.*;
@@ -85,14 +92,14 @@ rules
      // TODO: Use static imports for libraries
      //       e.g., import static org.strategoxt.strategolib.*;
      		
-     @SuppressWarnings("unused")
+     @SuppressWarnings({"unused", "cast"})
      public class x_name {
 
      ~*cnst-decls
      ~*cnstr-decls
      ~*lifted-defs
      
-     private static void preInit(ITermFactory termFactory) {
+     public static void preInit(ITermFactory termFactory) {
        ~*cnstr-inits
        ~*cnst-inits
      }
@@ -166,7 +173,7 @@ rules
 
   translate-inner-definition :
     SDefT(x, strats*, terms*, s) -> type-dec |[
-       protected static final class x extends Strategy {
+       private static final class x extends Strategy {
          ~instance-field*
          ~lifted-tfield*
          ~lifted-sfield*
@@ -193,15 +200,17 @@ rules
     with
       prelude(|"translate-inner-definition")
     ; lifted-tvar*   := <collect-lifted-tvars>
-    ; lifted-svar*   := <collect-lifted-svars>
+    with
+      lifted-svar*   := <collect-lifted-svars>
     ; lifted-tfield* := <map(\x -> |[ private final ITermReference x; ]|\)> lifted-tvar*
     //; debug(!"LIFTED-TFS:  ")
-    ; lifted-sfield* := <map(\x -> |[ private final IStrategy x;     ]|\)> lifted-svar*
+    ; lifted-sfield* := <map(\x -> |[ private final IStrategy x;      ]|\)> lifted-svar*
     //; debug(!"LIFTED-SFS:  ")
     ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
     //; debug(!"LIFTED-ARGS: ")
-    ; rules(LiftedArgs: x -> lifted-args)
-    ; <debug(!"SET LIFTED ARGS:")> (x, lifted-args)
+    ; x'             := x{}
+    ; rules(LiftedArgs: x' -> lifted-args)
+    // ; <debug(!"SET LIFTED ARGS:")> (x, lifted-args)
     with
       if !lifted-tvar* => lifted-svar* => [] then
         instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|
@@ -221,11 +230,11 @@ rules
     where prelude(|"translate-outer-definition")
 
   translate-parameter :
-    VarDec(x, ConstType(_)) -> param |[ final IStrategoTerm x ]|
+    VarDec(x, ConstType(_)) -> param |[ IStrategoTerm x ]|
     where prelude(|"translate-parameter - term")
   
   translate-parameter : 
-    VarDec(x, FunType(_, _)) -> param |[ final Strategy x ]|
+    VarDec(x, FunType(_, _)) -> param |[ Strategy x ]|
     where prelude(|"translate-parameter - strategy")
   
 strategies
@@ -243,9 +252,11 @@ strategies
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
   translate-Scope : 
-    Scope(vars, e) -> Block(<conc> (vars', [<translate-strategy> e]))
-    where prelude(|"translate-Scope") ;
-          <map(\ x -> bstm |[ IStrategoTerm x = null; ]| \)> vars => vars'
+    Scope(vars, body) -> bstm |[ { bstm_decl* bstm_body } ]|
+    with
+      prelude(|"translate-Scope")
+    ; bstm_decl* := <map(to-java-vardecl)> vars
+    ; bstm_body  := <translate-strategy> body
     
   /** @type Id -> Stm */
   translate-Id :
@@ -275,13 +286,13 @@ strategies
       IStrategoTerm x_termcopy = term; 
       Success: {
         Fail: {
-           stm_s1;
+           stm_s1
+           stm_s2
            break Success;
         }
-        stm_s2
+        term = x_termcopy;
+        stm_s3
       }
-      term = x_termcopy;
-      stm_s3
     ]|)
    with prelude(|"translate-GuardedLChoice")
      ; x_termcopy := <newname> "term"
@@ -291,8 +302,8 @@ strategies
 
   translate-strategy = 
        ( 
-       translate-CallT-local ; fc
-    <+ translate-CallT-recursive ; fc
+       translate-CallT-recursive ; fc
+    <+ translate-CallT-local ; fc
     <+ translate-CallT-global ; fc
     <+ translate-Build ; fc
     <+ translate-Seq ; fc
@@ -322,15 +333,15 @@ strategies
 	      break Fail;
       }
     ]|
-    with
-      debug(!"CALLT: ")
     where
-      <get-annos> x
-    ; getfirst(?Closure(_) + ?ApplyClosure())
-    with
-      debug(!"CALLT-local: ")
+      not(!x => _{Frames([_])})
+      //<get-annos> x
+      //; one(?Closure(_) + ?ApplyClosure())
+    where
+      e_instance := <lifted-call-to-instance>
     with
       prelude(|"translate-CallT")
+    //; debug(!"CALLT-local ")
     ; e_instance := <lifted-call-to-instance>
     ; e_s*       := <map(lifted-strategy-to-instance)> s*
     ; e_t*       := <map(java-construct-term)> t*
@@ -343,11 +354,7 @@ strategies
       }
     ]|
     where
-      <get-annos> x
-    ; x' := <strip-annos> x
-    ; getfirst(?Frames(x))
-    with
-      debug(!"CALLT-recursive: ")
+      <is-recursive-call> x
     with
       prelude(|"translate-CallT")
     ; e_s*  := <map(lifted-strategy-to-instance)> s*
@@ -361,39 +368,48 @@ strategies
       }
     ]|
     with
-      debug(!"CALLT-global: ")
-    with
       prelude(|"translate-CallT")
     ; e_s*  := <map(lifted-strategy-to-instance)> s*
     ; e_t*  := <map(java-construct-term)> t*
   
   lifted-strategy-to-instance =
-    SVar(id) // pass (potentially parameterizable) svars as-is
-  <+
-    with(
-      !SDefT(<newname => x> "lifted", [], [], <id>)
-    ; fragment(translate-inner-definition | "LiftedDef")
-    ; debug(!"LIFTED: ")
-    )
-  ; !CallT(SVar(x), [], [])
-  ; lifted-call-to-instance
+    if ?CallT(_, _, _) then
+      // Pass (potentially parameterizable) svar calls as-is
+      lifted-call-to-instance
+    else
+      // Lift definition and produce call
+      with(
+        !SDefT(<newname => x> "lifted", [], [], <id>)
+      ; fragment(translate-inner-definition | "LiftedDef")
+      //; debug(!"LIFTED: ")
+      )
+    ; <lifted-call-to-instance> CallT(SVar(x), [], [])
+    end
   
   lifted-call-to-instance =
     lifted-call-to-instance-with-args
+  <+
+    lifted-call-to-instance-direct
   <+
     lifted-call-to-instance-no-args
   
   lifted-call-to-instance-with-args :
     CallT(SVar(x), _, _) ->  |[ new x(e_arg*) ]|
-    with
-      lifted-arg* := <LiftedArgs> x
     where
-      !lifted-arg* => [_ | _]
+      lifted-arg* := <LiftedArgs> x{} // set for local defs
+    ; !lifted-arg* => [_ | _]         // local def with lifting
     with
       e_arg* := <map(\x -> expr |[ x ]|\)> lifted-arg*
   
+  lifted-call-to-instance-direct :
+    CallT(SVar(x), _, _) ->  |[ x ]|
+    where
+      not(<LiftedArgs> x{}) // not locally defined but passed as arg
+  
   lifted-call-to-instance-no-args :
     CallT(SVar(x), _, _) ->  |[ x.instance ]|
+    //where
+    //  <debug(!"X.INSTANCE")> (x, <LiftedArgs <+ !"?"> x{})
   
   is-dynamic-signature(|s*, t*) =
     where(
@@ -401,38 +417,17 @@ strategies
       <leq> (<length> t*, MAX_STATIC_TARGS())
     )
 
-  java-ArgToCl :
-    CallT(SVar(f{Closure(x), Frames([])}), [], []) -> expr|[ x ]|
-//    Strat|[ f~{Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
-
-  java-ArgToCl :
-    CallT(SVar(f{Offset(i),Closure(x),Frames([])}), [], []) -> expr|[ x ]|
-//    Strat|[ f~{Offset(i),Closure(x),Frames([])}(|) ]| -> exp|[ x ]|
-
-  // passing a remote closure to a function
-
-  java-ArgToCl :
-//    Strat|[ f~{Offset(i),Closure(x),Frames(frames)}(|) ]| -> 
-    CallT(SVar(f{Offset(i),Closure(x),Frames(frames)}), [], []) ->
-    expr|[ sl_fun_cl(~expr:<mk-int-const> i, ~expr:sl) ]|
-  with prelude(|"java-ArgToCl") ;
-    sl := <not([]); java-frames-to-static-link> frames
-
-
   translate-PrimT :
     PrimT(f, s*, t*) -> 
     <java-check-unbound-args(|t*)>  
     Block(bstm* |[ 
-      term = context.invokePrimitive("~f", term, new IStrategy[] { ~*args1 }, new IStrategoTerm[] { ~*args2 });
+      term = context.invokePrimitive("~f", term, new IStrategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) break Fail;
     ]|)
-  with prelude(|"translate-PrimT") ;
-       <kdebug(!"s* ")> s*
-     ; args1 := <map(java-ArgToCl)> s*
-     ; <kdebug(!"foo ")> t*
-     ; args2 := <map(java-construct-term)> t*
-     ; <kdebug(!"zap ")> args2
-     ; args  := <conc> (args1, args2)
+  with
+    prelude(|"translate-PrimT")
+  ; e_s*  := <map(lifted-strategy-to-instance)> s*
+  ; e_t*  := <map(java-construct-term)> t*
   
 /* ================================ Build  */
 
@@ -610,11 +605,10 @@ rules
     Op("Nil", []) -> expr|[ termFactory.makeList() ]|
   where prelude(|"java-ConstructTerm - Op(Nil, [])")
 
-  // TODO: use factory instead of IStrategoList.prepend
   java-ConstructTerm :
     Op("Cons", [t1, t2]) -> 
     expr|[ 
-      ((IStrategoList)(~expr:e)).prepend(~expr:<java-construct-term> t1)
+      termFactory.makeList(~expr:<java-construct-term> t1, (IStrategoList) e)
     ]|
   with
       prelude(|"java-ConstructTerm - Cons")
@@ -652,27 +646,6 @@ rules
 
   java-UncastATerm :
     expr|[ (IStrategoTerm)~expr:e ]| -> e
-
-  java-VarToReadRef : 
-    Var(x{}) -> ExprName(Id(x{}))
-
-  java-VarToReadRef :
-    Var(x{Frames([])}) -> ExprName(Id(x{}))
-
-  java-VarToReadRef :
-    Var(x{Offset(i), Frames([])}) -> ExprName(Id(x{}))
-
-  java-VarToReadRef : 
-    Var(x{Offset(i), Frames(frames)}) -> 
-    expr|[ sl_readvar(~expr:<java-mk-int-const> i, ~expr:sl) ]|
-  with
-    sl := <not([]); java-frames-to-static-link> frames
-
-signature
-  constructors
-  
-    Offset: Int -> Term
-    Frames: List(Term) -> Term
     
 /**
  * Signatures
@@ -741,10 +714,10 @@ strategies
      ; stm_match2 := <translate-Match> Match(t2,trm)
 
   translate-Match :
-    Match(Var(x){"unbound"}, trm) ->
-    stm|[ ~e = ~expr:trm; ]|
-  with prelude(|"translate-Match - Match(Var(x){unbound}, trm)");
-    ExprName(e) := <java-VarToWriteRef> x
+    Match(Var(x){"unbound"}, trm) -> stm_assign
+    with
+      prelude(|"translate-Match - Match(Var(x){unbound}, trm)")
+    ; stm_assign := <java-VarToWrite> (x, trm)
 
   translate-Match :
     Match(Var(x){"bound"}, trm) ->
@@ -752,52 +725,24 @@ strategies
       if(!e.equals(~expr:trm)) 
         break Fail;
      ]|
-  with
+    with
       prelude(|"translate-Match - Match(Var(x){bound}, trm)")
     ; e := <java-VarToReadRef> Var(x)
 
   translate-Match :
     Match(Var(x){"(un)bound"}, e) ->
     stm|[ 
-      if(e1 == null)
-        lhs = e;
-      else if(!e1.equals(e))
+      if (e_x == null)
+        stm_assign
+      else if (!e_x.equals(e))
         break Fail;
     ]|
-  with 
+    with 
       prelude(|"translate-Match - Match(Var(x){(un)bound})")
     ; <kdebug(!"XX ")> Var(x)
-    ; e1 := <java-VarToReadRef> Var(x)
+    ; e_x := <java-VarToReadRef> Var(x)
     ; <kdebug(!"PP")> ()
-	; e2 := <java-VarToWriteRef> x
-	; if !e2 => ExprName(_) then
-        lhs := e2
-	  else
-        lhs := e2
-	  end
-    ; <kdebug(!"e1 ")> e1
-    ; <kdebug(!"e2 ")> e2
-    ; <kdebug(!"lhs  ")> lhs
-
-  java-VarToWriteRef :
-    x{} -> ExprName(Id(x))
-
-  java-VarToWriteRef :
-    x{Frames([])} -> ExprName(Id(x))
-
-  java-VarToWriteRef : 
-    x{Offset(i), Frames([])} -> ExprName(Id(x))
-
-  java-VarToWriteRef : 
-    x{Offset(i), Frames(frames)} -> 
-    expr|[ sl_readvar(~expr:<java-mk-int-const> i, ~expr:sl).var ]|
-  where 
-    <not([]); java-frames-to-static-link> frames => sl
-
-  java-frames-to-static-link = prelude(|"java-frames-to-static-link") ; 
-    (Tl <+ err(|"*** frames-to-static-link error: "); fail)
-    ; foldr(!expr|[ sl ]|,
-	        !expr|[ sl_up(~expr:<Snd>) ]|)
+	; stm_assign := <java-VarToWrite> (x, e)
 
   translate-Match :
     Match(Var(x){}, trm) -> <translate-Match> Match(Var(x){"(un)bound"}, trm)

@@ -48,7 +48,12 @@ strategies
     Block([s, Block(s*)]) -> Block([s | s*])
   
   java-simplify-stm :
-    Block(Block(s*)) -> Block(s*)
+    Block([Block(s*)]) -> Block(s*)
+  
+  java-simplify-stm :
+    Block([Block(s*), s]) -> Block([s*, s])
+    where
+      <is-Stm> s
   
   java-simplify-stm :
     If(e, s1, Empty()) -> If(e, s1)

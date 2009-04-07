@@ -9,13 +9,28 @@ rules
  
   collect-lifted-tvars =
     tvars
-  ; list-loop({
-      x := <strip-annos>
-    ; rules(IsLiftedTVar: x)
-    })
+  ; filter(where(
+      get-annos
+    ; one(?Frames([_ | _]))
+    ))
   
   collect-lifted-svars =
     svars
+  ; filter(
+      where(
+        get-annos
+      ; one(?Frames([_ | _]))
+      )
+    ; not(is-recursive-call)
+    )
+  
+  is-recursive-call =
+    with(
+      x := <id>{}
+    )
+  ; get-annos
+  ; one(?Frames([x]))
+      
   
   lifted-vars-to-constructor(|x_name) :
     (svar*, tvar*) ->
@@ -28,58 +43,3 @@ rules
     ; param_tvar* := <map(\x -> param |[ ITermReference x ]|\)> tvar*
     ; var*        := <conc> (tvar*, svar*)
     ; bstm* := <map(\x -> |[ this.x = x; ]|\)> var*
- 
-  /*
-  collect-lifted-vars =
-    collect-lifted-vars-scope
-  <+
-    collect-lifted-vars-var
-  <+
-    crush(![], union, collect-lifted-vars)
-
-  collect-lifted-vars-scope:
-    SDefT(
-
-  collect-lifted-vars-scope:
-    Scope(x*, body) -> results
-    with
-      {| IsLocalVar:
-        !x*
-      ; list-loop({ ?x; rules(IsLocalVar: x) })
-      ; results := <collect-lifted-vars> body
-      |}
-  
-  collect-lifted-vars-scope:
-    ScopeDefault(body) -> []
-          
-  collect-lifted-vars-var:
-    Var(x) -> [x]
-    where
-      <not(IsLocalVar)> x
-    with
-      x' := <strip-annos> x
-    ; rules(
-        IsLiftedVar: y -> y
-        where
-          <strip-annos> y => x'
-      )
-  */
-
-rules
-
-  replace-lifted-vars =
-    alltd(
-      replace-lifted-vars-assign
-    + replace-lifted-vars-access
-    )
-  
-  replace-lifted-vars-assign:
-    |[ x = e ]| -> |[ x.set(e') ]|
-    where
-      <IsLiftedTVar> x
-    ; e' := <replace-lifted-vars> e
-  
-  replace-lifted-vars-access:
-    expr |[ x ]| -> |[ x.get() ]|
-    where
-      <IsLiftedTVar> x
