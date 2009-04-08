@@ -45,7 +45,6 @@ let
 
       doCheck = false;
       dontInstall = false;
-      useTempPrefix = false;
       tarballs = "*.tar.gz";
 
       inherit officialRelease;
