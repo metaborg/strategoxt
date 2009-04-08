@@ -120,7 +120,8 @@ rules
 	    preInit(context.getFactory());
 	    IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
         if (result == null) {
-          System.err.println("Rewriting failed"); 
+          System.err.println("Rewriting failed");
+          context.getStackTracer().printStackTrace();
           System.exit(1); 
         } else {
           System.out.println(result);
@@ -149,16 +150,7 @@ rules
        public static class x extends Strategy {
          public static x instance = new x();
          
-         mod_override*
-         public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
-           ITermFactory termFactory = context.getFactory();
-           Fail: {
-             ~stm:body;
-             if (true) // (avoid unreachable stm error)
-               return term;
-           };
-           return null;
-         }
+         ~body
          
          // TODO: Implement invokeDynamic() as necessary
          //
@@ -168,16 +160,7 @@ rules
     ]|
     with
       prelude(|"translate-outer-definition")
-    ; strats' := <map(translate-parameter)> strats*
-    ; terms'  := <map(translate-parameter)> terms*
-    ; param*  := <conc> (strats', terms')
-    ; body    := <translate-body> s
-    ; if is-dynamic-signature(|strats*, terms*) then
-        mod_override* := []
-      else
-        mod_override* := [ anno |[ @Override ]| ]
-      end
-
+    ; body    := <translate-definition-body>
 
   translate-inner-definition :
     SDefT(x, strats*, terms*, s) -> type-dec |[
@@ -185,18 +168,10 @@ rules
          ~instance-field*
          ~lifted-tfield*
          ~lifted-sfield*
+         
          ~constructor*
          
-         mod_override*         
-         public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
-           ITermFactory termFactory = context.getFactory();
-           Fail: {
-             ~stm:body;
-             if (true)  // (avoid unreachable stm error)
-               return term;
-           };
-           return null;
-         }
+         ~body
        }
     ]|
     with
@@ -222,15 +197,36 @@ rules
       ; constructor*    := [<lifted-vars-to-constructor(|x)> (lifted-svar*, lifted-tvar*)]
       end
     with
-      strats' := <map(translate-parameter)> strats*
+      body := <translate-definition-body>
+  
+  translate-definition-body :
+    SDefT(x, strats*, terms*, s) ->
+    |[ mod_override*
+       public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
+           ITermFactory termFactory = context.getFactory();
+           context.getStackTracer().push("~x");
+           Fail: {
+             bstm
+             if (true) { // (avoid unreachable stm error)
+               context.getStackTracer().popOnSuccess();
+               return term;
+             }
+           };
+           context.getStackTracer().popOnFailure();
+           return null;
+       }
+    ]|
+    with
+      bstm    := <translate-body> s   
+    ; strats' := <map(translate-parameter)> strats*
     ; terms'  := <map(translate-parameter)> terms*
-    ; param*  := <conc> (strats', terms')
-    ; body    := <translate-body> s
+    ; param*  := <conc> (strats', terms')   
     ; if is-dynamic-signature(|strats*, terms*) then
         mod_override* := []
       else
         mod_override* := [ anno |[ @Override ]| ]
       end
+   
   
   translate-outer-definition :
     ExtSDef(_, _, _) -> Semicolon()
@@ -272,7 +268,7 @@ strategies
     
   /** @type Id -> Stm */
   translate-Fail :
-    Fail() -> |[ if (true) break Fail; ]|
+    Fail() -> |[ if (true) break Fail; ]| // (avoid unreachable stm error)
     where prelude(|"translate-Fail")
 
   /** @type Seq -> Stm */
@@ -314,7 +310,7 @@ strategies
            stm_s1
            OuterFail: {
              stm_s2
-             if (true) break Success;
+             if (true) break Success; // (avoid unreachable stm error)
            }
         }
         term = x_termcopy;
