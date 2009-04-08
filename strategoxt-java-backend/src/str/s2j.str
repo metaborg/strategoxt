@@ -95,7 +95,7 @@ rules
      
      // TODO: Use static imports for libraries
      //       e.g., import static org.strategoxt.strategolib.*;
-     		
+         
      @SuppressWarnings({"unused", "cast"})
      public class x_name {
 
@@ -108,25 +108,25 @@ rules
        ~*cnst-inits
      }
 
-	 public static String testMain(String input) {
-	    Context context = new Context();
-	    preInit(context.getFactory());
-	    IStrategoTerm result = main_0_0.instance.invoke(context, context.getFactory().parseFromString(input));
+     public static String testMain(String input) {
+        Context context = new Context();
+        preInit(context.getFactory());
+        IStrategoTerm result = main_0_0.instance.invoke(context, context.getFactory().parseFromString(input));
         return result == null ? null : result.toString();
      }
         
-	 public static void main(String args[]) {
-	    Context context = new Context();
-	    preInit(context.getFactory());
-	    IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
+     public static void main(String args[]) {
+        Context context = new Context();
+        preInit(context.getFactory());
+        IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
         if (result == null) {
-          System.err.println("Rewriting failed");
+          System.err.println("~x_name" + ": rewriting failed, trace:");
           context.getStackTracer().printStackTrace();
           System.exit(1); 
         } else {
           System.out.println(result);
         }
-	 }
+     }
 
      ~*function-defs
 
@@ -352,8 +352,8 @@ strategies
   translate-CallT:
     CallT(SVar(x), s*, t*) -> bstm |[
       { term = e_instance.invoke(context, term, e_s*, e_t*);
-	    if (term == null) 
-	      break Fail;
+        if (term == null) 
+          break Fail;
       }
     ]|
     with
@@ -365,8 +365,8 @@ strategies
   translate-CallT-tail-call :
     CallT(SVar(x), s*, t*) -> bstm |[
       { term = invoke(context, term, e_s*, e_t*);
-	    if (term == null) 
-	      break Fail;
+        if (term == null) 
+          break Fail;
       }
     ]|
     where
@@ -465,10 +465,10 @@ strategies
                ]|)
   where prelude(|"translate-Build")
     ; {| java-CheckList :
-	     <java-construct-term> t => e
-	   ; kdebug(!"term ")
-	   ; bagof-java-CheckList; unzip; (id, reverse; concat) => (decs, stms)
-	   ; kdebug(!"bagof-CheckList ")
+         <java-construct-term> t => e
+       ; kdebug(!"term ")
+       ; bagof-java-CheckList; unzip; (id, reverse; concat) => (decs, stms)
+       ; kdebug(!"bagof-CheckList ")
       |} 
 
   java-check-unbound-args(|t) =
@@ -484,9 +484,9 @@ strategies
     where prelude(|"CheckUnboundArgs") ;
       <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
     ; kdebug(!"unbound ")
-	; not([])
-	; foldr1(!expr|[ ~expr:<Hd; java-ConstructVar> == null ]|
-	        ,!expr|[ ~expr:<Fst; java-ConstructVar> == null || ~expr:<Snd> ]|) => e
+    ; not([])
+    ; foldr1(!expr|[ ~expr:<Hd; java-ConstructVar> == null ]|
+            ,!expr|[ ~expr:<Fst; java-ConstructVar> == null || ~expr:<Snd> ]|) => e
     ; kdebug(!"expr ")
 
 /**
@@ -636,16 +636,16 @@ rules
   with
       prelude(|"java-ConstructTerm - Cons")
     ; <java-construct-term> t2
-	    ; if <not(Anno(is-ListOp,id))> t2 then 
-	        java-check-aterm-list 
-	      else
-	          if ?Id(_) then
-	            !|[ (IStrategoList) ~expr:<id> ]|
-	          else
-	            try(java-UncastATerm)
-	          end
-	          ; try(java-CastATermListSetAnnotations)
-	        end => e
+        ; if <not(Anno(is-ListOp,id))> t2 then 
+            java-check-aterm-list 
+          else
+              if ?Id(_) then
+                !|[ (IStrategoList) ~expr:<id> ]|
+              else
+                try(java-UncastATerm)
+              end
+              ; try(java-CastATermListSetAnnotations)
+            end => e
 
   java-check-aterm-list :
     e -> expr|[ (IStrategoList) x ]|
@@ -653,7 +653,7 @@ rules
       prelude(|"java-check-aterm-list") 
     ; x := <newname> "list"
     ; stms := 
-	     ( bstm |[ IStrategoList x; ]|
+         ( bstm |[ IStrategoList x; ]|
          , bstm*|[
              x = checkTermList(e);
              if (x == null) break Fail;
@@ -693,8 +693,8 @@ strategies
     OpDecl(c, t) ->
     bstm*|[
       ~id:csym = ATmakeSymbol(~expr:Lit(String([Chars(<double-quote> c')])), 
-			                  ~expr:<java-mk-int-const> ar,
-			                  ATtrue);
+                              ~expr:<java-mk-int-const> ar,
+                              ATtrue);
     ]|
   where 
       <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
@@ -765,7 +765,7 @@ strategies
     ; <kdebug(!"XX ")> Var(x)
     ; e_x := <java-VarToReadRef> Var(x)
     ; <kdebug(!"PP")> ()
-	; stm_assign := <java-VarToWrite> (x, e)
+    ; stm_assign := <java-VarToWrite> (x, e)
 
   translate-Match :
     Match(Var(x){}, trm) -> <translate-Match> Match(Var(x){"(un)bound"}, trm)
@@ -777,10 +777,10 @@ strategies
     stm|[ 
     {
       IStrategoTerm ~id:n0, ~id:n1; // XXX: no SSL
-	 ~id:n0 = SSL_get_constructor(e);
-	 ~id:n1 = SSL_get_arguments(e);
-	 ~stm:(<translate-Match> Match(t1, ExprName(n0)))
-	 ~stm:(<translate-Match> Match(t2, ExprName(n1)))
+     ~id:n0 = SSL_get_constructor(e);
+     ~id:n1 = SSL_get_arguments(e);
+     ~stm:(<translate-Match> Match(t1, ExprName(n0)))
+     ~stm:(<translate-Match> Match(t2, ExprName(n1)))
      } ]|
   with
       !e => ExprName(Id(_))
@@ -944,5 +944,5 @@ strategies
     } ]|
   with 
     <map(java-MatchArg1 <+ java-MatchArg2)> 
-	   [ (hd, expr|[ ((IStrategoList) e).head() ]|)
-	   , (tl, expr|[ ((IStrategoList) e).tail() ]|) ] => match-args
+       [ (hd, expr|[ ((IStrategoList) e).head() ]|)
+       , (tl, expr|[ ((IStrategoList) e).tail() ]|) ] => match-args
