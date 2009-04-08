@@ -13,6 +13,7 @@ rules
       get-annos
     ; one(?Frames([_ | _]))
     ))
+  ; make-set-with-annos
   
   collect-lifted-svars =
     svars
@@ -23,6 +24,10 @@ rules
       )
     ; not(is-recursive-call)
     )
+  ; make-set-with-annos
+  
+  make-set-with-annos =
+    foldr(![], union(strip-annos; eq), ![<id>])
   
   is-recursive-call =
     with(
@@ -30,7 +35,6 @@ rules
     )
   ; get-annos
   ; one(?Frames([x]))
-      
   
   lifted-vars-to-constructor(|x_name) :
     (svar*, tvar*) ->

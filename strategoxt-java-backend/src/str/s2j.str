@@ -70,8 +70,13 @@ rules
 
   compute-classname = 
       meta-filename 
-    ; base-filename 
+    ; base-filename
+    ; jify
     ; remove-extension
+  
+  jify =
+    string-replace(|"-", "_")
+  ; string-replace(|"'", "_q_")
     
   java-compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
@@ -265,7 +270,7 @@ strategies
     
   /** @type Id -> Stm */
   translate-Fail :
-    Fail() -> |[ break Fail; ]|
+    Fail() -> |[ if (true) break Fail; ]|
     where prelude(|"translate-Fail")
 
   /** @type Seq -> Stm */
@@ -280,15 +285,35 @@ strategies
     with prelude(|"translate-Seq")
 
   /** @type GuardedLChoice -> Block */  
-  translate-GuardedLChoice :
-    GuardedLChoice(s1, s2, s3) ->
+  translate-UnguardedLChoice :
+    GuardedLChoice(s1, Id(), s2) ->
     Block(bstm* |[
-      IStrategoTerm x_termcopy = term; 
+      IStrategoTerm x_termcopy = term;
       Success: {
         Fail: {
            stm_s1
-           stm_s2
-           break Success;
+        }
+        term = x_termcopy;
+        stm_s2
+      }
+    ]|)
+   with prelude(|"translate-UnguardedLChoice")
+     ; x_termcopy := <newname> "term"
+     ; stm_s1 := <translate-strategy> s1
+     ; stm_s2 := <translate-strategy> s2
+
+  /** @type GuardedLChoice -> Block */  
+  translate-GuardedLChoice :
+    GuardedLChoice(s1, s2, s3) ->
+    Block(bstm* |[
+      IStrategoTerm x_termcopy = term;
+      Success: {
+        Fail: {
+           stm_s1
+           OuterFail: {
+             stm_s2
+             if (true) break Success;
+           }
         }
         term = x_termcopy;
         stm_s3
@@ -310,6 +335,7 @@ strategies
     <+ translate-PrimT ; fc
     <+ translate-Id ; fc
     <+ translate-Fail ; fc
+    <+ translate-UnguardedLChoice ; fc
     <+ translate-GuardedLChoice ; fc
     <+ translate-Scope ; fc
     <+ translate-Match ; fc
@@ -589,7 +615,7 @@ rules
     
   java-ConstructTerm :
     Explode(t1, t2) -> 
-    expr|[ 
+    expr|[ // XXX: no SSL
       SSL_mkterm(~expr:<java-construct-term> t1, ~expr:<java-construct-term> t2) 
     ]|
   with 
@@ -753,7 +779,7 @@ strategies
     Match(Explode(t1, t2), e) ->
     stm|[ 
     {
-      IStrategoTerm ~id:n0, ~id:n1;
+      IStrategoTerm ~id:n0, ~id:n1; // XXX: no SSL
 	 ~id:n0 = SSL_get_constructor(e);
 	 ~id:n1 = SSL_get_arguments(e);
 	 ~stm:(<translate-Match> Match(t1, ExprName(n0)))
