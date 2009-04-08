@@ -19,20 +19,20 @@ let
       buildInputs = defaultBuildInputs pkgs ;
     };
 
-    defaultBuildInputs = pkgs :
-      [ pkgs.pkgconfig
-        pkgs.aterm
-        pkgs.strategoPackages017.sdf
-        pkgs.getopt
-      ];
+  defaultBuildInputs = pkgs :
+    [ pkgs.pkgconfig
+      pkgs.aterm
+      pkgs.strategoPackages017.sdf
+      pkgs.getopt
+    ];
 
-    defaultSvnBuildInputs = pkgs :
-      [ pkgs.autoconf
-        pkgs.automake19x
-        pkgs.libtool
-      ] ++ defaultBuildInputs pkgs;
+  defaultSvnBuildInputs = pkgs :
+    [ pkgs.autoconf
+      pkgs.automake19x
+      pkgs.libtool
+    ] ++ defaultBuildInputs pkgs;
 
-  makeStrategoXTTarball = name : baseline :
+  makeStrategoXTTarball = { name, baseline, useTempPrefix ? false }:  
     pkgs.releaseTools.makeSourceTarball {
       name = name;
       version = builtins.readFile ./version;
@@ -47,21 +47,31 @@ let
       dontInstall = false;
       tarballs = "*.tar.gz";
 
-      inherit officialRelease;
+      inherit officialRelease, useTempPrefix;
     };
 
   svn_tarball_run1 = 
-    makeStrategoXTTarball "strategoxt-tarball1" strategoxtBaseline;
+    makeStrategoXTTarball {
+      name = "strategoxt-tarball1" ;
+      baseline = strategoxtBaseline ;
+    } ;
 
   svn_tarball_run2 = 
-    makeStrategoXTTarball "strategoxt-tarball2" svn_tarball_run1;
+    makeStrategoXTTarball {
+      name = "strategoxt-tarball2" ;
+      baseline = svn_tarball_run1 ;
+    } ;
 
   systemPkgs = import nixpkgs {inherit system;};
 
   jobs = rec {
 
     tarball = 
-      makeStrategoXTTarball "strategoxt-tarball" svn_tarball_run2; 
+      makeStrategoXTTarball {
+      name = "strategoxt-tarball2";
+      baseline = svn_tarball_run2;
+      useTempPrefix = true;
+    };
 
     build =
       { tarball ? jobs.tarball
@@ -72,9 +82,7 @@ let
       releaseTools.nixBuild {
         name = "strategoxt";
         src = tarball;
- 
         buildInputs = defaultBuildInputs systemPkgs ;
-
       };
 
   } ;
