@@ -480,12 +480,11 @@ strategies
 
   java-CheckUnboundArgs(|t) :
     stm -> 
-    stm|[ 
+    stm|[ {
       if (e)
         break Fail;
-      else  
-        stm
-    ]|
+      stm
+    } ]|
     where prelude(|"CheckUnboundArgs") ;
       <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
     ; kdebug(!"unbound ")
@@ -868,12 +867,11 @@ strategies
    */
   translate-Match :
     Match(op@Op(c, ts), e) ->
-    stm|[
-      if (e.getTermType() == IStrategoTerm.APPL && ((IStrategoAppl) e).getConstructor().equals(x_cons)) {
-        ~bstm*:match-args
-      } else
+    stm|[ {
+      if (e.getTermType() != IStrategoTerm.APPL || !((IStrategoAppl) e).getConstructor().equals(x_cons))
         break Fail;
-    ]|
+      ~bstm*:match-args
+    } ]|
   where
     <not(is-ListOp + is-TupleOp)> op
   with
@@ -889,12 +887,11 @@ strategies
    */
   translate-Match :
     Match(op@Op(c, ts), e) ->
-    stm|[
-      if (e.getTermType() == IStrategoTerm.TUPLE && e.getSubtermCount() == i) {
-        ~bstm*:match-args
-      } else
+    stm|[ {
+      if (e.getTermType() != IStrategoTerm.TUPLE || e.getSubtermCount() != i)
         break Fail;
-    ]|
+      ~bstm*:match-args
+    } ]|
   where
     <is-TupleOp> op
   with
@@ -943,13 +940,12 @@ strategies
 
   translate-Match :
     Match(Op("Cons", [hd, tl]), e) ->
-    stm|[
-      if (e.getTermType() == IStrategoTerm.LIST
-          && !((IStrategoList) e).isEmpty()) {
-          ~bstm*:match-args 
-      } else
-        break Fail;
-    ]|
+    stm|[ {
+      if (e.getTermType() != IStrategoTerm.LIST
+          || ((IStrategoList) e).isEmpty())
+          break Fail;
+      ~bstm*:match-args
+    } ]|
   with 
     <map(java-MatchArg1 <+ java-MatchArg2)> 
 	   [ (hd, expr|[ ((IStrategoList) e).head() ]|)
