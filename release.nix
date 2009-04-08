@@ -94,9 +94,9 @@ let
 
     
     deb_debian40i386 = makeDeb_i686 (diskImages: diskImages.debian40i386) 40;
-#    deb_debian50i386 = makeDeb_i686 (diskImages: diskImages.debian50i386) 30;
+    deb_debian50i386 = makeDeb_i686 (diskImages: diskImages.debian50i386) 30;
     deb_ubuntu804i386 = makeDeb_i686 (diskImages: diskImages.ubuntu804i386) 50;
-#    deb_ubuntu810i386 = makeDeb_i686 (diskImages: diskImages.ubuntu810i386) 40;
+    deb_ubuntu810i386 = makeDeb_i686 (diskImages: diskImages.ubuntu810i386) 40;
 
 
 
@@ -112,7 +112,7 @@ let
     with import nixpkgs {inherit system;};
 
     releaseTools.rpmBuild rec {
-      name = "aterm-rpm";
+      name = "strategoxt-rpm";
       src = tarball;
       diskImage = diskImageFun vmTools.diskImages;
       meta = { schedulingPriority = toString prio; };
@@ -129,7 +129,7 @@ let
     with import nixpkgs {inherit system;};
 
     releaseTools.debBuild {
-      name = "aterm-deb";
+      name = "strategoxt-deb";
       src = tarball;
       diskImage = diskImageFun vmTools.diskImages;
       meta = { schedulingPriority = toString prio; };
