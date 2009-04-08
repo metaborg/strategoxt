@@ -86,8 +86,61 @@ let
         buildInputs = defaultBuildInputs systemPkgs ;
       };
 
+    rpm_fedora5i386 = makeRPM_i686 (diskImages: diskImages.fedora5i386) 20;
+    rpm_fedora9i386 = makeRPM_i686 (diskImages: diskImages.fedora9i386) 50;
+    rpm_fedora10i386 = makeRPM_i686 (diskImages: diskImages.fedora10i386) 40;
+    rpm_opensuse103i386 = makeRPM_i686 (diskImages: diskImages.opensuse103i386) 40;
+    rpm_opensuse110i386 = makeRPM_i686 (diskImages: diskImages.opensuse110i386) 40;
+
+    
+    deb_debian40i386 = makeDeb_i686 (diskImages: diskImages.debian40i386) 40;
+#    deb_debian50i386 = makeDeb_i686 (diskImages: diskImages.debian50i386) 30;
+    deb_ubuntu804i386 = makeDeb_i686 (diskImages: diskImages.ubuntu804i386) 50;
+#    deb_ubuntu810i386 = makeDeb_i686 (diskImages: diskImages.ubuntu810i386) 40;
+
+
+
   } ;
 
+  makeRPM_i686 = makeRPM "i686-linux";
+
+  makeRPM =
+    system: diskImageFun: prio:
+    { tarball ? jobs.tarball {}
+    }:
+
+    with import nixpkgs {inherit system;};
+
+    releaseTools.rpmBuild rec {
+      name = "aterm-rpm";
+      src = tarball;
+      diskImage = diskImageFun vmTools.diskImages;
+      meta = { schedulingPriority = toString prio; };
+    };
+
+
+  makeDeb_i686 = makeDeb "i686-linux";
   
+  makeDeb =
+    system: diskImageFun: prio:
+    { tarball ? jobs.tarball {}
+    }:
+
+    with import nixpkgs {inherit system;};
+
+    releaseTools.debBuild {
+      name = "aterm-deb";
+      src = tarball;
+      diskImage = diskImageFun vmTools.diskImages;
+      meta = { schedulingPriority = toString prio; };
+
+      # Work around a bug in (apparently) checkinstall, which causes
+      # `make install' to fail on Ubuntu 8.10.
+      preInstall = ''
+        mkdir -p /usr/share/doc/aterm
+      '';
+    };
+
+ 
 in jobs
 
