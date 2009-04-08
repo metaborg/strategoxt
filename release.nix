@@ -137,7 +137,7 @@ let
       # Work around a bug in (apparently) checkinstall, which causes
       # `make install' to fail on Ubuntu 8.10.
       preInstall = ''
-        mkdir -p /usr/share/doc/aterm
+        mkdir -p /usr/share/doc/strategoxt
       '';
     };
 
