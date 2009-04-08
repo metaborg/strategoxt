@@ -47,7 +47,8 @@ let
       dontInstall = false;
       tarballs = "*.tar.gz";
 
-      inherit officialRelease, useTempPrefix;
+      inherit officialRelease;
+      inherit useTempPrefix;
     };
 
   svn_tarball_run1 = 
