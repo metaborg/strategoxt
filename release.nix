@@ -69,7 +69,7 @@ let
 
     tarball = 
       makeStrategoXTTarball {
-      name = "strategoxt-tarball2";
+      name = "strategoxt-tarball";
       baseline = svn_tarball_run2;
       useTempPrefix = true;
     };
