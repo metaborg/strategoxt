@@ -1,5 +1,6 @@
 package org.strategoxt.lang;
 
+import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
@@ -16,8 +17,12 @@ public abstract class Strategy extends StrategyOverloads<IStrategy, IStrategoTer
 	 * 
 	 * @return The resulting term, or null in case of failure.
 	 */
-	public abstract IStrategoTerm invokeDynamic(Context context, IStrategoTerm current,
-			IStrategy[] sargs, IStrategoTerm[] targs);
+	public IStrategoTerm invokeDynamic(Context context, IStrategoTerm current,
+			IStrategy[] sargs, IStrategoTerm[] targs) {
+		
+		// TODO: Default implementation of invokeDynamic()
+		throw new NotImplementedException();
+	}
 	
 	public String getName() {
 		return getClass().getSimpleName();

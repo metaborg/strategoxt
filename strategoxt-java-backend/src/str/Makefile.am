@@ -29,7 +29,7 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	parse-rtg -i $< -o $@
 
 %.ctree : %.str
-	strc -F --library -la stratego-lib -i $< -o $@
+	strc -F --library -la stratego-lib -i $< -o $@ -O 0
 
 %.sctree : %.ctree backend-simplify
 	backend-simplify -i $< -o $@

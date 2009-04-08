@@ -20,16 +20,16 @@ rules
   ; filter(
       where(
         get-annos
-      ; one(?Frames([_ | _]))
+      ; one(?ApplyClosure())
       )
-    ; not(is-recursive-call)
+    ; not(is-tail-call)
     )
   ; make-set-with-annos
   
   make-set-with-annos =
     foldr(![], union(strip-annos; eq), ![<id>])
   
-  is-recursive-call =
+  is-tail-call =
     with(
       x := <id>{}
     )

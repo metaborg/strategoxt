@@ -11,7 +11,7 @@ public class Term {
 	
 	public static boolean nonNull(IStrategoTerm t) { return t != null; }
 	
-	public static boolean matchConstructor(IStrategoTerm t, IStrategoConstructor c) {
+	public static boolean matchAppl(IStrategoTerm t, IStrategoConstructor c) {
 		if(t.getTermType() == IStrategoTerm.APPL)
 			return ((IStrategoAppl)t).getConstructor().equals(c);
 		if(t.getTermType() == IStrategoTerm.LIST)

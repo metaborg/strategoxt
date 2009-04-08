@@ -90,9 +90,8 @@ rules
      import org.strategoxt.lang.Context;
      import org.spoofax.interpreter.terms.*;
          
-     import static org.strategoxt.lang.Term.nonNull;
      import static org.strategoxt.lang.Term.checkTermList;
-     import static org.strategoxt.lang.Term.matchConstructor;
+     import static org.strategoxt.lang.Term.matchAppl;
      
      // TODO: Use static imports for libraries
      //       e.g., import static org.strategoxt.strategolib.*;
@@ -150,6 +149,7 @@ rules
        public static class x extends Strategy {
          public static x instance = new x();
          
+         mod_override*
          public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
            ITermFactory termFactory = context.getFactory();
            Fail: {
@@ -160,12 +160,10 @@ rules
            return null;
          }
          
-         @Override
-         public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
-             IStrategoTerm[] targs) {
-           // TODO: Pass strategy and term args
-           return invoke(context, term);
-         }
+         // TODO: Implement invokeDynamic() as necessary
+         //
+         //  public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
+         //    IStrategoTerm[] targs) {
        }
     ]|
     with
@@ -174,6 +172,11 @@ rules
     ; terms'  := <map(translate-parameter)> terms*
     ; param*  := <conc> (strats', terms')
     ; body    := <translate-body> s
+    ; if is-dynamic-signature(|strats*, terms*) then
+        mod_override* := []
+      else
+        mod_override* := [ anno |[ @Override ]| ]
+      end
 
 
   translate-inner-definition :
@@ -183,7 +186,8 @@ rules
          ~lifted-tfield*
          ~lifted-sfield*
          ~constructor*
-                  
+         
+         mod_override*         
          public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
            ITermFactory termFactory = context.getFactory();
            Fail: {
@@ -192,13 +196,6 @@ rules
                return term;
            };
            return null;
-         }
-         
-         @Override
-         public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
-             IStrategoTerm[] targs) {
-           // TODO: Pass strategy and term args
-           return invoke(context, term);
          }
        }
     ]|
@@ -229,6 +226,11 @@ rules
     ; terms'  := <map(translate-parameter)> terms*
     ; param*  := <conc> (strats', terms')
     ; body    := <translate-body> s
+    ; if is-dynamic-signature(|strats*, terms*) then
+        mod_override* := []
+      else
+        mod_override* := [ anno |[ @Override ]| ]
+      end
   
   translate-outer-definition :
     ExtSDef(_, _, _) -> Semicolon()
@@ -239,7 +241,7 @@ rules
     where prelude(|"translate-parameter - term")
   
   translate-parameter : 
-    VarDec(x, FunType(_, _)) -> param |[ Strategy x ]|
+    VarDec(x, FunType(_, _)) -> param |[ IStrategy x ]|
     where prelude(|"translate-parameter - strategy")
   
 strategies
@@ -327,9 +329,8 @@ strategies
 
   translate-strategy = 
        ( 
-       translate-CallT-recursive ; fc
-    <+ translate-CallT-local ; fc
-    <+ translate-CallT-global ; fc
+       translate-CallT-tail-call ; fc
+    <+ translate-CallT ; fc
     <+ translate-Build ; fc
     <+ translate-Seq ; fc
     <+ translate-PrimT ; fc
@@ -352,27 +353,20 @@ strategies
     ; <map(fragment(translate-inner-definition | "LiftedDef"))> defs
     ; body' := <translate-strategy> body
 
-  translate-CallT-local:
+  translate-CallT:
     CallT(SVar(x), s*, t*) -> bstm |[
       { term = e_instance.invoke(context, term, e_s*, e_t*);
 	    if (term == null) 
 	      break Fail;
       }
     ]|
-    where
-      not(!x => _{Frames([_])})
-      //<get-annos> x
-      //; one(?Closure(_) + ?ApplyClosure())
-    where
-      e_instance := <lifted-call-to-instance>
     with
       prelude(|"translate-CallT")
-    //; debug(!"CALLT-local ")
     ; e_instance := <lifted-call-to-instance>
     ; e_s*       := <map(lifted-strategy-to-instance)> s*
     ; e_t*       := <map(java-construct-term)> t*
 
-  translate-CallT-recursive:
+  translate-CallT-tail-call :
     CallT(SVar(x), s*, t*) -> bstm |[
       { term = invoke(context, term, e_s*, e_t*);
 	    if (term == null) 
@@ -380,19 +374,7 @@ strategies
       }
     ]|
     where
-      <is-recursive-call> x
-    with
-      prelude(|"translate-CallT")
-    ; e_s*  := <map(lifted-strategy-to-instance)> s*
-    ; e_t*  := <map(java-construct-term)> t*
-
-  translate-CallT-global:
-    CallT(SVar(x), s*, t*) -> bstm |[
-      { term = x.instance.invoke(context, term, e_s*, e_t*);
-	    if (term == null) 
-	      break Fail;
-      }
-    ]|
+      <is-tail-call> x
     with
       prelude(|"translate-CallT")
     ; e_s*  := <map(lifted-strategy-to-instance)> s*
@@ -415,9 +397,9 @@ strategies
   lifted-call-to-instance =
     lifted-call-to-instance-with-args
   <+
-    lifted-call-to-instance-direct
+    lifted-call-to-instance-tail-call
   <+
-    lifted-call-to-instance-no-args
+    lifted-call-to-instance-direct
   
   lifted-call-to-instance-with-args :
     CallT(SVar(x), _, _) ->  |[ new x(e_arg*) ]|
@@ -427,20 +409,40 @@ strategies
     with
       e_arg* := <map(\x -> expr |[ x ]|\)> lifted-arg*
   
-  lifted-call-to-instance-direct :
-    CallT(SVar(x), _, _) ->  |[ x ]|
+  lifted-call-to-instance-tail-call :
+    CallT(SVar(x{}), _, _) -> expr |[ this ]|
     where
-      not(<LiftedArgs> x{}) // not locally defined but passed as arg
+      fail // TODO
   
-  lifted-call-to-instance-no-args :
-    CallT(SVar(x), _, _) ->  |[ x.instance ]|
-    //where
-    //  <debug(!"X.INSTANCE")> (x, <LiftedArgs <+ !"?"> x{})
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{}), _, _) -> expr |[ x.instance ]|
+    with
+      debug(!1)
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Frames([])}), _, _) ->  expr |[ x ]| // local def
+    with
+      debug(!2)
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Frames([_ | _])}), _, _) ->  expr |[ x.instance ]| // global def
+    with
+      debug(!"2.5")
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Closure(_), Frames(_)}), _, _) ->  expr |[ x.instance ]|
+    with
+      debug(!3)
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Offset(_), Frames(_), ApplyClosure()}), _, _) -> |[ x ]| // local def
+    with
+      debug(!4)
   
   is-dynamic-signature(|s*, t*) =
     where(
-      <leq> (<length> s*, MAX_STATIC_SARGS());
-      <leq> (<length> t*, MAX_STATIC_TARGS())
+      <gt> (<length> s*, MAX_STATIC_SARGS());
+      <gt> (<length> t*, MAX_STATIC_TARGS())
     )
 
   translate-PrimT :
@@ -862,35 +864,55 @@ strategies
     ; e_real := Lit(Float(<try(real-to-string)> r))
 
   /**
-   * Translate a match of an Op, but not a Cons/2 or Nil/0.
+   * Translate a match of an Op, but not a Cons/2 , Nil/0, or tuple.
    */
   translate-Match :
     Match(op@Op(c, ts), e) ->
     stm|[
-      if (matchConstructor(e, e_cname)) {
+      if (e.getTermType() == IStrategoTerm.APPL && ((IStrategoAppl) e).getConstructor().equals(x_cons)) {
         ~bstm*:match-args
       } else {
         break Fail;
       }
     ]|
   where
-       <not(is-ListOp)> op
+    <not(is-ListOp + is-TupleOp)> op
   with
-       prelude(|"translate-Match - Match(Op)");
-       e_cname := ExprName(Id(<java-ConstructorName> (c, <length> ts)))
-     <+
-       <is-TupleOp> op;
-       e_cname := Lit(Null())
-     <+
-       <fatal-err(|"Undeclared constructor")> (c, <length> ts)
+    prelude(|"translate-Match - Match(Op)");
+    x_cons := <java-ConstructorName> (c, <length> ts)
+  <+
+    <fatal-err(|"Undeclared constructor")> (c, <length> ts)
   with
-       (match-args, _) := <thread-map(\ (t,i) ->
-             (
+    match-args := <translate-Match-args> (e, ts)
+
+  /**
+   * Translate a match of an Op, but not a Cons/2 or Nil/0.
+   */
+  translate-Match :
+    Match(op@Op(c, ts), e) ->
+    stm|[
+      if (e.getTermType() == IStrategoTerm.TUPLE && e.getSubtermCount() == i) {
+        ~bstm*:match-args
+      } else {
+        break Fail;
+      }
+    ]|
+  where
+    <is-TupleOp> op
+  with
+    i:= <write-to-string> <length> ts
+  ; match-args := <translate-Match-args> (e, ts)
+  
+  translate-Match-args :
+    (e, terms) -> bstm_matcharg*
+    with
+      (bstm_matcharg*, _) :=
+        <thread-map(\ (t,i) -> (
                <java-MatchArg1 <+ java-MatchArg2> 
                   (t, expr|[ e.getSubterm(~expr:<java-mk-int-const> i) ]|)
              , <add>(i, 1)
              )
-           \ )> (ts,0)
+           \ )> (terms,0)
 
   java-MatchArg1 : 
     (Var(x){t*}, e) -> result
