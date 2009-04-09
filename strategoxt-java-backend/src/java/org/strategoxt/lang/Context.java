@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.IOperatorRegistry;
@@ -29,6 +30,8 @@ public class Context {
     private final Map<String, IOperatorRegistry> operatorRegistries =
     	new HashMap<String, IOperatorRegistry>();
     
+    private final StackTracer stackTracer = new StackTracer();
+    
     public Context() {
     	this(new BasicTermFactory());
     }
@@ -36,11 +39,20 @@ public class Context {
     public Context(ITermFactory factory) {
     	this.factory = factory;
         operatorRegistries.put(SSLLibrary.REGISTRY_NAME, new SSLLibrary());
-        interopContext = new org.spoofax.interpreter.core.Context(factory, factory);
+        interopContext = new org.spoofax.interpreter.core.Context(factory, factory) {
+        	@Override
+        	public StackTracer getStackTracer() {
+        		return Context.this.getStackTracer();
+        	}
+        };
     }
 	
 	public final ITermFactory getFactory() {
 		return factory;
+	}
+	
+	public StackTracer getStackTracer() {
+		return stackTracer;
 	}
 	
     public final IOAgent getIOAgent() {
