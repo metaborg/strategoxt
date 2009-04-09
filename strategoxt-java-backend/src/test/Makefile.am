@@ -37,10 +37,10 @@ CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:..
 	javac -J-Xmx256m -J-server -J-XX:MaxInlineSize=128 -J-XX:FreqInlineSize=512 -cp $(CLASSPATH) $<
 
 %.run : %.class
-	java -cp $(CLASSPATH) org.strategoxt.compiler.tests.cases.`basename $< .class`
+	java -ea -cp $(CLASSPATH) org.strategoxt.compiler.tests.cases.`basename $< .class`
 
 %.runner : %.class
-	echo java -cp $(CLASSPATH) org.strategoxt.compiler.tests.cases.`basename $< .class` > $@
+	echo java -ea -cp $(CLASSPATH) org.strategoxt.compiler.tests.cases.`basename $< .class` > $@
 	chmod 755 $@
 
 x:

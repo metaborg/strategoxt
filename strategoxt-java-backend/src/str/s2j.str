@@ -106,7 +106,8 @@ rules
      ~*cnstr-decls
      ~*lifted-defs
      
-     private static boolean TRACES_ENABLED = true;
+     // TODO: Add a switch to always enable stack traces
+     private static boolean TRACES_ENABLED = x_name.class.desiredAssertionStatus();
      
      public static void preInit(ITermFactory termFactory) {
        ~*cnstr-inits
@@ -125,7 +126,7 @@ rules
         preInit(context.getFactory());
         IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
         if (result == null) {
-          System.err.println("~x_name" + ": rewriting failed, trace:");
+          System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
           context.getStackTracer().printStackTrace();
           System.exit(1); 
         } else {

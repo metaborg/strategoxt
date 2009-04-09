@@ -47,5 +47,5 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 %.run : %.class
 	mkdir -p /tmp/org/strategoxt/compiler/tests/cases
 	cp *.class /tmp/org/strategoxt/compiler/tests/cases
-	java -cp $(CLASSPATH):/tmp org.strategoxt.compiler.tests.cases.`basename $< .class`
+	java -ea -cp $(CLASSPATH):/tmp org.strategoxt.compiler.tests.cases.`basename $< .class`
 
