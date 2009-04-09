@@ -102,6 +102,7 @@ rules
      @SuppressWarnings({"unused", "cast"})
      public class x_name {
 
+     static ITermFactory constantFactory;
      ~*cnst-decls
      ~*cnstr-decls
      ~*lifted-defs
@@ -110,6 +111,7 @@ rules
      private static boolean TRACES_ENABLED = x_name.class.desiredAssertionStatus();
      
      public static void preInit(ITermFactory termFactory) {
+       constantFactory = termFactory;
        ~*cnstr-inits
        ~*cnst-inits
      }
@@ -132,6 +134,16 @@ rules
         } else {
           System.out.println(result);
         }
+     }
+     
+     private static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
+         if (factory == constantFactory) {
+           return constant;
+         } else if (factory != null) {
+           return new TermConverter(factory).convert(constant);
+         } else {
+           throw new IllegalStateException("Component not initialized; please call preinit() first");
+         }
      }
 
      ~*function-defs
@@ -207,10 +219,9 @@ rules
            if (TRACES_ENABLED) context.getStackTracer().push("~x");
            Fail: {
              bstm
-             if (true) { // (avoid unreachable stm error)
-               if (TRACES_ENABLED) context.getStackTracer().popOnSuccess();
+             if (TRACES_ENABLED) context.getStackTracer().popOnSuccess();
+             if (true) // (avoid unreachable stm error)
                return term;
-             }
            };
            if (TRACES_ENABLED) context.getStackTracer().popOnFailure();
            return null;
@@ -501,14 +512,16 @@ strategies
  */
 rules 
 
+  /*
   java-init-term-caching =
     where(
          t1 := Op("Nil", [])
        ; t2 := Anno(Op("Nil", []), Op("Nil", []))
-       ; e  := expr|[ atermFactory.makeList() ]|
+       ; e  := expr|[ termFactory.makeList() ]|
     )
     ; rules( java-Cache : t1 -> e )
     ; rules( java-Cache : t2 -> e )
+  */
 
   /** @type Term -> Exp */
   java-construct-term =
@@ -519,17 +532,24 @@ rules
        ; (java-CacheConstant <+ Snd)
 
   java-CacheConstant :
-    (t, e1) -> e2
+    (t, e1) -> |[ getConstant(termFactory, e2) ]|
   where
-      <(Op(id, map(java-Cache)); proper-list 
+      <(Op(id, map(java-Cache)); java-proper-list 
             + Anno(java-Cache, java-Cache) 
             + Int(id) + Str(id) + Real(id) )> t
-      ; x  := <newname> "term"
+  with
+        x  := <newname> "constant"
       ; e2 := ExprName(Id(x))
-      ; rules( java-Cache : t -> e2 )
+      ; rules( java-Cache : t -> |[ getConstant(termFactory, e2) ]| )
       ; !(x, e1)
       ; fragment(java-DeclareTermId|"ConstDecl")
       ; fragment(java-InitTermId|"ConstInit")
+
+ java-proper-list =
+    Op("Nil", [])
+    + Op("Cons", [id, java-proper-list + ExprName(id)])
+    + Op(id, id)
+      ; not(is-ListOp)
 
 // helpers
 
