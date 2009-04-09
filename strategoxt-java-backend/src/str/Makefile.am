@@ -32,7 +32,7 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	strc -F --library -la stratego-lib -i $< -o $@ -O 0
 
 %.sctree : %.ctree backend-simplify
-	backend-simplify -i $< -o $@
+	backend-simplify -b -i $< -o $@
 
 %.ajava : %.sctree s2j
 	s2j -i $< -o $@
@@ -42,7 +42,7 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	    (format-check -i $< --rtg $(JAVA_FRONT)/share/java-front/Java-15.rtg --vis && exit 1)
 
 %.class : %.java
-	javac -cp $(CLASSPATH) $<
+	javac -J-Xmx256m -J-server -J-XX:MaxInlineSize=128 -J-XX:FreqInlineSize=512 -cp $(CLASSPATH) $<
 
 %.run : %.class
 	mkdir -p /tmp/org/strategoxt/compiler/tests/cases

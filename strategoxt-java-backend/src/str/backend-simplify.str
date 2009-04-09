@@ -13,8 +13,8 @@ strategies
   io-backend-simplify = io-wrap(backend-simplify)
   
   backend-simplify = 
-       lift-definitions
-     ; canonicalize
+     //  lift-definitions
+       canonicalize
      ; simplify1
      ; mark-bound-unbound-vars
      ; escaping-variables

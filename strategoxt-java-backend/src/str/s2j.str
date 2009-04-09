@@ -51,7 +51,6 @@ rules
     | "Internal error: resulting term is not well-formed"
     )
     */
-      
     
   java-backend = 
       rules(JavaRTG := <import-term(Java-15.rtg.af)>)
@@ -83,6 +82,11 @@ rules
      |[ 
      package pkgname;
      
+     import org.strategoxt.lang._Id; 
+     import org.strategoxt.lang._Fail; 
+     import org.strategoxt.lang.SRTS_all; 
+     import org.strategoxt.lang.SRTS_one; 
+     import org.strategoxt.lang.SRTS_some; 
      import org.strategoxt.lang.Strategy; 
      import org.strategoxt.lang.IStrategy;
      import org.strategoxt.lang.TermReference; 
@@ -91,7 +95,6 @@ rules
      import org.spoofax.interpreter.terms.*;
          
      import static org.strategoxt.lang.Term.checkTermList;
-     import static org.strategoxt.lang.Term.matchAppl;
      
      // TODO: Use static imports for libraries
      //       e.g., import static org.strategoxt.strategolib.*;
@@ -102,6 +105,8 @@ rules
      ~*cnst-decls
      ~*cnstr-decls
      ~*lifted-defs
+     
+     private static boolean TRACES_ENABLED = true;
      
      public static void preInit(ITermFactory termFactory) {
        ~*cnstr-inits
@@ -159,7 +164,7 @@ rules
        }
     ]|
     with
-      body    := <translate-definition-body>
+      body := <translate-definition-body>
 
   translate-inner-definition :
     SDefT(x, strats*, terms*, s) -> type-dec |[
@@ -198,15 +203,15 @@ rules
     |[ mod_override*
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
            ITermFactory termFactory = context.getFactory();
-           context.getStackTracer().push("~x");
+           if (TRACES_ENABLED) context.getStackTracer().push("~x");
            Fail: {
              bstm
              if (true) { // (avoid unreachable stm error)
-               context.getStackTracer().popOnSuccess();
+               if (TRACES_ENABLED) context.getStackTracer().popOnSuccess();
                return term;
              }
            };
-           context.getStackTracer().popOnFailure();
+           if (TRACES_ENABLED) context.getStackTracer().popOnFailure();
            return null;
        }
     ]|
@@ -220,7 +225,6 @@ rules
       else
         mod_override* := [ anno |[ @Override ]| ]
       end
-   
   
   translate-outer-definition :
     ExtSDef(_, _, _) -> Semicolon()
@@ -271,6 +275,7 @@ strategies
       Success: {
         Fail: {
            stm_s1
+           break Success;
         }
         term = x_termcopy;
         stm_s2
@@ -357,7 +362,7 @@ strategies
     else
       // Lift definition and produce call
       with(
-        !SDefT(<newname => x> "lifted", [], [], <id>)
+        !SDefT(<newname => x> "jlifted", [], [], <id>)
       ; fragment(translate-inner-definition | "LiftedDef")
       //; debug(!"LIFTED: ")
       )
@@ -368,6 +373,9 @@ strategies
     lifted-call-to-instance-with-args
   <+
     lifted-call-to-instance-tail-call
+  <+
+    debug;
+    lifted-call-to-instance-instance
   <+
     lifted-call-to-instance-direct
   
@@ -384,6 +392,7 @@ strategies
     where
       fail // TODO
   
+  // /*
   lifted-call-to-instance-direct :
     CallT(SVar(x{}), _, _) -> expr |[ x.instance ]|
   
@@ -391,13 +400,52 @@ strategies
     CallT(SVar(x{Frames([])}), _, _) ->  expr |[ x ]| // local def
   
   lifted-call-to-instance-direct :
+    CallT(SVar(x{Offset(_), Frames([])}), _, _) ->  expr |[ x ]|
+  
+  lifted-call-to-instance-direct :
     CallT(SVar(x{Frames([_ | _])}), _, _) ->  expr |[ x.instance ]| // global def
   
   lifted-call-to-instance-direct :
-    CallT(SVar(x{Closure(_), Frames(_)}), _, _) ->  expr |[ x.instance ]|
+    CallT(SVar(x{Frames([]), ApplyClosure()}), _, _) ->  expr |[ x ]| // local def
   
   lifted-call-to-instance-direct :
+    CallT(SVar(x{Offset(_), Closure(c), Frames(_)}), _, _) ->  expr |[ x ]|
+    where
+      <eq> (x{}, c)
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Offset(_), Closure(c), Frames(_)}), _, _) ->  expr |[ x.instance ]|
+    where
+      not(<eq> (x{}, c))
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Closure(c), Frames(_)}), _, _) ->  expr |[ x ]|
+    where
+      <eq> (x{}, c)
+  
+  lifted-call-to-instance-direct :
+    CallT(SVar(x{Closure(c), Frames(_)}), _, _) ->  expr |[ x.instance ]|
+    where
+      not(<eq> (x{}, c))
+  
+  lifted-call-to-instance-instance :
     CallT(SVar(x{Offset(_), Frames(_), ApplyClosure()}), _, _) -> |[ x ]| // local def
+  // */
+
+  /*
+  lifted-call-to-instance-instance :
+    CallT(SVar(x{a*}), _, _) -> expr |[ x.instance ]|
+    where
+      !a*
+    ; one(?Frames([_ | _]))
+    ; not(one(?ApplyClosure()))
+    <+
+      !a*
+    ; one(?Closure(_))
+
+  lifted-call-to-instance-direct :
+    CallT(SVar(x), _, _) -> expr |[ x ]|
+  */
   
   is-dynamic-signature(|s*, t*) =
     where(
@@ -558,9 +606,14 @@ rules
     
   java-ConstructTerm :
     Explode(t1, t2) -> 
-    expr|[ // XXX: no SSL
-      SSL_mkterm(~expr:<java-construct-term> t1, ~expr:<java-construct-term> t2) 
+    expr|[
+      context.invokePrimitive("SSL_mkterm", term,
+                              new IStrategy[] {},
+                              new IStrategoTerm[] { e_t1, e_t2 })
     ]|
+    with
+      e_t1 := <java-construct-term> t1
+    ; e_t2 := <java-construct-term> t2
 
   java-ConstructTerm : 
     Op("", args) -> expr|[ termFactory.makeTuple(~*args') ]|
@@ -705,16 +758,19 @@ strategies
     Match(Explode(t1, t2), e) ->
     stm|[ 
     {
-      IStrategoTerm ~id:n0, ~id:n1; // XXX: no SSL
-     ~id:n0 = SSL_get_constructor(e);
-     ~id:n1 = SSL_get_arguments(e);
-     ~stm:(<translate-Match> Match(t1, ExprName(n0)))
-     ~stm:(<translate-Match> Match(t2, ExprName(n1)))
+      IStrategoTerm x_cons = context.invokePrimitive("SSL_get_constructor", term,
+                                                      new IStrategy[] {},
+                                                      new IStrategoTerm[] { e });
+      ~stm:(<translate-Match> Match(t1, ExprName(Id(x_cons))))
+      IStrategoTerm x_args = context.invokePrimitive("SSL_get_arguments", term,
+                                                     new IStrategy[] {},
+                                                     new IStrategoTerm[] { e });
+      ~stm:(<translate-Match> Match(t2, ExprName(Id(x_cons))))
      } ]|
   with
       !e => ExprName(Id(_))
-    ; n0 := Id(<newname> "trm")
-    ; n1 := Id(<newname> "trm")
+    ; x_cons := <newname> "cons"
+    ; x_args := <newname> "args"
 
   translate-Match =
        ( translate-MatchNoAnno
@@ -842,16 +898,14 @@ strategies
   translate-Match :
     Match(Op("Nil", []), e) ->
     stm|[
-      if (e.getTermType() != IStrategoTerm.LIST
-          || !((IStrategoList) e).isEmpty())
+      if (e.getTermType() != IStrategoTerm.LIST || !((IStrategoList) e).isEmpty())
         break Fail;
     ]|
 
   translate-Match :
     Match(Op("Cons", [hd, tl]), e) ->
     stm|[ {
-      if (e.getTermType() != IStrategoTerm.LIST
-          || ((IStrategoList) e).isEmpty())
+      if (e.getTermType() != IStrategoTerm.LIST || ((IStrategoList) e).isEmpty())
           break Fail;
       ~bstm*:match-args
     } ]|
