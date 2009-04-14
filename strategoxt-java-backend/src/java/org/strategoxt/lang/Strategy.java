@@ -48,25 +48,35 @@ public abstract class Strategy extends StrategyOverloads<IStrategy, IStrategoTer
 					case 4: return invoke(context, current, s[0], s[1], t[0], t[1], t[2], t[3]);
 					case 5: return invoke(context, current, s[0], s[1], t[0], t[1], t[2], t[3], t[4]);
 				}
+				break;
+			case 3: 
+				switch (t.length) {
+					case 0: return invoke(context, current, s[0], s[1], s[2]);
+					case 1: return invoke(context, current, s[0], s[1], s[2], t[0]);
+					case 2: return invoke(context, current, s[0], s[1], s[2], t[0], t[1]);
+					case 3: return invoke(context, current, s[0], s[1], s[2], t[0], t[1], t[2]);
+					case 4: return invoke(context, current, s[0], s[1], s[2], t[0], t[1], t[2], t[3]);
+					case 5: return invoke(context, current, s[0], s[1], s[2], t[0], t[1], t[2], t[3], t[4]);
+				}
+				break;
+			case 4: 
+				switch (t.length) {
+					case 0: return invoke(context, current, s[0], s[1], s[2], s[3]);
+					case 1: return invoke(context, current, s[0], s[1], s[2], s[3], t[0]);
+					case 2: return invoke(context, current, s[0], s[1], s[2], s[3], t[0], t[1]);
+					case 3: return invoke(context, current, s[0], s[1], s[2], s[3], t[0], t[1], t[2]);
+					case 4: return invoke(context, current, s[0], s[1], s[2], s[3], t[0], t[1], t[2], t[3]);
+					case 5: return invoke(context, current, s[0], s[1], s[2], s[3], t[0], t[1], t[2], t[3], t[4]);
+				}
 		}
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
-	}
-	
-	@Override
-	public String getName() {
-		return getClass().getSimpleName();
-	}
-	
-	@Override
-	public String toString() {
-		return getName();
 	}
 }
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-abstract class StrategyOverloads<S extends IStrategy, T extends IStrategoTerm> implements IStrategyOverloads<S,T> {
+class StrategyOverloads<S extends IStrategy, T extends IStrategoTerm> implements IStrategyOverloads<S,T> {
 
 	public T invoke(Context context, T current) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
@@ -139,6 +149,85 @@ abstract class StrategyOverloads<S extends IStrategy, T extends IStrategoTerm> i
 	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3, T t4, T t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, T t1) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3, T t4) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3, T t4, T t5) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3, T t4) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3, T t4, T t5) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3, T t4) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
+
+	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3, T t4, T t5) {
+		throw new IllegalArgumentException("Illegal arguments for " + getName());
+	}
 	
-	public abstract String getName();
+	public String getName() {
+		return getClass().getSimpleName();
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

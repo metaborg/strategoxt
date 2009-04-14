@@ -8,6 +8,12 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 public class TermReference implements ITermReference {
 	private IStrategoTerm term;
 	
+	public TermReference(IStrategoTerm term) {
+		this.term = term;
+	}
+	
+	public TermReference() {}
+	
 	public void set(IStrategoTerm term) {
 		this.term = term;
 	}
