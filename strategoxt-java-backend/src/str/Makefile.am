@@ -15,9 +15,10 @@ BOOTCLEANFILES = $(wildcard *.c)
 
 XTC_IMPORT = $(JAVA_FRONT_XTC)
 
-# command-line testing
+# HACK: hardcoded, relative classpath
 
-CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:.
+CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:java:.
+JAVACFLAGS=-J-Xmx256m -J-server -cp $(CLASSPATH)
 
 s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) \
@@ -45,7 +46,5 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	javac -J-Xmx256m -J-server -J-XX:MaxInlineSize=128 -J-XX:FreqInlineSize=512 -cp $(CLASSPATH) $<
 
 %.run : %.class
-	mkdir -p /tmp/org/strategoxt/compiler/tests/cases
-	cp *.class /tmp/org/strategoxt/compiler/tests/cases
-	java -ea -cp $(CLASSPATH):/tmp org.strategoxt.compiler.tests.cases.`basename $< .class`
+	java -ea -cp $(CLASSPATH) `basename $< .class`
 

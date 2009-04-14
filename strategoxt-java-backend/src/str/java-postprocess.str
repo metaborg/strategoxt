@@ -52,8 +52,11 @@ strategies
 
 strategies
 
+  // TODO: Using a consistent variable renaming scheme, eliminate duplicate lifted defs
+  //       Or can we do this in the strc middle-end?
+
   java-simplify =
-    bottomup-consnil(repeat(java-simplify-stm))
+    bottomup-consnil(repeat(java-simplify-stm + java-simplify-expr))
   
   java-simplify-stm :
     [Empty() | s*] -> s*
@@ -87,6 +90,12 @@ strategies
   
   java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
+  
+  java-simplify-expr :
+    |[ new IStrategy[] {} ]| -> |[ EMPTY_STRATEGY_LIST ]|
+  
+  java-simplify-expr :
+    |[ new IStrategoTerm[] {} ]| -> |[ EMPTY_TERM_LIST ]|
 
 strategies
 

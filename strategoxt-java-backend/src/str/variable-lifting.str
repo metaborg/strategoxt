@@ -7,43 +7,47 @@ module variable-lifting
 
 rules
  
-  collect-lifted-tvars =
-    tvars
-  ; filter(where(
-      get-annos
-    ; one(?Frames([_ | _]))
-    ))
+  collect-lifted-tvars(|lifted-def, svars, tvars) =
+    <flatten-list> [ <collect-direct-lifted-vars(|lifted-def)> tvars
+                   , <collect-indirect-lifted-vars(LiftedTArgs)> svars]
   ; make-set-with-annos
   
-  collect-lifted-svars =
-    svars
-  ; filter(
+  collect-lifted-svars(|lifted-def, svars) =
+    <flatten-list> [ <collect-direct-lifted-vars(|lifted-def)> svars
+                   , <collect-indirect-lifted-vars(LiftedSArgs)> svars]
+  ; make-set-with-annos
+  
+  collect-direct-lifted-vars(|lifted-def) =
+    filter(
       where(
         get-annos
-      ; one(?ApplyClosure())
+      ; one(Frames(one(?lifted-def)))
+      ; one(?Offset(_))
       )
-    ; not(is-tail-call)
+    //; where(write-to-string; debug(!"  lifted: "))
+    //<+
+    //  write-to-string; debug(!"  not lifted: "); fail
     )
-  ; make-set-with-annos
+
+  collect-indirect-lifted-vars(lifted-args) =
+    {| IsIndirectCollected:
+      filter({ x: ?x
+      ; not(<IsIndirectCollected> x{})
+      ; x' := x{}
+      ; rules(IsIndirectCollected: x')
+      ; lifted-args
+      ; not([])
+      //; where(<debug(!"  liftedIndirect: ")> (x', <id>))
+      ; <conc> (<id>, <collect-indirect-lifted-vars(lifted-args)>)
+      })
+    |}
   
   make-set-with-annos =
     foldr(![], union(strip-annos; eq), ![<id>])
   
-  is-tail-call =
+  is-self-call =
     with(
       x := <id>{}
     )
   ; get-annos
   ; one(?Frames([x]))
-  
-  lifted-vars-to-constructor(|x_name) :
-    (svar*, tvar*) ->
-    |[ public x_name(param_svar*, param_tvar*) {
-         bstm*
-       }
-    ]|
-    with
-      param_svar* := <map(\x -> param |[ IStrategy x ]|\)> svar*
-    ; param_tvar* := <map(\x -> param |[ ITermReference x ]|\)> tvar*
-    ; var*        := <conc> (tvar*, svar*)
-    ; bstm* := <map(\x -> |[ this.x = x; ]|\)> var*
