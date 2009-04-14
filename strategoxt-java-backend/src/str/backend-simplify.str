@@ -55,7 +55,8 @@ rules
     where
       <one(ClosureAlloc)> a*
     with
-      rules(RemoveClosureAlloc: x' -> s)
+      x' := x{}
+    ; rules(RemoveClosureAlloc: x' -> s)
   
   remove-closure-alloc-call :
     CallT(SVar(x), [], _) -> inline
