@@ -76,7 +76,7 @@ strategies
       <get-config> "--stacktrace" => 0
     
   java-simplify-stm :
-    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> |[ stm bstm* ]|
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm* |[ stm bstm* ]|
     where
       <get-config> "--stacktrace" => 1
   
