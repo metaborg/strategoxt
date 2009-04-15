@@ -571,13 +571,13 @@ strategies
       end
   
   lifted-call-to-instance-direct :
-    CallT(SVar(x{a*}), _, _) -> expr |[ x ]|
+    CallT(SVar(x), _, _) -> expr |[ x ]|
     where
       <IsStrategyArg> x{}
     <+
-      !a*
-    ; one(?Frames([_ | _]))
-    ; one(?Offset(_))
+      <LiftedSArgs> x{} => [_ | _]
+    <+
+      <LiftedTArgs> x{} => [_ | _]
 
   lifted-call-to-instance-instance :
     CallT(SVar(x), _, _) -> expr |[ x.instance ]|
