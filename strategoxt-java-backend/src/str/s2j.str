@@ -428,7 +428,7 @@ strategies
     <+ translate-Match ; fc
     <+ translate-Let; fc
     <+ translate-ImportTerm; fc
-    <+ say(!"translate-strategy failed "); fail // ensures stack trace is cut off
+    <+ fatal-err(|"translate-strategy failed ")
        )
 
   translate-Let : 
@@ -480,6 +480,11 @@ strategies
       ,
         ?bstm_init*
       )
+
+  translate-PrimT :
+    CallDynamic(f, s*, t*) -> <fail>
+    with
+      fatal-err(|"Think again. Dynamic calls are not supported")
 
   translate-PrimT :
     PrimT(f, s*, t*) -> 
@@ -620,7 +625,7 @@ strategies
     with
       outputdir := <dirname> <get-config> "-o"
     ; <copy-file> (input, outputdir)
-    ; log(|Info(), ["Copied imported term file ", outputfile])
+    ; log(|Info(), ["Referenced imported term file ", file])
     <+
       <copy-file> (input, ".")
     ; log(|Info(), ["Copied imported term file to current directory ", outputfile])
