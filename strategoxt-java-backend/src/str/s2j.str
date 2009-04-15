@@ -806,13 +806,18 @@ strategies
     ; fragment(JavaInitConstructorQ <+ JavaInitConstructor|"ConstructorInit")
 
   JavaDeclareConstructor :
-    OpDecl(c, t) -> class-body-dec|[ private static IStrategoConstructor ~id:Id(csym); ]|
+    OpDecl(c, t) -> class-body-dec|[ public static IStrategoConstructor ~id:Id(csym); ]|
   where
     <not("" + "Cons" + "Nil")> c
   with 
       n    := <Arity> t
-    ; csym := <concat-strings> ["sym", <jify> c, <int-to-string> n]
-    ; rules(java-ConstructorName : (c, n) -> csym)
+    ; csym := <java-ConstructorName> (c, n)
+
+  java-ConstructorName :
+    (c, n) -> <conc-strings> (c', "_", n')
+    with
+      c' := <jify> c
+    ; n' := <int-to-string> n
 
   JavaInitConstructorQ :
     OpDecl(c, t) ->
@@ -973,11 +978,7 @@ strategies
     <not(is-ListOp + is-TupleOp)> op
   with
     x_cons := <java-ConstructorName> (c, <length> ts)
-  <+
-    // XXX: Undeclared constructor is inappropriately reported
-    <fatal-err(|"Undeclared constructor")> (c, <length> ts)
-  with
-    match-args := <translate-Match-args> (e, ts)
+  ; match-args := <translate-Match-args> (e, ts)
 
   /**
    * Translate a match of an Op, but not a Cons/2 or Nil/0.
