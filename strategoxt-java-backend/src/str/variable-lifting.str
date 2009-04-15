@@ -24,6 +24,7 @@ rules
       ; one(Frames(one(?lifted-def)))
       ; one(?Offset(_))
       )
+    ; not(is-self-call)
     //; where(write-to-string; debug(!"  lifted: "))
     //<+
     //  write-to-string; debug(!"  not lifted: "); fail
