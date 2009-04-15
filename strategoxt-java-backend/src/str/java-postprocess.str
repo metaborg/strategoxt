@@ -52,41 +52,20 @@ strategies
 
 strategies
 
-  // TODO: Using a consistent variable renaming scheme, eliminate duplicate lifted defs
-  //       Or can we do this in the strc middle-end?
+  topdown-consnil(s) =
+    rec rec(s; all-consnil(rec))
 
   java-simplify =
-    bottomup-consnil(repeat(java-simplify-stm + java-simplify-expr))
+    topdown-consnil(
+      try(Block(flatten-list))
+    ; repeat(java-simplify-stm + java-simplify-expr)
+    )
   
   java-simplify-stm :
     [Empty() | s*] -> s*
-    
-  java-simplify-stm :
-    [Block([ExprStm(s)]) | s*] -> [ExprStm(s) | s*]
-  
-  java-simplify-stm :
-    Block([s, Block(s*)]) -> Block([s | s*])
-  
-  java-simplify-stm :
-    Block([Block(s*)]) -> Block(s*)
-  
-  java-simplify-stm :
-    Block([Block(s*), s]) -> Block([s*, s])
-    where
-      <is-Stm> s
   
   java-simplify-stm :
     If(e, s1, Empty()) -> If(e, s1)
-    
-  java-simplify-stm :
-    Labeled(l, s*) -> Labeled(l, Block(s*)) // must contain Block
-    where
-      <not(?Block(_))> s*
-  
-  java-simplify-stm:
-    [Block(s1*) | s2*] -> [s1*, s2*]
-    where
-      <list-loop(is-Stm)> s1*
   
   java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|

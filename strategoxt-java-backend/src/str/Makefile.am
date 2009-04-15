@@ -17,7 +17,7 @@ XTC_IMPORT = $(JAVA_FRONT_XTC)
 
 # HACK: hardcoded, relative classpath
 
-CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:java:.
+CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:../test/java:.
 JAVACFLAGS=-J-Xmx256m -J-server -cp $(CLASSPATH)
 
 s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
@@ -36,7 +36,7 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	backend-simplify -b -i $< -o $@
 
 %.ajava : %.sctree s2j
-	s2j -i $< -o $@
+	s2j -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.java : %.ajava
 	pp-java -i $< -o $@ || \

@@ -353,7 +353,7 @@ strategies
   translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
   
   translate-Scope : 
-    Scope(vars, body) -> bstm |[ { bstm_decl* bstm_body } ]|
+    Scope(vars, body) -> bstm* |[ bstm_decl* bstm_body ]|
     with
       bstm_decl* := <map(to-java-vardecl)> vars
     ; bstm_body  := <translate-strategy> body
@@ -369,17 +369,15 @@ strategies
   /** @type Seq -> Stm */
   translate-Seq :
     Seq(s1, s2) -> 
-    bstm |[
-      { 
+    bstm* |[
         ~stm:<translate-strategy> s1 
         ~stm:<translate-strategy> s2 
-      } 
     ]|
 
   /** @type GuardedLChoice -> Block */  
   translate-GuardedLChoice-no-left-branch :
     GuardedLChoice(s1, Id(), s2) ->
-    Block(bstm* |[
+    bstm* |[
       IStrategoTerm x_termcopy = term;
       Skip: {
         Fail: {
@@ -390,7 +388,7 @@ strategies
         term = x_termcopy;
         stm_s2
       }
-    ]|)
+    ]|
    with
      x_termcopy := <newname> "term"
    ; stm_s1     := <translate-strategy> s1
@@ -399,7 +397,7 @@ strategies
   /** @type GuardedLChoice -> Block */  
   translate-GuardedLChoice :
     GuardedLChoice(s1, s2, s3) ->
-    Block(bstm* |[
+    bstm* |[
       IStrategoTerm x_termcopy = term;
       Success: {
         Fail: {
@@ -413,7 +411,7 @@ strategies
         term = x_termcopy;
         stm_s3
       }
-    ]|)
+    ]|
    with
      x_termcopy := <newname> "term"
    ; stm_s1     := <translate-strategy> s1
@@ -438,18 +436,18 @@ strategies
        )
 
   translate-Let : 
-    Let(defs, body) -> Block([body'])
+    Let(defs, body) -> body'
     with
       <map(fragment(translate-inner-definition | "LiftedDef"))> defs
     ; body' := <translate-strategy> body
 
   translate-CallT-dynamic:
-    CallT(SVar(x), s*, t*) -> bstm |[
-      { bstm_init*
-        term = e_instance.invokeDynamic(context, term, new IStrategy[] { e_s* }, new IStrategoTerm[] { e_t* });
-        if (term == null) 
-          break Fail;
-      }
+    CallT(SVar(x), s*, t*) ->
+    bstm* |[
+      bstm_init*
+      term = e_instance.invokeDynamic(context, term, new IStrategy[] { e_s* }, new IStrategoTerm[] { e_t* });
+      if (term == null) 
+        break Fail;
     ]|
     where
       is-dynamic-signature(|s*, t*)
@@ -467,12 +465,12 @@ strategies
       )
 
   translate-CallT:
-    CallT(SVar(x), s*, t*) -> bstm |[
-      { bstm_init*
-        term = e_instance.invoke(context, term, e_s*, e_t*);
-        if (term == null) 
-          break Fail;
-      }
+    CallT(SVar(x), s*, t*) ->
+    bstm* |[
+      bstm_init*
+      term = e_instance.invoke(context, term, e_s*, e_t*);
+      if (term == null) 
+        break Fail;
     ]|
     with
       lifted-decls-wrap(
@@ -490,11 +488,11 @@ strategies
   translate-PrimT :
     PrimT(f, s*, t*) -> 
     <java-check-unbound-args(|t*)>  
-    Block(bstm* |[
+    bstm* |[
       bstm_init*
       term = context.invokePrimitive("~f", term, new IStrategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) break Fail;
-    ]|)
+    ]|
     with
       lifted-decls-wrap(
         e_s*  := <map(lifted-strategy-to-instance)> s*
@@ -594,12 +592,13 @@ strategies
   translate-Build:
     Build(t) -> 
     <java-check-unbound-args(|t)> 
-    Block(bstm*|[
-               ~*decs
-               ~*stms
-               term = e;
-               ]|)
-  where {| java-CheckList :
+    bstm* |[
+      ~*decs
+      ~*stms
+      term = e;
+    ]|
+    where
+      {| java-CheckList :
          <java-construct-term> t => e
        ; bagof-java-CheckList; unzip; (id, reverse; concat) => (decs, stms)
       |}
@@ -621,11 +620,11 @@ strategies
 
   java-CheckUnboundArgs(|t) :
     stm -> 
-    stm|[ {
+    bstm* |[
       if (e)
         break Fail;
       stm
-    } ]|
+    ]|
     where
       <collect({?Var(_){t*}; where(<not(["bound"])> t* )})> t
     ; not([])
@@ -823,7 +822,7 @@ strategies
     ; fragment(JavaInitConstructorQ <+ JavaInitConstructor|"ConstructorInit")
 
   JavaDeclareConstructor :
-    OpDecl(c, t) -> class-body-dec|[ static IStrategoConstructor ~id:Id(csym); ]|
+    OpDecl(c, t) -> class-body-dec|[ private static IStrategoConstructor ~id:Id(csym); ]|
   where
     <not("" + "Cons" + "Nil")> c
   with 
@@ -865,14 +864,12 @@ strategies
 
   translate-Match :
     Match(As(t1,t2), trm) ->
-    stm|[ 
-      { 
-        stm_match1
-        stm_match2
-      }
+    bstm* |[ 
+      stm_match1
+      stm_match2
     ]|
-  with stm_match1 := <translate-Match> Match(t1,trm)
-     ; stm_match2 := <translate-Match> Match(t2,trm)
+    with stm_match1 := <translate-Match> Match(t1,trm)
+       ; stm_match2 := <translate-Match> Match(t2,trm)
 
   translate-Match :
     Match(Var(x){"unbound"}, trm) -> stm_assign
@@ -905,8 +902,7 @@ strategies
 
   translate-Match :
     Match(Explode(t1, t2), e) ->
-    stm|[ 
-    {
+    bstm* |[ 
       IStrategoTerm x_cons = context.invokePrimitive("SSL_get_constructor", term,
                                                       new IStrategy[] {},
                                                       new IStrategoTerm[] { e });
@@ -915,7 +911,7 @@ strategies
                                                      new IStrategy[] {},
                                                      new IStrategoTerm[] { e });
       ~stm:(<translate-Match> Match(t2, ExprName(Id(x_cons))))
-     } ]|
+     ]|
   with
       !e => ExprName(Id(_))
     ; x_cons := <newname> "cons"
@@ -931,12 +927,10 @@ strategies
 
   translate-MatchAnno :
     Match(Anno(pt1, pt2), e) -> 
-    stm|[ 
-      { 
-        stm0
-        IStrategoList x = e.getAnnotations();
-        stm1
-      } 
+    bstm* |[
+      stm0
+      IStrategoList x = e.getAnnotations();
+      stm1
     ]|
   where 
       <not(Wld)> pt2
@@ -986,11 +980,11 @@ strategies
    */
   translate-Match :
     Match(op@Op(c, ts), e) ->
-    stm|[ {
+    bstm* |[
       if (e.getTermType() != IStrategoTerm.APPL || !((IStrategoAppl) e).getConstructor().equals(x_cons))
         break Fail;
       ~bstm*:match-args
-    } ]|
+    ]|
   where
     <not(is-ListOp + is-TupleOp)> op
   with
@@ -1006,11 +1000,11 @@ strategies
    */
   translate-Match :
     Match(op@Op(c, ts), e) ->
-    stm|[ {
+    bstm* |[
       if (e.getTermType() != IStrategoTerm.TUPLE || e.getSubtermCount() != i)
         break Fail;
       ~bstm*:match-args
-    } ]|
+    ]|
   where
     <is-TupleOp> op
   with
@@ -1035,31 +1029,33 @@ strategies
 
   java-MatchArg2 : 
     (t, e) -> 
-    stm|[ 
-      { 
-         IStrategoTerm x = e; 
-         stm
-      } 
+    bstm* |[
+      stm1
+      stm2
     ]|
-  with
-      x   := <newname> "arg"
-    ; stm := <translate-Match> Match(t, ExprName(Id(x)))
-    // TODO: Optimize - don't generate 'x = e' if stm is Empty
+    with
+      x    := <newname> "arg"
+    ; stm2 := <translate-Match> Match(t, ExprName(Id(x)))
+    ; if !stm2 => Empty() then
+       stm1 := Empty()
+      else 
+       stm1 := |[ IStrategoTerm x = e; ]|
+     end
 
   translate-Match :
     Match(Op("Nil", []), e) ->
-    stm|[
+    bstm* |[
       if (e.getTermType() != IStrategoTerm.LIST || !((IStrategoList) e).isEmpty())
         break Fail;
     ]|
 
   translate-Match :
     Match(Op("Cons", [hd, tl]), e) ->
-    stm|[ {
+    bstm* |[
       if (e.getTermType() != IStrategoTerm.LIST || ((IStrategoList) e).isEmpty())
           break Fail;
       ~bstm*:match-args
-    } ]|
+    ]|
   with 
     <map(java-MatchArg1 <+ java-MatchArg2)> 
        [ (hd, expr|[ ((IStrategoList) e).head() ]|)
