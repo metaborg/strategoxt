@@ -15,9 +15,9 @@ public class SRTS_one extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
-		
 		IStrategoTerm[] results = null;
 		IStrategoTerm[] inputs = current.getAllSubterms();
+
 		for (int i = 0; i < inputs.length; i++) {
 			IStrategoTerm arg = inputs[i];
 			IStrategoTerm arg2 = s.invoke(context, arg);
@@ -34,9 +34,9 @@ public class SRTS_one extends Strategy {
 			case APPL:
     			return context.getFactory().replaceAppl(((IStrategoAppl)current).getConstructor(), inputs, (IStrategoAppl)current);
     		case LIST:
-    			return context.getFactory().replaceList(inputs, (IStrategoList)current);
+    			return context.getFactory().replaceList(results, (IStrategoList) current);
     		case TUPLE:
-    			return context.getFactory().replaceTuple(inputs, (IStrategoTuple)current);
+    			return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
     		default:
     			throw new IllegalStateException();
 		}

@@ -15,7 +15,6 @@ public class SRTS_some extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
-		
 		IStrategoTerm[] results = null;
 		IStrategoTerm[] inputs = current.getAllSubterms();
 		
@@ -29,15 +28,15 @@ public class SRTS_some extends Strategy {
 			}
 		}
 		
-		if (results == null) return current;
+		if (results == null) return null;
 		
 		switch (current.getTermType()) {
 			case APPL:
-    			return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), inputs, (IStrategoAppl) current);
+    			return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
     		case LIST:
-    			return context.getFactory().replaceList(inputs, (IStrategoList) current);
+    			return context.getFactory().replaceList(results, (IStrategoList) current);
     		case TUPLE:
-    			return context.getFactory().replaceTuple(inputs, (IStrategoTuple) current);
+    			return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
     		default:
     			return current;
 		}
