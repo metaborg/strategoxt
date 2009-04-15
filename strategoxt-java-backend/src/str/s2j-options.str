@@ -1,0 +1,41 @@
+/**
+ * s2j options
+ *
+ * @author Lennart Kats
+ */
+module s2j-options
+
+rules
+  
+  s2j-options =
+    Option(
+      "--library" + "--lib"
+    , <set-config> ("--library", ()); !()
+    , !"--library | --lib  Build a library instead of an application"
+    )
+  + ArgOption(
+      "-I" + "--Include"
+    , <post-extend-config> ("-I", ["-I", <id>]); !()
+    , !"-I d | --Include d Include modules from directory d"
+    )
+  + ArgOption(
+      "-la"
+    , <post-extend-config> ("-la", [<id>]); !()
+    , !"-la <name>         Include library <name>"
+    )
+  + ArgOption(
+      "-p"
+    , <set-config> ("-p", <id>); !()
+    , !"-p <name>          Set package name <name>"
+    )
+  + ArgOption(
+      "--stacktrace" + "-s"
+    , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
+    , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",
+                      "(0 = no, 1 = yes [default], 2 = only if assertions disabled for this class)")
+    )
+ 
+ s2j-init-options =
+   if not(<get-config> "--stacktrace") then
+     <set-config> ("--stacktrace", 1)
+   end

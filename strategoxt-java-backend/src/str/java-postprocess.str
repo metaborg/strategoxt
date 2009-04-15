@@ -52,14 +52,14 @@ strategies
 
 strategies
 
-  topdown-consnil(s) =
-    rec rec(s; all-consnil(rec))
-
   java-simplify =
     topdown-consnil(
       try(Block(flatten-list))
     ; repeat(java-simplify-stm + java-simplify-expr)
     )
+
+  topdown-consnil(s) =
+    rec rec(s; all-consnil(rec))
   
   java-simplify-stm :
     [Empty() | s*] -> s*
@@ -69,6 +69,16 @@ strategies
   
   java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
+    
+  java-simplify-stm :
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm*
+    where
+      <get-config> "--stacktrace" => 0
+    
+  java-simplify-stm :
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> |[ stm bstm* ]|
+    where
+      <get-config> "--stacktrace" => 1
   
   java-simplify-expr :
     |[ new IStrategy[] {} ]| -> |[ EMPTY_STRATEGY_LIST ]|

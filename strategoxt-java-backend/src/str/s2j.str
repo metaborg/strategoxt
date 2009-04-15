@@ -16,6 +16,7 @@ imports
   java-postprocess
   variable-lifting
   variable-access
+  s2j-options
   
   Java-EBlock
 
@@ -38,29 +39,8 @@ strategies
     io-wrap(
       s2j-options
     ,
-      java-backend
-    )
-  
-  s2j-options =
-    Option(
-      "--library" + "--lib"
-    , with(<set-config> ("--library", ())); !()
-    , !"--library | --lib  Build a library instead of an application"
-    )
-  + ArgOption(
-      "-I" + "--Include"
-    , with(<post-extend-config> ("-I", ["-I", <id>])); !()
-    , !"-I d | --Include d Include modules from directory d"
-    )
-  + ArgOption(
-      "-la"
-    , with(<post-extend-config> ("-la", [<id>])); !()
-    , !"-la <name>         Include library <name>"
-    )
-  + ArgOption(
-      "-p"
-    , with(<set-config> ("-p", <id>)); !()
-    , !"-p <name>          Set package name <name>"
+      with(s2j-init-options)
+    ; java-backend
     )
  
 rules
@@ -140,12 +120,11 @@ rules
      @SuppressWarnings({"unused"})
      public class x_name {
 
+     private static boolean TRACES_ENABLED = e_traces;
      private static ITermFactory constantFactory;
+
      ~*cnst-decls
      ~*cnstr-decls
-     
-     // TODO: Add a switch to always enable stack traces
-     private static boolean TRACES_ENABLED = x_name.class.desiredAssertionStatus();
      
      public static void preInit(ITermFactory termFactory) {
        constantFactory = termFactory;
@@ -184,6 +163,11 @@ rules
     ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
     ; cnst-decls    := <bagof-Fragment> "ConstDecl"
     ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
+    ; switch <get-config> "--stacktrace"
+        case 0: e_traces := |[ false ]|
+        case 1: e_traces := |[ true ]|
+        case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
+      end
   
   java-imports =
     <get-config> "-la"
