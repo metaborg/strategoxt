@@ -17,7 +17,8 @@ XTC_IMPORT = $(JAVA_FRONT_XTC)
 
 # HACK: hardcoded, relative classpath
 
-CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:../test/java:.
+BASEPATH=../../../../spoofax/trunk/spoofax
+CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:../test/java:.
 JAVACFLAGS=-J-Xmx256m -J-server -cp $(CLASSPATH)
 
 s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af

@@ -11,10 +11,10 @@ import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.CallT;
-import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -33,7 +33,7 @@ public class Context {
     private final StackTracer stackTracer = new StackTracer();
     
     public Context() {
-    	this(new BasicTermFactory());
+    	this(new BAFBasicTermFactory());
     }
     
     public Context(ITermFactory factory) {

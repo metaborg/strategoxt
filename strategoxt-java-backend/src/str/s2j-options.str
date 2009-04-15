@@ -14,11 +14,6 @@ rules
     , !"--library | --lib  Build a library instead of an application"
     )
   + ArgOption(
-      "-I" + "--Include"
-    , <post-extend-config> ("-I", ["-I", <id>]); !()
-    , !"-I d | --Include d Include modules from directory d"
-    )
-  + ArgOption(
       "-la"
     , <post-extend-config> ("-la", [<id>]); !()
     , !"-la <name>         Include library <name>"

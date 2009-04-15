@@ -2,8 +2,9 @@ include $(top_srcdir)/Makefile.xt
 
 TESTFILES   = $(wildcard java/org/strategoxt/compiler/tests/cases/*.str)
 JAVAFILES   = $(TESTFILES:.str=.java)
-SCTREEFILES = $(TESTFILES:.str=.sctree)
-RUNNERFILES = $(TESTFILES:.str=.runner)
+JTESTFILES  = $(wildcard java/org/strategoxt/compiler/tests/cases/*.java)
+SCTREEFILES = $(JTESTFILES:.java=.sctree)
+RUNNERFILES = $(JTESTFILES:.java=.runner)
 CLEANFILES  = $(SCTREEFILES) $(JAVAFILES)
 
 nobase_pkgdata_DATA = $(SCTREEFILES) $(JAVAFILES)
@@ -12,7 +13,9 @@ TESTS=$(RUNNERFILES)
 
 # HACK: hardcoded, relative classpath
 
-CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:../../../../spoofax/trunk/spoofax/org.spoofax.aterm/bin/:../java:java:.
+BASEPATH=../../../../spoofax/trunk/spoofax
+CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:../test/java:.
+JAVACFLAGS=-J-Xmx256m -J-server -cp $(CLASSPATH)
 
 ../str/s2j : .PURPLEPONY
 	$(MAKE) -C ../str s2j
@@ -27,14 +30,23 @@ CLASSPATH=../../../../spoofax/trunk/spoofax/org.spoofax.interpreter.core/bin/:..
 	../str/backend-simplify -i $< -o $@
 
 %.ajava : %.sctree ../str/s2j
-	../str/s2j -i $< -o $@
+	../str/s2j -i $< -o $@ -la org.strategoxt.libstratego_lib -p org.strategoxt.compiler.tests.cases
+
+java/org/strategoxt/libstratego_lib.sctree : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree
+	../str/backend-simplify -i $< -o $@
+
+java/org/strategoxt/libstratego_lib.ajava : java/org/strategoxt/libstratego_lib.sctree
+	../str/s2j -i $< -o $@  -p org.strategoxt --library
+
+java/org/strategoxt/libstratego_lib.class : java/org/strategoxt/libstratego_lib.java
+	javac $(JAVACFLAGS) $<
 
 %.java : %.ajava
 	pp-java -i $< -o $@ || \
 	    (format-check -i $< --rtg ~/.nix-profile/share/java-front/Java-15.rtg --vis; rm -f $@; exit 1)
 
-%.class : %.java
-	javac -J-Xmx256m -J-server -J-XX:MaxInlineSize=128 -J-XX:FreqInlineSize=512 -cp $(CLASSPATH) $<
+%.class : %.java java/org/strategoxt/libstratego_lib.class
+	javac $(JAVACFLAGS) $<
 
 %.run : %.class
 	java -ea -cp $(CLASSPATH) org.strategoxt.compiler.tests.cases.`basename $< .class`
