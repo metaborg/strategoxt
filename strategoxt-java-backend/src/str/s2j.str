@@ -856,7 +856,7 @@ strategies
   JavaDeclareConstructor :
     OpDecl(c, t) -> class-body-dec|[ public static IStrategoConstructor ~id:Id(csym); ]|
   where
-    <not("" + "Cons" + "Nil")> c
+    not(OpDecl("", id) + OpDecl("Cons", [id, id]) + OpDecl("Nil", []))
   with 
       n    := <Arity> t
     ; csym := <java-ConstructorName> (c, n)
