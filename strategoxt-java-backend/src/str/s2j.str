@@ -299,7 +299,7 @@ rules
        public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term,
                                           IStrategy[] sargs, IStrategoTerm[] targs) {
          if (sargs == null || targs == null || sargs.length != i_slength || targs.length != i_tlength)
-           throw new IllegalArgumentException();
+           throw new IllegalArgumentException("Illegal arguments for " + getName());
          
          return invoke(context, term, e_s*, e_t*);
        }
@@ -398,11 +398,11 @@ strategies
     GuardedLChoice(s1, Id(), s2) ->
     bstm* |[
       IStrategoTerm x_termcopy = term;
-      Skip: {
+      Success: {
         Fail: {
            stm_s1
            if (true) // (avoid unreachable stm error)
-             break Skip;
+             break Success;
         }
         term = x_termcopy;
         stm_s2

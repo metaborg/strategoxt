@@ -11,23 +11,36 @@ imports
 strategies
 
   java-relabel =
-    rules(CurrentLabel := "NO_OUTER_LABEL")
-  ; rec rec(
+    rec rec(
       java-relabel-outer-label
+    <+
+      java-relabel-success-label
     <+
       java-relabel-stm
     <+
-      all(rec)
+      all-consnil(rec)
     )
   
   java-relabel-outer-label :
     |[ OuterFail: { bstm* } ]| -> bstm |[ { bstm'* } ]|
     with
-      x_label := <OuterLabel>
-    ; {| Relabel:
-        rules(
-          CurrentLabel := x_label
-          Relabel: "OuterFail" -> x_label
+      {| Relabel, OuterLabel, CurrentLabel:
+        x_label  := <OldLabel>
+      ; x_label' := <OuterLabel>
+      ; rules(
+          CurrentLabel := x_label'
+          Relabel: x_label -> x_label'
+        )
+      ; bstm'* := <java-relabel> bstm*
+      |}
+  
+  java-relabel-success-label :
+    |[ Success: { bstm* } ]| -> bstm |[ x_label': { bstm'* } ]|
+    with
+      {| Relabel:
+        x_label' := <newname> "Success"
+      ; rules(
+          Relabel: "Success" -> x_label'
         )
       ; bstm'* := <java-relabel> bstm*
       |}
@@ -35,11 +48,12 @@ strategies
   java-relabel-stm :
     |[ x_label: { bstm* } ]| -> |[ x_label': { bstm'* } ]|
     with
-      x_label' := <newname> x_label
-    ; {| Relabel:
-        rules(
-          OuterLabel   := <CurrentLabel>
-          CurrentLabel := x_label
+      {| Relabel, OuterLabel, CurrentLabel, OldLabel:
+        x_label' := <newname> x_label
+      ; rules(
+          OuterLabel   := <CurrentLabel <+ !"NO_OUTER_LABEL">
+          OldLabel     := x_label
+          CurrentLabel := x_label'
           Relabel: x_label -> x_label'
         )
       ; bstm'* := <java-relabel> bstm*

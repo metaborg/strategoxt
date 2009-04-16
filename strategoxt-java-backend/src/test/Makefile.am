@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-TESTFILES   = $(STRC1TESTFILES) # $(wildcard strc1/*.str)
+TESTFILES   = $(STRC1TESTFILES) $(BASICTESTFILES)
 JAVAFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CLASSFILES  = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
@@ -22,7 +22,7 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  test75 test76 test77 test78 test79 test80 test81 test82 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
-		  test97 test98	test99 test100 test101 test102 test103		 \
+		  test97 test98	test99 test100 test101 test102		 \
 		  test104 test105 test106 test107 test108 test109		 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
@@ -31,16 +31,22 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  nested-defs01							 \
 		  cs-test01 cs-test02 cs-test03 cs-test04
 
+STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
+
+BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1
+
+BASICTESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
+
 # disabled tests:
 # io-test04                               # relies on parsing appl term with string constructor "pp-tables"("b")
 # static-links test83                     # rely on C code
+# test103                                 # relies on interaction with bug http://bugs.strategoxt.org/browse/STR-626;
+#                                         # should be fixed in front-end instead
 		  
 	          
 # STRC1TESTS_DISABLED=test50 test83 static-links
 
 check-am : strc1/ExpStratego.tbl .ALLJAVAFILES $(CTREEFILES) $(SCTREEFILES) $(JAVAFILES) $(CLASSFILES)
-
-STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
 # nobase_pkgdata_DATA = $(CTREEFILES) $(SCTREEFILES) $(JAVAFILES)
 
@@ -49,7 +55,7 @@ TESTS=$(RUNNERFILES)
 # HACK: hardcoded, relative classpath
 
 BASEPATH=../../../../spoofax/trunk/spoofax
-CLASSPATH=.:$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:strc1:.
+CLASSPATH=.:$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:basic:strc1:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 
 ../str/s2j : .PURPLEPONY
@@ -75,7 +81,7 @@ JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 	javac $(JAVACFLAGS) $<
 
 %.run : %.class
-	cd strc1; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
+	cd `dirname $<`; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
 	@ echo "cd strc1; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
