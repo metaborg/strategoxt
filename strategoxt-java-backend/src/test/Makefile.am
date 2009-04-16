@@ -35,7 +35,7 @@ STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
 BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1
 
-BASICTESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
+BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 
 # disabled tests:
 # io-test04                               # relies on parsing appl term with string constructor "pp-tables"("b")
@@ -84,7 +84,7 @@ JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 	cd `dirname $<`; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
-	@ echo "cd strc1; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
+	@ echo "cd `dirname $<`; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
 	@ chmod 755 $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf
@@ -106,7 +106,7 @@ strc1/cs_test03.ctree : strc1/ExpStratego.tbl
 strc1/cs_test04.ctree : strc1/ExpStratego.tbl strc1/Expressions.str
 
 .ALLJAVAFILES: $(JAVAFILES)
-	javac -J-server $(JAVACFLAGS) strc1/*.java
+	javac -J-server $(JAVACFLAGS) basic/*.java strc1/*.java
 
 .PURPLEPONY:
 
