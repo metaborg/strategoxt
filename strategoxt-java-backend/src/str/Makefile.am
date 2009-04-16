@@ -19,7 +19,7 @@ XTC_IMPORT = $(JAVA_FRONT_XTC)
 
 BASEPATH=../../../../spoofax/trunk/spoofax
 CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:../test/java:.
-JAVACFLAGS=-J-Xmx256m -J-server -cp $(CLASSPATH)
+JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH)
 
 s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) \
@@ -44,8 +44,8 @@ s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
 	    (format-check -i $< --rtg $(JAVA_FRONT)/share/java-front/Java-15.rtg --vis && exit 1)
 
 %.class : %.java
-	javac -J-Xmx256m -J-server -J-XX:MaxInlineSize=128 -J-XX:FreqInlineSize=512 -cp $(CLASSPATH) $<
+	javac $(JAVACFLAGS)j $<
 
 %.run : %.class
-	java -ea -cp $(CLASSPATH) `basename $< .class`
+	java -client -cp $(CLASSPATH) `basename $< .class`
 
