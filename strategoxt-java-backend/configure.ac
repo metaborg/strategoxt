@@ -31,6 +31,7 @@ AC_CONFIG_FILES([
   src/Makefile
   src/str/Makefile
   src/test/Makefile
+  src/java/Makefile
   xtc/Makefile
 ])
 AC_OUTPUT
