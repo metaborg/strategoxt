@@ -17,6 +17,7 @@ imports
   variable-lifting
   variable-access
   s2j-options
+  lib/core-lift-eblocks
   
   Java-EBlock
 
@@ -68,6 +69,7 @@ rules
   java-backend = 
       extract-meta
     ; java-compile-spec
+    ; core-lift-eblocks
     ; java-simplify
     ; java-relabel
      
@@ -785,14 +787,20 @@ rules
     
   java-ConstructTerm :
     Explode(t1, t2) -> 
-    expr|[
-      context.invokePrimitive("SSL_mkterm", term,
+    expr |[
+      {| IStrategoTerm mkterm = context.invokePrimitive("SSL_mkterm", term,
                               new IStrategy[] {},
-                              new IStrategoTerm[] { e_t1, e_t2 })
+                              new IStrategoTerm[] { e_t1, e_t2 });
+         if (mkterm == null)
+           break Fail;
+       |
+         mkterm
+       |}
     ]|
     with
       e_t1 := <java-construct-term> t1
     ; e_t2 := <java-construct-term> t2
+    ; x    := <newname> "mkterm"
 
   java-ConstructTerm : 
     Op("", args) -> expr|[ termFactory.makeTuple(~*args') ]|
@@ -941,6 +949,7 @@ strategies
       IStrategoTerm x_cons = context.invokePrimitive("SSL_get_constructor", term,
                                                       new IStrategy[] {},
                                                       new IStrategoTerm[] { e });
+      if (x_cons == null) 
       ~stm:(<translate-Match> Match(t1, ExprName(Id(x_cons))))
       IStrategoTerm x_args = context.invokePrimitive("SSL_get_arguments", term,
                                                      new IStrategy[] {},
