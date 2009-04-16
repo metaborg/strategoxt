@@ -69,8 +69,8 @@ rules
   java-backend = 
       extract-meta
     ; java-compile-spec
-    ; core-lift-eblocks
     ; java-simplify
+    ; core-lift-eblocks
     ; java-relabel
      
   extract-meta = 
@@ -788,13 +788,13 @@ rules
   java-ConstructTerm :
     Explode(t1, t2) -> 
     expr |[
-      {| IStrategoTerm mkterm = context.invokePrimitive("SSL_mkterm", term,
-                              new IStrategy[] {},
-                              new IStrategoTerm[] { e_t1, e_t2 });
-         if (mkterm == null)
+      {| IStrategoTerm x = context.invokePrimitive("SSL_mkterm", term,
+                           new IStrategy[] {},
+                           new IStrategoTerm[] { e_t1, e_t2 });
+         if (x == null)
            break Fail;
        |
-         mkterm
+         x
        |}
     ]|
     with

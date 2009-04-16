@@ -24,16 +24,21 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  test91 test92 test93 test94 test95 test96			 \
 		  test97 test98	test99 test100 test101 test102 test103		 \
 		  test104 test105 test106 test107 test108 test109		 \
-		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
+		  io-test10 io-test11 io-test1 io-test2 io-test3	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03			 \
 		  let-test							 \
 		  nested-defs01							 \
-		  # cs-test01 cs-test02 cs-test03 cs-test04
-	          
-STRC1TESTS_DISABLED=test50 test83 static-links
+		  cs-test01 cs-test02 cs-test03 cs-test04
 
-check :  $(CTREEFILES) $(SCTREEFILES) $(JAVAFILES) $(CLASSFILES)
+# disabled tests:
+# io-test04                               # relies on parsing appl term with string constructor "pp-tables"("b")
+# static-links test83                     # rely on C code
+		  
+	          
+# STRC1TESTS_DISABLED=test50 test83 static-links
+
+check-am : strc1/ExpStratego.tbl .ALLJAVAFILES $(CTREEFILES) $(SCTREEFILES) $(JAVAFILES) $(CLASSFILES)
 
 STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
@@ -45,7 +50,7 @@ TESTS=$(RUNNERFILES)
 
 BASEPATH=../../../../spoofax/trunk/spoofax
 CLASSPATH=.:$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:strc1:.
-JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH)
+JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 
 ../str/s2j : .PURPLEPONY
 	$(MAKE) -C ../str s2j
@@ -54,7 +59,7 @@ JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH)
 	$(MAKE) -b -C ../str backend-simplify
 
 %.ctree : %.str
-	$(SCOMPILE) -O 0 -F -i $< -o $@
+	$(SCOMPILE) -O 0 -F -I strc1 -i $< -o $@
 
 %.sctree : %.ctree ../str/backend-simplify
 	../str/backend-simplify -i $< -o $@
@@ -66,22 +71,36 @@ JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH)
 	pp-java -i $< -o $@ || \
 	    (format-check -i $< --rtg ~/.nix-profile/share/java-front/Java-15.rtg --vis; rm -f $@; exit 1)
 
-%.class : $(JAVAFILES)
-	$(MAKE) -C ../str
-	javac $(JAVACFLAGS) strc1/*.java
-
-# %.class : %.java
-#	javac $(JAVACFLAGS) $<
+%.class : %.java
+	javac $(JAVACFLAGS) $<
 
 %.run : %.class
-	java -client -cp $(CLASSPATH) `basename $< .class`
+	cd strc1; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
 	@ echo "cd strc1; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
 	@ chmod 755 $@
 
-.ALLJAVAFILES:
-	javac $(JAVACFLAGS) strc1/*.java
+ExpStratego.def : Expressions.sdf ExpStratego.sdf
+PGEN_FLAGS = -m `basename $*`
+SDF2RTG_FLAGS = -m `basename $*`
+
+.rtg.str :
+	$(STRATEGO_REGULAR)/bin/rtg2sig --module `basename "$*"` -i $< -o $@
+
+.sdf.def :
+	$(SDF_FRONT)/bin/pack-sdf $(SDFINCLUDES) -i $< -o $@ --dep $*.dep
+
+.def.tbl :
+	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
+
+strc1/cs_test01.ctree : strc1/ExpStratego.tbl strc1/Expressions.def strc1/Expressions.str
+strc1/cs_test02.ctree : strc1/ExpStratego.tbl
+strc1/cs_test03.ctree : strc1/ExpStratego.tbl
+strc1/cs_test04.ctree : strc1/ExpStratego.tbl strc1/Expressions.str
+
+.ALLJAVAFILES: $(JAVAFILES)
+	javac -J-server $(JAVACFLAGS) strc1/*.java
 
 .PURPLEPONY:
 

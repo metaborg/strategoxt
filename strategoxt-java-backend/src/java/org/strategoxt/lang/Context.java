@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
@@ -98,7 +99,11 @@ public class Context {
 	    			} else {
 	    				return null;
 	    			}
-    			} catch (Exception e) {
+    			} catch (InterpreterExit e) {
+    				throw new StrategoExit(e.getValue());
+    			} catch (InterpreterException e) {
+    				throw new StrategoException("Exception in execution of primitive '" + name + "'", e);
+    			} catch (RuntimeException e) {
     				throw new StrategoException("Exception in execution of primitive '" + name + "'", e);
     			}
     		}
