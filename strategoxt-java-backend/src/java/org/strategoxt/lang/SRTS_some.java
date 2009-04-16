@@ -15,20 +15,25 @@ public class SRTS_some extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+		boolean success = false;
 		IStrategoTerm[] results = null;
 		IStrategoTerm[] inputs = current.getAllSubterms();
 		
 		for (int i = 0; i < inputs.length; i++) {
 			IStrategoTerm arg = inputs[i];
 			IStrategoTerm arg2 = s.invoke(context, arg);
-			if (arg2 != arg) {
-				if (results == null)
-					results = inputs.clone();
-				results[i] = arg2;
+			if (arg2 != null) {
+				success = true;
+				if (arg2 != arg) {
+					if (results == null)
+						results = inputs.clone();
+					results[i] = arg2;
+				}
 			}
 		}
 		
-		if (results == null) return null;
+		if (results == null)
+			return success ? current : null;
 		
 		switch (current.getTermType()) {
 			case APPL:

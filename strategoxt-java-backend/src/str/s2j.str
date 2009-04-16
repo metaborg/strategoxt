@@ -120,10 +120,10 @@ rules
      ~*cnstr-decls
      
      public static void preInit(ITermFactory termFactory) {
+       constantFactory = termFactory;
        ~*import-inits
        ~*cnstr-inits
        ~*cnst-inits
-       constantFactory = termFactory;
      }
 
      ~*main
@@ -679,8 +679,6 @@ strategies
         ]|
       | "ConstDecl"
       )
-      
-      // TODO: import-term
 
   java-check-unbound-args(|t) =
     try(java-CheckUnboundArgs(|t))
@@ -701,7 +699,10 @@ strategies
 /**
  * Term construction with constant term caching
  */
-rules 
+rules
+
+  // TODO: Fix constants being generated multiple times
+  //       e.g., <conc> ([], []) does this; it's got something to do with annos 
 
   /** @type Term -> Exp */
   java-construct-term =

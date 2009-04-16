@@ -22,6 +22,8 @@ public class SRTS_all extends Strategy {
 			IStrategoTerm arg = inputs[i];
 			IStrategoTerm arg2 = s.invoke(context, arg);
 			if (arg2 != arg) {
+				if (arg2 == null)
+					return null;
 				if (results == null)
 					results = inputs.clone();
 				results[i] = arg2;
