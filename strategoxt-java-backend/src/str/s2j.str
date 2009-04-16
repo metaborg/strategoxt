@@ -244,15 +244,16 @@ rules
          public static x instance = new x();
          
          ~body
-         
-         // TODO: Implement invokeDynamic() as necessary
-         //
-         //  public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term, IStrategy[] sargs,
-         //    IStrategoTerm[] targs) {
+         ~invokedynamic*
        }
     ]|
     with
       body := <translate-definition-body>
+    ; if is-dynamic-signature(|strats*, terms*) then
+        invokedynamic* := [<make-invoke-dynamic> (strats*, terms*)]
+      else
+        invokedynamic* := []
+      end
 
   translate-inner-definition :
     SDefT(x, strats*, terms*, s) -> type-dec |[
@@ -262,6 +263,7 @@ rules
          ~lifted-sfield*
          
          ~body
+         ~invokedynamic*
        }
     ]|
     with
@@ -285,6 +287,28 @@ rules
         rules(CurrentLiftedFrame := x')
       ; body := <translate-definition-body>
       |}
+    ; if is-dynamic-signature(|strats*, terms*) then
+        invokedynamic* := [<make-invoke-dynamic> (strats*, terms*)]
+      else
+        invokedynamic* := []
+      end
+  
+  make-invoke-dynamic :
+    (s*, t*) ->
+    |[ @Override
+       public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term,
+                                          IStrategy[] sargs, IStrategoTerm[] targs) {
+         if (sargs == null || targs == null || sargs.length != i_slength || targs.length != i_tlength)
+           throw new IllegalArgumentException();
+         
+         return invoke(context, term, e_s*, e_t*);
+       }
+    ]|
+    with
+      i_slength := <write-to-string> <length> s*
+    ; i_tlength := <write-to-string> <length> t*
+    ; e_s*      := <number(\(_,n) -> |[ sargs[~i:<write-to-string> n] ]|\)> s*
+    ; e_t*      := <number(\(_,n) -> |[ targs[~i:<write-to-string> n] ]|\)> t*
   
   translate-definition-body :
     SDefT(x, strats*, terms*, s) ->
@@ -793,8 +817,7 @@ rules
                            new IStrategoTerm[] { e_t1, e_t2 });
          if (x == null)
            break Fail;
-       |
-         x
+       | x
        |}
     ]|
     with
@@ -949,7 +972,6 @@ strategies
       IStrategoTerm x_cons = context.invokePrimitive("SSL_get_constructor", term,
                                                       new IStrategy[] {},
                                                       new IStrategoTerm[] { e });
-      if (x_cons == null) 
       ~stm:(<translate-Match> Match(t1, ExprName(Id(x_cons))))
       IStrategoTerm x_args = context.invokePrimitive("SSL_get_arguments", term,
                                                      new IStrategy[] {},
