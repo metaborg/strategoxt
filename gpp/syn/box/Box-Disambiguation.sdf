@@ -1,4 +1,0 @@
-module Box-Disambiguation
-exports
-  context-free restrictions
-    LAYOUT? -/- [\ \t\n\%]

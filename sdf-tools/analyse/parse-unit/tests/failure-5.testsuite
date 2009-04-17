@@ -1,5 +1,0 @@
-testsuite Expressions
-topsort Exp
-
-test variadic wildcards
-  "2 + 3" -> Plus([...])

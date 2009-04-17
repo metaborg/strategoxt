@@ -1,3 +1,0 @@
-module posix-file
-imports system/posix/file
-

@@ -1,7 +1,0 @@
-module simplify2
-imports libstrc libstratego-lib
-strategies
-
-  simplify2-io =
-    io-wrap(simplify2)
- 

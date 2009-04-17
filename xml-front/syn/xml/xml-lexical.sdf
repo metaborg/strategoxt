@@ -1,3 +1,0 @@
-module xml-lexical
-imports xml-whitespace xml-comments xml-names
-

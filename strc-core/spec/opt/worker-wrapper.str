@@ -1,6 +1,0 @@
-module worker-wrapper
-imports Stratego libstrc libstratego-lib
-strategies
-
-  worker-wrapper-io =
-    io-wrap(worker-wrapper-spec)

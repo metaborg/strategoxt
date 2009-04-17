@@ -1,8 +1,0 @@
-module io-test2
-imports libstratego-lib
-
-strategies
-
-  main = 
-    <conc>(<id>, ["-i", "io-test10.in", "-o", "io-test10.out"])
-    ; io-wrap(id)

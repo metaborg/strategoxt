@@ -1,2 +1,0 @@
-# compile til-typecheck
-strc -i til-typecheck.str -I ../sig -I ../sim -la stratego-lib -m io-til-typecheck
