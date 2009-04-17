@@ -1,0 +1,33 @@
+/**
+ * Stratego compiler for Java
+ *
+ * @author Lennart Kats
+ */
+module strj
+
+imports
+  libstratego-lib
+  libstrc
+    
+  strj-options
+  backend-simplify
+  s2j
+
+strategies
+
+  main-strj =
+    strj-parse-options
+  ; log-timed(
+      xtc-input(strj)
+    | "Compilation succeeded", 1
+    )
+  ; <exit> 0
+  <+
+    log(|Error(),["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+  ; <exit> 1
+  
+  strj =
+    strc-front-end
+  ; strc-optimize
+  ; s2j
+  

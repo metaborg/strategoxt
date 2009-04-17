@@ -10,9 +10,7 @@ signature
   
 strategies
 
-  // TODO: Move this, a front-end call, and pp-java into a new strj module
-
-  io-backend-simplify = io-wrap(backend-simplify)
+  main-backend-simplify = io-wrap(backend-simplify)
   
   backend-simplify = 
        lift-definitions
@@ -21,13 +19,8 @@ strategies
      ; mark-bound-unbound-vars
      ; escaping-variables
      ; remove-closure-allocs
-     ; tag-with-filename
 
 rules
-  
-  tag-with-filename = 
-       where(filename := <get-config> "-i")
-     ; !<id>{Meta([Filename(filename)])}  
 
   remove-closure-allocs =
     alltd(remove-closure-alloc-let)

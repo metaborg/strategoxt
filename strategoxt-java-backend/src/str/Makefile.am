@@ -1,13 +1,13 @@
 include $(top_srcdir)/Makefile.xt
-# include $(wildcard *.dep)
+include $(wildcard *.dep)
 
-libexec_PROGRAMS = s2j backend-simplify
+libexec_PROGRAMS = strj s2j backend-simplify
 
 LDADD += $(SSL_LIBS) -lstrc 
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../../syn
 
-STRCFLAGS        = --main io-$* -O 0 --format-check 0
+STRCFLAGS        = --main main-$* -O 0 --format-check 0
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.syn) 
 CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.c) $(wildcard *.o)
@@ -20,12 +20,6 @@ XTC_IMPORT = $(JAVA_FRONT_XTC)
 BASEPATH=../../../../spoofax/trunk/spoofax
 CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:../test/java:.
 JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH)
-
-s2j : s2j.str $(wildcard *.str) $(wildcard lib/*.str) Java-15.rtg.af
-	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) \
-	            -la stratego-lib -la stratego-rtg -la stratego-xtc -la $(STRATEGOXT)/lib/libstrc.la \
-	            --main io-s2j --xtc-repo $(JAVA_FRONT_XTC) \
-	            -i $< -o $@
 
 %.rtg.af : $(JAVA_FRONT)/share/java-front/Java-15.rtg
 	parse-rtg -i $< -o $@

@@ -8,22 +8,27 @@ module s2j-options
 rules
   
   s2j-options =
-    Option(
-      "--library" + "--lib"
-    , <set-config> ("--library", ()); !()
-    , !"--library | --lib  Build a library instead of an application"
+    s2j-library-options + s2j-stacktrace-option
+  
+  s2j-library-options =
+    ArgOption(
+      "-p"
+    , <set-config> ("-p", <id>); !()
+    , !"-p <name>          Set package name <name>"
     )
   + ArgOption(
       "-la"
     , <post-extend-config> ("-la", [<id>]); !()
     , !"-la <name>         Include library <name>"
     )
-  + ArgOption(
-      "-p"
-    , <set-config> ("-p", <id>); !()
-    , !"-p <name>          Set package name <name>"
+  + Option(
+      "--library" + "--lib"
+    , <set-config> ("--library", ()); !()
+    , !"--library | --lib  Build a library instead of an application"
     )
-  + ArgOption(
+  
+  s2j-stacktrace-option =
+    ArgOption(
       "--stacktrace" + "-s"
     , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
     , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",

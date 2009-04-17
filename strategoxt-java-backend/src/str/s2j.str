@@ -36,19 +36,30 @@ overlays
     
 strategies
 
-  io-s2j =
+  main-s2j =
     io-wrap(
       s2j-options
     ,
-      with(s2j-init-options)
-    ; java-backend
+      s2j
     )
  
 rules
+    
+  s2j = 
+      with(
+        s2j-init-options
+      ; record-main-classname
+      )
+    ; java-compile-spec
+    ; java-simplify
+    ; core-lift-eblocks
+    ; java-relabel
  
   fc =
     id
-    /*
+  
+  /*
+  fc =
     with(
       verbosity => oldverbosity
     ; <set-verbosity> 1
@@ -58,34 +69,22 @@ rules
     ; <set-verbosity> oldverbosity
     | "Internal error: resulting term is not well-formed"
     )
-    */
   
   java-rtg =
     JavaRTG
   <+
     import-term(Java-15.rtg.af)
   ; rules(JavaRTG := <id>)
-    
-  java-backend = 
-      extract-meta
-    ; java-compile-spec
-    ; java-simplify
-    ; core-lift-eblocks
-    ; java-relabel
+    */
      
-  extract-meta = 
-     ?_{Meta(metas)}
-    ; rules(Metas := metas)
-  
-  meta-filename = 
-      Metas
-    ; getfirst(?Filename(<id>))
-
-  compute-classname = 
-      meta-filename 
-    ; base-filename
-    ; jify
-    ; remove-extension
+  record-main-classname = 
+    <get-config> "-i"
+  ; base-filename
+  ; jify
+  ; remove-extension
+  ; rules(
+      MainClassName := <id>
+    )
   
   jify =
     escape(Jify)
@@ -157,7 +156,7 @@ rules
       alltd(JavaTranslate)
     ; imports       := <java-imports>
     ; import-inits  := <java-init-imports>
-    ; x_name        := <compute-classname>
+    ; x_name        := <MainClassName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; function-defs := <map(translate-outer-definition)> defs
@@ -234,7 +233,7 @@ rules
     where
       not(<get-config> "--library")
     with
-      x_name := <compute-classname> ()
+      x_name := <MainClassName>
 
 rules
   
@@ -655,7 +654,7 @@ strategies
     ; log(|Info(), ["Copied imported term file to current directory ", outputfile])
     with
       x_cached := <new>
-    ; x_main   := <compute-classname>
+    ; x_main   := <MainClassName>
     ; fragment(
         !class-body-dec |[
           private static final ITermReference x_cached =

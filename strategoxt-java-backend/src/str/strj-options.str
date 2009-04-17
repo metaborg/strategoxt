@@ -1,0 +1,72 @@
+module strj-options
+
+strategies
+
+  strj-preinit-options =
+    <set-config> ("VERSION", <strc-version-number>)
+  ; <set-config> ("--verbose", 1)
+  ; <set-config> ("--statistics", 1)
+  ; <set-config> ("-O", 1)
+  ; <set-config> ("-I", [])
+ 
+  strj-parse-options =
+    with(strj-preinit-options)
+  ; parse-options(
+      strj-options
+    )
+  
+  strj-options =
+    input-option
+  <+
+    output-option
+  <+
+    ArgOption("-I" + "--Include",        
+    where(<post-extend-config>("-I", ["-I", <id>])); !(),
+    !"-I d | --Include d Include modules from directory d")
+  <+
+    s2j-stacktrace-option
+        
+  <+ ArgOption(fail, fail, !"")
+  <+ ArgOption(fail, fail, !"Library options:")
+  <+ ArgOption(fail, fail, !"")
+  <+
+    s2j-library-options
+
+  <+ ArgOption(fail, fail, !"")
+  <+ ArgOption(fail, fail, !"Configuration of the Stratego compiler:")
+  <+ ArgOption(fail, fail, !"")
+  <+
+  /* TODO: support --ast
+    Option("--ast",
+    where(<set-config>("--ast",())); !(),
+    !"--ast              Produce abstract syntax tree of packed program" )
+  */
+   Option("--prefer-str",
+    where(<set-config> ("--prefer-str", "")); !(),
+    !"--prefer-str       Prefer .str files over .rtree files")
+  <+
+    Option("--fusion",     
+    where(<toggle-config>("--fusion",())); !(),
+    !"--fusion           Toggle specialize applications of innermost (default: on)" )
+  <+
+    Option("--asfix",
+    where(<set-config>("--asfix",())); !(),
+    !"--asfix            Concrete syntax parts are not imploded")
+    
+  <+ ArgOption(fail, fail, !"")
+  <+ ArgOption(fail, fail, !"General options:")
+  <+ ArgOption(fail, fail, !"")
+  <+
+    general-options
+  <+
+    Option("-h" + "--help",         
+    where(<set-config> ("--help",())); !(),         
+    !"-h | --help        Show help")
+  <+
+  /* TODO: support -version
+    Option("-v"+"--version",     
+    where(<set-config> ("-v",())); !(),         
+    !"-v | --version     Display program's version")
+  <+
+  */
+    stratego-warnings-options
