@@ -6,7 +6,7 @@ imports libstratego-lib
 strategies
 
   main =
-    <foo> Some("Hey")
+    <not(foo)> Some("Hey")
 
   foo =
     ?f

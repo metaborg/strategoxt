@@ -975,10 +975,10 @@ rules
         goto ~id:S;
       }
     ]|
-    where {| CheckList, FailureLabel
+    where {| CheckBuild, FailureLabel
 	   : rules( FailureLabel : _ -> F )
 	   ; <construct-term> t => e
-	   ; bagof-CheckList; unzip; (id, reverse; concat) => (decs, stms)
+	   ; bagof-CheckBuild; unzip; (id, reverse; concat) => (decs, stms)
 	   |}
 
   check-unbound-args(|F,t) =
@@ -1090,8 +1090,15 @@ rules
   ConstructTerm :
     Explode(t1, t2) -> 
     exp|[ 
-      SSL_mkterm(~exp:<construct-term> t1, ~exp:<construct-term> t2) 
+      x
     ]|
+    with
+      x := <newname> "trm"
+	; FailureLabel => F
+	; !(dec|[ ATerm ~id:x; ]|, 
+            stm*|[ ~id:x = SSL_mkterm(~exp:<construct-term> t1, ~exp:<construct-term> t2);
+                   if(x == NULL) goto ~id:F; ]|) => stms
+	; rules( CheckBuild :+= stms )
 
   ConstructTerm :
     Op("Nil", []) -> exp|[ (ATerm)ATempty ]|
@@ -1121,7 +1128,7 @@ rules
 	; !(dec|[ ATerm ~id:x; ]|, 
             stm*|[ ~id:x = CheckATermList(~exp:e);
                    if(x == NULL) goto ~id:F; ]|) => stms
-	; rules( CheckList :+ _ -> stms )
+	; rules( CheckBuild :+= stms )
 
   CastATerm :
     e -> exp|[ (ATerm) ~exp:e ]|
