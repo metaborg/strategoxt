@@ -59,4 +59,4 @@ libstratego-sglr.rtree libstratego-sglr.c : $(sglrlib:.str=.rtree)
 
 libstratego-sglr.ctree : $(sglrlib:.str=.rtree)
 	@$(STRC_UNINSTALLED) -c -F --library -i stratego-sglr.rtree -o libstratego-sglr.ctree \
-          -O 2 --verbose 1 $(STRCFLAGS)
+          -O 1 --verbose 1 $(STRCFLAGS)

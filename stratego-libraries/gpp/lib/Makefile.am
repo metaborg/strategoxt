@@ -32,4 +32,4 @@ libstratego-gpp.rtree libstratego-gpp.c : $(gpplib:.str=.rtree)
 
 libstratego-gpp.ctree : $(gpplib:.str=.rtree) 
 	$(STRC_UNINSTALLED) -c -F --library -i $(srcdir)/stratego-gpp.str -o libstratego-gpp.ctree \
-	  -O 2 --verbose 1 $(STRCFLAGS)
+	  -O 1 --verbose 1 $(STRCFLAGS)

@@ -32,5 +32,5 @@ libstratego-rtg.rtree libstratego-rtg.c : $(rtglib:.str=.rtree)
 	rm libstratego-rtg.str
 
 libstratego-rtg.ctree : $(rtglib:.str=.rtree) 
-	$(STRC_UNINSTALLED) -c -F --library -i $(srcdir)/stratego-rtg.str -o libstratego-rtg.ctree \
+	$(STRC_UNINSTALLED) -c -F --library -i $(srcdir)/stratego-rtg.str -o libstratego-rtg.ctree -O 1 \
 	  --verbose 1 $(STRCFLAGS)

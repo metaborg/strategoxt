@@ -36,5 +36,5 @@ libstratego-sdf.rtree libstratego-sdf.c : $(sdflib:.str=.rtree)
 	rm libstratego-sdf.str
 
 libstratego-sdf.ctree : $(sdflib:.str=.rtree) 
-	$(STRC_UNINSTALLED) -F -c --library -i $(srcdir)/stratego-sdf.str -o libstratego-sdf.ctree -O 2 \
+	$(STRC_UNINSTALLED) -F -c --library -i $(srcdir)/stratego-sdf.str -o libstratego-sdf.ctree -O 1 \
 	  --verbose 1 $(STRCFLAGS)
