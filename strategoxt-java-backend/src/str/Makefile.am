@@ -1,7 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-libexec_PROGRAMS = strj s2j backend-simplify
+bin_PROGRAMS     = strj
+libexec_PROGRAMS = s2j
 
 LDADD += $(SSL_LIBS) -lstrc 
 
@@ -14,6 +15,7 @@ CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.c) $(wildcard 
 BOOTCLEANFILES = $(wildcard *.c) 
 
 XTC_IMPORT = $(JAVA_FRONT_XTC)
+LDADD     += $(JAVA_FRONT_LIBS)
 
 # HACK: hardcoded, relative classpath
 
@@ -25,12 +27,9 @@ JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH)
 	parse-rtg -i $< -o $@
 
 %.ctree : %.str
-	strc -F --library -la stratego-lib -i $< -o $@ -O 0
+	strc -F --format-check 0 --library -la stratego-lib -i $< -o $@ -O 0
 
-%.sctree : %.ctree backend-simplify
-	backend-simplify -b -i $< -o $@
-
-%.ajava : %.sctree s2j
+%.ajava : %.ctree s2j
 	s2j -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.java : %.ajava

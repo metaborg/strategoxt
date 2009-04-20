@@ -1,0 +1,14 @@
+module override_1
+
+imports
+  libstratego-lib
+
+rules
+
+  main =
+    <list('*')> "***"
+  ; not(<list('*')> ['*','*','*'])
+    
+  override list(s) =
+    string-as-chars(all(s))
+

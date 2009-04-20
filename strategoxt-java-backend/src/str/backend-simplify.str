@@ -9,8 +9,6 @@ signature
    Filename: Str -> Term
   
 strategies
-
-  main-backend-simplify = io-wrap(backend-simplify)
   
   backend-simplify = 
        lift-definitions

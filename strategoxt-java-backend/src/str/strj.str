@@ -6,11 +6,13 @@
 module strj
 
 imports
-  libstratego-lib
   libstrc
+  libstratego-lib
+  libstratego-xtc
+  libstratego-gpp
+  libjava-front
     
   strj-options
-  backend-simplify
   s2j
 
 strategies
@@ -23,11 +25,27 @@ strategies
     )
   ; <exit> 0
   <+
-    log(|Error(),["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+    log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
   ; <exit> 1
   
   strj =
-    strc-front-end
-  ; strc-optimize
-  ; s2j
-  
+    if <get-extension> <get-config> "-i" => "ctree" then
+      read-from
+    <+
+      <get-config> "-i"
+    ; err(|"File does not exist")
+    ; fail
+    else
+      strc-front-end
+    ; strc-optimize
+    end
+  ; log-timed(s2j         | "Back-end succeeded", 1)
+  ; log-timed(output-java | "Output succeeded", 1)
+
+  output-java :
+    ast -> file
+    with
+      box  := <pp-java5-to-abox>
+    ; file := <fopen> (<get-config; debug> "-o", "w")
+    ; <box2text-stream(|80, file)> box
+    ; <fclose> file

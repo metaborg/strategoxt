@@ -10,10 +10,24 @@ strategies
   ; <set-config> ("-I", [])
  
   strj-parse-options =
-    with(strj-preinit-options)
+    with(
+      strj-preinit-options
+    )
   ; parse-options(
       strj-options
     )
+  ; with(
+      infer-output-option
+    )
+  
+  infer-output-option =
+    <get-config> "-o"
+  <+
+    <get-config> "-i"
+  ; guarantee-extension(|"java")
+  ; <set-config> ("-o", <id>)
+  <+
+    <set-config> ("-o", stdout())
   
   strj-options =
     input-option

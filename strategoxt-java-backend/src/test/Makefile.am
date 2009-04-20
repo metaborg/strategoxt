@@ -4,9 +4,8 @@ TESTFILES   = $(STRC1TESTFILES) $(BASICTESTFILES)
 JAVAFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CLASSFILES  = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
-SCTREEFILES = $(subst .java,.sctree,$(JAVAFILES))
 RUNNERFILES = $(subst .java,.runner,$(JAVAFILES))
-CLEANFILES  = $(SCTREEFILES) $(JAVAFILES)
+CLEANFILES  = $(JAVAFILES)
 
 STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \
@@ -33,7 +32,7 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 
 STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
-BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1
+BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 override_1 extend_1 internal_1
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 
@@ -44,9 +43,9 @@ BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 	          
 # STRC1TESTS_DISABLED=test50 test83 static-links
 
-check-am : strc1/ExpStratego.tbl .ALLJAVAFILES $(CTREEFILES) $(SCTREEFILES) $(JAVAFILES) $(CLASSFILES)
+check-am : strc1/ExpStratego.tbl .ALLJAVAFILES $(CTREEFILES) $(JAVAFILES) $(CLASSFILES)
 
-# nobase_pkgdata_DATA = $(CTREEFILES) $(SCTREEFILES) $(JAVAFILES)
+# nobase_pkgdata_DATA = $(CTREEFILES) $(JAVAFILES)
 
 TESTS=$(RUNNERFILES)
 
@@ -59,16 +58,10 @@ JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 ../str/s2j : .PURPLEPONY
 	$(MAKE) -C ../str s2j
 
-../str/backend-simplify : .PURPLEPONY
-	$(MAKE) -b -C ../str backend-simplify
-
 %.ctree : %.str
-	$(SCOMPILE) -O 0 -F -I strc1 -i $< -o $@
+	$(SCOMPILE) -O 0 --format-check 0 -F -I strc1 -i $< -o $@
 
-%.sctree : %.ctree ../str/backend-simplify
-	../str/backend-simplify -i $< -o $@
-
-%.ajava : %.sctree ../str/s2j
+%.ajava : %.ctree ../str/s2j
 	../str/s2j -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.java : %.ajava

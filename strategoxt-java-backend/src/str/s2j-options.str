@@ -6,6 +6,8 @@
 module s2j-options
 
 rules
+
+  // TODO: Option like -D name=term
   
   s2j-options =
     s2j-library-options + s2j-stacktrace-option
@@ -18,6 +20,11 @@ rules
     )
   + ArgOption(
       "-la"
+    , <post-extend-config> ("-la", [<id>]); !()
+    , !"-la <name>         Include library <name>"
+    )
+  + ArgOption(
+      "--java"
     , <post-extend-config> ("-la", [<id>]); !()
     , !"-la <name>         Include library <name>"
     )
@@ -35,7 +42,7 @@ rules
                       "(0 = no, 1 = yes [default], 2 = only if assertions disabled for this class)")
     )
  
- s2j-init-options =
-   if not(<get-config> "--stacktrace") then
-     <set-config> ("--stacktrace", 1)
-   end
+  s2j-init-options =
+    if not(<get-config> "--stacktrace") then
+      <set-config> ("--stacktrace", 1)
+    end

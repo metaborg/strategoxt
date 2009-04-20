@@ -12,22 +12,28 @@ imports
   libstratego-xtc
   libstratego-rtg
   libstratego-lib
+  libjava-front
 
   java-postprocess
   variable-lifting
   variable-access
+  backend-simplify
   s2j-options
   lib/core-lift-eblocks
-  
-  Java-EBlock
 
 signature
   constructors 
     Next  : Term
     Match : Term * Exp -> Exp
-    Filename : Str -> Term
     Offset: Int -> Term
     Frames: List(Term) -> Term
+    
+    // stategoxt-annos
+    AnnoDef  : List(Anno) * Def -> Annos
+    Extend   : Anno
+    Override : Anno
+    Internal : Anno
+    Escape   : Stm -> Strategy
 
 overlays
 
@@ -50,6 +56,7 @@ rules
         s2j-init-options
       ; record-main-classname
       )
+    ; backend-simplify
     ; java-compile-spec
     ; java-simplify
     ; core-lift-eblocks
@@ -123,6 +130,7 @@ rules
        ~*import-inits
        ~*cnstr-inits
        ~*cnst-inits
+       ~*def-inits
      }
 
      ~*main
@@ -163,6 +171,7 @@ rules
     ; lifted-defs   := <bagof-Fragment> "LiftedDef"
     ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
     ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
+    ; def-inits     := <bagof-Fragment> "DefInit"
     ; cnst-decls    := <bagof-Fragment> "ConstDecl"
     ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
     ; switch <get-config> "--stacktrace"
@@ -237,8 +246,16 @@ rules
 
 rules
   
-  translate-outer-definition :
-    SDefT(x, strats*, terms*, s) -> type-dec |[
+  translate-outer-definition =
+     translate-outer-definition-plain
+  <+ translate-outer-definition-override
+  <+ translate-outer-definition-extend
+  <+ translate-outer-definition-internal
+  <+ translate-outer-definition-conflict
+  
+  translate-outer-definition-plain :
+    SDefT(x, s*, t*, s){a*} -> 
+    type-dec |[
        public static class x extends Strategy {
          public static x instance = new x();
          
@@ -247,15 +264,62 @@ rules
        }
     ]|
     with
-      body := <translate-definition-body>
-    ; if is-dynamic-signature(|strats*, terms*) then
-        invokedynamic* := [<make-invoke-dynamic> (strats*, terms*)]
-      else
-        invokedynamic* := []
-      end
+      body           := <translate-definition-body>
+    ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+
+  translate-outer-definition-override :
+    AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
+    type-dec |[
+       private static final class x' extends x {
+         ~(body)
+         @Override public String getName() { return "~x"; }
+       }
+    ]|
+    with
+      x' := <newname> <conc-strings> (x, "_override")
+    ; fragment(!|[ x.instance = new x'(); ]| | "DefInit")
+    with
+      body := <translate-definition-body> def
+
+  translate-outer-definition-extend :
+    AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
+    type-dec |[
+       private static final class x' extends x {
+         private static final x outer = x.instance;
+         ~(body)
+         @Override public String getName() { return "~x"; }
+       }
+    ]|
+    with
+      x' := <newname> <conc-strings> (x, "_extension")
+    ; fragment(!|[ x.instance = new x'(); ]| | "DefInit")
+    with
+      e_s*      := <translate-args> s*
+    ; e_t*      := <translate-args> t*
+    ; outercall := |[ outer.invoke(context, term, e_s*, e_t*); ]|
+    ; def'      := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Escape(outercall)))
+    ; body      := <translate-definition-body> def'
+
+  translate-outer-definition-internal :
+    AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
+    type-dec |[
+       private static final class x' extends x {
+         public static final x' instance = new x'();
+         ~body
+       }
+    ]|
+    with
+      x' := <newname> <conc-strings> (x, "_override")
+    ; body := <translate-definition-body> def
+
+  translate-outer-definition-conflict :
+    AnnoDef(a*, SDefT(x, _, _, _)) -> ()
+    with
+      fatal-err(|["conflicting annotations for strategy ", x])
 
   translate-inner-definition :
-    SDefT(x, strats*, terms*, s) -> type-dec |[
+    SDefT(x, s*, t*, s) ->
+    type-dec |[
        private static final class x extends Strategy {
          ~instance-field*
          ~lifted-tfield*
@@ -284,14 +348,19 @@ rules
     with
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x')
-      ; body := <translate-definition-body>
+      ; body           := <translate-definition-body>
+      ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
       |}
-    ; if is-dynamic-signature(|strats*, terms*) then
-        invokedynamic* := [<make-invoke-dynamic> (strats*, terms*)]
+  
+  maybe-make-invoke-dynamic :
+    (s*, t*) -> invokedynamic*
+    with
+      if is-dynamic-signature(|s*, t*) then
+        invokedynamic* := [<make-invoke-dynamic> (s*, t*)]
       else
         invokedynamic* := []
       end
-  
+    
   make-invoke-dynamic :
     (s*, t*) ->
     |[ @Override
@@ -310,7 +379,7 @@ rules
     ; e_t*      := <number(\(_,n) -> |[ targs[~i:<write-to-string> n] ]|\)> t*
   
   translate-definition-body :
-    SDefT(x, strats*, terms*, s) ->
+    SDefT(x, s*, t*, s) ->
     |[ mod_override*
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
            ITermFactory termFactory = context.getFactory();
@@ -328,10 +397,10 @@ rules
     ]|
     with
       {| IsStrategyArg:
-        (strats', [])         := <translate-params> strats*
-      ; (terms',  bstm_init*) := <translate-params> terms*
-      ; param*                := <conc> (strats', terms')   
-      ; if is-dynamic-signature(|strats*, terms*) then
+        (s'*, [])          := <translate-params> s*
+      ; (t'*,  bstm_init*) := <translate-params> t*
+      ; param*             := <conc> (s'*, t'*)   
+      ; if is-dynamic-signature(|s*, t*) then
           mod_override* := []
         else
           mod_override* := [ anno |[ @Override ]| ]
@@ -342,6 +411,9 @@ rules
   translate-outer-definition :
     ExtSDef(_, _, _) -> Semicolon()
 
+  /**
+   * Translates strategy formal parameters to method parameters and initialization.
+   */
   translate-params =
     unzip(translate-param)
   ; (id, concat)
@@ -361,6 +433,21 @@ rules
     with
       x' := x{}
     ; rules(IsStrategyArg: x')
+
+  /**
+   * Translates strategy formal parameters to call arguments.
+   */
+  translate-args =
+    map(translate-arg)
+
+  translate-arg :
+    VarDec(x{}, ConstType(_)) -> expr |[ x ]|
+
+  translate-arg :
+    VarDec(x{Offset(_), Escapes()}, ConstType(_)) -> expr |[ x.get() ]|
+  
+  translate-arg : 
+    VarDec(x, FunType(_, _)) -> expr |[ x ]|
   
 strategies
   
@@ -383,6 +470,9 @@ strategies
   /** @type Id -> Stm */
   translate-Fail :
     Fail() -> |[ if (true) break Fail; ]| // (avoid unreachable stm error)
+
+  translate-Escape :
+    Escape(java) -> java
 
   /** @type Seq -> Stm */
   translate-Seq :
@@ -451,6 +541,7 @@ strategies
     <+ translate-Match ; fc
     <+ translate-Let; fc
     <+ translate-ImportTerm; fc
+    <+ translate-Escape ; fc
     <+ fatal-err(|"translate-strategy failed ")
        )
 
@@ -821,6 +912,7 @@ rules
        |}
     ]|
     with
+      // TODO: Avoid eblock and use approach of java-check-aterm-list 
       e_t1 := <java-construct-term> t1
     ; e_t2 := <java-construct-term> t2
     ; x    := <newname> "mkterm"

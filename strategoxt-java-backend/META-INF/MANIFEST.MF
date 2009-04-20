@@ -4,8 +4,8 @@ Bundle-Name: strc_java
 Bundle-SymbolicName: strc_java
 Bundle-Version: 1.0.0
 Export-Package: org.strategoxt,
- org.strategoxt.compiler.tests,
  org.strategoxt.lang
 Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core;bundle-version="0.3.13",
- org.spoofax.interpreter.adapter.aterm;bundle-version="0.3.11"
+ org.spoofax.interpreter.adapter.aterm;bundle-version="0.3.11",
+ org.spoofax.jsglr;bundle-version="0.2.1"

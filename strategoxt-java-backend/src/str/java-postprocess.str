@@ -99,32 +99,3 @@ strategies
   
   java-simplify-expr :
     |[ new IStrategoTerm[] {} ]| -> |[ EMPTY_TERM_LIST ]|
-
-strategies
-
-  /**
-   * Determines if a Java construct is a non-declaration statement.
-   *
-   */
-  is-Stm =
-    ?Try(_, _, _)
-    + ?Try(_, _)
-    + ?Synchronized(_, _)
-    + ?Throw(_)
-    + ?Return(_)
-    + ?Continue(_)
-    + ?Break(_)
-    + ?ForEach(_, _, _)
-    + ?For(_, _, _, _)
-    + ?For(_, _, _, _)
-    + ?DoWhile(_, _)
-    + ?While(_, _)
-    + ?Switch(_, _)
-    + ?AssertStm(_, _)
-    + ?AssertStm(_)
-    + ?If(_, _, _)
-    + ?If(_, _)
-    + ?ExprStm(_)
-    + ?Labeled(_, _)
-    + ?Empty()
-    + ?Block(_)
