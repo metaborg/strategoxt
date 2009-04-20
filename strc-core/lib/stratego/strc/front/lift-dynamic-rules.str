@@ -1012,6 +1012,9 @@ strategies
 strategies
 
   def-name :
+    AnnoDef(_, def) -> <def-name> def
+
+  def-name :
     |[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| -> (f, (<length> a1*, <length> a2*))
 
   def-name :

@@ -62,6 +62,9 @@ strategies // strategy definitions
       else
         rules( IsLocal : sig )
       end
+    ; if ?AnnoDef(annos, _) then
+        rules( DefAnnos : sig -> annos )
+      end
     ; rules( ModDefinition :+ sig -> def )
 
   /**

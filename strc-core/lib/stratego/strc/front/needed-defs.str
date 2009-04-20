@@ -152,7 +152,7 @@ strategies
     JoinDefsExt
   
   joinannodefs(s) =
-    if filter(?AnnoDef(<id>, _)); concat; not([]) => annos then
+    if filter(?AnnoDef(<id>, _)); union; not([]) => annos then
       filter(
         not(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_))
       ; ?AnnoDef(_, <id>)

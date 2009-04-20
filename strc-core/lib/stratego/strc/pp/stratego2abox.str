@@ -456,7 +456,7 @@ rules
    Override() -> KW ["override"]
 
   stratego-to-abox : 
-   Local() -> KW ["local"]
+   Internal() -> KW ["internal"]
 
 rules
 
