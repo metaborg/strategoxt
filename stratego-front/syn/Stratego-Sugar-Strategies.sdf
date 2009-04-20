@@ -58,7 +58,6 @@ exports
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 
     Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
-    Strategy "{" "{" Strategy "}" "}" -> Strategy {reject}
     
     "{" Strategy "}"		  	  -> StrategyCurly {cons("StrategyCurly")}
 

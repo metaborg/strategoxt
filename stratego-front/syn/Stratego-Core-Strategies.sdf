@@ -20,7 +20,7 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
 
-    "{{" { Anno "," }+ "}}" StrategyDef -> Def {cons("AnnoDef")}
+    Anno+ StrategyDef -> Def {cons("AnnoDef")}
 
     "external"
     Id "(" {Typedid ","}* 
@@ -33,9 +33,30 @@ exports
 
   sorts Anno
   context-free syntax
-    "extend"                -> Anno {cons("Extend")}
-    "override"              -> Anno {cons("Override")}
-    "local"                 -> Anno {cons("Local")}
+    "extend"      -> Anno {cons("Extend")}
+    "override"    -> Anno {cons("Override")}
+    "internal"    -> Anno {cons("Internal")}
+%%  "sealed"      -> Anno {cons("Sealed")}
+%%  "extensible"  -> Anno {cons("Extensible")}
+%%  "overridable" -> Anno {cons("Overridable")}
+
+  lexical syntax
+    
+    "extend"      -> Keyword
+    "override"    -> Keyword
+    "internal"    -> Keyword
+    "sealed"      -> Keyword
+    "extensible"  -> Keyword
+    "overridable" -> Keyword
+
+  lexical restrictions
+  
+    "extend"
+    "override"
+    "internal"
+    "sealed"
+    "extensible"
+    "overridable" -/- [a-zA-Z0-9\'\-\_]
 
   sorts Typedid
   context-free syntax

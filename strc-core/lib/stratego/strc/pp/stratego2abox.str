@@ -445,7 +445,7 @@ rules
     ; <separate-by-comma>argt => argt'
 
   stratego-to-abox : 
-   AnnoDef(annos,def) -> V [ H hs=0 [ KW["{{"] ~annos' KW["}}"] ] ~def ]
+   AnnoDef(annos,def) -> H hs=0 [~annos' ~def ]
    where
      <separate-by-comma> annos => annos'
 

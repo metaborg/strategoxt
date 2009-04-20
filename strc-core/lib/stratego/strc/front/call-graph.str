@@ -65,7 +65,7 @@ strategies
          ; m-get-all-def-sigs
          ; map(
               DefIsNeeded
-           <+ DefAnnos; one(Override + Extend)
+           <+ IsLocal; DefAnnos; one(Override + Extend)
            <+ m-rm-def
            )
 	 ; m-get-all-constructors-sigs
