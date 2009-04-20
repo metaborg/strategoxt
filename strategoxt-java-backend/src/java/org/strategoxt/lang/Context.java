@@ -24,6 +24,8 @@ import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
  * @author Karl Trygve Kalleberg
  */
 public class Context {
+	private static final CallT[] EMPTY_CALLT_LIST = new CallT[0];
+	
 	private final ITermFactory factory;
 	
 	private final IContext interopContext;
@@ -129,6 +131,8 @@ public class Context {
     }
     
     private CallT[] toInteropStrategies(IStrategy[] strategies) {
+    	if (strategies.length == 0) return EMPTY_CALLT_LIST;
+    	
     	CallT[] results = new CallT[strategies.length];
     	for (int i = 0; i < strategies.length; i++)
     		results[i] = toInteropStrategy(strategies[i]);
