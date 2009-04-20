@@ -39,15 +39,19 @@ strategies
       Overlays(ols),
       Strategies([<AnnoCongDef> | sdefs])
     ])
-    where <not(fetch(  ?SDefT("Anno_Cong__",_,_,_)
+    where <not(fetch(try(?AnnoDef(_, <id>); 
+             ( ?SDefT("Anno_Cong__",_,_,_)
 		     + ?RDefT("Anno_Cong__",_,_,_)
 		     + ?ExtSDef("Anno_Cong__",_,_)
-		     + ?ExtSDefInl("Anno_Cong__",_,_,_)))> sdefs
+		     + ?ExtSDefInl("Anno_Cong__",_,_,_)))))> sdefs
 
 strategies
 
   // avoid double definitions of congruences by registering already
   // defined operators
+
+  RegisterCongDef =
+    AnnoDef(id, RegisterCongDef)
 
   RegisterCongDef =
     ?ExtSDef(f, xs, []) 

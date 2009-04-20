@@ -18,6 +18,11 @@ strategies
   lchoices = 
     foldr(!Fail(), \ (s1, s2) -> LChoice(s1, s2) \ )
 
+strategies
+
+  ignore-anno-def(s) =
+    ?AnnoDef(_, _) < AnnoDef(id, s) + s
+
 rules
 
   Add1 : Var(x)  -> [x]
@@ -46,7 +51,7 @@ rules
 
   Bind0 : Scope(xs, s) -> xs
   Bind0 : LRule(Rule(t1, t2, s)) -> <tvars> t1
-  Bind1 : Let(defs, s2) -> <map(?SDef(<id>,_,_) + ?SDefT(<id>,_,_,_) + ?RDef(<id>,_,_) + ?RDefT(<id>,_,_,_))> defs
+  Bind1 : Let(defs, s2) -> <map(ignore-anno-def(?SDef(<id>,_,_) + ?SDefT(<id>,_,_,_) + ?RDef(<id>,_,_) + ?RDefT(<id>,_,_,_)))> defs
   Bind2 : SDef(f, xs, s) -> <declared-vars> xs
   Bind3 : Rec(x, s) -> [x]
 

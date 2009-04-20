@@ -80,15 +80,29 @@ strategies
 strategies
 
   check-ext-overload =
-    let helper =
-          DefinitionName
-          ; if ExtDefinition then
-              sdef-key-to-string
-              ; debug(!"error: redefining external definition: ")
-              ; <exit> 1
-            end
-     in map(where(is-new-def < helper + id))
-    end
+    list-loop(
+      if is-new-def then
+        check-ext-overload-def
+      end
+    )
+  
+  check-ext-overload-def =
+    ?def{a*}
+    ; DefinitionName
+    ; if ExtDefinition then
+        if !a* => [] then
+          sdef-key-to-string
+          ; !def; write-to-string
+          ; debug(!"error: redefining external definition1: ")
+          ; <exit> 1
+        end
+      else
+        if !a* => [_ | _] then
+          sdef-key-to-string
+          ; debug(!"error: no external definition found: ")
+          ; <exit> 1
+        end
+      end
 
 strategies
 
@@ -133,7 +147,21 @@ strategies
    */
 
   joindefs = 
-    JoinDefs1 <+ JoinDefs2 <+ JoinDefsExt
+    joinannodefs(JoinDefs1 <+ JoinDefs2)
+  <+
+    JoinDefsExt
+  
+  joinannodefs(s) =
+    if filter(?AnnoDef(<id>, _)); concat; not([]) => annos then
+      filter(
+        not(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_))
+      ; ?AnnoDef(_, <id>)
+      )
+    ; s
+    ; !AnnoDef(annos, <id>)
+    else
+      s
+    end
 
 rules
 
@@ -169,7 +197,7 @@ rules
   JoinDefsExt =
     fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
     ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"error: redefining external definition: ")> f
+    ; <debug(!"error: redefining external definition2: ")> <write-to-string>
     ; giving-up
 
   choices = 

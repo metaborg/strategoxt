@@ -20,6 +20,8 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
 
+    "{{" { Anno "," }+ "}}" StrategyDef -> Def {cons("AnnoDef")}
+
     "external"
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("ExtSDefInl")}
@@ -28,6 +30,12 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
 
+
+  sorts Anno
+  context-free syntax
+    "extend"                -> Anno {cons("Extend")}
+    "override"              -> Anno {cons("Override")}
+    "local"                 -> Anno {cons("Local")}
 
   sorts Typedid
   context-free syntax

@@ -262,6 +262,11 @@ strategies
   SDefIgnore =
     ?Def|[ f(a1* | a2*) = s ]|
     ; where( !f => "DYNAMIC__CALLS_0_0" )
+  
+  SDefFail =
+    ?AnnoDef(a*, SDefT(s, _, _, _))
+    ; !(a*, s)
+    ; fatal-err(|"annotations not supported for this platform")
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->

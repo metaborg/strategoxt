@@ -4,7 +4,7 @@ strategies
 
   lift-definitions =
     declare-standard-strategies
-    ; Specification([id, Strategies(map(DeclareTopLevel); map(lift-sdefs <+ ![<id>]); concat)])
+    ; Specification([id, Strategies(map(ignore-anno-def(DeclareTopLevel)); map(lift-sdefs <+ ![<id>]); concat)])
 
   declare-standard-strategies =
     where(
@@ -24,6 +24,10 @@ strategies
     ?ExtSDef(f, xs, ys)
     ; rules(TopLevel : f -> ())
 
+  lift-sdefs :
+    AnnoDef(a*, SDefT(f, xs, ys, s)) -> <conc>(defs, [AnnoDef(a*, SDefT(f, xs, ys, s'))])
+    where <collect-split(LiftFromLet)> s => (s', defs)
+  
   lift-sdefs :
     SDefT(f, xs, ys, s) -> <conc>(defs, [SDefT(f, xs, ys, s')])
     where <collect-split(LiftFromLet)> s => (s', defs)

@@ -28,15 +28,15 @@ strategies
         <mark-needed-defs> "main_0_0"
       ; try(<mark-needed-defs> "DYNAMIC_CALLS_0_0")
       )
-    ; filter(
+    ; filter(ignore-anno-def(
         SDefT(DefNeeded,id,id,id) 
         <+ ExtSDefInl(DefNeeded,id,id,id)
         <+ ExtSDef(DefNeeded,id,id)
-      )
+      ))
 
   RegisterDefinition =
     ?sdef
-    ; where( (?SDefT(<id>,_,_,_) <+ ?ExtSDefInl(<id>,_,_,_) <+ ?ExtSDef(<id>,_,_)) => f )
+    ; where( ignore-anno-def(?SDefT(f,_,_,_) <+ ?ExtSDefInl(f,_,_,_) <+ ?ExtSDef(f,_,_)) )
     ; rules( NameToDefinition : f -> sdef )
   
   mark-needed-defs = 

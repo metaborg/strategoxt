@@ -40,8 +40,8 @@ strategies
     Specification([id,Strategies(inline-sdefs)])
 
   inline-sdefs = 
-    map(simplify0; try(inlineable; AddSDef))
-    ; map(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef))
+    map(ignore-anno-def(simplify0; try(inlineable; AddSDef)))
+    ; map(ignore-anno-def(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef)))
 
   inline-sdef =
     DeclareInline(inline-sdef) 

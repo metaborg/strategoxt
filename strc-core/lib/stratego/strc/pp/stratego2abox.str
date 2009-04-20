@@ -444,6 +444,19 @@ rules
       <separate-by-comma>args => args'
     ; <separate-by-comma>argt => argt'
 
+  stratego-to-abox : 
+   AnnoDef(annos,def) -> V [ H hs=0 [ KW["{{"] ~annos' KW["}}"] ] ~def ]
+   where
+     <separate-by-comma> annos => annos'
+
+  stratego-to-abox : 
+   Extend() -> KW ["extend"]
+
+  stratego-to-abox : 
+   Override() -> KW ["override"]
+
+  stratego-to-abox : 
+   Local() -> KW ["local"]
 
 rules
 

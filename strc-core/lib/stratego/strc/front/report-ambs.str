@@ -16,7 +16,7 @@ strategies
     <+ all(report-ambs)
 
   report-amb-definition(s) =
-    (?SDef(name,_,_) <+ ?SDefNoArgs(name,_) <+ ?SDefT(name,_,_,_))
+    (ignore-anno-def(?SDef(name,_,_) <+ ?SDefNoArgs(name,_) <+ ?SDefT(name,_,_,_)))
     ; {| current-definition
        : rules( current-definition : _ -> ("strategy", name) )
        ; all(s)
