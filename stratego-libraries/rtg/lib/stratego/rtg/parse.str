@@ -21,7 +21,7 @@ strategies
 
   get-rtg-parse-table =
     MemoRTGParseTable
-    <+ STRRTG-get-rtg-parsetable
+    <+ import-term(rtg.tbl)
        ; open-parse-table
        ; ?tbl
        ; rules(MemoRTGParseTable: _ -> tbl)
