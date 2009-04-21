@@ -46,6 +46,6 @@ strategies
     ast -> file
     with
       box  := <pp-java5-to-abox>
-    ; file := <fopen> (<get-config; debug> "-o", "w")
+    ; file := <fopen> (<get-config> "-o", "w")
     ; <box2text-stream(|80, file)> box
     ; <fclose> file

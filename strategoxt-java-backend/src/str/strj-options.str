@@ -39,6 +39,8 @@ strategies
     !"-I d | --Include d Include modules from directory d")
   <+
     s2j-stacktrace-option
+  <+
+    s2j-define-option
         
   <+ ArgOption(fail, fail, !"")
   <+ ArgOption(fail, fail, !"Library options:")

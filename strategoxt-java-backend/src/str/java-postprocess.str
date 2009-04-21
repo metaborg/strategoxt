@@ -6,7 +6,7 @@
 module java-postprocess
 
 imports
-  Java-EBlock
+  libjava-front
 
 strategies
 

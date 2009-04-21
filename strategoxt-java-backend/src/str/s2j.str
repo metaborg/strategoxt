@@ -126,6 +126,8 @@ rules
      ~*cnstr-decls
      
      public static void preInit(ITermFactory termFactory) {
+       if (constantFactory == termFactory)
+         return;
        constantFactory = termFactory;
        ~*import-inits
        ~*cnstr-inits
@@ -155,6 +157,7 @@ rules
          }
      }
 
+     ~*constant-defs
      ~*function-defs
      ~*lifted-defs
 
@@ -168,6 +171,7 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; function-defs := <map(translate-outer-definition)> defs
+    ; constant-defs := <map(debug; translate-constant-definition; debug)> <get-config> "-D"
     ; lifted-defs   := <bagof-Fragment> "LiftedDef"
     ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
     ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
@@ -245,6 +249,13 @@ rules
       x_name := <MainClassName>
 
 rules
+
+  translate-constant-definition : // TODO: check if contant definition name not taken
+    (name, value) -> def'
+    with
+      name'  := <conc-strings> (<cify> name, "_0_0")
+    ; def    := SDefT(name', [], [], Build(value))
+    ; def'   := <translate-outer-definition> def
   
   translate-outer-definition =
      translate-outer-definition-plain

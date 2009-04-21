@@ -6,11 +6,9 @@
 module s2j-options
 
 rules
-
-  // TODO: Option like -D name=term
   
   s2j-options =
-    s2j-library-options + s2j-stacktrace-option
+     s2j-stacktrace-option + s2j-define-option + s2j-library-options
   
   s2j-library-options =
     ArgOption(
@@ -40,6 +38,23 @@ rules
     , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
     , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",
                       "(0 = no, 1 = yes [default], 2 = only if assertions disabled for this class)")
+    )
+  
+  s2j-define-option =
+    ArgOption(
+      "-D"
+    , <post-extend-config> ("-D", [<parse-define-option>]); !()
+    ,!"-D name=value      Define a constant value strategy"
+    )
+ 
+  parse-define-option =
+    risky(
+      string-tokenize(|['='])
+    ; \[name, value] -> (name, value)\
+    | "option -D must be followed by name=value pair")
+  ; risky(
+      (id, read-from-string; trm-explode; raise-in-build; stratego-desugar)
+    | "illegal constant value for option -D"
     )
  
   s2j-init-options =
