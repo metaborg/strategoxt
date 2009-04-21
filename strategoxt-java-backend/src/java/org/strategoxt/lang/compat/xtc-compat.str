@@ -1,0 +1,15 @@
+/**
+ * Some degree of XTC and native calling compatibility.
+ *
+ * @author Lennart Kats
+ */
+module xtc-compat
+
+strategies
+
+  override xtc-find =
+    warn(|[<whoami <+ !"application">, "uses xtc"])
+  
+  override call =
+    ?(program, args);
+    prim("SSL_EXT_call", program, args)
