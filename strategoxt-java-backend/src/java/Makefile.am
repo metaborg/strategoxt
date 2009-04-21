@@ -33,7 +33,7 @@ org/strategoxt/libstratego_sglr.java : $(STRATEGOXT)/share/libstratego-sglr.ctre
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
 org/strategoxt/libstratego_rtg.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.lang.compat.libstratego_rtg
 
 org/strategoxt/libstratego_gpp.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../str/strj
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
