@@ -48,7 +48,17 @@ strategies
   output-java :
     ast -> file
     with
-      box  := <pp-java5-to-abox>
+      box  := <pp-java5-to-abox <+ output-java-error>
     ; file := <fopen> (<get-config> "-o", "w")
     ; <box2text-stream(|80, file)> box
     ; <fclose> file
+
+   // Using XTC for debugging:
+   // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,
+   // because of the import-term involved)
+   output-java-error =
+      err-msg(|"Internal error: generated Java AST is malformed")
+    ; write-to => FILE(file)
+    ; try(<xtc-command(!"format-check")> ["--vis", "-i", file, "--rtg", <xtc-find> "Java-15.rtg" | <pass-verbose>])
+    ; log(|Critical(), "Fatal errors encountered in generated code")
+    ; <xtc-exit> 1

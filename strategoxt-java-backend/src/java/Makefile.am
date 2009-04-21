@@ -7,9 +7,12 @@ nobase_pkgdata_DATA = \
   org/strategoxt/libstratego_lib.class \
   org/strategoxt/libstratego_xtc.class \
   org/strategoxt/libstratego_sglr.class \
-  org/strategoxt/libstratego_rtg.class \
   org/strategoxt/libstratego_gpp.class \
   $(COMPATCLASSES)
+  
+  # org/strategoxt/libstrc.class
+  # org/strategoxt/libstratego_sdf.class
+  # org/strategoxt/libstratego_rtg.class
 
 # HACK: hardcoded, relative classpath
 
@@ -30,13 +33,13 @@ org/strategoxt/libstratego_sglr.java : $(STRATEGOXT)/share/libstratego-sglr.ctre
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
 org/strategoxt/libstratego_rtg.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
 
 org/strategoxt/libstratego_gpp.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
 
 org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
 
 org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../str/strj
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
@@ -52,16 +55,13 @@ org/strategoxt/lang/compat/jsglr-parser-compat.java : org/strategoxt/lang/compat
 	pp-java -i $< -o $@ || \
 	    (format-check -i $< --rtg ~/.nix-profile/share/java-front/Java-15.rtg --vis; rm -f $@; exit 1)
 
-%.ajava : %ctree
-	../str/s2j -la org.strategoxt.libstratego_lib
-
 %.class : %.java
 	javac $(JAVACFLAGS) $<
 
 .PURPLEPONY:
 
-../str/s2j : .PURPLEPONY
-	$(MAKE) -C ../str s2j
+../str/strj : .PURPLEPONY
+	$(MAKE) -C ../str strj
 
 ../str/backend-simplify : .PURPLEPONY
 	$(MAKE) -b -C ../str backend-simplify

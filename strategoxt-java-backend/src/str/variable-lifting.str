@@ -7,21 +7,52 @@ module variable-lifting
 
 rules
  
-  collect-lifted-tvars(|lifted-def, svars, tvars) =
-    <flatten-list> [ <collect-direct-lifted-vars(|lifted-def)> tvars
-                   , <collect-indirect-lifted-vars(LiftedTArgs)> svars]
-  ; make-set-with-annos
+  collect-lifted-tvars :
+    SDefT(x, _, _, s) -> lifted-tvars
+    with
+      x' := x{}
+    with
+      lifted-tvars := <LiftedTVars> x'
+    <+
+      tvars         := <tvars> s
+    ; svars         := <svars> s
+    ; direct-lifted := <collect-direct-lifted-vars(|x')> tvars
+    ; rules(
+        // TODO: Do we need to do a fixpoint to find all lifted defs?
+        //       Or is setting an intermediate value sufficient..?
+        LiftedTVars: x' -> direct-lifted
+      )
+    ; indirect-lifted := <collect-indirect-lifted-tvars> svars
+    ; <flatten-list> [direct-lifted, indirect-lifted]
+    ; lifted-tvars := <make-set-with-annos>
+    ; rules(
+        LiftedTVars: x' -> lifted-tvars
+      )
   
-  collect-lifted-svars(|lifted-def, svars) =
-    <flatten-list> [ <collect-direct-lifted-vars(|lifted-def)> svars
-                   , <collect-indirect-lifted-vars(LiftedSArgs)> svars]
-  ; make-set-with-annos
+  collect-lifted-svars :
+    SDefT(x, _, _, s) -> lifted-svars
+    with
+      x' := x{}
+    with
+      lifted-svars := <LiftedSVars> x'
+    <+
+      svars         := <svars> s
+    ; direct-lifted := <collect-direct-lifted-vars(|x')> svars
+    ; rules(
+        LiftedSVars: x' -> direct-lifted
+      )
+    ; indirect-lifted := <collect-indirect-lifted-svars> svars
+    ; <flatten-list> [direct-lifted, indirect-lifted]
+    ; lifted-svars := <make-set-with-annos>
+    ; rules(
+        LiftedSVars: x' -> lifted-svars
+      )
   
-  collect-direct-lifted-vars(|lifted-def) =
+  collect-direct-lifted-vars(|lifted-name) =
     filter(
       where(
         get-annos
-      ; one(Frames(one(?lifted-def)))
+      ; one(Frames(one(?lifted-name)))
       ; one(?Offset(_))
       )
     ; not(is-self-call)
@@ -30,18 +61,21 @@ rules
     //  write-to-string; debug(!"  not lifted: "); fail
     )
 
-  collect-indirect-lifted-vars(lifted-args) =
-    {| IsIndirectCollected:
-      filter({ x: ?x
-      ; not(<IsIndirectCollected> x{})
-      ; x' := x{}
-      ; rules(IsIndirectCollected: x')
-      ; lifted-args
-      ; not([])
-      //; where(<debug(!"  liftedIndirect: ")> (x', <id>))
-      ; <conc> (<id>, <collect-indirect-lifted-vars(lifted-args)>)
-      })
-    |}
+  collect-indirect-lifted-tvars =
+    filter({ x:
+      ?x
+    ; <InnerDefinition> x{}
+    ; collect-lifted-tvars
+    //; where(<debug(!"  liftedIndirect: ")> (x{}, <id>))
+    })
+
+  collect-indirect-lifted-svars =
+    filter({ x:
+      ?x
+    ; <InnerDefinition> x{}
+    ; collect-lifted-svars
+    //; where(<debug(!"  liftedIndirect: ")> (x{}, <id>))
+    })
   
   make-set-with-annos =
     foldr(![], union(strip-annos; eq), ![<id>])
@@ -52,3 +86,4 @@ rules
     )
   ; get-annos
   ; one(?Frames([x]))
+

@@ -55,18 +55,14 @@ BASEPATH=../../../../spoofax/trunk/spoofax
 CLASSPATH=.:$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:basic:strc1:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 
-../str/s2j : .PURPLEPONY
-	$(MAKE) -C ../str s2j
+../str/strj : .PURPLEPONY
+	$(MAKE) -C ../str strj
 
 %.ctree : %.str
 	$(SCOMPILE) -O 0 --format-check 0 -F -I strc1 -i $< -o $@
 
-%.ajava : %.ctree ../str/s2j
-	../str/s2j -i $< -o $@ -la org.strategoxt.libstratego_lib
-
-%.java : %.ajava
-	pp-java -i $< -o $@ || \
-	    (format-check -i $< --rtg ~/.nix-profile/share/java-front/Java-15.rtg --vis; rm -f $@; exit 1)
+%.java : %.ctree ../str/strj
+	../str/strj -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.class : %.java
 	javac $(JAVACFLAGS) $<

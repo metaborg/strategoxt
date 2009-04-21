@@ -62,28 +62,6 @@ rules
     ; java-simplify
     ; core-lift-eblocks
     ; java-relabel
- 
-  fc =
-    id
-  
-  /*
-  fc =
-    with(
-      verbosity => oldverbosity
-    ; <set-verbosity> 1
-    )
-  ; with(
-      rtg-format-check(true, true|<java-rtg>)
-    ; <set-verbosity> oldverbosity
-    | "Internal error: resulting term is not well-formed"
-    )
-  
-  java-rtg =
-    JavaRTG
-  <+
-    import-term(Java-15.rtg.af)
-  ; rules(JavaRTG := <id>)
-    */
      
   record-main-classname = 
     <get-config> "-i"
@@ -177,9 +155,8 @@ rules
         case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
       end
   with
-    {| GetDefinition, Fragment:
-      <record-definitions> defs
-      ; function-defs := <map(translate-outer-definition)> defs
+    {| Fragment :
+        function-defs := <map(translate-outer-definition)> defs
       ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
       ; lifted-defs   := <bagof-Fragment> "LiftedDef"
       ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
@@ -189,16 +166,6 @@ rules
       ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
     |}
   
-  record-definitions =
-    list-loop({
-      if ?SDefT(_, _, _, s) + ?RDefT(_, _, _, s) then
-        sig := <m-def-signature>
-      ; rules(
-          GetDefinition: sig -> s
-        )
-      end
-    })
-    
   java-imports =
     <get-config> "-la"
   ; map(java-import)
@@ -220,7 +187,6 @@ rules
     x -> |[ x'.preInit(termFactory); ]|
     with
       x' := <jify> x
-
 
   java-main-methods :
     _ -> []
@@ -356,15 +322,12 @@ rules
        }
     ]|
     with
-      (svars, tvars) := (<svars>, <tvars>)
-    ; x'             := x{}
-    ; lifted-tvar*   := <collect-lifted-tvars(|x', svars, tvars)>
-    ; lifted-svar*   := <collect-lifted-svars(|x', svars)>
-    ; lifted-sfield* := <map(\x -> class-body-dec |[ IStrategy x;      ]|\)> lifted-svar*
-    ; lifted-tfield* := <map(\x -> class-body-dec |[ ITermReference x; ]|\)> lifted-tvar*
+      ?def
+    ; lifted-tvar*   := <collect-lifted-tvars> def
+    ; lifted-svar*   := <collect-lifted-svars> def
+    ; lifted-sfield* := <map(\y -> class-body-dec |[ IStrategy y;      ]|\)> lifted-svar*
+    ; lifted-tfield* := <map(\y -> class-body-dec |[ ITermReference y; ]|\)> lifted-tvar*
     ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
-    ; rules(LiftedSArgs: x' -> lifted-svar*)
-    ; rules(LiftedTArgs: x' -> lifted-tvar*)
     with
       if !lifted-tvar* => lifted-svar* => [] then
         instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|
@@ -373,7 +336,7 @@ rules
       end
     with
       {| CurrentLiftedFrame :
-        rules(CurrentLiftedFrame := x')
+        rules(CurrentLiftedFrame := x{})
       ; body           := <translate-definition-body>
       ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
       |}
@@ -422,7 +385,7 @@ rules
        }
     ]|
     with
-      {| IsStrategyArg:
+      {| IsStrategyArg :
         (s'*, [])          := <translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; param*             := <conc> (s'*, t'*)   
@@ -554,29 +517,39 @@ strategies
 
   translate-strategy = 
        ( 
-       translate-CallT-dynamic ; fc
-    <+ translate-CallT ; fc
-    <+ translate-Build ; fc
-    <+ translate-Seq ; fc
-    <+ translate-PrimT ; fc
-    <+ translate-Id ; fc
-    <+ translate-Fail ; fc
-    <+ translate-GuardedLChoice-no-left-branch ; fc
-    <+ translate-GuardedLChoice ; fc
-    <+ translate-Scope ; fc
-    <+ translate-Match ; fc
-    <+ translate-Let; fc
-    <+ translate-ImportTerm; fc
-    <+ translate-Escape ; fc
+       translate-CallT-dynamic
+    <+ translate-CallT
+    <+ translate-Build
+    <+ translate-Seq
+    <+ translate-PrimT
+    <+ translate-Id
+    <+ translate-Fail
+    <+ translate-GuardedLChoice-no-left-branch
+    <+ translate-GuardedLChoice
+    <+ translate-Scope
+    <+ translate-Match
+    <+ translate-Let
+    <+ translate-ImportTerm
+    <+ translate-Escape
     <+ fatal-err(|"translate-strategy failed ")
        )
 
   translate-Let : 
     Let(defs, body) -> body'
     with
-      <map(fragment(translate-inner-definition | "LiftedDef"))> defs
+      !defs
+    ; record-inner-definitions
+    ; list-loop(fragment(translate-inner-definition | "LiftedDef"))
     ; body' := <translate-strategy> body
 
+  record-inner-definitions =
+    list-loop({
+      if ?def @ SDefT(x, _, _, _) then
+        x' := x{}
+      ; rules(InnerDefinition: x' -> def)
+      end
+    })
+  
   translate-CallT-dynamic:
     CallT(SVar(x), s*, t*) ->
     bstm* |[
@@ -689,8 +662,8 @@ strategies
   lifted-call-to-instance-with-args :
     CallT(SVar(x), _, _) -> expr |[ x' ]|
     where
-      sarg* := <LiftedSArgs> x{}
-    ; targ* := <LiftedTArgs> x{}
+      sarg* := <LiftedSVars> x{}
+    ; targ* := <LiftedTVars> x{}
     ; (!sarg* => [_ | _] + !targ* => [_ | _]) // needs lifting
     with
       if not(<CallTDecl> x => x') then // add declaration
@@ -715,9 +688,9 @@ strategies
     where
       <IsStrategyArg> x{}
     <+
-      <LiftedSArgs> x{} => [_ | _]
+      <LiftedSVars> x{} => [_ | _]
     <+
-      <LiftedTArgs> x{} => [_ | _]
+      <LiftedTVars> x{} => [_ | _]
 
   lifted-call-to-instance-instance :
     CallT(SVar(x), _, _) -> expr |[ x.instance ]|
