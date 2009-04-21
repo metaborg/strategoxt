@@ -1,0 +1,14 @@
+module extend_1
+
+imports
+  libstratego-lib
+
+rules
+
+  main =
+    <list('*')> "***"
+  ; <list('*')> ['*','*','*']
+    
+  extend map(s) =
+    string-as-chars(all(s))
+

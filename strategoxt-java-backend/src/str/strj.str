@@ -14,6 +14,7 @@ imports
     
   strj-options
   s2j
+  lib/dr-scoping
 
 strategies
 
@@ -36,8 +37,10 @@ strategies
     ; err(|"File does not exist")
     ; fail
     else
-      strc-front-end
-    ; strc-optimize
+      dr-scope-all(
+        strc-front-end
+      ; strc-optimize
+      )
     end
   ; log-timed(s2j         | "Back-end succeeded", 1)
   ; log-timed(output-java | "Output succeeded", 1)

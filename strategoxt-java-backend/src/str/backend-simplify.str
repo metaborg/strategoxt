@@ -10,13 +10,15 @@ signature
   
 strategies
   
-  backend-simplify = 
-       lift-definitions
-     ; canonicalize
-     ; simplify1
-     ; mark-bound-unbound-vars
-     ; escaping-variables
-     ; remove-closure-allocs
+  backend-simplify =
+    dr-scope-all(
+      lift-definitions
+    ; canonicalize
+    ; simplify1
+    ; mark-bound-unbound-vars
+    ; escaping-variables
+    ; remove-closure-allocs
+    )
 
 rules
 
@@ -30,16 +32,6 @@ rules
                <filter(not(remove-closure-alloc-def))> def*
     ; s' := <remove-closure-allocs>
             <alltd(remove-closure-alloc-call)> s
-  
-  /* UNDONE: removed more than just {ClosureAlloc} annotated defs (breaks test08.str)
-  remove-closure-alloc-def(|other-defs) :
-    SDefT(x, [], [], s @ CallT(_, _, _)) -> []
-    where
-      x' := x{}
-    ; <not(oncetd({y: ?SVar(y); !y{} => x'}))> other-defs
-    with
-      rules(RemoveClosureAlloc: x' -> s)
-  */
     
   remove-closure-alloc-def :
     SDefT(x{a*}, _, _, s) -> []

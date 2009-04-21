@@ -5,7 +5,7 @@ JAVAFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CLASSFILES  = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
 RUNNERFILES = $(subst .java,.runner,$(JAVAFILES))
-CLEANFILES  = $(JAVAFILES)
+CLEANFILES  = $(JAVAFILES) $(CLASSFILES) $(CTREEFILES)
 
 STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \
@@ -32,7 +32,7 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 
 STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
-BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 override_1 extend_1 internal_1
+BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 override_1 extend_1 internal_1 shared_var_1 # shared_var_2
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 

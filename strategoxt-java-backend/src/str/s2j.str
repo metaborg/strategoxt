@@ -19,6 +19,7 @@ imports
   variable-access
   backend-simplify
   s2j-options
+  lib/dr-scoping
   lib/core-lift-eblocks
 
 signature
@@ -170,20 +171,34 @@ rules
     ; x_name        := <MainClassName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
-    ; function-defs := <map(translate-outer-definition)> defs
-    ; constant-defs := <map(debug; translate-constant-definition; debug)> <get-config> "-D"
-    ; lifted-defs   := <bagof-Fragment> "LiftedDef"
-    ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
-    ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
-    ; def-inits     := <bagof-Fragment> "DefInit"
-    ; cnst-decls    := <bagof-Fragment> "ConstDecl"
-    ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
         case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
       end
+  with
+    {| GetDefinition, Fragment:
+      <record-definitions> defs
+      ; function-defs := <map(translate-outer-definition)> defs
+      ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
+      ; lifted-defs   := <bagof-Fragment> "LiftedDef"
+      ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
+      ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
+      ; def-inits     := <bagof-Fragment> "DefInit"
+      ; cnst-decls    := <bagof-Fragment> "ConstDecl"
+      ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
+    |}
   
+  record-definitions =
+    list-loop({
+      if ?SDefT(_, _, _, s) + ?RDefT(_, _, _, s) then
+        sig := <m-def-signature>
+      ; rules(
+          GetDefinition: sig -> s
+        )
+      end
+    })
+    
   java-imports =
     <get-config> "-la"
   ; map(java-import)
