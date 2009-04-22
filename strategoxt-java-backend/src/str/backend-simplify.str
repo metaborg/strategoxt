@@ -1,7 +1,10 @@
 module backend-simplify
+
 imports
   libstratego-lib
   libstrc
+  
+  split-large-strategies
   
 signature
  constructors
@@ -13,6 +16,8 @@ strategies
   backend-simplify =
     dr-scope-all(
       lift-definitions
+    ; split-large-strategies
+    ; lift-definitions
     ; canonicalize
     ; simplify1
     ; mark-bound-unbound-vars

@@ -1,8 +1,43 @@
-module split-strategies
+module split-large-strategies
 
 overlays
-  LARGE_STRATEGY_SIZE = 1000
+  /**
+   * Minimum number of terms in a strategy definition required to split it up.
+   * Note that Java methods of over 4000 instructions may no longer be eligible for JIT compilation,
+   * and that Java defines a 64 KB instruction limit per method.
+   */
+  LARGE_STRATEGY_SIZE = 13337
 
 strategies
 
-  split-large-strategies
+  split-large-strategies =
+    Specification([Signature([Constructors(id)]), Strategies(map(try(split-large-def)))])
+  
+  split-large-def :
+    SDefT(x, s*, t*, s) -> SDefT(x, s*, t*, s')
+    with
+      s' := <split-large-strategy(|x, 0)> s
+  
+  split-large-strategy(|x, depth) =
+    split-large-strategy-1(|x, depth) <+ split-large-strategy-2(|x, depth) <+ id
+  
+  split-large-strategy-1(|x, depth) :
+    |[ s1 < s2 + s3 ]| -> |[ s1 < s2 + s3' ]|
+    where
+      <gt> (LARGE_STRATEGY_SIZE(), depth)
+    with
+      depth' := <add> (depth, <term-size> (s1,s2))
+    ; s3'    := <split-large-strategy(|x, depth')> s3
+  
+  split-large-strategy-2(|x, depth) :
+    |[ s1 < s2 + s3 ]| ->
+    |[ let x_split =
+         s_split
+       in
+         s1 < s2 + x_split
+       end
+    ]|
+    with
+      x_split := <newname> "split"
+    ; s_split := <split-large-strategy(|x, 0)> s3
+    ; log(|Notice(), ["Split up very large strategy ", x])

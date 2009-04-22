@@ -19,6 +19,7 @@ LIBRARYCLASSES = \
   org/strategoxt/libstratego_gpp.class \
   org/strategoxt/lang/compat/libstratego_aterm_compat.class \
   org/strategoxt/lang/compat/libstratego_rtg_compat.class \
+  org/strategoxt/lang/compat/libstratego_libstrc_compat.class \
   org/strategoxt/lang/compat/jsglr_parser_compat.class \
   org/strategoxt/lang/compat/jsglr_parser.class \
   org/strategoxt/lang/compat/performance_tweaks.class \
@@ -35,7 +36,8 @@ nobase_pkgdata_DATA = $(LANGCLASSES) $(LIBRARYCLASSES)
 
 CLEANFILES = \
   $(LANGCLASSES) $(LIBRARYCLASSES) \
-  $(subst org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYCLASSES:.class=.java))
+  $(subst org/strategoxt/lang/compat/libstrc_compat.java,, \
+  $(subst org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYCLASSES:.class=.java)))
 
 # HACK: hardcoded, relative classpath
 
@@ -75,7 +77,7 @@ org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ctree 
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_aterm 
 
 org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_xtc
+	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat
 
 org/strategoxt/libjava_front.java : $(JAVA_FRONT)/share/java-front/libjava-front.ctree ../str/strj
 	../str/strj -I $(JAVA_FRONT)/share/java-front-syntax -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp

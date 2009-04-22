@@ -4,6 +4,8 @@ include $(wildcard *.dep)
 bin_PROGRAMS     = strj
 # libexec_PROGRAMS = s2j
 
+STRJSOURCES = $(wildcard *.str)
+
 LDADD += $(SSL_LIBS) -lstrc 
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../../syn
@@ -30,14 +32,14 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 %.ctree : %.str
 	strc -F --format-check 0 --library -la stratego-lib -i $< -o $@ -O 0
 
-strj.java : %.str
+strj.java : strj.rtree $(STRJSOURCES:.str=.rtree)
 	strj -i $< -o $@ -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava-front
 
 %.java : %.ctree strj
 	strj -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.class : %.java
-	$(JAVAC) $(JAVACFLAGS)j $<
+	$(JAVAC) $(JAVACFLAGS) $<
 
 %.run : %.class
 	java -client -cp $(CLASSPATH) `basename $< .class`
