@@ -2,7 +2,6 @@ package org.strategoxt.lang.compat;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.Strategy;
@@ -11,7 +10,7 @@ import org.strategoxt.lang.Strategy;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class libstratego_rtg_compat {
-	public static void preInit(ITermFactory factory) {
+	public static void init(Context context) {
 		// Nothing to init
 	}
 	

@@ -3,6 +3,7 @@ package org.strategoxt.lang;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
@@ -15,7 +16,7 @@ import org.spoofax.interpreter.stratego.CallT;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
+import org.strategoxt.lang.compat.CompatManager;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -34,6 +35,8 @@ public class Context {
     	new HashMap<String, IOperatorRegistry>();
     
     private final StackTracer stackTracer = new StackTracer();
+    
+    private final CompatManager compat = new CompatManager();
     
     public Context() {
     	this(new BAFBasicTermFactory());
@@ -72,8 +75,12 @@ public class Context {
 		return operatorRegistries.get(domain);
 	}
 
-    public final void addOperatorRegistry(String domain, IOperatorRegistry or) {
-        operatorRegistries.put(domain, or);
+    public final void addOperatorRegistry(IOperatorRegistry or) {
+        operatorRegistries.put(or.getOperatorRegistryName(), or);
+    }
+    
+    public void postInit(String component) {
+    	compat.postInit(this, component);
     }
     
     public IStrategoTerm invokeStrategyCLI(IStrategy strategy, String appName, String[] args) {

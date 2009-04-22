@@ -1,0 +1,8 @@
+module split-strategies
+
+overlays
+  LARGE_STRATEGY_SIZE = 1000
+
+strategies
+
+  split-large-strategies

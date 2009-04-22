@@ -105,7 +105,8 @@ rules
      ~*cnst-decls
      ~*cnstr-decls
      
-     public static void preInit(ITermFactory termFactory) {
+     public static void init(Context context) {
+       ITermFactory termFactory = context.getFactory();
        if (constantFactory == termFactory)
          return;
        constantFactory = termFactory;
@@ -113,6 +114,7 @@ rules
        ~*cnstr-inits
        ~*cnst-inits
        ~*def-inits
+       context.postInit("~x_name");
      }
 
      ~*main
@@ -123,7 +125,7 @@ rules
          } else if (factory != null) {
            return new TermConverter(factory).convert(constant);
          } else {
-           throw new IllegalStateException("Component not initialized; please call preinit() first");
+           throw new IllegalStateException("Component not initialized; please call init() first");
          }
      }
      
@@ -133,7 +135,7 @@ rules
          } else if (factory != null) {
            return new TermConverter(factory).convert(constant.get());
          } else {
-           throw new IllegalStateException("Component not initialized; please call preinit() first");
+           throw new IllegalStateException("Component not initialized; please call init() first");
          }
      }
 
@@ -188,7 +190,7 @@ rules
       x' := <jify> x
   
   java-init-import :
-    x -> |[ x'.preInit(termFactory); ]|
+    x -> |[ x'.init(context); ]|
     with
       x' := <jify> x
 
@@ -202,7 +204,7 @@ rules
     |[
      public static String testMain(String input) {
         Context context = new Context();
-        preInit(context.getFactory());
+        init(context);
         try {
           IStrategoTerm result = main_0_0.instance.invoke(context, context.getFactory().parseFromString(input));
           return result == null ? null : result.toString();
@@ -213,7 +215,7 @@ rules
         
      public static void main(String args[]) {
         Context context = new Context();
-        preInit(context.getFactory());
+        init(context);
         try {
           IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
           if (result == null) {
@@ -764,6 +766,8 @@ strategies
       ; pack-include-path
       ; getfirst(pack-find-from-dir(|basefile)) => file'
       )
+    <+
+      file' := <file-exists> file
     <+
       fatal-err(|["file ", file, " for imported term not found"])
       

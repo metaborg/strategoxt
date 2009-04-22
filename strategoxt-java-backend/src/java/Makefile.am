@@ -1,33 +1,46 @@
 include $(top_srcdir)/Makefile.xt
 
-COMPATCLASSES = \
+LANGJAVAS = \
+  $(wildcard org/strategoxt/lang/*.java) \
+  org/strategoxt/lang/compat/CompatManager.java \
+  org/strategoxt/lang/compat/CompatLibrary.java \
+  org/strategoxt/lang/compat/JSGLRWrapper.java \
+  org/strategoxt/lang/compat/NativeCallHelper.java \
+  org/strategoxt/lang/compat/SSL_EXT_call.java \
+  org/strategoxt/lang/compat/SSL_EXT_read_text_from_stream.java
+
+LANGCLASSES = \
+  $(LANGJAVAS:.java=.class)
+
+LIBRARYCLASSES = \
+  org/strategoxt/libstratego_lib.class \
+  org/strategoxt/libstratego_xtc.class \
+  org/strategoxt/libstratego_sglr.class \
+  org/strategoxt/libstratego_gpp.class \
   org/strategoxt/lang/compat/libstratego_aterm_compat.class \
   org/strategoxt/lang/compat/libstratego_rtg_compat.class \
   org/strategoxt/lang/compat/jsglr_parser_compat.class \
   org/strategoxt/lang/compat/jsglr_parser.class \
   org/strategoxt/lang/compat/performance_tweaks.class \
-  org/strategoxt/lang/compat/xtc_compat.class
-
-CLASSES = \
-  org/strategoxt/libstratego_lib.class \
-  org/strategoxt/libstratego_xtc.class \
-  org/strategoxt/libstratego_sglr.class \
-  $(COMPATCLASSES) \
-  org/strategoxt/libstratego_gpp.class \
+  org/strategoxt/lang/compat/xtc_compat.class \
   org/strategoxt/libstratego_rtg.class \
   org/strategoxt/libstratego_aterm.class \
-  org/strategoxt/libstratego_sdf.class \
-  org/strategoxt/libstrc.class \
-  org/strategoxt/libjava_front.class
+  org/strategoxt/libstratego_sdf.class
 
-nobase_pkgdata_DATA = $(CLASSES)
+# TODO:
+# org/strategoxt/libstrc.class
+# org/strategoxt/libjava_front.class
 
-CLEANFILES = $(CLASSES) $(CLASSES:.class=.java)
+nobase_pkgdata_DATA = $(LANGCLASSES) $(LIBRARYCLASSES)
+
+CLEANFILES = \
+  $(LANGCLASSES) $(LIBRARYCLASSES) \
+  $(subst org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYCLASSES:.class=.java))
 
 # HACK: hardcoded, relative classpath
 
 BASEPATH=../../../../spoofax/trunk/spoofax
-CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:.
+CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:.
 JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
@@ -62,22 +75,22 @@ org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ctree 
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_aterm 
 
 org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
+	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_xtc
 
 org/strategoxt/libjava_front.java : $(JAVA_FRONT)/share/java-front/libjava-front.ctree ../str/strj
 	../str/strj -I $(JAVA_FRONT)/share/java-front-syntax -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
 
 org/strategoxt/lang/compat/jsglr_parser_compat.java : org/strategoxt/lang/compat/jsglr-parser-compat.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_xtc
+	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_xtc
 
 org/strategoxt/lang/compat/jsglr_parser.java : org/strategoxt/lang/compat/jsglr-parser.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib
+	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat --library -la org.strategoxt.libstratego_lib
 
 org/strategoxt/lang/compat/performance_tweaks.java : org/strategoxt/lang/compat/performance-tweaks.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib
+	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat --library -la org.strategoxt.libstratego_lib
 
 org/strategoxt/lang/compat/xtc_compat.java : org/strategoxt/lang/compat/xtc-compat.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
+	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
