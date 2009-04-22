@@ -5,6 +5,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.Strategy;
+import org.spoofax.NotImplementedException;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>

@@ -6,7 +6,7 @@ overlays
    * Note that Java methods of over 4000 _instructions_ may no longer be eligible for JIT compilation,
    * and that Java defines a 64 KB instruction limit per method.
    */
-  LARGE_STRATEGY_SIZE = 13337
+  LARGE_STRATEGY_SIZE = 4000
 
 strategies
 
@@ -19,7 +19,7 @@ strategies
       s' := <split-large-strategy(|x, 0)> s
   
   split-large-strategy(|x, depth) =
-    split-large-strategy-1(|x, depth) <+ split-large-strategy-2(|x, depth) <+ id
+    split-large-strategy-1(|x, depth) <+ split-large-strategy-2(|x, depth) <+ all(split-large-strategy(|x, depth))
   
   split-large-strategy-1(|x, depth) :
     |[ s1 < s2 + s3 ]| -> |[ s1 < s2 + s3' ]|

@@ -908,11 +908,11 @@ rules
 //    |[ _ t ]| -> <java-construct-term> t
 
   java-ConstructTerm :
-    Op(c, t*) -> expr|[ termFactory.makeAppl(~*[cn | args]) ]|
+    Op(c, t*) -> expr|[ termFactory.makeAppl(~*[cons | args]) ]|
   where
       not(is-ListOp + is-TupleOp)
   with
-      cn   := ExprName(Id(<java-ConstructorName> (c, <length> t*)))
+      cons := <java-ConstructorName-expr> (c, <length> t*)
     ; args := <map(java-construct-term)> t*
     
   java-ConstructTerm :
@@ -990,18 +990,28 @@ strategies
     ; fragment(JavaInitConstructorQ <+ JavaInitConstructor|"ConstructorInit")
 
   JavaDeclareConstructor :
-    OpDecl(c, t) -> class-body-dec|[ public static IStrategoConstructor ~id:Id(csym); ]|
+    OpDecl(c, t) -> class-body-dec|[ public static IStrategoConstructor x; ]|
   where
     not(OpDecl("", id) + OpDecl("Cons", [id, id]) + OpDecl("Nil", []))
   with 
-      n    := <Arity> t
-    ; csym := <java-ConstructorName> (c, n)
+    n := <Arity> t
+  ; x := <java-ConstructorName> (c, n)
+  ; rules(IsLocalOpDecl: (c, n))
 
   java-ConstructorName :
     (c, n) -> <conc-strings> ("_cons", c', "_", n')
     with
       c' := <jify> c
     ; n' := <int-to-string> n
+  
+  java-ConstructorName-expr =
+    if IsLocalOpDecl then
+      with(x_main := <MainClassName>)
+    ; !expr |[ x_main.~x:<java-ConstructorName> ]|
+    else
+      !expr |[ ~x:<java-ConstructorName> ]|
+    end
+    
 
   JavaInitConstructorQ :
     OpDecl(c, t) ->

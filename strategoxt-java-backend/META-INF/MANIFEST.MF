@@ -8,4 +8,5 @@ Export-Package: org.strategoxt,
 Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core;bundle-version="0.3.13",
  org.spoofax.interpreter.adapter.aterm;bundle-version="0.3.11",
- org.spoofax.jsglr;bundle-version="0.2.1"
+ org.spoofax.jsglr;bundle-version="0.2.1",
+ org.spoofax.interpreter.library.jsglr;bundle-version="0.3.9"
