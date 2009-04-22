@@ -1,24 +1,35 @@
 include $(top_srcdir)/Makefile.xt
 
-COMPATSTRS    = $(wildcard org/strategoxt/lang/compat/*.str)
-COMPATCLASSES = $(COMPATSTRS:.str=.class)
+COMPATCLASSES = \
+  org/strategoxt/lang/compat/libstratego_aterm_compat.class \
+  org/strategoxt/lang/compat/libstratego_rtg_compat.class \
+  org/strategoxt/lang/compat/jsglr_parser_compat.class \
+  org/strategoxt/lang/compat/jsglr_parser.class \
+  org/strategoxt/lang/compat/performance_tweaks.class \
+  org/strategoxt/lang/compat/xtc_compat.class
 
-nobase_pkgdata_DATA = \
+CLASSES = \
   org/strategoxt/libstratego_lib.class \
   org/strategoxt/libstratego_xtc.class \
   org/strategoxt/libstratego_sglr.class \
+  $(COMPATCLASSES) \
   org/strategoxt/libstratego_gpp.class \
-  $(COMPATCLASSES)
-  
-  # org/strategoxt/libstrc.class
-  # org/strategoxt/libstratego_sdf.class
-  # org/strategoxt/libstratego_rtg.class
+  org/strategoxt/libstratego_rtg.class \
+  org/strategoxt/libstratego_aterm.class \
+  org/strategoxt/libstratego_sdf.class \
+  org/strategoxt/libstrc.class \
+  org/strategoxt/libjava_front.class
+
+nobase_pkgdata_DATA = $(CLASSES)
+
+CLEANFILES = $(CLASSES) $(CLASSES:.class=.java)
 
 # HACK: hardcoded, relative classpath
 
 BASEPATH=../../../../spoofax/trunk/spoofax
-CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:../test/java:.
-JAVACFLAGS=-J-Xmx256m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH)
+CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:.
+JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
+JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 org/strategoxt/libstratego_lib.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../str/strj
 	../str/strj -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ -p org.strategoxt --library
@@ -33,35 +44,46 @@ org/strategoxt/libstratego_sglr.java : $(STRATEGOXT)/share/libstratego-sglr.ctre
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
 org/strategoxt/libstratego_rtg.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.lang.compat.libstratego_rtg
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.lang.compat.libstratego_rtg_compat
 
 org/strategoxt/libstratego_gpp.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../str/strj
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
 
+org/strategoxt/lang/compat/libstratego_aterm_compat.rtree : $(STRATEGOXT)/share/aterm-front/ATerms.str
+	parse-stratego -i $< -o $@
+
+org/strategoxt/lang/compat/libstratego_aterm_compat.java : org/strategoxt/lang/compat/libstratego_aterm_compat.rtree ../str/strj
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp
+
+org/strategoxt/libstratego_aterm.java : $(STRATEGOXT)/share/libstratego-aterm.ctree ../str/strj
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp -la org.strategoxt.lang.compat.libstratego_aterm_compat
+
 org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_aterm 
 
 org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
+	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
 
-org/strategoxt/lang/compat/jsglr-parser-compat.java : org/strategoxt/lang/compat/jsglr-parser-compat.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
+org/strategoxt/libjava_front.java : $(JAVA_FRONT)/share/java-front/libjava-front.ctree ../str/strj
+	../str/strj -I $(JAVA_FRONT)/share/java-front-syntax -i $< -o $@ -p org.strategoxt --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
 
-%.java : %.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.compat -la org.strategoxt.libstratego_lib
+org/strategoxt/lang/compat/jsglr_parser_compat.java : org/strategoxt/lang/compat/jsglr-parser-compat.str ../str/strj
+	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_xtc
 
+org/strategoxt/lang/compat/jsglr_parser.java : org/strategoxt/lang/compat/jsglr-parser.str ../str/strj
+	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib
 
-%.java : %.ajava
-	pp-java -i $< -o $@ || \
-	    (format-check -i $< --rtg ~/.nix-profile/share/java-front/Java-15.rtg --vis; rm -f $@; exit 1)
+org/strategoxt/lang/compat/performance_tweaks.java : org/strategoxt/lang/compat/performance-tweaks.str ../str/strj
+	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib
+
+org/strategoxt/lang/compat/xtc_compat.java : org/strategoxt/lang/compat/xtc-compat.str ../str/strj
+	../str/strj -i $< -o $@ -p org.strategoxt.compat --library -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
 %.class : %.java
-	javac $(JAVACFLAGS) $<
-
-.PURPLEPONY:
+	$(JAVAC) $(JAVACFLAGS) $<
 
 ../str/strj : .PURPLEPONY
 	$(MAKE) -C ../str strj
 
-../str/backend-simplify : .PURPLEPONY
-	$(MAKE) -b -C ../str backend-simplify
+.PURPLEPONY:
+

@@ -29,7 +29,7 @@ signature
     Offset: Int -> Term
     Frames: List(Term) -> Term
     
-    // stategoxt-annos
+    // stategoxt-annos extension:
     AnnoDef  : List(Anno) * Def -> Annos
     Extend   : Anno
     Override : Anno
@@ -99,6 +99,7 @@ rules
      public class x_name {
 
      private static boolean TRACES_ENABLED = e_traces;
+     private static boolean TRUE = true; // (ECJ 3.3 reachability detection bug workaround)
      private static ITermFactory constantFactory;
 
      ~*cnst-decls
@@ -155,8 +156,11 @@ rules
         case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
       end
   with
-    {| Fragment :
-        function-defs := <map(translate-outer-definition)> defs
+    {| Fragment, CurrentLiftedFrame :
+        rules(
+          CurrentLiftedFrame := None()
+        )
+      ; function-defs := <map(translate-outer-definition)> defs
       ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
       ; lifted-defs   := <bagof-Fragment> "LiftedDef"
       ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
@@ -377,7 +381,7 @@ rules
            Fail: {
              bstm
              if (TRACES_ENABLED) context.getStackTracer().popOnSuccess();
-             if (true) // (avoid unreachable stm error)
+             if (TRUE) // (avoid unreachable stm error)
                return term;
            };
            if (TRACES_ENABLED) context.getStackTracer().popOnFailure();
@@ -420,8 +424,9 @@ rules
   translate-param : 
     VarDec(x, FunType(_, _)) -> (param |[ IStrategy x ]|, [])
     with
-      x' := x{}
-    ; rules(IsStrategyArg: x')
+      x'    := x{}
+    ; frame := <CurrentLiftedFrame>
+    ; rules(IsStrategyArg: (frame, x'))
 
   /**
    * Translates strategy formal parameters to call arguments.
@@ -458,7 +463,7 @@ strategies
     
   /** @type Id -> Stm */
   translate-Fail :
-    Fail() -> |[ if (true) break Fail; ]| // (avoid unreachable stm error)
+    Fail() -> |[ if (TRUE) break Fail; ]| // (avoid unreachable stm error)
 
   translate-Escape :
     Escape(java) -> java
@@ -479,7 +484,7 @@ strategies
       Success: {
         Fail: {
            stm_s1
-           if (true) // (avoid unreachable stm error)
+           if (TRUE) // (avoid unreachable stm error)
              break Success;
         }
         term = x_termcopy;
@@ -501,7 +506,7 @@ strategies
            stm_s1
            OuterFail: { // (redirects failure to outer Fail block)
              stm_s2
-             if (true) // (avoid unreachable stm error)
+             if (TRUE) // (avoid unreachable stm error)
                break Success;
            }
         }
@@ -684,13 +689,9 @@ strategies
       end
   
   lifted-call-to-instance-direct :
-    CallT(SVar(x), _, _) -> expr |[ x ]|
+    CallT(SVar(x{a*}), _, _) -> expr |[ x ]|
     where
-      <IsStrategyArg> x{}
-    <+
-      <LiftedSVars> x{} => [_ | _]
-    <+
-      <LiftedTVars> x{} => [_ | _]
+      <IsStrategyArg> (<CurrentLiftedFrame>, x{})
 
   lifted-call-to-instance-instance :
     CallT(SVar(x), _, _) -> expr |[ x.instance ]|
@@ -726,48 +727,56 @@ strategies
    *    (minding the 32767 length limit)
    */
   translate-ImportTerm :
-    ImportTerm(file) -> |[ term = getConstant(termFactory, x_cached); ]|
+    ImportTerm(file) -> |[ term = getConstant(termFactory, x_constant); ]|
     with
-      input := <file-exists> file
-    <+
-      <fatal-err(|"Could not read from included file")> file
-    with
-      outputfile := <base-filename> file
+      inputfile  := <find-import-term-file> file // (exits on error)
+    ; outputfile := <base-filename> file
     ; pkgname    := <get-config <+ !""> "-p"
     ; pkgpath    := <conc-strings> ("/", <string-replace(|".", "/")> pkgname, "/")
     with
-      outputdir := <dirname> <get-config> "-o"
-    // UNDONE: ; <copy-file> (input, outputdir)
-    ; log(|Info(), ["Referenced imported term file ", file])
-    <+
-      <copy-file> (input, ".")
-    ; log(|Info(), ["Copied imported term file to current directory ", outputfile])
+      outputdir := <get-config; dirname <+ !"."> "-o"
+    ; copyfile  := <conc-strings> (outputdir, "/", outputfile)
+    ; if not(<eq> (<modification-time> inputfile, <modification-time> copyfile)) then
+        <copy-file> (inputfile, copyfile)
+      ; log(|Info(), ["Referenced imported term file ", file, "; copied to ", outputdir])
+      <+
+        fatal-err-msg(|["Could not copy imported term file ", inputfile, " to ", copyfile])
+      else
+        log(|Info(), ["Referenced imported term file ", file, "; exists in ", outputdir])
+      end
     with
-      x_cached := <new>
-    ; x_main   := <MainClassName>
+      x_constant := <new>
+    ; x_main     := <MainClassName>
+    ; fragment(!class-body-dec |[ private static ImportTermReference x_constant; ]| | "ConstDecl")
     ; fragment(
-        !class-body-dec |[
-          private static final ITermReference x_cached =
-            new LazyTermReference() {
-              @Override
-              protected IStrategoTerm init() {
-                java.io.InputStream stream = x_main.class.getResourceAsStream("/" + "~outputfile");
-                if (stream == null)
-                  stream = x_main.class.getResourceAsStream("~pkgpath" + "~outputfile");
-                if (stream == null)
-                  throw new StrategoException("~x_main" + ": Could not find imported term file " + "~outputfile");
-                try {
-                  return constantFactory.parseFromStream(stream);
-                } catch (java.io.IOException exc) {
-                  throw new StrategoException("~x_main" + ": Could not read imported term file " + "~outputfile", exc);
-                } catch (RuntimeException exc) {
-                  throw new StrategoException("~x_main" + ": Could not read imported term file " + "~outputfile", exc);
-                }
-              }
-            };
-        ]|
-      | "ConstDecl"
+        !bstm* |[ x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile"); ]|
+      | "ConstInit"
       )
+   
+  find-import-term-file :
+    file -> file'
+    with
+      pack-stratego-options-wrap(
+        pack-include-path
+      ; getfirst(pack-find-from-dir(|file)) => file'
+      <+
+        basefile := <base-filename> file
+      ; pack-include-path
+      ; getfirst(pack-find-from-dir(|basefile)) => file'
+      )
+    <+
+      fatal-err(|["file ", file, " for imported term not found"])
+      
+  pack-stratego-options-wrap(s) =
+    finally(
+      with(
+        include* := <get-config <+ ![]> "-I"
+      ; <set-config> ("-I", [])
+      ; <parse-options(pack-stratego-options, system-usage, id)> [<whoami>, include*, "-I", "."]
+      )
+    ; s
+    , <set-config> ("-I", include*)
+    )
 
   java-check-unbound-args(|t) =
     try(java-CheckUnboundArgs(|t))

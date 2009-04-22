@@ -8,7 +8,7 @@ module s2j-options
 rules
   
   s2j-options =
-     s2j-stacktrace-option + s2j-define-option + s2j-library-options
+     s2j-general-options + s2j-library-options
   
   s2j-library-options =
     ArgOption(
@@ -32,16 +32,19 @@ rules
     , !"--library | --lib  Build a library instead of an application"
     )
   
-  s2j-stacktrace-option =
+  s2j-general-options =
     ArgOption(
+      "-I" + "--Include"
+    , where(<post-extend-config>("-I", ["-I", <id>])); !()
+    , !"-I d | --Include d Include modules from directory d"
+    )
+  + ArgOption(
       "--stacktrace" + "-s"
     , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
     , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",
                       "(0 = no, 1 = yes [default], 2 = only if assertions disabled for this class)")
     )
-  
-  s2j-define-option =
-    ArgOption(
+  + ArgOption(
       "-D"
     , <post-extend-config> ("-D", [<parse-define-option>]); !()
     ,!"-D name=value      Define a constant value strategy"

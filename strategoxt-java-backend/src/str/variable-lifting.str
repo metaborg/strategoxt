@@ -12,7 +12,7 @@ rules
     with
       x' := x{}
     with
-      lifted-tvars := <LiftedTVars> x'
+      lifted-tvars  := <LiftedTVars> x'
     <+
       tvars         := <tvars> s
     ; svars         := <svars> s
@@ -23,8 +23,7 @@ rules
         LiftedTVars: x' -> direct-lifted
       )
     ; indirect-lifted := <collect-indirect-lifted-tvars> svars
-    ; <flatten-list> [direct-lifted, indirect-lifted]
-    ; lifted-tvars := <make-set-with-annos>
+    ; lifted-tvars    := <flatten-list; make-set-with-annos> [direct-lifted, indirect-lifted]
     ; rules(
         LiftedTVars: x' -> lifted-tvars
       )
@@ -34,7 +33,7 @@ rules
     with
       x' := x{}
     with
-      lifted-svars := <LiftedSVars> x'
+      lifted-svars  := <LiftedSVars> x'
     <+
       svars         := <svars> s
     ; direct-lifted := <collect-direct-lifted-vars(|x')> svars
@@ -42,11 +41,14 @@ rules
         LiftedSVars: x' -> direct-lifted
       )
     ; indirect-lifted := <collect-indirect-lifted-svars> svars
-    ; <flatten-list> [direct-lifted, indirect-lifted]
-    ; lifted-svars := <make-set-with-annos>
+    ; lifted-svars    := <flatten-list; make-set-with-annos> [direct-lifted, indirect-lifted]
     ; rules(
         LiftedSVars: x' -> lifted-svars
       )
+    ; list-loop({ y:
+        y := <id>{}
+      ; rules(IsStrategyArg: (x', y)) // is field for frame x'
+      })
   
   collect-direct-lifted-vars(|lifted-name) =
     filter(
@@ -56,9 +58,9 @@ rules
       ; one(?Offset(_))
       )
     ; not(is-self-call)
-    //; where(write-to-string; debug(!"  lifted: "))
+    //; where(write-to-string; debug(!"  lifted:          "))
     //<+
-    //  write-to-string; debug(!"  not lifted: "); fail
+    //  where(write-to-string; debug(!"  not lifted:      "); fail)
     )
 
   collect-indirect-lifted-tvars =
@@ -66,7 +68,8 @@ rules
       ?x
     ; <InnerDefinition> x{}
     ; collect-lifted-tvars
-    //; where(<debug(!"  liftedIndirect: ")> (x{}, <id>))
+    ; not([])
+    //; where(<debug(!"  lifted-indirect: ")> (x{}, <id>))
     })
 
   collect-indirect-lifted-svars =
@@ -74,7 +77,8 @@ rules
       ?x
     ; <InnerDefinition> x{}
     ; collect-lifted-svars
-    //; where(<debug(!"  liftedIndirect: ")> (x{}, <id>))
+    ; not([])
+    //; where(<debug(!"  lifted-indirect: ")> (x{}, <id>))
     })
   
   make-set-with-annos =
@@ -86,4 +90,3 @@ rules
     )
   ; get-annos
   ; one(?Frames([x]))
-

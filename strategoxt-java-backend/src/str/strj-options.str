@@ -34,13 +34,7 @@ strategies
   <+
     output-option
   <+
-    ArgOption("-I" + "--Include",        
-    where(<post-extend-config>("-I", ["-I", <id>])); !(),
-    !"-I d | --Include d Include modules from directory d")
-  <+
-    s2j-stacktrace-option
-  <+
-    s2j-define-option
+    s2j-general-options
         
   <+ ArgOption(fail, fail, !"")
   <+ ArgOption(fail, fail, !"Library options:")

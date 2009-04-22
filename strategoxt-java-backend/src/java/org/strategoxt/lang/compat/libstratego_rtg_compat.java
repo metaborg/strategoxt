@@ -5,11 +5,12 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.Strategy;
+import org.spoofax.NotImplementedException;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class libstratego_rtg {
+public class libstratego_rtg_compat {
 	public static void preInit(ITermFactory factory) {
 		// Nothing to init
 	}
@@ -21,7 +22,7 @@ public class libstratego_rtg {
 		public IStrategoTerm invoke(Context context, IStrategoTerm current,
 				IStrategy s1) {
 			// TODO Auto-generated method stub
-			return super.invoke(context, current, s1);
+			throw new NotImplementedException();
 		}
 	}
 
@@ -32,7 +33,7 @@ public class libstratego_rtg {
 		public IStrategoTerm invoke(Context context, IStrategoTerm current,
 				IStrategy s1) {
 			// TODO Auto-generated method stub
-			return super.invoke(context, current, s1);
+			throw new NotImplementedException();
 		}
 	}
 }

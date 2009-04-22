@@ -1,0 +1,14 @@
+module shared_var_2
+
+imports
+  libstratego-lib
+
+rules
+
+  main =
+    let
+      a = map(b); ?x
+      b = ?y
+    in
+      not(map(a))
+    end

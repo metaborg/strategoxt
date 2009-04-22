@@ -39,11 +39,11 @@ strategies
     else
       dr-scope-all(
         strc-front-end
-      ; strc-optimize
+      ; log-timed(strc-optimize  | "Optimization succeeded", 1)
       )
     end
   ; log-timed(s2j         | "Back-end succeeded", 1)
-  ; log-timed(output-java | "Output succeeded", 1)
+  ; log-timed(output-java | "Code generation succeeded", 1)
 
   output-java :
     ast -> file

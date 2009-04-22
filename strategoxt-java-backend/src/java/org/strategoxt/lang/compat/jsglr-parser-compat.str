@@ -8,6 +8,7 @@ module jsglr-parser-compat
 imports
   libstratego-lib
   libstratego-sglr
+  libstratego-xtc
   jsglr-parser
 
 strategies
@@ -15,7 +16,8 @@ strategies
   /**
    * @type SerializedParseTable -> ParseTable
    */
-  override open-parse-table = jsglr-open-parsetable
+  override open-parse-table =
+    jsglr-open-parsetable
 
   override parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))

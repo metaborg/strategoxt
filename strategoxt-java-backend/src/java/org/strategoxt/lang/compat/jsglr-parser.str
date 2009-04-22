@@ -1,4 +1,7 @@
-module org/spoofax/bindings/jsglr/jsglr-parser
+module org/strategoxt/lang/compat/jsglr-parser // org/spoofax/bindings/jsglr/jsglr-parser
+
+imports
+  libstratego-lib
 
 signature
   sorts ParseTable

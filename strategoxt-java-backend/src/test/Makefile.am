@@ -32,7 +32,8 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 
 STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
-BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 override_1 extend_1 internal_1 shared_var_1 # shared_var_2
+BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 override_1 extend_1 internal_1 \
+           shared_var_1 shared_var_2 shared_var_3 shared_var_4
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 
@@ -43,7 +44,7 @@ BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 	          
 # STRC1TESTS_DISABLED=test50 test83 static-links
 
-check-am : strc1/ExpStratego.tbl .ALLJAVAFILES $(CTREEFILES) $(JAVAFILES) $(CLASSFILES)
+check-am : strc1/ExpStratego.tbl $(CTREEFILES) $(JAVAFILES) .ALLCLASSFILES $(CLASSFILES)
 
 # nobase_pkgdata_DATA = $(CTREEFILES) $(JAVAFILES)
 
@@ -53,7 +54,8 @@ TESTS=$(RUNNERFILES)
 
 BASEPATH=../../../../spoofax/trunk/spoofax
 CLASSPATH=.:$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:basic:strc1:.
-JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
+JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
+JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 ../str/strj : .PURPLEPONY
 	$(MAKE) -C ../str strj
@@ -65,7 +67,7 @@ JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH)
 	../str/strj -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.class : %.java
-	javac $(JAVACFLAGS) $<
+	$(JAVAC) $(JAVACFLAGS) $<
 
 %.run : %.class
 	cd `dirname $<`; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
@@ -92,8 +94,8 @@ strc1/cs_test02.ctree : strc1/ExpStratego.tbl
 strc1/cs_test03.ctree : strc1/ExpStratego.tbl
 strc1/cs_test04.ctree : strc1/ExpStratego.tbl strc1/Expressions.str
 
-.ALLJAVAFILES: $(JAVAFILES)
-	javac -J-server $(JAVACFLAGS) basic/*.java strc1/*.java
+.ALLCLASSFILES: $(JAVAFILES)
+	$(JAVAC) -J-server $(JAVACFLAGS) basic/*.java strc1/*.java && touch $@
 
 .PURPLEPONY:
 
