@@ -812,7 +812,10 @@ rules
     <+ java-ConstructAnnoVar
     <+ java-ConstructVar
     <+ !(<id>, <java-ConstructTerm>)
-       ; (java-CacheConstant <+ Snd)
+       ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
+
+  java-CacheConstant-again :
+    (t, e1 @ |[ getConstant(termFactory, e2) ]|) -> e1
 
   java-CacheConstant :
     (t, e1) -> |[ getConstant(termFactory, e2) ]|

@@ -23,7 +23,7 @@ public class libstrc_compat {
 		}
 	}
 	
-	public static class pp_c_0_0 extends Strategy {
+	public static class pp_c_pretty_0_0 extends Strategy {
 		public static pp_c_pretty_0_0 instance = new pp_c_pretty_0_0();
 		
 		@Override

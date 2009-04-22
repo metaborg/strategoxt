@@ -2,8 +2,8 @@ module split-large-strategies
 
 overlays
   /**
-   * Minimum number of terms in a strategy definition required to split it up.
-   * Note that Java methods of over 4000 instructions may no longer be eligible for JIT compilation,
+   * Minimum number of _terms_ in a strategy definition required to split it up.
+   * Note that Java methods of over 4000 _instructions_ may no longer be eligible for JIT compilation,
    * and that Java defines a 64 KB instruction limit per method.
    */
   LARGE_STRATEGY_SIZE = 13337
