@@ -6,7 +6,7 @@ include $(wildcard *.dep)
 stratego/aterm/PrettyPrintRules.rtree : stratego/aterm/PrettyPrintRules.str
 	$(SGLRI) --heuristic-filters on -p $(STRATEGOBOXTBL_UNINSTALLED) -i $< | $(METAEXPLODE) -o $@
 
-nobase_data_DATA = libstratego-aterm.rtree
+nobase_data_DATA = libstratego-aterm.rtree libstratego-aterm.ctree
 lib_LTLIBRARIES  = libstratego-aterm.la
 EXTRA_DIST = $(atermlib) $(atermlib:.str=.rtree) libstratego-aterm.rtree
 CLEANFILES = $(wildcard *.dep) 
@@ -33,3 +33,6 @@ STRINCLUDES = -I $(top_srcdir)/../aterm-front/syn -I $(top_builddir)/../gpp/syn/
 libstratego-aterm.rtree libstratego-aterm.c : $(atermlib:.str=.rtree) 
 	$(STRC_UNINSTALLED) $(STRINCLUDES) -c --library -i $(srcdir)/stratego-aterm.str -o libstratego-aterm.rtree --verbose 1 $(STRCFLAGS)
 	rm libstratego-aterm.str
+
+libstratego-aterm.ctree : $(atermlib:.str=.rtree) 
+	$(STRC_UNINSTALLED) $(STRINCLUDES) -F -O 1 -c --library -i $(srcdir)/stratego-aterm.str -o libstratego-aterm.ctree --verbose 1 $(STRCFLAGS)
