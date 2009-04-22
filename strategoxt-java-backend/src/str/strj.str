@@ -39,7 +39,7 @@ strategies
     else
       dr-scope-all(
         strc-front-end
-      ; log-timed(strc-optimize  | "Optimization succeeded", 1)
+      ; strc-optimize
       )
     end
   ; log-timed(s2j         | "Back-end succeeded", 1)

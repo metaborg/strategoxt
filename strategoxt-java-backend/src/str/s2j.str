@@ -816,6 +816,8 @@ rules
 
   java-CacheConstant-again :
     (t, e1 @ |[ getConstant(termFactory, e2) ]|) -> e1
+    with
+      rules(java-Cache: t -> e1)
 
   java-CacheConstant :
     (t, e1) -> |[ getConstant(termFactory, e2) ]|

@@ -19,7 +19,7 @@ LIBRARYCLASSES = \
   org/strategoxt/libstratego_gpp.class \
   org/strategoxt/lang/compat/libstratego_aterm_compat.class \
   org/strategoxt/lang/compat/libstratego_rtg_compat.class \
-  org/strategoxt/lang/compat/libstratego_libstrc_compat.class \
+  org/strategoxt/lang/compat/libstrc_compat.class \
   org/strategoxt/lang/compat/jsglr_parser_compat.class \
   org/strategoxt/lang/compat/jsglr_parser.class \
   org/strategoxt/lang/compat/performance_tweaks.class \
