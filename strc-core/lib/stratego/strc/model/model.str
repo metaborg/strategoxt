@@ -62,8 +62,8 @@ strategies // strategy definitions
       else
         rules( IsLocal : sig )
       end
-    ; if ?AnnoDef(annos, _) then
-        rules( DefAnnos : sig -> annos )
+    ; if AnnoDef(one(Override + Extend), id) then
+        rules( AlwaysNeeded :+= sig )
       end
     ; rules( ModDefinition :+ sig -> def )
 

@@ -32,7 +32,7 @@ strategies // Desugaring Strategies
     + SDefT(id, id, id, desugar)
     + ExtSDef(id, id, id)
     + ExtSDefInl(id, id, id, id)
-    + AnnoDef(id, desugar)
+    + AnnoDef(id, desugar-def)
     <+ debug(!"not a definition: "); fail
 
 strategies // Desugaring Strategies

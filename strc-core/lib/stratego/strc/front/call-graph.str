@@ -58,14 +58,14 @@ strategies
    */
 
   remove-unused-defs =
-    {| DefIsNeeded
+    {| DefIsNeedeed
      : where(id
          ; <mark-used-defs-and-constructors> ("main_0_0", 0, 0)
          ; <mark-used-defs-and-constructors> ("DYNAMIC_CALLS_0_0", 0, 0)
+         ; <map(mark-used-defs-and-constructors)> <bagof-AlwaysNeeded>
          ; m-get-all-def-sigs
          ; map(
               DefIsNeeded
-           <+ IsLocal; DefAnnos; one(Override + Extend)
            <+ m-rm-def
            )
 	 ; m-get-all-constructors-sigs

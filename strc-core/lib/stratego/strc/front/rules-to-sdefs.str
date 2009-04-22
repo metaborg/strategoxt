@@ -11,8 +11,10 @@ strategies
     alltd(Strategies(map(try(ignore-anno-def(RDtoSD + DeclareVariables)); replace-call-and-rdef)))
 
   rules-to-sdefs-def =
-    try(RDtoSD <+ DeclareVariables)
-    ; replace-call-and-rdef
+    ignore-anno-def(
+      try(RDtoSD <+ DeclareVariables)
+      ; replace-call-and-rdef
+    )
 
 rules
 

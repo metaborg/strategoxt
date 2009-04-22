@@ -445,9 +445,9 @@ rules
     ; <separate-by-comma>argt => argt'
 
   stratego-to-abox : 
-   AnnoDef(annos,def) -> H hs=0 [~annos' ~def ]
+   AnnoDef(annos,def) -> H [~annos' ~def ]
    where
-     <separate-by-comma> annos => annos'
+     <separate-by-space> annos => annos'
 
   stratego-to-abox : 
    Extend() -> KW ["extend"]
@@ -995,6 +995,17 @@ rules
          ?[b1 | <x>]
        ; ?b2
        ; !H hs=1 [H hs=1 [b1 "*"] b2]
+       }
+    )
+
+  separate-by-space =
+    rec x(
+      ?[<id>]
+    <+ \ [] -> H hs=0 [] \
+    <+ {b1, b2:
+         ?[b1 | <x>]
+       ; ?b2
+       ; !H hs=1 [b1  b2]
        }
     )
 

@@ -6,7 +6,7 @@ exports
   context-free syntax
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
     
-    Annos RuleDef               -> Def {cons("AnnoDef")}
+    Anno+ RuleDef               -> Def {cons("AnnoDef")}
 
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
 
