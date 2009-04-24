@@ -49,7 +49,7 @@ strategies
     ast -> file
     with
       box  := <pp-java5-to-abox <+ output-java-error>
-    ; file := <fopen> (<get-config> "-o", "w")
+    ; file := <fopen <+ fatal-err(|"Could not open output file")> (<get-config> "-o", "w")
     ; <box2text-stream(|80, file)> box
     ; <fclose> file
 

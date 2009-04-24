@@ -15,8 +15,7 @@ strategies
     ?Stream(stream);
     prim("SSL_EXT_read_text_from_stream", stream)
   
-  // TODO: override crush
-  // crush(nul, sum) : 
-  //   _#(xs) -> <foldr(nul,sum)> xs
+  override crush(nul, sum, s) =
+    SRTS-EXT-crush(nul, sum, s)
 
-  
+  external SRTS-EXT-crush(nul, sum, s|)

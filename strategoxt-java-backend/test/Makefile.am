@@ -52,28 +52,29 @@ TESTS=$(RUNNERFILES)
 
 # HACK: hardcoded, relative classpath
 
-BASEPATH=../../../../spoofax/trunk/spoofax
-CLASSPATH=.:$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:basic:strc1:.
+BASEPATH=../../../spoofax/trunk/spoofax
+SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
+CLASSPATH=$(SPCLASSPATH):../java/runtime:../java/lib:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
-../str/strj : .PURPLEPONY
-	$(MAKE) -C ../str strj
+../trans/strj : .PURPLEPONY
+	$(MAKE) -C ../trans strj
 
 %.ctree : %.str
 	$(SCOMPILE) -O 0 --format-check 0 -F -I strc1 -i $< -o $@
 
-%.java : %.ctree ../str/strj
-	../str/strj -i $< -o $@ -la org.strategoxt.libstratego_lib
+%.java : %.ctree ../trans/strj
+	../trans/strj -i $< -o $@ -la org.strategoxt.libstratego_lib
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
 
 %.run : %.class
-	cd `dirname $<`; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
+	cd `dirname $<`; java -client -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
-	@ echo "cd `dirname $<`; java -client -cp `echo $(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
+	@ echo "cd `dirname $<`; java -client -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
 	@ chmod 755 $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf

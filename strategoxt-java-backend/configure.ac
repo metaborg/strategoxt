@@ -28,10 +28,8 @@ AC_PROG_LIBTOOL
 AC_CONFIG_FILES([
   Makefile
   syn/Makefile
-  src/Makefile
-  src/str/Makefile
-  src/test/Makefile
-  src/java/Makefile
-  xtc/Makefile
+  trans/Makefile
+  java/Makefile
+  test/Makefile
 ])
 AC_OUTPUT

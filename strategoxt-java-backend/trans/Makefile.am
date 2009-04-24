@@ -8,7 +8,7 @@ STRJSOURCES = $(wildcard *.str)
 
 LDADD += $(SSL_LIBS) -lstrc 
 
-STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../../syn
+STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../syn
 
 STRCFLAGS      = --main main-$* -O 0 --format-check 0
 
@@ -21,8 +21,9 @@ LDADD     += $(JAVA_FRONT_LIBS)
 
 # HACK: hardcoded, relative classpath
 
-BASEPATH=../../../../spoofax/trunk/spoofax
-CLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar:../java:.
+BASEPATH=../../../spoofax/trunk/spoofax
+SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
+CLASSPATH=$(SPCLASSPATH):../java/runtime:../java/lib:.
 JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
