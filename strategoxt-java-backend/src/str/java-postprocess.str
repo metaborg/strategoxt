@@ -11,58 +11,42 @@ imports
 strategies
 
   java-relabel =
-    rec rec(
-      java-relabel-outer-label
-    <+
-      java-relabel-success-label
-    <+
-      java-relabel-stm
-    <+
-      all-consnil(rec)
-    )
+    java-relabel(|"NO_FAIL_LABEL", "NO_SUCCESS_LABEL", "NO_OUTER_LABEL")
+
+  java-relabel(|failure, success, outer-fail) =
+    java-relabel-outer-label(|failure, success, outer-fail)
+  <+
+    java-relabel-success-label(|failure, success, outer-fail)
+  <+
+    java-relabel-stm(|failure, success, outer-fail)
+  <+
+    all(java-relabel(|failure, success, outer-fail))
   
-  java-relabel-outer-label :
-    |[ OuterFail: { bstm* } ]| -> bstm |[ { bstm'* } ]|
+  java-relabel-stm(|failure, success, outer-fail) :
+    |[ Fail: { bstm* } ]| -> |[ x_label': { bstm'* } ]|
     with
-      {| Relabel, OuterLabel, CurrentLabel:
-        x_label  := <OldLabel>
-      ; x_label' := <OuterLabel>
-      ; rules(
-          CurrentLabel := x_label'
-          Relabel: x_label -> x_label'
-        )
-      ; bstm'* := <java-relabel> bstm*
-      |}
+      x_label' := <newname> "Fail"
+    ; bstm'*   := <java-relabel(|x_label', success, failure)> bstm*
   
-  java-relabel-success-label :
+  java-relabel-success-label(|failure, success, outer-fail) :
     |[ Success: { bstm* } ]| -> bstm |[ x_label': { bstm'* } ]|
     with
-      {| Relabel:
-        x_label' := <newname> "Success"
-      ; rules(
-          Relabel: "Success" -> x_label'
-        )
-      ; bstm'* := <java-relabel> bstm*
-      |}
-  
-  java-relabel-stm :
-    |[ x_label: { bstm* } ]| -> |[ x_label': { bstm'* } ]|
-    with
-      {| Relabel, OuterLabel, CurrentLabel, OldLabel:
-        x_label' := <newname> x_label
-      ; rules(
-          OuterLabel   := <CurrentLabel <+ !"NO_OUTER_LABEL">
-          OldLabel     := x_label
-          CurrentLabel := x_label'
-          Relabel: x_label -> x_label'
-        )
-      ; bstm'* := <java-relabel> bstm*
-      |}
+      x_label' := <newname> "Success"
+    ; bstm'*   := <java-relabel(|failure, x_label', outer-fail)> bstm*
    
-   java-relabel-stm :
-     x_label -> x_label'
-     where
-       x_label' := <Relabel> x_label
+  java-relabel-outer-label(|failure, success, outer-fail) :
+    |[ OuterFail: { bstm* } ]| -> bstm |[ { bstm'* } ]|
+    with
+      bstm'* := <java-relabel(|outer-fail, success, outer-fail)> bstm*
+  
+   java-relabel-stm(|failure, success, outer-fail) :
+     "Fail" -> failure
+   
+   java-relabel-stm(|failure, success, outer-fail) :
+     "Success" -> success
+   
+   java-relabel-stm(|failure, success, outer-fail) :
+     "OuterFail" -> outer-fail
 
 strategies
 

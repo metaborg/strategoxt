@@ -7,11 +7,16 @@ signature constructors
 
 strategies
 
-  override map(s) = (?[_ | _] + ?[]); all(s)
+  override map(s) = ?[_ | _] < all(s) + []
   
-  override getfirst(s) = (?[_ | _] + ?[]); one(s; ?x); !x
+  override getfirst(s) = ?[_ | _] < one(s; ?x); !x + []
   
   override read-text-from-stream =
     ?Stream(stream);
     prim("SSL_EXT_read_text_from_stream", stream)
+  
+  // TODO: override crush
+  // crush(nul, sum) : 
+  //   _#(xs) -> <foldr(nul,sum)> xs
+
   

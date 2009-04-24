@@ -58,7 +58,9 @@ rules
       ; record-main-classname
       )
     ; backend-simplify
-    ; java-compile-spec
+    ; dr-scope-all(
+        java-compile-spec
+      )
     ; java-simplify
     ; core-lift-eblocks
     ; java-relabel
@@ -1013,7 +1015,6 @@ strategies
     else
       !expr |[ ~x:<java-ConstructorName> ]|
     end
-    
 
   JavaInitConstructorQ :
     OpDecl(c, t) ->
@@ -1064,7 +1065,7 @@ strategies
   translate-Match :
     Match(Var(x){"bound"}, trm) ->
     stm|[ 
-      if(!e.equals(~expr:trm)) 
+      if(!e.match(~expr:trm)) 
         break Fail;
      ]|
     with
@@ -1075,7 +1076,7 @@ strategies
     stm|[ 
       if (e_x == null)
         stm_assign
-      else if (!e_x.equals(e))
+      else if (!e_x.match(e))
         break Fail;
     ]|
     with 
@@ -1166,15 +1167,19 @@ strategies
   translate-Match :
     Match(op@Op(c, ts), e) ->
     bstm* |[
-      if (e.getTermType() != IStrategoTerm.APPL || !((IStrategoAppl) e).getConstructor().equals(x_cons))
-        break Fail;
+      if ( e.getTermType() != IStrategoTerm.APPL || e_nomatch) break Fail;
       ~bstm*:match-args
     ]|
   where
     <not(is-ListOp + is-TupleOp)> op
   with
-    x_cons := <java-ConstructorName> (c, <length> ts)
+    x_cons     := <java-ConstructorName> (c, <length> ts)
   ; match-args := <translate-Match-args> (e, ts)
+  ; if not(<get-config> "-sc" => "off") then
+      e_nomatch := |[ x_cons != ((IStrategoAppl) e).getConstructor() ]|
+    else
+      e_nomatch := |[ !x_cons.equals(((IStrategoAppl) e).getConstructor()) ]|
+    end
 
   /**
    * Translate a match of an Op, but not a Cons/2 or Nil/0.

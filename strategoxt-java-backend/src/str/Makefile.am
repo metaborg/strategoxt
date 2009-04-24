@@ -36,7 +36,7 @@ strj.java : strj.rtree $(STRJSOURCES:.str=.rtree)
 	strj -i $< -o $@ -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava-front
 
 %.java : %.ctree strj
-	strj -i $< -o $@ -la org.strategoxt.libstratego_lib
+	strj -i $< -o $@ --verbose 2 -la org.strategoxt.libstratego_lib
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<

@@ -49,6 +49,11 @@ rules
     , <post-extend-config> ("-D", [<parse-define-option>]); !()
     ,!"-D name=value      Define a constant value strategy"
     )
+  + ArgOption(
+      "-sc"
+    , <set-config> ("-sc", <id>); !()
+    ,!"-sc <on|off>       Assume all term constructors are shared (default: on)"
+    )
  
   parse-define-option =
     risky(

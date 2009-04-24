@@ -3,10 +3,12 @@ module split-large-strategies
 overlays
   /**
    * Minimum number of _terms_ in a strategy definition required to split it up.
-   * Note that Java methods of over 4000 _instructions_ may no longer be eligible for JIT compilation,
-   * and that Java defines a 64 KB instruction limit per method.
+   * Note that Java methods of over 8000 _instructions_ may no longer be eligible for JIT compilation
+   * (see -XX:-DontCompileHugeMethod), and that Java defines a 64 KB instruction limit per method.
+   *
+   * Ideal would be a 6000~7000 instructions as witnessed by -XX:+PrintCompilation.
    */
-  LARGE_STRATEGY_SIZE = 4000
+  LARGE_STRATEGY_SIZE = 3000
 
 strategies
 
@@ -16,28 +18,40 @@ strategies
   split-large-def :
     SDefT(x, s*, t*, s) -> SDefT(x, s*, t*, s')
     with
-      s' := <split-large-strategy(|x, 0)> s
+      s' := <split-large-strategy(|x)> s
   
-  split-large-strategy(|x, depth) =
-    split-large-strategy-1(|x, depth) <+ split-large-strategy-2(|x, depth) <+ all(split-large-strategy(|x, depth))
+  split-large-strategy(|x) =
+    bottomup-at-large-terms(
+      (?Seq(_, _) + ?GuardedLChoice(_, _, _))
+    ; all(try(split-large-strategy-apply(|x)))
+    )
+
+  bottomup-at-large-terms(s) =
+    bottomup-at-large-terms'(s) => (<id>, _)
   
-  split-large-strategy-1(|x, depth) :
-    |[ s1 < s2 + s3 ]| -> |[ s1 < s2 + s3' ]|
-    where
-      <gt> (LARGE_STRATEGY_SIZE(), depth)
+  bottomup-at-large-terms'(s) :
+    t -> (t'', size')
     with
-      depth' := <add> (depth, <term-size> (s1,s2))
-    ; s3'    := <split-large-strategy(|x, depth')> s3
+      t'-and-sizes := <all(bottomup-at-large-terms'(s))>
+    ; t'           := <all(Fst)> t'-and-sizes
+    ; size         := <crush(!1, add, Snd)> t'-and-sizes
+    with
+      <gt> (size, LARGE_STRATEGY_SIZE())
+    ; t''   := <s> t'
+    ; size' := 0
+    <+
+      t''   := t'
+    ; size' := size
   
-  split-large-strategy-2(|x, depth) :
-    |[ s1 < s2 + s3 ]| ->
+  split-large-strategy-apply(|x) :
+    |[ s ]| ->
     |[ let x_split =
-         s_split
+         s'
        in
-         s1 < s2 + x_split
+         x_split
        end
     ]|
     with
-      x_split := <newname> "split"
-    ; s_split := <split-large-strategy(|x, 0)> s3
+      x_split := <newname> <conc-strings> (x, "_fragment_")
+    ; s'      := <split-large-strategy(|x)> s
     ; log(|Notice(), ["Split up very large strategy ", x])

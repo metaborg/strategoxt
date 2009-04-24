@@ -12,32 +12,34 @@ LANGJAVAS = \
 LANGCLASSES = \
   $(LANGJAVAS:.java=.class)
 
-LIBRARYCLASSES = \
-  org/strategoxt/libstratego_lib.class \
-  org/strategoxt/libstratego_xtc.class \
-  org/strategoxt/libstratego_sglr.class \
-  org/strategoxt/libstratego_gpp.class \
-  org/strategoxt/lang/compat/libstratego_aterm_compat.class \
-  org/strategoxt/lang/compat/libstratego_rtg_compat.class \
-  org/strategoxt/lang/compat/libstrc_compat.class \
-  org/strategoxt/lang/compat/jsglr_parser_compat.class \
-  org/strategoxt/lang/compat/jsglr_parser.class \
-  org/strategoxt/lang/compat/performance_tweaks.class \
-  org/strategoxt/lang/compat/xtc_compat.class \
-  org/strategoxt/libstratego_rtg.class \
-  org/strategoxt/libstratego_aterm.class \
-  org/strategoxt/libstratego_sdf.class
+LIBRARYJAVAS = \
+  org/strategoxt/libstratego_lib.java \
+  org/strategoxt/libstratego_xtc.java \
+  org/strategoxt/lang/compat/jsglr_parser.java \
+  org/strategoxt/lang/compat/jsglr_parser_compat.java \
+  org/strategoxt/libstratego_sglr.java \
+  org/strategoxt/libstratego_gpp.java \
+  org/strategoxt/lang/compat/libstratego_aterm_compat.java \
+  org/strategoxt/lang/compat/libstratego_rtg_compat.java \
+  org/strategoxt/lang/compat/libstrc_compat.java \
+  org/strategoxt/lang/compat/performance_tweaks.java \
+  org/strategoxt/lang/compat/xtc_compat.java \
+  org/strategoxt/libstratego_rtg.java \
+  org/strategoxt/libstratego_aterm.java \
+  org/strategoxt/libstratego_sdf.java \
+  org/strategoxt/libstrc.java \
+  org/strategoxt/libjava_front.java
 
-# TODO:
-# org/strategoxt/libstrc.class
-# org/strategoxt/libjava_front.class
+LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
 
-nobase_pkgdata_DATA = $(LANGCLASSES) $(LIBRARYCLASSES)
+nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(LANGCLASSES) $(LIBRARYCLASSES)
+
+all-am : .ALLCLASSES
 
 CLEANFILES = \
   $(LANGCLASSES) $(LIBRARYCLASSES) \
   $(subst org/strategoxt/lang/compat/libstrc_compat.java,, \
-  $(subst org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYCLASSES:.class=.java)))
+  $(subst org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS)))
 
 # HACK: hardcoded, relative classpath
 
@@ -70,38 +72,40 @@ org/strategoxt/lang/compat/libstratego_aterm_compat.rtree : $(STRATEGOXT)/share/
 	parse-stratego -i $< -o $@
 
 org/strategoxt/lang/compat/libstratego_aterm_compat.java : org/strategoxt/lang/compat/libstratego_aterm_compat.rtree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp
+	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp
 
-org/strategoxt/libstratego_aterm.java : $(STRATEGOXT)/share/libstratego-aterm.ctree ../str/strj
+org/strategoxt/libstratego_aterm.java : $(STRATEGOXT)/share/libstratego-aterm.ctree org/strategoxt/lang/compat/libstratego_aterm_compat.class ../str/strj
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp -la org.strategoxt.lang.compat.libstratego_aterm_compat
 
 org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ctree ../str/strj
 	../str/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_aterm 
 
 org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../str/strj
-	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_rtgfg
-	 -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat
+	../str/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_rtg -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat
 
 org/strategoxt/libjava_front.java : $(JAVA_FRONT)/share/java-front/libjava-front.ctree ../str/strj
 	../str/strj -I $(JAVA_FRONT)/share/java-front-syntax -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
 
 org/strategoxt/lang/compat/jsglr_parser_compat.java : org/strategoxt/lang/compat/jsglr-parser-compat.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_xtc
+	../str/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_xtc
 
 org/strategoxt/lang/compat/jsglr_parser.java : org/strategoxt/lang/compat/jsglr-parser.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat $(STRJOPTIONS) -la org.strategoxt.libstratego_lib
+	../str/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib
 
 org/strategoxt/lang/compat/performance_tweaks.java : org/strategoxt/lang/compat/performance-tweaks.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat $(STRJOPTIONS) -la org.strategoxt.libstratego_lib
+	../str/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib
 
 org/strategoxt/lang/compat/xtc_compat.java : org/strategoxt/lang/compat/xtc-compat.str ../str/strj
-	../str/strj -i $< -o $@ -p org.strategoxt.lang.compat $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
+	../str/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
 
 ../str/strj : .PURPLEPONY
 	$(MAKE) -C ../str strj
+
+.ALLCLASSES : $(LANGJAVAS) $(LIBARYJAVAS)
+	$(JAVAC) $(JAVACFLAGS) $(LANGJAVAS) $(LIBRARYJAVAS) && touch $@
 
 .PURPLEPONY:
 
