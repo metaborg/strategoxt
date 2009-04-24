@@ -1,6 +1,6 @@
 module test109
 
-imports stratego-lib // TODO: libstratego-lib
+imports libstratego-lib
 
 strategies
 
