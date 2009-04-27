@@ -1,8 +1,7 @@
 module Stratego-Stratego-Java-15
 imports
-  StrategoStratego
-  StrategoRenamed
-  Embedded-Java-15 [StrategoTerm]
-  Java-EBlock-Prefixed
+  Stratego-Sugar-in-Stratego
+  languages/java/EmbeddedJavaMix[Java StrategoTerm]
+  languages/java/eblock/JavaEBlockMix[Java]
 exports
   context-free start-symbols StrategoModule

@@ -6,7 +6,7 @@ strategies
     <set-config> ("VERSION", <strc-version-number>)
   ; <set-config> ("--verbose", 1)
   ; <set-config> ("--statistics", 1)
-  ; <set-config> ("-O", 1)
+  ; <set-config> ("-O", 1) // TODO: default to 2 (breaks override/extend tests)
   ; <set-config> ("-I", [])
  
   strj-parse-options =
@@ -33,6 +33,12 @@ strategies
     input-option
   <+
     output-option
+  <+
+    ArgOption(
+      "--main" + "-m"
+    , <set-config>("-m", <id>); !()
+    , "--main f | -m f    Main strategy to compile (default: main)\n"
+    )
   <+
     s2j-general-options
         

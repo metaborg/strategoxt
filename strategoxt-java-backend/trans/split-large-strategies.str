@@ -6,9 +6,9 @@ overlays
    * Note that Java methods of over 8000 _instructions_ may no longer be eligible for JIT compilation
    * (see -XX:-DontCompileHugeMethod), and that Java defines a 64 KB instruction limit per method.
    *
-   * Ideal would be a 6000~7000 instructions as witnessed by -XX:+PrintCompilation.
+   * Ideal would be 6000~7000 instructions seen in -XX:+PrintCompilation.
    */
-  LARGE_STRATEGY_SIZE = 3000
+  LARGE_STRATEGY_SIZE = 3300
 
 strategies
 
@@ -23,7 +23,7 @@ strategies
   split-large-strategy(|x) =
     bottomup-at-large-terms(
       (?Seq(_, _) + ?GuardedLChoice(_, _, _))
-    ; all(try(split-large-strategy-apply(|x)))
+    ; split-large-strategy-apply(|x)
     )
 
   bottomup-at-large-terms(s) =
@@ -36,6 +36,10 @@ strategies
     ; t'           := <all(Fst)> t'-and-sizes
     ; size         := <crush(!1, add, Snd)> t'-and-sizes
     with
+      ?SDefT(_, _, _, _) // don't count definitions
+    ; t''   := t'
+    ; size' := 0
+    <+
       <gt> (size, LARGE_STRATEGY_SIZE())
     ; t''   := <s> t'
     ; size' := 0
@@ -45,13 +49,16 @@ strategies
   
   split-large-strategy-apply(|x) :
     |[ s ]| ->
-    |[ let x_split =
-         s'
+    |[ let
+         x_split(|) = s
        in
-         x_split
+         { x_unused: // HACK: prevent inlining by simplify/HoistLet
+           x_split(|)
+         }
        end
     ]|
     with
-      x_split := <newname> <conc-strings> (x, "_fragment_")
-    ; s'      := <split-large-strategy(|x)> s
+      x_split  := <newname> <conc-strings> (x, "_fragment_")
+    ; x_unused := "unused"
     ; log(|Notice(), ["Split up very large strategy ", x])
+

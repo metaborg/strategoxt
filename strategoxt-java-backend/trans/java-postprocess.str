@@ -67,19 +67,115 @@ strategies
   
   java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
-    
-  java-simplify-stm :
-    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm*
-    where
-      <get-config> "--stacktrace" => 0
-    
-  java-simplify-stm :
-    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm* |[ stm bstm* ]|
-    where
-      <get-config> "--stacktrace" => 1
   
   java-simplify-expr :
     |[ new IStrategy[] {} ]| -> |[ EMPTY_STRATEGY_LIST ]|
   
   java-simplify-expr :
     |[ new IStrategoTerm[] {} ]| -> |[ EMPTY_TERM_LIST ]|
+    
+  java-simplify-stm :
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm* |[ stm bstm* ]|
+    where
+      <get-config> "--stacktrace" => 1
+
+  java-simplify-stm :
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm*
+    where
+      <get-config> "--stacktrace" => 0
+  
+  java-eliminate-stacktrace =
+    alltd(
+      \bstm |[ if (TRACES_ENABLED) stm ]| -> Empty()\
+    )
+
+strategies
+
+  java-optimize =
+    topdown-consnil(try(
+      optimize-match-test
+    ))
+
+  optimize-match-test :
+    bstm* |[
+      IStrategoTerm x_cached = term;
+      Success: {
+        Fail: {
+          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+        }
+        term = x_cached;
+        bstm_othermatch*
+      }
+      bstm_tail*
+    ]| ->
+    bstm* |[
+      if (term.getTermType() != IStrategoTerm.APPL)
+        break Fail;
+      IStrategoTerm x_cached = term;
+      IStrategoConstructor x_actualcons = ((IStrategoAppl) term).getConstructor();
+      Success: {
+        Fail: {
+          if (x_actualcons != x_cons) break Fail;
+          bstm_decl*
+          bstm_body*
+        }
+        term = x_cached;
+        bstm_othermatch'*
+      }
+      bstm_tail*
+    ]|
+    with
+      x_actualcons := <newname> "cons"
+    where
+      bstm_othermatch'* := <replace-match-test1(|x_actualcons, x_cached)> bstm_othermatch*
+
+  replace-match-test1(|x_actualcons, x_cached) :
+    bstm* |[
+      IStrategoTerm x_cached' = term;
+      Success: {
+        Fail: {
+          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+        }
+        term = x_cached';
+        bstm_othermatch*
+      }
+      bstm_tail*
+    ]| ->
+    bstm* |[
+      Success: {
+        Fail: {
+          if (x_actualcons != x_cons) break Fail;
+          bstm_decl*
+          bstm_body*
+         }
+        term = x_cached;
+        bstm_othermatch'*
+      }
+      bstm_tail*
+    ]|
+    with
+      bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
+
+  replace-match-test1(|x_actualcons) :
+    bstm* |[
+      ~*<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+    ]| ->
+    bstm* |[
+      if (x_actualcons != x_cons) break Fail;
+      bstm_decl*
+      bstm_body*
+    ]|
+  
+  match-decls-and-appl-test :
+    bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], x_cons, bstm_body*)
+    where
+      (bstm_decl*, x_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
+    
+  match-decls-and-appl-test :
+    bstm* |[
+      if (~e:ExprName(Id("term")).getTermType() != IStrategoTerm.APPL || x_cons != ((IStrategoAppl) term).getConstructor())
+        break Fail;
+      bstm_body*
+    ]| ->
+    ([], x_cons, bstm_body*)
+    

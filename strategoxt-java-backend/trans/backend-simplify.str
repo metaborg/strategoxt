@@ -4,6 +4,7 @@ imports
   libstratego-lib
   libstrc
   
+  lib/dr-scoping
   split-large-strategies
   
 signature
@@ -12,11 +13,13 @@ signature
    Filename: Str -> Term
   
 strategies
+
+  main-backend-simplify =
+    io-wrap(backend-simplify)
   
   backend-simplify =
     dr-scope-all(
-      lift-definitions
-    ; split-large-strategies
+      split-large-strategies
     ; lift-definitions
     ; canonicalize
     ; simplify1

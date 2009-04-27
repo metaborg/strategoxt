@@ -54,6 +54,11 @@ rules
     , <set-config> ("-sc", <id>); !()
     ,!"-sc <on|off>       Assume all term constructors are shared (default: on)"
     )
+  + ArgOption(
+      "-O"
+    , <set-config>("-O", <string-to-int; strc-set-opt-level>); !()
+    , !"-O n              Optimization level (0 = no optimization)"
+    )
  
   parse-define-option =
     risky(

@@ -20,7 +20,6 @@ imports
   backend-simplify
   s2j-options
   lib/dr-scoping
-  lib/core-lift-eblocks
 
 signature
   constructors 
@@ -57,13 +56,20 @@ rules
         s2j-init-options
       ; record-main-classname
       )
-    ; backend-simplify
-    ; dr-scope-all(
-        java-compile-spec
+    ; log-timed(
+        backend-simplify
+      | "Backend preprocessing succeeded", 1
       )
-    ; java-simplify
-    ; core-lift-eblocks
-    ; java-relabel
+    ; log-timed(
+        dr-scope-all(java-compile-spec)
+      | "Backend transformation succeeded", 1
+      )
+    ; log-timed(
+        java-simplify
+      ; olevel1(java-optimize)
+      ; java-relabel
+      | "Backend postprocessing succeeded", 1
+      )
      
   record-main-classname = 
     <get-config> "-i"
@@ -160,19 +166,18 @@ rules
         case 2: e_traces := |[ x_name.class.desiredAssertionStatus() ]|
       end
   with
-    {| Fragment, CurrentLiftedFrame :
-        rules(
-          CurrentLiftedFrame := None()
-        )
-      ; function-defs := <map(translate-outer-definition)> defs
-      ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
-      ; lifted-defs   := <bagof-Fragment> "LiftedDef"
-      ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
-      ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
-      ; def-inits     := <bagof-Fragment> "DefInit"
-      ; cnst-decls    := <bagof-Fragment> "ConstDecl"
-      ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
-    |}
+    rules(
+      CurrentLiftedFrame := None()
+    )
+  ; function-defs := <map(translate-outer-definition)> defs
+  ; add-default-constructors
+  ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
+  ; lifted-defs   := <bagof-LiftedDef>
+  ; cnstr-decls   := <bagof-ConstructorDecl>
+  ; cnstr-inits   := <bagof-ConstructorInit>
+  ; def-inits     := <bagof-DefInit>
+  ; cnst-decls    := <bagof-ConstDecl>
+  ; cnst-inits    := <bagof-ConstInit; concat; reverse>
   
   java-imports =
     <get-config> "-la"
@@ -208,7 +213,7 @@ rules
         Context context = new Context();
         init(context);
         try {
-          IStrategoTerm result = main_0_0.instance.invoke(context, context.getFactory().parseFromString(input));
+          IStrategoTerm result = x_main.instance.invoke(context, context.getFactory().parseFromString(input));
           return result == null ? null : result.toString();
         } catch (StrategoExit exit) {
           return null;
@@ -219,7 +224,7 @@ rules
         Context context = new Context();
         init(context);
         try {
-          IStrategoTerm result = context.invokeStrategyCLI(main_0_0.instance, "~x_name", args);
+          IStrategoTerm result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
           if (result == null) {
             System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
             context.getStackTracer().printStackTrace();
@@ -236,6 +241,7 @@ rules
       not(<get-config> "--library")
     with
       x_name := <MainClassName>
+    ; x_main := <get-config <+ !"main_0_0"> "-m"
 
 rules
 
@@ -277,7 +283,7 @@ rules
     ]|
     with
       x' := <newname> <conc-strings> (x, "_override")
-    ; fragment(!|[ x.instance = new x'(); ]| | "DefInit")
+    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       body := <translate-definition-body> def
 
@@ -292,7 +298,7 @@ rules
     ]|
     with
       x' := <newname> <conc-strings> (x, "_extension")
-    ; fragment(!|[ x.instance = new x'(); ]| | "DefInit")
+    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       e_s*      := <translate-args> s*
     ; e_t*      := <translate-args> t*
@@ -345,7 +351,7 @@ rules
     with
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x{})
-      ; body           := <translate-definition-body>
+      ; body           := <java-eliminate-stacktrace> <translate-definition-body>
       ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
       |}
   
@@ -402,7 +408,7 @@ rules
         else
           mod_override* := [ anno |[ @Override ]| ]
         end
-      ; bstm    := <translate-body> s   
+      ; bstm := <translate-body> s  
       |}
     
   translate-outer-definition :
@@ -484,6 +490,7 @@ strategies
   translate-GuardedLChoice-no-left-branch :
     GuardedLChoice(s1, Id(), s2) ->
     bstm* |[
+      // (this pattern is matched optimized in java-postprocess)
       IStrategoTerm x_termcopy = term;
       Success: {
         Fail: {
@@ -548,7 +555,7 @@ strategies
     with
       !defs
     ; record-inner-definitions
-    ; list-loop(fragment(translate-inner-definition | "LiftedDef"))
+    ; list-loop(rules(LiftedDef :+= <translate-inner-definition>))
     ; body' := <translate-strategy> body
 
   record-inner-definitions =
@@ -639,7 +646,7 @@ strategies
       // Lift definition and produce call
       with(
         !SDefT(<newname => x> "jlifted", [], [], <id>)
-      ; fragment(translate-inner-definition | "LiftedDef")
+      ; rules(DefInit :+= <translate-inner-definition>)
       )
     ; <lifted-call-to-instance> CallT(SVar(x), [], [])
     end
@@ -717,9 +724,9 @@ strategies
       term = e;
     ]|
     where
-      {| java-CheckList :
+      {| java-CheckBuild :
          <java-construct-term> t => e
-       ; bagof-java-CheckList; unzip; (id, reverse; concat) => (decs, stms)
+       ; bagof-java-CheckBuild; unzip; (id, reverse; concat) => (decs, stms)
       |}
       
   /**
@@ -751,10 +758,10 @@ strategies
     with
       x_constant := <new>
     ; x_main     := <MainClassName>
-    ; fragment(!class-body-dec |[ private static ImportTermReference x_constant; ]| | "ConstDecl")
-    ; fragment(
-        !bstm* |[ x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile"); ]|
-      | "ConstInit"
+    ; rules(ConstDecl :+= class-body-dec |[ private static ImportTermReference x_constant; ]|)
+    ; rules(
+        ConstInit :+=
+          bstm* |[ x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile"); ]|
       )
    
   find-import-term-file :
@@ -836,8 +843,8 @@ rules
       ; e2 := ExprName(Id(x))
       ; rules( java-Cache : t -> |[ getConstant(termFactory, e2) ]| )
       ; !(x, e1)
-      ; fragment(java-DeclareTermId|"ConstDecl")
-      ; fragment(java-InitTermId|"ConstInit")
+      ; rules(ConstDecl :+= <java-DeclareTermId>)
+      ; rules(ConstInit :+= <java-InitTermId>)
 
  java-proper-list =
     Op("Nil", [])
@@ -920,21 +927,21 @@ rules
     ; args := <map(java-construct-term)> t*
     
   java-ConstructTerm :
-    Explode(t1, t2) -> 
-    expr |[
-      {| IStrategoTerm x = context.invokePrimitive("SSL_mkterm", term,
-                           new IStrategy[] {},
-                           new IStrategoTerm[] { e_t1, e_t2 });
-         if (x == null)
-           break Fail;
-       | x
-       |}
-    ]|
+    Explode(t1, t2) -> expr |[ x ]|
     with
-      // TODO: Avoid eblock and use approach of java-check-aterm-list 
       e_t1 := <java-construct-term> t1
     ; e_t2 := <java-construct-term> t2
     ; x    := <newname> "mkterm"
+    ; rules(
+        java-CheckBuild :+=
+          ( bstm |[ IStrategoTerm x; ]|
+          , bstm*|[
+               x = context.invokePrimitive("SSL_mkterm", term, new IStrategy[] {},
+                                           new IStrategoTerm[] { e_t1, e_t2 });
+               if (x == null)
+                 break Fail;
+            ]|)
+      )
 
   java-ConstructTerm : 
     Op("", args) -> expr|[ termFactory.makeTuple(~*args') ]|
@@ -966,13 +973,14 @@ rules
     e -> expr |[ x ]|
     with 
       x := <newname> "list"
-    ; stms := 
-         ( bstm |[ IStrategoList x; ]|
-         , bstm*|[
-             x = checkListTail(e);
-             if (x == null) break Fail;
-           ]|)
-    ; rules( java-CheckList :+ _ -> stms )
+    ; rules(
+        java-CheckBuild :+=
+          ( bstm |[ IStrategoList x; ]|
+          , bstm*|[
+              x = checkListTail(e);
+              if (x == null) break Fail;
+            ]|)
+      )
 
   java-CastATerm :
     e -> expr|[ (IStrategoTerm) e ]|
@@ -990,8 +998,8 @@ rules
 strategies
 
   JavaTranslate =
-      fragment(JavaDeclareConstructor|"ConstructorDecl")
-    ; fragment(JavaInitConstructorQ <+ JavaInitConstructor|"ConstructorInit")
+      rules(ConstructorDecl :+= <JavaDeclareConstructor>)
+    ; rules(ConstructorInit :+= <JavaInitConstructorQ <+ JavaInitConstructor>)
 
   JavaDeclareConstructor :
     OpDecl(c, t) -> class-body-dec|[ public static IStrategoConstructor x; ]|
@@ -1018,7 +1026,7 @@ strategies
 
   JavaInitConstructorQ :
     OpDecl(c, t) ->
-    bstm*|[
+    bstm |[
       x = termFactory.makeConstructor("\"" + "~c'" + "\"", 
                                       ~expr:<java-mk-int-const> ar);
     ]|
@@ -1029,13 +1037,31 @@ strategies
 
   JavaInitConstructor :
     OpDecl(c, t) ->
-    bstm*|[
-      x = termFactory.makeConstructor(~expr:Lit(String([Chars(c)])), 
-                                      ~expr:<java-mk-int-const> ar);
+    bstm |[
+      x = termFactory.makeConstructor("~c", ~expr:<java-mk-int-const> ar);
     ]|
   where 
       ar := <Arity> t
     ; x  := <java-ConstructorName> (c, ar)
+  
+  add-default-constructors =
+    with(
+      add-private-constructor(|"Some", 1)
+    ; add-private-constructor(|"None", 0)
+    ; add-private-constructor(|"Conc", 2)
+    )
+
+  add-private-constructor(|name, arity) =
+    if not(<IsLocalOpDecl> (name, arity)) then
+      x := <java-ConstructorName> (name, arity)
+    ; rules(
+        ConstructorDecl :+= class-body-dec|[ public static IStrategoConstructor x; ]|
+      )
+    ; rules(
+        ConstructorInit :+=
+          |[ x = termFactory.makeConstructor("~name", ~expr:<java-mk-int-const> arity); ]|
+      )
+    end
 
 /* ================================ Match */
 strategies
@@ -1167,7 +1193,8 @@ strategies
   translate-Match :
     Match(op@Op(c, ts), e) ->
     bstm* |[
-      if ( e.getTermType() != IStrategoTerm.APPL || e_nomatch) break Fail;
+      // (this pattern is matched optimized in java-postprocess)
+      if (e.getTermType() != IStrategoTerm.APPL || e_nomatch) break Fail;
       ~bstm*:match-args
     ]|
   where

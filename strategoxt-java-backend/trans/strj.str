@@ -39,10 +39,10 @@ strategies
     else
       dr-scope-all(
         strc-front-end
-      ; strc-optimize
       )
     end
-  ; log-timed(s2j         | "Back-end succeeded", 1)
+  ; strc-optimize
+  ; s2j
   ; log-timed(output-java | "Code generation succeeded", 1)
 
   output-java :
