@@ -26,7 +26,7 @@ strategies
     )
     ; pack-process-options
     ; pack-report-options
-    ; pack-stratego(|<pack-infaclude-path>) => (files, spec)
+    ; pack-stratego(|<pack-include-path>) => (files, spec)
     ; <pack-maybe-create-depfile> files
     ; !spec
     ; where(<set-config>("-I", incl))
