@@ -11,7 +11,7 @@ imports
 strategies
 
   override xtc-find =
-    warn(|[<whoami <+ !"application">, "uses xtc"])
+    warn-msg(|[<whoami <+ !"application">, " uses xtc to find ", <id>])
   
   override call =
     ?(program, args);

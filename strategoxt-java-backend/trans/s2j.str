@@ -749,7 +749,7 @@ strategies
     with
       outputdir := <get-config; dirname <+ !"."> "-o"
     ; copyfile  := <conc-strings> (outputdir, "/", outputfile)
-    ; if not(<eq> (<modification-time> inputfile, <modification-time> copyfile)) then
+    ; if not(<eq> (<modification-time> inputfile, <file-exists; modification-time> copyfile)) then
         <copy-file> (inputfile, copyfile)
       ; log(|Info(), ["Referenced imported term file ", file, "; copied to ", outputdir])
       <+
