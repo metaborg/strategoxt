@@ -1,11 +1,10 @@
 package org.strategoxt.lang.compat;
 
-import org.spoofax.interpreter.terms.IStrategoList;
+import org.spoofax.NotImplementedException;
+import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.Strategy;
-import org.spoofax.NotImplementedException;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -13,6 +12,21 @@ import org.spoofax.NotImplementedException;
 public class libstrc_compat {
 	public static void init(Context context) {
 		// Nothing to init
+		context.addOperatorRegistry(new OperatorRegistry());
+	}
+	
+	private static class OperatorRegistry extends AbstractStrategoOperatorRegistry {
+		
+		public OperatorRegistry() {
+			add(new StringValuePrimitive("VERSION_TERM", "x.y"));
+			add(new StringValuePrimitive("SVN_REVISION_TERM", "nnnn"));
+			add(new StringValuePrimitive("STRC_SYSTEM_LDFLAGS", ""));
+			add(new StringValuePrimitive("STRC_SYSTEM_CFLAGS", ""));
+		}
+
+		public String getOperatorRegistryName() {
+			return "libstrc_compat";
+		}		
 	}
 	
 	public static class pp_c_0_0 extends Strategy {
