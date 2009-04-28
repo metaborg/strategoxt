@@ -1,0 +1,41 @@
+/**
+ * This module locally redefines constructors
+ * that are defined in both libstrc and lib-java-front,
+ * thus overriding otherwise ambiguous references.
+ *
+ * @author Lennart Kats
+ */
+module shared-constructors
+
+signature constructors
+  Int : Term
+  Chars : Term -> Term
+  Void : Term
+  For : Term * Term -> Term
+  While : Term * Term -> Term
+  Switch : Term * Term -> Term
+  If : Term * Term -> Term
+  VarDec : Term * Term -> Term
+  ArrayInit : Term -> Term
+  Assign : Term * Term -> Term
+  And : Term * Term -> Term
+  Gt : Term * Term -> Term
+  Lt : Term * Term -> Term
+  Div : Term * Term -> Term
+  Mul : Term * Term -> Term
+  Not : Term -> Term
+  PreIncr : Term -> Term
+  PostIncr : Term -> Term
+  TypeName : Term * Term -> Term
+  Double : Term
+  Float : term
+  Char : Term
+  Long : Term
+  Short : Term
+  Char : Term
+  Volatile : Term
+  Static : Term
+  Id : Term -> Term
+  Parenthetical : Term -> Term
+  Anno : Term * Term -> Term
+  Return : Term -> Term

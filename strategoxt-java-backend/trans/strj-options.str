@@ -52,7 +52,7 @@ strategies
   <+ ArgOption(fail, fail, !"Configuration of the Stratego compiler:")
   <+ ArgOption(fail, fail, !"")
   <+
-  /* TODO: support --ast
+  /* TODO: support --ast, -F
     Option("--ast",
     where(<set-config>("--ast",())); !(),
     !"--ast              Produce abstract syntax tree of packed program" )

@@ -8,9 +8,10 @@
 module s2j
 
 imports
+  shared-constructors
+  
   libstrc
   libstratego-xtc
-  libstratego-rtg
   libstratego-lib
   libjava-front
 
@@ -209,11 +210,11 @@ rules
   java-main-methods :
     _ ->
     |[
-     public static String testMain(String input) {
+     public static String testMain(String inputTerm) {
         Context context = new Context();
         init(context);
         try {
-          IStrategoTerm result = x_main.instance.invoke(context, context.getFactory().parseFromString(input));
+          IStrategoTerm result = x_main.instance.invoke(context, context.getFactory().parseFromString(inputTerm));
           return result == null ? null : result.toString();
         } catch (StrategoExit exit) {
           return null;
@@ -241,7 +242,8 @@ rules
       not(<get-config> "--library")
     with
       x_name := <MainClassName>
-    ; x_main := <get-config <+ !"main_0_0"> "-m"
+    ; main   := <get-config <+ !"main"> "-m"
+    ; x_main := <conc-strings> (<jify> main, "_0_0")
 
 rules
 

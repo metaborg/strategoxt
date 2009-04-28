@@ -89,7 +89,7 @@ public class Context {
 		termArgs[0] = factory.makeString(appName);
 		
     	for (int i = 0; i < args.length; i++) {
-    		termArgs[i+1] = factory.parseFromString(args[i]);
+    		termArgs[i+1] = factory.makeString(args[i]);
     	}
     	
     	IStrategoList term = factory.makeList(termArgs);

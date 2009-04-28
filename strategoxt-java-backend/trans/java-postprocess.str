@@ -59,6 +59,9 @@ strategies
   topdown-consnil(s) =
     rec rec(s; all-consnil(rec))
   
+  all-consnil(s) =
+    ?[_ | _] < [s | s] + all(s)
+  
   java-simplify-stm :
     [Empty() | s*] -> s*
   

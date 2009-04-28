@@ -6,6 +6,8 @@
 module strj
 
 imports
+  shared-constructors
+
   libstrc
   libstratego-lib
   libstratego-xtc
