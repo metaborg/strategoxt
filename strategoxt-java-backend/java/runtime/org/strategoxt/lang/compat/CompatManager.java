@@ -13,8 +13,7 @@ public class CompatManager {
 		if ("libstratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			performance_tweaks.init(context);
-		} else if ("libstratego_xtc".equals(component)) {
-			xtc_compat.init(context);
+			xtc_compat.init(context); // also deals with native calls for libstratego-lib
 		} else if ("libstratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary(new WrappedATermFactory()));
 			jsglr_parser.init(context);

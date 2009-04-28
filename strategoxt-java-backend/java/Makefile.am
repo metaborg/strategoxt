@@ -12,6 +12,12 @@ RUNTIMEJAVAS = \
 RUNTIMECLASSES = \
   $(RUNTIMEJAVAS:.java=.class)
 
+COMPILERJAVAS = \
+  compiler/org/strategoxt/strj.java
+
+COMPILERCLASSES = \
+  $(COMPILERJAVAS:.java=.class)
+
 LIBRARYJAVAS = \
   lib/org/strategoxt/libstratego_lib.java \
   lib/org/strategoxt/libstratego_xtc.java \
@@ -33,7 +39,7 @@ LIBRARYJAVAS = \
 
 LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
 
-nobase_pkgdata_DATA = .ALLCLASSES $(LIBRARYJAVAS) $(RUNTIMECLASSES) $(LIBRARYCLASSES)
+nobase_pkgdata_DATA = .ALLCLASSES $(LIBRARYJAVAS) $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERJAVAS)
 
 CLEANFILES = \
   $(RUNTIMECLASSES) $(LIBRARYCLASSES) \
@@ -102,10 +108,20 @@ runtime/org/strategoxt/lang/compat/performance_tweaks.java : runtime/org/strateg
 runtime/org/strategoxt/lang/compat/xtc_compat.java : runtime/org/strategoxt/lang/compat/xtc-compat.str ../trans/strj
 	../trans/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc
 
+###### COMPILER #######
+
+compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
+	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -DDEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
+
+###### GENERAL #######
+
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
 
 ../trans/strj : .PURPLEPONY
+	$(MAKE) -C ../trans strj
+
+../trans/strj.ctree : .PURPLEPONY
 	$(MAKE) -C ../trans strj
 
 .ALLCLASSES : $(LANGJAVAS) $(LIBARYJAVAS)

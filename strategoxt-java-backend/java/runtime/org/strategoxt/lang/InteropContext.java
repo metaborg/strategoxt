@@ -10,7 +10,6 @@ import org.spoofax.interpreter.core.StrategoSignature;
 import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOperatorRegistry;
-import org.spoofax.interpreter.stratego.CallT;
 import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.stratego.Match.Results;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -24,8 +23,6 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class InteropContext implements IContext {
 	
-	private static final CallT[] EMPTY_CALLT_LIST = new CallT[0];
-	
 	private final Context context;
 	
 	private IStrategoTerm current;
@@ -33,32 +30,10 @@ public class InteropContext implements IContext {
 	public InteropContext(Context context) {
 		this.context = context;
 	}
-    
-	public CallT[] toInteropStrategies(IStrategy[] strategies) {
-    	if (strategies.length == 0) return EMPTY_CALLT_LIST;
-    	
-    	CallT[] results = new CallT[strategies.length];
-    	for (int i = 0; i < strategies.length; i++)
-    		results[i] = toInteropStrategy(strategies[i]);
-    	return results;
-    }
-
-	public CallT toInteropStrategy(final IStrategy strategy) {
-    	return new CallT(strategy.getName(), null, null) {
-    		@Override
-    		protected String getTraceName() {
-    			return strategy.getName();
-    		}
-
-    		@Override
-			public boolean evaluate(IContext context) throws InterpreterException {
-				IStrategoTerm term = strategy.invoke(InteropContext.this.context, context.current());
-				if (term == null) return false;
-				context.setCurrent(term);
-				return true;
-			}
-    	};
-    }
+	
+	public Context getContext() {
+		return context;
+	}
 
 	public boolean bindVars(Results r) {
 		throw new UnsupportedOperationException();

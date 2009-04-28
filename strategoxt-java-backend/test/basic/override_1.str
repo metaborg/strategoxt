@@ -6,9 +6,8 @@ imports
 rules
 
   main =
-    <list('*')> "***"
-  ; not(<list('*')> ['*','*','*'])
+    <string-tokenize(|['*'])> "***"
     
-  override list(s) =
-    string-as-chars(all(s))
+  override string-tokenize(s) = // used by string-tokenize(|t)
+    string-tokenize-keep-all(|<s>)
 

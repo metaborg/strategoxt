@@ -311,14 +311,16 @@ rules
   translate-outer-definition-internal :
     AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
-       private static final class x' extends x {
-         public static final x' instance = new x'();
+       private static final class x extends Strategy {
+         public static final x instance = new x();
+         
          ~body
+         ~invokedynamic*
        }
     ]|
     with
-      x' := <newname> <conc-strings> (x, "_override")
-    ; body := <translate-definition-body> def
+      body := <translate-definition-body> def
+    ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
 
   translate-outer-definition-conflict :
     AnnoDef(a*, SDefT(x, _, _, _)) -> ()

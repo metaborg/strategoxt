@@ -11,6 +11,8 @@ strategies
   
   override getfirst(s) = ?[_ | _] < one(s; ?x); !x + []
   
+  override list-loop(s) = ?[_ | _] < all(where(s)) + []
+  
   override read-text-from-stream =
     ?Stream(stream);
     prim("SSL_EXT_read_text_from_stream", stream)

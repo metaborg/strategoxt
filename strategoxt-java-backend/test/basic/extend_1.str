@@ -6,9 +6,9 @@ imports
 rules
 
   main =
-    <list('*')> "***"
-  ; <list('*')> ['*','*','*']
+    <collect-all('*')> "***" => "***"
+  ; <collect-all('*')> ['*','*','*']
     
-  extend map(s) =
-    string-as-chars(all(s))
+  extend collect-all(s,un) =
+    string-as-chars(filter(s))
 

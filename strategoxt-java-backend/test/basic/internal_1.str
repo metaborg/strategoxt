@@ -6,9 +6,9 @@ imports
 rules
 
   main =
-    not(<list('*')> "***")
-  ; <map('*')> ['*','*','*']
+    not(<collect-all('*')> "***" => "***")
+  ; not(<collect-all('*', id)> ['*','*','*'])
     
-  internal map(s) =
-    string-as-chars(all(s))
+  internal collect-all(s,un) =
+    string-as-chars(filter(s))
 

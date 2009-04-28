@@ -95,7 +95,7 @@ public class Context {
 
     	interopContext.setCurrent(term);
 		try {
-			if (primitive.call(interopContext, interopContext.toInteropStrategies(args), targs)) {
+			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(args), targs)) {
 				return interopContext.current();
 			} else {
 				return null;

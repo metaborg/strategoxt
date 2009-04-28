@@ -6,7 +6,7 @@ strategies
     <set-config> ("VERSION", <strc-version-number>)
   ; <set-config> ("--verbose", 1)
   ; <set-config> ("--statistics", 1)
-  ; <set-config> ("-O", 1) // TODO: default to 2 (breaks override/extend tests)
+  ; <set-config> ("-O", 2)
   ; <set-config> ("-I", [])
  
   strj-parse-options =
