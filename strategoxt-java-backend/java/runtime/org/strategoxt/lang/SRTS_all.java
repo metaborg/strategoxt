@@ -18,7 +18,8 @@ public class SRTS_all extends Strategy {
 		IStrategoTerm[] results = null;
 		IStrategoTerm[] inputs = current.getAllSubterms();
 		
-		// TODO: Optimize SRTS_all for head/nil traversal of lists
+		// TODO: Optimize SRTS_all, SRTS_one, SRTS_some for head/nil traversal of lists?
+		//       The tricky part is constructing the resulting list...
 		
 		for (int i = 0; i < inputs.length; i++) {
 			IStrategoTerm arg = inputs[i];

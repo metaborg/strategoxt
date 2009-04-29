@@ -1,0 +1,9 @@
+module fetch_1
+
+imports
+  libstratego-lib
+
+rules
+
+  main =
+     ![1,2,3]; fetch(inc) => [2,2,3]

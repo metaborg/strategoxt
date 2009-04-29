@@ -39,12 +39,13 @@ LIBRARYJAVAS = \
 
 LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
 
-nobase_pkgdata_DATA = .ALLCLASSES $(LIBRARYJAVAS) $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERJAVAS)
+nobase_pkgdata_DATA = $(LIBRARYJAVAS) .ALLCLASSES $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERJAVAS)
 
 CLEANFILES = \
   $(RUNTIMECLASSES) $(LIBRARYCLASSES) \
   $(subst runtime/org/strategoxt/lang/compat/libstrc_compat.java,, \
-  $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS)))
+  $(subst runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.java,, \
+  $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS))))
 
 # HACK: hardcoded, relative classpath
 
@@ -111,7 +112,7 @@ runtime/org/strategoxt/lang/compat/xtc_compat.java : runtime/org/strategoxt/lang
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
-	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -DDEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
+	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""-
 
 ###### GENERAL #######
 
@@ -122,7 +123,7 @@ compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
 	$(MAKE) -C ../trans strj
 
 ../trans/strj.ctree : .PURPLEPONY
-	$(MAKE) -C ../trans strj
+	$(MAKE) -C ../trans strj.ctree
 
 .ALLCLASSES : $(LANGJAVAS) $(LIBARYJAVAS)
 	$(JAVAC) $(JAVACFLAGS) $(LANGJAVAS) $(LIBRARYJAVAS) && touch $@

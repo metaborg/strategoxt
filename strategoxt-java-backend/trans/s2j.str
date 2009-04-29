@@ -403,7 +403,7 @@ rules
        }
     ]|
     with
-      {| IsStrategyArg :
+      {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame:
         (s'*, [])          := <translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; param*             := <conc> (s'*, t'*)   

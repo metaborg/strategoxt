@@ -33,7 +33,8 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
 BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 internal_1 internal_2 \
-           shared_var_1 shared_var_2 shared_var_3 shared_var_4
+           shared_var_1 shared_var_2 shared_var_3 shared_var_4 \
+           dynrules_1 fetch_1
 
            # TODO:  override_1 extend_1 (no longer work because inlining's enabled)
 

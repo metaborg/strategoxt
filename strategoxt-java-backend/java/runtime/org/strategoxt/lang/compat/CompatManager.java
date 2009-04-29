@@ -8,6 +8,8 @@ import org.strategoxt.lang.Context;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class CompatManager {
+
+	// TODO: eliminate the compat manager and use library imports and library init methods instead
 	
 	public void postInit(Context context, String component) {
 		if ("libstratego_lib".equals(component)) {

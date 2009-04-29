@@ -1,5 +1,6 @@
 package org.strategoxt.lang;
 
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -17,10 +18,19 @@ public class SRTS_EXT_crush_3_0 extends Strategy {
 		ITermFactory factory = context.getFactory();
 		IStrategoTerm result = nul.invoke(context, current);
 		
-		for (IStrategoTerm subterm : current.getAllSubterms()) {
-			subterm = s.invoke(context, subterm);
-			IStrategoTuple input = factory.makeTuple(subterm, result);
-			result = sum.invoke(context, input);
+		if (current.getTermType() == IStrategoTerm.LIST) {
+			for (IStrategoList cons = (IStrategoList) current; !cons.isEmpty(); cons = cons.tail()) {
+				IStrategoTerm subterm = cons.head();
+				subterm = s.invoke(context, subterm);
+				IStrategoTuple input = factory.makeTuple(subterm, result);
+				result = sum.invoke(context, input);				
+			}
+		} else {
+			for (IStrategoTerm subterm : current.getAllSubterms()) {
+				subterm = s.invoke(context, subterm);
+				IStrategoTuple input = factory.makeTuple(subterm, result);
+				result = sum.invoke(context, input);
+			}
 		}
 		
 		return result;

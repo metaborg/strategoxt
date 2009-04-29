@@ -4,6 +4,8 @@
  */
 module performance-tweaks
 
+imports libstratego-lib
+
 signature constructors
   Cons   : Term * List -> List
   Nil    : List
@@ -13,11 +15,11 @@ strategies
 
   override map(s) = ?[_ | _] < all(s) + []
   
-  override getfirst(s) = ?[_ | _] < one(s; ?x); !x + []
+  override getfirst(s) = ?[_ | _]; one(where(s; ?x)); !x
   
   override fetch-elem(s) = getfirst(s)
   
-  override fetch(s) = ?[_ | _] < one(where(s)) + []
+  override fetch(s) =  ?[_ | _]; one(s)
   
   override list-loop(s) = ?[_ | _] < all(where(s)) + []
   
@@ -32,9 +34,9 @@ strategies
     SRTS-EXT-crush(nul, sum, s)
 
   override foldr(nul, sum) =
-    ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []
+    ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []; nul
 
   override foldr(nul, sum, s) =
-    ?[_ | _] < SRTS-EXT-crush(nul, sum, s) + []
+    ?[_ | _] < SRTS-EXT-crush(nul, sum, s) + []; nul
 
   external SRTS-EXT-crush(nul, sum, s|)
