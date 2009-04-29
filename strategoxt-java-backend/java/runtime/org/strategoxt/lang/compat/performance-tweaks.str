@@ -1,3 +1,7 @@
+/**
+ * Overrides some of the built-in, recusively defined libstratego-lib
+ * strategies for better stack behavior and performance.
+ */
 module performance-tweaks
 
 signature constructors
@@ -11,13 +15,26 @@ strategies
   
   override getfirst(s) = ?[_ | _] < one(s; ?x); !x + []
   
+  override fetch-elem(s) = getfirst(s)
+  
+  override fetch(s) = ?[_ | _] < one(where(s)) + []
+  
   override list-loop(s) = ?[_ | _] < all(where(s)) + []
   
   override read-text-from-stream =
     ?Stream(stream);
     prim("SSL_EXT_read_text_from_stream", stream)
   
+  override crush(nul, sum) =
+    SRTS-EXT-crush(nul, sum, id)
+  
   override crush(nul, sum, s) =
     SRTS-EXT-crush(nul, sum, s)
+
+  override foldr(nul, sum) =
+    ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []
+
+  override foldr(nul, sum, s) =
+    ?[_ | _] < SRTS-EXT-crush(nul, sum, s) + []
 
   external SRTS-EXT-crush(nul, sum, s|)
