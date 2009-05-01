@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-TESTFILES   = $(STRC1TESTFILES) $(BASICTESTFILES)
+TESTFILES   = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES)
 JAVAFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CLASSFILES  = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
@@ -32,7 +32,21 @@ STRC1TESTS=test01 test02 test03 test04 test05				 \
 
 STRC1TESTFILES=$(addprefix strc1/,$(addsuffix .str,$(STRC1TESTS)))
 
-BASICTESTS=build_0 lchoice_1 lchoice_2 gchoice_1 internal_1 internal_2 \
+STRC2TESTS=arity-test as-pattern assignment			    \
+		  comment-test conditional-innermost congruence-arguments   \
+		  congruence-thread dynamic-rules-test empty-sections	    \
+		  flatten-test higher-order-arg				    \
+		  implicit-var-decl improper-list-test innermost-pure	    \
+		  match-arity match-automaton-test mkterm		    \
+		  number-syntax-test number-test overlay-test		    \
+		  overlay-test-b					    \
+		  overloading-constructors-test overloading		    \
+		  prop rename-test tail	    \
+		  thread-test traversal-test twice unification-test occan
+
+STRC2TESTFILES=$(addprefix strc2/,$(addsuffix .str,$(STRC2TESTS)))
+
+BASICTESTS=build_0 build_1 lchoice_1 lchoice_2 gchoice_1 internal_1 internal_2 \
            shared_var_1 shared_var_2 shared_var_3 shared_var_4 \
            dynrules_1 fetch_1
 
@@ -56,7 +70,7 @@ TESTS=$(RUNNERFILES)
 # HACK: hardcoded, relative classpath
 
 BASEPATH=../../../spoofax/trunk/spoofax
-SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
+SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.jsglr/bin:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
 CLASSPATH=$(SPCLASSPATH):../java/runtime:../java/lib:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
@@ -74,10 +88,10 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	$(JAVAC) $(JAVACFLAGS) $<
 
 %.run : %.class
-	cd `dirname $<`; java -client -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
+	cd `dirname $<`; java -client -Xss10m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
-	@ echo "cd `dirname $<`; java -client -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
+	@ echo "cd `dirname $<`; java -client -Xss10m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
 	@ chmod 755 $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf
@@ -99,7 +113,7 @@ strc1/cs_test03.ctree : strc1/ExpStratego.tbl
 strc1/cs_test04.ctree : strc1/ExpStratego.tbl strc1/Expressions.str
 
 .ALLCLASSFILES: $(JAVAFILES)
-	$(JAVAC) -J-server $(JAVACFLAGS) basic/*.java strc1/*.java && touch $@
+	$(JAVAC) -J-server $(JAVACFLAGS) $(JAVAFILES) && touch $@
 
 .PURPLEPONY:
 
