@@ -852,7 +852,8 @@ rules
 
  java-proper-list =
     Op("Nil", [])
-    + Op("Cons", [id, java-proper-list + ?|[ getConstant(e1, e2) ]|])
+    + Op("Cons", [id, java-proper-list])
+    // UNDONE: + Op("Cons", [id, java-proper-list + ?|[ getConstant(e1, e2) ]|])
     + Op(id, id)
       ; not(is-ListOp)
 
@@ -953,12 +954,12 @@ rules
       args' := <map(java-construct-term)> args
     
   java-ConstructTerm :
-    Op("Nil", []) -> expr|[ termFactory.makeList() ]|
+    Op("Nil", []) -> expr|[ (IStrategoTerm) termFactory.makeList() ]|
 
   java-ConstructTerm :
     Op("Cons", [t1, t2]) -> 
     expr|[ 
-      termFactory.makeList(~expr:<java-construct-term> t1, e)
+      (IStrategoTerm) termFactory.makeList(~expr:<java-construct-term> t1, e)
     ]|
     with
       <java-construct-term> t2
