@@ -16,8 +16,8 @@ strategies
    */
   open-parse-table =
     ?tbl
-    ; prim("STRSGLR_open_parse_table", tbl) => internal
-    ; !ParseTable(internal)
+    ; prim("STRSGLR_open_parse_table", tbl) => table
+    ; !ParseTable(table)
 
   /**
    * Close an open parse table.
@@ -26,8 +26,8 @@ strategies
    * @type ParseTable -> ()
    */
   close-parse-table =
-    ?ParseTable(internal)
-    ; prim("STRSGLR_close_parse_table", internal)
+    ?ParseTable(table)
+    ; prim("STRSGLR_close_parse_table", table)
     ; !()
 
   /**
