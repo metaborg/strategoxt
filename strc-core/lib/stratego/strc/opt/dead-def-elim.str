@@ -27,12 +27,18 @@ strategies
     ; where(
         <mark-needed-defs> "main_0_0"
       ; try(<mark-needed-defs> "DYNAMIC_CALLS_0_0")
+      ; bagof-AlwaysNeeded
+      ; list-loop(\(x, s, t) -> <mark-needed-defs> x\)
       )
-    ; filter(ignore-anno-def(
-        SDefT(DefNeeded,id,id,id) 
+    ; filter(
+        AnnoDef(one(Override + Extend), id)
+      <+
+        ignore-anno-def(
+           SDefT(DefNeeded,id,id,id) 
         <+ ExtSDefInl(DefNeeded,id,id,id)
         <+ ExtSDef(DefNeeded,id,id)
-      ))
+        )
+      )
 
   RegisterDefinition =
     ?sdef

@@ -42,6 +42,7 @@ strategies
     <+ mark-lchoice(mark-buv)
     <+ mark-guardedlchoice(mark-buv)
     <+ all(mark-buv)
+    <+ debug(!"wtf "); fail
   //); debug(!"mark-buv out: "); dr-print-rule-set(|"MarkVar")
 
 strategies

@@ -197,7 +197,7 @@ rules
   JoinDefsExt =
     fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
     ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"error: redefining external definition2: ")> <write-to-string>
+    ; <debug(!"error: redefining external definition: ")> <write-to-string>
     ; giving-up
 
   choices = 
