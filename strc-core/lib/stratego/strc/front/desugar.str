@@ -399,7 +399,11 @@ rules
 
   Desugar :
     |[ where(s) ]| -> |[ {x: ?x; s; !x} ]|
-    where new => x
+    where <not(Id)> s
+    with x := <new>
+
+  Desugar :
+    |[ where(id) ]| -> |[ id ]|
 
 // overlays
 

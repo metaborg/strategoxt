@@ -50,15 +50,15 @@ strategies
   local-dead-def-elim =
     Let(id,id)
     ; {| DefDead
-       : DeclareDead
+       : DeclareLetDead
        ; Let(local-dead-def-elim, local-dead-def-elim)
        ; DeleteDeadDefinitions
        |}
     <+ try(DeclareNotDead)
        ; all(local-dead-def-elim)
 
-  DeclareDead =
-    Let(map(DeclareDefDead), id)
+  DeclareLetDead =
+    Let(list-loop(DeclareDefDead), id)
 
   DeclareDefDead =
     ?SDefT(f, _, _, _)
