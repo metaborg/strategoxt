@@ -50,7 +50,7 @@ public class UncaughtExceptionHandler  {
     protected synchronized boolean dumpError(String startMessage) {
     	if (dumpedError) return true;
 
-    	if (stackTracer.getTraceDepth() > 0) {
+    	if (stackTracer.getTraceDepth(true) > 0) {
     		if (startMessage != null) System.err.println(startMessage);
 	    	try {
 	    		stackTracer.printStackTrace(true);
