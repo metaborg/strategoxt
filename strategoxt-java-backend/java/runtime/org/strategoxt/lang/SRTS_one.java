@@ -2,6 +2,8 @@ package org.strategoxt.lang;
 
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
+import java.util.Arrays;
+
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -27,6 +29,7 @@ public class SRTS_one extends Strategy {
 				} else {
 					results = inputs.clone();
 					results[i] = arg2;
+					System.out.println("Did some replacing: " + arg2 + " in " + Arrays.toString(results));
 				}
 				break;
 			}
@@ -36,7 +39,7 @@ public class SRTS_one extends Strategy {
 		
 		switch (current.getTermType()) {
 			case APPL:
-    			return context.getFactory().replaceAppl(((IStrategoAppl)current).getConstructor(), inputs, (IStrategoAppl)current);
+    			return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
     		case LIST:
     			return context.getFactory().replaceList(results, (IStrategoList) current);
     		case TUPLE:

@@ -33,7 +33,8 @@ public class Context {
     
     private final CompatManager compat = new CompatManager();
     
-    private final UncaughtExceptionHandler exceptionHandler = new UncaughtExceptionHandler(stackTracer);
+    private final UncaughtExceptionHandler exceptionHandler =
+    	new UncaughtExceptionHandler(stackTracer);
 	
 	private final ITermFactory factory;
     

@@ -70,7 +70,6 @@ public class UncaughtExceptionHandler  {
 	 */
     private class ActualHandler extends Thread implements Thread.UncaughtExceptionHandler {
 		public void uncaughtException(Thread t, Throwable e) {
-			System.out.println(1);
 			if (e instanceof StackOverflowError && dumpError(true)) {
 				System.err.println("Stack overflow.");
 			} else {
