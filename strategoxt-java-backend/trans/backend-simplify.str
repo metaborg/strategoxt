@@ -18,7 +18,7 @@ strategies
     io-wrap(backend-simplify)
   
   backend-simplify =
-    dr-scope-all(
+    dr-scope-all-verbose(
       split-large-strategies
     ; lift-definitions
     ; canonicalize
@@ -27,7 +27,7 @@ strategies
     ; escaping-variables
     ; remove-closure-allocs
     )
-
+  
 rules
 
   remove-closure-allocs =

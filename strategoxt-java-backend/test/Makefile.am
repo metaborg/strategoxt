@@ -46,11 +46,11 @@ STRC2TESTS=arity-test as-pattern assignment			    \
 
 STRC2TESTFILES=$(addprefix strc2/,$(addsuffix .str,$(STRC2TESTS)))
 
-BASICTESTS=build_0 build_1 lchoice_1 lchoice_2 gchoice_1 internal_1 internal_2 \
-           shared_var_1 shared_var_2 shared_var_3 shared_var_4 \
-           dynrules_1 fetch_1
-
-           # TODO:  override_1 extend_1 (no longer work because inlining's enabled)
+BASICTESTS=build_0 build_1 lchoice_1 lchoice_2 gchoice_1 \
+           internal_1 internal_2 override_1 extend_1 \
+           shared_var_1 shared_var_2 shared_var_3 shared_var_4 shared_var_5 \
+           dynrules_1 dynrules_2 dynrules_3 dynrules_4 dynrules_5 iset_1 fetch_1 \
+           mapconcat_1
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 
@@ -106,6 +106,10 @@ SDF2RTG_FLAGS = -m `basename $*`
 
 .def.tbl :
 	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
+
+%.crun : %.str
+	strc -la strc -la stratego-lib -i $<
+	`dirname $<`/`basename $< .str`
 
 strc1/cs_test01.ctree : strc1/ExpStratego.tbl strc1/Expressions.def strc1/Expressions.str
 strc1/cs_test02.ctree : strc1/ExpStratego.tbl

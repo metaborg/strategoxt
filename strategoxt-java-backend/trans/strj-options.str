@@ -52,12 +52,17 @@ strategies
   <+ ArgOption(fail, fail, !"Configuration of the Stratego compiler:")
   <+ ArgOption(fail, fail, !"")
   <+
-  /* TODO: support --ast, -F
     Option("--ast",
-    where(<set-config>("--ast",())); !(),
-    !"--ast              Produce abstract syntax tree of packed program" )
-  */
-   Option("--prefer-str",
+      where(<set-config>("--ast",())); !(),
+      !"--ast              Produce abstract syntax tree of packed program"
+    )
+  <+
+    Option("-F",           
+      where(<set-config>("-F",())); !(),
+      !"-F                 Produce core after front-end"
+    )
+  <+ 
+    Option("--prefer-str",
     where(<set-config> ("--prefer-str", "")); !(),
     !"--prefer-str       Prefer .str files over .rtree files")
   <+

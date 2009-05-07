@@ -39,13 +39,12 @@ LIBRARYJAVAS = \
 
 LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
 
-nobase_pkgdata_DATA = $(LIBRARYJAVAS) .ALLCLASSES $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERJAVAS)
+nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERCLASSES)
 
 CLEANFILES = \
   $(RUNTIMECLASSES) $(LIBRARYCLASSES) \
   $(subst runtime/org/strategoxt/lang/compat/libstrc_compat.java,, \
-  $(subst runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.java,, \
-  $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS))))
+  $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS)))
 
 # HACK: hardcoded, relative classpath
 
@@ -77,12 +76,6 @@ lib/org/strategoxt/libstratego_rtg.java : $(STRATEGOXT)/share/libstratego-rtg.ct
 lib/org/strategoxt/libstratego_gpp.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr
 
-lib/org/strategoxt/lang/compat/libstratego_aterm_compat.rtree : $(STRATEGOXT)/share/aterm-front/ATerms.str
-	parse-stratego -i $< -o $@
-
-lib/org/strategoxt/lang/compat/libstratego_aterm_compat.java : runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.rtree ../trans/strj
-	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp
-
 lib/org/strategoxt/libstratego_aterm.java : $(STRATEGOXT)/share/libstratego-aterm.ctree runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.class ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp -la org.strategoxt.lang.compat.libstratego_aterm_compat
 
@@ -90,12 +83,18 @@ lib/org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ct
 	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_aterm 
 
 lib/org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../trans/strj
-	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_rtg -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat
+	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_rtg -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat -O 1
 
 lib/org/strategoxt/libjava_front.java : $(JAVA_FRONT)/share/java-front/libjava-front.ctree ../trans/strj
 	../trans/strj -I $(JAVA_FRONT)/share/java-front-syntax -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
 
 ###### RUNTIME #######
+
+runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.rtree : $(STRATEGOXT)/share/aterm-front/ATerms.str
+	parse-stratego -i $< -o $@
+
+runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.java : runtime/org/strategoxt/lang/compat/libstratego_aterm_compat.rtree ../trans/strj
+	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_gpp
 
 runtime/org/strategoxt/lang/compat/jsglr_parser_compat.java : runtime/org/strategoxt/lang/compat/jsglr-parser-compat.str ../trans/strj
 	../trans/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_xtc
@@ -112,7 +111,7 @@ runtime/org/strategoxt/lang/compat/xtc_compat.java : runtime/org/strategoxt/lang
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
-	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""-
+	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
 ###### GENERAL #######
 
@@ -125,8 +124,8 @@ compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
 ../trans/strj.ctree : .PURPLEPONY
 	$(MAKE) -C ../trans strj.ctree
 
-.ALLCLASSES : $(LANGJAVAS) $(LIBARYJAVAS)
-	$(JAVAC) $(JAVACFLAGS) $(LANGJAVAS) $(LIBRARYJAVAS) && touch $@
+.ALLCLASSES : $(LANGJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+	$(JAVAC) $(JAVACFLAGS) $(LANGJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch $@
 
 .PURPLEPONY:
 

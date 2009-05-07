@@ -6,8 +6,9 @@ imports
 rules
 
   main =
-    <string-tokenize(|['*'])> "***"
+    not(<cify> "foo-bar" => "foo_bar")
+  ; <cify> "foosbar" => "foobar"
     
-  override string-tokenize(s) = // used by string-tokenize(|t)
-    string-tokenize-keep-all(|<s>)
+  override Cify(s) :
+    ['s' | tail] -> <s> tail
 

@@ -40,13 +40,13 @@ strategies
       bstm'* := <java-relabel(|outer-fail, success, outer-fail)> bstm*
   
    java-relabel-stm(|failure, success, outer-fail) :
-     "Fail" -> failure
+     Id("Fail") -> Id(failure)
    
    java-relabel-stm(|failure, success, outer-fail) :
-     "Success" -> success
+     Id("Success") -> Id(success)
    
    java-relabel-stm(|failure, success, outer-fail) :
-     "OuterFail" -> outer-fail
+     Id("OuterFail") -> Id(outer-fail)
 
 strategies
 
@@ -97,6 +97,9 @@ strategies
   java-optimize =
     topdown-consnil(try(
       optimize-match-test
+    ))
+  ; topdown(try( // should be done after previous pass
+      optimize-if-true-break
     ))
 
   optimize-match-test :
@@ -182,3 +185,18 @@ strategies
     ]| ->
     ([], x_cons, bstm_body*)
     
+  optimize-if-true-break :
+    |[ Fail: { bstm* } ]| -> |[ Fail: { bstm'* } ]|
+    where
+      !bstm*
+    ; one(?|[ if (e) break Fail; ]|)
+    ; at-last([remove-if-true]) => bstm'*
+  
+  remove-if-true :
+    |[ if (TRUE) break Fail; ]| -> |[ break Fail; ]|
+  
+  remove-if-true :
+    |[ if (TRUE) break Success; ]| -> |[ break Success; ]|
+  
+  remove-if-true :
+    |[ if (TRUE) return e; ]| -> |[ return e; ]|

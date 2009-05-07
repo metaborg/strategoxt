@@ -35,7 +35,11 @@ rules
   s2j-general-options =
     ArgOption(
       "-I" + "--Include"
-    , where(<post-extend-config>("-I", ["-I", <id>])); !()
+    , where(<post-extend-config>("-I", ["-I", <id>]))
+    ; if not(file-exists) then
+        warn(|"import directory does not exist")
+      end
+    ; !()
     , !"-I d | --Include d Include modules from directory d"
     )
   + ArgOption(

@@ -39,13 +39,13 @@ strategies
     ; err(|"File does not exist")
     ; fail
     else
-      dr-scope-all(
+      dr-scope-all-verbose(
         strc-front-end
       )
     end
   ; strc-optimize
   ; s2j
-  ; log-timed(output-java | "Code generation succeeded", 1)
+  ; log-timed(output-java | "Pretty printing succeeded", 1)
 
   output-java :
     ast -> file

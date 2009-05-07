@@ -62,7 +62,7 @@ rules
       | "Backend preprocessing succeeded", 1
       )
     ; log-timed(
-        dr-scope-all(java-compile-spec)
+        dr-scope-all-verbose(java-compile-spec)
       | "Backend transformation succeeded", 1
       )
     ; log-timed(
@@ -88,7 +88,7 @@ rules
     \['_'  | cs] -> ['_' | <x> cs]\
   <+
     Cify(x)
-    
+  
   java-compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
      |[ 
@@ -215,6 +215,7 @@ rules
         init(context);
         try {
           IStrategoTerm result = x_main.instance.invoke(context, context.getFactory().parseFromString(inputTerm));
+          context.uninit();
           return result == null ? null : result.toString();
         } catch (StrategoExit exit) {
           return null;
@@ -226,6 +227,7 @@ rules
         init(context);
         try {
           IStrategoTerm result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+          context.uninit();
           if (result == null) {
             System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
             context.getStackTracer().printStackTrace();
@@ -284,7 +286,7 @@ rules
        }
     ]|
     with
-      x' := <newname> <conc-strings> (x, "_override")
+      x' := <conc-strings> (x, "_override")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       body := <translate-definition-body> def
@@ -299,12 +301,12 @@ rules
        }
     ]|
     with
-      x' := <newname> <conc-strings> (x, "_extension")
+      x' := <conc-strings> (x, "_extension")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       e_s*      := <translate-args> s*
     ; e_t*      := <translate-args> t*
-    ; outercall := |[ outer.invoke(context, term, e_s*, e_t*); ]|
+    ; outercall := |[ term = outer.invoke(context, term, e_s*, e_t*); ]|
     ; def'      := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Escape(outercall)))
     ; body      := <translate-definition-body> def'
 
@@ -433,7 +435,7 @@ rules
     ( param |[ IStrategoTerm x' ]|
     , bstm* |[ TermReference x = new TermReference(x'); ]|)
     with
-      x' := <newname> x
+      x' := <conc-strings> ("ref_", x)
   
   translate-param : 
     VarDec(x, FunType(_, _)) -> (param |[ IStrategy x ]|, [])
@@ -638,7 +640,9 @@ strategies
   lifted-decls-wrap(s, get-init-stms) =
     dr-ignore-states( // (hide and then scope these dyn. rules)
       s
-    ; with(<get-init-stms> <conc> (<bagof-CallTDecls>, <bagof-CallTAssigns; concat>))
+    ; with(
+        <get-init-stms> <concat> [<bagof-CallTDecls> | <bagof-CallTAssigns>]
+      )
     | ["CallTDecl", "CallTDecls", "CallTAssigns"]
     )
   

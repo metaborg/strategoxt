@@ -6,9 +6,9 @@ imports
 rules
 
   main =
-    <collect-all('*')> "***" => "***"
-  ; <collect-all('*')> ['*','*','*']
+    <cify> "foo-bar" => "foo_bar"
+  ; <cify> "foosbar" => "foobar"
     
-  extend collect-all(s,un) =
-    string-as-chars(filter(s))
+  extend Cify(s) :
+    ['s' | tail] -> <s> tail
 

@@ -6,9 +6,10 @@ imports
 rules
 
   main =
-    not(<collect-all('*')> "***" => "***")
-  ; not(<collect-all('*', id)> ['*','*','*'])
+    <cify> "foo-bar" => "foo_bar"
+  ; not(<cify> "foosbar" => "foobar")
+  ; <Cify(id)> ['s'] => []
     
-  internal collect-all(s,un) =
-    string-as-chars(filter(s))
+  internal Cify(s) :
+    ['s' | tail] -> <s> tail
 
