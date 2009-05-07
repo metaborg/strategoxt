@@ -54,7 +54,7 @@ public class InteropStrategy extends CallT {
 
 	@Override
 	public boolean evaluate(IContext env) throws InterpreterException {
-		if (!(env instanceof InteropStrategy))
+		if (!(env instanceof InteropContext))
 			throw new StrategoException("Expected InteropContext");
 		Context context = ((InteropContext) env).getContext();	
 		
@@ -69,7 +69,7 @@ public class InteropStrategy extends CallT {
 	public boolean evaluateWithArgs(IContext env, Strategy[] sv,
 			IStrategoTerm[] tv) throws InterpreterException {
 
-		if (!(env instanceof InteropStrategy))
+		if (!(env instanceof InteropContext))
 			throw new StrategoException("Expected InteropContext");
 		Context context = ((InteropContext) env).getContext();
 		

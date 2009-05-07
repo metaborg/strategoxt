@@ -6,9 +6,9 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 public class Term {
 	
-	public static final Strategy[] EMPTY_STRATEGY_LIST = new Strategy[0];
+	public static final Strategy[] EMPTY_STRATEGY_LIST = {};
 	
-	public static final IStrategoTerm[] EMPTY_TERM_LIST = new IStrategoTerm[0];
+	public static final IStrategoTerm[] EMPTY_TERM_LIST = {};
 	
 	private Term() {}
 	

@@ -1,6 +1,5 @@
 package org.strategoxt.lang;
 
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -10,27 +9,29 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class SRTS_EXT_crush_3_0 extends Strategy {
 	public static SRTS_EXT_crush_3_0 instance = new SRTS_EXT_crush_3_0();
+	
+	private static final IStrategoTerm[] EMPTY = {};
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,
 			IStrategy nul, IStrategy sum, IStrategy s) {
 		
-		ITermFactory factory = context.getFactory();
-		IStrategoTerm result = nul.invoke(context, current);
+		// TODO: Is getAllSubterms() a good idea for crush/foldr of lists? 
 		
-		if (current.getTermType() == IStrategoTerm.LIST) {
-			for (IStrategoList cons = (IStrategoList) current; !cons.isEmpty(); cons = cons.tail()) {
-				IStrategoTerm subterm = cons.head();
-				subterm = s.invoke(context, subterm);
-				IStrategoTuple input = factory.makeTuple(subterm, result);
-				result = sum.invoke(context, input);				
-			}
-		} else {
-			for (IStrategoTerm subterm : current.getAllSubterms()) {
-				subterm = s.invoke(context, subterm);
-				IStrategoTuple input = factory.makeTuple(subterm, result);
-				result = sum.invoke(context, input);
-			}
+		ITermFactory factory = context.getFactory();
+		IStrategoTerm[] subterms = current.getAllSubterms();
+		
+		IStrategoTerm result = factory.makeList(EMPTY);
+		result = nul.invoke(context, result);
+		if (result == null) return null;
+		
+		for (int i = subterms.length - 1; i >= 0; i--) {
+			IStrategoTerm subterm = subterms[i];
+			subterm = s.invoke(context, subterm);
+			if (subterm == null) return null;
+			IStrategoTuple input = factory.makeTuple(subterm, result);
+			result = sum.invoke(context, input);
+			if (result == null) return null;
 		}
 		
 		return result;
