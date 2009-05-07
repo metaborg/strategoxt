@@ -47,16 +47,16 @@ public class UncaughtExceptionHandler  {
 		}
 	}
     
-    protected synchronized boolean dumpError(boolean skipMessage) {
+    protected synchronized boolean dumpError(String startMessage) {
     	if (dumpedError) return true;
-    	
-    	try {
-    		stackTracer.printStackTrace();
-    	} catch (RuntimeException e) {
-    		// gracefully accept exceptions in case of a race codition
-    	}
+
     	if (stackTracer.getTraceDepth() > 0) {
-    		if (!skipMessage) System.err.println("Aborted.");
+    		if (startMessage != null) System.err.println(startMessage);
+	    	try {
+	    		stackTracer.printStackTrace(true);
+	    	} catch (RuntimeException e) {
+	    		// gracefully accept exceptions in case of a race codition
+	    	}
     		dumpedError = true;
     	} else {
     		dumpedError = false;
@@ -70,16 +70,17 @@ public class UncaughtExceptionHandler  {
 	 */
     private class ActualHandler extends Thread implements Thread.UncaughtExceptionHandler {
 		public void uncaughtException(Thread t, Throwable e) {
-			if (e instanceof StackOverflowError && dumpError(true)) {
+			if (e instanceof StackOverflowError && dumpError("Fatal error at")) {
 				System.err.println("Stack overflow.");
 			} else {
 				originalHandler.uncaughtException(t, e);
+				dumpError("Fatal error at");
 			}
 		}
 		
 		@Override
 		public void run() {
-			dumpError(false);
+			dumpError("Aborted at");
 		}
 	}
 
