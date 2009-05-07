@@ -32,6 +32,8 @@ public class Context {
     private final StackTracer stackTracer = new StackTracer();
     
     private final CompatManager compat = new CompatManager();
+    
+    private final UncaughtExceptionHandler exceptionHandler = new UncaughtExceptionHandler(stackTracer);
 	
 	private final ITermFactory factory;
     
@@ -50,6 +52,10 @@ public class Context {
 	
 	public StackTracer getStackTracer() {
 		return stackTracer;
+	}
+	
+	public UncaughtExceptionHandler getExceptionHandler() {
+		return exceptionHandler;
 	}
 	
     public final IOAgent getIOAgent() {
@@ -71,7 +77,17 @@ public class Context {
     }
     
     public void postInit(String component) {
+    	exceptionHandler.setEnabled(true);
     	compat.postInit(this, component);
+    }
+    
+    public void uninit() {
+    	exceptionHandler.setEnabled(false);
+    }
+    
+    @Override
+    protected void finalize() throws Throwable {
+    	uninit();
     }
     
     public IStrategoTerm invokeStrategyCLI(IStrategy strategy, String appName, String[] args) {
@@ -101,6 +117,7 @@ public class Context {
 				return null;
 			}
 		} catch (InterpreterExit e) {
+			uninit();
 			throw new StrategoExit(e.getValue());
 		} catch (InterpreterException e) {
 			throw new StrategoException("Exception in execution of primitive '" + name + "'", e);
