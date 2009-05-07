@@ -50,7 +50,7 @@ BASICTESTS=build_0 build_1 lchoice_1 lchoice_2 gchoice_1 \
            internal_1 internal_2 override_1 extend_1 \
            shared_var_1 shared_var_2 shared_var_3 shared_var_4 shared_var_5 \
            dynrules_1 dynrules_2 dynrules_3 dynrules_4 dynrules_5 iset_1 fetch_1 \
-           mapconcat_1
+           mapconcat_1 traversal_1
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 

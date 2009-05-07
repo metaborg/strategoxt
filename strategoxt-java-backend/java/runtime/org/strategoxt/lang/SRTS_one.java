@@ -29,7 +29,6 @@ public class SRTS_one extends Strategy {
 				} else {
 					results = inputs.clone();
 					results[i] = arg2;
-					System.out.println("Did some replacing: " + arg2 + " in " + Arrays.toString(results));
 				}
 				break;
 			}
