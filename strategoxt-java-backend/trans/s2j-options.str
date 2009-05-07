@@ -23,7 +23,7 @@ rules
     )
   + ArgOption(
       "--java"
-    , <post-extend-config> ("-la", [<id>]); !()
+    , <post-extend-config> ("-la", [<try(translate-default-library)>]); !()
     , !"-la <name>         Include library <name>"
     )
   + Option(
@@ -63,6 +63,11 @@ rules
     , <set-config>("-O", <string-to-int; strc-set-opt-level>); !()
     , !"-O n              Optimization level (0 = no optimization)"
     )
+    
+  translate-default-library =
+    if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" then
+      <conc-strings> ("org.strategoxt.lib", <id>)
+    end
  
   parse-define-option =
     risky(

@@ -83,7 +83,7 @@ lib/org/strategoxt/libstratego_sdf.java : $(STRATEGOXT)/share/libstratego-sdf.ct
 	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_aterm 
 
 lib/org/strategoxt/libstrc.java : $(STRATEGOXT)/share/libstrc.ctree ../trans/strj
-	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_rtg -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat -O 1
+	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstratego_rtg -la org.strategoxt.libstratego_xtc -la org.strategoxt.lang.compat.libstrc_compat
 
 lib/org/strategoxt/libjava_front.java : $(JAVA_FRONT)/share/java-front/libjava-front.ctree ../trans/strj
 	../trans/strj -I $(JAVA_FRONT)/share/java-front-syntax -i $< -o $@ $(STRJOPTIONS) -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_sglr -la org.strategoxt.libstratego_gpp
