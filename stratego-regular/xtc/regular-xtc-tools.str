@@ -14,7 +14,7 @@ strategies
   xtc-rtg-front-end =
     xtc-ensure-file
     ; ?FILE(<id>)
-    ; my-parse-rtg-file
+    ; parse-rtg-file
     ; rtg-reduce
     ; rtg-group-productions
 
@@ -39,7 +39,7 @@ strategies
 
   my-get-rtg-parse-table =
     MyMemoRTGParseTable
-    <+ STRRTG-get-rtg-parsetable
+    <+ get-rtg-parse-table
        ; open-parse-table
        ; ?tbl
        ; rules(MyMemoRTGParseTable: _ -> tbl)

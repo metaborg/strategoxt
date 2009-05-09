@@ -9,13 +9,13 @@ strategies
   main-parse-rtg =
     io-stream-wrap(
       ?(fin, fout)
-      ; <my-parse-rtg-stream> fin
+      ; <parse-rtg-stream> fin
       ; <write-to-stream> (fout, <id>)
     )
 
   my-parse-rtg-stream =
     where(
-      STRRTG-get-rtg-parsetable
+      get-rtg-parse-table
       ; tbl := <open-parse-table>
     )
     ; finally(parse-stream(|tbl), <close-parse-table> tbl)
