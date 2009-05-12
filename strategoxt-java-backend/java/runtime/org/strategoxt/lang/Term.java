@@ -1,5 +1,6 @@
 package org.strategoxt.lang;
 
+import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -8,7 +9,7 @@ public class Term {
 	
 	public static final Strategy[] EMPTY_STRATEGY_LIST = {};
 	
-	public static final IStrategoTerm[] EMPTY_TERM_LIST = {};
+	public static final IStrategoTerm[] EMPTY_TERM_LIST = BasicTermFactory.EMPTY;
 	
 	private Term() {}
 	

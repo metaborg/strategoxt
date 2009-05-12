@@ -42,8 +42,12 @@ public class UncaughtExceptionHandler  {
 	public void disable() {
 		if (enabled) {
 			enabled = false;
-			Thread.currentThread().setUncaughtExceptionHandler(originalHandler);
-			Runtime.getRuntime().removeShutdownHook(handler);
+			try {
+				Thread.currentThread().setUncaughtExceptionHandler(originalHandler);
+				Runtime.getRuntime().removeShutdownHook(handler);
+			} catch (IllegalStateException e) {
+				// Ignore (perhaps already shutting down)
+			}
 		}
 	}
     
@@ -70,10 +74,10 @@ public class UncaughtExceptionHandler  {
 	 */
     private class ActualHandler extends Thread implements Thread.UncaughtExceptionHandler {
 		public void uncaughtException(Thread t, Throwable e) {
+			originalHandler.uncaughtException(t, e);
 			if (e instanceof StackOverflowError && dumpError("Fatal error at")) {
 				System.err.println("Stack overflow.");
 			} else {
-				originalHandler.uncaughtException(t, e);
 				dumpError("Fatal error at");
 			}
 		}

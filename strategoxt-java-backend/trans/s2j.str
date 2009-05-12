@@ -764,7 +764,7 @@ strategies
         log(|Info(), ["Referenced imported term file ", file, "; exists in ", outputdir])
       end
     with
-      x_constant := <new>
+      x_constant := <newname> "constImportTerm"
     ; x_main     := <MainClassName>
     ; rules(ConstDecl :+= class-body-dec |[ private static ImportTermReference x_constant; ]|)
     ; rules(

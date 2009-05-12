@@ -128,9 +128,9 @@ public class Context {
     }
 
 	public AbstractPrimitive lookupOperator(String name) {
-        for(IOperatorRegistry or : operatorRegistries.values()) {
+        for (IOperatorRegistry or : operatorRegistries.values()) {
             AbstractPrimitive t = or.get(name);
-            if(t != null)
+            if (t != null)
                 return t;
         }
         return null;

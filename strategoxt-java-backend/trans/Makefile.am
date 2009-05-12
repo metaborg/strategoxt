@@ -50,3 +50,7 @@ strj.java : strj.ctree strj
 %.run : %.class
 	java -client -cp $(CLASSPATH) `basename $< .class`
 
+%.crun : %.str
+	strc -la strc -la stratego-lib -i $<
+	`dirname $<`/`basename $< .str`
+

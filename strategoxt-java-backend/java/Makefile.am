@@ -33,9 +33,8 @@ LIBRARYJAVAS = \
   lib/org/strategoxt/libstratego_rtg.java \
   lib/org/strategoxt/libstratego_aterm.java \
   lib/org/strategoxt/libstratego_sdf.java \
-  lib/org/strategoxt/libstrc.java
-
-# lib/org/strategoxt/libjava_front.java
+  lib/org/strategoxt/libstrc.java \
+  lib/org/strategoxt/libjava_front.java
 
 LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
 

@@ -6,9 +6,9 @@ overlays
    * Note that Java methods of over 8000 _instructions_ may no longer be eligible for JIT compilation
    * (see -XX:-DontCompileHugeMethod), and that Java defines a 64 KB instruction limit per method.
    *
-   * Ideal would be 6000~7000 instructions seen in -XX:+PrintCompilation.
+   * Ideal would be 6000~7000 instructions (use -XX:+PrintCompilation for accurate figures).
    */
-  LARGE_STRATEGY_SIZE = 3300
+  LARGE_STRATEGY_SIZE = 2500
 
 strategies
 

@@ -2,8 +2,6 @@ package org.strategoxt.lang;
 
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
 
-import java.util.Arrays;
-
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
