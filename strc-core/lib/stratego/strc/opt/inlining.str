@@ -40,7 +40,14 @@ strategies
     Specification([id,Strategies(inline-sdefs)])
 
   inline-sdefs = 
-    map(ignore-anno-def(simplify0; try(inlineable; AddSDef)))
+    try(olevel3(?o3)) // global definition inlining is only done with -O 3
+    ; map(
+        if ?AnnoDef(_, _) then debug(!1) end;
+        AnnoDef([Internal], simplify0; try(inlineable; AddSDef));
+        debug(!2)
+      <+
+        ignore-anno-def(simplify0; try(!o3; inlineable; AddSDef))
+      )
     ; map(ignore-anno-def(SDefT("DYNAMIC_CALLS_0_0",id,id,id) <+ inline-sdef; try(inlineable; AddSDef)))
 
   inline-sdef =
