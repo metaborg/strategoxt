@@ -3,7 +3,6 @@ package org.strategoxt.lang;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -15,6 +14,7 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.compat.CompatManager;
+import org.strategoxt.lang.terms.BAFTermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -22,24 +22,22 @@ import org.strategoxt.lang.compat.CompatManager;
  * @author Lennart Kats
  * @author Karl Trygve Kalleberg
  */
-public class Context {
+public class Context extends StackTracer {
 	
 	private final InteropContext interopContext = new InteropContext(this);
 
     private final Map<String, IOperatorRegistry> operatorRegistries =
     	new HashMap<String, IOperatorRegistry>();
     
-    private final StackTracer stackTracer = new StackTracer();
-    
     private final CompatManager compat = new CompatManager();
     
     private final UncaughtExceptionHandler exceptionHandler =
-    	new UncaughtExceptionHandler(stackTracer);
+    	new UncaughtExceptionHandler(this);
 	
 	private final ITermFactory factory;
     
     public Context() {
-    	this(new BAFBasicTermFactory());
+    	this(new BAFTermFactory());
     }
     
     public Context(ITermFactory factory) {
@@ -49,10 +47,6 @@ public class Context {
 	
 	public final ITermFactory getFactory() {
 		return factory;
-	}
-	
-	public StackTracer getStackTracer() {
-		return stackTracer;
 	}
 	
 	public UncaughtExceptionHandler getExceptionHandler() {

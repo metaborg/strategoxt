@@ -56,7 +56,7 @@ public class InteropContext implements IContext {
 	}
 
 	public StackTracer getStackTracer() {
-		return context.getStackTracer();
+		return context;
 	}
 
 	public StrategoSignature getStrategoSignature() {

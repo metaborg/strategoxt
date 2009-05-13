@@ -212,7 +212,7 @@ rules
           context.uninit();
           if (result == null) {
             System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
-            context.getStackTracer().printStackTrace();
+            context.printStackTrace();
             System.exit(1); 
           } else {
             System.out.println(result);
@@ -398,14 +398,14 @@ rules
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
            ITermFactory termFactory = context.getFactory();
            bstm_init*
-           if (TRACES_ENABLED) context.getStackTracer().push("~x");
+           if (TRACES_ENABLED) context.push("~x");
            Fail: {
              bstm
-             if (TRACES_ENABLED) context.getStackTracer().popOnSuccess();
+             if (TRACES_ENABLED) context.popOnSuccess();
              if (TRUE) // (avoid unreachable stm error)
                return term;
            };
-           if (TRACES_ENABLED) context.getStackTracer().popOnFailure();
+           if (TRACES_ENABLED) context.popOnFailure();
            return null;
        }
     ]|
