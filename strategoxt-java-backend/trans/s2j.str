@@ -127,26 +127,7 @@ rules
      }
 
      ~*main
-     
-     private static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
-         if (factory == constantFactory) {
-           return constant;
-         } else if (factory != null) {
-           return new TermConverter(factory).convert(constant);
-         } else {
-           throw new IllegalStateException("Component not initialized; please call init() first");
-         }
-     }
-     
-     private static IStrategoTerm getConstant(ITermFactory factory, ITermReference constant) {
-         if (factory == constantFactory) {
-           return constant.get();
-         } else if (factory != null) {
-           return new TermConverter(factory).convert(constant.get());
-         } else {
-           throw new IllegalStateException("Component not initialized; please call init() first");
-         }
-     }
+     ~*constant
 
      ~*constant-defs
      ~*function-defs
@@ -161,6 +142,7 @@ rules
     ; x_name        := <MainClassName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
+    ; constant      := <java-constant-methods>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -246,6 +228,29 @@ rules
       x_name := <MainClassName>
     ; main   := <get-config <+ !"main"> "-m"
     ; x_main := <conc-strings> (<jify> main, "_0_0")
+
+  java-constant-methods =
+    !|[
+      private static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
+        if (factory == constantFactory) {
+          return constant;
+        } else if (factory != null) {
+          return new TermConverter(factory).convert(constant);
+        } else {
+          throw new IllegalStateException("Component not initialized; please call init() first");
+        }
+      }
+     
+      private static IStrategoTerm getConstant(ITermFactory factory, ITermReference constant) {
+        if (factory == constantFactory) {
+          return constant.get();
+        } else if (factory != null) {
+          return new TermConverter(factory).convert(constant.get());
+        } else {
+          throw new IllegalStateException("Component not initialized; please call init() first");
+        }
+      }
+    ]|
 
 rules
 

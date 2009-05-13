@@ -53,7 +53,7 @@ CLASSPATH=$(SPCLASSPATH):runtime:lib:.
 JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
-STRJOPTIONS=--library -p org.strategoxt --verbose 3
+STRJOPTIONS=--library -p org.strategoxt --verbose 3 -O 3
 
 ###### LIBRARIES #######
 
