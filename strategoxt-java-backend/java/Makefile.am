@@ -2,6 +2,8 @@ include $(top_srcdir)/Makefile.xt
 
 RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
+  $(wildcard runtime/org/strategoxt/lang/compat/*.java) \
+  $(wildcard runtime/org/strategoxt/lang/compat/sglr/*.java) \
   runtime/org/strategoxt/lang/compat/CompatManager.java \
   runtime/org/strategoxt/lang/compat/CompatLibrary.java \
   runtime/org/strategoxt/lang/compat/NativeCallHelper.java \
