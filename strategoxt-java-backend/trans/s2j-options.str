@@ -18,12 +18,7 @@ rules
     )
   + ArgOption(
       "-la"
-    , <post-extend-config> ("-la", [<id>]); !()
-    , !"-la <name>         Include library <name>"
-    )
-  + ArgOption(
-      "--java"
-    , <post-extend-config> ("-la", [<try(translate-default-library)>]); !()
+    , <post-extend-config> ("-la", [<translate-default-library>]); !()
     , !"-la <name>         Include library <name>"
     )
   + Option(
@@ -67,6 +62,10 @@ rules
   translate-default-library =
     if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" then
       <conc-strings> ("org.strategoxt.lib", <id>)
+    end
+  ; if not(is-substring(!".")) then
+      err(|"Imported libraries must include a package name")
+    ; fail
     end
  
   parse-define-option =

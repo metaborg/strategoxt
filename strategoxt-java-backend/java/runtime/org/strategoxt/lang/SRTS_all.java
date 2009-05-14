@@ -16,7 +16,9 @@ public class SRTS_all extends Strategy {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
 		IStrategoTerm[] results = null;
+		String name = s.getName();
 		IStrategoTerm[] inputs = current.getAllSubterms();
+		
 		
 		// TODO: Optimize SRTS_all, SRTS_one, SRTS_some for head/nil traversal of lists?
 		//       The tricky part is constructing the resulting list...

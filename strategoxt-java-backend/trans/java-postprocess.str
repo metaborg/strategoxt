@@ -115,10 +115,10 @@ strategies
       bstm_tail*
     ]| ->
     bstm* |[
-      if (term.getTermType() != IStrategoTerm.APPL)
-        break Fail;
       IStrategoTerm x_cached = term;
-      IStrategoConstructor x_actualcons = ((IStrategoAppl) term).getConstructor();
+      IStrategoConstructor x_actualcons = term.getTermType() == IStrategoTerm.APPL
+        ? ((IStrategoAppl) term).getConstructor()
+        : null;
       Success: {
         Fail: {
           if (x_actualcons != x_cons) break Fail;
