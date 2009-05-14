@@ -9,7 +9,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-class StringValuePrimitive extends AbstractPrimitive {
+public class StringValuePrimitive extends AbstractPrimitive {
 	
 	private final String value;
 

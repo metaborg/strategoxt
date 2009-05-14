@@ -71,9 +71,9 @@ public class Context extends StackTracer {
         operatorRegistries.put(or.getOperatorRegistryName(), or);
     }
     
-    public void postInit(String component) {
+    public void postInit(String componentName) {
     	exceptionHandler.setEnabled(true);
-    	compat.postInit(this, component);
+    	compat.postInit(this, componentName);
     }
     
     public void uninit() {

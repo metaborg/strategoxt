@@ -18,18 +18,21 @@ strategies
     ; prim("JSGLR_open_parsetable", tbl) => int
     ; !ParseTable(int)
     
+  /*
   jsglr-parse-string(|tbl) =
     jsglr-parse-string(id | tbl, None(), "string")
   
   jsglr-parse-string(on-parse-error | tbl, start-symbol, path) =
       where(!tbl => ParseTable(internal-tbl))
     ; ?string
-    ; prim("JSGLR_parse_string", on-parse-error | string, internal-tbl, start-symbol, path)
+    ; prim("JSGLR_parse_string_compat", on-parse-error | string, internal-tbl, start-symbol, path)
+    ; implode-asfix
+  */
     
 strategies
 
   jsglr-parse-string-pt(on-parse-error | tbl, start-symbol, path) =
       where(!tbl => ParseTable(internal-tbl))
     ; ?string
-    ; prim("JSGLR_parse_string_pt", on-parse-error | string, internal-tbl, start-symbol, path)
+    ; prim("JSGLR_parse_string_pt_compat", on-parse-error | string, internal-tbl, start-symbol, path)
     

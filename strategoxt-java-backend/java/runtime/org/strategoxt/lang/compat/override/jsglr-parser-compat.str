@@ -69,33 +69,6 @@ strategies // parsing and parse tables
   override parse-string-pt(on-parse-error | tbl, start-symbol, path) =
     jsglr-parse-string-pt(on-parse-error | tbl, start-symbol, path)
 
-strategies // configuration
-
-  internal set-any-filter(s) =
-    if s then
-      warn(|"Heuristic filters are not supported by JSGLR")
-    end
-
-  override set-filter-direct-eagerness(s) = set-any-filter(s)
-
-  override get-filter-direct-eagerness = fail
-
-  override set-filter-eagerness(s) = set-any-filter(s)
-
-  override get-filter-eagerness = fail
-
-  override set-filter-injection-count(s) = set-any-filter(s)
-
-  override get-filter-injection-count = fail
-
-  override set-filter-priority(s) = set-any-filter(s)
-
-  override get-filter-priority = fail
-  
-  override set-filter-reject(s) = set-any-filter(s)
-
-  override get-filter-reject = fail
-
-  override set-heuristic-filters(s) = set-any-filter(s)
-
-  override set-default-filters = id
+  jsglr-parse-string(on-parse-error |tbl, start-symbol, path) =
+    jsglr-parse-string-pt(on-parse-error |tbl, start-symbol, path);
+    implode-asfix
