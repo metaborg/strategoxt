@@ -1,3 +1,4 @@
+
 /**
  * Java backend for the Stratego compiler
  *
@@ -294,7 +295,11 @@ rules
       x' := <conc-strings> (x, "_override")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
-      body := <translate-definition-body> def
+      e_s*      := <translate-args> s*
+    ; e_t*      := <translate-args> t*
+    ; outercall := |[ term = outer.invoke(context, term, e_s*, e_t*); ]|
+    ; def'      := <alltd(\Override() -> outercall\)> def
+    ; body      := <translate-definition-body> def'
 
   translate-outer-definition-extend :
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
@@ -486,6 +491,9 @@ strategies
   translate-Fail :
     Fail() -> |[ if (TRUE) break Fail; ]| // (avoid unreachable stm error)
 
+  translate-Override :
+    Override() -> <fatal-err(|"override call illegal in this context")>
+
   translate-Escape :
     Escape(java) -> java
 
@@ -551,6 +559,7 @@ strategies
     <+ translate-PrimT
     <+ translate-Id
     <+ translate-Fail
+    <+ translate-Override
     <+ translate-GuardedLChoice-no-left-branch
     <+ translate-GuardedLChoice
     <+ translate-Scope
