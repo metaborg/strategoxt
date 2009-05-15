@@ -32,11 +32,6 @@ strategies
   report-amb =
     ?amb(_) 
     ; where( current-definition => (type, name) )
-    ; xtc-temp-files( 
-        write-to
-        ; xtc-transform(!"pp-stratego",!["--abstract"])
-        ; FILE(read-text-file => pp)
-      )
     ; log(|Error(),["Ambiguity found in ",type, " ",name])
-    ; say(!pp) 
+    ; say(pp-stratego-string) 
  
