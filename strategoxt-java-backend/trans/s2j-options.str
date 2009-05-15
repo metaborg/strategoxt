@@ -60,7 +60,7 @@ rules
     )
     
   translate-default-library =
-    if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" then
+    if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" + "strc" then
       <conc-strings> ("org.strategoxt.lib", <id>)
     end
   ; if not(is-substring(!".")) then
