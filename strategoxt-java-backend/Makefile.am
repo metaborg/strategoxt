@@ -11,4 +11,5 @@ XTC_IMPORT = \
   $(STRATEGOXT)/share/strategoxt/XTC \
   $(JAVA_FRONT)/share/java-front/XTC
 
-
+jar :
+	$(MAKE) -C java jar

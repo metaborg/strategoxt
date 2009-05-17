@@ -18,6 +18,11 @@ public class SRTS_one extends Strategy {
 		IStrategoTerm[] results = null;
 		IStrategoTerm[] inputs = current.getAllSubterms();
 
+		int termType = current.getTermType();
+		
+		if (termType == LIST)
+			return fetchMaintainAnnos(context, (IStrategoList) current, s);
+		
 		for (int i = 0; i < inputs.length; i++) {
 			IStrategoTerm arg = inputs[i];
 			IStrategoTerm arg2 = s.invoke(context, arg);
@@ -34,15 +39,39 @@ public class SRTS_one extends Strategy {
 		
 		if (results == null) return null;
 		
-		switch (current.getTermType()) {
+		switch (termType) {
 			case APPL:
     			return context.getFactory().replaceAppl(((IStrategoAppl) current).getConstructor(), results, (IStrategoAppl) current);
-    		case LIST:
-    			return context.getFactory().replaceList(results, (IStrategoList) current);
     		case TUPLE:
     			return context.getFactory().replaceTuple(results, (IStrategoTuple) current);
     		default:
     			throw new IllegalStateException();
+		}
+	}
+	
+	private static IStrategoList fetchMaintainAnnos(Context context, IStrategoList current, IStrategy s) {
+		if (current.isEmpty()) {
+			return null;
+		} else {
+			IStrategoTerm head = current.head();
+			IStrategoTerm head2 = s.invoke(context, head);
+			if (head2 == null) {
+				IStrategoList tail = current.tail();
+				IStrategoList tail2 = fetchMaintainAnnos(context, tail, s);
+				if (tail2 == null) {
+					return null;
+				} else if (tail2 == tail || tail2.match(tail)) {
+					return current;
+				} else {
+					// TODO: head/tail variation of replaceList
+					return context.getFactory().makeList(head, tail2);
+				}
+			} else if (head2 == head || head2.match(head)) {
+				return current;
+			} else {
+				// TODO: head/tail variation of replaceList
+				return context.getFactory().makeList(head2, current.tail());
+			}
 		}
 	}
 }

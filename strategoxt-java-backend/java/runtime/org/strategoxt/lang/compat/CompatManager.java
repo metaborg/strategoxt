@@ -14,6 +14,12 @@ import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
  */
 public class CompatManager {
 	
+	/**
+	 * Dynamically loads any compatibility library associated with a Stratego library.
+	 * 
+	 * (Note that some libraries need to import additional compatibility components
+	 *  to implement some native functionality, such as libstratego-rtg-compat.) 
+	 */
 	public void postInit(Context context, String component) {
 		if ("libstratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());

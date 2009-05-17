@@ -1,6 +1,8 @@
 /**
  * Overrides some of the built-in, recusively defined libstratego-lib
  * strategies for better stack behavior and performance.
+ *
+ * @author Lennart Kats <lennart add lclnet.nl>
  */
 module performance-tweaks
 
@@ -38,5 +40,10 @@ strategies
 
   override foldr(nul, sum, s) =
     ?[_ | _] < SRTS-EXT-crush(nul, sum, s) + []; nul
+  
+  override filter(s) =
+    SRTS-EXT-filter(s)
 
   external SRTS-EXT-crush(nul, sum, s|)
+  
+  external SRTS-EXT-filter(s|)

@@ -1,7 +1,7 @@
 /**
  * Some degree of XTC and native calling compatibility.
  *
- * @author Lennart Kats
+ * @author Lennart Kats <lennart add lclnet.nl>
  */
 module xtc-compat
 

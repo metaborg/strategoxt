@@ -18,7 +18,7 @@ strategies
     ; prim("JSGLR_open_parsetable", tbl) => int
     ; !ParseTable(int)
     
-  /*
+  /* UNDONE: JSGLR_parse_string_compat not implemented
   jsglr-parse-string(|tbl) =
     jsglr-parse-string(id | tbl, None(), "string")
   
