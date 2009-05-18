@@ -14,16 +14,11 @@ public class SRTS_all extends Strategy {
 	public static SRTS_all instance = new SRTS_all();
 
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current,
-			IStrategy s) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
 		int termType = current.getTermType();
-
-		// TODO: Optimize SRTS_all, SRTS_one, SRTS_some for head/nil traversal
-		// of lists?
-		// The tricky part is constructing the resulting list...
-
+		
 		if (termType == LIST) {
-			return map(context, current, s);
+			return map(context, (IStrategoList) current, s);
 		} else {
 			IStrategoTerm[] inputs = current.getAllSubterms();
 			IStrategoTerm[] results = null;
@@ -57,10 +52,9 @@ public class SRTS_all extends Strategy {
 		}
 	}
 
-	private static IStrategoTerm map(Context context, IStrategoTerm current, IStrategy s) {
-		if (current.getSubtermCount() == 0)
-			return current;
-		final IStrategoList list = (IStrategoList) current;
+	private static IStrategoTerm map(Context context, IStrategoList list, IStrategy s) {
+		if (list.getSubtermCount() == 0)
+			return list;
 
 		IStrategoTerm head = list.head();
 		IStrategoTerm head2 = s.invoke(context, head);
@@ -72,20 +66,20 @@ public class SRTS_all extends Strategy {
 			IStrategoList tail2 = mapMaintainAnnos(context, tail, s);
 			if (tail2 == null) {
 				return null;
-			} else if (tail2 == tail || tail2.match(tail)) {
-				return current;
+			} else if (tail2 == tail) { // (match() not necessary because of recursion)
+				return list;
 			} else {
 				return context.getFactory().makeList(head2, tail2);
 			}
 		} else {
-			return mapNoAnnos(context, head2, list, s);
+			return mapIgnoreAnnos(context, head2, list, s);
 		}
 	}
 
-	private static IStrategoList mapNoAnnos(Context context, IStrategoTerm head2, IStrategoList list, IStrategy s) {
+	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, IStrategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
 		items[0] = head2;
-		assert list.head() != head2;
+		assert list.head() != null : "List implementation must not expose internal array";
 		for (int i = 1; i < items.length; i++) {
 			IStrategoTerm item = items[i];
 			IStrategoTerm item2 = s.invoke(context, item);
@@ -99,26 +93,25 @@ public class SRTS_all extends Strategy {
 	}
 
 	private static IStrategoList mapMaintainAnnos(Context context, IStrategoList list, IStrategy s) {
-		if (list.isEmpty()) {
+		if (list.isEmpty())
 			return list;
+		
+		IStrategoTerm head = list.head();
+		IStrategoTerm head2 = s.invoke(context, head);
+		if (head2 == null) {
+			return null;
+		} else if (head2 != head && !head2.match(head)) {
+			return mapIgnoreAnnos(context, head2, list, s);
 		} else {
-			IStrategoTerm head = list.head();
-			IStrategoTerm head2 = s.invoke(context, head);
-			if (head2 == null) {
+			IStrategoList tail = list.tail();
+			IStrategoList tail2 = mapMaintainAnnos(context, tail, s);
+			if (tail2 == null) {
 				return null;
-			} else if (head2 != head && !head2.match(head)) {
-				return mapNoAnnos(context, head2, list, s);
+			} else if (tail2 != tail) { // (match() not necessary because of recursion)
+				// TODO: head/tail variation of replaceList
+				return context.getFactory().makeList(head2, tail2);
 			} else {
-				IStrategoList tail = list.tail();
-				IStrategoList tail2 = mapMaintainAnnos(context, tail, s);
-				if (tail2 == null) {
-					return null;
-				} else if (tail2 != tail && !tail2.match(tail)) {
-					// TODO: head/tail variation of replaceList
-					return context.getFactory().makeList(head2, tail2);
-				} else {
-					return list;
-				}
+				return list;
 			}
 		}
 	}

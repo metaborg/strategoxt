@@ -79,12 +79,12 @@ public class SRTS_some extends Strategy {
 					return context.getFactory().makeList(head2, tail2);
 				}
 			} else {
-				return mapTryNoAnnos(context, head2, list, s);
+				return mapTryIgnoreAnnos(context, head2, list, s);
 			}
 		}
 	}
 
-	private static IStrategoList mapTryNoAnnos(Context context, IStrategoTerm head2, IStrategoList list, IStrategy s) {
+	private static IStrategoList mapTryIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, IStrategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
 		items[0] = head2;
 		assert list.head() != head2;

@@ -15,13 +15,13 @@ public class SRTS_one extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
-		IStrategoTerm[] results = null;
-		IStrategoTerm[] inputs = current.getAllSubterms();
-
 		int termType = current.getTermType();
 		
 		if (termType == LIST)
 			return fetchMaintainAnnos(context, (IStrategoList) current, s);
+		
+		IStrategoTerm[] results = null;
+		IStrategoTerm[] inputs = current.getAllSubterms();
 		
 		for (int i = 0; i < inputs.length; i++) {
 			IStrategoTerm arg = inputs[i];

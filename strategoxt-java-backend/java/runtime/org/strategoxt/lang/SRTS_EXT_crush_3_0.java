@@ -9,8 +9,6 @@ import org.spoofax.interpreter.terms.ITermFactory;
  */
 public class SRTS_EXT_crush_3_0 extends Strategy {
 	public static SRTS_EXT_crush_3_0 instance = new SRTS_EXT_crush_3_0();
-	
-	private static final IStrategoTerm[] EMPTY = {};
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,
@@ -21,7 +19,7 @@ public class SRTS_EXT_crush_3_0 extends Strategy {
 		ITermFactory factory = context.getFactory();
 		IStrategoTerm[] subterms = current.getAllSubterms();
 		
-		IStrategoTerm result = factory.makeList(EMPTY);
+		IStrategoTerm result = factory.makeList(Term.EMPTY_TERM_LIST);
 		result = nul.invoke(context, result);
 		if (result == null) return null;
 		

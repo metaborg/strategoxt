@@ -944,9 +944,6 @@ rules
       <not(?Op("Nil", []))> pt2
     ; <not(?Var(_))> pt1
 
-//  java-ConstructTerm :
-//    |[ _ t ]| -> <java-construct-term> t
-
   java-ConstructTerm :
     Op(c, t*) -> expr|[ termFactory.makeAppl(~*[cons | args]) ]|
   where

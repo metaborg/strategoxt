@@ -1,9 +1,8 @@
 package org.strategoxt.lang;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -15,6 +14,7 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.compat.CompatManager;
+import org.strategoxt.lang.terms.BAFTermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -26,8 +26,11 @@ public class Context extends StackTracer {
 	
 	private final InteropContext interopContext = new InteropContext(this);
 
-    private final Map<String, IOperatorRegistry> operatorRegistries =
+    private final HashMap<String, IOperatorRegistry> operatorRegistryMap =
     	new HashMap<String, IOperatorRegistry>();
+
+    private final ArrayList<IOperatorRegistry> operatorRegistries =
+    	new ArrayList<IOperatorRegistry>();
     
     private final CompatManager compat = new CompatManager();
     
@@ -36,13 +39,19 @@ public class Context extends StackTracer {
 	
 	private final ITermFactory factory;
     
+    private String lastPrimitiveName1, lastPrimitiveName2;
+    
+    private AbstractPrimitive lastPrimitive1, lastPrimitive2;
+    
     public Context() {
-    	this(new BAFBasicTermFactory());
+    	this(new BAFTermFactory());
     }
     
     public Context(ITermFactory factory) {
     	this.factory = factory;
-        operatorRegistries.put(SSLLibrary.REGISTRY_NAME, new SSLLibrary());
+        SSLLibrary ssl = new SSLLibrary();
+		operatorRegistryMap.put(SSLLibrary.REGISTRY_NAME, ssl);
+        operatorRegistries.add(ssl);
     }
 	
 	public final ITermFactory getFactory() {
@@ -64,11 +73,13 @@ public class Context extends StackTracer {
     }
 	
 	public final IOperatorRegistry getOperatorRegistry(String domain) {
-		return operatorRegistries.get(domain);
+		return operatorRegistryMap.get(domain);
 	}
 
     public final void addOperatorRegistry(IOperatorRegistry or) {
-        operatorRegistries.put(or.getOperatorRegistryName(), or);
+        IOperatorRegistry previous = operatorRegistryMap.put(or.getOperatorRegistryName(), or);
+        if (previous != null) operatorRegistries.remove(previous);
+        operatorRegistries.add(or);
     }
     
     public void postInit(String componentName) {
@@ -122,11 +133,21 @@ public class Context extends StackTracer {
     }
 
 	public AbstractPrimitive lookupOperator(String name) {
-        for (IOperatorRegistry or : operatorRegistries.values()) {
-            AbstractPrimitive t = or.get(name);
-            if (t != null)
-                return t;
-        }
-        return null;
+		if (lastPrimitiveName1 == name) {
+			return lastPrimitive1;
+		} else if (lastPrimitiveName2 == name) {
+			return lastPrimitive2;
+		} else {;
+			for (int i = 0, size = operatorRegistries.size(); i < size; i++) {
+	            AbstractPrimitive p = operatorRegistries.get(i).get(name);
+	            if (p != null) {
+	            	lastPrimitiveName2 = lastPrimitiveName1;
+	            	lastPrimitive2 = lastPrimitive1;
+	            	lastPrimitiveName1 = name;
+	                return lastPrimitive1 = p;
+	            }
+	        }
+	        return null;
+		}
 	}
 }

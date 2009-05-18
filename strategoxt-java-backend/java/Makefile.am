@@ -72,6 +72,7 @@ ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org
 	([ -d ext-lib ] || mkdir ext-lib); \
 	cat $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd ext-lib; $(JAR) x); \
 	cat $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd ext-lib; $(JAR) x); \
+	cat $(BASEPATH)/share/java/junit-3.8.1.jar | (cd ext-lib; $(JAR) x); \
 	rm -rf ext-lib/META-INF
 
 ###### LIBRARIES #######

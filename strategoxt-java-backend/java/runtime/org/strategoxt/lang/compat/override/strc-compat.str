@@ -15,7 +15,7 @@ strategies
     <get-config> "-I"
   
   extend pack-stratego-parse-stratego :
-    (IncludeFromPath(name), includes) -> (name, ast)
+    (IncludeFromPath(name), includes) -> ("", ast) // (empty result name goes into .dep)
     where
       switch !name
         case "libstratego-lib":
