@@ -911,6 +911,12 @@ rules
       termFactory.makeString(~expr:Lit(String([Chars(<escape> x)])))
     ]|
 
+  java-ConstructTerm : // HACK: BAFReader work-around
+    Str([]) -> 
+    expr|[ 
+      termFactory.makeString("[]")
+    ]|
+
   java-ConstructVar :
     x@Var(_) -> e
   with 
