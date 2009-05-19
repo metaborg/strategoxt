@@ -50,7 +50,6 @@ strategies
     ; topdown(try(\ Parenthetical(s) -> ParenStrat(s) \ ))
     ; try(where(<get-config> "--annotations"); annos-as-comment)
     ; stratego2abox
-    ; debug(!"foo")
 
   pp-stratego-options =
     Option("-a" + "--abstract", where(<set-config>("--abstract", ())),
