@@ -10,6 +10,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.jsglr.Disambiguator;
 import org.spoofax.jsglr.ParseTable;
 import org.spoofax.jsglr.SGLR;
+import org.spoofax.jsglr.SGLRException;
 
 import aterm.ATermFactory;
 
@@ -18,12 +19,26 @@ import aterm.ATermFactory;
  */
 public class JSGLR_parse_string_pt_compat extends AbstractPrimitive {
 	
+	public static final String NAME = "JSGLR_parse_string_pt_compat"; 
+	
 	private final Disambiguator filterSettings;
 	
-	private final JSGLR_parse_string_pt parser;
+	private final JSGLR_parse_string_pt parser;	
+	
+	public SGLRException getLastException() {
+		return parser.getLastException();
+	}
+	
+	public void clearLastException() {
+		parser.clearLastException();
+	}
+	
+	public String getLastPath() {
+		return parser.getLastPath();
+	}
 
 	protected JSGLR_parse_string_pt_compat(WrappedATermFactory termFactory, Disambiguator filterSettings) {
-		super("JSGLR_parse_string_pt_compat", 0, 0);
+		super(NAME, 0, 0);
 		
 		this.filterSettings = filterSettings;
 		parser = new JSGLR_parse_string_pt(termFactory) {

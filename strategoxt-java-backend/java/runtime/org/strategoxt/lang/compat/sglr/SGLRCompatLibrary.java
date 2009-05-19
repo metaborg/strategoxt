@@ -9,7 +9,7 @@ import org.spoofax.jsglr.Disambiguator;
  */
 public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 	
-	private static final String REGISTRY_NAME = "sglrcompat";
+	public static final String REGISTRY_NAME = "sglrcompat";
 	
 	private final Disambiguator filterSettings = new Disambiguator();
 	
@@ -21,7 +21,15 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 		initPrimitives(atermFactory);
 	}
 	
-	protected void initPrimitives(WrappedATermFactory atermFactory) {
+	protected void initPrimitives(WrappedATermFactory wrappedFactory) {
+		initFilterSettings();
+		
+		add(new JSGLR_parse_string_pt_compat(wrappedFactory, filterSettings));
+		add(new STRSGLR_get_parse_error(wrappedFactory));
+		add(new STRSGLR_clear_parse_error());
+	}
+
+	private void initFilterSettings() {
 		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes_on") {
 			@Override
 			public void set() {
@@ -123,8 +131,6 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 				filterSettings.setDefaultFilters();
 			}
 		});
-		
-		add(new JSGLR_parse_string_pt_compat(atermFactory, filterSettings));
 	}
 
 	public String getOperatorRegistryName() {
