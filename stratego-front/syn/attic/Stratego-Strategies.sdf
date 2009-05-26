@@ -34,7 +34,6 @@ exports
 
     "fail" 				  -> Strategy {cons("Fail")}
     "id" 				  -> Strategy {cons("Id")}
-    "override" 			  -> Strategy {cons("Override")}
 
     %% Abstraction
 

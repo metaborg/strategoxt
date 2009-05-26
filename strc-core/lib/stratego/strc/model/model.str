@@ -67,6 +67,9 @@ strategies // strategy definitions
       end
     ; rules( ModDefinition :+ sig -> def )
 
+  mark-always-needed(|name,sarity,tarity) =
+    rules( AlwaysNeeded :+= (name,sarity,tarity) )
+
   /**
    * Remove all definitions for a given signature.
    *

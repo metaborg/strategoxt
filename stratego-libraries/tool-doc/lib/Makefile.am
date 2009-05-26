@@ -7,7 +7,7 @@ stratego/tool-doc/PrettyPrint.rtree : stratego/tool-doc/PrettyPrint.str
 	$(SGLRI) --heuristic-filters on -p $(STRATEGOBOXTBL_UNINSTALLED) -i $< | $(METAEXPLODE) -o $@
 
 
-nobase_data_DATA = libstratego-tool-doc.rtree
+nobase_data_DATA = libstratego-tool-doc.rtree libstratego-tool-doc.ctree
 lib_LTLIBRARIES  = libstratego-tool-doc.la
 EXTRA_DIST = $(tooldoclib) $(tooldoclib:.str=.rtree) libstratego-tool-doc.rtree
 CLEANFILES = $(wildcard *.dep) 
@@ -36,3 +36,6 @@ STRINCLUDES = -I $(top_srcdir)/../gpp/syn/box -I $(top_builddir)/../gpp/syn/box
 libstratego-tool-doc.rtree libstratego-tool-doc.c : $(tooldoclib:.str=.rtree) 
 	$(STRC_UNINSTALLED) $(STRINCLUDES) -c --library -i $(srcdir)/stratego-tool-doc.str -o libstratego-tool-doc.rtree --verbose 1 $(STRCFLAGS)
 	rm libstratego-tool-doc.str
+
+libstratego-tool-doc.ctree : $(tooldoclib:.str=.rtree) 
+	$(STRC_UNINSTALLED) $(STRINCLUDES) -F --library -i $(srcdir)/stratego-tool-doc.str -o libstratego-tool-doc.ctree --verbose 1 $(STRCFLAGS)

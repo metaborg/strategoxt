@@ -69,6 +69,7 @@ exports
 
     "fail" 				  -> Strategy {cons("Fail")}
     "id" 				  -> Strategy {cons("Id")}
+    "override" 			  -> Strategy {cons("Override")}
 
     %% Match and build
 
