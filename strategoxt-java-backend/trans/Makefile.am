@@ -39,10 +39,10 @@ strj.ctree : strj.rtree $(STRJSOURCES:.str=.rtree) strj
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -F -m main-strj
 
 strj.java : strj.ctree strj
-	./strj -i $< -o $@ -la org.strategoxt.libstratego_lib -la org.strategoxt.libstratego_xtc -la org.strategoxt.libstratego_gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -m main-strj
+	./strj -i $< -o $@ -la stratego-lib -la stratego-xtc -la stratego-gpp -la strc -la java-front -m main-strj
 
 %.java : %.str strj
-	./strj -i $< -o $@ --verbose 2 -la org.strategoxt.libstratego_lib
+	./strj -i $< -o $@ --verbose 2 -la stratego-lib -la java-front
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<

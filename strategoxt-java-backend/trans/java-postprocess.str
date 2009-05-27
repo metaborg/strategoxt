@@ -8,6 +8,14 @@ module java-postprocess
 imports
   libjava-front
 
+overlays
+
+  /**
+   * Minimum number of statements in an init method required to split it up,
+   * in order to circumvent the 64K method size limit.
+   */
+  LARGE_METHOD_SIZE = 600
+
 strategies
 
   java-relabel =
@@ -50,6 +58,40 @@ strategies
 
 strategies
 
+  java-split-method =
+    try(java-split-method' <+ ![<id>])
+
+  java-split-method' :
+    class-body-dec |[
+      mod* t x(param*) {
+        bstm*
+      }
+    ]| ->
+    class-body-dec* |[ 
+      ~*<java-split-method> |[
+        mod* t x(param*) {
+          x'(e_param*);
+          bstm2*
+        }
+      ]|
+
+      mod2* t x'(param*) {
+        bstm1*
+      }
+    ]|
+    where
+      <gt> (<length> bstm*, LARGE_METHOD_SIZE())
+    with
+      x'               := <newname> x
+    ; e_param*         := <map(java-param-to-arg)> param*
+    ; mod2*            := <map(try(\<Public + Protected> -> Private()\))> mod*
+    ; (bstm1*, bstm2*) := <split-at(|LARGE_METHOD_SIZE())> bstm*
+
+  java-param-to-arg :
+    param |[ t x ]| -> expr |[ x ]|
+
+strategies
+
   java-simplify =
     topdown-consnil(
       try(Block(flatten-list))
@@ -63,7 +105,7 @@ strategies
     ?[_ | _] < [s | s] + all(s)
   
   java-simplify-stm :
-    [Empty() | s*] -> s*
+    [<Empty + Semicolon> | s*] -> s*
   
   java-simplify-stm :
     If(e, s1, Empty()) -> If(e, s1)
@@ -98,7 +140,7 @@ strategies
     topdown-consnil(try(
       optimize-match-test
     ))
-  ; topdown(try( // should be done after previous pass
+  ; bottomup(repeat( // should be done after previous pass
       optimize-if-true-break
     ))
 
@@ -120,12 +162,13 @@ strategies
         ? ((IStrategoAppl) term).getConstructor()
         : null;
       Success: {
-        Fail: {
-          if (x_actualcons != x_cons) break Fail;
-          bstm_decl*
-          bstm_body*
+        if (x_actualcons == x_cons) {
+          Fail: {
+            bstm_decl*
+            bstm_body*
+          }
+          term = x_cached;
         }
-        term = x_cached;
         bstm_othermatch'*
       }
       bstm_tail*
@@ -149,28 +192,19 @@ strategies
     ]| ->
     bstm* |[
       Success: {
-        Fail: {
-          if (x_actualcons != x_cons) break Fail;
-          bstm_decl*
-          bstm_body*
-         }
-        term = x_cached;
+        if (x_actualcons == x_cons) {
+          Fail: {
+            bstm_decl*
+            bstm_body*
+           }
+          term = x_cached;
+        }
         bstm_othermatch'*
       }
       bstm_tail*
     ]|
     with
       bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
-
-  replace-match-test1(|x_actualcons) :
-    bstm* |[
-      ~*<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
-    ]| ->
-    bstm* |[
-      if (x_actualcons != x_cons) break Fail;
-      bstm_decl*
-      bstm_body*
-    ]|
   
   match-decls-and-appl-test :
     bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], x_cons, bstm_body*)
@@ -179,12 +213,33 @@ strategies
     
   match-decls-and-appl-test :
     bstm* |[
-      if (~e:ExprName(Id("term")).getTermType() != IStrategoTerm.APPL || x_cons != ((IStrategoAppl) term).getConstructor())
+      if (~e:ExprName(Id("term")).getTermType() != IStrategoTerm.APPL || e_cons != ((IStrategoAppl) term).getConstructor())
         break Fail;
       bstm_body*
     ]| ->
     ([], x_cons, bstm_body*)
-    
+    with
+      !e_cons => |[ x.x_cons ]|
+    <+
+      !e_cons => |[ x_cons ]|
+
+  optimize-if-true-break :
+    bstm |[ { Fail: { if (TRUE) break Success; } bstm* } ]| -> |[ if (TRUE) break Success; ]|
+  
+  optimize-if-true-break :
+    bstm |[ if (e) if (TRUE) stm ]| -> |[ if (e) stm ]|
+  
+  optimize-if-true-break :
+    bstm |[ Success: { if (e) break Success; bstm* } ]| -> |[ if (!e) { bstm* } ]|
+  
+  optimize-if-true-break :
+    bstm |[ if (!(e1 == e2)) stm ]| -> |[ if (e1 != e2) stm ]|
+  
+  optimize-if-true-break :
+    bstm |[ if (e1) { if (e2) stm } ]| -> |[ if (e1 && e2) stm ]|
+    where
+      not(!e2 => expr |[ TRUE ]|)
+  
   optimize-if-true-break :
     |[ Fail: { bstm* } ]| -> |[ Fail: { bstm'* } ]|
     where

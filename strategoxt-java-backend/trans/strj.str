@@ -43,6 +43,7 @@ strategies
         strc-front-end
       )
     end
+  ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
   ; s2j
   ; log-timed(output-java | "Pretty printing succeeded", 1)

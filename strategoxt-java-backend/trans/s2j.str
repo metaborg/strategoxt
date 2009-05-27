@@ -120,14 +120,27 @@ rules
        if (constantFactory == termFactory)
          return;
        constantFactory = termFactory;
+       initConstructors(termFactory);
+       initConstants(termFactory);
        ~*import-inits
-       ~*cnstr-inits
-       ~*cnst-inits
        ~*def-inits
        context.postInit("~x_name");
      }
+     
+     ~*<java-split-method> |[
+       private static void initConstructors(ITermFactory termFactory) {
+         ~*cnstr-inits
+       }
+     ]|
+     
+     ~*<java-split-method> |[
+       private static void initConstants(ITermFactory termFactory) {
+         ~*cnst-inits
+       }
+     ]|
 
      ~*main
+     ~*register
      ~*constant
 
      ~*constant-defs
@@ -143,6 +156,7 @@ rules
     ; x_name        := <MainClassName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
+    ; register      := <java-register-method> defs
     ; constant      := <java-constant-methods>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
@@ -189,6 +203,7 @@ rules
     _ -> []
     where
       <get-config> "--library"
+    ; not(<get-config> "-m")
 
   java-main-methods :
     _ ->
@@ -224,7 +239,7 @@ rules
      }
     ]|
     where
-      not(<get-config> "--library")
+      <get-config> "-m" <+ not(<get-config> "--library")
     with
       x_name := <MainClassName>
     ; main   := <get-config <+ !"main"> "-m"
@@ -252,6 +267,21 @@ rules
         }
       }
     ]|
+  
+  java-register-method :
+    defs ->
+    <java-split-method> |[
+      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
+        init(compiledContext);
+        bstm*
+      }
+    ]|
+    with
+      bstm* := <filter(java-register-strategy)> defs
+
+  java-register-strategy :
+    SDefT(x,_,_,_) ->
+    |[ context.getVarScope().addSVar("~x", new InteropStrategyDef(x.class, context, compiledContext)); ]|
 
 rules
 
@@ -295,11 +325,14 @@ rules
       x' := <conc-strings> (x, "_override")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
-      e_s*      := <translate-args> s*
-    ; e_t*      := <translate-args> t*
-    ; outercall := |[ term = outer.invoke(context, term, e_s*, e_t*); ]|
-    ; def'      := <alltd(\Override() -> outercall\)> def
-    ; body      := <translate-definition-body> def'
+      {| OuterInvoke :
+        e_s* := <translate-args> s*
+      ; e_t* := <translate-args> t*
+      ; rules(
+          OuterInvoke := |[ outer.invoke(context, term, e_s*, e_t*) ]|
+        )
+      ; body := <translate-definition-body> def
+      |}
 
   translate-outer-definition-extend :
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
@@ -314,11 +347,15 @@ rules
       x' := <conc-strings> (x, "_extension")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
-      e_s*      := <translate-args> s*
-    ; e_t*      := <translate-args> t*
-    ; outercall := |[ term = outer.invoke(context, term, e_s*, e_t*); ]|
-    ; def'      := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Escape(outercall)))
-    ; body      := <translate-definition-body> def'
+      {| OuterInvoke :
+        e_s* := <translate-args> s*
+      ; e_t* := <translate-args> t*
+      ; def' := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Override()))
+      ; rules(
+          OuterInvoke := |[ outer.invoke(context, term, e_s*, e_t*) ]|
+        )
+      ; body := <translate-definition-body> def'
+      |}
 
   translate-outer-definition-internal :
     AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
@@ -415,7 +452,8 @@ rules
        }
     ]|
     with
-      {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame:
+      {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame, java-CheckBuild,
+         IsLiftedTVar, IsLiftedSVar, LiftedTVars, LiftedSVars:
         (s'*, [])          := <translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; param*             := <conc> (s'*, t'*)   
@@ -492,7 +530,15 @@ strategies
     Fail() -> |[ if (TRUE) break Fail; ]| // (avoid unreachable stm error)
 
   translate-Override :
-    Override() -> <fatal-err(|"override call illegal in this context")>
+    Override() ->
+    bstm* |[
+      term = e_outer;
+      if (term == null) break Fail;
+    ]|
+    with
+      e_outer := <OuterInvoke>
+    <+
+      fatal-err(|"override call illegal in this context")
 
   translate-Escape :
     Escape(java) -> java
@@ -573,10 +619,12 @@ strategies
   translate-Let : 
     Let(defs, body) -> body'
     with
-      !defs
-    ; record-inner-definitions
-    ; list-loop(rules(LiftedDef :+= <translate-inner-definition>))
-    ; body' := <translate-strategy> body
+      {| InnerDefinition :
+        !defs
+      ; record-inner-definitions
+      ; list-loop(rules(LiftedDef :+= <translate-inner-definition>))
+      ; body' := <translate-strategy> body
+      |}
 
   record-inner-definitions =
     list-loop({
@@ -834,9 +882,6 @@ strategies
  */
 rules
 
-  // TODO: Fix constants being generated multiple times
-  //       e.g., <conc> ([], []) does this; it's got something to do with annos 
-
   /** @type Term -> Exp */
   java-construct-term =
        java-Cache 
@@ -872,10 +917,10 @@ rules
     Op("Nil", [])
     + Op("Cons", [id, java-proper-list])
     // UNDONE: + Op("Cons", [id, java-proper-list + ?|[ getConstant(e1, e2) ]|])
+    // TODO: Fix constants being generated multiple times
+    //       e.g., <conc> ([], []) does this; it's got something to do with annos 
     + Op(id, id)
       ; not(is-ListOp)
-
-// helpers
 
 strategies
     
@@ -1024,15 +1069,18 @@ rules
 strategies
 
   JavaTranslate =
-      rules(ConstructorDecl :+= <JavaDeclareConstructor>)
-    ; rules(ConstructorInit :+= <JavaInitConstructorQ <+ JavaInitConstructor>)
+      ?OpDecl(c, t)
+    ; rules(
+        ConstructorDecl :+= <JavaDeclareConstructor>
+        ConstructorInit :+= <JavaInitConstructorQ <+ JavaInitConstructor>
+      )
 
   JavaDeclareConstructor :
     OpDecl(c, t) -> class-body-dec|[ public static IStrategoConstructor x; ]|
   where
     not(OpDecl("", id) + OpDecl("Cons", [id, id]) + OpDecl("Nil", []))
   with 
-    n := <Arity> t
+    n := <Arity <+ is-int> t
   ; x := <java-ConstructorName> (c, n)
   ; rules(IsLocalOpDecl: (c, n))
 
@@ -1043,12 +1091,22 @@ strategies
     ; n' := <int-to-string> n
   
   java-ConstructorName-expr =
-    if IsLocalOpDecl then
-      with(x_main := <MainClassName>)
-    ; !expr |[ x_main.~x:<java-ConstructorName> ]|
-    else
-      !expr |[ ~x:<java-ConstructorName> ]|
-    end
+    with(
+      IsLocalOpDecl
+    <+
+      // HACK: locally redefine external constructors to avoid ambiguous imports
+      //       (should this be done for congruences as well?)
+      JavaCopyConstructor
+    )
+  ; !expr |[ ~x:<MainClassName>.~x:<java-ConstructorName> ]|
+  
+  JavaCopyConstructor =
+    ((c, n) -> OpDecl(c, n))
+  ; rules(
+      IsLocalOpDecl: (c, n)
+      ConstructorDecl :+= <oncetd(\Public() -> Protected()\)> <JavaDeclareConstructor>
+      ConstructorInit :+= <JavaInitConstructorQ <+ JavaInitConstructor>
+    )
 
   JavaInitConstructorQ :
     OpDecl(c, t) ->
@@ -1058,7 +1116,7 @@ strategies
     ]|
   where 
       <string-as-chars(unescape-chars; un-double-quote-chars)> c => c' 
-    ; ar := <Arity> t
+    ; ar := <Arity <+ is-int> t
     ; x  := <java-ConstructorName> (c, ar)
 
   JavaInitConstructor :
@@ -1067,9 +1125,13 @@ strategies
       x = termFactory.makeConstructor("~c", ~expr:<java-mk-int-const> ar);
     ]|
   where 
-      ar := <Arity> t
+      ar := <Arity <+ is-int> t
     ; x  := <java-ConstructorName> (c, ar)
   
+  /**
+   * Locally redefines some standard list and Some/None constructors,
+   * which appear in nearly every grammar.
+   */
   add-default-constructors =
     with(
       add-private-constructor(|"Some", 1)
@@ -1081,9 +1143,8 @@ strategies
     if not(<IsLocalOpDecl> (name, arity)) then
       x := <java-ConstructorName> (name, arity)
     ; rules(
+        IsLocalOpDecl: (name, arity)
         ConstructorDecl :+= class-body-dec|[ public static IStrategoConstructor x; ]|
-      )
-    ; rules(
         ConstructorInit :+=
           |[ x = termFactory.makeConstructor("~name", ~expr:<java-mk-int-const> arity); ]|
       )
@@ -1115,24 +1176,24 @@ strategies
       stm_assign := <java-VarToWrite> (x, trm)
 
   translate-Match :
-    Match(Var(x){"bound"}, trm) ->
-    stm|[ 
-      if(!e.match(~expr:trm)) 
+    Match(Var(x){"bound"}, e) ->
+    stm |[
+      if (e != e_var && !e_var.match(e)) 
         break Fail;
      ]|
     with
-      e := <java-VarToReadRef> Var(x)
+      e_var := <java-VarToReadRef> Var(x)
 
   translate-Match :
     Match(Var(x){"(un)bound"}, e) ->
-    stm|[ 
-      if (e_x == null)
+    stm |[
+      if (e_var == null)
         stm_assign
-      else if (!e_x.match(e))
+      else if (e_var != e && !e_var.match(e))
         break Fail;
     ]|
     with 
-      e_x := <java-VarToReadRef> Var(x)
+      e_var      := <java-VarToReadRef> Var(x)
     ; stm_assign := <java-VarToWrite> (x, e)
 
   translate-Match :
@@ -1177,9 +1238,8 @@ strategies
     ; stm0 := <translate-Match> Match(pt1, e)
     ; stm1 := <translate-Match> Match(pt2, ExprName(Id(x)))
 
-  /**
-   * @todo  String constants should probably be cached, just like constructor names
-   */
+  // String constants are not cached for comparison,
+  // since we do comparison modulo annotations
   translate-Match :
     Match(Str(str), e) -> 
     stm|[
@@ -1219,23 +1279,23 @@ strategies
   translate-Match :
     Match(op@Op(c, ts), e) ->
     bstm* |[
-      // (this pattern is matched optimized in java-postprocess)
+      // (this pattern is matched and optimized in java-postprocess)
       if (e.getTermType() != IStrategoTerm.APPL || e_nomatch) break Fail;
       ~bstm*:match-args
     ]|
   where
     <not(is-ListOp + is-TupleOp)> op
   with
-    x_cons     := <java-ConstructorName> (c, <length> ts)
+    e_cons     := <java-ConstructorName-expr> (c, <length> ts)
   ; match-args := <translate-Match-args> (e, ts)
   ; if not(<get-config> "-sc" => "off") then
-      e_nomatch := |[ x_cons != ((IStrategoAppl) e).getConstructor() ]|
+      e_nomatch := |[ e_cons != ((IStrategoAppl) e).getConstructor() ]|
     else
-      e_nomatch := |[ !x_cons.equals(((IStrategoAppl) e).getConstructor()) ]|
+      e_nomatch := |[ !e_cons.equals(((IStrategoAppl) e).getConstructor()) ]|
     end
 
   /**
-   * Translate a match of an Op, but not a Cons/2 or Nil/0.
+   * Translate a match of a tuple.
    */
   translate-Match :
     Match(op@Op(c, ts), e) ->

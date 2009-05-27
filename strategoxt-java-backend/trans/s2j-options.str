@@ -38,7 +38,7 @@ rules
       "--stacktrace" + "-s"
     , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
     , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",
-                      "(0 = no, 1 = yes [default], 2 = only if assertions disabled for this class)")
+                      "(0 = no, 1 = always [default], 2 = only if assertions (java -ea) disabled for a class)")
     )
   + ArgOption(
       "-D"
@@ -57,7 +57,7 @@ rules
     )
     
   translate-default-library =
-    if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" + "strc" then
+    if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" + "strc" + "stratego-tool-doc" + "java-front" then
       <conc-strings> ("org.strategoxt.lib", <id>)
     end
   ; if not(is-substring(!".")) then

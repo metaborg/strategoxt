@@ -31,7 +31,9 @@ strategies
 rules
 
   remove-closure-allocs =
-    alltd(remove-closure-alloc-let)
+    {| RemoveClosureAlloc :
+      alltd(remove-closure-alloc-let)
+    |}
   
   remove-closure-alloc-let :
     Let(def*, s) -> Let(def'*, s')
