@@ -13,8 +13,15 @@ test "x$prefix" = xNONE && prefix=$ac_default_prefix
 
 XT_SVN_REVISION
 # comment to make this a stable release
+
+# if VERSION_SUFFIX not is set then it's a pre release
 if ! test -n "${VERSION_SUFFIX+X}"; then
   XT_PRE_RELEASE
+else
+  # if VERSION_SUFFIX is set and not "" then it's a pre release
+  if test -n "${VERSION_SUFFIX}"; then
+    XT_PRE_RELEASE
+  fi
 fi
 
 ### DEPENDENCIES ##################################################
