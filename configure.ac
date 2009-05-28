@@ -13,7 +13,9 @@ test "x$prefix" = xNONE && prefix=$ac_default_prefix
 
 XT_SVN_REVISION
 # comment to make this a stable release
-XT_PRE_RELEASE
+if ! test -n "${VERSION_SUFFIX+X}"; then
+  XT_PRE_RELEASE
+fi
 
 ### DEPENDENCIES ##################################################
 
