@@ -9,6 +9,8 @@ m4_pattern_allow([^XT_DIST_CHECK_SOURCES(_TRUE|_FALSE)?$])
 
 XT_SETUP
 
+XT_SVN_REVISION
+
 # if VERSION_SUFFIX not is set then it's a pre release
 if ! test -n "${VERSION_SUFFIX+X}"; then
   XT_PRE_RELEASE
