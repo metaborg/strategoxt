@@ -37,9 +37,10 @@ LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
 nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERCLASSES)
 
 CLEANFILES = \
-  $(RUNTIMECLASSES) $(LIBRARYCLASSES) \
+  $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERCLASSES) \
   $(subst runtime/org/strategoxt/lang/compat/libstrc_compat.java,, \
   $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS))) \
+  $(COMPILERJAVAS) \
   .ALLCLASSES
 
 # HACK: hardcoded, relative classpath

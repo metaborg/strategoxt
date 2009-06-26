@@ -122,7 +122,7 @@ public class Context extends StackTracer {
     	uninit();
     }
     
-    public IStrategoTerm invokeStrategyCLI(IStrategy strategy, String appName, String[] args) {
+    public IStrategoTerm invokeStrategyCLI(Strategy strategy, String appName, String[] args) {
     	ITermFactory factory = getFactory();    	
     	IStrategoTerm[] termArgs = new IStrategoTerm[args.length + 1];
 		termArgs[0] = factory.makeString(appName);
@@ -136,7 +136,7 @@ public class Context extends StackTracer {
     	return strategy.invoke(this, term);
     }
     
-    public final IStrategoTerm invokePrimitive(String name, IStrategoTerm term, IStrategy[] sargs, IStrategoTerm[] targs) {
+    public final IStrategoTerm invokePrimitive(String name, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
     	AbstractPrimitive primitive = lookupOperator(name);
     	if (primitive == null)
     		throw new StrategoException("Illegal primitive invoked: " + name);
@@ -144,7 +144,7 @@ public class Context extends StackTracer {
     	return invokePrimitive(primitive, term, sargs, targs);
     }
 
-	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, IStrategy[] sargs, IStrategoTerm[] targs) {
+	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
 		interopContext.setCurrent(term);
 		try {
 			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(sargs), targs)) {

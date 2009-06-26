@@ -5,11 +5,11 @@ import org.spoofax.interpreter.core.IConstruct;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.CallT;
-import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.strategoxt.lang.Strategy;
 
 /**
- * Adapts an {@link IStrategy} strategy to a {@link CallT},
+ * Adapts an {@link Strategy} strategy to a {@link CallT},
  * making interpreter strategies and primitives with strategy arguments
  * accessible for compiled strategies.
  * 
@@ -19,9 +19,9 @@ public class InteropStrategy extends CallT {
 	
 	private static final CallT[] NO_CALLTS = {};
 	
-	private static final IStrategy[] NO_ISTRATEGIES = {};
+	private static final Strategy[] NO_ISTRATEGIES = {};
 	
-	private final IStrategy strategy;
+	private final Strategy strategy;
 	
 	private final Context context;
 	
@@ -30,7 +30,7 @@ public class InteropStrategy extends CallT {
 	 * 
 	 * @param strategy	The strategy to adapt.
 	 */
-	public InteropStrategy(IStrategy strategy) {
+	public InteropStrategy(Strategy strategy) {
 		this(strategy, null);
 	}
 	
@@ -40,14 +40,14 @@ public class InteropStrategy extends CallT {
 	 * @param strategy	The strategy to adapt.
 	 * @param context	The compiled context, if used with an interpreter context.
 	 */
-	public InteropStrategy(IStrategy strategy, Context context) {
+	public InteropStrategy(Strategy strategy, Context context) {
 		super(strategy.getName(), null, null);
 		
 		this.strategy = strategy;
 		this.context = context;
 	}
     
-	public static CallT[] toInteropStrategies(IStrategy[] strategies) {
+	public static CallT[] toInteropStrategies(Strategy[] strategies) {
     	if (strategies.length == 0) return NO_CALLTS;
     	
     	CallT[] results = new CallT[strategies.length];
@@ -56,13 +56,13 @@ public class InteropStrategy extends CallT {
     	return results;
     }
     
-	public static IStrategy[] fromInteropStrategies(Strategy[] strategies) {
+	public static Strategy[] fromInteropStrategies(org.spoofax.interpreter.stratego.Strategy[] strategies) {
 		if (strategies.length == 0)
 			return NO_ISTRATEGIES;
 
-		IStrategy[] results = new IStrategy[strategies.length];
+		Strategy[] results = new Strategy[strategies.length];
 		for (int i = 0; i < strategies.length; i++) {
-			Strategy strategy = strategies[i];
+			org.spoofax.interpreter.stratego.Strategy strategy = strategies[i];
 			if (!(strategy instanceof InteropStrategy))
 				throw new StrategoException("Expected InteropStrategy");
 			results[i] = ((InteropStrategy) strategy).strategy;
@@ -102,7 +102,7 @@ public class InteropStrategy extends CallT {
 	}
 	
 	@Override
-	public boolean evaluateWithArgs(IContext env, Strategy[] sv, IStrategoTerm[] tv) {
+	public boolean evaluateWithArgs(IContext env, org.spoofax.interpreter.stratego.Strategy[] sv, IStrategoTerm[] tv) {
 		IStrategoTerm result = strategy.invokeDynamic(
 				getCompiledContext(env),env.current(), fromInteropStrategies(sv), tv);
 		if (result == null) return false;
@@ -111,7 +111,7 @@ public class InteropStrategy extends CallT {
 	}
 	
 	@Override
-	public Strategy evalWithArgs(IContext env, Strategy[] sv,
+	public org.spoofax.interpreter.stratego.Strategy evalWithArgs(IContext env, org.spoofax.interpreter.stratego.Strategy[] sv,
 			IStrategoTerm[] actualTVars) throws InterpreterException {
 		throw new NotImplementedException();
 	}

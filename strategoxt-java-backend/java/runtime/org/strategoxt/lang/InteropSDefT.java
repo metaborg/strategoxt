@@ -9,12 +9,12 @@ import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
- * Adapts an {@link SDefT} definition to an {@link IStrategy},
+ * Adapts an {@link SDefT} definition to a {@link Strategy},
  * making interpreter strategy arguments accessible to the compiled strategies.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class InteropSDefT extends DynamicStrategy implements IStrategy {
+public class InteropSDefT extends DynamicStrategy {
 	
 	private final SDefT definition;
 	
@@ -25,8 +25,8 @@ public class InteropSDefT extends DynamicStrategy implements IStrategy {
 		this.context = context;
 	}
 	
-	public static IStrategy[] toInteropSDefTs(SDefT[] definitions, IContext context) {
-		IStrategy[] results = new IStrategy[definitions.length];
+	public static Strategy[] toInteropSDefTs(SDefT[] definitions, IContext context) {
+		Strategy[] results = new Strategy[definitions.length];
 		for (int i = 0; i < definitions.length; i++) {
 			SDefT definition = definitions[i];
 			if (definition instanceof InteropStrategyDef) {
@@ -38,7 +38,8 @@ public class InteropSDefT extends DynamicStrategy implements IStrategy {
 		return results;
 	}
 	
-	public IStrategoTerm invokeDynamic(Context compilerContext, IStrategoTerm current, IStrategy[] sargs, IStrategoTerm[] targs) {
+	@Override
+	public IStrategoTerm invokeDynamic(Context compilerContext, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
 		VarScope oldScope = context.getVarScope();
 		try {
 			if (sargs.length != 0 || targs.length != 0) {
@@ -57,7 +58,7 @@ public class InteropSDefT extends DynamicStrategy implements IStrategy {
 		}
 	}
 
-	private void assignParameters(Context compiledContext, VarScope scope, IStrategy[] sargs, IStrategoTerm[] targs)
+	private void assignParameters(Context compiledContext, VarScope scope, Strategy[] sargs, IStrategoTerm[] targs)
 			throws InterpreterException {
 		
 		SDefT.SVar[] sparams = definition.getStrategyParams();

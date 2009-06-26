@@ -3,7 +3,6 @@ package org.strategoxt.lang.compat;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.Strategy;
 
 /**
@@ -18,7 +17,7 @@ public class libstratego_rtg_compat {
 		public static strrtg_list_loop1_1_0 instance = new strrtg_list_loop1_1_0();
 		
 		@Override
-		public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+		public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 			if (current.getTermType() != IStrategoTerm.LIST)
 				return null;
 			
@@ -39,7 +38,7 @@ public class libstratego_rtg_compat {
 		public static strrtg_repeat_1_0 instance = new strrtg_repeat_1_0();
 		
 		@Override
-		public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+		public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 			IStrategoTerm result = current;
 			IStrategoTerm next = s.invoke(context, result);
 			

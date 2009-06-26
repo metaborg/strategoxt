@@ -12,14 +12,14 @@ public class SRTS_EXT_crush_3_0 extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current,
-			IStrategy nul, IStrategy sum, IStrategy s) {
+			Strategy nul, Strategy sum, Strategy s) {
 		
 		// TODO: Is getAllSubterms() a good idea for crush/foldr of lists? 
 		
 		ITermFactory factory = context.getFactory();
 		IStrategoTerm[] subterms = current.getAllSubterms();
 		
-		IStrategoTerm result = factory.makeList(Term.EMPTY_TERM_LIST);
+		IStrategoTerm result = factory.makeList(Term.NO_TERMS);
 		result = nul.invoke(context, result);
 		if (result == null) return null;
 		

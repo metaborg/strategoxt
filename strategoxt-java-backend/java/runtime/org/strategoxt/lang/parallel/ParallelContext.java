@@ -6,7 +6,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.IStrategy;
+import org.strategoxt.lang.Strategy;
+
 import static org.strategoxt.lang.parallel.libstratego_parallel.*;
 
 /**
@@ -74,7 +75,7 @@ public class ParallelContext extends Context {
 	}
 	
 	@Override
-	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, IStrategy[] args, IStrategoTerm[] targs) {
+	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, Strategy[] args, IStrategoTerm[] targs) {
 		if (isAborted.get() && !job.isFocusJob())
 			throw new ParallelJobAbortedException();
 		

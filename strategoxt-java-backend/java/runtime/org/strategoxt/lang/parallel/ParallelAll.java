@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.SRTS_all;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.lang.Strategy;
 
 import static org.strategoxt.lang.parallel.libstratego_parallel.*;
 
@@ -48,7 +48,7 @@ public class ParallelAll extends SRTS_all {
 	private volatile boolean allowUnorderedOnce;
 	
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
 		if ((ALLOW_NESTED_JOBS || !isParallelActive) && isCandidateTerm(context, current) && ENABLED) {
 			context.push("<parallel>");
@@ -63,7 +63,7 @@ public class ParallelAll extends SRTS_all {
 		}
 	}
 
-	public IStrategoTerm invokeParallel(final Context context, final IStrategoTerm current, final IStrategy s) {		
+	public IStrategoTerm invokeParallel(final Context context, final IStrategoTerm current, final Strategy s) {		
 		final IStrategoTerm[] inputs = current.getAllSubterms();
 		final IStrategoTerm[] outputs = new IStrategoTerm[inputs.length];
 		final AtomicInteger focusIndex = new AtomicInteger(0); // index of the job with side effects

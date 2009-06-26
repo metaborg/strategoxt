@@ -2,7 +2,6 @@ package org.strategoxt.lang.parallel;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.IStrategy;
 import org.strategoxt.lang.SRTS_all;
 import org.strategoxt.lang.Strategy;
 
@@ -45,7 +44,7 @@ public class libstratego_parallel {
 		public static parallel_unordered_0_0 instance = new parallel_unordered_0_0();
 		
 		@Override
-		public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+		public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 			ParallelAll.instance.setAllowUnorderedOnce(true);
 			try {
 				return s.invoke(context, current, s);

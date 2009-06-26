@@ -14,7 +14,7 @@ public class SRTS_some extends Strategy {
 	public static SRTS_some instance = new SRTS_some();
 
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();
 		
 		if (termType == LIST)
@@ -50,7 +50,7 @@ public class SRTS_some extends Strategy {
 		}
 	}
 	
-	private static IStrategoList map1MaintainAnnos(Context context, IStrategoList list, IStrategy s, boolean foundSome) {
+	private static IStrategoList map1MaintainAnnos(Context context, IStrategoList list, Strategy s, boolean foundSome) {
 		if (list.isEmpty()) {
 			return foundSome ? list : null;
 		} else {
@@ -84,7 +84,7 @@ public class SRTS_some extends Strategy {
 		}
 	}
 
-	private static IStrategoList mapTryIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, IStrategy s) {
+	private static IStrategoList mapTryIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, Strategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
 		items[0] = head2;
 		assert list.head() != head2;

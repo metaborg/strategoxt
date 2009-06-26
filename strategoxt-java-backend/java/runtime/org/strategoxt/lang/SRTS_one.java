@@ -14,7 +14,7 @@ public class SRTS_one extends Strategy {
 	public static SRTS_one instance = new SRTS_one();
 
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();
 		
 		if (termType == LIST)
@@ -49,7 +49,7 @@ public class SRTS_one extends Strategy {
 		}
 	}
 	
-	private static IStrategoList fetchMaintainAnnos(Context context, IStrategoList current, IStrategy s) {
+	private static IStrategoList fetchMaintainAnnos(Context context, IStrategoList current, Strategy s) {
 		if (current.isEmpty()) {
 			return null;
 		} else {

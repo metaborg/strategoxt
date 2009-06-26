@@ -117,10 +117,10 @@ strategies
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
   
   java-simplify-expr :
-    |[ new IStrategy[] {} ]| -> |[ EMPTY_STRATEGY_LIST ]|
+    |[ new Strategy[] {} ]| -> |[ NO_STRATEGIES ]|
   
   java-simplify-expr :
-    |[ new IStrategoTerm[] {} ]| -> |[ EMPTY_TERM_LIST ]|
+    |[ new IStrategoTerm[] {} ]| -> |[ NO_TERMS ]|
     
   java-simplify-stm :
     bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm* |[ stm bstm* ]|

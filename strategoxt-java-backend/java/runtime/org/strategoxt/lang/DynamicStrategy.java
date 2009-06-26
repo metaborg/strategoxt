@@ -11,174 +11,189 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public abstract class DynamicStrategy extends DynamicStrategyOverloads<IStrategy, IStrategoTerm> implements IStrategy {
-	
-	public String getName() {
-		return getClass().getSimpleName();
-	}
+public abstract class DynamicStrategy extends Strategy implements IDynamicStrategy {
 	
 	@Override
-	public String toString() {
-		return getName();
-	}
-}
-
-/**
- * @author Lennart Kats <lennart add lclnet.nl>
- */
-abstract class DynamicStrategyOverloads<S extends IStrategy, T extends IStrategoTerm>
-		implements IStrategyOverloads<S, T>, IDynamicStrategyOverload<T> {
+	public abstract IStrategoTerm invokeDynamic(Context context, IStrategoTerm current,
+			Strategy[] sargs, IStrategoTerm[] targs);
 	
-	public T invoke(Context context, T current) {
-		return invokeDynamic(context, current, EMPTY_STRATEGY_LIST, EMPTY_TERM_LIST);
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
+		return invokeDynamic(context, current, NO_STRATEGIES, NO_TERMS);
 	}
 
-	public T invoke(Context context, T current, T t1) {
-		return invokeDynamic(context, current, EMPTY_STRATEGY_LIST, new IStrategoTerm[] { t1 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1) {
+		return invokeDynamic(context, current, NO_STRATEGIES, new IStrategoTerm[] { t1 });
 	}
 
-	public T invoke(Context context, T current, T t1, T t2) {
-		return invokeDynamic(context, current, EMPTY_STRATEGY_LIST, new IStrategoTerm[] { t1, t2 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2) {
+		return invokeDynamic(context, current, NO_STRATEGIES, new IStrategoTerm[] { t1, t2 });
 	}
 
-	public T invoke(Context context, T current, T t1, T t2, T t3) {
-		return invokeDynamic(context, current, EMPTY_STRATEGY_LIST, new IStrategoTerm[] { t1, t2, t3 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
+		return invokeDynamic(context, current, NO_STRATEGIES, new IStrategoTerm[] { t1, t2, t3 });
 	}
 
-	public T invoke(Context context, T current, T t1, T t2, T t3, T t4) {
-		return invokeDynamic(context, current, EMPTY_STRATEGY_LIST, new IStrategoTerm[] { t1, t2, t3, t4 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
+		return invokeDynamic(context, current, NO_STRATEGIES, new IStrategoTerm[] { t1, t2, t3, t4 });
 	}
 
-	public T invoke(Context context, T current, T t1, T t2, T t3, T t4, T t5) {
-		return invokeDynamic(context, current, EMPTY_STRATEGY_LIST, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
+		return invokeDynamic(context, current, NO_STRATEGIES, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
 	}
 
-	public T invoke(Context context, T current, S s1) {
-		return invokeDynamic(context, current, new IStrategy[] { s1 }, EMPTY_TERM_LIST);
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1) {
+		return invokeDynamic(context, current, new Strategy[] { s1 }, NO_TERMS);
 	}
 
-	public T invoke(Context context, T current, S s1, T t1) {
-		return invokeDynamic(context, current, new IStrategy[] { s1 }, new IStrategoTerm[] { t1 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, IStrategoTerm t1) {
+		return invokeDynamic(context, current, new Strategy[] { s1 }, new IStrategoTerm[] { t1 });
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2) {
-		return invokeDynamic(context, current, new IStrategy[] { s1 }, new IStrategoTerm[] { t1, t2 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, IStrategoTerm t1, IStrategoTerm t2) {
+		return invokeDynamic(context, current, new Strategy[] { s1 }, new IStrategoTerm[] { t1, t2 });
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2, T t3) {
-		return invokeDynamic(context, current, new IStrategy[] { s1 }, new IStrategoTerm[] { t1, t2, t3 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
+		return invokeDynamic(context, current, new Strategy[] { s1 }, new IStrategoTerm[] { t1, t2, t3 });
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2, T t3, T t4) {
-		return invokeDynamic(context, current, new IStrategy[] { s1 }, new IStrategoTerm[] { t1, t2, t3, t4 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
+		return invokeDynamic(context, current, new Strategy[] { s1 }, new IStrategoTerm[] { t1, t2, t3, t4 });
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2, T t3, T t4, T t5) {
-		return invokeDynamic(context, current, new IStrategy[] { s1 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
+		return invokeDynamic(context, current, new Strategy[] { s1 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2 }, EMPTY_TERM_LIST);
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2 }, NO_TERMS);
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2 }, new IStrategoTerm[] { t1 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, IStrategoTerm t1) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2 }, new IStrategoTerm[] { t1 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, IStrategoTerm t1, IStrategoTerm t2) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2, t3 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2, t3 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3, T t4) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2, t3, t4 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2, t3, t4 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3, T t4, T t5) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3 }, EMPTY_TERM_LIST);
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3 }, NO_TERMS);
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, IStrategoTerm t1) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, IStrategoTerm t1, IStrategoTerm t2) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2, t3 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2, t3 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3, T t4) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2, t3, t4 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2, t3, t4 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3, T t4, T t5) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4 }, EMPTY_TERM_LIST);
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4 }, NO_TERMS);
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, IStrategoTerm t1) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, IStrategoTerm t1, IStrategoTerm t2) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2, t3 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2, t3 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3, T t4) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2, t3, t4 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2, t3, t4 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3, T t4, T t5) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4, s5 }, EMPTY_TERM_LIST);
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, Strategy s5) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4, s5 }, NO_TERMS);
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, Strategy s5, IStrategoTerm t1) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, Strategy s5, IStrategoTerm t1, IStrategoTerm t2) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2, t3 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, Strategy s5, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2, t3 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3, T t4) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2, t3, t4 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, Strategy s5, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2, t3, t4 });
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3, T t4, T t5) {
-		return invokeDynamic(context, current, new IStrategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
+	@Override
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s1, Strategy s2, Strategy s3, Strategy s4, Strategy s5, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
+		return invokeDynamic(context, current, new Strategy[] { s1, s2, s3, s4, s5 }, new IStrategoTerm[] { t1, t2, t3, t4, t5 });
 	}
-}
-
-/**
- * Defines the invokeDynamic method with a custom, erased return type,
- * while avoiding the <code>@Override</code> requirement of abstract methods. 
- */
-interface IDynamicStrategyOverload<T extends IStrategoTerm> extends IDynamicStrategy {
-	public T invokeDynamic(Context context, IStrategoTerm current,
-			IStrategy[] sargs, IStrategoTerm[] targs);
 }

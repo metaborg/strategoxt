@@ -99,17 +99,13 @@ rules
 
      import org.strategoxt.lang.*;
      import org.spoofax.interpreter.terms.*;
-         
-     import static org.strategoxt.lang.Term.checkListTail;
-     import static org.strategoxt.lang.Term.checkListAnnos;
-     import static org.strategoxt.lang.Term.EMPTY_STRATEGY_LIST;
-     import static org.strategoxt.lang.Term.EMPTY_TERM_LIST;
+     import static org.strategoxt.lang.Term.*;
          
      @SuppressWarnings({"unused"})
      public class x_name {
 
-     private static boolean TRACES_ENABLED = e_traces;
-     private static ITermFactory constantFactory;
+     protected static final boolean TRACES_ENABLED = e_traces;
+     protected static ITermFactory constantFactory;
 
      ~*cnst-decls
      ~*cnstr-decls
@@ -246,7 +242,7 @@ rules
 
   java-constant-methods =
     !|[
-      private static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
+      protected static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
         if (factory == constantFactory) {
           return constant;
         } else if (factory != null) {
@@ -256,7 +252,7 @@ rules
         }
       }
      
-      private static IStrategoTerm getConstant(ITermFactory factory, ITermReference constant) {
+      protected static IStrategoTerm getConstant(ITermFactory factory, ITermReference constant) {
         if (factory == constantFactory) {
           return constant.get();
         } else if (factory != null) {
@@ -391,7 +387,7 @@ rules
       ?def
     ; lifted-tvar*   := <collect-lifted-tvars> def
     ; lifted-svar*   := <collect-lifted-svars> def
-    ; lifted-sfield* := <map(\y -> class-body-dec |[ IStrategy y;      ]|\)> lifted-svar*
+    ; lifted-sfield* := <map(\y -> class-body-dec |[ Strategy y;      ]|\)> lifted-svar*
     ; lifted-tfield* := <map(\y -> class-body-dec |[ ITermReference y; ]|\)> lifted-tvar*
     ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
     with
@@ -420,7 +416,7 @@ rules
     (s*, t*) ->
     |[ @Override
        public IStrategoTerm invokeDynamic(Context context, IStrategoTerm term,
-                                          IStrategy[] sargs, IStrategoTerm[] targs) {
+                                          Strategy[] sargs, IStrategoTerm[] targs) {
          if (sargs == null || targs == null || sargs.length != i_slength || targs.length != i_tlength)
            throw new IllegalArgumentException("Illegal arguments for " + getName());
          
@@ -486,7 +482,7 @@ rules
       x' := <conc-strings> ("ref_", x)
   
   translate-param : 
-    VarDec(x, FunType(_, _)) -> (param |[ IStrategy x ]|, [])
+    VarDec(x, FunType(_, _)) -> (param |[ Strategy x ]|, [])
     with
       x'    := x{}
     ; frame := <CurrentLiftedFrame>
@@ -637,7 +633,7 @@ strategies
     CallT(SVar(x), s*, t*) ->
     bstm* |[
       bstm_init*
-      term = e_instance.invokeDynamic(context, term, new IStrategy[] { e_s* }, new IStrategoTerm[] { e_t* });
+      term = e_instance.invokeDynamic(context, term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) 
         break Fail;
     ]|
@@ -687,7 +683,7 @@ strategies
     <java-check-unbound-args(|t*)>  
     bstm* |[
       bstm_init*
-      term = context.invokePrimitive("~f", term, new IStrategy[] { e_s* }, new IStrategoTerm[] { e_t* });
+      term = context.invokePrimitive("~f", term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) break Fail;
     ]|
     with
@@ -827,7 +823,7 @@ strategies
     with
       x_constant := <newname> "constImportTerm"
     ; x_main     := <MainClassName>
-    ; rules(ConstDecl :+= class-body-dec |[ private static ImportTermReference x_constant; ]|)
+    ; rules(ConstDecl :+= class-body-dec |[ protected static ImportTermReference x_constant; ]|)
     ; rules(
         ConstInit :+=
           bstm* |[ x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile"); ]|
@@ -927,7 +923,7 @@ strategies
 
   java-DeclareTermId :
     (x, e) ->
-    class-body-dec|[ private static IStrategoTerm x; ]|
+    class-body-dec|[ protected static IStrategoTerm x; ]|
 
   java-InitTermId :
     (x, e) -> bstm*|[ x = e; ]|
@@ -1006,7 +1002,7 @@ rules
         java-CheckBuild :+=
           ( bstm |[ IStrategoTerm x; ]|
           , bstm*|[
-               x = context.invokePrimitive("SSL_mkterm", term, new IStrategy[] {},
+               x = context.invokePrimitive("SSL_mkterm", term, new Strategy[] {},
                                            new IStrategoTerm[] { e_t1, e_t2 });
                if (x == null)
                  break Fail;
@@ -1202,11 +1198,11 @@ strategies
     Match(Explode(t1, t2), e) ->
     bstm* |[ 
       IStrategoTerm x_cons = context.invokePrimitive("SSL_get_constructor", term,
-                                                      new IStrategy[] {},
+                                                      new Strategy[] {},
                                                       new IStrategoTerm[] { e });
       ~stm:(<translate-Match> Match(t1, ExprName(Id(x_cons))))
       IStrategoTerm x_args = context.invokePrimitive("SSL_get_arguments", term,
-                                                     new IStrategy[] {},
+                                                     new Strategy[] {},
                                                      new IStrategoTerm[] { e });
       ~stm:(<translate-Match> Match(t2, ExprName(Id(x_args))))
      ]|

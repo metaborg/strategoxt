@@ -14,7 +14,7 @@ public class SRTS_all extends Strategy {
 	public static SRTS_all instance = new SRTS_all();
 
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		int termType = current.getTermType();
 		
 		if (termType == LIST) {
@@ -52,7 +52,7 @@ public class SRTS_all extends Strategy {
 		}
 	}
 
-	private static IStrategoTerm map(Context context, IStrategoList list, IStrategy s) {
+	private static IStrategoTerm map(Context context, IStrategoList list, Strategy s) {
 		if (list.getSubtermCount() == 0)
 			return list;
 
@@ -76,7 +76,7 @@ public class SRTS_all extends Strategy {
 		}
 	}
 
-	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, IStrategy s) {
+	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, Strategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
 		items[0] = head2;
 		assert list.head() != null : "List implementation must not expose internal array";
@@ -92,7 +92,7 @@ public class SRTS_all extends Strategy {
 		return context.getFactory().replaceList(items, list);
 	}
 
-	private static IStrategoList mapMaintainAnnos(Context context, IStrategoList list, IStrategy s) {
+	private static IStrategoList mapMaintainAnnos(Context context, IStrategoList list, Strategy s) {
 		if (list.isEmpty())
 			return list;
 		

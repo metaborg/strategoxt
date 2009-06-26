@@ -9,7 +9,7 @@ import org.spoofax.interpreter.stratego.StupidFormatter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
- * Adapts an {@link IStrategy} strategy to a {@link SDefT},
+ * Adapts an {@link Strategy} strategy to a {@link SDefT},
  * making compiled strategies accessible to the interpreter.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -26,28 +26,28 @@ public class InteropStrategyDef extends SDefT {
 	
 	private final IContext context;
 	
-	private final Class<? extends IStrategy> strategyClass;
+	private final Class<? extends Strategy> strategyClass;
 	
-	private IStrategy strategy;
+	private Strategy strategy;
 
-	// TODO: Optimize - take a Class<IStrategy> or String argument for lazy loading
-	public InteropStrategyDef(Class<? extends IStrategy> strategyClass, IContext context, Context compiledContext) {
+	// TODO: Optimize - take a Class<Strategy> or String argument for lazy loading
+	public InteropStrategyDef(Class<? extends Strategy> strategyClass, IContext context, Context compiledContext) {
 		this.strategyClass = strategyClass;
 		this.compiledContext = compiledContext;
 		this.context = context;
 	}
 
-	public InteropStrategyDef(IStrategy strategy, IContext context, Context compiledContext) {
+	public InteropStrategyDef(Strategy strategy, IContext context, Context compiledContext) {
 		this.strategyClass = null;
 		this.compiledContext = compiledContext;
 		this.context = context;
 		this.strategy = strategy;
 	}
 
-	public static SDefT[] toInteropStrategyDefs(IStrategy[] strategies, IContext context, Context compiledContext) {
+	public static SDefT[] toInteropStrategyDefs(Strategy[] strategies, IContext context, Context compiledContext) {
 		SDefT[] results = new SDefT[strategies.length];
 		for (int i = 0; i < strategies.length; i++) {
-			IStrategy strategy = strategies[i];
+			Strategy strategy = strategies[i];
 			if (strategy instanceof InteropSDefT) {
 				results[i] = ((InteropSDefT) strategy).getDefinition();
 			} else {
@@ -151,7 +151,7 @@ public class InteropStrategyDef extends SDefT {
 			targs[i] = targ;
 		}
 		
-		IStrategy[] sdefargs = InteropSDefT.toInteropSDefTs(sargs, env);
+		Strategy[] sdefargs = InteropSDefT.toInteropSDefTs(sargs, env);
 		IStrategoTerm result = getStrategy().invokeDynamic(compiledContext, env.current(), sdefargs, targs);
 		
 		if (result != null) {
@@ -162,11 +162,11 @@ public class InteropStrategyDef extends SDefT {
 		}
 	}
 	
-	public IStrategy getStrategy() {
+	public Strategy getStrategy() {
 		if (strategy == null) {
 			try {
 				// TODO: is this a good performance trade off??
-				strategy = (IStrategy) strategyClass.getField("instance").get(null);
+				strategy = (Strategy) strategyClass.getField("instance").get(null);
 			} catch (IllegalAccessException e) {
 				throw new StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (IllegalArgumentException e) {

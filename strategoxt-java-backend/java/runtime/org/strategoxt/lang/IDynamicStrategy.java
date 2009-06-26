@@ -11,7 +11,7 @@ public interface IDynamicStrategy {
 	 * 
 	 * @return The resulting term, or null in case of failure.
 	 */
-	IStrategoTerm invokeDynamic(Context context, IStrategoTerm current, IStrategy[] sargs, IStrategoTerm[] targs);
+	IStrategoTerm invokeDynamic(Context context, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs);
 
 	String getName();
 }

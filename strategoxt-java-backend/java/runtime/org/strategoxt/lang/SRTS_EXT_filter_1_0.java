@@ -16,7 +16,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 	private static final int LARGE_LIST_SIZE = 10;
 	
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		if (current.getTermType() != IStrategoTerm.LIST)
 			return null;
 		
@@ -39,7 +39,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 
 	private IStrategoTerm filterMaintainTailAnnos(Context context, 
 			IStrategoTerm[] prefix, IStrategoList tail, int tailStart,
-			IStrategy s) {
+			Strategy s) {
 		// Filter prefix, disregarding annotations
 		for (int j = 0; j < tailStart; j++) {
 			prefix[j] = s.invoke(context, prefix[j]);
@@ -57,7 +57,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		return result;
 	}
 
-	private IStrategoList filterMaintainAnnos(Context context, IStrategoList list, IStrategy s) {
+	private IStrategoList filterMaintainAnnos(Context context, IStrategoList list, Strategy s) {
 		if (list.isEmpty())
 			return list;
 		
@@ -78,12 +78,12 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		}
 	}
 	
-	private IStrategoList filterIgnoreAnnos(Context context, IStrategoTerm[] list, IStrategy s) {
+	private IStrategoList filterIgnoreAnnos(Context context, IStrategoTerm[] list, Strategy s) {
 		for (int i = 0; i < list.length; i++) {
 			list[i] = s.invoke(context, list[i]);
 		}
 		
-		IStrategoList result = context.getFactory().makeList(Term.EMPTY_TERM_LIST);
+		IStrategoList result = context.getFactory().makeList(Term.NO_TERMS);
 		for (int i = list.length - 1; i >= 0; i--) {
 			IStrategoTerm head = list[i];
 			if (head != null)
