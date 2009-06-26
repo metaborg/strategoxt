@@ -1,5 +1,8 @@
 module gchoice_1
 
+imports
+  libstratego-lib
+
 signature constructors
   Nil  : Nil
   Cons : Term -> Cons
@@ -7,5 +10,10 @@ signature constructors
 rules
 
   main =
-    not(id < (id < fail + !3) + !2)
-
+    not(
+      id
+      < (id < fail + !3)
+      + !2
+    )
+  ; (id < id + ?never)
+  ; not(!never)

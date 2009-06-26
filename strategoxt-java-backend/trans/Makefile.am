@@ -25,8 +25,8 @@ LDADD     += $(JAVA_FRONT_LIBS)
 
 BASEPATH=../../../spoofax/trunk/spoofax
 SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/../../branches/spoofax-recovery/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
-CLASSPATH=$(SPCLASSPATH):../java/runtime:../java/lib:../java/compiler:.
-JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH) -Xss10m -source 5 -nowarn
+CLASSPATH=.:$(SPCLASSPATH):../java/runtime:../java/lib:../java/compiler
+JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 %.rtg.af : $(JAVA_FRONT)/share/java-front/Java-15.rtg
@@ -34,6 +34,9 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 %.ctree : %.str
 	strc -F --format-check 0 --library -la stratego-lib -i $< -o $@ -O 0
+
+%.str : %.astr
+	aster -i $< -o $@
 
 strj.ctree : strj.rtree $(STRJSOURCES:.str=.rtree) strj
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -F -m main-strj

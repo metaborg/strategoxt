@@ -50,7 +50,7 @@ BASICTESTS=build_0 build_1 match_1 match_2 lchoice_1 lchoice_2 gchoice_1 \
            internal_1 internal_2 override_1 extend_1 \
            shared_var_1 shared_var_2 shared_var_3 shared_var_4 shared_var_5 \
            dynrules_1 dynrules_2 dynrules_3 dynrules_4 dynrules_5 iset_1 fetch_1 \
-           mapconcat_1 traversal_1 annos_1 annos_2
+           mapconcat_1 traversal_1 annos_1 annos_2 pp_java5_to_string
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 
@@ -79,10 +79,13 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	$(MAKE) -C ../trans strj
 
 %.ctree : %.str
-	$(SCOMPILE) -O 0 --format-check 0 -F -I strc1 -i $< -o $@
+	$(SCOMPILE) -O 0 $(JAVA_FRONT_STRCFLAGS) --format-check 0 -F -I strc1 -i $< -o $@
+
+%.str : %.astr
+	aster -i $< -o $@
 
 %.java : %.ctree ../trans/strj
-	../trans/strj -i $< -o $@ -la org.strategoxt.libstratego_lib
+	../trans/strj -i $< -o $@ -la stratego-lib -la java-front
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<

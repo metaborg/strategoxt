@@ -111,6 +111,9 @@ strategies
     If(e, s1, Empty()) -> If(e, s1)
   
   java-simplify-stm :
+    Block([Block(s)]) -> Block(s)
+  
+  java-simplify-stm :
     |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
   
   java-simplify-expr :
@@ -137,11 +140,12 @@ strategies
 strategies
 
   java-optimize =
-    topdown-consnil(try(
+    topdown-consnil(repeat(
       optimize-match-test
+    + optimize-assignments
     ))
   ; bottomup(repeat( // should be done after previous pass
-      optimize-if-true-break
+      optimize-conditionals
     ))
 
   optimize-match-test :
@@ -206,6 +210,9 @@ strategies
     with
       bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
   
+  match-decls-and-appl-text :
+    [Block(bstm*) | _] -> <match-decls-and-appl-test> bstm*
+  
   match-decls-and-appl-test :
     bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], x_cons, bstm_body*)
     where
@@ -223,29 +230,49 @@ strategies
     <+
       !e_cons => |[ x_cons ]|
 
-  optimize-if-true-break :
-    bstm |[ { Fail: { if (TRUE) break Success; } bstm* } ]| -> |[ if (TRUE) break Success; ]|
+  optimize-conditionals :
+    bstm |[ Fail: { if (TRUE) break Fail; bstm1* } ]| -> bstm |[ ; ]|
+
+  optimize-conditionals :
+    bstm |[ { if (TRUE) break x; bstm* } ]| -> bstm |[ { if (TRUE) break x; } ]|
+    where
+      not(!bstm* => [])
   
-  optimize-if-true-break :
+  optimize-conditionals :
     bstm |[ if (e) if (TRUE) stm ]| -> |[ if (e) stm ]|
   
-  optimize-if-true-break :
+  optimize-conditionals :
     bstm |[ Success: { if (e) break Success; bstm* } ]| -> |[ if (!e) { bstm* } ]|
   
-  optimize-if-true-break :
+  optimize-conditionals :
     bstm |[ if (!(e1 == e2)) stm ]| -> |[ if (e1 != e2) stm ]|
   
-  optimize-if-true-break :
+  optimize-conditionals :
     bstm |[ if (e1) { if (e2) stm } ]| -> |[ if (e1 && e2) stm ]|
     where
       not(!e2 => expr |[ TRUE ]|)
   
-  optimize-if-true-break :
+  optimize-conditionals :
     |[ Fail: { bstm* } ]| -> |[ Fail: { bstm'* } ]|
     where
       !bstm*
     ; one(?|[ if (e) break Fail; ]|)
     ; at-last([remove-if-true]) => bstm'*
+  
+  optimize-conditionals :
+    Block([Block(s)]) -> Block(s)
+  
+  optimize-assignments :
+    bstm* |[ term = y; x = term; term = z; bstm* ]| ->
+    bstm* |[ x = y; term = z; bstm* ]|
+    where
+      not(!z => expr |[ term ]|)
+  
+  optimize-assignments :
+    bstm* |[ x = y; x = e; bstm* ]| ->
+    bstm* |[ x = e; bstm* ]|
+    where
+      not(<oncetd(?x)> e)
   
   remove-if-true :
     |[ if (TRUE) break Fail; ]| -> |[ break Fail; ]|

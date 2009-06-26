@@ -109,7 +109,6 @@ rules
      public class x_name {
 
      private static boolean TRACES_ENABLED = e_traces;
-     private static boolean TRUE = true; // (ECJ 3.3 reachability detection bug workaround)
      private static ITermFactory constantFactory;
 
      ~*cnst-decls
@@ -140,13 +139,13 @@ rules
      ]|
 
      ~*main
-     ~*register
      ~*constant
 
      ~*constant-defs
      ~*function-defs
      ~*lifted-defs
 
+     ~*register
      }
      ]|
   with 
@@ -438,6 +437,7 @@ rules
     SDefT(x, s*, t*, s) ->
     |[ mod_override*
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
+           boolean TRUE = true; // (ECJ 3.3 reachability detection bug workaround)
            ITermFactory termFactory = context.getFactory();
            bstm_init*
            if (TRACES_ENABLED) context.push("~x");
@@ -462,7 +462,7 @@ rules
         else
           mod_override* := [ anno |[ @Override ]| ]
         end
-      ; bstm := <translate-body> s  
+      ; bstm := <translate-strategy> s  
       |}
     
   translate-outer-definition :
@@ -509,14 +509,13 @@ rules
   
 strategies
   
-  /** @type Strategy -> Stm */
-  translate-body = 
-    translate-strategy
-
-  translation-failed = ?x#(_) ; log(|Error(), [ "Unknown constructor type ", x ]) ; fail
-  
   translate-Scope : 
-    Scope(vars, body) -> bstm* |[ bstm_decl* bstm_body ]|
+    Scope(vars, body) -> bstm* |[
+      // { // TODO: using an actual scope might reduce the # of local variable slots
+        bstm_decl*
+        bstm_body
+      // }
+    ]|
     with
       bstm_decl* := <map(to-java-vardecl)> vars
     ; bstm_body  := <translate-strategy> body
