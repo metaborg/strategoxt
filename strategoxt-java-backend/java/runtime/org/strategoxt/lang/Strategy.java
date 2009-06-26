@@ -3,9 +3,15 @@ package org.strategoxt.lang;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
+ * An abstract strategy class. Inheritor classes should implement one
+ * of the invoke() overloads or invokeDynamic() as appropriate.
+ * 
+ * @see DynamicStrategy
+ *        An abstract strategy class where invokeDynamic() should be implemented.
+ * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public abstract class Strategy extends StrategyOverloads<IStrategy, IStrategoTerm> implements IStrategy {
+public class Strategy implements IStrategy {
 	/**
 	 * Invoke this strategy using a dynamic number of arguments.
 	 * 
@@ -71,154 +77,148 @@ public abstract class Strategy extends StrategyOverloads<IStrategy, IStrategoTer
 		}
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
-}
 
-/**
- * @author Lennart Kats <lennart add lclnet.nl>
- */
-class StrategyOverloads<S extends IStrategy, T extends IStrategoTerm> implements IStrategyOverloads<S,T> {
-
-	public T invoke(Context context, T current) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, T t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, T t1, T t2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, T t1, T t2, T t3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, T t1, T t2, T t3, T t4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, T t1, T t2, T t3, T t4, T t5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, T t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategoTerm t1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategoTerm t1, IStrategoTerm t2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2, T t3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2, T t3, T t4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, T t1, T t2, T t3, T t4, T t5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategoTerm t1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategoTerm t1, IStrategoTerm t2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3, T t4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, T t1, T t2, T t3, T t4, T t5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategoTerm t1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategoTerm t1, IStrategoTerm t2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3, T t4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, T t1, T t2, T t3, T t4, T t5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategoTerm t1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategoTerm t1, IStrategoTerm t2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3, T t4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, T t1, T t2, T t3, T t4, T t5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategy s5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategy s5, IStrategoTerm t1) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategy s5, IStrategoTerm t1, IStrategoTerm t2) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategy s5, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3, T t4) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategy s5, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 
-	public T invoke(Context context, T current, S s1, S s2, S s3, S s4, S s5, T t1, T t2, T t3, T t4, T t5) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategy s1, IStrategy s2, IStrategy s3, IStrategy s4, IStrategy s5, IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, IStrategoTerm t4, IStrategoTerm t5) {
 		throw new IllegalArgumentException("Illegal arguments for " + getName());
 	}
 	

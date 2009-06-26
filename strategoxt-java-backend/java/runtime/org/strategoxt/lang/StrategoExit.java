@@ -16,6 +16,11 @@ public class StrategoExit extends StrategoException {
         this.value = value;
     }
     
+    public StrategoExit(int value, Throwable cause) {
+    	super("Legal exit", cause);
+    	this.value = value;
+    }
+    
     public int getValue() {
         return value;
     }

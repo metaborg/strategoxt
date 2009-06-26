@@ -2,6 +2,8 @@ package org.strategoxt.lang;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -26,11 +28,9 @@ public class Context extends StackTracer {
 	
 	private final InteropContext interopContext = new InteropContext(this);
 
-    private final HashMap<String, IOperatorRegistry> operatorRegistryMap =
-    	new HashMap<String, IOperatorRegistry>();
+    private final Map<String, IOperatorRegistry> operatorRegistryMap;
 
-    private final ArrayList<IOperatorRegistry> operatorRegistries =
-    	new ArrayList<IOperatorRegistry>();
+    private final List<IOperatorRegistry> operatorRegistries;
     
     private final CompatManager compat = new CompatManager();
     
@@ -39,23 +39,44 @@ public class Context extends StackTracer {
 	
 	private final ITermFactory factory;
     
-    private String lastPrimitiveName1, lastPrimitiveName2;
+    private transient String lastPrimitiveName1, lastPrimitiveName2;
     
-    private AbstractPrimitive lastPrimitive1, lastPrimitive2;
+    private transient AbstractPrimitive lastPrimitive1, lastPrimitive2;
     
     public Context() {
     	this(new BAFBasicTermFactory());
     }
     
+    public Context(Context other) {
+    	this(other.getFactory());
+    	operatorRegistryMap.clear();
+    	operatorRegistryMap.putAll(other.operatorRegistryMap);
+    	operatorRegistries.addAll(other.operatorRegistries);
+    }
+    
     public Context(ITermFactory factory) {
-    	this.factory = factory;
+    	this(factory, new HashMap<String, IOperatorRegistry>(), new ArrayList<IOperatorRegistry>());
         SSLLibrary ssl = new SSLLibrary();
 		operatorRegistryMap.put(SSLLibrary.REGISTRY_NAME, ssl);
         operatorRegistries.add(ssl);
     }
+    
+    protected Context(ITermFactory factory, Map<String, IOperatorRegistry> operatorRegistryMap, List<IOperatorRegistry> operatorRegistries) {
+    	this.factory = factory;
+    	this.operatorRegistryMap = operatorRegistryMap;
+    	this.operatorRegistries = operatorRegistries;
+    }
 	
 	public final ITermFactory getFactory() {
 		return factory;
+	}
+	
+	public List<IOperatorRegistry> getOperatorRegistries() {
+		return operatorRegistries;
+	}
+	
+	public Map<String, IOperatorRegistry> getOperatorRegistryMap() {
+		return operatorRegistryMap;
 	}
 	
 	public UncaughtExceptionHandler getExceptionHandler() {
@@ -78,8 +99,13 @@ public class Context extends StackTracer {
 
     public final void addOperatorRegistry(IOperatorRegistry or) {
         IOperatorRegistry previous = operatorRegistryMap.put(or.getOperatorRegistryName(), or);
-        if (previous != null) operatorRegistries.remove(previous);
-        operatorRegistries.add(or);
+        if (previous == null) {
+        	operatorRegistries.add(or);
+        } else {
+        	int i = operatorRegistries.indexOf(previous);
+        	operatorRegistries.remove(previous);
+        	operatorRegistries.add(i, or);
+        }
     }
     
     public void postInit(String componentName) {
@@ -110,14 +136,18 @@ public class Context extends StackTracer {
     	return strategy.invoke(this, term);
     }
     
-    public IStrategoTerm invokePrimitive(String name, IStrategoTerm term, IStrategy[] args, IStrategoTerm[] targs) {
+    public final IStrategoTerm invokePrimitive(String name, IStrategoTerm term, IStrategy[] sargs, IStrategoTerm[] targs) {
     	AbstractPrimitive primitive = lookupOperator(name);
     	if (primitive == null)
     		throw new StrategoException("Illegal primitive invoked: " + name);
 
-    	interopContext.setCurrent(term);
+    	return invokePrimitive(primitive, term, sargs, targs);
+    }
+
+	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, IStrategy[] sargs, IStrategoTerm[] targs) {
+		interopContext.setCurrent(term);
 		try {
-			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(args), targs)) {
+			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(sargs), targs)) {
 				return interopContext.current();
 			} else {
 				return null;
@@ -126,11 +156,11 @@ public class Context extends StackTracer {
 			uninit();
 			throw new StrategoExit(e.getValue());
 		} catch (InterpreterException e) {
-			throw new StrategoException("Exception in execution of primitive '" + name + "'", e);
+			throw new StrategoException("Exception in execution of primitive '" + primitive.getName() + "'", e);
 		} catch (RuntimeException e) {
-			throw new StrategoException("Exception in execution of primitive '" + name + "'", e);
+			throw new StrategoException("Exception in execution of primitive '" + primitive.getName() + "'", e);
 		}
-    }
+	}
 
 	public AbstractPrimitive lookupOperator(String name) {
 		if (lastPrimitiveName1 == name) {

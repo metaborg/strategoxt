@@ -11,7 +11,11 @@ import org.strategoxt.lang.compat.override.strc_compat;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class libstrc_compat {
+	private static boolean isInitialized;
+	
 	public static void init(Context context) {
+		if (isInitialized) return;
+		isInitialized = true;
 		context.addOperatorRegistry(new OperatorRegistry());
 		strc_compat.init(context);
 	}
