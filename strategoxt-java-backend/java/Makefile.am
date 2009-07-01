@@ -41,6 +41,8 @@ CLEANFILES = \
   $(subst runtime/org/strategoxt/lang/compat/libstrc_compat.java,, \
   $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS))) \
   $(COMPILERJAVAS) \
+  runtime/org/strategoxt/lang/compat/override/libstratego_aterm_compat.rtree \
+  lib/org/strategoxt/libstratego-xtc.rtree \
   .ALLCLASSES
 
 # HACK: hardcoded, relative classpath
@@ -96,7 +98,7 @@ ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org
 lib/org/strategoxt/libstratego_lib.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJOPTIONS)
 
-lib/org/strategoxt/libstratego-xtc.rtree : $(STRATEGOXT)/share/xtc/stratego-xtc-posix-xsi.rtree
+lib/org/strategoxt/libstratego-xtc.rtree : $(STRATEGOXT)/share/libstratego-xtc-posix-xsi.rtree
 	cp $< $@
 
 lib/org/strategoxt/libstratego_xtc.java : lib/org/strategoxt/libstratego-xtc.rtree ../trans/strj
