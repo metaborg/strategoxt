@@ -1,5 +1,5 @@
 AC_PREREQ([2.60])
-AC_INIT([strc-core],[0.17],[stratego@cs.uu.nl])
+AC_INIT([strc-core],[0.18],[users@strategoxt.org])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
