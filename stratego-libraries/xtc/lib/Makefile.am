@@ -5,7 +5,7 @@ include $(wildcard *.dep)
 pkgdatadir = $(datadir)/xtc
 
 nobase_pkgdata_DATA =  stratego-xtc.str $(fullstrategoxtc:.str=.rtree)
-data_DATA = libstratego-xtc.rtree libstratego-xtc-posix-xsi.rtree
+data_DATA = libstratego-xtc.rtree
 lib_LTLIBRARIES = libstratego-xtc.la
 
 EXTRA_DIST	= $(all_rtree) $(fullstrategoxtc) $(nobase_pkgdata_DATA)

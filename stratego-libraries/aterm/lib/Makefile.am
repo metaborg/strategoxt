@@ -8,7 +8,7 @@ stratego/aterm/PrettyPrintRules.rtree : stratego/aterm/PrettyPrintRules.str
 
 nobase_data_DATA = libstratego-aterm.rtree libstratego-aterm.ctree
 lib_LTLIBRARIES  = libstratego-aterm.la
-EXTRA_DIST = $(atermlib) $(atermlib:.str=.rtree) libstratego-aterm.rtree
+EXTRA_DIST = $(atermlib) $(atermlib:.str=.rtree) $(nobase_data_DATA)
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-aterm.rtree libstratego-aterm.c $(atermlib:.str=.rtree)
 
