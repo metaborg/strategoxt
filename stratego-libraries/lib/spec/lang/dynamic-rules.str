@@ -220,11 +220,14 @@ strategies
    */
   dr-ignore-state(s|name) =
     where(
-      dr-new-rule-set
-      ; dr-switch-rule-set(|name) => rs
+      dr-new-rule-set => newrule
+      ; dr-switch-rule-set(|name) => oldrule
     )
   ; s
-  ; where(<dr-set-rule-set(|name)> rs)
+  ; where(
+      <dr-leave-scope> newrule
+      ; <dr-set-rule-set(|name)> oldrule
+    )
 
   /**
    * Apply s in a state where the current dynamic rules for names are ignored.
@@ -235,11 +238,14 @@ strategies
    */
   dr-ignore-states(s|names) =
     where(
-       <map(dr-new-rule-set)> names
-       ; zip(dr-switch-rule-set | names) => rss
+      newrules := <map(dr-new-rule-set)> names
+      ; zip(dr-switch-rule-set | names) => oldrules
     )
     ; s
-    ; where(<zip(dr-set-rule-set | names)> rss)
+    ; where(
+        <list-loop(dr-leave-scope)> newrules  
+      ; <zip(dr-set-rule-set | names)> oldrules
+      )
 
 strategies
 
