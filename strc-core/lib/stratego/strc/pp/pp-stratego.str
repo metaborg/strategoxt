@@ -67,7 +67,7 @@ strategies
   + ArgOption("-la", id,
               !"-la <name>         Ignored (for command-line compatibility with strc).")
 
-  internal pass-includes =
+  pass-includes =
     <get-config<+![]> "-I" ; foldr(id, conc, !["-I", <id>])
 
 strategies
