@@ -71,7 +71,7 @@ strategies
     //  )
 
     // PATTERN MATCH COMPILATION
-    ; olevel3(
+    ; olevel4(
 	compile-match
 	; desugar-case
         //; save-as2(!".opt5")

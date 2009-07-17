@@ -73,7 +73,7 @@ libstratego-lib-posix-xsi.c libstratego-lib-posix-xsi.rtree : $(fullstrategolib:
 	rm libstratego-lib-posix-xsi.str
 
 libstratego-lib.ctree: $(fullstrategolib:.str=.rtree)
-	$(STRC_UNINSTALLED) $(STRCFLAGS) -O 1 -F -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib.ctree
+	$(STRC_UNINSTALLED) $(STRCFLAGS) -O 2 -F -c --library -i stratego-lib-posix-xsi.rtree -o libstratego-lib.ctree
 
 fullstrategolib = \
   libstrategolib.str \

@@ -112,6 +112,9 @@ rules
 */
 
   check-constructors =
+    AnnoDef(id, check-constructors)
+
+  check-constructors =
     ?RDefT(f, xs, ys, <id>)
     ; check-constructors'(|(f, <length> xs, <length> ys), "rule")
 

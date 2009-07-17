@@ -22,6 +22,9 @@ strategies
 
 rules
 
+  RenameSDef :
+    AnnoDef(a*, def) -> AnnoDef(a*, <RenameSDef> def)
+
   RenameSDef : 
     SDefT(x, args1, args2, s) -> SDefT(y, args1, args2, s)
     where <length> args1 => n

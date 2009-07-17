@@ -11,11 +11,7 @@ strategies
    * @type Stratego AST -> String
    */
   pp-stratego-fragment =
-    xtc-temp-files(
-      write-to
-    ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
-    ; ?FILE(<read-text-file>)
-    )
+    pp-stratego-string
     
   /**
    * @param Name of strategy (String)

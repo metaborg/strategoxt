@@ -119,9 +119,10 @@ strategies
 
   def-tvars =
     <union> (<tvars>,
-             <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+             < try(?AnnoDef(_, <id>));
+              (?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
               <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
-              <+ ![]
+              <+ ![])
              >
             )
 
@@ -1009,6 +1010,9 @@ strategies
 
 
 strategies
+
+  def-name :
+    AnnoDef(_, def) -> <def-name> def
 
   def-name :
     |[ rules( f(a1*|a2*) : t1 -> t2 where s ) ]| -> (f, (<length> a1*, <length> a2*))

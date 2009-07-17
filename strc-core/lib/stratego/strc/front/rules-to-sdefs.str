@@ -8,11 +8,13 @@ imports Stratego-Sugar
 strategies
 
   rules-to-sdefs =
-    alltd(Strategies(map(try(RDtoSD + DeclareVariables); replace-call-and-rdef)))
+    alltd(Strategies(map(try(ignore-anno-def(RDtoSD + DeclareVariables)); replace-call-and-rdef)))
 
   rules-to-sdefs-def =
-    try(RDtoSD <+ DeclareVariables)
-    ; replace-call-and-rdef
+    ignore-anno-def(
+      try(RDtoSD <+ DeclareVariables)
+      ; replace-call-and-rdef
+    )
 
 rules
 
@@ -28,7 +30,7 @@ rules
     SDef(f, xs, s) -> SDefT(f, xs, [], Scope(<tvars> s, s))
 
   DeclareVariables :
-    SDefT(f, xs, ys, s) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), s))
+    SDefT(f, xs, ys, s){a*} -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), s)){a*}
     where <declared-vars> ys => ys'
         ; <tvars> s => vs
 

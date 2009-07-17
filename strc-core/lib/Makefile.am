@@ -63,7 +63,7 @@ libstrc.rtree libstrc.c : $(strclib:.str=.rtree)
 
 # stratego/strc/parse/Stratego.tbl
 libstrc.ctree : $(strclib:.str=.rtree) 
-	$(STRC)/bin/strc -F -c --library -i $(srcdir)/strc.str -o libstrc.ctree -O 2 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
+	$(STRC)/bin/strc -F -c --library -i $(srcdir)/strc.str -o libstrc.ctree -O 1 --verbose 1 $(STRCFLAGS) $(STRINCLUDES)
 
 # stratego/strc/parse/Stratego.tbl : ../../stratego-front/syn/Stratego.tbl
 # 	mkdir -p $(top_builddir)/lib/stratego/strc/parse

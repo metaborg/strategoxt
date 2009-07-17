@@ -216,7 +216,7 @@ strategies
    * Return a list of strategy names which invoke strategy "To"
    */
   caller(To) = 
-    ?SDefT(name, _, _,def)
+    ignore-anno-def(?SDefT(name, _, _,def))
     ; To => to
     ; !def
     ; collect( CallT(SVar(?to), id, id);!to )
@@ -228,7 +228,7 @@ strategies
    * "prop" holds 
    */
   sdef-with-property(prop) =
-    ?SDefT(name, _, _, <id>)
+    ignore-anno-def(?SDefT(name, _, _, <id>))
     ; collect(prop)
     ; not([])
     ; map( \ match -> (name, match) \ )

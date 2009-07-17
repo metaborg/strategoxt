@@ -391,6 +391,9 @@ rules
 
   TranslateStrat(|S,F) :
     Fail() -> stm|[ goto ~id:F; ]|
+  
+  TranslateStrat(|S,F) :
+    Override() -> <fatal-err(|"override call not supported on this platform")>
 
   TranslateStrat(|S,F) :
     Scope(xs, s) -> 

@@ -16,7 +16,7 @@ strategies
     <+ all(report-ambs)
 
   report-amb-definition(s) =
-    (?SDef(name,_,_) <+ ?SDefNoArgs(name,_) <+ ?SDefT(name,_,_,_))
+    (ignore-anno-def(?SDef(name,_,_) <+ ?SDefNoArgs(name,_) <+ ?SDefT(name,_,_,_)))
     ; {| current-definition
        : rules( current-definition : _ -> ("strategy", name) )
        ; all(s)
@@ -32,11 +32,6 @@ strategies
   report-amb =
     ?amb(_) 
     ; where( current-definition => (type, name) )
-    ; xtc-temp-files( 
-        write-to
-        ; xtc-transform(!"pp-stratego",!["--abstract"])
-        ; FILE(read-text-file => pp)
-      )
     ; log(|Error(),["Ambiguity found in ",type, " ",name])
-    ; say(!pp) 
+    ; say(pp-stratego-string) 
  

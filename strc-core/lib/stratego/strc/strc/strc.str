@@ -69,7 +69,7 @@ strategies
         ; copy-to(strc-getoutfile(!".rtree") => file1)
 	; log(|Info(), ["Abstract syntax in '", file1, "'"])
 
-        ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
+        ; xtc-io-transform(pp-stratego-string)
         ; copy-to(strc-getoutfile(!".str") => file2)
 	; log(|Info(), ["Concrete syntax in '", file2, "'"])
       | "Export of externals succeeded"

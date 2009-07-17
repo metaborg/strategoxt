@@ -251,6 +251,7 @@ strategies
 
   Translate = //debug(!"Translate: "); 
     SDefIgnore
+    <+ SDefFail
     <+ is-closure-alloc
     <+ fragment(SDefToDeclaration|"FunctionSig")
        ; fragment(SDefToRegistration|"FunctionReg")
@@ -262,12 +263,23 @@ strategies
   SDefIgnore =
     ?Def|[ f(a1* | a2*) = s ]|
     ; where( !f => "DYNAMIC__CALLS_0_0" )
+  
+  SDefFail =
+    ?AnnoDef(a*, SDefT(s, _, _, _))
+    ; not(<[Override + Internal]> a*)
+    ; !(a*, s)
+    ; fatal-err(|"strategy modifier is not implemented for this platform")
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
     dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <not(is-local-function)> f
         ; ps := <map(TranslateVarDec)> [a1*,a2*]
+    
+  SDefToDeclaration :
+    AnnoDef(Internal(), Def|[ f(a1* | a2*) = s ]|) ->
+    dec|[ static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
+    where ps := <map(TranslateVarDec)> [a1*,a2*]
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
@@ -327,7 +339,11 @@ strategies
   // TODO: insert escaping strategy arguments in frame
 
   TranslateDef :
-    Def|[ f~{t*}(a1*|a2*) = s ]| -> <try(make-static)> 
+    AnnoDef(Internal(), def) -> def'
+    with def' := <make-internal-static> <TranslateDef> def
+
+  TranslateDef :
+    Def|[ f~{t*}(a1*|a2*) = s ]| -> <try(make-local-static)> 
     |[ 
        ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
@@ -371,15 +387,15 @@ strategies
     [Offsets(i,j)|_] -> [ stm|[ sl_vars(~exp:<mk-int-const>j); ]| ]
     where <not(0)> j
 
-
-
-  make-static :
+  make-local-static :
     |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
-    //<debug(!"static: ")> 
     |[ static ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]|
-    where //debug(!"make-static: ");
+    where
 	  <is-local-function> f
-	//; debug(!"is local fun")
+
+  make-internal-static :
+    |[ ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]| -> 
+    |[ static ATerm ~id:f(~param-dec*:args) { ~stm*:stms } ]|
 
   is-local-function =
     explode-string

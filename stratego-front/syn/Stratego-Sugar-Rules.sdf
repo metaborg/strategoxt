@@ -5,6 +5,8 @@ exports
   sorts RuleDef
   context-free syntax
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
+    
+    Anno+ RuleDef               -> Def {cons("AnnoDef")}
 
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
 
