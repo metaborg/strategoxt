@@ -100,15 +100,21 @@ rules
      import org.strategoxt.lang.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
+     import org.spoofax.interpreter.library.AbstractPrimitive;
+     import org.spoofax.interpreter.core.VarScope;
+     import java.util.ArrayList;
          
      @SuppressWarnings({"unused"})
      public class x_name {
 
      protected static final boolean TRACES_ENABLED = e_traces;
      protected static ITermFactory constantFactory;
+     
+     private static ArrayList<InteropStrategyDef> interopStrategyCache;
 
      ~*cnst-decls
      ~*cnstr-decls
+     ~*prim-decls
      
      public static void init(Context context) {
        ITermFactory termFactory = context.getFactory();
@@ -120,7 +126,24 @@ rules
        ~*import-inits
        ~*def-inits
        context.postInit("~x_name");
+       initPrimitives(context); // must be last
      }
+
+     ~*main
+     
+      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
+        init(compiledContext);
+        synchronized (x_name.class) {
+          if (interopStrategyCache == null) {
+            interopStrategyCache = new ArrayList<InteropStrategyDef>(i_defs);
+            registerInteropCache(context, compiledContext, interopStrategyCache);
+          }
+        }
+        VarScope svars = context.getVarScope();
+        for (InteropStrategyDef svar : interopStrategyCache) {
+          svars.addSVar(svar.getName(), svar);
+        }
+      }    
      
      ~*<java-split-method> |[
        private static void initConstructors(ITermFactory termFactory) {
@@ -133,8 +156,16 @@ rules
          ~*cnst-inits
        }
      ]|
-
-     ~*main
+     
+     ~*<java-split-method> |[
+       private static void initPrimitives(Context context) {
+         ArrayList<String> failures = new ArrayList<String>();
+         ~*prim-inits
+         // TODO: Report missing primitives
+         // if (failures.size() > 0)
+         //   throw new StrategoException("Primitive(s) not defined: " + failures); 
+       }
+     ]|
      ~*constant
 
      ~*constant-defs
@@ -152,6 +183,7 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; register      := <java-register-method> defs
+    ; i_defs        := <write-to-string> <length> defs
     ; constant      := <java-constant-methods>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
@@ -166,6 +198,8 @@ rules
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   ; lifted-defs   := <bagof-LiftedDef>
+  ; prim-decls    := <bagof-PrimitiveDecl>
+  ; prim-inits    := <bagof-PrimitiveInit; concat>
   ; cnstr-decls   := <bagof-ConstructorDecl>
   ; cnstr-inits   := <bagof-ConstructorInit>
   ; def-inits     := <bagof-DefInit>
@@ -252,7 +286,7 @@ rules
         }
       }
      
-      protected static IStrategoTerm getConstant(ITermFactory factory, ITermReference constant) {
+      protected static IStrategoTerm getConstant(ITermFactory factory, TermReference constant) {
         if (factory == constantFactory) {
           return constant.get();
         } else if (factory != null) {
@@ -263,11 +297,13 @@ rules
       }
     ]|
   
-  java-register-method :
+  java-register-method : // TODO: cache all strategy additions into interopStrategyDefs
     defs ->
     <java-split-method> |[
-      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        init(compiledContext);
+      private static void registerInteropCache(
+          org.spoofax.interpreter.core.IContext context, Context compiledContext, 
+          ArrayList<InteropStrategyDef> svars)
+      {
         bstm*
       }
     ]|
@@ -276,7 +312,7 @@ rules
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
-    |[ context.getVarScope().addSVar("~x", new InteropStrategyDef(x.class, context, compiledContext)); ]|
+    |[ svars.add(new InteropStrategyDef(x.class, context, compiledContext)); ]|
 
 rules
 
@@ -388,7 +424,7 @@ rules
     ; lifted-tvar*   := <collect-lifted-tvars> def
     ; lifted-svar*   := <collect-lifted-svars> def
     ; lifted-sfield* := <map(\y -> class-body-dec |[ Strategy y;      ]|\)> lifted-svar*
-    ; lifted-tfield* := <map(\y -> class-body-dec |[ ITermReference y; ]|\)> lifted-tvar*
+    ; lifted-tfield* := <map(\y -> class-body-dec |[ TermReference y; ]|\)> lifted-tvar*
     ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
     with
       if !lifted-tvar* => lifted-svar* => [] then
@@ -676,6 +712,8 @@ strategies
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
     with
+      // They could be supported through the interopcontext,
+      // but they're never used anyway
       fatal-err(|"Think again. Dynamic calls are not supported")
 
   translate-PrimT :
@@ -683,9 +721,23 @@ strategies
     <java-check-unbound-args(|t*)>  
     bstm* |[
       bstm_init*
-      term = context.invokePrimitive("~f", term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
+      term = context.invokePrimitive(x_f, term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) break Fail;
     ]|
+    with
+      x_f := <conc-strings> ("_prim", <jify> f)
+    with
+      <IsPrimitiveDecl> f
+    <+
+      rules(
+        IsPrimitiveDecl: f
+        PrimitiveDecl  :+= class-body-dec |[ protected static AbstractPrimitive x_f; ]|
+        PrimitiveInit  :+= bstm* |[
+          x_f = context.lookupPrimitive("~f");
+          if (x_f == null)
+            failures.add("~f");
+        ]|
+      )
     with
       lifted-decls-wrap(
         e_s*  := <map(lifted-strategy-to-instance)> s*
