@@ -86,7 +86,7 @@ smalljar :
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
+ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar $(BASEPATH)/share/java/junit-3.8.1.jar $(BASEPATH)/share/java/jjtraveler-0.4.3.jar
 	([ -d ext-lib ] || mkdir ext-lib); \
 	cat $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd ext-lib; $(JAR) x); \
 	cat $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd ext-lib; $(JAR) x); \
@@ -98,11 +98,11 @@ ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org
 lib/org/strategoxt/libstratego_lib.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJOPTIONS)
 
-lib/org/strategoxt/libstratego-xtc.rtree : $(STRATEGOXT)/share/libstratego-xtc-posix-xsi.rtree
+lib/org/strategoxt/libstratego-xtc.rtree : $(STRATEGOXT)/share/xtc/stratego-xtc-posix-xsi.rtree
 	cp $< $@
 
 lib/org/strategoxt/libstratego_xtc.java : lib/org/strategoxt/libstratego-xtc.rtree ../trans/strj
-	../trans/strj -I $(STRATEGOXT)/share/xtc -i $< -o $@ $(STRJOPTIONS) -la stratego-lib -D GetInternalDefaultXtcRepository=None
+	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/xtc -i $< -o $@ $(STRJOPTIONS) -la stratego-lib -D GetInternalDefaultXtcRepository=None
 
 lib/org/strategoxt/libstratego_sglr.java : $(STRATEGOXT)/share/libstratego-sglr.ctree ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share -i $< -o $@ $(STRJOPTIONS) -la stratego-lib -la stratego-xtc
@@ -149,7 +149,7 @@ runtime/org/strategoxt/lang/compat/override/xtc_compat.java : runtime/org/strate
 	../trans/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat.override -la stratego-lib -la stratego-xtc
 
 runtime/org/strategoxt/lang/compat/override/strc_compat.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj
-	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(JAVA_FRONT)/share/java-front -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat.override -la stratego-lib -la stratego-xtc -la org.strategoxt.libstrc
+	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(STRATEGOXT)/share/stratego-lib -I $(JAVA_FRONT)/share/java-front -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat.override -la stratego-lib -la stratego-xtc -la org.strategoxt.libstrc
 
 ###### COMPILER #######
 

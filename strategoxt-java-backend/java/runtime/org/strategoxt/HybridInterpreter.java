@@ -3,6 +3,7 @@ package org.strategoxt;
 import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
+import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 
@@ -32,7 +33,6 @@ public class HybridInterpreter extends Interpreter {
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
 		
-		// TODO: Optimize - could this be shared across threads?
 		libstratego_aterm.registerInterop(context, compiledContext);
 		libstratego_lib.registerInterop(context, compiledContext);
 		libstratego_rtg.registerInterop(context, compiledContext);
@@ -41,12 +41,25 @@ public class HybridInterpreter extends Interpreter {
 		libstratego_sglr.registerInterop(context, compiledContext);
 		libstratego_tool_doc.registerInterop(context, compiledContext);
 		libstratego_rtg.registerInterop(context, compiledContext);
+		libstratego_gpp.registerInterop(context, compiledContext);
 		libjava_front.registerInterop(context, compiledContext);
 		libstrc.registerInterop(context, compiledContext);
 	}
 	
 	public Context getCompiledContext() {
 		return compiledContext;
+	}
+	
+	@Override
+	public void addOperatorRegistry(IOperatorRegistry or) {
+		compiledContext.addOperatorRegistry(or);
+		getContext().addOperatorRegistry(or);
+	}
+	
+	@Deprecated
+	@Override
+	public void addOperatorRegistry(String domainName, IOperatorRegistry or) {
+		compiledContext.addOperatorRegistry(or);
 	}
 
 }

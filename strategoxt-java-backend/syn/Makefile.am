@@ -8,7 +8,7 @@ SDFINCLUDES     = \
 	-I ${JAVA_FRONT}/share/java-front-syntax/ \
 	-Idef ${JAVA_FRONT}/share/java-front/Stratego-Java-EBlock.def  
 
-CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
+CLEANFILES 	= $(wildcard *.tbl) $(wildcard *.dep) $(TESTS)
 BOOTCLEANFILES	= $(wildcard *.def) 
 
 EXTRA_DIST 	= Stratego-Stratego-Java-15.tbl $(wildcard *.sdf)

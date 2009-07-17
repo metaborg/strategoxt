@@ -137,15 +137,18 @@ public class Context extends StackTracer {
     }
     
     public final IStrategoTerm invokePrimitive(String name, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
-    	AbstractPrimitive primitive = lookupOperator(name);
+    	AbstractPrimitive primitive = lookupPrimitive(name);
     	if (primitive == null)
-    		throw new StrategoException("Illegal primitive invoked: " + name);
+    		throw new StrategoException("Primitive not defined: " + name);
 
     	return invokePrimitive(primitive, term, sargs, targs);
     }
 
 	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
-		interopContext.setCurrent(term);
+    	if (primitive == null)
+    		throw new StrategoException("Calling undefined primitive");
+		
+    	interopContext.setCurrent(term);
 		try {
 			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(sargs), targs)) {
 				return interopContext.current();
@@ -162,7 +165,7 @@ public class Context extends StackTracer {
 		}
 	}
 
-	public AbstractPrimitive lookupOperator(String name) {
+	public AbstractPrimitive lookupPrimitive(String name) {
 		if (lastPrimitiveName1 == name) {
 			return lastPrimitive1;
 		} else if (lastPrimitiveName2 == name) {

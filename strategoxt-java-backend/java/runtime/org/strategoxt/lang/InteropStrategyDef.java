@@ -24,23 +24,22 @@ public class InteropStrategyDef extends SDefT {
 	
 	private final Context compiledContext;
 	
-	private final IContext context;
+	private final VarScope scope;
 	
 	private final Class<? extends Strategy> strategyClass;
 	
 	private Strategy strategy;
 
-	// TODO: Optimize - take a Class<Strategy> or String argument for lazy loading
 	public InteropStrategyDef(Class<? extends Strategy> strategyClass, IContext context, Context compiledContext) {
 		this.strategyClass = strategyClass;
 		this.compiledContext = compiledContext;
-		this.context = context;
+		this.scope = context.getVarScope();
 	}
 
 	public InteropStrategyDef(Strategy strategy, IContext context, Context compiledContext) {
 		this.strategyClass = null;
 		this.compiledContext = compiledContext;
-		this.context = context;
+		this.scope = context.getVarScope();
 		this.strategy = strategy;
 	}
 
@@ -103,7 +102,7 @@ public class InteropStrategyDef extends SDefT {
 	
 	@Override
 	public VarScope getScope() {
-		return context.getVarScope();
+		return scope;
 	}
 	
 	@Override
