@@ -57,6 +57,8 @@ install-data-local::
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-gpp.la -l $(prefix)/lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-rtg.rtree -l $(prefix)/share -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-rtg.la -l $(prefix)/lib -V $(VERSION)
+	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-sdf.rtree -l $(prefix)/share -V $(VERSION)
+	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-sdf.la -l $(prefix)/lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-aterm.rtree -l $(prefix)/share -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-aterm.la -l $(prefix)/lib -V $(VERSION)
 	$(XTC_PROG) register -r $(DESTDIR)$(REPOSITORY) -t libstratego-tool-doc.rtree -l $(prefix)/share -V $(VERSION)
