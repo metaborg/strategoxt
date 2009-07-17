@@ -30,6 +30,8 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 	}
 
 	private void initFilterSettings() {
+		filterSettings.setFilterAny(true);
+		
 		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes_on") {
 			@Override
 			public void set() {

@@ -330,6 +330,7 @@ rules
     AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        private static final class x' extends x {
+         private static final x outer = x.instance;
          ~(body)
          @Override public String getName() { return "~x"; }
        }
