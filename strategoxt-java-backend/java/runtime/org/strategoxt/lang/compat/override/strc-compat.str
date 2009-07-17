@@ -25,6 +25,7 @@ strategies
         case "libstratego-aterm":    import-term(libstratego-aterm.rtree)
         case "libstratego-gpp":      import-term(libstratego-gpp.rtree)
         case "libstratego-tool-doc": import-term(libstratego-tool-doc.rtree)
+        case "libstratego-parallel": !Module("libstratego-parallel", [])
         case "libstrc":              import-term(libstrc.rtree)
         case "libjava-front":
           // prefer local (-I) definition
