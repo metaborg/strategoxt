@@ -298,7 +298,7 @@ rules
 
 rules
 
-  translate-constant-definition : // TODO: check if contant definition name not taken
+  translate-constant-definition : // TODO: check if contant strategy definition name not taken
     (name, value) -> def'
     with
       name'  := <conc-strings> (<cify> name, "_0_0")

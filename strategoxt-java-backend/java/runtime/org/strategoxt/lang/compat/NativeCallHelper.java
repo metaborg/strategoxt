@@ -53,8 +53,6 @@ class StreamCopier extends Thread {
 			
 			reader.close();
 			output.flush();
-			if (output != System.out && output != System.err)
-				output.close();
 		} catch (IOException e) {
 			throw new StrategoException("IO Exception redirecting output from Process", e);
 		}

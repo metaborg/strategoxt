@@ -39,20 +39,22 @@ public class InteropSDefT extends DynamicStrategy {
 	}
 	
 	@Override
-	public IStrategoTerm invokeDynamic(Context compilerContext, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
+	public IStrategoTerm invokeDynamic(Context compiledContext, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
 		VarScope oldScope = context.getVarScope();
 		try {
+		    VarScope defScope = definition.getScope();
 			if (sargs.length != 0 || targs.length != 0) {
-				VarScope newScope = new VarScope(oldScope);
-				assignParameters(compilerContext, newScope, sargs, targs);
-				context.setVarScope(newScope);
+				defScope = new VarScope(defScope);
+				assignParameters(compiledContext, defScope, sargs, targs);
+				context.setVarScope(defScope);
 			}
 			
 			context.setCurrent(current);
+			context.setVarScope(defScope);
 			boolean success = definition.evaluate(context);
 			return success ? context.current() : null;
 		} catch (InterpreterException e) {
-			throw new StrategoException("Exception in interpreter", e);
+			throw new StrategoException("Exception in interpreter: " + e.getMessage(), e);
 		} finally {
 			context.restoreVarScope(oldScope);
 		}

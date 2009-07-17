@@ -54,6 +54,10 @@ public class InteropContext implements IContext {
 	public IOperatorRegistry getOperatorRegistry(String domain) {
 		return context.getOperatorRegistry(domain);
 	}
+	
+	public void addOperatorRegistry(IOperatorRegistry registry) {
+		context.addOperatorRegistry(registry);
+	}
 
 	public StackTracer getStackTracer() {
 		return context;
@@ -72,7 +76,7 @@ public class InteropContext implements IContext {
 	}
 
 	public AbstractPrimitive lookupOperator(String name) {
-        return context.lookupOperator(name);
+        return context.lookupPrimitive(name);
 	}
 
 	public SDefT lookupSVar(String n) throws InterpreterException {

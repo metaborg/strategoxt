@@ -28,6 +28,13 @@ rules
     , <set-config> ("--library", ()); !()
     , !"--library | --lib  Build a library instead of an application"
     )
+  + Option(
+      "--xtc-repo"
+    , warn-msg(|"Option --xtc-repo is not supported on this platform");
+      <conc-strings> ("GetInternalDefaultXtcRepository=\"", <id>, "\"");
+      <post-extend-config> ("-D", [<parse-define-option>]); !()
+    , fail // undocumented
+    )
   
   s2j-general-options =
     ArgOption(

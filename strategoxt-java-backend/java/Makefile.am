@@ -149,7 +149,7 @@ runtime/org/strategoxt/lang/compat/override/xtc_compat.java : runtime/org/strate
 	../trans/strj -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat.override -la stratego-lib -la stratego-xtc
 
 runtime/org/strategoxt/lang/compat/override/strc_compat.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj
-	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(STRATEGOXT)/share/stratego-lib -I $(JAVA_FRONT)/share/java-front -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat.override -la stratego-lib -la stratego-xtc -la org.strategoxt.libstrc
+	../trans/strj -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(STRATEGOXT)/share/xtc -I $(STRATEGOXT)/share/stratego-lib -I $(JAVA_FRONT)/share/java-front -i $< -o $@ $(STRJOPTIONS) -p org.strategoxt.lang.compat.override -la stratego-lib -la stratego-xtc -la org.strategoxt.libstrc
 
 ###### COMPILER #######
 
