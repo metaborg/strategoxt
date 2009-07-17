@@ -101,7 +101,6 @@ rules
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
-     import org.spoofax.interpreter.core.VarScope;
      import java.util.ArrayList;
          
      @SuppressWarnings({"unused"})
@@ -109,8 +108,6 @@ rules
 
      protected static final boolean TRACES_ENABLED = e_traces;
      protected static ITermFactory constantFactory;
-     
-     private static ArrayList<InteropStrategyDef> interopStrategyCache;
 
      ~*cnst-decls
      ~*cnstr-decls
@@ -130,20 +127,6 @@ rules
      }
 
      ~*main
-     
-      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        init(compiledContext);
-        synchronized (x_name.class) {
-          if (interopStrategyCache == null) {
-            interopStrategyCache = new ArrayList<InteropStrategyDef>(i_defs);
-            registerInteropCache(context, compiledContext, interopStrategyCache);
-          }
-        }
-        VarScope svars = context.getVarScope();
-        for (InteropStrategyDef svar : interopStrategyCache) {
-          svars.addSVar(svar.getName(), svar);
-        }
-      }    
      
      ~*<java-split-method> |[
        private static void initConstructors(ITermFactory termFactory) {
@@ -183,7 +166,6 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; register      := <java-register-method> defs
-    ; i_defs        := <write-to-string> <length> defs
     ; constant      := <java-constant-methods>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
@@ -297,13 +279,11 @@ rules
       }
     ]|
   
-  java-register-method : // TODO: cache all strategy additions into interopStrategyDefs
+  java-register-method : // TODO: do interop strategy additions in an on-demand fashion
     defs ->
     <java-split-method> |[
-      private static void registerInteropCache(
-          org.spoofax.interpreter.core.IContext context, Context compiledContext, 
-          ArrayList<InteropStrategyDef> svars)
-      {
+      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
+        init(compiledContext);
         bstm*
       }
     ]|
@@ -312,7 +292,7 @@ rules
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
-    |[ svars.add(new InteropStrategyDef(x.class, context, compiledContext)); ]|
+    |[ context.getVarScope().addSVar("~x", new InteropStrategyDef(x.class, context, compiledContext)); ]|
 
 rules
 
