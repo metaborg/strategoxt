@@ -1,4 +1,14 @@
+/**
+ * strj options
+ *
+ * @see s2j-options
+ *
+ * @author Lennart Kats
+ */
 module strj-options
+
+imports
+  s2j-options
 
 strategies
 

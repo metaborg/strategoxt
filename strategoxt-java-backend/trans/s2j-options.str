@@ -1,6 +1,8 @@
 /**
  * s2j options
  *
+ * @see strj-options
+ *
  * @author Lennart Kats
  */
 module s2j-options
@@ -43,22 +45,28 @@ rules
   + ArgOption(
       "-D"
     , <post-extend-config> ("-D", [<parse-define-option>]); !()
-    ,!"-D name=value      Define a constant value strategy"
+    , !"-D name=value      Define a constant value strategy"
     )
   + ArgOption(
       "-sc"
     , <set-config> ("-sc", <id>); !()
-    ,!"-sc <on|off>       Assume all term constructors are shared (default: on)"
+    , !"-sc <on|off>       Assume all term constructors are shared (default: on)"
     )
   + ArgOption(
       "-O"
     , <set-config>("-O", <string-to-int; strc-set-opt-level>); !()
-    , !"-O n              Optimization level (0 = no optimization)"
+    , !"-O n               Optimization level (0 = no optimization)"
     )
     
   translate-default-library =
-    if "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" + "stratego-gpp" + "strc" + "stratego-tool-doc" + "java-front" then
-      <conc-strings> ("org.strategoxt.lib", <id>)
+    switch id
+      case "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" +
+           "stratego-gpp" + "strc" + "stratego-tool-doc" + "java-front":
+        <conc-strings> ("org.strategoxt.lib", <id>)
+      case "stratego-parallel":
+        <conc-strings> ("org.strategoxt.lang.parallel.lib", <id>)
+      otherwise:
+        id
     end
   ; if not(is-substring(!".")) then
       err(|"Imported libraries must include a package name")
