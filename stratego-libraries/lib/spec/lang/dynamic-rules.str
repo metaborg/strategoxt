@@ -123,6 +123,48 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  /**
+   * Scope all dynamic rules.
+   */
+  dr-scope-all(s) =
+    {| DrScopedRules :
+      finally(
+        dr-scope-all-start; s
+      , dr-scope-all-end
+      )
+    |}
+
+  /**
+   * Start a new scope for all dynamic rules.
+   */
+  dr-scope-all-start =
+    where(
+      table := Hashtable(<dr-rule-sets-hashtable>);
+      names := ["DrScopedRules" | <hashtable-keys> table];
+      
+      dr-begin-scopes(|names);
+      rules(DrScopedRules := names)
+    )
+
+  /**
+   * End a scope for all dynamic rules.
+   */
+  dr-scope-all-end =
+    where(
+      table := Hashtable(<dr-rule-sets-hashtable>);
+      names := <DrScopedRules>;
+      
+      dr-end-scopes(|names);
+  
+      // Remove other, newly defined rules
+      <diff> (<hashtable-keys> table, names);
+      list-loop(
+        { key: ?key;
+          <hashtable-remove(|key)> table
+        }
+      )
+    )
+
   dr-scopes(s | names) =
     dr-begin-scopes(|names)
     ; (s < dr-end-scopes(|names)

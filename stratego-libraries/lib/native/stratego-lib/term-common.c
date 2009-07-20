@@ -206,7 +206,7 @@ ATerm SSL_address(ATerm t)
 ATerm SSL_checksum(ATerm t) {
   unsigned char *digest = ATchecksum(t);
 
-  char buf[32] ;
+  char buf[33] ;
   int i, offset = 0;
 
   for (i=0; i<16 ; i++) {
