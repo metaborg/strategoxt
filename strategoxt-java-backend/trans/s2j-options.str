@@ -20,7 +20,11 @@ rules
     )
   + ArgOption(
       "-la"
-    , <post-extend-config> ("-la", [<translate-default-library>]); !()
+    , if is-substring(!"/") + is-substring(!"\\") then
+        warn(|"Ignoring library import: must follow format packagename.ClassName")
+      else
+        <post-extend-config> ("-la", [<translate-default-library>]); !()
+      end
     , !"-la <name>         Include library <name>"
     )
   + Option(
@@ -64,20 +68,29 @@ rules
     , !"-O n               Optimization level (0 = no optimization)"
     )
     
+  // For compatibility, allow a number of built-in library names
   translate-default-library =
     switch id
       case "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" +
-           "stratego-gpp" + "strc" + "stratego-tool-doc" + "java-front":
+           "stratego-gpp" + "strc" + "stratego-tool-doc" + "stratego-sdf" + "java-front":
         <conc-strings> ("org.strategoxt.lib", <id>)
+
       case "stratego-parallel":
         <conc-strings> ("org.strategoxt.lang.parallel.lib", <id>)
+
+      case not(is-substring(!".")):
+        err(|"Imported libraries must follow format packagename.ClassName"); fail
+      
       otherwise:
         id
     end
-  ; if not(is-substring(!".")) then
-      err(|"Imported libraries must include a package name")
-    ; fail
-    end
+  
+  // For compatibility, ignore all built-in library paths
+  // (e.g., -la /home/.../java-front.la)
+  translate-default-library-path =
+    base-filename;
+    remove-extension;
+    translate-default-library
  
   parse-define-option =
     risky(

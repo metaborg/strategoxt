@@ -8,6 +8,8 @@ imports
 
 strategies
 
+  // TODO: move out of 'lib' directory
+
   dr-scope-all-verbose(s) =
     {| DrScopedRules :
       dr-scope-all-start
@@ -25,35 +27,3 @@ strategies
       end
     |}
 
-  dr-scope-all(s) =
-    {| DrScopedRules :
-      finally(
-        dr-scope-all-start; s
-      , dr-scope-all-end
-      )
-    |}
-
-  dr-scope-all-start =
-    where(
-      table := Hashtable(<dr-rule-sets-hashtable>);
-      names := ["DrScopedRules" | <hashtable-keys> table];
-      
-      dr-begin-scopes(|names);
-      rules(DrScopedRules := names)
-    )
-
-  dr-scope-all-end =
-    where(
-      table := Hashtable(<dr-rule-sets-hashtable>);
-      names := <DrScopedRules>;
-      
-      dr-end-scopes(|names);
-  
-      // Remove other, newly defined rules
-      <diff> (<hashtable-keys> table, names);
-      list-loop(
-        { key: ?key;
-          <hashtable-remove(|key)> table
-        }
-      )
-    )

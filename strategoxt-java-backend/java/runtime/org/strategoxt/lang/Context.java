@@ -32,7 +32,7 @@ public class Context extends StackTracer {
 
     private final List<IOperatorRegistry> operatorRegistries;
     
-    private final CompatManager compat = new CompatManager();
+    private final CompatManager compat = new CompatManager(this);
     
     private final UncaughtExceptionHandler exceptionHandler =
     	new UncaughtExceptionHandler(this);
@@ -52,6 +52,7 @@ public class Context extends StackTracer {
     	operatorRegistryMap.clear();
     	operatorRegistryMap.putAll(other.operatorRegistryMap);
     	operatorRegistries.addAll(other.operatorRegistries);
+    	compat.init();
     }
     
     public Context(ITermFactory factory) {
@@ -108,18 +109,12 @@ public class Context extends StackTracer {
         }
     }
     
-    public void postInit(String componentName) {
-    	exceptionHandler.setEnabled(true);
-    	compat.postInit(this, componentName);
+    public void registerComponent(String componentName) {
+    	compat.registerComponent(componentName);
     }
     
-    public void uninit() {
-    	exceptionHandler.setEnabled(false);
-    }
-    
-    @Override
-    protected void finalize() throws Throwable {
-    	uninit();
+    public void setStandAlone(boolean isStandAlone) {
+    	exceptionHandler.setEnabled(isStandAlone);
     }
     
     public IStrategoTerm invokeStrategyCLI(Strategy strategy, String appName, String[] args) {
@@ -156,7 +151,6 @@ public class Context extends StackTracer {
 				return null;
 			}
 		} catch (InterpreterExit e) {
-			uninit();
 			throw new StrategoExit(e.getValue());
 		} catch (InterpreterException e) {
 			throw new StrategoException("Exception in execution of primitive '" + primitive.getName() + "'", e);

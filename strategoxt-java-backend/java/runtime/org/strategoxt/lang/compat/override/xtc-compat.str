@@ -15,7 +15,7 @@ strategies
     warn-msg(|[<whoami <+ !"application">, " uses xtc to find non-local file ", <id>]);
     override
   <+
-    file-exists
+    id // HACK: try to find something on the path instead
   
   // TODO: also implement fork-and-wait
   //       (which is more lower-level and probably inlined in call)

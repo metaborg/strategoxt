@@ -11,17 +11,20 @@ import org.strategoxt.lang.compat.override.strc_compat;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class libstrc_compat {
-	private static boolean isInitialized;
+	
+	private libstrc_compat() {
+		// No instantiation
+	}
 	
 	public static void init(Context context) {
-		if (isInitialized) return;
-		isInitialized = true;
-		context.addOperatorRegistry(new OperatorRegistry());
 		strc_compat.init(context);
 	}
 	
-	private static class OperatorRegistry extends AbstractStrategoOperatorRegistry {
-		
+	public static AbstractStrategoOperatorRegistry getOperatorRegistry() {
+		return new OperatorRegistry();
+	}
+	
+	private static class OperatorRegistry extends AbstractStrategoOperatorRegistry {		
 		public OperatorRegistry() {
 			add(new StringValuePrimitive("VERSION_TERM", "x.y"));
 			add(new StringValuePrimitive("SVN_REVISION_TERM", "nnnn"));

@@ -113,17 +113,22 @@ rules
      ~*cnstr-decls
      ~*prim-decls
      
-     public static void init(Context context) {
+     public static Context init(Context context) {
        ITermFactory termFactory = context.getFactory();
        if (constantFactory == termFactory)
-         return;
+         return context;
        constantFactory = termFactory;
        initConstructors(termFactory);
        initConstants(termFactory);
        ~*import-inits
        ~*def-inits
-       context.postInit("~x_name");
+       context.registerComponent("~x_name");
        initPrimitives(context); // must be last
+       return context;
+     }
+     
+     public static Context init() {
+       return init(new Context());
      }
 
      ~*main
@@ -219,34 +224,31 @@ rules
   java-main-methods :
     _ ->
     |[
-     public static String testMain(String inputTerm) {
-        Context context = new Context();
-        init(context);
-        try {
-          IStrategoTerm result = x_main.instance.invoke(context, context.getFactory().parseFromString(inputTerm));
-          context.uninit();
-          return result == null ? null : result.toString();
-        } catch (StrategoExit exit) {
-          return null;
-        }
-     }
-        
      public static void main(String args[]) {
-        Context context = new Context();
-        init(context);
-        try {
-          IStrategoTerm result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
-          context.uninit();
-          if (result == null) {
-            System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
-            context.printStackTrace();
-            System.exit(1); 
-          } else {
-            System.out.println(result);
-          }
-        } catch (StrategoExit exit) {
-          System.exit(exit.getValue());
-        }
+       Context context = init();
+       context.setStandAlone(true);
+       try {
+         IStrategoTerm result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+         if (result == null) {
+           System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
+           context.printStackTrace();
+           System.exit(1); 
+         } else {
+           System.out.println(result);
+           System.exit(0);
+         }
+       } catch (StrategoExit exit) {
+         System.exit(exit.getValue());
+       }
+     }
+     
+     public static IStrategoTerm mainNoExit(String... args) throws StrategoExit {
+       return mainNoExit(new Context(), args);
+     }
+     
+     public static IStrategoTerm mainNoExit(Context context, String... args) throws StrategoExit {
+       init(context);
+       return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
      }
     ]|
     where
