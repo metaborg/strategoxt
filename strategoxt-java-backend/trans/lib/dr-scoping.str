@@ -1,14 +1,12 @@
 /**
  * @author Lennart Kats
  */
-module lib/dr-scoping
+module lib/dr-scoping // TODO: move out of 'lib' directory
 
 imports
   libstratego-lib
 
 strategies
-
-  // TODO: move out of 'lib' directory
 
   dr-scope-all-verbose(s) =
     {| DrScopedRules :
@@ -27,3 +25,28 @@ strategies
       end
     |}
 
+  // TODO: remove these definitions
+  internal dr-scope-all-start =
+    where(
+      table := Hashtable(<dr-rule-sets-hashtable>);
+      names := ["DrScopedRules" | <hashtable-keys> table];
+      
+      dr-begin-scopes(|names);
+      rules(DrScopedRules' := names)
+    )
+
+  internal dr-scope-all-end =
+    where(
+      table := Hashtable(<dr-rule-sets-hashtable>);
+      names := <DrScopedRules'>;
+      
+      dr-end-scopes(|names);
+  
+      // Remove other, newly defined rules
+      <diff> (<hashtable-keys> table, names);
+      list-loop(
+        { key: ?key;
+          <hashtable-remove(|key)> table
+        }
+      )
+    )

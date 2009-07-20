@@ -61,16 +61,17 @@ JARIN2=`find lib      | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!lib/!-C li
 JARIN3=`find compiler | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
 
 jar strategoxt.jar : ext-lib # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
-	$(JAR) cfm strategoxt.jar META-INF/MANIFEST.MF $(JARIN1)
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF $(JARIN2)
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF $(JARIN3)
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF -C ext-lib/ .
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.core/bin/ .
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/../../branches/spoofax-recovery/bin/ .
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.aterm/bin/ .
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin/ .
-	$(JAR) ufm strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin/ .
-	jar i strategoxt.jar
+	$(JAR) cfm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN1)
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN2)
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN3)
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C ext-lib/ .
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.core/bin/ .
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/../../branches/spoofax-recovery/bin/ .
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.aterm/bin/ .
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin/ .
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin/ .
+	jar i strategoxt.jar.tmp
+	mv strategoxt.jar.tmp strategoxt.jar
 
 smalljar :
 	$(JAR) cfm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN1)
