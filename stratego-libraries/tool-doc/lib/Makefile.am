@@ -9,7 +9,7 @@ stratego/tool-doc/PrettyPrint.rtree : stratego/tool-doc/PrettyPrint.str
 
 nobase_data_DATA = libstratego-tool-doc.rtree libstratego-tool-doc.ctree
 lib_LTLIBRARIES  = libstratego-tool-doc.la
-EXTRA_DIST = $(tooldoclib) $(tooldoclib:.str=.rtree) libstratego-tool-doc.rtree
+EXTRA_DIST = $(tooldoclib) $(tooldoclib:.str=.rtree) libstratego-tool-doc.rtree libstratego-tool-doc.ctree
 CLEANFILES = $(wildcard *.dep) 
 BOOTCLEANFILES = libstratego-tool-doc.rtree libstratego-tool-doc.c $(tooldoclib:.str=.rtree)
 
