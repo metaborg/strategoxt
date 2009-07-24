@@ -1,0 +1,157 @@
+/**
+ * Java output dead assignments elimination.
+ *
+ * Assumes all variables are declared only once per method,
+ * and that identifiers are not annotated.
+ *
+ * Treats all blocks as if they can be exited (using a 'break')
+ * at any time.
+ *
+ * @author Lennart Kats
+ */
+module java-dead-assigns
+
+imports
+  libjava-front
+
+strategies
+
+  java-dead-assigns-top =
+    alltd(
+      MethodDec(
+        ?MethodDecHead(_, _, _, Id("invoke"), _, _)
+      , {| IsUsed, IsAssigned:
+          where(x := "term")
+        ; rules(IsUsed+x: x -> <fail>)
+        ; dead-assigns-stm
+        |}
+      )
+    )
+  
+  dead-assigns-stm =
+    dead-assigns-assign-id
+  <+
+    dead-assigns-assign
+  <+
+    dead-assigns-decl
+  <+
+    dead-assigns-control
+  <+
+    [id | dead-assigns-stm]
+  ; [dead-assigns-stm | id]
+  <+
+    []
+  <+
+    fatal-err(|"Internal error: not supported by dead assignments optimization")
+  
+  // IsUsed scoping is used to ignore the effects of reassignments:
+    
+  dead-assigns-control =
+    [is-container-stm | id]
+  ; [id | {| IsUsed: dead-assigns-stm |}] // might not be reachable if breaked from
+  ; [dead-assigns-stm | id]
+  
+  dead-assigns-control =
+    If(id, {| IsUsed: dead-assigns-stm |})
+  ; If(dead-assigns-expr, id)
+  
+  dead-assigns-control =
+    If(id, {| IsUsed: dead-assigns-stm |}, {| IsUsed: dead-assigns-stm |})
+  ; If(dead-assigns-expr, id, id)
+  
+  dead-assigns-control =
+    While(dead-assigns-expr, id)
+  ; While(id, {| IsUsed: dead-assigns-stm |})
+  
+  dead-assigns-control =
+    Block({| IsUsed: dead-assigns-stm |})
+  
+  dead-assigns-control =
+    Labeled(id, {| IsUsed: dead-assigns-stm |})
+  
+  dead-assigns-control =
+    DoWhile(id, {| IsUsed: dead-assigns-stm |})
+  ; While(dead-assigns-expr, id)
+  
+  dead-assigns-control =
+    [Break(id) | {| IsUsed: dead-assigns-stm |}]
+
+  is-container-stm =
+    ?Labeled(_, _) + ?Block(_) + ?If(_, _) + ?If(_, _, _)
+  + ?Try(_, _) + ?Try(_, _, _) + ?Synchronized(_, _)
+  + ?While(_, _) + ?DoWhile(_, _) + ?For(_, _) + ?For(_, _, _, _)
+
+  dead-assigns-control =
+    ExprStm(dead-assigns-expr)
+  + Return(dead-assigns-expr)
+  + Break(id) // (break in container stm)
+  
+  dead-assigns-decl :
+    bstm* |[ t x = e; bstm* ]| -> bstm''*
+    where
+      !e => Lit(_)
+    with
+      rules(IsUsed+x: x -> <fail>)
+    ; bstm'* := <dead-assigns-stm> bstm*
+    ; if <IsAssigned <+ IsUsed> x then
+        bstm''* := bstm* |[ t x = e; bstm'* ]|
+      else
+        bstm''* := bstm* |[          bstm'* ]|
+      end
+  
+  dead-assigns-decl :
+    bstm* |[ t x = e; bstm* ]| -> bstm''*
+    where
+      not(!e => Lit(_))
+    with
+      <dead-assigns-decl>  bstm* |[ t x; x = e; bstm* ]|
+    ; if ?bstm* |[ t x; x = e; bstm'* ]| then
+        bstm''* := bstm* |[ t x = e; bstm'* ]|
+      else
+        ?bstm''*
+      end
+  
+  dead-assigns-decl :
+    bstm* |[ t x; bstm* ]| -> bstm''*
+    with
+      rules(IsUsed+x: x -> <fail>)
+    ; bstm'* := <dead-assigns-stm> bstm*
+    ; if <IsAssigned <+ IsUsed> x then
+        bstm''* := bstm* |[ t x; bstm'* ]|
+      else
+        bstm''* := bstm* |[      bstm'* ]|
+      end
+  
+  dead-assigns-assign-id :
+    bstm* |[ e = e; bstm* ]| -> <dead-assigns-stm> bstm*
+  
+  dead-assigns-assign :
+    bstm* |[ x = e; bstm* ]| -> bstm''*
+    with
+      // rules(IsUsed :- x) // (need to consider all following statements not just bstm*)
+      bstm'* := <dead-assigns-stm> bstm*
+    ; if <IsUsed> x then
+        rules(IsAssigned: x)
+      ; if not(<oncetd(?x)> e) then
+          rules(IsUsed :- x)
+        end
+      ; <dead-assigns-expr> e
+      ; bstm''* := bstm* |[ x = e; bstm'* ]|
+      else
+        bstm''* := bstm* |[        bstm'* ]|
+      end
+
+  dead-assigns-assign :
+    bstm |[ x = e; ]| -> bstm
+    with
+      [bstm | _] := <dead-assigns-assign> [<id>]
+    <+
+      bstm := Empty()
+ 
+  dead-assigns-expr =
+    alltd({
+      (?ExprName(Id(x)) + ?AmbName(Id(x)))
+    ; rules(
+        IsUsed.x: x
+      )
+    })

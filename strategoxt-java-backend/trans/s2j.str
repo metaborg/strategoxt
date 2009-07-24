@@ -17,6 +17,8 @@ imports
   libjava-front
 
   java-postprocess
+  java-optimize
+  java-simplify
   variable-lifting
   variable-access
   backend-simplify
@@ -92,7 +94,7 @@ rules
   
   java-compile-spec :
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> 
-     |[ 
+    |[ 
      ~package-dec?: pkgname
      
      ~import-dec*:imports
@@ -111,19 +113,17 @@ rules
 
      ~*cnst-decls
      ~*cnstr-decls
-     ~*prim-decls
      
      public static Context init(Context context) {
        ITermFactory termFactory = context.getFactory();
        if (constantFactory == termFactory)
          return context;
-       constantFactory = termFactory;
+       x_name.constantFactory = termFactory;
        initConstructors(termFactory);
        initConstants(termFactory);
        ~*import-inits
        ~*def-inits
        context.registerComponent("~x_name");
-       initPrimitives(context); // must be last
        return context;
      }
      
@@ -144,16 +144,7 @@ rules
          ~*cnst-inits
        }
      ]|
-     
-     ~*<java-split-method> |[
-       private static void initPrimitives(Context context) {
-         ArrayList<String> failures = new ArrayList<String>();
-         ~*prim-inits
-         // TODO: Report missing primitives
-         // if (failures.size() > 0)
-         //   throw new StrategoException("Primitive(s) not defined: " + failures); 
-       }
-     ]|
+
      ~*constant
 
      ~*constant-defs
@@ -162,7 +153,7 @@ rules
 
      ~*register
      }
-     ]|
+  ]|
   with 
       alltd(JavaTranslate)
     ; imports       := <java-imports>
@@ -185,8 +176,6 @@ rules
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   ; lifted-defs   := <bagof-LiftedDef>
-  ; prim-decls    := <bagof-PrimitiveDecl>
-  ; prim-inits    := <bagof-PrimitiveInit; concat>
   ; cnstr-decls   := <bagof-ConstructorDecl>
   ; cnstr-inits   := <bagof-ConstructorInit>
   ; def-inits     := <bagof-DefInit>
@@ -706,23 +695,9 @@ strategies
     <java-check-unbound-args(|t*)>  
     bstm* |[
       bstm_init*
-      term = context.invokePrimitive(x_f, term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
+      term = context.invokePrimitive("~f", term, new Strategy[] { e_s* }, new IStrategoTerm[] { e_t* });
       if (term == null) break Fail;
     ]|
-    with
-      x_f := <conc-strings> ("_prim", <jify> f)
-    with
-      <IsPrimitiveDecl> f
-    <+
-      rules(
-        IsPrimitiveDecl: f
-        PrimitiveDecl  :+= class-body-dec |[ protected static AbstractPrimitive x_f; ]|
-        PrimitiveInit  :+= bstm* |[
-          x_f = context.lookupPrimitive("~f");
-          if (x_f == null)
-            failures.add("~f");
-        ]|
-      )
     with
       lifted-decls-wrap(
         e_s*  := <map(lifted-strategy-to-instance)> s*
@@ -1370,7 +1345,7 @@ strategies
     ; if !stm2 => Empty() then
        stm1 := Empty()
       else 
-       stm1 := |[ IStrategoTerm x = e; ]|
+       stm1 := bstm |[ IStrategoTerm x = e; ]|
      end
 
   translate-Match :

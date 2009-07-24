@@ -12,6 +12,7 @@ signature constructors
   Chars : Term -> Term
   Void : Term
   For : Term * Term -> Term
+  For : Term * Term * Term * Term -> Term
   While : Term * Term -> Term
   Switch : Term * Term -> Term
   If : Term * Term -> Term
@@ -39,3 +40,15 @@ signature constructors
   Parenthetical : Term -> Term
   Anno : Term * Term -> Term
   Return : Term -> Term
+
+strategies
+
+  internal If(x, y) = ?If(a, b){a*}; !If(<x> a, <y> b){a*}
+
+  internal While(x, y) = ?While(a, b){a*}; !While(<x> a, <y> b){a*}
+
+  internal DoWhile(x, y) = ?DoWhile(a, b){a*}; !DoWhile(<x> a, <y> b){a*}
+
+  internal Return(x) = ?Return(a){a*}; !Return(<x> a){a*}
+
+  internal Break(x) = ?Break(a){a*}; !Break(<x> a){a*}

@@ -1,0 +1,15 @@
+module iset_2
+
+imports libstratego-lib
+
+strategies
+
+  main =
+    set := <new-iset>
+  ; iset-add(|1)
+  ; iset-clear
+  ; iset-addlist(|[2,3,4])
+  ; with(iset-get-index(|3); debug => 1)
+  ; with(iset-add(inc | 3); debug => 2)
+  ; with(iset-add(inc | 5))
+  ; iset-elements; debug => [2,3,4,5]

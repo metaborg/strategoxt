@@ -65,11 +65,6 @@ public class ParallelContext extends Context {
 	*/
 	
 	@Override
-	public void postInit(String componentName) {
-		// Do nothing
-	}
-	
-	@Override
 	protected void finalize() throws Throwable {
 		// Do nothing
 	}

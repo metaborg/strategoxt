@@ -14,7 +14,7 @@ strategies
   override strc-get-include-dirs =
     <get-config> "-I"
   
-  extend pack-stratego-parse-stratego :
+  extend pack-stratego-parse-stratego:
     (IncludeFromPath(name), includes) -> ("", ast) // (empty result name goes into .dep)
     where
       switch !name
@@ -30,10 +30,14 @@ strategies
         case "libstrc":              import-term(libstrc.rtree)
         case "lib":                  import-term(lib.rtree)
         case "liblib":               import-term(liblib.rtree)
-        case "libjava-front":
-          // prefer local (-I) definition
-          override <+ import-term(libjava-front.rtree)
       end => ast
+  
+   extend pack-stratego-parse-stratego:
+     (IncludeFromPath("libjava-front"), includes) -> result
+     where
+       override => result // prefer local (-I) definition
+     <+
+       result := ("", <import-term(libjava-front.rtree)>)
    
    extend xtc-find =
      ?"StrategoRenamed.sdf" // no warning

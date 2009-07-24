@@ -1,0 +1,64 @@
+/**
+ * Java output simplification.
+ *
+ * Removes all unnecessary statements generated for convenience,
+ * and makes life (much) easier for the pretty printer.
+ *
+ * @author Lennart Kats
+ */
+module java-simplify
+
+imports
+  libjava-front
+
+strategies
+
+  java-simplify =
+    topdown-consnil(
+      try(Block(flatten-list))
+    ; repeat(java-simplify-stm + java-simplify-expr)
+    )
+  
+  internal all-consnil(s) =
+    ?[_ | _] < [s | s] + all(s)
+
+  internal topdown-consnil(s) =
+    rec rec(s; all-consnil(rec))
+  
+  java-simplify-stm :
+    [<Empty + Semicolon> | s*] -> s*
+  
+  java-simplify-stm :
+    If(e, s1, Empty()) -> If(e, s1)
+  
+  java-simplify-stm :
+    Block([Block(s)]) -> Block(s)
+  
+  java-simplify-stm :
+    |[ if (e1 == e2) ; else stm2 ]| -> |[ if (e1 != e2) stm2 ]|
+  
+  java-simplify-expr :
+    |[ new Strategy[] {} ]| -> |[ NO_STRATEGIES ]|
+  
+  java-simplify-expr :
+    |[ new IStrategoTerm[] {} ]| -> |[ NO_TERMS ]|
+  
+  java-simplify-expr :
+    x{a*} -> x{}
+    where
+      not(!a* => [])
+    
+  java-simplify-stm :
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm* |[ stm bstm* ]|
+    where
+      <get-config> "--stacktrace" => 1
+
+  java-simplify-stm :
+    bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm*
+    where
+      <get-config> "--stacktrace" => 0
+  
+  java-eliminate-stacktrace =
+    alltd(
+      \bstm |[ if (TRACES_ENABLED) stm ]| -> Empty()\
+    )

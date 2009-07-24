@@ -8,6 +8,17 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 
 /**
+ * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
+ * 
+ * This interpreter typically loads much faster than the standard interpreter.
+ * Custom libraries can be added using their <code>registerInterop</code>
+ * method:
+ * 
+ * <code>
+ *   HybridInterpreter i = new HybridInterpreter();
+ *   mylib.registerInterop(i.getContext(), i.getCompiledContext());
+ * </code
+ * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class HybridInterpreter extends Interpreter {
@@ -52,14 +63,14 @@ public class HybridInterpreter extends Interpreter {
 	
 	@Override
 	public void addOperatorRegistry(IOperatorRegistry or) {
-		compiledContext.addOperatorRegistry(or);
+		getCompiledContext().addOperatorRegistry(or);
 		getContext().addOperatorRegistry(or);
 	}
 	
 	@Deprecated
 	@Override
 	public void addOperatorRegistry(String domainName, IOperatorRegistry or) {
-		compiledContext.addOperatorRegistry(or);
+		getCompiledContext().addOperatorRegistry(or);
+		getContext().addOperatorRegistry(or);
 	}
-
 }

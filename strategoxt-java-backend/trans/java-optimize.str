@@ -1,0 +1,222 @@
+/**
+ * Java output optimization.
+ *
+ * @author Lennart Kats
+ */
+module java-optimize
+
+imports
+  libjava-front
+  java-dead-assigns
+
+strategies
+
+  java-optimize =
+    topdown-consnil(
+      try(optimize-match-test + use-lazy-stack-assigns)
+    ; repeat(
+        [id | optimize-assignments] + optimize-assignments
+      )
+    )
+  //; optimize-assignments-top
+  ; java-dead-assigns-top
+  ; bottomup(repeat( // should be done after previous pass
+      optimize-conditionals
+    ))
+
+strategies
+
+  // TODO: Proper copy propagation?
+  
+  optimize-assignments :
+    bstm* |[ x = e; y = x; bstm* ]| ->
+    bstm* |[ x = e; y = e; bstm* ]|
+    where
+      not(!e => ExprName(Id(x)))
+    ; <has-no-side-effects> e
+  
+  optimize-assignments :
+    bstm* |[ x = e1; x = e2;  bstm* ]| ->
+    bstm* |[         x = e2'; bstm* ]|
+    where
+      <has-no-side-effects> e1
+    with
+      e2' := <alltd((ExprName(Id(x)) -> e1))> e2
+  
+  optimize-assignments :
+    bstm* |[ x = y; x = z; bstm* ]| ->
+    bstm* |[        x = z; bstm* ]|
+  
+  optimize-assignments :
+    bstm* |[ x = x; bstm* ]| ->
+    bstm* |[        bstm* ]|
+
+  has-no-side-effects =
+    ?Lit(_)
+  + ?|[ getConstant(e1, e2) ]|
+  + ?ExprName(_)
+  //+ ?|[ termFactory.x(e*) ]|; where(<all(has-no-side-effects)> e*)
+
+  optimize-match-test :
+    bstm* |[
+      IStrategoTerm x_cached = term;
+      Success: {
+        Fail: {
+          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+        }
+        term = x_cached;
+        bstm_othermatch*
+      }
+      bstm_tail*
+    ]| ->
+    bstm* |[
+      IStrategoTerm x_cached = term;
+      IStrategoConstructor x_actualcons = term.getTermType() == IStrategoTerm.APPL
+        ? ((IStrategoAppl) term).getConstructor()
+        : null;
+      Success: {
+        if (x_actualcons == x_cons) {
+          Fail: {
+            bstm_decl*
+            bstm_body*
+          }
+          term = x_cached;
+        }
+        bstm_othermatch'*
+      }
+      bstm_tail*
+    ]|
+    with
+      x_actualcons := <newname> "cons"
+    where
+      bstm_othermatch'* := <replace-match-test1(|x_actualcons, x_cached)> bstm_othermatch*
+
+  replace-match-test1(|x_actualcons, x_cached) :
+    bstm* |[
+      IStrategoTerm x_cached' = term;
+      Success: {
+        Fail: {
+          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+        }
+        term = x_cached';
+        bstm_othermatch*
+      }
+      bstm_tail*
+    ]| ->
+    bstm* |[
+      Success: {
+        if (x_actualcons == x_cons) {
+          Fail: {
+            bstm_decl*
+            bstm_body*
+           }
+          term = x_cached;
+        }
+        bstm_othermatch'*
+      }
+      bstm_tail*
+    ]|
+    with
+      bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
+  
+  match-decls-and-appl-text :
+    [Block(bstm*) | _] -> <match-decls-and-appl-test> bstm*
+  
+  match-decls-and-appl-test :
+    bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], x_cons, bstm_body*)
+    where
+      (bstm_decl*, x_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
+    
+  match-decls-and-appl-test :
+    bstm* |[
+      if (~e:ExprName(Id("term")).getTermType() != IStrategoTerm.APPL || e_cons != ((IStrategoAppl) term).getConstructor())
+        break Fail;
+      bstm_body*
+    ]| ->
+    ([], x_cons, bstm_body*)
+    with
+      !e_cons => |[ x.x_cons ]|
+    <+
+      !e_cons => |[ x_cons ]|
+
+strategies
+
+  optimize-conditionals :
+    bstm |[ Fail: { if (TRUE) break Fail; bstm1* } ]| -> bstm |[ ; ]|
+
+  optimize-conditionals :
+    bstm |[ { if (TRUE) break x; bstm* } ]| -> bstm |[ { if (TRUE) break x; } ]|
+    where
+      not(!bstm* => [])
+  
+  optimize-conditionals :
+    bstm |[ if (e) if (TRUE) stm ]| -> |[ if (e) stm ]|
+  
+  optimize-conditionals :
+    bstm |[ Success: { if (e) break Success; bstm* } ]| -> |[ if (!e) { bstm* } ]|
+  
+  optimize-conditionals :
+    bstm |[ if (!(e1 == e2)) stm ]| -> |[ if (e1 != e2) stm ]|
+  
+  optimize-conditionals :
+    bstm |[ if (e1) { if (e2) stm } ]| -> |[ if (e1 && e2) stm ]|
+    where
+      not(!e2 => expr |[ TRUE ]|)
+  
+  optimize-conditionals :
+    |[ Fail: { bstm* } ]| -> |[ Fail: { bstm'* } ]|
+    where
+      !bstm*
+    ; one(?|[ if (e) break Fail; ]|)
+    ; at-last([remove-if-true]) => bstm'*
+  
+  optimize-conditionals :
+    Block([Block(s)]) -> Block(s)
+  
+  remove-if-true :
+    |[ if (TRUE) break Fail; ]| -> |[ break Fail; ]|
+  
+  remove-if-true :
+    |[ if (TRUE) break Success; ]| -> |[ break Success; ]|
+  
+  remove-if-true :
+    |[ if (TRUE) return e; ]| -> |[ return e; ]|
+
+strategies
+
+  use-lazy-stack-assigns :
+    bstm* |[
+      context.push(e);
+      x_Fail: {
+        bstm*
+      }
+      context.popOnFailure();
+      return null;
+    ]| ->
+    bstm* |[
+      x_Fail: {
+        bstm'*
+      }
+      context.push(e);
+      context.popOnFailure();
+      return null;
+    ]|
+    where
+      bstm'* := <if-no-invokes-remove-stack-pop> bstm*
+  
+  if-no-invokes-remove-stack-pop =
+    if [id, id] then
+      with(
+        ?bstm* |[ context.popOnSuccess(); bstm_return ]|
+      )
+    ; !bstm* |[ bstm_return ]|
+    else
+      if-no-invokes-remove-stack-pop-2
+    end
+  
+  if-no-invokes-remove-stack-pop-2 :
+    [s | s*] -> [s | s'*]
+    where
+      <not(oncetd("invoke"))> s
+    ; s'* := <if-no-invokes-remove-stack-pop> s*
+

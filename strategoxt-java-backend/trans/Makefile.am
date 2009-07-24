@@ -38,6 +38,8 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 %.str : %.astr
 	aster -i $< -o $@
 
+strj$(exeext) : $(STRJSOURCES:.str=.rtree)
+
 strj.ctree : strj.rtree $(STRJSOURCES:.str=.rtree) strj
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -F -m main-strj
 

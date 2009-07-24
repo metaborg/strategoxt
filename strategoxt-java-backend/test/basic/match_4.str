@@ -1,0 +1,11 @@
+module match_4
+
+imports
+  libstratego-lib
+
+strategies
+
+  main =
+    a := 1
+  ; b := 2
+  ; not(?a)

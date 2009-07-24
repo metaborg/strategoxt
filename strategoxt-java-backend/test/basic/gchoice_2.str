@@ -1,4 +1,4 @@
-module gchoice_1
+module gchoice_2
 
 imports
   libstratego-lib
@@ -10,5 +10,8 @@ signature constructors
 rules
 
   main =
-    (id < id + ?never)
-  ; not(!never)
+    not(
+      id
+      < (id < fail + !3)
+      + !2
+    )

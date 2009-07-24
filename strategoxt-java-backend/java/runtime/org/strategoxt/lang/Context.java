@@ -47,14 +47,6 @@ public class Context extends StackTracer {
     	this(new BAFBasicTermFactory());
     }
     
-    public Context(Context other) {
-    	this(other.getFactory());
-    	operatorRegistryMap.clear();
-    	operatorRegistryMap.putAll(other.operatorRegistryMap);
-    	operatorRegistries.addAll(other.operatorRegistries);
-    	compat.init();
-    }
-    
     public Context(ITermFactory factory) {
     	this(factory, new HashMap<String, IOperatorRegistry>(), new ArrayList<IOperatorRegistry>());
         SSLLibrary ssl = new SSLLibrary();
@@ -66,6 +58,7 @@ public class Context extends StackTracer {
     	this.factory = factory;
     	this.operatorRegistryMap = operatorRegistryMap;
     	this.operatorRegistries = operatorRegistries;
+    	compat.init();
     }
 	
 	public final ITermFactory getFactory() {
@@ -107,6 +100,8 @@ public class Context extends StackTracer {
         	operatorRegistries.remove(previous);
         	operatorRegistries.add(i, or);
         }
+        lastPrimitiveName1 = null;
+        lastPrimitiveName2 = null;
     }
     
     public void registerComponent(String componentName) {
@@ -164,7 +159,7 @@ public class Context extends StackTracer {
 			return lastPrimitive1;
 		} else if (lastPrimitiveName2 == name) {
 			return lastPrimitive2;
-		} else {;
+		} else {
 			for (int i = 0, size = operatorRegistries.size(); i < size; i++) {
 	            AbstractPrimitive p = operatorRegistries.get(i).get(name);
 	            if (p != null) {

@@ -52,7 +52,7 @@ strategies
     ast -> file
     with
       log-timed(
-        box  := <pp-java5-to-abox <+ output-java-error>
+        box  := <pp-java5-to-abox>
       | "Pretty printing: preparation succeeded", 2
       )
     ; log-timed(
@@ -61,6 +61,8 @@ strategies
       ; <fclose> file
       | "Pretty printing: output to stream succeeded", 2
       )
+    <+
+      output-java-error
 
    // Using XTC for debugging:
    // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,
