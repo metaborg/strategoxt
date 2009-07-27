@@ -50,7 +50,7 @@ public class ParallelAll extends SRTS_all {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
-		if ((ALLOW_NESTED_JOBS || !isParallelActive) && isCandidateTerm(context, current) && ENABLED) {
+		if (ENABLED && (ALLOW_NESTED_JOBS || !isParallelActive) && isCandidateTerm(context, current)) {
 			context.push("<parallel>");
 			IStrategoTerm result = invokeParallel(context, current, s);
 			

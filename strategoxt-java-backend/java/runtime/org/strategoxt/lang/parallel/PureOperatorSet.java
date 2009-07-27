@@ -49,7 +49,7 @@ public class PureOperatorSet {
 	}};
 	
 	/**
-	 * Primitives that are thread safe only if not
+	 * Primitives that are only thread safe when only
 	 * combined with other white/gray-listed primitives.
 	 */
 	@SuppressWarnings("serial")
@@ -89,6 +89,10 @@ public class PureOperatorSet {
 	
 	public static boolean isWhiteListed(String name) {
 		return whiteList.contains(name);
+	}
+	
+	public static void addWhiteListed(String name) {
+		
 	}
 	
 	public static boolean isGrayListed(String name) {

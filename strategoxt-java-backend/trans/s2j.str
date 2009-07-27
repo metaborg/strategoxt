@@ -66,12 +66,15 @@ rules
       )
     ; log-timed(
         dr-scope-all-verbose(java-compile-spec)
+      ; java-simplify
       | "Backend transformation succeeded", 1
       )
     ; log-timed(
-        java-simplify
-      ; olevel1(java-optimize)
-      ; java-relabel
+        olevel1(java-optimize)
+      | <conc-strings> ("Backend optimization succeeded -O ", <get-config; int-to-string> "-O"), 1
+      )
+    ; log-timed(
+        java-relabel
       | "Backend postprocessing succeeded", 1
       )
      
@@ -997,12 +1000,12 @@ rules
     ; <not(?Var(_))> pt1
 
   java-ConstructTerm :
-    Op(c, t*) -> expr|[ termFactory.makeAppl(~*[cons | args]) ]|
+    Op(c, t*) -> expr|[ termFactory.makeAppl(e_cons, new IStrategoTerm[] { e_arg* }) ]|
   where
       not(is-ListOp + is-TupleOp)
   with
-      cons := <java-ConstructorName-expr> (c, <length> t*)
-    ; args := <map(java-construct-term)> t*
+      e_cons := <java-ConstructorName-expr> (c, <length> t*)
+    ; e_arg* := <map(java-construct-term)> t*
     
   java-ConstructTerm :
     Explode(t1, t2) -> expr |[ x ]|

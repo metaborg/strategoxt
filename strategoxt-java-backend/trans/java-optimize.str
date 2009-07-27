@@ -18,7 +18,6 @@ strategies
         [id | optimize-assignments] + optimize-assignments
       )
     )
-  //; optimize-assignments-top
   ; java-dead-assigns-top
   ; bottomup(repeat( // should be done after previous pass
       optimize-conditionals
@@ -55,6 +54,7 @@ strategies
     ?Lit(_)
   + ?|[ getConstant(e1, e2) ]|
   + ?ExprName(_)
+  //+ ?|[ x.get() ]|
   //+ ?|[ termFactory.x(e*) ]|; where(<all(has-no-side-effects)> e*)
 
   optimize-match-test :

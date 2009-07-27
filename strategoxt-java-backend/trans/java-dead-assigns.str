@@ -67,14 +67,12 @@ strategies
     Block({| IsUsed: dead-assigns-stm |})
   
   dead-assigns-control =
-    Labeled(id, {| IsUsed: dead-assigns-stm |})
+    Labeled(id, id)
+  //; Labeled(id, {| IsUsed: dead-assigns-stm |})
+  ; Labeled(id, is-container-stm; dead-assigns-stm)
   
-  dead-assigns-control =
-    DoWhile(id, {| IsUsed: dead-assigns-stm |})
-  ; While(dead-assigns-expr, id)
-  
-  dead-assigns-control =
-    [Break(id) | {| IsUsed: dead-assigns-stm |}]
+  //dead-assigns-control =
+  //  [Break(id) | {| IsUsed: dead-assigns-stm |}]
 
   is-container-stm =
     ?Labeled(_, _) + ?Block(_) + ?If(_, _) + ?If(_, _, _)

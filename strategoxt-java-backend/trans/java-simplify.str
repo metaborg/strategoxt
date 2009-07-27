@@ -1,7 +1,7 @@
 /**
  * Java output simplification.
  *
- * Removes all unnecessary statements generated for convenience,
+ * Removes some unnecessary statements and blocks generated for convenience,
  * and makes life (much) easier for the pretty printer.
  *
  * @author Lennart Kats

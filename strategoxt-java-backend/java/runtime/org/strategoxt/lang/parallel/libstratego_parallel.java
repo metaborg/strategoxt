@@ -12,7 +12,7 @@ public class libstratego_parallel {
 	
 	protected static final boolean ENABLED = true;
 	
-	protected static final boolean VERBOSE = true;
+	protected static final boolean VERBOSE = false;
 	
 	protected static final boolean DIAGNOSE_SYNCHRONOUS_OPERATIONS = false;
 	
@@ -22,7 +22,7 @@ public class libstratego_parallel {
 	
 	protected static final int DEFAULT_TERM_SIZE_THRESHOLD = 3200;
 	
-	protected static final int DEFAULT_SUBTERM_COUNT_THRESHOLD = 6;
+	protected static final int DEFAULT_SUBTERM_COUNT_THRESHOLD = 12;
 	
 	protected static final double DEFAULT_JOB_LENGTH_MULTIPLIER = .5;
 	
@@ -33,11 +33,20 @@ public class libstratego_parallel {
 	private static boolean isInitialized; 
 	
 	public static void init(Context context) {
-		if (isInitialized) return;
+		if (isInitialized || !ENABLED) return;
 		isInitialized = true;
 		
 		ParallelAll.instance = new ParallelAll();
 		SRTS_all.instance = ParallelAll.instance;
+		
+		System.err.println("[ libstratego-parallel ] using "
+				+ DEFAULT_ACTIVE_THREADS
+				+ (DEFAULT_MAX_THREADS != DEFAULT_ACTIVE_THREADS ? "/" + DEFAULT_MAX_THREADS : "")
+				+ " threads,"
+				+ " jobsize " + DEFAULT_JOB_LENGTH_MULTIPLIER
+				+ (ADJUST_FOCUS_THREAD_PRIORITY ? " (priority focus thread)" : "")
+				+ (DIAGNOSE_SYNCHRONOUS_OPERATIONS ? " (diagnose sync. ops)" : "")
+				);
 	}
 	
 	public static class parallel_unordered_0_0 extends Strategy {
