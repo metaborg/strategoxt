@@ -286,15 +286,21 @@ strategies
    * @param exit
    *          The exit strategy to use, e.g., xtc-exit.
    */
-  report-failure =
-    report-failure(exit)
-  
   report-failure(exit) =
       ?stacktrace
     ; report-run-time
     ; <fprintnl> (stderr(), [<log-src> (), ": rewriting failed, trace:"])
     ; <reverse ; map(<fprintnl> (stderr(), ["\t", <id>]))> stacktrace
     ; <exit> 1
+  
+  report-failure =
+    report-failure(exit)
+  
+  report-failure(|message, term) =
+    report-failure(
+      log(|Critical(), message, term)
+    ; <exit> 1
+    )
   
   /**
    * Report the failure of this program, without showing a stack trace.
