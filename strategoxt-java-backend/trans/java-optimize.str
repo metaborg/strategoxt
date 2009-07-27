@@ -52,7 +52,7 @@ strategies
 
   has-no-side-effects =
     ?Lit(_)
-  + ?|[ getConstant(e1, e2) ]|
+  + ?|[ x.getConstant(e1, e2) ]|
   + ?ExprName(_)
   //+ ?|[ x.get() ]|
   //+ ?|[ termFactory.x(e*) ]|; where(<all(has-no-side-effects)> e*)

@@ -60,19 +60,11 @@ strategies
   ; If(dead-assigns-expr, id, id)
   
   dead-assigns-control =
-    While(dead-assigns-expr, id)
-  ; While(id, {| IsUsed: dead-assigns-stm |})
-  
-  dead-assigns-control =
     Block({| IsUsed: dead-assigns-stm |})
   
   dead-assigns-control =
     Labeled(id, id)
-  //; Labeled(id, {| IsUsed: dead-assigns-stm |})
   ; Labeled(id, is-container-stm; dead-assigns-stm)
-  
-  //dead-assigns-control =
-  //  [Break(id) | {| IsUsed: dead-assigns-stm |}]
 
   is-container-stm =
     ?Labeled(_, _) + ?Block(_) + ?If(_, _) + ?If(_, _, _)

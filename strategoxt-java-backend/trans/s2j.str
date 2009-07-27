@@ -113,21 +113,32 @@ rules
 
      protected static final boolean TRACES_ENABLED = e_traces;
      protected static ITermFactory constantFactory;
+     private static Context initedContext;
+     private static boolean isIniting;
 
      ~*cnst-decls
      ~*cnstr-decls
      
      public static Context init(Context context) {
-       ITermFactory termFactory = context.getFactory();
-       if (constantFactory == termFactory)
+       synchronized (x_name.class) {
+         if (isIniting) return null;
+         isIniting = true;
+         ITermFactory termFactory = context.getFactory();
+         if (constantFactory != termFactory) {
+           initConstructors(termFactory);
+           initConstants(termFactory);
+         }
+         if (context != initedContext) {
+           ~*import-inits
+           ~*def-inits
+           context.registerComponent("~x_name");
+         }
+         // Set these last to trigger failure if getConstant() is called early
+         x_name.initedContext = context;
+         x_name.constantFactory = termFactory;
+         isIniting = false;
          return context;
-       x_name.constantFactory = termFactory;
-       initConstructors(termFactory);
-       initConstants(termFactory);
-       ~*import-inits
-       ~*def-inits
-       context.registerComponent("~x_name");
-       return context;
+       }
      }
      
      public static Context init() {
@@ -255,7 +266,7 @@ rules
       protected static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
         if (factory == constantFactory) {
           return constant;
-        } else if (factory != null) {
+        } else if (constantFactory != null) {
           return new TermConverter(factory).convert(constant);
         } else {
           throw new IllegalStateException("Component not initialized; please call init() first");
@@ -265,7 +276,7 @@ rules
       protected static IStrategoTerm getConstant(ITermFactory factory, TermReference constant) {
         if (factory == constantFactory) {
           return constant.get();
-        } else if (factory != null) {
+        } else if (constantFactory != null) {
           return new TermConverter(factory).convert(constant.get());
         } else {
           throw new IllegalStateException("Component not initialized; please call init() first");
@@ -818,7 +829,7 @@ strategies
    *    (minding the 32767 length limit)
    */
   translate-ImportTerm :
-    ImportTerm(file) -> |[ term = getConstant(termFactory, x_constant); ]|
+    ImportTerm(file) -> |[ term = x_main.getConstant(termFactory, x_constant); ]|
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
@@ -901,12 +912,13 @@ rules
        ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
 
   java-CacheConstant-again :
-    (t, e1 @ |[ getConstant(termFactory, e2) ]|) -> e1
+    (t, e1 @ |[ x_main.getConstant(termFactory, e2) ]|) -> e1
     with
       rules(java-Cache: t -> e1)
+    ; x_main := <MainClassName>
 
   java-CacheConstant :
-    (t, e1) -> |[ getConstant(termFactory, e2) ]|
+    (t, e1) -> |[ x_main.getConstant(termFactory, e2) ]|
   where
       <(Op(id, map(java-Cache)); java-proper-list 
             + Anno(java-Cache, java-Cache) 
@@ -918,7 +930,8 @@ rules
           x := <newname> "const"
         end
       ; e2 := ExprName(Id(x))
-      ; rules( java-Cache : t -> |[ getConstant(termFactory, e2) ]| )
+      ; x_main := <MainClassName>
+      ; rules( java-Cache : t -> |[ x_main.getConstant(termFactory, e2) ]| )
       ; !(x, e1)
       ; rules(ConstDecl :+= <java-DeclareTermId>)
       ; rules(ConstInit :+= <java-InitTermId>)
@@ -926,7 +939,7 @@ rules
  java-proper-list =
     Op("Nil", [])
     + Op("Cons", [id, java-proper-list])
-    // UNDONE: + Op("Cons", [id, java-proper-list + ?|[ getConstant(e1, e2) ]|])
+    // UNDONE: + Op("Cons", [id, java-proper-list + ?|[ x_main.getConstant(e1, e2) ]|])
     // TODO: Fix constants being generated multiple times
     //       e.g., <conc> ([], []) does this; it's got something to do with annos 
     + Op(id, id)
@@ -941,7 +954,9 @@ strategies
     class-body-dec|[ protected static IStrategoTerm x; ]|
 
   java-InitTermId :
-    (x, e) -> bstm*|[ x = e; ]|
+    (x, e) -> bstm*|[ x = e'; ]|
+    with
+      e' := <alltd(\|[ x.getConstant(e_factory, e_const) ]| -> e_const\)> e
 
   java-mk-int-const =
     !Lit(Deci(<try(int-to-string)>))
@@ -1042,7 +1057,7 @@ rules
         ; if <not(Anno(is-ListOp,id))> t2 then 
             java-check-aterm-list 
           else
-              if ?|[ getConstant(e1, e2) ]| + ?expr |[ x ]| then
+              if ?|[ x.getConstant(e1, e2) ]| + ?expr |[ x ]| then
                 !|[ (IStrategoList) ~expr:<id> ]|
               else
                 try(java-UncastATerm)
