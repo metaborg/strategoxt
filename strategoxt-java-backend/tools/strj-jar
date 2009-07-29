@@ -55,14 +55,9 @@ fi
 
 ## COMPILATION
 
-if head -n1 make_permissive.java | grep 'package ' >/dev/null; then
-  PACKAGE=`head -n1 make_permissive.java | sed 's/package //; s/;//'`
-  PACKAGEDIR=`echo $PACKAGE | sed 's!\.!/!g'`
-fi
-
-( mkdir -p $TEMPDIR/$PACKAGEDIR
+( mkdir -p $TEMPDIR
   echo $JAVAC $JAVACFLAGS1 -cp $CLASSPATH `basename $INPUT`
-  $JAVAC $JAVACFLAGS1 $JAVACFLAGS2 -cp $CLASSPATH $INPUT -d $TEMPDIR/$PACKAGEDIR) || exit 1
+  $JAVAC $JAVACFLAGS1 $JAVACFLAGS2 -cp $CLASSPATH $INPUT -d $TEMPDIR) || exit 1
 
 ## JARRING
 
