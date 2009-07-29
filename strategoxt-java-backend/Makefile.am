@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 ACLOCAL_AMFLAGS = -I .
 
-SUBDIRS           = syn trans java test
+SUBDIRS           = syn trans java test tools
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = bootstrap Makefile.xt

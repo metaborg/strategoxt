@@ -31,5 +31,6 @@ AC_CONFIG_FILES([
   trans/Makefile
   java/Makefile
   test/Makefile
+  tools/Makefile
 ])
 AC_OUTPUT

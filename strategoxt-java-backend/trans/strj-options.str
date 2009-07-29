@@ -26,7 +26,7 @@ strategies
   ; parse-options(
       strj-options
     )
-  ; if <get-config> "-o"; not(<eq> (<id>, <jify>)) then
+  ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)) then
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
     end

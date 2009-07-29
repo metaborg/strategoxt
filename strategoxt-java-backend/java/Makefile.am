@@ -1,6 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 
 EXTRA_DIST=strategoxt.jar
+pkgdata_DATA=strategoxt.jar
 
 RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
@@ -47,11 +48,8 @@ CLEANFILES = \
   lib/org/strategoxt/libstratego-xtc.rtree \
   .ALLCLASSES
 
-# HACK: hardcoded, relative classpath
-
-BASEPATH=../../../spoofax/trunk/spoofax
-SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/../../branches/spoofax-recovery/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
-CLASSPATH=$(SPCLASSPATH):runtime:lib:.
+SPOOFAX=../../../spoofax/trunk/spoofax
+CLASSPATH=runtime:lib:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
@@ -62,16 +60,11 @@ JARIN1=`find runtime  | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!runtime/!-
 JARIN2=`find lib      | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
 JARIN3=`find compiler | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
 
-jar strategoxt.jar : ext-lib # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
-	$(JAR) cfm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN1)
+jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+	cp spoofax-libs.jar strategoxt.jar.tmp
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN1)
 	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN2)
 	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN3)
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C ext-lib/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.core/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/../../branches/spoofax-recovery/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.aterm/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin/ .
 	jar i strategoxt.jar.tmp
 	mv strategoxt.jar.tmp strategoxt.jar
 
@@ -79,22 +72,26 @@ smalljar :
 	$(JAR) cfm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN1)
 	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN2)
 	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN3)
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C ext-lib/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.core/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/../../branches/spoofax-recovery/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.aterm/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin/ .
+	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C spoofax-libs/ .
 	mv strategoxt.jar strategoxt-no-compression.jar
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar $(BASEPATH)/share/java/junit-3.8.1.jar $(BASEPATH)/share/java/jjtraveler-0.4.3.jar
-	([ -d ext-lib ] || mkdir ext-lib); \
-	cat $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd ext-lib; $(JAR) x); \
-	cat $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd ext-lib; $(JAR) x); \
-	cat $(BASEPATH)/share/java/junit-3.8.1.jar | (cd ext-lib; $(JAR) x); \
-	rm -rf ext-lib/META-INF
+new-spoofax-libs :
+	rm -rf spoofax-libs-tmp
+	mkdir spoofax-libs-tmp
+	cat $(SPOOFAX)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd spoofax-libs-tmp; $(JAR) x)
+	cat $(SPOOFAX)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd spoofax-libs-tmp; $(JAR) x)
+	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
+	rm -rf spoofax-libs-tmp/META-INF
+	$(JAR) cf spoofax-libs.jar.tmp -C spoofax-libs-tmp .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.core/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/../../branches/spoofax-recovery/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.aterm/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.adapter.aterm/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.jsglr/bin/ .
+	rm -rf spoofax-libs-tmp
+	mv spoofax-libs.jar.tmp spoofax-libs.jar
 
 ###### LIBRARIES #######
 
