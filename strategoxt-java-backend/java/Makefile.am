@@ -1,5 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 
+EXTRA_DIST=strategoxt.jar
+
 RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/*.java) \

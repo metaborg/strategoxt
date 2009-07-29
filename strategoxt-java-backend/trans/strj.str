@@ -22,6 +22,7 @@ strategies
 
   main-strj =
     strj-parse-options
+  ; main-module-required
   ; log-timed(
       xtc-input(strj)
     | "Compilation succeeded", 1
@@ -32,8 +33,10 @@ strategies
   ; <exit> 1
   
   strj =
-    if <get-extension> <get-config> "-i" => "ctree" then
-      read-from
+    if FILE(get-extension => "ctree") then
+      xtc-ensure-file
+    ; strc-get-infile
+    ; read-from
     <+
       <get-config> "-i"
     ; err(|"File does not exist")
@@ -56,7 +59,8 @@ strategies
       | "Pretty printing: preparation succeeded", 2
       )
     ; log-timed(
-        file := <fopen <+ fatal-err(|"Could not open output file")> (<get-config> "-o", "w")
+        name := <get-config <+ strc-getoutfile(!".java"); jify> "-o"
+      ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
       ; <box2text-stream(|80, file)> box
       ; <fclose> file
       | "Pretty printing: output to stream succeeded", 2

@@ -26,18 +26,10 @@ strategies
   ; parse-options(
       strj-options
     )
-  ; with(
-      infer-output-option
-    )
-  
-  infer-output-option =
-    <get-config> "-o"
-  <+
-    <get-config> "-i"
-  ; guarantee-extension(|"java")
-  ; <set-config> ("-o", <id>)
-  <+
-    <set-config> ("-o", stdout())
+  ; if <get-config> "-o"; not(<eq> (<id>, <jify>)) then
+      <get-config> "-o"
+    ; fatal-err(|"Output file name is not a legal Java name")
+    end
   
   strj-options =
     input-option
