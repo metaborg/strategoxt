@@ -30,6 +30,9 @@ strategies
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
     end
+  ; if <get-config> "--library"; not(<get-config> "-p") then
+      warn(|"No package name specified")
+    end
   
   strj-options =
     input-option

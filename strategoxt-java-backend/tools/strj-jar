@@ -1,0 +1,75 @@
+#!/bin/bash
+
+## SETTINGS
+
+PACKAGE=
+MAINCLASS=
+CLASSPATH=strategoxt.jar
+JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
+JAVAC=`if which ecj &>/dev/null; then echo ecj; else echo javac; fi`
+JAVACFLAGS1="-source 5 -nowarn"
+JAVACFLAGS2="-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC"
+
+[ "$TEMP" != "" ] || TEMP=/tmp
+TEMPDIR=$TEMP/strj-jar-`date +'%N'`
+
+if which strj-jar &>/dev/null; then
+  CLASSPATH=$(dirname $(which strj-jar))/../share/strc-java/strategoxt.jar
+fi
+
+## PARAMETERS
+
+while P=$1; shift; do
+  if [ "$P" == "-cp" ]; then
+    CLASSPATH="$1"
+    shift
+  elif [ "$P" == "-i" ]; then
+    INPUT="$1"
+    shift
+  elif [ "$P" == "-o" ]; then
+    OUTPUT="$1"
+    shift
+  else
+    echo "Illegal argument: $P" >&2
+    INPUT=
+    break
+  fi
+done
+
+if [ "$INPUT" == "" ]; then
+  echo Usage: strj-jar [-p PACKAGE] [-m MAINCLASS] [-cp CLASSPATH] [-runtimecp CLASSPATH] -i INPUT.java [-o OUTPUT.jar]
+  exit 1
+fi
+
+## PARAMETER VALIDATION
+
+if [ ! -e "$INPUT" ]; then
+  echo "File does not exist: $INPUT" >&2
+  exit 1
+elif [ "$CLASSPATH" == "strategoxt.jar" ] && [ ! -e strategoxt.jar ]; then
+  echo "File not found: strategoxt.jar" >&2
+  exit 1
+elif [ "$OUTPUT" == "" ]; then
+  OUTPUT="`dirname $INPUT`/`basename $INPUT .java`.jar"
+fi
+
+## COMPILATION
+
+if head -n1 make_permissive.java | grep 'package ' >/dev/null; then
+  PACKAGE=`head -n1 make_permissive.java | sed 's/package //; s/;//'`
+  PACKAGEDIR=`echo $PACKAGE | sed 's!\.!/!g'`
+fi
+
+( mkdir -p $TEMPDIR/$PACKAGEDIR
+  echo $JAVAC $JAVACFLAGS1 -cp $CLASSPATH `basename $INPUT`
+  $JAVAC $JAVACFLAGS1 $JAVACFLAGS2 -cp $CLASSPATH $INPUT -d $TEMPDIR/$PACKAGEDIR) || exit 1
+
+## JARRING
+
+echo $JAR cf $OUTPUT -C \$TEMPDIR .
+$JAR cf $OUTPUT -C $TEMPDIR .
+RET=$?
+
+rm -rf $TEMPDIR
+
+exit $RET
