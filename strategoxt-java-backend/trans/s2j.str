@@ -165,7 +165,7 @@ rules
      ~*function-defs
      ~*lifted-defs
 
-     ~*register
+     ~register
      }
   ]|
   with 
@@ -288,10 +288,15 @@ rules
   //       (need to make a custom VarScope class to do so)
   java-register-method : 
     defs ->
-    <java-split-method> |[
-      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        init(compiledContext);
-        bstm*
+    |[
+      public static void registerInterop(final org.spoofax.interpreter.core.IContext context, final Context compiledContext) {
+        new Runnable() { // Move these many literals and statements to another, lazily loaded class
+          ~*<java-split-method>  |[
+            public void run() {
+              bstm*
+            }
+          ]|
+        }.run();
       }
     ]|
     with
