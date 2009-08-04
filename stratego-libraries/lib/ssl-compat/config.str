@@ -1,6 +1,0 @@
-/**
- * NOTE: Use XTC instead of configuration files.
- */
-module config
-imports util/config/common
-

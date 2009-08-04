@@ -1,8 +1,0 @@
-/**
- * This module defines some operations on characters, which
- * are encoded in ASCII in Stratego.
- */
-module char
-imports 
-  term/string
-

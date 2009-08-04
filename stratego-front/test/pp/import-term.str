@@ -1,5 +1,0 @@
-module import-term
-strategies
-
-  main =
-    import-term(foo.aterm)

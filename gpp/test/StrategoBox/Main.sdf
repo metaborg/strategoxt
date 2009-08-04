@@ -1,4 +1,0 @@
-module Main
-imports Stratego-Box
-exports
-  context-free start-symbols StrategoTerm

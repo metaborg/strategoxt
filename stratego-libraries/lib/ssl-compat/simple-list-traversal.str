@@ -1,3 +1,0 @@
-module simple-list-traversal
-imports strategy/traversal/list
-

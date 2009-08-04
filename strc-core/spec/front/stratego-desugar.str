@@ -1,7 +1,0 @@
-module stratego-desugar
-imports libstratego-lib libstrc
-
-strategies
- 
-  stratego-desugar-io = 
-    io-wrap(stratego-desugar)
