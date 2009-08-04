@@ -43,6 +43,10 @@ signature constructors
 
 strategies
 
+  // HACK: Need to locally redefine the congruences...
+
+  internal Id(x) = ?Id(a){a*}; !Id(<x> a){a*}
+
   internal If(x, y) = ?If(a, b){a*}; !If(<x> a, <y> b){a*}
 
   internal While(x, y) = ?While(a, b){a*}; !While(<x> a, <y> b){a*}
@@ -52,3 +56,5 @@ strategies
   internal Return(x) = ?Return(a){a*}; !Return(<x> a){a*}
 
   internal Break(x) = ?Break(a){a*}; !Break(<x> a){a*}
+  
+  internal VarDec(x, y) = ?VarDec(a, b){a*}; !VarDec(<x> a, <y> b){a*}

@@ -1,5 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 
+EXTRA_DIST=strategoxt.jar
+pkgdata_DATA=strategoxt.jar
+
 RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/*.java) \
@@ -11,14 +14,12 @@ RUNTIMEJAVAS = \
   runtime/org/strategoxt/lang/compat/override/xtc_compat.java \
   runtime/org/strategoxt/lang/compat/override/strc_compat.java
 
-RUNTIMECLASSES = \
-  $(RUNTIMEJAVAS:.java=.class)
+GENRUNTIMEJAVAS= \
+  $(subst runtime/org/strategoxt/lang/compat/libstrc_compat.java,, \
+  $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS)))
 
 COMPILERJAVAS = \
   compiler/org/strategoxt/strj.java
-
-COMPILERCLASSES = \
-  $(COMPILERJAVAS:.java=.class)
 
 LIBRARYJAVAS = \
   lib/org/strategoxt/libstratego_lib.java \
@@ -32,44 +33,30 @@ LIBRARYJAVAS = \
   lib/org/strategoxt/libstrc.java \
   lib/org/strategoxt/libjava_front.java
 
-LIBRARYCLASSES=$(LIBRARYJAVAS:.java=.class)
-
-nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERCLASSES)
+nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES
 
 CLEANFILES = \
-  $(RUNTIMECLASSES) $(LIBRARYCLASSES) $(COMPILERCLASSES) \
-  $(subst runtime/org/strategoxt/lang/compat/libstrc_compat.java,, \
-  $(subst runtime/org/strategoxt/lang/compat/libstratego_rtg_compat.java,,$(LIBRARYJAVAS))) \
-  $(COMPILERJAVAS) \
+  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(GENRUNTIMEJAVAS) $(wildcard bin/*) \
   runtime/org/strategoxt/lang/compat/override/libstratego_aterm_compat.rtree \
   lib/org/strategoxt/libstratego-xtc.rtree \
   .ALLCLASSES
 
-# HACK: hardcoded, relative classpath
-
-BASEPATH=../../../spoofax/trunk/spoofax
-SPCLASSPATH=$(BASEPATH)/org.spoofax.interpreter.core/bin:$(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin:$(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin:$(BASEPATH)/../../branches/spoofax-recovery/bin:$(BASEPATH)/org.spoofax.aterm/bin/:$(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar:$(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar
-CLASSPATH=$(SPCLASSPATH):runtime:lib:.
+SPOOFAX=../../../spoofax/trunk/spoofax
+CLASSPATH=runtime:lib:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 STRJOPTIONS=--library -p org.strategoxt --verbose 3 -O 3
 
 JAR=`if which fastjar >/dev/null; then echo fastjar; else echo jar; fi`
-JARIN1=`find runtime  | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
-JARIN2=`find lib      | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
-JARIN3=`find compiler | grep -E '\.class|\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
+JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
+JARIN2=`find lib      | grep -E '\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
+JARIN3=`find compiler | grep -E '\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
 
-jar strategoxt.jar : ext-lib # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
-	$(JAR) cfm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN1)
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN2)
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN3)
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C ext-lib/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.core/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/../../branches/spoofax-recovery/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.aterm/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin/ .
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin/ .
+jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+	cp spoofax-libs.jar strategoxt.jar.tmp
+	$(JAR) uf strategoxt.jar.tmp $(JARIN1) $(JARIN2) $(JARIN3)
+	$(JAR) uf strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
 	jar i strategoxt.jar.tmp
 	mv strategoxt.jar.tmp strategoxt.jar
 
@@ -77,24 +64,34 @@ smalljar :
 	$(JAR) cfm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN1)
 	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN2)
 	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN3)
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C ext-lib/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.core/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/../../branches/spoofax-recovery/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.aterm/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.adapter.aterm/bin/ .
-	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C $(BASEPATH)/org.spoofax.interpreter.library.jsglr/bin/ .
+	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF -C spoofax-libs/ .
 	mv strategoxt.jar strategoxt-no-compression.jar
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-ext-lib : $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar $(BASEPATH)/share/java/junit-3.8.1.jar $(BASEPATH)/share/java/jjtraveler-0.4.3.jar
-	([ -d ext-lib ] || mkdir ext-lib); \
-	cat $(BASEPATH)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd ext-lib; $(JAR) x); \
-	cat $(BASEPATH)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd ext-lib; $(JAR) x); \
-	cat $(BASEPATH)/share/java/junit-3.8.1.jar | (cd ext-lib; $(JAR) x); \
-	rm -rf ext-lib/META-INF
+new-spoofax-libs :
+	rm -rf spoofax-libs-tmp
+	mkdir spoofax-libs-tmp
+	cat $(SPOOFAX)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd spoofax-libs-tmp; $(JAR) x)
+	cat $(SPOOFAX)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd spoofax-libs-tmp; $(JAR) x)
+	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
+	rm -rf spoofax-libs-tmp/META-INF
+	$(JAR) cf spoofax-libs.jar.tmp -C spoofax-libs-tmp .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.core/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/../../branches/spoofax-recovery/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.aterm/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.adapter.aterm/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.jsglr/bin/ .
+	rm -rf spoofax-libs-tmp
+	mv spoofax-libs.jar.tmp spoofax-libs.jar
+
+.ALLCLASSES : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) -d bin && touch $@
 
 ###### LIBRARIES #######
+
+bin/org/strategoxt/libstratego_lib.class : lib/org/strategoxt/libstratego_lib.java
+	$(JAVAC) $< -d bin
 
 lib/org/strategoxt/libstratego_lib.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJOPTIONS)
@@ -157,19 +154,13 @@ runtime/org/strategoxt/lang/compat/override/strc_compat.java : runtime/org/strat
 compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
 	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
-###### GENERAL #######
-
-%.class : %.java
-	$(JAVAC) $(JAVACFLAGS) $<
+###### EXTERNAL #######
 
 ../trans/strj : .PURPLEPONY
 	$(MAKE) -C ../trans strj
 
 ../trans/strj.ctree : .PURPLEPONY
 	$(MAKE) -C ../trans strj.ctree
-
-.ALLCLASSES : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
-	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch $@
 
 .PURPLEPONY:
 

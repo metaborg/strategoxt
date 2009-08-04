@@ -14,5 +14,6 @@ Require-Bundle: org.spoofax.aterm,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- java/strategoxt.jar,
- java/runtime/
+ java/runtime/,
+ java/compiler/,
+ java/lib/

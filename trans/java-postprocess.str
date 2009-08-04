@@ -91,3 +91,39 @@ strategies
 
   java-param-to-arg :
     param |[ t x ]| -> expr |[ x ]|
+
+strategies
+
+  java-split-class :
+    compilation-unit |[
+      ~package-dec?:pkgname
+      ~import-dec*:imports
+      mod* class x {
+        ~*members
+      }
+    ]| ->
+    [ compilation-unit |[
+        ~package-dec?:pkgname
+        ~import-dec*:imports
+        mod* class x {
+          ~*members'
+        }
+      ]| 
+    | member-classes
+    ]
+    with
+      (member-classes, members') := <partition(to-compilation-unit(|pkgname, imports, mod*))> members
+
+  to-compilation-unit(|pkgname, imports, mod*) :
+    type-dec |[
+      mod2* class x extends y {
+        ~*members
+      }
+    ]| ->
+    compilation-unit |[
+      ~package-dec?: pkgname
+      ~import-dec*: imports
+      mod* class x extends y {
+        ~*members
+      }
+    ]|

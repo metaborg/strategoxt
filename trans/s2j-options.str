@@ -15,7 +15,10 @@ rules
   s2j-library-options =
     ArgOption(
       "-p"
-    , <set-config> ("-p", <id>); !()
+    , if is-substring(!"/") + is-substring("-") then
+        fatal-err(|"Illegal package name")
+      end
+    ; <set-config> ("-p", <id>); !()
     , !"-p <name>          Set package name <name>"
     )
   + ArgOption(
@@ -82,7 +85,7 @@ rules
         err(|"Imported libraries must follow format packagename.ClassName"); fail
       
       otherwise:
-        id
+        jify
     end
   
   // For compatibility, ignore all built-in library paths

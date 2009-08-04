@@ -1,23 +1,26 @@
-package org.strategoxt.lang.compat;
+package org.strategoxt.lang.compat.libstrc_compat;
 
 import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
-import org.strategoxt.lang.compat.override.strc_compat;
+import org.strategoxt.lang.compat.StringValuePrimitive;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class libstrc_compat {
+public class Main {
 	
-	private libstrc_compat() {
+	// TODO: libstrc_compat and libstratego_rtg_compat should be Stratego modules
+	//       with calls to primitives, and ideally they should get a different name
+	
+	private Main() {
 		// No instantiation
 	}
 	
 	public static void init(Context context) {
-		strc_compat.init(context);
+		org.strategoxt.lang.compat.override.strc_compat.Main.init(context);
 	}
 	
 	public static AbstractStrategoOperatorRegistry getOperatorRegistry() {

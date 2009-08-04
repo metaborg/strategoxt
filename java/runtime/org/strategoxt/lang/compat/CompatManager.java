@@ -6,10 +6,6 @@ import java.util.Set;
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.compat.override.jsglr_parser;
-import org.strategoxt.lang.compat.override.jsglr_parser_compat;
-import org.strategoxt.lang.compat.override.performance_tweaks;
-import org.strategoxt.lang.compat.override.xtc_compat;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
 /**
@@ -51,17 +47,17 @@ public class CompatManager {
 	public void activateComponent(String component) {
 		if ("libstratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
-			performance_tweaks.init(context);
-			xtc_compat.init(context); // also deals with native calls for libstratego-lib
+			org.strategoxt.lang.compat.override.performance_tweaks.Main.init(context);
+			org.strategoxt.lang.compat.override.xtc_compat.Main.init(context); // also deals with native calls for libstratego-lib
 		} else if ("libstratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));
 			context.addOperatorRegistry(new SGLRCompatLibrary(atermFactory));
-			jsglr_parser.init(context);
-			jsglr_parser_compat.init(context);
+			org.strategoxt.lang.compat.override.jsglr_parser.Main.init(context);
+			org.strategoxt.lang.compat.override.jsglr_parser_compat.Main.init(context);
 		} else if ("libstrc".equals(component)) {
-			context.addOperatorRegistry(libstrc_compat.getOperatorRegistry());
-			libstrc_compat.init(context);
+			context.addOperatorRegistry(org.strategoxt.lang.compat.libstrc_compat.Main.getOperatorRegistry());
+			org.strategoxt.lang.compat.libstrc_compat.Main.init(context);
 		}
 	}
 }
