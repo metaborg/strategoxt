@@ -23,6 +23,9 @@ while P=$1; shift; do
   if [ "$P" == "-cp" ]; then
     CLASSPATH="$1"
     shift
+  elif [ "$P" == "-p" ]; then
+    PACKAGE="$1"
+    shift
   elif [ "$P" == "-i" ]; then
     INPUT="$1"
     shift
