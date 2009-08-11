@@ -64,8 +64,12 @@ fi
 
 ## JARRING
 
-echo $JAR cf $OUTPUT -C \$TEMPDIR .
-$JAR cf $OUTPUT -C $TEMPDIR .
+INPUTDIR=`dirname $INPUT`
+ATTACHMENTS=`ls $INPUTDIR | grep -vE "^$(basename $INPUT)\$" | sed "s!^!-C $INPUTDIR !"` \
+  || (echo "Illegal input file name: $INPUT">&2; exit 1)
+
+echo $JAR cf $OUTPUT -C . .
+$JAR cf $OUTPUT -C $TEMPDIR . $ATTACHMENTS
 RET=$?
 
 rm -rf $TEMPDIR
