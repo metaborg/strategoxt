@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: strc-java
-Bundle-SymbolicName: org.strategoxt.strcjava;singleton:=true
+Bundle-Name: Stratego/XT Java runtime
+Bundle-SymbolicName: org.strategoxt.strj;singleton:=true
 Bundle-Version: 0.1
 Export-Package: org.strategoxt,
  org.strategoxt.lang,
