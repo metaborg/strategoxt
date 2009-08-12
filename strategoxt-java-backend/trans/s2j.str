@@ -852,14 +852,34 @@ strategies
         log(|Info(), ["Referenced imported term file ", file, "; exists in ", outputdir])
       end
     with
-      x_constant := <newname> "constImportTerm"
-    ; x_main     := <MainClassName>
-    ; rules(ConstDecl :+= class-body-dec |[ protected static ImportTermReference x_constant; ]|)
+      inputname     := <file-name-to-identifier> inputfile
+    ; inputname'    := <not(IsImported) <+ newname> inputname
+    ; x_constant    := <conc-strings> ("const", inputname')
+    ; x_getconstant := <conc-strings> ("get",   inputname')
+    ; x_main        := <MainClassName>
     ; rules(
-        ConstInit :+=
-          bstm* |[ x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile"); ]|
+        IsImported : inputname
+        ConstDecl :+= class-body-dec |[
+          protected static ImportTermReference x_constant;
+        ]|
+        ConstDecl :+= class-body-dec |[
+          public static IStrategoTerm x_getconstant(ITermFactory termFactory) {
+            return getConstant(termFactory, x_constant);
+          }
+        ]|
+        ConstInit :+= bstm* |[
+          x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile");
+        ]|
       )
-   
+  
+  file-name-to-identifier =
+    base-filename
+  ; string-as-chars(
+      listtd(try(['.', to-upper | id]))
+    ; filter(is-alphanum)
+    ; [to-upper | id]
+    )
+  
   find-import-term-file :
     file -> file'
     with
