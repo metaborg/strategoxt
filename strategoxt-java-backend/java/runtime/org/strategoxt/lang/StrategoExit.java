@@ -12,13 +12,17 @@ public class StrategoExit extends StrategoException {
     public static final int SUCCESS = 0;
     
     public StrategoExit(int value) {
-        super("Legal exit");
+        super("Legal exit: return code " + valueToString(value));
         this.value = value;
     }
     
     public StrategoExit(int value, Throwable cause) {
-    	super("Legal exit", cause);
+    	super("Legal exit: return code " + valueToString(value), cause);
     	this.value = value;
+    }
+
+    private static Object valueToString(int value) {
+        return (value == SUCCESS ? "0 (success)" : value);
     }
     
     public int getValue() {
