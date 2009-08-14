@@ -33,7 +33,12 @@ public class ImportTerm extends LazyTerm {
 		if (aterm == null) {
 			return aterm = initATerm(factory);
 		} else if (factory != atermFactory) {
-			return factory.importTerm(aterm);
+			try {
+				return initATerm(factory);
+			} catch (RuntimeException e) {
+				 // factory.importTerm(aterm) may not be implemented, try again...
+				return initATerm(factory);
+			}
 		} else {
 			return aterm;
 		}
