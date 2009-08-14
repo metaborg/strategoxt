@@ -158,8 +158,16 @@ rules
          ~*cnst-inits
        }
      ]|
-
-     ~*constant
+     
+     protected static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
+       if (factory == constantFactory) {
+         return constant;
+       } else if (constantFactory != null) {
+         return new TermConverter(factory).convert(constant);
+       } else {
+         throw new IllegalStateException("Component not initialized; please call init() first");
+       }
+     }
 
      ~*constant-defs
      ~*function-defs
@@ -176,7 +184,6 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; register      := <java-register-method> defs
-    ; constant      := <java-constant-methods>
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -260,29 +267,6 @@ rules
       x_name := <MainClassName>
     ; main   := <get-config <+ !"main"> "-m"
     ; x_main := <conc-strings> (<jify> main, "_0_0")
-
-  java-constant-methods =
-    !|[
-      protected static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
-        if (factory == constantFactory) {
-          return constant;
-        } else if (constantFactory != null) {
-          return new TermConverter(factory).convert(constant);
-        } else {
-          throw new IllegalStateException("Component not initialized; please call init() first");
-        }
-      }
-     
-      protected static IStrategoTerm getConstant(ITermFactory factory, TermReference constant) {
-        if (factory == constantFactory) {
-          return constant.get();
-        } else if (constantFactory != null) {
-          return new TermConverter(factory).convert(constant.get());
-        } else {
-          throw new IllegalStateException("Component not initialized; please call init() first");
-        }
-      }
-    ]|
   
   // TODO: do interop strategy additions in an on-demand fashion
   //       (need to make a custom VarScope class to do so)
@@ -827,7 +811,7 @@ strategies
       
   /**
    * Translate 'import-term'
-   * - uses LazyTermReference for caching
+   * - uses LazyTerm to lazily load the term
    * - inlining construction would exceed max method limit
    *    even an array may have this effect
    *  - inlining a string could be an easy solution to inline it
@@ -860,7 +844,7 @@ strategies
     ; rules(
         IsImported : inputname
         ConstDecl :+= class-body-dec |[
-          protected static ImportTermReference x_constant;
+          protected static ImportTerm x_constant;
         ]|
         ConstDecl :+= class-body-dec |[
           public static IStrategoTerm x_getconstant(ITermFactory termFactory) {
@@ -868,7 +852,7 @@ strategies
           }
         ]|
         ConstInit :+= bstm* |[
-          x_constant = new ImportTermReference(termFactory, x_main.class, "~pkgpath", "~outputfile");
+          x_constant = new ImportTerm(termFactory, x_main.class, "~pkgpath", "~outputfile");
         ]|
       )
   

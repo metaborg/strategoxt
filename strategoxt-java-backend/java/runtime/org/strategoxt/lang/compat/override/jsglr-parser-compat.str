@@ -73,6 +73,11 @@ strategies // parsing and parse tables
     jsglr-parse-string-pt(on-parse-error |tbl, start-symbol, path);
     implode-asfix
 
+strategies
+
+  override strsglr-perror =
+    err(|"Unable to open file:")
+
 strategies // location information
 
   override asfix-anno-location = // TODO: asfix-anno-location?

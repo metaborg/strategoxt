@@ -25,6 +25,7 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 		initFilterSettings();
 		
 		add(new JSGLR_parse_string_pt_compat(wrappedFactory, filterSettings));
+		add(new JSGLR_open_parsetable_compat(wrappedFactory));
 		add(new STRSGLR_get_parse_error(wrappedFactory));
 		add(new STRSGLR_clear_parse_error());
 	}
