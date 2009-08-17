@@ -43,14 +43,12 @@ public class ParallelAll extends SRTS_all {
 
 	private AtomicInteger parallelismLevel = new AtomicInteger(0);
 	
-	private volatile boolean isParallelActive;
-	
 	private volatile boolean allowUnorderedOnce;
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
-		if (ENABLED && (ALLOW_NESTED_JOBS || !isParallelActive) && isCandidateTerm(context, current)) {
+		if (ENABLED && (ALLOW_NESTED_JOBS || libstratego_parallel.isActive()) && isCandidateTerm(context, current)) {
 			context.push("<parallel>");
 			IStrategoTerm result = invokeParallel(context, current, s);
 			
@@ -87,7 +85,7 @@ public class ParallelAll extends SRTS_all {
 			allowUnordered = level == 1 && allowUnorderedOnce;
 			allowUnorderedOnce = false;
 		} else {
-			isParallelActive = true;
+			libstratego_parallel.setActive(true);
 			allowUnordered = allowUnorderedOnce;
 			allowUnorderedOnce = false;
 		}
@@ -151,7 +149,7 @@ public class ParallelAll extends SRTS_all {
 			throw new RuntimeException(e);
 		} finally {
 			if (ALLOW_NESTED_JOBS) parallelismLevel.decrementAndGet();
-			else isParallelActive = false;
+			else libstratego_parallel.setActive(false);
 		}
 		
 		if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {

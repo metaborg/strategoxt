@@ -45,6 +45,8 @@ public class PureOperatorSet {
 		add("JSGLR_parse_string_pt_compat");
 		add("JSGLR_parse_string_pt");
 		add("JSGLR_open_parsetable");
+		add("SSL_dynamic_rules_hashtable");
+		add("SSL_table_hashtable");
 		// TODO: More "pure" operators
 	}};
 	
@@ -54,12 +56,10 @@ public class PureOperatorSet {
 	 */
 	@SuppressWarnings("serial")
 	private static final HashSet<String> grayList = new HashSet<String>() {{
-		add("SSL_dynamic_rules_hashtable");
 		add("SSL_hashtable_get");
 		add("SSL_indexedSet_get");
 		add("SSL_hashtable_elements");
 		add("SSL_indexedSet_elements");
-		add("SSL_table_hashtable");
 		add("SSL_table_fold");
 		add("SSL_keys_fold");
 		add("SSL_values_fold");

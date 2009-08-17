@@ -30,7 +30,9 @@ public class libstratego_parallel {
 	
 	protected static final boolean ADJUST_FOCUS_THREAD_PRIORITY = true;
 	
-	private static boolean isInitialized; 
+	private static boolean isInitialized;
+	
+	private static boolean isActive;
 	
 	public static void init(Context context) {
 		if (isInitialized || !ENABLED) return;
@@ -47,6 +49,14 @@ public class libstratego_parallel {
 				+ (ADJUST_FOCUS_THREAD_PRIORITY ? " (priority focus thread)" : "")
 				+ (DIAGNOSE_SYNCHRONOUS_OPERATIONS ? " (diagnose sync. ops)" : "")
 				);
+	}
+	
+	public static boolean isActive() {
+		return isActive;
+	}
+	
+	protected static void setActive(boolean value) {
+		isActive = value;
 	}
 	
 	public static class parallel_unordered_0_0 extends Strategy {
