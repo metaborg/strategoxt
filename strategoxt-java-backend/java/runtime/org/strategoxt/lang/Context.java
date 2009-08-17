@@ -48,16 +48,22 @@ public class Context extends StackTracer {
     }
     
     public Context(ITermFactory factory) {
-    	this(factory, new HashMap<String, IOperatorRegistry>(), new ArrayList<IOperatorRegistry>());
+    	this(factory, null);
+    }
+    
+    public Context(ITermFactory factory, IOAgent ioAgent) {
+    	this(factory, ioAgent, new HashMap<String, IOperatorRegistry>(), new ArrayList<IOperatorRegistry>());
         SSLLibrary ssl = new SSLLibrary();
 		operatorRegistryMap.put(SSLLibrary.REGISTRY_NAME, ssl);
         operatorRegistries.add(ssl);
     }
     
-    protected Context(ITermFactory factory, Map<String, IOperatorRegistry> operatorRegistryMap, List<IOperatorRegistry> operatorRegistries) {
+    protected Context(ITermFactory factory, IOAgent ioAgent, Map<String, IOperatorRegistry> operatorRegistryMap, List<IOperatorRegistry> operatorRegistries) {
     	this.factory = factory;
     	this.operatorRegistryMap = operatorRegistryMap;
     	this.operatorRegistries = operatorRegistries;
+    	
+    	if (ioAgent != null) setIOAgent(ioAgent);
     	compat.init();
     }
 	

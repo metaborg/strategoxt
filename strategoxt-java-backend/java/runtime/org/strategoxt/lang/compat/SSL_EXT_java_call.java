@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -50,17 +50,21 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		if (sameContext) {
 			context = parentContext;
 		} else {
-			IOAgent ioAgent = parentContext.getIOAgent();
-			context = new Context(parentContext.getFactory());
-			context.setIOAgent(ioAgent);
+			context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
 		}
 
-		IStrategoTerm result = strategy.invoke(context, tvars[1]);
-		if (result == null) {
-			return false;
-		} else {
-			env.setCurrent(result);
-			return true;
+		try {
+			IStrategoTerm result = strategy.invoke(context, tvars[1]);
+			if (result == null) {
+				return false;
+			} else {
+				env.setCurrent(result);
+				return true;
+			}
+		} catch (StrategoExit e) {
+			if (sameContext) throw new StrategoExit(e.getValue(), e);
+			
+			return e.getValue() == StrategoExit.SUCCESS;
 		}
 	}
 	
@@ -69,7 +73,12 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		if (cached != null) return cached;
 		
 		try {
-			Class<?> library = Class.forName(className);
+			Class<?> library;
+			try {
+				library = Class.forName(className);
+			} catch (ClassNotFoundException e) {
+				library = Class.forName(toStrategoName(className));
+			}
 			Field instance = library.getField("instance");
 
 			if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
@@ -79,8 +88,6 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			invocationCache.put(className, cached);
 			return cached;
 			
-		} catch (StrategoExit e) {
-			return null;
 		} catch (ClassNotFoundException e) {
 			return null;
 		} catch (IllegalArgumentException e) {
@@ -92,5 +99,19 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		} catch (SecurityException e) {
 			throw new StrategoException("Could not dynamically call strategy " + className, e);
 		}
+	}
+	
+	private static String toStrategoName(String className) {
+		StringBuilder result = new StringBuilder();
+		String[] parts = className.split("\\.");
+		parts[parts.length - 1] = Interpreter.cify(parts[parts.length - 1]);
+		
+		result.append(parts[0]);
+		for (int i = 1; i < parts.length; i++) {
+			result.append('.');
+			result.append(parts[i]);
+		}
+		
+		return result.toString();
 	}
 }

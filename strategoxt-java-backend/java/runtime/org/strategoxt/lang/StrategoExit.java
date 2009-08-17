@@ -20,6 +20,10 @@ public class StrategoExit extends StrategoException {
     	super("Legal exit: return code " + valueToString(value), cause);
     	this.value = value;
     }
+    
+    public StrategoExit(StrategoExit cause) {
+    	this(cause.getValue(), cause);
+    }
 
     private static Object valueToString(int value) {
         return (value == SUCCESS ? "0 (success)" : value);

@@ -43,7 +43,7 @@ public class ParallelContext extends Context {
 	 *            operations will break the program.
 	 */
 	public ParallelContext(Context context, ParallelJobExecutor executor, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered, boolean allowGrayListed) {
-		super(context.getFactory(), context.getOperatorRegistryMap(), context.getOperatorRegistries());
+		super(context.getFactory(), context.getIOAgent(), context.getOperatorRegistryMap(), context.getOperatorRegistries());
 		this.executor = executor;
 		this.job = job;
 		this.isAborted = aborted;

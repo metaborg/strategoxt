@@ -159,7 +159,7 @@ public class ParallelAll extends SRTS_all {
 		if (isAborted.get()) {
 			if (exception.get() != null) {
 				if (exception.get() instanceof StrategoExit) {
-					throw new StrategoExit(((StrategoExit) exception.get()).getValue(), exception.get());
+					throw new StrategoExit((StrategoExit) exception.get());
 				} else {
 					throw new StrategoException("Exception in asynchronous job", exception.get());
 				}

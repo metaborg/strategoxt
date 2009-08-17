@@ -17,8 +17,12 @@ strategies
   <+
     id // HACK: try to find something on the path instead
   
-  // TODO: also implement fork-and-wait
-  //       (which is more lower-level and probably inlined in call)
+  // TODO: also implement fork-and-wait?
+  
   override call =
+    ?(program, args);
+    <is-substring(!".")> program;
+    prim("SSL_EXT_java_call", program, args, 0)
+  <+
     ?(program, args);
     prim("SSL_EXT_call", program, args)
