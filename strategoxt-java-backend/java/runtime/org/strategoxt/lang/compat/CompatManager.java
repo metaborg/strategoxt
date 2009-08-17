@@ -5,12 +5,14 @@ import java.util.Set;
 
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
+import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.compat.override.jsglr_parser;
 import org.strategoxt.lang.compat.override.jsglr_parser_compat;
 import org.strategoxt.lang.compat.override.performance_tweaks;
 import org.strategoxt.lang.compat.override.xtc_compat;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
+import org.strategoxt.libstratego_lib.set_config_0_0;
 
 /**
  * Handles per-context library compatibility components.
@@ -52,6 +54,9 @@ public class CompatManager {
 		if ("libstratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			performance_tweaks.init(context);
+			ITermFactory factory = context.getFactory();
+			set_config_0_0.instance.invoke(context,
+					factory.makeTuple(factory.makeString("JAVA_PLATFORM"), factory.makeInt(1)));
 			xtc_compat.init(context); // also deals with native calls for libstratego-lib
 		} else if ("libstratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();

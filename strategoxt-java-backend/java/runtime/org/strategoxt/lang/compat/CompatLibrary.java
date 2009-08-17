@@ -11,6 +11,7 @@ public class CompatLibrary extends AbstractStrategoOperatorRegistry {
 	
 	public CompatLibrary() {
 		add(new SSL_EXT_call());
+		add(new SSL_EXT_java_call());
 		add(new SSL_EXT_read_text_from_stream());
 	}
 
