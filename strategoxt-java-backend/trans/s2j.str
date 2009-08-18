@@ -267,7 +267,7 @@ rules
      }
      
      public static Strategy getMainStrategy() {
-       return x_main;
+       return x_main.instance;
      }
     ]|
     where

@@ -30,4 +30,4 @@ strategies
     end
   <+
     ?(program, args);
-    prim("SSL_EXT_call", program, args)
+    prim("SSL_EXT_call", program, args) => 0

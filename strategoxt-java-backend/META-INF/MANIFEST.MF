@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.strategoxt.strj;singleton:=true
 Bundle-Version: 0.1
 Export-Package: org.strategoxt,
  org.strategoxt.lang,
+ org.strategoxt.lang.compat,
  org.strategoxt.lang.parallel
 Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core;bundle-version="0.3.13",
