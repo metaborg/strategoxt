@@ -1,10 +1,17 @@
 package org.strategoxt.lang.compat;
 
+import static org.strategoxt.lang.Term.*;
+
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
+import org.spoofax.interpreter.library.ssl.SSLLibrary;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoInt;
+import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.compat.override.jsglr_parser;
@@ -12,7 +19,6 @@ import org.strategoxt.lang.compat.override.jsglr_parser_compat;
 import org.strategoxt.lang.compat.override.performance_tweaks;
 import org.strategoxt.lang.compat.override.xtc_compat;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
-import org.strategoxt.libstratego_lib.set_config_0_0;
 
 /**
  * Handles per-context library compatibility components.
@@ -54,9 +60,7 @@ public class CompatManager {
 		if ("libstratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			performance_tweaks.init(context);
-			ITermFactory factory = context.getFactory();
-			set_config_0_0.instance.invoke(context,
-					factory.makeTuple(factory.makeString("JAVA_PLATFORM"), factory.makeInt(1)));
+			initConfig();
 			xtc_compat.init(context); // also deals with native calls for libstratego-lib
 		} else if ("libstratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();
@@ -68,5 +72,28 @@ public class CompatManager {
 			context.addOperatorRegistry(libstrc_compat.getOperatorRegistry());
 			libstrc_compat.init(context);
 		}
+	}
+
+	private void initConfig() {
+		ITermFactory factory = context.getFactory();
+		Map<IStrategoTerm, IStrategoTerm> config = getConfigTable();
+		
+		config.put(factory.makeString("JAVA_PLATFORM"), factory.makeInt(1));
+	}
+
+	private Map<IStrategoTerm, IStrategoTerm> getConfigTable() {
+		ITermFactory factory = context.getFactory();
+		SSLLibrary library = (SSLLibrary) context.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
+		Map<IStrategoTerm, IStrategoTerm> allTables = library.getHashtable(library.getTableTableRef());
+		
+		IStrategoInt configRef = (IStrategoInt) allTables.get(factory.makeString("config"));
+		if (configRef == null) {
+			IStrategoTerm[] config = { factory.makeInt(117), factory.makeInt(75) };
+			configRef = (IStrategoInt) context.invokePrimitive("SSL_hashtable_create", config[0], NO_STRATEGIES, config);
+			IStrategoAppl configTerm = factory.makeAppl(factory.makeConstructor("Hashtable", 1), configRef);
+			allTables.put(factory.makeString("config"), configTerm);
+		}
+		
+		return library.getHashtable(configRef.intValue());
 	}
 }
