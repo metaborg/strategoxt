@@ -27,7 +27,7 @@ strategies
   
   override read-text-from-stream =
     ?Stream(stream);
-    prim("SSL_EXT_read_text_from_stream", sticsream)
+    prim("SSL_EXT_read_text_from_stream", stream)
   
   override crush(nul, sum) =
     SRTS-EXT-crush(nul, sum, id)

@@ -52,6 +52,8 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		} else {
 			context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
 		}
+		
+		// TODO: call init()
 
 		try {
 			IStrategoTerm result = strategy.invoke(context, tvars[1]);
