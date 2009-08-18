@@ -9,7 +9,6 @@ import java.util.Set;
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
-import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -84,14 +83,18 @@ public class CompatManager {
 	private Map<IStrategoTerm, IStrategoTerm> getConfigTable() {
 		ITermFactory factory = context.getFactory();
 		SSLLibrary library = (SSLLibrary) context.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
+		if (library == null) throw new IllegalStateException("Standard operator registry not found");
 		Map<IStrategoTerm, IStrategoTerm> allTables = library.getHashtable(library.getTableTableRef());
 		
-		IStrategoInt configRef = (IStrategoInt) allTables.get(factory.makeString("config"));
-		if (configRef == null) {
+		IStrategoTerm configTerm = allTables.get(factory.makeString("config"));
+		IStrategoInt configRef; 
+		if (configTerm == null) {
 			IStrategoTerm[] config = { factory.makeInt(117), factory.makeInt(75) };
 			configRef = (IStrategoInt) context.invokePrimitive("SSL_hashtable_create", config[0], NO_STRATEGIES, config);
-			IStrategoAppl configTerm = factory.makeAppl(factory.makeConstructor("Hashtable", 1), configRef);
+			configTerm = factory.makeAppl(factory.makeConstructor("Hashtable", 1), configRef);
 			allTables.put(factory.makeString("config"), configTerm);
+		} else {
+			configRef = (IStrategoInt) configTerm.getSubterm(0);
 		}
 		
 		return library.getHashtable(configRef.intValue());

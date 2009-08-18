@@ -226,7 +226,12 @@ rules
       x' := <jify> x
 
   java-main-methods :
-    _ -> []
+    _ ->
+    class-body-dec* |[
+      public static Strategy getMainStrategy() {
+        return null;
+      }
+    ]|
     where
       <get-config> "--library"
     ; not(<get-config> "-m")
@@ -259,6 +264,10 @@ rules
      public static IStrategoTerm mainNoExit(Context context, String... args) throws StrategoExit {
        init(context);
        return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+     }
+     
+     public static Strategy getMainStrategy() {
+       return x_main;
      }
     ]|
     where

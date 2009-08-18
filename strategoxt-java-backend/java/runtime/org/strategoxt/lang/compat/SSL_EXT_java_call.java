@@ -3,6 +3,8 @@ package org.strategoxt.lang.compat;
 import static org.spoofax.interpreter.core.Tools.*;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,8 +28,11 @@ import org.strategoxt.lang.Strategy;
  */
 public class SSL_EXT_java_call extends AbstractPrimitive {
 	
-	private static Map<String,Strategy> invocationCache =
+	private static Map<String, Strategy> invocationCache =
 		new ConcurrentHashMap<String, Strategy>();
+	
+	private static Map<String, Method> initCache =
+		new ConcurrentHashMap<String, Method>();
 	
 	public SSL_EXT_java_call() {
 		super("SSL_EXT_java_call", 0, 3);
@@ -40,9 +45,12 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		
 		if (!isTermString(tvars[0])) return false;
 		if (!isTermInt(tvars[2])) return false;
+
+		String className = ((IStrategoString) tvars[0]).stringValue();
+		IStrategoTerm arg = tvars[1];
 		boolean sameContext = ((IStrategoInt) tvars[2]).intValue() != 0;
 		
-		Strategy strategy = getStrategy(((IStrategoString) tvars[0]).stringValue());
+		Strategy strategy = getStrategy(className);
 		if (strategy == null) return false;
 
 		Context parentContext = ((InteropContext) env).getContext();
@@ -51,12 +59,12 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			context = parentContext;
 		} else {
 			context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
+			context = initContext(context, className);
+			if (context == null) return false;
 		}
-		
-		// TODO: call init()
 
 		try {
-			IStrategoTerm result = strategy.invoke(context, tvars[1]);
+			IStrategoTerm result = strategy.invoke(context, arg);
 			if (result == null) {
 				return false;
 			} else {
@@ -70,23 +78,62 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		}
 	}
 	
+	protected static Context initContext(Context context, String className) {
+		try {
+			Method method = initCache.get(className);
+			if (method == null) {
+				String libraryName = toLibraryName(className);
+				Class<?> library;
+				try {
+					library = Class.forName(libraryName);
+				} catch (ClassNotFoundException e) {
+					library = Class.forName(toStrategoName(libraryName));
+				}
+				method = library.getMethod("init", Context.class);
+				initCache.put(className, method);
+			}
+			return (Context) method.invoke(null, context);
+		} catch (ClassNotFoundException e) {
+			return null;
+		} catch (IllegalArgumentException e) {
+			return null;
+		} catch (IllegalAccessException e) {
+			return null;
+		} catch (NoSuchMethodException e) {
+			return null;
+		} catch (ClassCastException e) {
+			throw new StrategoException("Could not dynamically call strategy " + className, e);
+		} catch (InvocationTargetException e) {
+			throw new StrategoException("Could not dynamically call strategy " + className, e);
+		} catch (SecurityException e) {
+			throw new StrategoException("Could not dynamically call strategy " + className, e);
+		}
+	}
+
 	protected static Strategy getStrategy(String className) {
 		Strategy cached = invocationCache.get(className);
 		if (cached != null) return cached;
-		
+
+		String innerClassName = toInnerClassName(className);
+
 		try {
 			Class<?> library;
 			try {
-				library = Class.forName(className);
+				library = Class.forName(toStrategoName(innerClassName) + "_0_0");
+				
+				Field instance = library.getField("instance");
+
+				if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
+					return null;
+				
+				cached = (Strategy) instance.get(null);
+				
 			} catch (ClassNotFoundException e) {
 				library = Class.forName(toStrategoName(className));
+				cached = (Strategy) library.getMethod("getMainStrategy", new Class[0]).invoke(null);
+				return cached;
 			}
-			Field instance = library.getField("instance");
-
-			if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
-				return null;
 			
-			cached = (Strategy) instance.get(null);
 			invocationCache.put(className, cached);
 			return cached;
 			
@@ -98,18 +145,41 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			return null;
 		} catch (IllegalAccessException e) {
 			return null;
+		} catch (NoSuchMethodException e) {
+			return null;
+		} catch (ClassCastException e) {
+			throw new StrategoException("Could not dynamically call strategy " + className, e);
+		} catch (InvocationTargetException e) {
+			throw new StrategoException("Could not dynamically call strategy " + className, e);
 		} catch (SecurityException e) {
 			throw new StrategoException("Could not dynamically call strategy " + className, e);
 		}
 	}
 	
+	private static String toInnerClassName(String className) {
+		int lastDot = className.lastIndexOf('.');
+		return className.substring(0, lastDot) + "$" + className.substring(lastDot + 1);
+	}
+	
 	private static String toStrategoName(String className) {
 		StringBuilder result = new StringBuilder();
 		String[] parts = className.split("\\.");
-		parts[parts.length - 1] = Interpreter.cify(parts[parts.length - 1]);
+		
+		result.append(Interpreter.cify(parts[0]));
+		for (int i = 1; i < parts.length; i++) {
+			result.append('.');
+			result.append(Interpreter.cify(parts[i]));
+		}
+		
+		return result.toString();
+	}
+	
+	private static String toLibraryName(String className) {
+		StringBuilder result = new StringBuilder();
+		String[] parts = className.split("\\.");
 		
 		result.append(parts[0]);
-		for (int i = 1; i < parts.length; i++) {
+		for (int i = 1, max = parts.length - 1; i < max; i++) {
 			result.append('.');
 			result.append(parts[i]);
 		}
