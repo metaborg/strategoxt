@@ -1,7 +1,6 @@
 package org.strategoxt.lang.parallel.tables;
 
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
-import org.spoofax.interpreter.library.ssl.SSLLibrary;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -12,10 +11,11 @@ public class ParallelTableLibrary extends AbstractStrategoOperatorRegistry {
     
     private final Object syncRoot = new Object();
     
-    private final SSLLibrary sslLibrary;
+    // concurrentset?
+    // private final ThreadLocal<Set<LoggedTableRead>> tableReads =
+    //	new ThreadLocal<Set<LoggedTableRead>>();
     
-    public ParallelTableLibrary(SSLLibrary sslLibrary) {
-    	this.sslLibrary = sslLibrary;
+    public ParallelTableLibrary() {
     	add(new ParallelTableDestroy(this));
     	add(new ParallelTableRemove(this));
     	add(new ParallelTableReset(this));
@@ -23,10 +23,6 @@ public class ParallelTableLibrary extends AbstractStrategoOperatorRegistry {
     	add(new ParallelTableGet(this));
     	add(new ParallelTableKeys(this));
     	add(new ParallelTablePut(this));
-    }
-    
-    public SSLLibrary getSSLLibrary() {
-    	return sslLibrary;
     }
     
     public Object getSyncRoot() {

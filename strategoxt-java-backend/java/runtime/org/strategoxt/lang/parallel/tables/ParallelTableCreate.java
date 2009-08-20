@@ -13,9 +13,7 @@ import org.strategoxt.lang.parallel.libstratego_parallel;
  */
 public class ParallelTableCreate extends SSL_hashtable_create {
 
-	protected ParallelTableCreate(ParallelTableLibrary library) {
-		super(library.getSSLLibrary());
-	}
+	protected ParallelTableCreate(ParallelTableLibrary library) {}
 	
 	@Override
 	public boolean call(IContext env, Strategy[] sargs, IStrategoTerm[] targs)

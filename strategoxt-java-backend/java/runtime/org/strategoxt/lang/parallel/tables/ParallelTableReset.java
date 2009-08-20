@@ -15,7 +15,6 @@ public class ParallelTableReset extends SSL_hashtable_reset {
 	private final ParallelTableLibrary library;
 
 	protected ParallelTableReset(ParallelTableLibrary library) {
-		super(library.getSSLLibrary());
 		this.library = library;
 	}
 	

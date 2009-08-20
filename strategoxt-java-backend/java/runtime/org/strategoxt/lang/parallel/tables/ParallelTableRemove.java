@@ -13,9 +13,7 @@ import org.strategoxt.lang.parallel.libstratego_parallel;
  */
 public class ParallelTableRemove extends SSL_hashtable_remove {
 
-	protected ParallelTableRemove(ParallelTableLibrary library) {
-		super(library.getSSLLibrary());
-	}
+	protected ParallelTableRemove(ParallelTableLibrary library) {}
 
 	@Override
 	public boolean call(IContext env, Strategy[] sargs, IStrategoTerm[] targs)

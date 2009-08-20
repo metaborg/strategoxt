@@ -13,9 +13,7 @@ import org.strategoxt.lang.parallel.libstratego_parallel;
  */
 public class ParallelTableDestroy extends SSL_hashtable_destroy {
 
-	protected ParallelTableDestroy(ParallelTableLibrary library) {
-		super(library.getSSLLibrary());
-	}
+	protected ParallelTableDestroy(ParallelTableLibrary library) {}
 
 	@Override
 	public boolean call(IContext env, Strategy[] sargs, IStrategoTerm[] targs)

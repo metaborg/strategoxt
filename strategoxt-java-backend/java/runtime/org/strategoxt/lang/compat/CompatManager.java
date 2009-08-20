@@ -1,7 +1,5 @@
 package org.strategoxt.lang.compat;
 
-import static org.strategoxt.lang.Term.*;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,7 +7,7 @@ import java.util.Set;
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
-import org.spoofax.interpreter.terms.IStrategoInt;
+import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
@@ -80,23 +78,20 @@ public class CompatManager {
 		config.put(factory.makeString("JAVA_PLATFORM"), factory.makeInt(1));
 	}
 
-	private Map<IStrategoTerm, IStrategoTerm> getConfigTable() {
+	private StrategoHashMap getConfigTable() {
 		ITermFactory factory = context.getFactory();
 		SSLLibrary library = (SSLLibrary) context.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
 		if (library == null) throw new IllegalStateException("Standard operator registry not found");
-		Map<IStrategoTerm, IStrategoTerm> allTables = library.getHashtable(library.getTableTableRef());
+		StrategoHashMap allTables = library.getTableTable();
 		
-		IStrategoTerm configTerm = allTables.get(factory.makeString("config"));
-		IStrategoInt configRef; 
-		if (configTerm == null) {
-			IStrategoTerm[] config = { factory.makeInt(117), factory.makeInt(75) };
-			configRef = (IStrategoInt) context.invokePrimitive("SSL_hashtable_create", config[0], NO_STRATEGIES, config);
-			configTerm = factory.makeAppl(factory.makeConstructor("Hashtable", 1), configRef);
-			allTables.put(factory.makeString("config"), configTerm);
+		IStrategoTerm configRef = allTables.get(factory.makeString("config"));
+		if (configRef == null) {
+			StrategoHashMap result = new StrategoHashMap(117, 75);
+			configRef = factory.makeAppl(factory.makeConstructor("Hashtable", 1), result);
+			allTables.put(factory.makeString("config"), configRef);
+			return result;
 		} else {
-			configRef = (IStrategoInt) configTerm.getSubterm(0);
+			return (StrategoHashMap) configRef.getSubterm(0);
 		}
-		
-		return library.getHashtable(configRef.intValue());
 	}
 }
