@@ -5,7 +5,9 @@ import static org.spoofax.interpreter.core.Tools.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.spoofax.interpreter.core.IContext;
@@ -34,10 +36,17 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 	private static Map<String, Method> initCache =
 		new ConcurrentHashMap<String, Method>();
 	
+	private static Set<ClassLoader> asyncClassLoaders = new HashSet<ClassLoader>();
+	
 	public SSL_EXT_java_call() {
 		super("SSL_EXT_java_call", 0, 3);
 	}
-
+	
+	public static void registerClassLoader(ClassLoader classLoader) {
+		synchronized (asyncClassLoaders) {
+			asyncClassLoaders.add(classLoader);
+		}
+	}
 
 	@Override
 	public boolean call(IContext env, org.spoofax.interpreter.stratego.Strategy[] svars,
@@ -85,9 +94,9 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 				String libraryName = toLibraryName(className);
 				Class<?> library;
 				try {
-					library = Class.forName(libraryName);
+					library = findClass(libraryName);
 				} catch (ClassNotFoundException e) {
-					library = Class.forName(toStrategoName(libraryName));
+					library = findClass(toStrategoName(libraryName));
 				}
 				method = library.getMethod("init", Context.class);
 				initCache.put(className, method);
@@ -119,7 +128,7 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		try {
 			Class<?> library;
 			try {
-				library = Class.forName(toStrategoName(innerClassName) + "_0_0");
+				library = findClass(toStrategoName(innerClassName) + "_0_0");
 				
 				Field instance = library.getField("instance");
 
@@ -153,6 +162,23 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			throw new StrategoException("Could not dynamically call strategy " + className, e);
 		} catch (SecurityException e) {
 			throw new StrategoException("Could not dynamically call strategy " + className, e);
+		}
+	}
+	
+	private static Class<?> findClass(String className) throws ClassNotFoundException {
+		try {
+			return Class.forName(className, true, SSL_EXT_java_call.class.getClassLoader());
+		} catch (ClassNotFoundException e) {
+			synchronized (asyncClassLoaders) {
+				for (ClassLoader loader : asyncClassLoaders) {
+					try {
+						return Class.forName(className, true, loader);
+					} catch (ClassNotFoundException ignored) {
+						// Try again
+					}
+				}
+			}
+			throw e;
 		}
 	}
 	
