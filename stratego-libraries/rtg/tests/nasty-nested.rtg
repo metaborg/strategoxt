@@ -1,6 +1,0 @@
-regular tree grammar
-  start A
-  productions
-    A -> a(B, b(C), c(d()))
-    B -> c(e())
-    C -> foo()

@@ -1,7 +1,0 @@
-module TIL-goto
-imports TIL
-exports
-  context-free syntax
-    "label" Id ";"         -> Stat {cons("Label")}
-    "goto" Id ";"          -> Stat {cons("Jump")}
-    "if" Exp "goto" Id ";" -> Stat {cons("CJump")}

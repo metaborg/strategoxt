@@ -1,5 +1,0 @@
-module string-literal
-
-strategies
-
-  foo = !"2"

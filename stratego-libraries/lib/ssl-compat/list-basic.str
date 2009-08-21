@@ -1,6 +1,0 @@
-/**
- * Basic functionality on lists. 
- */
-module list-basic
-imports collection/list/common 
-

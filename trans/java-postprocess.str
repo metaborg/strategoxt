@@ -1,0 +1,144 @@
+/**
+ * Java output postprocessing.
+ *
+ * Performs essential Java-to-Java transformations.
+ *
+ * @author Lennart Kats
+ */
+module java-postprocess
+
+imports
+  libjava-front
+
+overlays
+
+  /**
+   * Minimum number of statements in an init method required to split it up,
+   * in order to circumvent the 64K method size limit.
+   */
+  LARGE_METHOD_SIZE = 600
+
+strategies
+
+  java-relabel =
+    java-relabel(|"NO_FAIL_LABEL", "NO_SUCCESS_LABEL", "NO_OUTER_LABEL")
+
+  java-relabel(|failure, success, outer-fail) =
+    java-relabel-outer-label(|failure, success, outer-fail)
+  <+
+    java-relabel-success-label(|failure, success, outer-fail)
+  <+
+    java-relabel-stm(|failure, success, outer-fail)
+  <+
+    all(java-relabel(|failure, success, outer-fail))
+  
+  java-relabel-stm(|failure, success, outer-fail) :
+    |[ Fail: { bstm* } ]| -> |[ x_label': { bstm'* } ]|
+    with
+      x_label' := <newname> "Fail"
+    ; bstm'*   := <java-relabel(|x_label', success, failure)> bstm*
+  
+  java-relabel-success-label(|failure, success, outer-fail) :
+    |[ Success: { bstm* } ]| -> bstm |[ x_label': { bstm'* } ]|
+    with
+      x_label' := <newname> "Success"
+    ; bstm'*   := <java-relabel(|failure, x_label', outer-fail)> bstm*
+   
+  java-relabel-outer-label(|failure, success, outer-fail) :
+    |[ OuterFail: { bstm* } ]| -> bstm |[ { bstm'* } ]|
+    with
+      bstm'* := <java-relabel(|outer-fail, success, outer-fail)> bstm*
+  
+   java-relabel-stm(|failure, success, outer-fail) :
+     Id("Fail") -> Id(failure)
+   
+   java-relabel-stm(|failure, success, outer-fail) :
+     Id("Success") -> Id(success)
+   
+   java-relabel-stm(|failure, success, outer-fail) :
+     Id("OuterFail") -> Id(outer-fail)
+
+strategies
+
+  java-split-method =
+    try(java-split-method' <+ ![<id>])
+
+  java-split-method' :
+    class-body-dec |[
+      mod* t x(param*) {
+        bstm*
+      }
+    ]| ->
+    class-body-dec* |[ 
+      ~*<java-split-method> |[
+        mod* t x(param*) {
+          x'(e_param*);
+          bstm2*
+        }
+      ]|
+
+      mod2* t x'(param*) {
+        bstm1*
+      }
+    ]|
+    where
+      <gt> (<length> bstm*, LARGE_METHOD_SIZE())
+    with
+      x'               := <newname> x
+    ; e_param*         := <map(java-param-to-arg)> param*
+    ; mod2*            := <map(try(\<Public + Protected> -> Private()\))> mod*
+    ; (bstm1*, bstm2*) := <split-at(|LARGE_METHOD_SIZE())> bstm*
+
+  java-param-to-arg :
+    param |[ t x ]| -> expr |[ x ]|
+
+strategies
+
+  java-strategies-to-methods-top =
+    topdown-consnil(try(java-strategies-to-methods))
+
+  java-strategies-to-methods :
+    class-body-dec* |[
+      mod* class x extends Strategy {
+        mod_field* x instance = new x();
+        
+        mod_method* IStrategoTerm invoke(param*) { bstm_body* }
+      }
+      
+      ~*tail
+    ]| ->
+    class-body-dec* |[
+      public static Strategy x_override;
+      
+      mod* IStrategoTerm x(param*) {
+        if (x_override != null)
+          stm_overridecall
+        bstm_body'*
+      }
+    
+      mod* class x extends Strategy {
+        mod_field* x instance = new ~x:x{"once"}(); // HACK
+        mod_method* IStrategoTerm invoke(param*) {
+          return x(e_param*);
+        }
+      }
+      
+      ~*tail
+    ]|
+    with
+      x_override  := <conc-strings> (x, "_override")
+    ; e_param*    := <map(\Param(_, _, Id(y)) -> expr |[ y ]|\)> param*
+    ; bstm_body'* := <alltd(\|[ this ]| -> |[ x.instance ]|\ + \|[ this.invoke(e*) ]| -> |[ x(e*) ]|\)> bstm_body*
+    ; if <lt> (<length> e_param*, 6) then // HACK
+        stm_overridecall := |[ return x_override.invoke(e_param*); ]|
+      else
+        stm_overridecall := |[ throw new IllegalStateException("Not implemented"); ]|
+      end
+
+  java-strategies-to-methods :
+    |[ x.instance = e ]| -> |[ x_override = e ]|
+    with
+      x_override := <conc-strings> (x, "_override")
+
+  java-strategies-to-methods :
+    |[ x.instance.invoke(e*) ]| -> |[ x(e*) ]|

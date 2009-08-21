@@ -1,6 +1,0 @@
-module test08
-imports libstrategolib
-
-strategies
-
-  foo = ?"foo"

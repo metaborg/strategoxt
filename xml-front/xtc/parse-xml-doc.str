@@ -1,9 +1,0 @@
-module parse-xml-doc
-imports 
-  libstratego-lib
-  libstratego-xtc xml-xtc-tools
-
-strategies
-  
-  main-parse-xml-doc =
-    xtc-io-wrap(xtc-parse-xml-doc)

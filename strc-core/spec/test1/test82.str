@@ -1,6 +1,0 @@
-module test82
-imports libstratego-lib
-strategies
-
-  main =
-    !Conc(1,2)

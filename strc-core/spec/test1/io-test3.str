@@ -1,9 +1,0 @@
-module io-test3
-imports libstratego-lib
-
-strategies
-
-  main = 
-    <conc>(<id>, ["-i", "io-test2.in", "-o", "io-test2.out"])
-    ; parse-options(io-options)
-    ; debug 

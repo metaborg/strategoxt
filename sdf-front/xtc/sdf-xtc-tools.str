@@ -1,6 +1,0 @@
-/**
- * @todo Import sdf/tool/xtc and remove definitions.
- */
-module sdf-xtc-tools
-imports
-  sdf/tool/xtc

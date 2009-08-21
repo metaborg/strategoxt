@@ -1,3 +1,0 @@
-module system/posix/error
-imports
-  system/error
