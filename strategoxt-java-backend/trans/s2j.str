@@ -385,7 +385,7 @@ rules
        }
     ]|
     with
-      body := <translate-definition-body> def
+      body           := <translate-definition-body> def
     ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
 
   translate-outer-definition-conflict :
