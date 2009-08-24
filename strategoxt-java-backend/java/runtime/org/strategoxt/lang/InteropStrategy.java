@@ -41,7 +41,7 @@ public class InteropStrategy extends CallT {
 	 * @param context	The compiled context, if used with an interpreter context.
 	 */
 	public InteropStrategy(Strategy strategy, Context context) {
-		super(strategy.getName(), null, null);
+		super(null, null, null);
 		
 		this.strategy = strategy;
 		this.context = context;
@@ -71,7 +71,7 @@ public class InteropStrategy extends CallT {
     }
 	
 	@Override
-	protected String getTraceName() {
+	public String getTargetStrategyName() {
 		return strategy.getName();
 	}
 	

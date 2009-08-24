@@ -30,4 +30,5 @@ strategies
     end
   <+
     ?(program, args);
+    log(|Info(), ["Calling external tool ", program, " with arguments ", <conc-strings> args]);
     prim("SSL_EXT_call", program, args) => 0
