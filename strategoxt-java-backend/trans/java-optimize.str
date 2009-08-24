@@ -119,6 +119,17 @@ strategies
     with
       bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
   
+  replace-match-test1(|x_actualcons, x_cached) :
+    <match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)> ->
+    bstm* |[
+      if (x_actualcons == x_cons) {
+        bstm_decl*
+        bstm_body*
+      } else {
+        break Fail;
+      }
+    ]|
+  
   match-decls-and-appl-text :
     [Block(bstm*) | _] -> <match-decls-and-appl-test> bstm*
   

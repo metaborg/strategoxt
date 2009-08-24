@@ -36,17 +36,17 @@ LIBRARYJAVAS = \
 nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES
 
 CLEANFILES = \
-  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(GENRUNTIMEJAVAS) $(wildcard bin/*) \
+  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(GENRUNTIMEJAVAS) $(wildcard bin/*/*/*) $(wildcard bin/*/*/*/*) $(wildcard bin/*/*/*/*/*) \
   runtime/org/strategoxt/lang/compat/override/libstratego_aterm_compat.rtree \
   lib/org/strategoxt/libstratego-xtc.rtree \
   .ALLCLASSES
 
 SPOOFAX=../../../spoofax/trunk/spoofax
 CLASSPATH=runtime:lib:spoofax-libs.jar:.
-JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
+JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
-STRJOPTIONS=--library -p org.strategoxt --verbose 3 -O 3
+STRJOPTIONS=--library -p org.strategoxt --verbose 3 -O 0
 
 JAR=`if which fastjar >/dev/null; then echo fastjar; else echo jar; fi`
 JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
@@ -86,12 +86,12 @@ new-spoofax-libs :
 	mv spoofax-libs.jar.tmp spoofax-libs.jar
 
 .ALLCLASSES : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
-	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) -d bin && touch $@
+	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch $@
 
 ###### LIBRARIES #######
 
 bin/org/strategoxt/libstratego_lib.class : lib/org/strategoxt/libstratego_lib.java
-	$(JAVAC) $< -d bin
+	$(JAVAC) $<
 
 lib/org/strategoxt/libstratego_lib.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj
 	../trans/strj -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJOPTIONS)
@@ -152,7 +152,7 @@ runtime/org/strategoxt/lang/compat/override/strc_compat.java : runtime/org/strat
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj.java : ../trans/strj.ctree ../trans/strj
-	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
+	../trans/strj -i $< -o $@ -p org.strategoxt --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
 ###### EXTERNAL #######
 

@@ -19,7 +19,7 @@ strategies
     ; !ParseTable(int)
     
   /* UNDONE: JSGLR_parse_string_compat not implemented
-   * TODO: implement JSGLR_parse_string without TermConverter usage
+   * TODO: Optimize - implement JSGLR_parse_string without TermConverter usage
   jsglr-parse-string(|tbl) =
     jsglr-parse-string(id | tbl, None(), "string")
   
