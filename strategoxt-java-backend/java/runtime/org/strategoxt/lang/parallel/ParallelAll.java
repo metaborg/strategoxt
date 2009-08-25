@@ -48,7 +48,8 @@ public class ParallelAll extends SRTS_all {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
-		if (ENABLED && (ALLOW_NESTED_JOBS || libstratego_parallel.isActive()) && isCandidateTerm(context, current)) {
+		// TODO: Only trigger invokeParallel if synchronous execution takes longer than a certain threshold
+		if (ENABLED && (ALLOW_NESTED_JOBS || !libstratego_parallel.isActive()) && isCandidateTerm(context, current)) {
 			context.push("<parallel>");
 			IStrategoTerm result = invokeParallel(context, current, s);
 			
@@ -61,7 +62,8 @@ public class ParallelAll extends SRTS_all {
 		}
 	}
 
-	public IStrategoTerm invokeParallel(final Context context, final IStrategoTerm current, final Strategy s) {		
+	public IStrategoTerm invokeParallel(final Context context, final IStrategoTerm current, final Strategy s) {
+		// TODO: Cleanup - method got too long!!
 		final IStrategoTerm[] inputs = current.getAllSubterms();
 		final IStrategoTerm[] outputs = new IStrategoTerm[inputs.length];
 		final AtomicInteger focusIndex = new AtomicInteger(0); // index of the job with side effects
@@ -72,11 +74,6 @@ public class ParallelAll extends SRTS_all {
 		final boolean allowUnordered;
 		
 		ParallelJob firstJob = null;
-		
-		// HACK
-		final boolean allowGrayListed = "lifted1240".equals(s.getName()) || "lifted835".equals(s.getName()) 
-				|| "lifted233".equals(s.getName())  || "lifted324".equals(s.getName())
-				|| "lifted55".equals(s.getName());
 		
 		if (ALLOW_NESTED_JOBS) {
 			int level = parallelismLevel.incrementAndGet();
@@ -107,7 +104,7 @@ public class ParallelAll extends SRTS_all {
 
 						IStrategoTerm result = null;
 						try {
-							ParallelContext parallelContext = new ParallelContext(context, executor, this, isAborted, allowUnordered, allowGrayListed);
+							ParallelContext parallelContext = new ParallelContext(context, executor, this, isAborted, allowUnordered);
 							if (DIAGNOSE_SYNCHRONOUS_OPERATIONS)
 								parallelContext.setLastSynchronousOperation(lastSynchronousOperation);
 							result = s.invoke(parallelContext, input);

@@ -24,7 +24,8 @@ while P=$1; shift; do
     CLASSPATH="$1"
     shift
   elif [ "$P" == "-p" ]; then
-    PACKAGE="$1"
+    echo "Warning: ignoring option -p; currently unused" >&2
+    PACKAGE="$1" # currently unused
     shift
   elif [ "$P" == "-i" ]; then
     INPUT="$1"
@@ -32,6 +33,8 @@ while P=$1; shift; do
   elif [ "$P" == "-o" ]; then
     OUTPUT="$1"
     shift
+  elif [ "$P" == "--help" ] || ["$P" == "-h" ]; then
+    break
   else
     echo "Illegal argument: $P" >&2
     INPUT=
@@ -40,7 +43,7 @@ while P=$1; shift; do
 done
 
 if [ "$INPUT" == "" ]; then
-  echo Usage: strj-jar [-p PACKAGE] [-m MAINCLASS] [-cp CLASSPATH] [-runtimecp CLASSPATH] -i INPUT.java [-o OUTPUT.jar]
+  echo "Usage: strj-jar [-m MAINCLASS] [-cp CLASSPATH] [-runtimecp CLASSPATH] -i INPUT.java [-o OUTPUT.jar]"
   exit 1
 fi
 

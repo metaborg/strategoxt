@@ -12,7 +12,7 @@ public class libstratego_parallel {
 	
 	protected static final boolean ENABLED = true;
 	
-	protected static final boolean VERBOSE = false;
+	protected static final boolean VERBOSE = true;
 	
 	protected static final boolean DIAGNOSE_SYNCHRONOUS_OPERATIONS = false;
 	
@@ -41,6 +41,7 @@ public class libstratego_parallel {
 		ParallelAll.instance = new ParallelAll();
 		SRTS_all.instance = ParallelAll.instance;
 		
+		// TODO: print intro message only for --verbose 2
 		System.err.println("[ libstratego-parallel ] using "
 				+ DEFAULT_ACTIVE_THREADS
 				+ (DEFAULT_MAX_THREADS != DEFAULT_ACTIVE_THREADS ? "/" + DEFAULT_MAX_THREADS : "")

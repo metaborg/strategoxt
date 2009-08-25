@@ -15,6 +15,7 @@ public class PureOperatorSet {
 	 */
 	@SuppressWarnings("serial")
 	private static final HashSet<String> whiteList = new HashSet<String>() {{
+		// General
 		add("SSL_new");
 		add("SSL_newname");
 		add("SSL_is_string");
@@ -47,13 +48,34 @@ public class PureOperatorSet {
 		add("JSGLR_open_parsetable");
 		add("SSL_dynamic_rules_hashtable");
 		add("SSL_table_hashtable");
+
+		// Collection "read" primitives
+		add("SSL_hashtable_get");
+		add("SSL_indexedSet_get");
+		add("SSL_hashtable_elements");
+		add("SSL_indexedSet_elements");
+		add("SSL_table_fold");
+		add("SSL_keys_fold");
+		add("SSL_values_fold");
+
+		// Collection "write" primitives
+		add("SSL_hashtable_put");
+		add("SSL_indexedSet_put");
+		add("SSL_hashtable_remove");
+		add("SSL_indexedSet_remove");
+		add("SSL_hashtable_reset");
+		add("SSL_indexedSet_reset");
+		add("SSL_hashtable_create");
+		add("SSL_indexedSet_create");
+
 		// TODO: More "pure" operators
 	}};
 	
-	/**
-	 * Primitives that are only thread safe when only
-	 * combined with other white/gray-listed primitives.
-	 */
+	/* UNDONE: operator graylist
+	 * Primitives that are only thread safe when just
+	 * when black listed operations are never used,
+	 * not even from the focus thread.
+	 *
 	@SuppressWarnings("serial")
 	private static final HashSet<String> grayList = new HashSet<String>() {{
 		add("SSL_hashtable_get");
@@ -94,8 +116,5 @@ public class PureOperatorSet {
 	public static void addWhiteListed(String name) {
 		
 	}
-	
-	public static boolean isGrayListed(String name) {
-		return grayList.contains(name);
-	}
+
 }

@@ -109,13 +109,21 @@ public abstract class ParallelJob implements Runnable, Comparable<ParallelJob> {
 	
 	public abstract IStrategoTerm execute(IStrategoTerm input);
 	
+	/**
+	 * Checks if the current job is executed in the focus thread.
+	 * 
+	 * @return <code>true</code> if the job is executed in the focus thread.
+	 */
 	public boolean isFocusJob() {
 		return isFocusJob || focusIndex.get() == startIndex;
 	}
 	
+	/**
+	 * Waits until the current thread is the focus thread.
+	 * Must be called form the thread that owns this job.
+	 */
 	public void waitForFocus() throws InterruptedException {
 		if (!isFocusJob) {
-			// waitForFocusIndex(focusIndex, startIndex, notifier);
 			waitForFocusIndexEagerly();
 			if (ADJUST_FOCUS_THREAD_PRIORITY)
 				Thread.currentThread().setPriority(Thread.MAX_PRIORITY);

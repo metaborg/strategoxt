@@ -23,8 +23,6 @@ public class ParallelContext extends Context {
 	
 	private final boolean allowUnordered;
 	
-	private final boolean allowGrayListed;
-	
 	private AtomicReference<String> lastSynchronousOperation;
 
 	/**
@@ -37,18 +35,13 @@ public class ParallelContext extends Context {
 	 * @param allowUnordered
 	 *            Allows all threads to use any operation, using locks for
 	 *            non-whitelisted ones.
-	 * @param allowGrayListed
-	 *            Allows all threads to use white-listed and gray-listed
-	 *            operations in parallel, without locks. Using other
-	 *            operations will break the program.
 	 */
-	public ParallelContext(Context context, ParallelJobExecutor executor, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered, boolean allowGrayListed) {
+	public ParallelContext(Context context, ParallelJobExecutor executor, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
 		super(context.getFactory(), context.getIOAgent(), context.getOperatorRegistryMap(), context.getOperatorRegistries());
 		this.executor = executor;
 		this.job = job;
 		this.isAborted = aborted;
 		this.allowUnordered = allowUnordered;
-		this.allowGrayListed = allowGrayListed;
 	}
 	
 	void setLastSynchronousOperation(AtomicReference<String> value) {
@@ -83,7 +76,7 @@ public class ParallelContext extends Context {
 			return super.invokePrimitive(primitive, term, args, targs);
 		
 		if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
-			if (lastSynchronousOperation.get() == null && !PureOperatorSet.isGrayListed(name))
+			if (lastSynchronousOperation.get() == null)
 				lastSynchronousOperation.set(name);
 		}
 		
@@ -91,13 +84,6 @@ public class ParallelContext extends Context {
 			synchronized (executor) {
 				return super.invokePrimitive(primitive, term, args, targs);
 			}
-		}
-		
-		if (allowGrayListed) {
-			if (PureOperatorSet.isGrayListed(name))
-				return super.invokePrimitive(primitive, term, args, targs);
-			else
-				throw new IllegalStateException("Uses non-graylisted operation: " + name);
 		}
 		
 		// If all else fails, perform any "black-listed" operations in an ordered fashion
@@ -110,7 +96,10 @@ public class ParallelContext extends Context {
 		return job;
 	}
 	
-	private void waitForFocus() {
+	/**
+	 * Puts the current thread into an idle state until it becomes the focus thread.
+	 */
+	public void waitForFocus() {
 		executor.asyncBeginSleep();
 		try {
 			job.waitForFocus();

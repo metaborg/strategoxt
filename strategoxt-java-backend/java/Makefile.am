@@ -7,6 +7,8 @@ RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/sglr/*.java) \
+  $(wildcard runtime/org/strategoxt/lang/parallel/*.java) \
+  $(wildcard runtime/org/strategoxt/lang/parallel/*/*.java) \
   runtime/org/strategoxt/lang/compat/override/jsglr_parser.java \
   runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat.java \
   runtime/org/strategoxt/lang/compat/override/libstratego_aterm_compat.java \
@@ -46,7 +48,7 @@ CLASSPATH=runtime:lib:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
-STRJOPTIONS=--library -p org.strategoxt --verbose 3 -O 0
+STRJOPTIONS=--library -p org.strategoxt --verbose 3 -O 3
 
 JAR=`if which fastjar >/dev/null; then echo fastjar; else echo jar; fi`
 JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
