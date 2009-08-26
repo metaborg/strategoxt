@@ -1,0 +1,131 @@
+#!/bin/bash
+#
+# by Lennart Kats <lennart add lclnet.nl>
+
+IOPTION=
+FOPTION=
+COPTION=
+GOPTION=
+GOPTION=
+LOPTION=
+LAOPTION=
+OOPTION="-O 1"
+
+while true; do
+  if [ "$1" = "-c" ] || [ "$1" == "--indent-c" ]; then
+    COPTION="-c --indent-c"
+    shift
+    continue
+  fi
+
+  if [ "$1" = "-F" ]; then
+    FOPTION="-F"
+    shift
+    continue
+  fi
+  
+  if [ "$1" = "--library" ] || [ "$1" = "--lib" ]; then
+    LOPTION="--library"
+    shift
+    continue
+  fi
+  
+  if [ "$1" = "-g" ]; then
+    GOPTION="-g"
+    shift
+    continue
+  fi
+  
+  if [ "$1" = "-O" ]; then
+    OOPTION="-O $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-la" ]; then
+    LAOPTION="$LAOPTION -la $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-I" ]; then
+    IOPTION="-I $2"
+    shift; shift
+    continue
+  fi
+  
+  if [ "$1" = "-i" ]; then
+    INPUT="$(cat $2)"
+    shift; shift
+    $0 $FOPTION $GOPTION $COPTION $OOPTION $LOPTION $IOPTION $LAOPTION $* $INPUT
+    exit $?
+  fi
+  
+  if (echo "$1" | grep -e '^ [^ ]\.' &>/dev/null || [ -f "$1" ]) && [ $# = 1 ]; then
+    if [ -f "$1" ]; then
+      $0 $FOPTION $GOPTION $COPTION $OOPTION $LOPTION $IOPTION $LAOPTION "$(cat $1)"
+      exit $?
+    else
+      echo Not a Stratego module: $1 >&2
+      exit 1
+    fi
+  fi
+  
+  if [ $# = 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo 'Usage: str [-c | -F [--lib] | -g] [-O N] [-i FILE | INPUT]'
+    echo 'Compile and run Stratego program in FILE or from INPUT.'
+    echo
+    echo '  -c        Display program output C code instead of running it.'
+    echo '  -F        Display program in core format instead of running it.'
+    echo '  -g        Run program using gdb and display backtrace.'
+    echo '  --lib     Treat as library, keeping all unused strategies'
+    echo '  -la NAME  Search the libtool library libNAME.la when linking.'
+    echo '  -I DIR    Include modules from directory DIR.'
+    echo '  -O N      Use optimization level N (default 1).'
+    echo '  -i FILE   Read input from FILE.'
+    echo '  INPUT     Use INPUT as the input program (typically specified using single quotes),'
+    echo '            which can be a single strategy or a complete module'
+    exit
+  fi
+  break
+done
+  
+if echo "$@" | grep '^module ' >/dev/null; then
+  PROGRAM="$@"
+else
+  PROGRAM="module foo imports libstratego-lib libstratego-xtc libstratego-sglr libstratego-rtg libstrc rules main =
+$@"
+fi
+
+if [ "$TEMP" == "" ]; then
+  TEMP=/tmp
+fi
+
+[ -d $TEMP/.libs ] || (mkdir $TEMP/.libs; chmod 777 $TEMP/.libs)
+
+TEMPFILE=$TEMP/str-`date +'%N'`.str
+echo "$PROGRAM" |
+  perl -pe 's/\blibstratego-lib\b//; s/module\s+[\w\-'']+\b/$& imports libstratego-lib strategies/' > $TEMPFILE
+
+(strc $FOPTION $LOPTION $COPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 -la stratego-lib -la stratego-xtc -la strc -la stratego-sglr -la stratego-rtg -I . -i $TEMPFILE -o $TEMPFILE.out --statistics 0; RET=$?) 2>&1 | grep -vE '^ *[ig]cc|warning ] Mismatch between basename|info ] Compiling|libtool: '
+
+rm $TEMPFILE
+
+if [ -e $TEMPFILE.out ]; then
+  if [ $FOPTION ]; then
+    pp-stratego -a -i $TEMPFILE.out
+  elif [ $GOPTION ]; then
+    echo 'run
+          backtrace' > $TEMPFILE.gdb
+    gdb -batch -x $TEMPFILE.gdb $TEMPFILE.out
+  else
+    $TEMPFILE.out
+  fi
+elif [ "$COPTION" ]; then
+  cat $TEMPFILE.c
+fi
+
+rm -f $TEMPFILE.out $TEMPFILE.gdb $TEMPFILE.c \
+      $TEMPFILE.str.lo $TEMPFILE.str.la $TEMPFILE.str.out.dep $TEMPFILE.str.c
+
+exit $RET

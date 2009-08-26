@@ -244,6 +244,8 @@ strategies
    *
    * @param s          Term -> Term
    * @type  Term -> Term 
+   *
+   * @see collect-one
    */
   oncetd(s) = 
     rec x(s <+ one(x))

@@ -12,7 +12,7 @@ LDADD      = $(LIB_STRC) $(SSL_LIBS)
 
 #strc_LDADD      = $(LIB_STRC) $(SSL_LIBS)
 
-bin_SCRIPTS      = strcflags
+bin_SCRIPTS      = strcflags str
 bin_PROGRAMS 	 = strc parse-stratego pp-stratego
 
 libexec_PROGRAMS = pack-stratego report-ambs stratego-ensugar \

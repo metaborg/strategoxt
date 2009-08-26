@@ -35,4 +35,8 @@ strategies
 
   pp-rtg-box =
     rtg-ppfix
-    ; ast2box(|[<xtc-find; ReadFromFile> "rtg.pp.af"])
+    ; ast2box(|[<pp-table-rtg>])
+  
+  pp-table-rtg =
+    import-term(rtg.pp.af)
+
