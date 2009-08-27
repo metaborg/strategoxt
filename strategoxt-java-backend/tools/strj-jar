@@ -7,21 +7,26 @@ MAINCLASS=
 CLASSPATH=strategoxt.jar
 JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
 JAVAC=`if which ecj &>/dev/null; then echo ecj; else echo javac; fi`
-JAVACFLAGS1="-source 5 -nowarn"
-JAVACFLAGS2="-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC"
+if [ "$JAVAFLAGS" == "" ]; then
+  JAVACFLAGS="-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC"
+fi
 
 [ "$TEMP" != "" ] || TEMP=/tmp
 TEMPDIR=$TEMP/strj-jar-`date +'%N'`
 
 if which strj-jar &>/dev/null; then
-  CLASSPATH=$(dirname $(which strj-jar))/../share/strc-java/strategoxt.jar
+  CLASSPATH=$(cd $(dirname $(which strj-jar))/..; pwd)/share/strc-java/strategoxt.jar
 fi
 
 ## PARAMETERS
 
 while P=$1; shift; do
   if [ "$P" == "-cp" ]; then
-    CLASSPATH="$1"
+    if [ -e $CLASSPATH ]; then
+      CLASSPATH="$1:$CLASSPATH"
+    else
+      CLASSPATH="$1"
+    fi
     shift
   elif [ "$P" == "-p" ]; then
     echo "Warning: ignoring option -p; currently unused" >&2
@@ -62,8 +67,8 @@ fi
 ## COMPILATION
 
 ( mkdir -p $TEMPDIR
-  echo $JAVAC $JAVACFLAGS1 -cp $CLASSPATH `basename $INPUT`
-  $JAVAC $JAVACFLAGS1 $JAVACFLAGS2 -cp $CLASSPATH $INPUT -d $TEMPDIR) || exit 1
+  echo $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH `basename $INPUT`
+  $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH $INPUT -d $TEMPDIR) || exit 1
 
 ## JARRING
 

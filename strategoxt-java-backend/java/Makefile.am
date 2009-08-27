@@ -41,7 +41,7 @@ CLEANFILES = \
 
 SPOOFAX=../../../spoofax/trunk/spoofax
 CLASSPATH=runtime:lib:compiler:spoofax-libs.jar:.
-JAVACFLAGS=-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
+JAVACFLAGS=-J-Xmx512m -J-Xms300m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 STRJFLAGS=--library --verbose 3 -O 3
@@ -150,6 +150,7 @@ runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj/Main.java : ../trans/strj.ctree ../trans/strj
+	if ! which ecj >/dev/null; then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2
 	../trans/strj -i $< -o $@ -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
 ###### EXTERNAL #######

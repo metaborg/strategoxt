@@ -43,6 +43,14 @@ strategies
       e2' := <alltd((ExprName(Id(x)) -> e1))> e2
   
   optimize-assignments :
+    bstm* |[ x = e1; y = e2;  bstm* ]| ->
+    bstm* |[ x = e1; y = e2'; bstm* ]|
+    where
+      not(x := y)
+    ; <has-no-side-effects> e1
+    ; e2' := <sometd((ExprName(Id(x)) -> e1))> e2
+  
+  optimize-assignments :
     bstm* |[ x = y; x = z; bstm* ]| ->
     bstm* |[        x = z; bstm* ]|
   
