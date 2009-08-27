@@ -44,6 +44,11 @@ strategies
   override filter(s) =
     SRTS-EXT-filter(s)
 
+  extend newname =
+    ?"@"; SRTS-EXT-newint
+
   external SRTS-EXT-crush(nul, sum, s|)
   
   external SRTS-EXT-filter(s|)
+
+  external SRTS-EXT-newint(|)
