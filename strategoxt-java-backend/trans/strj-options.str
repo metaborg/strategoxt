@@ -31,13 +31,15 @@ strategies
     ; fatal-err(|"Output file name is not a legal Java name")
     end
   ; if <get-config> "--library"; not(<get-config> "-p") then
-      warn(|"No package name specified")
+      // TODO: Allow programs without a packagename?
+      //       (we'd have to disable the class-splitting filter)
+      fatal-err-msg(|"No package name specified")
     end
   
   strj-options =
     input-option
   <+
-    output-option
+    output-option // TODO: add a -d destination dir option that uses the package name
   <+
     ArgOption(
       "--main" + "-m"

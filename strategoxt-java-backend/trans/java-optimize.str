@@ -62,7 +62,7 @@ strategies
       IStrategoTerm x_cached = term;
       Success: {
         Fail: {
-          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, e_cons, bstm_body*)>
         }
         term = x_cached;
         bstm_othermatch*
@@ -75,7 +75,7 @@ strategies
         ? ((IStrategoAppl) term).getConstructor()
         : null;
       Success: {
-        if (x_actualcons == x_cons) {
+        if (x_actualcons == e_cons) {
           Fail: {
             bstm_decl*
             bstm_body*
@@ -96,7 +96,7 @@ strategies
       IStrategoTerm x_cached' = term;
       Success: {
         Fail: {
-          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)>
+          ~bstm*:<match-decls-and-appl-test => (bstm_decl*, e_cons, bstm_body*)>
         }
         term = x_cached';
         bstm_othermatch*
@@ -105,7 +105,7 @@ strategies
     ]| ->
     bstm* |[
       Success: {
-        if (x_actualcons == x_cons) {
+        if (x_actualcons == e_cons) {
           Fail: {
             bstm_decl*
             bstm_body*
@@ -120,9 +120,9 @@ strategies
       bstm_othermatch'* := <try(replace-match-test1(|x_actualcons, x_cached))> bstm_othermatch*
   
   replace-match-test1(|x_actualcons, x_cached) :
-    <match-decls-and-appl-test => (bstm_decl*, x_cons, bstm_body*)> ->
+    <match-decls-and-appl-test => (bstm_decl*, e_cons, bstm_body*)> ->
     bstm* |[
-      if (x_actualcons == x_cons) {
+      if (x_actualcons == e_cons) {
         bstm_decl*
         bstm_body*
       } else {
@@ -134,9 +134,9 @@ strategies
     [Block(bstm*) | _] -> <match-decls-and-appl-test> bstm*
   
   match-decls-and-appl-test :
-    bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], x_cons, bstm_body*)
+    bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], e_cons, bstm_body*)
     where
-      (bstm_decl*, x_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
+      (bstm_decl*, e_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
     
   match-decls-and-appl-test :
     bstm* |[
@@ -144,11 +144,7 @@ strategies
         break Fail;
       bstm_body*
     ]| ->
-    ([], x_cons, bstm_body*)
-    with
-      !e_cons => |[ x.x_cons ]|
-    <+
-      !e_cons => |[ x_cons ]|
+    ([], e_cons, bstm_body*)
 
 strategies
 

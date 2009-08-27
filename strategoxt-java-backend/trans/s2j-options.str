@@ -15,8 +15,11 @@ rules
   s2j-library-options =
     ArgOption(
       "-p"
-    , <set-config> ("-p", <id>); !()
-    , !"-p <name>          Set package name <name>"
+    , if is-substring(!"/") + is-substring("-") then
+        fatal-err(|"Illegal package name")
+      end
+    ; <set-config> ("-p", <id>); !()
+    , !"-p <name>          Set package name <name> (should be unique for each library)"
     )
   + ArgOption(
       "-la"
@@ -82,7 +85,7 @@ rules
         err(|"Imported libraries must follow format packagename.ClassName"); fail
       
       otherwise:
-        id
+        jify
     end
   
   // For compatibility, ignore all built-in library paths
@@ -94,7 +97,7 @@ rules
  
   parse-define-option =
     risky(
-      string-tokenize(|['='])
+      string-tokenize('=')
     ; \[name, value] -> (name, value)\
     | "option -D must be followed by name=value pair")
   ; risky(

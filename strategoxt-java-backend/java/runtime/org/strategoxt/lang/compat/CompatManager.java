@@ -11,10 +11,10 @@ import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.compat.override.jsglr_parser;
-import org.strategoxt.lang.compat.override.jsglr_parser_compat;
-import org.strategoxt.lang.compat.override.performance_tweaks;
-import org.strategoxt.lang.compat.override.xtc_compat;
+import org.strategoxt.lang.compat.override.jsglr_parser.jsglr_parser;
+import org.strategoxt.lang.compat.override.jsglr_parser_compat.jsglr_parser_compat;
+import org.strategoxt.lang.compat.override.performance_tweaks.performance_tweaks;
+import org.strategoxt.lang.compat.override.xtc_compat.xtc_compat;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
 /**
@@ -65,9 +65,6 @@ public class CompatManager {
 			context.addOperatorRegistry(new SGLRCompatLibrary(atermFactory));
 			jsglr_parser.init(context);
 			jsglr_parser_compat.init(context);
-		} else if ("libstrc".equals(component)) {
-			context.addOperatorRegistry(libstrc_compat.getOperatorRegistry());
-			libstrc_compat.init(context);
 		}
 	}
 

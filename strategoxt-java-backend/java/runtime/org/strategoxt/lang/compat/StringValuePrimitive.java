@@ -13,7 +13,7 @@ public class StringValuePrimitive extends AbstractPrimitive {
 	
 	private final String value;
 
-	protected StringValuePrimitive(String name, String value) {
+	public StringValuePrimitive(String name, String value) {
 		super(name, 0, 0);
 		this.value = value;
 	}

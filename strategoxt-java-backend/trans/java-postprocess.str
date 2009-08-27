@@ -82,12 +82,70 @@ strategies
       }
     ]|
     where
-      <gt> (<length> bstm*, LARGE_METHOD_SIZE())
+      (bstm1*, bstm2*) := <split-at(|LARGE_METHOD_SIZE())> bstm*
     with
       x'               := <newname> x
     ; e_param*         := <map(java-param-to-arg)> param*
     ; mod2*            := <map(try(\<Public + Protected> -> Private()\))> mod*
-    ; (bstm1*, bstm2*) := <split-at(|LARGE_METHOD_SIZE())> bstm*
 
   java-param-to-arg :
     param |[ t x ]| -> expr |[ x ]|
+
+strategies
+
+  java-split-class :
+    compilation-unit |[
+      ~package-dec?:pkgname
+      ~import-dec*:imports
+      mod* class x {
+        ~*members
+      }
+    ]| ->
+    [ compilation-unit |[
+        ~package-dec?:pkgname
+        ~import-dec*:imports
+        mod* class x {
+          ~*members'
+        }
+      ]| 
+    | member-classes
+    ]
+    with
+      (member-classes, members') := <partition(to-compilation-unit(|pkgname, imports, mod*))> members
+
+  to-compilation-unit(|pkgname, imports, mod*) :
+    type-dec |[
+      mod2* class x extends y {
+        ~*members
+      }
+    ]| ->
+    compilation-unit |[
+      ~package-dec?: pkgname
+      ~import-dec*: imports
+      mod* class x extends y {
+        ~*members
+      }
+    ]|
+    
+  java-add-alias-classes =
+    try(java-add-alias-class(!"Main"))
+  ; try(java-add-alias-class(ApplicationName))
+
+  java-add-alias-class(alias) :
+    [ class@CompilationUnit(
+         pkgname
+       , _
+       , [ClassDec(ClassDecHead(_, Id(x_name), _, _, _), _)]
+       )
+    | classes*
+    ] ->
+    [ compilation-unit |[
+        ~package-dec?:pkgname
+        public class x_name' extends x_name {}
+      ]|
+    , class
+    | classes*
+    ]
+    where
+      x_name' := <alias>
+    ; not(MainClassName => x_name')

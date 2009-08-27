@@ -75,16 +75,24 @@ rules
       )
     ; log-timed(
         java-relabel
+      ; if <get-config> "-p" then
+          // Use multiple .java files for programs with a package name
+          java-split-class
+        ; java-add-alias-classes
+        else
+          ![<id>]
+        end
       | "Backend postprocessing succeeded", 1
       )
-     
-  record-main-classname = 
-    <get-config> "-i"
+  
+  record-main-classname =
+    (<get-config> "-o" <+ strc-getoutfile(!""))
   ; base-filename
   ; jify
   ; remove-extension
   ; rules(
       MainClassName := <id>
+      ApplicationName := <!"-p"; get-config; string-tokenize('.'); last <+ MainClassName>
     )
   
   jify =
@@ -108,7 +116,7 @@ rules
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
          
-     @SuppressWarnings({"unused"})
+     @SuppressWarnings("all")
      public class x_name {
 
      protected static final boolean TRACES_ENABLED = e_traces;
@@ -131,7 +139,7 @@ rules
          if (context != initedContext) {
            ~*import-inits
            ~*def-inits
-           context.registerComponent("~x_name");
+           context.registerComponent("~x_name'");
          }
          // Set these last to trigger failure if getConstant() is called early
          x_name.initedContext = context;
@@ -181,6 +189,7 @@ rules
     ; imports       := <java-imports>
     ; import-inits  := <java-init-imports>
     ; x_name        := <MainClassName>
+    ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; register      := <java-register-method> defs
@@ -216,12 +225,12 @@ rules
     ![]
   
   java-import :
-    x -> StaticImportOnDemandDec(TypeName(Id(x')))
+    x -> TypeImportOnDemandDec(TypeName(Id(x')))
     with
       x' := <jify> x
   
   java-init-import :
-    x -> |[ x'.init(context); ]|
+    x -> |[ x'.Main.init(context); ]|
     with
       x' := <jify> x
 
@@ -318,6 +327,7 @@ rules
   translate-outer-definition-plain :
     SDefT(x, s*, t*, s){a*} -> 
     type-dec |[
+       @SuppressWarnings("all")
        public static class x extends Strategy {
          public static x instance = new x();
          
@@ -332,6 +342,7 @@ rules
   translate-outer-definition-override :
     AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
+       @SuppressWarnings("all")
        private static final class x' extends x {
          private static final x outer = x.instance;
          ~(body)
@@ -354,6 +365,7 @@ rules
   translate-outer-definition-extend :
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
+       @SuppressWarnings("all")
        private static final class x' extends x {
          private static final x outer = x.instance;
          ~(body)
@@ -377,6 +389,7 @@ rules
   translate-outer-definition-internal :
     AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
+       @SuppressWarnings("all")
        private static final class x extends Strategy {
          public static final x instance = new x();
          
@@ -396,6 +409,7 @@ rules
   translate-inner-definition :
     SDefT(x, s*, t*, s) ->
     type-dec |[
+       @SuppressWarnings("all")
        private static final class x extends Strategy {
          ~instance-field*
          ~lifted-tfield*
@@ -827,14 +841,14 @@ strategies
    *    (minding the 32767 length limit)
    */
   translate-ImportTerm :
-    ImportTerm(file) -> |[ term = x_main.getConstant(termFactory, x_constant); ]|
+    ImportTerm(file) -> |[ term = x_main.getConstant(termFactory, x_main.x_constant); ]|
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
     ; pkgname    := <get-config <+ !""> "-p"
     ; pkgpath    := <conc-strings> ("/", <string-replace(|".", "/")> pkgname, "/")
     with
-      outputdir := <get-config; dirname <+ !"."> "-o"
+      outputdir := <output-dirname>
     ; copyfile  := <conc-strings> (outputdir, "/", outputfile)
     ; if not(<eq> (<modification-time> inputfile, <file-exists; modification-time> copyfile)) then
         <copy-file> (inputfile, copyfile)
@@ -936,7 +950,7 @@ rules
     ; x_main := <MainClassName>
 
   java-CacheConstant :
-    (t, e1) -> |[ x_main.getConstant(termFactory, e2) ]|
+    (t, e1) -> |[ x_main.getConstant(termFactory, x_main.x) ]|
   where
       <(Op(id, map(java-Cache)); java-proper-list 
             + Anno(java-Cache, java-Cache) 
@@ -947,9 +961,8 @@ rules
         else
           x := <newname> "const"
         end
-      ; e2 := ExprName(Id(x))
       ; x_main := <MainClassName>
-      ; rules( java-Cache : t -> |[ x_main.getConstant(termFactory, e2) ]| )
+      ; rules( java-Cache : t -> |[ x_main.getConstant(termFactory, x_main.x) ]| )
       ; !(x, e1)
       ; rules(ConstDecl :+= <java-DeclareTermId>)
       ; rules(ConstInit :+= <java-InitTermId>)

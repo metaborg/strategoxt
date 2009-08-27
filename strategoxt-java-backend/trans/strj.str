@@ -49,24 +49,45 @@ strategies
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
   ; s2j
-  ; log-timed(output-java | "Pretty printing succeeded", 1)
+  ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
 
   output-java :
     ast -> file
     with
-      log-timed(
-        box  := <pp-java5-to-abox>
-      | "Pretty printing: preparation succeeded", 2
-      )
-    ; log-timed(
-        name := <get-config <+ strc-getoutfile(!".java"); jify> "-o"
-      ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
-      ; <box2text-stream(|80, file)> box
-      ; <fclose> file
-      | "Pretty printing: output to stream succeeded", 2
-      )
+      name := <output-filename <+ fatal-err(|"Unexpected output")> ast
+    ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
+    ; box  := <pp-java5-to-abox> ast
+    ; <box2text-stream(|80, file)> box
+    ; <fclose> file
     <+
       output-java-error
+
+   // TODO: Override .dep file location
+   
+   output-filename :
+     CompilationUnit(
+       _
+     , _
+     , [ClassDec(ClassDecHead(_, Id(x_name), _, _, _), _)]
+     )
+     -> x_name'
+     with
+       x_name' := <conc-strings> (<output-dirname>, "/", x_name, ".java")
+   
+   output-dirname =
+     OutputDirName
+   <+
+     <get-config> "-o"
+   ; if has-extension(|"java") then
+       dirname
+     end
+   ; try(file-exists <+ mkdir)
+   ; rules(OutputDirName := <id>)
+   <+
+     strc-getoutfile(!"")
+   ; dirname
+   ; try(file-exists <+ mkdir)
+   ; rules(OutputDirName := <id>)
 
    // Using XTC for debugging:
    // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,

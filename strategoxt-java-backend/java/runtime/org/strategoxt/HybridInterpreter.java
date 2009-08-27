@@ -44,17 +44,17 @@ public class HybridInterpreter extends Interpreter {
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
 		
-		libstratego_aterm.registerInterop(context, compiledContext);
-		libstratego_lib.registerInterop(context, compiledContext);
-		libstratego_rtg.registerInterop(context, compiledContext);
-		libstratego_sdf.registerInterop(context, compiledContext);
-		libstratego_xtc.registerInterop(context, compiledContext);
-		libstratego_sglr.registerInterop(context, compiledContext);
-		libstratego_tool_doc.registerInterop(context, compiledContext);
-		libstratego_rtg.registerInterop(context, compiledContext);
-		libstratego_gpp.registerInterop(context, compiledContext);
-		libjava_front.registerInterop(context, compiledContext);
-		libstrc.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_aterm.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_lib.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_rtg.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_sdf.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_xtc.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_sglr.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_tool_doc.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_rtg.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstratego_gpp.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libjava_front.Main.registerInterop(context, compiledContext);
+		org.strategoxt.libstrc.Main.registerInterop(context, compiledContext);
 	}
 	
 	public Context getCompiledContext() {

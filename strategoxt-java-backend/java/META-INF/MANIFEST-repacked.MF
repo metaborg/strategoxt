@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: org.strategoxt.strj
+Main-Class: org.strategoxt.strj.Main
 Class-Path: strategoxt-no-compression.jar
 Export-Package: org.strategoxt
