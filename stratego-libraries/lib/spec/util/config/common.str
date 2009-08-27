@@ -90,3 +90,16 @@ strategies
   post-extend-config =
     ?(key, val)
     ; <table-put> ("config", key, <conc> (<get-config <+ ![]> key, val))
+  
+  /**
+   * Evaluates a strategy f if and only if the program is compiled to Java.
+   */
+  if-java-platform(s) = // implemented by the compiler
+    id + s
+  
+  /**
+   * Evaluates a strategy f if and only if the program is compiled to C.
+   */
+  if-c-platform(s) = // implemented by the compiler
+    id + s
+

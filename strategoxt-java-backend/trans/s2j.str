@@ -185,7 +185,8 @@ rules
      }
   ]|
   with 
-      alltd(JavaTranslate)
+      <list-loop(try(JavaTranslate))> ops
+    ; <list-loop(try(JavaTranslate))> defs
     ; imports       := <java-imports>
     ; import-inits  := <java-init-imports>
     ; x_name        := <MainClassName>
@@ -559,6 +560,12 @@ strategies
   /** @type Id -> Stm */
   translate-Fail :
     Fail() -> |[ if (TRUE) break Fail; ]| // (avoid unreachable stm error)
+  
+  translate-Platform :
+    CallT(SVar("if_java_platform_1_0"), [s], []) -> <translate-strategy> s
+  
+  translate-Platform :
+    CallT(SVar("if_c_platform_1_0"), [s], []) ->  Empty()
 
   translate-Override :
     Override() ->
@@ -629,7 +636,8 @@ strategies
 
   translate-strategy = 
        ( 
-       translate-CallT-dynamic
+       translate-Platform
+    <+ translate-CallT-dynamic
     <+ translate-CallT
     <+ translate-Build
     <+ translate-Seq

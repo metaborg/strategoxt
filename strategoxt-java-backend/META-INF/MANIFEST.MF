@@ -6,7 +6,17 @@ Bundle-Version: 0.1
 Export-Package: org.strategoxt,
  org.strategoxt.lang,
  org.strategoxt.lang.compat,
- org.strategoxt.lang.parallel
+ org.strategoxt.lang.parallel,
+ org.strategoxt.libjava_front,
+ org.strategoxt.libstratego_aterm,
+ org.strategoxt.libstratego_gpp,
+ org.strategoxt.libstratego_lib,
+ org.strategoxt.libstratego_rtg,
+ org.strategoxt.libstratego_sdf,
+ org.strategoxt.libstratego_sglr,
+ org.strategoxt.libstratego_tool_doc,
+ org.strategoxt.libstratego_xtc,
+ org.strategoxt.libstrc
 Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core;bundle-version="0.3.13",
  org.spoofax.interpreter.adapter.aterm;bundle-version="0.3.11",

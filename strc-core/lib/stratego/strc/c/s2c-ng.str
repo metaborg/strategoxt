@@ -440,14 +440,21 @@ strategies
 rules 
 
   translate-strat(|S,F) =
-    TranslateStrat(|S,F)
+    TranslateStratPlatform(|S,F)
+    <+ TranslateStrat(|S,F)
     <+ dbg(|"*** translate-strat undefined: "); fail
 
   TranslateStrat(|S,F) :
-    Id -> stm|[ goto ~id:S; ]|
+    Id() -> stm|[ goto ~id:S; ]|
 
   TranslateStrat(|S,F) :
-    Fail -> stm|[ goto ~id:F; ]|
+    Fail() -> stm|[ goto ~id:F; ]|
+  
+  TranslateStratPlatform(|S,F) :
+    CallT(SVar("if_java_platform_1_0"), [s], []) -> stm|[ goto ~id:S; ]|
+  
+  TranslateStratPlatform(|S,F) :
+    CallT(SVar("if_c_platform_1_0"), [s], []) -> <TranslateStrat(|S,F)> s
 
   TranslateStrat(|S,F) :
     |[ {x* : s} ]| -> 
