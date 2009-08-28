@@ -452,9 +452,6 @@ rules
   
   TranslateStratPlatform(|S,F) :
     CallT(SVar("if_java_platform_1_0"), [s], []) -> stm|[ goto ~id:S; ]|
-  
-  TranslateStratPlatform(|S,F) :
-    CallT(SVar("if_c_platform_1_0"), [s], []) -> <TranslateStrat(|S,F)> s
 
   TranslateStrat(|S,F) :
     |[ {x* : s} ]| -> 
