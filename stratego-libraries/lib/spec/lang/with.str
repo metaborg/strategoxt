@@ -19,7 +19,7 @@ strategies
    *       failures raised by with clauses and uses of this strategy.
    */
   with(s|message) =
-    where(s <+ report-with-failure(|message, <prim("SSL_stacktrace_get_all_frame_names")>))
+    where(s <+ report-failure(|message, <prim("SSL_stacktrace_get_all_frame_names")>))
   
   /**
    * @obsolete
@@ -31,6 +31,7 @@ strategies
     ; report-failure(log(|Critical(), message, term); exit)
   
   /**
+   * @obsolete
    * @internal
    */
   report-with-failure(|message, trace) =
