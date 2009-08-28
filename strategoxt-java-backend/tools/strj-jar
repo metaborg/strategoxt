@@ -29,7 +29,7 @@ while P=$1; shift; do
     fi
     shift
   elif [ "$P" == "-p" ]; then
-    echo "Warning: ignoring option -p; currently unused" >&2
+    echo "Warning: ignoring option -p (currently unused)" >&2
     PACKAGE="$1" # currently unused
     shift
   elif [ "$P" == "-i" ]; then
@@ -67,8 +67,8 @@ fi
 ## COMPILATION
 
 ( mkdir -p $TEMPDIR
-  echo $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH `basename $INPUT`
-  $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH $INPUT -d $TEMPDIR) || exit 1
+  echo $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH `dirname $INPUT`/\*.java -d \$TEMPDIR
+  $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH `dirname $INPUT`/*.java -d $TEMPDIR) || exit 1
 
 ## JARRING
 
@@ -81,7 +81,7 @@ fi
 ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|astr|str|meta|dep|c|lo|o)$' | sed "s!^!-C $INPUTDIR !"` \
   || (echo "Illegal input file name: $INPUT">&2; exit 1)
 
-echo $JAR cf $OUTPUT -C . . $ATTACHMENTS
+echo $JAR cf $OUTPUT -C \$TEMPDIR . $ATTACHMENTS
 $JAR cf $OUTPUT -C $TEMPDIR . $ATTACHMENTS
 RET=$?
 

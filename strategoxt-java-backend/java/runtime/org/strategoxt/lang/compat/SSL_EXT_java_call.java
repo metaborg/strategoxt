@@ -123,12 +123,10 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		Strategy cached = invocationCache.get(className);
 		if (cached != null) return cached;
 
-		String innerClassName = toInnerClassName(className);
-
 		try {
 			Class<?> library;
 			try {
-				library = findClass(toStrategoName(innerClassName) + "_0_0");
+				library = findClass(toStrategoName(className) + "_0_0");
 				
 				Field instance = library.getField("instance");
 
@@ -182,11 +180,6 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		}
 	}
 	
-	private static String toInnerClassName(String className) {
-		int lastDot = className.lastIndexOf('.');
-		return className.substring(0, lastDot) + "$" + className.substring(lastDot + 1);
-	}
-	
 	private static String toStrategoName(String className) {
 		StringBuilder result = new StringBuilder();
 		String[] parts = className.split("\\.");
@@ -209,6 +202,7 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			result.append('.');
 			result.append(parts[i]);
 		}
+		result.append(".Main");
 		
 		return result.toString();
 	}
