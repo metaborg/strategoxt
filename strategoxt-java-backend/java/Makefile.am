@@ -7,6 +7,7 @@ RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/sglr/*.java) \
+  $(wildcard runtime/org/strategoxt/lang/terms/*.java) \
   $(wildcard runtime/org/strategoxt/lang/parallel/*.java) \
   $(wildcard runtime/org/strategoxt/lang/parallel/*/*.java) \
   runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java \

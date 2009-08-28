@@ -52,15 +52,24 @@ strategies
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
 
   output-java :
-    ast -> file
+    ast -> name
     with
       name := <output-filename <+ fatal-err(|"Unexpected output")> ast
-    ; file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
-    ; box  := <pp-java5-to-abox> ast
-    ; <box2text-stream(|80, file)> box
-    ; <fclose> file
+    ; if FastPrettyPrinting then
+        if-c-platform(
+          <parenthesize-Java5; pp-java-native> ast
+        ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
+        )
+      else
+          file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
+        ; box  := <pp-java5-to-abox> ast
+        ; <box2text-stream(|80, file)> box
+        ; <fclose> file
+      end
     <+
       output-java-error
+       
+  external pp-java-native(|)
 
    // TODO: Override .dep file location
    

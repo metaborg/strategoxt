@@ -21,6 +21,11 @@ public class StrategoExit extends StrategoException {
     	this.value = value;
     }
     
+    public StrategoExit(int value, String message) {
+    	super(message);
+    	this.value = value;
+    }
+    
     public StrategoExit(StrategoExit cause) {
     	this(cause.getValue(), cause);
     }

@@ -8,7 +8,7 @@ nobase_pkgdata_DATA = strj.ctree
 
 STRJSOURCES = $(wildcard *.str) $(wildcard lib/*.str)
 
-LDADD += $(SSL_LIBS) -lstrc 
+LDADD += $(SSL_LIBS) libjava-pp.la -lstrc 
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../syn
 
@@ -38,7 +38,7 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 %.str : %.astr
 	aster -i $< -o $@
 
-strj$(exeext) : $(STRJSOURCES:.str=.rtree)
+strj$(exeext) : $(STRJSOURCES:.str=.rtree) libjava-pp.la
 
 strj.ctree : strj.rtree $(STRJSOURCES:.str=.rtree) strj
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -F -m main-strj
@@ -58,4 +58,13 @@ strj.java : strj.ctree strj
 %.crun : %.str
 	strc -la strc -la stratego-lib -i $<
 	`dirname $<`/`basename $< .str`
+
+## fast C-based pretty-printer
+
+lib_LTLIBRARIES = libjava-pp.la 
+
+libjava_pp_la_SOURCES = java-pp.c
+libjava_pp_la_LIBADD  = $(STRATEGO_XTC_LIBS)   $(STRATEGO_LIB_LIBS)   $(STRATEGO_RUNTIME_LIBS)   $(ATERM_LIBS)
+libjava_pp_la_CFLAGS  = $(STRATEGO_XTC_CFLAGS) $(STRATEGO_LIB_CFLAGS) $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS) $(AM_CFLAGS)
+libjava_pp_la_LDFLAGS = -avoid-version -no-undefined $(AM_LDFLAGS)
 

@@ -64,6 +64,13 @@ strategies
       !"--ast              Produce abstract syntax tree of packed program"
     )
   <+
+    Option("--fast-pretty-printing" + "--fast-pp",
+      if-java-platform(warn(|"Fast pretty printing not available on Java"));
+      if-c-platform(rules(FastPrettyPrinting: _))
+    , !"--fast-pretty-printing | --fast-pp   pretty-print ugly and fast";
+      if-java-platform(fail)
+    )
+  <+
     Option("-F",           
       where(<set-config>("-F",())); !(),
       !"-F                 Produce core after front-end"
