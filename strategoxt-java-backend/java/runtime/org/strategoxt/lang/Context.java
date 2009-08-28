@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -17,6 +16,7 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.compat.CompatManager;
+import org.strategoxt.lang.terms.TermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -44,7 +44,7 @@ public class Context extends StackTracer {
     private transient AbstractPrimitive lastPrimitive1, lastPrimitive2;
     
     public Context() {
-    	this(new BAFBasicTermFactory());
+    	this(new TermFactory());
     }
     
     public Context(ITermFactory factory) {
