@@ -13,3 +13,6 @@ XTC_IMPORT = \
 
 jar :
 	$(MAKE) -C java jar
+
+new-libs :
+	$(MAKE) -C java new-libs

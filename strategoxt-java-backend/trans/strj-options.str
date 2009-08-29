@@ -44,7 +44,13 @@ strategies
     ArgOption(
       "--main" + "-m"
     , <set-config>("-m", <id>); !()
-    , "--main f | -m f    Main strategy to compile (default: main)\n"
+    , !"--main f | -m f    Main strategy to compile (default: main)"
+    )
+  <+
+    Option(
+      "-clean"
+    , <set-config> ("-clean", <id>)
+    , !"-clean             Remove all existing Java files in the output directory"
     )
   <+
     s2j-general-options

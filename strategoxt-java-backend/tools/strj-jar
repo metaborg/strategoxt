@@ -2,7 +2,6 @@
 
 ## SETTINGS
 
-PACKAGE=
 MAINCLASS=
 CLASSPATH=strategoxt.jar
 JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
@@ -28,10 +27,6 @@ while P=$1; shift; do
       CLASSPATH="$1"
     fi
     shift
-  elif [ "$P" == "-p" ]; then
-    echo "Warning: ignoring option -p (currently unused)" >&2
-    PACKAGE="$1" # currently unused
-    shift
   elif [ "$P" == "-i" ]; then
     INPUT="$1"
     shift
@@ -52,6 +47,7 @@ if [ "$INPUT" == "" ]; then
   exit 1
 fi
 
+
 ## PARAMETER VALIDATION
 
 if [ ! -e "$INPUT" ]; then
@@ -64,15 +60,30 @@ elif [ "$OUTPUT" == "" ]; then
   OUTPUT="`dirname $INPUT`/`basename $INPUT .java`.jar"
 fi
 
+INPUTDIR=`dirname $INPUT`
+
+## PROCESS PACKAGE NAME
+ 
+INPUT2=
+INPUT3=
+if head -n 1 $INPUT | grep '^package'; then
+  # PACKAGE=`head $INPUT -n 1 | sed 's/package //; s/\;//'`
+  # PACKAGEDIR=`echo "$PACKAGE" | sed 's!\.!/!g	'`
+  INPUT2="$INPUTDIR/Main.java"
+  INPUTDIR2=`cd $INPUTDIR; pwd` # canonicalize
+  INPUT3="$INPUTDIR/`basename $INPUTDIR2`.java"
+  if [ ! -e $INPUT3 ]; then
+    INPUT3=
+  fi
+fi
+
 ## COMPILATION
 
 ( mkdir -p $TEMPDIR
-  echo $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH `dirname $INPUT`/\*.java -d \$TEMPDIR
-  $JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH `dirname $INPUT`/*.java -d $TEMPDIR) || exit 1
+  echo "$JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH -d \$TEMPDIR $INPUT $INPUT2 $INPUT3"
+  $JAVAC -source 5 -nowarn $JAVACFLAGS -cp "$CLASSPATH" -d $TEMPDIR $INPUT $INPUT2 $INPUT3) || exit 1
 
 ## JARRING
-
-INPUTDIR=`dirname $INPUT`
 
 if ls $INPUTDIR/*.str &>/dev/null; then
   echo "Warning: using this build directory may mean non-term files are included as attachments" >&2

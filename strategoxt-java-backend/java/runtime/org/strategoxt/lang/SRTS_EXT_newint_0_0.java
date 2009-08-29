@@ -41,7 +41,7 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 		}
 
 		public IStrategoTerm getSubterm(int index) {
-			return null;
+			throw new UnsupportedOperationException();
 		}
 
 		public int getSubtermCount() {
@@ -69,6 +69,11 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 		public int hashCode() {
 			// Always different from basic stratego int hash
 			return (449 * value ^ 7841) + 1;
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(value);
 		}
 		
 	}

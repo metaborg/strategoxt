@@ -34,7 +34,7 @@ public class CompatManager {
 			}
 		}
 	}
-	
+
 	public void registerComponent(String component) {
 		synchronized (asyncComponents) {
 			asyncComponents.add(component);

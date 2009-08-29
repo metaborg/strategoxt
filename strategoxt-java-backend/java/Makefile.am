@@ -35,17 +35,20 @@ LIBRARYJAVAS = \
 nobase_pkgdata_DATA = $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES
 
 CLEANFILES = \
-  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(wildcard bin/*/*/*) $(wildcard bin/*/*/*/*) $(wildcard bin/*/*/*/*/*) \
+  $(LIBRARYJAVAS) $(COMPILERJAVAS) \
   runtime/org/strategoxt/lang/compat/override/libstratego_aterm_compat.rtree \
   lib/org/strategoxt/libstratego-xtc.rtree \
   .ALLCLASSES
+  
+clean :
+	rm -rf bin/* lib/org/strategoxt/*
 
 SPOOFAX=../../../spoofax/trunk/spoofax
 CLASSPATH=runtime:lib:compiler:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx512m -J-Xms300m -J-server -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
-STRJFLAGS=--library --verbose 3 -O 3
+STRJFLAGS=--library --verbose 3 -clean -O 3
 
 JAR=`if which fastjar >/dev/null; then echo fastjar; else echo jar; fi`
 JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
@@ -68,7 +71,7 @@ smalljar :
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-new-spoofax-libs :
+new-libs :
 	rm -rf spoofax-libs-tmp
 	mkdir spoofax-libs-tmp
 	cat $(SPOOFAX)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd spoofax-libs-tmp; $(JAR) x)
@@ -85,7 +88,13 @@ new-spoofax-libs :
 	mv spoofax-libs.jar.tmp spoofax-libs.jar
 
 .ALLCLASSES : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+	if ! which ecj >/dev/null; \
+	  then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2; \
+	fi
 	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch $@
+
+debug-classes : $(RUNTIMEJAVA)
+	$(JAVAC) -g $(JAVACFLAGS) $(RUNTIMEJAVAS)
 
 ###### LIBRARIES #######
 
@@ -151,8 +160,7 @@ runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj/Main.java : ../trans/strj.ctree ../trans/strj
-	if ! which ecj >/dev/null; then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2; fi
-	../trans/strj -i $< -o $@ -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
+	../trans/strj -i $< -o $@ -clean -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.libstrc -la org.strategoxt.libjava_front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
 ###### EXTERNAL #######
 

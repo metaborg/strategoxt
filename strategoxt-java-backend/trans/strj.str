@@ -43,13 +43,42 @@ strategies
     ; fail
     else
       dr-scope-all-verbose(
-        strc-front-end
+        with(<set-config> ("JAVA_PLATFORM", ()))
+      ; strc-front-end
       )
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
   ; s2j
+  ; with(clean-output-dir)
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
+  
+  clean-output-dir =
+    if <get-config> "-clean" then
+      if <get-config> "-p" then
+        output-dirname
+      ; if file-exists then
+          delete-java-files-in-dir
+        end
+      else
+        warn-msg(|"Ignored -clean option: no package name specified")
+      end
+    end
+  
+  delete-java-files-in-dir =
+    with(olddir := <getcwd>)
+  ; finally(
+      chdir
+    ; <readdir> "."
+    ; list-loop(
+        if has-extension(|"java") then
+          remove-file
+        end
+      )
+    , <chdir> olddir
+    )
+  <+
+    warn(|"Could not clean output directory")
 
   output-java :
     ast -> name
@@ -69,7 +98,7 @@ strategies
     <+
       output-java-error
        
-  external pp-java-native(|)
+   external pp-java-native(|)
 
    // TODO: Override .dep file location
    

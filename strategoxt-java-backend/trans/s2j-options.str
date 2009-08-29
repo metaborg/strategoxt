@@ -57,7 +57,8 @@ rules
     )
   + ArgOption(
       "-D"
-    , <post-extend-config> ("-D", [<parse-define-option>]); !()
+    , // TODO: Support prim(<-D constant>) as seen in strc-options
+      <post-extend-config> ("-D", [<parse-define-option>]); !()
     , !"-D name=value      Define a constant value strategy"
     )
   + ArgOption(

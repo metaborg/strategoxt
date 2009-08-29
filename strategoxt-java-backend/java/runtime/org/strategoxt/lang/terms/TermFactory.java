@@ -37,6 +37,12 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     
     private static final int MAX_POOLED_STRING_LENGTH = 100;
 
+    /**
+     * The singleton maximally shared empty list instance.
+     * 
+     * Other empty lists may exists, but this is the only one
+     * that may be marked maximally shared.
+     */
     public static final StrategoList EMPTY_LIST =
     	new StrategoList(null, null, null, MAXIMALLY_SHARED); 
 

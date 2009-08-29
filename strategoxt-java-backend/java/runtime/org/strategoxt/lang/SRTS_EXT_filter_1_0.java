@@ -27,7 +27,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 			IStrategoTerm[] items = new IStrategoTerm[size];
 			IStrategoList cons = list;
 			for (int i = 0; i < size; i++, cons = cons.tail()) {
-				if (cons.getAnnotations().size() != 0)
+				if (!cons.getAnnotations().isEmpty())
 					return filterMaintainTailAnnos(context, items, cons, i, s);
 				items[i] = cons.head();
 			}

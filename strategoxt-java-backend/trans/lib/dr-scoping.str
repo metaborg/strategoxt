@@ -13,10 +13,9 @@ strategies
       dr-scope-all-start
     ; s
     <+
-      stack := <prim("SSL_stacktrace_get_all_frame_names")>
+      prim("SSL_stacktrace_get_all_frame_names")
     ; if if-verbose3(?true); !true then
-        !stack
-      ; report-failure(
+        report-failure(
           log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
         ; <exit> 1
         )

@@ -60,5 +60,4 @@ strategies
     with
       x_split  := <newname> <conc-strings> (x, "_fragment_")
     ; x_unused := <newname> "unused"
-    ; log(|Notice(), ["Split up very large strategy ", x])
 

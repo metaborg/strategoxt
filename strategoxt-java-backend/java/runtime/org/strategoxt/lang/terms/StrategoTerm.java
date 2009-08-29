@@ -22,7 +22,12 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     private IStrategoList annotations;
     
     protected StrategoTerm(IStrategoList annotations) {
-        this.annotations = annotations;
+    	if (annotations != TermFactory.EMPTY_LIST)
+    		this.annotations = annotations;
+    }
+    
+    protected StrategoTerm() {
+    	this(null);
     }
 
     /**
@@ -83,10 +88,16 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     	int result = hashCode;
     	switch (result) {
     		case MUTABLE_HASH:
-    			return hashFunction();
+    			result = hashFunction();
+    			if (annotations != null && !annotations.isEmpty())
+    				result = result * 2423 + annotations.hashCode();
+    			return result;
     		case UNKNOWN_HASH:
     			result = hashFunction();
-    			if (getTermType() != MUTABLE) hashCode = result;
+    			if (annotations != null && !annotations.isEmpty())
+    				result = result * 2423 + annotations.hashCode();
+    			if (getTermType() != MUTABLE)
+    				hashCode = result;
     			return result;
     		default:
     			return result;
@@ -94,9 +105,13 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     }
     
     protected final void initImmutableHashCode() {
-    	assert getTermType() != MUTABLE;
-    	if (hashCode == UNKNOWN_HASH)
-    		hashCode = hashFunction();
+    	assert getTermType() != MUTABLE; // (avoid this virtual call here)
+    	if (hashCode == UNKNOWN_HASH) {
+    		int hashCode = hashFunction();
+			this.hashCode = annotations == null || annotations.isEmpty()
+				? hashCode
+				: hashCode * 2423 + annotations.hashCode();
+    	}
     }
     
     protected abstract int hashFunction();
@@ -140,11 +155,17 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
         }
     }
     
-    public IStrategoList getAnnotations() {
+    public final IStrategoList getAnnotations() {
         return annotations == null ? TermFactory.EMPTY_LIST : annotations;
     }
     
     protected final void internalSetAnnotations(IStrategoList annotations) {
-        this.annotations = annotations;
+    	if (annotations == TermFactory.EMPTY_LIST)
+    		annotations = null; // essential for hash code calculation
+    	
+    	if (this.annotations != annotations) {
+    		this.annotations = annotations;
+    		this.hashCode = UNKNOWN_HASH;
+    	}
     }
 }

@@ -22,6 +22,12 @@ public class StrategoList extends StrategoTerm implements IStrategoList {
 	
 	private static final int UNKNOWN_STORAGE = -1;
     
+    /**
+     * @see #hashFunction()
+     * @see TermFactory#EMPTY_LIST  The singleton maximally shared empty list instance.
+     */
+    static final int EMPTY_LIST_HASH = 1 * 71 * 71;
+    
     private IStrategoTerm head;
     
     private IStrategoList tail;
@@ -206,8 +212,8 @@ public class StrategoList extends StrategoTerm implements IStrategoList {
         }
         return (int)(hc >> 2);
         */
-		final int prime = 31;
-		int result = 0;
+		final int prime = 71;
+		int result = 1;
 		result = prime * result + ((head == null) ? 0 : head.hashCode());
 		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
 		return result;

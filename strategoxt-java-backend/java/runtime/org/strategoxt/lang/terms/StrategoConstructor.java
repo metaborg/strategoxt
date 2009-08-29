@@ -42,14 +42,9 @@ public final class StrategoConstructor extends StrategoTerm implements IStratego
     public IStrategoTerm[] getAllSubterms() {
         return TermFactory.EMPTY;
     }
-    
-    @Override
-    public IStrategoList getAnnotations() {
-        throw new UnsupportedOperationException();
-    }
 
     public IStrategoTerm getSubterm(int index) {
-        throw new ArrayIndexOutOfBoundsException();
+        throw new UnsupportedOperationException();
     }
 
     public int getSubtermCount() {

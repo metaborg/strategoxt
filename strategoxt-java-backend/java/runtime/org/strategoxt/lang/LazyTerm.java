@@ -50,18 +50,27 @@ public abstract class LazyTerm implements IStrategoAppl, IStrategoInt, IStratego
 	public String toString() {
 		return getWrapped().toString();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return getWrapped().equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return getWrapped().hashCode();
+	}
 
 	public IStrategoList getAnnotations() {
 		return getWrapped().getAnnotations();
 	}
 
 	public int getStorageType() {
-		return Math.min(IMMUTABLE, getWrapped().getStorageType());
+		return Math.min(SHARABLE, getWrapped().getStorageType());
 	}
 
 	public boolean match(IStrategoTerm second) {
-		// TODO Auto-generated method stub
-		return false;
+		return getWrapped().match(second);
 	}
 	
 	// Semi-specialized accessors
