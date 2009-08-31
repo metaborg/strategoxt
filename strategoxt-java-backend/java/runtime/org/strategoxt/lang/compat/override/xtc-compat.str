@@ -56,7 +56,7 @@ strategies
   override report-failure(|message, term) =
     report-failure(
       log(|Critical(), message, term);
-      SRTS-EXT-fatal-err(|msg, <try(concat-strings)> term)
+      SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
     )
   
   external SRTS-EXT-fatal-err(|msg, term)

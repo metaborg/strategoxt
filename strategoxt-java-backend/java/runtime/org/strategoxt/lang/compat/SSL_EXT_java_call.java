@@ -2,6 +2,7 @@ package org.strategoxt.lang.compat;
 
 import static org.spoofax.interpreter.core.Tools.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,6 +43,15 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		super("SSL_EXT_java_call", 0, 3);
 	}
 	
+	/**
+	 * Registers a new class loader used for dynamical class loading. 
+	 * 
+	 * This method is only useful in applications that employ multiple class
+	 * loaders (such as Eclipse). Typically, this method is used in the form
+	 * <code>registerClassLoader(C.class.getClassLoader())</code> where
+	 * <code>C</code> is a class that would be dynamically loaded
+	 * by a Stratego program.
+	 */
 	public static void registerClassLoader(ClassLoader classLoader) {
 		synchronized (asyncClassLoaders) {
 			asyncClassLoaders.add(classLoader);
@@ -64,9 +74,11 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 
 		Context parentContext = ((InteropContext) env).getContext();
 		Context context;
+		String oldWorkingDir = null;
 		if (sameContext) {
 			context = parentContext;
 		} else {
+			oldWorkingDir = parentContext.getIOAgent().getWorkingDir();
 			context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
 			context = initContext(context, className);
 			if (context == null) return false;
@@ -84,6 +96,12 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			if (sameContext) throw new StrategoExit(e.getValue(), e);
 			
 			return e.getValue() == StrategoExit.SUCCESS;
+		} finally {
+			try {
+				if (!sameContext) context.getIOAgent().setWorkingDir(oldWorkingDir);
+			} catch (Exception e) {
+				// Must ignore chdir exceptions here
+			}
 		}
 	}
 	

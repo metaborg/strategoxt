@@ -12,12 +12,11 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
-import org.spoofax.interpreter.library.ssl.SSL_indexedSet_put;
-import org.spoofax.interpreter.library.ssl.SSL_list_loop;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.compat.CompatManager;
+import org.strategoxt.lang.compat.SSL_EXT_java_call;
 import org.strategoxt.lang.terms.TermFactory;
 
 /**
@@ -100,6 +99,20 @@ public class Context extends StackTracer {
         SSLLibrary op = (SSLLibrary) getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
         op.setIOAgent(ioAgent);
     }
+	
+	/**
+	 * Registers a new class loader used for dynamical class loading
+	 * (using {@link SSL_EXT_java_call}). 
+	 * 
+	 * This method is only useful in applications that employ multiple class
+	 * loaders (such as Eclipse). Typically, this method is used in the form
+	 * <code>registerClassLoader(C.class.getClassLoader())</code> where
+	 * <code>C</code> is a class that would be dynamically loaded
+	 * by a Stratego program.
+	 */
+	public void registerClassLoader(ClassLoader classLoader) {
+		SSL_EXT_java_call.registerClassLoader(classLoader);
+	}
 	
 	public final IOperatorRegistry getOperatorRegistry(String domain) {
 		return operatorRegistryMap.get(domain);
