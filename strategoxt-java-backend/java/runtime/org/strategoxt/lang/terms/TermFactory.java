@@ -1,10 +1,3 @@
-/*
- * Created on 27. jan.. 2007
- *
- * Copyright (c) 2005, Karl Trygve Kalleberg <karltk near strategoxt.org>
- * 
- * Licensed under the GNU General Public License, v2
- */
 package org.strategoxt.lang.terms;
 
 import static java.lang.Math.*;
@@ -29,6 +22,9 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+/**
+ * @author Lennart Kats <lennart add lclnet.nl>
+ */
 public class TermFactory extends BasicTermFactory implements ITermFactory {
 
     public static final IStrategoTerm[] EMPTY = BasicTermFactory.EMPTY;
@@ -36,6 +32,8 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     private static final int MY_STORAGE_TYPE = SHARABLE;
     
     private static final int MAX_POOLED_STRING_LENGTH = 100;
+    
+    private static final IStrategoInt[] intCache = initIntCache();
 
     /**
      * The singleton maximally shared empty list instance.
@@ -114,9 +112,19 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 
     @Override
     public IStrategoInt makeInt(int i) {
+    	if (0 <= i && i <= 255)
+    		return intCache[i];
     	return new StrategoInt(i, null);
     }
 
+    private static final IStrategoInt[] initIntCache() {
+    	IStrategoInt[] results = new IStrategoInt[256];
+    	for (int i = 0; i < results.length; i++) {
+    		results[i] = new StrategoInt(i);
+    	}
+    	return results;
+    }
+    
     @Override
     public IStrategoList makeList(IStrategoTerm... terms) {
         StrategoList result = EMPTY_LIST;
