@@ -19,7 +19,7 @@ strategies
    *       failures raised by with clauses and uses of this strategy.
    */
   with(s|message) =
-    where(s <+ report-failure(|message, <prim("SSL_stacktrace_get_all_frame_names")>))
+    where(s <+ ?term; prim("SSL_stacktrace_get_all_frame_names"); report-failure(|message, term))
   
   /**
    * @obsolete

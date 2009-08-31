@@ -354,6 +354,21 @@ rules
 
   Desugar :
     Call(f, ss) -> CallT(f, ss, [])
+  
+  Desugar :
+    CallT(SVar("if-java-platform"), [s], []) -> Id()
+    where
+      not(<get-config> "JAVA_PLATFORM" + <get-config> "-F")
+  
+  Desugar :
+    CallT(SVar("if-c-platform"), [s], []) -> s
+    where
+      not(<get-config> "JAVA_PLATFORM" + <get-config> "-F")
+  
+  Desugar :
+    CallT(SVar("if-java-platform"), [s], []) -> s
+    where
+      <get-config> "JAVA_PLATFORM"; not(<get-config> "-F")
 
   DesugarOnce :
     PrimNoArgs(f) -> PrimT(<try(un-double-quote)>f, [], [])
