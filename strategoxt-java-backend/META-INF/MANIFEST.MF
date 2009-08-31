@@ -27,5 +27,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  java/runtime/,
- java/compiler/,
- java/lib/
+ java/strategoxt.jar
