@@ -1,5 +1,7 @@
 package org.strategoxt.lang;
 
+import java.lang.management.ManagementFactory;
+
 import org.spoofax.interpreter.core.StackTracer;
 
 /**
@@ -68,7 +70,7 @@ public class UncaughtExceptionHandler  {
     	
     	return dumpedError;
     }
-	
+    
 	/**
 	 * Class that handles shutdown and unhandled exception events.
 	 */
@@ -76,10 +78,21 @@ public class UncaughtExceptionHandler  {
 		public void uncaughtException(Thread t, Throwable e) {
 			originalHandler.uncaughtException(t, e);
 			if (e instanceof StackOverflowError && dumpError("Fatal error at")) {
-				System.err.println("Stack overflow.");
+				if (isStackTuned()) {
+					System.err.println("Stack overflow.");
+				} else {
+					System.err.println("Stack overflow (use java -Xss4m to increase the stack size)");
+				}
 			} else {
 				dumpError("Fatal error at");
 			}
+		}
+
+		private boolean isStackTuned() {
+			for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+				if (arg.startsWith("-Xss")) return true;
+			}
+			return false;
 		}
 		
 		@Override

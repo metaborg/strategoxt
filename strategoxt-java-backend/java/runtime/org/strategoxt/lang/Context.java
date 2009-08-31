@@ -12,6 +12,8 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
+import org.spoofax.interpreter.library.ssl.SSL_indexedSet_put;
+import org.spoofax.interpreter.library.ssl.SSL_list_loop;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -152,7 +154,7 @@ public class Context extends StackTracer {
 		
     	interopContext.setCurrent(term);
 		try {
-			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(sargs), targs)) {
+			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(sargs, this), targs)) {
 				return interopContext.current();
 			} else {
 				return null;

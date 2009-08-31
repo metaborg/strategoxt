@@ -29,16 +29,7 @@ public class InteropStrategy extends CallT {
 	 * Creates a new InteropStrategy instance.
 	 * 
 	 * @param strategy	The strategy to adapt.
-	 */
-	public InteropStrategy(Strategy strategy) {
-		this(strategy, null);
-	}
-	
-	/**
-	 * Creates a new InteropStrategy instance.
-	 * 
-	 * @param strategy	The strategy to adapt.
-	 * @param context	The compiled context, if used with an interpreter context.
+	 * @param context	The compiled context; may be null if used with an {@link InteropContext}.
 	 */
 	public InteropStrategy(Strategy strategy, Context context) {
 		super(null, null, null);
@@ -47,12 +38,15 @@ public class InteropStrategy extends CallT {
 		this.context = context;
 	}
     
-	public static CallT[] toInteropStrategies(Strategy[] strategies) {
+	/**
+	 * @param context	The compiled context; may be null if used with an {@link InteropContext}.
+	 */
+	public static CallT[] toInteropStrategies(Strategy[] strategies, Context context) {
     	if (strategies.length == 0) return NO_CALLTS;
     	
     	CallT[] results = new CallT[strategies.length];
     	for (int i = 0; i < strategies.length; i++)
-    		results[i] = new InteropStrategy(strategies[i]);
+    		results[i] = new InteropStrategy(strategies[i], context);
     	return results;
     }
     
@@ -103,8 +97,13 @@ public class InteropStrategy extends CallT {
 	
 	@Override
 	public boolean evaluateWithArgs(IContext env, org.spoofax.interpreter.stratego.Strategy[] sv, IStrategoTerm[] tv) {
-		IStrategoTerm result = strategy.invokeDynamic(
-				getCompiledContext(env),env.current(), fromInteropStrategies(sv), tv);
+		IStrategoTerm result;
+		if (tv.length == 0 && sv.length == 0) {
+			result = strategy.invoke(getCompiledContext(env), env.current());
+		} else {
+			result = strategy.invokeDynamic(
+					getCompiledContext(env), env.current(), fromInteropStrategies(sv), tv);
+		}
 		if (result == null) return false;
 		env.setCurrent(result);		
 		return true;		

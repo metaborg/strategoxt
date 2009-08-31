@@ -3,6 +3,7 @@
 ## SETTINGS
 
 MAINCLASS=
+PRINT_CLASSPATH=
 CLASSPATH=strategoxt.jar
 JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
 JAVAC=`if which ecj &>/dev/null; then echo ecj; else echo javac; fi`
@@ -30,6 +31,8 @@ while P=$1; shift; do
   elif [ "$P" == "-i" ]; then
     INPUT="$1"
     shift
+  elif [ "$P" == "-p" ]; then
+    PRINT_CLASSPATH=1
   elif [ "$P" == "-o" ]; then
     OUTPUT="$1"
     shift
@@ -41,6 +44,11 @@ while P=$1; shift; do
     break
   fi
 done
+
+if [ $PRINT_CLASSPATH ]; then
+  echo $CLASSPATH
+  exit
+fi
 
 if [ "$INPUT" == "" ]; then
   echo "Usage: strj-jar [-m MAINCLASS] [-cp CLASSPATH] [-runtimecp CLASSPATH] -i INPUT.java [-o OUTPUT.jar]"
