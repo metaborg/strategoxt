@@ -21,7 +21,7 @@ BOOTCLEANFILES = $(wildcard *.c)
 XTC_IMPORT = $(JAVA_FRONT_XTC)
 LDADD     += $(JAVA_FRONT_LIBS)
 
-CLASSPATH=../java/spoofax-libs.jar:../java/bin:.
+CLASSPATH=.:../java/spoofax-libs.jar:../java/bin:../java/strategoxt.jar
 JAVACFLAGS=-J-Xmx256m -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 

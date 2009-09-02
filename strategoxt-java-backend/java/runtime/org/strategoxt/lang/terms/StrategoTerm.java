@@ -125,9 +125,9 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
         
         sb.append('{');
         sb.append(annos.get(0));
-        for (int i = 1; i < annos.size(); i++) {
-            sb.append(",");
-            sb.append(annos.toString());
+        for (annos = annos.tail(); !annos.isEmpty(); annos = annos.tail()) {
+            sb.append(',');
+            sb.append(annos.head().toString());        	
         }
         sb.append('}');
     }
@@ -137,10 +137,10 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
         if (annos.size() == 0) return;
         
         pp.print("{");
-        annos.get(0).prettyPrint(pp);
-        for (int i = 1; i < annos.size(); i++) {
-            pp.print(",");
-            pp.print(annos.toString());
+        annos.head().prettyPrint(pp);
+        for (annos = annos.tail(); !annos.isEmpty(); annos = annos.tail()) {
+        	pp.print(",");
+        	annos.head().prettyPrint(pp);        	
         }
         pp.print("}");
     }
