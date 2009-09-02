@@ -118,8 +118,10 @@ if [ -e $TEMPFILE.out ]; then
     echo 'run
           backtrace' > $TEMPFILE.gdb
     gdb -batch -x $TEMPFILE.gdb $TEMPFILE.out
+    RET=$?
   else
     $TEMPFILE.out
+    RET=$?
   fi
 elif [ "$COPTION" ]; then
   cat $TEMPFILE.c
