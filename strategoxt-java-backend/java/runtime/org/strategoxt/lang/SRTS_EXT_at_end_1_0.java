@@ -57,7 +57,7 @@ public class SRTS_EXT_at_end_1_0 extends Strategy {
 			return tail != null && checkListTail(tail) != null ? (IStrategoList) tail : null;
 		} else {
 			IStrategoList tail = atEndMaintainAnnos(context, list.tail(), s);
-			if (list == null) return null;
+			if (tail == null) return null;
 			IStrategoTerm result = context.getFactory().makeList(list.head(), tail);
 			return (IStrategoList) context.getFactory().annotateTerm(result, list.getAnnotations());
 		}

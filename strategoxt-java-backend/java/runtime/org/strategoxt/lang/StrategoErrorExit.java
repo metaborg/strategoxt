@@ -23,4 +23,9 @@ public class StrategoErrorExit extends StrategoExit {
 	public IStrategoTerm getTerm() {
 		return term;
 	}
+	
+	@Override
+	public String getLocalizedMessage() { // used for toString() and stacktraces
+		return getMessage() + (getTerm() == null ? "" : "\n\t" + getTerm());
+	}
 }
