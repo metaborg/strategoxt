@@ -81,7 +81,7 @@ public class UncaughtExceptionHandler  {
 				if (isStackTuned()) {
 					System.err.println("Stack overflow.");
 				} else {
-					System.err.println("Stack overflow (use java -Xss4m to increase the stack size)");
+					System.err.println("Stack overflow (use java -ss4m to increase the stack size)");
 				}
 			} else {
 				dumpError("Fatal error at");
@@ -90,7 +90,7 @@ public class UncaughtExceptionHandler  {
 
 		private boolean isStackTuned() {
 			for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
-				if (arg.startsWith("-Xss")) return true;
+				if (arg.startsWith("-Xss") || arg.startsWith("-ss")) return true;
 			}
 			return false;
 		}
