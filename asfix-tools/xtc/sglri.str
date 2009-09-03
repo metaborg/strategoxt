@@ -51,7 +51,7 @@ strategies
         )
 
       ; if must-preserve-comments then
-          asfix-anno-comments(| [ "ShortCom", "LongCom"] )
+          asfix-anno-comments(| [ "ShortCom", "LongCom", "Comment" ] )
         end
   
       ; if must-preserve-positions then

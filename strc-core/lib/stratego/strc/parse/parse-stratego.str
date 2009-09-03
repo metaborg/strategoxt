@@ -140,7 +140,7 @@ strategies
     ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
 
     ; if <ps-must-preserve-comments> meta then
-        asfix-anno-comments(| [ "ShortCom", "LongCom"] )
+        asfix-anno-comments(| [ "ShortCom", "LongCom", "Comment" ] )
       end
   
     ; if <ps-must-preserve-positions> meta then
