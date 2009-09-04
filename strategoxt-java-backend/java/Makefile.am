@@ -87,7 +87,9 @@ new-libs :
 	rm -rf spoofax-libs-tmp
 	mv spoofax-libs.jar.tmp spoofax-libs.jar
 
-.ALLCLASSES : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+.ALLCLASSES : bin/org/strategoxt/strj/Main.class
+
+bin/org/strategoxt/strj/Main.class : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
 	if ! which ecj >/dev/null; \
 	  then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2; \
 	fi

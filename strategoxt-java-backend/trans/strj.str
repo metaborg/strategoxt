@@ -66,7 +66,8 @@ strategies
     end
   
   delete-java-files-in-dir =
-    with(olddir := <getcwd>)
+    log(|Info(), ["Deleting existing java files in output directory ", <id>])
+  ; with(olddir := <getcwd>)
   ; finally(
       chdir
     ; <readdir> "."
