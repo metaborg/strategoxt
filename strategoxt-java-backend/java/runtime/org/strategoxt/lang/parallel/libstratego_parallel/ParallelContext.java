@@ -1,4 +1,4 @@
-package org.strategoxt.lang.parallel;
+package org.strategoxt.lang.parallel.libstratego_parallel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -8,7 +8,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
-import static org.strategoxt.lang.parallel.libstratego_parallel.*;
+import static org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel.*;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -37,7 +37,7 @@ public class ParallelContext extends Context {
 	 *            non-whitelisted ones.
 	 */
 	public ParallelContext(Context context, ParallelJobExecutor executor, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
-		super(context.getFactory(), context.getIOAgent(), context.getOperatorRegistryMap(), context.getOperatorRegistries());
+		super(context.getFactory(), context.getOperatorRegistryMap(), context.getOperatorRegistries(), true);
 		this.executor = executor;
 		this.job = job;
 		this.isAborted = aborted;

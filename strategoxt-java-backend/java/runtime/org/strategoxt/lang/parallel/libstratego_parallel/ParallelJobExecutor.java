@@ -1,6 +1,6 @@
-package org.strategoxt.lang.parallel;
+package org.strategoxt.lang.parallel.libstratego_parallel;
 
-import static org.strategoxt.lang.parallel.libstratego_parallel.*;
+import static org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel.*;
 
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

@@ -6,8 +6,8 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.InteropContext;
-import org.strategoxt.lang.parallel.ParallelContext;
-import org.strategoxt.lang.parallel.libstratego_parallel;
+import org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel;
+import org.strategoxt.lang.parallel.libstratego_parallel.ParallelContext;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>

@@ -1,4 +1,4 @@
-package org.strategoxt.lang.parallel;
+package org.strategoxt.lang.parallel.libstratego_parallel;
 
 import java.util.HashSet;
 

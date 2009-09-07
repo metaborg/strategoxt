@@ -66,12 +66,11 @@ public class Context extends StackTracer {
         compat.init();
     }
     
-    protected Context(ITermFactory factory, IOAgent ioAgent, Map<String, IOperatorRegistry> operatorRegistryMap, List<IOperatorRegistry> operatorRegistries) {
+    protected Context(ITermFactory factory, Map<String, IOperatorRegistry> operatorRegistryMap, List<IOperatorRegistry> operatorRegistries, boolean skipCompat) {
     	this.factory = factory;
     	this.operatorRegistryMap = operatorRegistryMap;
     	this.operatorRegistries = operatorRegistries;
-    	if (ioAgent != null) setIOAgent(ioAgent);
-    	compat.init();
+    	if (!skipCompat) compat.init();
     }
 	
 	public final ITermFactory getFactory() {

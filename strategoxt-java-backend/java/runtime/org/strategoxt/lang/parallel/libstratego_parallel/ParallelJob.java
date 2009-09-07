@@ -1,7 +1,7 @@
-package org.strategoxt.lang.parallel;
+package org.strategoxt.lang.parallel.libstratego_parallel;
 
 import static java.lang.Math.*;
-import static org.strategoxt.lang.parallel.libstratego_parallel.*;
+import static org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

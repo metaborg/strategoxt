@@ -7,7 +7,7 @@ import org.spoofax.interpreter.library.ssl.SSL_indexedSet_create;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.lang.parallel.libstratego_parallel;
+import org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>

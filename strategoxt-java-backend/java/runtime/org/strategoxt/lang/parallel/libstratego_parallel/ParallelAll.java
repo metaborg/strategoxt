@@ -1,8 +1,9 @@
-package org.strategoxt.lang.parallel;
+package org.strategoxt.lang.parallel.libstratego_parallel;
 
 import static java.lang.Math.*;
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
-import static org.strategoxt.lang.parallel.ParallelJob.*;
+import static org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel.*;
+import static org.strategoxt.lang.parallel.libstratego_parallel.ParallelJob.*;
 
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,7 +18,6 @@ import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
 
-import static org.strategoxt.lang.parallel.libstratego_parallel.*;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -94,7 +94,7 @@ public class ParallelAll extends SRTS_all {
 			if (VERBOSE)
 				System.out.print("<" + inputs.length / jobLength);
 			
-			// Populate thread pool
+			// Initialize job queue
 			for (int i = 0; i < inputs.length; i += jobLength) {
 				final int index = i;
 				ParallelJob job = new ParallelJob(inputs, outputs, index, jobLength, parallelismLevel.get(), focusIndex, notifier) {

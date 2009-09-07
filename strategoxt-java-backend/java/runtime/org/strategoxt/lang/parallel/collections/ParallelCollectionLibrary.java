@@ -20,7 +20,7 @@ import org.spoofax.interpreter.library.ssl.SSL_indexedSet_reset;
 import org.spoofax.interpreter.library.ssl.SSL_table_fold;
 import org.spoofax.interpreter.library.ssl.SSL_table_keys_fold;
 import org.spoofax.interpreter.library.ssl.SSL_table_values_fold;
-import org.strategoxt.lang.parallel.ParallelJob;
+import org.strategoxt.lang.parallel.libstratego_parallel.ParallelJob;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>

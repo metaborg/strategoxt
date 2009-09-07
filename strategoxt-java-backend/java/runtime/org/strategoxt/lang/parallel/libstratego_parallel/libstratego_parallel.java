@@ -1,4 +1,4 @@
-package org.strategoxt.lang.parallel;
+package org.strategoxt.lang.parallel.libstratego_parallel;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
@@ -24,11 +24,11 @@ public class libstratego_parallel {
 	
 	protected static final int DEFAULT_SUBTERM_COUNT_THRESHOLD = 12;
 	
-	protected static final double DEFAULT_JOB_LENGTH_MULTIPLIER = .5;
+	protected static final double DEFAULT_JOB_LENGTH_MULTIPLIER = 1; // .5;
 	
 	protected static final boolean ALLOW_NESTED_JOBS = false;
 	
-	protected static final boolean ADJUST_FOCUS_THREAD_PRIORITY = true;
+	protected static final boolean ADJUST_FOCUS_THREAD_PRIORITY = false;
 	
 	private static boolean isInitialized;
 	
