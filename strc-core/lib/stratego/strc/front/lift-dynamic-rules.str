@@ -134,7 +134,8 @@ strategies
   lift-dynamic-rule = 
     rec x(
       oncetd(
-        DesugarDynRuleDef; x
+	   DesugarDynRuleDefId
+        <+ DesugarDynRuleDef; x
         <+ SplitDynamicRule
         <+ split-under-scope(x)
       )
@@ -156,7 +157,7 @@ strategies
    * Desugaring dynamic rules
    */
 
-  DesugarDynRuleDef :
+  DesugarDynRuleDefId :
     |[ rules() ]| -> |[ id ]|
 
   // Multiple rules moved to front/desugar.str
