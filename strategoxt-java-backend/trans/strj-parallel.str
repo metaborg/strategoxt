@@ -1,0 +1,12 @@
+module strj-parallel
+
+imports
+  // org.strategoxt.strj
+  // org.strategoxt.libstratego_parallel
+
+strategies
+
+  main-strj-parallel =
+    main-strj
+
+  external main-strj(|)

@@ -15,7 +15,7 @@ rules
   s2j-library-options =
     ArgOption(
       "-p"
-    , if is-substring(!"/") + is-substring("-") then
+    , if is-substring(!"/") + is-substring(!"-") then
         fatal-err(|"Illegal package name")
       end
     ; <set-config> ("-p", <id>); !()
@@ -28,7 +28,7 @@ rules
       else
         <post-extend-config> ("-la", [<translate-default-library>]); !()
       end
-    , !"-la <name>         Include library <name>"
+    , !"-la <name>         Include library in package <name>"
     )
   + Option(
       "--library" + "--lib"
@@ -53,7 +53,7 @@ rules
       "--stacktrace" + "-s"
     , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
     , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",
-                      "(0 = no, 1 = always [default], 2 = only if assertions (java -ea) disabled for a class)")
+                      "(0 = no, 1 = always [default], 2 = only if assertions (java -ea) enabled for a class)")
     )
   + ArgOption(
       "-D"
