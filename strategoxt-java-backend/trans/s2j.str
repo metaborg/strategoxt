@@ -1089,7 +1089,7 @@ rules
   java-ConstructTerm :
     Op("Cons", [t1, t2]) -> 
     expr|[ 
-      (IStrategoTerm) termFactory.makeList(~expr:<java-construct-term> t1, e)
+      (IStrategoTerm) termFactory.makeListCons(~expr:<java-construct-term> t1, e)
     ]|
     with
       <java-construct-term> t2

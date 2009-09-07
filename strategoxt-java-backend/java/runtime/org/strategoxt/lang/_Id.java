@@ -7,6 +7,10 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  */
 public class _Id extends Strategy {
 	public static final _Id instance = new _Id();
+	
+	private _Id() {
+		// Singleton class
+	}
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {

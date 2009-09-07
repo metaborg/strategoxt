@@ -143,7 +143,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     }
     
     @Override
-    public IStrategoList makeList(IStrategoTerm head, IStrategoList tail) {
+    public IStrategoList makeListCons(IStrategoTerm head, IStrategoList tail) {
     	int storageType = min(MY_STORAGE_TYPE, getStorageType(head, tail));
     	
     	if (head == null) return EMPTY_LIST;
