@@ -13,6 +13,8 @@ imports
 
 strategies // parsing and parse tables
 
+  // TODO: new "jsglr enable recovery" strategy
+
   /**
    * @type SerializedParseTable -> ParseTable
    */
