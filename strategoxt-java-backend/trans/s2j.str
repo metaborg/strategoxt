@@ -301,12 +301,14 @@ rules
         ~*<java-split-method>  |[
           public static void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
             compiledContext.registerComponent("~x_name");
+            x_name.init(compiledContext);
             bstm1*
           }
         ]|
         ~*<java-split-method>  |[
           public static void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
             compiledContext.registerComponent("~x_name");
+            x_name.init(compiledContext);
             bstm2*
           }
         ]|
