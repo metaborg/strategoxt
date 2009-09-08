@@ -111,21 +111,23 @@ strategies
     | member-classes
     ]
     with
-      (member-classes, members') := <partition(to-compilation-unit(|pkgname, imports, mod*))> members
+      (member-classes, members') := <partition(to-compilation-unit(|pkgname, imports))> members
 
-  to-compilation-unit(|pkgname, imports, mod*) :
+  to-compilation-unit(|pkgname, imports) :
     type-dec |[
-      mod2* class x extends y {
+      mod* class x extends y {
         ~*members
       }
     ]| ->
     compilation-unit |[
       ~package-dec?: pkgname
       ~import-dec*: imports
-      mod* class x extends y {
+      mod2* class x extends y {
         ~*members
       }
     ]|
+    with
+      mod2* := <filter(Public + Abstract + Final)> mod*
     
   java-add-alias-classes =
     try(java-add-alias-class(!"Main"))

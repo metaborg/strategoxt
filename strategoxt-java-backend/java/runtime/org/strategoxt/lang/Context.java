@@ -117,7 +117,7 @@ public class Context extends StackTracer {
 		return operatorRegistryMap.get(domain);
 	}
 
-    public final void addOperatorRegistry(IOperatorRegistry or) {
+    public void addOperatorRegistry(IOperatorRegistry or) {
         IOperatorRegistry previous = operatorRegistryMap.put(or.getOperatorRegistryName(), or);
         if (previous == null) {
         	operatorRegistries.add(or);

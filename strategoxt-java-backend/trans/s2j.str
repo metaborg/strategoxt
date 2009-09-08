@@ -181,7 +181,7 @@ rules
      ~*function-defs
      ~*lifted-defs
 
-     ~register
+     ~*register
      }
   ]|
   with 
@@ -287,27 +287,50 @@ rules
     ; main   := <get-config <+ !"main"> "-m"
     ; x_main := <conc-strings> (<jify> main, "_0_0")
   
-  // TODO: do interop strategy additions in an on-demand fashion
-  //       (need to make a custom VarScope class to do so)
+  // TODO: do interop strategy additions in a fully on-demand fashion
+  //       (need to adapt VarScope class to do so)
   java-register-method : 
     defs ->
-    |[
-      public static void registerInterop(final org.spoofax.interpreter.core.IContext context, final Context compiledContext) {
-        new Runnable() { // Move these many literals and statements to another, lazily loaded class
-          ~*<java-split-method>  |[
-            public void run() {
-              bstm*
-            }
-          ]|
-        }.run();
+    class-body-dec* |[
+      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
+        InteropRegisterer.registerLazy(context, compiledContext, context.getVarScope());
+      }
+      
+      // Put these many literals and statements to another, lazily loaded class
+      protected static class InteropRegisterer extends Object { // (header matched by java-split-class)
+        ~*<java-split-method>  |[
+          public static void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
+            compiledContext.registerComponent("~x_name");
+            bstm1*
+          }
+        ]|
+        ~*<java-split-method>  |[
+          public static void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
+            compiledContext.registerComponent("~x_name");
+            bstm2*
+          }
+        ]|
       }
     ]|
     with
-      bstm* := <filter(java-register-strategy)> defs
+      // HACK: non-lazy defs are used only to trick javac to compile everything atm
+      bstm1*  := <filter(java-register-strategy)> defs
+    ; bstm2*  := <filter(java-register-strategy-lazy)> defs
+    ; x_name := <ApplicationName>
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
-    |[ context.getVarScope().addSVar("~x", new InteropStrategyDef(x.class, context, compiledContext)); ]|
+    |[ varScope.addSVar("~x", new InteropStrategyDef(x.instance, context, compiledContext)); ]|
+
+  java-register-strategy-lazy :
+    SDefT(x,_,_,_) ->
+    |[ varScope.addSVar("~x", new InteropStrategyDef("~y", context, compiledContext)); ]|
+    with
+      y := <conc-strings> (<get-config> "-p", ".", x)
+    <+
+      // TODO: test this
+      //       would it have to be x.isntance instead?
+      y := <conc-strings> (<ApplicationName>, "$", x)
 
 rules
 

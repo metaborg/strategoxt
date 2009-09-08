@@ -23,7 +23,7 @@ import org.strategoxt.lang.Context;
  */
 public class HybridInterpreter extends Interpreter {
 	
-	private final Context compiledContext;
+	private final HybridCompiledContext compiledContext;
 
 	public HybridInterpreter() {
 		this(new BAFBasicTermFactory());
@@ -36,8 +36,13 @@ public class HybridInterpreter extends Interpreter {
 	public HybridInterpreter(ITermFactory termFactory, ITermFactory programFactory) {
 		super(termFactory, programFactory);
 		
-		compiledContext = new Context(termFactory);
+		compiledContext = new HybridCompiledContext(termFactory);
 		registerLibraries();
+	}
+	
+	@Override
+	protected org.spoofax.interpreter.core.Context createContext(ITermFactory termFactory, ITermFactory programFactory) {
+		return new HybridContext(termFactory, programFactory);
 	}
 	
 	protected void registerLibraries() {
@@ -57,20 +62,57 @@ public class HybridInterpreter extends Interpreter {
 		org.strategoxt.libstrc.Main.registerInterop(context, compiledContext);
 	}
 	
-	public Context getCompiledContext() {
+	public final Context getCompiledContext() {
 		return compiledContext;
 	}
 	
-	@Override
-	public void addOperatorRegistry(IOperatorRegistry or) {
-		getCompiledContext().addOperatorRegistry(or);
-		getContext().addOperatorRegistry(or);
+	/**
+	 * A hybrid interpreter context.
+	 * 
+	 * @author Lennart Kats <lennart add lclnet.nl>
+	 */
+	private class HybridContext extends org.spoofax.interpreter.core.Context {
+		
+		public HybridContext(ITermFactory termFactory, ITermFactory programFactory) {
+			super(termFactory, programFactory);
+		}
+		
+		@Override
+		public void addOperatorRegistry(IOperatorRegistry or) {
+			super.addOperatorRegistry(or);
+			compiledContext.internalAddOperatorRegistry(or);
+		}
+		
+		@Override @Deprecated
+		public void addOperatorRegistry(String domain, IOperatorRegistry or) {
+			super.addOperatorRegistry(domain, or);
+			compiledContext.internalAddOperatorRegistry(or);
+		}
+		
+		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
+			super.addOperatorRegistry(or);
+		}
 	}
 	
-	@Deprecated
-	@Override
-	public void addOperatorRegistry(String domainName, IOperatorRegistry or) {
-		getCompiledContext().addOperatorRegistry(or);
-		getContext().addOperatorRegistry(or);
+	/**
+	 * A hybrid compiled Stratego context.
+	 * 
+	 * @author Lennart Kats <lennart add lclnet.nl>
+	 */
+	private class HybridCompiledContext extends Context {
+		
+		public HybridCompiledContext(ITermFactory factory) {
+			super(factory);
+		}
+		
+		@Override
+		public void addOperatorRegistry(IOperatorRegistry or) {
+			super.addOperatorRegistry(or);
+			((HybridContext) getContext()).internalAddOperatorRegistry(or);
+		}
+		
+		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
+			super.addOperatorRegistry(or);
+		}
 	}
 }

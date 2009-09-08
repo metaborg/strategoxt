@@ -26,21 +26,24 @@ public class InteropStrategyDef extends SDefT {
 	
 	private final VarScope scope;
 	
-	private final Class<? extends Strategy> strategyClass;
+	private final String strategyClassName;
 	
 	private Strategy strategy;
 
-	public InteropStrategyDef(Class<? extends Strategy> strategyClass, IContext context, Context compiledContext) {
-		this.strategyClass = strategyClass;
-		this.compiledContext = compiledContext;
-		this.scope = context.getVarScope();
-	}
-
 	public InteropStrategyDef(Strategy strategy, IContext context, Context compiledContext) {
-		this.strategyClass = null;
+		this.strategyClassName = null;
 		this.compiledContext = compiledContext;
 		this.scope = context.getVarScope();
 		this.strategy = strategy;
+	}
+
+	/**
+	 * Creates a new InteropStrategyDef that dynamically loads the specified strategy class.
+	 */
+	public InteropStrategyDef(String strategyClassName, IContext context, Context compiledContext) {
+		this.strategyClassName = strategyClassName;
+		this.compiledContext = compiledContext;
+		this.scope = context.getVarScope();
 	}
 
 	public static SDefT[] toInteropStrategyDefs(Strategy[] strategies, IContext context, Context compiledContext) {
@@ -164,8 +167,10 @@ public class InteropStrategyDef extends SDefT {
 	public Strategy getStrategy() {
 		if (strategy == null) {
 			try {
-				// TODO: is this a good performance trade off??
+				Class<?> strategyClass = Class.forName(strategyClassName);
 				strategy = (Strategy) strategyClass.getField("instance").get(null);
+			} catch (ClassNotFoundException e) {
+				throw new StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (IllegalAccessException e) {
 				throw new StrategoException("Unable to instantiate compiled strategy", e);
 			} catch (IllegalArgumentException e) {
