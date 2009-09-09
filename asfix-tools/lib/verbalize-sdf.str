@@ -56,7 +56,7 @@ strategies
   + \ sort(str)			-> [str] \
   + \ lit(str)			-> [<try(un-double-quote;unescape)>str] \
   + \ label(str,_)		-> [<try(un-double-quote;unescape)>str] \
-  + \ layout			-> ["LAYOUT"] \
+  + \ layout()			-> ["LAYOUT"] \
   )
 
   /**
@@ -95,7 +95,7 @@ strategies
   + \ sort(str)			-> [str] \
   + \ lit(str)			-> [<try(un-double-quote;unescape)>str] \
   + \ label(str,_)		-> [<try(un-double-quote;unescape)>str] \
- <+ \ layout			-> ["LAYOUT"] \
+ <+ \ layout()			-> ["LAYOUT"] \
   )
 
 rules
