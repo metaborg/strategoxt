@@ -58,8 +58,7 @@ public class Context extends StackTracer {
     	this.operatorRegistries = new ArrayList<IOperatorRegistry>();
     	
         SSLLibrary ssl = new SSLLibrary();
-		operatorRegistryMap.put(SSLLibrary.REGISTRY_NAME, ssl);
-        operatorRegistries.add(ssl);
+        addOperatorRegistry(ssl);
 
     	if (ioAgent != null) setIOAgent(ioAgent);
 

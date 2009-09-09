@@ -75,7 +75,7 @@ public class HybridInterpreter extends Interpreter {
 	private class HybridContext extends org.spoofax.interpreter.core.Context {
 		
 		public HybridContext(ITermFactory termFactory, ITermFactory programFactory) {
-			super(termFactory, programFactory);
+			super(termFactory, programFactory, true);
 		}
 		
 		@Override
