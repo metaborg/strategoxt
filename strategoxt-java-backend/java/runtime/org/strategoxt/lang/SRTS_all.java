@@ -69,7 +69,7 @@ public class SRTS_all extends Strategy {
 			} else if (tail2 == tail) { // (match() not necessary because of recursion)
 				return list;
 			} else {
-				return context.getFactory().makeList(head, tail2);
+				return context.getFactory().makeListCons(head, tail2);
 			}
 		} else {
 			return mapIgnoreAnnos(context, head2, list, s);
@@ -109,7 +109,7 @@ public class SRTS_all extends Strategy {
 				return null;
 			} else if (tail2 != tail) { // (match() not necessary because of recursion)
 				// TODO: head/tail variation of replaceList
-				return context.getFactory().makeList(head, tail2);
+				return context.getFactory().makeListCons(head, tail2);
 			} else {
 				return list;
 			}

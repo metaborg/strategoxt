@@ -46,7 +46,7 @@ public class SRTS_EXT_at_end_1_0 extends Strategy {
 		ITermFactory factory = context.getFactory();
 		IStrategoList result = tail;
 		for (int i = prefixEnd - 1; i >= 0; i--) {
-			result = factory.makeList(prefix[i], result);
+			result = factory.makeListCons(prefix[i], result);
 		}
 		return result;
 	}
@@ -58,7 +58,7 @@ public class SRTS_EXT_at_end_1_0 extends Strategy {
 		} else {
 			IStrategoList tail = atEndMaintainAnnos(context, list.tail(), s);
 			if (tail == null) return null;
-			IStrategoTerm result = context.getFactory().makeList(list.head(), tail);
+			IStrategoTerm result = context.getFactory().makeListCons(list.head(), tail);
 			return (IStrategoList) context.getFactory().annotateTerm(result, list.getAnnotations());
 		}
 	}

@@ -29,6 +29,8 @@ public class InteropStrategyDef extends SDefT {
 	private final String strategyClassName;
 	
 	private Strategy strategy;
+	
+	private transient org.spoofax.interpreter.stratego.Strategy strategyBody;
 
 	public InteropStrategyDef(Strategy strategy, IContext context, Context compiledContext) {
 		this.strategyClassName = null;
@@ -110,27 +112,30 @@ public class InteropStrategyDef extends SDefT {
 	
 	@Override
 	public org.spoofax.interpreter.stratego.Strategy getBody() {
-		return new org.spoofax.interpreter.stratego.Strategy() {
-			public IConstruct eval(IContext env) throws InterpreterException {
-				return evaluate(env)
-					? getHook().pop().onSuccess(env)
-					: getHook().pop().onFailure(env);
-			}
-			
-			@Override
-			public boolean evaluate(IContext env) throws InterpreterException {
-				return InteropStrategyDef.this.evaluate(env);
-			}
-
-			public void prettyPrint(StupidFormatter fmt) {
-				InteropStrategyDef.this.prettyPrint(fmt);
-			}
-			
-			@Override
-			protected String getTraceName() {
-				return getName();
-			}
-		};
+		if (strategyBody == null) {
+			strategyBody = new org.spoofax.interpreter.stratego.Strategy() {
+				public IConstruct eval(IContext env) throws InterpreterException {
+					return evaluate(env)
+						? getHook().pop().onSuccess(env)
+						: getHook().pop().onFailure(env);
+				}
+				
+				@Override
+				public boolean evaluate(IContext env) throws InterpreterException {
+					return InteropStrategyDef.this.evaluate(env);
+				}
+	
+				public void prettyPrint(StupidFormatter fmt) {
+					InteropStrategyDef.this.prettyPrint(fmt);
+				}
+				
+				@Override
+				protected String getTraceName() {
+					return getName();
+				}
+			};
+		}
+		return strategyBody;
 	}
 	
 	@Override

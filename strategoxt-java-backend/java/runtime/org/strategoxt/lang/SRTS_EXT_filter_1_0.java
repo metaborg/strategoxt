@@ -52,7 +52,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		for (int j = tailStart - 1; j >= 0; j--) {
 			IStrategoTerm head = prefix[j];
 			if (head != null)
-				result = context.getFactory().makeList(head, result);
+				result = context.getFactory().makeListCons(head, result);
 		}
 		return result;
 	}
@@ -73,7 +73,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 					&& (head2 == head || head2.match(head))) {
 				return list;
 			} else {
-				return context.getFactory().makeList(head2, tail2);
+				return context.getFactory().makeListCons(head2, tail2);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class SRTS_EXT_filter_1_0 extends Strategy {
 		for (int i = list.length - 1; i >= 0; i--) {
 			IStrategoTerm head = list[i];
 			if (head != null)
-				result = context.getFactory().makeList(head, result); 
+				result = context.getFactory().makeListCons(head, result); 
 		}
 		return result;
 	}

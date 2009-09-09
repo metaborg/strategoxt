@@ -64,8 +64,8 @@ public class SRTS_some extends Strategy {
 				} else if (tail2 == tail || tail2.match(tail)) {
 					return list;
 				} else {
-					// TODO: head/tail variation of replaceList
-					return context.getFactory().makeList(head, tail2);
+					// TODO: head/tail variation of replaceList?
+					return context.getFactory().makeListCons(head, tail2);
 				}
 			} else if (head2 == head || head2.match(head)) {
 				IStrategoList tail = list.tail();
@@ -75,8 +75,8 @@ public class SRTS_some extends Strategy {
 				} else if (tail2 == tail || tail2.match(tail)) {
 					return list;
 				} else {
-					// TODO: head/tail variation of replaceList
-					return context.getFactory().makeList(head2, tail2);
+					// TODO: head/tail variation of replaceList?
+					return context.getFactory().makeListCons(head2, tail2);
 				}
 			} else {
 				return mapTryIgnoreAnnos(context, head2, list, s);
