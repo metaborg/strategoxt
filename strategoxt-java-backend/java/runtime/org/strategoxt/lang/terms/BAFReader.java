@@ -289,7 +289,7 @@ public class BAFReader {
                       debug(" + " + args[i].getClass());
               }
               level--;
-              return ((IStrategoList) args[1]).prepend(args[0]);
+              return factory.makeListCons(args[0], (IStrategoList) args[1]);
           }
           else if (name.equals("[]")) {
               level--;

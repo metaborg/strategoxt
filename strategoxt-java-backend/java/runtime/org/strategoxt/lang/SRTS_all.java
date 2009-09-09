@@ -108,7 +108,7 @@ public class SRTS_all extends Strategy {
 			if (tail2 == null) {
 				return null;
 			} else if (tail2 != tail) { // (match() not necessary because of recursion)
-				// TODO: head/tail variation of replaceList
+				// TODO: head/tail variation of replaceList?
 				return context.getFactory().makeListCons(head, tail2);
 			} else {
 				return list;

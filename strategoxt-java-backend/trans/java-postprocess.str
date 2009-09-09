@@ -127,7 +127,12 @@ strategies
       }
     ]|
     with
-      mod2* := <filter(Public + Abstract + Final)> mod*
+      mod2* := <filter(is-legal-outer-class-mod)> mod*
+  
+  is-legal-outer-class-mod =
+    Public + Abstract + Final
+  + MarkerAnno(id)
+  + SingleElemAnno(id, id)
     
   java-add-alias-classes =
     try(java-add-alias-class(!"Main"))

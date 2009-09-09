@@ -297,6 +297,7 @@ rules
       }
       
       // Put these many literals and statements to another, lazily loaded class
+      @SuppressWarnings("unused")
       protected static class InteropRegisterer extends Object { // (header matched by java-split-class)
         ~*<java-split-method>  |[
           public static void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {

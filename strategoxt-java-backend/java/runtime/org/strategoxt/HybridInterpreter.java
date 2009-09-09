@@ -3,6 +3,7 @@ package org.strategoxt;
 import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
+import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
@@ -91,6 +92,11 @@ public class HybridInterpreter extends Interpreter {
 		
 		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
+		}
+		
+		@Override
+		public StackTracer getStackTracer() {
+			return compiledContext;
 		}
 	}
 	
