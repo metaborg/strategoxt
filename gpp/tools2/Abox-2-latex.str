@@ -129,7 +129,7 @@ Abox2latex:
    where
       <construct-rows>b => bs;
       <Vspace;string-to-int>so        => vs;
-      <conc>(<copy>(vs, EOR ),[EOR, "\n"])  => row-end;
+      <conc>(<copy>(vs, EOR() ),[EOR(), "\n"])  => row-end;
       <table-def>aos    => tdef;
       <map(MkRows); separate-by(!row-end)>bs => bs'
 
@@ -169,13 +169,13 @@ Abox2latex:
 
 table-def =
    ?AOPTIONS( aos ); !aos;
-   map(  \ AL(so) -> [L,<copy>(<Hspace;string-to-int>so, "~")] \
+   map(  \ AL(so) -> [L(),<copy>(<Hspace;string-to-int>so, "~")] \
         +
-         \ AC(so) -> [C,<copy>(<Hspace;string-to-int>so, "~")] \
+         \ AC(so) -> [C(),<copy>(<Hspace;string-to-int>so, "~")] \
         +
-         \ AR(so) -> [R,<copy>(<Hspace;string-to-int>so, "~")] \
+         \ AR(so) -> [R(),<copy>(<Hspace;string-to-int>so, "~")] \
       );
-      separate-by(![CSEP]);concat;at-last(![EOR])
+      separate-by(![CSEP()]);concat;at-last(![EOR()])
 
 table-row =
    ?R(_,bs );!bs;
@@ -184,7 +184,7 @@ table-row =
    <+ [id]
    <+ [C(id,id),id|x]
    <+ [id,C(id,id)|x]
-   <+ ?[e1,e2|xs];![e1,CSEP|<x>[e2|xs]]
+   <+ ?[e1,e2|xs];![e1,CSEP()|<x>[e2|xs]]
    })
    
 MkRows =

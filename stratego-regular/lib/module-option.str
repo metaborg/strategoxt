@@ -10,7 +10,7 @@ strategies
 
   get-module-name =
     <get-config> "--module"
-    <+ log(|Critical, "No module name specified. Use the --module option to specify a module name. See also --help.")
+    <+ log(|Critical(), "No module name specified. Use the --module option to specify a module name. See also --help.")
        ; <exit> 1
 
   guess-module-name =

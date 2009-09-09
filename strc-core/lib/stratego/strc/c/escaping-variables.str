@@ -95,7 +95,7 @@ strategies
     ?Typedid|[ f : tp ]|
     ; rules( 
         CallIsClosure : 
-          |[ f~{t1*}(s*|t2*) ]| -> |[ f~{ApplyClosure,t1*}(s*|t2*) ]| 
+          |[ f~{t1*}(s*|t2*) ]| -> |[ f~{ApplyClosure(),t1*}(s*|t2*) ]| 
       )
 
   escaping-arg :

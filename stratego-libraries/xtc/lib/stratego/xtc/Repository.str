@@ -28,21 +28,21 @@ strategies
 
   xtc-read = 
       ?rep
-    ; not(<table-get>(XTC, Imported(rep)))
-    ; where(<table-put>(XTC, Repository, [rep]))
+    ; not(<table-get>(XTC(), Imported(rep)))
+    ; where(<table-put>(XTC(), Repository(), [rep]))
     ; log(|Vomit(),<conc-strings>("Reading repository ",rep))
     ; read-repository-file
     ; log(|Vomit(),<conc-strings>("Read repository ",rep))
-    ; <table-putlist(table-append)>(XTC, <id>)
+    ; <table-putlist(table-append)>(XTC(), <id>)
     ; log(|Vomit(),"Repository stored in table")
-    ; <table-put>(XTC, Imported(rep), [])
+    ; <table-put>(XTC(), Imported(rep), [])
     ; log(|Vomit(),"Registered repository as imported")
 
   // read-repository-file =
 
   xtc-import = 
     where(
-      repeat(<table-get>(XTC, Import)
+      repeat(<table-get>(XTC(), Import())
              ; filter(xtc-read)
              ; not([]))
     )
@@ -50,7 +50,7 @@ strategies
   xtc-load =
     log(|Vomit(),"Loading repository") 
   ; where(
-      <table-get>(XTC, Repository)
+      <table-get>(XTC(), Repository())
       <+ xtc-location
          ; xtc-read
 	 ; xtc-import

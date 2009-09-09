@@ -221,7 +221,7 @@ symbol2abox(path) =
       !xs;pair;
       map(  {a,b: (lit(id);Make=>a,
                    (id,iter(id)+iter-star(id));Make=>b);
-                   !V([SOpt(VS,"2")],[a,b])
+                   !V([SOpt(VS(),"2")],[a,b])
             }) => v;
       !V([],[v, lit])
 
@@ -241,4 +241,4 @@ rules
   Make : (i, _ ) -> Arg( i )
 
   // Literals are pretty-printed as keywords
-  Make : lit(s)  -> FBOX(KW, S(s))
+  Make : lit(s)  -> FBOX(KW(), S(s))

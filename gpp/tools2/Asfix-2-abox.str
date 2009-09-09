@@ -49,7 +49,7 @@ strategies
     // the parse-tree where the layout nodes have been removed
     ; split( 
         topdown(
-          try(is-list;filter(not(opt(layout));not(layout(id))))
+          try(is-list;filter(not(opt(layout()));not(layout(id))))
         )
         ; appl2abox
       , collect'(layout(id))

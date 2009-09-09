@@ -73,7 +73,7 @@ insert-layout =
      <+layout(id);not(is-pp-conservative-enabled);has-significant-layout;layout2box
    );flat-list;
    (  \ [x] -> x \ 
-   <+ \ x -> H([SOpt(HS,"0")], x ) \
+   <+ \ x -> H([SOpt(HS(),"0")], x ) \
    )
 
 InsLayout(s) = 
@@ -92,7 +92,7 @@ InsLayout(s) =
          // expressions.
          is-pp-conservative-enabled
          ; <has-layout> w
-         ; !([H([SOpt(HS,"0")],[H([],[a']), <layout2box>w, H([],[b'])])|xs']
+         ; !([H([SOpt(HS(),"0")],[H([],[a']), <layout2box>w, H([],[b'])])|xs']
             , ws''
             )
       <+

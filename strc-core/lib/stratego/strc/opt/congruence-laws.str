@@ -10,7 +10,7 @@ rules
 
   MatchingCongruence :
     Cong(f, ss) -> Match(Anno(Op(f, ts), Wld()))
-    where <map(\ Match(t) -> t \ + \ Id -> Wld() \ )> ss => ts
+    where <map(\ Match(t) -> t \ + \ Id() -> Wld() \ )> ss => ts
 
   MatchingCongruence :
     Cong(f, []) -> Match(Anno(Op(f, []), Wld()))

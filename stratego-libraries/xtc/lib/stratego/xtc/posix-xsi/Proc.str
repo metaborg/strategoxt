@@ -12,7 +12,7 @@ strategies
   xtc-new-file =
     new-temp-file => (f, fd)
   ; where(
-      <assert(!TempFiles)> (f, ())
+      <assert(!TempFiles())> (f, ())
     )
   ; <close> fd
   ; !f

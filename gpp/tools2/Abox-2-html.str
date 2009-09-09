@@ -113,11 +113,11 @@ Abox2html:
 
 // Box L operator
 Abox2html:
-   L( b1, b2 ) -> HR
+   L( b1, b2 ) -> HR()
 
 // Box L operator
 Abox2html:
-   LNAT( i, b ) -> HR
+   LNAT( i, b ) -> HR()
 
 // Box LBL operator
 Abox2html:
@@ -220,5 +220,5 @@ make-html-comment =
    remove-trailing(?"");
    reverse;
    remove-trailing(?"");
-   map( \x -> [x,BR] \ )
+   map( \x -> [x,BR()] \ )
 

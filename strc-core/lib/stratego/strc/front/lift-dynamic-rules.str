@@ -955,7 +955,7 @@ strategies
               "\n"
       ]
     ; dbg(|"msg: ")
-    ; <fprintnl>(stderr, <id>)
+    ; <fprintnl>(stderr(), <id>)
     ; <exit> 1
 
   trm-to-string = 

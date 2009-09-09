@@ -11,11 +11,11 @@ rules // combinations of match and build
 
 
   MisMatch :
-    Seq(Build(Anno(Op(f, ts1),pt1)), Match(Anno(Op(g, ts2),pt2))) -> Fail
+    Seq(Build(Anno(Op(f, ts1),pt1)), Match(Anno(Op(g, ts2),pt2))) -> Fail()
     where <not(eq)> (f, g)
 
   MisMatch :
-    Seq(Build(Anno(Op(f, ts1),p1)), Seq(Match(Anno(Op(g, ts2),pt2)), _)) -> Fail
+    Seq(Build(Anno(Op(f, ts1),p1)), Seq(Match(Anno(Op(g, ts2),pt2)), _)) -> Fail()
     where <not(eq)> (f, g)
 
   BuildMatchFusion :

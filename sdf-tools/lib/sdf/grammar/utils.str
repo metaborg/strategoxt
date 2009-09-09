@@ -15,8 +15,8 @@ strategies
     ; concat
 
     ; let prod-of-empty-grammar =
-               ?prod(_, cf(layout), _)
-            <+ ?prod(_, file-start, _)
+               ?prod(_, cf(layout()), _)
+            <+ ?prod(_, file-start(), _)
 
        in map(prod-of-empty-grammar)
       end

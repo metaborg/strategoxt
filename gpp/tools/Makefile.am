@@ -17,7 +17,6 @@ libexec_PROGRAMS = \
 
 STRCFLAGS = --main io-$*
 STRINCLUDES = -I $(XTC)/share/xtc \
-              -I $(top_srcdir)/trans/2abox \
               -I $(SDF_TOOLS)/share/sdf-tools \
               $(STRATEGO_GPP_STRCFLAGS)
 

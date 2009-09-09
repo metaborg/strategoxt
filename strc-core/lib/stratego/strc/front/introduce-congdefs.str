@@ -95,7 +95,7 @@ rules
     where <length> ts => n
         ; <not(CongDefined)> (f, n)
         ; rules(CongDefined : (f, n) -> ())
-        ; <unzip(new; !(VarDec(<id>, DefaultStrat), <id>))> ts => (xdecs, xs)
+        ; <unzip(new; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
 
   MkCongDefs : 
     Constructors(ods) -> <filter(MkCongDef)> ods

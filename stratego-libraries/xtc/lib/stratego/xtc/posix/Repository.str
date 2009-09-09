@@ -23,7 +23,7 @@ strategies
       log(|Vomit(),"Saving repository")
     ; <get-config> "-r"
     ; if can-write-repository then
-       <WriteToBinaryFile> (<id>, <table-getlist> XTC)
+       <WriteToBinaryFile> (<id>, <table-getlist> XTC() )
       else
         log(|Error(), <conc-strings> ("no write permission for repository ", <id>))
       ; fail

@@ -45,7 +45,7 @@ rules
         //; <debug(!"RowLet: ")> Row(ts1, s)
         ; < tvars-matrix
           ; <isect>(<id>, ps)
-          ; unzip(!(VarDec(<id>,DefaultTerm), Var(<id>)))
+          ; unzip(!(VarDec(<id>,DefaultTerm()), Var(<id>)))
           > s => (as, ts2)
         //; debug(!"Free variables: ")
 

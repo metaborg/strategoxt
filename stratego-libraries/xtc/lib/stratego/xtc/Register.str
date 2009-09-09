@@ -23,11 +23,11 @@ strategies
  
   xtc-find-version-loc :
     (tool, version) -> loc
-    where <table-get>(XTC, Tool(tool)); fetch(?(version, loc))
+    where <table-get>(XTC(), Tool(tool)); fetch(?(version, loc))
 
   xtc-find-loc :
     tool -> loc
-    where <table-get> (XTC, Tool(tool)) => [(version, loc) | _]
+    where <table-get> (XTC(), Tool(tool)) => [(version, loc) | _]
 
   xtc-find-path =
     xtc-find; dirname
@@ -122,4 +122,4 @@ strategies
     ; log(|Vomit(),"Registering imports",<id>)
     ; <get-config> "import" => reps
     ; log(|Vomit(),"Importing",<id>)
-    ; <table-union> (XTC, Import, reps)
+    ; <table-union> (XTC(), Import(), reps)

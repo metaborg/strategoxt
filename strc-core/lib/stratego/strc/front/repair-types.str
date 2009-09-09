@@ -32,7 +32,7 @@ strategies
 	                               "' starts with constant type"] )
 	      
   explanation =
-    <fprintnl>(stderr, ["
+    <fprintnl>(stderr(), ["
 ** Warning: Starting with Stratego 0.9.3 the calling convention of
    strategies has been changed such that the current term is the *last*
    argument. For most strategy definitions this is not a problem. Only

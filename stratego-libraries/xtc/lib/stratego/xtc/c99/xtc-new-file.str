@@ -13,6 +13,6 @@ strategies
     f := <tmpnam>
     ; where(
         stream := <fopen> (f, "w")
-      ; <assert(!TempFiles)> (f, ())
+      ; <assert(!TempFiles())> (f, ())
       ; <fclose> stream
       )

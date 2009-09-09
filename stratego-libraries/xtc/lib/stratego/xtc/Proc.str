@@ -228,7 +228,7 @@ strategies
    */
   xtc-remove-temporaries =
     where(
-      <table-get>(XTC, TEMP) => fs
+      <table-get>(XTC(), TEMP()) => fs
       ; map(try(remove-file))
     )
 
@@ -243,11 +243,11 @@ strategies
    * @type     t -> u
    */
   xtc-temp-files(s) = 
-    begin-scope(!TempFiles)
+    begin-scope(!TempFiles())
     ; restore-always(s,
-        where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
+        where((<table-get>(TempFiles(), Scopes()) <+ ![[]]) => [scope | scopes]
             ; <map(try(remove-file))> scope)
-        ; end-scope(!TempFiles)
+        ; end-scope(!TempFiles())
       )
 
   /**
@@ -261,9 +261,9 @@ strategies
   xtc-exit =
     ?status
     ; repeat( 
-        where(<table-get>(TempFiles, Scopes) => [scope | scopes]
+        where(<table-get>(TempFiles(), Scopes()) => [scope | scopes]
             ; <map(try(remove-file))> scope)
-        ; end-scope(!TempFiles)
+        ; end-scope(!TempFiles())
       )
     ; exit
 
@@ -309,7 +309,7 @@ strategies
 
   xtc-input(s) =
     xtc-temp-files(
-        (!FILE(<get-config> "-i") <+ !stdin)
+        (!FILE(<get-config> "-i") <+ !stdin())
       ; s
     )
 
@@ -323,7 +323,7 @@ strategies
   xtc-output(s) =
     xtc-temp-files(
         s
-      ; copy-to(<get-config> "-o" <+ !stdout)
+      ; copy-to(<get-config> "-o" <+ !stdout() )
     )
 
   // io-wrap for xtc tools: 'read' -i option, transform, and 'write' to -o option

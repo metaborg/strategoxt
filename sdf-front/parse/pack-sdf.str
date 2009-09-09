@@ -298,7 +298,7 @@ strategies
     ?( (w1, m1, w2), (w3, m2, w4) );
     !(w1, MM-iter( 
             m1, 
-            <concat-layout>[w2, OptNewLine, OptNewLine, w3], 
+            <concat-layout>[w2, OptNewLine(), OptNewLine(), w3], 
             m2), w4)
 
 signature
@@ -346,13 +346,13 @@ overlays
    *   -> M*
    */
   EmptyModuleIterStar =
-    appl(prod([],cf(iter-star(sort("Module"))),no-attrs),[])
+    appl(prod([],cf(iter-star(sort("Module"))),no-attrs()),[])
 
   /**
    * M+ -> M*
    */
   NonEmptyModuleIterStar(m) = 
-    appl(prod([cf(iter(sort("Module")))],cf(iter-star(sort("Module"))),no-attrs),[m])
+    appl(prod([cf(iter(sort("Module")))],cf(iter-star(sort("Module"))),no-attrs()),[m])
 
   /**
    * M+ M+ -> M+ {left}
@@ -365,13 +365,13 @@ overlays
    * M -> M+
    */
   M-iter( m ) = 
-    appl(prod([cf(sort("Module"))],cf(iter(sort("Module"))),no-attrs),[m])
+    appl(prod([cf(sort("Module"))],cf(iter(sort("Module"))),no-attrs()),[m])
 
   /**
    *  Module* -> Definition
    */
   Module-s-overlay ( g_6 ) =
-    appl ( prod ( [ cf ( iter-star ( sort ( "Module" ) ) ) ] , cf ( sort ( "Definition" ) ) , no-attrs  ) , [ g_6 ] )
+    appl ( prod ( [ cf ( iter-star ( sort ( "Module" ) ) ) ] , cf ( sort ( "Definition" ) ) , no-attrs()  ) , [ g_6 ] )
 
   /**
    * definition Definition -> SDF

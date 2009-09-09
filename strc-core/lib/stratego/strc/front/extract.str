@@ -14,7 +14,7 @@ strategies
 
   check-dynamic-calls =
     if not( fetch-elem(?SDefT("DYNAMIC-CALLS", [], [], _)) ) then
-      ![ SDefT("DYNAMIC-CALLS", [], [], Fail) | <id> ]
+      ![ SDefT("DYNAMIC-CALLS", [], [], Fail()) | <id> ]
     end
 
   extract-all =

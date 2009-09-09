@@ -27,7 +27,7 @@ rules
     [Compound([], stats) | stats'] -> <conc>(stats, stats')
 
   Csimplify :
-    [Stat(EmptyExp) | stats] -> stats
+    [Stat(EmptyExp()) | stats] -> stats
 
   Csimplify :
     IfElse(e, s, Compound([],[])) -> If(e, s)
@@ -48,7 +48,7 @@ rules
 //    where <Stat(id)> s
 
   Csimplify :
-    Goto(Id(Next)) -> Compound([],[])
+    Goto(Id(Next())) -> Compound([],[])
     //stm|[ goto ~id:Next; ]| -> stm|[ { } ]|
 
 strategies

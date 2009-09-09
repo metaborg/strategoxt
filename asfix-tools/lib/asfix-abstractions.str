@@ -15,7 +15,7 @@ constructors
 overlays
 
   conc-prod(s) = 
-    prod([cf(iter(s)),cf(opt(layout)),cf(iter(s))],cf(iter(s)),no-attrs)
+    prod([cf(iter(s)),cf(opt(layout())),cf(iter(s))],cf(iter(s)),no-attrs)
 
   iter-inj-prod(s) =
     prod([cf(s)], cf(iter(s)), no-attrs)
@@ -33,33 +33,33 @@ overlays
 
   flatlit(str) = flatlex(lit(str), str)
 
-  white(str) = flatlex(cf(opt(layout)), str)
+  white(str) = flatlex(cf(opt(layout())), str)
 
   start(s,l1,x,l2) =       
-    appl(prod([cf(opt(layout)),cf(sort(s)),cf(opt(layout))],
+    appl(prod([cf(opt(layout())),cf(sort(s)),cf(opt(layout()))],
               sort("<START>"),no-attrs),
          [l1,x,l2])
 
   CfLayout(l) =
-     appl(prod([lex(layout)], cf(layout), no-attrs), [l])
+     appl(prod([lex(layout())], cf(layout()), no-attrs), [l])
 
   ConcCfLayout(l1, l2) = 
-     appl(prod([cf(layout), cf(layout)], cf(layout), attrs([assoc(left())])), [l1, l2])
+     appl(prod([cf(layout()), cf(layout())], cf(layout()), attrs([assoc(left())])), [l1, l2])
 
   NoCfLayout = 
-     appl(prod([], cf(opt(layout)), no-attrs), [])
+     appl(prod([], cf(opt(layout())), no-attrs), [])
      
   CfOptLayout(l) =
-     appl(prod([cf(layout)], cf(opt(layout)), no-attrs), [l])
+     appl(prod([cf(layout())], cf(opt(layout())), no-attrs), [l])
 
   Space =
-    CfLayout(appl(prod([char-class([range(9,10),13,32])],lex(layout),attrs([prefer()])), [32]))
+    CfLayout(appl(prod([char-class([range(9,10),13,32])],lex(layout()),attrs([prefer()])), [32]))
 
   NewLine =
-    CfLayout(appl(prod([char-class([range(9,10),13,32])],lex(layout),attrs([prefer()])), [10]))
+    CfLayout(appl(prod([char-class([range(9,10),13,32])],lex(layout()),attrs([prefer()])), [10]))
 
   OptNewLine =
-     CfOptLayout(NewLine)
+     CfOptLayout(NewLine())
 
 strategies
 
@@ -85,10 +85,10 @@ rules
     CfOptLayout(ConcCfLayout(l1, l2))
 
   conc-layout2 : 
-    (NoCfLayout, l) -> l
+    (NoCfLayout(), l) -> l
 
   conc-layout3 : 
-    (l, NoCfLayout) -> l
+    (l, NoCfLayout()) -> l
 
 strategies
 

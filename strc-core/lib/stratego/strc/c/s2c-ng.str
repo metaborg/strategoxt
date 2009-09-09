@@ -427,7 +427,7 @@ strategies
     stm|[ sl_init_var(~exp:<mk-int-const>i, ~id:x); ]|
 
   TranslateType : 
-    ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None)
+    ConstType(_) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]), None())
 
   TranslateType :
     FunType(ts, _) -> 
@@ -459,7 +459,7 @@ rules
       {
 	~dec*:[Declaration2(TypeSpec([],TypeId("ATerm"),[]),
 	        // <map(!var-dec|[~id:<id> = NULL]|)> x*
-		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> x*)
+		<map(!DeclInit(IdDecl([],Id(<id>),None()),AssignInit(Id("NULL"))))> x*)
 	       ]
         ~stm*:<filter(TranslateEscapingVarDec)> x*
         ~stm:(<translate-strat(|S,F)> s)
@@ -1173,7 +1173,7 @@ strategies
 
   InitTermId :
     (x, e) ->
-    [Stat(Assign(Id(x), AssignEq, e)),
+    [Stat(Assign(Id(x), AssignEq(), e)),
      Stat(FunCall(Id("ATprotect"),[Address(Id(x))]))]
 
    mk-int-const =

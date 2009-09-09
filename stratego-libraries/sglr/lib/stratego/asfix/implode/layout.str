@@ -46,8 +46,8 @@ strategies
    * @todo Find out why this strategy is used.
    */
   is-layout' =
-      appl(prod(id, cf(opt(layout)), id), id)
-    + cf(opt(layout))
+      appl(prod(id, cf(opt(layout())), id), id)
+    + cf(opt(layout()))
     + layout(id)
 
 strategies

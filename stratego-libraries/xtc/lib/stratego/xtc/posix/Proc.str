@@ -101,7 +101,7 @@ strategies
         ; <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
 
   xtc-transform-file(tool, args) :
-    stdin -> FILE(g)
+    stdin() -> FILE(g)
     where xtc-new-file => g
         ; <conc; xtc-command(tool)> (<args>, ["-o", g])
 
@@ -233,5 +233,5 @@ strategies
   xtc-new-file-name =
     obsolete(!"xtc-new-file-name; use xtc-new-file")
     ; new-file => f
-    ; where(<assert(!TempFiles)> (f, ()))
+    ; where(<assert(!TempFiles())> (f, ()))
     ; !FILE(f)

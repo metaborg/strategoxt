@@ -34,16 +34,16 @@ strategies
       <+ AM(x, ImplodeLayout(id))
       <+ RuleNoCond(x, ImplodeLayout(id))
       <+ Rule(x, ImplodeLayout(id), x)
-      <+ (appl(prod(id, cf(opt(layout)), id), id)
+      <+ (appl(prod(id, cf(opt(layout())), id), id)
          ; {layout_var:
-             appl(prod([cf(layout)], cf(opt(layout)), id),
+             appl(prod([cf(layout())], cf(opt(layout())), id),
                   oncetd(?meta-var(layout_var)))
            < !meta-var(layout_var) + try(not(build); !Wld())})
     ))
                                                                                
   asfix-option =
     Option( "--asfix",
-       <set-config> ("--asfix", ()); !AsFix,
+       <set-config> ("--asfix", ()); !AsFix(),
        !"--asfix          treat concrete syntax parts as AsFix trees")
 
   io-meta-explode =
