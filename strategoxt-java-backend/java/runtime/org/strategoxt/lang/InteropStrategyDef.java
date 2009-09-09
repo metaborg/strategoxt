@@ -65,6 +65,11 @@ public class InteropStrategyDef extends SDefT {
 	public String getName() {
 		return getStrategy().getName();
 	}
+	
+	@Override
+	protected void setName(String name) {
+		throw new UnsupportedOperationException();
+	}
 
 	@Override
 	public SVar[] getStrategyParams() {
