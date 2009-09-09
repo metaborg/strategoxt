@@ -46,7 +46,7 @@ strj_parallel.java : strj-parallel.str strj
 	strj -la org.strategoxt.strj -la stratego-parallel -i strj-parallel.str
 
 %.java : %.str strj
-	./strj -i $< -o $@ --verbose 2 -la stratego-lib -la java-front
+	./strj -i $< -o $@ --verbose 2 -la stratego-lib -la java-front -la stratego-sglr
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
@@ -55,7 +55,7 @@ strj_parallel.java : strj-parallel.str strj
 	java -client -cp $(CLASSPATH) `basename $< .class`
 
 %.crun : %.str
-	strc -la strc -la stratego-lib -i $<
+	strc -la strc -la stratego-lib -la stratego-sglr -i $<
 	`dirname $<`/`basename $< .str`
 
 ## fast C-based pretty-printer

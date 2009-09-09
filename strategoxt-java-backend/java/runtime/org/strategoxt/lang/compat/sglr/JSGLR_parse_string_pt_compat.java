@@ -1,8 +1,6 @@
 package org.strategoxt.lang.compat.sglr;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.core.IContext;
@@ -46,8 +44,7 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 		SGLR parser = new SGLR(factory.getFactory(), table);
 		parser.setDisambiguator(filterSettings);
 		
-		InputStream is = new ByteArrayInputStream(input.getBytes());
-		IStrategoTerm result = factory.wrapTerm(parser.parse(is, startSymbol));
+		IStrategoTerm result = factory.wrapTerm(parser.parse(input, startSymbol));
 		if (!outputWrappedATerm)
 			result = TermConverter.convert(env.getFactory(), result);
 		
