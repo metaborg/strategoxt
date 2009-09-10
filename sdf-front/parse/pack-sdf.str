@@ -18,6 +18,7 @@ imports
   sdf/tool/xtc
   Sdf2
   asfix-abstractions
+  libstratego-sglr
 
 /**
  * Entry point
@@ -27,14 +28,19 @@ strategies
   main-pack-sdf =
     xtc-io-wrap(pack-sdf-options,
       process-options
-    ; pack-sdf(|<include-path>) => (files, spec)
-    ; <maybe-create-depfile> files
-    ; <write-to> spec
-    ; (  where(of-config => "txt")   < xtc-asfix-yield
-      +  where(of-config => "ast")   < xtc-implode-asfix
-      +  where(of-config => "asfix")
-         <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
+    ; where( 
+        tbl := <xtc-find ; ReadFromFile ; open-parse-table>"Sdf2.baf" 
+      ; rules( SdfParseTable := tbl )
       )
+    ; pack-sdf(|<include-path>) => (files, spec)
+    ; <close-parse-table> tbl
+    ; <maybe-create-depfile> files
+    ; !spec
+    ; where( (<fopen> (<get-config> "-o", "w") <+ stdout-stream ) => stream ) 
+    ; (  where(of-config => "txt")   < ( asfix-yield(|stream) ; <xtc-exit>0 )
+      +  where(of-config => "ast")   < implode-asfix
+      +  where(of-config => "asfix")
+      ) ; write-to <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
     )
 
 /**
@@ -188,9 +194,8 @@ strategies
    */
   parse-sdf2-module-to-asfix(check) =
     ?pathname
-    ; ( <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(pathname)
-        < read-from
-          ; ?parsetree(<id>, _)
+    ; ( <parse-file-pt(|<SdfParseTable>, "Module")> pathname
+        <   ?parsetree(<id>, _)
           ; check-module-name(check|pathname)
         + <fatal-error> ["pack-sdf: Error: module ", pathname, " cannot be parsed\n"]
       )
