@@ -13,7 +13,7 @@
 # Variables
 #
 
-AM_CFLAGS  = $(STR_CFLAGS)
+AM_CFLAGS  = $(STR_CFLAGS) -fno-stack-protector
 AM_LDFLAGS = $(STR_LDFLAGS)
 
 if XT_XTC_REGISTER
