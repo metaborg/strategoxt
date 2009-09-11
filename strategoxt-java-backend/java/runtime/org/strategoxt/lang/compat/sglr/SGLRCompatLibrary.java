@@ -33,41 +33,41 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 	private void initFilterSettings() {
 		filterSettings.setFilterAny(true);
 		
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes_on") {
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes_on") { // (sic)
 			@Override
 			public void set() {
 				filterSettings.setFilterDirectPreference(true);
 			}
 		});
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes_off") {
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes_off") { // (sic)
 			@Override
 			public void set() {
 				filterSettings.setFilterDirectPreference(false);
 			}
 		});
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes") {
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes") { // (sic)
 			@Override
 			public boolean get() {
 				return filterSettings.getFilterDirectPreference();
 			}
 		});
 		
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes_on") {
-			@Override
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes_on") { // (sic)
+			@Override @Deprecated
 			public void set() {
 				filterSettings.setFilterIndirectPreference(true);
 			}
 		});
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes_off") {
-			@Override
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes_off") { // (sic)
+			@Override @Deprecated
 			public void set() {
 				filterSettings.setFilterIndirectPreference(false);
 			}
 		});
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes") {
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes") { // (sic)
 			@Override
 			public boolean get() {
-				return filterSettings.getFilterIndirectPreference();
+				return filterSettings.getFilterDirectPreference();
 			}
 		});
 

@@ -93,7 +93,7 @@ bin/org/strategoxt/strj/Main.class : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJA
 	if ! which ecj >/dev/null; \
 	  then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2; \
 	fi
-	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch $@
+	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch .ALLCLASSES
 
 debug-classes : $(RUNTIMEJAVA)
 	$(JAVAC) -g $(JAVACFLAGS) $(RUNTIMEJAVAS)
