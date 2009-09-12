@@ -83,6 +83,9 @@ strategies
 strategies // location information
 
   override asfix-anno-location = // TODO: asfix-anno-location?
+    AsfixAnnoLocationWarned
+  <+
+    rules(AsfixAnnoLocationWarned: _);
     warn-msg(|"Asfix location annotation not implemented for this platform")
 
   override asfix-anno-position-info(|name) =
