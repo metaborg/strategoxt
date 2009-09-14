@@ -17,7 +17,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 /**
  * Provides interoperability with the (relatively dynamic) {@link IContext}
- * interface.
+ * interface. Its main use is calling Stratego primitives.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
@@ -93,7 +93,6 @@ public class InteropContext implements IContext {
 
 	public void restoreVarScope(VarScope anotherVarScope) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	public void setVarScope(VarScope newVarScope) {

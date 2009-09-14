@@ -18,6 +18,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 import org.strategoxt.lang.terms.TermFactory;
+import static org.strategoxt.lang.Term.*;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -148,7 +149,12 @@ public class Context extends StackTracer {
     	
     	IStrategoList term = factory.makeList(termArgs);
     	
-    	return strategy.invoke(this, term);
+    	// Launch with a clean operand stack when launched from SSL_java_call, Ant, etc.
+    	if (new Exception().getStackTrace().length > 20) {
+    		return strategy.invokeStackFriendly(this, term, NO_STRATEGIES, NO_TERMS);
+    	} else {
+    		return strategy.invoke(this, term);
+    	}
     }
     
     public final IStrategoTerm invokePrimitive(String name, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
@@ -165,7 +171,7 @@ public class Context extends StackTracer {
 		
     	interopContext.setCurrent(term);
 		try {
-			if (primitive.call(interopContext, InteropStrategy.toInteropStrategies(sargs, this), targs)) {
+			if (primitive.call(interopContext, InteropCallT.toInteropCallTs(sargs, this), targs)) {
 				return interopContext.current();
 			} else {
 				return null;

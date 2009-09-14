@@ -1,117 +1,91 @@
 package org.strategoxt.lang;
 
-import org.spoofax.NotImplementedException;
-import org.spoofax.interpreter.core.IConstruct;
+import java.util.Arrays;
+
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
-import org.spoofax.interpreter.stratego.CallT;
+import org.spoofax.interpreter.core.VarScope;
+import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.lang.Strategy;
 
 /**
- * Adapts an {@link Strategy} strategy to a {@link CallT},
- * making interpreter strategies and primitives with strategy arguments
- * accessible for compiled strategies.
+ * Adapts an {@link SDefT} definition to a {@link Strategy},
+ * making interpreter strategy arguments accessible to the compiled strategies.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class InteropStrategy extends CallT {
+public class InteropStrategy extends DynamicStrategy {
 	
-	private static final CallT[] NO_CALLTS = {};
+	private final SDefT definition;
 	
-	private static final Strategy[] NO_ISTRATEGIES = {};
+	private final IContext context;
 	
-	private final Strategy strategy;
-	
-	private final Context context;
-	
-	/**
-	 * Creates a new InteropStrategy instance.
-	 * 
-	 * @param strategy	The strategy to adapt.
-	 * @param context	The compiled context; may be null if used with an {@link InteropContext}.
-	 */
-	public InteropStrategy(Strategy strategy, Context context) {
-		super(null, null, null);
-		
-		this.strategy = strategy;
+	public InteropStrategy(SDefT definition, IContext context) {
+		this.definition = definition;
 		this.context = context;
 	}
-    
-	/**
-	 * @param context	The compiled context; may be null if used with an {@link InteropContext}.
-	 */
-	public static CallT[] toInteropStrategies(Strategy[] strategies, Context context) {
-    	if (strategies.length == 0) return NO_CALLTS;
-    	
-    	CallT[] results = new CallT[strategies.length];
-    	for (int i = 0; i < strategies.length; i++)
-    		results[i] = new InteropStrategy(strategies[i], context);
-    	return results;
-    }
-    
-	public static Strategy[] fromInteropStrategies(org.spoofax.interpreter.stratego.Strategy[] strategies) {
-		if (strategies.length == 0)
-			return NO_ISTRATEGIES;
-
-		Strategy[] results = new Strategy[strategies.length];
-		for (int i = 0; i < strategies.length; i++) {
-			org.spoofax.interpreter.stratego.Strategy strategy = strategies[i];
-			if (!(strategy instanceof InteropStrategy))
-				throw new StrategoException("Expected InteropStrategy");
-			results[i] = ((InteropStrategy) strategy).strategy;
+	
+	public static Strategy[] toInteropStrategies(SDefT[] definitions, IContext context) {
+		Strategy[] results = new Strategy[definitions.length];
+		for (int i = 0; i < definitions.length; i++) {
+			SDefT definition = definitions[i];
+			if (definition instanceof InteropSDefT) {
+				results[i] = ((InteropSDefT) definition).getStrategy();
+			} else {
+				results[i] = new InteropStrategy(definitions[i], context);
+			}
 		}
 		return results;
-    }
-	
-	@Override
-	public String getTargetStrategyName() {
-		return strategy.getName();
 	}
 	
 	@Override
-	public IConstruct eval(IContext env) throws InterpreterException {
-		return evaluate(env)
-			? getHook().pop().onSuccess(env)
-			: getHook().pop().onFailure(env);
-	}
-
-	@Override
-	public boolean evaluate(IContext env) {
-		IStrategoTerm result = strategy.invoke(getCompiledContext(env), env.current());
-		if (result == null) return false;
-		env.setCurrent(result);
-		
-		return true;
-	}
-
-	private Context getCompiledContext(IContext env) {
-		if (context != null)
-			return context;
-		
-		if (!(env instanceof InteropContext))
-			throw new StrategoException("Expected InteropContext");
-		Context context = ((InteropContext) env).getContext();
-		return context;
-	}
-	
-	@Override
-	public boolean evaluateWithArgs(IContext env, org.spoofax.interpreter.stratego.Strategy[] sv, IStrategoTerm[] tv) {
-		IStrategoTerm result;
-		if (tv.length == 0 && sv.length == 0) {
-			result = strategy.invoke(getCompiledContext(env), env.current());
-		} else {
-			result = strategy.invokeDynamic(
-					getCompiledContext(env), env.current(), fromInteropStrategies(sv), tv);
+	public IStrategoTerm invokeDynamic(Context compiledContext, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
+		VarScope oldScope = context.getVarScope();
+		try {
+		    VarScope defScope = definition.getScope();
+			if (sargs.length != 0 || targs.length != 0) {
+				defScope = new VarScope(defScope);
+				assignParameters(compiledContext, defScope, sargs, targs);
+				context.setVarScope(defScope);
+			}
+			
+			context.setCurrent(current);
+			context.setVarScope(defScope);
+			boolean success = definition.evaluate(context);
+			return success ? context.current() : null;
+		} catch (InterpreterException e) {
+			throw new StrategoException("Exception in interpreter: " + e.getMessage(), e);
+		} finally {
+			context.restoreVarScope(oldScope);
 		}
-		if (result == null) return false;
-		env.setCurrent(result);		
-		return true;		
+	}
+
+	private void assignParameters(Context compiledContext, VarScope scope, Strategy[] sargs, IStrategoTerm[] targs)
+			throws InterpreterException {
+		
+		SDefT.SVar[] sparams = definition.getStrategyParams();
+		String[] tparams = definition.getTermParams();
+		SDefT[] sargs2 = InteropSDefT.toInteropSDefTs(sargs, context, compiledContext);
+		if (sparams.length != sargs.length || tparams.length != targs.length) {
+			throw new InterpreterException("Illegal number of arguments passed to strategy "
+					+ getName() + ": " + Arrays.toString(sargs) + "|" + Arrays.toString(targs));
+		}
+		
+		for (int i = 0; i < sparams.length; i++) {
+			scope.addSVar(sparams[i].name, sargs2[i]);
+		}
+		
+		for (int i = 0; i < tparams.length; i++) {
+			scope.add(tparams[i], targs[i]);
+		}
 	}
 	
 	@Override
-	public org.spoofax.interpreter.stratego.Strategy evalWithArgs(IContext env, org.spoofax.interpreter.stratego.Strategy[] sv,
-			IStrategoTerm[] actualTVars) throws InterpreterException {
-		throw new NotImplementedException();
+	public String getName() {
+		return definition.getName();
+	}
+	
+	public SDefT getDefinition() {
+		return definition;
 	}
 }

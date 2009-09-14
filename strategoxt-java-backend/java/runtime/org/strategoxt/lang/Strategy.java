@@ -1,6 +1,8 @@
 package org.strategoxt.lang;
 
-import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -76,13 +78,48 @@ public class Strategy {
 					case 4: return invoke(context, current, s[0], s[1], s[2], s[3], t[0], t[1], t[2], t[3]);
 					case 5: return invoke(context, current, s[0], s[1], s[2], s[3], t[0], t[1], t[2], t[3], t[4]);
 				}
+				break;
+			case 5:
+				switch (t.length) {
+					case 0: return invoke(context, current, s[0], s[1], s[2], s[3], s[4]);
+					case 1: return invoke(context, current, s[0], s[1], s[2], s[3], s[4], t[0]);
+					case 2: return invoke(context, current, s[0], s[1], s[2], s[3], s[4], t[0], t[1]);
+					case 3: return invoke(context, current, s[0], s[1], s[2], s[3], s[4], t[0], t[1], t[2]);
+					case 4: return invoke(context, current, s[0], s[1], s[2], s[3], s[4], t[0], t[1], t[2], t[3]);
+					case 5: return invoke(context, current, s[0], s[1], s[2], s[3], s[4], t[0], t[1], t[2], t[3], t[4]);
+				}
 		}
 		
-		ArrayList<Object> args = new ArrayList<Object>();
-		for (Object o : s) args.add(o);
-		for (Object o : t) args.add(o);
-		throw new IllegalArgumentException(args);
+		throw new IllegalArgumentException(s, t);
 	}
+	
+	/**
+	 * Invokes this strategy in a new thread, and then joins it waiting for the result.
+	 * This way, the strategy has a clean operand stack to its disposal,
+	 * reducing the risk of throwing a StackOverflowError.
+	 * 
+	 * @return The resulting term, or null in case of failure.
+	 */
+	@Deprecated // TODO: Move to separate class
+	public IStrategoTerm invokeStackFriendly(final Context context, final IStrategoTerm current, final Strategy[] s, final IStrategoTerm[] t) {
+		final FutureTask<IStrategoTerm> result = new FutureTask<IStrategoTerm>(new Callable<IStrategoTerm>() {
+			public IStrategoTerm call() throws Exception {
+				return invokeDynamic(context, current, s, t);
+			}
+    	});
+		new Thread(result).start();
+		try {
+			return result.get();
+		} catch (ExecutionException e) {
+			if (e.getCause() instanceof RuntimeException)
+				throw (RuntimeException) e.getCause();
+			if (e.getCause() instanceof Error)
+				throw (Error) e.getCause();
+			throw new StrategoException("Unexpected exception", e);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+    }
 
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 		throw new IllegalArgumentException();
@@ -264,6 +301,13 @@ public class Strategy {
 		
 		return result.toString();
 	}
+	
+	private static Object[] concat(Object[] l1, Object[] l2) {
+		Object[] results = new Object[l1.length + l2.length];
+		System.arraycopy(l1, 0, results, 0, l1.length);
+		System.arraycopy(l2, 0, results, l1.length, l2.length);
+		return results;
+	}
 
 	/**
 	 * Thrown to indicate that a strategy has been passed an illegal or
@@ -274,6 +318,10 @@ public class Strategy {
 		
 		public IllegalArgumentException(Object... args) {
 			super("Illegal arguments for " + getName() + " " + argsToText(args));
+		}
+		
+		public IllegalArgumentException(Object[] s, Object[] t) {
+			this(concat(s, t));
 		}
 	}
 }

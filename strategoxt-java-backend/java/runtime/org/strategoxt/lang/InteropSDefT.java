@@ -1,91 +1,201 @@
 package org.strategoxt.lang;
 
-import java.util.Arrays;
-
+import org.spoofax.interpreter.core.IConstruct;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.stratego.SDefT;
+import org.spoofax.interpreter.stratego.StupidFormatter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
- * Adapts an {@link SDefT} definition to a {@link Strategy},
- * making interpreter strategy arguments accessible to the compiled strategies.
+ * Adapts an {@link Strategy} strategy to a {@link SDefT},
+ * making compiled strategies available to the interpreter.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class InteropSDefT extends DynamicStrategy {
+public class InteropSDefT extends SDefT {
 	
-	private final SDefT definition;
+	private static final ConstType CONST_TYPE = new ConstType();
 	
-	private final IContext context;
+	private static final SVar[] NO_SVARS = {};
 	
-	public InteropSDefT(SDefT definition, IContext context) {
-		this.definition = definition;
-		this.context = context;
+	private static final String[] NO_STRINGS = {};
+	
+	private final Context compiledContext;
+	
+	private final String strategyClassName;
+	
+	private final ClassLoader classLoader;
+	
+	private Strategy strategy;
+
+	public InteropSDefT(Strategy strategy, IContext context, Context compiledContext) {
+		super(context.getVarScope());
+		this.strategyClassName = null;
+		this.classLoader = null;
+		this.compiledContext = compiledContext;
+		this.strategy = strategy;
 	}
-	
-	public static Strategy[] toInteropSDefTs(SDefT[] definitions, IContext context) {
-		Strategy[] results = new Strategy[definitions.length];
-		for (int i = 0; i < definitions.length; i++) {
-			SDefT definition = definitions[i];
-			if (definition instanceof InteropStrategyDef) {
-				results[i] = ((InteropStrategyDef) definition).getStrategy();
+
+	/**
+	 * Creates a new InteropSDefT that dynamically loads the specified strategy class.
+	 */
+	public InteropSDefT(ClassLoader classLoader, String strategyClassName, IContext context, Context compiledContext) {
+		super(context.getVarScope());
+		this.classLoader = classLoader;
+		this.strategyClassName = strategyClassName;
+		this.compiledContext = compiledContext;
+	}
+
+	public static SDefT[] toInteropSDefTs(Strategy[] strategies, IContext context, Context compiledContext) {
+		SDefT[] results = new SDefT[strategies.length];
+		for (int i = 0; i < strategies.length; i++) {
+			Strategy strategy = strategies[i];
+			if (strategy instanceof InteropStrategy) {
+				results[i] = ((InteropStrategy) strategy).getDefinition();
 			} else {
-				results[i] = new InteropSDefT(definitions[i], context);
+				results[i] = new InteropSDefT(strategy, context, compiledContext);
 			}
 		}
 		return results;
 	}
-	
-	@Override
-	public IStrategoTerm invokeDynamic(Context compiledContext, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
-		VarScope oldScope = context.getVarScope();
-		try {
-		    VarScope defScope = definition.getScope();
-			if (sargs.length != 0 || targs.length != 0) {
-				defScope = new VarScope(defScope);
-				assignParameters(compiledContext, defScope, sargs, targs);
-				context.setVarScope(defScope);
-			}
-			
-			context.setCurrent(current);
-			context.setVarScope(defScope);
-			boolean success = definition.evaluate(context);
-			return success ? context.current() : null;
-		} catch (InterpreterException e) {
-			throw new StrategoException("Exception in interpreter: " + e.getMessage(), e);
-		} finally {
-			context.restoreVarScope(oldScope);
-		}
-	}
 
-	private void assignParameters(Context compiledContext, VarScope scope, Strategy[] sargs, IStrategoTerm[] targs)
-			throws InterpreterException {
-		
-		SDefT.SVar[] sparams = definition.getStrategyParams();
-		String[] tparams = definition.getTermParams();
-		SDefT[] sargs2 = InteropStrategyDef.toInteropStrategyDefs(sargs, context, compiledContext);
-		if (sparams.length != sargs.length || tparams.length != targs.length) {
-			throw new InterpreterException("Illegal number of arguments passed to strategy "
-					+ getName() + ": (" + Arrays.toString(sargs) + "|" + Arrays.toString(targs) + ")");
-		}
-		
-		for (int i = 0; i < sparams.length; i++) {
-			scope.addSVar(sparams[i].name, sargs2[i]);
-		}
-		
-		for (int i = 0; i < tparams.length; i++) {
-			scope.add(tparams[i], targs[i]);
-		}
-	}
-	
 	@Override
 	public String getName() {
-		return definition.getName();
+		return getStrategy().getName();
 	}
 	
-	public SDefT getDefinition() {
-		return definition;
+	@Override
+	protected void setName(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SVar[] getStrategyParams() {
+		SVar[] results = super.getStrategyParams();
+		if (results != null) return results;
+		
+		String name = getName();
+		int countEnd = name.lastIndexOf('_');
+		int countStart = name.lastIndexOf('_', countEnd - 1);
+		int count = Integer.parseInt(name.substring(countStart + 1, countEnd));
+		
+		if (count == 0) return NO_SVARS;
+		
+		results = new SVar[count];
+		for (int i = 0; i < results.length; i++) {
+			results[i] = new SVar("s" + i, CONST_TYPE);
+		}
+		
+		return results;
+	}
+
+	@Override
+	public String[] getTermParams() {
+		String[] results = super.getTermParams();
+		if (results != null) return results;
+		
+		String name = getName();
+		int countStart = name.lastIndexOf('_');
+		int count = Integer.parseInt(name.substring(countStart + 1));
+		
+		if (count == 0) return NO_STRINGS;
+		
+		results = new String[count];
+		for (int i = 0; i < results.length; i++) {
+			results[i] = "t" + i;
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public org.spoofax.interpreter.stratego.Strategy getBody() {
+		org.spoofax.interpreter.stratego.Strategy result = super.getBody();
+		if (result == null) {
+			result = new org.spoofax.interpreter.stratego.Strategy() {
+				public IConstruct eval(IContext env) throws InterpreterException {
+					return evaluate(env)
+						? getHook().pop().onSuccess(env)
+						: getHook().pop().onFailure(env);
+				}
+				
+				@Override
+				public boolean evaluate(IContext env) throws InterpreterException {
+					return InteropSDefT.this.evaluate(env);
+				}
+	
+				public void prettyPrint(StupidFormatter fmt) {
+					InteropSDefT.this.prettyPrint(fmt);
+				}
+				
+				@Override
+				protected String getTraceName() {
+					return getName();
+				}
+			};
+			setBody(result);
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean evaluate(IContext env) throws InterpreterException {
+		VarScope scope = env.getVarScope();
+		SVar[] svars = getStrategyParams();
+		String[] tvars = getTermParams();
+		SDefT[] sargs = new SDefT[svars.length];
+		IStrategoTerm[] targs = new IStrategoTerm[tvars.length];
+		
+		for (int i = 0; i < svars.length; i++) {
+			SDefT sarg = scope.lookupSVar(svars[i].name);
+			if (sarg == null) throw new InterpreterException("Missing strategy argument: " + svars[i].name);
+			sargs[i] = sarg;
+		}
+		
+		for (int i = 0; i < tvars.length; i++) {
+			IStrategoTerm targ = scope.lookup(tvars[i]);
+            if (targ == null) throw new InterpreterException("Missing term argument: " + tvars[i]);
+			targs[i] = targ;
+		}
+		
+		Strategy[] sdefargs = InteropStrategy.toInteropStrategies(sargs, env);
+		IStrategoTerm result;
+		try {
+			result = getStrategy().invokeDynamic(compiledContext, env.current(), sdefargs, targs);
+		} catch (StrategoExit e) {
+			throw new InterpreterExit(e.getValue(), e);
+		}
+		
+		if (result != null) {
+			env.setCurrent(result);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public Strategy getStrategy() {
+		if (strategy == null) {
+			try {
+				Class<?> strategyClass = classLoader.loadClass(strategyClassName);
+				strategy = (Strategy) strategyClass.getField("instance").get(null);
+			} catch (ClassNotFoundException e) {
+				throw new StrategoException("Unable to instantiate compiled strategy", e);
+			} catch (IllegalAccessException e) {
+				throw new StrategoException("Unable to instantiate compiled strategy", e);
+			} catch (IllegalArgumentException e) {
+				throw new StrategoException("Unable to instantiate compiled strategy", e);
+			} catch (SecurityException e) {
+				throw new StrategoException("Unable to instantiate compiled strategy", e);
+			} catch (NoSuchFieldException e) {
+				throw new StrategoException("Unable to instantiate compiled strategy", e);
+			}
+		}
+			
+		return strategy;
 	}
 }
+

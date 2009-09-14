@@ -287,13 +287,13 @@ rules
     ; main   := <get-config <+ !"main"> "-m"
     ; x_main := <conc-strings> (<jify> main, "_0_0")
   
-  // TODO: do interop strategy additions in a fully on-demand fashion
+  // TODO: do interop strategy additions in a fully on-demand fashion?
   //       (need to adapt VarScope class to do so)
   java-register-method : 
     defs ->
     class-body-dec* |[
       public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        InteropRegisterer.registerLazy(context, compiledContext, context.getVarScope());
+        InteropRegisterer.registerLazy(context, compiledContext, context.getVarScope(), InteropRegisterer.class.getClassLoader());
       }
       
       // Put these many literals and statements to another, lazily loaded class
@@ -307,7 +307,7 @@ rules
           }
         ]|
         ~*<java-split-method>  |[
-          public static void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
+          public static void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope, ClassLoader classLoader) {
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm2*
@@ -323,11 +323,11 @@ rules
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x", new InteropStrategyDef(x.instance, context, compiledContext)); ]|
+    |[ varScope.addSVar("~x", new InteropSDefT(x.instance, context, compiledContext)); ]|
 
   java-register-strategy-lazy :
     SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x", new InteropStrategyDef("~y", context, compiledContext)); ]|
+    |[ varScope.addSVar("~x", new InteropSDefT(classLoader, "~y", context, compiledContext)); ]|
     with
       y := <conc-strings> (<get-config> "-p", ".", x)
     <+

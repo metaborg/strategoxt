@@ -3,10 +3,15 @@ package org.strategoxt;
 import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
+import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.library.IOperatorRegistry;
+import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
+import org.strategoxt.lang.StrategoException;
+import org.strategoxt.lang.StrategoExit;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
@@ -18,13 +23,15 @@ import org.strategoxt.lang.Context;
  * <code>
  *   HybridInterpreter i = new HybridInterpreter();
  *   mylib.registerInterop(i.getContext(), i.getCompiledContext());
- * </code
+ * </code> 
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class HybridInterpreter extends Interpreter {
 	
 	private final HybridCompiledContext compiledContext;
+	
+	private boolean registeredLibraries;
 
 	public HybridInterpreter() {
 		this(new BAFBasicTermFactory());
@@ -38,7 +45,6 @@ public class HybridInterpreter extends Interpreter {
 		super(termFactory, programFactory);
 		
 		compiledContext = new HybridCompiledContext(termFactory);
-		registerLibraries();
 	}
 	
 	@Override
@@ -46,6 +52,20 @@ public class HybridInterpreter extends Interpreter {
 		return new HybridContext(termFactory, programFactory);
 	}
 	
+	@Override
+	public void load(IStrategoTerm term) throws InterpreterException {
+		// Lazily register library strategies
+		// (since this interpreter may only be used with compiled strategies)
+		if (!registeredLibraries) {
+			registeredLibraries = true;
+			registerLibraries();
+		}
+		super.load(term);
+	}
+	
+	/**
+	 * Initialize the interpreter register with all standard library strategies.
+	 */
 	protected void registerLibraries() {
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
@@ -65,6 +85,17 @@ public class HybridInterpreter extends Interpreter {
 	
 	public final Context getCompiledContext() {
 		return compiledContext;
+	}
+	
+	@Override
+	public boolean invoke(String name) throws InterpreterExit, InterpreterException {
+		try {
+			return super.invoke(name);
+        } catch (StrategoExit e) {
+            throw new InterpreterExit(e.getValue(), e);
+        } catch (StrategoException e) {
+            throw new InterpreterException(e);
+        }
 	}
 	
 	/**
