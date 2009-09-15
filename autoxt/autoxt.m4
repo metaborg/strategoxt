@@ -48,6 +48,27 @@ AC_DEFUN([XT_DARWIN],
   AM_CONDITIONAL([XT_DARWIN], [test "$xt_darwin" = "yes"])
 ])
 
+# XT_CYGWIN
+# ---------
+AC_DEFUN([XT_CYGWIN],
+[
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  AC_REQUIRE([AC_CANONICAL_BUILD])
+
+  # As an exception to XT_* macros name, this is a valid part of configure.
+  m4_pattern_allow([^XT_CYGWIN(_TRUE|_FALSE)?$])
+
+  AC_MSG_CHECKING([whether host operating system is Cygwin])
+  xt_cygwin="no"
+  case $host_os in
+    cygwin*)
+      xt_cygwin="yes"
+      ;;
+  esac
+  AC_MSG_RESULT([$xt_cygwin])
+  AM_CONDITIONAL([XT_CYGWIN], [test "$xt_cygwin" = "yes"])
+])
+
 # XT_C_TYPE_CHARACTERISTICS
 # -----------------
 AC_DEFUN([XT_C_TYPE_CHARACTERISTICS],
