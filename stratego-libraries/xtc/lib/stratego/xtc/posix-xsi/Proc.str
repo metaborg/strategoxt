@@ -28,7 +28,7 @@ strategies
    */
   xtc-cat:
     in-files -> file
-      where xtc-new-file-name => file
+      where !FILE(<xtc-new-file>) => file
           ; <xtc-open-fd> file => fdout
           ; <map(File-as-fd(<fdcopy> (<id>, fdout)))> in-files
           ; <xtc-close-fd> fdout
