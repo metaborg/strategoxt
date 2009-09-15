@@ -313,3 +313,24 @@ strategies
 
   strc-announce =
     if-verbose2(strc-version)
+
+
+strategies
+  strc-maybe-create-depfile =
+    where(try(strc-create-dep-file))
+
+  strc-depfile-from-config = 
+    <get-config> "-o" <+ <get-config> "baseout"
+  
+  strc-create-dep-file =
+    strc-create-dep-file(|<strc-depfile-from-config>)
+      
+  strc-create-dep-file(|outfile) =
+    bagof-FileDependencies 
+    ; uniq => files
+    ; where(
+        <fopen> (<add-extension>(outfile,"dep"), "w") => stream
+      )
+    ; ![outfile | <separate-by(|" \\\n\t")> [":" | files]]
+    ; map(<fputs> (<id>, stream))
+    ; <fclose> stream

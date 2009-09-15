@@ -321,7 +321,8 @@ strategies
       ?syntax
       ; log(|Debug(), <concat-strings>["Trying to find a parse table for ",syntax])
       ; guarantee-extension(|"tbl")
-      ; ps-find-in-includes(!"Using parse table: ")
+      ; ps-find-in-includes(!"Using parse table: ") => file
+      ; rules( FileDependencies :+= file )
       ; !FILE(<id>)
       ; read-from
 

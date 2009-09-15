@@ -2,7 +2,8 @@ module pack-stratego-options
 imports
   libstratego-xtc
   strategoxt-xtc-tools
-
+  stratego/strc/pack/pack-stratego-options
+    
 /**
  * Options
  */
@@ -110,14 +111,5 @@ strategies
     <get-config> "-dep"
 
   pack-maybe-create-depfile =
-    where(try(pack-create-dep-file))
+    where(try(strc-create-dep-file(|<pack-depfile-from-config>)))
 
-  pack-create-dep-file =
-    ?files
-    ; where(
-        pack-depfile-from-config => outfile
-      ; <fopen> (<add-extension>(outfile,"dep"), "w") => stream
-      )
-    ; ![outfile | <separate-by(|" \\\n\t")> [":" | files]]
-    ; map(<fputs> (<id>, stream))
-    ; <fclose> stream

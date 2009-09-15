@@ -45,7 +45,9 @@ strategies
       \ FILE(s) -> IncludePathName(s) \
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(
-        pack-stratego-parse-stratego
+        { file:
+          pack-stratego-parse-stratego => (file,_)
+        ; rules( FileDependencies :+= file )
         ; if <get-config> "--dump-aterms" then
             where({fn, trm: 
                 ?(fn, trm)
@@ -54,6 +56,7 @@ strategies
                   end
                 })
           end
+        }
       , pack-get-stratego-imports 
         ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
@@ -312,6 +315,7 @@ strategies
     ImportTerm(file) -> ImportTerm(file')
     where
       file' := <pack-find-from(|includes)> file
+    ; rules( FileDependencies :+= file' )
 
   pack-find-from(|includes) =
     ?file
