@@ -115,7 +115,7 @@ strategies
     x{t1*} -> x{Frames(frames),t1*}
     where frames := <frames-to-parent> x
 	; if <not([])> frames then
-            rules( Escapes.x{} : x{t*} -> x{Escapes,t*} )
+            rules( Escapes.x{} : x{t*} -> x{Escapes(),t*} )
             <+ say(<concat-strings>
                  ["* warning (escaping-var-id): ", x, " not declared"])
           end

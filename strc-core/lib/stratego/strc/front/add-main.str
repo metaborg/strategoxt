@@ -18,6 +18,7 @@ strategies
         )
     )
 
+
   MkMain(|main) =
     !SDef("main", [], Call(SVar(main), []))
 
@@ -47,9 +48,18 @@ strategies
       ; if-not-lib(
           if <ModDefinition> ("main", 0, 0) then
             say(!"Adding main strategy even though one is already present!")
+          else 
+            if not( <ModDefinition> (m, 0, 0) ) then
+              log(|Error(),["Could not find specified main strategy/rule called '",m,"'."])
+            ; <exit>1
+            end
           end
           ; where(MkMain(|m); m-add-def)
         )
+    end
+  ; if not(<ModDefinition> ("main", 0, 0)) then
+      log(|Error(),["No 'main' strategy/rule found. Add strategy/rule called 'main' or use -m flag to specify the entry point of the application."])  
+    ; <exit>1
     end
 
 strategies
