@@ -1,12 +1,8 @@
 package org.strategoxt;
 
-import static org.spoofax.interpreter.core.Tools.*;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
@@ -26,7 +22,7 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
-import org.strategoxt.libstratego_lib.libstratego_lib;
+import org.strategoxt.stratego_lib.stratego_lib;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
@@ -87,7 +83,7 @@ public class HybridInterpreter extends Interpreter {
 	public void loadJars(ClassLoader parentClassLoader, URL... jars)
 			throws SecurityException, IncompatibleJarException, IOException {
 
-		URLClassLoader classLoader = new URLClassLoader(jars, libstratego_lib.class.getClassLoader());
+		URLClassLoader classLoader = new URLClassLoader(jars, stratego_lib.class.getClassLoader());
 		
 		for (URL jar : jars) {
 		    registerJar(classLoader, jar);
@@ -138,17 +134,17 @@ public class HybridInterpreter extends Interpreter {
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
 		
-		org.strategoxt.libstratego_aterm.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_lib.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_rtg.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_sdf.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_xtc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_sglr.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_tool_doc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_rtg.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstratego_gpp.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libjava_front.Main.registerInterop(context, compiledContext);
-		org.strategoxt.libstrc.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_aterm.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_sdf.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_xtc.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_sglr.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_tool_doc.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_gpp.Main.registerInterop(context, compiledContext);
+		org.strategoxt.java_front.Main.registerInterop(context, compiledContext);
+		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
 	}
 	
 	public final Context getCompiledContext() {

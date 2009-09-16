@@ -1,4 +1,4 @@
-package org.strategoxt.lang.compat.libstratego_rtg_compat;
+package org.strategoxt.lang.compat.stratego_rtg_compat;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;

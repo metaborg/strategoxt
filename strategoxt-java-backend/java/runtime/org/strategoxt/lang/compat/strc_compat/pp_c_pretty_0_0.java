@@ -1,4 +1,4 @@
-package org.strategoxt.lang.compat.libstrc_compat;
+package org.strategoxt.lang.compat.strc_compat;
 
 import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.terms.IStrategoTerm;

@@ -77,10 +77,10 @@ rules
     switch id
       case "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" +
            "stratego-gpp" + "strc" + "stratego-tool-doc" + "stratego-sdf" + "java-front":
-        <conc-strings> ("org.strategoxt.lib", <id>)
+        <conc-strings> ("org.strategoxt.", <id>)
 
       case "stratego-parallel":
-        <conc-strings> ("org.strategoxt.lang.parallel.lib", <id>)
+        <conc-strings> ("org.strategoxt.lang.parallel.", <id>)
 
       case not(is-substring(!".")):
         err(|"Imported libraries must follow format packagename.ClassName"); fail

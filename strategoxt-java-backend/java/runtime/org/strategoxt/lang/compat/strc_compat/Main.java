@@ -1,4 +1,4 @@
-package org.strategoxt.lang.compat.libstrc_compat;
+package org.strategoxt.lang.compat.strc_compat;
 
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.strategoxt.lang.Context;
@@ -30,7 +30,7 @@ public class Main {
 		}
 
 		public String getOperatorRegistryName() {
-			return "libstrc_compat";
+			return "strc_compat";
 		}		
 	}
 }
