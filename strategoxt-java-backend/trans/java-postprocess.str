@@ -115,14 +115,14 @@ strategies
 
   to-compilation-unit(|pkgname, imports) :
     type-dec |[
-      mod* class x extends y {
+      mod* class x extends tname_y {
         ~*members
       }
     ]| ->
     compilation-unit |[
       ~package-dec?: pkgname
       ~import-dec*: imports
-      mod2* class x extends y {
+      mod2* class x extends tname_y {
         ~*members
       }
     ]|

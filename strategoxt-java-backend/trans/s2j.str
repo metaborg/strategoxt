@@ -230,7 +230,7 @@ rules
     with
       x' := <jify> x
   
-  java-init-import : // TODO: Call the library-specific main class instead
+  java-init-import :
     x -> |[ x'.Main.init(context); ]|
     with
       x' := <jify> x
