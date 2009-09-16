@@ -1,5 +1,18 @@
 package org.strategoxt;
 
+import static org.spoofax.interpreter.core.Tools.*;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
@@ -10,8 +23,10 @@ import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
+import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.libstratego_lib.libstratego_lib;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
@@ -61,6 +76,59 @@ public class HybridInterpreter extends Interpreter {
 			registerLibraries();
 		}
 		super.load(term);
+	}
+
+	public void loadJars(URL... jars)
+			throws SecurityException, IncompatibleJarException, IOException {
+		
+		loadJars(HybridInterpreter.class.getClassLoader(), jars);
+	}
+	
+	public void loadJars(ClassLoader parentClassLoader, URL... jars)
+			throws SecurityException, IncompatibleJarException, IOException {
+
+		URLClassLoader classLoader = new URLClassLoader(jars, libstratego_lib.class.getClassLoader());
+		
+		for (URL jar : jars) {
+		    registerJar(classLoader, jar);
+		}
+	}
+
+	private void registerJar(URLClassLoader classLoader, URL jar)
+			throws SecurityException, IncompatibleJarException, IOException {
+
+		URL protocolfulUrl = new URL("jar", "", jar + "!/");
+		JarURLConnection connection = (JarURLConnection) protocolfulUrl.openConnection();
+		JarFile jarFile = connection.getJarFile();
+		Enumeration<JarEntry> jarEntries = jarFile.entries();
+		
+		while (jarEntries.hasMoreElements()) {
+			JarEntry entry = jarEntries.nextElement();
+			if (entry.getName().endsWith("/InteropRegisterer.class")) {
+				String className = entry.getName().substring(0, entry.getName().length() - 7);
+				className = className.replace('/', '.');
+				Class<?> registerClass;
+				try {
+					registerClass = classLoader.loadClass(className);
+					Object registerObject = registerClass.getConstructor().newInstance();
+					if (registerObject instanceof InteropRegisterer) {
+						((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
+					} else {
+						throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
+					}
+				} catch (InstantiationException e) {
+					throw new IncompatibleJarException(jar, e);
+				} catch (IllegalAccessException e) {
+					throw new IncompatibleJarException(jar, e);
+				} catch (InvocationTargetException e) {
+					throw new IncompatibleJarException(jar, e);
+				} catch (NoSuchMethodException e) {
+					throw new IncompatibleJarException(jar, e);
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException("Could not load listed class", e);
+				}
+			}
+		}
 	}
 	
 	/**

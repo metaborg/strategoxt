@@ -54,14 +54,14 @@ strategies
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
   
   clean-output-dir =
-    if <get-config> "-clean" then
+    if <get-config> "--clean" then
       if <get-config> "-p" then
         output-dirname
       ; if file-exists then
           delete-java-files-in-dir
         end
       else
-        warn-msg(|"Ignored -clean option: no package name specified")
+        warn-msg(|"Ignored --clean option: no package name specified")
       end
     end
   

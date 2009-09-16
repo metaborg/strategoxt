@@ -87,6 +87,7 @@ public class ParallelContext extends Context {
 		}
 		
 		// If all else fails, perform any "black-listed" operations in an ordered fashion
+		System.out.println(":(" + name + "):");
 		waitForFocus();
 		
 		return super.invokePrimitive(primitive, term, args, targs);

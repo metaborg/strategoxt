@@ -293,21 +293,29 @@ rules
     defs ->
     class-body-dec* |[
       public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        InteropRegisterer.registerLazy(context, compiledContext, context.getVarScope(), InteropRegisterer.class.getClassLoader());
+        new InteropRegisterer().registerLazy(context, compiledContext, InteropRegisterer.class.getClassLoader());
       }
       
-      // Put these many literals and statements to another, lazily loaded class
       @SuppressWarnings("unused")
-      protected static class InteropRegisterer extends Object { // (header matched by java-split-class)
+      protected static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
+        public void register(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
+          register(context, compiledContext, context.getVarScope());
+        }
+        
+        public void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader) {
+          registerLazy(context, compiledContext, classLoader, context.getVarScope());
+        }
+        
         ~*<java-split-method>  |[
-          public static void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
+          private void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm1*
           }
         ]|
+        
         ~*<java-split-method>  |[
-          public static void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope, ClassLoader classLoader) {
+          private void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader, org.spoofax.interpreter.core.VarScope varScope) {
             compiledContext.registerComponent("~x_name");
             x_name.init(compiledContext);
             bstm2*

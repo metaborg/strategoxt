@@ -48,9 +48,9 @@ strategies
     )
   <+
     Option(
-      "-clean"
-    , <set-config> ("-clean", <id>)
-    , !"-clean             Remove all existing Java files in the output directory"
+      "--clean" + "-clean"
+    , <set-config> ("--clean", <id>)
+    , !"--clean            Remove all existing Java files in the output directory"
     )
   <+
     s2j-general-options
