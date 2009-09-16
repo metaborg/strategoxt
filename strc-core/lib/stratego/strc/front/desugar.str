@@ -188,7 +188,11 @@ rules
           s
           <+ { x: ?x
            ; prim("SSL_stacktrace_get_all_frame_names",|)
-           ; report-failure(|~str:message {^[]}, x)
+           ; // TODO: call report-failure(|~str:message {^[]}, x) instead
+             report-failure(
+                log(|Critical(){^[]}, ~str:message {^[]}, x)
+              ; exit(|)
+              )
              }
         )
       ]|
@@ -217,7 +221,11 @@ strategies // "with" strategy
          s
          <+ { x: ?x
           ; prim("SSL_stacktrace_get_all_frame_names",|)
-          ; report-failure(|~str:message {^[]}, x)
+           ; // TODO: call report-failure(|~str:message {^[]}, x) instead
+             report-failure(
+                log(|Critical(){^[]}, ~str:message {^[]}, x)
+              ; exit(|)
+              )
             }
        )
     ]|
