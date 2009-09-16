@@ -4,6 +4,7 @@ EXTRA_DIST=strategoxt.jar
 pkgdata_DATA=strategoxt.jar
 
 RUNTIMEJAVAS = \
+  $(wildcard runtime/org/strategoxt/*.java) \
   $(wildcard runtime/org/strategoxt/lang/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/*.java) \
   $(wildcard runtime/org/strategoxt/lang/compat/sglr/*.java) \

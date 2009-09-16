@@ -296,8 +296,9 @@ rules
         new InteropRegisterer().registerLazy(context, compiledContext, InteropRegisterer.class.getClassLoader());
       }
       
+      // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
       @SuppressWarnings("unused")
-      protected static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
+      public static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
         public void register(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
           register(context, compiledContext, context.getVarScope());
         }

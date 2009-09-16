@@ -100,13 +100,14 @@ public class HybridInterpreter extends Interpreter {
 		
 		while (jarEntries.hasMoreElements()) {
 			JarEntry entry = jarEntries.nextElement();
-			if (entry.getName().endsWith("/InteropRegisterer.class")) {
-				String className = entry.getName().substring(0, entry.getName().length() - 7);
+			if (entry.getName().endsWith("/InteropRegisterer.class") || entry.getName().equals("InteropRegisterer.class")) {
+				final int POSTFIX = ".class".length();
+				String className = entry.getName().substring(0, entry.getName().length() - POSTFIX);
 				className = className.replace('/', '.');
 				Class<?> registerClass;
 				try {
 					registerClass = classLoader.loadClass(className);
-					Object registerObject = registerClass.getConstructor().newInstance();
+					Object registerObject = registerClass.getDeclaredConstructor().newInstance();
 					if (registerObject instanceof InteropRegisterer) {
 						((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
 					} else {
