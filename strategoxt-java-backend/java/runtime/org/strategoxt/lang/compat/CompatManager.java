@@ -49,11 +49,11 @@ public class CompatManager {
 	 *  to implement some native functionality, such as libstratego-rtg-compat.) 
 	 */
 	public void activateComponent(String component) {
-		if ("libstratego_lib".equals(component)) {
+		if ("stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			performance_tweaks.init(context);
 			xtc_compat.init(context); // also deals with native calls for libstratego-lib
-		} else if ("libstratego_sglr".equals(component)) {
+		} else if ("stratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));
 			context.addOperatorRegistry(new SGLRCompatLibrary(atermFactory));
