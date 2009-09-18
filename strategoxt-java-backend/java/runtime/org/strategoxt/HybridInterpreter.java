@@ -99,10 +99,10 @@ public class HybridInterpreter extends Interpreter {
 		Enumeration<JarEntry> jarEntries = jarFile.entries();
 		
 		while (jarEntries.hasMoreElements()) {
-			JarEntry entry = jarEntries.nextElement();
-			if (entry.getName().endsWith("/InteropRegisterer.class") || entry.getName().equals("InteropRegisterer.class")) {
+			String entry = jarEntries.nextElement().getName();
+			if (entry.endsWith("/InteropRegisterer.class") || entry.equals("InteropRegisterer.class")) {
 				final int POSTFIX = ".class".length();
-				String className = entry.getName().substring(0, entry.getName().length() - POSTFIX);
+				String className = entry.substring(0, entry.length() - POSTFIX);
 				className = className.replace('/', '.');
 				Class<?> registerClass;
 				try {

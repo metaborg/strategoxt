@@ -141,9 +141,8 @@ rules
            ~*def-inits
            context.registerComponent("~x_name'");
          }
-         // Set these last to trigger failure if getConstant() is called early
-         x_name.initedContext = context;
-         x_name.constantFactory = termFactory;
+         initedContext = context;
+         constantFactory = termFactory;
          isIniting = false;
          return context;
        }
@@ -166,16 +165,6 @@ rules
          ~*cnst-inits
        }
      ]|
-     
-     protected static IStrategoTerm getConstant(ITermFactory factory, IStrategoTerm constant) {
-       if (factory == constantFactory) {
-         return constant;
-       } else if (constantFactory != null) {
-         return new TermConverter(factory).convert(constant);
-       } else {
-         throw new IllegalStateException("Component not initialized; please call init() first");
-       }
-     }
 
      ~*constant-defs
      ~*function-defs
@@ -340,8 +329,6 @@ rules
     with
       y := <conc-strings> (<get-config> "-p", ".", x)
     <+
-      // TODO: test this
-      //       would it have to be x.isntance instead?
       y := <conc-strings> (<ApplicationName>, "$", x)
 
 rules
@@ -884,7 +871,7 @@ strategies
    *    (minding the 32767 length limit)
    */
   translate-ImportTerm :
-    ImportTerm(file) -> |[ term = x_main.getConstant(termFactory, x_main.x_constant); ]|
+    ImportTerm(file) -> |[ term = x_main.x_constant; ]|
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
@@ -913,8 +900,8 @@ strategies
           protected static ImportTerm x_constant;
         ]|
         ConstDecl :+= class-body-dec |[
-          public static IStrategoTerm x_getconstant(ITermFactory termFactory) {
-            return getConstant(termFactory, x_constant);
+          public static IStrategoTerm x_getconstant() {
+            return x_constant;
           }
         ]|
         ConstInit :+= bstm* |[
@@ -987,33 +974,39 @@ rules
        ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
 
   java-CacheConstant-again :
-    (t, e1 @ |[ x_main.getConstant(termFactory, e2) ]|) -> e1
+    (t, e1 @ |[ x_main.x_constant ]|) -> e1
     with
       rules(java-Cache: t -> e1)
     ; x_main := <MainClassName>
 
   java-CacheConstant :
-    (t, e1) -> |[ x_main.getConstant(termFactory, x_main.x) ]|
+    (t, e1) -> |[ x_main.x ]|
   where
       <(Op(id, map(java-Cache)); java-proper-list 
             + Anno(java-Cache, java-Cache) 
             + Int(id) + Str(id) + Real(id) )> t
   with
-        if !t => Op(op, _) then
-          x := <newname> <conc-strings> ("const", <try(un-double-quote-chars); jify> op)
-        else
-          x := <newname> "const"
+        x_main := <MainClassName>
+      ; switch !t
+          case ?Op("Cons", _):
+            x := <newname> "constCons"
+          ; rules(IsProperList: |[ x_main.x ]|)
+          case ?Op("Nil", _):
+            x := <newname> "constNil"
+          ; rules(IsProperList: |[ x_main.x ]|)
+          case ?Op(op, _):
+            x := <newname> <conc-strings> ("const", <try(un-double-quote-chars); jify> op)
+          otherwise:
+            x := <newname> "const"
         end
-      ; x_main := <MainClassName>
-      ; rules( java-Cache : t -> |[ x_main.getConstant(termFactory, x_main.x) ]| )
+      ; rules( java-Cache : t -> |[ x_main.x ]| )
       ; !(x, e1)
       ; rules(ConstDecl :+= <java-DeclareTermId>)
       ; rules(ConstInit :+= <java-InitTermId>)
 
  java-proper-list =
     Op("Nil", [])
-    + Op("Cons", [id, java-proper-list])
-    // UNDONE: + Op("Cons", [id, java-proper-list + ?|[ x_main.getConstant(e1, e2) ]|])
+    + Op("Cons", [id, java-proper-list <+ IsProperList])
     // TODO: Fix constants being generated multiple times
     //       e.g., <conc> ([], []) does this; it's got something to do with annos 
     + Op(id, id)
@@ -1028,9 +1021,7 @@ strategies
     class-body-dec|[ protected static IStrategoTerm x; ]|
 
   java-InitTermId :
-    (x, e) -> bstm*|[ x = e'; ]|
-    with
-      e' := <alltd(\|[ x.getConstant(e_factory, e_const) ]| -> e_const\)> e
+    (x, e) -> bstm* |[ x = e; ]|
 
   java-mk-int-const =
     !Lit(Deci(<try(int-to-string)>))
@@ -1131,7 +1122,7 @@ rules
         ; if <not(Anno(is-ListOp,id))> t2 then 
             java-check-aterm-list 
           else
-              if ?|[ x.getConstant(e1, e2) ]| + ?expr |[ x ]| then
+              if ?|[ x_main.x_constant ]| + ?expr |[ x ]| then
                 !|[ (IStrategoList) ~expr:<id> ]|
               else
                 try(java-UncastATerm)
