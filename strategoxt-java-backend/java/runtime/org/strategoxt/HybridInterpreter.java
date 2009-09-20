@@ -1,7 +1,6 @@
 package org.strategoxt;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -107,7 +106,7 @@ public class HybridInterpreter extends Interpreter {
 				Class<?> registerClass;
 				try {
 					registerClass = classLoader.loadClass(className);
-					Object registerObject = registerClass.getDeclaredConstructor().newInstance();
+					Object registerObject = registerClass.newInstance();
 					if (registerObject instanceof InteropRegisterer) {
 						((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
 					} else {
@@ -116,10 +115,6 @@ public class HybridInterpreter extends Interpreter {
 				} catch (InstantiationException e) {
 					throw new IncompatibleJarException(jar, e);
 				} catch (IllegalAccessException e) {
-					throw new IncompatibleJarException(jar, e);
-				} catch (InvocationTargetException e) {
-					throw new IncompatibleJarException(jar, e);
-				} catch (NoSuchMethodException e) {
 					throw new IncompatibleJarException(jar, e);
 				} catch (ClassNotFoundException e) {
 					throw new RuntimeException("Could not load listed class", e);

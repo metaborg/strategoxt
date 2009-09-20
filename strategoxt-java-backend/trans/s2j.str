@@ -227,7 +227,7 @@ rules
   java-main-methods :
     _ ->
     class-body-dec* |[
-      public static Strategy getMainStrategy() {
+      public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
         return null;
       }
     ]|
@@ -265,7 +265,7 @@ rules
        return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
      }
      
-     public static Strategy getMainStrategy() {
+     public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
        return x_main.instance;
      }
     ]|

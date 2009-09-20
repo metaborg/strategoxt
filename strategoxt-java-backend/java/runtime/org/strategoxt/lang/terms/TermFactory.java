@@ -158,7 +158,8 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     @Override
     public IStrategoString makeString(String s) {
     	if (s.length() > MAX_POOLED_STRING_LENGTH)
-    		return new StrategoString(s, null, IMMUTABLE);
+    		return new StrategoString(s, null, MY_STORAGE_TYPE);
+    	
     	synchronized (this) {
 	    	StrategoString result = asyncStringPool.get(s);
 	    	if (result == null) {

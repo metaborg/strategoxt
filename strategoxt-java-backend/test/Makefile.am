@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-TESTFILES   = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES)
+TESTFILES   = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES) $(ASTERTESTFILES)
 JAVAFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CLASSFILES  = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
@@ -46,13 +46,17 @@ STRC2TESTS=arity-test as-pattern assignment			    \
 
 STRC2TESTFILES=$(addprefix strc2/,$(addsuffix .str,$(STRC2TESTS)))
 
-BASICTESTS=build_0 build_1 build_2 match_1 match_2 match_3 match_4 match_5 lchoice_1 lchoice_2 gchoice_1 gchoice_2 \
+BASICTESTS=build_0 build_1 build_2 build_3 match_1 match_2 match_3 match_4 match_5 lchoice_1 lchoice_2 gchoice_1 gchoice_2 \
            scopes_1 scopes_2 internal_1 internal_2 override_1 extend_1 \
            shared_var_1 shared_var_2 shared_var_3 shared_var_4 shared_var_5 \
            dynrules_1 dynrules_2 dynrules_3 dynrules_4 dynrules_5 iset_1 iset_2 fetch_1 \
            mapconcat_1 traversal_1 annos_1 annos_2 pp_java5_to_string chars_1
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
+
+ASTERTESTS=test_attributes
+
+ASTERTESTFILES=$(addprefix aster/,$(addsuffix .str,$(ASTERTESTS)))
 
 # disabled tests:
 # io-test04                               # relies on parsing appl term with string constructor "pp-tables"("b")
@@ -87,10 +91,10 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	$(JAVAC) $(JAVACFLAGS) $<
 
 %.run : %.class
-	cd `dirname $<`; java -client -Xss10m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
+	cd `dirname $<`; java -client -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
-	@ echo "cd `dirname $<`; java -client -Xss10m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
+	@ echo "cd `dirname $<`; java -client -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
 	@ chmod 755 $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf

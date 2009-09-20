@@ -155,7 +155,8 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 			} catch (ClassNotFoundException e) {
 				library = Class.forName(toStrategoName(className));
 				cached = (Strategy) library.getMethod("getMainStrategy", new Class[0]).invoke(null);
-				return cached;
+				if (cached == null)
+					throw new StrategoException("Component has no main strategy: " + className);
 			}
 			
 			invocationCache.put(className, cached);

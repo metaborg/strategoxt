@@ -71,7 +71,17 @@ rules
     , <set-config>("-O", <string-to-int; strc-set-opt-level>); !()
     , !"-O n               Optimization level (0 = no optimization)"
     )
-    
+  + ArgOption(
+      "--format-check"
+    , if "1" then <warn(|"Format checking not supported; ignored")> "--format-check 1" end
+    , fail // undocumented
+    )    
+  + ArgOption(
+      "-Xcc"
+    , id
+    , fail // undocumented
+    )
+  
   // For compatibility, allow a number of built-in library names
   translate-default-library =
     switch id
