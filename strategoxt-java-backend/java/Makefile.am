@@ -57,6 +57,9 @@ JARIN2=`find lib      | grep -E '\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
 JARIN3=`find compiler | grep -E '\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
 
 jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+	@if [ ! -e bin/org/strategoxt/stratego_lib/Main.class ]; then \
+	  echo Standard library classes not found; please run 'make all' first. >&2; exit 1; \
+	fi 
 	cp spoofax-libs.jar strategoxt.jar.tmp
 	$(JAR) uf strategoxt.jar.tmp $(JARIN1) $(JARIN2) $(JARIN3)
 	$(JAR) uf strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
