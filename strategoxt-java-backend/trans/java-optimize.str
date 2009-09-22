@@ -27,15 +27,6 @@ strategies
 
   // TODO: Proper copy propagation?
   
-/*
-  optimize-assignments :
-    bstm* |[ x = e; y = x; bstm* ]| ->
-    bstm* |[ x = e; y = e; bstm* ]|
-    where
-      not(!e => ExprName(Id(x)))
-    ; <has-no-side-effects> e
-*/
-  
   optimize-assignments :
     bstm* |[ x = e1; x = e2;  bstm* ]| ->
     bstm* |[         x = e2'; bstm* ]|

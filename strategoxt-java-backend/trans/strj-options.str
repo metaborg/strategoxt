@@ -70,13 +70,6 @@ strategies
       !"--ast              Produce abstract syntax tree of packed program"
     )
   <+
-    Option("--fast-pretty-printing" + "--fast-pp",
-      if-java-platform(warn(|"Fast pretty printing not available on Java"));
-      if-c-platform(rules(FastPrettyPrinting: _))
-    , !"--fast-pretty-printing | --fast-pp   pretty-print ugly and fast";
-      if-java-platform(fail)
-    )
-  <+
     Option("-F",           
       where(<set-config>("-F",())); !(),
       !"-F                 Produce core after front-end"
@@ -93,7 +86,20 @@ strategies
     Option("--asfix",
     where(<set-config>("--asfix",())); !(),
     !"--asfix            Concrete syntax parts are not imploded")
-    
+  <+
+    Option("--Xfast-pp",
+      if-java-platform(warn(|"Fast pretty printing not available on Java"));
+      if-c-platform(rules(FastPrettyPrinting: _))
+    , !"--Xfast-pp         Use the C-based ugly and fast pretty-printer";
+      if-java-platform(fail)
+    )
+  <+
+    Option("--Xecj33",
+      rules(OldECJCompatibility: _))
+    , !"--Xecj33           Generate code compatible with ECJ 3.3 and lower";
+      if-java-platform(fail)
+    )
+  
   <+ ArgOption(fail, fail, !"")
   <+ ArgOption(fail, fail, !"General options:")
   <+ ArgOption(fail, fail, !"")

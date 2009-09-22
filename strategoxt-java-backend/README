@@ -111,6 +111,12 @@ ways:
   compiler" by Kalleberg and Visser, and "Domain-Specific Languages
   for Composable Editor Plugins" by Kats, Kalleberg, and Visser.
 
+- Compiled Stratego components can be dynamically loaded from JAR
+  files and may be combined with interpreted components using the
+  HybridInterpreter class. To interpret a Stratego component,
+  pre-compile it to a .ctree file using STRJ and the '-F --library'
+  options.
+
 LICENSING
 =========
 
