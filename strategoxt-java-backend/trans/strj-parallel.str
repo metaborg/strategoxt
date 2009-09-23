@@ -1,3 +1,6 @@
+/**
+ * A module to facilitate linking strj against the experimental stratego-parallel library.
+ */
 module strj-parallel
 
 imports

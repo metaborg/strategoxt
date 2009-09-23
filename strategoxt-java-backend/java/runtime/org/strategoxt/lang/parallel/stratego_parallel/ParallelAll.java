@@ -1,9 +1,7 @@
-package org.strategoxt.lang.parallel.libstratego_parallel;
+package org.strategoxt.lang.parallel.stratego_parallel;
 
-import static java.lang.Math.*;
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
-import static org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel.*;
-import static org.strategoxt.lang.parallel.libstratego_parallel.ParallelJob.*;
+import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*;
 
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,7 +24,7 @@ public class ParallelAll extends SRTS_all {
 
 	/**
 	 * Gets the active ParallelAll instance, or null.
-	 * Is set by {@link libstratego_parallel#init(Context)}.
+	 * Is set by {@link stratego_parallel#init(Context)}.
 	 */
 	public static ParallelAll instance;
 	
@@ -43,13 +41,19 @@ public class ParallelAll extends SRTS_all {
 
 	private AtomicInteger parallelismLevel = new AtomicInteger(0);
 	
-	private volatile boolean allowUnorderedOnce;
+	// TODO: ALLOW_NESTED_JOBS: isForcedParallel would have to apply to the current teer
+	private boolean isForcedParallel;
+	
+	private volatile boolean allowUnordered;
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
 		// TODO: Only trigger invokeParallel if synchronous execution takes longer than a certain threshold
-		if (ENABLED && (ALLOW_NESTED_JOBS || !libstratego_parallel.isActive()) && isCandidateTerm(context, current)) {
+		if (ENABLED && (ALLOW_NESTED_JOBS || !stratego_parallel.isActive())
+				&& (isForcedParallel || isCandidateTerm(context, current))) {
+			
+			isForcedParallel = false;
 			context.push("<parallel>");
 			IStrategoTerm result = invokeParallel(context, current, s);
 			
@@ -58,19 +62,27 @@ public class ParallelAll extends SRTS_all {
 			
 			return result;
 		} else {
+			// TODO: add array copying overhead for testing
+			current.getAllSubterms();
 			return super.invoke(context, current, s);
 		}
 	}
+	
+	public void setForcedParallel(boolean isForcedParallel) {
+		this.isForcedParallel = isForcedParallel;
+	}
+	
+	public ParallelJobExecutor getExecutor() {
+		return executor;
+	}
 
 	public IStrategoTerm invokeParallel(final Context context, final IStrategoTerm current, final Strategy s) {
-		// TODO: Cleanup - method got too long!!
 		final IStrategoTerm[] inputs = current.getAllSubterms();
 		final IStrategoTerm[] outputs = new IStrategoTerm[inputs.length];
 		final AtomicInteger focusIndex = new AtomicInteger(0); // index of the job with side effects
 		final AtomicBoolean isAborted = new AtomicBoolean(false);
 		final AtomicReference<String> lastSynchronousOperation = DIAGNOSE_SYNCHRONOUS_OPERATIONS ? new AtomicReference<String>() : null;
-		final AtomicReference<Throwable> exception = new AtomicReference<Throwable>();
-		final Object notifier = new Object();
+		final AtomicReference<Throwable> lastException = new AtomicReference<Throwable>();
 		final boolean allowUnordered;
 		
 		ParallelJob firstJob = null;
@@ -79,17 +91,16 @@ public class ParallelAll extends SRTS_all {
 			int level = parallelismLevel.incrementAndGet();
 			// We can only do this if there are no other parallel jobs active,
 			// otherwise we'd get confused about the place unordered is allowed
-			allowUnordered = level == 1 && allowUnorderedOnce;
-			allowUnorderedOnce = false;
+			allowUnordered = level == 1 && this.allowUnordered;
+			this.allowUnordered = false;
 		} else {
-			libstratego_parallel.setActive(true);
-			allowUnordered = allowUnorderedOnce;
-			allowUnorderedOnce = false;
+			stratego_parallel.setActive(true);
+			allowUnordered = this.allowUnordered;
 		}
 		
 		try {
 			double jobLengthPrecise = (double) inputs.length / (executor.getMaximumPoolSize() + 1) * jobLengthMultiplier;
-			int jobLength = max(1, (int) jobLengthPrecise);
+			int jobLength = 1 + (int) jobLengthPrecise;
 			
 			if (VERBOSE)
 				System.out.print("<" + inputs.length / jobLength);
@@ -97,39 +108,7 @@ public class ParallelAll extends SRTS_all {
 			// Initialize job queue
 			for (int i = 0; i < inputs.length; i += jobLength) {
 				final int index = i;
-				ParallelJob job = new ParallelJob(inputs, outputs, index, jobLength, parallelismLevel.get(), focusIndex, notifier) {
-					@Override
-					public IStrategoTerm execute(IStrategoTerm input) {
-						if (isAborted.get()) return null;
-
-						IStrategoTerm result = null;
-						try {
-							ParallelContext parallelContext = new ParallelContext(context, executor, this, isAborted, allowUnordered);
-							if (DIAGNOSE_SYNCHRONOUS_OPERATIONS)
-								parallelContext.setLastSynchronousOperation(lastSynchronousOperation);
-							result = s.invoke(parallelContext, input);
-							
-						} catch (ParallelJobAbortedException e) {
-							// Fine here
-						} catch (RuntimeException e) {
-							exception.set(e);
-						} catch (Error e) {
-							exception.set(e);
-						}
-						
-						if (result == null) {
-							isAborted.set(true);
-							getFocusIndex().set(COMPLETED_FOCUS_INDEX);
-							executor.getQueue().clear();
-							synchronized (notifier) {
-								if (VERBOSE) System.out.print("!>");
-								notifier.notifyAll();
-							}
-						}
-						
-						return result;
-					}
-				};
+				ParallelJob job = new ParallelJob(context, s, inputs, outputs, focusIndex, isAborted, lastSynchronousOperation, lastException, allowUnordered, index, jobLength, parallelismLevel.get());
 				
 				if (firstJob == null) {
 					firstJob = job;
@@ -138,15 +117,14 @@ public class ParallelAll extends SRTS_all {
 				}
 			}
 			
-			assert firstJob != null;
 			firstJob.run();
-
-			joinExecutor(focusIndex, notifier);
+			executor.join();
+			firstJob.waitForCompletedFocusIndex();
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (ALLOW_NESTED_JOBS) parallelismLevel.decrementAndGet();
-			else libstratego_parallel.setActive(false);
+			else stratego_parallel.setActive(false);
 		}
 		
 		if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
@@ -154,33 +132,23 @@ public class ParallelAll extends SRTS_all {
 		}
 		
 		if (isAborted.get()) {
-			if (exception.get() != null) {
-				if (exception.get() instanceof StrategoExit) {
-					throw new StrategoExit((StrategoExit) exception.get());
+			if (lastException.get() != null) {
+				if (lastException.get() instanceof StrategoExit) {
+					throw new StrategoExit((StrategoExit) lastException.get());
 				} else {
-					throw new StrategoException("Exception in asynchronous job", exception.get());
+					throw new StrategoException("Exception in asynchronous job", lastException.get());
 				}
 			}
 			return null;
 		}
 		
 		assert current.getTermType() == LIST;
-		return context.getFactory().replaceList(outputs, (IStrategoList) current);
+		// TODO: return context.getFactory().replaceList(outputs, (IStrategoList) current);
+		return context.getFactory().makeList(outputs);
 	}
 	
-	public void setAllowUnorderedOnce(boolean allowUnorderedOnce) {
-		this.allowUnorderedOnce = allowUnorderedOnce;
-	}
-
-	private void joinExecutor(AtomicInteger focusIndex, Object notifier) throws InterruptedException {
-		// Help the thread pool
-		Runnable job;
-		while ((job = executor.getQueue().poll()) != null) {
-			job.run();
-		}
-		
-		// Wait for other threads
-		ParallelJob.waitForFocusIndex(focusIndex, COMPLETED_FOCUS_INDEX, notifier);
+	public void setAllowUnordered(boolean allowUnorderedOnce) {
+		this.allowUnordered = allowUnorderedOnce;
 	}
 	
 	protected boolean isCandidateTerm(Context context, IStrategoTerm term) {

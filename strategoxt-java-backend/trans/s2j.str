@@ -288,10 +288,12 @@ rules
       // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
       @SuppressWarnings("unused")
       public static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
+        @Override
         public void register(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
           register(context, compiledContext, context.getVarScope());
         }
         
+        @Override
         public void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader) {
           registerLazy(context, compiledContext, classLoader, context.getVarScope());
         }

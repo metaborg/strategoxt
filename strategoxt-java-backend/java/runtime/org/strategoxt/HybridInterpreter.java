@@ -57,6 +57,10 @@ public class HybridInterpreter extends Interpreter {
 		compiledContext = new HybridCompiledContext(termFactory);
 	}
 	
+	public static void main(String... args) {
+		// TODO: HybridInterpreter.main()
+	}
+	
 	@Override
 	protected org.spoofax.interpreter.core.Context createContext(ITermFactory termFactory, ITermFactory programFactory) {
 		return new HybridContext(termFactory, programFactory);

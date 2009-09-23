@@ -26,5 +26,8 @@ public class ThreadBoundSet extends StrategoSet implements IThreadBoundCollectio
 		assert thread == Thread.currentThread();
 		return super.put(value);
 	}
-
+	
+	public Thread getThread() {
+		return thread;
+	}
 }

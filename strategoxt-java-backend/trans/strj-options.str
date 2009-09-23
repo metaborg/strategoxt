@@ -95,7 +95,7 @@ strategies
     )
   <+
     Option("--Xecj33",
-      rules(OldECJCompatibility: _))
+      rules(OldECJCompatibility: _)
     , !"--Xecj33           Generate code compatible with ECJ 3.3 and lower";
       if-java-platform(fail)
     )

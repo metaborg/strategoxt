@@ -1,4 +1,4 @@
-package org.strategoxt.lang.parallel.libstratego_parallel;
+package org.strategoxt.lang.parallel.stratego_parallel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -7,15 +7,17 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
+import org.strategoxt.lang.parallel.stratego_parallel.ParallelJob;
+import org.strategoxt.lang.parallel.stratego_parallel.ParallelJobAbortedException;
+import org.strategoxt.lang.parallel.stratego_parallel.ParallelJobExecutor;
+import org.strategoxt.lang.parallel.stratego_parallel.PureOperatorSet;
 
-import static org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel.*;
+import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class ParallelContext extends Context {
-	
-	private final ParallelJobExecutor executor;
 	
 	private final ParallelJob job;
 	
@@ -29,16 +31,14 @@ public class ParallelContext extends Context {
 	 * Constructs a new parallelism-aware context.
 	 * 
 	 * @param context
-	 * @param executor
 	 * @param job
 	 * @param aborted
 	 * @param allowUnordered
 	 *            Allows all threads to use any operation, using locks for
 	 *            non-whitelisted ones.
 	 */
-	public ParallelContext(Context context, ParallelJobExecutor executor, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
+	public ParallelContext(Context context, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
 		super(context.getFactory(), context.getOperatorRegistryMap(), context.getOperatorRegistries(), true);
-		this.executor = executor;
 		this.job = job;
 		this.isAborted = aborted;
 		this.allowUnordered = allowUnordered;
@@ -81,26 +81,32 @@ public class ParallelContext extends Context {
 		}
 		
 		if (allowUnordered) {
-			synchronized (executor) {
+			synchronized (ParallelAll.instance.getExecutor()) {
 				return super.invokePrimitive(primitive, term, args, targs);
 			}
 		}
 		
 		// If all else fails, perform any "black-listed" operations in an ordered fashion
-		System.out.println(":(" + name + "):");
 		waitForFocus();
 		
 		return super.invokePrimitive(primitive, term, args, targs);
 	}
 	
-	public ParallelJob getJob() {
+	public final ParallelJob getJob() {
 		return job;
 	}
 	
 	/**
 	 * Puts the current thread into an idle state until it becomes the focus thread.
+	 * 
+	 * @see ParallelJob#isFocusJob()
 	 */
 	public void waitForFocus() {
+		// HACK: no waiting for focus if allowUnordered true
+		if (allowUnordered || job.isFocusJob())
+			return;
+		
+		ParallelJobExecutor executor = ParallelAll.instance.getExecutor();
 		executor.asyncBeginSleep();
 		try {
 			job.waitForFocus();

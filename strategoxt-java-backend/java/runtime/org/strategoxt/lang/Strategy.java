@@ -276,9 +276,9 @@ public class Strategy {
 
 	private static String argsToText(Object... args) {
 		if (args.length == 0)
-			return " (none)";
+			return "(none)";
 		
-		StringBuilder result = new StringBuilder(" (");
+		StringBuilder result = new StringBuilder("(");
 		boolean printedBar = false;
 
 		if (args[0] instanceof IStrategoTerm) {

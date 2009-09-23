@@ -71,7 +71,7 @@ check-am : strc1/ExpStratego.tbl $(CTREEFILES) $(JAVAFILES) .ALLCLASSFILES $(CLA
 
 TESTS=$(RUNNERFILES)
 
-CLASSPATH=../java/spoofax-libs.jar:../java/bin:.
+CLASSPATH=../java/spoofax-libs.jar:../java/bin:../java/strategoxt.jar:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
@@ -79,13 +79,13 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	$(MAKE) -C ../trans strj
 
 %.ctree : %.str
-	$(SCOMPILE) -O 0 $(JAVA_FRONT_STRCFLAGS) --format-check 0 -F -I strc1 -i $< -o $@
+	../trans/strj -O 0 -la java-front --format-check 0 -F -I strc1 -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
 
 %.str : %.astr
 	aster -i $< -o $@
 
 %.java : %.ctree ../trans/strj
-	../trans/strj -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
+	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<

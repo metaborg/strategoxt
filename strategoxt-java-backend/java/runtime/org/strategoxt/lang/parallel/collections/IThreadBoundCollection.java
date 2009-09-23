@@ -6,5 +6,5 @@ package org.strategoxt.lang.parallel.collections;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public interface IThreadBoundCollection {
-
+	Thread getThread();
 }

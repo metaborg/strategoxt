@@ -26,5 +26,8 @@ public class ThreadBoundHashMap extends StrategoHashMap implements IThreadBoundC
 		assert thread == Thread.currentThread();
 		return super.put(key, value);
 	}
-
+	
+	public Thread getThread() {
+		return thread;
+	}
 }

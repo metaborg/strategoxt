@@ -6,8 +6,8 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.InteropContext;
-import org.strategoxt.lang.parallel.libstratego_parallel.libstratego_parallel;
-import org.strategoxt.lang.parallel.libstratego_parallel.ParallelContext;
+import org.strategoxt.lang.parallel.stratego_parallel.ParallelContext;
+import org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -35,7 +35,7 @@ public class ParallelRead extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] sargs, IStrategoTerm[] targs)
 			throws InterpreterException {
 		
-		if (!libstratego_parallel.isActive()) {
+		if (!stratego_parallel.isActive()) {
 			return primitive.call(env, sargs, targs);
 		} else if (targs[tableIndex] instanceof IThreadBoundCollection) {
 			return primitive.call(env, sargs, targs);

@@ -1,4 +1,4 @@
-package org.strategoxt.lang.parallel.libstratego_parallel;
+package org.strategoxt.lang.parallel.stratego_parallel;
 
 import org.strategoxt.lang.StrategoException;
 

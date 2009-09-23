@@ -1,24 +1,22 @@
-package org.strategoxt.lang.parallel.libstratego_parallel;
+package org.strategoxt.lang.parallel.stratego_parallel;
 
-import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.SRTS_all;
-import org.strategoxt.lang.Strategy;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class libstratego_parallel {
+public class stratego_parallel {
 	
 	protected static final boolean ENABLED = true;
 	
-	protected static final boolean VERBOSE = true;
+	protected static final boolean VERBOSE = false;
 	
 	protected static final boolean DIAGNOSE_SYNCHRONOUS_OPERATIONS = false;
 	
-	protected static final int DEFAULT_ACTIVE_THREADS = 4;
+	protected static final int DEFAULT_ACTIVE_THREADS = 2;
 	
-	protected static final int DEFAULT_MAX_THREADS = 4;
+	protected static final int DEFAULT_MAX_THREADS = 2;
 	
 	protected static final int DEFAULT_TERM_SIZE_THRESHOLD = 3200;
 	
@@ -32,7 +30,7 @@ public class libstratego_parallel {
 	
 	private static boolean isInitialized;
 	
-	private static boolean isActive;
+	private static volatile boolean isActive;
 	
 	public static void init(Context context) {
 		if (isInitialized || !ENABLED) return;
@@ -58,19 +56,5 @@ public class libstratego_parallel {
 	
 	protected static void setActive(boolean value) {
 		isActive = value;
-	}
-	
-	public static class parallel_unordered_0_0 extends Strategy {
-		public static parallel_unordered_0_0 instance = new parallel_unordered_0_0();
-		
-		@Override
-		public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
-			ParallelAll.instance.setAllowUnorderedOnce(true);
-			try {
-				return s.invoke(context, current, s);
-			} finally {
-				ParallelAll.instance.setAllowUnorderedOnce(false);
-			}
-		}
 	}
 }
