@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 
 EXTRA_DIST=strategoxt.jar
-pkgdata_DATA=strategoxt.jar
+pkgdata_DATA=.ALLCLASSES strategoxt.jar
 
 RUNTIMEJAVAS = \
   $(wildcard runtime/org/strategoxt/*.java) \
@@ -60,7 +60,7 @@ JARIN3=`find compiler | grep -E '\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compi
 
 jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
 	@if [ ! -e bin/org/strategoxt/stratego_lib/Main.class ]; then \
-	  echo Standard library classes not found; please run 'make all' first. >&2; exit 1; \
+	  echo "Standard library classes not found; please run 'make all' first." >&2; exit 1; \
 	fi 
 	cp spoofax-libs.jar strategoxt.jar.tmp
 	$(JAR) uf strategoxt.jar.tmp $(JARIN1) $(JARIN2) $(JARIN3)
