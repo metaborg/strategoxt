@@ -1,5 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 
+# remove the default tar -o option to allow long path names
+am__tar = ${AMTAR} chf - "$$tardir"
+
 ACLOCAL_AMFLAGS = -I .
 
 SUBDIRS           = syn trans java test tools
