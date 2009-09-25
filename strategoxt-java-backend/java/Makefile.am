@@ -1,6 +1,5 @@
 include $(top_srcdir)/Makefile.xt
 
-EXTRA_DIST=strategoxt.jar
 pkgdata_DATA=.ALLCLASSES strategoxt.jar
 
 RUNTIMEJAVAS = \
@@ -36,6 +35,23 @@ LIBRARYJAVAS = \
 nobase_pkgdata_DATA = \
   runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree \
   $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES
+
+EXTRA_DIST=\
+  $(wildcard runtime/org/strategoxt/*.java) \
+  $(wildcard runtime/org/strategoxt/*/*.java) \
+  $(wildcard runtime/org/strategoxt/*/*/*.java) \
+  $(wildcard runtime/org/strategoxt/*/*/*/*.java) \
+  $(wildcard runtime/org/strategoxt/*/*/*/*/*.java) \
+  $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.java) \
+  $(wildcard runtime/org/strategoxt/*.str) \
+  $(wildcard runtime/org/strategoxt/*/*.str) \
+  $(wildcard runtime/org/strategoxt/*/*/*.str) \
+  $(wildcard runtime/org/strategoxt/*/*/*/*.str) \
+  $(wildcard runtime/org/strategoxt/*/*/*/*/*.str) \
+  $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.str) \
+  runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree \
+  spoofax-libs.jar \
+  META-INF/MANIFEST.MF
 
 CLEANFILES = \
   $(LIBRARYJAVAS) $(COMPILERJAVAS) \
@@ -110,6 +126,7 @@ bin/org/strategoxt/stratego_lib/Main.class : lib/org/strategoxt/stratego_lib/Mai
 	$(JAVAC) $(JAVACFLAGS) $<
 
 lib/org/strategoxt/stratego_lib/Main.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj
+	[ -e lib/org/strategoxt ] || mkdir -p lib/org/strategoxt
 	../trans/strj -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_lib
 
 lib/org/strategoxt/stratego-xtc.rtree : $(STRATEGOXT)/share/xtc/stratego-xtc-posix-xsi.rtree
@@ -168,6 +185,7 @@ runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj/Main.java : ../trans/strj.ctree ../trans/strj
+	[ -e compiler/org/strategoxt ] || mkdir -p compiler/org/strategoxt
 	../trans/strj -i $< -o $@ -clean -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.strc -la org.strategoxt.java_front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
 ###### EXTERNAL #######

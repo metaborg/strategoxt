@@ -14,7 +14,7 @@ STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRA
 
 STRCFLAGS      = --main main-$* -O 0 --format-check 0
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.syn) 
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard lib/*.str) $(wildcard lib/*.meta)
 CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.o) # $(wildcard *.c)
 BOOTCLEANFILES = $(wildcard *.c) 
 
