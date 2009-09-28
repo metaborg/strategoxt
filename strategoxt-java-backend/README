@@ -28,9 +28,12 @@ shell script can also help with command-line or scripted builds.
 KNOWN ISSUES
 ============
 
-The Java version of SGLR, JSGLR, is not yet fully mature. In
-particular, the post-parse filter implementation may not yet be
-complete (especially the heuristic filters that are disabled by
+The Stratego/J runtime implements most of the primitives of the
+natively compiled version of Stratego, but some compatibility issues
+may arise. In particular, the parsing primitives are implemented using
+JSGLR, the Java version of SGLR, which is not yet fully
+mature. Mainly, the post-parse filter implementation is not yet
+complete (especially the heuristic filters -- which are disabled by
 default).
 
 The standard Sun compiler can be quite slow when compiling large
@@ -44,6 +47,15 @@ Many Linux distributions also provide a stand-alone version of ECJ
 through their package manager. When using the Sun compiler, you may
 need to add option -J-mx256m to increase the available heap space, and
 likely need to have a fair amount of patience ;)
+
+Stratego programs compiled to Java do not have the same performance
+characteristics as those compiled using the native Stratego compiler
+strc. The exact numbers vary per application (some, such as the
+somewhat artificial ASF+SDF benchmark, actually run faster on Java),
+but natively compiled Stratego applications that include parsing and
+pretty-printing are typically a factor two faster. Future
+optimizations, particularly in the term library and in I/O, may make
+this gap smaller.
 
 A final open issue is the stack usage by typical Stratego programs,
 putting JVM implementations with a small default stack size at risk of
