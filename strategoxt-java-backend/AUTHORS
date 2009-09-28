@@ -6,4 +6,5 @@ STRJ and the Stratego/J runtime have been developed by:
 
 The development of STRJ would not have been possible without the
 efforts of Eelco Visser and his team in developing the STRC reference
-stratego compiler.
+stratego compiler. Martin Bravenboer's Java-Front library and syntax
+definition have also been indispensable for the development STRJ.

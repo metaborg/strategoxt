@@ -1,13 +1,14 @@
 STRJ: THE STRATEGO-TO-JAVA COMPILER
 ===================================
 
-The compiler comes in two flavors: one called is strj, and is compiled
-with the standard C-based strc. The second is a bootstrapped,
-cross-platform compiler that lives in strategoxt.jar. Note that
-Stratego executables compiled with strj do not support XTC (since it
-depends on native executables) and the strategoxt.jar compiler is no
-exception. Another difference between the two is that strj still uses
-the C-based SGLR parser, and strategoxt.jar uses JSGLR.
+The compiler comes in two flavors: one called strj, compiled with the
+standard C-based strc. The second is a bootstrapped, cross-platform
+compiler that lives in strategoxt.jar. Note that Stratego executables
+compiled with strj do not support XTC (since it depends on forking
+native executables and assumes filesystem access) and the
+strategoxt.jar compiler is no exception. Another difference between
+the two is that strj still uses the C-based SGLR parser, and
+strategoxt.jar uses JSGLR.
 
 Compiling a simple application from the command line with either
 compiler is similar to doing so with the C version of Stratego:
@@ -20,8 +21,8 @@ or
 
 It should be noted that at this time the compiler only outputs '.java'
 source files and not '.class' files. Subsequent compilation should be
-done using a standard Java compiler (ideally in an automated fashion
-using Eclipse or an Ant build script). The (non-portable) strj-jar
+done using a standard Java compiler (ideally, in an automated fashion
+using an Ant build script or Eclipse). The (non-portable) strj-jar
 shell script can also help with command-line or scripted builds.
 
 KNOWN ISSUES
@@ -33,14 +34,16 @@ complete (especially the heuristic filters that are disabled by
 default).
 
 The standard Sun compiler can be quite slow when compiling large
-Stratego projects. We recommend using ecj (Eclipse Compiler for Java)
-instead, which is much faster and less memory-intensive.  ecj is
-distributed as part of Eclipse (java -cp
-plugins/org.eclipse.jdt.core_*.jar
-org.eclipse.jdt.internal.compiler.batch.Main) and directly available
-through the package manager of various Linux distributions. When using
-the Sun compiler, you may need to add option -J-mx256m to increase the
-available heap space and require a fair amount of patience ;)
+Stratego projects. We recommend using ECJ (Eclipse Compiler for Java)
+instead, which is much faster and less memory-intensive. ECJ is
+distributed as part of Eclipse, and can be executed as follows:
+
+  java -cp plugins/org.eclipse.jdt.core_*.jar  org.eclipse.jdt.internal.compiler.batch.Main
+
+Many Linux distributions also provide a stand-alone version of ECJ
+through their package manager. When using the Sun compiler, you may
+need to add option -J-mx256m to increase the available heap space, and
+likely need to have a fair amount of patience ;)
 
 A final open issue is the stack usage by typical Stratego programs,
 putting JVM implementations with a small default stack size at risk of
@@ -53,24 +56,25 @@ USING EXTERNAL APPLICATIONS AND LIBRARIES
 =========================================
 
 A trend in Stratego programs has been to use the standard libraries in
-favor of the (slower) XTC interface. For example, the parse-file
-strategy from libstratego-sglr can be used to parse files. Since XTC
-depends on native executables and a centralized repository, it is not
-portable and not supported on the Java platform. As an alternative,
-library calls should be used instead, which is generally the preferred
-method for invoking external components.
+favor of the (slower, less portable) XTC interface. For example, the
+parse-file strategy from libstratego-sglr can be used to parse
+files. Since XTC depends on native executables and a centralized
+repository, it is not portable and not supported on the Java
+platform. As an alternative, library calls should be used instead,
+which is generally the preferred method for invoking external
+components.
 
 Libraries in the Java environment have a package name. For example,
 the Stratego standard library resides in the
-org.strategoxt.libstratego_lib package. To maintain compatibility,
-these package names are not used within the Stratego language, but
-only at compile time and when the components are linked. For example,
-to link a program to the standard library the option '-la
-org.strategoxt.stratego_lib' can be specified. The standard
-libraries also have aliases that correspond to the XTC names commonly
-used with strc; '-la stratego-lib' is also accepted. To define a
-package name for your own library, use the '-p' and '--library'
-options. For example:
+org.strategoxt.stratego_lib package. To maintain compatibility, these
+package names are not used within the Stratego language, but only at
+compile time and when the components are linked. For example, to link
+a program to the standard library the option '-la
+org.strategoxt.stratego_lib' can be specified. The standard libraries
+also have aliases that correspond to the XTC names commonly used with
+strc; '-la stratego-lib' is also accepted. To define a package name
+for your own library, use the '-p' and '--library' options. For
+example:
 
   java -jar strategoxt.jar -i foo.str --library --clean -p org.foo \
        -o bin/org/foo/Main.java
@@ -117,11 +121,20 @@ ways:
   pre-compile it to a .ctree file using STRJ and the '-F --library'
   options.
 
+SOURCE CODE
+===========
+
+Source code is available directly from SVN at
+
+  https://svn.strategoxt.org/repos/StrategoXT/strc-java/trunk
+  
+or can be downloaded as a package at hydra.nixos.org.
+
 LICENSING
 =========
 
 Most STRJ code is licensed under the GNU Lesser General Public License.
 Some runtime components are licensed under the Eclipse Public License;
-external components may be covered by different licences.
+external components may be covered by different licenses.
 
 Authors and contributors are listed in the AUTHORS file.
