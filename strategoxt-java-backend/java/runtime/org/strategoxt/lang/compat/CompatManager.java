@@ -43,22 +43,16 @@ public class CompatManager {
 	}
 	
 	/**
-	 * Dynamically loads any compatibility library associated with a Stratego library.
-	 * 
-	 * (Note that some libraries need to import additional compatibility components
-	 *  to implement some native functionality, such as libstratego-rtg-compat.) 
+	 * Dynamically loads any compatibility library or operator registry
+	 * associated with a Stratego library.
 	 */
 	public void activateComponent(String component) {
 		if ("stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
-			performance_tweaks.init(context);
-			xtc_compat.init(context); // also deals with native calls for libstratego-lib
 		} else if ("stratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));
 			context.addOperatorRegistry(new SGLRCompatLibrary(atermFactory));
-			jsglr_parser.init(context);
-			jsglr_parser_compat.init(context);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Some degree of XTC and native calling compatibility.
+ * XTC handling.
  *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
@@ -16,47 +16,4 @@ strategies
     override
   <+
     id // HACK: try to find something on the path instead
-  
 
-strategies
-  
-  // TODO: move call and fatal-err to lib-compat.str
-
-  // TODO: also implement fork-and-wait?
-  
-  override call =
-    ?(program, args);
-    <is-substring(!".")> program;
-    if <is-list> args then
-      prim("SSL_EXT_java_call", program, [program | args], 0)
-    else
-      warn(|"Program arguments for <call> should be a list");
-      prim("SSL_EXT_java_call", program, args, 0)
-    end
-  <+
-    ?(program, args);
-
-    log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
-    prim("SSL_EXT_call", program, args) => 0
-
-strategies
-
-  override fatal-err(|msg) =
-    log(|Critical(), msg, <id>);
-    SRTS-EXT-fatal-err(|msg, <try(concat-strings)>)
-  
-  override fatal-err-msg(|msg) =
-    log(|Critical(), msg);
-    SRTS-EXT-fatal-err(|msg, ())
-  
-  override fatal-error =
-    error;
-    SRTS-EXT-fatal-err(|<try(concat-strings)>, ())
-  
-  override report-failure(|message, term) =
-    report-failure(
-      log(|Critical(), message, term);
-      SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
-    )
-  
-  external SRTS-EXT-fatal-err(|msg, term)

@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoAppl;
@@ -45,7 +44,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     	new StrategoList(null, null, null, MAXIMALLY_SHARED); 
 
     private static final Map<StrategoConstructor, StrategoConstructor> asyncCtorCache =
-        new WeakHashMap<StrategoConstructor, StrategoConstructor>();
+        new HashMap<StrategoConstructor, StrategoConstructor>();
     
     private static final Map<String,StrategoString> asyncStringPool =
         new HashMap<String, StrategoString>();

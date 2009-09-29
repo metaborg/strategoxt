@@ -15,7 +15,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class Strategy {
+public abstract class Strategy {
 	/**
 	 * Invoke this strategy using a dynamic number of arguments.
 	 * 
