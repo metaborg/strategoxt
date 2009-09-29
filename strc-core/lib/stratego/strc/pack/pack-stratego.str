@@ -31,6 +31,19 @@ strategies
     ; !spec
     ; where(<set-config>("-I", incl))
 
+  expand-term-imports-trm(|args) =
+    where(id
+      ; incl := <get-config <+ ![]> "-I"
+      ; <set-config> ("-I", [])
+      ; <parse-options(pack-stratego-options <+ input-options, system-usage, id)> 
+          [<whoami <+ !"strc"> | args]
+    )
+    ; pack-process-options
+    ; expand-term-imports(|<pack-include-path>)
+    ; where(
+        <set-config> ("-I", incl)
+      )
+
   pack-stratego-io = 
     xtc-iowrap(
       pack-stratego-options
@@ -76,7 +89,6 @@ strategies
         ; (id, pack-flatten-stratego)
         end
       end
-    ; (id, expand-term-imports(|mkpt))
 
   pack-report-module-not-found =
     let pack-get-module-name =
