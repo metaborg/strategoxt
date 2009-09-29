@@ -15,6 +15,8 @@ RUNTIMEJAVAS = \
   runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat/Main.java \
   runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java \
   runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java \
+  runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java \
+  runtime/org/strategoxt/lang/compat/override/java_integration/Main.java \
   runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java
 
 COMPILERJAVAS = \
@@ -49,7 +51,6 @@ EXTRA_DIST=\
   $(wildcard runtime/org/strategoxt/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.str) \
-  runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree \
   spoofax-libs.jar \
   META-INF/MANIFEST.MF
 
@@ -126,30 +127,30 @@ debug-classes : $(RUNTIMEJAVA)
 bin/org/strategoxt/stratego_lib/Main.class : lib/org/strategoxt/stratego_lib/Main.java
 	$(JAVAC) $(JAVACFLAGS) $<
 
-lib/org/strategoxt/stratego_lib/Main.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj
+lib/org/strategoxt/stratego_lib/Main.java : $(STRATEGOXT)/share/stratego-lib/libstratego-lib.ctree ../trans/strj runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java runtime/org/strategoxt/lang/compat/override/java_integration/Main.java runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java
 	[ -e lib/org/strategoxt ] || mkdir -p lib/org/strategoxt
-	$(STRJ) -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_lib
+	$(STRJ) -I $(STRATEGOXT)/share/stratego-lib -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_lib -la org.strategoxt.lang.compat.override.native_calls_compat -la org.strategoxt.lang.compat.override.java_integration -la org.strategoxt.lang.compat.override.performance_tweaks
 
 lib/org/strategoxt/stratego-xtc.rtree : $(STRATEGOXT)/share/xtc/stratego-xtc-posix-xsi.rtree
 	cp $< $@
 
-lib/org/strategoxt/stratego_xtc/Main.java : lib/org/strategoxt/stratego-xtc.rtree ../trans/strj
-	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/xtc -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_xtc -la stratego-lib -D GetInternalDefaultXtcRepository=None
+lib/org/strategoxt/stratego_xtc/Main.java : lib/org/strategoxt/stratego-xtc.rtree ../trans/strj runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java
+	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/xtc -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_xtc -la stratego-lib -la org.strategoxt.lang.compat.override.xtc_compat -D GetInternalDefaultXtcRepository=None
 
-lib/org/strategoxt/stratego_sglr/Main.java : $(STRATEGOXT)/share/libstratego-sglr.ctree ../trans/strj
-	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sglr -la stratego-lib -la stratego-xtc
+lib/org/strategoxt/stratego_sglr/Main.java : $(STRATEGOXT)/share/libstratego-sglr.ctree ../trans/strj runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java
+	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sglr -la stratego-lib -la stratego-xtc -la org.strategoxt.lang.compat.override.jsglr_parser -la org.strategoxt.lang.compat.override.jsglr_parser_compat
 
 lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../trans/strj runtime/org/strategoxt/lang/compat/stratego_rtg_compat/Main.java
-	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_rtg -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.stratego_rtg_compat
+	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-regular -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_rtg -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.stratego_rtg_compat
 
 lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj
-	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr
+	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/gpp -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr
 
 lib/org/strategoxt/stratego_aterm/Main.java : $(STRATEGOXT)/share/libstratego-aterm.ctree runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat/Main.java ../trans/strj
 	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_aterm -la stratego-lib -la stratego-gpp -la org.strategoxt.lang.compat.override.stratego_aterm_compat
 
 lib/org/strategoxt/stratego_sdf/Main.java : $(STRATEGOXT)/share/libstratego-sdf.ctree ../trans/strj
-	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sdf -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-aterm 
+	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/sdf-front -I $(STRATEGOXT)/share/sdf-front -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sdf -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-aterm 
 
 lib/org/strategoxt/stratego_tool_doc/Main.java : $(STRATEGOXT)/share/libstratego-tool-doc.ctree ../trans/strj
 	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_tool_doc -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm -D SRTS-package-bugreport='"bugs@strategoxt.org"' -D SRTS-package-name='"<SRTS-package-name>"' -D SRTS-package-revision='"<SRTS-package-revision>"' -D SRTS-package-version='"<SRTS-package-version>"'
@@ -179,6 +180,12 @@ runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java : runti
 
 runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.xtc_compat -la stratego-lib -la stratego-xtc
+
+runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
+	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.native_calls_compat -la stratego-lib -la stratego-xtc
+
+runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
+	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.java_integration -la stratego-lib -la stratego-xtc
 
 runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(STRATEGOXT)/share/xtc -I $(STRATEGOXT)/share/stratego-lib -I $(JAVA_FRONT)/share/java-front -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.strc_compat -la stratego-lib -la stratego-xtc -la org.strategoxt.strc -I runtime/org/strategoxt/lang/parallel/stratego_parallel
