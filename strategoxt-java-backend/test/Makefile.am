@@ -7,6 +7,8 @@ CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
 RUNNERFILES = $(subst .java,.runner,$(JAVAFILES))
 CLEANFILES  = $(JAVAFILES) $(CLASSFILES) $(CTREEFILES)
 
+EXTRA_DIST = $(wildcard */*.str) $(wildcard */*.meta) $(wildcard */*.sdf) $(wildcard */*.tbl) $(wildcard */*.trm)
+
 STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \
 		  test13 test14 test15 test16 test17 test18 test19		 \
