@@ -36,7 +36,7 @@ while P=$1; shift; do
   elif [ "$P" == "-o" ]; then
     OUTPUT="$1"
     shift
-  elif [ "$P" == "--help" ] || ["$P" == "-h" ]; then
+  elif [ "$P" == "--help" ] || [ "$P" == "-h" ]; then
     break
   else
     echo "Illegal argument: $P" >&2
