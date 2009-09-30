@@ -87,7 +87,7 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	aster -i $< -o $@
 
 %.java : %.ctree ../trans/strj
-	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
+	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
