@@ -81,13 +81,13 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	$(MAKE) -C ../trans strj
 
 %.ctree : %.str
-	../trans/strj -O 0 -la java-front --format-check 0 -F -I strc1 -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
+	../trans/strj -O 0 -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
 
 %.str : %.astr
 	aster -i $< -o $@
 
 %.java : %.ctree ../trans/strj
-	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
+	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I strc1 -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
