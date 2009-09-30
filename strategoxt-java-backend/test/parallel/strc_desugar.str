@@ -1,0 +1,26 @@
+module strc_desugar
+
+imports
+  libstratego-lib
+  libstratego-parallel
+  libstrc
+
+strategies
+  
+  main =
+    <set-config> ("--statistics", 1);
+    <set-config> ("-O", 3);
+    // import-term(libstrc.ptree);
+    import-term(webdsl-generator.ptree);
+    log-timed(
+      many-runs(parallel-unordered(stratego-desugar))
+    | "desugared", 0
+    );
+    log-timed(
+      many-runs(parallel-unordered(strc-optimize))
+    | "optimized", 0
+    );
+    !()
+ 
+ many-runs(s) =
+   ?t; repeat(<s> t|2)
