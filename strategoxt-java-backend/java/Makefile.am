@@ -181,10 +181,10 @@ runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java : runti
 runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.xtc_compat -la stratego-lib -la stratego-xtc
 
-runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
+runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java : runtime/org/strategoxt/lang/compat/override/native-calls-compat.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.native_calls_compat -la stratego-lib -la stratego-xtc
 
-runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
+runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime/org/strategoxt/lang/compat/override/java-integration.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.java_integration -la stratego-lib -la stratego-xtc
 
 runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree
