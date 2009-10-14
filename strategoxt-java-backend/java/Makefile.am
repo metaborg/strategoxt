@@ -52,6 +52,7 @@ EXTRA_DIST=\
   $(wildcard runtime/org/strategoxt/*/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.str) \
   spoofax-libs.jar \
+  bin \
   META-INF/MANIFEST.MF
 
 CLEANFILES = \
