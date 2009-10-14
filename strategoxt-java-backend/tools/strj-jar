@@ -4,7 +4,7 @@
 
 MAINCLASS=
 PRINT_CLASSPATH=
-CLASSPATH=strategoxt.jar
+CLASSPATH=strategoxt.jar # override with option -cp
 JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
 JAVAC=`if which ecj &>/dev/null; then echo ecj; else echo javac; fi`
 if [ "$JAVAFLAGS" == "" ]; then
