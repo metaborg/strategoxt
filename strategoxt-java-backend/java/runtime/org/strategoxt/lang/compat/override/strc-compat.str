@@ -18,7 +18,8 @@ strategies
     (IncludeFromPath(name), includes) -> ("", ast) // (empty result name goes into .dep)
     where
       switch !name
-        case "libstratego-lib":      import-term(libstratego-lib.rtree)
+        case "libstratego-lib" + "libstrategolib":
+          import-term(libstratego-lib.rtree)
         case "libstratego-xtc":      import-term(libstratego-xtc.rtree)
         case "libstratego-sglr":     import-term(libstratego-sglr.rtree)
         case "libstratego-rtg":      import-term(libstratego-rtg.rtree)
