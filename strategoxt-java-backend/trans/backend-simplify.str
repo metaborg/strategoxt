@@ -19,7 +19,8 @@ strategies
   
   backend-simplify =
     dr-scope-all-verbose(
-      split-large-strategies
+      dollars-for-capitals-top
+    ; split-large-strategies
     ; lift-definitions
     ; canonicalize
     ; simplify1
@@ -27,6 +28,34 @@ strategies
     ; escaping-variables
     ; remove-closure-allocs
     )
+
+rules
+  
+  /**
+   * Adds dollars to names with capitals (e.g. Desugar becomes $Desugar).
+   * Doing so is required for supporting (Windows/Mac) case-insensitive file systems.
+   */
+  dollars-for-capitals-top =
+    topdown(try(
+      SVar(dollars-for-capitals)
+    + SDefT(dollars-for-capitals, id, id, id)
+    + ExtSDef(dollars-for-capitals, id, id)
+    ))
+   
+  dollars-for-capitals =
+    // We make an exception for the hand-crafted SRTS_EXT Java classes
+    if not(string-starts-with(|"SRTS_EXT")) then
+      escape(dollar-for-capital)
+    end
+  
+  dollar-for-capital(rec) :
+    [c | cs] -> ['$', c | <rec> cs] where <is-upper> c
+  
+  undo-dollars-for-capitals =
+    escape(undo-dollar-for-capital)
+  
+  undo-dollar-for-capital(rec) :
+    ['$' | cs] -> <rec> cs
   
 rules
 

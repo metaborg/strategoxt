@@ -34,6 +34,8 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 %.str : %.astr
 	aster -i $< -o $@
 
+strj.c : $(STRJSOURCES:.str=.rtree)
+
 strj$(exeext) : $(STRJSOURCES:.str=.rtree) libjava-pp.la
 
 strj.ctree : strj.rtree $(STRJSOURCES:.str=.rtree) strj

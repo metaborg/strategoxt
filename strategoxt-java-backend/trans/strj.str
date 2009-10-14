@@ -52,6 +52,7 @@ strategies
   ; strc-output-frontend
   ; s2j
   ; with(clean-output-dir)
+    // TODO: output .rtree file for libraries?
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
   
   clean-output-dir =

@@ -337,10 +337,10 @@ rules
 
 rules
 
-  translate-constant-definition : // TODO: check if contant strategy definition name not taken
+  translate-constant-definition : // TODO: check if constant strategy definition name not taken
     (name, value) -> def'
     with
-      name'  := <conc-strings> (<cify> name, "_0_0")
+      name'  := <conc-strings> (<cify; dollars-for-capitals> name, "_0_0")
     ; def    := SDefT(name', [], [], Build(value))
     ; def'   := <translate-outer-definition> def
   
@@ -502,7 +502,7 @@ rules
            boolean TRUE = true;
            ITermFactory termFactory = context.getFactory();
            bstm_init*
-           if (TRACES_ENABLED) context.push("~x");
+           if (TRACES_ENABLED) context.push("~x'");
            Fail: {
              bstm
              if (TRACES_ENABLED) context.popOnSuccess();
@@ -518,6 +518,7 @@ rules
          IsLiftedTVar, IsLiftedSVar, LiftedTVars, LiftedSVars:
         (s'*, [])          := <translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
+      ; x'                 := <undo-dollars-for-capitals> x
       ; param*             := <conc> (s'*, t'*)   
       ; if is-dynamic-signature(|s*, t*) then
           mod_override* := []
