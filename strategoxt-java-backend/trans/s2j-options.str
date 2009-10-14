@@ -24,7 +24,7 @@ rules
   + ArgOption(
       "-la"
     , if is-substring(!"/") + is-substring(!"\\") then
-        warn(|"Ignoring library import: must follow format packagename.ClassName")
+        warn(|"Ignoring library import: must be a Java package name")
       else
         <post-extend-config> ("-la", [<translate-default-library>]); !()
       end
@@ -91,9 +91,6 @@ rules
 
       case "stratego-parallel":
         <conc-strings> ("org.strategoxt.lang.parallel.", <id>)
-
-      case not(is-substring(!".")):
-        err(|"Imported libraries must follow format packagename.ClassName"); fail
       
       otherwise:
         jify
