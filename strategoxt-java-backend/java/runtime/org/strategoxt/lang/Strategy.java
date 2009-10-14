@@ -93,34 +93,6 @@ public abstract class Strategy {
 		throw new IllegalArgumentException(s, t);
 	}
 	
-	/**
-	 * Invokes this strategy in a new thread, and then joins it waiting for the result.
-	 * This way, the strategy has a clean operand stack to its disposal,
-	 * reducing the risk of throwing a StackOverflowError.
-	 * 
-	 * @return The resulting term, or null in case of failure.
-	 */
-	@Deprecated // TODO: Move to separate class
-	public IStrategoTerm invokeStackFriendly(final Context context, final IStrategoTerm current, final Strategy[] s, final IStrategoTerm[] t) {
-		final FutureTask<IStrategoTerm> result = new FutureTask<IStrategoTerm>(new Callable<IStrategoTerm>() {
-			public IStrategoTerm call() throws Exception {
-				return invokeDynamic(context, current, s, t);
-			}
-    	});
-		new Thread(result).start();
-		try {
-			return result.get();
-		} catch (ExecutionException e) {
-			if (e.getCause() instanceof RuntimeException)
-				throw (RuntimeException) e.getCause();
-			if (e.getCause() instanceof Error)
-				throw (Error) e.getCause();
-			throw new StrategoException("Unexpected exception", e);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-    }
-
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 		throw new IllegalArgumentException();
 	}

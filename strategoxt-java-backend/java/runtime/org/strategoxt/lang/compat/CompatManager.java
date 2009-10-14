@@ -6,10 +6,8 @@ import java.util.Set;
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.compat.override.jsglr_parser.jsglr_parser;
-import org.strategoxt.lang.compat.override.jsglr_parser_compat.jsglr_parser_compat;
-import org.strategoxt.lang.compat.override.performance_tweaks.performance_tweaks;
-import org.strategoxt.lang.compat.override.xtc_compat.xtc_compat;
+import org.strategoxt.lang.SRTS_all;
+import org.strategoxt.lang.StackSaver;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
 /**
@@ -49,6 +47,8 @@ public class CompatManager {
 	public void activateComponent(String component) {
 		if ("stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
+			// DEBUG
+			// SRTS_all.instance = new StackSaver(SRTS_all.instance);
 		} else if ("stratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));

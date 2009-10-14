@@ -27,3 +27,9 @@ strategies
     log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
     prim("SSL_EXT_call", program, args) => 0
 
+  override fork(child) =
+    fatal-err(|"Forking of applications is not supported on Java at this time")
+
+  override fork(child, parent) =
+    fatal-err(|"Forking of applications is not supported on Java at this time")
+

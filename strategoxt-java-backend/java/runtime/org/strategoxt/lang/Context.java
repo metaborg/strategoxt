@@ -151,7 +151,7 @@ public class Context extends StackTracer {
     	
     	// Launch with a clean operand stack when launched from SSL_java_call, Ant, etc.
     	if (new Exception().getStackTrace().length > 20) {
-    		return strategy.invokeStackFriendly(this, term, NO_STRATEGIES, NO_TERMS);
+    		return new StackSaver(strategy).invokeStackFriendly(this, term, NO_STRATEGIES, NO_TERMS);
     	} else {
     		return strategy.invoke(this, term);
     	}

@@ -53,7 +53,6 @@ public class ParallelCollectionLibrary extends AbstractStrategoOperatorRegistry 
 		add(new ParallelRead(this, new SSL_indexedSet_elements()));
 		add(new ParallelRead(this, new SSL_indexedSet_reset()));
 		add(new ParallelRead(this, new SSL_indexedSet_destroy()));
-		throw new IllegalStateException("we're actually using this");
 	}
 	
 	public void invalidateReads(Object collection) {

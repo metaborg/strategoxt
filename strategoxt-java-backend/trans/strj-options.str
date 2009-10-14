@@ -110,7 +110,7 @@ strategies
     where(<set-config> ("--help",())); !(),         
     !"-h | --help        Show help")
   <+
-  /* TODO: support -version
+  /* TODO: support -version; see ${SVN_REVISION} and ${VERSION} in Makefile
     Option("-v"+"--version",     
     where(<set-config> ("-v",())); !(),         
     !"-v | --version     Display program's version")

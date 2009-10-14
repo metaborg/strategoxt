@@ -82,7 +82,9 @@ strategies
 
 strategies // location information
 
-  override asfix-anno-location = // TODO: asfix-anno-location?
+  override asfix-anno-location =
+    // TODO: asfix-anno-location?
+    // TODO: asfix-anno-location should be a (fatal?) error by default
     AsfixAnnoLocationWarned
   <+
     rules(AsfixAnnoLocationWarned: _);

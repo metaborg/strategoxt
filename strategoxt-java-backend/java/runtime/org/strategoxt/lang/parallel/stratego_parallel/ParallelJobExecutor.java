@@ -1,5 +1,6 @@
 package org.strategoxt.lang.parallel.stratego_parallel;
 
+import static java.lang.Math.*;
 import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -24,7 +25,7 @@ public class ParallelJobExecutor extends ThreadPoolExecutor {
 	private int asyncPoolSize;
 
 	public ParallelJobExecutor() {
-		this(DEFAULT_ACTIVE_THREADS, DEFAULT_MAX_THREADS);
+		this(max(DEFAULT_ACTIVE_THREADS, 2), max(DEFAULT_MAX_THREADS, 2));
 	}
 	
 	public ParallelJobExecutor(int activeThreads, int maxThreads) {

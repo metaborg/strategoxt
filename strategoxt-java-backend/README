@@ -44,9 +44,11 @@ distributed as part of Eclipse, and can be executed as follows:
   java -cp plugins/org.eclipse.jdt.core_*.jar  org.eclipse.jdt.internal.compiler.batch.Main
 
 Many Linux distributions also provide a stand-alone version of ECJ
-through their package manager. When using the Sun compiler, you may
-need to add option -J-mx256m to increase the available heap space, and
-likely need to have a fair amount of patience ;)
+through their package manager.  (Note that ECJ 3.3 and lower have a
+bug that can be worked around with the -Xecj33 flag.) When using the
+Sun compiler, you may need to add option -J-mx256m to increase the
+available heap space, and likely need to have a fair amount of
+patience ;)
 
 Stratego programs compiled to Java do not have the same performance
 characteristics as those compiled using the native Stratego compiler
@@ -63,6 +65,8 @@ throwing a StackOverflowException (notably the Sun JVM on Linux). For
 these systems, running the JVM with option -ss4m avoids the stack
 overflow problem. (When this parameter is not set and a stack overflow
 occurs, compiled applications will hint at this setting.)
+
+XTC is not supported at this time. Also see the next section.
 
 USING EXTERNAL APPLICATIONS AND LIBRARIES
 =========================================

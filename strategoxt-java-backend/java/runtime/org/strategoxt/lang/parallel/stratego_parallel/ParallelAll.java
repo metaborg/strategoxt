@@ -110,16 +110,20 @@ public class ParallelAll extends SRTS_all {
 				final int index = i;
 				ParallelJob job = new ParallelJob(context, s, inputs, outputs, focusIndex, isAborted, lastSynchronousOperation, lastException, allowUnordered, index, jobLength, parallelismLevel.get());
 				
-				if (firstJob == null) {
+				if (DEFAULT_MAX_THREADS == 1) {
+					job.run();
+				} else if (firstJob == null) {
 					firstJob = job;
 				} else {
 					executor.execute(job);
 				}
 			}
 			
-			firstJob.run();
-			executor.join();
-			firstJob.waitForCompletedFocusIndex();
+			if (DEFAULT_MAX_THREADS != 1) {
+				firstJob.run();
+				executor.join();
+				firstJob.waitForCompletedFocusIndex();
+			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {

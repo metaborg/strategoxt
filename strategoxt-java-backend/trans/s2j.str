@@ -31,16 +31,18 @@ signature
     Match : Term * Exp -> Exp
     Offset: Int -> Term
     Frames: List(Term) -> Term
+    Escape: Stm -> Strategy
     
     // stategoxt-annos extension:
-    AnnoDef  : List(Anno) * Def -> Annos
-    Extend   : Anno
-    Override : Anno
-    Internal : Anno
-    Escape   : Stm -> Strategy
+    Override       : Strategy
+    ProceedNoArgs  : Strategy
+    Proceed        : List(Strategy) -> Strategy
+    ProceedT       : List(Strategy) * List(Term) -> Strategy
 
 overlays
 
+  // Number of term/strategy arguments allowed by the default overloads of Strategy.invoke()
+  // The number 5 was chosen mostly to support Aster-generated strategies.
   MAX_STATIC_TARGS = 5
   MAX_STATIC_SARGS = 5
     
@@ -354,7 +356,7 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        public static class x extends Strategy {
-         public static x instance = new x();
+         public static x /*Strategy*/ instance = new x(); // DEBUG
          
          ~body
          ~invokedynamic*
@@ -369,7 +371,7 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        private static final class x' extends x {
-         private static final x outer = x.instance;
+         private static final x proceed = x.instance;
          ~(body)
          @Override public String getName() { return "~x"; }
        }
@@ -378,11 +380,11 @@ rules
       x' := <conc-strings> (x, "_override")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
-      {| OuterInvoke :
+      {| ProceedInvoke :
         e_s* := <translate-args> s*
       ; e_t* := <translate-args> t*
       ; rules(
-          OuterInvoke := |[ outer.invoke(context, term, e_s*, e_t*) ]|
+          ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
         )
       ; body := <translate-definition-body> def
       |}
@@ -392,7 +394,7 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        private static final class x' extends x {
-         private static final x outer = x.instance;
+         private static final x proceed = x.instance;
          ~(body)
          @Override public String getName() { return "~x"; }
        }
@@ -401,12 +403,12 @@ rules
       x' := <conc-strings> (x, "_extension")
     ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
-      {| OuterInvoke :
+      {| ProceedInvoke :
         e_s* := <translate-args> s*
       ; e_t* := <translate-args> t*
       ; def' := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Override()))
       ; rules(
-          OuterInvoke := |[ outer.invoke(context, term, e_s*, e_t*) ]|
+          ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
         )
       ; body := <translate-definition-body> def'
       |}
@@ -594,14 +596,16 @@ strategies
   translate-Platform :
     CallT(SVar("if_c_platform_1_0"), [s], []) ->  Empty()
 
-  translate-Override :
-    Override() ->
+  // TODO: support Proceed(s*, t*)
+
+  translate-Proceed :
+    <ProceedNoArgs() + Override()> -> // TODO: remove "override" strategy keyword
     bstm* |[
       term = e_outer;
       if (term == null) break Fail;
     ]|
     with
-      e_outer := <OuterInvoke>
+      e_outer := <ProceedInvoke>
     <+
       fatal-err(|"override call illegal in this context")
 
@@ -671,7 +675,7 @@ strategies
     <+ translate-PrimT
     <+ translate-Id
     <+ translate-Fail
-    <+ translate-Override
+    <+ translate-Proceed
     <+ translate-GuardedLChoice-no-left-branch
     <+ translate-GuardedLChoice
     <+ translate-Scope

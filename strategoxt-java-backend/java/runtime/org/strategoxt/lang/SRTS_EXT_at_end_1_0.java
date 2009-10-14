@@ -19,26 +19,34 @@ public class SRTS_EXT_at_end_1_0 extends Strategy {
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
+		// context.push("at_end_1_0"); // DEBUG
+		
+		// DEBUG
+		//if (StackSaver.isNeededFor(context))
+		//	new StackSaver(this).invokeStackFriendly(context, current, new Strategy[] { s }, NO_TERMS);
+		
 		if (current.getTermType() != LIST)
 			return null;
 		
 		IStrategoList list = (IStrategoList) current;
 		IStrategoTerm[] listItems = new IStrategoTerm[list.size()];
-		IStrategoList cons = list;
 		
 		for (int i = 0; i < listItems.length; i++) {
-			if (!cons.getAnnotations().isEmpty()) {
-				IStrategoList tail = atEndMaintainAnnos(context, cons, s);
+			if (!list.getAnnotations().isEmpty()) {
+				IStrategoList tail = atEndMaintainAnnos(context, list, s);
 				return tail == null ? null : concat(context, listItems, i, tail);
 			}
-			listItems[i] = cons.head();
-			cons = cons.tail();
+			listItems[i] = list.head();
+			list = list.tail();
 		}
 		
 		IStrategoTerm tail = context.getFactory().makeList();
 		tail = s.invoke(context, tail);
-		if (tail == null || checkListTail(tail) == null)
+		if (tail == null || checkListTail(tail) == null) {
+			//context.popOnFailure(); // DEBUG
 			return null;
+		}
+		//context.popOnSuccess(); // DEBUG
 		return concat(context, listItems, listItems.length, (IStrategoList) tail);
 	}
 	

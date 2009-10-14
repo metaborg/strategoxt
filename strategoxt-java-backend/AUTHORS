@@ -1,7 +1,7 @@
 STRJ and the Stratego/J runtime have been developed by:
 
-* Lennart Kats (main strj development; Stratego/J compatibility components)
-* Karl Trygve Kalleberg (Stratego/J runtime; original s2j prototype)
+* Lennart Kats (main STRJ development; Stratego/J compatibility components)
+* Karl Trygve Kalleberg (main Stratego/J and JSGLR development; original s2j prototype)
 * Valentin David (Stratego/J runtime)
 
 The development of STRJ would not have been possible without the

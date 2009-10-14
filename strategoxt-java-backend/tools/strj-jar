@@ -31,6 +31,9 @@ while P=$1; shift; do
   elif [ "$P" == "-i" ]; then
     INPUT="$1"
     shift
+  elif [ "$P" == "-m" ]; then
+    MAINCLASS="$1"
+    shift
   elif [ "$P" == "-p" ]; then
     PRINT_CLASSPATH=1
   elif [ "$P" == "-o" ]; then
@@ -91,10 +94,15 @@ fi
   echo "$JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH -d \$TEMPDIR $INPUT $INPUT2 $INPUT3"
   $JAVAC -source 5 -nowarn $JAVACFLAGS -cp "$CLASSPATH" -d $TEMPDIR $INPUT $INPUT2 $INPUT3) || exit 1
 
+# TODO: create META-INF file like:
+#
+#   Manifest-Version: 1.0
+#   Main-Class: $MAINCLASS
+#   Class-Path: strategoxt.jar
 ## JARRING
 
 if ls $INPUTDIR/*.str &>/dev/null; then
-  echo "Warning: using this build directory may mean non-term files are included as attachments" >&2
+  echo "WARNING: using this build directory may mean non-term files are included as attachments" >&2
 fi
 
 ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|astr|str|meta|dep|c|lo|o)$' | sed "s!^!-C $INPUTDIR !"` \

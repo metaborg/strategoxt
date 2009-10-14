@@ -10,13 +10,13 @@ public class stratego_parallel {
 	
 	protected static final boolean ENABLED = true;
 	
-	protected static final boolean VERBOSE = false;
+	protected static final boolean VERBOSE = true;
 	
 	protected static final boolean DIAGNOSE_SYNCHRONOUS_OPERATIONS = false;
 	
-	protected static final int DEFAULT_ACTIVE_THREADS = 2;
+	protected static final int DEFAULT_MAX_THREADS = 8;
 	
-	protected static final int DEFAULT_MAX_THREADS = 2;
+	protected static final int DEFAULT_ACTIVE_THREADS = DEFAULT_MAX_THREADS;
 	
 	protected static final int DEFAULT_TERM_SIZE_THRESHOLD = 3200;
 	
@@ -35,6 +35,8 @@ public class stratego_parallel {
 	public static void init(Context context) {
 		if (isInitialized || !ENABLED) return;
 		isInitialized = true;
+		
+		// TODO: Override (not supplement) the context with the ParallelCollectionLibrary
 		
 		ParallelAll.instance = new ParallelAll();
 		SRTS_all.instance = ParallelAll.instance;

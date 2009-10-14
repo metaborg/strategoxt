@@ -121,20 +121,30 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 	private void updateFocusIndex() {
 		if (focusIndex.get() == COMPLETED_FOCUS_INDEX) return;
 		
+		/*
+		// HACK: removed synchronized here for now, using CaS instead
 		// synchronized here ensures ordered writes to 'outputs'
-		synchronized (getFocusIndexMonitor()) {
+		//synchronized (getFocusIndexMonitor()) {
 			int oldFocusIndex = focusIndex.get();
 			if (oldFocusIndex == COMPLETED_FOCUS_INDEX) return;
+			int currentFocusIndex = oldFocusIndex;
 			int newFocusIndex = oldFocusIndex;
 			
 			while (newFocusIndex < outputs.length) {
 				int lastJob = min(newFocusIndex + jobLength, outputs.length) - 1;
 				if (newFocusIndex > oldFocusIndex) {
-					focusIndex.set(newFocusIndex);
+					// focusIndex.set(newFocusIndex); // HACK
+					while (!focusIndex.compareAndSet(currentFocusIndex, newFocusIndex)) {
+						if (focusIndex.get() > newFocusIndex)
+							return;
+					}
+					currentFocusIndex = newFocusIndex;
 				}
 				if (outputs[lastJob] == null) {
 					if (newFocusIndex > oldFocusIndex) {
+						synchronized (getFocusIndexMonitor()) { // HACK
 						getFocusIndexMonitor().notifyAll();
+						}
 					}
 					return;
 				}
@@ -142,8 +152,12 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 			}
 			
 			focusIndex.set(COMPLETED_FOCUS_INDEX);
-			getFocusIndexMonitor().notifyAll();
-		}
+			synchronized (getFocusIndexMonitor()) { // HACK
+				getFocusIndexMonitor().notifyAll();
+			}
+		//}
+		 */
+		focusIndex.set(COMPLETED_FOCUS_INDEX);
 		if (VERBOSE) System.out.print(">");
 	}
 	
@@ -204,6 +218,7 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 	}
 
 	private void waitForFocusIndexAndComplain() throws InterruptedException {
+		System.out.print("$?");
 		if (focusIndex.get() < startIndex) {
 			Object monitor = getFocusIndexMonitor();
 			synchronized (monitor) {
@@ -221,6 +236,7 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 		for (int i = 0; i < SPINWAIT_CYCLES; i++) {
 			if (focusIndex.get() == COMPLETED_FOCUS_INDEX) return;
 		}
+		System.out.print("$??");
 		Object monitor = getFocusIndexMonitor();
 		synchronized (monitor) {
 			while (focusIndex.get() != COMPLETED_FOCUS_INDEX) {
