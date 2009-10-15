@@ -33,8 +33,13 @@ natively compiled version of Stratego, but some compatibility issues
 may arise. In particular, the parsing primitives are implemented using
 JSGLR, the Java version of SGLR, which is not yet fully
 mature. Mainly, the post-parse filter implementation is not yet
-complete (especially the heuristic filters -- which are disabled by
-default).
+complete. This especially impacts the heuristic filters, which are
+disabled by default, but used for Stratego's concrete syntax
+embedding. To work around any problems, we suggest using the native
+'strj' executable to compile these files for now, or to pre-parse them
+to '.rtree' files using parse-stratego. A general recommendation may
+be to disable the heuristic filters in the .meta files using the
+HeuristicFilters(Off()) directive.
 
 The standard Sun compiler can be quite slow when compiling large
 Stratego projects. We recommend using ECJ (Eclipse Compiler for Java)
