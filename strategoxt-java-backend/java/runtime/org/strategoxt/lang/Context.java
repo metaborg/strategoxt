@@ -138,8 +138,31 @@ public class Context extends StackTracer {
     	exceptionHandler.setEnabled(isStandAlone);
     }
     
-    public IStrategoTerm invokeStrategyCLI(Strategy strategy, String appName, String[] args) {
-    	ITermFactory factory = getFactory();    	
+    public IStrategoTerm invokeStrategyCLI(Strategy strategy, String appName, String... args)
+    		throws StrategoExit, StrategoException {
+    	
+    	IStrategoList input = toCLITerm(appName, args);
+    	
+    	// Launch with a clean operand stack when launched from SSL_java_call, Ant, etc.
+    	if (new Exception().getStackTrace().length > 20) {
+    		return new StackSaver(strategy).invokeStackFriendly(this, input, NO_STRATEGIES, NO_TERMS);
+    	} else {
+    		return strategy.invoke(this, input);
+    	}
+    }
+    
+    public IStrategoTerm invokeStrategyCLI(String strategy, String appName, String... args)
+    		throws MissingStrategyException, StrategoExit, StrategoException {
+    	
+    	IStrategoList input = toCLITerm(appName, args);
+
+    	SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
+    	if (caller == null) caller = new SSL_EXT_java_call();
+    	return caller.call(this, strategy, input, false);
+    }
+
+	private IStrategoList toCLITerm(String appName, String... args) {
+		ITermFactory factory = getFactory();    	
     	IStrategoTerm[] termArgs = new IStrategoTerm[args.length + 1];
 		termArgs[0] = factory.makeString(appName);
 		
@@ -148,14 +171,8 @@ public class Context extends StackTracer {
     	}
     	
     	IStrategoList term = factory.makeList(termArgs);
-    	
-    	// Launch with a clean operand stack when launched from SSL_java_call, Ant, etc.
-    	if (new Exception().getStackTrace().length > 20) {
-    		return new StackSaver(strategy).invokeStackFriendly(this, term, NO_STRATEGIES, NO_TERMS);
-    	} else {
-    		return strategy.invoke(this, term);
-    	}
-    }
+		return term;
+	}
     
     public final IStrategoTerm invokePrimitive(String name, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
     	AbstractPrimitive primitive = lookupPrimitive(name);

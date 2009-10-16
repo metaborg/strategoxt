@@ -57,7 +57,6 @@ public class StackSaver extends SRTS_all { // DEBUG: SRTS_all superclass
 	 */
 	public IStrategoTerm invokeStackFriendly(final Context context, final IStrategoTerm current, final Strategy[] s, final IStrategoTerm[] t) {
 		int startDepth = context.getTraceDepth(true);
-		System.out.println("FREIND!" + strategy.getName() + "!" + startDepth); // DEBUG
 		activeThreadDepth += startDepth;
 		final FutureTask<IStrategoTerm> result = new FutureTask<IStrategoTerm>(new Callable<IStrategoTerm>() {
 			public IStrategoTerm call() throws Exception {

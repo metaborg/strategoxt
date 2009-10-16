@@ -1,9 +1,5 @@
 package org.strategoxt.lang;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**

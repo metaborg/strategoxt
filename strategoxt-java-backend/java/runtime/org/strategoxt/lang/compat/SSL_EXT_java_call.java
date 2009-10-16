@@ -19,7 +19,7 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropContext;
-import org.strategoxt.lang.StrategoException;
+import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
 
@@ -65,36 +65,49 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		if (!isTermInt(tvars[2])) return false;
 
 		String className = ((IStrategoString) tvars[0]).stringValue();
-		IStrategoTerm arg = tvars[1];
+		IStrategoTerm input = tvars[1];
+		Context parentContext = ((InteropContext) env).getContext();
 		boolean sameContext = ((IStrategoInt) tvars[2]).intValue() != 0;
 		
-		Strategy strategy = getStrategy(className);
-		if (strategy == null) return false;
+		IStrategoTerm result = call(parentContext, className, input, sameContext);
+		if (result != null) {
+			env.setCurrent(result);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-		Context parentContext = ((InteropContext) env).getContext();
+	public IStrategoTerm call(Context parentContext, String className, IStrategoTerm arg, boolean sameContext) {
+		Strategy strategy = getStrategy(className);
+		if (strategy == null) return null;
+
 		Context context;
 		String oldWorkingDir = null;
 		if (sameContext) {
 			context = parentContext;
 		} else {
-			oldWorkingDir = parentContext.getIOAgent().getWorkingDir();
-			context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
+			if (parentContext != null) {
+				oldWorkingDir = parentContext.getIOAgent().getWorkingDir();
+				context = new Context(parentContext.getFactory(), parentContext.getIOAgent());
+			} else {
+				context = new Context();
+			}
 			context = initContext(context, className);
-			if (context == null) return false;
+			if (context == null) return null;
 		}
 
 		try {
 			IStrategoTerm result = strategy.invoke(context, arg);
 			if (result == null) {
-				return false;
+				return null;
 			} else {
-				env.setCurrent(result);
-				return true;
+				return result;
 			}
 		} catch (StrategoExit e) {
 			if (sameContext) throw new StrategoExit(e.getValue(), e);
 			
-			return e.getValue() == StrategoExit.SUCCESS;
+			return e.getValue() == StrategoExit.SUCCESS ? arg : null;
 		} finally {
 			try {
 				if (!sameContext) context.getIOAgent().setWorkingDir(oldWorkingDir);
@@ -128,11 +141,11 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		} catch (NoSuchMethodException e) {
 			return null;
 		} catch (ClassCastException e) {
-			throw new StrategoException("Could not dynamically call strategy " + className, e);
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (InvocationTargetException e) {
-			throw new StrategoException("Could not dynamically call strategy " + className, e);
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (SecurityException e) {
-			throw new StrategoException("Could not dynamically call strategy " + className, e);
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		}
 	}
 
@@ -148,7 +161,7 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 				Field instance = library.getField("instance");
 
 				if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
-					return null;
+					throw new MissingStrategyException("Unable to initialize container library for strategy: " + className);
 				
 				cached = (Strategy) instance.get(null);
 				
@@ -156,28 +169,28 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 				library = Class.forName(toStrategoName(className));
 				cached = (Strategy) library.getMethod("getMainStrategy", new Class[0]).invoke(null);
 				if (cached == null)
-					throw new StrategoException("Component has no main strategy: " + className);
+					throw new MissingStrategyException("Component has no main strategy: " + className);
 			}
 			
 			invocationCache.put(className, cached);
 			return cached;
 			
 		} catch (ClassNotFoundException e) {
-			return null;
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (IllegalArgumentException e) {
-			return null;
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (NoSuchFieldException e) {
-			return null;
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (IllegalAccessException e) {
-			return null;
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (NoSuchMethodException e) {
-			return null;
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (ClassCastException e) {
-			throw new StrategoException("Could not dynamically call strategy " + className, e);
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (InvocationTargetException e) {
-			throw new StrategoException("Could not dynamically call strategy " + className, e);
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (SecurityException e) {
-			throw new StrategoException("Could not dynamically call strategy " + className, e);
+			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		}
 	}
 	
