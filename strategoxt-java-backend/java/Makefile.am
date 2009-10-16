@@ -34,6 +34,13 @@ LIBRARYJAVAS = \
   lib/org/strategoxt/strc/Main.java \
   lib/org/strategoxt/java_front/Main.java
 
+TOOLJAVAS = \
+  tools/org/strategoxt/tools/Main.java
+
+TOOLSTRS = \
+  $(wildcard tools/org/strategoxt/tools/*.str) \
+  $(wildcard tools/org/strategoxt/tools/lib/*.str)
+
 nobase_pkgdata_DATA = \
   runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree \
   $(LIBRARYJAVAS) $(COMPILERJAVAS) .ALLCLASSES
@@ -55,8 +62,11 @@ EXTRA_DIST=\
   bin \
   META-INF/MANIFEST.MF
 
+STRINCLUDES= \
+  -I $(STRATEGOXT)/share/sdf/stratego-regular
+
 CLEANFILES = \
-  $(LIBRARYJAVAS) $(COMPILERJAVAS) \
+  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(TOOLJAVAS) \
   runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat.rtree \
   lib/org/strategoxt/stratego-xtc.rtree \
   .ALLCLASSES
@@ -65,7 +75,7 @@ clean :
 	rm -rf bin/* lib/org/strategoxt/*
 
 SPOOFAX=../../../spoofax/trunk/spoofax
-CLASSPATH=runtime:lib:compiler:spoofax-libs.jar:.
+CLASSPATH=runtime:lib:compiler:tools:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
@@ -77,7 +87,7 @@ JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtim
 JARIN2=`find lib      | grep -E '\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
 JARIN3=`find compiler | grep -E '\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
 
-jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS)
 	@if [ ! -e bin/org/strategoxt/stratego_lib/Main.class ]; then \
 	  echo "Standard library classes not found; please run 'make all' first." >&2; exit 1; \
 	fi 
@@ -114,11 +124,11 @@ new-libs :
 
 .ALLCLASSES : bin/org/strategoxt/strj/Main.class
 
-bin/org/strategoxt/strj/Main.class : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(COMPILERJAVAS)
+bin/org/strategoxt/strj/Main.class : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS)
 	@if ! which ecj >/dev/null; \
 	  then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2; \
 	fi
-	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(COMPILERJAVAS) && touch .ALLCLASSES
+	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS) && touch .ALLCLASSES
 
 debug-classes : $(RUNTIMEJAVA)
 	$(JAVAC) -g $(JAVACFLAGS) $(RUNTIMEJAVAS)
@@ -191,11 +201,16 @@ runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime
 runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(STRATEGOXT)/share/xtc -I $(STRATEGOXT)/share/stratego-lib -I $(JAVA_FRONT)/share/java-front -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.strc_compat -la stratego-lib -la stratego-xtc -la org.strategoxt.strc -I runtime/org/strategoxt/lang/parallel/stratego_parallel
 
+###### TOOLS #######
+
+tools/org/strategoxt/tools/Main.java : $(TOOLSTRS:.str=.rtree)
+	$(STRJ) -i tools/org/strategoxt/tools/tools.rtree -o $@ $(STRJFLAGS) -p org.strategoxt.tools -la stratego-lib -la stratego-xtc -la stratego-gpp -la stratego-rtg -la stratego-sglr -la stratego-tool-doc -I $(STRATEGOXT)/share/sdf/xml-front -I tools/org/strategoxt/tools/lib -I $(STRATEGOXT)/share/sdf/gpp -I $(STRATEGOXT)/share/sdf/stratego-regular -I $(STRATEGOXT)/share/stratego-regular -I $(STRATEGOXT)/share/sdf/sdf-front
+
 ###### COMPILER #######
 
 compiler/org/strategoxt/strj/Main.java : ../trans/strj.ctree ../trans/strj
 	[ -e compiler/org/strategoxt ] || mkdir -p compiler/org/strategoxt
-	$(STRJ) -i $< -o $@ -clean -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la org.strategoxt.strc -la org.strategoxt.java_front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
+	$(STRJ) -i $< -o $@ -clean -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la strc -la java-front -O 3 # -D DEFAULT_XTC_REPOSITORY="\"$(REPOSITORY)\""
 
 ###### EXTERNAL #######
 

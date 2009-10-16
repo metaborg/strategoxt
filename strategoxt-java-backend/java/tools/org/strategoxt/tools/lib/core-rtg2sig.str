@@ -1,0 +1,104 @@
+/**
+ * Generates a Stratego signature from an RTG.
+ *
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ */
+module core-rtg2sig 
+imports
+  lib/stratego-rtg
+  libstratego-lib
+
+strategies
+
+  /**
+   * @type  RTG -> StrategoModule
+   */ 
+  core-rtg2sig(|modulename) =
+      rtg-group-productions
+    ; RTG(id, ProdRules(map(ProdRule(id, make-set))))
+    ; RTG(id, ProdRules(filter(not(ignore-prodrule))))
+    ; rtg-ungroup-productions
+
+    ; ?RTG(Start(starts), ProdRules(prods))
+    ; !|[
+        module ~modulename
+        signature
+          constructors
+            ~*<map(prodrule-to-constr)> prods
+
+        signature
+          constructors
+            Some : a -> Option(a)
+            None : Option(a)
+
+        signature
+          constructors
+            Cons : a * List(a) -> List(a)
+            Nil  : List(a)
+            Conc : List(a) * List(a) -> List(a)
+      ]|
+
+/**
+ * @todo  Create at least some constructors for labelled content models
+ * @todo  Anonymous term applications
+ */
+strategies
+
+  /**
+   * @type  ProdRule -> Opdecl
+   */
+  prodrule-to-constr =
+       empty-prodrule-to-constr
+    <+ not-empty-prodrule-to-constr
+    <+ ref-prodrule-to-constr
+    <+ log(|Error(), "Cannot rewrite production", <id>); fail
+
+/**
+ * This somewhat ad-hoc, but it works fine for sdf2rtg | rtg2sig 
+ */
+strategies
+
+  ignore-prodrule =
+       declare-plus-list
+    <+ is-list-prodrule
+    <+ declare-option
+
+  is-list-prodrule = 
+    where(
+      collect(?Appl(<id>, []))
+    ; ?[_|_]
+    ; map(ConcTerm() + ConsTerm() + NilTerm())
+    )
+
+  declare-option =
+    ?ProdRule(Nonterm(srtx1), alts)
+    ; where(
+        <length> alts => 2
+      ; <fetch(?Appl(NoneTerm(), []))> alts
+      ; <fetch(?Appl(SomeTerm(), [Ref(Nonterm(srtx))]))> alts
+      ; rules(
+          OptionTree2Sort : Ref(Nonterm(srtx1)) -> Sort |[ Option(srtx) ]|
+        )
+      )
+
+  declare-plus-list =
+    ?ProdRule(Nonterm(srtx1), alts)
+    ; where(
+        <make-set> alts => alts1
+      ; <length> alts1 => 4
+      ; !alts1
+      ; filter(?Appl(ConcTerm(), [Ref(_), Ref(_)]))
+      ; length => 3
+      ; !alts1
+      ; fetch(?Appl(ConsTerm(), [Ref(Nonterm(srtx)), Ref(Nonterm(srtx2))]))
+      ; rules(
+          ListTree2Sort : Ref(Nonterm(srtx1)) -> Sort |[ List(srtx) ]|
+          ListTree2Sort : Ref(Nonterm(srtx2)) -> Sort |[ List(srtx) ]|
+        )
+      )
+
+
+
+
+
+

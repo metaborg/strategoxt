@@ -1,0 +1,60 @@
+module sdf2rtg
+imports 
+  libstratego-lib
+  libstratego-xtc
+  libstratego-tool-doc
+  lib/pp-rtg
+  lib/sdf-options
+  lib/core-sdf-grammar2rtg
+  regular-xtc-tools
+
+strategies
+
+  main-sdf2rtg =
+    xtc-io-wrap(
+      sdf-main-module-option + ignore-option
+    , sdf2rtg-usage
+    , sdf2rtg-about
+    , !["sdf2table", "implodePT", "sdf-desugar"]
+    , sdf2rtg
+    )
+
+  sdf2rtg = 
+      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; xtc-transform(!"implodePT")
+    ; xtc-transform(!"sdf-desugar", pass-verbose)
+    ; read-from
+    ; core-sdf-grammar2rtg
+    ; xtc-pp-rtg
+    <+ <xtc-exit> 1
+
+  ignore-option =
+    Option("--ignore-missing-cons"
+    , <set-config> (IgnoreMissingCons(), ())
+    , !HelpString("--ignore-missing-cons", "Ignore productions that do not have a constructor (default: produce error)")
+    )
+
+  sdf2rtg-usage =
+    <tool-doc>
+      [ Usage("sdf2rtg [OPTIONS]")
+      , Summary(
+         "Generates an abstract syntax definition in the rtg language
+          from a SDF concrete syntax definition.")
+      , OptionUsage()
+      , AutoReportBugs()
+      ]
+
+  sdf2rtg-about =
+    <tool-doc>
+      [ AutoProgram()
+      , Author(Person("Martin Bravenboer", "martin.bravenboer@gmail.com"))
+      , GNU_LGPL("2002-2008", "Stratego Software Foundation <stratego@cs.uu.nl>")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ]) 
+      ]
+
+signature
+  constructors
+    IgnoreMissingCons : Option
