@@ -16,7 +16,12 @@ public class start {
 		System.arraycopy(strategyArgs, 1, args, 0, args.length);
 		try {
 			Context context = new Context();
-			IStrategoTerm result = context.invokeStrategyCLI(strategy, strategy, args);
+			IStrategoTerm result;
+			try {
+				result = context.invokeStrategyCLI(strategy, strategy, args);
+			} finally {
+				context.getIOAgent().closeAllFiles();
+			}
 			if (result == null) {
 				System.err.println(strategy + (context.getTraceDepth() != 0
 								? ": rewriting failed, trace:"

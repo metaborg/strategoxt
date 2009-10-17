@@ -33,8 +33,10 @@ strategies
     ; (  where(of-config => "txt")   < ( asfix-yield(|stream) ; <xtc-exit>0 )
       +  where(of-config => "ast")   < implode-asfix
       +  where(of-config => "asfix")
-      ) ; write-to <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
+      ); write-to <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
     )
+  
+  external asfix-yield(|stream) // HACK
 
 /**
  * Main strategies

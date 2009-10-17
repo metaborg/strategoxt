@@ -244,7 +244,12 @@ rules
        Context context = init();
        context.setStandAlone(true);
        try {
-         IStrategoTerm result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+         IStrategoTerm result;
+         try {
+           result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+         } finally {
+           context.getIOAgent().closeAllFiles();
+         }
          if (result == null) {
            System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
            context.printStackTrace();
@@ -263,8 +268,12 @@ rules
      }
      
      public static IStrategoTerm mainNoExit(Context context, String... args) throws StrategoExit {
-       init(context);
-       return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+       try {
+         init(context);
+         return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+       } finally {
+         context.getIOAgent().closeAllFiles();
+       }
      }
      
      public static Strategy getMainStrategy() { // used by SSL_EXT_java_call
