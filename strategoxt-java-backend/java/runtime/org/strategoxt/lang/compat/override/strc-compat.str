@@ -8,6 +8,7 @@ module strc-compat
 imports
   libstratego-lib
   libstrc
+  strj-version
 
 strategies
 

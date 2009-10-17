@@ -344,7 +344,7 @@ rules
   translate-constant-definition : // TODO: check if constant strategy definition name not taken
     (name, value) -> def'
     with
-      name'  := <conc-strings> (<cify; dollars-for-capitals> name, "_0_0")
+      name'  := <dollars-for-capitals> name
     ; def    := SDefT(name', [], [], Build(value))
     ; def'   := <translate-outer-definition> def
   
@@ -677,6 +677,7 @@ strategies
     <+ translate-CallT
     <+ translate-Build
     <+ translate-Seq
+    <+ translate-PrimT-constant
     <+ translate-PrimT
     <+ translate-Id
     <+ translate-Fail
@@ -759,6 +760,11 @@ strategies
       // They could be supported through the interopcontext,
       // but they're never used anyway
       fatal-err(|"Think again. Dynamic calls are not supported")
+
+  translate-PrimT-constant :
+    PrimT(f, [], []) -> <translate-strategy> Build(term)
+    where
+      term := <GetConstantDef> f
 
   translate-PrimT :
     PrimT(f, s*, t*) -> 

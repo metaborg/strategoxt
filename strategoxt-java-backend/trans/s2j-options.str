@@ -110,6 +110,8 @@ rules
     | "option -D must be followed by name=value pair")
   ; risky(
       (id, read-from-string; trm-explode; raise-in-build; stratego-desugar)
+    ; ?(name, value)
+    ; rules(GetConstantDef: name -> value)
     | "illegal constant value for option -D"
     )
  

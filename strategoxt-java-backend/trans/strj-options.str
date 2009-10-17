@@ -9,6 +9,7 @@ module strj-options
 
 imports
   s2j-options
+  strj-version
 
 strategies
 
@@ -26,6 +27,8 @@ strategies
   ; parse-options(
       strj-options
     )
+  ; display-version
+  ; strc-announce
   ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)) then
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
@@ -110,10 +113,8 @@ strategies
     where(<set-config> ("--help",())); !(),         
     !"-h | --help        Show help")
   <+
-  /* TODO: support -version; see ${SVN_REVISION} and ${VERSION} in Makefile
-    Option("-v"+"--version",     
+    Option("-v" + "--version",     
     where(<set-config> ("-v",())); !(),         
     !"-v | --version     Display program's version")
   <+
-  */
     stratego-warnings-options

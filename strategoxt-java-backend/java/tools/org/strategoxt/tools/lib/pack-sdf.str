@@ -187,20 +187,11 @@ strategies
    */
   parse-sdf2-module-to-asfix(check) =
     ?pathname
-    ; ( <parse-file-pt(|<pack-sdf-table>, "Module")> pathname
+    ; ( <parse-file-pt(|<get-sdf-parse-table>, "Module")> pathname
         <   ?parsetree(<id>, _)
           ; check-module-name(check|pathname)
         + <fatal-error> ["pack-sdf: Error: module ", pathname, " cannot be parsed\n"]
       )
-  
-  pack-sdf-table =
-    PackSDFTable
-  <+
-    import-term(Sdf2.tbl);
-    open-parse-table;
-    rules(
-      PackSDFTable := <id>
-    )
 
   check-module-name(check|pathname) =
     ?ptree;

@@ -84,7 +84,7 @@ strategies
       ?IncludeDef(def)
     ; !FILE(def)
     ; xtc-temp-files(
-        parse-xtc-file-report-errors(|<pack-sdf-table>, "Module")
+        parse-xtc-file-report-errors(|<get-sdf-parse-table>, "Module")
       ; read-from
       )
     ; collect-om(?

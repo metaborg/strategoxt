@@ -2,7 +2,6 @@
 
 ## SETTINGS
 
-MAINCLASS=
 PRINT_CLASSPATH=
 CLASSPATH=strategoxt.jar # override with option -cp
 JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
@@ -31,9 +30,6 @@ while P=$1; shift; do
   elif [ "$P" == "-i" ]; then
     INPUT="$1"
     shift
-  elif [ "$P" == "-m" ]; then
-    MAINCLASS="$1"
-    shift
   elif [ "$P" == "-p" ]; then
     PRINT_CLASSPATH=1
   elif [ "$P" == "-o" ]; then
@@ -54,7 +50,7 @@ if [ $PRINT_CLASSPATH ]; then
 fi
 
 if [ "$INPUT" == "" ]; then
-  echo "Usage: strj-jar [-m MAINCLASS] [-cp CLASSPATH] [-runtimecp CLASSPATH] -i INPUT.java [-o OUTPUT.jar]"
+  echo "Usage: strj-jar [-cp CLASSPATH] [-runtimecp CLASSPATH] -i INPUT.java [-o OUTPUT.jar]"
   exit 1
 fi
 
@@ -90,26 +86,36 @@ fi
 
 ## COMPILATION
 
-( mkdir -p $TEMPDIR
-  echo "$JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH -d \$TEMPDIR $INPUT $INPUT2 $INPUT3"
-  $JAVAC -source 5 -nowarn $JAVACFLAGS -cp "$CLASSPATH" -d $TEMPDIR $INPUT $INPUT2 $INPUT3) || exit 1
+mkdir -p $TEMPDIR || exit 1
+echo "$JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH -d \$TEMPDIR $INPUT $INPUT2 $INPUT3"
+set -o pipefail
+$JAVAC -source 5 -nowarn $JAVACFLAGS -cp "$CLASSPATH" -d $TEMPDIR $INPUT $INPUT2 $INPUT3 \
+  | tee $TEMPDIR/javac.log
+if [ $? != 0 ]; then
+  if grep "annot be resolved" $TEMPDIR/javac.log >/dev/null; then
+    echo "Unresolved references: please check the -la import options." >&2
+  fi
+  rm -rf $TEMPDIR
+  exit 1
+fi
 
-# TODO: create META-INF file like:
-#
-#   Manifest-Version: 1.0
-#   Main-Class: $MAINCLASS
-#   Class-Path: strategoxt.jar
 ## JARRING
+
+MAINCLASS="`head -n1 $INPUT | grep "package [^;];" | sed 's/package ([^;]*);/$1\./'``basename $INPUT .java`"
+echo "Manifest-Version: 1.0" > $TEMPDIR/MANIFEST.MF
+echo "Main-Class: $MAINCLASS" >> $TEMPDIR/MANIFEST.MF
+echo "Class-Path: strategoxt.jar" >> $TEMPDIR/MANIFEST.MF
+echo >> $TEMPDIR/MANIFEST.MF
+cat $TEMPDIR/MANIFEST.MF
 
 if ls $INPUTDIR/*.str &>/dev/null; then
   echo "WARNING: using this build directory may mean non-term files are included as attachments" >&2
 fi
 
-ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|astr|str|meta|dep|c|lo|o|class)$' | sed "s!^!-C $INPUTDIR !"` \
-  || (echo "Illegal input file name: $INPUT">&2; exit 1)
+ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|log|astr|str|meta|dep|c|lo|o|class|MF)$' | sed 's!^!-C $INPUTDIR !'`
 
-echo $JAR cf $OUTPUT -C \$TEMPDIR . $ATTACHMENTS
-$JAR cf $OUTPUT -C $TEMPDIR . $ATTACHMENTS
+echo $JAR cfm $OUTPUT \$TEMPDIR/MANIFEST.MF -C \$TEMPDIR . $ATTACHMENTS
+$JAR cfm $OUTPUT $TEMPDIR/MANIFEST.MF -C $TEMPDIR . $ATTACHMENTS
 RET=$?
 
 rm -rf $TEMPDIR

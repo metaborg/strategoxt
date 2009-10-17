@@ -12,7 +12,13 @@ LDADD += $(SSL_LIBS) libjava-pp.la -lstrc
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../syn
 
+STRJ_VERSION=$(VERSION) based on `$(STRATEGOXT)/bin/strc --version | head -n1 | sed 's/ (revision \(.*\))/r\1/'`
+
 STRCFLAGS      = --main main-$* -O 0 --format-check 0
+
+DEFS += -DSTRJ_VERSION_TERM\(\)=\(\(ATerm\)\ ATmakeString\(\""$(STRJ_VERSION)"\"\)\)
+
+#  -D SVN_REVISION_TERM=\"$(SVN_REVISION)\" -D STRC_SYSTEM_LDFLAGS=\"\" -D STRC_SYSTEM_CFLAGS=\"\"
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard lib/*.str) $(wildcard lib/*.meta)
 CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.o) # $(wildcard *.c)
