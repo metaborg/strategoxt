@@ -40,7 +40,9 @@ TOOLJAVAS = \
 
 TOOLSTRS = \
   $(wildcard tools/org/strategoxt/tools/*.str) \
-  $(wildcard tools/org/strategoxt/tools/lib/*.str)
+  $(wildcard tools/org/strategoxt/tools/*.meta) \
+  $(wildcard tools/org/strategoxt/tools/lib/*.str) \
+  $(wildcard tools/org/strategoxt/tools/lib/*.meta)
 
 nobase_pkgdata_DATA = \
   runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree \
@@ -60,7 +62,7 @@ EXTRA_DIST=\
   $(wildcard runtime/org/strategoxt/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.str) \
-  $(TOOLSTRS) $(TOOLSTRS:.str=.meta) \
+  $(TOOLSTRS) \
   spoofax-libs.jar \
   bin \
   META-INF/MANIFEST.MF
@@ -164,6 +166,7 @@ lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.
 
 # HACK: work-around for the Java BAFReader
 lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl
+	[ -e lib/org/strategoxt/stratego_rtg ] || mkdir lib/org/strategoxt/stratego_rtg
 	baffle -ws -i $< -o $@
 
 lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj
