@@ -60,7 +60,7 @@ EXTRA_DIST=\
   $(wildcard runtime/org/strategoxt/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.str) \
-  $(TOOLSTRS) \
+  $(TOOLSTRS) $(TOOLSTRS:.str=.meta) \
   spoofax-libs.jar \
   bin \
   META-INF/MANIFEST.MF
@@ -89,7 +89,7 @@ STRJ_VERSION=$(VERSION) (Java version) based on `$(STRATEGOXT)/bin/strc --versio
 STRJ_CONSTANTS=-D STRJ_VERSION_TERM="\"$(STRJ_VERSION)\"" -D SVN_REVISION_TERM=\"$(SVN_REVISION)\" -D STRC_SYSTEM_LDFLAGS=\"\" -D STRC_SYSTEM_CFLAGS=\"\"
 
 JAR=`if which fastjar >/dev/null; then echo fastjar; else echo jar; fi`
-JARIN0=`find tools    | grep -E '\.rtree|\.af|\.tbl' | sed 's!tools/!-C tools/ !'`
+JARIN0=`find tools    | grep -E         '\.af|\.tbl' | sed 's!tools/!-C tools/ !'`
 JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
 JARIN2=`find lib      | grep -E '\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
 JARIN3=`find compiler | grep -E '\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
@@ -99,7 +99,7 @@ jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBRARYJAV
 	  echo "Standard library classes not found; please run 'make all' first." >&2; exit 1; \
 	fi 
 	cp spoofax-libs.jar strategoxt.jar.tmp
-	$(JAR) uf strategoxt.jar.tmp $(JARIN1) $(JARIN2) $(JARIN3)
+	$(JAR) uf strategoxt.jar.tmp $(JARIN0) $(JARIN1) $(JARIN2) $(JARIN3)
 	$(JAR) uf strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
 	jar i strategoxt.jar.tmp
 	mv strategoxt.jar.tmp strategoxt.jar
@@ -159,8 +159,12 @@ lib/org/strategoxt/stratego_xtc/Main.java : lib/org/strategoxt/stratego-xtc.rtre
 lib/org/strategoxt/stratego_sglr/Main.java : $(STRATEGOXT)/share/libstratego-sglr.ctree ../trans/strj runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java
 	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sglr -la stratego-lib -la stratego-xtc -la org.strategoxt.lang.compat.override.jsglr_parser -la org.strategoxt.lang.compat.override.jsglr_parser_compat
 
-lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../trans/strj runtime/org/strategoxt/lang/compat/stratego_rtg_compat/Main.java
-	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-regular -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_rtg -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.stratego_rtg_compat
+lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../trans/strj runtime/org/strategoxt/lang/compat/stratego_rtg_compat/Main.java lib/org/strategoxt/stratego_rtg/rtg.tbl
+	$(STRJ) -I lib/org/strategoxt/stratego_rtg -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_rtg -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.stratego_rtg_compat
+
+# HACK: work-around for the Java BAFReader
+lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl
+	baffle -ws -i $< -o $@
 
 lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/gpp -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr
