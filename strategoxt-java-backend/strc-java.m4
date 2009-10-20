@@ -139,3 +139,15 @@ AC_DEFUN([XT_USE_LANGUAGE_TESTS],
   AC_SUBST([LANGUAGE_TESTS])
 ])
 
+AC_DEFUN([XT_USE_STRC_JAVA], [
+  XT_CHECK_PACKAGE([STRC_JAVA],[strc-java])
+
+  AC_MSG_CHECKING([for strategoxt.jar at $STRC_JAVA/share/strc-java/strategoxt.jar])
+  test -x "$STRC_JAVA/share/strc-java/strategoxt.jar"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find strategoxt.jar. Is strc-java installed correctly?])
+  fi
+])
