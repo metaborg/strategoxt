@@ -4,6 +4,7 @@ include $(top_srcdir)/Makefile.xt
 am__tar = ${AMTAR} chf - "$$tardir"
 
 ACLOCAL_AMFLAGS = -I .
+pkgdata_DATA = strc-java.m4
 
 SUBDIRS           = syn trans java test tools
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
