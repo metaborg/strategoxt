@@ -26,6 +26,7 @@ AC_PROG_LIBTOOL
 
 ### OUTPUT #############################
 AC_CONFIG_FILES([
+  strc-java.pc
   Makefile
   syn/Makefile
   trans/Makefile
