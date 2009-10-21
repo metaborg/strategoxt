@@ -112,7 +112,7 @@ if ls $INPUTDIR/*.str &>/dev/null; then
   echo "WARNING: using this build directory may mean non-term files are included as attachments" >&2
 fi
 
-ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|log|astr|str|meta|dep|c|lo|o|class|MF)$' | sed 's!^!-C $INPUTDIR !'`
+ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|log|astr|str|meta|dep|c|lo|o|class|MF)$' | sed "s!^!-C $INPUTDIR !"`
 
 echo $JAR cfm $OUTPUT \$TEMPDIR/MANIFEST.MF -C \$TEMPDIR . $ATTACHMENTS
 $JAR cfm $OUTPUT $TEMPDIR/MANIFEST.MF -C $TEMPDIR . $ATTACHMENTS
