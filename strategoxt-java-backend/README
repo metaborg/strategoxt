@@ -71,7 +71,13 @@ these systems, running the JVM with option -ss4m avoids the stack
 overflow problem. (When this parameter is not set and a stack overflow
 occurs, compiled applications will hint at this setting.)
 
-XTC is not supported at this time. Also see the next section.
+While the XTC standard library strategies (such as xtc-io-wrap) are
+supported, support for the XTC repository is not implemented as this
+time because of portability concerns. Any xtc-transform or xtc-call
+invocations report a warning, and simply invoke executables on the
+path. For the interest of portability, applications that make use
+of these strategies should use library strategies instead, as
+discussed in the following section.
 
 USING EXTERNAL APPLICATIONS AND LIBRARIES
 =========================================
