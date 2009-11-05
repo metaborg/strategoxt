@@ -43,7 +43,7 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			PrintStream stderr = io.getOutputStream(IOAgent.CONST_STDERR);
 			
 			// Invocation
-			int returnCode = caller.call(commandArgs, dir, stdout, stderr);
+			int returnCode = caller.call(commandArgs, new String[0], dir, stdout, stderr);
 			env.setCurrent(env.getFactory().makeInt(returnCode));
 			return true;
 			

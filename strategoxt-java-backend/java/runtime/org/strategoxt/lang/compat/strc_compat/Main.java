@@ -1,8 +1,6 @@
 package org.strategoxt.lang.compat.strc_compat;
 
-import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.compat.StringValuePrimitive;
 
 /**
  * Configures the strc_compat overrides.

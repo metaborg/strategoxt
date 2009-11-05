@@ -6,8 +6,6 @@ import java.util.Set;
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.strategoxt.lang.Context;
-import org.strategoxt.lang.SRTS_all;
-import org.strategoxt.lang.StackSaver;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
 /**
