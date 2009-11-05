@@ -11,9 +11,11 @@ import java.util.jar.JarFile;
 import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
+import org.spoofax.interpreter.core.InterpreterErrorExit;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
+import org.spoofax.interpreter.core.UndefinedStrategyException;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -151,8 +153,15 @@ public class HybridInterpreter extends Interpreter {
 		return compiledContext;
 	}
 	
+	/**
+	 * Invokes a compiled or interpreted strategy bound to this instance.
+	 * 
+	 * Wraps any StrategoException into checked InterpreterException exceptions.
+	 */
 	@Override
-	public boolean invoke(String name) throws InterpreterExit, InterpreterException {
+	public boolean invoke(String name)
+			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
+		
 		try {
 			return super.invoke(name);
         } catch (StrategoExit e) {

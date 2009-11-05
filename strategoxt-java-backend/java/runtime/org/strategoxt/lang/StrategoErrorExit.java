@@ -3,6 +3,8 @@ package org.strategoxt.lang;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
+ * Exception thrown when the application exits with an fatal error message.
+ * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class StrategoErrorExit extends StrategoExit {
