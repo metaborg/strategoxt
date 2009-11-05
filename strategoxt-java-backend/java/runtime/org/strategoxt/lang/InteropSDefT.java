@@ -2,6 +2,7 @@ package org.strategoxt.lang;
 
 import org.spoofax.interpreter.core.IConstruct;
 import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.InterpreterErrorExit;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.VarScope;
@@ -165,6 +166,8 @@ public class InteropSDefT extends SDefT {
 		IStrategoTerm result;
 		try {
 			result = getStrategy().invokeDynamic(compiledContext, env.current(), sdefargs, targs);
+		} catch (StrategoErrorExit e) {
+			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
 		} catch (StrategoExit e) {
 			throw new InterpreterExit(e.getValue(), e);
 		}

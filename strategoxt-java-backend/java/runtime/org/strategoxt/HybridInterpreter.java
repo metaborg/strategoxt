@@ -21,6 +21,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
+import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.stratego_lib.stratego_lib;
@@ -164,6 +165,8 @@ public class HybridInterpreter extends Interpreter {
 		
 		try {
 			return super.invoke(name);
+		} catch (StrategoErrorExit e) {
+			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
         } catch (StrategoExit e) {
             throw new InterpreterExit(e.getValue(), e);
         } catch (StrategoException e) {
