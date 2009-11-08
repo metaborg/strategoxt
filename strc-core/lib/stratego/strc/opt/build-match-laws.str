@@ -11,8 +11,7 @@ rules // combinations of match and build
     + MatchIdem
     + BuildMatchIdem
     
-    + // TODO: use bound/unboundness java-based optimization?
-      // Without maximal sharing, there's no guaranteed relation between term equality and identity
+    + // Without maximal sharing, there's no guaranteed relation between term equality and identity
       if !assume-shared-terms => 1 then
         MatchBuildIdemVar
       else

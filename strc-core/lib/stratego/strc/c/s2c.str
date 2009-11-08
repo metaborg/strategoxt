@@ -393,7 +393,13 @@ rules
     Fail() -> stm|[ goto ~id:F; ]|
   
   TranslateStrat(|S,F) :
-    Override() -> <fatal-err(|"override call not supported on this platform")>
+    ProceedNoArgs() -> <fatal-err(|"proceed not yet supported on this platform")>
+  
+  TranslateStrat(|S,F) :
+    ProceedT(_, _) -> <fatal-err(|"proceed not yet supported on this platform")>
+  
+  TranslateStrat(|S,F) :
+    Proceed(_) -> <fatal-err(|"proceed not yet supported on this platform")>
 
   TranslateStrat(|S,F) :
     Scope(xs, s) -> 

@@ -37,7 +37,7 @@ strategies
    extend pack-stratego-parse-stratego:
      (IncludeFromPath("libjava-front"), includes) -> result
      where
-       override => result // prefer local (-I) definition
+       proceed => result // prefer local (-I) definition
      <+
        result := ("", <import-term(libjava-front.rtree)>)
    

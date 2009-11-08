@@ -86,6 +86,9 @@ exports
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
 
+    "proceed"                          -> Strategy {cons("ProceedNoArgs"), prefer}
+    "proceed" "(" {Strategy "," }+ ")" -> Strategy {cons("Proceed"), prefer}
+
     "if" Strategy "then" Strategy 
                   "else" Strategy "end"   -> Strategy {cons("CondChoice")}
     "if" Strategy "then" Strategy "end"   -> Strategy {cons("IfThen")}

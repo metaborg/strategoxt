@@ -453,7 +453,13 @@ rules
    Extend() -> KW ["extend"]
 
   stratego-to-abox : 
-   Override() -> KW ["override"]
+   ProceedNoArgs() -> KW ["proceed"]
+
+  stratego-to-abox : 
+   ProceedT(s*, t*) -> <stratego-to-abox> CallT("proceed", s*, t*)
+
+  stratego-to-abox : 
+   Proceed(s*) -> <stratego-to-abox> Call("proceed", s*)
 
   stratego-to-abox : 
    Internal() -> KW ["internal"]

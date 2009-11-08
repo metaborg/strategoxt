@@ -610,7 +610,9 @@ strategies
   translate-Platform :
     CallT(SVar("if_c_platform_1_0"), [s], []) ->  Empty()
 
-  // TODO: support Proceed(s*, t*)
+  // TODO: Proceed(s*) / ProceedT(s*, t*)
+  translate-Proceed :
+    <Proceed(id) + ProceedT(id, id)> -> <fatal-err(|"proceed with arguments is not implemented yet")>
 
   translate-Proceed :
     <ProceedNoArgs() + Override()> -> // TODO: remove "override" strategy keyword
@@ -621,7 +623,7 @@ strategies
     with
       e_outer := <ProceedInvoke>
     <+
-      fatal-err(|"override call illegal in this context")
+      fatal-err(|"proceed illegal in this context")
 
   translate-Escape :
     Escape(java) -> java

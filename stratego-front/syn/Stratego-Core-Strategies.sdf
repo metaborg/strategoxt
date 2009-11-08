@@ -69,7 +69,9 @@ exports
 
     "fail" 				  -> Strategy {cons("Fail")}
     "id" 				  -> Strategy {cons("Id")}
-    "override" 			  -> Strategy {cons("Override")}
+
+    "proceed" "(" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("ProceedT"), prefer}
+    "proceed"                                         -> Strategy {cons("ProceedNoArgs"), prefer}
 
     %% Match and build
 
