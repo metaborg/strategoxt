@@ -13,8 +13,8 @@ imports
   stratego/strc/opt/build-match-laws
 
 strategies
-
-  Simplify = 
+  
+  Simplify(|assume-shared-terms) =
     ElimId
     + ElimFail 
     + AssociateR
@@ -22,14 +22,31 @@ strategies
     + EmptyScope
     + LetNoDefs
     + LetHoist
-    + BuildMatch
+    + BuildMatch(|assume-shared-terms)
     + MatchSimplify
+
+  // Provided for compatibility; for performance,
+  // assume-shared-terms argument should be locally cached
+  Simplify = 
+    Simplify(|<AssumeSharedTerms>)
+  
+  /**
+   * On Java, where non-shared terms may be used, 
+   * there's no guaranteed relation between term equality and identity,
+   * which has impact on certain optimizations.
+   */
+  AssumeSharedTerms =
+    if <get-config> "JAVA_PLATFORM" + <get-config> "-F" then
+      !0
+    else
+      !1
+    end
 
   DefineCongruences =
     (MatchingCongruence <+ TransformingAnnoCongruence <+ TransformingCongruence)
 
-  Optimize =
-    Simplify
+  Optimize(|assume-shared-terms) =
+    Simplify(|assume-shared-terms)
     + HoistLet 
     + FuseScope
     + WidenScope
@@ -41,13 +58,21 @@ strategies
     + RecIsSugar
     + Desugar
 
+  // Provided for compatibility; for performance,
+  // assume-shared-terms argument should be locally cached
+  Optimize =
+    Optimize(|<AssumeSharedTerms>)
 
-  simplify0 = 
-    downup(repeat(Simplify))
+  simplify0 =
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; downup(repeat(Simplify(|assume-shared-terms)))
 
-  simplify = 
-    bottomup(
-      repeat( AssociateR ; simplify <+ Optimize )
+  simplify =
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; rec rec(
+      bottomup(
+        repeat( AssociateR ; rec <+ Optimize(|assume-shared-terms) )
+      )
     )
     
 //    innermost(Optimize)

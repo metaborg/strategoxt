@@ -32,8 +32,9 @@ strategies
     )
 
   inline-rules = 
-    rec x(try(
-        Simplify
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; rec x(try(
+        Simplify(|assume-shared-terms)
         <+ GuardedLChoice(x, x, x)
 	<+ Scope(id, Seq(Match(id), id))
 	<+ InlineStrat; x

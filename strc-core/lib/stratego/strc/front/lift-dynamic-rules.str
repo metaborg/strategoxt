@@ -416,8 +416,12 @@ strategies
     |[ rules(  f(a1*|a2*) : t1 -> t2 where s ) ]| -> t*
     where
       <tvars; map(!Var(<id>))> t1 => keys
-      ; <tvars; filter(test(ContextVar); !Var(<id>))> (t1, t2, s) => vals
-      ; <diff> (vals, keys) => t*
+      ; <tvars; filter(test(ContextVar); !Var(<id>))> (t2, s) => vals
+      ; if AssumeSharedTerms => 1 then
+          t* := <diff> (vals, keys)
+        else
+          t* := vals
+        end
 
   /**
    * Get a stamp for a dynamic rule closure based on its standardized renaming,
@@ -470,8 +474,13 @@ strategies
         ; <closure> drd => t*
         ; new => x // holding entire lhs
         ; <tvars; map(!DefaultVarDec(<id>))> t1 => a3* // variables in lhs
+        ; if AssumeSharedTerms => 1 then
+            a3'* := a3*
+          else
+            a3'* := <map(DefaultVarDec({ a: ?a; if <one(Var(?a))> t* then new end }))> a3* // ignore lhs vars
+          end
         ; add-def(||[ 
-            g(a1*|a2*, a3*, x) : (~str:stamp, t*) -> t2 where <s> x 
+            g(a1*|a2*, a3'*, x) : (~str:stamp, t*) -> t2 where <s> x 
           ]|)
       end
 

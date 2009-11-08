@@ -7,7 +7,8 @@ imports Stratego
 strategies
 
   match-to-matrix_OLD =
-    downup(repeat(MatchToMatrix + MatrixMerge + Simplify))
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; downup(repeat(MatchToMatrix + MatrixMerge + Simplify(|assume-shared-terms)))
 
   match-to-matrix =
   (

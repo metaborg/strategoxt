@@ -6,7 +6,8 @@ imports stratego/strc/match/automaton
 strategies
 
   desugar-case =
-    topdown(repeat(DesugarAssign + DesugarCase + Optimize))
+    where(assume-shared-terms := <AssumeSharedTerms>)
+  ; topdown(repeat(DesugarAssign + DesugarCase + Optimize(|assume-shared-terms)))
 
   DesugarAssign :
     Assign(Var(x), t) -> Seq(Build(t), Match(Var(x)))

@@ -3,9 +3,22 @@ imports Stratego Stratego-MetaTransition
 
 rules // combinations of match and build
 
-  BuildMatch = 
+  BuildMatch =
+    BuildMatch(|<AssumeSharedTerms>)
+
+  BuildMatch(|assume-shared-terms) = 
     MisMatch + BuildMatchFusion 
-    + MatchIdem + BuildMatchIdem + MatchBuildIdemVar + BuildMatchIdemVar
+    + MatchIdem
+    + BuildMatchIdem
+    
+    + // TODO: use bound/unboundness java-based optimization?
+      // Without maximal sharing, there's no guaranteed relation between term equality and identity
+      if !assume-shared-terms => 1 then
+        MatchBuildIdemVar
+      else
+        MatchBuildIdemVarUnbound
+      end
+
 	// + MatchBuildIdem + BuildBuild
     + BuildAlwaysSucceeds
 
@@ -71,11 +84,11 @@ rules // combinations of match and build
 //  MatchBuildIdem :
 //    Seq(Match(t), Build(t)) -> Match(t)
   
-  BuildMatchIdemVar :
+  MatchBuildIdemVar :
     Seq(Match(Var(x)), Seq(Match(t), Seq(Build(Var(x)), s))) ->
     Seq(Match(Var(x)), Seq(Match(t),                    s))
   
-  BuildMatchIdemVar :
+  MatchBuildIdemVar :
     Seq(Match(Var(x)), Seq(Match(t), Build(Var(x)))) ->
     Seq(Match(Var(x)),     Match(t))
  
@@ -84,6 +97,20 @@ rules // combinations of match and build
 
   MatchBuildIdemVar :
     Seq(Match(Var(x)), Seq(Build(Var(x)), s)) -> Seq(Match(Var(x)), s)
+  
+  MatchBuildIdemVarUnbound :
+    Seq(Match(Var(x){"unbound"}), Seq(Match(t), Seq(Build(Var(x)), s))) ->
+    Seq(Match(Var(x){"unbound"}), Seq(Match(t),                    s))
+  
+  MatchBuildIdemVarUnbound :
+    Seq(Match(Var(x){"unbound"}), Seq(Match(t), Build(Var(x)))) ->
+    Seq(Match(Var(x){"unbound"}),     Match(t))
+ 
+  MatchBuildIdemVarUnbound :
+    Seq(Match(Var(x){"unbound"}), Build(Var(x))) -> Match(Var(x){"unbound"})
+
+  MatchBuildIdemVarUnbound :
+    Seq(Match(Var(x){"unbound"}), Seq(Build(Var(x)), s)) -> Seq(Match(Var(x){"unbound"}), s)
 
 
 rules // other rules 

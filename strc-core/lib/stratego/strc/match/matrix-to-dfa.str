@@ -15,7 +15,8 @@ strategies
 
   matrix-to-dfa = 
     {| MatrixSeenBefore :
-       rec x(repeat(reduce-matrix + MatrixScope + Simplify); all(x))
+       where(assume-shared-terms := <AssumeSharedTerms>)
+     ; rec x(repeat(reduce-matrix + MatrixScope + Simplify(|assume-shared-terms)); all(x))
     |}
 
   reduce-matrix = 
