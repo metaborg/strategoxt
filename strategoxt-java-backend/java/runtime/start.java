@@ -11,6 +11,10 @@ import org.strategoxt.lang.StrategoExit;
  */
 public class start {
 	public static void main(String[] strategyArgs) {
+		if (strategyArgs == null || strategyArgs.length < 1) {
+			System.out.println("Usage: start <package>.<strategy> <args>");
+			System.exit(127);
+		}
 		String strategy = strategyArgs[0];
 		String[] args = new String[strategyArgs.length - 1];
 		System.arraycopy(strategyArgs, 1, args, 0, args.length);
@@ -29,7 +33,6 @@ public class start {
 				context.printStackTrace();
 				System.exit(1);
 			} else {
-				System.out.println(result);
 				System.exit(0);
 			}
 		} catch (MissingStrategyException e) {

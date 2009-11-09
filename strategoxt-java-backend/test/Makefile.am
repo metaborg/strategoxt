@@ -7,7 +7,15 @@ CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
 RUNNERFILES = $(subst .java,.runner,$(JAVAFILES))
 CLEANFILES  = $(JAVAFILES) $(CLASSFILES) $(CTREEFILES)
 
-EXTRA_DIST = $(wildcard */*.str) $(wildcard */*.meta) $(wildcard */*.sdf) $(wildcard */*.tbl) $(wildcard */*.trm) $(wildcard */*.in) $(wildcard */*.res)
+EXTRA_DIST = \
+  $(wildcard */*.str) \
+  $(wildcard */*.meta) \
+  $(wildcard */*.sdf) \
+  $(wildcard */*.tbl) \
+  $(wildcard */*.trm) \
+  $(wildcard */*.in) \
+  $(wildcard */*.res) \
+  test-tools.sh
 
 STRC1TESTS=test01 test02 test03 test04 test05				 \
 		  test06 test07 test08 test09 test10 test11 test12		 \
@@ -71,7 +79,7 @@ check-am : strc1/ExpStratego.tbl $(CTREEFILES) $(JAVAFILES) .ALLCLASSFILES $(CLA
 
 # nobase_pkgdata_DATA = $(CTREEFILES) $(JAVAFILES)
 
-TESTS=$(RUNNERFILES)
+TESTS=test-tools.sh $(RUNNERFILES)
 
 CLASSPATH=../java/spoofax-libs.jar:../java/bin:../java/strategoxt.jar:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
@@ -93,10 +101,10 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 	$(JAVAC) $(JAVACFLAGS) $<
 
 %.run : %.class
-	cd `dirname $<`; java -client -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
+	cd `dirname $<`; java -client -Xverify:none -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`
 
 %.runner : %.class
-	@ echo "cd `dirname $<`; java -client -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
+	@ echo "cd `dirname $<`; java -client -Xverify:none -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
 	@ chmod 755 $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf

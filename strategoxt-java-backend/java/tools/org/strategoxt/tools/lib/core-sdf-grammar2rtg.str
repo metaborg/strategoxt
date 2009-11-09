@@ -8,7 +8,6 @@ imports
   libstratego-lib
   libstratego-rtg
   libstratego-sdf
-  sdf/tool/xtc
   libstratego-xtc
 
 strategies
@@ -201,6 +200,8 @@ strategies
       ; if y := <get-cnstr-name> attrs then
           !rtg |[ A -> y(t*) ]|
         else
+          // TODO: restore constructor errors?
+          //
           //log-prod(|Error(), "No constructor name specified in production:", p)
           //;    log(|Error(), "Resolution: please add a cons attribute to this production.")
           //; if-verbose1(log(|Error(), "Production in abstract syntax: ", p))
@@ -596,9 +597,11 @@ strategies
     where(
       xtc-temp-files(
         !prod
-      ; write-to
-      ; xtc-pp-sdf2
-      ; ?FILE(<read-text-file; trim-chars('\n' + '\r' + ' ' + '\t'); string-as-chars(filter(not('\n' + '\r')))>)
+      // TODO: restore log-prod?
+      //; write-to
+      //; xtc-pp-sdf2
+      //; ?FILE(<read-text-file; trim-chars('\n' + '\r' + ' ' + '\t'); string-as-chars(filter(not('\n' + '\r')))>)
+      ; write-to-string
       ; ?prodtxt
       )
     ; log(|severity, msg)

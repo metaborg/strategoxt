@@ -89,14 +89,18 @@ public class Context extends StackTracer {
 		return exceptionHandler;
 	}
 	
-    public final IOAgent getIOAgent() {
-        SSLLibrary op = (SSLLibrary) getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
-        return op.getIOAgent();
+    @Override
+	public IOAgent getIOAgent() {
+		SSLLibrary op = (SSLLibrary) getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
+		return op == null ? null : op.getIOAgent();
     }
     
-    public final void setIOAgent(IOAgent ioAgent) {
+    @Override
+    public void setIOAgent(IOAgent ioAgent) {
         SSLLibrary op = (SSLLibrary) getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
+        if (op == null) throw new IllegalStateException("No SSL library");
         op.setIOAgent(ioAgent);
+        super.setIOAgent(ioAgent);
     }
 	
 	/**

@@ -73,10 +73,7 @@ public class HybridInterpreter extends Interpreter {
 	public void load(IStrategoTerm term) throws InterpreterException {
 		// Lazily register library strategies
 		// (since this interpreter may only be used with compiled strategies)
-		if (!registeredLibraries) {
-			registeredLibraries = true;
-			registerLibraries();
-		}
+		init();
 		super.load(term);
 	}
 
@@ -127,6 +124,17 @@ public class HybridInterpreter extends Interpreter {
 					throw new RuntimeException("Could not load listed class", e);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Eagerly initializes this interpreter, loading the standard libraries.
+	 * (If not invoked, load() ensures lazy initialization.)
+	 */
+	public void init() {
+		if (!registeredLibraries) {
+			registeredLibraries = true;
+			registerLibraries();
 		}
 	}
 	

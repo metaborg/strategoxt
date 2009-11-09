@@ -31,9 +31,27 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			throws InterpreterException {
 		
 		try {
-			if (!isTermString(tvars[0]) || !isTermList(tvars[1])) return false;
+			String program;
+			String[] environment = null;
 			
-			String[] commandArgs = toCommandArgs(tvars);
+			if (!isTermList(tvars[1])) 
+				return false;
+			if (isTermTuple(tvars[0])) {
+				if (tvars[0].getSubtermCount() != 2 || !isTermString(tvars[0].getSubterm(0)))
+					return false;
+				program = asJavaString(tvars[0].getSubterm(0));
+				environment = toEnvironment(tvars[0].getSubterm(1));
+				if (environment == null)
+					return false;
+			} else if (isTermString(tvars[0])) {
+				program = asJavaString(tvars[0]);
+			} else {
+				return false;
+			}
+			
+			String[] commandArgs = toCommandArgs(program, tvars);
+			if (commandArgs == null)
+				return false;
 			
 			// I/O setup
 			SSLLibrary op = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
@@ -43,7 +61,7 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			PrintStream stderr = io.getOutputStream(IOAgent.CONST_STDERR);
 			
 			// Invocation
-			int returnCode = caller.call(commandArgs, new String[0], dir, stdout, stderr);
+			int returnCode = caller.call(commandArgs, environment, dir, stdout, stderr);
 			env.setCurrent(env.getFactory().makeInt(returnCode));
 			return true;
 			
@@ -56,17 +74,29 @@ public class SSL_EXT_call extends AbstractPrimitive {
 		}
 	}
 
-	private String[] toCommandArgs(IStrategoTerm[] tvars) throws IllegalArgumentException {
+	private String[] toCommandArgs(String program, IStrategoTerm[] tvars) throws IllegalArgumentException {
 		IStrategoList args = (IStrategoList) tvars[1];
 		String[] result = new String[1 + args.size()];
-		result[0] = javaString(tvars[0]);
+		result[0] = program;
 		
 		for (int i = 0; i < args.size(); i++) {
 			if (!isTermString(args.get(i)))
-				throw new IllegalArgumentException();
+				return null;
 			result[i+1] = javaString(args.get(i));
 		}
 		
 		return result;
+	}
+	
+	private String[] toEnvironment(IStrategoTerm env) {
+		if (!isTermList(env)) return null;
+
+		String[] results = new String[env.getSubtermCount()];
+		for (int i = 0; i < results.length; i++) {
+			if (!isTermString(env.getSubterm(i))) return null;
+			results[i] = asJavaString(env.getSubterm(i));
+		}
+		
+		return results;
 	}
 }

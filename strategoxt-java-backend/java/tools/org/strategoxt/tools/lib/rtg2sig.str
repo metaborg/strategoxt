@@ -24,7 +24,6 @@ strategies
     , ![]
     , xtc-rtg-front-end
       ; core-rtg2sig(|<guess-module-name>)
-      ; write-to
       ; xtc-pp-abstract-stratego
     )
 

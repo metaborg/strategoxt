@@ -31,7 +31,7 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
     }
     
     public IStrategoTerm getSubterm(int index) {
-        throw new ArrayIndexOutOfBoundsException();
+        throw new IndexOutOfBoundsException();
     }
 
     public IStrategoTerm[] getAllSubterms() {

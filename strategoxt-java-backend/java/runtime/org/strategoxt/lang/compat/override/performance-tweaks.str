@@ -41,6 +41,9 @@ strategies
   override foldr(nul, sum, s) =
     ?[_ | _] < SRTS-EXT-crush(nul, sum, s) + []; nul
   
+  override repeat(s) =
+    SRTS-EXT-repeat(s)
+  
   override filter(s) =
     SRTS-EXT-filter(s)
   
@@ -52,3 +55,5 @@ strategies
   external SRTS-EXT-filter(s|)
 
   external SRTS-EXT-at-end(s|)
+
+  external SRTS-EXT-repeat(s|)

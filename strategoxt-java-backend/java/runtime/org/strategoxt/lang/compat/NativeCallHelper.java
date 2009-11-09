@@ -14,7 +14,6 @@ import org.strategoxt.lang.StrategoException;
  */
 public class NativeCallHelper {	
 	
-	@Deprecated
 	public int call(String[] commandArgs, File workingDir, PrintStream outStream, PrintStream errorStream)
 		throws InterruptedException, IOException {
 		return call(commandArgs, null, workingDir, outStream, errorStream);

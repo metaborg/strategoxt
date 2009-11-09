@@ -39,7 +39,7 @@ public class StrategoReal extends StrategoTerm implements IStrategoReal {
     }
 
     public IStrategoTerm getSubterm(int index) {
-        throw new ArrayIndexOutOfBoundsException();
+        throw new IndexOutOfBoundsException();
     }
 
     public int getSubtermCount() {

@@ -219,7 +219,7 @@ runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/
 ###### TOOLS #######
 
 tools/org/strategoxt/tools/Main.java : $(TOOLSTRS:.str=.rtree)
-	$(STRJ) -i tools/org/strategoxt/tools/tools.rtree -o $@ $(STRJFLAGS) -p org.strategoxt.tools -la stratego-lib -la stratego-xtc -la stratego-gpp -la stratego-rtg -la stratego-sglr -la stratego-tool-doc -la stratego-sdf -I $(STRATEGOXT)/share/sdf/xml-front -I tools/org/strategoxt/tools/lib -I $(STRATEGOXT)/share/sdf/gpp -I $(STRATEGOXT)/share/sdf/stratego-regular -I $(STRATEGOXT)/share/stratego-regular -I $(STRATEGOXT)/share/sdf/sdf-front
+	$(STRJ) -i tools/org/strategoxt/tools/tools.rtree -o $@ $(STRJFLAGS) -p org.strategoxt.tools -la stratego-lib -la stratego-xtc -la stratego-gpp -la stratego-rtg -la stratego-sglr -la stratego-tool-doc -la stratego-sdf -la stratego-aterm -la strc -I $(STRATEGOXT)/share/sdf/xml-front -I tools/org/strategoxt/tools/lib -I $(STRATEGOXT)/share/sdf/gpp -I $(STRATEGOXT)/share/sdf/stratego-regular -I $(STRATEGOXT)/share/stratego-regular -I $(STRATEGOXT)/share/sdf/sdf-front
 
 ###### COMPILER #######
 

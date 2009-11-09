@@ -39,7 +39,7 @@ public class StrategoInt extends StrategoTerm implements IStrategoInt {
     }
 
     public IStrategoTerm getSubterm(int index) {
-        throw new ArrayIndexOutOfBoundsException();
+        throw new IndexOutOfBoundsException();
     }
 
     public int getSubtermCount() {

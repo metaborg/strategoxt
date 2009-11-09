@@ -7,31 +7,58 @@ imports
   lib/sdf-options
   lib/core-sdf-grammar2rtg
   regular-xtc-tools
+  sdf-desugar
 
 strategies
 
   main-sdf2rtg =
     xtc-io-wrap(
-      sdf-main-module-option + ignore-option
+      sdf-main-module-option + ignore-option + native-executables-option
     , sdf2rtg-usage
     , sdf2rtg-about
-    , !["sdf2table", "implodePT", "sdf-desugar"]
+    , !["sdf2table", "implodePT"]
     , sdf2rtg
     )
 
   sdf2rtg = 
-      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
-    ; xtc-transform(!"implodePT")
-    ; xtc-transform(!"sdf-desugar", pass-verbose)
+      native-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; native-transform(!"implodePT", ![])
     ; read-from
+    ; sdf-desugar
     ; core-sdf-grammar2rtg
     ; xtc-pp-rtg
     <+ <xtc-exit> 1
+
+  native-transform(tool, args) =
+    if <get-config> "-Xnativepath" => nativepath then
+      xtc-ensure-file => FILE(file)
+    ; xtc-new-file    => file'
+    ; tool' := <conc-strings> (nativepath, "/bin/", <tool>)
+    ; lib   := <conc-strings> ("LD_LIBRARY_PATH=", nativepath, "/lib")
+    ; <call> (tool', [lib], ["-i", file, "-o", file' | <args>])
+    ; !FILE(file')
+    else
+      xtc-transform(tool, args)
+    end
+  <+
+    fatal-err(|[<tool>, " failed"])
+
+  native-executables-option =
+    ArgOption("-Xnativepath"
+    , <set-config> ("-Xnativepath", <id>)
+    , !HelpString("-Xnativepath", "Sets the path to the native sdf2table and implodePT executables")
+    )
 
   ignore-option =
     Option("--ignore-missing-cons"
     , <set-config> (IgnoreMissingCons(), ())
     , !HelpString("--ignore-missing-cons", "Ignore productions that do not have a constructor (default: produce error)")
+    )
+
+  module-option =
+    ArgOption("--module"
+    , where(<set-config> ("--module", <id>))
+    , !"--module n       Generated module has name n"
     )
 
   sdf2rtg-usage =

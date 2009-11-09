@@ -14,7 +14,7 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-sglr
-  strategoxt-xtc-tools
+  // strategoxt-xtc-tools (in libstrc)
   lib/asfix-abstractions
   lib/pack-sdf-options
 
@@ -68,7 +68,7 @@ strategies
 
      in get-module-name => module-name
       ; <fprintnl> (stderr(), ["pack-sdf: error: module ", module-name, " not found"])
-      ; <bagof-ImportedFrom> module-name
+      ; <bagof-ImportedFrom'> module-name
       ; if [] then
           id
         else if ?[mod] then
@@ -238,7 +238,7 @@ strategies
     ; where(
         map({import:
             ?import
-          ; rules(ImportedFrom :+ import -> mod)
+          ; rules(ImportedFrom' :+ import -> mod)
         })
       )
     <+ debug(!"a -------------------- "); fail

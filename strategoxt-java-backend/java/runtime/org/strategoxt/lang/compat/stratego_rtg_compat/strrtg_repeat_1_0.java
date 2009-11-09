@@ -1,25 +1,10 @@
 package org.strategoxt.lang.compat.stratego_rtg_compat;
 
-import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
+import org.strategoxt.lang.SRTS_EXT_repeat_1_0;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class strrtg_repeat_1_0 extends Strategy {
-	public static strrtg_repeat_1_0 instance = new strrtg_repeat_1_0();
-	
-	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
-		IStrategoTerm result = current;
-		IStrategoTerm next = s.invoke(context, result);
-		
-		while (next != null) {
-			result = next;
-			next = s.invoke(context, result);
-		}
+public class strrtg_repeat_1_0 extends SRTS_EXT_repeat_1_0 {
 
-		return result;
-	}
 }

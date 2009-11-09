@@ -13,6 +13,7 @@ strategies
   // TODO: also implement fork-and-wait?
   
   override call =
+    // (Java extension)
     ?(program, args);
     <is-substring(!".")> program;
     if <is-list> args then
@@ -26,6 +27,12 @@ strategies
 
     log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
     prim("SSL_EXT_call", program, args) => 0
+  <+
+    // (Java extension)
+    ?(program, env, args);
+
+    log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+    prim("SSL_EXT_call", (program, env), args) => 0
 
   override fork(child) =
     fatal-err(|"Forking of applications is not supported on Java at this time")

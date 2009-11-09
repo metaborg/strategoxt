@@ -74,7 +74,7 @@ INPUTDIR=`dirname $INPUT`
 INPUT2=
 INPUT3=
 if head -n 1 $INPUT | grep '^package' &>/dev/null; then
-  # PACKAGE=`head $INPUT -n 1 | sed 's/package //; s/\;//'`
+  PACKAGE="`head $INPUT -n 1 | sed 's/package //; s/\;//'`."
   # PACKAGEDIR=`echo "$PACKAGE" | sed 's!\.!/!g	'`
   INPUT2="$INPUTDIR/Main.java"
   INPUTDIR2=`cd $INPUTDIR; pwd` # canonicalize
@@ -103,10 +103,9 @@ fi
 
 MAINCLASS="`head -n1 $INPUT | grep "package [^;];" | sed 's/package ([^;]*);/$1\./'``basename $INPUT .java`"
 echo "Manifest-Version: 1.0" > $TEMPDIR/MANIFEST.MF
-echo "Main-Class: $MAINCLASS" >> $TEMPDIR/MANIFEST.MF
+echo "Main-Class: $PACKAGE$MAINCLASS" >> $TEMPDIR/MANIFEST.MF
 echo "Class-Path: strategoxt.jar" >> $TEMPDIR/MANIFEST.MF
 echo >> $TEMPDIR/MANIFEST.MF
-cat $TEMPDIR/MANIFEST.MF
 
 if ls $INPUTDIR/*.str &>/dev/null; then
   echo "WARNING: using this build directory may mean non-term files are included as attachments" >&2
