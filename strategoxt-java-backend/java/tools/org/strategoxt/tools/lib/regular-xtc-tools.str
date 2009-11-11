@@ -2,12 +2,20 @@ module regular-xtc-tools
 imports
   pp-rtg
   libstratego-sglr
+  libstrc
 
 strategies
 
   xtc-pp-abstract-stratego =
-    xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ()])
-
+    with(
+      file   := <xtc-new-file>
+    ; stream := <open-stream> (file, "w")
+    )
+  ; finally(
+      pp-stratego-stream(|stream), <fclose> stream
+    )
+  ; !FILE(file)
+  
   /**
    * @type FILE -> RTG
    */
