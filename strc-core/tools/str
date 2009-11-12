@@ -107,13 +107,14 @@ TEMPFILE=$TEMP/str-`date +'%N'`.str
 echo "$PROGRAM" |
   perl -pe 's/\blibstratego-lib\b//; s/module\s+[\w\-'']+\b/$& imports libstratego-lib strategies/' > $TEMPFILE
 
-(strc $FOPTION $LOPTION $COPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 -la stratego-lib -la stratego-xtc -la strc -la stratego-sglr -la stratego-rtg -I . -i $TEMPFILE -o $TEMPFILE.out --statistics 0; RET=$?) 2>&1 | grep -vE '^ *[ig]cc|warning ] Mismatch between basename|info ] Compiling|libtool: '
+(strc $FOPTION $LOPTION $COPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 -la stratego-lib -la stratego-xtc -la strc -la stratego-sglr -la stratego-rtg -I . -i $TEMPFILE -o $TEMPFILE.out --statistics 0 || exit 1) 2>&1 | grep -vE '^ *[ig]cc|warning ] Mismatch between basename|info ] Compiling|libtool: '
+RET=$?
 
 rm $TEMPFILE
 
 if [ -e $TEMPFILE.out ]; then
   if [ $FOPTION ]; then
-    pp-stratego -a -i $TEMPFILE.out
+    (pp-stratego -a -i $TEMPFILE.out || pp-aterm -i $TEMPFILE.out)
   elif [ $GOPTION ]; then
     echo 'run
           backtrace' > $TEMPFILE.gdb
