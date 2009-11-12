@@ -120,6 +120,7 @@ test106_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test107_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test108_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test109_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
+test112_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 
 test_chain01_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
 test_chain02_LDADD = $(STRATEGOLIB) $(STRATEGORUNLIBS)
@@ -250,6 +251,7 @@ nodist_test108_SOURCES = test108.c
 nodist_test109_SOURCES = test109.c
 nodist_test110_SOURCES = test110.c
 nodist_test111_SOURCES = test111.c
+nodist_test112_SOURCES = test112.c
 
 nodist_test_chain01_SOURCES = test-chain01.c
 nodist_test_chain02_SOURCES = test-chain02.c
