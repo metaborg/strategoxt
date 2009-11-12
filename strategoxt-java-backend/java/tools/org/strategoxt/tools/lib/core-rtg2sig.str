@@ -38,6 +38,10 @@ strategies
             Conc : List(a) * List(a) -> List(a)
       ]|
 
+  core-rtg2sig =
+    ?[_, modulename, sdf]
+  ; <core-rtg2sig(|modulename)> sdf
+
 /**
  * @todo  Create at least some constructors for labelled content models
  * @todo  Anonymous term applications
