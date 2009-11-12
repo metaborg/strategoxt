@@ -10,6 +10,7 @@ imports
   Stratego-Sugar
   stratego/strc/lib/stratlib
   stratego/strc/front/DefaultStrat
+  stratego/strc/front/desugar-string-quotations
 
 strategies // Desugaring Strategies
 

@@ -7,6 +7,7 @@
  * 
  * @author Eelco Visser <visser@acm.org>
  * @author Karl Trygve Kalleberg <karltk@strategoxt.org>
+ * @author Lennart Kats <lennart add lclnet.nl>
  */
 module term/string
 imports 
@@ -603,6 +604,37 @@ strategies
     <align-right> (<s> (), <Fst>, <Snd>)
 
   /**
+   * Remove padding from a string.
+   *
+   * @internal
+   * @since 0.18
+   */
+  remove-padding =
+    string-as-chars(
+      split-at-newlines
+    ; where(padding := <length> <Hd>)
+    ; remove-padding(|padding, padding)
+    ; at-last(rtrim(' ' + '\t'))
+    ; separate-by(|['\n'])
+    ; concat
+    )
+  
+  internal remove-padding(|max, n) =
+    where(<leq> (n, 0))
+  ; [id | remove-padding(|max, max)]
+  <+
+    [?[' '  | <id>] | id]
+  ; remove-padding(|max, <dec> n)
+  <+
+    [?['\t' | <id>] | id]
+  ; remove-padding(|max, <subt> (n, 4))
+  <+
+    where(max' := <subt> (max, n))
+  ; [id | remove-padding(|max', max')]
+  <+
+    []
+
+  /**
    * @type Char * String * Int -> String
    */
   align-right :
@@ -944,18 +976,17 @@ strategies
    */
   get-lines =
     explode-string
-    ; let split-at-newlines = {tl: 
-            at-suffix(
-               (['\n'       | tl] -> [])
-            <+ (['\r', '\n' | tl] -> [])
-            <+ (['\r'       | tl] -> [])
-            )
-            ; ![<id> | <split-at-newlines> tl]
-            <+ ![<id>]
-          }
-       in split-at-newlines
-      end
+    ; split-at-newlines
     ; map(implode-string)
+
+  internal split-at-newlines =
+    at-suffix(
+       (['\n'       | tl] -> [])
+    <+ (['\r', '\n' | tl] -> [])
+    <+ (['\r'       | tl] -> [])
+    )
+    ; ![<id> | <split-at-newlines> tl]
+    <+ ![<id>]
 
   /**
    * Applies a strategy to all lines in a string.

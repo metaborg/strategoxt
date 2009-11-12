@@ -329,6 +329,33 @@ rules
       else
         !|[ H hs=0 [ "\"" ~lit:i "\""] ]|
       end
+  
+  stratego-to-abox :
+    StringQuotation1(s, t) -> H hs=0 [ KW["$["] ~*t KW["]"] ]
+  
+  stratego-to-abox :
+    StringQuotation2(s, t) -> H hs=0 [ KW["${"] ~*t KW["}"] ]
+  
+  stratego-to-abox :
+    StringQuotation3(s, t) -> H hs=0 [ KW["$("] ~*t KW[")"] ]
+  
+  stratego-to-abox :
+    StringQuotation4(s, t) -> H hs=0 [ KW["$<"] ~*t KW[">"] ]
+  
+  stratego-to-abox :
+    StringEscape1(_, t) -> H hs=0 [ KW["["] ~t KW["]"] ]
+  
+  stratego-to-abox :
+    StringEscape2(_, t) -> H hs=0 [ KW["{"] ~t KW["}"] ]
+  
+  stratego-to-abox :
+    StringEscape3(_, t) -> H hs=0 [ KW["("] ~t KW[")"] ]
+  
+  stratego-to-abox :
+    StringEscape4(_, t) -> H hs=0 [ KW["<"] ~t KW[">"] ]
+  
+  stratego-to-abox :
+    QStr(i) -> S(i)
 
   stratego-to-abox =
     ?Char(i)

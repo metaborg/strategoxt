@@ -26,7 +26,7 @@ tests =									 \
 		  test84 test85 test86 test87 test88 test89 test90		 \
 		  test91 test92 test93 test94 test95 test96			 \
 		  test97 test98	test99 test100 test101 test102 test103		 \
-		  test104 test105 test106 test107 test108 test109 test110 test111	 \
+		  test104 test105 test106 test107 test108 test109 test110 test111 test112	 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 io-test4	 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04		 \
                   test-chain01 test-chain02 test-chain03			 \

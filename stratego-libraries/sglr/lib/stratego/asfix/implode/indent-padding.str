@@ -1,0 +1,127 @@
+/**
+ * Indent-padding annotation.
+ *
+ * @author Lennart Kats
+ */
+module stratego/asfix/implode/indent-padding
+imports
+  stratego/concrete-syntax/markers
+
+signature constructors
+
+  AddPadding     : Term -> AddPadding
+  PaddingContext : Term -> PaddingContext
+  PaddingId      : Term -> PaddingId
+  PaddingStart   : PaddingStart
+  indentpadding  : Attr
+
+strategies
+    
+  /**
+   * Add an annotation uniquely identifying each {indentpadding} lexical.
+   */
+  AddPaddedLexicalAnno :
+    appl(prod(_, _, attrs(a*)), _) -> <id> {PaddingId(<new>)}
+    where
+      <one(term(indentpadding()))> a* 
+    
+  ImplodePaddedLexical :
+    appl(prod(_, _, attrs(a*)), _) -> AddPadding(imploded) {PaddingContext(<id>)}
+    where
+      <one(term(indentpadding()))> a*
+    with
+      imploded := <asfix-yield-appl>
+
+  AddIndentPadding(|asfix) :
+    AddPadding(t) -> t'
+    with
+      if !asfix => appl(_, _) then
+        where(
+          asfix'  := <strip-tree-before(?_{PaddingId(_)})> asfix
+        ; padding := <asfix-yield-appl-chars> asfix'
+        //; <debug(!"  padding1: ")> <write-to-string> <implode-string> <asfix-yield-appl-chars> asfix
+        //; <debug(!"  padding2: ")> <write-to-string> <implode-string> padding
+        )
+      ; if (!asfix => _{PaddingId(_)} <+ <not(one('\n'))> padding) then
+          t' := <id> // keep constructor (add padding later)
+        else
+          t' := <add-indent-padding-string(|asfix)> t
+        end
+      else
+        t' := <id> // keep constructor (add padding later)
+      end
+
+  /**
+   * The yield of an AsFixTerm are the characters at the leaves of the tree.
+   */
+  asfix-yield-appl-chars =
+    let yield(|chars) =
+            asfix-yield-acc(yield | chars)
+
+     in ?appl(_, <id>)
+      ; yield(|[])
+    end
+  
+  add-indent-padding-string(|asfix) =
+    topdown(try(AddIndentPaddingString(|asfix)))
+  ; conc-to-cons
+  
+  AddIndentPaddingString(|asfix) :
+    AddPadding(s){a*} -> s'
+    with
+      if !a* => [PaddingContext(context)] then
+        asfix'   := <strip-tree-before(?context)> asfix
+      ; padding  := <asfix-yield-appl-chars; chars-after-newlines> asfix'
+      ; padding' := <chars-to-whitespace> padding
+      ; s'       := <conc; implode-string> (padding', <explode-string> s)
+      else
+        s' := s
+      end
+  
+  strip-tree-before(s) =
+    if is-list then
+      [s | id]; ![]
+    <+
+      try(strip-tree-before-list(s))
+    else
+      all(strip-tree-before(s))
+    end
+  
+  strip-tree-before-list(s) :
+    [i | i*] -> stripped*
+    where
+      if <oncetd(s)> i then
+        stripped* := [<strip-tree-before(s)> i]
+      else
+        stripped* := [i | <strip-tree-before(s)> i*]
+      end
+  
+  chars-to-whitespace :
+    [c | c*] -> c'*
+    where
+      if !c => '\t' then
+        c'* := ['\t' | <chars-to-whitespace> c*]
+      else
+        c'* := [' '  | <chars-to-whitespace> c*]
+      end
+    
+  chars-to-whitespace :
+    [] -> []
+  
+  chars-after-newlines :
+    input @ [c | c*] -> c''*
+    where
+      if !c => '\n' + !c => '\r' then
+        c''* := <chars-after-newlines> c*
+      else
+        c'* := <chars-after-newlines> c*
+      ; if !c'* => c* then
+          c''* := input
+        else
+          c''* := c'*
+        end
+      end
+  
+  chars-after-newlines :
+    [] -> []
+

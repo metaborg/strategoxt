@@ -16,6 +16,7 @@ imports
   stratego/asfix/implode/list
   stratego/asfix/implode/sort
   stratego/asfix/implode/tuple
+  stratego/asfix/implode/indent-padding
 
 /**
  * Main entry points for implosion of AsFix
@@ -33,23 +34,54 @@ strategies
    */
   implode-asfix(implode-concrete) =
     ?parsetree(<id>, _)
-    ; rec x(
-         ImplodeLexical
-
-      <+ where(not(implode-concrete))
-         ; skip-concrete(x)
-
-      <+ appl(id, filter(not(is-ignorable-syntax)))
-         ; ( ImplodeOptionalList; x
-          <+ ReplCons(x)
-          <+ ImplodeInjection; x
-          <+ ImplodeTuple; x
-          <+ ImplodeAlternative; x)
-
-      <+ amb(map(x))
-
-      <+ all(x)
-      )
+    ; topdown(try(AddPaddedLexicalAnno))
+    ; ?asfix
+    ; rec x({
+        ?asfix
+      ; (
+           ImplodePaddedLexical
+      
+        <+ ImplodeLexical
+  
+        <+ where(not(implode-concrete))
+           ; skip-concrete(x)
+  
+        <+ appl(id, filter(not(is-ignorable-syntax)))
+           ; ( ImplodeOptionalList; x; (?AddPadding(_) < !AddPadding(<x>) + x)
+            <+ ReplCons({ asfixchild:
+                   ?asfixchild
+                 ; x
+                 ; if ?AddPadding(_) then
+                     AddIndentPadding(|asfixchild)
+                   ; try(?p @ AddPadding(_))
+                   end
+               })
+               ; if !p then
+                   !AddPadding(<id>)
+                 end
+            <+ ImplodeInjection;   (?AddPadding(_) < !AddPadding(<x>) + x)
+            <+ ImplodeTuple;       (?AddPadding(_) < !AddPadding(<x>) + x)
+            <+ ImplodeAlternative; (?AddPadding(_) < !AddPadding(<x>) + x)
+            )
+  
+        <+ amb(map(x))
+        
+        <+ [id | x]
+           ; if ?[_ | AddPadding(_)] then
+               !AddPadding(<[x | id]>)
+             else
+               [x | id]
+             end
+  
+        <+ all(x)
+        )
+      ; if ?AddPadding(_) then
+          AddIndentPadding(|asfix)
+        end
+      })
+    ; if ?AddPadding(_) then
+        add-indent-padding-string(|asfix)
+      end
 
 strategies
 

@@ -132,6 +132,7 @@ strategies
     Match(oncetd(fail
       <+ ?BuildDefault(_) 
       <+ ?BuildDefaultPT(_)
+      <+ ?_{"quoted"}
     ))
     ; err(|"build symbols in match pattern")
   
