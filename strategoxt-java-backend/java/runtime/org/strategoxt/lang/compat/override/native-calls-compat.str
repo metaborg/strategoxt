@@ -15,7 +15,7 @@ strategies
   override call =
     // (Java extension)
     ?(program, args);
-    <is-substring(!".")> program;
+    <is-substring(!"."); not(is-substring(!"/"))> program;
     if <is-list> args then
       prim("SSL_EXT_java_call", program, [program | args], 0)
     else

@@ -65,6 +65,7 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		if (!isTermInt(tvars[2])) return false;
 
 		String className = ((IStrategoString) tvars[0]).stringValue();
+		if (className.indexOf('/') != -1) return false;
 		IStrategoTerm input = tvars[1];
 		Context parentContext = ((InteropContext) env).getContext();
 		boolean sameContext = ((IStrategoInt) tvars[2]).intValue() != 0;

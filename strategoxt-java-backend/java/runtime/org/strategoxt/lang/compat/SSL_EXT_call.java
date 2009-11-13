@@ -82,10 +82,21 @@ public class SSL_EXT_call extends AbstractPrimitive {
 		for (int i = 0; i < args.size(); i++) {
 			if (!isTermString(args.get(i)))
 				return null;
-			result[i+1] = javaString(args.get(i));
+			result[i+1] = handleSpacesInPath(javaString(args.get(i)));
 		}
 		
 		return result;
+	}
+	
+	private String handleSpacesInPath(String potentialPath) {
+		return (potentialPath.indexOf(' ') != -1 && isWindows())
+				? "\"" + potentialPath + "\""
+				: potentialPath;
+	}
+	
+	private static boolean isWindows() {
+		// Java only publishes this as a string
+		return System.getProperty("os.name").toLowerCase().indexOf("win") != -1;
 	}
 	
 	private String[] toEnvironment(IStrategoTerm env) {

@@ -31,17 +31,22 @@ strategies
 
   native-transform(tool, args) =
     if <get-config> "-Xnativepath" => nativepath; not("") then
-      xtc-ensure-file => FILE(file)
-    ; xtc-new-file    => file'
-    ; tool' := <conc-strings> (nativepath, "/bin/", <tool>)
-    ; lib   := <conc-strings> ("LD_LIBRARY_PATH=", nativepath, "/lib")
-    ; <call> (tool', [lib], ["-i", file, "-o", file' | <args>])
-    ; !FILE(file')
+      xtc-ensure-file => FILE(input)
+    ; xtc-new-file    => output
+    ; input' := <abspath> input
+    ; cwd    := <getcwd>
+    ; <chdir <+ fatal-err(|"Native tool path not found")> nativepath
+    ; <call> (<tool>, ["-i", input', "-o", output | <args>])
+    ; if not(<file-exists> output) then // (shouldn't be reachable)
+        fatal-err(|["Native tool ", <tool>, " failed to produce an output file."])
+      end
+    ; <chdir> cwd
+    ; !FILE(output)
     else
       xtc-transform(tool, args)
     end
   <+
-    fatal-err(|[<tool>, " failed"])
+    <fatal-err(|[<tool>, " failed"])> <args <+ !"<args?>">
 
   native-executables-option =
     ArgOption("-Xnativepath"
