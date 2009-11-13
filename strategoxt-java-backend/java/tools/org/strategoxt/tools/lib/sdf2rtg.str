@@ -33,7 +33,7 @@ strategies
     if <get-config> "-Xnativepath" => nativepath; not("") then
       xtc-ensure-file => FILE(input)
     ; xtc-new-file    => output
-    ; input' := <abspath> input
+    ; input' := <try(abspath; file-exists)> input
     ; cwd    := <getcwd>
     ; <chdir <+ fatal-err(|"Native tool path not found")> nativepath
     ; <call> (<tool>, ["-i", input', "-o", output | <args>])
