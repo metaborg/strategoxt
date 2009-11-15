@@ -128,7 +128,7 @@ strategies
             end
   
          pack-is-qualified =
-           ?['/' | _] + ?['.' | _ ]
+           ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
 
      in ?(IncludePathName(<pack-qualify-pathname>), _)
       ; if file-exists then
