@@ -1,11 +1,12 @@
 include $(top_srcdir)/Makefile.xt
 
-TESTFILES   = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES) $(ASTERTESTFILES)
-JAVAFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
-CLASSFILES  = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
-CTREEFILES  = $(subst .java,.ctree,$(JAVAFILES))
-RUNNERFILES = $(subst .java,.runner,$(JAVAFILES))
-CLEANFILES  = $(JAVAFILES) $(CLASSFILES) $(CTREEFILES)
+TESTFILES    = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES) $(ASTERTESTFILES)
+JAVAFILES    = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
+CLASSFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
+CTREEFILES   = $(subst .java,.ctree,$(JAVAFILES))
+RUNNERFILES  = $(subst .java,.runner,$(JAVAFILES))
+IRUNNERFILES = $(subst .java,.irunner,$(JAVAFILES))
+CLEANFILES   = $(JAVAFILES) $(CLASSFILES) $(CTREEFILES)
 
 EXTRA_DIST = \
   $(wildcard */*.str) \
@@ -105,6 +106,13 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 %.runner : %.class
 	@ echo "cd `dirname $<`; java -client -Xverify:none -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` `basename $< .class`" > $@
+	@ chmod 755 $@
+
+%.irun : %.ctree
+	cd `dirname $<`; java -client -Xverify:none -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` run `basename $<` main
+
+%.irunner : %.ctree
+	@ echo "cd `dirname $<`; java -client -Xverify:none -Xss2m -cp `echo .:$(CLASSPATH) | sed 's!:../!:../../!g'` run `basename $<` main" > $@
 	@ chmod 755 $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf

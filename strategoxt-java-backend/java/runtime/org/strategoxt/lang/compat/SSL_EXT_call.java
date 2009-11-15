@@ -12,7 +12,6 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
@@ -49,7 +48,7 @@ public class SSL_EXT_call extends AbstractPrimitive {
 				return false;
 			}
 			
-			String[] commandArgs = toCommandArgs(program, tvars);
+			String[] commandArgs = toCommandArgs(program, tvars[1].getAllSubterms());
 			if (commandArgs == null)
 				return false;
 			
@@ -74,24 +73,32 @@ public class SSL_EXT_call extends AbstractPrimitive {
 		}
 	}
 
-	private String[] toCommandArgs(String program, IStrategoTerm[] tvars) throws IllegalArgumentException {
-		IStrategoList args = (IStrategoList) tvars[1];
-		String[] result = new String[1 + args.size()];
-		result[0] = program;
+	public static String[] toCommandArgs(String program, IStrategoTerm[] args) throws IllegalArgumentException {
+		String[] results = new String[1 + args.length];
+		results[0] = handleSpacesInPath(addExecutableExtension(program));
 		
-		for (int i = 0; i < args.size(); i++) {
-			if (!isTermString(args.get(i)))
+		for (int i = 0; i < args.length; i++) {
+			if (!isTermString(args[i]))
 				return null;
-			result[i+1] = handleSpacesInPath(javaString(args.get(i)));
+			results[i+1] = handleSpacesInPath(javaString(args[i]));
 		}
 		
-		return result;
+		return results;
 	}
 	
-	private String handleSpacesInPath(String potentialPath) {
-		return (potentialPath.indexOf(' ') != -1 && isWindows())
-				? "\"" + potentialPath + "\""
-				: potentialPath;
+	private static String handleSpacesInPath(String potentialPath) {
+		if (potentialPath.indexOf(' ') != -1 && isWindows() && !potentialPath.startsWith("\"")) {
+			return "\"" + potentialPath + "\"";
+		} else {
+			return potentialPath;
+		}
+	}
+	
+	private static String addExecutableExtension(String command) {
+		if (!new File(command).exists() && isWindows()) {
+			if (new File(command + ".exe").exists()) return command + ".exe";
+		}
+		return command;
 	}
 	
 	private static boolean isWindows() {

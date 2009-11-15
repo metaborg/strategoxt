@@ -81,6 +81,9 @@ public class InteropSDefT extends SDefT {
 		String name = getName();
 		int countEnd = name.lastIndexOf('_');
 		int countStart = name.lastIndexOf('_', countEnd - 1);
+		if (countStart == -1 || countEnd == -1) {
+			return NO_SVARS; // FIXME: properly handle "lifted" InteropSDefT strategies
+		}
 		int count = Integer.parseInt(name.substring(countStart + 1, countEnd));
 		
 		if (count == 0) return NO_SVARS;
@@ -100,15 +103,21 @@ public class InteropSDefT extends SDefT {
 		
 		String name = getName();
 		int countStart = name.lastIndexOf('_');
-		int count = Integer.parseInt(name.substring(countStart + 1));
+		int count;
+		try {
+			count = Integer.parseInt(name.substring(countStart + 1));
+		} catch (NumberFormatException e) {
+			// FIXME: properly handle "lifted" InteropSDefT strategies
+			return NO_STRINGS;
+		}
 		
 		if (count == 0) return NO_STRINGS;
-		
+	
 		results = new String[count];
 		for (int i = 0; i < results.length; i++) {
 			results[i] = "t" + i;
 		}
-		
+	
 		return results;
 	}
 	
@@ -170,6 +179,9 @@ public class InteropSDefT extends SDefT {
 			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
 		} catch (StrategoExit e) {
 			throw new InterpreterExit(e.getValue(), e);
+		} catch (MissingStrategyException e) {
+			// Programmer error: not the same as a UndefinedStrategyException
+			throw new InterpreterException(e);
 		}
 		
 		if (result != null) {

@@ -33,12 +33,13 @@ strategies
     if <get-config> "-Xnativepath" => nativepath; not("") then
       xtc-ensure-file => FILE(input)
     ; xtc-new-file    => output
-    ; input' := <try(abspath; file-exists)> input
+    ; tool'  := <conc-strings> (nativepath, <tool>)
+    ; input' := <abspath> input
     ; cwd    := <getcwd>
     ; <chdir <+ fatal-err(|"Native tool path not found")> nativepath
-    ; <call> (<tool>, ["-i", input', "-o", output | <args>])
+    ; <call> (tool', ["-i", input', "-o", output | <args>])
     ; if not(<file-exists> output) then // (shouldn't be reachable)
-        fatal-err(|["Native tool ", <tool>, " failed to produce an output file."])
+        fatal-err(|["Native tool ", tool', " failed to produce an output file."])
       end
     ; <chdir> cwd
     ; !FILE(output)
@@ -46,7 +47,7 @@ strategies
       xtc-transform(tool, args)
     end
   <+
-    <fatal-err(|[<tool>, " failed"])> <args <+ !"<args?>">
+    <fatal-err(|["Native tool ", <tool>, " failed"])> <args <+ !"<args?>">
 
   native-executables-option =
     ArgOption("-Xnativepath"

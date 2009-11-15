@@ -13,9 +13,9 @@ strategies
   // TODO: also implement fork-and-wait?
   
   override call =
-    // (Java extension)
+    // (Java extension) // FIXME: properly detect that <call> isn't invoking a class
     ?(program, args);
-    <is-substring(!"."); not(is-substring(!"/"))> program;
+    <where(is-substring(!".")); not(is-substring(!"/") + is-substring(!"\\") + file-exists)> program;
     if <is-list> args then
       prim("SSL_EXT_java_call", program, [program | args], 0)
     else

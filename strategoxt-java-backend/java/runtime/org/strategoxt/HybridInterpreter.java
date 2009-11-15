@@ -1,5 +1,6 @@
 package org.strategoxt;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -17,10 +18,14 @@ import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.core.UndefinedStrategyException;
 import org.spoofax.interpreter.library.IOperatorRegistry;
+import org.spoofax.interpreter.stratego.SDefT;
+import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
+import org.strategoxt.lang.InteropSDefT;
+import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
@@ -42,9 +47,14 @@ import org.strategoxt.stratego_lib.stratego_lib;
  */
 public class HybridInterpreter extends Interpreter {
 	
+	private static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
+	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
+
 	private final HybridCompiledContext compiledContext;
 	
 	private boolean registeredLibraries;
+	
+	private boolean loadedJars;
 
 	public HybridInterpreter() {
 		this(new BAFBasicTermFactory());
@@ -61,7 +71,104 @@ public class HybridInterpreter extends Interpreter {
 	}
 	
 	public static void main(String... args) {
-		// TODO: HybridInterpreter.main()
+		if (args == null || args.length < 1) {
+			System.out.println(USAGE);
+			System.exit(127);
+		}
+		HybridInterpreter interpreter = new HybridInterpreter();
+		int i = mainLoadAll(interpreter, args);
+		boolean nothingLoaded = i == 0;
+		
+		String main = args[i++];
+
+		if (nothingLoaded)
+			warnUnqualifiedInvoke(interpreter, main);
+		
+		IStrategoString[] mainArgs = new IStrategoString[args.length - i + 1];
+		mainArgs[0] = interpreter.getFactory().makeString(main);
+		
+		for (int j = 1; j < mainArgs.length; i++, j++) {
+			mainArgs[j] = interpreter.getFactory().makeString(args[i]);
+		}
+		interpreter.setCurrent(interpreter.getFactory().makeList(mainArgs));
+		try {
+			interpreter.invoke(main);
+		} catch (InterpreterExit e) {
+			System.exit(e.getValue());
+		} catch (UndefinedStrategyException e) {
+			System.err.println(e.getMessage());
+			System.exit(125);
+		} catch (InterpreterException e) {
+			e.printStackTrace();
+			System.exit(124);
+		}
+	}
+
+	private static void warnUnqualifiedInvoke(HybridInterpreter interpreter, String main) {
+		interpreter.init();
+		SDefT invoked = interpreter.lookupUncifiedSVar(main);
+		if (invoked != null) {
+			String name = ((InteropSDefT) invoked).getStrategy().getClass().getName();
+			System.err.println("Warning: unqualified invocation of " + name);
+		}
+	}
+
+	private static int mainLoadAll(HybridInterpreter interpreter, String... args) {
+		int i = 0;
+		while (i < args.length) {
+			try {
+				if (args[i].endsWith(".ctree")) {
+					interpreter.load(args[i++]);
+				} else if (args[i].endsWith(".jar")) {
+					URL[] jars = { new File(args[i++]).toURL() };
+					interpreter.loadJars(jars);
+				} else {
+					break;
+				}
+			} catch (Exception e) {
+				System.err.println("Could not open input file " + args[i]
+						+ ": " + e.getClass().getSimpleName() + " - "
+						+ e.getMessage());
+				System.exit(126);
+			}
+		}
+		boolean nothingLoaded = i == 0;
+		if (i == args.length || (!nothingLoaded && args[i].indexOf('.') > -1)) {
+			System.err.println(USAGE);
+			System.exit(1);
+		} else if (nothingLoaded && args[i].indexOf('.') > -1) {
+			mainLocalJar(args); // avoid HybridInterpreter/InteropRegisters
+		}
+		return i;
+	}
+	
+	private static void mainLocalJar(String... args) {
+		String strategy = args[0];
+		String[] mainArgs = new String[args.length - 1];
+		System.arraycopy(args, 1, mainArgs, 0, mainArgs.length);
+		try {
+			Context context = new Context();
+			IStrategoTerm result;
+			try {
+				result = context.invokeStrategyCLI(strategy, strategy, mainArgs);
+			} finally {
+				context.getIOAgent().closeAllFiles();
+			}
+			if (result == null) {
+				System.err.println(strategy + (context.getTraceDepth() != 0
+								? ": rewriting failed, trace:"
+								: ": rewriting failed"));
+				context.printStackTrace();
+				System.exit(1);
+			} else {
+				System.exit(0);
+			}
+		} catch (MissingStrategyException e) {
+			System.err.println(e.getMessage());
+			System.exit(125);
+		} catch (StrategoExit e) {
+			System.exit(e.getValue());
+		}
 	}
 	
 	@Override
@@ -87,6 +194,7 @@ public class HybridInterpreter extends Interpreter {
 			throws SecurityException, IncompatibleJarException, IOException {
 
 		URLClassLoader classLoader = new URLClassLoader(jars, stratego_lib.class.getClassLoader());
+		loadedJars = true;
 		
 		for (URL jar : jars) {
 		    registerJar(classLoader, jar);
@@ -145,16 +253,18 @@ public class HybridInterpreter extends Interpreter {
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
 		
+		// FIXME: HybridInterpreter loads all libs into the same namespace
+		//        Which may affect interpreted code and invoke()
+		org.strategoxt.tools.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_gpp.Main.registerInterop(context, compiledContext);
 		org.strategoxt.stratego_aterm.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
 		org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
 		org.strategoxt.stratego_sdf.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_xtc.Main.registerInterop(context, compiledContext);
 		org.strategoxt.stratego_sglr.Main.registerInterop(context, compiledContext);
 		org.strategoxt.stratego_tool_doc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_rtg.Main.registerInterop(context, compiledContext);
-		org.strategoxt.stratego_gpp.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_xtc.Main.registerInterop(context, compiledContext);
 		org.strategoxt.java_front.Main.registerInterop(context, compiledContext);
+		org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
 		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
 	}
 	
@@ -172,11 +282,14 @@ public class HybridInterpreter extends Interpreter {
 			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
 		
 		try {
+			if (!loadedJars) init();
 			return super.invoke(name);
 		} catch (StrategoErrorExit e) {
 			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
         } catch (StrategoExit e) {
             throw new InterpreterExit(e.getValue(), e);
+        } catch (MissingStrategyException e) {
+        	throw new UndefinedStrategyException(e);
         } catch (StrategoException e) {
             throw new InterpreterException(e);
         }

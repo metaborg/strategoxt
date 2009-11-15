@@ -1,10 +1,8 @@
 package org.strategoxt.lang.compat;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 import org.strategoxt.lang.StrategoException;
@@ -47,16 +45,13 @@ public class NativeCallHelper {
 		@Override
 		public void run() {
 			try {
-				InputStreamReader streamReader = new InputStreamReader(input);
-				BufferedReader reader = new BufferedReader(streamReader);
-				
-				// NOTE: This might block if exceptionally long lines are printed
-				String line;
-				while ((line = reader.readLine()) != null) {
-					output.println(line);
+				byte[] buffer = new byte[512];
+				int read = 0;
+				while ((read = input.read(buffer, 0, 512)) != -1) {
+					output.write(buffer, 0, read);
 				}
 				
-				reader.close();
+				input.close();
 				output.flush();
 			} catch (IOException e) {
 				throw new StrategoException("IO Exception redirecting output from Process", e);
