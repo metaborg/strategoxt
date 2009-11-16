@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -62,6 +63,9 @@ public class Context extends StackTracer {
         addOperatorRegistry(ssl);
 
     	if (ioAgent != null) setIOAgent(ioAgent);
+    	
+    	if (factory instanceof WrappedATermFactory)
+    		throw new IllegalArgumentException("WrappedATermFactory is not supported at this time");
 
         compat.init();
     }
