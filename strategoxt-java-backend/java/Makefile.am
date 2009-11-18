@@ -159,7 +159,7 @@ lib/org/strategoxt/stratego_xtc/Main.java : lib/org/strategoxt/stratego-xtc.rtre
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/xtc -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_xtc -la stratego-lib -la org.strategoxt.lang.compat.override.xtc_compat -D GetInternalDefaultXtcRepository_0_0=None -D PACKAGE_NAME_TERM='"<package name>"'
 
 lib/org/strategoxt/stratego_sglr/Main.java : $(STRATEGOXT)/share/libstratego-sglr.ctree ../trans/strj runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java
-	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sglr -la stratego-lib -la stratego-xtc -la org.strategoxt.lang.compat.override.jsglr_parser -la org.strategoxt.lang.compat.override.jsglr_parser_compat
+	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -O 2 -p org.strategoxt.stratego_sglr -la stratego-lib -la stratego-xtc -la org.strategoxt.lang.compat.override.jsglr_parser -la org.strategoxt.lang.compat.override.jsglr_parser_compat # compile with limited inlining for all the overridden overloads
 
 lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.ctree ../trans/strj runtime/org/strategoxt/lang/compat/stratego_rtg_compat/Main.java lib/org/strategoxt/stratego_rtg/rtg.tbl
 	$(STRJ) -I lib/org/strategoxt/stratego_rtg -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_rtg -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.stratego_rtg_compat

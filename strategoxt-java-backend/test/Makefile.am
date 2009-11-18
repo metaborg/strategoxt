@@ -130,7 +130,7 @@ SDF2RTG_FLAGS = -m `basename $*`
 
 %.crun : %.str
 	strc -la strc -la stratego-lib -i $<
-	`dirname $<`/`basename $< .str`
+	(cd `dirname $<`; ./`basename $< .str`)
 
 strc1/cs_test01.ctree : strc1/ExpStratego.tbl strc1/Expressions.def strc1/Expressions.str
 strc1/cs_test02.ctree : strc1/ExpStratego.tbl

@@ -20,6 +20,9 @@ strategies // parsing and parse tables
    */
   override open-parse-table =
     jsglr-open-parsetable
+  
+  override close-parse-table =
+    jsglr-open-parsetable
 
   override parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
     where(!tbl => ParseTable(internal-tbl))
@@ -83,15 +86,8 @@ strategies
 strategies // location information
 
   override asfix-anno-location =
-    // TODO: asfix-anno-location?
-    // TODO: asfix-anno-location should be a (fatal?) error by default
-    AsfixAnnoLocationWarned
-  <+
-    rules(AsfixAnnoLocationWarned: _);
-    warn-msg(|"Asfix location annotation not implemented for this platform")
+    prim("STRSGLR_anno_location", <id>)
 
   override asfix-anno-position-info(|name) =
-    with(
-      <warn(|"Asfix position annotation not supported for this platform; try asfix-anno-location instead")> name
-    )
+    <fatal-err(|"Old-style asfix position annotation not supported on this platform; use asfix-anno-location instead")> name
 

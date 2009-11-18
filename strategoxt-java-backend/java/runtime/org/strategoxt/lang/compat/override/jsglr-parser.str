@@ -17,6 +17,9 @@ strategies
       ?tbl
     ; prim("JSGLR_open_parsetable_compat", tbl) => int
     ; !ParseTable(int)
+  
+  jsglr-close-parsetable =
+    id // no such thing
     
   /* UNDONE: JSGLR_parse_string_compat not implemented
    * TODO: Optimize - implement JSGLR_parse_string without TermConverter usage
