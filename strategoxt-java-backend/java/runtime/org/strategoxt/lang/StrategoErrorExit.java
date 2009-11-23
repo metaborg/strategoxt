@@ -12,14 +12,18 @@ public class StrategoErrorExit extends StrategoExit {
 	private static final long serialVersionUID = 1718563644820693442L;
 	
 	private final IStrategoTerm term;
+	
+	public StrategoErrorExit(String message, IStrategoTerm term, Throwable cause) {
+		super(1, message, cause);
+		this.term = term;
+	}
 
 	public StrategoErrorExit(String message, IStrategoTerm term) {
-		super(1, message);
-		this.term = term;
+		this(message, term, null);
 	}
 	
 	public StrategoErrorExit(String message) {
-		this(message, null);
+		this(message, null, null);
 	}
 	
 	public IStrategoTerm getTerm() {

@@ -10,6 +10,7 @@ package org.strategoxt.lang.terms;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermPrinter;
+import static org.strategoxt.lang.terms.TermFactory.EMPTY_LIST;;
 
 public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
 	
@@ -89,15 +90,14 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     	switch (result) {
     		case MUTABLE_HASH:
     			result = hashFunction();
-    			if (annotations != null && !annotations.isEmpty())
+    			if (annotations != null && annotations != EMPTY_LIST && !annotations.isEmpty())
     				result = result * 2423 + annotations.hashCode();
     			return result;
     		case UNKNOWN_HASH:
     			result = hashFunction();
-    			if (annotations != null && !annotations.isEmpty())
+    			if (annotations != null && annotations != EMPTY_LIST && !annotations.isEmpty())
     				result = result * 2423 + annotations.hashCode();
-    			if (getTermType() != MUTABLE)
-    				hashCode = result;
+   				hashCode = getTermType() == MUTABLE ? MUTABLE_HASH : result;
     			return result;
     		default:
     			return result;
@@ -108,7 +108,7 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     	assert getTermType() != MUTABLE; // (avoid this virtual call here)
     	if (hashCode == UNKNOWN_HASH) {
     		int hashCode = hashFunction();
-			this.hashCode = annotations == null || annotations.isEmpty()
+			this.hashCode = annotations == null || annotations == EMPTY_LIST || annotations.isEmpty()
 				? hashCode
 				: hashCode * 2423 + annotations.hashCode();
     	}

@@ -55,7 +55,7 @@ public class StrategoList extends StrategoTerm implements IStrategoList {
     }
     
     public IStrategoTerm head() {
-        if (isEmpty())
+        if (head == null)
             throw new NoSuchElementException();
         return head;
     }

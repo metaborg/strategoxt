@@ -3,7 +3,9 @@ package org.strategoxt.lang;
 import java.util.Arrays;
 
 import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.InterpreterErrorExit;
 import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -53,6 +55,10 @@ public class InteropStrategy extends DynamicStrategy {
 			context.setVarScope(defScope);
 			boolean success = definition.evaluate(context);
 			return success ? context.current() : null;
+		} catch (InterpreterErrorExit e) {
+			throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e);
+		} catch (InterpreterExit e) {
+			throw new StrategoExit(e.getValue(), e);
 		} catch (InterpreterException e) {
 			throw new StrategoException("Exception in interpreter: " + e.getMessage(), e);
 		} finally {

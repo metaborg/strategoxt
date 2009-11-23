@@ -5,34 +5,41 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class TermReference implements ITermReference {
-	private IStrategoTerm term;
+public final class TermReference implements ITermReference {
+	
+	public IStrategoTerm value;
 	
 	public TermReference(IStrategoTerm term) {
-		this.term = term;
+		this.value = term;
 	}
 	
 	public TermReference() {}
 	
 	public void set(IStrategoTerm term) {
-		this.term = term;
+		this.value = term;
 	}
 	
 	public IStrategoTerm get() {
-		return term;
+		return value;
+	}
+	
+	public boolean match(IStrategoTerm term) {
+		if (this.value == null) {
+			this.value = term;
+			return true;
+		} else {
+			return this.value == term || this.value.match(term);
+		}
 	}
 	
 	@Override
 	public String toString() {
-		return "->" + term;
+		return "->" + value;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((term == null) ? 0 : term.hashCode());
-		return result;
+		return value == null ? 0 : value.hashCode();
 	}
 
 	@Override
@@ -42,12 +49,12 @@ public class TermReference implements ITermReference {
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
-			return term == null ? false : term.equals(obj);
+			return value == null ? false : value.equals(obj);
 		TermReference other = (TermReference) obj;
-		if (term == null) {
-			if (other.term != null)
+		if (value == null) {
+			if (other.value != null)
 				return false;
-		} else if (!term.equals(other.term))
+		} else if (!value.equals(other.value))
 			return false;
 		return true;
 	}

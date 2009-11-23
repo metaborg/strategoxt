@@ -578,7 +578,7 @@ rules
     VarDec(x{}, ConstType(_)) -> expr |[ x ]|
 
   translate-arg :
-    VarDec(x{Offset(_), Escapes()}, ConstType(_)) -> expr |[ x.get() ]|
+    VarDec(x{Offset(_), Escapes()}, ConstType(_)) -> expr |[ x.value ]|
   
   translate-arg : 
     VarDec(x, FunType(_, _)) -> expr |[ x ]|

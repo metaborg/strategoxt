@@ -9,7 +9,6 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.spoofax.interpreter.adapter.aterm.BAFBasicTermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.core.InterpreterErrorExit;
@@ -29,6 +28,7 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.lang.terms.TermFactory;
 import org.strategoxt.stratego_lib.stratego_lib;
 
 /**
@@ -57,7 +57,7 @@ public class HybridInterpreter extends Interpreter {
 	private boolean loadedJars;
 
 	public HybridInterpreter() {
-		this(new BAFBasicTermFactory());
+		this(new TermFactory());
 	}
 
 	public HybridInterpreter(ITermFactory factory) {

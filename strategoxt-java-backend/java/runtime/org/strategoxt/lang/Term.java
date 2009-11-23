@@ -1,15 +1,15 @@
 package org.strategoxt.lang;
 
-import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.strategoxt.lang.terms.TermFactory;
 
 public class Term {
 	
 	public static final Strategy[] NO_STRATEGIES = {};
 	
-	public static final IStrategoTerm[] NO_TERMS = BasicTermFactory.EMPTY;
+	public static final IStrategoTerm[] NO_TERMS = TermFactory.EMPTY;
 	
 	private Term() {}
 	
