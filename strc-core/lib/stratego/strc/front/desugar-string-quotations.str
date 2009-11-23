@@ -144,12 +144,19 @@ strategies
   string-escape-padd(|n) :
     StringEscape1(s, t) -> <desugar> Term |[
       <!t
-       ; (map(is-string(|) <+ write-to-string(|)|); concat-strings(|)
-          <+ (is-string(|) <+ write-to-string(|)))
+       ; (   concat-strings(|)
+          <+ is-string(|)
+          <+ { x, y: ?x; prim("SSL_stacktrace_get_all_frame_names",|); ?[ _ | y]; !y; report-failure(|~str:message {^[]}, x) }
+         )
        ; string-replace(|"\n", t_padded)>
     ]|
     with
       t_padded := Anno(Str(<string-as-chars(!['\n' | <drop(!n)>])> s), Op("Nil", []))
+    ; x := <new>
+    ; y := <new>
+    ; (  message := <conc-strings> ("Internal error: escaped term in string quotation is not a string in ", <WithContext>)
+      <+ message := "Internal error: escaped term in string quotation is not a string"
+      )
 
   DesugarQuoted :
     StringEscape2(s, t) -> StringEscape1(s, t)
