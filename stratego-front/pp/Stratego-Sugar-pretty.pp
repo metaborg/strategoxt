@@ -277,6 +277,7 @@
    StringEscape3                                      -- H hs=0 [ KW["("] _2 KW[")"] ],
    StringEscape4                                      -- H hs=0 [ KW["<"] _2 KW[">"] ],
    QStr                                               -- _1,
+   QBr                                                -- H hs=0 [ KW["$"] _1 KW["$"] ],
    ExtSDefInl                                         -- V is=2 [H  [KW["external"] H hs=0 [_1 KW["("] H  [_2]] KW["|"] H hs=0 [H  [_3] KW[")"]] KW["="]] _4],
    ExtSDefInl.2:iter-star-sep                         -- _1 KW[","],
    ExtSDefInl.3:iter-star-sep                         -- _1 KW[","],

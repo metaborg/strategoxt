@@ -24,30 +24,9 @@ strategies
       t'*     := <normalize-quoted(|s)> t*
     ; t''*    :=  t'*{"quoted"}
   
-  /*
   normalize-quoted(|padding) =
-    // Add initial padding before each fragment's first newline
-    if ?[QStr(_) | _] then
-      [QStr(<conc-strings> (padding, <id>) => initial) | id]
-    ; where(
-        padding'       := <string-as-chars(get-padding-chars)> initial
-      ; padding-length := <string-length> padding'
-      )
-    ; [id | map(try(QStr(<conc-strings> (padding', <id>))))]
-    else
-      where(
-        padding-length := <string-length> padding
-      )
-    ; map(try(QStr(<conc-strings> (padding, <id>))))
-    end
-  ; map(try(DesugarQuoted))
-  ; string-quotation-padd(|padding-length)
-  ; try(at-last([QStr(string-as-chars(rtrim(' ' + '\t')))]))
-  ; map(try(DesugarQStr))
-  */
-  
-  normalize-quoted(|padding) =
-    if ?[QStr(_) | _] then
+    map(try(DesugarQBr))
+  ; if ?[QStr(_) | _] then
       // Combine padding before the initial string with the padding inside it
       [QStr(<conc-strings> (padding, <id>) => initial) | id]
     ; where(
@@ -169,4 +148,7 @@ strategies
 
   DesugarQStr :
     QStr(s) -> Anno(Str(s), Op("Nil", []))
+
+  DesugarQBr :
+    QBr(s) -> QStr(s)
 

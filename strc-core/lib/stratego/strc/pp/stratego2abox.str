@@ -356,6 +356,9 @@ rules
   
   stratego-to-abox :
     QStr(i) -> S(i)
+  
+  stratego-to-abox :
+    QBr(i) -> |[ H hs=0 [ "$" ~lit:i "$"] ]|
 
   stratego-to-abox =
     ?Char(i)
