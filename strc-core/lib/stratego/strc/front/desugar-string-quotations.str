@@ -31,13 +31,13 @@ strategies
       [QStr(<conc-strings> (padding, <id>) => initial) | id]
     ; where(
         padding'       := <string-as-chars(get-padding-chars)> initial
-      ; padding-length := <string-length> padding'
+      ; padding-length := <padding-length> padding'
       )
       // Unpadd the initial string
     ; [QStr(string-as-chars(![<id>]; remove-padding(|<string-length> initial, <string-length> initial) => ([<id>], _))) | id]
     else
       where(
-        padding-length := <string-length> padding
+        padding-length := <padding-length> padding
       )
     end
   ; map(try(DesugarQuoted))
@@ -49,6 +49,9 @@ strategies
     [' ' + '\t' | get-padding-chars]
   <+
     ![]
+  
+  internal padding-length =
+    string-replace(|"\t", "    "); string-length
   
   /**
    * Remove balanced padding from quoted strings,
@@ -97,8 +100,14 @@ strategies
     [?[' '  | <id>] | id]
   ; remove-padding(|max, <dec> n)
   <+
-    [?['\t' | <id>] | id]
-  ; remove-padding(|max, <subt> (n, 4))
+    ?[['\t' | _] | _]
+  ; if <lt> (n, 4) then
+      [id | remove-padding(|max, max) => (<id>, max')]
+    ; !(<id>, max')
+    else
+      [?[_ | <id>] | id]
+    ; remove-padding(|max, <subt> (n, 4))
+    end
   <+
     ?[_ | _]
   ; where(max' := <subt> (max, n))
