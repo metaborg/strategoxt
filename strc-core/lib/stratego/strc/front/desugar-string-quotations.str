@@ -156,7 +156,9 @@ strategies
     StringEscape4(s, t) -> StringEscape1(s, t)
 
   DesugarQStr :
-    QStr(s) -> Anno(Str(s), Op("Nil", []))
+    QStr(s) -> Anno(Str(s'), Op("Nil", []))
+    with
+      s' := <conc-strings> ("\"", s, "\"")
 
   DesugarQBr :
     QBr(s) -> QStr(s)
