@@ -34,7 +34,14 @@ strategies
       ; padding-length := <padding-length> padding'
       )
       // Unpadd the initial string
-    ; [QStr(string-as-chars(![<id>]; remove-padding(|<string-length> initial, <string-length> initial) => ([<id>], _))) | id]
+    ; [QStr(
+         string-as-chars(
+           ![<id>]
+         ; remove-padding(|<padding-length> initial, <padding-length> initial) => ([<id>], _)
+         )
+       )
+      | id
+      ]
     else
       where(
         padding-length := <padding-length> padding
