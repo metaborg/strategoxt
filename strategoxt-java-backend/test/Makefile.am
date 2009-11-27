@@ -61,7 +61,8 @@ BASICTESTS=build_0 build_1 build_2 build_3 match_1 match_2 match_3 match_4 match
            scopes_1 scopes_2 internal_1 internal_2 override_1 extend_1 \
            shared_var_1 shared_var_2 shared_var_3 shared_var_4 shared_var_5 \
            dynrules_1 dynrules_2 dynrules_3 dynrules_4 dynrules_5 iset_1 iset_2 fetch_1 \
-           mapconcat_1 traversal_1 annos_1 annos_2 pp_java5_to_string chars_1
+           mapconcat_1 traversal_1 annos_1 annos_2 pp_java5_to_string chars_1 \
+           readterm_1
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 

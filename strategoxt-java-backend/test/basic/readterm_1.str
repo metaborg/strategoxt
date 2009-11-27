@@ -1,0 +1,12 @@
+module readterm_1
+
+imports
+  libstratego-lib
+
+strategies
+  
+  main =
+    t := Some([1,2{3}]{4}){5};
+    <WriteToTextFile> ("readterm_1.trm", t);
+    <ReadFromFile> "readterm_1.trm" => t
+
