@@ -82,20 +82,22 @@ while true; do
     echo 'Usage: str [-c | -F | -g] [OPTIONS] [-i FILE | INPUT]'
     echo 'Compile and run Stratego program in FILE or from INPUT.'
     echo
-    echo ' COMMANDS:'
+    echo 'COMMANDS:'
     echo '  -c        Display program output C code instead of running it.'
     echo '  -F        Display program in core format instead of running it.'
     echo '  -g        Run program using gdb and display backtrace.'
-    echo '  -m NAME   Sets the main strategy to use (default main).'
     echo
-    echo ' OPTIONS:'
+    echo 'OPTIONS:'
     echo '  --lib     Treat as library, keeping all unused strategies.'
     echo '  -la NAME  Search the libtool library libNAME.la when linking.'
+    echo '  -m NAME   Sets the main strategy to use (default main).'
     echo '  -I DIR    Include modules from directory DIR.'
     echo '  -O N      Use optimization level N (default 1).'
+    echo
+    echo 'INPUT:'
     echo '  -i FILE   Read input from FILE.'
-    echo '  INPUT     Use INPUT as the input program (typically specified using single quotes),'
-    echo '            which can be a single strategy or a complete module'
+    echo '  INPUT     Use INPUT as the input program (typically specified using single quotes).'
+    echo '            Can be a single strategy or a complete module'
     exit
   fi
   break
