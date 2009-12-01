@@ -67,10 +67,10 @@ Export-Package: .,
  org.strategoxt.strj,
  shared
 Require-Bundle: org.spoofax.aterm,
- org.spoofax.interpreter.core;bundle-version="0.3.13",
- org.spoofax.interpreter.adapter.aterm;bundle-version="0.3.11",
- org.spoofax.jsglr;bundle-version="0.2.1",
- org.spoofax.interpreter.library.jsglr;bundle-version="0.3.9"
+ org.spoofax.interpreter.core,
+ org.spoofax.interpreter.adapter.aterm,
+ org.spoofax.jsglr,
+ org.spoofax.interpreter.library.jsglr
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: ., java/runtime/,
    java/strategoxt.jar

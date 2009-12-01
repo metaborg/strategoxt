@@ -54,7 +54,7 @@ strj_parallel.java : strj-parallel.str strj
 	strj -la org.strategoxt.strj -la stratego-parallel -i strj-parallel.str
 
 %.java : %.str strj
-	./strj -i $< -o $@ --verbose 2 -la stratego-lib -la java-front -la stratego-sglr
+	./strj -i $< -o $@ --verbose 2 -la stratego-lib -la java-front -la stratego-sglr -la stratego-xtc
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<

@@ -139,6 +139,11 @@ strategies
     bstm* |[ IStrategoTerm x = null; bstm* ]| -> ([<Hd> | bstm_decl*], e_cons, bstm_body*)
     where
       (bstm_decl*, e_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
+  
+  match-decls-and-appl-test :
+    bstm* |[ x = term; bstm* ]| -> ([<Hd> | bstm_decl*], e_cons, bstm_body*)
+    where
+      (bstm_decl*, e_cons, bstm_body*) := <match-decls-and-appl-test> bstm*
     
   match-decls-and-appl-test :
     bstm* |[
