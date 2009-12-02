@@ -104,7 +104,7 @@ strategies
     )
   <+
     Option("-c",
-      warn(|"Ignored unsupported option -c")
+      warn-msg(|"Ignored unsupported option -c")
     , fail
     )
   
