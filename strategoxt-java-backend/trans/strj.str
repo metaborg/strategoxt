@@ -49,6 +49,7 @@ strategies
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
+  ; strc-export-external-defs
   ; strc-output-frontend
   ; s2j
   ; with(clean-output-dir)
@@ -68,17 +69,19 @@ strategies
     end
   
   delete-java-files-in-dir =
-    log(|Info(), ["Deleting existing java files in output directory ", <id>])
-  ; with(olddir := <getcwd>)
-  ; finally(
-      chdir
-    ; <readdir> "."
-    ; list-loop(
-        if has-extension(|"java") then
-          remove-file
-        end
+    log-timed(
+      with(olddir := <getcwd>)
+    ; finally(
+        chdir
+      ; <readdir> "."
+      ; list-loop(
+          if has-extension(|"java") then
+            remove-file
+          end
+        )
+      , <chdir> olddir
       )
-    , <chdir> olddir
+    | <conc-strings> ("Deleted existing java files in output directory ", <id>), 1
     )
   <+
     warn(|"Could not clean output directory")

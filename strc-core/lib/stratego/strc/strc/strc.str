@@ -30,8 +30,8 @@ strategies
     xtc-input(
       strc-front-end
       ; strc-optimize
-      ; strc-output-frontend
       ; strc-export-external-defs
+      ; strc-output-frontend
       ; strc-back-end
       ; strc-c-compile
     )
@@ -57,24 +57,22 @@ strategies
 
   strc-export-external-defs =
     strc-if-lib(where(
-      log-timed(
-        defs-to-external-defs
-	; where(
-	    <not(eq)>(<get-config>"baseout",<get-config>"basein")
-	    <+ <get-config>"baseout"
-	       ; warn(|<concat-strings>["Name for library same as name for base file", <id>])
-	       ; fail
-          )
-        ; write-to
-        ; copy-to(strc-getoutfile(!".rtree") => file1)
-	; log(|Info(), ["Abstract syntax in '", file1, "'"])
-
-        ; xtc-io-transform(pp-stratego-string)
-        ; copy-to(strc-getoutfile(!".str") => file2)
-	; log(|Info(), ["Concrete syntax in '", file2, "'"])
-      | "Export of externals succeeded"
-      , 1
-      )
+      if <eq> (<get-config> "baseout", <get-config> "basein") then
+        <get-config> "baseout"
+        ; warn(|<concat-strings>["Could not export library signature: name for library same as name for base file"])
+      else
+        log-timed(
+          defs-to-external-defs
+          ; write-to
+          ; copy-to(strc-getoutfile(!".rtree") => file1)
+          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
+          ; xtc-io-transform(pp-stratego-string)
+          ; copy-to(strc-getoutfile(!".str") => file2)
+          ; log(|Info(), ["Concrete syntax in '", file2, "'"])
+        | "Export of externals succeeded"
+        , 1
+        )
+      end
     ))
 
 strategies
