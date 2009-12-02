@@ -29,7 +29,7 @@ strategies
     )
   ; display-version
   ; strc-announce
-  ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)) then
+  ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)); not(<get-config> "-F") then
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
     end
@@ -101,6 +101,11 @@ strategies
       rules(OldECJCompatibility: _)
     , !"--Xecj33           Generate code compatible with ECJ 3.3 and lower";
       if-java-platform(fail)
+    )
+  <+
+    Option("-c",
+      warn(|"Ignored unsupported option -c")
+    , fail
     )
   
   <+ ArgOption(fail, fail, !"")
