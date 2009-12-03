@@ -59,4 +59,7 @@ strategies
    2$ z$>$";
 
     !${ block {"{"} foo $}$  }; show(|11) =>
-"block { foo }"
+"block { foo }";
+
+    !$[ 1[2]3 ]; show(|12) => "123"
+

@@ -36,8 +36,7 @@ strategies
       // Unpadd the initial string
     ; [QStr(
          string-as-chars(
-           ![<id>]
-         ; remove-padding(|<padding-length> initial, <padding-length> initial) => ([<id>], _)
+           remove-padding-single-line(|<padding-length> initial)
          )
        )
       | id
@@ -123,6 +122,11 @@ strategies
   <+
     []
   ; !([], max)
+  
+  remove-padding-single-line(|n):
+    s -> s'
+    with
+      ([s'], _) := <remove-padding(|n, n)> [s]
 
   internal split-at-newlines =
     at-suffix(
@@ -141,17 +145,25 @@ strategies
       <!t
        ; (   concat-strings(|)
           <+ is-string(|)
-          <+ { x, y: ?x; prim("SSL_stacktrace_get_all_frame_names",|); ?[ _ | y]; !y; report-failure(|~str:message {^[]}, x) }
+          <+ int-to-string(|)
+          <+ real-to-string(|)
+          <+ { x, y :
+               ?x
+               ; prim("SSL_stacktrace_get_all_frame_names",|); ?[ _ | y]
+               ; !y
+               ; report-failure(|~str:message {^[]}, x)
+             }
          )
-       ; string-replace(|"\n", t_padded)>
+       ; string-replace(|"\n", ~str:s_padded {^[]})>
     ]|
     with
-      t_padded := Anno(Str(<string-as-chars(!['\n' | <drop(!n)>])> s), Op("Nil", []))
+      s_padded := <string-as-chars(!['\n' | <remove-padding-single-line(|n)>])> s
     ; x := <new>
     ; y := <new>
     ; (  message := <conc-strings> ("Internal error: escaped term in string quotation is not a string in ", <WithContext>)
       <+ message := "Internal error: escaped term in string quotation is not a string"
       )
+    
 
   DesugarQuoted :
     StringEscape2(s, t) -> StringEscape1(s, t)
