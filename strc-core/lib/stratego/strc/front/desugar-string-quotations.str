@@ -51,12 +51,12 @@ strategies
   ; try(at-last([QStr(string-as-chars(rtrim(' ' + '\t')))]))
   ; map(try(DesugarQStr))
   
-  internal get-padding-chars =
+  get-padding-chars =
     [' ' + '\t' | get-padding-chars]
   <+
     ![]
   
-  internal padding-length =
+  padding-length =
     string-replace(|"\t", "    "); string-length
   
   /**
@@ -128,7 +128,7 @@ strategies
     with
       ([s'], _) := <remove-padding(|n, n)> [s]
 
-  internal split-at-newlines =
+  split-at-newlines =
     at-suffix(
        (['\n'       | tl] -> [])
     <+ (['\r', '\n' | tl] -> [])
