@@ -66,9 +66,11 @@ strategies
           ; write-to
           ; copy-to(strc-getoutfile(!".rtree") => file1)
           ; log(|Info(), ["Abstract syntax in '", file1, "'"])
-          ; xtc-io-transform(pp-stratego-string)
-          ; copy-to(strc-getoutfile(!".str") => file2)
-          ; log(|Info(), ["Concrete syntax in '", file2, "'"])
+          ; if not(<get-config> "--no-concrete-syntax-externals") then
+              xtc-io-transform(pp-stratego-string)
+            ; copy-to(strc-getoutfile(!".str") => file2)
+            ; log(|Info(), ["Concrete syntax in '", file2, "'"])
+            end
         | "Export of externals succeeded"
         , 1
         )
