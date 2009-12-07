@@ -49,11 +49,10 @@ strategies
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
-  ; strc-export-external-defs
+    // TODO: strc-export-external-defs
   ; strc-output-frontend
   ; s2j
   ; with(clean-output-dir)
-    // TODO: output .rtree file for libraries?
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
   
   clean-output-dir =
