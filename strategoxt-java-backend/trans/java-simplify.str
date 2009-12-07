@@ -14,9 +14,24 @@ imports
 strategies
 
   java-simplify =
-    topdown-consnil(
+    with(
+      try(<get-config> "--stacktrace" => 1 => stacktrace1)
+    ; try(<get-config> "--stacktrace" => 0 => stacktrace0)
+    ; try(OldECJCompatibility => oldecj)
+    )
+  ; topdown-consnil(
       try(Block(flatten-list))
     ; repeat(java-simplify-stm + java-simplify-expr)
+    ; if !stacktrace1 then
+        try(java-simplify-stm-trace-always)
+      else
+        if !stacktrace0 then
+          try(java-simplify-stm-trace-never)
+        end
+      end
+    ; if not(!oldecj) then
+        try(java-simplify-ecj-compatibility)
+      end
     )
   
   internal all-consnil(s) =
@@ -47,16 +62,18 @@ strategies
     x{a*} -> x{}
     where
       not(!a* => [])
+  
+  java-simplify-ecj-compatibility :
+    bstm* |[ boolean TRUE = true; bstm* ]| -> bstm*
+  
+  java-simplify-ecj-compatibility :
+    bstm |[ if (TRUE) stm ]| -> |[ if (true) stm ]|
     
-  java-simplify-stm :
+  java-simplify-stm-trace-always :
     bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm* |[ stm bstm* ]|
-    where
-      <get-config> "--stacktrace" => 1
 
-  java-simplify-stm :
+  java-simplify-stm-trace-never :
     bstm* |[ if (TRACES_ENABLED) stm bstm* ]| -> bstm*
-    where
-      <get-config> "--stacktrace" => 0
   
   java-eliminate-stacktrace =
     alltd(

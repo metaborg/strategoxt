@@ -511,7 +511,6 @@ rules
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
            // As an ECJ 3.3 reachability detection bug workaround,
            // we assign a non-final boolean TRUE to true
-           // TODO: only use boolean TRUE if -Xecj33 is passed
            boolean TRUE = true;
            ITermFactory termFactory = context.getFactory();
            bstm_init*
