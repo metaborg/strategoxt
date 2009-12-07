@@ -93,6 +93,9 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 %.ctree : %.str
 	../trans/strj -O 0 -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
 
+basic/camelCase_1.ctree : basic/camelCase_1.str
+	../trans/strj -O 0 -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -m camelCase_1 -i $< -o $@
+
 %.str : %.astr
 	aster -i $< -o $@
 
