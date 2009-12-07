@@ -285,7 +285,7 @@ rules
     with
       x_name := <MainClassName>
     ; main   := <get-config <+ !"main"> "-m"
-    ; x_main := <conc-strings> (<jify> main, "_0_0")
+    ; x_main := <conc-strings> (<jify; dollars-for-capitals> main, "_0_0")
   
   // TODO: do interop strategy additions in a fully on-demand fashion?
   //       (need to adapt VarScope class to do so)
