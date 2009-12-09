@@ -9,7 +9,7 @@ import org.strategoxt.stratego_lib.report_failure_1_0;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SSL_EXT_report_failure_1_0 extends report_failure_1_0 {
+public class SRTS_EXT_report_failure_1_0 extends report_failure_1_0 {
 	
 	private report_failure_1_0 proceed = instance;
 	
@@ -51,7 +51,7 @@ public class SSL_EXT_report_failure_1_0 extends report_failure_1_0 {
 		@Override
 		public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm level, IStrategoTerm message, IStrategoTerm term) {
 			if (enabled) {
-				synchronized (SSL_EXT_report_failure_1_0.this) {
+				synchronized (SRTS_EXT_report_failure_1_0.this) {
 					if (enabled) {
 						lastTerm = term;
 						lastMessage = message;
