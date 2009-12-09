@@ -12,11 +12,16 @@ public class IncompatibleJarException extends Exception {
 	private final URL jar;
 
 	public IncompatibleJarException(URL jar) {
-		this(jar, null);
+		this(jar, (Throwable) null);
 	}
 
 	public IncompatibleJarException(URL jar, Throwable cause) {
 		super("Incompatible jar:" + jar, cause);
+		this.jar = jar;
+	}
+
+	public IncompatibleJarException(URL jar, String message) {
+		super(message + ":" + jar);
 		this.jar = jar;
 	}
 

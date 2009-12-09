@@ -207,7 +207,8 @@ public class HybridInterpreter extends Interpreter {
 		URL protocolfulUrl = new URL("jar", "", jar + "!/");
 		JarURLConnection connection = (JarURLConnection) protocolfulUrl.openConnection();
 		JarFile jarFile = connection.getJarFile();
-		Enumeration<JarEntry> jarEntries = jarFile.entries();
+		Enumeration<JarEntry> jarEntries = jarFile.entries();		
+		boolean foundRegisterer = false;
 		
 		while (jarEntries.hasMoreElements()) {
 			String entry = jarEntries.nextElement().getName();
@@ -221,6 +222,7 @@ public class HybridInterpreter extends Interpreter {
 					Object registerObject = registerClass.newInstance();
 					if (registerObject instanceof InteropRegisterer) {
 						((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
+						foundRegisterer = true;
 					} else {
 						throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
 					}
@@ -233,6 +235,9 @@ public class HybridInterpreter extends Interpreter {
 				}
 			}
 		}
+		
+		if (!foundRegisterer)
+			throw new IncompatibleJarException(jar, "No STRJ InteropRegisterer classes found");
 	}
 
 	/**
