@@ -211,7 +211,7 @@ public class HybridInterpreter extends Interpreter {
 		
 		while (jarEntries.hasMoreElements()) {
 			String entry = jarEntries.nextElement().getName();
-			if (entry.endsWith("/InteropRegisterer.class") || entry.equals("InteropRegisterer.class")) {
+			if (entry.endsWith("/InteropRegisterer.class") || entry.endsWith("$InteropRegisterer.class") || entry.equals("InteropRegisterer.class")) {
 				final int POSTFIX = ".class".length();
 				String className = entry.substring(0, entry.length() - POSTFIX);
 				className = className.replace('/', '.');
