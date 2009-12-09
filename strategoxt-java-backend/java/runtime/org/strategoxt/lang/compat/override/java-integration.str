@@ -28,6 +28,11 @@ strategies
       SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
     )
   
+  override report-failure(exit) = // used for with failures
+    SRTS-EXT-report-failure(exit)
+  
+  external SRTS-EXT-report-failure(exit|)
+  
   external SRTS-EXT-fatal-err(|msg, term)
   
   // TODO: exception rethrowing in risky, finally?

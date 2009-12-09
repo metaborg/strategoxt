@@ -125,34 +125,33 @@ public class InteropSDefT extends SDefT {
 	public org.spoofax.interpreter.stratego.Strategy getBody() {
 		org.spoofax.interpreter.stratego.Strategy result = super.getBody();
 		if (result == null) {
-			result = new org.spoofax.interpreter.stratego.Strategy() {
-				public IConstruct eval(IContext env) throws InterpreterException {
-					return evaluate(env)
-						? getHook().pop().onSuccess(env)
-						: getHook().pop().onFailure(env);
-				}
-				
-				@Override
-				public boolean evaluate(IContext env) throws InterpreterException {
-					return InteropSDefT.this.evaluate(env);
-				}
-	
-				public void prettyPrint(StupidFormatter fmt) {
-					InteropSDefT.this.prettyPrint(fmt);
-				}
-				
-				@Override
-				protected String getTraceName() {
-					return getName();
-				}
-			};
+			result = new StrategyBody();
 			setBody(result);
 		}
 		return result;
 	}
 	
 	@Override
-	public boolean evaluate(IContext env) throws InterpreterException {
+	public org.spoofax.interpreter.stratego.Strategy getParametrizedBody(
+			final org.spoofax.interpreter.stratego.Strategy[] sargs,
+			final IStrategoTerm[] targs) {
+		
+		return new StrategyBody() {
+			@Override
+			public boolean evaluate(IContext env) throws InterpreterException {
+				SDefT[] sargDefs = new SDefT[sargs.length];
+				for (int i = 0; i < sargs.length; i++) {
+					sargDefs[i] = new SDefT("s" + i, NO_SVARS, NO_STRINGS, sargs[i], env.getVarScope());
+				}
+				return InteropSDefT.this.evaluate(env, InteropStrategy.toInteropStrategies(sargDefs, env), targs);
+			}
+		};
+	}
+	
+	@Override
+	public boolean evaluate(IContext env)
+			throws  InterpreterErrorExit, InterpreterExit, InterpreterException {
+		
 		VarScope scope = env.getVarScope();
 		SVar[] svars = getStrategyParams();
 		String[] tvars = getTermParams();
@@ -171,10 +170,15 @@ public class InteropSDefT extends SDefT {
 			targs[i] = targ;
 		}
 		
-		Strategy[] sdefargs = InteropStrategy.toInteropStrategies(sargs, env);
+		return evaluate(env, InteropStrategy.toInteropStrategies(sargs, env), targs);
+	}
+
+	private boolean evaluate(IContext env, Strategy[] sargs, IStrategoTerm[] targs)
+			throws InterpreterErrorExit, InterpreterExit, InterpreterException {
+		
 		IStrategoTerm result;
 		try {
-			result = getStrategy().invokeDynamic(compiledContext, env.current(), sdefargs, targs);
+			result = getStrategy().invokeDynamic(compiledContext, env.current(), sargs, targs);
 		} catch (StrategoErrorExit e) {
 			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
 		} catch (StrategoExit e) {
@@ -211,6 +215,33 @@ public class InteropSDefT extends SDefT {
 		}
 			
 		return strategy;
+	}
+	
+	/**
+	 * The strategy body used by the interpreter.
+	 * 
+	 * @author Lennart Kats <lennart add lclnet.nl>
+	 */
+	private class StrategyBody extends org.spoofax.interpreter.stratego.Strategy {
+		public IConstruct eval(IContext env) throws InterpreterException {
+			return evaluate(env)
+				? getHook().pop().onSuccess(env)
+				: getHook().pop().onFailure(env);
+		}
+		
+		@Override
+		public boolean evaluate(IContext env) throws InterpreterException {
+			return InteropSDefT.this.evaluate(env);
+		}
+
+		public void prettyPrint(StupidFormatter fmt) {
+			InteropSDefT.this.prettyPrint(fmt);
+		}
+		
+		@Override
+		protected String getTraceName() {
+			return getName();
+		}
 	}
 }
 
