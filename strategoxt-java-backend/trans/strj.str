@@ -49,7 +49,7 @@ strategies
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
   ; strc-optimize
-    // TODO: strc-export-external-defs
+  // TODO; strc-export-external-defs!
   ; strc-output-frontend
   ; s2j
   ; with(clean-output-dir)

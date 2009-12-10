@@ -45,8 +45,7 @@ public class CompatManager {
 	public void activateComponent(String component) {
 		if ("stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
-			// DEBUG
-			// SRTS_all.instance = new StackSaver(SRTS_all.instance);
+			report_failure_compat_1_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			WrappedATermFactory atermFactory = new WrappedATermFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));

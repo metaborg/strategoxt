@@ -72,6 +72,11 @@ public class InteropSDefT extends SDefT {
 	protected void setName(String name) {
 		throw new UnsupportedOperationException();
 	}
+    
+    @Override
+    public boolean isCompiledStrategy() {
+        return true;
+    }
 
 	@Override
 	public SVar[] getStrategyParams() {
