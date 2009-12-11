@@ -83,7 +83,12 @@ strategies
   EnsugarOnce =
       DefaultVarDec(AddLeadingPrime)
     + RDef(AddLeadingPrime,id,id)
+    + RDefT(AddLeadingPrime,id,id,id)
+    + RDefNoArgs(AddLeadingPrime,id)
     + SDef(AddLeadingPrime,id,id)
+    + SDefT(AddLeadingPrime,id,id,id)
+    + SDefNoArgs(AddLeadingPrime,id)
+    + ExtSDef(AddLeadingPrime,id,id)
     + VarDec(AddLeadingPrime,id)
     + Var(AddLeadingPrime)
     + SVar(AddLeadingPrime)
