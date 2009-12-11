@@ -88,6 +88,7 @@ strategies
     + Var(AddLeadingPrime)
     + SVar(AddLeadingPrime)
     + OpDecl(AddLeadingPrime,id)
+    + ExtOpDecl(AddLeadingPrime,id)
     + Op(AddLeadingPrime,id)
 
   AddLeadingPrime :

@@ -30,6 +30,15 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
 
+    "external"
+    EmptyId "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
+
+
+  sorts EmptyId
+  lexical syntax
+  
+    -> EmptyId
 
   sorts Anno
   context-free syntax
