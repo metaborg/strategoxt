@@ -18,6 +18,7 @@ public class SRTS_EXT_fatal_err_0_2 extends Strategy {
 		if (message == null || message.getTermType() != STRING)
 			return null;
 		
+		context.popOnExit(false);
 		if (term.getTermType() == TUPLE && term.getSubtermCount() == 0) {
 			throw new StrategoErrorExit(asJavaString(message));
 		} else {
