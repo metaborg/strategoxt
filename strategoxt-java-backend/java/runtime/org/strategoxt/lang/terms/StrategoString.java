@@ -80,7 +80,10 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
     }
     
     public void prettyPrint(ITermPrinter pp) {
-        pp.print("\"" + stringValue().replace("\\", "\\\\").replace("\"", "\\\"") + "\"");
+        pp.print("\"");
+        pp.print(stringValue().replace("\\", "\\\\").replace("\"", "\\\"")
+        		.replace("\n", "\\n").replace("\r", "\\r"));
+        pp.print("\"");
         printAnnotations(pp);
     }
  
@@ -88,7 +91,8 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("\"");
-        result.append(stringValue().replace("\\", "\\\\").replace("\"", "\\\""));
+        result.append(stringValue().replace("\\", "\\\\").replace("\"", "\\\"")
+        		.replace("\n", "\\n").replace("\r", "\\r"));
         result.append("\"");
         appendAnnotations(result);
         return result.toString();
