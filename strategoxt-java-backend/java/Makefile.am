@@ -101,8 +101,8 @@ jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBRARYJAV
 	  echo "Standard library classes not found; please run 'make all' first." >&2; exit 1; \
 	fi 
 	cp spoofax-libs.jar strategoxt.jar.tmp
-	$(JAR) uf strategoxt.jar.tmp $(JARIN0) $(JARIN1) $(JARIN2) $(JARIN3)
-	$(JAR) uf strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN0) $(JARIN1) $(JARIN2) $(JARIN3)
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
 	jar i strategoxt.jar.tmp
 	mv strategoxt.jar.tmp strategoxt.jar
 
