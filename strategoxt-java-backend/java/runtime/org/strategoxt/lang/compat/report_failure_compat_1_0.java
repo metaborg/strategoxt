@@ -41,6 +41,8 @@ public class report_failure_compat_1_0 extends report_failure_1_0 {
 				log_0_2.instance = logIntercept;
 				
 				return proceed.invoke(context, current, s);
+			} catch (StrategoErrorExit e) {
+			    throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e);
 			} catch (StrategoExit e) {
 				IStrategoTerm message = logIntercept.lastMessage.get();
 				IStrategoTerm term = logIntercept.lastTerm.get();
