@@ -146,14 +146,17 @@ strategies
 strategies
 
   /**
-   * Returns directory portion of pathname in a POSIX compatible way.
+   * Returns directory portion of pathname in a POSIX compatible way,
+   * after converting all backslashes to forward slashes.
    *
    * @inc   dirname
    * @type  String -> String
    */
   dirname =
     string-as-chars(
-      /* (1) Strip trailing slashes */
+      /* (0) Convert backslashes to forward slashes */
+      all(try(\'\' -> '/'\))
+    ; /* (1) Strip trailing slashes */
       try(split-init-last; ?(<id>, '/'))
     ; /* (2) If string consists entirely of slash characters, string shall be
              set to a single slash character.  In this case, skip steps (3)
@@ -194,7 +197,7 @@ strategies
   /**
    * Succeeds if the input pathname is a relative path.
    *
-   * A pathname is relative if it does not start with a /.
+   * A pathname is relative if is-abspath fails.
    *
    * @type  String -> String
    * @since 0.9.4
@@ -209,7 +212,7 @@ strategies
    * @inc   base-filename-test
    */
   base-filename =
-      <string-tokenize> (['/'], <id>)
+      <string-tokenize> (['/','\'], <id>)
     ; last
   
 /**

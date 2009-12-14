@@ -81,7 +81,7 @@ clean :
 
 SPOOFAX=../../../spoofax/trunk/spoofax
 CLASSPATH=runtime:lib:compiler:tools:spoofax-libs.jar:.
-JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -nowarn -d bin
+JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -target 5 -nowarn -d bin
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 STRJ=XTC_REPOSITORY="$(BUILD_REPOSITORY)" ../trans/strj
@@ -168,6 +168,12 @@ lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.
 lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl
 	[ -e lib/org/strategoxt/stratego_rtg ] || mkdir lib/org/strategoxt/stratego_rtg
 	$(ATERM)/bin/baffle -ws -i $< -o $@
+	@if [ `du -b $@ | grep -o '[0-9]*'` -lt 500 ]; then \
+		echo $@ corrupted >&2; \
+		ls -l $@; \
+		rm $@; \
+		exit 1 ;\
+	fi
 
 lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/gpp -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr

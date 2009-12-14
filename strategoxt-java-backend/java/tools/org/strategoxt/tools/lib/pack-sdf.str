@@ -106,14 +106,14 @@ strategies
   pack-sdf-parse-sdf =
     let qualify-pathname =
             where(explode-string => cs)
-          ; if <is-qualified> cs then
+          ; if <pack-is-qualified> cs then
               id
             else
               <implode-string> ['.', '/' | cs]
             end
   
-         is-qualified =
-           ?['/' | _] + ?['.' | _ ]
+         pack-is-qualified =
+           ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
 
      in ?(<id>, _)
       ; ?IncludePathName(<qualify-pathname>)

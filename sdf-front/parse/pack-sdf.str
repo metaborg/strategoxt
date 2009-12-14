@@ -118,7 +118,7 @@ strategies
             end
   
          is-qualified =
-           ?['/' | _] + ?['.' | _ ]
+           ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
 
      in ?(<id>, _)
       ; ?IncludePathName(<qualify-pathname>)

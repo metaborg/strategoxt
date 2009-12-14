@@ -134,7 +134,7 @@ rules
          if (isIniting) return null;
          isIniting = true;
          ITermFactory termFactory = context.getFactory();
-         if (constantFactory != termFactory) {
+         if (constantFactory == null) { // don't reinit constants by default
            initConstructors(termFactory);
            initConstants(termFactory);
          }
@@ -157,13 +157,13 @@ rules
      ~*main
      
      ~*<java-split-method> |[
-       private static void initConstructors(ITermFactory termFactory) {
+       public static void initConstructors(ITermFactory termFactory) {
          ~*cnstr-inits
        }
      ]|
      
      ~*<java-split-method> |[
-       private static void initConstants(ITermFactory termFactory) {
+       public static void initConstants(ITermFactory termFactory) {
          ~*cnst-inits
        }
      ]|

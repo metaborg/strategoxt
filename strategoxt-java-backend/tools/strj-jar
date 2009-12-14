@@ -87,9 +87,9 @@ fi
 ## COMPILATION
 
 mkdir -p $TEMPDIR || exit 1
-echo "$JAVAC -source 5 -nowarn $JAVACFLAGS -cp $CLASSPATH -d \$TEMPDIR $INPUT $INPUT2 $INPUT3"
+echo "$JAVAC -source 5 -target 5 -nowarn $JAVACFLAGS -cp $CLASSPATH -d \$TEMPDIR $INPUT $INPUT2 $INPUT3"
 set -o pipefail
-$JAVAC -source 5 -nowarn $JAVACFLAGS -cp "$CLASSPATH" -d $TEMPDIR $INPUT $INPUT2 $INPUT3 \
+$JAVAC -source 5 -target 5 -nowarn $JAVACFLAGS -cp "$CLASSPATH" -d $TEMPDIR $INPUT $INPUT2 $INPUT3 \
   | tee $TEMPDIR/javac.log
 if [ $? != 0 ]; then
   if grep "annot be resolved" $TEMPDIR/javac.log >/dev/null; then

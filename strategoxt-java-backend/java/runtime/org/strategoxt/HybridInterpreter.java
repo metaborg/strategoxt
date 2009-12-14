@@ -206,6 +206,7 @@ public class HybridInterpreter extends Interpreter {
 
 		URL protocolfulUrl = new URL("jar", "", jar + "!/");
 		JarURLConnection connection = (JarURLConnection) protocolfulUrl.openConnection();
+		connection.setUseCaches(false);
 		JarFile jarFile = connection.getJarFile();
 		Enumeration<JarEntry> jarEntries = jarFile.entries();		
 		boolean foundRegisterer = false;
