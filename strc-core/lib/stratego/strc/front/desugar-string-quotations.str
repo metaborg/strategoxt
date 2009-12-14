@@ -25,7 +25,7 @@ strategies
     ; t''*    :=  t'*{"quoted"}
   
   normalize-quoted(|padding) =
-    map(try(DesugarQBr))
+    map(try(DesugarToQStr))
   ; if ?[QStr(_) | _] then
       // Combine padding before the initial string with the padding inside it
       [QStr(<conc-strings> (padding, <id>) => initial) | id]
@@ -163,7 +163,6 @@ strategies
     ; (  message := <conc-strings> ("Internal error: escaped term in string quotation is not a string in ", <WithContext>)
       <+ message := "Internal error: escaped term in string quotation is not a string"
       )
-    
 
   DesugarQuoted :
     StringEscape2(s, t) -> StringEscape1(s, t)
@@ -179,6 +178,9 @@ strategies
     with
       s' := <conc-strings> ("\"", s, "\"")
 
-  DesugarQBr :
+  DesugarToQStr :
     QBr(s) -> QStr(s)
+
+  DesugarToQStr :
+    QDollar(s) -> QStr(s)
 
