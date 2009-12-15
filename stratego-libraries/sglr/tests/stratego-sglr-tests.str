@@ -50,8 +50,14 @@ strategies
 
   simple-parse-tests =
       where(
-        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
+        <ReadFromFile> "ExpInt.tbl" => unopenedtbl; open-parse-table => tbl
       ; <ReadFromFile> "ExpIntAmb.tbl"; open-parse-table => ambtbl
+      )
+
+    ; apply-and-check(!"Parse an expression, implictly opening the parse table"
+      , parse-string-pt(|unopenedtbl)
+      , !"1 + 1"
+      , is-parse-tree
       )
 
     ; apply-and-check(!"Parse a simple expression"

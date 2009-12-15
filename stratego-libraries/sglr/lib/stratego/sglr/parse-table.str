@@ -15,9 +15,20 @@ strategies
    * @type SerializedParseTable -> ParseTable
    */
   open-parse-table =
-    ?tbl
-    ; prim("STRSGLR_open_parse_table", tbl) => table
-    ; !ParseTable(table)
+      prim("STRSGLR_open_parse_table", <id>)
+    ; !ParseTable(<id>)
+    
+  /**
+   * Open a parse table for use in parsing, memoizing the resulting table.
+   *
+   * @type SerializedParseTable -> ParseTable
+   */
+  memo-open-parse-table =
+    MemoOpenParseTable
+  <+
+    ?trm
+    ; open-parse-table => tbl
+    ; rules(MemoOpenParseTable : trm -> tbl)
 
   /**
    * Close an open parse table.
