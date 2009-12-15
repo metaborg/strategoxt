@@ -37,7 +37,7 @@ strategies
 strategies
 
   jsglr-parse-string-pt(on-parse-error | tbl, start-symbol, path) =
-      where(<try(not(?ParseTable(_)); debug(!"IN"); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
+      where(<try(not(?ParseTable(_)); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     ; ?string
     ; prim("JSGLR_parse_string_pt_compat", on-parse-error | string, internal-tbl, start-symbol, path)
     
