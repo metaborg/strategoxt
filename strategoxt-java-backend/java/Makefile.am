@@ -205,7 +205,7 @@ runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java : runt
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.jsglr_parser_compat -la stratego-lib -la stratego-sglr -la stratego-xtc
 
 runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java : runtime/org/strategoxt/lang/compat/override/jsglr-parser.str ../trans/strj
-	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.jsglr_parser -la stratego-lib
+	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.jsglr_parser -la stratego-lib -la stratego-sglr
 
 runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java : runtime/org/strategoxt/lang/compat/override/performance-tweaks.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.performance_tweaks -la stratego-lib
