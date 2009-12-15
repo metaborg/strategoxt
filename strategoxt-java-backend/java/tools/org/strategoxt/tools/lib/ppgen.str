@@ -20,7 +20,9 @@ strategies
   ppgen = 
     <pre-process-sdf> (<get-input-type>, <id>)
     ; ppgenerate
-    ; if not(<get-config> "--output-type" => AST()) then
+    ; if <get-config> "--output-type" => AST() then
+        write-to
+      else
         pp-pp-table; print-to
       end
 
