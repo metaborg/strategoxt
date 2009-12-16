@@ -128,7 +128,7 @@ strategies
     parse-stream-pt(on-parse-error | tbl, start-symbol, "stream")
     
   parse-stream-pt(on-parse-error | tbl, start-symbol, path) =
-    where(<try(memo-open-parse-table)> tbl => ParseTable(internal-tbl))
+    where(<try(not(?ParseTable(_)); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     ; ?Stream(stream)
     ; prim("STRSGLR_parse_stream_pt", on-parse-error | stream, internal-tbl, start-symbol, path)
 
