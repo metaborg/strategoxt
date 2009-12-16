@@ -306,8 +306,8 @@ cs-test02.c : ExpStratego.tbl
 cs-test03.c : ExpStratego.tbl
 cs-test04.c : ExpStratego.tbl Expressions.str
 
-test115 : test115.str
-	$(SCOMPILE) -la stratego-sdf -la stratego-lib -i $< -o $@
+# test115 : test115.str
+# 	$(SCOMPILE) -la stratego-sdf -la stratego-lib -i $< -o $@
 
 ExpStratego.def : Expressions.sdf ExpStratego.sdf
 
