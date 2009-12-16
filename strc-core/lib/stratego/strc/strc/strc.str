@@ -72,8 +72,8 @@ strategies
               )
             end
           ; write-to
-          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
           ; copy-to(strc-getoutfile(!".rtree") => file1)
+          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
         | "Export of externals succeeded"
         , 1
         )
