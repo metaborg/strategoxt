@@ -63,14 +63,17 @@ strategies
       else
         log-timed(
           defs-to-external-defs
-          ; where(write-to; copy-to(strc-getoutfile(!".rtree") => file1))
-          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
           ; if not(<get-config> "--no-concrete-syntax-externals") then
-              pp-stratego-string
-            ; print-to
-            ; copy-to(strc-getoutfile(!".str") => file2)
-            ; log(|Info(), ["Concrete syntax in '", file2, "'"])
+              where(
+                pp-stratego-string
+              ; print-to
+              ; copy-to(strc-getoutfile(!".str") => file2)
+              ; log(|Info(), ["Concrete syntax in '", file2, "'"])
+              )
             end
+          ; write-to
+          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
+          ; copy-to(strc-getoutfile(!".rtree") => file1)
         | "Export of externals succeeded"
         , 1
         )
