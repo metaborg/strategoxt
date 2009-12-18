@@ -46,9 +46,9 @@ public class ImportTerm extends LazyTerm {
 	
 	@Override
 	protected IStrategoTerm init() {
-		java.io.InputStream stream = container.getResourceAsStream("/" + name);
+		java.io.InputStream stream = container.getResourceAsStream(path + name);
 		if (stream == null)
-			stream = container.getResourceAsStream(path + name);
+			stream = container.getResourceAsStream("/" + name);
 		if (stream == null)
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not find imported term file " + name);
@@ -64,9 +64,9 @@ public class ImportTerm extends LazyTerm {
 	}
 	
 	private ATerm initATerm(ATermFactory factory) {
-		java.io.InputStream stream = container.getResourceAsStream("/" + name);
+		java.io.InputStream stream = container.getResourceAsStream(path + name);
 		if (stream == null)
-			stream = container.getResourceAsStream(path + name);
+			stream = container.getResourceAsStream("/" + name);
 		if (stream == null)
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not find imported term file " + name);

@@ -30,7 +30,7 @@ strategies
     <+ <xtc-exit> 1
 
   native-transform(tool, args) =
-    if <get-config> "-Xnativepath" => nativepath; not("") then
+    if <get-config> "-Xnativepath" => nativepath; file-exists then
       xtc-ensure-file => FILE(input)
     ; xtc-new-file    => output
     ; tool'  := <conc-strings> (nativepath, <tool>)
