@@ -2,7 +2,6 @@ package org.strategoxt.lang.compat.sglr;
 
 import java.util.WeakHashMap;
 
-import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
@@ -34,10 +33,10 @@ public class JSGLR_open_parsetable_compat extends JSGLRPrimitive {
     
     private final ATermFactory factory;
 	
-	protected JSGLR_open_parsetable_compat(WrappedATermFactory factory) {
+	protected JSGLR_open_parsetable_compat(ATermFactory factory) {
 		super(NAME, 0, 1);
-		normalOpener = new JSGLR_open_parsetable(factory);
-		this.factory = factory.getFactory();
+		normalOpener = new JSGLR_open_parsetable();
+		this.factory = factory;
 	}
 	
 	@Override
@@ -51,7 +50,7 @@ public class JSGLR_open_parsetable_compat extends JSGLRPrimitive {
 		}
 	}
 	
-	private boolean openTable(IContext env, ATerm table) {
+	protected boolean openTable(IContext env, ATerm table) {
 	    IStrategoInt cached = parseTableCache.get(table);
 	    if (cached != null) {
 	        env.setCurrent(cached);

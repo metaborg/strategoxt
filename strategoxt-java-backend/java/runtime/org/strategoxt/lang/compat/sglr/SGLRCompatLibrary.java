@@ -1,8 +1,9 @@
 package org.strategoxt.lang.compat.sglr;
 
-import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.spoofax.jsglr.Disambiguator;
+
+import aterm.ATermFactory;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -17,16 +18,16 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 		return filterSettings;
 	}
 	
-	public SGLRCompatLibrary(WrappedATermFactory atermFactory) {
+	public SGLRCompatLibrary(ATermFactory atermFactory) {
 		initPrimitives(atermFactory);
 	}
 	
-	protected void initPrimitives(WrappedATermFactory wrappedFactory) {
+	protected void initPrimitives(ATermFactory atermFactory) {
 		initFilterSettings();
 		
-		add(new JSGLR_parse_string_pt_compat(wrappedFactory, filterSettings));
-		add(new JSGLR_open_parsetable_compat(wrappedFactory));
-		add(new STRSGLR_get_parse_error(wrappedFactory));
+		add(new JSGLR_parse_string_pt_compat(atermFactory, filterSettings));
+		add(new JSGLR_open_parsetable_compat(atermFactory));
+		add(new STRSGLR_get_parse_error());
 		add(new STRSGLR_clear_parse_error());
 		add(new STRSGLR_anno_location());
 	}

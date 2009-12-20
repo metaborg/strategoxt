@@ -10,6 +10,7 @@ import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
@@ -32,7 +33,16 @@ public class SSL_EXT_read_text_from_stream extends AbstractPrimitive {
         
         SSLLibrary or = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
         InputStream input = or.getIOAgent().getInputStream(Tools.asJavaInt(tvars[0]));
-        StringBuilder result = new StringBuilder();
+        
+        IStrategoString result = call(env, input);
+        if (result == null) return false;
+		
+		env.setCurrent(result);
+		return true;
+	}
+
+	protected IStrategoString call(IContext env, InputStream input) {
+		StringBuilder result = new StringBuilder();
 		
 		try {
 			InputStreamReader reader = new InputStreamReader(input);
@@ -40,7 +50,7 @@ public class SSL_EXT_read_text_from_stream extends AbstractPrimitive {
 			for (int read = 0; read != -1; read = reader.read(buffer))
 				result.append(buffer, 0, read);
 		} catch (IOException e) {
-			return false;
+			return null;
 		} finally {
 			try {
 				input.close();
@@ -48,9 +58,6 @@ public class SSL_EXT_read_text_from_stream extends AbstractPrimitive {
 				// Not gonna happen
 			}
 		}
-		
-		env.setCurrent(env.getFactory().makeString(result.toString()));
-
-		return true;
+		return env.getFactory().makeString(result.toString());
 	}
 }

@@ -7,7 +7,7 @@ import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
  */
 public class CompatLibrary extends AbstractStrategoOperatorRegistry {
 	
-	protected static final String REGISTRY_NAME = "compat";
+	public static final String REGISTRY_NAME = "compat";
 	
 	public CompatLibrary() {
 		add(new SSL_EXT_call());

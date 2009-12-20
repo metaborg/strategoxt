@@ -3,10 +3,12 @@ package org.strategoxt.lang.compat;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
+
+import aterm.ATermFactory;
+import aterm.pure.PureFactory;
 
 /**
  * Handles per-context library compatibility components.
@@ -47,7 +49,7 @@ public class CompatManager {
 			context.addOperatorRegistry(new CompatLibrary());
 			report_failure_compat_1_0.init();
 		} else if ("stratego_sglr".equals(component)) {
-			WrappedATermFactory atermFactory = new WrappedATermFactory();
+			ATermFactory atermFactory = new PureFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));
 			context.addOperatorRegistry(new SGLRCompatLibrary(atermFactory));
 		}
