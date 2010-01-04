@@ -16,6 +16,7 @@ import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.core.UndefinedStrategyException;
+import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoString;
@@ -68,6 +69,23 @@ public class HybridInterpreter extends Interpreter {
 		super(termFactory, programFactory);
 		
 		compiledContext = new HybridCompiledContext(termFactory);
+	}
+	
+	/**
+	 * Creates an interpreter that bases its definition scope on an existing instance.
+	 */
+	public HybridInterpreter(HybridInterpreter interpreter) {
+		this(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
+		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
+		interpreter.init();
+		for (IOperatorRegistry registry : interpreter.getCompiledContext().getOperatorRegistries()) {
+			if (getContext().getOperatorRegistry(registry.getOperatorRegistryName()) == null)
+				addOperatorRegistry(registry);
+		}
+		registeredLibraries = interpreter.registeredLibraries;
+		loadedJars = interpreter.loadedJars;
+		setIOAgent(interpreter.getIOAgent());
+		setCurrent(interpreter.current());
 	}
 	
 	public static void main(String... args) {
@@ -246,7 +264,7 @@ public class HybridInterpreter extends Interpreter {
 	 * (If not invoked, load() ensures lazy initialization.)
 	 */
 	public void init() {
-		if (!registeredLibraries) {
+		if (!registeredLibraries && !loadedJars) {
 			registeredLibraries = true;
 			registerLibraries();
 		}
@@ -276,6 +294,14 @@ public class HybridInterpreter extends Interpreter {
 	
 	public final Context getCompiledContext() {
 		return compiledContext;
+	}
+	
+	public static Context getCompiledContext(IContext context) {
+		return ((HybridContext) context).getCompiledContext();
+	}
+	
+	public static IContext getContext(Context context) {
+		return ((HybridCompiledContext) context).getContext();
 	}
 	
 	/**
@@ -332,6 +358,10 @@ public class HybridInterpreter extends Interpreter {
 		public StackTracer getStackTracer() {
 			return compiledContext;
 		}
+		
+		public Context getCompiledContext() {
+			return compiledContext;
+		}
 	}
 	
 	/**
@@ -345,6 +375,10 @@ public class HybridInterpreter extends Interpreter {
 			super(factory);
 		}
 		
+		public IContext getContext() {
+			return HybridInterpreter.this.getContext();
+		}
+
 		@Override
 		public void addOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);

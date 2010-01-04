@@ -37,6 +37,7 @@ strategies
       xtc-ensure-file
     ; strc-get-infile
     ; read-from
+    ; strc-output-ast
     <+
       <get-config> "-i"
     ; err(|"File does not exist")
@@ -80,7 +81,7 @@ strategies
         )
       , <chdir> olddir
       )
-    | <conc-strings> ("Deleted existing java files in output directory ", <id>), 1
+    | $[Deleted existing java files in output directory [<output-dirname>]], 1
     )
   <+
     warn(|"Could not clean output directory")

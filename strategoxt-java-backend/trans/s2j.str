@@ -334,13 +334,13 @@ rules
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x'", new InteropSDefT(x.instance, context, compiledContext)); ]|
+    |[ varScope.addSVar("~x'", new InteropSDefT(x.instance, context)); ]|
     with
       x' := <undo-dollars-for-capitals> x
 
   java-register-strategy-lazy :
     SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x'", new InteropSDefT(classLoader, "~y", context, compiledContext)); ]|
+    |[ varScope.addSVar("~x'", new InteropSDefT(classLoader, "~y", context)); ]|
     with
       x' := <undo-dollars-for-capitals> x
     with
@@ -369,7 +369,7 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        public static class x extends Strategy {
-         public static x /*Strategy*/ instance = new x(); // DEBUG
+         public static x instance = new x();
          
          ~body
          ~invokedynamic*

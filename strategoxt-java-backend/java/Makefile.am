@@ -15,6 +15,7 @@ RUNTIMEJAVAS = \
   runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java \
   runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat/Main.java \
   runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java \
+  runtime/org/strategoxt/lang/compat/override/gpp_performance/Main.java \
   runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java \
   runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java \
   runtime/org/strategoxt/lang/compat/override/java_integration/Main.java \
@@ -175,8 +176,8 @@ lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regul
 		exit 1 ;\
 	fi
 
-lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj
-	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/gpp -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr
+lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj runtime/org/strategoxt/lang/compat/override/gpp_performance/Main.java
+	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/gpp -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.override.gpp_performance
 
 lib/org/strategoxt/stratego_aterm/Main.java : $(STRATEGOXT)/share/libstratego-aterm.ctree runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat/Main.java ../trans/strj
 	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_aterm -la stratego-lib -la stratego-gpp -la org.strategoxt.lang.compat.override.stratego_aterm_compat
@@ -209,6 +210,9 @@ runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java : runtime/org
 
 runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java : runtime/org/strategoxt/lang/compat/override/performance-tweaks.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.performance_tweaks -la stratego-lib
+
+runtime/org/strategoxt/lang/compat/override/gpp_performance/Main.java : runtime/org/strategoxt/lang/compat/override/gpp-performance.str ../trans/strj
+	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.gpp_performance -la stratego-lib -la stratego-gpp
 
 runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
 	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.xtc_compat -la stratego-lib -la stratego-xtc

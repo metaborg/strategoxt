@@ -67,11 +67,17 @@ public class StackSaver extends SRTS_all { // DEBUG: SRTS_all superclass
 		try {
 			return result.get();
 		} catch (ExecutionException e) {
-			if (e.getCause() instanceof RuntimeException)
-				throw (RuntimeException) e.getCause();
-			if (e.getCause() instanceof Error)
-				throw (Error) e.getCause();
-			throw new StrategoException("Unexpected exception", e);
+			try {
+				throw e.getCause();
+			} catch (StrategoErrorExit f) {
+				throw new StrategoErrorExit(f.getMessage(), f.getTerm(), e.getCause());
+			} catch (StrategoExit f) {
+				throw new StrategoExit(f.getValue(), e.getCause());
+			} catch (StrategoException f) {
+				throw new StrategoException(f.getMessage(), e.getCause());
+			} catch (Throwable f) {
+				throw new RuntimeException(e.getCause());
+			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {

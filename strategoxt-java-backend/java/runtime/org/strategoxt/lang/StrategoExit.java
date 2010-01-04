@@ -16,17 +16,13 @@ public class StrategoExit extends StrategoException {
         this.value = value;
     }
     
-    public StrategoExit(int value, String message, Throwable cause) {
+    protected StrategoExit(int value, String message, Throwable cause) {
     	super(message, cause);
     	this.value = value;
     }
     
     public StrategoExit(int value, Throwable cause) {
     	this(value, "Legal exit: return code " + valueToString(value), cause);
-    }
-    
-    public StrategoExit(int value, String message) {
-    	this(value, message, null);
     }
     
     public StrategoExit(StrategoExit cause) {

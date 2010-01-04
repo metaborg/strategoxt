@@ -69,7 +69,7 @@ strategies
   is-container-stm =
     ?Labeled(_, _) + ?Block(_) + ?If(_, _) + ?If(_, _, _)
   + ?Try(_, _) + ?Try(_, _, _) + ?Synchronized(_, _)
-  + ?While(_, _) + ?DoWhile(_, _) + ?For(_, _) + ?For(_, _, _, _)
+  + ?While(_, _) + ?DoWhile(_, _) + ?ForEach(_, _, _) + ?For(_, _, _, _)
 
   dead-assigns-control =
     ExprStm(dead-assigns-expr)

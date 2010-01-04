@@ -7,6 +7,7 @@ module strc-compat
 
 imports
   libstratego-lib
+  libstratego-xtc
   libstrc
   strj-version
 

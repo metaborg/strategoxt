@@ -8,7 +8,9 @@
 module strj-options
 
 imports
+  libstrc
   s2j-options
+  s2j
   strj-version
 
 strategies
@@ -19,7 +21,7 @@ strategies
   ; <set-config> ("--statistics", 1)
   ; <set-config> ("-O", 2)
   ; <set-config> ("-I", [])
-  ; <set-config> ( "--no-concrete-syntax-externals", 1)
+  ; <set-config> ("--no-concrete-syntax-externals", 1)
  
   strj-parse-options =
     with(

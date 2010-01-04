@@ -9,6 +9,7 @@ import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.stratego.StupidFormatter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.strategoxt.HybridInterpreter;
 
 /**
  * Adapts an {@link Strategy} strategy to a {@link SDefT},
@@ -24,40 +25,46 @@ public class InteropSDefT extends SDefT {
 	
 	private static final String[] NO_STRINGS = {};
 	
-	private final Context compiledContext;
-	
 	private final String strategyClassName;
 	
 	private final ClassLoader classLoader;
 	
 	private Strategy strategy;
 
-	public InteropSDefT(Strategy strategy, IContext context, Context compiledContext) {
+	public InteropSDefT(Strategy strategy, IContext context) {
 		super(context.getVarScope());
 		this.strategyClassName = null;
 		this.classLoader = null;
-		this.compiledContext = compiledContext;
 		this.strategy = strategy;
+	}
+	
+	@Deprecated
+	public InteropSDefT(Strategy strategy, IContext context, Context compiledContext) {
+		this(strategy, context);
 	}
 
 	/**
 	 * Creates a new InteropSDefT that dynamically loads the specified strategy class.
 	 */
-	public InteropSDefT(ClassLoader classLoader, String strategyClassName, IContext context, Context compiledContext) {
+	public InteropSDefT(ClassLoader classLoader, String strategyClassName, IContext context) {
 		super(context.getVarScope());
 		this.classLoader = classLoader;
 		this.strategyClassName = strategyClassName;
-		this.compiledContext = compiledContext;
+	}
+	
+	@Deprecated
+	public InteropSDefT(ClassLoader classLoader, String strategyClassName, IContext context, Context compiledContext) {
+		this(classLoader, strategyClassName, context);
 	}
 
-	public static SDefT[] toInteropSDefTs(Strategy[] strategies, IContext context, Context compiledContext) {
+	public static SDefT[] toInteropSDefTs(Strategy[] strategies, IContext context) {
 		SDefT[] results = new SDefT[strategies.length];
 		for (int i = 0; i < strategies.length; i++) {
 			Strategy strategy = strategies[i];
 			if (strategy instanceof InteropStrategy) {
 				results[i] = ((InteropStrategy) strategy).getDefinition();
 			} else {
-				results[i] = new InteropSDefT(strategy, context, compiledContext);
+				results[i] = new InteropSDefT(strategy, context);
 			}
 		}
 		return results;
@@ -148,7 +155,7 @@ public class InteropSDefT extends SDefT {
 				for (int i = 0; i < sargs.length; i++) {
 					sargDefs[i] = new SDefT("s" + i, NO_SVARS, NO_STRINGS, sargs[i], env.getVarScope());
 				}
-				return InteropSDefT.this.evaluate(env, InteropStrategy.toInteropStrategies(sargDefs, env), targs);
+				return InteropSDefT.this.evaluate(env, InteropStrategy.toInteropStrategies(sargDefs), targs);
 			}
 		};
 	}
@@ -175,7 +182,7 @@ public class InteropSDefT extends SDefT {
 			targs[i] = targ;
 		}
 		
-		return evaluate(env, InteropStrategy.toInteropStrategies(sargs, env), targs);
+		return evaluate(env, InteropStrategy.toInteropStrategies(sargs), targs);
 	}
 
 	private boolean evaluate(IContext env, Strategy[] sargs, IStrategoTerm[] targs)
@@ -183,7 +190,8 @@ public class InteropSDefT extends SDefT {
 		
 		IStrategoTerm result;
 		try {
-			result = getStrategy().invokeDynamic(compiledContext, env.current(), sargs, targs);
+			Context context = HybridInterpreter.getCompiledContext(env);
+			result = getStrategy().invokeDynamic(context, env.current(), sargs, targs);
 		} catch (StrategoErrorExit e) {
 			throw new InterpreterErrorExit(e.getMessage(), e.getTerm(), e);
 		} catch (StrategoExit e) {

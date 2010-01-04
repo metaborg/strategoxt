@@ -9,6 +9,7 @@ import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.strategoxt.HybridInterpreter;
 
 /**
  * Adapts an {@link SDefT} definition to a {@link Strategy},
@@ -20,21 +21,18 @@ public class InteropStrategy extends DynamicStrategy {
 	
 	private final SDefT definition;
 	
-	private final IContext context;
-	
-	public InteropStrategy(SDefT definition, IContext context) {
+	public InteropStrategy(SDefT definition) {
 		this.definition = definition;
-		this.context = context;
 	}
 	
-	public static Strategy[] toInteropStrategies(SDefT[] definitions, IContext context) {
+	public static Strategy[] toInteropStrategies(SDefT[] definitions) {
 		Strategy[] results = new Strategy[definitions.length];
 		for (int i = 0; i < definitions.length; i++) {
 			SDefT definition = definitions[i];
 			if (definition instanceof InteropSDefT) {
 				results[i] = ((InteropSDefT) definition).getStrategy();
 			} else {
-				results[i] = new InteropStrategy(definitions[i], context);
+				results[i] = new InteropStrategy(definitions[i]);
 			}
 		}
 		return results;
@@ -42,6 +40,7 @@ public class InteropStrategy extends DynamicStrategy {
 	
 	@Override
 	public IStrategoTerm invokeDynamic(Context compiledContext, IStrategoTerm current, Strategy[] sargs, IStrategoTerm[] targs) {
+		IContext context = HybridInterpreter.getContext(compiledContext);
 		VarScope oldScope = context.getVarScope();
 		try {
 		    VarScope defScope = definition.getScope();
@@ -71,7 +70,8 @@ public class InteropStrategy extends DynamicStrategy {
 		
 		SDefT.SVar[] sparams = definition.getStrategyParams();
 		String[] tparams = definition.getTermParams();
-		SDefT[] sargs2 = InteropSDefT.toInteropSDefTs(sargs, context, compiledContext);
+		IContext context = HybridInterpreter.getContext(compiledContext);
+		SDefT[] sargs2 = InteropSDefT.toInteropSDefTs(sargs, context);
 		if (sparams.length != sargs.length || tparams.length != targs.length) {
 			throw new InterpreterException("Illegal number of arguments passed to strategy "
 					+ getName() + ": " + Arrays.toString(sargs) + "|" + Arrays.toString(targs));

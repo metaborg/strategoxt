@@ -12,8 +12,8 @@ strategies
     )
   
   pp-pp-table =
-    if [is-string, is-list => l] then // HACK: allow calling with <call>
-      ![l]
+    if [is-string, ?pp] then // HACK: allow calling with <call>
+      ![pp]
     end
   ; ast2abox(|[<import-term(pp-table-pretty.pp.af)>])
   ; box2text-string(|80)
