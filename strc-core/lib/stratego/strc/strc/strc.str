@@ -63,7 +63,7 @@ strategies
       else
         log-timed(
           defs-to-external-defs
-          ; if not(<get-config> "--no-concrete-syntax-externals") then
+          ; if not(<get-config> "--no-concrete-syntax-externals" + <get-config> "-F") then
               where(
                 pp-stratego-string
               ; print-to
