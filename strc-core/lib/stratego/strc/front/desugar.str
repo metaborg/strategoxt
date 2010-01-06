@@ -184,16 +184,15 @@ rules
     where
       message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule ", <name>)
     ; x := <new>
+    ; y := <new>
     ; with := Strat |[
         where(
           s
-          <+ { x: ?x
+          <+ { x, y: ?x
            ; prim("SSL_stacktrace_get_all_frame_names",|)
-           ; // TODO: call report-failure(|~str:message {^[]}, x) instead
-             report-failure(
-                log(|Critical(){^[]}, ~str:message {^[]}, x)
-              ; exit(|)
-              )
+           ; ?y
+           ; !x
+           ; report-with-failure(|~str:message {^[]}, y)
              }
         )
       ]|
