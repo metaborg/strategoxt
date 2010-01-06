@@ -31,7 +31,6 @@ strategies
     ; report-failure(log(|Critical(), message, term); exit)
   
   /**
-   * @obsolete
    * @internal
    */
   report-with-failure(|message, trace) =
