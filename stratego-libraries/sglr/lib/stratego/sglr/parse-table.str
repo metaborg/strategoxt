@@ -27,6 +27,7 @@ strategies
     MemoOpenParseTable
   <+
     ?trm
+    ; not(?ParseTable(_))
     ; open-parse-table => tbl
     ; rules(MemoOpenParseTable : trm -> tbl)
 
