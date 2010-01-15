@@ -89,16 +89,17 @@ strategies
   output-java :
     ast -> name
     with
-      name := <output-filename <+ fatal-err(|"Unexpected output")> ast
+      name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
     ; if FastPrettyPrinting then
         if-c-platform(
           <parenthesize-Java5; pp-java-native> ast
         ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
         )
       else
-          file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
-        ; box  := <pp-java5-to-abox> ast
-        ; <box2text-stream(|80, file)> box
+          file := <fopen; debug(!-1) <+ fatal-err(|"Could not open output file")> (name, "w")
+        ; box  := <debug(!0); pp-java5-to-abox; debug(!1)> ast
+        ; with(<debug(!"1.5")> <pp-java5-to-string> ast)
+        ; <debug(!2); box2text-stream(|80, file)> box
         ; <fclose> file
       end
     <+
