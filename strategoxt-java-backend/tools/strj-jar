@@ -74,7 +74,7 @@ INPUTDIR=`dirname $INPUT`
 INPUT2=
 INPUT3=
 if head -n 1 $INPUT | grep '^package' &>/dev/null; then
-  PACKAGE="`head $INPUT -n 1 | sed 's/package //; s/\;//'`."
+  PACKAGE="`head -n 1 $INPUT | sed 's/package //; s/\;//'`."
   # PACKAGEDIR=`echo "$PACKAGE" | sed 's!\.!/!g	'`
   INPUT2="$INPUTDIR/Main.java"
   INPUTDIR2=`cd $INPUTDIR; pwd` # canonicalize
