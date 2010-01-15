@@ -96,10 +96,9 @@ strategies
         ; (rename-to(!name) <+ <fatal-err(|"Could not open output file")> name)
         )
       else
-          file := <fopen; debug(!-1) <+ fatal-err(|"Could not open output file")> (name, "w")
-        ; box  := <debug(!0); pp-java5-to-abox; debug(!1)> ast
-        ; with(<debug(!"1.5")> <pp-java5-to-string> ast)
-        ; <debug(!2); box2text-stream(|80, file)> box
+          file := <fopen <+ fatal-err(|"Could not open output file")> (name, "w")
+        ; box  := <pp-java5-to-abox> ast
+        ; <box2text-stream(|80, file)> box
         ; <fclose> file
       end
     <+
