@@ -113,7 +113,7 @@ if [ "$INPUTFILE" == "" ]; then
   if echo "$@" | grep '^module ' >/dev/null; then
     PROGRAM="$@"
   else
-    PROGRAM="module foo imports libstratego-lib libstratego-xtc libstratego-sglr libstratego-rtg libstrc rules main =
+    PROGRAM="module foo imports libstratego-lib libstratego-xtc libstratego-sglr libstratego-rtg libstratego-aterm libstrc rules main =
 $@"
   fi
   echo "$PROGRAM" |
@@ -121,7 +121,7 @@ $@"
   INPUTFILE=$TEMPFILE
 fi
 
-(strc $FOPTION $LOPTION $COPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 -la stratego-lib -la stratego-xtc -la strc -la stratego-sglr -la stratego-rtg -I . -i $INPUTFILE -o $TEMPFILE.out --statistics 0 || exit 1) 2>&1 | grep -vE '^ *[ig]cc|warning ] Mismatch between basename|info ] Compiling|libtool: '
+(strc $FOPTION $LOPTION $COPTION $MOPTION $OOPTION $IOPTION $LAOPTION --format-check 0 -Xcc -O0 -la stratego-lib -la stratego-xtc -la stratego-aterm -la strc -la stratego-sglr -la stratego-rtg -I . -i $INPUTFILE -o $TEMPFILE.out --statistics 0 || exit 1) 2>&1 | grep -vE '^ *[ig]cc|warning ] Mismatch between basename|info ] Compiling|libtool: '
 RET=$?
 
 rm -f $TEMPFILE
