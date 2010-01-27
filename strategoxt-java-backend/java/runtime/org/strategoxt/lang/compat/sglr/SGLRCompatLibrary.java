@@ -47,7 +47,7 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 				filterSettings.setFilterDirectPreference(false);
 			}
 		});
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_direct_eagernes") { // (sic)
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_get_filter_direct_eagernes") { // (sic)
 			@Override
 			public boolean get() {
 				return filterSettings.getFilterDirectPreference();
@@ -55,21 +55,21 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 		});
 		
 		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes_on") { // (sic)
-			@Override @Deprecated
+			@Override
 			public void set() {
-				filterSettings.setFilterIndirectPreference(true);
+				filterSettings.setFilterPreferenceCount(false);
 			}
 		});
 		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes_off") { // (sic)
-			@Override @Deprecated
+			@Override
 			public void set() {
-				filterSettings.setFilterIndirectPreference(false);
+				filterSettings.setFilterPreferenceCount(false);
 			}
 		});
-		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_filter_eagernes") { // (sic)
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_get_filter_eagernes") { // (sic)
 			@Override
 			public boolean get() {
-				return filterSettings.getFilterDirectPreference();
+				return filterSettings.getFilterPreferenceCount();
 			}
 		});
 
