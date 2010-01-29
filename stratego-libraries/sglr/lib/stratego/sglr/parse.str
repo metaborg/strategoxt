@@ -187,7 +187,7 @@ strategies
     ?path; parse-file-pt(on-open-error, on-parse-error | tbl, start-symbol, path)
 
   parse-file-pt(on-open-error, on-parse-error | tbl, start-symbol, path) =
-    where(!tbl => ParseTable(internal-tbl))
+    where(<try(memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     ; (<fopen> (<id>, "r") => stream <+ on-open-error; fail)
     ; finally(
         parse-stream-pt(on-parse-error | tbl, start-symbol, path)
@@ -253,7 +253,7 @@ strategies
     ?file; parse-xtc-file-pt(on-open-error, on-parse-error |tbl, start-symbol, <path-of-xtc-file> file)
 
   parse-xtc-file-pt(on-open-error, on-parse-error |tbl, start-symbol, path) =
-    where(!tbl => ParseTable(internal-tbl))
+    where(<try(memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     
     ; let open-stream =
             ?FILE(<id>); (<fopen> (<id>, "r") <+ on-open-error)
