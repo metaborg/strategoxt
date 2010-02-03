@@ -14,7 +14,7 @@ fi
 TEMPDIR=$TEMP/strj-jar-`date +'%N'`
 
 if which strj-jar &>/dev/null; then
-  CLASSPATH=$(cd $(dirname $(which strj-jar))/..; pwd)/share/strc-java/strategoxt.jar
+  CLASSPATH=`dirname "$(cd ${0%/*}/.. && echo $PWD/${0##*/})"`/share/strc-java/strategoxt.jar
 fi
 
 ## PARAMETERS
