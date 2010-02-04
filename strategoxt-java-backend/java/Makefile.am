@@ -176,6 +176,9 @@ lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regul
 		exit 1 ;\
 	fi
 
+bin :
+	mkdir bin
+
 lib/org/strategoxt/stratego_gpp/Main.java : $(STRATEGOXT)/share/libstratego-gpp.ctree ../trans/strj runtime/org/strategoxt/lang/compat/override/gpp_performance/Main.java
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/gpp -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_gpp -la stratego-lib -la stratego-lib -la stratego-sglr -la org.strategoxt.lang.compat.override.gpp_performance
 
