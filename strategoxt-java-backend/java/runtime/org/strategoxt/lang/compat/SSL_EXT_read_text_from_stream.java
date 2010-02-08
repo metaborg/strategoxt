@@ -1,8 +1,6 @@
 package org.strategoxt.lang.compat;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -17,8 +15,6 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class SSL_EXT_read_text_from_stream extends AbstractPrimitive {
-	
-	private final char[] buffer = new char[2048];
 
 	protected SSL_EXT_read_text_from_stream() {
 		super("SSL_EXT_read_text_from_stream", 0, 1);
@@ -31,33 +27,23 @@ public class SSL_EXT_read_text_from_stream extends AbstractPrimitive {
         if(!Tools.isTermInt(tvars[0]))
             return false;
         
-        SSLLibrary or = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
-        InputStream input = or.getIOAgent().getInputStream(Tools.asJavaInt(tvars[0]));
-        
-        IStrategoString result = call(env, input);
-        if (result == null) return false;
-		
-		env.setCurrent(result);
-		return true;
+        try {
+        	IStrategoString result = call(env, Tools.asJavaInt(tvars[0]));
+			env.setCurrent(result);
+			return true;
+        } catch (IOException e) {
+        	SSLLibrary or = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
+            or.getIOAgent().printError("SSL_EXT_read_text_from_stream - could not read file (" + e.getMessage() + ")");
+        	return false;
+        }
 	}
 
-	protected IStrategoString call(IContext env, InputStream input) {
-		StringBuilder result = new StringBuilder();
+	protected IStrategoString call(IContext env, int fd)
+			throws IOException {
 		
-		try {
-			InputStreamReader reader = new InputStreamReader(input);
-		
-			for (int read = 0; read != -1; read = reader.read(buffer))
-				result.append(buffer, 0, read);
-		} catch (IOException e) {
-			return null;
-		} finally {
-			try {
-				input.close();
-			} catch (IOException e) {
-				// Not gonna happen
-			}
-		}
-		return env.getFactory().makeString(result.toString());
+		SSLLibrary or = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
+		String resultString = or.getIOAgent().readString(fd);
+		IStrategoString result = env.getFactory().makeString(resultString);
+		return result;
 	}
 }

@@ -138,7 +138,7 @@ public class HybridInterpreter extends Interpreter {
 				if (args[i].endsWith(".ctree")) {
 					interpreter.load(args[i++]);
 				} else if (args[i].endsWith(".jar")) {
-					URL[] jars = { new File(args[i++]).toURL() };
+					URL[] jars = { new File(args[i++]).toURI().toURL() };
 					interpreter.loadJars(jars);
 				} else {
 					break;

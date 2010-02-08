@@ -1,10 +1,14 @@
 package org.strategoxt.lang.compat;
 
-import static org.spoofax.interpreter.core.Tools.*;
+import static org.spoofax.interpreter.core.Tools.asJavaString;
+import static org.spoofax.interpreter.core.Tools.isTermList;
+import static org.spoofax.interpreter.core.Tools.isTermString;
+import static org.spoofax.interpreter.core.Tools.isTermTuple;
+import static org.spoofax.interpreter.core.Tools.javaString;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.Writer;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -56,8 +60,8 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			SSLLibrary op = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
 			IOAgent io = op.getIOAgent();
 			File dir = io.openFile(io.getWorkingDir());
-			PrintStream stdout = io.getOutputStream(IOAgent.CONST_STDOUT);
-			PrintStream stderr = io.getOutputStream(IOAgent.CONST_STDERR);
+			Writer stdout = io.getWriter(IOAgent.CONST_STDOUT);
+			Writer stderr = io.getWriter(IOAgent.CONST_STDERR);
 			
 			// Invocation
 			int returnCode = caller.call(commandArgs, environment, dir, stdout, stderr);

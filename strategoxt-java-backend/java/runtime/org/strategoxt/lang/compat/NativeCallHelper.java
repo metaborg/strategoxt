@@ -2,8 +2,11 @@ package org.strategoxt.lang.compat;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.Reader;
+import java.io.Writer;
 
 import org.strategoxt.lang.StrategoException;
 
@@ -12,17 +15,31 @@ import org.strategoxt.lang.StrategoException;
  */
 public class NativeCallHelper {	
 	
+	@Deprecated
 	public int call(String[] commandArgs, File workingDir, PrintStream outStream, PrintStream errorStream)
-		throws InterruptedException, IOException {
+			throws InterruptedException, IOException {
+		
 		return call(commandArgs, null, workingDir, outStream, errorStream);
 	}
 	
-	public int call(String[] commandArgs, String[] environment, File workingDir, PrintStream outStream, PrintStream errorStream)
+	public int call(String[] commandArgs, File workingDir, Writer outStream, Writer errorStream)
 			throws InterruptedException, IOException {
 		
+		return call(commandArgs, null, workingDir, outStream, errorStream);
+	}
+	
+	@Deprecated
+	public int call(String[] commandArgs, String[] environment, File workingDir, PrintStream outStream, PrintStream errorStream)
+			throws InterruptedException, IOException {
+		return call(commandArgs, environment, workingDir, new OutputStreamWriter(outStream), new OutputStreamWriter(errorStream));
+	}
+		
+	public int call(String[] commandArgs, String[] environment, File workingDir, Writer outWriter, Writer errorWriter)
+			throws InterruptedException, IOException {
+
 		Process process = Runtime.getRuntime().exec(commandArgs, environment, workingDir);
-		Thread t1 = new StreamCopier(process.getInputStream(), outStream);
-		Thread t2 = new StreamCopier(process.getErrorStream(), errorStream);
+		Thread t1 = new StreamCopier(new InputStreamReader(process.getInputStream()), outWriter);
+		Thread t2 = new StreamCopier(new InputStreamReader(process.getErrorStream()), errorWriter);
 		t1.start();
 		t2.start();
 		
@@ -34,10 +51,10 @@ public class NativeCallHelper {
 	}
 
 	public static class StreamCopier extends Thread {
-		private final InputStream input;
-		private final PrintStream output;
+		private final Reader input;
+		private final Writer output;
 	
-		public StreamCopier(InputStream input, PrintStream output) {
+		public StreamCopier(Reader input, Writer output) {
 			this.input = input;
 			this.output = output;
 		}
@@ -45,7 +62,7 @@ public class NativeCallHelper {
 		@Override
 		public void run() {
 			try {
-				byte[] buffer = new byte[512];
+				char[] buffer = new char[512];
 				int read = 0;
 				while ((read = input.read(buffer, 0, 512)) != -1) {
 					output.write(buffer, 0, read);

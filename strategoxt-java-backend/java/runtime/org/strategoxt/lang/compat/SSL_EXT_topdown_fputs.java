@@ -1,20 +1,19 @@
 package org.strategoxt.lang.compat;
 
-import static org.spoofax.interpreter.core.Tools.*;
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
+import static org.spoofax.interpreter.core.Tools.asJavaInt;
+import static org.spoofax.interpreter.core.Tools.asJavaString;
+import static org.spoofax.interpreter.terms.IStrategoTerm.APPL;
+import static org.spoofax.interpreter.terms.IStrategoTerm.INT;
+import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Writer;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
-import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-
-import aterm.stream.BufferedOutputStreamWriter;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -38,15 +37,14 @@ public class SSL_EXT_topdown_fputs extends AbstractPrimitive {
 		int streamInt = asJavaInt(streamTerm.getSubterm(0)); 
 
 		SSLLibrary or = SSLLibrary.instance(env);
-		OutputStream out = or.getIOAgent().getOutputStream(streamInt);
-		BufferedOutputStreamWriter writer = new BufferedOutputStreamWriter(out);
+		Writer writer = or.getIOAgent().getWriter(streamInt);
 		
 		try {
 			invoke(env.current(), writer);
 			writer.flush();
 			return true;
 		} catch (IOException e) {
-			or.getIOAgent().getOutputStream(IOAgent.CONST_STDERR).println(getName() + ": " + e.getMessage());
+			or.getIOAgent().printError(getName() + ": " + e.getMessage());
 			return false;
 		}
 	}
