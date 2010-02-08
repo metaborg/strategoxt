@@ -1,5 +1,11 @@
 package org.strategoxt.lang;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -46,14 +52,8 @@ public class ImportTerm extends LazyTerm {
 	
 	@Override
 	protected IStrategoTerm init() {
-		java.io.InputStream stream = container.getResourceAsStream(path + name);
-		if (stream == null)
-			stream = container.getResourceAsStream("/" + name);
-		if (stream == null)
-			throw new StrategoException(container.getSimpleName()
-					+ ": Could not find imported term file " + name);
 		try {
-			return factory.parseFromStream(stream);
+			return factory.parseFromStream(openStream());
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
@@ -64,20 +64,48 @@ public class ImportTerm extends LazyTerm {
 	}
 	
 	private ATerm initATerm(ATermFactory factory) {
-		java.io.InputStream stream = container.getResourceAsStream(path + name);
-		if (stream == null)
-			stream = container.getResourceAsStream("/" + name);
-		if (stream == null)
-			throw new StrategoException(container.getSimpleName()
-					+ ": Could not find imported term file " + name);
 		try {
-			return factory.readFromFile(stream);
+			return factory.readFromFile(openStream());
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
 		} catch (RuntimeException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
+		}
+	}
+
+	private InputStream openStream() {
+		InputStream result = tryOpenStreamFromJar();
+		if (result == null)
+			result = container.getResourceAsStream(path + name);
+		if (result == null)
+			result = container.getResourceAsStream("/" + name);
+		if (result == null)
+			throw new StrategoException(container.getSimpleName()
+					+ ": Could not find imported term file " + name);
+		return result;
+	}
+
+	/**
+	 * Attempt to open resources in JARs using the Java ZipFile API,
+	 * hopefully avoiding JVM classloader failures.
+	 */
+	private InputStream tryOpenStreamFromJar() {
+		try {
+			URL location = container.getProtectionDomain().getCodeSource().getLocation();
+			if (location.getFile().endsWith(".jar")) {
+				File jarFile = new File(location.toURI());
+				ZipFile jar = new ZipFile(jarFile);
+				ZipEntry entry = jar.getEntry(path + name);
+				if (entry == null) entry = jar.getEntry("/" + name);
+				if (entry == null) return null;
+				return jar.getInputStream(entry);
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null; // be forgiving
 		}
 	}
 }
