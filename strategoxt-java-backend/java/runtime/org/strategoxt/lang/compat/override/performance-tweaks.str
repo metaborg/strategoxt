@@ -37,6 +37,9 @@ strategies
   override crush(nul, sum, s) =
     SRTS-EXT-crush(nul, sum, s)
 
+  override topdown(s) =
+    rec rec(s; all(rec))
+
   override foldr(nul, sum) =
     ?[_ | _] < SRTS-EXT-crush(nul, sum, id) + []; nul
 

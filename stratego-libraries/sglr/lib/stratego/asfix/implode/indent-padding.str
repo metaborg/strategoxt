@@ -21,14 +21,10 @@ strategies
    * Add an annotation uniquely identifying each {indentpadding} lexical.
    */
   AddPaddedLexicalAnno :
-    appl(prod(_, _, attrs(a*)), _) -> <id> {PaddingId(<new>)}
-    where
-      <one(term(indentpadding()))> a* 
+    appl(prod(_, _, attrs([term(indentpadding())])), _) -> <id> {PaddingId(<new>)}
     
   ImplodePaddedLexical :
-    appl(prod(_, _, attrs(a*)), _) -> AddPadding(imploded) {PaddingContext(<id>)}
-    where
-      <one(term(indentpadding()))> a*
+    appl(prod(_, _, attrs(term(indentpadding()))), _) -> AddPadding(imploded) {PaddingContext(<id>)}
     with
       imploded := <asfix-yield-appl>
 
