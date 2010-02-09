@@ -71,7 +71,7 @@ public class StrategoInt extends StrategoTerm implements IStrategoInt {
     }
 
     public void prettyPrint(ITermPrinter pp) {
-        pp.print("" + intValue());
+        pp.print(String.valueOf(intValue()));
         printAnnotations(pp);
     }
 

@@ -15,7 +15,6 @@ import org.strategoxt.lang.StrategoException;
  */
 public class NativeCallHelper {	
 	
-	@Deprecated
 	public int call(String[] commandArgs, File workingDir, PrintStream outStream, PrintStream errorStream)
 			throws InterruptedException, IOException {
 		
@@ -28,7 +27,6 @@ public class NativeCallHelper {
 		return call(commandArgs, null, workingDir, outStream, errorStream);
 	}
 	
-	@Deprecated
 	public int call(String[] commandArgs, String[] environment, File workingDir, PrintStream outStream, PrintStream errorStream)
 			throws InterruptedException, IOException {
 		return call(commandArgs, environment, workingDir, new OutputStreamWriter(outStream), new OutputStreamWriter(errorStream));
@@ -50,7 +48,7 @@ public class NativeCallHelper {
 		return result;
 	}
 
-	public static class StreamCopier extends Thread {
+	private static class StreamCopier extends Thread {
 		private final Reader input;
 		private final Writer output;
 	
