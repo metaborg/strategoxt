@@ -51,6 +51,19 @@ strategies
   newname = ?prefix; prim("SSL_newname", prefix)
 
   /**
+   * Generates a unique new term.
+   * May not necessarily be a string, depending on the platform.
+   * May be slightly more efficient than a standard 'new.'
+   *
+   * @since 0.18
+   */
+  newterm =
+    if-c-platform(prim("SSL_new"));
+    if-java-platform(SRTS-EXT-newint)
+
+  external SRTS-EXT-newint(|)
+
+  /**
    * Predicate that checks if the supplied term is a string.
    *
    * @type String -> String
