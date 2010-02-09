@@ -97,8 +97,8 @@ public class ImportTerm extends LazyTerm {
 			if (location.getFile().endsWith(".jar")) {
 				File jarFile = new File(location.toURI());
 				ZipFile jar = new ZipFile(jarFile);
-				ZipEntry entry = jar.getEntry(path + name);
-				if (entry == null) entry = jar.getEntry("/" + name);
+				ZipEntry entry = jar.getEntry(removePrecedingSlash(path) + name);
+				if (entry == null) entry = jar.getEntry(name);
 				if (entry == null) return null;
 				return jar.getInputStream(entry);
 			} else {
@@ -107,5 +107,9 @@ public class ImportTerm extends LazyTerm {
 		} catch (Exception e) {
 			return null; // be forgiving
 		}
+	}
+	
+	private static String removePrecedingSlash(String path) {
+		return path.startsWith("/") ? path.substring(1) : path;
 	}
 }
