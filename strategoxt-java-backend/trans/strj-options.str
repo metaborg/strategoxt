@@ -32,7 +32,7 @@ strategies
       strj-options
     )
   //; display-version
-  ; where(output-dirname) // ensure dir exists
+  ; ensure-output-dir-exists
   ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)); not(<get-config> "-F") then
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
@@ -40,6 +40,9 @@ strategies
   ; if <get-config> "--library"; not(<get-config> "-p" + <get-config> "-F") then
       fatal-err-msg(|"No package name specified")
     end
+  
+  ensure-output-dir-exists =
+    where(not(<get-config> "-o") + output-dirname)
   
   strj-options =
     input-option
