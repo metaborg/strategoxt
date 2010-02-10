@@ -34,7 +34,7 @@ strategies
    */
   implode-asfix(implode-concrete) =
     ?parsetree(<id>, _)
-    ; rec rec(all((AddPaddedLexicalAnno <+ id); rec))
+    ; rec rec((AddPaddedLexicalAnno <+ id); all(rec))
     ; ?asfix
     ; rec x({
         ?asfix
