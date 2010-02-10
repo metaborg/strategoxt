@@ -17,15 +17,15 @@ if which strj-jar &>/dev/null; then
   CLASSPATH=`dirname "$(cd ${0%/*}/.. && echo $PWD/${0##*/})"`/share/strc-java/strategoxt.jar
 fi
 
+if [ ! -e $CLASSPATH ]; then
+  echo Warning: $CLASSPATH not found >&2
+fi
+
 ## PARAMETERS
 
 while P=$1; shift; do
   if [ "$P" == "-cp" ]; then
-    if [ -e $CLASSPATH ]; then
-      CLASSPATH="$1:$CLASSPATH"
-    else
-      CLASSPATH="$1"
-    fi
+    CLASSPATH="$1:$CLASSPATH"
     shift
   elif [ "$P" == "-i" ]; then
     INPUT="$1"

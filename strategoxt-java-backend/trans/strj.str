@@ -137,7 +137,8 @@ strategies
    // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,
    // because of the import-term involved)
    output-java-error =
-      err-msg(|"Internal error: generated Java AST is malformed")
+      with(not(<pp-java5-to-abox> Id("foo") => Id("foo")) | "Internal error: linking against libjava-front failed")
+    ; err-msg(|"Internal error: generated Java AST is malformed")
     ; write-to => FILE(file)
     ; try(<xtc-command(!"format-check")> ["--vis", "-i", file, "--rtg", <xtc-find> "Java-15.rtg" | <pass-verbose>])
     ; log(|Critical(), "Fatal errors encountered in generated code")
