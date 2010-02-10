@@ -14,14 +14,13 @@ strategies
     ; s
     <+
       prim("SSL_stacktrace_get_all_frame_names")
-    ; if if-verbose3(?true); !true then
+    ; if-verbose3(
         report-failure(
           log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
         ; <exit> 1
         )
-      else
-        dr-scope-all-end; fail
-      end
+      )
+    ; dr-scope-all-end; fail
     |}
 
   // TODO: remove these definitions

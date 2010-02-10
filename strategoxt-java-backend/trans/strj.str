@@ -29,7 +29,14 @@ strategies
     )
   ; <exit> 0
   <+
-    log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+    prim("SSL_stacktrace_get_all_frame_names")
+  ; if-verbose3(
+      report-failure(
+        log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
+      ; <exit> 1
+      )
+    )
+  ; log(|Error(), ["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
   ; <exit> 1
   
   strj =
