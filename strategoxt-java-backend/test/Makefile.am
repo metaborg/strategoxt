@@ -85,7 +85,7 @@ check-am : strc1/ExpStratego.tbl $(CTREEFILES) $(JAVAFILES) .ALLCLASSFILES $(CLA
 TESTS=test-tools.sh $(RUNNERFILES)
 
 CLASSPATH=../java/spoofax-libs.jar:../java/bin:../java/strategoxt.jar:.
-JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn
+JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -encoding UTF-8
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 ../trans/strj : .PURPLEPONY
