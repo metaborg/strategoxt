@@ -32,7 +32,7 @@ strategies
       strj-options
     )
   //; display-version
-  ; if not(<get-config> "-o" + output-dirname) then
+  ; if not(output-dirname); <get-config> "-o" then
       fatal-err-msg(|"Illegal output directory")
     end
   ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)); not(<get-config> "-F") then
