@@ -24,7 +24,7 @@ strategies
     appl(prod(_, _, attrs([term(indentpadding())])), _) -> <id> {PaddingId(<new>)}
     
   ImplodePaddedLexical :
-    appl(prod(_, _, attrs(term(indentpadding()))), _) -> AddPadding(imploded) {PaddingContext(<id>)}
+    appl(prod(_, _, attrs([term(indentpadding())])), _) -> AddPadding(imploded) {PaddingContext(<id>)}
     with
       imploded := <asfix-yield-appl>
 
