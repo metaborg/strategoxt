@@ -4,8 +4,8 @@
 
 PRINT_CLASSPATH=
 CLASSPATH=strategoxt.jar # override with option -cp
-JAR=`if which fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
-JAVAC=`if which ecj &>/dev/null; then echo ecj; else echo javac; fi`
+JAR=`if type -p fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
+JAVAC=`if type -p ecj &>/dev/null; then echo ecj; else echo javac; fi`
 if [ "$JAVAFLAGS" == "" ]; then
   JAVACFLAGS="-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -encoding UTF-8"
 fi
@@ -17,7 +17,7 @@ CLASSPATH="$(cd `dirname "$0"`/.. && pwd)"/share/strc-java/strategoxt.jar
 
 if [ ! -e $CLASSPATH ]; then
   echo Warning: $CLASSPATH not found >&2
-  echo "(invoked as $0; available as `which strj-jar`) ">&2
+  echo "(invoked as $0; available as `type -p strj-jar`) ">&2
 fi
 
 ## PARAMETERS
