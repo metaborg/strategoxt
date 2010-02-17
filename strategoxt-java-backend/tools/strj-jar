@@ -13,9 +13,7 @@ fi
 [ "$TEMP" != "" ] || TEMP=/tmp
 TEMPDIR=$TEMP/strj-jar-`date +'%N'`
 
-if which strj-jar &>/dev/null; then
-  CLASSPATH="$(cd `dirname "$0"`/.. && pwd)"/share/strc-java/strategoxt.jar
-fi
+CLASSPATH="$(cd `dirname "$0"`/.. && pwd)"/share/strc-java/strategoxt.jar
 
 if [ ! -e $CLASSPATH ]; then
   echo Warning: $CLASSPATH not found >&2
