@@ -19,7 +19,7 @@ fi
 
 if [ ! -e $CLASSPATH ]; then
   echo Warning: $CLASSPATH not found >&2
-  echo "(invoked as %0; available as `which strj-jar`) ">&2
+  echo "(invoked as $0; available as `which strj-jar`) ">&2
 fi
 
 ## PARAMETERS
