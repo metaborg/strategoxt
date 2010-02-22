@@ -176,7 +176,7 @@ strategies
   DesugarQStr :
     QStr(s) -> Anno(Str(s'), Op("Nil", []))
     with
-      s' := <conc-strings> ("\"", s, "\"")
+      s' := <conc-strings> ("\"", <string-replace(|"\\", "\\\\")> s, "\"")
 
   DesugarToQStr :
     QBr(s) -> QStr(s)

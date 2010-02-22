@@ -61,5 +61,7 @@ strategies
     !${ block {"{"} foo $}$  }; show(|11) =>
 "block { foo }";
 
-    !$[ 1[2]3 ]; show(|12) => "123"
+    !$[ 1[2]3 ]; show(|12) => "123";
+    
+    !$[a\\b]; show(|13); string-length => 4
 
