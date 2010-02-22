@@ -146,8 +146,10 @@ strategies
    */
   pack-stratego-parse-stratego =
       ?(IncludeFromPath(<id>), includes)
-    ; guarantee-extension(|"str")
-    ; remove-extension => mod
+    ; if has-extension(|"str") then
+        remove-extension
+      end
+    ;  ?mod
     ; <pack-if-prefer-str(
         fetch-elem(
            pack-include-from-dir(|mod)
