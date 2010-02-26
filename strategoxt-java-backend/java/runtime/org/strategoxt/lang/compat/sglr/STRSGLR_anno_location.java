@@ -185,7 +185,7 @@ public class STRSGLR_anno_location extends AbstractPrimitive {
 					args = args.tail();
 				}
 
-				t = makeTreeAmb(((IStrategoTerm[]) newArgs.toArray()));
+				t = makeTreeAmb(newArgs.toArray(new IStrategoTerm[newArgs.size()]));
 			} else {
 				System.err.println(NAME + ": unhandled tree - " + t);
 			}
