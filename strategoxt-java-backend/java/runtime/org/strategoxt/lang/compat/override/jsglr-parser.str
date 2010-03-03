@@ -1,4 +1,4 @@
-module org/strategoxt/lang/compat/jsglr-parser // org/spoofax/bindings/jsglr/jsglr-parser
+module jsglr-parser // org/spoofax/bindings/jsglr/jsglr-parser
 
 imports
   libstratego-lib
@@ -40,11 +40,3 @@ strategies
       where(<try(not(?ParseTable(_)); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     ; ?string
     ; prim("JSGLR_parse_string_pt_compat", on-parse-error | string, internal-tbl, start-symbol, path)
-    
-  internal memo-open-parse-table = // HACK: copied here until a new STRC baseline is set
-    MemoOpenParseTable'
-  <+
-    ?trm
-    ; open-parse-table => tbl
-    ; rules(MemoOpenParseTable' : trm -> tbl)
-

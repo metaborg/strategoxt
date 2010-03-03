@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-TESTFILES    = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES) $(ASTERTESTFILES)
+TESTFILES    = $(BASICTESTFILES) $(STRC1TESTFILES) $(STRC2TESTFILES) $(ASTERTESTFILES) $(SGLRTESTFILES)
 JAVAFILES    = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CLASSFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES   = $(subst .java,.ctree,$(JAVAFILES))
@@ -67,6 +67,10 @@ BASICTESTS=build_0 build_1 build_2 build_3 match_1 match_2 match_3 match_4 match
 
 BASICTESTFILES=$(addprefix basic/,$(addsuffix .str,$(BASICTESTS)))
 
+SGLRTESTS=entities
+
+SGLRTESTFILES=$(addprefix sglr/,$(addsuffix .str,$(SGLRTESTS)))
+
 ASTERTESTS=test_attributes
 
 ASTERTESTFILES=$(addprefix aster/,$(addsuffix .str,$(ASTERTESTS)))
@@ -101,7 +105,7 @@ basic/camelCase_1.ctree : basic/camelCase_1.str
 	aster -i $< -o $@
 
 %.java : %.ctree ../trans/strj
-	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I strc1 -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
+	../trans/strj --verbose 2 -i $< -o $@ -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I strc1 -I sglr -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
@@ -134,7 +138,7 @@ SDF2RTG_FLAGS = -m `basename $*`
 	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
 
 %.crun : %.str
-	strc -la strc -la stratego-lib -i $<
+	strc -la strc -la stratego-lib -i $< -I sglr
 	(cd `dirname $<`; ./`basename $< .str`)
 
 strc1/cs_test01.ctree : strc1/ExpStratego.tbl strc1/Expressions.def strc1/Expressions.str

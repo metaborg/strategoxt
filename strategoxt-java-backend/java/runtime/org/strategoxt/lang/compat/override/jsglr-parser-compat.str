@@ -25,17 +25,14 @@ strategies // parsing and parse tables
     jsglr-open-parsetable
 
   override parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
-    where(!tbl => ParseTable(internal-tbl))
-    ; (<fopen> (<id>, "r") => stream <+ on-open-error; fail)
+      (<fopen> (<id>, "r") => stream <+ on-open-error; fail)
     ; finally(
         parse-stream(on-parse-error | tbl, start-symbol, path)
       , <fclose> stream
       )
 
   override parse-xtc-file(on-open-error, on-parse-error |tbl, start-symbol, path) =
-    where(!tbl => ParseTable(internal-tbl))
-    
-    ; let open-stream =
+      let open-stream =
             ?FILE(<id>); (<fopen> (<id>, "r") <+ on-open-error)
             <+ ?stdin(); stdin-stream
             
@@ -47,14 +44,8 @@ strategies // parsing and parse tables
       end
   
   override parse-xtc-file-report-errors(|tbl, sort) =
-    if is-parse-table-open(|tbl) then
-      parse-xtc-file(strsglr-perror, strsglr-report-parse-error | tbl, sort)
-    else
-      // open the parse table and call recursive
-      let parse(|tbl') = parse-xtc-file-report-errors(|tbl', sort)
-       in open-parse-table-wrap-report-errors(parse| tbl)
-      end
-    end
+  	where(<try(memo-open-parse-table)> tbl => tbl');
+    parse-xtc-file(strsglr-perror, strsglr-report-parse-error | tbl', sort)
   
   override parse-stream(on-parse-error |tbl, start-symbol, path):
     stream -> term
