@@ -8,7 +8,7 @@ imports
 rules
 
   main =
-    <parse-file> "/tmp/foo.ent"
+    <parse-file> "Entities.ent"
   
   parse-file =
     parse-file(|<import-term(Entities.tbl)>)
