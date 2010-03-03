@@ -14,6 +14,7 @@ EXTRA_DIST = \
   $(wildcard */*.sdf) \
   $(wildcard */*.tbl) \
   $(wildcard */*.trm) \
+  $(wildcard */*.ent) \
   $(wildcard */*.in) \
   $(wildcard */*.res) \
   test-tools.sh
