@@ -159,7 +159,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     	if (s.length() > MAX_POOLED_STRING_LENGTH)
     		return new StrategoString(s, null, MY_STORAGE_TYPE);
     	
-    	synchronized (this) {
+    	synchronized (TermFactory.class) {
 	    	StrategoString result = asyncStringPool.get(s);
 	    	if (result == null) {
 	        	result = new StrategoString(s, null, MAXIMALLY_SHARED);
