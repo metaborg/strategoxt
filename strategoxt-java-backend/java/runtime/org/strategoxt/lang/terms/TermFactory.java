@@ -51,7 +51,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     
     @Override
     public boolean hasConstructor(String name, int arity) {
-        synchronized (this) {
+        synchronized (TermFactory.class) {
         	if (arity == 0) {
             	if (asyncStringPool.containsKey(name)) {
             		return true;
@@ -96,7 +96,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     @Override
     public StrategoConstructor makeConstructor(String name, int arity) {
         StrategoConstructor result = new StrategoConstructor(name, arity);
-        synchronized (this) {
+        synchronized (TermFactory.class) {
 	        StrategoConstructor cached = asyncCtorCache.get(result);
 	        if (cached == null) {
 	            asyncCtorCache.put(result, result);
