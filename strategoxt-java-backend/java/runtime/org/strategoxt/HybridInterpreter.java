@@ -269,6 +269,15 @@ public class HybridInterpreter extends Interpreter {
 			registerLibraries();
 		}
 	}
+
+	/**
+	 * Uninitializes the interpreter, making a best-effort attempt
+	 * at releasing any resources associated with it.
+	 */
+	public void uninit() {
+		loadedJars = false;
+		getContext().getVarScope().clear();
+	}
 	
 	/**
 	 * Initialize the interpreter register with all standard library strategies.
