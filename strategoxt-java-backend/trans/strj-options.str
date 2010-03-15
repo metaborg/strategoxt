@@ -39,6 +39,9 @@ strategies
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
     end
+  ; if <get-config> "-o"; base-filename => "main.java" then
+      fatal-err(|"Output file name 'main' is not allowed as it causes problems on case-insensitive file systems; use 'Main' instead")
+    end
   ; if <get-config> "--library"; not(<get-config> "-p" + <get-config> "-F") then
       fatal-err-msg(|"No package name specified")
     end
