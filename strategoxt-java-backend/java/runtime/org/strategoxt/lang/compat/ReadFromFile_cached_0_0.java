@@ -20,6 +20,14 @@ import org.strategoxt.stratego_lib.$Read$From$File_0_0;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
+
+	/**
+	 * The number of milliseconds leeway to give before deciding a file is out
+	 * of date. This is needed because not every file system supports tracking
+	 * the last modified time to the millisecond level. 2 seconds should
+	 * even be good for FAT16.
+	 */
+	private static long FILE_TIME_GRANULARITY = 2001;
 	
 	private static volatile boolean isInited;
 	
@@ -48,22 +56,30 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 		FileDate cachedDate = null;
 		IStrategoTerm cachedTerm = null;
 		
+		long now = System.currentTimeMillis();
+		long fileDate = file.lastModified();
+		
 		synchronized (asyncCache) {
 			cachedTerm = asyncCache.get(file);
 			if (cachedTerm != null)
 				cachedDate = asyncCacheDates.get(cachedTerm);
 		}
 		
-		long date = file.lastModified();
-		if (cachedDate != null && cachedDate.date < date && cachedDate.file.equals(file)) {
+		if (now < fileDate + FILE_TIME_GRANULARITY) {
+			// Date stamp too recent or in the future
+			return super.invoke(context, term);
+		} else if (cachedDate != null
+				&& cachedDate.accessed > fileDate + FILE_TIME_GRANULARITY
+				&& cachedDate.file.equals(file)) {
 			return cachedTerm;
 		} else {
 			IStrategoTerm result = super.invoke(context, term);
 			if (result != null &&
-					(result.getStorageType() == SHARABLE || result.getStorageType() == MAXIMALLY_SHARED)) {
+					(result.getStorageType() == SHARABLE ||
+					 result.getStorageType() == MAXIMALLY_SHARED)) {
 				synchronized (asyncCache) {
 					asyncCache.put(file, result);
-					asyncCacheDates.put(result, new FileDate(file, date));
+					asyncCacheDates.put(result, new FileDate(file, now));
 				}
 			}
 			return result;
@@ -75,11 +91,11 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 	 */
 	private static class FileDate {
 		final File file;
-		final long date;
+		final long accessed;
 		
-		FileDate(File file, long date) {
+		FileDate(File file, long accessed) {
 			this.file = file;
-			this.date = date;
+			this.accessed = accessed;
 		}
 	}
 }
