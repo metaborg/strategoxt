@@ -6,14 +6,11 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.SHARABLE;
 import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.spoofax.interpreter.library.ssl.ChannelPushbackInputStream;
 import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
@@ -76,7 +73,8 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     
     @Override
     public IStrategoTerm parseFromStream(InputStream inputStream) throws IOException {
-        BufferedInputStream bis;
+        /*
+    	BufferedInputStream bis;
         if (inputStream instanceof BufferedInputStream) {
             bis = (BufferedInputStream) inputStream;
         } else if (inputStream instanceof FileInputStream) {
@@ -90,6 +88,18 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
         } else {
             bis = new BufferedInputStream(inputStream);
         }
+        if (BAFReader.isBinaryATerm(bis)) {
+            return new BAFReader(this, bis).readFromBinaryFile(true);
+        } else {
+            return super.parseFromStream(bis);
+        }
+        */
+    	BufferedInputStream bis;
+        if (inputStream instanceof BufferedInputStream)
+            bis = (BufferedInputStream) inputStream;
+        else
+            bis = new BufferedInputStream(inputStream);
+        
         if (BAFReader.isBinaryATerm(bis)) {
             return new BAFReader(this, bis).readFromBinaryFile(true);
         } else {
