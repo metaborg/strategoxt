@@ -48,6 +48,7 @@ public class CompatManager {
 		if ("stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			report_failure_compat_1_0.init();
+			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			ATermFactory atermFactory = new PureFactory();
 			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));

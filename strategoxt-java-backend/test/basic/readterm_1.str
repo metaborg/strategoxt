@@ -7,10 +7,14 @@ strategies
   
   main =
     t := Some([1,2{3}]{4}){5};
+    debug(!"Writing ");
     <WriteToTextFile> ("readterm_1.trm", t);
+    <ReadFromFile> "readterm_1.trm" => t;
     <ReadFromFile> "readterm_1.trm" => t;
     
     t2 := Some([1,2]);
+    debug(!"Writing ");
     <WriteToTextFile> ("readterm_1.trm", t2);
+    <ReadFromFile> "readterm_1.trm" => t2;
     <ReadFromFile> "readterm_1.trm" => t2
 
