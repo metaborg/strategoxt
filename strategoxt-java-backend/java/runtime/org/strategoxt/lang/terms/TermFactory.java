@@ -1,15 +1,19 @@
 package org.strategoxt.lang.terms;
 
-import static java.lang.Math.*;
-import static org.spoofax.interpreter.terms.IStrategoTerm.*;
+import static java.lang.Math.min;
+import static org.spoofax.interpreter.terms.IStrategoTerm.MAXIMALLY_SHARED;
+import static org.spoofax.interpreter.terms.IStrategoTerm.SHARABLE;
+import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 
 import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
+import org.spoofax.interpreter.library.ssl.ChannelPushbackInputStream;
 import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
@@ -30,7 +34,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     
     private static final int MY_STORAGE_TYPE = SHARABLE;
     
-    private static final int MAX_POOLED_STRING_LENGTH = 100;
+    public static final int MAX_POOLED_STRING_LENGTH = 100;
     
     private static final IStrategoInt[] intCache = initIntCache();
 
@@ -43,10 +47,12 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     public static final StrategoList EMPTY_LIST =
     	new StrategoList(null, null, null, MAXIMALLY_SHARED); 
 
-    private static final Map<StrategoConstructor, StrategoConstructor> asyncCtorCache =
+    private static final HashMap<StrategoConstructor, StrategoConstructor> asyncCtorCache =
         new HashMap<StrategoConstructor, StrategoConstructor>();
     
-    private static final Map<String,StrategoString> asyncStringPool =
+    // TODO: use a WeakValueHashMap for TermFactory.asyncStringPool?
+    //       (WeakHashMap<String, WeakReference> seems to be quite expensive)
+    private static final HashMap<String, StrategoString> asyncStringPool =
         new HashMap<String, StrategoString>();
     
     @Override
@@ -56,7 +62,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             	if (asyncStringPool.containsKey(name)) {
             		return true;
             	} else if (name.length() > MAX_POOLED_STRING_LENGTH) {
-            		throw new UnsupportedOperationException("String too long to be pooled: " + name);
+            		throw new UnsupportedOperationException("String too long to be pooled (newname not allowed): " + name);
             	} else {
                 	// HACK: pre-allocating strings to avoid race condition 
             		asyncStringPool.put(name, new StrategoString(name, null, MAXIMALLY_SHARED));
@@ -71,11 +77,19 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     @Override
     public IStrategoTerm parseFromStream(InputStream inputStream) throws IOException {
         BufferedInputStream bis;
-        if (inputStream instanceof BufferedInputStream)
+        if (inputStream instanceof BufferedInputStream) {
             bis = (BufferedInputStream) inputStream;
-        else
+        } else if (inputStream instanceof FileInputStream) {
+        	FileChannel channel = ((FileInputStream) inputStream).getChannel();
+			ChannelPushbackInputStream pis = new ChannelPushbackInputStream(channel);
+			if (BAFReader.isBinaryATerm(pis)) {
+				return new BAFReader(this, pis).readFromBinaryFile(true);
+			} else {
+				return super.parseFromStream(pis);
+			}
+        } else {
             bis = new BufferedInputStream(inputStream);
-        
+        }
         if (BAFReader.isBinaryATerm(bis)) {
             return new BAFReader(this, bis).readFromBinaryFile(true);
         } else {
@@ -125,13 +139,21 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     }
     
     @Override
-    public IStrategoList makeList(IStrategoTerm... terms) {
+    public IStrategoList makeList(IStrategoTerm[] terms, IStrategoList outerAnnos) {
         StrategoList result = EMPTY_LIST;
         int storageType = MY_STORAGE_TYPE;
-        for (int i = terms.length - 1; i >= 0; i--) {
-            IStrategoTerm head = terms[i];
+        int i = terms.length - 1;
+        while (i > 0) {
+        	IStrategoTerm head = terms[i--];
             storageType = min(storageType, getStorageType(head));
 			result = new StrategoList(head, result, null, storageType);
+        }
+        if (i == 0) {
+        	IStrategoTerm head = terms[0];
+            storageType = min(storageType, getStorageType(head));
+			result = new StrategoList(head, result, outerAnnos, storageType);
+        } else {
+        	return new StrategoList(null, null, outerAnnos, MY_STORAGE_TYPE);
         }
         return result;
     }
@@ -142,11 +164,11 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     }
     
     @Override
-    public IStrategoList makeListCons(IStrategoTerm head, IStrategoList tail) {
+    public IStrategoList makeListCons(IStrategoTerm head, IStrategoList tail, IStrategoList annotations) {
     	int storageType = min(MY_STORAGE_TYPE, getStorageType(head, tail));
     	
     	if (head == null) return EMPTY_LIST;
-    	return new StrategoList(head, tail, null, storageType);
+    	return new StrategoList(head, tail, annotations, storageType);
     }
 
     @Override
@@ -170,9 +192,9 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     }
 
     @Override
-    public IStrategoTuple makeTuple(IStrategoTerm... terms) {
+    public IStrategoTuple makeTuple(IStrategoTerm[] terms, IStrategoList annos) {
         int storageType = min(MY_STORAGE_TYPE, getStorageType(terms));
-		return new StrategoTuple(terms, null, storageType);
+		return new StrategoTuple(terms, annos, storageType);
     }
     
     protected static int getStorageType(IStrategoTerm term) {
