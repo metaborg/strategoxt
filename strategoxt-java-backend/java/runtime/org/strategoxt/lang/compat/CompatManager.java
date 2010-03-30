@@ -19,13 +19,15 @@ public class CompatManager {
 	
 	private final Context context;
 	
-	private static Set<String> asyncComponents = new HashSet<String>();
+	private static final Set<String> asyncComponents = new HashSet<String>();
 	
 	public CompatManager(Context context) {
 		this.context = context;
 	}
 	
 	public void init() {
+		// We have to initialize the current context based on asyncComponents,
+		// since registerComponent() is only called in the life cycle of the JVM 
 		synchronized (asyncComponents) {
 			for (String component : asyncComponents) {
 				activateComponent(component);
@@ -44,7 +46,7 @@ public class CompatManager {
 	 * Dynamically loads any compatibility library or operator registry
 	 * associated with a Stratego library.
 	 */
-	public void activateComponent(String component) {
+	private void activateComponent(String component) {
 		if ("stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			report_failure_compat_1_0.init();

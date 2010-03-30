@@ -6,6 +6,8 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -73,13 +75,21 @@ public class HybridInterpreter extends Interpreter {
 	
 	/**
 	 * Creates an interpreter that bases its definition scope on an existing instance.
+	 * 
+	 * @param interpreter		The interpreter to base this instance on.
+	 * 
+	 * @param reuseRegistries	The names of operator registries that should not be re-created,
+	 *                       	but can be reused from the old instance.
 	 */
-	public HybridInterpreter(HybridInterpreter interpreter) {
+	public HybridInterpreter(HybridInterpreter interpreter, String... reuseRegistries) {
 		this(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
+		Set<String> reusable = asSet(reuseRegistries);
+		
 		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
 		interpreter.init();
 		for (IOperatorRegistry registry : interpreter.getCompiledContext().getOperatorRegistries()) {
-			if (getContext().getOperatorRegistry(registry.getOperatorRegistryName()) == null)
+			IOperatorRegistry existing = getContext().getOperatorRegistry(registry.getOperatorRegistryName());
+			if (existing == null || reusable.contains(registry.getOperatorRegistryName()))
 				addOperatorRegistry(registry);
 		}
 		registeredLibraries = interpreter.registeredLibraries;
@@ -120,6 +130,13 @@ public class HybridInterpreter extends Interpreter {
 			e.printStackTrace();
 			System.exit(124);
 		}
+	}
+
+	private static Set<String> asSet(String... reuseRegistries) {
+		Set<String> reusable = new HashSet<String>();
+		if (reuseRegistries != null)
+			for (String reuse : reuseRegistries) reusable.add(reuse);
+		return reusable;
 	}
 
 	private static void warnUnqualifiedInvoke(HybridInterpreter interpreter, String main) {
