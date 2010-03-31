@@ -6,6 +6,7 @@ import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermPrinter;
+import org.strategoxt.lang.terms.TermFactory;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -33,7 +34,7 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 		}
 
 		public IStrategoList getAnnotations() {
-			return null;
+			return TermFactory.EMPTY_LIST;
 		}
 
 		public int getStorageType() {
