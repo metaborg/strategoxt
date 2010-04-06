@@ -85,7 +85,7 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     }
     
     @Override
-    public final int hashCode() {
+    public int hashCode() {
     	int result = hashCode;
     	switch (result) {
     		case MUTABLE_HASH:

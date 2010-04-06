@@ -49,6 +49,8 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     
     // TODO: use a WeakValueHashMap for TermFactory.asyncStringPool?
     //       (WeakHashMap<String, WeakReference> seems to be quite expensive)
+    // Alternatively, we could maintain a prefix string - counter map,
+    // parsing the integer postfix of all strings that are constructed
     private static final HashMap<String, StrategoString> asyncStringPool =
         new HashMap<String, StrategoString>();
     
