@@ -23,6 +23,7 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     private IStrategoList annotations;
     
     protected StrategoTerm(IStrategoList annotations) {
+        assert annotations == null || annotations.isEmpty() || annotations == TermFactory.EMPTY_LIST;
     	if (annotations != TermFactory.EMPTY_LIST)
     		this.annotations = annotations;
     }
@@ -160,6 +161,7 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     }
     
     protected final void internalSetAnnotations(IStrategoList annotations) {
+        assert annotations == null || annotations.isEmpty() || annotations == TermFactory.EMPTY_LIST;
     	if (annotations == TermFactory.EMPTY_LIST)
     		annotations = null; // essential for hash code calculation
     	

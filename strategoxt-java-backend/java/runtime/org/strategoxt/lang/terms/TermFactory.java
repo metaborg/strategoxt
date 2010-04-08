@@ -165,7 +165,11 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             storageType = min(storageType, getStorageType(head));
 			result = new StrategoList(head, result, outerAnnos, storageType);
         } else {
-        	return new StrategoList(null, null, outerAnnos, MY_STORAGE_TYPE);
+        	if (outerAnnos == null || outerAnnos.isEmpty()) {
+        		return EMPTY_LIST;
+        	} else {
+        		return new StrategoList(null, null, outerAnnos, MY_STORAGE_TYPE);
+        	}
         }
         return result;
     }
