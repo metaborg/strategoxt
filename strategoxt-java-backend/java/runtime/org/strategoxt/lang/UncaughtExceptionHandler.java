@@ -1,6 +1,7 @@
 package org.strategoxt.lang;
 
 import java.lang.management.ManagementFactory;
+import java.lang.ref.WeakReference;
 
 import org.spoofax.interpreter.core.StackTracer;
 
@@ -9,10 +10,11 @@ import org.spoofax.interpreter.core.StackTracer;
  */
 public class UncaughtExceptionHandler  {
 	
-	private final StackTracer stackTracer;
+	private final WeakReference<StackTracer> stackTracer;
 	
 	private final ActualHandler handler = new ActualHandler();
 	
+	// We keep the original handler (may be used by someone else) intact
 	private Thread.UncaughtExceptionHandler originalHandler;
 	
 	private boolean enabled;
@@ -20,7 +22,7 @@ public class UncaughtExceptionHandler  {
 	private boolean dumpedError;
 	
 	public UncaughtExceptionHandler(StackTracer stackTracer) {
-		this.stackTracer = stackTracer;
+		this.stackTracer = new WeakReference<StackTracer>(stackTracer);
 	}
 	
 	public boolean isEnabled() {
@@ -41,7 +43,7 @@ public class UncaughtExceptionHandler  {
 		}
 	}
 	
-	public void disable() {
+	private void disable() {
 		if (enabled) {
 			enabled = false;
 			try {
@@ -56,10 +58,11 @@ public class UncaughtExceptionHandler  {
     protected synchronized boolean dumpError(String startMessage) {
     	if (dumpedError) return true;
 
-    	if (stackTracer.getTraceDepth(true) > 0) {
+    	StackTracer tracer = stackTracer.get();
+    	if (tracer != null && tracer.getTraceDepth(true) > 0) {
     		if (startMessage != null) System.err.println(startMessage);
 	    	try {
-	    		stackTracer.printStackTrace(true);
+	    		tracer.printStackTrace(true);
 	    	} catch (RuntimeException e) {
 	    		// gracefully accept exceptions in case of a race codition
 	    	}
@@ -75,6 +78,7 @@ public class UncaughtExceptionHandler  {
 	 * Class that handles shutdown and unhandled exception events.
 	 */
     private class ActualHandler extends Thread implements Thread.UncaughtExceptionHandler {
+    	
 		public void uncaughtException(Thread t, Throwable e) {
 			originalHandler.uncaughtException(t, e);
 			if (e instanceof StackOverflowError && dumpError("Fatal error at")) {
@@ -100,5 +104,12 @@ public class UncaughtExceptionHandler  {
 			dumpError("Aborted at");
 		}
 	}
+    
+    class Finalizer {
+    	@Override
+    	protected void finalize() throws Throwable {
+    		setEnabled(false);
+    	}
+    }
 
 }

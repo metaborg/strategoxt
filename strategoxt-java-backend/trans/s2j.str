@@ -253,12 +253,15 @@ rules
          if (result == null) {
            System.err.println("~x_name" + (TRACES_ENABLED ? ": rewriting failed, trace:" : ": rewriting failed"));
            context.printStackTrace();
+           context.setStandAlone(false);
            System.exit(1); 
          } else {
            System.out.println(result);
+           context.setStandAlone(false);
            System.exit(0);
          }
        } catch (StrategoExit exit) {
+         context.setStandAlone(false);
          System.exit(exit.getValue());
        }
      }

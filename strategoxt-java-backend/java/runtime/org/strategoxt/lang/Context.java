@@ -39,6 +39,10 @@ public class Context extends StackTracer {
     
     private final UncaughtExceptionHandler exceptionHandler =
     	new UncaughtExceptionHandler(this);
+    
+	@SuppressWarnings("unused")
+	private final UncaughtExceptionHandler.Finalizer exceptionHandlerFinalizer =
+    	exceptionHandler.new Finalizer();
 	
 	private final ITermFactory factory;
     
