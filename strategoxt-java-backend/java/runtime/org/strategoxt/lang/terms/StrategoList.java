@@ -125,7 +125,7 @@ public class StrategoList extends StrategoTerm implements IStrategoList {
 
     @Override
     protected boolean doSlowMatch(IStrategoTerm second, int commonStorageType) {
-        if(second.getTermType() != IStrategoTerm.LIST)
+        if (second.getTermType() != IStrategoTerm.LIST)
             return false;
         
         final IStrategoList snd = (IStrategoList) second;
@@ -141,6 +141,7 @@ public class StrategoList extends StrategoTerm implements IStrategoList {
         	IStrategoList tail = tail();
         	IStrategoList tail2 = snd.tail();
         
+        	// TODO: test equality of annos on cons nodes (see BasicStrategoList)
 	        for (IStrategoList cons = tail, cons2 = tail2; !cons.isEmpty(); cons = cons.tail(), cons2 = cons2.tail()) {
 	            IStrategoTerm consHead = cons.head();
 				IStrategoTerm cons2Head = cons2.head();
