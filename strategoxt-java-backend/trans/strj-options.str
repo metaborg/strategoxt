@@ -8,6 +8,7 @@
 module strj-options
 
 imports
+  libstratego-lib
   libstrc
   s2j-options
   s2j
@@ -23,6 +24,7 @@ strategies
   ; <set-config> ("-O", 2)
   ; <set-config> ("-I", [])
   ; <set-config> ("--no-concrete-syntax-externals", 1)
+  ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
  
   strj-parse-options =
     with(
@@ -38,6 +40,15 @@ strategies
   ; if <get-config> "-o"; base-filename; not(<eq> (<id>, <jify>)); not(<get-config> "-F") then
       <get-config> "-o"
     ; fatal-err(|"Output file name is not a legal Java name")
+    end
+  ; if IsIncrementalCompilation; not(<file-exists> $[[<output-dirname>]/Main.java]) then
+      log(|Info(), "No existing output files found; performing initial compilation");
+      rules(IsIncrementalCompilation :- _)
+    end
+  ; if IsIncrementalCompilation then
+      olevel2(
+        fatal-err-msg(|"Inlining not supported with incremental compilation: use -O 1 or lower")
+      )
     end
   ; if <get-config> "-o"; base-filename => "main.java" then
       fatal-err(|"Output file name 'main' is not allowed as it causes problems on case-insensitive file systems; use 'Main' instead")
@@ -113,6 +124,13 @@ strategies
     Option("-c",
       warn-msg(|"Ignored unsupported option -c")
     , fail
+    )
+  + Option(
+      "-Xsep-comp-tool"
+    , rules(IsIncrementalCompilation: _);
+      <set-config> ("--library", ());
+      (ManuallySetOptimization <+ <set-config> ("-O", <strc-set-opt-level> 1))
+    , !"--Xsep-comp-tool  Compile based on sep-comp-tool (experimental)"
     )
   
   <+ ArgOption(fail, fail, !"")

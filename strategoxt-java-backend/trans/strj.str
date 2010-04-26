@@ -24,10 +24,13 @@ strategies
     strj-parse-options
   ; main-module-required
   ; log-timed(
-      xtc-input(strj)
+      xtc-input(strj-or-die)
     | "Compilation succeeded", 1
     )
   ; <exit> 0
+  
+  strj-or-die =
+  	strj
   <+
     prim("SSL_stacktrace_get_all_frame_names")
   ; if-verbose3(

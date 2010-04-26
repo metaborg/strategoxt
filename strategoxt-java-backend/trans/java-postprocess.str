@@ -101,17 +101,20 @@ strategies
         ~*members
       }
     ]| ->
-    [ compilation-unit |[
-        ~package-dec?:pkgname
-        ~import-dec*:imports
-        mod* class x {
-          ~*members'
-        }
-      ]| 
-    | member-classes
-    ]
+    [ main-class*, member-class* ]
     with
-      (member-classes, members') := <partition(to-compilation-unit(|pkgname, imports))> members
+      (member-class*, members') := <partition(to-compilation-unit(|pkgname, imports))> members;
+      if IsIncrementalCompilation then
+        main-class* := []
+      else
+        main-class* := [compilation-unit |[
+	        ~package-dec?:pkgname
+	        ~import-dec*:imports
+	        mod* class x {
+	          ~*members'
+	        }
+	      ]|]
+	    end
 
   to-compilation-unit(|pkgname, imports) :
     type-dec |[

@@ -80,7 +80,9 @@ rules
       ; if <get-config> "-p" then
           // Use multiple .java files for programs with a package name
           java-split-class
-        ; java-add-alias-classes
+        ; if not(IsIncrementalCompilation) then
+            java-add-alias-classes
+          end
         else
           ![<id>]
         end
@@ -94,7 +96,11 @@ rules
   ; remove-extension
   ; rules(
       MainClassName := <id>
-      ApplicationName := <!"-p"; get-config; string-tokenize('.'); last <+ MainClassName>
+    )
+  ; app-name := <!"-p"; get-config; string-tokenize('.'); last <+ MainClassName>
+  ; rules(
+      ConstantContainerClass := app-name
+      ApplicationName        := app-name
     )
   
   jify =
@@ -194,7 +200,7 @@ rules
     rules(
       CurrentLiftedFrame := None()
     )
-  ; function-defs := <map(translate-outer-definition)> defs
+  ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   ; lifted-defs   := <bagof-LiftedDef>
@@ -359,6 +365,69 @@ rules
       name'  := <dollars-for-capitals> name
     ; def    := SDefT(name', [], [], Build(value))
     ; def'   := <translate-outer-definition> def
+  
+  translate-outer-definition-top =
+    if IsIncrementalCompilation then
+      {| ConstDecl, ConstInit, java-Cache, ConstantContainerClass:
+        if ?SDefT(name, _, _, _) then
+          rules(
+            ConstantContainerClass := name
+          )
+        end;
+        translate-outer-definition;
+        if ConstInit then
+          with(add-local-constant-decls; ?x); !x
+        end
+      |}
+    else
+      translate-outer-definition
+    end
+  
+  add-local-constant-decls:
+    Semicolon() -> Semicolon()
+  
+  add-local-constant-decls:
+    type-dec |[
+      mod* class x extends y {
+        ~*members
+      }
+    ]| ->
+    type-dec |[
+      mod* class x extends y {
+        private volatile boolean isInitialized;
+        ~*cnst-decls
+        ~*members'
+        private void init() {
+          synchronized (x.class) {
+            if (!isInitialized) {
+              ~*cnst-inits'
+              isInitialized = true;
+            }
+          }
+        }
+      }
+    ]|
+  with
+    x_main      := <MainClassName>
+  ; cnst-decls  := <bagof-ConstDecl>
+  ; cnst-inits  := <bagof-ConstInit; concat; reverse>
+  ; cnst-inits' := <alltd(add-constant-factory-container(|x_main))> cnst-inits
+  ; members'    := <oncetd(add-local-constant-inits)> members
+    
+  add-local-constant-inits:
+    |[ mod* IStrategoTerm x_name(param*) {
+         bstm*
+       }
+    ]| ->
+    |[ mod* IStrategoTerm x_name(param*) {
+         if (!isInitialized) // Java 5+ safe double-checked locking
+           init();
+         bstm*
+       }
+    ]| 
+  
+  add-constant-factory-container(|x_main):
+    AmbName(Id("termFactory")) -> expr |[ x_main.constantFactory ]|
   
   translate-outer-definition =
      translate-outer-definition-plain
@@ -904,7 +973,7 @@ strategies
    *    (minding the 32767 length limit)
    */
   translate-ImportTerm :
-    ImportTerm(file) -> |[ term = x_main.x_constant; ]|
+    ImportTerm(file) -> |[ term = x_constants.x_constant; ]|
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
@@ -926,7 +995,7 @@ strategies
     ; inputname'    := <not(IsImported) <+ newname> inputname
     ; x_constant    := <conc-strings> ("const", inputname')
     ; x_getconstant := <conc-strings> ("get",   inputname')
-    ; x_main        := <MainClassName>
+    ; x_constants   := <ConstantContainerClass>
     ; rules(
         IsImported : inputname
         ConstDecl :+= class-body-dec |[
@@ -938,7 +1007,7 @@ strategies
           }
         ]|
         ConstInit :+= bstm* |[
-          x_constant = new ImportTerm(termFactory, x_main.class, "~pkgpath", "~outputfile");
+          x_constant = new ImportTerm(termFactory, x_constants.class, "~pkgpath", "~outputfile");
         ]|
       )
   
@@ -1007,32 +1076,32 @@ rules
        ; (java-CacheConstant-again <+ java-CacheConstant <+ Snd)
 
   java-CacheConstant-again :
-    (t, e1 @ |[ x_main.x_constant ]|) -> e1
+    (t, e1 @ |[ x_constants.x_constant ]|) -> e1
     with
       rules(java-Cache: t -> e1)
-    ; x_main := <MainClassName>
+    ; x_constants := <ConstantContainerClass>
 
   java-CacheConstant :
-    (t, e1) -> |[ x_main.x ]|
+    (t, e1) -> |[ x_constants.x ]|
   where
       <(Op(id, map(java-Cache)); java-proper-list 
             + Anno(java-Cache, java-Cache) 
             + Int(id) + Str(id) + Real(id) )> t
   with
-        x_main := <MainClassName>
+        x_constants := <ConstantContainerClass>
       ; switch !t
           case ?Op("Cons", _):
             x := <newname> "constCons"
-          ; rules(IsProperList: |[ x_main.x ]|)
+          ; rules(IsProperList: |[ x_constants.x ]|)
           case ?Op("Nil", _):
             x := <newname> "constNil"
-          ; rules(IsProperList: |[ x_main.x ]|)
+          ; rules(IsProperList: |[ x_constants.x ]|)
           case ?Op(op, _):
             x := <newname> <conc-strings> ("const", <try(un-double-quote-chars); jify> op)
           otherwise:
             x := <newname> "const"
         end
-      ; rules( java-Cache : t -> |[ x_main.x ]| )
+      ; rules( java-Cache : t -> |[ x_constants.x ]| )
       ; !(x, e1)
       ; rules(ConstDecl :+= <java-DeclareTermId>)
       ; rules(ConstInit :+= <java-InitTermId>)
@@ -1155,7 +1224,7 @@ rules
         ; if <not(Anno(is-ListOp,id))> t2 then 
             java-check-aterm-list 
           else
-              if ?|[ x_main.x_constant ]| + ?expr |[ x ]| then
+              if ?|[ x_constants.x_constant ]| + ?expr |[ x ]| then
                 !|[ (IStrategoList) ~expr:<id> ]|
               else
                 try(java-UncastATerm)

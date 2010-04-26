@@ -7,6 +7,10 @@
  */
 module s2j-options
 
+imports
+  libstrc
+  s2j
+
 rules
   
   s2j-options =
@@ -41,7 +45,6 @@ rules
       <post-extend-config> ("-D", [<parse-define-option>]); !()
     , fail // undocumented/deprecated
     )
-  
   s2j-general-options =
     ArgOption(
       "-I" + "--Include"
@@ -68,7 +71,8 @@ rules
     )
   + ArgOption(
       "-O"
-    , <set-config>("-O", <string-to-int; strc-set-opt-level>); !()
+    , <set-config>("-O", <string-to-int; strc-set-opt-level>);
+      rules(ManuallySetOptimization: _)
     , !"-O n               Optimization level (0 = no optimization)"
     )
   + ArgOption(
