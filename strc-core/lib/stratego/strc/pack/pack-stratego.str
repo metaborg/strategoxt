@@ -74,6 +74,7 @@ strategies
         ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
+    ; (uniq,id)
     ; if ?(_, []) then
        Fst
        ; unzip
