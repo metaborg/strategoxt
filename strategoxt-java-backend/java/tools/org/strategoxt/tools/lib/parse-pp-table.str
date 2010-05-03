@@ -8,6 +8,7 @@ strategies
   main-parse-pp-table =
     xtc-io-wrap(
       xtc-ensure-file => FILE(<id>);
-      parse-pptable-file
+      parse-pptable-file;
+      write-to
     )
 
