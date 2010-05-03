@@ -1,6 +1,7 @@
 package org.strategoxt.lang;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.ZipEntry;
@@ -52,14 +53,22 @@ public class ImportTerm extends LazyTerm {
 	
 	@Override
 	protected IStrategoTerm init() {
+		InputStream stream = openStream();
 		try {
-			return factory.parseFromStream(openStream());
+			return factory.parseFromStream(stream);
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
 		} catch (RuntimeException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
+		} finally {
+			try {
+				if (stream != null)
+					stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

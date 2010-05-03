@@ -20,6 +20,7 @@ import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.core.UndefinedStrategyException;
 import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.library.IOperatorRegistry;
+import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -294,6 +295,9 @@ public class HybridInterpreter extends Interpreter {
 	public void uninit() {
 		loadedJars = false;
 		getContext().getVarScope().clear();
+		SSLLibrary lib = SSLLibrary.instance(getContext());
+		if (lib != null)
+			lib.getIOAgent().closeAllFiles();
 	}
 	
 	/**
