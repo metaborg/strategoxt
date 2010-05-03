@@ -5,3 +5,4 @@ imports
   lib/sdf2rtg
   lib/pack-sdf
   lib/ppgen
+  lib/parse-pp-table
