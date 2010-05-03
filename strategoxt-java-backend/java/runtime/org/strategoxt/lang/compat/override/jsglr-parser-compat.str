@@ -13,8 +13,6 @@ imports
 
 strategies // parsing and parse tables
 
-  // TODO: new "jsglr enable recovery" strategy
-
   /**
    * @type SerializedParseTable -> ParseTable
    */
@@ -22,7 +20,7 @@ strategies // parsing and parse tables
     jsglr-open-parsetable
   
   override close-parse-table =
-    jsglr-open-parsetable
+    jsglr-close-parsetable
 
   override parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
       (<fopen> (<id>, "r") => stream <+ on-open-error; fail)

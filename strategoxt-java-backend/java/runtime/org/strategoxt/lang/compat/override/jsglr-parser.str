@@ -11,6 +11,12 @@ signature
     
 strategies
 
+  // TODO: new "jsglr enable recovery" strategy
+  
+  jsglr-enable-recovery = fatal-err-msg(|"Not implemented")
+  
+  jsglr-disable-recovery = fatal-err-msg(|"Not implemented")
+
   /**
    * @type SerializedParseTable -> ParseTable
    */
