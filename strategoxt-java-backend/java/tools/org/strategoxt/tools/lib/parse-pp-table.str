@@ -1,0 +1,13 @@
+module parse-pp-table
+imports 
+  libstratego-lib
+  libstratego-xtc strategoxt-xtc-tools
+
+strategies
+  
+  main-parse-pp-table =
+    xtc-io-wrap(
+      xtc-ensure-file => FILE(<id>);
+      parse-pptable-file
+    )
+

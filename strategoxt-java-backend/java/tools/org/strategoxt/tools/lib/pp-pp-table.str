@@ -8,7 +8,9 @@ strategies
 
   main-pp-pp-table =
     xtc-io-wrap(
-      pp-pp-table
+      read-from;
+      pp-pp-table;
+      print-to
     )
   
   pp-pp-table =
