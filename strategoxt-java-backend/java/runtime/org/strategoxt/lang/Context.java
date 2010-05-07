@@ -201,7 +201,10 @@ public class Context extends StackTracer {
     	interopContext.setCurrent(term);
 		try {
 			if (primitive.call(interopContext, InteropCallT.toInteropCallTs(sargs, this), targs)) {
-				return interopContext.current();
+				IStrategoTerm result = interopContext.current();
+				// Release term after passing it to the primitive
+				interopContext.setCurrent(null);
+				return result;
 			} else {
 				return null;
 			}
