@@ -12,6 +12,7 @@ import org.spoofax.interpreter.core.StackTracer;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.library.IOperatorRegistry;
+import org.spoofax.interpreter.library.java.JFFLibrary;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -63,8 +64,8 @@ public class Context extends StackTracer {
     	this.operatorRegistryMap = new HashMap<String, IOperatorRegistry>();
     	this.operatorRegistries = new ArrayList<IOperatorRegistry>();
     	
-        SSLLibrary ssl = new SSLLibrary();
-        addOperatorRegistry(ssl);
+        addOperatorRegistry(new SSLLibrary());
+        addOperatorRegistry(new JFFLibrary(factory));
 
     	if (ioAgent != null) setIOAgent(ioAgent);
     	
