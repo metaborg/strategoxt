@@ -576,7 +576,7 @@ strategies
 
   Symbol2String :
     seq(sym, syms) ->
-      < filter(not(?lit(_) + ?ci-lit(_)))
+      < ( map(?lit(_) + ?ci-lit(_)) <+ filter(not(?lit(_) + ?ci-lit(_))) )
       ; map(Symbol2String)
       ; <separate-by> ("_", <id>)
       ; concat-strings
