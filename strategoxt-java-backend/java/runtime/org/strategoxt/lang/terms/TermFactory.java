@@ -8,8 +8,10 @@ import static org.spoofax.interpreter.terms.IStrategoTerm.STRING;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 import org.spoofax.interpreter.terms.BasicTermFactory;
 import org.spoofax.interpreter.terms.IStrategoAppl;
@@ -47,12 +49,9 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     private static final HashMap<StrategoConstructor, StrategoConstructor> asyncCtorCache =
         new HashMap<StrategoConstructor, StrategoConstructor>();
     
-    // TODO: use a WeakValueHashMap for TermFactory.asyncStringPool?
-    //       (WeakHashMap<String, WeakReference> seems to be quite expensive)
-    // Alternatively, we could maintain a prefix string - counter map,
-    // parsing the integer postfix of all strings that are constructed
-    private static final HashMap<String, StrategoString> asyncStringPool =
-        new HashMap<String, StrategoString>();
+    // StrategoXT/801: must use weak keys and values, and must maintain maximal sharing to avoid early collection
+    private static final WeakHashMap<String, WeakReference<StrategoString>> asyncStringPool =
+        new WeakHashMap<String, WeakReference<StrategoString>>();
     
     @Override
     public boolean hasConstructor(String name, int arity) {
@@ -64,7 +63,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             		throw new UnsupportedOperationException("String too long to be pooled (newname not allowed): " + name);
             	} else {
                 	// HACK: pre-allocating strings to avoid race condition 
-            		asyncStringPool.put(name, new StrategoString(name, null, MAXIMALLY_SHARED));
+            		asyncStringPool.put(name, new WeakReference<StrategoString>(new StrategoString(name, null, MAXIMALLY_SHARED)));
             		return false;
             	}
         	} else {
@@ -198,10 +197,11 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     		return new StrategoString(s, null, MY_STORAGE_TYPE);
     	
     	synchronized (TermFactory.class) {
-	    	StrategoString result = asyncStringPool.get(s);
+	    	WeakReference<StrategoString> resultRef = asyncStringPool.get(s);
+	    	StrategoString result = resultRef == null ? null : resultRef.get();
 	    	if (result == null) {
 	        	result = new StrategoString(s, null, MAXIMALLY_SHARED);
-	        	asyncStringPool.put(s, result);
+	        	asyncStringPool.put(s, new WeakReference<StrategoString>(result));
 	    	}
 	    	return result;
     	}
