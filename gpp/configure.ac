@@ -1,5 +1,5 @@
 AC_PREREQ([2.60])
-AC_INIT([gpp],[0.18],[users@strategoxt.org])
+AC_INIT([gpp],[1.8],[users@strategoxt.org])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
