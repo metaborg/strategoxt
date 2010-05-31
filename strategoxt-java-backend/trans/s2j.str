@@ -456,7 +456,9 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        private static final class x' extends x {
-         private static final x proceed = x.instance;
+         // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
+         // NOTE: this prevents multiple overrides of a strategy.
+         private static final x proceed = new x();
          ~(body)
          @Override public String getName() { return "~x"; }
        }
