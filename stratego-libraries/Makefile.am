@@ -20,7 +20,6 @@ pkgconfig_DATA = \
   stratego-sglr.pc \
   stratego-gpp.pc \
   stratego-sdf.pc \
-  stratego-lib.pc \
   stratego-xtc.pc \
   stratego-runtime.pc \
   stratego-rtg.pc \
