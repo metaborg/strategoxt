@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-pkgdata_DATA   = xml-doc.rtg xml-doc.str xml-doc.str
+pkgdata_DATA   = xml-doc.rtg xml-doc.str
 #pkgdata_DATA   = xml-doc.rtg xml-doc.str xml-doc.rtree 
 
 EXTRA_DIST     = $(pkgdata_DATA)
