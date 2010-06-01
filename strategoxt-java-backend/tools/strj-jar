@@ -3,7 +3,6 @@
 ## SETTINGS
 
 PRINT_CLASSPATH=
-CLASSPATH=strategoxt.jar # override with option -cp
 JAR=`if type -p fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
 JAVAC=`if type -p ecj &>/dev/null; then echo ecj; else echo javac; fi`
 if [ "$JAVAFLAGS" == "" ]; then
@@ -76,6 +75,9 @@ if head -n 1 $INPUT | grep '^package' &>/dev/null; then
   PACKAGE="`head -n 1 $INPUT | sed 's/package //; s/\;//'`."
   # PACKAGEDIR=`echo "$PACKAGE" | sed 's!\.!/!g	'`
   INPUT2="$INPUTDIR/Main.java"
+  if [ "$INPUT2" == "$INPUT" ]; then
+    INPUT2=
+  fi
   INPUTDIR2=`cd $INPUTDIR; pwd` # canonicalize
   INPUT3="$INPUTDIR/`basename $INPUTDIR2`.java"
   if [ ! -e $INPUT3 ]; then
@@ -107,7 +109,7 @@ echo "Class-Path: strategoxt.jar" >> $TEMPDIR/MANIFEST.MF
 echo >> $TEMPDIR/MANIFEST.MF
 
 if ls $INPUTDIR/*.str &>/dev/null; then
-  echo "WARNING: using this build directory may mean non-term files are included as attachments" >&2
+  echo "WARNING: using this build directory may mean that non-term files are included as attachments" >&2
 fi
 
 ATTACHMENTS=`ls $INPUTDIR | grep -vE '^.*\.(java|jar|log|astr|str|meta|dep|c|lo|o|class|MF)$' | sed "s!^!-C $INPUTDIR !"`
