@@ -67,7 +67,7 @@ strategies
     with
       if !a* => [PaddingContext(context)] then
         asfix'   := <strip-tree-before(?context)> asfix
-      ; padding  := <asfix-yield-appl-chars; chars-after-newlines> asfix'
+      ; <with(padding := <asfix-yield-appl-chars; chars-after-newlines>)> asfix'
       ; padding' := <chars-to-whitespace> padding
       ; s'       := <conc; implode-string> (padding', <explode-string> s)
       else
