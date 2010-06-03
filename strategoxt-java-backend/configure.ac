@@ -1,5 +1,5 @@
 AC_PREREQ([2.58])
-AC_INIT([strc-java],[0.17.9],[bugs@strategoxt.org])
+AC_INIT([strc-java],[0.17.91],[bugs@strategoxt.org])
 AM_INIT_AUTOMAKE
 
 # set the prefix immediately to the default prefix
