@@ -33,7 +33,7 @@ strategies
   ; parse-options(
       strj-options
     )
-  //; display-version
+  ; display-version
   ; if not(output-dirname); <get-config> "-o" then
       fatal-err-msg(|"Illegal output directory")
     end
