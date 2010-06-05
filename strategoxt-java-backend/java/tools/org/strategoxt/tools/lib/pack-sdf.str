@@ -30,10 +30,12 @@ strategies
     ; <maybe-create-depfile> files
     ; !spec
     ; where( (<fopen> (<get-config> "-o", "w") <+ stdout-stream ) => stream ) 
-    ; (  where(of-config => "txt")   < ( asfix-yield(|stream) ; <xtc-exit>0 )
-      +  where(of-config => "ast")   < implode-asfix
-      +  where(of-config => "asfix")
-      ); write-to <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
+    ; with(
+        (  where(of-config => "txt")   < ( asfix-yield(|stream) ; <xtc-exit>0 )
+        +  where(of-config => "ast")   < implode-asfix
+        +  where(of-config => "asfix")
+        ); write-to
+      | "failed to write output")
     )
   
   external asfix-yield(|stream) // HACK

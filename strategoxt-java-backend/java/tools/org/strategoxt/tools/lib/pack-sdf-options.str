@@ -83,10 +83,7 @@ strategies
   process-Idef =
       ?IncludeDef(def)
     ; !FILE(def)
-    ; xtc-temp-files(
-        parse-xtc-file-report-errors(|<get-sdf-parse-table>, "Module")
-      ; read-from
-      )
+    ; parse-xtc-file-pt-report-errors(|<get-sdf-parse-table>, "SDF")
     ; collect-om(?
         appl(prod(_, cf(sort("Module")), attrs([term(cons("module"))])), _)
       )
