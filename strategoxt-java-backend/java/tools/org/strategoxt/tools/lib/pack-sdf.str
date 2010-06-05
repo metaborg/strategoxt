@@ -35,7 +35,8 @@ strategies
         +  where(of-config => "ast")   < implode-asfix
         +  where(of-config => "asfix")
         ); write-to
-      | "failed to write output")
+      | "failed to write output"
+      )
     )
   
   external asfix-yield(|stream) // HACK
