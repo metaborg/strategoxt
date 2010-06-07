@@ -19,6 +19,10 @@ signature
     On  : Switch
     Off : Switch
 
+overlays
+  
+  PS_FS_TIMESTAMP_GRANULARITY = 2
+
 strategies
 
   parse-stratego-options =
@@ -37,6 +41,10 @@ strategies
 	      !"-silent ")
 
   + Option("--asfix", where(<set-config>("--asfix", 1)), !"--asfix")
+
+  + ArgOption("--cache-dir",
+        where(<set-config> ("--cache-dir", <where(file-exists; filemode; isdir <+ mkdir)>)); !(),
+        !"--cache-dir <dir>  Maintain a parse cache in <dir>")
 
   + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
 	      !"--desugaring on/off : turn desugaring on or off (default: off)")
@@ -128,17 +136,19 @@ strategies
    */
   ps-parse-module-trm =
       file@FILE(filename) := <xtc-ensure-file>
-    ; log(|Notice(), <concat-strings>["Parsing file ", filename])
     ; where(id
       ; base := <remove-extension> filename
       ; path := <path-of-xtc-file> file
+      )
+    ; !path
+    ; ps-parse-cached(
+        log(|Notice(), <concat-strings>["Parsing file ", filename])
       ; meta := <ps-get-meta> file
       ; tbl  := <ps-get-syntax; ps-get-parse-table> meta
     
       // sglr settings
       ; <ps-set-filters> meta
       ; srt := <ps-get-sort> meta
-      )
     
     ; <parse-xtc-file-pt(err(|["cannot open file ", path]), strsglr-report-parse-error | tbl, srt, path)> file
 
@@ -170,12 +180,59 @@ strategies
           meta-explode(false)
         end
       end
+    )
 
     ; where(if-not-silent(ps-check-module-name(|base)))
 
     ; if <get-config> "--desugaring" => "on" then
         stratego-desugar
       end
+
+/**
+ * Parse caching.
+ */
+strategies
+
+  ps-parse-cached(parse):
+    path -> ast
+    with
+      if <get-config> "--cache-dir"; ps-uses-default-implode-options then
+        abs-path   := <abspath> path
+      ; cache-path := <ps-cache-path> abs-path
+      ; (   <ps-is-newer> (cache-path, path)
+          ; ast := <ReadFromFile> cache-path
+        <+
+            ast := <parse> path
+          ; <WriteToBinaryFile> (cache-path, ast)
+        )
+      else
+        ast := <parse>
+      end
+  
+  /** Succeeds if the default option flags are used. (Ignores --desugar.) */
+  ps-uses-default-implode-options =
+    not(
+      ps-must-preserve-comments
+    + ps-must-preserve-positions
+    + ps-must-preserve-asfix-in-quotes
+    + ps-must-yield-quotes
+    )
+    
+  ps-is-newer:
+    (file1, file2) -> <id>
+    where
+      <gt> (<file-exists; modification-time> file1,
+            <file-exists; modification-time; ps-add-fs-granularity> file2)
+  
+  ps-add-fs-granularity:
+    timestamp -> <add> (timestamp, PS_FS_TIMESTAMP_GRANULARITY())
+  
+  ps-cache-path:
+    full-path -> cache-path
+    with
+      cache-dir  := <get-config> "--cache-dir";
+      full-path' := <string-replace(|"/", "+"); string-replace(|"\\", "+"); string-replace(|":", "+")> <guarantee-extension(|"rtree")> full-path;
+      cache-path := $[[cache-dir]/[full-path']]
 
 /**
  * Main parsing strategies.

@@ -100,6 +100,13 @@ strategies
     where(<set-config> ("--prefer-str", "")); !(),
     !"--prefer-str       Prefer .str files over .rtree files")
   <+
+    ArgOption("--default-syntax", where(<set-config>("--default-syntax", <id>)),
+	!"--default-syntax syn        use syntax syn as default")
+  <+
+    ArgOption("--cache-dir",
+    where(<set-config> ("--cache-dir", <where(file-exists; filemode; isdir <+ mkdir)>)),
+    !"--cache-dir <dir>  Maintain a compilation cache in <dir>")
+  <+
     Option("--fusion",     
     where(<toggle-config>("--fusion",())); !(),
     !"--fusion           Toggle specialize applications of innermost (default: on)" )

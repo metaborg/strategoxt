@@ -27,6 +27,9 @@ strategies
 	where(<set-config> ("--slack", ())); !(),
 	!"--slack              Continue when module is not found")
 
+    + ArgOption("--default-syntax", where(<set-config>("--default-syntax", <id>)),
+	      !"--default-syntax syn        use syntax syn as default")
+
     + Option("--asfix",
         where(<set-config> ("--asfix", "")); !(),
         !"--asfix              Do not implode the concrete syntax parts")
@@ -34,6 +37,10 @@ strategies
     + Option("--prefer-str",
         where(<set-config> ("--prefer-str", "")); !(),
         !"--prefer-str              Prefer .str files over .rtree files")
+
+  + ArgOption("--cache-dir",
+        where(<set-config> ("--cache-dir", <where(file-exists; filemode; isdir <+ mkdir)>)); !(),
+        !"--cache-dir <dir>  Maintain a parse cache in <dir>")
  
     + ArgOption("--desugaring", 
         where(<set-config>("--desugaring", <id>)),
