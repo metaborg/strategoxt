@@ -93,6 +93,11 @@ strategies
           )
         )
 
+        // Give overrides an unique name to prevent joining
+      ; m-transform-local-defs(
+          map(try(RenameOverrideDef))
+        )
+      
       ; m-transform-local-defs(id
           ; ![<joindefs>] 
           ; [RenameSDef]

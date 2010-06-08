@@ -4,6 +4,7 @@ static void SRTS_stratego_initialize_module()
 {
   init_module_constructors();
   init_module_constant_terms();
+  init_module_overrides();
   if(SRTS_stratego_initialize_next != NULL)
     SRTS_stratego_initialize_next();
 

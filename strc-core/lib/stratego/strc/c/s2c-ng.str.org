@@ -65,13 +65,12 @@ rules
         incl          := <GenerateIncludes>
       ; cnstr-decls   := <bagof-Fragment> "ConstructorDecl"
       ; cnstr-inits   := <bagof-Fragment; concat> "ConstructorInit"
-      ; function-sigs := <bagof-Fragment; flatten-list> "FunctionSig"
+      ; function-sigs := <bagof-Fragment> "FunctionSig"
       ; function-regs := <bagof-Fragment> "FunctionReg"
       ; function-defs := <bagof-Fragment> "FunctionDef"
       //; debug(!"function definitions: ")
       ; cnst-decls    := <bagof-Fragment> "ConstDecl"
-      ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit"
-      ; over-inits    := <bagof-Fragment; flatten-list> "OverrideInit" 
+      ; cnst-inits    := <bagof-Fragment; concat; reverse> "ConstInit" 
     );
     !|[
 	// C includes specified on command-line or by default configuration
@@ -97,30 +96,25 @@ rules
 	{
 	  ~stm*:cnst-inits
 	}
-   
+
+	// include functions for calling the initialization functions
+	~ext-def*:
+	  <if-lib(
+	     ![PpControl("#include <srts/init-stratego-module.h>")],
+	     ![PpControl("#include <srts/init-stratego-application.h>")]
+	   )>
+	   
 	~ext-def*:<![<tracing-table-sig>, <tracing-table-counter-sig>]>
 	
 	// signatures of all generated functions
 	~ext-def*:function-sigs
 
-  // function definitions themselves
+	// function definitions themselves
 	~ext-def*:function-defs
 
         ~ext-def*:<if-lib(![], ![<register-strategies-function>function-regs])>
 
-  // init all overridden strategies
-  static void init_module_overrides() {
-    ~stm*:over-inits
-  }   
-
-  // include functions for calling the initialization functions
-  ~ext-def*:
-    <if-lib(
-       ![PpControl("#include <srts/init-stratego-module.h>")],
-       ![PpControl("#include <srts/init-stratego-application.h>")]
-     )>
-
-  ~ext-def*:<if-lib(![], ![<MainDef>])>
+	~ext-def*:<if-lib(![], ![<MainDef>])>
     ]|
 
 strategies
@@ -255,16 +249,12 @@ strategies
  */
 strategies 
 
-  strat-fname = <concat-strings> [<id>, "_s"]
-  proceed-name: x -> <concat-strings> [x, "_proceed"]
-  
-  Translate = 
+  Translate = //debug(!"Translate: "); 
     SDefIgnore
     <+ SDefFail
     <+ is-closure-alloc
     <+ fragment(SDefToDeclaration|"FunctionSig")
-       ; try(fragment(SDefToRegistration|"FunctionReg"))
-       ; try(fragment(SDefToOverrideDeclaration|"OverrideInit"))
+       ; fragment(SDefToRegistration|"FunctionReg")
        ; (fragment(TranslateDef | "FunctionDef")
 	  <+ {?Def|[ external f(a1* | a2* ) ]|}
 	  <+ {?Def|[ external f(a1* | a2* ) = s ]|}
@@ -279,67 +269,32 @@ strategies
     ; not(<[Override + Internal]> a*)
     ; !(a*, s)
     ; fatal-err(|"strategy modifier is not implemented for this platform")
-  
+
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec*|[ 
-      ATerm ~id:ff (StrSL sl, ~param-dec*:ps, ATerm t);
-      ATerm (* ~id:f ) (StrSL, ~param-dec*:ps, ATerm) = & ~id:ff;
-    ]|
+    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <not(is-local-function)> f
         ; ps := <map(TranslateVarDec)> [a1*,a2*]
-        ; ff := <strat-fname> f
-
-  override-def-to-overridden: def@Def|[ f(a1* | a2*) = s ]| -> f'
-    with  x := <strip-annos; OriginalOverrideName> f
-        ; y := <Overriding> x
-        ; f' := <RenameVar> (y, (<length> a1*, <length> a2*))
-
+    
   SDefToDeclaration :
-    AnnoDef([Override()], def@Def|[ f(a1* | a2*) = s ]|) ->
-    dec*|[
-      extern ATerm (* ~id:forg) (StrSL, ~param-dec*:ps, ATerm);    // for library override
-      ATerm (* ~id:fproceed ) (StrSL, ~param-dec*:ps, ATerm) = NULL;
-    ]|
-    with fproceed := <proceed-name> f
-       ; ps := <map(TranslateVarDec)> [a1*,a2*]
-       ; forg := <override-def-to-overridden> def 
-  
-  SDefToOverrideDeclaration :
-    AnnoDef([Override()], def@Def|[ f(a1* | a2*) = s ]|) -> 
-    stm* |[ 
-      ~id:fproceed = ~id:cur;   // Save old override
-      ~id:cur = &(~id:f);       // Set new override
-    ]|
-    with  fproceed := <proceed-name> f
-        ; cur := <override-def-to-overridden> def
-        ; ps := <map(TranslateVarDec)> [a1*, a2*]
-        
-  SDefToDeclaration :
-    AnnoDef([Internal()], Def|[ f(a1* | a2*) = s ]|) ->
-    dec*|[ 
-    	static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); 
-    ]|
+    AnnoDef(Internal(), Def|[ f(a1* | a2*) = s ]|) ->
+    dec|[ static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where ps := <map(TranslateVarDec)> [a1*,a2*]
-    with  rules(FunctionToFunctionPointer : f -> exp|[ &(~id:f) ]|)
 
   SDefToDeclaration :
     Def|[ f(a1* | a2*) = s ]| ->
-    dec*|[
-    	static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t);
-    ]|
+    dec|[ static ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where <is-local-function> f
         ; ps := <map(TranslateVarDec)> [a1*,a2*]
-    with  rules(FunctionToFunctionPointer : f -> exp|[ &(~id:f) ]|)
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) = s ]| ->
-    dec|[ extern ATerm (* ~id:f) (StrSL sl, ~param-dec*:ps, ATerm t); ]|
+    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where ps := <map(TranslateVarDec)> [a1*,a2*]
 
   SDefToDeclaration :
     Def|[ external f(a1* | a2*) ]| ->
-    dec|[ extern ATerm (* ~id:f) (StrSL sl, ~param-dec*:ps, ATerm t); ]|
+    dec|[ ATerm ~id:f (StrSL sl, ~param-dec*:ps, ATerm t); ]|
     where ps := <map(TranslateVarDec)> [a1*,a2*]
 
 
@@ -355,7 +310,7 @@ strategies
     )
     ; !stm|[
         {
-          closures[closures_index].fun = ~id:f;   // f is a function pointer, not the function itself
+          closures[closures_index].fun = &(~id:f);
           closures[closures_index].sl = NULL;
           SRTS_register_function(
               (ATerm) ATmakeAppl0(ATmakeSymbol(~id:<double-quote>f, 0, ATtrue))
@@ -384,28 +339,13 @@ strategies
   // TODO: insert escaping strategy arguments in frame
 
   TranslateDef :
-    AnnoDef([Internal()], def@Def|[ f~{t*}(a1* | a2*) = s ]|) -> def'
-    with def' := <make-internal-static> <TranslateDef(|f)> def
+    AnnoDef(Internal(), def) -> def'
+    with def' := <make-internal-static> <TranslateDef> def
 
   TranslateDef :
-    AnnoDef([Override()], def@Def|[ f~{t*}(a1* | a2*) = s ]|) -> def'
-    with {| ProceedName, ProceedArgs:
-            proceed-name := <proceed-name> f
-          ; rules(
-                ProceedName := proceed-name
-                ProceedArgs := (a1*, a2*)
-            )
-          ; def' := <TranslateDef(|f)> def
-         |}
-
-  TranslateDef : 
-    def@Def|[ f~{t*}(a1*|a2*) = s ]| -> <TranslateDef(|f')> def
-    where f' := <where(is-local-function) <+ strat-fname> f
-
-  TranslateDef(|fname) :
     Def|[ f~{t*}(a1*|a2*) = s ]| -> <try(make-local-static)> 
     |[ 
-       ATerm ~id:fname{}(StrSL sl, ~param-dec*:args, ATerm t)
+       ATerm ~id:f{}(StrSL sl, ~param-dec*:args, ATerm t)
        {
          __tracing_table[__tracing_table_counter++] = ~exp:<!StringLit([<double-quote> f])>;
          __tracing_table[__tracing_table_counter] = NULL;
@@ -575,34 +515,7 @@ rules
     where <map(Translate)> defs
         ; (closures, stms) := <filter(MkClosure); unzip; (concat,concat)> defs
 	; stm := <translate-strat(|S,F)> s
-	  
-	// todo: check earlier
-	check-in-override =
-		where(
-			ProceedName; ProceedArgs
-	<+  fatal-err(|"proceed outside of override"))
-	  
-	TranslateStrat(|S,F) :
-	  |[ proceed ]| -> 
-	  stm |[ {
-	       t = ~id:s (sl, ~exp*:args, t);
-	       if( t == NULL ) goto ~id:F; else goto ~id:S;
-	     } ]|
-	  where check-in-override
-	  with ProceedArgs; \(s*,t*) -> [s*,t*]\; map(\VarDec(x, _) -> Id(x) \) => args
-	     ; ProceedName => s
-	
-	/*  TODO:
-  Proceed with arguments. 
-  Should be desugared early in the pipeline to enable stuff like strategy lifting and frames.
-  */
-  TranslateStrat(|S,F) :
-    ProceedT(s*, f*) -> <fatal-err(|"proceed with arguments no yet supported")> 
-  
-  function-pointer =
-  	 FunctionToFunctionPointer     // internal functions without pointer
-  <+ ?f; !exp |[ f ]|              // normal functions are implemented by a pointer 
-  
+
   // @TODO
   // cater for closures for top-level functions, which will typically
   // have the form 
@@ -612,30 +525,27 @@ rules
  
   MkClosure :
     Def|[ f~{Offsets(i,j),Closure(x)}(|) = s ]| ->
-    ([dec|[ struct str_closure ~id:y = {~exp:fp, &frame}; ]|
+    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     , [])
     where y := <new>
-        ; fp := <function-pointer> f
 
   MkClosure :
     Def|[ f~{Offsets(i,j),Offset(k),Escapes(),Closure(x)}(|) = s ]| ->
-    ([dec|[ struct str_closure ~id:y = {~id:f, &frame}; ]|
+    ([dec|[ struct str_closure ~id:y = {&~id:f, &frame}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
     where y := <new>
-        ; fp := <function-pointer> f
 
   // allocate closure for a top-level function
 
   MkClosure :
     Def|[ f~{Offsets(0,0),Closure(x),ClosureAlloc()}(|)
             = g~{Frames(frames)}(|) ]| ->
-    ([dec|[ struct str_closure ~id:y = {~exp:gp, ~exp:sl}; ]|
+    ([dec|[ struct str_closure ~id:y = {&~id:g, ~exp:sl}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     , [])
     where ?def
-  ; gp := <function-pointer> g
 	; y := <new>
 	; frames' := <Tl> frames
 	; if <not([])> frames' then
@@ -648,11 +558,10 @@ rules
   MkClosure :
     Def|[ f~{Offsets(0,0),Offset(k),Escapes(),Closure(x),ClosureAlloc()}(|) 
           = g~{Frames(frames)}(|) ]| ->
-    ([dec|[ struct str_closure ~id:y = {~exp:fp, ~exp:sl}; ]|
+    ([dec|[ struct str_closure ~id:y = {&~id:f, ~exp:sl}; ]|
      ,dec|[ StrCL ~id:x = &y; ]|]
     ,[stm|[ sl_init_fun(~exp:<mk-int-const>k, ~id:x); ]|])
     where ?def
-  ; fp := <function-pointer> f
 	; y := <new>
 	; frames' := <Tl> frames
 	; if <not([])> frames' then

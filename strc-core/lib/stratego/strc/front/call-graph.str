@@ -8,8 +8,12 @@ strategies
       ; map(register-ho-arg)
       ; filter(
           bagof-ModDefinition
-          ; filter(not(check-calls-def))
-          ; not(?[])
+          ; (
+              check-override
+           <+ 
+              filter(not(check-calls-def))
+            ; not(?[])
+          )
         )
       ; ?[]
     )
@@ -17,6 +21,17 @@ strategies
   register-ho-arg =
     ?sig@(f, _, _)
     ; rules( CcHoArg :+ f -> sig )
+  
+  check-override: defs -> defs
+    where [] := <remove-all(?AnnoDef(<fetch-elem(?Override())>, _))> defs
+    with  dsig := <Hd; ?AnnoDef(_, <id>); m-def-signature> defs
+        ; err(|["*** ", dsig, " overrides non-existing strategy"])
+
+  check-override: defs -> defs
+    where so := <fetch-elem(where(?AnnoDef(<fetch-elem(?Override())>, _)))> defs
+        ; <one(?AnnoDef(<fetch-elem(?Internal())>, _))> defs
+    with  dsig := <?AnnoDef(_, <id>); m-def-signature> so
+        ; err(|["*** ", dsig, " cannot override an internal strategy"])
 
   check-calls-def = 
     where(id

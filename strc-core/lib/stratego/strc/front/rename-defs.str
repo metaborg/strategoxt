@@ -22,8 +22,21 @@ strategies
 
 rules
 
+  RenameOverrideDef :
+    AnnoDef(a*, SDefT(x{anno*}, args1, args2, s)) ->
+    AnnoDef(a*, SDefT(y{anno*}, args1, args2, s))
+      where <fetch(?Override())> a*
+      with  y := <concat-strings; newname> [x, "-override"]
+          ; rules(Overriding : y -> x)
+          ; try(collect(?ProceedT(_,_)); Hd; err(|"proceed with arguments no yet supported"))
+            
   RenameSDef :
-    AnnoDef(a*, def) -> AnnoDef(a*, <RenameSDef> def)
+    AnnoDef(a*, def1@SDefT(x, _, _, _)) -> AnnoDef(a*, def2)
+      with  def2@SDefT(y, _, _, _) := <RenameSDef> def1
+          ; try(
+                <fetch(?Override())> a* 
+              ; rules(OriginalOverrideName : y -> x)
+            )
 
   RenameSDef : 
     SDefT(x, args1, args2, s) -> SDefT(y, args1, args2, s)

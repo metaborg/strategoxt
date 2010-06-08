@@ -6,6 +6,10 @@ AM_INIT_AUTOMAKE
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 XT_INTERNAL_USE_XT_PACKAGES
 
+# NATHAN: this makes the build system use the old (installed) strc
+AC_DEFINE_UNQUOTED([STRC_SYSTEM_LDFLAGS()],[((ATerm) ATmakeString("${STR_LDFLAGS}"))], [Additional arguments to pass to the linker.])
+AC_DEFINE_UNQUOTED([STRC_SYSTEM_CFLAGS()],[((ATerm) ATmakeString("${STR_CFLAGS} -DSIZEOF_VOID_P=${ac_cv_sizeof_void_p} -DSIZEOF_LONG=${ac_cv_sizeof_long} -DSIZEOF_INT=${ac_cv_sizeof_int}"))], [Additional arguments to pass to the C compiler.])
+
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
