@@ -21,7 +21,7 @@ TBLS = \
   Stratego-Sugar-in-Stratego.tbl \
   Stratego-Core-in-Stratego.tbl
 
-sdfdata_DATA = $(TBLS) $(DEFS) StrategoRenamed.sdf $(wildcard *.sdf)
+sdfdata_DATA = $(TBLS) $(DEFS) StrategoRenamed.sdf $(filter-out StrategoRenamed.sdf,$(wildcard *.sdf))
 
 EXTRA_DIST     = $(DEFS) $(GEN_MODS) $(wildcard *.sdf) 
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
