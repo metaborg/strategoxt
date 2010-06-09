@@ -14,6 +14,7 @@ signature constructors
   PaddingId      : Term -> PaddingId
   PaddingStart   : PaddingStart
   indentpadding  : Attr
+  parse-tree     : Term * Term -> parse-tree
 
 strategies
     
@@ -32,16 +33,20 @@ strategies
     AddPadding(t) -> t'
     with
       if !asfix => appl(_, _) then
-        where(
-          asfix'  := <strip-tree-before(?_{PaddingId(_)})> asfix
-        ; padding := <asfix-yield-appl-chars> asfix'
-        //; <debug(!"  padding1: ")> <write-to-string> <implode-string> <asfix-yield-appl-chars> asfix
-        //; <debug(!"  padding2: ")> <write-to-string> <implode-string> padding
-        )
-      ; if (!asfix => _{PaddingId(_)} <+ <not(one('\n'))> padding) then
+        if !asfix => _{PaddingId(_)} then
           t' := <id> // keep constructor (add padding later)
         else
-          t' := <add-indent-padding-string(|asfix)> t
+          where(
+              asfix'       := <strip-tree-before(?_{PaddingId(_)})> asfix
+            ; with(padding := <asfix-yield-appl-chars> asfix')
+            //; <debug(!"  padding1: ")> <write-to-string> <implode-string> <asfix-yield-appl-chars> asfix
+            //; <debug(!"  padding2: ")> <write-to-string> <implode-string> padding
+            )
+        ; if not(<one('\n')> padding) then
+            t' := <id> // keep constructor (add padding later)
+          else
+            t' := <add-indent-padding-string(|asfix)> t
+          end
         end
       else
         t' := <id> // keep constructor (add padding later)
@@ -74,23 +79,42 @@ strategies
         s' := s
       end
   
-  strip-tree-before(s) =
-    if is-list then
-      [s | id]; ![]
-    <+
-      try(strip-tree-before-list(s))
-    else
-      all(strip-tree-before(s))
-    end
+  /**
+   * Strips the tail of a parse tree starting from the point where <s> succeeds.
+   */
+  strip-tree-before(s):
+    tree -> tree'
+    with
+      try(?parse-tree(<id>, _));
+      tree' := <strip-appl-before(s)>
   
-  strip-tree-before-list(s) :
+  strip-appl-before(s) =
+    if ?appl @ appl(prod @ prod(_, rhs, _), list) then
+      if not(!rhs => lit(_) + !rhs => lex(_)) then
+	      list' := <strip-appl-list-before(s)> list;
+	      if !list' => list then
+	        !appl
+	      else
+	        !appl(prod, list')
+	      end
+	    <+
+	      !list => []; !appl
+		  end
+	  else
+	    // Shouldn't happen, or maybe with kernel syntax
+	    all(strip-appl-before(s))
+	  end
+  
+  strip-appl-list-before(s) :
     [i | i*] -> stripped*
     where
-      if <oncetd(s)> i then
-        stripped* := [<strip-tree-before(s)> i]
-      else
-        stripped* := [i | <strip-tree-before(s)> i*]
-      end
+      <s> i
+    ; stripped* := []
+    <+
+      <one(oncetd(s))> i
+    ; stripped* := [<strip-appl-before(s)> i]
+    <+
+      stripped* := [i | <strip-appl-list-before(s)> i*]
   
   chars-to-whitespace :
     [c | c*] -> c'*
