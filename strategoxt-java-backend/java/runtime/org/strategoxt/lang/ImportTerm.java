@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.spoofax.interpreter.adapter.aterm.ATermConverter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -53,6 +54,9 @@ public class ImportTerm extends LazyTerm {
 	
 	@Override
 	protected IStrategoTerm init() {
+		if (aterm != null)
+			return new ATermConverter(aterm.getFactory(), factory, true).convert(aterm);
+		
 		InputStream stream = openStream();
 		try {
 			return factory.parseFromStream(stream);
