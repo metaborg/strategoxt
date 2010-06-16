@@ -78,3 +78,6 @@ strategies
     i -> [i | acc]
     where
       is-int
+  
+  asfix-yield-acc(rec : b * c -> d | acc) :
+    amb([x | _]) -> <rec(|acc)> x
