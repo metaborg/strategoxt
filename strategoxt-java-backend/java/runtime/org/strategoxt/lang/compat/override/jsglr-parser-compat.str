@@ -22,6 +22,11 @@ strategies // parsing and parse tables
   override close-parse-table =
     jsglr-close-parsetable
 
+  // HACK: currently seems to inline close-parse-table
+  override open-parse-table-wrap-report-errors(s : OpenParseTable * a -> b | tbl) =
+    where(tbl' := <open-parse-table-report-errors> tbl)
+    ; finally(s(|tbl'), <close-parse-table> tbl')
+
   override parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
       (<fopen> (<id>, "r") => stream <+ on-open-error; fail)
     ; finally(
