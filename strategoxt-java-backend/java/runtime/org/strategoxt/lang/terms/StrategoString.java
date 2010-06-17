@@ -17,7 +17,7 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
 
 	private final int storageType;
 	
-    private String value;
+    private final String value;
     
     public StrategoString(String value, IStrategoList annotations, int storageType) {
         super(annotations);
@@ -57,8 +57,10 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
         if (value == secondValue) {
         	// Do nothing
         } else if (value.equals(secondValue)) {
-        	if (commonStorageType == SHARABLE)
-        		this.value = secondValue;
+        	// Don't apply resharing here (StrategoXT/801) but maintain
+        	// the string instance that may be in the string pool
+        	// if (commonStorageType == SHARABLE)
+        	//	this.value = secondValue;
         } else {
             return false;
         }
