@@ -195,7 +195,7 @@ strategies
 
   ps-parse-cached(parse):
     path -> ast
-    with
+    where
       if <get-config> "--cache-dir"; ps-uses-default-implode-options then
         abs-path   := <abspath> path
       ; cache-path := <ps-cache-path> abs-path

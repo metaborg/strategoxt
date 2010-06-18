@@ -99,11 +99,11 @@ strategies
 	      end
 	    <+
 	      !list => []; !appl
-		  end
-	  else
-	    // Shouldn't happen, or maybe with kernel syntax
-	    all(strip-appl-before(s))
 	  end
+	else
+	  // Shouldn't happen, or maybe with kernel syntax
+	  all(strip-appl-before(s))
+	end
   
   strip-appl-list-before(s) :
     [i | i*] -> stripped*
