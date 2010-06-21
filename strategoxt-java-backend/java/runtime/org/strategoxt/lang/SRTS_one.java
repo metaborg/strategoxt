@@ -28,7 +28,7 @@ public class SRTS_one extends Strategy {
 			IStrategoTerm arg2 = s.invoke(context, arg);
 			if (arg2 != null) {
 				if (arg2 == arg) {
-					results = inputs;
+					return current;
 				} else {
 					results = inputs.clone();
 					results[i] = arg2;
@@ -60,13 +60,13 @@ public class SRTS_one extends Strategy {
 				IStrategoList tail2 = fetchMaintainAnnos(context, tail, s);
 				if (tail2 == null) {
 					return null;
-				} else if (tail2 == tail || tail2.match(tail)) {
+				} else if (tail2 == tail) {
 					return current;
 				} else {
 					// TODO: head/tail variation of replaceList?
 					return context.getFactory().makeListCons(head, tail2);
 				}
-			} else if (head2 == head || head2.match(head)) {
+			} else if (head2 == head) {
 				return current;
 			} else {
 				// TODO: head/tail variation of replaceList?

@@ -77,10 +77,29 @@ public class SRTS_all extends Strategy {
 		}
 	}
 
+	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoList list, Strategy s) {
+		IStrategoTerm[] inputs = list.getAllSubterms();
+		IStrategoTerm[] results = null;
+
+		for (int i = 0; i < inputs.length; i++) {
+			IStrategoTerm arg = inputs[i];
+			IStrategoTerm arg2 = s.invoke(context, arg);
+			if (arg2 != arg) {
+				if (arg2 == null)
+					return null;
+				if (results == null)
+					results = inputs.clone();
+				results[i] = arg2;
+			}
+		}
+		
+		return results == null ? list : context.getFactory().replaceList(results, list);
+	}
+
 	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, Strategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
+		assert (items[0] = null) == null && list.head() != null : "List implementation must not expose internal array";
 		items[0] = head2;
-		assert list.head() != null : "List implementation must not expose internal array";
 		for (int i = 1; i < items.length; i++) {
 			IStrategoTerm item = items[i];
 			IStrategoTerm item2 = s.invoke(context, item);
@@ -101,11 +120,11 @@ public class SRTS_all extends Strategy {
 		IStrategoTerm head2 = s.invoke(context, head);
 		if (head2 == null) {
 			return null;
-		} else if (head2 != head && !head2.match(head)) {
+		} else if (head2 != head) {
 			return mapIgnoreAnnos(context, head2, list, s);
 		} else {
 			IStrategoList tail = list.tail();
-			IStrategoList tail2 = mapMaintainAnnos(context, tail, s);
+			IStrategoList tail2 = mapIgnoreAnnos(context, tail, s);
 			if (tail2 == null) {
 				return null;
 			} else if (tail2 != tail) { // (match() not necessary because of recursion)

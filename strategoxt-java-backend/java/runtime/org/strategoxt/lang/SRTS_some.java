@@ -61,18 +61,18 @@ public class SRTS_some extends Strategy {
 				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, foundSome);
 				if (tail2 == null) {
 					return null;
-				} else if (tail2 == tail || tail2.match(tail)) {
+				} else if (tail2 == tail) {
 					return list;
 				} else {
 					// TODO: head/tail variation of replaceList?
 					return context.getFactory().makeListCons(head, tail2);
 				}
-			} else if (head2 == head || head2.match(head)) {
+			} else if (head2 == head) {
 				IStrategoList tail = list.tail();
 				IStrategoList tail2 = map1MaintainAnnos(context, tail, s, true);
 				if (tail2 == null) {
 					return null;
-				} else if (tail2 == tail || tail2.match(tail)) {
+				} else if (tail2 == tail) {
 					return list;
 				} else {
 					// TODO: head/tail variation of replaceList?
