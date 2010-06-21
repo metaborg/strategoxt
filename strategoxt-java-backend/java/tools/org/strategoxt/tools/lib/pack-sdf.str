@@ -34,9 +34,10 @@ strategies
         (  where(of-config => "txt")   < ( asfix-yield(|stream) ; <xtc-exit>0 )
         +  where(of-config => "ast")   < implode-asfix
         +  where(of-config => "asfix")
-        ); write-to
+        ); write-to => out
       | "failed to write output"
       )
+    ; !out
     )
   
   external asfix-yield(|stream) // HACK
