@@ -105,10 +105,18 @@ public class UncaughtExceptionHandler  {
 		}
 	}
     
-    class Finalizer {
+    static class Finalizer {
+    	final WeakReference<UncaughtExceptionHandler> handler;
+    	
+    	public Finalizer(UncaughtExceptionHandler handler) {
+			this.handler = new WeakReference<UncaughtExceptionHandler>(handler);
+		}
+    	
     	@Override
     	protected void finalize() throws Throwable {
-    		setEnabled(false);
+    		UncaughtExceptionHandler handler = this.handler.get();
+    		if (handler != null)
+    			handler.setEnabled(false);
     	}
     }
 
