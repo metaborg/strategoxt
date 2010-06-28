@@ -38,6 +38,8 @@ public class report_failure_compat_1_0 extends report_failure_1_0 {
 			try {
 				logIntercept.proceed = log_0_2.instance;
 				logIntercept.enabled = true;
+				logIntercept.lastMessage.set(null);
+				logIntercept.lastTerm.set(null);
 				log_0_2.instance = logIntercept;
 				
 				return proceed.invoke(context, current, s);
