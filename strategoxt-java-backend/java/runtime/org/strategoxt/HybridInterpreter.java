@@ -33,7 +33,6 @@ import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.terms.TermFactory;
-import org.strategoxt.stratego_lib.stratego_lib;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
@@ -229,7 +228,7 @@ public class HybridInterpreter extends Interpreter {
 	public void loadJars(ClassLoader parentClassLoader, URL... jars)
 			throws SecurityException, IncompatibleJarException, IOException {
 
-		URLClassLoader classLoader = new URLClassLoader(jars, stratego_lib.class.getClassLoader());
+		URLClassLoader classLoader = new URLClassLoader(jars, parentClassLoader);
 		loadedJars = true;
 		
 		for (URL jar : jars) {

@@ -15,7 +15,8 @@ public class UncaughtExceptionHandler  {
 	private final ActualHandler handler = new ActualHandler();
 	
 	// We keep the original handler (may be used by someone else) intact
-	private Thread.UncaughtExceptionHandler originalHandler;
+	private static final ThreadLocal<Thread.UncaughtExceptionHandler> originalHandler =
+		new ThreadLocal<Thread.UncaughtExceptionHandler>();
 	
 	private boolean enabled;
 	
@@ -37,7 +38,8 @@ public class UncaughtExceptionHandler  {
 	private void enable() {
 		if (!enabled) {
 			enabled = true;
-			originalHandler = Thread.currentThread().getUncaughtExceptionHandler();
+			if (!(Thread.currentThread().getUncaughtExceptionHandler() instanceof UncaughtExceptionHandler))
+				originalHandler.set(Thread.currentThread().getUncaughtExceptionHandler());
 			Thread.currentThread().setUncaughtExceptionHandler(handler);
 			Runtime.getRuntime().addShutdownHook(handler);
 		}
@@ -47,7 +49,7 @@ public class UncaughtExceptionHandler  {
 		if (enabled) {
 			enabled = false;
 			try {
-				Thread.currentThread().setUncaughtExceptionHandler(originalHandler);
+				Thread.currentThread().setUncaughtExceptionHandler(originalHandler.get());
 				Runtime.getRuntime().removeShutdownHook(handler);
 			} catch (IllegalStateException e) {
 				// Ignore (perhaps already shutting down)
@@ -80,7 +82,6 @@ public class UncaughtExceptionHandler  {
     private class ActualHandler extends Thread implements Thread.UncaughtExceptionHandler {
     	
 		public void uncaughtException(Thread t, Throwable e) {
-			originalHandler.uncaughtException(t, e);
 			if (e instanceof StackOverflowError && dumpError("Fatal error at")) {
 				if (isStackTuned()) {
 					System.err.println("Stack overflow.");
@@ -90,6 +91,9 @@ public class UncaughtExceptionHandler  {
 			} else {
 				dumpError("Fatal error at");
 			}
+			UncaughtExceptionHandler handler = originalHandler.get();
+			if (handler != null)
+				handler.uncaughtException(t, e);
 		}
 
 		private boolean isStackTuned() {
