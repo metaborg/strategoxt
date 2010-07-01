@@ -123,13 +123,14 @@ rules
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
+     import java.lang.ref.WeakReference;
          
      @SuppressWarnings("all")
      public class x_name {
 
      protected static final boolean TRACES_ENABLED = e_traces;
      protected static ITermFactory constantFactory;
-     private static Context initedContext;
+     private static WeakReference<Context> initedContext;
      private static boolean isIniting;
 
      ~*cnst-decls
@@ -144,12 +145,12 @@ rules
            initConstructors(termFactory);
            initConstants(termFactory);
          }
-         if (context != initedContext) {
+         if (initedContext == null || initedContext.get() != context) {
            ~*import-inits
            ~*def-inits
            context.registerComponent("~x_name'");
          }
-         initedContext = context;
+         initedContext = new WeakReference<Context>(context);
          constantFactory = termFactory;
          isIniting = false;
          return context;
