@@ -15,6 +15,8 @@ import org.strategoxt.HybridInterpreter;
  * Adapts an {@link SDefT} definition to a {@link Strategy},
  * making interpreter strategy arguments accessible to the compiled strategies.
  * 
+ * @see JavaInteropRegisterer  A base class for registering Java libraries.
+ * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class InteropStrategy extends DynamicStrategy {
