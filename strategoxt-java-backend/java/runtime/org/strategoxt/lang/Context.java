@@ -1,10 +1,15 @@
 package org.strategoxt.lang;
 
+import static org.strategoxt.lang.Term.NO_STRATEGIES;
+import static org.strategoxt.lang.Term.NO_TERMS;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 
+import org.spoofax.IAsyncCancellable;
 import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
@@ -20,7 +25,6 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 import org.strategoxt.lang.terms.TermFactory;
-import static org.strategoxt.lang.Term.*;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -28,7 +32,7 @@ import static org.strategoxt.lang.Term.*;
  * @author Lennart Kats
  * @author Karl Trygve Kalleberg
  */
-public class Context extends StackTracer {
+public class Context extends StackTracer implements IAsyncCancellable {
 	
 	private final InteropContext interopContext = new InteropContext(this);
 
@@ -50,6 +54,8 @@ public class Context extends StackTracer {
     private transient String lastPrimitiveName1, lastPrimitiveName2;
     
     private transient AbstractPrimitive lastPrimitive1, lastPrimitive2;
+
+	private transient volatile boolean asyncCancelled;
     
     public Context() {
     	this(new TermFactory());
@@ -83,6 +89,7 @@ public class Context extends StackTracer {
     }
 	
 	public final ITermFactory getFactory() {
+        if (asyncCancelled) cancel();
 		return factory;
 	}
 	
@@ -198,6 +205,8 @@ public class Context extends StackTracer {
 	public IStrategoTerm invokePrimitive(AbstractPrimitive primitive, IStrategoTerm term, Strategy[] sargs, IStrategoTerm[] targs) {
     	if (primitive == null)
     		throw new StrategoException("Calling undefined primitive");
+        if (asyncCancelled)
+            cancel();
 		
     	interopContext.setCurrent(term);
 		try {
@@ -235,5 +244,19 @@ public class Context extends StackTracer {
 	        }
 	        return null;
 		}
+	}
+
+    public void asyncCancel() {
+        asyncCancelled = true;
+    }
+
+    public void asyncCancelReset() {
+        asyncCancelled = false;
+    }
+
+	private void cancel() {
+		asyncCancelled = false;
+		getIOAgent().closeAllFiles();
+		throw new CancellationException("Stratego interpreter cancelled");
 	}
 }

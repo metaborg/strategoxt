@@ -98,4 +98,12 @@ public class InteropContext implements IContext {
 	public void setVarScope(VarScope newVarScope) {
 		throw new UnsupportedOperationException();
 	}
+
+	public void asyncCancel() {
+		context.asyncCancel();
+	}
+
+	public void asyncCancelReset() {
+		context.asyncCancelReset();
+	}
 }

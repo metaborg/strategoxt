@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.spoofax.IAsyncCancellable;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.core.InterpreterErrorExit;
@@ -48,7 +49,7 @@ import org.strategoxt.lang.terms.TermFactory;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class HybridInterpreter extends Interpreter {
+public class HybridInterpreter extends Interpreter implements IAsyncCancellable {
 	
 	private static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
 	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
@@ -417,5 +418,15 @@ public class HybridInterpreter extends Interpreter {
 		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
 		}
+	}
+
+	public void asyncCancel() {
+		getCompiledContext().asyncCancel();
+		getContext().asyncCancel();
+	}
+
+	public void asyncCancelReset() {
+		getCompiledContext().asyncCancelReset();
+		getContext().asyncCancelReset();
 	}
 }
