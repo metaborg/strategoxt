@@ -67,7 +67,9 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             		return false;
             	}
         	} else {
-        		return asyncCtorCache.get(new StrategoConstructor(name, arity)) != null;
+        		// UNDONE: requires zeroary constructors to be registered in the string pool 
+        		// return asyncCtorCache.get(new StrategoConstructor(name, arity)) != null;
+        		throw new UnsupportedOperationException();
         	}
         }
     }
@@ -125,8 +127,6 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 	        StrategoConstructor cached = asyncCtorCache.get(result);
 	        if (cached == null) {
 	            asyncCtorCache.put(result, result);
-	            if (arity == 0)
-	            	makeString(name); // put in string pool
 	        } else {
 	            result = cached;
 	        }
@@ -244,7 +244,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 		    	return new StrategoList(null, null, annotations, MY_STORAGE_TYPE);
 			} else if (term.getTermType() == STRING) {
 				String value = ((IStrategoString) term).stringValue();
-				if (annotations.isEmpty()) {
+				if (annotations == EMPTY_LIST || annotations.isEmpty()) {
 					return makeString(value);
 				} else {
 					return new StrategoString(value, annotations, MY_STORAGE_TYPE);
