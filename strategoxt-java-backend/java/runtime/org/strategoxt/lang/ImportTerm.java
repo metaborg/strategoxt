@@ -29,6 +29,8 @@ public class ImportTerm extends LazyTerm {
 	
 	private ATerm aterm;
 	
+	private ZipFile lastZipFile;
+	
 	public ImportTerm(ITermFactory factory, Class<?> container, String path, String name) {
 		assert path.endsWith("/");
 		this.factory = factory;
@@ -70,6 +72,9 @@ public class ImportTerm extends LazyTerm {
 			try {
 				if (stream != null)
 					stream.close();
+				if (lastZipFile != null)
+					lastZipFile.close();
+				lastZipFile = null;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -77,14 +82,22 @@ public class ImportTerm extends LazyTerm {
 	}
 	
 	private ATerm initATerm(ATermFactory factory) {
+		InputStream stream = null;
 		try {
-			return factory.readFromFile(openStream());
+			stream = openStream();
+			return factory.readFromFile(stream);
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
 		} catch (RuntimeException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
+		} finally {
+			try {
+				if (stream != null) stream.close();
+			} catch (IOException e) {
+				e.printStackTrace(); // won't happen
+			}
 		}
 	}
 
@@ -102,14 +115,14 @@ public class ImportTerm extends LazyTerm {
 
 	/**
 	 * Attempt to open resources in JARs using the Java ZipFile API,
-	 * hopefully avoiding JVM classloader failures.
+	 * hopefully avoiding JVM classloader crashes.
 	 */
 	private InputStream tryOpenStreamFromJar() {
 		try {
 			URL location = container.getProtectionDomain().getCodeSource().getLocation();
 			if (location.getFile().endsWith(".jar")) {
 				File jarFile = new File(location.toURI());
-				ZipFile jar = new ZipFile(jarFile);
+				ZipFile jar = lastZipFile = new ZipFile(jarFile);
 				ZipEntry entry = jar.getEntry(removePrecedingSlash(path) + name);
 				if (entry == null) entry = jar.getEntry(name);
 				if (entry == null) return null;

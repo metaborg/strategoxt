@@ -243,36 +243,39 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		URL protocolfulUrl = new URL("jar", "", jar + "!/");
 		JarURLConnection connection = (JarURLConnection) protocolfulUrl.openConnection();
 		connection.setUseCaches(false);
-		JarFile jarFile = connection.getJarFile();
-		Enumeration<JarEntry> jarEntries = jarFile.entries();		
 		boolean foundRegisterer = false;
-		
-		while (jarEntries.hasMoreElements()) {
-			String entry = jarEntries.nextElement().getName();
-			if (entry.endsWith("/InteropRegisterer.class") || entry.endsWith("$InteropRegisterer.class") || entry.equals("InteropRegisterer.class")) {
-				final int POSTFIX = ".class".length();
-				String className = entry.substring(0, entry.length() - POSTFIX);
-				className = className.replace('/', '.');
-				Class<?> registerClass;
-				try {
-					registerClass = classLoader.loadClass(className);
-					Object registerObject = registerClass.newInstance();
-					if (registerObject instanceof InteropRegisterer) {
-						((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
-						foundRegisterer = true;
-					} else {
-						throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
+		JarFile jarFile = connection.getJarFile();
+		try {
+			Enumeration<JarEntry> jarEntries = jarFile.entries();		
+			
+			while (jarEntries.hasMoreElements()) {
+				String entry = jarEntries.nextElement().getName();
+				if (entry.endsWith("/InteropRegisterer.class") || entry.endsWith("$InteropRegisterer.class") || entry.equals("InteropRegisterer.class")) {
+					final int POSTFIX = ".class".length();
+					String className = entry.substring(0, entry.length() - POSTFIX);
+					className = className.replace('/', '.');
+					Class<?> registerClass;
+					try {
+						registerClass = classLoader.loadClass(className);
+						Object registerObject = registerClass.newInstance();
+						if (registerObject instanceof InteropRegisterer) {
+							((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
+							foundRegisterer = true;
+						} else {
+							throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
+						}
+					} catch (InstantiationException e) {
+						throw new IncompatibleJarException(jar, e);
+					} catch (IllegalAccessException e) {
+						throw new IncompatibleJarException(jar, e);
+					} catch (ClassNotFoundException e) {
+						throw new RuntimeException("Could not load listed class", e);
 					}
-				} catch (InstantiationException e) {
-					throw new IncompatibleJarException(jar, e);
-				} catch (IllegalAccessException e) {
-					throw new IncompatibleJarException(jar, e);
-				} catch (ClassNotFoundException e) {
-					throw new RuntimeException("Could not load listed class", e);
 				}
 			}
+		} finally {
+			jarFile.close();
 		}
-		
 		if (!foundRegisterer)
 			throw new IncompatibleJarException(jar, "No STRJ InteropRegisterer classes found");
 	}
