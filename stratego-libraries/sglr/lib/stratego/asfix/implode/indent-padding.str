@@ -15,6 +15,7 @@ signature constructors
   PaddingStart   : PaddingStart
   indentpadding  : Attr
   parse-tree     : Term * Term -> parse-tree
+  Stop           : Term -> Term
 
 strategies
     
@@ -71,7 +72,7 @@ strategies
     with
       if !a* => [PaddingContext(context)] then
         asfix'   := <collect-tree-chars-before(?context)> asfix
-      ; padding  := <chars-before-newlines; chars-to-whitespace> asfix'
+      ; padding  := <chars-before-newlines; reverse; chars-to-whitespace> asfix'
       ; s'       := <conc; implode-string> (padding, <explode-string> s)
       else
         s' := s
@@ -85,10 +86,7 @@ strategies
     t -> c*
     with
       try(?parse-tree(<id>, _))
-    ; c* := <collect-tree-chars-before-acc(stop | [])>
-      
-  collect-tree-chars-before-acc(stop|c*):
-    parse-tree(appl, _) -> <collect-tree-chars-before-acc(stop|c*)> appl
+    ; c* := <try(?Stop(<id>))> <collect-tree-chars-before-acc(stop | [])>
   
   collect-tree-chars-before-acc(stop|c*):
     appl(_, ts) -> <collect-tree-chars-before-acc(stop|c*)> ts
@@ -99,12 +97,15 @@ strategies
   collect-tree-chars-before-acc(stop|c*):
     [x | xs] -> result
     with
+      !c* => Stop(_)
+    ; result := c*
+    <+
       if <is-int> x then
         c'*    := [x | c*]
       ; result := <collect-tree-chars-before-acc(stop|c'*)> xs
       else
         if <stop> x then
-          result := c*
+          result := Stop(c*)
         else
           x'     := <collect-tree-chars-before-acc(stop|c*)> x
         ; result := <collect-tree-chars-before-acc(stop|x')> xs
