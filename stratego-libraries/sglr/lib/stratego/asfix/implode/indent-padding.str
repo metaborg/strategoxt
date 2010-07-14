@@ -37,11 +37,10 @@ strategies
           t' := <id> // keep constructor (add padding later)
         else
           where(
-              asfix'       := <strip-tree-before(?_{PaddingId(_)})> asfix
-            ; with(padding := <asfix-yield-appl-chars> asfix')
+            padding := <collect-tree-chars-before(?_{PaddingId(_)})> asfix
             //; <debug(!"  padding1: ")> <write-to-string> <implode-string> <asfix-yield-appl-chars> asfix
             //; <debug(!"  padding2: ")> <write-to-string> <implode-string> padding
-            )
+          )
         ; if not(<one('\n')> padding) then
             t' := <id> // keep constructor (add padding later)
           else
@@ -71,50 +70,49 @@ strategies
     AddPadding(s){a*} -> s'
     with
       if !a* => [PaddingContext(context)] then
-        asfix'   := <strip-tree-before(?context)> asfix
-      ; <with(padding := <asfix-yield-appl-chars; chars-after-newlines>)> asfix'
-      ; padding' := <chars-to-whitespace> padding
-      ; s'       := <conc; implode-string> (padding', <explode-string> s)
+        asfix'   := <collect-tree-chars-before(?context)> asfix
+      ; padding  := <chars-before-newlines; chars-to-whitespace> asfix'
+      ; s'       := <conc; implode-string> (padding, <explode-string> s)
       else
         s' := s
       end
   
   /**
-   * Strips the tail of a parse tree starting from the point where <s> succeeds.
+   * Collects a reverse list of all characters in a parse tree,
+   * before a certain subtree is encountered.
    */
-  strip-tree-before(s):
-    tree -> tree'
+  collect-tree-chars-before(stop):
+    t -> c*
     with
-      try(?parse-tree(<id>, _));
-      tree' := <strip-appl-before(s)>
+      try(?parse-tree(<id>, _))
+    ; c* := <collect-tree-chars-before-acc(stop | [])>
+      
+  collect-tree-chars-before-acc(stop|c*):
+    parse-tree(appl, _) -> <collect-tree-chars-before-acc(stop|c*)> appl
   
-  strip-appl-before(s) =
-    if ?appl @ appl(prod @ prod(_, rhs, _), list) then
-      if not(!rhs => lit(_) + !rhs => lex(_)) then
-	      list' := <strip-appl-list-before(s)> list;
-	      if !list' => list then
-	        !appl
-	      else
-	        !appl(prod, list')
-	      end
-	    <+
-	      !list => []; !appl
-	  end
-	else
-	  // Shouldn't happen, or maybe with kernel syntax
-	  all(strip-appl-before(s))
-	end
+  collect-tree-chars-before-acc(stop|c*):
+    appl(_, ts) -> <collect-tree-chars-before-acc(stop|c*)> ts
+
+  collect-tree-chars-before-acc(stop|c*):
+    [] -> c*
+
+  collect-tree-chars-before-acc(stop|c*):
+    [x | xs] -> result
+    with
+      if <is-int> x then
+        c'*    := [x | c*]
+      ; result := <collect-tree-chars-before-acc(stop|c'*)> xs
+      else
+        if <stop> x then
+          result := c*
+        else
+          x'     := <collect-tree-chars-before-acc(stop|c*)> x
+        ; result := <collect-tree-chars-before-acc(stop|x')> xs
+        end
+      end
   
-  strip-appl-list-before(s) :
-    [i | i*] -> stripped*
-    where
-      <s> i
-    ; stripped* := []
-    <+
-      <one(oncetd(s))> i
-    ; stripped* := [<strip-appl-before(s)> i]
-    <+
-      stripped* := [i | <strip-appl-list-before(s)> i*]
+  collect-tree-chars-before-acc(stop|c*):
+    amb([x | _]) -> <collect-tree-chars-before-acc(stop|c*)> x
   
   chars-to-whitespace :
     [c | c*] -> c'*
@@ -127,21 +125,15 @@ strategies
     
   chars-to-whitespace :
     [] -> []
+
+  chars-before-newlines :
+    [] -> []
   
-  chars-after-newlines :
-    input @ [c | c*] -> c''*
+  chars-before-newlines :
+    [c | cs] -> c*
     where
       if !c => '\n' + !c => '\r' then
-        c''* := <chars-after-newlines> c*
+        c* := []
       else
-        c'* := <chars-after-newlines> c*
-      ; if !c'* => c* then
-          c''* := input
-        else
-          c''* := c'*
-        end
+        c* := [c | <chars-before-newlines> cs]
       end
-  
-  chars-after-newlines :
-    [] -> []
-
