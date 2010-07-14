@@ -51,7 +51,7 @@ public class StrategoAnnotation extends StrategoWrapped {
 
 	@Override
 	protected int hashFunction() {
-		// FIXME: annotations should be part of the hash code	
+		assert getWrapped().getAnnotations().isEmpty() : "Constructor contract broken";
 		return getWrapped().hashCode();
 	}
 

@@ -166,7 +166,7 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     	if (annotations == TermFactory.EMPTY_LIST)
     		annotations = null; // essential for hash code calculation
     	
-    	assert annotations != null || getTermType() != STRING || getStorageType() != MAXIMALLY_SHARED :
+    	assert getTermType() != STRING || getStorageType() != MAXIMALLY_SHARED :
     		"Maximally shared, unannotated string must be created using constructor";
     	
     	if (this.annotations != annotations) {

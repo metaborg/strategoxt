@@ -134,25 +134,25 @@ public abstract class StrategoWrapped extends StrategoTerm implements IStrategoA
 
 	public IStrategoConstructor getConstructor() {
 		if (getTermType() != APPL)
-			throw new TermWrapperException("Called getConstructor() on a term that is not of type LIST");
+			throw new TermWrapperException("Called getConstructor() on a term that is not of type APPL");
 		return ((IStrategoAppl) wrapped).getConstructor();
 	}
 
 	public int intValue() {
-		if (getTermType() != APPL)
-			throw new TermWrapperException("Called intValue() on a term that is not of type LIST");
+		if (getTermType() != INT)
+			throw new TermWrapperException("Called intValue() on a term that is not of type INT");
 		return ((IStrategoInt) wrapped).intValue();
 	}
 
 	public double realValue() {
-		if (getTermType() != APPL)
-			throw new TermWrapperException("Called realValue() on a term that is not of type LIST");
+		if (getTermType() != REAL)
+			throw new TermWrapperException("Called realValue() on a term that is not of type REAL");
 		return ((IStrategoReal) wrapped).realValue();
 	}
 
 	public String stringValue() {
 		if (getTermType() != STRING)
-			throw new TermWrapperException("Called stringValue() on a term that is not of type LIST");
+			throw new TermWrapperException("Called stringValue() on a term that is not of type STRING");
 		return ((IStrategoString) wrapped).stringValue();
 	}
 

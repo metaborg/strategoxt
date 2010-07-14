@@ -15,11 +15,17 @@ import org.spoofax.interpreter.terms.ITermPrinter;
  */
 public abstract class LazyTerm implements IStrategoAppl, IStrategoInt, IStrategoList, IStrategoReal, IStrategoString, IStrategoTuple {
 
+	// TODO: base class should be StrategoWrapped :o
+	
 	private IStrategoTerm term;
 	
 	public final IStrategoTerm getWrapped() {
 		if (term == null) term = init();
 		return term;
+	}
+	
+	public final IStrategoTerm getWrapped(boolean skipInit) {
+		return skipInit ? term : getWrapped();
 	}
 	
 	protected abstract IStrategoTerm init();

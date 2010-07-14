@@ -7,6 +7,9 @@ overlays
    * (see -XX:-DontCompileHugeMethod), and that Java defines a 64 KB instruction limit per method.
    *
    * Ideal would be 6000~7000 instructions (use -XX:+PrintCompilation for accurate figures).
+   *
+   * According to a benchmark with libstrc:
+   *   2000 = good, 2500 = good, 3000~5000 = still good, 10.000 = bad
    */
   LARGE_STRATEGY_SIZE = 2500
 

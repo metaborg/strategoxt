@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Stratego/XT Java runtime
 Bundle-SymbolicName: org.strategoxt.strj;singleton:=true
-Bundle-Version: 0.17.91.qualifier
+Bundle-Version: 0.17.92.qualifier
 Export-Package: .,
  aterm,
  aterm.pure,

@@ -21,9 +21,9 @@ public class ImportTerm extends LazyTerm {
 	
 	private final ITermFactory factory;
 	
-	private final Class<?> container;
-	
 	private final String path, name;
+	
+	private final Class<?> container;
 	
 	private ATermFactory atermFactory;
 	
@@ -40,18 +40,16 @@ public class ImportTerm extends LazyTerm {
 	}
 	
 	public ATerm getATerm(ATermFactory factory) {
-		if (aterm == null) {
-			return aterm = initATerm(factory);
-		} else if (factory != atermFactory) {
+		if (aterm == null || factory != atermFactory) {
 			try {
-				return initATerm(factory);
+				aterm = factory.importTerm(aterm);
 			} catch (RuntimeException e) {
 				 // factory.importTerm(aterm) may not be implemented, try again...
-				return initATerm(factory);
+				aterm = initATerm(factory);
 			}
-		} else {
-			return aterm;
+			atermFactory = factory;
 		}
+		return aterm;
 	}
 	
 	@Override
@@ -61,7 +59,8 @@ public class ImportTerm extends LazyTerm {
 		
 		InputStream stream = openStream();
 		try {
-			return factory.parseFromStream(stream);
+			IStrategoTerm result = factory.parseFromStream(stream);
+			return result;
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
 					+ ": Could not read imported term file " + name, e);
@@ -82,6 +81,8 @@ public class ImportTerm extends LazyTerm {
 	}
 	
 	private ATerm initATerm(ATermFactory factory) {
+		if (getWrapped(true) != null)
+			return new ATermConverter(factory, this.factory, false).convert(getWrapped());
 		InputStream stream = null;
 		try {
 			stream = openStream();
@@ -104,6 +105,8 @@ public class ImportTerm extends LazyTerm {
 	private InputStream openStream() {
 		InputStream result = tryOpenStreamFromJar();
 		if (result == null)
+			result = container.getResourceAsStream(removePrecedingSlash(path) + name);
+		if (result == null)
 			result = container.getResourceAsStream(path + name);
 		if (result == null)
 			result = container.getResourceAsStream("/" + name);
@@ -124,6 +127,7 @@ public class ImportTerm extends LazyTerm {
 				File jarFile = new File(location.toURI());
 				ZipFile jar = lastZipFile = new ZipFile(jarFile);
 				ZipEntry entry = jar.getEntry(removePrecedingSlash(path) + name);
+				if (entry == null) entry = jar.getEntry(path + name);
 				if (entry == null) entry = jar.getEntry(name);
 				if (entry == null) return null;
 				return jar.getInputStream(entry);

@@ -241,7 +241,11 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             return term;
         } else if (term.getStorageType() == MAXIMALLY_SHARED) {
 			if (term == EMPTY_LIST) {
-		    	return new StrategoList(null, null, annotations, MY_STORAGE_TYPE);
+				if (annotations == EMPTY_LIST || annotations.isEmpty()) {
+					return EMPTY_LIST;
+				} else {
+					return new StrategoList(null, null, annotations, MY_STORAGE_TYPE);
+				}
 			} else if (term.getTermType() == STRING) {
 				String value = ((IStrategoString) term).stringValue();
 				if (annotations == EMPTY_LIST || annotations.isEmpty()) {
@@ -250,8 +254,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 					return new StrategoString(value, annotations, MY_STORAGE_TYPE);
 				}
 			} else if (term.getAnnotations() == EMPTY_LIST) {
-				int storageType = min(MY_STORAGE_TYPE, getStorageType(term));
-				return new StrategoAnnotation(this, term, annotations, storageType);
+				return new StrategoAnnotation(this, term, annotations, MY_STORAGE_TYPE);
 			} else if (term instanceof StrategoAnnotation) {
 				term = ((StrategoAnnotation) term).getWrapped();
 				int storageType = min(MY_STORAGE_TYPE, getStorageType(term));
