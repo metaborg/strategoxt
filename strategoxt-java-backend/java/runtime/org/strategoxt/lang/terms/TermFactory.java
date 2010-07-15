@@ -263,9 +263,13 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 				throw new UnsupportedOperationException("Unable to annotate term of type " + term.getClass().getName());
 			}
         } else if (term instanceof StrategoTerm) {
-        	StrategoTerm result = ((StrategoTerm) term).clone();
-    	    result.internalSetAnnotations(annotations);
-    	    return result;
+        	if ((annotations == EMPTY_LIST || annotations.isEmpty()) && term.getTermType() == STRING) {
+        		return makeString(((IStrategoString) term).stringValue());
+        	} else {
+	        	StrategoTerm result = ((StrategoTerm) term).clone();
+	    	    result.internalSetAnnotations(annotations);
+	    	    return result;        		
+        	}
     	} else {
             throw new UnsupportedOperationException("Unable to annotate term of type " + term.getClass().getName() + " in " + getClass().getName());
         }
