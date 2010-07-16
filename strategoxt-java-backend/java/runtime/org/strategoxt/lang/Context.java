@@ -154,6 +154,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
     	compat.registerComponent(componentName);
     }
     
+    public CompatManager getCompatManager() {
+    	return compat;
+    }
+    
     public void setStandAlone(boolean isStandAlone) {
     	exceptionHandler.setEnabled(isStandAlone);
     }

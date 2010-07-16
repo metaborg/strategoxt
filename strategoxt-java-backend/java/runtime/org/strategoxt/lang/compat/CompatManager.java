@@ -1,5 +1,6 @@
 package org.strategoxt.lang.compat;
 
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,16 @@ public class CompatManager {
 	private final Context context;
 	
 	private static final Set<String> asyncComponents = new HashSet<String>();
+	
+	/**
+	 * The last ATermFactory used by the CompatManager. ATermFactories are
+	 * guaranteed thread-safe, and by sharing them we make sure only one
+	 * instance is used by CompatManager ensuring low memory consumption and
+	 * high compatibility.
+	 */
+	private static WeakReference<ATermFactory> lastATermFactory;
+	
+	private ATermFactory atermFactory;
 	
 	public CompatManager(Context context) {
 		this.context = context;
@@ -42,6 +53,20 @@ public class CompatManager {
 		}
 	}
 	
+	public void setATermFactory(ATermFactory atermFactory) {
+		this.atermFactory = atermFactory;
+		lastATermFactory = new WeakReference<ATermFactory>(atermFactory);
+	}
+	
+	private ATermFactory getATermFactory() {
+		if (atermFactory == null) {
+			atermFactory = lastATermFactory == null ? null : lastATermFactory.get();
+			if (atermFactory == null) 
+				setATermFactory(new PureFactory());
+		}
+		return atermFactory;
+	}
+	
 	/**
 	 * Dynamically loads any compatibility library or operator registry
 	 * associated with a Stratego library.
@@ -52,9 +77,9 @@ public class CompatManager {
 			report_failure_compat_1_0.init();
 			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
-			ATermFactory atermFactory = new PureFactory();
-			context.addOperatorRegistry(new JSGLRLibrary(atermFactory));
-			context.addOperatorRegistry(new SGLRCompatLibrary(atermFactory));
+			ATermFactory factory = getATermFactory();
+			context.addOperatorRegistry(new JSGLRLibrary(factory));
+			context.addOperatorRegistry(new SGLRCompatLibrary(factory));
 		}
 	}
 }

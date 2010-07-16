@@ -23,6 +23,7 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.strategoxt.lang.StrategoException;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -60,7 +61,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             	if (asyncStringPool.containsKey(name)) {
             		return true;
             	} else if (name.length() > MAX_POOLED_STRING_LENGTH) {
-            		throw new UnsupportedOperationException("String too long to be pooled (newname not allowed): " + name);
+            		throw new StrategoException("String too long to be pooled (newname not allowed): " + name);
             	} else {
                 	// HACK: pre-allocating strings to avoid race condition 
             		asyncStringPool.put(name, new WeakReference<StrategoString>(new StrategoString(name, null, MAXIMALLY_SHARED)));
