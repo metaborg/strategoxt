@@ -23,6 +23,7 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
         super(annotations);
         this.value = value;
         this.storageType = storageType;
+        assert storageType == MAXIMALLY_SHARED ? annotations == null : true;
         initImmutableHashCode();
     }
     
@@ -68,6 +69,7 @@ public class StrategoString extends StrategoTerm implements IStrategoString {
         IStrategoList annotations = getAnnotations();
         IStrategoList secondAnnotations = second.getAnnotations();
         if (annotations == secondAnnotations) {
+            assert annotations.isEmpty() ? this == second : true : "Maximal sharing contract broken";
         	return true;
         } else if (annotations.match(secondAnnotations)) {
         	if (commonStorageType == SHARABLE) internalSetAnnotations(secondAnnotations);

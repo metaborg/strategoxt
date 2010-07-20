@@ -34,6 +34,10 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
     
     private static final int MY_STORAGE_TYPE = SHARABLE;
     
+    // Strings should be MAXIMALLY_SHARED, but we use
+    // a weaker assumption instead to be safe (StrategoXT/834)
+    private static final int STRING_STORAGE_TYPE = SHARABLE;
+    
     public static final int MAX_POOLED_STRING_LENGTH = 100;
     
     private static final IStrategoInt[] intCache = initIntCache();
@@ -64,7 +68,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
             		throw new StrategoException("String too long to be pooled (newname not allowed): " + name);
             	} else {
                 	// HACK: pre-allocating strings to avoid race condition 
-            		asyncStringPool.put(name, new WeakReference<StrategoString>(new StrategoString(name, null, MAXIMALLY_SHARED)));
+            		asyncStringPool.put(name, new WeakReference<StrategoString>(new StrategoString(name, null, STRING_STORAGE_TYPE)));
             		return false;
             	}
         	} else {
@@ -201,7 +205,7 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 	    	WeakReference<StrategoString> resultRef = asyncStringPool.get(s);
 	    	StrategoString result = resultRef == null ? null : resultRef.get();
 	    	if (result == null) {
-	        	result = new StrategoString(s, null, MAXIMALLY_SHARED);
+	        	result = new StrategoString(s, null, STRING_STORAGE_TYPE);
 	        	asyncStringPool.put(s, new WeakReference<StrategoString>(result));
 	    	}
 	    	return result;
@@ -263,14 +267,13 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
 			} else {
 				throw new UnsupportedOperationException("Unable to annotate term of type " + term.getClass().getName());
 			}
+        } else if ((annotations == EMPTY_LIST || annotations.isEmpty()) && term.getTermType() == STRING) {
+    		return makeString(((IStrategoString) term).stringValue());
         } else if (term instanceof StrategoTerm) {
-        	if ((annotations == EMPTY_LIST || annotations.isEmpty()) && term.getTermType() == STRING) {
-        		return makeString(((IStrategoString) term).stringValue());
-        	} else {
-	        	StrategoTerm result = ((StrategoTerm) term).clone();
-	    	    result.internalSetAnnotations(annotations);
-	    	    return result;        		
-        	}
+        	StrategoTerm result = ((StrategoTerm) term).clone();
+    	    result.internalSetAnnotations(annotations);
+    	    assert result.getStorageType() != MAXIMALLY_SHARED;
+    	    return result;
     	} else {
             throw new UnsupportedOperationException("Unable to annotate term of type " + term.getClass().getName() + " in " + getClass().getName());
         }

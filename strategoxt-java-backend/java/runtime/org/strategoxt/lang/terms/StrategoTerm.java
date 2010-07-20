@@ -149,7 +149,7 @@ public abstract class StrategoTerm implements IStrategoTerm, Cloneable {
     @Override
     protected StrategoTerm clone() {
         try {
-        	if (getStorageType() == MAXIMALLY_SHARED) return this;
+        	assert getStorageType() != MAXIMALLY_SHARED;
             return (StrategoTerm) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e); // silly checked exceptions...

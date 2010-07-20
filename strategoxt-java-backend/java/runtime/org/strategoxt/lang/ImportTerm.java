@@ -40,7 +40,10 @@ public class ImportTerm extends LazyTerm {
 	}
 	
 	public ATerm getATerm(ATermFactory factory) {
-		if (aterm == null || factory != atermFactory) {
+		if (aterm == null) {
+			aterm = initATerm(factory);
+			atermFactory = factory;
+		} else if (factory != atermFactory) {
 			try {
 				aterm = factory.importTerm(aterm);
 			} catch (RuntimeException e) {
