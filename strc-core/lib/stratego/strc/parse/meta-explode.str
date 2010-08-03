@@ -76,7 +76,8 @@ strategies
    )
 
   trm-explode =
-    TrmMetaVar 
+    ToTermToTerm
+    <+ TrmMetaVar 
     <+ LstMetaVar 
     <+ TrmFromTerm 
     <+ TrmFromApp
@@ -92,10 +93,11 @@ strategies
 	  <+ TrmNil 
 	  <+ TrmCons 
 	  <+ TrmOp
-        >) 
+        >)
 
   pretrm-explode = 
-    TrmMetaVar 
+    ToTermToTerm
+    <+ TrmMetaVar 
     <+ LstMetaVar 
     <+ TrmInt 
     <+ TrmStr 
@@ -110,6 +112,25 @@ strategies
     <+ TrmNil 
     <+ TrmCons 
     <+ TrmOp
+
+// match ToTerm nested in ToTerm; take structure literally
+
+  // todo: what do various combinations mean
+  // ToTerm(ToTerm(A(FromTerm(x))))
+  // ToTerm(ToTerm(A(FromTerm(FromTerm(x)))))
+
+  // todo: does not cover all variants of quotation constructors 
+ 
+  ToTermToTerm = 
+    ?ToTerm(t); quoted-trm-explode
+
+  quoted-trm-explode =
+    QuotedOp 
+
+  QuotedOp :
+    op#(ts) -> Op(op, <map(quoted-trm-explode)> ts)
+
+// regular explode
 
   TrmOp :	
     op#(ts) -> Op(op, <map(trm-explode)> ts)
