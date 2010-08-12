@@ -221,24 +221,29 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	}
 
 	public void loadJars(URL... jars)
-			throws SecurityException, IncompatibleJarException, IOException {
+			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
 		
 		loadJars(HybridInterpreter.class.getClassLoader(), jars);
 	}
 	
 	public void loadJars(ClassLoader parentClassLoader, URL... jars)
-			throws SecurityException, IncompatibleJarException, IOException {
+			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
 
 		URLClassLoader classLoader = new URLClassLoader(jars, parentClassLoader);
+		boolean foundRegisterer = false;
 		loadedJars = true;
 		
 		for (URL jar : jars) {
-		    registerJar(classLoader, jar);
+			foundRegisterer |=
+				registerJar(classLoader, jar);
 		}
+		
+		if (!foundRegisterer)
+			throw new NoInteropRegistererJarException(jars);
 	}
 
-	private void registerJar(URLClassLoader classLoader, URL jar)
-			throws SecurityException, IncompatibleJarException, IOException, RuntimeException {
+	private boolean registerJar(URLClassLoader classLoader, URL jar)
+			throws SecurityException, IncompatibleJarException, IOException {
 
 		URL protocolfulUrl = new URL("jar", "", jar + "!/");
 		JarURLConnection connection = (JarURLConnection) protocolfulUrl.openConnection();
@@ -254,9 +259,8 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 					final int POSTFIX = ".class".length();
 					String className = entry.substring(0, entry.length() - POSTFIX);
 					className = className.replace('/', '.');
-					Class<?> registerClass;
 					try {
-						registerClass = classLoader.loadClass(className);
+						Class<?> registerClass = classLoader.loadClass(className);
 						Object registerObject = registerClass.newInstance();
 						if (registerObject instanceof InteropRegisterer) {
 							((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
@@ -281,8 +285,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		} finally {
 			jarFile.close();
 		}
-		if (!foundRegisterer)
-			throw new IncompatibleJarException(jar, "No STRJ InteropRegisterer classes found");
+		return foundRegisterer;
 	}
 
 	/**
