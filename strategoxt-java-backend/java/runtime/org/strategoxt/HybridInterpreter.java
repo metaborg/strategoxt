@@ -238,7 +238,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	}
 
 	private void registerJar(URLClassLoader classLoader, URL jar)
-			throws SecurityException, IncompatibleJarException, IOException {
+			throws SecurityException, IncompatibleJarException, IOException, RuntimeException {
 
 		URL protocolfulUrl = new URL("jar", "", jar + "!/");
 		JarURLConnection connection = (JarURLConnection) protocolfulUrl.openConnection();
@@ -269,7 +269,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 					} catch (IllegalAccessException e) {
 						throw new IncompatibleJarException(jar, e);
 					} catch (ClassNotFoundException e) {
-						throw new RuntimeException("Could not load listed class", e);
+						throw new IncompatibleJarException(jar, e);
+					} catch (RuntimeException e) {
+						throw new IncompatibleJarException(jar, e);
+					} catch (Error e) {
+						// e.g. thrown by Eclipse when sources could not be compiled
+						throw new IncompatibleJarException(jar, e);
 					}
 				}
 			}

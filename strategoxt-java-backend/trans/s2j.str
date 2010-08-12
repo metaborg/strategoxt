@@ -139,20 +139,23 @@ rules
      public static Context init(Context context) {
        synchronized (x_name.class) {
          if (isIniting) return null;
-         isIniting = true;
-         ITermFactory termFactory = context.getFactory();
-         if (constantFactory == null) { // don't reinit constants by default
-           initConstructors(termFactory);
-           initConstants(termFactory);
+         try {
+           isIniting = true;
+           ITermFactory termFactory = context.getFactory();
+           if (constantFactory == null) { // don't reinit constants by default
+             initConstructors(termFactory);
+             initConstants(termFactory);
+           }
+           if (initedContext == null || initedContext.get() != context) {
+             ~*import-inits
+             ~*def-inits
+             context.registerComponent("~x_name'");
+           }
+           initedContext = new WeakReference<Context>(context);
+           constantFactory = termFactory;
+         } finally {
+           isIniting = false;
          }
-         if (initedContext == null || initedContext.get() != context) {
-           ~*import-inits
-           ~*def-inits
-           context.registerComponent("~x_name'");
-         }
-         initedContext = new WeakReference<Context>(context);
-         constantFactory = termFactory;
-         isIniting = false;
          return context;
        }
      }
