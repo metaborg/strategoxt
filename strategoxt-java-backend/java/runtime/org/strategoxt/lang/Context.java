@@ -176,14 +176,18 @@ public class Context extends StackTracer implements IAsyncCancellable {
     }
     
     public IStrategoTerm invokeStrategyCLI(String strategy, String appName, String... args)
-    		throws MissingStrategyException, StrategoExit, StrategoException {
+    		throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
     	
-    	IStrategoList input = toCLITerm(appName, args);
+    	return invokeStrategy(strategy, toCLITerm(appName, args));
+    }
 
-    	SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
+	public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input) 
+			throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
+		
+		SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
     	if (caller == null) caller = new SSL_EXT_java_call();
     	return caller.call(this, strategy, input, false);
-    }
+	}
 
 	private IStrategoList toCLITerm(String appName, String... args) {
 		ITermFactory factory = getFactory();    	

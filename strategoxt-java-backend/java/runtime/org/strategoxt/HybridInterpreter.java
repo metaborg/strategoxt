@@ -429,6 +429,28 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
 		}
+		
+		@Override
+		public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input)
+				throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
+			
+			IStrategoTerm oldCurrent = current();
+			try {
+				setCurrent(input);
+				invoke(strategy);
+				return current();
+			} catch (InterpreterErrorExit e) {
+				throw new StrategoErrorExit(e.getMessage(), e.getTerm(), e);
+			} catch (InterpreterExit e) {
+				throw new StrategoExit(e.getValue(), e);
+			} catch (UndefinedStrategyException e) {
+				throw new MissingStrategyException(e.getMessage(), e);
+			} catch (InterpreterException e) {
+				throw new StrategoException(e.getMessage(), e);
+			} finally {
+				setCurrent(oldCurrent);
+			}
+		}
 	}
 
 	public void asyncCancel() {
