@@ -5,7 +5,7 @@
 PRINT_CLASSPATH=
 JAR=`if type -p fastjar &>/dev/null; then echo fastjar; else echo jar; fi`
 JAVAC=`if type -p ecj &>/dev/null; then echo ecj; else echo javac; fi`
-if [ "$JAVAFLAGS" == "" ]; then
+if [ "$JAVACFLAGS" == "" ]; then
   JAVACFLAGS="-J-Xmx256m -J-Xms100m -J-server -J-XX:+UseParallelGC -encoding UTF-8"
 fi
 
