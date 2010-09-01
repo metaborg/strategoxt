@@ -16,7 +16,7 @@ public class IncompatibleJarException extends Exception {
 	}
 
 	public IncompatibleJarException(URL jar, Throwable cause) {
-		super("Incompatible jar:" + jar, cause);
+		super("Incompatible Stratego jar: " + jar, cause);
 		this.jar = jar;
 	}
 

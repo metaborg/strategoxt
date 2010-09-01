@@ -22,11 +22,11 @@ public class JavaInteropRegisterer extends InteropRegisterer {
 	
 	private final Strategy[] strategies;
 	
-	public JavaInteropRegisterer(Strategy[] strategies) {
+	public JavaInteropRegisterer(Strategy... strategies) {
 		if (strategies == null)
 			throw new IllegalArgumentException("strategies");
 		if (!getClass().getSimpleName().equals("InteropRegisterer"))
-			throw new IllegalStateException("Class must be named InteropRegisterer: " + getClass().getSimpleName());
+			throw new IllegalStateException("Class must be named InteropRegisterer: " + getClass().getName());
 		this.strategies = strategies;
 	}
 
