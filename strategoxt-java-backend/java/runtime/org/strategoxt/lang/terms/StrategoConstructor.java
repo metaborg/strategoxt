@@ -24,6 +24,7 @@ public final class StrategoConstructor extends StrategoTerm implements IStratego
         super(null);
         this.name = name;
         this.arity = arity;
+        if (name == null) throw new IllegalArgumentException("name cannot be null");
     }
     
     public int getStorageType() {
