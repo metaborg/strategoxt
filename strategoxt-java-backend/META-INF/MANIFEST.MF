@@ -79,3 +79,4 @@ Bundle-ClassPath: .,
  java/runtime/,
  java/strategoxt.jar,
  java/eclipse/
+Bundle-Vendor: StrategoXT.org
