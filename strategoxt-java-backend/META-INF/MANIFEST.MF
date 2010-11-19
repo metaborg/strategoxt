@@ -66,6 +66,7 @@ Export-Package: .,
  org.strategoxt.stratego_xtc,
  org.strategoxt.strc,
  org.strategoxt.strj,
+ org.strategoxt.tools,
  shared
 Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core,
