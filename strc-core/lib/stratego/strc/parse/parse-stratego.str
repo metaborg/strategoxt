@@ -231,8 +231,8 @@ strategies
     full-path -> cache-path
     with
       cache-dir  := <get-config> "--cache-dir";
-      full-path' := <string-replace(|"/", "+"); string-replace(|"\\", "+"); string-replace(|":", "+")> <guarantee-extension(|"rtree")> full-path;
-      cache-path := $[[cache-dir]/[full-path']]
+      full-path' := <string-replace(|"/", "+"); string-replace(|"\\", "+"); string-replace(|":", "+")> full-path;
+      cache-path := $[[cache-dir]/[full-path'].sig]
 
 /**
  * Main parsing strategies.
