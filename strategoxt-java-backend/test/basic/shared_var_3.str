@@ -1,4 +1,4 @@
-module shared_var_2
+module shared_var_3
 
 imports
   libstratego-lib
