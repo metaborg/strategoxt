@@ -232,7 +232,7 @@ strategies
     with
       cache-dir  := <get-config> "--cache-dir";
       full-path' := <string-replace(|"/", "+"); string-replace(|"\\", "+"); string-replace(|":", "+")> full-path;
-      cache-path := $[[cache-dir]/[full-path'].sig]
+      cache-path := $[[cache-dir]/[full-path'].cache]
 
 /**
  * Main parsing strategies.
