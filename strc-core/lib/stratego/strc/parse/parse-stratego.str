@@ -60,7 +60,8 @@ strategies
 
   + ps-preserve-comments-option
   + ps-preserve-positions-option
-
+  + ps-preserve-locations-option
+  
   + Option(fail, fail, !"")
   + Option(fail, fail, !"I/O options:")
 
@@ -96,6 +97,22 @@ strategies
 
   ps-must-preserve-positions =
     <get-config> "preserve-positions" => "yes"
+
+strategies
+
+  ps-preserve-locations-option =
+    Option("--preserve-locations"
+    , <ps-set-preserve-locations> "yes"
+    , !"--preserve-locations
+                    Preserve source code locations in the input file as annotations 
+                    of the abstract syntax tree. [off]"
+    )
+
+  ps-set-preserve-locations =
+    <set-config> ("preserve-locations", <id>)
+
+  ps-must-preserve-locations =
+    <get-config> "preserve-locations" => "yes"
 
 strategies
 
@@ -159,7 +176,11 @@ strategies
     ; if <ps-must-preserve-positions> meta then
         asfix-anno-position-info(|"")
       end
-
+      
+    ; if <ps-must-preserve-locations> meta then
+        asfix-anno-location
+      end
+        
     ; if <ps-must-preserve-asfix-in-quotes> meta then
         implode-asfix-skip-concrete-syntax
       else
