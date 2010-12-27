@@ -1,5 +1,0 @@
-regular tree grammar
-start StringStar
-productions
-  StringStar -> <cons> (<string>, StringStar)
-  StringStar -> <nil> ()

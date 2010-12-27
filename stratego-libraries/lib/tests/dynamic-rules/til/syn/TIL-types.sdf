@@ -1,7 +1,0 @@
-module TIL-types
-imports TIL-literals
-exports 
- sorts Type
-  context-free syntax
-    Id -> Type {cons("TypeName")}
- 

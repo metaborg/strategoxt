@@ -1,9 +1,0 @@
-module repair-types
-imports
-  libstrc
-  libstratego-lib
-
-strategies
-
-  repair-types-io =
-    io-wrap(try(sometd(RepairDefinition); where(explanation)))

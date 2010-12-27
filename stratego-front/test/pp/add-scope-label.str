@@ -1,7 +1,0 @@
-module foo
-strategies
-
-  main =
-    !"x" => x
-    ; rules(Foo+x)
-

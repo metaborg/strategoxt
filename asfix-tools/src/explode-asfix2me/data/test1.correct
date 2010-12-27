@@ -1,1 +1,0 @@
-parsetree(appl(prod([cf(opt(layout)),cf(sort("S")),cf(opt(layout))],sort("<START>"),no-attrs),[appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([lit("a")],cf(sort("S")),attrs([term(cons("a"))])),[appl(prod([char-class([97])],lit("a"),no-attrs),[97])]),appl(prod([],cf(opt(layout)),no-attrs),[])]),0)

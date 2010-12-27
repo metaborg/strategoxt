@@ -1,3 +1,0 @@
-module nested-tables
-imports collection/hash-table/nested
-

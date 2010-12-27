@@ -1,2 +1,0 @@
-module posix-signal
-imports system/posix/signal
