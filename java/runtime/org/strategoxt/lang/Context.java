@@ -22,9 +22,9 @@ import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
-import org.strategoxt.lang.terms.TermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.

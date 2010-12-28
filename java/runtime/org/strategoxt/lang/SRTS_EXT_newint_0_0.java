@@ -6,7 +6,7 @@ import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermPrinter;
-import org.strategoxt.lang.terms.TermFactory;
+import org.spoofax.terms.TermFactory;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>

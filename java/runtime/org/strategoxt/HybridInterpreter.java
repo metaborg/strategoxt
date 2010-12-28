@@ -26,6 +26,7 @@ import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.InteropSDefT;
@@ -33,7 +34,6 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
-import org.strategoxt.lang.terms.TermFactory;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.

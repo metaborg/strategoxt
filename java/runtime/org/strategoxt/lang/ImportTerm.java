@@ -10,7 +10,7 @@ import java.util.zip.ZipFile;
 import org.spoofax.interpreter.adapter.aterm.ATermConverter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.strategoxt.lang.terms.LazyTerm;
+import org.spoofax.terms.LazyTerm;
 
 import aterm.ATerm;
 import aterm.ATermFactory;
@@ -63,7 +63,7 @@ public class ImportTerm extends LazyTerm {
 		
 		InputStream stream = openStream();
 		try {
-			IStrategoTerm result = ((org.spoofax.terms.io.ITermFactory) factory).parseFromStream(stream);
+			IStrategoTerm result = ((org.spoofax.interpreter.terms.io.IFileTermFactory) factory).parseFromStream(stream);
 			return result;
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
