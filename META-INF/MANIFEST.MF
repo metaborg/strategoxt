@@ -71,6 +71,7 @@ Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core,
  org.spoofax.interpreter.adapter.aterm,
  org.spoofax.jsglr;bundle-version="0.3.0",
+ org.spoofax.terms,
  org.spoofax.interpreter.library.jsglr,
  org.eclipse.ant.core;bundle-version="3.0.0",
  org.eclipse.core.runtime;bundle-version="3.0.0"
