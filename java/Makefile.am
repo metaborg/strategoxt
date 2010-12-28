@@ -126,6 +126,7 @@ new-libs :
 	rm -rf spoofax-libs-tmp/META-INF
 	$(JAR) cf spoofax-libs.jar.tmp -C spoofax-libs-tmp .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.core/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.terms/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.jsglr/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.aterm/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.adapter.aterm/bin/ .
