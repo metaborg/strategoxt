@@ -11,6 +11,7 @@ import org.spoofax.interpreter.adapter.aterm.ATermConverter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.LazyTerm;
+import org.spoofax.terms.io.TermReader;
 
 import aterm.ATerm;
 import aterm.ATermFactory;
@@ -63,7 +64,7 @@ public class ImportTerm extends LazyTerm {
 		
 		InputStream stream = openStream();
 		try {
-			IStrategoTerm result = ((org.spoofax.interpreter.terms.io.IFileTermFactory) factory).parseFromStream(stream);
+			IStrategoTerm result = new TermReader(factory).parseFromStream(stream);
 			return result;
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
