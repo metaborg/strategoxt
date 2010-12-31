@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 
 import org.spoofax.IAsyncCancellable;
-import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -74,9 +73,6 @@ public class Context extends StackTracer implements IAsyncCancellable {
         addOperatorRegistry(new JFFLibrary(factory));
 
     	if (ioAgent != null) setIOAgent(ioAgent);
-    	
-    	if (factory instanceof WrappedATermFactory)
-    		throw new IllegalArgumentException("WrappedATermFactory is not supported at this time");
 
         compat.init();
     }

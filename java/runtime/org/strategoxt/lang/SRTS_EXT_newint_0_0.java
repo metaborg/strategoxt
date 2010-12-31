@@ -1,10 +1,13 @@
 package org.strategoxt.lang;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.ITermAttachment;
 import org.spoofax.interpreter.terms.ITermPrinter;
 import org.spoofax.terms.TermFactory;
 
@@ -75,6 +78,27 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 		@Override
 		public String toString() {
 			return String.valueOf(value);
+		}
+
+		public String toString(int maxDepth) {
+			return toString();
+		}
+
+		public void writeToString(Appendable output, int maxDepth)
+				throws IOException {
+			output.append(toString());
+		}
+
+		public <T extends ITermAttachment> T getAttachment(Class<T> attachment) {
+			return null;
+		}
+
+		public void putAttachment(ITermAttachment attachment) {
+			throw new NotImplementedException();
+		}
+
+		public boolean isList() {
+			return false;
 		}
 		
 	}
