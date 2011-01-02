@@ -7,9 +7,9 @@ import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.ITermAttachment;
 import org.spoofax.interpreter.terms.ITermPrinter;
 import org.spoofax.terms.TermFactory;
+import org.spoofax.terms.attachments.ITermAttachment;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -93,9 +93,13 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 			return null;
 		}
 
-		public void putAttachment(ITermAttachment attachment) {
-			throw new NotImplementedException();
-		}
+	    public<T extends ITermAttachment> void putAttachment(ITermAttachment attachment) {
+	    	throw new NotImplementedException();
+	    }
+	    
+	    public void removeAttachment(Class<? extends ITermAttachment> attachmentType) {
+	    	throw new NotImplementedException();
+	    }
 
 		public boolean isList() {
 			return false;

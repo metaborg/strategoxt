@@ -10,7 +10,7 @@ import java.util.zip.ZipFile;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.LazyTerm;
-import org.spoofax.terms.io.TermReader;
+import org.spoofax.terms.io.baf.TermReader;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
