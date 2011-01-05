@@ -47,7 +47,6 @@ Export-Package: .,
  org.strategoxt.tools
 Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.core,
- org.spoofax.interpreter.adapter.aterm,
  org.spoofax.jsglr;bundle-version="0.3.0",
  org.spoofax.terms,
  org.spoofax.interpreter.library.jsglr,
