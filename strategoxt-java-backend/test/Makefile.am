@@ -6,6 +6,7 @@ CLASSFILES   = $(subst .str,.java,$(subst -,_,$(TESTFILES)))
 CTREEFILES   = $(subst .java,.ctree,$(JAVAFILES))
 RUNNERFILES  = $(subst .java,.runner,$(JAVAFILES))
 IRUNNERFILES = $(subst .java,.irunner,$(JAVAFILES))
+IRUNFILES    = $(subst .java,.irun,$(JAVAFILES))
 CLEANFILES   = $(JAVAFILES) $(CLASSFILES) $(CTREEFILES)
 
 EXTRA_DIST = \
@@ -95,6 +96,8 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 ../trans/strj : .PURPLEPONY
 	$(MAKE) -C ../trans strj
+
+check-interpreter : $(IRUNFILES)
 
 %.ctree : %.str
 	../trans/strj -O 0 -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
