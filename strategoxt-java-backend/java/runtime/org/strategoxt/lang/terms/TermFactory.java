@@ -23,6 +23,7 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.terms.saf.BinaryReader;
 import org.strategoxt.lang.StrategoException;
 
 /**
@@ -110,6 +111,8 @@ public class TermFactory extends BasicTermFactory implements ITermFactory {
         
         if (BAFReader.isBinaryATerm(bis)) {
             return new BAFReader(this, bis).readFromBinaryFile(true);
+        } else if (BinaryReader.isStreamingATerm(bis)) {
+        	return BinaryReader.readTermFromSAFStream(this, bis);
         } else {
             return super.parseFromStream(bis);
         }
