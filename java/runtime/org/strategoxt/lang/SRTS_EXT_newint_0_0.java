@@ -10,6 +10,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermPrinter;
 import org.spoofax.terms.TermFactory;
 import org.spoofax.terms.attachments.ITermAttachment;
+import org.spoofax.terms.attachments.TermAttachmentType;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -84,20 +85,20 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 			return toString();
 		}
 
-		public void writeToString(Appendable output, int maxDepth)
+		public void writeAsString(Appendable output, int maxDepth)
 				throws IOException {
 			output.append(toString());
 		}
 
-		public <T extends ITermAttachment> T getAttachment(Class<T> attachment) {
+		public <T extends ITermAttachment> T getAttachment(TermAttachmentType<T> attachmentType) {
 			return null;
 		}
 
-	    public<T extends ITermAttachment> void putAttachment(ITermAttachment attachment) {
+	    public void putAttachment(ITermAttachment attachment) {
 	    	throw new NotImplementedException();
 	    }
-	    
-	    public void removeAttachment(Class<? extends ITermAttachment> attachmentType) {
+
+		public void removeAttachment(TermAttachmentType<?> attachmentType) {
 	    	throw new NotImplementedException();
 	    }
 
