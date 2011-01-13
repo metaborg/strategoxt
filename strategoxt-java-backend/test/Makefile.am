@@ -88,7 +88,7 @@ check-am : strc1/ExpStratego.tbl $(CTREEFILES) $(JAVAFILES) .ALLCLASSFILES $(CLA
 
 # nobase_pkgdata_DATA = $(CTREEFILES) $(JAVAFILES)
 
-TESTS=test-tools.sh $(RUNNERFILES)
+TESTS=test-tools.sh $(IRUNNERFILES)
 
 CLASSPATH=../java/spoofax-libs.jar:../java/bin:../java/strategoxt.jar:.
 JAVACFLAGS=-J-Xmx256m -J-XX:+UseParallelGC -cp $(CLASSPATH) -source 5 -nowarn -encoding UTF-8

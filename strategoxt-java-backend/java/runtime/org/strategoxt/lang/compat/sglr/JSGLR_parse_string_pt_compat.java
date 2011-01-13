@@ -1,6 +1,7 @@
 package org.strategoxt.lang.compat.sglr;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -32,10 +33,17 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 	
 	private final ATermFactory atermFactory;
 
-	protected JSGLR_parse_string_pt_compat(ATermFactory atermFactory, Disambiguator filterSettings) {
+	private final AtomicBoolean recoveryEnabled;
+
+	protected JSGLR_parse_string_pt_compat(ATermFactory atermFactory, Disambiguator filterSettings, AtomicBoolean recoveryEnabled) {
 		super(atermFactory, NAME, 1, 4);
 		this.filterSettings = filterSettings;
 		this.atermFactory = atermFactory;
+		this.recoveryEnabled = recoveryEnabled;
+	}
+	
+	protected boolean isRecoveryEnabled() {
+		return recoveryEnabled.get();
 	}
 	
 	@Override
@@ -45,6 +53,7 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 		
 		SGLR parser = new SGLR(atermFactory, table);
 		parser.setDisambiguator(filterSettings);
+		parser.setUseStructureRecovery(isRecoveryEnabled());
 		
 		ATerm resultATerm = parser.parse(input.stringValue(), startSymbol);
 		return getATermConverter(env).convert(resultATerm);

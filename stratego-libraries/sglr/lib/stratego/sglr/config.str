@@ -55,6 +55,38 @@ strategies
     end
 
 /**
+ * Error recovery
+ */
+strategies
+
+  /**
+   * Set if filtering is enabled.
+   *
+   * @param true (success) or false (failure)
+   */
+  set-recovery(s) =
+    if-java-platform(
+      if s then
+        where(prim("STRSGLR_set_recovery_on"))
+      else
+        where(prim("STRSGLR_set_recovery_off"))
+      end
+    )
+
+  /**
+   * Succeeds if error recovery is enabled.
+   *
+   * @type  t -> t
+   */
+  get-filter-priority =
+    if-c-platform(
+      fail
+    );
+    if-java-platform(
+      where(prim("STRSGLR_get_recovery"))
+    )
+
+/**
  * Logging
  */
 strategies
