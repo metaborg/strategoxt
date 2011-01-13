@@ -68,4 +68,20 @@ Sorry! Sorry!";
 	0
 	1
 	2
+";
+	!$[ and now with a
+        
+          blank line
+	]; show(|7) =>
+"and now with a
+
+  blank line
+";
+	!$[ and now with another
+
+          blank line
+	]; show(|8) =>
+"and now with another
+
+  blank line
 "

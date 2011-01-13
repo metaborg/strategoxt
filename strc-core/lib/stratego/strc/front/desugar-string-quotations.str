@@ -99,7 +99,7 @@ strategies
    * @type List(List(Char)) -> (List(List(Char)), Int)
    */
   remove-padding(|max, n) =
-    where(<leq> (n, 0))
+  	where(<leq> (n, 0) <+ ?[[] | _]) // finished with current line
   ; [id | remove-padding(|max, max) => (<id>, max')]
   ; !(<id>, max')
   <+
@@ -115,7 +115,7 @@ strategies
     ; remove-padding(|max, <subt> (n, 4))
     end
   <+
-    ?[_ | _]
+    ?[_ | _] // uh oh, non-whitespace character with n > 0; reduce max
   ; where(max' := <subt> (max, n))
   ; [id | remove-padding(|max', max') => (<id>, max'')]
   ; !(<id>, max'')
