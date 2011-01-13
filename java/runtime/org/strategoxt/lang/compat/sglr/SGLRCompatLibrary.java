@@ -1,5 +1,7 @@
 package org.strategoxt.lang.compat.sglr;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.spoofax.interpreter.library.jsglr.JSGLR_open_parsetable;
 import org.spoofax.jsglr.client.Disambiguator;
@@ -13,8 +15,14 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 	
 	private final Disambiguator filterSettings = new Disambiguator();
 	
+	private final AtomicBoolean recoveryEnabled = new AtomicBoolean(); // silly placeholder
+	
 	public Disambiguator getFilterSettings() {
 		return filterSettings;
+	}
+
+	public AtomicBoolean getRecoveryEnabledSetting() {
+		return recoveryEnabled;
 	}
 	
 	public SGLRCompatLibrary() {
@@ -23,8 +31,7 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 	
 	protected void initPrimitives() {
 		initFilterSettings();
-		
-		add(new JSGLR_parse_string_pt_compat(filterSettings));
+		add(new JSGLR_parse_string_pt_compat(filterSettings, recoveryEnabled));
 		add(new JSGLR_open_parsetable());
 		add(new STRSGLR_get_parse_error());
 		add(new STRSGLR_clear_parse_error());
@@ -133,6 +140,27 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 			@Override
 			public void set() {
 				filterSettings.setDefaultFilters();
+			}
+		});
+
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_recovery_on") {
+			@Override
+			public void set() {
+				recoveryEnabled.set(true);
+			}
+		});
+
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_set_recovery_off") {
+			@Override
+			public void set() {
+				recoveryEnabled.set(false);
+			}
+		});
+		
+		add(new AbstractFilterSetting(filterSettings, "STRSGLR_get_recovery") {
+			@Override
+			public boolean get() {
+				return recoveryEnabled.get();
 			}
 		});
 	}

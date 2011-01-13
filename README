@@ -6,9 +6,11 @@ standard C-based strc. The second is a bootstrapped, cross-platform
 compiler that lives in strategoxt.jar. Note that Stratego executables
 compiled with strj do not support XTC (since it depends on forking
 native executables and assumes filesystem access) and the
-strategoxt.jar compiler is no exception. Another difference between
-the two is that strj still uses the C-based SGLR parser, and
-strategoxt.jar uses JSGLR.
+strategoxt.jar compiler is no exception. This means that you have to
+explicitly specify the import path of dependencies that would
+otherwise be resolved using XTC. Another difference between the two
+is that strj still uses the C-based SGLR parser, while strategoxt.jar
+uses JSGLR.
 
 Compiling a simple application from the command line with either
 compiler is similar to doing so with the C version of Stratego:
@@ -25,21 +27,22 @@ done using a standard Java compiler (ideally, in an automated fashion
 using an Ant build script or Eclipse). The (non-portable) strj-jar
 shell script can also help with command-line or scripted builds.
 
-KNOWN ISSUES
-============
+KNOWN ISSUES AND LIMITATIONS
+============================
 
 The Stratego/J runtime implements most of the primitives of the
 natively compiled version of Stratego, but some compatibility issues
-may arise. In particular, the parsing primitives are implemented using
-JSGLR, the Java version of SGLR, which is not yet fully
-mature. Mainly, the post-parse filter implementation is not yet
-complete. This especially impacts the heuristic filters, which are
-disabled by default, but used for Stratego's concrete syntax
-embedding. To work around any problems, we suggest using the native
-'strj' executable to compile these files for now, or to pre-parse them
-to '.rtree' files using parse-stratego. A general recommendation may
-be to disable the heuristic filters in the .meta files using the
-HeuristicFilters(Off()) directive.
+might arise. In particular, the parsing primitives are implemented
+using JSGLR, the Java version of SGLR, which may not be bug-for-bug
+compatible with the C version of SGLR. Mainly, the post-parse filter
+implementation might not always produce the same results. This
+especially impacts the heuristic filters, which are disabled by
+default, but used for Stratego's concrete syntax embedding. To work
+around any problems, the native 'strj' executable can be used to
+compile these files, or they can be pre-parse them to '.rtree' files
+using parse-stratego. A general recommendation may be to disable the
+heuristic filters in the .meta files using the HeuristicFilters(Off())
+directive.
 
 The standard Sun compiler can be quite slow when compiling large
 Stratego projects. We recommend using ECJ (Eclipse Compiler for Java)
@@ -75,9 +78,12 @@ While the XTC standard library strategies (such as xtc-io-wrap) are
 supported, support for the XTC repository is not implemented as this
 time because of portability concerns. Any xtc-transform or xtc-call
 invocations report a warning, and simply invoke executables on the
-path. For the interest of portability, applications that make use
-of these strategies should use library strategies instead, as
-discussed in the following section.
+path. For the interest of portability, applications that make use of
+these strategies should use library strategies instead, as discussed
+in the following section. As for the compiler itself, it may be
+necessary to specify additional import paths for files that would
+normally be resolved using XTC. Use the -I option to specify the paths
+of any parse tables, libraries, or other dependencies explicitly.
 
 USING EXTERNAL APPLICATIONS AND LIBRARIES
 =========================================

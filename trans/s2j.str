@@ -969,6 +969,23 @@ strategies
          <java-construct-term> t => e
        ; bagof-java-CheckBuild; unzip; (id, reverse; concat) => (decs, stms)
       |}
+  
+  // these two strategies should be in libstratego-lib, but is not yet supported
+  // by the c compiler due to usage of an older aterm library 
+  WriteToStreamingFile = 
+    WriteToFile(write-in-saf-to-stream)
+  
+  write-in-saf-to-stream =
+    if-java-platform(
+      ?(Stream(stream), term); prim("SSL_write_term_to_stream_saf", stream, term); !Stream(<id>)
+    );
+    if-c-platform(
+      fatal-err-msg(|["Trying to write SAF file on c platform, not supported"])
+    )
+    
+  write-imported-term =
+    if-java-platform(WriteToStreamingFile);
+    if-c-platform(WriteToBinaryFile)
       
   /**
    * Translate 'import-term'
@@ -989,7 +1006,8 @@ strategies
       outputdir := <output-dirname>
     ; copyfile  := <conc-strings> (outputdir, "/", outputfile)
     ; if not(<eq> (<modification-time> inputfile, <file-exists; modification-time> copyfile)) then
-        <copy-file> (inputfile, copyfile)
+        <ReadFromFile> inputfile
+      ; <write-imported-term> (copyfile, <id>)
       ; log(|Info(), ["Referenced imported term file ", file, "; copied to ", outputdir])
       <+
         fatal-err-msg(|["Could not copy imported term file ", inputfile, " to ", copyfile])
