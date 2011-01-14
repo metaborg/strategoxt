@@ -9,6 +9,7 @@ import org.spoofax.interpreter.library.jsglr.JSGLR_parse_string_pt;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.jsglr.Disambiguator;
+import org.spoofax.jsglr.NoRecoveryRulesException;
 import org.spoofax.jsglr.ParseTable;
 import org.spoofax.jsglr.SGLR;
 import org.spoofax.jsglr.SGLRException;
@@ -53,7 +54,12 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 		
 		SGLR parser = new SGLR(atermFactory, table);
 		parser.setDisambiguator(filterSettings);
-		parser.setUseStructureRecovery(isRecoveryEnabled());
+		try {
+			parser.setUseStructureRecovery(isRecoveryEnabled());
+		} catch (NoRecoveryRulesException e) {
+			// won't happen, trust me
+			e.printStackTrace();
+		}
 		
 		ATerm resultATerm = parser.parse(input.stringValue(), startSymbol);
 		return getATermConverter(env).convert(resultATerm);
