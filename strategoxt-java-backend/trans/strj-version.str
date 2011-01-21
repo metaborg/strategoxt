@@ -3,7 +3,7 @@
  *
  * @author Lennart Kats
  */
-module strj-options
+module strj-version
 
 strategies
   
