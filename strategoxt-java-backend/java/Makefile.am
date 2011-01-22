@@ -82,7 +82,7 @@ clean :
 
 SPOOFAX=../../../spoofax/trunk/spoofax
 CLASSPATH=runtime:lib:compiler:tools:spoofax-libs.jar:.
-JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -target 5 -nowarn -d bin
+JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -target 5 -nowarn -d bin -g:source
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
 STRJ=XTC_REPOSITORY="$(BUILD_REPOSITORY)" ../trans/strj
