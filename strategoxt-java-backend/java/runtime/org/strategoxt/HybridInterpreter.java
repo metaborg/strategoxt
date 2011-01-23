@@ -393,7 +393,8 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	 * Evaluates a stratego expression, optionally desugaring it.
      *
 	 * Note that no checks whatsoever are applied during desugaring.
-	 * It also does not support higher-order strategy calls.
+	 * It also does not support higher-order strategy calls
+	 * or nullary constructors.
 	 */
 	public boolean evaluate(IStrategoAppl s, boolean desugar)
 			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {

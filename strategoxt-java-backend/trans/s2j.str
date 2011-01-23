@@ -1006,9 +1006,13 @@ strategies
       outputdir := <output-dirname>
     ; copyfile  := <conc-strings> (outputdir, "/", outputfile)
     ; if not(<eq> (<modification-time> inputfile, <file-exists; modification-time> copyfile)) then
-        <ReadFromFile> inputfile
-      ; <write-imported-term> (copyfile, <id>)
-      ; log(|Info(), ["Referenced imported term file ", file, "; copied to ", outputdir])
+        log(|Info(), ["Referenced imported term file ", file, "; copying to ", outputdir])
+      ; if olevel1(?is-olevel1); !is-olevel1 then
+          <ReadFromFile> inputfile
+        ; <write-imported-term> (copyfile, <id>)
+        else
+          <copy-file> (inputfile, copyfile)
+        end
       <+
         fatal-err-msg(|["Could not copy imported term file ", inputfile, " to ", copyfile])
       else
