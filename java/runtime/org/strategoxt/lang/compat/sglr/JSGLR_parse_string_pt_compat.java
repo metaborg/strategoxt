@@ -47,12 +47,7 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 		
 		SGLR parser = new SGLR(new Asfix2TreeBuilder(env.getFactory()), table);
 		parser.setDisambiguator(filterSettings);
-		try {
-			parser.setUseStructureRecovery(isRecoveryEnabled());
-		} catch (NoRecoveryRulesException e) {
-			// won't happen, trust me
-			e.printStackTrace();
-		}
+		parser.setUseStructureRecovery(isRecoveryEnabled());
 		
 		IStrategoTerm result = (IStrategoTerm) parser.parse(input.stringValue(), startSymbol);
 		return result;

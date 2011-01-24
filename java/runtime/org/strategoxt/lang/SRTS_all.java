@@ -98,7 +98,7 @@ public class SRTS_all extends Strategy {
 
 	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoTerm head2, IStrategoList list, Strategy s) {
 		IStrategoTerm[] items = list.getAllSubterms();
-		assert (items[0] = null) == null && list.head() != null && list.get(0) != null : "List implementation must not expose internal array";
+		assert (items[0] = null) == null && list.head() != null && list.getSubterm(0) != null : "List implementation must not expose internal array";
 		items[0] = head2;
 		for (int i = 1; i < items.length; i++) {
 			IStrategoTerm item = items[i];
