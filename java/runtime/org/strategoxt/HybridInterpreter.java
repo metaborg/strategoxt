@@ -1,5 +1,9 @@
 package org.strategoxt;
 
+import static org.spoofax.interpreter.core.Tools.asJavaString;
+import static org.spoofax.interpreter.core.Tools.isTermAppl;
+import static org.spoofax.interpreter.core.Tools.termAt;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -23,9 +27,12 @@ import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.library.IOperatorRegistry;
 import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.stratego.SDefT;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.terms.TermConverter;
 import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
@@ -34,6 +41,12 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.lang.Strategy;
+import org.strategoxt.stratego_lib.topdown_1_0;
+import org.strategoxt.strc.desugar_0_0;
+import org.strategoxt.strc.pre_desugar_0_0;
+import org.strategoxt.strc.raise_annotations_0_0;
+import org.strategoxt.strc.simplify_0_0;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
@@ -215,7 +228,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	@Override
 	public void load(IStrategoTerm term) throws InterpreterException {
 		// Lazily register library strategies
-		// (since this interpreter may only be used with compiled strategies)
+		// (since this interpreter may be used with only compiled strategies)
 		init();
 		super.load(term);
 	}
@@ -366,6 +379,72 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
         } catch (StrategoException e) {
             throw new InterpreterException(e);
         }
+	}
+	
+	@Override
+	public boolean evaluate(IStrategoAppl s)
+			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
+		
+		init();
+		return super.evaluate(s);
+	}
+	
+	/**
+	 * Evaluates a stratego expression, optionally desugaring it.
+     *
+	 * Note that no checks whatsoever are applied during desugaring.
+	 * It also does not support higher-order strategy calls
+	 * or nullary constructors.
+	 */
+	public boolean evaluate(IStrategoAppl s, boolean desugar)
+			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
+		
+		if (desugar) {
+			init();
+			// TODO: support nullary constructors? e.g. by considering all non-matched unary vars to be constructors
+			// XXX: factory should be getFactory(); termconverter should not be used
+			final ITermFactory factory = getFactory();
+			s = (IStrategoAppl) TermConverter.convert(factory, s);
+			final IStrategoConstructor callT = factory.makeConstructor("CallT", 3);
+			final IStrategoConstructor sdefT = factory.makeConstructor("SDefT", 4);
+			s = (IStrategoAppl) pre_desugar_0_0.instance.invoke(getCompiledContext(), s);
+			s = (IStrategoAppl) desugar_0_0.instance.invoke(getCompiledContext(), s);
+			s = (IStrategoAppl) raise_annotations_0_0.instance.invoke(getCompiledContext(), s);
+			s = (IStrategoAppl) simplify_0_0.instance.invoke(getCompiledContext(), s);
+			s = (IStrategoAppl) topdown_1_0.instance.invoke(getCompiledContext(), s, 
+					new Strategy() {
+						@Override
+						public IStrategoTerm invoke(Context context, IStrategoTerm current) {
+							if (isTermAppl(current)) {
+								current = cifyAndAddParams(factory, callT, sdefT, (IStrategoAppl) current);
+							}
+							return current;
+						}
+					});
+		}
+		return evaluate(s);
+	}
+
+	private IStrategoTerm cifyAndAddParams(ITermFactory factory, IStrategoConstructor callT,
+			IStrategoConstructor sdefT, IStrategoAppl current) {
+		
+		IStrategoConstructor cons = current.getConstructor();
+		if (cons == sdefT || cons == callT) {
+			IStrategoTerm s = termAt(current, 1);
+			IStrategoTerm t = termAt(current, 2);
+			if (cons == sdefT) {
+				IStrategoString name = termAt(current, 0);
+				name = factory.makeString(cify(asJavaString(name)) + "_" + s.getSubtermCount() + "_" + t.getSubtermCount());
+				current = factory.makeAppl(cons, name, s, t, termAt(current, 3));
+			} else {
+				IStrategoAppl svar = termAt(current, 0);
+				IStrategoTerm name = termAt(svar, 0);
+				name = factory.makeString(cify(asJavaString(name)) + "_" + s.getSubtermCount() + "_" + t.getSubtermCount());
+				name = factory.makeAppl(svar.getConstructor(), name);
+				current = factory.makeAppl(cons, name, s, t);
+			}
+		}
+		return current;
 	}
 	
 	/**

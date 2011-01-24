@@ -14,7 +14,7 @@ STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRA
 
 STRJ_VERSION=$(VERSION) based on `$(STRATEGOXT)/bin/strc --version | head -n1 | sed 's/ (revision \(.*\))/r\1/'`
 
-STRCFLAGS      = --main main-$* -O 0 --format-check 0
+STRCFLAGS      = --main main-$* -O 0 --format-check 0 --cache-dir .cache
 
 DEFS += -DSTRJ_VERSION_TERM\(\)=\(\(ATerm\)\ ATmakeString\(\""$(STRJ_VERSION)"\"\)\)
 
@@ -40,11 +40,12 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 %.str : %.astr
 	aster -i $< -o $@
 
-strj.c : $(STRJSOURCES:.str=.rtree)
+strj.c : $(STRJSOURCES)
 
-strj$(exeext) : $(STRJSOURCES:.str=.rtree) libjava-pp.la
+strj$(exeext) : $(STRJSOURCES) libjava-pp.la
 
-strj.ctree : strj.rtree $(STRJSOURCES:.str=.rtree) strj
+strj.ctree : strj.str $(STRJSOURCES) strj
+	rm -f $(STRJSOURCES:.str=.rtree)
 	$(SCOMPILE) $(STRINCLUDES) $(STRCFLAGS) $(SCFLAGS) -i $< -o $@ -F -m main-strj
 
 strj.java : strj.ctree strj
