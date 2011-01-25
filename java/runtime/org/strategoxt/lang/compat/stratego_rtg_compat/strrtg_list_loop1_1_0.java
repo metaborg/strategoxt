@@ -20,7 +20,7 @@ public class strrtg_list_loop1_1_0 extends Strategy {
 		IStrategoList list = (IStrategoList) current;
 		
 		for (int i = 0; i < list.size(); i++) {
-			IStrategoTerm term = list.get(i);
+			IStrategoTerm term = list.getSubterm(i);
 			IStrategoTerm term2 = s.invoke(context, term);
 			if (term2 != null) success = true;
 		}
