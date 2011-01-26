@@ -28,8 +28,6 @@ strategies
   jsglr-close-parsetable =
     id // no such thing
     
-  /* UNDONE: JSGLR_parse_string_compat not implemented
-   * TODO: Optimize - implement JSGLR_parse_string without TermConverter usage
   jsglr-parse-string(|tbl) =
     jsglr-parse-string(id | tbl, None(), "string")
   
@@ -37,8 +35,6 @@ strategies
       where(!tbl => ParseTable(internal-tbl))
     ; ?string
     ; prim("JSGLR_parse_string_compat", on-parse-error | string, internal-tbl, start-symbol, path)
-    ; implode-asfix
-  */
     
 strategies
 

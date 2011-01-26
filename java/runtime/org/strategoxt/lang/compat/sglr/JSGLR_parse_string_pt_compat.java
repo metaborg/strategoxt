@@ -10,6 +10,7 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.jsglr.client.Asfix2TreeBuilder;
 import org.spoofax.jsglr.client.Disambiguator;
+import org.spoofax.jsglr.client.ITreeBuilder;
 import org.spoofax.jsglr.client.SGLR;
 import org.strategoxt.lang.compat.override.jsglr_parser_compat.jsglr_parser_compat;
 
@@ -30,7 +31,11 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 	private final AtomicBoolean recoveryEnabled;
 
 	protected JSGLR_parse_string_pt_compat(Disambiguator filterSettings, AtomicBoolean recoveryEnabled) {
-		super(NAME, 1, 4);
+		this(NAME, filterSettings, recoveryEnabled);
+	}
+	
+	protected JSGLR_parse_string_pt_compat(String name, Disambiguator filterSettings, AtomicBoolean recoveryEnabled) {
+		super(name, 1, 4);
 		this.filterSettings = filterSettings;
 		this.recoveryEnabled = recoveryEnabled;
 	}
@@ -45,12 +50,16 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 			throws InterpreterException, IOException,
 			org.spoofax.jsglr.shared.SGLRException {
 		
-		SGLR parser = new SGLR(new Asfix2TreeBuilder(env.getFactory()), table);
+		SGLR parser = new SGLR(createTreeBuilder(env), table);
 		parser.setDisambiguator(filterSettings);
 		parser.setUseStructureRecovery(isRecoveryEnabled());
 		
 		IStrategoTerm result = (IStrategoTerm) parser.parse(input.stringValue(), startSymbol);
 		return result;
+	}
+
+	protected ITreeBuilder createTreeBuilder(IContext env) {
+		return new Asfix2TreeBuilder(env.getFactory());
 	}
 
 }
