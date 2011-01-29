@@ -54,7 +54,7 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 		parser.setDisambiguator(filterSettings);
 		parser.setUseStructureRecovery(isRecoveryEnabled());
 		
-		IStrategoTerm result = (IStrategoTerm) parser.parse(input.stringValue(), startSymbol);
+		IStrategoTerm result = (IStrategoTerm) parser.parse(input.stringValue(), null, startSymbol);
 		return result;
 	}
 
