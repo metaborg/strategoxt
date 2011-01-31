@@ -837,6 +837,11 @@ strategies
   DummifyTerm :
     Term|[ x ]| -> Term|[ [DR_DUMMY()] ]| 
     where <not(ContextVar)> x
+    
+  // StrategoXT/854, prevent generation of empty list tails with DR_DUMMY annotation
+  DummifyTerm :
+    Op("Cons", [hd, Anno(Op("Nil",[]), Wld)]) -> Op("Cons",[hd', Anno(Op("Nil", []), Op("Nil", []))])
+      with hd' := <alltd(DummifyTerm)> hd
 
   DummifyTerm :
     Term|[ x@t ]| -> <alltd(DummifyTerm)> Term|[ t ]|
