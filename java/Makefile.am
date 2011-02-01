@@ -166,7 +166,7 @@ lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.
 # HACK: work-around for the Java BAFReader
 lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl
 	[ -e lib/org/strategoxt/stratego_rtg ] || mkdir lib/org/strategoxt/stratego_rtg
-	$(ATERM)/bin/baffle -ws -i $< -o $@
+	$(ATERM)/bin/baffle -wt -i $< -o $@
 	@if [ `du -k $@ | grep -o '[0-9]*'` -lt 1 ]; then \
 		echo $@ corrupted >&2; \
 		ls -l $@; \

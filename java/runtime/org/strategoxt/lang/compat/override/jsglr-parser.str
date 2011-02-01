@@ -32,7 +32,7 @@ strategies
     jsglr-parse-string(id | tbl, None(), "string")
   
   jsglr-parse-string(on-parse-error | tbl, start-symbol, path) =
-      where(!tbl => ParseTable(internal-tbl))
+      where(<try(not(?ParseTable(_)); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     ; ?string
     ; prim("JSGLR_parse_string_compat", on-parse-error | string, internal-tbl, start-symbol, path)
     
