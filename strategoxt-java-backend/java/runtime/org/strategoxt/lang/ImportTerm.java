@@ -7,12 +7,10 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.spoofax.interpreter.adapter.aterm.ATermConverter;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-
-import aterm.ATerm;
-import aterm.ATermFactory;
+import org.spoofax.terms.LazyTerm;
+import org.spoofax.terms.io.binary.TermReader;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -25,10 +23,6 @@ public class ImportTerm extends LazyTerm {
 	
 	private final Class<?> container;
 	
-	private ATermFactory atermFactory;
-	
-	private ATerm aterm;
-	
 	private ZipFile lastZipFile;
 	
 	public ImportTerm(ITermFactory factory, Class<?> container, String path, String name) {
@@ -39,30 +33,11 @@ public class ImportTerm extends LazyTerm {
 		this.name = name;
 	}
 	
-	public ATerm getATerm(ATermFactory factory) {
-		if (aterm == null) {
-			aterm = initATerm(factory);
-			atermFactory = factory;
-		} else if (factory != atermFactory) {
-			try {
-				aterm = factory.importTerm(aterm);
-			} catch (RuntimeException e) {
-				 // factory.importTerm(aterm) may not be implemented, try again...
-				aterm = initATerm(factory);
-			}
-			atermFactory = factory;
-		}
-		return aterm;
-	}
-	
 	@Override
 	protected IStrategoTerm init() {
-		if (aterm != null)
-			return new ATermConverter(aterm.getFactory(), factory, true).convert(aterm);
-		
 		InputStream stream = openStream();
 		try {
-			IStrategoTerm result = factory.parseFromStream(stream);
+			IStrategoTerm result = new TermReader(factory).parseFromStream(stream);
 			return result;
 		} catch (java.io.IOException e) {
 			throw new StrategoException(container.getSimpleName()
@@ -79,28 +54,6 @@ public class ImportTerm extends LazyTerm {
 				lastZipFile = null;
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-		}
-	}
-	
-	private ATerm initATerm(ATermFactory factory) {
-		if (getWrapped(true) != null)
-			return new ATermConverter(factory, this.factory, false).convert(getWrapped());
-		InputStream stream = null;
-		try {
-			stream = openStream();
-			return factory.readFromFile(stream);
-		} catch (java.io.IOException e) {
-			throw new StrategoException(container.getSimpleName()
-					+ ": Could not read imported term file " + name, e);
-		} catch (RuntimeException e) {
-			throw new StrategoException(container.getSimpleName()
-					+ ": Could not read imported term file " + name, e);
-		} finally {
-			try {
-				if (stream != null) stream.close();
-			} catch (IOException e) {
-				e.printStackTrace(); // won't happen
 			}
 		}
 	}

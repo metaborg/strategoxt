@@ -2,14 +2,14 @@ package org.strategoxt.lang.compat;
 
 import static org.spoofax.interpreter.core.Tools.asJavaString;
 import static org.spoofax.interpreter.core.Tools.isTermString;
-import static org.spoofax.interpreter.terms.IStrategoTerm.MAXIMALLY_SHARED;
-import static org.spoofax.interpreter.terms.IStrategoTerm.SHARABLE;
+import static org.spoofax.interpreter.terms.IStrategoTerm.MUTABLE;
 
 import java.io.File;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.TermConverter;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.WeakValueHashMap;
 import org.strategoxt.stratego_lib.$Read$From$File_0_0;
@@ -71,18 +71,25 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 		} else if (cachedDate != null
 				&& cachedDate.accessed > fileDate + FILE_TIME_GRANULARITY
 				&& cachedDate.file.equals(file)) {
+			
+			if (cachedTerm.getStorageType() == MUTABLE) {
+				cachedTerm = TermConverter.convert(context.getFactory(), cachedTerm);
+				putCache(file, now, cachedTerm);
+			}
 			return cachedTerm;
 		} else {
 			IStrategoTerm result = super.invoke(context, term);
-			if (result != null &&
-					(result.getStorageType() == SHARABLE ||
-					 result.getStorageType() == MAXIMALLY_SHARED)) {
-				synchronized (asyncCache) {
-					asyncCache.put(file, result);
-					asyncCacheDates.put(result, new FileDate(file, now));
-				}
+			if (result != null) {
+				putCache(file, now, result);
 			}
 			return result;
+		}
+	}
+
+	private void putCache(File file, long now, IStrategoTerm result) {
+		synchronized (asyncCache) {
+			asyncCache.put(file, result);
+			asyncCacheDates.put(result, new FileDate(file, now));
 		}
 	}
 	

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 
 import org.spoofax.IAsyncCancellable;
-import org.spoofax.interpreter.adapter.aterm.WrappedATermFactory;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -22,9 +21,9 @@ import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
-import org.strategoxt.lang.terms.TermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.
@@ -74,9 +73,6 @@ public class Context extends StackTracer implements IAsyncCancellable {
         addOperatorRegistry(new JFFLibrary(factory));
 
     	if (ioAgent != null) setIOAgent(ioAgent);
-    	
-    	if (factory instanceof WrappedATermFactory)
-    		throw new IllegalArgumentException("WrappedATermFactory is not supported at this time");
 
         compat.init();
     }

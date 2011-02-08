@@ -68,10 +68,6 @@ strategies // parsing and parse tables
   override parse-string-pt(on-parse-error | tbl, start-symbol, path) =
     jsglr-parse-string-pt(on-parse-error | tbl, start-symbol, path)
 
-  jsglr-parse-string(on-parse-error |tbl, start-symbol, path) =
-    jsglr-parse-string-pt(on-parse-error |tbl, start-symbol, path);
-    implode-asfix
-
 strategies
 
   override strsglr-perror =

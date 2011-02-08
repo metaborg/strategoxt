@@ -81,6 +81,7 @@ clean :
 	rm -rf bin/* lib/org/strategoxt/*
 
 SPOOFAX=../../../spoofax/trunk/spoofax
+#SPOOFAX=../../../../spoofax/branches/spoofax-new-terms/spoofax
 CLASSPATH=runtime:lib:compiler:tools:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -target 5 -nowarn -d bin -g:source
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
@@ -120,15 +121,12 @@ smalljar :
 new-libs :
 	rm -rf spoofax-libs-tmp
 	mkdir spoofax-libs-tmp
-	cat $(SPOOFAX)/org.spoofax.aterm/lib/jjtraveler-0.4.3.jar | (cd spoofax-libs-tmp; $(JAR) x)
-	cat $(SPOOFAX)/org.spoofax.aterm/lib/shared-objects-1.4.jar | (cd spoofax-libs-tmp; $(JAR) x)
 	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
 	rm -rf spoofax-libs-tmp/META-INF
 	$(JAR) cf spoofax-libs.jar.tmp -C spoofax-libs-tmp .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.core/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.terms/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.jsglr/bin/ .
-	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.aterm/bin/ .
-	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.adapter.aterm/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.jsglr/bin/ .
 	rm -rf spoofax-libs-tmp
 	mv spoofax-libs.jar.tmp spoofax-libs.jar
@@ -168,7 +166,7 @@ lib/org/strategoxt/stratego_rtg/Main.java : $(STRATEGOXT)/share/libstratego-rtg.
 # HACK: work-around for the Java BAFReader
 lib/org/strategoxt/stratego_rtg/rtg.tbl : $(STRATEGOXT)/share/sdf/stratego-regular/rtg.tbl
 	[ -e lib/org/strategoxt/stratego_rtg ] || mkdir lib/org/strategoxt/stratego_rtg
-	$(ATERM)/bin/baffle -ws -i $< -o $@
+	$(ATERM)/bin/baffle -wt -i $< -o $@
 	@if [ `du -k $@ | grep -o '[0-9]*'` -lt 1 ]; then \
 		echo $@ corrupted >&2; \
 		ls -l $@; \

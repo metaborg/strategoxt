@@ -9,7 +9,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.spoofax.jsglr.NotImplementedException;
+import org.spoofax.NotImplementedException;
 
 /**
  * Executes jobs, in parallel.

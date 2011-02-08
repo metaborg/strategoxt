@@ -1,12 +1,14 @@
 package org.strategoxt.lang;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermPrinter;
-import org.strategoxt.lang.terms.TermFactory;
+import org.spoofax.terms.AbstractSimpleTerm;
+import org.spoofax.terms.TermFactory;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -19,7 +21,7 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 		return new UniqueValue();
 	}
 	
-	private static final class UniqueValue implements IStrategoInt {
+	private static final class UniqueValue extends AbstractSimpleTerm implements IStrategoInt {
 		
 		private static final AtomicInteger counter = new AtomicInteger();
 		
@@ -75,6 +77,19 @@ public class SRTS_EXT_newint_0_0 extends Strategy {
 		@Override
 		public String toString() {
 			return String.valueOf(value);
+		}
+
+		public String toString(int maxDepth) {
+			return toString();
+		}
+
+		public void writeAsString(Appendable output, int maxDepth)
+				throws IOException {
+			output.append(toString());
+		}
+
+		public boolean isList() {
+			return false;
 		}
 		
 	}

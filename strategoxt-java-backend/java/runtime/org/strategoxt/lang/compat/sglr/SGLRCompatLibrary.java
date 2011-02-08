@@ -3,9 +3,8 @@ package org.strategoxt.lang.compat.sglr;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
-import org.spoofax.jsglr.Disambiguator;
-
-import aterm.ATermFactory;
+import org.spoofax.interpreter.library.jsglr.JSGLR_open_parsetable;
+import org.spoofax.jsglr.client.Disambiguator;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
@@ -21,20 +20,20 @@ public class SGLRCompatLibrary extends AbstractStrategoOperatorRegistry {
 	public Disambiguator getFilterSettings() {
 		return filterSettings;
 	}
-	
+
 	public AtomicBoolean getRecoveryEnabledSetting() {
 		return recoveryEnabled;
 	}
 	
-	public SGLRCompatLibrary(ATermFactory atermFactory) {
-		initPrimitives(atermFactory);
+	public SGLRCompatLibrary() {
+		initPrimitives();
 	}
 	
-	protected void initPrimitives(ATermFactory atermFactory) {
+	protected void initPrimitives() {
 		initFilterSettings();
-		
-		add(new JSGLR_parse_string_pt_compat(atermFactory, filterSettings, recoveryEnabled));
-		add(new JSGLR_open_parsetable_compat(atermFactory));
+		add(new JSGLR_parse_string_pt_compat(filterSettings, recoveryEnabled));
+		add(new JSGLR_parse_string_compat(filterSettings, recoveryEnabled));
+		add(new JSGLR_open_parsetable());
 		add(new STRSGLR_get_parse_error());
 		add(new STRSGLR_clear_parse_error());
 		add(new STRSGLR_anno_location());

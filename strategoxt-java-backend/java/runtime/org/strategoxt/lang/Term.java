@@ -3,7 +3,7 @@ package org.strategoxt.lang;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.strategoxt.lang.terms.TermFactory;
+import org.spoofax.terms.TermFactory;
 
 public class Term {
 	

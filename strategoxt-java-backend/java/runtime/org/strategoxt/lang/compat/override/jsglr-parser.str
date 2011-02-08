@@ -22,23 +22,19 @@ strategies
    */
   jsglr-open-parsetable = 
       ?tbl
-    ; prim("JSGLR_open_parsetable_compat", tbl) => int
+    ; prim("JSGLR_open_parsetable", tbl) => int
     ; !ParseTable(int)
   
   jsglr-close-parsetable =
     id // no such thing
     
-  /* UNDONE: JSGLR_parse_string_compat not implemented
-   * TODO: Optimize - implement JSGLR_parse_string without TermConverter usage
   jsglr-parse-string(|tbl) =
     jsglr-parse-string(id | tbl, None(), "string")
   
   jsglr-parse-string(on-parse-error | tbl, start-symbol, path) =
-      where(!tbl => ParseTable(internal-tbl))
+      where(<try(not(?ParseTable(_)); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
     ; ?string
     ; prim("JSGLR_parse_string_compat", on-parse-error | string, internal-tbl, start-symbol, path)
-    ; implode-asfix
-  */
     
 strategies
 

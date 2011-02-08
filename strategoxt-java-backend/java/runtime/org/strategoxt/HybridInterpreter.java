@@ -32,7 +32,8 @@ import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.interpreter.terms.TermConverter;
+import org.spoofax.terms.TermFactory;
+import org.spoofax.terms.TermTransformer;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.InteropSDefT;
@@ -40,10 +41,8 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
-import org.strategoxt.lang.Strategy;
-import org.strategoxt.lang.terms.TermFactory;
-import org.strategoxt.stratego_lib.topdown_1_0;
 import org.strategoxt.strc.desugar_0_0;
+import org.strategoxt.strc.desugar_list_matching_0_0;
 import org.strategoxt.strc.pre_desugar_0_0;
 import org.strategoxt.strc.raise_annotations_0_0;
 import org.strategoxt.strc.simplify_0_0;
@@ -402,27 +401,30 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		if (desugar) {
 			init();
 			// TODO: support nullary constructors? e.g. by considering all non-matched unary vars to be constructors
-			// XXX: factory should be getFactory(); termconverter should not be used
-			final ITermFactory factory = getFactory();
-			s = (IStrategoAppl) TermConverter.convert(factory, s);
-			final IStrategoConstructor callT = factory.makeConstructor("CallT", 3);
-			final IStrategoConstructor sdefT = factory.makeConstructor("SDefT", 4);
-			s = (IStrategoAppl) pre_desugar_0_0.instance.invoke(getCompiledContext(), s);
-			s = (IStrategoAppl) desugar_0_0.instance.invoke(getCompiledContext(), s);
-			s = (IStrategoAppl) raise_annotations_0_0.instance.invoke(getCompiledContext(), s);
-			s = (IStrategoAppl) simplify_0_0.instance.invoke(getCompiledContext(), s);
-			s = (IStrategoAppl) topdown_1_0.instance.invoke(getCompiledContext(), s, 
-					new Strategy() {
-						@Override
-						public IStrategoTerm invoke(Context context, IStrategoTerm current) {
-							if (isTermAppl(current)) {
-								current = cifyAndAddParams(factory, callT, sdefT, (IStrategoAppl) current);
-							}
-							return current;
-						}
-					});
+			s = desugar(s);
 		}
 		return evaluate(s);
+	}
+
+	private IStrategoAppl desugar(IStrategoAppl s) {
+		final ITermFactory factory = getProgramFactory();
+		final IStrategoConstructor callT = factory.makeConstructor("CallT", 3);
+		final IStrategoConstructor sdefT = factory.makeConstructor("SDefT", 4);
+		s = (IStrategoAppl) pre_desugar_0_0.instance.invoke(getCompiledContext(), s);
+		s = (IStrategoAppl) desugar_list_matching_0_0.instance.invoke(getCompiledContext(), s);
+		s = (IStrategoAppl) desugar_0_0.instance.invoke(getCompiledContext(), s);
+		s = (IStrategoAppl) raise_annotations_0_0.instance.invoke(getCompiledContext(), s);
+		s = (IStrategoAppl) simplify_0_0.instance.invoke(getCompiledContext(), s);
+		s = (IStrategoAppl) new TermTransformer(factory, false) {
+				@Override
+				public IStrategoTerm preTransform(IStrategoTerm term) {
+					if (isTermAppl(term)) {
+						term = cifyAndAddParams(factory, callT, sdefT, (IStrategoAppl) term);
+					}
+					return term;
+				}
+			}.transform(s);
+		return s;
 	}
 
 	private IStrategoTerm cifyAndAddParams(ITermFactory factory, IStrategoConstructor callT,
