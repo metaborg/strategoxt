@@ -256,7 +256,7 @@ public abstract class Strategy {
 		result.append(args[0]);
 		
 		for (int i = 1; i < args.length; i++) {
-			Object arg = args[0];
+			Object arg = args[i];
 			if (!printedBar && arg instanceof IStrategoTerm) {
 				result.append(" |");
 				printedBar = true;
