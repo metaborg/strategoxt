@@ -106,7 +106,7 @@ done
 if [ "$TEMP" == "" ]; then
   TEMP=/tmp
 fi
-TEMPFILE=$TEMP/str-`date +'%N'`.str
+TEMPFILE=$TEMP/str-`date +'%H%M%S%N'`.str
 [ -d $TEMP/.libs ] || (mkdir $TEMP/.libs; chmod 777 $TEMP/.libs)
   
 if [ "$INPUTFILE" == "" ]; then
