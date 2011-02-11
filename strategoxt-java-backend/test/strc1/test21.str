@@ -1,7 +1,0 @@
-module test21
-imports libstratego-lib
-strategies
-
-   main = try(<ReadFromFile> "NonExistentFile")
-
-

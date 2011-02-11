@@ -1,6 +1,0 @@
-module expand-overlays
-imports libstrc libstratego-lib
-strategies
-  
-  expand-overlays-io = 
-    io-wrap(ExpandOverlays)
