@@ -1,0 +1,8 @@
+module lift-dynamic-rules
+imports libstratego-lib libstrc
+
+strategies
+
+  lift-dynamic-rules-io =
+    io-wrap(LiftDynamicRules)
+

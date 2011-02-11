@@ -1,0 +1,98 @@
+module bound-unbound-vars-test
+imports libstratego-lib libstrc
+strategies
+
+  bound-unbound-vars-test-io =
+    test-suite(!"bound-unbound-vars-test",
+      test1
+      ; test1a
+      ; test1b
+      ; test2
+      ; test3
+    )
+
+  test1 =    
+    apply-test(!"test1"
+	, mark-buv
+	, !|[ {h : ?h; !Cons(h, Nil())} ]|
+	, !Scope(["h"],
+		Seq(Match(Var("h"){"unbound"}),
+		    Build(NoAnnoList(Op("Cons",[Var("h"){"bound"},NoAnnoList(Op("Nil",[]))])))))
+	) 
+
+  test1a =    
+    apply-test(!"test1a"
+	, mark-buv
+	, !|[ {h : ?h; !h; foo(|h); !h} ]|
+	, !Scope(["h"],
+		Seq(Match(Var("h"){"unbound"}),
+		Seq(Build(Var("h"){"bound"}),
+		Seq(CallT(SVar("foo"),[],[Var("h"){"bound"}]),
+		    Build(Var("h"){"bound"})))))
+
+	) 
+
+  test1b =    
+    apply-test(!"test1b"
+	, mark-buv
+	, !|[ {name : try(at-suffix-rev(?['/' | name]); !name) } ]|
+	, !Scope(["name"],
+	    Call(SVar("try"),[
+	     Seq(Call(SVar("at-suffix-rev"),[
+	       Match(NoAnnoList(ListTail([NoAnnoList(Char("'/'"))],Var("name"){"unbound"})))]),
+	       Build(Var("name"){"(un)bound"}))]))
+	)
+
+  test2 =
+    apply-test(!"test2"
+	, mark-buv
+	, !|[ F(|s_5 : Int()) = 
+	      {h_0, i_0, j_0, k_0, l_0 :
+               !s_5
+               ; ?h_0
+               ; ?i_0
+               ; !stdout()
+               ; ?j_0 
+               ; !s_5 
+               ; ?k_0
+               ; !Cons(s_5, Nil())
+	      } 
+	   ]|
+	, !SDefT("F",[],[VarDec("s_5",ConstType(Sort("Int",[])))],
+		Scope(["h_0","i_0","j_0","k_0","l_0"],
+		Seq(Build(Var("s_5"){"bound"}),
+		Seq(Match(Var("h_0"){"unbound"}),
+		Seq(Match(Var("i_0"){"unbound"}),
+		Seq(Build(NoAnnoList(Op("stdout",[]))),
+		Seq(Match(Var("j_0"){"unbound"}),
+		Seq(Build(Var("s_5"){"bound"}),
+		Seq(Match(Var("k_0"){"unbound"}),
+		    Build(NoAnnoList(Op("Cons",[Var("s_5"){"bound"},NoAnnoList(Op("Nil",[]))])))
+		)))))))))
+	)
+
+  test3 =    
+    apply-test(!"test3a"
+	, mark-buv
+	, !|[ {A,B : 
+	       let F(|) = !(B, A)
+                in ?(A, B); F(|)
+	       end }  ]|
+	, !Scope(["A","B"],
+		Let([SDefT("F",[],[],
+		      Build(NoAnnoList(Tuple([Var("B"){"(un)bound"},Var("A"){"(un)bound"}]))))],
+		  Seq(Match(NoAnnoList(Tuple([Var("A"){"(un)bound"},Var("B"){"(un)bound"}]))),
+		      CallT(SVar("F"),[],[]))))
+	);
+    apply-test(!"test3b"
+	, mark-buv
+	, !|[ {A,B : 
+	       let F(|A,B) = !(B, A)
+                in ?(A, B); F(|A,B)
+	       end }  ]|
+	, !Scope(["A","B"],
+		Let([SDefT("F",[],[DefaultVarDec("A"),DefaultVarDec("B")],
+		  Build(NoAnnoList(Tuple([Var("B"){"bound"},Var("A"){"bound"}]))))],
+		  Seq(Match(NoAnnoList(Tuple([Var("A"){"unbound"},Var("B"){"unbound"}]))),
+		      CallT(SVar("F"),[],[Var("A"){"bound"},Var("B"){"bound"}]))))
+	)

@@ -1,0 +1,6 @@
+module rename-defs
+imports libstrc libstratego-lib
+strategies
+
+  rename-defs-io =
+    io-wrap(Specification([id, id, Strategies(rename-sdefs)]))

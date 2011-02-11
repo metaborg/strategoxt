@@ -1,0 +1,6 @@
+module use-def
+imports libstrc libstratego-lib
+strategies
+
+  use-def-io =
+    io-wrap(stratego-warnings-options, where(spec-use-def))

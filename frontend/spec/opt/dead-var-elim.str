@@ -1,0 +1,6 @@
+module dead-var-elim
+imports libstrc libstratego-lib
+strategies
+ 
+  dead-var-elim-io =
+    io-wrap(dead-var-elim)

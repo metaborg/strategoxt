@@ -1,0 +1,12 @@
+module compile-match
+
+imports stratego/strc/match/match-to-matrix 
+	stratego/strc/match/matrix-to-dfa 
+	stratego/strc/opt/opt-lib
+
+strategies
+
+  match-to-dfa = 
+    match-to-matrix    
+    ; matrix-to-dfa
+    ; strename

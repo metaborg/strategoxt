@@ -1,0 +1,7 @@
+module bound-unbound-vars
+imports libstrc libstratego-lib
+strategies
+
+  bound-unbound-vars-io =
+    io-wrap(mark-bound-unbound-vars)
+

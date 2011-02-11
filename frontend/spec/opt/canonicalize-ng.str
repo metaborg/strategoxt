@@ -1,0 +1,8 @@
+module canonicalize-ng
+imports libstrc libstratego-lib
+
+strategies
+
+  canonicalize-ng-io =
+    io-wrap(canonicalize)
+

@@ -1,0 +1,8 @@
+module test10
+
+imports collection/list/cons 
+
+strategies
+
+  main =
+    ?x; !x@"a"

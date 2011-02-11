@@ -1,0 +1,55 @@
+module build-match-laws-test
+imports libstratego-lib libstrc
+strategies
+
+  build-match-laws-test-io =
+    test-suite(!"build-match-laws-test",
+	test2
+	; test3
+    )
+
+/*
+  test1 = 
+    apply-test(!"test1"
+	, BuildMatch
+	, !Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
+           Seq(Match(Op("TCons",[Var("f_0"),Op("TCons",[Var("g_0"),Op("TNil",[])])])),
+               Where(PrimT("SSL_fprintnl",[],[Var("f_0"),Var("g_0")]))))
+	, !Seq(Seqs([Seq(Build(Var("b_0")),Match(Var("f_0"))),
+                     Seq(Build(Op("TCons",[Var("c_0"),Op("TNil",[])])),
+			 Match(Op("TCons",[Var("g_0"),Op("TNil",[])])))]),
+               Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
+                   Where(PrimT("SSL_fprintnl",[],[Var("f_0"),Var("g_0")]))))
+
+	)
+*/
+
+  test2 = 
+    apply-and-check(!"test2"
+	, simplify
+	, !Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
+           Seq(Match(Op("TCons",[Var("f_0"),Op("TCons",[Var("g_0"),Op("TNil",[])])])),
+               Where(PrimT("SSL_fprintnl", [], [Var("f_0"),Var("g_0")]))))
+	, ?Scope([a_0],
+	   Seq(Build(Var("b_0")),
+	   Seq(Match(Var("f_0")),
+	   Seq(Build(Var("c_0")),
+	   Seq(Match(Var("g_0")),
+	   Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
+ 	   Seq(Match(Var(a_0)),
+	   Seq(PrimT("SSL_fprintnl", [], [Var("f_0"),Var("g_0")]),
+	       Build(Var(a_0))))))))))
+	)
+
+  test3 = 
+    apply-test(!"test3"
+	, simplify
+	, !Seq(Build(Op("TCons",[Var("b_0"),Op("TCons",[Var("c_0"),Op("TNil",[])])])),
+           Seq(Match(Op("TCons",[Var("f_0"),Op("TCons",[Var("g_0"),Op("TNil",[])])])),
+               PrimT("SSL_fprintnl", [],[Var("f_0"),Var("g_0")])))
+	, !Seq(Build(Var("b_0")),
+	   Seq(Match(Var("f_0")),
+	   Seq(Build(Var("c_0")),
+	   Seq(Match(Var("g_0")),
+	       PrimT("SSL_fprintnl",[],[Var("f_0"),Var("g_0")])))))
+	)

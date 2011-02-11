@@ -1,0 +1,23 @@
+/**
+ * Library of utils for reporting errors in strc.
+ */
+module error-reporting
+imports
+  libstratego-xtc
+
+strategies
+  
+  /**
+   * @type Stratego AST -> String
+   */
+  pp-stratego-fragment =
+    pp-stratego-string
+    
+  /**
+   * @param Name of strategy (String)
+   * @param Number of strategy arguments (Int)
+   * @param Number of term arguments (Int)
+   * @type _ -> String
+   */
+  pp-strategy-name(|name, n-sargs, n-targs) =
+    <concat-strings> [name, "(", <int-to-string> n-sargs, ",", <int-to-string> n-targs, ")"]

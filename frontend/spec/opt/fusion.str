@@ -1,0 +1,13 @@
+module fusion
+imports libstrc libstratego-lib
+
+strategies
+
+  fusion-io = 
+    io-wrap(
+      declare-inline-rules
+      ; alltd(innermost-fusion)
+      // turn off outermost-fusion while it is not finished (EV)
+      //; alltd(innermost-fusion + outermost-fusion)
+    )
+

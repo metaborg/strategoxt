@@ -1,0 +1,7 @@
+module stratego-parenthesize
+imports libstratego-lib libstrc
+
+strategies
+
+   stratego-parenthesize-io =
+     io-stratego-parenthesize

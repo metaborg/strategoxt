@@ -1,0 +1,7 @@
+module dead-def-elim
+imports libstrc libstratego-lib
+strategies
+
+  dead-def-elim-io = 
+    io-wrap(only-local-option, dead-def-elim-spec)
+

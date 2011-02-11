@@ -1,0 +1,4 @@
+module rename-vars
+imports libstrc libstratego-lib
+strategies
+  rename-vars = io-wrap(strename)

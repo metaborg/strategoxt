@@ -1,0 +1,10 @@
+module pp-stratego
+imports
+  libstratego-lib
+  libstratego-xtc 
+  libstrc
+
+strategies
+
+  pp-stratego-io =
+    io-pp-stratego

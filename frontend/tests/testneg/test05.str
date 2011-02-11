@@ -1,0 +1,23 @@
+/**
+ * Test of a dynamic rule with [] lhs.
+ *
+ * [] used to be the dummy introduced by the dr liter
+ * for wildcards and non-context variables. This caused
+ * this test to fail for very obscure reasons.
+ */
+module test66
+imports libstratego-lib
+strategies
+
+  main =
+      define-Var
+    ; define-List
+
+    ; <Foo> []
+    ; debug(!"Applied: ")
+
+  define-Var =
+    rules(Foo : x ->  "Var")
+
+  define-List =
+    rules(Foo : [] -> "List")

@@ -1,0 +1,6 @@
+module define-congruences
+imports libstrc libstratego-lib
+strategies
+
+  define-congruences-io =
+    io-wrap(define-congruences)

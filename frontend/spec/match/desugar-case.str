@@ -1,0 +1,6 @@
+module desugar-case
+imports libstrc libstratego-lib
+strategies
+
+  desugar-case-io =
+    io-wrap(desugar-case) 

@@ -1,0 +1,10 @@
+/**
+ * Translate rewrite rules to strategy definitions.
+ */
+
+module rules-to-sdefs
+imports libstrc libstratego-lib
+strategies
+
+  rules-to-sdefs-io = 
+    io-wrap(rules-to-sdefs)

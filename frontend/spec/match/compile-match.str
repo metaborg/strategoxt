@@ -1,0 +1,7 @@
+module compile-match
+imports libstrc libstratego-lib
+strategies
+
+  compile-match-io = 
+    io-wrap(apply-to-bodies(match-to-dfa))
+

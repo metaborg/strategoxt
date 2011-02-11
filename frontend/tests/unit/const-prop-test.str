@@ -1,0 +1,76 @@
+module const-prop-test
+imports libstrc libstratego-lib
+strategies
+
+  const-prop-test-io =
+    test-suite(!"const-prop-test",
+      test1
+    )
+
+  test1 = 
+    apply-test(!"test1"
+	, cp
+	, !|[ {d_6, e_6 :
+                    MarkVar_0_0(|)
+                    ; ?d_6
+                    ; ?Var(e_6)
+                    ; !(Var(e_6), Defined("f_0", "bound"))
+                    ; {w_3, i_4, v_4 :
+                       ?(w_3, i_4)
+                       ; !"MarkVar"
+                       ; ?v_4
+                       ; !(v_4, w_3, i_4)
+                       ; table_replace_0_0(|)
+                       ; !(w_3, i_4)}
+                    ; !d_6}
+	   ]|
+	, !|[ {d_6, e_6 :
+                    MarkVar_0_0(|)
+                    ; ?d_6
+                    ; ?Var(e_6)
+                    ; !(Var(e_6), Defined("f_0", "bound"))
+                    ; {w_3, i_4, v_4 :
+                       ?(w_3, i_4)
+                       ; !"MarkVar"
+                       ; ?v_4
+                       ; !("MarkVar", Var(e_6), Defined("f_0", "bound"))
+                       ; table_replace_0_0(|)
+                       ; !(Var(e_6), Defined("f_0", "bound"))}
+                    ; !d_6}
+	   ]|
+	)
+
+
+/*
+
+
+    mark_match_0_0( | ) =
+      {b_6, c_6 :
+       ?Match(b_6)
+       ; !b_6
+       ; alltd_1_0({d_6, e_6 :
+                    MarkVar_0_0(|)
+                    ; ?d_6
+                    ; ?Var(e_6)
+                    ; !(Var(e_6), Defined("f_0", "bound"))
+                    ; {w_3, i_4, v_4 :
+                       ?(w_3, i_4)
+                       ; !"MarkVar"
+                       ; ?v_4
+                       ; !(v_4, w_3, i_4)
+                       ; table_replace_0_0(|)
+                       ; !(w_3, i_4)}
+                    ; !d_6} |)
+       ; ?c_6
+       ; prim(SSL_pfrintnl, | stderr(), Cons("mark-match after: ", Nil()))
+       ; !c_6
+       ; save_MarkVar_0_0(|)
+       ; map_1_0({x_4, y_4 :
+                  ?x_4
+                  ; !"  "
+                  ; ?y_4
+                  ; prim(SSL_fprintnl, | stderr(), Cons(y_4, Cons(x_4, Nil())))
+                  ; !x_4} |)
+       ; !Match(c_6)}
+
+*/

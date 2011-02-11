@@ -1,0 +1,17 @@
+module report-ambs
+
+imports 
+  libstratego-lib
+  libstratego-xtc 
+  libstratego-sglr
+  libstrc
+
+strategies
+
+  report-ambs-io = 
+    io-wrap(
+      where(report-ambs)
+    ; if oncetd(amb(id)) then 
+        xtc-exit 
+      end
+    )

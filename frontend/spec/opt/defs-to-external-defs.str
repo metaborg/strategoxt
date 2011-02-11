@@ -1,0 +1,7 @@
+module defs-to-external-defs
+imports libstratego-lib libstrc
+strategies
+
+  defs-to-external-defs-io =
+    io-wrap(dted-options, defs-to-external-defs)
+

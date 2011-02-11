@@ -1,0 +1,6 @@
+module desugar-default-vardec
+imports libstrc libstratego-lib
+strategies
+
+  desugar-default-vardec-io = 
+    io-wrap(desugar-DefaultVarDec)

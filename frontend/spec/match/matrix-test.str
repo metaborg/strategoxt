@@ -1,0 +1,14 @@
+module matrix-test
+imports libstratego-lib matrix 
+
+strategies
+
+  main = 
+    test-suite(!"matrix-test",
+	id
+    )
+
+
+
+
+

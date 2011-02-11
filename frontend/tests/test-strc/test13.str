@@ -1,0 +1,12 @@
+module test13
+
+imports libstratego-lib
+
+strategies
+  main = !0; foo
+  
+  foo : a -> a
+    where say(!1)
+    with fail
+    where say(!3)
+

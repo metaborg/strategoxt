@@ -1,0 +1,11 @@
+/**
+ * Invocation of non-existing strategy should fail in strc
+ *
+ * Test for STR-636
+ */
+module test07
+imports list-cons tuple-cons
+strategies
+
+ main =
+   bar

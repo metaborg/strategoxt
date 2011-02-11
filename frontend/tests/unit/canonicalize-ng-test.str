@@ -1,0 +1,69 @@
+module canonicalize-ng-test
+imports libstrc libstratego-lib
+strategies
+
+  canonicalize-ng-test-io = 
+    test-suite(!"canonicalize-ng-test", id
+	; test-all-elimination1
+        ; test-all-elimination2
+	//; test-closure-alloc
+    )
+
+  test-all-elimination1 = 
+    apply-and-check(!"test-all-elimination1"
+	, canonicalize
+	, !|[ bottomup_1_0(e_1 : ATerm() -> ATerm()|) =
+                all(bottomup_1_0(e_1(|)|)); e_1(|)
+           ]|
+	, ?|[ bottomup_1_0(e_1 : ATerm() -> ATerm()|) =
+                let f(|) = bottomup_1_0(e_1(|)|)
+                 in SRTS_all(f(|)|)
+                end
+                ; e_1(|)
+           ]|
+	)
+ 
+  test-all-elimination2 = 
+    apply-test(!"test-all-elimination2"
+	, canonicalize
+	, !|[ 
+              bottomup_1_0(h_1 : ATerm() -> ATerm()|) =
+                let t_0(|) = all(t_0(|)); h_1(|)
+                in t_0(|)
+               end
+           ]|
+	, !|[ 
+              bottomup_1_0(h_1 : ATerm() -> ATerm()|) =
+                let t_0(|) = SRTS_all(t_0(|)|); h_1(|)
+                in t_0(|)
+               end
+           ]|
+	)
+
+  // TODO: find out why the check fails
+
+  test-closure-alloc = 
+    apply-and-check(!"test-closure-alloc"
+	, canonicalize
+	, !|[ 
+              strategies
+                foo(|) = 
+                  bar(id, baz(|)|)
+                bar(aaa : ATerm -> ATerm, bbb : ATerm -> ATerm|) = 
+                  aaa(|); bbb(|)
+	        baz(|) = 
+                  fail
+           ]|
+	, ?|[ 
+              strategies
+                foo(|) = 
+                  let f~{ClosureAlloc()}(|) = _Id(|)
+                      g~{ClosureAlloc()}(|) = baz(|)
+                   in bar(f(|), g(|)|)
+		  end
+                bar(aaa : ATerm -> ATerm, bbb : ATerm -> ATerm|) = 
+                  aaa(|); bbb(|)
+	        baz(|) = 
+                  fail
+           ]|
+	)

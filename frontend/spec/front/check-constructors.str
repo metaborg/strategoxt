@@ -1,0 +1,10 @@
+module check-constructors
+imports
+  libstratego-lib
+  libstrc
+
+strategies
+
+  check-constructors-io = 
+    io-wrap(CheckConstructors)
+

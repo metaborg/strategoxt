@@ -1,0 +1,5 @@
+module stratego2abox
+imports libstrc
+strategies
+
+  stratego2abox-io = io-stratego2abox 
