@@ -1,6 +1,0 @@
-/**
- * Character based in-/output.
- */
-module char-io
-imports system/io/char
-
