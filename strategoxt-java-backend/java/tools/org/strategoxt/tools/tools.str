@@ -6,3 +6,6 @@ imports
   lib/pack-sdf
   lib/ppgen
   lib/parse-pp-table
+  lib/core-sdf-parenthesize
+  lib/gen-renamed-sdf-module
+  lib/gen-sdf-mix

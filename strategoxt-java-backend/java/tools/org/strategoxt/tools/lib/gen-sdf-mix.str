@@ -1,0 +1,189 @@
+/**
+ * Generates a Mixin SDF module
+ *
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ * @since   0.17
+ */
+module gen-sdf-mix
+imports
+  Sdf2
+  libstratego-lib
+  libstratego-xtc
+  sdf/grammar/utils
+  native-transform
+
+strategies
+
+  main-gen-sdf-mix =
+    xtc-io-wrap(mix-options + native-executables-option, gen-sdf-mix)
+
+  gen-sdf-mix =
+      xtc-ensure-file
+    ; where(
+        param* := <get-main-module-parameters>
+      )
+    ; native-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; native-transform(!"implodePT", ![])
+    ; read-from
+    ; sdf-desugar
+    ; error-if-empty-grammar(<xtc-exit> 1)
+    ; where(collect-layout-sorts => layout-sorts)
+    ; collect-sorts
+    ; if not(<get-config> MixLayout()) then
+        <diff> (<id>, layout-sorts)
+      end
+    ; remove-all(is-main-module-param(|param*))
+    ; where(ctx := <newname> "Ctx")
+    ; map(rename-sort(|ctx))
+    ; create-module(|ctx, param*)
+    ; xtc-pp-sdf2
+  	
+
+/**
+ * Parameters of the main module need to become parameters of the mix module.
+ */
+strategies
+  my-parse-sdf2-definition = 
+    ?FILE(<parse-sdf-definition-file>)
+  ; sdf-desugar
+
+  get-main-module-parameters =
+    lookup-sdf-module(|<get-sdf-main-module>)
+    ; ( \ 'module(unparameterized(_), _, _) -> [] \
+      + \ 'module(parameterized(_, param*), _, _) -> param* \
+      )
+
+  lookup-sdf-module(|mod) =
+    my-parse-sdf2-definition
+    ; ?definition(<id>)
+    ; (
+      fetch-elem(
+        ?'module(parameterized(mod, _), _, _)
+        <+ ?'module(unparameterized(mod), _, _)
+      )
+      <+ log(|Error(), "Main module not found in syntax definition"))
+
+  is-main-module-param(|param*) =
+    where(?sym; <fetch(?sym)> param*)
+
+/**
+ * Layout sorts should not be renamed.
+ */
+strategies
+
+  collect-layout-sorts =
+    ?grammar
+    ; new-hashtable => prods
+    ; <collect-om(?prod(_, _, _))> grammar
+    ; map({lhs, rhs: ?prod(lhs, rhs, _); <hashtable-pushlist(|rhs, lhs)> prods})
+    ; new-iset => result
+    ; iset-add(| A |[  LAYOUT ]| )
+    ; iset-add(| A |[ <LAYOUT-LEX> ]| )
+    ; iset-add(| A |[ <LAYOUT-CF> ]| )
+    ; iset-add(| A |[  LAYOUT? ]| )
+    ; iset-add(| A |[ <LAYOUT?-LEX> ]| )
+    ; iset-add(| A |[ <LAYOUT?-CF> ]| )
+    ; iset-fixpoint({a:?a; <hashtable-get(|a)> prods})
+    ; iset-elements
+    ; retain-all(
+        ?sort(_)
+      + ?lex(sort(_)); ?lex(<id>)
+      + ?cf(sort(<id>)); ?lex(<id>)
+      )
+
+/**
+ * Transformation
+ */
+strategies
+
+  // cf(parameterized-sort("Expr", [sort("Ctx")]))
+  collect-sorts =
+    collect(
+      // kernel sort
+      \ p |[ A* -> S       $ ]| -> A |[ S ]| \
+
+      // cf sort
+    + \ p |[ A* -> <S-CF>  $ ]| -> A |[ S ]| \
+
+      // lex sort
+    + \ p |[ A* -> <S-LEX> $ ]| -> A |[ S ]| \
+
+      // kernel parameterized sort
+    + \ p |[ A* -> S[[B+]] $ ]| -> A |[ S[[B+]] ]| \
+
+      // cf parameterized sort
+    + \ p |[ A* -> <S[[B+]]-CF> $ ]| -> A |[ S[[B+]] ]| \
+
+      // lex parameterized sort
+    + \ p |[ A* -> <S[[B+]]-LEX> $ ]| -> A |[ S[[B+]] ]| \
+    )
+
+  /**
+   * Renames a plain sort.
+   *
+   * @param String - Name of new context parameter
+   */
+  rename-sort(|S) :
+    A |[ S1 ]| -> ro |[ S1 => S1[[S]] ]|
+
+  /**
+   * Renames a parameterized sort.
+   *
+   * @param String - Name of new context parameter
+   */
+  rename-sort(|S) :
+    A |[ S1[[B+]] ]| -> ro |[ S1[[B+]] => S1[[S, B+]] ]|
+
+strategies
+
+  /**
+   * Produces the final module
+   * @param String - Name of new context parameter
+   * @param List(Symbol) - Additional module parameters
+   */
+  create-module(|S, A*) :
+    ro* -> m |[
+      module Mid2[S A*]
+      imports Mid1[A*] [ ro* ]
+    ]|
+    where
+      [_ | _] := A*
+      ; get-sdf-main-module => Mid1
+      ; <get-config> SdfResultModuleFlag() => Mid2
+
+  create-module(|S, A*) :
+    ro* -> m |[
+      module Mid2[S A*]
+      imports Mid1[ ro* ]
+    ]|
+    where
+      [] := A*
+      ; get-sdf-main-module => Mid1
+      ; <get-config> SdfResultModuleFlag() => Mid2
+
+/**
+ * Options
+ */
+strategies
+
+  mix-options =
+      sdf-main-module-option
+    + sdf-result-module-option
+    + include-layout-option
+
+  sdf-result-module-option =
+    ArgOption("--name"
+    , where(<set-config> (SdfResultModuleFlag(), <id>))
+    , <concat-strings>   ["--name mod       ", "Name of the resulting module (required)"]
+    )
+
+  include-layout-option =
+    Option("--include-layout"
+    , where(<set-config> (MixLayout(), ()))
+    , !"--include-layout        Rename layout"
+    )
+
+signature
+  constructors
+    SdfResultModuleFlag : Flag
+    MixLayout : Flag

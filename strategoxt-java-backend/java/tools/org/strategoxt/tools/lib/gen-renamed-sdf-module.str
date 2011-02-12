@@ -1,0 +1,119 @@
+/**
+ * Generates an SDF module with renamings for all sorts in the input SDF definition.
+ *
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ * @since   0.9.5
+ */
+module gen-renamed-sdf-module
+imports
+  libstratego-lib
+  libstratego-xtc
+  sdf/grammar/utils
+  lib/native-transform
+  lib/sdf-desugar
+  lib/sdf-ensugar
+  lib/core-sdf-parenthesize
+  
+strategies
+
+  main-gen-renamed-sdf-module =
+    xtc-io-wrap(renaming-options + native-executables-option, gen-renamed-sdf-module)
+
+  gen-renamed-sdf-module = 
+      native-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; native-transform(!"implodePT", ![])
+    ; read-from
+    ; sdf-desugar
+    ; error-if-empty-grammar(<xtc-exit> 1)
+    ; collect-sorts
+    ; map(rename-sort)
+    ; create-module
+    ; sdf-ensugar
+    ; parenthesize-Sdf2
+    ; xtc-pp-sdf2
+
+  xtc-pp-sdf2 =
+    where(f := <xtc-new-file>)
+    ; pp-sdf2-file(|f)
+    ; !FILE(f)
+
+  pp-sdf2-file(|path) =
+    let open =
+          open-stream <+ ?(<id>, _); perror; fail
+
+     in where(fout := <open> (path, "w"))
+      ; finally(
+          pp-sdf-stream(|fout)
+          ; <fputs> ("\n", fout)
+        , try(<fclose> fout)
+        )
+   end
+  	
+
+/**
+ * Transformation
+ */
+strategies
+
+  collect-sorts =
+   collect(
+     \ p |[ A* -> S       $ ]| -> A |[ S ]| \
+   + \ p |[ A* -> <S-CF>  $ ]| -> A |[ S ]| \
+   + \ p |[ A* -> <S-LEX> $ ]| -> A |[ S ]| \
+   )
+
+  rename-sort :
+    A |[ S1 ]| -> ro |[ S1 => S2 ]|
+      where <apply-renaming-scheme> S1 => S2
+
+  create-module :
+    ro* -> m |[
+      module M2
+      imports M1 [ ro* ]
+    ]|
+    where get-sdf-main-module => M1
+        ; <get-config'> SdfResultModuleFlag() => M2
+
+  apply-renaming-scheme :
+    S1 -> S2
+      where <get-config'> RenamingSchemeFlag()
+          ; map( is-string <+ \ Var("Sort") -> S1 \ )
+          ; concat-strings
+              => S2
+
+  get-config' =
+    <table-get> ("config", <id>)
+
+/**
+ * Options
+ */
+strategies
+
+  renaming-options =
+    sdf-main-module-option
+  + sdf-result-module-option
+  + renaming-scheme-option
+
+  sdf-result-module-option =
+    ArgOption("--name"
+    , where(<set-config> (SdfResultModuleFlag(), <id>))
+    , <concat-strings>   ["--name mod       ", "Name of the resulting module (required)"]
+    )
+
+  renaming-scheme-option = 
+      ArgOption("--prefix"
+      , where(<set-config> (RenamingSchemeFlag(), [<id>, Var("Sort")]))
+      , <concat-strings> ["--prefix id      ", "Prefix the sort names with `id`"]
+      )
+    + ArgOption("--scheme"
+      , where(<set-config> (RenamingSchemeFlag(), <read-from-string>))
+      , <concat-strings> ["--scheme [...]   ", "Scheme for the renaming of sorts"]
+      )
+
+signature
+  constructors
+    SdfResultModuleFlag : Flag
+    RenamingSchemeFlag  : Flag
+
+    Var : String -> RenamingSchemePart
+        : String -> RenamingSchemePart

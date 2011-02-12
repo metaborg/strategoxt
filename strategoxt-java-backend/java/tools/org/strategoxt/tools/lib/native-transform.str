@@ -1,0 +1,33 @@
+module native-transform
+imports
+  libstratego-lib
+  libstratego-xtc
+  libstratego-tool-doc
+
+strategies
+  native-transform(tool, args) =
+    if <get-config> "-Xnativepath" => nativepath; file-exists then
+      xtc-ensure-file => FILE(input)
+    ; xtc-new-file    => output
+    ; tool'  := <conc-strings> (nativepath, <tool>)
+    ; input' := <abspath> input
+    ; cwd    := <getcwd>
+    ; <chdir <+ fatal-err(|"Native tool path not found")> nativepath
+    ; <call> (tool', ["-i", input', "-o", output | <args>])
+    ; if not(<file-exists> output) then // (shouldn't be reachable)
+        fatal-err(|["Native tool ", tool', " failed to produce an output file."])
+      end
+    ; <chdir> cwd
+    ; !FILE(output)
+    else
+      xtc-transform(tool, args)
+    end
+  <+
+    <fatal-err(|["Native tool ", <tool>, " failed"])> <args <+ !"<args?>">
+
+  native-executables-option =
+    ArgOption("-Xnativepath"
+    , <set-config> ("-Xnativepath", <id>)
+    , !HelpString("-Xnativepath", "Sets the path to the native sdf2table and implodePT executables")
+    )
+
