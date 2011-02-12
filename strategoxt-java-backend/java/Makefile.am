@@ -69,7 +69,8 @@ EXTRA_DIST=\
   META-INF/MANIFEST.MF
 
 STRINCLUDES= \
-  -I $(STRATEGOXT)/share/sdf/stratego-regular
+  -I $(STRATEGOXT)/share/sdf/stratego-regular \
+  -I $(STRATEGOXT)/share/sdf/sdf-front
 
 CLEANFILES = \
   $(LIBRARYJAVAS) $(COMPILERJAVAS) $(TOOLJAVAS) \
@@ -236,7 +237,7 @@ tools/org/strategoxt/tools/Main.java : $(TOOLSTRS:.str=.rtree)
 
 compiler/org/strategoxt/strj/Main.java : ../trans/strj.ctree ../trans/strj
 	[ -e compiler/org/strategoxt ] || mkdir -p compiler/org/strategoxt
-	$(STRJ) -i $< -o $@ --clean -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la strc -la java-front -O 3 $(STRJ_CONSTANTS)
+	$(STRJ) -i $< -o $@ --clean -p org.strategoxt.strj --verbose 3 -la stratego-lib -la stratego-xtc -la stratego-gpp -la strc -la java-front -O 3 $(STRJ_CONSTANTS) 
 
 ###### EXTERNAL #######
 
