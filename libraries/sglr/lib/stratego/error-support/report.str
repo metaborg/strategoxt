@@ -4,7 +4,7 @@
 module stratego/error-support/report
 imports
   libstratego-xtc
-  error-support
+  stratego/error-support/error-support
 
 strategies
 
