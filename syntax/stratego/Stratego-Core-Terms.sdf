@@ -1,0 +1,38 @@
+module Stratego-Core-Terms
+imports
+  Stratego-Core-Identifiers
+  Stratego-Core-Constants
+
+exports
+  sorts ID Var Wld
+  context-free syntax
+    Id 				-> Var  {cons("Var")}
+    Id				-> ID
+    %% ":" Var                  -> Var  {cons("SeqVar")}
+
+  sorts Term PreTerm
+  context-free syntax
+    Var 			 -> PreTerm 
+    Var 			 -> Term {prefer}
+
+    "_" 			 -> Wld {cons("Wld")}
+    Wld 			 -> PreTerm
+    Wld 			 -> Term {prefer}
+
+    Int 			 -> PreTerm {cons("Int")}
+    Real 			 -> PreTerm {cons("Real")}
+    String 			 -> PreTerm {cons("Str")}
+
+    Id "(" {Term ","}* ")" 	 -> PreTerm {cons("Op")}
+    String "(" {Term ","}* ")" 	 -> PreTerm {cons("OpQ")}
+    Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
+
+    PreTerm "{^" PreTerm "}"	 -> Term {cons("Anno")}
+
+    Var "@" Term 		 -> Term {cons("As"),prefer}
+    Var "@" PreTerm 		 -> PreTerm {cons("As")}
+
+  context-free priorities
+    Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
+  > Var "@" Term 		 -> Term {cons("As")}
+

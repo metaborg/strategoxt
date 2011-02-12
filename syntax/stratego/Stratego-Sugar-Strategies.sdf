@@ -1,0 +1,134 @@
+module Stratego-Sugar-Strategies
+imports
+  Stratego-Core-Strategies
+  Stratego-Sugar-Terms
+  Stratego-Sugar-Constants
+  Stratego-Sugar-Signatures
+
+exports
+  context-free syntax
+    Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
+    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
+
+  context-free syntax
+    ID 				  	  -> Typedid {cons("DefaultVarDec")}
+
+  sorts Rule
+
+  sorts StrategyParen StrategyCurly StrategyAngle
+  context-free syntax
+
+    %% Abstraction
+
+    SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
+
+    %% Match and build
+
+    "{" Strategy "}" 			  -> Strategy {cons("ScopeDefault")}
+
+     %%"<" Strategy ">" Term 		  -> Strategy {cons("BA")}
+     StrategyAngle Term 		  -> Strategy {cons("BA")}
+     "<" Strategy ">"			  -> StrategyAngle {bracket} %% {cons("AngleStrat")}
+
+    %% Combinators
+
+    Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
+
+    "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
+
+    "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
+    "where" "(" Strategy ")" 		  -> Strategy {cons("Where")}
+    "with"  "(" Strategy ")" 		  -> Strategy {cons("With"), prefer}
+    "test"  "(" Strategy ")" 		  -> Strategy {cons("Test")}
+
+    %% Primitives
+
+    "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
+    "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
+
+    %% Congruence operators
+
+    String 				  -> Strategy {cons("StrCong")}
+    Int 				  -> Strategy {cons("IntCong")}
+    Real 				  -> Strategy {cons("RealCong")}
+    Char 			 	  -> Strategy {cons("CharCong")}
+
+    String "(" {Strategy ","}* ")" 	  -> Strategy {cons("CongQ")}
+
+    %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
+
+    Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
+    
+    "{" Strategy "}"		  	  -> StrategyCurly {cons("StrategyCurly")}
+
+    "("  ")" 		  		  -> Strategy {cons("EmptyTupleCong")}
+   "(" Strategy  ")" 		          -> Strategy {bracket}
+    "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
+
+%%    Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
+%%    Mod "(" {Strategy ","}* ")"	  	  -> Strategy {cons("ModCong")}
+%%    Id "^" Id				  -> Mod {cons("Mod")}
+    "[" {Strategy ","}* "]" 		  -> Strategy {cons("ListCongNoTail")}
+    "[" {Strategy ","}* "|" Strategy "]"  -> Strategy {cons("ListCong")}
+
+%%    Strategy "#" "(" StrategyInj ")" 	  -> Strategy {cons("ExplodeCong")}
+%%    Strategy "#" "(" Strategy ")" 	  -> Strategy {cons("ExplodeCong")}
+    Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}
+
+  %% Syntactic sugar sugar
+
+  sorts SwitchCase
+  context-free syntax
+
+    SVar  		  		  -> Strategy {cons("CallNoArgs")}
+    "\\" Rule "\\" 			  -> Strategy {cons("LRule")}
+    "(" Rule ")" 			  -> Strategy {cons("SRule")}
+    Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
+    Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
+
+    "proceed" "(" {Strategy "," }+ ")" -> Strategy {cons("Proceed"), prefer}
+
+    "if" Strategy "then" Strategy 
+                  "else" Strategy "end"   -> Strategy {cons("CondChoice")}
+    "if" Strategy "then" Strategy "end"   -> Strategy {cons("IfThen")}
+
+    "switch" Strategy SwitchCase* "end"   -> Strategy {cons("SwitchChoiceNoOtherwise")}
+    "switch" Strategy SwitchCase*
+         "otherwise" ":" Strategy "end"   -> Strategy {cons("SwitchChoice")}
+
+    "case" Strategy ":" Strategy          -> SwitchCase {cons("SwitchCase")}
+
+    Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
+
+    Term ":=" Term			  -> Strategy {cons("Assign")}
+
+  %% Priorities
+
+  context-free priorities
+    { Strategy StrategyCurly		  -> Strategy
+      Strategy "#" StrategyParen          -> Strategy
+    }
+  > { "!" Term 				  -> Strategy
+      "?" Term 				  -> Strategy
+    }
+  > StrategyAngle Term 		          -> Strategy
+  > Strategy "=>" Term 		  	  -> Strategy
+  > Strategy ";" Strategy 		  -> Strategy
+  > {right: 
+     Strategy "+" Strategy 		  -> Strategy
+     Strategy "<+" Strategy 		  -> Strategy
+     Strategy "+>" Strategy 		  -> Strategy
+     
+     Strategy "<" StrategyMid 
+              "+" Strategy 		  -> Strategy
+    }
+
+  context-free priorities
+    Strategy 				  -> StrategyMid
+  > Strategy "+" Strategy 		  -> Strategy
+
+  context-free priorities
+    { Strategy StrategyCurly      -> Strategy
+      Strategy "#" StrategyParen  -> Strategy
+    }
+    .> Term ":=" Term -> Strategy

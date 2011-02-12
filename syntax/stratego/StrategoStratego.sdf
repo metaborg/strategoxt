@@ -1,0 +1,7 @@
+module StrategoStratego
+imports
+  StrategoMix[StrategoHost]
+  EmbeddedStrategoMix[StrategoObject PreTerm[[StrategoHost]] Term[[StrategoHost]]]
+
+hiddens
+  context-free start-symbols Module[[StrategoHost]]

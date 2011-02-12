@@ -1,0 +1,121 @@
+module Stratego-Core-Strategies
+imports
+  Stratego-Core-Terms
+  Stratego-Core-Constants
+  Stratego-Core-Signatures
+
+exports
+  sorts Def
+  context-free syntax
+    StrategyDef					 -> Def 
+    Id						 -> SVar {cons("SVar")}
+    "let" Def* "in" Strategy "end"		 -> Strategy {cons("Let")}
+    SVar "(" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallT")}
+
+    "call" "(" Term "|" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallDynamic")}
+
+
+  sorts StrategyDef
+  context-free syntax
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
+
+    Anno+ StrategyDef -> Def {cons("AnnoDef")}
+
+    "external"
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("ExtSDefInl")}
+
+    "external"
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
+
+    "external"
+    EmptyId "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
+
+
+  sorts EmptyId
+  lexical syntax
+  
+    -> EmptyId
+
+  sorts Anno
+  context-free syntax
+    "extend"      -> Anno {cons("Extend")}
+    "override"    -> Anno {cons("Override")}
+    "internal"    -> Anno {cons("Internal")}
+%%  "sealed"      -> Anno {cons("Sealed")}
+%%  "extensible"  -> Anno {cons("Extensible")}
+%%  "overridable" -> Anno {cons("Overridable")}
+
+  lexical syntax
+    
+    "extend"      -> Keyword
+    "override"    -> Keyword
+    "internal"    -> Keyword
+    "sealed"      -> Keyword
+    "extensible"  -> Keyword
+    "overridable" -> Keyword
+
+  lexical restrictions
+  
+    "extend"
+    "override"
+    "internal"
+    "sealed"
+    "extensible"
+    "overridable" -/- [a-zA-Z0-9\'\-\_]
+
+  sorts Typedid
+  context-free syntax
+    ID ":" Type 			  -> Typedid {cons("VarDec")}
+
+
+  sorts Strategy SVar StrategyParen StrategyMid 
+  context-free syntax
+    "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
+
+    "fail" 				  -> Strategy {cons("Fail")}
+    "id" 				  -> Strategy {cons("Id")}
+
+    "proceed" "(" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("ProceedT"), prefer}
+    "proceed"                                         -> Strategy {cons("ProceedNoArgs"), prefer}
+
+    %% Match and build
+
+    "?" Term 				  -> Strategy {cons("Match")}
+    "!" Term 				  -> Strategy {cons("Build")}
+    "{" {ID ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
+
+    %% Combinators
+
+    Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
+    Strategy "<" StrategyMid 
+             "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
+    Strategy 				  -> StrategyMid
+
+    %% Primitives
+
+    "prim" "(" String "," {Strategy ","}* "|" {Term ","}*")"  -> Strategy {cons("PrimT")}
+
+    %% Traversal
+
+    "some" "(" Strategy ")" 		  -> Strategy {cons("Some")}
+    "one" "(" Strategy ")" 		  -> Strategy {cons("One")}
+    "all" "(" Strategy ")" 		  -> Strategy {cons("All")}
+
+  %% Priorities
+
+  context-free priorities
+    { "!" Term 				  -> Strategy {cons("Build")}
+      "?" Term 				  -> Strategy {cons("Match")}
+    }
+  > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
+  > {right: 
+     Strategy "<" StrategyMid 
+              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
+    }
+
+  context-free syntax
+    "import-term" "(" ModName ")" -> Strategy {cons("ImportTerm")}

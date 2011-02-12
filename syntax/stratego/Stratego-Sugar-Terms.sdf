@@ -1,0 +1,35 @@
+module Stratego-Sugar-Terms
+imports
+  Stratego-Core-Terms
+  Stratego-Sugar-Strategies
+
+exports
+  sorts LID
+  context-free syntax
+    LId 			-> LID  {cons("ListVar")}
+    LID				-> Var  {cons("Var")}
+    LID				-> ID
+
+  context-free syntax
+    "_" PreTerm 		 -> PreTerm {cons("BuildDefaultPT")}
+    "_" Term 			 -> Term {cons("BuildDefault"),prefer}
+
+    Char 			 -> PreTerm {cons("Char")}
+
+    PreTerm "{" {Term ","}* "}"	 -> Term {cons("AnnoList")}
+    PreTerm                      -> Term {cons("NoAnnoList")}
+
+    "<" Strategy ">" Term 	 -> PreTerm {cons("App")}
+    "<" Strategy ">" Term 	 -> Term {cons("App"),prefer}
+
+    StrategyAngle		 -> PreTerm {cons("RootApp")}
+    StrategyAngle		 -> Term {cons("RootApp"),prefer}
+
+    "(" {Term ","}* ")" 	 -> PreTerm {cons("Tuple")}
+    "[" {Term ","}* "]" 	 -> PreTerm {cons("List")}
+    "[" {Term ","}* "|" Term "]" -> PreTerm {cons("ListTail")}
+
+  context-free priorities
+    Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
+  > PreTerm "{" {Term ","}* "}"	 -> Term {cons("AnnoList")}
+  > Var "@" Term 		 -> Term {cons("As")}

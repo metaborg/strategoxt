@@ -1,0 +1,100 @@
+module Stratego-Core-Identifiers
+exports
+  sorts ModName ModNamePart
+  lexical syntax
+    {ModNamePart "/"}+ -> ModName
+    [a-zA-Z\.\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
+  lexical restrictions
+    ModName -/- [a-zA-Z0-9\'\.\-\_]
+  lexical syntax
+    "imports" 		-> ModName {reject}
+    "overlays" 		-> ModName {reject}
+    "rules" 		-> ModName {reject}
+    "signature" 	-> ModName {reject}
+    "strategies" 	-> ModName {reject}
+
+  sorts Id LId LCID UCID Wld
+  lexical syntax
+    [a-zA-Z\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+    [\'] [a-z]+                       -> Id
+
+    [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
+    [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
+
+  lexical restrictions
+    Id   -/- [a-zA-Z0-9\'\_\*]
+    Id   -/- [\-].~[\>]
+    LId  -/- [a-zA-Z0-9\'\-\_]
+    LCID -/- [a-zA-Z0-9\'\-\_]
+    UCID -/- [a-zA-Z0-9\'\-\_]
+
+  lexical syntax
+    "_"     -> Id {reject}
+    "'"     -> Id {reject}
+
+    Keyword -> Id   {reject}
+    Keyword -> LId  {reject}
+    Keyword -> LCID {reject}
+    Keyword -> UCID {reject}
+
+  lexical restrictions
+    "all"
+    "case" %% not reserved kw
+    "constructors"
+    "else" %% not reserved kw
+    "end" %% not reserved kw
+    "external" %% not reserved kw
+    "fail"
+    "id"
+    "if" %% not reserved kw
+    "in"
+    "imports" %% not reserved kw
+    "let"
+    "module"
+    "not"
+    "one"
+    "overlays"
+    "otherwise" %% not reserved kw
+    "prim"
+    "rec" %% not reserved kw
+    "rules"
+    "script"
+    "signature"
+    "some"
+    "sorts"
+    "strategies"
+    "stratego"
+    "switch" %% not reserved kw
+    "test"
+    "then" %% not reserved kw
+    "where"
+    "import-term"
+      -/- [a-zA-Z0-9\'\-\_]
+  
+  context-free restrictions
+    Wld -/- [a-zA-Z0-9\'\-\_]
+
+  sorts Keyword
+  lexical syntax
+    "all"               -> Keyword
+    "constructors" 	-> Keyword
+    "fail" 		-> Keyword
+    "id" 		-> Keyword
+    "in" 		-> Keyword
+    "let" 		-> Keyword
+    "module" 		-> Keyword
+    "not" 		-> Keyword
+    "one" 		-> Keyword
+    "overlays" 		-> Keyword
+    "prim" 		-> Keyword
+    "rules" 		-> Keyword
+    "script" 		-> Keyword
+    "signature" 	-> Keyword
+    "some" 		-> Keyword
+    "sorts" 		-> Keyword
+    "strategies" 	-> Keyword
+    "stratego" 		-> Keyword
+    "test" 		-> Keyword
+    "where" 		-> Keyword
+    "import-term"	-> Keyword
