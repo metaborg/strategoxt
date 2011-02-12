@@ -1,0 +1,51 @@
+#! /bin/sh
+
+ulimit -s unlimited
+#  -Xnativepath ~/.nix-profile/bin/ -i Stratego.def --main Stratego --name StrategoMix -o StrategoMix.def
+
+SDF=$HOME/.nix-profile
+STRJAR=$HOME/src/strategoxt-java-backend/java/strategoxt.jar
+STRJ="java -cp $STRJAR org.strategoxt.strj.Main"
+PACKSDF="java -cp $STRJAR run org.strategoxt.tools.main-pack-sdf"
+GENSDFMIX="java -cp $STRJAR run org.strategoxt.tools.main-gen-sdf-mix -Xnativepath $HOME/.nix-profile/bin/"
+GENRENSDF="java -cp $STRJAR run org.strategoxt.tools.main-gen-renamed-sdf-module -Xnativepath $HOME/.nix-profile/bin/"
+
+srcdir=`pwd`
+
+cd $srcdir/syntax/stratego
+$PACKSDF -i Stratego.sdf -o Stratego.def || exit 1
+sdf2table -i Stratego.def -o Stratego.tbl -m Stratego || exit 1
+
+$PACKSDF -i EmbeddedStratego.sdf -o EmbeddedStratego.def  || exit 1
+
+$GENSDFMIX -i Stratego.def -o StrategoMix.sdf --main Stratego --name StrategoMix || exit 1
+$GENSDFMIX -i EmbeddedStratego.def -o EmbeddedStrategoMix.sdf --main EmbeddedStratego --name EmbeddedStrategoMix || exit 1
+$GENRENSDF -i Stratego.def -o StrategoRenamed.sdf --main Stratego --name StrategoRenamed --prefix Stratego  || exit 1
+
+$PACKSDF -i StrategoStratego.sdf -o StrategoStratego.def  || exit 1
+sdf2table -i StrategoStratego.def -o StrategoStratego.tbl -m StrategoStratego || exit 1
+
+$PACKSDF -i Stratego-Sugar-in-Stratego.sdf -o Stratego-Sugar-in-Stratego.def || exit 1
+sdf2table -i Stratego-Sugar-in-Stratego.def -o Stratego-Sugar-in-Stratego.tbl -m Stratego-Sugar-in-Stratego || exit 1
+
+cd ../sdf
+$PACKSDF -i Sdf2.sdf -o Sdf2.def -I $SDF/share/sdf-library/library || exit 1
+sdf2table -i Sdf2.def -o Sdf2.tbl -m Sdf2 || exit 1
+
+$PACKSDF -i Stratego-Sdf2.sdf -o Stratego-Sdf2.def -I ../stratego -I $SDF/share/sdf-library/library || exit 1
+sdf2table -i Stratego-Sdf2.def -o Stratego-Sdf2.tbl -m Stratego-Sdf2 || exit 1
+
+cd ../box
+$PACKSDF -i Box.sdf -o Box.def || exit 1
+sdf2table -i Box.def -o Box.tbl -m Box || exit 1
+
+$PACKSDF -i Stratego-Box.sdf -o Stratego-Box.def -I ../stratego || exit 1
+sdf2table -i Stratego-Box.def -o Stratego-Box.tbl -m Stratego-Box || exit 1
+
+cd ../pp-table
+$PACKSDF -i pp-table.sdf -o pp-table.def -I ../box || exit 1
+sdf2table -i pp-table.def -o pp-table.tbl -m pp-table || exit 1
+
+cd $srcdir
+
+
