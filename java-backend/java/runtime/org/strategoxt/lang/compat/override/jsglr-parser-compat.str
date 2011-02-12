@@ -1,0 +1,83 @@
+/**
+ * Overrides the standard libstratego-sglr SGLR/SGLRI strategies to use JSGR.
+ *
+ * @author Lennart Kats
+ */
+module jsglr-parser-compat
+
+imports
+  libstratego-lib
+  libstratego-sglr
+  libstratego-xtc
+  jsglr-parser
+
+strategies // parsing and parse tables
+
+  /**
+   * @type SerializedParseTable -> ParseTable
+   */
+  override open-parse-table =
+    jsglr-open-parsetable
+  
+  override close-parse-table =
+    jsglr-close-parsetable
+
+  // HACK: currently seems to inline close-parse-table
+  override open-parse-table-wrap-report-errors(s : OpenParseTable * a -> b | tbl) =
+    where(tbl' := <open-parse-table-report-errors> tbl)
+    ; finally(s(|tbl'), <close-parse-table> tbl')
+
+  override parse-file(on-open-error, on-parse-error | tbl, start-symbol, path) =
+      (<fopen> (<id>, "r") => stream <+ on-open-error; fail)
+    ; finally(
+        parse-stream(on-parse-error | tbl, start-symbol, path)
+      , <fclose> stream
+      )
+
+  override parse-xtc-file(on-open-error, on-parse-error |tbl, start-symbol, path) =
+      let open-stream =
+            ?FILE(<id>); (<fopen> (<id>, "r") <+ on-open-error)
+            <+ ?stdin(); stdin-stream
+            
+       in open-stream => stream
+          ; finally(
+              parse-stream(on-parse-error |tbl, start-symbol, path)
+            , <fclose> stream
+            )
+      end
+  
+  override parse-xtc-file-report-errors(|tbl, sort) =
+  	where(<try(memo-open-parse-table)> tbl => tbl');
+    parse-xtc-file(strsglr-perror, strsglr-report-parse-error | tbl', sort)
+  
+  override parse-stream(on-parse-error |tbl, start-symbol, path):
+    stream -> term
+    where
+      read-text-from-stream;
+      jsglr-parse-string(on-parse-error |tbl, start-symbol, path) => term
+  
+  override parse-stream-pt(on-parse-error |tbl, start-symbol, path):
+    stream -> term
+    where
+      read-text-from-stream;
+      jsglr-parse-string-pt(on-parse-error |tbl, start-symbol, path) => term
+
+  override parse-string(on-parse-error | tbl, start-symbol, path) =
+    jsglr-parse-string(on-parse-error | tbl, start-symbol, path)
+  
+  override parse-string-pt(on-parse-error | tbl, start-symbol, path) =
+    jsglr-parse-string-pt(on-parse-error | tbl, start-symbol, path)
+
+strategies
+
+  override strsglr-perror =
+    err(|"Unable to open file:")
+
+strategies // location information
+
+  override asfix-anno-location =
+    prim("STRSGLR_anno_location", <id>)
+
+  override asfix-anno-position-info(|name) =
+    <fatal-err(|"Old-style asfix position annotation not supported on this platform; use asfix-anno-location instead")> name
+

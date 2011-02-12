@@ -1,0 +1,6 @@
+module test40
+imports libstratego-lib
+strategies
+
+  main = foldr(id, conc, explode-string)
+

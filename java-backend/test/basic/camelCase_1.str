@@ -1,0 +1,9 @@
+module camelCase_1
+
+imports
+
+  libstratego-lib
+
+strategies
+
+  camelCase_1 = debug(!"success")

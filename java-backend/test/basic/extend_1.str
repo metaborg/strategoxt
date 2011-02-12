@@ -1,0 +1,14 @@
+module extend_1
+
+imports
+  libstratego-lib
+
+rules
+
+  main =
+    <cify> "foo-bar" => "foo_bar"
+  ; <cify> "foosbar" => "foobar"
+    
+  extend Cify(s) :
+    ['s' | tail] -> <s> tail
+

@@ -1,0 +1,125 @@
+/**
+ * s2j options
+ *
+ * @see strj-options
+ *
+ * @author Lennart Kats
+ */
+module s2j-options
+
+imports
+  libstrc
+  s2j
+
+rules
+  
+  s2j-options =
+     s2j-general-options + s2j-library-options
+  
+  s2j-library-options =
+    ArgOption(
+      "-p"
+    , if is-substring(!"/") + is-substring(!"-") then
+        fatal-err(|"Illegal package name")
+      end
+    ; <set-config> ("-p", <id>); !()
+    , !"-p <name>          Set package name <name> (should be unique for each library)"
+    )
+  + ArgOption(
+      "-la"
+    , if is-substring(!"/") + is-substring(!"\\") then
+        warn(|"Ignoring library import: must be a Java package name")
+      else
+        <post-extend-config> ("-la", [<translate-default-library>]); !()
+      end
+    , !"-la <name>         Include library in package <name>"
+    )
+  + Option(
+      "--library" + "--lib"
+    , <set-config> ("--library", ()); !()
+    , !"--library | --lib  Build a library instead of an application"
+    )
+  + ArgOption(
+      "--xtc-repo"
+    , <conc-strings> ("GetInternalDefaultXtcRepository=\"", <id>, "\"");
+      <post-extend-config> ("-D", [<parse-define-option>]); !()
+    , fail // undocumented/deprecated
+    )
+  s2j-general-options =
+    ArgOption(
+      "-I" + "--Include"
+    , where(<post-extend-config>("-I", ["-I", <id>]))
+    ; !()
+    , !"-I d | --Include d Include modules from directory d"
+    )
+  + ArgOption(
+      "--stacktrace" + "-s"
+    , <set-config> ("--stacktrace", <string-to-int; (0 + 1 + 2)>); !()
+    , <conc-strings> ("--stacktrace i | -s i  Enable stacktracing ",
+                      "(0 = no, 1 = always [default], 2 = only if assertions (java -ea) enabled for a class)")
+    )
+  + ArgOption(
+      "-D"
+    , // TODO: Support prim(<-D constant>) as seen in strc-options
+      <post-extend-config> ("-D", [<parse-define-option>]); !()
+    , !"-D name=value      Define a constant value strategy"
+    )
+  + ArgOption(
+      "-sc"
+    , <set-config> ("-sc", <id>); !()
+    , !"-sc <on|off>       Assume all term constructors are shared (default: on)"
+    )
+  + ArgOption(
+      "-O"
+    , <set-config>("-O", <string-to-int; strc-set-opt-level>);
+      rules(ManuallySetOptimization: _)
+    , !"-O n               Optimization level (0 = no optimization)"
+    )
+  + ArgOption(
+      "--format-check"
+    , if "1" then <warn(|"Format checking not supported; ignored")> "--format-check 1" end
+    , fail // undocumented
+    )    
+  + ArgOption(
+      "-Xcc"
+    , id
+    , fail // undocumented
+    )
+  
+  // For compatibility, allow a number of built-in library names
+  translate-default-library =
+    switch id
+      case "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" +
+           "stratego-gpp" + "strc" + "stratego-tool-doc" + "stratego-sdf" + "java-front":
+        <conc-strings> ("org.strategoxt.", <id>)
+
+      case "stratego-parallel":
+        <conc-strings> ("org.strategoxt.lang.parallel.", <id>)
+      
+      otherwise:
+        jify
+    end
+  
+  // For compatibility, ignore all built-in library paths
+  // (e.g., -la /home/.../java-front.la)
+  translate-default-library-path =
+    base-filename;
+    remove-extension;
+    translate-default-library
+ 
+  parse-define-option =
+    risky(
+      string-tokenize('=')
+    ; \[name, value] -> (name, value)\
+    | "option -D must be followed by name=value pair")
+  ; risky(
+      (id, read-from-string; trm-explode; raise-in-build; stratego-desugar)
+    ; ?(name, value)
+    ; rules(GetConstantDef: name -> value)
+    | "illegal constant value for option -D"
+    )
+ 
+  s2j-init-options =
+    if not(<get-config> "--stacktrace") then
+      <set-config> ("--stacktrace", 1)
+    end

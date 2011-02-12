@@ -1,0 +1,18 @@
+/**
+ * strj version overrides
+ *
+ * @author Lennart Kats
+ */
+module strj-version
+
+strategies
+  
+  override strc-version-number =
+    prim("STRJ_VERSION_TERM")
+
+  override svn-revision-number =
+    prim("SVN_REVISION_TERM")
+    
+  override strc-version =
+    where(<fprintnl>(stdout(), ["STRJ ", <strc-version-number>, "\n"]))
+

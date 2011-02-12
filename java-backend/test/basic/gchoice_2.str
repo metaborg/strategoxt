@@ -1,0 +1,17 @@
+module gchoice_2
+
+imports
+  libstratego-lib
+
+signature constructors
+  Nil  : Nil
+  Cons : Term -> Cons
+
+rules
+
+  main =
+    not(
+      id
+      < (id < fail + !3)
+      + !2
+    )

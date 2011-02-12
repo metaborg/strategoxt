@@ -1,0 +1,45 @@
+/**
+ * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ */ 
+module rtg-ppfix
+imports
+  libstratego-lib
+  libstratego-rtg
+
+strategies
+
+  rtg-ppfix =
+    topdown(
+      if Term(is-string) + Nonterm(is-string) then
+        Term(ExplodeId)
+        + Nonterm(ExplodeId)
+      else
+        try(PpFix)
+      end
+    )
+
+  PpFix =
+    TupleTerm(int-to-string)
+
+  ExplodeId =
+    explode-string
+    ; foldr(![Chars([])],
+         \ ('\', parts) -> [EscapeSeq('\') | parts] \
+      + \ (']', parts) -> [EscapeSeq(']') | parts] \
+      + \ (c,   [Chars(cs) | parts]) ->  [Chars([c | cs]) | parts] \
+      + \ (c,   parts) -> [Chars([c]) | parts] \
+      )
+    ; filter(not(Chars([])))
+    ; if [Chars(?s; map(is-rtg-plain-char))] then
+        <implode-string> s
+      ; !Plain(<id>)
+      else
+        map(Chars(implode-string) + EscapeSeq(<implode-string> [<id>]))
+      ; !Quoted(<id>)
+      end
+
+  is-rtg-plain-char =
+    is-alphanum
+    + '\''
+    + '-'
+    + '_'

@@ -1,0 +1,46 @@
+/** 
+ * Overrides xtc-based library imports in strc.
+ *
+ * @author Lennart Kats <lennart add lclnet.nl>
+ */
+module strc-compat
+
+imports
+  libstratego-lib
+  libstratego-xtc
+  libstrc
+  strj-version
+
+strategies
+
+  override strc-get-include-dirs =
+    <get-config> "-I"
+  
+  extend pack-stratego-parse-stratego:
+    (IncludeFromPath(name), includes) -> ("", ast) // (empty result name goes into .dep)
+    where
+      switch !name
+        case "libstratego-lib" + "libstrategolib":
+          import-term(libstratego-lib.rtree)
+        case "libstratego-xtc":      import-term(libstratego-xtc.rtree)
+        case "libstratego-sglr":     import-term(libstratego-sglr.rtree)
+        case "libstratego-rtg":      import-term(libstratego-rtg.rtree)
+        case "libstratego-sdf":      import-term(libstratego-sdf.rtree)
+        case "libstratego-aterm":    import-term(libstratego-aterm.rtree)
+        case "libstratego-gpp":      import-term(libstratego-gpp.rtree)
+        case "libstratego-tool-doc": import-term(libstratego-tool-doc.rtree)
+        case "libstratego-parallel": import-term(libstratego-parallel.rtree)
+        case "libstrc":              import-term(libstrc.rtree)
+        case "lib":                  import-term(lib.rtree)
+        case "liblib":               import-term(liblib.rtree)
+      end => ast
+  
+   extend pack-stratego-parse-stratego:
+     (IncludeFromPath("libjava-front"), includes) -> result
+     where
+       proceed => result // prefer local (-I) definition
+     <+
+       result := ("", <import-term(libjava-front.rtree)>)
+   
+   extend xtc-find =
+     ?"StrategoRenamed.sdf" // no warning

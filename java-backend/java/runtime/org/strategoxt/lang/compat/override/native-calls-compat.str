@@ -1,0 +1,44 @@
+/**
+ * Some degree native calling compatibility.
+ *
+ * @author Lennart Kats <lennart add lclnet.nl>
+ */
+module native-calls-compat
+
+imports
+  libstratego-lib
+
+strategies
+
+  // TODO: also implement fork-and-wait?
+  
+  override call =
+    // (Java extension) // FIXME: properly detect that <call> isn't invoking a class
+    ?(program, args);
+    <where(is-substring(!".")); not(is-substring(!"/") + is-substring(!"\\") + file-exists)> program;
+    if <is-list> args then
+      prim("SSL_EXT_java_call", program, [program | args], 0)
+    else
+      warn(|"Program arguments for <call> should be a list");
+      prim("SSL_EXT_java_call", program, args, 0)
+    end
+  <+
+    ?(program, args);
+
+    log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+    prim("SSL_EXT_call", program, args) => 0
+  /* UNDONE: added a Java extension for calling a tool with a custom environment
+  <+
+    // (Java extension)
+    ?(program, env, args);
+
+    log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+    prim("SSL_EXT_call", (program, env), args) => 0
+  */
+
+  override fork(child) =
+    fatal-err(|"Forking of applications is not supported on Java at this time")
+
+  override fork(child, parent) =
+    fatal-err(|"Forking of applications is not supported on Java at this time")
+
