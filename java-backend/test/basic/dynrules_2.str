@@ -1,9 +1,0 @@
-module dynrules_2
-
-imports
-  libstratego-lib
-
-rules
-
-  main =
-     rules(Foo :+= 1 Foo :+=2); bagof-Foo

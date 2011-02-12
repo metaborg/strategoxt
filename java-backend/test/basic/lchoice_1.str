@@ -1,7 +1,0 @@
-module lchoice_1
-imports
-  stratego-lib
-
-strategies
-
-  main = id < !0 + !1
