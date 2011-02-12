@@ -1,0 +1,89 @@
+module format-check
+strategies
+
+  tfc1(|format, phase) = tfc(|format, 1, phase)
+  tfc2(|format, phase) = tfc(|format, 2, phase)
+  tfc3(|format, phase) = tfc(|format, 3, phase)
+  tfc4(|format, phase) = tfc(|format, 4, phase)
+  tfc5(|format, phase) = tfc(|format, 5, phase)
+  tfc6(|format, phase) = tfc(|format, 6, phase)
+
+  tfc(|format, n, phase) = 
+    if <geq>(<get-config> "--format-check", n) then
+      where(fc(|format, phase))
+    end
+    ; if-keep(
+        where(
+          write-to
+        ; save-as(!phase)
+        )
+      | <inc> n
+      )
+
+  tfc-c(|n, phase) = 
+    if <geq>(<get-config> "--format-check", n) then
+      where(fc(|"C", phase))
+    end
+    ; if-keep(
+        where(
+          write-to
+        ; copy-to(strc-getoutfile(<conc-strings>(".",phase)) => file1)
+        ; log(|Info(), ["abstract syntax in '", file1, "'"] )
+        ; xtc-transform(!"pp-c")
+        ; copy-to(<conc-strings> (file1, ".txt") => file2)
+        ; log(|Info(), ["concrete syntax in '", file2, "'"])
+        )
+      | <inc> n
+      )
+
+  fc(|format, phase) =
+    where(
+      format' := <strc-rtgnf-by-simple-name> format
+    ; memoverbose := <verbosity>
+    ; <set-verbosity> 1
+    )
+    ; if not(log-timed(strc-rtg-format-check(|format')
+                | <concat-strings>["  FC '",format,"'"]
+                , 2
+                ))
+      then
+        if !phase => "pack" then
+          fatal-err(|<concat-strings>[
+            "\n  The result of packing your Stratego program resulted in a file\n",
+            "  with a wrong format. This is probably caused by the use of a\n",
+            "  .rtree file produced by an old version of Stratego, or by a \n",
+            "  concrete syntax embedding using an old syntax of Stratego.\n",
+            "  Recompile with the option '--format-check 1' to discover which\n",
+            "  module caused the problem."
+          ])
+        else
+          write-to
+          ; save-as(!<concat-strings>[".", phase, ".", format])
+          ; ?FILE(name)
+          ; fatal-err(| <concat-strings>[
+              "file ", name, "does not satisfy format ", format, 
+              "\nThis indicates a bug in the compiler\n",
+              "Please notify stratego-bugs@cs.uu.nl"
+            ])
+        end
+        ; fail
+      end
+    ; where(<set-verbosity> memoverbose)
+
+  strc-rtg-format-check(|rtg) =
+    topdown(
+      try(is-string; !"")
+      ; try(is-int; !0)
+    )
+    ; rtg-format-check(true, true | rtg)
+
+strategies
+
+  strc-rtgnf-by-simple-name =
+    strc-memo-rtgnf
+    <+ ?simplename
+       ; <conc-strings> (simplename, ".rtg-nf")
+       ; xtc-find
+       ; ReadFromFile
+       ; ?result
+       ; rules(strc-memo-rtgnf: simplename -> result)

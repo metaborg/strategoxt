@@ -1,0 +1,87 @@
+/**
+ * Strategies for compiling a (generated) C file to object code and
+ * linking it.
+ */
+module compile-c
+
+imports
+  libstratego-lib
+  libstratego-xtc
+
+strategies // Compile generated C code
+
+  strc-c-compile =
+     where(<get-config> "-c")
+  <+ log-timed(
+       strc-c-to-object-code 
+       ; strc-link-object-code
+     | "C compilation succeeded"
+     , 1 
+     )
+
+  strc-c-to-object-code :
+    FILE(cfile) -> FILE(ofile)
+    where log(|Notice(), "Compiling C code")
+	; strc-getoutfile(!".lo") => ofile
+	; <strc-call-backend>
+	    (<xtc-find> "libtool", [
+              "--mode=compile", "--tag=CC", <get-config> "--cc" | <concat> [<get-config> "-Xcc", ["-c", cfile,"-o", ofile]]])
+
+  strc-link-object-code :
+    FILE(ofile) -> FILE(target)
+    where
+      log(|Notice(), "Linking object code")
+      ; (<get-config> "-o" <+ strc-getoutfile(strc-get-final-suffix)) => target
+      ; strc-if-lib(strc-link-library(|ofile, target), strc-link-program(|ofile, target))
+
+  strc-link-program(|ofile, target) =
+    <strc-call-backend>
+      (<xtc-find> "libtool", [
+        "--mode=link", "--tag=CC", <get-config> "--ld", ofile, "-o", target | <get-config> "-Xlinker"])
+
+/**
+ * Linking a library using libtool
+ */
+strategies
+
+  strc-link-library(|ofile, target) =
+      <call>
+        (<xtc-find> "libtool", [
+          "--mode=link", "--tag=CC", <get-config> "--ld", ofile, "-o", target, "-rpath", <strc-libdir> target, "-avoid-version", "-no-undefined" | <get-config> "-Xlinker"])
+    ; if <get-config> DisableInstall() then
+        log(|Info(), ["Don't forget to install the library using: libtool --mode=install cp ", target, " ", <strc-libinstallpath> target])
+      else
+        log(|Info(), "Installing library")
+        ; <call>
+            (<xtc-find> "libtool", ["--mode=install", "cp", target, <strc-libinstallpath> target])
+      end
+      
+
+  /**
+   * Given a target, return the libdir.
+   * @type String -> String
+   */
+  strc-libdir =
+    <get-config> LibDir()
+    ; abspath
+
+    <+ dirname
+       ; abspath
+
+  /**
+   * Given a target, return the location for installing the library.
+   *
+   * @type String -> String
+   */
+  strc-libinstallpath =
+    <conc-strings> (<get-config> LibDir(), "/", <base-filename>)
+    ; abspath
+    <+ abspath
+
+
+strategies
+
+  strc-call-backend =
+    ?(tool,args)
+    ; log(|Notice(),<separate-by(|" ") ; concat-strings>["Command:",tool|args])
+    ; call
