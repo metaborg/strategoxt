@@ -1,6 +1,0 @@
-module test08
-strategies
-
-  main =
-    ?_(xs)
-    ; !xs 
