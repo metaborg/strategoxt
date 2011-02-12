@@ -1,0 +1,13 @@
+%% The most elementary boxes are strings enclosed in double quotes
+%% (literals) and numbered placeholders. Numbered placeholders refer to a
+%% sub-expression of a BOX term. Currently, referencing sub-terms at a
+%% maximum level of two is supported. For example, \_i.j refers to the jth
+%% element within the ith BOX of a BOX term.
+
+module Box-Atoms
+   exports
+      imports Box-Base Box-Literal
+
+   exports
+      context-free syntax
+         BoxLiteral            -> BOX {cons("S")}
