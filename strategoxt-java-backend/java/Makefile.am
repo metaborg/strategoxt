@@ -43,7 +43,15 @@ TOOLSTRS = \
   $(wildcard tools/org/strategoxt/tools/*.str) \
   $(wildcard tools/org/strategoxt/tools/*.meta) \
   $(wildcard tools/org/strategoxt/tools/lib/*.str) \
-  $(wildcard tools/org/strategoxt/tools/lib/*.meta)
+  $(wildcard tools/org/strategoxt/tools/lib/*.meta) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/*.str) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/*.meta) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/grammar/*.str) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/grammar/*.meta) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/production/*.str) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/production/*.meta) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/symbol/*.str) \
+  $(wildcard tools/org/strategoxt/tools/lib/sdf/symbol/*.meta) 
 
 nobase_pkgdata_DATA = \
   runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree \
