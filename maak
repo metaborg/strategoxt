@@ -1,12 +1,12 @@
 #! /bin/sh
 
 ulimit -s unlimited
-
+STRJCONSTANTS='-D STRJ_VERSION_TERM="\"123\"" -D SVN_REVISION_TERM="\"345\"" -D STRC_SYSTEM_LDFLAGS="\"\"" -D STRC_SYSTEM_CFLAGS="\"\""'
 SDF=$HOME/.nix-profile
 STRJAR=$HOME/src/strategoxt-java-backend/java/strategoxt.jar
-STRJ="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main -F --library"
-STRJPLAIN="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main"
-STRJLIB="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main --library"
+STRJ="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS -F --library"
+STRJPLAIN="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS"
+STRJLIB="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS --library"
 PACKSDF="java -cp $STRJAR run org.strategoxt.tools.main-pack-sdf"
 GENSDFMIX="java -cp $STRJAR run org.strategoxt.tools.main-gen-sdf-mix -Xnativepath $HOME/.nix-profile/bin/"
 GENRENSDF="java -cp $STRJAR run org.strategoxt.tools.main-gen-renamed-sdf-module -Xnativepath $HOME/.nix-profile/bin/"
@@ -26,7 +26,8 @@ $RTG2SIG -i $1.rtg -o $1.str --module $1 || exit 1
 
 srcdir=`pwd`
 
-cat <<EOF
+echo " *** syntax `date`"
+
 cd $srcdir/syntax/stratego
 
 fromsdf Stratego
@@ -79,6 +80,8 @@ cd ../rtg
 fromsdf rtg
 fromsdf Stratego-rtg "-I $srcdir/syntax/stratego"
 
+echo " *** frontend `date`"
+
 cd $srcdir/libraries/aterm/lib
 $STRJ -i stratego-aterm.str -o libstratego-aterm.ctree -I $srcdir/syntax/box -I $srcdir/syntax/aterm || exit 1
 
@@ -86,8 +89,9 @@ cd $srcdir/libraries/gpp/lib
 $STRJ -i stratego-gpp.str -o libstratego-gpp.ctree -I $srcdir/syntax/box -I $srcdir/syntax/pp-table || exit 1
 
 cd $srcdir/libraries/lib/spec
-$STRJ -i stratego-lib-posix.str -o libstratego-lib.ctree || exit 1 
+$STRJ -i stratego-lib-posix-xsi.str -o libstratego-lib.ctree || exit 1 
 $STRJ -i stratego-lib-posix.str -o libstratego-lib-posix.ctree || exit 1 
+$STRJ -i stratego-lib-posix-xsi.str -o libstratego-lib-posix-xsi.ctree || exit 1 
 
 cd $srcdir/libraries/rtg/lib
 $STRJ -i stratego-rtg.str -o libstratego-rtg.ctree || exit 1
@@ -102,7 +106,7 @@ cd $srcdir/libraries/tool-doc/lib
 $STRJ -i stratego-tool-doc.str -o libstratego-tool-doc.ctree -I $srcdir/syntax/box || exit 1 
 
 cd $srcdir/libraries/xtc/lib
-$STRJ -i stratego-xtc-posix.str -o libstratego-xtc.ctree -I $srcdir/libraries/lib/spec || exit 1
+$STRJ -i stratego-xtc-posix-xsi.str -o libstratego-xtc.ctree -I $srcdir/libraries/lib/spec || exit 1
 
 cd $srcdir/libraries/strc/lib
 
@@ -162,6 +166,9 @@ $STRJ -i javafront.str -o libjava-front.ctree -I $srcdir/syntax/box || exit 1
 
 cd $srcdir/java-backend/trans
 $STRJPLAIN -F -m main-strj -i strj.str -o strj.ctree -I $srcdir/java-front/syntax-embedding -I $srcdir/syntax/stratego || exit 1
+
+
+echo " *** backend `date`"
 
 cd $srcdir/lib
 mkdir -p org/strategoxt/stratego_aterm
@@ -247,16 +254,19 @@ $STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/strc-compat.
 
 cd $srcdir/lib
 JAVAC_FLAGS="-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $srcdir/java-backend/java/spoofax-libs.jar:$srcdir/java-backend/java/runtime:. -source 5 -target 5 -nowarn -d bin -g:source"
-ecj $JAVAC_FLAGS `find . -name "*.java"` || exit 1
+echo " *** compiling java code `date`"
+ecj $JAVAC_FLAGS `find . -name "*.java"` `find ../java-backend/java/runtime -name "*.java"` || exit 1
 
-EOF
 
-JARIN=`find lib | grep -E '\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
-JAR=fastjar 
+echo " *** making jar `date`"
 
-cp java-backend/java/spoofax-libs.jar strategoxt.jar.tmp
-$JAR ufm strategoxt.jar.tmp java-backend/java/META-INF/MANIFEST.MF $JARIN
-$JAR ufm strategoxt.jar.tmp java-backend/java/META-INF/MANIFEST.MF -C lib/bin .
-jar i strategoxt.jar.tmp
+cd $srcdir/lib
+JARIN=`find . -type f| grep -E '\.rtree|\.af|\.tbl' | sed 's!\./!-C ./ !'`
+JAR=jar 
+
+cp ../java-backend/java/spoofax-libs.jar strategoxt.jar.tmp
+$JAR ufm strategoxt.jar.tmp ../java-backend/java/META-INF/MANIFEST.MF $JARIN
+$JAR ufm strategoxt.jar.tmp ../java-backend/java/META-INF/MANIFEST.MF -C bin .
+$JAR i strategoxt.jar.tmp
 mv strategoxt.jar.tmp strategoxt.jar
 
