@@ -17,25 +17,6 @@ imports
 
 strategies
 
-  strc-strc =
-    strc-command-line-options
-    ; log-timed(strc-compile | "Compilation succeeded", 1)
-    ; <exit> 0
-   <+ log(|Error(),["Compilation failed (", <run-time ; real-to-string(|2)>, " secs)"])
-    ; <exit> 1
-
-strategies
-
-  strc-compile =
-    xtc-input(
-      strc-front-end
-      ; strc-optimize
-      ; strc-export-external-defs
-      ; strc-output-frontend
-      ; strc-back-end
-      ; strc-c-compile
-    )
-
   strc-front-end =
     log-timed(
       strc-get-infile
@@ -79,35 +60,6 @@ strategies
         )
       end
     ))
-
-strategies
-
-  strc-back-end =
-    log-timed(
-      lift-definitions
-      ; tfc2(|"Stratego-Core", "be-lift")
-      ; canonicalize
-      ; tfc2(|"Stratego-Core", "be-can")
-      ; simplify1
-      ; tfc3(|"Stratego-Core", "be-sim")
-      ; mark-bound-unbound-vars
-      ; tfc2(|"Stratego-Core", "be-buv")
-      ; escaping-variables
-      ; tfc2(|"Stratego-Core", "be-esc")
-      ; expand-term-imports-trm(|<get-config> "-I")
-      ; stratego-to-c
-      ; tfc-c(|1,"be-c")
-      ; log-timed(
-          if not(<get-config> "--old-pp") then
-            strc-ac2text
-          else
-            strc-ac2abox; strc-abox2text
-          end
-        |"Pretty print", 2)
-      ; rename-to(strc-getoutfile(!".c"))
-    | "Back-end succeeded"
-    , 1
-    )
 
 strategies
 

@@ -1,5 +1,5 @@
 module canonicalize-ng
-imports Stratego-Core libstratego-lib C 
+imports Stratego-Core libstratego-lib 
 	stratego/strc/opt/stratego-laws 
 	stratego/strc/c/frames
 

@@ -5,6 +5,10 @@
 module rules-to-sdefs
 imports Stratego-Sugar 
 	stratego/strc/lib/stratlib
+
+signature constructors
+  Id : String -> Term
+
 strategies
 
   rules-to-sdefs =
