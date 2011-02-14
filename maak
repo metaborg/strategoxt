@@ -1,20 +1,37 @@
 #! /bin/sh
 
 ulimit -s unlimited
-#  -Xnativepath ~/.nix-profile/bin/ -i Stratego.def --main Stratego --name StrategoMix -o StrategoMix.def
 
 SDF=$HOME/.nix-profile
 STRJAR=$HOME/src/strategoxt-java-backend/java/strategoxt.jar
-STRJ="java -cp $STRJAR org.strategoxt.strj.Main"
+STRJ="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main -F --library"
+STRJPLAIN="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main"
 PACKSDF="java -cp $STRJAR run org.strategoxt.tools.main-pack-sdf"
 GENSDFMIX="java -cp $STRJAR run org.strategoxt.tools.main-gen-sdf-mix -Xnativepath $HOME/.nix-profile/bin/"
 GENRENSDF="java -cp $STRJAR run org.strategoxt.tools.main-gen-renamed-sdf-module -Xnativepath $HOME/.nix-profile/bin/"
+SDF2RTG="java -cp $STRJAR run org.strategoxt.tools.main-sdf2rtg -Xnativepath $HOME/.nix-profile/bin/ --ignore-missing-cons"
+RTG2SIG="java -cp $STRJAR run org.strategoxt.tools.main-rtg2sig"
+SDF2PARENTHESIZE="java -Xss8m -Xmx1024m -cp $STRJAR run org.strategoxt.tools.main-sdf2parenthesize"
+SGLRI="java -cp $STRJAR org.spoofax.jsglr.Main --implode"
+#sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego
+
+function fromsdf {
+$PACKSDF -i $1.sdf -o $1.def $2 || exit 1
+sdf2table -i $1.def -o $1.tbl -m $1 || exit 1
+$SDF2RTG -i $1.def -o $1.rtg -m $1 || exit 1
+$RTG2SIG -i $1.rtg -o $1.str --module $1 || exit 1
+}
+
 
 srcdir=`pwd`
 
+echo '
 cd $srcdir/syntax/stratego
-$PACKSDF -i Stratego.sdf -o Stratego.def || exit 1
-sdf2table -i Stratego.def -o Stratego.tbl -m Stratego || exit 1
+
+fromsdf Stratego
+fromsdf Stratego-Core
+fromsdf Stratego-Sugar
+fromsdf Stratego-Amb
 
 $PACKSDF -i EmbeddedStratego.sdf -o EmbeddedStratego.def  || exit 1
 
@@ -22,30 +39,172 @@ $GENSDFMIX -i Stratego.def -o StrategoMix.sdf --main Stratego --name StrategoMix
 $GENSDFMIX -i EmbeddedStratego.def -o EmbeddedStrategoMix.sdf --main EmbeddedStratego --name EmbeddedStrategoMix || exit 1
 $GENRENSDF -i Stratego.def -o StrategoRenamed.sdf --main Stratego --name StrategoRenamed --prefix Stratego  || exit 1
 
+$PACKSDF -i StrategoMix.sdf -o StrategoMix.def  || exit 1
 $PACKSDF -i StrategoStratego.sdf -o StrategoStratego.def  || exit 1
 sdf2table -i StrategoStratego.def -o StrategoStratego.tbl -m StrategoStratego || exit 1
 
 $PACKSDF -i Stratego-Sugar-in-Stratego.sdf -o Stratego-Sugar-in-Stratego.def || exit 1
 sdf2table -i Stratego-Sugar-in-Stratego.def -o Stratego-Sugar-in-Stratego.tbl -m Stratego-Sugar-in-Stratego || exit 1
 
+cd ../aterm
+$PACKSDF -i ATerms.sdf -o ATerms.def -I $SDF/share/sdf-library/library || exit 1
+sdf2table -i ATerms.def -o ATerms.tbl -m ATerms || exit 1
+$SDF2RTG -i ATerms.def -o ATerms.rtg -m ATerms || exit 1
+$RTG2SIG -i ATerms.rtg -o ATerms.str --module ATerms || exit 1
+
 cd ../sdf
-$PACKSDF -i Sdf2.sdf -o Sdf2.def -I $SDF/share/sdf-library/library || exit 1
-sdf2table -i Sdf2.def -o Sdf2.tbl -m Sdf2 || exit 1
+fromsdf Sdf2 "-I $SDF/share/sdf-library/library"
 
 $PACKSDF -i Stratego-Sdf2.sdf -o Stratego-Sdf2.def -I ../stratego -I $SDF/share/sdf-library/library || exit 1
 sdf2table -i Stratego-Sdf2.def -o Stratego-Sdf2.tbl -m Stratego-Sdf2 || exit 1
 
 cd ../box
-$PACKSDF -i Box.sdf -o Box.def || exit 1
-sdf2table -i Box.def -o Box.tbl -m Box || exit 1
+fromsdf Box
 
 $PACKSDF -i Stratego-Box.sdf -o Stratego-Box.def -I ../stratego || exit 1
 sdf2table -i Stratego-Box.def -o Stratego-Box.tbl -m Stratego-Box || exit 1
 
 cd ../pp-table
-$PACKSDF -i pp-table.sdf -o pp-table.def -I ../box || exit 1
-sdf2table -i pp-table.def -o pp-table.tbl -m pp-table || exit 1
+fromsdf pp-table
 
-cd $srcdir
+cd ../sdf
+$SGLRI -i Sdf2.pp -o Sdf2.pp.af -p $srcdir/syntax/pp-table/pp-table.tbl
+
+cd ../rtg
+fromsdf rtg
+
+cd $srcdir/libraries/aterm/lib
+$STRJ -i stratego-aterm.str -o libstratego-aterm.ctree -I $srcdir/syntax/box -I $srcdir/syntax/aterm || exit 1
+
+cd $srcdir/libraries/gpp/lib
+$STRJ -i stratego-gpp.str -o libstratego-gpp.ctree -I $srcdir/syntax/box -I $srcdir/syntax/pp-table || exit 1
+
+cd $srcdir/libraries/lib/spec
+$STRJ -i stratego-lib-posix.str -o libstratego-lib.ctree || exit 1 
+$STRJ -i stratego-lib-posix.str -o libstratego-lib-posix.ctree || exit 1 
+
+cd $srcdir/libraries/rtg/lib
+$STRJ -i stratego-rtg.str -o libstratego-rtg.ctree || exit 1
+
+cd $srcdir/libraries/sdf/lib
+$STRJ -i stratego-sdf.str -o libstratego-sdf.ctree -I $srcdir/syntax/sdf || exit 1
+
+cd $srcdir/libraries/sglr/lib
+$STRJ -i stratego-sglr.str -o libstratego-sglr.ctree -I $srcdir/syntax/sdf || exit 1 
+
+cd $srcdir/libraries/tool-doc/lib
+$STRJ -i stratego-tool-doc.str -o libstratego-tool-doc.ctree -I $srcdir/syntax/box || exit 1 
+
+cd $srcdir/libraries/xtc/lib
+$STRJ -i stratego-xtc-posix.str -o libstratego-xtc.ctree -I $srcdir/libraries/lib/spec || exit 1
+
+cd $srcdir/libraries/strc/lib
+
+echo "
+    RootApp                  : StrategyAngle -> Term
+    BA                       : StrategyAngle * Term -> Strategy
+" >> $srcdir/syntax/stratego/Stratego.str
+
+$SDF2PARENTHESIZE -m Stratego --omod stratego-parenthesize --lang Stratego -i $srcdir/syntax/stratego/Stratego.tbl -o stratego/strc/pp/stratego-parenthesize.str || exit 1
+$STRJ -i strc.str -o libstrc.ctree -I $srcdir/libraries/strc/lib -I $srcdir/syntax/stratego -I $srcdir/syntax/box || exit 1
+
+
+cd $srcdir/java-front/syntax/src
+
+fromsdf Java-15
+fromsdf JavaCompilationUnit-15
+
+$GENSDFMIX -i Java-15.def --main languages/java-15/Main --name languages/java-15/JavaMix -o languages/java-15/JavaMix.sdf || exit 1
+$PACKSDF -i languages/java-15/JavaMix.sdf -o JavaMix.def -Idef $srcdir/java-front/syntax/src/Java-15.def || exit 1
+
+cd $srcdir/java-front/syntax-embedding/
+
+$PACKSDF -i languages/java/EmbeddedJava.sdf -o EmbeddedJava.def -Idef $srcdir/java-front/syntax/src/Java-15.def || exit 1
+$GENSDFMIX -i EmbeddedJava.def --main languages/java/EmbeddedJava --name languages/java/EmbeddedJavaMix -o languages/java/EmbeddedJavaMix.sdf || exit 1
+
+fromsdf Java-EBlock "-Idef $srcdir/java-front/syntax/src/Java-15.def"
+#$PACKSDF -i Java-EBlock.sdf -o Java-EBlock.def -Idef $srcdir/java-front/syntax/src/Java-15.def || exit 1
+$GENSDFMIX -i Java-EBlock.def --main languages/java/eblock/Main --name languages/java/eblock/JavaEBlockMix -o languages/java/eblock/JavaEBlockMix.sdf || exit 1
+
+fromsdf Stratego-Java-15 "-Idef $srcdir/syntax/stratego/StrategoMix.def -Idef $srcdir/java-front/syntax/src/JavaMix.def" 
+fromsdf Stratego-Java-EBlock "-Idef $srcdir/syntax/stratego/StrategoMix.def -Idef $srcdir/java-front/syntax/src/JavaMix.def" 
+
+cd $srcdir/java-front/lib
+
+$SDF2PARENTHESIZE -i $srcdir/java-front/syntax/src/Java-15.tbl -o java/pp/parenthesize.str \
+          --omod java/pp/parenthesize \
+          --sig-module java/signature/v5 \
+          --main-strategy io-java5-parenthesize \
+          --lang Java5
+
+$RTG2SIG -i $srcdir/java-front/syntax/src/Java-15.rtg -o java/signature/v5.str --module Java-15
+$RTG2SIG -i $srcdir/java-front/syntax-embedding/Java-EBlock.rtg -o java/signature/eblock.str --module Java-EBlock
+
+mkdir java/signature
+
+echo "
+    OctaEscape1             : Int -> OctaEscape
+    OctaEscape2             : Int * Int -> OctaEscape
+    OctaEscape3             : Int * Int * Int -> OctaEscape
+    Cond                    : Expr * CondMid * Expr -> Expr
+    UnicodeEscape           : ListPlusOfCharClass1 * Int * Int * Int * Int -> UnicodeEscape
+    ArrayAccess             : Expr * ArraySubscript -> ArrayAccess
+    NamedEscape             : Int -> NamedEscape
+" >> java/signature/v5.str
+
+$STRJ -i javafront.str -o libjava-front.ctree -I $srcdir/syntax/box || exit 1
+
+cd java-backend/trans
+$STRJPLAIN -F -m main-strj -i strj.str -o strj.ctree -I $srcdir/java-front/syntax-embedding -I $srcdir/syntax/stratego
+
+cd $srcdir/lib
+mkdir -p org/strategoxt/stratego_aterm
+$STRJPLAIN -i $srcdir/libraries/aterm/lib/libstratego-aterm.ctree -o org/strategoxt/stratego_aterm/Main.java -p org.strategoxt.stratego_aterm || exit 1
+
+mkdir -p org/strategoxt/stratego_gpp
+$STRJPLAIN -i $srcdir/libraries/gpp/lib/libstratego-gpp.ctree -o org/strategoxt/stratego_gpp/Main.java -p org.strategoxt.stratego_gpp -I $srcdir/syntax/pp-table || exit 1
+
+mkdir -p org/strategoxt/stratego_lib
+$STRJPLAIN -i $srcdir/libraries/lib/spec/libstratego-lib.ctree -o org/strategoxt/stratego_lib/Main.java -p org.strategoxt.stratego_lib || exit 1
+
+mkdir -p org/strategoxt/stratego_rtg
+$STRJPLAIN -i $srcdir/libraries/rtg/lib/libstratego-rtg.ctree -o org/strategoxt/stratego_rtg/Main.java -p org.strategoxt.stratego_rtg -I $srcdir/syntax/rtg || exit 1
+
+mkdir -p org/strategoxt/stratego_sdf
+$STRJPLAIN -i $srcdir/libraries/sdf/lib/libstratego-sdf.ctree -o org/strategoxt/stratego_sdf/Main.java -p org.strategoxt.stratego_sdf -I $srcdir/syntax/sdf || exit 1
+
+mkdir -p org/strategoxt/stratego_sglr
+$STRJPLAIN -i $srcdir/libraries/sglr/lib/libstratego-sglr.ctree -o org/strategoxt/stratego_sglr/Main.java -p org.strategoxt.stratego_sglr || exit 1
+
+mkdir -p org/strategoxt/strc
+$STRJPLAIN -i $srcdir/libraries/strc/lib/libstrc.ctree -o org/strategoxt/strc/Main.java -p org.strategoxt.strc -I $srcdir/syntax/stratego || exit 1
+
+mkdir -p org/strategoxt/stratego_tool_doc
+$STRJPLAIN -i $srcdir/libraries/tool-doc/lib/libstratego-tool-doc.ctree -o org/strategoxt/stratego_tool_doc/Main.java -p org.strategoxt.stratego_tool_doc || exit 1
+
+mkdir -p org/strategoxt/stratego_xtc
+$STRJPLAIN -i $srcdir/libraries/xtc/lib/libstratego-xtc.ctree -o org/strategoxt/stratego_xtc/Main.java -p org.strategoxt.stratego_xtc || exit 1
+
+mkdir -p org/strategoxt/strj
+$STRJPLAIN -i $srcdir/java-backend/trans/strj.ctree -o org/strategoxt/strj/Main.java --clean -p org.strategoxt.strj
+
+mkdir -p org/strategoxt/java_front
+$STRJPLAIN -i $srcdir/java-front/lib/libjava-front.ctree -o org/strategoxt/java_front/Main.java -p org.strategoxt.java_front -I $srcdir/java-front/syntax/src || exit 1
+
+'
+
+cd $srcdir/lib
+
+
+#runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat.rtree : $(STRATEGOXT)/share/aterm-front/ATerms.str
+#runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat/Main.java : runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat.rtree ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java : runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java : runtime/org/strategoxt/lang/compat/override/jsglr-parser.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java : runtime/org/strategoxt/lang/compat/override/performance-tweaks.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/gpp_performance/Main.java : runtime/org/strategoxt/lang/compat/override/gpp-performance.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java : runtime/org/strategoxt/lang/compat/override/native-calls-compat.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime/org/strategoxt/lang/compat/override/java-integration.str ../trans/strj
+#runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj runtime/org/strategoxt/lan$
 
 
