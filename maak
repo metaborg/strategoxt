@@ -25,7 +25,6 @@ $RTG2SIG -i $1.rtg -o $1.str --module $1 || exit 1
 
 srcdir=`pwd`
 
-echo '
 cd $srcdir/syntax/stratego
 
 fromsdf Stratego
@@ -65,13 +64,18 @@ $PACKSDF -i Stratego-Box.sdf -o Stratego-Box.def -I ../stratego || exit 1
 sdf2table -i Stratego-Box.def -o Stratego-Box.tbl -m Stratego-Box || exit 1
 
 cd ../pp-table
-fromsdf pp-table
+fromsdf pp-table "-I $srcdir/syntax/box"
 
 cd ../sdf
 $SGLRI -i Sdf2.pp -o Sdf2.pp.af -p $srcdir/syntax/pp-table/pp-table.tbl
+cd ../pp-table
+$SGLRI -i pp-table-pretty.pp -o pp-table-pretty.pp.af -p $srcdir/syntax/pp-table/pp-table.tbl
+cd ../rtg
+$SGLRI -i rtg.pp -o rtg.pp.af -p $srcdir/syntax/pp-table/pp-table.tbl
 
 cd ../rtg
 fromsdf rtg
+fromsdf Stratego-rtg "-I $srcdir/syntax/stratego"
 
 cd $srcdir/libraries/aterm/lib
 $STRJ -i stratego-aterm.str -o libstratego-aterm.ctree -I $srcdir/syntax/box -I $srcdir/syntax/aterm || exit 1
@@ -191,20 +195,49 @@ $STRJPLAIN -i $srcdir/java-backend/trans/strj.ctree -o org/strategoxt/strj/Main.
 mkdir -p org/strategoxt/java_front
 $STRJPLAIN -i $srcdir/java-front/lib/libjava-front.ctree -o org/strategoxt/java_front/Main.java -p org.strategoxt.java_front -I $srcdir/java-front/syntax/src || exit 1
 
-'
+cd $srcdir/java-backend/java/tools/org/strategoxt/tools
+mkdir -p $srcdir/org/strategoxt/tools
+$STRJPLAIN --library -i tools.str -o $srcdir/lib/org/strategoxt/tools/Main.java -p org.strategoxt.tools -I $srcdir/syntax/sdf -I $srcdir/syntax/stratego -I $srcdir/syntax/rtg -I lib -I $srcdir/syntax/pp-table || exit 1
+
+cd $srcdir/java-backend/java 
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/jsglr_parser_compat
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str -o $srcdir/lib/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java -p org.strategoxt.lang.compat.override || exit 1
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/jsglr_parser
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/jsglr-parser.str -o $srcdir/lib/org/strategoxt/lang/compat/override/jsglr_parser/Main.java  -p org.strategoxt.lang.compat.override.jsglr_parser || exit 1
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/performance_tweaks
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/performance-tweaks.str -o $srcdir/lib/org/strategoxt/lang/compat/override/performance_tweaks/Main.java  -p org.strategoxt.lang.compat.override.performance_tweaks || exit 1
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/gpp_performance
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/gpp-performance.str -o $srcdir/lib/org/strategoxt/lang/compat/override/gpp_performance/Main.java  -p org.strategoxt.lang.compat.override.gpp_performance || exit 1
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/xtc_compat
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/xtc-compat.str -o $srcdir/lib/org/strategoxt/lang/compat/override/xtc_compat/Main.java  -p org.strategoxt.lang.compat.override.xtc_compat || exit 1
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/native_calls_compat
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/native-calls-compat.str -o $srcdir/lib/org/strategoxt/lang/compat/override/native_calls_compat/Main.java  -p org.strategoxt.lang.compat.override.native_calls_compat || exit 1
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/java_integration
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/java-integration.str -o $srcdir/lib/org/strategoxt/lang/compat/override/java_integration/Main.java  -p org.strategoxt.lang.compat.override.java_integration || exit 1
+
+cd $srcdir/java-backend/java
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/java_integration
+$SGLRI -p $srcdir/syntax/stratego/Stratego.tbl -i runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.str -o runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree || exit 1
+
+cd $srcdir/java-backend/java
+mkdir -p $srcdir/lib/org/strategoxt/lang/compat/override/strc_compat
+$STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/strc-compat.str -o $srcdir/lib/org/strategoxt/lang/compat/override/strc_compat/Main.java  -p org.strategoxt.lang.compat.override.strc_compat \
+   -I $srcdir/libraries/lib/spec \
+   -I $srcdir/libraries/xtc/lib \
+   -I $srcdir/libraries/sglr/lib \
+   -I $srcdir/libraries/rtg/lib \
+   -I $srcdir/libraries/sdf/lib \
+   -I $srcdir/libraries/gpp/lib \
+   -I $srcdir/libraries/tool-doc/lib \
+   -I $srcdir/libraries/aterm/lib \
+   -I $srcdir/libraries/strc/lib \
+   -I $srcdir/java-front/lib \
+   -I $srcdir/java-backend/java/runtime/org/strategoxt/lang/parallel/stratego_parallel \
+   -I $srcdir/java-backend/trans || exit 1
 
 cd $srcdir/lib
+JAVAC_FLAGS="-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $srcdir/java-backend/java/spoofax-libs.jar:$srcdir/java-backend/java/runtime:. -source 5 -target 5 -nowarn -d bin -g:source"
+ecj $JAVAC_FLAGS `find . -name "*.java"`
 
-
-#runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat.rtree : $(STRATEGOXT)/share/aterm-front/ATerms.str
-#runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat/Main.java : runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat.rtree ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java : runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/jsglr_parser/Main.java : runtime/org/strategoxt/lang/compat/override/jsglr-parser.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/performance_tweaks/Main.java : runtime/org/strategoxt/lang/compat/override/performance-tweaks.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/gpp_performance/Main.java : runtime/org/strategoxt/lang/compat/override/gpp-performance.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/xtc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/xtc-compat.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/native_calls_compat/Main.java : runtime/org/strategoxt/lang/compat/override/native-calls-compat.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime/org/strategoxt/lang/compat/override/java-integration.str ../trans/strj
-#runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj runtime/org/strategoxt/lan$
 
 
