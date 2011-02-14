@@ -1,0 +1,26 @@
+module Stratego-rtg
+imports rtg StrategoRenamed
+
+exports
+  context-free start-symbols StrategoModule
+
+  context-free syntax
+
+    "rtg" "|[" ProdRule   "]|" -> StrategoTerm {cons("ToTerm")}
+    "rtg" "|[" AnnoTreeFN "]|" -> StrategoTerm {cons("ToTerm")}
+    "rtg" "|[" RTG        "]|" -> StrategoTerm {cons("ToTerm")}
+
+                "A" "|[" NonTerm "]|" -> StrategoTerm {cons("ToTerm")}
+    "rtg" "nonterm" "|[" NonTerm "]|" -> StrategoTerm {cons("ToTerm")}
+
+  variables
+    "t"  [0-9\']*     -> TreeFN   {prefer}
+    "at" [0-9\']*     -> AnnoTreeFN
+    "at" [0-9\']* "*" -> {AnnoTreeFN ","}*
+    "t"  [0-9\']* "*" -> {AnnoTreeFN ","}*
+
+    [ABC][0-9\']*     -> NonTerm  {prefer}
+    [ABC][0-9\']* "+" -> NonTerm+
+    [abc][0-9\']*     -> Term
+    [xyz][0-9\']*     -> Id
+    [ij][0-9\']*      -> IntConst

@@ -1,0 +1,20 @@
+module rg-identifier
+exports
+  sorts Id QuotedIdPart
+  syntax
+    Id -> <Id-CF>
+
+    <PlainIdChars-LEX>    -> Id {cons("Plain")}
+    "[" QuotedIdPart* "]" -> Id {cons("Quoted")}
+
+    <QuotedIdChars-LEX> -> QuotedIdPart {cons("Chars")}
+     "\\" [\\\]]        -> QuotedIdPart {cons("EscapeSeq")}
+
+  sorts PlainIdChars QuotedIdChars
+  lexical syntax
+    ~[\\\]]+           -> QuotedIdChars
+    [a-zA-Z0-9\'\-\_]+ -> PlainIdChars
+
+  lexical restrictions
+    QuotedIdChars -/- ~[\\\]]
+    PlainIdChars  -/- [a-zA-Z0-9\'\-\_]

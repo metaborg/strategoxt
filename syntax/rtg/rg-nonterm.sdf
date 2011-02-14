@@ -1,0 +1,8 @@
+module rg-nonterm
+imports rg-identifier
+exports
+  sorts NonTerm
+  context-free syntax
+    Id         -> NonTerm {cons("Nonterm")}
+    "<string>" -> NonTerm {cons("String")}
+    "<int>"    -> NonTerm {cons("Int")}
