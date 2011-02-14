@@ -9,3 +9,5 @@ imports
   lib/core-sdf-parenthesize
   lib/gen-renamed-sdf-module
   lib/gen-sdf-mix
+  lib/sdf2ast-conflicts
+  lib/sdf2parenthesize
