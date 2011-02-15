@@ -3,7 +3,7 @@
 ulimit -s unlimited
 
 STRJCONSTANTS='-D STRJ_VERSION_TERM="\"123\"" -D SVN_REVISION_TERM="\"345\"" -D STRC_SYSTEM_LDFLAGS="\"\"" -D STRC_SYSTEM_CFLAGS="\"\""'
-SDF=${SDF$HOME/.nix-profile}
+SDF=${SDF:-$HOME/.nix-profile}
 STRJAR=${STRJAR:-$HOME/src/strategoxt-java-backend/java/strategoxt.jar}
 STRJ="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS -F --library"
 STRJPLAIN="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS"
