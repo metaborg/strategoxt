@@ -183,6 +183,7 @@ $STRJPLAIN -F -m main-strj -i strj.str -o strj.ctree -I $srcdir/java-front/synta
 
 echo " *** backend `date`"
 
+mkdir -p $srcdir/lib
 cd $srcdir/lib
 mkdir -p org/strategoxt/stratego_aterm
 $STRJLIB -i $srcdir/libraries/aterm/lib/libstratego-aterm.ctree -o org/strategoxt/stratego_aterm/Main.java -p org.strategoxt.stratego_aterm -la stratego-lib -la stratego-gpp || exit 1
