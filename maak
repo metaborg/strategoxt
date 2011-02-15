@@ -152,6 +152,7 @@ fromsdf Stratego-Java-EBlock "-Idef $srcdir/syntax/stratego/StrategoMix.def -Ide
 
 cd $srcdir/java-front/lib
 
+mkdir -p java/signature
 $SDF2PARENTHESIZE -i $srcdir/java-front/syntax/src/Java-15.tbl -o java/pp/parenthesize.str \
           --omod java/pp/parenthesize \
           --sig-module java/signature/v5 \
