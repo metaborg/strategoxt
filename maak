@@ -27,7 +27,7 @@ $RTG2SIG -i $1.rtg -o $1.str --module $1 || exit 1
 
 srcdir=`pwd`
 
-echo " *** syntax `date`"
+echo " * syntax `date`"
 
 cd $srcdir/syntax/stratego
 
@@ -81,7 +81,7 @@ cd ../rtg
 fromsdf rtg
 fromsdf Stratego-rtg "-I $srcdir/syntax/stratego"
 
-echo " *** frontend `date`"
+echo " * frontend `date`"
 
 cd $srcdir/libraries/aterm/lib
 $STRJ -i stratego-aterm.str -o libstratego-aterm.ctree -I $srcdir/syntax/box -I $srcdir/syntax/aterm || exit 1
@@ -108,17 +108,6 @@ $STRJ -i stratego-tool-doc.str -o libstratego-tool-doc.ctree -I $srcdir/syntax/b
 
 cd $srcdir/libraries/xtc/lib
 $STRJ -i stratego-xtc-posix-xsi.str -o libstratego-xtc.ctree -I $srcdir/libraries/lib/spec || exit 1
-
-cd $srcdir/libraries/strc/lib
-
-echo "
-    RootApp                  : StrategyAngle -> Term
-    BA                       : StrategyAngle * Term -> Strategy
-" >> $srcdir/syntax/stratego/Stratego.str
-
-$SDF2PARENTHESIZE -m Stratego --omod stratego-parenthesize --lang Stratego -i $srcdir/syntax/stratego/Stratego.tbl -o stratego/strc/pp/stratego-parenthesize.str || exit 1
-$STRJ -i strc.str -o libstrc.ctree -I $srcdir/libraries/strc/lib -I $srcdir/syntax/stratego -I $srcdir/syntax/box || exit 1
-
 
 cd $srcdir/java-front/syntax/src
 
@@ -152,6 +141,16 @@ do
                  -I $srcdir/java-front/syntax-embedding 
 done
 
+cd $srcdir/libraries/strc/lib
+
+echo "
+    RootApp                  : StrategyAngle -> Term
+    BA                       : StrategyAngle * Term -> Strategy
+" >> $srcdir/syntax/stratego/Stratego.str
+
+$SDF2PARENTHESIZE -m Stratego --omod stratego-parenthesize --lang Stratego -i $srcdir/syntax/stratego/Stratego.tbl -o stratego/strc/pp/stratego-parenthesize.str || exit 1
+$STRJ -i strc.str -o libstrc.ctree -I $srcdir/libraries/strc/lib -I $srcdir/syntax/stratego -I $srcdir/syntax/box || exit 1
+
 cd $srcdir/java-front/lib
 
 mkdir -p java/signature
@@ -181,7 +180,7 @@ cd $srcdir/java-backend/trans
 $STRJPLAIN -F -m main-strj -i strj.str -o strj.ctree -I $srcdir/java-front/syntax-embedding -I $srcdir/syntax/stratego || exit 1
 
 
-echo " *** backend `date`"
+echo " * backend `date`"
 
 mkdir -p $srcdir/lib
 cd $srcdir/lib
@@ -268,11 +267,11 @@ $STRJPLAIN --library -i runtime/org/strategoxt/lang/compat/override/strc-compat.
 
 cd $srcdir/lib
 JAVAC_FLAGS="-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $srcdir/java-backend/java/spoofax-libs.jar:$srcdir/java-backend/java/runtime:. -source 5 -target 5 -nowarn -d bin -g:source"
-echo " *** compiling java code `date`"
+echo " * compiling java code `date`"
 ecj $JAVAC_FLAGS `find . -name "*.java"` `find ../java-backend/java/runtime -name "*.java"` || exit 1
 
 
-echo " *** making jar `date`"
+echo " * making jar `date`"
 
 cd $srcdir/lib
 JARIN=`find . -type f| grep -E '\.rtree|\.af|\.tbl' | sed 's!\./!-C ./ !'`
