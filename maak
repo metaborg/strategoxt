@@ -81,17 +81,6 @@ cd ../rtg
 fromsdf rtg
 fromsdf Stratego-rtg "-I $srcdir/syntax/stratego"
 
-cd $srcdir
-for f in `find . -name "*.meta"` 
-do 
-  parse-stratego -i `dirname $f`/`basename $f .meta`.str \
-                 -o `dirname $f`/`basename $f .meta`.rtree \
-                 -I $srcdir/syntax/sdf \
-                 -I $srcdir/syntax/rtg \
-                 -I $srcdir/syntax/stratego \
-                 -I $srcdir/syntax/box \
-                 -I $srcdir/java-front/syntax-embedding 
-done
 echo " *** frontend `date`"
 
 cd $srcdir/libraries/aterm/lib
@@ -150,6 +139,18 @@ $GENSDFMIX -i Java-EBlock.def --main languages/java/eblock/Main --name languages
 
 fromsdf Stratego-Java-15 "-Idef $srcdir/syntax/stratego/StrategoMix.def -Idef $srcdir/java-front/syntax/src/JavaMix.def" 
 fromsdf Stratego-Java-EBlock "-Idef $srcdir/syntax/stratego/StrategoMix.def -Idef $srcdir/java-front/syntax/src/JavaMix.def" 
+
+cd $srcdir
+for f in `find . -name "*.meta"` 
+do 
+  parse-stratego -i `dirname $f`/`basename $f .meta`.str \
+                 -o `dirname $f`/`basename $f .meta`.rtree \
+                 -I $srcdir/syntax/sdf \
+                 -I $srcdir/syntax/rtg \
+                 -I $srcdir/syntax/stratego \
+                 -I $srcdir/syntax/box \
+                 -I $srcdir/java-front/syntax-embedding 
+done
 
 cd $srcdir/java-front/lib
 
