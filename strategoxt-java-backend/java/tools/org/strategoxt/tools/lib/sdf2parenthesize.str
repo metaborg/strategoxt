@@ -129,7 +129,7 @@ strategies
              io-wrap(id)
       ]|
     where
-        guess-module-name => M1
+        s2p-guess-module-name => M1
       ; guess-main-strategy-name => f
   
   innermost-module :
@@ -152,7 +152,7 @@ strategies
              Parenthetical : Unknown -> Unknown
       ]|
     where
-        guess-module-name => M1
+        s2p-guess-module-name => M1
       ; guess-signature-name => M2
       ; guess-main-strategy-name => f
       ; guess-language-name => lang
@@ -174,7 +174,7 @@ strategies
 
   report-config =
       log(|Info(), <conc-strings> ("SDF main module is ", <get-sdf-main-module>))
-    ; log(|Info(), <conc-strings> ("Name of output module is ", <guess-module-name>))
+    ; log(|Info(), <conc-strings> ("Name of output module is ", <s2p-guess-module-name>))
     ; log(|Info(), <conc-strings> ("Main strategy is ", <guess-main-strategy-name>))
     ; log(|Info(), <conc-strings> ("Name of signature module is ", <guess-signature-name>))
     ; log(|Info(), <conc-strings> ("Language name is ", <guess-language-name>))
@@ -188,9 +188,10 @@ strategies
     , !HelpString("--omod <module>", "Name of the resulting Stratego module [basename of output]")
     )
 
-  guess-module-name =
+  s2p-guess-module-name =
     ModuleName
     <+ <get-config; remove-extension> "-o"
+    <+ <get-config; remove-extension> "-i"
     <+ log(|Critical(), "No Stratego module name specified. Use the --omod option to specify a module name. See also --help.")
        ; <exit> 1
 
@@ -204,7 +205,7 @@ strategies
 
   guess-main-strategy-name =
     MainStrategyName
-    <+ guess-module-name => M1
+    <+ s2p-guess-module-name => M1
       ; <conc-strings> ("io-", M1) => f
 
 strategies
