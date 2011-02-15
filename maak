@@ -80,6 +80,16 @@ cd ../rtg
 fromsdf rtg
 fromsdf Stratego-rtg "-I $srcdir/syntax/stratego"
 
+for f in `find . -name "*.meta"` 
+do 
+  parse-stratego -i `dirname $f`/`basename $f .meta`.str \
+                 -o `dirname $f`/`basename $f .meta`.rtree \
+                 -I $srcdir/syntax/sdf \
+                 -I $srcdir/syntax/rtg \
+                 -I $srcdir/syntax/stratego \
+                 -I $srcdir/syntax/box \
+                 -I $srcdir/java-front/syntax-embedding 
+done
 echo " *** frontend `date`"
 
 cd $srcdir/libraries/aterm/lib
