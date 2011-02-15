@@ -31,8 +31,6 @@ strategies
         case "libstratego-tool-doc": import-term(libstratego-tool-doc.rtree)
         case "libstratego-parallel": import-term(libstratego-parallel.rtree)
         case "libstrc":              import-term(libstrc.rtree)
-        case "lib":                  import-term(lib.rtree)
-        case "liblib":               import-term(liblib.rtree)
       end => ast
   
    extend pack-stratego-parse-stratego:
