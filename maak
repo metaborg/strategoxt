@@ -2,19 +2,20 @@
 
 ulimit -s unlimited
 
+JAVAFLAGS="-Xss8m -Xmx1024m"
 STRJCONSTANTS='-D STRJ_VERSION_TERM="\"123\"" -D SVN_REVISION_TERM="\"345\"" -D STRC_SYSTEM_LDFLAGS="\"\"" -D STRC_SYSTEM_CFLAGS="\"\""'
 SDF=${SDF:-$HOME/.nix-profile}
 STRJAR=${STRJAR:-$HOME/src/strategoxt-java-backend/java/strategoxt.jar}
-STRJ="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS -F --library"
-STRJPLAIN="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS"
-STRJLIB="java -Xss8m -Xmx1024m -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS --library"
-PACKSDF="java -cp $STRJAR run org.strategoxt.tools.main-pack-sdf"
-GENSDFMIX="java -cp $STRJAR run org.strategoxt.tools.main-gen-sdf-mix -Xnativepath $HOME/.nix-profile/bin/"
-GENRENSDF="java -cp $STRJAR run org.strategoxt.tools.main-gen-renamed-sdf-module -Xnativepath $HOME/.nix-profile/bin/"
-SDF2RTG="java -cp $STRJAR run org.strategoxt.tools.main-sdf2rtg -Xnativepath $HOME/.nix-profile/bin/ --ignore-missing-cons"
-RTG2SIG="java -cp $STRJAR run org.strategoxt.tools.main-rtg2sig"
-SDF2PARENTHESIZE="java -Xss8m -Xmx1024m -cp $STRJAR run org.strategoxt.tools.main-sdf2parenthesize"
-SGLRI="java -cp $STRJAR org.spoofax.jsglr.Main --implode"
+STRJ="java $JAVAFLAGS -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS -F --library"
+STRJPLAIN="java $JAVAFLAGS -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS"
+STRJLIB="java $JAVAFLAGS -cp $STRJAR org.strategoxt.strj.Main $STRJCONSTANTS --library"
+PACKSDF="java $JAVAFLAGS -cp $STRJAR run org.strategoxt.tools.main-pack-sdf"
+GENSDFMIX="java $JAVAFLAGS -cp $STRJAR run org.strategoxt.tools.main-gen-sdf-mix -Xnativepath $HOME/.nix-profile/bin/"
+GENRENSDF="java $JAVAFLAGS -cp $STRJAR run org.strategoxt.tools.main-gen-renamed-sdf-module -Xnativepath $HOME/.nix-profile/bin/"
+SDF2RTG="java $JAVAFLAGS -cp $STRJAR run org.strategoxt.tools.main-sdf2rtg -Xnativepath $HOME/.nix-profile/bin/ --ignore-missing-cons"
+RTG2SIG="java $JAVAFLAGS -cp $STRJAR run org.strategoxt.tools.main-rtg2sig"
+SDF2PARENTHESIZE="java $JAVAFLAGS -cp $STRJAR run org.strategoxt.tools.main-sdf2parenthesize"
+SGLRI="java $JAVAFLAGS -cp $STRJAR org.spoofax.jsglr.Main --implode"
 
 function fromsdf {
 $PACKSDF -i $1.sdf -o $1.def $2 || exit 1
