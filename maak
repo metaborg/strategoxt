@@ -81,6 +81,7 @@ cd ../rtg
 fromsdf rtg
 fromsdf Stratego-rtg "-I $srcdir/syntax/stratego"
 
+cd $srcdir
 for f in `find . -name "*.meta"` 
 do 
   parse-stratego -i `dirname $f`/`basename $f .meta`.str \
@@ -153,6 +154,7 @@ fromsdf Stratego-Java-EBlock "-Idef $srcdir/syntax/stratego/StrategoMix.def -Ide
 cd $srcdir/java-front/lib
 
 mkdir -p java/signature
+
 $SDF2PARENTHESIZE -i $srcdir/java-front/syntax/src/Java-15.tbl -o java/pp/parenthesize.str \
           --omod java/pp/parenthesize \
           --sig-module java/signature/v5 \
@@ -161,8 +163,6 @@ $SDF2PARENTHESIZE -i $srcdir/java-front/syntax/src/Java-15.tbl -o java/pp/parent
 
 $RTG2SIG -i $srcdir/java-front/syntax/src/Java-15.rtg -o java/signature/v5.str --module Java-15
 $RTG2SIG -i $srcdir/java-front/syntax-embedding/Java-EBlock.rtg -o java/signature/eblock.str --module Java-EBlock
-
-mkdir java/signature
 
 echo "
     OctaEscape1             : Int -> OctaEscape
