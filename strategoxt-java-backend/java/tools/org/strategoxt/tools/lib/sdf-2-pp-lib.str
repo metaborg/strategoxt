@@ -19,7 +19,7 @@ strategies
     ?prod(syms, sym, attrs)
   ; ( <?attrs(<id>); get-cnstr-name> attrs => cons-name
     < <symbols2pp-entries(!cons-name)> syms
-    + ignore-prod
+    + pp-lib-ignore-prod
       < ![]
       + if-verbose1(missing-constructor-warning)
         ; ![]
@@ -36,7 +36,7 @@ strategies
 
 strategies
 
-  ignore-prod =
+  pp-lib-ignore-prod =
       is-inject-prod
     + is-bracket-prod
     + is-reject-prod
@@ -44,7 +44,7 @@ strategies
   /**
    * Ignore a bracket production that injects A into A.
    */
-  ignore-prod =
+  pp-lib-ignore-prod =
     ?prod(syms, cf(sort(x)), attrs(attrs))
     ; where(
         <contains-bracket> attrs
