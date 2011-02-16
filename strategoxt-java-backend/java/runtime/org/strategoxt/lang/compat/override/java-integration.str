@@ -9,6 +9,11 @@ imports
   libstratego-lib
 
 strategies
+  override term-address-lt(|t2) =
+    ?t1 ; <address-lt>(t1,t2)
+
+  override address-lt =
+    (checksum, checksum) ; string-lt ; ![]
 
   override fatal-err(|msg) =
     log(|Critical(), msg, <id>);
