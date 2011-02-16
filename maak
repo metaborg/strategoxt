@@ -143,11 +143,6 @@ done
 
 cd $srcdir/libraries/strc/lib
 
-echo "
-    RootApp                  : StrategyAngle -> Term
-    BA                       : StrategyAngle * Term -> Strategy
-" >> $srcdir/syntax/stratego/Stratego.str
-
 $SDF2PARENTHESIZE -m Stratego --omod stratego-parenthesize --lang Stratego -i $srcdir/syntax/stratego/Stratego.tbl -o stratego/strc/pp/stratego-parenthesize.str || exit 1
 $STRJ -i strc.str -o libstrc.ctree -I $srcdir/libraries/strc/lib -I $srcdir/syntax/stratego -I $srcdir/syntax/box || exit 1
 
@@ -163,16 +158,6 @@ $SDF2PARENTHESIZE -i $srcdir/java-front/syntax/src/Java-15.tbl -o java/pp/parent
 
 $RTG2SIG -i $srcdir/java-front/syntax/src/Java-15.rtg -o java/signature/v5.str --module Java-15
 $RTG2SIG -i $srcdir/java-front/syntax-embedding/Java-EBlock.rtg -o java/signature/eblock.str --module Java-EBlock
-
-echo "
-    OctaEscape1             : Int -> OctaEscape
-    OctaEscape2             : Int * Int -> OctaEscape
-    OctaEscape3             : Int * Int * Int -> OctaEscape
-    Cond                    : Expr * CondMid * Expr -> Expr
-    UnicodeEscape           : ListPlusOfCharClass1 * Int * Int * Int * Int -> UnicodeEscape
-    ArrayAccess             : Expr * ArraySubscript -> ArrayAccess
-    NamedEscape             : Int -> NamedEscape
-" >> java/signature/v5.str
 
 $STRJ -i javafront.str -o libjava-front.ctree -I $srcdir/syntax/box || exit 1
 
