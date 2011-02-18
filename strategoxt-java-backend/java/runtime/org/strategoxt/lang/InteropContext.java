@@ -50,6 +50,10 @@ public class InteropContext implements IContext {
 	public ITermFactory getFactory() {
 		return context.getFactory();
 	}
+	
+	public void setFactory(ITermFactory factory) {
+		context.setFactory(factory);
+	}
 
 	public IOperatorRegistry getOperatorRegistry(String domain) {
 		return context.getOperatorRegistry(domain);

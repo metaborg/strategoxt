@@ -48,7 +48,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
 	private final UncaughtExceptionHandler.Finalizer exceptionHandlerFinalizer =
     	new UncaughtExceptionHandler.Finalizer(exceptionHandler);
 	
-	private final ITermFactory factory;
+	private ITermFactory factory;
     
     private transient String lastPrimitiveName1, lastPrimitiveName2;
     
@@ -87,6 +87,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
 	public final ITermFactory getFactory() {
         if (asyncCancelled) cancel();
 		return factory;
+	}
+	
+	public void setFactory(ITermFactory factory) {
+		this.factory = factory;
 	}
 	
 	public List<IOperatorRegistry> getOperatorRegistries() {

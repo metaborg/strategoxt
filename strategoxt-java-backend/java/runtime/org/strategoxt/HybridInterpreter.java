@@ -484,6 +484,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		public Context getCompiledContext() {
 			return compiledContext;
 		}
+		
+		@Override
+		public void setFactory(ITermFactory factory) {
+			super.setFactory(factory);
+			compiledContext.setFactory(factory);
+		}
 	}
 	
 	/**
@@ -496,7 +502,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		public HybridCompiledContext(ITermFactory factory) {
 			super(factory);
 		}
-		
+
 		public IContext getContext() {
 			return HybridInterpreter.this.getContext();
 		}

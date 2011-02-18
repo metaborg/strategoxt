@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
+import org.spoofax.interpreter.library.jsglr.origin.OriginLibrary;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
@@ -50,6 +51,7 @@ public class CompatManager {
 			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary());
+			context.addOperatorRegistry(new OriginLibrary());
 			context.addOperatorRegistry(new SGLRCompatLibrary());
 		}
 	}
