@@ -25,9 +25,11 @@ public class SRTS_EXT_crush_3_0 extends Strategy {
 		
 		for (int i = subterms.length - 1; i >= 0; i--) {
 			IStrategoTerm subterm = subterms[i];
-			subterm = s.invoke(context, subterm);
-			if (subterm == null) return null;
-			IStrategoTuple input = factory.makeTuple(subterm, result);
+			IStrategoTerm subtermResult = s.invoke(context, subterm);
+			if (subtermResult == null) return null;
+			factory.replaceTerm(subtermResult, subterm);
+			
+			IStrategoTuple input = factory.makeTuple(subtermResult, result);
 			result = sum.invoke(context, input);
 			if (result == null) return null;
 		}
