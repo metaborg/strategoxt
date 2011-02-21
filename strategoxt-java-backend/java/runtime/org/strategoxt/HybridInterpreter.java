@@ -357,6 +357,10 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		return ((HybridCompiledContext) context).getContext();
 	}
 	
+	public static HybridInterpreter getInterpreter(Context context) {
+		return ((HybridCompiledContext) context).getInterpreter();
+	}
+	
 	/**
 	 * Invokes a compiled or interpreted strategy bound to this instance.
 	 * 
@@ -503,8 +507,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			super(factory);
 		}
 
+		public HybridInterpreter getInterpreter() {
+			return HybridInterpreter.this;
+		}
+
 		public IContext getContext() {
-			return HybridInterpreter.this.getContext();
+			return getInterpreter().getContext();
 		}
 
 		@Override
