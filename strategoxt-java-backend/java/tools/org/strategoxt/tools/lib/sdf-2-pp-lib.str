@@ -26,13 +26,10 @@ strategies
     )
 
   missing-constructor-warning =
-    // TODO: restore constructor warnings?
-    // xtc-temp-files(
-    //  write-to
-    //; xtc-pp-sdf2
-    // ; ?FILE(<read-text-file; trim-chars('\n' + '\r' + ' ' + '\t')>)
-    // )
-      fatal-err(|"No constructor defined for production")
+    xtc-pp-sdf2
+  ; ?FILE(<read-text-file; trim-chars('\n' + '\r' + ' ' + '\t')>)
+  ; log(|Warning(), "No constructor defined for production")
+  ; log(|Warning(), <concat-strings>["  ", <id>])
 
 strategies
 
