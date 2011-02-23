@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.ant.test" basedir="." default="all">
+    <import file="strategoxt.xml" />
+    <property name="sdf" value="/home/rbvermaa/.nix-profile/"/>
+
+    <property name="syntaxstr" value="syntax/stratego"/>
+    <property name="syntaxbox" value="syntax/box"/>
+    <property name="syntaxrtg" value="syntax/rtg"/>
+    <property name="syntaxjava" value="java-front/syntax/src"/>
+    <property name="syntaxjavaemb" value="java-front/syntax-embedding"/>
+    <property name="syntaxpp" value="syntax/pp-table"/>
+    <property name="syntaxsdf" value="syntax/sdf"/>
+    <property name="syntaxaterm" value="syntax/aterm"/>
+
+    <target
+        name="all"
+        depends="ensure-dirs,syntax,compile"
+    />
+
+
+    <target name="ensure-dirs">
+        <mkdir dir="lib" />
+        <mkdir dir="lib/org/strategoxt/stratego_aterm" />
+        <mkdir dir="lib/org/strategoxt/stratego_gpp" />
+        <mkdir dir="lib/org/strategoxt/stratego_lib" />
+        <mkdir dir="lib/org/strategoxt/stratego_rtg" />
+        <mkdir dir="lib/org/strategoxt/stratego_sdf" />
+        <mkdir dir="lib/org/strategoxt/stratego_sglr" />
+        <mkdir dir="lib/org/strategoxt/strc" />
+        <mkdir dir="lib/org/strategoxt/stratego_tool_doc" />
+        <mkdir dir="lib/org/strategoxt/stratego_xtc" />
+        <mkdir dir="lib/org/strategoxt/strj" />
+        <mkdir dir="lib/org/strategoxt/java_front" />
+        <mkdir dir="lib/org/strategoxt/tools" />
+        <mkdir dir="java-front/lib/java/signature" />
+    </target>
+
+    <target name="syntax" depends="stratego-syntax,aterm-syntax,sdf-syntax,box-syntax,pp-syntax,rtg-syntax,java-syntax">
+        <sglri input="syntax/sdf/Sdf2.pp" output="syntax/sdf/Sdf2.pp.af" parsetable="syntax/pp-table/pp-table.tbl" />
+        <sglri input="syntax/pp-table/pp-table-pretty.pp" output="syntax/pp-table/pp-table-pretty.pp.af" parsetable="syntax/pp-table/pp-table.tbl" />
+        <sglri input="syntax/rtg/rtg.pp" output="syntax/rtg/rtg.pp.af" parsetable="syntax/pp-table/pp-table.tbl" />
+    </target>
+
+    <target name="compile">
+    </target>
+
+    <target name="stratego-aterm-compile">
+
+    </target>
+
+    <target name="stratego-syntax">
+        <sdf2generated base="${syntaxstr}/Stratego" main="Stratego" />
+        <sdf2generated base="${syntaxstr}/Stratego-Core" main="Stratego-Core" />
+        <sdf2generated base="${syntaxstr}/Stratego-Sugar" main="Stratego-Sugar" />
+        <sdf2generated base="${syntaxstr}/Stratego-Amb" main="Stratego-Amb" />
+        <pack-sdf input="${syntaxstr}/EmbeddedStratego.sdf" output="${syntaxstr}/EmbeddedStratego.def" />
+        <gen-sdf-mix
+            input="${syntaxstr}/Stratego.def"
+            output="${syntaxstr}/StrategoMix.sdf"
+            main="Stratego"
+            name="StrategoMix"
+        />
+        <gen-sdf-mix
+            input="${syntaxstr}/EmbeddedStratego.def"
+            output="${syntaxstr}/EmbeddedStrategoMix.sdf"
+            main="EmbeddedStratego"
+            name="EmbeddedStrategoMix"
+        />
+        <gen-renamed-sdf-module
+            input="${syntaxstr}/Stratego.def"
+            output="${syntaxstr}/StrategoRenamed.sdf"
+            prefix="Stratego"
+            main="Stratego"
+            name="StrategoRenamed"
+        />
+        <sdf2generated base="${syntaxstr}/StrategoStratego" main="StrategoStratego" />
+        <sdf2generated base="${syntaxstr}/Stratego-Sugar-in-Stratego" main="Stratego-Sugar-in-Stratego" />
+    </target>
+
+    <target name="box-syntax">
+        <sdf2generated base="${syntaxbox}/Box" main="Box" />
+        <sdf2generated base="${syntaxbox}/Stratego-Box" main="Stratego-Box">
+            <includeargs>
+                <args>
+                    <arg value="-I"/>
+                    <arg value="syntax/stratego"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+    </target>
+
+    <target name="rtg-syntax">
+        <sdf2generated base="${syntaxrtg}/rtg" main="rtg" />
+        <sdf2generated base="${syntaxrtg}/Stratego-rtg" main="Stratego-rtg">
+            <includeargs>
+                <args>
+                    <arg value="-I"/>
+                    <arg value="syntax/stratego"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+    </target>
+
+    <target name="java-syntax">
+        <sdf2generated base="${syntaxjava}/Java-15" main="Java-15" />
+        <sdf2generated base="${syntaxjava}/JavaCompilationUnit-15" main="JavaCompilationUnit-15" />
+        <gen-sdf-mix
+            input="${syntaxjava}/Java-15.def"
+            output="${syntaxjava}/languages/java-15/JavaMix.sdf"
+            main="languages/java-15/Main"
+            name="languages/java-15/JavaMix"
+        />
+
+        <sdf2generated base="${syntaxjavaemb}/Java-EBlock" main="Java-EBlock">
+            <includeargs>
+                <args>
+                    <arg value="-Idef"/>
+                    <arg value="${syntaxjava}/Java-15.def"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+
+        <pack-sdf input="${syntaxjavaemb}/languages/java/EmbeddedJava.sdf" output="${syntaxjavaemb}/EmbeddedJava.def">
+            <args>
+                <arg value="-Idef"/>
+                <arg value="${syntaxjava}/Java-15.def"/>
+            </args>
+        </pack-sdf>
+        <gen-sdf-mix
+            input="${syntaxjavaemb}/EmbeddedJava.def"
+            output="${syntaxjava}/languages/java/EmbeddedJavaMix.sdf"
+            main="languages/java/EmbeddedJava"
+            name="languages/java/EmbeddedJavaMix"
+        />
+
+        <sdf2generated base="${syntaxjavaemb}/Stratego-Java-15" main="Stratego-Java-15">
+            <includeargs>
+                <args>
+                    <arg value="-Idef"/>
+                    <arg value="syntax/stratego/StrategoMix.def"/>
+                    <arg value="-Idef"/>
+                    <arg value="${syntaxjava}/JavaMix.def"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+
+        <sdf2generated base="${syntaxjavaemb}/Stratego-Java-EBlock" main="Stratego-Java-EBlock">
+            <includeargs>
+                <args>
+                    <arg value="-Idef"/>
+                    <arg value="syntax/stratego/StrategoMix.def"/>
+                    <arg value="-Idef"/>
+                    <arg value="${syntaxjava}/JavaMix.def"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+
+
+    </target>
+
+    <target name="pp-syntax">
+        <sdf2generated base="${syntaxpp}/pp-table" main="pp-table">
+            <includeargs>
+                <args>
+                    <arg value="-I"/>
+                    <arg value="syntax/box"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+    </target>
+
+    <target name="sdf-syntax">
+        <sdf2generated base="${syntaxsdf}/Sdf2" main="Sdf2">
+            <includeargs>
+                <args>
+                    <arg value="-I"/>
+                    <arg value="${sdf}/share/sdf-library/library"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+        <sdf2generated base="${syntaxsdf}/Stratego-Sdf2" main="Stratego-Sdf2">
+            <includeargs>
+                <args>
+                    <arg value="-I"/>
+                    <arg value="${sdf}/share/sdf-library/library"/>
+                    <arg value="-I"/>
+                    <arg value="syntax/stratego"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+    </target>
+
+    <target name="aterm-syntax">
+        <sdf2generated base="${syntaxaterm}/ATerms" main="ATerms">
+            <includeargs>
+                <args>
+                    <arg value="-I"/>
+                    <arg value="${sdf}/share/sdf-library/library"/>
+                </args>
+            </includeargs>
+        </sdf2generated>
+    </target>
+
+
+</project>
