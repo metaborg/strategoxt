@@ -265,6 +265,8 @@
                 <arg value="SRTS_package_revision_0_0=&quot;&lt;SRTS-package-revision>&quot;" />
                 <arg value="-D" />
                 <arg value="SRTS_package_version_0_0=&quot;&lt;SRTS-package-version>&quot;" />
+                <arg value="-I" />
+                <arg value="${syntaxbox}" />
             </strjlibargs>
             <str-deps>
                 <srcfiles dir="libraries/tool-doc/lib" includes="**/*.str" />
