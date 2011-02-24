@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.ant.test" basedir="." default="all">
     <import file="strategoxt.xml" />
-    <property name="sdf" value="/home/rbvermaa/.nix-profile/"/>
     <property name="version" value="0.17.92"/>
     <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 
