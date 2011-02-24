@@ -281,17 +281,24 @@
         <attribute name="output" />
         <attribute name="package" />
         <element name="strjargs" optional="true" />
+        <element name="str-deps" optional="true" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="org.strategoxt.strj.Main" failonerror="true">
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <arg value="-p"/>
-                <arg value="@{package}"/>
-                <strjargs />
-            </java>
+            <uptodate-mio input="@{input}" output="@{output}" type="strj-lib">
+                <action>
+                    <java classname="org.strategoxt.strj.Main" failonerror="true">
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <arg value="-p"/>
+                        <arg value="@{package}"/>
+                        <strjargs />
+                    </java>
+                </action>
+                <deps>
+                    <str-deps />
+                </deps>
+            </uptodate-mio>
         </sequential>
     </macrodef>
 
@@ -300,13 +307,21 @@
         <attribute name="output" />
         <attribute name="package" />
         <element name="strjlibargs" optional="true" />
+        <element name="str-deps" optional="true" />
         <sequential>
-            <strj input="@{input}" output="@{output}" package="@{package}">
-                <strjargs>
-                    <arg value="--library"/>
-                    <strjlibargs />
-                </strjargs>
-            </strj>
+            <uptodate-mio input="@{input}" output="@{output}" type="strj-lib">
+                <action>
+                    <strj input="@{input}" output="@{output}" package="@{package}">
+                        <strjargs>
+                            <arg value="--library"/>
+                            <strjlibargs />
+                        </strjargs>
+                    </strj>
+                </action>
+                <deps>
+                    <str-deps />
+                </deps>
+            </uptodate-mio>
         </sequential>
     </macrodef>
 
