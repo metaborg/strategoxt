@@ -2,6 +2,7 @@
 <project name="org.strategoxt.ant.test" basedir="." default="all">
     <import file="strategoxt.xml" />
     <property name="sdf" value="/home/rbvermaa/.nix-profile/"/>
+    <property name="version" value="0.17.92"/>
     <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 
     <property name="syntaxstr" value="syntax/stratego"/>
@@ -24,6 +25,26 @@
                 <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
             </deps>
         </sdf2generated>
+    </target>
+
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete dir="lib"/>
+        <delete file="strategoxt.jar"/>
+        <delete file=""/>
+        <delete>
+            <fileset dir="." includes="**/*Renamed.sdf"/>
+            <fileset dir="." includes="**/*Mix.sdf"/>
+        </delete>
+        <delete>
+            <fileset dir="." includes="**/*.rtree"/>
+            <fileset dir="." includes="**/*.ctree"/>
+            <fileset dir="." includes="**/*.def" excludes="**/tests/**/*.def"/>
+            <fileset dir="." includes="**/*.dep"/>
+            <fileset dir="." includes="**/*.tbl" excludes="**/tests/**/*.tbl"/>
+            <fileset dir="." includes="**/*.rtg" excludes="**/tests/**/*.rtg" />
+            <fileset dir="." includes="**/*.pp.af"/>
+        </delete>
     </target>
 
     <target name="ensure-dirs">
@@ -53,7 +74,7 @@
     <target name="syntax" depends="stratego-syntax,aterm-syntax,sdf-syntax,box-syntax,pp-syntax,rtg-syntax,java-syntax,parse-pp-tables">
     </target>
 
-    <target name="generate-java" depends="aterm-java,gpp-java,lib-java,rtg-java,sdf-java,sglr-java,strc-java,tool-doc-java,xtc-java,strj-java,tools-java,java-java">
+    <target name="generate-java" depends="aterm-java,gpp-java,lib-java,rtg-java,sdf-java,sglr-java,strc-java,tool-doc-java,xtc-java,strj-java,tools-java,java-java,compat-java">
     </target>
 
     <target name="install">
@@ -300,6 +321,8 @@
                 <arg value="${syntaxstr}" />
                 <arg value="-I" />
                 <arg value="${syntaxjavaemb}" />
+                <arg value="-D" />
+                <arg value="STRJ_VERSION_TERM=&quot;${version}&quot;" />
             </strjargs>
             <str-deps>
                 <srcfiles dir="java-backend/trans" includes="**/*.str" />
@@ -572,6 +595,14 @@
             main="Stratego"
             name="StrategoMix"
         />
+        <pack-sdf input="${syntaxstr}/StrategoMix.sdf" output="${syntaxstr}/StrategoMix.def">
+            <sdf-deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" >
+                    <exclude name="**/*Renamed.sdf" />
+                    <exclude name="**/*Mix.sdf" />
+                </srcfiles>
+            </sdf-deps>
+        </pack-sdf>
         <gen-sdf-mix
             input="${syntaxstr}/EmbeddedStratego.def"
             output="${syntaxstr}/EmbeddedStrategoMix.sdf"
@@ -596,7 +627,7 @@
     </target>
 
     <target name="box-syntax">
-        <sdf2generated base="${syntaxbox}/Box" main="Box" />
+        <sdf2generated base="${syntaxbox}/Box" main="Box" pp="false" />
         <sdf2generated base="${syntaxbox}/Stratego-Box" main="Stratego-Box">
             <includeargs>
                 <args>
@@ -608,7 +639,7 @@
     </target>
 
     <target name="rtg-syntax">
-        <sdf2generated base="${syntaxrtg}/rtg" main="rtg" />
+        <sdf2generated base="${syntaxrtg}/rtg" main="rtg" pp="false" />
         <sdf2generated base="${syntaxrtg}/Stratego-rtg" main="Stratego-rtg">
             <includeargs>
                 <args>
@@ -628,6 +659,19 @@
             main="languages/java-15/Main"
             name="languages/java-15/JavaMix"
         />
+
+        <pack-sdf input="${syntaxjava}/languages/java-15/JavaMix.sdf" output="${syntaxjava}/JavaMix.def">
+            <args>
+                <arg value="-Idef"/>
+                <arg value="${syntaxjava}/Java-15.def"/>
+            </args>
+            <sdf-deps>
+                <srcfiles dir="${syntaxjava}" includes="**/*.sdf" >
+                    <exclude name="**/*Renamed.sdf" />
+                    <exclude name="**/*Mix.sdf" />
+                </srcfiles>
+            </sdf-deps>
+        </pack-sdf>
 
         <sdf2generated base="${syntaxjavaemb}/Java-EBlock" main="Java-EBlock">
             <includeargs>
@@ -652,6 +696,29 @@
             name="languages/java/EmbeddedJavaMix"
         />
 
+        <mkdir dir="${syntaxjava}/languages/java/eblock" />
+        <gen-sdf-mix
+            input="${syntaxjavaemb}/Java-EBlock.def"
+            output="${syntaxjava}/languages/java/eblock/JavaEBlockMix.sdf"
+            main="languages/java/eblock/Main"
+            name="languages/java/eblock/JavaEBlockMix"
+        />
+
+        <pack-sdf input="${syntaxjava}/languages/java/EmbeddedJavaMix.sdf" output="${syntaxjava}/EmbeddedJavaMix.def">
+            <args>
+                <arg value="-Idef"/>
+                <arg value="${syntaxjava}/Java-15.def"/>
+                <arg value="-I"/>
+                <arg value="${syntaxjavaemb}"/>
+            </args>
+            <sdf-deps>
+                <srcfiles dir="${syntaxjava}" includes="**/*.sdf" >
+                    <exclude name="**/*Renamed.sdf" />
+                    <exclude name="**/*Mix.sdf" />
+                </srcfiles>
+            </sdf-deps>
+        </pack-sdf>
+
         <sdf2generated base="${syntaxjavaemb}/Stratego-Java-15" main="Stratego-Java-15">
             <includeargs>
                 <args>
@@ -659,6 +726,8 @@
                     <arg value="syntax/stratego/StrategoMix.def"/>
                     <arg value="-Idef"/>
                     <arg value="${syntaxjava}/JavaMix.def"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxjava}"/>
                 </args>
             </includeargs>
         </sdf2generated>
@@ -670,6 +739,8 @@
                     <arg value="syntax/stratego/StrategoMix.def"/>
                     <arg value="-Idef"/>
                     <arg value="${syntaxjava}/JavaMix.def"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxjava}"/>
                 </args>
             </includeargs>
         </sdf2generated>
@@ -704,7 +775,7 @@
     </target>
 
     <target name="sdf-syntax">
-        <sdf2generated base="${syntaxsdf}/Sdf2" main="Sdf2">
+        <sdf2generated base="${syntaxsdf}/Sdf2" main="Sdf2" pp="false">
             <includeargs>
                 <args>
                     <arg value="-I"/>

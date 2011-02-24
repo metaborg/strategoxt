@@ -205,6 +205,7 @@
     <macrodef name="sdf2generated">
         <attribute name="base" />
         <attribute name="main" />
+        <attribute name="pp" default="true" />
         <element name="includeargs" optional="true" />
         <element name="deps" optional="true" />
         <sequential>
@@ -216,7 +217,12 @@
             </pack-sdf>
             <sdf2table input="@{base}.def" output="@{base}.tbl" main="@{main}" />
 
-            <ppgen input="@{base}.def" output="@{base}.pp" />
+            <if>
+                <equals arg1="@{pp}" arg2="true" />
+                <then>
+                    <ppgen input="@{base}.def" output="@{base}.pp" />
+                </then>
+            </if>
 
             <sdf2rtg input="@{base}.def" output="@{base}.rtg" main="@{main}" />
             <rtg2sig input="@{base}.rtg" output="@{base}.str" main="@{main}" />
