@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.ant" basedir="." >
     <property name="nativepath" value="${sdf}/bin/"/>
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
     <macrodef name="log">
         <attribute name="message" />
@@ -16,16 +17,71 @@
         <attribute name="input" />
         <attribute name="output" />
         <element name="args" optional="true"/>
+        <element name="sdf-deps" optional="true"/>
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-pack-sdf"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <args />
-            </java>
+            <uptodate-mio input="@{input}" output="@{output}" type="pack-sdf">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-pack-sdf"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <args />
+                    </java>
+                </action>
+                <deps>
+                    <sdf-deps />
+                </deps>
+            </uptodate-mio>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="uptodate-io">
+        <attribute name="type" />
+        <attribute name="input" />
+        <attribute name="output" />
+        <element name="action" />
+        <sequential>
+            <condition property="@{input}.@{type}">
+                <uptodate srcfile="@{input}" targetfile="@{output}" />
+            </condition>
+            <if>
+                <equals arg1="${@{input}.@{type}}" arg2="true" />
+                <then>
+                    <echo message="@{output} is up-to-date" />
+                </then>
+                <else>
+                    <log message="@{input} -> @{output}"/>
+                    <action />
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="uptodate-mio">
+        <attribute name="type" />
+        <attribute name="input" />
+        <attribute name="output" />
+        <element name="action" />
+        <element name="deps" />
+        <sequential>
+            <condition property="@{input}.@{type}">
+                <uptodate targetfile="@{output}">
+                    <srcfiles dir="." includes="@{input}" />
+                    <deps/>
+                </uptodate>
+            </condition>
+            <if>
+                <equals arg1="${@{input}.@{type}}" arg2="true" />
+                <then>
+                    <echo message="@{output} is up-to-date" />
+                </then>
+                <else>
+                    <log message="@{input} -> @{output}"/>
+                    <action />
+                </else>
+            </if>
         </sequential>
     </macrodef>
 
@@ -35,18 +91,21 @@
         <attribute name="parsetable" />
         <element name="args" optional="true"/>
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="org.spoofax.jsglr.Main" failonerror="true">
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-p"/>
-                <arg value="@{parsetable}"/>
-                <arg value="--implode"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <args />
-            </java>
-        </sequential>
+            <uptodate-io input="@{input}" output="@{output}" type="sglri">
+                <action>
+                    <java classname="org.spoofax.jsglr.Main" failonerror="true">
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-p"/>
+                        <arg value="@{parsetable}"/>
+                        <arg value="--implode"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <args />
+                    </java>
+                </action>
+            </uptodate-io>
+         </sequential>
     </macrodef>
 
     <macrodef name="sdf2rtg">
@@ -54,19 +113,22 @@
         <attribute name="output" />
         <attribute name="main" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-sdf2rtg"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-m"/>
-                <arg value="@{main}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <arg value="--ignore-missing-cons"/>
-                <arg value="-Xnativepath"/>
-                <arg value="${nativepath}"/>
-            </java>
+            <uptodate-io input="@{input}" output="@{output}" type="sdf2rtg">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-sdf2rtg"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-m"/>
+                        <arg value="@{main}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <arg value="--ignore-missing-cons"/>
+                        <arg value="-Xnativepath"/>
+                        <arg value="${nativepath}"/>
+                    </java>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 
@@ -75,16 +137,19 @@
         <attribute name="output" />
         <attribute name="main" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-rtg2sig"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="--module"/>
-                <arg value="@{main}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-            </java>
+            <uptodate-io input="@{input}" output="@{output}" type="sdf2rtg">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-rtg2sig"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="--module"/>
+                        <arg value="@{main}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                    </java>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 
@@ -93,15 +158,18 @@
         <attribute name="output" />
         <attribute name="main" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <exec executable="${sdf}/bin/sdf2table">
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-m"/>
-                <arg value="@{main}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-            </exec>
+            <uptodate-io input="@{input}" output="@{output}" type="sdf2table">
+                <action>
+                    <exec executable="${sdf}/bin/sdf2table">
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-m"/>
+                        <arg value="@{main}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                    </exec>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 
@@ -109,23 +177,26 @@
         <attribute name="input" />
         <attribute name="output" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-ppgen"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-t"/>
-                <arg value="-b"/>
-                <arg value="-o"/>
-                <arg value="@{output}.af"/>
-            </java>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-pp-pp-table"/>
-                <arg value="-i"/>
-                <arg value="@{output}.af"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-            </java>
+            <uptodate-io input="@{input}" output="@{output}" type="ppgen">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-ppgen"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-t"/>
+                        <arg value="-b"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}.af"/>
+                    </java>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-pp-pp-table"/>
+                        <arg value="-i"/>
+                        <arg value="@{output}.af"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                    </java>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 
@@ -133,9 +204,13 @@
         <attribute name="base" />
         <attribute name="main" />
         <element name="includeargs" optional="true" />
+        <element name="deps" optional="true" />
         <sequential>
             <pack-sdf input="@{base}.sdf" output="@{base}.def">
                 <includeargs />
+                <sdf-deps>
+                    <deps />
+                </sdf-deps>
             </pack-sdf>
             <sdf2table input="@{base}.def" output="@{base}.tbl" main="@{main}" />
 
@@ -154,21 +229,24 @@
         <attribute name="outputmodule" />
         <element name="args" optional="true" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-sdf2parenthesize"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="-m"/>
-                <arg value="@{main}"/>
-                <arg value="--lang"/>
-                <arg value="@{language}"/>
-                <arg value="--omod"/>
-                <arg value="@{outputmodule}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <args />
-            </java>
+            <uptodate-io input="@{input}" output="@{output}" type="sdf2parenthesize">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-sdf2parenthesize"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="-m"/>
+                        <arg value="@{main}"/>
+                        <arg value="--lang"/>
+                        <arg value="@{language}"/>
+                        <arg value="--omod"/>
+                        <arg value="@{outputmodule}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <args />
+                    </java>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 
@@ -178,20 +256,23 @@
         <attribute name="main" />
         <attribute name="name" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-gen-sdf-mix"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="--main"/>
-                <arg value="@{main}"/>
-                <arg value="--name"/>
-                <arg value="@{name}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <arg value="-Xnativepath"/>
-                <arg value="${nativepath}"/>
-            </java>
+            <uptodate-io input="@{input}" output="@{output}" type="gen-sdf-mix">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-gen-sdf-mix"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="--main"/>
+                        <arg value="@{main}"/>
+                        <arg value="--name"/>
+                        <arg value="@{name}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <arg value="-Xnativepath"/>
+                        <arg value="${nativepath}"/>
+                    </java>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 
@@ -236,22 +317,25 @@
         <attribute name="name" />
         <attribute name="prefix" />
         <sequential>
-            <log message="@{input} -> @{output}"/>
-            <java classname="run" failonerror="true">
-                <arg value="org.strategoxt.tools.main-gen-renamed-sdf-module"/>
-                <arg value="-i"/>
-                <arg value="@{input}"/>
-                <arg value="--main"/>
-                <arg value="@{main}"/>
-                <arg value="--name"/>
-                <arg value="@{name}"/>
-                <arg value="--prefix"/>
-                <arg value="@{prefix}"/>
-                <arg value="-o"/>
-                <arg value="@{output}"/>
-                <arg value="-Xnativepath"/>
-                <arg value="${nativepath}"/>
-            </java>
+            <uptodate-io input="@{input}" output="@{output}" type="gen-renamed-sdf-module">
+                <action>
+                    <java classname="run" failonerror="true">
+                        <arg value="org.strategoxt.tools.main-gen-renamed-sdf-module"/>
+                        <arg value="-i"/>
+                        <arg value="@{input}"/>
+                        <arg value="--main"/>
+                        <arg value="@{main}"/>
+                        <arg value="--name"/>
+                        <arg value="@{name}"/>
+                        <arg value="--prefix"/>
+                        <arg value="@{prefix}"/>
+                        <arg value="-o"/>
+                        <arg value="@{output}"/>
+                        <arg value="-Xnativepath"/>
+                        <arg value="${nativepath}"/>
+                    </java>
+                </action>
+            </uptodate-io>
         </sequential>
     </macrodef>
 

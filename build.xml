@@ -18,6 +18,13 @@
         depends="ensure-dirs,syntax,generate-java"
     />
 
+    <target name="test">
+        <sdf2generated base="${syntaxstr}/Stratego" main="Stratego">
+            <deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
+            </deps>
+        </sdf2generated>
+    </target>
 
     <target name="ensure-dirs">
         <mkdir dir="bin" />
@@ -37,13 +44,20 @@
         <mkdir dir="java-front/lib/java/signature" />
     </target>
 
-    <target name="syntax" depends="stratego-syntax,aterm-syntax,sdf-syntax,box-syntax,pp-syntax,rtg-syntax,java-syntax">
+    <target name="parse-pp-tables">
         <sglri input="syntax/sdf/Sdf2.pp" output="syntax/sdf/Sdf2.pp.af" parsetable="syntax/pp-table/pp-table.tbl" />
         <sglri input="syntax/pp-table/pp-table-pretty.pp" output="syntax/pp-table/pp-table-pretty.pp.af" parsetable="syntax/pp-table/pp-table.tbl" />
         <sglri input="syntax/rtg/rtg.pp" output="syntax/rtg/rtg.pp.af" parsetable="syntax/pp-table/pp-table.tbl" />
     </target>
 
+    <target name="syntax" depends="stratego-syntax,aterm-syntax,sdf-syntax,box-syntax,pp-syntax,rtg-syntax,java-syntax,parse-pp-tables">
+    </target>
+
     <target name="generate-java" depends="aterm-java,gpp-java,lib-java,rtg-java,sdf-java,sglr-java,strc-java,tool-doc-java,xtc-java,strj-java,tools-java,java-java">
+    </target>
+
+    <target name="install">
+        <mkdir dir="${prefix}/share/strc-java" />
     </target>
 
     <target name="compile-java">
@@ -476,11 +490,31 @@
     </target>
 
     <target name="stratego-syntax">
-        <sdf2generated base="${syntaxstr}/Stratego" main="Stratego" />
-        <sdf2generated base="${syntaxstr}/Stratego-Core" main="Stratego-Core" />
-        <sdf2generated base="${syntaxstr}/Stratego-Sugar" main="Stratego-Sugar" />
-        <sdf2generated base="${syntaxstr}/Stratego-Amb" main="Stratego-Amb" />
-        <pack-sdf input="${syntaxstr}/EmbeddedStratego.sdf" output="${syntaxstr}/EmbeddedStratego.def" />
+        <sdf2generated base="${syntaxstr}/Stratego" main="Stratego">
+            <deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
+            </deps>
+        </sdf2generated>
+        <sdf2generated base="${syntaxstr}/Stratego-Core" main="Stratego-Core">
+            <deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
+            </deps>
+        </sdf2generated>
+        <sdf2generated base="${syntaxstr}/Stratego-Sugar" main="Stratego-Sugar">
+            <deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
+            </deps>
+        </sdf2generated>
+        <sdf2generated base="${syntaxstr}/Stratego-Amb" main="Stratego-Amb">
+            <deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
+            </deps>
+        </sdf2generated>
+        <pack-sdf input="${syntaxstr}/EmbeddedStratego.sdf" output="${syntaxstr}/EmbeddedStratego.def">
+            <sdf-deps>
+                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
+            </sdf-deps>
+        </pack-sdf>
         <gen-sdf-mix
             input="${syntaxstr}/Stratego.def"
             output="${syntaxstr}/StrategoMix.sdf"
