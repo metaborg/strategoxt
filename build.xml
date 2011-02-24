@@ -31,7 +31,32 @@
         <delete dir="bin"/>
         <delete dir="lib"/>
         <delete file="strategoxt.jar"/>
-        <delete file=""/>
+        <delete file="syntax/aterm/ATerms.str"/>
+        <delete file="syntax/aterm/ATerms.pp"/>
+        <delete file="syntax/box/Box.str"/>
+        <delete file="syntax/box/Stratego-Box.str"/>
+        <delete file="syntax/box/Stratego-Box.pp"/>
+        <delete file="syntax/sdf/Sdf2.str"/>
+        <delete file="syntax/sdf/Stratego-Sdf2.str"/>
+        <delete file="syntax/sdf/Stratego-Sdf2.pp"/>
+        <delete file="syntax/rtg/rtg.str"/>
+        <delete file="syntax/rtg/Stratego-rtg.str"/>
+        <delete file="syntax/rtg/Stratego-rtg.pp"/>
+        <delete file="syntax/pp-table/pp-table.pp"/>
+        <delete file="syntax/pp-table/pp-table.str"/>
+        <delete file="syntax/stratego/Stratego.str"/>
+        <delete file="syntax/stratego/Stratego.pp"/>
+        <delete file="syntax/stratego/Stratego-Amb.str"/>
+        <delete file="syntax/stratego/Stratego-Amb.pp"/>
+        <delete file="syntax/stratego/Stratego-Core.str"/>
+        <delete file="syntax/stratego/Stratego-Core.pp"/>
+        <delete file="syntax/stratego/Stratego-Sugar-in-Stratego.str"/>
+        <delete file="syntax/stratego/Stratego-Sugar-in-Stratego.pp"/>
+        <delete file="syntax/stratego/Stratego-Sugar.str"/>
+        <delete file="syntax/stratego/Stratego-Sugar.pp"/>
+        <delete file="syntax/stratego/StrategoStratego.str"/>
+        <delete file="syntax/stratego/StrategoStratego.pp"/>
+        <delete file="libraries/strc/lib/stratego/strc/pp/stratego-parenthesize.str"/>
         <delete>
             <fileset dir="." includes="**/*Renamed.sdf"/>
             <fileset dir="." includes="**/*Mix.sdf"/>
