@@ -79,6 +79,7 @@
 
     <target name="install">
         <mkdir dir="${prefix}/share/strc-java" />
+        <copydir src="syntax" dest="${prefix}/share/" />
     </target>
 
     <target name="compile-java">
