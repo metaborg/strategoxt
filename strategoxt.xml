@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.ant" basedir="." >
     <property name="nativepath" value="${sdf}/bin/"/>
+    <property name="version" value="0"/>
+    <property name="revision" value="0"/>
     <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
     <macrodef name="log">
@@ -292,6 +294,10 @@
                         <arg value="@{output}"/>
                         <arg value="-p"/>
                         <arg value="@{package}"/>
+                        <arg value="-D"/>
+                        <arg value="VERSION_TERM=&quot;${version}&quot;"/>
+                        <arg value="-D"/>
+                        <arg value="SVN_REVISION_TERM=&quot;${revision}&quot;"/>
                         <strjargs />
                     </java>
                 </action>
