@@ -199,8 +199,29 @@
     </target>
 
     <target name="lib-java">
+        <mkdir dir="lib/org/strategoxt/stratego_lib" />
         <strj-lib
             input="libraries/lib/spec/stratego-lib-posix-xsi.str"
+            output="libraries/lib/spec/libstratego-lib-posix-xsi.ctree"
+            package="org.strategoxt.stratego_lib"
+        >
+            <strjlibargs>
+                <arg value="-la" />
+                <arg value="org.strategoxt.lang.compat.override.java_integration" />
+                <arg value="-la" />
+                <arg value="org.strategoxt.lang.compat.override.performance_tweaks" />
+                <arg value="-la" />
+                <arg value="org.strategoxt.lang.compat.override.native_calls_compat" />
+                <arg value="-F" />
+            </strjlibargs>
+            <str-deps>
+                <srcfiles dir="libraries/lib/spec" includes="**/*.str" />
+            </str-deps>
+        </strj-lib>
+        <copy file="libraries/lib/spec/libstratego-lib-posix-xsi.ctree" tofile="libraries/lib/spec/libstratego-lib.ctree" />
+
+        <strj-lib
+            input="libraries/lib/spec/libstratego-lib.ctree"
             output="lib/org/strategoxt/stratego_lib/Main.java"
             package="org.strategoxt.stratego_lib"
         >
