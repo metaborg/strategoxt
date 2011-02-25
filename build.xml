@@ -135,7 +135,7 @@
 
     <target name="install">
         <mkdir dir="${prefix}/share/strc-java" />
-        <copy file="strategoxt.jar" dest="${prefix}/share/strc-java/strategoxt.jar" />
+        <copy file="strategoxt.jar" tofile="${prefix}/share/strc-java/strategoxt.jar" />
         <copydir src="syntax" dest="${prefix}/share/" />
     </target>
 
