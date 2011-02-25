@@ -163,9 +163,9 @@
     <target name="jar">
         <jar destfile="strategoxt.jar" manifest="java-backend/java/META-INF/MANIFEST.MF">
             <fileset dir="bin" includes="**/*.class"/>
-            <fileset dir="bin" includes="**/*.rtree"/>
-            <fileset dir="bin" includes="**/*.af"/>
-            <fileset dir="bin" includes="**/*.tbl"/>
+            <fileset dir="lib" includes="**/*.rtree"/>
+            <fileset dir="lib" includes="**/*.af"/>
+            <fileset dir="lib" includes="**/*.tbl"/>
             <zipfileset includes="**/*" src="java-backend/java/spoofax-libs.jar"/>
         </jar>
     </target>
