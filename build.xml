@@ -34,15 +34,15 @@
                 <fileset dir="." includes="**/*.str" />
             </path>
             <sequential>
-                <echo message="Parsing @{strfile}"/>
-                <basename file="@{strfile}" property="basename" suffix=".str" />
-                <dirname file="@{strfile}" property="dirname" />
+                <basename file="@{strfile}" property="@{strfile}.basename" suffix=".str" />
+                <dirname file="@{strfile}" property="@{strfile}.dirname" />
+                    <echo message="Parsing @{strfile} -> ${@{strfile}.dirname}/${@{strfile}.basename}.rtree"/>
 
                 <exec executable="parse-stratego">
                     <arg value="-i"/>
                     <arg value="@{strfile}"/>
                     <arg value="-o"/>
-                    <arg value="${dirname}/${basename}.rtree"/>
+                    <arg value="${@{strfile}.dirname}/${@{strfile}.basename}.rtree"/>
                     <arg value="-I"/>
                     <arg value="${syntaxstr}"/>
                     <arg value="-I"/>
