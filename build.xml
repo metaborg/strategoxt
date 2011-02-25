@@ -251,6 +251,7 @@
             </str-deps>
         </strj-lib>
         <copy file="libraries/lib/spec/libstratego-lib-posix-xsi.ctree" tofile="libraries/lib/spec/libstratego-lib.ctree" />
+        <copy file="libraries/lib/spec/libstratego-lib-posix-xsi.rtree" tofile="libraries/lib/spec/libstratego-lib.rtree" />
 
         <strj-lib
             input="libraries/lib/spec/libstratego-lib.ctree"
