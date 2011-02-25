@@ -357,6 +357,31 @@
     <target name="xtc-java">
         <strj-lib
             input="libraries/xtc/lib/stratego-xtc-posix-xsi.str"
+            output="libraries/xtc/lib/libstratego-xtc-posix-xsi.ctree"
+            package="org.strategoxt.stratego_xtc"
+        >
+            <strjlibargs>
+                <arg value="-la" />
+                <arg value="stratego-lib" />
+                <arg value="-la" />
+                <arg value="org.strategoxt.lang.compat.override.xtc_compat" />
+                <arg value="-I" />
+                <arg value="libraries/lib/spec" />
+                <arg value="-D" />
+                <arg value="GetInternalDefaultXtcRepository_0_0=None" />
+                <arg value="-D" />
+                <arg value="PACKAGE_NAME_TERM=&quot;&lt;package name>&quot;" />
+                <arg value="-F" />
+            </strjlibargs>
+            <str-deps>
+                <srcfiles dir="libraries/xtc/lib" includes="**/*.str" />
+            </str-deps>
+        </strj-lib>
+        <copy file="libraries/xtc/lib/libstratego-xtc-posix-xsi.ctree" tofile="libraries/xtc/lib/libstratego-xtc.ctree" />
+        <copy file="libraries/xtc/lib/libstratego-xtc-posix-xsi.rtree" tofile="libraries/xtc/lib/libstratego-xtc.rtree" />
+
+        <strj-lib
+            input="libraries/xtc/lib/libstratego-xtc.ctree"
             output="lib/org/strategoxt/stratego_xtc/Main.java"
             package="org.strategoxt.stratego_xtc"
         >
@@ -376,6 +401,7 @@
                 <srcfiles dir="libraries/xtc/lib" includes="**/*.str" />
             </str-deps>
         </strj-lib>
+
     </target>
 
     <target name="strj-java">

@@ -332,6 +332,7 @@
                     </strj>
                 </action>
                 <deps>
+
                     <str-deps />
                 </deps>
             </uptodate-mio>
