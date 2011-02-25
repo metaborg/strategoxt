@@ -140,15 +140,24 @@
     </target>
 
     <target name="compile-java">
-         <javac srcdir="lib"
-                destdir="bin"
-                classpath="java-backend/java/spoofax-libs.jar:java-backend/java/runtime:bin"
-                source="1.5"
-                target="1.5"
-                nowarn="on"
-                debug="true"
-                debuglevel="source"
-         />
+        <javac srcdir="lib"
+               destdir="bin"
+               classpath="java-backend/java/spoofax-libs.jar:java-backend/java/runtime:bin"
+               source="1.5"
+               target="1.5"
+               nowarn="on"
+               debug="true"
+               debuglevel="source"
+        />
+        <javac srcdir="java-backend/java/runtime"
+               destdir="bin"
+               classpath="java-backend/java/spoofax-libs.jar:java-backend/java/runtime:bin"
+               source="1.5"
+               target="1.5"
+               nowarn="on"
+               debug="true"
+               debuglevel="source"
+        />
     </target>
 
     <target name="jar">
