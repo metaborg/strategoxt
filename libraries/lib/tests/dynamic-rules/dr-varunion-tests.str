@@ -4,7 +4,7 @@ imports
 
 strategies
 
-  main =
+  main-dr-varunion-tests =
     varunion-tests
 
   varunion-tests =

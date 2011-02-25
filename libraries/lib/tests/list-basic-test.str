@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-list-basic-test =
     test-suite(!"list-basic-test",
       map-test
     ; split-fetch-test

@@ -7,7 +7,7 @@ signature
 
 strategies
 
-  main =
+  main-term-zip-test =
     test-suite(!"term-zip-test",
 	test1;
 	test2;

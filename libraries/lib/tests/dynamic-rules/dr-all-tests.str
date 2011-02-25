@@ -7,7 +7,7 @@ imports
 
 strategies
 
-  main =
+  main-dr-all-tests =
     id
 /*
     ; scope-tests

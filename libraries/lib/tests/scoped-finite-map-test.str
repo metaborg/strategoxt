@@ -49,7 +49,7 @@ rules
 
 strategies
 
-  main = 
+  main-scoped-finite-map-test = 
     test-suite(!"scoped-finite-map-test",
 	test0;
 	test1;

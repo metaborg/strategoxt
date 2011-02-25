@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-parse-options-test = 
     test-suite(!"parse-options-test",
       simple-option-tests
     ; default-option-tests

@@ -7,7 +7,7 @@ module string-test
 imports libstratego-lib
 strategies 
 
-  main = 
+  main-string-test = 
     test-suite(!"string-test",
       explode-implode-test
     ; strcat-tests

@@ -9,7 +9,7 @@ imports
 
 strategies
 
-  main =
+  main-dr-propconst-tests-2 =
     propconst-tests-2
 
   propconst-tests-2 =

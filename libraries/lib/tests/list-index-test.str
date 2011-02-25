@@ -5,7 +5,7 @@ module list-index-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-list-index-test = 
     test-suite(!"list-index-test",
       test-set-index
     ; test-index

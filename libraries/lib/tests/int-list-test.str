@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies 
 
-  main = 
+  main-int-list-test = 
     test-suite(!"int-list-test",
 	sort-test;
 	is-interval-test;

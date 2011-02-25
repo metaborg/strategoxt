@@ -2,7 +2,7 @@ module substitution-test
 imports libstratego-lib
 strategies
 
-  main =
+  main-substitution-test =
     test-suite(!"substitution-test",
 	test1
     )

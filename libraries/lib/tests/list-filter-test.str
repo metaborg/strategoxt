@@ -2,7 +2,7 @@ module list-filter-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-list-filter-test = 
     test-suite(!"list-filter-test",
       test1;
       test2

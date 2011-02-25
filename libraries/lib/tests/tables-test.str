@@ -5,7 +5,7 @@ module tables-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-tables-test = 
     test-suite(!"tables-test",
       legacy-tests
 

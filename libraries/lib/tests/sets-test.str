@@ -5,7 +5,7 @@ module sets-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-sets-test = 
     test-suite(!"Testsuite for IndexedSets",
         test-create
       ; test-add
