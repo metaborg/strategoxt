@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.ant.test" basedir="." default="all">
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
     <import file="strategoxt.xml" />
     <property name="version" value="0.17.92"/>
     <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
@@ -15,7 +17,7 @@
 
     <target
         name="all"
-        depends="ensure-dirs,syntax,generate-java,compile-java,jar"
+        depends="ensure-dirs,syntax,parse-hack,generate-java,compile-java,jar"
     />
 
     <target name="test">
@@ -24,6 +26,36 @@
                 <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
             </deps>
         </sdf2generated>
+    </target>
+
+    <target name="parse-hack">
+        <for param="strfile">
+            <path>
+                <fileset dir="." includes="**/*.str" />
+            </path>
+            <sequential>
+                <echo message="Parsing @{strfile}"/>
+                <basename file="@{strfile}" property="basename" suffix=".str" />
+                <dirname file="@{strfile}" property="dirname" />
+
+                <exec executable="parse-stratego">
+                    <arg value="-i"/>
+                    <arg value="@{strfile}"/>
+                    <arg value="-o"/>
+                    <arg value="${dirname}/${basename}.rtree"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxstr}"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxrtg}"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxbox}"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxsdf}"/>
+                    <arg value="-I"/>
+                    <arg value="${syntaxjavaemb}"/>
+                </exec>
+            </sequential>
+        </for>
     </target>
 
     <target name="clean">
