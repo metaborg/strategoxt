@@ -475,6 +475,8 @@
                 <srcfiles dir="java-front/lib" includes="**/*.str" />
             </str-deps>
         </strj-lib>
+        <copy file="java-front/lib/libjavafront.ctree" tofile="java-front/lib/libjava-front.ctree" />
+        <copy file="java-front/lib/libjavafront.rtree" tofile="java-front/lib/libjava-front.rtree" />
     </target>
 
     <target name="compat-java">
