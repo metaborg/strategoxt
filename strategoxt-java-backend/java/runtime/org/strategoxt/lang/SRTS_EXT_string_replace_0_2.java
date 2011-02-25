@@ -26,6 +26,9 @@ public class SRTS_EXT_string_replace_0_2 extends Strategy {
 
 	private IStrategoTerm invoke(ITermFactory factory, IStrategoTerm current,
 			String before, String after) {
+                if(before.equals("")) {
+			return current;
+                }
 		
 		String input = asJavaString(current);
 		String result = input.replace(before, after);
