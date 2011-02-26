@@ -10,9 +10,6 @@ imports
   libstratego-sglr
   ExpId
   ExpInt
-  ConcreteSyntax
-  error-support
-  KernelStartSymbol
 
 strategies
 
