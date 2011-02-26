@@ -164,6 +164,7 @@
             <uptodate-io input="@{input}" output="@{output}" type="sdf2table">
                 <action>
                     <exec executable="${sdf}/bin/sdf2table">
+                        <arg value="-t"/>
                         <arg value="-i"/>
                         <arg value="@{input}"/>
                         <arg value="-m"/>
