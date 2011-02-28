@@ -292,4 +292,4 @@ strategies
    * Succeeds if the current term is a parse tree.
    */
   is-parse-tree =
-    ?t; prim("STRSGLR_is_parse_tree", t)
+    ?parsetree(_,_)
