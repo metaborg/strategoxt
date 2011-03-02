@@ -3,9 +3,15 @@ package org.strategoxt.lang.compat;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.jsglr.origin.OriginLibrary;
+import org.strategoxt.HybridInterpreter;
 import org.strategoxt.lang.Context;
+import org.strategoxt.lang.InteropSDefT;
+import org.strategoxt.lang.SRTS_EXT_eq_ignore_annos_0_1;
+import org.strategoxt.lang.SRTS_EXT_newint_0_0;
 import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
 /**
@@ -30,6 +36,14 @@ public class CompatManager {
 			for (String component : asyncComponents) {
 				activateComponent(component);
 			}
+		}
+		
+		// HACK: make some of the built-in strategies available to the interpreter
+		IContext iContext = HybridInterpreter.getContext(context);
+		if (iContext != null) {
+			VarScope varScope = iContext.getVarScope();
+		    varScope.addSVar("SRTS_EXT_newint_0_0", new InteropSDefT(SRTS_EXT_newint_0_0.instance, iContext));
+		    varScope.addSVar("SRTS_EXT_eq_ignore_annos_0_1", new InteropSDefT(SRTS_EXT_eq_ignore_annos_0_1.instance, iContext));
 		}
 	}
 
