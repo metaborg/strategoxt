@@ -354,11 +354,15 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	}
 	
 	public static IContext getContext(Context context) {
-		return ((HybridCompiledContext) context).getContext();
+		return context instanceof HybridCompiledContext
+			? ((HybridCompiledContext) context).getContext()
+			: null;
 	}
 	
 	public static HybridInterpreter getInterpreter(Context context) {
-		return ((HybridCompiledContext) context).getInterpreter();
+		return context instanceof HybridCompiledContext
+			? ((HybridCompiledContext) context).getInterpreter()
+			: null;
 	}
 	
 	/**
