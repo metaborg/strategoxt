@@ -100,10 +100,10 @@ JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 check-interpreter : $(IRUNFILES)
 
 %.ctree : %.str
-	../trans/strj -O 0 -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
+	../trans/strj -O 0 -m main-`basename $< .str` -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -i $< -o $@
 
 basic/camelCase_1.ctree : basic/camelCase_1.str
-	../trans/strj -O 0 -la java-front --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -m camelCase_1 -i $< -o $@
+	../trans/strj -O 0 -la java-front -m main-`basename $< .str` --format-check 0 -F -I ../java/runtime/org/strategoxt/lang/parallel/stratego_parallel -m camelCase_1 -i $< -o $@
 
 %.str : %.astr
 	aster -i $< -o $@
