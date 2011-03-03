@@ -20,12 +20,19 @@
         depends="ensure-dirs,syntax,parse-hack,generate-java,compile-java,jar"
     />
 
-    <target name="test">
-        <sdf2generated base="${syntaxstr}/Stratego" main="Stratego">
-            <deps>
-                <srcfiles dir="${syntaxstr}" includes="**/*.sdf" />
-            </deps>
-        </sdf2generated>
+    <target name="test" depends="tests">
+    </target>
+
+    <target name="tests">
+        <for param="strfile" keepgoing="true">
+            <path>
+                <fileset dir="libraries" includes="*/tests/*.str" />
+                <fileset dir="java-front" includes="java-front/test/*.str" />
+            </path>
+            <sequential>
+                <strj-test input="@{strfile}" />
+            </sequential>
+        </for>
     </target>
 
     <target name="parse-hack">
