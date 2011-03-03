@@ -1,5 +1,5 @@
 module assignment
-imports list-cons
+imports libstratego-lib
 signature
   constructors
     A : Term

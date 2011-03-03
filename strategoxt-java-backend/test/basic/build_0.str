@@ -1,6 +1,6 @@
 module build_0
 imports
-  stratego-lib
+  libstratego-lib
 
 signature
   constructors

@@ -1,5 +1,5 @@
 module conditional-innermost
-imports list-cons
+imports collection/list/cons
 signature
   sorts Nat
   constructors
