@@ -4,6 +4,6 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-iset_1 =
     new-iset
   ; iset-add(|1)

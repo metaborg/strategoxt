@@ -11,7 +11,7 @@ signature
 
 strategies
 
-  main = 
+  main-overloading = 
    <[f(RA); RD, f(RA, RB); RC]	> [F(A),G(A,B)] => [F(D),G(D,C)]
 
   f(s) = F(s)

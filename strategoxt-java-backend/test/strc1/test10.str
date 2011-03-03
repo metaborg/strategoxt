@@ -17,7 +17,7 @@ rules
 
 strategies
 
-  main =  
+  main-test10 =  
     !Plus(Succ(Plus(Succ(Zero), Succ(Zero))), Succ(Zero));
     Eval2
 

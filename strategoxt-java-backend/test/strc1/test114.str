@@ -10,4 +10,4 @@ signature constructors
 
 strategies
 
-  main = !sort(1); sort(id)
+  main-test114 = !sort(1); sort(id)

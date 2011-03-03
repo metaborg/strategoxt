@@ -7,7 +7,7 @@ signature
 
 strategies
 
-  main =
+  main-test75 =
     test1
 
   test1 = 

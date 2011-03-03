@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-dynrules_1 =
      !Some(1); ?x; rules(Rule: Some(2) -> 2 Rule: x -> 1)
    ; !Some(2); Rule; debug
    ; !Some(1); Rule; debug

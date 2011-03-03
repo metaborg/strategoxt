@@ -5,7 +5,7 @@ imports
 
 strategies
 
-  main =
+  main-match_4 =
     a := 1
   ; b := 2
   ; not(?a)

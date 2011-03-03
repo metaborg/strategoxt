@@ -9,7 +9,7 @@ signature constructors
 
 rules
 
-  main =
+  main-gchoice_2 =
     not(
       id
       < (id < fail + !3)

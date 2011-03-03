@@ -9,7 +9,7 @@ signature constructors
 
 strategies
 
-  main =
+  main-build_3 =
     !""#([1,2]) => (1,2);
     !Foo(1,2); to-foo2; debug => Foo2(1,2)
   

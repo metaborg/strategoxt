@@ -10,7 +10,7 @@ strategies
   
   show(|s) = where(write-to-string; debug(!s)); say(id)
 
-  main =
+  main-test112 =
     x := $[ 1
             2 ];
     !$[ Indent me: [x]]; show(|1) =>

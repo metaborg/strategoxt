@@ -14,7 +14,7 @@ strategies
 	    {n : ?(n, Module(n, _))},
 	    \ Module(n, c) -> <filter(not(Imports(id)))> c \ )
 
-  main = 
+  main-flatten_test = 
     test-suite(!"flatten-test",
 	test1
     )

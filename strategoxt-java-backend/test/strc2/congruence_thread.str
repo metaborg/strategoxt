@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-congruence_thread = 
     test-suite(!"congruence-env-test",
 	//congruence-dist-test;
 	//congruence-thread-test;

@@ -7,4 +7,4 @@ signature
   constructors
       BOL_Lambda : BOLVar * List(BOLBndVar) * BOLExp -> BOLLambda
 strategies
-  main = id
+  main-comment_test = id

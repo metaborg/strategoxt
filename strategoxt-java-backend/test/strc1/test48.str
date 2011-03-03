@@ -8,5 +8,5 @@ strategies
   ALL(s) = 
     ?t; prim("SRTS_all", s | t)
 
-  main =
+  main-test48 =
     ALL(id)

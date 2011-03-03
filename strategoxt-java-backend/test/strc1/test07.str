@@ -23,6 +23,6 @@ strategies
   eval = 
     repeat(A + B)
 
-  main =  
+  main-test07 =  
     !Plus(Succ(Succ(Zero)), Succ(Zero));
     eval

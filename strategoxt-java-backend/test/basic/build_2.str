@@ -4,7 +4,7 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-build_2 =
     !Some("a"){1, 2}
     ; try(\Some(s){ts*} -> Some(s){Some(ts*)}\)
     ; ?Some("a"){Some([1,2])}

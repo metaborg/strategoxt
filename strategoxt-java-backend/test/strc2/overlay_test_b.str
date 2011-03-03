@@ -38,7 +38,7 @@ overlays
 
 strategies
 
-  main =   
+  main-overlay_test_b =   
     //!Add(Mul(Var("x"), Add(Var("y"), Var("z"))), " ", " ", Var("a"))
     !Add(Var("z"), " ", " ", Var("a"))
               

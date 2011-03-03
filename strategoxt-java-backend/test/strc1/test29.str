@@ -8,7 +8,7 @@ signature
 
 strategies
 
-  main = 
+  main-test29 = 
     test-suite(!"test29",
       test1;
       test2;

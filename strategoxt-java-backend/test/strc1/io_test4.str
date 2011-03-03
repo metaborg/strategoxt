@@ -7,7 +7,7 @@ signature
  
 strategies 
 
-  main = 
+  main-io_test4 = 
     <conc>(<id>, ["-i", "io-test4.in", "-o", "io-test4.out"])
     ; io-wrap( 
         ?x

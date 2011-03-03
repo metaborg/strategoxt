@@ -4,7 +4,7 @@ imports
 
 strategies
 
-  main =
+  main-test_chain03 =
       !"Foo" => op1
     ; !"Bar" => op2
     ; rules(Foo : (op1#(_), op2#(_)) -> ())

@@ -7,6 +7,6 @@ signature
 
 strategies 
 
-  main = 
+  main-improper_list_test = 
     (!["a" | ["b" | Bla(["c" | ["d" | []]])]] <+ !"a");
     ?"a"

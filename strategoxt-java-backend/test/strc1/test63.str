@@ -5,7 +5,7 @@ module test63
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main =
+  main-test63 =
     !Cons(1, 2, 3)
     ; Cons( \ 1 -> 2 \, \ 2 -> 3 \, \ 3 -> 4 \ )
     ; ?Cons(2, 3, 4)

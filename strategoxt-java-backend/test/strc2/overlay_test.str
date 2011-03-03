@@ -38,7 +38,7 @@ rules
 
 strategies
 
-  main =   
+  main-overlay_test =   
     test-suite(!"overlay-test",  
 	overlay-test1;
 	overlay-test2;

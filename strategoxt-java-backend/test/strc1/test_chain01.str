@@ -4,7 +4,7 @@ imports
 
 strategies
 
-  main =
+  main-test_chain01 =
       register-extension1
     ; register-extension2
     ; {| Foo :

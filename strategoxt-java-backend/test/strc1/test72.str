@@ -62,7 +62,7 @@ strategies
 
 strategies
 
-  main = 
+  main-test72 = 
     test-suite(!"test72",
       test1
     )

@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-shared_var_3 =
     let
       a = map(b); ?x
       b = ?y

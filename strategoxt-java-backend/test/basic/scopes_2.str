@@ -4,7 +4,7 @@ imports libstratego-lib
 
 rules
 
-  main =
+  main-scopes_2 =
     { x:
       if debug then
         { y:

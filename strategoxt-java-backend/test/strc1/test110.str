@@ -5,6 +5,6 @@ module test110
 imports libstratego-lib
 strategies
 
-  main =
+  main-test110 =
     x := None()
   ; not(!Some(x#([])))

@@ -9,7 +9,7 @@ strategies
   eval =
     ?Add(i,j); <add>(i,j)
 
-  main = 
+  main-test13 = 
     !Add(1,2);
     eval;
     ?3

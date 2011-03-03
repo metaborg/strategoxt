@@ -2,7 +2,7 @@ module unification-test
 imports libstratego-lib
 strategies
 
-  main =
+  main-unification_test =
     test-suite(!"unification-test",
 	test0;
 	test1

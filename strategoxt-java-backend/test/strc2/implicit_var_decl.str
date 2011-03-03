@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-implicit_var_decl =
 	parse-options(io-options);
 	?options;
 	option-defined(?Program(prog));

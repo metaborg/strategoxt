@@ -13,7 +13,7 @@ signature
 
 strategies
 
-  main =
+  main-test104 =
     test1
     ; debug(!"the term: ")
     ; ?Foo(Bar(["a","b"]), None(), (Baz(),Aap()))

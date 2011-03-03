@@ -12,7 +12,7 @@ strategies
   list(s) =
     rec x([] + [s | x])
 
-  main = 
+  main-test14 = 
     list(try(?Add(1,x)))
     ; (!x <+ !2)
     

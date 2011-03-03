@@ -12,7 +12,7 @@ signature
 
 strategies
 
-  main = 
+  main-match_automaton_test = 
     test-suite(!"match-automaton-test",
 	failure-in-case1;
   	failure-in-case2

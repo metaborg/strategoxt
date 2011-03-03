@@ -62,7 +62,7 @@ strategies
 
 strategies
 
-  main = 
+  main-dynamic_rules_test = 
     test-suite(!"dynamic-rules-test",
 	//test0;
 	test1;

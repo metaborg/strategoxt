@@ -28,7 +28,7 @@ strategies
   eval(env) = 
     innermost(A(env) + B)
 
-  main =  
+  main-test96 =  
     !Plus(Var("a"), Plus(Var("b"), Var("c")))
     ; eval(![("a", 1), ("b", 2), ("c", 3)])
     ; ?6

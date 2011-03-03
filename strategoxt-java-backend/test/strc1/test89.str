@@ -2,7 +2,7 @@ module test89
 imports libstratego-lib
 strategies
 
-  main =
+  main-test89 =
     <all-G-by-H> H(G(G(H(G(B, I(1)), A), B), I(0)), A)
 	      => H(G(G(H(H(B, I(1)), A), B), I(0)), A)
 

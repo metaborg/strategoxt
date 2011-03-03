@@ -15,4 +15,4 @@ strategies
 
 strategies
 
-  main = id
+  main-empty_sections = id

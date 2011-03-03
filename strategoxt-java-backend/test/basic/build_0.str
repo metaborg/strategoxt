@@ -8,4 +8,4 @@ signature
 
 strategies
 
-  main = !Foo(1,2)
+  main-build_0 = !Foo(1,2)

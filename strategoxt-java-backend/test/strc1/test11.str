@@ -11,6 +11,6 @@ strategies
 
   h : y -> z where <Var(id)> y => z
 
-  main =
+  main-test11 =
     !Var("a");
     where(f(Var) + h)

@@ -9,7 +9,7 @@ signature
     g: a -> Term
 strategies
 
-  main = 
+  main-test18 = 
     test-suite(!"test18",
 	test0;
 	test1;

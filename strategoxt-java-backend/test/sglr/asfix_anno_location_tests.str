@@ -12,7 +12,7 @@ imports
 
 strategies
 
-  main =
+  main-asfix_anno_location_tests =
     test-suite(!"asfix-anno-location",
       asfix-anno-location-tests
     )

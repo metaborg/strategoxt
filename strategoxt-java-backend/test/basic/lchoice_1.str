@@ -4,4 +4,4 @@ imports
 
 strategies
 
-  main = id < !0 + !1
+  main-lchoice_1 = id < !0 + !1

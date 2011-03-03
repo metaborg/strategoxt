@@ -14,7 +14,7 @@ strategies
     + {?(r@A, C); !r}
     + {?(r@B, C); !r}
 
-  main = 
+  main-test99 = 
     test-suite(!"test99", 
 	test1
     )

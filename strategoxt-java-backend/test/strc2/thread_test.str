@@ -13,7 +13,7 @@ signature
 
 strategies
 
-  main = 
+  main-thread_test = 
     test-suite(!"thread-test",
       simple-test;
       preorder-number;

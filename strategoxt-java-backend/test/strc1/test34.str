@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-   main =
+   main-test34 =
      test1
      ; test2
      //; test3

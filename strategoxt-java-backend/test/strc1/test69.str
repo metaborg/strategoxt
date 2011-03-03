@@ -14,7 +14,7 @@ rules
 
 strategies
 
-  main = 
+  main-test69 = 
     test-suite(!"explode-test",
 	explode-test1;
 	explode-test2;

@@ -5,7 +5,7 @@ strategies
   hd : [x | xs] -> x
   tl : [x | xs] -> xs
 
-  main = 
+  main-test47 = 
     where(foo(|<hd>))
     ; bar(|<hd>,[<tl>])
 

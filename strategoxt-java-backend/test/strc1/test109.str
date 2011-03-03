@@ -4,7 +4,7 @@ imports libstratego-lib
 
 strategies
 
-  main = !1 => <foo> => <bar> => 3
+  main-test109 = !1 => <foo> => <bar> => 3
   
   foo: 1 -> b where 1 with b := 2
   

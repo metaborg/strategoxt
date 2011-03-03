@@ -2,4 +2,4 @@ module test68
 imports libstratego-lib spec
 strategies
 
-  main = !Fred("test")
+  main-test68 = !Fred("test")

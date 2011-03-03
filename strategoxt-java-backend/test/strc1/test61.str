@@ -5,7 +5,7 @@ module test61
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main =
+  main-test61 =
     !Cons()
     ; Cons()
     ; ?Cons

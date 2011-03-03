@@ -6,5 +6,5 @@ signature
 
 strategies
 
-  main = <If(id, id)> If("a","b")
+  main-congruence_arguments = <If(id, id)> If("a","b")
 

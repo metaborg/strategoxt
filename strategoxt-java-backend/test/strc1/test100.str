@@ -8,5 +8,5 @@ strategies
      in nestedtable-put(forward, id | keys, value)
     end
 
-  main =
+  main-test100 =
     where(try(mynestedtable-put(|"", "")))

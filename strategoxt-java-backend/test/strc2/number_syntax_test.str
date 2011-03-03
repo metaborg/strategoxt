@@ -8,7 +8,7 @@ rules
 
 strategies
 
-  main = 
+  main-number_syntax_test = 
    <bla> 1 => 2;
    <blabla> 0.2 => 0.1
 

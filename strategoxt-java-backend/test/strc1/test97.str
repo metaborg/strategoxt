@@ -2,7 +2,7 @@ module test97
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main =
+  main-test97 =
     test1
 
   test1 =

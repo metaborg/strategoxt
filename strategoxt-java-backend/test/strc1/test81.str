@@ -6,7 +6,7 @@ signature
 
 strategies 
  
- main = 
+ main-test81 = 
    test-suite(!"test81: test quoted constructors",
      test-match
    )

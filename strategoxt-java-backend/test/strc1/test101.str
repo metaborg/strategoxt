@@ -2,7 +2,7 @@ module test101
 imports collection/list/cons
 strategies
 
-  main =
+  main-test101 =
     toplevel
 
   toplevel =

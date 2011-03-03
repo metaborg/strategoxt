@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-shared_var_1 =
     let
       a = x := 1
       b = !x

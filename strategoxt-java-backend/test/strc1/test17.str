@@ -12,7 +12,7 @@ overlays
 
 strategies
 
-  main = 
+  main-test17 = 
     test-suite(!"test17",
 	test1
     )

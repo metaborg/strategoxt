@@ -6,7 +6,7 @@ imports collection/list/cons collection/tuple/cons
 
 strategies
 
-  main =
+  main-qcons_test01 =
     !"aap"(1)
 
 signature

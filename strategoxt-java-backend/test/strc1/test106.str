@@ -12,7 +12,7 @@ overlays
 
 strategies
 
-  main = id
+  main-test106 = id
     ; <test1> Bar("a", 3)
     ; <test2> Bar("a", 3)
 

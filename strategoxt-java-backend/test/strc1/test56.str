@@ -2,6 +2,6 @@ module test56
 imports libstratego-lib
 strategies
 
-   main =
+   main-test56 =
      rules(Foo: t@(1, x@2) -> [1, 2, t, x])
  

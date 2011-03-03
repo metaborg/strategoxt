@@ -7,7 +7,7 @@ signature constructors
 
 strategies
 
-  main =
+  main-traversal_1 =
     !Fork(Fork(2,5), 7)
   ; oncetd(inc)
   ; ?Fork(Fork(3,5), 7)

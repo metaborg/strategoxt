@@ -8,7 +8,7 @@ signature constructors
 
 strategies
 
-  main =
+  main-annos_2 =
     test-strings
   ; test-vars
   

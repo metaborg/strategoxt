@@ -29,7 +29,7 @@ signature
 
 strategies
 
-  main = 
+  main-occan = 
     test-suite(!"occan", id
       	; test-dead
 	; test-once

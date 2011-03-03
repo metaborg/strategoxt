@@ -14,7 +14,7 @@ rules
 
 strategies
 
-  main = 
+  main-test84 = 
     ?[prog | args]
     ; oncetd(try(?(x,x)))
     ; try(prim("SSL_fputs", x, x))

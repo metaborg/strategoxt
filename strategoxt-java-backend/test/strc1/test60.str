@@ -2,7 +2,7 @@ module test60
 imports libstratego-lib
 strategies
 
-  main = 
+  main-test60 = 
     {| CSE 
      : new-A(|"a","a")
      ; where(<Assign> ("a", ("b", "c")))

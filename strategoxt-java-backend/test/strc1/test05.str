@@ -9,7 +9,7 @@ strategies
  
   eq = ?(x, x)
 
-  main =  
+  main-test05 =  
     !(F(1),F(1));
     eq;
     !F(3)

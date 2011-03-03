@@ -18,7 +18,7 @@ rules
 
 strategies
 
-  main = 
+  main-as_pattern = 
     test-suite(!"as-pattern-test",
 	as-pattern1;
 	as-pattern2

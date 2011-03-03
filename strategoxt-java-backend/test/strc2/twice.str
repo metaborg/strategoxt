@@ -11,7 +11,7 @@ rules
 
 strategies
 
-    main       = debug(!"main: "); <Main> [A, A]; debug(!"main x: ")
+    main-twice = debug(!"main: "); <Main> [A, A]; debug(!"main x: ")
 
     Main       = debug(!"Main: "); memo-scope([ma, ma]); debug(!"Main x: ")
 

@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-   main =
+   main-test53 =
      !["test53", "a", "b", "c"]
      ; test0
      ; test1

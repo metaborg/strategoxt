@@ -36,6 +36,6 @@ strategies
   eval = 
     innermost(A + B)
 
-  main =  
+  main-test08 =  
     !Plus(Succ(Plus(Succ(Zero), Succ(Zero))), Succ(Zero));
     eval

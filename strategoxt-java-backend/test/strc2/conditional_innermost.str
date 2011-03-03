@@ -30,4 +30,4 @@ rules
 
 strategies
 
-  main = innermost(A + B)
+  main-conditional_innermost = innermost(A + B)

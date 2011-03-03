@@ -11,7 +11,7 @@ signature
 
 strategies
 
-  main =
+  main-test111 =
     foo := "Foo"
   ; bar := "Bar"
   ; !foo#([bar#([42])]) => Foo(Bar(42))

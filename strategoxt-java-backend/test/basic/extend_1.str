@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-extend_1 =
     <cify> "foo-bar" => "foo_bar"
   ; <cify> "foosbar" => "foobar"
     

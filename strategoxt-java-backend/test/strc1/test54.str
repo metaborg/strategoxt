@@ -37,6 +37,6 @@ strategies
     
 strategies
 
-  main = 
+  main-test54 = 
     !Plus(Succ(Succ(Zero)), Succ(Zero));
     eval

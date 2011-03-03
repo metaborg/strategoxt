@@ -12,6 +12,6 @@ rules
 
 strategies
 
-  main = 
+  main-test03 = 
     ?[prog | args];
     split(!Call(prog, args), id)

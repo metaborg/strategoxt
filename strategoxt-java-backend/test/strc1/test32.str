@@ -9,7 +9,7 @@ signature
 
 strategies
 
-  main = 
+  main-test32 = 
     <reduce> Plus(Succ(Succ(Zero)), Succ(Zero))
 
   try(s) = s <+ id

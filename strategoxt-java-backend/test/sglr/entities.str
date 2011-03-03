@@ -7,7 +7,7 @@ imports
 
 rules
 
-  main =
+  main-entities =
     <parse-file> "Entities.ent"
   
   parse-file =

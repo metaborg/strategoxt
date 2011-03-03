@@ -5,7 +5,7 @@ imports
 
 strategies
 
-  main = rtg-remove-injection-rules
+  main-shared_var_4 = rtg-remove-injection-rules
 
   rtg-remove-injection-rules =
       let

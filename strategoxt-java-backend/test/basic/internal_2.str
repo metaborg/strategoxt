@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main = privaat
+  main-internal_2 = privaat
     
   internal privaat = debug
 

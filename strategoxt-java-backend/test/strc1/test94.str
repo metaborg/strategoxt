@@ -7,7 +7,7 @@ imports
 
 strategies
   
-  main =
+  main-test94 =
     <doit(string-tokenize)> "foo bar fred" => ["foo", "bar", "fred"]
 
   doit(s : t * t -> t) =

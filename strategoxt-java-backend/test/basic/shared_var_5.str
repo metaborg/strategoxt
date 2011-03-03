@@ -6,7 +6,7 @@ signature constructors
 
 strategies
 
-  main =
+  main-shared_var_5 =
       let
         a = ?x; b; a
         b = not(?x); a; b

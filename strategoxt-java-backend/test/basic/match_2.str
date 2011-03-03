@@ -9,5 +9,5 @@ signature constructors
 
 rules
 
-  main = !1; (?Foo() <+ ?Bar() <+ ?1)
+  main-match_2 = !1; (?Foo() <+ ?Bar() <+ ?1)
   

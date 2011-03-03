@@ -11,7 +11,7 @@ signature
 
 strategies
 
-  main = 
+  main-test90 = 
     try(private-single-field-decs1)
     ; try(private-single-field-decs2)
 

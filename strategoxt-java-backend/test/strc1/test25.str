@@ -2,4 +2,4 @@ module test25
 imports collection/list/cons collection/tuple/cons
 rules
 
-  main = ![]; !"" #(<id>)
+  main-test25 = ![]; !"" #(<id>)

@@ -9,7 +9,7 @@ strategies
 	  
 strategies
 
-  main = 
+  main-test73 = 
     test-suite(!"intersection with rulenames",
       test-it-now
     )

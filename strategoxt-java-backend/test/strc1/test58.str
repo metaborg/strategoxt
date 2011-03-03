@@ -2,7 +2,7 @@ module test58
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main =
+  main-test58 =
     let p = q <+ p
         q = r <+ q
         r = !1 <+ r

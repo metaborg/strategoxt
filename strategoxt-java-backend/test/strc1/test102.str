@@ -5,7 +5,7 @@ module test102
 imports libstratego-lib
 strategies
 
-  main =
+  main-test102 =
     <not(foo)> Some("Hey")
 
   foo =

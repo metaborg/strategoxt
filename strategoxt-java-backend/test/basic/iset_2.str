@@ -4,7 +4,7 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-iset_2 =
     set := <new-iset>
   ; iset-add(|1)
   ; iset-clear

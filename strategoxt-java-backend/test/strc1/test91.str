@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = <rewr> f(100, empty)
+  main-test91 = <rewr> f(100, empty)
 
 signature
   sorts Domain Range Map

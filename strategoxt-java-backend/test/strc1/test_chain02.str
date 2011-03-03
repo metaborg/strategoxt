@@ -4,7 +4,7 @@ imports
 
 strategies
 
-  main =
+  main-test_chain02 =
     !3 => z
     ; rules(Foo :+ (x, y, _) -> (<add> (x, 1), y, z))
     ; rules(Foo :+ (x, y, _) -> (<add> (x, 10), y, z))

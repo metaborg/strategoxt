@@ -3,6 +3,6 @@ imports libstratego-lib
 
 strategies
 
-   main = debug
+   main-io_test1 = debug
 
 

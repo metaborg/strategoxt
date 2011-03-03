@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-internal_1 =
     <cify> "foo-bar" => "foo_bar"
   ; not(<cify> "foosbar" => "foobar")
   ; <Cify(id)> ['s'] => []

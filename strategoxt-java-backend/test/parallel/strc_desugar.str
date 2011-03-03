@@ -7,7 +7,7 @@ imports
 
 strategies
   
-  main =
+  main-strc_desugar =
     <set-config> ("--statistics", 1);
     <set-config> ("-O", 3);
     // import-term(libstrc.ptree);

@@ -23,6 +23,6 @@ strategies
   eval = 
     bottomup(A <+ B <+ Ident)
 
-  main =  
+  main-test41 =  
     !Plus(Succ(Plus(Succ(Zero), Succ(Zero))), Succ(Zero));
     eval

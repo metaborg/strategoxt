@@ -7,7 +7,7 @@ signature
 
 strategies
 
-  main = 
+  main-test22 = 
     !Foo("uck")
     ; check(test1)
     ; check(test3)

@@ -14,7 +14,7 @@ signature
 
 
 strategies
-  main =
+  main-test_attributes =
     option-wrap(
       verbose-option
     , test-suite(

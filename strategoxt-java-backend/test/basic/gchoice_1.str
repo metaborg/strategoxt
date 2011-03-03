@@ -9,6 +9,6 @@ signature constructors
 
 rules
 
-  main =
+  main-gchoice_1 =
     (id < id + ?never)
   ; not(!never)

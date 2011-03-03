@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-dynrules_3 =
      rules(Foo+1 := 1)
    ; {| Foo:
        rules(Foo+2 := 2)

@@ -2,5 +2,5 @@ module test82
 imports libstratego-lib
 strategies
 
-  main =
+  main-test82 =
     !Conc(1,2)

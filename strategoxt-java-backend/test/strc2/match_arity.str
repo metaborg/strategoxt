@@ -15,7 +15,7 @@ rules
 
 strategies
 
-  main = 
+  main-match_arity = 
     test-suite(!"match-arity",
 	match-arity1;
 	match-arity2;

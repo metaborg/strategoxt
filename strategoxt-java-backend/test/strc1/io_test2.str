@@ -3,6 +3,6 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-io_test2 = 
     <conc>(<id>, ["-i", "io-test10.in", "-o", "io-test10.out"])
     ; io-wrap(id)

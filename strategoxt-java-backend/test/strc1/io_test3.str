@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-io_test3 = 
     <conc>(<id>, ["-i", "io-test2.in", "-o", "io-test2.out"])
     ; parse-options(io-options)
     ; debug 

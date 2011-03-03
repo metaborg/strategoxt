@@ -2,5 +2,5 @@ module test40
 imports libstratego-lib
 strategies
 
-  main = foldr(id, conc, explode-string)
+  main-test40 = foldr(id, conc, explode-string)
 

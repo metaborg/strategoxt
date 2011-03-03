@@ -19,7 +19,7 @@ strategies
   member = 
     (?x, fetch(?x))
 
-  main =
+  main-test35 =
     <not(member)> ("a", ["d", "b", "c"])
 
   fetch(s) =

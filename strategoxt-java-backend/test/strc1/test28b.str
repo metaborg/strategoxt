@@ -12,7 +12,7 @@ signature
  
 strategies 
  
-  main = 
+  main-test28b = 
     !Plus(Var("a"), Var("b")){Int}
     ; rm-annotations 
 

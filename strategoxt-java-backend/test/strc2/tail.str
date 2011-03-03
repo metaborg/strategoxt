@@ -8,6 +8,6 @@ rules
 
 strategies
 
-  main = 
+  main-tail = 
    <[id, id | id]; RA; [id, id, id | id ]> 
 	["A", "B", "C", "D"] => ["A","B","A","C","D"]

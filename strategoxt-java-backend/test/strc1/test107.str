@@ -6,7 +6,7 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-test107 =
     import-term(./Java-15.tbl)
     ; ?"parse-table"#(_)
     ; !"ok"

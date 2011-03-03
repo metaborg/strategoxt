@@ -21,7 +21,7 @@ rules
 
 strategies
 
-  main =
+  main-test24 =
     !H(H(H(B)))
     ; R2
     ; ?I(G(H(B),A))

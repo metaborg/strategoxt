@@ -5,7 +5,7 @@ module qconc-test04
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main =
+  main-qcons_test04 =
     !"aap"(1)
     ; not(?aap(_))
 

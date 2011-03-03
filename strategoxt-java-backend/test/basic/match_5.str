@@ -5,7 +5,7 @@ imports
 
 strategies
 
-  main =
+  main-match_5 =
     x := 0
   ; !1
   ; switch !x

@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = let-test
+  main-let_test = let-test
 
   let-test = 
     test-suite(

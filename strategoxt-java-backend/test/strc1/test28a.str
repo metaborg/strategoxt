@@ -15,7 +15,7 @@ strategies
   try(s) = 
     s <+ id
 
-  main =
+  main-test28a =
     !Var("a"){Int, Float}
     ; try( \ Var(s){ts*} -> Var(s){Foo(ts*)} \ )
     ; ?Var("a"){Foo([Int,Float])}

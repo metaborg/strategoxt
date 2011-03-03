@@ -6,6 +6,6 @@ signature
 
 strategies
 
-  main = 
+  main-test02 = 
     ?[prog | args];
     !Call(prog, args)

@@ -2,7 +2,7 @@ module cs-test01
 imports Expressions libstratego-lib
 strategies
   
-  main = 
+  main-cs_test01 = 
     test-suite(!"cs-test01",
 	  test1(A1 | "test1 - A1")
 	; test1(A2 | "test1 - A2")

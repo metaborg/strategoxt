@@ -9,7 +9,7 @@ signature
 
 strategies
 
-  main = 
+  main-build_1 = 
     !("module1", 
       [Module("module3",[Imports(["module1"]),Content("module3")]),
        Module("module2",[Imports([]),Content("module2")]),

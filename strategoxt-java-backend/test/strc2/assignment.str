@@ -8,7 +8,7 @@ signature
 
 strategies
 
-  main = <bla> G(A())
+  main-assignment = <bla> G(A())
 
   s = ?G(x); !F(x,x)
 

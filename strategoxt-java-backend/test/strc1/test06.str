@@ -23,6 +23,6 @@ strategies
 
 strategies
 
-  main = 
+  main-test06 = 
     !Plus(Succ(Succ(Zero)), Succ(Zero));
     eval

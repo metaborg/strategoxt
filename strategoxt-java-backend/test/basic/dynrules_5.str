@@ -5,7 +5,7 @@ imports
 
 rules
 
-  main =
+  main-dynrules_5 =
      rules(
        Foo :+ Some("2") -> 1
        Foo :+ None()    -> None()

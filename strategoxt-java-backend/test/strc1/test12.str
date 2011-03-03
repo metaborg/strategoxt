@@ -13,7 +13,7 @@ rules
 
 strategies
 
-  main =
+  main-test12 =
     <R> F(I, I) => G(I)
 
   

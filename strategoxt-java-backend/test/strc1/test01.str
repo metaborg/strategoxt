@@ -1,4 +1,4 @@
 module test01
 strategies
 
-  main = id
+  main-test01 = id

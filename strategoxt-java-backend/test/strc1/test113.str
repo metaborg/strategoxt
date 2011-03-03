@@ -11,7 +11,7 @@ strategies
   
 	show(|s) = where(write-to-string; debug(!s)); say(id)
 
-	main =
+	main-test113 =
 		s := $[ Sorry! ];
 		!$[		I like tabs.
 					[s]

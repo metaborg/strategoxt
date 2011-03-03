@@ -2,7 +2,7 @@ module test50
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main = foo
+  main-test50 = foo
 
   foo = [bar(!"a") | id]
 

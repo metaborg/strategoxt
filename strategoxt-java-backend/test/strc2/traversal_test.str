@@ -11,7 +11,7 @@ signature
 
 strategies
 
-  main = 
+  main-traversal_test = 
     test-suite(!"traversal-test",
 	all-test1;
 	all-test2;

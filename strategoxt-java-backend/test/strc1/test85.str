@@ -2,7 +2,7 @@ module switch-semantics-test
 imports libstratego-lib
 strategies
 
-  main =
+  main-test85 =
   test-suite(!"switch construct testsuite",
     test-woow
   ; test-wow

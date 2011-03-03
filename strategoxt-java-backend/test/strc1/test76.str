@@ -2,7 +2,7 @@ module test76
 imports libstratego-lib
 strategies
 
-  main =
+  main-test76 =
     test-suite(!"Annotations in static patterns",
       annos-in-static-patterns
     )

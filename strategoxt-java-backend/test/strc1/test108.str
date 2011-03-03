@@ -6,7 +6,7 @@ imports libstratego-lib
 
 strategies
 
-  main = id
+  main-test108 = id
     ; not(Foo)
 
     ; {| Foo :

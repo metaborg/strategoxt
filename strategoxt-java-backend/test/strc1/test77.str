@@ -10,5 +10,5 @@ strategies
     ?(x,y,z)
     ; rules( Foo : Foo(x,y,_) -> () depends on [] )
 
-  main = 
+  main-test77 = 
     undefine-Foo(|"a")

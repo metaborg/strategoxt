@@ -6,7 +6,7 @@ imports
 
 rules
 
-  main =
+  main-chars_1 =
     !"öä";
     explode-string;
     implode-string; debug => "öä";

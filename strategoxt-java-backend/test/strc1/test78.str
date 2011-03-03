@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-test78 = 
     asd123(|1) 
     ; asd321(|1) 
     ; asd111(|1)

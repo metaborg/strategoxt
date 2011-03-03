@@ -10,7 +10,7 @@ signature
 
 strategies
 
-   main =
+   main-test57 =
      <innermost(Simplify)>
        Seq(
          [ Bar(1)

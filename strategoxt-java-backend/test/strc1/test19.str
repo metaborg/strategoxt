@@ -9,7 +9,7 @@ f : a -> a
 aap: a
 
 strategies
-   main = string-test
+   main-test19 = string-test
    
    string-test =
      test-suite(!"string-test",

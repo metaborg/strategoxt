@@ -5,7 +5,7 @@ module cs-test02
 imports AsFix libstratego-lib
 strategies
 
-  main =
+  main-cs_test02 =
     test-suite(!"cs-test02", tests)
 
   tests = 

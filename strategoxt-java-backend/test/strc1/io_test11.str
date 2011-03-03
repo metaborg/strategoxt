@@ -25,6 +25,6 @@ strategies
   eval = 
     my-innermost(A + B)
 
-  main = 
+  main-io_test11 = 
     <conc>(<id>, ["-i", "io-test11.in", "-o", "io-test11.out"])
     ; io-wrap(eval)

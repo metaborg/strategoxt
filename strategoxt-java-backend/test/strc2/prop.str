@@ -2,7 +2,7 @@ module prop
 imports libstratego-lib
 strategies
 
-  main = 
+  main-prop = 
     test-suite(!"prop",
         test1
     )

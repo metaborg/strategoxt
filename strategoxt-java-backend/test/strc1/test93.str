@@ -7,7 +7,7 @@ imports
 
 strategies
 
-  main =
+  main-test93 =
       !Minus(
         And(
           CastPrim(Long,ExprName(Id("save")))

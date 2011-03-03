@@ -2,7 +2,7 @@ module test27
 imports collection/list/cons collection/tuple/cons
 strategies
 
-  main =
+  main-test27 =
     !(); try(test1); ?()
 
   try(s) = 

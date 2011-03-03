@@ -30,7 +30,7 @@ strategies
   nat_nf = 
     rec x(Succ(x) + Zero)
 
-  main =  
+  main-test09 =  
     !Plus(Succ(Plus(Succ(Zero), Succ(Zero))), Succ(Zero));
     eval;
     nat_nf

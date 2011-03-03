@@ -10,7 +10,7 @@ signature
 
 strategies
 
-  main = 
+  main-test33 = 
    <my-inline>
       Let([Fdec("f", ["x"], Call("h", [Var("x")])), Vdec("y", Var("z"))]
 	 ,[Call("f", [Var("y")])])

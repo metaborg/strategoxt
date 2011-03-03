@@ -2,7 +2,7 @@ module test83
 imports libstratego-lib
 strategies
 
-  main = 
+  main-test83 = 
     !"inc" => f     ; <call(f||)>1 => 2 
   ; !"apply-it-now" ; call(<id>|inc|2) => 3
   

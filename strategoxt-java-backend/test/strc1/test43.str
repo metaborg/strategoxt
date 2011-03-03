@@ -8,7 +8,7 @@ signature
 
 strategies
 
-   main = ?y;  
+   main-test43 = ?y;  
      let s(|x) = !x; foo
       in s(|1)
      end; !(y,y)

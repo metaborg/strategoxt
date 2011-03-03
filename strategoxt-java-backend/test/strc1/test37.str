@@ -2,7 +2,7 @@ module test37
 imports libstratego-lib
 strategies
 
-  main =
+  main-test37 =
     say(!"test37")
     ; ![48,65,97,92]
     ; debug

@@ -22,7 +22,7 @@ signature
    
 strategies
 
-  main = 
+  main-test79 = 
     test-suite(!"Annotations test suite",
       do-test(!"", test-match-suite)
     ; do-test(!"", test-set-suite)

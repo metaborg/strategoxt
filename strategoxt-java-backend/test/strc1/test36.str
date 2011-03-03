@@ -7,7 +7,7 @@ signature
 
 strategies
 
-  main = 
+  main-test36 = 
     ?foo
     ; <fclose> Stream(0)
     ; gclose(|1)

@@ -5,5 +5,5 @@ imports
 
 rules
 
-  main =
+  main-dynrules_2 =
      rules(Foo :+= 1 Foo :+=2); bagof-Foo

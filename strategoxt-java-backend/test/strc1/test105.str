@@ -8,7 +8,7 @@ imports collection/list/cons
 
 strategies
 
-  main =
+  main-test105 =
     dbg(|"test108: ")
 
   external dbg(|t)

@@ -18,7 +18,7 @@ signature
 
 strategies
 
-  main = 
+  main-test86 = 
     test-suite(!"test86",
       test1
       ; test2

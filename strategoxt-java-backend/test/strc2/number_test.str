@@ -6,7 +6,7 @@ rules
 
 strategies
 
-  main = 
+  main-number_test = 
     test-suite(!"number-test",
 	test0;
 	test1;

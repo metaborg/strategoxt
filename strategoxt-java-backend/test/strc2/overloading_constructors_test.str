@@ -25,7 +25,7 @@ strategies
 
 strategies
 
-  main = 
+  main-overloading_constructors_test = 
     test-suite(!"overloading-constructors-test",
       eval-test1;
       eval-test2;
