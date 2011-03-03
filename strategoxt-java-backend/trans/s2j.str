@@ -107,7 +107,7 @@ rules
     escape(Jify)
   
   Jify(x) =
-    \['_'  | cs] -> ['_','_' | <x> cs]\
+    \['_'  | cs] -> ['_' | <x> cs]\
   <+
     Cify(x)
   
