@@ -109,7 +109,7 @@ basic/camelCase_1.ctree : basic/camelCase_1.str
 	aster -i $< -o $@
 
 %.java : %.ctree ../trans/strj
-	../trans/strj --verbose 2 -i $< -o $@ -m main-`basename $< .str` -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I strc1 -I sglr -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
+	../trans/strj --verbose 2 -i $< -o $@ -m main-`basename $< .ctree` -la stratego-lib -la java-front -la stratego-sglr -I $(STRATEGOXT)/share/sdf/stratego-front -I strc1 -I sglr -I parallel -la strc `if echo $< | grep parallel >/dev/null; then echo -la stratego-parallel; fi`
 
 %.class : %.java
 	$(JAVAC) $(JAVACFLAGS) $<
