@@ -27,7 +27,7 @@
         <for param="strfile" keepgoing="true">
             <path>
                 <fileset dir="libraries" includes="*/tests/*.str" />
-                <fileset dir="java-front" includes="java-front/test/*.str" />
+                <fileset dir="java-front" includes="test/*.str" />
             </path>
             <sequential>
                 <strj-test input="@{strfile}" />
