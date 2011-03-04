@@ -36,6 +36,7 @@
                 <sdf2rtg input="@{deffile}" output="generated/${@{deffile}.basename}.rtg" main="Main" />
                 <rtg2sig input="generated/${@{deffile}.basename}.rtg" output="generated/${@{deffile}.basename}.str" main="Main" />
                 <sdf2table input="@{deffile}" output="generated/${@{deffile}.basename}.tbl" main="Main" />
+                <copy file="generated/${@{deffile}.basename}.tbl" tofile="${@{deffile}.dirname}/${@{deffile}.basename}.tbl" />
             </sequential>
         </for>
 
