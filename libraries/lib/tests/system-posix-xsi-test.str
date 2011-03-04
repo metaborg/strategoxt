@@ -6,7 +6,7 @@ strategies
   main-system-posix-xsi-test = 
     test-suite(!"system-posix-xsi",
       cwd-tests
-      ; fileno-tests
+     // ; fileno-tests
     )
 
 strategies
@@ -23,6 +23,7 @@ strategies
 
 strategies
 
+/*
   fileno-tests =
     where(new-temp-file => (tmp-name, tmp-fd))
 
@@ -35,3 +36,4 @@ strategies
       )
 
     ; where(<remove-file> tmp-name)
+*/
