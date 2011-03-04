@@ -36,7 +36,9 @@
                     <arg value="-I" />
                     <arg value="${syntaxbox}" />
                     <arg value="-I" />
-                    <arg value="${syntaxrtg}" />
+                    <arg value="generated/" />
+                    <arg value="-I" />
+                    <arg value="${@{input}.dirname}" />
                 </strjargs>
                 <str-deps>
                     <srcfiles dir="." includes="*.jar" />
@@ -53,7 +55,7 @@
                            debuglevel="source"
                            compiler="classic"
                     />
-             <java fork="true" classname="test.Main" failonerror="true">
+             <java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
                  <classpath>
                     <pathelement location="./strategoxt.jar"/>
                     <pathelement path="${@{input}.dirname}/${@{input}.basename}"/>
