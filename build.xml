@@ -24,6 +24,21 @@
     </target>
 
     <target name="tests">
+        <mkdir dir="generated" />
+        <for param="deffile">
+            <path>
+                <fileset dir="libraries" includes="sglr/tests/*.def" excludes="sglr/tests/List.def" />
+            </path>
+            <sequential>
+                <basename file="@{deffile}" property="@{deffile}.basename" suffix=".def" />
+                <dirname file="@{deffile}" property="@{deffile}.dirname" />
+
+                <sdf2rtg input="@{deffile}" output="generated/${@{deffile}.basename}.rtg" main="Main" />
+                <rtg2sig input="generated/${@{deffile}.basename}.rtg" output="generated/${@{deffile}.basename}.str" main="Main" />
+                <sdf2table input="@{deffile}" output="generated/${@{deffile}.basename}.tbl" main="Main" />
+            </sequential>
+        </for>
+
         <for param="strfile" keepgoing="true">
             <path>
                 <fileset dir="libraries" includes="*/tests/*.str" />
