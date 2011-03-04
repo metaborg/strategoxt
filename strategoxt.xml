@@ -35,6 +35,8 @@
                     <arg value="${syntaxaterm}" />
                     <arg value="-I" />
                     <arg value="${syntaxbox}" />
+                    <arg value="-I" />
+                    <arg value="${syntaxrtg}" />
                 </strjargs>
                 <str-deps>
                     <srcfiles dir="." includes="*.jar" />
