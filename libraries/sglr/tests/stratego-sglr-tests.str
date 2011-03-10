@@ -32,8 +32,6 @@ strategies
     ; implode-tests-conc
     ; implode-tests-ast-attributes    
     ; implode-tests-lexical    
-    ; asfix2me-tests
-    ; asfix-anno-position-info-tests
     ; asfix-anno-location-tests
     )
 
@@ -385,74 +383,6 @@ strategies
       }
 
     ; where(<close-parse-table> tbl)
-
-/**
- * Position info
- */
-strategies
-
-  asfix-anno-position-info-tests =
-      where(
-        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
-      )
-
-    ; apply-test(!"Position info for a simple expression"
-      , parse-string-pt(|tbl)
-        ; asfix-anno-position-info(|"")
-        ; implode-asfix
-        ; strip-non-string-annos
-      , !"1 + 2"
-      , !Plus(
-           Int("1"{[pos-info(),area-in-file("",area(1,0,1,1,0,1))]})
-         , Int("2"{[pos-info(),area-in-file("",area(1,4,1,5,4,1))]})
-         )
-      )
-
-    ; apply-test(!"Position info for a simple expression"
-      , parse-string-pt(|tbl)
-        ; asfix-anno-position-info(|"")
-        ; implode-asfix
-        ; strip-non-string-annos
-      , !"1 + 234"
-      , !Plus(
-           Int("1"{[pos-info(),area-in-file("",area(1,0,1,1,0,1))]})
-         , Int("234"{[pos-info(),area-in-file("",area(1,4,1,7,4,3))]})
-         )
-      )
-
-    ; where(
-        <close-parse-table> tbl
-      )
-
-    /* position-info produces SEGV on amb
-    ; where(
-        <ReadFromFile> "ExpIntAmb.tbl"; open-parse-table => ambtbl
-      )
-
-
-    ; apply-and-check(!"Position info for a simple ambiguous expression"
-      , parse-string-pt(|ambtbl)
-        ; asfix-anno-position-info(|"")
-        ; implode-asfix
-        ; strip-non-string-annos
-
-      , !"1 + 2 + 3"
-      , ?amb(<id>)
-        ; fetch(
-            ?Plus(
-              Int("1"{[pos-info(),area-in-file("",area(1,0,1,1,0,1))]})
-            , Plus(
-                Int("2"{[pos-info(),area-in-file("",area(1,4,1,5,4,1))]})
-              , Int("3"{[pos-info(),area-in-file("",area(1,8,1,9,8,1))]})
-              )
-            )
-         )
-      )
-
-    ; where(
-        <close-parse-table> ambtbl
-      )
-    */
 
   strip-non-string-annos =
     topdown(if not(is-string) then rm-annotations end)
@@ -1145,59 +1075,6 @@ strategies
     ; where(<close-parse-table> tbl)
 
     
-  asfix2me-tests = id
-    ; where(
-        <ReadFromFile> "ExpInt.tbl"; open-parse-table => tbl
-      )
-
-    ; set-default-sglr-config
-    ; where(<set-parse-tree-format> AsFix2ME())
-
-    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2ME"
-      , parse-string-pt(|tbl)
-      , !"12 + 13"
-      ,   oncetd(?[49, 50])
-        ; oncetd(?[49, 51])
-      )
-
-    ; set-default-sglr-config      
-    ; where(set-asfix2me-format)
-    
-    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2ME"
-      , parse-string-pt(|tbl)
-      , !"12 + 13"
-      ,   oncetd(?[49, 50])
-        ; oncetd(?[49, 51])
-      )
-      
-    ; set-default-sglr-config
-    ; where(<set-parse-tree-format> AsFix2())
-
-    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2"
-      , parse-string-pt(|tbl)
-      , !"12 + 13"
-      ,   oncetd(?[49])
-        ; oncetd(?[50])
-        ; oncetd(?[51])
-        ; not(oncetd(?[49, 50]))
-        ; not(oncetd(?[49, 51]))
-      )
-
-    ; set-default-sglr-config      
-    ; where(set-asfix2-format)
-    
-    ; apply-and-check(!"Check that the parse tree format can be set to AsFix2"
-      , parse-string-pt(|tbl)
-      , !"12 + 13"
-      ,   oncetd(?[49])
-        ; oncetd(?[50])
-        ; oncetd(?[51])
-        ; not(oncetd(?[49, 50]))
-        ; not(oncetd(?[49, 51]))        
-      )
-
-    ; set-default-sglr-config      
-
   conc-test-fetch-top =
     oncetd(?appl(prod(_, cf(iter-star-sep(sort("Exp"), lit(","))), _), _); ?appl)
     ; !appl
