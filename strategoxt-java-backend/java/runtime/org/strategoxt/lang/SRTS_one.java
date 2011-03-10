@@ -63,14 +63,13 @@ public class SRTS_one extends Strategy {
 				} else if (tail2 == tail) {
 					return current;
 				} else {
-					// TODO: head/tail variation of replaceList?
-					return context.getFactory().makeListCons(head, tail2);
+					return context.getFactory().replaceListCons(head, tail2, head, tail);
 				}
 			} else if (head2 == head) {
 				return current;
 			} else {
-				// TODO: head/tail variation of replaceList?
-				return context.getFactory().makeListCons(head2, current.tail());
+				IStrategoList tail = current.tail();
+				return context.getFactory().replaceListCons(head2, tail, head, tail);
 			}
 		}
 	}

@@ -58,6 +58,8 @@ public class SRTS_all extends Strategy {
 
 		IStrategoTerm head = list.head();
 		IStrategoTerm head2 = s.invoke(context, head);
+		IStrategoList result;
+		
 		if (head2 == null) {
 			return null;
 		} else if (head2 == head || head2.match(head)) {
@@ -69,12 +71,14 @@ public class SRTS_all extends Strategy {
 			} else if (tail2 == tail) { // (match() not necessary because of recursion)
 				return list;
 			} else {
-				// TODO: head/tail variation of replaceList?
-				return context.getFactory().makeListCons(head, tail2);
+				result = context.getFactory().replaceListCons(head, tail2, head, tail);
 			}
 		} else {
-			return mapIgnoreAnnos(context, head2, list, s);
+			result = mapIgnoreAnnos(context, head2, list, s);
 		}
+		
+		context.getFactory().replaceTerm(result, list); // set origin for topmost Cons
+		return result;
 	}
 
 	private static IStrategoList mapIgnoreAnnos(Context context, IStrategoList list, Strategy s) {
@@ -128,8 +132,7 @@ public class SRTS_all extends Strategy {
 			if (tail2 == null) {
 				return null;
 			} else if (tail2 != tail) { // (match() not necessary because of recursion)
-				// TODO: head/tail variation of replaceList?
-				return context.getFactory().makeListCons(head, tail2);
+				return context.getFactory().replaceListCons(head, tail2, head, tail);
 			} else {
 				return list;
 			}
