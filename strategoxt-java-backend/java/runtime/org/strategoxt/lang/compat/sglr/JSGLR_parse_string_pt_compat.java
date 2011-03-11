@@ -50,6 +50,7 @@ public class JSGLR_parse_string_pt_compat extends JSGLR_parse_string_pt {
 			throws InterpreterException, IOException,
 			org.spoofax.jsglr.shared.SGLRException {
 		
+		// TODO: Optimize - cache tree builder...
 		SGLR parser = new SGLR(createTreeBuilder(env), table);
 		parser.setDisambiguator(filterSettings);
 		parser.setUseStructureRecovery(isRecoveryEnabled());
