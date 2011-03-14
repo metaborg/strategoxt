@@ -17,7 +17,7 @@
 
     <target
         name="all"
-        depends="ensure-dirs,syntax,parse-hack,generate-java,compile-java,jar"
+        depends="ensure-dirs,syntax,generate-java,compile-java,jar"
     />
 
     <target name="test" depends="tests">
