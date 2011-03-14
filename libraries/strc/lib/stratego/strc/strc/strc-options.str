@@ -36,27 +36,7 @@ strategies
     ; <set-config> ("--statistics", 1)
     ; <set-config> ("-O", 2)
     ; <set-config> ("-I", [])
-    ; <set-config> ("--C-include", 
-		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
-
-    // @todo consider to include CFLAGS from the environment
-    ; <set-config> ("-Xcc",
-        [ "-I", <xtc-find-path> "SRTS-include"
-        , "-I", <xtc-find-path> "stratego-lib-include"
-        , "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")
-        | <strc-system-cflags> ()
-        ])
-
-    ; <set-config> ("-Xlinker",
-        [ <xtc-find> "libstratego-lib-native.la"
-        , <xtc-find> "libstratego-runtime.la"
-        , <xtc-find> "libATerm.la"
-        , "-lm"
-        | <strc-system-ldflags> ()
-        ])
-
     ; <set-config> ("--dr", "new")
-    ; <set-config> ("--cc", <xtc-find> "cc")
   )
 
   strc-post-process-strc-config =
@@ -65,20 +45,6 @@ strategies
         <set-config> ("--ld", <get-config> "--cc")
       end
     )
-
-  /**
-   * @todo This does not supported quoted options (with spaces)
-   */
-  strc-system-ldflags =
-    <prim("STRC_SYSTEM_LDFLAGS")> ()
-    ; string-tokenize(| ['\ ', '\n', '\r'])
-
-  /**
-   * @todo This does not supported quoted options (with spaces)
-   */
-  strc-system-cflags =
-    <prim("STRC_SYSTEM_CFLAGS")> ()
-    ; string-tokenize(| ['\ ', '\n', '\r'])
 
   strc-get-include-dirs =
     <conc> (<get-config> "-I"
@@ -110,10 +76,6 @@ strategies
 	where(<set-config>("-m", <id>)); !(),
 	!"--main f | -m f    Main strategy to compile (default: main)\n")
 
-  + ArgOption("--C-include",       
-	where(<post-extend-config>("--C-include", [<id>])); !(), 
-	!"--C-include h      Include header file h (\"file.h\" or <file.h>)")
-
   /**
    * Library options
    */
@@ -136,52 +98,6 @@ strategies
         where(<set-config> (DisableInstall(), ())),
         !"--disable-install  If the output is a library, then don't install it in the libdir.")
 
-  /**
-   * C compiler flags
-   */
-  + ArgOption(fail, fail, !"")
-  + ArgOption(fail, fail, !"C compiler options:")
-  + ArgOption(fail, fail, !"")
-
-  + ArgOption("--cc",
-	where(<set-config>("--cc", <id>)); !(),
-	!"--cc <path>        Use C compiler at <path>")
-
-  + ArgOption("-Xcc",
-	where(<post-extend-config>("-Xcc", [<id>])); !(),
-	!"-Xcc <arg>         Pass <arg> on to the C compiler")
-
-  + ArgOption("-CI",
-	where(<post-extend-config>("-Xcc", ["-I", <id>])); !(),
-	!"-CI d              Include C headers from directory d")
-
-  + ArgOption("-CD",
-	where(<post-extend-config>("-Xcc", [<conc-strings> ("-D", <id>)])); !(),
-	!"-CD name=def       Predefine name as a macro, with definition def.")
-
-  /**
-   * Linker flags.
-   */
-  + ArgOption(fail, fail, !"")
-  + ArgOption(fail, fail, !"Linker options:")
-  + ArgOption(fail, fail, !"")
-
-  + ArgOption("--ld",
-	where(<set-config>("--ld", <id>)); !(),
-	!"--ld <path>        Use linker at <path> (default: C compiler)")
-
-  + ArgOption("-Xlinker",
-	where(<post-extend-config>("-Xlinker", [<id>])); !(),
-	!"-Xlinker <arg>     Pass <arg> on to the linker")
-
-  + ArgOption("-CL",
-	where(<post-extend-config>("-Xlinker", [<conc-strings> ("-L", <id>)])); !(),
-	!"-CL d              Include binary libraries from directory d")
-
-  + ArgOption("-Cl",
-	where(<post-extend-config>("-Xlinker", [<conc-strings> ("-l", <id>)])); !(),
-	!"-Cl <lib>          Search the library named <lib> when linking.")
-
   + ArgOption("-la",
 	where(<post-extend-config>("-Xlinker", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
 	!"-la <name>         Search the libtool library lib<name>.la when linking.")
@@ -194,10 +110,6 @@ strategies
   + ArgOption("--xtc-repo",
 	where(<extend-config>("-Xcc", [<concat-strings> ["-DDEFAULT_XTC_REPOSITORY=\"", <id>, "\""]])); !(),
 	!"--xtc-repo file    Set default XTC repository in output program to file (default: none).")
-
-  + Option("-c",          
-	where(<set-config>("-c",())); !(),
-	!"-c                 Produce C code only (don't compile)" )
 
   + Option("--ast",
 	where(<set-config>("--ast",())); !(),
@@ -234,9 +146,6 @@ strategies
         where(<set-config>("--asfix",())); !(),
         !"--asfix            Concrete syntax parts are not imploded")
 
-  + Option("--indent-c",    
-	where(<set-config> ("--indent-c",())); !(),         
-	!"--indent-c         Use this flag if you want the generated C code to use indentation.")
   + Option("--dump-aterms",    
 	where(<set-config> ("--dump-aterms",())); !(),         
 	!"--dump-aterms      Use this flag if you want to dump ATerms for all imported modules (for analysis) in dump.aterm.")
