@@ -185,6 +185,7 @@
 
     <target name="jar">
         <jar destfile="strategoxt.jar" manifest="java-backend/java/META-INF/MANIFEST.MF">
+            <fileset dir="." includes="strategoxt-build.xml"/>
             <fileset dir="bin" includes="**/*.class"/>
             <fileset dir="lib" includes="**/*.rtree"/>
             <fileset dir="lib" includes="**/*.af"/>
