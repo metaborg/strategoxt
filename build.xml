@@ -2,7 +2,7 @@
 <project name="org.strategoxt.ant.test" basedir="." default="all">
     <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
-    <import file="strategoxt.xml" />
+    <import file="strategoxt-build.xml" />
     <property name="version" value="0.17.92"/>
     <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 
