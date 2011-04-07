@@ -63,7 +63,7 @@ import org.strategoxt.strc.simplify_0_0;
  */
 public class HybridInterpreter extends Interpreter implements IAsyncCancellable {
 	
-	private static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
+	protected static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
 	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
 
 	private final HybridCompiledContext compiledContext;
@@ -152,7 +152,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		return reusable;
 	}
 
-	private static void warnUnqualifiedInvoke(HybridInterpreter interpreter, String main) {
+	protected static void warnUnqualifiedInvoke(HybridInterpreter interpreter, String main) {
 		interpreter.init();
 		SDefT invoked = interpreter.lookupUncifiedSVar(main);
 		if (invoked != null) {
@@ -161,7 +161,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		}
 	}
 
-	private static int mainLoadAll(HybridInterpreter interpreter, String... args) {
+	protected static int mainLoadAll(HybridInterpreter interpreter, String... args) {
 		int i = 0;
 		while (i < args.length) {
 			try {
