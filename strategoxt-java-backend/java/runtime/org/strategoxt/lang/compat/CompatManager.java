@@ -7,6 +7,7 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.VarScope;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.jsglr.origin.OriginLibrary;
+import org.spoofax.interpreter.library.language.LanguageLibrary;
 import org.strategoxt.HybridInterpreter;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropSDefT;
@@ -45,6 +46,10 @@ public class CompatManager {
 		    varScope.addSVar("SRTS_EXT_newint_0_0", new InteropSDefT(SRTS_EXT_newint_0_0.instance, iContext));
 		    varScope.addSVar("SRTS_EXT_eq_ignore_annos_0_1", new InteropSDefT(SRTS_EXT_eq_ignore_annos_0_1.instance, iContext));
 		}
+		
+		// More standard registries, kind of
+        context.addOperatorRegistry(new LanguageLibrary());
+        context.addOperatorRegistry(new OriginLibrary());
 	}
 
 	public void registerComponent(String component) {
@@ -65,7 +70,6 @@ public class CompatManager {
 			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary());
-			context.addOperatorRegistry(new OriginLibrary());
 			context.addOperatorRegistry(new SGLRCompatLibrary());
 		}
 	}
