@@ -174,14 +174,14 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 					break;
 				}
 			} catch (Exception e) {
-				System.err.println("Could not open input file " + args[i]
+				System.err.println("Could not open input file " + args[i - 1]
 						+ ": " + e.getClass().getSimpleName() + " - "
 						+ e.getMessage());
 				System.exit(126);
 			}
 		}
 		boolean nothingLoaded = i == 0;
-		if (i == args.length || (!nothingLoaded && args[i].indexOf('.') > -1)) {
+		if (i == args.length) {
 			System.err.println(USAGE);
 			System.exit(1);
 		} else if (nothingLoaded && args[i].indexOf('.') > -1) {
