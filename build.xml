@@ -505,6 +505,8 @@
                 <arg value="stratego-gpp" />
                 <arg value="-I" />
                 <arg value="${syntaxjava}" />
+                <arg value="-I" />
+                <arg value="${syntaxbox}" />
             </strjlibargs>
             <str-deps>
                 <srcfiles dir="java-front/lib" includes="**/*.str" />
