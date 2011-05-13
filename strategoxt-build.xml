@@ -55,14 +55,12 @@
                            debuglevel="source"
                            compiler="classic"
                     >
-                 <compilerarg value="-Xss8m"/>
              </javac>
              <java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
                  <classpath>
                     <pathelement location="./strategoxt.jar"/>
                     <pathelement path="${@{input}.dirname}/${@{input}.basename}"/>
                  </classpath>
-                 <jvmarg value="-Xss8m"/>
              </java>
         </sequential>
     </macrodef>
@@ -368,6 +366,7 @@
                         <arg value="-D"/>
                         <arg value="SVN_REVISION_TERM=&quot;${revision}&quot;"/>
                         <strjargs />
+                        <jvmarg value="-Xss8m"/>
                     </java>
                 </action>
                 <deps>
