@@ -20,11 +20,11 @@
         depends="ensure-dirs,syntax,generate-java,compile-java,jar"
     />
 
-    <target name="test">
+    <target name="test-test">
         <strj-test input="libraries/sglr/tests/stratego-sglr-tests.str" />
     </target>
 
-    <target name="tests">
+    <target name="test">
         <mkdir dir="generated" />
         <for param="deffile">
             <path>
