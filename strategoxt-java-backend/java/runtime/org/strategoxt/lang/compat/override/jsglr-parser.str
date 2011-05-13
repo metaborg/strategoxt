@@ -30,7 +30,7 @@ strategies
     id // no such thing
     
   jsglr-parse-string(|tbl) =
-    jsglr-parse-string(id | tbl, None(), "string")
+    jsglr-parse-string(fail | tbl, None(), "string")
   
   jsglr-parse-string(on-parse-error | tbl, start-symbol, path) =
       where(<try(not(?ParseTable(_)); memo-open-parse-table)> tbl => ParseTable(internal-tbl))
