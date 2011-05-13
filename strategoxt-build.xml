@@ -54,7 +54,9 @@
                            debug="true"
                            debuglevel="source"
                            compiler="classic"
-                    />
+                    >
+                 <compilerarg value="-Xss8m"/>
+             </javac>
              <java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
                  <classpath>
                     <pathelement location="./strategoxt.jar"/>
