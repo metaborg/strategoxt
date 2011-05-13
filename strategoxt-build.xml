@@ -60,6 +60,7 @@
                     <pathelement location="./strategoxt.jar"/>
                     <pathelement path="${@{input}.dirname}/${@{input}.basename}"/>
                  </classpath>
+                 <jvmarg value="-Xss8m"/>
              </java>
         </sequential>
     </macrodef>
