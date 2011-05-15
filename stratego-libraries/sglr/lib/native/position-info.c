@@ -157,7 +157,13 @@ static ATerm traverse(ATerm t, struct Location* session)
   }
   else if(isTreeAppl(t)) {
     ATermList args = traverseArgs((ATermList) ATgetArgument(t, 1), session);
+    ATermList annos = (ATermList) ATgetAnnotations(t);
+    if(annos == NULL) {
+      annos = ATempty;
+    }
+
     t = makeTreeAppl(ATgetArgument(t, 0), args);
+    t = ATsetAnnotations(t, (ATerm) annos);
   }
   else if (isTreeAmb(t)) {
     ATermList args = (ATermList) ATgetArgument(t, 0);
