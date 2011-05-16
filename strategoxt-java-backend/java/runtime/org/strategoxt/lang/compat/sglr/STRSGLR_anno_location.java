@@ -104,7 +104,7 @@ public class STRSGLR_anno_location extends AbstractPrimitive {
 		}
 
 		private IStrategoTerm makeTreeAmb(IStrategoTerm[] ts) {
-			return factory.makeAppl(amb, ts);
+			return factory.makeAppl(amb, factory.makeList(ts));
 		}
 
 		private int getTreeChar(IStrategoTerm tree) {
