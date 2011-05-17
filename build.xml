@@ -21,6 +21,7 @@
     />
 
     <target name="test-test">
+        <strj-test input="libraries/lib/tests/dynamic-rules-lowlevel-test.str" />
         <strj-test input="libraries/sglr/tests/stratego-sglr-tests.str" />
     </target>
 
@@ -48,36 +49,6 @@
             </path>
             <sequential>
                 <strj-test input="@{strfile}" />
-            </sequential>
-        </for>
-    </target>
-
-    <target name="parse-hack">
-        <for param="strfile">
-            <path>
-                <fileset dir="." includes="**/*.str" />
-            </path>
-            <sequential>
-                <basename file="@{strfile}" property="@{strfile}.basename" suffix=".str" />
-                <dirname file="@{strfile}" property="@{strfile}.dirname" />
-                    <echo message="Parsing @{strfile} -> ${@{strfile}.dirname}/${@{strfile}.basename}.rtree"/>
-
-                <exec executable="parse-stratego">
-                    <arg value="-i"/>
-                    <arg value="@{strfile}"/>
-                    <arg value="-o"/>
-                    <arg value="${@{strfile}.dirname}/${@{strfile}.basename}.rtree"/>
-                    <arg value="-I"/>
-                    <arg value="${syntaxstr}"/>
-                    <arg value="-I"/>
-                    <arg value="${syntaxrtg}"/>
-                    <arg value="-I"/>
-                    <arg value="${syntaxbox}"/>
-                    <arg value="-I"/>
-                    <arg value="${syntaxsdf}"/>
-                    <arg value="-I"/>
-                    <arg value="${syntaxjavaemb}"/>
-                </exec>
             </sequential>
         </for>
     </target>
