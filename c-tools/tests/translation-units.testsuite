@@ -1,5 +1,0 @@
-testsuite C TranslationUnits
-topsort TranslationUnit
-
-test Stratego fragment
-  file translation-units/Stratego1.c succeeds

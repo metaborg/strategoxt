@@ -1,6 +1,0 @@
-module lift-definitions
-imports libstrc libstratego-lib
-strategies
-
-  lift-definitions-io =
-    io-wrap(lift-definitions)

@@ -1,9 +1,0 @@
-module gpp-performance
-
-imports
-  libstratego-gpp
-
-rules
-
-  override gpp-topdown-fputs(|stream) =
-    prim("SSL_EXT_topdown_fputs", stream)

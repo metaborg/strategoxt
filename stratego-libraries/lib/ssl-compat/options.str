@@ -1,6 +1,0 @@
-/**
- * Handling command line options.
- */
-module options
-imports util/config/options
-

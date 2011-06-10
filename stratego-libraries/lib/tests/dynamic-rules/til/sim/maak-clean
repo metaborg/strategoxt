@@ -1,2 +1,0 @@
-rm -f *~ *.dep til-simplify *.c *.o
-rm -rf .libs

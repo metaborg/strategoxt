@@ -1,7 +1,0 @@
-module lchoice_2
-imports
-  libstratego-lib
-
-strategies
-
-  main-lchoice_2 = fail < !0 + !1

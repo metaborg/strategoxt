@@ -1,3 +1,0 @@
-module pack-modules
-imports strategy/pack/modules
-

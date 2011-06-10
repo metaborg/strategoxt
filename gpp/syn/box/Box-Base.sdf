@@ -1,5 +1,0 @@
-%% Base module of the BOX markup language. Here only the sort BOX is
-%% defined.
-module Box-Base
-   exports
-      sorts BOX
