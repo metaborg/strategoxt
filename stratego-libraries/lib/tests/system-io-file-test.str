@@ -234,9 +234,10 @@ strategies
 
   aterm-io-tests(writer) =
       apply-test(!"ATerm IO -- 1", write-read-term(writer), !"Bla Bla Bla", !"Bla Bla Bla")
-    // ; apply-test(!"ATerm IO -- 2", write-read-term(writer), !(), !()) TODO: fails ON TAF!
+    ; apply-test(!"ATerm IO -- 2", write-read-term(writer), !(), !())
     ; apply-test(!"ATerm IO -- 3", write-read-term(writer), !1, !1)
     ; apply-test(!"ATerm IO -- 4", write-read-term(writer), !None(), !None())
+    ; apply-test(!"ATerm IO -- 5", write-read-term(writer), !-1, !-1) // Spoofax/312
 
   write-read-term(writer) =
     ?t

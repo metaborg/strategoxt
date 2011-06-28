@@ -2,11 +2,12 @@ module integers-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main =
     test-suite(!"integers-test",
       test1
     ; test2
     ; test3
+    ; int-test
     ; lt-lt-test
     ; string-to-int-tests
     ; mod-tests
@@ -17,38 +18,42 @@ strategies
 
   test1 =
     apply-test(!"test1"
-	, leq
-	, !(5,5)
-	, !(5,5)
-	)
+  , leq
+  , !(5,5)
+  , !(5,5)
+  )
 
   test2 =
     apply-test(!"test2a"
-	, !(<divi>(<id>, 2), <mod; ?0>(<id>, 2))
-	, !16
-	, !(8,0)
-	);
+  , !(<divi>(<id>, 2), <mod; ?0>(<id>, 2))
+  , !16
+  , !(8,0)
+  );
     apply-test(!"test2b"
-	, log2
-	, !16
-	, !4
-	);
+  , log2
+  , !16
+  , !4
+  );
     apply-and-fail(!"test2c"
-	, log2
-	, !6
-	)
+  , log2
+  , !6
+  )
 
   test3 =
     apply-test(!"test3"
-	, addS
-	, !("5","3")
-	, !"8"
-	);
+  , addS
+  , !("5","3")
+  , !"8"
+  );
     apply-test(!"test3"
-	, ltS
-	, !("3","5")
-	, !("3","5")
-	)
+  , ltS
+  , !("3","5")
+  , !("3","5")
+  )
+
+  int-test =
+    apply-test(!"int-test pos", int, !1.9, !1);
+    apply-test(!"int-test neg", int, !-1.9, !-2)
 
 strategies
 
@@ -177,4 +182,3 @@ strategies
     ; apply-test(!"bin-string-test-c", bin-string-to-int, !"10110000", !176)
     ; apply-test(!"bin-string-test-b", bin-string-to-int, !"111100011", !483)
     ; apply-test(!"bin-string-test-d", bin-string-to-int, !"101010101", !341)
-
