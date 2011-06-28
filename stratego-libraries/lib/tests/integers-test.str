@@ -53,7 +53,7 @@ strategies
 
   int-test =
     apply-test(!"int-test pos", int, !1.9, !1);
-    apply-test(!"int-test neg", int, !-1.9, !-2)
+    apply-test(!"int-test neg", int, !-1.9, !-1)
 
 strategies
 
