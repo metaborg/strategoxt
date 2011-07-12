@@ -1,9 +1,6 @@
 module xml-text
 exports
 
-  lexical syntax
-    [\ \t\n\13] -> WhiteSpaceChar
-
   syntax
 
     CharDataPart+ -> CharData {cons("Text")}
@@ -13,6 +10,16 @@ exports
     "<![CDATA[" <CData-LEX> "]]>" -> CharDataPart {cons("CDATASection")}
 
     <CharDataText-LEX> -> FooCharDataText
+
+  restrictions
+
+	%% Must be followed by `<' ...
+    CharData -/- ~[\<]
+
+	%% ... unless the `<' starts a CDATASection
+    %% (It would be better to lift CDATASections from child to sibling of Text,
+    %%  but this would change the structure of the AST...) 
+    CharData -/- [\<].[\!].[\[].[C].[D].[A].[T].[A].[\[]
 
   lexical syntax
 
@@ -51,4 +58,3 @@ exports
 
     CloseBracket     -/- [\]]
     TwoCloseBrackets -/- [\>]
-    CharDataToken    -/- ~[\<\&\]\ \t\n\13]

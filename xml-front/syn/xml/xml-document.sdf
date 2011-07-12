@@ -12,16 +12,13 @@ exports
     Element -> Content
     Comment -> Content {cons("Comment")}
     PI      -> Content
+
   syntax
 
     CharData      -> <Content-CF>
-    CDataSection  -> <Content-CF>
 
     "<"
     <LAYOUT?-CF> <QName-CF> <LAYOUT?-CF> <Attribute*-CF> <LAYOUT?-CF>
       ">" <Content-CF>* "</"
     <LAYOUT?-CF> <QName-CF> <LAYOUT?-CF>
     ">"  -> <Element-CF> {cons("Element")}
-
-
-
