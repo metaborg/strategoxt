@@ -2066,7 +2066,7 @@ strategies // rule-set equality
         ?(RuleScope(lbl1, tbl1), RuleScope(lbl2, tbl2))
       ; <iset-eq(|lbl2)> lbl1
       ; <hashtable-eq> (tbl1, tbl2)
-    +   ?(ChangeSet(lbl1, rmset1, tbl1), ChangeSet(lbl2, rmset1, tbl2))
+    +   ?(ChangeSet(lbl1, rmset1, tbl1), ChangeSet(lbl2, rmset2, tbl2))
       ; <iset-eq(|lbl2)> lbl1
       ; <iset-eq(|rmset2)> rmset1
       ; <hashtable-eq> (tbl1, tbl2)
