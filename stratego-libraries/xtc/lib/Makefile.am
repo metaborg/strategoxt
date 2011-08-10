@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 
 pkgdatadir = $(datadir)/xtc
 
-nobase_pkgdata_DATA =  stratego-xtc.str libstratego-xtc.ctree $(fullstrategoxtc:.str=.rtree)
+nobase_pkgdata_DATA =  stratego-xtc.str $(fullstrategoxtc:.str=.rtree)
 data_DATA = libstratego-xtc.rtree
 lib_LTLIBRARIES = libstratego-xtc.la
 
@@ -44,9 +44,6 @@ endif
 
 libstratego-xtc.rtree : lib$(stratego_xtc_module).rtree
 	cp $< $@
-
-libstratego-xtc.ctree : libstratego-xtc-posix-xsi.rtree
-	$(STRC_UNINSTALLED) -F --library -i $< -o $@ $(STRCFLAGS)
 
 stratego-xtc.str : Makefile
 	echo "module stratego-xtc imports $(stratego_xtc_module)" > $@
