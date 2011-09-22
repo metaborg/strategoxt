@@ -262,7 +262,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
         asyncCancelled = false;
     }
 
-	private void cancel() {
+	protected void cancel() {
 		asyncCancelled = false;
 		getIOAgent().closeAllFiles();
 		throw new CancellationException("Stratego interpreter cancelled");
