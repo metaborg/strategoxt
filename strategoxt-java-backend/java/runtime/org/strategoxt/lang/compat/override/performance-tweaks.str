@@ -57,7 +57,10 @@ strategies
   
   override at-end(s) =
     SRTS-EXT-at-end(s)
-  
+
+  override flatten-list =
+    SRTS-EXT-flatten-list
+
   external SRTS-EXT-string-replace(|s1, s2)
 
   external SRTS-EXT-crush(nul, sum, s|)
@@ -67,3 +70,5 @@ strategies
   external SRTS-EXT-at-end(s|)
 
   external SRTS-EXT-repeat(s|)
+
+  external SRTS-EXT-flatten-list(|)
