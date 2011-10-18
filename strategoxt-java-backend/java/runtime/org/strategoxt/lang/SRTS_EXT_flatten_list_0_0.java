@@ -29,6 +29,10 @@ public class SRTS_EXT_flatten_list_0_0 extends Strategy {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
 
+		if (current.getTermType() != IStrategoTerm.LIST) {
+			return null;
+		}
+
 		ArrayList<IStrategoTerm> newList = new ArrayList<IStrategoTerm>();
 		ArrayList<IStrategoTerm> stack = new ArrayList<IStrategoTerm>();
 
