@@ -72,9 +72,12 @@ strategies
       , !["a", "b", "c"]
       , !["a", "b", "c"]
       )
-    ; apply-test(!"flatten-test 5", flatten-list
+    ; apply-test(!"flatten-test 6", flatten-list
       , !["a", [("b", [1, 2]), "d"], "c"]
       , !["a", ("b", [1, 2]), "d", "c"]
+      )
+    ; apply-and-fail(!"flatten-test 7", flatten-list
+      , !"a"
       )
 
   take-test = id
