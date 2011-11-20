@@ -1240,7 +1240,7 @@ rules
       args' := <map(java-construct-term)> args
     
   java-ConstructTerm :
-    Op("Nil", []) -> expr|[ (IStrategoTerm) termFactory.makeList() ]|
+    Op("Nil", []) -> expr|[ (IStrategoTerm) termFactory.makeList(Term.NO_TERMS) ]|
 
   java-ConstructTerm :
     Op("Cons", [t1, t2]) -> 
