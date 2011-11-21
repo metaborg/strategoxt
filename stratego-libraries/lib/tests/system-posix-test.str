@@ -78,6 +78,14 @@ strategies
     ; apply-test(!"is-abspath -- 2", is-abspath, !"/bla", !"/bla")
     ; apply-and-fail(!"is-abspath -- 3", is-abspath, !"bla")
     ; apply-and-fail(!"is-abspath -- 4", is-abspath, !"./bla")
+      // Windows paths
+    ; apply-test(!"is-abspath -- 5", is-abspath, !"C:\\", !"C:\\")
+    ; apply-test(!"is-abspath -- 6", is-abspath, !"C:/", !"C:/")
+    ; apply-test(!"is-abspath -- 7", is-abspath, !"a:\\bla", !"a:\\bla")
+      // only letters are allowed before the colon according to the documentation
+      // (though colon isn't allowed anywhere on Windows, so strictly speaking,
+      // the next path is neither absolute nor relative...)
+    ; apply-and-fail(!"is-abspath -- 8", is-abspath, !"!:/")
 
   getcwd-tests =
       apply-test(!"getcwd -- 1", getcwd, !())

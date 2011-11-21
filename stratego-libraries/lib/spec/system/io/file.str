@@ -185,14 +185,14 @@ strategies
    * Succeeds if the input pathname is an absolute path.
    *
    * A pathname is considered absolute if it starts with a /, a \,
-   * or X:\ for any letter X.
+   * X:/ or X:\ for any letter X.
    *
    * @type  String -> String
    * @since 0.9.4
    * @inc   is-abs-path
    */
   is-abspath =
-    where(explode-string; (?['/'  | _] + ?[is-alpha, ':', '\' | _] + ?['\' | _]))
+    where(explode-string; (?[<'/' + '\'> | _] + ?[<is-alpha>, ':', <'/' + '\'> | _]))
 
   /**
    * Succeeds if the input pathname is a relative path.
