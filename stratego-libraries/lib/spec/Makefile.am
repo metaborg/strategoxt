@@ -101,3 +101,4 @@ fullstrategolib = \
   $(wildcard strategy/general*.str) \
   $(wildcard util/*.str) \
   $(wildcard util/config/*.str)
+
