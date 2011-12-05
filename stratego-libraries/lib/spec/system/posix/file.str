@@ -65,10 +65,10 @@ strategies
 strategies
 
  /**
-  * The  readdir()  function  returns  a  pointer  to a dirent
-  * structure representing the next  directory  entry  in  the
-  * directory  stream  pointed  to by dir.  It returns NULL on
-  * reaching the end-of-file or if an error occurred. 
+  * Given a path to a directory, returns a list of files in that directory, 
+  * including the self (.) and parent pointers (..).
+  *
+  * @type String -> List(String)
   */
   readdir = 
     ?dir; prim("SSL_readdir", dir)
