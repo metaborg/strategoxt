@@ -52,7 +52,6 @@ strategies
    */
   abox2text(rec : t * t -> t | xpos, width) =
       abox2text-HV(rec | xpos, width)
-    + abox2text-HV(rec | xpos, width)
     + abox2text-H(rec | xpos, width)
     + abox2text-V(rec | xpos, width)
     + abox2text-A(rec | xpos, width)
