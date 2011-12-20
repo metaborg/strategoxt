@@ -1,4 +1,4 @@
-/** 
+/**
  * This is a simple Box to text converter.
  * It formats H, HV, A/R and ALT boxes.
  *
@@ -72,8 +72,6 @@ strategies
   /**
    * HV
    *
-   * @todo Handle vs and is options
-   * @todo Substract last hspace from xpos
    * @type (Box, Int) -> (Strs, Int)
    */
   abox2text-HV(rec : t * t -> t | xpos, width) =
@@ -84,15 +82,21 @@ strategies
     ; <gpp-vs-text> sopt => vs
     ; <length> hs-chars => hsl
     ; <add> (xpos, <gpp-is-length> sopt) => left-xpos
-
-    ; !(bs, [([], xpos)])
-    ; foldl(
-        gpp-hv-add-to-hbox(rec | hsl, width)
-        <+ gpp-hv-in-new-vbox(rec | hsl, left-xpos, width)
-      )
-    ; reverse; map((reverse, id))
-    ; map((<separate-by> (hs, <id>), id))
-    ; gpp-format-vbox(|sopt, xpos)
+    ; <filter(gpp-is-real-vbox)> bs
+    ; if ?[] then
+        !([], xpos)
+      else
+        !(<id>, [([], xpos)])
+        ; foldl(
+            gpp-hv-add-to-hbox(rec | hsl, width)
+            <+ gpp-hv-in-new-vbox(rec | hsl, left-xpos, width)
+          )
+          // Substract last hspace from xpos
+        ; [(id, <subt> (<id>, hsl)) | id]
+        ; reverse; map((reverse, id))
+        ; map((<separate-by> (hs, <id>), id))
+        ; gpp-format-vbox(|sopt, xpos)
+      end
 
   /**
    * @type Box * [Int * [String]] -> [Int * [String]]
@@ -102,7 +106,7 @@ strategies
     where
       <rec(|xpos)> box => (str, new-xpos)
       ; (<leq> (new-xpos, width) + (!width => 0))
-        
+
   gpp-hv-in-new-vbox(rec : t * t -> t | hsl, left-xpos, width) :
     (box, vbs) -> [([str], <add> (new-xpos, hsl)) | vbs]
     where
@@ -114,7 +118,7 @@ strategies
    * H
    *
    * @type (Box, Int) -> (Strs, Int)
-   */       
+   */
   abox2text-H(rec : t * t -> t | xpos, width) =
     ?H(sopt, bs)
 
@@ -169,7 +173,7 @@ strategies
 
   /**
    * A
-   * 
+   *
    * The first two rules are to handle empty alignment operators, i.e., A
    * boxses with [] or [[]] as third argument.
    * Without subboxes ([] as third argument)
@@ -236,7 +240,7 @@ strategies
    */
   gpp-to-matrix(|nr-cols) =
     map(gpp-FitToMax(|nr-cols))
-  
+
   gpp-FitToMax(|nr-cols) =
     ?lst
     ; where(length => my-length)
@@ -277,7 +281,7 @@ strategies
 
   abox2text-R(rec : t * t -> t | xpos, width) :
     R(sopt, bs) -> <rec(|xpos)> HV(sopt, bs)
-      
+
   abox2text-ALT(rec : t * t -> t | xpos, width) =
     ?ALT(a1, a2)
     ; <rec(|xpos)> a1 => r1@(s, xpos2)
@@ -286,7 +290,7 @@ strategies
       else
         <rec(|xpos)> a2
       end
-         
+
   abox2text-list(rec : t * t -> t | xpos, width) :
     [b] -> <rec(|xpos)> b
 
