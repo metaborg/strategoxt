@@ -127,7 +127,9 @@ smalljar :
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-new-libs :
+new-libs : spoofax-libs.jar
+
+spoofax-libs.jar :
 	rm -rf spoofax-libs-tmp
 	mkdir spoofax-libs-tmp
 	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
@@ -138,6 +140,7 @@ new-libs :
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.jsglr/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.jsglr/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.language/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.java/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.xml/bin/ .
 	rm -rf spoofax-libs-tmp
 	mv spoofax-libs.jar.tmp spoofax-libs.jar
