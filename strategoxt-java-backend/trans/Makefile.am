@@ -8,7 +8,7 @@ nobase_pkgdata_DATA = strj.ctree
 
 STRJSOURCES = $(wildcard *.str) $(wildcard lib/*.str)
 
-LDADD += $(SSL_LIBS) libjava-pp.la -lstrc 
+LDADD += $(SSL_LIBS) libjava-pp.la -lstrc -lstratego-gpp
 
 STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../syn
 
