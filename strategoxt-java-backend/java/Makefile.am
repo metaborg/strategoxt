@@ -129,7 +129,7 @@ smalljar :
 
 new-libs : spoofax-libs.jar
 
-spoofax-libs.jar : .PURPLEPONY
+spoofax-libs.jar : # .\PURPLEPONY
 	rm -rf spoofax-libs-tmp
 	mkdir spoofax-libs-tmp
 	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
