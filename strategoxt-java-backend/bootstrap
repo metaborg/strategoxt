@@ -3,8 +3,8 @@
 set -e
 
 if [ -e /etc/debian_version ] ; then
-	export ACLOCAL=/usr/bin/aclocal-1.10
-	export AUTOMAKE=/usr/bin/automake-1.10
+	export ACLOCAL=/usr/bin/aclocal-1.11
+	export AUTOMAKE=/usr/bin/automake-1.11
 else 
 	# Assume Gentoo, of course
 	export WANT_AUTOMAKE="1.8"
