@@ -92,7 +92,7 @@ strategies // Boolean combinators
     id
 
   /**
-   * false is a synonym for id.
+   * false is a synonym for fail.
    */
 
   false = 
