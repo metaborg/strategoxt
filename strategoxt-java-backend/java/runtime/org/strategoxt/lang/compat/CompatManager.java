@@ -14,7 +14,6 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropSDefT;
 import org.strategoxt.lang.SRTS_EXT_eq_ignore_annos_0_1;
 import org.strategoxt.lang.SRTS_EXT_newint_0_0;
-import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
 
 /**
  * Handles per-context library compatibility components.
@@ -22,24 +21,24 @@ import org.strategoxt.lang.compat.sglr.SGLRCompatLibrary;
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class CompatManager {
-	
+
 	private final Context context;
-	
+
 	private static final Set<String> asyncComponents = new HashSet<String>();
-	
+
 	public CompatManager(Context context) {
 		this.context = context;
 	}
-	
+
 	public void init() {
 		// We have to initialize the current context based on asyncComponents,
-		// since registerComponent() is only called in the life cycle of the JVM 
+		// since registerComponent() is only called in the life cycle of the JVM
 		synchronized (asyncComponents) {
 			for (String component : asyncComponents) {
 				activateComponent(component);
 			}
 		}
-		
+
 		// HACK: make some of the built-in strategies available to the interpreter
 		IContext iContext = HybridInterpreter.getContext(context);
 		if (iContext != null) {
@@ -47,7 +46,7 @@ public class CompatManager {
 		    varScope.addSVar("SRTS_EXT_newint_0_0", new InteropSDefT(SRTS_EXT_newint_0_0.instance, iContext));
 		    varScope.addSVar("SRTS_EXT_eq_ignore_annos_0_1", new InteropSDefT(SRTS_EXT_eq_ignore_annos_0_1.instance, iContext));
 		}
-		
+
 		// More standard registries, kind of
         context.addOperatorRegistry(new LanguageLibrary());
         context.addOperatorRegistry(new OriginLibrary());
@@ -60,7 +59,7 @@ public class CompatManager {
 				activateComponent(component);
 		}
 	}
-	
+
 	/**
 	 * Dynamically loads any compatibility library or operator registry
 	 * associated with a Stratego library.
@@ -72,7 +71,6 @@ public class CompatManager {
 			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary());
-			context.addOperatorRegistry(new SGLRCompatLibrary());
 		}
 	}
 }
