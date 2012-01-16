@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,8 +34,10 @@ import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.StrategoConstructor;
 import org.spoofax.terms.TermFactory;
 import org.spoofax.terms.TermTransformer;
+import org.spoofax.terms.attachments.AbstractWrappedTermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropRegisterer;
 import org.strategoxt.lang.InteropSDefT;
@@ -49,28 +53,63 @@ import org.strategoxt.strc.simplify_0_0;
 
 /**
  * An interpreter that uses STRJ-compiled versions of the Stratego standard libraries.
- * 
+ *
  * This interpreter typically loads much faster than the standard interpreter.
  * Custom libraries can be added using their <code>registerInterop</code>
  * method:
- * 
+ *
  * <code>
  *   HybridInterpreter i = new HybridInterpreter();
  *   mylib.registerInterop(i.getContext(), i.getCompiledContext());
- * </code> 
- * 
+ * </code>
+ *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class HybridInterpreter extends Interpreter implements IAsyncCancellable {
-	
+
 	protected static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
 	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
 
 	private final HybridCompiledContext compiledContext;
-	
+
 	private boolean registeredLibraries;
-	
+
 	private boolean loadedJars;
+
+	private final ConstructorRecordingTermFactory recordingFactory;
+
+	private static class ConstructorRecordingTermFactory extends AbstractWrappedTermFactory {
+
+		private final Collection<IStrategoConstructor> constructors = new ArrayList<IStrategoConstructor>();
+		private final ITermFactory theBaseFactory;
+
+		public ConstructorRecordingTermFactory(ITermFactory baseFactory) {
+			super(IStrategoTerm.MUTABLE, baseFactory);
+			theBaseFactory = baseFactory;
+		}
+
+		public ITermFactory getFactoryWithStorageType(int storageType) {
+			assert getDefaultStorageType() <= storageType;
+			return this;
+		}
+
+		@Override
+		public StrategoConstructor makeConstructor(String name, int arity) {
+			StrategoConstructor r = super.makeConstructor(name, arity);
+			constructors.add(r);
+			return r;
+		}
+
+		public Collection<IStrategoConstructor> getAndClearConstructorRecord() {
+			ArrayList<IStrategoConstructor> r = new ArrayList<IStrategoConstructor>(constructors);
+			constructors.clear();
+			return r;
+		}
+
+		public ITermFactory getWrappedFactory() {
+			return theBaseFactory;
+		}
+	};
 
 	public HybridInterpreter() {
 		this(new TermFactory());
@@ -82,22 +121,23 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 	public HybridInterpreter(ITermFactory termFactory, ITermFactory programFactory) {
 		super(termFactory, programFactory);
-		
+
 		compiledContext = new HybridCompiledContext(termFactory);
+		recordingFactory = new ConstructorRecordingTermFactory(termFactory);
 	}
-	
+
 	/**
 	 * Creates an interpreter that bases its definition scope on an existing instance.
-	 * 
+	 *
 	 * @param interpreter		The interpreter to base this instance on.
-	 * 
+	 *
 	 * @param reuseRegistries	The names of operator registries that should not be re-created,
 	 *                       	but can be reused from the old instance.
 	 */
 	public HybridInterpreter(HybridInterpreter interpreter, String... reuseRegistries) {
 		this(interpreter.getFactory(), ((org.spoofax.interpreter.core.Context) interpreter.getContext()).getProgramFactory());
 		Set<String> reusable = asSet(reuseRegistries);
-		
+
 		getContext().setVarScope(new VarScope(interpreter.getContext().getVarScope()));
 		interpreter.init();
 		for (IOperatorRegistry registry : interpreter.getCompiledContext().getOperatorRegistries()) {
@@ -110,7 +150,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		setIOAgent(interpreter.getIOAgent());
 		setCurrent(interpreter.current());
 	}
-	
+
 	public static void main(String... args) {
 		if (args == null || args.length < 1) {
 			System.out.println(USAGE);
@@ -119,15 +159,15 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		HybridInterpreter interpreter = new HybridInterpreter();
 		int i = mainLoadAll(interpreter, args);
 		boolean nothingLoaded = i == 0;
-		
+
 		String main = args[i++];
 
 		if (nothingLoaded)
 			warnUnqualifiedInvoke(interpreter, main);
-		
+
 		IStrategoString[] mainArgs = new IStrategoString[args.length - i + 1];
 		mainArgs[0] = interpreter.getFactory().makeString(main);
-		
+
 		for (int j = 1; j < mainArgs.length; i++, j++) {
 			mainArgs[j] = interpreter.getFactory().makeString(args[i]);
 		}
@@ -189,7 +229,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		}
 		return i;
 	}
-	
+
 	private static void mainLocalJar(String... args) {
 		String strategy = args[0];
 		String[] mainArgs = new String[args.length - 1];
@@ -218,12 +258,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			System.exit(e.getValue());
 		}
 	}
-	
+
 	@Override
 	protected org.spoofax.interpreter.core.Context createContext(ITermFactory termFactory, ITermFactory programFactory) {
 		return new HybridContext(termFactory, programFactory);
 	}
-	
+
 	@Override
 	public void load(IStrategoTerm term) throws InterpreterException {
 		// Lazily register library strategies
@@ -234,22 +274,22 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 	public void loadJars(URL... jars)
 			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
-		
+
 		loadJars(HybridInterpreter.class.getClassLoader(), jars);
 	}
-	
+
 	public void loadJars(ClassLoader parentClassLoader, URL... jars)
 			throws SecurityException, NoInteropRegistererJarException, IncompatibleJarException, IOException {
 
 		URLClassLoader classLoader = new URLClassLoader(jars, parentClassLoader);
 		boolean foundRegisterer = false;
 		loadedJars = true;
-		
+
 		for (URL jar : jars) {
 			foundRegisterer |=
 				registerJar(classLoader, jar);
 		}
-		
+
 		if (!foundRegisterer)
 			throw new NoInteropRegistererJarException(jars);
 	}
@@ -263,8 +303,8 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		boolean foundRegisterer = false;
 		JarFile jarFile = connection.getJarFile();
 		try {
-			Enumeration<JarEntry> jarEntries = jarFile.entries();		
-			
+			Enumeration<JarEntry> jarEntries = jarFile.entries();
+
 			while (jarEntries.hasMoreElements()) {
 				String entry = jarEntries.nextElement().getName();
 				if (entry.endsWith("/InteropRegisterer.class") || entry.endsWith("$InteropRegisterer.class") || entry.equals("InteropRegisterer.class")) {
@@ -275,7 +315,11 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 						Class<?> registerClass = classLoader.loadClass(className);
 						Object registerObject = registerClass.newInstance();
 						if (registerObject instanceof InteropRegisterer) {
+							assert recordingFactory.getWrappedFactory() == getCompiledContext().getFactory();
+							getCompiledContext().setFactory(recordingFactory);
 							((InteropRegisterer) registerObject).registerLazy(getContext(), getCompiledContext(), classLoader);
+							getCompiledContext().addConstructors(recordingFactory.getAndClearConstructorRecord());
+							getCompiledContext().setFactory(recordingFactory.getWrappedFactory());
 							foundRegisterer = true;
 						} else {
 							throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
@@ -322,14 +366,14 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		if (lib != null)
 			lib.getIOAgent().closeAllFiles();
 	}
-	
+
 	/**
 	 * Initialize the interpreter register with all standard library strategies.
 	 */
 	protected void registerLibraries() {
 		IContext context = getContext();
 		Context compiledContext = getCompiledContext();
-		
+
 		// FIXME: HybridInterpreter loads all libs into the same namespace
 		//        Which may affect interpreted code and invoke()
 		org.strategoxt.tools.Main.registerInterop(context, compiledContext);
@@ -344,36 +388,36 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		org.strategoxt.stratego_lib.Main.registerInterop(context, compiledContext);
 		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
 	}
-	
+
 	public final Context getCompiledContext() {
 		return compiledContext;
 	}
-	
+
 	public static Context getCompiledContext(IContext context) {
 		return ((HybridContext) context).getCompiledContext();
 	}
-	
+
 	public static IContext getContext(Context context) {
 		return context instanceof HybridCompiledContext
 			? ((HybridCompiledContext) context).getContext()
 			: null;
 	}
-	
+
 	public static HybridInterpreter getInterpreter(Context context) {
 		return context instanceof HybridCompiledContext
 			? ((HybridCompiledContext) context).getInterpreter()
 			: null;
 	}
-	
+
 	/**
 	 * Invokes a compiled or interpreted strategy bound to this instance.
-	 * 
+	 *
 	 * Wraps any StrategoException into checked InterpreterException exceptions.
 	 */
 	@Override
 	public boolean invoke(String name)
 			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
-		
+
 		try {
 			if (!loadedJars) init();
 			return super.invoke(name);
@@ -387,15 +431,15 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
             throw new InterpreterException(e);
         }
 	}
-	
+
 	@Override
 	public boolean evaluate(IStrategoAppl s)
 			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
-		
+
 		init();
 		return super.evaluate(s);
 	}
-	
+
 	/**
 	 * Evaluates a stratego expression, optionally desugaring it.
      *
@@ -405,7 +449,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	 */
 	public boolean evaluate(IStrategoAppl s, boolean desugar)
 			throws InterpreterErrorExit, InterpreterExit, UndefinedStrategyException, InterpreterException {
-		
+
 		if (desugar) {
 			init();
 			// TODO: support nullary constructors? e.g. by considering all non-matched unary vars to be constructors
@@ -437,7 +481,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 	private IStrategoTerm cifyAndAddParams(ITermFactory factory, IStrategoConstructor callT,
 			IStrategoConstructor sdefT, IStrategoAppl current) {
-		
+
 		IStrategoConstructor cons = current.getConstructor();
 		if (cons == sdefT || cons == callT) {
 			IStrategoTerm s = termAt(current, 1);
@@ -456,43 +500,37 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		}
 		return current;
 	}
-	
+
 	/**
 	 * A hybrid interpreter context.
-	 * 
+	 *
 	 * @author Lennart Kats <lennart add lclnet.nl>
 	 */
 	private class HybridContext extends org.spoofax.interpreter.core.Context {
-		
+
 		public HybridContext(ITermFactory termFactory, ITermFactory programFactory) {
 			super(termFactory, programFactory, true);
 		}
-		
+
 		@Override
 		public void addOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
 			compiledContext.internalAddOperatorRegistry(or);
 		}
-		
-		@Override @Deprecated
-		public void addOperatorRegistry(String domain, IOperatorRegistry or) {
-			super.addOperatorRegistry(domain, or);
-			compiledContext.internalAddOperatorRegistry(or);
-		}
-		
-		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
+
+		private final void internalAddOperatorRegistryNoCompiledContext(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
 		}
-		
+
 		@Override
 		public StackTracer getStackTracer() {
 			return compiledContext;
 		}
-		
+
 		public Context getCompiledContext() {
 			return compiledContext;
 		}
-		
+
 		@Override
 		public void setFactory(ITermFactory factory) {
 			super.setFactory(factory);
@@ -505,14 +543,14 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 			super.cancel();
 		}
 	}
-	
+
 	/**
 	 * A hybrid compiled Stratego context.
-	 * 
+	 *
 	 * @author Lennart Kats <lennart add lclnet.nl>
 	 */
 	private class HybridCompiledContext extends Context {
-		
+
 		public HybridCompiledContext(ITermFactory factory) {
 			super(factory);
 		}
@@ -528,17 +566,17 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		@Override
 		public void addOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
-			((HybridContext) getContext()).internalAddOperatorRegistry(or);
+			((HybridContext) getContext()).internalAddOperatorRegistryNoCompiledContext(or);
 		}
-		
-		protected void internalAddOperatorRegistry(IOperatorRegistry or) {
+
+		protected final void internalAddOperatorRegistry(IOperatorRegistry or) {
 			super.addOperatorRegistry(or);
 		}
-		
+
 		@Override
 		public IStrategoTerm invokeStrategy(String strategy, IStrategoTerm input)
 				throws MissingStrategyException, StrategoErrorExit, StrategoExit, StrategoException {
-			
+
 			IStrategoTerm oldCurrent = current();
 			try {
 				setCurrent(input);
