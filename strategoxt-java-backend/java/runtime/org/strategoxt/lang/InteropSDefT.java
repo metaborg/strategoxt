@@ -14,21 +14,19 @@ import org.strategoxt.HybridInterpreter;
 /**
  * Adapts an {@link Strategy} strategy to a {@link SDefT},
  * making compiled strategies available to the interpreter.
- * 
+ *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class InteropSDefT extends SDefT {
-	
-	private static final ConstType CONST_TYPE = new ConstType();
-	
+
 	private static final SVar[] NO_SVARS = {};
-	
+
 	private static final String[] NO_STRINGS = {};
-	
+
 	private final String strategyClassName;
-	
+
 	private final ClassLoader classLoader;
-	
+
 	private Strategy strategy;
 
 	public InteropSDefT(Strategy strategy, IContext context) {
@@ -37,7 +35,7 @@ public class InteropSDefT extends SDefT {
 		this.classLoader = null;
 		this.strategy = strategy;
 	}
-	
+
 	@Deprecated
 	public InteropSDefT(Strategy strategy, IContext context, Context compiledContext) {
 		this(strategy, context);
@@ -51,7 +49,7 @@ public class InteropSDefT extends SDefT {
 		this.classLoader = classLoader;
 		this.strategyClassName = strategyClassName;
 	}
-	
+
 	@Deprecated
 	public InteropSDefT(ClassLoader classLoader, String strategyClassName, IContext context, Context compiledContext) {
 		this(classLoader, strategyClassName, context);
@@ -74,12 +72,12 @@ public class InteropSDefT extends SDefT {
 	public String getName() {
 		return getStrategy().getName();
 	}
-	
+
 	@Override
 	protected void setName(String name) {
 		throw new UnsupportedOperationException();
 	}
-    
+
     @Override
     public boolean isCompiledStrategy() {
         return true;
@@ -89,7 +87,7 @@ public class InteropSDefT extends SDefT {
 	public SVar[] getStrategyParams() {
 		SVar[] results = super.getStrategyParams();
 		if (results != null) return results;
-		
+
 		String name = getName();
 		int countEnd = name.lastIndexOf('_');
 		int countStart = name.lastIndexOf('_', countEnd - 1);
@@ -97,14 +95,14 @@ public class InteropSDefT extends SDefT {
 			return NO_SVARS; // FIXME: properly handle "lifted" InteropSDefT strategies
 		}
 		int count = Integer.parseInt(name.substring(countStart + 1, countEnd));
-		
+
 		if (count == 0) return NO_SVARS;
-		
+
 		results = new SVar[count];
 		for (int i = 0; i < results.length; i++) {
-			results[i] = new SVar("s" + i, CONST_TYPE);
+			results[i] = new SVar("s" + i, ConstType.INSTANCE);
 		}
-		
+
 		return results;
 	}
 
@@ -112,7 +110,7 @@ public class InteropSDefT extends SDefT {
 	public String[] getTermParams() {
 		String[] results = super.getTermParams();
 		if (results != null) return results;
-		
+
 		String name = getName();
 		int countStart = name.lastIndexOf('_');
 		int count;
@@ -122,17 +120,17 @@ public class InteropSDefT extends SDefT {
 			// FIXME: properly handle "lifted" InteropSDefT strategies
 			return NO_STRINGS;
 		}
-		
+
 		if (count == 0) return NO_STRINGS;
-	
+
 		results = new String[count];
 		for (int i = 0; i < results.length; i++) {
 			results[i] = "t" + i;
 		}
-	
+
 		return results;
 	}
-	
+
 	@Override
 	public org.spoofax.interpreter.stratego.Strategy getBody() {
 		org.spoofax.interpreter.stratego.Strategy result = super.getBody();
@@ -142,12 +140,12 @@ public class InteropSDefT extends SDefT {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public org.spoofax.interpreter.stratego.Strategy getParametrizedBody(
 			final org.spoofax.interpreter.stratego.Strategy[] sargs,
 			final IStrategoTerm[] targs) {
-		
+
 		return new StrategyBody() {
 			@Override
 			public boolean evaluate(IContext env) throws InterpreterException {
@@ -159,35 +157,35 @@ public class InteropSDefT extends SDefT {
 			}
 		};
 	}
-	
+
 	@Override
 	public boolean evaluate(IContext env)
 			throws  InterpreterErrorExit, InterpreterExit, InterpreterException {
-		
+
 		VarScope scope = env.getVarScope();
 		SVar[] svars = getStrategyParams();
 		String[] tvars = getTermParams();
 		SDefT[] sargs = new SDefT[svars.length];
 		IStrategoTerm[] targs = new IStrategoTerm[tvars.length];
-		
+
 		for (int i = 0; i < svars.length; i++) {
 			SDefT sarg = scope.lookupSVar(svars[i].name);
 			if (sarg == null) throw new InterpreterException("Missing strategy argument: " + svars[i].name);
 			sargs[i] = sarg;
 		}
-		
+
 		for (int i = 0; i < tvars.length; i++) {
 			IStrategoTerm targ = scope.lookup(tvars[i]);
             if (targ == null) throw new InterpreterException("Missing term argument: " + tvars[i]);
 			targs[i] = targ;
 		}
-		
+
 		return evaluate(env, InteropStrategy.toInteropStrategies(sargs), targs);
 	}
 
 	private boolean evaluate(IContext env, Strategy[] sargs, IStrategoTerm[] targs)
 			throws InterpreterErrorExit, InterpreterExit, InterpreterException {
-		
+
 		IStrategoTerm result;
 		try {
 			Context context = HybridInterpreter.getCompiledContext(env);
@@ -200,7 +198,7 @@ public class InteropSDefT extends SDefT {
 			// Programmer error: not the same as a UndefinedStrategyException
 			throw new InterpreterException(e);
 		}
-		
+
 		if (result != null) {
 			env.setCurrent(result);
 			return true;
@@ -208,7 +206,7 @@ public class InteropSDefT extends SDefT {
 			return false;
 		}
 	}
-	
+
 	public Strategy getStrategy() {
 		if (strategy == null) {
 			try {
@@ -226,13 +224,13 @@ public class InteropSDefT extends SDefT {
 				throw new StrategoException("Unable to instantiate compiled strategy", e);
 			}
 		}
-			
+
 		return strategy;
 	}
-	
+
 	/**
 	 * The strategy body used by the interpreter.
-	 * 
+	 *
 	 * @author Lennart Kats <lennart add lclnet.nl>
 	 */
 	private class StrategyBody extends org.spoofax.interpreter.stratego.Strategy {
@@ -241,7 +239,7 @@ public class InteropSDefT extends SDefT {
 				? getHook().pop().onSuccess(env)
 				: getHook().pop().onFailure(env);
 		}
-		
+
 		@Override
 		public boolean evaluate(IContext env) throws InterpreterException {
 			return InteropSDefT.this.evaluate(env);
@@ -250,7 +248,7 @@ public class InteropSDefT extends SDefT {
 		public void prettyPrint(StupidFormatter fmt) {
 			InteropSDefT.this.prettyPrint(fmt);
 		}
-		
+
 		@Override
 		protected String getTraceName() {
 			return getName();
