@@ -23,7 +23,7 @@ strategies
   jsglr-open-parsetable = 
       ?tbl
     ; ?"parse-table"#(_)
-    ; prim("JSGLR_open_parsetable", tbl) => int
+    ; prim("STRSGLR_open_parsetable", tbl) => int
     ; !ParseTable(int)
   
   jsglr-close-parsetable =
