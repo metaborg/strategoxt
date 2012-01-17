@@ -114,7 +114,6 @@ jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBRARYJAV
 	cp spoofax-libs.jar strategoxt.jar.tmp
 	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN0) $(JARIN1) $(JARIN2) $(JARIN3)
 	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
-	jar i strategoxt.jar.tmp
 	mv strategoxt.jar.tmp strategoxt.jar
 
 smalljar :
@@ -127,9 +126,7 @@ smalljar :
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-spoofax-libs.jar : new-libs
-
-new-libs :
+new-libs : 
 	rm -rf spoofax-libs-tmp
 	mkdir spoofax-libs-tmp
 	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
