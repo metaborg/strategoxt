@@ -127,9 +127,9 @@ smalljar :
 	jar cfm strategoxt.jar META-INF/MANIFEST-repacked.MF strategoxt-no-compression.jar
 	jar i strategoxt.jar
 
-new-libs : spoofax-libs.jar
+spoofax-libs.jar : new-libs
 
-spoofax-libs.jar : # .\PURPLEPONY
+new-libs :
 	rm -rf spoofax-libs-tmp
 	mkdir spoofax-libs-tmp
 	cat $(SPOOFAX)/share/java/junit-3.8.1.jar | (cd spoofax-libs-tmp; $(JAR) x)
