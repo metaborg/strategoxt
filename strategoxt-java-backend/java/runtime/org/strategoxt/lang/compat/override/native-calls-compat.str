@@ -25,8 +25,30 @@ strategies
   <+
     ?(program, args);
 
+    Stream(instream)  := <stdin-stream>;
+    Stream(outstream) := <stdout-stream>;
+    Stream(errstream) := <stderr-stream>;
+    
     log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
-    prim("SSL_EXT_call", program, args) => 0
+    prim("SSL_EXT_call", program, args, instream, outstream, errstream) => 0
+  <+
+    ?(program, args, instream, outstream, errstream);
+    
+    log(|Info(), ["Calling external tool ", program, " ", <try(separate-by(|" "); concat-strings)> args]);
+    prim("SSL_EXT_call", program, args, instream, outstream, errstream) => 0
+
+  override read-from-prog(prog, args) =
+    (tempname, fd)    := <new-temp-file>;
+    outstream         := <fdopen> (fd, "w");
+    Stream(instream)  := <stdin-stream>;
+    Stream(errstream) := <stderr-stream>;
+    finally(
+      <call> (<prog>, <args>)
+    , <fclose> fd
+    );
+    <ReadFromFile> tempname;
+    where(<remove-file> tempname)
+
   /* UNDONE: added a Java extension for calling a tool with a custom environment
   <+
     // (Java extension)

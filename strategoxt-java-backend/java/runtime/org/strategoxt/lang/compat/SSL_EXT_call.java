@@ -1,6 +1,8 @@
 package org.strategoxt.lang.compat;
 
+import static org.spoofax.interpreter.core.Tools.asJavaInt;
 import static org.spoofax.interpreter.core.Tools.asJavaString;
+import static org.spoofax.interpreter.core.Tools.isTermInt;
 import static org.spoofax.interpreter.core.Tools.isTermList;
 import static org.spoofax.interpreter.core.Tools.isTermString;
 import static org.spoofax.interpreter.core.Tools.isTermTuple;
@@ -26,7 +28,7 @@ public class SSL_EXT_call extends AbstractPrimitive {
 	private final NativeCallHelper caller = new NativeCallHelper();
 	
 	public SSL_EXT_call() {
-		super("SSL_EXT_call", 0, 2);
+		super("SSL_EXT_call", 0, 5);
 	}
 
 	@Override
@@ -51,6 +53,8 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			} else {
 				return false;
 			}
+			if (!isTermInt(tvars[3]) || !isTermInt(tvars[4]))
+				return false;
 			
 			String[] commandArgs = toCommandArgs(program, tvars[1].getAllSubterms());
 			if (commandArgs == null)
@@ -60,8 +64,9 @@ public class SSL_EXT_call extends AbstractPrimitive {
 			SSLLibrary op = (SSLLibrary) env.getOperatorRegistry(SSLLibrary.REGISTRY_NAME);
 			IOAgent io = op.getIOAgent();
 			File dir = io.openFile(io.getWorkingDir());
-			Writer stdout = io.getWriter(IOAgent.CONST_STDOUT);
-			Writer stderr = io.getWriter(IOAgent.CONST_STDERR);
+			// TODO: stdin?
+			Writer stdout = io.getWriter(asJavaInt(tvars[3]));
+			Writer stderr = io.getWriter(asJavaInt(tvars[4]));
 			
 			// Invocation
 			int returnCode = caller.call(commandArgs, environment, dir, stdout, stderr);
