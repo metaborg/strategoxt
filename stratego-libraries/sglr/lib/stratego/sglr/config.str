@@ -38,6 +38,19 @@ strategies
     where(prim("STRSGLR_get_ambiguity_error"))
 
 /**
+ * Recovery
+ */
+strategies
+
+  set-recovery(s) =
+    if s then
+      where(if-java-platform(prim("STRSGLR_set_recovery_on")))
+    else
+      where(if-java-platform(prim("STRSGLR_set_recovery_off")))
+    end
+  ; if-c-platform(fail)
+
+/**
  * Filtering
  */
 strategies
