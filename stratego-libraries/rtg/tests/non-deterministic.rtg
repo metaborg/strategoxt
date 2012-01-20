@@ -1,8 +1,0 @@
-regular tree grammar
-  start Exp
-  productions
-    Var -> Var   (String)
-    Exp -> Var   (String)
-    Exp -> Assign(Var, Exp)
-    Exp -> Plus(Exp, Exp)
-    String -> <string>

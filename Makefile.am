@@ -1,48 +1,23 @@
-ACLOCAL_AMFLAGS = -I config
+include $(top_srcdir)/Makefile.xt
 
-SUBDIRS      = . news-archive manpages $(PKGS)
-DIST_SUBDIRS =   news-archive manpages $(PKGS)
-CLEANFILES   = $(BUILD_REPOSITORY)
+# remove the default tar -o option to allow long path names
+am__tar = ${AMTAR} chf - "$$tardir"
 
-EXTRA_DIST   = \
-  README svn-revision bootstrap Makefile.xt \
-  strategoxt.spec.in strategoxt.spec \
-  strategoxt.pc.in \
-  xtc-uninstalled.pc.in \
-  stratego-runtime-uninstalled.pc.in \
-  stratego-lib-uninstalled.pc.in \
-  stratego-xtc-uninstalled.pc.in \
-  stratego-sglr-uninstalled.pc.in \
-  stratego-gpp-uninstalled.pc.in \
-  stratego-sdf-uninstalled.pc.in \
-  stratego-rtg-uninstalled.pc.in
+ACLOCAL_AMFLAGS = -I .
+pkgconfig_DATA = strc-java.m4 strc-java.pc
 
-pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA = strategoxt.pc
+SUBDIRS           = syn trans java test tools
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS      = $(SUBDIRS)
+EXTRA_DIST        = bootstrap Makefile.xt
 
-relname:
-	echo -n $(distdir) > relname
+XTC_IMPORT = \
+  $(STRATEGOXT)/share/strategoxt/XTC \
+  $(JAVA_FRONT)/share/java-front/XTC
 
-make-%:
-	for subdir in $(PKGS) ; do \
-           (cd $$subdir; $(MAKE) $*) ; \
-	done
+jar :
+	$(MAKE) -C java jar
 
-install-%: %
-	for subdir in $(PKGS) ; do \
-           cp -f $< $$subdir ; \
-	done
+new-libs :
+	$(MAKE) -C java new-libs
 
-bootclean :
-	@for dir in $(PKGS); do \
-	   (cd $$dir && $(MAKE) bootclean) ; \
-	done
-
-bootstep :
-	$(MAKE) bootclean 
-	$(MAKE) 
-	$(MAKE) check 
-	$(MAKE) install
-
-svnignore :
-	svn propset -R svn:ignore -F svn-ignore .

@@ -1,6 +1,0 @@
-/**
- * Strategies for exploring directories.
- */
-module dir
-imports system/io/dir
-

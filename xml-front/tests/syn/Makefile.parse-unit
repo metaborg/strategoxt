@@ -1,2 +1,0 @@
-%.runtestsuite : %.testsuite
-	$(SDF_TOOLS)/bin/parse-unit -i $< -p $(PARSE_UNIT_PTABLE)

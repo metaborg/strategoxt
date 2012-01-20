@@ -1,7 +1,0 @@
-module const-prop
-imports libstrc libstratego-lib
-strategies
-
-  const-prop-io =
-    io-wrap(Specification([Signature(id),Strategies(map(const-prop))]))
-

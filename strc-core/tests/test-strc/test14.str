@@ -1,6 +1,0 @@
-module test14
-
-imports libstratego-lib
-
-strategies
-  main = !0; with(1)

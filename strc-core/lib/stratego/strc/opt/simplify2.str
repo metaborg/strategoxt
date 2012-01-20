@@ -1,7 +1,0 @@
-module simplify2
-imports stratego/strc/opt/stratego-laws stratego/strc/opt/opt-lib
-strategies
-
-  simplify2 =
-    apply-to-bodies(lift-term-args; simplify)
- 

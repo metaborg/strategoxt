@@ -1,6 +1,0 @@
-/**
- * Various iteration strategies.
- */
-module iteration
-imports strategy/iteration
-
