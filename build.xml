@@ -507,20 +507,6 @@
             </strjlibargs>
         </strj-lib>
 
-        <mkdir dir="lib/org/strategoxt/lang/compat/override/jsglr_parser" />
-        <strj-lib
-            input="java-backend/java/runtime/org/strategoxt/lang/compat/override/jsglr-parser.str"
-            output="lib/org/strategoxt/lang/compat/override/jsglr_parser/Main.java"
-            package="org.strategoxt.lang.compat.override.jsglr_parser"
-        >
-            <strjlibargs>
-                <arg value="-la" />
-                <arg value="stratego-lib" />
-                <arg value="-la" />
-                <arg value="stratego-sglr" />
-            </strjlibargs>
-        </strj-lib>
-
         <mkdir dir="lib/org/strategoxt/lang/compat/override/performance_tweaks" />
         <strj-lib
             input="java-backend/java/runtime/org/strategoxt/lang/compat/override/performance-tweaks.str"
