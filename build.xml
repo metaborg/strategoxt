@@ -328,8 +328,6 @@
                 <arg value="-la" />
                 <arg value="stratego-xtc" />
                 <arg value="-la" />
-                <arg value="org.strategoxt.lang.compat.override.jsglr_parser" />
-                <arg value="-la" />
                 <arg value="org.strategoxt.lang.compat.override.jsglr_parser_compat" />
                 <arg value="-I" />
                 <arg value="${syntaxsdf}" />
