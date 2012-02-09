@@ -59,7 +59,6 @@ strategies
     + abox2text-S(rec | xpos, width)
     + abox2text-C(rec | xpos, width)
     + abox2text-FBOX(rec | xpos, width)
-    + abox2text-R(rec | xpos, width)
     + abox2text-ALT(rec | xpos, width)
     + abox2text-list(rec | xpos, width)
 
@@ -278,9 +277,6 @@ strategies
 
   abox2text-FBOX(rec : t * t -> t | xpos, width) :
     FBOX(_,b) -> <rec(|xpos)> b
-
-  abox2text-R(rec : t * t -> t | xpos, width) :
-    R(sopt, bs) -> <rec(|xpos)> HV(sopt, bs)
 
   abox2text-ALT(rec : t * t -> t | xpos, width) =
     ?ALT(a1, a2)
