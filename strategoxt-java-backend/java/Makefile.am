@@ -80,11 +80,14 @@ EXTRA_DIST=\
   $(wildcard runtime/org/strategoxt/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*.str) \
   $(wildcard runtime/org/strategoxt/*/*/*/*/*/*.str) \
+  $(wildcard pack-sdf-ext/extension/*.str) \
+  $(wildcard pack-sdf-ext/lib/org/strategoxt/pack_sdf_ext_compat/*.str) \
   $(TOOLSTRS) \
   spoofax-libs.jar \
   bin \
   META-INF/MANIFEST.MF \
-  pack-sdf-ext/syn/SDF-Ext.tbl 
+  $(wildcard pack-sdf-ext/syn/*.sdf) \
+  pack-sdf-ext/syn/SDF-Ext.tbl
 
 STRINCLUDES= \
   -I $(STRATEGOXT)/share/sdf/stratego-regular \
