@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 pkgdata_DATA=.ALLCLASSES strategoxt.jar
 
-sdfdata_DATA = pack-sdf-ext/syn/SDF-Ext.tbl
+sdfdata_DATA = pack-sdf-ext/syn/SDF-Ext.tbl $(wildcard pack-sdf-ext/syn/*.sdf)
 
 SDFINCLUDES   = \
        -Idef ${SDF_FRONT}/share/sdf/sdf-front/Sdf2.def\
@@ -258,6 +258,10 @@ pack-sdf-ext/lib/org/strategoxt/pack_sdf_ext_compat/Main.java : pack-sdf-ext/lib
 
 tools/org/strategoxt/tools/Main.java : $(TOOLSTRS:.str=.rtree) pack-sdf-ext/extension/pack-sdf-ext.rtree
 	$(STRJ) -i tools/org/strategoxt/tools/tools.rtree -o $@ $(STRJFLAGS) -p org.strategoxt.tools -la stratego-lib -la stratego-xtc -la stratego-gpp -la stratego-rtg -la stratego-sglr -la stratego-tool-doc -la stratego-sdf -la stratego-aterm -la strc -I $(STRATEGOXT)/share/sdf/xml-front -I tools/org/strategoxt/tools/lib -I $(STRATEGOXT)/share/sdf/gpp -I $(STRATEGOXT)/share/gpp -I $(STRATEGOXT)/share/sdf/stratego-regular -I $(STRATEGOXT)/share/stratego-regular -I $(STRATEGOXT)/share/sdf/sdf-front -I pack-sdf-ext/extension/
+
+###### PACK-SDF-EXT #######
+
+pack-sdf-ext/syn/SDF-Ext.tbl : $(wildcard pack-sdf-ext/syn/*.sdf)
 
 ###### COMPILER #######
 

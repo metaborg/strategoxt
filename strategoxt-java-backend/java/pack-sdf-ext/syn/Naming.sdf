@@ -4,10 +4,12 @@ imports
   languages/sdf2/syntax/Sdf2
 
 exports
-	 
+
 context-free syntax
   
   IdCon -> Namespace
+  
+  Namespace "@=" Symbol -> Symbol {cons("namespacedef")}
 
 syntax
   
@@ -17,8 +19,6 @@ syntax
   
   <Namespace-CF> "@" <Symbol-CF> -> <Symbol-CF> {cons("namespaceref2")}
   
-  <Namespace-CF> "@=" <Symbol-CF> -> <Symbol-CF> {cons("namespacedef")}
-
 context-free syntax
 
 %%  "scopes" ScopeList* -> Section {cons("Scopes")}
@@ -31,17 +31,20 @@ context-free syntax
 
 %%  "scope" "(" "*" ")" -> Attribute {prefer, ast("term(default(appl(unquoted(\"scope\"), [fun(quoted(\"*\"))])))")}
 
-context-free priorities
-  
-  %% FIXME: priorities for @= and @ don't work
-    
-    Symbol "?"              -> Symbol >
-    Symbol "?"              -> Symbol >
-    %%{Symbol "?"              -> Symbol
-    %%Symbol "*"               -> Symbol
-    %%Symbol "+"               -> Symbol} >
-    %%Symbol "|" Symbol -> Symbol >
-    Namespace "@=" Symbol    -> Symbol   
+priorities
+
+    {
+    <Symbol-CF> <LAYOUT?-CF> "?"            -> <Symbol-CF>
+    <Symbol-CF> <LAYOUT?-CF> "*"             -> <Symbol-CF>
+    <Symbol-CF> <LAYOUT?-CF> "+"             -> <Symbol-CF>
+    }
+    >
+    <Symbol-CF> <LAYOUT?-CF> "|" <Symbol-CF> -> <Symbol-CF>
+    >
+    {
+     <Namespace-CF> <LAYOUT?-CF> "@=" <LAYOUT?-CF> <Symbol-CF> -> <Symbol-CF>
+     <Namespace-CF>              "@"               <Symbol-CF> -> <Symbol-CF> 
+    }
 
 lexical restrictions
   

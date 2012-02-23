@@ -19,16 +19,16 @@ rules
 
   remove-sdf-ext:
     appl(
-      prod(_, _, attrs([term(cons("namespacedef"))]))
+      prod(_, _, attrs([term(cons("namespacedef")) | _]))
     , contents
     ) ->
     symbol
     with
-      !contents => [namespace, atequals, symbol]
+      !contents => [namespace, layout1, atequals, layout2, symbol]
 
   remove-sdf-ext:
     appl(
-      prod(_, _, attrs([term(cons("namespaceref2"))]))
+      prod(_, _, attrs([term(cons("namespaceref2")) | _]))
     , contents
     ) ->
     symbol
@@ -37,7 +37,7 @@ rules
 
   remove-sdf-ext:
     appl(
-      prod(_, _, attrs([term(cons("namespaceref"))]))
+      prod(_, _, attrs([term(cons("namespaceref")) | _]))
     , contents
     ) ->
     symbol
