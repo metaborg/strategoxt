@@ -142,10 +142,13 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		} catch (NoSuchMethodException e) {
 			return null;
 		} catch (ClassCastException e) {
+			e.printStackTrace();
 			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		} catch (SecurityException e) {
+			e.printStackTrace();
 			throw new MissingStrategyException("Could not dynamically call strategy " + className, e);
 		}
 	}
