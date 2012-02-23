@@ -106,6 +106,7 @@ strategies
        + include-from-def(|mod)
        + include-from-xtc(|mod)
        )> includes
+    ; pack-sdf-ext-postprocess
 
   pack-sdf-parse-sdf =
     let qualify-pathname =
@@ -128,6 +129,7 @@ strategies
           <fatal-error> ["pack-sdf: error: file ", <id>, " does not exist\n"]
         end
     end
+    ; pack-sdf-ext-postprocess
 
   include-pathname :
     file -> (file, tree)

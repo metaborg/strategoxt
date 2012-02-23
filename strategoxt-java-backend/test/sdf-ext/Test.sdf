@@ -1,0 +1,9 @@
+module Test
+
+exports
+
+context-free syntax
+
+  NAM@X  -> X
+  NAM@=X -> X
+  @NAM   -> X

@@ -1,0 +1,103 @@
+/**
+ * An extension of pack-sdf to support an extended
+ * version of the SDF syntax definition formalism.
+ */
+module pack-sdf-ext
+
+imports
+  libstratego-lib
+  libstratego-sglr
+  pack-sdf
+
+rules
+
+  pack-sdf-ext-postprocess:
+    (path, asfix) -> (path, <remove-sdf-ext-top> asfix)
+
+  remove-sdf-ext-top =
+    topdown(repeat(remove-sdf-ext))
+
+  remove-sdf-ext:
+    appl(
+      prod(_, _, attrs([term(cons("namespacedef"))]))
+    , contents
+    ) ->
+    symbol
+    with
+      !contents => [namespace, atequals, symbol]
+
+  remove-sdf-ext:
+    appl(
+      prod(_, _, attrs([term(cons("namespaceref2"))]))
+    , contents
+    ) ->
+    symbol
+    with
+      !contents => [namespace, at, symbol]
+
+  remove-sdf-ext:
+    appl(
+      prod(_, _, attrs([term(cons("namespaceref"))]))
+    , contents
+    ) ->
+    symbol
+    with
+      !contents => [at, namespace];
+      symbol := // the sort "ID" in asfix format
+          appl(
+             prod(
+               [cf(sort("Sort"))]
+             , cf(sort("Symbol"))
+             , attrs([term(cons("sort"))])
+             )
+           , [ appl(
+                 prod(
+                   [lex(sort("Sort"))]
+                 , cf(sort("Sort"))
+                 , no-attrs()
+                 )
+               , [ appl(
+                     prod(
+                       [ char-class([range(65, 90)])
+                       , lex(
+                           iter-star(
+                             char-class(
+                               [ 45
+                               , range(48, 57)
+                               , range(65, 90)
+                               , range(97, 122)
+                               ]
+                             )
+                           )
+                         )
+                       , char-class(
+                           [range(48, 57), range(65, 90), range(97, 122)]
+                         )
+                       ]
+                     , lex(sort("Sort"))
+                     , attrs([term(cons("more-chars"))])
+                     )
+                   , [ 73
+                     , appl(
+                         list(
+                           lex(
+                             iter-star(
+                               char-class(
+                                 [ 45
+                                 , range(48, 57)
+                                 , range(65, 90)
+                                 , range(97, 122)
+                                 ]
+                               )
+                             )
+                           )
+                         )
+                       , []
+                       )
+                     , 68
+                     ]
+                   )
+                 ]
+               )
+             ]
+           )

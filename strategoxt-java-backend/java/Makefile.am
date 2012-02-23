@@ -2,6 +2,13 @@ include $(top_srcdir)/Makefile.xt
 
 pkgdata_DATA=.ALLCLASSES strategoxt.jar
 
+sdfdata_DATA = pack-sdf-ext/syn/SDF-Ext.tbl
+
+SDFINCLUDES   = \
+       -Idef ${SDF_FRONT}/share/sdf/sdf-front/Sdf2.def\
+       -I pack-sdf-ext/syn
+PGEN_FLAGS	= -m SDF-Ext
+
 RUNTIMEJAVAS = \
   $(wildcard runtime/*.java) \
   $(wildcard runtime/org/strategoxt/*.java) \
@@ -38,6 +45,9 @@ LIBRARYJAVAS = \
 TOOLJAVAS = \
   tools/org/strategoxt/tools/Main.java
 
+PACKSDFEXTJAVAS = \
+  pack-sdf-ext/lib/org/strategoxt/pack_sdf_ext_compat/Main.java
+
 TOOLSTRS = \
   $(wildcard tools/org/strategoxt/tools/*.str) \
   $(wildcard tools/org/strategoxt/tools/*.meta) \
@@ -73,14 +83,15 @@ EXTRA_DIST=\
   $(TOOLSTRS) \
   spoofax-libs.jar \
   bin \
-  META-INF/MANIFEST.MF
+  META-INF/MANIFEST.MF \
+  pack-sdf-ext/syn/SDF-Ext.tbl 
 
 STRINCLUDES= \
   -I $(STRATEGOXT)/share/sdf/stratego-regular \
   -I $(STRATEGOXT)/share/sdf/sdf-front
 
 CLEANFILES = \
-  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(TOOLJAVAS) \
+  $(LIBRARYJAVAS) $(COMPILERJAVAS) $(TOOLJAVAS) $(PACKSDFEXTJAVAS) \
   runtime/org/strategoxt/lang/compat/override/stratego_aterm_compat.rtree \
   lib/org/strategoxt/stratego-xtc.rtree \
   .ALLCLASSES
@@ -90,7 +101,7 @@ clean :
 
 SPOOFAX=../../../spoofax/trunk/spoofax
 #SPOOFAX=../../../../spoofax/branches/spoofax-new-terms/spoofax
-CLASSPATH=runtime:lib:compiler:tools:spoofax-libs.jar:.
+CLASSPATH=runtime:lib:compiler:tools:pack-sdf-ext/lib:spoofax-libs.jar:.
 JAVACFLAGS=-J-Xmx1024m -J-Xms512m -J-server -J-XX:+UseConcMarkSweepGC -cp $(CLASSPATH) -source 5 -target 5 -nowarn -d bin -g:source
 JAVAC=`if which ecj >/dev/null; then echo ecj; else echo javac; fi`
 
@@ -101,21 +112,24 @@ STRJ_VERSION=$(VERSION) (Java version) based on `$(STRATEGOXT)/bin/strc --versio
 STRJ_CONSTANTS=-D STRJ_VERSION_TERM="\"$(STRJ_VERSION)\"" -D SVN_REVISION_TERM=\"$(SVN_REVISION)\" -D STRC_SYSTEM_LDFLAGS=\"\" -D STRC_SYSTEM_CFLAGS=\"\"
 
 JAR=`if which fastjar >/dev/null; then echo fastjar; else echo jar; fi`
+JARINX=`find pack-sdf-ext/lib | grep -E         '\.af|\.tbl' | sed 's!pack-sdf-ext/lib/!-C pack-sdf-ext/lib/ !'`
 JARIN0=`find tools    | grep -E         '\.af|\.tbl' | sed 's!tools/!-C tools/ !'`
 JARIN1=`find runtime  | grep -E '\.rtree|\.af|\.tbl' | sed 's!runtime/!-C runtime/ !'`
 JARIN2=`find lib      | grep -E '\.rtree|\.af|\.tbl' | sed 's!lib/!-C lib/ !'`
 JARIN3=`find compiler | grep -E '\.rtree|\.af|\.tbl' | sed 's!compiler/!-C compiler/ !'`
 
-jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS)
+jar strategoxt.jar : spoofax-libs.jar # .ALLCLASSES $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS) $(PACKSDFEXTJAVAS)
 	@if [ ! -e bin/org/strategoxt/stratego_lib/Main.class ]; then \
 	  echo "Standard library classes not found; please run 'make all' first." >&2; exit 1; \
 	fi 
 	cp spoofax-libs.jar strategoxt.jar.tmp
-	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARIN0) $(JARIN1) $(JARIN2) $(JARIN3)
+	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF $(JARINX) $(JARIN0) $(JARIN1) $(JARIN2) $(JARIN3)
 	$(JAR) ufm strategoxt.jar.tmp META-INF/MANIFEST.MF -C bin .
 	mv strategoxt.jar.tmp strategoxt.jar
 
+# experimental: jar with solid compression
 smalljar :
+	$(JAR) cfm0 strategoxt.jar META-INF/MANIFEST.MF $(JARINX)
 	$(JAR) cfm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN0)
 	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN1)
 	$(JAR) ufm0 strategoxt.jar META-INF/MANIFEST.MF $(JARIN2)
@@ -143,11 +157,11 @@ new-libs :
 
 .ALLCLASSES : bin/org/strategoxt/strj/Main.class
 
-bin/org/strategoxt/strj/Main.class : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS)
+bin/org/strategoxt/strj/Main.class : $(RUNTIMEJAVAS) $(LIBARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS) $(PACKSDFEXTJAVAS)
 	@if ! which ecj >/dev/null; \
 	  then echo "WARNING: ecj is not installed; using the (much) slower javac compiler instead" >&2; \
 	fi
-	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS) && touch .ALLCLASSES
+	$(JAVAC) $(JAVACFLAGS) $(RUNTIMEJAVAS) $(LIBRARYJAVAS) $(TOOLJAVAS) $(COMPILERJAVAS) $(PACKSDFEXTJAVAS) && touch .ALLCLASSES
 
 debug-classes : $(RUNTIMEJAVA)
 	$(JAVAC) -g $(JAVACFLAGS) $(RUNTIMEJAVAS)
@@ -194,7 +208,7 @@ lib/org/strategoxt/stratego_aterm/Main.java : $(STRATEGOXT)/share/libstratego-at
 	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_aterm -la stratego-lib -la stratego-gpp -la org.strategoxt.lang.compat.override.stratego_aterm_compat
 
 lib/org/strategoxt/stratego_sdf/Main.java : $(STRATEGOXT)/share/libstratego-sdf.ctree ../trans/strj
-	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/sdf-front -I $(STRATEGOXT)/share/sdf-front -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sdf -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-aterm 
+	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/sdf-front -I $(STRATEGOXT)/share/sdf-front -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_sdf -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-aterm  -la org.strategoxt.pack_sdf_ext_compat
 
 lib/org/strategoxt/stratego_tool_doc/Main.java : $(STRATEGOXT)/share/libstratego-tool-doc.ctree ../trans/strj
 	$(STRJ) -I $(STRATEGOXT)/share -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.stratego_tool_doc -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm -D SRTS_package_bugreport_0_0='"bugs@strategoxt.org"' -D SRTS_package_name_0_0='"<SRTS-package-name>"' -D SRTS_package_revision_0_0='"<SRTS-package-revision>"' -D SRTS_package_version_0_0='"<SRTS-package-version>"'
@@ -237,10 +251,13 @@ runtime/org/strategoxt/lang/compat/override/java_integration/Main.java : runtime
 runtime/org/strategoxt/lang/compat/override/strc_compat/Main.java : runtime/org/strategoxt/lang/compat/override/strc-compat.str ../trans/strj runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree ../trans/strj-version.str
 	$(STRJ) -I $(STRATEGOXT)/share -I $(STRATEGOXT)/share/sdf/stratego-front -I $(STRATEGOXT)/share/xtc -I $(STRATEGOXT)/share/stratego-lib -I $(JAVA_FRONT)/share/java-front -I ../trans -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.lang.compat.override.strc_compat -la stratego-lib -la stratego-xtc -la org.strategoxt.strc -I runtime/org/strategoxt/lang/parallel/stratego_parallel
 
+pack-sdf-ext/lib/org/strategoxt/pack_sdf_ext_compat/Main.java : pack-sdf-ext/lib/org/strategoxt/pack_sdf_ext_compat/pack-sdf-ext-compat.str pack-sdf-ext/syn/SDF-Ext.tbl
+	$(STRJ) -i $< -o $@ $(STRJFLAGS) -p org.strategoxt.pack_sdf_ext_compat -la stratego-lib -la stratego-sglr -la stratego-sdf -I pack-sdf-ext/syn
+
 ###### TOOLS #######
 
-tools/org/strategoxt/tools/Main.java : $(TOOLSTRS:.str=.rtree)
-	$(STRJ) -i tools/org/strategoxt/tools/tools.rtree -o $@ $(STRJFLAGS) -p org.strategoxt.tools -la stratego-lib -la stratego-xtc -la stratego-gpp -la stratego-rtg -la stratego-sglr -la stratego-tool-doc -la stratego-sdf -la stratego-aterm -la strc -I $(STRATEGOXT)/share/sdf/xml-front -I tools/org/strategoxt/tools/lib -I $(STRATEGOXT)/share/sdf/gpp -I $(STRATEGOXT)/share/gpp -I $(STRATEGOXT)/share/sdf/stratego-regular -I $(STRATEGOXT)/share/stratego-regular -I $(STRATEGOXT)/share/sdf/sdf-front
+tools/org/strategoxt/tools/Main.java : $(TOOLSTRS:.str=.rtree) pack-sdf-ext/extension/pack-sdf-ext.rtree
+	$(STRJ) -i tools/org/strategoxt/tools/tools.rtree -o $@ $(STRJFLAGS) -p org.strategoxt.tools -la stratego-lib -la stratego-xtc -la stratego-gpp -la stratego-rtg -la stratego-sglr -la stratego-tool-doc -la stratego-sdf -la stratego-aterm -la strc -I $(STRATEGOXT)/share/sdf/xml-front -I tools/org/strategoxt/tools/lib -I $(STRATEGOXT)/share/sdf/gpp -I $(STRATEGOXT)/share/gpp -I $(STRATEGOXT)/share/sdf/stratego-regular -I $(STRATEGOXT)/share/stratego-regular -I $(STRATEGOXT)/share/sdf/sdf-front -I pack-sdf-ext/extension/
 
 ###### COMPILER #######
 
