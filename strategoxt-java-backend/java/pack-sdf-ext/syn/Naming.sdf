@@ -39,7 +39,7 @@ priorities
     <Symbol-CF> <LAYOUT?-CF> "+"             -> <Symbol-CF>
     }
     >
-    <Symbol-CF> <LAYOUT?-CF> "|" <Symbol-CF> -> <Symbol-CF>
+    <Symbol-CF> <LAYOUT?-CF> "|" <LAYOUT?-CF> <Symbol-CF> -> <Symbol-CF>
     >
     {
      <Namespace-CF> <LAYOUT?-CF> "@=" <LAYOUT?-CF> <Symbol-CF> -> <Symbol-CF>

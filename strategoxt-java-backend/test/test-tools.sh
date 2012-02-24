@@ -12,3 +12,5 @@ if grep -E "@|NAM" sdf-ext/Test-filtered.sdf; then
   echo Illegal output from pack-sdf
   exit 1
 fi
+
+echo 'Success!'

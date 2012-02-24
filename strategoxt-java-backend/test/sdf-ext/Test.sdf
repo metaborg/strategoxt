@@ -7,3 +7,8 @@ context-free syntax
   NAM@X  -> X
   NAM@=X -> X
   @NAM   -> X
+
+lexical syntax
+
+    {ID "/"}+       -> QID
+    {ID ("/"|".")}+ -> QIDWithDots
