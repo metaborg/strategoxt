@@ -1,5 +1,6 @@
 /**
  * @author Martin Bravenboer <martin.bravenboer@gmail.com>
+ * @author Tobi Vollebregt <tobivollebregt@gmail.com>
  */
 module abox2text-tests
 imports
@@ -13,6 +14,10 @@ strategies
       hbox-tests
     ; vbox-tests
     ; fbox-tests
+    ; zbox-tests
+    ; hvbox-tests
+    ; hzbox-tests
+    ; misc-tests
     )
 
 strategies
@@ -52,6 +57,20 @@ strategies
       , V is=2 ["a" "b"]
       , "a\n  b"
       )
+    ; abox2text-test(|"Simple V box in one H box"
+      , H ["pre" V ["a" "b" "c"] "post"]
+      , $[pre a
+              b
+              c post]
+      )
+    ; abox2text-test(|"Two V boxes in one H box"
+      , H hs=0 [V ["aa" "bb" "c"] V["dd" "ee" "ff"]]
+      , $[aa
+          bb
+          cdd
+           ee
+           ff]
+      )
 
   fbox-tests = id
     ; abox2text-test(|"Simple font box"
@@ -59,11 +78,132 @@ strategies
       , "0"
       )
 
+  zbox-tests = id
+    ; abox2text-test(|"Simple Z box without is"
+      , H ["pre" Z ["a" "b" "c"] "post"]
+      , $[pre a
+          b
+          c post]
+      )
+    ; abox2text-test(|"Simple Z box with is"
+      , H ["pre" Z is=2 ["a" "b" "c"] "post"]
+      , $[pre a
+            b
+            c post]
+      )
+    ; abox2text-test(|"Simple Z box with is"
+      , H ["pre" Z is=3 ["a" HV["b" "c"]] "post"]
+      , 5
+      , $[pre a
+             b
+             c post]
+      )
+    ; abox2text-test(|"Simple I box without is"
+      , I ["foo"]
+      , "foo"
+      )
+    ; abox2text-test(|"Simple I box with is"
+      , I is=2 ["foo"]
+      , "  foo"
+      )
+    ; abox2text-test(|"Simple Z box in an I box"
+      // NOTE: Using H to indent, because V is=2 does not indent the first line
+      // NOTE: Start with a dot, because string quotations eat leading whitespace
+      , H hs=0 [". " I [H ["pre" Z ["a" "b" "c"] "post"]]]
+      , $[. pre a
+            b
+            c post]
+      )
+    ; abox2text-test(|"Symmetry?"
+      , H hs=0 [V["aa" "bb" "cc"] Z is=1 ["d" "ee" "ff"]]
+      , $[aa
+          bb
+          ccd
+           ee
+           ff]
+      )
+
+  hvbox-tests = id
+    ; abox2text-test(|"Simple HV box in an H box"
+      , H ["pre" HV ["a" "b" "c"] "post"]
+      , 7
+      , $[pre a b
+              c post]
+      )
+    ; abox2text-test(|"Simple HV box with is"
+      , HV is=2 ["a" "b" "c" "d"]
+      , 3
+      , $[a b
+            c
+            d]
+      )
+    ; abox2text-test(|"Simple HV box with vs"
+      , HV vs=1 ["a" "b" "c" "d"]
+      , 3
+      , $[a b
+
+          c d]
+      )
+
+  hzbox-tests = id
+    ; abox2text-test(|"Simple HZ box in an H box"
+      , H ["pre" HZ ["a" "b" "c"] "post"]
+      , 7
+      , $[pre a b
+          c post]
+      )
+    ; abox2text-test(|"Simple HZ box with is in an H box"
+      , H ["pre" HZ is=2 ["a" "b" "c" "d"] "post"]
+      , 5
+      , $[pre a
+            b c
+            d post]
+      )
+    ; abox2text-test(|"Simple HZ box with vs in an H box"
+      , H ["pre" HZ vs=1 ["a" "b" "c" "d"] "post"]
+      , 5
+      , $[pre a
+
+          b c d post]
+      )
+
+  // Use case for Z box
+  misc-tests = id
+    ; abox2text-test(|"If else"
+      , V [
+          H hs=0 ["if (a) " Z ["{" "}"]]
+          H hs=0 ["else " Z ["{" "}"]]
+        ]
+      , $[if (a) {
+          }
+          else {
+          }]
+      )
+    ; abox2text-test(|"If else if"
+      , V [
+          H hs=0 ["if (a) " Z ["{" "}"]]
+          H hs=0 ["else " Z[
+            H hs=0 ["if (b) " Z ["{" "}"]]
+          ]]
+        ]
+      , $[if (a) {
+          }
+          else if (b) {
+          }]
+      )
+
 strategies
 
   abox2text-test(|msg, box, txt) =
     apply-test(!msg
     , box2text-string(|80)
+    , !box
+    , !txt
+    )
+
+  abox2text-test(|msg, box, width, txt) =
+    apply-test(!msg
+    , box2text-string(|width)
     , !box
     , !txt
     )

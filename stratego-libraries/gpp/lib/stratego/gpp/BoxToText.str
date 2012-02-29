@@ -28,21 +28,22 @@ strategies
    * @todo Dump the exit
    */
   try-abox2text(|pos, width) =
-    let local-abox2text(|pos) =
-          abox2text(local-abox2text | pos, width)
-          <+ log(|Error(), "invalid box: ", <id>)
-             ; <exit> 1
-
-     in local-abox2text(|0)
-    end
+      rules( GppIndent := 0 )
+    ; let local-abox2text(|pos) =
+            abox2text(local-abox2text | pos, width)
+            <+ log(|Error(), "invalid box: ", <id>)
+               ; <exit> 1
+       in local-abox2text(|0)
+      end
     ; Fst
 
   abox2text(| width) =
-    let local-abox2text(|pos) =
-          abox2text(local-abox2text | pos, width)
+      rules( GppIndent := 0 )
+    ; let local-abox2text(|pos) =
+            abox2text(local-abox2text | pos, width)
 
-     in local-abox2text(|0)
-    end
+       in local-abox2text(|0)
+      end
     ; Fst
 
 strategies
@@ -52,8 +53,11 @@ strategies
    */
   abox2text(rec : t * t -> t | xpos, width) =
       abox2text-HV(rec | xpos, width)
+    + abox2text-HZ(rec | xpos, width)
     + abox2text-H(rec | xpos, width)
     + abox2text-V(rec | xpos, width)
+    + abox2text-Z(rec | xpos, width)
+    + abox2text-I(rec | xpos, width)
     + abox2text-A(rec | xpos, width)
     + abox2text-R(rec | xpos, width)
     + abox2text-S(rec | xpos, width)
@@ -76,11 +80,19 @@ strategies
   abox2text-HV(rec : t * t -> t | xpos, width) =
     ?HV(sopt, bs)
 
-    ; <gpp-hs-chars> sopt => hs-chars
+    ; gpp-hv-hz-helper(rec | xpos, width, sopt, bs, xpos)
+
+  abox2text-HZ(rec : t * t -> t | xpos, width) =
+    ?HZ(sopt, bs)
+
+    ; gpp-hv-hz-helper(rec | xpos, width, sopt, bs, <GppIndent>)
+
+  gpp-hv-hz-helper(rec : t * t -> t | xpos, width, sopt, bs, left-margin-xpos) =
+      <gpp-hs-chars> sopt => hs-chars
     ; <implode-string> hs-chars => hs
     ; <gpp-vs-text> sopt => vs
     ; <length> hs-chars => hsl
-    ; <add> (xpos, <gpp-is-length> sopt) => left-xpos
+    ; <add> (left-margin-xpos, <gpp-is-length> sopt) => left-xpos
     ; <filter(gpp-is-real-vbox)> bs
     ; if ?[] then
         !([], xpos)
@@ -94,7 +106,7 @@ strategies
         ; [(id, <subt> (<id>, hsl)) | id]
         ; reverse; map((reverse, id))
         ; map((<separate-by> (hs, <id>), id))
-        ; gpp-format-vbox(|sopt, xpos)
+        ; gpp-format-vbox(|sopt, left-margin-xpos)
       end
 
   /**
@@ -153,13 +165,21 @@ strategies
   abox2text-V(rec : t * t -> t | xpos, width) =
     ?V(sopt, bs)
 
-    ; <add> (xpos, <gpp-is-length> sopt) => left-xpos
+    ; gpp-h-z-helper(rec | xpos, width, sopt, bs, xpos)
+
+  abox2text-Z(rec : t * t -> t | xpos, width) =
+    ?Z(sopt, bs)
+
+    ; gpp-h-z-helper(rec | xpos, width, sopt, bs, <GppIndent>)
+
+  gpp-h-z-helper(rec : t * t -> t | xpos, width, sopt, bs, left-margin-xpos) =
+      <add> (left-margin-xpos, <gpp-is-length> sopt) => left-xpos
     ; <filter(gpp-is-real-vbox)> bs
     ; if ?[] then
         !([], xpos)
       else
         gpp-do-vbox-children(rec | xpos, left-xpos)
-        ; gpp-format-vbox(|sopt, xpos)
+        ; gpp-format-vbox(|sopt, left-margin-xpos)
       end
 
   /**
@@ -167,6 +187,25 @@ strategies
    */
   gpp-do-vbox-children(rec : t * t -> t | xpos, left-xpos) :
     [b | bs] -> [<rec(|xpos)> b | <map(rec(|left-xpos))> bs]
+
+strategies
+
+  /**
+   * `I is=N b' is equivalent to `H hs=N [S(""), b]'
+   *
+   * NOTE: this I box is not context sensitive!
+   * NOTE: this I box takes a single box as argument, not a list of boxes!
+   * NOTE: is=0 is the default
+   */
+  abox2text-I(rec : t * t -> t | xpos, width) =
+    ?I(sopt, b)
+
+    ; {|GppIndent:
+          <add> (xpos, <gpp-is-length> sopt) => left-xpos
+        ; rules( GppIndent := left-xpos )
+        ; <fetch-elem(?SOpt(IS(), <id>)) <+ !"0"> sopt => value
+        ; <rec(|xpos)> H([SOpt(HS(), value)], [S(""), b])
+      |}
 
 strategies
 

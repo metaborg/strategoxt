@@ -68,9 +68,24 @@ exports
 
    exports
       context-free syntax
-         "H" S-OPTION*  "[" BOX* "]"  -> BOX {cons("H")}
-         "V" S-OPTION*  "[" BOX* "]"  -> BOX {cons("V")}
+         "H"  S-OPTION* "[" BOX* "]" -> BOX {cons("H")}
+         "V"  S-OPTION* "[" BOX* "]" -> BOX {cons("V")}
          "HV" S-OPTION* "[" BOX* "]" -> BOX {cons("HV")}
+
+%% Contrary to the \textsf{V} and \textsf{HV} operators, the \textsf{Z}
+%% and \textsf{HZ} operators wrap back to the left margin.
+%% The left margin is the column position set by a preceding \textsf{I}
+%% operator. Apart from this side effect, the \textsf{I} operator is
+%% identical to the \textsf{H} operator with the empty string and the child
+%% box of the \textsf{I} operator as childs, and its \textsf{hs} option
+%% set to the value of the \textsf{is} option of the \textsf{I} operator.
+
+   exports
+     context-free syntax
+
+         "Z"  S-OPTION* "[" BOX* "]" -> BOX {cons("Z")}
+         "HZ" S-OPTION* "[" BOX* "]" -> BOX {cons("HZ")}
+         "I"  S-OPTION* "[" BOX  "]" -> BOX {cons("I")}
 
 %% The \textsf{ALT} operator is used to choose between two alternative BOX
 %% expressions depending on the available width. When its first argument
