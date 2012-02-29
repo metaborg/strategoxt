@@ -13,4 +13,8 @@ if grep -E "@|NAM" sdf-ext/Test-filtered.sdf; then
   exit 1
 fi
 
+if ! grep "cons" sdf-ext/Test-filtered.sdf > /dev/null; then
+  echo Expected 'cons' constructor from pack-sdf
+  exit 1
+fi
 echo 'Success!'

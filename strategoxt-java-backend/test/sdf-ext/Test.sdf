@@ -7,6 +7,7 @@ context-free syntax
   NAM@X  -> X
   NAM@=X -> X
   @NAM   -> X
+  @NAM   -> X {"Cons"}
 
 lexical syntax
 
