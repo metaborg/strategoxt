@@ -22,6 +22,14 @@ imports
   libstratego-lib
   stratego/gpp/Util
 
+// NOTE: bootstrap (libraries are compiled against baseline signature?)
+
+signature
+  constructors
+    I        : List(S-OPTION) * BOX -> BOX
+    HZ       : List(S-OPTION) * List(BOX) -> BOX
+    Z        : List(S-OPTION) * List(BOX) -> BOX
+
 strategies
 
   /**
