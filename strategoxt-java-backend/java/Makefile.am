@@ -155,6 +155,7 @@ new-libs :
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.language/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.java/bin/ .
 	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.xml/bin/ .
+	$(JAR) uf spoofax-libs.jar.tmp -C $(SPOOFAX)/org.spoofax.interpreter.library.interpreter/bin/ .
 	rm -rf spoofax-libs-tmp
 	mv spoofax-libs.jar.tmp spoofax-libs.jar
 
