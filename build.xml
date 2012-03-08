@@ -417,6 +417,7 @@
                 <arg value="-la" /><arg value="stratego-aterm" />
                 <arg value="-la" /><arg value="strc" />
                 <arg value="-I" /><arg value="java-backend/java/tools/org/strategoxt/tools/lib" />
+                <arg value="-I" /><arg value="java-backend/java/pack-sdf-ext/extension" />
                 <arg value="-I" /><arg value="${syntaxstr}" />
                 <arg value="-I" /><arg value="${syntaxsdf}" />
                 <arg value="-I" /><arg value="${syntaxrtg}" />
