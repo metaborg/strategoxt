@@ -497,6 +497,9 @@ rules
   stratego-to-abox : 
    Internal() -> KW ["internal"]
 
+  stratego-to-abox :
+   Override() -> KW ["override"]
+
 rules
 
   stratego-to-abox : 
