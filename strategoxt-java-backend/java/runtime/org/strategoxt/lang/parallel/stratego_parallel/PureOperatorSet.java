@@ -114,7 +114,7 @@ public class PureOperatorSet {
 	}
 	
 	public static void addWhiteListed(String name) {
-		
+		whiteList.add(name);
 	}
 
 }

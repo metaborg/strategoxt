@@ -72,6 +72,10 @@ public class ParallelAll extends SRTS_all {
 		this.isForcedParallel = isForcedParallel;
 	}
 	
+	public boolean isForcedParallel() {
+		return isForcedParallel;
+	}
+	
 	public ParallelJobExecutor getExecutor() {
 		return executor;
 	}

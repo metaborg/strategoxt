@@ -19,6 +19,8 @@ import static org.strategoxt.lang.parallel.stratego_parallel.stratego_parallel.*
  */
 public class ParallelContext extends Context {
 	
+	private final Context innerContext;
+	
 	private final ParallelJob job;
 	
 	private final AtomicBoolean isAborted;
@@ -39,6 +41,7 @@ public class ParallelContext extends Context {
 	 */
 	public ParallelContext(Context context, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
 		super(context.getFactory(), context.getOperatorRegistryMap(), context.getOperatorRegistries(), true);
+		this.innerContext = context;
 		this.job = job;
 		this.isAborted = aborted;
 		this.allowUnordered = allowUnordered;
@@ -46,6 +49,10 @@ public class ParallelContext extends Context {
 	
 	void setLastSynchronousOperation(AtomicReference<String> value) {
 		this.lastSynchronousOperation = value;
+	}
+	
+	public Context getInnerContext() {
+		return innerContext;
 	}
 	
 	/* UNDONE: expensive according to profiler
@@ -69,27 +76,32 @@ public class ParallelContext extends Context {
 		
 		String name = primitive.getName();
 		
-		if (!DIAGNOSE_SYNCHRONOUS_OPERATIONS && job.isFocusJob())
-			return super.invokePrimitive(primitive, term, args, targs);
-		
-		if (PureOperatorSet.isWhiteListed(name))
-			return super.invokePrimitive(primitive, term, args, targs);
-		
-		if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
-			if (lastSynchronousOperation.get() == null)
-				lastSynchronousOperation.set(name);
-		}
-		
-		if (allowUnordered) {
-			synchronized (ParallelAll.instance.getExecutor()) {
+		// protect access to IContext.getCurrent(), used by primitives
+		synchronized (ParallelAll.instance.getExecutor()) {
+			if (!DIAGNOSE_SYNCHRONOUS_OPERATIONS && job.isFocusJob())
 				return super.invokePrimitive(primitive, term, args, targs);
+			
+			if (PureOperatorSet.isWhiteListed(name))
+				return super.invokePrimitive(primitive, term, args, targs);
+			
+			if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
+				if (lastSynchronousOperation.get() == null)
+					lastSynchronousOperation.set(name);
+			}
+			
+			if (allowUnordered) {
+				synchronized (ParallelAll.instance.getExecutor()) {
+					return super.invokePrimitive(primitive, term, args, targs);
+				}
 			}
 		}
-		
+			
 		// If all else fails, perform any "black-listed" operations in an ordered fashion
 		waitForFocus();
 		
-		return super.invokePrimitive(primitive, term, args, targs);
+		synchronized (ParallelAll.instance.getExecutor()) {
+			return super.invokePrimitive(primitive, term, args, targs);
+		}
 	}
 	
 	public final ParallelJob getJob() {
