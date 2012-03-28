@@ -395,8 +395,6 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	}
 
 	public static Context getCompiledContext(IContext context) {
-		if (context instanceof ParallelContext)
-			context = ((ParallelContext) context).getInnerContext();
 		return ((HybridContext) context).getCompiledContext();
 	}
 
