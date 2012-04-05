@@ -51,7 +51,7 @@ public class ParallelAll extends SRTS_all {
 		// TODO: The focus thread could actually start more jobs, given a priority job queue
 		// TODO: Only trigger invokeParallel if synchronous execution takes longer than a certain threshold
 		if (ENABLED && (ALLOW_NESTED_JOBS || !stratego_parallel.isActive())
-				&& (isForcedParallel || isCandidateTerm(context, current))) {
+				&& (isForcedParallel /*|| isCandidateTerm(context, current)*/)) {
 			
 			isForcedParallel = false;
 			context.push("<parallel>");
@@ -82,6 +82,8 @@ public class ParallelAll extends SRTS_all {
 
 	public IStrategoTerm invokeParallel(final Context context, final IStrategoTerm current, final Strategy s) {
 		final IStrategoTerm[] inputs = current.getAllSubterms();
+		if(inputs.length == 0)
+			return context.getFactory().makeList();
 		final IStrategoTerm[] outputs = new IStrategoTerm[inputs.length];
 		final AtomicInteger focusIndex = new AtomicInteger(0); // index of the job with side effects
 		final AtomicBoolean isAborted = new AtomicBoolean(false);

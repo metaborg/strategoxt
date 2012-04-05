@@ -1,9 +1,13 @@
 package org.strategoxt.lang.parallel.stratego_parallel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.spoofax.interpreter.library.AbstractPrimitive;
+import org.spoofax.interpreter.library.IOperatorRegistry;
+import org.spoofax.interpreter.library.ssl.SSLLibrary;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
@@ -40,11 +44,16 @@ public class ParallelContext extends Context {
 	 *            non-whitelisted ones.
 	 */
 	public ParallelContext(Context context, ParallelJob job, AtomicBoolean aborted, boolean allowUnordered) {
-		super(context.getFactory(), context.getOperatorRegistryMap(), context.getOperatorRegistries(), true);
+		super(context.getFactory(), new HashMap<String, IOperatorRegistry>(context.getOperatorRegistryMap()), 
+				new ArrayList<IOperatorRegistry>(context.getOperatorRegistries()), true);
 		this.innerContext = context;
 		this.job = job;
 		this.isAborted = aborted;
 		this.allowUnordered = allowUnordered;
+		
+		SSLLibrary lib = new SSLLibrary();
+		lib.setIOAgent(context.getIOAgent());
+		addOperatorRegistry(lib);
 	}
 	
 	void setLastSynchronousOperation(AtomicReference<String> value) {
