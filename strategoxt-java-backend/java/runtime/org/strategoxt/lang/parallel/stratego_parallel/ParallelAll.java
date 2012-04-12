@@ -86,6 +86,7 @@ public class ParallelAll extends SRTS_all {
 			return context.getFactory().makeList();
 		final IStrategoTerm[] outputs = new IStrategoTerm[inputs.length];
 		final AtomicInteger focusIndex = new AtomicInteger(0); // index of the job with side effects
+		final AtomicInteger jobsCompleted = new AtomicInteger(0);
 		final AtomicBoolean isAborted = new AtomicBoolean(false);
 		final AtomicReference<String> lastSynchronousOperation = DIAGNOSE_SYNCHRONOUS_OPERATIONS ? new AtomicReference<String>() : null;
 		final AtomicReference<Throwable> lastException = new AtomicReference<Throwable>();
@@ -107,15 +108,18 @@ public class ParallelAll extends SRTS_all {
 		try {
 			double jobLengthPrecise = (double) inputs.length / (executor.getMaximumPoolSize() + 1) * jobLengthMultiplier;
 			int jobLength = 1 + (int) jobLengthPrecise;
+			int numJobs = (int)Math.ceil((double)inputs.length / (double)jobLength);
 			
 			if (VERBOSE)
-				System.out.print("<" + inputs.length / jobLength);
+				System.out.print("<" + numJobs);
 			
 			// Initialize job queue
 			for (int i = 0; i < inputs.length; i += jobLength) {
 				final int index = i;
-				ParallelJob job = new ParallelJob(context, s, inputs, outputs, focusIndex, isAborted, lastSynchronousOperation, lastException, allowUnordered, index, jobLength, parallelismLevel.get());
-				
+				ParallelJob job = new ParallelJob(context, s, inputs, outputs, focusIndex, isAborted, 
+						lastSynchronousOperation, lastException, allowUnordered, index, jobLength, 
+						parallelismLevel.get(), jobsCompleted);
+
 				if (DEFAULT_MAX_THREADS == 1) {
 					job.run();
 				} else if (firstJob == null) {
@@ -129,6 +133,11 @@ public class ParallelAll extends SRTS_all {
 				firstJob.run();
 				executor.join();
 				firstJob.waitForCompletedFocusIndex();
+				
+				synchronized(jobsCompleted) {
+					while(jobsCompleted.get() != numJobs)
+						jobsCompleted.wait();
+				}
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

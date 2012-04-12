@@ -42,6 +42,8 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 	
 	private final int parallelismLevel;
 	
+	private final AtomicInteger jobsCompleted;
+	
 	private boolean isFocusJob;
 	
 	/**
@@ -58,7 +60,7 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 			AtomicBoolean isAborted,
 			AtomicReference<String> lastSynchronousOperation,
 			AtomicReference<Throwable> lastException, boolean allowUnordered,
-			int startIndex, int jobLength, int parallelismLevel) {
+			int startIndex, int jobLength, int parallelismLevel, AtomicInteger jobsCompleted) {
 		
 		// TODO: put fields shared accross jobs in a separate configuration object?
 		this.parentContext = parentContext;
@@ -74,6 +76,7 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 		this.startIndex = startIndex;
 		this.jobLength = jobLength;
 		this.parallelismLevel = parallelismLevel;
+		this.jobsCompleted = jobsCompleted;
 	}
 
 	public final void run() {
@@ -92,6 +95,11 @@ public class ParallelJob implements Runnable, Comparable<ParallelJob> {
 			System.out.print('!');
 		
 		updateFocusIndex();
+		
+		synchronized(jobsCompleted) {
+			jobsCompleted.incrementAndGet();
+			jobsCompleted.notifyAll();
+		}
 		
 		if (ADJUST_FOCUS_THREAD_PRIORITY) {
 			Thread thread = Thread.currentThread();

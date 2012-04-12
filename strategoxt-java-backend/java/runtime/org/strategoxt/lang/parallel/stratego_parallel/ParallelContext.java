@@ -87,20 +87,22 @@ public class ParallelContext extends Context {
 		
 		// protect access to IContext.getCurrent(), used by primitives
 		synchronized (ParallelAll.instance.getExecutor()) {
-			if (!DIAGNOSE_SYNCHRONOUS_OPERATIONS && job.isFocusJob())
-				return super.invokePrimitive(primitive, term, args, targs);
-			
-			if (PureOperatorSet.isWhiteListed(name))
-				return super.invokePrimitive(primitive, term, args, targs);
-			
-			if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
-				if (lastSynchronousOperation.get() == null)
-					lastSynchronousOperation.set(name);
-			}
-			
-			if (allowUnordered) {
-				synchronized (ParallelAll.instance.getExecutor()) {
+			synchronized(ParallelContext.class) {
+				if (!DIAGNOSE_SYNCHRONOUS_OPERATIONS && job.isFocusJob())
 					return super.invokePrimitive(primitive, term, args, targs);
+				
+				if (PureOperatorSet.isWhiteListed(name))
+					return super.invokePrimitive(primitive, term, args, targs);
+				
+				if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
+					if (lastSynchronousOperation.get() == null)
+						lastSynchronousOperation.set(name);
+				}
+				
+				if (allowUnordered) {
+					synchronized (ParallelAll.instance.getExecutor()) {
+						return super.invokePrimitive(primitive, term, args, targs);
+					}
 				}
 			}
 		}

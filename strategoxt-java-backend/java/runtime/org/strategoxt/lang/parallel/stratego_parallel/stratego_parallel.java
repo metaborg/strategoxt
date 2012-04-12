@@ -10,7 +10,7 @@ public class stratego_parallel {
 	
 	protected static final boolean ENABLED = true;
 	
-	protected static final boolean VERBOSE = true;
+	protected static final boolean VERBOSE = false;
 	
 	protected static final boolean DIAGNOSE_SYNCHRONOUS_OPERATIONS = false;
 	
