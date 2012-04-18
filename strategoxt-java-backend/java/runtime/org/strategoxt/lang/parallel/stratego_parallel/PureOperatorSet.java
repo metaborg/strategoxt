@@ -48,6 +48,25 @@ public class PureOperatorSet {
 		add("JSGLR_open_parsetable");
 		add("SSL_dynamic_rules_hashtable");
 		add("SSL_table_hashtable");
+		
+		// Index
+		add("LANG_index_add");
+		add("LANG_index_clear_all");
+		add("LANG_index_clear_file");
+		//add("LANG_index_commit");
+		add("LANG_index_end_transaction");
+		add("LANG_index_get_all_files");
+		add("LANG_index_get_all_in_file");
+		add("LANG_index_get_children");
+		add("LANG_index_current_file");
+		add("LANG_index_descendants");
+		add("LANG_index_get_file_revision");
+		add("LANG_index_get_files_newer_than");
+		add("LANG_index_get_files_of");
+		add("LANG_index_get");
+		add("LANG_index_remove");
+		add("LANG_index_setup");
+		add("LANG_index_start_transaction");
 
 		// Collection "read" primitives
 		add("SSL_hashtable_get");

@@ -35,7 +35,7 @@ public class InteropContext implements IContext {
 
 	private final Context context;
 
-	private IStrategoTerm current;
+	private ThreadLocal<IStrategoTerm> current = new ThreadLocal<IStrategoTerm>();
 
 	private final Set<IStrategoConstructor> constructors = new HashSet<IStrategoConstructor>();
 
@@ -52,11 +52,11 @@ public class InteropContext implements IContext {
 	}
 
 	public IStrategoTerm current() {
-		return current;
+		return current.get();
 	}
 
 	public void setCurrent(IStrategoTerm value) {
-		current = value;
+		current.set(value);
 	}
 
 	public ITermFactory getFactory() {

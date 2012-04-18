@@ -84,29 +84,24 @@ public class ParallelContext extends Context {
 			throw new ParallelJobAbortedException();
 		
 		String name = primitive.getName();
+	
+		if (!DIAGNOSE_SYNCHRONOUS_OPERATIONS && job.isFocusJob())
+			return super.invokePrimitive(primitive, term, args, targs);
 		
-		// protect access to IContext.getCurrent(), used by primitives
-		synchronized (ParallelAll.instance.getExecutor()) {
+		if (PureOperatorSet.isWhiteListed(name))
+			return super.invokePrimitive(primitive, term, args, targs);
+		
+		if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
+			if (lastSynchronousOperation.get() == null)
+				lastSynchronousOperation.set(name);
+		}
+		
+		if (allowUnordered) {
 			synchronized(ParallelContext.class) {
-				if (!DIAGNOSE_SYNCHRONOUS_OPERATIONS && job.isFocusJob())
-					return super.invokePrimitive(primitive, term, args, targs);
-				
-				if (PureOperatorSet.isWhiteListed(name))
-					return super.invokePrimitive(primitive, term, args, targs);
-				
-				if (DIAGNOSE_SYNCHRONOUS_OPERATIONS) {
-					if (lastSynchronousOperation.get() == null)
-						lastSynchronousOperation.set(name);
-				}
-				
-				if (allowUnordered) {
-					synchronized (ParallelAll.instance.getExecutor()) {
-						return super.invokePrimitive(primitive, term, args, targs);
-					}
-				}
+				return super.invokePrimitive(primitive, term, args, targs);
 			}
 		}
-			
+
 		// If all else fails, perform any "black-listed" operations in an ordered fashion
 		waitForFocus();
 		
