@@ -1,0 +1,21 @@
+module nbl/lookup
+
+imports
+	
+	nbl/collect
+	nbl/utils
+	
+rules
+
+	nbl-lookup(|defs) = 
+		nbl-lookup-local(|defs) <+ 
+		[id|Tl]; nbl-lookup(|defs)
+	
+	nbl-lookup-local(|defs): [(ns, name)|path] -> Use(def-path)
+	where
+		vdebug(!"lookup ");
+		Def(def-path) := <fetch-elem(where(nbl-match(|ns, name, path)))> defs;
+		vdebug(!"result ")		
+		
+	nbl-match(|ns, name, path) = ?Def([(ns, name)|path]) + ?Def([(ns, name, _)|path])
+	

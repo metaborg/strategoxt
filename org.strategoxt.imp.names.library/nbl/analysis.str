@@ -1,0 +1,19 @@
+module nbl/analysis
+
+imports
+	
+	nbl/collect
+	nbl/tasks
+	
+strategies
+	
+	nbl-analyse:
+		ast -> (ast'', defs, uses, err)
+		where
+			(ast', coll)        := <nbl-collect>; 
+			(tasks, defs)       := <split-tasks> coll;
+			tasks'              := <merge-tasks> tasks;
+			(err, uses, nr-map) := <perform-tasks(|defs)> (tasks', [], []);
+			ast''               := <distribute-results(|nr-map)> ast'
+			
+	

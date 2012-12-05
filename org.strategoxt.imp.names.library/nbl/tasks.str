@@ -1,0 +1,67 @@
+	module nbl/tasks
+
+imports 
+	
+	nbl/utils
+	nbl/lookup
+		
+signature
+
+	sorts
+	
+		Task Result Instruction
+	
+	constructors
+		
+		Task  : String * Instruction -> Task
+		Result: String         			-> Result
+	
+		Resolve  : List(Segment) * List(Prop) * ListImport() -> Instruction
+		PropCalc : Property * Term                           -> Instruction
+		PropMatch: Property * Term                           -> Instruction
+		Done     : Term                                      -> Instruction
+
+rules
+	
+	new-task(tasks'|tasks):
+		 instruction -> Result(name)
+		 where
+		 	name := <newname> "";
+			match(tasks'|[Task([name], instruction)|tasks])
+			
+	merge-tasks =
+		   [] 
+		<+ ?[Task(names, instr)|<fetch(Task(!(names, <id>); conc, ?instr)); merge-tasks>]
+		<+ [id|merge-tasks]
+	
+	perform-tasks(|defs):
+		(tasks, results, nr-map) -> <try(perform-tasks(|defs))> (tasks', [result|results], <conc> (nr-map, nr-map'))
+		where
+			(ts1, t, ts2)             := <split-fetch-keep(Task(id, perform-task(|defs)))> tasks;
+			Task(names, Done(result)) := t;
+			nr-map'                   := <map(!(<id>, result))> names;
+			tasks'                    := <conc; distribute-results(|nr-map')> (ts1, ts2)
+			
+rules
+	
+	perform-task(|defs): Resolve(path, [], []) -> Done(<nbl-lookup(|defs)> path)
+
+rules
+	
+	split-tasks =
+		partition(?Task(_, _))
+		
+	split-results = 
+		partition(task-result; unzip; (concat, id))
+	
+	task-result: Task(names, Done(result)) -> (<map(!(<id>, result))> names, result)
+	
+	distribute-results(|results) = 
+		alltd(insert-result(|results))
+	
+	insert-result(|results) = 
+		has-annos; 
+		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
+		set-annos
+	
+	insert-result(|results): Result(n) -> <lookup> (n, results)

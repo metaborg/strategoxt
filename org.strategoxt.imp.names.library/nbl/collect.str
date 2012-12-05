@@ -1,0 +1,165 @@
+module nbl/collect
+
+imports
+	
+	nbl/tasks
+	nbl/utils
+	
+signature 
+
+	sorts
+	
+		Unique Import DefScope RefScope
+
+	constructors
+	
+	Unique     : Unique
+	NonUnique  : Unique
+	
+	Single     : Namespace * Name -> Import
+	All        : Namespace        -> Import
+	Imported   : Namespace        -> Import
+	
+	
+	Current    :            DefScope
+	Subsequent :            DefScope
+	DefScope   : Unknown -> DefScope
+
+	Candidate  : Namespace * List(Property) * RefScope * List(Import) -> Use
+	
+	Current    :                                                 RefScope
+	Surrounding:                                                 RefScope
+	Context    : String * Namespace * ListProperty * RefScope -> RefScope
+
+	Def        : List(Segment)                    -> Def
+	Use        : List(Segment)                    -> Use
+	Prop       : List(Segment) * Property * Value -> Prop
+	
+strategies // generic traversal
+	
+	nbl-collect = 
+		nbl-collect(id, ?tasks|[]); 
+		!(<id>, tasks)
+	
+	nbl-collect(spaths, tasks|paths) =
+		vdebug(!"analyse def ");
+		nbl-def-collect(?cpaths, spaths, ?task1*|paths);
+		vdebug(!"visit children ");
+		preserve-annos(id#(nbl-siblings(?task2*|cpaths)));
+		vdebug(!"analyse use ");
+		nbl-use-collect(?task3*|paths);
+		vdebug(!"analyse prop ");
+		nbl-prop-collect(?task4*|paths);
+		match(tasks|[task1*, task2*, task3*, task4*]);
+		vdebug(!"done ")
+	
+	nbl-siblings(tasks|paths) = 
+		[]; match(tasks|[])
+	
+	nbl-siblings(tasks|paths) =
+		[nbl-collect(?spaths, ?task1*|paths)|nbl-siblings(?task2*|spaths)];
+		match(tasks|[task1*, task2*]) 
+
+rules // generic analysis of defs
+	
+	nbl-def-collect(cpaths, spaths, tasks|paths) =
+		nbl-def-site(cpaths, spaths, tasks|paths) <+ 
+		(
+			match(cpaths|paths);
+			match(spaths|paths);
+			match(tasks|[])
+		)
+		
+	// interface to specific analysis
+	nbl-def-site(cpaths, spaths, tasks|paths) = fail
+	
+	// call back to generic analysis
+	nbl-def(cpaths, spaths, tasks|paths, ns, unique, defscope, scoped):
+		name{anno*} -> name{d,anno*}
+		where
+			defscope := [Current()];
+			path     := [(ns, name, unique)|<lookup <+ ![]> (ns, paths)];
+			d        := Def(path);
+		  match(spaths|paths);
+			match(cpaths|<replace-scope-paths(|path)> (scoped, paths));
+			match(tasks|[d])
+			
+	nbl-def(cpaths, spaths, tasks|paths, ns, unique, defscope, scoped):
+		name{anno*} -> name{d, anno*}
+		where
+			defscope:= [Subsequent()];
+			segment := Subsequent();
+			path    := [(ns, name, unique), segment|<lookup <+ ![]> (ns, paths)];
+			d       := Def(path);
+			match(spaths|<extend-scope-paths(|segment)> ([ns], paths));
+		  match(cpaths|paths);
+			match(tasks|[d])
+	
+	// call back for generic analysis of anonymous scopes
+	nbl-anonymous-scope(cpaths, spaths, tasks|nss, paths) =
+		match(spaths|paths);
+		match(cpaths|<extend-scope-paths(|Unique())> (nss, paths));
+	  match(tasks |[])
+		
+rules // generic analysis of uses
+	
+	nbl-use-collect(tasks|paths) =
+		nbl-use-site(tasks|paths) <+ 
+		match(tasks|[])
+	
+	// interface to specific analysis
+	nbl-use-site(tasks|paths) = fail
+	
+	// call back to generic analysis
+	nbl-use(tasks|paths, candidates):
+		name -> name'
+		where
+			(name', task*) := <foldl(nbl-use-candidate(|paths))> (candidates, (name, []));
+			match(tasks|task*)
+		
+	nbl-use-candidate(|paths):
+		(Candidate(ns, props, Current(), imports), (name{anno*}, tasks)) -> (name{task, anno*}, tasks')
+		where
+			path  := [(ns, name{}) | <lookup <+ ![]> (ns, paths)];
+		  task  := <new-task(?tasks'|tasks)> Resolve(path, props, imports)
+	
+	nbl-use-candidate(|paths):
+		(Candidate(ns, props, Context(name', ns', props', refscope'), imports), (name{anno*}, tasks)) -> (name{task, anno*}, tasks'')
+		where		
+			(name'{subtask}, tasks') := <nbl-use-candidate(|paths)> (Candidate(ns', props', refscope', []), (name'{}, tasks));
+			path                     := [(ns, name{}), subtask];
+			task                     := <new-task(?tasks''|tasks')> Resolve(path, props, imports)
+				
+rules // generic analysis of properties
+			
+	nbl-prop-collect(tasks|paths) =
+		nbl-prop-site(tasks|paths) <+ 
+		match(tasks|[])
+	
+	// interface to specific analysis
+	nbl-prop-site(tasks|paths) = fail
+	
+	// call back to generic analysis
+	nbl-props(tasks|prop*) =
+		?name{Def(def-path)};
+		match(tasks|<map(try(extend-prop(|def-path)))> prop*)
+		
+	extend-prop(|def-path):
+		Prop((ns, name), prop, val) -> Prop(def-path, prop, val)
+		where
+			<Hd> def-path;
+			(
+				?(ns, name) +
+				?(ns, name, _)
+			)
+			
+rules // helpers
+	
+	replace-scope-paths(|path)	 = foldl(update-scope-paths(!path))
+	extend-scope-paths(|segment) = foldl(update-scope-paths(![segment|<id>]))
+	
+	update-scope-paths(update):
+		(key, paths) -> result
+		where
+			result := <fetch((?key, update))> paths <+ 
+			result := [(key, <update> [])|paths]

@@ -1,0 +1,8 @@
+module nbl/utils
+
+rules 
+	
+	match(m|val) = where (!val; m)
+	
+	vdebug(s) = where(verbose < debug(s) + id)
+	verbose   = fail
