@@ -35,13 +35,19 @@ rules
 		<+ [id|merge-tasks]
 	
 	perform-tasks(|defs):
-		(tasks, results, nr-map) -> <try(perform-tasks(|defs))> (tasks', [result|results], <conc> (nr-map, nr-map'))
-		where
-			(ts1, t, ts2)             := <split-fetch-keep(Task(id, perform-task(|defs)))> tasks;
-			Task(names, Done(result)) := t;
-			nr-map'                   := <map(!(<id>, result))> names;
-			tasks'                    := <conc; distribute-results(|nr-map')> (ts1, ts2)
-			
+		(tasks, results, nr-map) -> result
+		with
+			if 
+				(ts1, t, ts2) := <split-fetch-keep(Task(id, perform-task(|defs)))> tasks 
+			then
+			  Task(names, Done(tr)) := t;
+				nr-map'                   := <map(!(<id>, tr))> names;
+				tasks'                    := <conc; distribute-results(|nr-map')> (ts1, ts2);
+				result := <perform-tasks(|defs)> (tasks', [tr|results], <conc> (nr-map, nr-map'))
+			else
+				result := (tasks, results, nr-map) 
+			end
+				
 rules
 	
 	perform-task(|defs): Resolve(path, [], []) -> Done(<nbl-lookup(|defs)> path)
