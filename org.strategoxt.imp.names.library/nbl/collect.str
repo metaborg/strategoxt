@@ -2,7 +2,6 @@ module nbl/collect
 
 imports
 	
-	lib/editor-common.generated
 	nbl/tasks
 	nbl/utils
 	
