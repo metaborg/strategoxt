@@ -23,11 +23,16 @@ signature
 
 rules
 	
+	new-task:
+		instruction -> (Result(name), Task([name], instruction))
+		where
+			name := <newname> ""
+			
 	new-task(tasks'|tasks):
-		 instruction -> Result(name)
+		 instruction -> result
 		 where
-		 	name := <newname> "";
-			match(tasks'|[Task([name], instruction)|tasks])
+		 	new-task => (result, task);
+			match(tasks'|[task|tasks])
 			
 	merge-tasks =
 		   [] 
