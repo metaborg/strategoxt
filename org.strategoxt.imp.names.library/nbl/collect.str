@@ -2,6 +2,7 @@ module nbl/collect
 
 imports
 	
+	lib/editor-common.generated
 	nbl/tasks
 	nbl/utils
 	
@@ -75,22 +76,22 @@ rules // generic analysis of defs
 	
 	// call back to generic analysis
 	nbl-def(cpaths, spaths, tasks|paths, ns, unique, defscope, scoped):
-		name{anno*} -> name{d,anno*}
+		a@name{anno*} -> name{d,anno*}
 		where
 			defscope := [Current()];
 			path     := [(ns, name, unique)|<lookup <+ ![]> (ns, paths)];
-			d        := Def(path);
+			d        := <force-origins(!Def(path))> a;
 		  match(spaths|paths);
 			match(cpaths|<replace-scope-paths(|path)> (scoped, paths));
 			match(tasks|[d])
 			
 	nbl-def(cpaths, spaths, tasks|paths, ns, unique, defscope, scoped):
-		name{anno*} -> name{d, anno*}
+		a@name{anno*} -> name{d, anno*}
 		where
 			defscope:= [Subsequent()];
 			segment := Subsequent();
 			path    := [(ns, name, unique), segment|<lookup <+ ![]> (ns, paths)];
-			d       := Def(path);
+			d       := <force-origins(!Def(path))> a;
 			match(spaths|<extend-scope-paths(|segment)> ([ns], paths));
 		  match(cpaths|paths);
 			match(tasks|[d])
