@@ -45,7 +45,7 @@ strategies // generic traversal
 		vdebug(!"analyse def ");
 		nbl-def-collect(?cpaths, spaths, ?task1*|paths);
 		vdebug(!"visit children ");
-		preserve-annos(id#(nbl-siblings(?task2*|cpaths)));
+		preserve-annos(force-origins(id#(nbl-siblings(?task2*|cpaths))));
 		vdebug(!"analyse use ");
 		nbl-use-collect(?task3*|paths);
 		vdebug(!"analyse prop ");
@@ -163,3 +163,6 @@ rules // helpers
 		where
 			result := <fetch((?key, update))> paths <+ 
 			result := [(key, <update> [])|paths]
+			
+	force-origins(s) =
+    ![<id>]; all(s); ?[<id>]
