@@ -27,9 +27,9 @@ signature
 
 	Candidate  : Namespace * List(Property) * RefScope * List(Import) -> Use
 	
-	Current    :                                                 RefScope
-	Surrounding:                                                 RefScope
-	Context    : String * Namespace * ListProperty * RefScope -> RefScope
+	Current    :                                     							 RefScope
+	Surrounding:                                  	 							 RefScope
+	Context    : String * Namespace * List(Property) * RefScope	-> RefScope
 
 	Def        : List(Segment)                    -> Def
 	Use        : List(Segment)                    -> Use
@@ -124,12 +124,11 @@ rules // generic analysis of uses
 		  task  := <new-task(?tasks'|tasks)> Resolve(path, props, imports)
 	
 	nbl-use-candidate(|paths):
-		(Candidate(ns, props, Context(name', ns', props', refscope'), imports), (name{anno*}, tasks)) -> (name{task, anno*}, tasks'')
-		where		
-			(name'{subtask}, tasks') := <nbl-use-candidate(|paths)> (Candidate(ns', props', refscope', []), (name'{}, tasks));
-			path                     := [(ns, name{}), subtask];
-			task                     := <new-task(?tasks''|tasks')> Resolve(path, props, imports)
-				
+		(Candidate(ns, props, Context(name', ns', props', refscope'), imports), (name{anno*}, tasks)) -> (name{result, anno*}, [task|tasks'])
+		where	
+			(_{tempresult}, tasks') := <nbl-use-candidate(|paths)> (Candidate(ns', props', refscope', []), (name'{}, tasks));
+			(result, task)	:= <new-task> Resolve((ns, name{}), tempresult, props, imports)
+
 rules // generic analysis of properties
 			
 	nbl-prop-collect(tasks|paths) =
@@ -142,15 +141,16 @@ rules // generic analysis of properties
 	// call back to generic analysis
 	nbl-props(tasks|prop*) =
 		?name{Def(def-path)};
-		match(tasks|<map(try(extend-prop(|def-path)))> prop*)
+		match(tasks|<map(extend-prop(|def-path))> prop*)
 		
 	extend-prop(|def-path):
 		Prop((ns, name), prop, val) -> Prop(def-path, prop, val)
 		where
+			name':= name{};
 			<Hd> def-path;
 			(
-				?(ns, name) +
-				?(ns, name, _)
+				?(ns, name') +
+				?(ns, name', _)
 			)
 			
 rules // helpers

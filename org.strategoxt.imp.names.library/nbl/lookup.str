@@ -7,15 +7,25 @@ imports
 	
 rules
 
-	nbl-lookup(|defs) = 
-		nbl-lookup-local(|defs) <+ 
-		[id|Tl]; nbl-lookup(|defs)
+	nbl-lookup(|elems) = 
+		?[(_, <nbl-uri>)|_] <+
+		nbl-lookup-local(|elems) <+ 
+		[id|Tl]; nbl-lookup(|elems)
 	
-	nbl-lookup-local(|defs): [(ns, name)|path] -> Use(def-path)
+	nbl-lookup-local(|elems): [(ns, name)|path] -> Use(def-path)
 	where
 		vdebug(!"lookup ");
-		Def(def-path) := <fetch-elem(where(nbl-match(|ns, name, path)))> defs;
+		Def(def-path) := <fetch-elem(where(nbl-match(|ns, name, path)))> elems;
 		vdebug(!"result ")		
 		
 	nbl-match(|ns, name, path) = ?Def([(ns, name)|path]) + ?Def([(ns, name, _)|path])
+	
+rules
+	
+	nbl-lookup-property(|elems): (kind, name) -> <fetch-elem(?Prop(name', kind, <id>))> elems where name' := <nbl-uri> name
+		
+	nbl-uri = 
+		?Def(<id>) +
+		?Use(<id>) +
+		(get-annos; fetch-elem(nbl-uri))
 	

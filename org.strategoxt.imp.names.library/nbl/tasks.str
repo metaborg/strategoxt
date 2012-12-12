@@ -2,9 +2,8 @@
 
 imports 
 	
-	nbl/utils
-	nbl/lookup
-		
+	nbl/-
+	
 signature
 
 	sorts
@@ -16,10 +15,11 @@ signature
 		Task  : String * Instruction -> Task
 		Result: String         			-> Result
 	
-		Resolve  : List(Segment) * List(Prop) * ListImport() -> Instruction
-		PropCalc : Property * Term                           -> Instruction
-		PropMatch: Property * Term                           -> Instruction
-		Done     : Term                                      -> Instruction
+		Resolve  : List(Segment) * List(Prop) * ListImport()	-> Instruction
+		Resolve  : Segment * Term * List(Prop) * ListImport() -> Instruction
+		PropCalc : Property * Term                          	-> Instruction
+		Match		 : ID * Term			                          	-> Instruction
+		Done     : Term                                   		-> Instruction
 
 rules
 	
@@ -29,9 +29,9 @@ rules
 			name := <newname> ""
 			
 	new-task(tasks'|tasks):
-		 instruction -> result
-		 where
-		 	new-task => (result, task);
+		instruction -> result
+		where
+			new-task => (result, task);
 			match(tasks'|[task|tasks])
 			
 	merge-tasks =
@@ -39,24 +39,38 @@ rules
 		<+ ?[Task(names, instr)|<fetch(Task(!(names, <id>); conc, ?instr)); merge-tasks>]
 		<+ [id|merge-tasks]
 	
-	perform-tasks(|defs):
-		(tasks, results, nr-map) -> result
+	perform-tasks:
+		(tasks, elems) -> (tasks'', elems'')
 		with
 			if 
-				(ts1, t, ts2) := <split-fetch-keep(Task(id, perform-task(|defs)))> tasks 
+				(ts1, t, ts2) := <split-fetch-keep(Task(id, vperform-task(|elems)))> tasks 
 			then
 			  Task(names, Done(tr)) := t;
-				nr-map'                   := <map(!(<id>, tr))> names;
-				tasks'                    := <conc; distribute-results(|nr-map')> (ts1, ts2);
-				result := <perform-tasks(|defs)> (tasks', [tr|results], <conc> (nr-map, nr-map'))
+				nr-map                := <map(!(<id>, tr))> names;
+				tasks'                := <conc; distribute-results(|nr-map)> (ts1, ts2);
+				elems'                := <map(!Task(<id>, tr))> names;
+				(tasks'', elems'')    := <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 			else
-				result := (tasks, results, nr-map) 
+				tasks'' := tasks;
+				elems'' := elems
 			end
 				
 rules
 	
-	perform-task(|defs): Resolve(path, [], []) -> Done(<nbl-lookup(|defs)> path)
+	vperform-task(|elems) = 
+		debug(!"try "); perform-task(|elems); debug(!"solved ")
+	
+	perform-task(|elems): Resolve(path, [], []) 		-> Done(<nbl-lookup(|elems)> path)
+	perform-task(|elems): Resolve(s, path, [], []) 	-> <perform-task(|elems)> Resolve([s|path], [], []) where <is-list> path
+	perform-task(|elems): PropCalc(prop, term) 			-> Done(<calc-property(|elems)> (prop, term))
+	perform-task(|elems): Match(key, term) 					-> Done(<match-term> (key, term))
+	
+rules
 
+	calc-property(|elems) = nbl-lookup-property(|elems)
+	
+	match-term = fail
+	
 rules
 	
 	split-tasks =
@@ -70,9 +84,10 @@ rules
 	distribute-results(|results) = 
 		alltd(insert-result(|results))
 	
+	insert-result(|results): Result(n) -> <lookup> (n, results)
+
 	insert-result(|results) = 
 		has-annos; 
 		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
 		set-annos
-	
-	insert-result(|results): Result(n) -> <lookup> (n, results)
+		

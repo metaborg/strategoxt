@@ -8,12 +8,11 @@ imports
 strategies
 	
 	nbl-analyse:
-		ast -> (ast'', defs, uses, err)
+		ast -> (ast', elems', errs)
 		where
-			(ast', coll)        := <nbl-collect>; 
-			(tasks, defs)       := <split-tasks> coll;
-			tasks'              := <merge-tasks> tasks;
-			(err, uses, nr-map) := <perform-tasks(|defs)> (tasks', [], []);
-			ast''               := <distribute-results(|nr-map)> ast'
+			(ast', coll)   := <nbl-collect>; 
+			(tasks, elems) := <split-tasks> coll;
+			tasks'         := <merge-tasks> tasks;
+			(errs, elems') := <perform-tasks> (tasks', elems)
 			
 	
