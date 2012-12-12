@@ -12,9 +12,10 @@ signature
 	
 	constructors
 		
-		Task  : String * Instruction -> Task
-		Result: String         			-> Result
-	
+		Task  : String * List(String) * Instruction -> Task
+		Result: String         											-> Result
+		DoneTask: String * Term											-> DoneTask
+		
 		Resolve  : List(Segment) * List(Prop) * ListImport()	-> Instruction
 		Resolve  : Segment * Term * List(Prop) * ListImport() -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
@@ -24,7 +25,7 @@ signature
 rules
 	
 	new-task:
-		instruction -> (Result(name), Task([name], instruction))
+		instruction -> (Result(name), Task([name], [], instruction))
 		where
 			name := <newname> ""
 			
@@ -36,20 +37,20 @@ rules
 			
 	merge-tasks =
 		   [] 
-		<+ ?[Task(names, instr)|<fetch(Task(!(names, <id>); conc, ?instr)); merge-tasks>]
+		<+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, !(dep, <id>); conc, ?instr)); merge-tasks>]
 		<+ [id|merge-tasks]
 	
 	perform-tasks:
 		(tasks, elems) -> (tasks'', elems'')
 		with
 			if 
-				(ts1, t, ts2) := <split-fetch-keep(Task(id, vperform-task(|elems)))> tasks 
+				(ts1, t, ts2) := <split-fetch-keep(Task(id, id, vperform-task(|elems)))> tasks 
 			then
-			  Task(names, Done(tr)) := t;
-				nr-map                := <map(!(<id>, tr))> names;
-				tasks'                := <conc; distribute-results(|nr-map)> (ts1, ts2);
-				elems'                := <map(!Task(<id>, tr))> names;
-				(tasks'', elems'')    := <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
+			  Task(names, _, Done(tr))	:= t;
+				nr-map                		:= <map(!(<id>, tr))> names;
+				tasks'                		:= <conc; distribute-results(|nr-map)> (ts1, ts2);
+				elems'                		:= <map(!DoneTask(<id>, tr))> names;
+				(tasks'', elems'')    		:= <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 			else
 				tasks'' := tasks;
 				elems'' := elems
@@ -74,12 +75,12 @@ rules
 rules
 	
 	split-tasks =
-		partition(?Task(_, _))
+		partition(?Task(_, _, _))
 		
 	split-results = 
 		partition(task-result; unzip; (concat, id))
 	
-	task-result: Task(names, Done(result)) -> (<map(!(<id>, result))> names, result)
+	task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
 	
 	distribute-results(|results) = 
 		alltd(insert-result(|results))
