@@ -24,17 +24,12 @@ signature
 
 rules
 	
-	new-task:
-		instruction -> (Result(name), Task([name], [], instruction))
+	new-task(|dep):
+		instruction -> (Result(name), Task([name], dep, instruction))
 		where
 			name := <newname> ""
 			
-	new-task(tasks'|tasks):
-		instruction -> result
-		where
-			new-task => (result, task);
-			match(tasks'|[task|tasks])
-			
+	
 	merge-tasks =
 		   [] 
 		<+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, !(dep, <id>); conc, ?instr)); merge-tasks>]
@@ -48,8 +43,8 @@ rules
 			then
 			  Task(names, _, Done(tr))	:= t;
 				nr-map                		:= <map(!(<id>, tr))> names;
-				tasks'                		:= <conc; distribute-results(|nr-map)> (ts1, ts2);
 				elems'                		:= <map(!DoneTask(<id>, tr))> names;
+				tasks'                		:= <conc; distribute-results(|nr-map)> (ts1, ts2);
 				(tasks'', elems'')    		:= <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 			else
 				tasks'' := tasks;
