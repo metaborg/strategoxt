@@ -121,13 +121,13 @@ rules // generic analysis of uses
 		(Candidate(ns, props, Current(), imports), (name{anno*}, tasks)) -> (name{result, anno*}, [task|tasks])
 		where
 			path  				 := [(ns, name{}) | <lookup <+ ![]> (ns, paths)];
-		  (result, task) := <new-task(|[])> Resolve(path, props, imports)
+		  (result, task) := <new-task> Resolve(path, props, imports)
 	
 	nbl-use-candidate(|paths):
 		(Candidate(ns, props, Context(name', ns', props', refscope'), imports), (name{anno*}, tasks)) -> (name{result, anno*}, [task|tasks'])
 		where	
 			(_{tempresult}, tasks') := <nbl-use-candidate(|paths)> (Candidate(ns', props', refscope', []), (name'{}, tasks));
-			(result, task)	:= <new-task(|[<?Result(<id>)> tempresult])> Resolve((ns, name{}), tempresult, props, imports)
+			(result, task)	:= <new-task> Resolve((ns, name{}), tempresult, props, imports)
 
 rules // generic analysis of properties
 			
