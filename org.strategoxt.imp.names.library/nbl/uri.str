@@ -1,0 +1,77 @@
+module nbl/uri
+
+imports
+  
+signature
+
+  sorts
+  
+    URI
+    Language
+    ID
+    Subsequent
+    
+    Unique
+    NonUnique
+
+  constructors
+  	
+  	Language   : String                        ->  Language
+  	ID         : Namespace * Name              ->  Segment
+  	ID         : Namespace * Name * Qualifier  ->  Segment
+  	Subsequent :                                   Segment
+  	Unique     :                                   Qualifier
+  	NonUnique  :                                   Qualifier
+  	URI        : Language * List(Segment)      ->  URI
+    
+rules
+	
+	nbl-uri-language:
+		URI(language, _) -> language
+		
+  nbl-uri-language-name:
+    URI(Language(name), _) -> name
+    
+  nbl-uri-path:
+  	URI(_, path) -> path
+  	
+  nbl-uri-parent:
+    URI(language, path) -> URI(language, parent)
+    where
+      [_|parent] := path
+  	
+  nbl-id-namespace:
+  	ID(namespace, _) -> namespace
+  	
+  nbl-id-namespace:
+    ID(namespace, _, _) -> namespace
+  	
+  nbl-id-name:
+  	ID(_, name) -> name
+  	
+  nbl-id-name:
+    ID(_, name, _) -> name
+    
+  nbl-id-qualifier:
+    ID(_, _, qualifier) -> qualifier
+    
+  nbl-is-unique =
+    ?ID(_, _, Unique())
+    
+  nbl-is-unique =
+    ?Unique()
+    
+  nbl-is-nonunique =
+    ?ID(_, _, NonUnique())
+    
+  nbl-is-nonunique =
+    ?NonUnique()
+    
+  nbl-is-id =
+    ?ID(_, _)
+    
+  nbl-is-id =
+    ?ID(_, _, _)
+    
+  nbl-is-subsequent =
+    ?Subsequent()
