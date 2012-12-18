@@ -1,4 +1,4 @@
-	module nbl/tasks
+module nbl/tasks
 
 imports 
 	
@@ -8,80 +8,112 @@ signature
 
 	sorts
 	
-		Task Result Instruction
+		Task Subtask Placeholder DoneTask Instruction
 	
 	constructors
 		
-		Task  : String * List(String) * Instruction -> Task
-		Result: String         											-> Result
-		DoneTask: String * Term											-> DoneTask
+		Task       : String * List(String) * Instruction 				-> Task
+		Result     : String         														-> Placeholder
+		DoneTask   : String * Term															-> DoneTask
 		
-		Resolve  : List(Segment) * List(Prop) * ListImport()	-> Instruction
-		Resolve  : Segment * Term * List(Prop) * ListImport() -> Instruction
-		PropCalc : Property * Term                          	-> Instruction
-		Match		 : ID * Term			                          	-> Instruction
-		Done     : Term                                   		-> Instruction
+		Resolve    : Segment * Term * List(Prop) * ListImport() -> Instruction
+		PropCalc   : Property * Term                          	-> Instruction
+		Match		   : ID * Term			                          	-> Instruction
 
-rules
-	
-	new-task = new-task(|<dependent-tasks>)
+		Done 			 : Term                                   		-> Instruction
+		Fail			 :																							 Instruction
 		
-	new-task(|dep):
-		instruction -> (Result(name), <debug(!"created task ")> Task([name], dep, instruction))
-		where
-			name := <newname> ""
-			
-	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
-	dependent-task = ?Result(<id>) 
-	dependent-task =
-		has-annos; get-annos; dependent-tasks
+		Compound   : CompKind * List(Subtask) 									-> Instruction
+		ReSchedule : Instruction * List(String)									-> Instruction
+		OrderedAlt : CompKind
+		
+		Subtask    : String * List(String) * List(Task)    			-> Subtask
+		           		
+rules // task creation
 	
-rules
+	new-task(|tasks) =
+		?Compound(OrderedAlt(), [Subtask(name, deps, _)|_]);
+		t := Task([name], deps, <id>);
+		iset-add(|tasks);
+		!(Result(name), t);
+		debug(!"created task ")
+	
+	new-task(|tasks) =
+		not(?Compound(_, _));
+		where (name := <newname> "");
+		t := Task([name], <dependent-tasks>, <id>);
+		iset-add(|tasks);
+		!(Result(name), t);
+		debug(!"created task ")
+			
+	new-subtask(|tasks):
+		task* -> <debug(!"created subtask ")> Subtask(name, deps', task*)
+		where
+			names := <map(?Task(<id>, _, _))> task*;
+			deps  := <mapconcat(?Task(_, <id>, _))> task*;
+			deps' := <diff> (deps, names);
+			name  := <Hd> names
+			
+	extend-subtask(|task):
+		Subtask(name, dep1*, tasks) -> Subtask(name', [dep1*, dep2*], [task|tasks])
+		where
+			Task([name'], dep2*, _) := task
+	
+	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
+	dependent-task  = ?Result(<id>) 
+	dependent-task  = has-annos; get-annos; dependent-tasks
+	
+rules // task scheduling
 	
 	merge-tasks =
 		   [] 
 		<+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, !(dep, <id>); union, ?instr)); merge-tasks>]
 		<+ [id|merge-tasks]
+		
+rules // task execution
 	
-	perform-tasks:
-		(tasks, elems) -> (tasks'', elems'')
-		with
-			if 
-				(ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task(|elems)))> tasks 
-			then
-			  Task(names, [], Done(tr))	:= t;
-				nr-map                		:= <map(!(<id>, tr))> names;
-				elems'                		:= <map(!DoneTask(<id>, tr))> names;
-				tasks'                		:= <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-				(tasks'', elems'')    		:= <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
-			else
-				tasks'' := tasks;
-				elems'' := elems
-			end
-				
-rules
+	perform-tasks(|elems) = repeat(perform-next-task(|elems))
 	
-	perform-task(|elems): Resolve(path, [], []) 		-> Done(<nbl-lookup(|elems)> path)
-	perform-task(|elems): Resolve(s, path, [], []) 	-> <perform-task(|elems)> Resolve([s|path], [], []) where <is-list> path
-	perform-task(|elems): PropCalc(prop, term) 			-> Done(<calc-property(|elems)> (prop, term))
-	perform-task(|elems): Match(key, term) 					-> Done(<match-term> (key, term))
-	
-rules
+	perform-next-task(|elems) = 
+		split-fetch-keep(Task(id, [], perform-task(|elems))) => (t1*, t, t2*);
+		<update-tasks> [t, t1*, t2*]
+			
+	perform-task(|elems): 
+		Subtask(n, [], t*) -> result
+		where
+			<perform-tasks(|elems)> t*;
+			result := <fetch-elem(?Done(n)) <+ !Fail()>
+			
+	 		
+	perform-task(|elems) = Compound(OrderedAlt(), [perform-task(|elems)|id])
 
+	perform-task(|elems): Resolve(s, path, [], []) -> Done(<nbl-lookup(|elems)> [s|path]) where <is-list> path
+	perform-task(|elems): PropCalc(prop, term) 		 -> Done(<calc-property(|elems)> (prop, term))
+	perform-task(|elems): Match(key, term) 				 -> Done(<match-term> (key, term))
+				
 	calc-property(|elems) = nbl-lookup-property(|elems)
 	
 	match-term = fail
 	
-rules
+rules // post-processing
 	
+	update-tasks:
+		[Task(names, [], Done(tr))|tasks] -> tasks'
+		where
+			nr-map := <map(!(<id>, tr))> names;
+			done*  := <map(!DoneTask(<id>, tr))> names;
+			tasks' := <map(try(resolve-dependencies(|names, nr-map)))> tasks
+			
+	update-tasks = [reschedule-task|id]
+		
+	reschedule-task:
+		Task(names, [], Compound(OrderedAlt(), [Fail()|sts])) -> Task(names, d, Compound(OrderedAlt(), sts))
+		where
+			Subtask(_, d, _) := <Hd> sts
+		
 	split-tasks =
 		partition(?Task(_, _, _))
-		
-	split-results = 
-		partition(task-result; unzip; (concat, id))
-	
-	task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
-	
+			
 	resolve-dependencies(|solved, results):
 		Task(names, deps, task) -> Task(names, deps', task')
 		where
@@ -97,4 +129,4 @@ rules
 		has-annos; 
 		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
 		set-annos
-		
+	
