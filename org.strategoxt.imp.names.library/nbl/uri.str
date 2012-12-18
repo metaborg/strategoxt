@@ -1,129 +1,52 @@
-// module uri
-// 
-// signature 
-// 
-// 	sorts
-// 	
-// 		Language
-// 		Unique
-// 		Namespace
-// 		URISegment
-// 		URI
-// 		
-// 	constructors
-// 	
-// 						: String 						 					-> Language
-// 	Unique		:	String											-> Unique
-// 	NonUnique	: 															 Unique
-// 						: Namespace * String * Unique -> URISegment
-// 	Anonymous :	String											-> URISegment
-// 	URI 			: Language * URISegment				-> URI
-// 
-// rules // construction
-// 	
-// 	base-uri = !URI(<id>, [])
-// 		 
-// 	extend-uri(|ns, name, unique) = URI(id, ![(ns, name, unique)|<id>])
-// 
-// 	anonymous-uri = URI(id, ![Anonymous(<newname>)|<id>])
-// 	
-// strategies // queries
-// 	
-// 	uri-language	= ?URI(<id>, _)
-// 	uri-path			= ?URI(_, <id>)
-// 	
-// 	uri-namespace = uri-path; segment-namespace
-// 	
-// 	segmend-namespace = ?(<id>, _, _)
-// 	segment-namespace = Anonymous(id)
-// 
-// 	uri-name			= uri-path; ?(_, <id>, _)
-// 	
-// 	uri-scope			= URI(id, Tl)
-// 	uri-scopes		= closure(uri-scope)
-// 	
-// 	uri-in-scope	= URI(id, [id|Tl])
-// 	uri-in-scopes = closure(uri-in-scope)
-// 	
-// 	closure(s) = 
-// 			s 
-// 		< ![<id>|<closure(s)>] 
-// 		+ ![]
+module uri
+
+signature 
+
+	sorts
 	
-module nbl/uri
-
-imports
-  
-signature
-
-  sorts
-  
-    URI
-    Language
-    ID
-    Subsequent
-    
-    Unique
-    NonUnique
-
-  constructors
-  	
-  	Language   : String                        ->  Language
-  	ID         : Namespace * Name              ->  Segment
-  	ID         : Namespace * Name * Qualifier  ->  Segment
-  	Subsequent :                                   Segment
-  	Unique     :                                   Qualifier
-  	NonUnique  :                                   Qualifier
-  	URI        : Language * List(Segment)      ->  URI
-    
-rules
-	
-	nbl-uri-language:
-		URI(language, _) -> language
+		Language
+		Unique
+		Namespace
+		URISegment
+		URI
 		
-  nbl-uri-language-name:
-    URI(Language(name), _) -> name
-    
-  nbl-uri-path:
-  	URI(_, path) -> path
-  	
-  nbl-uri-parent:
-    URI(language, path) -> URI(language, parent)
-    where
-      [_|parent] := path
-  	
-  nbl-id-namespace:
-  	ID(namespace, _) -> namespace
-  	
-  nbl-id-namespace:
-    ID(namespace, _, _) -> namespace
-  	
-  nbl-id-name:
-  	ID(_, name) -> name
-  	
-  nbl-id-name:
-    ID(_, name, _) -> name
-    
-  nbl-id-qualifier:
-    ID(_, _, qualifier) -> qualifier
-    
-  nbl-is-unique =
-    ?ID(_, _, Unique())
-    
-  nbl-is-unique =
-    ?Unique()
-    
-  nbl-is-nonunique =
-    ?ID(_, _, NonUnique())
-    
-  nbl-is-nonunique =
-    ?NonUnique()
-    
-  nbl-is-id =
-    ?ID(_, _)
-    
-  nbl-is-id =
-    ?ID(_, _, _)
-    
-  nbl-is-subsequent =
-    ?Subsequent()
+	constructors
+	
+						: String 						 					-> Language
+	Unique		:	String											-> Unique
+	NonUnique	: 															 Unique
+						: Namespace * String * Unique -> URISegment
+	Anonymous :	String											-> URISegment
+	URI 			: Language * URISegment				-> URI
+
+rules // construction
+	
+	base-uri = !URI(<id>, [])
+		 
+	extend-uri(|ns, name, unique) = URI(id, ![(ns, name, unique)|<id>])
+
+	anonymous-uri = URI(id, ![Anonymous(<newname>)|<id>])
+	
+strategies // queries
+	
+	uri-language	= ?URI(<id>, _)
+	uri-path			= ?URI(_, <id>)
+	
+	uri-namespace = uri-path; segment-namespace
+	
+	segmend-namespace = ?(<id>, _, _)
+	segment-namespace = Anonymous(id)
+
+	uri-name			= uri-path; ?(_, <id>, _)
+	
+	uri-scope			= URI(id, Tl)
+	uri-scopes		= closure(uri-scope)
+	
+	uri-in-scope	= URI(id, [id|Tl])
+	uri-in-scopes = closure(uri-in-scope)
+	
+	closure(s) = 
+			s 
+		< ![<id>|<closure(s)>] 
+		+ ![]
+	

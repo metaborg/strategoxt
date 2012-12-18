@@ -8,13 +8,11 @@ imports
 strategies
 	
 	nbl-analyse:
-		ast -> (ast', elems, errs)
+		ast -> (ast', elems', errs)
 		where
-			elem-set := <new-iset>;
-			task-set := <new-iset>;
-			(ast', tasks)  := <nbl-collect(|elem-set, task-set)>; 
+			(ast', coll)   := <nbl-collect>; 
+			(tasks, elems) := <split-tasks> coll;
 			tasks'         := <merge-tasks> tasks;
-			elems					 := <iset-elements> elem-set;
-			errs  				 := <perform-tasks(|elems)> tasks'
+			(errs, elems') := <perform-tasks> (tasks', elems)
 			
 	
