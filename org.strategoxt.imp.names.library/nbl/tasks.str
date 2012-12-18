@@ -24,12 +24,13 @@ signature
 
 rules
 	
-	new-task = new-task(|<dependent-tasks>)
+	new-task(|elems) = new-task(|elems, <dependent-tasks>)
 		
-	new-task(|dep):
-		instruction -> (Result(name), <debug(!"created task ")> Task([name], dep, instruction))
-		where
-			name := <newname> ""
+	new-task(|elems, dep):
+		instruction -> Result(name)
+		with
+			name := <newname> "";
+			<debug(!"created task "); iset-add(|elems)> Task([name], dep, instruction)
 			
 	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
 	dependent-task = ?Result(<id>) 
