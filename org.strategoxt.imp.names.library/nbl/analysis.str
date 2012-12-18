@@ -15,7 +15,7 @@ strategies
       index-setup(|language, [project-path], partition);
       <index-clear-file> partition
 		with // Collect tasks
-			(ast', coll)   := <nbl-collect> ast; 
+			(ast', coll)   := <nbl-collect(|language)> ast; 
 			(tasks, elems) := <split-tasks> coll;
 			<index-add-all(|partition)> elems
 	  with // Perform tasks

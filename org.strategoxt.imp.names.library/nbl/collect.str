@@ -36,39 +36,39 @@ signature
 	
 strategies // generic traversal
 	
-	nbl-collect = 
+	nbl-collect(|lang) = 
 		where (new-iset; ?elems);
-		nbl-collect(id|elems, []); 
+		nbl-collect(id|lang, elems, []); 
 		!(<id>, <iset-elements> elems)
 	
-	nbl-collect(spaths|elems, paths) =
+	nbl-collect(spaths|lang, elems, paths) =
 		vdebug(!"analyse def ");
-		nbl-def-collect(?cpaths, spaths|elems, paths);
+		nbl-def-collect(?cpaths, spaths|lang, elems, paths);
 		vdebug(!"visit children ");
-		preserve-annos(force-origins(id#(nbl-siblings(|elems, cpaths))));
+		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, cpaths))));
 		vdebug(!"analyse use ");
-		try(nbl-use-site(|elems, paths));
+		try(nbl-use-site(|lang, elems, paths));
 		vdebug(!"analyse prop ");
 		try(nbl-prop-site(|elems, paths));
 		vdebug(!"done ")
 	
-	nbl-siblings(|elems, paths) = 
+	nbl-siblings(|lang, elems, paths) = 
 		[]
 	
-	nbl-siblings(|elems, paths) =
-		[nbl-collect(?spaths|elems, paths)|nbl-siblings(|elems, spaths)]
+	nbl-siblings(|lang, elems, paths) =
+		[nbl-collect(?spaths|lang, elems, paths)|nbl-siblings(|lang, elems, spaths)]
 
 rules // generic analysis of defs
 	
-	nbl-def-collect(cpaths, spaths|elems, paths) =
-		nbl-def-site(cpaths, spaths|elems, paths) <+ 
+	nbl-def-collect(cpaths, spaths|lang, elems, paths) =
+		nbl-def-site(cpaths, spaths|lang, elems, paths) <+ 
 		(
 			match(cpaths|paths);
 			match(spaths|paths)
 		)
 		
 	// interface to specific analysis
-	nbl-def-site(cpaths, spaths|elems, paths) = fail
+	nbl-def-site(cpaths, spaths|lang, elems, paths) = fail
 	
 	// call back to generic analysis
 	nbl-def(cpaths, spaths|lang, elems, paths, ns, unique, defscope, scoped):
@@ -99,23 +99,24 @@ rules // generic analysis of defs
 		
 rules // generic analysis of uses
 	
-	nbl-use-collect(|elems, paths) =
-		try(nbl-use-site(|elems, paths))
+	nbl-use-collect(|lang, elems, paths) =
+		try(nbl-use-site(|lang, elems, paths))
 	
 	// interface to specific analysis
-	nbl-use-site(|elems, paths) = fail
+	nbl-use-site(|lang, elems, paths) = fail
 	
 	// call back to generic analysis
-	nbl-use(|elems, paths, candidates):
+	nbl-use(|lang, elems, paths, candidates):
 		name -> name'
 		where
-			name' := <foldl(nbl-use-candidate(|elems, paths))> (candidates, name)
+			name' := <foldl(nbl-use-candidate(|lang, elems, paths))> (candidates, name)
 		
-	nbl-use-candidate(|elems, paths):
+	nbl-use-candidate(|lang, elems, paths):
 		(Candidate(ns, props, Current(), imports), name{anno*}) -> name{u, anno*}
 		where
-			path   := [(ns, name{}) | <lookup <+ ![]> (ns, paths)];
-		  result := <new-task(|elems)> Resolve(path, props, imports);
+			ppath  := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+			path   := <nbl-extend-uri(|ID(ns, name))> ppath; 
+			result := <new-task(|elems)> Resolve(path, props, imports);
 		  u      := <new-use(|elems, result)>
 	
 	nbl-use-candidate(|elems, paths):
