@@ -50,7 +50,7 @@ strategies // generic traversal
 		vdebug(!"analyse use ");
 		try(nbl-use-site(|lang, elems, tasks, paths));
 		vdebug(!"analyse prop ");
-		try(nbl-prop-site(|elems, tasks, paths));
+		try(nbl-prop-site(|lang, elems, tasks, paths));
 		vdebug(!"done ")
 	
 	nbl-siblings(|lang, elems, tasks, paths) = 
@@ -100,16 +100,20 @@ rules // generic analysis of defs
 		
 rules // generic analysis of uses
 	
-	nbl-use-collect(|lang, elems, tasks, paths) =
-		try(nbl-use-site(|lang, elems, tasks, paths))
-	
 	// interface to specific analysis
 	nbl-use-site(|lang, elems, tasks, paths) = fail
 	
 	// call back to generic analysis
+	nbl-use(|lang, elems, tasks, paths, candidate):
+		name -> name'
+		where
+			<not(is-list)> candidate;
+			name' := <nbl-use-candidate(|lang, elems, tasks, paths)> (candidate, name)
+	
 	nbl-use(|lang, elems, tasks, paths, candidates):
 		name -> name'
 		where
+			<is-list> candidates;
 			name' := <foldl(nbl-use-candidate(|lang, elems, tasks, paths))> (candidates, name)
 		
 	nbl-use-candidate(|lang, elems, tasks, paths):
@@ -128,19 +132,16 @@ rules // generic analysis of uses
 		  u      				:= <new-use(|elems, result)>
 
 rules // generic analysis of properties
-			
-	nbl-prop-collect(|elems, tasks, paths) =
-		try(nbl-prop-site(|elems, tasks, paths))
-	
+				
 	// interface to specific analysis
-	nbl-prop-site(|elems, tasks, paths) = fail
+	nbl-prop-site(|lang, elems, tasks, paths) = fail
 	
 	// call back to generic analysis
-	nbl-props(|elems, tasks, prop*) =
+	nbl-props(|lang, elems, tasks, prop*) =
 		?name{Def(path)};
-		<map(extend-prop(|elems, tasks, path))> prop*
+		<map(extend-prop(|lang, elems, tasks, path))> prop*
 		
-	extend-prop(|elems, tasks, path):
+	extend-prop(|lang, elems, tasks, path):
 		Prop((ns, name), prop, val) -> <new-prop(|elems, path, prop, val)> 
 		where
 			name':= name{};
