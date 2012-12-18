@@ -6,16 +6,11 @@ signature
 
   sorts
   
-    URI
     Language
-    
-    ID
-    Subsequent
-    Anonymous
-    
-    Unique
-    NonUnique
-
+    URI
+		Segment
+		Qualifier
+		
   constructors
   	
   	Language   : String                        ->  Language
@@ -31,12 +26,9 @@ rules // Construction
 	nbl-base-uri = 
 		!URI(<id>, [])
 		 
-	nbl-extend-uri(|namespace, name, qualifier) = 
-		URI(id, ![(namespace, name, qualifier)|<id>])
-
-	nbl-anonymous-uri = 
-		URI(id, ![Anonymous(<newname>)|<id>])
-    
+	nbl-extend-uri(|segment) = 
+		URI(id, ![segment|<id>])
+  
 rules // Projections
 	
 	nbl-uri-language:

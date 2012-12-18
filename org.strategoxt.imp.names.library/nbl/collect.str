@@ -30,9 +30,9 @@ signature
 	Surrounding:                                  	 							 RefScope
 	Context    : String * Namespace * List(Property) * RefScope	-> RefScope
 
-	Def        : List(Segment)                    -> Def
-	Use        : List(Segment)                    -> Use
-	Prop       : List(Segment) * Property * Value -> Prop
+	Def        : URI                    -> Def
+	Use        : URI                    -> Use
+	Prop       : URI * Property * Value -> Prop
 	
 strategies // generic traversal
 	
@@ -71,29 +71,31 @@ rules // generic analysis of defs
 	nbl-def-site(cpaths, spaths|elems, paths) = fail
 	
 	// call back to generic analysis
-	nbl-def(cpaths, spaths|elems, paths, ns, unique, defscope, scoped):
+	nbl-def(cpaths, spaths|lang, elems, paths, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
 			defscope := [Current()];
-			path     := [(ns, name, unique)|<lookup <+ ![]> (ns, paths)];
+			ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+			path     := <nbl-extend-uri(|ID(ns, name, unique))> ppath;
 			d        := <new-def(|elems, path)> a;
 		  match(spaths|paths);
 			match(cpaths|<replace-scope-paths(|path)> (scoped, paths))
 			
-	nbl-def(cpaths, spaths|elems, paths, ns, unique, defscope, scoped):
+	nbl-def(cpaths, spaths|lang, elems, paths, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d, anno*}
 		where
-			defscope:= [Subsequent()];
-			segment := Subsequent();
-			path    := [(ns, name, unique), segment|<lookup <+ ![]> (ns, paths)];
-			d       := <new-def(|elems, path)> a;
-			match(spaths|<extend-scope-paths(|segment)> ([ns], paths));
+			defscope := [Subsequent()];
+			segment  := Subsequent(<new>);
+			ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+			path     := <nbl-extend-uri(|segment); nbl-extend-uri(|ID(ns, name, unique))> ppath;
+			d        := <new-def(|elems, path)> a;
+			match(spaths|<extend-scope-paths(|lang, segment)> ([ns], paths));
 		  match(cpaths|paths)
 	
 	// call back for generic analysis of anonymous scopes
-	nbl-anonymous-scope(cpaths, spaths|elems, paths, nss) =
+	nbl-anonymous-scope(cpaths, spaths|lang, elems, paths, nss) =
 		match(spaths|paths);
-		match(cpaths|<extend-scope-paths(|Unique())> (nss, paths))
+		match(cpaths|<extend-scope-paths(|lang, Anonymous(<new>))> (nss, paths))
 		
 rules // generic analysis of uses
 	
@@ -148,14 +150,14 @@ rules // generic analysis of properties
 			
 rules // helpers
 	
-	replace-scope-paths(|path)	 = foldl(update-scope-paths(!path))
-	extend-scope-paths(|segment) = foldl(update-scope-paths(![segment|<id>]))
+	replace-scope-paths(|path)         = foldl(update-scope-paths(!path|<nbl-uri-language> path))
+	extend-scope-paths(|lang, segment) = foldl(update-scope-paths(nbl-extend-uri(|segment)|lang))
 	
-	update-scope-paths(update):
+	update-scope-paths(update|lang):
 		(key, paths) -> result
 		where
 			result := <fetch((?key, update))> paths <+ 
-			result := [(key, <update> [])|paths]
+			result := [(key, <update; nbl-base-uri> lang)|paths]
 			
 	force-origins(s) =
     ![<id>]; all(s); ?[<id>]
