@@ -79,6 +79,9 @@ rules
 		
 	split-results = 
 		partition(task-result; unzip; (concat, id))
+		
+  split-done-tasks =
+  	partition(?DoneTask(_, _))
 	
 	task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
 	

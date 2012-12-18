@@ -2,17 +2,24 @@ module nbl/analysis
 
 imports
 	
+	index/core
 	nbl/collect
 	nbl/tasks
 	
 strategies
 	
-	nbl-analyse:
+	nbl-analyze(|language, path, project-path):
 		ast -> (ast', elems', errs)
-		where
-			(ast', coll)   := <nbl-collect>; 
+		with // Setup index
+			partition := $[[project-path]/[path]];
+      index-setup(|language, [project-path], partition);
+      <index-clear-file> partition
+		with // Collect tasks
+			(ast', coll)   := <nbl-collect> ast; 
 			(tasks, elems) := <split-tasks> coll;
+			<index-add-all(|partition)> elems
+	  with // Perform tasks
 			tasks'         := <merge-tasks> tasks;
-			(errs, elems') := <perform-tasks> (tasks', elems)
-			
-	
+			(errs, elems') := <perform-tasks> (tasks', elems);
+			(results, _)   := <split-done-tasks> elems';
+			<index-add-all(|partition)> results
