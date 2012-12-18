@@ -40,7 +40,7 @@ strategies // generic traversal
 		where (new-iset; ?elems);
 		where (new-iset; ?tasks);
 		nbl-collect(id|lang, elems, tasks, []); 
-		!(<id>, <iset-elements> elems)
+		!(<id>, <iset-elements> elems, <iset-elements> tasks)
 	
 	nbl-collect(spaths|lang, elems, tasks, paths) =
 		vdebug(!"analyse def ");
