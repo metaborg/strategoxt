@@ -205,8 +205,9 @@ rules // helpers
 	update-scope-paths(update|lang):
 		(key, paths) -> result
 		where
-			result := <fetch((?key, update))> paths <+ 
-			result := [(key, <update; nbl-base-uri> lang)|paths]
+			  result := <fetch((?key, update))> paths 
+			<+ 
+			  result := [(key, <nbl-base-uri; update> lang)|paths]
 			
 	force-origins(s) =
     ![<id>]; all(s); ?[<id>]
