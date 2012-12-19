@@ -32,7 +32,7 @@ rules // Index-based lookup internal
 			with(parentURI       := <nbl-uri-parent> uri		| "Could not construct a parent URI.");
 			with(targetNamespace := <nbl-uri-namespace> uri	| "Could not extract target namespace.");
 			with(targetName      := <nbl-uri-name> uri      | "Could not extract target name.");
-			entry                := <debug(!"Result: ")> <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
+			entry                := <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
 			
 	nbl-lookup-uri(create-template|namespace, name):
 		uri -> entry
