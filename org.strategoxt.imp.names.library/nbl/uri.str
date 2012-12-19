@@ -60,10 +60,10 @@ rules // Projections
       [_|parent] := path
       
   nbl-uri-name:
-  	uri -> <nbl-uri-path; nbl-segment-name> uri
+  	uri -> <nbl-uri-path; Hd; nbl-segment-name> uri
   	
   nbl-uri-namespace:
-  	uri -> <nbl-uri-path; nbl-segment-namespace> uri  	
+  	uri -> <nbl-uri-path; Hd; nbl-segment-namespace> uri  	
 
   	
   nbl-segment-namespace:

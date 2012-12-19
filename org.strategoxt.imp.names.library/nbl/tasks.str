@@ -64,7 +64,7 @@ rules
 				
 rules
 	
-	perform-task(|elems): Resolve(path, [], []) 		-> Done(<nbl-lookup(|elems)> path)
+	perform-task(|elems): Resolve(path, [], []) 		-> Done(<nbl-lookup-definition> path)
 	perform-task(|elems): Resolve(s, path, [], []) 	-> <perform-task(|elems)> Resolve([s|path], [], []) where <is-list> path
 	perform-task(|elems): PropCalc(prop, term) 			-> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 					-> Done(<match-term> (key, term))
