@@ -264,3 +264,6 @@ rules // Index querying
    */
   index-get-value:
     template -> <index-value> <?[<id>|_]> <index-get-all> template
+    
+  index-get-children:
+  	template -> <prim("LANG_index_get_children", template)>

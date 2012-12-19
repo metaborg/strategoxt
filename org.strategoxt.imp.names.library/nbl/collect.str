@@ -152,7 +152,7 @@ rules // generic analysis of properties
 				?(ns, name', _)
 			)
 			
-rules // uri & value projections
+rules // index uri & value projections
 	
   /** @internal */
   index-uri-impl:

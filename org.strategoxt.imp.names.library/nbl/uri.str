@@ -30,6 +30,12 @@ rules // Construction
 		 
 	nbl-extend-uri(|segment) = 
 		URI(id, ![segment|<id>])
+		
+	nbl-extend-uri(|namespace, name) = 
+		URI(id, ![ID(namespace, name)|<id>])
+		
+	nbl-extend-uri(|namespace, name, qualifier) = 
+		URI(id, ![ID(namespace, name, qualifier)|<id>])
   
 rules // Projections
 	
@@ -103,3 +109,14 @@ rules // Conditions
     
   nbl-is-subsequent =
     ?Subsequent(_)
+
+rules // Index uri & value projections
+	
+  /** @internal */
+  index-uri-impl:
+    URI(_, _) -> <id>
+    
+  /** @internal */
+  index-value-impl:
+    URI(_, _) -> <id>    
+    

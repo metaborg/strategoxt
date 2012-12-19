@@ -2,8 +2,10 @@ module nbl/lookup
 
 imports
 	
+	index/core
 	nbl/collect
 	nbl/utils
+	nbl/uri
 	
 rules
 
@@ -23,9 +25,91 @@ rules
 rules
 	
 	nbl-lookup-property(|elems): (kind, name) -> <fetch-elem(?Prop(name', kind, <id>))> elems where name' := <nbl-uri> name
-		
-	nbl-uri = 
-		?Def(<id>) +
-		?Use(<id>) +
-		(get-annos; fetch-elem(nbl-uri))
 	
+rules // Index-based lookup interface
+	
+	nbl-lookup-definition:
+		containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
+		
+	nbl-lookup-property(|type):
+		containsURI -> <nbl-lookup(nbl-property-template(|type))> containsURI
+	
+rules // Index based visibility interface
+	
+	nbl-visibile-definitions:
+		containsURI -> <nbl-visible(nbl-definition-template)> containsURI
+		
+	nbl-visible-properties(|type):
+		containsURI -> <nbl-visible(nbl-property-template(|type))> containsURI
+	
+rules // Index-based lookup internal
+	
+	nbl-lookup(create-template|):
+		containsURI -> entry
+		where
+			uri        			:= <with(nbl-uri 						| "Could not extract URI from given term.")> containsURI;
+			parentURI       := <with(nbl-uri-parent			| "Could not construct a parent URI.")> uri;
+			targetName      := <with(nbl-uri-name				| "Could not extract lookup target name.")> uri;
+			targetNamespace := <with(nbl-uri-namespace	| "Could not extract lookup target namespace.")> uri;
+			entry           := <nbl-lookup-uri(create-template|targetName, targetNamespace)> parentURI
+			
+	nbl-lookup-uri(create-template|namespace, name):
+		uri -> entry
+		where
+			entries      := <nbl-lookup-uri-scoped(create-template|namespace, name)> uri;
+      if not(entry := <Hd> entries) then
+        parentURI  := <nbl-uri-parent> uri;
+        entry      := <nbl-lookup-uri(create-template|namespace, name)> parentURI
+      end
+		
+  nbl-lookup-uri-scoped(create-template|namespace, name):
+  	uri -> entries
+  	where
+  		lookupURI := <nbl-extend-uri(|namespace, name)> uri;
+  		template  := <create-template> lookupURI;
+  		entries   := <index-get-all> template
+
+rules // Index based visibility internal
+			
+	nbl-visible(create-template|):
+		containsURI -> entries
+		with
+			uri        			:= <with(nbl-uri 						| "Could not extract URI from given term.")> containsURI;
+			parentURI       := <with(nbl-uri-parent			| "Could not construct a parent URI.")> uri;
+			targetPrefix    := <with(nbl-uri-name				| "Could not extract lookup target prefix name.")> uri;
+			targetNamespace := <with(nbl-uri-namespace	| "Could not extract lookup target namespace.")> uri;
+			entries         := <nbl-visible-uri(create-template|targetPrefix, targetNamespace)> parentURI
+			
+	nbl-visible-uri(create-template|namespace, prefix):
+		uri -> allEntries
+		with
+			entries      := <nbl-lookup-uri-scoped(create-template|namespace, prefix)> uri;
+      if parentURI := <nbl-uri-parent> then
+      	entries2   := <nbl-visible-uri(create-template|namespace, prefix)> parentURI;
+        allEntries := <conc> (entries, entries2)
+      else
+        allEntries := entries
+      end
+			
+	nbl-visible-uri-scoped(create-template|namespace, prefix):
+		uri -> entries
+		where
+  		template        := <create-template> uri;
+  		childrenEntries := <index-get-children> template;
+  		entries 				:= <filter(nbl-compare-prefix(|namespace, prefix))> childrenEntries
+  		
+  nbl-compare-prefix(|namespace, prefix):
+    entry -> <id>
+    where
+      uri := <nbl-uri> entry;
+      <eq> (namespace, <nbl-uri-namespace> uri);
+      <is-substring(!prefix)> <nbl-uri-name> uri
+ 
+rules // Index-based lookup & visibility helpers
+	
+	nbl-definition-template:
+		uri -> Def(uri)
+		
+	nbl-property-template(|type):
+		uri -> Prop(uri, type, ())
+ 
