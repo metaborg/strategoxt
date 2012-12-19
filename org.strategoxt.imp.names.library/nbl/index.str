@@ -8,12 +8,12 @@ rules
 	
 	new-def(|elems, path) =
 		force-origins(!Def(path));
-		iset-add(|elems)
+		<iset-add(|<id>)> elems
 
 	new-use(|elems, path) =
 		force-origins(!Use(path));
-		iset-add(|elems)
+		<iset-add(|<id>)> elems
 		
 	new-prop(|elems, path, kind, val) =
 		force-origins(!Prop(path, kind, val));
-		iset-add(|elems)
+		<iset-add(|<id>)> elems
