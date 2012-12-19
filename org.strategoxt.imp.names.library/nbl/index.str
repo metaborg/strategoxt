@@ -6,14 +6,20 @@ imports
 	
 rules
 	
-	new-def(|elems, path) =
-		force-origins(!Def(path));
-		<iset-add(|<id>)> elems
-
-	new-use(|elems, path) =
-		force-origins(!Use(path));
-		<iset-add(|<id>)> elems
+	new-def(|elems, path):
+		x -> definition
+		where
+			definition := <force-origins(!Def(path))> x;
+			<iset-add(|definition)> elems
+			
+	new-use(|elems, path):
+		x -> use
+		where
+			use := <force-origins(!Use(path))> x;
+			<iset-add(|use)> elems
 		
-	new-prop(|elems, path, kind, val) =
-		force-origins(!Prop(path, kind, val));
-		<iset-add(|<id>)> elems
+	new-prop(|elems, path, kind, val):
+		x -> prop
+		where
+			prop := <force-origins(!Prop(path, kind, val))> x;
+			<iset-add(|prop)> elems
