@@ -2,6 +2,7 @@ module nbl/collect
 
 imports
 	
+	index/utility
 	nbl/-
 	
 signature 
@@ -150,6 +151,51 @@ rules // generic analysis of properties
 				?(ns, name') +
 				?(ns, name', _)
 			)
+			
+rules // uri & value projections
+	
+  /** @internal */
+  index-uri-impl:
+    Def(uri) -> uri
+    
+  /** @internal */  
+  index-uri-impl:
+    Use(uri) -> uri
+    
+  /** @internal */  
+  index-uri-impl:
+    Prop(uri, _, _) -> uri
+    
+  /** @internal */  
+  index-uri-impl:
+    _{anno*} -> <fetch-elem(index-uri)> anno*
+
+
+  /** @internal */  
+  index-uris-impl:
+    _{anno*} -> <filter(index-uri)> anno*
+   
+    
+  /** @internal */
+  index-value-impl:
+    Def(value) -> value
+
+  /** @internal */
+  index-value-impl:
+    Use(value) -> value
+    
+  /** @internal */
+  index-value-impl:
+    Prop(_, _, value) -> value
+    
+  /** @internal */  
+  index-value-impl:
+    _{anno*} -> <fetch-elem(index-value)> anno*
+    
+    
+  /** @internal */  
+  index-values-impl:
+    _{anno*} -> <filter(index-value)> anno*
 			
 rules // helpers
 	

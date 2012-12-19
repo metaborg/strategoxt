@@ -1,6 +1,8 @@
 module nbl/uri
 
 imports
+	
+	index/utility
   
 signature
 
@@ -30,6 +32,12 @@ rules // Construction
 		URI(id, ![segment|<id>])
   
 rules // Projections
+	
+	nbl-uri =
+		index-uri
+		
+	nbl-uris =
+		index-uris
 	
 	nbl-uri-language:
 		URI(language, _) -> language

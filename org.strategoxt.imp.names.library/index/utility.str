@@ -18,6 +18,9 @@ rules
   index-uri = 
     index-uri-impl <+ index-uri-generic
     
+  index-uris =
+  	index-uris-impl <+ index-uris-generic
+    
   /**
    * Gets the value part for given term. Can be extended by defining a index-value-impl rule. If no index-value-impl 
    * rule is defined for the given term the second subterm is used as the value. Fails if no value can be retrieved
@@ -33,21 +36,55 @@ rules
    */  
   index-value = 
     index-value-impl <+ index-value-generic
+    
+  index-values = 
+    index-values-impl <+ index-values-generic
 
 rules /** @internal */
 
   /** @internal */
-  index-uri-impl:
-    [_|_] -> <id>
-
-  /** @internal */
-  index-value-impl:
-    [_|_] -> <id>
+  index-uri-impl = fail
 
   /** @internal */
   index-uri-generic:
     term -> <?_#(<?[<id>|_]>)> term
     
+ 
+  /** @internal */
+  index-uris-impl = fail 
+    
+  /** @internal */
+  index-uris-generic:
+    terms -> <filter(index-uri)> terms
+    where
+    	<is-list> terms
+    	
+  /** @internal */  	
+  index-uris-generic:
+    term -> [<index-uri> term]
+    where
+    	not(<is-list> term)
+    
+    
+  /** @internal */
+  index-value-impl = fail
+    
   /** @internal */
   index-value-generic:
     term -> <?_#(<?[_, <id>|_]> )> term
+    
+
+  /** @internal */
+  index-values-impl = fail
+    
+  /** @internal */
+  index-values-generic:
+    terms -> <filter(index-value)> terms
+    where
+    	<is-list> terms
+    	
+  /** @internal */  	
+  index-values-generic:
+    term -> [<index-value> term]
+    where
+    	not(<is-list> term)
