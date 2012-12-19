@@ -30,7 +30,9 @@ rules
 		instruction -> Result(name)
 		with
 			name := <newname> "";
-			<debug(!"created task "); iset-add(|elems)> Task([name], dep, instruction)
+			task := Task([name], dep, instruction);
+			<iset-add(|task)> elems;
+			<debug(!"Created task: ")> task
 			
 	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
 	dependent-task = ?Result(<id>) 
