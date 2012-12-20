@@ -2,10 +2,9 @@ module nbl/lookup
 
 imports
 	
-	index/core
 	nbl/collect
-	nbl/utils
 	nbl/uri
+	nbl/incremental
 	
 rules // Index-based lookup interface
 	
@@ -48,12 +47,12 @@ rules // Index-based lookup internal
   	where
   		lookupURI := <nbl-extend-uri(|namespace, name)> uri;
   		template  := <create-template> lookupURI;
-  		entries   := <index-get-all> template;
+  		entries   := <nbl-get-all> template;
   		if not(<Hd> entries) then
   			// TODO: This is not the proper way to look up unique items, requires indirection.
   			lookupURI' := <nbl-extend-uri(|namespace, name, Unique())> uri;
   			template'  := <create-template> lookupURI';
-  			entries'   := <index-get-all> template'
+  			entries'   := <nbl-get-all> template'
   		else
   			entries' := entries
   		end
@@ -83,16 +82,8 @@ rules // Index based visibility internal
 	nbl-visible-uri-scoped(create-template|namespace, prefix):
 		uri -> entries
 		where
-  		template        := <create-template> uri;
-  		childrenEntries := <index-get-children> template;
-  		entries 				:= <filter(nbl-compare-prefix(|namespace, prefix))> childrenEntries
-  		
-  nbl-compare-prefix(|namespace, prefix):
-    entry -> <id>
-    where
-      uri := <nbl-uri> entry;
-      <eq> (namespace, <nbl-uri-namespace> uri);
-      <is-substring(!prefix)> <nbl-uri-name> uri
+  		template := <create-template> uri;
+  		entries  := <nbl-get-children(|namespace, prefix)> template
  
 rules // Index-based lookup & visibility helpers
 	

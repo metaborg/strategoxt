@@ -1,0 +1,66 @@
+module index/query
+
+imports
+  
+  index/utility
+
+rules
+  
+  /**
+   * Get all index entries that match the given template.
+   *
+   * Example:
+   *   <index-get-all> Def([Entity(), "Bar"]) => [Def([Entity(), "Bar"]), ...]
+   *
+   * @type template -> List(elem)
+   */
+  index-get-all:
+    template -> <prim("LANG_index_get", template)>
+    
+  /**
+   * Get all values of index entries that match the given template.
+   *
+   * Example:
+   *   <index-get-all-values> DefData([Property(), "s"], Type(), ()) => [TYPE("String"), ...]
+   *
+   * @type template -> List(value)
+   *
+   * @see index-value
+   */
+  index-get-all-values:
+    template -> <filter(index-value)> <index-get-all> template
+ 
+  /**
+   * Get the first index entry that matches the given template, or fail.
+   *
+   * Example:
+   *   <index-get> Def([Entity(), "Bar"]) => Def([Entity(), "Bar"])
+   *
+   * @type template -> ?elem
+   */
+  index-get:
+    template -> <?[<id>|_]> <index-get-all> template
+   
+  /**
+   * Get the value of first index entry that matches the given template, or fail.
+   *
+   * Example:
+   *   <index-get-value> DefData([Entity(), "Bar"], Type(), ()) => TYPE("Bar")
+   *
+   * @type template -> ?value
+   *
+   * @see index-value
+   */
+  index-get-value:
+    template -> <index-value> <?[<id>|_]> <index-get-all> template
+
+  /**
+   * Get all children entries of the given template.
+   *
+   * Example:
+   *   <index-get-children> Def([Entity(), "Bar", "Foo"]) => [Def([Method(), "Bar"]), Def([Field(), "Baz"]), ...]
+   *
+   * @type template -> List(elem)
+   */    
+  index-get-children:
+    template -> <prim("LANG_index_get_children", template)>

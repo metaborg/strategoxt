@@ -2,7 +2,8 @@
 
 imports 
 	
-	nbl/-
+	nbl/lookup
+	nbl/uri
 	
 signature
 
@@ -103,4 +104,3 @@ rules
 		has-annos; 
 		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
 		set-annos
-		

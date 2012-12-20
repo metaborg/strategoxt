@@ -3,8 +3,10 @@ module nbl/collect
 imports
 	
 	libstratego-lib
-	index/utility
-	nbl/-
+	nbl/tasks
+	nbl/index
+	nbl/uri
+	nbl/utils
 	
 signature 
 
@@ -32,9 +34,9 @@ signature
 	Surrounding:                                  	 							 RefScope
 	Context    : String * Namespace * List(Property) * RefScope	-> RefScope
 
-	Def        : URI                    -> Def
-	Use        : URI                    -> Use
-	Prop       : URI * Property * Value -> Prop
+	Def        : URI                    -> Entry
+	Use        : URI                    -> Entry
+	Prop       : URI * Property * Value -> Entry
 	
 strategies // generic traversal
 	
@@ -198,12 +200,12 @@ rules // index uri & value projections
     
   /** @internal */  
   index-uri-impl:
-    _{anno*} -> <fetch-elem(index-uri)> anno*
+    _{anno*} -> <fetch-elem(nbl-uri)> anno*
 
 
   /** @internal */  
   index-uris-impl:
-    _{anno*} -> <filter(index-uri)> anno*
+    _{anno*} -> <filter(nbl-uri)> anno*
    
     
   /** @internal */
@@ -220,12 +222,12 @@ rules // index uri & value projections
     
   /** @internal */  
   index-value-impl:
-    _{anno*} -> <fetch-elem(index-value)> anno*
+    _{anno*} -> <fetch-elem(nbl-value)> anno*
     
     
   /** @internal */  
   index-values-impl:
-    _{anno*} -> <filter(index-value)> anno*
+    _{anno*} -> <filter(nbl-value)> anno*
 			
 rules // helpers
 	
@@ -238,6 +240,3 @@ rules // helpers
 			  result := <fetch((?key, update))> paths 
 			<+ 
 			  result := [(key, <nbl-base-uri; update> lang)|paths]
-			
-	force-origins(s) =
-    ![<id>]; all(s); ?[<id>]

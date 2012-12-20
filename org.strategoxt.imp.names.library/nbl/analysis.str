@@ -5,6 +5,7 @@ imports
 	index/core
 	nbl/collect
 	nbl/tasks
+	nbl/incremental
 	
 strategies
 	
@@ -13,12 +14,15 @@ strategies
 		with // Setup index
 			partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
-      <index-clear-file> partition
+      <index-clear-partition> partition
 		with // Collect tasks
 			(ast', elems, tasks) := <nbl-collect(|language)> ast; 
 			<index-add-all(|partition)> elems
 	  with // Perform tasks
+	  	nbl-begin-collect-reads;
 			tasks'         := <merge-tasks> tasks;
 			(errs, elems') := <perform-tasks> (tasks', elems);
 			(results, _)   := <split-done-tasks> elems';
-			<index-add-all(|partition)> results
+			reads          := <nbl-end-collect-reads>
+			<index-add-all(|partition)> results;
+			<index-add-all(|partition)> reads

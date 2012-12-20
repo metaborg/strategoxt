@@ -1,8 +1,9 @@
 module index/globals
 
 imports
-	
-	index/core
+
+index/core
+index/query
   
 signature 
 

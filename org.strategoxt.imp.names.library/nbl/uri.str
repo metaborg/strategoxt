@@ -2,6 +2,7 @@ module nbl/uri
 
 imports
 	
+	index/core
 	index/utility
   
 signature
@@ -9,7 +10,6 @@ signature
   sorts
   
     Language
-    URI
 		Segment
 		Qualifier
 		
@@ -50,6 +50,13 @@ rules // Projections
 		
 	nbl-uris =
 		index-uris
+		
+  nbl-value =
+    index-value
+    
+  nbl-values =
+    index-values
+    
 	
 	nbl-uri-language:
 		URI(language, _) -> language
