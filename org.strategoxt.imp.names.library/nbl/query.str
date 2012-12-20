@@ -3,6 +3,7 @@ module nbl/query
 imports
   
   index/query
+  nbl/collect
   nbl/incremental
   nbl/uri
 
@@ -13,8 +14,69 @@ signature
     Read    : URI                      -> Entry
     ReadAll : URI                      -> Entry
     ReadAll : URI * Namespace * Prefix -> Entry
-    
-rules // Interface
+  
+rules // Specific queries
+
+  /**
+   * Gets a property that matches the kind of value and given URI, or fails if no property is found.
+   *
+   * Example:
+   *   <nbl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
+   *
+   * @param type Only properties of this kind is returned.
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> Prop(uri, kind, value)
+   */
+  nbl-get-property(|kind) = 
+  	nbl-get-all-properties(|kind); Hd
+      
+  /**
+   * Gets all properties that match the kind of value and given URI.
+   *
+   * Example:
+   *   <nbl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
+   *
+   * @param kind Only data of this kind is returned.
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
+   */
+  nbl-get-all-properties(|kind):
+     <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-all-values> Prop(uri, kind, ())
+     
+  /**
+   * Gets all Use entries that match the given URI.
+   *
+   * Example:
+   *   <nbl-get-all-uses> Def([Entity(), "M", "Bar"]) => [Use([Entity(), "M", "Bar"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Use(uri))
+   */
+  nbl-get-all-uses:
+    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-all> Use(uri)
+     
+  /**
+   * Gets all Read and ReadAll entries that match the given URI.
+   *
+   * Example:
+   *   <nbl-get-all-reads> Def([Property(), "Bar", "p"]) => [Read([Property(), "Bar", "p"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Read(uri) or ReadAll(uri) or ReadAll(uri, namespace, prefix))
+   */
+  nbl-get-all-reads:
+    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <conc> (reads, readAlls)
+    where
+      reads := <index-get-all> Read(uri);
+      if parentURI := <nbl-uri-parent> uri then
+        readAlls1  := <index-get-all> ReadAll(parentURI);
+        readAlls2  := <index-get-all> ReadAll(parentURI, (), ());
+        namespace  := <nbl-uri-namespace> uri;
+        name       := <nbl-uri-name> uri;
+        // TODO: Test if this works.
+        readAlls2' := <filter(nbl-compare-prefix(|namespace, name))> readAlls2;
+        readAlls   := <conc> (readAlls1, readAlls2')
+      else
+        readAlls   := []
+      end
+
+rules // Generic queries
   
   nbl-get-all:
     template -> <index-get-all> template
@@ -51,7 +113,10 @@ rules // Interface
           uri := <nbl-uri> template;
           <iset-add(|ReadAll(uri, namespace, prefix))> set
         end
-        
+
+rules /** @internal Helpers */
+  
+  /** @internal */      
   nbl-compare-prefix(|namespace, prefix):
     entry -> <id>
     where
@@ -59,6 +124,28 @@ rules // Interface
       <eq> (namespace, <nbl-uri-namespace> uri);
       <is-substring(!prefix)> <nbl-uri-name> uri
 
-rules // URI & value projections
+rules /** @internal URI & value projections */
   
-  
+  /** @internal */  
+  nbl-uri-impl:
+    Read(uri) -> uri
+    
+  /** @internal */  
+  nbl-uri-impl:
+    ReadAll(uri) -> uri
+    
+  /** @internal */  
+  nbl-uri-impl:
+    ReadAll(uri, _, _) -> uri
+    
+  /** @internal */
+  nbl-value-impl:
+    Read(value) -> value
+
+  /** @internal */
+  nbl-value-impl:
+    ReadAll(value) -> value
+    
+  /** @internal */
+  nbl-value-impl:
+    ReadAll(value, _, _) -> value

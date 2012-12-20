@@ -3,12 +3,26 @@ module nbl/incremental
 imports
 	
 	index/query
+	nbl/query
 	nbl/uri
       
-rules
+rules // Dependencies
+  
+  /**
+   * Gets the set of partitions with read dependencies to the given entries.
+   *
+   * Example:
+   *   <nbl-get-dependent-partitions> [Def([Entity(), "Bar"]), ...] => [("fullpath/file.ext", "partition"), ...]
+   *
+   * @type List(entry) -> List(partition)
+   */
+  nbl-get-dependent-partitions = 
+    nbl-get-dependent-partitions(nbl-get-all-reads)
+          
+rules // Storing reads
   
   nbl-begin-collect-reads = 
-      rules(NBL-ReadSet := <new-iset>)
+  	rules(NBL-ReadSet := <new-iset>)
       
   nbl-end-collect-reads:
     _ -> elements
@@ -19,3 +33,12 @@ rules
     		elements := []
     	end;
     	rules(NBL-ReadSet :- _)
+
+rules /** @internal */
+  
+  /** @internal */
+  nbl-get-dependent-partitions(construct-from-uri):
+    entries -> files
+    where
+      referenced  := <concat> <filter(construct-from-uri)> entries;
+      files       := <iset-elements> <iset-addlist(|<mapconcat(index-get-partitions-of)> referenced)> <new-iset>
