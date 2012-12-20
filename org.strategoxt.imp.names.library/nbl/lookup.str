@@ -13,7 +13,7 @@ rules // Index-based lookup interface
 		containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
 		
 	nbl-lookup-property(|type):
-		containsURI -> <nbl-lookup(nbl-property-template(|type))> containsURI
+		containsURI -> containsURI //<nbl-lookup(nbl-property-template(|type))> containsURI
 	
 rules // Index based visibility interface
 	
@@ -28,11 +28,11 @@ rules // Index-based lookup internal
 	nbl-lookup(create-template|):
 		containsURI -> entry
 		where
-			with(uri        		 := <nbl-uri> containsURI		| "Could not extract URI from given term.");
-			with(parentURI       := <nbl-uri-parent> uri		| "Could not construct a parent URI.");
-			with(targetNamespace := <nbl-uri-namespace> uri	| "Could not extract target namespace.");
-			with(targetName      := <nbl-uri-name> uri      | "Could not extract target name.");
-			entry                := <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
+			<with(uri        		  := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
+			<with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
+			<with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
+			<with(targetName      := <nbl-uri-name> uri      | "Could not extract target name.")> [uri];
+			entry                 := <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
 			
 	nbl-lookup-uri(create-template|namespace, name):
 		uri -> entry
@@ -63,11 +63,11 @@ rules // Index based visibility internal
 	nbl-visible(create-template|):
 		containsURI -> entries
 		with
-			with(uri        		 := <nbl-uri> containsURI		| "Could not extract URI from given term.");
-			with(parentURI       := <nbl-uri-parent> uri		| "Could not construct a parent URI.");
-			with(targetNamespace := <nbl-uri-namespace> uri	| "Could not extract target namespace.");
-			with(targetPrefix    := <nbl-uri-name> uri      | "Could not extract target prefix.");
-			entries              := <nbl-visible-uri(create-template|targetNamespace, targetPrefix)> parentURI
+			<with(uri        		  := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
+			<with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
+			<with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
+			<with(targetPrefix    := <nbl-uri-name> uri      | "Could not extract target prefix.")> [uri];
+			entries               := <nbl-visible-uri(create-template|targetNamespace, targetPrefix)> parentURI
 			
 	nbl-visible-uri(create-template|namespace, prefix):
 		uri -> allEntries
