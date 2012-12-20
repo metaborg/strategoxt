@@ -73,7 +73,7 @@ rules // generic analysis of defs
 	// interface to specific analysis
 	nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) = fail
 	
-	// call back to generic analysis
+	// call backs to generic analysis
 	nbl-def(cpaths, spaths|lang, elems, tasks, paths, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
@@ -88,17 +88,21 @@ rules // generic analysis of defs
 		a@name{anno*} -> name{d, anno*}
 		where
 			defscope := [Subsequent()];
-			segment  := Subsequent(<new>);
+			segment  := <nbl-subsequent-segment>;
 			ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
 			path     := <nbl-extend-uri(|segment); nbl-extend-uri(|ns, name, unique)> ppath;
 			d        := <new-def(|elems, path)> a;
 			match(spaths|<extend-scope-paths(|lang, segment)> ([ns], paths));
 		  match(cpaths|paths)
 	
+	nbl-def-scope = !DefScope(<nbl-anonymous-segment>)
+	
+	nbl-def-scope(|scope): name{anno*} -> name{scope, anno*}
+		
 	// call back for generic analysis of anonymous scopes
 	nbl-anonymous-scope(cpaths, spaths|lang, elems, tasks, paths, nss) =
 		match(spaths|paths);
-		match(cpaths|<extend-scope-paths(|lang, Anonymous(<new>))> (nss, paths))
+		match(cpaths|<extend-scope-paths(|lang, <nbl-anonymous-segment>)> (nss, paths))
 		
 rules // generic analysis of uses
 	
