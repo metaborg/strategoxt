@@ -15,13 +15,14 @@ signature
 		
   constructors
   	
-  	Language   : String                        ->  Language
-  	ID         : Namespace * Name              ->  Segment
-  	ID         : Namespace * Name * Qualifier  ->  Segment
-  	Subsequent : String                        ->  Segment
-  	Anonymous  : String                        ->  Segment
-  	Unique     : String                        ->  Qualifier
-  	URI        : Language * List(Segment)      ->  URI
+  	Language   : String                        -> Language
+  	ID         : Namespace * Name              -> Segment
+  	ID         : Namespace * Name * Qualifier  -> Segment
+  	Subsequent : String                        -> Segment
+  	Anonymous  : String                        -> Segment
+  	ExternalDef: String												 ->	Segment
+  	Unique     : String                        -> Qualifier
+  	URI        : Language * List(Segment)      -> URI
     
 rules // Construction
 	
@@ -36,6 +37,11 @@ rules // Construction
 		
 	nbl-extend-uri(|namespace, name, qualifier) = 
 		URI(id, ![ID(namespace, name, qualifier)|<id>])
+  
+  nbl-anonymous-segment  = !Anonymous(<new>)
+  nbl-subsequent-segment = !Subsequent(<new>)
+  
+  nbl-external-segment: Anonymous(name) -> ExternalDef(name)
   
 rules // Projections
 	
