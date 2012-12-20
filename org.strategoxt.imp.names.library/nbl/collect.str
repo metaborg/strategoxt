@@ -187,46 +187,46 @@ rules // generic analysis of properties
 rules // index uri & value projections
 	
   /** @internal */
-  index-uri-impl:
+  nbl-uri-impl:
     Def(uri) -> uri
     
   /** @internal */  
-  index-uri-impl:
+  nbl-uri-impl:
     Use(uri) -> uri
     
   /** @internal */  
-  index-uri-impl:
+  nbl-uri-impl:
     Prop(uri, _, _) -> uri
     
   /** @internal */  
-  index-uri-impl:
+  nbl-uri-impl:
     _{anno*} -> <fetch-elem(nbl-uri)> anno*
 
 
   /** @internal */  
-  index-uris-impl:
+  nbl-uris-impl:
     _{anno*} -> <filter(nbl-uri)> anno*
    
     
   /** @internal */
-  index-value-impl:
+  nbl-value-impl:
     Def(value) -> value
 
   /** @internal */
-  index-value-impl:
+  nbl-value-impl:
     Use(value) -> value
     
   /** @internal */
-  index-value-impl:
+  nbl-value-impl:
     Prop(_, _, value) -> value
     
   /** @internal */  
-  index-value-impl:
+  nbl-value-impl:
     _{anno*} -> <fetch-elem(nbl-value)> anno*
     
     
   /** @internal */  
-  index-values-impl:
+  nbl-values-impl:
     _{anno*} -> <filter(nbl-value)> anno*
 			
 rules // helpers

@@ -3,7 +3,6 @@ module nbl/uri
 imports
 	
 	index/core
-	index/utility
   
 signature
 
@@ -45,17 +44,17 @@ rules // Construction
   
 rules // Projections
 	
-	nbl-uri =
-		index-uri
-		
-	nbl-uris =
-		index-uris
-		
-  nbl-value =
-    index-value
+  nbl-uri = 
+    nbl-uri-impl <+ nbl-uri-generic
     
-  nbl-values =
-    index-values
+  nbl-uris =
+    nbl-uris-impl <+ nbl-uris-generic
+
+  nbl-value = 
+    nbl-value-impl <+ nbl-value-generic
+    
+  nbl-values = 
+    nbl-values-impl <+ nbl-values-generic
     
 	
 	nbl-uri-language:
@@ -123,13 +122,53 @@ rules // Conditions
   nbl-is-subsequent =
     ?Subsequent(_)
 
-rules // Index uri & value projections
-	
+rules /** @internal */
+
   /** @internal */
-  index-uri-impl:
+  nbl-uri-impl:
+    URI(_, _) -> <id>
+
+  /** @internal */
+  nbl-uri-generic:
+    term -> <?_#(<?[<id>|_]>)> term
+    
+ 
+  /** @internal */
+  nbl-uris-impl = fail 
+    
+  /** @internal */
+  nbl-uris-generic:
+    terms -> <filter(nbl-uri)> terms
+    where
+      <is-list> terms
+      
+  /** @internal */    
+  nbl-uris-generic:
+    term -> [<nbl-uri> term]
+    where
+      not(<is-list> term)
+    
+    
+  /** @internal */
+  nbl-value-impl:
     URI(_, _) -> <id>
     
   /** @internal */
-  index-value-impl:
-    URI(_, _) -> <id>    
+  nbl-value-generic:
+    term -> <?_#(<?[_, <id>|_]> )> term
     
+
+  /** @internal */
+  nbl-values-impl = fail
+    
+  /** @internal */
+  nbl-values-generic:
+    terms -> <filter(nbl-value)> terms
+    where
+      <is-list> terms
+      
+  /** @internal */    
+  nbl-values-generic:
+    term -> [<nbl-value> term]
+    where
+      not(<is-list> term)

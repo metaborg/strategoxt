@@ -4,61 +4,8 @@ imports
 	
 	index/query
 	nbl/uri
-	
-signature
-
-  constructors
-  	
-  	Read    : URI                      -> Entry
-  	ReadAll : URI                      -> Entry
-  	ReadAll : URI * Namespace * Prefix -> Entry
-  	
-rules // Interface
-	
-  nbl-get-all:
-    template -> <index-get-all> template
-      with
-        if set := <NBL-ReadSet> then
-          uri := <nbl-uri> template;
-          <iset-add(|Read(uri))> set
-        end
-       
-  nbl-get-all-values:
-    template -> <map(nbl-value)> <nbl-get-all> template
-
-  nbl-get:
-    template -> <Hd> <nbl-get-all> template
       
-  nbl-get-value:
-    template -> <nbl-value> <Hd> <nbl-get-all> template
-    
-  nbl-get-children:
-    template -> entries
-      with
-        entries  := <index-get-children> template;
-        if set := <NBL-ReadSet> then
-          uri := <nbl-uri> template;
-          <iset-add(|ReadAll(uri))> set
-        end
-        
-  nbl-get-children(|namespace, prefix):
-    template -> entries
-      with
-        children := <index-get-children> template;
-        entries  := <filter(nbl-compare-prefix(|namespace, prefix))> children;
-        if set := <NBL-ReadSet> then
-          uri := <nbl-uri> template;
-          <iset-add(|ReadAll(uri, namespace, prefix))> set
-        end
-        
-  nbl-compare-prefix(|namespace, prefix):
-    entry -> <id>
-    where
-      uri := <nbl-uri> entry;
-      <eq> (namespace, <nbl-uri-namespace> uri);
-      <is-substring(!prefix)> <nbl-uri-name> uri
-      
-rules // Internal
+rules
   
   nbl-begin-collect-reads = 
       rules(NBL-ReadSet := <new-iset>)
@@ -72,5 +19,3 @@ rules // Internal
     		elements := []
     	end;
     	rules(NBL-ReadSet :- _)
-  
-rules // URI & value projections

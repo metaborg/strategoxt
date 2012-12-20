@@ -3,8 +3,8 @@ module nbl/lookup
 imports
 	
 	nbl/collect
+	nbl/query
 	nbl/uri
-	nbl/incremental
 	
 rules // Index-based lookup interface
 	
