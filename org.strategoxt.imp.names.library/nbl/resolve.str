@@ -1,0 +1,35 @@
+module nbl/resolve
+
+imports
+  
+  nbl/collect
+  nbl/tasks
+  nbl/query
+  
+rules // Reference resolution
+  
+  nbl-resolve = 
+    has-annos;
+    get-annos;
+    collect-one(nbl-resolve)
+  
+  nbl-resolve:
+    Use(Result(number)) -> definition
+    where
+      uri        := <nbl-get-value> DoneTask(number, ());
+      definition := <nbl-get> Def(uri)
+      
+rules // Conditions
+	
+  nbl-is-reference =
+    ?Use(_)
+    
+  nbl-has-reference =
+  	collect-one(nbl-is-reference)
+ 
+  nbl-is-unresolved =
+  	?node;
+    has-annos;
+    get-annos;
+    nbl-has-reference;
+    <not(nbl-resolve)> node
