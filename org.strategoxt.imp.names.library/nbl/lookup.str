@@ -6,7 +6,7 @@ imports
 	nbl/query
 	nbl/uri
 	
-rules // Index-based lookup interface
+rules // Index-based lookup
 	
 	nbl-lookup-definition:
 		containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
@@ -14,7 +14,7 @@ rules // Index-based lookup interface
 	nbl-lookup-property(|type):
 		containsURI -> containsURI //<nbl-lookup(nbl-property-template(|type))> containsURI
 	
-rules // Index based visibility interface
+rules // Index based visibility
 	
 	nbl-visibile-definitions:
 		containsURI -> <nbl-visible(nbl-definition-template)> containsURI
@@ -22,7 +22,7 @@ rules // Index based visibility interface
 	nbl-visible-properties(|type):
 		containsURI -> <nbl-visible(nbl-property-template(|type))> containsURI
 	
-rules // Index-based lookup internal
+rules /** @internal Index-based lookup */
 	
 	nbl-lookup(create-template|):
 		containsURI -> entry
@@ -57,7 +57,7 @@ rules // Index-based lookup internal
   			entries' := entries
   		end
 
-rules // Index based visibility internal
+rules /** @internal Index based visibility */
 			
 	nbl-visible(create-template|):
 		containsURI -> entries
@@ -85,7 +85,7 @@ rules // Index based visibility internal
   		template := <create-template> uri;
   		entries  := <nbl-get-children(|namespace, prefix)> template
  
-rules // Index-based lookup & visibility helpers
+rules /** @internal Helpers */
 	
 	nbl-definition-template:
 		uri -> Def(uri)

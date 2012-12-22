@@ -3,6 +3,7 @@ module nbl/incremental
 imports
 	
 	index/query
+	nbl/collect
 	nbl/query
 	nbl/uri
       
@@ -19,26 +20,43 @@ rules // Dependencies
   nbl-get-dependent-partitions = 
     nbl-get-dependent-partitions(nbl-get-all-reads)
           
-rules // Storing reads
+rules /** @internal Storing reads */
   
-  nbl-begin-collect-reads = 
-  	rules(NBL-ReadSet := <new-iset>)
+  nbl-collect-reads(s) =
+    {| NBL-ReadSet:
+    	rules(NBL-ReadSet := <new-iset>);
+    	try(s);
+    	NBL-ReadSet;
+    	iset-elements
+  	|}
+    	
+rules /** @internal Entry difference */
+  
+  nbl-diff-entry:
+    Def(uri) -> <id>
+    where
+      not(<nbl-uri-has-anonymous> uri)
+    
+  nbl-diff-entry:
+    Prop(uri, _, _) -> <id>
+    where
+      not(<nbl-uri-has-anonymous> uri)
       
-  nbl-end-collect-reads:
-    _ -> elements
+  nbl-diff-eq:
+    (entry1, entry2) -> <id>
+    where
+      <nbl-uri-eq> (<nbl-uri> entry1, <nbl-uri> entry2)      
+
+  nbl-diff:
+    (defs1, defs2) -> (added, removed)
     with
-    	if set := <NBL-ReadSet> then
-    	  elements := <iset-elements> set
-    	else
-    		elements := []
-    	end;
-    	rules(NBL-ReadSet :- _)
+      added   := <diff(nbl-diff-eq)> (defs2, defs1);
+      removed := <diff(nbl-diff-eq)> (defs1, defs2)
 
 rules /** @internal */
   
-  /** @internal */
   nbl-get-dependent-partitions(construct-from-uri):
-    entries -> files
+    entries -> partitions
     where
-      referenced  := <concat> <filter(construct-from-uri)> entries;
-      files       := <iset-elements> <iset-addlist(|<mapconcat(index-get-partitions-of)> referenced)> <new-iset>
+      references := <mapconcat(construct-from-uri)> entries;
+      partitions := <make-set> <mapconcat(index-get-partitions-of)> references

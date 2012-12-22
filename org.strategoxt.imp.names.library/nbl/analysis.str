@@ -3,6 +3,7 @@ module nbl/analysis
 imports
 	
 	index/core
+	index/query
 	nbl/collect
 	nbl/tasks
 	nbl/incremental
@@ -10,19 +11,27 @@ imports
 strategies
 	
 	nbl-analyze(|language, path, project-path):
-		ast -> (ast', elems', errs)
+		ast -> (ast', entries', errors, dependent)
 		with // Setup index
 			partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
+			index-setup(|language, [project-path], partition);
+			oldEntries := <filter(nbl-diff-entry)> <index-get-all-in-partition> partition;
       <index-clear-partition> partition
 		with // Collect tasks
-			(ast', elems, tasks) := <nbl-collect(|language)> ast; 
-			<index-add-all(|partition)> elems
+			(ast', entries, tasks) := <nbl-collect(|language)> ast;
+			 
+			<index-add-all(|partition)> entries
 	  with // Perform tasks
-	  	nbl-begin-collect-reads;
-			tasks'         := <merge-tasks> tasks;
-			(errs, elems') := <perform-tasks> (tasks', elems);
-			(results, _)   := <split-done-tasks> elems';
-			reads          := <nbl-end-collect-reads>
+	  	nbl-collect-reads(
+				tasks'             := <merge-tasks> tasks;
+				(errors, entries') := <perform-tasks> (tasks', entries);
+				(results, _)       := <split-done-tasks> entries'
+			) => reads;
+			
 			<index-add-all(|partition)> results;
 			<index-add-all(|partition)> reads
+		with // Dependent partitions
+		  newEntries       := <filter(nbl-diff-entry)> entries';
+      (added, removed) := <nbl-diff> (oldEntries, newEntries);
+      changed          := <conc> (added, removed);
+      dependent        := <nbl-get-dependent-partitions> changed

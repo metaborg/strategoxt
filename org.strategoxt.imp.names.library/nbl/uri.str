@@ -121,8 +121,20 @@ rules // Conditions
     
   nbl-is-subsequent =
     ?Subsequent(_)
+    
+  nbl-is-anonymous =
+    ?Anonymous(_)
+    
+  nbl-uri-has-anonymous = 
+    nbl-uri-path;
+    fetch(nbl-is-anonymous)
 
-rules /** @internal */
+rules // Equality
+  
+  nbl-uri-eq = 
+    eq
+        
+rules /** @internal Projections */
 
   /** @internal */
   nbl-uri-impl:
