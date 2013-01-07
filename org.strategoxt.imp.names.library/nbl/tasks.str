@@ -16,12 +16,14 @@ signature
 		Task     : List(String) * List(String) * Instruction  -> Task
 		Result   : String         											      -> Result
 		DoneTask : String * Term											        -> DoneTask
+		FailTask : String * Term                              -> FailTask
 		
 		Resolve  : URI * List(Prop) * ListImport()	          -> Instruction
 		Resolve  : Segment * Term * List(Prop) * ListImport() -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
 		Match		 : ID * Term			                          	-> Instruction
 		Done     : Term                                   		-> Instruction
+		Fail     : Term                                       -> Instruction
 
 rules
 	
@@ -53,11 +55,18 @@ rules
 			if 
 				(ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task(|elems)))> tasks 
 			then
-			  Task(names, [], Done(tr))	:= t;
-				nr-map                		:= <map(!(<id>, tr))> names;
-				elems'                		:= <map(!DoneTask(<id>, tr))> names;
-				tasks'                		:= <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-				(tasks'', elems'')    		:= <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
+			  Task(names, [], res) := t;
+			  if Done(tr) := res then
+					nr-map             := <map(!(<id>, tr))> names;
+					elems'             := <map(!DoneTask(<id>, tr))> names
+				else 
+				  if Fail(tr) := res then
+			      nr-map           := <map(!(<id>, tr))> names;
+            elems'           := <map(!FailTask(<id>, tr))> names
+          end
+			  end;
+				tasks'               := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
+				(tasks'', elems'')   := <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 			else
 				tasks'' := tasks;
 				elems'' := elems
@@ -65,7 +74,14 @@ rules
 				
 rules
 	
-	perform-task(|elems): Resolve(uri, [], []) 		      -> Done(<nbl-uri> <nbl-lookup-definition> uri)
+	perform-task(|elems): 
+	  Resolve(uri, [], []) -> result
+	  where
+	    if resolvedURI := <nbl-uri> <nbl-lookup-definition> uri then 
+	      result := Done(<nbl-uri> <nbl-lookup-definition> uri)
+	    else
+	      result := Fail(uri)
+	    end
 	perform-task(|elems): Resolve(segment, uri, [], []) -> <perform-task(|elems)> Resolve(<nbl-extend-uri(|segment)> uri, [], [])
 	perform-task(|elems): PropCalc(prop, term) 			    -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 					    -> Done(<match-term> (key, term))
@@ -84,8 +100,8 @@ rules
 	split-results = 
 		partition(task-result; unzip; (concat, id))
 		
-  split-done-tasks =
-  	partition(?DoneTask(_, _))
+  split-completed-tasks =
+  	partition(?DoneTask(_, _) <+ ?FailTask(_, _))
 	
 	task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
 	
@@ -110,6 +126,15 @@ rules /** @internal Projections */
 	/** @internal */
   nbl-uri-impl:
     Task(uri, _, _) -> uri
-    
+  
+  /** @internal */  
   nbl-uri-impl:
   	Resolve(uri, _, _) -> uri
+  
+  /** @internal */
+  nbl-uri-impl:
+    DoneTask(_, uri) -> uri
+    
+  /** @internal */
+  nbl-uri-impl:
+    FailTask(_, uri) -> uri

@@ -25,7 +25,7 @@ strategies
 	  	nbl-collect-reads(
 				tasks'             := <merge-tasks> tasks;
 				(errors, entries') := <perform-tasks> (tasks', entries);
-				(results, _)       := <split-done-tasks> entries'
+				(results, _)       := <split-completed-tasks> entries'
 			) => reads;
 			
 			<index-add-all(|partition)> results;

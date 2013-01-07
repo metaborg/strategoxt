@@ -19,6 +19,16 @@ rules // Reference resolution
       uri        := <nbl-get-value> DoneTask(number, ());
       definition := <nbl-get> Def(uri)
       
+  nbl-unresolved-uri = 
+    has-annos;
+    get-annos;
+    collect-one(nbl-resolve)
+      
+  nbl-unresolved-uri:
+    Use(Result(number)) -> uri
+    where
+      uri := <nbl-get-value> FailTask(number, ())
+      
 rules // Conditions
 	
   nbl-is-reference =
