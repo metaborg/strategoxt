@@ -16,7 +16,7 @@ rules // Index-based lookup
 	
 rules // Index based visibility
 	
-	nbl-visibile-definitions:
+	nbl-visible-definitions:
 		containsURI -> <nbl-visible(nbl-definition-template)> containsURI
 		
 	nbl-visible-properties(|type):

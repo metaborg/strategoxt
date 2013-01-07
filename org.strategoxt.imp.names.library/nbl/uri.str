@@ -1,41 +1,41 @@
 module nbl/uri
 
 imports
-	
-	index/core
+  
+  index/core
   
 signature
 
   sorts
   
     Language
-		Segment
-		Qualifier
-		
+    Segment
+    Qualifier
+    
   constructors
-  	
-  	Language   : String                        -> Language
-  	ID         : Namespace * Name              -> Segment
-  	ID         : Namespace * Name * Qualifier  -> Segment
-  	Subsequent : String                        -> Segment
-  	Anonymous  : String                        -> Segment
-  	ExternalDef: String												 ->	Segment
-  	Unique     : String                        -> Qualifier
-  	URI        : Language * List(Segment)      -> URI
+    
+    Language    : String                        -> Language
+    ID          : Namespace * Name              -> Segment
+    ID          : Namespace * Name * Qualifier  -> Segment
+    Subsequent  : String                        -> Segment
+    Anonymous   : String                        -> Segment
+    ExternalDef : String                        -> Segment
+    Unique      : String                        -> Qualifier
+    URI         : Language * List(Segment)      -> URI
     
 rules // Construction
-	
-	nbl-base-uri = 
-		!URI(<id>, [])
-		 
-	nbl-extend-uri(|segment) = 
-		URI(id, ![segment|<id>])
-		
-	nbl-extend-uri(|namespace, name) = 
-		URI(id, ![ID(namespace, name)|<id>])
-		
-	nbl-extend-uri(|namespace, name, qualifier) = 
-		URI(id, ![ID(namespace, name, qualifier)|<id>])
+  
+  nbl-base-uri = 
+    !URI(<id>, [])
+     
+  nbl-extend-uri(|segment) = 
+    URI(id, ![segment|<id>])
+    
+  nbl-extend-uri(|namespace, name) = 
+    URI(id, ![ID(namespace, name)|<id>])
+    
+  nbl-extend-uri(|namespace, name, qualifier) = 
+    URI(id, ![ID(namespace, name, qualifier)|<id>])
   
   nbl-anonymous-segment  = !Anonymous(<new>)
   nbl-subsequent-segment = !Subsequent(<new>)
@@ -43,7 +43,7 @@ rules // Construction
   nbl-external-segment: Anonymous(name) -> ExternalDef(name)
   
 rules // Projections
-	
+  
   nbl-uri = 
     nbl-uri-impl <+ nbl-uri-generic
     
@@ -56,37 +56,37 @@ rules // Projections
   nbl-values = 
     nbl-values-impl <+ nbl-values-generic
     
-	
-	nbl-uri-language:
-		URI(language, _) -> language
-		
+  
+  nbl-uri-language:
+    URI(language, _) -> language
+    
   nbl-uri-language-name:
     URI(Language(name), _) -> name
     
   nbl-uri-path:
-  	URI(_, path) -> path
-  	
+    URI(_, path) -> path
+    
   nbl-uri-parent:
     URI(language, path) -> URI(language, parent)
     where
       [_|parent] := path
       
   nbl-uri-name:
-  	uri -> <nbl-uri-path; Hd; nbl-segment-name> uri
-  	
+    uri -> <nbl-uri-path; Hd; nbl-segment-name> uri
+    
   nbl-uri-namespace:
-  	uri -> <nbl-uri-path; Hd; nbl-segment-namespace> uri  	
+    uri -> <nbl-uri-path; Hd; nbl-segment-namespace> uri    
 
-  	
+    
   nbl-segment-namespace:
-  	ID(namespace, _) -> namespace
-  	
+    ID(namespace, _) -> namespace
+    
   nbl-segment-namespace:
     ID(namespace, _, _) -> namespace
-  	
+    
   nbl-segment-name:
-  	ID(_, name) -> name
-  	
+    ID(_, name) -> name
+    
   nbl-segment-name:
     ID(_, name, _) -> name
     
@@ -94,16 +94,16 @@ rules // Projections
     ID(_, _, qualifier) -> qualifier
     
     
-	nbl-uri-scope			= URI(id, Tl)
-	nbl-uri-scopes		= nbl-closure(nbl-uri-scope)
-	
-	nbl-uri-in-scope	= URI(id, [id|Tl])
-	nbl-uri-in-scopes = nbl-closure(nbl-uri-in-scope)
-	
-	nbl-closure(s) = 
-			s 
-		< ![<id>|<nbl-closure(s)>] 
-		+ ![]
+  nbl-uri-scope      = URI(id, Tl)
+  nbl-uri-scopes    = nbl-closure(nbl-uri-scope)
+  
+  nbl-uri-in-scope  = URI(id, [id|Tl])
+  nbl-uri-in-scopes = nbl-closure(nbl-uri-in-scope)
+  
+  nbl-closure(s) = 
+      s 
+    < ![<id>|<nbl-closure(s)>] 
+    + ![]
     
 rules // Conditions
     

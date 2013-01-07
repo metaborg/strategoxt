@@ -13,11 +13,11 @@ signature
 	
 	constructors
 		
-		Task  : String * List(String) * Instruction -> Task
-		Result: String         											-> Result
-		DoneTask: String * Term											-> DoneTask
+		Task     : List(String) * List(String) * Instruction  -> Task
+		Result   : String         											      -> Result
+		DoneTask : String * Term											        -> DoneTask
 		
-		Resolve  : List(Segment) * List(Prop) * ListImport()	-> Instruction
+		Resolve  : URI * List(Prop) * ListImport()	          -> Instruction
 		Resolve  : Segment * Term * List(Prop) * ListImport() -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
 		Match		 : ID * Term			                          	-> Instruction
@@ -65,10 +65,10 @@ rules
 				
 rules
 	
-	perform-task(|elems): Resolve(path, [], []) 		-> Done(<nbl-uri> <nbl-lookup-definition> path)
-	perform-task(|elems): Resolve(s, path, [], []) 	-> <perform-task(|elems)> Resolve([s|path], [], []) where <is-list> path
-	perform-task(|elems): PropCalc(prop, term) 			-> Done(<calc-property(|elems)> (prop, term))
-	perform-task(|elems): Match(key, term) 					-> Done(<match-term> (key, term))
+	perform-task(|elems): Resolve(uri, [], []) 		      -> Done(<nbl-uri> <nbl-lookup-definition> uri)
+	perform-task(|elems): Resolve(segment, uri, [], []) -> <perform-task(|elems)> Resolve(<nbl-extend-uri(|segment)> uri, [], [])
+	perform-task(|elems): PropCalc(prop, term) 			    -> Done(<calc-property(|elems)> (prop, term))
+	perform-task(|elems): Match(key, term) 					    -> Done(<match-term> (key, term))
 	
 rules
 
@@ -104,3 +104,12 @@ rules
 		has-annos; 
 		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
 		set-annos
+
+rules /** @internal Projections */
+	
+	/** @internal */
+  nbl-uri-impl:
+    Task(uri, _, _) -> uri
+    
+  nbl-uri-impl:
+  	Resolve(uri, _, _) -> uri
