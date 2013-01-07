@@ -7,6 +7,7 @@ imports
 	nbl/collect
 	nbl/tasks
 	nbl/incremental
+	nbl/uri
 	
 strategies
 	
@@ -18,7 +19,7 @@ strategies
 			oldEntries := <filter(nbl-diff-entry)> <index-get-all-in-partition> partition;
       <index-clear-partition> partition
 		with // Collect tasks
-			(ast', entries, tasks) := <nbl-collect(|language)> ast;
+			(ast', entries, tasks) := <nbl-collect(|Language(language))> ast;
 			 
 			<index-add-all(|partition)> entries
 	  with // Perform tasks

@@ -1,95 +1,95 @@
 module nbl/lookup
 
 imports
-	
-	nbl/collect
-	nbl/query
-	nbl/uri
-	
+  
+  nbl/collect
+  nbl/query
+  nbl/uri
+  
 rules // Index-based lookup
-	
-	nbl-lookup-definition:
-		containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
-		
-	nbl-lookup-property(|type):
-		containsURI -> containsURI //<nbl-lookup(nbl-property-template(|type))> containsURI
-	
+  
+  nbl-lookup-definition:
+    containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
+    
+  nbl-lookup-property(|type):
+    containsURI -> containsURI //<nbl-lookup(nbl-property-template(|type))> containsURI
+  
 rules // Index based visibility
-	
-	nbl-visible-definitions:
-		containsURI -> <nbl-visible(nbl-definition-template)> containsURI
-		
-	nbl-visible-properties(|type):
-		containsURI -> <nbl-visible(nbl-property-template(|type))> containsURI
-	
+  
+  nbl-visible-definitions:
+    containsURI -> <nbl-visible(nbl-definition-template)> containsURI
+    
+  nbl-visible-properties(|type):
+    containsURI -> <nbl-visible(nbl-property-template(|type))> containsURI
+  
 rules /** @internal Index-based lookup */
-	
-	nbl-lookup(create-template|):
-		containsURI -> entry
-		where
-			<with(uri        		  := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
-			<with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
-			<with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
-			<with(targetName      := <nbl-uri-name> uri      | "Could not extract target name.")> [uri];
-			entry                 := <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
-			
-	nbl-lookup-uri(create-template|namespace, name):
-		uri -> entry
-		where
-			entries      := <nbl-lookup-uri-scoped(create-template|namespace, name)> uri;
+  
+  nbl-lookup(create-template|):
+    containsURI -> entry
+    where
+      <with(uri              := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
+      <with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
+      <with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
+      <with(targetName      := <nbl-uri-name> uri      | "Could not extract target name.")> [uri];
+      entry                 := <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
+      
+  nbl-lookup-uri(create-template|namespace, name):
+    uri -> entry
+    where
+      entries      := <nbl-lookup-uri-scoped(create-template|namespace, name)> uri;
       if not(entry := <Hd> entries) then
         parentURI  := <nbl-uri-parent> uri;
         entry      := <nbl-lookup-uri(create-template|namespace, name)> parentURI
       end
-		
+    
   nbl-lookup-uri-scoped(create-template|namespace, name):
-  	uri -> entries'
-  	where
-  		lookupURI := <nbl-extend-uri(|namespace, name)> uri;
-  		template  := <create-template> lookupURI;
-  		entries   := <nbl-get-all> template;
-  		if not(<Hd> entries) then
-  			// TODO: This is not the proper way to look up unique items, requires indirection.
-  			lookupURI' := <nbl-extend-uri(|namespace, name, Unique())> uri;
-  			template'  := <create-template> lookupURI';
-  			entries'   := <nbl-get-all> template'
-  		else
-  			entries' := entries
-  		end
+    uri -> entries'
+    where
+      lookupURI := <nbl-extend-uri(|namespace, name)> uri;
+      template  := <create-template> lookupURI;
+      entries   := <nbl-get-all> template;
+      if not(<Hd> entries) then
+        // TODO: This is not the proper way to look up unique items, requires indirection.
+        lookupURI' := <nbl-extend-uri(|namespace, name, Unique())> uri;
+        template'  := <create-template> lookupURI';
+        entries'   := <nbl-get-all> template'
+      else
+        entries' := entries
+      end
 
 rules /** @internal Index based visibility */
-			
-	nbl-visible(create-template|):
-		containsURI -> entries
-		with
-			<with(uri        		  := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
-			<with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
-			<with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
-			<with(targetPrefix    := <nbl-uri-name> uri      | "Could not extract target prefix.")> [uri];
-			entries               := <nbl-visible-uri(create-template|targetNamespace, targetPrefix)> parentURI
-			
-	nbl-visible-uri(create-template|namespace, prefix):
-		uri -> allEntries
-		with
-			entries      := <nbl-lookup-uri-scoped(create-template|namespace, prefix)> uri;
-      if parentURI := <nbl-uri-parent> then
-      	entries2   := <nbl-visible-uri(create-template|namespace, prefix)> parentURI;
+      
+  nbl-visible(create-template|):
+    containsURI -> entries
+    with
+      <with(uri              := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
+      <with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
+      <with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
+      <with(targetPrefix    := <nbl-uri-name> uri      | "Could not extract target prefix.")> [uri];
+      entries               := <nbl-visible-uri(create-template|targetNamespace, targetPrefix)> parentURI
+      
+  nbl-visible-uri(create-template|namespace, prefix):
+    uri -> allEntries
+    with
+      entries      := <nbl-visible-uri-scoped(create-template|namespace, prefix)> uri;
+      if parentURI := <nbl-uri-parent> uri then
+        entries2   := <nbl-visible-uri(create-template|namespace, prefix)> parentURI;
         allEntries := <conc> (entries, entries2)
       else
         allEntries := entries
       end
-			
-	nbl-visible-uri-scoped(create-template|namespace, prefix):
-		uri -> entries
-		where
-  		template := <create-template> uri;
-  		entries  := <nbl-get-children(|namespace, prefix)> template
+      
+  nbl-visible-uri-scoped(create-template|namespace, prefix):
+    uri -> entries
+    where
+      template := <create-template> uri;
+      entries  := <nbl-get-children(|namespace, prefix)> template
  
 rules /** @internal Helpers */
-	
-	nbl-definition-template:
-		uri -> Def(uri)
-		
-	nbl-property-template(|type):
-		uri -> Prop(uri, type, ())
+  
+  nbl-definition-template:
+    uri -> Def(uri)
+    
+  nbl-property-template(|type):
+    uri -> Prop(uri, type, ())
  

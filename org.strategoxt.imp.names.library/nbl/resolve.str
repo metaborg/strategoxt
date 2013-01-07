@@ -5,7 +5,16 @@ imports
   nbl/collect
   nbl/tasks
   nbl/query
+  nbl/lookup
+  nbl/uri
+  index/core
   
+signature
+
+  constructors
+    
+    COMPLETION : String -> COMPLETION
+      
 rules // Reference resolution
   
   nbl-resolve = 
@@ -18,17 +27,30 @@ rules // Reference resolution
     where
       uri        := <nbl-get-value> DoneTask(number, ());
       definition := <nbl-get> Def(uri)
-      
-  nbl-unresolved-uri = 
+
+rules // Code completion
+
+  nbl-unresolved-uris = 
     has-annos;
     get-annos;
-    collect-one(nbl-resolve)
+    collect-all(nbl-unresolved-uris);
+    concat
       
-  nbl-unresolved-uri:
-    Use(Result(number)) -> uri
+  nbl-unresolved-uris:
+    Use(Result(number)) -> [uri]
     where
       uri := <nbl-get-value> FailTask(number, ())
-      
+
+  nbl-propose-completions:
+    ast -> proposals'
+      where
+        item        := <collect-one(?COMPLETION(_))> ast;
+        index-transaction(
+          uris      := <nbl-unresolved-uris> item;
+          proposals := <mapconcat(nbl-visible-definitions)> uris
+        );
+        proposals'  := <map(nbl-uri; nbl-uri-name)> proposals
+
 rules // Conditions
 	
   nbl-is-reference =
