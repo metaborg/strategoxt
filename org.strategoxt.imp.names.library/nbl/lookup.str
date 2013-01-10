@@ -27,7 +27,7 @@ rules /** @internal Index-based lookup */
   nbl-lookup(create-template|):
     containsURI -> entry
     where
-      <with(uri              := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
+      <with(uri             := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
       <with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
       <with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
       <with(targetName      := <nbl-uri-name> uri      | "Could not extract target name.")> [uri];
@@ -36,33 +36,42 @@ rules /** @internal Index-based lookup */
   nbl-lookup-uri(create-template|namespace, name):
     uri -> entry
     where
-      entries      := <nbl-lookup-uri-scoped(create-template|namespace, name)> uri;
-      if not(entry := <Hd> entries) then
+      entry*       := <nbl-lookup-uri-scoped(create-template|namespace, name)> uri;
+      if not(entry := <Hd> entry*) then
         parentURI  := <nbl-uri-parent> uri;
         entry      := <nbl-lookup-uri(create-template|namespace, name)> parentURI
       end
     
   nbl-lookup-uri-scoped(create-template|namespace, name):
-    uri -> entries'
-    where
-      lookupURI := <nbl-extend-uri(|namespace, name)> uri;
-      template  := <create-template> lookupURI;
-      entries   := <nbl-get-all> template;
-      if not(<Hd> entries) then
-        // TODO: This is not the proper way to look up unique items, requires indirection.
-        lookupURI' := <nbl-extend-uri(|namespace, name, Unique())> uri;
-        template'  := <create-template> lookupURI';
-        entries'   := <nbl-get-all> template'
-      else
-        entries' := entries
-      end
+    uri -> [entry*, nonUniqueEntry*, importEntry*]
+    with
+      // Standard lookups
+      entry*          := <nbl-standard-lookup(create-template|namespace, name)> uri;
+      nonUniqueEntry* := <nbl-standard-lookup-nonunique(create-template|namespace, name)> uri;
+      
+      // Imports & aliases
+      importEntry*    := <nbl-lookup-imported-entries(create-template|namespace, name, <nbl-uri-language> uri)> uri
+      
+      // TODO: External (defines x in y) definitions
+      
+      // TODO: Implicit (this, super) definitions
+      
+  nbl-standard-lookup-nonunique(create-template|namespace, name) =
+    nbl-extend-uri(|namespace, name);
+    create-template;
+    nbl-get-all
+    
+  nbl-standard-lookup(create-template|namespace, name) =
+    nbl-extend-uri(|namespace, name, Unique()); // TODO: Properly lookup unique entries.
+    create-template;
+    nbl-get-all
 
 rules /** @internal Index based visibility */
       
   nbl-visible(create-template|):
     containsURI -> entries
     with
-      <with(uri              := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
+      <with(uri             := <nbl-uri> containsURI   | "Could not extract URI from given term.")> [containsURI];
       <with(parentURI       := <nbl-uri-parent> uri    | "Could not construct a parent URI.")> [uri];
       <with(targetNamespace := <nbl-uri-namespace> uri | "Could not extract target namespace.")> [uri];
       <with(targetPrefix    := <nbl-uri-name> uri      | "Could not extract target prefix.")> [uri];
@@ -80,11 +89,51 @@ rules /** @internal Index based visibility */
       end
       
   nbl-visible-uri-scoped(create-template|namespace, prefix):
-    uri -> entries
-    where
-      template := <create-template> uri;
-      entries  := <nbl-get-children(|namespace, prefix)> template
- 
+    uri -> [entry*, importEntry*]
+    with
+      // Standard lookup
+      entry*       := <nbl-standard-visible(create-template|namespace, prefix)> uri;
+      
+      // Imports & aliases
+      importEntry* := <nbl-visible-imported-entries(create-template|namespace, prefix, <nbl-uri-language> uri)> uri
+      
+      // TODO: External (defines x in y) definitions
+      
+      // TODO: Implicit (this, super) definitions
+
+  nbl-standard-visible(create-template|namespace, prefix) =
+    create-template;
+    nbl-get-children(|namespace, prefix)
+
+rules /** @internal Imports */
+
+  nbl-lookup-imported-entries(create-template|language, namespace, name):
+    uri -> <conc> (namedEntry*, unnamedEntry*)
+    with
+      namedImportURI*   := <nbl-get-import-props(|language, namespace, name)> uri;
+      namedEntry*       := <mapconcat(create-template; nbl-get-all)> namedImportURI*;
+      unnamedImportURI* := <nbl-get-import-props(|language, namespace)> uri;
+      unnamedEntry*     := <mapconcat(nbl-standard-lookup(create-template|namespace, name))> unnamedImportURI*
+      
+  nbl-visible-imported-entries(create-template|language, namespace, prefix):
+    uri -> unnamedEntry*
+    with
+      unnamedImportURI* := <nbl-get-import-props(|language, namespace)> uri;
+      unnamedEntry*     := <mapconcat(nbl-standard-visible(create-template|namespace, prefix))> unnamedImportURI* 
+
+  nbl-get-import-props(|language, namespace):
+    uri -> <conc> (importURI*, transitiveImportURI*)
+    with
+      importURI*           := <nbl-get-all-properties(|Import(language, namespace))> uri;
+      importedURI*         := <nbl-get-all-properties(|Import(language, Imported(namespace)))> uri;
+      transitiveImportURI* := <mapconcat(nbl-get-import-props(|language, namespace))> importedURI*
+      // TODO: prevent loops
+    
+  nbl-get-import-props(|language, namespace, name):
+    uri -> importURI*
+    with
+      importURI* := <nbl-get-all-properties(|Import(language, namespace, name))> uri
+
 rules /** @internal Helpers */
   
   nbl-definition-template:

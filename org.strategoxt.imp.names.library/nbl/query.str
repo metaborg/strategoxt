@@ -108,11 +108,19 @@ rules // Generic queries
     template -> entries
       with
         children := <index-get-children> template;
-        entries  := <filter(nbl-compare-prefix(|namespace, prefix))> children;
+        entries  := <nbl-filter-entries(|namespace, prefix)> children;
         if set := <NBL-ReadSet> then
           uri := <nbl-uri> template;
           <iset-add(|ReadAll(uri, namespace, prefix))> set
         end
+
+rules // Entry filtering
+  
+  nbl-filter-entries(|namespace, prefix):
+    entry* -> <filter(nbl-compare-prefix(|namespace, prefix))> entry*
+  
+  nbl-filter-entries(|namespace):
+    entry* -> <filter(nbl-compare-namespace(|namespace))> entry*
 
 rules /** @internal Helpers */
   
@@ -123,6 +131,13 @@ rules /** @internal Helpers */
       uri := <nbl-uri> entry;
       <eq> (namespace, <nbl-uri-namespace> uri);
       <is-substring(!prefix)> <nbl-uri-name> uri
+      
+  /** @internal */      
+  nbl-compare-namespace(|namespace):
+    entry -> <id>
+    where
+      uri := <nbl-uri> entry;
+      <eq> (namespace, <nbl-uri-namespace> uri)
 
 rules /** @internal URI & value projections */
   
