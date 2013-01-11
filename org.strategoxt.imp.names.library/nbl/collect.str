@@ -23,7 +23,7 @@ signature
 	Subsequent :            						DefScope
 	DefScope   : Namespace * Segment -> DefScope
 
-	Candidate  : Namespace * List(Property) * RefScope * List(Import) -> Use
+	Candidate  : Namespace * List(Property) * RefScope -> Use
 	
 	Current    :                                     							 RefScope
 	Surrounding:                                  	 							 RefScope
@@ -50,6 +50,7 @@ strategies // generic traversal
 		nbl-scope-site(?paths'|lang, paths);
 		vdebug(!"analyse def ");
 		nbl-def-collect(?cpaths, spaths|lang, elems, tasks, paths');
+		try(nbl-import-site(|lang, elems, tasks, cpaths));
 		vdebug(!"visit children ");
 		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, tasks, cpaths))));
 		vdebug(!"analyse use ");
@@ -129,6 +130,44 @@ rules // generic analysis of defs
 			d        := <new-def(|elems, path)> a;
 			match(spaths|<extend-scope-paths(|lang, segment)> ([ns], paths));
 		  match(cpaths|paths)
+
+rules // generic analysis of imports
+  
+  nbl-import-site(|lang, elems, tasks, paths) = fail
+  
+  nbl-import(|lang, elems, tasks, paths, resolveNs, imports):
+    name -> name'
+    where
+      name' := <foldl(nbl-import-candidate(|lang, elems, tasks, paths, resolveNs))> (imports, name)
+        
+  nbl-import-candidate(|lang, elems, tasks, paths, resolveNs):
+    (import, name) -> name
+    where
+      importNs := <nbl-import-namespace> import;
+      ppath    := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
+      path     := <nbl-extend-uri(|resolveNs, <strip-annos> <try(fix-completion-name)> name)> ppath; 
+      result   := <new-task(|tasks)> Resolve(path, []);
+      new-prop(|elems, ppath, import, result)
+      
+  nbl-import-namespace:
+    Import(_, Imported(namespace)) -> namespace
+    where
+      not(Imported(_) := namespace)
+      
+  nbl-import-namespace:
+    Import(_, namespace) -> namespace
+    where
+      not(Imported(_) := namespace)
+      
+  nbl-import-namespace:
+    Import(_, Imported(namespace), _) -> namespace
+    where
+      not(Imported(_) := namespace)
+      
+  nbl-import-namespace:
+    Import(_, namespace, _) -> namespace
+    where
+      not(Imported(_) := namespace)
 	
 rules // generic analysis of uses
 	
@@ -149,25 +188,19 @@ rules // generic analysis of uses
 			name' := <foldl(nbl-use-candidate(|lang, elems, tasks, paths))> (candidates, name)
 		
 	nbl-use-candidate(|lang, elems, tasks, paths):
-		(Candidate(ns, props, Current(), imports), name{anno*}) -> name{u, anno*}
+		(Candidate(ns, props, Current()), name{anno*}) -> name{u, anno*}
 		where
 			ppath   := <lookup <+ <nbl-base-uri> lang> (ns, paths);
 			path    := <nbl-extend-uri(|ns, <strip-annos> <try(fix-completion-name)> name)> ppath; 
-			result  := <new-task(|tasks)> Resolve(path, props, imports);
-		  u       := <new-use(|elems, result)>;
-		  import* := <map(nbl-import-candidate(|elems, path, result))> imports
+			result  := <new-task(|tasks)> Resolve(path, props);
+		  u       := <new-use(|elems, result)>
 	
 	nbl-use-candidate(|lang, elems, tasks, paths):
-		(Candidate(ns, props, Context(name', ns', props', refscope'), imports), name{anno*}) -> name{u, anno*}
+		(Candidate(ns, props, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
 		where	
-			_{tempresult} := <nbl-use-candidate(|lang, elems, tasks, paths)> (Candidate(ns', props', refscope', []), name'{});
-			result				:= <new-task(|tasks)> Resolve((ns, name{}), tempresult, props, imports);
+			_{tempresult} := <nbl-use-candidate(|lang, elems, tasks, paths)> (Candidate(ns', props', refscope'), name'{});
+			result				:= <new-task(|tasks)> Resolve((ns, name{}), tempresult, props);
 		  u      				:= <new-use(|elems, result)>
-		  //import*       := <map(nbl-import-candidate(|elems, path, result))> imports
-		  
-  nbl-import-candidate(|elems, path, resolveTask) =
-    ?import;
-    new-prop(|elems, path, import, resolveTask)
 
 rules // generic analysis of properties
 				

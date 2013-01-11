@@ -21,7 +21,7 @@ strategies
 		with // Collect tasks
 			(ast', entries, tasks) := <nbl-collect(|Language(language))> ast;
 			 
-			<index-add-all(|partition)> entries
+			<index-add-all(|partition)> <debug(!"added: ")> entries
 	  with // Perform tasks
 	  	nbl-collect-reads(
 				tasks'             := <merge-tasks> tasks;
