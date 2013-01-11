@@ -33,13 +33,10 @@ rules // Code completion
   nbl-unresolved-uris = 
     has-annos;
     get-annos;
-    collect-all(nbl-unresolved-uris);
-    concat
+    collect-all(nbl-unresolved-uri)
       
-  nbl-unresolved-uris:
-    Use(Result(number)) -> [uri]
-    where
-      uri := <nbl-get-value> FailTask(number, ())
+  nbl-unresolved-uri:
+    Use(result) -> <nbl-resolve-result> result
 
   nbl-propose-completions:
     ast -> proposals'
@@ -50,6 +47,14 @@ rules // Code completion
           proposals := <mapconcat(nbl-visible-definitions)> uris
         );
         proposals'  := <map(nbl-uri; nbl-uri-name)> proposals
+
+rules // Resolving URI's
+  
+  nbl-resolve-result:
+    Result(number) -> <nbl-get-value> DoneTask(number, ())
+  
+  nbl-resolve-result:
+    Result(number) -> <nbl-get-value> FailTask(number, ())
 
 rules // Conditions
 	

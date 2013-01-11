@@ -110,10 +110,10 @@ rules /** @internal Imports */
   nbl-lookup-imported-entries(create-template|language, namespace, name):
     uri -> <conc> (namedEntry*, unnamedEntry*)
     with
-      namedImportURI*   := <nbl-get-import-props(|language, namespace, name)> uri;
-      namedEntry*       := <mapconcat(create-template; nbl-get-all)> namedImportURI*;
-      unnamedImportURI* := <nbl-get-import-props(|language, namespace)> uri;
-      unnamedEntry*     := <mapconcat(nbl-standard-lookup(create-template|namespace, name))> unnamedImportURI*
+      namedImportURI*   := <debug(!"namedImportURI   ")> <nbl-get-import-props(|language, namespace, name)> uri;
+      namedEntry*       := <debug(!"namedEntry       ")> <mapconcat(create-template; nbl-get-all)> namedImportURI*;
+      unnamedImportURI* := <debug(!"unnamedImportURI ")> <nbl-get-import-props(|language, namespace)> uri;
+      unnamedEntry*     := <debug(!"unnamedEntry     ")> <mapconcat(nbl-standard-lookup(create-template|namespace, name))> unnamedImportURI*
       
   nbl-visible-imported-entries(create-template|language, namespace, prefix):
     uri -> unnamedEntry*

@@ -75,14 +75,14 @@ rules
 rules
 	
 	perform-task(|elems): 
-	  Resolve(uri, [], []) -> result
+	  Resolve(uri, _, _) -> result
 	  where
 	    if resolvedURI := <nbl-uri> <nbl-lookup-definition> uri then 
 	      result := Done(<nbl-uri> <nbl-lookup-definition> uri)
 	    else
 	      result := Fail(uri)
 	    end
-	perform-task(|elems): Resolve(segment, uri, [], []) -> <perform-task(|elems)> Resolve(<nbl-extend-uri(|segment)> uri, [], [])
+	perform-task(|elems): Resolve(segment, uri, _, _) -> <perform-task(|elems)> Resolve(<nbl-extend-uri(|segment)> uri, [], [])
 	perform-task(|elems): PropCalc(prop, term) 			    -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 					    -> Done(<match-term> (key, term))
 	

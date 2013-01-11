@@ -19,10 +19,6 @@ signature
 	Unique     : Unique
 	NonUnique  : Unique
 	
-	Single     : Namespace * Name -> Import
-	All        : Namespace        -> Import
-	Imported   : Namespace        -> Import
-	
 	Current    :            						DefScope
 	Subsequent :            						DefScope
 	DefScope   : Namespace * Segment -> DefScope
@@ -37,8 +33,9 @@ signature
 	Use        : URI                    -> Entry
 	Prop       : URI * Property * Value -> Entry
 	
+	Imported   : Namespace                   -> Namespace
 	Import     : Language * Namespace        -> Property
-	Import     : Language * Namespace * Name -> Property 
+	Import     : Language * Namespace * Name -> Property
 	
 strategies // generic traversal
 	
@@ -154,17 +151,23 @@ rules // generic analysis of uses
 	nbl-use-candidate(|lang, elems, tasks, paths):
 		(Candidate(ns, props, Current(), imports), name{anno*}) -> name{u, anno*}
 		where
-			ppath  := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			path   := <nbl-extend-uri(|ns, <strip-annos> <try(fix-completion-name)> name)> ppath; 
-			result := <new-task(|tasks)> Resolve(path, props, imports);
-		  u      := <new-use(|elems, result)>
+			ppath   := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+			path    := <nbl-extend-uri(|ns, <strip-annos> <try(fix-completion-name)> name)> ppath; 
+			result  := <new-task(|tasks)> Resolve(path, props, imports);
+		  u       := <new-use(|elems, result)>;
+		  import* := <map(nbl-import-candidate(|elems, path, result))> imports
 	
-	nbl-use-candidate(|elems, tasks, paths):
+	nbl-use-candidate(|lang, elems, tasks, paths):
 		(Candidate(ns, props, Context(name', ns', props', refscope'), imports), name{anno*}) -> name{u, anno*}
 		where	
-			_{tempresult} := <nbl-use-candidate(|elems, tasks, paths)> (Candidate(ns', props', refscope', []), name'{});
+			_{tempresult} := <nbl-use-candidate(|lang, elems, tasks, paths)> (Candidate(ns', props', refscope', []), name'{});
 			result				:= <new-task(|tasks)> Resolve((ns, name{}), tempresult, props, imports);
 		  u      				:= <new-use(|elems, result)>
+		  //import*       := <map(nbl-import-candidate(|elems, path, result))> imports
+		  
+  nbl-import-candidate(|elems, path, resolveTask) =
+    ?import;
+    new-prop(|elems, path, import, resolveTask)
 
 rules // generic analysis of properties
 				
