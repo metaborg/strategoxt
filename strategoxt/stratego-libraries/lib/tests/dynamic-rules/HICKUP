@@ -1,0 +1,3 @@
+The *maak* script appear to compile the dynamic rule tests. Question is whether this script is needed? Perhaps this step can be included as part of the build process!
+
+Ok, it's clear that maak is a nested compilation process for these tests. Every folder inside *til/* contains a maak script. Leaving here until we can figure out whether we can run the tests from Ant.
