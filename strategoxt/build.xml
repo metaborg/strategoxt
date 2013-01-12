@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT" basedir="." default="all">
+	<target name="all">
+	</target>
+</project>
