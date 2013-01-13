@@ -7,7 +7,7 @@
 		<element name="action" />
 		<sequential>
 			<condition property="@{input}.@{type}">
-				<uptodate srcfile="@{input}" targetfile="@{output}" />
+				<uptodate srcfile="${basedir}/@{input}" targetfile="${basedir}/@{output}" />
 			</condition>
 			<if>
 				<equals arg1="${@{input}.@{type}}" arg2="true" />
@@ -30,8 +30,8 @@
 		<element name="deps" />
 		<sequential>
 			<condition property="@{input}.@{type}">
-				<uptodate targetfile="@{output}">
-					<srcfiles dir="." includes="@{input}" />
+				<uptodate targetfile="${basedir}/@{output}">
+					<srcfiles dir="." includes="${basedir}/@{input}" />
 					<deps />
 				</uptodate>
 			</condition>
