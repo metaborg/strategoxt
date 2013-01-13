@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="org.strategoxt.StrategoXT" basedir="." default="all">
+<project name="org.strategoxt.StrategoXT.syntax" basedir="." default="all">
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<!-- Import Stratego/XT Ant contributions -->
@@ -14,12 +14,25 @@
 	<property name="syn.aterm" value="aterm" />
 	<property name="syn.java" value="java" />
 	<property name="syn.javaemb" value="java-embedded" />
-
+	
 	<target name="all" depends="
 		stratego-syntax
 		" />
-	
-	<target name="clean" />
+
+	<target name="clean">
+		<delete file="../strc/lib/stratego/strc/pp/stratego-parenthesize.str" />
+		<delete>
+			<fileset dir="${syn.str}" includes="*.def" />
+			<fileset dir="${syn.str}" includes="*.tbl" />
+			<fileset dir="${syn.str}" includes="*.pp" />
+			<fileset dir="${syn.str}" includes="*.pp.af" />
+			<fileset dir="${syn.str}" includes="*.str" />
+			<fileset dir="${syn.str}" includes="*.rtg" />
+		</delete>
+		<delete file="${syn.str}/EmbeddedStrategoMix.sdf" />
+		<delete file="${syn.str}/StrategoMix.sdf" />
+		<delete file="${syn.str}/StrategoRenamed.sdf" />
+	</target>
 
 	<target name="stratego-syntax">
 		<sdf2generated base="${syn.str}/Stratego" main="Stratego">
@@ -75,6 +88,6 @@
 		<gen-renamed-sdf-module input="${syn.str}/Stratego.def" output="${syn.str}/StrategoRenamed.sdf" prefix="Stratego" main="Stratego" name="StrategoRenamed" />
 		<sdf2generated base="${syn.str}/StrategoStratego" main="StrategoStratego" />
 		<sdf2generated base="${syn.str}/Stratego-Sugar-in-Stratego" main="Stratego-Sugar-in-Stratego" />
-		<sdf2parenthesize input="${syn.str}/Stratego.tbl" output="libraries/strc/lib/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
+		<sdf2parenthesize input="${syn.str}/Stratego.tbl" output="../strc/lib/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
 	</target>
 </project>
