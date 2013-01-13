@@ -14,10 +14,20 @@
 	<property name="syn.aterm" value="aterm" />
 	<property name="syn.java" value="java" />
 	<property name="syn.javaemb" value="java-embedded" />
-	
+
 	<target name="all" depends="
-		stratego-syntax
+		stratego-syntax,
+		aterm-syntax,
+		sdf-syntax,
+		box-syntax,
+		pp-syntax,
+		rtg-syntax,
+		java-syntax
 		" />
+	<!--
+		parse-pp-tables
+	
+	-->
 
 	<target name="clean">
 		<delete file="../strc/lib/stratego/strc/pp/stratego-parenthesize.str" />
@@ -28,6 +38,14 @@
 			<fileset dir="${syn.str}" includes="*.pp.af" />
 			<fileset dir="${syn.str}" includes="*.str" />
 			<fileset dir="${syn.str}" includes="*.rtg" />
+		</delete>
+		<delete>
+			<fileset dir="${syn.aterm}" includes="*.def" />
+			<fileset dir="${syn.aterm}" includes="*.tbl" />
+			<fileset dir="${syn.aterm}" includes="*.pp" />
+			<fileset dir="${syn.aterm}" includes="*.pp.af" />
+			<fileset dir="${syn.aterm}" includes="*.str" />
+			<fileset dir="${syn.aterm}" includes="*.rtg" />
 		</delete>
 		<delete file="${syn.str}/EmbeddedStrategoMix.sdf" />
 		<delete file="${syn.str}/StrategoMix.sdf" />
@@ -90,4 +108,165 @@
 		<sdf2generated base="${syn.str}/Stratego-Sugar-in-Stratego" main="Stratego-Sugar-in-Stratego" />
 		<sdf2parenthesize input="${syn.str}/Stratego.tbl" output="../strc/lib/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
 	</target>
+
+	<target name="aterm-syntax">
+		<sdf2generated base="${syn.aterm}/ATerms" main="ATerms">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${sdf}/share/sdf-library/library" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="sdf-syntax">
+		<sdf2generated base="${syn.sdf}/Sdf2" main="Sdf2" pp="false">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${sdf}/share/sdf-library/library" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+		<sdf2generated base="${syn.sdf}/Stratego-Sdf2" main="Stratego-Sdf2">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${sdf}/share/sdf-library/library" />
+					<arg value="-I" />
+					<arg value="stratego" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="box-syntax">
+		<sdf2generated base="${syn.box}/Box" main="Box" pp="false" />
+		<sdf2generated base="${syn.box}/Stratego-Box" main="Stratego-Box">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="stratego" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="pp-syntax">
+		<sdf2generated base="${syn.pp}/pp-table" main="pp-table">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="box" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="rtg-syntax">
+		<sdf2generated base="${syn.rtg}/rtg" main="rtg" pp="false" />
+		<sdf2generated base="${syn.rtg}/Stratego-rtg" main="Stratego-rtg">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="stratego" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="java-syntax">
+		<sdf2generated base="${syn.java}/Java-15" main="Java-15" />
+		<sdf2generated base="${syn.java}/JavaCompilationUnit-15" main="JavaCompilationUnit-15" />
+		<gen-sdf-mix input="${syn.java}/Java-15.def" output="${syn.java}/languages/java-15/JavaMix.sdf" main="languages/java-15/Main" name="languages/java-15/JavaMix" />
+
+		<pack-sdf input="${syn.java}/languages/java-15/JavaMix.sdf" output="${syn.java}/JavaMix.def">
+			<args>
+				<arg value="-Idef" />
+				<arg value="${syn.java}/Java-15.def" />
+			</args>
+			<sdf-deps>
+				<srcfiles dir="${syn.java}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</sdf-deps>
+		</pack-sdf>
+
+		<sdf2generated base="${syn.javaemb}/Java-EBlock" main="Java-EBlock">
+			<includeargs>
+				<args>
+					<arg value="-Idef" />
+					<arg value="${syn.java}/Java-15.def" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+
+		<pack-sdf input="${syn.javaemb}/languages/java/EmbeddedJava.sdf" output="${syn.javaemb}/EmbeddedJava.def">
+			<args>
+				<arg value="-Idef" />
+				<arg value="${syn.java}/Java-15.def" />
+			</args>
+		</pack-sdf>
+
+		<gen-sdf-mix input="${syn.javaemb}/EmbeddedJava.def" output="${syn.java}/languages/java/EmbeddedJavaMix.sdf" main="languages/java/EmbeddedJava" name="languages/java/EmbeddedJavaMix" />
+
+		<mkdir dir="${syn.java}/languages/java/eblock" />
+		<gen-sdf-mix input="${syn.javaemb}/Java-EBlock.def" output="${syn.java}/languages/java/eblock/JavaEBlockMix.sdf" main="languages/java/eblock/Main" name="languages/java/eblock/JavaEBlockMix" />
+
+		<pack-sdf input="${syn.java}/languages/java/EmbeddedJavaMix.sdf" output="${syn.java}/EmbeddedJavaMix.def">
+			<args>
+				<arg value="-Idef" />
+				<arg value="${syn.java}/Java-15.def" />
+				<arg value="-I" />
+				<arg value="${syn.javaemb}" />
+			</args>
+			<sdf-deps>
+				<srcfiles dir="${syn.java}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</sdf-deps>
+		</pack-sdf>
+
+		<sdf2generated base="${syn.javaemb}/Stratego-Java-15" main="Stratego-Java-15">
+			<includeargs>
+				<args>
+					<arg value="-Idef" />
+					<arg value="stratego/StrategoMix.def" />
+					<arg value="-Idef" />
+					<arg value="${syn.java}/JavaMix.def" />
+					<arg value="-I" />
+					<arg value="${syn.java}" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+
+		<sdf2generated base="${syn.javaemb}/Stratego-Java-EBlock" main="Stratego-Java-EBlock">
+			<includeargs>
+				<args>
+					<arg value="-Idef" />
+					<arg value="stratego/StrategoMix.def" />
+					<arg value="-Idef" />
+					<arg value="${syn.java}/JavaMix.def" />
+					<arg value="-I" />
+					<arg value="${syn.java}" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+
+		<rtg2sig input="${syn.java}/Java-15.rtg" output="java-front/lib/java/signature/v5.str" main="Java-15" />
+		<rtg2sig input="${syn.javaemb}/Java-EBlock.rtg" output="java-front/lib/java/signature/eblock.str" main="Java-EBlock" />
+
+		<sdf2parenthesize input="${syn.java}/Java-15.tbl" output="java-front/lib/java/pp/parenthesize.str" main="Java" language="Java5" outputmodule="java/pp/parenthesize">
+			<args>
+				<arg value="--sig-module" />
+				<arg value="java/signature/v5" />
+				<arg value="--main-strategy" />
+				<arg value="io-java5-parenthesize" />
+			</args>
+		</sdf2parenthesize>
+	</target>
+
 </project>
