@@ -5,7 +5,7 @@
 	<property name="nativepath" value="${sdf}/bin/" />
 	<property name="version" value="0" />
 	<property name="revision" value="0" />
-	<property name="sdf" value="" />
+	<property name="sdf" value="${user.home}/.nix-profile" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 	<macrodef name="pack-sdf">

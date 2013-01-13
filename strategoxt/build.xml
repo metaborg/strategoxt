@@ -4,31 +4,30 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
 	<!-- Import Stratego/XT Ant contributions -->
 	<import file="ant-contrib/strategoxt-contrib.xml" />
+
 	<!-- Import the properties file, containing e.g. the version number -->
 	<property file="build.properties"/>
 	
-	<!-- Define where syntaxes are located -->
-	
-	<property name="syn.str" value="syntax/stratego" />
-	<property name="syn.box" value="syntax/box" />
-	<property name="syn.rtg" value="syntax/rtg" />
-	<property name="syn.pp" value="syntax/pp-table" />
-	<property name="syn.sdf" value="syntax/sdf" />
-	<property name="syn.aterm" value="syntax/aterm" />
-	<property name="syn.java" value="syntax/java" />
-	<property name="syn.javaemb" value="syntax/java-embedded" />
-	
-	
 	<target name="all" depends="
-		create-dirs
-		">
-	</target>
-	
+		create-dirs,
+		syntax
+		"/>
 	<target name="create-dirs">
 		<mkdir dir="dist" />
 	</target>
 	
 	<target name="clean">
 		<delete dir="dist" />
+		<!-- Clean the syntax -->
+		<subant target="clean">
+			<fileset dir="." includes="syntax/build.xml" />
+		</subant>
+	</target>
+	
+	<target name="syntax">
+		<!-- Build the syntax -->
+		<subant target="all">
+			<fileset dir="." includes="syntax/build.xml" />
+		</subant>
 	</target>
 </project>

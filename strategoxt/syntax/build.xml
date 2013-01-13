@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT" basedir="." default="all">
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<!-- Import Stratego/XT Ant contributions -->
+	<import file="../ant-contrib/strategoxt-contrib.xml" />
+
+	<!-- Define where syntaxes are located -->
+	<property name="syn.str" value="stratego" />
+	<property name="syn.box" value="box" />
+	<property name="syn.rtg" value="rtg" />
+	<property name="syn.pp" value="pp-table" />
+	<property name="syn.sdf" value="sdf" />
+	<property name="syn.aterm" value="aterm" />
+	<property name="syn.java" value="java" />
+	<property name="syn.javaemb" value="java-embedded" />
+
+	<target name="all" depends="
+		stratego-syntax
+		" />
+	
+	<target name="clean" />
+
+	<target name="stratego-syntax">
+		<sdf2generated base="${syn.str}/Stratego" main="Stratego">
+			<deps>
+				<srcfiles dir="${syn.str}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<sdf2generated base="${syn.str}/Stratego-Core" main="Stratego-Core">
+			<deps>
+				<srcfiles dir="${syn.str}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<sdf2generated base="${syn.str}/Stratego-Sugar" main="Stratego-Sugar">
+			<deps>
+				<srcfiles dir="${syn.str}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<sdf2generated base="${syn.str}/Stratego-Amb" main="Stratego-Amb">
+			<deps>
+				<srcfiles dir="${syn.str}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</deps>
+		</sdf2generated>
+		<pack-sdf input="${syn.str}/EmbeddedStratego.sdf" output="${syn.str}/EmbeddedStratego.def">
+			<sdf-deps>
+				<srcfiles dir="${syn.str}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</sdf-deps>
+		</pack-sdf>
+		<gen-sdf-mix input="${syn.str}/Stratego.def" output="${syn.str}/StrategoMix.sdf" main="Stratego" name="StrategoMix" />
+		<pack-sdf input="${syn.str}/StrategoMix.sdf" output="${syn.str}/StrategoMix.def">
+			<sdf-deps>
+				<srcfiles dir="${syn.str}" includes="**/*.sdf">
+					<exclude name="**/*Renamed.sdf" />
+					<exclude name="**/*Mix.sdf" />
+				</srcfiles>
+			</sdf-deps>
+		</pack-sdf>
+		<gen-sdf-mix input="${syn.str}/EmbeddedStratego.def" output="${syn.str}/EmbeddedStrategoMix.sdf" main="EmbeddedStratego" name="EmbeddedStrategoMix" />
+		<gen-renamed-sdf-module input="${syn.str}/Stratego.def" output="${syn.str}/StrategoRenamed.sdf" prefix="Stratego" main="Stratego" name="StrategoRenamed" />
+		<sdf2generated base="${syn.str}/StrategoStratego" main="StrategoStratego" />
+		<sdf2generated base="${syn.str}/Stratego-Sugar-in-Stratego" main="Stratego-Sugar-in-Stratego" />
+		<sdf2parenthesize input="${syn.str}/Stratego.tbl" output="libraries/strc/lib/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
+	</target>
+</project>
