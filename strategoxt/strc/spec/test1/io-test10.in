@@ -1,1 +1,0 @@
-Plus(Succ(Plus(Succ(Zero),Succ(Zero))),Succ(Zero))

@@ -1,4 +1,0 @@
-module test01
-strategies
-
-  main = id
