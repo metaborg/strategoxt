@@ -12,8 +12,9 @@
 	<property name="syn.pp" value="pp-table" />
 	<property name="syn.sdf" value="sdf" />
 	<property name="syn.aterm" value="aterm" />
-	<property name="syn.java" value="java" />
-	<property name="syn.javaemb" value="java-embedded" />
+	<property name="java-front" value="java-front" />
+	<property name="syn.java" value="${java-front}/syntax/src" />
+	<property name="syn.javaemb" value="${java-front}/syntax-embedding" />
 
 	<target name="all" depends="
 		stratego-syntax,
@@ -39,6 +40,9 @@
 			<fileset dir="${syn.str}" includes="*.str" />
 			<fileset dir="${syn.str}" includes="*.rtg" />
 		</delete>
+		<delete file="${syn.str}/EmbeddedStrategoMix.sdf" />
+		<delete file="${syn.str}/StrategoMix.sdf" />
+		<delete file="${syn.str}/StrategoRenamed.sdf" />
 		<delete>
 			<fileset dir="${syn.aterm}" includes="*.def" />
 			<fileset dir="${syn.aterm}" includes="*.tbl" />
@@ -47,9 +51,38 @@
 			<fileset dir="${syn.aterm}" includes="*.str" />
 			<fileset dir="${syn.aterm}" includes="*.rtg" />
 		</delete>
-		<delete file="${syn.str}/EmbeddedStrategoMix.sdf" />
-		<delete file="${syn.str}/StrategoMix.sdf" />
-		<delete file="${syn.str}/StrategoRenamed.sdf" />
+		<delete>
+			<fileset dir="${syn.box}" includes="*.def" />
+			<fileset dir="${syn.box}" includes="*.tbl" />
+			<fileset dir="${syn.box}" includes="*.pp" excludes="Box.pp" />
+			<fileset dir="${syn.box}" includes="*.pp.af" />
+			<fileset dir="${syn.box}" includes="*.str" />
+			<fileset dir="${syn.box}" includes="*.rtg" />
+		</delete>
+		<delete>
+			<fileset dir="${syn.pp}" includes="*.def" />
+			<fileset dir="${syn.pp}" includes="*.tbl" />
+			<fileset dir="${syn.pp}" includes="*.pp" excludes="pp-table-pretty.pp"/>
+			<fileset dir="${syn.pp}" includes="*.pp.af" />
+			<fileset dir="${syn.pp}" includes="*.str" />
+			<fileset dir="${syn.pp}" includes="*.rtg" />
+		</delete>
+		<delete>
+			<fileset dir="${syn.sdf}" includes="*.def" />
+			<fileset dir="${syn.sdf}" includes="*.tbl" />
+			<fileset dir="${syn.sdf}" includes="*.pp" />
+			<fileset dir="${syn.sdf}" includes="*.pp.af" />
+			<fileset dir="${syn.sdf}" includes="*.str" />
+			<fileset dir="${syn.sdf}" includes="*.rtg" />
+		</delete>
+		<delete>
+			<fileset dir="${syn.rtg}" includes="*.def" />
+			<fileset dir="${syn.rtg}" includes="*.tbl" />
+			<fileset dir="${syn.rtg}" includes="*.pp" />
+			<fileset dir="${syn.rtg}" includes="*.pp.af" />
+			<fileset dir="${syn.rtg}" includes="*.str" />
+			<fileset dir="${syn.rtg}" includes="*.rtg" />
+		</delete>
 	</target>
 
 	<target name="stratego-syntax">
@@ -234,7 +267,7 @@
 			<includeargs>
 				<args>
 					<arg value="-Idef" />
-					<arg value="stratego/StrategoMix.def" />
+					<arg value="${syn.str}/StrategoMix.def" />
 					<arg value="-Idef" />
 					<arg value="${syn.java}/JavaMix.def" />
 					<arg value="-I" />
@@ -247,7 +280,7 @@
 			<includeargs>
 				<args>
 					<arg value="-Idef" />
-					<arg value="stratego/StrategoMix.def" />
+					<arg value="${syn.str}/StrategoMix.def" />
 					<arg value="-Idef" />
 					<arg value="${syn.java}/JavaMix.def" />
 					<arg value="-I" />
@@ -256,10 +289,10 @@
 			</includeargs>
 		</sdf2generated>
 
-		<rtg2sig input="${syn.java}/Java-15.rtg" output="java-front/lib/java/signature/v5.str" main="Java-15" />
-		<rtg2sig input="${syn.javaemb}/Java-EBlock.rtg" output="java-front/lib/java/signature/eblock.str" main="Java-EBlock" />
+		<rtg2sig input="${syn.java}/Java-15.rtg" output="${java-front}/lib/java/signature/v5.str" main="Java-15" />
+		<rtg2sig input="${syn.javaemb}/Java-EBlock.rtg" output="${java-front}/lib/java/signature/eblock.str" main="Java-EBlock" />
 
-		<sdf2parenthesize input="${syn.java}/Java-15.tbl" output="java-front/lib/java/pp/parenthesize.str" main="Java" language="Java5" outputmodule="java/pp/parenthesize">
+		<sdf2parenthesize input="${syn.java}/Java-15.tbl" output="${java-front}/lib/java/pp/parenthesize.str" main="Java" language="Java5" outputmodule="java/pp/parenthesize">
 			<args>
 				<arg value="--sig-module" />
 				<arg value="java/signature/v5" />
