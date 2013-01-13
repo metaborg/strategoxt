@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT.libraries" basedir="." default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+	<import file="../ant-contrib/strategoxt-contrib.xml" />
+
+	<!-- Assume variable dist.dir is defined by importer -->
+	<target name="all" depends="create-dirs,aterm-java" />
+
+	<target name="create-dirs">
+		<mkdir dir="../${lib}" />
+		<mkdir dir="../${lib}/org/strategoxt/stratego_aterm" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${lib}/org/strategoxt/stratego_aterm" />
+	</target>
+
+	<target name="aterm-java">
+		<strj-lib
+			input="aterm/lib/stratego-aterm.str"
+			output="../${lib}/org/strategoxt/stratego_aterm/Main.java"
+			package="org.strategoxt.stratego_aterm">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-I" />
+				<arg value="${basedir}/../${syntax-dir}/${syn.aterm}" />
+				<arg value="-I" />
+				<arg value="${basedir}/../${syntax-dir}/${syn.box}" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="aterm/lib" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
+	</target>
+</project>

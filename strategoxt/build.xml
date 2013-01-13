@@ -2,32 +2,55 @@
 <project name="org.strategoxt.StrategoXT" basedir="." default="all">
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
 	<!-- Import Stratego/XT Ant contributions -->
 	<!--<import file="ant-contrib/strategoxt-contrib.xml" />-->
 
 	<!-- Import the properties file, containing e.g. the version number -->
 	<property file="build.properties" />
 
-	<!-- Import syntax builder -->
-	<!--<include file="syntax/build.xml" as="syntax" />-->
+	<!-- Location of the syntax folder -->
+	<property name="syntax-dir" value="syntax" />
+	<!-- Location of libraries folder -->
+	<property name="libraries-dir" value="stratego-libraries" />
+	<!-- Destination of files -->
+	<property name="lib" value="lib" />
 
+	<!-- Import syntax builder -->
+	<include file="${syntax-dir}/build.xml" as="syntax" />
+	
+	<!-- Import the libraries builder -->
+	<include file="${libraries-dir}/build.xml" as="libraries" />
+	
 	<target name="all" depends="
 		create-dirs,
-		syntax
+		syntax,
+		generate-java
 		" />
 	<target name="create-dirs">
-		<mkdir dir="dist" />
+		<mkdir dir="${lib}" />
 	</target>
 
 	<target name="clean">
-		<delete dir="dist" />
+		<delete dir="${lib}" />
 		<!-- Clean the syntax -->
-		<ant dir="syntax" antfile="build.xml" target="clean" />
+		<antcall target="syntax.clean">
+			<param name="basedir" value="${basedir}/${syntax-dir}" />
+		</antcall>
 	</target>
 
 	<target name="syntax">
 		<!-- Build the syntax -->
-		<!--<antcall target="syntax.all" />-->
-		<ant dir="syntax" antfile="build.xml" target="all" />
+		<antcall target="syntax.all">
+			<param name="basedir" value="${basedir}/${syntax-dir}" />
+		</antcall>
 	</target>
+
+	<target name="generate-java">
+		<!-- Compile libraries to Java -->
+		<antcall target="libraries.all">
+			<param name="basedir" value="${basedir}/${libraries-dir}" />
+		</antcall>
+	</target>
+
 </project>

@@ -5,7 +5,7 @@
 	<!-- Import Stratego/XT Ant contributions -->
 	<import file="../ant-contrib/strategoxt-contrib.xml" />
 
-	<!-- Define where syntaxes are located -->
+	<!-- Define where syntax files are located -->
 	<property name="syn.str" value="stratego" />
 	<property name="syn.box" value="box" />
 	<property name="str-rtg" value="rtg" />

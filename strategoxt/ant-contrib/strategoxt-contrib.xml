@@ -241,7 +241,7 @@
 				<action>
 					<java classname="org.strategoxt.strj.Main" failonerror="true">
 						<arg value="-i" />
-						<arg value="@{input}" />
+						<arg value="${basedir}/@{input}" />
 						<arg value="-o" />
 						<arg value="@{output}" />
 						<arg value="-p" />
@@ -251,7 +251,7 @@
 						<arg value="-D" />
 						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
 						<strjargs />
-						<jvmarg value="-Xss8m" />
+						<!-- <jvmarg value="-Xss8m" /> -->
 					</java>
 				</action>
 				<deps>
