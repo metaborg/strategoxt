@@ -42,12 +42,12 @@
 				<action>
 					<java classname="org.spoofax.jsglr.Main" failonerror="true">
 						<arg value="-i" />
-						<arg value="@{input}" />
+						<arg value="${basedir}/@{input}" />
 						<arg value="-p" />
-						<arg value="@{parsetable}" />
+						<arg value="${basedir}/@{parsetable}" />
 						<arg value="--implode" />
 						<arg value="-o" />
-						<arg value="@{output}" />
+						<arg value="${basedir}/@{output}" />
 						<args />
 					</java>
 				</action>

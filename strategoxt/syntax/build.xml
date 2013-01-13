@@ -8,9 +8,11 @@
 	<!-- Define where syntaxes are located -->
 	<property name="syn.str" value="stratego" />
 	<property name="syn.box" value="box" />
-	<property name="syn.rtg" value="rtg" />
+	<property name="str-rtg" value="rtg" />
+	<property name="syn.rtg" value="${str-rtg}/syn" />
 	<property name="syn.pp" value="pp-table" />
-	<property name="syn.sdf" value="sdf" />
+	<property name="sdf-front" value="sdf" />
+	<property name="syn.sdf" value="${sdf-front}/syn" />
 	<property name="syn.aterm" value="aterm" />
 	<property name="java-front" value="java-front" />
 	<property name="syn.java" value="${java-front}/syntax/src" />
@@ -23,10 +25,10 @@
 		box-syntax,
 		pp-syntax,
 		rtg-syntax,
-		java-syntax
+		java-syntax,
+		parse-pp-tables
 		" />
 	<!--
-		parse-pp-tables
 	
 	-->
 
@@ -62,7 +64,7 @@
 		<delete>
 			<fileset dir="${syn.pp}" includes="*.def" />
 			<fileset dir="${syn.pp}" includes="*.tbl" />
-			<fileset dir="${syn.pp}" includes="*.pp" excludes="pp-table-pretty.pp"/>
+			<fileset dir="${syn.pp}" includes="*.pp" excludes="pp-table-pretty.pp" />
 			<fileset dir="${syn.pp}" includes="*.pp.af" />
 			<fileset dir="${syn.pp}" includes="*.str" />
 			<fileset dir="${syn.pp}" includes="*.rtg" />
@@ -168,7 +170,7 @@
 					<arg value="-I" />
 					<arg value="${sdf}/share/sdf-library/library" />
 					<arg value="-I" />
-					<arg value="stratego" />
+					<arg value="${basedir}/${syn.str}" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -180,7 +182,7 @@
 			<includeargs>
 				<args>
 					<arg value="-I" />
-					<arg value="stratego" />
+					<arg value="${basedir}/${syn.str}" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -191,7 +193,7 @@
 			<includeargs>
 				<args>
 					<arg value="-I" />
-					<arg value="box" />
+					<arg value="${basedir}/${syn.box}" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -203,7 +205,7 @@
 			<includeargs>
 				<args>
 					<arg value="-I" />
-					<arg value="stratego" />
+					<arg value="${basedir}/${syn.str}" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -217,7 +219,7 @@
 		<pack-sdf input="${syn.java}/languages/java-15/JavaMix.sdf" output="${syn.java}/JavaMix.def">
 			<args>
 				<arg value="-Idef" />
-				<arg value="${syn.java}/Java-15.def" />
+				<arg value="${basedir}/${syn.java}/Java-15.def" />
 			</args>
 			<sdf-deps>
 				<srcfiles dir="${syn.java}" includes="**/*.sdf">
@@ -231,7 +233,7 @@
 			<includeargs>
 				<args>
 					<arg value="-Idef" />
-					<arg value="${syn.java}/Java-15.def" />
+					<arg value="${basedir}/${syn.java}/Java-15.def" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -239,7 +241,7 @@
 		<pack-sdf input="${syn.javaemb}/languages/java/EmbeddedJava.sdf" output="${syn.javaemb}/EmbeddedJava.def">
 			<args>
 				<arg value="-Idef" />
-				<arg value="${syn.java}/Java-15.def" />
+				<arg value="${basedir}/${syn.java}/Java-15.def" />
 			</args>
 		</pack-sdf>
 
@@ -253,7 +255,7 @@
 				<arg value="-Idef" />
 				<arg value="${syn.java}/Java-15.def" />
 				<arg value="-I" />
-				<arg value="${syn.javaemb}" />
+				<arg value="${basedir}/${syn.javaemb}" />
 			</args>
 			<sdf-deps>
 				<srcfiles dir="${syn.java}" includes="**/*.sdf">
@@ -267,11 +269,11 @@
 			<includeargs>
 				<args>
 					<arg value="-Idef" />
-					<arg value="${syn.str}/StrategoMix.def" />
+					<arg value="${basedir}/${syn.str}/StrategoMix.def" />
 					<arg value="-Idef" />
-					<arg value="${syn.java}/JavaMix.def" />
+					<arg value="${basedir}/${syn.java}/JavaMix.def" />
 					<arg value="-I" />
-					<arg value="${syn.java}" />
+					<arg value="${basedir}/${syn.java}" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -280,11 +282,11 @@
 			<includeargs>
 				<args>
 					<arg value="-Idef" />
-					<arg value="${syn.str}/StrategoMix.def" />
+					<arg value="${basedir}/${syn.str}/StrategoMix.def" />
 					<arg value="-Idef" />
-					<arg value="${syn.java}/JavaMix.def" />
+					<arg value="${basedir}/${syn.java}/JavaMix.def" />
 					<arg value="-I" />
-					<arg value="${syn.java}" />
+					<arg value="${basedir}/${syn.java}" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -300,6 +302,12 @@
 				<arg value="io-java5-parenthesize" />
 			</args>
 		</sdf2parenthesize>
+	</target>
+
+	<target name="parse-pp-tables">
+		<sglri input="${sdf-front}/pp/Sdf2.pp" output="${syn.sdf}/Sdf2.pp.af" parsetable="${syn.pp}/pp-table.tbl" />
+		<sglri input="${syn.pp}/pp-table-pretty.pp" output="${syn.pp}/pp-table-pretty.pp.af" parsetable="${syn.pp}/pp-table.tbl" />
+		<sglri input="${str-rtg}/pp/rtg.pp" output="${syn.rtg}/rtg.pp.af" parsetable="${syn.pp}/pp-table.tbl" />
 	</target>
 
 </project>
