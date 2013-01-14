@@ -6,13 +6,13 @@
 		<attribute name="output" />
 		<element name="action" />
 		<sequential>
-			<condition property="@{input}.@{type}">
+			<condition property="@{input}.@{output}.@{type}">
 				<uptodate srcfile="${basedir}/@{input}" targetfile="${basedir}/@{output}" />
 			</condition>
 			<if>
-				<equals arg1="${@{input}.@{type}}" arg2="true" />
+				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
 				<then>
-					<echo message="@{output} is up-to-date" />
+					<echo message="@{input} -> @{output} is up-to-date" />
 				</then>
 				<else>
 					<log message="@{input} -> @{output}" />
@@ -29,14 +29,14 @@
 		<element name="action" />
 		<element name="deps" />
 		<sequential>
-			<condition property="@{input}.@{type}">
+			<condition property="@{input}.@{output}.@{type}">
 				<uptodate targetfile="@{output}">
 					<srcfiles dir="${basedir}" includes="@{input}" />
 					<deps />
 				</uptodate>
 			</condition>
 			<if>
-				<equals arg1="${@{input}.@{type}}" arg2="true" />
+				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
 				<then>
 					<echo message="@{output} is up-to-date" />
 				</then>

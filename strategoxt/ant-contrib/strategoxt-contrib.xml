@@ -2,10 +2,12 @@
 <project name="org.strategoxt.ant" basedir=".">
 	<import file="strategoxt-contrib-util.xml" />
 
+	<!-- This will be more beautiful when SDF is reimplemented in Stratego -->
+	<property name="sdf" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf}/bin/" />
+
 	<property name="version" value="0" />
 	<property name="revision" value="0" />
-	<property name="sdf" value="${user.home}/.nix-profile" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 	<macrodef name="pack-sdf">
@@ -84,7 +86,7 @@
 		<attribute name="output" />
 		<attribute name="main" />
 		<sequential>
-			<uptodate-io input="@{input}" output="@{output}" type="sdf2rtg">
+			<uptodate-io input="@{input}" output="@{output}" type="rtg2sig">
 				<action>
 					<java classname="run" failonerror="true">
 						<arg value="org.strategoxt.tools.main-rtg2sig" />
