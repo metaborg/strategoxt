@@ -31,7 +31,7 @@
 		<sequential>
 			<condition property="@{input}.@{output}.@{type}">
 				<uptodate targetfile="@{output}">
-					<srcfiles dir="${basedir}" includes="@{input}" />
+					<srcfiles dir="." includes="${basedir}/@{input}" />
 					<deps />
 				</uptodate>
 			</condition>

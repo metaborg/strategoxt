@@ -19,6 +19,7 @@
 	<property name="syn.javaemb" value="${java-front}/syntax-embedding" />
 
 	<target name="all" depends="
+		create-dirs,
 		stratego-syntax,
 		aterm-syntax,
 		sdf-syntax,
@@ -28,9 +29,10 @@
 		java-syntax,
 		parse-pp-tables
 		" />
-	<!--
 	
-	-->
+	<target name="create-dirs">
+		<mkdir dir="${lib}/org/strategoxt/java_front" />
+	</target>
 
 	<target name="clean">
 		<delete file="../strc/lib/stratego/strc/pp/stratego-parenthesize.str" />
@@ -85,6 +87,7 @@
 			<fileset dir="${syn.rtg}" includes="*.str" />
 			<fileset dir="${syn.rtg}" includes="*.rtg" />
 		</delete>
+		<delete dir="${lib}/org/strategoxt/java_front" />
 	</target>
 
 	<target name="stratego-syntax">
@@ -309,6 +312,29 @@
 		<sglri input="${sdf-front}/pp/Sdf2.pp" output="${syn.sdf}/Sdf2.pp.af" parsetable="${syn.pp}/pp-table.tbl" />
 		<sglri input="${syn.pp}/pp-table-pretty.pp" output="${syn.pp}/pp-table-pretty.pp.af" parsetable="${syn.pp}/pp-table.tbl" />
 		<sglri input="${str-rtg}/pp/rtg.pp" output="${syn.rtg}/rtg.pp.af" parsetable="${syn.pp}/pp-table.tbl" />
+	</target>
+
+	<!-- TODO: this should be done with a build-file inside the Java-front package. -->
+	<target name="java-front-java">
+		<strj-lib input="${java-front}/lib/javafront.str" output="${lib}/org/strategoxt/java_front/Main.java" package="org.strategoxt.java_front">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-I" />
+				<arg value="${basedir}/${syn.java}" />
+				<arg value="-I" />
+				<arg value="${basedir}/${syn.box}" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="${java-front}/lib" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
+		<copy file="${java-front}/lib/libjavafront.ctree" tofile="${java-front}/lib/libjava-front.ctree" />
+		<copy file="${java-front}/lib/libjavafront.rtree" tofile="${java-front}/lib/libjava-front.rtree" />
 	</target>
 
 </project>

@@ -46,14 +46,14 @@
 		</antcall>
 	</target>
 
-	<target name="generate-java">
+	<target name="generate-java" depends="syntax">
 		<!-- Compile libraries to Java -->
 		<antcall target="libraries.all">
 			<param name="basedir" value="${libraries-dir}" />
 		</antcall>
-		<antcall target="syntax.java-front-java">
+		<!--<antcall target="syntax.java-front-java">
 			<param name="basedir" value="${syntax-dir}" />
-		</antcall>
+		</antcall>-->
 	</target>
 
 </project>
