@@ -15,7 +15,8 @@
 		strc-java,
 		tool-doc-java,
 		xtc-java,
-		strj-java
+		strj-java,
+		tools-java
 		" />
 
 	<target name="create-dirs">
@@ -29,6 +30,7 @@
 		<mkdir dir="${lib}/org/strategoxt/stratego_tool_doc" />
 		<mkdir dir="${lib}/org/strategoxt/stratego_xtc" />
 		<mkdir dir="${lib}/org/strategoxt/strj" />
+		<mkdir dir="${lib}/org/strategoxt/tools" />
 	</target>
 
 	<target name="clean">
@@ -42,6 +44,7 @@
 		<delete dir="${lib}/org/strategoxt/stratego_tool_doc" />
 		<delete dir="${lib}/org/strategoxt/stratego_xtc" />
 		<delete dir="${lib}/org/strategoxt/strj" />
+		<delete dir="${lib}/org/strategoxt/tools" />
 	</target>
 
 	<target name="aterm-java">
@@ -267,4 +270,45 @@
 			</str-deps>
 		</strj>
 	</target>
+
+	<target name="tools-java">
+		<strj-lib input="java-backend/java/tools/org/strategoxt/tools/tools.str" output="${lib}/org/strategoxt/tools/Main.java" package="org.strategoxt.tools">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-la" />
+				<arg value="stratego-rtg" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="stratego-tool-doc" />
+				<arg value="-la" />
+				<arg value="stratego-sdf" />
+				<arg value="-la" />
+				<arg value="stratego-aterm" />
+				<arg value="-la" />
+				<arg value="strc" />
+				<arg value="-I" />
+				<arg value="${basedir}/java-backend/java/tools/org/strategoxt/tools/lib" />
+				<arg value="-I" />
+				<arg value="${basedir}/java-backend/java/pack-sdf-ext/extension" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.str}" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.sdf}" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.rtg}" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.pp}" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="java-backend/java/tools/org/strategoxt/tools" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
+	</target>
+
 </project>
