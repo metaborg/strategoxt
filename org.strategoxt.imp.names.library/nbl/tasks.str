@@ -19,8 +19,7 @@ signature
 		DoneTask : String * Term											        -> DoneTask
 		FailTask : String * Term                              -> FailTask
 		
-		Resolve  : URI * List(Prop)                           -> Instruction
-		Resolve  : Segment * Term * List(Prop)                -> Instruction
+		Resolve  : URI * Namespace * Name * List(Prop)        -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
 		Match		 : ID * Term			                          	-> Instruction
 		Done     : Term                                   		-> Instruction
@@ -77,14 +76,13 @@ rules
 rules
 	
 	perform-task(|elems): 
-	  Resolve(uri, props) -> result
+	  Resolve(uri, namespace, name, _) -> result
 	  where
-	    if resolvedURI := <nbl-uri> <nbl-lookup-definition> uri then 
-	      result := Done(<nbl-uri> <nbl-lookup-definition> uri)
+	    if resolvedURI := <nbl-uri> <nbl-lookup-definition(|namespace, name)> uri then 
+	      result := Done(resolvedURI)
 	    else
 	      result := Fail(uri)
 	    end
-	perform-task(|elems): Resolve(segment, uri, props) -> <perform-task(|elems)> Resolve(<nbl-extend-uri(|segment)> uri, [])
 	perform-task(|elems): PropCalc(prop, term) 		     -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 				     -> Done(<match-term> (key, term))
 	
@@ -133,7 +131,7 @@ rules /** @internal Projections */
   
   /** @internal */  
   nbl-uri-impl:
-  	Resolve(uri, _) -> uri
+  	Resolve(uri, _, _, _) -> uri
   
   /** @internal */
   nbl-uri-impl:

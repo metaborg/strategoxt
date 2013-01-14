@@ -12,6 +12,9 @@ rules // Index-based lookup
   nbl-lookup-definition:
     containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
     
+  nbl-lookup-definition(|namespace, name):
+    uri -> <nbl-lookup-uri(nbl-definition-template|namespace, name)> uri
+    
   nbl-lookup-property(|type):
     containsURI -> containsURI //<nbl-lookup(nbl-property-template(|type))> containsURI
   
@@ -58,7 +61,7 @@ rules /** @internal Index-based lookup */
       // TODO: Implicit (this, super) definitions
       
   nbl-standard-lookup-nonunique(create-template|namespace, name) =
-    nbl-extend-uri(|namespace, name);
+    nbl-extend-uri(|namespace, name, NonUnique());
     create-template;
     nbl-get-all
     
