@@ -10,11 +10,11 @@
 	<property file="build.properties" />
 
 	<!-- Location of the syntax folder -->
-	<property name="syntax-dir" value="syntax" />
+	<property name="syntax-dir" location="syntax" />
 	<!-- Location of libraries folder -->
-	<property name="libraries-dir" value="stratego-libraries" />
+	<property name="libraries-dir" location="stratego-libraries" />
 	<!-- Destination of files -->
-	<property name="lib" value="lib" />
+	<property name="lib" location="lib/" />
 
 	<!-- Import syntax builder -->
 	<include file="${syntax-dir}/build.xml" as="syntax" />
@@ -35,21 +35,21 @@
 		<delete dir="${lib}" />
 		<!-- Clean the syntax -->
 		<antcall target="syntax.clean">
-			<param name="basedir" value="${basedir}/${syntax-dir}" />
+			<param name="basedir" value="${syntax-dir}" />
 		</antcall>
 	</target>
 
 	<target name="syntax">
 		<!-- Build the syntax -->
 		<antcall target="syntax.all">
-			<param name="basedir" value="${basedir}/${syntax-dir}" />
+			<param name="basedir" value="${syntax-dir}" />
 		</antcall>
 	</target>
 
 	<target name="generate-java">
 		<!-- Compile libraries to Java -->
 		<antcall target="libraries.all">
-			<param name="basedir" value="${basedir}/${libraries-dir}" />
+			<param name="basedir" value="${libraries-dir}" />
 		</antcall>
 	</target>
 
