@@ -2,6 +2,7 @@
 
 imports 
 	
+	index/core
 	nbl/lookup
 	nbl/uri
 	
@@ -49,7 +50,7 @@ rules
 		<+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, !(dep, <id>); union, ?instr)); merge-tasks>]
 		<+ [id|merge-tasks]
 	
-	perform-tasks:
+	perform-tasks(|partition):
 		(tasks, elems) -> (tasks'', elems'')
 		with
 			if 
@@ -65,8 +66,9 @@ rules
             elems'           := <map(!FailTask(<id>, tr))> names
           end
 			  end;
+			  <index-add-all(|partition)> elems';
 				tasks'               := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-				(tasks'', elems'')   := <perform-tasks> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
+				(tasks'', elems'')   := <perform-tasks(|partition)> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 			else
 				tasks'' := tasks;
 				elems'' := elems
@@ -100,9 +102,6 @@ rules
 	split-results = 
 		partition(task-result; unzip; (concat, id))
 		
-  split-completed-tasks =
-  	partition(?DoneTask(_, _) <+ ?FailTask(_, _))
-	
 	task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
 	
 	resolve-dependencies(|solved, results):
@@ -120,6 +119,11 @@ rules
 		has-annos; 
 		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
 		set-annos
+
+rules
+  
+  nbl-result-number:
+    Result(num) -> num
 
 rules /** @internal Projections */
 	

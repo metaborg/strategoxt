@@ -111,14 +111,10 @@ rules /** @internal Imports */
   nbl-lookup-imported-entries(create-template|language, namespace, name):
     uri -> <conc> (namedEntry*, unnamedEntry*)
     with
-      <debug(!"uri              ")> uri;
-      <debug(!"language         ")> language;
-      <debug(!"namespace        ")> namespace;
-      <debug(!"name             ")> name;
-      namedImportURI*   := <debug(!"namedImportURI      ")> <nbl-get-import-uris(|language, namespace, name)> uri;
-      namedEntry*       := <debug(!"namedEntry          ")> <mapconcat(create-template; nbl-get-all)> namedImportURI*;
-      unnamedImportURI* := <debug(!"unnamedImportURI    ")> <nbl-get-import-uris(|language, namespace)> uri;
-      unnamedEntry*     := <debug(!"unnamedEntry        ")> <mapconcat(nbl-standard-lookup(create-template|namespace, name))> unnamedImportURI*
+      namedImportURI*   := <nbl-get-import-uris(|language, namespace, name)> uri;
+      namedEntry*       := <mapconcat(create-template; nbl-get-all)> namedImportURI*;
+      unnamedImportURI* := <nbl-get-import-uris(|language, namespace)> uri;
+      unnamedEntry*     := <mapconcat(nbl-standard-lookup(create-template|namespace, name))> unnamedImportURI*
       
   nbl-visible-imported-entries(create-template|language, namespace, prefix):
     uri -> unnamedEntry*
@@ -129,18 +125,18 @@ rules /** @internal Imports */
   nbl-get-import-uris(|language, namespace):
     uri -> <conc> (importURI*, transitiveImportURI*)
     with
-      importResult*        := <debug(!"importResult        ")> <nbl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <debug(!"importURI           ")> <filter(nbl-resolve-result)> importResult*;
-      importedResult*      := <debug(!"importedResult      ")> <nbl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <debug(!"importedURI         ")> <filter(nbl-resolve-result)> importedResult*;
-      transitiveImportURI* := <debug(!"transitiveImportURI ")> <mapconcat(nbl-get-import-uris(|language, namespace))> importedURI*
+      importResult*        := <nbl-get-all-properties(|Import(language, namespace))> uri;
+      importURI*           := <filter(nbl-resolve-result)> importResult*;
+      importedResult*      := <nbl-get-all-properties(|Import(language, Imported(namespace)))> uri;
+      importedURI*         := <filter(nbl-resolve-result)> importedResult*;
+      transitiveImportURI* := <mapconcat(nbl-get-import-uris(|language, namespace))> importedURI*
       // TODO: prevent loops
     
   nbl-get-import-uris(|language, namespace, name):
     uri -> importURI*
     with
-      importResult* := <debug(!"importResult        ")> <nbl-get-all-properties(|Import(language, namespace, name))> uri;
-      importURI*    := <debug(!"importURI           ")> <filter(nbl-resolve-result)> importResult*
+      importResult* := <nbl-get-all-properties(|Import(language, namespace, name))> uri;
+      importURI*    := <filter(nbl-resolve-result)> importResult*
 
 rules /** @internal Helpers */
   

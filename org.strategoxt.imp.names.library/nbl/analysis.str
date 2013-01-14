@@ -21,15 +21,13 @@ strategies
 		with // Collect tasks
 			(ast', entries, tasks) := <nbl-collect(|Language(language))> ast;
 			 
-			<index-add-all(|partition)> <debug(!"added: ")> entries
+			<index-add-all(|partition)> entries
 	  with // Perform tasks
 	  	nbl-collect-reads(
 				tasks'             := <merge-tasks> tasks;
-				(errors, entries') := <perform-tasks> (tasks', entries);
-				(results, _)       := <split-completed-tasks> entries'
+				(errors, entries') := <perform-tasks(|partition)> (tasks', entries)
 			) => reads;
-			
-			<index-add-all(|partition)> results;
+					
 			<index-add-all(|partition)> reads
 		with // Dependent partitions
 		  newEntries       := <filter(nbl-diff-entry)> entries';
