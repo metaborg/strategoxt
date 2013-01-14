@@ -114,13 +114,14 @@ strategies
     Option("--asfix",
     where(<set-config>("--asfix",())); !(),
     !"--asfix            Concrete syntax parts are not imploded")
-  <+
-    Option("--Xfast-pp",
-      if-java-platform(warn(|"Fast pretty printing not available on Java"));
-      if-c-platform(rules(FastPrettyPrinting: _))
-    , !"--Xfast-pp         Use the C-based ugly and fast pretty-printer";
-      if-java-platform(fail)
-    )
+  // UNDONE. VladVergu. No fast pretty printing for Java, no C platform anymore. Removed for bootstrapping.
+  // <+
+  //   Option("--Xfast-pp",
+  //     if-java-platform(warn(|"Fast pretty printing not available on Java"));
+  //     if-c-platform(rules(FastPrettyPrinting: _))
+  //   , !"--Xfast-pp         Use the C-based ugly and fast pretty-printer";
+  //     if-java-platform(fail)
+  //   )
   <+
     Option("--Xecj33",
       rules(OldECJCompatibility: _)
