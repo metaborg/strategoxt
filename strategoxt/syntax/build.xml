@@ -39,7 +39,7 @@
 			<fileset dir="${syn.str}" includes="*.tbl" />
 			<fileset dir="${syn.str}" includes="*.pp" />
 			<fileset dir="${syn.str}" includes="*.pp.af" />
-			<fileset dir="${syn.str}" includes="*.str" />
+			<fileset dir="${syn.str}" includes="*.str" excludes="Stratego-MetaTransition.str, Stratego-Sugar-MetaTransition.str"/>
 			<fileset dir="${syn.str}" includes="*.rtg" />
 		</delete>
 		<delete file="${syn.str}/EmbeddedStrategoMix.sdf" />
@@ -141,7 +141,7 @@
 		<gen-renamed-sdf-module input="${syn.str}/Stratego.def" output="${syn.str}/StrategoRenamed.sdf" prefix="Stratego" main="Stratego" name="StrategoRenamed" />
 		<sdf2generated base="${syn.str}/StrategoStratego" main="StrategoStratego" />
 		<sdf2generated base="${syn.str}/Stratego-Sugar-in-Stratego" main="Stratego-Sugar-in-Stratego" />
-		<sdf2parenthesize input="${syn.str}/Stratego.tbl" output="../strc/lib/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
+		<sdf2parenthesize input="${syn.str}/Stratego.tbl" output="../${libraries-dir}/strc/lib/stratego/strc/pp/stratego-parenthesize.str" main="Stratego" language="Stratego" outputmodule="stratego-parenthesize" />
 	</target>
 
 	<target name="aterm-syntax">

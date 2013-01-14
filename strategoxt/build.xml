@@ -12,7 +12,7 @@
 	<!-- Location of the syntax folder -->
 	<property name="syntax-dir" location="syntax" />
 	<!-- Location of libraries folder -->
-	<property name="libraries-dir" location="stratego-libraries" />
+	<property name="libraries-dir" value="stratego-libraries" />
 	<!-- Destination of files -->
 	<property name="lib" location="lib/" />
 
