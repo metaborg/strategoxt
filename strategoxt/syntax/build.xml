@@ -253,7 +253,7 @@
 		<pack-sdf input="${syn.java}/languages/java/EmbeddedJavaMix.sdf" output="${syn.java}/EmbeddedJavaMix.def">
 			<args>
 				<arg value="-Idef" />
-				<arg value="${syn.java}/Java-15.def" />
+				<arg value="${basedir}/${syn.java}/Java-15.def" />
 				<arg value="-I" />
 				<arg value="${basedir}/${syn.javaemb}" />
 			</args>
@@ -290,7 +290,8 @@
 				</args>
 			</includeargs>
 		</sdf2generated>
-
+		
+		<mkdir dir="${java-front}/lib/java/signature" />
 		<rtg2sig input="${syn.java}/Java-15.rtg" output="${java-front}/lib/java/signature/v5.str" main="Java-15" />
 		<rtg2sig input="${syn.javaemb}/Java-EBlock.rtg" output="${java-front}/lib/java/signature/eblock.str" main="Java-EBlock" />
 
