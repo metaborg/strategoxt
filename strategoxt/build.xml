@@ -16,6 +16,7 @@
 
 	<!-- Destination of files -->
 	<property name="lib" location="lib/" />
+	<property name="bin" location="bin/" />
 
 	<!-- Import syntax builder -->
 	<include file="${syntax-dir}/build.xml" as="syntax" />
@@ -27,14 +28,17 @@
 	        depends="
 		create-dirs,
 		syntax,
-		generate-java
+		generate-java,
+		compile-java
 		" />
 	<target name="create-dirs">
 		<mkdir dir="${lib}" />
+		<mkdir dir="${bin}" />
 	</target>
 
 	<target name="clean">
 		<delete dir="${lib}" />
+		<delete dir="${bin}" />
 		<!-- Clean the syntax -->
 		<antcall target="syntax.clean">
 			<param name="basedir" value="${syntax-dir}" />
@@ -61,4 +65,23 @@
 		</antcall>
 	</target>
 
+	<target name="compile-java" depends="generate-java">
+		<javac srcdir="${lib}"
+		       destdir="${bin}"
+		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
+		       source="1.5"
+		       target="1.5"
+		       nowarn="on"
+		       debug="true"
+		       debuglevel="source" />
+		<javac srcdir="${libraries-dir}/java-backend/java/runtime"
+		       destdir="${bin}"
+		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
+		       source="1.5"
+		       target="1.5"
+		       nowarn="on"
+		       debug="true"
+		       debuglevel="source" />
+	</target>
+	
 </project>
