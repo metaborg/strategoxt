@@ -153,7 +153,8 @@ rules // generic analysis of imports
     where
       importNs := <nbl-import-namespace> import;
       uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
-      result   := <new-task(|tasks)> Resolve(uri, resolveNs, <strip-annos> <try(fix-completion-name)> name, []);
+      uri'     := <nbl-extend-uri(|resolveNs, <strip-annos> <try(fix-completion-name)> name, ())> uri;
+      result   := <new-task(|tasks)> Resolve(uri', []);
       deps'    := [<nbl-result-number> result|deps];
       new-prop(|elems, uri, import, result)
       
@@ -195,7 +196,8 @@ rules // generic analysis of uses
 		(Candidate(ns, props, Current()), name{anno*}) -> name{u, anno*}
 		where
 			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			result := <new-task(|tasks, deps)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, props);
+			uri'   := <nbl-extend-uri(|ns, <strip-annos> <try(fix-completion-name)> name, ())> uri;
+			result := <new-task(|tasks, deps)> Resolve(uri', props);
 		  u      := <new-use(|elems, result)>
 	
 	// TODO Gabriel: Don't understand this code, please fix it again Guido.
