@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="org.strategoxt.ant" basedir=".">
+<project name="org.strategoxt.ant">
 	<import file="strategoxt-contrib-util.xml" />
 
 	<!-- This will be more beautiful when SDF is reimplemented in Stratego -->

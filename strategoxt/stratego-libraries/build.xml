@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<project name="org.strategoxt.StrategoXT.libraries" basedir="." default="all">
+<project name="org.strategoxt.StrategoXT.libraries" basedir=".">
 	<!-- Import Stratego/XT Ant contributions -->
 	<import file="../ant-contrib/strategoxt-contrib.xml" />
 
 	<!-- Assume variable dist.dir is defined by importer -->
-	<target name="all"
+	<target name="part-1"
 	        depends="
 		create-dirs,
 		aterm-java,
@@ -17,7 +17,11 @@
 		tool-doc-java,
 		xtc-java,
 		strj-java,
-		tools-java,
+		tools-java
+		" />
+	
+	<target name="part-2" depends="
+		create-dirs,
 		compat-java
 		" />
 
