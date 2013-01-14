@@ -30,8 +30,8 @@
 		<element name="deps" />
 		<sequential>
 			<condition property="@{input}.@{type}">
-				<uptodate targetfile="${basedir}/@{output}">
-					<srcfiles dir="." includes="${basedir}/@{input}" />
+				<uptodate targetfile="@{output}">
+					<srcfiles dir="${basedir}" includes="@{input}" />
 					<deps />
 				</uptodate>
 			</condition>
