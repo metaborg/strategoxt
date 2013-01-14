@@ -29,7 +29,8 @@
 		create-dirs,
 		syntax,
 		generate-java,
-		compile-java
+		compile-java,
+		jar
 		" />
 	<target name="create-dirs">
 		<mkdir dir="${lib}" />
@@ -83,5 +84,18 @@
 		       debug="true"
 		       debuglevel="source" />
 	</target>
-	
+
+	<target name="jar">
+		<jar destfile="strategoxt.jar"
+		     manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF">
+			<fileset dir="ant-contrib" includes="*.xml" />
+			<fileset dir="." includes="COPYING" />
+			<fileset dir="${bin}" includes="**/*.class" />
+			<fileset dir="${lib}" includes="**/*.rtree" />
+			<fileset dir="${lib}" includes="**/*.af" />
+			<fileset dir="${lib}" includes="**/*.tbl" />
+			<zipfileset includes="**/*"
+			            src="${libraries-dir}/java-backend/java/spoofax-libs.jar" />
+		</jar>
+	</target>
 </project>
