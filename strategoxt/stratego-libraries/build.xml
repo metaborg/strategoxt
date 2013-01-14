@@ -13,7 +13,8 @@
 		sdf-java,
 		sglr-java,
 		strc-java,
-		tool-doc-java
+		tool-doc-java,
+		xtc-java
 		" />
 
 	<target name="create-dirs">
@@ -25,6 +26,7 @@
 		<mkdir dir="${lib}/org/strategoxt/stratego_sglr" />
 		<mkdir dir="${lib}/org/strategoxt/strc" />
 		<mkdir dir="${lib}/org/strategoxt/stratego_tool_doc" />
+		<mkdir dir="${lib}/org/strategoxt/stratego_xtc" />
 	</target>
 
 	<target name="clean">
@@ -36,6 +38,7 @@
 		<delete dir="${lib}/org/strategoxt/stratego_sglr" />
 		<delete dir="${lib}/org/strategoxt/strc" />
 		<delete dir="${lib}/org/strategoxt/stratego_tool_doc" />
+		<delete dir="${lib}/org/strategoxt/stratego_xtc" />
 	</target>
 
 	<target name="aterm-java">
@@ -208,5 +211,28 @@
 				<srcfiles dir="tool-doc/lib" includes="**/*.str" />
 			</str-deps>
 		</strj-lib>
+	</target>
+
+	<target name="xtc-java">
+		<strj-lib input="xtc/lib/stratego-xtc-posix-xsi.str" output="${lib}/org/strategoxt/stratego_xtc/Main.java" package="org.strategoxt.stratego_xtc">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="org.strategoxt.lang.compat.override.xtc_compat" />
+				<arg value="-I" />
+				<arg value="${basedir}/lib/spec" />
+				<arg value="-D" />
+				<arg value="GetInternalDefaultXtcRepository_0_0=None" />
+				<arg value="-D" />
+				<arg value="PACKAGE_NAME_TERM=&quot;&lt;package name>&quot;" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="xtc/lib" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
+		<copy file="xtc/lib/libstratego-xtc-posix-xsi.ctree" tofile="xtc/lib/libstratego-xtc.ctree" />
+		<copy file="xtc/lib/libstratego-xtc-posix-xsi.rtree" tofile="xtc/lib/libstratego-xtc.rtree" />
+
 	</target>
 </project>
