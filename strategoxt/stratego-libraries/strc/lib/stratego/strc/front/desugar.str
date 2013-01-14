@@ -12,6 +12,11 @@ imports
   stratego/strc/front/DefaultStrat
   stratego/strc/front/desugar-string-quotations
 
+signature
+	constructors
+		// VladVergu. Was missing when boostrapping to Java
+		Id: Term -> Term
+
 strategies // Desugaring Strategies
 
   desugar-top =

@@ -1,5 +1,9 @@
 module canonicalize-ng
-imports Stratego-Core libstratego-lib C 
+imports
+	Stratego-Core
+	libstratego-lib
+	// UNDONE. VladVergu. Not needed for bootstrapping to Java.
+	// C 
 	stratego/strc/opt/stratego-laws 
 	stratego/strc/c/frames
 
