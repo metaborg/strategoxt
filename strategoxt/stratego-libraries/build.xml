@@ -12,7 +12,8 @@
 		rtg-java,
 		sdf-java,
 		sglr-java,
-		strc-java
+		strc-java,
+		tool-doc-java
 		" />
 
 	<target name="create-dirs">
@@ -23,7 +24,7 @@
 		<mkdir dir="${lib}/org/strategoxt/stratego_sdf" />
 		<mkdir dir="${lib}/org/strategoxt/stratego_sglr" />
 		<mkdir dir="${lib}/org/strategoxt/strc" />
-		<!-- <mkdir dir="strc/lib" /> -->
+		<mkdir dir="${lib}/org/strategoxt/stratego_tool_doc" />
 	</target>
 
 	<target name="clean">
@@ -34,7 +35,7 @@
 		<delete dir="${lib}/org/strategoxt/stratego_sdf" />
 		<delete dir="${lib}/org/strategoxt/stratego_sglr" />
 		<delete dir="${lib}/org/strategoxt/strc" />
-		<!-- <delete dir="strc/lib" /> -->
+		<delete dir="${lib}/org/strategoxt/stratego_tool_doc" />
 	</target>
 
 	<target name="aterm-java">
@@ -175,6 +176,36 @@
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="strc/lib" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
+	</target>
+
+	<target name="tool-doc-java">
+		<strj-lib input="tool-doc/lib/stratego-tool-doc.str" output="${lib}/org/strategoxt/stratego_tool_doc/Main.java" package="org.strategoxt.stratego_tool_doc">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="stratego-aterm" />
+				<arg value="-D" />
+				<arg value="SRTS_package_bugreport_0_0=&quot;bugs@strategoxt.org&quot;" />
+				<arg value="-D" />
+				<arg value="SRTS_package_name_0_0=&quot;&lt;SRTS-package-name>&quot;" />
+				<arg value="-D" />
+				<arg value="SRTS_package_revision_0_0=&quot;&lt;SRTS-package-revision>&quot;" />
+				<arg value="-D" />
+				<arg value="SRTS_package_version_0_0=&quot;&lt;SRTS-package-version>&quot;" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.box}" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="tool-doc/lib" includes="**/*.str" />
 			</str-deps>
 		</strj-lib>
 	</target>
