@@ -11,7 +11,8 @@
 		lib-java,
 		rtg-java,
 		sdf-java,
-		sglr-java
+		sglr-java,
+		strc-java
 		" />
 
 	<target name="create-dirs">
@@ -21,6 +22,8 @@
 		<mkdir dir="${lib}/org/strategoxt/stratego_rtg" />
 		<mkdir dir="${lib}/org/strategoxt/stratego_sdf" />
 		<mkdir dir="${lib}/org/strategoxt/stratego_sglr" />
+		<mkdir dir="${lib}/org/strategoxt/strc" />
+		<!-- <mkdir dir="strc/lib" /> -->
 	</target>
 
 	<target name="clean">
@@ -30,6 +33,8 @@
 		<delete dir="${lib}/org/strategoxt/stratego_rtg" />
 		<delete dir="${lib}/org/strategoxt/stratego_sdf" />
 		<delete dir="${lib}/org/strategoxt/stratego_sglr" />
+		<delete dir="${lib}/org/strategoxt/strc" />
+		<!-- <delete dir="strc/lib" /> -->
 	</target>
 
 	<target name="aterm-java">
@@ -142,6 +147,34 @@
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="sglr/lib" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
+	</target>
+
+	<target name="strc-java">
+		<strj-lib input="strc/lib/strc.str" output="${lib}/org/strategoxt/strc/Main.java" package="org.strategoxt.strc">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="stratego-rtg" />
+				<arg value="-la" />
+				<arg value="org.strategoxt.lang.compat.strc_compat" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.str}" />
+				<arg value="-I" />
+				<arg value="${syntax-dir}/${syn.box}" />
+				<arg value="-O" />
+				<arg value="2" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="strc/lib" includes="**/*.str" />
 			</str-deps>
 		</strj-lib>
 	</target>
