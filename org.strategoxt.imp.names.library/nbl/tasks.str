@@ -36,7 +36,7 @@ rules
 			name := <newname> "";
 			task := Task([name], deps, instruction);
 			<iset-add(|task)> elems;
-			<debug(!"Created task: ")> (task, deps)
+			<debug(!"Created task: ")> task
 			
 	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
 	dependent-task = ?Result(<id>) 
@@ -89,7 +89,7 @@ rules
 	
 rules
 
-	calc-property(|elems) = nbl-lookup-property(|elems)
+	calc-property(|elems) = fail
 	
 	match-term = fail
 	

@@ -1,0 +1,76 @@
+module entries
+
+imports
+  
+  nbl/collect
+  nbl/utils
+  
+signature
+
+  constructors
+    
+    Def   : URI                    -> Entry
+    Alias : URI * URI              -> Entry
+    Use   : URI                    -> Entry
+    Prop  : URI * Property * Value -> Entry
+  
+rules
+  
+  new-def(|elems, uri):
+    x -> definition
+    where
+      definition := <force-origins(!Def(uri))> x;
+      <iset-add(|definition)> elems
+      
+  new-alias(|elems, uri, alias):
+    x -> definition
+    where
+      definition := <force-origins(!Alias(uri, alias))> x;
+      <iset-add(|definition)> elems
+      
+  new-use(|elems, uri):
+    x -> use
+    where
+      use := <force-origins(!Use(uri))> x;
+      <iset-add(|use)> elems
+    
+  new-prop(|elems, uri, kind, val):
+    x -> prop
+    where
+      prop := <force-origins(!Prop(uri, kind, val))> x;
+      <iset-add(|prop)> elems
+      
+rules // index uri & value projections
+  
+  /** @internal */
+  nbl-uri-impl:
+    Def(uri) -> uri
+    
+  /** @internal */
+  nbl-uri-impl:
+    Alias(uri, _) -> uri
+    
+  /** @internal */  
+  nbl-uri-impl:
+    Use(uri) -> uri
+    
+  /** @internal */  
+  nbl-uri-impl:
+    Prop(uri, _, _) -> uri
+    
+    
+  /** @internal */
+  nbl-value-impl:
+    Def(value) -> value
+    
+  /** @internal */
+  nbl-value-impl:
+    Alias(_, value) -> value
+
+  /** @internal */
+  nbl-value-impl:
+    Use(value) -> value
+    
+  /** @internal */
+  nbl-value-impl:
+    Prop(_, _, value) -> value

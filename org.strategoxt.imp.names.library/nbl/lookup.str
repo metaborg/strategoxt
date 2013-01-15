@@ -6,6 +6,7 @@ imports
   nbl/resolve
   nbl/query
   nbl/uri
+  nbl/entries
   
 rules // Index-based lookup
   
@@ -14,17 +15,11 @@ rules // Index-based lookup
     
   nbl-lookup-definition(|namespace, name):
     uri -> <nbl-lookup-uri(nbl-definition-template|namespace, name)> uri
-    
-  nbl-lookup-property(|type):
-    containsURI -> containsURI //<nbl-lookup(nbl-property-template(|type))> containsURI
   
 rules // Index based visibility
   
   nbl-visible-definitions:
     containsURI -> <nbl-visible(nbl-definition-template)> containsURI
-    
-  nbl-visible-properties(|type):
-    containsURI -> <nbl-visible(nbl-property-template(|type))> containsURI
   
 rules /** @internal Index-based lookup */
   
@@ -65,10 +60,14 @@ rules /** @internal Index-based lookup */
     create-template;
     nbl-get-all
     
-  nbl-standard-lookup(create-template|namespace, name) =
-    nbl-extend-uri(|namespace, name, Unique()); // TODO: Properly lookup unique entries.
-    create-template;
-    nbl-get-all
+  nbl-standard-lookup(create-template|namespace, name):
+    uri -> entry*
+    where
+      if alias  := <nbl-get-value> Alias(<nbl-extend-uri(|namespace, name, NonUnique())> uri, ()) then
+        entry* := <create-template; nbl-get-all> alias
+      else
+        entry* := []
+      end
 
 rules /** @internal Index based visibility */
       
@@ -152,7 +151,4 @@ rules /** @internal Helpers */
   
   nbl-definition-template:
     uri -> Def(uri)
-    
-  nbl-property-template(|type):
-    uri -> Prop(uri, type, ())
  

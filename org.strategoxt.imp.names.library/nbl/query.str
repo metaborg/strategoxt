@@ -6,6 +6,7 @@ imports
   nbl/collect
   nbl/incremental
   nbl/uri
+  nbl/entries
 
 signature
 

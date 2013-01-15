@@ -6,6 +6,7 @@ imports
 	nbl/collect
 	nbl/query
 	nbl/uri
+	nbl/entries
       
 rules // Dependencies
   

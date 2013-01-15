@@ -20,6 +20,7 @@ signature
     Anonymous   : String                       -> Segment
     ExternalDef : String                       -> Segment
     Unique      : String                       -> Qualifier
+    NonUnique   :                                 Qualifier
     URI         : Language * List(Segment)     -> URI
     
 rules // Construction
@@ -32,6 +33,15 @@ rules // Construction
     
   nbl-extend-uri(|namespace, name, qualifier) = 
     URI(id, ![ID(namespace, name, qualifier)|<id>])
+    
+  nbl-replace-uri(|segment) = 
+    URI(id, ![segment|<Tl>])
+    
+  nbl-replace-uri(|namespace, name, qualifier) = 
+    URI(id, ![ID(namespace, name, qualifier)|<Tl>])
+  
+  nbl-unique-qualifier = !Unique(<new>)
+  nbl-nonunique-qualifier = !NonUnique()
   
   nbl-anonymous-segment  = !Anonymous(<new>)
   nbl-subsequent-segment = !Subsequent(<new>)
