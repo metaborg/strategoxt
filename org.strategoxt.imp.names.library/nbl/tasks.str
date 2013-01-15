@@ -4,6 +4,7 @@ imports
 	
 	index/core
 	nbl/lookup
+	nbl/resolve
 	nbl/uri
 	
 signature
@@ -19,7 +20,7 @@ signature
 		DoneTask : String * Term											        -> DoneTask
 		FailTask : String * Term                              -> FailTask
 		
-		Resolve  : URI * List(Prop)                           -> Instruction
+		Resolve  : Result * Namespace * Name                  -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
 		Match		 : ID * Term			                          	-> Instruction
 		Done     : Term                                   		-> Instruction
@@ -29,13 +30,13 @@ rules
 	
 	new-task(|elems) = new-task(|elems, <dependent-tasks>)
 		
-	new-task(|elems, dep):
+	new-task(|elems, deps):
 		instruction -> Result(name)
 		with
 			name := <newname> "";
-			task := Task([name], dep, instruction);
+			task := Task([name], deps, instruction);
 			<iset-add(|task)> elems;
-			<debug(!"Created task: ")> task
+			<debug(!"Created task: ")> (task, deps)
 			
 	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
 	dependent-task = ?Result(<id>) 
@@ -75,14 +76,14 @@ rules
 				
 rules
 	
-	perform-task(|elems): 
-	  Resolve(uri, _) -> result
-	  where
-	    if resolvedURI := <nbl-uri> <nbl-lookup-definition> uri then 
-	      result := Done(resolvedURI)
-	    else
-	      result := Fail(uri)
-	    end
+  perform-task(|elems): 
+    Resolve(uri, namespace, name) -> result
+    where
+      if resolvedURI := <nbl-uri> <nbl-lookup-definition(|namespace, name)> uri then 
+        result := Done(resolvedURI)
+      else
+        result := Fail(<nbl-extend-uri(|namespace, name, ())> uri)
+      end
 	perform-task(|elems): PropCalc(prop, term) 		     -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 				     -> Done(<match-term> (key, term))
 	
@@ -131,7 +132,7 @@ rules /** @internal Projections */
   
   /** @internal */  
   nbl-uri-impl:
-  	Resolve(uri, _) -> uri
+  	Resolve(uri, _, _) -> uri
   
   /** @internal */
   nbl-uri-impl:

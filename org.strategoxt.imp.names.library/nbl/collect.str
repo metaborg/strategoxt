@@ -28,6 +28,8 @@ signature
 	Current    :                                     							 RefScope
 	Surrounding:                                  	 							 RefScope
 	Context    : String * Namespace * List(Property) * RefScope	-> RefScope
+	
+	Prop       : Property * Value       -> PropCandidate
 
 	Def        : URI                    -> Entry
 	Use        : URI                    -> Entry
@@ -153,8 +155,7 @@ rules // generic analysis of imports
     where
       importNs := <nbl-import-namespace> import;
       uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
-      uri'     := <nbl-extend-uri(|resolveNs, <strip-annos> <try(fix-completion-name)> name, ())> uri;
-      result   := <new-task(|tasks)> Resolve(uri', []);
+      result   := <new-task(|tasks)> Resolve(uri, resolveNs, <strip-annos> <try(fix-completion-name)> name);
       deps'    := [<nbl-result-number> result|deps];
       new-prop(|elems, uri, import, result)
       // TODO: should import be added to annotation?
@@ -197,19 +198,21 @@ rules // generic analysis of uses
 		(Candidate(ns, props, Current()), name{anno*}) -> name{u, anno*}
 		where
 			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			uri'   := <nbl-extend-uri(|ns, <strip-annos> <try(fix-completion-name)> name, ())> uri;
-			result := <new-task(|tasks, deps)> Resolve(uri', props);
+			result := <new-task(|tasks, deps)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
 		  u      := <new-use(|elems, result)>
-	
-	// TODO Gabriel: Don't understand this code, please fix it again Guido.
-	/*
+		  
 	nbl-use-candidate(|lang, elems, tasks, paths, deps):
-		(Candidate(ns, props, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
-		where	
-			_{tempresult} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (Candidate(ns', props', refscope'), name'{});
-			result				:= <new-task(|tasks)> Resolve((ns, name{}), tempresult, props);
-		  u      				:= <new-use(|elems, result)>
-  */
+		(c@Candidate(ns, props, uri@Result(resultNumber)), name{anno*}) -> name{u, anno*}
+		where
+			result := <new-task(|tasks, [resultNumber])> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+		  u      := <new-use(|elems, result)>
+		  
+  nbl-use-candidate(|lang, elems, tasks, paths, deps):
+    (Candidate(ns, props, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
+    where 
+      _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (Candidate(ns', props', refscope'), name'{});
+      result := <new-task(|tasks)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+      u      := <new-use(|elems, result)>
 
 rules // generic analysis of properties
 				
@@ -224,7 +227,7 @@ rules // generic analysis of properties
 		  name'    := <foldl(extend-prop(|lang, elems, tasks, uri))> (prop*, name)
 		
 	extend-prop(|lang, elems, tasks, uri):
-		(Prop(_, type, result), name) -> name // TODO: remove first subterm of prop, redundant info?
+		(Prop(type, result), name) -> name
 		where
 		  prop := <new-prop(|elems, uri, type, result)> name
 		  // TODO: should prop be added to annotation?
