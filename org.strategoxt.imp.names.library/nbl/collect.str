@@ -220,7 +220,7 @@ rules // generic analysis of properties
 	nbl-props(|lang, elems, tasks, prop*):
 	  name{anno*} -> name'
 	  where
-	    Def(uri) := <debug(!"Def: ")> <collect-one(?Def(_))> <debug(!"prop-annos: ")> anno*;
+	    Def(uri) := <collect-one(?Def(_))> anno*;
 		  name'    := <foldl(extend-prop(|lang, elems, tasks, uri))> (prop*, name)
 		
 	extend-prop(|lang, elems, tasks, uri):
