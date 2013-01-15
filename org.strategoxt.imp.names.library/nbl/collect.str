@@ -157,6 +157,7 @@ rules // generic analysis of imports
       result   := <new-task(|tasks)> Resolve(uri', []);
       deps'    := [<nbl-result-number> result|deps];
       new-prop(|elems, uri, import, result)
+      // TODO: should import be added to annotation?
       
   nbl-import-namespace:
     Import(_, Imported(namespace)) -> namespace
@@ -216,20 +217,18 @@ rules // generic analysis of properties
 	nbl-prop-site(|lang, elems, tasks, paths) = fail
 	
 	// call back to generic analysis
-	nbl-props(|lang, elems, tasks, prop*) =
-		?name{Def(path)};
-		<map(extend-prop(|lang, elems, tasks, path))> prop*
+	nbl-props(|lang, elems, tasks, prop*):
+	  name{anno*} -> name'
+	  where
+	    Def(uri) := <debug(!"Def: ")> <collect-one(?Def(_))> <debug(!"prop-annos: ")> anno*;
+		  name'    := <foldl(extend-prop(|lang, elems, tasks, uri))> (prop*, name)
 		
-	extend-prop(|lang, elems, tasks, path):
-		Prop((ns, name), prop, val) -> <new-prop(|elems, path, prop, val)> 
+	extend-prop(|lang, elems, tasks, uri):
+		(Prop(_, type, result), name) -> name // TODO: remove first subterm of prop, redundant info?
 		where
-			name':= name{};
-			<Hd> path;
-			(
-				?(ns, name') +
-				?(ns, name', _)
-			)
-			
+		  prop := <new-prop(|elems, uri, type, result)> name
+		  // TODO: should prop be added to annotation?
+		  
 rules // index uri & value projections
 	
   /** @internal */
