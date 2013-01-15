@@ -429,7 +429,7 @@
 
 		<sglri input="java-backend/java/runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.str"
 		       output="java-backend/java/runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree"
-		       parsetable="${syntax-dir}/${syn.str}/Stratego.tbl" />
+		       parsetable="../${syntax-dir}/${syn.str}/Stratego.tbl" />
 		<strj-lib input="java-backend/java/runtime/org/strategoxt/lang/compat/override/strc-compat.str"
 		          output="${lib}/org/strategoxt/lang/compat/override/strc_compat/Main.java"
 		          package="org.strategoxt.lang.compat.override.strc_compat">
