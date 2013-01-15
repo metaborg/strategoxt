@@ -47,6 +47,7 @@
 		<delete file="${syn.str}/EmbeddedStrategoMix.sdf" />
 		<delete file="${syn.str}/StrategoMix.sdf" />
 		<delete file="${syn.str}/StrategoRenamed.sdf" />
+		<delete file="../${libraries-dir}/strc/lib/stratego/strc/pp/stratego-parenthesize.str" />
 		<delete>
 			<fileset dir="${syn.aterm}" includes="*.def" />
 			<fileset dir="${syn.aterm}" includes="*.tbl" />

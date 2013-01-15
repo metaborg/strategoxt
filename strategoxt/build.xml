@@ -44,6 +44,9 @@
 		<antcall target="syntax.clean">
 			<param name="basedir" value="${syntax-dir}" />
 		</antcall>
+		<antcall target="libraries.clean">
+			<param name="basedir" value="${syntax-dir}" />
+		</antcall>
 	</target>
 
 	<target name="syntax">

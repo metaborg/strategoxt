@@ -65,6 +65,10 @@
 		<delete dir="${lib}/org/strategoxt/lang/compat/override/native_calls_compat" />
 		<delete dir="${lib}/org/strategoxt/lang/compat/override/java_integration" />
 		<delete dir="${lib}/org/strategoxt/lang/compat/override/strc_compat" />
+		<delete>
+			<fileset dir="." includes="**/*.rtree" excludes="strc/tests/testneg/wrongformat.rtree" />
+			<fileset dir="." includes="**/*.ctree" />
+		</delete>
 	</target>
 
 	<target name="aterm-java">
