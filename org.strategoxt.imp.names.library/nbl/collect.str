@@ -205,14 +205,14 @@ rules // generic analysis of uses
 	nbl-use-candidate(|lang, elems, tasks, paths, deps):
 		(c@Candidate(ns, props, uri@Result(resultNumber)), name{anno*}) -> name{u, anno*}
 		where
-			result := <new-task(|tasks, [resultNumber])> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+			result := <new-task(|tasks, [resultNumber|deps])> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
 		  u      := <new-use(|elems, result)>
 		  
   nbl-use-candidate(|lang, elems, tasks, paths, deps):
     (Candidate(ns, props, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
     where 
       _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (Candidate(ns', props', refscope'), name'{});
-      result := <new-task(|tasks)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+      result := <new-task(|tasks, deps)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
       u      := <new-use(|elems, result)>
 
 rules // generic analysis of properties

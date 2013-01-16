@@ -42,14 +42,13 @@ rules /** @internal Index-based lookup */
       end
     
   nbl-lookup-uri-scoped(create-template|namespace, name):
-    uri -> [entry*, nonUniqueEntry*, importEntry*]
+    uri -> [entry*, importEntry*]
     with
-      // Standard lookups
-      entry*          := <nbl-standard-lookup(create-template|namespace, name)> uri;
-      nonUniqueEntry* := <nbl-standard-lookup-nonunique(create-template|namespace, name)> uri;
+      // Standard lookup
+      entry*       := <nbl-standard-lookup(create-template|namespace, name)> uri;
       
       // Imports & aliases
-      importEntry*    := <nbl-lookup-imported-entries(create-template|<nbl-uri-language> uri, namespace, name)> uri
+      importEntry* := <nbl-lookup-imported-entries(create-template|<nbl-uri-language> uri, namespace, name)> uri
       
       // TODO: External (defines x in y) definitions
       
@@ -60,15 +59,21 @@ rules /** @internal Index-based lookup */
     create-template;
     nbl-get-all
     
-  nbl-standard-lookup(create-template|namespace, name):
+  nbl-standard-lookup-unique(create-template|namespace, name):
     uri -> entry*
     where
-      if alias  := <nbl-get-value> Alias(<nbl-extend-uri(|namespace, name, NonUnique())> uri, ()) then
+      if alias := <nbl-get-value> Alias(<nbl-extend-uri(|namespace, name, NonUnique())> uri, ()) then
         entry* := <create-template; nbl-get-all> alias
       else
         entry* := []
       end
 
+  nbl-standard-lookup(create-template|namespace, name):
+    uri -> [entry*, nonUniqueEntry*]
+    where
+      entry*          := <nbl-standard-lookup-unique(create-template|namespace, name)> uri;
+      nonUniqueEntry* := <nbl-standard-lookup-nonunique(create-template|namespace, name)> uri
+      
 rules /** @internal Index based visibility */
       
   nbl-visible(create-template|):
