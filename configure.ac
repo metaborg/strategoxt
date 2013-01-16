@@ -1,7 +1,7 @@
 AC_PREREQ([2.60])
 AC_INIT([strategoxt],[1.8],[users@strategoxt.org])
 AC_CONFIG_AUX_DIR([config])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.9 tar-pax])
 
 # XT_ or AB_ left in configure is the sign a macro was not defined, or
 # there was a typo in a macro invocation.
