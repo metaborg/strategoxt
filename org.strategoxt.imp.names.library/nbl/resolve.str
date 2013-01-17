@@ -28,6 +28,11 @@ rules // Reference resolution
     where
       uri        := <nbl-get-value> DoneTask(number, ());
       definition := <nbl-get> Def(uri)
+      
+  nbl-resolve:
+    Use(uri@URI(_, _)) -> definition
+    where
+      definition := <nbl-lookup-definition> uri
 
 rules // Code completion
 
