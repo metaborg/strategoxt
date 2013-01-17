@@ -19,6 +19,17 @@ signature
 rules // Specific queries
 
   /**
+   * Gets all unique and non-unique definition entries that match the given URI.
+   *
+   * Example:
+   *   <nbl-get-all-definitions> [Entity(), "M", "Bar"] => [Def([Entity(), "M", "Bar"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
+   */
+  nbl-get-all-definitions:
+    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-unique-nonunique(\uri -> Def(uri)\)>
+
+  /**
    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
    *
    * Example:
@@ -64,10 +75,10 @@ rules // Specific queries
   nbl-get-all-reads:
     <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <conc> (reads, readAlls)
     where
-      reads := <index-get-all> Read(uri);
+      reads        := <nbl-get-unique-nonunique(fail, \uri -> Read(uri)\)> uri;
       if parentURI := <nbl-uri-parent> uri then
-        readAlls1  := <index-get-all> ReadAll(parentURI);
-        readAlls2  := <index-get-all> ReadAll(parentURI, (), ());
+        readAlls1  := <nbl-get-all(fail)> ReadAll(parentURI);
+        readAlls2  := <nbl-get-all(fail)> ReadAll(parentURI, (), ());
         namespace  := <nbl-uri-namespace> uri;
         name       := <nbl-uri-name> uri;
         // TODO: Test if this works.
@@ -77,55 +88,97 @@ rules // Specific queries
         readAlls   := []
       end
 
+  /**
+   * Gets all Alias entries that match the given URI.
+   *
+   * Example:
+   *   <nbl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(aliasURI)
+   */
+  nbl-get-all-aliases:
+    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> aliasURI*
+    where
+      aliasURI* := <nbl-get-all-values(fail)> Alias(<nbl-replace-uri-qualifier(|NonUnique())> uri, ()) 
+
 rules // Generic queries
+	
+	nbl-get-all = nbl-get-all(id)
+	nbl-get-all-values = nbl-get-all-values(id)
+	nbl-get = nbl-get(id)
+	nbl-get-value = nbl-get-value(id)
+	nbl-get-children = nbl-get-children(id)
+	nbl-get-children(|namespace, prefix) = nbl-get-children(id|namespace, prefix)
+	nbl-get-unique-nonunique(create-template) = nbl-get-unique-nonunique(id, create-template)
+
+rules /* @internal Generic queries */
   
-  nbl-get-all:
+  /** @internal */
+  nbl-get-all(store-read):
     template -> <index-get-all> template
       with
-        if set := <NBL-ReadSet> then
+        if set := <store-read; NBL-ReadSet> then
           uri := <nbl-uri> template;
           <iset-add(|Read(uri))> set
         end
        
-  nbl-get-all-values:
-    template -> <map(nbl-value)> <nbl-get-all> template
+  /** @internal */
+  nbl-get-all-values(store-read):
+    template -> <map(nbl-value)> <nbl-get-all(store-read)> template
 
-  nbl-get:
-    template -> <Hd> <nbl-get-all> template
-      
-  nbl-get-value:
-    template -> <nbl-value> <Hd> <nbl-get-all> template
-    
-  nbl-get-children:
+  /** @internal */
+  nbl-get(store-read):
+    template -> <Hd> <nbl-get-all(store-read)> template
+  
+  /** @internal */    
+  nbl-get-value(store-read):
+    template -> <nbl-value> <Hd> <nbl-get-all(store-read)> template
+  
+  /** @internal */  
+  nbl-get-children(store-read):
     template -> entries
       with
         entries  := <index-get-children> template;
-        if set := <NBL-ReadSet> then
+        if set := <store-read; NBL-ReadSet> then
           uri := <nbl-uri> template;
           <iset-add(|ReadAll(uri))> set
         end
         
-  nbl-get-children(|namespace, prefix):
+  /** @internal */
+  nbl-get-children(store-read|namespace, prefix):
     template -> entries
       with
         children := <index-get-children> template;
         entries  := <nbl-filter-entries(|namespace, prefix)> children;
-        if set := <NBL-ReadSet> then
+        if set := <store-read; NBL-ReadSet> then
           uri := <nbl-uri> template;
           <iset-add(|ReadAll(uri, namespace, prefix))> set
         end
-
-rules // Entry filtering
   
+  /** @internal */
+  nbl-get-unique-nonunique(store-read, create-template):
+  	uri -> [unique*, nonUnique*]
+  	where
+      if aliasURI := <Hd> <nbl-get-all-aliases> uri then
+        unique*   := <create-template; nbl-get-all(store-read)> aliasURI
+      else
+        unique*   := []
+      end;
+      nonUnique*  := <create-template; nbl-get-all(store-read)> <nbl-replace-uri-qualifier(|NonUnique())> uri
+
+rules /** @internal Entry filtering */
+  
+  /** @internal */
   nbl-filter-entries(|namespace, prefix):
     entry* -> <filter(nbl-compare-prefix(|namespace, prefix))> entry*
   
+  /** @internal */
   nbl-filter-entries(|namespace):
     entry* -> <filter(nbl-compare-namespace(|namespace))> entry*
 
 rules /** @internal Helpers */
   
-  /** @internal */      
+  /** @internal */
   nbl-compare-prefix(|namespace, prefix):
     entry -> <id>
     where
@@ -133,7 +186,7 @@ rules /** @internal Helpers */
       <eq> (namespace, <nbl-uri-namespace> uri);
       <is-substring(!prefix)> <nbl-uri-name> uri
       
-  /** @internal */      
+  /** @internal */
   nbl-compare-namespace(|namespace):
     entry -> <id>
     where

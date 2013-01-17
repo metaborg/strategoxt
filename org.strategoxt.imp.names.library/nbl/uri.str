@@ -39,6 +39,10 @@ rules // Construction
     
   nbl-replace-uri(|namespace, name, qualifier) = 
     URI(id, ![ID(namespace, name, qualifier)|<Tl>])
+    
+  nbl-replace-uri-qualifier(|qualifier) =
+    ?URI(lang, [ID(namespace, name, _)|rest]);
+    !URI(lang, [ID(namespace, name, qualifier)|rest])
   
   nbl-unique-qualifier = !Unique(<new>)
   nbl-nonunique-qualifier = !NonUnique()
@@ -104,32 +108,27 @@ rules // Projections
       s 
     < ![<id>|<nbl-closure(s)>] 
     + ![]
-    
-rules // Conditions
-    
-  nbl-is-unique =
-    ?ID(_, _, Unique(_))
-    
-  nbl-is-unique =
-    ?Unique(_)
-    
-  nbl-is-id =
-    ?ID(_, _, _)
-    
-  nbl-is-subsequent =
-    ?Subsequent(_)
-    
-  nbl-is-anonymous =
-    ?Anonymous(_)
-    
-  nbl-uri-has-anonymous = 
-    nbl-uri-path;
-    fetch(nbl-is-anonymous)
 
 rules // Equality
   
   nbl-uri-eq = 
-    eq
+    ?(URI(lang1, segs1), URI(lang2, segs2));
+    <eq> (lang1, lang2);
+    <zip(nbl-uri-segment-eq)> (segs1, segs2)
+    
+  nbl-uri-segment-eq =
+    ?(ID(ns1, name1, _), ID(ns2, name2, _));
+    <eq> (ns1, ns2);
+    <eq> (name1, name2)
+     
+  nbl-uri-segment-eq =
+    ?(Subsequent(_), Subsequent(_))
+    
+  nbl-uri-segment-eq =
+    ?(Anonymous(_), Anonymous(_))
+    
+  nbl-uri-segment-eq =
+    ?(ExternalDef(_), ExternalDef(_))
         
 rules /** @internal Projections */
 

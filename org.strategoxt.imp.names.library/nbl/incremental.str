@@ -33,20 +33,16 @@ rules /** @internal Storing reads */
     	
 rules /** @internal Entry difference */
   
-  nbl-diff-entry:
-    Def(uri) -> <id>
-    where
-      not(<nbl-uri-has-anonymous> uri)
+  nbl-diff-entry =
+    ?Def(_)
     
-  nbl-diff-entry:
-    Prop(uri, _, _) -> <id>
-    where
-      not(<nbl-uri-has-anonymous> uri)
+  nbl-diff-entry =
+    ?Prop(_, _, _)
       
   nbl-diff-eq:
     (entry1, entry2) -> <id>
     where
-      <nbl-uri-eq> (<nbl-uri> entry1, <nbl-uri> entry2)      
+      <nbl-uri-eq> (<nbl-uri> entry1, <nbl-uri> entry2)
 
   nbl-diff:
     (defs1, defs2) -> (added, removed)
