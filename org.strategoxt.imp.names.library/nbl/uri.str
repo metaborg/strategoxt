@@ -87,6 +87,9 @@ rules // Projections
   nbl-uri-namespace:
     uri -> <nbl-uri-path; Hd; nbl-segment-namespace> uri    
 
+  nbl-uri-qualifier:
+    uri -> <nbl-uri-path; Hd; nbl-segment-qualifier> uri
+    
     
   nbl-segment-namespace:
     ID(namespace, _, _) -> namespace
@@ -109,6 +112,16 @@ rules // Projections
     < ![<id>|<nbl-closure(s)>] 
     + ![]
 
+rules // Conditions
+  
+  nbl-is-unique =
+    nbl-uri-qualifier;
+    ?Unique(_)
+    
+  nbl-is-nonunique =
+    nbl-uri-qualifier;
+    ?NonUnique()
+
 rules // Equality
   
   nbl-uri-eq = 
@@ -129,6 +142,14 @@ rules // Equality
     
   nbl-uri-segment-eq =
     ?(ExternalDef(_), ExternalDef(_))
+
+rules // Printing
+  
+  nbl-print-uri:
+    uri -> $[[ns] [names]]
+    where
+      ns#(_) := <nbl-uri-namespace> uri;
+      names  := <nbl-uri-path; filter(nbl-segment-name); separate-by(|"."); concat-strings> uri
         
 rules /** @internal Projections */
 

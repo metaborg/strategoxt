@@ -17,6 +17,23 @@ signature
     COMPLETION : String -> COMPLETION
       
 rules // Reference resolution
+    
+  nbl-resolve-all = 
+    has-annos;
+    get-annos;
+    collect-all(nbl-resolve-all);
+    concat
+  
+  nbl-resolve-all:
+    Use(Result(number)) -> def*
+    where
+      uri*  := <nbl-get-value> DoneTask(number, ());
+      def*  := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
+      
+  nbl-resolve-all:
+    Use(uri@URI(_, _)) -> def*
+    where
+       def* := <nbl-lookup-definitions> uri
   
   nbl-resolve = 
     has-annos;
@@ -24,22 +41,29 @@ rules // Reference resolution
     collect-one(nbl-resolve)
   
   nbl-resolve:
-    Use(Result(number)) -> definition
+    Use(Result(number)) -> <Hd> def*
     where
-      uri        := <nbl-get-value> DoneTask(number, ());
-      definition := <nbl-get> Def(uri)
+      uri* := <nbl-get-value> DoneTask(number, ());
+      def* := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
       
   nbl-resolve:
-    Use(uri@URI(_, _)) -> definition
+    Use(uri@URI(_, _)) -> <Hd> def*
     where
-      definition := <nbl-lookup-definition> uri
+      def* := <nbl-lookup-definitions> uri
 
 rules // Code completion
+
+  nbl-resolve-result:
+    Result(number) -> [done*, fail*]
+    with
+      (<nbl-get-value> DoneTask(number, ()) <+ ![]) => done*;
+      (<nbl-get-value> FailTask(number, ()) <+ ![]) => fail*
 
   nbl-unresolved-uris = 
     has-annos;
     get-annos;
-    collect-all(nbl-unresolved-uri)
+    collect-all(nbl-unresolved-uri);
+    concat
       
   nbl-unresolved-uri:
     Use(result) -> <nbl-resolve-result> result
@@ -54,13 +78,14 @@ rules // Code completion
         );
         proposals'  := <map(nbl-uri; nbl-uri-name)> proposals
 
-rules // Resolving URI's
+rules // Ambiguity
   
-  nbl-resolve-result:
-    Result(number) -> <nbl-get-value> DoneTask(number, ())
-  
-  nbl-resolve-result:
-    Result(number) -> <nbl-get-value> FailTask(number, ())
+  nbl-get-ambiguities =
+    nbl-resolve-all;
+    mapconcat(nbl-get-all-aliases);
+    filter(nbl-uri; nbl-uri-parent);
+    make-set;
+    where(<gt> (<length>, 1))
 
 rules // Conditions
 	
@@ -82,5 +107,4 @@ rules // Conditions
     get-annos;
     collect-one(?Def(_));
     nbl-get-all-aliases;
-    length;
-    <gt> (<id>, 1)
+    <gt> (<length>, 1)

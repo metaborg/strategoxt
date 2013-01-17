@@ -79,13 +79,14 @@ rules
   perform-task(|elems): 
     Resolve(uri, namespace, name) -> result
     where
-      if resolvedURI := <nbl-uri> <nbl-lookup-definition(|namespace, name)> uri then 
-        result := Done(resolvedURI)
+    	resolvedURI* := <filter(nbl-uri)> <nbl-lookup-definitions(|namespace, name)> uri;
+      if [] := resolvedURI* then
+      	result := Fail([<nbl-extend-uri(|namespace, name, ())> uri])
       else
-        result := Fail(<nbl-extend-uri(|namespace, name, ())> uri)
+        result := Done(resolvedURI*)
       end
-	perform-task(|elems): PropCalc(prop, term) 		     -> Done(<calc-property(|elems)> (prop, term))
-	perform-task(|elems): Match(key, term) 				     -> Done(<match-term> (key, term))
+	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
+	perform-task(|elems): Match(key, term) 		 -> Done(<match-term> (key, term))
 	
 rules
 
