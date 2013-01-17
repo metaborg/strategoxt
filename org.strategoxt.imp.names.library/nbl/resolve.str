@@ -76,3 +76,11 @@ rules // Conditions
     get-annos;
     nbl-has-reference;
     <not(nbl-resolve)> node
+    
+  nbl-is-duplicate-definition =
+    has-annos;
+    get-annos;
+    collect-one(?Def(_));
+    nbl-get-all-aliases;
+    length;
+    <gt> (<id>, 1)

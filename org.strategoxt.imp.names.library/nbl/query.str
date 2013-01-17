@@ -99,8 +99,12 @@ rules // Specific queries
   nbl-get-all-aliases:
     <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> aliasURI*
     where
-      aliasURI* := <nbl-get-all-values(fail)> Alias(<nbl-replace-uri-qualifier(|NonUnique())> uri, ()) 
-
+      if nonUniqueURI := <nbl-replace-uri-qualifier(|NonUnique())> uri then
+        aliasURI* := <nbl-get-all-values(fail)> Alias(nonUniqueURI, ()) 
+      else
+        aliasURI* := []
+      end
+      
 rules // Generic queries
 	
 	nbl-get-all = nbl-get-all(id)
@@ -164,7 +168,11 @@ rules /* @internal Generic queries */
       else
         unique*   := []
       end;
-      nonUnique*  := <create-template; nbl-get-all(store-read)> <nbl-replace-uri-qualifier(|NonUnique())> uri
+      if nonUniqueURI := <nbl-replace-uri-qualifier(|NonUnique())> uri then
+        nonUnique*  := <create-template; nbl-get-all(store-read)> nonUniqueURI
+      else
+        nonUnique* := []
+      end
 
 rules /** @internal Entry filtering */
   
