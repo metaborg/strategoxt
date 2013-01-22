@@ -9,7 +9,14 @@ imports
 	nbl/incremental
 	nbl/uri
 	
-strategies
+signature
+
+  constructors
+  
+    File   : Path * AST                            -> File
+    Result : Path * AST * List(Entry) * List(Task) -> File
+    	
+rules // Single file analysis
 	
 	nbl-analyze(|language, path, project-path):
 		ast -> (ast', entries', errors, dependent)
@@ -34,3 +41,42 @@ strategies
       (added, removed) := <nbl-diff> (oldEntries, newEntries);
       changed          := <conc> (added, removed);
       dependent        := <nbl-get-dependent-partitions> changed
+
+rules // Multi file analysis
+
+  nbl-analyze-multiple(parse-file|language, project-path):
+  	path* -> file'*
+  	with
+  	  file*  := <map(nbl-analyze-parse-file(parse-file))> path*;
+  	  file'* := <nbl-analyze-multiple-files(|language, project-path)> file*
+
+  nbl-analyze-parse-file(parse-file):
+    path -> File(path, ast)
+    with
+      if not(ast := <file-exists; parse-file> path) then
+        ast := ()
+      end
+
+  nbl-analyze-multiple-files(|language, project-path):
+    files -> collect'*
+    with // Setup index
+      index-setup(|language, [project-path], ".")
+    with // Collect entries and tasks for all files.
+    	collect* := <map(nbl-analyze-multiple-collect(|language))> files
+    with // Perform tasks for all files.
+      collect'* := <map(nbl-analyze-multiple-perform(|language))> collect*
+    	
+  nbl-analyze-multiple-collect(|language):
+  	File(path, ast) -> Result(path, ast', entry*, <merge-tasks> task*)
+  	with
+  		(ast', entry*, task*) := <nbl-collect(|Language(language))> ast;
+  		<index-clear-partition> path;
+  		<index-add-all(|path)> entry*
+  
+  nbl-analyze-multiple-perform(|language):
+    Result(path, ast, entry*, task*) -> Result(path, ast, entry'*, error*)
+    with
+      nbl-collect-reads(
+        (error*, entry'*) := <perform-tasks(|path)> (task*, entry*)
+      ) => reads;
+      <index-add-all(|path)> reads
