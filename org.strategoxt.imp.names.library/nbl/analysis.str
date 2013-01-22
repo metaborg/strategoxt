@@ -13,8 +13,8 @@ signature
 
   constructors
   
-    File   : Path * AST                            -> File
-    Result : Path * AST * List(Entry) * List(Task) -> File
+    File   : Path * AST                                  -> File
+    Result : Path * AST * AST * List(Entry) * List(Task) -> File
     	
 rules // Single file analysis
 	
@@ -67,14 +67,14 @@ rules // Multi file analysis
       collect'* := <map(nbl-analyze-multiple-perform(|language))> collect*
     	
   nbl-analyze-multiple-collect(|language):
-  	File(path, ast) -> Result(path, ast', entry*, <merge-tasks> task*)
+  	File(path, ast) -> Result(path, ast, ast', entry*, <merge-tasks> task*)
   	with
   		(ast', entry*, task*) := <nbl-collect(|Language(language))> ast;
   		<index-clear-partition> path;
   		<index-add-all(|path)> entry*
   
   nbl-analyze-multiple-perform(|language):
-    Result(path, ast, entry*, task*) -> Result(path, ast, entry'*, error*)
+    Result(path, ast, ast', entry*, task*) -> Result(path, ast, ast', entry'*, error*)
     with
       nbl-collect-reads(
         (error*, entry'*) := <perform-tasks(|path)> (task*, entry*)
