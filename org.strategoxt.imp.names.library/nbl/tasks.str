@@ -6,6 +6,7 @@ imports
 	nbl/lookup
 	nbl/resolve
 	nbl/uri
+	nbl/utils
 	
 signature
 
@@ -36,7 +37,7 @@ rules
 			name := <newname> "";
 			task := Task([name], deps, instruction);
 			<iset-add(|task)> elems;
-			<debug(!"Created task: ")> task
+			<vdebug(!"Created task: ")> task
 			
 	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
 	dependent-task = ?Result(<id>) 

@@ -20,6 +20,9 @@ rules // Dependencies
    */
   nbl-get-dependent-partitions = 
     nbl-get-dependent-partitions(nbl-get-all-reads)
+    
+  nbl-remove-own-partition(|partition) =
+    remove-all(?(partition, _))
           
 rules /** @internal Storing reads */
   
