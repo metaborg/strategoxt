@@ -13,8 +13,8 @@ signature
 
   constructors
   
-    File   : Path * AST                                  -> File
-    Result : Path * AST * AST * List(Entry) * List(Task) -> File
+    File   : Path * AST                                       -> File
+    Result : Partition * AST * AST * List(Entry) * List(Task) -> File
     	
 rules // Single file analysis
 	
@@ -62,21 +62,24 @@ rules // Multi file analysis
     with // Setup index
       index-setup(|language, [project-path], ".")
     with // Collect entries and tasks for all files.
-    	collect* := <map(nbl-analyze-multiple-collect(|language))> files
+    	collect*  := <map(nbl-analyze-multiple-collect(|language, project-path))> files
     with // Perform tasks for all files.
       collect'* := <map(nbl-analyze-multiple-perform(|language))> collect*
     	
-  nbl-analyze-multiple-collect(|language):
-  	File(path, ast) -> Result(path, ast, ast', entry*, <merge-tasks> task*)
+  nbl-analyze-multiple-collect(|language, project-path):
+  	File(path, ast) -> Result(partition, ast, ast', entry*, <merge-tasks> task*) // TODO: Merge entire list of tasks instead of just for this file.
   	with
+  	  partition := $[[project-path]/[path]];
+  	  <index-set-current-partition> partition;
   		(ast', entry*, task*) := <nbl-collect(|Language(language))> ast;
-  		<index-clear-partition> path;
-  		<index-add-all(|path)> entry*
+  		<index-clear-partition> partition;
+  		<index-add-all(|partition)> entry*
   
   nbl-analyze-multiple-perform(|language):
-    Result(path, ast, ast', entry*, task*) -> Result(path, ast, ast', entry'*, error*)
+    Result(partition, ast, ast', entry*, task*) -> Result(partition, ast, ast', entry'*, error*)
     with
+      <index-set-current-partition> partition;
       nbl-collect-reads(
-        (error*, entry'*) := <perform-tasks(|path)> (task*, entry*)
+        (error*, entry'*) := <perform-tasks(|partition)> (task*, entry*)
       ) => reads;
-      <index-add-all(|path)> reads
+      <index-add-all(|partition)> reads
