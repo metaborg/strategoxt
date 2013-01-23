@@ -43,12 +43,12 @@ rules // Single file analysis
       dependent        := <nbl-get-dependent-partitions> changed
 
 rules // Multi file analysis
-
-  nbl-analyze-multiple(parse-file|language, project-path):
-  	path* -> file'*
+  
+  nbl-analyze-multiple(parse-file, complete-work-unit|language, project-path):
+  	path* -> result*
   	with
-  	  file*  := <map(nbl-analyze-parse-file(parse-file))> path*;
-  	  file'* := <nbl-analyze-multiple-files(|language, project-path)> file*
+  	  file*   := <map(nbl-analyze-parse-file(parse-file); where(complete-work-unit))> path*;
+  	  result* := <nbl-analyze-multiple-files(complete-work-unit|language, project-path)> file*
 
   nbl-analyze-parse-file(parse-file):
     path -> File(path, ast)
@@ -57,17 +57,18 @@ rules // Multi file analysis
         ast := ()
       end
 
-  nbl-analyze-multiple-files(|language, project-path):
+  nbl-analyze-multiple-files(complete-work-unit|language, project-path):
     files -> collect'*
     with // Setup index
       index-setup(|language, [project-path], ".")
     with // Collect entries and tasks for all files.
-    	collect*  := <map(nbl-analyze-multiple-collect(|language, project-path))> files
+    	collect*  := <map(nbl-analyze-multiple-collect(|language, project-path); where(complete-work-unit))> files
     with // Perform tasks for all files.
-      collect'* := <map(nbl-analyze-multiple-perform(|language))> collect*
+      collect'* := <map(nbl-analyze-multiple-perform(|language); where(complete-work-unit))> collect*
     	
+  // TODO: Merge entire list of tasks instead of just for this file, if index allows it (in parallel).
   nbl-analyze-multiple-collect(|language, project-path):
-  	File(path, ast) -> Result(partition, ast, ast', entry*, <merge-tasks> task*) // TODO: Merge entire list of tasks instead of just for this file.
+  	File(path, ast) -> Result(partition, ast, ast', entry*, <merge-tasks> task*)
   	with
   	  partition := $[[project-path]/[path]];
   	  <index-set-current-partition> partition;
