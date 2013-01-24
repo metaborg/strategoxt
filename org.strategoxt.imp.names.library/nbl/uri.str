@@ -80,6 +80,22 @@ rules // Projections
     URI(language, path) -> URI(language, parent)
     where
       [_|parent] := path
+  
+  nbl-scopes = fail
+  
+  nbl-uri-parent(|targetNamespace):
+    URI(language, path) -> URI(language, parent')
+    where
+      [_|parent] := path;
+      if [segment|_] := parent; namespace := <nbl-segment-namespace> segment then
+        if <nbl-scopes> (namespace, targetNamespace) then
+          parent' := parent
+        else
+          parent' := <nbl-uri-parent(|targetNamespace)> parent
+        end
+      else
+        parent' := parent
+      end
       
   nbl-uri-name:
     uri -> <nbl-uri-path; Hd; nbl-segment-name> uri
