@@ -44,11 +44,11 @@ rules // Single file analysis
 
 rules // Multi file analysis
   
-  nbl-analyze-multiple(parse-file, complete-work-unit|language, project-path):
+  nbl-analyze-multiple(parse-file, parallel, complete-work-unit|language, project-path):
     path* -> result*
     with
       file*   := <map(nbl-analyze-parse-file(parse-file); where(complete-work-unit))> path*;
-      result* := <nbl-analyze-multiple-files(complete-work-unit|language, project-path)> file*
+      result* := <nbl-analyze-multiple-files(parallel, complete-work-unit|language, project-path)> file*
 
   nbl-analyze-parse-file(parse-file):
     path -> File(path, ast)
@@ -57,32 +57,40 @@ rules // Multi file analysis
         ast := ()
       end
 
-  nbl-analyze-multiple-files(complete-work-unit|language, project-path):
+  nbl-analyze-multiple-files(parallel, complete-work-unit|language, project-path):
     file* -> result3*
-    with // Setup index
-      index-setup(|language, [project-path], ".")
-    with
-      // TODO: Can be performed in parallel trivially. 
-      result1* := <map(nbl-analyze-multiple-collect(|language); where(complete-work-unit))> file*;
+    with 
+      result1* := <parallel(all(
+        nbl-analyze-multiple-setup(|language, project-path); 
+        nbl-analyze-multiple-collect(|language); 
+        where(complete-work-unit)
+      ))> file*;
       // TODO: Can be performed in parallel optimistically with re-analysis on inconsistent or outdated data.
-      result2* := <map(nbl-analyze-multiple-perform; where(complete-work-unit))> result1*;
-      // TODO: Can be performed in parallel trivially.
-      result3* := <map(nbl-analyze-multiple-dependent; where(complete-work-unit))> result2*
+      result2* := <all(
+        nbl-analyze-multiple-setup(|language, project-path); 
+        nbl-analyze-multiple-perform; 
+        where(complete-work-unit)
+      )> result1*;
+      result3* := <parallel(all(
+        nbl-analyze-multiple-setup(|language, project-path); 
+        nbl-analyze-multiple-dependent; 
+        where(complete-work-unit)
+      ))> result2*
       
   nbl-analyze-multiple-collect(|language):
     File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, <merge-tasks> task*, [])
     with
-      <index-set-current-partition> partition;
       (ast', entry*, task*) := <nbl-collect(|Language(language))> ast;
-      oldEntry*             := <filter(nbl-diff-entry)> <index-get-all-in-partition> partition;
-      <index-clear-partition> partition;
-      <index-add-all(|partition)> entry*
+      index-transaction(
+        oldEntry*           := <filter(nbl-diff-entry)> <index-get-all-in-partition> partition;
+        <index-clear-partition> partition;
+        <index-add-all(|partition)> entry*
+      )
   
   nbl-analyze-multiple-perform:
     Result(partition, ast, ast', oldEntry*, entry*, task*, _) -> 
       Result(partition, ast, ast', oldEntry*, entry'*, error*, [])
     with
-      <index-set-current-partition> partition;
       nbl-collect-reads(
         (error*, entry'*) := <perform-tasks(|partition)> (task*, entry*)
       ) => reads;
@@ -92,8 +100,16 @@ rules // Multi file analysis
     Result(partition, ast, ast', oldEntry*, entry*, error*, _) -> 
       Result(partition, ast, ast', oldEntry*, entry*, error*, dependent*)
       with
-        <index-set-current-partition> partition;
         newEntry*          := <filter(nbl-diff-entry)> entry*;
         (added*, removed*) := <nbl-diff> (oldEntry*, newEntry*);
         changed            := [added*, removed*];
-        dependent*         := <nbl-get-dependent-partitions; nbl-remove-own-partition(|partition)> changed
+        index-transaction(
+          dependent*       := <nbl-get-dependent-partitions; nbl-remove-own-partition(|partition)> changed
+        )
+
+  nbl-analyze-multiple-setup(|language, project-path) =
+    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _));
+    index-setup(|language, [project-path], partition)
+    
+  nbl-analyze-multiple-work-units = 
+    length; !(<id>, 4); mul
