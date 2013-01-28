@@ -143,9 +143,9 @@ rules /** @internal Imports */
     uri -> [importURI*, transitiveImportURI*]
     with
       importResult*        := <nbl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <mapconcat(nbl-resolve-result)> importResult*;
+      importURI*           := <mapconcat(nbl-resolve-results)> importResult*;
       importedResult*      := <nbl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <mapconcat(nbl-resolve-result)> importedResult*;
+      importedURI*         := <mapconcat(nbl-resolve-results)> importedResult*;
       transitiveImportURI* := <concat> <filter(nbl-get-import-uris-unnamed-transitive(|seen, language, namespace))> importedURI*
 
   nbl-get-import-uris-unnamed-transitive(|seen, language, namespace):
@@ -158,7 +158,7 @@ rules /** @internal Imports */
     uri -> importURI*
     with
       importResult* := <nbl-get-all-properties(|Import(language, namespace, name))> uri;
-      importURI*    := <filter(nbl-resolve-result)> importResult*
+      importURI*    := <filter(nbl-resolve-results)> importResult*
 
 rules /** @internal Helpers */
   

@@ -2,7 +2,6 @@ module nbl/resolve
 
 imports
   
-  nbl/collect
   nbl/tasks
   nbl/query
   nbl/lookup
@@ -17,101 +16,82 @@ signature
     COMPLETION : String -> COMPLETION
       
 rules // Reference resolution
-    
-  nbl-resolve-all = 
-    has-annos;
-    get-annos;
-    collect-all(nbl-resolve-all);
-    concat
   
-  nbl-resolve-all:
-    Use(Result(number)) -> def*
-    where
-      uri*  := <nbl-get-value> DoneTask(number, ());
-      def*  := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
-      
-  nbl-resolve-all:
-    Use(uri@URI(_, _)) -> def*
-    where
-       def* := <nbl-lookup-definitions> uri
-  
-  nbl-resolve = 
-    has-annos;
-    get-annos;
-    collect-one(nbl-resolve)
-  
-  nbl-resolve:
-    Use(Result(number)) -> <Hd> def*
-    where
-      uri* := <nbl-get-value> DoneTask(number, ());
-      def* := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
-      
-  nbl-resolve:
-    Use(uri@URI(_, _)) -> <Hd> def*
-    where
-      def* := <nbl-lookup-definitions> uri
-
-rules // New resolve
-  
-  nbl-resolve-new =
+  nbl-resolve =
     switch ?t
       case has-annos:
         get-annos;
-        nbl-resolve-new;
+        nbl-resolve;
         try(concat);
         !t{<id>}
       case ?Result(_):
-        nbl-resolve-result;
-        try(nbl-resolve-new)
+        nbl-resolve-results;
+        try(nbl-resolve)
       case ?Use(_): 
-        nbl-resolve-use
+        nbl-resolve-uses
       case ?Def(_): 
         id
       otherwise:
-        try(all(nbl-resolve-new))
+        try(all(nbl-resolve))
     end
+
+  nbl-resolve-collect = 
+    has-annos;
+    get-annos;
+    collect-all(nbl-resolve-collect);
+    concat
   
-  nbl-resolve-result:
+  nbl-resolve-collect:
+    Use(_) -> def*
+    where
+      def* := <nbl-resolve-uses>
+    
+  nbl-resolve-collect:
+    Def(_) -> [<id>]
+    
+  nbl-resolve-collect-one = nbl-resolve-collect; Hd
+  
+  nbl-resolve-results:
     Result(number) -> [done*, fail*]
     with
       (<nbl-get-value> DoneTask(number, ()) <+ ![]) => done*;
       (<nbl-get-value> FailTask(number, ()) <+ ![]) => fail*
       
-  nbl-resolve-use:
-    Use(result@Result(number)) -> def*
+  nbl-resolve-uses:
+    Use(Result(number)) -> def*
     where
-      def* := <nbl-resolve-result; mapconcat(nbl-get-all-definitions)> result
+      uri*  := <nbl-get-value> DoneTask(number, ());
+      def*  := <mapconcat(nbl-get-all-definitions)> uri*
       
-  nbl-resolve-use:
+  nbl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
     where
       def* := <nbl-lookup-definitions> uri
     
 rules // Code completion
 
-  nbl-unresolved-uris = 
+  nbl-resolve-collect-uris = 
     has-annos;
     get-annos;
-    collect-all(nbl-unresolved-uri);
+    collect-all(nbl-resolve-collect-uris);
     concat
-      
-  nbl-unresolved-uri:
-    Use(result) -> <nbl-resolve-result> result
+    
+  nbl-resolve-collect-uris = nbl-resolve-results
 
   nbl-propose-completions:
-    ast -> proposals'
+    ast -> proposals'*
       where
         item        := <collect-one(?COMPLETION(_))> ast;
         index-transaction(
-          uris      := <nbl-unresolved-uris> item;
-          proposals := <mapconcat(nbl-visible-definitions)> uris
+          uri*      := <nbl-resolve-collect-uris; filter(nbl-uri)> item;
+          proposal* := <mapconcat(nbl-visible-definitions)> uri*
         );
-        proposals'  := <map(nbl-uri; nbl-uri-name)> proposals
+        proposals'* := <map(nbl-uri; nbl-uri-name)> proposal*
 
 rules // Ambiguity
   
   nbl-get-ambiguities =
-    nbl-resolve-all;
+    nbl-resolve-collect;
     mapconcat(nbl-get-all-aliases);
     filter(nbl-uri; nbl-uri-parent);
     make-set;
@@ -124,13 +104,18 @@ rules // Conditions
     
   nbl-has-reference =
   	collect-one(nbl-is-reference)
+  	
+  nbl-has-reference =
+    has-annos;
+    get-annos;
+    nbl-has-reference
  
   nbl-is-unresolved =
   	?node;
     has-annos;
     get-annos;
     nbl-has-reference;
-    <not(nbl-resolve)> node
+    [] := <nbl-resolve-collect> node
     
   nbl-is-duplicate-definition =
     has-annos;

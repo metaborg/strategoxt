@@ -97,9 +97,9 @@ rules
   nbl-resolve-constraint-one(|entry):
   	Prop(type, value) -> entry
   	where
-  		values  := <nbl-get-all-properties(|type); nbl-resolve-new> entry;
-  		values' := <nbl-resolve-new> values;
-  		value'  := <nbl-resolve-new> value;
+  		values  := <nbl-get-all-properties(|type)> entry;
+  		values' := <nbl-resolve> values;
+  		value'  := <nbl-resolve> value;
   		<fetch(?value')> values'
       
 	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
