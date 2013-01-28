@@ -11,34 +11,37 @@ imports
 rules // Index-based lookup
   
   nbl-lookup-definitions:
-    containsURI -> <nbl-lookup(nbl-definition-template)> containsURI
+    containsURI -> <nbl-lookup(nbl-definition-template, id)> containsURI
     
   nbl-lookup-definitions(|namespace, name):
-    uri -> <nbl-lookup-uri(nbl-definition-template|namespace, name)> uri
+    uri -> <nbl-lookup-uri(nbl-definition-template, id|namespace, name)> uri
+
+  nbl-lookup-definitions(constraint|namespace, name):
+    uri -> <nbl-lookup-uri(nbl-definition-template, constraint|namespace, name)> uri
   
 rules // Index based visibility
   
   nbl-visible-definitions:
-    containsURI -> <nbl-visible(nbl-definition-template)> containsURI
+    containsURI -> <nbl-visible(nbl-definition-template, id)> containsURI
   
 rules /** @internal Index-based lookup */
   
-  nbl-lookup(create-template|):
+  nbl-lookup(create-template, constraint|):
     containsURI -> entry*
     where
       <with(uri             := <nbl-uri> containsURI                  | "Could not extract URI from given term.")> [containsURI];
       <with(targetNamespace := <nbl-uri-namespace> uri                | "Could not extract target namespace.")> [uri];
       <with(targetName      := <nbl-uri-name> uri                     | "Could not extract target name.")> [uri];
       <with(parentURI       := <nbl-uri-parent(|targetNamespace)> uri | "Could not construct a parent URI.")> [uri];
-      entry*                := <nbl-lookup-uri(create-template|targetNamespace, targetName)> parentURI
+      entry*                := <nbl-lookup-uri(create-template, constraint|targetNamespace, targetName)> parentURI
       
-  nbl-lookup-uri(create-template|namespace, name):
+  nbl-lookup-uri(create-template, constraint|namespace, name):
     uri -> entry'*
     where
-      entry*         := <nbl-lookup-uri-scoped(create-template|namespace, name)> uri;
+      entry*         := <nbl-lookup-uri-scoped(create-template, constraint|namespace, name)> uri;
       if []          := entry* then
         if parentURI := <nbl-uri-parent(|namespace)> uri then
-          entry'*    := <nbl-lookup-uri(create-template|namespace, name)> parentURI
+          entry'*    := <nbl-lookup-uri(create-template, constraint|namespace, name)> parentURI
         else
           entry'*    := []
         end
@@ -46,14 +49,14 @@ rules /** @internal Index-based lookup */
         entry'*      := entry*
       end
     
-  nbl-lookup-uri-scoped(create-template|namespace, name):
+  nbl-lookup-uri-scoped(create-template, constraint|namespace, name):
     uri -> [entry*, importEntry*]
     with
       // Standard lookup
-      entry*       := <nbl-standard-lookup(create-template|namespace, name)> uri;
+      entry*       := <nbl-standard-lookup(create-template|namespace, name); filter(constraint)> uri;
       
       // Imports & aliases
-      importEntry* := <nbl-lookup-imported-entries(create-template|<nbl-uri-language> uri, namespace, name)> uri
+      importEntry* := <nbl-lookup-imported-entries(create-template|<nbl-uri-language> uri, namespace, name); filter(constraint)> uri
       
       // TODO: External (defines x in y) definitions
       
@@ -81,34 +84,34 @@ rules /** @internal Index-based lookup */
       
 rules /** @internal Index based visibility */
       
-  nbl-visible(create-template|):
+  nbl-visible(create-template, constraint|):
     containsURI -> entries
     with
       <with(uri             := <nbl-uri> containsURI                  | "Could not extract URI from given term.")> [containsURI];
       <with(targetNamespace := <nbl-uri-namespace> uri                | "Could not extract target namespace.")> [uri];
       <with(targetPrefix    := <nbl-uri-name> uri                     | "Could not extract target prefix.")> [uri];
       <with(parentURI       := <nbl-uri-parent(|targetNamespace)> uri | "Could not construct a parent URI.")> [uri];
-      entries               := <nbl-visible-uri(create-template|targetNamespace, targetPrefix)> parentURI
+      entries               := <nbl-visible-uri(create-template, constraint|targetNamespace, targetPrefix)> parentURI
       
-  nbl-visible-uri(create-template|namespace, prefix):
+  nbl-visible-uri(create-template, constraint|namespace, prefix):
     uri -> allEntries
     with
-      entries      := <nbl-visible-uri-scoped(create-template|namespace, prefix)> uri;
+      entries      := <nbl-visible-uri-scoped(create-template, constraint|namespace, prefix)> uri;
       if parentURI := <nbl-uri-parent(|namespace)> uri then
-        entries2   := <nbl-visible-uri(create-template|namespace, prefix)> parentURI;
+        entries2   := <nbl-visible-uri(create-template, constraint|namespace, prefix)> parentURI;
         allEntries := <conc> (entries, entries2)
       else
         allEntries := entries
       end
       
-  nbl-visible-uri-scoped(create-template|namespace, prefix):
+  nbl-visible-uri-scoped(create-template, constraint|namespace, prefix):
     uri -> [entry*, importEntry*]
     with
       // Standard lookup
-      entry*       := <nbl-standard-visible(create-template|namespace, prefix)> uri;
+      entry*       := <nbl-standard-visible(create-template|namespace, prefix); filter(constraint)> uri;
       
       // Imports & aliases
-      importEntry* := <nbl-visible-imported-entries(create-template|<nbl-uri-language> uri, namespace, prefix)> uri
+      importEntry* := <nbl-visible-imported-entries(create-template|<nbl-uri-language> uri, namespace, prefix); filter(constraint)> uri
       
       // TODO: External (defines x in y) definitions
       
