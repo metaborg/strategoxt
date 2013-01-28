@@ -51,13 +51,43 @@ rules // Reference resolution
     where
       def* := <nbl-lookup-definitions> uri
 
-rules // Code completion
-
+rules // New resolve
+  
+  nbl-resolve-new =
+    switch ?t
+      case has-annos:
+        get-annos;
+        nbl-resolve-new;
+        try(concat);
+        !t{<id>}
+      case ?Result(_):
+        nbl-resolve-result;
+        try(nbl-resolve-new)
+      case ?Use(_): 
+        nbl-resolve-use
+      case ?Def(_): 
+        id
+      otherwise:
+        try(all(nbl-resolve-new))
+    end
+  
   nbl-resolve-result:
     Result(number) -> [done*, fail*]
     with
       (<nbl-get-value> DoneTask(number, ()) <+ ![]) => done*;
       (<nbl-get-value> FailTask(number, ()) <+ ![]) => fail*
+      
+  nbl-resolve-use:
+    Use(result@Result(number)) -> def*
+    where
+      def* := <nbl-resolve-result; mapconcat(nbl-get-all-definitions)> result
+      
+  nbl-resolve-use:
+    Use(uri@URI(_, _)) -> def*
+    where
+      def* := <nbl-lookup-definitions> uri
+    
+rules // Code completion
 
   nbl-unresolved-uris = 
     has-annos;

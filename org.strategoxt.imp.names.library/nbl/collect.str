@@ -184,7 +184,7 @@ rules // generic analysis of imports
     where
       importNs := <nbl-import-namespace> import;
       uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
-      result   := <new-task(|tasks)> Resolve(uri, resolveNs, <strip-annos> <try(fix-completion-name)> name);
+      result   := <new-task(|tasks)> Resolve(uri, resolveNs, <strip-annos> <try(fix-completion-name)> name, []);
       deps'    := [<nbl-result-number> result|deps];
       new-prop(|elems, uri, import, result)
       // TODO: should import be added to annotation?
@@ -228,25 +228,25 @@ rules // generic analysis of uses
 		
 	// candidate in current scope
 	nbl-use-candidate(|lang, elems, tasks, paths, deps):
-		(Candidate(ns, props, Current()), name{anno*}) -> name{u, anno*}
+		(Candidate(ns, prop*, Current()), name{anno*}) -> name{u, anno*}
 		where
 			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			result := <new-task(|tasks, deps)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
 		  u      := <new-use(|elems, result)>
 	
 	// candidate in another scope (result of resolution)	  
 	nbl-use-candidate(|lang, elems, tasks, paths, deps):
-		(c@Candidate(ns, props, uri@Result(resultNumber)), name{anno*}) -> name{u, anno*}
+		(c@Candidate(ns, prop*, uri@Result(resultNumber)), name{anno*}) -> name{u, anno*}
 		where
-			result := <new-task(|tasks, [resultNumber|deps])> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+			result := <new-task(|tasks, <conc> ([resultNumber|deps], <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
 		  u      := <new-use(|elems, result)>
 		  
 	// candidate in context
   nbl-use-candidate(|lang, elems, tasks, paths, deps):
-    (Candidate(ns, props, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
+    (Candidate(ns, prop*, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
     where 
       _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (Candidate(ns', props', refscope'), name'{});
-      result := <new-task(|tasks, deps)> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name);
+      result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
       u      := <new-use(|elems, result)>
 
 rules // generic analysis of properties

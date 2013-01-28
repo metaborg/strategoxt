@@ -4,7 +4,9 @@ imports
 	
 	index/core
 	nbl/lookup
+	nbl/collect
 	nbl/resolve
+	nbl/query
 	nbl/uri
 	nbl/utils
 	
@@ -21,7 +23,7 @@ signature
 		DoneTask : String * Term											        -> DoneTask
 		FailTask : String * Term                              -> FailTask
 		
-		Resolve  : Result * Namespace * Name                  -> Instruction
+		Resolve  : Result * Namespace * Name * List(Prop)     -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
 		Match		 : ID * Term			                          	-> Instruction
 		Done     : Term                                   		-> Instruction
@@ -78,14 +80,28 @@ rules
 rules
 	
   perform-task(|elems): 
-    Resolve(uri, namespace, name) -> result
-    where
-    	resolvedURI* := <filter(nbl-uri)> <nbl-lookup-definitions(|namespace, name)> uri;
+    Resolve(uri, namespace, name, prop*) -> result
+    with
+    	resolvedURI* := <filter(nbl-uri)> <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri;
       if [] := resolvedURI* then
       	result := Fail([<nbl-extend-uri(|namespace, name, ())> uri])
       else
         result := Done(resolvedURI*)
       end
+      
+  nbl-resolve-constraint(|prop*):
+  	entry -> entry
+  	where
+  		<map(nbl-resolve-constraint-one(|entry))> prop*
+  		
+  nbl-resolve-constraint-one(|entry):
+  	Prop(type, value) -> entry
+  	where
+  		values  := <nbl-get-all-properties(|type); nbl-resolve-new> entry;
+  		values' := <nbl-resolve-new> values;
+  		value'  := <nbl-resolve-new> value;
+  		<fetch(?value')> values'
+      
 	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 		 -> Done(<match-term> (key, term))
 	
@@ -134,7 +150,7 @@ rules /** @internal Projections */
   
   /** @internal */  
   nbl-uri-impl:
-  	Resolve(uri, _, _) -> uri
+  	Resolve(uri, _, _, _) -> uri
   
   /** @internal */
   nbl-uri-impl:

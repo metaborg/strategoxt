@@ -70,8 +70,8 @@ rules /** @internal Index-based lookup */
   nbl-standard-lookup-unique(create-template|namespace, name):
     uri -> entry*
     where
-      if alias := <nbl-get-value> Alias(<nbl-extend-uri(|namespace, name, NonUnique())> uri, ()) then
-        entry* := <create-template; nbl-get-all> alias
+      if alias* := <nbl-get-all-values> Alias(<nbl-extend-uri(|namespace, name, NonUnique())> uri, ()) then
+        entry* := <mapconcat(create-template; nbl-get-all)> alias*
       else
         entry* := []
       end
