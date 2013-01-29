@@ -27,7 +27,7 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nbl-get-all-definitions:
-    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-unique-nonunique(\uri -> Def(uri)\)>
+    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-unique-nonunique(\uri -> Def(uri)\)> uri
 
   /**
    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
@@ -163,15 +163,15 @@ rules /* @internal Generic queries */
   nbl-get-unique-nonunique(store-read, create-template):
   	uri -> [unique*, nonUnique*]
   	where
-      if aliasURI := <Hd> <nbl-get-all-aliases> uri then
-        unique*   := <create-template; nbl-get-all(store-read)> aliasURI
+      if alias* := <nbl-get-all-aliases> uri then
+        unique* := <mapconcat(create-template; nbl-get-all(store-read))> alias*
       else
-        unique*   := []
+        unique* := []
       end;
       if nonUniqueURI := <nbl-replace-uri-qualifier(|NonUnique())> uri then
-        nonUnique*  := <create-template; nbl-get-all(store-read)> nonUniqueURI
+        nonUnique*    := <create-template; nbl-get-all(store-read)> nonUniqueURI
       else
-        nonUnique* := []
+        nonUnique*    := []
       end
 
 rules /** @internal Entry filtering */
