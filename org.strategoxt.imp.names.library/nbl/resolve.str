@@ -20,10 +20,8 @@ rules // Reference resolution
   nbl-resolve =
     switch ?t
       case has-annos:
-        get-annos;
-        nbl-resolve;
-        try(concat);
-        !t{<id>}
+        anno* := <get-annos; nbl-resolve; try(concat)> t; 
+        !t{anno*}
       case ?Result(_):
         nbl-resolve-results;
         try(nbl-resolve)
@@ -61,12 +59,30 @@ rules // Reference resolution
     Use(Result(number)) -> def*
     where
       uri*  := <nbl-get-value> DoneTask(number, ());
-      def*  := <mapconcat(nbl-get-all-definitions)> uri*
+      def*  := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
       
   nbl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
     where
       def* := <nbl-lookup-definitions> uri
+      
+  nbl-is-reference =
+    ?Use(_)
+    
+  nbl-has-reference =
+    collect-one(nbl-is-reference)
+    
+  nbl-has-reference =
+    has-annos;
+    get-annos;
+    nbl-has-reference
+ 
+  nbl-is-unresolved =
+    ?node;
+    has-annos;
+    get-annos;
+    nbl-has-reference;
+    [] := <nbl-resolve-collect> node
     
 rules // Code completion
 
@@ -88,7 +104,7 @@ rules // Code completion
         );
         proposals'* := <map(nbl-uri; nbl-uri-name)> proposal*
 
-rules // Ambiguity
+rules // Ambiguities
   
   nbl-get-ambiguities =
     nbl-resolve-collect;
@@ -97,29 +113,11 @@ rules // Ambiguity
     make-set;
     where(<gt> (<length>, 1))
 
-rules // Conditions
-	
-  nbl-is-reference =
-    ?Use(_)
-    
-  nbl-has-reference =
-  	collect-one(nbl-is-reference)
-  	
-  nbl-has-reference =
-    has-annos;
-    get-annos;
-    nbl-has-reference
- 
-  nbl-is-unresolved =
-  	?node;
-    has-annos;
-    get-annos;
-    nbl-has-reference;
-    [] := <nbl-resolve-collect> node
-    
-  nbl-is-duplicate-definition =
+rules // Duplicate definitions
+  
+  nbl-get-duplicate-definitions =
     has-annos;
     get-annos;
     collect-one(?Def(_));
     nbl-get-all-aliases;
-    <gt> (<length>, 1)
+    where(<gt> (<length>, 1))
