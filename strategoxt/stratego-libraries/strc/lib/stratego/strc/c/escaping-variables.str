@@ -150,3 +150,12 @@ strategies
   arg-should-be-closure-undeclared =
     debug(!"* warning (arg-should-be-closure): not a local function")
     ; <exit> 1
+    
+  is-ListOp =
+    ?Op("Nil", []) + ?Op("Cons", [_, _])
+
+  Arity :
+    ConstType(t) -> 0
+
+  Arity :
+    FunType(ts, t) -> <length> ts
