@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.ant.test" basedir=".">
+	<import file="strategoxt-contrib.xml" />
+
 	<macrodef name="strj-test">
 		<attribute name="input" />
 		<sequential>
 			<log message="Testing @{input}" />
 			<dirname file="@{input}" property="@{input}.dirname" />
-			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
+			<basename file="@{input}"
+			          property="@{input}.basename"
+			          suffix=".str" />
 			<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
-			<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
+			<strj-for-test input="@{input}"
+			               output="${@{input}.dirname}/${@{input}.basename}/test/Main.java"
+			               package="test">
 				<strjargs>
 					<arg value="-m" />
 					<arg value="main-${@{input}.basename}" />
@@ -38,9 +44,21 @@
 					<srcfiles dir="." includes="*.jar" />
 				</str-deps>
 			</strj-for-test>
-			<javac srcdir="${@{input}.dirname}/${@{input}.basename}" destdir="${@{input}.dirname}/${@{input}.basename}" classpath="./strategoxt.jar" source="1.5" target="1.5" nowarn="on" fork="true" debug="true" debuglevel="source" compiler="classic">
+			<javac srcdir="${@{input}.dirname}/${@{input}.basename}"
+			       destdir="${@{input}.dirname}/${@{input}.basename}"
+			       classpath="./strategoxt.jar"
+			       source="1.5"
+			       target="1.5"
+			       nowarn="on"
+			       fork="true"
+			       debug="true"
+			       debuglevel="source"
+			       compiler="classic">
 			</javac>
-			<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
+			<java fork="true"
+			      classname="test.Main"
+			      failonerror="true"
+			      dir="${@{input}.dirname}">
 				<classpath>
 					<pathelement location="./strategoxt.jar" />
 					<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
@@ -48,4 +66,5 @@
 			</java>
 		</sequential>
 	</macrodef>
+
 </project>

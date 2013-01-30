@@ -153,7 +153,7 @@
 			<includeargs>
 				<args>
 					<arg value="-I" />
-					<arg value="${sdf}/share/sdf-library/library" />
+					<arg value="${nix-profile}/share/sdf-library/library" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -164,7 +164,7 @@
 			<includeargs>
 				<args>
 					<arg value="-I" />
-					<arg value="${sdf}/share/sdf-library/library" />
+					<arg value="${nix-profile}/share/sdf-library/library" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -172,7 +172,7 @@
 			<includeargs>
 				<args>
 					<arg value="-I" />
-					<arg value="${sdf}/share/sdf-library/library" />
+					<arg value="${nix-profile}/share/sdf-library/library" />
 					<arg value="-I" />
 					<arg value="${basedir}/${syn.str}" />
 				</args>
