@@ -26,8 +26,11 @@ signature
 		Resolve  : Result * Namespace * Name * List(Prop)     -> Instruction
 		PropCalc : Property * Term                          	-> Instruction
 		Match		 : ID * Term			                          	-> Instruction
-		Done     : Term                                   		-> Instruction
-		Fail     : Term                                       -> Instruction
+		
+		Done     : Term                                   		-> Result
+		Fail     : Term                                       -> Result
+		
+		Stall    : Instruction
 
 rules
 	
@@ -60,18 +63,17 @@ rules
 				(ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task(|elems)))> tasks 
 			then
 			  Task(names, [], res) := t;
-			  if Done(tr) := res then
-					nr-map             := <map(!(<id>, tr))> names;
-					elems'             := <map(!DoneTask(<id>, tr))> names
-				else 
-				  if Fail(tr) := res then
-			      nr-map           := <map(!(<id>, tr))> names;
-            elems'           := <map(!FailTask(<id>, tr))> names
-          end
+			  switch !res
+			    case ?Done(tr):
+	          nr-map := <map(!(<id>, tr))> names;
+	          elems' := <map(!DoneTask(<id>, tr))> names
+	        case ?Fail(tr):
+            nr-map := <map(!(<id>, tr))> names;
+            elems' := <map(!FailTask(<id>, tr))> names
 			  end;
-			  <index-add-all(|partition)> elems';
-				tasks'               := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-				(tasks'', elems'')   := <perform-tasks(|partition)> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
+        <index-add-all(|partition)> elems';
+        tasks'             := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
+        (tasks'', elems'') := <perform-tasks(|partition)> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 			else
 				tasks'' := tasks;
 				elems'' := elems
@@ -80,28 +82,40 @@ rules
 rules
 	
   perform-task(|elems): 
-    Resolve(uri, namespace, name, prop*) -> result
-    with
-    	resolvedURI* := <filter(nbl-uri)> <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri;
-      if [] := resolvedURI* then
-      	result := Fail([<nbl-extend-uri(|namespace, name, ())> uri])
-      else
-        result := Done(resolvedURI*)
-      end
-      
+    instruction@Resolve(uri, namespace, name, prop*) -> result
+    where
+    	resolved* := <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri;
+    	switch !resolved*
+    	  case ?[]: 
+    	    result := Fail([<nbl-extend-uri(|namespace, name, ())> uri])
+    	  case fetch(?Stall()) :
+    	  	fail
+    	  otherwise:
+    	    result := Done(<filter(nbl-uri)> resolved*)
+    	end
+    	
   nbl-resolve-constraint(|prop*):
-  	entry -> entry
+  	entry -> entry'
   	where
-  		<map(nbl-resolve-constraint-one(|entry))> prop*
+  	  results := <map(nbl-resolve-constraint-one(|entry))> prop*;
+  		if <fetch(?Stall())> results then
+  		  entry' := Stall()
+  		else
+  		  entry' := entry
+  		end
   		
   nbl-resolve-constraint-one(|entry):
-  	Prop(type, value) -> entry
+  	Prop(type, expectedValue) -> entry'
   	where
-  		values  := <nbl-get-all-properties(|type)> entry;
-  		values' := <nbl-resolve> values;
-  		value'  := <nbl-resolve> value;
-  		<fetch(?value')> values'
-      
+  		value := <nbl-get-property(|type)> entry;
+  		if value' := <nbl-resolve> value then
+	      expectedValue'  := <nbl-resolve> expectedValue;
+	      <eq> (expectedValue', value');
+	      entry' := entry
+      else
+        entry' := Stall()
+      end
+            
 	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 		 -> Done(<match-term> (key, term))
 	

@@ -50,16 +50,17 @@ rules // Reference resolution
   nbl-resolve-collect-one = nbl-resolve-collect; Hd
   
   nbl-resolve-results:
-    Result(number) -> [done*, fail*]
-    with
-      (<nbl-get-value> DoneTask(number, ()) <+ ![]) => done*;
-      (<nbl-get-value> FailTask(number, ()) <+ ![]) => fail*
+    Result(number) -> results
+    where
+      if not(results := <nbl-get-value> DoneTask(number, ())) then
+        results := <nbl-get-value> FailTask(number, ()) 
+      end
       
   nbl-resolve-uses:
     Use(Result(number)) -> def*
     where
-      uri*  := <nbl-get-value> DoneTask(number, ());
-      def*  := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
+      uri* := <nbl-get-value> DoneTask(number, ());
+      def* := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
       
   nbl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
