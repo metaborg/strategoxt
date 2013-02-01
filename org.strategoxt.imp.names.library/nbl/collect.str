@@ -20,7 +20,9 @@ signature
 	Subsequent :            						DefScope
 	DefScope   : Namespace * Segment -> DefScope
 
-	Candidate  : Namespace * List(Property) * RefScope -> Use
+	Candidate  : Namespace * List(Property) * RefScope           -> Use
+	Candidate  : Namespace * Name * List(Property) * RefScope    -> Use
+	Candidate  : Namespace * Name * Unique * List(Property)      -> ImplicitDef
 	
 	Current    :                                     							 RefScope
 	Surrounding:                                  	 							 RefScope
@@ -66,6 +68,9 @@ strategies // generic traversal
 		vdebug(!"analyse prop ");
 		// handles properties
 		try(nbl-prop-site(|lang, elems, tasks, paths'));
+    vdebug(!"analyse implicit def ");
+    // handles implicit definition sites
+    try(nbl-implicit-def-site(|lang, elems, tasks, cpaths));
 		vdebug(!"done ")
 	
 	nbl-siblings(|lang, elems, tasks, paths, deps) = 
@@ -163,6 +168,30 @@ rules // generic analysis of defs
       new-alias(|elems, <nbl-replace-uri(|ns, name, <nbl-nonunique-qualifier>)> path, path)
     end
 
+rules // generic analysis of implicit defs
+  
+  // interface to specific analysis
+  nbl-implicit-def-site(|lang, elems, tasks, paths) = fail
+  
+  nbl-implicit-def(|lang, elems, tasks, paths, candidates):
+    name -> name
+    where
+      <map(nbl-implicit-def-candidate(|lang, elems, tasks, paths))> candidates
+      
+  nbl-implicit-def-candidate(|lang, elems, tasks, paths):
+    Candidate(ns, name, unique, props) -> <id>
+    where
+      // get path for namespace of definition site
+      ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+      // build path for definition site
+      path     := <nbl-extend-uri(|ns, name, unique)> ppath;
+      // build Def entry for the index
+      new-def(|elems, path);
+      // store non-unique alias in the index
+      nbl-def-store-alias(|elems, unique, path, ns, name);
+      // build Prop entries for the index
+      <map(\Prop(type, result) -> <new-prop(|elems, path, type, result)>\)> props
+
 rules // generic analysis of imports
   
   nbl-import-collect(deps'|lang, elems, tasks, paths, deps) =
@@ -233,6 +262,14 @@ rules // generic analysis of uses
 			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
 			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
 		  u      := <new-use(|elems, result)>
+		  
+  // named candidate in current scope
+  nbl-use-candidate(|lang, elems, tasks, paths, deps):
+    (Candidate(ns, name, prop*, Current()), term{anno*}) -> term{u, anno*}
+    where
+      uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+      result := <new-task(|tasks, <concat> [deps, <dependent-tasks> prop*, <dependent-tasks> name])> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
+      u      := <new-use(|elems, result)>
 	
 	// candidate in another scope (result of resolution)	  
 	nbl-use-candidate(|lang, elems, tasks, paths, deps):
@@ -259,9 +296,9 @@ rules // generic analysis of properties
 	  name{anno*} -> name'
 	  where
 	    Def(uri) := <collect-one(?Def(_))> anno*;
-		  name'    := <foldl(extend-prop(|lang, elems, tasks, uri))> (prop*, name)
+		  name'    := <foldl(extend-prop(|elems, uri))> (prop*, name)
 		
-	extend-prop(|lang, elems, tasks, uri):
+	extend-prop(|elems, uri):
 		(Prop(type, result), name) -> name
 		where
 		  prop := <new-prop(|elems, uri, type, result)> name

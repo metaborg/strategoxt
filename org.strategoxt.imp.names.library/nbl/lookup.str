@@ -68,8 +68,6 @@ rules /** @internal Index-based lookup */
       // Imports & aliases
       importEntry* := <nbl-lookup-imported-entries(create-template|<nbl-uri-language> uri, namespace, name); filter(constraint)> uri
       
-      // TODO: External (defines x in y) definitions
-      
       // TODO: Implicit (this, super) definitions
       
   nbl-standard-lookup-nonunique(create-template|namespace, name) =
@@ -122,8 +120,6 @@ rules /** @internal Index based visibility */
       
       // Imports & aliases
       importEntry* := <nbl-visible-imported-entries(create-template|<nbl-uri-language> uri, namespace, prefix); filter(constraint)> uri
-      
-      // TODO: External (defines x in y) definitions
       
       // TODO: Implicit (this, super) definitions
 
