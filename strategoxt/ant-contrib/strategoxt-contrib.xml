@@ -3,8 +3,8 @@
 	<import file="strategoxt-contrib-util.xml" />
 
 	<!-- This will be nicer when SDF is reimplemented in Stratego -->
-	<property name="nix-profile" value="${user.home}/.nix-profile" />
-	<property name="nativepath" value="${nix-profile}/bin/" />
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
 
 	<property name="version" value="0" />
 	<property name="revision" value="0" />

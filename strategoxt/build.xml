@@ -18,28 +18,43 @@
 	<property name="lib" location="lib/" />
 	<property name="bin" location="bin/" />
 
+	
+	<!-- For CI builds -->
+	<!--<property name="java-front" location="syntax/java-front" />-->
+	<property name="install-prefix" location="dist" />
+	
 	<!-- Import syntax builder -->
 	<include file="${syntax-dir}/build.xml" as="syntax" />
 
 	<!-- Import the libraries builder -->
 	<include file="${libraries-dir}/build.xml" as="libraries" />
-
+	
+	
 	<target name="all"
 	        depends="
 		create-dirs,
 		syntax,
 		generate-java,
 		compile-java,
-		jar
-		" />
+		jar,
+		install" />
+	
 	<target name="create-dirs">
 		<mkdir dir="${lib}" />
 		<mkdir dir="${bin}" />
+		<mkdir dir="${install-prefix}" />
 	</target>
+	
 
+	
+	<target name="install" depends="jar">
+		<copy file="strategoxt.jar" tofile="${install-prefix}/share/strategoxt/strategoxt.jar" />
+	</target>
+	
 	<target name="clean">
 		<delete dir="${lib}" />
 		<delete dir="${bin}" />
+		<mkdir dir="${install-prefix}" />
 		<!-- Clean the syntax -->
 		<antcall target="syntax.clean">
 			<param name="basedir" value="${syntax-dir}" />
