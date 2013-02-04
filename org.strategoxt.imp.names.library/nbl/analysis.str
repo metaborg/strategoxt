@@ -113,3 +113,8 @@ rules // Multi file analysis
     
   nbl-analyze-multiple-work-units = 
     length; !(<id>, 4); mul
+
+rules // Projections
+  
+  nbl-result-dependent:
+    Result(_, _, _, _, _, _, dependent*) -> dependent*
