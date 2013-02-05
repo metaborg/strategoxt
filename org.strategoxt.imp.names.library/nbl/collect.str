@@ -216,7 +216,6 @@ rules // generic analysis of imports
       result   := <new-task(|tasks)> Resolve(uri, resolveNs, <strip-annos> <try(fix-completion-name)> name, []);
       deps'    := [<nbl-result-number> result|deps];
       new-prop(|elems, uri, import, result)
-      // TODO: should import be added to annotation?
       
   nbl-import-namespace:
     Import(_, Imported(namespace)) -> namespace
@@ -302,7 +301,6 @@ rules // generic analysis of properties
 		(Prop(type, result), name) -> name
 		where
 		  prop := <new-prop(|elems, uri, type, result)> name
-		  // TODO: should prop be added to annotation?
 		  
 rules // index uri & value projections
 	
