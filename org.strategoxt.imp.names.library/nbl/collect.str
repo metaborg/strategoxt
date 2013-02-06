@@ -56,15 +56,15 @@ strategies // generic traversal
 		vdebug(!"analyse def ");
 		// handles definition sites
 		nbl-def-collect(?cpaths, spaths|lang, elems, tasks, paths');
-		vdebug(!"analyse imports ");
-		// handles import sites
-		nbl-import-collect(?deps'|lang, elems, tasks, cpaths, deps);
 		vdebug(!"visit children ");
 		// visit children from left to right
-		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, tasks, cpaths, deps'))));
+		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, tasks, cpaths, deps/*'*/))));
 		vdebug(!"analyse use ");
 		// handles use sites
-		try(nbl-use-site(|lang, elems, tasks, paths', deps'));
+		try(nbl-use-site(|lang, elems, tasks, paths', deps/*'*/));
+	  vdebug(!"analyse imports ");
+    // handles import sites
+    nbl-import-collect(?deps'|lang, elems, tasks, cpaths, deps);
 		vdebug(!"analyse prop ");
 		// handles properties
 		try(nbl-prop-site(|lang, elems, tasks, paths'));
@@ -213,7 +213,8 @@ rules // generic analysis of imports
     where
       importNs := <nbl-import-namespace> import;
       uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
-      result   := <new-task(|tasks)> Resolve(uri, resolveNs, <strip-annos> <try(fix-completion-name)> name, []);
+      name'    := <nbl-name> name;
+      result   := <get-annos; collect-one(?Use(<id>))> name';
       deps'    := [<nbl-result-number> result|deps];
       new-prop(|elems, uri, import, result)
       
@@ -259,7 +260,7 @@ rules // generic analysis of uses
 		(Candidate(ns, prop*, Current()), name{anno*}) -> name{u, anno*}
 		where
 			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
+			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*);
 		  u      := <new-use(|elems, result)>
 		  
   // named candidate in current scope
@@ -267,14 +268,14 @@ rules // generic analysis of uses
     (Candidate(ns, name, prop*, Current()), term{anno*}) -> term{u, anno*}
     where
       uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-      result := <new-task(|tasks, <concat> [deps, <dependent-tasks> prop*, <dependent-tasks> name])> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
+      result := <new-task(|tasks, <concat> [deps, <dependent-tasks> prop*, <dependent-tasks> name])> Resolve(uri, ns, <nbl-fix-name> name, prop*);
       u      := <new-use(|elems, result)>
 	
 	// candidate in another scope (result of resolution)	  
 	nbl-use-candidate(|lang, elems, tasks, paths, deps):
 		(c@Candidate(ns, prop*, uri@Result(resultNumber)), name{anno*}) -> name{u, anno*}
 		where
-			result := <new-task(|tasks, <conc> ([resultNumber|deps], <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
+			result := <new-task(|tasks, <conc> ([resultNumber|deps], <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*);
 		  u      := <new-use(|elems, result)>
 		  
 	// candidate in context
@@ -282,7 +283,7 @@ rules // generic analysis of uses
     (Candidate(ns, prop*, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
     where 
       _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (Candidate(ns', props', refscope'), name'{});
-      result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <strip-annos> <try(fix-completion-name)> name, prop*);
+      result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*);
       u      := <new-use(|elems, result)>
 
 rules // generic analysis of properties
@@ -301,6 +302,12 @@ rules // generic analysis of properties
 		(Prop(type, result), name) -> name
 		where
 		  prop := <new-prop(|elems, uri, type, result)> name
+
+rules // name retrieval
+  
+  nbl-name = is-string
+    
+  nbl-fix-name = try(fix-completion-name); strip-annos
 		  
 rules // index uri & value projections
 	
