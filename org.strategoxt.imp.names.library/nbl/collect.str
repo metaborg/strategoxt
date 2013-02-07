@@ -15,25 +15,37 @@ signature
 	
 		Unique Import DefScope RefScope
 
-	constructors
+	constructors // def
 
-	Current    :            						DefScope
-	Subsequent :            						DefScope
-	DefScope   : Namespace * Segment -> DefScope
+		Current    :            						DefScope
+		Subsequent :            						DefScope
+		DefScope   : Namespace * Segment -> DefScope
 
-	Candidate  : Namespace * List(Property) * RefScope           -> Use
-	Candidate  : Namespace * Name * List(Property) * RefScope    -> Use
-	Candidate  : Namespace * Name * Unique * List(Property)      -> ImplicitDef
+  constructors // implicit def
+    
+    IDefCandidate : Namespace * Name * Unique * List(Property) -> ImplicitDef
+  
+  constructors // use
+      
+		UseCandidate  : Namespace * List(Property) * RefScope * Range        -> Use
+		UseCandidate  : Namespace * Name * List(Property) * RefScope * Range -> Use
 	
-	Current    :                                     							 RefScope
-	Surrounding:                                  	 							 RefScope
-	Context    : String * Namespace * List(Property) * RefScope	-> RefScope
+		Current     :                                     							RefScope
+		Surrounding :                                  	 							  RefScope
+		Context     : String * Namespace * List(Property) * RefScope -> RefScope
+		
+    All : Range
+    One : Range
 	
-	Prop       : Property * Value       -> PropCandidate
-	
-	Imported   : Namespace                   -> Namespace
-	Import     : Language * Namespace        -> Property
-	Import     : Language * Namespace * Name -> Property
+	constructors // import
+	  
+	  Imported : Namespace                   -> Namespace
+	  Import   : Language * Namespace        -> Property
+	  Import   : Language * Namespace * Name -> Property
+  
+  constructors // property
+    
+    Prop : Property * Value -> Prop
 	
 strategies // generic traversal
 	
@@ -174,7 +186,7 @@ rules // generic analysis of implicit defs
       <map(nbl-implicit-def-candidate(|lang, elems, tasks, paths))> candidates
       
   nbl-implicit-def-candidate(|lang, elems, tasks, paths):
-    Candidate(ns, name, unique, props) -> <id>
+    IDefCandidate(ns, name, unique, props) -> <id>
     where
       // get path for namespace of definition site
       ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
@@ -186,6 +198,53 @@ rules // generic analysis of implicit defs
       nbl-def-store-alias(|elems, unique, path, ns, name);
       // build Prop entries for the index
       <map(\Prop(type, result) -> <new-prop(|elems, path, type, result)>\)> props
+	
+rules // generic analysis of uses
+	
+	// single candidate
+	nbl-use(|lang, elems, tasks, paths, deps, candidate):
+		name -> name'
+		where
+			<not(is-list)> candidate;
+			name' := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (candidate, name)
+	
+	// list of candidates
+	nbl-use(|lang, elems, tasks, paths, deps, candidates):
+		name -> name'
+		where
+			<is-list> candidates;
+			name' := <foldl(nbl-use-candidate(|lang, elems, tasks, paths, deps))> (candidates, name)
+		
+	// candidate in current scope
+	nbl-use-candidate(|lang, elems, tasks, paths, deps):
+		(UseCandidate(ns, prop*, Current(), range), name{anno*}) -> name{u, anno*}
+		where
+			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+		  u      := <new-use(|elems, result)>
+		  
+  // named candidate in current scope
+  nbl-use-candidate(|lang, elems, tasks, paths, deps):
+    (UseCandidate(ns, name, prop*, Current(), range), term{anno*}) -> term{u, anno*}
+    where
+      uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+      result := <new-task(|tasks, <concat> [deps, <dependent-tasks> prop*, <dependent-tasks> name])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+      u      := <new-use(|elems, result)>
+	
+	// candidate in another scope (result of resolution)	  
+	nbl-use-candidate(|lang, elems, tasks, paths, deps):
+		(c@UseCandidate(ns, prop*, uri@Result(resultNumber), range), name{anno*}) -> name{u, anno*}
+		where
+			result := <new-task(|tasks, <conc> ([resultNumber|deps], <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+		  u      := <new-use(|elems, result)>
+		  
+	// candidate in context
+  nbl-use-candidate(|lang, elems, tasks, paths, deps):
+    (UseCandidate(ns, prop*, Context(name', ns', props', refscope'), range), name{anno*}) -> name{u, anno*}
+    where 
+      _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (UseCandidate(ns', props', refscope', range), name'{});
+      result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+      u      := <new-use(|elems, result)>
 
 rules // generic analysis of imports
   
@@ -206,10 +265,9 @@ rules // generic analysis of imports
     where
       importNs := <nbl-import-namespace> import;
       uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
-      name'    := <nbl-name> name;
-      result   := <get-annos; collect-one(?Use(<id>))> name';
-      deps'    := [<nbl-result-number> result|deps];
-      new-prop(|elems, uri, import, result)
+      Use(res) := <nbl-collect-use> name;
+      deps'    := [<nbl-result-number> res|deps];
+      new-prop(|elems, uri, import, res)
       
   nbl-import-namespace:
     Import(_, Imported(namespace)) -> namespace
@@ -226,61 +284,14 @@ rules // generic analysis of imports
     Import(_, namespace, _) -> namespace
     where
       not(Imported(_) := namespace)
-	
-rules // generic analysis of uses
-	
-	// single candidate
-	nbl-use(|lang, elems, tasks, paths, deps, candidate):
-		name -> name'
-		where
-			<not(is-list)> candidate;
-			name' := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (candidate, name)
-	
-	// list of candidates
-	nbl-use(|lang, elems, tasks, paths, deps, candidates):
-		name -> name'
-		where
-			<is-list> candidates;
-			name' := <foldl(nbl-use-candidate(|lang, elems, tasks, paths, deps))> (candidates, name)
-		
-	// candidate in current scope
-	nbl-use-candidate(|lang, elems, tasks, paths, deps):
-		(Candidate(ns, prop*, Current()), name{anno*}) -> name{u, anno*}
-		where
-			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*);
-		  u      := <new-use(|elems, result)>
-		  
-  // named candidate in current scope
-  nbl-use-candidate(|lang, elems, tasks, paths, deps):
-    (Candidate(ns, name, prop*, Current()), term{anno*}) -> term{u, anno*}
-    where
-      uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-      result := <new-task(|tasks, <concat> [deps, <dependent-tasks> prop*, <dependent-tasks> name])> Resolve(uri, ns, <nbl-fix-name> name, prop*);
-      u      := <new-use(|elems, result)>
-	
-	// candidate in another scope (result of resolution)	  
-	nbl-use-candidate(|lang, elems, tasks, paths, deps):
-		(c@Candidate(ns, prop*, uri@Result(resultNumber)), name{anno*}) -> name{u, anno*}
-		where
-			result := <new-task(|tasks, <conc> ([resultNumber|deps], <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*);
-		  u      := <new-use(|elems, result)>
-		  
-	// candidate in context
-  nbl-use-candidate(|lang, elems, tasks, paths, deps):
-    (Candidate(ns, prop*, Context(name', ns', props', refscope')), name{anno*}) -> name{u, anno*}
-    where 
-      _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (Candidate(ns', props', refscope'), name'{});
-      result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*);
-      u      := <new-use(|elems, result)>
 
 rules // generic analysis of properties
   
 	// call back to generic analysis
 	nbl-props(|lang, elems, tasks, prop*):
-	  name{anno*} -> name'
+	  name -> name'
 	  where
-	    Def(uri) := <collect-one(?Def(_))> anno*;
+	    Def(uri) := <nbl-collect-def> name;
 		  name'    := <foldl(extend-prop(|elems, uri))> (prop*, name)
 		
 	extend-prop(|elems, uri):
@@ -293,6 +304,18 @@ rules // name retrieval
   nbl-name = is-string
     
   nbl-fix-name = try(fix-completion-name); strip-annos
+  
+rules // URI retrieval
+  
+  nbl-collect-def =
+    nbl-name;
+    get-annos;
+    collect-one(?Def(_))
+    
+  nbl-collect-use =
+    nbl-name;
+    get-annos;
+    collect-one(?Use(_))
 
 rules // helpers
 	

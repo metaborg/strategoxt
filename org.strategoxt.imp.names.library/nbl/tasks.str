@@ -24,9 +24,9 @@ signature
 		DoneTask : String * Term											        -> DoneTask
 		FailTask : String * Term                              -> FailTask
 		
-		Resolve  : Result * Namespace * Name * List(Prop)     -> Instruction
-		PropCalc : Property * Term                          	-> Instruction
-		Match		 : ID * Term			                          	-> Instruction
+		Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
+		PropCalc : Property * Term                          	    -> Instruction
+		Match		 : ID * Term			                          	    -> Instruction
 		
 		Done     : Term                                   		-> Result
 		Fail     : Term                                       -> Result
@@ -83,9 +83,13 @@ rules
 rules
 	
   perform-task(|elems): 
-    instruction@Resolve(uri, namespace, name, prop*) -> result
+    instruction@Resolve(uri, namespace, name, prop*, range) -> result
     where
-    	resolved* := <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri;
+      switch !range
+        case All(): resolved* := <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri
+        case One(): resolved* := <nbl-lookup-definitions-scoped(nbl-resolve-constraint(|prop*)|namespace, name)> uri
+    	end;
+    	
     	switch !resolved*
     	  case ?[]: 
     	    result := Fail([<nbl-extend-uri(|namespace, name, ())> uri])
@@ -159,7 +163,7 @@ rules /** @internal Projections */
   
   /** @internal */  
   nbl-uri-impl:
-  	Resolve(uri, _, _, _) -> uri
+  	Resolve(uri, _, _, _, _) -> uri
   
   /** @internal */
   nbl-uri-impl:

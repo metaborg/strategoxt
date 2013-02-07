@@ -18,6 +18,9 @@ rules // Index-based lookup
 
   nbl-lookup-definitions(constraint|namespace, name):
     uri -> <nbl-lookup-uri(nbl-definition-template, constraint|namespace, name)> uri
+    
+  nbl-lookup-definitions-scoped(constraint|namespace, name):
+    uri -> <nbl-lookup-uri-scoped(nbl-definition-template, constraint|namespace, name)> uri
   
 rules // Index based visibility
   
