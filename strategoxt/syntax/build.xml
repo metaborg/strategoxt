@@ -13,7 +13,7 @@
 	<property name="syn.pp" value="pp-table" />
 	<property name="sdf-front" value="sdf" />
 	<property name="syn.sdf" value="${sdf-front}/syn" />
-	<property name="syn.aterm" value="aterm" />
+	<property name="syn.aterm" value="aterm-front/syn" />
 	<property name="java-front" value="java-front" />
 	<property name="syn.java" value="${java-front}/syntax/src" />
 	<property name="syn.javaemb" value="${java-front}/syntax-embedding" />
