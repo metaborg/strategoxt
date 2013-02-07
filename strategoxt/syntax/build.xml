@@ -8,7 +8,7 @@
 	<!-- Define where syntax files are located -->
 	<property name="syn.str" value="stratego" />
 	<property name="syn.box" value="gpp/syn/box" />
-	<property name="str-rtg" value="rtg" />
+	<property name="str-rtg" value="stratego-regular" />
 	<property name="syn.rtg" value="${str-rtg}/syn" />
 	<property name="syn.pp" value="gpp/syn/pp-table" />
 	<property name="sdf-front" value="sdf" />
