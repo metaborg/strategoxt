@@ -17,44 +17,48 @@
 	<!-- Destination of files -->
 	<property name="lib" location="lib/" />
 	<property name="bin" location="bin/" />
-
-	
 	<!-- For CI builds -->
 	<!--<property name="java-front" location="syntax/java-front" />-->
 	<property name="install-prefix" location="dist" />
-	
+	<property name="install-location" location="${install-prefix}/${install-prefix}/share/strategoxt" />
+	<property name="jar.name" value="strategoxt.jar" />
+
+
+
 	<!-- Import syntax builder -->
 	<include file="${syntax-dir}/build.xml" as="syntax" />
 
 	<!-- Import the libraries builder -->
 	<include file="${libraries-dir}/build.xml" as="libraries" />
-	
-	
+
+
 	<target name="all"
 	        depends="
-		create-dirs,
-		syntax,
-		generate-java,
-		compile-java,
-		jar,
-		install" />
-	
+									create-dirs,
+									syntax,
+									generate-java,
+									compile-java,
+									jar,
+									install" />
+
 	<target name="create-dirs">
 		<mkdir dir="${lib}" />
 		<mkdir dir="${bin}" />
-		<mkdir dir="${install-prefix}" />
+		<mkdir dir="${install-location}" />
 	</target>
-	
 
-	
+
+
 	<target name="install" depends="jar">
-		<copy file="strategoxt.jar" tofile="${install-prefix}/share/strategoxt/strategoxt.jar" />
+		<copy file="${jar.name}"
+		      tofile="${install-location}/${jar.name}" />
 	</target>
-	
+
 	<target name="clean">
 		<delete dir="${lib}" />
 		<delete dir="${bin}" />
 		<delete dir="${install-prefix}" />
+		<delete file="${jar.name}" />
 		<!-- Clean the syntax -->
 		<antcall target="syntax.clean">
 			<param name="basedir" value="${syntax-dir}" />
@@ -104,7 +108,7 @@
 	</target>
 
 	<target name="jar">
-		<jar destfile="strategoxt.jar"
+		<jar destfile="${jar.name}"
 		     manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF">
 			<fileset dir="ant-contrib" includes="*.xml" />
 			<fileset dir="." includes="COPYING" />
