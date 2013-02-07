@@ -7,6 +7,14 @@ imports
 	nbl/query
 	nbl/uri
 	nbl/entries
+
+signature
+
+  constructors
+    
+    Read    : URI                      -> Entry
+    ReadAll : URI                      -> Entry
+    ReadAll : URI * Namespace * Prefix -> Entry
       
 rules // Dependencies
   
@@ -60,3 +68,29 @@ rules /** @internal */
     where
       references := <mapconcat(construct-from-uri)> entries;
       partitions := <make-set> <mapconcat(index-get-partitions-of)> references
+      
+rules /** @internal URI & value projections */
+  
+  /** @internal */  
+  nbl-uri-impl:
+    Read(uri) -> uri
+    
+  /** @internal */  
+  nbl-uri-impl:
+    ReadAll(uri) -> uri
+    
+  /** @internal */  
+  nbl-uri-impl:
+    ReadAll(uri, _, _) -> uri
+    
+  /** @internal */
+  nbl-value-impl:
+    Read(value) -> value
+
+  /** @internal */
+  nbl-value-impl:
+    ReadAll(value) -> value
+    
+  /** @internal */
+  nbl-value-impl:
+    ReadAll(value, _, _) -> value

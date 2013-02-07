@@ -7,6 +7,7 @@ imports
 	nbl/collect
 	nbl/resolve
 	nbl/query
+	nbl/interface
 	nbl/uri
 	nbl/utils
 	
@@ -118,12 +119,6 @@ rules
             
 	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 		 -> Done(<match-term> (key, term))
-	
-rules
-
-	calc-property(|elems) = fail
-	
-	match-term = fail
 	
 rules
 	

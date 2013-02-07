@@ -9,3 +9,6 @@ rules
 
   force-origins(s) =
     ![<id>]; all(s); ?[<id>]
+
+  fix-completion-name:
+    "completion123" -> ""

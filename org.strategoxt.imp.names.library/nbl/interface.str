@@ -1,0 +1,25 @@
+module nbl/interface
+
+strategies // Collect
+  
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) = fail
+  
+  nbl-implicit-def-site(|lang, elems, tasks, paths) = fail
+  
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) = fail
+  
+  nbl-use-site(|lang, elems, tasks, paths, deps) = fail
+  
+  nbl-prop-site(|lang, elems, tasks, paths) = fail
+
+strategies // Projections
+  
+  nbl-name = fail
+  
+  nbl-scopes = fail
+
+strategies // Tasks
+  
+  calc-property(|elems) = fail
+  
+  match-term = fail

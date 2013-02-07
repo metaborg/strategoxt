@@ -3,6 +3,7 @@ module nbl/uri
 imports
   
   index/core
+  nbl/interface
   
 signature
 
@@ -57,14 +58,8 @@ rules // Projections
   nbl-uri = 
     nbl-uri-impl <+ nbl-uri-generic
     
-  nbl-uris =
-    nbl-uris-impl <+ nbl-uris-generic
-
   nbl-value = 
     nbl-value-impl <+ nbl-value-generic
-    
-  nbl-values = 
-    nbl-values-impl <+ nbl-values-generic
     
   
   nbl-uri-language:
@@ -80,8 +75,6 @@ rules // Projections
     URI(language, path) -> URI(language, parent)
     where
       [_|parent] := path
-  
-  nbl-scopes = fail
   
   nbl-uri-parent(|targetNamespace):
     URI(language, path) -> URI(language, parent')
@@ -177,23 +170,6 @@ rules /** @internal Projections */
   nbl-uri-generic:
     term -> <?_#(<?[<id>|_]>)> term
     
- 
-  /** @internal */
-  nbl-uris-impl = fail 
-    
-  /** @internal */
-  nbl-uris-generic:
-    terms -> <filter(nbl-uri)> terms
-    where
-      <is-list> terms
-      
-  /** @internal */    
-  nbl-uris-generic:
-    term -> [<nbl-uri> term]
-    where
-      not(<is-list> term)
-    
-    
   /** @internal */
   nbl-value-impl:
     URI(_, _) -> <id>
@@ -202,18 +178,10 @@ rules /** @internal Projections */
   nbl-value-generic:
     term -> <?_#(<?[_, <id>|_]> )> term
     
+  /** @internal */  
+  nbl-uri-impl:
+    _{anno*} -> <fetch-elem(nbl-uri)> anno*
 
-  /** @internal */
-  nbl-values-impl = fail
-    
-  /** @internal */
-  nbl-values-generic:
-    terms -> <filter(nbl-value)> terms
-    where
-      <is-list> terms
-      
-  /** @internal */    
-  nbl-values-generic:
-    term -> [<nbl-value> term]
-    where
-      not(<is-list> term)
+  /** @internal */  
+  nbl-value-impl:
+    _{anno*} -> <fetch-elem(nbl-value)> anno*

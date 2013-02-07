@@ -5,6 +5,7 @@ imports
 	libstratego-lib
 	nbl/tasks
 	nbl/entries
+	nbl/interface
 	nbl/uri
 	nbl/utils
 	
@@ -110,9 +111,6 @@ rules // generic analysis of defs
 			match(cpaths|paths);
 			match(spaths|paths)
 		)
-		
-	// interface to specific analysis
-	nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) = fail
 	
 	// call backs to generic analysis
 	
@@ -169,10 +167,7 @@ rules // generic analysis of defs
     end
 
 rules // generic analysis of implicit defs
-  
-  // interface to specific analysis
-  nbl-implicit-def-site(|lang, elems, tasks, paths) = fail
-  
+
   nbl-implicit-def(|lang, elems, tasks, paths, candidates):
     name -> name
     where
@@ -199,8 +194,6 @@ rules // generic analysis of imports
     (
       match(deps'|deps)
     )
-  
-  nbl-import-site(deps'|lang, elems, tasks, paths, deps) = fail
   
   nbl-import(deps'|lang, elems, tasks, paths, deps, resolveNs, imports):
     name -> name'
@@ -235,11 +228,6 @@ rules // generic analysis of imports
       not(Imported(_) := namespace)
 	
 rules // generic analysis of uses
-	
-	// interface to specific analysis
-	nbl-use-site(|lang, elems, tasks, paths, deps) = fail
-	
-	// call back to generic analysis
 	
 	// single candidate
 	nbl-use(|lang, elems, tasks, paths, deps, candidate):
@@ -287,10 +275,7 @@ rules // generic analysis of uses
       u      := <new-use(|elems, result)>
 
 rules // generic analysis of properties
-				
-	// interface to specific analysis
-	nbl-prop-site(|lang, elems, tasks, paths) = fail
-	
+  
 	// call back to generic analysis
 	nbl-props(|lang, elems, tasks, prop*):
 	  name{anno*} -> name'
@@ -308,27 +293,7 @@ rules // name retrieval
   nbl-name = is-string
     
   nbl-fix-name = try(fix-completion-name); strip-annos
-		  
-rules // index uri & value projections
-	
-	// TODO: check if needed, move to uri.str
-	
-  /** @internal */  
-  nbl-uri-impl:
-    _{anno*} -> <fetch-elem(nbl-uri)> anno*
 
-  /** @internal */  
-  nbl-uris-impl:
-    _{anno*} -> <filter(nbl-uri)> anno*
-    
-  /** @internal */  
-  nbl-value-impl:
-    _{anno*} -> <fetch-elem(nbl-value)> anno*
-    
-  /** @internal */  
-  nbl-values-impl:
-    _{anno*} -> <filter(nbl-value)> anno*
-			
 rules // helpers
 	
 	replace-scope-paths(|path)         = foldl(update-scope-paths(!path|<nbl-uri-language> path))
@@ -340,7 +305,3 @@ rules // helpers
 			  result := <fetch((?key, update))> paths 
 			<+ 
 			  result := [(key, <nbl-base-uri; update> lang)|paths]
-			
-	// TODO: move to utils?  
-	fix-completion-name:
-	  "completion123" -> ""

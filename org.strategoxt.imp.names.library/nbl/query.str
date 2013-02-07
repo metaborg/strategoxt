@@ -7,14 +7,6 @@ imports
   nbl/incremental
   nbl/uri
   nbl/entries
-
-signature
-
-  constructors
-    
-    Read    : URI                      -> Entry
-    ReadAll : URI                      -> Entry
-    ReadAll : URI * Namespace * Prefix -> Entry
   
 rules // Specific queries
 
@@ -81,7 +73,6 @@ rules // Specific queries
         readAlls2  := <nbl-get-all(fail)> ReadAll(parentURI, (), ());
         namespace  := <nbl-uri-namespace> uri;
         name       := <nbl-uri-name> uri;
-        // TODO: Test if this works.
         readAlls2' := <filter(nbl-compare-prefix(|namespace, name))> readAlls2;
         readAlls   := <conc> (readAlls1, readAlls2')
       else
@@ -200,29 +191,3 @@ rules /** @internal Helpers */
     where
       uri := <nbl-uri> entry;
       <eq> (namespace, <nbl-uri-namespace> uri)
-
-rules /** @internal URI & value projections */
-  
-  /** @internal */  
-  nbl-uri-impl:
-    Read(uri) -> uri
-    
-  /** @internal */  
-  nbl-uri-impl:
-    ReadAll(uri) -> uri
-    
-  /** @internal */  
-  nbl-uri-impl:
-    ReadAll(uri, _, _) -> uri
-    
-  /** @internal */
-  nbl-value-impl:
-    Read(value) -> value
-
-  /** @internal */
-  nbl-value-impl:
-    ReadAll(value) -> value
-    
-  /** @internal */
-  nbl-value-impl:
-    ReadAll(value, _, _) -> value
