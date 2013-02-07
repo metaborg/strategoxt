@@ -54,7 +54,7 @@
 	<target name="clean">
 		<delete dir="${lib}" />
 		<delete dir="${bin}" />
-		<mkdir dir="${install-prefix}" />
+		<delete dir="${install-prefix}" />
 		<!-- Clean the syntax -->
 		<antcall target="syntax.clean">
 			<param name="basedir" value="${syntax-dir}" />
