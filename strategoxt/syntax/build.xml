@@ -11,7 +11,7 @@
 	<property name="str-rtg" value="stratego-regular" />
 	<property name="syn.rtg" value="${str-rtg}/syn" />
 	<property name="syn.pp" value="gpp/syn/pp-table" />
-	<property name="sdf-front" value="sdf" />
+	<property name="sdf-front" value="sdf-front" />
 	<property name="syn.sdf" value="${sdf-front}/syn" />
 	<property name="syn.aterm" value="aterm-front/syn" />
 	<property name="java-front" value="java-front" />
