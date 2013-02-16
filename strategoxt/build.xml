@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.StrategoXT" default="all">
 	<!-- Import Ant contrib -->
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
 	<!-- Import Stratego/XT Ant contributions -->
-	<!--<import file="ant-contrib/strategoxt-contrib.xml" />-->
+	<import file="ant-contrib/strategoxt-test.xml" />
 
 	<!-- Import the properties file, containing e.g. the version number -->
 	<property file="build.properties" />
@@ -40,7 +40,7 @@
 				<basename file="@{deffile}" property="@{deffile}.basename" suffix=".def" />
 				<dirname file="@{deffile}" property="@{deffile}.dirname" />
 				<property name="@{deffile}.rel" value="@{deffile}" relative="yes" />
-				
+
 				<sdf2rtg input="${@{deffile}.rel}" output="${test-gen}/${@{deffile}.basename}.rtg" main="Main" />
 				<rtg2sig input="${test-gen}/${@{deffile}.basename}.rtg"
 				         output="${test-gen}/${@{deffile}.basename}.str"
@@ -50,7 +50,7 @@
 			</sequential>
 		</for>
 
-		<!--<for param="strfile" keepgoing="true">
+		<for param="strfile">
 			<path>
 				<fileset dir="${libraries-dir}" includes="*/tests/*.str" />
 				<fileset dir="${syntax-dir}/java-front" includes="test/*.str" />
@@ -58,10 +58,70 @@
 			<sequential>
 				<strj-test input="@{strfile}" />
 			</sequential>
-		</for>-->
+		</for>
 	</target>
 
 
+	
+	
+	<macrodef name="strj-test">
+			<attribute name="input" />
+			<sequential>
+				<log message="Testing @{input}" />
+				<dirname file="@{input}" property="@{input}.dirname" />
+				<basename file="@{input}" property="@{input}.basename" suffix=".str" />
+				<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
+				<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
+					<strjargs>
+						<arg value="-m" />
+						<arg value="main-${@{input}.basename}" />
+						<arg value="-la" />
+						<arg value="stratego-lib" />
+						<arg value="-la" />
+						<arg value="stratego-gpp" />
+						<arg value="-la" />
+						<arg value="stratego-xtc" />
+						<arg value="-la" />
+						<arg value="stratego-aterm" />
+						<arg value="-la" />
+						<arg value="stratego-rtg" />
+						<arg value="-la" />
+						<arg value="stratego-sglr" />
+						<arg value="-la" />
+						<arg value="java-front" />
+						<arg value="-I" />
+						<arg value="${syntax-dir}/${syn.aterm}" />
+						<arg value="-I" />
+						<arg value="${syntax-dir}/${syn.box}" />
+						<arg value="-I" />
+						<arg value="generated/" />
+						<arg value="-I" />
+						<arg value="${@{input}.dirname}" />
+					</strjargs>
+					<str-deps>
+						<srcfiles dir="." includes="*.jar" />
+					</str-deps>
+				</strj-for-test>
+				<javac srcdir="${@{input}.dirname}/${@{input}.basename}"
+				       destdir="${@{input}.dirname}/${@{input}.basename}"
+				       classpath="${java.class.path}"
+				       source="1.5"
+				       target="1.5"
+				       nowarn="on"
+				       fork="true"
+				       debug="true"
+				       debuglevel="source"
+				       compiler="classic">
+				</javac>
+				<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
+					<classpath>
+						<!--<pathelement location="./strategoxt.jar" />-->
+						<pathelement path="${java.class.path}" />
+						<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
+					</classpath>
+				</java>
+			</sequential>
+		</macrodef>
 
 
 
