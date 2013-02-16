@@ -58,15 +58,14 @@
 				<fileset dir="${syntax-dir}/java-front" includes="test/*.str" />
 			</path>
 			<sequential>
-				<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" generated="${test-gen}"/>
-				<!--<trycatch>
+				<trycatch>
 					<try>
-						<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" />
+						<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" generated="${test-gen}"/>
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
 					</catch>
-				</trycatch>-->
+				</trycatch>
 			</sequential>
 		</for>
 	</target>

@@ -14,8 +14,8 @@ strategies
       ; is-abspath-tests
       ; file-props-tests
       ; readdir-tests
-      ; kill-tests
-      ; times-tests
+      // ; kill-tests // UNDONE. not supported on Java. (Vlad)
+      // ; times-tests // UNDONE missing primitive on Java (Vlad)
     )
 
 strategies
