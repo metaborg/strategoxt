@@ -239,8 +239,8 @@
 		<element name="strjargs" optional="true" />
 		<element name="str-deps" optional="true" />
 		<sequential>
-			<property name="@{input}.abs" location="@{input}"/>
-			<property name="@{output}.abs" location="@{output}"/>
+			<property name="@{input}.abs" location="@{input}" />
+			<property name="@{output}.abs" location="@{output}" />
 			<uptodate-mio input="@{input}" output="@{output}" type="strj">
 				<action>
 					<java classname="org.strategoxt.strj.Main" failonerror="true">
@@ -255,7 +255,6 @@
 						<arg value="-D" />
 						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
 						<strjargs />
-						<!-- <jvmarg value="-Xss8m" /> -->
 					</java>
 				</action>
 				<deps>

@@ -1,33 +1,4 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.ant.unused" basedir=".">
-	<macrodef name="strj-for-test">
-		<attribute name="input" />
-		<attribute name="output" />
-		<attribute name="package" />
-		<element name="strjargs" optional="true" />
-		<element name="str-deps" optional="true" />
-		<sequential>
-			<uptodate-mio input="@{input}" output="@{output}" type="strj">
-				<action>
-					<java classname="org.strategoxt.strj.Main" failonerror="true" classpath="./strategoxt.jar" fork="true">
-						<arg value="-i" />
-						<arg value="@{input}" />
-						<arg value="-o" />
-						<arg value="@{output}" />
-						<arg value="-p" />
-						<arg value="@{package}" />
-						<arg value="-D" />
-						<arg value="VERSION_TERM=&quot;${version}&quot;" />
-						<arg value="-D" />
-						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
-						<strjargs />
-						<jvmarg value="-Xss8m" />
-					</java>
-				</action>
-				<deps>
-					<str-deps />
-				</deps>
-			</uptodate-mio>
-		</sequential>
-	</macrodef>
+	
 </project>

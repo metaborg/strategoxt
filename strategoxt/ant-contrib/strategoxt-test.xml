@@ -7,13 +7,9 @@
 		<sequential>
 			<log message="Testing @{input}" />
 			<dirname file="@{input}" property="@{input}.dirname" />
-			<basename file="@{input}"
-			          property="@{input}.basename"
-			          suffix=".str" />
+			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
 			<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
-			<strj-for-test input="@{input}"
-			               output="${@{input}.dirname}/${@{input}.basename}/test/Main.java"
-			               package="test">
+			<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
 				<strjargs>
 					<arg value="-m" />
 					<arg value="main-${@{input}.basename}" />
@@ -46,7 +42,7 @@
 			</strj-for-test>
 			<javac srcdir="${@{input}.dirname}/${@{input}.basename}"
 			       destdir="${@{input}.dirname}/${@{input}.basename}"
-			       classpath="./strategoxt.jar"
+			       classpath="${java.class.path}"
 			       source="1.5"
 			       target="1.5"
 			       nowarn="on"
@@ -55,15 +51,48 @@
 			       debuglevel="source"
 			       compiler="classic">
 			</javac>
-			<java fork="true"
-			      classname="test.Main"
-			      failonerror="true"
-			      dir="${@{input}.dirname}">
+			<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
 				<classpath>
-					<pathelement location="./strategoxt.jar" />
+					<!--<pathelement location="./strategoxt.jar" />-->
+					<pathelement path="${java.class.path}" />
 					<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
 				</classpath>
 			</java>
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="strj-for-test">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="package" />
+		<element name="strjargs" optional="true" />
+		<element name="str-deps" optional="true" />
+		<sequential>
+			<property name="@{input}.abs" location="@{input}" />
+			<property name="@{output}.abs" location="@{output}" />
+			<uptodate-mio input="@{input}" output="@{output}" type="strj">
+				<action>
+					<java classname="org.strategoxt.strj.Main" failonerror="true" classpathref="${java.class.path}" fork="true">
+						<arg value="-i" />
+						<arg value="${@{input}.abs}" />
+						<arg value="-o" />
+						<arg value="${@{output}.abs}" />
+						<arg value="-p" />
+						<arg value="@{package}" />
+						<arg value="-D" />
+						<arg value="VERSION_TERM=&quot;${version}&quot;" />
+						<arg value="-D" />
+						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+						<strjargs />
+						<jvmarg value="-Xss8m" />
+						<jvmarg value="-Xmx512m" />
+					</java>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
 		</sequential>
 	</macrodef>
 

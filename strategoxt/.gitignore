@@ -5,6 +5,7 @@
 /strategoxt-base.jar
 /lib
 /bin
+/generated
 /stratego-libraries/strc/lib/stratego/strc/pp/stratego-parenthesize.str
 /dist
 /base

@@ -17,19 +17,53 @@
 	<!-- Destination of files -->
 	<property name="lib" location="lib/" />
 	<property name="bin" location="bin/" />
+	<property name="test-gen" value="generated/" />
 	<!-- For CI builds -->
 	<!--<property name="java-front" location="syntax/java-front" />-->
 	<property name="install-prefix" location="dist" />
 	<property name="install-location" location="${install-prefix}/${install-prefix}/share/strategoxt" />
 	<property name="jar.name" value="strategoxt.jar" />
 
-
-
 	<!-- Import syntax builder -->
 	<include file="${syntax-dir}/build.xml" as="syntax" />
 
 	<!-- Import the libraries builder -->
 	<include file="${libraries-dir}/build.xml" as="libraries" />
+
+
+	<target name="test" depends="create-dirs">
+		<for param="deffile">
+			<path>
+				<fileset dir="${libraries-dir}" includes="sglr/tests/*.def" excludes="sglr/tests/List.def" />
+			</path>
+			<sequential>
+				<basename file="@{deffile}" property="@{deffile}.basename" suffix=".def" />
+				<dirname file="@{deffile}" property="@{deffile}.dirname" />
+				<property name="@{deffile}.rel" value="@{deffile}" relative="yes" />
+				
+				<sdf2rtg input="${@{deffile}.rel}" output="${test-gen}/${@{deffile}.basename}.rtg" main="Main" />
+				<rtg2sig input="${test-gen}/${@{deffile}.basename}.rtg"
+				         output="${test-gen}/${@{deffile}.basename}.str"
+				         main="Main" />
+				<sdf2table input="@{deffile}" output="${test-gen}/${@{deffile}.basename}.tbl" main="Main" />
+				<copy file="${test-gen}/${@{deffile}.basename}.tbl" tofile="${@{deffile}.dirname}/${@{deffile}.basename}.tbl" />
+			</sequential>
+		</for>
+
+		<!--<for param="strfile" keepgoing="true">
+			<path>
+				<fileset dir="${libraries-dir}" includes="*/tests/*.str" />
+				<fileset dir="${syntax-dir}/java-front" includes="test/*.str" />
+			</path>
+			<sequential>
+				<strj-test input="@{strfile}" />
+			</sequential>
+		</for>-->
+	</target>
+
+
+
+
 
 
 	<target name="all"
@@ -44,19 +78,20 @@
 	<target name="create-dirs">
 		<mkdir dir="${lib}" />
 		<mkdir dir="${bin}" />
+		<mkdir dir="${test-gen}" />
 		<mkdir dir="${install-location}" />
 	</target>
 
 
 
 	<target name="install" depends="jar">
-		<copy file="${jar.name}"
-		      tofile="${install-location}/${jar.name}" />
+		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
 	</target>
 
 	<target name="clean">
 		<delete dir="${lib}" />
 		<delete dir="${bin}" />
+		<delete dir="${test-gen}" />
 		<delete dir="${install-prefix}" />
 		<delete file="${jar.name}" />
 		<!-- Clean the syntax -->
@@ -108,16 +143,14 @@
 	</target>
 
 	<target name="jar">
-		<jar destfile="${jar.name}"
-		     manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF">
+		<jar destfile="${jar.name}" manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF">
 			<fileset dir="ant-contrib" includes="*.xml" />
 			<fileset dir="." includes="COPYING" />
 			<fileset dir="${bin}" includes="**/*.class" />
 			<fileset dir="${lib}" includes="**/*.rtree" />
 			<fileset dir="${lib}" includes="**/*.af" />
 			<fileset dir="${lib}" includes="**/*.tbl" />
-			<zipfileset includes="**/*"
-			            src="${libraries-dir}/java-backend/java/spoofax-libs.jar" />
+			<zipfileset includes="**/*" src="${libraries-dir}/java-backend/java/spoofax-libs.jar" />
 		</jar>
 	</target>
 </project>
