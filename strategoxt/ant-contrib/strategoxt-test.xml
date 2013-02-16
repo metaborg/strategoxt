@@ -35,48 +35,52 @@
 			</uptodate-mio>
 		</sequential>
 	</macrodef>
-	
+
 	<macrodef name="strj-test">
-				<attribute name="input" />
-				<attribute name="synaterm" />
-				<attribute name="synbox" />
-				<attribute name="generated" />
-				<sequential>
-					<log message="Testing @{input}" />
-					<dirname file="@{input}" property="@{input}.dirname" />
-					<basename file="@{input}" property="@{input}.basename" suffix=".str" />
-					<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
-					<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
-						<strjargs>
-							<arg value="-m" />
-							<arg value="main-${@{input}.basename}" />
-							<arg value="-la" />
-							<arg value="stratego-lib" />
-							<arg value="-la" />
-							<arg value="stratego-gpp" />
-							<arg value="-la" />
-							<arg value="stratego-xtc" />
-							<arg value="-la" />
-							<arg value="stratego-aterm" />
-							<arg value="-la" />
-							<arg value="stratego-rtg" />
-							<arg value="-la" />
-							<arg value="stratego-sglr" />
-							<arg value="-la" />
-							<arg value="java-front" />
-							<arg value="-I" />
-							<arg value="@{synaterm}" />
-							<arg value="-I" />
-							<arg value="@{synbox}" />
-							<arg value="-I" />
-							<arg value="@{generated}" />
-							<arg value="-I" />
-							<arg value="${@{input}.dirname}" />
-						</strjargs>
-						<str-deps>
-							<srcfiles dir="." includes="*.jar" />
-						</str-deps>
-					</strj-for-test>
+		<attribute name="input" />
+		<attribute name="synaterm" />
+		<attribute name="synbox" />
+		<attribute name="generated" />
+		<sequential>
+			<log message="Testing @{input}" />
+			<dirname file="@{input}" property="@{input}.dirname" />
+			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
+			<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
+			<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
+				<strjargs>
+					<arg value="-m" />
+					<arg value="main-${@{input}.basename}" />
+					<arg value="-la" />
+					<arg value="stratego-lib" />
+					<arg value="-la" />
+					<arg value="stratego-gpp" />
+					<arg value="-la" />
+					<arg value="stratego-xtc" />
+					<arg value="-la" />
+					<arg value="stratego-aterm" />
+					<arg value="-la" />
+					<arg value="stratego-rtg" />
+					<arg value="-la" />
+					<arg value="stratego-sglr" />
+					<arg value="-la" />
+					<arg value="java-front" />
+					<arg value="-I" />
+					<arg value="@{synaterm}" />
+					<arg value="-I" />
+					<arg value="@{synbox}" />
+					<arg value="-I" />
+					<arg value="@{generated}" />
+					<arg value="-I" />
+					<arg value="${@{input}.dirname}" />
+				</strjargs>
+				<str-deps>
+					<srcfiles dir="." includes="*.jar" />
+				</str-deps>
+			</strj-for-test>
+			<uptodate-io input="${@{input}.dirname}/${@{input}.basename}/test/Main.java"
+			             output="${@{input}.dirname}/${@{input}.basename}/test/fingerprint"
+			             type="javac">
+				<action>
 					<javac srcdir="${@{input}.dirname}/${@{input}.basename}"
 					       destdir="${@{input}.dirname}/${@{input}.basename}"
 					       classpath="${java.class.path}"
@@ -94,7 +98,10 @@
 							<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
 						</classpath>
 					</java>
-				</sequential>
-			</macrodef>
+					<touch file="${@{input}.dirname}/${@{input}.basename}/test/fingerprint" />
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
 
 </project>
