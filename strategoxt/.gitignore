@@ -2,7 +2,7 @@
 *.ctree.dep
 *.rtree
 /strategoxt.jar
-/strategoxt-base.jar
+#/strategoxt-base.jar
 /lib
 /bin
 /generated

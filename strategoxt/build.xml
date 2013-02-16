@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.StrategoXT" default="all">
 	<!-- Import Ant contrib -->
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 	<!-- Import Stratego/XT Ant contributions -->
 	<import file="ant-contrib/strategoxt-test.xml" />
@@ -17,11 +17,12 @@
 	<!-- Destination of files -->
 	<property name="lib" location="lib/" />
 	<property name="bin" location="bin/" />
-	<property name="test-gen" value="generated/" />
+	<property name="test-gen" location="generated/" />
+
 	<!-- For CI builds -->
 	<!--<property name="java-front" location="syntax/java-front" />-->
 	<property name="install-prefix" location="dist" />
-	<property name="install-location" location="${install-prefix}/${install-prefix}/share/strategoxt" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt" />
 	<property name="jar.name" value="strategoxt.jar" />
 
 	<!-- Import syntax builder -->
@@ -39,14 +40,15 @@
 			<sequential>
 				<basename file="@{deffile}" property="@{deffile}.basename" suffix=".def" />
 				<dirname file="@{deffile}" property="@{deffile}.dirname" />
-				<property name="@{deffile}.rel" value="@{deffile}" relative="yes" />
-
-				<sdf2rtg input="${@{deffile}.rel}" output="${test-gen}/${@{deffile}.basename}.rtg" main="Main" />
-				<rtg2sig input="${test-gen}/${@{deffile}.basename}.rtg"
-				         output="${test-gen}/${@{deffile}.basename}.str"
+				<property name="@{deffile}.rel.in" value="@{deffile}" relative="yes" />
+				<property name="@{deffile}.rel.out" value="${test-gen}/${@{deffile}.basename}" relative="yes" />
+				
+				<sdf2rtg input="${@{deffile}.rel.in}" output="${@{deffile}.rel.out}.rtg" main="Main" />
+				<rtg2sig input="${@{deffile}.rel.out}.rtg"
+				         output="${@{deffile}.rel.out}.str"
 				         main="Main" />
 				<sdf2table input="@{deffile}" output="${test-gen}/${@{deffile}.basename}.tbl" main="Main" />
-				<copy file="${test-gen}/${@{deffile}.basename}.tbl" tofile="${@{deffile}.dirname}/${@{deffile}.basename}.tbl" />
+				<!--<copy file="${test-gen}/${@{deffile}.basename}.tbl" tofile="${@{deffile}.dirname}/${@{deffile}.basename}.tbl" />-->
 			</sequential>
 		</for>
 
@@ -56,75 +58,18 @@
 				<fileset dir="${syntax-dir}/java-front" includes="test/*.str" />
 			</path>
 			<sequential>
-				<strj-test input="@{strfile}" />
+				<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" generated="${test-gen}"/>
+				<!--<trycatch>
+					<try>
+						<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" />
+					</try>
+					<catch>
+						<echo message="FAILURE: Test @{strfile} failed" />
+					</catch>
+				</trycatch>-->
 			</sequential>
 		</for>
 	</target>
-
-
-	
-	
-	<macrodef name="strj-test">
-			<attribute name="input" />
-			<sequential>
-				<log message="Testing @{input}" />
-				<dirname file="@{input}" property="@{input}.dirname" />
-				<basename file="@{input}" property="@{input}.basename" suffix=".str" />
-				<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
-				<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
-					<strjargs>
-						<arg value="-m" />
-						<arg value="main-${@{input}.basename}" />
-						<arg value="-la" />
-						<arg value="stratego-lib" />
-						<arg value="-la" />
-						<arg value="stratego-gpp" />
-						<arg value="-la" />
-						<arg value="stratego-xtc" />
-						<arg value="-la" />
-						<arg value="stratego-aterm" />
-						<arg value="-la" />
-						<arg value="stratego-rtg" />
-						<arg value="-la" />
-						<arg value="stratego-sglr" />
-						<arg value="-la" />
-						<arg value="java-front" />
-						<arg value="-I" />
-						<arg value="${syntax-dir}/${syn.aterm}" />
-						<arg value="-I" />
-						<arg value="${syntax-dir}/${syn.box}" />
-						<arg value="-I" />
-						<arg value="generated/" />
-						<arg value="-I" />
-						<arg value="${@{input}.dirname}" />
-					</strjargs>
-					<str-deps>
-						<srcfiles dir="." includes="*.jar" />
-					</str-deps>
-				</strj-for-test>
-				<javac srcdir="${@{input}.dirname}/${@{input}.basename}"
-				       destdir="${@{input}.dirname}/${@{input}.basename}"
-				       classpath="${java.class.path}"
-				       source="1.5"
-				       target="1.5"
-				       nowarn="on"
-				       fork="true"
-				       debug="true"
-				       debuglevel="source"
-				       compiler="classic">
-				</javac>
-				<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
-					<classpath>
-						<!--<pathelement location="./strategoxt.jar" />-->
-						<pathelement path="${java.class.path}" />
-						<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
-					</classpath>
-				</java>
-			</sequential>
-		</macrodef>
-
-
-
 
 	<target name="all"
 	        depends="
