@@ -6,6 +6,7 @@
 		<attribute name="input" />
 		<attribute name="output" />
 		<attribute name="package" />
+		<attribute name="compiler" />
 		<element name="strjargs" optional="true" />
 		<element name="str-deps" optional="true" />
 		<sequential>
@@ -13,7 +14,7 @@
 			<property name="@{output}.abs" location="@{output}" />
 			<uptodate-mio input="@{input}" output="@{output}" type="strj">
 				<action>
-					<java classname="org.strategoxt.strj.Main" failonerror="true" classpath="${java.class.path}" fork="true">
+					<java classname="org.strategoxt.strj.Main" failonerror="true" classpath="@{compiler}" fork="true">
 						<arg value="-i" />
 						<arg value="${@{input}.abs}" />
 						<arg value="-o" />
@@ -41,12 +42,13 @@
 		<attribute name="synaterm" />
 		<attribute name="synbox" />
 		<attribute name="generated" />
+		<attribute name="compiler" />
 		<sequential>
 			<log message="Testing @{input}" />
 			<dirname file="@{input}" property="@{input}.dirname" />
 			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
 			<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
-			<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test">
+			<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test" compiler="@{compiler}">
 				<strjargs>
 					<arg value="-m" />
 					<arg value="main-${@{input}.basename}" />
@@ -83,7 +85,7 @@
 				<action>
 					<javac srcdir="${@{input}.dirname}/${@{input}.basename}"
 					       destdir="${@{input}.dirname}/${@{input}.basename}"
-					       classpath="${java.class.path}"
+					       classpath="@{compiler}"
 					       source="1.5"
 					       target="1.5"
 					       nowarn="on"
@@ -94,7 +96,7 @@
 					</javac>
 					<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
 						<classpath>
-							<pathelement path="${java.class.path}" />
+							<pathelement location="@{compiler}" />
 							<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
 						</classpath>
 					</java>
