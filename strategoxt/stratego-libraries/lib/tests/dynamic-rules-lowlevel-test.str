@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-dynamic-rules-lowlevel-test = 
     test-suite(!"dynamic-rules-tested (low-level)",
       test-dr-set-in-rule-set
       ; test-dr-add-to-rule-set

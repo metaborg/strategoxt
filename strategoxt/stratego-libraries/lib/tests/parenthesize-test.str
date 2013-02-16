@@ -2,7 +2,7 @@ module parenthesize-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-parenthesize-test = 
     test-suite(!"parenthesize-test",
       parenthesize-tests
     )

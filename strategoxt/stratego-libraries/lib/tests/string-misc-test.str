@@ -5,7 +5,7 @@ module string-misc-test
 imports libstratego-lib
 strategies
 
-  main =
+  main-string-misc-test =
     test-suite(!"String Misc test suite",
       test-all-lines
     ; test-string-tokenize

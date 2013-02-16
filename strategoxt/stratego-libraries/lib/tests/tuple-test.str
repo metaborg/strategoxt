@@ -2,7 +2,7 @@ module tuple-test
 imports libstratego-lib
 strategies 
 
-  main = 
+  main-tuple-test = 
     test-suite(!"tuple-test",
 	tuple-zip-test;
         tuple-unzip-test

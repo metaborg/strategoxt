@@ -8,7 +8,7 @@ signature
     B : Term
 strategies
 
-  main = 
+  main-simple-traversal-test = 
     test-suite(!"simple-traversal-test",
       test1;
       test2;

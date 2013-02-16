@@ -2,7 +2,7 @@ module strcmp-test
 imports libstratego-lib
 strategies
 
-main = a
+main-strcmp-test = a
 
 b=
 io-wrap(

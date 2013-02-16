@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-system-io-file-test = 
     test-suite(!"system-io-file",
       aterm-io-tests
       ; char-io-tests

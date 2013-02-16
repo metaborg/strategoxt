@@ -4,7 +4,7 @@ imports
 
 strategies
 
- main =
+ main-annotation-test =
     test-suite(!"string-test",
       get-annotation-tests
     ; set-annotation-tests

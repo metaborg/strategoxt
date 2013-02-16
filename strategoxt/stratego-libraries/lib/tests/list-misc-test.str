@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main =
+  main-list-misc-test =
     test-suite(!"list-misc-test",
 	copy-test;
 	number-test;

@@ -2,7 +2,7 @@ module rename-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-rename-test = 
     test-suite(!"rename-test",
 	test1;
 	test2

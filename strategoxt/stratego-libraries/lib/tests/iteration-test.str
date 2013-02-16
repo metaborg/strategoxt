@@ -10,7 +10,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-iteration-test = 
     test-suite(!"iteration test",
       repeat-tests
     ; repeatc-tests

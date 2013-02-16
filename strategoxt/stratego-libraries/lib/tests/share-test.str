@@ -11,7 +11,7 @@ signature
 
 strategies
 
-  main = 
+  main-share-test = 
     test-suite(!"share-test",
 	test1;
 	test2;

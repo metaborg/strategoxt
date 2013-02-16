@@ -9,7 +9,7 @@ signature
 
 strategies
 
-  main = 
+  main-env-traversal-test = 
     test-suite(!"env-traversal-test",
       test1
     )

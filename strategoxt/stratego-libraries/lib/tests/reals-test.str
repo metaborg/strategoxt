@@ -2,7 +2,7 @@ module reals-test
 imports libstratego-lib
 strategies
 
-  main =
+  main-reals-test =
     test-suite(!"reals-test",
       id-test
     ; cos-test

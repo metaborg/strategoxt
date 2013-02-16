@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies 
 
-  main = 
+  main-char-test = 
     test-suite(!"char-test",
 	is-num-test;
 	is-alphanum-test;

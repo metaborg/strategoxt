@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-system-posix-test = 
     test-suite(!"system-posix",
       fileno-tests
       ; access-tests

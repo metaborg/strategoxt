@@ -2,7 +2,7 @@ module list-set-test
 imports libstratego-lib
 strategies 
 
- main = 
+ main-list-set-test = 
     test-suite(!"list-set-test",
 	test1a;
 	test1b;  

@@ -2,7 +2,7 @@ module integers-test
 imports libstratego-lib
 strategies
 
-  main =
+  main-integers-test =
     test-suite(!"integers-test",
       test1
     ; test2

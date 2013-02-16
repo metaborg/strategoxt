@@ -12,7 +12,7 @@ signature
 
 strategies
 
-  main =
+  main-dynamic-rules-highlevel-test =
   test-suite(!"dynamic-rules-highlevel-test",
     test-plain-1
   ; test-labeled-1

@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-list-sort-test = 
     test-suite(!"list-sort-test",
       tuple-uniq-tests
       ; qsort-tests

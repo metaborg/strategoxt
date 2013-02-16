@@ -3,7 +3,7 @@ imports libstratego-lib
 
 strategies
 
-  main = 
+  main-system-posix-xsi-test = 
     test-suite(!"system-posix-xsi",
       cwd-tests
       ; fileno-tests

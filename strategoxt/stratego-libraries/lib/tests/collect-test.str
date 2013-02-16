@@ -6,7 +6,7 @@ imports libstratego-lib
 
 strategies 
 
- main = 
+ main-collect-test = 
   test-suite(!"collect-test",
     collect-split-tests
   ; collect-om-tests

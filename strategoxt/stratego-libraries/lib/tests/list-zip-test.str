@@ -2,7 +2,7 @@ module list-zip-test
 imports libstratego-lib
 strategies
 
-  main = 
+  main-list-zip-test = 
     test-suite(!"list-zip-test",
       nzip-tests
     ; zip-tests
