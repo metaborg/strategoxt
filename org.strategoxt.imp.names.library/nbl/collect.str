@@ -69,15 +69,18 @@ strategies // generic traversal
 		vdebug(!"analyse def ");
 		// handles definition sites
 		nbl-def-collect(?cpaths, spaths|lang, elems, tasks, paths');
+		vdebug(!"import dependencies ");
+		// import dependencies
+		nbl-import-dependency-collect(?deps'|lang, elems, tasks, cpaths, deps);
 		vdebug(!"visit children ");
 		// visit children from left to right
-		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, tasks, cpaths, deps/*'*/))));
+		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, tasks, cpaths, deps'))));
 		vdebug(!"analyse use ");
 		// handles use sites
-		try(nbl-use-site(|lang, elems, tasks, paths', deps/*'*/));
+		try(nbl-use-site(|lang, elems, tasks, paths', deps));
 	  vdebug(!"analyse imports ");
     // handles import sites
-    nbl-import-collect(?deps'|lang, elems, tasks, cpaths, deps);
+    try(nbl-import-site(|lang, elems, tasks, paths));
 		vdebug(!"analyse prop ");
 		// handles properties
 		try(nbl-prop-site(|lang, elems, tasks, paths'));
@@ -178,6 +181,24 @@ rules // generic analysis of defs
       new-alias(|elems, <nbl-replace-uri(|ns, name, <nbl-nonunique-qualifier>)> path, path)
     end
 
+rules // import dependencies
+  
+  nbl-import-dependency-collect(deps'|lang, elems, tasks, paths, deps) =
+    nbl-import-dependency-site(deps'|lang, elems, tasks, paths, deps) <+ 
+    (
+      match(deps'|deps)
+    )
+  	
+  nbl-import-dependency(deps'|lang, elems, tasks, paths, deps):
+    name{anno*} -> name{anno*, reserved*}
+    where
+      /* Reserve a task number for use as dependency for the subtree of the import. The reserved 
+      number is used in nbl-import to create a NoOp task that has a dependency on the resolution
+      of the import target. This makes sure that imports are resolved before other resolve tasks. */
+    	Reserved(number) := <reserve-task>;
+    	reserved*        := [Reserved(number)];
+    	match(deps'|[number|deps])
+
 rules // generic analysis of implicit defs
 
   nbl-implicit-def(|lang, elems, tasks, paths, candidates):
@@ -248,25 +269,19 @@ rules // generic analysis of uses
 
 rules // generic analysis of imports
   
-  nbl-import-collect(deps'|lang, elems, tasks, paths, deps) =
-    nbl-import-site(deps'|lang, elems, tasks, paths, deps) <+ 
-    (
-      match(deps'|deps)
-    )
-  
-  nbl-import(deps'|lang, elems, tasks, paths, deps, resolveNs, imports):
+  nbl-import(|lang, elems, tasks, paths, resolveNs, imports):
     name -> name'
     where
-      (name', newDeps) := <foldl(nbl-import-candidate(|lang, elems, tasks, paths, resolveNs))> (imports, (name, []));
-      match(deps'|<conc> (deps, newDeps))
+      name' := <foldl(nbl-import-candidate(|lang, elems, tasks, paths, resolveNs))> (imports, name)
         
   nbl-import-candidate(|lang, elems, tasks, paths, resolveNs):
-    (import, (name, deps)) -> (name, deps')
+    (import, name) -> name
     where
-      importNs := <nbl-import-namespace> import;
-      uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
-      Use(res) := <nbl-collect-use> name;
-      deps'    := [<nbl-result-number> res|deps];
+      importNs    := <nbl-import-namespace> import;
+      uri         := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
+      Use(res)    := <nbl-collect-use> name;
+      Reserved(r) := <nbl-collect-reserved> name;
+      <new-task(|tasks, r, [<nbl-result-number> res])> NoOp();
       new-prop(|elems, uri, import, res)
       
   nbl-import-namespace:
@@ -316,6 +331,10 @@ rules // URI retrieval
     nbl-name;
     get-annos;
     collect-one(?Use(_))
+    
+  nbl-collect-reserved =
+    get-annos;
+    collect-one(?Reserved(_))
 
 rules // helpers
 	
