@@ -4,11 +4,9 @@ strategies // Collect
   
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) = fail
   
-  nbl-import-dependency-site(deps'|lang, elems, tasks, paths, deps) = fail
-  
   nbl-implicit-def-site(|lang, elems, tasks, paths) = fail
   
-  nbl-import-site(|lang, elems, tasks, paths) = fail
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) = fail
   
   nbl-use-site(|lang, elems, tasks, paths, deps) = fail
   
