@@ -21,12 +21,14 @@ signature
 		
 		Task     : List(String) * List(String) * Instruction  -> Task
 		Result   : String         											      -> Result
+		Reserved : String                                     -> Result
 		DoneTask : String * Term											        -> DoneTask
 		FailTask : String * Term                              -> FailTask
 		
 		Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
 		PropCalc : Property * Term                          	    -> Instruction
 		Match		 : ID * Term			                          	    -> Instruction
+		Noop     :                                                   Instruction
 		
 		Done     : Term                                   		-> Result
 		Fail     : Term                                       -> Result
@@ -37,13 +39,17 @@ rules
 	
 	new-task(|elems) = new-task(|elems, <dependent-tasks>)
 		
-	new-task(|elems, deps):
+  new-task(|elems, deps) = new-task(|elems, deps, <newname> "") 
+    		
+	new-task(|elems, deps, name):
 		instruction -> Result(name)
 		with
-			name := <newname> "";
 			task := Task([name], deps, instruction);
 			<iset-add(|task)> elems;
 			<vdebug(!"Created task: ")> task
+	
+	reserve-task =
+	  !Reserved(<newname> "")
 			
 	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
 	dependent-task = ?Result(<id>) 
@@ -123,6 +129,8 @@ rules
             
 	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
 	perform-task(|elems): Match(key, term) 		 -> Done(<match-term> (key, term))
+	
+	perform-task(|elems): Noop()               -> Done(())
 	
 rules
 	

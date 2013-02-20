@@ -57,15 +57,17 @@ strategies // generic traversal
 	  where
 	    new-iset => elem*;
 	    new-iset => task*;
-	    ast' := <nbl-collect(id|lang, elem*, task*, [], [])> ast
+	    ast' := <nbl-collect(id, id|lang, elem*, task*, [], [])> ast
 	
 	/**
 	 * Performs the collection in a topdown traversal. 
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
 	 */
-	nbl-collect(sibling-uris|lang, elem*, task*, uri*, dep*) =
+	nbl-collect(sibling-uris, deps'|lang, elem*, task*, uri*, dep*) =
 		nbl-scope-site(?uri'*|lang, uri*); // scopes of external definitions, e.g. variables in let expressions
 		nbl-def-collect(?child-uri*, sibling-uris|lang, elem*, task*, uri'*);
+		nbl-import-dependency-annotate;
+		nbl-import-dependency-collect(deps'|dep*);
 		
 		preserve-annos(force-origins(id#(nbl-siblings(|lang, elem*, task*, child-uri*, dep*)))); // visit children from left to right
 		
@@ -78,7 +80,7 @@ strategies // generic traversal
 		[]
 	
 	nbl-siblings(|lang, elem*, task*, uri*, dep*) =
-		[nbl-collect(?sibling-uri*|lang, elem*, task*, uri*, dep*)|nbl-siblings(|lang, elem*, task*, sibling-uri*, dep*)]
+		[nbl-collect(?sibling-uri*, ?deps'|lang, elem*, task*, uri*, dep*)|nbl-siblings(|lang, elem*, task*, sibling-uri*, deps')]
 
 rules // generic analysis of scopes
 	
@@ -165,6 +167,29 @@ rules // generic analysis of defs
 	  if Unique(_) := unique then
       new-alias(|elem*, <nbl-replace-uri(|ns, name, <nbl-nonunique-qualifier>)> path, path)
     end
+
+rules
+  
+  nbl-import-dependency-annotate = try(nbl-import-dependency-site)
+
+  nbl-import-dependency:
+    name -> <nbl-add-reserved(|reserved)> name
+    with
+      /* Reserve a task number for use as dependency for the subtree of the import and annotate the name with it. 
+      The reserved number is used in nbl-import to create a Noop task that has a dependency on the resolution of the 
+      import target. This makes sure that imports are resolved before other resolve tasks. */
+      reserved := <reserve-task>
+      
+  nbl-import-dependency-collect(deps'|dep*):
+    name -> name
+    with
+    	/* Do the actual adding of the dependency here because the reserved annotation may be added to a name that is
+      in the subtree of the import name. The dependency should only be active after the annotated term. */
+      if Reserved(r) := <nbl-collect-reserved> name then
+        match(deps'|[r|dep*])
+      else
+        match(deps'|dep*)
+      end
 	
 rules // generic analysis of uses
 	
@@ -225,17 +250,24 @@ rules // generic analysis of imports
   nbl-import-collect(|lang, elem*, task*, uri*) = try(nbl-import-site(|lang, elem*, task*, uri*))
   
   nbl-import(|lang, elem*, task*, uri*, imports):
-    name -> name'
+    name -> name''
     where
-      name' := <foldl(nbl-import-candidate(|lang, elem*, task*, uri*))> (imports, name)
+    	Use(use) := <nbl-collect-use> name;
+      name'    := <foldl(nbl-import-candidate(|lang, elem*, task*, uri*, use))> (imports, name);
+      if Reserved(r) := <nbl-collect-reserved> name then
+      	Result(dep) := use;
+      	name''      := <remove-annotations(?Reserved(r))> name';
+      	<new-task(|task*, [dep], r)> Noop()
+      else
+      	name'' := name'
+      end
         
-  nbl-import-candidate(|lang, elem*, task*, uri*):
+  nbl-import-candidate(|lang, elem*, task*, uri*, use):
     (import, name) -> name
     where
       ns       := <nbl-import-namespace> import;
       uri      := <lookup-uri(|lang, ns)> uri*;
-      Use(res) := <nbl-collect-use> name;
-      new-prop(|elem*, uri, import, res)
+      new-prop(|elem*, uri, import, use)
       
   nbl-import-namespace:
     Import(_, Imported(namespace)) -> namespace
@@ -295,6 +327,8 @@ rules // generic analysis of implicit defs
 rules // name retrieval
   
   nbl-name = is-string
+  
+  nbl-name-apply(s) = is-string; s
     
   nbl-fix-name = try(fix-completion-name); strip-annos
   
@@ -309,6 +343,14 @@ rules // URI retrieval
     nbl-name;
     get-annos;
     collect-one(?Use(_))
+    
+  nbl-add-reserved(|reserved) =
+    nbl-name-apply(add-annotation(|reserved))
+    
+  nbl-collect-reserved =
+    nbl-name;
+    get-annos;
+    collect-one(?Reserved(_))
 
 rules // helpers
 	
@@ -319,9 +361,9 @@ rules // helpers
 	update-scope-uri(update|lang):
 		(key, uri*) -> result
 		where
-			  result := <fetch((?key, update))> uri* 
-			<+ 
-			  result := [(key, <nbl-base-uri; update> lang)|uri*]
+		  result := <fetch((?key, update))> uri* 
+		<+ 
+		  result := [(key, <nbl-base-uri; update> lang)|uri*]
 			  
 	lookup-uri(|lang, ns):
 	  uri* -> <<lookup> (ns, uri*) <+ <nbl-base-uri> lang>

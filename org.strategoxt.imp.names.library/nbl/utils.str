@@ -12,3 +12,11 @@ rules
 
   fix-completion-name:
     "completion123" -> ""
+
+  add-annotation(|a):
+    t{a*} -> t{a, a*}
+
+  remove-annotations(s):
+    t{a*} -> t{a'*}
+    where
+      a'* := <remove-all(s)> a*

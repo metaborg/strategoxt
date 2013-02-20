@@ -6,6 +6,10 @@ strategies // Collect
   
   nbl-def-site(child-uris, sibiling-uris|lang, elem*, task*, uri*) = fail
   
+  nbl-import-dependency-site = fail
+  
+  nbl-scope-site(cpaths|lang, paths) = fail
+  
   nbl-use-site(|lang, elem*, task*, uri*, dep*) = fail
   
   nbl-import-site(|lang, elem*, task*, uri*) = fail
@@ -17,6 +21,8 @@ strategies // Collect
 strategies // Projections
   
   nbl-name = fail
+  
+  nbl-name-apply(s) = fail
   
   nbl-scopes = fail
 
