@@ -2,15 +2,17 @@ module nbl/interface
 
 strategies // Collect
   
-  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) = fail
+  nbl-scope-site(child-uris|lang, uri*) = fail
   
-  nbl-implicit-def-site(|lang, elems, tasks, paths) = fail
+  nbl-def-site(child-uris, sibiling-uris|lang, elem*, task*, uri*) = fail
   
-  nbl-import-site(deps'|lang, elems, tasks, paths, deps) = fail
+  nbl-use-site(|lang, elem*, task*, uri*, dep*) = fail
   
-  nbl-use-site(|lang, elems, tasks, paths, deps) = fail
+  nbl-import-site(|lang, elem*, task*, uri*) = fail
   
-  nbl-prop-site(|lang, elems, tasks, paths) = fail
+  nbl-implicit-def-site(|lang, elem*, task*, uri*) = fail
+  
+  nbl-prop-site(|lang, elem*, task*, uri*) = fail
 
 strategies // Projections
   
@@ -20,6 +22,6 @@ strategies // Projections
 
 strategies // Tasks
   
-  calc-property(|elems) = fail
+  calc-property(|elem*) = fail
   
   match-term = fail

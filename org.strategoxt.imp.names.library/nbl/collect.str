@@ -49,61 +49,49 @@ signature
 	
 strategies // generic traversal
 	
-	/*
-			This is the main strategy to collect all index elements and tasks from an AST
-	*/
-	nbl-collect(|lang) = 
-		where (new-iset; ?elems);
-		where (new-iset; ?tasks);
-		nbl-collect(id|lang, elems, tasks, [], []); 
-		!(<id>, <iset-elements> elems, <iset-elements> tasks)
+	/**
+	 * Main strategy to collect all index elements and task* from an AST.
+	 */
+	nbl-collect(|lang):
+	  ast -> (ast', <iset-elements> elem*, <iset-elements> task*)
+	  where
+	    new-iset => elem*;
+	    new-iset => task*;
+	    ast' := <nbl-collect(id|lang, elem*, task*, [], [])> ast
 	
-	/*
-			This strategy performs the collection in a topdown traversal. 
-			At each node, it tries various calls to generated strategies, which call back to generic strategies.
-	*/
-	nbl-collect(spaths|lang, elems, tasks, paths, deps) =
-		vdebug(!"analyse scope ");
-		// handles the scopes of external definitions, e.g. variables in let expressions
-		nbl-scope-site(?paths'|lang, paths);
-		vdebug(!"analyse def ");
-		// handles definition sites
-		nbl-def-collect(?cpaths, spaths|lang, elems, tasks, paths');
-		vdebug(!"visit children ");
-		// visit children from left to right
-		preserve-annos(force-origins(id#(nbl-siblings(|lang, elems, tasks, cpaths, deps/*'*/))));
-		vdebug(!"analyse use ");
-		// handles use sites
-		try(nbl-use-site(|lang, elems, tasks, paths', deps/*'*/));
-	  vdebug(!"analyse imports ");
-    // handles import sites
-    nbl-import-collect(?deps'|lang, elems, tasks, cpaths, deps);
-		vdebug(!"analyse prop ");
-		// handles properties
-		try(nbl-prop-site(|lang, elems, tasks, paths'));
-    vdebug(!"analyse implicit def ");
-    // handles implicit definition sites
-    try(nbl-implicit-def-site(|lang, elems, tasks, cpaths));
-		vdebug(!"done ")
+	/**
+	 * Performs the collection in a topdown traversal. 
+	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
+	 */
+	nbl-collect(sibling-uris|lang, elem*, task*, uri*, dep*) =
+		nbl-scope-site(?uri'*|lang, uri*); // scopes of external definitions, e.g. variables in let expressions
+		nbl-def-collect(?child-uri*, sibling-uris|lang, elem*, task*, uri'*);
+		
+		preserve-annos(force-origins(id#(nbl-siblings(|lang, elem*, task*, child-uri*, dep*)))); // visit children from left to right
+		
+		nbl-use-collect(|lang, elem*, task*, uri'*, dep*);
+    nbl-import-collect(|lang, elem*, task*, child-uri*);
+		nbl-prop-collect(|lang, elem*, task*, uri'*);
+    nbl-implicit-def-collect(|lang, elem*, task*, child-uri*)
 	
-	nbl-siblings(|lang, elems, tasks, paths, deps) = 
+	nbl-siblings(|lang, elem*, task*, uri*, dep*) = 
 		[]
 	
-	nbl-siblings(|lang, elems, tasks, paths, deps) =
-		[nbl-collect(?spaths|lang, elems, tasks, paths, deps)|nbl-siblings(|lang, elems, tasks, spaths, deps)]
+	nbl-siblings(|lang, elem*, task*, uri*, dep*) =
+		[nbl-collect(?sibling-uri*|lang, elem*, task*, uri*, dep*)|nbl-siblings(|lang, elem*, task*, sibling-uri*, dep*)]
 
 rules // generic analysis of scopes
 	
-	nbl-scope-site(cpaths|lang, paths):
+	nbl-scope-site(child-uris|lang, uri*):
 		name{anno*} -> result
 		where
 			if (anno1*, anno2*) := <split-fetch(?DefScope(ns, segment) => scope )> anno* then
 				segment' := <nbl-external-segment> segment;
-				paths'   := <update-scope-paths(nbl-extend-uri(|segment')|lang)> (ns, paths);
+				uri'*   := <update-scope-uri(nbl-extend-uri(|segment')|lang)> (ns, uri*);
 				// TODO: fix empty annotation list
-				result   := <nbl-scope-site(cpaths|lang, paths')> name{anno1*, anno2*}
+				result   := <nbl-scope-site(child-uris|lang, uri'*)> name{anno1*, anno2*}
 			else
-				match(cpaths|paths);
+				match(child-uris|uri*);
 				result := name{anno*}
 			end
 	
@@ -112,42 +100,42 @@ rules // generic analysis of scopes
 	nbl-def-scope(|scope): name{anno*} -> name{scope, anno*}
 		
 	// call back for generic analysis of anonymous scopes
-	nbl-anonymous-scope(cpaths|lang, paths, nss) =
-		match(cpaths|<extend-scope-paths(|lang, <nbl-anonymous-segment>)> (nss, paths))	
+	nbl-anonymous-scope(child-uris|lang, uri*, ns*) =
+		match(child-uris|<extend-scope-uri(|lang, <nbl-anonymous-segment>)> (ns*, uri*))	
 	
 rules // generic analysis of defs
 	
-	nbl-def-collect(cpaths, spaths|lang, elems, tasks, paths) =
-		nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) <+ 
+	nbl-def-collect(child-uris, sibling-uris|lang, elem*, task*, uri*) =
+		nbl-def-site(child-uris, sibling-uris|lang, elem*, task*, uri*) <+ 
 		(
-			match(cpaths|paths);
-			match(spaths|paths)
+			match(child-uris|uri*);
+			match(sibling-uris|uri*)
 		)
 	
 	// call backs to generic analysis
 	
 	// TODO: can the alias storage be handled by new-def
 	// definition site in current scope
-	nbl-def(cpaths, spaths|lang, elems, tasks, paths, ns, unique, defscope, scoped):
+	nbl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
 			defscope := [Current()];
 			// get path for namespace of definition site
-			ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
+			current-uri := <lookup-uri(|lang, ns)> uri*;
 			// build path for definition site
-			path     := <nbl-extend-uri(|ns, name, unique)> ppath;
+			def-uri     := <nbl-extend-uri(|ns, name, unique)> current-uri;
 			// build Def entry for the index
-			d        := <new-def(|elems, path)> a;
+			d           := <new-def(|elem*, def-uri)> a;
 			// store non-unique alias in the index
-			nbl-def-store-alias(|elems, unique, path, ns, name);
-		  // preserve current paths in subsequent scope
-		  match(spaths|paths);
-			// extend paths in children for scoped namespaces
-			match(cpaths|<replace-scope-paths(|path)> (scoped, paths))
+			nbl-def-store-alias(|elem*, unique, def-uri, ns, name);
+		  // preserve current uri* in subsequent scope
+		  match(sibling-uris|uri*);
+			// extend uri* in children for scoped namespaces
+			match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*))
 		
 	// TODO: make this work with lists of def scopes
 	// definition site in subsequent scope and/or external	
-	nbl-def(cpaths, spaths|lang, elems, tasks, paths, ns, unique, defscope, scoped):
+	nbl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d, anno*}
 		where
 			if 
@@ -155,119 +143,99 @@ rules // generic analysis of defs
 			then
 				segment  := <nbl-subsequent-segment>;
 				// get path for namespace of definition site
-				ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths)
+				current-uri := <lookup-uri(|lang, ns)> uri*
 			else
 				// TODO: check if we can create the segment here
 				[DefScope(ns, segment)] := defscope;
 				// get base path for language
-				ppath    := <nbl-base-uri> lang
+				current-uri := <nbl-base-uri> lang
 			end;
 			// build path for definition site
-			path     := <nbl-extend-uri(|segment); nbl-extend-uri(|ns, name, unique)> ppath;
+			def-uri  := <nbl-extend-uri(|segment); nbl-extend-uri(|ns, name, unique)> current-uri;
 			// build Def entry 
-			d        := <new-def(|elems, path)> a;
+			d        := <new-def(|elem*, def-uri)> a;
 			// store a non-unique alias in the index
-			nbl-def-store-alias(|elems, unique, path, ns, name);
+			nbl-def-store-alias(|elem*, unique, def-uri, ns, name);
 			// TODO: check if this is correct for external definitions
-			match(spaths|<extend-scope-paths(|lang, segment)> ([ns], paths));
-		  // preserve current paths in children
-		  match(cpaths|paths)
+			match(sibling-uris|<extend-scope-uri(|lang, segment)> ([ns], uri*));
+		  // preserve current uri* in children
+		  match(child-uris|uri*)
 		  
-	nbl-def-store-alias(|elems, unique, path, ns, name) =
+	nbl-def-store-alias(|elem*, unique, path, ns, name) =
 	  if Unique(_) := unique then
-      new-alias(|elems, <nbl-replace-uri(|ns, name, <nbl-nonunique-qualifier>)> path, path)
+      new-alias(|elem*, <nbl-replace-uri(|ns, name, <nbl-nonunique-qualifier>)> path, path)
     end
-
-rules // generic analysis of implicit defs
-
-  nbl-implicit-def(|lang, elems, tasks, paths, candidates):
-    name -> name
-    where
-      <map(nbl-implicit-def-candidate(|lang, elems, tasks, paths))> candidates
-      
-  nbl-implicit-def-candidate(|lang, elems, tasks, paths):
-    IDefCandidate(ns, name, unique, props) -> <id>
-    where
-      // get path for namespace of definition site
-      ppath    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-      // build path for definition site
-      path     := <nbl-extend-uri(|ns, name, unique)> ppath;
-      // build Def entry for the index
-      new-def(|elems, path);
-      // store non-unique alias in the index
-      nbl-def-store-alias(|elems, unique, path, ns, name);
-      // build Prop entries for the index
-      <map(\Prop(type, result) -> <new-prop(|elems, path, type, result)>\)> props
 	
 rules // generic analysis of uses
 	
+	nbl-use-collect(|lang, elem*, task*, uri*, dep*) = try(nbl-use-site(|lang, elem*, task*, uri*, dep*))
+	
 	// single candidate
-	nbl-use(|lang, elems, tasks, paths, deps, candidate):
+	nbl-use(|lang, elem*, task*, uri*, dep*, candidate):
 		name -> name'
 		where
 			<not(is-list)> candidate;
-			name' := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (candidate, name)
+			name' := <nbl-use-candidate(|lang, elem*, task*, uri*, dep*)> (candidate, name)
 	
 	// list of candidates
-	nbl-use(|lang, elems, tasks, paths, deps, candidates):
+	nbl-use(|lang, elem*, task*, uri*, dep*, candidates):
 		name -> name'
 		where
 			<is-list> candidates;
-			name' := <foldl(nbl-use-candidate(|lang, elems, tasks, paths, deps))> (candidates, name)
+			name' := <foldl(nbl-use-candidate(|lang, elem*, task*, uri*, dep*))> (candidates, name)
 		
 	// candidate in current scope
-	nbl-use-candidate(|lang, elems, tasks, paths, deps):
+	nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
 		(UseCandidate(ns, prop*, Current(), range), name{anno*}) -> name{u, anno*}
 		where
-			uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-			result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
-		  u      := <new-use(|elems, result)>
-		  
+			uri      := <lookup-uri(|lang, ns)> uri*;
+			propdep* := <dependent-tasks> prop*;
+			result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+		  u        := <new-use(|elem*, result)>
+
   // named candidate in current scope
-  nbl-use-candidate(|lang, elems, tasks, paths, deps):
+  nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
     (UseCandidate(ns, name, prop*, Current(), range), term{anno*}) -> term{u, anno*}
     where
-      uri    := <lookup <+ <nbl-base-uri> lang> (ns, paths);
-      result := <new-task(|tasks, <concat> [deps, <dependent-tasks> prop*, <dependent-tasks> name])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
-      u      := <new-use(|elems, result)>
+      uri      := <lookup-uri(|lang, ns)> uri*;
+      propdep* := <dependent-tasks> prop*;
+      namedep* := <dependent-tasks> name;
+      result   := <new-task(|task*, [dep*, propdep*, namedep*])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+      u        := <new-use(|elem*, result)>
 	
 	// candidate in another scope (result of resolution)	  
-	nbl-use-candidate(|lang, elems, tasks, paths, deps):
-		(c@UseCandidate(ns, prop*, uri@Result(resultNumber), range), name{anno*}) -> name{u, anno*}
+	nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
+		(c@UseCandidate(ns, prop*, uri@Result(r), range), name{anno*}) -> name{u, anno*}
 		where
-			result := <new-task(|tasks, <conc> ([resultNumber|deps], <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
-		  u      := <new-use(|elems, result)>
+		  propdep* := <dependent-tasks> prop*;
+			result   := <new-task(|task*, [r|[dep*, propdep*]])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+		  u        := <new-use(|elem*, result)>
 		  
 	// candidate in context
-  nbl-use-candidate(|lang, elems, tasks, paths, deps):
+  nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
     (UseCandidate(ns, prop*, Context(name', ns', props', refscope'), range), name{anno*}) -> name{u, anno*}
     where 
-      _{uri} := <nbl-use-candidate(|lang, elems, tasks, paths, deps)> (UseCandidate(ns', props', refscope', range), name'{});
-      result := <new-task(|tasks, <conc> (deps, <dependent-tasks> prop*))> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
-      u      := <new-use(|elems, result)>
+      _{uri}   := <nbl-use-candidate(|lang, elem*, task*, uri*, dep*)> (UseCandidate(ns', props', refscope', range), name'{});
+      propdep* := <dependent-tasks> prop*;
+      result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+      u        := <new-use(|elem*, result)>
 
 rules // generic analysis of imports
   
-  nbl-import-collect(deps'|lang, elems, tasks, paths, deps) =
-    nbl-import-site(deps'|lang, elems, tasks, paths, deps) <+ 
-    (
-      match(deps'|deps)
-    )
+  nbl-import-collect(|lang, elem*, task*, uri*) = try(nbl-import-site(|lang, elem*, task*, uri*))
   
-  nbl-import(deps'|lang, elems, tasks, paths, deps, resolveNs, imports):
+  nbl-import(|lang, elem*, task*, uri*, imports):
     name -> name'
     where
-      (name', newDeps) := <foldl(nbl-import-candidate(|lang, elems, tasks, paths, resolveNs))> (imports, (name, []));
-      match(deps'|<conc> (deps, newDeps))
+      name' := <foldl(nbl-import-candidate(|lang, elem*, task*, uri*))> (imports, name)
         
-  nbl-import-candidate(|lang, elems, tasks, paths, resolveNs):
-    (import, (name, deps)) -> (name, deps')
+  nbl-import-candidate(|lang, elem*, task*, uri*):
+    (import, name) -> name
     where
-      importNs := <nbl-import-namespace> import;
-      uri      := <lookup <+ <nbl-base-uri> lang> (importNs, paths);
+      ns       := <nbl-import-namespace> import;
+      uri      := <lookup-uri(|lang, ns)> uri*;
       Use(res) := <nbl-collect-use> name;
-      deps'    := [<nbl-result-number> res|deps];
-      new-prop(|elems, uri, import, res)
+      new-prop(|elem*, uri, import, res)
       
   nbl-import-namespace:
     Import(_, Imported(namespace)) -> namespace
@@ -287,17 +255,42 @@ rules // generic analysis of imports
 
 rules // generic analysis of properties
   
+  nbl-prop-collect(|lang, elem*, task*, uri*) = try(nbl-prop-site(|lang, elem*, task*, uri*))
+  
 	// call back to generic analysis
-	nbl-props(|lang, elems, tasks, prop*):
+	nbl-props(|lang, elem*, task*, prop*):
 	  name -> name'
 	  where
 	    Def(uri) := <nbl-collect-def> name;
-		  name'    := <foldl(extend-prop(|elems, uri))> (prop*, name)
+		  name'    := <foldl(extend-prop(|elem*, uri))> (prop*, name)
 		
-	extend-prop(|elems, uri):
+	extend-prop(|elem*, uri):
 		(Prop(type, result), name) -> name
 		where
-		  prop := <new-prop(|elems, uri, type, result)> name
+		  prop := <new-prop(|elem*, uri, type, result)> name
+
+rules // generic analysis of implicit defs
+
+  nbl-implicit-def-collect(|lang, elem*, task*, uri*) = try(nbl-implicit-def-site(|lang, elem*, task*, uri*))
+ 
+  nbl-implicit-def(|lang, elem*, task*, uri*, candidates):
+    name -> name
+    where
+      <map(nbl-implicit-def-candidate(|lang, elem*, task*, uri*))> candidates
+      
+  nbl-implicit-def-candidate(|lang, elem*, task*, uri*):
+    IDefCandidate(ns, name, unique, prop*) -> <id>
+    where
+      // get path for namespace of definition site
+      current-uri := <lookup-uri(|lang, ns)> uri*;
+      // build path for definition site
+      def-uri     := <nbl-extend-uri(|ns, name, unique)> current-uri;
+      // build Def entry for the index
+      new-def(|elem*, def-uri);
+      // store non-unique alias in the index
+      nbl-def-store-alias(|elem*, unique, def-uri, ns, name);
+      // build Prop entries for the index
+      <map(\Prop(type, result) -> <new-prop(|elem*, def-uri, type, result)>\)> prop*
 
 rules // name retrieval
   
@@ -319,12 +312,17 @@ rules // URI retrieval
 
 rules // helpers
 	
-	replace-scope-paths(|path)         = foldl(update-scope-paths(!path|<nbl-uri-language> path))
-	extend-scope-paths(|lang, segment) = foldl(update-scope-paths(nbl-extend-uri(|segment)|lang))
+	replace-scope-uri(|path)         = foldl(update-scope-uri(!path|<nbl-uri-language> path))
 	
-	update-scope-paths(update|lang):
-		(key, paths) -> result
+	extend-scope-uri(|lang, segment) = foldl(update-scope-uri(nbl-extend-uri(|segment)|lang))
+	
+	update-scope-uri(update|lang):
+		(key, uri*) -> result
 		where
-			  result := <fetch((?key, update))> paths 
+			  result := <fetch((?key, update))> uri* 
 			<+ 
-			  result := [(key, <nbl-base-uri; update> lang)|paths]
+			  result := [(key, <nbl-base-uri; update> lang)|uri*]
+			  
+	lookup-uri(|lang, ns):
+	  uri* -> <<lookup> (ns, uri*) <+ <nbl-base-uri> lang>
+	  
