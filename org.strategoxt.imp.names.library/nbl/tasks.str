@@ -1,109 +1,102 @@
-	module nbl/tasks
+  module nbl/tasks
 
 imports 
-	
-	index/core
-	nbl/lookup
-	nbl/collect
-	nbl/resolve
-	nbl/query
-	nbl/interface
-	nbl/uri
-	nbl/utils
-	
+  
+  index/core
+  nbl/lookup
+  nbl/collect
+  nbl/resolve
+  nbl/query
+  nbl/interface
+  nbl/uri
+  nbl/utils
+  
 signature
 
-	sorts
-	
-		Task Result Instruction
-	
-	constructors
-		
-		Task     : List(String) * List(String) * Instruction  -> Task
-		Result   : String         											      -> Result
-		Reserved : String                                     -> Result
-		DoneTask : String * Term											        -> DoneTask
-		FailTask : String * Term                              -> FailTask
-		
-		Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
-		PropCalc : Property * Term                          	    -> Instruction
-		Match		 : ID * Term			                          	    -> Instruction
-		Noop     :                                                   Instruction
-		
-		Done     : Term                                   		-> Result
-		Fail     : Term                                       -> Result
-		
-		Stall    : Instruction
+  sorts
+  
+    Task Result Instruction
+  
+  constructors
+    
+    Task     : List(String) * List(String) * Instruction  -> Task
+    Result   : String                                     -> Result
+    Reserved : String                                     -> Result
+    DoneTask : String * Term                              -> DoneTask
+    FailTask : String * Term                              -> FailTask
+    
+    Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
+    PropCalc : Property * Term                                -> Instruction
+    Match     : ID * Term                                      -> Instruction
+    Noop     :                                                   Instruction
+    
+    Done     : Term                                       -> Result
+    Fail     : Term                                       -> Result
+    
+    Stall    : Instruction
 
 rules
-	
-	new-task(|elems) = new-task(|elems, <dependent-tasks>)
-		
-  new-task(|elems, deps) = new-task(|elems, deps, <newname> "") 
-    		
-	new-task(|elems, deps, name):
-		instruction -> Result(name)
-		with
-			task := Task([name], deps, instruction);
-			<iset-add(|task)> elems;
-			<vdebug(!"Created task: ")> task
-	
-	reserve-task =
-	  !Reserved(<newname> "")
-			
-	dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
-	dependent-task = ?Result(<id>) 
-	dependent-task =
-		has-annos; get-annos; dependent-tasks
-	
+  
+  new-task(|task*) = new-task(|task*, <dependent-tasks>)
+    
+  new-task(|task*, deps) = new-task(|task*, deps, <newname> "") 
+        
+  new-task(|task*, deps, name):
+    instruction -> Result(name)
+    with
+      task := Task([name], deps, instruction);
+      <iset-add(|task)> task*;
+      <vdebug(!"Created task: ")> task
+  
+  reserve-task =
+    !Reserved(<newname> "")
+      
+  dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
+  dependent-task = ?Result(<id>) 
+  dependent-task =
+    has-annos; get-annos; dependent-tasks
+  
 rules
-	
-	merge-tasks =
-		   [] 
-		<+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, ?[], ?instr)); merge-tasks>]
-		<+ [id|merge-tasks]
-	
-	perform-tasks(|partition):
-		(tasks, elems) -> (tasks'', elems'')
-		with
-			if 
-				(ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task(|elems)))> tasks 
-			then
-			  Task(names, [], res) := t;
-			  switch !res
-			    // TODO: Get rid of duplicate code.
-			    case ?Done(tr):
-	          nr-map := <map(!(<id>, tr))> names;
-	          elems' := <map(!DoneTask(<id>, tr))> names;
-		        <index-add-all(|partition)> elems';
-		        tasks'             := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-		        (tasks'', elems'') := <perform-tasks(|partition)> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
-	        case ?Fail(tr):
-            nr-map := <map(!(<id>, tr))> names;
-            elems' := <map(!FailTask(<id>, tr))> names;
-		        <index-add-all(|partition)> elems';
-		        tasks'             := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-		        (tasks'', elems'') := <perform-tasks(|partition)> (tasks', <conc> (elems, elems'))
-			  end
-			else
-				tasks'' := tasks;
-				elems'' := elems
-			end
-				
+  
+  merge-tasks =
+       [] 
+    <+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, ?[], ?instr)); merge-tasks>]
+    <+ [id|merge-tasks]
+  
+  perform-tasks(|partition):
+    task* -> task'*
+    with
+      if 
+        (ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task))> task*
+      then
+        Task(names, [], res) := t;
+        switch !res
+          case ?Done(tr):
+            <map(!DoneTask(<id>, tr)); index-add-all(|partition)> names;
+            nr-map := <map(!(<id>, tr))> names
+          case ?Fail(tr):
+            <map(!FailTask(<id>, tr)); index-add-all(|partition)> names;
+            nr-map := <map(!(<id>, Fail(tr)))> names
+        end;
+        task'* := <conc; map(try(resolve-dependencies(|names, nr-map))); perform-tasks(|partition)> (ts1, ts2)
+      else
+        task'* := task*
+      end
+        
 rules
-	
-  perform-task(|elems): 
+  
+  perform-task: 
     Resolve(uri, namespace, name, prop*, range) -> result
     where
       not(<is-list> uri);
-      result := <perform-task(|elems)> Resolve([uri], namespace, name, prop*, range)
-	
-  perform-task(|elems): 
+      result := <perform-task> Resolve([uri], namespace, name, prop*, range)
+  
+  perform-task: 
     Resolve(uri*, namespace, name, prop*, range) -> result
     where
       <is-list> uri*;
       // TODO: Get rid of flatten-list?
-      resolved* := <flatten-list; mapconcat(perform-task-resolve(|elems, namespace, name, prop*, range))> uri*;
+      resolved* := <flatten-list; remove-all(?Fail(_)); mapconcat(perform-task-resolve(|namespace, name, prop*, range))> uri*;
       switch !resolved*
         case ?[]: 
           result := Fail(<map(nbl-extend-uri(|namespace, name, ()))> uri*)
@@ -113,66 +106,66 @@ rules
           result := Done(<filter(nbl-uri)> resolved*)
       end
       
-  perform-task-resolve(|elems, namespace, name, prop*, range): 
-    uri-> resolved*
+  perform-task-resolve(|namespace, name, prop*, range): 
+    uri -> resolved*
     where
       switch !range
         case All(): resolved* := <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri
         case One(): resolved* := <nbl-lookup-definitions-scoped(nbl-resolve-constraint(|prop*)|namespace, name)> uri
       end
-    	
+      
   nbl-resolve-constraint(|prop*):
-  	entry -> entry'
-  	where
-  	  results := <map(nbl-resolve-constraint-one(|entry))> prop*;
-  		if <fetch(?Stall())> results then
-  		  entry' := Stall()
-  		else
-  		  entry' := entry
-  		end
-  		
+    entry -> entry'
+    where
+      results := <map(nbl-resolve-constraint-one(|entry))> prop*;
+      if <fetch(?Stall())> results then
+        entry' := Stall()
+      else
+        entry' := entry
+      end
+      
   nbl-resolve-constraint-one(|entry):
-  	Prop(type, expectedValue) -> entry'
-  	where
-  		value := <nbl-get-property(|type)> entry;
-  		if value' := <nbl-resolve> value then
-	      expectedValue'  := <nbl-resolve> expectedValue;
-	      <eq> (expectedValue', value');
-	      entry' := entry
+    Prop(type, expectedValue) -> entry'
+    where
+      value := <nbl-get-property(|type)> entry;
+      if value' := <nbl-resolve> value then
+        expectedValue'  := <nbl-resolve> expectedValue;
+        <eq> (expectedValue', value');
+        entry' := entry
       else
         entry' := Stall()
       end
             
-	perform-task(|elems): PropCalc(prop, term) -> Done(<calc-property(|elems)> (prop, term))
-	perform-task(|elems): Match(key, term) 		 -> Done(<match-term> (key, term))
-	
-	perform-task(|elems): Noop()               -> Done(())
-	
+  perform-task: PropCalc(prop, term) -> Done(<calc-property> (prop, term))
+  perform-task: Match(key, term)      -> Done(<match-term> (key, term))
+  
+  perform-task: Noop()               -> Done(())
+  
 rules
-	
-	split-tasks =
-		partition(?Task(_, _, _))
-		
-	split-results = 
-		partition(task-result; unzip; (concat, id))
-		
-	task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
-	
-	resolve-dependencies(|solved, results):
-		Task(names, deps, task) -> Task(names, deps', task')
-		where
-			deps' := <diff; not(?deps)> (deps, solved);
-			task' := <try(distribute-results(|results))> task
-		
-	distribute-results(|results) = 
-		alltd(insert-result(|results))
-	
-	insert-result(|results): Result(n) -> <lookup> (n, results)
+  
+  split-tasks =
+    partition(?Task(_, _, _))
+    
+  split-results = 
+    partition(task-result; unzip; (concat, id))
+    
+  task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
+  
+  resolve-dependencies(|solved, results):
+    Task(names, deps, task) -> Task(names, deps', task')
+    where
+      deps' := <diff; not(?deps)> (deps, solved);
+      task' := <try(distribute-results(|results))> task
+    
+  distribute-results(|results) = 
+    alltd(insert-result(|results))
+  
+  insert-result(|results): Result(n) -> <lookup> (n, results)
 
-	insert-result(|results) = 
-		has-annos; 
-		!(<id>, <get-annos; map(try(insert-result(|results)))>); 
-		set-annos
+  insert-result(|results) = 
+    has-annos; 
+    !(<id>, <get-annos; map(try(insert-result(|results)))>); 
+    set-annos
 
 rules
   
@@ -180,14 +173,14 @@ rules
     Result(num) -> num
 
 rules /** @internal Projections */
-	
-	/** @internal */
+  
+  /** @internal */
   nbl-uri-impl:
     Task(uri, _, _) -> uri
   
   /** @internal */  
   nbl-uri-impl:
-  	Resolve(uri, _, _, _, _) -> uri
+    Resolve(uri, _, _, _, _) -> uri
   
   /** @internal */
   nbl-uri-impl:

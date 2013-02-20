@@ -28,6 +28,6 @@ strategies // Projections
 
 strategies // Tasks
   
-  calc-property(|elem*) = fail
+  calc-property = fail
   
   match-term = fail
