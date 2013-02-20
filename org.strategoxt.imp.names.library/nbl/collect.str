@@ -208,6 +208,7 @@ rules // generic analysis of uses
 		where
 			<is-list> candidates;
 			name' := <foldl(nbl-use-candidate(|lang, elem*, task*, uri*, dep*))> (candidates, name)
+
 		
 	// candidate in current scope
 	nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
@@ -228,13 +229,17 @@ rules // generic analysis of uses
       result   := <new-task(|task*, [dep*, propdep*, namedep*])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
       u        := <new-use(|elem*, result)>
 	
+	
 	// candidate in another scope (result of resolution)	  
 	nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
-		(c@UseCandidate(ns, prop*, uri@Result(r), range), name{anno*}) -> name{u, anno*}
+		(c@UseCandidate(ns, prop*, target-uri*, range), name{anno*}) -> name{u, anno*}
 		where
+		  <?Result(_) <+ map(?Result(_))> target-uri*;
 		  propdep* := <dependent-tasks> prop*;
-			result   := <new-task(|task*, [r|[dep*, propdep*]])> Resolve(uri, ns, <nbl-fix-name> name, prop*, range);
+		  uridep*  := <dependent-tasks> target-uri*;
+			result   := <new-task(|task*, [dep*, propdep*, uridep*])> Resolve(target-uri*, ns, <nbl-fix-name> name, prop*, range);
 		  u        := <new-use(|elem*, result)>
+	
 		  
 	// candidate in context
   nbl-use-candidate(|lang, elem*, task*, uri*, dep*):
@@ -339,10 +344,20 @@ rules // URI retrieval
     get-annos;
     collect-one(?Def(_))
     
+  nbl-collect-all-def =
+    nbl-name;
+    get-annos;
+    collect-all(?Def(_))
+    
   nbl-collect-use =
     nbl-name;
     get-annos;
     collect-one(?Use(_))
+    
+  nbl-collect-all-use =
+    nbl-name;
+    get-annos;
+    collect-all(?Use(_))
     
   nbl-add-reserved(|reserved) =
     nbl-name-apply(add-annotation(|reserved))

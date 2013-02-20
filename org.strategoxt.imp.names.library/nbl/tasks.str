@@ -71,16 +71,20 @@ rules
 			then
 			  Task(names, [], res) := t;
 			  switch !res
+			    // TODO: Get rid of duplicate code.
 			    case ?Done(tr):
 	          nr-map := <map(!(<id>, tr))> names;
-	          elems' := <map(!DoneTask(<id>, tr))> names
+	          elems' := <map(!DoneTask(<id>, tr))> names;
+		        <index-add-all(|partition)> elems';
+		        tasks'             := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
+		        (tasks'', elems'') := <perform-tasks(|partition)> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
 	        case ?Fail(tr):
             nr-map := <map(!(<id>, tr))> names;
-            elems' := <map(!FailTask(<id>, tr))> names
-			  end;
-        <index-add-all(|partition)> elems';
-        tasks'             := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
-        (tasks'', elems'') := <perform-tasks(|partition)> (tasks', <conc> (<distribute-results(|nr-map)> elems, elems'))
+            elems' := <map(!FailTask(<id>, tr))> names;
+		        <index-add-all(|partition)> elems';
+		        tasks'             := <conc; map(try(resolve-dependencies(|names, nr-map)))> (ts1, ts2);
+		        (tasks'', elems'') := <perform-tasks(|partition)> (tasks', <conc> (elems, elems'))
+			  end
 			else
 				tasks'' := tasks;
 				elems'' := elems
@@ -89,21 +93,33 @@ rules
 rules
 	
   perform-task(|elems): 
-    instruction@Resolve(uri, namespace, name, prop*, range) -> result
+    Resolve(uri, namespace, name, prop*, range) -> result
+    where
+      not(<is-list> uri);
+      result := <perform-task(|elems)> Resolve([uri], namespace, name, prop*, range)
+	
+  perform-task(|elems): 
+    Resolve(uri*, namespace, name, prop*, range) -> result
+    where
+      <is-list> uri*;
+      // TODO: Get rid of flatten-list?
+      resolved* := <flatten-list; mapconcat(perform-task-resolve(|elems, namespace, name, prop*, range))> uri*;
+      switch !resolved*
+        case ?[]: 
+          result := Fail(<map(nbl-extend-uri(|namespace, name, ()))> uri*)
+        case fetch(?Stall()) :
+          fail
+        otherwise:
+          result := Done(<filter(nbl-uri)> resolved*)
+      end
+      
+  perform-task-resolve(|elems, namespace, name, prop*, range): 
+    uri-> resolved*
     where
       switch !range
         case All(): resolved* := <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri
         case One(): resolved* := <nbl-lookup-definitions-scoped(nbl-resolve-constraint(|prop*)|namespace, name)> uri
-    	end;
-    	
-    	switch !resolved*
-    	  case ?[]: 
-    	    result := Fail([<nbl-extend-uri(|namespace, name, ())> uri])
-    	  case fetch(?Stall()) :
-    	  	fail
-    	  otherwise:
-    	    result := Done(<filter(nbl-uri)> resolved*)
-    	end
+      end
     	
   nbl-resolve-constraint(|prop*):
   	entry -> entry'
