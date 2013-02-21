@@ -2,7 +2,7 @@ module nbl/collect
 
 imports
 	
-	libstratego-lib
+	task/core
 	nbl/tasks
 	nbl/entries
 	nbl/interface

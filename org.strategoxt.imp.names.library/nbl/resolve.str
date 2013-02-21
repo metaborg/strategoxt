@@ -2,12 +2,13 @@ module nbl/resolve
 
 imports
   
+  task/core
+  index/core
   nbl/tasks
   nbl/query
   nbl/lookup
   nbl/uri
   nbl/entries
-  index/core
   
 signature
 

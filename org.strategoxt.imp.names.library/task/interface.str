@@ -1,0 +1,5 @@
+module task/interface
+
+strategies
+  
+  perform-task = fail

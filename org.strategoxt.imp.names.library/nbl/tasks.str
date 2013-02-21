@@ -1,8 +1,8 @@
-  module nbl/tasks
+module nbl/tasks
 
 imports 
   
-  index/core
+  task/core
   nbl/lookup
   nbl/collect
   nbl/resolve
@@ -12,81 +12,17 @@ imports
   nbl/utils
   
 signature
-
-  sorts
-  
-    Task Result Instruction
   
   constructors
-    
-    Task     : List(String) * List(String) * Instruction  -> Task
-    Result   : String                                     -> Result
-    Reserved : String                                     -> Result
-    DoneTask : String * Term                              -> DoneTask
-    FailTask : String * Term                              -> FailTask
     
     Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
     PropCalc : Property * Term                                -> Instruction
     Match    : ID * Term                                      -> Instruction
     Noop     :                                                   Instruction
     
-    Done     :                                               Result
-    Done     : Term                                       -> Result
-    Fail     : Term                                       -> Result
-    
-    Stall    : Instruction
-
-rules
-  
-  new-task(|task*) = new-task(|task*, <dependent-tasks>)
-    
-  new-task(|task*, deps) = new-task(|task*, deps, <newname> "") 
+    Stall : Instruction
         
-  new-task(|task*, deps, name):
-    instruction -> Result(name)
-    with
-      task := Task([name], deps, instruction);
-      <iset-add(|task)> task*;
-      <vdebug(!"Created task: ")> task
-  
-  reserve-task =
-    !Reserved(<newname> "")
-      
-  dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
-  dependent-task = ?Result(<id>) 
-  dependent-task =
-    has-annos; get-annos; dependent-tasks
-  
-rules
-  
-  merge-tasks =
-       [] 
-    <+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, ?[], ?instr)); merge-tasks>]
-    <+ [id|merge-tasks]
-  
-  perform-tasks(|partition):
-    task* -> task'*
-    with
-      if 
-        (ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task))> task*
-      then
-        Task(names, [], res) := t;
-        switch !res
-          case ?Done(tr):
-            <map(!DoneTask(<id>, tr)); index-add-all(|partition)> names;
-            nr-map := <map(!(<id>, tr))> names
-          case ?Done():
-            nr-map := []
-          case ?Fail(tr):
-            <map(!FailTask(<id>, tr)); index-add-all(|partition)> names;
-            nr-map := <map(!(<id>, Fail(tr)))> names
-        end;
-        task'* := <conc; map(try(resolve-dependencies(|names, nr-map))); perform-tasks(|partition)> (ts1, ts2)
-      else
-        task'* := task*
-      end
-        
-rules
+rules // Resolve
   
   perform-task: 
     Resolve(uri, namespace, name, prop*, range) -> result
@@ -138,43 +74,25 @@ rules
       else
         entry' := Stall()
       end
+
+rules // Property calculation
             
   perform-task: PropCalc(prop, term) -> Done(<calc-property> (prop, term))
-  perform-task: Match(key, term)     -> Done(<match-term> (key, term))
-  perform-task: Noop()               -> Done()
   
-rules
+rules // Match
   
-  split-tasks =
-    partition(?Task(_, _, _))
-    
-  split-results = 
-    partition(task-result; unzip; (concat, id))
-    
-  task-result: Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
+  perform-task: Match(key, term) -> Done(<match-term> (key, term))
   
-  resolve-dependencies(|solved, results):
-    Task(names, deps, task) -> Task(names, deps', task')
-    where
-      deps' := <diff; not(?deps)> (deps, solved);
-      task' := <try(distribute-results(|results))> task
-    
-  distribute-results(|results) = 
-    alltd(insert-result(|results))
+rules // Noop
   
-  insert-result(|results): Result(n) -> <lookup> (n, results)
-
-  insert-result(|results) = 
-    has-annos; 
-    !(<id>, <get-annos; map(try(insert-result(|results)))>); 
-    set-annos
-
-rules
+  perform-task: Noop() -> Done()
+  
+rules // Utility
   
   nbl-result-number:
     Result(num) -> num
 
-rules /** @internal Projections */
+rules // Projections
   
   /** @internal */
   nbl-uri-impl:

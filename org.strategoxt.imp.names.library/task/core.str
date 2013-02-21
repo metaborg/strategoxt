@@ -1,0 +1,96 @@
+module task/core
+
+imports 
+  
+  task/interface
+  index/core
+  
+signature
+
+  sorts
+  
+    Task Result Instruction
+  
+  constructors
+    
+    Task     : List(String) * List(String) * Instruction -> Task
+    Result   : String                                    -> Result
+    Reserved : String                                    -> Result
+    DoneTask : String * Term                             -> DoneTask
+    FailTask : String * Term                             -> FailTask
+    
+    Done     :                                              Result
+    Done     : Term                                      -> Result
+    Fail     : Term                                      -> Result
+
+rules // Creation
+  
+  new-task(|task*) = new-task(|task*, <dependent-tasks>)
+  new-task(|task*, deps) = new-task(|task*, deps, <newname> "") 
+  new-task(|task*, deps, name):
+    instruction -> Result(name)
+    with
+      task := Task([name], deps, instruction);
+      <iset-add(|task)> task*
+  
+  reserve-task =
+    !Reserved(<newname> "")
+      
+  dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
+  dependent-task = ?Result(<id>) 
+  dependent-task =
+    has-annos; get-annos; dependent-tasks
+  
+rules // Execution
+  
+  perform-tasks(|partition):
+    task* -> task'*
+    with
+      if 
+        (ts1, t, ts2) := <split-fetch-keep(Task(id, [], perform-task))> task*
+      then
+        Task(names, [], res) := t;
+        switch !res
+          case ?Done(tr):
+            <map(!DoneTask(<id>, tr)); index-add-all(|partition)> names;
+            nr-map := <map(!(<id>, tr))> names
+          case ?Done():
+            nr-map := []
+          case ?Fail(tr):
+            <map(!FailTask(<id>, tr)); index-add-all(|partition)> names;
+            nr-map := <map(!(<id>, Fail(tr)))> names
+        end;
+        task'* := <conc; map(try(resolve-dependencies(|names, nr-map))); perform-tasks(|partition)> (ts1, ts2)
+      else
+        task'* := task*
+      end
+  
+rules // Utility
+  
+  merge-tasks =
+       [] 
+    <+ ?[Task(names, dep, instr)|<fetch(Task(!(names, <id>); conc, ?[], ?instr)); merge-tasks>]
+    <+ [id|merge-tasks]
+    
+  split-results = 
+    partition(task-result; unzip; (concat, id))
+    
+  task-result: 
+    Task(names, _, Done(result)) -> (<map(!(<id>, result))> names, result)
+  
+  resolve-dependencies(|solved, results):
+    Task(names, deps, task) -> Task(names, deps', task')
+    where
+      deps' := <diff; not(?deps)> (deps, solved);
+      task' := <try(distribute-results(|results))> task
+    
+  distribute-results(|results) = 
+    alltd(insert-result(|results))
+  
+  insert-result(|results): 
+    Result(n) -> <lookup> (n, results)
+
+  insert-result(|results) = 
+    has-annos; 
+    !(<id>, <get-annos; map(try(insert-result(|results)))>); 
+    set-annos
