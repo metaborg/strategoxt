@@ -27,9 +27,10 @@ signature
     
     Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
     PropCalc : Property * Term                                -> Instruction
-    Match     : ID * Term                                      -> Instruction
+    Match    : ID * Term                                      -> Instruction
     Noop     :                                                   Instruction
     
+    Done     :                                               Result
     Done     : Term                                       -> Result
     Fail     : Term                                       -> Result
     
@@ -74,6 +75,8 @@ rules
           case ?Done(tr):
             <map(!DoneTask(<id>, tr)); index-add-all(|partition)> names;
             nr-map := <map(!(<id>, tr))> names
+          case ?Done():
+            nr-map := []
           case ?Fail(tr):
             <map(!FailTask(<id>, tr)); index-add-all(|partition)> names;
             nr-map := <map(!(<id>, Fail(tr)))> names
@@ -137,9 +140,8 @@ rules
       end
             
   perform-task: PropCalc(prop, term) -> Done(<calc-property> (prop, term))
-  perform-task: Match(key, term)      -> Done(<match-term> (key, term))
-  
-  perform-task: Noop()               -> Done(())
+  perform-task: Match(key, term)     -> Done(<match-term> (key, term))
+  perform-task: Noop()               -> Done()
   
 rules
   
