@@ -22,48 +22,48 @@ rules // Dependencies
    * Gets the set of partitions with read dependencies to the given entries.
    *
    * Example:
-   *   <nbl-get-dependent-partitions> [Def([Entity(), "Bar"]), ...] => [("fullpath/file.ext", "partition"), ...]
+   *   <nabl-get-dependent-partitions> [Def([Entity(), "Bar"]), ...] => [("fullpath/file.ext", "partition"), ...]
    *
    * @type List(entry) -> List(partition)
    */
-  nbl-get-dependent-partitions = 
-    nbl-get-dependent-partitions(nbl-get-all-reads)
+  nabl-get-dependent-partitions = 
+    nabl-get-dependent-partitions(nabl-get-all-reads)
     
-  nbl-remove-own-partition(|partition) =
+  nabl-remove-own-partition(|partition) =
     remove-all(?(partition, _))
           
 rules /** @internal Storing reads */
   
-  nbl-collect-reads(s) =
-    {| NBL-ReadSet:
-    	rules(NBL-ReadSet := <new-iset>);
+  nabl-collect-reads(s) =
+    {| nabl-ReadSet:
+    	rules(nabl-ReadSet := <new-iset>);
     	try(s);
-    	NBL-ReadSet;
+    	nabl-ReadSet;
     	iset-elements
   	|}
     	
 rules /** @internal Entry difference */
   
-  nbl-diff-entry =
+  nabl-diff-entry =
     ?Def(_)
     
-  nbl-diff-entry =
+  nabl-diff-entry =
     ?Prop(_, _, _)
       
-  nbl-diff-eq:
+  nabl-diff-eq:
     (entry1, entry2) -> <id>
     where
-      <nbl-uri-eq> (<nbl-uri> entry1, <nbl-uri> entry2)
+      <nabl-uri-eq> (<nabl-uri> entry1, <nabl-uri> entry2)
 
-  nbl-diff:
+  nabl-diff:
     (defs1, defs2) -> (added, removed)
     with
-      added   := <diff(nbl-diff-eq)> (defs2, defs1);
-      removed := <diff(nbl-diff-eq)> (defs1, defs2)
+      added   := <diff(nabl-diff-eq)> (defs2, defs1);
+      removed := <diff(nabl-diff-eq)> (defs1, defs2)
 
 rules /** @internal */
   
-  nbl-get-dependent-partitions(construct-from-uri):
+  nabl-get-dependent-partitions(construct-from-uri):
     entries -> partitions
     where
       references := <mapconcat(construct-from-uri)> entries;
@@ -72,25 +72,25 @@ rules /** @internal */
 rules /** @internal URI & value projections */
   
   /** @internal */  
-  nbl-uri-impl:
+  nabl-uri-impl:
     Read(uri) -> uri
     
   /** @internal */  
-  nbl-uri-impl:
+  nabl-uri-impl:
     ReadAll(uri) -> uri
     
   /** @internal */  
-  nbl-uri-impl:
+  nabl-uri-impl:
     ReadAll(uri, _, _) -> uri
     
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     Read(value) -> value
 
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     ReadAll(value) -> value
     
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     ReadAll(value, _, _) -> value

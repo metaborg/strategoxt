@@ -43,34 +43,34 @@ rules
 rules // index uri & value projections
   
   /** @internal */
-  nbl-uri-impl:
+  nabl-uri-impl:
     Def(uri) -> uri
     
   /** @internal */
-  nbl-uri-impl:
+  nabl-uri-impl:
     Alias(uri, _) -> uri
     
   /** @internal */  
-  nbl-uri-impl:
+  nabl-uri-impl:
     Use(uri) -> uri
     
   /** @internal */  
-  nbl-uri-impl:
+  nabl-uri-impl:
     Prop(uri, _, _) -> uri
     
     
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     Def(value) -> value
     
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     Alias(_, value) -> value
 
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     Use(value) -> value
     
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     Prop(_, _, value) -> value

@@ -38,37 +38,37 @@ rules // Resolve
       resolved* := <flatten-list; remove-all(?Fail(_)); mapconcat(perform-task-resolve(|namespace, name, prop*, range))> uri*;
       switch !resolved*
         case ?[]: 
-          result := Fail(<map(nbl-extend-uri(|namespace, name, ()))> uri*)
+          result := Fail(<map(nabl-extend-uri(|namespace, name, ()))> uri*)
         case fetch(?Stall()) :
           fail
         otherwise:
-          result := Done(<filter(nbl-uri)> resolved*)
+          result := Done(<filter(nabl-uri)> resolved*)
       end
       
   perform-task-resolve(|namespace, name, prop*, range): 
     uri -> resolved*
     where
       switch !range
-        case All(): resolved* := <nbl-lookup-definitions(nbl-resolve-constraint(|prop*)|namespace, name)> uri
-        case One(): resolved* := <nbl-lookup-definitions-scoped(nbl-resolve-constraint(|prop*)|namespace, name)> uri
+        case All(): resolved* := <nabl-lookup-definitions(nabl-resolve-constraint(|prop*)|namespace, name)> uri
+        case One(): resolved* := <nabl-lookup-definitions-scoped(nabl-resolve-constraint(|prop*)|namespace, name)> uri
       end
       
-  nbl-resolve-constraint(|prop*):
+  nabl-resolve-constraint(|prop*):
     entry -> entry'
     where
-      results := <map(nbl-resolve-constraint-one(|entry))> prop*;
+      results := <map(nabl-resolve-constraint-one(|entry))> prop*;
       if <fetch(?Stall())> results then
         entry' := Stall()
       else
         entry' := entry
       end
       
-  nbl-resolve-constraint-one(|entry):
+  nabl-resolve-constraint-one(|entry):
     Prop(type, expectedValue) -> entry'
     where
-      value := <nbl-get-property(|type)> entry;
-      if value' := <nbl-resolve> value then
-        expectedValue'  := <nbl-resolve> expectedValue;
+      value := <nabl-get-property(|type)> entry;
+      if value' := <nabl-resolve> value then
+        expectedValue'  := <nabl-resolve> expectedValue;
         <eq> (expectedValue', value');
         entry' := entry
       else
@@ -89,23 +89,23 @@ rules // Noop
   
 rules // Utility
   
-  nbl-result-number:
+  nabl-result-number:
     Result(num) -> num
 
 rules // Projections
   
   /** @internal */
-  nbl-uri-impl:
+  nabl-uri-impl:
     Task(uri, _, _) -> uri
   
   /** @internal */  
-  nbl-uri-impl:
+  nabl-uri-impl:
     Resolve(uri, _, _, _, _) -> uri
   
   /** @internal */
-  nbl-uri-impl:
+  nabl-uri-impl:
     DoneTask(_, uri) -> uri
     
   /** @internal */
-  nbl-uri-impl:
+  nabl-uri-impl:
     FailTask(_, uri) -> uri

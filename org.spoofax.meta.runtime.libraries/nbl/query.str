@@ -14,66 +14,66 @@ rules // Specific queries
    * Gets all unique and non-unique definition entries that match the given URI.
    *
    * Example:
-   *   <nbl-get-all-definitions> [Entity(), "M", "Bar"] => [Def([Entity(), "M", "Bar"]), ...]
+   *   <nabl-get-all-definitions> [Entity(), "M", "Bar"] => [Def([Entity(), "M", "Bar"]), ...]
    *
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
-  nbl-get-all-definitions:
-    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-unique-nonunique(\uri -> Def(uri)\)> uri
+  nabl-get-all-definitions:
+    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-unique-nonunique(\uri -> Def(uri)\)> uri
 
   /**
    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
    *
    * Example:
-   *   <nbl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
+   *   <nabl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
    *
    * @param type Only properties of this kind is returned.
    * @type Def(uri) or "name"{uri} or URI(language, path) -> Prop(uri, kind, value)
    */
-  nbl-get-property(|kind) = 
-  	nbl-get-all-properties(|kind); Hd
+  nabl-get-property(|kind) = 
+  	nabl-get-all-properties(|kind); Hd
       
   /**
    * Gets all properties that match the kind of value and given URI.
    *
    * Example:
-   *   <nbl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
+   *   <nabl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
    *
    * @param kind Only data of this kind is returned.
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
    */
-  nbl-get-all-properties(|kind):
-     <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-all-values> Prop(uri, kind, ())
+  nabl-get-all-properties(|kind):
+     <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-all-values> Prop(uri, kind, ())
      
   /**
    * Gets all Use entries that match the given URI.
    *
    * Example:
-   *   <nbl-get-all-uses> Def([Entity(), "M", "Bar"]) => [Use([Entity(), "M", "Bar"]), ...]
+   *   <nabl-get-all-uses> Def([Entity(), "M", "Bar"]) => [Use([Entity(), "M", "Bar"]), ...]
    *
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Use(uri))
    */
-  nbl-get-all-uses:
-    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <nbl-get-all> Use(uri)
+  nabl-get-all-uses:
+    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-all> Use(uri)
      
   /**
    * Gets all Read and ReadAll entries that match the given URI.
    *
    * Example:
-   *   <nbl-get-all-reads> Def([Property(), "Bar", "p"]) => [Read([Property(), "Bar", "p"]), ...]
+   *   <nabl-get-all-reads> Def([Property(), "Bar", "p"]) => [Read([Property(), "Bar", "p"]), ...]
    *
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Read(uri) or ReadAll(uri) or ReadAll(uri, namespace, prefix))
    */
-  nbl-get-all-reads:
-    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> <conc> (reads, readAlls)
+  nabl-get-all-reads:
+    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <conc> (reads, readAlls)
     where
-      reads        := <nbl-get-unique-nonunique(fail, \uri -> Read(uri)\)> uri;
-      if parentURI := <nbl-uri-parent> uri then
-        readAlls1  := <nbl-get-all(fail)> ReadAll(parentURI);
-        readAlls2  := <nbl-get-all(fail)> ReadAll(parentURI, (), ());
-        namespace  := <nbl-uri-namespace> uri;
-        name       := <nbl-uri-name> uri;
-        readAlls2' := <filter(nbl-compare-prefix(|namespace, name))> readAlls2;
+      reads        := <nabl-get-unique-nonunique(fail, \uri -> Read(uri)\)> uri;
+      if parentURI := <nabl-uri-parent> uri then
+        readAlls1  := <nabl-get-all(fail)> ReadAll(parentURI);
+        readAlls2  := <nabl-get-all(fail)> ReadAll(parentURI, (), ());
+        namespace  := <nabl-uri-namespace> uri;
+        name       := <nabl-uri-name> uri;
+        readAlls2' := <filter(nabl-compare-prefix(|namespace, name))> readAlls2;
         readAlls   := <conc> (readAlls1, readAlls2')
       else
         readAlls   := []
@@ -83,84 +83,84 @@ rules // Specific queries
    * Gets all Alias entries that match the given URI.
    *
    * Example:
-   *   <nbl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
+   *   <nabl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
    *
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(aliasURI)
    */
-  nbl-get-all-aliases:
-    <with(uri := <nbl-uri> | "Could not extract URI from given term.")> -> aliasURI*
+  nabl-get-all-aliases:
+    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> aliasURI*
     where
-      if nonUniqueURI := <nbl-replace-uri-qualifier(|NonUnique())> uri then
-        aliasURI* := <nbl-get-all-values(fail)> Alias(nonUniqueURI, ()) 
+      if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
+        aliasURI* := <nabl-get-all-values(fail)> Alias(nonUniqueURI, ()) 
       else
         aliasURI* := []
       end
       
 rules // Generic queries
 	
-	nbl-get-all = nbl-get-all(id)
-	nbl-get-all-values = nbl-get-all-values(id)
-	nbl-get = nbl-get(id)
-	nbl-get-value = nbl-get-value(id)
-	nbl-get-children = nbl-get-children(id)
-	nbl-get-children(|namespace, prefix) = nbl-get-children(id|namespace, prefix)
-	nbl-get-unique-nonunique(create-template) = nbl-get-unique-nonunique(id, create-template)
+	nabl-get-all = nabl-get-all(id)
+	nabl-get-all-values = nabl-get-all-values(id)
+	nabl-get = nabl-get(id)
+	nabl-get-value = nabl-get-value(id)
+	nabl-get-children = nabl-get-children(id)
+	nabl-get-children(|namespace, prefix) = nabl-get-children(id|namespace, prefix)
+	nabl-get-unique-nonunique(create-template) = nabl-get-unique-nonunique(id, create-template)
 
 rules /* @internal Generic queries */
   
   /** @internal */
-  nbl-get-all(store-read):
+  nabl-get-all(store-read):
     template -> <index-get-all> template
       with
-        if set := <store-read; NBL-ReadSet> then
-          uri := <nbl-uri> template;
+        if set := <store-read; nabl-ReadSet> then
+          uri := <nabl-uri> template;
           <iset-add(|Read(uri))> set
         end
        
   /** @internal */
-  nbl-get-all-values(store-read):
-    template -> <map(nbl-value)> <nbl-get-all(store-read)> template
+  nabl-get-all-values(store-read):
+    template -> <map(nabl-value)> <nabl-get-all(store-read)> template
 
   /** @internal */
-  nbl-get(store-read):
-    template -> <Hd> <nbl-get-all(store-read)> template
+  nabl-get(store-read):
+    template -> <Hd> <nabl-get-all(store-read)> template
   
   /** @internal */    
-  nbl-get-value(store-read):
-    template -> <nbl-value> <Hd> <nbl-get-all(store-read)> template
+  nabl-get-value(store-read):
+    template -> <nabl-value> <Hd> <nabl-get-all(store-read)> template
   
   /** @internal */  
-  nbl-get-children(store-read):
+  nabl-get-children(store-read):
     template -> entries
       with
         entries  := <index-get-children> template;
-        if set := <store-read; NBL-ReadSet> then
-          uri := <nbl-uri> template;
+        if set := <store-read; nabl-ReadSet> then
+          uri := <nabl-uri> template;
           <iset-add(|ReadAll(uri))> set
         end
         
   /** @internal */
-  nbl-get-children(store-read|namespace, prefix):
+  nabl-get-children(store-read|namespace, prefix):
     template -> entries
       with
         children := <index-get-children> template;
-        entries  := <nbl-filter-entries(|namespace, prefix)> children;
-        if set := <store-read; NBL-ReadSet> then
-          uri := <nbl-uri> template;
+        entries  := <nabl-filter-entries(|namespace, prefix)> children;
+        if set := <store-read; nabl-ReadSet> then
+          uri := <nabl-uri> template;
           <iset-add(|ReadAll(uri, namespace, prefix))> set
         end
   
   /** @internal */
-  nbl-get-unique-nonunique(store-read, create-template):
+  nabl-get-unique-nonunique(store-read, create-template):
   	uri -> [unique*, nonUnique*]
   	where
-      if alias* := <nbl-get-all-aliases> uri then
-        unique* := <mapconcat(create-template; nbl-get-all(store-read))> alias*
+      if alias* := <nabl-get-all-aliases> uri then
+        unique* := <mapconcat(create-template; nabl-get-all(store-read))> alias*
       else
         unique* := []
       end;
-      if nonUniqueURI := <nbl-replace-uri-qualifier(|NonUnique())> uri then
-        nonUnique*    := <create-template; nbl-get-all(store-read)> nonUniqueURI
+      if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
+        nonUnique*    := <create-template; nabl-get-all(store-read)> nonUniqueURI
       else
         nonUnique*    := []
       end
@@ -168,26 +168,26 @@ rules /* @internal Generic queries */
 rules /** @internal Entry filtering */
   
   /** @internal */
-  nbl-filter-entries(|namespace, prefix):
-    entry* -> <filter(nbl-compare-prefix(|namespace, prefix))> entry*
+  nabl-filter-entries(|namespace, prefix):
+    entry* -> <filter(nabl-compare-prefix(|namespace, prefix))> entry*
   
   /** @internal */
-  nbl-filter-entries(|namespace):
-    entry* -> <filter(nbl-compare-namespace(|namespace))> entry*
+  nabl-filter-entries(|namespace):
+    entry* -> <filter(nabl-compare-namespace(|namespace))> entry*
 
 rules /** @internal Helpers */
   
   /** @internal */
-  nbl-compare-prefix(|namespace, prefix):
+  nabl-compare-prefix(|namespace, prefix):
     entry -> <id>
     where
-      uri := <nbl-uri> entry;
-      <eq> (namespace, <nbl-uri-namespace> uri);
-      <is-substring(!prefix)> <nbl-uri-name> uri
+      uri := <nabl-uri> entry;
+      <eq> (namespace, <nabl-uri-namespace> uri);
+      <is-substring(!prefix)> <nabl-uri-name> uri
       
   /** @internal */
-  nbl-compare-namespace(|namespace):
+  nabl-compare-namespace(|namespace):
     entry -> <id>
     where
-      uri := <nbl-uri> entry;
-      <eq> (namespace, <nbl-uri-namespace> uri)
+      uri := <nabl-uri> entry;
+      <eq> (namespace, <nabl-uri-namespace> uri)

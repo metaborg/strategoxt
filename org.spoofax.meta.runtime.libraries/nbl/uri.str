@@ -26,162 +26,162 @@ signature
     
 rules // Construction
   
-  nbl-base-uri = 
+  nabl-base-uri = 
     !URI(<id>, [])
      
-  nbl-extend-uri(|segment) = 
+  nabl-extend-uri(|segment) = 
     URI(id, ![segment|<id>])
     
-  nbl-extend-uri(|namespace, name, qualifier) = 
+  nabl-extend-uri(|namespace, name, qualifier) = 
     URI(id, ![ID(namespace, name, qualifier)|<id>])
     
-  nbl-replace-uri(|segment) = 
+  nabl-replace-uri(|segment) = 
     URI(id, ![segment|<Tl>])
     
-  nbl-replace-uri(|namespace, name, qualifier) = 
+  nabl-replace-uri(|namespace, name, qualifier) = 
     URI(id, ![ID(namespace, name, qualifier)|<Tl>])
     
-  nbl-replace-uri-qualifier(|qualifier) =
+  nabl-replace-uri-qualifier(|qualifier) =
     ?URI(lang, [ID(namespace, name, _)|rest]);
     !URI(lang, [ID(namespace, name, qualifier)|rest])
   
-  nbl-unique-qualifier = !Unique(<new>)
-  nbl-nonunique-qualifier = !NonUnique()
+  nabl-unique-qualifier = !Unique(<new>)
+  nabl-nonunique-qualifier = !NonUnique()
   
-  nbl-anonymous-segment  = !Anonymous(<new>)
-  nbl-subsequent-segment = !Subsequent(<new>)
+  nabl-anonymous-segment  = !Anonymous(<new>)
+  nabl-subsequent-segment = !Subsequent(<new>)
   
-  nbl-external-segment: Anonymous(name) -> ExternalDef(name)
+  nabl-external-segment: Anonymous(name) -> ExternalDef(name)
   
 rules // Projections
   
-  nbl-uri = 
-    nbl-uri-impl <+ nbl-uri-generic
+  nabl-uri = 
+    nabl-uri-impl <+ nabl-uri-generic
     
-  nbl-value = 
-    nbl-value-impl <+ nbl-value-generic
+  nabl-value = 
+    nabl-value-impl <+ nabl-value-generic
     
   
-  nbl-uri-language:
+  nabl-uri-language:
     URI(language, _) -> language
     
-  nbl-uri-language-name:
+  nabl-uri-language-name:
     URI(Language(name), _) -> name
     
-  nbl-uri-path:
+  nabl-uri-path:
     URI(_, path) -> path
     
-  nbl-uri-parent:
+  nabl-uri-parent:
     URI(language, path) -> URI(language, parent)
     where
       [_|parent] := path
   
-  nbl-uri-parent(|targetNamespace):
+  nabl-uri-parent(|targetNamespace):
     URI(language, path) -> URI(language, parent')
     where
       [_|parent] := path;
-      if [segment|_] := parent; namespace := <nbl-segment-namespace> segment then
-        if <nbl-scopes> (namespace, targetNamespace) then
+      if [segment|_] := parent; namespace := <nabl-segment-namespace> segment then
+        if <nabl-scopes> (namespace, targetNamespace) then
           parent' := parent
         else
-          parent' := <nbl-uri-parent(|targetNamespace)> parent
+          parent' := <nabl-uri-parent(|targetNamespace)> parent
         end
       else
         parent' := parent
       end
       
-  nbl-uri-name:
-    uri -> <nbl-uri-path; Hd; nbl-segment-name> uri
+  nabl-uri-name:
+    uri -> <nabl-uri-path; Hd; nabl-segment-name> uri
     
-  nbl-uri-namespace:
-    uri -> <nbl-uri-path; Hd; nbl-segment-namespace> uri    
+  nabl-uri-namespace:
+    uri -> <nabl-uri-path; Hd; nabl-segment-namespace> uri    
 
-  nbl-uri-qualifier:
-    uri -> <nbl-uri-path; Hd; nbl-segment-qualifier> uri
+  nabl-uri-qualifier:
+    uri -> <nabl-uri-path; Hd; nabl-segment-qualifier> uri
     
     
-  nbl-segment-namespace:
+  nabl-segment-namespace:
     ID(namespace, _, _) -> namespace
     
-  nbl-segment-name:
+  nabl-segment-name:
     ID(_, name, _) -> name
     
-  nbl-segment-qualifier:
+  nabl-segment-qualifier:
     ID(_, _, qualifier) -> qualifier
     
     
-  nbl-uri-scope      = URI(id, Tl)
-  nbl-uri-scopes    = nbl-closure(nbl-uri-scope)
+  nabl-uri-scope      = URI(id, Tl)
+  nabl-uri-scopes    = nabl-closure(nabl-uri-scope)
   
-  nbl-uri-in-scope  = URI(id, [id|Tl])
-  nbl-uri-in-scopes = nbl-closure(nbl-uri-in-scope)
+  nabl-uri-in-scope  = URI(id, [id|Tl])
+  nabl-uri-in-scopes = nabl-closure(nabl-uri-in-scope)
   
-  nbl-closure(s) = 
+  nabl-closure(s) = 
       s 
-    < ![<id>|<nbl-closure(s)>] 
+    < ![<id>|<nabl-closure(s)>] 
     + ![]
 
 rules // Conditions
   
-  nbl-is-unique =
-    nbl-uri-qualifier;
+  nabl-is-unique =
+    nabl-uri-qualifier;
     ?Unique(_)
     
-  nbl-is-nonunique =
-    nbl-uri-qualifier;
+  nabl-is-nonunique =
+    nabl-uri-qualifier;
     ?NonUnique()
 
 rules // Equality
   
-  nbl-uri-eq = 
+  nabl-uri-eq = 
     ?(URI(lang1, segs1), URI(lang2, segs2));
     <eq> (lang1, lang2);
-    <zip(nbl-uri-segment-eq)> (segs1, segs2)
+    <zip(nabl-uri-segment-eq)> (segs1, segs2)
     
-  nbl-uri-segment-eq =
+  nabl-uri-segment-eq =
     ?(ID(ns1, name1, _), ID(ns2, name2, _));
     <eq> (ns1, ns2);
     <eq> (name1, name2)
      
-  nbl-uri-segment-eq =
+  nabl-uri-segment-eq =
     ?(Subsequent(_), Subsequent(_))
     
-  nbl-uri-segment-eq =
+  nabl-uri-segment-eq =
     ?(Anonymous(_), Anonymous(_))
     
-  nbl-uri-segment-eq =
+  nabl-uri-segment-eq =
     ?(ExternalDef(_), ExternalDef(_))
 
 rules // Printing
   
-  nbl-print-uri:
+  nabl-print-uri:
     uri -> $[[ns] [names]]
     where
-      ns#(_) := <nbl-uri-namespace> uri;
-      names  := <nbl-uri-path; filter(nbl-segment-name); separate-by(|"."); concat-strings> uri
+      ns#(_) := <nabl-uri-namespace> uri;
+      names  := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"."); concat-strings> uri
         
 rules /** @internal Projections */
 
   /** @internal */
-  nbl-uri-impl:
+  nabl-uri-impl:
     URI(_, _) -> <id>
 
   /** @internal */
-  nbl-uri-generic:
+  nabl-uri-generic:
     term -> <?_#(<?[<id>|_]>)> term
     
   /** @internal */
-  nbl-value-impl:
+  nabl-value-impl:
     URI(_, _) -> <id>
     
   /** @internal */
-  nbl-value-generic:
+  nabl-value-generic:
     term -> <?_#(<?[_, <id>|_]> )> term
     
   /** @internal */  
-  nbl-uri-impl:
-    _{anno*} -> <fetch-elem(nbl-uri)> anno*
+  nabl-uri-impl:
+    _{anno*} -> <fetch-elem(nabl-uri)> anno*
 
   /** @internal */  
-  nbl-value-impl:
-    _{anno*} -> <fetch-elem(nbl-value)> anno*
+  nabl-value-impl:
+    _{anno*} -> <fetch-elem(nabl-value)> anno*

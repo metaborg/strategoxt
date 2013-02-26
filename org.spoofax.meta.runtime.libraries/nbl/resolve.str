@@ -18,109 +18,109 @@ signature
       
 rules // Reference resolution
   
-  nbl-resolve =
+  nabl-resolve =
     switch ?t
       case has-annos:
-        anno* := <get-annos; nbl-resolve; try(concat)> t; 
+        anno* := <get-annos; nabl-resolve; try(concat)> t; 
         !t{anno*}
       case ?Result(_):
-        nbl-resolve-results;
-        try(nbl-resolve)
+        nabl-resolve-results;
+        try(nabl-resolve)
       case ?Use(_): 
-        nbl-resolve-uses
+        nabl-resolve-uses
       case ?Def(_): 
         id
       otherwise:
-        try(all(nbl-resolve))
+        try(all(nabl-resolve))
     end
 
-  nbl-resolve-collect = 
+  nabl-resolve-collect = 
     has-annos;
     get-annos;
-    collect-all(nbl-resolve-collect);
+    collect-all(nabl-resolve-collect);
     concat
   
-  nbl-resolve-collect:
+  nabl-resolve-collect:
     Use(_) -> def*
     where
-      def* := <nbl-resolve-uses>
+      def* := <nabl-resolve-uses>
     
-  nbl-resolve-collect:
+  nabl-resolve-collect:
     Def(_) -> [<id>]
     
-  nbl-resolve-collect-one = nbl-resolve-collect; Hd
+  nabl-resolve-collect-one = nabl-resolve-collect; Hd
   
-  nbl-resolve-results:
+  nabl-resolve-results:
     Result(number) -> results
     where
-      if not(results := <nbl-get-value> DoneTask(number, ())) then
-        results := <nbl-get-value> FailTask(number, ()) 
+      if not(results := <nabl-get-value> DoneTask(number, ())) then
+        results := <nabl-get-value> FailTask(number, ()) 
       end
       
-  nbl-resolve-uses:
+  nabl-resolve-uses:
     Use(Result(number)) -> def*
     where
-      uri* := <nbl-get-value> DoneTask(number, ());
-      def* := <mapconcat(\uri -> Def(uri)\; nbl-get-all)> uri*
+      uri* := <nabl-get-value> DoneTask(number, ());
+      def* := <mapconcat(\uri -> Def(uri)\; nabl-get-all)> uri*
       
-  nbl-resolve-uses:
+  nabl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
     where
-      def* := <nbl-lookup-definitions> uri
+      def* := <nabl-lookup-definitions> uri
       
-  nbl-is-reference =
+  nabl-is-reference =
     ?Use(_)
     
-  nbl-has-reference =
-    collect-one(nbl-is-reference)
+  nabl-has-reference =
+    collect-one(nabl-is-reference)
     
-  nbl-has-reference =
+  nabl-has-reference =
     has-annos;
     get-annos;
-    nbl-has-reference
+    nabl-has-reference
  
-  nbl-is-unresolved =
+  nabl-is-unresolved =
     ?node;
     has-annos;
     get-annos;
-    nbl-has-reference;
-    [] := <nbl-resolve-collect> node
+    nabl-has-reference;
+    [] := <nabl-resolve-collect> node
     
 rules // Code completion
 
-  nbl-resolve-collect-uris = 
+  nabl-resolve-collect-uris = 
     has-annos;
     get-annos;
-    collect-all(nbl-resolve-collect-uris);
+    collect-all(nabl-resolve-collect-uris);
     concat
     
-  nbl-resolve-collect-uris = nbl-resolve-results
+  nabl-resolve-collect-uris = nabl-resolve-results
 
-  nbl-propose-completions:
+  nabl-propose-completions:
     ast -> proposals'*
       where
         item        := <collect-one(?COMPLETION(_))> ast;
         index-transaction(
-          uri*      := <nbl-resolve-collect-uris; filter(nbl-uri)> item;
-          proposal* := <mapconcat(nbl-visible-definitions)> uri*
+          uri*      := <nabl-resolve-collect-uris; filter(nabl-uri)> item;
+          proposal* := <mapconcat(nabl-visible-definitions)> uri*
         );
-        proposals'* := <map(nbl-uri; nbl-uri-name)> proposal*
+        proposals'* := <map(nabl-uri; nabl-uri-name)> proposal*
 
 rules // Ambiguities
   
-  nbl-get-ambiguities =
-    nbl-resolve-collect;
-    mapconcat(nbl-get-all-aliases);
-    filter(nbl-uri; nbl-uri-parent);
+  nabl-get-ambiguities =
+    nabl-resolve-collect;
+    mapconcat(nabl-get-all-aliases);
+    filter(nabl-uri; nabl-uri-parent);
     make-set;
     where(<gt> (<length>, 1))
 
 rules // Duplicate definitions
   
-  nbl-get-duplicate-definitions =
+  nabl-get-duplicate-definitions =
     has-annos;
     get-annos;
     collect-one(?Def(_));
-    nbl-get-all-definitions;
+    nabl-get-all-definitions;
     make-set;
     where(<gt> (<length>, 1))
