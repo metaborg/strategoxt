@@ -8,8 +8,6 @@ strategies // Collect
   
   nabl-import-dependency-site = fail
   
-  nabl-scope-site(cpaths|lang, paths) = fail
-  
   nabl-use-site(|lang, elem*, task*, uri*, dep*) = fail
   
   nabl-import-site(|lang, elem*, task*, uri*) = fail
