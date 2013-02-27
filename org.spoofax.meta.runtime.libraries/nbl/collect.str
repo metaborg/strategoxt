@@ -107,8 +107,8 @@ rules // generic analysis of state
   		term'  := <remove-annotations(?State(_, _))> term;
   		match(states'|state*)
   		
-  nabl-get-state(|name, state*) =
-  	<fetch-elem(?State(name, _))> state*
+  nabl-get-state(|name) =
+  	fetch-elem(?State(name, _))
 
 rules // generic analysis of scopes
 	
