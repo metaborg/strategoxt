@@ -149,7 +149,7 @@ rules // generic analysis of defs
 	nabl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
-			defscope := [Current()];
+			defscope := Current();
 			// get path for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> uri*;
 			// build path for definition site
