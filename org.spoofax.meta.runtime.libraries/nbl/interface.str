@@ -2,19 +2,21 @@ module nbl/interface
 
 strategies // Collect
   
-  nabl-scope-site(child-uris|lang, uri*) = fail
+  nabl-scope-site(child-uris|lang, uri*, state*) = fail
   
-  nabl-def-site(child-uris, sibiling-uris|lang, elem*, task*, uri*) = fail
+  nabl-def-site(child-uris, sibiling-uris|lang, elem*, task*, uri*, state*) = fail
   
   nabl-import-dependency-site = fail
   
-  nabl-use-site(|lang, elem*, task*, uri*, dep*) = fail
+  nabl-state-site = fail
   
-  nabl-import-site(|lang, elem*, task*, uri*) = fail
+  nabl-use-site(|lang, elem*, task*, uri*, dep*, state*) = fail
   
-  nabl-implicit-def-site(|lang, elem*, task*, uri*) = fail
+  nabl-import-site(|lang, elem*, task*, uri*, state*) = fail
   
-  nabl-prop-site(|lang, elem*, task*, uri*) = fail
+  nabl-implicit-def-site(|lang, elem*, task*, uri*, state*) = fail
+  
+  nabl-prop-site(|lang, elem*, task*, uri*, state*) = fail
 
 strategies // Projections
   
