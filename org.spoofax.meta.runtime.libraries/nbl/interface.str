@@ -2,7 +2,7 @@ module nbl/interface
 
 strategies // Collect
   
-  nabl-scope-site(child-uris|lang, uri*, state*) = fail
+  nabl-anonymous-scope-site(child-uris|lang, uri*, state*) = fail
   
   nabl-def-site(child-uris, sibiling-uris|lang, elem*, task*, uri*, state*) = fail
   

@@ -70,7 +70,6 @@ strategies // generic traversal
 	 */
 	nabl-collect(sibling-uris, deps'|lang, elem*, task*, uri*, dep*) =
 		nabl-state-pop(?state*);
-		
 		nabl-scope-site(?uri'*|lang, uri*, state*); // scopes of external definitions, e.g. variables in let expressions
 		nabl-def-collect(?child-uri*, sibling-uris|lang, elem*, task*, uri'*, state*);
 		nabl-import-dependency-annotate;
@@ -118,10 +117,10 @@ rules // generic analysis of scopes
 			if (anno1*, anno2*) := <split-fetch(?DefScope(ns, segment) => scope )> anno* then
 				segment' := <nabl-external-segment> segment;
 				uri'*   := <update-scope-uri(nabl-extend-uri(|segment')|lang)> (ns, uri*);
-				// TODO: fix empty annotation list
-				result   := <nabl-scope-site(child-uris|lang, uri'*, state*)> name{anno1*, anno2*}
+				result   := <set-annos; nabl-scope-site(child-uris|lang, uri'*, state*)> (name, [anno1*, anno2*])
 			else
-				match(child-uris|uri*);
+				result := <nabl-anonymous-scope-site(child-uris|lang, uri*, state*)> name{anno*}
+				<+ match(child-uris|uri*);
 				result := name{anno*}
 			end
 	
