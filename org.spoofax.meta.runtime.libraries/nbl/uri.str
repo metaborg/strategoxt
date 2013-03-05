@@ -36,15 +36,14 @@ rules // Construction
     URI(id, ![ID(namespace, name, qualifier)|<id>])
     
   nabl-replace-uri(|segment) = 
-    URI(id, ![segment|<Tl>])
+    URI(id, [!segment|id])
     
   nabl-replace-uri(|namespace, name, qualifier) = 
-    URI(id, ![ID(namespace, name, qualifier)|<Tl>])
+    URI(id, [!ID(namespace, name, qualifier)|id])
     
   nabl-replace-uri-qualifier(|qualifier) =
-    ?URI(lang, [ID(namespace, name, _)|rest]);
-    !URI(lang, [ID(namespace, name, qualifier)|rest])
-  
+    URI(id, [ID(id, id, !qualifier)|id])
+    
   nabl-unique-qualifier = !Unique(<new>)
   nabl-nonunique-qualifier = !NonUnique()
   
@@ -60,7 +59,6 @@ rules // Projections
     
   nabl-value = 
     nabl-value-impl <+ nabl-value-generic
-    
   
   nabl-uri-language:
     URI(language, _) -> language
