@@ -143,7 +143,6 @@ rules // generic analysis of defs
 	
 	// call backs to generic analysis
 	
-	// TODO: can the alias storage be handled by new-def
 	// definition site in current scope
 	nabl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
@@ -155,9 +154,7 @@ rules // generic analysis of defs
 			def-uri     := <nabl-extend-uri(|ns, name, unique)> current-uri;
 			// build Def entry for the index
 			d           := <new-def(|elem*, def-uri)> a;
-			// store non-unique alias in the index
-			nabl-def-store-alias(|elem*, unique, def-uri, ns, name);
-		  // preserve current uri* in subsequent scope
+			// preserve current uri* in subsequent scope
 		  match(sibling-uris|uri*);
 			// extend uri* in children for scoped namespaces
 			match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*))
@@ -183,17 +180,10 @@ rules // generic analysis of defs
 			def-uri  := <nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> current-uri;
 			// build Def entry 
 			d        := <new-def(|elem*, def-uri)> a;
-			// store a non-unique alias in the index
-			nabl-def-store-alias(|elem*, unique, def-uri, ns, name);
 			// TODO: check if this is correct for external definitions
 			match(sibling-uris|<extend-scope-uri(|lang, segment)> ([ns], uri*));
 		  // preserve current uri* in children
 		  match(child-uris|uri*)
-		  
-	nabl-def-store-alias(|elem*, unique, path, ns, name) =
-	  if Unique(_) := unique then
-      new-alias(|elem*, <nabl-replace-uri(|ns, name, <nabl-nonunique-qualifier>)> path, path)
-    end
 
 rules
   

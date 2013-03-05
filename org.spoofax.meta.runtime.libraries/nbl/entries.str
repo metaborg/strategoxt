@@ -4,6 +4,7 @@ imports
   
   nbl/collect
   nbl/utils
+  nbl/uri
   
 signature
 
@@ -20,13 +21,16 @@ rules
     x -> definition
     where
       definition := <force-origins(!Def(uri))> x;
-      <iset-add(|definition)> elems
+      <iset-add(|definition)> elems;
+			<new-alias(|elems, <nabl-nonunique-uri> uri, uri)> x
       
   new-alias(|elems, uri, alias):
     x -> definition
     where
       definition := <force-origins(!Alias(uri, alias))> x;
-      <iset-add(|definition)> elems
+      if <not(eq)> (uri, alias) then
+      	<iset-add(|definition)> elems
+      end
       
   new-use(|elems, uri):
     x -> use

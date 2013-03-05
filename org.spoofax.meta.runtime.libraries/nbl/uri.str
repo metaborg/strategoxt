@@ -52,6 +52,9 @@ rules // Construction
   
   nabl-external-segment: Anonymous(name) -> ExternalDef(name)
   
+	nabl-nonunique-uri =
+		URI(id, [ID(id, id, !NonUnique())|id])
+
 rules // Projections
   
   nabl-uri = 
