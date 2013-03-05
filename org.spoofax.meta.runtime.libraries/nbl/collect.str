@@ -141,50 +141,55 @@ rules // generic analysis of defs
 			match(sibling-uris|uri*)
 		)
 	
-	// call backs to generic analysis
-	
-	// definition site in current scope
+	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
-			defscope := Current();
-			// get path for namespace of definition site
+			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> uri*;
-			// build path for definition site
-			def-uri     := <nabl-extend-uri(|ns, name, unique)> current-uri;
-			// build Def entry for the index
-			d           := <new-def(|elem*, def-uri)> a;
-			// preserve current uri* in subsequent scope
-		  match(sibling-uris|uri*);
-			// extend uri* in children for scoped namespaces
-			match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*))
-		
-	// TODO: make this work with lists of def scopes
-	// definition site in subsequent scope and/or external	
-	nabl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
-		a@name{anno*} -> name{d, anno*}
-		where
-			if 
-				defscope := [Subsequent()]
-			then
-				segment  := <nabl-subsequent-segment>;
-				// get path for namespace of definition site
-				current-uri := <lookup-uri(|lang, ns)> uri*
-			else
-				// TODO: check if we can create the segment here
-				[DefScope(ns, segment)] := defscope;
-				// get base path for language
-				current-uri := <nabl-base-uri> lang
+			switch !defscope
+			// in each case we 
+			// 1. build URI of the definition site
+			// 2. update URIs for children (vertical scope)
+			// 3. update URIs for right siblings (horizontal scope)
+			case ?Current():
+				// 1. extend current URI with ID segment
+				// 2. extend URIs of scoped namespaces
+				// 3. preserve
+				def-uri := <nabl-extend-uri(|ns, name, unique)> current-uri;
+				match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*));
+			  match(sibling-uris|uri*)
+			case ?[Subsequent()]:
+				// 1. extend current URI with Subsequent and ID segment
+				// 2. preserve
+				// 3. extend URI for namespace of definition site with Subsequent segment
+				segment := <nabl-subsequent-segment>;
+				def-uri := <nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> current-uri;
+	  		match(child-uris|uri*);
+				match(sibling-uris|<extend-scope-uri(|lang, segment)> ([ns], uri*))
+	  	case ?[DefScope(ns, segment)]:
+	  		// 1. extend base URI with External and ID segment
+				// 2. preserve
+				// 3. preserve
+				def-uri := <nabl-base-uri; nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> lang;
+				match(child-uris|uri*);
+				match(sibling-uris|uri*)
+			case ?[Subsequent(), DefScope(ns, segment)]:
+				// 1a. extend base URI with External and ID segment
+				// 1b. extend current URI with Subsequent and ID segment
+				// 1c. introduce alias from 1b to 1a
+				// 2. preserve
+				// 3. extend URI for namespace of definition site with Subsequent segment
+				def-uri   := <nabl-base-uri; nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> lang;
+				segment2  := <nabl-subsequent-segment>;
+				alias-uri := <nabl-extend-uri(|segment2); nabl-extend-uri(|ns, name, unique)> current-uri;
+	  		<new-alias(|elem*, def-uri, alias-uri)> a;
+	  		match(child-uris|uri*);
+				match(sibling-uris|<extend-scope-uri(|lang, segment2)> ([ns], uri*))
 			end;
-			// build path for definition site
-			def-uri  := <nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> current-uri;
-			// build Def entry 
-			d        := <new-def(|elem*, def-uri)> a;
-			// TODO: check if this is correct for external definitions
-			match(sibling-uris|<extend-scope-uri(|lang, segment)> ([ns], uri*));
-		  // preserve current uri* in children
-		  match(child-uris|uri*)
-
+			// add Def entry to the index
+			d := <new-def(|elem*, def-uri)> a
+	
 rules
   
   nabl-import-dependency-annotate = try(nabl-import-dependency-site)
