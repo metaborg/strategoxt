@@ -16,6 +16,7 @@ signature
   constructors
     
     Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
+    Choice   : List(String)                                   -> Instruction
     PropCalc : Property * Term                                -> Instruction
     Match    : ID * Term                                      -> Instruction
     Noop     :                                                   Instruction
@@ -35,6 +36,7 @@ rules // Resolve
     where
       <is-list> uri*;
       // TODO: Get rid of flatten-list?
+      // GW: should this simply be a concat?
       resolved* := <flatten-list; remove-all(?Fail(_)); mapconcat(perform-task-resolve(|namespace, name, prop*, range))> uri*;
       switch !resolved*
         case ?[]: 
@@ -74,6 +76,12 @@ rules // Resolve
       else
         entry' := Stall()
       end
+
+	perform-task:
+ 		Choice(choices) -> result
+		where
+			result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choices) <+
+			result := Fail(<filter(?Fail(<id>)); concat> choices) 
 
 rules // Property calculation
             
