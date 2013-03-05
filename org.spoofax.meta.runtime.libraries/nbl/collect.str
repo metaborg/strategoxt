@@ -345,8 +345,6 @@ rules // generic analysis of implicit defs
       def-uri     := <nabl-extend-uri(|ns, name, unique)> current-uri;
       // build Def entry for the index
       new-def(|elem*, def-uri);
-      // store non-unique alias in the index
-      nabl-def-store-alias(|elem*, unique, def-uri, ns, name);
       // build Prop entries for the index
       <map(\Prop(type, result) -> <new-prop(|elem*, def-uri, type, result)>\)> prop*
 
