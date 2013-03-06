@@ -225,7 +225,7 @@ rules // generic analysis of uses
 	nabl-use(|lang, elem*, task*, uri*, dep*, candidates):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, dep*, <nabl-fix-name> name)); unions> candidates;
+			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, dep*, <nabl-fix-name> name)); make-set> candidates;
 			taskdep* := <dependent-tasks> subtask*;
 			result   := <new-task(|task*, taskdep*)> Choice(subtask*);
 		  u        := <new-use(|elem*, result)>
@@ -237,7 +237,7 @@ rules // generic analysis of uses
 			uri      := <lookup-uri(|lang, ns)> uri*;
 			propdep* := <dependent-tasks> prop*;
 			result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, name, prop*, range)
-
+      
   // named candidate in current scope
   nabl-use-candidate(|lang, elem*, task*, uri*, dep*, term):
     UseCandidate(ns, name, prop*, Current(), range)-> result
@@ -246,7 +246,7 @@ rules // generic analysis of uses
       propdep* := <dependent-tasks> prop*;
       namedep* := <dependent-tasks> name;
       result   := <new-task(|task*, [dep*, propdep*, namedep*])> Resolve(uri, ns, name, prop*, range)
-	
+    
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|lang, elem*, task*, uri*, dep*, name):
 		c@UseCandidate(ns, prop*, target-uri*, range) -> result
@@ -264,7 +264,7 @@ rules // generic analysis of uses
      	uri-result := <nabl-use-candidate(|lang, elem*, task*, uri*, dep*, <nabl-fix-name> name')> UseCandidate(ns', props', refscope', range);
       propdep*   := <dependent-tasks> prop*;
       result     := <new-task(|task*, [dep*, propdep*])> Resolve(uri-result, ns, name, prop*, range)
-
+    
 rules // generic analysis of imports
   
   nabl-import-collect(|lang, elem*, task*, uri*, state*) = 
