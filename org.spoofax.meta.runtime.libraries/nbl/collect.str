@@ -57,19 +57,19 @@ strategies // generic traversal
 	/**
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
-	nabl-collect(|path, lang):
+	nabl-collect(|partition, lang):
 	  ast -> (ast', <iset-elements> elem*, <iset-elements> task*)
 	  where
-	    new-iset => elem*;
-	    new-iset => task*;
-	    nabl-initial-yds => yds;
-	    ast' := <nabl-collect(id, id|(path, lang, elem*, task*, yds), [], [])> ast
+	    new-iset      => elem*;
+	    new-iset      => task*;
+	    new-hashtable => unique*;
+	    ast' := <nabl-collect(id, id|(partition, lang, elem*, task*, unique*), [], [])> ast
 	
-  path-in-context = ?(<id>, _, _, _, _)
-	lang-in-context = ?(_, <id>, _, _, _)
-  elem-in-context = ?(_, _, <id>, _, _)
-  task-in-context = ?(_, _, _, <id>, _)
-  yds-in-context  = ?(_, _, _, _, <id>)
+  partition-in-context = ?(<id>, _, _, _, _)
+	lang-in-context      = ?(_, <id>, _, _, _)
+  elem-in-context      = ?(_, _, <id>, _, _)
+  task-in-context      = ?(_, _, _, <id>, _)
+  unique-in-context    = ?(_, _, _, _, <id>)
   
 	/**
 	 * Performs the collection in a topdown traversal. 
@@ -128,13 +128,13 @@ rules // generic analysis of scopes
 				result := name{anno*}
 			end
 	
-	nabl-def-scope(|context) = !DefScope(<id>, <lang-in-context; nabl-base-uri; nabl-extend-uri-anonymous(|context)> context)
+	nabl-def-scope(|context) = !DefScope(<id>, <lang-in-context; nabl-base-uri; nabl-extend-uri-anonymous(|<unique-in-context> context, <partition-in-context> context)> context)
 	
 	nabl-def-scope(|scope): name{anno*} -> name{scope, anno*}
 		
 	// call back for generic analysis of anonymous scopes
 	nabl-anonymous-scope(child-uris|context, uri*, ns*) =
-		match(child-uris|<update-scope-uri(nabl-extend-uri-anonymous(|context)|<lang-in-context> context)> (ns*, uri*))	
+		match(child-uris|<extend-scope-uri(nabl-extend-uri-anonymous(|<unique-in-context> context, <partition-in-context> context)|<lang-in-context> context)> (ns*, uri*))	
 	
 rules // generic analysis of defs
 	
@@ -158,22 +158,22 @@ rules // generic analysis of defs
 				// 1. extend current URI with ID segment
 				// 2. extend URIs of scoped namespaces
 				// 3. preserve
-				def-uri := <nabl-extend-uri(|context, ns, name, unique)> current-uri;
+				def-uri := <nabl-extend-uri(|<unique-in-context> context, <partition-in-context> context, ns, name, unique)> current-uri;
 				match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*));
 			  match(sibling-uris|uri*)
 			case ?[Subsequent()]:
 				// 1. extend current URI with Subsequent and ID segment
 				// 2. preserve
 				// 3. extend URI for namespace of definition site with Subsequent segment
-				subs-uri := <nabl-extend-uri-subsequent(|context)> current-uri;
-				def-uri  := <nabl-extend-uri(|context, ns, name, unique)> subs-uri;
+				subs-uri := <nabl-extend-uri-subsequent(|<unique-in-context> context, <partition-in-context> context)> current-uri;
+				def-uri  := <nabl-extend-uri(|<unique-in-context> context, <partition-in-context> context, ns, name, unique)> subs-uri;
 	  		match(child-uris|uri*);
 				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
 	  	case ?[DefScope(ns, uri)]:
 	  		// 1. extend base URI with External and ID segment
 				// 2. preserve
 				// 3. preserve
-				def-uri := <nabl-extend-uri(|context, ns, name, unique)> uri;
+				def-uri := <nabl-extend-uri(|<unique-in-context> context, <partition-in-context> context, ns, name, unique)> uri;
 				match(child-uris|uri*);
 				match(sibling-uris|uri*)
 			case ?[Subsequent(), DefScope(ns, uri)]:
@@ -182,9 +182,9 @@ rules // generic analysis of defs
 				// 1c. introduce alias from 1b to 1a
 				// 2. preserve
 				// 3. extend URI for namespace of definition site with Subsequent segment
-				def-uri   := <nabl-extend-uri(|context, ns, name, unique)> uri;
-				subs-uri  := <nabl-extend-uri-subsequent(|context)> current-uri;
-        alias-uri := <nabl-extend-uri(|context, ns, name, unique)> subs-uri;
+				def-uri   := <nabl-extend-uri(|<unique-in-context> context, <partition-in-context> context, ns, name, unique)> uri;
+				subs-uri  := <nabl-extend-uri-subsequent(|<unique-in-context> context, <partition-in-context> context)> current-uri;
+        alias-uri := <nabl-extend-uri(|<unique-in-context> context, <partition-in-context> context, ns, name, unique)> subs-uri;
 	  		<new-alias(|context, def-uri, alias-uri)> a;
 	  		match(child-uris|uri*);
 				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
@@ -343,7 +343,7 @@ rules // generic analysis of implicit defs
       // get path for namespace of definition site
       current-uri := <lookup-uri(|<lang-in-context> context, ns)> uri*;
       // build path for definition site
-      def-uri     := <nabl-extend-uri(|context, ns, name, unique)> current-uri;
+      def-uri     := <nabl-extend-uri(|<unique-in-context> context, <partition-in-context> context, ns, name, unique)> current-uri;
       // build Def entry for the index
       new-def(|<elem-in-context> context, def-uri);
       // build Prop entries for the index
@@ -389,8 +389,9 @@ rules // URI retrieval
 
 rules // helpers
 	
-	replace-scope-uri(|path)    = foldl(update-scope-uri(!path|<nabl-uri-language> path))
-
+	replace-scope-uri(|path) = foldl(update-scope-uri(!path|<nabl-uri-language> path))
+  extend-scope-uri(s|lang) = foldl(update-scope-uri(s|lang))
+  
 	update-scope-uri(update|lang):
 		(key, uri*) -> result
 		where

@@ -52,18 +52,37 @@ rules // Construction
 
 rules // stable URI extensions
   
-  nabl-initial-yds = ![]
-  
-  nabl-extend-uri(|context, ns, n, u) = 
-    if where(<?NonUnique()> u) then
-      nabl-extend-uri(|ns, n, NonUnique())
-    else
-      nabl-extend-uri(|ns, n, Unique(<new>))
-    end
+  nabl-extend-uri(|table, partition, ns, n, u):
+    uri -> <nabl-extend-uri(|ns, n, qualifier)> uri
+    where 
+	    if where(<?NonUnique()> u) then
+	      qualifier := NonUnique()
+	    else
+	      qualifier := Unique(<stable-uri-part(|table, partition)> (partition, uri, ns, n))
+	    end
     
-  nabl-extend-uri-anonymous(|context)  = nabl-extend-uri(|Anonymous(<new>))
-  nabl-extend-uri-subsequent(|context) = nabl-extend-uri(|Subsequent(<new>))
-  
+  nabl-extend-uri-anonymous(|table, partition):
+    uri -> <nabl-extend-uri(|Anonymous(unique))> uri
+    where
+      unique := <stable-uri-part(|table, partition)> (partition, uri, "anonymous")
+      
+  nabl-extend-uri-subsequent(|table, partition):
+    uri -> <nabl-extend-uri(|Subsequent(unique))> uri
+    where
+      unique := <stable-uri-part(|table, partition)> (partition, uri, "subsequent")
+
+  stable-uri-part(|table, partition):
+    key -> $[[partition]/[unique]]
+    where
+      if value := <hashtable-get(|key)> table then
+        unique    := <int-to-string> value;
+        new-value := <inc> value
+      else
+        unique    := "0";
+        new-value := 1
+      end;
+      <hashtable-put(|key, new-value)> table
+      
 rules // Projections
   
   nabl-uri = 
