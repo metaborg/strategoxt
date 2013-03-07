@@ -229,7 +229,7 @@ rules // generic analysis of uses
 	nabl-use(|context, uri*, dep*, candidates):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|context, uri*, dep*, <nabl-name; nabl-fix-name> name)); make-set> candidates;
+			subtask* := <map(nabl-use-candidate(|context, uri*, dep*, <nabl-fix-name> name)); make-set> candidates;
 			taskdep* := <dependent-tasks> subtask*;
 			result   := <new-task(|<task-in-context> context, taskdep*)> Choice(subtask*);
 		  u        := <new-use(|<elem-in-context> context, result)>
