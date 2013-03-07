@@ -16,7 +16,7 @@ strategies // Collect
   
   nabl-implicit-def-site(|context, uri*, state*) = fail
   
-  nabl-prop-site(|context, uri*, state*) = fail
+  nabl-prop-site(|context, state*) = fail
 
 strategies // Projections
   

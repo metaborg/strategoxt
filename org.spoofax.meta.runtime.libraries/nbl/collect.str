@@ -78,7 +78,7 @@ strategies // generic traversal
 	nabl-collect(sibling-uris, deps'|context, uri*, dep*) =
 		nabl-state-pop(?state*);
 		nabl-scope-site(?uri'*|context, uri*, state*); // scopes of external definitions, e.g. variables in let expressions
-		nabl-def-collect(?child-uri*, sibling-uris|context, uri'*, state*);
+		nabl-def-collect(?child-uri*, sibling-uris|context, uri'*, uri*, state*);
 		nabl-import-dependency-annotate;
 		nabl-import-dependency-collect(deps'|dep*);
 		nabl-state-collect;
@@ -87,7 +87,7 @@ strategies // generic traversal
 		
 		nabl-use-collect(|context, uri'*, dep*, state*);
     nabl-import-collect(|context, child-uri*, state*);
-		nabl-prop-collect(|context, uri'*, state*);
+		nabl-prop-collect(|context, state*);
     nabl-implicit-def-collect(|context, child-uri*, state*)
 	
 	nabl-siblings(|context, uri*, dep*) = 
@@ -115,16 +115,15 @@ rules // generic analysis of state
 
 rules // generic analysis of scopes
 	
-	nabl-scope-site(child-uris|context, uri*, state*):
+	nabl-scope-site(adapted-uris|context, uri*, state*):
 		name{anno*} -> result
 		where
 			if (anno1*, anno2*) := <split-fetch(?DefScope(ns, uri) => scope )> anno* then
 				segment := <nabl-uri-path; Hd; nabl-external-segment> uri;
 				uri'*   := <update-scope-uri(nabl-extend-uri(|segment)|<lang-in-context> context)> (ns, uri*);
-				result  := <set-annos; nabl-scope-site(child-uris|context, uri'*, state*)> (name, [anno1*, anno2*])
+				result  := <set-annos; nabl-scope-site(adapted-uris|context, uri'*, state*)> (name, [anno1*, anno2*])
 			else
-				result := <nabl-anonymous-scope-site(child-uris|context, uri*, state*)> name{anno*}
-				<+ match(child-uris|uri*);
+				match(adapted-uris|uri*);
 				result := name{anno*}
 			end
 	
@@ -138,11 +137,14 @@ rules // generic analysis of scopes
 	
 rules // generic analysis of defs
 	
-	nabl-def-collect(child-uris, sibling-uris|context, uri*, state*) =
-		nabl-def-site(child-uris, sibling-uris|context, uri*, state*) <+ 
-		match(child-uris|uri*);
-		match(sibling-uris|uri*)
-	
+	nabl-def-collect(child-uris, sibling-uris|context, c-uri*, s-uri*, state*) =
+		nabl-def-site(child-uris, sibling-uris|context, c-uri*, state*) <+ 
+	  match(sibling-uris|s-uri*);
+	  (
+      nabl-anonymous-scope-site(child-uris|context, c-uri*, state*) <+
+      match(child-uris|c-uri*)
+    )
+    	
 	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|context, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
@@ -312,8 +314,8 @@ rules // generic analysis of imports
 
 rules // generic analysis of properties
   
-  nabl-prop-collect(|context, uri*, state*) = 
-  	try(nabl-prop-site(|context, uri*, state*))
+  nabl-prop-collect(|context, state*) = 
+  	try(nabl-prop-site(|context, state*))
   
 	// call back to generic analysis
 	nabl-props(|context, prop*):
