@@ -32,8 +32,7 @@ rules // Single file analysis
       <index-add-all(|partition)> entries
     with // Perform tasks
       nabl-collect-reads(
-        tasks' := <merge-tasks> tasks;
-        errors := <perform-tasks(|partition)> tasks'
+        errors := <perform-tasks(|partition)> tasks
       ) => reads;
           
       <index-add-all(|partition)> reads
@@ -79,7 +78,7 @@ rules // Multi file analysis
       ))> result2*
       
   nabl-analyze-multiple-collect(|language):
-    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, <merge-tasks> task*, [])
+    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, task*, [])
     with
       (ast', entry*, task*) := <nabl-collect(|partition, Language(language))> ast;
       index-transaction(
