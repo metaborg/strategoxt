@@ -57,37 +57,41 @@ strategies // generic traversal
 	/**
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
-	nabl-collect(|lang):
+	nabl-collect(|path, lang):
 	  ast -> (ast', <iset-elements> elem*, <iset-elements> task*)
 	  where
 	    new-iset => elem*;
 	    new-iset => task*;
-	    ast' := <nabl-collect(id, id|lang, elem*, task*, [], [])> ast
+	    nabl-initial-yds => yds;
+	    ast' := <nabl-collect(id, id|(path, lang, elem*, task*, yds), [], [])> ast
 	
+  path-in-context = ?(<id>, _, _, _, _)
+	lang-in-context = ?(_, <id>, _, _, _)
+  elem-in-context = ?(_, _, <id>, _, _)
+  task-in-context = ?(_, _, _, <id>, _)
+  yds-in-context  = ?(_, _, _, _, <id>)
+  
 	/**
 	 * Performs the collection in a topdown traversal. 
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
 	 */
-	nabl-collect(sibling-uris, deps'|lang, elem*, task*, uri*, dep*) =
+	nabl-collect(sibling-uris, deps'|context, uri*, dep*) =
 		nabl-state-pop(?state*);
-		nabl-scope-site(?uri'*|lang, uri*, state*); // scopes of external definitions, e.g. variables in let expressions
-		nabl-def-collect(?child-uri*, sibling-uris|lang, elem*, task*, uri'*, state*);
+		nabl-scope-site(?uri'*|context, uri*, state*); // scopes of external definitions, e.g. variables in let expressions
+		nabl-def-collect(?child-uri*, sibling-uris|context, uri'*, state*);
 		nabl-import-dependency-annotate;
 		nabl-import-dependency-collect(deps'|dep*);
 		nabl-state-collect;
 		
-		preserve-annos(force-origins(id#(nabl-siblings(|lang, elem*, task*, child-uri*, dep*)))); // visit children from left to right
+		preserve-annos(force-origins(id#(nabl-siblings(|context, child-uri*, dep*)))); // visit children from left to right
 		
-		nabl-use-collect(|lang, elem*, task*, uri'*, dep*, state*);
-    nabl-import-collect(|lang, elem*, task*, child-uri*, state*);
-		nabl-prop-collect(|lang, elem*, task*, uri'*, state*);
-    nabl-implicit-def-collect(|lang, elem*, task*, child-uri*, state*)
+		nabl-use-collect(|context, uri'*, dep*, state*);
+    nabl-import-collect(|context, child-uri*, state*);
+		nabl-prop-collect(|context, uri'*, state*);
+    nabl-implicit-def-collect(|context, child-uri*, state*)
 	
-	nabl-siblings(|lang, elem*, task*, uri*, dep*) = 
-		[]
-	
-	nabl-siblings(|lang, elem*, task*, uri*, dep*) =
-		[nabl-collect(?sibling-uri*, ?deps'|lang, elem*, task*, uri*, dep*)|nabl-siblings(|lang, elem*, task*, sibling-uri*, deps')]
+	nabl-siblings(|context, uri*, dep*) = 
+		[] + [nabl-collect(?sibling-uri*, ?deps'|context, uri*, dep*)|nabl-siblings(|context, sibling-uri*, deps')]
 
 rules // generic analysis of state
   
@@ -111,40 +115,40 @@ rules // generic analysis of state
 
 rules // generic analysis of scopes
 	
-	nabl-scope-site(child-uris|lang, uri*, state*):
+	nabl-scope-site(child-uris|context, uri*, state*):
 		name{anno*} -> result
 		where
-			if (anno1*, anno2*) := <split-fetch(?DefScope(ns, segment) => scope )> anno* then
-				segment' := <nabl-external-segment> segment;
-				uri'*   := <update-scope-uri(nabl-extend-uri(|segment')|lang)> (ns, uri*);
-				result   := <set-annos; nabl-scope-site(child-uris|lang, uri'*, state*)> (name, [anno1*, anno2*])
+			if (anno1*, anno2*) := <split-fetch(?DefScope(ns, uri) => scope )> anno* then
+				segment := <nabl-uri-path; Hd; nabl-external-segment> uri;
+				uri'*   := <update-scope-uri(nabl-extend-uri(|segment)|<lang-in-context> context)> (ns, uri*);
+				result  := <set-annos; nabl-scope-site(child-uris|context, uri'*, state*)> (name, [anno1*, anno2*])
 			else
-				result := <nabl-anonymous-scope-site(child-uris|lang, uri*, state*)> name{anno*}
+				result := <nabl-anonymous-scope-site(child-uris|context, uri*, state*)> name{anno*}
 				<+ match(child-uris|uri*);
 				result := name{anno*}
 			end
 	
-	nabl-def-scope = !DefScope(<id>, <nabl-anonymous-segment>)
+	nabl-def-scope(|context) = !DefScope(<id>, <lang-in-context; nabl-base-uri; nabl-extend-uri-anonymous(|context)> context)
 	
 	nabl-def-scope(|scope): name{anno*} -> name{scope, anno*}
 		
 	// call back for generic analysis of anonymous scopes
-	nabl-anonymous-scope(child-uris|lang, uri*, ns*) =
-		match(child-uris|<extend-scope-uri(|lang, <nabl-anonymous-segment>)> (ns*, uri*))	
+	nabl-anonymous-scope(child-uris|context, uri*, ns*) =
+		match(child-uris|<update-scope-uri(nabl-extend-uri-anonymous(|context)|<lang-in-context> context)> (ns*, uri*))	
 	
 rules // generic analysis of defs
 	
-	nabl-def-collect(child-uris, sibling-uris|lang, elem*, task*, uri*, state*) =
-		nabl-def-site(child-uris, sibling-uris|lang, elem*, task*, uri*, state*) <+ 
+	nabl-def-collect(child-uris, sibling-uris|context, uri*, state*) =
+		nabl-def-site(child-uris, sibling-uris|context, uri*, state*) <+ 
 		match(child-uris|uri*);
 		match(sibling-uris|uri*)
 	
 	// call back to generic analysis
-	nabl-def(child-uris, sibling-uris|lang, elem*, task*, uri*, ns, unique, defscope, scoped):
+	nabl-def(child-uris, sibling-uris|context, uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
 			// get URI for namespace of definition site
-			current-uri := <lookup-uri(|lang, ns)> uri*;
+			current-uri := <lookup-uri(|<lang-in-context> context, ns)> uri*;
 			switch !defscope
 			// in each case we 
 			// 1. build URI of the definition site
@@ -154,39 +158,39 @@ rules // generic analysis of defs
 				// 1. extend current URI with ID segment
 				// 2. extend URIs of scoped namespaces
 				// 3. preserve
-				def-uri := <nabl-extend-uri(|ns, name, unique)> current-uri;
+				def-uri := <nabl-extend-uri(|context, ns, name, unique)> current-uri;
 				match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*));
 			  match(sibling-uris|uri*)
 			case ?[Subsequent()]:
 				// 1. extend current URI with Subsequent and ID segment
 				// 2. preserve
 				// 3. extend URI for namespace of definition site with Subsequent segment
-				segment := <nabl-subsequent-segment>;
-				def-uri := <nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> current-uri;
+				subs-uri := <nabl-extend-uri-subsequent(|context)> current-uri;
+				def-uri  := <nabl-extend-uri(|context, ns, name, unique)> subs-uri;
 	  		match(child-uris|uri*);
-				match(sibling-uris|<extend-scope-uri(|lang, segment)> ([ns], uri*))
-	  	case ?[DefScope(ns, segment)]:
+				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
+	  	case ?[DefScope(ns, uri)]:
 	  		// 1. extend base URI with External and ID segment
 				// 2. preserve
 				// 3. preserve
-				def-uri := <nabl-base-uri; nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> lang;
+				def-uri := <nabl-extend-uri(|context, ns, name, unique)> uri;
 				match(child-uris|uri*);
 				match(sibling-uris|uri*)
-			case ?[Subsequent(), DefScope(ns, segment)]:
+			case ?[Subsequent(), DefScope(ns, uri)]:
 				// 1a. extend base URI with External and ID segment
 				// 1b. extend current URI with Subsequent and ID segment
 				// 1c. introduce alias from 1b to 1a
 				// 2. preserve
 				// 3. extend URI for namespace of definition site with Subsequent segment
-				def-uri   := <nabl-base-uri; nabl-extend-uri(|segment); nabl-extend-uri(|ns, name, unique)> lang;
-				segment2  := <nabl-subsequent-segment>;
-				alias-uri := <nabl-extend-uri(|segment2); nabl-extend-uri(|ns, name, unique)> current-uri;
-	  		<new-alias(|elem*, def-uri, alias-uri)> a;
+				def-uri   := <nabl-extend-uri(|context, ns, name, unique)> uri;
+				subs-uri  := <nabl-extend-uri-subsequent(|context)> current-uri;
+        alias-uri := <nabl-extend-uri(|context, ns, name, unique)> subs-uri;
+	  		<new-alias(|context, def-uri, alias-uri)> a;
 	  		match(child-uris|uri*);
-				match(sibling-uris|<extend-scope-uri(|lang, segment2)> ([ns], uri*))
+				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
 			end;
 			// add Def entry to the index
-			d := <new-def(|elem*, def-uri)> a
+			d := <new-def(|<elem-in-context> context, def-uri)> a
 	
 rules
   
@@ -213,82 +217,82 @@ rules
 	
 rules // generic analysis of uses
 	
-	nabl-use-collect(|lang, elem*, task*, uri*, dep*, state*) = 
-		try(nabl-use-site(|lang, elem*, task*, uri*, dep*, state*))
+	nabl-use-collect(|context, uri*, dep*, state*) = 
+		try(nabl-use-site(|context, uri*, dep*, state*))
 	
 	// single candidate
-	nabl-use(|lang, elem*, task*, uri*, dep*, candidate) =
+	nabl-use(|context, uri*, dep*, candidate) =
 		where (<not(is-list)> candidate);
-		nabl-use(|lang, elem*, task*, uri*, dep*, [candidate])
+		nabl-use(|context, uri*, dep*, [candidate])
 	
 	// list of candidates
-	nabl-use(|lang, elem*, task*, uri*, dep*, candidates):
+	nabl-use(|context, uri*, dep*, candidates):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, dep*, <nabl-fix-name> name)); make-set> candidates;
+			subtask* := <map(nabl-use-candidate(|context, uri*, dep*, <nabl-fix-name> name)); make-set> candidates;
 			taskdep* := <dependent-tasks> subtask*;
-			result   := <new-task(|task*, taskdep*)> Choice(subtask*);
-		  u        := <new-use(|elem*, result)>
+			result   := <new-task(|<task-in-context> context, taskdep*)> Choice(subtask*);
+		  u        := <new-use(|<elem-in-context> context, result)>
 		
 	// candidate in current scope
-	nabl-use-candidate(|lang, elem*, task*, uri*, dep*, name):
+	nabl-use-candidate(|context, uri*, dep*, name):
 		UseCandidate(ns, prop*, Current(), range) -> result
 		where
-			uri      := <lookup-uri(|lang, ns)> uri*;
+			uri      := <lookup-uri(|<lang-in-context> context, ns)> uri*;
 			propdep* := <dependent-tasks> prop*;
-			result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, name, prop*, range)
+			result   := <new-task(|<task-in-context> context, [dep*, propdep*])> Resolve(uri, ns, name, prop*, range)
       
   // named candidate in current scope
-  nabl-use-candidate(|lang, elem*, task*, uri*, dep*, term):
+  nabl-use-candidate(|context, uri*, dep*, term):
     UseCandidate(ns, name, prop*, Current(), range)-> result
     where
-      uri      := <lookup-uri(|lang, ns)> uri*;
+      uri      := <lookup-uri(|<lang-in-context> context, ns)> uri*;
       propdep* := <dependent-tasks> prop*;
       namedep* := <dependent-tasks> name;
-      result   := <new-task(|task*, [dep*, propdep*, namedep*])> Resolve(uri, ns, name, prop*, range)
+      result   := <new-task(|<task-in-context> context, [dep*, propdep*, namedep*])> Resolve(uri, ns, name, prop*, range)
     
 	// candidate in another scope (result of resolution)	  
-	nabl-use-candidate(|lang, elem*, task*, uri*, dep*, name):
+	nabl-use-candidate(|context, uri*, dep*, name):
 		c@UseCandidate(ns, prop*, target-uri*, range) -> result
 		where
 		  <?Result(_) <+ map(?Result(_))> target-uri*;
 		  propdep* := <dependent-tasks> prop*;
 		  uridep*  := <dependent-tasks> target-uri*;
-			result   := <new-task(|task*, [dep*, propdep*, uridep*])> Resolve(target-uri*, ns, name, prop*, range);
-		  u        := <new-use(|elem*, result)>
+			result   := <new-task(|<task-in-context> context, [dep*, propdep*, uridep*])> Resolve(target-uri*, ns, name, prop*, range);
+		  u        := <new-use(|<elem-in-context> context, result)>
 		  
 	// candidate in context
-  nabl-use-candidate(|lang, elem*, task*, uri*, dep*, name):
+  nabl-use-candidate(|context, uri*, dep*, name):
     UseCandidate(ns, prop*, Context(name', ns', props', refscope'), range) -> result
     where 
-     	uri-result := <nabl-use-candidate(|lang, elem*, task*, uri*, dep*, <nabl-fix-name> name')> UseCandidate(ns', props', refscope', range);
+     	uri-result := <nabl-use-candidate(|context, uri*, dep*, <nabl-fix-name> name')> UseCandidate(ns', props', refscope', range);
       propdep*   := <dependent-tasks> prop*;
-      result     := <new-task(|task*, [dep*, propdep*])> Resolve(uri-result, ns, name, prop*, range)
+      result     := <new-task(|<task-in-context> context, [dep*, propdep*])> Resolve(uri-result, ns, name, prop*, range)
     
 rules // generic analysis of imports
   
-  nabl-import-collect(|lang, elem*, task*, uri*, state*) = 
-  	try(nabl-import-site(|lang, elem*, task*, uri*, state*))
+  nabl-import-collect(|context, uri*, state*) = 
+  	try(nabl-import-site(|context, uri*, state*))
   
-  nabl-import(|lang, elem*, task*, uri*, imports):
+  nabl-import(|context, uri*, imports):
     name -> name''
     where
     	Use(use) := <nabl-collect-use> name;
-      name'    := <foldl(nabl-import-candidate(|lang, elem*, task*, uri*, use))> (imports, name);
+      name'    := <foldl(nabl-import-candidate(|context, uri*, use))> (imports, name);
       if Reserved(r) := <nabl-collect-reserved> name then
       	Result(dep) := use;
       	name''      := <remove-annotations(?Reserved(r))> name';
-      	<new-task(|task*, [dep], r)> Noop()
+      	<new-task(|<task-in-context> context, [dep], r)> Noop()
       else
       	name'' := name'
       end
         
-  nabl-import-candidate(|lang, elem*, task*, uri*, use):
+  nabl-import-candidate(|context, uri*, use):
     (import, name) -> name
     where
       ns       := <nabl-import-namespace> import;
-      uri      := <lookup-uri(|lang, ns)> uri*;
-      new-prop(|elem*, uri, import, use)
+      uri      := <lookup-uri(|<lang-in-context> context, ns)> uri*;
+      new-prop(|<elem-in-context> context, uri, import, use)
       
   nabl-import-namespace:
     Import(_, Imported(namespace)) -> namespace
@@ -308,15 +312,15 @@ rules // generic analysis of imports
 
 rules // generic analysis of properties
   
-  nabl-prop-collect(|lang, elem*, task*, uri*, state*) = 
-  	try(nabl-prop-site(|lang, elem*, task*, uri*, state*))
+  nabl-prop-collect(|context, uri*, state*) = 
+  	try(nabl-prop-site(|context, uri*, state*))
   
 	// call back to generic analysis
-	nabl-props(|lang, elem*, task*, prop*):
+	nabl-props(|context, prop*):
 	  name -> name'
 	  where
 	    Def(uri) := <nabl-collect-def> name;
-		  name'    := <foldl(extend-prop(|elem*, uri))> (prop*, name)
+		  name'    := <foldl(extend-prop(|<elem-in-context> context, uri))> (prop*, name)
 		
 	extend-prop(|elem*, uri):
 		(Prop(type, result), name) -> name
@@ -325,25 +329,25 @@ rules // generic analysis of properties
 
 rules // generic analysis of implicit defs
 
-  nabl-implicit-def-collect(|lang, elem*, task*, uri*, state*) = 
-  	try(nabl-implicit-def-site(|lang, elem*, task*, uri*, state*))
+  nabl-implicit-def-collect(|context, uri*, state*) = 
+  	try(nabl-implicit-def-site(|context, uri*, state*))
  
-  nabl-implicit-def(|lang, elem*, task*, uri*, candidates):
+  nabl-implicit-def(|context, uri*, candidates):
     name -> name
     where
-      <map(nabl-implicit-def-candidate(|lang, elem*, task*, uri*))> candidates
+      <map(nabl-implicit-def-candidate(|context, uri*))> candidates
       
-  nabl-implicit-def-candidate(|lang, elem*, task*, uri*):
+  nabl-implicit-def-candidate(|context, uri*):
     IDefCandidate(ns, name, unique, prop*) -> <id>
     where
       // get path for namespace of definition site
-      current-uri := <lookup-uri(|lang, ns)> uri*;
+      current-uri := <lookup-uri(|<lang-in-context> context, ns)> uri*;
       // build path for definition site
-      def-uri     := <nabl-extend-uri(|ns, name, unique)> current-uri;
+      def-uri     := <nabl-extend-uri(|context, ns, name, unique)> current-uri;
       // build Def entry for the index
-      new-def(|elem*, def-uri);
+      new-def(|<elem-in-context> context, def-uri);
       // build Prop entries for the index
-      <map(\Prop(type, result) -> <new-prop(|elem*, def-uri, type, result)>\)> prop*
+      <map(\Prop(type, result) -> <new-prop(|<elem-in-context> context, def-uri, type, result)>\)> prop*
 
 rules // name retrieval
   
@@ -385,10 +389,8 @@ rules // URI retrieval
 
 rules // helpers
 	
-	replace-scope-uri(|path)         = foldl(update-scope-uri(!path|<nabl-uri-language> path))
-	
-	extend-scope-uri(|lang, segment) = foldl(update-scope-uri(nabl-extend-uri(|segment)|lang))
-	
+	replace-scope-uri(|path)    = foldl(update-scope-uri(!path|<nabl-uri-language> path))
+
 	update-scope-uri(update|lang):
 		(key, uri*) -> result
 		where

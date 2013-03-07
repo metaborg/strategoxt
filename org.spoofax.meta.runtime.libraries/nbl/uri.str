@@ -22,6 +22,7 @@ signature
     ExternalDef : String                       -> Segment
     Unique      : String                       -> Qualifier
     NonUnique   :                                 Qualifier
+    Unique      :                                 Qualifier
     URI         : Language * List(Segment)     -> URI
     
 rules // Construction
@@ -43,18 +44,26 @@ rules // Construction
     
   nabl-replace-uri-qualifier(|qualifier) =
     URI(id, [ID(id, id, !qualifier)|id])
-    
-  nabl-unique-qualifier = !Unique(<new>)
-  nabl-nonunique-qualifier = !NonUnique()
-  
-  nabl-anonymous-segment  = !Anonymous(<new>)
-  nabl-subsequent-segment = !Subsequent(<new>)
-  
+      
   nabl-external-segment: Anonymous(name) -> ExternalDef(name)
   
 	nabl-nonunique-uri =
 		URI(id, [ID(id, id, !NonUnique())|id])
 
+rules // stable URI extensions
+  
+  nabl-initial-yds = ![]
+  
+  nabl-extend-uri(|context, ns, n, u) = 
+    if where(<?NonUnique()> u) then
+      nabl-extend-uri(|ns, n, NonUnique())
+    else
+      nabl-extend-uri(|ns, n, Unique(<new>))
+    end
+    
+  nabl-extend-uri-anonymous(|context)  = nabl-extend-uri(|Anonymous(<new>))
+  nabl-extend-uri-subsequent(|context) = nabl-extend-uri(|Subsequent(<new>))
+  
 rules // Projections
   
   nabl-uri = 
@@ -99,8 +108,7 @@ rules // Projections
 
   nabl-uri-qualifier:
     uri -> <nabl-uri-path; Hd; nabl-segment-qualifier> uri
-    
-    
+      
   nabl-segment-namespace:
     ID(namespace, _, _) -> namespace
     
@@ -109,7 +117,6 @@ rules // Projections
     
   nabl-segment-qualifier:
     ID(_, _, qualifier) -> qualifier
-    
     
   nabl-uri-scope      = URI(id, Tl)
   nabl-uri-scopes    = nabl-closure(nabl-uri-scope)

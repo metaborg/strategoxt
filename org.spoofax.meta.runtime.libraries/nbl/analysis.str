@@ -27,7 +27,7 @@ rules // Single file analysis
       oldEntries := <filter(nabl-diff-entry)> <index-get-all-in-partition> partition;
       <index-clear-partition> partition
     with // Collect tasks
-      (ast', entries, tasks) := <nabl-collect(|Language(language))> ast;
+      (ast', entries, tasks) := <nabl-collect(|path, Language(language))> ast;
        
       <index-add-all(|partition)> entries
     with // Perform tasks
@@ -81,7 +81,7 @@ rules // Multi file analysis
   nabl-analyze-multiple-collect(|language):
     File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, <merge-tasks> task*, [])
     with
-      (ast', entry*, task*) := <nabl-collect(|Language(language))> ast;
+      (ast', entry*, task*) := <nabl-collect(|partition, Language(language))> ast;
       index-transaction(
         oldEntry*           := <filter(nabl-diff-entry)> <index-get-all-in-partition> partition;
         <index-clear-partition> partition;
