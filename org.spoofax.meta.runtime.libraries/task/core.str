@@ -46,7 +46,7 @@ rules // Execution
   perform-tasks(|partition) = repeat(perform-task(|partition))
     
   perform-task(|partition) =
-    split-fetch-keep(?Task(n, [], <perform-task>)) => (t1*, res, t2*);
+    split-fetch-keep(perform-single-task) => (t1*, (n, res), t2*);
     switch !res
       case ?Done(tr):
         <index-add(|partition)> DoneTask(n, tr)
@@ -56,6 +56,9 @@ rules // Execution
         <index-add(|partition)> FailTask(n, tr)
       end;
     <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
+   
+  perform-single-task:
+    Task(n, [], t) -> (n, <perform-task> t)
     
 rules // Utility
   
