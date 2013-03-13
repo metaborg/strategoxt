@@ -78,7 +78,13 @@ strategies // generic traversal
 	nabl-collect(sibling-uris, deps'|context, uri*, dep*) =
 		nabl-state-pop(?state*);
 		nabl-scope-site(?uri'*|context, uri*, state*); // scopes of external definitions, e.g. variables in let expressions
-		nabl-def-collect(?child-uri*, sibling-uris|context, uri'*, uri*, state*);
+		(
+		   nabl-def-site(?child-uri*, sibling-uris|context, uri'*, state*) 
+    <+ match(sibling-uris|uri*)
+    ;  nabl-anonymous-scope-site(?child-uri*|context, uri'*, state*)
+    <+ match(?child-uri*|uri'*)
+    );
+    
 		nabl-import-dependency-annotate;
 		nabl-import-dependency-collect(deps'|dep*);
 		nabl-state-collect;
@@ -140,14 +146,6 @@ rules // generic analysis of scopes
 		match(child-uris|<extend-scope-uri(nabl-extend-uri-anonymous(|<unique-in-context> context, <partition-in-context> context)|<lang-in-context> context)> (ns*, uri*))	
 	
 rules // generic analysis of defs
-	
-	nabl-def-collect(child-uris, sibling-uris|context, c-uri*, s-uri*, state*) =
-		nabl-def-site(child-uris, sibling-uris|context, c-uri*, state*) <+ 
-	  match(sibling-uris|s-uri*);
-	  (
-      nabl-anonymous-scope-site(child-uris|context, c-uri*, state*) <+
-      match(child-uris|c-uri*)
-    )
     	
 	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|context, uri*, ns, unique, defscope, scoped):
@@ -226,18 +224,16 @@ rules // generic analysis of uses
 	nabl-use-collect(|context, uri*, dep*, state*) = 
 		try(nabl-use-site(|context, uri*, dep*, state*))
 	
-	// single candidate
-	nabl-use(|context, uri*, dep*, candidate) =
-		where (<not(is-list)> candidate);
-		nabl-use(|context, uri*, dep*, [candidate])
-	
 	// list of candidates
 	nabl-use(|context, uri*, dep*, candidates):
 		name{anno*} -> name{u, anno*}
 		where
 			subtask* := <map(nabl-use-candidate(|context, uri*, dep*, <nabl-fix-name> name)); make-set> candidates;
-			taskdep* := <dependent-tasks> subtask*;
-			result   := <new-task(|<task-in-context> context, taskdep*)> Choice(subtask*);
+			taskdep* := <dependent-tasks> subtask*
+		where
+		  [result] := subtask* <+
+			result   := <new-task(|<task-in-context> context, taskdep*)> Choice(subtask*)
+		where
 		  u        := <new-use(|<elem-in-context> context, result)>
 		
 	// candidate in current scope
@@ -246,7 +242,7 @@ rules // generic analysis of uses
 		where
 			uri      := <lookup-uri(|<lang-in-context> context, ns)> uri*;
 			propdep* := <dependent-tasks> prop*;
-			result   := <new-task(|<task-in-context> context, [dep*, propdep*])> Resolve(uri, ns, name, prop*, range)
+			result   := <new-task(|<task-in-context> context, [dep*, propdep*])> Resolve([uri], ns, name, prop*, range)
       
   // named candidate in current scope
   nabl-use-candidate(|context, uri*, dep*, term):
@@ -255,13 +251,13 @@ rules // generic analysis of uses
       uri      := <lookup-uri(|<lang-in-context> context, ns)> uri*;
       propdep* := <dependent-tasks> prop*;
       namedep* := <dependent-tasks> name;
-      result   := <new-task(|<task-in-context> context, [dep*, propdep*, namedep*])> Resolve(uri, ns, name, prop*, range)
+      result   := <new-task(|<task-in-context> context, [dep*, propdep*, namedep*])> Resolve([uri], ns, name, prop*, range)
     
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|context, uri*, dep*, name):
 		c@UseCandidate(ns, prop*, target-uri*, range) -> result
 		where
-		  <?Result(_) <+ map(?Result(_))> target-uri*;
+		  <map(?Result(_))> target-uri*;
 		  propdep* := <dependent-tasks> prop*;
 		  uridep*  := <dependent-tasks> target-uri*;
 			result   := <new-task(|<task-in-context> context, [dep*, propdep*, uridep*])> Resolve(target-uri*, ns, name, prop*, range);
@@ -273,7 +269,7 @@ rules // generic analysis of uses
     where 
      	uri-result := <nabl-use-candidate(|context, uri*, dep*, <nabl-fix-name> name')> UseCandidate(ns', props', refscope', range);
       propdep*   := <dependent-tasks> prop*;
-      result     := <new-task(|<task-in-context> context, [dep*, propdep*])> Resolve(uri-result, ns, name, prop*, range)
+      result     := <new-task(|<task-in-context> context, [dep*, propdep*])> Resolve([uri-result], ns, name, prop*, range)
     
 rules // generic analysis of imports
   

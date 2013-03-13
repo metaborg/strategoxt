@@ -26,12 +26,6 @@ signature
 rules // Resolve
   
   perform-task: 
-    Resolve(uri, namespace, name, prop*, range) -> result
-    where
-      not(<is-list> uri);
-      result := <perform-task> Resolve([uri], namespace, name, prop*, range)
-  
-  perform-task: 
     Resolve(uri*, namespace, name, prop*, range) -> result
     where
       <is-list> uri*;

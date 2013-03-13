@@ -43,7 +43,7 @@ rules // Creation
   
 rules // Execution
   
-  perform-tasks(|partition) = repeat(perform-task(|partition))
+  perform-tasks(|partition) = repeat(perform-task(|partition)); map(debug(!"ERROR: "))
     
   perform-task(|partition) =
     split-fetch-keep(perform-single-task) => (t1*, (n, res), t2*);
