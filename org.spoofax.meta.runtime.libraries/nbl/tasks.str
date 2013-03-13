@@ -18,7 +18,7 @@ signature
     Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
     Choice   : List(String)                                   -> Instruction
     PropCalc : Property * Term                                -> Instruction
-    Match    : ID * Term                                      -> Instruction
+    Match    : ID * List(Term) * Term                         -> Instruction
     Noop     :                                                   Instruction
     
     Stall : Instruction
@@ -89,7 +89,7 @@ rules // Property calculation
   
 rules // Match
   
-  perform-task: Match(key, term) -> Done(<match-term> (key, term))
+  perform-task: Match(key, bound, term) -> Done(<nabl-match> (key, term, bound))
   
 rules // Noop
   
