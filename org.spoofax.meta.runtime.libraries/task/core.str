@@ -13,14 +13,13 @@ signature
   
   constructors
     
-    Task     : List(String) * List(String) * Instruction -> Task
-    Result   : String                                    -> Result
-    DoneTask : String * Term                             -> DoneTask
-    FailTask : String * Term                             -> FailTask
+    Task     : Int * List(Int) * Instruction -> Task
+    Result   : Int                           -> Result
+    DoneTask : Int * Term                    -> DoneTask
+    FailTask : Int * Term                    -> FailTask
     
-    Done     :                                              Result
-    Done     : Term                                      -> Result
-    Fail     : Term                                      -> Result
+    Done     : Term                          -> Result
+    Fail     : Term                          -> Result
 
 rules // Creation
   
@@ -46,8 +45,6 @@ rules // Execution
     switch !res
       case ?Done(tr):
         <index-add(|partition)> DoneTask(n, tr)
-      case ?Done():
-        tr := ()
       case ?Fail(fr) => tr:
         <index-add(|partition)> FailTask(n, fr)
       end;

@@ -19,7 +19,6 @@ signature
     Choice   : List(String)                                   -> Instruction
     PropCalc : Property * Term                                -> Instruction
     Match    : ID * List(Term) * Term                         -> Instruction
-    Noop     :                                                   Instruction
     
     Stall : Instruction
         
@@ -76,7 +75,7 @@ rules // Resolve
  		Choice(choices) -> result
 		where
 			result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choices) <+
-			result := Fail(<filter(?Fail(<id>)); concat> choices) 
+			result := Fail(<mapconcat(?Fail(<id>))> choices) 
 
 rules // Property calculation
             
@@ -85,11 +84,7 @@ rules // Property calculation
 rules // Match
   
   perform-task: Match(key, bound, term) -> Done(<nabl-match> (key, term, bound))
-  
-rules // Noop
-  
-  perform-task: Noop() -> Done()
-  
+    
 rules // Utility
   
   nabl-result-number:
