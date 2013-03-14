@@ -77,7 +77,8 @@ strategies // generic traversal
 	 */
 	nabl-collect(sibling-uris, deps'|context, uri*, dep*) =
 		nabl-state-pop(?state*);
-		nabl-scope-site(?uri'*|context, uri*, state*); // scopes of external definitions, e.g. variables in let expressions
+		nabl-scope-site(?uri'*|context, uri*); // scopes of external definitions, e.g. variables in let expressions
+		
 		(
 		   nabl-def-site(?child-uri*, sibling-uris|context, uri'*, state*) 
     <+ match(sibling-uris|uri*)
@@ -85,26 +86,24 @@ strategies // generic traversal
     <+ match(?child-uri*|uri'*)
     );
     
-		nabl-import-dependency-annotate;
+		try(nabl-import-dependency-site);
 		nabl-import-dependency-collect(deps'|dep*);
-		nabl-state-collect;
+		try(nabl-state-site);
 		
 		preserve-annos(force-origins(id#(nabl-siblings(|context, child-uri*, dep*)))); // visit children from left to right
 		
-		nabl-use-collect(|context, uri'*, dep*, state*);
-    nabl-import-collect(|context, child-uri*, state*);
-		nabl-prop-collect(|context, state*);
-    nabl-implicit-def-collect(|context, child-uri*, state*)
+		try(nabl-use-site(|context, uri'*, dep*, state*));
+    try(nabl-import-site(|context, child-uri*, state*));
+    try(nabl-prop-site(|context, state*));
+    try(nabl-implicit-def-site(|context, child-uri*, state*))
 	
 	nabl-siblings(|context, uri*, dep*) = 
 		[] + [nabl-collect(?sibling-uri*, ?deps'|context, uri*, dep*)|nabl-siblings(|context, sibling-uri*, deps')]
 
 rules // generic analysis of state
   
-  nabl-state-collect = try(nabl-state-site)
-  
-  nabl-state(pattern|state):
-    term -> <map(try(nabl-state-annotate(pattern|state)))> term
+  nabl-state(pattern|state) =
+    map(try(nabl-state-annotate(pattern|state)))
       
   nabl-state-annotate(pattern|state) =
     ?pattern; add-annotation(|state)
@@ -121,7 +120,7 @@ rules // generic analysis of state
 
 rules // generic analysis of scopes
 	
-	nabl-scope-site(adapted-uris|context, uri*, state*) =
+	nabl-scope-site(adapted-uris|context, uri*) =
 	  with (
 	    get-annotations;
 	    collect-all(?DefScope(_, _));
@@ -197,33 +196,28 @@ rules // generic analysis of defs
 			d := <new-def(|<elem-in-context> context, def-uri)> a
 	
 rules
-  
-  nabl-import-dependency-annotate = try(nabl-import-dependency-site)
 
-  nabl-import-dependency:
-    name -> <nabl-add-reserved(|reserved)> name
-    with
+  nabl-import-dependency =
+    with (
       /* Reserve a task number for use as dependency for the subtree of the import and annotate the name with it. 
       The reserved number is used in nabl-import to create a Noop task that has a dependency on the resolution of the 
       import target. This makes sure that imports are resolved before other resolve tasks. */
-      reserved := <reserve-task>
+      nabl-add-reserved(|<reserve-task>)
+    ) 
       
-  nabl-import-dependency-collect(deps'|dep*):
-    name -> name
-    with
+  nabl-import-dependency-collect(deps'|dep*) =
+    with (
     	/* Do the actual adding of the dependency here because the reserved annotation may be added to a name that is
       in the subtree of the import name. The dependency should only be active after the annotated term. */
-      if Reserved(r) := <nabl-collect-reserved> name then
+      if Reserved(r) := <nabl-collect-reserved> then
         match(deps'|[r|dep*])
       else
         match(deps'|dep*)
       end
+    )
 	
 rules // generic analysis of uses
-	
-	nabl-use-collect(|context, uri*, dep*, state*) = 
-		try(nabl-use-site(|context, uri*, dep*, state*))
-	
+		
 	// list of candidates
 	nabl-use(|context, uri*, dep*, candidates):
 		name{anno*} -> name{u, anno*}
@@ -273,9 +267,6 @@ rules // generic analysis of uses
     
 rules // generic analysis of imports
   
-  nabl-import-collect(|context, uri*, state*) = 
-  	try(nabl-import-site(|context, uri*, state*))
-  
   nabl-import(|context, uri*, imports):
     name -> name''
     where
@@ -314,10 +305,7 @@ rules // generic analysis of imports
 
 rules // generic analysis of properties
   
-  nabl-prop-collect(|context, state*) = 
-  	try(nabl-prop-site(|context, state*))
-  
-	// call back to generic analysis
+  // call back to generic analysis
 	nabl-props(|context, prop*):
 	  name -> name'
 	  where
@@ -330,9 +318,6 @@ rules // generic analysis of properties
 		  prop := <new-prop(|elem*, uri, type, result)> name
 
 rules // generic analysis of implicit defs
-
-  nabl-implicit-def-collect(|context, uri*, state*) = 
-  	try(nabl-implicit-def-site(|context, uri*, state*))
  
   nabl-implicit-def(|context, uri*, candidates):
     name -> name
