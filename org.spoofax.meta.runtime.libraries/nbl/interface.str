@@ -6,11 +6,9 @@ strategies // Collect
   
   nabl-def-site(child-uris, sibiling-uris|context, uri*, state*) = fail
   
-  nabl-import-dependency-site = fail
-  
   nabl-state-site = fail
   
-  nabl-use-site(|context, uri*, dep*, state*) = fail
+  nabl-use-site(|context, uri*, state*) = fail
   
   nabl-import-site(|context, uri*, state*) = fail
   

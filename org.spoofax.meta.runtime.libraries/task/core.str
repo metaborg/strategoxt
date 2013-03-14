@@ -15,7 +15,6 @@ signature
     
     Task     : List(String) * List(String) * Instruction -> Task
     Result   : String                                    -> Result
-    Reserved : String                                    -> Result
     DoneTask : String * Term                             -> DoneTask
     FailTask : String * Term                             -> FailTask
     
@@ -32,9 +31,6 @@ rules // Creation
     with
       task := Task(name, deps, instruction);
       <iset-add(|task)> task*
-  
-  reserve-task =
-    !Reserved(<newname> "")
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
   dependent-task = ?Result(<id>) 

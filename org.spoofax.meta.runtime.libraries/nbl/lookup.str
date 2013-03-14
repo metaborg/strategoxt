@@ -5,6 +5,7 @@ imports
   nbl/collect
   nbl/resolve
   nbl/query
+  nbl/tasks
   nbl/uri
   nbl/entries
   
@@ -69,7 +70,8 @@ rules /** @internal Index-based lookup */
       entry*       := <nabl-standard-lookup(create-template|namespace, name); filter(constraint)> uri;
       
       // Imports & aliases
-      importEntry* := <nabl-lookup-imported-entries(create-template|<nabl-uri-language> uri, namespace, name); filter(constraint)> uri
+      importEntry* := <nabl-lookup-imported-entries(create-template|<nabl-uri-language> uri, namespace, name); filter(constraint)> uri <+
+      importEntry* := Stall()
       
   nabl-standard-lookup-nonunique(create-template|namespace, name) =
     nabl-extend-uri(|namespace, name, NonUnique());
@@ -130,7 +132,7 @@ rules /** @internal Imports */
 
   nabl-lookup-imported-entries(create-template|language, namespace, name):
     uri -> [namedEntry*, unnamedEntry*]
-    with
+    where
       namedImportURI*   := <nabl-get-import-uris-named(|language, namespace, name)> uri;
       namedEntry*       := <mapconcat(create-template; nabl-get-all)> namedImportURI*;
       unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, namespace)> uri;
@@ -138,7 +140,7 @@ rules /** @internal Imports */
       
   nabl-visible-imported-entries(create-template|language, namespace, prefix):
     uri -> unnamedEntry*
-    with
+    where
       unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, namespace)> uri;
       unnamedEntry*     := <mapconcat(nabl-standard-visible(create-template|namespace, prefix))> unnamedImportURI* 
 
@@ -146,12 +148,12 @@ rules /** @internal Imports */
 
   nabl-get-import-uris-unnamed(|seen, language, namespace):
     uri -> [importURI*, transitiveImportURI*]
-    with
+    where
       importResult*        := <nabl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <filter(nabl-resolve-results); concat> importResult*;
+      importURI*           := <mapconcat(nabl-resolve-results)> importResult*;
       importedResult*      := <nabl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <filter(nabl-resolve-results); concat> importedResult*;
-      transitiveImportURI* := <concat> <filter(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace))> importedURI*
+      importedURI*         := <mapconcat(nabl-resolve-results)> importedResult*;
+      transitiveImportURI* := <mapconcat(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace))> importedURI*
 
   nabl-get-import-uris-unnamed-transitive(|seen, language, namespace):
     uri -> transitiveImportURI*
@@ -161,9 +163,9 @@ rules /** @internal Imports */
     
   nabl-get-import-uris-named(|language, namespace, name):
     uri -> importURI*
-    with
+    where
       importResult* := <nabl-get-all-properties(|Import(language, namespace, name))> uri;
-      importURI*    := <filter(nabl-resolve-results)> importResult*
+      importURI*    := <mapconcat(nabl-resolve-results)> importResult*
 
 rules /** @internal Helpers */
   
