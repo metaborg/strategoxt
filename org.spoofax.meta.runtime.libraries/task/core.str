@@ -52,8 +52,8 @@ rules // Execution
         <index-add(|partition)> DoneTask(n, tr)
       case ?Done():
         tr := ()
-      case ?Fail(tr):
-        <index-add(|partition)> FailTask(n, tr)
+      case ?Fail(fr) => tr:
+        <index-add(|partition)> FailTask(n, fr)
       end;
     <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
    

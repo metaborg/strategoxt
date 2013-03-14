@@ -28,13 +28,13 @@ rules // Resolve
   perform-task: 
     Resolve(uri*, namespace, name, prop*, range) -> result
     where
-      <is-list> uri*;
+      name' := <rm-annotations> name;
       // TODO: Get rid of flatten-list?
       // GW: should this simply be a concat?
-      resolved* := <flatten-list; remove-all(?Fail(_)); mapconcat(perform-task-resolve(|namespace, name, prop*, range))> uri*;
+      resolved* := <flatten-list; remove-all(?Fail(_)); mapconcat(perform-task-resolve(|namespace, name', prop*, range))> uri*;
       switch !resolved*
         case ?[]: 
-          result := Fail(<map(nabl-extend-uri(|namespace, name, ()))> uri*)
+          result := Fail(<map(nabl-extend-uri(|namespace, name', ()))> uri*)
         case fetch(?Stall()) :
           fail
         otherwise:
@@ -42,8 +42,9 @@ rules // Resolve
       end
       
   perform-task-resolve(|namespace, name, prop*, range): 
-    uri -> resolved*
+    t -> resolved*
     where
+      uri := <nabl-uri> t;
       switch !range
         case All(): resolved* := <nabl-lookup-definitions(nabl-resolve-constraint(|prop*)|namespace, name)> uri
         case One(): resolved* := <nabl-lookup-definitions-scoped(nabl-resolve-constraint(|prop*)|namespace, name)> uri
