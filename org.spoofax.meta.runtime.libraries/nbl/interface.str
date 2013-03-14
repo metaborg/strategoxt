@@ -2,19 +2,19 @@ module nbl/interface
 
 strategies // Collect
   
-  nabl-anonymous-scope-site(child-uris|context, uri*, state*) = fail
+  nabl-anonymous-scope-site(child-uris|lang, partition, unique*, uri*, state*) = fail
   
-  nabl-def-site(child-uris, sibiling-uris|context, uri*, state*) = fail
+  nabl-def-site(child-uris, sibiling-uris|lang, partition, unique*, elem*, uri*, state*) = fail
   
   nabl-state-site = fail
   
-  nabl-use-site(|context, uri*, state*) = fail
+  nabl-use-site(|lang, elem*, task*, uri*, state*) = fail
   
-  nabl-import-site(|context, uri*, state*) = fail
+  nabl-import-site(|lang, elem*, task*, uri*, state*) = fail
   
-  nabl-implicit-def-site(|context, uri*, state*) = fail
+  nabl-implicit-def-site(|lang, partition, unique*, elem*, uri*, state*) = fail
   
-  nabl-prop-site(|context, state*) = fail
+  nabl-prop-site(|elem*, task*, state*) = fail
 
 strategies // Projections
   
