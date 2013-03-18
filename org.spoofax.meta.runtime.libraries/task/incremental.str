@@ -79,4 +79,11 @@ rules // Construction
 		nr -> Task(nr, d*, i, <task-remove-partition> p)
 		with
 			(p, Task(_, i)) := <task-template; index-get-all-with-partitions; Hd> nr;
-			d*              := <task-dep-template; index-get-all; map(task-dep-dep)> nr
+			d*              := <task-dep-template; index-get-all; map(task-dep-dep); filter(not(has-task-results))> nr
+			
+  has-task-results:
+    nr -> <id>
+    where
+    	<index-get-all; Hd> DoneTask(nr, ()) <+
+    	<index-get-all; Hd> FailTask(nr, ())
+    	
