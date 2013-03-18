@@ -1,0 +1,78 @@
+module task/incremental
+
+imports 
+  
+  task/core
+  task/store
+  index/core
+  index/query
+  
+signature
+
+  sorts
+  	
+  	
+  
+  constructors
+    
+    
+
+rules
+	
+	task-diff:
+		(old, new) -> (added, removed)
+		where
+      added   := <diff(task-eq)> (new, old);
+      removed := <diff(task-eq)> (old, new)
+      
+  task-incremental:
+  	(old, new) -> [task1*, task2*, task3*]
+  	where
+  		(added, removed) := <task-diff> (old, new);
+  		<map(task-remove-result)> removed;
+  		task1* := <map(task-retrieve; task-reconstruct)> added;
+  		task2* := <mapconcat(task-dependent)> added;
+  		task3* := <mapconcat(task-dependent)> removed
+  		
+	task-remove-result:
+		nr -> <index-remove-all> DoneTask(nr, ())
+		
+	task-dependent:
+		nr -> task*
+		where
+			nr*   := <task-dep-template; index-get-all; map(task-dep-dep)> nr;
+			task* := <map(task-retrieve; task-reconstruct)> nr*
+			
+	task-retrieve:
+		nr -> <task-template; index-get-all; Hd> nr
+
+rules // Equality
+	
+	task-eq:
+		(t1, t2) -> <task-nr> t1
+		where
+			<eq> (<task-nr> t1, <task-nr> t2)
+		
+rules // Projections
+	
+	task-nr:
+		Task(nr, _, _, _) -> nr
+		
+	task-nr:
+		Task(nr, _) -> nr
+	
+	task-dep-dep:
+		TaskDep(_, d) -> d
+		
+	task-template:
+		nr -> Task(nr, ())
+		
+	task-dep-template:
+		nr -> TaskDep(nr, ())
+
+rules // Construction
+		
+	task-reconstruct:
+		Task(nr, i) -> Task(nr, d*, i, p)
+		where
+			(p, TaskDep(_, d*)) := <task-dep-template; index-get-all-with-partitions> nr

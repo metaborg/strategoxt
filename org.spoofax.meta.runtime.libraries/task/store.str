@@ -1,0 +1,27 @@
+module task/store
+
+imports
+	
+	task/core
+	index/core
+
+signature
+  
+  constructors
+  	
+		Task    : Int * Instruction -> StoreTask
+		TaskDep : Int * Int         -> StoreTaskDep
+
+rules
+  
+	store-task:
+		Task(nr, d*, i, p) -> <id>
+		where
+			<index-add(|p)> Task(nr, i);
+			<store-task-deps(|p, nr)> d*
+			
+	store-task-deps(|partition, nr) =
+		map(create-task-dep(|nr)); index-add-all(|partition)
+	
+	create-task-dep(|nr) =
+		!TaskDep(nr, <id>)

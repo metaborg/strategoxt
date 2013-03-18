@@ -3,7 +3,9 @@ module task/core
 imports 
   
   task/interface
+  task/store
   index/core
+  index/query
   
 signature
 
@@ -13,17 +15,15 @@ signature
   
   constructors
     
-    Task     : Int * List(Int) * Instruction -> Task
-    Result   : Int                           -> Result
-    DoneTask : Int * Term                    -> DoneTask
-    FailTask : Int * Term                    -> FailTask
+    Task     : Int * List(Int) * Instruction * Partition -> Task
+    Result   : Int                                       -> Result
+    DoneTask : Int * Term                                -> DoneTask
+    FailTask : Int * Term                                -> FailTask
     
-    Done       : Term                        -> Result
-    Fail       : Term                        -> Result
-    Dependency : List(Int)                   -> Result
-
-		Task : Int * Instruction -> StoreTask
-		TaskDep : Int * Int -> StoreTaskDep
+    Done       : Term      -> Result
+    Fail       : Term      -> Result
+    Dependency : List(Int) -> Result
+		
 rules // Creation
   
   new-task(|task*) = new-task(|task*, <dependent-tasks>)
@@ -31,7 +31,8 @@ rules // Creation
   new-task(|task*, deps, name):
     instruction -> Result(name)
     with
-      task := Task(name, deps, instruction);
+    	// TODO: Partition should be a term argument.
+      task := Task(name, deps, instruction, <index-get-current-partition>);
       <iset-add(|task)> task*
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
@@ -41,39 +42,28 @@ rules // Creation
   
 rules // Execution
   
-  perform-tasks(|partition) = where(map(store-task(|partition))); repeat(perform-task(|partition)); map(debug(!"ERROR: "))
+  perform-tasks = repeat(perform-task); map(debug(!"ERROR: "))
     
-  perform-task(|partition) =
-    split-fetch-keep(perform-single-task) => (t1*, (n, res, i), t2*);
+  perform-task =
+    split-fetch-keep(perform-single-task) => (t1*, (n, res, i, p), t2*);
     switch !res
       case ?Done(tr):
-        <index-add(|partition)> DoneTask(n, tr);
-        <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
+        <index-add(|p)> DoneTask(n, tr);
+        <completed-task(|n, tr)> [t1*, t2*]
       case ?Fail(fr) => tr:
-        <index-add(|partition)> FailTask(n, fr);
-        <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
+        <index-add(|p)> FailTask(n, fr);
+        <completed-task(|n, tr)> [t1*, t2*]
       case ?Dependency(d*):
-      	<store-task-deps(|partition, n)> d*;
-      	![t1*, t2*, Task(n, d*, i)]
+      	<store-task-deps(|p, n)> d*;
+      	![t1*, t2*, Task(n, d*, i, p)]
       end
 
   perform-single-task:
-    Task(n, [], i) -> (n, <perform-task> i, i)
-
-rules // Store
-	
-	store-task(|partition):
-		Task(nr, d*, i) -> <id>
-		where
-			<index-add(|partition)> Task(nr, i);
-			<store-task-deps(|partition, nr)> d*
-			
-	store-task-deps(|partition, nr) =
-		map(create-task-dep(|nr)); index-add-all(|partition)
-	
-	create-task-dep(|nr) =
-		!TaskDep(nr, <id>)
+    Task(n, [], i, p) -> (n, <perform-task> i, i, p)
     
+  completed-task(|n, res) =
+  	map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)))
+
 rules // Utility
   
   effectively(s) = ?t; s; not(?t)  

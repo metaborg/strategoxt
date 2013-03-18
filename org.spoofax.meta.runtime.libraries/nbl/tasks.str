@@ -107,7 +107,7 @@ rules // Projections
   
   /** @internal */
   nabl-uri-impl:
-    Task(uri, _, _) -> uri
+    Task(uri, _, _, _) -> uri
   
   /** @internal */  
   nabl-uri-impl:

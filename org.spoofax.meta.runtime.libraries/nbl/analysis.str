@@ -3,6 +3,7 @@ module nbl/analysis
 imports
   
   task/core
+  task/store
   index/core
   index/query
   nbl/collect
@@ -32,7 +33,7 @@ rules // Single file analysis
       <index-add-all(|partition)> entries
     with // Perform tasks
       nabl-collect-reads(
-        errors := <perform-tasks(|partition)> tasks
+        errors := <perform-tasks> tasks
       ) => reads;
           
       <index-add-all(|partition)> reads
@@ -84,7 +85,8 @@ rules // Multi file analysis
       index-transaction(
         oldEntry*           := <filter(nabl-diff-entry)> <index-get-all-in-partition> partition;
         <index-clear-partition> partition;
-        <index-add-all(|partition)> entry*
+        <index-add-all(|partition)> entry*;
+        <map(store-task)> task* 
       )
   
   nabl-analyze-multiple-perform:
@@ -92,7 +94,7 @@ rules // Multi file analysis
       Result(partition, ast, ast', oldEntry*, entry*, error*, [])
     with
       nabl-collect-reads(
-        error* := <perform-tasks(|partition)> task*
+        error* := <perform-tasks> task*
       ) => reads;
       <index-add-all(|partition)> reads
       
