@@ -11,17 +11,27 @@ signature
   	
 		Task    : Int * Instruction -> StoreTask
 		TaskDep : Int * Int         -> StoreTaskDep
+		
+		TaskPartition : Partition
 
 rules
+		
+	task-partition:
+		(partition, _) -> (partition, TaskPartition())
+		
+	task-partition:
+		partition -> (partition, TaskPartition())
+		where
+			<is-string> partition
   
 	store-task:
 		Task(nr, d*, i, p) -> <id>
 		where
-			<index-add(|p)> Task(nr, i);
+			<index-add(|<task-partition> p)> Task(nr, i);
 			<store-task-deps(|p, nr)> d*
 			
 	store-task-deps(|partition, nr) =
-		map(create-task-dep(|nr)); index-add-all(|partition)
+		map(create-task-dep(|nr)); index-add-all(|<task-partition> partition)
 	
 	create-task-dep(|nr) =
 		!TaskDep(nr, <id>)
