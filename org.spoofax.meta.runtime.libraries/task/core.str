@@ -27,12 +27,12 @@ signature
 rules // Creation
   
   new-task(|task*) = new-task(|task*, <dependent-tasks>)
-  new-task(|task*, deps) = new-task(|task*, deps, <address>) 
-  new-task(|task*, deps, name):
-    instruction -> Result(name)
+  new-task(|task*, deps):
+    instruction -> Result(nr)
     with
-    	// TODO: Partition should be a term argument.
-      task := Task(name, deps, instruction, <index-get-current-partition>);
+    	partition := <index-get-current-partition>;      // TODO: Partition should be a term argument.
+    	nr        := <address> (instruction, partition); // TODO: Don't make tasks specific to their partition.
+      task      := Task(nr, deps, instruction, partition);
       <iset-add(|task)> task*
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set

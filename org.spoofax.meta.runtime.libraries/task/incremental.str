@@ -30,6 +30,8 @@ rules // Incremental
   	(old, new) -> [added*, depTask*]
   	with
   		(added*, removed*) := <task-diff> (old, new);
+  		<map(debug(!"Added task: "))> added*;
+  		<map(debug(!"Removed task: "))> removed*;
   		<map(task-nr; debug(!"Removing results for: "); task-remove-result)> removed*;
   		depTask* := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent task: "))> [added*, removed*]
   		
