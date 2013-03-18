@@ -51,12 +51,8 @@ rules // Reference resolution
   nabl-resolve-collect-one = nabl-resolve-collect; Hd
   
   nabl-resolve-results:
-    Result(number) -> results
-    where
-      if not(results := <nabl-get-value> DoneTask(number, ())) then
-        results := <nabl-get-value> FailTask(number, ()) 
-      end
-      
+    Result(number) -> <nabl-get-value> DoneTask(number, ())
+
   nabl-resolve-uses:
     Use(Result(number)) -> def*
     where

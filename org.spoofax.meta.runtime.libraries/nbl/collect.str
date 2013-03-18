@@ -208,27 +208,24 @@ rules // generic analysis of uses
 		UseCandidate(ns, prop*, Current(), range) -> result
 		where
 			uri      := <lookup-uri(|lang, ns)> uri*;
-			propdep* := <dependent-tasks> prop*;
-			result   := <new-task(|task*, propdep*)> Resolve([uri], ns, name, prop*, range)
+			result   := <new-task(|task*)> Resolve(uri, ns, name, prop*, range)
       
   // named candidate in current scope
   nabl-use-candidate(|lang, task*, uri*, term):
     UseCandidate(ns, name, prop*, Current(), range)-> result
     where
       uri      := <lookup-uri(|lang, ns)> uri*;
-      propdep* := <dependent-tasks> prop*;
-      namedep* := <dependent-tasks> name;
-      result   := <new-task(|task*, [propdep*, namedep*])> Resolve([uri], ns, name, prop*, range)
-    
+      result   := <new-task(|task*)> Resolve(uri, ns, name, prop*, range)
+   
+  // TODO: This should be done with a Choice. And is this not a special case of nabl-use-candidate below?
 	// candidate in another scope (result of resolution)	  
-	nabl-use-candidate(|lang, task*, uri*, name):
-		c@UseCandidate(ns, prop*, target-uri*, range) -> result
+	/*nabl-use-candidate(|lang, task*, uri*, name):
+		UseCandidate(ns, prop*, target-uri*, range) -> result
 		where
 		  <map(?Result(_))> target-uri*;
 		  propdep* := <dependent-tasks> prop*;
 		  uridep*  := <dependent-tasks> target-uri*;
-			result   := <new-task(|task*, [propdep*, uridep*])> Resolve(target-uri*, ns, name, prop*, range)
-			//; u        := <new-use(|elem*, result)>
+			result   := <new-task(|task*, [propdep*, uridep*])> Resolve(target-uri*, ns, name, prop*, range)*/
 		  
 	// candidate in context
   nabl-use-candidate(|lang, task*, uri*, name):
