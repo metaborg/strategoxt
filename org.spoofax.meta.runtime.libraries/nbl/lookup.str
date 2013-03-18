@@ -64,14 +64,18 @@ rules /** @internal Index-based lookup */
       end
     
   nabl-lookup-uri-scoped(create-template, constraint|namespace, name):
-    uri -> [entry*, importEntry*]
+    uri -> [entry*, importEntry'*]
     with
       // Standard lookup
       entry*       := <nabl-standard-lookup(create-template|namespace, name); filter(constraint)> uri;
       
       // Imports & aliases
-      importEntry* := <nabl-lookup-imported-entries(create-template|<nabl-uri-language> uri, namespace, name); filter(constraint)> uri <+
-      importEntry* := Stall()
+      importEntry* := <nabl-lookup-imported-entries(create-template|<nabl-uri-language> uri, namespace, name)> uri;
+      if d := <nabl-collect-dependency> importEntry* then
+      	importEntry'* := [d]
+      else
+      	importEntry'* := <filter(constraint)> importEntry*
+      end
       
   nabl-standard-lookup-nonunique(create-template|namespace, name) =
     nabl-extend-uri(|namespace, name, NonUnique());
@@ -131,29 +135,39 @@ rules /** @internal Index based visibility */
 rules /** @internal Imports */
 
   nabl-lookup-imported-entries(create-template|language, namespace, name):
-    uri -> [namedEntry*, unnamedEntry*]
-    where
+    uri -> result
+    with
       namedImportURI*   := <nabl-get-import-uris-named(|language, namespace, name)> uri;
-      namedEntry*       := <mapconcat(create-template; nabl-get-all)> namedImportURI*;
       unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, namespace)> uri;
-      unnamedEntry*     := <mapconcat(nabl-standard-lookup(create-template|namespace, name))> unnamedImportURI*
+      if <nabl-has-dependency> namedImportURI* <+ <nabl-has-dependency> unnamedImportURI* then
+      	result := [namedImportURI*, unnamedImportURI*]
+      else
+	      namedEntry*   := <mapconcat(create-template; nabl-get-all)> namedImportURI*;
+	      unnamedEntry* := <mapconcat(nabl-standard-lookup(create-template|namespace, name))> unnamedImportURI*;
+	      result        := [namedEntry*, unnamedEntry*]
+      end
       
   nabl-visible-imported-entries(create-template|language, namespace, prefix):
-    uri -> unnamedEntry*
-    where
+    uri -> result
+    with
       unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, namespace)> uri;
-      unnamedEntry*     := <mapconcat(nabl-standard-visible(create-template|namespace, prefix))> unnamedImportURI* 
+      if <nabl-has-dependency> unnamedImportURI* then
+      	result := unnamedImportURI*
+    	else
+      	unnamedEntry* := <mapconcat(nabl-standard-visible(create-template|namespace, prefix))> unnamedImportURI*;
+      	result        := unnamedEntry*
+      end 
 
   nabl-get-import-uris-unnamed(|language, namespace) = nabl-get-import-uris-unnamed(|[], language, namespace)
 
   nabl-get-import-uris-unnamed(|seen, language, namespace):
     uri -> [importURI*, transitiveImportURI*]
-    where
+    with
       importResult*        := <nabl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <mapconcat(nabl-resolve-results)> importResult*;
+      importURI*           := <mapconcat(nabl-resolve-results) <+ nabl-create-dependency; ![<id>]> importResult*;
       importedResult*      := <nabl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <mapconcat(nabl-resolve-results)> importedResult*;
-      transitiveImportURI* := <mapconcat(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace))> importedURI*
+      importedURI*         := <mapconcat(nabl-resolve-results) <+ nabl-create-dependency; ![<id>]> importedResult*;
+      transitiveImportURI* := <mapconcat(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace)) <+ nabl-create-dependency> importedURI*
 
   nabl-get-import-uris-unnamed-transitive(|seen, language, namespace):
     uri -> transitiveImportURI*
@@ -163,9 +177,9 @@ rules /** @internal Imports */
     
   nabl-get-import-uris-named(|language, namespace, name):
     uri -> importURI*
-    where
+    with
       importResult* := <nabl-get-all-properties(|Import(language, namespace, name))> uri;
-      importURI*    := <mapconcat(nabl-resolve-results)> importResult*
+      importURI*    := <mapconcat(nabl-resolve-results) <+ nabl-create-dependency; ![<id>]> importResult*
 
 rules /** @internal Helpers */
   

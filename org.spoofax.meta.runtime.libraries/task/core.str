@@ -18,8 +18,9 @@ signature
     DoneTask : Int * Term                    -> DoneTask
     FailTask : Int * Term                    -> FailTask
     
-    Done     : Term                          -> Result
-    Fail     : Term                          -> Result
+    Done       : Term                        -> Result
+    Fail       : Term                        -> Result
+    Dependency : List(Int)                   -> Result
 
 rules // Creation
   
@@ -41,17 +42,20 @@ rules // Execution
   perform-tasks(|partition) = repeat(perform-task(|partition)); map(debug(!"ERROR: "))
     
   perform-task(|partition) =
-    split-fetch-keep(perform-single-task) => (t1*, (n, res), t2*);
+    split-fetch-keep(perform-single-task) => (t1*, (n, res, i), t2*);
     switch !res
       case ?Done(tr):
-        <index-add(|partition)> DoneTask(n, tr)
+        <index-add(|partition)> DoneTask(n, tr);
+        <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
       case ?Fail(fr) => tr:
-        <index-add(|partition)> FailTask(n, fr)
-      end;
-    <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
-   
+        <index-add(|partition)> FailTask(n, fr);
+        <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
+      case ?Dependency(d*):
+      	![t1*, t2*, Task(n, d*, i)]
+      end
+
   perform-single-task:
-    Task(n, [], t) -> (n, <perform-task> t)
+    Task(n, [], i) -> (n, <perform-task> i, i)
     
 rules // Utility
   

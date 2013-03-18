@@ -19,8 +19,6 @@ signature
     Choice   : List(String)                                   -> Instruction
     PropCalc : Property * Term                                -> Instruction
     Match    : ID * List(Term) * Term                         -> Instruction
-    
-    Stall : Instruction
         
 rules // Resolve
   
@@ -34,8 +32,8 @@ rules // Resolve
       switch !resolved*
         case ?[]: 
           result := Fail(<map(nabl-extend-uri(|namespace, name', ()))> uri*)
-        case fetch(?Stall()) :
-          fail
+        case d := <nabl-collect-dependency>:
+          result := d
         otherwise:
           result := Done(<filter(nabl-uri)> resolved*)
       end
@@ -53,8 +51,8 @@ rules // Resolve
     entry -> entry'
     where
       results := <map(nabl-resolve-constraint-one(|entry))> prop*;
-      if <fetch(?Stall())> results then
-        entry' := Stall()
+      if d := <nabl-collect-dependency> results then
+        entry' := d
       else
         entry' := entry
       end
@@ -68,9 +66,9 @@ rules // Resolve
         <eq> (expectedValue', value');
         entry' := entry
       else
-        entry' := Stall()
+        entry' := <nabl-create-dependency> value
       end
-
+		
 	perform-task:
  		Choice(choices) -> result
 		where
@@ -89,6 +87,21 @@ rules // Utility
   
   nabl-result-number:
     Result(num) -> num
+
+rules // Task dependency utilities
+	
+  nabl-create-dependency =
+  	collect-all(?Result(<id>));
+  	!Dependency(<id>)
+  	
+	nabl-has-dependency =
+		fetch(?Dependency(_))
+		
+	nabl-collect-dependency =
+		collect-all(?Dependency(<id>));
+		concat;
+		where(Hd);
+		!Dependency(<id>)
 
 rules // Projections
   
