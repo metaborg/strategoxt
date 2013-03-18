@@ -1,0 +1,36 @@
+module analysis/single
+
+imports
+	
+  task/core
+  task/store
+  task/incremental
+  index/core
+  index/query
+  nbl/collect
+  nbl/tasks
+  nbl/incremental
+  nbl/uri
+  
+rules // Single file analysis
+  
+  nabl-analyze(|language, path, project-path):
+    ast -> (ast', entry*, error*, [])
+    with // Setup index
+      partition := $[[project-path]/[path]];
+      index-setup(|language, [project-path], partition);
+      
+      oldTask* := <task-olds> partition;
+      <task-clear> partition
+    with // Collect tasks
+      (ast', entry*, newTask*) := <nabl-collect(|path, Language(language))> ast;
+      
+      <collect-partition; index-clear-partition> partition;
+      <index-add-all(|<collect-partition> partition)> entry*;
+      <map(store-task)> newTask*
+    with // Perform tasks
+      task*  := <task-incremental; make-set> (oldTask*, newTask*);
+      <map(task-nr; debug(!"Removing results for: "); task-remove-result)> task*;
+      <map(debug(!"Performing tasks: "))> task*;
+      error* := <perform-tasks> task*
+      // TODO: update markers for other partitions.
