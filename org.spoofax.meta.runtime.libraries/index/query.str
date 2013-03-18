@@ -12,6 +12,17 @@ rules
    */
   index-get-all:
     template -> <prim("LANG_index_get", template)>
+    
+  /**
+   * Get tuples of all index entries that match the given template with their partition
+   *
+   * Example:
+   *   <index-get-all> Def([Entity(), "Bar"]) => [(("fullpath/file.ext", "subfile"), Def([Entity(), "Bar"])), ...]
+   *
+   * @type template -> List(elem)
+   */
+  index-get-all-with-partitions:
+    template -> <prim("LANG_index_get_with_partitions", template)>
 
   /**
    * Get all children entries of the given template.
