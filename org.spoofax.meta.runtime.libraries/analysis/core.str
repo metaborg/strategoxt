@@ -1,4 +1,4 @@
-module nbl/analysis
+module analysis/core
 
 imports
   
