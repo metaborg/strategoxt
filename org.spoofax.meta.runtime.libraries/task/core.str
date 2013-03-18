@@ -16,9 +16,10 @@ signature
     Task     : Int * List(Int) * Instruction -> Task
     Result   : Int                           -> Result
     DoneTask : Int * Term                    -> DoneTask
+    FailTask : Int * Term                    -> FailTask
     
     Done       : Term                        -> Result
-    Fail       :                                Result
+    Fail       : Term                        -> Result
     Dependency : List(Int)                   -> Result
 
 rules // Creation
@@ -46,8 +47,9 @@ rules // Execution
       case ?Done(tr):
         <index-add(|partition)> DoneTask(n, tr);
         <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
-      case ?Fail():
-      	<map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, Fail()))))))> [t1*, t2*]
+      case ?Fail(fr) => tr:
+        <index-add(|partition)> FailTask(n, fr);
+        <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
       case ?Dependency(d*):
       	![t1*, t2*, Task(n, d*, i)]
       end

@@ -23,13 +23,15 @@ signature
 rules // Resolve
   
   perform-task: 
-    Resolve(uri, namespace, name, prop*, range) -> result
+    Resolve(uri*, namespace, name, prop*, range) -> result
     where
       name' := <rm-annotations> name;
-      resolved* := <perform-task-resolve(|namespace, name', prop*, range)> uri;
+      // TODO: Get rid of flatten-list?
+      // GW: should this simply be a concat?
+      resolved* := <flatten-list; remove-all(?Fail(_)); mapconcat(perform-task-resolve(|namespace, name', prop*, range))> uri*;
       switch !resolved*
         case ?[]: 
-          result := Fail()
+          result := Fail(<map(nabl-extend-uri(|namespace, name', ()))> uri*)
         case d := <nabl-collect-dependency>:
           result := d
         otherwise:
@@ -37,9 +39,9 @@ rules // Resolve
       end
       
   perform-task-resolve(|namespace, name, prop*, range): 
-    term -> resolved*
+    t -> resolved*
     where
-      uri := <nabl-uri> term;
+      uri := <nabl-uri> t;
       switch !range
         case All(): resolved* := <nabl-lookup-definitions(nabl-resolve-constraint(|prop*)|namespace, name)> uri
         case One(): resolved* := <nabl-lookup-definitions-scoped(nabl-resolve-constraint(|prop*)|namespace, name)> uri
@@ -70,8 +72,8 @@ rules // Resolve
 	perform-task:
  		Choice(choices) -> result
 		where
-			result := Done(<remove-all(?Fail()); concat; ?[_|_]> choices) <+
-			result := Fail()
+			result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choices) <+
+			result := Fail(<mapconcat(?Fail(<id>))> choices) 
 
 rules // Property calculation
             
@@ -114,3 +116,7 @@ rules // Projections
   /** @internal */
   nabl-uri-impl:
     DoneTask(_, uri) -> uri
+    
+  /** @internal */
+  nabl-uri-impl:
+    FailTask(_, uri) -> uri
