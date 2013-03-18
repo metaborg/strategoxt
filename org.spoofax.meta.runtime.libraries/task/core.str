@@ -22,6 +22,8 @@ signature
     Fail       : Term                        -> Result
     Dependency : List(Int)                   -> Result
 
+		Task : Int * Instruction -> StoreTask
+		TaskDep : Int * Int -> StoreTaskDep
 rules // Creation
   
   new-task(|task*) = new-task(|task*, <dependent-tasks>)
@@ -39,7 +41,7 @@ rules // Creation
   
 rules // Execution
   
-  perform-tasks(|partition) = repeat(perform-task(|partition)); map(debug(!"ERROR: "))
+  perform-tasks(|partition) = where(map(store-task(|partition))); repeat(perform-task(|partition)); map(debug(!"ERROR: "))
     
   perform-task(|partition) =
     split-fetch-keep(perform-single-task) => (t1*, (n, res, i), t2*);
@@ -51,11 +53,26 @@ rules // Execution
         <index-add(|partition)> FailTask(n, fr);
         <map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, tr))))))> [t1*, t2*]
       case ?Dependency(d*):
+      	<store-task-deps(|partition, n)> d*;
       	![t1*, t2*, Task(n, d*, i)]
       end
 
   perform-single-task:
     Task(n, [], i) -> (n, <perform-task> i, i)
+
+rules // Store
+	
+	store-task(|partition):
+		Task(nr, d*, i) -> <id>
+		where
+			<index-add(|partition)> Task(nr, i);
+			<store-task-deps(|partition, nr)> d*
+			
+	store-task-deps(|partition, nr) =
+		map(create-task-dep(|nr)); index-add-all(|partition)
+	
+	create-task-dep(|nr) =
+		!TaskDep(nr, <id>)
     
 rules // Utility
   
