@@ -63,7 +63,7 @@ rules
     list-loop(with(index-add(|partition)))
     
   /**
-   * Removes given element from the index that is contained in given partition.
+   * Removes given entry from the index that is contained in given partition.
    *
    * Example:
    *   <index-remove(|"fullpath/file.ext")> Def([Entity(), "Bar"])
@@ -76,17 +76,16 @@ rules
     prim("LANG_index_remove", <id>, partition)
     
   /**
-   * Removes all given elements from the index that are contained in given partition.
+   * Removes entries with given template from the index (from all partitions).
    *
    * Example:
-   *   <index-remove-all(|"fullpath/file.ext")> [Def([Entity(), "Bar"]), ...]
-   *   <index-remove-all(|("fullpath/file.ext", "subfile"))> [Def([Entity(), "Bar"]), ...]
-   *
-   * @param partition  The partition to remove the elements from.
-   * @type List(x) -> ?List(x)
+   *   <index-remove-all> Def([Entity(), "Bar"])
+   * 
+   * @param partition The partition to remove the element from.
+   * @type x -> ?x
    */
-  index-remove-all(|partition) =
-    list-loop(with(index-remove(|partition)))
+  index-remove-all =
+    prim("LANG_index_remove_all", <id>)
     
   /**
    * Removes all elements from the index that are contained in given partition.
