@@ -51,6 +51,10 @@ signature
   constructors // property
     
     Prop : Property * Value -> Prop
+    
+  constructors // partition
+  
+  	CollectPartition : Partition
 	
 strategies // generic traversal
 	
@@ -337,3 +341,10 @@ rules // helpers
 	lookup-uri(|lang, ns):
 	  uri* -> <<lookup> (ns, uri*) <+ <nabl-base-uri> lang>
 	  
+	collect-partition:
+		(partition, _) -> (partition, CollectPartition())
+		
+	collect-partition:
+		partition -> (partition, CollectPartition())
+		where
+			<is-string> partition
