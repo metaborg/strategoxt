@@ -20,3 +20,5 @@ syntax/Index*.generated.esv
 utils
 lib/*.generated.str
 lib-refactoring/*.generated.str
+/lib
+/include
