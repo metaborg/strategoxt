@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?eclipse version="3.0"?>
+
+<plugin>
+       <extension point="org.eclipse.imp.runtime.languageDescription">
+          <language extensions="ind" description="Index" language="Index" derivedFrom="DynamicRoot" validator="org.metaborg.meta.lang.index.IndexValidator" validatorClass="org.metaborg.meta.lang.index.IndexValidator"></language>
+       </extension>
+       <extension id="org.metaborg.meta.lang.index.parser" name="Index Parser" point="org.eclipse.imp.runtime.parser">
+          <parser class="org.metaborg.meta.lang.index.IndexParseController" language="Index">
+          </parser>
+       </extension>    
+    </plugin>

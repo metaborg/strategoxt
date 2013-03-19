@@ -1,0 +1,82 @@
+templates // URIs
+ 
+  URI.URI             = <<Language>://<Segment*; separator="/">>
+
+  Language.Language   = <<ID>>
+  
+  Segment.ID          = <<ID>.<ID>.<Qualifier>>
+  Segment.Subsequent  = <subsequent(<String>)>
+  Segment.Anonymous   = <anonymous(<String>)>
+  Segment.ExternalDef = <context(<String>)>
+  
+  Qualifier.Unique    = <u(<String>)>
+  Qualifier.Unique    = <u(*)>
+  Qualifier.NonUnique = <*>
+  
+templates // index entries
+ 
+  Index.Index = <<Partition*>>
+  
+  Partition.Partition = <
+  partition
+    <String><Entry*>
+  >
+  
+  Entry.Global    = <
+  global <URI>>
+  
+  Entry.Global    = <
+	global <URI> {<Entry*>
+	}>
+  
+  Entry.Def       = <
+  binding instance <URI>>
+  
+  Entry.Alias     = [
+  alias [URI] -> [URI]]
+  
+  Entry.Use       = <
+  binding prospect <URI>>
+  
+  Entry.Prop      = <
+  property <URI>.<Property> = <Term>>
+
+  Entry.DoneTask  = <
+  result <TaskID> = <Term>>
+  
+  Entry.FailTask  = <
+  error <TaskID> = <Term>>
+
+  Entry.StoreTask = <
+  task <Int>
+    <Instruction>>
+
+  Entry.StoreTaskDep = [
+  dependency [Int] -> [Int]]
+  
+templates // tasks
+  
+  Task.Task = <
+  task <TaskID> depends on <Int*; separator=", ">
+    <Instruction>>
+
+  Instruction.Resolve = <
+  resolve <URI>/<ID>.<ID> <Prop> <Range>>
+  
+  Instruction.Choice = <
+  choose <Term+; separator=" || ">>
+
+  Instruction.PropCalc = <
+  calculate <ID> of <Term>>
+    
+  Instruction.Match = <
+  match <ID>(<Term*; separator=", ">) with <Term> >
+  
+templates // results 
+
+  Result.Done       = <done <Term>>
+  Result.Fail       = <failed <Term>>
+  Result.Dependency = <depends on <Int*; separator=", ">>
+  
+  Term.Result = <result <TaskID>>
+

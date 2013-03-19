@@ -1,0 +1,58 @@
+module Indexgenerated
+exports
+  context-free syntax
+    Language "://" {Segment "/"}* -> URI       {cons("URI")}
+    ID                            -> Language  {cons("Language")}
+    ID "." ID "." Qualifier       -> Segment   {cons("ID")}
+    "subsequent" "(" String ")"   -> Segment   {cons("Subsequent")}
+    "anonymous" "(" String ")"    -> Segment   {cons("Anonymous")}
+    "context" "(" String ")"      -> Segment   {cons("ExternalDef")}
+    "u" "(" String ")"            -> Qualifier {cons("Unique")}
+    "u" "(" "*" ")"               -> Qualifier {cons("Unique")}
+    "*"                           -> Qualifier {cons("NonUnique")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> URI       {cons("COMPLETION-URI")}
+    CONTENTCOMPLETE -> Language  {cons("COMPLETION-Language")}
+    CONTENTCOMPLETE -> Segment   {cons("COMPLETION-Segment")}
+    CONTENTCOMPLETE -> Qualifier {cons("COMPLETION-Qualifier")}
+
+  context-free syntax
+    Partition*                           -> Index     {cons("Index")}
+    "partition" String Entry*            -> Partition {cons("Partition")}
+    "global" URI                         -> Entry     {cons("Global")}
+    "global" URI "{" Entry* "}"          -> Entry     {cons("Global")}
+    "binding" "instance" URI             -> Entry     {cons("Def")}
+    "alias" URI "->" URI                 -> Entry     {cons("Alias")}
+    "binding" "prospect" URI             -> Entry     {cons("Use")}
+    "property" URI "." Property "=" Term -> Entry     {cons("Prop")}
+    "result" TaskID "=" Term             -> Entry     {cons("DoneTask")}
+    "error" TaskID "=" Term              -> Entry     {cons("FailTask")}
+    "task" Int Instruction               -> Entry     {cons("StoreTask")}
+    "dependency" Int "->" Int            -> Entry     {cons("StoreTaskDep")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Index     {cons("COMPLETION-Index")}
+    CONTENTCOMPLETE -> Partition {cons("COMPLETION-Partition")}
+    CONTENTCOMPLETE -> Entry     {cons("COMPLETION-Entry")}
+
+  context-free syntax
+    "task" TaskID "depends" "on" {Int ","}* Instruction -> Task        {cons("Task")}
+    "resolve" URI "/" ID "." ID Prop Range              -> Instruction {cons("Resolve")}
+    "choose" {Term "||"}+                               -> Instruction {cons("Choice")}
+    "calculate" ID "of" Term                            -> Instruction {cons("PropCalc")}
+    "match" ID "(" {Term ","}* ")" "with" Term          -> Instruction {cons("Match")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Task        {cons("COMPLETION-Task")}
+    CONTENTCOMPLETE -> Instruction {cons("COMPLETION-Instruction")}
+
+  context-free syntax
+    "done" Term               -> Result {cons("Done")}
+    "failed" Term             -> Result {cons("Fail")}
+    "depends" "on" {Int ","}* -> Result {cons("Dependency")}
+    "result" TaskID           -> Term   {cons("Result")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Result {cons("COMPLETION-Result")}
+    CONTENTCOMPLETE -> Term   {cons("COMPLETION-Term")}

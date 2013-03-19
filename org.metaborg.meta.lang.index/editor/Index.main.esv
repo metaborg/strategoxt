@@ -1,0 +1,16 @@
+module Index.main
+
+imports Index-Builders Index-Refactorings Index-Colorer Index-Completions Index-Folding Index-Outliner Index-References Index-Syntax
+
+language General properties
+                  
+  name          : Index
+  id            : org.metaborg.meta.lang.index
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the Index language"
+  url           : http://strategoxt.org
+                  
+  extensions    : ind
+  table         : include/Index.tbl
+  start symbols : Start
