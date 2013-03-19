@@ -87,7 +87,8 @@ strategies // generic traversal
 		try(nabl-use-site(|lang, elem*, task*, uri'*, state*));
     try(nabl-import-site(|lang, elem*, task*, child-uri*, state*));
     try(nabl-prop-site(|elem*, task*, state*));
-    try(nabl-implicit-def-site(|lang, partition, unique*, elem*, child-uri*, state*))
+    try(nabl-implicit-def-site(|lang, partition, unique*, elem*, child-uri*, state*));
+    try(nabl-constraint-site(|lang, task*))
 	
 	nabl-siblings(|lang, partition, unique*, elem*, task*, uri*) = 
 		[] + 
