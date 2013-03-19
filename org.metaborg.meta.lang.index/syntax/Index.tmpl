@@ -36,8 +36,10 @@ templates // index entries
   Entry.Alias     = [
   alias [URI] -> [URI]]
   
+  // Entry.Use       = <
+  // binding prospect <URI>>
   Entry.Use       = <
-  binding prospect <URI>>
+  binding prospect <Term>>
   
   Entry.Prop      = <
   property <URI>.<ID> = <Term>>
@@ -89,5 +91,7 @@ templates // results
   Result.Fail       = <failed <Term>>
   Result.Dependency = <depends on <INT*; separator=", ">>
   
-  Term.Result = <result <BTerm>>
+  Term.Result = <result <TaskID>>
+  
+  Term = <<BTerm>>
 

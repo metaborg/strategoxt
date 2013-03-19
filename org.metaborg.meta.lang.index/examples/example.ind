@@ -2,7 +2,9 @@ partition "foo/bar.txt"
 
   binding instance CSharp://Namespace.name.u("1")
   
-  binding prospect CSharp://Namespace.name.*
+  /* binding prospect CSharp://Namespace.name.* */
+  
+  binding prospect result 55
   
   alias CSharp://Namespace.name.* -> CSharp://Namespace.name.u("1")
       
@@ -12,7 +14,7 @@ partition "foo/bar.txt"
   					NablNsField.this.u("0")/
   						NablNsClass.B.u("0")/
   							NablNsNamespace.Test.*.type 
-  	= result Type("B")
+  	= Term("foo")
     
   task 123
     resolve Namespace name in CSharp://
@@ -36,7 +38,9 @@ partition "foo/bar.txt"
 
   binding instance CSharp://Namespace.name.u("1")
   
-  binding prospect CSharp://Namespace.name.*
+  /* binding prospect CSharp://Namespace.name.* */
+  
+  binding prospect result 42
   
   alias CSharp://Namespace.name.* -> CSharp://Namespace.name.u("1")
       
