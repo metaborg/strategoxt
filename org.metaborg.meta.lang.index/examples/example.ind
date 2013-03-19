@@ -1,2 +1,27 @@
-partition
+partition "foo/bar.txt"
+
+  binding instance CSharp://Namespace.name.u("1")
   
+  binding prospect CSharp://Namespace.name.*
+  
+  alias CSharp://Namespace.name.* -> CSharp://Namespace.name.u("1")
+      
+  property CSharp://Namespace.name.u("1").property = result 345
+    
+  task 123
+    resolve Namespace name in CSharp://
+    
+  task 234
+    calculate property of result 123
+    
+  task 240
+    choose result 234 || result 235 || result 236
+    
+  task 345
+    match match123() with result 240
+    
+  dependency 123 -> 234
+  
+  result 123 = result 0
+  
+  error 234 = result 0

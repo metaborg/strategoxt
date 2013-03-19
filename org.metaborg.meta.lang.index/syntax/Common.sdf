@@ -17,7 +17,6 @@ exports
     
     [\*]                             -> CommentChar
     "/*" (~[\*] | CommentChar)* "*/" -> LAYOUT
-    "//" ~[\n\r]* ([\n\r] | EOF)     -> LAYOUT
     
     -> EOF
   

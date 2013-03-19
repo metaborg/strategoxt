@@ -5,11 +5,11 @@ templates // URIs
   Language.Language   = <<ID>>
   
   Segment.ID          = <<ID>.<ID>.<Qualifier>>
-  Segment.Subsequent  = <subsequent(<String>)>
-  Segment.Anonymous   = <anonymous(<String>)>
-  Segment.ExternalDef = <context(<String>)>
+  Segment.Subsequent  = <subsequent(<STRING>)>
+  Segment.Anonymous   = <anonymous(<STRING>)>
+  Segment.ExternalDef = <context(<STRING>)>
   
-  Qualifier.Unique    = <u(<String>)>
+  Qualifier.Unique    = <u(<STRING>)>
   Qualifier.Unique    = <u(*)>
   Qualifier.NonUnique = <*>
   
@@ -19,7 +19,7 @@ templates // index entries
   
   Partition.Partition = <
   partition
-    <String><Entry*>
+    <STRING><Entry*>
   >
   
   Entry.Global    = <
@@ -39,7 +39,7 @@ templates // index entries
   binding prospect <URI>>
   
   Entry.Prop      = <
-  property <URI>.<Property> = <Term>>
+  property <URI>.<ID> = <Term>>
 
   Entry.DoneTask  = <
   result <TaskID> = <Term>>
@@ -48,20 +48,30 @@ templates // index entries
   error <TaskID> = <Term>>
 
   Entry.StoreTask = <
-  task <Int>
+  task <TaskID>
     <Instruction>>
 
   Entry.StoreTaskDep = [
-  dependency [Int] -> [Int]]
+  dependency [TaskID] -> [TaskID]]
+  
+lexical syntax
+
+  TaskID = INT
   
 templates // tasks
   
   Task.Task = <
-  task <TaskID> depends on <Int*; separator=", ">
+  task <TaskID> depends on <TaskID*; separator=", ">
     <Instruction>>
 
   Instruction.Resolve = <
-  resolve <URI>/<ID>.<ID> <Prop> <Range>>
+  resolve <ID> <ID> in <URI> <Prop> <Range>>
+  
+  Prop.None = <>
+  Prop.Prop = <<ID> = <Term>>
+  
+  Range.All = <>
+  Range.One = <one>
   
   Instruction.Choice = <
   choose <Term+; separator=" || ">>
@@ -76,7 +86,7 @@ templates // results
 
   Result.Done       = <done <Term>>
   Result.Fail       = <failed <Term>>
-  Result.Dependency = <depends on <Int*; separator=", ">>
+  Result.Dependency = <depends on <INT*; separator=", ">>
   
   Term.Result = <result <TaskID>>
 
