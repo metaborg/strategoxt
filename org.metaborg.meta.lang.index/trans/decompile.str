@@ -1,0 +1,76 @@
+module decompile
+
+imports
+	libstrc
+	include/Index
+	lib/task/core
+	lib/nbl/-
+	pp
+	
+rules
+	
+	/*
+	* Convert index entries to actual Index language syntax
+	*
+	*/
+	from-index:
+		(filename, entries*) -> Partition(<from-string> filename, entries'*)
+		where
+			entries'* := <filter(from-nbl <+ from-task <+ debug-fail(!"Failed to rewrite index syntax: "))> entries*
+
+	from-string = is-string; !$["[<id>]"]
+	
+rules // NBL things
+	
+	from-nbl:
+		Use(r) -> Use(<from-task-result> r)
+
+	from-nbl:
+		Def(defuri) -> Def(<from-uri> defuri)
+
+	from-nbl:
+		Alias(uria, urib) -> Alias(<from-uri> uria, <from-uri> urib)
+
+	from-nbl:
+		Prop(uri, prop#(_), val) -> Prop(<from-uri> uri, prop, <from-task-result>)
+
+rules // Task things
+
+	from-task:
+		Task(tnum, tinstr) -> StoreTask($[[tnum]], <from-instr> tinstr)
+	
+	from-task:
+		TaskDep(tnum, deptnum) -> StoreTaskDep($[[tnum]], $[[deptnum]])
+	
+	from-task:
+		DoneTask(tnum, tres) -> DoneTask($[[tnum]], <from-task-result> tres)
+		
+	from-task:
+		FailTask(tnum, tres) -> FailTask($[[tnum]], <from-task-result> tres)
+	
+	from-instr = !PropCalc("property", Result("123"))
+
+	from-task-result = !NoAnnoList(Op("Foobar", [NoAnnoList(Str("\"123\""))]))
+
+rules // Index things
+
+	from-uri = alltd(from-uri-entry)
+ 	
+	from-uri-entry:
+		ID(nspace#(_), name, uniq) -> ID(nspace, name, <try(from-uri-entry)> uniq)
+ 
+	from-uri-entry:
+		Subsequent(s) -> Subsequent(<from-string> s)
+ 
+	from-uri-entry:
+		Unique(s) -> Unique(<from-string> s)
+ 
+	from-uri-entry:
+		Anonymous(s) -> Anonymous(<from-string> s)
+ 
+	from-uri-entry:
+		ExternalDef(s) -> ExternalDef(<from-string> s)
+
+rules
+	
+	debug-fail(s) = debug(s);fail

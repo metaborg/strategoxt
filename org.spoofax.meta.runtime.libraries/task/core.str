@@ -44,7 +44,7 @@ rules // Creation
   
 rules // Execution
   
-  perform-tasks(|partition) = where(map(store-task(|partition))); repeat(perform-task(|partition)); map(debug(!"ERROR: "))
+  perform-tasks(|partition) = where(map(store-task(|partition))); repeat(perform-task(|partition))
     
   perform-task(|partition) =
     split-fetch-keep(perform-single-task) => (t1*, (n, res, i), t2*);

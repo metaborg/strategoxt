@@ -15,6 +15,7 @@ imports
   check
   generate
   refactor
+  decompile
 
 rules // Analysis
   

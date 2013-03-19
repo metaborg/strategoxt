@@ -6,11 +6,11 @@ templates // URIs
   Language.Language   = <<ID>>
   
   Segment.ID          = <<ID>.<ID>.<Qualifier>>
-  Segment.Subsequent  = <subsequent(<Str>)>
-  Segment.Anonymous   = <anonymous(<Str>)>
-  Segment.ExternalDef = <context(<Str>)>
+  Segment.Subsequent  = <subsequent(<STRING>)>
+  Segment.Anonymous   = <anonymous(<STRING>)>
+  Segment.ExternalDef = <context(<STRING>)>
   
-  Qualifier.Unique    = <u(<Str>)>
+  Qualifier.Unique    = <u(<STRING>)>
   Qualifier.Unique    = <u(*)>
   Qualifier.NonUnique = <*>
   
@@ -20,7 +20,7 @@ templates // index entries
   
   Partition.Partition = <
   partition
-    <Str><Entry*>
+    <STRING><Entry*>
   >
   
   Entry.Global    = <
