@@ -20,6 +20,9 @@ signature
     
     Done       : Term                        -> Result
     Fail       : Term                        -> Result
+    Error      : Term                        -> Result
+    Warning    : Term                        -> Result
+    Note       : Term                        -> Result
     Dependency : List(Int)                   -> Result
 
 		Task : Int * Instruction -> StoreTask

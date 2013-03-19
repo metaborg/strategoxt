@@ -1,0 +1,22 @@
+module nbl/constraints
+
+imports
+  
+  task/core
+  nbl/interface
+  nbl/tasks
+  
+rules
+
+  nabl-match: ("constraint-error",   term, []) -> Error(<constraint-error> term)
+  nabl-match: ("constraint-warning", term, []) -> Warning(<constraint-warning> term)
+  nabl-match: ("constraint-note",    term, []) -> Note(<constraint-note> term)
+  
+  new-error-check(|task*)   = where(<new-task(|task*)> Match("constraint-error"  , [], <id>))
+  new-warning-check(|task*) = where(<new-task(|task*)> Match("constraint-warning", [], <id>))
+  new-note-check(|task*)    = where(<new-task(|task*)> Match("constraint-note"   , [], <id>))
+  
+  // nabl-constraint-site(|task*) = ?Pattern(...); <new-error-check(|task*)
+  //
+  // constraint-error: Pattern(...) -> (e, msg)
+  

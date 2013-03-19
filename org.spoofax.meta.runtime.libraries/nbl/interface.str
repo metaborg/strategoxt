@@ -16,7 +16,13 @@ strategies // Collect
   
   nabl-prop-site(|elem*, task*, state*) = fail
 
-  nabl-constraint-site(|lang, task*) = fail
+  nabl-constraint-site(|task*) = fail
+  
+  constraint-error   = fail
+  
+  constraint-warning = fail
+  
+  constraint-note    = fail
 
 strategies // Projections
   
