@@ -2,12 +2,17 @@ module Common
 
 exports
 
+
+	context-free syntax
+		
+		"\"" STRING "\"" -> Str {"Str"}
+		
   lexical syntax
   
     [a-zA-Z][a-zA-Z0-9]* -> ID
     "-"? [0-9]+          -> INT
-    
-    "\"" StringChar* "\"" -> STRING
+    %% "\"" StringChar* "\"" -> STRING
+    StringChar* -> STRING
     ~[\"\n]               -> StringChar
     "\\\""                -> StringChar
     BackSlashChar         -> StringChar

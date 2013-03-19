@@ -1,0 +1,36 @@
+module terms/Terms[Var]
+
+imports
+
+	terms/Constants
+	terms/Identifiers
+	
+exports
+
+  sorts PreTerm[[Var]] Term[[Var]]
+  
+  context-free syntax
+
+    Int                                        -> PreTerm[[Var]] {"Int"}
+    Real                                       -> PreTerm[[Var]] {"Real"}
+    String                                     -> PreTerm[[Var]] {"Str"}
+
+    Id "(" {Term[[Var]] ","}* ")"              -> PreTerm[[Var]] {"Op"}
+    String "(" {Term[[Var]] ","}* ")"          -> PreTerm[[Var]] {"OpQ"}
+
+    PreTerm[[Var]]                             -> Term[[Var]]    {"NoAnnoList"}
+
+  context-free syntax
+
+    Char                                       -> PreTerm[[Var]] {"Char"}
+
+    "(" {Term[[Var]] ","}* ")" 	               -> PreTerm[[Var]] {"Tuple"}
+    "[" {Term[[Var]] ","}* "]" 	               -> PreTerm[[Var]] {"List"}
+    "[" {Term[[Var]] ","}* "|" Term[[Var]] "]" -> PreTerm[[Var]] {"ListTail"}
+
+  context-free syntax
+  	
+  	Var -> PreTerm[[Var]] 
+    Var -> Term[[Var]]    {prefer}
+	
+  

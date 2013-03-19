@@ -1,3 +1,4 @@
+
 templates // URIs
  
   URI.URI             = <<Language>://<Segment*; separator="/">>
@@ -5,11 +6,11 @@ templates // URIs
   Language.Language   = <<ID>>
   
   Segment.ID          = <<ID>.<ID>.<Qualifier>>
-  Segment.Subsequent  = <subsequent(<STRING>)>
-  Segment.Anonymous   = <anonymous(<STRING>)>
-  Segment.ExternalDef = <context(<STRING>)>
+  Segment.Subsequent  = <subsequent(<Str>)>
+  Segment.Anonymous   = <anonymous(<Str>)>
+  Segment.ExternalDef = <context(<Str>)>
   
-  Qualifier.Unique    = <u(<STRING>)>
+  Qualifier.Unique    = <u(<Str>)>
   Qualifier.Unique    = <u(*)>
   Qualifier.NonUnique = <*>
   
@@ -19,7 +20,7 @@ templates // index entries
   
   Partition.Partition = <
   partition
-    <STRING><Entry*>
+    <Str><Entry*>
   >
   
   Entry.Global    = <
@@ -88,5 +89,5 @@ templates // results
   Result.Fail       = <failed <Term>>
   Result.Dependency = <depends on <INT*; separator=", ">>
   
-  Term.Result = <result <TaskID>>
+  Term.Result = <result <BTerm>>
 
