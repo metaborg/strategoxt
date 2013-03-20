@@ -80,16 +80,12 @@ rules // Generic term things
 	
 	// HACK there must be some other way of reaching the Stratego parse table than hardcoding it and parsing with Term as start symbol ???
 	from-term =
-			debug(!"A ");
 			strip-annos;
 			pp-aterm-box;
-			debug(!"B ");
 			box2text-string(|200);
-			debug(!"C ");
-			parse-stratego;
-			debug(!"D ")
+			parse-stratego
 
-	parse-stratego =  debug(!"Trying to parse stratego: ");parse-string(|<stratego-parsetable>,"Term");debug(!"Parsed stratego: ")	
+	parse-stratego =  parse-string(|<stratego-parsetable>,"Term")
 	stratego-parsetable = import-term(lib-stratego/Stratego-Sugar-TermStart.tbl)
 
 rules
