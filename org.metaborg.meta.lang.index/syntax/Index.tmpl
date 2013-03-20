@@ -68,7 +68,10 @@ templates // tasks
     <Instruction>>
 
   Instruction.Resolve = <
-  resolve <ID> <ID> in <URI> <Prop> <Range>>
+  resolve <ID> <ID> in <URIorResult> <Prop> <Range>>
+  
+  URIorResult = <<TaskResult>>
+  URIorResult = <<URI>>
   
   Prop.None = <>
   Prop.Prop = <<ID> = <Term>>
@@ -91,7 +94,8 @@ templates // results
   Result.Fail       = <failed <Term>>
   Result.Dependency = <depends on <INT*; separator=", ">>
   
-  Term.Result = <result <TaskID>>
+  TaskResult.Result = <result <TaskID>>
   
+  Term = <<TaskResult>>
   Term = <<BTerm>>
 
