@@ -4,25 +4,19 @@ imports
 	
 	task/core
 	index/core
+	index/query
 
 signature
   
   constructors
   	
-		Task    : Int * Instruction -> StoreTask
-		TaskDep : Int * Int         -> StoreTaskDep
+		Task           : Int * Instruction -> Entry
+		TaskDependency : Int * Int         -> Entry
+		TaskDependent  : Int * Int         -> Entry
 		
 		TaskPartition : Partition
 
-rules
-		
-	task-partition:
-		(partition, _) -> (partition, TaskPartition())
-		
-	task-partition:
-		partition -> (partition, TaskPartition())
-		where
-			<is-string> partition
+rules // Storing
   
 	store-task:
 		Task(nr, d*, i, p) -> <id>
@@ -31,7 +25,55 @@ rules
 			<store-task-deps(|p, nr)> d*
 			
 	store-task-deps(|partition, nr) =
-		map(create-task-dep(|nr)); index-add-all(|<task-partition> partition)
+		where(map(create-task-dependency(|nr)); index-add-all(|<task-partition> partition));
+		map(create-task-dependent(|nr)); index-add-all(|<task-partition> partition)
 	
-	create-task-dep(|nr) =
-		!TaskDep(nr, <id>)
+	create-task-dependency(|nr) =
+		!TaskDependency(nr, <id>)
+		
+	create-task-dependent(|nr) =
+		!TaskDependent(<id>, nr)
+
+rules // Retrieving
+	
+	task-get =
+		task-template; index-get-all; Hd
+		
+	task-get-with-partition =
+		task-template; index-get-all-with-partitions; Hd
+		
+	task-get-dependencies =
+		task-dependency-template; index-get-all; map(task-dependency-nr)
+		
+	task-get-dependent =
+		task-dependent-template; index-get-all; map(task-dependent-nr)
+		
+rules // Projections
+	
+	task-partition:
+		(partition, _) -> (partition, TaskPartition())
+		
+	task-partition:
+		partition -> (partition, TaskPartition())
+		where
+			<is-string> partition
+
+			
+	task-nr:
+		Task(nr, _) -> nr
+	
+	task-dependency-nr:
+		TaskDependency(_, d) -> d
+		
+	task-dependent-nr:
+		TaskDependent(_, d) -> d
+
+		
+	task-template:
+		nr -> Task(nr, ())
+
+	task-dependent-template:
+		nr -> TaskDependent(nr, ())
+		
+	task-dependency-template:
+		nr -> TaskDependency(nr, ())

@@ -64,6 +64,11 @@ rules // Execution
   completed-task(|n, res) =
   	map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)))
 
+rules // Projections
+	
+	task-nr:
+		Task(nr, _, _, _) -> nr
+
 rules // Utility
   
   effectively(s) = ?t; s; not(?t)  

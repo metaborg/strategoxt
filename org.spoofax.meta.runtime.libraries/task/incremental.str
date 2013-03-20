@@ -44,7 +44,7 @@ rules // Incremental
 	task-dependent:
 		nr -> task*
 		with
-			nr*   := <task-dep-template; index-get-all; map(task-dep-dep)> nr;
+			nr*   := <task-get-dependent> nr; // TODO: Should be dependent?
 			task* := <map(task-reconstruct)> nr*
 
 rules // Equality
@@ -54,23 +54,6 @@ rules // Equality
 		where
 			<eq> (<task-nr> t1, <task-nr> t2)
 		
-rules // Projections
-	
-	task-nr:
-		Task(nr, _, _, _) -> nr
-		
-	task-nr:
-		Task(nr, _) -> nr
-	
-	task-dep-dep:
-		TaskDep(_, d) -> d
-		
-	task-template:
-		nr -> Task(nr, ())
-		
-	task-dep-template:
-		nr -> TaskDep(nr, ())
-
 rules // Construction
 		
 	// HACK: Remove artificial TaskPartition()
@@ -80,8 +63,8 @@ rules // Construction
 	task-reconstruct:
 		nr -> Task(nr, d*, i, <task-remove-partition> p)
 		with
-			(p, Task(_, i)) := <task-template; index-get-all-with-partitions; Hd> nr;
-			d*              := <task-dep-template; index-get-all; map(task-dep-dep)> nr
+			(p, Task(_, i)) := <task-get-with-partition> nr;
+			d*              := <task-get-dependencies> nr
 
 	task-insert-own-existing-results:
 		t@Task(_, d*, _, _) -> <task-insert-existing-results(|d*)> t 
