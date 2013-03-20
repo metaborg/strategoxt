@@ -17,9 +17,9 @@ rules
 	*
 	*/
 	from-index:
-		(filename, entries*) -> Partition(<from-string> filename, entries'*)
+		(filename, entries*) -> Partition(<from-string> filename, <qsort(address-lt)> entries'*)
 		where
-			entries'* := <filter(from-nbl <+ from-task <+ debug-fail(!"Failed to rewrite index syntax: "))> entries*
+			entries'* := <filter(from-nbl <+ from-task <+ debug-fail(!"Failed to rewrite index entry: "))> entries*
 
 	from-string = is-string; !$["[<id>]"]
 	
@@ -41,8 +41,10 @@ rules // NBL things
 		PropCalc(propkind#(_), instr) -> PropCalc(propkind, <from-task-result> instr)
 	
 	from-instr:
-		Resolve([inuri], ns#(_), name, conds*, range) -> Resolve(ns, <from-string-or-result> name, <from-uri> inuri, <from-prop-cond> conds*, range)
-
+		Resolve([inuri], ns#(_), name, conds*, range) -> Resolve(ns, name, <from-uri> inuri, <from-prop-cond> conds*, range)
+		where
+			<is-string <+ debug-fail(!"Resolution name is not a string: ")> name
+			
 	from-instr:
 		Choice(choices*) -> Choice(<alltd(from-string)> choices*)
 	
@@ -99,6 +101,8 @@ rules // Stratego terms
 			pp-aterm-box;
 			box2text-string(|200);
 			parse-string(|<stratego-parsetable>,"Term")
+	
+	// from-term = strip-annos;trm-explode
 
 	stratego-parsetable = import-term(lib-stratego/Stratego-Sugar-TermStart.tbl)
 
