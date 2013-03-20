@@ -41,7 +41,7 @@ rules // NBL things
 		PropCalc(propkind#(_), instr) -> PropCalc(propkind, <from-task-result> instr)
 	
 	from-instr:
-		Resolve([inuri], ns#(_), name, conds*, range) -> Resolve(ns, name, <from-uri> inuri, <from-prop-cond> conds*, range)
+		Resolve([inuri], ns#(_), name, conds*, range) -> Resolve(ns, <from-string-or-result> name, <from-uri> inuri, <from-prop-cond> conds*, range)
 
 	from-instr:
 		Choice(choices*) -> Choice(<alltd(from-string)> choices*)
@@ -69,6 +69,8 @@ rules // Task things
 	from-instr = fail
 
 	from-task-result = ?Result(_) <+ from-term
+	
+	from-string-or-result = is-string <+ from-task-result
 
 rules // Index things
 
