@@ -6,6 +6,11 @@ imports
 	lib/task/core
 	lib/nbl/-
 	pp
+	libstratego-aterm
+	libstratego-lib
+	libstratego-gpp
+	libstrc
+	libstratego-sglr
 	
 rules
 	
@@ -32,7 +37,7 @@ rules // NBL things
 		Alias(uria, urib) -> Alias(<from-uri> uria, <from-uri> urib)
 
 	from-nbl:
-		Prop(uri, prop#(_), val) -> Prop(<from-uri> uri, prop, <from-task-result>)
+		Prop(uri, prop#(_), val) -> Prop(<from-uri> uri, prop, <from-term> val)
 
 rules // Task things
 
@@ -70,6 +75,22 @@ rules // Index things
  
 	from-uri-entry:
 		ExternalDef(s) -> ExternalDef(<from-string> s)
+
+rules // Generic term things
+	
+	// HACK there must be some other way of reaching the Stratego parse table than hardcoding it and parsing with Term as start symbol ???
+	from-term =
+			debug(!"A ");
+			strip-annos;
+			pp-aterm-box;
+			debug(!"B ");
+			box2text-string(|200);
+			debug(!"C ");
+			parse-stratego;
+			debug(!"D ")
+
+	parse-stratego =  debug(!"Trying to parse stratego: ");parse-string(|<stratego-parsetable>,"Term");debug(!"Parsed stratego: ")	
+	stratego-parsetable = import-term(lib-stratego/Stratego-Sugar-TermStart.tbl)
 
 rules
 	
