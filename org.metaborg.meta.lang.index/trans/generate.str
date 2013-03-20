@@ -60,5 +60,5 @@ rules // Generate GraphViz for task (dependencies)
 
 rules
 	
-	sanitize-identifier = string-replace(|"\"","");string-replace(|".","_")
+	sanitize-identifier = string-replace(|"\"","");string-replace(|".","_");string-replace(|"/","_")
 	

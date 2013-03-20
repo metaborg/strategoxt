@@ -17,8 +17,14 @@ rules
 	*
 	*/
 	from-index:
+		pairs* -> Index(<map(where(Fst;debug(!"Filename "));from-index)> pairs*)
+		where
+			is-list
+	
+	from-index:
 		(filename, entries*) -> Partition(<from-string> filename, <qsort(address-lt)> entries'*)
 		where
+			not(is-list);
 			entries'* := <filter(from-nbl <+ from-task <+ debug-fail(!"Failed to rewrite index entry: "))> entries*
 
 	from-string = is-string; !$["[<id>]"]
