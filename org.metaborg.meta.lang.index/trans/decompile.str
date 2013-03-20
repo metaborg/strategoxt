@@ -37,6 +37,21 @@ rules // NBL things
 	from-nbl:
 		Prop(uri, prop#(_), val) -> Prop(<from-uri> uri, prop, <from-term> val)
 
+	from-instr:
+		PropCalc(propkind#(_), instr) -> PropCalc(propkind, <from-task-result> instr)
+	
+	from-instr:
+		Resolve([inuri], ns#(_), name, conds*, range) -> Resolve(ns, name, <from-uri> inuri, <from-prop-cond> conds*, range)
+
+	from-instr:
+		Choice(choices*) -> Choice(<alltd(from-string)> choices*)
+	
+	from-prop-cond:
+		[] -> None()
+	
+	from-prop-cond:
+		[Prop(propkind#(_), term)] -> Prop(propkind, <from-task-result> term)
+		
 rules // Task things
 
 	from-task:
@@ -50,10 +65,10 @@ rules // Task things
 		
 	from-task:
 		FailTask(tnum, tres) -> FailTask($[[tnum]], <from-task-result> tres)
-	
-	from-instr = !PropCalc("property", Result("123"))
 
-	from-task-result = !NoAnnoList(Op("Foobar", [NoAnnoList(Str("\"123\""))]))
+	from-instr = fail
+
+	from-task-result = ?Result(_) <+ from-term
 
 rules // Index things
 
@@ -74,16 +89,15 @@ rules // Index things
 	from-uri-entry:
 		ExternalDef(s) -> ExternalDef(<from-string> s)
 
-rules // Generic term things
+rules // Stratego terms
 	
 	// HACK there must be some other way of reaching the Stratego parse table than hardcoding it and parsing with Term as start symbol ???
 	from-term =
 			strip-annos;
 			pp-aterm-box;
 			box2text-string(|200);
-			parse-stratego
+			parse-string(|<stratego-parsetable>,"Term")
 
-	parse-stratego =  parse-string(|<stratego-parsetable>,"Term")
 	stratego-parsetable = import-term(lib-stratego/Stratego-Sugar-TermStart.tbl)
 
 rules
