@@ -23,7 +23,8 @@ builders
   builder  : "Show index entries for all files"    = debug-index-show-all-files (openeditor) (realtime) (meta) (source)     
   builder  : "Clear index for current file"        = debug-index-clear-current (meta) (source)                              
   builder  : "Clear index"                         = debug-index-clear (meta) (source)                                      
-  builder  : "Reload index"                        = debug-index-reload (meta) (source)                                     
+  builder  : "Reload index"                        = debug-index-reload (meta) (source)   
+  builder  : "Generate tasks GraphViz"						 = generate-task-graph (openeditor) (realtime)                                  
 	
 
   on save  : editor-save                                                                                                    
