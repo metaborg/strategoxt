@@ -19,5 +19,8 @@ strategies
 	prettyprint-ID = index2box; ![<id>]
 	prettyprint-STRING = index2box; ![<id>]
 	prettyprint-INT = index2box; ![<id>]
-	prettyprint-BTerm = pp-stratego-string; prettyprint-STRING
+	prettyprint-BTerm = pp-stratego-sugar; prettyprint-STRING
+	
+	
+	pp-stratego-sugar = prim("SSL_EXT_foreigncall", "Stratego-Sugar", "pp-stratego_sugar-string")
 	

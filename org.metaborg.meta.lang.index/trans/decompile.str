@@ -43,14 +43,14 @@ rules // NBL things
 	from-instr:
 		Resolve([inuri], ns#(_), name, conds*, range) -> Resolve(ns, name, <from-uri> inuri, <from-prop-cond> conds*, range)
 		where
-			<is-string <+ debug-fail(!"Resolution name is not a string: ")> name
+			<is-string <+ debug-fail(!"!!!! Resolution name is not a string: ")> name
 	
 	from-instr:
 		Match(_, _, _) -> <debug-fail(!"NOT IMPLEMENTED: ")>
 			
 	from-instr:
-		Choice(choices*) -> Choice(<alltd(from-string)> choices*)
-	
+		Choice(choices*) -> Choice(<map(from-task-result)> choices*)
+			
 	from-prop-cond:
 		[] -> None()
 	
@@ -74,8 +74,6 @@ rules // Task things
 	from-instr = fail
 
 	from-task-result = ?Result(_) <+ from-term
-	
-	from-string-or-result = is-string <+ from-task-result
 
 rules // Index things
 
