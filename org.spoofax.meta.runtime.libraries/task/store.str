@@ -37,7 +37,10 @@ rules // Storing
 rules // Retrieving
 	
 	task-get =
-		task-template; index-get-all; Hd
+		task-get-all; Hd
+		
+	task-get-all =
+		task-template; index-get-all
 		
 	task-get-with-partition =
 		task-template; index-get-all-with-partitions; Hd
@@ -53,6 +56,12 @@ rules // Retrieving
 		<+
 		(task-failed-result-template; index-get-all; Hd));
 		task-result-value
+		
+rules // Removing
+	
+	task-remove-result(|partition) =
+		where(task-successful-result-template; index-remove(|partition));
+		where(task-failed-result-template; index-remove(|partition))
 		
 rules // Projections
 	

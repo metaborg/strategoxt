@@ -29,8 +29,7 @@ rules // Single file analysis
       <index-add-all(|<collect-partition> partition)> entry*;
       <map(store-task)> newTask*
     with // Perform tasks
-      task* := <task-incremental; make-set; map(task-insert-own-existing-results)> (oldTask*, newTask*);
-      <map(task-nr; debug(!"Removing results for: "); task-remove-result)> task*;
-      <map(debug(!"Performing tasks: "))> task*;
+      task* := <task-incremental(|partition); make-set; map(task-insert-own-existing-results)> (oldTask*, newTask*);
+      <map(debug(!"Performing tasks: "); task-nr; task-remove-result(|partition))> task*;
       error* := <perform-tasks> task*
       // TODO: update markers for other partitions.

@@ -31,7 +31,7 @@ rules // Creation
     instruction -> Result(nr)
     with
     	partition := <index-get-current-partition>;      // TODO: Partition should be a term argument.
-    	nr        := <address> (instruction, partition); // TODO: Don't make tasks specific to their partition.
+    	nr        := <address> instruction;
       task      := Task(nr, deps, instruction, partition);
       <iset-add(|task)> task*
       
@@ -79,6 +79,6 @@ rules // Utility
   insert-result(|n, r): Result(n) -> r 
     
   insert-result(|n, r) = 
-    has-annos; 
-    !(<id>, <get-annos; map(try(insert-result(|n, r)))>); 
-    set-annos
+		has-annos; 
+		!(<id>, <get-annos; map(try(insert-result(|n, r)))>); 
+		set-annos
