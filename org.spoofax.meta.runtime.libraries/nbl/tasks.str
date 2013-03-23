@@ -3,26 +3,41 @@ module nbl/tasks
 imports 
   
   task/core
-  nbl/lookup
   nbl/collect
   nbl/resolve
   nbl/query
   nbl/interface
   nbl/uri
   nbl/utils
+  nbl/entries
   
 signature
   
   constructors
     
-    Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
+    Resolve  : URI * Namespace * Name * List(Prop)            -> Instruction
+    ResolveImport  : URI * Namespace * Name * List(Prop)            -> Instruction
     Choice   : List(String)                                   -> Instruction
     PropCalc : Property * Term                                -> Instruction
     Match    : ID * List(Term) * Term                         -> Instruction
         
 rules // Resolve
   
-  perform-task: 
+  perform-task:
+  	Resolve(uri, ns, name, prop*) -> result
+  	where
+  		uri'   := <nabl-extend-uri(|ns, name, NonUnique())> uri; 
+  		entry* := <nabl-get-all-definitions> uri';
+  		if [] := entry* then
+  			result := Fail()
+			else
+				result := <debug(!"Resolved: ")> Done(entry*)
+			end
+
+	perform-task:
+		ResolveImport(uri, ns, name, prop*) -> Fail()
+  
+  /*perform-task: 
     Resolve(uri*, namespace, name, prop*, range) -> result
     where
       name' := <rm-annotations> name;
@@ -68,12 +83,13 @@ rules // Resolve
       else
         entry' := <nabl-create-dependency> value
       end
+*/
 		
 	perform-task:
  		Choice(choices) -> result
 		where
-			result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choices) <+
-			result := Fail(<mapconcat(?Fail(<id>))> choices) 
+			result := Done(<remove-all(?Fail()); concat; ?[_|_]> choices) <+
+			result := Fail()
 
 rules // Property calculation
             
@@ -111,12 +127,12 @@ rules // Projections
   
   /** @internal */  
   nabl-uri-impl:
-    Resolve(uri, _, _, _, _) -> uri
+    Resolve(uri, _, _, _) -> uri
+  
+  /** @internal */  
+  nabl-uri-impl:
+    ResolveImport(uri, _, _, _) -> uri
   
   /** @internal */
   nabl-uri-impl:
     DoneTask(_, uri) -> uri
-    
-  /** @internal */
-  nabl-uri-impl:
-    FailTask(_, uri) -> uri

@@ -18,10 +18,10 @@ signature
     Task     : Int * List(Int) * Instruction * Partition -> Task
     Result   : Int                                       -> Result
     DoneTask : Int * Term                                -> DoneTask
-    FailTask : Int * Term                                -> FailTask
+    FailTask : Int                                       -> FailTask
     
     Done       : Term      -> Result
-    Fail       : Term      -> Result
+    Fail       :              Result
     Dependency : List(Int) -> Result
 		
 rules // Creation
@@ -50,9 +50,9 @@ rules // Execution
       case ?Done(tr):
         <index-add(|p)> DoneTask(n, tr);
         <completed-task(|n, tr)> [t1*, t2*]
-      case ?Fail(fr) => tr:
-        <index-add(|p)> FailTask(n, fr);
-        <completed-task(|n, tr)> [t1*, t2*]
+      case ?Fail():
+        <index-add(|p)> FailTask(n);
+        <completed-task(|n, Fail())> [t1*, t2*]
       case ?Dependency(d*):
       	<store-task-deps(|p, n)> d*;
       	![t1*, t2*, Task(n, d*, i, p)]

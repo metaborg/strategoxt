@@ -84,7 +84,7 @@ rules // Projections
 		DoneTask(_, v) -> v
 		
 	task-result-value:
-		FailTask(_, v) -> v
+		FailTask(_) -> Fail()
 
 		
 	task-template:
@@ -100,5 +100,5 @@ rules // Projections
 		nr -> DoneTask(nr, ())
 
 	task-failed-result-template:
-		nr -> FailTask(nr, ())
+		nr -> FailTask(nr)
 		

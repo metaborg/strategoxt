@@ -54,14 +54,14 @@ rules // Reference resolution
     Result(number) -> results
     where
       if not(results := <nabl-get-value> DoneTask(number, ())) then
-        results := <nabl-get-value> FailTask(number, ()) 
+        results := <nabl-get; !Fail()> FailTask(number) 
       end
       
   nabl-resolve-uses:
     Use(Result(number)) -> def*
     where
       uri* := <nabl-get-value> DoneTask(number, ());
-      def* := <mapconcat(\uri -> Def(uri)\; nabl-get-all)> uri*
+      def* := <mapconcat(nabl-get-all)> uri*
       
   nabl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
