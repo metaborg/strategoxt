@@ -48,6 +48,12 @@ rules // Retrieving
 	task-get-dependent =
 		task-dependent-template; index-get-all; map(task-dependent-nr)
 		
+	task-get-result =
+		((task-successful-result-template; index-get-all; Hd)
+		<+
+		(task-failed-result-template; index-get-all; Hd));
+		task-result-value
+		
 rules // Projections
 	
 	task-partition:
@@ -67,6 +73,12 @@ rules // Projections
 		
 	task-dependent-nr:
 		TaskDependent(_, d) -> d
+		
+	task-result-value:
+		DoneTask(_, v) -> v
+		
+	task-result-value:
+		FailTask(_, v) -> v
 
 		
 	task-template:
@@ -77,3 +89,10 @@ rules // Projections
 		
 	task-dependency-template:
 		nr -> TaskDependency(nr, ())
+		
+	task-successful-result-template:
+		nr -> DoneTask(nr, ())
+
+	task-failed-result-template:
+		nr -> FailTask(nr, ())
+		

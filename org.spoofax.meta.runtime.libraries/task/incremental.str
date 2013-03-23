@@ -73,7 +73,7 @@ rules // Construction
 		task -> <foldl(task-insert-existing-result <+ Snd)> (nr*, task)
 		
 	task-insert-existing-result:
-		(nr, task) -> <Task(id, remove-all(?nr), insert-result(|nr, res), id)> task
+		(nr, task) -> <task-insert-results(|nr, res)> task
 		where
-			res := <index-get-all; Hd> DoneTask(nr, ())
+			res := <task-get-result> nr
 	

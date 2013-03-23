@@ -62,8 +62,11 @@ rules // Execution
     Task(n, [], i, p) -> (n, <perform-task> i, i, p)
     
   completed-task(|n, res) =
-  	map(try(Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)))
-
+  	map(try(task-insert-results(|n, res)))
+  	
+	task-insert-results(|n, res) = 
+		Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)
+		
 rules // Projections
 	
 	task-nr:
