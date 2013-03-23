@@ -42,9 +42,6 @@ rules // Retrieving
 	task-get-all =
 		task-template; index-get-all
 		
-	task-get-with-partition =
-		task-template; index-get-all-with-partitions; Hd
-		
 	task-get-dependencies =
 		task-dependency-template; index-get-all; map(task-dependency-nr)
 		
