@@ -27,17 +27,21 @@ rules // Incremental
 		partition -> <task-partition; index-clear-partition> partition
 	
   task-incremental(|partition):
-  	(old, new) -> [added*, depTask*]
+  	(old, new) -> [added'*, depTask*]
   	with
   		(added*, removed*) := <task-diff> (old, new);
   		<map(task-nr; debug(!"Removing partitioned results for: "); task-remove-result(|partition))> removed*;
   		removed'*          := <filter(task-confirm-removed)> removed*;
-  		<map(debug(!"Added task: "))> added*;
+  		added'*            := <filter(task-confirm-added)> added*;
+  		<map(debug(!"Added task: "))> added'*;
   		<map(debug(!"Garbage collected task: "))> removed'*;
   		depTask*           := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent task: "))> removed'*
   		
 	task-confirm-removed =
 		where(task-nr; task-get-all; not(Hd))
+		
+	task-confirm-added =
+		where(task-nr; task-get-all; Tl; not(Hd))
 		
 	task-dependent:
 		nr -> task*
