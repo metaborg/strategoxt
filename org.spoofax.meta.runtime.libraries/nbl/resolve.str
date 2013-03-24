@@ -66,7 +66,8 @@ rules // Reference resolution
   nabl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
     where
-      def* := <nabl-lookup-definitions> uri
+      //def* := <nabl-lookup-definitions> uri
+      def* := <nabl-get-all-definitions> uri
       
   nabl-is-reference =
     ?Use(_)

@@ -221,11 +221,11 @@ rules // generic analysis of uses
 	nabl-use-subtasks(|task*, ns, name): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
 		where
-			subtask1 := <new-task(|task*)> Resolve(uri, ns, name, []);
-			subtask2 := <new-task(|task*)> ResolveImport(uri, ns, name, []);
+			subtask1 := <new-task(|task*)> Resolve(uri, ns, name);
+			subtask2 := <new-task(|task*)> ResolveImport(uri, ns, name);
 			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
         ext-uri  := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
-        subtask* := [<new-task(|task*)> Resolve(ext-uri, ns, name, [])]
+        subtask* := [<new-task(|task*)> Resolve(ext-uri, ns, name)]
       else
       	subtask* := []
       end;

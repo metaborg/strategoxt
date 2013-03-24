@@ -56,6 +56,8 @@ rules // Execution
       case ?Dependency(d*):
       	<store-task-deps(|p, n)> d*;
       	![t1*, t2*, Task(n, d*, i, p)]
+    	otherwise:
+    		<with(fail|"Unexpected result from perform-task: ")> res
       end
 
   perform-single-task:
