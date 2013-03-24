@@ -63,10 +63,10 @@ rules // Multi file analysis
     Result(partition, ast, ast', oldEntry*, entry*, task*, _) -> 
       Result(partition, ast, ast', oldEntry*, entry*, error*, [])
     with
-      nabl-collect-reads(
+      //nabl-collect-reads(
         error* := <perform-tasks> task*
-      ) => reads;
-      <index-add-all(|partition)> reads
+      //) => reads;
+      //<index-add-all(|partition)> reads
       
 rules // Utility
 

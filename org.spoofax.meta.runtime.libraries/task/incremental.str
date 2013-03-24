@@ -26,16 +26,12 @@ rules // Incremental
 	task-clear:
 		partition -> <task-partition; index-clear-partition> partition
 	
-  task-incremental(|partition):
-  	(old, new) -> [added'*, depTask*]
+  task-incremental:
+  	(old, new) -> (added'*, removed'*)
   	with
   		(added*, removed*) := <task-diff> (old, new);
-  		<map(task-nr; debug(!"Removing partitioned results for: "); task-remove-result(|partition))> removed*;
   		removed'*          := <filter(task-confirm-removed)> removed*;
-  		added'*            := <filter(task-confirm-added)> added*;
-  		<map(debug(!"Added task: "))> added'*;
-  		<map(debug(!"Garbage collected task: "))> removed'*;
-  		depTask*           := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent task: "))> removed'*
+  		added'*            := <filter(task-confirm-added)> added*
   		
 	task-confirm-removed =
 		where(task-nr; task-get-all; not(Hd))
@@ -60,10 +56,10 @@ rules // Construction
 		
 	// HACK: Remove artificial TaskPartition()
 	task-remove-partition:
-		(file, TaskPartition()) -> (file, [])
+		(file, _) -> (file, [])
 		
 	task-reconstruct:
-		nr -> <task-reconstruct-create(|nr, d*, i)> p*
+		nr -> <map(task-reconstruct-create(|nr, d*, i))> p*
 		with
 			t@Task(_, i) := <task-get> nr;
 			p*           := <index-get-partitions-of> t; 

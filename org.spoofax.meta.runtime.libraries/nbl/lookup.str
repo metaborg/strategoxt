@@ -15,7 +15,7 @@ rules // Lookup
 		scope -> def*
 		with
   		<with(uri := <nabl-uri> scope | "Could not extract URI from: ")> scope;
-  		uri'   := <nabl-extend-uri(|ns, name, NonUnique())> uri; 
+  		uri' := <nabl-extend-uri(|ns, name, ())> uri; 
   		def* := <nabl-get-all-definitions> uri'
   
 rules // Visible entries

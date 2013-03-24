@@ -4,6 +4,7 @@ imports
 	
 	task/core
 	nbl/tasks
+	nbl/incremental
 	nbl/entries
 	nbl/interface
 	nbl/uri
@@ -217,10 +218,9 @@ rules // generic analysis of uses
 			
 	// TODO: take range into account.
 	// TODO: other cases.
-	// TODO: create reads for mapping uris to tasks.
 	nabl-use-subtasks(|task*, ns, name): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
-		where
+		with
 			subtask1 := <new-task(|task*)> Resolve(uri, ns, name);
 			subtask2 := <new-task(|task*)> ResolveImport(uri, ns, name);
 			if ExternalDef(x) := <nabl-uri-path; Hd> uri then

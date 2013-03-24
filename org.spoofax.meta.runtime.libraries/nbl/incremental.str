@@ -2,47 +2,34 @@ module nbl/incremental
 
 imports
 	
+	index/core
 	index/query
 	nbl/collect
 	nbl/query
-	nbl/uri
 	nbl/entries
+	nbl/uri
 
 signature
 
   constructors
     
-    Read    : URI                      -> Entry
-    ReadAll : URI                      -> Entry
-    ReadAll : URI * Namespace * Prefix -> Entry
+    Read    : URI * Int -> Entry
+    ReadInv : Int * URI -> Entry
       
-rules // Dependencies
-  
-  /**
-   * Gets the set of partitions with read dependencies to the given entries.
-   *
-   * Example:
-   *   <nabl-get-dependent-partitions> [Def([Entity(), "Bar"]), ...] => [("fullpath/file.ext", "partition"), ...]
-   *
-   * @type List(entry) -> List(partition)
-   */
-  nabl-get-dependent-partitions = 
-    nabl-get-dependent-partitions(nabl-get-all-reads)
-    
-  nabl-remove-own-partition(|partition) =
-    remove-all(?(partition, _))
-          
-rules /** @internal Storing reads */
-  
-  nabl-collect-reads(s) =
-    {| nabl-ReadSet:
-    	rules(nabl-ReadSet := <new-iset>);
-    	try(s);
-    	nabl-ReadSet;
-    	iset-elements
-  	|}
-    	
-rules /** @internal Entry difference */
+rules // Construction
+	
+	nabl-new-reads(|nr):
+		uri -> [Read(uri, nr), ReadInv(nr, uri)]
+
+rules // Index
+	
+	nabl-entry-olds:
+		partition -> <collect-partition; index-get-all-in-partition; filter(nabl-diff-entry)> partition
+			
+	nabl-entry-clear:
+		partition -> <collect-partition; index-clear-partition> partition
+      
+rules // Entry difference
   
   nabl-diff-entry =
     ?Def(_)
@@ -55,42 +42,47 @@ rules /** @internal Entry difference */
     where
       <nabl-uri-eq> (<nabl-uri> entry1, <nabl-uri> entry2)
 
-  nabl-diff:
-    (defs1, defs2) -> (added, removed)
+  nabl-entry-diff:
+    (old, new) -> (added, removed)
     with
-      added   := <diff(nabl-diff-eq)> (defs2, defs1);
-      removed := <diff(nabl-diff-eq)> (defs1, defs2)
+      added   := <diff(nabl-diff-eq)> (new, old);
+      removed := <diff(nabl-diff-eq)> (old, new)
+      
+  nabl-entry-incremental:
+    (old, new) -> [added*, removed*]
+    with
+      (added*, removed*) := <nabl-entry-diff> (old, new)
 
-rules /** @internal */
-  
-  nabl-get-dependent-partitions(construct-from-uri):
-    entries -> partitions
-    where
-      references := <mapconcat(construct-from-uri)> entries;
-      partitions := <make-set> <mapconcat(index-get-partitions-of)> references
+	nabl-get-reads:
+		<with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> [read*, fail-read*]
+		with
+			read*      := <nabl-get-all-values> Read(uri, ());
+			fail-read* := <nabl-get-all-values> Read(<nabl-replace-uri-qualifier(|())> uri, ())
+		
+	nabl-remove-read:
+		nr -> <id>
+		with
+			uri* := <nabl-get-all-values> ReadInv(nr, ());
+			<index-remove-all> ReadInv(nr, ());
+			// TODO: these may remove reads from other tasks as well?
+			<map(!Read(<id>, ()); index-remove-all)> uri*;
+			<filter(!Read(<nabl-replace-uri-qualifier(|())>, ()); index-remove-all)> uri*
       
 rules /** @internal URI & value projections */
   
   /** @internal */  
   nabl-uri-impl:
-    Read(uri) -> uri
-    
-  /** @internal */  
-  nabl-uri-impl:
-    ReadAll(uri) -> uri
-    
-  /** @internal */  
-  nabl-uri-impl:
-    ReadAll(uri, _, _) -> uri
-    
-  /** @internal */
-  nabl-value-impl:
-    Read(value) -> value
+    Read(uri, _) -> uri
 
-  /** @internal */
+  /** @internal */  
   nabl-value-impl:
-    ReadAll(value) -> value
+    Read(_, value) -> value
     
-  /** @internal */
+  /** @internal */  
+  nabl-uri-impl:
+    ReadInv(uri, _) -> uri
+
+  /** @internal */  
   nabl-value-impl:
-    ReadAll(value, _, _) -> value
+    ReadInv(_, value) -> value
+    

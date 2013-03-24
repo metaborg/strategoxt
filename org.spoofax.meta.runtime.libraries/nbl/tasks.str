@@ -3,14 +3,15 @@ module nbl/tasks
 imports 
   
   task/core
+  nbl/lookup
   nbl/collect
   nbl/resolve
   nbl/query
+  nbl/incremental
   nbl/interface
   nbl/uri
   nbl/utils
   nbl/entries
-  nbl/lookup
   
 signature
   
@@ -25,16 +26,16 @@ signature
         
 rules // Resolve
   
-  perform-task:
+  perform-task(|nr):
   	Resolve(scope, ns, name) -> result
   	with
   		def* := <nabl-lookup(|ns, name)> scope;
   		switch !def*
-        case ?[]: !Fail()
-        otherwise: !Done(def*)
+        case ?[]: !Fail(<nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr)> scope)
+        otherwise: !Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
   		end => result
 
-	perform-task:
+	perform-task(|nr):
 		ResolveImport(scope, ns, name) -> result
 		with
 			<with(uri := <nabl-uri> scope | "Could not extract URI from: ")> scope;
@@ -44,9 +45,13 @@ rules // Resolve
       if <nabl-has-dependency> namedImportURI* <+ <nabl-has-dependency> unnamedImportURI* then
       	result := Dependency([namedImportURI*, unnamedImportURI*])
       else
-	      namedDef*   := <mapconcat(nabl-lookup(|ns, name))> namedImportURI*;
-	      unnamedDef* := <mapconcat(nabl-lookup(|ns, name))> unnamedImportURI*;
-	      result      := Done([namedDef*, unnamedDef*])
+	      namedDef*     := <mapconcat(nabl-lookup(|ns, name))> namedImportURI*;
+	      unnamedDef*   := <mapconcat(nabl-lookup(|ns, name))> unnamedImportURI*;
+	      def*          := [namedDef*, unnamedDef*];
+	      def-read*     := <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*;
+	      named-read*   := <mapconcat(nabl-new-reads(|nr))> namedImportURI*;
+	      unnamed-read* := <mapconcat(nabl-new-reads(|nr))> unnamedImportURI*;
+	      result        := Done(def*, [def-read*, named-read*, unnamed-read*])
       end
       
   /*nabl-resolve-constraint(|prop*):
@@ -71,7 +76,7 @@ rules // Resolve
         entry' := <nabl-create-dependency> value
       end*/
 		
-	perform-task:
+	perform-task(|nr):
  		Choice(choices) -> result
 		where
 			result := Done(<remove-all(?Fail()); concat; ?[_|_]> choices) <+
@@ -79,11 +84,11 @@ rules // Resolve
 
 rules // Property calculation
             
-  perform-task: PropCalc(prop, term) -> Done(<calc-property> (prop, term))
+  perform-task(|nr): PropCalc(prop, term) -> Done(<calc-property> (prop, term))
   
 rules // Match
   
-  perform-task: Match(key, bound, term) -> Done(<nabl-match> (key, term, bound))
+  perform-task(|nr): Match(key, bound, term) -> Done(<nabl-match> (key, term, bound))
     
 rules // Utility
   

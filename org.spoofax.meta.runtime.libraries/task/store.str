@@ -56,9 +56,9 @@ rules // Retrieving
 		
 rules // Removing
 	
-	task-remove-result(|partition) =
-		where(task-successful-result-template; index-remove(|partition));
-		where(task-failed-result-template; index-remove(|partition))
+	task-remove-result =
+		where(task-successful-result-template; index-remove-all);
+		where(task-failed-result-template; index-remove-all)
 		
 rules // Projections
 	

@@ -20,9 +20,11 @@ signature
     DoneTask : Int * Term                                -> DoneTask
     FailTask : Int                                       -> FailTask
     
-    Done       : Term      -> Result
-    Fail       :              Result
-    Dependency : List(Int) -> Result
+    Done       : Term               -> Result
+    Done       : Term * List(Entry) -> Result
+    Fail       :                       Result
+    Fail       : List(Entry)        -> Result
+    Dependency : List(Int)          -> Result
 		
 rules // Creation
   
@@ -42,14 +44,26 @@ rules // Creation
   
 rules // Execution
   
-  perform-tasks = repeat(perform-task); map(debug(!"ERROR: "))
+  perform-tasks:
+  	task* -> (<iset-elements> elem*, error*)
+  	with
+  		new-iset => elem*;
+  		error*   := <repeat(perform-task-internal(|elem*)); map(debug(!"ERROR: "))> task*
     
-  perform-task =
+  perform-task-internal(|elem*) =
     split-fetch-keep(perform-single-task) => (t1*, (n, res, i, p), t2*);
     switch !res
+      case ?Done(tr, e*):
+      	<iset-addlist(|e*)> elem*;
+        <index-add(|p)> DoneTask(n, tr);
+        <completed-task(|n, tr)> [t1*, t2*]
       case ?Done(tr):
         <index-add(|p)> DoneTask(n, tr);
         <completed-task(|n, tr)> [t1*, t2*]
+      case ?Fail(e*):
+      	<iset-addlist(|e*)> elem*;
+        <index-add(|p)> FailTask(n);
+        <completed-task(|n, Fail())> [t1*, t2*]
       case ?Fail():
         <index-add(|p)> FailTask(n);
         <completed-task(|n, Fail())> [t1*, t2*]
@@ -61,7 +75,7 @@ rules // Execution
       end
 
   perform-single-task:
-    Task(n, [], i, p) -> (n, <perform-task> i, i, p)
+    Task(n, [], i, p) -> (n, <perform-task(|n)> i, i, p)
     
   completed-task(|n, res) =
   	map(try(task-insert-results(|n, res)))
@@ -73,6 +87,9 @@ rules // Projections
 	
 	task-nr:
 		Task(nr, _, _, _) -> nr
+		
+	task-result-nr:
+		Result(nr) -> nr
 
 rules // Utility
   
