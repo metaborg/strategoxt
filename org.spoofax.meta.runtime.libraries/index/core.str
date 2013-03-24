@@ -25,6 +25,19 @@ rules
     prim("LANG_index_setup", language, project-paths, current-partition)
     
   /**
+   * Unloads the currently loaded index.
+   *
+   * Example:
+   *   index-unload(|<project-path>)
+   *
+   * @param project-path The project path that contain all source files to analyse and compile.
+   *
+   * @type x -> x
+   */
+  index-unload(|project-path) =
+    prim("LANG_index_unload", project-path)
+    
+  /**
    * Sets the current file the index (analysis) is operating on to the given file.
    *
    * Example:
