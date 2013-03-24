@@ -57,7 +57,11 @@ rules // Entry difference
 		<with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> [read*, fail-read*]
 		with
 			read*      := <nabl-get-all-values> Read(uri, ());
-			fail-read* := <nabl-get-all-values> Read(<nabl-replace-uri-qualifier(|())> uri, ())
+			if fail-uri := <nabl-replace-uri-qualifier(|())> uri then
+				fail-read* := <nabl-get-all-values> Read(fail-uri, ())
+			else
+				fail-read* := []
+			end
 		
 	nabl-remove-read:
 		nr -> <id>
