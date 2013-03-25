@@ -18,8 +18,8 @@ rules // Single file analysis
     ast -> (ast', newEntry*, error*, [])
     with // Setup index
       partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
-      
+      index-setup(|language, [project-path], partition)
+    with // Store and clean old tasks and entries.  
       oldTask*  := <task-olds> partition;
       oldEntry* := <nabl-entry-olds> partition;
       <task-clear> partition;
@@ -35,13 +35,17 @@ rules // Single file analysis
   		<map(debug(!"Removed task: "))> removed-task*;
   		<map(task-nr; debug(!"Removing all results for: "); task-remove-result)> removed-task*; // Cleanup removed results
   		<map(task-nr; debug(!"Removing all reads for: "); nabl-remove-read)> removed-task*;
-  		removed-task-dep*            := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent on removed task: "))> removed-task*;
+  		removed-task-dep* := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent on removed task: "))> removed-task*;
+  		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
+    	
     	
     	// Tasks that need to be re-evaluated because a definition or property has changed.
     	changedEntry*  := <nabl-entry-incremental; map(debug(!"Changed entry: "); nabl-uri); make-set> (oldEntry*, <filter(nabl-diff-entry)> newEntry*);
     	read-task-nr*  := <mapconcat(nabl-get-reads); map(debug(!"Read for changed entry: "))> changedEntry*;
     	read-task*     := <mapconcat(task-reconstruct); map(debug(!"Changed task: "))> read-task-nr*;
     	read-task-dep* := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent on changed task: "))> read-task*;
+  		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
+  		
   		
   		// All tasks that need to be re-evaluated.
     	task* := <make-set> [read-task*, read-task-dep*, added-task*, removed-task-dep*]
@@ -49,7 +53,7 @@ rules // Single file analysis
       <map(task-nr; task-remove-result)> task*;
 			<map(task-nr; nabl-remove-read)> task*
     with // Perform tasks
-			task'* := <map(task-insert-own-existing-results)> task*;
+			task'* := <map(task-insert-own-existing-results)> task*; // Fill in existing results.
       <map(debug(!"Performing tasks: "))> task'*;
       (taskEntry*, error*) := <perform-tasks> task'*;
       <index-add-all(|partition)> taskEntry*
