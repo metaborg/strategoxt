@@ -75,9 +75,9 @@ rules // Entry difference
 		with
 			uri* := <nabl-get-all-values> ReadInv(nr, ());
 			<index-remove-all> ReadInv(nr, ());
-			// TODO: these may remove reads from other tasks as well?
-			<map(!Read(<id>, ()); index-remove-all)> uri*;
-			<filter(!Read(<nabl-replace-uri-qualifier(|())>, ()); index-remove-all)> uri*
+			// Use index-remove-one because only Reads with value (nr) should be removed.
+			<map(!Read(<id>, nr); index-remove-one)> uri*;
+			<filter(!Read(<nabl-replace-uri-qualifier(|())>, nr); index-remove-one)> uri*
       
 rules /** @internal URI & value projections */
   

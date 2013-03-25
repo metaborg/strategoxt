@@ -43,15 +43,16 @@ rules // Resolve
       namedImportURI*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
       unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, ns)> uri;
       if <nabl-has-dependency> namedImportURI* <+ <nabl-has-dependency> unnamedImportURI* then
-      	result := Dependency([namedImportURI*, unnamedImportURI*])
+      	result := <nabl-collect-dependency> (namedImportURI*, unnamedImportURI*)
       else
-	      namedDef*     := <mapconcat(nabl-lookup(|ns, name))> namedImportURI*;
-	      unnamedDef*   := <mapconcat(nabl-lookup(|ns, name))> unnamedImportURI*;
-	      def*          := [namedDef*, unnamedDef*];
-	      def-read*     := <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*;
-	      import-uri*   := [namedImportURI*, unnamedImportURI*];
-	      import-read*  := <mapconcat(nabl-new-reads(|nr))> import-uri*;
-	      result        := Done(def*, <debug(!"Stored reads: ")> [uri, def-read*, import-read*])
+	      namedDef*        := <mapconcat(nabl-lookup(|ns, name))> namedImportURI*;
+	      unnamedDef*      := <mapconcat(nabl-lookup(|ns, name))> unnamedImportURI*;
+	      def*             := [namedDef*, unnamedDef*];
+	      def-read*        := <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*;
+	      import-uri*      := [namedImportURI*, unnamedImportURI*];
+	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import-uri*;
+	      import-uri-read* := <nabl-new-reads(|nr)> uri;
+	      result           := Done(def*, <debug(!"Stored reads: ")> [import-uri-read*, def-read*, import-read*])
 	      // TODO: Store 'failed import' uris as reads.
       end
       

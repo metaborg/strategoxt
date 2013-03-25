@@ -40,10 +40,29 @@ rules // Incremental
 		where(task-nr; task-get-all; Tl; not(Hd))
 		
 	task-dependent:
-		nr -> task*
+		nr -> [task*, task-rec*]
+		where
+			<is-int> nr
 		with
-			nr*   := <task-get-dependent> nr;
-			task* := <mapconcat(task-reconstruct)> nr*
+			d*    := <task-get-dependent> nr;
+			task* := <mapconcat(task-reconstruct)> d*;
+			// Recurse because dependent task may have other dependent task that then also need to be scheduled.
+			if not([] := task*) then
+				task-rec* := <mapconcat(task-dependent)> task*
+			else
+				task-rec* := []
+			end
+			
+	task-dependent:
+		Task(_, d*, _, _) -> [task*, task-rec*]
+		with
+			task* := <mapconcat(task-reconstruct)> d*;
+			// Recurse because dependent task may have other dependent task that then also need to be scheduled.
+			if not([] := task*) then
+				task-rec* := <mapconcat(task-dependent)> task*
+			else
+				task-rec* := []
+			end
 
 rules // Equality
 	
