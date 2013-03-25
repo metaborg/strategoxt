@@ -22,6 +22,7 @@ rules // Single file analysis
     with // Store and clean old tasks and entries.  
       oldTask*  := <task-olds> partition;
       oldEntry* := <nabl-entry-olds> partition;
+      <task-partition; index-get-all-in-partition> partition;
       <task-clear> partition;
       <nabl-entry-clear> partition
     with // Collect tasks

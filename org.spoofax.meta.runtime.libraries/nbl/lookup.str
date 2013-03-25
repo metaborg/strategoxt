@@ -12,11 +12,18 @@ imports
 rules // Lookup
 	
 	nabl-lookup(|ns, name):
-		scope -> def*
+		scope -> <nabl-lookup(|ns, name)> [scope]
+		where
+			not(<is-list> scope)
+	
+	nabl-lookup(|ns, name):
+		scope* -> def*
+		where
+			<is-list> scope*
 		with
-  		<with(uri := <nabl-uri> scope | "Could not extract URI from: ")> scope;
-  		uri' := <nabl-extend-uri(|ns, name, ())> uri; 
-  		def* := <nabl-get-all-definitions> uri'
+  		<with(uri* := <map(nabl-uri)> scope* | "Could not extract URIs from: ")> scope*;
+  		uri'* := <map(nabl-extend-uri(|ns, name, ()))> uri*; 
+  		def*  := <mapconcat(nabl-get-all-definitions)> uri'*
   
 rules // Visible entries
   

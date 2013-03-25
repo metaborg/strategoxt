@@ -74,23 +74,20 @@ rules // Incremental
 		where(task-nr; task-get-all; Tl; not(Hd))
 		
 	task-dependent:
-		nr -> [task1*, task2*, task-rec*]
+		nr -> [task*, task-rec*]
 		where
 			<is-int> nr
 		with
 			d*        := <task-get-dependent> nr;
-			//dep*      := <task-get-dependent> nr;
-			task1*    := <mapconcat(task-reconstruct)> d*;
-			task2*    := [];//<mapconcat(task-reconstruct)> dep*;
-			task-rec* := <task-dependent-rec> task1*
+			task*     := <mapconcat(task-reconstruct)> d*;
+			task-rec* := <task-dependent-rec> task*
 			
 	task-dependent:
-		Task(nr, _, _, _) -> [task1*, task2*, task-rec*]
+		Task(nr, _, _, _) -> [task*, task-rec*]
 		with
 			d*        := <task-get-dependent> nr;
-			task1*    := <mapconcat(task-reconstruct)> d*;
-			task2*    := [];//<mapconcat(task-reconstruct)> dep*;
-			task-rec* := <task-dependent-rec> task1*
+			task*     := <mapconcat(task-reconstruct)> d*;
+			task-rec* := <task-dependent-rec> task*
 
 	task-dependent-rec:
 		task* -> task-rec* 			

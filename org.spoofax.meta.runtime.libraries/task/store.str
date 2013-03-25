@@ -56,9 +56,16 @@ rules // Retrieving
 		
 rules // Removing
 	
-	task-remove-result =
-		where(task-successful-result-template; index-remove-all);
-		where(task-failed-result-template; index-remove-all)
+	task-remove-result:
+		nr -> <id>
+		where
+			<task-successful-result-template; index-remove-all> nr;
+			<task-failed-result-template; index-remove-all> nr;
+			
+			dependent* := <task-dependency-template; index-get-all; map(task-dependency-nr)> nr;
+			<task-dependency-template; debug(!"Removing dependency: "); index-remove-all> nr;
+			// Use index-remove-one because only TaskDependent with value (nr) should be removed.
+			<map(!TaskDependent(<id>, nr); debug(!"Removing dependent: "); index-remove-one)> dependent*
 		
 rules // Projections
 	
