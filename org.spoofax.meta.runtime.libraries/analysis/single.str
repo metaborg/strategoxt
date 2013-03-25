@@ -34,7 +34,7 @@ rules // Single file analysis
     	(added-task*, removed-task*) := <task-incremental> (oldTask*, newTask*);
   		<map(debug(!"Added task: "))> added-task*;
   		<map(debug(!"Removed task: "))> removed-task*;
-  		<map(task-nr; debug(!"Removing all results for: "); task-remove-result)> removed-task*; // Cleanup removed results
+  		<map(task-nr; debug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*; // Cleanup removed results
   		<map(task-nr; debug(!"Removing all reads for: "); nabl-remove-read)> removed-task*;
   		removed-task-dep* := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent on removed task: "))> removed-task*;
   		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
