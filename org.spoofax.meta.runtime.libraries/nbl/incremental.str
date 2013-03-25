@@ -38,9 +38,16 @@ rules // Entry difference
     ?Prop(_, _, _)
       
   nabl-diff-eq:
-    (entry1, entry2) -> <id>
+    (Def(uri1), Def(uri2)) -> <id>
     where
-      <nabl-uri-eq> (<nabl-uri> entry1, <nabl-uri> entry2)
+      <nabl-uri-eq> (uri1, uri2)
+      
+  nabl-diff-eq:
+    (Prop(uri1, kind1, value1), Prop(uri2, kind2, value2)) -> <id>
+    where
+      <nabl-uri-eq> (uri1, uri2);
+      <eq> (kind1, kind2);
+      <eq> (value1, value2)
 
   nabl-entry-diff:
     (old, new) -> (added, removed)

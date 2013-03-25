@@ -49,9 +49,10 @@ rules // Resolve
 	      unnamedDef*   := <mapconcat(nabl-lookup(|ns, name))> unnamedImportURI*;
 	      def*          := [namedDef*, unnamedDef*];
 	      def-read*     := <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*;
-	      named-read*   := <mapconcat(nabl-new-reads(|nr))> namedImportURI*;
-	      unnamed-read* := <mapconcat(nabl-new-reads(|nr))> unnamedImportURI*;
-	      result        := Done(def*, [def-read*, named-read*, unnamed-read*])
+	      import-uri*   := [namedImportURI*, unnamedImportURI*];
+	      import-read*  := <mapconcat(nabl-new-reads(|nr))> import-uri*;
+	      result        := Done(def*, <debug(!"Stored reads: ")> [uri, def-read*, import-read*])
+	      // TODO: Store 'failed import' uris as reads.
       end
       
   /*nabl-resolve-constraint(|prop*):
