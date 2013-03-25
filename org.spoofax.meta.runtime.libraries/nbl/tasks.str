@@ -56,7 +56,7 @@ rules // Resolve
 	      import-uri-read* := <nabl-new-reads(|nr)> uri;
 	      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
 	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
-	      result           := Done(def*, [imported-read*, import-read*])
+	      result           := Done(def*, [import-uri-read*, imported-read*, import-read*])
       end
   
   perform-task(|nr):
