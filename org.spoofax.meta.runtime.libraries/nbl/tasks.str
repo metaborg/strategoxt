@@ -17,12 +17,12 @@ signature
   
   constructors
     
-    Resolve        : Scope                    -> Instruction
-    Resolve        : Scope * Namespace * Name -> Instruction
-    ResolveImport  : Scope * Namespace * Name -> Instruction
-    Choice         : List(Result)             -> Instruction
-    PropCalc       : Property * Term          -> Instruction
-    Match          : ID * List(Term) * Term   -> Instruction
+    Resolve        : Scope * Namespace * Name  -> Instruction
+    ResolveImport  : Scope * Namespace * Name  -> Instruction
+    PropConstraint : List(Prop) * List(Result) -> Instruction
+    Choice         : List(Result)              -> Instruction
+    PropCalc       : Property * Term           -> Instruction
+    Match          : ID * List(Term) * Term    -> Instruction
         
 rules // Resolve
   
@@ -55,34 +55,47 @@ rules // Resolve
 	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
 	      result           := Done(def*, [import-uri-read*, imported-read*, import-read*])
       end
-      
-  /*nabl-resolve-constraint(|prop*):
+  
+  perform-task(|nr):
+  	PropConstraint(prop*, res*) -> result
+  	with
+  		filtered := <remove-fail-and-empty; concat; filter(nabl-resolve-constraint(|prop*))> res*;
+      switch !filtered
+      	case nabl-collect-dependency => d: !d
+      	otherwise: !Done(filtered)
+      end => result
+  		
+  nabl-resolve-constraint(|prop*):
     entry -> entry'
     where
-      results := <map(nabl-resolve-constraint-one(|entry))> prop*;
-      if d := <nabl-collect-dependency> results then
-        entry' := d
-      else
-        entry' := entry
-      end
+      filtered := <filter(nabl-resolve-constraint-one(|entry))> prop*;
+      switch !filtered
+      	case ?[]: fail
+      	case nabl-collect-dependency => d: !d
+      	otherwise: !entry
+      end => entry'
       
   nabl-resolve-constraint-one(|entry):
     Prop(type, expectedValue) -> entry'
     where
-      value := <nabl-get-property(|type)> entry;
+    	uri := <nabl-uri> entry;
+      value := <nabl-get-property(|type)> uri;
       if value' := <nabl-resolve> value then
         expectedValue'  := <nabl-resolve> expectedValue;
         <eq> (expectedValue', value');
         entry' := entry
       else
         entry' := <nabl-create-dependency> value
-      end*/
+      end
 		
 	perform-task(|nr):
  		Choice(choices) -> result
 		where
-			result := Done(<remove-all(?Fail()); concat; ?[_|_]> choices) <+
+			result := Done(<remove-fail-and-empty; concat; ?[_|_]> choices) <+
 			result := Fail()
+			
+	remove-fail-and-empty =
+		remove-all(?Fail() <+ ?[])
 
 rules // Property calculation
             
@@ -117,10 +130,6 @@ rules // Projections
   /** @internal */
   nabl-uri-impl:
     Task(uri, _, _, _) -> uri
-
-  /** @internal */  
-  nabl-uri-impl:
-    Resolve(uri) -> uri
   
   /** @internal */  
   nabl-uri-impl:

@@ -202,19 +202,24 @@ rules // generic analysis of uses
 		nabl-use(|lang, elem*, task*, uri*, [candidate])
 	
 	// list of candidates
-	nabl-use(|lang, elem*, task*, uri*, candidates):
+	nabl-use(|lang, elem*, task*, uri*, candidate*):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, <nabl-fix-name> name)); unions> candidates;
+			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, <nabl-fix-name> name)); unions> candidate*;
 			result   := <new-task(|task*)> Choice(subtask*);
 		  u        := <new-use(|elem*, result)>
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, elem*, task*, uri*, name):
-		UseCandidate(ns, prop*, Current(), range) -> subtask*
+		UseCandidate(ns, prop*, Current(), range) -> result
 		where
 			uri      := <lookup-uri(|lang, ns)> uri*;
-			subtask* := <nabl-use-subtasks(|task*, ns, name)> uri
+			subtask* := <nabl-use-subtasks(|task*, ns, name)> uri;
+			if not([] := prop*) then
+				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+			else
+				result := subtask*
+			end
 			
 	// TODO: take range into account.
 	// TODO: other cases.
