@@ -83,8 +83,9 @@ rules // Incremental
 			task-rec* := <task-dependent-rec> task*
 			
 	task-dependent:
-		Task(_, d*, _, _) -> [task*, task-rec*]
+		Task(nr, _, _, _) -> [task*, task-rec*]
 		with
+			d*        := <task-get-dependent> nr;
 			task*     := <mapconcat(task-reconstruct)> d*;
 			task-rec* := <task-dependent-rec> task*
 
