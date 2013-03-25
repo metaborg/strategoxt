@@ -75,10 +75,10 @@ rules /** @internal Imports */
     uri -> [importURI*, transitiveImportURI*]
     with
       importResult*        := <nabl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <mapconcat(nabl-resolve-results) <+ nabl-create-dependency; ![<id>]> importResult*;
+      importURI*           := <(map(nabl-resolve-results); remove-fail-and-empty; concat) <+ (debug(!"FAIL 1: "); nabl-create-dependency; ![<id>])> importResult*;
       importedResult*      := <nabl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <mapconcat(nabl-resolve-results) <+ nabl-create-dependency; ![<id>]> importedResult*;
-      transitiveImportURI* := <mapconcat(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace)) <+ nabl-create-dependency> importedURI*
+      importedURI*         := <(map(nabl-resolve-results); remove-fail-and-empty; concat) <+ (debug(!"FAIL 2: "); nabl-create-dependency; ![<id>])> importedResult*;
+      transitiveImportURI* := <mapconcat(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace)) <+ (debug(!"FAIL 3: "); nabl-create-dependency; ![<id>])> importedURI*
 
   nabl-get-import-uris-unnamed-transitive(|seen, language, namespace):
     uri -> transitiveImportURI*
@@ -90,7 +90,7 @@ rules /** @internal Imports */
     uri -> importURI*
     with
       importResult* := <nabl-get-all-properties(|Import(language, namespace, name))> uri;
-      importURI*    := <mapconcat(nabl-resolve-results) <+ nabl-create-dependency; ![<id>]> importResult*
+      importURI*    := <(map(nabl-resolve-results); remove-fail-and-empty; concat) <+ (debug(!"FAIL 4: "); nabl-create-dependency; ![<id>])> importResult*
 
 rules /** @internal Helpers */
   

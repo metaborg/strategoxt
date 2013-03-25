@@ -18,12 +18,12 @@ signature
     Task     : Int * List(Int) * Instruction * Partition -> Task
     Result   : Int                                       -> Result
     DoneTask : Int * Term                                -> DoneTask
-    FailTask : Int                                       -> FailTask
+    FailTask : Int * Term                                -> FailTask
     
     Done       : Term               -> Result
     Done       : Term * List(Entry) -> Result
-    Fail       :                       Result
-    Fail       : List(Entry)        -> Result
+    Fail       : Term               -> Result
+    Fail       : Term * List(Entry) -> Result
     Dependency : List(Int)          -> Result
 		
 rules // Creation
@@ -52,6 +52,7 @@ rules // Execution
     
   perform-task-internal(|elem*) =
     split-fetch-keep(perform-single-task) => (t1*, (n, res, i, p), t2*);
+    <debug(!"Performing task: ")> n;
     switch !res
       case ?Done(tr, e*):
       	<iset-addlist(|e*)> elem*;
@@ -60,15 +61,15 @@ rules // Execution
       case ?Done(tr):
         <index-add(|p)> DoneTask(n, tr);
         <completed-task(|n, tr)> [t1*, t2*]
-      case ?Fail(e*):
+      case ?Fail(fr, e*):
       	<iset-addlist(|e*)> elem*;
-        <index-add(|p)> FailTask(n);
-        <completed-task(|n, Fail())> [t1*, t2*]
-      case ?Fail():
-        <index-add(|p)> FailTask(n);
-        <completed-task(|n, Fail())> [t1*, t2*]
+        <index-add(|p)> FailTask(n, fr);
+        <completed-task(|n, Fail(fr))> [t1*, t2*]
+      case ?Fail(fr):
+        <index-add(|p)> FailTask(n, fr);
+        <completed-task(|n, Fail(fr))> [t1*, t2*]
       case ?Dependency(d*):
-      	<store-task-deps(|p, n)> d*;
+      	<debug(!"Found dynamic dependencies: "); store-task-deps(|p, n)> d*;
       	![t1*, t2*, Task(n, d*, i, p)]
     	otherwise:
     		<with(fail|"Unexpected result from perform-task: ")> res

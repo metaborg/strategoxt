@@ -208,22 +208,8 @@ rules // generic analysis of uses
 			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, <nabl-fix-name> name)); unions> candidate*;
 			result   := <new-task(|task*)> Choice(subtask*);
 		  u        := <new-use(|elem*, result)>
-		  	
-	// candidate in current scope
-	nabl-use-candidate(|lang, elem*, task*, uri*, name):
-		UseCandidate(ns, prop*, Current(), range) -> result
-		where
-			uri      := <lookup-uri(|lang, ns)> uri*;
-			subtask* := <nabl-use-subtasks(|task*, ns, name)> uri;
-			if not([] := prop*) then
-				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
-			else
-				result := subtask*
-			end
-			
-	// TODO: take range into account.
-	// TODO: other cases.
-	nabl-use-subtasks(|task*, ns, name): 
+
+	nabl-use-subtasks(|task*, ns, name, range): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
 		with
 			subtask1 := <new-task(|task*)> Resolve(uri, ns, name);
@@ -234,18 +220,34 @@ rules // generic analysis of uses
       else
       	subtask* := []
       end;
-			subtasks := <nabl-uri-parent < nabl-use-subtasks(|task*, ns, name) + ![]> uri
+      switch !range
+      	case One(): ![]
+      	case All(): <nabl-uri-parent < nabl-use-subtasks(|task*, ns, name, range) + ![]> uri
+    	end => subtasks
+		  	
+	// candidate in current scope
+	nabl-use-candidate(|lang, elem*, task*, uri*, name):
+		UseCandidate(ns, prop*, Current(), range) -> result
+		where
+			uri      := <lookup-uri(|lang, ns)> uri*;
+			subtask* := <nabl-use-subtasks(|task*, ns, name, range)> uri;
+			if not([] := prop*) then
+				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+			else
+				result := subtask*
+			end
 
 	// candidate in another scope (result of resolution)	  
-	// nabl-use-candidate(|lang, elem*, task*, uri*, dep*):
-	// 	(UseCandidate(ns, prop*, target-uri*, range), name{anno*}) -> name{u, anno*}
-	// 	where
-	// 	  <?Result(_) <+ map(?Result(_))> target-uri*;
-	// 	  pdep*    := <dependent-tasks> prop*;
-	// 		subtask* := <nabl-use-subtasks(|task*, pdep*, ns, <nabl-fix-name> name)> target-uri*;
-	// 		taskdep* := <dependent-tasks> subtask*;
-	// 		result   := <new-task(|task*, [taskdep*, pdep*])> Choice(subtask*);
-	// 	  u        := <new-use(|elem*, result)>	
+	nabl-use-candidate(|lang, elem*, task*, uri*, name):
+		UseCandidate(ns, prop*, target-uri*, range) -> result
+		where
+		  <?Result(_) <+ map(?Result(_))> target-uri*;
+			subtask* := <nabl-use-subtasks(|task*, ns, <nabl-fix-name> name, range)> target-uri*;
+			if not([] := prop*) then
+				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+			else
+				result := subtask*
+			end
 		  
 	// candidate in context
 	//  nabl-use-candidate(|lang, elem*, task*, uri*, dep*):

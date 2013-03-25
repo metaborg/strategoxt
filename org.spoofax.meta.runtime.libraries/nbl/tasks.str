@@ -31,8 +31,11 @@ rules // Resolve
   	with
   		def* := <nabl-lookup(|ns, name)> scope;
   		switch !def*
-        case ?[]: !Fail(<nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr)> scope)
-        otherwise: !Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
+        case ?[]: 
+        	uri := <nabl-extend-uri(|ns, name, ())> scope; 
+        	!Fail([uri], <nabl-new-reads(|nr)> uri)
+        otherwise: 
+        	!Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
   		end => result
 
 	perform-task(|nr):
@@ -48,12 +51,12 @@ rules // Resolve
 	      namedDef*        := <mapconcat(nabl-lookup(|ns, name))> namedImport*;
 	      unnamedDef*      := <mapconcat(nabl-lookup(|ns, name))> unnamedImport*;
 	      def*             := [namedDef*, unnamedDef*];
-	      import*          := [namedImport*, unnamedImport*];
+	      import*          := <debug(!"Imports: ")> [namedImport*, unnamedImport*];
 	      
 	      import-uri-read* := <nabl-new-reads(|nr)> uri;
 	      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
 	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
-	      result           := Done(def*, [import-uri-read*, imported-read*, import-read*])
+	      result           := Done(def*, [imported-read*, import-read*])
       end
   
   perform-task(|nr):
@@ -90,12 +93,12 @@ rules // Resolve
 		
 	perform-task(|nr):
  		Choice(choices) -> result
-		where
-			result := Done(<remove-fail-and-empty; concat; ?[_|_]> choices) <+
-			result := Fail()
+		with
+			result := Done(<remove-fail-and-empty; ?[_|_]; concat> choices) <+
+			result := Fail(<filter(?Fail(<id>)); concat> choices)
 			
 	remove-fail-and-empty =
-		remove-all(?Fail() <+ ?[])
+		remove-all(?Fail(_) <+ ?[])
 
 rules // Property calculation
             
@@ -141,4 +144,18 @@ rules // Projections
   
   /** @internal */
   nabl-uri-impl:
-    DoneTask(_, uri) -> uri
+    DoneTask(uri, _) -> uri
+
+  /** @internal */
+  nabl-uri-impl:
+    FailTask(uri, _) -> uri
+
+
+  /** @internal */
+  nabl-value-impl:
+    DoneTask(_, value) -> value
+
+  /** @internal */
+  nabl-value-impl:
+    FailTask(_, value) -> value
+        
