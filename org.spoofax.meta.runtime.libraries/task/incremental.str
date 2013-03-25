@@ -6,71 +6,7 @@ imports
   task/store
   index/core
   index/query
-  
-rules // Diff
-	
-	task-diff:
-		(old, new) -> (added, removed)
-		where
-      added   := <diff(task-eq)> (new, old);
-      removed := <diff(task-eq)> (old, new)
-      
-  task-diff-entry =
-  	?Task(_, _)
-      
-rules // Incremental
-	
-	task-olds:
-		partition -> <task-partition; index-get-all-in-partition; filter(task-diff-entry)> partition
-			
-	task-clear:
-		partition -> <task-partition; index-clear-partition> partition
-	
-  task-incremental:
-  	(old, new) -> (added'*, removed'*)
-  	with
-  		(added*, removed*) := <task-diff> (old, new);
-  		removed'*          := <filter(task-confirm-removed)> removed*;
-  		added'*            := <filter(task-confirm-added)> added*
-  		
-	task-confirm-removed =
-		where(task-nr; task-get-all; not(Hd))
-		
-	task-confirm-added =
-		where(task-nr; task-get-all; Tl; not(Hd))
-		
-	task-dependent:
-		nr -> [task*, task-rec*]
-		where
-			<is-int> nr
-		with
-			d*    := <task-get-dependent> nr;
-			task* := <mapconcat(task-reconstruct)> d*;
-			// Recurse because dependent task may have other dependent task that then also need to be scheduled.
-			if not([] := task*) then
-				task-rec* := <mapconcat(task-dependent)> task*
-			else
-				task-rec* := []
-			end
-			
-	task-dependent:
-		Task(_, d*, _, _) -> [task*, task-rec*]
-		with
-			task* := <mapconcat(task-reconstruct)> d*;
-			// Recurse because dependent task may have other dependent task that then also need to be scheduled.
-			if not([] := task*) then
-				task-rec* := <mapconcat(task-dependent)> task*
-			else
-				task-rec* := []
-			end
 
-rules // Equality
-	
-	task-eq:
-		(t1, t2) -> <id>
-		where
-			<eq> (<task-nr> t1, <task-nr> t2)
-		
 rules // Construction
 		
 	// HACK: Remove artificial TaskPartition()
@@ -97,4 +33,67 @@ rules // Construction
 		(nr, task) -> <task-insert-results(|nr, res)> task
 		where
 			res := <task-get-result> nr
+
+rules // Index
+	
+	task-olds:
+		partition -> <task-partition; index-get-all-in-partition; filter(task-diff-entry)> partition
+			
+	task-clear:
+		partition -> <task-partition; index-clear-partition> partition
+  
+rules // Task diff
+	
+	task-diff:
+		(old, new) -> (added, removed)
+		where
+      added   := <diff(task-eq)> (new, old);
+      removed := <diff(task-eq)> (old, new)
+      
+  task-diff-entry =
+  	?Task(_, _)
+  	
+	task-eq:
+		(t1, t2) -> <id>
+		where
+			<eq> (<task-nr> t1, <task-nr> t2)
+
+rules // Incremental
+	
+  task-incremental:
+  	(old, new) -> (added'*, removed'*)
+  	with
+  		(added*, removed*) := <task-diff> (old, new);
+  		removed'*          := <filter(task-confirm-removed)> removed*;
+  		added'*            := <filter(task-confirm-added)> added*
+  		
+	task-confirm-removed =
+		where(task-nr; task-get-all; not(Hd))
+		
+	task-confirm-added =
+		where(task-nr; task-get-all; Tl; not(Hd))
+		
+	task-dependent:
+		nr -> [task*, task-rec*]
+		where
+			<is-int> nr
+		with
+			d*        := <task-get-dependent> nr;
+			task*     := <mapconcat(task-reconstruct)> d*;
+			task-rec* := <task-dependent-rec> task*
+			
+	task-dependent:
+		Task(_, d*, _, _) -> [task*, task-rec*]
+		with
+			task*     := <mapconcat(task-reconstruct)> d*;
+			task-rec* := <task-dependent-rec> task*
+
+	task-dependent-rec:
+		task* -> task-rec* 			
+		with
+			if not([] := task*) then
+				task-rec* := <mapconcat(task-dependent)> task*
+			else
+				task-rec* := []
+			end
 	

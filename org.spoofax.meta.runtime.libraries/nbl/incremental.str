@@ -29,8 +29,14 @@ rules // Index
 	nabl-entry-clear:
 		partition -> <collect-partition; index-clear-partition> partition
       
-rules // Entry difference
-  
+rules // Entry diff
+	
+  nabl-entry-diff:
+    (old, new) -> (added, removed)
+    with
+      added   := <diff(nabl-diff-eq)> (new, old);
+      removed := <diff(nabl-diff-eq)> (old, new)
+
   nabl-diff-entry =
     ?Def(_)
     
@@ -49,12 +55,8 @@ rules // Entry difference
       <eq> (kind1, kind2);
       <eq> (value1, value2)
 
-  nabl-entry-diff:
-    (old, new) -> (added, removed)
-    with
-      added   := <diff(nabl-diff-eq)> (new, old);
-      removed := <diff(nabl-diff-eq)> (old, new)
-      
+rules // Incremental
+	
   nabl-entry-incremental:
     (old, new) -> [added*, removed*]
     with
