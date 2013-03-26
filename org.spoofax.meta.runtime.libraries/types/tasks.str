@@ -1,0 +1,18 @@
+module types/tasks
+
+imports 
+	task/-
+  nbl/-
+  
+signature
+  
+  constructors
+    
+    TypeCalc : Term * Term       -> Instruction
+    TypeCheck: Term * List(Term) -> Instruction
+
+rules
+  
+	perform-task: TypeCheck(t, t*)     -> Done(t) where <elem> (t, t*)
+  
+  perform-task: TypeCalc(type, term) -> Done(type)
