@@ -53,9 +53,8 @@ rules // Reference resolution
   nabl-resolve-results:
     Result(number) -> results
     where
-    	debug(!"Resolving: ");
       if not(results := <nabl-get-value> DoneTask(number, ())) then
-        results := <debug(!"Trying to get FailTask: "); nabl-get-value; debug(!"Got it! ")> FailTask(number, ()) 
+        results := <nabl-get-value> FailTask(number, ()) 
       end
       
   nabl-resolve-uses:
