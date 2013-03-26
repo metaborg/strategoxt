@@ -17,8 +17,8 @@ signature
   constructors
   
     File   : Path * AST                                                                                    -> File
-    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * List(Partition) * List(Term) * List(Term) * List(Term) -> Result
-    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, evaluated-task*, error-task*, dependent-partition*, error*, warning*, note*)
+    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * List(Task) * List(Task) * List(Partition) * List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, evaluated-task*, error-task*, dependent-partition*, error*, warning*, note*)
 
 rules // Multi file analysis
   
@@ -50,19 +50,22 @@ rules // Multi file analysis
       )> result1*
       
   nabl-analyze-multiple-collect(|language):
-    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, task*, [], [], [], [], [])
+    File(partition, ast) -> Result(partition, ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, [], [], [], [], [], [])
     with
-      (ast', entry*, task*) := <nabl-collect(|partition, Language(language))> ast;
+      (analyzed-ast, new-entry*, new-task*) := <nabl-collect(|partition, Language(language))> ast;
       index-transaction(
-        oldEntry*           := <filter(nabl-diff-entry)> <index-get-all-in-partition> partition;
-        <index-clear-partition> partition;
-        <index-add-all(|partition)> entry*;
-        <map(store-task)> task* 
+	      old-task*  := <task-olds> partition;
+	      old-entry* := <nabl-entry-olds> partition;
+	      <task-partition; index-get-all-in-partition> partition;
+	      <task-clear> partition;
+	      <nabl-entry-clear> partition;
+	      <index-add-all(|<collect-partition> partition)> new-entry*;
+	      <map(store-task)> new-task*
       )
   
   nabl-analyze-multiple-perform:
-    Result(partition, ast, ast', oldEntry*, entry*, task*, _, _, _, _, _) -> 
-      Result(partition, ast, ast', oldEntry*, entry*, task*, error*, [], [], [], [])
+    Result(partition, ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, _, _, _, _, _, _) -> 
+      Result(partition, ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, [], [], [], [], [], [])
     with
       //nabl-collect-reads(
         error* := <perform-tasks> task*
