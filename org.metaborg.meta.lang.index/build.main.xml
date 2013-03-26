@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="Index" default="all">
+
+	<!-- Key input modules -->
+	<property name="sdfmodule" value="Index" />
+	<property name="metasdfmodule" value="Stratego-Index" />
+	<property name="esvmodule" value="Index" />
+	<property name="strmodule" value="index" />
+
+	<!-- Project directories -->
+	<property name="trans" location="trans" />
+	<property name="src-gen" location="editor/java" />
+	<property name="syntax" location="syntax" />
+	<property name="include" location="include" />
+	<property name="lib" location="lib" />
+	<property name="build" location="bin" />
+	<property name="dist" location="bin/dist" />
+
+	<!-- Imports -->
+	<property name="build.sdf.imports" value="" />
+	<property name="build.stratego.args"
+	          value="
+                        --library
+                        -I &quot;${trans}&quot;
+                        -I &quot;${basedir}&quot;
+                        -la stratego-lib -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm -la stratego-parallel" />
+
+	<!-- Optional: external .def and .jar locations
+        <property name="externaldef" location="syntax/${sdfmodule}.def"/>
+        <property name="externaljar" value="../lib.jar"/>
+        <property name="externaljarflags" value="-la org.lib"/>
+        -->
+
+	<!-- Environment configuration for command-line builds -->
+	<condition property="build.strategoxt.sdf" value="${eclipse.spoofaximp.nativeprefix}" else="">
+		<isset property="eclipse.spoofaximp.nativeprefix" />
+	</condition>
+	<property name="build.strategoxt.stratego" location="${user.home}/.nix-profile/bin" />
+
+	<!-- used for building inside of Eclipse -->
+	<import file="build.generated.xml" />
+
+	<!-- Main target -->
+	<target name="all" depends="link-lib-files, copy-lib-files, spoofaximp.default.ctree" />
+
+	<target name="os-detection">
+		<condition property="isWin">
+			<os family="windows" />
+		</condition>
+	</target>
+
+	<target name="copy-lib-files" if="isWin" depends="os-detection">
+		<!-- Copy NBL libraries, Ant is stupid and cannot link on Windows :( -->
+		<copy todir="${basedir}/lib/nbl">
+			<fileset dir="${basedir}/../org.spoofax.meta.runtime.libraries/nbl/" includes="**" />
+		</copy>
+		<copy todir="${basedir}/lib/index">
+			<fileset dir="${basedir}/../org.spoofax.meta.runtime.libraries/index/" includes="**" />
+		</copy>
+		<copy todir="${basedir}/lib/task">
+			<fileset dir="${basedir}/../org.spoofax.meta.runtime.libraries/task/" includes="**" />
+		</copy>
+		<copy todir="${basedir}/lib/tmpl">
+			<fileset dir="${basedir}/../org.spoofax.meta.runtime.libraries/tmpl/" includes="**" />
+		</copy>
+	</target>
+
+	<target name="link-lib-files" unless="isWin" depends="os-detection">
+		<!-- Link to NBL libraries. -->
+		<symlink resource="${basedir}/../org.spoofax.meta.runtime.libraries/nbl/"
+		         link="${basedir}/lib/nbl"
+		         overwrite="true" />
+		<symlink resource="${basedir}/../org.spoofax.meta.runtime.libraries/index/"
+		         link="${basedir}/lib/index"
+		         overwrite="true" />
+		<symlink resource="${basedir}/../org.spoofax.meta.runtime.libraries/task/"
+		         link="${basedir}/lib/task"
+		         overwrite="true" />
+		<symlink resource="${basedir}/../org.spoofax.meta.runtime.libraries/tmpl/"
+				         link="${basedir}/lib/tmpl"
+				         overwrite="true" />
+	</target>
+</project>

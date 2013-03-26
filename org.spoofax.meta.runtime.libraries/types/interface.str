@@ -1,0 +1,5 @@
+module types/interface
+
+strategies
+  
+  type-task(|task*) = fail

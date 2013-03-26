@@ -1,0 +1,64 @@
+module generate
+
+imports
+  libstratego-lib
+  libstratego-gpp
+  libstratego-aterm
+  include/Index
+  lib/editor-common.generated
+  lib/compilation-library.generated
+
+rules // Generate GraphViz for task (dependencies)
+      
+  
+  generate-task-graph:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      editor-init;
+      filename := <guarantee-extension(|"gv")> path;
+      result   := <to-task-graph> ast
+
+	
+	to-task-graph:
+		Index(partitions*) -> $<
+			digraph dataflow {
+				< <map(to-task-subgraph)> partitions* >
+				< <map(to-task-edges)> partitions* >
+			}
+			>
+	
+	to-task-subgraph:
+		Partition(name, entries*) -> $<
+			subgraph cluster_< cluster-name > {
+				< <to-task-nodes> entries* >
+				label = "< cluster-name >";
+			}
+			>
+		where
+			cluster-name := <sanitize-identifier> name
+	
+	
+	to-task-nodes:
+		entries* -> $<
+				< nodes >
+			>
+		where
+			task-names* := <filter(?StoreTask(<id>, _))> entries*;
+			nodes := <map(!$[[<id>];["\n"]])> task-names*
+	
+	to-task-edges:
+		Partition(_, entries*) -> $<
+				< edges* >
+			>
+		where
+			deps* := <filter(?StoreTaskDep(_, _))> entries*;
+			edges* := <map(to-task-edge)> deps*
+
+	to-task-edge:
+		StoreTaskDep(atask, btask) -> $[ [ atask ] -> [ btask ];
+		]
+
+rules
+	
+	sanitize-identifier = string-replace(|"\"","");string-replace(|".","_");string-replace(|"/","_")
+	

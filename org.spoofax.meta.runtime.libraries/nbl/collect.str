@@ -9,6 +9,7 @@ imports
 	nbl/interface
 	nbl/uri
 	nbl/utils
+	types/interface
 	
 signature 
 
@@ -63,12 +64,13 @@ strategies // generic traversal
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
 	nabl-collect(|partition, lang):
-	  ast -> (ast', <iset-elements> elem*, <iset-elements> task*)
+	  ast -> (ast'', <iset-elements> elem*, <iset-elements> task*)
 	  where
 	    new-iset      => elem*;
 	    new-iset      => task*;
 	    new-hashtable => unique*;
-	    ast' := <nabl-collect(id|lang, partition, unique*, elem*, task*, [])> ast
+	    ast'  := <nabl-collect(id|lang, partition, unique*, elem*, task*, [])> ast ;
+	    ast'' := <alltd(type-task(|task*))> ast'
 	  
 	/**
 	 * Performs the collection in a topdown traversal. 
@@ -92,7 +94,8 @@ strategies // generic traversal
 		try(nabl-use-site(|lang, elem*, task*, uri'*, state*));
     try(nabl-import-site(|lang, elem*, task*, child-uri*, state*));
     try(nabl-prop-site(|elem*, task*, state*));
-    try(nabl-implicit-def-site(|lang, partition, unique*, elem*, child-uri*, state*))
+    try(nabl-implicit-def-site(|lang, partition, unique*, elem*, child-uri*, state*));
+    try(nabl-constraint-site(|task*))
 	
 	nabl-siblings(|lang, partition, unique*, elem*, task*, uri*) = 
 		[] + 
@@ -292,7 +295,7 @@ rules // generic analysis of properties
 		(Prop(type, result), name) -> name
 		where
 		  prop := <new-prop(|elem*, uri, type, result)> name
-
+        
 rules // generic analysis of implicit defs
  
   nabl-implicit-def(|lang, partition, unique*, elem*, uri*, candidates):

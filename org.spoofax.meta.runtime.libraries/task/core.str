@@ -24,6 +24,9 @@ signature
     Done       : Term * List(Entry) -> Result
     Fail       : Term               -> Result
     Fail       : Term * List(Entry) -> Result
+    Error      : Term               -> Result
+    Warning    : Term               -> Result
+    Note       : Term               -> Result
     Dependency : List(Int)          -> Result
 		
 rules // Creation

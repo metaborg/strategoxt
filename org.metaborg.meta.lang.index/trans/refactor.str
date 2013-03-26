@@ -1,0 +1,8 @@
+module refactor
+
+imports
+  lib-refactoring/behavior-preservation.generated
+  check
+  lib/nbl-library.generated
+
+rules // Definitions of refactorings. Referenced from Minimal-Refactorings.esv

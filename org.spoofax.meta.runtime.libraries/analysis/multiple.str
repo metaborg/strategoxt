@@ -16,8 +16,9 @@ signature
 
   constructors
   
-    File   : Path * AST                                                                       -> File
-    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Partition) -> File
+    File   : Path * AST                                                                                    -> File
+    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * List(Partition) * List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, evaluated-task*, error-task*, dependent-partition*, error*, warning*, note*)
 
 rules // Multi file analysis
   
@@ -49,7 +50,7 @@ rules // Multi file analysis
       )> result1*
       
   nabl-analyze-multiple-collect(|language):
-    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, task*, [])
+    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, task*, [], [], [], [], [])
     with
       (ast', entry*, task*) := <nabl-collect(|partition, Language(language))> ast;
       index-transaction(
@@ -60,8 +61,8 @@ rules // Multi file analysis
       )
   
   nabl-analyze-multiple-perform:
-    Result(partition, ast, ast', oldEntry*, entry*, task*, _) -> 
-      Result(partition, ast, ast', oldEntry*, entry*, error*, [])
+    Result(partition, ast, ast', oldEntry*, entry*, task*, _, _, _, _, _) -> 
+      Result(partition, ast, ast', oldEntry*, entry*, task*, error*, [], [], [], [])
     with
       //nabl-collect-reads(
         error* := <perform-tasks> task*
@@ -71,11 +72,11 @@ rules // Multi file analysis
 rules // Utility
 
   nabl-analyze-multiple-setup(|language, project-path) =
-    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _));
+    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _, _, _, _, _));
     index-setup(|language, [project-path], partition)
     
   nabl-analyze-multiple-work-units = 
     length; !(<id>, 4); mul
 
   nabl-result-dependent:
-    Result(_, _, _, _, _, _, d*) -> d*
+    Result(_, _, _, _, _, _, _, dependent*, _, _, _) -> dependent*
