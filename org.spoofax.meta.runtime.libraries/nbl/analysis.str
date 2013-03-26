@@ -14,8 +14,9 @@ signature
 
   constructors
   
-    File   : Path * AST                                                                       -> File
-    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Partition) -> File
+    File   : Path * AST                                                                                    -> File
+    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * List(Partition) * List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, evaluated-task*, error-task*, dependent-partition*, error*, warning*, note*)
       
 rules // Single file analysis
   
@@ -78,7 +79,7 @@ rules // Multi file analysis
       ))> result2*
       
   nabl-analyze-multiple-collect(|language):
-    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, task*, [])
+    File(partition, ast) -> Result(partition, ast, ast', oldEntry*, entry*, task*, [], [], [], [], [])
     with
       (ast', entry*, task*) := <nabl-collect(|partition, Language(language))> ast;
       index-transaction(
@@ -88,8 +89,8 @@ rules // Multi file analysis
       )
   
   nabl-analyze-multiple-perform:
-    Result(partition, ast, ast', oldEntry*, entry*, task*, _) -> 
-      Result(partition, ast, ast', oldEntry*, entry*, error*, [])
+    Result(partition, ast, ast', oldEntry*, entry*, task*, _, _, _, _, _) -> 
+      Result(partition, ast, ast', oldEntry*, entry*, task*, error*, [], [], [], [])
     with
       nabl-collect-reads(
         error* := <perform-tasks(|partition)> task*
@@ -97,8 +98,8 @@ rules // Multi file analysis
       <index-add-all(|partition)> reads
       
   nabl-analyze-multiple-dependent:
-    Result(partition, ast, ast', oldEntry*, entry*, error*, _) -> 
-      Result(partition, ast, ast', oldEntry*, entry*, error*, dependent*)
+    Result(partition, ast, ast', oldEntry*, entry*, task*, error*, _, _, _, _) -> 
+      Result(partition, ast, ast', oldEntry*, entry*, task*, error*, dependent*, [], [], [])
       with
         newEntry*          := <filter(nabl-diff-entry)> entry*;
         (added*, removed*) := <nabl-diff> (oldEntry*, newEntry*);
@@ -108,7 +109,7 @@ rules // Multi file analysis
         )
 
   nabl-analyze-multiple-setup(|language, project-path) =
-    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _));
+    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _, _, _, _, _));
     index-setup(|language, [project-path], partition)
     
   nabl-analyze-multiple-work-units = 
@@ -117,4 +118,4 @@ rules // Multi file analysis
 rules // Projections
   
   nabl-result-dependent:
-    Result(_, _, _, _, _, _, dependent*) -> dependent*
+    Result(_, _, _, _, _, _, _, dependent*, _, _, _) -> dependent*
