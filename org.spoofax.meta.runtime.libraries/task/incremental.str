@@ -67,6 +67,12 @@ rules // Incremental
   		removed'*          := <filter(task-confirm-removed)> removed*;
   		added'*            := <filter(task-confirm-added)> added*
   		
+  task-incremental-no-confirm-added:
+  	(old, new) -> (added*, removed'*)
+  	with
+  		(added*, removed*) := <task-diff> (old, new);
+  		removed'*          := <filter(task-confirm-removed)> removed*
+  		
 	task-confirm-removed =
 		where(task-nr; task-get-all; not(Hd))
 		

@@ -22,10 +22,9 @@ rules // Single file analysis
     with // Store and clean old tasks and entries.  
       oldTask*  := <task-olds> partition;
       oldEntry* := <nabl-entry-olds> partition;
-      <task-partition; index-get-all-in-partition> partition;
       <task-clear> partition;
       <nabl-entry-clear> partition
-    with // Collect tasks
+    with // Collect entries and tasks.
       (ast', newEntry*, newTask*) := <nabl-collect(|path, Language(language))> ast;
       <index-add-all(|<collect-partition> partition)> newEntry*;
       <map(store-task)> newTask*
