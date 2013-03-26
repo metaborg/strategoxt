@@ -92,6 +92,9 @@ rules // Projections
 	task-nr:
 		Task(nr, _, _, _) -> nr
 		
+	task-partition:
+		Task(_, _, _, p) -> p
+		
 	task-result-nr:
 		Result(nr) -> nr
 

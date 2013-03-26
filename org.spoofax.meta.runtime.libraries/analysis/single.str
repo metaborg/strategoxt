@@ -25,7 +25,7 @@ rules // Single file analysis
       <task-clear> partition;
       <nabl-entry-clear> partition
     with // Collect entries and tasks.
-      (ast', newEntry*, newTask*) := <nabl-collect(|path, Language(language))> ast;
+      (ast', newEntry*, newTask*) := <nabl-collect(|partition, Language(language))> ast;
       <index-add-all(|<collect-partition> partition)> newEntry*;
       <map(store-task)> newTask*
     with // Incremental analysis
@@ -56,5 +56,5 @@ rules // Single file analysis
 			task'* := <map(task-insert-own-existing-results)> task*; // Fill in existing results.
       <map(debug(!"Performing tasks: "))> task'*;
       (taskEntry*, error*) := <perform-tasks> task'*;
-      <index-add-all(|partition)> taskEntry*
+      <index-add-all(|"TaskEntries")> taskEntry*
       // TODO: update markers for other partitions.
