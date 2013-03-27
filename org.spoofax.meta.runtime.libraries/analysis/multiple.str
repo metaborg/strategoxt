@@ -34,16 +34,16 @@ rules // Multi file analysis
     with
     	<vdebug(!"Analyzing files: ")> file*;
     	create-execqueue => execqueue;
-      result1* := <parallel(all(
+      result1* := <all(
         nabl-analyze-multiple-setup(|language, project-path); 
         analyze-collect(|language); 
         where(complete-work-unit)
-      ))> file*;
-      task* := <all(
+      )> file*;
+      task* := <mapconcat(
         nabl-analyze-multiple-setup(|language, project-path); 
         analyze-incremental(|execqueue);
         where(complete-work-unit)
-      )> result1*;
+      ); make-set> result1*;
       <analyze-perform-all(|execqueue)> task*
       
 rules // Utility
@@ -54,6 +54,3 @@ rules // Utility
     
   nabl-analyze-multiple-work-units = 
     length; !(<id>, 3); mul
-
-  //nabl-result-dependent:
-  //  Result(_, _, _, _, _, _, _, _, _, dependent*, _, _, _) -> dependent*
