@@ -16,7 +16,8 @@ signature
   constructors
     
     Resolve  : Result * Namespace * Name * List(Prop) * Range -> Instruction
-    Choice   : List(String)                                   -> Instruction
+    Choice   : List(Int)                                      -> Instruction
+    Choice   : List(Int) * List(String)                       -> Instruction
     PropCalc : Property * Term                                -> Instruction
     Match    : ID * List(Term) * Term                         -> Instruction
         
@@ -74,6 +75,14 @@ rules // Resolve
 		where
 			result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choices) <+
 			result := Fail(<mapconcat(?Fail(<id>))> choices) 
+
+  perform-task:
+    Choice(choice*, error*) -> result
+    where
+      result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choice*) //<+
+      //result := Fail(<concat-strings> error*) <+
+      //result := Fail(<mapconcat(?Fail(<id>))> choice*) 
+
 
 rules // Property calculation
             

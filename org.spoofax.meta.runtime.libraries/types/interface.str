@@ -2,4 +2,4 @@ module task/interface
 
 strategies
   
-  type-task(|task*) = fail
+  type-task(|task*)    = fail
