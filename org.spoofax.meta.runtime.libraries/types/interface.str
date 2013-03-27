@@ -1,4 +1,4 @@
-module task/interface
+module types/interface
 
 strategies
   

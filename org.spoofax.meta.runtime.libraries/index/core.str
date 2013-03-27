@@ -101,6 +101,18 @@ rules
     prim("LANG_index_remove_all", <id>)
     
   /**
+   * Removes given entry from the index (from all partitions).
+   *
+   * Example:
+   *   <index-remove-all> DefData([Entity(), "Bar"], Type(), Type("Bar"))
+   * 
+   * @param partition The partition to remove the element from.
+   * @type x -> ?x
+   */
+  index-remove-one =
+    prim("LANG_index_remove_one", <id>)
+    
+  /**
    * Removes all elements from the index that are contained in given partition.
    *
    * Example:

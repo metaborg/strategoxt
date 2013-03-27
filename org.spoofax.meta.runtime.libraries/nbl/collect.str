@@ -4,6 +4,7 @@ imports
 	
 	task/core
 	nbl/tasks
+	nbl/incremental
 	nbl/entries
 	nbl/interface
 	nbl/uri
@@ -52,6 +53,10 @@ signature
   constructors // property
     
     Prop : Property * Value -> Prop
+    
+  constructors // partition
+  
+  	CollectPartition : Partition
 	
 strategies // generic traversal
 	
@@ -193,53 +198,68 @@ rules // generic analysis of defs
 			d := <new-def(|elem*, def-uri)> a
 	
 rules // generic analysis of uses
-		
+	
+	// single candidate
+	nabl-use(|lang, elem*, task*, uri*, candidate) =
+		where (<not(is-list)> candidate);
+		nabl-use(|lang, elem*, task*, uri*, [candidate])
+	
 	// list of candidates
-	nabl-use(|lang, elem*, task*, uri*, candidates):
+	nabl-use(|lang, elem*, task*, uri*, candidate*):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, task*, uri*, <nabl-fix-name> name)); make-set> candidates;
-			taskdep* := <dependent-tasks> subtask*
-		where
-		  [result] := subtask* <+
-			result   := <new-task(|task*, taskdep*)> Choice(subtask*)
-		where
+			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, <nabl-fix-name> name)); unions> candidate*;
+			result   := <new-task(|task*)> Choice(subtask*);
 		  u        := <new-use(|elem*, result)>
-		
+
+	nabl-use-subtasks(|task*, ns, name, range): 
+		uri  -> [subtask1, subtask2, subtask*|subtasks]
+		with
+			subtask1 := <new-task(|task*)> Resolve(uri, ns, name);
+			subtask2 := <new-task(|task*)> ResolveImport(uri, ns, name);
+			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
+        ext-uri  := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
+        subtask* := [<new-task(|task*)> Resolve(ext-uri, ns, name)]
+      else
+      	subtask* := []
+      end;
+      switch !range
+      	case One(): ![]
+      	case All(): <nabl-uri-parent < nabl-use-subtasks(|task*, ns, name, range) + ![]> uri
+    	end => subtasks
+		  	
 	// candidate in current scope
-	nabl-use-candidate(|lang, task*, uri*, name):
+	nabl-use-candidate(|lang, elem*, task*, uri*, name):
 		UseCandidate(ns, prop*, Current(), range) -> result
 		where
 			uri      := <lookup-uri(|lang, ns)> uri*;
-			propdep* := <dependent-tasks> prop*;
-			result   := <new-task(|task*, propdep*)> Resolve([uri], ns, name, prop*, range)
-      
-  // named candidate in current scope
-  nabl-use-candidate(|lang, task*, uri*, term):
-    UseCandidate(ns, name, prop*, Current(), range)-> result
-    where
-      uri      := <lookup-uri(|lang, ns)> uri*;
-      propdep* := <dependent-tasks> prop*;
-      namedep* := <dependent-tasks> name;
-      result   := <new-task(|task*, [propdep*, namedep*])> Resolve([uri], ns, name, prop*, range)
-    
+			subtask* := <nabl-use-subtasks(|task*, ns, name, range)> uri;
+			if not([] := prop*) then
+				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+			else
+				result := subtask*
+			end
+
 	// candidate in another scope (result of resolution)	  
-	nabl-use-candidate(|lang, task*, uri*, name):
-		c@UseCandidate(ns, prop*, target-uri*, range) -> result
+	nabl-use-candidate(|lang, elem*, task*, uri*, name):
+		UseCandidate(ns, prop*, target-uri*, range) -> result
 		where
-		  <map(?Result(_))> target-uri*;
-		  propdep* := <dependent-tasks> prop*;
-		  uridep*  := <dependent-tasks> target-uri*;
-			result   := <new-task(|task*, [propdep*, uridep*])> Resolve(target-uri*, ns, name, prop*, range)
-			//; u        := <new-use(|elem*, result)>
+		  <?Result(_) <+ map(?Result(_))> target-uri*;
+			subtask* := <nabl-use-subtasks(|task*, ns, <nabl-fix-name> name, range)> target-uri*;
+			if not([] := prop*) then
+				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+			else
+				result := subtask*
+			end
 		  
 	// candidate in context
-  nabl-use-candidate(|lang, task*, uri*, name):
-    UseCandidate(ns, prop*, Context(name', ns', props', refscope'), range) -> result
-    where 
-     	uri-result := <nabl-use-candidate(|lang, task*, uri*, <nabl-fix-name> name')> UseCandidate(ns', props', refscope', range);
-      propdep*   := <dependent-tasks> prop*;
-      result     := <new-task(|task*, propdep*)> Resolve([uri-result], ns, name, prop*, range)
+	//  nabl-use-candidate(|lang, elem*, task*, uri*, dep*):
+	//    (UseCandidate(ns, prop*, Context(name', ns', props', refscope'), range), name{anno*}) -> name{u, anno*}
+	//    where 
+	//      _{uri}   := <nabl-use-candidate(|lang, elem*, task*, uri*, dep*)> (UseCandidate(ns', props', refscope', range), name'{});
+	//      propdep* := <dependent-tasks> prop*;
+	//      result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, <nabl-fix-name> name, prop*, range);
+	//      u        := <new-use(|elem*, result)>
     
 rules // generic analysis of imports
   
@@ -340,3 +360,10 @@ rules // helpers
 	lookup-uri(|lang, ns):
 	  uri* -> <<lookup> (ns, uri*) <+ <nabl-base-uri> lang>
 	  
+	collect-partition:
+		(partition, _) -> (partition, CollectPartition())
+		
+	collect-partition:
+		partition -> (partition, CollectPartition())
+		where
+			<is-string> partition

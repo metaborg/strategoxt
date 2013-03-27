@@ -1,0 +1,120 @@
+module analysis/multiple
+
+imports
+	
+  task/core
+  task/store
+  task/incremental
+  index/core
+  index/query
+  nbl/collect
+  nbl/tasks
+  nbl/incremental
+  nbl/uri
+
+signature
+
+  constructors
+  
+    File   : Path * AST -> File
+    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * 
+             List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, 
+    //        error*, warning*, note*)
+
+rules // Multi file analysis
+  
+  nabl-analyze-multiple(parse-file, parallel, complete-work-unit|language, project-path):
+    path* -> result*
+    with
+      file*   := <map(nabl-analyze-parse-file(parse-file); where(complete-work-unit))> path*;
+      result* := <nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path)> file*
+
+  nabl-analyze-parse-file(parse-file):
+    path -> File(path, ast)
+    with
+      if not(ast := <file-exists; parse-file> path) then
+        ast := ()
+      end
+
+  nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path):
+    file* -> (task*, result1*)
+    with
+    	<debug(!"Analyzing files: ")> file*;
+      result1* := <parallel(all(
+        nabl-analyze-multiple-setup(|language, project-path); 
+        nabl-analyze-multiple-collect(|language); 
+        where(complete-work-unit)
+      ))> file*;
+      task* := <mapconcat(
+        nabl-analyze-multiple-setup(|language, project-path); 
+        nabl-analyze-multiple-incremental; 
+        where(complete-work-unit)
+      )> result1*;
+      <make-set; nabl-analyze-multiple-perform-all> task*
+      
+  nabl-analyze-multiple-collect(|language):
+    File(partition, ast) -> Result(partition, ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, [], [], [])
+    with
+    	<debug(!"Collect for: ")> partition;
+      //index-transaction(
+      	// Store and clean old tasks and entries. 
+	      old-task*  := <task-olds> partition;
+	      old-entry* := <nabl-entry-olds> partition;
+	      <task-clear> partition;
+	      <nabl-entry-clear> partition;
+      //);
+    	// Collect tasks and entries.
+      (analyzed-ast, new-entry*, new-task*) := <nabl-collect(|partition, Language(language))> ast;
+      //index-transaction(
+	      // Store tasks and entries.
+	      <index-add-all(|<collect-partition> partition)> new-entry*;
+	      <map(store-task)> new-task*
+      //)
+  
+  nabl-analyze-multiple-incremental:
+  	Result(_, _, _, old-entry*, new-entry*, old-task*, new-task*, _, _, _) -> task*
+  	with
+    	// Added and dependencies of removed tasks that need to be re-evaluted.
+    	(added-task*, removed-task*) := <task-incremental-no-confirm-added> (old-task*, new-task*);
+  		<map(debug(!"Added task: "))> added-task*;
+  		<map(debug(!"Removed task: "))> removed-task*;
+  		<map(task-nr; debug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*; // Cleanup removed results
+  		<map(task-nr; debug(!"Removing all reads for: "); nabl-remove-read)> removed-task*;
+  		removed-task-dep* := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent on removed task: "))> removed-task*;
+  		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
+    	
+    	// Tasks that need to be re-evaluated because a definition or property has changed.
+    	changedEntry*  := <nabl-entry-incremental; map(debug(!"Changed entry: "); nabl-uri); make-set> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
+    	read-task-nr*  := <mapconcat(nabl-get-reads); map(debug(!"Read for changed entry: "))> changedEntry*;
+    	read-task*     := <mapconcat(task-reconstruct); map(debug(!"Changed task: "))> read-task-nr*;
+    	read-task-dep* := <mapconcat(task-nr; task-dependent); map(debug(!"Dependent on changed task: "))> read-task*;
+  		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
+  		
+  		// All tasks that need to be re-evaluated.
+    	task* := [read-task*, read-task-dep*, added-task*, removed-task-dep*]
+      
+  nabl-analyze-multiple-perform-all:
+  	task* -> <id>
+  	with
+    	// Remove reads and results for tasks that will be re-evaluated.
+      <map(task-nr; task-remove-result)> task*;
+			<map(task-nr; nabl-remove-read)> task*;
+			
+			// Perform tasks
+			task'* := <map(task-insert-own-existing-results)> task*; // Fill in existing results.
+      <map(debug(!"Performing tasks: "))> task'*;
+      (taskEntry*, error-task*) := <perform-tasks> task'*;
+      <index-add-all(|"TaskEntries")> taskEntry*
+      
+rules // Utility
+
+  nabl-analyze-multiple-setup(|language, project-path) =
+    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _, _, _, _));
+    where(index-setup(|language, [project-path], partition))
+    
+  nabl-analyze-multiple-work-units = 
+    length; !(<id>, 3); mul
+
+  //nabl-result-dependent:
+  //  Result(_, _, _, _, _, _, _, _, _, dependent*, _, _, _) -> dependent*

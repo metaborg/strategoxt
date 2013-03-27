@@ -37,7 +37,7 @@ rules
     where
       use := <force-origins(!Use(uri))> x;
       <iset-add(|use)> elems
-    
+
   new-prop(|elems, uri, kind, val):
     x -> prop
     where
