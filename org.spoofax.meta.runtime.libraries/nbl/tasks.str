@@ -30,7 +30,7 @@ rules // Resolve
   perform-task(|nr):
   	Resolve(scope, ns, name) -> result
   	with
-  		uri := </* HACK: Take first in list. */ try(Hd); nabl-uri> scope;
+  		<with(uri := </* HACK: Take first in list. */ try(remove-fail-and-empty; Hd); nabl-uri> scope | "Could not extract URI from: ")> scope;
   		def* := <nabl-lookup(|ns, name)> uri;
   		switch !def*
         case ?[]: 
@@ -43,7 +43,7 @@ rules // Resolve
 	perform-task(|nr):
 		ResolveImport(scope, ns, name) -> result
 		with
-			<with(uri := </* HACK: Take first in list. */ try(Hd); nabl-uri> scope | "Could not extract URI from: ")> scope;
+			<with(uri := </* HACK: Take first in list. */ try(remove-fail-and-empty; Hd); nabl-uri> scope | "Could not extract URI from: ")> scope;
 			language       := <nabl-uri-language> uri;
       namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
       unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri;
