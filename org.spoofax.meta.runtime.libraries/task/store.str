@@ -6,6 +6,7 @@ imports
 	index/core
 	index/query
 	nbl/utils // TODO: should not depend on NaBl.
+	task/incremental
 
 signature
   
@@ -17,6 +18,7 @@ signature
 		
 		TaskPartition : Partition
 
+/*
 rules // Storing
   
 	store-task:
@@ -112,4 +114,160 @@ rules // Projections
 
 	task-failed-result-template:
 		nr -> FailTask(nr, ())
+*/
 		
+		
+		rules
+	
+	/*
+		ON INDEX:
+				dep, revdep, tasks, solved
+
+		ON VOLATILE:
+				runtimedep, execqueue
+	*/
+
+rules // Task creation
+	
+	create-execqueue:
+		_ -> <new-iset>
+
+	store-task:
+		t@Task(nr, d*, i, p) -> <id>
+		where
+			<index-add(|<task-partition> p)> Task(nr, i);
+			<store-task-deps(|p, nr)> d*
+	
+	queue-task(|execqueue):
+		t@Task(nr, d*, i, p) -> <id>
+		where
+			if [] := d* then
+				<nabl-queue-task(|execqueue)> t
+			end
+			
+	store-task-deps(|partition, nr) =
+		where(map(create-task-dependency(|nr)); index-add-all(|<task-partition> partition));
+		map(create-task-dependent(|nr)); index-add-all(|<task-partition> partition)
+	
+	create-task-dependency(|nr) =
+		!TaskDependency(nr, <id>)
+		
+	create-task-dependent(|nr) =
+		!TaskDependent(<id>, nr)
+
+rules // Removing
+	
+	task-remove-result:
+		nr -> <id>
+		with
+			<task-successful-result-template; index-remove-all> nr;
+			<task-failed-result-template; index-remove-all> nr
+
+	task-remove-dependencies:
+		nr -> <id>
+		with	
+			dependent* := <task-dependency-template; index-get-all; map(task-dependency-nr)> nr;
+			<task-dependency-template; vdebug(!"Removing dependency: "); index-remove-all> nr;
+			// Use index-remove-one because only TaskDependent with value (nr) should be removed.
+			<map(!TaskDependent(<id>, nr); vdebug(!"Removing dependent: "); index-remove-one)> dependent*
+	
+rules // Retrieving
+	
+	task-get =
+		task-get-all; Hd
+		
+	task-get-all =
+		task-template; index-get-all
+		
+	task-get-dependencies =
+		task-dependency-template; index-get-all; map(task-dependency-nr)
+		
+	task-get-dependent =
+		task-dependent-template; index-get-all; map(task-dependent-nr)
+		
+	task-get-result =
+		((task-successful-result-template; index-get-all; Hd)
+		<+
+		(task-failed-result-template; index-get-all; Hd));
+		task-result-value
+		
+rules // Projections
+	
+	task-partition:
+		(partition, _) -> (partition, TaskPartition())
+		
+	task-partition:
+		partition -> (partition, TaskPartition())
+		where
+			<is-string> partition
+
+			
+	task-nr:
+		Task(nr, _) -> nr
+	
+	task-dependency-nr:
+		TaskDependency(_, d) -> d
+		
+	task-dependent-nr:
+		TaskDependent(_, d) -> d
+		
+	task-result-value:
+		DoneTask(_, v) -> v
+		
+	task-result-value:
+		FailTask(_, v) -> v
+
+		
+	task-template:
+		nr -> Task(nr, ())
+
+	task-dependent-template:
+		nr -> TaskDependent(nr, ())
+		
+	task-dependency-template:
+		nr -> TaskDependency(nr, ())
+		
+	task-successful-result-template:
+		nr -> DoneTask(nr, ())
+
+	task-failed-result-template:
+		nr -> FailTask(nr, ())
+
+rules // Queue
+	
+	nabl-queue-task(|execqueue):
+		t -> <iset-add(|t)> execqueue
+		
+	nabl-dequeue-task(|execqueue):
+		_ -> t
+		where
+			t := <?IndexedSet(<id>); gohla-iset-get-one> execqueue;
+			<iset-remove(|t)> execqueue
+
+rules // Schedule
+	
+	task-create-runtimedep:
+		_ -> <new-hashtable>
+	
+	task-try-schedule-task(|runtimedep, execqueue):
+		n -> <id>
+		where
+			dependent-n* := <task-get-dependent> n;
+			<map(task-remove-runtime-dependency(|runtimedep, execqueue, n))> dependent-n*
+	
+	task-remove-runtime-dependency(|runtimedep, execqueue, ct):
+		wt -> <id>
+		with
+ 			dep*  := <<hashtable-get(|wt)> runtimedep <+ <task-get-dependencies> wt>;
+			dep'* := <remove-all(?ct)> dep*;
+			<hashtable-put(|wt, dep'*)> runtimedep;
+			if [] := dep'* then
+				task* := <task-reconstruct> wt; // TODO: don't need to reconstruct dependencies in the term.
+				<map(nabl-queue-task(|execqueue))> task*
+			end
+	
+	task-add-runtime-dependency(|runtimedep, task):
+		deps* -> <id>
+		with
+			<hashtable-put(|task, deps*)> runtimedep
+			

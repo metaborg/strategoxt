@@ -12,50 +12,17 @@ imports
   nbl/incremental
   nbl/uri
   nbl/utils
+  analysis/core
   
 rules // Single file analysis
   
   nabl-analyze(|language, path, project-path):
-    ast -> (ast', newEntry*, error*, [])
+    ast -> (ast', new-entry*, [], [])
     with // Setup index
       partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition)
-    with // Store and clean old tasks and entries.  
-      oldTask*  := <task-olds> partition;
-      oldEntry* := <nabl-entry-olds> partition;
-      <task-clear> partition;
-      <nabl-entry-clear> partition
-    with // Collect entries and tasks.
-      (ast', newEntry*, newTask*) := <nabl-collect(|partition, Language(language))> ast;
-      <index-add-all(|<collect-partition> partition)> newEntry*;
-      <map(store-task)> newTask*
-    with // Incremental analysis
-    	// Added and dependencies of removed tasks that need to be re-evaluted.
-    	(added-task*, removed-task*) := <task-incremental> (oldTask*, newTask*);
-  		<map(vdebug(!"Added task: "))> added-task*;
-  		<map(vdebug(!"Removed task: "))> removed-task*;
-  		<map(task-nr; vdebug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*; // Cleanup removed results
-  		<map(task-nr; vdebug(!"Removing all reads for: "); nabl-remove-read)> removed-task*;
-  		removed-task-dep* := <mapconcat(task-nr; task-dependent); map(vdebug(!"Dependent on removed task: "))> removed-task*;
-  		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
-    	
-    	
-    	// Tasks that need to be re-evaluated because a definition or property has changed.
-    	changedEntry*  := <nabl-entry-incremental; map(vdebug(!"Changed entry: "); nabl-uri); make-set> (oldEntry*, <filter(nabl-diff-entry)> newEntry*);
-    	read-task-nr*  := <mapconcat(nabl-get-reads); map(vdebug(!"Read for changed entry: "))> changedEntry*;
-    	read-task*     := <mapconcat(task-reconstruct); map(vdebug(!"Changed task: "))> read-task-nr*;
-    	read-task-dep* := <mapconcat(task-nr; task-dependent); map(vdebug(!"Dependent on changed task: "))> read-task*;
-  		// TODO: task-dependent also returns tasks that already have results and may not need to be re-evaluated.
-  		
-  		
-  		// All tasks that need to be re-evaluated.
-    	task* := <make-set> [read-task*, read-task-dep*, added-task*, removed-task-dep*]
-  	with // Remove reads and results for tasks that will be re-evaluated.
-      <map(task-nr; task-remove-result)> task*;
-			<map(task-nr; nabl-remove-read)> task*
-    with // Perform tasks
-			task'* := <map(task-insert-own-existing-results)> task*; // Fill in existing results.
-      <map(vdebug(!"Performing tasks: "))> task'*;
-      (taskEntry*, error*) := <perform-tasks> task'*;
-      <index-add-all(|"TaskEntries")> taskEntry*
-      // TODO: update markers for other partitions.
+      index-setup(|language, [project-path], partition);
+      create-execqueue => execqueue;
+      Result(_, _, ast', _, new-entry*, _, _, _, _, _) := 
+      	<analyze-collect(|language); analyze-incremental(|execqueue)> File(partition, ast);
+    	analyze-perform-all(|execqueue)
+
