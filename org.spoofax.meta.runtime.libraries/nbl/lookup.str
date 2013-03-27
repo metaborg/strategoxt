@@ -21,7 +21,7 @@ rules // Lookup
 		where
 			<is-list> scope*
 		with
-  		<with(uri* := <map(nabl-uri)> scope* | "Could not extract URIs from: ")> scope*;
+  		<with(uri* := <remove-fail-and-empty; map(nabl-uri)> scope* | "Could not extract URIs from: ")> scope*;
   		uri'* := <map(nabl-extend-uri(|ns, name, ()))> uri*; 
   		def*  := <mapconcat(nabl-get-all-definitions)> uri'*
   
