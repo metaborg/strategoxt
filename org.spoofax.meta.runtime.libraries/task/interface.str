@@ -3,3 +3,4 @@ module task/interface
 strategies
   
   perform-task(|nr) = fail
+  desugar-task(|task*) = fail

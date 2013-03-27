@@ -17,12 +17,13 @@ signature
   
   constructors
     
-    Resolve        : Scope * Namespace * Name  -> Instruction
-    ResolveImport  : Scope * Namespace * Name  -> Instruction
-    PropConstraint : List(Prop) * List(Result) -> Instruction
-    Choice         : List(Result)              -> Instruction
-    PropCalc       : Property * Term           -> Instruction
-    Match          : ID * List(Term) * Term    -> Instruction
+    Resolve        : Scope * Namespace * Name    -> Instruction
+    ResolveImport  : Scope * Namespace * Name    -> Instruction
+    PropConstraint : List(Prop) * List(Result)   -> Instruction
+    Choice         : List(Result)                -> Instruction
+    Choice         : List(Result) * List(String) -> Instruction
+    PropCalc       : Property * Term             -> Instruction
+    Match          : ID * List(Term) * Term      -> Instruction
         
 rules // Resolve
   
@@ -100,6 +101,14 @@ rules // Resolve
 			
 	remove-fail-and-empty =
 		remove-all(?Fail(_) <+ ?[])
+
+  perform-task:
+    Choice(choice*, error*) -> result
+    where
+      result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choice*) //<+
+      //result := Fail(<concat-strings> error*) <+
+      //result := Fail(<mapconcat(?Fail(<id>))> choice*) 
+
 
 rules // Property calculation
             

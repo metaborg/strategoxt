@@ -32,8 +32,9 @@ signature
 rules // Creation
   
   new-task(|task*) = new-task(|task*, <dependent-tasks>)
-  new-task(|task*, deps):
-    instruction -> Result(nr)
+  new-task(|task*, deps) = desugar-task(|task*) <+new-task(|task*, deps, <address>) 
+  new-task(|task*, deps, name):
+    instruction -> Result(name)
     with
     	partition := <index-get-current-partition>;      // TODO: Partition should be a term argument.
     	nr        := <address> instruction;
