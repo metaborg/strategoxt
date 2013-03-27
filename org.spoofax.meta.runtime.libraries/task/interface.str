@@ -2,5 +2,5 @@ module task/interface
 
 strategies
   
-  perform-task = fail
+  perform-task(|nr) = fail
   desugar-task(|task*) = fail

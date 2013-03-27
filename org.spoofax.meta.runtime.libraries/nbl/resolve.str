@@ -61,12 +61,13 @@ rules // Reference resolution
     Use(Result(number)) -> def*
     where
       uri* := <nabl-get-value> DoneTask(number, ());
-      def* := <mapconcat(\uri -> Def(uri)\; nabl-get-all)> uri*
+      def* := <mapconcat(nabl-get-all)> uri*
       
   nabl-resolve-uses:
     Use(uri@URI(_, _)) -> def*
     where
-      def* := <nabl-lookup-definitions> uri
+      //def* := <nabl-lookup-definitions> uri
+      def* := <nabl-get-all-definitions> uri
       
   nabl-is-reference =
     ?Use(_)

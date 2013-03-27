@@ -55,29 +55,6 @@ rules // Specific queries
    */
   nabl-get-all-uses:
     <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-all> Use(uri)
-     
-  /**
-   * Gets all Read and ReadAll entries that match the given URI.
-   *
-   * Example:
-   *   <nabl-get-all-reads> Def([Property(), "Bar", "p"]) => [Read([Property(), "Bar", "p"]), ...]
-   *
-   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Read(uri) or ReadAll(uri) or ReadAll(uri, namespace, prefix))
-   */
-  nabl-get-all-reads:
-    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <conc> (reads, readAlls)
-    where
-      reads        := <nabl-get-unique-nonunique(fail, \uri -> Read(uri)\)> uri;
-      if parentURI := <nabl-uri-parent> uri then
-        readAlls1  := <nabl-get-all(fail)> ReadAll(parentURI);
-        readAlls2  := <nabl-get-all(fail)> ReadAll(parentURI, (), ());
-        namespace  := <nabl-uri-namespace> uri;
-        name       := <nabl-uri-name> uri;
-        readAlls2' := <filter(nabl-compare-prefix(|namespace, name))> readAlls2;
-        readAlls   := <conc> (readAlls1, readAlls2')
-      else
-        readAlls   := []
-      end
 
   /**
    * Gets all Alias entries that match the given URI.
@@ -91,76 +68,46 @@ rules // Specific queries
     <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> aliasURI*
     where
       if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
-        aliasURI* := <nabl-get-all-values(fail)> Alias(nonUniqueURI, ()) 
+        aliasURI* := <nabl-get-all-values> Alias(nonUniqueURI, ()) 
       else
         aliasURI* := []
       end
-      
+
 rules // Generic queries
-	
-	nabl-get-all = nabl-get-all(id)
-	nabl-get-all-values = nabl-get-all-values(id)
-	nabl-get = nabl-get(id)
-	nabl-get-value = nabl-get-value(id)
-	nabl-get-children = nabl-get-children(id)
-	nabl-get-children(|namespace, prefix) = nabl-get-children(id|namespace, prefix)
-	nabl-get-unique-nonunique(create-template) = nabl-get-unique-nonunique(id, create-template)
-
-rules /* @internal Generic queries */
   
-  /** @internal */
-  nabl-get-all(store-read):
+  nabl-get-all:
     template -> <index-get-all> template
-      with
-        if set := <store-read; nabl-ReadSet> then
-          uri := <nabl-uri> template;
-          <iset-add(|Read(uri))> set
-        end
        
-  /** @internal */
-  nabl-get-all-values(store-read):
-    template -> <map(nabl-value)> <nabl-get-all(store-read)> template
+  nabl-get-all-values:
+    template -> <nabl-get-all; map(nabl-value)> template
 
-  /** @internal */
-  nabl-get(store-read):
-    template -> <Hd> <nabl-get-all(store-read)> template
+  nabl-get:
+    template -> <nabl-get-all; Hd> template
+     
+  nabl-get-value:
+    template -> <nabl-get-all; Hd; nabl-value> template
   
-  /** @internal */    
-  nabl-get-value(store-read):
-    template -> <nabl-value> <Hd> <nabl-get-all(store-read)> template
-  
-  /** @internal */  
-  nabl-get-children(store-read):
+  nabl-get-children:
     template -> entries
       with
-        entries  := <index-get-children> template;
-        if set := <store-read; nabl-ReadSet> then
-          uri := <nabl-uri> template;
-          <iset-add(|ReadAll(uri))> set
-        end
+        entries  := <index-get-children> template
         
-  /** @internal */
-  nabl-get-children(store-read|namespace, prefix):
+  nabl-get-children(|namespace, prefix):
     template -> entries
       with
         children := <index-get-children> template;
-        entries  := <nabl-filter-entries(|namespace, prefix)> children;
-        if set := <store-read; nabl-ReadSet> then
-          uri := <nabl-uri> template;
-          <iset-add(|ReadAll(uri, namespace, prefix))> set
-        end
-  
-  /** @internal */
-  nabl-get-unique-nonunique(store-read, create-template):
+        entries  := <nabl-filter-entries(|namespace, prefix)> children
+
+  nabl-get-unique-nonunique(create-template):
   	uri -> [unique*, nonUnique*]
   	where
       if alias* := <nabl-get-all-aliases> uri then
-        unique* := <mapconcat(create-template; nabl-get-all(store-read))> alias*
+        unique* := <mapconcat(create-template; nabl-get-all)> alias*
       else
         unique* := []
       end;
       if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
-        nonUnique*    := <create-template; nabl-get-all(store-read)> nonUniqueURI
+        nonUnique*    := <create-template; nabl-get-all> nonUniqueURI
       else
         nonUnique*    := []
       end
