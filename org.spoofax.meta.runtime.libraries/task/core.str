@@ -6,6 +6,7 @@ imports
   task/store
   index/core
   index/query
+  nbl/utils // TODO: should not depend on NaBl.
   
 signature
 
@@ -52,11 +53,11 @@ rules // Execution
   	task* -> (<iset-elements> elem*, error*)
   	with
   		new-iset => elem*;
-  		error*   := <repeat(perform-task-internal(|elem*)); map(debug(!"ERROR: "))> task*
+  		error*   := <repeat(perform-task-internal(|elem*)); map(vdebug(!"ERROR: "))> task*
     
   perform-task-internal(|elem*) =
     split-fetch-keep(perform-single-task) => (t1*, (n, res, i, p), t2*);
-    <debug(!"Performing task: ")> n;
+    <vdebug(!"Performing task: ")> n;
     switch !res
       case ?Done(tr, e*):
       	<iset-addlist(|e*)> elem*;
@@ -73,7 +74,7 @@ rules // Execution
         <index-add(|p)> FailTask(n, fr);
         <completed-task(|n, Fail(fr))> [t1*, t2*]
       case ?Dependency(d*):
-      	<debug(!"Found dynamic dependencies: ") /*; store-task-deps(|p, n)*/> d*;
+      	<vdebug(!"Found dynamic dependencies: ") /*; store-task-deps(|p, n)*/> d*;
       	![t1*, t2*, Task(n, d*, i, p)]
     	otherwise:
     		<with(fail|"Unexpected result from perform-task: ")> res
