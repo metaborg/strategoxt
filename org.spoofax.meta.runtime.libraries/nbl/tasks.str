@@ -30,25 +30,25 @@ rules // Resolve
   perform-task(|nr):
   	Resolve(scope, ns, name) -> result
   	with
-  		scope' := <try(remove-fail-and-empty); try(Hd)> scope;
-  		if uri := <nabl-uri> scope' then
-	  		def* := <nabl-lookup(|ns, name)> uri;
-	  		switch !def*
-	        case ?[]: 
+  		def* := <nabl-lookup(|ns, name)> scope;
+  		switch !def*
+        case ?[]:
+        	scope' := <try(remove-fail-and-empty); try(Hd)> scope;
+        	if uri := <nabl-uri> scope' then
 	        	uri' := <nabl-extend-uri(|ns, name, ())> uri; 
 	        	!Fail([uri'], <nabl-new-reads(|nr)> uri')
-	        otherwise: 
-	        	!Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
-	  		end => result
-  		else
-  			result := Fail([])
-			end
+        	else
+        		!Fail([])
+        	end
+        otherwise: 
+        	!Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
+  		end => result
 
 	perform-task(|nr):
 		ResolveImport(scope, ns, name) -> result
-		with
-  		scope' := <debug(!"Try cleanup: "); try(remove-fail-and-empty); try(Hd); debug(!"Cleaned up: ")> scope;
-  		if uri := <nabl-uri; debug(!"The URI: ")> scope' then
+		where
+  		scope' := <try(remove-fail-and-empty); try(Hd)> scope;
+  		if uri := <nabl-uri> scope' then
 				language       := <nabl-uri-language> uri;
 	      namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
 	      unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri;
@@ -71,7 +71,7 @@ rules // Resolve
 	  
   perform-task(|nr):
   	PropConstraint(prop*, res*) -> result
-  	with
+  	where
   		filtered := <remove-fail-and-empty; concat; filter(nabl-resolve-constraint(|prop*))> res*;
       switch !filtered
       	case nabl-collect-dependency => d: !d
@@ -120,11 +120,11 @@ rules // Resolve
 
 rules // Property calculation
             
-  perform-task(|nr): PropCalc(prop, term) -> <!Done(<calc-property> (prop, term)) <+ !Fail(term)>
+  perform-task(|nr): PropCalc(prop, term) -> Done(<calc-property> (prop, term))
   
 rules // Match
   
-  perform-task(|nr): Match(key, bound, term) -> <!Done(<nabl-match> (key, term, bound)) <+ !Fail(term)>
+  perform-task(|nr): Match(key, bound, term) -> Done(<nabl-match> (key, term, bound))
     
 rules // Utility
   
