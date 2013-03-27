@@ -5,6 +5,7 @@ imports
 	task/core
 	index/core
 	index/query
+	nbl/utils // TODO: should not depend on NaBl.
 
 signature
   
@@ -66,9 +67,9 @@ rules // Removing
 		nr -> <id>
 		with	
 			dependent* := <task-dependency-template; index-get-all; map(task-dependency-nr)> nr;
-			<task-dependency-template; debug(!"Removing dependency: "); index-remove-all> nr;
+			<task-dependency-template; vdebug(!"Removing dependency: "); index-remove-all> nr;
 			// Use index-remove-one because only TaskDependent with value (nr) should be removed.
-			<map(!TaskDependent(<id>, nr); debug(!"Removing dependent: "); index-remove-one)> dependent*
+			<map(!TaskDependent(<id>, nr); vdebug(!"Removing dependent: "); index-remove-one)> dependent*
 		
 rules // Projections
 	

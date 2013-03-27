@@ -16,9 +16,9 @@ signature
 rules
   
 
-  perform-task: PropLookup(kind, t)  -> <!Done(<nabl-get-property(|kind)>) <+ !Fail(kind)> t
+  perform-task: PropLookup(kind, t)  -> <!Done(<nabl-resolve-collect-one; nabl-get-property(|kind)>) <+ !Fail(kind)> t
   perform-task: PropCalc(p, check*)  -> <fetch-elem(?Fail(_)) <+ !Done(p)> check* 
-	perform-task: PropCheck(p1, p2)    -> <eq < !Done(p1) + !Fail(p1)> (p1, p2)
+  perform-task: PropCheck(p1, p2)    -> <eq < !Done(p1) + !Fail(p1)> (p1, p2)
   
   desugar-task(|task*): PropCalc(Type(), t) -> <type-task(|task*)> t
     
