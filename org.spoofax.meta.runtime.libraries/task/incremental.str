@@ -33,6 +33,16 @@ rules // Construction
 		(nr, task) -> <task-insert-results(|nr, res)> task
 		where
 			res := <task-get-result> nr
+			
+	task-insert-results(|n, res) = 
+		Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)
+		
+	insert-result(|n, r): Result(n) -> r 
+    
+  insert-result(|n, r) = 
+		has-annos; 
+		!(<id>, <get-annos; map(try(insert-result(|n, r)))>); 
+		set-annos
 
 rules // Index
 	
