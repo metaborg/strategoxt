@@ -20,3 +20,9 @@ rules
     t{a*} -> t{a'*}
     where
       a'* := <remove-all(s)> a*
+  
+  
+  measure-time(s, log) =
+    where(before := <times>);
+    s;
+    where(after := <times>; !(after, before); diff-times; times-to-seconds; Fst; log)

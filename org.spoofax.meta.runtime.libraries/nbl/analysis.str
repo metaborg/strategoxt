@@ -15,9 +15,12 @@ signature
   constructors
   
     File   : Path * AST                                                                                    -> File
-    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * List(Partition) * List(Term) * List(Term) * List(Term) -> Result
+    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * List(Partition) * List(Term) * List(Term) * List(Term) * Metric -> Result
     // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, evaluated-task*, error-task*, dependent-partition*, error*, warning*, note*)
-      
+    
+    Metric : Int * Int * Int -> Metric
+  	// Metric(readsTime, performTime, dependTime)
+  	  
 rules // Single file analysis
   
   nabl-analyze(|language, path, project-path):
