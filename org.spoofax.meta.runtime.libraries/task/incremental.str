@@ -23,7 +23,7 @@ rules // Construction
 	task-reconstruct-create(|nr, d*, i):
 		p -> Task(nr, d*, i, <task-remove-partition> p)
 
-	task-insert-own-existing-results:
+	/*task-insert-own-existing-results:
 		t@Task(_, d*, _, _) -> <task-insert-existing-results(|d*)> t 
 
 	task-insert-existing-results(|nr*):
@@ -42,7 +42,7 @@ rules // Construction
   insert-result(|n, r) = 
 		has-annos; 
 		!(<id>, <get-annos; map(try(insert-result(|n, r)))>); 
-		set-annos
+		set-annos*/
 
 rules // Index
 	

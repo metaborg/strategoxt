@@ -49,70 +49,69 @@ rules // Creation
   
 rules // Execution
   
-  perform-tasks:
-  	task* -> (<iset-elements> elem*, error*)
+  perform-tasks(|execqueue, runtimedeps):
+  	_ -> <iset-elements> elem*
   	with
-  		new-iset      => elem*;
-  		new-hashtable => results;
-  		error*        := <repeat(perform-task-internal(|elem*, results)); map(vdebug(!"ERROR: "))> task*
+  		new-iset => elem*;
+  		while-imperative(nabl-dequeue-task(|execqueue); perform-one-task(|execqueue, runtimedeps, elem*))
+  
+  /*perform-tasks-internal(|elem*, results):
+  	task* -> result
+  	with
+  		//<length; vdebug(!"Length: ")> task*;
+  		eval-task*   := <filter(task-satisfies-dependencies(|results))> task*;
+  		other-task*  := <remove-all(task-satisfies-dependencies(|results))> task*; 
+  		if [] := eval-task* then
+  			result := other-task*
+  		else
+	  		dep-task* := <mapconcat(perform-one-task-internal(|elem*, results))> eval-task*;
+	  		rec-task* := <where(length; debug(!"Recursive length: "))> [other-task*, dep-task*];
+	  		result    := <perform-tasks-internal(|elem*, results)> rec-task*  			
+			end*/
     
-  perform-task-internal(|elem*, results) =
-    split-fetch-keep(perform-single-task(|results)) => (t1*, (n, res, i, p), t2*);
-    <vdebug(!"Performing task: ")> n;
-    switch !res
-      case ?Done(tr, e*):
-      	<iset-addlist(|e*)> elem*;
-        <index-add(|p)> DoneTask(n, tr);
-        <completed-task(|n, tr, results)> [t1*, t2*]
-      case ?Done(tr):
-        <index-add(|p)> DoneTask(n, tr);
-        <completed-task(|n, tr, results)> [t1*, t2*]
-      case ?Fail(fr, e*):
-      	<iset-addlist(|e*)> elem*;
-        <index-add(|p)> FailTask(n, fr);
-        <completed-task(|n, Fail(fr), results)> [t1*, t2*]
-      case ?Fail(fr):
-        <index-add(|p)> FailTask(n, fr);
-        <completed-task(|n, Fail(fr), results)> [t1*, t2*]
-      case ?Dependency(d*):
-      	<vdebug(!"Found dynamic dependencies: ") /*; store-task-deps(|p, n)*/> d*;
-      	![t1*, t2*, Task(n, d*, i, p)]
-    	otherwise:
-    		<with(fail|"Unexpected result from perform-task: ")> res
-      end
+  perform-one-task(|execqueue, runtimedeps, elem*):
+  	Task(n, d*, i, p) -> <id>
+  	with
+  		if res := <perform-instruction(|n)> i then
+		    <vdebug(!"Performing task: ")> n;
+		    switch !res
+		      case ?Done(tr, e*):
+		      	<iset-addlist(|e*)> elem*;
+		        <index-add(|p)> DoneTask(n, tr);
+		        <task-try-schedule-task(|runtimedeps, execqueue)> n
+		      case ?Done(tr):
+		        <index-add(|p)> DoneTask(n, tr);
+		        <task-try-schedule-task(|runtimedeps, execqueue)> n
+		      case ?Fail(fr, e*):
+		      	<iset-addlist(|e*)> elem*;
+		        <index-add(|p)> FailTask(n, fr);
+		        <task-try-schedule-task(|runtimedeps, execqueue)> n
+		      case ?Fail(fr):
+		        <index-add(|p)> FailTask(n, fr);
+		        <task-try-schedule-task(|runtimedeps, execqueue)> n
+		      case ?Dependency(new-dep*):
+		      	<vdebug(!"Found dynamic dependencies: ")> new-dep*;
+		      	//new-task := Task(n, new-dep*, i, p)
+		      	<task-add-runtime-dependency(|runtimedeps, n)> new-dep*
+		    	otherwise:
+		    		<with(fail|"Unexpected result from perform-task: ")> res
+		      end
+			else
+        <index-add(|p)> FailTask(n, []);
+        <task-try-schedule-task(|runtimedeps, execqueue)> n
+			end
 
-  perform-single-task(|results):
-    Task(n, d*@<satisfies-dependencies(|results)>, i, p) -> (n, <perform-task(|n)> i', i, p)
+  perform-instruction(|n):
+    i -> <perform-task(|n)> i'
     where
-    	i' := <task-insert-results(|results)> i
-    
-  completed-task(|n, res, results):
-  	task* -> <id>
-  	with
-  		<gohla-hashtable-put(|results)> (n, res)
-  		
-	task-insert-results(|results):
-		i -> i'
-		with
-			i' := <alltd(insert-result(|results))> i
-			
-  insert-result(|results) = 
+    	i' := <alltd(insert-result)>  i
+	
+  insert-result = 
 		has-annos; 
-		!(<id>, <get-annos; map(task-insert-results(|results))>); 
+		!(<id>, <get-annos; alltd(insert-result)>); 
 		set-annos
 			
-	insert-result(|results): Result(n) -> <gohla-hashtable-get(|results)>  n
-		
-	satisfies-dependencies(|results):
-		dependency* -> <?[]> res*
-		where
-			res* := <remove-all(gohla-hashtable-get(|results))> dependency*
-			
-	gohla-hashtable-get(|results):
-		n -> <hashtable-get(|n)> results
-
-	gohla-hashtable-put(|results): 
-		(t1, t2) -> <hashtable-put(|t1, t2)> results
+	insert-result: Result(n) -> <task-get-result> n
 		
 rules // Projections
 	
@@ -126,5 +125,9 @@ rules // Projections
 		Result(nr) -> nr
 
 rules // Utility
+  
+  external while-imperative(s|)
+  
+  external gohla-iset-get-one(|)
   
   effectively(s) = ?t; s; not(?t)  

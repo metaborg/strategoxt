@@ -30,40 +30,48 @@ rules // Resolve
   perform-task(|nr):
   	Resolve(scope, ns, name) -> result
   	with
-  		<with(uri := </* HACK: Take first in list. */ try(remove-fail-and-empty; Hd); nabl-uri> scope | "Could not extract URI from: ")> scope;
-  		def* := <nabl-lookup(|ns, name)> uri;
+  		def* := <nabl-lookup(|ns, name)> scope;
   		switch !def*
-        case ?[]: 
-        	uri' := <nabl-extend-uri(|ns, name, ())> uri; 
-        	!Fail([uri'], <nabl-new-reads(|nr)> uri')
+        case ?[]:
+        	scope' := <try(remove-fail-and-empty); try(Hd)> scope;
+        	if uri := <nabl-uri> scope' then
+	        	uri' := <nabl-extend-uri(|ns, name, ())> uri; 
+	        	!Fail([uri'], <nabl-new-reads(|nr)> uri')
+        	else
+        		!Fail([])
+        	end
         otherwise: 
         	!Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
   		end => result
 
 	perform-task(|nr):
 		ResolveImport(scope, ns, name) -> result
-		with
-			<with(uri := </* HACK: Take first in list. */ try(remove-fail-and-empty; Hd); nabl-uri> scope | "Could not extract URI from: ")> scope;
-			language       := <nabl-uri-language> uri;
-      namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
-      unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri;
-      if <nabl-has-dependency> namedImport* <+ <nabl-has-dependency> unnamedImport* then
-      	result := <nabl-collect-dependency> (namedImport*, unnamedImport*)
+		where
+  		scope' := <try(remove-fail-and-empty); try(Hd)> scope;
+  		if uri := <nabl-uri> scope' then
+				language       := <nabl-uri-language> uri;
+	      namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
+	      unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri;
+	      if <nabl-has-dependency> namedImport* <+ <nabl-has-dependency> unnamedImport* then
+	      	result := <nabl-collect-dependency> (namedImport*, unnamedImport*)
+	      else
+		      namedDef*        := <mapconcat(nabl-lookup(|ns, name))> namedImport*;
+		      unnamedDef*      := <mapconcat(nabl-lookup(|ns, name))> unnamedImport*;
+		      def*             := [namedDef*, unnamedDef*];
+		      import*          := [namedImport*, unnamedImport*];
+		      
+		      import-uri-read* := <nabl-new-reads(|nr)> uri;
+		      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
+		      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
+		      result           := Done(def*, [import-uri-read*, imported-read*, import-read*])
+	      end
       else
-	      namedDef*        := <mapconcat(nabl-lookup(|ns, name))> namedImport*;
-	      unnamedDef*      := <mapconcat(nabl-lookup(|ns, name))> unnamedImport*;
-	      def*             := [namedDef*, unnamedDef*];
-	      import*          := [namedImport*, unnamedImport*];
-	      
-	      import-uri-read* := <nabl-new-reads(|nr)> uri;
-	      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
-	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
-	      result           := Done(def*, [import-uri-read*, imported-read*, import-read*])
-      end
-  
+      	result := Fail([])
+    	end
+	  
   perform-task(|nr):
   	PropConstraint(prop*, res*) -> result
-  	with
+  	where
   		filtered := <remove-fail-and-empty; concat; filter(nabl-resolve-constraint(|prop*))> res*;
       switch !filtered
       	case nabl-collect-dependency => d: !d

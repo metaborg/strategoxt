@@ -1,0 +1,64 @@
+module analysis/core
+
+imports
+	
+	nbl/-
+	task/-
+	analysis/-
+	index/-
+
+signature
+
+  constructors
+  
+    File : Path * AST -> File
+    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * 
+             List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, 
+    //        error*, warning*, note*)
+    
+rules
+	
+	analyze-collect(|language):
+    File(partition, ast) -> Result(partition, ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, [], [], [])
+    with
+    	<vdebug(!"Collect for: ")> partition;
+    	// Store and clean old tasks and entries. 
+      old-task*  := <task-olds> partition;
+      old-entry* := <nabl-entry-olds> partition;
+      <task-clear> partition;
+      <nabl-entry-clear> partition;
+    	// Collect tasks and entries.
+      (analyzed-ast, new-entry*, new-task*) := <nabl-collect(|partition, Language(language))> ast;
+      // Store tasks and entries.
+      <index-add-all(|<collect-partition> partition)> new-entry*;
+      <map(store-task)> new-task*
+	
+	analyze-incremental(|execqueue):
+		r@Result(_, _, _, old-entry*, new-entry*, old-task*, new-task*, _, _, _) -> task*
+		with
+    	// Added and dependencies of removed tasks that need to be re-evaluted.
+    	(added-task*, removed-task*) := <task-incremental-no-confirm-added> (old-task*, new-task*);
+  		<map(vdebug(!"Added task: "))> added-task*;
+  		<map(vdebug(!"Removed task: "))> removed-task*;
+  		<map(task-nr; vdebug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*; // Cleanup removed results
+  		<map(task-nr; vdebug(!"Removing all reads for: "); nabl-remove-read)> removed-task*;
+    	
+    	// Tasks that need to be re-evaluated because a definition or property has changed.
+    	changedEntry*  := <nabl-entry-incremental; map(vdebug(!"Changed entry: "); nabl-uri); make-set> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
+    	read-task-nr*  := <mapconcat(nabl-get-reads); map(vdebug(!"Read for changed entry: "))> changedEntry*;
+    	read-task*     := <mapconcat(task-reconstruct); map(vdebug(!"Changed task: "))> read-task-nr*;
+
+  		// All tasks that need to be re-evaluated.
+  		task* := [read-task*, added-task*];
+      <map(task-nr; task-remove-result)> task*;
+			<map(task-nr; nabl-remove-read)> task*;
+  		<map(queue-task(|execqueue))> task*
+    	
+	analyze-perform-all(|execqueue):
+		_ -> <id>
+		with
+  		task-create-runtimedep => runtimedep;
+      taskEntry* := <perform-tasks(|execqueue, runtimedep)>; 
+      <index-add-all(|"TaskEntries")> taskEntry*
+      			
