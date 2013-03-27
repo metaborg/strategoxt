@@ -82,14 +82,14 @@ rules // Execution
       end
 
   perform-single-task(|results):
-    Task(n, d*@<debug(!"Checking: "); satisfies-dependencies(|results); debug(!"CHECKED: ")>, i, p) -> (n, <perform-task(|n)> i', i, p)
+    Task(n, d*@<satisfies-dependencies(|results)>, i, p) -> (n, <perform-task(|n)> i', i, p)
     where
     	i' := <task-insert-results(|results)> i
     
   completed-task(|n, res, results):
   	task* -> <id>
   	with
-  		<debug(!"Putting: "); gohla-hashtable-put(|results); debug(!"PUTTED: ")> (n, res)
+  		<gohla-hashtable-put(|results)> (n, res)
   		
 	task-insert-results(|results):
 		i -> i'
@@ -101,15 +101,15 @@ rules // Execution
 		!(<id>, <get-annos; map(task-insert-results(|results))>); 
 		set-annos
 			
-	insert-result(|results): Result(n) -> <debug(!"Inserting: "); gohla-hashtable-get(|results); debug(!"INSERTED ")>  n
+	insert-result(|results): Result(n) -> <gohla-hashtable-get(|results)>  n
 		
 	satisfies-dependencies(|results):
 		dependency* -> <?[]> res*
 		where
-			res* := <debug(!"Dependencies: "); remove-all(debug(!"1: "); gohla-hashtable-get(|results); debug(!"2: ")); debug(!"Bla: ")> dependency*
+			res* := <remove-all(gohla-hashtable-get(|results))> dependency*
 			
 	gohla-hashtable-get(|results):
-		n -> <debug(!"Hashtable-get: "); hashtable-get(|n)> results
+		n -> <hashtable-get(|n)> results
 
 	gohla-hashtable-put(|results): 
 		(t1, t2) -> <hashtable-put(|t1, t2)> results
