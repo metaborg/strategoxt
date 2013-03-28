@@ -37,11 +37,11 @@ rules // Multi file analysis
     	measure-time(
 	      result1* := <all(
 	      	measure-time(
-		        nabl-analyze-multiple-setup(|language, project-path); 
-		        analyze-collect(|language); 
-		        where(complete-work-unit),
+		        nabl-analyze-multiple-setup(|language, project-path), 
 		        id | "nabl-analyze-multiple-files-setup"
-		      ) 
+		      ); 
+	        analyze-collect(|language); 
+	        where(complete-work-unit)
 	      )> file*,
 	      id | "nabl-analyze-multiple-files-collect"
 	    );
