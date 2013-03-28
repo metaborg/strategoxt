@@ -22,11 +22,11 @@ public class Tasks {
 	private final ITermFactory factory;
 	
 	private final ManyToManyMap<IStrategoInt, IStrategoString> toPartition = ManyToManyMap.create();
-	private final ManyToManyMap<IStrategoInt, IStrategoInt> toDependency   = ManyToManyMap.create();
+	private final ManyToManyMap<IStrategoInt, IStrategoTerm> toDependency  = ManyToManyMap.create();
 	private final Map<IStrategoInt, IStrategoTerm> toInstruction = new ConcurrentHashMap<IStrategoInt, IStrategoTerm>();
 	private final Map<IStrategoInt, IStrategoList> toResult      = new ConcurrentHashMap<IStrategoInt, IStrategoList>();
 	
-	private final Set<IStrategoInt> addedTasks = new HashSet<IStrategoInt>();
+	private final Set<IStrategoInt> addedTasks   = new HashSet<IStrategoInt>();
 	private final Set<IStrategoInt> removedTasks = new HashSet<IStrategoInt>();
 	
 	private final Set<IStrategoInt> tasks    = toInstruction.keySet();
@@ -47,11 +47,8 @@ public class Tasks {
 		removedTasks.remove(taskID);
 		
 		toPartition.put(taskID, partition);
-		
-        while(!dependencies.isEmpty()) {
-        	toDependency.put(taskID, (IStrategoInt) dependencies.head());
-            dependencies = dependencies.tail();
-        }
+		for (IStrategoTerm dep : dependencies.getAllSubterms()) 
+			toDependency.put(taskID, dep);
         
         return taskID;
 	}
@@ -64,13 +61,17 @@ public class Tasks {
 		toResult.put(taskID, resultList);
 	}
 	
-	public void startAnalysis(IStrategoString partition) {
+	public IStrategoList getResult(IStrategoInt taskID) {
+		return toResult.get(taskID);
+	}
+	
+	public void startCollection(IStrategoString partition) {
 		addedTasks.clear();
 		removedTasks.clear();
 		removedTasks.addAll(toPartition.getInverse(partition));
 	}
 	
-	public IStrategoTuple stopAnalysis(IStrategoString partition) {
+	public IStrategoTuple stopCollection(IStrategoString partition) {
 
 		for(IStrategoInt removed : removedTasks)
 			toPartition.remove(removed, partition);
