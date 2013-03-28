@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Task
+Bundle-SymbolicName: org.metaborg.runtime.task
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.spoofax.interpreter.core;bundle-version="0.4.1",
+ org.spoofax.aterm;bundle-version="0.2.3",
+ org.strategoxt.strj;bundle-version="0.17.92"
