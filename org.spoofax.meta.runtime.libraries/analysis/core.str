@@ -44,7 +44,7 @@ rules
 	    )
 	
 	analyze-incremental(|execqueue):
-		r@Result(_, _, _, old-entry*, new-entry*, old-task*, new-task*, _, _, _) -> task*
+		r@Result(_, _, _, old-entry*, new-entry*, old-task*, new-task*, _, _, _) -> ()
 		with
     	// Added and dependencies of removed tasks that need to be re-evaluted.
     	measure-time(
@@ -70,9 +70,13 @@ rules
 			measure-time(
 	  		// All tasks that need to be re-evaluated.
 	  		task* := [read-task*, added-task*];
-	      <map(task-nr; task-remove-result)> task*;
-				<map(task-nr; nabl-remove-read)> task*;
-	  		<map(queue-task(|execqueue))> task*,
+	      <map(task-nr; task-remove-result)> added-task*;
+	      <map(task-nr; task-remove-result)> read-task*;
+				<map(task-nr; nabl-remove-read)> added-task*;
+				<map(task-nr; nabl-remove-read)> read-task*;
+
+	  		<map(queue-task(|execqueue))> added-task*;
+	  		<map(queue-task(|execqueue))> read-task*,
 	  		id | "analyze-incremental-concat-queue"
 	  	)
     	

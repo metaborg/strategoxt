@@ -33,7 +33,7 @@ signature
 rules // Creation
   
   new-task(|task*) = new-task(|task*, <dependent-tasks>)
-  new-task(|task*, deps) = desugar-task(|task*) <+new-task(|task*, deps, <address>) 
+  new-task(|task*, deps) = desugar-task(|task*) <+ new-task(|task*, deps, <address>) 
   new-task(|task*, deps, name):
     instruction -> Result(name)
     with

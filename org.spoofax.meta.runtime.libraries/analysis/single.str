@@ -22,7 +22,8 @@ rules // Single file analysis
       partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
       create-execqueue => execqueue;
-      Result(_, _, ast', _, new-entry*, _, _, _, _, _) := 
-      	<analyze-collect(|language); analyze-incremental(|execqueue)> File(partition, ast);
+      task-counter-init;
+      r@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language)> File(partition, ast);
+      <analyze-incremental(|execqueue)> r;
     	analyze-perform-all(|execqueue)
 

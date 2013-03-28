@@ -236,13 +236,28 @@ rules // Projections
 rules // Queue
 	
 	nabl-queue-task(|execqueue):
-		t -> <iset-add(|t)> execqueue
+		t -> <iset-add(|t); where(task-counter-inc)> execqueue
 		
 	nabl-dequeue-task(|execqueue):
 		_ -> t
 		where
 			t := <?IndexedSet(<id>); gohla-iset-get-one> execqueue;
 			<iset-remove(|t)> execqueue
+			
+rules // Task counter
+	
+	task-counter-init =
+		rules(
+			TaskCounter := 0
+		)
+	
+	task-counter-inc =
+		rules(
+			TaskCounter := <TaskCounter; inc <+ task-counter-init; task-counter-inc>
+		)
+		
+	task-counter-get =
+		TaskCounter
 
 rules // Schedule
 	
