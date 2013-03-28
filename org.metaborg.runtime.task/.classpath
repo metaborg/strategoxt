@@ -3,9 +3,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/guava-11.0.2.jar" sourcepath="lib/guava-11.0.1-sources.jar">
+	<classpathentry kind="lib" path="lib/guava.jar" sourcepath="lib/guava-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/org.metaborg.runtime.task/lib/guava-11.0.1-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/org.metaborg.runtime.task/lib/guava-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
