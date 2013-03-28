@@ -23,27 +23,6 @@ rules // Construction
 	task-reconstruct-create(|nr, d*, i):
 		p -> Task(nr, d*, i, <task-remove-partition> p)
 
-	/*task-insert-own-existing-results:
-		t@Task(_, d*, _, _) -> <task-insert-existing-results(|d*)> t 
-
-	task-insert-existing-results(|nr*):
-		task -> <foldl(task-insert-existing-result <+ Snd)> (nr*, task)
-		
-	task-insert-existing-result:
-		(nr, task) -> <task-insert-results(|nr, res)> task
-		where
-			res := <task-get-result> nr
-			
-	task-insert-results(|n, res) = 
-		Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)
-		
-	insert-result(|n, r): Result(n) -> r 
-    
-  insert-result(|n, r) = 
-		has-annos; 
-		!(<id>, <get-annos; map(try(insert-result(|n, r)))>); 
-		set-annos*/
-
 rules // Index
 	
 	task-olds:
@@ -113,4 +92,27 @@ rules // Incremental
 			else
 				task-rec* := []
 			end
+
+rules // Inserting results
+	
+	task-insert-own-existing-results:
+		t@Task(_, d*, _, _) -> <task-insert-existing-results(|d*)> t 
+
+	task-insert-existing-results(|nr*):
+		task -> <foldl(task-insert-existing-result <+ Snd)> (nr*, task)
+		
+	task-insert-existing-result:
+		(nr, task) -> <task-insert-results(|nr, res)> task
+		where
+			res := <task-get-result> nr
+			
+	task-insert-results(|n, res) = 
+		Task(id, effectively(remove-all(?n)), try(alltd(insert-result(|n, res))), id)
+		
+	insert-result(|n, r): Result(n) -> r 
+    
+  insert-result(|n, r) = 
+		has-annos; 
+		!(<id>, <get-annos; map(try(insert-result(|n, r)))>); 
+		set-annos
 	

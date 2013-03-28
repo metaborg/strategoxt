@@ -215,7 +215,7 @@ rules // Projections
 		DoneTask(_, v) -> v
 		
 	task-result-value:
-		FailTask(_, v) -> v
+		FailTask(_, v) -> Fail(v)
 
 		
 	task-template:
@@ -236,24 +236,40 @@ rules // Projections
 rules // Queue
 	
 	nabl-queue-task(|execqueue):
-		t -> <iset-add(|t)> execqueue
+		t -> <iset-add(|t); where(task-counter-inc)> execqueue
 		
 	nabl-dequeue-task(|execqueue):
 		_ -> t
 		where
 			t := <?IndexedSet(<id>); gohla-iset-get-one> execqueue;
 			<iset-remove(|t)> execqueue
+			
+rules // Task counter
+	
+	task-counter-init =
+		rules(
+			TaskCounter := 0
+		)
+	
+	task-counter-inc =
+		rules(
+			TaskCounter := <TaskCounter; inc <+ task-counter-init; task-counter-inc>
+		)
+		
+	task-counter-get =
+		TaskCounter
 
 rules // Schedule
 	
 	task-create-runtimedep:
 		_ -> <new-hashtable>
 	
-	task-try-schedule-task(|runtimedep, execqueue):
+	task-try-schedule-task(|runtimedep, invruntimedep, execqueue):
 		n -> <id>
 		where
-			dependent-n* := <task-get-dependent> n;
-			<map(task-remove-runtime-dependency(|runtimedep, execqueue, n))> dependent-n*
+			dependent-n-index* := <task-get-dependent> n; // get depdenent from invruntimedep as well.
+			dependent-n-run*   := <hashtable-get(|n) <+ ![]> invruntimedep;
+			<map(task-remove-runtime-dependency(|runtimedep, execqueue, n))> [dependent-n-index*, dependent-n-run*]
 	
 	task-remove-runtime-dependency(|runtimedep, execqueue, ct):
 		wt -> <id>
@@ -263,11 +279,21 @@ rules // Schedule
 			<hashtable-put(|wt, dep'*)> runtimedep;
 			if [] := dep'* then
 				task* := <task-reconstruct> wt; // TODO: don't need to reconstruct dependencies in the term.
-				<map(nabl-queue-task(|execqueue))> task*
+				<map(vdebug(!"Queueing task after completion: "); nabl-queue-task(|execqueue))> task*
 			end
 	
-	task-add-runtime-dependency(|runtimedep, task):
+	task-add-runtime-dependency(|runtimedep, invruntimedep, n):
 		deps* -> <id>
 		with
-			<hashtable-put(|task, deps*)> runtimedep
+			<hashtable-put(|n, deps*)> runtimedep;
+			<map(task-add-runtime-dependency-hashmap-put(|invruntimedep, n))> deps*
+	
+	task-add-runtime-dependency-hashmap-put(|hashtable, value):
+		key -> <id>
+		with
+			v* := <hashtable-get(|key) <+ ![]> key;
+			<hashtable-put(|key, [value, v*])> hashtable
+			
+	task-get-errors(|runtimedep):
+		deps* -> <hashtable-getlist; filter(?(<id>, [])); mapconcat(task-reconstruct); map(task-insert-own-existing-results)> runtimedep
 			

@@ -30,21 +30,39 @@ rules // Multi file analysis
       end
 
   nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path):
-    file* -> (task*, result1*)
+    file* -> (task-count, result*)
     with
     	<vdebug(!"Analyzing files: ")> file*;
     	create-execqueue => execqueue;
-      result1* := <all(
-        nabl-analyze-multiple-setup(|language, project-path); 
-        analyze-collect(|language); 
-        where(complete-work-unit)
-      )> file*;
-      task* := <mapconcat(
-        nabl-analyze-multiple-setup(|language, project-path); 
-        analyze-incremental(|execqueue);
-        where(complete-work-unit)
-      ); make-set> result1*;
-      <analyze-perform-all(|execqueue)> task*
+    	task-counter-init;
+    	measure-time(
+	      result* := <all(
+	      	measure-time(
+		        nabl-analyze-multiple-setup(|language, project-path), 
+		        id | "nabl-analyze-multiple-files-setup"
+		      ); 
+	        analyze-collect(|language); 
+	        where(complete-work-unit)
+	      )> file*,
+	      id | "nabl-analyze-multiple-files-collect"
+	    );
+	    measure-time(
+	      <all(
+	      	measure-time(
+	        	nabl-analyze-multiple-setup(|language, project-path),
+	        	id | "znabl-analyze-multiple-files-setup"
+	        ); 
+	        analyze-incremental(|execqueue);
+	        where(complete-work-unit)
+	      )> result*,
+	      id | "nabl-analyze-multiple-files-gathertasks"
+      );
+      measure-time(
+      	analyze-perform-all(|execqueue),
+      	id | "nabl-analyze-multiple-files-performtasks"
+      );
+      task-count := <task-counter-get>
+      // TODO: Get error tasks.
       
 rules // Utility
 

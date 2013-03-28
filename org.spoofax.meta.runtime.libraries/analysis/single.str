@@ -17,12 +17,12 @@ imports
 rules // Single file analysis
   
   nabl-analyze(|language, path, project-path):
-    ast -> (ast', new-entry*, [], [])
+    ast -> (ast', new-entry*, error*, [])
     with // Setup index
       partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
       create-execqueue => execqueue;
-      Result(_, _, ast', _, new-entry*, _, _, _, _, _) := 
-      	<analyze-collect(|language); analyze-incremental(|execqueue)> File(partition, ast);
-    	analyze-perform-all(|execqueue)
-
+      task-counter-init;
+      r@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language)> File(partition, ast);
+      <analyze-incremental(|execqueue)> r;
+    	error* := <analyze-perform-all(|execqueue)>
