@@ -50,14 +50,13 @@ rules // Creation
 rules // Execution
   
   perform-tasks(|execqueue, runtimedeps, invruntimedep):
-  	_ -> (<iset-elements> elem*, error*)
+  	_ -> (<iset-elements> elem*, <iset-elements> error*)
   	with
   		new-iset => elem*;
-  		while-imperative(nabl-dequeue-task(|execqueue); measure-time(perform-one-task(|execqueue, runtimedeps, invruntimedep, elem*), id | "perform-tasks-one"));
-  		error* := <verbose; task-get-errors(|runtimedeps); map(vdebug(!"Error: "))> <+
-  		error* := []
+  		new-iset => error*;
+  		while-imperative(nabl-dequeue-task(|execqueue); measure-time(perform-one-task(|execqueue, runtimedeps, invruntimedep, elem*, error*), id | "perform-tasks-one"))
     
-  perform-one-task(|execqueue, runtimedeps, invruntimedep, elem*):
+  perform-one-task(|execqueue, runtimedeps, invruntimedep, elem*, error*):
   	Task(n, d*, i, p) -> <id>
   	with
   		vdebug(!"Performing task: ");
@@ -75,11 +74,13 @@ rules // Execution
 		        <index-add(|p); vdebug(!"Fail: ")> FailTask(n, fr);
 		        <task-try-schedule-task(|runtimedeps, invruntimedep, execqueue)> n
 		      case ?Fail(fr):
-		        <index-add(|p); vdebug(!"Fail: ")> FailTask(n, fr);
+		        <index-add(|p); debug(!"Fail: ")> FailTask(n, fr);
 		        <task-try-schedule-task(|runtimedeps, invruntimedep, execqueue)> n
 		      case ?Dependency(new-dep*):
 		      	<vdebug(!"Found dynamic dependencies: ")> new-dep*;
 		      	<task-add-runtime-dependency(|runtimedeps, invruntimedep, n)> new-dep*
+		      case ?e@Error(_):
+		      	<iset-add(|e)> error*
 		    	otherwise:
 		    		<with(fail|"Unexpected result from perform-task: ")> res
 		      end

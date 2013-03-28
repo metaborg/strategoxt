@@ -110,17 +110,17 @@ rules // Resolve
 	remove-fail-and-empty =
 		remove-all(?Fail(_) <+ ?[])
 
-  perform-task:
+  perform-task(|n):
     Choice(choice*, error*) -> result
     where
-      result := Done(<remove-all(?Fail(_)); concat; ?[_|_]> choice*) //<+
+      result := <!Done(<remove-all(?Fail(_)); concat; ?[_|_]> choice*) <+ !Error(error*)> //<+
       //result := Fail(<concat-strings> error*) <+
       //result := Fail(<mapconcat(?Fail(<id>))> choice*) 
 
 
-rules // Property calculation
+//rules // Property calculation
             
-  perform-task(|nr): PropCalc(prop, term) -> Done(<calc-property> (prop, term))
+  //perform-task(|nr): PropCalc(prop, term) -> Done(<calc-property> (prop, term))
   
 rules // Match
   
