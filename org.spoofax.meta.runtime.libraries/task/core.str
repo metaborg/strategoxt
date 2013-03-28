@@ -53,7 +53,7 @@ rules // Execution
   	_ -> <iset-elements> elem*
   	with
   		new-iset => elem*;
-  		while-imperative(nabl-dequeue-task(|execqueue); perform-one-task(|execqueue, runtimedeps, elem*))
+  		while-imperative(nabl-dequeue-task(|execqueue); measure-time(perform-one-task(|execqueue, runtimedeps, elem*), id | "perform-tasks-one"))
   
   /*perform-tasks-internal(|elem*, results):
   	task* -> result
