@@ -47,7 +47,10 @@ rules // Multi file analysis
 	    );
 	    measure-time(
 	      task* := <mapconcat(
-	        nabl-analyze-multiple-setup(|language, project-path); 
+	      	measure-time(
+	        	nabl-analyze-multiple-setup(|language, project-path),
+	        	id | "znabl-analyze-multiple-files-setup"
+	        ); 
 	        analyze-incremental(|execqueue);
 	        where(complete-work-unit)
 	      ); make-set> result1*,
