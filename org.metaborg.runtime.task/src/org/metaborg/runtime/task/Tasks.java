@@ -18,12 +18,10 @@ import com.google.common.collect.Multimap;
 
 public class Tasks {
 	private final ITermFactory factory;
-	private final Multimap<IStrategoInt, IStrategoString> toPartition = LinkedHashMultimap.create();
-	private final Multimap<IStrategoString, IStrategoInt> fromPartition = LinkedHashMultimap.create();
+	private final ManyToManyMap<IStrategoInt, IStrategoString> toPartition = ManyToManyMap.create();
+	private final ManyToManyMap<IStrategoInt, IStrategoInt> toDependency = ManyToManyMap.create();
 	private final Map<IStrategoInt, IStrategoTerm> toInstruction = new ConcurrentHashMap<IStrategoInt, IStrategoTerm>();
 	private final Map<IStrategoInt, IStrategoList> toResult = new ConcurrentHashMap<IStrategoInt, IStrategoList>();
-	private final Multimap<IStrategoInt, IStrategoInt> toDependency = LinkedHashMultimap.create();
-	private final Multimap<IStrategoInt, IStrategoInt> toDependent = LinkedHashMultimap.create();
 	
 	private final Set<IStrategoInt> initialTasks = new HashSet<IStrategoInt>();
 	private final Set<IStrategoInt> addedTasks = new HashSet<IStrategoInt>();
@@ -33,18 +31,17 @@ public class Tasks {
 	}
 	
 	public IStrategoInt addTask(IStrategoTerm instruction, IStrategoString partition, IStrategoList dependencies) {
+		
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null)
 			addedTasks.add(taskID);
 		initialTasks.remove(taskID);
 		
 		toPartition.put(taskID, partition);
-		fromPartition.put(partition, taskID);
 		
         while(!dependencies.isEmpty()) {
         	IStrategoInt head = (IStrategoInt) dependencies.head();
             toDependency.put(taskID, head);
-            toDependent.put(head, taskID);
             dependencies = dependencies.tail();
         }
         
@@ -62,7 +59,7 @@ public class Tasks {
 	public void startAnalysis(IStrategoString partition) {
 		addedTasks.clear();
 		initialTasks.clear();
-		initialTasks.addAll(fromPartition.get(partition));
+		initialTasks.addAll(toPartition.getInverse(partition));
 	}
 	
 	public IStrategoTuple stopAnalysis(IStrategoString partition) {
@@ -74,13 +71,9 @@ public class Tasks {
 	
 	private void removeTask(IStrategoInt taskID, IStrategoString partition) {
 		toPartition.remove(taskID, partition);
-		fromPartition.remove(partition, taskID);
 		if(!toPartition.containsKey(taskID)) {
 			toInstruction.remove(taskID);
-			Collection<IStrategoInt> removedDependencies = toDependency.removeAll(taskID);
-			for(IStrategoInt removedDep : removedDependencies) {
-				toDependent.remove(removedDep, taskID);
-			}
+			toDependency.removeAll(taskID);
 			toResult.remove(taskID);
 		}
 	}

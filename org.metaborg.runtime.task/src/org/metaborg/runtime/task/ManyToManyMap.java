@@ -10,10 +10,14 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 
 	
-public class ManyToManyMap<Key, Value> implements Multimap<Key, Value> {
+public class ManyToManyMap<K, V> implements Multimap<K, V> {
 	
-	private final Multimap<Key, Value> keyToValue = LinkedHashMultimap.create();
-	private final Multimap<Value, Key> valueToKey = LinkedHashMultimap.create();
+	private final Multimap<K, V> keyToValue = LinkedHashMultimap.create();
+	private final Multimap<V, K> valueToKey = LinkedHashMultimap.create();
+	
+	public static <K,V> ManyToManyMap<K,V> create() {
+		return new ManyToManyMap<K, V>();
+	}
 	
 	@Override
 	public void clear() {
@@ -32,8 +36,12 @@ public class ManyToManyMap<Key, Value> implements Multimap<Key, Value> {
 	}
 
 	@Override
-	public Map<Key, Collection<Value>> asMap() {
+	public Map<K, Collection<V>> asMap() {
 		return keyToValue.asMap();
+	}
+
+	public Map<V, Collection<K>> asInverseMap() {
+		return valueToKey.asMap();
 	}
 
 	@Override
@@ -42,13 +50,17 @@ public class ManyToManyMap<Key, Value> implements Multimap<Key, Value> {
 	}
 
 	@Override
-	public Collection<Entry<Key, Value>> entries() {
+	public Collection<Entry<K, V>> entries() {
 		return keyToValue.entries();
 	}
 
 	@Override
-	public Collection<Value> get(Key key) {
+	public Collection<V> get(K key) {
 		return keyToValue.get(key);
+	}
+
+	public Collection<K> getInverse(V value) {
+		return valueToKey.get(value);
 	}
 
 	@Override
@@ -57,37 +69,37 @@ public class ManyToManyMap<Key, Value> implements Multimap<Key, Value> {
 	}
 
 	@Override
-	public Set<Key> keySet() {
+	public Set<K> keySet() {
 		return keyToValue.keySet();
 	}
 
 	@Override
-	public Multiset<Key> keys() {
+	public Multiset<K> keys() {
 		return keyToValue.keys();
 	}
 
 	@Override
-	public boolean put(Key key, Value value) {
+	public boolean put(K key, V value) {
 		return keyToValue.put(key, value) & valueToKey.put(value, key);
 	}
 
 	@Override
-	public boolean putAll(Multimap<? extends Key, ? extends Value> multimap) {
+	public boolean putAll(Multimap<? extends K, ? extends V> multimap) {
 	
 		boolean result = keyToValue.putAll(multimap);
 		
-		for (Entry<? extends Key, ? extends Value> entry : multimap.entries()) 
+		for (Entry<? extends K, ? extends V> entry : multimap.entries()) 
 			result &= valueToKey.put(entry.getValue(), entry.getKey());
 	
 		return result;
 	}
 
 	@Override
-	public boolean putAll(Key key, Iterable<? extends Value> values) {
+	public boolean putAll(K key, Iterable<? extends V> values) {
 		
 		boolean result = keyToValue.putAll(key, values);
 		
-		for (Value value : values) 
+		for (V value : values) 
 			result &= valueToKey.put(value, key);
 		
 		return result;
@@ -99,24 +111,24 @@ public class ManyToManyMap<Key, Value> implements Multimap<Key, Value> {
 	}
 
 	@Override
-	public Collection<Value> removeAll(Object key) {
+	public Collection<V> removeAll(Object key) {
 		
-		Collection<Value> removed = keyToValue.removeAll(key);
-		for (Value r : removed) 
+		Collection<V> removed = keyToValue.removeAll(key);
+		for (V r : removed) 
 			valueToKey.remove(r, key);
 		
 		return removed;
 	}
 
 	@Override
-	public Collection<Value> replaceValues(Key key,
-			Iterable<? extends Value> values) {
+	public Collection<V> replaceValues(K key,
+			Iterable<? extends V> values) {
 		
-		Collection<Value> replaced = keyToValue.replaceValues(key, values);
+		Collection<V> replaced = keyToValue.replaceValues(key, values);
 		
-		for (Value r : replaced) 
+		for (V r : replaced) 
 			valueToKey.remove(r, key);
-		for (Value value : values) 
+		for (V value : values) 
 			valueToKey.put(value, key);
 		
 		return replaced;
@@ -128,7 +140,7 @@ public class ManyToManyMap<Key, Value> implements Multimap<Key, Value> {
 	}
 
 	@Override
-	public Collection<Value> values() {
+	public Collection<V> values() {
 		return keyToValue.values();
 	}
 }
