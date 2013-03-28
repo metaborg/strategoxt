@@ -51,39 +51,40 @@ rules
   			(added-task*, removed-task*) := <task-incremental-no-confirm-added> (old-task*, new-task*),
   			id | "analyze-incremental-diff"
     	);
-			// <map(vdebug(!"Added task: "))> added-task*;
-			// <map(vdebug(!"Removed task: "))> removed-task*;
+
+			// Cleanup removed results
     	measure-time(
-  			<map(task-nr; vdebug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*; // Cleanup removed results
+  			<map(task-nr; vdebug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*;
   			<map(task-nr; vdebug(!"Removing all reads for: "); nabl-remove-read)> removed-task*,
   			id | "analyze-incremental-remove-olds"
   		);
     	
+    	// Tasks that need to be re-evaluated because a definition or property has changed.
     	measure-time(
-	    	// Tasks that need to be re-evaluated because a definition or property has changed.
-	    	changedEntry*  := <nabl-entry-incremental; map(vdebug(!"Changed entry: "); nabl-uri); make-set> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
+	    	changedEntry*  := <nabl-entry-incremental; map(vdebug(!"Changed entry: "); nabl-uri)> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
 	    	read-task-nr*  := <mapconcat(nabl-get-reads); map(vdebug(!"Read for changed entry: "))> changedEntry*;
 	    	read-task*     := <mapconcat(task-reconstruct); map(vdebug(!"Changed task: "))> read-task-nr*,
 	    	id | "analyze-incremental-add-news"
 	    );
 
+			// All tasks that need to be re-evaluated.
 			measure-time(
-	  		// All tasks that need to be re-evaluated.
-	  		task* := [read-task*, added-task*];
-	      <map(task-nr; task-remove-result)> added-task*;
-	      <map(task-nr; task-remove-result)> read-task*;
-				<map(task-nr; nabl-remove-read)> added-task*;
-				<map(task-nr; nabl-remove-read)> read-task*;
-
-	  		<map(queue-task(|execqueue))> added-task*;
-	  		<map(queue-task(|execqueue))> read-task*,
+	      <map(analyze-cleanup-and-queue(|execqueue))> added-task*;
+	      <map(analyze-cleanup-and-queue(|execqueue))> read-task*,
 	  		id | "analyze-incremental-concat-queue"
 	  	)
+	  	
+	analyze-cleanup-and-queue(|execqueue) =
+		where(queue-task(|execqueue));
+		task-nr;
+		where(task-remove-result);
+		where(nabl-remove-read)
     	
 	analyze-perform-all(|execqueue):
-		_ -> <id>
+		_ -> error*
 		with
   		task-create-runtimedep => runtimedep;
-      taskEntry* := <perform-tasks(|execqueue, runtimedep)>; 
+  		task-create-runtimedep => invruntimedep;
+      (taskEntry*, error*) := <perform-tasks(|execqueue, runtimedep, invruntimedep)>; 
       <index-add-all(|"TaskEntries")> taskEntry*
       			
