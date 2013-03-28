@@ -120,6 +120,15 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return removed;
 	}
 
+	public Collection<K> removeAllInverse(Object value) {
+		
+		Collection<K> removed = valueToKey.removeAll(value);
+		for (K r : removed) 
+			keyToValue.remove(r, value);
+		
+		return removed;
+	}
+
 	@Override
 	public Collection<V> replaceValues(K key,
 			Iterable<? extends V> values) {
