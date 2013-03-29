@@ -2,15 +2,11 @@ package org.metaborg.runtime.task;
 
 import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
-import static com.google.common.base.Predicates.or;
-import static com.google.common.collect.Maps.filterKeys;
-import static com.google.common.collect.Multimaps.filterValues;
 import static com.google.common.collect.Sets.filter;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,8 +18,6 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-
-import com.google.common.collect.Multimap;
 
 public class TaskEngine {
 	private final ITermFactory factory;
@@ -45,21 +39,11 @@ public class TaskEngine {
 	/** All tasks (view). */
 	private final Set<IStrategoInt> tasks = toInstruction.keySet();
 	
-	/** Task is garbage, if it is has no partition anymore (view). */
-	private final Set<IStrategoInt> garbage = filter(tasks, not(in(toPartition.keys())));
-	
 	/** Solved tasks (view). */
 	private final Set<IStrategoInt> solved = toResult.keySet();
 	
-	/** Unsatisfied dependencies between tasks (view). */
-	private final Multimap<IStrategoInt, IStrategoInt> toOpenDependency = filterValues(toDependency, not(in(solved)));
-	
-	/** Task is solvable, if it is neither solved, nor has any unsatisfied dependency (view). */
-	private final Map<IStrategoInt, IStrategoTerm> toSolvableInstruction = filterKeys(toInstruction,
-		not(or(in(solved), in(toOpenDependency.keys()))));
-	
-	/** solved task is invalid, if it has a dependency on an unsolved task (view). */
-	private final Set<IStrategoInt> invalid = filter(solved, in(filterValues(toDependency, not(in(solved))).keySet()));
+	/** Task is garbage, if it is has no partition anymore (view). */
+	private final Set<IStrategoInt> garbage = filter(tasks, not(in(toPartition.keys())));
 
 	
 	/** New tasks that have been added since last call to {@link #startCollection(IStrategoString)}. */
@@ -147,14 +131,8 @@ public class TaskEngine {
 		return toResult.get((IStrategoInt) resultID.getSubterm(0));
 	}
 	
-	public void evaluate() {
-		invalid.clear();
-		for(Entry<IStrategoInt, IStrategoTerm> solvable : toSolvableInstruction.entrySet())
-			setResult(solvable.getKey(), solve(solvable.getValue()));
-	}
-
-	public IStrategoList solve(IStrategoTerm instruction) {
-		return null;
+	public TaskSolver createSolver() {
+		return new TaskSolver(this, toInstruction, toDependency, solved);
 	}
 	
 	public void reset() {
