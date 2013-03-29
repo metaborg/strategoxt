@@ -1,105 +1,71 @@
 package org.metaborg.runtime.task.test;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.metaborg.runtime.task.TaskEngine;
-import org.metaborg.runtime.task.TaskManager;
-import org.spoofax.interpreter.core.Interpreter;
-import org.spoofax.interpreter.library.IOAgent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoList;
+import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
-import org.spoofax.interpreter.terms.ITermFactory;
 
-public class TaskEngineTest {
-    protected static Interpreter interpreter;
-    protected static ITermFactory factory;
-    protected static IOAgent agent;
+public class TaskEngineTest extends TaskTest {
+	@Before
+	public void setUp() {
+		taskEngine.reset();
+	}
 
-    protected static TaskManager taskManager;
-    protected static TaskEngine taskEngine;
+	@Test
+	public void addTasks() {
+		IStrategoString partition1 = str("String.java");
+		IStrategoString partition2 = str("Integer.java");
 
-    @BeforeClass
-    public static void setUpOnce() {
-        interpreter = new Interpreter();
-        factory = interpreter.getFactory();
-        agent = interpreter.getIOAgent();
+		IStrategoTerm resolveInstruction =
+			resolve("Java", segment("Package", "java"), segment("Package", "util"), segment("Class", "String"));
+		IStrategoTerm resolveImportInstruction =
+			resolveImport("Java", segment("Package", "java"), segment("Package", "util"), segment("Class", "String"));
+		IStrategoTerm choiceInstruction = choice(resolveInstruction, resolveImportInstruction);
 
-        taskManager = new TaskManager();
-        taskEngine = taskManager.loadTaskEngine(".", factory, agent);
-    }
+		taskEngine.startCollection(partition1);
+		IStrategoAppl resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction);
+		IStrategoInt resolveID = resultID(resolveResult);
+		IStrategoAppl resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction);
+		IStrategoInt resolveImportID = resultID(resolveImportResult);
+		taskEngine.stopCollection(partition1);
 
-    @AfterClass
-    public static void tearDownOnce() {
-        taskEngine.reset();
-        taskEngine = null;
-        taskManager = null;
-        interpreter.shutdown();
-        interpreter = null;
-        factory = null;
-        agent = null;
-    }
+		taskEngine.startCollection(partition2);
+		IStrategoAppl choiceResult =
+			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
+		IStrategoInt choiceID = resultID(choiceResult);
+		taskEngine.stopCollection(partition2);
 
-    public static IStrategoString str(String str) {
-        return factory.makeString(str);
-    }
+		assertEquals(resolveInstruction, taskEngine.getInstruction(resolveID));
+		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
+		assertEquals(choiceInstruction, taskEngine.getInstruction(choiceID));
 
-    public static IStrategoAppl constructor(String constructor, IStrategoTerm... terms) {
-        return factory.makeAppl(factory.makeConstructor(constructor, terms.length), terms);
-    }
-
-    public static IStrategoTuple tuple(IStrategoTerm... terms) {
-        return factory.makeTuple(terms);
-    }
-
-    public static IStrategoString file(String file) {
-        return str(file);
-    }
-
-    public static IStrategoTuple file(String file, String namespace, String... path) {
-        return factory.makeTuple(str(file), uri(namespace, path));
-    }
-
-    public static IStrategoList path(String... path) {
-        IStrategoString[] strategoPath = new IStrategoString[path.length];
-        for(int i = 0; i < path.length; ++i)
-            // Paths are reversed in Stratego for easy appending of new names.
-            strategoPath[i] = str(path[path.length - i - 1]);
-        return factory.makeList(strategoPath);
-    }
-
-    public static IStrategoList uri(String namespace, String... path) {
-        return factory.makeListCons(constructor(namespace), path(path));
-    }
-
-    public static IStrategoAppl def(String namespace, String... path) {
-        return factory.makeAppl(factory.makeConstructor("Def", 1), uri(namespace, path));
-    }
-
-    public static IStrategoAppl use(String namespace, String... path) {
-        return factory.makeAppl(factory.makeConstructor("Use", 1), uri(namespace, path));
-    }
-
-    public static IStrategoAppl read(String namespace, String... path) {
-        return factory.makeAppl(factory.makeConstructor("Read", 1), uri(namespace, path));
-    }
-
-    public static IStrategoAppl readAll(String prefix, String namespace, String... path) {
-        return factory.makeAppl(factory.makeConstructor("ReadAll", 2), uri(namespace, path), str(prefix));
-    }
-
-    public static IStrategoAppl type(IStrategoTerm type, String namespace, String... path) {
-        return factory.makeAppl(factory.makeConstructor("Type", 2), uri(namespace, path), type);
-    }
-
-    public static IStrategoAppl defData(IStrategoTerm type, IStrategoTerm value, String namespace, String... path) {
-        return factory.makeAppl(factory.makeConstructor("DefData", 3), uri(namespace, path), type, value);
-    }
-
-    public static IStrategoAppl longTerm(IStrategoTerm t1, IStrategoTerm t2, IStrategoTerm t3, String namespace,
-        String... path) {
-        return factory.makeAppl(factory.makeConstructor("LongTerm", 4), uri(namespace, path), t1, t2, t3);
-    }
+		assertTrue(assertContains(taskEngine.getPartitionsOf(resolveID), partition1));
+		assertFalse(assertContains(taskEngine.getPartitionsOf(resolveID), partition2));
+		assertTrue(assertContains(taskEngine.getPartitionsOf(resolveImportID), partition1));
+		assertFalse(assertContains(taskEngine.getPartitionsOf(resolveImportID), partition2));
+		assertTrue(assertContains(taskEngine.getPartitionsOf(choiceID), partition2));
+		assertFalse(assertContains(taskEngine.getPartitionsOf(choiceID), partition1));
+		
+		assertTrue(assertContains(taskEngine.getInPartition(partition1), resolveID));
+		assertTrue(assertContains(taskEngine.getInPartition(partition1), resolveImportID));
+		assertFalse(assertContains(taskEngine.getInPartition(partition1), choiceID));
+		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveID));
+		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveImportID));
+		assertTrue(assertContains(taskEngine.getInPartition(partition2), choiceID));
+		
+		assertEquals(0, taskEngine.getDependencies(resolveID).size());
+		assertEquals(0, taskEngine.getDependencies(resolveImportID).size());
+		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveID));
+		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveImportID));
+		
+		assertTrue(assertContains(taskEngine.getDependent(resolveID), choiceID));
+		assertTrue(assertContains(taskEngine.getDependent(resolveImportID), choiceID));
+		assertEquals(0, taskEngine.getDependent(choiceID).size());
+	}
 }

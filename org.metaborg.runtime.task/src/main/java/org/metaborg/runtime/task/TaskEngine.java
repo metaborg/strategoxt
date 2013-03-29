@@ -1,11 +1,21 @@
 package org.metaborg.runtime.task;
 
+import static com.google.common.base.Predicates.in;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.base.Predicates.or;
+import static com.google.common.collect.Maps.filterKeys;
+import static com.google.common.collect.Multimaps.filterValues;
+import static com.google.common.collect.Sets.filter;
+
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
@@ -15,17 +25,9 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Multimap;
 
-import static com.google.common.collect.Sets.filter;
-import static com.google.common.collect.Maps.filterKeys;
-import static com.google.common.collect.Multimaps.filterValues;
-
-import static com.google.common.base.Predicates.in;
-import static com.google.common.base.Predicates.not;
-import static com.google.common.base.Predicates.or;
-
 public class TaskEngine {
-
 	private final ITermFactory factory;
+	private final IStrategoConstructor resultConstructor;
 
 	/** Instructions of tasks. */
 	private final Map<IStrategoInt, IStrategoTerm> toInstruction = new ConcurrentHashMap<IStrategoInt, IStrategoTerm>();
@@ -72,6 +74,7 @@ public class TaskEngine {
 
 	public TaskEngine(ITermFactory factory) {
 		this.factory = factory;
+		this.resultConstructor = factory.makeConstructor("Result", 1);
 	}
 
 	public void startCollection(IStrategoString partition) {
@@ -81,7 +84,7 @@ public class TaskEngine {
 		inCollection = true;
 	}
 
-	public IStrategoInt addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
+	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
 		if(!inCollection)
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call startCollection before adding tasks.");
@@ -92,10 +95,15 @@ public class TaskEngine {
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
+		// TODO: Don't use getAllSubterms() on IStrategoList, allocates an array copy.
 		for(IStrategoTerm dep : dependencies.getAllSubterms())
 			toDependency.put(taskID, (IStrategoInt) dep);
 
-		return taskID;
+		return createResult(taskID);
+	}
+	
+	private IStrategoAppl createResult(IStrategoInt taskID) {
+		return factory.makeAppl(resultConstructor, taskID);
 	}
 
 	public IStrategoTuple stopCollection(IStrategoString partition) {
@@ -107,6 +115,38 @@ public class TaskEngine {
 		return factory.makeTuple(factory.makeList(addedTasks), factory.makeList(removedTasks));
 	}
 
+	public IStrategoTerm getInstruction(IStrategoInt taskID) {
+		return toInstruction.get(taskID);
+	}
+	
+	public Collection<IStrategoString> getPartitionsOf(IStrategoInt taskID) {
+		return toPartition.get(taskID);
+	}
+	
+	public Collection<IStrategoInt> getInPartition(IStrategoString partition) {
+		return toPartition.getInverse(partition);
+	}
+	
+	public Collection<IStrategoInt> getDependencies(IStrategoInt taskID) {
+		return toDependency.get(taskID);
+	}
+	
+	public Collection<IStrategoInt> getDependent(IStrategoInt taskID) {
+		return toDependency.getInverse(taskID);
+	}
+	
+	public void setResult(IStrategoInt taskID, IStrategoList resultList) {
+		toResult.put(taskID, resultList);
+	}
+
+	public IStrategoList getResult(IStrategoInt taskID) {
+		return toResult.get(taskID);
+	}
+	
+	public IStrategoList getResult(IStrategoAppl resultID) {
+		return toResult.get((IStrategoInt) resultID.getSubterm(0));
+	}
+	
 	public void evaluate() {
 		invalid.clear();
 		for(Entry<IStrategoInt, IStrategoTerm> solvable : toSolvableInstruction.entrySet())
@@ -115,14 +155,6 @@ public class TaskEngine {
 
 	public IStrategoList solve(IStrategoTerm instruction) {
 		return null;
-	}
-
-	public void setResult(IStrategoInt taskID, IStrategoList resultList) {
-		toResult.put(taskID, resultList);
-	}
-
-	public IStrategoList getResult(IStrategoInt taskID) {
-		return toResult.get(taskID);
 	}
 	
 	public void reset() {
