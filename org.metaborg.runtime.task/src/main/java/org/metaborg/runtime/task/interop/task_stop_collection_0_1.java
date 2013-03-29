@@ -6,15 +6,11 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
-public class task_stop_colleciton_0_1 extends Strategy {
-	private TaskManager taskManager;
-
-	public task_stop_colleciton_0_1(TaskManager taskManager) {
-		this.taskManager = taskManager;
-	}
+public class task_stop_collection_0_1 extends Strategy {
+	public static task_stop_collection_0_1 instance = new task_stop_collection_0_1();
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm partition) {
-		return taskManager.getCurrent().stopCollection((IStrategoString) partition);
+		return TaskManager.getInstance().getCurrent().stopCollection((IStrategoString) partition);
 	}
 }

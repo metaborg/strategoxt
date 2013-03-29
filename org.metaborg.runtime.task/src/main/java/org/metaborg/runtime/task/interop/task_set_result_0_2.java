@@ -8,15 +8,11 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
 public class task_set_result_0_2 extends Strategy {
-	private TaskManager taskManager;
-
-	public task_set_result_0_2(TaskManager taskManager) {
-		this.taskManager = taskManager;
-	}
+	public static task_set_result_0_2 instance = new task_set_result_0_2();
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm taskID, IStrategoTerm resultList) {
-		taskManager.getCurrent().setResult((IStrategoInt) taskID, (IStrategoList) resultList);
+		TaskManager.getInstance().getCurrent().setResult((IStrategoInt) taskID, (IStrategoList) resultList);
 		return current;
 	}
 }

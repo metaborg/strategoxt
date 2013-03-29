@@ -7,14 +7,10 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
 public class task_get_result_0_1 extends Strategy {
-	private TaskManager taskManager;
-
-	public task_get_result_0_1(TaskManager taskManager) {
-		this.taskManager = taskManager;
-	}
+	public static task_get_result_0_1 instance = new task_get_result_0_1();
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm taskID) {
-		return taskManager.getCurrent().getResult((IStrategoInt) taskID);
+		return TaskManager.getInstance().getCurrent().getResult((IStrategoInt) taskID);
 	}
 }

@@ -36,8 +36,8 @@ public class TaskEngineTest extends TaskTest {
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
-		IStrategoAppl choiceResult =
-			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
+		IStrategoAppl choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
+			choiceInstruction);
 		IStrategoInt choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
@@ -74,13 +74,13 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition1);
 		IStrategoAppl resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction);
 		IStrategoInt resolveID = resultID(resolveResult);
-		
+
 		IStrategoAppl resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction);
 		IStrategoInt resolveImportID = resultID(resolveImportResult);
-		
+
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
-		IStrategoAppl choiceResult =
-			taskEngine.addTask(partition1, dependencies(resolveResult, resolveImportResult), choiceInstruction);
+		IStrategoAppl choiceResult = taskEngine.addTask(partition1, dependencies(resolveResult, resolveImportResult),
+			choiceInstruction);
 		IStrategoInt choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition1);
 
@@ -93,26 +93,26 @@ public class TaskEngineTest extends TaskTest {
 		resolveID = resultID(resolveResult);
 		resolveResult = taskEngine.addTask(partition2, dependencies(), resolveInstruction);
 		resolveID = resultID(resolveResult);
-		
+
 		// Add 1 duplicate.
 		resolveImportResult = taskEngine.addTask(partition2, dependencies(), resolveImportInstruction);
 		resolveImportID = resultID(resolveImportResult);
 		resolveImportResult = taskEngine.addTask(partition2, dependencies(), resolveImportInstruction);
 		resolveImportID = resultID(resolveImportResult);
-		
+
 		choiceInstruction = choice(resolveResult, resolveImportResult);
-		choiceResult =
-			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
+		choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
+			choiceInstruction);
 		choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
-		
+
 		assertEquals(2, taskEngine.getPartitionsOf(resolveID).size());
 		assertEquals(2, taskEngine.getPartitionsOf(resolveImportID).size());
 		assertEquals(2, taskEngine.getPartitionsOf(choiceID).size());
-		
+
 		assertEquals(3, taskEngine.getInPartition(partition1).size());
 		assertEquals(3, taskEngine.getInPartition(partition1).size());
-		
+
 		assertEquals(0, taskEngine.getDependencies(resolveID).size());
 		assertEquals(0, taskEngine.getDependencies(resolveImportID).size());
 		assertEquals(2, taskEngine.getDependencies(choiceID).size());
@@ -161,8 +161,8 @@ public class TaskEngineTest extends TaskTest {
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
-		IStrategoAppl choiceResult =
-			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
+		IStrategoAppl choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
+			choiceInstruction);
 		IStrategoInt choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
@@ -200,8 +200,8 @@ public class TaskEngineTest extends TaskTest {
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
-		IStrategoAppl choiceResult =
-			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
+		IStrategoAppl choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
+			choiceInstruction);
 		IStrategoInt choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 

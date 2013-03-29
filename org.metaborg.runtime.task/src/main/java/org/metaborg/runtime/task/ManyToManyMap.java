@@ -9,22 +9,20 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 
-	
 public class ManyToManyMap<K, V> implements Multimap<K, V> {
-	
 	private final Multimap<K, V> keyToValue = LinkedHashMultimap.create();
 	private final Multimap<V, K> valueToKey = LinkedHashMultimap.create();
-	
-	public static <K,V> ManyToManyMap<K,V> create() {
+
+	public static <K, V> ManyToManyMap<K, V> create() {
 		return new ManyToManyMap<K, V>();
 	}
-	
+
 	@Override
 	public void clear() {
 		keyToValue.clear();
 		valueToKey.clear();
 	}
-	
+
 	@Override
 	public boolean containsKey(Object key) {
 		return keyToValue.containsKey(key);
@@ -85,23 +83,23 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 
 	@Override
 	public boolean putAll(Multimap<? extends K, ? extends V> multimap) {
-	
+
 		boolean result = keyToValue.putAll(multimap);
-		
-		for (Entry<? extends K, ? extends V> entry : multimap.entries()) 
+
+		for (Entry<? extends K, ? extends V> entry : multimap.entries())
 			result &= valueToKey.put(entry.getValue(), entry.getKey());
-	
+
 		return result;
 	}
 
 	@Override
 	public boolean putAll(K key, Iterable<? extends V> values) {
-		
+
 		boolean result = keyToValue.putAll(key, values);
-		
-		for (V value : values) 
+
+		for (V value : values)
 			result &= valueToKey.put(value, key);
-		
+
 		return result;
 	}
 
@@ -112,34 +110,33 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 
 	@Override
 	public Collection<V> removeAll(Object key) {
-		
+
 		Collection<V> removed = keyToValue.removeAll(key);
-		for (V r : removed) 
+		for (V r : removed)
 			valueToKey.remove(r, key);
-		
+
 		return removed;
 	}
 
 	public Collection<K> removeAllInverse(Object value) {
-		
+
 		Collection<K> removed = valueToKey.removeAll(value);
-		for (K r : removed) 
+		for (K r : removed)
 			keyToValue.remove(r, value);
-		
+
 		return removed;
 	}
 
 	@Override
-	public Collection<V> replaceValues(K key,
-			Iterable<? extends V> values) {
-		
+	public Collection<V> replaceValues(K key, Iterable<? extends V> values) {
+
 		Collection<V> replaced = keyToValue.replaceValues(key, values);
-		
-		for (V r : replaced) 
+
+		for (V r : replaced)
 			valueToKey.remove(r, key);
-		for (V value : values) 
+		for (V value : values)
 			valueToKey.put(value, key);
-		
+
 		return replaced;
 	}
 
