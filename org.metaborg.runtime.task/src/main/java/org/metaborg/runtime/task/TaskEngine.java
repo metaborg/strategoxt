@@ -110,14 +110,14 @@ public class TaskEngine {
 	public void evaluate() {
 		invalid.clear();
 		for(Entry<IStrategoInt, IStrategoTerm> solvable : toSolvableInstruction.entrySet())
-			addResult(solvable.getKey(), solve(solvable.getValue()));
+			setResult(solvable.getKey(), solve(solvable.getValue()));
 	}
 
 	public IStrategoList solve(IStrategoTerm instruction) {
 		return null;
 	}
 
-	public void addResult(IStrategoInt taskID, IStrategoList resultList) {
+	public void setResult(IStrategoInt taskID, IStrategoList resultList) {
 		toResult.put(taskID, resultList);
 	}
 

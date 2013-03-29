@@ -13,7 +13,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class IndexTest {
+public class TaskEngineTest {
     protected static Interpreter interpreter;
     protected static ITermFactory factory;
     protected static IOAgent agent;
