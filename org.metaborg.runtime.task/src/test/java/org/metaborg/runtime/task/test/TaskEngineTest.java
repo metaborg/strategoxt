@@ -19,7 +19,6 @@ public class TaskEngineTest extends TaskTest {
 		segment("Package", "util"), segment("Class", "String"));
 	private final IStrategoTerm resolveImportInstruction = resolveImport("Java", segment("Package", "java"),
 		segment("Package", "util"), segment("Class", "String"));
-	private final IStrategoTerm choiceInstruction = choice(resolveInstruction, resolveImportInstruction);
 
 	@Before
 	public void setUp() {
@@ -35,6 +34,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoInt resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
+		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoAppl choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
@@ -106,6 +106,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoInt resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 		
+		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoAppl choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
@@ -144,6 +145,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoInt resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 		
+		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoAppl choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction);
