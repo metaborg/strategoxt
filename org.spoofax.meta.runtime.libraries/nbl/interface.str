@@ -2,38 +2,36 @@ module nbl/interface
 
 strategies // Collect
   
-  nabl-anonymous-scope-site(child-uris|lang, partition, unique*, uri*, state*) = fail
-  
-  nabl-def-site(child-uris, sibiling-uris|lang, partition, unique*, elem*, uri*, state*) = fail
-  
-  nabl-state-site = fail
-  
-  nabl-use-site(|lang, elem*, task*, uri*, state*) = fail
-  
-  nabl-import-site(|lang, elem*, task*, uri*, state*) = fail
-  
-  nabl-implicit-def-site(|lang, partition, unique*, elem*, uri*, state*) = fail
-  
-  nabl-prop-site(|elem*, task*, state*) = fail
-
-  nabl-constraint-site(|task*) = fail
-  
-  constraint-error   = fail
-  
-  constraint-warning = fail
-  
-  constraint-note    = fail
+	nabl-anonymous-scope-site(child-uris|lang, partition, unique*, uri*, state*) = fail
+	
+	nabl-def-site(child-uris, sibiling-uris|lang, partition, unique*, elem*, uri*, state*) = fail
+	
+	nabl-state-site = fail
+	
+	nabl-use-site(|lang, partition, elem*, uri*, state*) = fail
+	
+	nabl-import-site(|lang, partition, elem*, uri*, state*) = fail
+	
+	nabl-implicit-def-site(|lang, partition, unique*, elem*, uri*, state*) = fail
+	
+	nabl-prop-site(|lang, partition, elem*, state*) = fail
+	
+	nabl-constraint-site(|lang, partition) = fail
+	
+	constraint-error = fail
+	
+	constraint-warning = fail
+	
+	constraint-note = fail
 
 strategies // Projections
   
-  nabl-name = fail
-  
-  nabl-name-apply(s) = fail
-  
-  nabl-scopes = fail
+	nabl-name = fail
+	
+	nabl-name-apply(s) = fail
+	
+	nabl-scopes = fail
 
 strategies // Tasks
   
-  calc-property = fail
-  
-  nabl-match = fail
+	calc-property = fail

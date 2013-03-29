@@ -1,0 +1,24 @@
+module task/tasks
+
+imports
+	
+	task/core
+	task/interface
+
+signature
+
+	constructors
+		
+    Choice : List(Result)                -> Instruction
+    Choice : List(Result) * List(String) -> Instruction
+    Match  : ID * List(Term) * Term      -> Instruction
+	
+rules
+	
+	perform-task(|nr):
+ 		Choice(choice*) -> <?[_|_]; concat> choice*
+
+  perform-task(|n):
+    Choice(choice*, error*) -> <?[_|_]; concat> choice*
+
+  perform-task(|nr): Match(key, bound, term) -> <task-match> (key, term, bound)

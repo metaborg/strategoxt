@@ -3,53 +3,67 @@ module task/core
 imports 
   
   task/interface
-  task/store
   index/core
   index/query
-  nbl/utils // TODO: should not depend on NaBl.
   
 signature
 
   sorts
   
-    Task Result Instruction
+    Result Instruction
   
   constructors
     
-    Task     : Int * List(Int) * Instruction * Partition -> Task
-    Result   : Int                                       -> Result
-    DoneTask : Int * Term                                -> DoneTask
-    FailTask : Int * Term                                -> FailTask
+    Result : Int -> Result
     
-    Done       : Term               -> Result
-    Done       : Term * List(Entry) -> Result
-    Fail       : Term               -> Result
-    Fail       : Term * List(Entry) -> Result
-    Error      : Term               -> Result
-    Warning    : Term               -> Result
-    Note       : Term               -> Result
-    Dependency : List(Int)          -> Result
+    Dependency : List(Int) -> Result
+    
+    Error   : Term -> Result
+    Warning : Term -> Result
+    Note    : Term -> Result
 		
 rules // Creation
   
-  new-task(|task*) = new-task(|task*, <dependent-tasks>)
-  new-task(|task*, deps) = desugar-task(|task*) <+ new-task(|task*, deps, <address>) 
-  new-task(|task*, deps, name):
-    instruction -> Result(name)
-    with
-    	partition := <index-get-current-partition>;      // TODO: Partition should be a term argument.
-    	nr        := <address> instruction;
-      task      := Task(nr, deps, instruction, partition);
-      <iset-add(|task)> task*
+  new-task(|partition) = new-task(|<dependent-tasks>)
+  new-task(|partition, dependencies) = desugar-task(|partition) <+ task-add-task(|partition, dependencies, <id>)
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
   dependent-task = ?Result(<id>) 
   dependent-task =
     has-annos; get-annos; dependent-tasks
-  
+
+rules // Dependencies
+	
+  task-create-dependencies =
+  	collect-all(?Result(<id>));
+  	!Dependency(<id>)
+  	
+	task-has-dependencies =
+		fetch(?Dependency(_))
+		
+	task-collect-dependencies =
+		collect-all(?Dependency(<id>));
+		concat;
+		where(Hd);
+		!Dependency(<id>)
+
+rules // Projections
+	
+	task-result-id:
+    Result(taskID) -> taskID
+
+rules // API
+	
+	external task-setup(|project-path)
+	external task-start-collection(|partition)
+	external task-stop-collection(|partition)
+	external task-add-task(|partition, dependencies, instruction)
+	external task-get-result(|taskID)
+	external task-evaluate(perform-task|)
+	  
 rules // Execution
   
-  perform-tasks(|execqueue, runtimedeps, invruntimedep):
+  /*perform-tasks(|execqueue, runtimedeps, invruntimedep):
   	_ -> (<iset-elements> elem*, <iset-elements> error*)
   	with
   		new-iset => elem*;
@@ -119,4 +133,4 @@ rules // Utility
   
   external gohla-iset-get-one(|)
   
-  effectively(s) = ?t; s; not(?t)  
+  effectively(s) = ?t; s; not(?t)  */

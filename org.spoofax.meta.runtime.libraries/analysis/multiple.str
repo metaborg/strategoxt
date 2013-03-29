@@ -3,8 +3,6 @@ module analysis/multiple
 imports
 	
   task/core
-  task/store
-  task/incremental
   index/core
   index/query
   nbl/collect
@@ -30,18 +28,16 @@ rules // Multi file analysis
       end
 
   nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path):
-    file* -> (task-count, result*)
+    file* -> (0, result*)
     with
     	<vdebug(!"Analyzing files: ")> file*;
-    	create-execqueue => execqueue;
-    	task-counter-init;
     	measure-time(
 	      result* := <all(
 	      	measure-time(
 		        nabl-analyze-multiple-setup(|language, project-path), 
 		        id | "nabl-analyze-multiple-files-setup"
 		      ); 
-	        analyze-collect(|language); 
+	        analyze-collect(|language, project-path); 
 	        where(complete-work-unit)
 	      )> file*,
 	      id | "nabl-analyze-multiple-files-collect"
@@ -52,16 +48,15 @@ rules // Multi file analysis
 	        	nabl-analyze-multiple-setup(|language, project-path),
 	        	id | "znabl-analyze-multiple-files-setup"
 	        ); 
-	        analyze-incremental(|execqueue);
+	        analyze-incremental;
 	        where(complete-work-unit)
 	      )> result*,
 	      id | "nabl-analyze-multiple-files-gathertasks"
       );
       measure-time(
-      	analyze-perform-all(|execqueue),
+      	analyze-perform-all,
       	id | "nabl-analyze-multiple-files-performtasks"
-      );
-      task-count := <task-counter-get>
+      )
       // TODO: Get error tasks.
       
 rules // Utility

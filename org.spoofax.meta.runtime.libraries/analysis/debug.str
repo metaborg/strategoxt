@@ -3,7 +3,6 @@ module analysis/debug
 imports
 	
 	nbl/collect
-	task/store
 	index/core
 	index/query
 
@@ -31,7 +30,7 @@ rules
     	partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
       filename := <guarantee-extension(|"current.tasks.aterm")> path;
-      result   := <task-partition; index-get-all-in-partition> partition
+      result   := [] //<task-partition; index-get-all-in-partition> partition // TODO: fix
       
   analysis-debug-show-all-partitions(|language):
     (_, _, _, path, project-path) -> (filename, result)

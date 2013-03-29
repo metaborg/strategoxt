@@ -3,8 +3,6 @@ module analysis/single
 imports
 	
   task/core
-  task/store
-  task/incremental
   index/core
   index/query
   nbl/collect
@@ -21,8 +19,6 @@ rules // Single file analysis
     with // Setup index
       partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
-      create-execqueue => execqueue;
-      task-counter-init;
-      r@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language)> File(partition, ast);
-      <analyze-incremental(|execqueue)> r;
-    	error* := <analyze-perform-all(|execqueue)>
+      result@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
+      <analyze-incremental> result;
+    	task-evaluate(perform-task) => error*

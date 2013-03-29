@@ -20,62 +20,53 @@ signature
     Resolve        : Scope * Namespace * Name    -> Instruction
     ResolveImport  : Scope * Namespace * Name    -> Instruction
     PropConstraint : List(Prop) * List(Result)   -> Instruction
-    Choice         : List(Result)                -> Instruction
-    Choice         : List(Result) * List(String) -> Instruction
     PropCalc       : Property * Term             -> Instruction
-    Match          : ID * List(Term) * Term      -> Instruction
         
 rules // Resolve
   
   perform-task(|nr):
-  	Resolve(scope, ns, name) -> result
+  	Resolve(scope*, ns, name) -> result
   	with
-  		def* := <nabl-lookup(|ns, name)> scope;
+  		def* := <nabl-lookup(|ns, name)> scope*;
   		switch !def*
         case ?[]:
-        	scope' := <try(remove-fail-and-empty); try(Hd)> scope;
-        	if uri := <nabl-uri> scope' then
-	        	uri' := <nabl-extend-uri(|ns, name, ())> uri; 
-	        	!Fail([uri'], <nabl-new-reads(|nr)> uri')
-        	else
-        		!Fail([])
-        	end
+        	fail
         otherwise: 
-        	!Done(def*, <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
-  		end => result
+        	// TODO: reads - <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
+        	!def*
+			end => result
 
 	perform-task(|nr):
-		ResolveImport(scope, ns, name) -> result
+		ResolveImport(scope*, ns, name) -> result
 		where
-  		scope' := <try(remove-fail-and-empty); try(Hd)> scope;
-  		if uri := <nabl-uri> scope' then
-				language       := <nabl-uri-language> uri;
-	      namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
-	      unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri;
-	      if <nabl-has-dependency> namedImport* <+ <nabl-has-dependency> unnamedImport* then
-	      	result := <nabl-collect-dependency> (namedImport*, unnamedImport*)
-	      else
-		      namedDef*        := <mapconcat(nabl-lookup(|ns, name))> namedImport*;
-		      unnamedDef*      := <mapconcat(nabl-lookup(|ns, name))> unnamedImport*;
-		      def*             := [namedDef*, unnamedDef*];
-		      import*          := [namedImport*, unnamedImport*];
-		      
-		      import-uri-read* := <nabl-new-reads(|nr)> uri;
-		      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
-		      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
-		      result           := Done(def*, [import-uri-read*, imported-read*, import-read*])
-	      end
+			import* := <nabl-lookup-import(|ns, name)> scope*;
+      if <task-has-dependencies> import* then
+      	result := <task-collect-dependencies> import*
       else
-      	result := Fail([])
-    	end
+	      def* := <mapconcat(nabl-lookup(|ns, name))> import*;
+	      
+	      /* TODO: reads
+	      import-uri-read* := <nabl-new-reads(|nr)> uri;
+	      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
+	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
+	      */
+	      
+	  		switch !def*
+	        case ?[]:
+	        	fail
+	        otherwise: 
+	        	// TODO: reads
+	        	!def*
+				end => result
+      end
 	  
   perform-task(|nr):
   	PropConstraint(prop*, res*) -> result
   	where
-  		filtered := <remove-fail-and-empty; concat; filter(nabl-resolve-constraint(|prop*))> res*;
+  		filtered := <concat; filter(nabl-resolve-constraint(|prop*))> res*;
       switch !filtered
-      	case nabl-collect-dependency => d: !d
-      	otherwise: !Done(filtered)
+      	case task-collect-dependencies => d: !d
+      	otherwise: !filtered
       end => result
   		
   nabl-resolve-constraint(|prop*):
@@ -84,7 +75,7 @@ rules // Resolve
       filtered := <filter(nabl-resolve-constraint-one(|entry))> prop*;
       switch !filtered
       	case ?[]: fail
-      	case nabl-collect-dependency => d: !d
+      	case task-collect-dependencies => d: !d
       	otherwise: !entry
       end => entry'
       
@@ -98,82 +89,7 @@ rules // Resolve
         <eq> (expectedValue', value');
         entry' := entry
       else
-        entry' := <nabl-create-dependency> value
+        entry' := <task-create-dependencies> value
       end
-		
-	perform-task(|nr):
- 		Choice(choices) -> result
-		with
-			result := Done(<remove-fail-and-empty; ?[_|_]; concat> choices) <+
-			result := Fail(<filter(?Fail(<id>)); concat> choices)
-			
-	remove-fail-and-empty =
-		remove-all(?Fail(_) <+ ?[])
 
-  perform-task(|n):
-    Choice(choice*, error*) -> result
-    where
-      result := <!Done(<remove-all(?Fail(_)); concat; ?[_|_]> choice*) <+ !Error(error*)> //<+
-      //result := Fail(<concat-strings> error*) <+
-      //result := Fail(<mapconcat(?Fail(<id>))> choice*) 
-
-
-//rules // Property calculation
-            
-  //perform-task(|nr): PropCalc(prop, term) -> Done(<calc-property> (prop, term))
-  
-rules // Match
-  
-  perform-task(|nr): Match(key, bound, term) -> Done(<nabl-match> (key, term, bound))
-    
-rules // Utility
-  
-  nabl-result-number:
-    Result(num) -> num
-
-rules // Task dependency utilities
-	
-  nabl-create-dependency =
-  	collect-all(?Result(<id>));
-  	!Dependency(<id>)
-  	
-	nabl-has-dependency =
-		fetch(?Dependency(_))
-		
-	nabl-collect-dependency =
-		collect-all(?Dependency(<id>));
-		concat;
-		where(Hd);
-		!Dependency(<id>)
-
-rules // Projections
-  
-  /** @internal */
-  nabl-uri-impl:
-    Task(uri, _, _, _) -> uri
-  
-  /** @internal */  
-  nabl-uri-impl:
-    Resolve(uri, _, _) -> uri
-  
-  /** @internal */  
-  nabl-uri-impl:
-    ResolveImport(uri, _, _) -> uri
-  
-  /** @internal */
-  nabl-uri-impl:
-    DoneTask(uri, _) -> uri
-
-  /** @internal */
-  nabl-uri-impl:
-    FailTask(uri, _) -> uri
-
-
-  /** @internal */
-  nabl-value-impl:
-    DoneTask(_, value) -> value
-
-  /** @internal */
-  nabl-value-impl:
-    FailTask(_, value) -> value
-        
+  perform-task(|nr): PropCalc(prop, term) -> <calc-property> (prop, term)
