@@ -23,7 +23,7 @@ import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Predicates.or;
 
-public class Tasks {
+public class TaskEngine {
 
 	private final ITermFactory factory;
 
@@ -49,7 +49,7 @@ public class Tasks {
 	/** Solved tasks (view). */
 	private final Set<IStrategoInt> solved = toResult.keySet();
 	
-	/** Unsatisfied dependencies between tasks (view) */
+	/** Unsatisfied dependencies between tasks (view). */
 	private final Multimap<IStrategoInt, IStrategoInt> toOpenDependency = filterValues(toDependency, not(in(solved)));
 	
 	/** Task is solvable, if it is neither solved, nor has any unsatisfied dependency (view). */
@@ -70,7 +70,7 @@ public class Tasks {
 	private boolean inCollection = false;
 	
 
-	public Tasks(ITermFactory factory) {
+	public TaskEngine(ITermFactory factory) {
 		this.factory = factory;
 	}
 
@@ -123,6 +123,16 @@ public class Tasks {
 
 	public IStrategoList getResult(IStrategoInt taskID) {
 		return toResult.get(taskID);
+	}
+	
+	public void reset() {
+		toInstruction.clear();
+		toPartition.clear();
+		toDependency.clear();
+		toResult.clear();
+		addedTasks.clear();
+		removedTasks.clear();
+		inCollection = false;
 	}
 
 	private void collectGarbage() {
