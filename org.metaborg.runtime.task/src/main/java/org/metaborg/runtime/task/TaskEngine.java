@@ -52,8 +52,8 @@ public class TaskEngine {
 	/** Tasks that have been removed when calling {@link #stopCollection(IStrategoString)}. */
 	private final Set<IStrategoInt> removedTasks = new HashSet<IStrategoInt>();
 	
-	/** True if collection is in progress, false otherwise. */
-	private boolean inCollection = false;
+	/** Partitions that are in process of collecting. */
+	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
 	
 
 	public TaskEngine(ITermFactory factory) {
@@ -62,14 +62,18 @@ public class TaskEngine {
 	}
 
 	public void startCollection(IStrategoString partition) {
+		if(inCollection.contains(partition))
+			throw new IllegalStateException(
+				"Collection has already been started. Call stopCollection before starting a new collection.");
+		
 		addedTasks.clear();
 		removedTasks.clear();
 		removedTasks.addAll(toPartition.getInverse(partition));
-		inCollection = true;
+		inCollection.add(partition);
 	}
 
 	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
-		if(!inCollection)
+		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call startCollection before adding tasks.");
 		
@@ -91,11 +95,14 @@ public class TaskEngine {
 	}
 
 	public IStrategoTuple stopCollection(IStrategoString partition) {
+		if(!inCollection.contains(partition))
+			throw new IllegalStateException(
+				"Collection has not been started yet. Call startCollection before stopping collection.");
+		
 		for(IStrategoInt removed : removedTasks)
 			toPartition.remove(removed, partition);
-
 		collectGarbage();
-
+		inCollection.remove(partition);
 		return factory.makeTuple(factory.makeList(addedTasks), factory.makeList(removedTasks));
 	}
 
@@ -142,7 +149,7 @@ public class TaskEngine {
 		toResult.clear();
 		addedTasks.clear();
 		removedTasks.clear();
-		inCollection = false;
+		inCollection.clear();
 	}
 
 	private void collectGarbage() {
