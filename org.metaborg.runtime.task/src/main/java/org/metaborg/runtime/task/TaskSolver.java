@@ -14,6 +14,8 @@ import java.util.Set;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.strategoxt.lang.Context;
+import org.strategoxt.lang.Strategy;
 
 import com.google.common.collect.Multimap;
 
@@ -41,13 +43,13 @@ public class TaskSolver {
 		this.invalid = filter(this.solved, in(filterValues(toDependency, not(in(this.solved))).keySet()));
 	}
 	
-	public void evaluate() {
+	public void evaluate(Context context, Strategy stategy) {
 		invalid.clear();
 		for(Entry<IStrategoInt, IStrategoTerm> solvable : toSolvableInstruction.entrySet())
-			taskEngine.setResult(solvable.getKey(), solve(solvable.getValue()));
+			taskEngine.setResult(solvable.getKey(), solve(context, stategy, solvable.getKey(), solvable.getValue()));
 	}
 
-	public IStrategoList solve(IStrategoTerm instruction) {
-		return null;
+	public IStrategoList solve(Context context, Strategy strategy, IStrategoInt taskID, IStrategoTerm instruction) {
+		return (IStrategoList) strategy.invoke(context, instruction, taskID);
 	}
 }
