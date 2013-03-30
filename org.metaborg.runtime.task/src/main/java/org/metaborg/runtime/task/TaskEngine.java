@@ -33,8 +33,12 @@ public class TaskEngine {
 	private final ManyToManyMap<IStrategoInt, IStrategoInt> toDependency = ManyToManyMap.create();
 
 	/** Solutions of tasks. */
-	private final Map<IStrategoInt, IStrategoList> toResult = new ConcurrentHashMap<IStrategoInt, IStrategoList>();
+	private final ConcurrentHashMap<IStrategoInt, IStrategoList> toResult = new ConcurrentHashMap<IStrategoInt, IStrategoList>();
+	
+	/** Tasks that have failed to produce a solution. */
+	private final Set<IStrategoInt> failed = new HashSet<IStrategoInt>();
 
+	
 	/** All tasks (view). */
 	private final Set<IStrategoInt> tasks = toInstruction.keySet();
 
@@ -44,6 +48,7 @@ public class TaskEngine {
 	/** Task is garbage, if it is has no partition anymore (view). */
 	private final Set<IStrategoInt> garbage = filter(tasks, not(in(toPartition.keys())));
 
+	
 	/**
 	 * New tasks that have been added since last call to {@link #startCollection(IStrategoString)}.
 	 */
@@ -138,13 +143,17 @@ public class TaskEngine {
 	public IStrategoList getResult(IStrategoInt taskID) {
 		return toResult.get(taskID);
 	}
+	
+	public void addFailed(IStrategoInt taskID) {
+		failed.add(taskID);
+	}
 
-	public IStrategoList getResult(IStrategoAppl resultID) {
-		return toResult.get((IStrategoInt) resultID.getSubterm(0));
+	public boolean hasFailed(IStrategoInt taskID) {
+		return failed.contains(taskID);
 	}
 
 	public TaskSolver createSolver() {
-		return new TaskSolver(this, toInstruction, toDependency, solved);
+		return new TaskSolver(this, solved, failed, toInstruction, toDependency);
 	}
 
 	public void reset() {
@@ -160,6 +169,7 @@ public class TaskEngine {
 	private void collectGarbage() {
 		tasks.removeAll(garbage);
 		solved.removeAll(garbage);
+		failed.removeAll(garbage);
 		toDependency.removeAll(garbage);
 	}
 }

@@ -2,6 +2,7 @@ package org.metaborg.runtime.task;
 
 import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
+import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.or;
 import static com.google.common.collect.Maps.filterKeys;
 import static com.google.common.collect.Multimaps.filterValues;
@@ -11,12 +12,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Multimap;
 
 public class TaskSolver {
@@ -24,6 +27,9 @@ public class TaskSolver {
 
 	/** Solved tasks. View over the result collection. */
 	private final Set<IStrategoInt> solved;
+
+	/** Failed tasks. */
+	private final Set<IStrategoInt> failed;
 
 	/** Unsatisfied dependencies between tasks. View over the dependency collection. */
 	private final Multimap<IStrategoInt, IStrategoInt> toOpenDependency;
@@ -37,25 +43,34 @@ public class TaskSolver {
 	/** Solved task is invalid, if it has a dependency on an unsolved task. View over the result collection. */
 	private final Set<IStrategoInt> invalid;
 
-	public TaskSolver(TaskEngine taskEngine, Map<IStrategoInt, IStrategoTerm> toInstruction,
-		ManyToManyMap<IStrategoInt, IStrategoInt> toDependency, Set<IStrategoInt> solved) {
+	public TaskSolver(TaskEngine taskEngine, Set<IStrategoInt> solved, Set<IStrategoInt> failed,
+		Map<IStrategoInt, IStrategoTerm> toInstruction, ManyToManyMap<IStrategoInt, IStrategoInt> toDependency) {
 		this.taskEngine = taskEngine;
 		this.solved = solved;
-		this.toOpenDependency = filterValues(toDependency, not(in(this.solved)));
-		this.toSolvableInstruction = filterKeys(toInstruction, not(or(in(this.solved), in(toOpenDependency.keys()))));
-		this.invalid = filter(this.solved, in(filterValues(toDependency, not(in(this.solved))).keySet()));
+		this.failed = failed;
+		
+		Predicate<IStrategoInt> unsolved = not(or(in(this.solved), in(this.failed)));
+		
+		// TODO: Filters are not efficient, entire collection is iterated. 
+		this.toOpenDependency = filterValues(toDependency, unsolved);
+		this.toSolvableInstruction = filterKeys(toInstruction, and(unsolved, not(in(toOpenDependency.keys()))));
+		this.invalid = filter(this.solved, in(filterValues(toDependency, unsolved).keySet()));
 	}
 
 	public void evaluate(Context context, Strategy performInstruction) {
 		invalid.clear();
-		for (Entry<IStrategoInt, IStrategoTerm> solvable : toSolvableInstruction.entrySet()) {
-			taskEngine.setResult(solvable.getKey(),
-				solve(context, performInstruction, solvable.getKey(), solvable.getValue()));
+		for(Entry<IStrategoInt, IStrategoTerm> solvable : toSolvableInstruction.entrySet()) {
+			final IStrategoInt taskID = solvable.getKey();
+			final IStrategoTerm result = solve(context, performInstruction, taskID, solvable.getValue());
+			if(result == null || !Tools.isTermList(result))
+				taskEngine.addFailed(taskID);
+			else
+				taskEngine.setResult(taskID, (IStrategoList) result);
 		}
 	}
 
-	public IStrategoList solve(Context context, Strategy performInstruction, IStrategoInt taskID,
+	public IStrategoTerm solve(Context context, Strategy performInstruction, IStrategoInt taskID,
 		IStrategoTerm instruction) {
-		return (IStrategoList) performInstruction.invoke(context, instruction, taskID);
+		return performInstruction.invoke(context, instruction, taskID);
 	}
 }
