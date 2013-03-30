@@ -15,7 +15,7 @@ imports
 rules // Single file analysis
   
   nabl-analyze(|language, path, project-path):
-    ast -> (ast', new-entry*, error*, [])
+    ast -> (ast', error*)
     with // Setup index
       partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);

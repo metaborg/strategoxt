@@ -43,7 +43,7 @@ rules // Resolve
       if <task-has-dependencies> import* then
       	result := <task-collect-dependencies> import*
       else
-	      def* := <mapconcat(nabl-lookup(|ns, name))> import*;
+	      def* := <nabl-lookup(|ns, name)> import*;
 	      
 	      /* TODO: reads
 	      import-uri-read* := <nabl-new-reads(|nr)> uri;
