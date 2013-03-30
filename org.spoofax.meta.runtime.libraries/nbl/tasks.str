@@ -25,7 +25,7 @@ signature
 rules // Resolve
   
   perform-task(|nr):
-  	Resolve(scope*, ns, name) -> result
+  	Resolve(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
   	where
   		def* := <nabl-lookup(|ns, name)> scope*;
   		switch !def*
@@ -37,7 +37,7 @@ rules // Resolve
 			end => result
 
 	perform-task(|nr):
-		ResolveImport(scope*, ns, name) -> result
+		ResolveImport(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
 		where
 			import* := <nabl-lookup-import(|ns, name)> scope*;
       if <task-has-dependencies> import* then
@@ -92,4 +92,13 @@ rules // Resolve
         entry' := <task-create-dependencies> value
       end
 
-  perform-task(|nr): PropCalc(prop, term) -> <calc-property> (prop, term)
+  perform-task(|nr): 
+  	PropCalc(prop, term) -> result'
+  	where
+  		result := <calc-property> (prop, term);
+  		// Tasks must always return a list of results.
+  		if <is-list> result then
+  			result' := result
+			else
+				result' := [result]
+			end

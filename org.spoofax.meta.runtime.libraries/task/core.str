@@ -53,8 +53,8 @@ rules // Results
 	insert-result =
 		switch id
 			case has-annos  : !(<id>, <get-annos; insert-result>); set-annos
-			case is-list    : filter(insert-result; not(?Fail()))
-			case ?Result(n) : (task-get-result(|n) <+ (task-has-failed(|n); !Fail()) <+ with(fail|"Cannot insert result."))
+			case is-list    : filter(insert-result; not(?[]))
+			case ?Result(n) : (task-get-result(|n) <+ (task-has-failed(|n); ![]) <+ with(fail|"Cannot insert result."))
 			otherwise       : all(insert-result)
 		end
 	

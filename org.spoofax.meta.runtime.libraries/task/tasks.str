@@ -21,4 +21,11 @@ rules
   perform-task(|n):
     Choice(choice*, error*) -> <Hd> choice*
 
-  perform-task(|nr): Match(key, bound, term) -> <task-match> (key, term, bound)
+  perform-task(|nr): 
+  	Match(key, bound, term*@<with(is-list|"Expected a list of terms.")>) -> result
+  	where
+  		result := <filter(!(key, <id>, bound); task-match)> term*;
+  		if [] := result then
+  			fail
+			end
+  
