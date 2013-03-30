@@ -35,7 +35,8 @@ public class TaskManager {
 
 	private void ensureInitialized() {
 		if(!isInitialized())
-			throw new IllegalStateException("Task engine has not been set-up yet.");
+			throw new IllegalStateException(
+				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
 	}
 
 	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
