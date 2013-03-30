@@ -39,6 +39,7 @@ public class TaskEngine {
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoInt> failed = new HashSet<IStrategoInt>();
 
+	
 	/** All tasks (view). */
 	private final Set<IStrategoInt> tasks = toInstruction.keySet();
 
@@ -48,22 +49,21 @@ public class TaskEngine {
 	/** Task is garbage, if it is has no partition anymore (view). */
 	private final Set<IStrategoInt> garbage = filter(tasks, not(in(toPartition.keys())));
 
-	/**
-	 * New tasks that have been added since last call to {@link #startCollection(IStrategoString)}.
-	 */
+	
+	/** New tasks that have been added since last call to {@link #startCollection(IStrategoString)}. */
 	private final Set<IStrategoInt> addedTasks = new HashSet<IStrategoInt>();
 
-	/**
-	 * Tasks that have been removed when calling {@link #stopCollection(IStrategoString)}.
-	 */
+	/** Tasks that have been removed when calling {@link #stopCollection(IStrategoString)}. */
 	private final Set<IStrategoInt> removedTasks = new HashSet<IStrategoInt>();
 
-	/** Partitions that are in process of collecting. */
+	/** Partitions that are in process of task collection. */
 	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
 
+	
 	/** Evaluates tasks to results. */
 	private final TaskEvaluator evaluator;
 
+	
 	public TaskEngine(ITermFactory factory) {
 		this.factory = factory;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
@@ -89,12 +89,10 @@ public class TaskEngine {
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
-
-			if(dependencies.isEmpty())
-				evaluator.schedule(taskID);
+			evaluator.trySchedule(taskID, dependencies, instruction);
 		}
 		removedTasks.remove(taskID);
-
+		
 		toPartition.put(taskID, partition);
 		while(!dependencies.isEmpty()) {
 			toDependency.put(taskID, (IStrategoInt) dependencies.head());
