@@ -5,13 +5,8 @@ import org.strategoxt.lang.Strategy;
 
 public class InteropRegisterer extends JavaInteropRegisterer {
 	public InteropRegisterer() {
-		super(new Strategy[] {
-			task_add_task_0_3.instance,
-			task_evaluate_1_0.instance,
-			task_get_result_0_1.instance,
-			task_set_result_0_2.instance,
-			task_setup_0_1.instance,
-			task_start_collection_0_1.instance,
-			task_start_collection_0_1.instance });
+		super(new Strategy[] { task_api_add_task_0_3.instance, task_api_evaluate_2_0.instance,
+			task_api_get_result_0_1.instance, task_api_has_failed_0_1.instance, task_api_setup_0_1.instance,
+			task_api_start_collection_0_1.instance, task_api_start_collection_0_1.instance });
 	}
 }
