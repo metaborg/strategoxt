@@ -39,7 +39,7 @@ rules
       );
       // Store entries.
       measure-time(
-	      <index-add-all(|<collect-partition> partition)> new-entry*,
+	      <index-add-all(|partition)> new-entry*,
 	      id | "analyze-collect-store"
 	    )
 	

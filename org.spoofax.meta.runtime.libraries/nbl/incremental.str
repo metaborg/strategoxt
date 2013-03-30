@@ -24,10 +24,10 @@ rules // Construction
 rules // Index
 	
 	nabl-entry-olds:
-		partition -> <collect-partition; index-get-all-in-partition; filter(nabl-diff-entry)> partition
+		partition -> <index-get-all-in-partition; filter(nabl-diff-entry)> partition
 			
 	nabl-entry-clear:
-		partition -> <collect-partition; index-clear-partition> partition
+		partition -> <index-clear-partition> partition
       
 rules // Entry diff
 	

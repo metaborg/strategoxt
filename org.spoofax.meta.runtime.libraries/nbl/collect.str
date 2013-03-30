@@ -215,11 +215,11 @@ rules // generic analysis of uses
 	nabl-use-subtasks(|partition, ns, name, range): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
 		with
-			subtask1 := <new-task(|partition)> Resolve([uri], ns, name);
-			subtask2 := <new-task(|partition)> ResolveImport([uri], ns, name);
+			subtask1 := <new-task(|partition)> Resolve(<nabl-use-subtask-uri(|partition)> uri, ns, name);
+			subtask2 := <new-task(|partition)> ResolveImport(<nabl-use-subtask-uri(|partition)> uri, ns, name);
 			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
         ext-uri  := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
-        subtask* := [<new-task(|partition)> Resolve([ext-uri], ns, name)]
+        subtask* := [<new-task(|partition)> Resolve(<nabl-use-subtask-uri(|partition)> ext-uri, ns, name)]
       else
       	subtask* := []
       end;
@@ -227,6 +227,13 @@ rules // generic analysis of uses
       	case One(): ![]
       	case All(): <nabl-uri-parent < nabl-use-subtasks(|partition, ns, name, range) + ![]> uri
     	end => subtasks
+    	
+	nabl-use-subtask-uri(|partition) =
+		switch id
+			case ?URI(_, _) => uri : ![uri]
+			case is-list           : <new-task(|partition)> Choice(<id>)
+			otherwise              : id
+		end 
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, elem*, uri*, name):
@@ -359,11 +366,3 @@ rules // helpers
 			  
 	lookup-uri(|lang, ns):
 	  uri* -> <<lookup> (ns, uri*) <+ <nabl-base-uri> lang>
-	  
-	collect-partition:
-		(partition, _) -> (partition, CollectPartition())
-		
-	collect-partition:
-		partition -> (partition, CollectPartition())
-		where
-			<is-string> partition

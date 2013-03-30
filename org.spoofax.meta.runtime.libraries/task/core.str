@@ -15,6 +15,7 @@ signature
   constructors
     
     Result : Int -> Result
+    Fail : Result
     
     Dependency : List(Int) -> Result
     
@@ -50,12 +51,12 @@ rules // Dependencies
 rules // Results
 	
 	insert-result =
-		switch debug(!"BEFORE "); id
-			case has-annos  : debug(!"has-annos "); !(<id>, <get-annos; insert-result>); set-annos; debug(!"has-annos after ")
-			case is-list    : debug(!"is-list   "); map(insert-result); try(concat); debug(!"is-list after  ")
-			case ?Result(n) : debug(!"result    "); (task-get-result(|n) <+ (task-has-failed(|n); ![]) <+ with(fail|"Cannot insert result.")); debug(!"result after   ")
-			otherwise       : debug(!"otherwise "); all(insert-result); debug(!"otherwise after ")
-		end; debug(!"DONE :D ")
+		switch id
+			case has-annos  : !(<id>, <get-annos; insert-result>); set-annos
+			case is-list    : filter(insert-result; not(?Fail()))
+			case ?Result(n) : (task-get-result(|n) <+ (task-has-failed(|n); !Fail()) <+ with(fail|"Cannot insert result."))
+			otherwise       : all(insert-result)
+		end
 	
 rules // Projections
 	
@@ -71,6 +72,7 @@ rules // API
 	external task-api-get-result(|taskID)
 	external task-api-has-failed(|taskID)
 	external task-api-evaluate(perform-task, insert-result|)
+	external task-api-reset(|)
 	
 	task-setup(|project-path)                            = task-api-setup(|project-path)
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
@@ -79,6 +81,7 @@ rules // API
 	task-get-result(|taskID)                             = task-api-get-result(|taskID)
 	task-has-failed(|taskID)                             = task-api-has-failed(|taskID)
 	task-evaluate                                        = task-api-evaluate(perform-task, insert-result)
+	task-reset                                           = task-api-reset
 	  
 rules // Execution
   
