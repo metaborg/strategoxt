@@ -21,4 +21,4 @@ rules // Single file analysis
       index-setup(|language, [project-path], partition);
       result@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
       <analyze-incremental> result;
-    	task-evaluate(perform-task) => error*
+    	analyze-perform-all => error*

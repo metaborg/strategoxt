@@ -47,6 +47,16 @@ rules // Dependencies
 		where(Hd);
 		!Dependency(<id>)
 
+rules // Results
+	
+	insert-result =
+		switch debug(!"BEFORE "); id
+			case has-annos  : debug(!"has-annos "); !(<id>, <get-annos; insert-result>); set-annos; debug(!"has-annos after ")
+			case is-list    : debug(!"is-list   "); map(insert-result); try(concat); debug(!"is-list after  ")
+			case ?Result(n) : debug(!"result    "); (task-get-result(|n) <+ (task-has-failed(|n); ![]) <+ with(fail|"Cannot insert result.")); debug(!"result after   ")
+			otherwise       : debug(!"otherwise "); all(insert-result); debug(!"otherwise after ")
+		end; debug(!"DONE :D ")
+	
 rules // Projections
 	
 	task-result-id:
@@ -54,12 +64,21 @@ rules // Projections
 
 rules // API
 	
-	external task-setup(|project-path)
-	external task-start-collection(|partition)
-	external task-stop-collection(|partition)
-	external task-add-task(|partition, dependencies, instruction)
-	external task-get-result(|taskID)
-	external task-evaluate(perform-task|)
+	external task-api-setup(|project-path)
+	external task-api-start-collection(|partition)
+	external task-api-stop-collection(|partition)
+	external task-api-add-task(|partition, dependencies, instruction)
+	external task-api-get-result(|taskID)
+	external task-api-has-failed(|taskID)
+	external task-api-evaluate(perform-task, insert-result|)
+	
+	task-setup(|project-path)                            = task-api-setup(|project-path)
+	task-start-collection(|partition)                    = task-api-start-collection(|partition)
+	task-stop-collection(|partition)                     = task-api-stop-collection(|partition)
+	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
+	task-get-result(|taskID)                             = task-api-get-result(|taskID)
+	task-has-failed(|taskID)                             = task-api-has-failed(|taskID)
+	task-evaluate                                        = task-api-evaluate(perform-task, insert-result)
 	  
 rules // Execution
   
@@ -134,3 +153,4 @@ rules // Utility
   external gohla-iset-get-one(|)
   
   effectively(s) = ?t; s; not(?t)  */
+

@@ -65,5 +65,5 @@ rules
 	analyze-perform-all:
 		_ -> error*
 		with
-      task-evaluate(perform-task) => error*
+      task-evaluate => error*
       			
