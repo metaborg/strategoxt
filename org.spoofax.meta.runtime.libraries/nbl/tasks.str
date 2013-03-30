@@ -26,7 +26,7 @@ rules // Resolve
   
   perform-task(|nr):
   	Resolve(scope*, ns, name) -> result
-  	with
+  	where
   		def* := <nabl-lookup(|ns, name)> scope*;
   		switch !def*
         case ?[]:
