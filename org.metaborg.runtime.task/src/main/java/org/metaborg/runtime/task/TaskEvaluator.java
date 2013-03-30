@@ -1,7 +1,9 @@
 package org.metaborg.runtime.task;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.spoofax.interpreter.core.Tools;
@@ -18,29 +20,41 @@ import com.google.common.collect.Iterables;
 
 public class TaskEvaluator {
 	private final TaskEngine taskEngine;
-	private final IStrategoConstructor dependenciesConstructor;
+	private final ITermFactory factory;
+	private final IStrategoConstructor dependencyConstructor;
 
+	
+	// TODO: Could schedule duplicates of a task is removed and added again without calling evaluate.
+	/** Queue of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Queue<IStrategoInt> scheduled = new ConcurrentLinkedQueue<IStrategoInt>();
 
+	/** Set of all instructions that can be scheduled. Used for retrieving unevaluated and erroneous tasks. */
+	private final Set<IStrategoTerm> possibleInstructions = new HashSet<IStrategoTerm>();
+
+	/** Dependencies of tasks which are updated during evaluation. */
 	private final ManyToManyMap<IStrategoInt, IStrategoInt> toRuntimeDependency = ManyToManyMap.create();
 
+	
 	public TaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
-		this.dependenciesConstructor = factory.makeConstructor("Dependencies", 1);
+		this.factory = factory;
+		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
 	}
 
-	public void schedule(IStrategoInt taskID) {
-		scheduled.add(taskID);
+	public void trySchedule(IStrategoInt taskID, IStrategoList dependencies, IStrategoTerm instruction) {
+		possibleInstructions.add(instruction);
+		if(dependencies.isEmpty())
+			scheduled.add(taskID);
 	}
 
-	public void evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
+	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		for(IStrategoInt taskID; (taskID = scheduled.poll()) != null;) {
 			taskEngine.removeSolved(taskID);
 			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 			final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
 			if(result != null && Tools.isTermAppl(result)) {
 				IStrategoAppl resultAppl = (IStrategoAppl) result;
-				if(resultAppl.getConstructor().equals(dependenciesConstructor)) {
+				if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 					updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
 				}
 			} else if(result == null) {
@@ -48,18 +62,21 @@ public class TaskEvaluator {
 				tryScheduleNewTasks(taskID);
 			} else if(Tools.isTermList(result)) {
 				taskEngine.addResult(taskID, (IStrategoList) result);
+				possibleInstructions.remove(instruction);
 				tryScheduleNewTasks(taskID);
 			} else {
-				throw new IllegalStateException("Unexpected result from perform-task: " + result + ". Must be a list.");
+				throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result + ". Must be a list.");
 			}
 		}
 
-		// TODO: return failed and unevaluated tasks
+		IStrategoList erroneousTasks = factory.makeList(possibleInstructions);
 		reset();
+		return erroneousTasks;
 	}
 
 	public void reset() {
 		scheduled.clear();
+		possibleInstructions.clear();
 		toRuntimeDependency.clear();
 	}
 
@@ -76,6 +93,7 @@ public class TaskEvaluator {
 		// Retrieve dependent tasks of the solved task.
 		Collection<IStrategoInt> dependents = taskEngine.getDependent(solved);
 		Collection<IStrategoInt> runtimeDependents = toRuntimeDependency.getInverse(solved);
+		// TODO: make a copy of runtimeDependents to prevent CME.
 
 		for(IStrategoInt dependent : Iterables.concat(dependents, runtimeDependents)) {
 			// Retrieve dependencies for a dependent task.
@@ -88,11 +106,10 @@ public class TaskEvaluator {
 				toRuntimeDependency.putAll(dependent, dependencies);
 			}
 
-			// TODO: might cause a CME, need to copy the dependents?
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
 			boolean removed = toRuntimeDependency.remove(dependent, solved);
 			if(dependenciesSize == 1 && removed)
-				schedule(dependent);
+				scheduled.add(dependent);
 		}
 	}
 
