@@ -34,23 +34,23 @@ public class TaskManager {
 	}
 
 	private void ensureInitialized() {
-		if (!isInitialized())
+		if(!isInitialized())
 			throw new IllegalStateException("Task engine has not been set-up yet.");
 	}
 
 	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
 		File file = new File(projectPath);
-		if (!file.isAbsolute())
+		if(!file.isAbsolute())
 			file = new File(agent.getWorkingDir(), projectPath);
 		URI project = file.toURI();
 
-		synchronized (TaskManager.class) {
+		synchronized(TaskManager.class) {
 			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
 			TaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
-			if (taskEngine == null) {
+			if(taskEngine == null) {
 				taskEngine = tryReadFromFile(getFile(project), factory);
 			}
-			if (taskEngine == null) {
+			if(taskEngine == null) {
 				taskEngine = new TaskEngine(factory);
 			}
 			taskEngineCache.put(project, new WeakReference<TaskEngine>(taskEngine));

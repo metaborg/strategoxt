@@ -33,8 +33,9 @@ public class TaskEngine {
 	private final ManyToManyMap<IStrategoInt, IStrategoInt> toDependency = ManyToManyMap.create();
 
 	/** Solutions of tasks. */
-	private final ConcurrentHashMap<IStrategoInt, IStrategoList> toResult = new ConcurrentHashMap<IStrategoInt, IStrategoList>();
-	
+	private final ConcurrentHashMap<IStrategoInt, IStrategoList> toResult =
+		new ConcurrentHashMap<IStrategoInt, IStrategoList>();
+
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoInt> failed = new HashSet<IStrategoInt>();
 
@@ -62,13 +63,19 @@ public class TaskEngine {
 	/** Partitions that are in process of collecting. */
 	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
 
+	
+	/** Evaluates tasks to results. */
+	private final TaskEvaluator evaluator;
+
+	
 	public TaskEngine(ITermFactory factory) {
 		this.factory = factory;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
+		this.evaluator = new TaskEvaluator(this, factory);
 	}
 
 	public void startCollection(IStrategoString partition) {
-		if (inCollection.contains(partition))
+		if(inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has already been started. Call stopCollection before starting a new collection.");
 
@@ -79,20 +86,22 @@ public class TaskEngine {
 	}
 
 	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
-		if (!inCollection.contains(partition))
+		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call startCollection before adding tasks.");
 
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
-		if (toInstruction.put(taskID, instruction) == null)
+		if(toInstruction.put(taskID, instruction) == null)
 			addedTasks.add(taskID);
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
-		// TODO: Don't use getAllSubterms() on IStrategoList, allocates an array
-		// copy.
-		for (IStrategoTerm dep : dependencies.getAllSubterms())
-			toDependency.put(taskID, (IStrategoInt) dep);
+		while(!dependencies.isEmpty()) {
+			toDependency.put(taskID, (IStrategoInt) dependencies.head());
+			dependencies = dependencies.tail();
+		}
+		if(dependencies.isEmpty())
+			evaluator.schedule(taskID);
 
 		return createResult(taskID);
 	}
@@ -102,11 +111,11 @@ public class TaskEngine {
 	}
 
 	public IStrategoTuple stopCollection(IStrategoString partition) {
-		if (!inCollection.contains(partition))
+		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call startCollection before stopping collection.");
 
-		for (IStrategoInt removed : removedTasks)
+		for(IStrategoInt removed : removedTasks)
 			toPartition.remove(removed, partition);
 		collectGarbage();
 		inCollection.remove(partition);
@@ -136,24 +145,37 @@ public class TaskEngine {
 		return toDependency.getInverse(taskID);
 	}
 
-	public void setResult(IStrategoInt taskID, IStrategoList resultList) {
+	public void addResult(IStrategoInt taskID, IStrategoList resultList) {
 		toResult.put(taskID, resultList);
+	}
+
+	public IStrategoList removeResult(IStrategoInt taskID) {
+		return toResult.remove(taskID);
 	}
 
 	public IStrategoList getResult(IStrategoInt taskID) {
 		return toResult.get(taskID);
 	}
-	
+
 	public void addFailed(IStrategoInt taskID) {
 		failed.add(taskID);
+	}
+
+	public boolean removeFailed(IStrategoInt taskID) {
+		return failed.remove(taskID);
 	}
 
 	public boolean hasFailed(IStrategoInt taskID) {
 		return failed.contains(taskID);
 	}
 
-	public TaskSolver createSolver() {
-		return new TaskSolver(this, solved, failed, toInstruction, toDependency);
+	public void removeSolved(IStrategoInt taskID) {
+		removeResult(taskID);
+		removeFailed(taskID);
+	}
+
+	public TaskEvaluator getEvaluator() {
+		return evaluator;
 	}
 
 	public void reset() {
