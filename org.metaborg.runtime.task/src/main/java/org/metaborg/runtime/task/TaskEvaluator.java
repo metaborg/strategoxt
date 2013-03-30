@@ -33,10 +33,6 @@ public class TaskEvaluator {
 		scheduled.add(taskID);
 	}
 
-	public void scheduleAll(Collection<IStrategoInt> tasks) {
-		scheduled.addAll(tasks);
-	}
-
 	public void evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		for(IStrategoInt taskID; (taskID = scheduled.poll()) != null;) {
 			taskEngine.removeSolved(taskID);
@@ -55,6 +51,14 @@ public class TaskEvaluator {
 				tryScheduleNewTasks(taskID);
 			}
 		}
+
+		// TODO: return failed and unevaluated tasks
+		reset();
+	}
+
+	public void reset() {
+		scheduled.clear();
+		toRuntimeDependency.clear();
 	}
 
 	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
@@ -78,6 +82,7 @@ public class TaskEvaluator {
 			if(dependenciesSize == 0) {
 				// If toRuntimeDependency does not contain dependencies for dependent yet, add them.
 				dependencies = taskEngine.getDependencies(dependent);
+				dependenciesSize = dependencies.size();
 				toRuntimeDependency.putAll(dependent, dependencies);
 			}
 

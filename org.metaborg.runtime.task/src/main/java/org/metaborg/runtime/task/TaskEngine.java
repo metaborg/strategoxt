@@ -39,7 +39,6 @@ public class TaskEngine {
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoInt> failed = new HashSet<IStrategoInt>();
 
-	
 	/** All tasks (view). */
 	private final Set<IStrategoInt> tasks = toInstruction.keySet();
 
@@ -49,7 +48,6 @@ public class TaskEngine {
 	/** Task is garbage, if it is has no partition anymore (view). */
 	private final Set<IStrategoInt> garbage = filter(tasks, not(in(toPartition.keys())));
 
-	
 	/**
 	 * New tasks that have been added since last call to {@link #startCollection(IStrategoString)}.
 	 */
@@ -63,11 +61,9 @@ public class TaskEngine {
 	/** Partitions that are in process of collecting. */
 	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
 
-	
 	/** Evaluates tasks to results. */
 	private final TaskEvaluator evaluator;
 
-	
 	public TaskEngine(ITermFactory factory) {
 		this.factory = factory;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
@@ -91,8 +87,12 @@ public class TaskEngine {
 				"Collection has not been started yet. Call startCollection before adding tasks.");
 
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
-		if(toInstruction.put(taskID, instruction) == null)
+		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
+
+			if(dependencies.isEmpty())
+				evaluator.schedule(taskID);
+		}
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
@@ -100,8 +100,6 @@ public class TaskEngine {
 			toDependency.put(taskID, (IStrategoInt) dependencies.head());
 			dependencies = dependencies.tail();
 		}
-		if(dependencies.isEmpty())
-			evaluator.schedule(taskID);
 
 		return createResult(taskID);
 	}
@@ -120,8 +118,7 @@ public class TaskEngine {
 		collectGarbage();
 		inCollection.remove(partition);
 
-		// TODO: Do we still need to get the list of added and removed tasks in
-		// Stratego?
+		// TODO: Do we still need to get the list of added and removed tasks in Stratego?
 		return factory.makeTuple(factory.makeList(addedTasks), factory.makeList(removedTasks));
 	}
 
@@ -186,6 +183,7 @@ public class TaskEngine {
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
+		evaluator.reset();
 	}
 
 	private void collectGarbage() {
