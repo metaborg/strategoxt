@@ -7,15 +7,12 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
 public class task_setup_0_1 extends Strategy {
-	private TaskManager taskManager;
-
-	public task_setup_0_1(TaskManager taskManager) {
-		this.taskManager = taskManager;
-	}
+	public static task_setup_0_1 instance = new task_setup_0_1();
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm projectPath) {
-		taskManager.loadTaskEngine(Tools.asJavaString(projectPath), context.getFactory(), context.getIOAgent());
+		TaskManager.getInstance().loadTaskEngine(Tools.asJavaString(projectPath), context.getFactory(),
+			context.getIOAgent());
 		return current;
 	}
 }

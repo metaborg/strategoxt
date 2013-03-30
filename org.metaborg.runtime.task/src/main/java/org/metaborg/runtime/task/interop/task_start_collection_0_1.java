@@ -7,15 +7,11 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 
 public class task_start_collection_0_1 extends Strategy {
-	private TaskManager taskManager;
-
-	public task_start_collection_0_1(TaskManager taskManager) {
-		this.taskManager = taskManager;
-	}
+	public static task_start_collection_0_1 instance = new task_start_collection_0_1();
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm partition) {
-		taskManager.getCurrent().startCollection((IStrategoString) partition);
+		TaskManager.getInstance().getCurrent().startCollection((IStrategoString) partition);
 		return current;
 	}
 }
