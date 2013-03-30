@@ -1,5 +1,6 @@
 package org.metaborg.runtime.task;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Queue;
@@ -23,7 +24,6 @@ public class TaskEvaluator {
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
 
-	
 	// TODO: Could schedule duplicates of a task is removed and added again without calling evaluate.
 	/** Queue of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Queue<IStrategoInt> scheduled = new ConcurrentLinkedQueue<IStrategoInt>();
@@ -34,7 +34,6 @@ public class TaskEvaluator {
 	/** Dependencies of tasks which are updated during evaluation. */
 	private final ManyToManyMap<IStrategoInt, IStrategoInt> toRuntimeDependency = ManyToManyMap.create();
 
-	
 	public TaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
@@ -65,7 +64,8 @@ public class TaskEvaluator {
 				possibleInstructions.remove(instruction);
 				tryScheduleNewTasks(taskID);
 			} else {
-				throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result + ". Must be a list.");
+				throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
+					+ ". Must be a list.");
 			}
 		}
 
@@ -92,8 +92,9 @@ public class TaskEvaluator {
 	private void tryScheduleNewTasks(IStrategoInt solved) {
 		// Retrieve dependent tasks of the solved task.
 		Collection<IStrategoInt> dependents = taskEngine.getDependent(solved);
-		Collection<IStrategoInt> runtimeDependents = toRuntimeDependency.getInverse(solved);
-		// TODO: make a copy of runtimeDependents to prevent CME.
+		// Make a copy for toRuntimeDependency because a remove operation can occur while iterating.
+		Collection<IStrategoInt> runtimeDependents =
+			new ArrayList<IStrategoInt>(toRuntimeDependency.getInverse(solved));
 
 		for(IStrategoInt dependent : Iterables.concat(dependents, runtimeDependents)) {
 			// Retrieve dependencies for a dependent task.
