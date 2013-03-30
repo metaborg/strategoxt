@@ -11,7 +11,7 @@ public class task_api_evaluate_2_0 extends Strategy {
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy performInstruction,
 		Strategy insertResults) {
-		TaskManager.getInstance().getCurrent().getEvaluator().evaluate(context, performInstruction, insertResults);
-		return current;
+		return TaskManager.getInstance().getCurrent().getEvaluator()
+			.evaluate(context, performInstruction, insertResults);
 	}
 }
