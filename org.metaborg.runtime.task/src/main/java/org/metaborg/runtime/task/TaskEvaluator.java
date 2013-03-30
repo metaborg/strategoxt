@@ -43,12 +43,14 @@ public class TaskEvaluator {
 				if(resultAppl.getConstructor().equals(dependenciesConstructor)) {
 					updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
 				}
-			} else if(result == null || !Tools.isTermList(result)) {
+			} else if(result == null) {
 				taskEngine.addFailed(taskID);
 				tryScheduleNewTasks(taskID);
-			} else {
+			} else if(Tools.isTermList(result)) {
 				taskEngine.addResult(taskID, (IStrategoList) result);
 				tryScheduleNewTasks(taskID);
+			} else {
+				throw new IllegalStateException("Unexpected result from perform-task: " + result + ". Must be a list.");
 			}
 		}
 

@@ -73,7 +73,7 @@ public class TaskEngine {
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
 			throw new IllegalStateException(
-				"Collection has already been started. Call stopCollection before starting a new collection.");
+				"Collection has already been started. Call task-stop-collection(|partition) before starting a new collection.");
 
 		addedTasks.clear();
 		removedTasks.clear();
@@ -84,7 +84,7 @@ public class TaskEngine {
 	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
-				"Collection has not been started yet. Call startCollection before adding tasks.");
+				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null) {
@@ -111,7 +111,7 @@ public class TaskEngine {
 	public IStrategoTuple stopCollection(IStrategoString partition) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
-				"Collection has not been started yet. Call startCollection before stopping collection.");
+				"Collection has not been started yet. Call task-start-collection(|partition) before stopping collection.");
 
 		for(IStrategoInt removed : removedTasks)
 			toPartition.remove(removed, partition);
