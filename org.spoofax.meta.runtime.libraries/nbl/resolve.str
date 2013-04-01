@@ -30,8 +30,8 @@ rules // Reference resolution
 			end
 
 	nabl-collect-one-resolved-def =
-		insert-results;
-		oncetd-annos(debug(!"Match: "); \d@Def(_) -> d\; debug(!"Built: "))
+		insert-results-or-create-dependency;
+		oncetd-annos((?Def(_) <+ ?Dependency(_)); ?d); !d
 		
 	oncetd-annos(s) = s <+ has-annos; get-annos; one(oncetd-annos(s)) <+ one(oncetd-annos(s))
 	

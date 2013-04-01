@@ -65,6 +65,14 @@ rules // Results
 			case ?Result(n) : task-api-get-result(|n) <+ (task-api-has-failed(|n); ![])
 			otherwise       : all(insert-results)
 		end
+		
+	insert-results-or-create-dependency =
+		switch id
+			case has-annos  : !(<id>, <get-annos; insert-results-or-create-dependency>); set-annos
+			case is-list    : map(insert-results-or-create-dependency); remove-all(?[])
+			case ?Result(n) : task-api-get-result(|n) <+ (task-api-has-failed(|n); ![]) <+ !Dependency([n])
+			otherwise       : all(insert-results-or-create-dependency)
+		end
 	
 rules // Projections
 	
@@ -72,15 +80,6 @@ rules // Projections
     Result(taskID) -> taskID
 
 rules // API
-	
-	external task-api-setup(|project-path)
-	external task-api-start-collection(|partition)
-	external task-api-stop-collection(|partition)
-	external task-api-add-task(|partition, dependencies, instruction)
-	external task-api-get-result(|taskID)
-	external task-api-has-failed(|taskID)
-	external task-api-evaluate(perform-task, insert-result|)
-	external task-api-reset(|)
 	
 	task-setup(|project-path)                            = task-api-setup(|project-path)
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
@@ -100,78 +99,14 @@ rules // API
 			case ?Result(taskID) : task-api-has-failed(|taskID)
 			otherwise            : task-api-has-failed(|<id>)
 		end
-	  
-rules // Execution
-  
-  /*perform-tasks(|execqueue, runtimedeps, invruntimedep):
-  	_ -> (<iset-elements> elem*, <iset-elements> error*)
-  	with
-  		new-iset => elem*;
-  		new-iset => error*;
-  		while-imperative(nabl-dequeue-task(|execqueue); measure-time(perform-one-task(|execqueue, runtimedeps, invruntimedep, elem*, error*), id | "perform-tasks-one"))
-    
-  perform-one-task(|execqueue, runtimedeps, invruntimedep, elem*, error*):
-  	Task(n, d*, i, p) -> <id>
-  	with
-  		vdebug(!"Performing task: ");
-  		if res := <perform-instruction(|n)> i then
-		    switch !res
-		      case ?Done(tr, e*):
-		      	<iset-addlist(|e*)> elem*;
-		        <index-add(|p); vdebug(!"Done: ")> DoneTask(n, tr);
-		        <task-try-schedule-task(|runtimedeps, invruntimedep, execqueue)> n
-		      case ?Done(tr):
-		        <index-add(|p); vdebug(!"Done: ")> DoneTask(n, tr);
-		        <task-try-schedule-task(|runtimedeps, invruntimedep, execqueue)> n
-		      case ?Fail(fr, e*):
-		      	<iset-addlist(|e*)> elem*;
-		        <index-add(|p); vdebug(!"Fail: ")> FailTask(n, fr);
-		        <task-try-schedule-task(|runtimedeps, invruntimedep, execqueue)> n
-		      case ?Fail(fr):
-		        <index-add(|p); debug(!"Fail: ")> FailTask(n, fr);
-		        <task-try-schedule-task(|runtimedeps, invruntimedep, execqueue)> n
-		      case ?Dependency(new-dep*):
-		      	<vdebug(!"Found dynamic dependencies: ")> new-dep*;
-		      	<task-add-runtime-dependency(|runtimedeps, invruntimedep, n)> new-dep*
-		      case ?e@Error(_):
-		      	<iset-add(|e)> error*
-		    	otherwise:
-		    		<with(fail|"Unexpected result from perform-task: ")> res
-		      end
-			else
-        //<index-add(|p)> FailTask(n, []);
-        //<task-try-schedule-task(|runtimedeps, execqueue)> n
-        vdebug(!"FAILED TASK: ")
-			end
 
-  perform-instruction(|n):
-    i -> <perform-task(|n)> i'
-    where
-    	i' := <alltd(insert-result)>  i
-	
-  insert-result = 
-		has-annos; 
-		!(<id>, <get-annos; alltd(insert-result)>); 
-		set-annos
-			
-	insert-result: Result(n) -> <task-get-result> n
-		
-rules // Projections
-	
-	task-nr:
-		Task(nr, _, _, _) -> nr
-		
-	task-partition:
-		Task(_, _, _, p) -> p
-		
-	task-result-nr:
-		Result(nr) -> nr
+rules /** @internal API externals */
 
-rules // Utility
-  
-  external while-imperative(s|)
-  
-  external gohla-iset-get-one(|)
-  
-  effectively(s) = ?t; s; not(?t)  */
-
+	external task-api-setup(|project-path)
+	external task-api-start-collection(|partition)
+	external task-api-stop-collection(|partition)
+	external task-api-add-task(|partition, dependencies, instruction)
+	external task-api-get-result(|taskID)
+	external task-api-has-failed(|taskID)
+	external task-api-evaluate(perform-task, insert-result|)
+	external task-api-reset(|)

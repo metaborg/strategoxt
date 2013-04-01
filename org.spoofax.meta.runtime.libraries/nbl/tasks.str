@@ -96,9 +96,9 @@ rules // Resolve
   	PropCalc(prop, term) -> result'
   	where
   		result := <calc-property> (prop, term);
-  		// Tasks must always return a list of results.
-  		if <is-list> result then
-  			result' := result
-			else
-				result' := [result]
-			end
+  		switch !result
+  			case task-collect-dependencies => d : !d
+      	case not(is-list)                   : ![result]
+      	otherwise                           : !result
+			end => result'
+
