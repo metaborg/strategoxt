@@ -44,26 +44,14 @@ rules
 	    )
 	
 	analyze-incremental:
-		r@Result(_, _, _, old-entry*, new-entry*, removed-task*, added-task*, _, _, _) -> ()
-		/* with
-			TODO: reads
-			// Cleanup removed results
-    	measure-time(
-  			<map(vdebug(!"Removing all reads for: "); nabl-remove-read)> removed-task*,
-  			id | "analyze-incremental-remove-olds"
-  		);
-    	
-    	// Tasks that need to be re-evaluated because a definition or property has changed.
-    	measure-time(
-	    	changedEntry*  := <nabl-entry-incremental; map(vdebug(!"Changed entry: "); nabl-uri)> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
-	    	read-task-nr*  := <mapconcat(nabl-get-reads); map(vdebug(!"Read for changed entry: "))> changedEntry*;
-	    	read-task*     := <mapconcat(task-reconstruct); map(vdebug(!"Changed task: "))> read-task-nr*,
-	    	id | "analyze-incremental-add-news"
-	    )
-	    */
+		Result(_, _, _, old-entry*, new-entry*, _, _, _, _, _) -> changed-read*
+		with
+			// TODO: Don't use diff because it is O(n*n).
+			changed-entry* := <nabl-entry-diff> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
+		  changed-read*  := <map(nabl-uri; try(nabl-replace-uri-qualifier(|())))> changed-entry*
     	
 	analyze-perform-all:
-		_ -> error*
+		changed-read* -> error*
 		with
-      task-evaluate => error*
+      task-evaluate(|changed-read*) => error*
       			

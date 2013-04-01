@@ -32,7 +32,7 @@ rules // Multi file analysis
     with
     	<vdebug(!"Analyzing files: ")> file*;
     	measure-time(
-	      result* := <all(
+	      result* := <map(
 	      	measure-time(
 		        nabl-analyze-multiple-setup(|language, project-path), 
 		        id | "nabl-analyze-multiple-files-setup"
@@ -43,7 +43,7 @@ rules // Multi file analysis
 	      id | "nabl-analyze-multiple-files-collect"
 	    );
 	    measure-time(
-	      <all(
+	      changed-read* := <mapconcat(
 	      	measure-time(
 	        	nabl-analyze-multiple-setup(|language, project-path),
 	        	id | "znabl-analyze-multiple-files-setup"
@@ -54,7 +54,7 @@ rules // Multi file analysis
 	      id | "nabl-analyze-multiple-files-gathertasks"
       );
       measure-time(
-      	mapconcat(analyze-perform-all) => error*,
+      	error* := <analyze-perform-all> changed-read*,
       	id | "nabl-analyze-multiple-files-performtasks"
       )
       // TODO: Get evaluated tasks.

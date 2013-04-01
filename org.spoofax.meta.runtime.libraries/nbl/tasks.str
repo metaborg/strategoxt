@@ -27,23 +27,27 @@ rules // Resolve
   perform-task(|nr):
   	Resolve(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
   	where
-  		def* := <nabl-lookup(|ns, name)> scope*;
+  		uri* := <filter(nabl-uri)> scope*;
+  		def* := <nabl-lookup(|ns, name)> uri*;
+  		<map(nabl-extend-uri(|ns, name, ()); task-add-read(|nr))> uri*;
   		switch !def*
         case ?[]:
         	fail
         otherwise: 
-        	// TODO: reads - <mapconcat(nabl-uri; nabl-new-reads(|nr))> def*)
         	!def*
 			end => result
 
 	perform-task(|nr):
 		ResolveImport(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
 		where
-			import* := <nabl-lookup-import(|ns, name)> scope*;
+			uri* := <filter(nabl-uri)> scope*;
+			import* := <nabl-lookup-import(|ns, name)> uri*;
+			<map(task-add-read(|nr))> uri*;
       if <task-has-dependencies> import* then
       	result := <task-collect-dependencies> import*
       else
 	      def* := <nabl-lookup(|ns, name)> import*;
+	      <map(nabl-uri; nabl-extend-uri(|ns, name, ()); task-add-read(|nr))> import*;
 	      
 	      /* TODO: reads
 	      import-uri-read* := <nabl-new-reads(|nr)> uri;
@@ -54,8 +58,7 @@ rules // Resolve
 	  		switch !def*
 	        case ?[]:
 	        	fail
-	        otherwise: 
-	        	// TODO: reads
+	        otherwise:
 	        	!def*
 				end => result
       end
@@ -101,4 +104,3 @@ rules // Resolve
       	case not(is-list)                   : ![result]
       	otherwise                           : !result
 			end => result'
-

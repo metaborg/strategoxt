@@ -19,6 +19,6 @@ rules // Single file analysis
     with // Setup index
       partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
-      result@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
-      <analyze-incremental> result;
-    	analyze-perform-all => error*
+      result@Result(_, _, ast', _, _ , _, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
+      changed-read* := <analyze-incremental> result;
+    	error*        := <analyze-perform-all> changed-read*

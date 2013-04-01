@@ -85,7 +85,7 @@ rules // API
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
 	task-stop-collection(|partition)                     = task-api-stop-collection(|partition)
 	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
-	task-evaluate                                        = task-api-evaluate(perform-task, insert-results-with-fail)
+	task-evaluate(|changed-read*)                        = task-api-evaluate(perform-task, insert-results-with-fail|changed-read*)
 	task-reset                                           = task-api-reset
 	
 	task-get-result =
@@ -99,6 +99,9 @@ rules // API
 			case ?Result(taskID) : task-api-has-failed(|taskID)
 			otherwise            : task-api-has-failed(|<id>)
 		end
+		
+	task-add-read(|taskID):
+		read -> <task-api-add-read(|taskID, read)>
 
 rules /** @internal API externals */
 
@@ -108,5 +111,6 @@ rules /** @internal API externals */
 	external task-api-add-task(|partition, dependencies, instruction)
 	external task-api-get-result(|taskID)
 	external task-api-has-failed(|taskID)
-	external task-api-evaluate(perform-task, insert-result|)
+	external task-api-add-read(|taskID, read)
+	external task-api-evaluate(perform-task, insert-result|changed-reads)
 	external task-api-reset(|)
