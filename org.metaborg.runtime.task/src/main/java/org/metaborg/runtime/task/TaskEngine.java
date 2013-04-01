@@ -4,6 +4,7 @@ import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Sets.filter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,6 +19,8 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.strategoxt.lang.Context;
+import org.strategoxt.lang.Strategy;
 
 public class TaskEngine {
 	private final ITermFactory factory;
@@ -32,6 +35,9 @@ public class TaskEngine {
 	/** Dependencies between tasks. */
 	private final ManyToManyMap<IStrategoInt, IStrategoInt> toDependency = ManyToManyMap.create();
 
+	/** Dependencies between tasks. */
+	private final ManyToManyMap<IStrategoInt, IStrategoTerm> toRead = ManyToManyMap.create();
+
 	/** Solutions of tasks. */
 	private final ConcurrentHashMap<IStrategoInt, IStrategoList> toResult =
 		new ConcurrentHashMap<IStrategoInt, IStrategoList>();
@@ -39,7 +45,7 @@ public class TaskEngine {
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoInt> failed = new HashSet<IStrategoInt>();
 
-	
+
 	/** All tasks (view). */
 	private final Set<IStrategoInt> tasks = toInstruction.keySet();
 
@@ -49,7 +55,7 @@ public class TaskEngine {
 	/** Task is garbage, if it is has no partition anymore (view). */
 	private final Set<IStrategoInt> garbage = filter(tasks, not(in(toPartition.keys())));
 
-	
+
 	/** New tasks that have been added since last call to {@link #startCollection(IStrategoString)}. */
 	private final Set<IStrategoInt> addedTasks = new HashSet<IStrategoInt>();
 
@@ -59,11 +65,11 @@ public class TaskEngine {
 	/** Partitions that are in process of task collection. */
 	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
 
-	
+
 	/** Evaluates tasks to results. */
 	private final TaskEvaluator evaluator;
 
-	
+
 	public TaskEngine(ITermFactory factory) {
 		this.factory = factory;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
@@ -89,10 +95,11 @@ public class TaskEngine {
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
-			evaluator.trySchedule(taskID, dependencies, instruction);
+			if(dependencies.isEmpty())
+				evaluator.schedule(taskID, instruction);
 		}
 		removedTasks.remove(taskID);
-		
+
 		toPartition.put(taskID, partition);
 		while(!dependencies.isEmpty()) {
 			toDependency.put(taskID, (IStrategoInt) dependencies.head());
@@ -140,6 +147,22 @@ public class TaskEngine {
 		return toDependency.getInverse(taskID);
 	}
 
+	public Collection<IStrategoTerm> getReads(IStrategoInt taskID) {
+		return toRead.get(taskID);
+	}
+
+	public Collection<IStrategoInt> getRead(IStrategoTerm read) {
+		return toRead.getInverse(read);
+	}
+
+	public void addRead(IStrategoInt taskID, IStrategoTerm read) {
+		toRead.put(taskID, read);
+	}
+
+	public Collection<IStrategoTerm> removeReads(IStrategoInt taskID) {
+		return toRead.removeAll(taskID);
+	}
+
 	public void addResult(IStrategoInt taskID, IStrategoList resultList) {
 		toResult.put(taskID, resultList);
 	}
@@ -173,10 +196,30 @@ public class TaskEngine {
 		return evaluator;
 	}
 
+	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults,
+		IStrategoList changedReads) {
+		// Transitively schedule tasks that might have changed as a result of a change in something they read.
+		// TODO: Make sure that TaskEvaluator only evaluates the task once its dependencies are met.
+		while(!changedReads.isEmpty()) {
+			for(IStrategoInt readTaskID : getRead(changedReads.head())) {
+				scheduleTransitiveReads(readTaskID);
+			}
+			changedReads = changedReads.tail();
+		}
+		return evaluator.evaluate(context, performInstruction, insertResults);
+	}
+
+	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
+		evaluator.schedule(readTaskID, getInstruction(readTaskID));
+		for(IStrategoInt dependent : getDependent(readTaskID))
+			scheduleTransitiveReads(dependent);
+	}
+
 	public void reset() {
 		toInstruction.clear();
 		toPartition.clear();
 		toDependency.clear();
+		toRead.clear();
 		toResult.clear();
 		addedTasks.clear();
 		removedTasks.clear();
@@ -185,9 +228,11 @@ public class TaskEngine {
 	}
 
 	private void collectGarbage() {
+		ArrayList<IStrategoInt> garbage = new ArrayList<IStrategoInt>(this.garbage);
 		tasks.removeAll(garbage);
 		solved.removeAll(garbage);
 		failed.removeAll(garbage);
 		toDependency.removeAll(garbage);
+		toRead.removeAll(garbage);
 	}
 }
