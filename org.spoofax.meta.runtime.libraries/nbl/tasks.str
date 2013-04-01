@@ -42,7 +42,7 @@ rules // Resolve
 		where
 			uri* := <filter(nabl-uri)> scope*;
 			import* := <nabl-lookup-import(|ns, name)> uri*;
-			<map(task-add-read(|nr))> uri*;
+			<map(try(nabl-replace-uri-qualifier(|())); task-add-read(|nr))> uri*;
       if <task-has-dependencies> import* then
       	result := <task-collect-dependencies> import*
       else
