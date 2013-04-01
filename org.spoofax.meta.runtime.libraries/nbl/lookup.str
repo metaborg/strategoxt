@@ -31,57 +31,8 @@ rules // Lookup
 			language       := <nabl-uri-language> uri;
       namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
       unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri
-  
-rules // Visible entries
-  
-  nabl-visible-definitions:
-    containsURI -> <nabl-visible(nabl-definition-template, id)> containsURI
-      
-  nabl-visible(create-template, constraint|):
-    containsURI -> entries
-    with
-      <with(uri             := <nabl-uri> containsURI                  | "Could not extract URI from given term.")> [containsURI];
-      <with(targetNamespace := <nabl-uri-namespace> uri                | "Could not extract target namespace.")> [uri];
-      <with(targetPrefix    := <nabl-uri-name> uri                     | "Could not extract target prefix.")> [uri];
-      <with(parentURI       := <nabl-uri-parent(|targetNamespace)> uri | "Could not construct a parent URI.")> [uri];
-      entries               := <nabl-visible-uri(create-template, constraint|targetNamespace, targetPrefix)> parentURI
-      
-  nabl-visible-uri(create-template, constraint|namespace, prefix):
-    uri -> allEntries
-    with
-      entries := <nabl-visible-uri-scoped(create-template, constraint|namespace, prefix)> uri;
-      if parentURI := <nabl-uri-parent(|namespace)> uri then
-        entries2   := <nabl-visible-uri(create-template, constraint|namespace, prefix)> parentURI;
-        allEntries := <conc> (entries, entries2)
-      else
-        allEntries := entries
-      end
-      
-  nabl-visible-uri-scoped(create-template, constraint|namespace, prefix):
-    uri -> [entry*, importEntry*]
-    with
-      // Standard lookup
-      entry*       := <nabl-standard-visible(create-template|namespace, prefix); filter(constraint)> uri;
-      
-      // Imports & aliases
-      importEntry* := <nabl-visible-imported-entries(create-template|<nabl-uri-language> uri, namespace, prefix); filter(constraint)> uri
 
-  nabl-standard-visible(create-template|namespace, prefix) =
-    create-template;
-    nabl-get-children(|namespace, prefix)
-
-rules /** @internal Imports */
-      
-  nabl-visible-imported-entries(create-template|language, namespace, prefix):
-    uri -> result
-    with
-      unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, namespace)> uri;
-      if <task-has-dependencies> unnamedImportURI* then
-      	result := unnamedImportURI*
-    	else
-      	unnamedEntry* := <mapconcat(nabl-standard-visible(create-template|namespace, prefix))> unnamedImportURI*;
-      	result        := unnamedEntry*
-      end 
+rules // Imports
 
   nabl-get-import-uris-unnamed(|language, namespace) = nabl-get-import-uris-unnamed(|[], language, namespace)
 
@@ -89,9 +40,9 @@ rules /** @internal Imports */
     uri -> [importURI*, transitiveImportURI*]
     with
       importResult*        := <nabl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <map(nabl-resolve-results <+ task-create-dependencies; ![<id>]); concat> importResult*;
+      importURI*           := <map(task-get-result <+ task-create-dependencies; ![<id>]); concat> importResult*;
       importedResult*      := <nabl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <map(nabl-resolve-results <+ task-create-dependencies; ![<id>]); concat> importedResult*;
+      importedURI*         := <map(task-get-result <+ task-create-dependencies; ![<id>]); concat> importedResult*;
       transitiveImportURI* := <mapconcat(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace))> importedURI*
 
   nabl-get-import-uris-unnamed-transitive(|seen, language, namespace):
@@ -104,10 +55,4 @@ rules /** @internal Imports */
     uri -> importURI*
     with
       importResult* := <nabl-get-all-properties(|Import(language, namespace, name))> uri;
-      importURI*    := <map(nabl-resolve-results <+ task-create-dependencies; ![<id>]); concat> importResult*
-
-rules /** @internal Helpers */
-  
-  nabl-definition-template:
-    uri -> Def(uri)
- 
+      importURI*    := <map(task-get-result <+ task-create-dependencies; ![<id>]); concat> importResult*

@@ -2,70 +2,12 @@ module nbl/resolve
 
 imports
   
-  task/core
-  index/core
   nbl/tasks
-  nbl/query
-  nbl/lookup
-  nbl/uri
-  nbl/entries
-  
-signature
-
-  constructors
-    
-    COMPLETION : String -> COMPLETION
+	nbl/entries
+	task/core
       
 rules // Reference resolution
   
-  nabl-resolve =
-    switch ?t
-      case has-annos:
-        anno* := <get-annos; nabl-resolve; try(concat)> t; 
-        !t{anno*}
-      case ?Result(_):
-        nabl-resolve-results;
-        try(nabl-resolve)
-      case ?Use(_): 
-        nabl-resolve-uses
-      case ?Def(_): 
-        id
-      otherwise:
-        try(all(nabl-resolve))
-    end
-
-  nabl-resolve-collect = 
-    has-annos;
-    get-annos;
-    collect-all(nabl-resolve-collect);
-    concat
-  
-  nabl-resolve-collect:
-    Use(_) -> def*
-    where
-      def* := <nabl-resolve-uses>
-    
-  nabl-resolve-collect:
-    Def(_) -> [<id>]
-    
-  nabl-resolve-collect-one = nabl-resolve-collect; Hd
-  
-  nabl-resolve-results:
-    Result(taskID) -> <task-get-result(|taskID)>
-		// TODO: what about failed cases?
-      
-  nabl-resolve-uses:
-    Use(Result(taskID)) -> def*
-    where
-      uri* := <task-get-result(|taskID)> taskID;
-      def* := <mapconcat(nabl-get-all)> uri*
-      
-  nabl-resolve-uses:
-    Use(uri@URI(_, _)) -> def*
-    where
-      //def* := <nabl-lookup-definitions> uri
-      def* := <nabl-get-all-definitions> uri
-      
   nabl-is-reference =
     ?Use(_)
     
@@ -76,49 +18,20 @@ rules // Reference resolution
     has-annos;
     get-annos;
     nabl-has-reference
- 
-  nabl-is-unresolved =
-    ?node;
-    has-annos;
-    get-annos;
-    nabl-has-reference;
-    [] := <nabl-resolve-collect> node
-    
-rules // Code completion
-
-  nabl-resolve-collect-uris = 
-    has-annos;
-    get-annos;
-    collect-all(nabl-resolve-collect-uris);
-    concat
-    
-  nabl-resolve-collect-uris = nabl-resolve-results
-
-  nabl-propose-completions:
-    ast -> proposals'*
-      where
-        item        := <collect-one(?COMPLETION(_))> ast;
-        index-transaction(
-          uri*      := <nabl-resolve-collect-uris; filter(nabl-uri)> item;
-          proposal* := <mapconcat(nabl-visible-definitions)> uri*
-        );
-        proposals'* := <map(nabl-uri; nabl-uri-name)> proposal*
-
-rules // Ambiguities
   
-  nabl-get-ambiguities =
-    nabl-resolve-collect;
-    mapconcat(nabl-get-all-aliases);
-    filter(nabl-uri; nabl-uri-parent);
-    make-set;
-    where(<gt> (<length>, 1))
+  // TODO: does not go through annotations?
+	nabl-collect-all-resolved-defs:
+		ast -> def*
+		with
+			if ast' := <insert-results> ast then
+				def* := <collect-all(?Def(_))> ast'
+			else
+				def* := []
+			end
 
-rules // Duplicate definitions
-  
-  nabl-get-duplicate-definitions =
-    has-annos;
-    get-annos;
-    collect-one(?Def(_));
-    nabl-get-all-definitions;
-    make-set;
-    where(<gt> (<length>, 1))
+	nabl-collect-one-resolved-def =
+		insert-results;
+		oncetd-annos(debug(!"Match: "); \d@Def(_) -> d\; debug(!"Built: "))
+		
+	oncetd-annos(s) = s <+ has-annos; get-annos; one(oncetd-annos(s)) <+ one(oncetd-annos(s))
+	

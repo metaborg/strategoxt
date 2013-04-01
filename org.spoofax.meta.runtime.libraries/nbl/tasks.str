@@ -82,10 +82,10 @@ rules // Resolve
   nabl-resolve-constraint-one(|entry):
     Prop(type, expectedValue) -> entry'
     where
-    	uri := <nabl-uri> entry;
+    	uri   := <nabl-uri> entry;
       value := <nabl-get-property(|type)> uri;
-      if value' := <nabl-resolve> value then
-        expectedValue'  := <nabl-resolve> expectedValue;
+      if value' := <insert-results> value then
+        expectedValue' := <insert-results> expectedValue;
         <eq> (expectedValue', value');
         entry' := entry
       else

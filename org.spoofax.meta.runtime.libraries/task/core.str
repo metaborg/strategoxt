@@ -50,12 +50,20 @@ rules // Dependencies
 
 rules // Results
 	
-	insert-result =
+	insert-results-with-fail =
 		switch id
-			case has-annos  : !(<id>, <get-annos; insert-result>); set-annos
-			case is-list    : filter(insert-result; not(?[]))
-			case ?Result(n) : (task-get-result(|n) <+ (task-has-failed(|n); ![]) <+ with(fail|"Cannot insert result."))
-			otherwise       : all(insert-result)
+			case has-annos  : !(<id>, <get-annos; insert-results-with-fail>); set-annos
+			case is-list    : filter(insert-results-with-fail; not(?[]))
+			case ?Result(n) : (task-api-get-result(|n) <+ (task-api-has-failed(|n); ![]) <+ with(fail|"Cannot insert result: "))
+			otherwise       : all(insert-results-with-fail)
+		end
+	
+	insert-results =
+		switch id
+			case has-annos  : !(<id>, <get-annos; insert-results>); set-annos
+			case is-list    : map(insert-results); remove-all(?[])
+			case ?Result(n) : task-api-get-result(|n) <+ (task-api-has-failed(|n); ![])
+			otherwise       : all(insert-results)
 		end
 	
 rules // Projections
@@ -78,10 +86,20 @@ rules // API
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
 	task-stop-collection(|partition)                     = task-api-stop-collection(|partition)
 	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
-	task-get-result(|taskID)                             = task-api-get-result(|taskID)
-	task-has-failed(|taskID)                             = task-api-has-failed(|taskID)
-	task-evaluate                                        = task-api-evaluate(perform-task, insert-result)
+	task-evaluate                                        = task-api-evaluate(perform-task, insert-results-with-fail)
 	task-reset                                           = task-api-reset
+	
+	task-get-result =
+		switch id
+			case ?Result(taskID) : task-api-get-result(|taskID)
+			otherwise            : task-api-get-result(|<id>)
+		end
+	
+	task-has-failed =
+		switch id
+			case ?Result(taskID) : task-api-has-failed(|taskID)
+			otherwise            : task-api-has-failed(|<id>)
+		end
 	  
 rules // Execution
   
