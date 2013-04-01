@@ -82,7 +82,8 @@ public class TaskEvaluator {
 
 	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoInt taskID, IStrategoTerm instruction) {
-		return performInstruction.invoke(context, insertResults(context, insertResults, instruction), taskID);
+		IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
+		return performInstruction.invoke(context, insertedInstruction, taskID);
 	}
 
 	private IStrategoTerm insertResults(Context context, Strategy insertResults, IStrategoTerm instruction) {
@@ -115,6 +116,7 @@ public class TaskEvaluator {
 	}
 
 	private void updateDelayedDependencies(IStrategoInt delayed, IStrategoList dependencies) {
+		toRuntimeDependency.removeAll(delayed);
 		while(!dependencies.isEmpty()) {
 			toRuntimeDependency.put(delayed, (IStrategoInt) dependencies.head());
 			dependencies = dependencies.tail();
