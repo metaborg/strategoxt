@@ -96,7 +96,7 @@ public class TaskEngine {
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
 			if(dependencies.isEmpty())
-				evaluator.schedule(taskID, instruction);
+				evaluator.schedule(taskID);
 		}
 		removedTasks.remove(taskID);
 
@@ -187,6 +187,10 @@ public class TaskEngine {
 		return failed.contains(taskID);
 	}
 
+	public boolean isSolved(IStrategoInt taskID) {
+		return getResult(taskID) != null || hasFailed(taskID) == true;
+	}
+
 	public void removeSolved(IStrategoInt taskID) {
 		removeResult(taskID);
 		removeFailed(taskID);
@@ -198,8 +202,7 @@ public class TaskEngine {
 
 	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoList changedReads) {
-		// Transitively schedule tasks that might have changed as a result of a change in something they read.
-		// TODO: Make sure that TaskEvaluator only evaluates the task once its dependencies are met.
+		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		while(!changedReads.isEmpty()) {
 			for(IStrategoInt readTaskID : getRead(changedReads.head())) {
 				scheduleTransitiveReads(readTaskID);
@@ -210,7 +213,7 @@ public class TaskEngine {
 	}
 
 	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
-		evaluator.schedule(readTaskID, getInstruction(readTaskID));
+		evaluator.trySchedule(readTaskID);
 		for(IStrategoInt dependent : getDependent(readTaskID))
 			scheduleTransitiveReads(dependent);
 	}

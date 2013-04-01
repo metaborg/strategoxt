@@ -28,11 +28,10 @@ public class TaskEvaluator {
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Set<IStrategoInt> nextScheduled = new HashSet<IStrategoInt>();
 
-	/** Set of all instructions that can be scheduled. Used for retrieving unevaluated and erroneous tasks. */
-	private final Set<IStrategoTerm> nextInstructions = new HashSet<IStrategoTerm>();
+	private final Set<IStrategoInt> nextTryScheduled = new HashSet<IStrategoInt>();
 
 	/** Queue of task that are scheduled for evaluation. */
-	private final Queue<IStrategoInt> runtimeScheduled = new ConcurrentLinkedQueue<IStrategoInt>();
+	private final Queue<IStrategoInt> evaluationQueue = new ConcurrentLinkedQueue<IStrategoInt>();
 
 	/** Dependencies of tasks which are updated during evaluation. */
 	private final ManyToManyMap<IStrategoInt, IStrategoInt> toRuntimeDependency = ManyToManyMap.create();
@@ -44,53 +43,88 @@ public class TaskEvaluator {
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
 	}
 
-	public void schedule(IStrategoInt taskID, IStrategoTerm instruction) {
-		if(nextScheduled.add(taskID))
-			nextInstructions.add(instruction);
+	/**
+	 * Schedules a task that has no dependencies for evaluation.
+	 * 
+	 * @param taskID Task identifier to schedule.
+	 */
+	public void schedule(IStrategoInt taskID) {
+		nextScheduled.add(taskID);
 	}
 
-	private void runtimeSchedule(IStrategoInt taskID) {
-		runtimeScheduled.add(taskID);
+	/**
+	 * Schedules a task for evaluation that possibly has dependencies for evaluation.
+	 * 
+	 * @param taskID Task identifier to schedule.
+	 */
+	public void trySchedule(IStrategoInt taskID) {
+		nextTryScheduled.add(taskID);
+	}
+
+	private void queue(IStrategoInt taskID) {
+		evaluationQueue.add(taskID);
 	}
 
 	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
-		for(IStrategoInt taskID : nextScheduled) {
-			taskEngine.removeSolved(taskID);
-			taskEngine.removeReads(taskID);
-			runtimeScheduled.add(taskID);
-		}
-		nextScheduled.clear();
-
-		for(IStrategoInt taskID; (taskID = runtimeScheduled.poll()) != null;) {
-			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
-			final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
-			if(result != null && Tools.isTermAppl(result)) {
-				IStrategoAppl resultAppl = (IStrategoAppl) result;
-				if(resultAppl.getConstructor().equals(dependencyConstructor)) {
-					updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
-				}
-			} else if(result == null) {
-				taskEngine.addFailed(taskID);
-				tryScheduleNewTasks(taskID);
-			} else if(Tools.isTermList(result)) {
-				taskEngine.addResult(taskID, (IStrategoList) result);
-				nextInstructions.remove(instruction);
-				tryScheduleNewTasks(taskID);
-			} else {
-				throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
-					+ ". Must be a list.");
+		try {
+			for(IStrategoInt taskID : nextScheduled) {
+				taskEngine.removeSolved(taskID);
+				taskEngine.removeReads(taskID);
+				evaluationQueue.add(taskID);
 			}
-		}
 
-		IStrategoList erroneousTasks = factory.makeList(nextInstructions);
-		reset();
-		return erroneousTasks;
+			for(IStrategoInt taskID : nextTryScheduled) {
+				taskEngine.removeSolved(taskID);
+				taskEngine.removeReads(taskID);
+			}
+
+			for(IStrategoInt taskID : nextTryScheduled) {
+				// TODO: Can this be done more efficiently?
+				Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
+				for(IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
+					if(taskEngine.isSolved(dependency))
+						dependencies.remove(dependency);
+				}
+				if(dependencies.isEmpty()) {
+					nextScheduled.add(taskID);
+					evaluationQueue.add(taskID);
+				} else {
+					toRuntimeDependency.putAll(taskID, dependencies);
+				}
+			}
+
+			for(IStrategoInt taskID; (taskID = evaluationQueue.poll()) != null;) {
+				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
+				final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
+				if(result != null && Tools.isTermAppl(result)) {
+					IStrategoAppl resultAppl = (IStrategoAppl) result;
+					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
+						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
+					}
+				} else if(result == null) {
+					taskEngine.addFailed(taskID);
+					tryScheduleNewTasks(taskID);
+				} else if(Tools.isTermList(result)) {
+					taskEngine.addResult(taskID, (IStrategoList) result);
+					nextScheduled.remove(instruction);
+					tryScheduleNewTasks(taskID);
+				} else {
+					throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
+						+ ". Must be a list.");
+				}
+			}
+
+			IStrategoList erroneousTasks = factory.makeList(nextScheduled);
+			return erroneousTasks;
+		} finally {
+			reset();
+		}
 	}
 
 	public void reset() {
 		nextScheduled.clear();
-		nextInstructions.clear();
-		runtimeScheduled.clear();
+		nextTryScheduled.clear();
+		evaluationQueue.clear();
 		toRuntimeDependency.clear();
 	}
 
@@ -125,7 +159,7 @@ public class TaskEvaluator {
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
 			boolean removed = toRuntimeDependency.remove(dependent, solved);
 			if(dependenciesSize == 1 && removed)
-				runtimeSchedule(dependent);
+				queue(dependent);
 		}
 	}
 
