@@ -27,9 +27,7 @@ public class TaskEvaluator {
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Set<IStrategoInt> nextScheduled = new HashSet<IStrategoInt>();
-
-	private final Set<IStrategoInt> nextTryScheduled = new HashSet<IStrategoInt>();
-
+	
 	/** Queue of task that are scheduled for evaluation. */
 	private final Queue<IStrategoInt> evaluationQueue = new ConcurrentLinkedQueue<IStrategoInt>();
 
@@ -52,15 +50,6 @@ public class TaskEvaluator {
 		nextScheduled.add(taskID);
 	}
 
-	/**
-	 * Schedules a task for evaluation that possibly has dependencies for evaluation.
-	 * 
-	 * @param taskID Task identifier to schedule.
-	 */
-	public void trySchedule(IStrategoInt taskID) {
-		nextTryScheduled.add(taskID);
-	}
-
 	private void queue(IStrategoInt taskID) {
 		evaluationQueue.add(taskID);
 	}
@@ -70,15 +59,9 @@ public class TaskEvaluator {
 			for(IStrategoInt taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
-				evaluationQueue.add(taskID);
 			}
 
-			for(IStrategoInt taskID : nextTryScheduled) {
-				taskEngine.removeSolved(taskID);
-				taskEngine.removeReads(taskID);
-			}
-
-			for(IStrategoInt taskID : nextTryScheduled) {
+			for(IStrategoInt taskID : nextScheduled) {
 				// TODO: Can this be done more efficiently?
 				Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
 				for(IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
@@ -86,7 +69,6 @@ public class TaskEvaluator {
 						dependencies.remove(dependency);
 				}
 				if(dependencies.isEmpty()) {
-					nextScheduled.add(taskID);
 					evaluationQueue.add(taskID);
 				} else {
 					toRuntimeDependency.putAll(taskID, dependencies);
@@ -123,7 +105,6 @@ public class TaskEvaluator {
 
 	public void reset() {
 		nextScheduled.clear();
-		nextTryScheduled.clear();
 		evaluationQueue.clear();
 		toRuntimeDependency.clear();
 	}

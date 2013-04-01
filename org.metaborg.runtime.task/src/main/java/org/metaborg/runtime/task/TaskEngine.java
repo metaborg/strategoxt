@@ -95,8 +95,7 @@ public class TaskEngine {
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
-			if(dependencies.isEmpty())
-				evaluator.schedule(taskID);
+			evaluator.schedule(taskID);
 		}
 		removedTasks.remove(taskID);
 
@@ -213,7 +212,7 @@ public class TaskEngine {
 	}
 
 	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
-		evaluator.trySchedule(readTaskID);
+		evaluator.schedule(readTaskID);
 		for(IStrategoInt dependent : getDependent(readTaskID))
 			scheduleTransitiveReads(dependent);
 	}
@@ -235,7 +234,9 @@ public class TaskEngine {
 		tasks.removeAll(garbage);
 		solved.removeAll(garbage);
 		failed.removeAll(garbage);
-		toDependency.removeAll(garbage);
-		toRead.removeAll(garbage);
+		for(IStrategoInt taskID : garbage)
+			toDependency.removeAll(taskID);
+		for(IStrategoInt taskID : garbage)
+			toRead.removeAll(taskID);
 	}
 }
