@@ -30,13 +30,8 @@ rules // Multi file analysis
   nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path):
     file* -> ([], error*, result*)
     with
-    	<vdebug(!"Analyzing files: ")> file*;
     	measure-time(
 	      result* := <map(
-	      	measure-time(
-		        nabl-analyze-multiple-setup(|language, project-path), 
-		        id | "nabl-analyze-multiple-files-setup"
-		      ); 
 	        analyze-collect(|language, project-path); 
 	        where(complete-work-unit)
 	      )> file*,
@@ -44,10 +39,6 @@ rules // Multi file analysis
 	    );
 	    measure-time(
 	      changed-read* := <mapconcat(
-	      	measure-time(
-	        	nabl-analyze-multiple-setup(|language, project-path),
-	        	id | "znabl-analyze-multiple-files-setup"
-	        ); 
 	        analyze-incremental;
 	        where(complete-work-unit)
 	      )> result*,
@@ -57,13 +48,8 @@ rules // Multi file analysis
       	error* := <analyze-perform-all> changed-read*,
       	id | "nabl-analyze-multiple-files-performtasks"
       )
-      // TODO: Get evaluated tasks.
       
 rules // Utility
 
-  nabl-analyze-multiple-setup(|language, project-path) =
-    (?File(partition, _) <+ ?Result(partition, _, _, _, _, _, _, _, _, _));
-    where(index-setup(|language, [project-path], partition))
-    
   nabl-analyze-multiple-work-units = 
     length; !(<id>, 3); mul

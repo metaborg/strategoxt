@@ -20,38 +20,27 @@ signature
 rules
 	
 	analyze-collect(|language, project-path):
-    File(partition, ast) -> Result(partition, ast, analyzed-ast, old-entry*, new-entry*, removed-task*, added-task*, [], [], [])
+    File(partition, ast) -> Result(partition, ast, analyzed-ast, removed-entry*, added-entry*, removed-task*, added-task*, [], [], [])
     with
-    	<vdebug(!"Collect for: ")> partition;
-    	measure-time(
-	    	// Store and clean old entries. 
-	      old-entry* := <nabl-entry-olds> partition;
-	      <nabl-entry-clear> partition,
-	      id | "analyze-collect-oldentries"
-      );
-    	// Collect tasks and entries.
-    	measure-time(
+    	//<vdebug(!"Collect for: ")> partition;
+    	//measure-time(
+    		index-setup(|language, [project-path], partition);
+		    index-start-collection(|partition);
     		task-setup(|project-path);
     		task-start-collection(|partition);
-      	(analyzed-ast, new-entry*)   := <nabl-collect(|partition, Language(language))> ast;
-      	(removed-task*, added-task*) := <task-stop-collection(|partition)>,
-      	id | "analyze-collect-collect"
-      );
-      // Store entries.
-      measure-time(
-	      <index-add-all(|partition)> new-entry*,
-	      id | "analyze-collect-store"
-	    )
+      	analyzed-ast                   := <nabl-collect(|partition, Language(language))> ast;
+      	(removed-task* , added-task*)  := <task-stop-collection(|partition)>;
+      	(removed-entry*, added-entry*) := <index-stop-collection>
+      //	id | "analyze-collect-collect"
+      //)
 	
 	analyze-incremental:
-		Result(_, _, _, old-entry*, new-entry*, _, _, _, _, _) -> changed-read*
+		Result(_, _, _, removed-entry*, added-entry*, _, _, _, _, _) -> changed-read*
 		with
-			// TODO: Don't use diff because it is O(n*n).
-			changed-entry* := <nabl-entry-diff> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
-		  changed-read*  := <map(nabl-uri; try(nabl-replace-uri-qualifier(|())))> changed-entry*
+		  changed-read*  := <map(nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
     	
 	analyze-perform-all:
 		changed-read* -> error*
 		with
       task-evaluate(|changed-read*) => error*
-      			
+      

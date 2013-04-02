@@ -49,6 +49,12 @@ rules
   index-set-current-partition = 
     prim("LANG_index_set_current_file", <id>)
 
+	index-start-collection(|partition) =
+		prim("LANG_index_start_collection", partition)
+		
+	index-stop-collection =
+		prim("LANG_index_stop_collection")
+
   /**
    * Adds given element to the index.
    *

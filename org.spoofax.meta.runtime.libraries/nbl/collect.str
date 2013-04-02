@@ -65,11 +65,10 @@ strategies // generic traversal
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
 	nabl-collect(|partition, lang):
-	  ast -> (ast'', <iset-elements> elem*)
+	  ast -> ast''
 	  where
-	    new-iset      => elem*;
 	    new-hashtable => unique*;
-	    ast'  := <nabl-collect(id|lang, partition, unique*, elem*, [])> ast ;
+	    ast'  := <nabl-collect(id|lang, partition, unique*, (), [])> ast ;
 	    ast'' := <alltd(type-task(|partition))> ast'
 	  
 	/**
@@ -80,10 +79,12 @@ strategies // generic traversal
 		nabl-state-pop(?state*);
 		nabl-scope-site(?uri'*|lang, uri*); // scopes of external definitions, e.g. variables in let expressions
 		
+		debug(!"Collect: ");
+		
 		(
-		   nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*) 
+			 (debug(!"Def1: "); nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*); debug(!"Def2: ")) 
     <+ match(sibling-uris|uri*)
-    ;  nabl-anonymous-scope-site(?child-uri*|lang, partition, unique*, uri'*, state*)
+    ;  (debug(!"Def3: "); nabl-anonymous-scope-site(?child-uri*|lang, partition, unique*, uri'*, state*); debug(!"Def4: "))
     <+ match(?child-uri*|uri'*)
     );
     
@@ -190,12 +191,12 @@ rules // generic analysis of defs
 				def-uri   := <nabl-extend-uri(|unique*, partition, ns, name, unique)> uri;
 				subs-uri  := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri;
         alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri;
-	  		<new-alias(|elem*, def-uri, alias-uri)> a;
+	  		<new-alias(|partition, def-uri, alias-uri)> a;
 	  		match(child-uris|uri*);
 				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
 			end;
 			// add Def entry to the index
-			d := <new-def(|elem*, def-uri)> a
+			d := <new-def(|partition, def-uri)> a
 	
 rules // generic analysis of uses
 	
@@ -210,7 +211,7 @@ rules // generic analysis of uses
 		where
 			subtask* := <map(nabl-use-candidate(|lang, partition, elem*, uri*, <nabl-fix-name> name)); unions> candidate*;
 			result   := <new-task(|partition)> Choice(subtask*);
-		  u        := <new-use(|elem*, result)>
+		  u        := <new-use(|partition, result)>
 
 	nabl-use-subtasks(|partition, ns, name, range): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
@@ -266,7 +267,7 @@ rules // generic analysis of uses
 	//      _{uri}   := <nabl-use-candidate(|lang, elem*, task*, uri*, dep*)> (UseCandidate(ns', props', refscope', range), name'{});
 	//      propdep* := <dependent-tasks> prop*;
 	//      result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, <nabl-fix-name> name, prop*, range);
-	//      u        := <new-use(|elem*, result)>
+	//      u        := <new-use(|partition, result)>
     
 rules // generic analysis of imports
   
@@ -281,7 +282,7 @@ rules // generic analysis of imports
     where
       ns  := <nabl-import-namespace> import;
       uri := <lookup-uri(|lang, ns)> uri*;
-      new-prop(|elem*, uri, import, use)
+      new-prop(|partition, uri, import, use)
       
   nabl-import-namespace =
        ?Import(_, Imported(<id>)) 
@@ -296,12 +297,12 @@ rules // generic analysis of properties
 	  name -> name'
 	  where
 	    Def(uri) := <nabl-collect-def> name;
-		  name'    := <foldl(extend-prop(|elem*, uri))> (prop*, name)
+		  name'    := <foldl(extend-prop(|partition, elem*, uri))> (prop*, name)
 		
-	extend-prop(|elem*, uri):
+	extend-prop(|partition, elem*, uri):
 		(Prop(type, result), name) -> name
 		where
-		  prop := <new-prop(|elem*, uri, type, result)> name
+		  prop := <new-prop(|partition, uri, type, result)> name
         
 rules // generic analysis of implicit defs
  
@@ -318,9 +319,9 @@ rules // generic analysis of implicit defs
       // build path for definition site
       def-uri     := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri;
       // build Def entry for the index
-      new-def(|elem*, def-uri);
+      new-def(|partition, def-uri);
       // build Prop entries for the index
-      <map(\Prop(type, result) -> <new-prop(|elem*, def-uri, type, result)>\)> prop*
+      <map(\Prop(type, result) -> <new-prop(|partition, def-uri, type, result)>\)> prop*
 
 rules // name retrieval
   
