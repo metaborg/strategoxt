@@ -7,7 +7,6 @@ imports
   nbl/collect
   nbl/resolve
   nbl/query
-  nbl/incremental
   nbl/interface
   nbl/uri
   nbl/utils

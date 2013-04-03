@@ -5,7 +5,6 @@ imports
 	task/core
 	task/tasks
 	nbl/tasks
-	nbl/incremental
 	nbl/entries
 	nbl/interface
 	nbl/uri

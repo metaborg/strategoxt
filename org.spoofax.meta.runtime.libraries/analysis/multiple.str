@@ -7,7 +7,6 @@ imports
   index/query
   nbl/collect
   nbl/tasks
-  nbl/incremental
   nbl/uri
   nbl/utils
   analysis/core

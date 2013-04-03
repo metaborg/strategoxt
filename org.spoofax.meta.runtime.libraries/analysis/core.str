@@ -2,11 +2,15 @@ module analysis/core
 
 imports
 	
-	nbl/-
-	task/-
-	analysis/-
-	index/-
-
+  nbl/collect
+  nbl/tasks
+  nbl/entries
+  nbl/uri
+  nbl/utils
+  index/core
+  index/query
+  task/core
+  
 signature
 
   constructors
@@ -32,7 +36,7 @@ rules // Analysis
   	  ); measure-time(
   	  	index-stop-collection => (removed-entry*, added-entry*);
       	task-stop-collection(|partition);
-      	changed-read* := <map(nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
+      	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
       	, id | "analyze-collect-diff" 
   	  )
 	
@@ -41,6 +45,14 @@ rules // Analysis
 		with
 			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-perform-concat-reads");
       measure-time(task-evaluate(|changed-read*) => error*, id | "analyze-perform-evaluate")
+
+rules // Index entries to diff
+	
+  analyze-diff-entry =
+    ?Def(_)
+    
+  analyze-diff-entry =
+    ?Prop(_, _, _)
       
 rules // Projections
 	
