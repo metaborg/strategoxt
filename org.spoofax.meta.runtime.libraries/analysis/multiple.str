@@ -14,39 +14,31 @@ imports
 
 rules // Multi file analysis
   
-  nabl-analyze-multiple(parse-file, parallel, complete-work-unit|language, project-path):
+  analyze-multiple(parse-file, parallel, complete-work-unit|language, project-path):
     path* -> result*
     with
-      file*   := <map(nabl-analyze-parse-file(parse-file); where(complete-work-unit))> path*;
-      result* := <nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path)> file*
+    	measure-time(
+      	file* := <map(analyze-parse-file(parse-file); where(complete-work-unit))> path*
+    	, id | "analyze-multiple-parse");
+      result* := <analyze-multiple-files(parallel, complete-work-unit|language, project-path)> file*
 
-  nabl-analyze-parse-file(parse-file):
+  analyze-parse-file(parse-file):
     path -> File(path, ast)
     with
       if not(ast := <file-exists; parse-file> path) then
         ast := ()
       end
 
-  nabl-analyze-multiple-files(parallel, complete-work-unit|language, project-path):
+  analyze-multiple-files(parallel, complete-work-unit|language, project-path):
     file* -> ([], error*, result*)
     with
     	measure-time(
-	      result* := <map(
-	        analyze-collect(|language, project-path); 
-	        where(complete-work-unit)
-	      )> file*,
-	      id | "nabl-analyze-multiple-files-collect"
+	      result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*
+	      , id | "analyze-multiple-collect"
 	    );
-	    measure-time(
-	      changed-read* := <mapconcat(
-	        analyze-incremental;
-	        where(complete-work-unit)
-	      )> result*,
-	      id | "nabl-analyze-multiple-files-gathertasks"
-      );
       measure-time(
-      	error* := <analyze-perform-all> changed-read*,
-      	id | "nabl-analyze-multiple-files-performtasks"
+      	error* := <analyze-perform-all> result*
+      	, id | "analyze-multiple-perform"
       )
       
 rules // Utility

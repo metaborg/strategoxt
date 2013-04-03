@@ -12,35 +12,40 @@ signature
   constructors
   
     File : Path * AST -> File
-    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * 
-             List(Term) * List(Term) * List(Term) -> Result
-    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, removed-task*, added-task*, 
-    //        error*, warning*, note*)
+    Result : Partition * AST * AST * List(URI) * List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
     
-rules
+rules // Analysis
 	
 	analyze-collect(|language, project-path):
-    File(partition, ast) -> Result(partition, ast, analyzed-ast, removed-entry*, added-entry*, removed-task*, added-task*, [], [], [])
+    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
     with
-    	//<vdebug(!"Collect for: ")> partition;
-    	//measure-time(
+    	measure-time(
     		index-setup(|language, [project-path], partition);
 		    index-start-collection(|partition);
     		task-setup(|project-path);
-    		task-start-collection(|partition);
-      	analyzed-ast                   := <nabl-collect(|partition, Language(language))> ast;
-      	(removed-task* , added-task*)  := <task-stop-collection(|partition)>;
-      	(removed-entry*, added-entry*) := <index-stop-collection>
-      //	id | "analyze-collect-collect"
-      //)
+    		task-start-collection(|partition)
+      	, id | "analyze-collect-setup"
+      ); measure-time(
+      	analyzed-ast := <nabl-collect(|partition, Language(language))> initial-ast
+    	  , id | "analyze-collect-collect" 
+  	  ); measure-time(
+  	  	index-stop-collection => (removed-entry*, added-entry*);
+      	task-stop-collection(|partition);
+      	changed-read* := <map(nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
+      	, id | "analyze-collect-diff" 
+  	  )
 	
-	analyze-incremental:
-		Result(_, _, _, removed-entry*, added-entry*, _, _, _, _, _) -> changed-read*
-		with
-		  changed-read*  := <map(nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
-    	
 	analyze-perform-all:
-		changed-read* -> error*
+		result* -> error*
 		with
-      task-evaluate(|changed-read*) => error*
+			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-perform-concat-reads");
+      measure-time(task-evaluate(|changed-read*) => error*, id | "analyze-perform-evaluate")
       
+rules // Projections
+	
+	analyze-result-reads:
+		Result(_, _, _, changed-read*, _, _, _) -> changed-read*
+		
+	analyze-result-analyzed-ast:
+		Result(_, _, analyzed-ast, _, _, _, _) -> analyzed-ast

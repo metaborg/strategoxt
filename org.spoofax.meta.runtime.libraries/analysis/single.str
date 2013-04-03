@@ -14,10 +14,9 @@ imports
   
 rules // Single file analysis
   
-  nabl-analyze(|language, path, project-path):
-    ast -> (ast', error*)
+  analyze-one(|language, path, project-path):
+    ast -> (<analyze-result-analyzed-ast> result, error*)
     with // Setup index
       partition := $[[project-path]/[path]];
-      result@Result(_, _, ast', _, _ , _, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
-      changed-read* := <analyze-incremental> result;
-    	error*        := <analyze-perform-all> changed-read*
+      result        := <analyze-collect(|language, project-path)> File(partition, ast);
+    	error*        := <analyze-perform-all> [result]

@@ -68,7 +68,8 @@ strategies // generic traversal
 	  ast -> ast''
 	  where
 	    new-hashtable => unique*;
-	    ast'  := <nabl-collect(id|lang, partition, unique*, (), [])> ast ;
+	    new-iset => elem*; // TODO: Remove
+	    ast'  := <nabl-collect(id|lang, partition, unique*, elem*, [])> ast ;
 	    ast'' := <alltd(type-task(|partition))> ast'
 	  
 	/**
@@ -79,12 +80,10 @@ strategies // generic traversal
 		nabl-state-pop(?state*);
 		nabl-scope-site(?uri'*|lang, uri*); // scopes of external definitions, e.g. variables in let expressions
 		
-		debug(!"Collect: ");
-		
 		(
-			 (debug(!"Def1: "); nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*); debug(!"Def2: ")) 
+			 nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*)
     <+ match(sibling-uris|uri*)
-    ;  (debug(!"Def3: "); nabl-anonymous-scope-site(?child-uri*|lang, partition, unique*, uri'*, state*); debug(!"Def4: "))
+    ;  nabl-anonymous-scope-site(?child-uri*|lang, partition, unique*, uri'*, state*)
     <+ match(?child-uri*|uri'*)
     );
     
