@@ -42,7 +42,7 @@ public class TaskEvaluator {
 	}
 
 	/**
-	 * Schedules a task that has no dependencies for evaluation.
+	 * Schedules a task with unknown dependencies for evaluation.
 	 * 
 	 * @param taskID Task identifier to schedule.
 	 */
@@ -56,18 +56,21 @@ public class TaskEvaluator {
 
 	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		try {
+			// Remove solutions and reads for tasks that are scheduled for evaluation.
 			for(IStrategoInt taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
 			}
 
+			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(IStrategoInt taskID : nextScheduled) {
-				// TODO: Can this be done more efficiently?
 				Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
 				for(IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
 					if(taskEngine.isSolved(dependency))
 						dependencies.remove(dependency);
 				}
+				
+				// If the task has no unsolved dependencies, queue it for analysis.
 				if(dependencies.isEmpty()) {
 					evaluationQueue.add(taskID);
 				} else {
@@ -75,18 +78,22 @@ public class TaskEvaluator {
 				}
 			}
 
+			// Evaluate each task in the queue.
 			for(IStrategoInt taskID; (taskID = evaluationQueue.poll()) != null;) {
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 				final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
 				if(result != null && Tools.isTermAppl(result)) {
+					// The task has dynamic dependencies.
 					IStrategoAppl resultAppl = (IStrategoAppl) result;
 					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
 					}
 				} else if(result == null) {
+					// The task failed to produce a result.
 					taskEngine.addFailed(taskID);
 					tryScheduleNewTasks(taskID);
 				} else if(Tools.isTermList(result)) {
+					// The task produced a result.
 					taskEngine.addResult(taskID, (IStrategoList) result);
 					nextScheduled.remove(instruction);
 					tryScheduleNewTasks(taskID);
@@ -145,6 +152,7 @@ public class TaskEvaluator {
 	}
 
 	private void updateDelayedDependencies(IStrategoInt delayed, IStrategoList dependencies) {
+		// Sets the runtime dependencies for a task to the given dependency list.
 		toRuntimeDependency.removeAll(delayed);
 		while(!dependencies.isEmpty()) {
 			toRuntimeDependency.put(delayed, (IStrategoInt) dependencies.head());

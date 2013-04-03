@@ -17,7 +17,6 @@ import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
@@ -76,6 +75,11 @@ public class TaskEngine {
 		this.evaluator = new TaskEvaluator(this, factory);
 	}
 
+	/**
+	 * Starts task collection for given partition.
+	 * 
+	 * @param partition The partition to collect tasks for.
+	 */
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
 			throw new IllegalStateException(
@@ -87,6 +91,14 @@ public class TaskEngine {
 		inCollection.add(partition);
 	}
 
+	/**
+	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
+	 * 
+	 * @param partition The partition where the task comes from.
+	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
+	 * @param instruction The instruction.
+	 * @return A unique task identifier for given instruction.
+	 */
 	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
@@ -112,7 +124,12 @@ public class TaskEngine {
 		return factory.makeAppl(resultConstructor, taskID);
 	}
 
-	public IStrategoTuple stopCollection(IStrategoString partition) {
+	/**
+	 * Stops collection for given partition.
+	 * 
+	 * @param partition The partition to stop collecting tasks for.
+	 */
+	public void stopCollection(IStrategoString partition) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before stopping collection.");
@@ -121,9 +138,34 @@ public class TaskEngine {
 			toPartition.remove(removed, partition);
 		collectGarbage();
 		inCollection.remove(partition);
+	}
 
-		// TODO: Do we still need to get the list of added and removed tasks in Stratego?
-		return factory.makeTuple(factory.makeList(addedTasks), factory.makeList(removedTasks));
+	/**
+	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
+	 * changed by a read.
+	 * 
+	 * @param context The context to call the perform and insert strategies with.
+	 * @param performInstruction The strategy that performs an instruction.
+	 * @param insertResults The strategy that inserts results into an instruction.
+	 * @param changedReads A list of reads which have changed.
+	 * @return A list of task identifiers that have failed to produce a result.
+	 */
+	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults,
+		IStrategoList changedReads) {
+		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
+		while(!changedReads.isEmpty()) {
+			for(IStrategoInt readTaskID : getRead(changedReads.head())) {
+				scheduleTransitiveReads(readTaskID);
+			}
+			changedReads = changedReads.tail();
+		}
+		return evaluator.evaluate(context, performInstruction, insertResults);
+	}
+
+	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
+		evaluator.schedule(readTaskID);
+		for(IStrategoInt dependent : getDependent(readTaskID))
+			scheduleTransitiveReads(dependent);
 	}
 
 	public IStrategoTerm getInstruction(IStrategoInt taskID) {
@@ -197,24 +239,6 @@ public class TaskEngine {
 
 	public TaskEvaluator getEvaluator() {
 		return evaluator;
-	}
-
-	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults,
-		IStrategoList changedReads) {
-		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
-		while(!changedReads.isEmpty()) {
-			for(IStrategoInt readTaskID : getRead(changedReads.head())) {
-				scheduleTransitiveReads(readTaskID);
-			}
-			changedReads = changedReads.tail();
-		}
-		return evaluator.evaluate(context, performInstruction, insertResults);
-	}
-
-	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
-		evaluator.schedule(readTaskID);
-		for(IStrategoInt dependent : getDependent(readTaskID))
-			scheduleTransitiveReads(dependent);
 	}
 
 	public void reset() {
