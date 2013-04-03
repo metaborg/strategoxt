@@ -107,10 +107,7 @@ public class TaskEngine {
 		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
-			if(dependencies.isEmpty())
-				evaluator.scheduleNoDependencies(taskID);
-			else
-				evaluator.schedule(taskID);
+			evaluator.schedule(taskID);
 		}
 		removedTasks.remove(taskID);
 
@@ -158,21 +155,17 @@ public class TaskEngine {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		while(!changedReads.isEmpty()) {
 			for(IStrategoInt readTaskID : getRead(changedReads.head())) {
-				scheduleTransitiveReads(readTaskID, null);
+				scheduleTransitiveReads(readTaskID);
 			}
 			changedReads = changedReads.tail();
 		}
 		return evaluator.evaluate(context, performInstruction, insertResults);
 	}
 
-	private void scheduleTransitiveReads(IStrategoInt readTaskID, IStrategoInt dependency) {
-		if(dependency == null)
-			evaluator.scheduleNoDependencies(readTaskID);
-		else
-			evaluator.schedule(readTaskID, dependency);
-		
+	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
+		evaluator.schedule(readTaskID);
 		for(IStrategoInt dependent : getDependent(readTaskID))
-			scheduleTransitiveReads(dependent, readTaskID);
+			scheduleTransitiveReads(dependent);
 	}
 
 	public IStrategoTerm getInstruction(IStrategoInt taskID) {
