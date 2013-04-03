@@ -11,6 +11,7 @@ public class task_api_stop_collection_0_1 extends Strategy {
 
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm partition) {
-		return TaskManager.getInstance().getCurrent().stopCollection((IStrategoString) partition);
+		TaskManager.getInstance().getCurrent().stopCollection((IStrategoString) partition);
+		return current;
 	}
 }
