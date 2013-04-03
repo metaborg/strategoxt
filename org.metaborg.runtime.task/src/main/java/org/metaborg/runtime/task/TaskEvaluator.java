@@ -27,7 +27,7 @@ public class TaskEvaluator {
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Set<IStrategoInt> nextScheduled = new HashSet<IStrategoInt>();
-	
+
 	/** Queue of task that are scheduled for evaluation. */
 	private final Queue<IStrategoInt> evaluationQueue = new ConcurrentLinkedQueue<IStrategoInt>();
 
@@ -42,12 +42,34 @@ public class TaskEvaluator {
 	}
 
 	/**
-	 * Schedules a task with unknown dependencies for evaluation.
+	 * Schedules a task with unknown dependencies for evaluation. Multiple calls only schedule once.
 	 * 
 	 * @param taskID Task identifier to schedule.
 	 */
 	public void schedule(IStrategoInt taskID) {
 		nextScheduled.add(taskID);
+	}
+
+	/**
+	 * Schedules a task with no dependencies for evaluation. Multiple calls only schedule once.
+	 * 
+	 * @param taskID Task identifier to schedule.
+	 */
+	public void scheduleNoDependencies(IStrategoInt taskID) {
+		if(nextScheduled.add(taskID))
+			queue(taskID);
+	}
+
+	/**
+	 * Schedules a task with a specific dependency for evaluation. Multiple calls only schedule once. May be called
+	 * multiple times to add extra dependencies.
+	 * 
+	 * @param taskID Task identifier to schedule.
+	 * @param dependency The dependency.
+	 */
+	public void schedule(IStrategoInt taskID, IStrategoInt dependency) {
+		nextScheduled.add(taskID);
+		toRuntimeDependency.put(taskID, dependency);
 	}
 
 	private void queue(IStrategoInt taskID) {
@@ -60,22 +82,6 @@ public class TaskEvaluator {
 			for(IStrategoInt taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
-			}
-
-			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
-			for(IStrategoInt taskID : nextScheduled) {
-				Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
-				for(IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
-					if(taskEngine.isSolved(dependency))
-						dependencies.remove(dependency);
-				}
-				
-				// If the task has no unsolved dependencies, queue it for analysis.
-				if(dependencies.isEmpty()) {
-					evaluationQueue.add(taskID);
-				} else {
-					toRuntimeDependency.putAll(taskID, dependencies);
-				}
 			}
 
 			// Evaluate each task in the queue.
