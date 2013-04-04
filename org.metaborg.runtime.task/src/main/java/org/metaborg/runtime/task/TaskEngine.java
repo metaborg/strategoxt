@@ -17,6 +17,7 @@ import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
@@ -148,9 +149,10 @@ public class TaskEngine {
 	 * @param performInstruction The strategy that performs an instruction.
 	 * @param insertResults The strategy that inserts results into an instruction.
 	 * @param changedReads A list of reads which have changed.
-	 * @return A list of task identifiers that have failed to produce a result.
+	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
+	 *         evaluations.
 	 */
-	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults,
+	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		while(!changedReads.isEmpty()) {
