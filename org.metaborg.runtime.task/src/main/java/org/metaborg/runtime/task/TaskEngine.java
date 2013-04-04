@@ -105,7 +105,7 @@ public class TaskEngine {
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		IStrategoInt taskID = factory.makeInt(instruction.hashCode());
+		final IStrategoInt taskID = factory.makeInt(instruction.hashCode());
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
@@ -131,26 +131,33 @@ public class TaskEngine {
 	 * 
 	 * @param taskID The identifier of the task.
 	 * @param instruction The instruction of the task.
-	 * @param dependencies A list of dependencies of the task
+	 * @param partitions The partitions of the task
+	 * @param dependencies The dependencies of the task
 	 * @param reads The reads of the task.
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
-	public void addPersistedTask(IStrategoInt taskID, IStrategoTerm instruction, IStrategoList dependencies,
-		IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
+	public void addPersistedTask(IStrategoInt taskID, IStrategoTerm instruction, IStrategoList partitions,
+		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
 		toInstruction.put(taskID, instruction);
+		while(!partitions.isEmpty()) {
+			toPartition.put(taskID, (IStrategoString) partitions.head());
+			partitions = partitions.tail();
+		}
 		while(!dependencies.isEmpty()) {
 			toDependency.put(taskID, (IStrategoInt) dependencies.head());
 			dependencies = dependencies.tail();
 		}
 		while(!reads.isEmpty()) {
-			toRead.put(taskID, (IStrategoTerm) reads.head());
+			toRead.put(taskID, reads.head());
 			reads = reads.tail();
 		}
 		if(results.getTermType() == IStrategoTerm.LIST)
 			toResult.put(taskID, (IStrategoList) results);
 		if(failed.intValue() == 1)
 			this.failed.add(taskID);
+
+		System.out.println("AddP " + taskID + ": " + instruction);
 	}
 
 	/**
@@ -163,7 +170,7 @@ public class TaskEngine {
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before stopping collection.");
 
-		for(IStrategoInt removed : removedTasks)
+		for(final IStrategoInt removed : removedTasks)
 			toPartition.remove(removed, partition);
 		collectGarbage();
 		inCollection.remove(partition);
@@ -184,7 +191,7 @@ public class TaskEngine {
 		IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		while(!changedReads.isEmpty()) {
-			for(IStrategoInt readTaskID : getRead(changedReads.head())) {
+			for(final IStrategoInt readTaskID : getRead(changedReads.head())) {
 				scheduleTransitiveReads(readTaskID);
 			}
 			changedReads = changedReads.tail();
@@ -194,7 +201,7 @@ public class TaskEngine {
 
 	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
 		evaluator.schedule(readTaskID);
-		for(IStrategoInt dependent : getDependent(readTaskID))
+		for(final IStrategoInt dependent : getDependent(readTaskID))
 			scheduleTransitiveReads(dependent);
 	}
 
@@ -288,13 +295,13 @@ public class TaskEngine {
 	}
 
 	private void collectGarbage() {
-		ArrayList<IStrategoInt> garbage = new ArrayList<IStrategoInt>(this.garbage);
+		final ArrayList<IStrategoInt> garbage = new ArrayList<IStrategoInt>(this.garbage);
 		tasks.removeAll(garbage);
 		solved.removeAll(garbage);
 		failed.removeAll(garbage);
-		for(IStrategoInt taskID : garbage)
+		for(final IStrategoInt taskID : garbage)
 			toDependency.removeAll(taskID);
-		for(IStrategoInt taskID : garbage)
+		for(final IStrategoInt taskID : garbage)
 			toRead.removeAll(taskID);
 	}
 }
