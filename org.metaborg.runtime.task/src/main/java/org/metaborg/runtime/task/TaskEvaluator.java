@@ -13,6 +13,7 @@ import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
@@ -27,7 +28,7 @@ public class TaskEvaluator {
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Set<IStrategoInt> nextScheduled = new HashSet<IStrategoInt>();
-	
+
 	/** Queue of task that are scheduled for evaluation. */
 	private final Queue<IStrategoInt> evaluationQueue = new ConcurrentLinkedQueue<IStrategoInt>();
 
@@ -54,7 +55,7 @@ public class TaskEvaluator {
 		evaluationQueue.add(taskID);
 	}
 
-	public IStrategoList evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
+	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		try {
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
 			for(IStrategoInt taskID : nextScheduled) {
@@ -69,7 +70,7 @@ public class TaskEvaluator {
 					if(taskEngine.isSolved(dependency))
 						dependencies.remove(dependency);
 				}
-				
+
 				// If the task has no unsolved dependencies, queue it for analysis.
 				if(dependencies.isEmpty()) {
 					evaluationQueue.add(taskID);
@@ -79,7 +80,9 @@ public class TaskEvaluator {
 			}
 
 			// Evaluate each task in the queue.
+			int numTasksEvaluated = 0;
 			for(IStrategoInt taskID; (taskID = evaluationQueue.poll()) != null;) {
+				++numTasksEvaluated;
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 				final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
 				if(result != null && Tools.isTermAppl(result)) {
@@ -103,8 +106,7 @@ public class TaskEvaluator {
 				}
 			}
 
-			IStrategoList erroneousTasks = factory.makeList(nextScheduled);
-			return erroneousTasks;
+			return factory.makeTuple(factory.makeList(nextScheduled), factory.makeInt(numTasksEvaluated));
 		} finally {
 			reset();
 		}
