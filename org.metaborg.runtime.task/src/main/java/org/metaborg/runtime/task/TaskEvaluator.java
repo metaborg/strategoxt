@@ -89,14 +89,17 @@ public class TaskEvaluator {
 					// The task has dynamic dependencies.
 					IStrategoAppl resultAppl = (IStrategoAppl) result;
 					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
+						System.out.println("DDep " + taskID + ": " + instruction + " - " + resultAppl.getSubterm(0));
 						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
 					}
 				} else if(result == null) {
 					// The task failed to produce a result.
+					System.out.println("Fail " + taskID + ": " + instruction);
 					taskEngine.addFailed(taskID);
 					tryScheduleNewTasks(taskID);
 				} else if(Tools.isTermList(result)) {
 					// The task produced a result.
+					System.out.println("Succ " + taskID + ": " + instruction + " - " + result);
 					taskEngine.addResult(taskID, (IStrategoList) result);
 					nextScheduled.remove(instruction);
 					tryScheduleNewTasks(taskID);
@@ -121,6 +124,7 @@ public class TaskEvaluator {
 	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoInt taskID, IStrategoTerm instruction) {
 		IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
+		System.out.println("Eval " + taskID + ": " + insertedInstruction);
 		return performInstruction.invoke(context, insertedInstruction, taskID);
 	}
 

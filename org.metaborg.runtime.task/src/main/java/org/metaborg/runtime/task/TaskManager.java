@@ -1,6 +1,7 @@
 package org.metaborg.runtime.task;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
@@ -8,13 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.spoofax.interpreter.library.IOAgent;
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.terms.io.binary.SAFWriter;
+import org.spoofax.terms.io.binary.TermReader;
 
 public class TaskManager {
 	private static final TaskManager INSTANCE = new TaskManager();
-	private static Map<URI, WeakReference<TaskEngine>> taskEngineCache = new HashMap<URI, WeakReference<TaskEngine>>();
+	private static final Map<URI, WeakReference<TaskEngine>> taskEngineCache =
+		new HashMap<URI, WeakReference<TaskEngine>>();
+	private final static TaskEngineFactory taskEngineFactory = new TaskEngineFactory();
 
-	private ThreadLocal<TaskEngine> current = new ThreadLocal<TaskEngine>();
+	private final ThreadLocal<TaskEngine> current = new ThreadLocal<TaskEngine>();
+	private final ThreadLocal<URI> currentProject = new ThreadLocal<URI>();
 
 	private TaskManager() {
 		// use getInstance()
@@ -40,11 +47,7 @@ public class TaskManager {
 	}
 
 	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
-		File file = new File(projectPath);
-		if(!file.isAbsolute())
-			file = new File(agent.getWorkingDir(), projectPath);
-		URI project = file.toURI();
-
+		URI project = getProjectURI(projectPath, agent);
 		synchronized(TaskManager.class) {
 			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
 			TaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
@@ -56,18 +59,56 @@ public class TaskManager {
 			}
 			taskEngineCache.put(project, new WeakReference<TaskEngine>(taskEngine));
 			current.set(taskEngine);
+			currentProject.set(project);
 			return taskEngine;
 		}
 	}
 
+	public void unloadTaskEngine(String removedProjectPath, IOAgent agent) {
+		URI removedProject = getProjectURI(removedProjectPath, agent);
+		synchronized(TaskManager.class) {
+			WeakReference<TaskEngine> removedTaskEngine = taskEngineCache.remove(removedProject);
+
+			TaskEngine taskEngine = current.get();
+			if(taskEngine != null && taskEngine == removedTaskEngine.get()) {
+				current.set(null);
+			}
+
+			URI project = currentProject.get();
+			if(project != null && project.equals(removedProject)) {
+				currentProject.set(null);
+			}
+		}
+	}
+
+	private URI getProjectURI(String projectPath, IOAgent agent) {
+		File file = new File(projectPath);
+		if(!file.isAbsolute())
+			file = new File(agent.getWorkingDir(), projectPath);
+		return file.toURI();
+	}
+
 	public TaskEngine tryReadFromFile(File file, ITermFactory factory) {
 		TaskEngine taskEngine = new TaskEngine(factory);
-		return taskEngine;
-		// TODO: read from file.
+		try {
+			IStrategoList tasks = (IStrategoList) new TermReader(factory).parseFromFile(file.toString());
+			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	public void storeCurrent(ITermFactory factory) throws IOException {
-		// TODO: write from file
+		File file = getFile(currentProject.get());
+		IStrategoList tasks = taskEngineFactory.toTerm(getCurrent(), factory);
+		file.createNewFile();
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			SAFWriter.writeTermToSAFStream(tasks, fos);
+			fos.flush();
+		} finally {
+			fos.close();
+		}
 	}
 
 	private File getFile(URI project) {
