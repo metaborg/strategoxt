@@ -14,8 +14,8 @@ imports
 rules // Single file analysis
   
   analyze-one(|language, path, project-path):
-    ast -> (<analyze-result-analyzed-ast> result, error*)
+    ast -> (<analyze-result-analyzed-ast> result, error*, evaluated-count)
     with // Setup index
-      partition := $[[project-path]/[path]];
-      result        := <analyze-collect(|language, project-path)> File(partition, ast);
-    	error*        := <analyze-perform-all> [result]
+      partition                 := $[[project-path]/[path]];
+      result                    := <analyze-collect(|language, project-path)> File(partition, ast);
+    	(error*, evaluated-count) := <analyze-perform-all> [result]

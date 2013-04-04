@@ -29,14 +29,14 @@ rules // Multi file analysis
       end
 
   analyze-multiple-files(parallel, complete-work-unit|language, project-path):
-    file* -> ([], error*, result*)
+    file* -> (error*, result*, evaluated-count)
     with
     	measure-time(
 	      result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*
 	      , id | "analyze-multiple-collect"
 	    );
       measure-time(
-      	error* := <analyze-perform-all> result*
+      	(error*, evaluated-count) := <analyze-perform-all> result*
       	, id | "analyze-multiple-perform"
       )
       

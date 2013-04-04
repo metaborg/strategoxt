@@ -41,10 +41,10 @@ rules // Analysis
   	  )
 	
 	analyze-perform-all:
-		result* -> error*
+		result* -> (error*, evaluated-count)
 		with
 			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-perform-concat-reads");
-      measure-time(task-evaluate(|changed-read*) => error*, id | "analyze-perform-evaluate")
+      measure-time(task-evaluate(|changed-read*) => (error*, evaluated-count), id | "analyze-perform-evaluate")
 
 rules // Index entries to diff
 	

@@ -100,6 +100,12 @@ rules // API
 			otherwise            : task-api-has-failed(|<id>)
 		end
 		
+	task-get-solved =
+		switch id
+			case ?Result(taskID) : task-api-get-result(|taskID) <+ (task-api-has-failed(|taskID); ![])
+			otherwise            : task-api-has-failed(|<id>) <+ (task-api-has-failed(|<id>); ![])
+		end
+				
 	task-add-read(|taskID):
 		read -> <task-api-add-read(|taskID, read)>
 
