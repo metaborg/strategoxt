@@ -109,6 +109,7 @@ public class TaskEngine {
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
+			System.out.println("Add  " + taskID + ": " + instruction);
 		}
 		removedTasks.remove(taskID);
 
@@ -123,6 +124,33 @@ public class TaskEngine {
 
 	private IStrategoAppl createResult(IStrategoInt taskID) {
 		return factory.makeAppl(resultConstructor, taskID);
+	}
+
+	/**
+	 * Adds a persisted task back to the task engine.
+	 * 
+	 * @param taskID The identifier of the task.
+	 * @param instruction The instruction of the task.
+	 * @param dependencies A list of dependencies of the task
+	 * @param reads The reads of the task.
+	 * @param results A list of results of the task, or an empty tuple if it has no results.
+	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
+	 */
+	public void addPersistedTask(IStrategoInt taskID, IStrategoTerm instruction, IStrategoList dependencies,
+		IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
+		toInstruction.put(taskID, instruction);
+		while(!dependencies.isEmpty()) {
+			toDependency.put(taskID, (IStrategoInt) dependencies.head());
+			dependencies = dependencies.tail();
+		}
+		while(!reads.isEmpty()) {
+			toRead.put(taskID, (IStrategoTerm) reads.head());
+			reads = reads.tail();
+		}
+		if(results.getTermType() == IStrategoTerm.LIST)
+			toResult.put(taskID, (IStrategoList) results);
+		if(failed.intValue() == 1)
+			this.failed.add(taskID);
 	}
 
 	/**
@@ -168,6 +196,10 @@ public class TaskEngine {
 		evaluator.schedule(readTaskID);
 		for(IStrategoInt dependent : getDependent(readTaskID))
 			scheduleTransitiveReads(dependent);
+	}
+
+	public Iterable<IStrategoInt> getTaskIDs() {
+		return tasks;
 	}
 
 	public IStrategoTerm getInstruction(IStrategoInt taskID) {
