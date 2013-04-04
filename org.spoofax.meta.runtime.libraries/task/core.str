@@ -87,6 +87,8 @@ rules // API
 	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
 	task-evaluate(|changed-read*)                        = task-api-evaluate(perform-task, insert-results-with-fail|changed-read*)
 	task-reset                                           = task-api-reset
+	task-persist                                         = task-api-persist
+	task-unload(|project-path)                           = task-api-unload(|project-path)
 	
 	task-get-result =
 		switch id
@@ -120,3 +122,5 @@ rules /** @internal API externals */
 	external task-api-add-read(|taskID, read)
 	external task-api-evaluate(perform-task, insert-result|changed-reads)
 	external task-api-reset(|)
+	external task-api-persist(|)
+	external task-api-unload(|project-path)
