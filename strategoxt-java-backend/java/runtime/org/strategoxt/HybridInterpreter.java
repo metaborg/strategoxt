@@ -85,7 +85,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		private final ITermFactory theBaseFactory;
 
 		public ConstructorRecordingTermFactory(ITermFactory baseFactory) {
-			super(IStrategoTerm.IMMUTABLE, baseFactory);
+			super(IStrategoTerm.MUTABLE, baseFactory);
 			theBaseFactory = baseFactory;
 		}
 
