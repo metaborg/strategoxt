@@ -58,15 +58,15 @@ public class TaskEvaluator {
 	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		try {
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
-			for(IStrategoInt taskID : nextScheduled) {
+			for(final IStrategoInt taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
 			}
 
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
-			for(IStrategoInt taskID : nextScheduled) {
-				Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
-				for(IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
+			for(final IStrategoInt taskID : nextScheduled) {
+				final Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
+				for(final IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
 					if(taskEngine.isSolved(dependency))
 						dependencies.remove(dependency);
 				}
@@ -87,19 +87,16 @@ public class TaskEvaluator {
 				final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
 				if(result != null && Tools.isTermAppl(result)) {
 					// The task has dynamic dependencies.
-					IStrategoAppl resultAppl = (IStrategoAppl) result;
+					final IStrategoAppl resultAppl = (IStrategoAppl) result;
 					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
-						System.out.println("DDep " + taskID + ": " + instruction + " - " + resultAppl.getSubterm(0));
 						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
 					}
 				} else if(result == null) {
 					// The task failed to produce a result.
-					System.out.println("Fail " + taskID + ": " + instruction);
 					taskEngine.addFailed(taskID);
 					tryScheduleNewTasks(taskID);
 				} else if(Tools.isTermList(result)) {
 					// The task produced a result.
-					System.out.println("Succ " + taskID + ": " + instruction + " - " + result);
 					taskEngine.addResult(taskID, (IStrategoList) result);
 					nextScheduled.remove(instruction);
 					tryScheduleNewTasks(taskID);
@@ -123,8 +120,7 @@ public class TaskEvaluator {
 
 	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoInt taskID, IStrategoTerm instruction) {
-		IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
-		System.out.println("Eval " + taskID + ": " + insertedInstruction);
+		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
 		return performInstruction.invoke(context, insertedInstruction, taskID);
 	}
 
@@ -134,12 +130,12 @@ public class TaskEvaluator {
 
 	private void tryScheduleNewTasks(IStrategoInt solved) {
 		// Retrieve dependent tasks of the solved task.
-		Collection<IStrategoInt> dependents = taskEngine.getDependent(solved);
+		final Collection<IStrategoInt> dependents = taskEngine.getDependent(solved);
 		// Make a copy for toRuntimeDependency because a remove operation can occur while iterating.
-		Collection<IStrategoInt> runtimeDependents =
+		final Collection<IStrategoInt> runtimeDependents =
 			new ArrayList<IStrategoInt>(toRuntimeDependency.getInverse(solved));
 
-		for(IStrategoInt dependent : Iterables.concat(dependents, runtimeDependents)) {
+		for(final IStrategoInt dependent : Iterables.concat(dependents, runtimeDependents)) {
 			// Retrieve dependencies for a dependent task.
 			Collection<IStrategoInt> dependencies = toRuntimeDependency.get(dependent);
 			int dependenciesSize = dependencies.size();
@@ -151,7 +147,7 @@ public class TaskEvaluator {
 			}
 
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
-			boolean removed = toRuntimeDependency.remove(dependent, solved);
+			final boolean removed = toRuntimeDependency.remove(dependent, solved);
 			if(dependenciesSize == 1 && removed)
 				queue(dependent);
 		}

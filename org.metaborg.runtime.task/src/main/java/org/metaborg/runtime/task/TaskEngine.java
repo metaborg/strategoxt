@@ -109,7 +109,6 @@ public class TaskEngine {
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
-			System.out.println("Add  " + taskID + ": " + instruction);
 		}
 		removedTasks.remove(taskID);
 
@@ -156,8 +155,6 @@ public class TaskEngine {
 			toResult.put(taskID, (IStrategoList) results);
 		if(failed.intValue() == 1)
 			this.failed.add(taskID);
-
-		System.out.println("AddP " + taskID + ": " + instruction);
 	}
 
 	/**
