@@ -113,10 +113,8 @@ public class TaskEngine {
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
-		while(!dependencies.isEmpty()) {
-			toDependency.put(taskID, (IStrategoInt) dependencies.head());
-			dependencies = dependencies.tail();
-		}
+		for(final IStrategoTerm dependency : dependencies)
+			toDependency.put(taskID, (IStrategoInt) dependency);
 
 		return createResult(taskID);
 	}
@@ -139,18 +137,12 @@ public class TaskEngine {
 	public void addPersistedTask(IStrategoInt taskID, IStrategoTerm instruction, IStrategoList partitions,
 		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
 		toInstruction.put(taskID, instruction);
-		while(!partitions.isEmpty()) {
-			toPartition.put(taskID, (IStrategoString) partitions.head());
-			partitions = partitions.tail();
-		}
-		while(!dependencies.isEmpty()) {
-			toDependency.put(taskID, (IStrategoInt) dependencies.head());
-			dependencies = dependencies.tail();
-		}
-		while(!reads.isEmpty()) {
-			toRead.put(taskID, reads.head());
-			reads = reads.tail();
-		}
+		for(final IStrategoTerm partition : partitions)
+			toPartition.put(taskID, (IStrategoString) partition);
+		for(final IStrategoTerm dependency : dependencies)
+			toDependency.put(taskID, (IStrategoInt) dependency);
+		for(final IStrategoTerm read : reads)
+			toRead.put(taskID, read);
 		if(results.getTermType() == IStrategoTerm.LIST)
 			toResult.put(taskID, (IStrategoList) results);
 		if(failed.intValue() == 1)
@@ -187,11 +179,10 @@ public class TaskEngine {
 	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
-		while(!changedReads.isEmpty()) {
-			for(final IStrategoInt readTaskID : getRead(changedReads.head())) {
+		for(final IStrategoTerm changedRead : changedReads) {
+			for(final IStrategoInt readTaskID : getRead(changedRead)) {
 				scheduleTransitiveReads(readTaskID);
 			}
-			changedReads = changedReads.tail();
 		}
 		return evaluator.evaluate(context, performInstruction, insertResults);
 	}
@@ -292,6 +283,7 @@ public class TaskEngine {
 	}
 
 	private void collectGarbage() {
+		// TODO: this iterates over the entire tasks collection?
 		final ArrayList<IStrategoInt> garbage = new ArrayList<IStrategoInt>(this.garbage);
 		tasks.removeAll(garbage);
 		solved.removeAll(garbage);

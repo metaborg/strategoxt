@@ -156,9 +156,7 @@ public class TaskEvaluator {
 	private void updateDelayedDependencies(IStrategoInt delayed, IStrategoList dependencies) {
 		// Sets the runtime dependencies for a task to the given dependency list.
 		toRuntimeDependency.removeAll(delayed);
-		while(!dependencies.isEmpty()) {
-			toRuntimeDependency.put(delayed, (IStrategoInt) dependencies.head());
-			dependencies = dependencies.tail();
-		}
+		for(final IStrategoTerm dependency : dependencies)
+			toRuntimeDependency.put(delayed, (IStrategoInt) dependency);
 	}
 }
