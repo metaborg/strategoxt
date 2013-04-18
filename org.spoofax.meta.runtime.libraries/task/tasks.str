@@ -1,0 +1,31 @@
+module task/tasks
+
+imports
+	
+	task/core
+	task/interface
+
+signature
+
+	constructors
+		
+    Choice : List(Result)                -> Instruction
+    Choice : List(Result) * List(String) -> Instruction
+    Match  : ID * List(Term) * Term      -> Instruction
+	
+rules
+	
+	perform-task(|nr):
+ 		Choice(choice*) -> <Hd> choice*
+
+  perform-task(|n):
+    Choice(choice*, error*) -> <Hd> choice*
+
+  perform-task(|nr): 
+  	Match(key, bound, term*@<with(is-list|"Expected a list of terms.")>) -> result
+  	where
+  		result := <filter(!(key, <id>, bound); task-match)> term*;
+  		if [] := result then
+  			fail
+			end
+  

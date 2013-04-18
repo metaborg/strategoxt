@@ -2,89 +2,62 @@ module analysis/core
 
 imports
 	
-	nbl/-
-	task/-
-	analysis/-
-	index/-
-
+  nbl/collect
+  nbl/tasks
+  nbl/entries
+  nbl/uri
+  nbl/utils
+  index/core
+  index/query
+  task/core
+  
 signature
 
   constructors
   
     File : Path * AST -> File
-    Result : Partition * AST * AST * List(Entry) * List(Entry) * List(Task) * List(Task) * 
-             List(Term) * List(Term) * List(Term) -> Result
-    // Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, 
-    //        error*, warning*, note*)
+    Result : Partition * AST * AST * List(URI) * List(Term) * List(Term) * List(Term) -> Result
+    // Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
     
-rules
+rules // Analysis
 	
-	analyze-collect(|language):
-    File(partition, ast) -> Result(partition, ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, [], [], [])
+	analyze-collect(|language, project-path):
+    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
     with
-    	<vdebug(!"Collect for: ")> partition;
     	measure-time(
-	    	// Store and clean old tasks and entries. 
-	      old-task*  := <task-olds> partition;
-	      old-entry* := <nabl-entry-olds> partition;
-	      <task-clear> partition;
-	      <nabl-entry-clear> partition,
-	      id | "analyze-collect-oldentries"
-      );
-    	// Collect tasks and entries.
-    	measure-time(
-      	(analyzed-ast, new-entry*, new-task*) := <nabl-collect(|partition, Language(language))> ast,
-      	id | "analyze-collect-collect"
-      );
-      // Store tasks and entries.
-      measure-time(
-	      <index-add-all(|<collect-partition> partition)> new-entry*;
-	      <map(store-task)> new-task*,
-	      id | "analyze-collect-store"
-	    )
+    		index-setup(|language, [project-path], partition);
+		    index-start-collection(|partition);
+    		task-setup(|project-path);
+    		task-start-collection(|partition)
+      	, id | "analyze-collect-setup"
+      ); measure-time(
+      	analyzed-ast := <nabl-collect(|partition, Language(language))> initial-ast
+    	  , id | "analyze-collect-collect" 
+  	  ); measure-time(
+  	  	index-stop-collection => (removed-entry*, added-entry*);
+      	task-stop-collection(|partition);
+      	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
+      	, id | "analyze-collect-diff" 
+  	  )
 	
-	analyze-incremental(|execqueue):
-		r@Result(_, _, _, old-entry*, new-entry*, old-task*, new-task*, _, _, _) -> ()
+	analyze-perform-all:
+		result* -> (error*, evaluated-count)
 		with
-    	// Added and dependencies of removed tasks that need to be re-evaluted.
-    	measure-time(
-  			(added-task*, removed-task*) := <task-incremental-no-confirm-added> (old-task*, new-task*),
-  			id | "analyze-incremental-diff"
-    	);
+			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-perform-concat-reads");
+      measure-time(task-evaluate(|changed-read*) => (error*, evaluated-count), id | "analyze-perform-evaluate")
 
-			// Cleanup removed results
-    	measure-time(
-  			<map(task-nr; vdebug(!"Removing all results and dependencies for: "); task-remove-result; task-remove-dependencies)> removed-task*;
-  			<map(task-nr; vdebug(!"Removing all reads for: "); nabl-remove-read)> removed-task*,
-  			id | "analyze-incremental-remove-olds"
-  		);
-    	
-    	// Tasks that need to be re-evaluated because a definition or property has changed.
-    	measure-time(
-	    	changedEntry*  := <nabl-entry-incremental; map(vdebug(!"Changed entry: "); nabl-uri)> (old-entry*, <filter(nabl-diff-entry)> new-entry*);
-	    	read-task-nr*  := <mapconcat(nabl-get-reads); map(vdebug(!"Read for changed entry: "))> changedEntry*;
-	    	read-task*     := <mapconcat(task-reconstruct); map(vdebug(!"Changed task: "))> read-task-nr*,
-	    	id | "analyze-incremental-add-news"
-	    );
-
-			// All tasks that need to be re-evaluated.
-			measure-time(
-	      <map(analyze-cleanup-and-queue(|execqueue))> added-task*;
-	      <map(analyze-cleanup-and-queue(|execqueue))> read-task*,
-	  		id | "analyze-incremental-concat-queue"
-	  	)
-	  	
-	analyze-cleanup-and-queue(|execqueue) =
-		where(queue-task(|execqueue));
-		task-nr;
-		where(task-remove-result);
-		where(nabl-remove-read)
-    	
-	analyze-perform-all(|execqueue):
-		_ -> error*
-		with
-  		task-create-runtimedep => runtimedep;
-  		task-create-runtimedep => invruntimedep;
-      (taskEntry*, error*) := <perform-tasks(|execqueue, runtimedep, invruntimedep)>; 
-      <index-add-all(|"TaskEntries")> taskEntry*
-      			
+rules // Index entries to diff
+	
+  analyze-diff-entry =
+    ?Def(_)
+    
+  analyze-diff-entry =
+    ?Prop(_, _, _)
+      
+rules // Projections
+	
+	analyze-result-reads:
+		Result(_, _, _, changed-read*, _, _, _) -> changed-read*
+		
+	analyze-result-analyzed-ast:
+		Result(_, _, analyzed-ast, _, _, _, _) -> analyzed-ast

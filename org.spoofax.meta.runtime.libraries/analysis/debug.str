@@ -3,35 +3,19 @@ module analysis/debug
 imports
 	
 	nbl/collect
-	task/store
 	index/core
 	index/query
+	task/core
 
 rules
 	
-	analysis-debug-show-results(|language):
+  analysis-debug-show-current-partition(|language):
     (_, _, _, path, project-path) -> (filename, result)
     with
     	partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
-      filename  := <guarantee-extension(|"current.results.aterm")> path;
-      result    := <index-get-all-in-partition> partition
-      
-  analysis-debug-show-collected(|language):
-    (_, _, _, path, project-path) -> (filename, result)
-    with
-    	partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
-      filename := <guarantee-extension(|"current.collected.aterm")> path;
-      result   := <collect-partition; index-get-all-in-partition> partition
-      
-  analysis-debug-show-tasks(|language):
-    (_, _, _, path, project-path) -> (filename, result)
-    with
-    	partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
-      filename := <guarantee-extension(|"current.tasks.aterm")> path;
-      result   := <task-partition; index-get-all-in-partition> partition
+      filename := <guarantee-extension(|"index.current.aterm")> path;
+      result   := <index-get-all-in-partition> partition
       
   analysis-debug-show-all-partitions(|language):
     (_, _, _, path, project-path) -> (filename, result)
@@ -40,24 +24,25 @@ rules
       index-setup(|language, [project-path], partition);
       filename := <guarantee-extension(|"index.all.aterm")> path;
       result   := <index-get-all-partitions; map(\filename -> (filename, <index-get-all-in-partition> filename)\)>
-
-  analysis-debug-clear-current(|language):
-    (_, _, _, path, project-path) -> None()
-    with
-     	partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
-      <index-clear-partition> partition
       
-  analysis-debug-clear-all(|language):
+  analysis-debug-reset-index(|language):
     (_, _, _, path, project-path) -> None()
     with
     	partition := $[[project-path]/[path]];
       index-setup(|language, [project-path], partition);
       index-clear
+      
+  analysis-debug-reset-task(|language):
+    (_, _, _, path, project-path) -> None()
+    with
+      task-setup(|project-path);
+      task-reset
 
-  analysis-debug-reload(|language):
+  analysis-debug-reanalyze(|language):
     (_, _, _, path, project-path) -> None()
     with
     	partition := $[[project-path]/[path]];
+    	task-setup(|project-path);
+    	task-reset;
       index-setup(|language, [project-path], partition);
       index-reload

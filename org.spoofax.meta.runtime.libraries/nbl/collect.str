@@ -3,8 +3,8 @@ module nbl/collect
 imports
 	
 	task/core
+	task/tasks
 	nbl/tasks
-	nbl/incremental
 	nbl/entries
 	nbl/interface
 	nbl/uri
@@ -64,24 +64,23 @@ strategies // generic traversal
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
 	nabl-collect(|partition, lang):
-	  ast -> (ast'', <iset-elements> elem*, <iset-elements> task*)
+	  ast -> ast''
 	  where
-	    new-iset      => elem*;
-	    new-iset      => task*;
 	    new-hashtable => unique*;
-	    ast'  := <nabl-collect(id|lang, partition, unique*, elem*, task*, [])> ast ;
-	    ast'' := <alltd(type-task(|task*))> ast'
+	    new-iset => elem*; // TODO: Remove
+	    ast'  := <nabl-collect(id|lang, partition, unique*, elem*, [])> ast ;
+	    ast'' := <alltd(type-task(|partition))> ast'
 	  
 	/**
 	 * Performs the collection in a topdown traversal. 
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
 	 */
-	nabl-collect(sibling-uris|lang, partition, unique*, elem*, task*, uri*) =
+	nabl-collect(sibling-uris|lang, partition, unique*, elem*, uri*) =
 		nabl-state-pop(?state*);
 		nabl-scope-site(?uri'*|lang, uri*); // scopes of external definitions, e.g. variables in let expressions
 		
 		(
-		   nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*) 
+			 nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*)
     <+ match(sibling-uris|uri*)
     ;  nabl-anonymous-scope-site(?child-uri*|lang, partition, unique*, uri'*, state*)
     <+ match(?child-uri*|uri'*)
@@ -89,18 +88,18 @@ strategies // generic traversal
     
 		try(nabl-state-site);
 		
-		preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, elem*, task*, child-uri*)))); // visit children from left to right
+		preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, elem*, child-uri*)))); // visit children from left to right
 		
-		try(nabl-use-site(|lang, elem*, task*, uri'*, state*));
-    try(nabl-import-site(|lang, elem*, task*, child-uri*, state*));
-    try(nabl-prop-site(|elem*, task*, state*));
+		try(nabl-use-site(|lang, partition, elem*, uri'*, state*));
+    try(nabl-import-site(|lang, partition, elem*, child-uri*, state*));
+    try(nabl-prop-site(|lang, partition, elem*, state*));
     try(nabl-implicit-def-site(|lang, partition, unique*, elem*, child-uri*, state*));
-    try(nabl-constraint-site(|task*))
+    try(nabl-constraint-site(|lang, partition))
 	
-	nabl-siblings(|lang, partition, unique*, elem*, task*, uri*) = 
+	nabl-siblings(|lang, partition, unique*, elem*, uri*) = 
 		[] + 
-		[ nabl-collect(?sibling-uri*|lang, partition, unique*, elem*, task*, uri*)
-		| nabl-siblings(|lang, partition, unique*, elem*, task*, sibling-uri*) ]
+		[ nabl-collect(?sibling-uri*|lang, partition, unique*, elem*, uri*)
+		| nabl-siblings(|lang, partition, unique*, elem*, sibling-uri*) ]
 
 rules // generic analysis of state
   
@@ -190,64 +189,71 @@ rules // generic analysis of defs
 				def-uri   := <nabl-extend-uri(|unique*, partition, ns, name, unique)> uri;
 				subs-uri  := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri;
         alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri;
-	  		<new-alias(|elem*, def-uri, alias-uri)> a;
+	  		<new-alias(|partition, def-uri, alias-uri)> a;
 	  		match(child-uris|uri*);
 				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
 			end;
 			// add Def entry to the index
-			d := <new-def(|elem*, def-uri)> a
+			d := <new-def(|partition, def-uri)> a
 	
 rules // generic analysis of uses
 	
 	// single candidate
-	nabl-use(|lang, elem*, task*, uri*, candidate) =
+	nabl-use(|lang, partition, elem*, uri*, candidate) =
 		where (<not(is-list)> candidate);
-		nabl-use(|lang, elem*, task*, uri*, [candidate])
+		nabl-use(|lang, partition, elem*, uri*, [candidate])
 	
 	// list of candidates
-	nabl-use(|lang, elem*, task*, uri*, candidate*):
+	nabl-use(|lang, partition, elem*, uri*, candidate*):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, elem*, task*, uri*, <nabl-fix-name> name)); unions> candidate*;
-			result   := <new-task(|task*)> Choice(subtask*);
-		  u        := <new-use(|elem*, result)>
+			subtask* := <map(nabl-use-candidate(|lang, partition, elem*, uri*, <nabl-fix-name> name)); unions> candidate*;
+			result   := <new-task(|partition)> Choice(subtask*);
+		  u        := <new-use(|partition, result)>
 
-	nabl-use-subtasks(|task*, ns, name, range): 
+	nabl-use-subtasks(|partition, ns, name, range): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
 		with
-			subtask1 := <new-task(|task*)> Resolve(uri, ns, name);
-			subtask2 := <new-task(|task*)> ResolveImport(uri, ns, name);
+			subtask1 := <new-task(|partition)> Resolve(<nabl-use-subtask-uri(|partition)> uri, ns, name);
+			subtask2 := <new-task(|partition)> ResolveImport(<nabl-use-subtask-uri(|partition)> uri, ns, name);
 			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
         ext-uri  := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
-        subtask* := [<new-task(|task*)> Resolve(ext-uri, ns, name)]
+        subtask* := [<new-task(|partition)> Resolve(<nabl-use-subtask-uri(|partition)> ext-uri, ns, name)]
       else
       	subtask* := []
       end;
       switch !range
       	case One(): ![]
-      	case All(): <nabl-uri-parent < nabl-use-subtasks(|task*, ns, name, range) + ![]> uri
+      	case All(): <nabl-uri-parent < nabl-use-subtasks(|partition, ns, name, range) + ![]> uri
     	end => subtasks
+    	
+	nabl-use-subtask-uri(|partition) =
+		switch id
+			case ?URI(_, _) => uri : ![uri]
+			case is-list           : <new-task(|partition)> Choice(<id>)
+			otherwise              : id
+		end 
 		  	
 	// candidate in current scope
-	nabl-use-candidate(|lang, elem*, task*, uri*, name):
+	nabl-use-candidate(|lang, partition, elem*, uri*, name):
 		UseCandidate(ns, prop*, Current(), range) -> result
 		where
 			uri      := <lookup-uri(|lang, ns)> uri*;
-			subtask* := <nabl-use-subtasks(|task*, ns, name, range)> uri;
+			subtask* := <nabl-use-subtasks(|partition, ns, name, range)> uri;
 			if not([] := prop*) then
-				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+				result := [<new-task(|partition)> PropConstraint(prop*, subtask*)]
 			else
 				result := subtask*
 			end
 
 	// candidate in another scope (result of resolution)	  
-	nabl-use-candidate(|lang, elem*, task*, uri*, name):
+	nabl-use-candidate(|lang, partition, elem*, uri*, name):
 		UseCandidate(ns, prop*, target-uri*, range) -> result
 		where
 		  <?Result(_) <+ map(?Result(_))> target-uri*;
-			subtask* := <nabl-use-subtasks(|task*, ns, <nabl-fix-name> name, range)> target-uri*;
+			subtask* := <nabl-use-subtasks(|partition, ns, <nabl-fix-name> name, range)> target-uri*;
 			if not([] := prop*) then
-				result := [<new-task(|task*)> PropConstraint(prop*, subtask*)]
+				result := [<new-task(|partition)> PropConstraint(prop*, subtask*)]
 			else
 				result := subtask*
 			end
@@ -259,22 +265,22 @@ rules // generic analysis of uses
 	//      _{uri}   := <nabl-use-candidate(|lang, elem*, task*, uri*, dep*)> (UseCandidate(ns', props', refscope', range), name'{});
 	//      propdep* := <dependent-tasks> prop*;
 	//      result   := <new-task(|task*, [dep*, propdep*])> Resolve(uri, ns, <nabl-fix-name> name, prop*, range);
-	//      u        := <new-use(|elem*, result)>
+	//      u        := <new-use(|partition, result)>
     
 rules // generic analysis of imports
   
-  nabl-import(|lang, elem*, task*, uri*, imports):
+  nabl-import(|lang, partition, elem*, uri*, imports):
     name -> name'
     where
     	Use(use) := <nabl-collect-use> name;
-      name'    := <foldl(nabl-import-candidate(|lang, elem*, uri*, use))> (imports, name)
+      name'    := <foldl(nabl-import-candidate(|lang, partition, elem*, uri*, use))> (imports, name)
         
-  nabl-import-candidate(|lang, elem*, uri*, use):
+  nabl-import-candidate(|lang, partition, elem*, uri*, use):
     (import, name) -> name
     where
       ns  := <nabl-import-namespace> import;
       uri := <lookup-uri(|lang, ns)> uri*;
-      new-prop(|elem*, uri, import, use)
+      new-prop(|partition, uri, import, use)
       
   nabl-import-namespace =
        ?Import(_, Imported(<id>)) 
@@ -285,16 +291,16 @@ rules // generic analysis of imports
 rules // generic analysis of properties
   
   // call back to generic analysis
-	nabl-props(|elem*, prop*):
+	nabl-props(|lang, partition, elem*, prop*):
 	  name -> name'
 	  where
 	    Def(uri) := <nabl-collect-def> name;
-		  name'    := <foldl(extend-prop(|elem*, uri))> (prop*, name)
+		  name'    := <foldl(extend-prop(|partition, elem*, uri))> (prop*, name)
 		
-	extend-prop(|elem*, uri):
+	extend-prop(|partition, elem*, uri):
 		(Prop(type, result), name) -> name
 		where
-		  prop := <new-prop(|elem*, uri, type, result)> name
+		  prop := <new-prop(|partition, uri, type, result)> name
         
 rules // generic analysis of implicit defs
  
@@ -311,9 +317,9 @@ rules // generic analysis of implicit defs
       // build path for definition site
       def-uri     := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri;
       // build Def entry for the index
-      new-def(|elem*, def-uri);
+      new-def(|partition, def-uri);
       // build Prop entries for the index
-      <map(\Prop(type, result) -> <new-prop(|elem*, def-uri, type, result)>\)> prop*
+      <map(\Prop(type, result) -> <new-prop(|partition, def-uri, type, result)>\)> prop*
 
 rules // name retrieval
   
@@ -359,11 +365,3 @@ rules // helpers
 			  
 	lookup-uri(|lang, ns):
 	  uri* -> <<lookup> (ns, uri*) <+ <nabl-base-uri> lang>
-	  
-	collect-partition:
-		(partition, _) -> (partition, CollectPartition())
-		
-	collect-partition:
-		partition -> (partition, CollectPartition())
-		where
-			<is-string> partition

@@ -3,26 +3,19 @@ module analysis/single
 imports
 	
   task/core
-  task/store
-  task/incremental
   index/core
   index/query
   nbl/collect
   nbl/tasks
-  nbl/incremental
   nbl/uri
   nbl/utils
   analysis/core
   
 rules // Single file analysis
   
-  nabl-analyze(|language, path, project-path):
-    ast -> (ast', new-entry*, error*, [])
+  analyze-one(|language, path, project-path):
+    ast -> (<analyze-result-analyzed-ast> result, error*, evaluated-count)
     with // Setup index
-      partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
-      create-execqueue => execqueue;
-      task-counter-init;
-      r@Result(_, _, ast', _, new-entry*, _, _, _, _, _) := <analyze-collect(|language)> File(partition, ast);
-      <analyze-incremental(|execqueue)> r;
-    	error* := <analyze-perform-all(|execqueue)>
+      partition                 := $[[project-path]/[path]];
+      result                    := <analyze-collect(|language, project-path)> File(partition, ast);
+    	(error*, evaluated-count) := <analyze-perform-all> [result]

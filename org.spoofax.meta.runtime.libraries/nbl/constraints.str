@@ -3,6 +3,7 @@ module nbl/constraints
 imports
   
   task/core
+  task/tasks
   nbl/interface
   nbl/tasks
   

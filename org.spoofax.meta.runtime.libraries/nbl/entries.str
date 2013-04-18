@@ -5,6 +5,7 @@ imports
   nbl/collect
   nbl/utils
   nbl/uri
+  index/core
   
 signature
 
@@ -17,32 +18,32 @@ signature
   
 rules
   
-  new-def(|elems, uri):
+  new-def(|partition, uri):
     x -> definition
-    where
+    with
       definition := <force-origins(!Def(uri))> x;
-      <iset-add(|definition)> elems;
-			<new-alias(|elems, <nabl-nonunique-uri> uri, uri)> x
+      <index-add(|partition)> definition;
+			<new-alias(|partition, <nabl-nonunique-uri> uri, uri)> x
       
-  new-alias(|elems, uri, alias):
-    x -> definition
-    where
-      definition := <force-origins(!Alias(uri, alias))> x;
-      if <not(eq)> (uri, alias) then
-      	<iset-add(|definition)> elems
+  new-alias(|partition, uri, alias-uri):
+    x -> alias
+    with
+      alias := <force-origins(!Alias(uri, alias-uri))> x;
+      if <not(eq)> (uri, alias-uri) then
+      	<index-add(|partition)> alias
       end
       
-  new-use(|elems, uri):
+  new-use(|partition, uri):
     x -> use
-    where
+    with
       use := <force-origins(!Use(uri))> x;
-      <iset-add(|use)> elems
+      <index-add(|partition)> use
 
-  new-prop(|elems, uri, kind, val):
+  new-prop(|partition, uri, kind, val):
     x -> prop
-    where
+    with
       prop := <force-origins(!Prop(uri, kind, val))> x;
-      <iset-add(|prop)> elems
+      <index-add(|partition)> prop
       
 rules // index uri & value projections
   
