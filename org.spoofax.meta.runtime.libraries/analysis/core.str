@@ -3,12 +3,10 @@ module analysis/core
 imports
 	
   nbl/collect
-  nbl/tasks
   nbl/entries
   nbl/uri
   nbl/utils
   index/core
-  index/query
   task/core
   
 signature

@@ -1,15 +1,10 @@
 module analysis/multiple
 
 imports
-	
-  task/core
-  index/core
-  index/query
-  nbl/collect
-  nbl/tasks
-  nbl/uri
-  nbl/utils
+
   analysis/core
+  task/core
+  nbl/utils
 
 rules // Multi file analysis
   

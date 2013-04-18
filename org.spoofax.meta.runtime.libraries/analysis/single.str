@@ -2,15 +2,8 @@ module analysis/single
 
 imports
 	
-  task/core
-  index/core
-  index/query
-  nbl/collect
-  nbl/tasks
-  nbl/uri
-  nbl/utils
   analysis/core
-  
+    
 rules // Single file analysis
   
   analyze-one(|language, path, project-path):

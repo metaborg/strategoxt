@@ -2,7 +2,6 @@ module analysis/debug
 
 imports
 	
-	nbl/collect
 	index/core
 	index/query
 	task/core
