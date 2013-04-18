@@ -3,7 +3,6 @@ module nbl/lookup
 imports
   
   nbl/collect
-  nbl/resolve
   nbl/query
   nbl/tasks
   nbl/uri

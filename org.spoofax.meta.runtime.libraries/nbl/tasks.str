@@ -5,7 +5,6 @@ imports
   task/core
   nbl/lookup
   nbl/collect
-  nbl/resolve
   nbl/query
   nbl/interface
   nbl/uri
@@ -47,13 +46,6 @@ rules // Resolve
       else
 	      def* := <nabl-lookup(|ns, name)> import*;
 	      <map(nabl-uri; nabl-extend-uri(|ns, name, ()); task-add-read(|nr))> import*;
-	      
-	      /* TODO: reads
-	      import-uri-read* := <nabl-new-reads(|nr)> uri;
-	      imported-read*   := <mapconcat(nabl-uri; nabl-extend-uri(|ns, name, ()); nabl-new-reads(|nr))> import*; // TODO: may store too broad Reads.
-	      import-read*     := <mapconcat(nabl-new-reads(|nr))> import*;
-	      */
-	      
 	  		switch !def*
 	        case ?[]:
 	        	fail

@@ -2,8 +2,8 @@ module nbl/uri
 
 imports
   
-  index/core
   nbl/interface
+  index/core
   
 signature
 

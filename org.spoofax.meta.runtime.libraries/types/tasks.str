@@ -2,7 +2,6 @@ module types/tasks
 
 imports 
 	
-	task/core
 	nbl/resolve
 	nbl/collect
 	nbl/query

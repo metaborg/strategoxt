@@ -2,10 +2,9 @@ module nbl/query
 
 imports
   
-  index/query
-  nbl/collect
   nbl/uri
   nbl/entries
+  index/query
   
 rules // Specific queries
 
