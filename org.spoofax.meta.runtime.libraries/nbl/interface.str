@@ -2,9 +2,15 @@ module nbl/interface
 
 strategies // Collect
   
-	nabl-anonymous-scope-site(child-uris|lang, partition, unique*, uri*, state*) = fail
+	nabl-anonymous-scope-site(
+	  child-uris
+	| lang, partition, unique*, uri*, state*
+	) = fail
 	
-	nabl-def-site(child-uris, sibiling-uris|lang, partition, unique*, elem*, uri*, state*) = fail
+	nabl-def-site(
+	  child-uris, sibiling-uris, implicits
+	| lang, partition, unique*, elem*, uri*, state*
+	) = fail
 	
 	nabl-state-site = fail
 	
@@ -12,18 +18,8 @@ strategies // Collect
 	
 	nabl-import-site(|lang, partition, elem*, uri*, state*) = fail
 	
-	nabl-implicit-def-site(|lang, partition, unique*, elem*, uri*, state*) = fail
+	nabl-prop-site(|lang, partition, elem*, state*, implicit*) = fail
 	
-	nabl-prop-site(|lang, partition, elem*, state*) = fail
-	
-	nabl-constraint-site(|lang, partition) = fail
-	
-	constraint-error = fail
-	
-	constraint-warning = fail
-	
-	constraint-note = fail
-
 strategies // Projections
   
 	nabl-name = fail
