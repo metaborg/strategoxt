@@ -27,10 +27,6 @@ signature
 		Subsequent :            						DefScope
 		DefScope   : Namespace * Segment -> DefScope
 
-  constructors // implicit def
-    
-    IDefCandidate : Namespace * Name * Unique * List(Property) -> ImplicitDef
-  
   constructors // use
       
 		UseCandidate  : Namespace * List(Property) * RefScope * Range        -> Use
@@ -80,7 +76,7 @@ strategies // generic traversal
 		nabl-scope-site(?uri'*|lang, uri*); // scopes of external definitions, e.g. variables in let expressions
 		
 		(
-			 nabl-def-site(?child-uri*, sibling-uris|lang, partition, unique*, elem*, uri'*, state*)
+			 nabl-def-site(?child-uri*, sibling-uris, ?implicit*|lang, partition, unique*, elem*, uri'*, state*)
     <+ match(sibling-uris|uri*)
     ;  nabl-anonymous-scope-site(?child-uri*|lang, partition, unique*, uri'*, state*)
     <+ match(?child-uri*|uri'*)
@@ -92,9 +88,7 @@ strategies // generic traversal
 		
 		try(nabl-use-site(|lang, partition, elem*, uri'*, state*));
     try(nabl-import-site(|lang, partition, elem*, child-uri*, state*));
-    try(nabl-prop-site(|lang, partition, elem*, state*));
-    try(nabl-implicit-def-site(|lang, partition, unique*, elem*, child-uri*, state*));
-    try(nabl-constraint-site(|lang, partition))
+    try(nabl-prop-site(|lang, partition, elem*, state*, implicit*))
 	
 	nabl-siblings(|lang, partition, unique*, elem*, uri*) = 
 		[] + 
@@ -148,11 +142,11 @@ rules // generic analysis of scopes
 rules // generic analysis of defs
     	
 	// call back to generic analysis
-	nabl-def(child-uris, sibling-uris|lang, partition, unique*, elem*, uri*, ns, unique, defscope, scoped):
+	nabl-def(child-uris, sibling-uris|lang, partition, unique*, elem*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
 			// get URI for namespace of definition site
-			current-uri := <lookup-uri(|lang, ns)> uri*;
+			current-uri := <lookup-uri(|lang, ns)> child-uri*;
 			switch !defscope
 			// in each case we 
 			// 1. build URI of the definition site
@@ -163,23 +157,23 @@ rules // generic analysis of defs
 				// 2. extend URIs of scoped namespaces
 				// 3. preserve
 				def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri;
-				match(child-uris|<replace-scope-uri(|def-uri)> (scoped, uri*));
-			  match(sibling-uris|uri*)
+				match(child-uris|<replace-scope-uri(|def-uri)> (scoped, child-uri*));
+			  match(sibling-uris|sibl-uri*)
 			case ?[Subsequent()]:
 				// 1. extend current URI with Subsequent and ID segment
 				// 2. preserve
 				// 3. extend URI for namespace of definition site with Subsequent segment
 				subs-uri := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri;
 				def-uri  := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri;
-	  		match(child-uris|uri*);
-				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
+	  		match(child-uris|child-uri*);
+				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
 	  	case ?[DefScope(ns, uri)]:
 	  		// 1. extend base URI with External and ID segment
 				// 2. preserve
 				// 3. preserve
 				def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> uri;
-				match(child-uris|uri*);
-				match(sibling-uris|uri*)
+				match(child-uris|child-uri*);
+				match(sibling-uris|sibl-uri*)
 			case ?[Subsequent(), DefScope(ns, uri)]:
 				// 1a. extend base URI with External and ID segment
 				// 1b. extend current URI with Subsequent and ID segment
@@ -190,8 +184,8 @@ rules // generic analysis of defs
 				subs-uri  := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri;
         alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri;
 	  		<new-alias(|partition, def-uri, alias-uri)> a;
-	  		match(child-uris|uri*);
-				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], uri*))
+	  		match(child-uris|child-uri*);
+				match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
 			end;
 			// add Def entry to the index
 			d := <new-def(|partition, def-uri)> a
@@ -291,7 +285,7 @@ rules // generic analysis of imports
 rules // generic analysis of properties
   
   // call back to generic analysis
-	nabl-props(|lang, partition, elem*, prop*):
+	nabl-props(|partition, elem*, prop*):
 	  name -> name'
 	  where
 	    Def(uri) := <nabl-collect-def> name;
@@ -302,25 +296,6 @@ rules // generic analysis of properties
 		where
 		  prop := <new-prop(|partition, uri, type, result)> name
         
-rules // generic analysis of implicit defs
- 
-  nabl-implicit-def(|lang, partition, unique*, elem*, uri*, candidates):
-    name -> name
-    where
-      <map(nabl-implicit-def-candidate(|lang, partition, unique*, elem*, uri*))> candidates
-      
-  nabl-implicit-def-candidate(|lang, partition, unique*, elem*, uri*):
-    IDefCandidate(ns, name, unique, prop*) -> <id>
-    where
-      // get path for namespace of definition site
-      current-uri := <lookup-uri(|lang, ns)> uri*;
-      // build path for definition site
-      def-uri     := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri;
-      // build Def entry for the index
-      new-def(|partition, def-uri);
-      // build Prop entries for the index
-      <map(\Prop(type, result) -> <new-prop(|partition, def-uri, type, result)>\)> prop*
-
 rules // name retrieval
   
   nabl-name = is-string
