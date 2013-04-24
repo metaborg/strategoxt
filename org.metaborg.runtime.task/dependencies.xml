@@ -3,8 +3,8 @@
 
 	<target name="download" description="Download external dependencies">
 		<mkdir dir="${lib.dir}" />
-		<get src="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/14.0.1/guava-14.0.1.jar" dest="${lib.dir}/guava.jar" />
-		<get src="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/14.0.1/guava-14.0.1-javadoc.jar" dest="${lib.dir}/guava-javadoc.jar" />
-		<get src="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/14.0.1/guava-14.0.1-sources.jar" dest="${lib.dir}/guava-sources.jar" />
+		<get src="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/14.0.1/guava-14.0.1.jar" dest="${lib.dir}/guava.jar" skipexisting="true" />
+		<get src="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/14.0.1/guava-14.0.1-javadoc.jar" dest="${lib.dir}/guava-javadoc.jar" skipexisting="true" />
+		<get src="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/14.0.1/guava-14.0.1-sources.jar" dest="${lib.dir}/guava-sources.jar" skipexisting="true" />
 	</target>
 </project>
