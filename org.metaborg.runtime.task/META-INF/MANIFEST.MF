@@ -11,7 +11,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.junit4,
  org.spoofax.interpreter.core,
  org.spoofax.terms,
- org.strategoxt.strj
+ org.strategoxt.strj,
+ org.spoofax.interpreter.externaldeps;bundle-version="1.0.0"
 Export-Package: org.metaborg.runtime.task;
   uses:="com.google.common.collect,
    org.strategoxt.lang,
@@ -19,3 +20,4 @@ Export-Package: org.metaborg.runtime.task;
    org.spoofax.interpreter.library"
 Bundle-ClassPath: lib/guava.jar,
  .
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
