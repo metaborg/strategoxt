@@ -199,17 +199,18 @@ rules // generic analysis of defs
 rules // generic analysis of uses
 	
 	// single candidate
-	nabl-use(|lang, partition, elem*, uri*, candidate) =
+	nabl-use(|lang, partition, elem*, uri*, candidate, dep*) =
 		where (<not(is-list)> candidate);
-		nabl-use(|lang, partition, elem*, uri*, [candidate])
+		nabl-use(|lang, partition, elem*, uri*, [candidate], dep*)
 	
 	// list of candidates
-	nabl-use(|lang, partition, elem*, uri*, candidate*):
+	nabl-use(|lang, partition, elem*, uri*, candidate*, dep*):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, partition, elem*, uri*, <nabl-fix-name> name)); unions> candidate*;
-			result   := <new-task(|partition)> Choice(subtask*);
-		  u        := <new-use(|partition, result)>
+			subtask*     := <map(nabl-use-candidate(|lang, partition, elem*, uri*, <nabl-fix-name> name)); unions> candidate*;
+			subtask-dep* := <dependent-tasks> subtask*;
+			result       := <new-task(|partition)> Choice([subtask-dep*, dep*]);
+		  u            := <new-use(|partition, result)>
 
 	nabl-use-subtasks(|partition, ns, name, range): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
