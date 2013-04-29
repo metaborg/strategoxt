@@ -9,16 +9,16 @@ strategies // Collect
 	
 	nabl-def-site(
 	  child-uris, sibiling-uris, implicits
-	| lang, partition, unique*, elem*, uri*, state*
+	| lang, partition, unique*, uri*, state*
 	) = fail
 	
 	nabl-state-site = fail
 	
-	nabl-use-site(|lang, partition, elem*, uri*, state*) = fail
+	nabl-use-site(|lang, partition, uri*, state*) = fail
 	
-	nabl-import-site(|lang, partition, elem*, uri*, state*) = fail
+	nabl-import-site(|lang, partition, uri*, state*) = fail
 	
-	nabl-prop-site(|lang, partition, elem*, state*, implicit*) = fail
+	nabl-prop-site(|lang, partition, state*, implicit*) = fail
 	
 strategies // Projections
   
