@@ -29,21 +29,21 @@ strategies
 		message -> Note(message)
 		
 		
-	task-create-error-on-failure(|partition, task*):
-		message -> <new-task(|partition)> Message(task*, Failure(), <task-error-message> message)
+	task-create-error-on-failure(|partition, task):
+		message -> <new-task(|partition)> Message(task, Failure(), <task-error-message> message)
 		
-	task-create-warning-on-failure(|partition, task*):
-		message -> <new-task(|partition)> Message(task*, Failure(), <task-warning-message> message)
+	task-create-warning-on-failure(|partition, task):
+		message -> <new-task(|partition)> Message(task, Failure(), <task-warning-message> message)
 		
-	task-create-note-on-failure(|partition, task*):
-		message -> <new-task(|partition)> Message(task*, Failure(), <task-note-message> message)
+	task-create-note-on-failure(|partition, task):
+		message -> <new-task(|partition)> Message(task, Failure(), <task-note-message> message)
 		
 		
-	task-create-error-on-success(|partition, task*):
-		message -> <new-task(|partition)> Message(task*, Success(), <task-error-message> message)
+	task-create-error-on-success(|partition, task):
+		message -> <new-task(|partition)> Message(task, Success(), <task-error-message> message)
 		
-	task-create-warning-on-success(|partition, task*):
-		message -> <new-task(|partition)> Message(task*, Success(), <task-warning-message> message)
+	task-create-warning-on-success(|partition, task):
+		message -> <new-task(|partition)> Message(task, Success(), <task-warning-message> message)
 		
-	task-create-note-on-success(|partition, task*):
-		message -> <new-task(|partition)> Message(task*, Success(), <task-note-message> message)
+	task-create-note-on-success(|partition, task):
+		message -> <new-task(|partition)> Message(task, Success(), <task-note-message> message)

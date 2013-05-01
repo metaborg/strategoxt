@@ -17,8 +17,30 @@ signature
 
 rules
   
-  perform-task(|n): PropLookup(kind, t) -> <nabl-collect-one-resolved-def; nabl-get-property(|kind)> t
-  perform-task(|n): PropCalc(p, check*) -> p where <Hd> check*
-  perform-task(|n): PropCheck(p1, p2)   -> <eq; !p1> (p1, p2)
+  perform-task(|n): 
+  	PropLookup(kind, t) -> <nabl-collect-one-resolved-def; nabl-get-property(|kind)> t
+  	
+  perform-task(|n): 
+  	PropCalc(result, check*) -> result'
+  	where 
+  		<if is-list then Hd end> check*
+  	with
+  		switch !result
+      	case not(is-list)                   : ![result]
+      	otherwise                           : !result
+			end => result'
+			
+  perform-task(|n): 
+  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck([term], expected)
+  	where
+  		not(<is-list> term)
+			
+  perform-task(|n): 
+  	PropCheck(term*, expected) -> <map(\t -> <eq> (t, expected)\); !term*> term*
+  	where
+  		<is-list> term*
+  		  		
+rules
   
-  desugar-task(|partition): PropCalc(Type(), t) -> <type-task(|partition)> t
+  desugar-task(|partition): 
+  	PropCalc(Type(), t) -> <type-task(|partition)> t

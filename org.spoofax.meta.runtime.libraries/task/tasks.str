@@ -21,13 +21,13 @@ rules
 	perform-task(|nr):
  		Choice(choice*) -> <Hd> choice*
 
-	// TODO: () should indicate that no result should be stored.
+	// TODO: should not store any result.
   perform-task(|n):
-    Message(task*, trigger, message) -> []
+    Message(task, trigger, message) -> []
     where
     	switch !trigger
-    		case Success() : <Hd> task*; task-add-message(|n, message)
-    		case Failure() : not(<Hd> task*); task-add-message(|n, message)
+    		case Success() : <Hd> task; task-add-message(|n, message)
+    		case Failure() : not(<Hd> task); task-add-message(|n, message)
     	end
 
   perform-task(|nr): 
