@@ -9,17 +9,26 @@ signature
 
 	constructors
 		
-    Choice : List(Result)                -> Instruction
-    Choice : List(Result) * List(String) -> Instruction
-    Match  : ID * List(Term) * Term      -> Instruction
+    Choice  : List(Result)                         -> Instruction
+    Message : List(Result) * MessageTrigger * Term -> Instruction
+    Match   : ID * List(Term) * Term               -> Instruction
+    
+    Success : MessageTrigger
+    Failure : MessageTrigger
 	
 rules
 	
 	perform-task(|nr):
  		Choice(choice*) -> <Hd> choice*
 
+	// TODO: () should indicate that no result should be stored.
   perform-task(|n):
-    Choice(choice*, error*) -> <Hd> choice*
+    Message(task*, trigger, message) -> []
+    where
+    	switch !trigger
+    		case Success() : <Hd> task*; task-add-message(|n, message)
+    		case Failure() : not(<Hd> task*); task-add-message(|n, message)
+    	end
 
   perform-task(|nr): 
   	Match(key, bound, term*@<with(is-list|"Expected a list of terms.")>) -> result

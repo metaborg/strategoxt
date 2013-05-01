@@ -16,10 +16,6 @@ signature
     Fail : Result
     
     Dependency : List(Int) -> Result
-    
-    Error   : Term -> Result
-    Warning : Term -> Result
-    Note    : Term -> Result
 		
 rules // Creation
   
@@ -83,6 +79,8 @@ rules // API
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
 	task-stop-collection(|partition)                     = task-api-stop-collection(|partition)
 	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
+	task-add-message(|taskID, message)                   = task-api-add-message(|taskID, message)
+	task-get-messages(|partition)                        = task-api-get-messages(|partition)
 	task-evaluate(|changed-read*)                        = task-api-evaluate(perform-task, insert-results-with-fail|changed-read*)
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
@@ -116,6 +114,8 @@ rules /** @internal API externals */
 	external task-api-stop-collection(|partition)
 	external task-api-add-task(|partition, dependencies, instruction)
 	external task-api-get-result(|taskID)
+	external task-api-add-message(|taskID, message)
+	external task-api-get-messages(|partition)
 	external task-api-has-failed(|taskID)
 	external task-api-add-read(|taskID, read)
 	external task-api-evaluate(perform-task, insert-result|changed-reads)

@@ -42,6 +42,9 @@ public class TaskEngine {
 	private final ConcurrentHashMap<IStrategoInt, IStrategoList> toResult =
 		new ConcurrentHashMap<IStrategoInt, IStrategoList>();
 
+	/** Produced messages of tasks. */
+	private final Map<IStrategoInt, IStrategoTerm> toMessage = new ConcurrentHashMap<IStrategoInt, IStrategoTerm>();
+	
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoInt> failed = new HashSet<IStrategoInt>();
 
@@ -244,6 +247,29 @@ public class TaskEngine {
 	public IStrategoList getResult(IStrategoInt taskID) {
 		return toResult.get(taskID);
 	}
+	
+	public void setMessage(IStrategoInt taskID, IStrategoTerm resultList) {
+		toMessage.put(taskID, resultList);
+	}
+
+	public IStrategoTerm removeMessage(IStrategoInt taskID) {
+		return toMessage.remove(taskID);
+	}
+
+	public IStrategoTerm getMessage(IStrategoInt taskID) {
+		return toMessage.get(taskID);
+	}
+	
+	public IStrategoList getMessages(IStrategoString partition) {
+		Collection<IStrategoInt> taskIDs = getInPartition(partition);
+		IStrategoList messages = factory.makeList();
+		for(IStrategoInt taskID : taskIDs) {
+			IStrategoTerm message = getMessage(taskID);
+			if(message != null)
+				messages = factory.makeListCons(message, messages);
+		}
+		return messages;
+	}
 
 	public void addFailed(IStrategoInt taskID) {
 		failed.add(taskID);
@@ -276,6 +302,7 @@ public class TaskEngine {
 		toDependency.clear();
 		toRead.clear();
 		toResult.clear();
+		toMessage.clear();
 		failed.clear();
 		addedTasks.clear();
 		removedTasks.clear();
@@ -288,6 +315,7 @@ public class TaskEngine {
 		final ArrayList<IStrategoInt> garbage = new ArrayList<IStrategoInt>(this.garbage);
 		tasks.removeAll(garbage);
 		solved.removeAll(garbage);
+		toMessage.remove(garbage);
 		failed.removeAll(garbage);
 		for(final IStrategoInt taskID : garbage)
 			toDependency.removeAll(taskID);

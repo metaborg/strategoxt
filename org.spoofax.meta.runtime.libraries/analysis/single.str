@@ -7,8 +7,9 @@ imports
 rules // Single file analysis
   
   analyze-one(|language, path, project-path):
-    ast -> (<analyze-result-analyzed-ast> result, error*, evaluated-count)
+    ast -> (<analyze-result-analyzed-ast> result, error-taskID*, evaluated-count, messages)
     with // Setup index
-      partition                 := $[[project-path]/[path]];
-      result                    := <analyze-collect(|language, project-path)> File(partition, ast);
-    	(error*, evaluated-count) := <analyze-perform-all> [result]
+      partition                        := $[[project-path]/[path]];
+      result                           := <analyze-collect(|language, project-path)> File(partition, ast);
+    	(error-taskID*, evaluated-count) := <analyze-perform-all> [result];
+    	messages                         := <analyze-messages(|partition)>

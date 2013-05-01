@@ -8,6 +8,7 @@ imports
   nbl/utils
   index/core
   task/core
+  task/messages
   
 signature
 
@@ -43,6 +44,15 @@ rules // Analysis
 		with
 			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-perform-concat-reads");
       measure-time(task-evaluate(|changed-read*) => (error*, evaluated-count), id | "analyze-perform-evaluate")
+  
+  // TODO: origin tracking    
+  analyze-messages(|partition):
+  	_ -> (error*, warning*, note*)
+  	with
+  		message* := <task-get-messages(|partition)>;
+  		error*   := <filter(\Error(m) -> (m, m)\)> message*;
+  		warning* := <filter(\Warning(m) -> (m, m)\)> message*;
+  		note*    := <filter(\Note(m) -> (m, m)\)> message*
 
 rules // Index entries to diff
 	
