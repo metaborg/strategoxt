@@ -73,8 +73,9 @@ rules // Resolve
       	otherwise: !entry
       end => entry'
       
+  // TODO: check dependencies (3rd subterm) as well.
   nabl-resolve-constraint-one(|entry):
-    Prop(type, expectedValue) -> entry'
+    Prop(type, expectedValue, _) -> entry'
     where
     	uri   := <nabl-uri> entry;
       value := <nabl-get-property(|type)> uri;
