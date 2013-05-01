@@ -48,7 +48,7 @@ signature
   	
   constructors // property
     
-    Prop : Property * Value -> Prop
+    Prop : Property * Value * List(Dependency) -> Prop
     
   constructors // partition
   
@@ -282,7 +282,7 @@ rules // generic analysis of properties
 		  name'    := <foldl(extend-prop(|partition, uri))> (prop*, name)
 		
 	extend-prop(|partition, uri):
-		(Prop(type, result), name) -> name
+		(Prop(type, result, dep*), name) -> name
 		where
 		  prop := <new-prop(|partition, uri, type, result)> name
         
