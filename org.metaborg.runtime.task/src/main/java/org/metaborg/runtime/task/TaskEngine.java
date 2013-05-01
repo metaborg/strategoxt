@@ -276,6 +276,7 @@ public class TaskEngine {
 		toDependency.clear();
 		toRead.clear();
 		toResult.clear();
+		failed.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
