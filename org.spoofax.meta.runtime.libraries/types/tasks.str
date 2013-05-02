@@ -30,16 +30,24 @@ rules
       	otherwise                           : !result
 			end => result'
 			
+	try-make-list =
+		switch id
+			case is-list: id
+			otherwise: ![<id>]
+		end	
+	
   perform-task(|n): 
-  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck([term], expected)
+  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
   	where
-  		not(<is-list> term)
+  		not(<is-list> term <+ <is-list> expected)
 			
   perform-task(|n): 
-  	PropCheck(term*, expected) -> <map(\t -> <eq> (t, expected)\); !term*> term*
+  	PropCheck(term*, expected*) -> term*
   	where
-  		<is-list> term*
-  		  		
+  		<is-list> term*;
+  		<is-list> expected*;
+  		<cart(eq)> (term*, expected*)
+  		
 rules
   
   desugar-task(|partition): 
