@@ -50,9 +50,12 @@ rules // Analysis
   	_ -> (error*, warning*, note*)
   	with
   		message* := <task-get-messages(|partition)>;
-  		error*   := <filter(\Error(m) -> (m, m)\)> message*;
-  		warning* := <filter(\Warning(m) -> (m, m)\)> message*;
-  		note*    := <filter(\Note(m) -> (m, m)\)> message*
+  		error*   := <filter(?Error(_); analyze-message-to-tuple)> message*;
+  		warning* := <filter(?Warning(_); analyze-message-to-tuple)> message*;
+  		note*    := <filter(?Note(_); analyze-message-to-tuple)> message*
+  		
+	analyze-message-to-tuple:
+		message -> (message, <task-message> message)
 
 rules // Index entries to diff
 	

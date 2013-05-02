@@ -28,6 +28,19 @@ strategies
 	task-note-message:
 		message -> Note(message)
 		
+	
+	task-message:
+		Error(message) -> message
+
+	task-message:
+		Warning(message) -> message
+		
+	task-message:
+		Note(message) -> message
+				
+		
+	task-create-message-on-failure(|partition, task):
+		message -> <new-task(|partition)> Message(task, Failure(), message)
 		
 	task-create-error-on-failure(|partition, task):
 		message -> <new-task(|partition)> Message(task, Failure(), <task-error-message> message)
@@ -38,6 +51,9 @@ strategies
 	task-create-note-on-failure(|partition, task):
 		message -> <new-task(|partition)> Message(task, Failure(), <task-note-message> message)
 		
+	
+	task-create-message-on-success(|partition, task):
+		message -> <new-task(|partition)> Message(task, Success(), message)
 		
 	task-create-error-on-success(|partition, task):
 		message -> <new-task(|partition)> Message(task, Success(), <task-error-message> message)
