@@ -60,11 +60,12 @@ strategies // generic traversal
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
 	nabl-collect(|partition, lang):
-	  ast -> ast''
+	  ast -> ast'''
 	  where
 	    new-hashtable => unique*;
-	    ast'  := <nabl-collect(id|lang, partition, unique*, [])> ast ;
-	    ast'' := <alltd(type-task(|partition))> ast'
+	    ast'   := <nabl-collect(id|lang, partition, unique*, [])> ast ;
+	    ast''  := <alltd(type-task(|partition))> ast';
+	    ast''' := <alltd(message-task(|partition))> ast''
 	  
 	/**
 	 * Performs the collection in a topdown traversal. 

@@ -31,3 +31,5 @@ strategies // Projections
 strategies // Tasks
   
 	calc-property = fail
+
+	message-task(|partition) = fail
