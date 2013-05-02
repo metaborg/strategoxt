@@ -91,6 +91,7 @@
 
 	<target name="install" depends="jar">
 		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
+		<echo file="${install-prefix}/nix-support/hydra-build-products">file jar ${install-location}/${jar.name}</echo>
 	</target>
 
 	<target name="clean">
