@@ -90,6 +90,9 @@ public class TaskEvaluator {
 					final IStrategoAppl resultAppl = (IStrategoAppl) result;
 					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
+					} else { 
+						throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
+							+ ". Must be a list, Dependency(_) constructor or failure.");
 					}
 				} else if(result == null) {
 					// The task failed to produce a result.
@@ -102,7 +105,7 @@ public class TaskEvaluator {
 					tryScheduleNewTasks(taskID);
 				} else {
 					throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
-						+ ". Must be a list.");
+						+ ". Must be a list, Dependency(_) constructor or failure.");
 				}
 			}
 
