@@ -31,4 +31,14 @@ rules
     
   external record-time-native(|name)
   	
+ 	try-make-list =
+		switch id
+			case is-list: id
+			otherwise: ![<id>]
+		end	
 		
+	try-remove-list =
+		switch id
+			case is-list : Hd
+			otherwise    : id
+		end	

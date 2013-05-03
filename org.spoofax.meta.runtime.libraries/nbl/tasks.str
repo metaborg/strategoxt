@@ -25,9 +25,10 @@ rules // Resolve
   perform-task(|nr):
   	Resolve(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
   	where
-  		uri* := <filter(nabl-uri)> scope*;
-  		def* := <nabl-lookup(|ns, name)> uri*;
-  		<map(nabl-extend-uri(|ns, name, ()); task-add-read(|nr))> uri*;
+  		uri*  := <filter(nabl-uri)> scope*;
+  		name' := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
+  		def*  := <nabl-lookup(|ns, name')> uri*;
+  		<map(nabl-extend-uri(|ns, name', ()); task-add-read(|nr))> uri*;
   		switch !def*
         case ?[]:
         	fail
@@ -39,13 +40,14 @@ rules // Resolve
 		ResolveImport(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
 		where
 			uri* := <filter(nabl-uri)> scope*;
-			import* := <nabl-lookup-import(|ns, name)> uri*;
+			name' := <try-remove-list> name;
+			import* := <nabl-lookup-import(|ns, name')> uri*;
 			<map(try(nabl-replace-uri-qualifier(|())); task-add-read(|nr))> uri*;
       if <task-has-dependencies> import* then
       	result := <task-collect-dependencies> import*
       else
-	      def* := <nabl-lookup(|ns, name)> import*;
-	      <map(nabl-uri; nabl-extend-uri(|ns, name, ()); task-add-read(|nr))> import*;
+	      def* := <nabl-lookup(|ns, name')> import*;
+	      <map(nabl-uri; nabl-extend-uri(|ns, name', ()); task-add-read(|nr))> import*;
 	  		switch !def*
 	        case ?[]:
 	        	fail

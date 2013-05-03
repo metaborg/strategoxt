@@ -15,7 +15,7 @@ rules // Lookup
 		scope* -> def*
 		with
   		uri*  := <filter(nabl-uri)> scope*;
-  		uri'* := <map(nabl-extend-uri(|ns, name, ()))> uri*; 
+  		uri'* := <map(nabl-extend-uri(|ns, name, ()))> uri*;
   		def*  := <mapconcat(nabl-get-all-definitions)> uri'*
 			  		
 	nabl-lookup-import(|ns, name):

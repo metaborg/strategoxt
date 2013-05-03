@@ -7,8 +7,10 @@ import static com.google.common.collect.Sets.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -184,17 +186,20 @@ public class TaskEngine {
 		IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(final IStrategoTerm changedRead : changedReads) {
-			for(final IStrategoInt readTaskID : getRead(changedRead)) {
-				scheduleTransitiveReads(readTaskID);
+			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
+			final Set<IStrategoInt> seen = new HashSet<IStrategoInt>();
+			final Queue<IStrategoInt> workList = new LinkedList<IStrategoInt>(getRead(changedRead));
+			for(IStrategoInt taskID; (taskID = workList.poll()) != null;){
+				evaluator.schedule(taskID);
+				seen.add(taskID);
+				Collection<IStrategoInt> dependent = getDependent(taskID);
+				for(IStrategoInt dependentTaskID : dependent) {
+					if(!seen.contains(dependentTaskID))
+						workList.offer(dependentTaskID);
+				}
 			}
 		}
 		return evaluator.evaluate(context, performInstruction, insertResults);
-	}
-
-	private void scheduleTransitiveReads(IStrategoInt readTaskID) {
-		evaluator.schedule(readTaskID);
-		for(final IStrategoInt dependent : getDependent(readTaskID))
-			scheduleTransitiveReads(dependent);
 	}
 
 	public Iterable<IStrategoInt> getTaskIDs() {

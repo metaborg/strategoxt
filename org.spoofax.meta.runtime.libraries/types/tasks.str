@@ -6,6 +6,7 @@ imports
 	nbl/collect
 	nbl/entries
 	nbl/query
+	nbl/utils
   types/interface
   
 signature
@@ -31,12 +32,6 @@ rules
   	PropCalc(result, check*) -> <try-make-list> result
   	where 
   		<if is-list then Hd end> check*
-			
-	try-make-list =
-		switch id
-			case is-list: id
-			otherwise: ![<id>]
-		end	
 	
   perform-task(|n): 
   	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
@@ -53,4 +48,4 @@ rules
 rules
   
   desugar-task(|partition): 
-  	PropCalc(Type(), t) -> <type-task(|partition)> t
+  	PropCalc(Type(), t) -> <type-of-task(|partition)> t

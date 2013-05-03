@@ -11,6 +11,6 @@ public class InteropRegisterer extends JavaInteropRegisterer {
 				task_api_get_result_0_1.instance, task_api_has_failed_0_1.instance, task_api_persist_0_0.instance,
 				task_api_reset_0_0.instance, task_api_setup_0_1.instance, task_api_start_collection_0_1.instance,
 				task_api_start_collection_0_1.instance, task_api_unload_0_1.instance,
-				task_api_get_all_results_0_0.instance });
+				task_api_debug_info_0_1.instance });
 	}
 }
