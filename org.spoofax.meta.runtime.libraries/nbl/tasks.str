@@ -33,7 +33,7 @@ rules // Resolve
         case ?[]:
         	fail
         otherwise: 
-        	!def*
+        	<try(nabl-disambiguate(|ns))> def*
 			end => result
 
 	perform-task(|nr):
@@ -52,7 +52,7 @@ rules // Resolve
 	        case ?[]:
 	        	fail
 	        otherwise:
-	        	!def*
+	        	<try(nabl-disambiguate(|ns))> def*
 				end => result
       end
 	  
