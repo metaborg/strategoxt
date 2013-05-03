@@ -4,6 +4,7 @@ imports
 	
 	nbl/resolve
 	nbl/collect
+	nbl/entries
 	nbl/query
   types/interface
   
@@ -18,7 +19,13 @@ signature
 rules
   
   perform-task(|n): 
-  	PropLookup(kind, t) -> <nabl-collect-one-resolved-def; nabl-get-property(|kind); try-make-list> t
+  	PropLookup(kind, t) -> result
+  	where
+  		resolved := <nabl-collect-one-resolved-def> t;
+  		switch !resolved
+  			case ?Def(_) : nabl-get-property(|kind); try-make-list
+  			otherwise    : id
+  		end => result
   	
   perform-task(|n): 
   	PropCalc(result, check*) -> <try-make-list> result
