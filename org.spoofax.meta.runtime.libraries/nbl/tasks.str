@@ -83,7 +83,7 @@ rules // Resolve
       value := <nabl-get-property(|type)> uri;
       if value' := <insert-results> value then
         expectedValue' := <insert-results> expectedValue;
-        <eq> (expectedValue', value');
+        <nabl-property-eq(|type) <+ eq> (expectedValue', value');
         entry' := entry
       else
         entry' := <task-create-dependencies> value
