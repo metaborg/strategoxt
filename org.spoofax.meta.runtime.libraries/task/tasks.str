@@ -12,6 +12,7 @@ signature
     Choice  : List(Result)                         -> Instruction
     Message : List(Result) * MessageTrigger * Term -> Instruction
     Match   : ID * List(Term) * Term               -> Instruction
+    Concat  : List(Result)                         -> Instruction
     
     Success : MessageTrigger
     Failure : MessageTrigger
@@ -38,3 +39,5 @@ rules
   			fail
 			end
   
+  perform-task(|nr):
+  	Concat(term*) -> <concat> term*
