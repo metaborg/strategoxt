@@ -24,6 +24,13 @@ rules
       filename := <guarantee-extension(|"index.all.aterm")> path;
       result   := <index-get-all-partitions; map(\filename -> (filename, <index-get-all-in-partition> filename)\)>
       
+  analysis-debug-show-all-results(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      task-setup(|project-path);
+      filename := <guarantee-extension(|"result.all.aterm")> path;
+      result   := <task-get-all-results>
+      
   analysis-debug-reset-index(|language):
     (_, _, _, path, project-path) -> None()
     with

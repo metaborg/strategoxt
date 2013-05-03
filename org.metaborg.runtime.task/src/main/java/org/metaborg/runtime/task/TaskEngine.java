@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -246,6 +247,10 @@ public class TaskEngine {
 
 	public IStrategoList getResult(IStrategoInt taskID) {
 		return toResult.get(taskID);
+	}
+	
+	public Set<Entry<IStrategoInt, IStrategoList>> getAllResults() {
+		return toResult.entrySet();
 	}
 	
 	public void setMessage(IStrategoInt taskID, IStrategoTerm resultList) {

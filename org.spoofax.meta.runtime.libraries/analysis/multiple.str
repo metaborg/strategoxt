@@ -8,13 +8,13 @@ imports
 
 rules // Multi file analysis
   
-  analyze-multiple(parse-file, parallel, complete-work-unit|language, project-path):
+  analyze-multiple(parse-file, complete-work-unit|language, project-path):
     path* -> result*
     with
     	measure-time(
       	file* := <map(analyze-parse-file(parse-file); where(complete-work-unit))> path*
     	, id | "analyze-multiple-parse");
-      result* := <analyze-multiple-files(parallel, complete-work-unit|language, project-path)> file*
+      result* := <analyze-multiple-files(complete-work-unit|language, project-path)> file*
 
   analyze-parse-file(parse-file):
     path -> File(path, ast)
@@ -23,7 +23,7 @@ rules // Multi file analysis
         ast := ()
       end
 
-  analyze-multiple-files(parallel, complete-work-unit|language, project-path):
+  analyze-multiple-files(complete-work-unit|language, project-path):
     file* -> (error*, result*, evaluated-count)
     with
     	measure-time(
