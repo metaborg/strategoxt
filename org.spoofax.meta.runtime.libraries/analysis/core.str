@@ -21,7 +21,7 @@ signature
 rules // Analysis
 	
 	analyze-collect(|language, project-path):
-    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
+    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
     with
     	measure-time(
     		index-setup(|language, [project-path], partition);
@@ -37,6 +37,9 @@ rules // Analysis
       	task-stop-collection(|partition);
       	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
       	, id | "analyze-collect-diff" 
+  	  );  measure-time(
+  	  	(error*, warning*, note*) := <analyze-messages(|partition)>
+  	  	, id | "analyze-messages"
   	  )
 	
 	analyze-perform-all:
