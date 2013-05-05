@@ -151,7 +151,7 @@ public class TaskEvaluator {
 
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
 			final boolean removed = toRuntimeDependency.remove(dependent, solved);
-			if(dependenciesSize == 1 && removed)
+			if(dependenciesSize == 1 && removed && !taskEngine.isSolved(dependent))
 				queue(dependent);
 		}
 	}
