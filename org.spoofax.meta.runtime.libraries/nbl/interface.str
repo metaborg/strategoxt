@@ -2,10 +2,7 @@ module nbl/interface
 
 strategies // Collect
   
-	nabl-anonymous-scope-site(
-	  child-uris
-	| lang, partition, unique*, uri*, state*
-	) = fail
+	nabl-scoping-site = fail
 	
 	nabl-def-site(
 	  child-uris, sibiling-uris, implicits
