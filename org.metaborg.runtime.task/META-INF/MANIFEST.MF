@@ -1,23 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.metaborg.runtime.task
-         id="org.metaborg.runtime.task"
-         download-size="0"
-         install-size="0"
-         version="1.0.0.qualifier"
-         unpack="false"/>
 Bundle-SymbolicName: org.metaborg.runtime.task
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.junit4,
- org.spoofax.interpreter.core,
+Require-Bundle: org.spoofax.interpreter.core,
  org.spoofax.terms,
- org.strategoxt.strj,
- org.spoofax.interpreter.externaldeps;bundle-version="1.0.0"
+ org.spoofax.interpreter.externaldeps,
+ org.junit4,
+ org.strategoxt.strj;bundle-version="0.17.92"
 Export-Package: org.metaborg.runtime.task;
   uses:="com.google.common.collect,
    org.strategoxt.lang,
    org.spoofax.interpreter.terms,
    org.spoofax.interpreter.library"
-Bundle-ClassPath: lib/guava.jar,
- .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .
