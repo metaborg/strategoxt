@@ -17,23 +17,19 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return new ManyToManyMap<K, V>();
 	}
 
-	@Override
 	public void clear() {
 		keyToValue.clear();
 		valueToKey.clear();
 	}
 
-	@Override
 	public boolean containsKey(Object key) {
 		return keyToValue.containsKey(key);
 	}
 
-	@Override
 	public boolean containsValue(Object value) {
 		return keyToValue.containsValue(value);
 	}
 
-	@Override
 	public Map<K, Collection<V>> asMap() {
 		return keyToValue.asMap();
 	}
@@ -42,17 +38,14 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return valueToKey.asMap();
 	}
 
-	@Override
 	public boolean containsEntry(Object key, Object value) {
 		return keyToValue.containsEntry(key, value);
 	}
 
-	@Override
 	public Collection<Entry<K, V>> entries() {
 		return keyToValue.entries();
 	}
 
-	@Override
 	public Collection<V> get(K key) {
 		return keyToValue.get(key);
 	}
@@ -61,27 +54,22 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return valueToKey.get(value);
 	}
 
-	@Override
 	public boolean isEmpty() {
 		return keyToValue.isEmpty();
 	}
 
-	@Override
 	public Set<K> keySet() {
 		return keyToValue.keySet();
 	}
 
-	@Override
 	public Multiset<K> keys() {
 		return keyToValue.keys();
 	}
 
-	@Override
 	public boolean put(K key, V value) {
 		return keyToValue.put(key, value) & valueToKey.put(value, key);
 	}
 
-	@Override
 	public boolean putAll(Multimap<? extends K, ? extends V> multimap) {
 
 		boolean result = keyToValue.putAll(multimap);
@@ -92,7 +80,6 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return result;
 	}
 
-	@Override
 	public boolean putAll(K key, Iterable<? extends V> values) {
 
 		boolean result = keyToValue.putAll(key, values);
@@ -103,12 +90,10 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return result;
 	}
 
-	@Override
 	public boolean remove(Object key, Object value) {
 		return keyToValue.remove(key, value) & valueToKey.remove(value, key);
 	}
 
-	@Override
 	public Collection<V> removeAll(Object key) {
 
 		Collection<V> removed = keyToValue.removeAll(key);
@@ -127,7 +112,6 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return removed;
 	}
 
-	@Override
 	public Collection<V> replaceValues(K key, Iterable<? extends V> values) {
 
 		Collection<V> replaced = keyToValue.replaceValues(key, values);
@@ -140,12 +124,10 @@ public class ManyToManyMap<K, V> implements Multimap<K, V> {
 		return replaced;
 	}
 
-	@Override
 	public int size() {
 		return keyToValue.size();
 	}
 
-	@Override
 	public Collection<V> values() {
 		return keyToValue.values();
 	}
