@@ -36,13 +36,13 @@ rules // Imports
   nabl-get-import-uris-unnamed(|language, namespace) = nabl-get-import-uris-unnamed(|[], language, namespace)
 
   nabl-get-import-uris-unnamed(|seen, language, namespace):
-    uri -> [importURI*, transitiveImportURI*]
+    uri -> importURI* //[importURI*, transitiveImportURI*]
     with
       importResult*        := <nabl-get-all-properties(|Import(language, namespace))> uri;
-      importURI*           := <map(task-get-solved; filter(nabl-uri) <+ task-create-dependencies; ![<id>]); concat> importResult*;
-      importedResult*      := <nabl-get-all-properties(|Import(language, Imported(namespace)))> uri;
-      importedURI*         := <map(task-get-solved; filter(nabl-uri) <+ task-create-dependencies; ![<id>]); concat> importedResult*;
-      transitiveImportURI* := <filter(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace)); concat> importedURI*
+      importURI*           := <map(task-get-solved; filter(nabl-uri) <+ task-create-dependencies; ![<id>]); concat> importResult*//;
+      //importedResult*      := <nabl-get-all-properties(|Import(language, Imported(namespace)))> uri;
+      //importedURI*         := <map(task-get-solved; filter(nabl-uri) <+ task-create-dependencies; ![<id>]); concat> importedResult*;
+      //transitiveImportURI* := <filter(nabl-get-import-uris-unnamed-transitive(|seen, language, namespace)); concat> importedURI*
 
   nabl-get-import-uris-unnamed-transitive(|seen, language, namespace):
     uri -> transitiveImportURI*
