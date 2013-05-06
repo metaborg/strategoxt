@@ -1,0 +1,3 @@
+#! /bin/bash
+
+java -cp strategoxt.jar run org.strategoxt.tools.main-pack-sdf $@

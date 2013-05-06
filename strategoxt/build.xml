@@ -87,10 +87,10 @@
 		<mkdir dir="${install-location}" />
 	</target>
 
-
-
 	<target name="install" depends="jar">
 		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
+		<copy file="wrapper-scripts/unix/pack-sdf" todir="${install-location}/" />
+		<chmod file="${install-location}/pack-sdf" perm="a+rx" />
 		<echo file="${install-prefix}/nix-support/hydra-build-products">file jar ${install-location}/${jar.name}</echo>
 	</target>
 
