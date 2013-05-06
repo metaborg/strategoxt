@@ -17,7 +17,9 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-all-definitions:
-    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-unique-nonunique(\uri -> Def(uri)\)> uri
+    containsURI -> <nabl-get-unique-nonunique(\uri -> Def(uri)\)> uri
+    where
+    	uri := <nabl-uri> containsURI
 
   /**
    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
@@ -41,7 +43,9 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
    */
   nabl-get-all-properties(|kind):
-     <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-all-values> Prop(uri, kind, ())
+		containsURI -> <nabl-get-all-values> Prop(uri, kind, ())
+    where
+    	uri := <nabl-uri> containsURI
      
   /**
    * Gets all Use entries that match the given URI.
@@ -52,7 +56,9 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Use(uri))
    */
   nabl-get-all-uses:
-    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> <nabl-get-all> Use(uri)
+    containsURI -> <nabl-get-all> Use(uri)
+    where
+    	uri := <nabl-uri> containsURI
 
   /**
    * Gets all Alias entries that match the given URI.
@@ -63,8 +69,9 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(aliasURI)
    */
   nabl-get-all-aliases:
-    <with(uri := <nabl-uri> | "Could not extract URI from given term.")> -> aliasURI*
+    containsURI -> aliasURI*
     where
+    	uri := <nabl-uri> containsURI;
       if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
         aliasURI* := <nabl-get-all-values> Alias(nonUniqueURI, ()) 
       else

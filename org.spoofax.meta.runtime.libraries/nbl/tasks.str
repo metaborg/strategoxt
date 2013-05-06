@@ -15,15 +15,17 @@ signature
   
   constructors
     
-    Resolve        : Scope * Namespace * Name    -> Instruction
-    ResolveImport  : Scope * Namespace * Name    -> Instruction
-    PropConstraint : List(Prop) * List(Result)   -> Instruction
-    PropCalc       : Property * Term             -> Instruction
+    ResolveDefs            : Scope * Namespace * Name    -> Instruction
+    ResolveNamedImports    : Scope * Namespace * Name    -> Instruction
+    ResolveWildcardImports : Scope * Namespace           -> Instruction
+    PropConstraint         : List(Prop) * List(Result)   -> Instruction
+    PropCalc               : Property * Term             -> Instruction
         
 rules // Resolve
   
+  // Looks up defintions in scopes with namespace and name.
   perform-task(|nr):
-  	Resolve(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
+  	ResolveDefs(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
   	where
   		uri*  := <filter(nabl-uri)> scope*;
   		name' := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
@@ -36,24 +38,31 @@ rules // Resolve
         	<try(nabl-disambiguate(|ns))> def*
 			end => result
 
+	// Looks up named imports, active in scopes with namespace and name..
 	perform-task(|nr):
-		ResolveImport(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
+		ResolveNamedImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
 		where
-			uri* := <filter(nabl-uri)> scope*;
-			name' := <try-remove-list> name;
-			import* := <nabl-lookup-import(|ns, name')> uri*;
+			uri*    := <filter(nabl-uri)> scope*;
+			name'   := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
+			import* := <nabl-lookup-named-import(|ns, name')> uri*;
 			<map(try(nabl-replace-uri-qualifier(|())); task-add-read(|nr))> uri*;
       if <task-has-dependencies> import* then
       	result := <task-collect-dependencies> import*
       else
-	      def* := <nabl-lookup(|ns, name')> import*;
-	      <map(nabl-uri; nabl-extend-uri(|ns, name', ()); task-add-read(|nr))> import*;
-	  		switch !def*
-	        case ?[]:
-	        	fail
-	        otherwise:
-	        	<try(nabl-disambiguate(|ns))> def*
-				end => result
+	      result := import*
+      end
+	
+	// Looks up wildcard imports for a namespace active in scopes.
+	perform-task(|nr):
+		ResolveWildcardImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
+		where
+			uri*    := <filter(nabl-uri)> scope*;
+			import* := <nabl-lookup-unnamed-import(|ns)> uri*;
+			<map(try(nabl-replace-uri-qualifier(|())); task-add-read(|nr))> uri*;
+      if <task-has-dependencies> import* then
+      	result := <task-collect-dependencies> import*
+      else
+	      result := import*
       end
 	  
   perform-task(|nr):

@@ -206,16 +206,21 @@ rules // generic analysis of uses
 		  u        := <new-use(|partition, result)>
 
 	nabl-use-subtasks(|partition, ns, name, range): 
-		uri  -> [subtask1, subtask2, subtask*|subtasks]
+		uri  -> [defsTask, namedDefsTask, wildcardDefsTask, subtask*|subtasks]
 		with
-			subtask1 := <new-task(|partition)> Resolve(<nabl-use-subtask-uri(|partition)> uri, ns, name);
-			subtask2 := <new-task(|partition)> ResolveImport(<nabl-use-subtask-uri(|partition)> uri, ns, name);
+			defsTask            := <new-task(|partition)> ResolveDefs(<nabl-use-subtask-uri(|partition)> uri, ns, name);
+			namedImportsTask    := <new-task(|partition)> ResolveNamedImports(<nabl-use-subtask-uri(|partition)> uri, ns, name);
+			namedDefsTask       := <new-task(|partition)> ResolveDefs(namedImportsTask, ns, name);
+			wildcardImportsTask := <new-task(|partition)> ResolveWildcardImports(<nabl-use-subtask-uri(|partition)> uri, ns);
+			wildcardDefsTask    := <new-task(|partition)> ResolveDefs(wildcardImportsTask, ns, name);
+			
 			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
         ext-uri  := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
-        subtask* := [<new-task(|partition)> Resolve(<nabl-use-subtask-uri(|partition)> ext-uri, ns, name)]
+        subtask* := [<new-task(|partition)> ResolveDefs(<nabl-use-subtask-uri(|partition)> ext-uri, ns, name)]
       else
       	subtask* := []
       end;
+      
       switch !range
       	case One(): ![]
       	case All(): <nabl-uri-parent < nabl-use-subtasks(|partition, ns, name, range) + ![]> uri
@@ -242,7 +247,7 @@ rules // generic analysis of uses
 
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context)) -> result
+		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context)) -> result
 		where
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context);
 			subtask*   := <nabl-use-subtasks(|partition, ns, <nabl-fix-name> name, One())> ctx-result;

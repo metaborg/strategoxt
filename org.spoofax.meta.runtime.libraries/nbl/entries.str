@@ -57,7 +57,7 @@ rules // index uri & value projections
     
   /** @internal */  
   nabl-uri-impl:
-    Use(uri) -> uri
+    Use(uri) -> <nabl-is-uri> uri
     
   /** @internal */  
   nabl-uri-impl:
