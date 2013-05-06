@@ -30,8 +30,7 @@ signature
     
   constructors // use
       
-		UseCandidate  : Namespace * List(Property) * RefScope        -> Use
-		UseCandidate  : Namespace * Name * List(Property) * RefScope -> Use
+		UseCandidate  : Namespace * List(Property) * RefScope * List(Dependency) -> Use
 	
 		Current     :                                     							RefScope
 		Surrounding :                                  	 							  RefScope
@@ -79,16 +78,15 @@ strategies // generic traversal
 		   nabl-scope-site(?uri'*|lang, partition, unique*, uri*)
 		<+ match(?uri'*|uri*) 
 		); // scopes of external definitions, e.g. variables in let expressions
-    
-		(
+   	(
 			 nabl-def-site(?child-uri*, sibling-uris, ?implicit*|lang, partition, unique*, uri'*, state*)
     <+ match(sibling-uris|uri*)
      ; match(?child-uri*|uri'*)
     );
     
 		try(nabl-state-site);
-    
-		preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*)))); // visit children from left to right
+   
+    preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*)))); // visit children from left to right
     
 		try(nabl-use-site(|lang, partition, uri'*, state*));
     try(nabl-import-site(|lang, partition, child-uri*, state*));
@@ -222,10 +220,10 @@ rules // generic analysis of uses
 	nabl-use(|lang, partition, uri*, candidate*):
 		name{anno*} -> name{u, anno*}
 		where
-			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name)); unions> candidate*;
+			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, name)); unions> candidate*;
 			result   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, result)>
-
+      
 	nabl-use-subtasks(|partition, ns, name, range): 
 		uri  -> [subtask1, subtask2, subtask*|subtasks]
 		with
@@ -251,7 +249,7 @@ rules // generic analysis of uses
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Current()) -> result
+		UseCandidate(ns, prop*, Current(), _) -> result
 		where
 			uri      := <lookup-uri(|lang, ns)> uri*;
 			subtask* := <nabl-use-subtasks(|partition, ns, name, All())> uri;
@@ -263,9 +261,9 @@ rules // generic analysis of uses
 
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context)) -> result
+		UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), dep*) -> result
 		where
-			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context);
+			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, dep*);
 			subtask*   := <nabl-use-subtasks(|partition, ns, <nabl-fix-name> name, One())> ctx-result;
 			if not([] := prop*) then
 				result := [<new-task(|partition)> PropConstraint(prop*, subtask*)]
