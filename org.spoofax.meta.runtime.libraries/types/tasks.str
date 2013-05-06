@@ -8,6 +8,7 @@ imports
 	nbl/query
 	nbl/utils
   types/interface
+  task/core
   
 signature
   
@@ -24,7 +25,7 @@ rules
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
   		switch !resolved
-  			case ?Def(_) : nabl-get-property(|kind); try-make-list
+  			case ?Def(_) : nabl-get-property(|kind); insert-results-or-create-dependency; try-make-list
   			otherwise    : id
   		end => result
   	
