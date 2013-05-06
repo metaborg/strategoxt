@@ -1,3 +1,6 @@
 #! /bin/bash
 
-java -jar strategoxt.jar $@
+SCRIPT=$(readlink -f $0)
+SCRIPTPATH=$(dirname $SCRIPT)
+
+java -jar $SCRIPTPATH/../share/strategoxt/strategoxt.jar $@
