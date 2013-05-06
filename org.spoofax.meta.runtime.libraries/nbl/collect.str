@@ -118,7 +118,7 @@ rules // generic analysis of scopes
 	
 	nabl-scope-site(adapted-uris|lang, partition, unique*, uri*) =
 	  remove-annotations(?Scope(ns*))
-	; with (
+	; where (
 	  	uri'* := <extend-scope-uri(nabl-extend-uri-anonymous(|unique*, partition)|lang)> (ns*, uri*)
 	  ; match(
 	    	adapted-uris
