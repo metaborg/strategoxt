@@ -90,10 +90,16 @@
 	<target name="install" depends="jar">
 		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
 		<mkdir dir="${install-prefix}/bin" />
-		<copy file="wrapper-scripts/unix/pack-sdf" todir="${install-prefix}/bin/" />
+		<copy todir="${install-prefix}/bin" >
+			<fileset dir="wrapper-scripts/unix/" include="*" />
+		</copy>
+		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
+		<!--<copy file="wrapper-scripts/unix/pack-sdf" todir="${install-prefix}/bin/" />
 		<chmod file="${install-prefix}/bin/pack-sdf" perm="a+rx" />
 		<copy file="wrapper-scripts/unix/strj" todir="${install-prefix}/bin/" />
 		<chmod file="${install-prefix}/bin/strj" perm="a+rx" />
+                <copy file="wrapper-scripts/unix/ppgen" todir="${install-prefix}/bin/" />
+                <chmod file="${install-prefix}/bin/ppgen" perm="a+rx" /> -->
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/${jar.name}</echo>
 	</target>
