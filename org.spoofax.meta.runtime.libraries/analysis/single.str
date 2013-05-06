@@ -12,4 +12,4 @@ rules // Single file analysis
       partition                        := $[[project-path]/[path]];
       r@Result(_, _, analyzed-ast, _, error*, warning*, note*) 
                                        := <analyze-collect(|language, project-path)> File(partition, ast);
-    	(error-taskID*, evaluated-count) := <analyze-perform-all> r
+    	(error-taskID*, evaluated-count) := <analyze-perform-all> [r]
