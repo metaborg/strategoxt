@@ -91,7 +91,7 @@
 		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
 		<mkdir dir="${install-prefix}/bin" />
 		<copy todir="${install-prefix}/bin" >
-			<fileset dir="wrapper-scripts/unix/" include="*" />
+			<fileset dir="wrapper-scripts/unix/" includes="*" />
 		</copy>
 		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
 		<!--<copy file="wrapper-scripts/unix/pack-sdf" todir="${install-prefix}/bin/" />
