@@ -3,4 +3,4 @@
 SCRIPT=$(readlink -f $0)
 SCRIPTPATH=$(dirname $SCRIPT)
 
-java -jar $SCRIPTPATH/../share/strategoxt/strategoxt.jar $@
+java -Xss8m -Xmx1024m -jar $SCRIPTPATH/../share/strategoxt/strategoxt.jar $@
