@@ -1,0 +1,6 @@
+#! /bin/bash
+
+SCRIPT=$(readlink -f $0)
+SCRIPTPATH=$(dirname $SCRIPT)
+
+java -cp $SCRIPTPATH/../share/strategoxt/strategoxt.jar run org.strategoxt.tools.main-parse-pp-table $@
