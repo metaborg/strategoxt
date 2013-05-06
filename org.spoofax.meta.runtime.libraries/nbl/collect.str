@@ -74,9 +74,12 @@ strategies // generic traversal
 	 */
 	nabl-collect(sibling-uris|lang, partition, unique*, uri*) =
 		nabl-state-pop(?state*);
-		try(nabl-scoping-site);
-		try(nabl-scope-site(?uri'*|lang, partition, unique*, uri*)); // scopes of external definitions, e.g. variables in let expressions
-		
+    try(nabl-scoping-site);
+    (
+		   nabl-scope-site(?uri'*|lang, partition, unique*, uri*)
+		<+ match(?uri'*|uri*) 
+		); // scopes of external definitions, e.g. variables in let expressions
+    
 		(
 			 nabl-def-site(?child-uri*, sibling-uris, ?implicit*|lang, partition, unique*, uri'*, state*)
     <+ match(sibling-uris|uri*)
@@ -84,13 +87,13 @@ strategies // generic traversal
     );
     
 		try(nabl-state-site);
-		
+    
 		preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*)))); // visit children from left to right
-		
+    
 		try(nabl-use-site(|lang, partition, uri'*, state*));
     try(nabl-import-site(|lang, partition, child-uri*, state*));
     try(nabl-prop-site(|lang, partition, state*, implicit*))
-	
+    
 	nabl-siblings(|lang, partition, unique*, uri*) = 
 		[] + 
 		[ nabl-collect(?sibling-uri*|lang, partition, unique*, uri*)
