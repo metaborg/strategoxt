@@ -1,5 +1,9 @@
 module nbl/utils
 
+imports
+	
+	task/core
+
 rules 
 	
 	match(m|val) = where (!val; m)
@@ -34,6 +38,7 @@ rules
  	try-make-list =
 		switch id
 			case is-list: id
+			case ?Dependency(_): id
 			otherwise: ![<id>]
 		end	
 		
