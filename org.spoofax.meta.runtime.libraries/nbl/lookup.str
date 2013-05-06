@@ -17,19 +17,30 @@ rules // Lookup
   		uri*  := <filter(nabl-uri)> scope*;
   		uri'* := <map(nabl-extend-uri(|ns, name, ()))> uri*;
   		def*  := <mapconcat(nabl-get-all-definitions)> uri'*
-			  		
-	nabl-lookup-import(|ns, name):
+
+	nabl-lookup-named-import(|ns, name):
 		scope* -> import*
 		with
 			uri*    := <filter(nabl-uri)> scope*;
-			import* := <mapconcat(nabl-lookup-import-one(|ns, name))> uri*
+			import* := <mapconcat(nabl-lookup-named-import-one(|ns, name))> uri*
 			
-	nabl-lookup-import-one(|ns, name):
-		uri -> [namedImport*, unnamedImport*]
+	nabl-lookup-named-import-one(|ns, name):
+		uri -> import*
 		with
-			language       := <nabl-uri-language> uri;
-      namedImport*   := <nabl-get-import-uris-named(|language, ns, name)> uri;
-      unnamedImport* := <nabl-get-import-uris-unnamed(|language, ns)> uri
+			language := <nabl-uri-language> uri;
+      import*  := <nabl-get-import-uris-named(|language, ns, name)> uri
+			  		
+	nabl-lookup-unnamed-import(|ns):
+		scope* -> import*
+		with
+			uri*    := <filter(nabl-uri)> scope*;
+			import* := <mapconcat(nabl-lookup-unnamed-import-one(|ns))> uri*
+			
+	nabl-lookup-unnamed-import-one(|ns):
+		uri -> import*
+		with
+			language := <nabl-uri-language> uri;
+      import*  := <nabl-get-import-uris-unnamed(|language, ns)> uri
 
 rules // Imports
 

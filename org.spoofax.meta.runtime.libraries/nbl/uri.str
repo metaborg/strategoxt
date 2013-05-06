@@ -150,6 +150,9 @@ rules // Projections
 
 rules // Conditions
   
+  nabl-is-uri =
+  	?URI(_, _)
+  
   nabl-is-unique =
     nabl-uri-qualifier;
     ?Unique(_)
@@ -195,7 +198,7 @@ rules /** @internal Projections */
 
   /** @internal */
   nabl-uri-generic:
-    term -> <?_#(<?[<id>|_]>)> term
+    term -> <not(is-list); ?_#(<?[<id>|_]>); nabl-is-uri> term
     
   /** @internal */
   nabl-value-impl:
@@ -203,7 +206,7 @@ rules /** @internal Projections */
     
   /** @internal */
   nabl-value-generic:
-    term -> <?_#(<?[_, <id>|_]> )> term
+    term -> <not(is-list); ?_#(<?[_, <id>|_]> ); nabl-is-uri> term
     
   /** @internal */  
   nabl-uri-impl:
