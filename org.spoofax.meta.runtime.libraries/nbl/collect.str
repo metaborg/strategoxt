@@ -41,6 +41,8 @@ signature
 	
 	constructors // import
 	  
+	  Wildcard : List(Import) * RefScope * DefScope * List(Dependency) -> ImportDesc
+	  Single   : Term * DefScope -> ImportDesc
 	  Imported : Namespace                   -> Namespace
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
@@ -202,8 +204,8 @@ rules // generic analysis of defs
 		  // 3. extend it with an ID segment
 		  // 4. create an alias from the new URI to def-uri
 		  
-		  // this might later be handled by import-site rules, 
-		  // but for now the sketched approach keeps things working
+		  // this is currently handled by import-site rules, 
+		  // but the sketched approach might avoid import-sites completely
 		with
 			// add Def entry to the index
 			d := <new-def(|partition, def-uri)> a
@@ -277,18 +279,47 @@ rules // generic analysis of uses
     
 rules // generic analysis of imports
   
-  nabl-import(|lang, partition, uri*, imports):
-    name -> name'
-    where
-    	Use(use) := <nabl-collect-use> name;
-      name'    := <foldl(nabl-import-candidate(|lang, partition, uri*, use))> (imports, name)
+  nabl-import(|lang, partition, uri*, imports) =
+    where(<map(nabl-import-candidate(|lang, partition, uri*))> imports)
+  
+  nabl-import-candidate(|lang, partition, uri*) =
+    ?Single(term, scope*)
+  ; Def(uri) := <nabl-collect-def> term
+  ; ns       := <nabl-uri-namespace> uri
+  ; segment  := <nabl-uri-path; Hd> uri
+  ; <map(nabl-import-alias(|lang, partition, uri*, uri, ns, segment))> scope*
         
-  nabl-import-candidate(|lang, partition, uri*, use):
-    (import, name) -> name
+  nabl-import-candidate(|lang, partition, uri*) =
+    ?Wildcard(import*, from, into, dep)
+  ; <map(nabl-import-prop(|lang, partition, uri*, from, into))> import*
+  
+  nabl-import-alias(|lang, partition, uri*, uri, ns, segment):
+    scope -> <new-alias(|partition, uri, alias-uri)>
+  where
+    base-uri  := <nabl-scope-uri(|lang, uri*, ns)> 
+  ; alias-uri := <nabl-extend-uri(|segment)> base-uri
+    
+  nabl-import-prop(|lang, partition, uri*, from, into):
+    Import(lang, ins) -> <new-prop(|partition, into-uri, <id>, from-uri)>
+  where
+     Imported(ns) := ins
+  <+ ns           := ins
+  where
+    from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
+  ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into 
+  
+  nabl-scope-uri(|lang, uri*, ns):
+    Current() -> <lookup-uri(|lang, ns)> uri*
+  
+  nabl-scope-uri(|lang, uri*, ns):
+    DefScope(term{anno*}) -> <lookup> (ns, scope*)
     where
-      ns  := <nabl-import-namespace> import;
-      uri := <lookup-uri(|lang, ns)> uri*;
-      new-prop(|partition, uri, import, use)
+      <fetch-elem(?Scope(scope*))> anno*
+      
+  nabl-scope-uri(|lang, uri*, ns):
+    Context(_, name, _, _) -> uri
+    where
+      Use(uri) := <nabl-collect-use> name
       
   nabl-import-namespace =
        ?Import(_, Imported(<id>)) 
