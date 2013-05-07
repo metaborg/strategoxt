@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.Tools;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -23,21 +22,21 @@ public class task_api_debug_info_0_1 extends Strategy {
 		final TaskEngine engine = TaskManager.getInstance().getCurrent();
 		
 		if(Tools.isTermString(partitionOrID)) {
-			Collection<IStrategoInt> taskIDs = engine.getInPartition((IStrategoString) partitionOrID);
+			Collection<IStrategoTerm> taskIDs = engine.getInPartition((IStrategoString) partitionOrID);
 			IStrategoList list = factory.makeList();
-			for(IStrategoInt taskID : taskIDs) {
+			for(IStrategoTerm taskID : taskIDs) {
 				list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
 			}
 
 			return list;
 		} else if(Tools.isTermInt(partitionOrID)) {
-			return createDebugTuple((IStrategoInt) partitionOrID, engine, factory);
+			return createDebugTuple(partitionOrID, engine, factory);
 		}
 		
 		return null;
 	}
 
-	private IStrategoTuple createDebugTuple(IStrategoInt taskID, TaskEngine engine, ITermFactory factory) {
+	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, TaskEngine engine, ITermFactory factory) {
 		IStrategoTerm instruction = engine.getInstruction(taskID);
 		IStrategoList dependencies = factory.makeList(engine.getDependencies(taskID));
 		IStrategoTerm message = engine.getMessage(taskID);
