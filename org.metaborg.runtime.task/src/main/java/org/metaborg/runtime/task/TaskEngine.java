@@ -27,6 +27,7 @@ import org.strategoxt.lang.Strategy;
 
 public class TaskEngine {
 	private final ITermFactory factory;
+	private final ITermDigester digester;
 	private final IStrategoConstructor resultConstructor;
 
 	
@@ -77,8 +78,9 @@ public class TaskEngine {
 	private final TaskEvaluator evaluator;
 
 
-	public TaskEngine(ITermFactory factory) {
+	public TaskEngine(ITermFactory factory, ITermDigester digester) {
 		this.factory = factory;
+		this.digester = digester;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
 		this.evaluator = new TaskEvaluator(this, factory);
 	}
@@ -112,12 +114,11 @@ public class TaskEngine {
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		//final IStrategoTerm taskID = factory.makeInt(instruction.hashCode());
-		final IStrategoTerm taskID = factory.makeInt(instruction.toString().hashCode());
+		final IStrategoTerm taskID = digester.digest(instruction, factory);
 		IStrategoTerm instr = toInstruction.get(taskID);
 		if(instr != null && !instruction.match(instr)) {
 			reset();
-			throw new IllegalStateException("Hash collision, task " + instruction + " and " + instr + " have the same hash code: " + taskID);
+			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr + " have the same identifier: " + taskID);
 		}
 		
 		if(toInstruction.put(taskID, instruction) == null) {

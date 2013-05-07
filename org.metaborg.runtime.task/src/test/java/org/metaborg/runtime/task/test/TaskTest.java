@@ -1,5 +1,7 @@
 package org.metaborg.runtime.task.test;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.metaborg.runtime.task.TaskEngine;
@@ -22,7 +24,7 @@ public class TaskTest {
 	protected static TaskEngine taskEngine;
 
 	@BeforeClass
-	public static void setUpOnce() {
+	public static void setUpOnce() throws NoSuchAlgorithmException {
 		interpreter = new Interpreter();
 		factory = interpreter.getFactory();
 		agent = interpreter.getIOAgent();
