@@ -32,18 +32,13 @@ rules
   perform-task(|n): 
   	PropCalc(result, check*) -> <try-make-list> result
   	where 
-  		<if is-list then Hd end> check*
+  		<try-remove-list> check*
 	
   perform-task(|n): 
-  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
+  	PropCheck(term, expected) ->  term*
   	where
-  		not(<is-list> term <+ <is-list> expected)
-			
-  perform-task(|n): 
-  	PropCheck(term*, expected*) -> <try-make-list> term*
-  	where
-  		<is-list> term*;
-  		<is-list> expected*;
+  		term*     := <try-make-list> term;
+  		expected* := <try-make-list> expected;
   		<cart(eq)> (term*, expected*)
   		
 rules
