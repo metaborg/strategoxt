@@ -42,7 +42,7 @@ signature
 	constructors // import
 	  
 	  Wildcard : List(Import) * RefScope * DefScope * List(Dependency) -> ImportDesc
-	  Single   : Term * DefScope -> ImportDesc
+	  Single   : Term * DefScope * List(Dependency) -> ImportDesc
 	  Imported : Namespace                   -> Namespace
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
@@ -283,12 +283,12 @@ rules // generic analysis of imports
     where(<map(nabl-import-candidate(|lang, partition, uri*))> imports)
   
   nabl-import-candidate(|lang, partition, uri*) =
-    ?Single(term, scope*)
+    ?Single(term, scope*, dep)
   ; Def(uri) := <nabl-collect-def> term
   ; ns       := <nabl-uri-namespace> uri
   ; segment  := <nabl-uri-path; Hd> uri
   ; <map(nabl-import-alias(|lang, partition, uri*, uri, ns, segment))> scope*
-        
+       
   nabl-import-candidate(|lang, partition, uri*) =
     ?Wildcard(import*, from, into, dep)
   ; <map(nabl-import-prop(|lang, partition, uri*, from, into))> import*
