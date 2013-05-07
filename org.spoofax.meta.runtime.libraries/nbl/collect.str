@@ -121,17 +121,16 @@ rules // generic analysis of scopes
 	  remove-annotations(?Scope(ns*))
 	; where (
 	  	uri'* := <extend-scope-uri(nabl-extend-uri-anonymous(|unique*, partition)|lang)> (ns*, uri*)
-	  ; match(
-	    	adapted-uris
-	    | uri'*
-      )
+	  ; match(adapted-uris| uri'*)
+	  ; scope-uri* := <map(!(<id>, <lookup-uri(|uri'*)>))> ns*
 	  )
-	; add-annotation(|Scope(uri'*))
+	; add-annotation(|Scope(scope-uri*))
 	  
 	nabl-scope(|ns1*) = 
-	  remove-annotations(?Scope(ns2*))
-	; add-annotation(|Scope(<union> (ns1*, ns2*)))
-   
+	   remove-annotations(?Scope(ns2*))
+	 ; add-annotation(|Scope(<union> (ns1*, ns2*)))
+	<+ add-annotation(|Scope(ns1*))
+	 
 rules // generic analysis of defs
     	
 	// call back to generic analysis
@@ -353,5 +352,8 @@ rules // helpers
 		<+ 
 		  result := [(key, <nabl-base-uri; update> lang)|uri*]
 			  
-	lookup-uri(|lang, ns):
-	  uri* -> <<lookup> (ns, uri*) <+ <nabl-base-uri> lang>
+	lookup-uri(|lang, ns) =
+	  <lookup> (ns, <id>) <+ <nabl-base-uri> lang
+ 
+  lookup-uri(|uri*) =
+    <lookup> (<id>, uri*)
