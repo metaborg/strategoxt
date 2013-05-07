@@ -176,7 +176,7 @@ rules // generic analysis of defs
      ; ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
 		 ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> ano-uri
      // 1b. extend current URI with subsequent and ID segment
-     ; subs-uri := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
+     ; subs-uri  := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
      ; alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri
      // 1c. introduce alias from 1b to 1a
      ; <new-alias(|partition, def-uri, alias-uri)> a
@@ -185,31 +185,35 @@ rules // generic analysis of defs
      // 3. extend URI for namespace of definition site with Subsequent segment
      ; match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
     
-    <+ 
+    <+ ?defscope*
      // 4th case: definition only in external scopes
      
      // 1. extend base URI with anonymous and ID segment
-       ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
+     ; ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
      ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> ano-uri
      // 2. preserve
 		 ; match(child-uris|child-uri*)
      // 3. preserve
 		 ; match(sibling-uris|sibl-uri*)
-		where
-		  id
-		  // TODO add aliases here for DefScope entries
-		  // for each DefScope(term)
-		  // 1. get the Scope(_) annotation
-		  // 2. lookup the URI for the namespace
-		  // 3. extend it with an ID segment
-		  // 4. create an alias from the new URI to def-uri
-		  
-		  // this is currently handled by import-site rules, 
-		  // but the sketched approach might avoid import-sites completely
+	  where
+	    //introduce aliases
+		  is-list
+		; filter(nabl-def-alias(|partition, def-uri))
 		with
 			// add Def entry to the index
 			d := <new-def(|partition, def-uri)> a
 	
+	nabl-def-alias(|partition, def-uri):
+	  DefScope(term{anno*}) -> <new-alias(|partition, def-uri, alias-uri)>
+	  where
+	    <fetch-elem(?Scope(scope*))> anno*
+	  ; ns        := <nabl-uri-namespace> def-uri
+	  ; base-uri  := <lookup> (ns, scope*)
+	  ; segment   := <nabl-uri-path; Hd> base-uri
+	  ; alias-uri := <nabl-extend-uri(|segment)> base-uri
+      
+      // this is currently handled by import-site rules, 
+      // but the sketched approach might avoid import-sites completely
 rules // generic analysis of uses
 	
 	// single candidate
