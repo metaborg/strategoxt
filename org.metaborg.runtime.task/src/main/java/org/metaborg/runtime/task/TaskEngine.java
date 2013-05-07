@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.spoofax.interpreter.terms.IStrategoAppl;
@@ -30,6 +31,9 @@ public class TaskEngine {
 	private final ITermDigester digester;
 	private final IStrategoConstructor resultConstructor;
 
+	
+	private final WeakHashMap<IStrategoTerm, IStrategoTerm> hashCache = new WeakHashMap<IStrategoTerm, IStrategoTerm>();
+	
 	
 	/** Instructions of tasks. */
 	private final Map<IStrategoTerm, IStrategoTerm> toInstruction = new ConcurrentHashMap<IStrategoTerm, IStrategoTerm>();
@@ -113,8 +117,13 @@ public class TaskEngine {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
-
-		final IStrategoTerm taskID = digester.digest(instruction, factory);
+		
+		IStrategoTerm taskID = hashCache.get(instruction);
+		if(taskID == null) {
+			taskID = digester.digest(instruction, factory);
+			hashCache.put(instruction, taskID);
+		}
+		
 		IStrategoTerm instr = toInstruction.get(taskID);
 		if(instr != null && !instruction.match(instr)) {
 			reset();
