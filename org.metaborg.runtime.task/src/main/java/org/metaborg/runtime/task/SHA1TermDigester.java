@@ -82,14 +82,6 @@ public class SHA1TermDigester implements ITermDigester {
 		}
 	}
 
-	private String byteArray2Hex(final byte[] digest) {
-		stringBuilder.setLength(0);
-		for(byte b : digest) {
-			formatter.format("%02x", b);
-		}
-		return stringBuilder.toString();
-	}
-
 	private int toInt(final byte[] digest, final int offset) {
 		return ((digest[offset + 0] & 0xFF) << 24) | ((digest[offset + 1] & 0xFF) << 16)
 			| ((digest[offset + 2] & 0xFF) << 8) | (digest[offset + 3] & 0xFF);
