@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.metaborg.runtime.task.digest.ITermDigester;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoInt;
@@ -31,12 +31,10 @@ public class TaskEngine {
 	private final ITermDigester digester;
 	private final IStrategoConstructor resultConstructor;
 
-	
-	private final WeakHashMap<IStrategoTerm, IStrategoTerm> hashCache = new WeakHashMap<IStrategoTerm, IStrategoTerm>();
-	
-	
+
 	/** Instructions of tasks. */
-	private final Map<IStrategoTerm, IStrategoTerm> toInstruction = new ConcurrentHashMap<IStrategoTerm, IStrategoTerm>();
+	private final Map<IStrategoTerm, IStrategoTerm> toInstruction =
+		new ConcurrentHashMap<IStrategoTerm, IStrategoTerm>();
 
 	/** Origin partitions of tasks. */
 	private final ManyToManyMap<IStrategoTerm, IStrategoString> toPartition = ManyToManyMap.create();
@@ -53,7 +51,7 @@ public class TaskEngine {
 
 	/** Produced messages of tasks. */
 	private final Map<IStrategoTerm, IStrategoTerm> toMessage = new ConcurrentHashMap<IStrategoTerm, IStrategoTerm>();
-	
+
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoTerm> failed = new HashSet<IStrategoTerm>();
 
@@ -92,7 +90,8 @@ public class TaskEngine {
 	/**
 	 * Starts task collection for given partition.
 	 * 
-	 * @param partition The partition to collect tasks for.
+	 * @param partition
+	 *            The partition to collect tasks for.
 	 */
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
@@ -108,28 +107,27 @@ public class TaskEngine {
 	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
 	 * 
-	 * @param partition The partition where the task comes from.
-	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
-	 * @param instruction The instruction.
+	 * @param partition
+	 *            The partition where the task comes from.
+	 * @param dependencies
+	 *            A list of task identifiers of the tasks that given instruction depends on,
+	 * @param instruction
+	 *            The instruction.
 	 * @return A unique task identifier for given instruction.
 	 */
 	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
-		
-		IStrategoTerm taskID = hashCache.get(instruction);
-		if(taskID == null) {
-			taskID = digester.digest(instruction, factory);
-			hashCache.put(instruction, taskID);
-		}
-		
-		IStrategoTerm instr = toInstruction.get(taskID);
+
+		final IStrategoTerm taskID = digester.digest(instruction, factory);
+		final IStrategoTerm instr = toInstruction.get(taskID);
 		if(instr != null && !instruction.match(instr)) {
 			reset();
-			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr + " have the same identifier: " + taskID);
+			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr
+				+ " have the same identifier: " + taskID);
 		}
-		
+
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
@@ -150,13 +148,20 @@ public class TaskEngine {
 	/**
 	 * Adds a persisted task back to the task engine.
 	 * 
-	 * @param taskID The identifier of the task.
-	 * @param instruction The instruction of the task.
-	 * @param partitions The partitions of the task
-	 * @param dependencies The dependencies of the task
-	 * @param reads The reads of the task.
-	 * @param results A list of results of the task, or an empty tuple if it has no results.
-	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
+	 * @param taskID
+	 *            The identifier of the task.
+	 * @param instruction
+	 *            The instruction of the task.
+	 * @param partitions
+	 *            The partitions of the task
+	 * @param dependencies
+	 *            The dependencies of the task
+	 * @param reads
+	 *            The reads of the task.
+	 * @param results
+	 *            A list of results of the task, or an empty tuple if it has no results.
+	 * @param failed
+	 *            An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
 	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoList partitions,
 		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
@@ -176,7 +181,8 @@ public class TaskEngine {
 	/**
 	 * Stops collection for given partition.
 	 * 
-	 * @param partition The partition to stop collecting tasks for.
+	 * @param partition
+	 *            The partition to stop collecting tasks for.
 	 */
 	public void stopCollection(IStrategoString partition) {
 		if(!inCollection.contains(partition))
@@ -193,10 +199,14 @@ public class TaskEngine {
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
 	 * 
-	 * @param context The context to call the perform and insert strategies with.
-	 * @param performInstruction The strategy that performs an instruction.
-	 * @param insertResults The strategy that inserts results into an instruction.
-	 * @param changedReads A list of reads which have changed.
+	 * @param context
+	 *            The context to call the perform and insert strategies with.
+	 * @param performInstruction
+	 *            The strategy that performs an instruction.
+	 * @param insertResults
+	 *            The strategy that inserts results into an instruction.
+	 * @param changedReads
+	 *            A list of reads which have changed.
 	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
 	 *         evaluations.
 	 */
@@ -207,7 +217,7 @@ public class TaskEngine {
 			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 			final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
 			final Queue<IStrategoTerm> workList = new LinkedList<IStrategoTerm>(getRead(changedRead));
-			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;){
+			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 				evaluator.schedule(taskID);
 				seen.add(taskID);
 				Collection<IStrategoTerm> dependent = getDependent(taskID);
@@ -271,11 +281,11 @@ public class TaskEngine {
 	public IStrategoList getResult(IStrategoTerm taskID) {
 		return toResult.get(taskID);
 	}
-	
+
 	public Set<Entry<IStrategoTerm, IStrategoList>> getAllResults() {
 		return toResult.entrySet();
 	}
-	
+
 	public void setMessage(IStrategoTerm taskID, IStrategoTerm resultList) {
 		toMessage.put(taskID, resultList);
 	}
@@ -287,7 +297,7 @@ public class TaskEngine {
 	public IStrategoTerm getMessage(IStrategoTerm taskID) {
 		return toMessage.get(taskID);
 	}
-	
+
 	public IStrategoList getMessages(IStrategoString partition) {
 		Collection<IStrategoTerm> taskIDs = getInPartition(partition);
 		IStrategoList messages = factory.makeList();
@@ -324,6 +334,10 @@ public class TaskEngine {
 		return evaluator;
 	}
 
+	public ITermDigester getDigester() {
+		return digester;
+	}
+	
 	public void reset() {
 		toInstruction.clear();
 		toPartition.clear();
@@ -336,6 +350,7 @@ public class TaskEngine {
 		removedTasks.clear();
 		inCollection.clear();
 		evaluator.reset();
+		digester.reset();
 	}
 
 	private void collectGarbage() {

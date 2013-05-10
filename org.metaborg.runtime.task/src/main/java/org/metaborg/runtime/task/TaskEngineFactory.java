@@ -2,21 +2,17 @@ package org.metaborg.runtime.task;
 
 import java.util.Collection;
 
-import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.TermFactory;
 import org.spoofax.terms.attachments.TermAttachmentSerializer;
 
 public class TaskEngineFactory {
-	private static final IStrategoConstructor TASK_CONSTRUCTOR = new TermFactory().makeConstructor("Task", 7);
-
-	public IStrategoList toTerm(TaskEngine taskEngine, ITermFactory factory) {
+	public IStrategoTerm toTerm(TaskEngine taskEngine, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
+
 		IStrategoList tasks = factory.makeList();
 		for(final IStrategoTerm taskID : taskEngine.getTaskIDs()) {
 			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
@@ -32,13 +28,20 @@ public class TaskEngineFactory {
 					createTaskTerm(factory, taskID, instruction, partitions, dependencies, reads, results, failed),
 					tasks);
 		}
-		return tasks;
+
+		final IStrategoTerm digestState = taskEngine.getDigester().state(factory);
+
+		return factory.makeTuple(digestState, tasks);
 	}
 
-	public TaskEngine fromTerms(TaskEngine taskEngine, IStrategoList tasks, ITermFactory factory) {
+	public TaskEngine fromTerms(TaskEngine taskEngine, IStrategoTerm term, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
-		while(!tasks.isEmpty()) {
-			final IStrategoAppl task = (IStrategoAppl) tasks.head();
+
+		final IStrategoTerm digestState = term.getSubterm(0);
+		taskEngine.getDigester().setState(digestState);
+
+		final IStrategoTerm tasks = term.getSubterm(1);
+		for(IStrategoTerm task : tasks) {
 			final IStrategoTerm taskID = task.getSubterm(0);
 			final IStrategoTerm instruction = task.getSubterm(1);
 			final IStrategoList partitions = (IStrategoList) task.getSubterm(2);
@@ -47,17 +50,16 @@ public class TaskEngineFactory {
 			final IStrategoTerm results = serializer.fromAnnotations(task.getSubterm(5), false);
 			final IStrategoInt failed = (IStrategoInt) task.getSubterm(6);
 			taskEngine.addPersistedTask(taskID, instruction, partitions, dependencies, reads, results, failed);
-			tasks = tasks.tail();
 		}
 
 		return taskEngine;
 	}
 
-	private IStrategoAppl createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
-		Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies, Collection<IStrategoTerm> reads,
-		IStrategoTerm results, boolean failed) {
-		return factory.makeAppl(TASK_CONSTRUCTOR, taskID, instruction, factory.makeList(partitions),
-			factory.makeList(dependencies), factory.makeList(reads), results == null ? factory.makeTuple() : results,
-			failed ? factory.makeInt(1) : factory.makeInt(0));
+	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
+		Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
+		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed) {
+		return factory.makeTuple(taskID, instruction, factory.makeList(partitions), factory.makeList(dependencies),
+			factory.makeList(reads), results == null ? factory.makeTuple() : results, failed ? factory.makeInt(1)
+				: factory.makeInt(0));
 	}
 }

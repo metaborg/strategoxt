@@ -9,8 +9,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoList;
+import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.io.binary.SAFWriter;
 import org.spoofax.terms.io.binary.TermReader;
@@ -47,7 +49,12 @@ public class TaskManager {
 				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
 	}
 
-	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) throws NoSuchAlgorithmException {
+	public TaskEngine createTaskEngine(ITermFactory factory) {
+		return new TaskEngine(factory, new NonDeterministicCountingTermDigester());
+	}
+
+	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent)
+		throws NoSuchAlgorithmException {
 		URI project = getProjectURI(projectPath, agent);
 		synchronized(TaskManager.class) {
 			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
@@ -56,7 +63,7 @@ public class TaskManager {
 				taskEngine = tryReadFromFile(getFile(project), factory);
 			}
 			if(taskEngine == null) {
-				taskEngine = new TaskEngine(factory, new SHA1TermDigester());
+				taskEngine = createTaskEngine(factory);
 			}
 			taskEngineCache.put(project, new WeakReference<TaskEngine>(taskEngine));
 			current.set(taskEngine);
@@ -91,7 +98,7 @@ public class TaskManager {
 
 	public TaskEngine tryReadFromFile(File file, ITermFactory factory) {
 		try {
-			TaskEngine taskEngine = new TaskEngine(factory, new SHA1TermDigester());
+			TaskEngine taskEngine = createTaskEngine(factory);
 			IStrategoList tasks = (IStrategoList) new TermReader(factory).parseFromFile(file.toString());
 			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
 		} catch(Exception e) {
@@ -101,7 +108,7 @@ public class TaskManager {
 
 	public void storeCurrent(ITermFactory factory) throws IOException {
 		File file = getFile(currentProject.get());
-		IStrategoList tasks = taskEngineFactory.toTerm(getCurrent(), factory);
+		IStrategoTerm tasks = taskEngineFactory.toTerm(getCurrent(), factory);
 		file.createNewFile();
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
