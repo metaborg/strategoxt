@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
@@ -27,13 +26,13 @@ public class TaskEvaluator {
 
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
-	private final Set<IStrategoInt> nextScheduled = new HashSet<IStrategoInt>();
+	private final Set<IStrategoTerm> nextScheduled = new HashSet<IStrategoTerm>();
 
 	/** Queue of task that are scheduled for evaluation. */
-	private final Queue<IStrategoInt> evaluationQueue = new ConcurrentLinkedQueue<IStrategoInt>();
+	private final Queue<IStrategoTerm> evaluationQueue = new ConcurrentLinkedQueue<IStrategoTerm>();
 
 	/** Dependencies of tasks which are updated during evaluation. */
-	private final ManyToManyMap<IStrategoInt, IStrategoInt> toRuntimeDependency = ManyToManyMap.create();
+	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toRuntimeDependency = ManyToManyMap.create();
 
 
 	public TaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
@@ -47,26 +46,26 @@ public class TaskEvaluator {
 	 * 
 	 * @param taskID Task identifier to schedule.
 	 */
-	public void schedule(IStrategoInt taskID) {
+	public void schedule(IStrategoTerm taskID) {
 		nextScheduled.add(taskID);
 	}
 
-	private void queue(IStrategoInt taskID) {
+	private void queue(IStrategoTerm taskID) {
 		evaluationQueue.add(taskID);
 	}
 
 	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		try {
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
-			for(final IStrategoInt taskID : nextScheduled) {
+			for(final IStrategoTerm taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
 			}
 
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
-			for(final IStrategoInt taskID : nextScheduled) {
-				final Set<IStrategoInt> dependencies = new HashSet<IStrategoInt>(taskEngine.getDependencies(taskID));
-				for(final IStrategoInt dependency : taskEngine.getDependencies(taskID)) {
+			for(final IStrategoTerm taskID : nextScheduled) {
+				final Set<IStrategoTerm> dependencies = new HashSet<IStrategoTerm>(taskEngine.getDependencies(taskID));
+				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
 					if(taskEngine.isSolved(dependency))
 						dependencies.remove(dependency);
 				}
@@ -81,7 +80,7 @@ public class TaskEvaluator {
 
 			// Evaluate each task in the queue.
 			int numTasksEvaluated = 0;
-			for(IStrategoInt taskID; (taskID = evaluationQueue.poll()) != null;) {
+			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				++numTasksEvaluated;
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 				final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
@@ -97,11 +96,12 @@ public class TaskEvaluator {
 				} else if(result == null) {
 					// The task failed to produce a result.
 					taskEngine.addFailed(taskID);
+					nextScheduled.remove(taskID);
 					tryScheduleNewTasks(taskID);
 				} else if(Tools.isTermList(result)) {
 					// The task produced a result.
 					taskEngine.addResult(taskID, (IStrategoList) result);
-					nextScheduled.remove(instruction);
+					nextScheduled.remove(taskID);
 					tryScheduleNewTasks(taskID);
 				} else {
 					throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
@@ -122,7 +122,7 @@ public class TaskEvaluator {
 	}
 
 	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
-		IStrategoInt taskID, IStrategoTerm instruction) {
+		IStrategoTerm taskID, IStrategoTerm instruction) {
 		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
 		return performInstruction.invoke(context, insertedInstruction, taskID);
 	}
@@ -131,16 +131,16 @@ public class TaskEvaluator {
 		return insertResults.invoke(context, instruction);
 	}
 
-	private void tryScheduleNewTasks(IStrategoInt solved) {
+	private void tryScheduleNewTasks(IStrategoTerm solved) {
 		// Retrieve dependent tasks of the solved task.
-		final Collection<IStrategoInt> dependents = taskEngine.getDependent(solved);
+		final Collection<IStrategoTerm> dependents = taskEngine.getDependent(solved);
 		// Make a copy for toRuntimeDependency because a remove operation can occur while iterating.
-		final Collection<IStrategoInt> runtimeDependents =
-			new ArrayList<IStrategoInt>(toRuntimeDependency.getInverse(solved));
+		final Collection<IStrategoTerm> runtimeDependents =
+			new ArrayList<IStrategoTerm>(toRuntimeDependency.getInverse(solved));
 
-		for(final IStrategoInt dependent : Iterables.concat(dependents, runtimeDependents)) {
+		for(final IStrategoTerm dependent : Iterables.concat(dependents, runtimeDependents)) {
 			// Retrieve dependencies for a dependent task.
-			Collection<IStrategoInt> dependencies = toRuntimeDependency.get(dependent);
+			Collection<IStrategoTerm> dependencies = toRuntimeDependency.get(dependent);
 			int dependenciesSize = dependencies.size();
 			if(dependenciesSize == 0) {
 				// If toRuntimeDependency does not contain dependencies for dependent yet, add them.
@@ -156,10 +156,10 @@ public class TaskEvaluator {
 		}
 	}
 
-	private void updateDelayedDependencies(IStrategoInt delayed, IStrategoList dependencies) {
+	private void updateDelayedDependencies(IStrategoTerm delayed, IStrategoList dependencies) {
 		// Sets the runtime dependencies for a task to the given dependency list.
 		toRuntimeDependency.removeAll(delayed);
 		for(final IStrategoTerm dependency : dependencies)
-			toRuntimeDependency.put(delayed, (IStrategoInt) dependency);
+			toRuntimeDependency.put(delayed, dependency);
 	}
 }

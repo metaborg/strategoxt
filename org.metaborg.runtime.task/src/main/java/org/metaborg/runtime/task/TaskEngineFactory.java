@@ -18,10 +18,10 @@ public class TaskEngineFactory {
 	public IStrategoList toTerm(TaskEngine taskEngine, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 		IStrategoList tasks = factory.makeList();
-		for(final IStrategoInt taskID : taskEngine.getTaskIDs()) {
+		for(final IStrategoTerm taskID : taskEngine.getTaskIDs()) {
 			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
-			final Collection<IStrategoInt> dependencies = taskEngine.getDependencies(taskID);
+			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			IStrategoTerm results = taskEngine.getResult(taskID);
 			if(results != null)
@@ -39,7 +39,7 @@ public class TaskEngineFactory {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 		while(!tasks.isEmpty()) {
 			final IStrategoAppl task = (IStrategoAppl) tasks.head();
-			final IStrategoInt taskID = (IStrategoInt) task.getSubterm(0);
+			final IStrategoTerm taskID = task.getSubterm(0);
 			final IStrategoTerm instruction = task.getSubterm(1);
 			final IStrategoList partitions = (IStrategoList) task.getSubterm(2);
 			final IStrategoList dependencies = (IStrategoList) task.getSubterm(3);
@@ -53,8 +53,8 @@ public class TaskEngineFactory {
 		return taskEngine;
 	}
 
-	private IStrategoAppl createTaskTerm(ITermFactory factory, IStrategoInt taskID, IStrategoTerm instruction,
-		Collection<IStrategoString> partitions, Collection<IStrategoInt> dependencies, Collection<IStrategoTerm> reads,
+	private IStrategoAppl createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
+		Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies, Collection<IStrategoTerm> reads,
 		IStrategoTerm results, boolean failed) {
 		return factory.makeAppl(TASK_CONSTRUCTOR, taskID, instruction, factory.makeList(partitions),
 			factory.makeList(dependencies), factory.makeList(reads), results == null ? factory.makeTuple() : results,
