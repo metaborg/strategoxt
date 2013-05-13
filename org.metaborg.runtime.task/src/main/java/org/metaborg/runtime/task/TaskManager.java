@@ -16,6 +16,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.io.binary.SAFWriter;
 import org.spoofax.terms.io.binary.TermReader;
+import org.strategoxt.imp.runtime.Environment;
 
 public class TaskManager {
 	private static final TaskManager INSTANCE = new TaskManager();
@@ -99,7 +100,7 @@ public class TaskManager {
 	public TaskEngine tryReadFromFile(File file, ITermFactory factory) {
 		try {
 			TaskEngine taskEngine = createTaskEngine(factory);
-			IStrategoList tasks = (IStrategoList) new TermReader(factory).parseFromFile(file.toString());
+			IStrategoTerm tasks = new TermReader(factory).parseFromFile(file.toString());
 			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
 		} catch(Exception e) {
 			return null;

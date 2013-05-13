@@ -38,6 +38,7 @@ public class NonDeterministicCountingTermDigester implements ITermDigester {
 
 	public void setState(IStrategoTerm state) {
 		count = Tools.asJavaInt(state.getSubterm(0));
+		mapping.clear();
 		for (IStrategoTerm entry : state.getSubterm(1))
 			mapping.put(entry.getSubterm(0), entry.getSubterm(1));
 	}
