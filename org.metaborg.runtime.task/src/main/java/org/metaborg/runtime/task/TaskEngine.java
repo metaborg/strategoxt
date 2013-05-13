@@ -136,7 +136,7 @@ public class TaskEngine {
 
 		toPartition.put(taskID, partition);
 		for(final IStrategoTerm dependency : dependencies)
-			toDependency.put(taskID, dependency);
+			addDependency(taskID, dependency);
 
 		return createResult(taskID);
 	}
@@ -268,6 +268,10 @@ public class TaskEngine {
 
 	public Collection<IStrategoTerm> removeReads(IStrategoTerm taskID) {
 		return toRead.removeAll(taskID);
+	}
+	
+	public void addDependency(IStrategoTerm taskID, IStrategoTerm dependency) {
+		toDependency.put(taskID, dependency);
 	}
 
 	public void addResult(IStrategoTerm taskID, IStrategoList resultList) {
