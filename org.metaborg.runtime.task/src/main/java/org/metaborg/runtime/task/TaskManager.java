@@ -11,12 +11,10 @@ import java.util.Map;
 
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.spoofax.interpreter.library.IOAgent;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.io.binary.SAFWriter;
 import org.spoofax.terms.io.binary.TermReader;
-import org.strategoxt.imp.runtime.Environment;
 
 public class TaskManager {
 	private static final TaskManager INSTANCE = new TaskManager();
