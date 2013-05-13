@@ -45,7 +45,7 @@ rules // Lookup
 rules // Imports
 
   nabl-get-import-uris-unnamed(|language, namespace):
-  	uri -> <nabl-get-import-uris-unnamed(|uri, 3, language, namespace)> uri
+  	uri -> <nabl-get-import-uris-unnamed(|[uri], 0, language, namespace)> uri
 
   nabl-get-import-uris-unnamed(|seen, count, language, namespace):
     uri -> result
