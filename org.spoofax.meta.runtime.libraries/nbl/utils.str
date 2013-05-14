@@ -2,6 +2,7 @@ module nbl/utils
 
 imports
 	
+	libstratego-lib
 	task/core
 
 rules 
@@ -47,3 +48,26 @@ rules
 			case is-list : Hd
 			otherwise    : id
 		end	
+		
+rules // multimap simulation
+	
+	hash-multimap-put(|key, value):
+		hashtable -> hashtable
+		where
+			values := <hash-multimap-getorcreate(|key)> hashtable;
+			<hashtable-put(|key, [value|values])> hashtable 
+			
+	hash-multimap-putlist(|key, put-value*):
+		hashtable -> hashtable
+		where
+			value* := <hash-multimap-getorcreate(|key)> hashtable;
+			<hashtable-put(|key, [value*, put-value*])> hashtable 
+			
+	hash-multimap-getorcreate(|key) =
+		hashtable-get(|key) <+ hashtable-put(|key, []); ![]
+	
+	hash-multimap-copy(|from):
+		to -> to
+		where
+			<hashtable-fold(\((key, value*), _) -> <hash-multimap-putlist(|key, value*)> to\|())> from
+			

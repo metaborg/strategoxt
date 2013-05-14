@@ -42,6 +42,7 @@ signature
 	constructors // import
 	  
 	  Imported : Namespace                   -> Namespace
+	  Import   :                                Property
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
   	Type     : Property
@@ -283,15 +284,38 @@ rules // generic analysis of imports
   nabl-import-candidate(|lang, partition, uri*, use):
     (import, name) -> name
     where
-      ns  := <nabl-import-namespace> import;
-      uri := <lookup-uri(|lang, ns)> uri*;
-      new-prop(|partition, uri, import, use)
+      ns    := <nabl-import-namespace> import;
+      ilang := <nabl-import-lang> import;
+      uri   := <lookup-uri(|ilang, ns)> uri*;
+      if <nabl-import-name> import then
+      	// Named import.
+      	new-prop(|partition, uri, import, use)
+      else
+      	// Wildcard import, create tasks that calculate imports and the transitive closure.
+      	rawns := <nabl-import-raw-namespace> import;
+	      Result(import-calc)    := <new-task(|partition)> ImportCalc(uri);
+	      <dependent-tasks; map(task-add-dependency(|import-calc))> use;
+	      Result(import-closure) := <new-task(|partition)> ImportClosure(uri);
+	      <task-add-dependency(|import-closure)> import-calc;
+	      new-prop(|partition, uri, Import(), (rawns, use))
+      end
       
   nabl-import-namespace =
        ?Import(_, Imported(<id>)) 
     <+ ?Import(_, <id>)
     <+ ?Import(_, Imported(<id>), _)
-    <+ ?Import(_, <id>, _) 
+    <+ ?Import(_, <id>, _)
+    
+  nabl-import-raw-namespace =
+       ?Import(_, <id>) 
+    <+ ?Import(_, <id>, _)
+    
+  nabl-import-lang =
+       ?Import(<id>, _) 
+    <+ ?Import(<id>, _, _)
+    
+  nabl-import-name =
+  	?Import(_, _, <id>)
 
 rules // generic analysis of properties
   

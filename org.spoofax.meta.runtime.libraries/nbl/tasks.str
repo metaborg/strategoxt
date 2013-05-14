@@ -19,6 +19,8 @@ signature
     DisambiguateDefs       : List(Def) * List(Prop) * Namespace * Name -> Instruction
     ResolveNamedImports    : Scope * Namespace * Name                  -> Instruction
     ResolveWildcardImports : Scope * Namespace                         -> Instruction
+    ImportCalc             : URI                                       -> Instruction
+    ImportClosure          : URI                                       -> Instruction
     PropConstraint         : List(Prop) * List(Result)                 -> Instruction
     PropCalc               : Property * Term                           -> Instruction
         
@@ -67,14 +69,78 @@ rules // Resolve
 	perform-task(|nr):
 		ResolveWildcardImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
 		where
-			uri*    := <filter(nabl-uri)> scope*;
-			import* := <nabl-lookup-unnamed-import(|ns)> uri*;
-			<map(try(nabl-replace-uri-qualifier(|())); task-add-read(|nr))> uri*;
-      if <task-has-dependencies> import* then
-      	result := <task-collect-dependencies> import*
-      else
-	      result := import*
-      end
+			uri*        := <filter(nabl-uri)> scope*;
+			import-uri* := <mapconcat(resolve-one-wildcard-import(|ns))> uri*;
+      switch !import-uri*
+      	case task-collect-dependencies => d : !d
+      	otherwise                           : !import-uri* // TODO: id?
+      end => result
+			// TODO: reads
+			
+	resolve-one-wildcard-import(|ns):
+		uri -> result
+		where
+			hashtable := <get-import-closure-hashtable> uri;
+			switch !hashtable
+				case ?Dependency(_) : ![<id>]
+				otherwise           : <hashtable-get(|ns)> hashtable
+			end => result
+
+	get-import-closure-hashtable:
+		uri -> result
+		with
+			import-closure-id := <task-instruction-id> ImportClosure(uri);
+			switch !import-closure-id
+				case task-get-result => h : !h
+				otherwise                 : !Dependency(import-closure-id)
+			end => result
+
+rules // Import calculation
+	
+	// Import calculation.
+	perform-task(|nr):
+		ImportCalc(uri) -> result
+		where
+			import-ns-use*        := <nabl-get-all-properties(|Import())> uri;
+			(imported-uri*, uri*) := <partition(resolve-transitive-import, resolve-import)> import-ns-use*;
+			<task-add-read(|nr)> uri;
+  		switch !(imported-uri*, uri*)
+        case d := <task-collect-dependencies> : !d
+        otherwise                             : !(imported-uri*, uri*) // TODO: id?
+			end => result
+
+	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
+	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
+	resolve-import-use = task-get-solved; filter(nabl-uri) <+ task-create-dependencies
+	
+	// Import transitive closure calculation.
+	perform-task(|nr):
+		ImportClosure(uri) -> result
+		where
+			import-calc-id        := <task-instruction-id> ImportCalc(uri);
+			(imported-uri*, uri*) := <task-get-result> import-calc-id; // Result for this task must exit, as a dependency is expressed on it during collect.
+			hashtable             := <new-hashtable>;
+			<map(import-to-hash-table(|hashtable))> uri*;
+			d* := <mapconcat(import-closure-transitive(|nr, hashtable))> imported-uri*;
+			switch !d*
+				case task-collect-dependencies => d : !d
+				otherwise                           : ![hashtable]
+			end => result;
+			<task-add-read(|nr)> uri
+			
+	import-to-hash-table(|hash-table):
+		(ns, import-uri) -> <hash-multimap-put(|ns, import-uri)> hash-table
+		
+	import-closure-transitive(|nr, hashtable):
+		uri	-> result
+		where
+			import-closure-id  := <task-instruction-id> ImportClosure(uri);
+			switch !import-closure-id
+				case task-has-failed        : ![]
+				case h := <task-get-result> : <hash-multimap-copy(|h)> hashtable; ![]
+				otherwise                   : ![<id>]
+			end => result;
+			<task-add-read(|nr)> uri
 
 rules // Property constraints
 	  
