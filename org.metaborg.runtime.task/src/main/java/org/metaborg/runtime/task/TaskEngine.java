@@ -105,6 +105,23 @@ public class TaskEngine {
 	}
 
 	/**
+	 * Given an instruction, returns its identifier.
+	 * 
+	 * @param instruction The instruction.
+	 * @return Identifier of the instruction.
+	 */
+	public IStrategoTerm taskID(IStrategoTerm instruction) {
+		final IStrategoTerm taskID = digester.digest(instruction, factory);
+		final IStrategoTerm instr = toInstruction.get(taskID);
+		if(instr != null && !instruction.match(instr)) {
+			reset();
+			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr
+				+ " have the same identifier: " + taskID);
+		}
+		return taskID;
+	}
+	
+	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
 	 * 
 	 * @param partition
@@ -115,19 +132,13 @@ public class TaskEngine {
 	 *            The instruction.
 	 * @return A unique task identifier for given instruction.
 	 */
-	public IStrategoAppl addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
+	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		final IStrategoTerm taskID = digester.digest(instruction, factory);
-		final IStrategoTerm instr = toInstruction.get(taskID);
-		if(instr != null && !instruction.match(instr)) {
-			reset();
-			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr
-				+ " have the same identifier: " + taskID);
-		}
-
+		final IStrategoTerm taskID = taskID(instruction);
+		
 		if(toInstruction.put(taskID, instruction) == null) {
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);

@@ -110,6 +110,9 @@ rules // API
 		
 	task-add-dependency(|taskID):
 		dependency -> <task-api-add-dependency(|taskID, dependency)>
+		
+	task-instruction-id:
+		instruction -> <task-api-task-id(|instruction)>
 
 rules /** @internal API externals */
 
@@ -127,4 +130,5 @@ rules /** @internal API externals */
 	external task-api-evaluate(perform-task, insert-result|changed-reads)
 	external task-api-reset(|)
 	external task-api-persist(|)
+	external task-api-task-id(|instruction)
 	external task-api-unload(|project-path)
