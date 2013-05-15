@@ -106,8 +106,8 @@ rules // Resolve
 			import-closure-id := <task-instruction-id> ImportClosure(uri);
 			debug(!"l: ");
 			switch !import-closure-id
-				case task-get-result : Hd
-				otherwise            : <task-create-dependency> import-closure-id
+				case task-get-result => r : <Hd> r
+				otherwise                 : <task-create-dependency> import-closure-id
 			end => result;
 			debug(!"m: ")
 
@@ -131,7 +131,7 @@ rules // Import calculation
 
 	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
 	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
-	resolve-import-use = task-get-solved; filter(nabl-uri) <+ task-create-dependencies
+	resolve-import-use = task-get-solved; debug(!"Solved: "); filter(nabl-uri) <+ task-create-dependencies
 	
 	// Import transitive closure calculation.
 	perform-task(|nr):
