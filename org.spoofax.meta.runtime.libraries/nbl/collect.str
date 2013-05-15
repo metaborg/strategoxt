@@ -235,7 +235,7 @@ rules // generic analysis of uses
       	subtasks := []
       end;
       
-      concatted     := <new-task(|partition)> Concat([[defsTask, namedDefsTask|wildcardDefsTask]|subtasks]);
+      concatted     := <new-task(|partition)> Concat([defsTask, namedDefsTask|<conc> (wildcardDefsTask, subtasks)]);
       filtered      := <nabl-use-propconstraint(|partition, prop*)> concatted;
       disambiguated := <nabl-use-disambiguate(disambiguate|partition, prop*, ns, name)> filtered
           	
