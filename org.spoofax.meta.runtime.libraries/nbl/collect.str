@@ -261,7 +261,7 @@ rules // generic analysis of uses
 		task -> result
 		where
 			if not([] := prop*) then
-				result := [<new-task(|partition)> PropConstraint(prop*, task)]
+				result := <new-task(|partition)> PropConstraint(prop*, task)
 			else
 				result := task
 			end	
