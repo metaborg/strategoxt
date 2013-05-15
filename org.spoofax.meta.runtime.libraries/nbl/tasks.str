@@ -80,6 +80,7 @@ rules // Resolve
       end => result;
       debug(!"v: ")
 			// TODO: reads
+			// TODO: make-set
 			
 	resolve-one-wildcard-import(|ns):
 		uri -> result
@@ -157,7 +158,7 @@ rules // Import calculation
 			debug(!"h: ")
 			
 	import-to-hash-table(|hashtable):
-		(ns, import-uri) -> <hash-multimap-put(|ns, import-uri)> hashtable
+		(ns, import-uri*) -> <hash-multimap-putlist(|ns, import-uri*)> hashtable
 		
 	import-closure-transitive(|nr, hashtable):
 		uri	-> result
