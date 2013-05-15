@@ -12,6 +12,10 @@ public class HashCodeTermDigester implements ITermDigester {
 		return factory.makeInt(0);
 	}
 	
+	public boolean digested(IStrategoTerm term) {
+		return true;
+	}
+	
 	public void setState(IStrategoTerm state) {
 		
 	}

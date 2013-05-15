@@ -36,6 +36,10 @@ public class SHA1TermDigester implements ITermDigester {
 		return digested;
 	}
 
+	public boolean digested(IStrategoTerm term) {
+		return true;
+	}
+	
 	public IStrategoTerm state(ITermFactory factory) {
 		return factory.makeInt(0);
 	}

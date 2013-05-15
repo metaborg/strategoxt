@@ -32,6 +32,9 @@ rules // Dependencies
   task-create-dependencies =
   	collect-all(?Result(<id>));
   	!Dependency(<id>)
+
+  task-create-dependency =
+		!Dependency([<id>])
   	
 	task-has-dependencies =
 		fetch(?Dependency(_))
@@ -83,6 +86,7 @@ rules // API
 	task-add-message(|taskID, message)                   = task-api-add-message(|taskID, message)
 	task-get-messages(|partition)                        = task-api-get-messages(|partition)
 	task-evaluate(|changed-read*)                        = task-api-evaluate(perform-task, insert-results-with-fail|changed-read*)
+	task-exists(|instruction)                            = task-api-exists(|instruction)
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
 	task-unload(|project-path)                           = task-api-unload(|project-path)
@@ -128,6 +132,7 @@ rules /** @internal API externals */
 	external task-api-add-read(|taskID, read)
 	external task-api-add-dependency(|taskID, dependency)
 	external task-api-evaluate(perform-task, insert-result|changed-reads)
+	external task-api-exists(|instruction)
 	external task-api-reset(|)
 	external task-api-persist(|)
 	external task-api-task-id(|instruction)

@@ -26,6 +26,10 @@ public class NonDeterministicCountingTermDigester implements ITermDigester {
 		return nr;
 	}
 
+	public boolean digested(IStrategoTerm term) {
+		return mapping.containsKey(term);
+	}
+	
 	public IStrategoTerm state(ITermFactory factory) {
 		final IStrategoInt countTerm = factory.makeInt(count);
 		IStrategoList mappingTerm = factory.makeList();

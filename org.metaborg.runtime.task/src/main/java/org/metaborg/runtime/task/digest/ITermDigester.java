@@ -6,6 +6,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 public interface ITermDigester {
 	public IStrategoTerm digest(IStrategoTerm term, ITermFactory factory);
 	public IStrategoTerm state(ITermFactory factory);
+	public boolean digested(IStrategoTerm term);
 	public void setState(IStrategoTerm state);
 	public void reset();
 }

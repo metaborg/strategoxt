@@ -105,6 +105,16 @@ public class TaskEngine {
 	}
 
 	/**
+	 * Queries if given instruction exists.
+	 * 
+	 * @param instruction The instruction.
+	 * @return True if it exists, false otherwise.
+	 */
+	public boolean taskExists(IStrategoTerm instruction) {
+		return digester.digested(instruction);
+	}
+	
+	/**
 	 * Given an instruction, returns its identifier.
 	 * 
 	 * @param instruction The instruction.
