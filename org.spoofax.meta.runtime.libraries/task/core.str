@@ -107,6 +107,12 @@ rules // API
 				
 	task-add-read(|taskID):
 		read -> <task-api-add-read(|taskID, read)>
+		
+	task-add-dependency(|taskID):
+		dependency -> <task-api-add-dependency(|taskID, dependency)>
+		
+	task-instruction-id:
+		instruction -> <task-api-task-id(|instruction)>
 
 rules /** @internal API externals */
 
@@ -120,7 +126,9 @@ rules /** @internal API externals */
 	external task-api-get-messages(|partition)
 	external task-api-has-failed(|taskID)
 	external task-api-add-read(|taskID, read)
+	external task-api-add-dependency(|taskID, dependency)
 	external task-api-evaluate(perform-task, insert-result|changed-reads)
 	external task-api-reset(|)
 	external task-api-persist(|)
+	external task-api-task-id(|instruction)
 	external task-api-unload(|project-path)

@@ -43,10 +43,10 @@ rules // Analysis
   	  )
 	
 	analyze-perform-all:
-		result* -> (error*, evaluated-count)
+		result* -> (unevaluated-task*, evaluated-count)
 		with
 			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-perform-concat-reads");
-      measure-time(task-evaluate(|changed-read*) => (error*, evaluated-count), id | "analyze-perform-evaluate")
+      measure-time(task-evaluate(|changed-read*) => (unevaluated-task*, evaluated-count), id | "analyze-perform-evaluate")
   
   // TODO: origin tracking    
   analyze-messages(|partition):

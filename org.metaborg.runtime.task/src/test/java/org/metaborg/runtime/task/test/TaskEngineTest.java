@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -29,16 +28,16 @@ public class TaskEngineTest extends TaskTest {
 	public void testAddTasks() {
 		taskEngine.startCollection(partition1);
 		IStrategoAppl resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction);
-		IStrategoInt resolveID = resultID(resolveResult);
+		IStrategoTerm resolveID = resultID(resolveResult);
 		IStrategoAppl resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction);
-		IStrategoInt resolveImportID = resultID(resolveImportResult);
+		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoAppl choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
 			choiceInstruction);
-		IStrategoInt choiceID = resultID(choiceResult);
+		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
 		assertEquals(resolveInstruction, taskEngine.getInstruction(resolveID));
@@ -73,15 +72,15 @@ public class TaskEngineTest extends TaskTest {
 	public void testNoDuplicates() {
 		taskEngine.startCollection(partition1);
 		IStrategoAppl resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction);
-		IStrategoInt resolveID = resultID(resolveResult);
+		IStrategoTerm resolveID = resultID(resolveResult);
 
 		IStrategoAppl resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction);
-		IStrategoInt resolveImportID = resultID(resolveImportResult);
+		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		IStrategoAppl choiceResult = taskEngine.addTask(partition1, dependencies(resolveResult, resolveImportResult),
 			choiceInstruction);
-		IStrategoInt choiceID = resultID(choiceResult);
+		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition1);
 
 		// Add all tasks again to partition 2.
@@ -154,16 +153,16 @@ public class TaskEngineTest extends TaskTest {
 	public void testRemoveTasks() {
 		taskEngine.startCollection(partition1);
 		IStrategoAppl resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction);
-		IStrategoInt resolveID = resultID(resolveResult);
+		IStrategoTerm resolveID = resultID(resolveResult);
 		IStrategoAppl resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction);
-		IStrategoInt resolveImportID = resultID(resolveImportResult);
+		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoAppl choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
 			choiceInstruction);
-		IStrategoInt choiceID = resultID(choiceResult);
+		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
 		assertEquals(resolveInstruction, taskEngine.getInstruction(resolveID));
@@ -193,16 +192,16 @@ public class TaskEngineTest extends TaskTest {
 	public void testReset() {
 		taskEngine.startCollection(partition1);
 		IStrategoAppl resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction);
-		IStrategoInt resolveID = resultID(resolveResult);
+		IStrategoTerm resolveID = resultID(resolveResult);
 		IStrategoAppl resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction);
-		IStrategoInt resolveImportID = resultID(resolveImportResult);
+		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoAppl choiceResult = taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult),
 			choiceInstruction);
-		IStrategoInt choiceID = resultID(choiceResult);
+		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
 		taskEngine.reset();

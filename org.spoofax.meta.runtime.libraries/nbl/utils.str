@@ -1,5 +1,9 @@
 module nbl/utils
 
+imports
+	
+	task/core
+
 rules 
 	
 	match(m|val) = where (!val; m)
@@ -31,6 +35,11 @@ rules
     
   external record-time-native(|name)
   	
- 	try-make-list = is-list <+ ![<id>]
+ 	try-make-list =
+		switch id
+			case is-list: id
+			case ?Dependency(_): id
+			otherwise: ![<id>]
+		end	
 		
 	try-remove-list = is-list < Hd + id
