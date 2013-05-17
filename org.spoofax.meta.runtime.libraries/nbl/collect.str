@@ -139,8 +139,6 @@ rules // generic analysis of defs
 	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
-		  debug(!"hit ")
-		where
 			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
 		where
