@@ -139,67 +139,53 @@ rules // generic analysis of defs
 	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
 		a@name{anno*} -> name{d,anno*}
 		where
+		  debug(!"hit ")
+		where
 			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
 		where
-			 !defscope
-		 // in each case we 
-		 // 1. build URI of the definition site
-		 // 2. update URIs for children (vertical scope)
-		 // 3. update URIs for right siblings (horizontal scope)
-		 
-		 ; ?Current()
-		 // 1st case: definition in current scope
-
-		 // 1. extend current URI with ID segment
-		 ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri
-		 // 2. extend URIs of scoped namespaces
-		 ; match(child-uris|<replace-scope-uri(|def-uri)> (scoped, child-uri*))
-	 	 // 3. preserve
-		 ; match(sibling-uris|sibl-uri*)
-     
-		<+ ?[Subsequent()]
-	 	 // 2nd case: definition only in subsequent scope
-
-		 // 1. extend current URI with subsequent and ID segment
-		 ; subs-uri := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
-		 ; def-uri  := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri
-		 // 2. preserve
-	   ; match(child-uris|child-uri*)
-		 // 3. extend URI for namespace of definition site with Subsequent segment
-		 ; match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
-
-	  <+ fetch-elem(?Subsequent())
-     // 3rd case: definition in subsequent and external scopes
-
-  	 // 1a. extend base URI with anonymous and ID segment
-     ; ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
-		 ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> ano-uri
-     // 1b. extend current URI with subsequent and ID segment
-     ; subs-uri  := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
-     ; alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri
-     // 1c. introduce alias from 1b to 1a
-     ; <new-alias(|partition, def-uri, alias-uri)> a
-     // 2. preserve
-     ; match(child-uris|child-uri*)
-     // 3. extend URI for namespace of definition site with Subsequent segment
-     ; match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
-    
-    <+ ?defscope*
-     // 4th case: definition only in external scopes
-     
-     // 1. extend base URI with anonymous and ID segment
-     ; ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
-     ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> ano-uri
-     // 2. preserve
-		 ; match(child-uris|child-uri*)
-     // 3. preserve
-		 ; match(sibling-uris|sibl-uri*)
-	  where
-	    //introduce aliases
-		  is-list
-		; filter(nabl-def-alias(|partition, def-uri))
-		with
+			switch !defscope
+			  // in each case we 
+			  // 1. build URI of the definition site
+			  // 2. update URIs for children (vertical scope)
+			  // 3. update URIs for right siblings (horizontal scope)
+			 
+			  // 1st case: definition in current scope
+			  case Current(): 
+		
+			  // 1. extend current URI with ID segment
+			  // 2. extend URIs of scoped namespaces
+		 	  // 3. preserve
+			    def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri
+			  ; match(child-uris|<replace-scope-uri(|def-uri)> (scoped, child-uri*))
+			  ; match(sibling-uris|sibl-uri*)
+		   
+		    // 2nd case: definition in subsequent scope and maybe in external scopes
+		    case fetch-elem(?Subsequent()) => def-scope*:
+		       
+			  // 1. extend current URI with subsequent and ID segment
+			  // 2. preserve
+			  // 3. extend URI for namespace of definition site with Subsequent segment
+			    subs-uri := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
+			  ; def-uri  := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri
+		    ; match(child-uris|child-uri*)
+			  ; match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
+		
+		    // 3rd case: definition only in external scopes
+		    case is-list => def-scope*:
+			  
+		    // 1. extend base URI with anonymous and ID segment
+		    // 2. preserve
+		    // 3. preserve
+		      ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
+		    ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> ano-uri
+			  ; match(child-uris|child-uri*)
+			  ; match(sibling-uris|sibl-uri*)
+		  end
+    where
+      //introduce aliases
+	    try(<filter(nabl-def-alias(|partition, def-uri))> def-scope*)
+    with
 			// add Def entry to the index
 			d := <new-def(|partition, def-uri)> a
 	
@@ -212,8 +198,6 @@ rules // generic analysis of defs
 	  ; segment   := <nabl-uri-path; Hd> base-uri
 	  ; alias-uri := <nabl-extend-uri(|segment)> base-uri
       
-      // this is currently handled by import-site rules, 
-      // but the sketched approach might avoid import-sites completely
 rules // generic analysis of uses
 	
 	// single candidate
