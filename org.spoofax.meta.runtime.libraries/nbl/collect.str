@@ -35,6 +35,7 @@ signature
 		Current     :                                     							RefScope
 		Surrounding :                                  	 							  RefScope
 		Context     : String * Namespace * List(Property) * RefScope -> RefScope
+		RefScope    : Term                                           -> RefScope
 		
     All : Range
     One : Range
