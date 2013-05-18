@@ -19,14 +19,6 @@ public class UnsafeBuild extends AbstractPrimitive {
 
 	private ITermFactory factory;
 
-	// public UnsafeBuild(ITermFactory factory) {
-	// super("SUGARJ_unsafe_build", 0, 1);
-	// if (factory instanceof TypesmartTermFactory)
-	// this.factory = ((TypesmartTermFactory) factory).getBaseFactory();
-	// else
-	// this.factory = factory;
-	// }
-
 	public UnsafeBuild() {
 		super("SUGARJ_unsafe_build", 0, 1);
 	}
@@ -34,6 +26,16 @@ public class UnsafeBuild extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext context, Strategy[] svars,
 			IStrategoTerm[] tvars) throws InterpreterException {
+		if (factory == null) {
+			ITermFactory smartFactory = context.getFactory();
+			if (smartFactory instanceof TypesmartTermFactory) {
+				factory = ((TypesmartTermFactory) smartFactory)
+						.getBaseFactory();
+			} else {
+				factory = smartFactory;
+			}
+		}
+
 		String ctr = TypeSmartATermCommands.getString(tvars[0]);
 
 		if (!(context.current() instanceof StrategoList))
