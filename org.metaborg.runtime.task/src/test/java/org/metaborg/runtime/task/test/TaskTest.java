@@ -80,11 +80,11 @@ public class TaskTest {
 		return constructor("ID", constructor(namespace), str(name), constructor("Unique", str(unique)));
 	}
 
-	public static IStrategoTerm resultID(IStrategoAppl result) {
+	public static IStrategoTerm resultID(IStrategoTerm result) {
 		return result.getSubterm(0);
 	}
 
-	public static IStrategoList dependencies(IStrategoAppl... results) {
+	public static IStrategoList dependencies(IStrategoTerm... results) {
 		IStrategoTerm[] dependencies = new IStrategoTerm[results.length];
 		for (int i = 0; i < results.length; ++i)
 			dependencies[i] = resultID(results[i]);
