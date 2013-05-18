@@ -16,10 +16,11 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropSDefT;
 import org.strategoxt.lang.SRTS_EXT_eq_ignore_annos_0_1;
 import org.strategoxt.lang.SRTS_EXT_newint_0_0;
+import org.strategoxt.lang.typesmart.TypesmartLibrary;
 
 /**
  * Handles per-context library compatibility components.
- *
+ * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
 public class CompatManager {
@@ -41,20 +42,25 @@ public class CompatManager {
 			}
 		}
 
-		// HACK: make some of the built-in strategies available to the interpreter
+		// HACK: make some of the built-in strategies available to the
+		// interpreter
 		IContext iContext = HybridInterpreter.getContext(context);
 		if (iContext != null) {
 			VarScope varScope = iContext.getVarScope();
-		    varScope.addSVar("SRTS_EXT_newint_0_0", new InteropSDefT(SRTS_EXT_newint_0_0.instance, iContext));
-		    varScope.addSVar("SRTS_EXT_eq_ignore_annos_0_1", new InteropSDefT(SRTS_EXT_eq_ignore_annos_0_1.instance, iContext));
+			varScope.addSVar("SRTS_EXT_newint_0_0", new InteropSDefT(
+					SRTS_EXT_newint_0_0.instance, iContext));
+			varScope.addSVar("SRTS_EXT_eq_ignore_annos_0_1", new InteropSDefT(
+					SRTS_EXT_eq_ignore_annos_0_1.instance, iContext));
+			// register the typesmart library & factory
+			TypesmartLibrary.register(iContext);
 		}
 
 		// More standard registries, kind of
-        context.addOperatorRegistry(new LanguageLibrary());
-        context.addOperatorRegistry(new IndexLibrary());
-        context.addOperatorRegistry(new OriginLibrary());
-        context.addOperatorRegistry(new XMLLibrary());
-        context.addOperatorRegistry(new InterpreterLibrary());
+		context.addOperatorRegistry(new LanguageLibrary());
+		context.addOperatorRegistry(new IndexLibrary());
+		context.addOperatorRegistry(new OriginLibrary());
+		context.addOperatorRegistry(new XMLLibrary());
+		context.addOperatorRegistry(new InterpreterLibrary());
 	}
 
 	public void registerComponent(String component) {
