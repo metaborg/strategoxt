@@ -19,6 +19,8 @@ import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.AbstractTermFactory;
 import org.spoofax.terms.TermFactory;
+import org.strategoxt.HybridInterpreter;
+import org.strategoxt.lang.Context;
 import org.strategoxt.lang.StrategoException;
 
 /**
@@ -33,21 +35,30 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 
 	private final static boolean DEBUG_TYPESMART = true;
 
-	protected IContext context;
-	protected ITermFactory baseFactory;
+	private final ITermFactory baseFactory;
+	private final Context compiledContext;
+	private IContext context;
 
 	public int smartCalls = 0;
 	public BigInteger totalTimeMillis = BigInteger.ZERO;
 
-	public TypesmartTermFactory(IContext context) {
-		super(context.getFactory().getDefaultStorageType());
-		this.baseFactory = context.getFactory();
-		this.context = context;
+
+	public TypesmartTermFactory(ITermFactory baseFactory, Context compiledContext) {
+		super(baseFactory.getDefaultStorageType());
+		this.baseFactory = baseFactory;
+		this.compiledContext = compiledContext;
 	}
 
 	@Override
 	public IStrategoAppl makeAppl(IStrategoConstructor ctr,
 			IStrategoTerm[] terms, IStrategoList annotations) {
+
+		if (context == null) {
+			context = HybridInterpreter.getContext(compiledContext);
+			if(context == null) {
+				return baseFactory.makeAppl(ctr, terms, annotations);
+			}
+		}
 
 		String smartCtrName = "smart-" + ctr.getName();
 		smartCtrName = smartCtrName.replace("-", "_") + "_0_" + terms.length;
@@ -56,9 +67,9 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 			SDefT sdef = context.lookupSVar(smartCtrName);
 
 			// no check defined
-			if (sdef == null)
+			if (sdef == null){
 				return baseFactory.makeAppl(ctr, terms, annotations);
-
+			}
 			// System.out.println("Typesmart " + ctr);
 
 			// apply smart constructor to argument terms

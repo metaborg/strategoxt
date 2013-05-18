@@ -51,8 +51,6 @@ public class CompatManager {
 					SRTS_EXT_newint_0_0.instance, iContext));
 			varScope.addSVar("SRTS_EXT_eq_ignore_annos_0_1", new InteropSDefT(
 					SRTS_EXT_eq_ignore_annos_0_1.instance, iContext));
-			// register the typesmart library & factory
-			TypesmartLibrary.register(iContext);
 		}
 
 		// More standard registries, kind of
@@ -61,6 +59,7 @@ public class CompatManager {
 		context.addOperatorRegistry(new OriginLibrary());
 		context.addOperatorRegistry(new XMLLibrary());
 		context.addOperatorRegistry(new InterpreterLibrary());
+		context.addOperatorRegistry(new TypesmartLibrary());
 	}
 
 	public void registerComponent(String component) {

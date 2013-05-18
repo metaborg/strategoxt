@@ -9,37 +9,44 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoList;
 
 /**
- * Builds an application term using the given term factory.
- * The constructor name is expected as a term argument, 
- * the argument list is expected as the current term.
+ * Builds an application term using the given term factory. The constructor name
+ * is expected as a term argument, the argument list is expected as the current
+ * term.
  * 
  * @author seba
  */
 public class UnsafeBuild extends AbstractPrimitive {
 
-  private ITermFactory factory;
-  
-  public UnsafeBuild(ITermFactory factory) {
-    super("SUGARJ_unsafe_build", 0, 1);
-    if (factory instanceof TypesmartTermFactory)
-      this.factory = ((TypesmartTermFactory) factory).getBaseFactory();
-    else
-      this.factory = factory;
-  }
+	private ITermFactory factory;
 
-  @Override
-  public boolean call(IContext context, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-    String ctr = TypeSmartATermCommands.getString(tvars[0]);
-    
-    if (!(context.current() instanceof StrategoList))
-      return false;
-    
-    StrategoList args = (StrategoList) context.current();
-    
-    IStrategoTerm[] argArray = TypeSmartATermCommands.getList(args).toArray(new IStrategoTerm[args.size()]);
-    IStrategoTerm unsafeTerm = factory.makeAppl(factory.makeConstructor(ctr, argArray.length), argArray);
-    
-    context.setCurrent(unsafeTerm);
-    return true;
-  }
+	// public UnsafeBuild(ITermFactory factory) {
+	// super("SUGARJ_unsafe_build", 0, 1);
+	// if (factory instanceof TypesmartTermFactory)
+	// this.factory = ((TypesmartTermFactory) factory).getBaseFactory();
+	// else
+	// this.factory = factory;
+	// }
+
+	public UnsafeBuild() {
+		super("SUGARJ_unsafe_build", 0, 1);
+	}
+
+	@Override
+	public boolean call(IContext context, Strategy[] svars,
+			IStrategoTerm[] tvars) throws InterpreterException {
+		String ctr = TypeSmartATermCommands.getString(tvars[0]);
+
+		if (!(context.current() instanceof StrategoList))
+			return false;
+
+		StrategoList args = (StrategoList) context.current();
+
+		IStrategoTerm[] argArray = TypeSmartATermCommands.getList(args)
+				.toArray(new IStrategoTerm[args.size()]);
+		IStrategoTerm unsafeTerm = factory.makeAppl(
+				factory.makeConstructor(ctr, argArray.length), argArray);
+
+		context.setCurrent(unsafeTerm);
+		return true;
+	}
 }

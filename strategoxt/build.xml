@@ -147,7 +147,7 @@
 		       target="1.5"
 		       nowarn="on"
 		       debug="true"
-		       debuglevel="source" />
+		       debuglevel="lines,vars,source" />
 		<javac srcdir="${libraries-dir}/java-backend/java/runtime"
 		       destdir="${bin}"
 		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
@@ -155,7 +155,7 @@
 		       target="1.5"
 		       nowarn="on"
 		       debug="true"
-		       debuglevel="source" />
+		       debuglevel="lines,vars,source" />
 	</target>
 
 	<target name="jar">
