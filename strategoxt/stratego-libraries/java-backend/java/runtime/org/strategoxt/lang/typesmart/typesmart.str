@@ -1,0 +1,122 @@
+module typesmart
+
+imports
+  // org/sugarj/languages/Stratego
+  // org/sugarj/stdlib/Common
+  libstrc
+  libstratego-lib
+  
+rules
+  // redefined in Stratego
+  smart-Some(|arg) =
+      <get-syntax-sort> arg => xsort
+    ; <prim("SUGARJ_unsafe_build", "Some")> [arg] 
+    ; put-syntax-sort(|<prim("SUGARJ_unsafe_build", "Sort")> ["Option", [xsort]])
+
+rules
+  put-syntax-sort(|sort) =
+    prim("SUGARJ_put_typesmart_sort", sort)
+  get-syntax-sort =
+    prim("SUGARJ_get_typesmart_sort") 
+
+rules
+  // has-sort = Swap; debug(!"has sort? "); fail
+  has-sort = try-init-subsort-stack; is-subsort-of
+  
+  is-lexical-sort = fail
+  
+  // is-subsort-of = (try(get-syntax-sort), id); debug-analysis(!"is-subsort-of: "); fail
+  is-subsort-of = 
+      push-subsort-stack
+    ; finally( is-subsort-of-refl <+ is-subsort-unrename <+ is-subsort-of-trans
+             , pop-subsort-stack)
+  // is-subsort-of = debug-analysis(!"FAIL is-subsort-of: "); fail
+  
+  try-init-subsort-stack =
+    where(Subsort-Stack <+ rules ( Subsort-Stack := [] ))
+  push-subsort-stack =
+      where(
+        strip-annos => pair
+      ; <not(elem)> (pair, <Subsort-Stack>)
+      ; rules( Subsort-Stack := [pair | <Subsort-Stack>] ))
+  pop-subsort-stack =
+    where(rules( Subsort-Stack := <Subsort-Stack; ?[_|<id>]> ))
+  
+  is-subsort-of-refl =
+      ?(xs, Sort("List", [xsort]))
+    ; <map(!(<id>, xsort); is-subsort-of)> xs
+  is-subsort-of-refl =
+      ?(""#(xs), Sort("Tuple", xsorts))
+    ; <equal> (<length> xs, <length> xsorts)
+    ; <zip> (xs, xsorts)
+    ; map(is-subsort-of)
+  is-subsort-of-refl =
+      ?(None(), Sort("Option", [_]))
+  is-subsort-of-refl =
+      ?(Some(x), Sort("Option", [xsort]))
+    ; <is-subsort-of> (x, xsort)
+  is-subsort-of-refl =
+      ?(x, Sort("Alt", [xsort1, xsort2]))
+    ; (<is-subsort-of> (x, xsort1) + <is-subsort-of-refl> (x, xsort2))
+  is-subsort-of-refl =
+      ?(x, xsort)
+    ; <is-string> x
+    ; <is-lexical-sort> xsort
+  is-subsort-of-refl =
+      (get-syntax-sort ,id)
+    ; sort-match
+  
+  is-subsort-unrename = (id, unrename-sort); is-subsort-of
+  is-subsort-of-trans = fail
+  unrename-sort = fail
+  
+  is-subsort-of-inject(|arg-sort,res-sort) =
+  	  ?(term,sup-sort)
+      // result to argument
+      ; <sort-match> (sup-sort, res-sort)
+      ; where(<try(unrename-sort)> arg-sort => unrenamed-arg-sort)
+      // ; <debug-analysis(!"inject: ")> (unrenamed-arg-sort, res-sort) 
+      ; <is-subsort-of> (term, unrenamed-arg-sort)
+
+  structurally-equal = ?(c#(xs),d#(ys)); <equal> (c,d); <zip(structurally-equal)> (xs, ys)
+
+  sort-match = structurally-equal
+  sort-match =
+      ?(Sort("List", [xsort]), Sort("List", [xsort2]))
+    ; <sort-match> (xsort, xsort2)
+  sort-match =
+      ?(Sort("Option",[xsort1]), Sort("Option",[xsort2]))
+    ; (<sort-match> (xsort1, xsort2))
+  sort-match =
+      ?(Sort("Tuple",xsorts1), Sort("Tuple",xsorts2))
+      ; <equal> (<length> xsorts1, <length> xsorts2)
+      ; <zip> (xsorts1, xsorts2)
+      ; map(sort-match)
+  sort-match =
+      ?(Sort("Alt",[sort1, sort2]), sort)
+    ; (<sort-match> (sort1, sort) + <sort-match> (sort2, sort))
+  sort-match =
+      ?(sort, Sort("Alt",[sort1, sort2]))
+    ; (<sort-match> (sort, sort1) + <sort-match> (sort, sort2))
+  sort-match =
+      (repeat1(unrename-sort), id)
+    ; sort-match
+  
+
+signature constructors
+  EmptyCollection : Sdf2Sort
+
+rules
+  log-mismatching-sort-error(|cons) =
+    (not(get-syntax-sort), id);
+    Swap;
+    debug(<conc-strings> ("Argument of constructor ", cons, " lacks sort annotation, expected: "))
+  
+  log-mismatching-sort-error(|cons) =
+    (get-syntax-sort, id);
+    ?(was, exp);
+    where(<conc-strings> 
+            ("Mismatching argument sort for constructor '", cons, "'.",
+             " Was ", <write-to-string> was, ",",
+             " expected ", <write-to-string> exp) => s);
+    <debug(!s)> "."
