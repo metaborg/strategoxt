@@ -109,7 +109,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${test-gen}" />
 		<delete dir="${install-prefix}" />
-		<delete file="${jar.name}" />
+		<!--<delete file="${jar.name}" />-->
 		<!-- Clean the syntax -->
 		<antcall target="syntax.clean">
 			<param name="basedir" value="${syntax-dir}" />

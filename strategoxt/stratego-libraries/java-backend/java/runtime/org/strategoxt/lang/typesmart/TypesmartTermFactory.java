@@ -65,12 +65,11 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 
 		try {
 			SDefT sdef = context.lookupSVar(smartCtrName);
-
 			// no check defined
 			if (sdef == null){
 				return baseFactory.makeAppl(ctr, terms, annotations);
 			}
-			// System.out.println("Typesmart " + ctr);
+			 System.out.println("Typesmart " + ctr);
 
 			// apply smart constructor to argument terms
 			rebuildEmptyLists(terms);

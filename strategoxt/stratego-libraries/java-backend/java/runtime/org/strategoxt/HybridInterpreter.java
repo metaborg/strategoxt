@@ -438,6 +438,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		org.strategoxt.stratego_lib.Main.registerInterop(context,
 				compiledContext);
 		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
+		org.strategoxt.lang.typesmart.Main.registerInterop(context, compiledContext);
 	}
 
 	public final Context getCompiledContext() {
