@@ -159,7 +159,7 @@
 	</target>
 
 	<target name="jar">
-		<jar destfile="${jar.name}" manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF">
+		<jar destfile="${jar.name}" manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF" update="true">
 			<fileset dir="ant-contrib" includes="*.xml" />
 			<fileset dir="." includes="COPYING" />
 			<fileset dir="${bin}" includes="**/*.class" />

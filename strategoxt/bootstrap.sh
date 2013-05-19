@@ -1,57 +1,83 @@
 #! /bin/sh
-COMPILER0="base/strategoxt.jar.base"
-COMPILER1="base/strategoxt.jar.1"
-COMPILER2="base/strategoxt.jar.2"
-COMPILER3="base/strategoxt.jar.3"
-COMPILER4="base/strategoxt.jar.4"
 
 BASE_PATH=`pwd`
 
-echo "Build 1/4\n" &&
+echo "Build 1/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
 ant clean &&
-git clean -Xdf &&
+find . -name \*.[cr]tree\* | xargs rm
 cd syntax/java-front &&
-svn st | grep '^?' | awk '{print $2}' | xargs rm -rf &&
+git clean -f -f -d &&
 cd $BASE_PATH &&
-rm -f strategoxt-base.jar &&
-ln -s $COMPILER0 strategoxt-base.jar &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
 ./build.sh &&
-cp strategoxt.jar $COMPILER1 &&
 
-echo "Build 2/4\n" &&
+echo "Build 2/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
 ant clean &&
-git clean -Xdf &&
+find . -name \*.[cr]tree\* | xargs rm
 cd syntax/java-front &&
-svn st | grep '^?' | awk '{print $2}' | xargs rm -rf &&
+git clean -f -f -d &&
 cd $BASE_PATH &&
-rm -f strategoxt-base.jar &&
-ln -s $COMPILER1 strategoxt-base.jar &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
 ./build.sh &&
-cp strategoxt.jar $COMPILER2 &&
 
-echo "Build 3/4\n" &&
+echo "Build 3/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
 ant clean &&
-git clean -Xdf &&
+find . -name \*.[cr]tree\* | xargs rm
 cd syntax/java-front &&
-svn st | grep '^?' | awk '{print $2}' | xargs rm -rf &&
+git clean -f -f -d &&
 cd $BASE_PATH &&
-rm -f strategoxt-base.jar &&
-ln -s $COMPILER2 strategoxt-base.jar &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
 ./build.sh &&
-cp strategoxt.jar $COMPILER3 &&
 
-echo "Build 4/4\n" &&
+echo "Build 4/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
 ant clean &&
-git clean -Xdf &&
+find . -name \*.[cr]tree\* | xargs rm
 cd syntax/java-front &&
-svn st | grep '^?' | awk '{print $2}' | xargs rm -rf &&
+git clean -f -f -d &&
 cd $BASE_PATH &&
-rm -f strategoxt-base.jar &&
-ln -s $COMPILER3 strategoxt-base.jar &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
 ./build.sh &&
-cp strategoxt.jar $COMPILER4 &&
 
-echo "Linking the result\n" &&
-rm -f strategoxt-base.jar strategoxt.jar &&
-ln -s $COMPILER4 strategoxt.jar
+echo "Build 5/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
+ant clean &&
+find . -name \*.[cr]tree\* | xargs rm
+cd syntax/java-front &&
+git clean -f -f -d &&
+cd $BASE_PATH &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
+./build.sh &&
 
+echo "Build 6/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
+ant clean &&
+find . -name \*.[cr]tree\* | xargs rm
+cd syntax/java-front &&
+git clean -f -f -d &&
+cd $BASE_PATH &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
+./build.sh &&
+
+echo "Build 7/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
+ant clean &&
+find . -name \*.[cr]tree\* | xargs rm
+cd syntax/java-front &&
+git clean -f -f -d &&
+cd $BASE_PATH &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
+./build.sh &&
+
+echo "Build 8/8\n" &&
+mv strategoxt.jar strategoxt-base.jar &&
+ant clean &&
+find . -name \*.[cr]tree\* | xargs rm
+cd syntax/java-front &&
+git clean -f -f -d &&
+cd $BASE_PATH &&
+git checkout stratego-libraries/strc/tests/testneg/wrongformat.rtree &&
+./build.sh
