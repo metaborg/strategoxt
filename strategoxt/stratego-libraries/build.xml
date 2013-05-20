@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.StrategoXT.libraries" basedir=".">
-	<typedef file="../ant-contrib/strategoxt-antlib.xml" />
+	<typedef resource="strategoxt-antlib.xml" />
 
 	<!-- Assume variable dist.dir is defined by importer -->
 	<target name="part-1"
