@@ -8,7 +8,7 @@
 	<property name="revision" value="0" />
 	
 	<!-- Import Ant contrib -->
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
 	<!-- Import Stratego/XT Ant contributions -->
 	<typedef file="ant-contrib/strategoxt-antlib.xml" />
