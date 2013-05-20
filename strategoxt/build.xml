@@ -6,7 +6,6 @@
 
 	<property name="version" value="0" />
 	<property name="revision" value="0" />
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 	
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
