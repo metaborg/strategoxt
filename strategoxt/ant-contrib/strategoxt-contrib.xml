@@ -40,13 +40,14 @@
 		<attribute name="parsetable" />
 		<element name="args" optional="true" />
 		<sequential>
+			<property name="@{parsetable}.abs" location="@{parsetable}" />
 			<uptodate-io input="@{input}" output="@{output}" type="sglri">
 				<action>
 					<java classname="org.spoofax.jsglr.Main" failonerror="true">
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="-p" />
-						<arg value="${basedir}/@{parsetable}" />
+						<arg value="${@{parsetable}.abs}" />
 						<arg value="--implode" />
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
@@ -290,7 +291,6 @@
 					</strj>
 				</action>
 				<deps>
-
 					<str-deps />
 				</deps>
 			</uptodate-mio>
@@ -326,4 +326,23 @@
 		</sequential>
 	</macrodef>
 
+
+	<macrodef name="make-permissive">
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="permissiveargs" optional="true" />
+		<sequential>
+			<uptodate-io input="@{input}" output="@{output}" type="make-permissive">
+				<action>
+					<java classname="org.strategoxt.permissivegrammars.make_permissive" failonerror="true">
+						<arg value="-i" />
+						<arg value="${basedir}/@{input}" />
+						<arg value="-o" />
+						<arg value="${basedir}/@{output}" />
+						<permissiveargs />
+					</java>
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
 </project>
