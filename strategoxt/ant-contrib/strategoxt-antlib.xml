@@ -1,15 +1,5 @@
 <?xml version="1.0"?>
-<project name="org.strategoxt.ant">
-	<import file="strategoxt-contrib-util.xml" />
-
-	<!-- This will be nicer when SDF is reimplemented in Stratego -->
-	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
-	<property name="nativepath" value="${sdf2bundle}/bin/" />
-
-	<property name="version" value="0" />
-	<property name="revision" value="0" />
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-
+<antlib>
 	<macrodef name="pack-sdf">
 		<attribute name="input" />
 		<attribute name="output" />
@@ -345,4 +335,165 @@
 			</uptodate-io>
 		</sequential>
 	</macrodef>
-</project>
+
+	<macrodef name="strj-for-test">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="package" />
+		<attribute name="compiler" />
+		<element name="strjargs" optional="true" />
+		<element name="str-deps" optional="true" />
+		<sequential>
+			<property name="@{input}.abs" location="@{input}" />
+			<property name="@{output}.abs" location="@{output}" />
+			<uptodate-mio input="@{input}" output="@{output}" type="strj">
+				<action>
+					<java classname="org.strategoxt.strj.Main" failonerror="true" classpath="@{compiler}" fork="true">
+						<arg value="-i" />
+						<arg value="${@{input}.abs}" />
+						<arg value="-o" />
+						<arg value="${@{output}.abs}" />
+						<arg value="-p" />
+						<arg value="@{package}" />
+						<arg value="-D" />
+						<arg value="VERSION_TERM=&quot;${version}&quot;" />
+						<arg value="-D" />
+						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+						<strjargs />
+						<jvmarg value="-Xss8m" />
+						<jvmarg value="-Xmx512m" />
+					</java>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
+		</sequential>
+	</macrodef>
+
+	<!--
+	**************************************************************
+	*********** MACROS FOR TESTING *******************************
+	-->
+
+	<macrodef name="strj-test">
+		<attribute name="input" />
+		<attribute name="synaterm" />
+		<attribute name="synbox" />
+		<attribute name="generated" />
+		<attribute name="compiler" />
+		<sequential>
+			<log message="Testing @{input}" />
+			<dirname file="@{input}" property="@{input}.dirname" />
+			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
+			<mkdir dir="${@{input}.dirname}/${@{input}.basename}/test" />
+			<strj-for-test input="@{input}" output="${@{input}.dirname}/${@{input}.basename}/test/Main.java" package="test" compiler="@{compiler}">
+				<strjargs>
+					<arg value="-m" />
+					<arg value="main-${@{input}.basename}" />
+					<arg value="-la" />
+					<arg value="stratego-lib" />
+					<arg value="-la" />
+					<arg value="stratego-gpp" />
+					<arg value="-la" />
+					<arg value="stratego-xtc" />
+					<arg value="-la" />
+					<arg value="stratego-aterm" />
+					<arg value="-la" />
+					<arg value="stratego-rtg" />
+					<arg value="-la" />
+					<arg value="stratego-sglr" />
+					<arg value="-la" />
+					<arg value="java-front" />
+					<arg value="-I" />
+					<arg value="@{synaterm}" />
+					<arg value="-I" />
+					<arg value="@{synbox}" />
+					<arg value="-I" />
+					<arg value="@{generated}" />
+					<arg value="-I" />
+					<arg value="${@{input}.dirname}" />
+				</strjargs>
+				<str-deps>
+					<srcfiles dir="." includes="*.jar" />
+				</str-deps>
+			</strj-for-test>
+			<uptodate-io input="${@{input}.dirname}/${@{input}.basename}/test/Main.java" output="${@{input}.dirname}/${@{input}.basename}/test/fingerprint" type="javac">
+				<action>
+					<javac srcdir="${@{input}.dirname}/${@{input}.basename}" destdir="${@{input}.dirname}/${@{input}.basename}" classpath="@{compiler}" source="1.5" target="1.5" nowarn="on" fork="true" debug="true" debuglevel="source" compiler="classic">
+					</javac>
+					<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
+						<classpath>
+							<pathelement location="@{compiler}" />
+							<pathelement path="${@{input}.dirname}/${@{input}.basename}" />
+						</classpath>
+					</java>
+					<touch file="${@{input}.dirname}/${@{input}.basename}/test/fingerprint" />
+				</action>
+			</uptodate-io>
+		</sequential>
+	</macrodef>
+
+	<!--
+	**************************************************************
+	*********** UTILITIES FOR THE ABOVE **************************
+	-->
+
+	<macrodef name="uptodate-io">
+		<attribute name="type" />
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="action" />
+		<sequential>
+			<condition property="@{input}.@{output}.@{type}">
+				<uptodate srcfile="@{input}" targetfile="@{output}" />
+			</condition>
+			<if>
+				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
+				<then>
+					<echo message="@{input} -> @{output} is up-to-date" />
+				</then>
+				<else>
+					<log message="@{input} -> @{output}" />
+					<action />
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="uptodate-mio">
+		<attribute name="type" />
+		<attribute name="input" />
+		<attribute name="output" />
+		<element name="action" />
+		<element name="deps" />
+		<sequential>
+			<condition property="@{input}.@{output}.@{type}">
+				<uptodate targetfile="@{output}">
+					<srcfiles dir="." includes="@{input}" />
+					<deps />
+				</uptodate>
+			</condition>
+			<if>
+				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
+				<then>
+					<echo message="@{output} is up-to-date" />
+				</then>
+				<else>
+					<log message="@{input} -> @{output}" />
+					<action />
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="log">
+		<attribute name="message" />
+		<sequential>
+			<echo message="========================================================================================" />
+			<echo message="@{message}" />
+			<echo message="========================================================================================" />
+			<echo message="" />
+		</sequential>
+	</macrodef>
+</antlib>

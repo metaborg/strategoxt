@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.StrategoXT.syntax" default="all">
-	<!-- Import Ant contrib -->
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-	<!-- Import Stratego/XT Ant contributions -->
-	<import file="../ant-contrib/strategoxt-contrib.xml" />
+	<typedef file="../ant-contrib/strategoxt-antlib.xml" />
 
 	<!-- Define where syntax files are located -->
 	<property name="syn.str" value="stratego-front/syn" />

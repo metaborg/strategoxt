@@ -1,10 +1,18 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.StrategoXT" default="all">
+	<!-- This will be nicer when SDF is reimplemented in Stratego -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+
+	<property name="version" value="0" />
+	<property name="revision" value="0" />
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+	
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 	<!-- Import Stratego/XT Ant contributions -->
-	<import file="ant-contrib/strategoxt-test.xml" />
+	<typedef file="ant-contrib/strategoxt-antlib.xml" />
 
 	<!-- Import the properties file, containing e.g. the version number -->
 	<property file="build.properties" />
@@ -57,11 +65,7 @@
 			<sequential>
 				<trycatch>
 					<try>
-						<strj-test input="@{strfile}"
-						           synaterm="${syntax-dir}/${syn.aterm}"
-						           synbox="${syntax-dir}/${syn.box}"
-						           generated="${test-gen}"
-						           compiler="${install-location}/${jar.name}" />
+						<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" generated="${test-gen}" compiler="${install-location}/${jar.name}" />
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
@@ -71,8 +75,7 @@
 		</for>
 	</target>
 
-	<target name="all"
-	        depends="
+	<target name="all" depends="
 									create-dirs,
 									syntax,
 									generate-java,
@@ -88,18 +91,12 @@
 	</target>
 
 	<target name="install" depends="jar">
-		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
+		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" overwrite="true" verbose="true"/>
 		<mkdir dir="${install-prefix}/bin" />
-		<copy todir="${install-prefix}/bin" >
+		<copy todir="${install-prefix}/bin" verbose="true" >
 			<fileset dir="wrapper-scripts/unix/" includes="*" />
 		</copy>
 		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
-		<!--<copy file="wrapper-scripts/unix/pack-sdf" todir="${install-prefix}/bin/" />
-		<chmod file="${install-prefix}/bin/pack-sdf" perm="a+rx" />
-		<copy file="wrapper-scripts/unix/strj" todir="${install-prefix}/bin/" />
-		<chmod file="${install-prefix}/bin/strj" perm="a+rx" />
-                <copy file="wrapper-scripts/unix/ppgen" todir="${install-prefix}/bin/" />
-                <chmod file="${install-prefix}/bin/ppgen" perm="a+rx" /> -->
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/${jar.name}</echo>
 	</target>
@@ -140,27 +137,13 @@
 	</target>
 
 	<target name="compile-java" depends="generate-java">
-		<javac srcdir="${lib}"
-		       destdir="${bin}"
-		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
-		       source="1.5"
-		       target="1.5"
-		       nowarn="on"
-		       debug="true"
-		       debuglevel="source" />
-		<javac srcdir="${libraries-dir}/java-backend/java/runtime"
-		       destdir="${bin}"
-		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
-		       source="1.5"
-		       target="1.5"
-		       nowarn="on"
-		       debug="true"
-		       debuglevel="source" />
+		<javac srcdir="${lib}" destdir="${bin}" classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="source" />
+		<javac srcdir="${libraries-dir}/java-backend/java/runtime" destdir="${bin}" classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="source" />
 	</target>
 
 	<target name="jar">
 		<jar destfile="${jar.name}" manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF" update="true">
-			<fileset dir="ant-contrib" includes="*.xml" />
+			<fileset dir="ant-contrib" includes="**/*.xml" />
 			<fileset dir="." includes="COPYING" />
 			<fileset dir="${bin}" includes="**/*.class" />
 			<fileset dir="${lib}" includes="**/*.rtree" />
