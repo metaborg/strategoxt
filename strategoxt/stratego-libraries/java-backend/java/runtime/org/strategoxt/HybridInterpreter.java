@@ -128,12 +128,11 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		super(termFactory, programFactory);
 
 		compiledContext = new HybridCompiledContext(termFactory);
-		if (!(termFactory instanceof TypesmartTermFactory)) {
-			termFactory = new TypesmartTermFactory(termFactory, compiledContext);
-			compiledContext.setFactory(termFactory);
-			getContext().setFactory(termFactory);
-		}
-		recordingFactory = new ConstructorRecordingTermFactory(termFactory);
+		TypesmartTermFactory smartFactory = new TypesmartTermFactory(
+				termFactory, compiledContext);
+		compiledContext.setFactory(smartFactory);
+		getContext().setFactory(smartFactory);
+		recordingFactory = new ConstructorRecordingTermFactory(smartFactory);
 	}
 
 	/**
@@ -439,8 +438,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		org.strategoxt.stratego_lib.Main.registerInterop(context,
 				compiledContext);
 		org.strategoxt.strc.Main.registerInterop(context, compiledContext);
-		org.strategoxt.lang.typesmart.Main.registerInterop(context,
-				compiledContext);
+		org.strategoxt.lang.typesmart.Main.registerInterop(context, compiledContext);
 	}
 
 	public final Context getCompiledContext() {
