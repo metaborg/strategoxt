@@ -3,6 +3,7 @@ package org.metaborg.runtime.task;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
@@ -15,6 +16,8 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 public class SHA1TermDigester implements ITermDigester {
 	private final MessageDigest digest;
+	private final StringBuilder stringBuilder = new StringBuilder();
+	private final Formatter formatter = new Formatter(stringBuilder);
 	private final ByteBuffer intBuffer = ByteBuffer.allocate(4);
 	private final ByteBuffer doubleBuffer = ByteBuffer.allocate(8);
 
@@ -22,6 +25,7 @@ public class SHA1TermDigester implements ITermDigester {
 		digest = MessageDigest.getInstance("SHA-1");
 	}
 
+	@Override
 	public IStrategoTerm digest(IStrategoTerm term, ITermFactory factory) {
 		digestTop(term);
 		byte[] data = digest.digest();
