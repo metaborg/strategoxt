@@ -29,8 +29,10 @@ signature
 
   constructors // use
       
-		UseCandidate  : Namespace * List(Property) * RefScope        -> Use
-		UseCandidate  : Namespace * Name * List(Property) * RefScope -> Use
+		UseCandidate  : Namespace * List(Property) * RefScope * WildcardImport -> Use
+		
+		True  : WildcardImport
+		False : WildcardImport
 	
 		Current     :                                     							RefScope
 		Surrounding :                                  	 							  RefScope
@@ -248,18 +250,18 @@ rules // generic analysis of uses
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Current()) -> choice
+		UseCandidate(ns, prop*, Current(), wci) -> choice
 		where
 			uri       := <lookup-uri(|lang, ns)> uri*;
-			subtask*  := <nabl-use-subtasks(id, fail|partition, ns, name, prop*, All())> uri; // TODO: only disambiguate if required.
+			subtask*  := <nabl-use-subtasks(id, !wci; ?True()|partition, ns, name, prop*, All())> uri; // TODO: only disambiguate if required.
 			choice    := <new-task(|partition)> Choice(subtask*)
 
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context)) -> choice
+		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _) -> choice
 		where
-			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context);
-			subtask*   := <nabl-use-subtasks(id, fail|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
+			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True());
+			subtask*   := <nabl-use-subtasks(id, id|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
 			choice     := <new-task(|partition)> Choice(subtask*)
 			
 	nabl-use-propconstraint(|partition, prop*):
