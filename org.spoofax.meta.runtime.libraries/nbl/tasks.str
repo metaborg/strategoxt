@@ -33,7 +33,7 @@ rules // Resolve
   		uri*  := <filter(nabl-uri)> scope*;
   		name' := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
   		def*  := <nabl-lookup(|ns, name')> uri*;
-  		<map(nabl-extend-uri(|ns, name', ()); task-add-read(|nr))> uri*;
+  		<map(nabl-add-read-extend(|nr, ns, name'))> uri*;
   		switch !def*
         case ?[]:
         	fail
@@ -58,7 +58,7 @@ rules // Resolve
 			uri*    := <filter(nabl-uri)> scope*;
 			name'   := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
 			import* := <nabl-lookup-named-import(|ns, name')> uri*;
-			<map(try(nabl-replace-uri-qualifier(|())); task-add-read(|nr))> uri*;
+			<map(nabl-add-read(|nr))> uri*;
       if <task-has-dependencies> import* then
       	result := <task-collect-dependencies> import*
       else
@@ -75,8 +75,7 @@ rules // Resolve
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
       end => result
-			// TODO: reads
-			// TODO: make-set
+			// TODO: make-set?
 			
 	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
@@ -85,11 +84,10 @@ rules // Resolve
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed      : ![]
-					case task-get-result => h : <Hd; hashtable-get(|ns)> h
+					case task-get-result => h : <Hd; hashtable-get(|ns); debug(!"Result: ")> h
 					otherwise                 : ![<task-create-dependency> import-closure-id]
 				end => result;
-				<task-add-read(|nr)> uri;
-				<task-add-dependency(|nr)> import-closure-id
+				<nabl-add-read(|nr)> uri
 			else
 				result := []
 			end
@@ -106,7 +104,7 @@ rules // Import calculation
         case d := <task-collect-dependencies> : !d
         otherwise                             : ![<id>]
 			end => result;
-			<task-add-read(|nr)> uri
+			<nabl-add-read(|nr)> uri
 
 	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
 	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
@@ -125,7 +123,7 @@ rules // Import calculation
 				case task-collect-dependencies => d : !d
 				otherwise                           : ![hashtable]
 			end => result;
-			<task-add-read(|nr)> uri
+			<nabl-add-read(|nr)> uri
 			
 	import-to-hash-table(|hashtable):
 		(ns, import-uri*) -> <hash-multimap-putlist(|ns, import-uri*)> hashtable
@@ -139,7 +137,7 @@ rules // Import calculation
 				case task-get-result; Hd => h : <hash-multimap-copy(|h)> hashtable; ![]
 				otherwise                     : ![<id>]
 			end => result;
-			<task-add-read(|nr)> uri
+			<nabl-add-read(|nr)> uri
 
 rules // Property constraints
 	  
@@ -187,3 +185,8 @@ rules // Property calcuation
       	case not(is-list)                   : ![result]
       	otherwise                           : !result
 			end => result'
+
+rules // Utility
+	
+	nabl-add-read(|nr) = try(nabl-replace-uri-qualifier(|())); task-add-read(|nr)
+	nabl-add-read-extend(|nr, ns, name) = nabl-extend-uri(|ns, name, ()); task-add-read(|nr)
