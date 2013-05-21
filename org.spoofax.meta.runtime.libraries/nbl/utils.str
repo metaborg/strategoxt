@@ -69,5 +69,9 @@ rules // multimap simulation
 	hash-multimap-copy(|from):
 		to -> to
 		where
-			<hashtable-fold(\((key, value*), _) -> <hash-multimap-putlist(|key, value*)> to\|())> from
+			// wtf is this I don't even.. hashtable-fold needs term arguments instead of current term arguments.
+			<hashtable-fold(hash-multimap-copy-fold|to)> from
+			
+	hash-multimap-copy-fold(|key, value*):
+		to -> <hash-multimap-putlist(|key, value*)> to
 			
