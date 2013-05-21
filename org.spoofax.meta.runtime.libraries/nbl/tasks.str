@@ -67,16 +67,13 @@ rules // Resolve
 	
 	// Looks up wildcard imports for a namespace active in scopes.
 	perform-task(|nr):
-		ResolveWildcardImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> <debug(!"v: ")> result
+		ResolveWildcardImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
 		where
-			debug(!"s: ");
 			uri*        := <filter(nabl-uri)> scope*;
-			debug(!"t: ");
 			import-uri* := <mapconcat(resolve-one-wildcard-import(|ns))> uri*;
-			debug(!"u: ");
-      switch !import-uri*
+      switch id
       	case task-collect-dependencies => d : !d
-      	otherwise                           : !import-uri* // TODO: id?
+      	otherwise                           : id
       end => result
 			// TODO: reads
 			// TODO: make-set
@@ -85,88 +82,70 @@ rules // Resolve
 		uri -> result
 		where
 			if task-exists(|ImportClosure(uri)) then
-				
 				hashtable := <get-import-closure-hashtable> uri;
-				debug(!"w: ");
-				switch !hashtable
+				switch id
 					case ?Dependency(_) : ![<id>]
+					case ?[]            : ![]
 					otherwise           : <hashtable-get(|ns)> hashtable
-				end => result;
-				debug(!"x: ")
+				end => result
 			else
-				result := [];
-				debug(!"y: ")
-			end;
-			debug(!"z: ")
-
+				result := []
+			end
+			
 	get-import-closure-hashtable:
 		uri -> result
 		with
-			debug(!"k: ");
 			import-closure-id := <task-instruction-id> ImportClosure(uri);
-			debug(!"l: ");
-			switch !import-closure-id
+			switch id
+				case task-has-failed      : ![]
 				case task-get-result => r : <Hd> r
 				otherwise                 : <task-create-dependency> import-closure-id
-			end => result;
-			debug(!"m: ")
+			end => result
 
 rules // Import calculation
 	
 	// Import calculation.
 	perform-task(|nr):
-		ImportCalc(uri) -> <debug(!"5: ")> result
+		ImportCalc(uri) -> result
 		where
-			debug(!"1: ");
 			import-ns-use*        := <nabl-get-all-properties(|Import())> uri;
-			debug(!"2: ");
 			(imported-uri*, uri*) := <partition(resolve-transitive-import, resolve-import)> import-ns-use*;
-			debug(!"3: ");
-			<task-add-read(|nr)> uri;
-			debug(!"4: ");
-  		switch !(imported-uri*, uri*)
+  		switch id
         case d := <task-collect-dependencies> : !d
-        otherwise                             : ![(imported-uri*, uri*)] // TODO: id?
-			end => result
+        otherwise                             : ![<id>]
+			end => result;
+			<task-add-read(|nr)> uri
 
 	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
 	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
-	resolve-import-use = task-get-solved; debug(!"Solved: "); filter(nabl-uri) <+ task-create-dependencies
+	resolve-import-use = task-get-solved; filter(nabl-uri) <+ task-create-dependencies
 	
 	// Import transitive closure calculation.
 	perform-task(|nr):
 		ImportClosure(uri) -> result
-		where
-			debug(!"a: ");
+		with
 			import-calc-id        := <task-instruction-id> ImportCalc(uri);
-			debug(!"b: ");
 			(imported-uri*, uri*) := <task-get-result; Hd> import-calc-id; // Result for this task must exit, as a dependency is expressed on it during collect.
-			debug(!"c: ");
 			hashtable             := <new-hashtable>;
-			debug(!"d: ");
 			<map(import-to-hash-table(|hashtable))> uri*;
-			debug(!"e: ");
-			d* := <mapconcat(import-closure-transitive(|nr, hashtable))> imported-uri*;
-			debug(!"f: ");
-			switch !d*
+			d* := <collect-all(?URI(_, _)); mapconcat(import-closure-transitive(|nr, hashtable))> imported-uri*;
+			switch id
 				case task-collect-dependencies => d : !d
 				otherwise                           : ![hashtable]
 			end => result;
-			debug(!"g: ");
-			<task-add-read(|nr)> uri;
-			debug(!"h: ")
+			<task-add-read(|nr)> uri
 			
 	import-to-hash-table(|hashtable):
 		(ns, import-uri*) -> <hash-multimap-putlist(|ns, import-uri*)> hashtable
 		
 	import-closure-transitive(|nr, hashtable):
 		uri	-> result
-		where
-			import-closure-id  := <task-instruction-id> ImportClosure(uri);
-			switch !import-closure-id
-				case task-has-failed        : ![]
-				case h := <task-get-result> : <hash-multimap-copy(|h)> hashtable; ![]
-				otherwise                   : ![<id>]
+		with
+			import-closure-id := <task-instruction-id> ImportClosure(uri);
+			switch id
+				case task-has-failed          : ![]
+				case task-get-result; Hd => h : <hash-multimap-copy(|h)> hashtable; ![]
+				otherwise                     : ![<id>]
 			end => result;
 			<task-add-read(|nr)> uri
 
