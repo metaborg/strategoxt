@@ -70,7 +70,7 @@ rules // Resolve
 		ResolveWildcardImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
 		where
 			uri*        := <filter(nabl-uri)> scope*;
-			import-uri* := <mapconcat(resolve-one-wildcard-import(|ns))> uri*;
+			import-uri* := <mapconcat(resolve-one-wildcard-import(|nr, ns))> uri*;
       switch id
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
@@ -78,29 +78,21 @@ rules // Resolve
 			// TODO: reads
 			// TODO: make-set
 			
-	resolve-one-wildcard-import(|ns):
+	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
 		where
 			if task-exists(|ImportClosure(uri)) then
-				hashtable := <get-import-closure-hashtable> uri;
+				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
-					case ?Dependency(_) : ![<id>]
-					case ?[]            : ![]
-					otherwise           : <hashtable-get(|ns)> hashtable
-				end => result
+					case task-has-failed      : ![]
+					case task-get-result => h : <Hd; hashtable-get(|ns)> h
+					otherwise                 : ![<task-create-dependency> import-closure-id]
+				end => result;
+				<task-add-read(|nr)> uri;
+				<task-add-dependency(|nr)> import-closure-id
 			else
 				result := []
 			end
-			
-	get-import-closure-hashtable:
-		uri -> result
-		with
-			import-closure-id := <task-instruction-id> ImportClosure(uri);
-			switch id
-				case task-has-failed      : ![]
-				case task-get-result => r : <Hd> r
-				otherwise                 : <task-create-dependency> import-closure-id
-			end => result
 
 rules // Import calculation
 	
