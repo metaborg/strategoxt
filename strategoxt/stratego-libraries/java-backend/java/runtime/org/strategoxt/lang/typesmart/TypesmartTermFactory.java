@@ -45,8 +45,14 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 
 	public TypesmartTermFactory(ITermFactory baseFactory, Context compiledContext) {
 		super(baseFactory.getDefaultStorageType());
-		this.baseFactory = baseFactory;
+		this.baseFactory = getStandardFactory(baseFactory);
 		this.compiledContext = compiledContext;
+	}
+
+	private static ITermFactory getStandardFactory(ITermFactory baseFactory) {
+		if (baseFactory instanceof TypesmartTermFactory)
+			return getStandardFactory(((TypesmartTermFactory) baseFactory).baseFactory);
+		return baseFactory;
 	}
 
 	@Override
