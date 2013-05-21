@@ -105,8 +105,7 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 					System.err.println("*****FAIL " + failedTerm);
 					throw new StrategoException(
 							"Smart constructor failed for: "
-									+ TypeSmartATermCommands
-											.stripAnnos(failedTerm));
+									+ baseFactory.annotateTerm(failedTerm, baseFactory.makeList()));
 				}
 
 				t = context.current();

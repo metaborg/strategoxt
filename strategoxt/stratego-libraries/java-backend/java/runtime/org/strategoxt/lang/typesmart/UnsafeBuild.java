@@ -7,6 +7,7 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.StrategoList;
+import org.spoofax.terms.Term;
 
 /**
  * Builds an application term using the given term factory. The constructor name
@@ -36,15 +37,14 @@ public class UnsafeBuild extends AbstractPrimitive {
 			}
 		}
 
-		String ctr = TypeSmartATermCommands.getString(tvars[0]);
+		String ctr = Term.javaString(tvars[0]);
 
 		if (!(context.current() instanceof StrategoList))
 			return false;
 
 		StrategoList args = (StrategoList) context.current();
 
-		IStrategoTerm[] argArray = TypeSmartATermCommands.getList(args)
-				.toArray(new IStrategoTerm[args.size()]);
+		IStrategoTerm[] argArray = args.getAllSubterms();
 		IStrategoTerm unsafeTerm = factory.makeAppl(
 				factory.makeConstructor(ctr, argArray.length), argArray);
 
