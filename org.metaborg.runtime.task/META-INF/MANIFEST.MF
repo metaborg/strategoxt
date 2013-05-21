@@ -12,5 +12,6 @@ Export-Package: org.metaborg.runtime.task;
   uses:="com.google.common.collect,
    org.strategoxt.lang,
    org.spoofax.interpreter.terms,
-   org.spoofax.interpreter.library"
+   org.spoofax.interpreter.library",
+ org.metaborg.runtime.task.interop
 Bundle-ClassPath: .
