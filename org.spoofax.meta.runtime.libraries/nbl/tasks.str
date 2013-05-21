@@ -15,12 +15,11 @@ signature
   
   constructors
     
-    ResolveDefs            : Scope * Namespace * Name                  -> Instruction
-    DisambiguateDefs       : List(Def) * List(Prop) * Namespace * Name -> Instruction
-    ResolveNamedImports    : Scope * Namespace * Name                  -> Instruction
-    ResolveWildcardImports : Scope * Namespace                         -> Instruction
-    PropConstraint         : List(Prop) * List(Result)                 -> Instruction
-    PropCalc               : Property * Term                           -> Instruction
+    ResolveDefs            : Scope * Namespace * Name    -> Instruction
+    ResolveNamedImports    : Scope * Namespace * Name    -> Instruction
+    ResolveWildcardImports : Scope * Namespace           -> Instruction
+    PropConstraint         : List(Prop) * List(Result)   -> Instruction
+    PropCalc               : Property * Term             -> Instruction
         
 rules // Resolve
   
@@ -36,18 +35,8 @@ rules // Resolve
         case ?[]:
         	fail
         otherwise: 
-        	!def* // TODO: id?
+        	<try(nabl-disambiguate(|ns))> def*
 			end => result
-
-	// Calls a user-defined disambiguation filter on definitions with relevant information.
-	perform-task(|nr):
-		DisambiguateDefs(def*, prop*, namespace, name) -> result
-		where
-			if <Tl> def* then
-				result := <try(nabl-disambiguate(|prop*, namespace, name))> def*
-			else
-				result := def*
-			end
 
 	// Looks up named imports, active in scopes with namespace and name..
 	perform-task(|nr):
@@ -75,16 +64,14 @@ rules // Resolve
       else
 	      result := import*
       end
-
-rules // Property constraints
 	  
   perform-task(|nr):
   	PropConstraint(prop*, res*) -> result
   	where
-  		filtered := <filter(nabl-resolve-constraint(|prop*))> res*;
+  		filtered := <concat; filter(nabl-resolve-constraint(|prop*))> res*;
       switch !filtered
       	case task-collect-dependencies => d: !d
-      	otherwise: !filtered // TODO: id?
+      	otherwise: !filtered
       end => result
   		
   nabl-resolve-constraint(|prop*):
@@ -110,8 +97,6 @@ rules // Property constraints
       else
         entry' := <task-create-dependencies> value
       end
-
-rules // Property calcuation
 
   perform-task(|nr): 
   	PropCalc(prop, term) -> result'

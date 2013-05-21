@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class TaskManager {
 				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
 	}
 
-	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) throws NoSuchAlgorithmException {
+	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
 		URI project = getProjectURI(projectPath, agent);
 		synchronized(TaskManager.class) {
 			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
@@ -56,7 +55,7 @@ public class TaskManager {
 				taskEngine = tryReadFromFile(getFile(project), factory);
 			}
 			if(taskEngine == null) {
-				taskEngine = new TaskEngine(factory, new SHA1TermDigester());
+				taskEngine = new TaskEngine(factory);
 			}
 			taskEngineCache.put(project, new WeakReference<TaskEngine>(taskEngine));
 			current.set(taskEngine);
@@ -90,8 +89,8 @@ public class TaskManager {
 	}
 
 	public TaskEngine tryReadFromFile(File file, ITermFactory factory) {
+		TaskEngine taskEngine = new TaskEngine(factory);
 		try {
-			TaskEngine taskEngine = new TaskEngine(factory, new SHA1TermDigester());
 			IStrategoList tasks = (IStrategoList) new TermReader(factory).parseFromFile(file.toString());
 			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
 		} catch(Exception e) {

@@ -35,4 +35,4 @@ strategies // Lookup hooks
 	
 	nabl-property-eq(|kind) = fail
 	
-	nabl-disambiguate(|prop*, namespace, name) = fail
+	nabl-disambiguate(|ns) = fail
