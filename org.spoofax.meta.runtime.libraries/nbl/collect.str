@@ -9,7 +9,7 @@ imports
 	nbl/interface
 	nbl/uri
 	nbl/utils
-	types/interface
+	types/collect
 	
 signature 
 
@@ -63,41 +63,39 @@ strategies // generic traversal
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
 	nabl-collect(|partition, lang):
-	  ast -> ast'''
+	  ast -> ast''
 	  where
 	    new-hashtable => unique*;
-	    ast'   := <nabl-collect(id|lang, partition, unique*, [])> ast ;
-	    ast''  := <bottomup(try(property-task(|partition)))> ast';
-	    ast''' := <alltd(message-task(|partition))> ast''
+	    ast'  := <nabl-collect(id|lang, partition, unique*, [])> ast ;
+	    ast'' := <alltd(message-task(|partition))> ast'
 	  
 	/**
 	 * Performs the collection in a topdown traversal. 
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
 	 */
 	nabl-collect(sibling-uris|lang, partition, unique*, uri*) =
-		nabl-state-pop(?state*);
-    try(nabl-scoping-site);
-    (
+		nabl-state-pop(?state*)
+  ; try(nabl-scoping-site)
+  ; (
 		   nabl-scope-site(?uri'*|lang, partition, unique*, uri*)
 		<+ match(?uri'*|uri*) 
-		); // scopes of external definitions, e.g. variables in let expressions
-   	(
+		) 
+  ; (
 			 nabl-def-site(?child-uri*, sibling-uris, ?implicit*|lang, partition, unique*, uri'*, state*)
     <+ match(sibling-uris|uri*)
      ; match(?child-uri*|uri'*)
-    );
-    
-		try(nabl-state-site);
-   
-    preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*)))); // visit children from left to right
-    
-		try(nabl-use-site(|lang, partition, uri'*, state*));
-    try(nabl-import-site(|lang, partition, child-uri*, state*));
-    try(nabl-prop-site(|lang, partition, state*, implicit*))
+    )    
+  ; try(nabl-state-site)
+  // visit children from left to right  
+  ; preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
+  ; try(nabl-use-site(|lang, partition, uri'*, state*))
+  ; try(nabl-import-site(|lang, partition, child-uri*, state*))
+  ; try(nabl-prop-site(|lang, partition, state*, implicit*))
+  ; annotate-property-tasks(|partition)
     
 	nabl-siblings(|lang, partition, unique*, uri*) = 
-		[] + 
-		[ nabl-collect(?sibling-uri*|lang, partition, unique*, uri*)
+		[]  
+	+ [ nabl-collect(?sibling-uri*|lang, partition, unique*, uri*)
 		| nabl-siblings(|lang, partition, unique*, sibling-uri*) ]
 
 rules // generic analysis of state

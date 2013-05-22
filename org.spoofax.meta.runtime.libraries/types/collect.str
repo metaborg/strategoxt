@@ -4,7 +4,32 @@ imports
   task/-
   types/-
   nbl/-
+
+strategies
   
+  annotate-property-tasks(|task*) =
+    !([Type()|<custom-properties <+ ![]>], <id>)
+  ; foldl(annotate-property-task(|task*) <+ Snd)
+  
+  annotate-property-task(|task*):
+    (kind, term{a*}) -> term{(kind, prop), a*}
+    where
+      not(<property-task(|kind)> term)
+    where
+      prop := <new-property-task(|task*)> 
+     
+  new-property-task(|task*):
+    (Type(), term) -> <type-of(|task*)> term
+
+  property-task(|kind) = 
+    get-annos
+  ; fetch-elem(?(kind, task))
+  ; !task
+ 
+  property-task(|kind, task*) = 
+     property-task(|kind)
+  <+ <new-property-task(|task*)> (kind, <id>)
+    
 strategies
   
   prop-calc(|task*, dep*) = 
@@ -14,7 +39,7 @@ strategies
   prop-check(|kind, task*, dep*):
     (term, expected) -> task
     where
-      actual    := <property-task(|kind, task*)> term
+      actual    := <property-task(|kind)> term
     ; expected* := <try-make-list> expected
     ; check*    := <map(<new-task(|task*)> PropCheck(actual, <id>))> expected*
     ; task      := <new-task(|task*, [dep*, check*])> Choice(check*)
@@ -38,5 +63,3 @@ strategies
   type-lookup(|task*, dep*) = prop-lookup(|Type(), task*, dep*)
   
   type-unify(|task*, relation) = prop-unify(|task*, relation)
-  
-  property-task(|task*, kind) = where(Type() := kind); type-of(|task*)

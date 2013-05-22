@@ -2,5 +2,9 @@ module types/interface
 
 strategies
   
-  type-of(|task*) = fail
+  custom-properties = fail
+  
+  new-property-task(|task*): (kind, term) -> <fail>
+
+  type-of(|task*)   = fail
   
