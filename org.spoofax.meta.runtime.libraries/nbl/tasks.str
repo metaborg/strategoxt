@@ -111,14 +111,15 @@ rules // Property constraints
         entry' := <task-create-dependencies> value
       end
 
-rules // Property calcuation
-
-  perform-task(|nr): 
-  	PropCalc(prop, term) -> result'
-  	where
-  		result := <calc-property> (prop, term);
-  		switch !result
-  			case task-collect-dependencies => d : !d
-      	case not(is-list)                   : ![result]
-      	otherwise                           : !result
-			end => result'
+// this should not be needed any longer
+// rules // Property calcuation
+// 
+//   perform-task(|nr): 
+//   	PropCalc(prop, term) -> result'
+//   	where
+//   		result := <calc-property> (prop, term);
+//   		switch !result
+//   			case task-collect-dependencies => d : !d
+//       	case not(is-list)                   : ![result]
+//       	otherwise                           : !result
+// 			end => result'

@@ -16,6 +16,7 @@ signature
 
     PropLookup : Property * Term -> Instruction    
     PropCalc   : Term * Term     -> Instruction
+    PropCalc   : Term            -> Instruction
     PropCheck  : Term * Term     -> Instruction
 
 rules
@@ -28,20 +29,26 @@ rules
   			case ?Def(_) : nabl-get-property(|kind); insert-results-or-create-dependency; try-make-list
   			otherwise    : id
   		end => result
+  
+  avoid-task(|dep*):
+    PropCalc(_) -> <perform-task(|0)> 
+    where
+      [] := dep*
   	
   perform-task(|n): 
-  	PropCalc(result, check*) -> <try-make-list> result
-  	where 
-  		<try-remove-list> check*
-	
+  	PropCalc(result) -> <try-make-list> result
+  
+  // TODO: remove this one	
+  perform-task(|n): PropCalc(result, dep*) -> <perform-task(|n)> PropCalc(result)
+  
+  avoid-task(|dep*):
+    PropCheck(actual, expected) -> <perform-task(|0)> 
+    where
+      [] := dep*
+  
   perform-task(|n): 
   	PropCheck(term, expected) ->  term*
   	where
   		term*     := <try-make-list> term;
   		expected* := <try-make-list> expected;
   		<cart(eq)> (term*, expected*)
-  		
-rules
-  
-  desugar-task(|partition): 
-  	PropCalc(Type(), t) -> <type-of-task(|partition)> t

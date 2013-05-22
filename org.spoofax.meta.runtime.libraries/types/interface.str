@@ -2,5 +2,5 @@ module types/interface
 
 strategies
   
-  type-task(|partition) = fail
-  type-of-task(|partition) = fail
+  type-of(|task*) = fail
+  
