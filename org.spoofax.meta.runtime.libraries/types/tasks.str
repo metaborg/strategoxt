@@ -42,7 +42,7 @@ rules
   perform-task(|n): PropCalc(result, dep*) -> <perform-task(|n)> PropCalc(result)
   
   avoid-task(|dep*):
-    PropCheck(actual, expected) -> <perform-task(|0)> 
+    PropCheck(actual, expected) -> <perform-task(|0) <+ ![]> 
     where
       [] := dep*
   
