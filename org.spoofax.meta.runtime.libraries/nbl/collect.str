@@ -299,10 +299,8 @@ rules // generic analysis of imports
       else
       	// Wildcard import, create tasks that calculate imports and the transitive closure.
       	rawns := <nabl-import-raw-namespace> import;
-	      Result(import-calc)    := <new-task(|partition)> ImportCalc(uri);
-	      <dependent-tasks; map(task-add-dependency(|import-calc))> use;
-	      Result(import-closure) := <new-task(|partition)> ImportClosure(uri);
-	      <task-add-dependency(|import-closure)> import-calc;
+	      Result(import-calc)    := <new-task(|partition, <dependent-tasks> use)> ImportCalc(uri);
+	      Result(import-closure) := <new-task(|partition, [import-calc])> ImportClosure(uri);
 	      new-prop(|partition, uri, Import(), (rawns, use))
       end
       

@@ -85,7 +85,7 @@ rules // API
 	task-debug-info(|partition)                          = task-api-debug-info(|partition)
 	task-add-message(|taskID, message)                   = task-api-add-message(|taskID, message)
 	task-get-messages(|partition)                        = task-api-get-messages(|partition)
-	task-evaluate(|changed-read*)                        = task-api-evaluate(perform-task, insert-results-with-fail|changed-read*)
+	task-evaluate(|changed-read*)                        = task-api-evaluate(task-perform-task, insert-results-with-fail|changed-read*)
 	task-exists(|instruction)                            = task-api-exists(|instruction)
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
@@ -117,6 +117,8 @@ rules // API
 		
 	task-instruction-id:
 		instruction -> <task-api-task-id(|instruction)>
+		
+	task-perform-task(|nr) = perform-task(|nr)
 
 rules /** @internal API externals */
 

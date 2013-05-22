@@ -8,6 +8,10 @@ public class HashCodeTermDigester implements ITermDigester {
 		return factory.makeInt(term.hashCode());
 	}
 	
+	public void undigest(IStrategoTerm term) {
+		
+	}
+	
 	public IStrategoTerm state(ITermFactory factory) {
 		return factory.makeInt(0);
 	}

@@ -67,7 +67,7 @@ rules // Resolve
 	
 	// Looks up wildcard imports for a namespace active in scopes.
 	perform-task(|nr):
-		ResolveWildcardImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
+		ResolveWildcardImports(scope*, ns) -> result
 		where
 			uri*        := <filter(nabl-uri)> scope*;
 			import-uri* := <mapconcat(resolve-one-wildcard-import(|nr, ns))> uri*;
@@ -75,7 +75,6 @@ rules // Resolve
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
       end => result
-			// TODO: make-set?
 			
 	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
@@ -84,13 +83,13 @@ rules // Resolve
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed      : ![]
-					case task-get-result => h : <Hd; hashtable-get(|ns); debug(!"Result: ")> h
+					case task-get-result => h : <Hd; hashtable-get(|ns)> h
 					otherwise                 : ![<task-create-dependency> import-closure-id]
-				end => result;
-				<nabl-add-read(|nr)> uri
+				end => result
 			else
 				result := []
-			end
+			end;
+			<nabl-add-read(|nr)> uri
 
 rules // Import calculation
 	
