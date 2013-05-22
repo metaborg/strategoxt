@@ -1,7 +1,11 @@
 package org.metaborg.runtime.task;
 
 import java.util.Collection;
+import java.util.Map.Entry;
 
+import org.spoofax.interpreter.core.Tools;
+import org.spoofax.interpreter.library.ssl.StrategoHashMap;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
@@ -19,9 +23,7 @@ public class TaskEngineFactory {
 			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
 			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
-			IStrategoTerm results = taskEngine.getResult(taskID);
-			if(results != null)
-				results = serializer.toAnnotations(results);
+			IStrategoTerm results = serializeResults(taskEngine.getResult(taskID), factory, serializer);
 			final boolean failed = taskEngine.hasFailed(taskID);
 			tasks =
 				factory.makeListCons(
@@ -47,7 +49,7 @@ public class TaskEngineFactory {
 			final IStrategoList partitions = (IStrategoList) task.getSubterm(2);
 			final IStrategoList dependencies = (IStrategoList) task.getSubterm(3);
 			final IStrategoList reads = (IStrategoList) task.getSubterm(4);
-			final IStrategoTerm results = serializer.fromAnnotations(task.getSubterm(5), false);
+			final IStrategoTerm results = deserializeResults(task.getSubterm(5), factory, serializer);
 			final IStrategoInt failed = (IStrategoInt) task.getSubterm(6);
 			taskEngine.addPersistedTask(taskID, instruction, partitions, dependencies, reads, results, failed);
 		}
@@ -61,5 +63,64 @@ public class TaskEngineFactory {
 		return factory.makeTuple(taskID, instruction, factory.makeList(partitions), factory.makeList(dependencies),
 			factory.makeList(reads), results == null ? factory.makeTuple() : results, failed ? factory.makeInt(1)
 				: factory.makeInt(0));
+	}
+
+	private IStrategoTerm serializeResults(IStrategoTerm results, ITermFactory factory,
+		TermAttachmentSerializer serializer) {
+		if(results != null) {
+			IStrategoList newResults = factory.makeList();
+			for(IStrategoTerm result : results) {
+				IStrategoTerm newResult;
+				if(isHashMap(result))
+					newResult = serializeHashMap((StrategoHashMap) result, factory);
+				else
+					newResult = result;
+				newResults = factory.makeListCons(serializer.toAnnotations(newResult), newResults);
+			}
+			return newResults;
+		}
+		return null;
+	}
+
+	private IStrategoTerm deserializeResults(IStrategoTerm results, ITermFactory factory,
+		TermAttachmentSerializer serializer) {
+		if(Tools.isTermList(results)) {
+			IStrategoList newResults = factory.makeList();
+			for(IStrategoTerm result : results) {
+				IStrategoTerm newResult;
+				if(isSerializedHashMap(result))
+					newResult = deserializeHashMap(result);
+				else
+					newResult = result;
+				newResults = factory.makeListCons(serializer.fromAnnotations(newResult, false), newResults);
+			}
+			return newResults;
+		}
+		return results;
+	}
+
+	private IStrategoTerm serializeHashMap(StrategoHashMap hashMap, ITermFactory factory) {
+		IStrategoList entries = factory.makeList();
+		for(Entry<IStrategoTerm, IStrategoTerm> entry : hashMap.entrySet()) {
+			entries = factory.makeListCons(factory.makeTuple(entry.getKey(), entry.getValue()), entries);
+		}
+		return factory.makeAppl(factory.makeConstructor("StrategoHashMap", 1), entries);
+	}
+
+	private boolean isHashMap(IStrategoTerm term) {
+		return term instanceof StrategoHashMap;
+	}
+
+	private boolean isSerializedHashMap(IStrategoTerm term) {
+		return Tools.isTermAppl(term) && Tools.hasConstructor((IStrategoAppl) term, "StrategoHashMap");
+	}
+
+	private StrategoHashMap deserializeHashMap(IStrategoTerm term) {
+		StrategoHashMap hashMap = new StrategoHashMap();
+		IStrategoTerm entries = term.getSubterm(0);
+		for(IStrategoTerm entry : entries) {
+			hashMap.put(entry.getSubterm(0), entry.getSubterm(1));
+		}
+		return hashMap;
 	}
 }
