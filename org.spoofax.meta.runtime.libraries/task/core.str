@@ -20,7 +20,9 @@ signature
 rules // Creation
   
   new-task(|partition) = new-task(|partition, <dependent-tasks>)
-  new-task(|partition, dependencies) = desugar-task(|partition) <+ task-add-task(|partition, dependencies, <id>)
+  new-task(|partition, dependencies) = 
+     avoid-task(|dependencies)
+  <+ task-add-task(|partition, dependencies, <id>)
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
   dependent-task = ?Result(<id>) 

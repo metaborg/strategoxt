@@ -3,5 +3,5 @@ module task/interface
 strategies
   
   perform-task(|nr) = fail
-  desugar-task(|partition) = fail
-  task-match = fail
+  task-match        = fail
+  avoid-task(|dep*) = fail

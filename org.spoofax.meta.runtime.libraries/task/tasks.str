@@ -4,7 +4,8 @@ imports
 	
 	task/core
 	task/interface
-
+  nbl/utils
+  
 signature
 
 	constructors
@@ -19,6 +20,11 @@ signature
 	
 rules
 	
+	avoid-task(|dep*):
+	  Choice([choice]) -> choice
+	  where
+	    <dependent-tasks> choice => dep*
+	    
 	perform-task(|nr):
  		Choice(choice*) -> <Hd> choice*
 
@@ -31,6 +37,11 @@ rules
     		case Failure() : not(<Hd> task); task-add-message(|n, message)
     	end
 
+  avoid-task(|dep*):
+    Match(_, _, _) -> <perform-task(|0)>
+    where
+      [] := dep*
+    	
   perform-task(|nr): 
   	Match(key, bound, term*@<with(is-list|"Expected a list of terms.")>) -> result
   	where
