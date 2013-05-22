@@ -85,7 +85,8 @@ rules // Resolve
 					case task-has-failed      : ![]
 					case task-get-result => h : <Hd; hashtable-get(|ns)> h
 					otherwise                 : ![<task-create-dependency> import-closure-id]
-				end => result
+				end => result;
+				<task-add-dependency(|nr)> import-closure-id
 			else
 				result := []
 			end;
@@ -130,12 +131,17 @@ rules // Import calculation
 	import-closure-transitive(|nr, hashtable):
 		uri	-> result
 		with
-			import-closure-id := <task-instruction-id> ImportClosure(uri);
-			switch id
-				case task-has-failed          : ![]
-				case task-get-result; Hd => h : <hash-multimap-copy(|h)> hashtable; ![]
-				otherwise                     : ![<id>]
-			end => result;
+			if task-exists(|ImportClosure(uri)) then
+				import-closure-id := <task-instruction-id> ImportClosure(uri);
+				switch id
+					case task-has-failed          : ![]
+					case task-get-result; Hd => h : <hash-multimap-copy(|h)> hashtable; ![]
+					otherwise                     : ![<id>]
+				end => result;
+				<task-add-dependency(|nr)> import-closure-id
+			else
+				result := []
+			end;
 			<nabl-add-read(|nr)> uri
 
 rules // Property constraints

@@ -388,7 +388,9 @@ public class TaskEngine {
 		
 		for(final IStrategoTerm taskID : garbage) {
 			toDependency.removeAll(taskID);
+			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
+			toRead.removeAllInverse(taskID);
 			digester.undigest(getInstruction(taskID));
 		}
 		
