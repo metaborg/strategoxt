@@ -109,6 +109,9 @@ rules // API
 			otherwise            : task-api-has-failed(|<id>) <+ (task-api-has-failed(|<id>); ![])
 		end
 				
+	task-get-dependencies:
+		taskID -> <task-api-get-dependencies(|taskID)>
+				
 	task-add-read(|taskID):
 		read -> <task-api-add-read(|taskID, read)>
 		
@@ -135,6 +138,7 @@ rules /** @internal API externals */
 	external task-api-add-dependency(|taskID, dependency)
 	external task-api-evaluate(perform-task, insert-result|changed-reads)
 	external task-api-exists(|instruction)
+	external task-api-get-dependencies(|taskID)
 	external task-api-reset(|)
 	external task-api-persist(|)
 	external task-api-task-id(|instruction)
