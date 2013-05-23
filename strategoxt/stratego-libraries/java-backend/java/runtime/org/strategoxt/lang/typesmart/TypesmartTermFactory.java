@@ -166,6 +166,10 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @deprecated Use {@link #getWrappedFactory()} instead.
+	 */
 	@Deprecated
 	public ITermFactory getBaseFactory() {
 		return getWrappedFactory();
