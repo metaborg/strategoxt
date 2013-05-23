@@ -9,15 +9,9 @@ import org.spoofax.interpreter.stratego.SDefT;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoPlaceholder;
-import org.spoofax.interpreter.terms.IStrategoReal;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.AbstractTermFactory;
 import org.spoofax.terms.TermFactory;
 import org.strategoxt.HybridInterpreter;
 import org.strategoxt.lang.Context;
@@ -30,67 +24,72 @@ import org.strategoxt.lang.StrategoException;
  * using the base factory.
  * 
  * @author Sebastian Erdweg
+ * @author Vlad Vergu
  */
-public class TypesmartTermFactory extends AbstractTermFactory {
+public class TypesmartTermFactory extends AWrappedTermFactory {
 
 	private final static boolean DEBUG_TYPESMART = true;
 
-	private final ITermFactory baseFactory;
 	private final Context compiledContext;
 	private IContext context;
 
 	public int smartCalls = 0;
 	public BigInteger totalTimeMillis = BigInteger.ZERO;
 
-
-	public TypesmartTermFactory(ITermFactory baseFactory, Context compiledContext) {
-		super(baseFactory.getDefaultStorageType());
-		this.baseFactory = getStandardFactory(baseFactory);
+	public TypesmartTermFactory(ITermFactory baseFactory,
+			Context compiledContext) {
+		super(baseFactory.getDefaultStorageType(),
+				getStandardFactory(baseFactory));
 		this.compiledContext = compiledContext;
 	}
 
 	private static ITermFactory getStandardFactory(ITermFactory baseFactory) {
-		if (baseFactory instanceof TypesmartTermFactory)
-			return getStandardFactory(((TypesmartTermFactory) baseFactory).baseFactory);
-		return baseFactory;
+		 if (baseFactory instanceof TypesmartTermFactory)
+		 return getStandardFactory(((TypesmartTermFactory)
+		 baseFactory).getWrappedFactory());
+		 return baseFactory;
+	}
+
+	public IStrategoAppl makeUnsafeAppl(IStrategoConstructor ctr,
+			IStrategoTerm[] kids, IStrategoList annotations) {
+		return super.makeAppl(ctr, kids, annotations);
 	}
 
 	@Override
 	public IStrategoAppl makeAppl(IStrategoConstructor ctr,
-			IStrategoTerm[] terms, IStrategoList annotations) {
-
+			IStrategoTerm[] kids, IStrategoList annotations) {
 		if (context == null) {
-			context = HybridInterpreter.getContext(compiledContext);
-			if(context == null) {
-				return baseFactory.makeAppl(ctr, terms, annotations);
+			 context = HybridInterpreter.getContext(compiledContext);
+			if (context == null) {
+				return makeUnsafeAppl(ctr, kids, annotations);
 			}
 		}
 
 		String smartCtrName = "smart-" + ctr.getName();
-		smartCtrName = smartCtrName.replace("-", "_") + "_0_" + terms.length;
+		smartCtrName = smartCtrName.replace("-", "_") + "_0_" + kids.length;
 
 		try {
 			SDefT sdef = context.lookupSVar(smartCtrName);
 			// no check defined
-			if (sdef == null){
-				return baseFactory.makeAppl(ctr, terms, annotations);
+			if (sdef == null) {
+				return makeUnsafeAppl(ctr, kids, annotations);
 			}
-			 System.out.println("Typesmart " + ctr);
+			System.out.println("Typesmart " + ctr);
 
 			// apply smart constructor to argument terms
-			rebuildEmptyLists(terms);
+			rebuildEmptyLists(kids);
 
 			CallT smartCall = new CallT(smartCtrName, new Strategy[0],
 					new IStrategoTerm[0]);
 			IStrategoTerm currentWas = context.current();
 			IStrategoTerm t;
 			try {
-				context.setFactory(baseFactory);
+				context.setFactory(getWrappedFactory());
 
 				smartCalls++;
 				long start = System.currentTimeMillis();
 				boolean smartOk = smartCall.evaluateWithArgs(context,
-						new Strategy[0], terms);
+						new Strategy[0], kids);
 				long end = System.currentTimeMillis();
 				totalTimeMillis = totalTimeMillis.add(BigInteger.valueOf(end
 						- start));
@@ -100,12 +99,12 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 				}
 
 				if (!smartOk) {
-					IStrategoTerm failedTerm = baseFactory.makeAppl(ctr, terms,
+					IStrategoTerm failedTerm = makeUnsafeAppl(ctr, kids,
 							annotations);
 					System.err.println("*****FAIL " + failedTerm);
 					throw new StrategoException(
 							"Smart constructor failed for: "
-									+ baseFactory.annotateTerm(failedTerm, baseFactory.makeList()));
+									+ annotateTerm(failedTerm, makeList()));
 				}
 
 				t = context.current();
@@ -151,18 +150,15 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 				terms[i] = terms[i];
 	}
 
-	public ITermFactory getFactoryWithStorageType(int arg0) {
-		return baseFactory.getFactoryWithStorageType(arg0);
-	}
-
 	/**
 	 * Identical to
 	 * {@link TermFactory#annotateTerm(IStrategoTerm, IStrategoList)} except
 	 * that it retains sort attachments.
 	 */
+	@Override
 	public IStrategoTerm annotateTerm(IStrategoTerm term,
 			IStrategoList annotations) {
-		IStrategoTerm result = baseFactory.annotateTerm(term, annotations);
+		IStrategoTerm result = super.annotateTerm(term, annotations);
 		TypesmartSortAttachment attach = TypesmartSortAttachment.get(term);
 		if (attach != null)
 			TypesmartSortAttachment.put(result, attach);
@@ -170,43 +166,13 @@ public class TypesmartTermFactory extends AbstractTermFactory {
 		return result;
 	}
 
-	public IStrategoInt makeInt(int arg0) {
-		return baseFactory.makeInt(arg0);
-	}
-
-	public IStrategoPlaceholder makePlaceholder(IStrategoTerm arg0) {
-		return baseFactory.makePlaceholder(arg0);
-	}
-
-	public IStrategoReal makeReal(double arg0) {
-		return baseFactory.makeReal(arg0);
-	}
-
-	public IStrategoString makeString(String arg0) {
-		return baseFactory.makeString(arg0);
-	}
-
-	public IStrategoString tryMakeUniqueString(String arg0) {
-		return baseFactory.makeString(arg0);
-	}
-
-	@Override
-	public IStrategoList makeList(IStrategoTerm[] arg0, IStrategoList arg1) {
-		return baseFactory.makeList(arg0, arg1);
-	}
-
-	@Override
-	public IStrategoList makeListCons(IStrategoTerm arg0, IStrategoList arg1,
-			IStrategoList arg2) {
-		return baseFactory.makeListCons(arg0, arg1, arg2);
-	}
-
-	@Override
-	public IStrategoTuple makeTuple(IStrategoTerm[] arg0, IStrategoList arg1) {
-		return baseFactory.makeTuple(arg0, arg1);
-	}
-
+	@Deprecated
 	public ITermFactory getBaseFactory() {
-		return baseFactory;
+		return getWrappedFactory();
 	}
+
+	public ITermFactory getFactoryWithStorageType(int storageType) {
+		return getWrappedFactory().getFactoryWithStorageType(storageType);
+	}
+
 }
