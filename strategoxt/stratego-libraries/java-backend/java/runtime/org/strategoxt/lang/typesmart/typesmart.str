@@ -8,10 +8,10 @@ imports
   
 rules
   // redefined in Stratego
-  smart-Some(|arg) =
-      <get-syntax-sort> arg => xsort
-    ; <prim("SUGARJ_unsafe_build", "Some")> [arg] 
-    ; put-syntax-sort(|<prim("SUGARJ_unsafe_build", "Sort")> ["Option", [xsort]])
+  // smart-Some(|arg) =
+  //     <get-syntax-sort> arg => xsort
+  //   ; <prim("SUGARJ_unsafe_build", "Some")> [arg] 
+  //   ; put-syntax-sort(|<prim("SUGARJ_unsafe_build", "Sort")> ["Option", [xsort]])
 
 rules
   put-syntax-sort(|sort) =
