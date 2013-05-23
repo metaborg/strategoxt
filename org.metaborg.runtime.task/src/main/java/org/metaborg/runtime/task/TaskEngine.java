@@ -375,9 +375,11 @@ public class TaskEngine {
 		solved.removeAll(garbage);
 		toMessage.remove(garbage);
 		failed.removeAll(garbage);
-		for(final IStrategoTerm taskID : garbage)
+		for(final IStrategoTerm taskID : garbage) {
 			toDependency.removeAll(taskID);
-		for(final IStrategoTerm taskID : garbage)
+			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
+			toRead.removeAllInverse(taskID);
+		}
 	}
 }
