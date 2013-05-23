@@ -161,7 +161,8 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
     }
 
     public ITermFactory getFactoryWithStorageType(int storageType) {
-	return getWrappedFactory().getFactoryWithStorageType(storageType);
+	assert getDefaultStorageType() <= storageType;
+	return this;
     }
 
 }
