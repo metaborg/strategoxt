@@ -25,11 +25,13 @@ rules // Creation
   new-task(|partition) = new-task(|partition, <dependent-tasks>)
   
   new-task(|partition, dependencies) = 
-     tdebug(!"new task ")
-   ; avoid-task(|dependencies)
-   ; tdebug(!"avoided ")
-  <+ task-add-task(|partition, dependencies, <id>)
-   ; tdebug(!"added ")
+    task-add-task(|partition, dependencies, <id>)
+   
+  //    tdebug(!"new task ")
+  //  ; avoid-task(|dependencies)
+  //  ; tdebug(!"avoided ")
+  // <+ task-add-task(|partition, dependencies, <id>)
+  //  ; tdebug(!"added ")
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
   dependent-task = ?Result(<id>) 

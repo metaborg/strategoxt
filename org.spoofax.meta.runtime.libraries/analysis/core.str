@@ -53,9 +53,9 @@ rules // Analysis
   	_ -> (error*, warning*, note*)
   	with
   		message* := <task-get-messages(|partition)>;
-  		error*   := <filter(?Error(_); analyze-message-to-tuple)> message*;
-  		warning* := <filter(?Warning(_); analyze-message-to-tuple)> message*;
-  		note*    := <filter(?Note(_); analyze-message-to-tuple)> message*
+  		error*   := <filter(?Error(_, _); analyze-message-to-tuple)> message*;
+  		warning* := <filter(?Warning(_, _); analyze-message-to-tuple)> message*;
+  		note*    := <filter(?Note(_, _); analyze-message-to-tuple)> message*
   		
 	analyze-message-to-tuple:
 		message -> (message, <task-message> message)

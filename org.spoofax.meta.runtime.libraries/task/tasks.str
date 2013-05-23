@@ -48,9 +48,9 @@ rules
       [] := dep*
     	
   perform-task(|nr): 
-  	Match(key, bound, term*@<with(is-list|"Expected a list of terms.")>) -> result
+  	Match(key, bound, term) -> result
   	where
-  		result := <filter(!(key, <id>, bound); task-match)> term*;
+  		result := <try-make-list; filter(!(key, <id>, bound); debug(!"m "); task-match)> term;
   		if [] := result then
   			fail
 			end
