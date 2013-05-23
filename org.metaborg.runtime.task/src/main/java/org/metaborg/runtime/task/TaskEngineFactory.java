@@ -72,7 +72,7 @@ public class TaskEngineFactory {
 			for(IStrategoTerm result : results) {
 				IStrategoTerm newResult;
 				if(isHashMap(result))
-					newResult = serializeHashMap((StrategoHashMap) result, factory);
+					newResult = serializeHashMap((StrategoHashMap) result.getSubterm(0), factory);
 				else
 					newResult = result;
 				newResults = factory.makeListCons(serializer.toAnnotations(newResult), newResults);
@@ -88,8 +88,8 @@ public class TaskEngineFactory {
 			IStrategoList newResults = factory.makeList();
 			for(IStrategoTerm result : results) {
 				IStrategoTerm newResult;
-				if(isSerializedHashMap(result))
-					newResult = deserializeHashMap(result);
+				if(isHashMap(result))
+					newResult = deserializeHashMap(result, factory);
 				else
 					newResult = result;
 				newResults = factory.makeListCons(serializer.fromAnnotations(newResult, false), newResults);
@@ -104,23 +104,19 @@ public class TaskEngineFactory {
 		for(Entry<IStrategoTerm, IStrategoTerm> entry : hashMap.entrySet()) {
 			entries = factory.makeListCons(factory.makeTuple(entry.getKey(), entry.getValue()), entries);
 		}
-		return factory.makeAppl(factory.makeConstructor("StrategoHashMap", 1), entries);
+		return factory.makeAppl(factory.makeConstructor("Hashtable", 1), entries);
 	}
 
 	private boolean isHashMap(IStrategoTerm term) {
-		return term instanceof StrategoHashMap;
+		return Tools.isTermAppl(term) && Tools.hasConstructor((IStrategoAppl) term, "Hashtable");
 	}
 
-	private boolean isSerializedHashMap(IStrategoTerm term) {
-		return Tools.isTermAppl(term) && Tools.hasConstructor((IStrategoAppl) term, "StrategoHashMap");
-	}
-
-	private StrategoHashMap deserializeHashMap(IStrategoTerm term) {
+	private IStrategoTerm deserializeHashMap(IStrategoTerm term, ITermFactory factory) {
 		StrategoHashMap hashMap = new StrategoHashMap();
 		IStrategoTerm entries = term.getSubterm(0);
 		for(IStrategoTerm entry : entries) {
 			hashMap.put(entry.getSubterm(0), entry.getSubterm(1));
 		}
-		return hashMap;
+		return factory.makeAppl(factory.makeConstructor("Hashtable", 1), hashMap);
 	}
 }
