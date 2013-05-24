@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.strategoxt.lang.typesmart;
 
 import java.util.Collection;
@@ -27,6 +24,7 @@ import org.spoofax.terms.attachments.AbstractWrappedTermFactory;
  * 
  * 
  * @author Vlad Vergu
+ * @author Sebastian Erdweg
  * 
  */
 public abstract class AWrappedTermFactory extends AbstractTermFactory {
@@ -81,33 +79,6 @@ public abstract class AWrappedTermFactory extends AbstractTermFactory {
     @Override
     public IStrategoList makeList(IStrategoTerm[] kids, IStrategoList annotations) {
 	return baseFactory.makeList(kids, annotations);
-    }
-
-    @Override
-    public IStrategoAppl replaceAppl(IStrategoConstructor constructor, IStrategoTerm[] kids,
-	    IStrategoAppl old) {
-	return baseFactory.replaceAppl(constructor, kids, old);
-    }
-
-    @Override
-    public IStrategoTuple replaceTuple(IStrategoTerm[] kids, IStrategoTuple old) {
-	return baseFactory.replaceTuple(kids, old);
-    }
-
-    @Override
-    public IStrategoList replaceList(IStrategoTerm[] kids, IStrategoList old) {
-	return baseFactory.replaceList(kids, old);
-    }
-
-    @Override
-    public IStrategoList replaceListCons(IStrategoTerm head, IStrategoList tail,
-	    IStrategoTerm oldHead, IStrategoList oldTail) {
-	return baseFactory.replaceListCons(head, tail, oldHead, oldTail);
-    }
-
-    @Override
-    public IStrategoTerm replaceTerm(IStrategoTerm term, IStrategoTerm old) {
-	return baseFactory.replaceTerm(term, old);
     }
 
     @Override
