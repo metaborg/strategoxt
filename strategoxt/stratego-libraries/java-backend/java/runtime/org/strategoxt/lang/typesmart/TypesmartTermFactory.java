@@ -40,7 +40,7 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
 	this.compiledContext = compiledContext;
     }
 
-    private static ITermFactory getStandardFactory(ITermFactory baseFactory) {
+    public static ITermFactory getStandardFactory(ITermFactory baseFactory) {
 	if (baseFactory instanceof TypesmartTermFactory)
 	    return getStandardFactory(((TypesmartTermFactory) baseFactory).getWrappedFactory());
 	return baseFactory;
