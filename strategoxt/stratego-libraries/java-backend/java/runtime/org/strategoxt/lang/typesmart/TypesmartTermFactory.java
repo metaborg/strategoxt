@@ -54,20 +54,10 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
     @Override
     public IStrategoAppl makeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
 	    IStrategoList annotations) {
-	if (context == null) {
-	    context = HybridInterpreter.getContext(compiledContext);
-	    if (context == null) {
-		return makeUnsafeAppl(ctr, kids, annotations);
-	    }
-	}
-
-	String smartCtrName = "smart-" + ctr.getName();
-	smartCtrName = smartCtrName.replace("-", "_") + "_0_" + kids.length;
-
 	try {
-	    SDefT sdef = context.lookupSVar(smartCtrName);
+	    CallT smartCall = tryGetTypesmartConstructorCall(ctr, kids);
 	    // no check defined
-	    if (sdef == null) {
+	    if (smartCall == null) {
 		return makeUnsafeAppl(ctr, kids, annotations);
 	    }
 	    System.out.println("Typesmart " + ctr);
@@ -75,7 +65,6 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
 	    // apply smart constructor to argument terms
 	    rebuildEmptyLists(kids);
 
-	    CallT smartCall = new CallT(smartCtrName, new Strategy[0], new IStrategoTerm[0]);
 	    IStrategoTerm currentWas = context.current();
 	    IStrategoTerm t;
 	    try {
@@ -124,6 +113,21 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
 	}
     }
 
+    protected CallT tryGetTypesmartConstructorCall(IStrategoConstructor ctr, IStrategoTerm[] kids)
+	    throws InterpreterException {
+	if (context == null)
+	    context = HybridInterpreter.getContext(compiledContext);
+	if (context == null)
+	    return null;
+
+	String smartCtrName = "smart-" + ctr.getName();
+	smartCtrName = smartCtrName.replace("-", "_") + "_0_" + kids.length;
+	SDefT sdef = context.lookupSVar(smartCtrName);
+	if (sdef == null)
+	    return null;
+	return new CallT(smartCtrName, new Strategy[0], new IStrategoTerm[0]);
+    }
+
     protected void rebuildEmptyLists(IStrategoTerm[] terms) {
 	for (int i = 0; i < terms.length; i++)
 	    if (terms[i] instanceof IStrategoAppl
@@ -155,6 +159,7 @@ public class TypesmartTermFactory extends AWrappedTermFactory {
      * 
      * @deprecated Use {@link #getWrappedFactory()} instead.
      */
+    @SuppressWarnings("javadoc")
     @Deprecated
     public ITermFactory getBaseFactory() {
 	return getWrappedFactory();
