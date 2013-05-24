@@ -119,6 +119,9 @@ rules // API
 	task-add-dependency(|taskID):
 		dependency -> <task-api-add-dependency(|taskID, dependency)>
 		
+	task-add-dependency-nocycle(|taskID):
+		dependency -> <(not(task-becomes-cyclic(|taskID, dependency); !(taskID, dependency); debug(!"Would introduce cycle: ")); task-api-add-dependency(|taskID, dependency)) <+ id>
+		
 	task-instruction-id:
 		instruction -> <task-api-task-id(|instruction)>
 		

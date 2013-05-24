@@ -138,7 +138,7 @@ rules // Import calculation
 					case task-get-result; Hd => h : <hash-multimap-copy(|h)> hashtable; ![]
 					otherwise                     : ![<id>]
 				end => result;
-				<task-add-dependency(|nr)> import-closure-id
+				<task-add-dependency-nocycle(|nr)> import-closure-id
 			else
 				result := []
 			end;
