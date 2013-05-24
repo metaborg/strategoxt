@@ -82,11 +82,11 @@ rules // Resolve
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
-					case task-has-failed      : ![]
-					case task-get-result => h : <Hd; hashtable-get(|ns)> h
-					otherwise                 : ![<task-create-dependency> import-closure-id]
-				end => result;
-				<task-add-dependency(|nr)> import-closure-id
+					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
+					case task-get-result => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <Hd; hashtable-get(|ns)> h
+					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<task-create-dependency> import-closure-id]
+					otherwise                                             : ![]
+				end => result
 			else
 				result := []
 			end;
@@ -134,11 +134,11 @@ rules // Import calculation
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
-					case task-has-failed          : ![]
-					case task-get-result; Hd => h : <hash-multimap-copy(|h)> hashtable; ![]
-					otherwise                     : ![<id>]
-				end => result;
-				<task-add-dependency-nocycle(|nr)> import-closure-id
+					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
+					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
+					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<id>]
+					otherwise                                             : ![]
+				end => result
 			else
 				result := []
 			end;
