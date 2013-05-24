@@ -209,4 +209,28 @@ public class TaskEngineTest extends TaskTest {
 		assertEquals(null, taskEngine.getInstruction(resolveImportID));
 		assertEquals(null, taskEngine.getInstruction(choiceID));
 	}
+	
+	@Test
+	public void testBecomesCyclic() {
+		taskEngine.startCollection(partition1);
+		IStrategoTerm resolveD = resultID(taskEngine.addTask(partition1, list(), resolve("D")));
+		IStrategoTerm resolveC = resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C")));
+		IStrategoTerm resolveB = resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B")));
+		IStrategoTerm resolveA = resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A")));
+		taskEngine.stopCollection(partition1);
+		
+		assertTrue(taskEngine.becomesCyclic(resolveD, resolveA));
+		assertTrue(taskEngine.becomesCyclic(resolveD, resolveB));
+		assertTrue(taskEngine.becomesCyclic(resolveD, resolveC));
+		assertTrue(taskEngine.becomesCyclic(resolveC, resolveA));
+		assertTrue(taskEngine.becomesCyclic(resolveC, resolveB));
+		assertTrue(taskEngine.becomesCyclic(resolveB, resolveA));
+		assertFalse(taskEngine.becomesCyclic(resolveD, resolveD));
+		assertFalse(taskEngine.becomesCyclic(resolveA, resolveD));
+		assertFalse(taskEngine.becomesCyclic(resolveB, resolveD));
+		assertFalse(taskEngine.becomesCyclic(resolveC, resolveD));
+		assertFalse(taskEngine.becomesCyclic(resolveA, resolveC));
+		assertFalse(taskEngine.becomesCyclic(resolveB, resolveC));
+		assertFalse(taskEngine.becomesCyclic(resolveA, resolveB));
+	}
 }
