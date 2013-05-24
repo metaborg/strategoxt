@@ -335,7 +335,7 @@ rules // generic analysis of properties
 	  where
 	    Def(uri) := <nabl-collect-def> name;
 		  name'    := <foldl(extend-prop(|partition, uri))> (prop*, name)
-		
+      
 	extend-prop(|partition, uri):
 		(Prop(type, result, dep*), name) -> name
 		where
@@ -352,22 +352,22 @@ rules // name retrieval
 rules // URI retrieval
   
   nabl-collect-def =
-    nabl-name;
+    try(nabl-name);
     get-annos;
     collect-one(?Def(_))
     
   nabl-collect-all-def =
-    nabl-name;
+    try(nabl-name);
     get-annos;
     collect-all(?Def(_))
     
   nabl-collect-use =
-    nabl-name;
+    try(nabl-name);
     get-annos;
     collect-one(?Use(_))
     
   nabl-collect-all-use =
-    nabl-name;
+    try(nabl-name);
     get-annos;
     collect-all(?Use(_))
 
