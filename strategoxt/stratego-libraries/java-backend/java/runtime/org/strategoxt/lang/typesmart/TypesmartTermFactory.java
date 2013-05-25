@@ -13,161 +13,191 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.TermFactory;
+import org.spoofax.terms.attachments.AbstractWrappedTermFactory;
 import org.strategoxt.HybridInterpreter;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.StrategoException;
 
 /**
- * When constructing an application term, this term factory looks for the existing of a type-smart
+ * When constructing an application term, this term factory looks for the existence of a type-smart
  * constructor. If such constructor exists, it is used for the construction of the term. Otherwise,
  * a standard build is performed using the base factory.
  * 
  * @author Sebastian Erdweg
  * @author Vlad Vergu
  */
-public class TypesmartTermFactory extends AWrappedTermFactory {
+public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 
-    private final static boolean DEBUG_TYPESMART = true;
+	private final static boolean DEBUG_TYPESMART = true;
 
-    private final Context compiledContext;
-    private IContext context;
+	private final Context compiledContext;
+	private IContext context;
 
-    public int smartCalls = 0;
-    public BigInteger totalTimeMillis = BigInteger.ZERO;
+	public int smartCalls = 0;
+	public BigInteger totalTimeMillis = BigInteger.ZERO;
 
-    public TypesmartTermFactory(ITermFactory baseFactory, Context compiledContext) {
-	super(baseFactory.getDefaultStorageType(), getStandardFactory(baseFactory));
-	this.compiledContext = compiledContext;
-    }
-
-    public static ITermFactory getStandardFactory(ITermFactory baseFactory) {
-	if (baseFactory instanceof TypesmartTermFactory)
-	    return getStandardFactory(((TypesmartTermFactory) baseFactory).getWrappedFactory());
-	return baseFactory;
-    }
-
-    public IStrategoAppl makeUnsafeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
-	    IStrategoList annotations) {
-	return super.makeAppl(ctr, kids, annotations);
-    }
-
-    @Override
-    public IStrategoAppl makeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
-	    IStrategoList annotations) {
-	try {
-	    CallT smartCall = tryGetTypesmartConstructorCall(ctr, kids);
-	    // no check defined
-	    if (smartCall == null) {
-		return makeUnsafeAppl(ctr, kids, annotations);
-	    }
-	    System.out.println("Typesmart " + ctr);
-
-	    // apply smart constructor to argument terms
-	    rebuildEmptyLists(kids);
-
-	    IStrategoTerm currentWas = context.current();
-	    IStrategoTerm t;
-	    try {
-		context.setFactory(getWrappedFactory());
-
-		smartCalls++;
-		long start = System.currentTimeMillis();
-		boolean smartOk = smartCall.evaluateWithArgs(context, new Strategy[0], kids);
-		long end = System.currentTimeMillis();
-		totalTimeMillis = totalTimeMillis.add(BigInteger.valueOf(end - start));
-		if (end - start > 100) {
-		    System.out.println(ctr.getName());
-		    System.out.println(end - start);
-		}
-
-		if (!smartOk) {
-		    IStrategoTerm failedTerm = makeUnsafeAppl(ctr, kids, annotations);
-		    System.err.println("*****FAIL " + failedTerm);
-		    throw new StrategoException("Smart constructor failed for: "
-			    + annotateTerm(failedTerm, makeList()));
-		}
-
-		t = context.current();
-	    } finally {
-		context.setFactory(this);
-		context.setCurrent(currentWas);
-	    }
-
-	    if (!(t instanceof IStrategoAppl))
-		throw new StrategoException(
-			"Smart constructor should have returned an application term, but was: " + t);
-
-	    IStrategoAppl appl = (IStrategoAppl) t;
-	    if (!appl.getConstructor().equals(ctr))
-		throw new StrategoException(
-			"Smart constructor should have returned an application term with constructor "
-				+ ctr + ", but was: " + t);
-
-	    if (DEBUG_TYPESMART && TypesmartSortAttachment.getSort(appl) == null)
-		throw new StrategoException(
-			"Typesmart constructor failed to install syntax-sort attachment: " + t);
-
-	    return appl;
-	} catch (InterpreterException e) {
-	    throw new StrategoException("Type-unsafe constructor application " + ctr, e);
+	public TypesmartTermFactory(Context context) {
+		this(context, new TermFactory());
 	}
-    }
 
-    protected CallT tryGetTypesmartConstructorCall(IStrategoConstructor ctr, IStrategoTerm[] kids)
-	    throws InterpreterException {
-	if (context == null)
-	    context = HybridInterpreter.getContext(compiledContext);
-	if (context == null)
-	    return null;
+	public TypesmartTermFactory(Context context, ITermFactory baseFactory) {
+		super(baseFactory.getDefaultStorageType(), baseFactory);
+		assert !isTypeSmart(baseFactory) : "Multiply-wrapped typesmart term factories";
+		this.compiledContext = context;
+	}
 
-	String smartCtrName = "smart-" + ctr.getName();
-	smartCtrName = smartCtrName.replace("-", "_") + "_0_" + kids.length;
-	SDefT sdef = context.lookupSVar(smartCtrName);
-	if (sdef == null)
-	    return null;
-	return new CallT(smartCtrName, new Strategy[0], new IStrategoTerm[0]);
-    }
+	/**
+	 * Registers (creates a new) {@link TypesmartTermFactory} on the given factory. There are three
+	 * modes of operation:
+	 * 
+	 * (A) if the <code>factory</code> is an {@link AbstractWrappedTermFactory} this method attempts
+	 * to insert a {@link TypesmartTermFactory} at the deepest possible point in the chain of
+	 * {@link TermFactory}s;
+	 * 
+	 * (B) if the <code>factory</code> is not an {@link AbstractWrappedTermFactory} then a new
+	 * {@link TypesmartTermFactory} is created which wraps the given <code>factory</code>;
+	 * 
+	 * (C) specifically if the <code>factory</code> or a deeper base factory is a
+	 * {@link TypesmartTermFactory} this method returns the unchanged <code>factory</code>.
+	 * 
+	 * @param factory
+	 * @return A potentially modified factory. May or may not be a reference to the given factory.
+	 */
+	public static ITermFactory registerTypesmartFactory(Context context, ITermFactory factory) {
+		if (isTypeSmart(factory)) {
+			return factory;
+		}
+		if (factory instanceof AbstractWrappedTermFactory) {
+			ITermFactory oldBaseFactory = ((AbstractWrappedTermFactory) factory)
+					.getWrappedFactory(true);
+			((AbstractWrappedTermFactory) factory).replaceBaseFactory(new TypesmartTermFactory(
+					context, oldBaseFactory), true);
+			return factory;
+		}
+		return new TypesmartTermFactory(context, factory);
+	}
 
-    protected void rebuildEmptyLists(IStrategoTerm[] terms) {
-	for (int i = 0; i < terms.length; i++)
-	    if (terms[i] instanceof IStrategoAppl
-		    && TypesmartSortAttachment.getSort(terms[i]) == null) {
-		IStrategoAppl appl = (IStrategoAppl) terms[i];
-		terms[i] = makeAppl(appl.getConstructor(), appl.getAllSubterms(),
-			appl.getAnnotations());
-		if (!terms[i].toString().equals("Op(\"Nil\",[])"))
-		    System.err.println("unexpected  rebuilding");
-	    } else
-		terms[i] = terms[i];
-    }
+	public static boolean isTypeSmart(ITermFactory factory) {
+		if (factory instanceof TypesmartTermFactory) {
+			return true;
+		}
+		if (factory instanceof AbstractWrappedTermFactory) {
+			return isTypeSmart(((AbstractWrappedTermFactory) factory).getWrappedFactory());
+		}
+		return false;
+	}
 
-    /**
-     * Identical to {@link TermFactory#annotateTerm(IStrategoTerm, IStrategoList)} except that it
-     * retains sort attachments.
-     */
-    @Override
-    public IStrategoTerm annotateTerm(IStrategoTerm term, IStrategoList annotations) {
-	IStrategoTerm result = super.annotateTerm(term, annotations);
-	TypesmartSortAttachment attach = TypesmartSortAttachment.get(term);
-	if (attach != null)
-	    TypesmartSortAttachment.put(result, attach);
+	public IStrategoAppl makeUnsafeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
+			IStrategoList annotations) {
+		return super.makeAppl(ctr, kids, annotations);
+	}
 
-	return result;
-    }
+	@Override
+	public IStrategoAppl makeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
+			IStrategoList annotations) {
+		try {
+			CallT smartCall = tryGetTypesmartConstructorCall(ctr, kids);
+			// no check defined
+			if (smartCall == null) {
+				return makeUnsafeAppl(ctr, kids, annotations);
+			}
+			System.out.println("Typesmart " + ctr);
 
-    /**
-     * 
-     * @deprecated Use {@link #getWrappedFactory()} instead.
-     */
-    @SuppressWarnings("javadoc")
-    @Deprecated
-    public ITermFactory getBaseFactory() {
-	return getWrappedFactory();
-    }
+			// apply smart constructor to argument terms
+			rebuildEmptyLists(kids);
 
-    public ITermFactory getFactoryWithStorageType(int storageType) {
-	assert getDefaultStorageType() <= storageType;
-	return this;
-    }
+			IStrategoTerm currentWas = context.current();
+			IStrategoTerm t;
+			try {
+				context.setFactory(getWrappedFactory());
+
+				smartCalls++;
+				long start = System.currentTimeMillis();
+				boolean smartOk = smartCall.evaluateWithArgs(context, new Strategy[0], kids);
+				long end = System.currentTimeMillis();
+				totalTimeMillis = totalTimeMillis.add(BigInteger.valueOf(end - start));
+				if (end - start > 100) {
+					System.out.println(ctr.getName());
+					System.out.println(end - start);
+				}
+
+				if (!smartOk) {
+					IStrategoTerm failedTerm = makeUnsafeAppl(ctr, kids, annotations);
+					System.err.println("*****FAIL " + failedTerm);
+					throw new StrategoException("Smart constructor failed for: "
+							+ annotateTerm(failedTerm, makeList()));
+				}
+
+				t = context.current();
+			} finally {
+				context.setFactory(this);
+				context.setCurrent(currentWas);
+			}
+
+			if (!(t instanceof IStrategoAppl))
+				throw new StrategoException(
+						"Smart constructor should have returned an application term, but was: " + t);
+
+			IStrategoAppl appl = (IStrategoAppl) t;
+			if (!appl.getConstructor().equals(ctr))
+				throw new StrategoException(
+						"Smart constructor should have returned an application term with constructor "
+								+ ctr + ", but was: " + t);
+
+			if (DEBUG_TYPESMART && TypesmartSortAttachment.getSort(appl) == null)
+				throw new StrategoException(
+						"Typesmart constructor failed to install syntax-sort attachment: " + t);
+
+			return appl;
+		} catch (InterpreterException e) {
+			throw new StrategoException("Type-unsafe constructor application " + ctr, e);
+		}
+	}
+
+	protected CallT tryGetTypesmartConstructorCall(IStrategoConstructor ctr, IStrategoTerm[] kids)
+			throws InterpreterException {
+		if (context == null)
+			context = HybridInterpreter.getContext(compiledContext);
+		if (context == null)
+			return null;
+
+		String smartCtrName = "smart-" + ctr.getName();
+		smartCtrName = smartCtrName.replace("-", "_") + "_0_" + kids.length;
+		SDefT sdef = context.lookupSVar(smartCtrName);
+		if (sdef == null)
+			return null;
+		return new CallT(smartCtrName, new Strategy[0], new IStrategoTerm[0]);
+	}
+
+	protected void rebuildEmptyLists(IStrategoTerm[] terms) {
+		for (int i = 0; i < terms.length; i++)
+			if (terms[i] instanceof IStrategoAppl
+					&& TypesmartSortAttachment.getSort(terms[i]) == null) {
+				IStrategoAppl appl = (IStrategoAppl) terms[i];
+				terms[i] = makeAppl(appl.getConstructor(), appl.getAllSubterms(),
+						appl.getAnnotations());
+				if (!terms[i].toString().equals("Op(\"Nil\",[])"))
+					System.err.println("unexpected  rebuilding");
+			} else
+				terms[i] = terms[i];
+	}
+
+	/**
+	 * Identical to {@link TermFactory#annotateTerm(IStrategoTerm, IStrategoList)} except that it
+	 * retains sort attachments.
+	 */
+	@Override
+	public IStrategoTerm annotateTerm(IStrategoTerm term, IStrategoList annotations) {
+		IStrategoTerm result = super.annotateTerm(term, annotations);
+		TypesmartSortAttachment attach = TypesmartSortAttachment.get(term);
+		if (attach != null)
+			TypesmartSortAttachment.put(result, attach);
+
+		return result;
+	}
+
+	public ITermFactory getFactoryWithStorageType(int storageType) {
+		return getWrappedFactory().getFactoryWithStorageType(storageType);
+	}
 
 }
