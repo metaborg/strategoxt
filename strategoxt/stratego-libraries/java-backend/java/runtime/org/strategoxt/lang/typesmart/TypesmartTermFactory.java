@@ -41,7 +41,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 	}
 
 	public TypesmartTermFactory(Context context, ITermFactory baseFactory) {
-		super(baseFactory.getDefaultStorageType(), baseFactory);
+		super(IStrategoTerm.MUTABLE, baseFactory);
 		assert !isTypeSmart(baseFactory) : "Multiply-wrapped typesmart term factories";
 		this.compiledContext = context;
 	}
