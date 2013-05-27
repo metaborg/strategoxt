@@ -222,4 +222,11 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 		return getWrappedFactory().getFactoryWithStorageType(storageType);
 	}
 
+	/**
+	 * Recheck invariant of typesmart constrcutor.
+	 */
+	@Override
+	public IStrategoAppl replaceAppl(IStrategoConstructor constructor, IStrategoTerm[] kids, IStrategoAppl old) {
+		return makeAppl(constructor, kids, old.getAnnotations());
+	}
 }
