@@ -38,7 +38,7 @@ public class WithoutTypesmartSyntax extends AbstractPrimitive {
 	ITermFactory oldFactory = ctx.getFactory();
 	try {
 	    if (oldFactory instanceof TypesmartTermFactory) {
-		ctx.setFactory(((TypesmartTermFactory) ctx.getFactory()).getWrappedFactory());
+		ctx.setFactory(TypesmartTermFactory.getStandardFactory(ctx.getFactory()));
 	    }
 	    if (targs.length == 0)
 		return s.invoke(ctx, current);

@@ -133,7 +133,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 			IStrategoTerm currentWas = context.current();
 			IStrategoTerm t;
 			try {
-				context.setFactory(getWrappedFactory());
+				context.setFactory(TypesmartTermFactory.getStandardFactory(this));
 
 				smartCalls++;
 				long start = System.currentTimeMillis();
