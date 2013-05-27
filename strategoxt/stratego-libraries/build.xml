@@ -8,6 +8,7 @@
 		create-dirs,
 		aterm-java,
 		gpp-java,
+		typesmart-java,
 		lib-java,
 		rtg-java,
 		sdf-java,
@@ -124,6 +125,18 @@
 		</strj-lib>
 		<copy file="lib/spec/libstratego-lib-posix-xsi.ctree" tofile="lib/spec/libstratego-lib.ctree" />
 		<copy file="lib/spec/libstratego-lib-posix-xsi.rtree" tofile="lib/spec/libstratego-lib.rtree" />
+	</target>
+
+	<target name="typesmart-java">
+		<strj-lib input="java-backend/java/runtime/org/strategoxt/lang/typesmart/typesmart.str" output="${lib}/org/strategoxt/lang/typesmart/Main.java" package="org.strategoxt.lang.typesmart">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="java-backend/java/runtime/org/strategoxt/lang/typesmart" includes="**/*.str" />
+			</str-deps>
+		</strj-lib>
 	</target>
 
 	<target name="rtg-java">
@@ -424,13 +437,8 @@
 				<arg value="${basedir}/java-backend/java/runtime/org/strategoxt/lang/parallel/stratego_parallel" />
 				<arg value="-I" />
 				<arg value="${basedir}/java-backend/trans" />
-			</strjlibargs>
-		</strj-lib>
-
-		<strj-lib input="java-backend/java/runtime/org/strategoxt/lang/typesmart/typesmart.str" output="${lib}/org/strategoxt/lang/typesmart/Main.java" package="org.strategoxt.lang.typesmart">
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="stratego-lib" />
+				<arg value="-I" />
+				<arg value="${basedir}/java-backend/java/runtime/org/strategoxt/lang/typesmart" />
 			</strjlibargs>
 		</strj-lib>
 	</target>

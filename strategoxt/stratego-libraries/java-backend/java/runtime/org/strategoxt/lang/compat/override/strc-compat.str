@@ -30,6 +30,7 @@ strategies
         case "libstratego-gpp":      import-term(libstratego-gpp.rtree)
         case "libstratego-tool-doc": import-term(libstratego-tool-doc.rtree)
         case "libstratego-parallel": import-term(libstratego-parallel.rtree)
+        case "libstratego-typesmart":import-term(libtypesmart.rtree)
         case "libstrc":              import-term(libstrc.rtree)
       end => ast
   
