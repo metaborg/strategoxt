@@ -119,7 +119,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		compiledContext = new HybridCompiledContext(termFactory);
 		termFactory = TypesmartTermFactory.registerTypesmartFactory(compiledContext, termFactory);
-		assert TypesmartTermFactory.isTypeSmart(termFactory);
+		assert TypesmartTermFactory.isTypesmart(termFactory);
 		compiledContext.setFactory(termFactory);
 		getContext().setFactory(termFactory);
 		recordingFactory = new ConstructorRecordingTermFactory(termFactory);

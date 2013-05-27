@@ -69,7 +69,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 	public Context(ITermFactory factory, IOAgent ioAgent) {
 		factory = TypesmartTermFactory.registerTypesmartFactory(this, factory);
-		assert TypesmartTermFactory.isTypeSmart(factory);
+		assert TypesmartTermFactory.isTypesmart(factory);
 		this.factory = factory;
 		this.operatorRegistryMap = new HashMap<String, IOperatorRegistry>();
 		this.operatorRegistries = new ArrayList<IOperatorRegistry>();

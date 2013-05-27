@@ -42,7 +42,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 
 	public TypesmartTermFactory(Context context, ITermFactory baseFactory) {
 		super(IStrategoTerm.MUTABLE, baseFactory);
-		assert !isTypeSmart(baseFactory) : "Multiply-wrapped typesmart term factories";
+		assert !isTypesmart(baseFactory) : "Multiply-wrapped typesmart term factories";
 		this.compiledContext = context;
 	}
 
@@ -64,7 +64,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 	 * @return A potentially modified factory. May or may not be a reference to the given factory.
 	 */
 	public static ITermFactory registerTypesmartFactory(Context context, ITermFactory factory) {
-		if (isTypeSmart(factory)) {
+		if (isTypesmart(factory)) {
 			return factory;
 		}
 		if (factory instanceof AbstractWrappedTermFactory) {
@@ -77,18 +77,18 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 		return new TypesmartTermFactory(context, factory);
 	}
 
-	public static boolean isTypeSmart(ITermFactory factory) {
+	public static boolean isTypesmart(ITermFactory factory) {
 		if (factory instanceof TypesmartTermFactory) {
 			return true;
 		}
 		if (factory instanceof AbstractWrappedTermFactory) {
-			return isTypeSmart(((AbstractWrappedTermFactory) factory).getWrappedFactory());
+			return isTypesmart(((AbstractWrappedTermFactory) factory).getWrappedFactory());
 		}
 		return false;
 	}
 
 	public static ITermFactory getStandardFactory(ITermFactory factory) {
-		if (!isTypeSmart(factory)) {
+		if (!isTypesmart(factory)) {
 			return factory;
 		}
 		if (factory instanceof AbstractWrappedTermFactory) {
@@ -99,7 +99,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 	}
 
 	public static TypesmartTermFactory getTypesmartInstance(ITermFactory factory) {
-		if (!isTypeSmart(factory)) {
+		if (!isTypesmart(factory)) {
 			return null;
 		}
 		if (factory instanceof TypesmartTermFactory) {
