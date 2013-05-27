@@ -68,21 +68,16 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 			return factory;
 		}
 		if (factory instanceof AbstractWrappedTermFactory) {
-			ITermFactory oldBaseFactory = ((AbstractWrappedTermFactory) factory)
-					.getWrappedFactory(true);
-			((AbstractWrappedTermFactory) factory).replaceBaseFactory(new TypesmartTermFactory(
-					context, oldBaseFactory), true);
+			ITermFactory oldBaseFactory = ((AbstractWrappedTermFactory) factory).getWrappedFactory(true);
+			((AbstractWrappedTermFactory) factory).replaceBaseFactory(new TypesmartTermFactory(context, oldBaseFactory), true);
 			return factory;
 		}
 		return new TypesmartTermFactory(context, factory);
 	}
 
 	public static boolean isTypesmart(ITermFactory factory) {
-		if (factory instanceof TypesmartTermFactory) {
-			return true;
-		}
 		if (factory instanceof AbstractWrappedTermFactory) {
-			return isTypesmart(((AbstractWrappedTermFactory) factory).getWrappedFactory());
+			return ((AbstractWrappedTermFactory) factory).hasBaseFactory(TypesmartTermFactory.class);
 		}
 		return false;
 	}
