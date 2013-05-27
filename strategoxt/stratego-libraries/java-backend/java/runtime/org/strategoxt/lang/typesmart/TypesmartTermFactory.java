@@ -41,7 +41,8 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 	}
 
 	public TypesmartTermFactory(Context context, ITermFactory baseFactory) {
-		super(IStrategoTerm.MUTABLE, baseFactory);
+		super(baseFactory.getDefaultStorageType(), baseFactory);
+		assert baseFactory.getDefaultStorageType() == IStrategoTerm.MUTABLE : "Typesmart factory needs to have a factory with MUTABLE terms";
 		assert !isTypesmart(baseFactory) : "Multiply-wrapped typesmart term factories";
 		this.compiledContext = context;
 	}
@@ -216,9 +217,10 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 	}
 
 	public ITermFactory getFactoryWithStorageType(int storageType) {
-		if(storageType == getDefaultStorageType()){
+		if (storageType == getDefaultStorageType()) {
 			return this;
 		}
+		assert storageType < IStrategoTerm.IMMUTABLE : "Typesmart factory cannot work with NON-MUTABLE terms";
 		return getWrappedFactory().getFactoryWithStorageType(storageType);
 	}
 
