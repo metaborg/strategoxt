@@ -87,6 +87,30 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 		return false;
 	}
 
+	public static ITermFactory getStandardFactory(ITermFactory factory) {
+		if (!isTypeSmart(factory)) {
+			return factory;
+		}
+		if (factory instanceof AbstractWrappedTermFactory) {
+			return getStandardFactory(((AbstractWrappedTermFactory) factory).getWrappedFactory());
+		}
+		// woot?
+		return null;
+	}
+
+	public static TypesmartTermFactory getTypesmartInstance(ITermFactory factory) {
+		if (!isTypeSmart(factory)) {
+			return null;
+		}
+		if (factory instanceof TypesmartTermFactory) {
+			return (TypesmartTermFactory) factory;
+		}
+		if (factory instanceof AbstractWrappedTermFactory) {
+			return getTypesmartInstance(((AbstractWrappedTermFactory) factory).getWrappedFactory());
+		}
+		return null;
+	}
+
 	public IStrategoAppl makeUnsafeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
 			IStrategoList annotations) {
 		return super.makeAppl(ctr, kids, annotations);
