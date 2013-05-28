@@ -14,7 +14,7 @@ rules
   // has-sort = Swap; debug(!"has sort? "); fail
   has-sort = try-init-subsort-stack; has-subsort-of
   
-  is-lexical-sort = fail
+  is-lexical-sort = log(|Info(), "Built-in (fail) is-lexical-called!!!"); fail
   
   // has-subsort-of = (try(get-syntax-sort), id); debug-analysis(!"has-subsort-of: "); fail
   has-subsort-of = 
@@ -58,7 +58,7 @@ rules
     ; sort-match
   
   has-subsort-unrename = (id, unrename-sort); has-subsort-of
-  has-subsort-of-trans = fail
+  has-subsort-of-trans = log(|Info(), "Built-in (fail) has-subsort-of-trans called!!!"); fail
   unrename-sort = fail
   
   has-subsort-of-inject(|arg-sort,res-sort) =
