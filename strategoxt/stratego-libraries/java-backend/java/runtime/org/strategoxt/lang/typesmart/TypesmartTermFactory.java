@@ -1,5 +1,6 @@
 package org.strategoxt.lang.typesmart;
 
+import java.lang.ref.WeakReference;
 import java.math.BigInteger;
 
 import org.spoofax.interpreter.core.IContext;
@@ -30,8 +31,8 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 
 	private final static boolean DEBUG_TYPESMART = true;
 
-	private final Context compiledContext;
-	private IContext context;
+	private final WeakReference<Context> compiledContext;
+	private WeakReference<IContext> context;
 
 	public int smartCalls = 0;
 	public BigInteger totalTimeMillis = BigInteger.ZERO;
@@ -44,7 +45,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 		super(baseFactory.getDefaultStorageType(), baseFactory);
 		assert baseFactory.getDefaultStorageType() == IStrategoTerm.MUTABLE : "Typesmart factory needs to have a factory with MUTABLE terms";
 		assert !isTypesmart(baseFactory) : "Multiply-wrapped typesmart term factories";
-		this.compiledContext = context;
+		this.compiledContext = new WeakReference<Context>(context);
 	}
 
 	/**
@@ -113,8 +114,8 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 	}
 
 	@Override
-	public IStrategoAppl makeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids,
-			IStrategoList annotations) {
+	public IStrategoAppl makeAppl(IStrategoConstructor ctr, IStrategoTerm[] kids, IStrategoList annotations) {
+		
 		try {
 			CallT smartCall = tryGetTypesmartConstructorCall(ctr, kids);
 			// no check defined
@@ -125,6 +126,10 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 
 			// apply smart constructor to argument terms
 			rebuildEmptyLists(kids);
+
+			IContext context = this.context.get(); 
+			if (context == null)
+				throw new IllegalStateException("Term factory has already been marked for garbage collection.");
 
 			IStrategoTerm currentWas = context.current();
 			IStrategoTerm t;
@@ -174,12 +179,17 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 		}
 	}
 
-	protected CallT tryGetTypesmartConstructorCall(IStrategoConstructor ctr, IStrategoTerm[] kids)
-			throws InterpreterException {
+	protected CallT tryGetTypesmartConstructorCall(IStrategoConstructor ctr, IStrategoTerm[] kids) throws InterpreterException {
+		Context compiledContext = this.compiledContext.get();
+		if (compiledContext == null)
+			throw new IllegalStateException("Term factory has already been marked for garbage collection.");
+
+		IContext context = this.context == null ? null : this.context.get();
 		if (context == null)
 			context = HybridInterpreter.getContext(compiledContext);
 		if (context == null)
 			return null;
+		this.context = new WeakReference<IContext>(context);
 
 		String smartCtrName = "smart-" + ctr.getName();
 		smartCtrName = smartCtrName.replace("-", "_") + "_0_" + kids.length;
