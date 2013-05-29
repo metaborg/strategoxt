@@ -44,7 +44,7 @@ rules
   	where
   		<is-list> term*;
   		<is-list> expected*;
-  		<cart(eq)> (term*, expected*)
+  		<cart(type-prop-eq)> (term*, expected*)
   		
 rules
   

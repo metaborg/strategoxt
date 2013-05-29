@@ -4,3 +4,5 @@ strategies
   
   type-task(|partition) = fail
   type-of-task(|partition) = fail
+  
+  type-prop-eq = eq
