@@ -32,6 +32,9 @@ rules // Dependencies
   task-create-dependencies =
   	collect-all(?Result(<id>));
   	!Dependency(<id>)
+
+  task-create-dependency =
+		!Dependency([<id>])
   	
 	task-has-dependencies =
 		fetch(?Dependency(_))
@@ -79,10 +82,12 @@ rules // API
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
 	task-stop-collection(|partition)                     = task-api-stop-collection(|partition)
 	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
+	task-becomes-cyclic(|taskIDFrom, taskIDTo)           = task-api-becomes-cyclic(|taskIDFrom, taskIDTo)
 	task-debug-info(|partition)                          = task-api-debug-info(|partition)
 	task-add-message(|taskID, message)                   = task-api-add-message(|taskID, message)
 	task-get-messages(|partition)                        = task-api-get-messages(|partition)
-	task-evaluate(|changed-read*)                        = task-api-evaluate(perform-task, insert-results-with-fail|changed-read*)
+	task-evaluate(|changed-read*)                        = task-api-evaluate(task-perform-task, insert-results-with-fail|changed-read*)
+	task-exists(|instruction)                            = task-api-exists(|instruction)
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
 	task-unload(|project-path)                           = task-api-unload(|project-path)
@@ -105,14 +110,22 @@ rules // API
 			otherwise            : task-api-has-failed(|<id>) <+ (task-api-has-failed(|<id>); ![])
 		end
 				
+	task-get-dependencies:
+		taskID -> <task-api-get-dependencies(|taskID)>
+				
 	task-add-read(|taskID):
 		read -> <task-api-add-read(|taskID, read)>
 		
 	task-add-dependency(|taskID):
 		dependency -> <task-api-add-dependency(|taskID, dependency)>
 		
+	task-add-dependency-nocycle(|taskID):
+		dependency -> <(not(task-becomes-cyclic(|taskID, dependency)); task-api-add-dependency(|taskID, dependency)) <+ id>
+		
 	task-instruction-id:
 		instruction -> <task-api-task-id(|instruction)>
+		
+	task-perform-task(|nr) = perform-task(|nr)
 
 rules /** @internal API externals */
 
@@ -120,6 +133,7 @@ rules /** @internal API externals */
 	external task-api-start-collection(|partition)
 	external task-api-stop-collection(|partition)
 	external task-api-add-task(|partition, dependencies, instruction)
+	external task-api-becomes-cyclic(|taskIDFrom, taskIDTo)
 	external task-api-get-result(|taskID)
 	external task-api-debug-info(|partition)
 	external task-api-add-message(|taskID, message)
@@ -128,6 +142,8 @@ rules /** @internal API externals */
 	external task-api-add-read(|taskID, read)
 	external task-api-add-dependency(|taskID, dependency)
 	external task-api-evaluate(perform-task, insert-result|changed-reads)
+	external task-api-exists(|instruction)
+	external task-api-get-dependencies(|taskID)
 	external task-api-reset(|)
 	external task-api-persist(|)
 	external task-api-task-id(|instruction)

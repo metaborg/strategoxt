@@ -29,8 +29,10 @@ signature
 
   constructors // use
       
-		UseCandidate  : Namespace * List(Property) * RefScope        -> Use
-		UseCandidate  : Namespace * Name * List(Property) * RefScope -> Use
+		UseCandidate  : Namespace * List(Property) * RefScope * WildcardImport -> Use
+		
+		True  : WildcardImport
+		False : WildcardImport
 	
 		Current     :                                     							RefScope
 		Surrounding :                                  	 							  RefScope
@@ -42,6 +44,7 @@ signature
 	constructors // import
 	  
 	  Imported : Namespace                   -> Namespace
+	  Import   :                                Property
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
   	Type     : Property
@@ -205,23 +208,27 @@ rules // generic analysis of uses
 			result   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, result)>
 
-	nabl-use-subtasks(disambiguate|partition, ns, name, prop*, range): 
+	nabl-use-subtasks(disambiguate, wildcardimport|partition, ns, name, prop*, range): 
 		uri  -> [task|subtasks]
 		with
-			task := <nabl-use-subtasks-one(disambiguate|partition, ns, name, prop*, range)> uri;
+			task := <nabl-use-subtasks-one(disambiguate, wildcardimport|partition, ns, name, prop*, range)> uri;
       switch !range
       	case One(): ![]
-      	case All(): <nabl-uri-parent < nabl-use-subtasks(disambiguate|partition, ns, name, prop*, range) + ![]> uri
+      	case All(): <nabl-uri-parent < nabl-use-subtasks(disambiguate, id|partition, ns, name, prop*, range) + ![]> uri
     	end => subtasks
     	
-  nabl-use-subtasks-one(disambiguate|partition, ns, name, prop*, range):
+  nabl-use-subtasks-one(disambiguate, wildcardimport|partition, ns, name, prop*, range):
 		uri  -> disambiguated
 		with
 			defsTask            := <new-task(|partition)> ResolveDefs(<nabl-use-subtask-uri(|partition)> uri, ns, name);
 			namedImportsTask    := <new-task(|partition)> ResolveNamedImports(<nabl-use-subtask-uri(|partition)> uri, ns, name);
 			namedDefsTask       := <new-task(|partition)> ResolveDefs(namedImportsTask, ns, name);
-			wildcardImportsTask := <new-task(|partition)> ResolveWildcardImports(<nabl-use-subtask-uri(|partition)> uri, ns);
-			wildcardDefsTask    := <new-task(|partition)> ResolveDefs(wildcardImportsTask, ns, name);
+			if wildcardimport then 
+				wildcardImportsTask := <new-task(|partition)> ResolveWildcardImports(<nabl-use-subtask-uri(|partition)> uri, ns);
+				wildcardDefsTask    := [<new-task(|partition)> ResolveDefs(wildcardImportsTask, ns, name)]
+			else
+				wildcardDefsTask := []
+			end;
 			
 			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
         ext-uri  := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
@@ -230,7 +237,7 @@ rules // generic analysis of uses
       	subtasks := []
       end;
       
-      concatted     := <new-task(|partition)> Concat([defsTask, namedDefsTask, wildcardDefsTask|subtasks]);
+      concatted     := <new-task(|partition)> Concat([defsTask, namedDefsTask|<conc> (wildcardDefsTask, subtasks)]);
       filtered      := <nabl-use-propconstraint(|partition, prop*)> concatted;
       disambiguated := <nabl-use-disambiguate(disambiguate|partition, prop*, ns, name)> filtered
           	
@@ -243,19 +250,19 @@ rules // generic analysis of uses
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Current()) -> choice
+		UseCandidate(ns, prop*, Current(), wci) -> choice
 		where
 			uri       := <lookup-uri(|lang, ns)> uri*;
-			subtask*  := <nabl-use-subtasks(id|partition, ns, name, prop*, All())> uri; // TODO: only disambiguate if required.
+			subtask*  := <nabl-use-subtasks(id, !wci; ?True()|partition, ns, name, prop*, All())> uri; // TODO: only disambiguate if required.
 			choice    := <new-task(|partition)> Choice(subtask*)
 
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context)) -> choice
+		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _) -> choice
 		where
-			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context);
-			subtask*   := <nabl-use-subtasks(id|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
-			choice    := <new-task(|partition)> Choice(subtask*)
+			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True());
+			subtask*   := <nabl-use-subtasks(id, id|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
+			choice     := <new-task(|partition)> Choice(subtask*)
 			
 	nabl-use-propconstraint(|partition, prop*):
 		task -> result
@@ -283,15 +290,36 @@ rules // generic analysis of imports
   nabl-import-candidate(|lang, partition, uri*, use):
     (import, name) -> name
     where
-      ns  := <nabl-import-namespace> import;
-      uri := <lookup-uri(|lang, ns)> uri*;
-      new-prop(|partition, uri, import, use)
+      ns    := <nabl-import-namespace> import;
+      ilang := <nabl-import-lang> import;
+      uri   := <lookup-uri(|ilang, ns)> uri*;
+      if <nabl-import-name> import then
+      	// Named import.
+      	new-prop(|partition, uri, import, use)
+      else
+      	// Wildcard import, create tasks that calculate imports and the transitive closure.
+      	rawns := <nabl-import-raw-namespace> import;
+	      Result(import-calc)    := <new-task(|partition, <dependent-tasks> use)> ImportCalc(uri);
+	      Result(import-closure) := <new-task(|partition, [import-calc])> ImportClosure(uri);
+	      new-prop(|partition, uri, Import(), (rawns, use))
+      end
       
   nabl-import-namespace =
        ?Import(_, Imported(<id>)) 
     <+ ?Import(_, <id>)
     <+ ?Import(_, Imported(<id>), _)
-    <+ ?Import(_, <id>, _) 
+    <+ ?Import(_, <id>, _)
+    
+  nabl-import-raw-namespace =
+       ?Import(_, <id>) 
+    <+ ?Import(_, <id>, _)
+    
+  nabl-import-lang =
+       ?Import(<id>, _) 
+    <+ ?Import(<id>, _, _)
+    
+  nabl-import-name =
+  	?Import(_, _, <id>)
 
 rules // generic analysis of properties
   
