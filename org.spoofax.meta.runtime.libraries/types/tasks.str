@@ -37,7 +37,7 @@ rules
   perform-task(|n): 
   	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
   	where
-  		not(<is-list> term <+ <is-list> expected)
+  		not(<is-list> term; <is-list> expected)
 			
   perform-task(|n): 
   	PropCheck(term*, expected*) -> <try-make-list> term*
