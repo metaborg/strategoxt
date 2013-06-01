@@ -24,6 +24,8 @@ signature
     PropConstraint         : List(Prop) * List(Result)                 -> Instruction
     PropCalc               : Property * Term                           -> Instruction
         
+    ResolveAllDefs            : Scope * Namespace                  -> Instruction
+        
 rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
@@ -91,6 +93,22 @@ rules // Resolve
 				result := []
 			end;
 			<nabl-add-read(|nr)> uri
+
+rules // Visibility
+	
+  // Looks up defintions in scopes with namespace and name.
+  perform-task(|nr):
+  	ResolveAllDefs(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
+  	where
+  		uri*  := <filter(nabl-uri)> scope*;
+  		def*  := <nabl-lookup-all(|ns)> uri*;
+  		//<map(nabl-add-read-extend(|nr, ns, name'))> uri*;
+  		switch !def*
+        case ?[]:
+        	fail
+        otherwise: 
+        	!def* // TODO: id?
+			end => result	
 
 rules // Import calculation
 	

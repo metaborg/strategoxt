@@ -15,8 +15,8 @@ rules
   force-origins(s) =
     ![<id>]; all(s); ?[<id>]
 
-  fix-completion-name:
-    "completion123" -> ""
+	is-completion-name = ?"completion123"
+  fix-completion-name = is-completion-name; !""
 
   add-annotation(|a):
     t{a*} -> t{a, a*}
