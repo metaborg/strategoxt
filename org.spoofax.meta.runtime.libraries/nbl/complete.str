@@ -2,12 +2,9 @@ module nbl/complete
 
 imports
 	
-	nbl/lookup
-	nbl/query
-	nbl/entries
+	nbl/collect
   nbl/uri
   task/core
-  index/core
   
 signature
 
@@ -17,71 +14,11 @@ signature
     
 rules // Code completion
 
-  nabl-completion-defs = 
-    has-annos;
-    get-annos;
-    collect-all(nabl-completion-defs);
-    concat
-    
-  nabl-completion-defs:
-  	Result(taskID) -> <task-get-result>
-
   nabl-propose-completions:
-    ast -> proposals'*
-      where
-        item        := <collect-one(?COMPLETION(_))> ast;
-        index-transaction(
-          uri*      := <nabl-completion-defs; filter(nabl-uri)> item;
-          proposal* := <mapconcat(nabl-visible-definitions)> uri*
-        );
-        proposals'* := <map(nabl-uri; nabl-uri-name)> proposal*
-        
-rules // Visible entries
-  
-  nabl-visible-definitions:
-    containsURI -> <nabl-visible(\uri -> Def(uri)\, id)> containsURI
-      
-  nabl-visible(create-template, constraint|):
-    containsURI -> entries
+    ast -> proposal*
     with
-      <with(uri             := <nabl-uri> containsURI                  | "Could not extract URI from given term.")> [containsURI];
-      <with(targetNamespace := <nabl-uri-namespace> uri                | "Could not extract target namespace.")> [uri];
-      <with(targetPrefix    := <nabl-uri-name> uri                     | "Could not extract target prefix.")> [uri];
-      <with(parentURI       := <nabl-uri-parent(|targetNamespace)> uri | "Could not construct a parent URI.")> [uri];
-      entries               := <nabl-visible-uri(create-template, constraint|targetNamespace, targetPrefix)> parentURI
-      
-  nabl-visible-uri(create-template, constraint|namespace, prefix):
-    uri -> allEntries
-    with
-      entries := <nabl-visible-uri-scoped(create-template, constraint|namespace, prefix)> uri;
-      if parentURI := <nabl-uri-parent(|namespace)> uri then
-        entries2   := <nabl-visible-uri(create-template, constraint|namespace, prefix)> parentURI;
-        allEntries := <conc> (entries, entries2)
-      else
-        allEntries := entries
-      end
-      
-  nabl-visible-uri-scoped(create-template, constraint|namespace, prefix):
-    uri -> [entry*, importEntry*]
-    with
-      // Standard lookup
-      entry*       := <nabl-standard-visible(create-template|namespace, prefix); filter(constraint)> uri;
-      
-      // Imports & aliases
-      importEntry* := <nabl-visible-imported-entries(create-template|<nabl-uri-language> uri, namespace, prefix); filter(constraint)> uri
-
-  nabl-standard-visible(create-template|namespace, prefix) =
-    create-template;
-    nabl-get-children(|namespace, prefix)
-    
-  nabl-visible-imported-entries(create-template|language, namespace, prefix):
-    uri -> result
-    with
-      unnamedImportURI* := <nabl-get-import-uris-unnamed(|language, namespace)> uri;
-      if <task-has-dependencies> unnamedImportURI* then
-      	result := unnamedImportURI*
-    	else
-      	unnamedEntry* := <mapconcat(nabl-standard-visible(create-template|namespace, prefix))> unnamedImportURI*;
-      	result        := unnamedEntry*
-      end
- 
+	    	completion* := <collect-one(?COMPLETION(_)); nabl-collect-all-completion> ast;
+				def*        := <mapconcat(\Completion(result) -> result\; task-get-solved)> completion*;
+				proposal*   := <map(nabl-uri; nabl-uri-name)> def*
+			<+
+				proposal*   := []

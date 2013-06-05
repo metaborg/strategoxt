@@ -20,6 +20,19 @@ rules // Specific queries
     containsURI -> <nabl-get-unique-nonunique(\uri -> Def(uri)\)> uri
     where
     	uri := <nabl-uri> containsURI
+    	
+  /**
+   * Gets all child definition entries in given URI that match given namespace.
+   *
+   * Example:
+   *   <nabl-get-child-definitions> [Entity(), "M", "Bar"] => [Def([Field(), "a", "M", "Bar"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
+   */
+  nabl-get-child-definitions(|ns):
+    containsURI -> <nabl-get-children(|ns)> Def(uri)
+    where
+    	uri := <nabl-uri> containsURI
 
   /**
    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
@@ -96,6 +109,12 @@ rules // Generic queries
     template -> entries
       with
         entries  := <index-get-children> template
+
+  nabl-get-children(|namespace):
+    template -> entries
+      with
+        children := <index-get-children> template;
+        entries  := <nabl-filter-entries(|namespace)> children
         
   nabl-get-children(|namespace, prefix):
     template -> entries

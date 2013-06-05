@@ -39,16 +39,25 @@ rules
   	PropCalc(result) -> <try-make-list> result
   
   // TODO: remove this one	
-  perform-task(|n): PropCalc(result, dep*) -> <perform-task(|n)> PropCalc(result)
+  perform-task(|n): 
+    PropCalc(result, dep*) -> <perform-task(|n)> PropCalc(result)
+    where 
+      <if is-list then Hd end> dep*
   
   avoid-task(|dep*):
     PropCheck(actual, expected) -> <perform-task(|0) <+ ![]> 
     where
       [] := dep*
-  
+  	
   perform-task(|n): 
-  	PropCheck(term, expected) ->  term*
+  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
   	where
-  		term*     := <try-make-list> term;
-  		expected* := <try-make-list> expected;
-  		<cart(eq)> (term*, expected*)
+  		not(<is-list> term; <is-list> expected)
+			
+  perform-task(|n): 
+  	PropCheck(term*, expected*) -> <try-make-list> term*
+  	where
+  		<is-list> term*;
+  		<is-list> expected*;
+  		<cart(type-prop-eq)> (term*, expected*)
+

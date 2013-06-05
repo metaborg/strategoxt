@@ -105,6 +105,16 @@ public class TaskEngine {
 	}
 
 	/**
+	 * Queries if given instruction exists.
+	 * 
+	 * @param instruction The instruction.
+	 * @return True if it exists, false otherwise.
+	 */
+	public boolean taskExists(IStrategoTerm instruction) {
+		return digester.digested(instruction);
+	}
+	
+	/**
 	 * Given an instruction, returns its identifier.
 	 * 
 	 * @param instruction The instruction.
@@ -264,6 +274,26 @@ public class TaskEngine {
 	public Collection<IStrategoTerm> getDependent(IStrategoTerm taskID) {
 		return toDependency.getInverse(taskID);
 	}
+	
+	public boolean becomesCyclic(IStrategoTerm taskIDFrom, IStrategoTerm taskIDTo) {
+		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
+		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
+		
+		queue.add(taskIDTo);
+		seen.add(taskIDTo);
+		
+		for(IStrategoTerm taskID; (taskID = queue.poll()) != null;) {
+			final Collection<IStrategoTerm> dependencies = getDependencies(taskID);
+			for(IStrategoTerm dependency : dependencies) {
+				if(dependency.equals(taskIDFrom))
+					return true;
+				if(seen.add(dependency))
+					queue.add(dependency);
+			}
+		}
+		
+		return false;
+	}
 
 	public Collection<IStrategoTerm> getReads(IStrategoTerm taskID) {
 		return toRead.get(taskID);
@@ -371,15 +401,19 @@ public class TaskEngine {
 	private void collectGarbage() {
 		// TODO: this iterates over the entire tasks collection?
 		final ArrayList<IStrategoTerm> garbage = new ArrayList<IStrategoTerm>(this.garbage);
-		tasks.removeAll(garbage);
+		
 		solved.removeAll(garbage);
 		toMessage.remove(garbage);
 		failed.removeAll(garbage);
+		
 		for(final IStrategoTerm taskID : garbage) {
 			toDependency.removeAll(taskID);
 			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
 			toRead.removeAllInverse(taskID);
+			digester.undigest(getInstruction(taskID));
 		}
+		
+		tasks.removeAll(garbage);
 	}
 }

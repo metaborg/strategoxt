@@ -18,6 +18,12 @@ rules // Lookup
   		uri'* := <map(nabl-extend-uri(|ns, name, ()))> uri*;
   		def*  := <mapconcat(nabl-get-all-definitions)> uri'*
 
+	nabl-lookup-all(|ns):
+		scope* -> def*
+		with
+  		uri*  := <filter(nabl-uri)> scope*;
+  		def*  := <mapconcat(nabl-get-child-definitions(|ns))> uri*
+
 	nabl-lookup-named-import(|ns, name):
 		scope* -> import*
 		with

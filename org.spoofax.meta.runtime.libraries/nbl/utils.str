@@ -2,6 +2,7 @@ module nbl/utils
 
 imports
 	
+	libstratego-lib
 	task/core
 
 rules 
@@ -14,8 +15,8 @@ rules
   force-origins(s) =
     ![<id>]; all(s); ?[<id>]
 
-  fix-completion-name:
-    "completion123" -> ""
+	is-completion-name = ?"completion123"
+  fix-completion-name = is-completion-name; !""
 
   add-annotation(|a):
     t{a*} -> t{a, a*}
@@ -35,11 +36,32 @@ rules
     
   external record-time-native(|name)
   	
- 	try-make-list =
-		switch id
-			case is-list: id
-			case ?Dependency(_): id
-			otherwise: ![<id>]
-		end	
+ 	try-make-list = is-list <+ ?Dependency(_) <+ ![<id>]
 		
 	try-remove-list = is-list < Hd + id
+		
+rules // multimap simulation
+	
+	hash-multimap-put(|key, value):
+		hashtable -> hashtable
+		where
+			values := <hash-multimap-getorcreate(|key)> hashtable;
+			<hashtable-put(|key, [value|values])> hashtable 
+			
+	hash-multimap-putlist(|key, put-value*):
+		hashtable -> hashtable
+		where
+			value* := <hash-multimap-getorcreate(|key)> hashtable;
+			<hashtable-put(|key, [value*, put-value*])> hashtable 
+			
+	hash-multimap-getorcreate(|key) =
+		hashtable-get(|key) <+ hashtable-put(|key, []); ![]
+	
+	hash-multimap-copy(|from):
+		to -> to
+		where
+			// wtf is this I don't even.. hashtable-fold needs term arguments instead of current term arguments.
+			<hashtable-fold(hash-multimap-copy-fold|to)> from
+			
+	hash-multimap-copy-fold(|key, value*):
+		to -> <hash-multimap-putlist(|key, value*)> to

@@ -13,7 +13,7 @@ rules // Unresolved
     ?node;
     has-annos;
     get-annos;
-    nabl-has-reference;
+    where(nabl-has-reference);
     not(nabl-collect-one-resolved-def)
 
 rules // Ambiguities

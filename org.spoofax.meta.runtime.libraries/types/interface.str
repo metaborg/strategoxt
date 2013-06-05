@@ -8,3 +8,8 @@ strategies
 
   type-of(|task*)   = fail
   
+  // TODO: turn into general tasks
+  type-task(|partition)    = fail 
+  type-of-task(|partition) = fail
+  
+  type-prop-eq = eq
