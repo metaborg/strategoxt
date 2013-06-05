@@ -4,6 +4,7 @@ imports
 	
 	task/core
 	task/tasks
+	editor/origins
 	
 signature
 
@@ -13,53 +14,51 @@ signature
 		
 	constructors
 		
-    Error   : Term -> Message
-    Warning : Term -> Message
-    Note    : Term -> Message
+    Error   : Origin * Term -> Message
+    Warning : Origin * Term -> Message
+    Note    : Origin * Term -> Message
     
 strategies
 	
-	task-error-message:
-		message -> Error(message)
+	task-error-message(|message):
+		term -> Error(<origin-location>, message)
 		
-	task-warning-message:
-		message -> Warning(message)
-		
-	task-note-message:
-		message -> Note(message)
-		
-	
+	task-warning-message(|message):
+    term -> Warning(<origin-location>, message)
+    
+	task-note-message(|message):
+    term -> Note(<origin-location>, message)
+    
 	task-message:
-		Error(message) -> message
+		Error(_, message) -> message
 
 	task-message:
-		Warning(message) -> message
+		Warning(_, message) -> message
 		
 	task-message:
-		Note(message) -> message
-				
-		
-	task-create-message-on-failure(|partition, task):
-		message -> <new-task(|partition)> Message(task, Failure(), message)
-		
-	task-create-error-on-failure(|partition, task):
-		message -> <new-task(|partition)> Message(task, Failure(), <task-error-message> message)
-		
-	task-create-warning-on-failure(|partition, task):
-		message -> <new-task(|partition)> Message(task, Failure(), <task-warning-message> message)
-		
-	task-create-note-on-failure(|partition, task):
-		message -> <new-task(|partition)> Message(task, Failure(), <task-note-message> message)
-		
+		Note(_, message) -> message
 	
-	task-create-message-on-success(|partition, task):
-		message -> <new-task(|partition)> Message(task, Success(), message)
+	task-create-message-on-failure(|partition, task):
+    message -> <new-task(|partition)> Message(task, Failure(), message)
+  
+  task-create-error-on-failure(|partition, task, message):
+		term -> <new-task(|partition)> Message(task, Failure(), <origin-track-forced(task-error-message(|message))> term)
 		
-	task-create-error-on-success(|partition, task):
-		message -> <new-task(|partition)> Message(task, Success(), <task-error-message> message)
+	task-create-warning-on-failure(|partition, task, message):
+		term -> <new-task(|partition)> Message(task, Failure(), <origin-track-forced(task-warning-message(|message))> term)
 		
-	task-create-warning-on-success(|partition, task):
-		message -> <new-task(|partition)> Message(task, Success(), <task-warning-message> message)
+	task-create-note-on-failure(|partition, task, message):
+		term -> <new-task(|partition)> Message(task, Failure(), <origin-track-forced(task-note-message(|message))> term)
+			
+	task-create-message-on-failure(|partition, task):
+    message -> <new-task(|partition)> Message(task, Success(), message)
+  
+  task-create-error-on-success(|partition, task, message):
+		term -> <new-task(|partition)> Message(task, Success(), <origin-track-forced(task-error-message(|message))> term)
 		
-	task-create-note-on-success(|partition, task):
-		message -> <new-task(|partition)> Message(task, Success(), <task-note-message> message)
+	task-create-warning-on-success(|partition, task, message):
+		term -> <new-task(|partition)> Message(task, Success(), <origin-track-forced(task-warning-message(|message))> term)
+		
+	task-create-note-on-success(|partition, task, message):
+		term -> <new-task(|partition)> Message(task, Success(), <origin-track-forced(task-note-message(|message))> term)
+		

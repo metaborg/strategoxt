@@ -1,5 +1,7 @@
 package org.metaborg.runtime.task.test;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.metaborg.runtime.task.TaskEngine;
@@ -7,7 +9,6 @@ import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -23,7 +24,7 @@ public class TaskTest {
 	protected static TaskEngine taskEngine;
 
 	@BeforeClass
-	public static void setUpOnce() {
+	public static void setUpOnce() throws NoSuchAlgorithmException {
 		interpreter = new Interpreter();
 		factory = interpreter.getFactory();
 		agent = interpreter.getIOAgent();
@@ -79,12 +80,12 @@ public class TaskTest {
 		return constructor("ID", constructor(namespace), str(name), constructor("Unique", str(unique)));
 	}
 
-	public static IStrategoInt resultID(IStrategoAppl result) {
-		return (IStrategoInt) result.getSubterm(0);
+	public static IStrategoTerm resultID(IStrategoTerm result) {
+		return result.getSubterm(0);
 	}
 
-	public static IStrategoList dependencies(IStrategoAppl... results) {
-		IStrategoInt[] dependencies = new IStrategoInt[results.length];
+	public static IStrategoList dependencies(IStrategoTerm... results) {
+		IStrategoTerm[] dependencies = new IStrategoTerm[results.length];
 		for (int i = 0; i < results.length; ++i)
 			dependencies[i] = resultID(results[i]);
 		return list(dependencies);

@@ -13,7 +13,7 @@ rules // Multi file analysis
     with
     	measure-time(
       	file* := <map(analyze-parse-file(parse-file); where(complete-work-unit))> path*
-    	, id | "analyze-multiple-parse");
+    	, id | "analyze-parse");
       result* := <analyze-multiple-files(complete-work-unit|language, project-path)> file*
 
   analyze-parse-file(parse-file):
@@ -24,16 +24,10 @@ rules // Multi file analysis
       end
 
   analyze-multiple-files(complete-work-unit|language, project-path):
-    file* -> (error*, result*, evaluated-count)
+    file* -> (result*, unevaluated-task*, evaluated-count)
     with
-    	measure-time(
-	      result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*
-	      , id | "analyze-multiple-collect"
-	    );
-      measure-time(
-      	(error*, evaluated-count) := <analyze-perform-all> result*
-      	, id | "analyze-multiple-perform"
-      )
+      result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*;
+    	(unevaluated-task*, evaluated-count) := <analyze-perform-all> result*
       
 rules // Utility
 
