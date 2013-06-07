@@ -51,15 +51,16 @@ strategies
       task := <prop-check(|kind, task*, dep*)> (term, expected)
     ; <origin-track-forced(task-create-error-on-failure(|task*, task, msg))> term
   
-  enforce-origin(|target):
-    source -> target
-    
-  prop-lookup(|kind, task*, dep*) = 
+ prop-lookup(|kind, task*, dep*) = 
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|task*, all-dep*)> PropLookup(kind, <id>) 
   
-  prop-unify(|task*, relation) = 
-    <new-task(|task*)> Match(relation, <Fst>, <Snd>)
+  prop-match(|task*, relation) = 
+    <new-task(|task*)> Rewrite(relation, <id>)
+    
+  prop-match(|task*, relation, dep*) = 
+    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
+  ; <new-task(|task*)> Rewrite(relation, <id>)
   
 strategies
   
@@ -72,4 +73,7 @@ strategies
   type-lookup(|task*)       = prop-lookup(|Type(), task*, [])
   type-lookup(|task*, dep*) = prop-lookup(|Type(), task*, dep*)
   
-  type-unify(|task*, relation) = prop-unify(|task*, relation)
+  type-match(|task*, relation) = prop-match(|task*, relation)
+
+  type-of = property-task(|Type())
+  

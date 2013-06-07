@@ -13,6 +13,7 @@ signature
     Choice  : List(Result)                         -> Instruction
     Message : List(Result) * MessageTrigger * Term -> Instruction
     Match   : ID * List(Term) * Term               -> Instruction
+    Rewrite : ID * Term                            -> Instruction
     Concat  : List(Result)                         -> Instruction
     
     Success : MessageTrigger
@@ -54,6 +55,14 @@ rules
   		if [] := result then
   			fail
 			end
+  
+  perform-task(|nr): 
+    Rewrite(key, term) -> result
+    where
+      result := <try-make-list; filter(!(key, <id>); task-match)> term;
+      if [] := result then
+        fail
+      end
   
   perform-task(|nr):
   	Concat(term*) -> <concat> term*
