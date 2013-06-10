@@ -49,7 +49,9 @@ public class TaskManager {
 	}
 
 	public TaskEngine createTaskEngine(ITermFactory factory) {
-		return new TaskEngine(factory, new NonDeterministicCountingTermDigester());
+		final TaskEngine taskEngine = new TaskEngine(factory, new NonDeterministicCountingTermDigester());
+		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
+		return taskEngine;
 	}
 
 	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent)
