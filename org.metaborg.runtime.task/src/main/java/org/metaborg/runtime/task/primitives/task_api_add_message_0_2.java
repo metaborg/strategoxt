@@ -12,7 +12,7 @@ public class task_api_add_message_0_2 extends AbstractPrimitive {
 	public static task_api_add_message_0_2 instance = new task_api_add_message_0_2();
 	
 	public task_api_add_message_0_2() {
-		super("task_api_add_message_0_2", 0, 2);
+		super("task_api_add_message", 0, 2);
 	}
 	
 	@Override

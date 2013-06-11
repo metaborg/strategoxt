@@ -4,14 +4,14 @@ import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.strategoxt.lang.Strategy;
 
 public class task_api_exists_0_1 extends AbstractPrimitive {
 	public static task_api_exists_0_1 instance = new task_api_exists_0_1();
 
-	public task_api_add_dependency_0_2() {
-		super("task_api_add_dependency", 0, 2);
+	public task_api_exists_0_1() {
+		super("task_api_exists", 0, 1);
 	}
 	
 	@Override

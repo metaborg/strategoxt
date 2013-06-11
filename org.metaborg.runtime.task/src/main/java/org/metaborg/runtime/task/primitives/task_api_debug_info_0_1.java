@@ -8,18 +8,18 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.library.AbstractPrimitive;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.strategoxt.lang.Strategy;
 
 public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	public static task_api_debug_info_0_1 instance = new task_api_debug_info_0_1();
 
 	public task_api_debug_info_0_1() {
-		super("task_api_debug_info_0_1", 0, 2);
+		super("task_api_debug_info", 0, 2);
 	}
 	
 	@Override
