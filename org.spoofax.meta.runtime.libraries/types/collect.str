@@ -34,7 +34,7 @@ strategies
 strategies
   
   prop-calc(|task*, dep*) = 
-    where(all-dep* := <union; debug(!"deps ")> (<dependent-tasks>, <dependent-tasks> dep*));
+    where(all-dep* := <union> (<dependent-tasks>, <dependent-tasks> dep*));
     <new-task(|task*, all-dep*)> PropCalc(<id>)
     
   prop-check(|kind, task*, dep*):
@@ -51,7 +51,7 @@ strategies
       task := <prop-check(|kind, task*, dep*)> (term, expected)
     ; <origin-track-forced(task-create-error-on-failure(|task*, task, msg))> term
   
- prop-lookup(|kind, task*, dep*) = 
+  prop-lookup(|kind, task*, dep*) = 
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|task*, all-dep*)> PropLookup(kind, <id>) 
   

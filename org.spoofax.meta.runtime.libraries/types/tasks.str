@@ -41,6 +41,8 @@ rules
   // TODO: remove this one	
   perform-task(|n): 
     PropCalc(result, dep*) -> <perform-task(|n)> PropCalc(result)
+    with
+      fail
     where 
       <if is-list then Hd end> dep*
   
