@@ -13,5 +13,5 @@ Export-Package: org.metaborg.runtime.task;
    org.strategoxt.lang,
    org.spoofax.interpreter.terms,
    org.spoofax.interpreter.library",
- org.metaborg.runtime.task.interop
+ org.metaborg.runtime.task.primitives
 Bundle-ClassPath: .

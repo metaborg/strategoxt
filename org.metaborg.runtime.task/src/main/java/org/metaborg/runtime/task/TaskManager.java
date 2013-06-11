@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,8 +53,7 @@ public class TaskManager {
 		return taskEngine;
 	}
 
-	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent)
-		throws NoSuchAlgorithmException {
+	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
 		URI project = getProjectURI(projectPath, agent);
 		synchronized(TaskManager.class) {
 			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
