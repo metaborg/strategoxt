@@ -20,7 +20,7 @@ public class task_api_debug_info_0_1 extends Strategy {
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm partitionOrID) {
 		final ITermFactory factory = context.getFactory();
 		final TaskEngine engine = TaskManager.getInstance().getCurrent();
-		
+
 		if(Tools.isTermString(partitionOrID)) {
 			Collection<IStrategoTerm> taskIDs = engine.getInPartition((IStrategoString) partitionOrID);
 			IStrategoList list = factory.makeList();
@@ -31,8 +31,15 @@ public class task_api_debug_info_0_1 extends Strategy {
 			return list;
 		} else if(Tools.isTermInt(partitionOrID)) {
 			return createDebugTuple(partitionOrID, engine, factory);
+		} else if(Tools.isTermTuple(partitionOrID)) {
+			IStrategoList list = factory.makeList();
+			for(IStrategoTerm taskID : engine.getTaskIDs()) {
+				list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
+			}
+
+			return list;
 		}
-		
+
 		return null;
 	}
 
