@@ -1,7 +1,5 @@
 package org.metaborg.runtime.task.interop;
 
-import java.util.Collection;
-
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.Tools;
@@ -17,30 +15,27 @@ public class task_api_debug_info_0_1 extends Strategy {
 	public static task_api_debug_info_0_1 instance = new task_api_debug_info_0_1();
 
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm partitionOrID) {
+	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm tupleOrPartitionOrID) {
 		final ITermFactory factory = context.getFactory();
 		final TaskEngine engine = TaskManager.getInstance().getCurrent();
 
-		if(Tools.isTermString(partitionOrID)) {
-			Collection<IStrategoTerm> taskIDs = engine.getInPartition((IStrategoString) partitionOrID);
-			IStrategoList list = factory.makeList();
-			for(IStrategoTerm taskID : taskIDs) {
-				list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
-			}
-
-			return list;
-		} else if(Tools.isTermInt(partitionOrID)) {
-			return createDebugTuple(partitionOrID, engine, factory);
-		} else if(Tools.isTermTuple(partitionOrID)) {
-			IStrategoList list = factory.makeList();
-			for(IStrategoTerm taskID : engine.getTaskIDs()) {
-				list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
-			}
-
-			return list;
+		if(Tools.isTermTuple(tupleOrPartitionOrID)) {
+			return createDebugTuples(engine.getTaskIDs(), engine, factory);
+		} else if(Tools.isTermString(tupleOrPartitionOrID)) {
+			return createDebugTuples(engine.getInPartition((IStrategoString) tupleOrPartitionOrID), engine, factory);
+		} else if(Tools.isTermInt(tupleOrPartitionOrID)) {
+			return createDebugTuple(tupleOrPartitionOrID, engine, factory);
 		}
 
 		return null;
+	}
+
+	private IStrategoList createDebugTuples(Iterable<IStrategoTerm> taskIDs, TaskEngine engine, ITermFactory factory) {
+		IStrategoList list = factory.makeList();
+		for(IStrategoTerm taskID : taskIDs) {
+			list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
+		}
+		return list;
 	}
 
 	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, TaskEngine engine, ITermFactory factory) {
