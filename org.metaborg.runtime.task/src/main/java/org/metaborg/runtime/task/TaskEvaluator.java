@@ -51,6 +51,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
 		taskEngine.clearTimes();
+		taskEngine.clearEvaluations();
 		
 		try {
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
@@ -124,7 +125,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 		final long timeBefore = System.nanoTime();
 		final IStrategoTerm result = performInstruction.invoke(context, insertedInstruction, taskID);
 		final long timeAfter = System.nanoTime();
-		taskEngine.setTime(taskID, timeAfter - timeBefore);
+		taskEngine.addTime(taskID, timeAfter - timeBefore);
+		taskEngine.addEvaluation(taskID);
 		return result;
 	}
 

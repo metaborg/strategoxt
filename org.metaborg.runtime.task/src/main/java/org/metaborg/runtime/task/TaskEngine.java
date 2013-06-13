@@ -59,6 +59,9 @@ public class TaskEngine {
 	/** Time taken for each task. **/
 	private final Map<IStrategoTerm, Long> toTime = new HashMap<IStrategoTerm, Long>();
 
+	/** Time taken for each task. **/
+	private final Map<IStrategoTerm, Long> toEvaluations = new HashMap<IStrategoTerm, Long>();
+	
 
 	/** All tasks (view). */
 	private final Set<IStrategoTerm> tasks = toInstruction.keySet();
@@ -386,8 +389,9 @@ public class TaskEngine {
 		removeFailed(taskID);
 	}
 
-	public void setTime(IStrategoTerm taskID, long time) {
-		toTime.put(taskID, time);
+	public void addTime(IStrategoTerm taskID, long time) {
+		final long newTime = toTime.get(taskID) + time;
+		toTime.put(taskID, newTime);
 	}
 	
 	public void clearTimes() {
@@ -396,6 +400,19 @@ public class TaskEngine {
 	
 	public Long getTime(IStrategoTerm taskID) {
 		return toTime.get(taskID);
+	}
+	
+	public void addEvaluation(IStrategoTerm taskID) {
+		final long newEvaluations = toEvaluations.get(taskID) + 1;
+		toEvaluations.put(taskID, newEvaluations);
+	}
+	
+	public void clearEvaluations() {
+		toEvaluations.clear();
+	}
+	
+	public Long getEvaluations(IStrategoTerm taskID) {
+		return toEvaluations.get(taskID);
 	}
 	
 	public ITaskEvaluator getEvaluator() {
@@ -415,6 +432,7 @@ public class TaskEngine {
 		toMessage.clear();
 		failed.clear();
 		toTime.clear();
+		toEvaluations.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
@@ -435,6 +453,8 @@ public class TaskEngine {
 			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
 			toRead.removeAllInverse(taskID);
+			toTime.remove(taskID);
+			toEvaluations.remove(taskID);
 			digester.undigest(getInstruction(taskID));
 		}
 		
