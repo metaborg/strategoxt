@@ -44,11 +44,12 @@ public class task_api_debug_info_0_1 extends Strategy {
 		IStrategoTerm message = engine.getMessage(taskID);
 		IStrategoTerm result =
 			engine.hasFailed(taskID) ? factory.makeAppl(factory.makeConstructor("Fail", 0)) : engine.getResult(taskID);
-		long time = engine.getTime(taskID);
-
+		Long timeBox = engine.getTime(taskID);
+		long time = timeBox == null ? -1 : timeBox;
+		
 		return factory.makeTuple(taskID, instruction, dependencies,
 			result == null ? factory.makeAppl(factory.makeConstructor("None", 0)) : result,
 			message == null ? factory.makeAppl(factory.makeConstructor("None", 0)) : message,
-			factory.makeInt((int) time));
+			factory.makeInt((int)time));
 	}
 }
