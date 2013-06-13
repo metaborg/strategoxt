@@ -26,7 +26,7 @@ public class SHA1TermDigester implements ITermDigester {
 
 	public IStrategoTerm digest(IStrategoTerm term, ITermFactory factory) {
 		IStrategoTerm digested = cache.get(term);
-		if(digest == null) {
+		if(digested == null) {
 			digestTop(term);
 			byte[] data = digest.digest();
 			digested = factory.makeTuple(factory.makeInt(toInt(data, 0)), factory.makeInt(toInt(data, 4)));
