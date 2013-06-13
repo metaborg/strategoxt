@@ -46,7 +46,8 @@ public class task_api_debug_info_0_1 extends Strategy {
 			engine.hasFailed(taskID) ? factory.makeAppl(factory.makeConstructor("Fail", 0)) : engine.getResult(taskID);
 		Long timeBox = engine.getTime(taskID);
 		long time = timeBox == null ? -1 : timeBox;
-		long evaluations = engine.getEvaluations(taskID);
+		Long evaluationsBox = engine.getEvaluations(taskID);
+		long evaluations = evaluationsBox == null ? 0 : evaluationsBox;
 		
 		return factory.makeTuple(taskID, instruction, dependencies,
 			result == null ? factory.makeAppl(factory.makeConstructor("None", 0)) : result,

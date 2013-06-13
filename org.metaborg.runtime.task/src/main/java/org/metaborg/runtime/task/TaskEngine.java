@@ -390,8 +390,8 @@ public class TaskEngine {
 	}
 
 	public void addTime(IStrategoTerm taskID, long time) {
-		final long newTime = toTime.get(taskID) + time;
-		toTime.put(taskID, newTime);
+		final Long timeBox = toTime.get(taskID);
+		toTime.put(taskID, (timeBox == null ? 0 : timeBox) + time);
 	}
 	
 	public void clearTimes() {
@@ -403,8 +403,8 @@ public class TaskEngine {
 	}
 	
 	public void addEvaluation(IStrategoTerm taskID) {
-		final long newEvaluations = toEvaluations.get(taskID) + 1;
-		toEvaluations.put(taskID, newEvaluations);
+		final Long evaluationsBox = toEvaluations.get(taskID);
+		toEvaluations.put(taskID, (evaluationsBox == null ? 0 : evaluationsBox) + 1);
 	}
 	
 	public void clearEvaluations() {
