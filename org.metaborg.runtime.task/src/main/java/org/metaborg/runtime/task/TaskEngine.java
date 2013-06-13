@@ -6,6 +6,7 @@ import static com.google.common.collect.Sets.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -54,6 +55,9 @@ public class TaskEngine {
 
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoTerm> failed = new HashSet<IStrategoTerm>();
+	
+	/** Time taken for each task. **/
+	private final Map<IStrategoTerm, Long> toTime = new HashMap<IStrategoTerm, Long>();
 
 
 	/** All tasks (view). */
@@ -382,6 +386,18 @@ public class TaskEngine {
 		removeFailed(taskID);
 	}
 
+	public void setTime(IStrategoTerm taskID, long time) {
+		toTime.put(taskID, time);
+	}
+	
+	public void clearTimes() {
+		toTime.clear();
+	}
+	
+	public Long getTime(IStrategoTerm taskID) {
+		return toTime.get(taskID);
+	}
+	
 	public ITaskEvaluator getEvaluator() {
 		return evaluator;
 	}
@@ -398,6 +414,7 @@ public class TaskEngine {
 		toResult.clear();
 		toMessage.clear();
 		failed.clear();
+		toTime.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
