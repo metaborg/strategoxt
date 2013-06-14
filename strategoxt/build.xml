@@ -57,11 +57,7 @@
 			<sequential>
 				<trycatch>
 					<try>
-						<strj-test input="@{strfile}"
-						           synaterm="${syntax-dir}/${syn.aterm}"
-						           synbox="${syntax-dir}/${syn.box}"
-						           generated="${test-gen}"
-						           compiler="${install-location}/${jar.name}" />
+						<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" generated="${test-gen}" compiler="${install-location}/${jar.name}" />
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
@@ -71,8 +67,7 @@
 		</for>
 	</target>
 
-	<target name="all"
-	        depends="
+	<target name="all" depends="
 									create-dirs,
 									syntax,
 									generate-java,
@@ -90,7 +85,7 @@
 	<target name="install" depends="jar">
 		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" />
 		<mkdir dir="${install-prefix}/bin" />
-		<copy todir="${install-prefix}/bin" >
+		<copy todir="${install-prefix}/bin">
 			<fileset dir="wrapper-scripts/unix/" includes="*" />
 		</copy>
 		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
@@ -140,22 +135,8 @@
 	</target>
 
 	<target name="compile-java" depends="generate-java">
-		<javac srcdir="${lib}"
-		       destdir="${bin}"
-		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
-		       source="1.5"
-		       target="1.5"
-		       nowarn="on"
-		       debug="true"
-		       debuglevel="lines,vars,source" />
-		<javac srcdir="${libraries-dir}/java-backend/java/runtime"
-		       destdir="${bin}"
-		       classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}"
-		       source="1.5"
-		       target="1.5"
-		       nowarn="on"
-		       debug="true"
-		       debuglevel="lines,vars,source" />
+		<javac srcdir="${lib}" destdir="${bin}" classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="lines,vars,source" />
+		<javac srcdir="${libraries-dir}/java-backend/java/runtime" destdir="${bin}" classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${libraries-dir}/java-backend/java/ehcache-core-2.6.6.jar:${libraries-dir}/java-backend/java/slf4j-api-1.6.1.jar:${libraries-dir}/java-backend/java/slf4j-jdk14-1.6.1.jar:${bin}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="lines,vars,source" />
 	</target>
 
 	<target name="jar">
@@ -167,6 +148,10 @@
 			<fileset dir="${lib}" includes="**/*.af" />
 			<fileset dir="${lib}" includes="**/*.tbl" />
 			<zipfileset includes="**/*" src="${libraries-dir}/java-backend/java/spoofax-libs.jar" />
+			<zipfileset includes="**/*" src="${libraries-dir}/java-backend/java/ehcache-core-2.6.6.jar" />
+			<zipfileset includes="**/*" src="${libraries-dir}/java-backend/java/slf4j-api-1.6.1.jar" />
+			<zipfileset includes="**/*" src="${libraries-dir}/java-backend/java/slf4j-jdk14-1.6.1.jar" />
+			<fileset dir="${libraries-dir}/java-backend/java/" includes="ehcache.xml" />
 		</jar>
 	</target>
 </project>

@@ -6,5 +6,8 @@
 	<classpathentry exported="true" kind="lib" path="java/strategoxt.jar" sourcepath="java/lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="java/ehcache-core-2.6.6.jar"/>
+	<classpathentry kind="lib" path="java/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="java/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="output" path="java/bin"/>
 </classpath>

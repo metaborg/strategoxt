@@ -27,6 +27,7 @@ import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
 import org.strategoxt.lang.typesmart.TypesmartTermFactory;
+//import org.strategoxt.lang.typesmart.TypesmartTermFactory;
 
 /**
  * The runtime context of a compiled Stratego strategy.

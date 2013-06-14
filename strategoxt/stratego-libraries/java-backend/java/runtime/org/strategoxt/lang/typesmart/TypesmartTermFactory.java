@@ -121,7 +121,7 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 			if (smartCall == null) {
 				return makeUnsafeAppl(ctr, kids, annotations);
 			}
-			System.out.println("Typesmart " + ctr);
+//			System.out.println("Typesmart " + ctr);
 
 			// apply smart constructor to argument terms
 			rebuildEmptyLists(kids);
@@ -136,10 +136,10 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 				boolean smartOk = smartCall.evaluateWithArgs(context, new Strategy[0], kids);
 				long end = System.currentTimeMillis();
 				totalTimeMillis = totalTimeMillis.add(BigInteger.valueOf(end - start));
-				if (end - start > 100) {
-					System.out.println(ctr.getName());
-					System.out.println(end - start);
-				}
+//				if (end - start > 100) {
+//					System.out.println(ctr.getName());
+//					System.out.println(end - start);
+//				}
 
 				if (!smartOk) {
 					IStrategoTerm failedTerm = makeUnsafeAppl(ctr, kids, annotations);
@@ -196,8 +196,8 @@ public class TypesmartTermFactory extends AbstractWrappedTermFactory {
 				IStrategoAppl appl = (IStrategoAppl) terms[i];
 				terms[i] = makeAppl(appl.getConstructor(), appl.getAllSubterms(),
 						appl.getAnnotations());
-				if (!terms[i].toString().equals("Op(\"Nil\",[])"))
-					System.err.println("unexpected  rebuilding");
+//				if (!terms[i].toString().equals("Op(\"Nil\",[])"))
+//					System.err.println("unexpected  rebuilding");
 			} else
 				terms[i] = terms[i];
 	}
