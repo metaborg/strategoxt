@@ -3,6 +3,7 @@ package org.metaborg.runtime.task.interop;
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.Tools;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -19,15 +20,13 @@ public class task_api_debug_info_0_1 extends Strategy {
 		final ITermFactory factory = context.getFactory();
 		final TaskEngine engine = TaskManager.getInstance().getCurrent();
 
-		if(Tools.isTermTuple(tupleOrPartitionOrID)) {
+		if(Tools.isTermTuple(tupleOrPartitionOrID) && tupleOrPartitionOrID.getSubtermCount() == 0) {
 			return createDebugTuples(engine.getTaskIDs(), engine, factory);
 		} else if(Tools.isTermString(tupleOrPartitionOrID)) {
 			return createDebugTuples(engine.getInPartition((IStrategoString) tupleOrPartitionOrID), engine, factory);
-		} else if(Tools.isTermInt(tupleOrPartitionOrID)) {
+		} else {
 			return createDebugTuple(tupleOrPartitionOrID, engine, factory);
 		}
-
-		return null;
 	}
 
 	private IStrategoList createDebugTuples(Iterable<IStrategoTerm> taskIDs, TaskEngine engine, ITermFactory factory) {

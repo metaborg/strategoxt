@@ -15,7 +15,6 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.spoofax.terms.attachments.TermAttachmentSerializer;
 import org.spoofax.terms.io.binary.SAFWriter;
 
 public class SHA1TermDigester implements ITermDigester {
@@ -32,8 +31,7 @@ public class SHA1TermDigester implements ITermDigester {
 		IStrategoTerm digestedTerm = mapping.get(term);
 		if(digestedTerm == null) {
 			digest.reset();
-			final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
-			digestTopSerializer(serializer.toAnnotations(term));
+			digestTopSerializer(term);
 			byte[] data = digest.digest();
 			digestedTerm = factory.makeTuple(factory.makeInt(toInt(data, 0)), factory.makeInt(toInt(data, 4)));
 			mapping.put(term, digestedTerm);
