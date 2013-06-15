@@ -1,5 +1,7 @@
 package org.metaborg.runtime.task;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,12 +35,19 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	/** Dependencies of tasks which are updated during evaluation. */
 	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toRuntimeDependency = ManyToManyMap.create();
+	
+	private final ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
 
 
 	public TaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
+		
+		if(mxBean.isThreadCpuTimeSupported()) 
+			mxBean.setThreadCpuTimeEnabled(true);
+		else
+			throw new RuntimeException("Cannot log CPU time");
 	}
 
 	public void schedule(IStrategoTerm taskID) {
@@ -122,9 +131,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
 		IStrategoTerm taskID, IStrategoTerm instruction) {
 		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
-		final long timeBefore = System.nanoTime();
+		final long timeBefore = mxBean.getCurrentThreadCpuTime();
 		final IStrategoTerm result = performInstruction.invoke(context, insertedInstruction, taskID);
-		final long timeAfter = System.nanoTime();
+		final long timeAfter = mxBean.getCurrentThreadCpuTime();
 		taskEngine.addTime(taskID, timeAfter - timeBefore);
 		taskEngine.addEvaluation(taskID);
 		return result;
