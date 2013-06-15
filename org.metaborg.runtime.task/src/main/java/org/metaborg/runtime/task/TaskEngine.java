@@ -195,7 +195,8 @@ public class TaskEngine {
 	 *            An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
 	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoList partitions,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
+		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
+		IStrategoTerm time, IStrategoTerm evaluations) {
 		toInstruction.put(taskID, instruction);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
@@ -207,6 +208,10 @@ public class TaskEngine {
 			toResult.put(taskID, (IStrategoList) results);
 		if(failed.intValue() == 1)
 			this.failed.add(taskID);
+		if(time.getTermType() == IStrategoTerm.INT)
+			toTime.put(taskID, (long)((IStrategoInt)time).intValue());
+		if(evaluations.getTermType() == IStrategoTerm.INT)
+			toEvaluations.put(taskID, (long)((IStrategoInt)evaluations).intValue());
 	}
 
 	/**

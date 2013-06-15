@@ -25,10 +25,12 @@ public class TaskEngineFactory {
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			IStrategoTerm results = serializeResults(taskEngine.getResult(taskID), factory, serializer);
 			final boolean failed = taskEngine.hasFailed(taskID);
+			final Long time = taskEngine.getTime(taskID);
+			final Long evaluations = taskEngine.getEvaluations(taskID);
 			tasks =
 				factory.makeListCons(
-					createTaskTerm(factory, taskID, instruction, partitions, dependencies, reads, results, failed),
-					tasks);
+					createTaskTerm(factory, taskID, instruction, partitions, dependencies, reads, results, failed,
+						time, evaluations), tasks);
 		}
 
 		final IStrategoTerm digestState = taskEngine.getDigester().state(factory);
@@ -51,7 +53,10 @@ public class TaskEngineFactory {
 			final IStrategoList reads = (IStrategoList) task.getSubterm(4);
 			final IStrategoTerm results = deserializeResults(task.getSubterm(5), factory, serializer);
 			final IStrategoInt failed = (IStrategoInt) task.getSubterm(6);
-			taskEngine.addPersistedTask(taskID, instruction, partitions, dependencies, reads, results, failed);
+			final IStrategoTerm time = task.getSubterm(7);
+			final IStrategoTerm evaluations = task.getSubterm(8);
+			taskEngine.addPersistedTask(taskID, instruction, partitions, dependencies, reads, results, failed, time,
+				evaluations);
 		}
 
 		return taskEngine;
@@ -59,10 +64,18 @@ public class TaskEngineFactory {
 
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
 		Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
-		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed) {
-		return factory.makeTuple(taskID, instruction, factory.makeList(partitions), factory.makeList(dependencies),
-			factory.makeList(reads), results == null ? factory.makeTuple() : results, failed ? factory.makeInt(1)
-				: factory.makeInt(0));
+		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, Long time, Long evaluations) {
+		return factory.makeTuple(
+			taskID, 
+			instruction, 
+			factory.makeList(partitions), 
+			factory.makeList(dependencies),
+			factory.makeList(reads), 
+			results == null ? factory.makeTuple() : results, 
+			failed ? factory.makeInt(1) : factory.makeInt(0), 
+			time == null ? factory.makeTuple() : factory.makeInt((int) (long) time),
+			evaluations == null ? factory.makeTuple() : factory.makeInt((int) (long) evaluations)
+		);
 	}
 
 	private IStrategoTerm serializeResults(IStrategoTerm results, ITermFactory factory,
