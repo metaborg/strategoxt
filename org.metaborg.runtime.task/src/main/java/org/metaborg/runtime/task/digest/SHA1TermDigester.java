@@ -58,7 +58,7 @@ public class SHA1TermDigester implements ITermDigester {
 
 	public void setState(IStrategoTerm state) {
 		mapping.clear();
-		for (IStrategoTerm entry : state.getSubterm(1))
+		for (IStrategoTerm entry : state)
 			mapping.put(entry.getSubterm(0), entry.getSubterm(1));
 	}
 
