@@ -264,6 +264,10 @@ public class TaskEngine {
 		return toInstruction.get(taskID);
 	}
 
+	public Set<IStrategoString> getAllPartition() {
+		return new HashSet<IStrategoString>(toPartition.values());
+	}
+	
 	public Collection<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
 		return toPartition.get(taskID);
 	}

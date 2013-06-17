@@ -1,7 +1,5 @@
 package org.metaborg.runtime.task.primitives;
 
-import java.util.Collection;
-
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
@@ -26,21 +24,25 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITermFactory factory = env.getFactory();
 		final TaskEngine engine = TaskManager.getInstance().getCurrent();
-		final IStrategoTerm partitionOrID = tvars[0];
+		final IStrategoTerm tupleOrPartitionOrID = tvars[0];
 
-		if(Tools.isTermString(partitionOrID)) {
-			Collection<IStrategoTerm> taskIDs = engine.getInPartition((IStrategoString) partitionOrID);
-			IStrategoList list = factory.makeList();
-			for(IStrategoTerm taskID : taskIDs) {
-				list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
-			}
-
-			env.setCurrent(list);
-		} else if(Tools.isTermInt(partitionOrID)) {
-			env.setCurrent(createDebugTuple(partitionOrID, engine, factory));
+		if(Tools.isTermTuple(tupleOrPartitionOrID) && tupleOrPartitionOrID.getSubtermCount() == 0) {
+			env.setCurrent(createDebugTuples(engine.getTaskIDs(), engine, factory));
+		} else if(Tools.isTermString(tupleOrPartitionOrID)) {
+			env.setCurrent(createDebugTuples(engine.getInPartition((IStrategoString) tupleOrPartitionOrID), engine, factory));
+		} else {
+			env.setCurrent(createDebugTuple(tupleOrPartitionOrID, engine, factory));
 		}
 
 		return true;
+	}
+
+	private IStrategoList createDebugTuples(Iterable<IStrategoTerm> taskIDs, TaskEngine engine, ITermFactory factory) {
+		IStrategoList list = factory.makeList();
+		for(IStrategoTerm taskID : taskIDs) {
+			list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
+		}
+		return list;
 	}
 
 	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, TaskEngine engine, ITermFactory factory) {

@@ -102,6 +102,7 @@ rules // API
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
 	task-unload(|project-path)                           = task-api-unload(|project-path)
+	task-unload                                          = task-unload(|<id>)
 	
 	task-get-result =
 		switch id
