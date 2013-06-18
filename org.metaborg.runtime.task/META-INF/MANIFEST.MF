@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.metaborg.runtime.task
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.spoofax.interpreter.core,
  org.spoofax.terms,
+ org.spoofax.jsglr;bundle-version="0.3.0",
  org.spoofax.interpreter.externaldeps,
  org.junit4
 Export-Package: org.metaborg.runtime.task;
