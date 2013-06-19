@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
+import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.InterpreterException;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoInt;
@@ -23,8 +26,6 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 
 public class TaskEngine {
 	private final ITermFactory factory;
@@ -233,9 +234,10 @@ public class TaskEngine {
 	 *            A list of reads which have changed.
 	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
 	 *         evaluations.
+	 * @throws InterpreterException 
 	 */
-	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults,
-		IStrategoList changedReads) {
+	public IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults,
+		IStrategoList changedReads) throws InterpreterException {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(final IStrategoTerm changedRead : changedReads) {
 			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.

@@ -1,32 +1,40 @@
-package org.metaborg.runtime.task.interop;
+package org.metaborg.runtime.task.primitives;
 
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
+import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.Tools;
-import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.library.AbstractPrimitive;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 
-public class task_api_debug_info_0_1 extends Strategy {
+public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	public static task_api_debug_info_0_1 instance = new task_api_debug_info_0_1();
 
+	public task_api_debug_info_0_1() {
+		super("task_api_debug_info", 0, 2);
+	}
+	
 	@Override
-	public IStrategoTerm invoke(Context context, IStrategoTerm current, IStrategoTerm tupleOrPartitionOrID) {
-		final ITermFactory factory = context.getFactory();
+	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
+		final ITermFactory factory = env.getFactory();
 		final TaskEngine engine = TaskManager.getInstance().getCurrent();
+		final IStrategoTerm tupleOrPartitionOrID = tvars[0];
 
 		if(Tools.isTermTuple(tupleOrPartitionOrID) && tupleOrPartitionOrID.getSubtermCount() == 0) {
-			return createDebugTuples(engine.getTaskIDs(), engine, factory);
+			env.setCurrent(createDebugTuples(engine.getTaskIDs(), engine, factory));
 		} else if(Tools.isTermString(tupleOrPartitionOrID)) {
-			return createDebugTuples(engine.getInPartition((IStrategoString) tupleOrPartitionOrID), engine, factory);
+			env.setCurrent(createDebugTuples(engine.getInPartition((IStrategoString) tupleOrPartitionOrID), engine, factory));
 		} else {
-			return createDebugTuple(tupleOrPartitionOrID, engine, factory);
+			env.setCurrent(createDebugTuple(tupleOrPartitionOrID, engine, factory));
 		}
+
+		return true;
 	}
 
 	private IStrategoList createDebugTuples(Iterable<IStrategoTerm> taskIDs, TaskEngine engine, ITermFactory factory) {

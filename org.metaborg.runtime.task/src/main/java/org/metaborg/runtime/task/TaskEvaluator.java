@@ -7,15 +7,17 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.Tools;
+import org.spoofax.interpreter.stratego.CallT;
+import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
-import org.strategoxt.lang.Context;
-import org.strategoxt.lang.Strategy;
 
 import com.google.common.collect.Iterables;
 
@@ -49,7 +51,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 		evaluationQueue.add(taskID);
 	}
 
-	public IStrategoTuple evaluate(Context context, Strategy performInstruction, Strategy insertResults) {
+	public IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults)
+		throws InterpreterException {
 		try {
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
 			for(final IStrategoTerm taskID : nextScheduled) {
@@ -84,7 +87,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 					final IStrategoAppl resultAppl = (IStrategoAppl) result;
 					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
-					} else { 
+					} else {
 						throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
 							+ ". Must be a list, Dependency(_) constructor or failure.");
 					}
@@ -116,14 +119,20 @@ public class TaskEvaluator implements ITaskEvaluator {
 		toRuntimeDependency.clear();
 	}
 
-	private IStrategoTerm solve(Context context, Strategy performInstruction, Strategy insertResults,
-		IStrategoTerm taskID, IStrategoTerm instruction) {
+	private IStrategoTerm solve(IContext context, Strategy performInstruction, Strategy insertResults,
+		IStrategoTerm taskID, IStrategoTerm instruction) throws InterpreterException {
 		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
-		return performInstruction.invoke(context, insertedInstruction, taskID);
+		// return performInstruction.invoke(context, insertedInstruction, taskID);
+		((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] {
+			insertedInstruction, taskID });
+		return context.current();
 	}
 
-	private IStrategoTerm insertResults(Context context, Strategy insertResults, IStrategoTerm instruction) {
-		return insertResults.invoke(context, instruction);
+	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction)
+		throws InterpreterException {
+		// return insertResults.invoke(context, instruction);
+		((CallT) insertResults).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { instruction });
+		return context.current();
 	}
 
 	private void tryScheduleNewTasks(IStrategoTerm solved) {
