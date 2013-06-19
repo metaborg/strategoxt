@@ -174,7 +174,7 @@ public class TaskEngineTest extends TaskTest {
 		resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		assertEquals(null, taskEngine.getInstruction(resolveID));
+		assertEquals(null, taskEngine.getTask(resolveID));
 		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
 		assertEquals(choiceInstruction, taskEngine.getInstruction(choiceID));
 
@@ -182,9 +182,9 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition2);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(null, taskEngine.getInstruction(resolveID));
+		assertEquals(null, taskEngine.getTask(resolveID));
 		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
-		assertEquals(null, taskEngine.getInstruction(choiceID));
+		assertEquals(null, taskEngine.getTask(choiceID));
 	}
 
 	@Test
@@ -205,9 +205,9 @@ public class TaskEngineTest extends TaskTest {
 
 		taskEngine.reset();
 
-		assertEquals(null, taskEngine.getInstruction(resolveID));
-		assertEquals(null, taskEngine.getInstruction(resolveImportID));
-		assertEquals(null, taskEngine.getInstruction(choiceID));
+		assertEquals(null, taskEngine.getTask(resolveID));
+		assertEquals(null, taskEngine.getTask(resolveImportID));
+		assertEquals(null, taskEngine.getTask(choiceID));
 	}
 	
 	@Test

@@ -1,19 +1,12 @@
 package org.metaborg.runtime.task;
 
-import static com.google.common.base.Predicates.in;
-import static com.google.common.base.Predicates.not;
-import static com.google.common.collect.Sets.filter;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.spoofax.interpreter.core.IContext;
@@ -34,9 +27,8 @@ public class TaskEngine {
 	private final IStrategoConstructor resultConstructor;
 
 
-	/** Instructions of tasks. */
-	private final Map<IStrategoTerm, IStrategoTerm> toInstruction =
-		new ConcurrentHashMap<IStrategoTerm, IStrategoTerm>();
+	/** Mapping of task identifiers to tasks. */
+	private final Map<IStrategoTerm, Task> toTasks = new HashMap<IStrategoTerm, Task>();
 
 	/** Origin partitions of tasks. */
 	private final ManyToManyMap<IStrategoTerm, IStrategoString> toPartition = ManyToManyMap.create();
@@ -47,31 +39,8 @@ public class TaskEngine {
 	/** Dependencies between tasks. */
 	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toRead = ManyToManyMap.create();
 
-	/** Solutions of tasks. */
-	private final ConcurrentHashMap<IStrategoTerm, IStrategoList> toResult =
-		new ConcurrentHashMap<IStrategoTerm, IStrategoList>();
-
-	/** Produced messages of tasks. */
-	private final Map<IStrategoTerm, IStrategoTerm> toMessage = new ConcurrentHashMap<IStrategoTerm, IStrategoTerm>();
-
-	/** Tasks that have failed to produce a solution. */
-	private final Set<IStrategoTerm> failed = new HashSet<IStrategoTerm>();
-	
-	/** Time taken for each task. **/
-	private final Map<IStrategoTerm, Long> toTime = new HashMap<IStrategoTerm, Long>();
-
-	/** Time taken for each task. **/
-	private final Map<IStrategoTerm, Long> toEvaluations = new HashMap<IStrategoTerm, Long>();
-	
-
-	/** All tasks (view). */
-	private final Set<IStrategoTerm> tasks = toInstruction.keySet();
-
-	/** Solved tasks (view). */
-	private final Set<IStrategoTerm> solved = toResult.keySet();
-
-	/** Task is garbage, if it is has no partition anymore (view). */
-	private final Set<IStrategoTerm> garbage = filter(tasks, not(in(toPartition.keys())));
+	/** Tasks that are not in any partition are garbage. **/
+	private final Set<IStrategoTerm> garbage = new HashSet<IStrategoTerm>();
 
 
 	/** New tasks that have been added since last call to {@link #startCollection(IStrategoString)}. */
@@ -93,7 +62,7 @@ public class TaskEngine {
 		this.digester = digester;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
 	}
-	
+
 	public void setEvaluator(ITaskEvaluator evaluator) {
 		this.evaluator = evaluator;
 	}
@@ -101,8 +70,7 @@ public class TaskEngine {
 	/**
 	 * Starts task collection for given partition.
 	 * 
-	 * @param partition
-	 *            The partition to collect tasks for.
+	 * @param partition The partition to collect tasks for.
 	 */
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
@@ -124,7 +92,7 @@ public class TaskEngine {
 	public boolean taskExists(IStrategoTerm instruction) {
 		return digester.digested(instruction);
 	}
-	
+
 	/**
 	 * Given an instruction, returns its identifier.
 	 * 
@@ -133,7 +101,9 @@ public class TaskEngine {
 	 */
 	public IStrategoTerm taskID(IStrategoTerm instruction) {
 		final IStrategoTerm taskID = digester.digest(instruction, factory);
-		final IStrategoTerm instr = toInstruction.get(taskID);
+		if(!toTasks.containsKey(instruction))
+			return taskID;
+		final IStrategoTerm instr = toTasks.get(taskID).instruction;
 		if(instr != null && !instruction.match(instr)) {
 			reset();
 			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr
@@ -141,16 +111,13 @@ public class TaskEngine {
 		}
 		return taskID;
 	}
-	
+
 	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
 	 * 
-	 * @param partition
-	 *            The partition where the task comes from.
-	 * @param dependencies
-	 *            A list of task identifiers of the tasks that given instruction depends on,
-	 * @param instruction
-	 *            The instruction.
+	 * @param partition The partition where the task comes from.
+	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
+	 * @param instruction The instruction.
 	 * @return A unique task identifier for given instruction.
 	 */
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
@@ -159,8 +126,8 @@ public class TaskEngine {
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
 		final IStrategoTerm taskID = taskID(instruction);
-		
-		if(toInstruction.put(taskID, instruction) == null) {
+
+		if(toTasks.put(taskID, new Task(instruction)) == null) {
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
 		}
@@ -180,25 +147,21 @@ public class TaskEngine {
 	/**
 	 * Adds a persisted task back to the task engine.
 	 * 
-	 * @param taskID
-	 *            The identifier of the task.
-	 * @param instruction
-	 *            The instruction of the task.
-	 * @param partitions
-	 *            The partitions of the task
-	 * @param dependencies
-	 *            The dependencies of the task
-	 * @param reads
-	 *            The reads of the task.
-	 * @param results
-	 *            A list of results of the task, or an empty tuple if it has no results.
-	 * @param failed
-	 *            An integer value that indicates if the task had failed. A value of 1 indicates failure.
+	 * @param taskID The identifier of the task.
+	 * @param instruction The instruction of the task.
+	 * @param partitions The partitions of the task
+	 * @param dependencies The dependencies of the task
+	 * @param reads The reads of the task.
+	 * @param results A list of results of the task, or an empty tuple if it has no results.
+	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
 	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoList partitions,
 		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
 		IStrategoTerm time, IStrategoTerm evaluations) {
-		toInstruction.put(taskID, instruction);
+		Task task = new Task(instruction);
+		if(toTasks.put(taskID, task) == null)
+			throw new RuntimeException("Trying to add a persisted task that already exists.");
+
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
 		for(final IStrategoTerm dependency : dependencies)
@@ -206,47 +169,46 @@ public class TaskEngine {
 		for(final IStrategoTerm read : reads)
 			toRead.put(taskID, read);
 		if(results.getTermType() == IStrategoTerm.LIST)
-			toResult.put(taskID, (IStrategoList) results);
+			task.results = (IStrategoList) results;
 		if(failed.intValue() == 1)
-			this.failed.add(taskID);
+			task.failed = true;
 		if(time.getTermType() == IStrategoTerm.INT)
-			toTime.put(taskID, (long)((IStrategoInt)time).intValue());
+			task.time = ((IStrategoInt) time).intValue();
 		if(evaluations.getTermType() == IStrategoTerm.INT)
-			toEvaluations.put(taskID, (long)((IStrategoInt)evaluations).intValue());
+			task.evaluations = (short) ((IStrategoInt) evaluations).intValue();
 	}
 
 	/**
 	 * Stops collection for given partition.
 	 * 
-	 * @param partition
-	 *            The partition to stop collecting tasks for.
+	 * @param partition The partition to stop collecting tasks for.
 	 */
 	public void stopCollection(IStrategoString partition) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before stopping collection.");
 
-		for(final IStrategoTerm removed : removedTasks)
+		for(final IStrategoTerm removed : removedTasks) {
 			toPartition.remove(removed, partition);
-		collectGarbage();
+			if(toPartition.get(removed).isEmpty())
+				garbage.add(removed);
+		}
+		
 		inCollection.remove(partition);
+		collectGarbage();
 	}
 
 	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
 	 * 
-	 * @param context
-	 *            The context to call the perform and insert strategies with.
-	 * @param performInstruction
-	 *            The strategy that performs an instruction.
-	 * @param insertResults
-	 *            The strategy that inserts results into an instruction.
-	 * @param changedReads
-	 *            A list of reads which have changed.
+	 * @param context The context to call the perform and insert strategies with.
+	 * @param performInstruction The strategy that performs an instruction.
+	 * @param insertResults The strategy that inserts results into an instruction.
+	 * @param changedReads A list of reads which have changed.
 	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
 	 *         evaluations.
-	 * @throws InterpreterException 
+	 * @throws InterpreterException
 	 */
 	public IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults,
 		IStrategoList changedReads) throws InterpreterException {
@@ -269,17 +231,25 @@ public class TaskEngine {
 	}
 
 	public Iterable<IStrategoTerm> getTaskIDs() {
-		return tasks;
+		return toTasks.keySet();
+	}
+
+	public Task getTask(IStrategoTerm taskID) {
+		return toTasks.get(taskID);
+	}
+
+	public Iterable<Task> getTasks() {
+		return toTasks.values();
 	}
 
 	public IStrategoTerm getInstruction(IStrategoTerm taskID) {
-		return toInstruction.get(taskID);
+		return getTask(taskID).instruction;
 	}
 
 	public Set<IStrategoString> getAllPartition() {
 		return new HashSet<IStrategoString>(toPartition.values());
 	}
-	
+
 	public Collection<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
 		return toPartition.get(taskID);
 	}
@@ -295,14 +265,14 @@ public class TaskEngine {
 	public Collection<IStrategoTerm> getDependent(IStrategoTerm taskID) {
 		return toDependency.getInverse(taskID);
 	}
-	
+
 	public boolean becomesCyclic(IStrategoTerm taskIDFrom, IStrategoTerm taskIDTo) {
 		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
 		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
-		
+
 		queue.add(taskIDTo);
 		seen.add(taskIDTo);
-		
+
 		for(IStrategoTerm taskID; (taskID = queue.poll()) != null;) {
 			final Collection<IStrategoTerm> dependencies = getDependencies(taskID);
 			for(IStrategoTerm dependency : dependencies) {
@@ -312,7 +282,7 @@ public class TaskEngine {
 					queue.add(dependency);
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -331,37 +301,33 @@ public class TaskEngine {
 	public Collection<IStrategoTerm> removeReads(IStrategoTerm taskID) {
 		return toRead.removeAll(taskID);
 	}
-	
+
 	public void addDependency(IStrategoTerm taskID, IStrategoTerm dependency) {
 		toDependency.put(taskID, dependency);
 	}
 
 	public void addResult(IStrategoTerm taskID, IStrategoList resultList) {
-		toResult.put(taskID, resultList);
+		getTask(taskID).results = resultList;
 	}
 
-	public IStrategoList removeResult(IStrategoTerm taskID) {
-		return toResult.remove(taskID);
+	public void removeResult(IStrategoTerm taskID) {
+		getTask(taskID).results = null;
 	}
 
 	public IStrategoList getResult(IStrategoTerm taskID) {
-		return toResult.get(taskID);
+		return getTask(taskID).results;
 	}
 
-	public Set<Entry<IStrategoTerm, IStrategoList>> getAllResults() {
-		return toResult.entrySet();
+	public void setMessage(IStrategoTerm taskID, IStrategoTerm message) {
+		getTask(taskID).message = message;
 	}
 
-	public void setMessage(IStrategoTerm taskID, IStrategoTerm resultList) {
-		toMessage.put(taskID, resultList);
-	}
-
-	public IStrategoTerm removeMessage(IStrategoTerm taskID) {
-		return toMessage.remove(taskID);
+	public void removeMessage(IStrategoTerm taskID) {
+		getTask(taskID).message = null;
 	}
 
 	public IStrategoTerm getMessage(IStrategoTerm taskID) {
-		return toMessage.get(taskID);
+		return getTask(taskID).message;
 	}
 
 	public IStrategoList getMessages(IStrategoString partition) {
@@ -376,15 +342,15 @@ public class TaskEngine {
 	}
 
 	public void addFailed(IStrategoTerm taskID) {
-		failed.add(taskID);
+		getTask(taskID).failed = true;
 	}
 
-	public boolean removeFailed(IStrategoTerm taskID) {
-		return failed.remove(taskID);
+	public void removeFailed(IStrategoTerm taskID) {
+		getTask(taskID).failed = false;
 	}
 
 	public boolean hasFailed(IStrategoTerm taskID) {
-		return failed.contains(taskID);
+		return getTask(taskID).failed;
 	}
 
 	public boolean isSolved(IStrategoTerm taskID) {
@@ -397,31 +363,33 @@ public class TaskEngine {
 	}
 
 	public void addTime(IStrategoTerm taskID, long time) {
-		final Long timeBox = toTime.get(taskID);
-		toTime.put(taskID, (timeBox == null ? 0 : timeBox) + time);
+		getTask(taskID).time += time;
 	}
-	
+
 	public void clearTimes() {
-		toTime.clear();
+		for(Task task : getTasks()) {
+			task.time = -1;
+		}
 	}
-	
-	public Long getTime(IStrategoTerm taskID) {
-		return toTime.get(taskID);
+
+	public long getTime(IStrategoTerm taskID) {
+		return getTask(taskID).time;
 	}
-	
+
 	public void addEvaluation(IStrategoTerm taskID) {
-		final Long evaluationsBox = toEvaluations.get(taskID);
-		toEvaluations.put(taskID, (evaluationsBox == null ? 0 : evaluationsBox) + 1);
+		++getTask(taskID).evaluations;
 	}
-	
+
 	public void clearEvaluations() {
-		toEvaluations.clear();
+		for(Task task : getTasks()) {
+			task.evaluations = 0;
+		}
 	}
-	
-	public Long getEvaluations(IStrategoTerm taskID) {
-		return toEvaluations.get(taskID);
+
+	public short getEvaluations(IStrategoTerm taskID) {
+		return getTask(taskID).evaluations;
 	}
-	
+
 	public ITaskEvaluator getEvaluator() {
 		return evaluator;
 	}
@@ -429,42 +397,30 @@ public class TaskEngine {
 	public ITermDigester getDigester() {
 		return digester;
 	}
-	
+
 	public void reset() {
-		toInstruction.clear();
+		digester.reset();
+		toTasks.clear();
 		toPartition.clear();
 		toDependency.clear();
 		toRead.clear();
-		toResult.clear();
-		toMessage.clear();
-		failed.clear();
-		toTime.clear();
-		toEvaluations.clear();
+		garbage.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
 		evaluator.reset();
-		digester.reset();
 	}
 
 	private void collectGarbage() {
-		// TODO: this iterates over the entire tasks collection?
-		final ArrayList<IStrategoTerm> garbage = new ArrayList<IStrategoTerm>(this.garbage);
-		
-		solved.removeAll(garbage);
-		toMessage.remove(garbage);
-		failed.removeAll(garbage);
-		
 		for(final IStrategoTerm taskID : garbage) {
 			toDependency.removeAll(taskID);
 			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
 			toRead.removeAllInverse(taskID);
-			toTime.remove(taskID);
-			toEvaluations.remove(taskID);
 			digester.undigest(getInstruction(taskID));
+			toTasks.remove(taskID);
 		}
-		
-		tasks.removeAll(garbage);
+
+		garbage.clear();
 	}
 }
