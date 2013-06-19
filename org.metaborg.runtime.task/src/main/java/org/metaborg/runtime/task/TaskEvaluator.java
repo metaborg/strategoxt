@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.Tools;
@@ -36,6 +37,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 	/** Dependencies of tasks which are updated during evaluation. */
 	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toRuntimeDependency = ManyToManyMap.create();
 
+	/** Timer for measuring task time **/
+	private final Timer timer = new Timer();
+
 
 	public TaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
@@ -53,6 +57,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	public IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults)
 		throws InterpreterException {
+		taskEngine.clearTimes();
+		taskEngine.clearEvaluations();
+
 		try {
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
 			for(final IStrategoTerm taskID : nextScheduled) {
@@ -122,15 +129,16 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private IStrategoTerm solve(IContext context, Strategy performInstruction, Strategy insertResults,
 		IStrategoTerm taskID, IStrategoTerm instruction) throws InterpreterException {
 		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
-		// return performInstruction.invoke(context, insertedInstruction, taskID);
+		timer.start();
 		((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] {
 			insertedInstruction, taskID });
+		taskEngine.addTime(taskID, timer.stop());
+		taskEngine.addEvaluation(taskID);
 		return context.current();
 	}
 
 	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction)
 		throws InterpreterException {
-		// return insertResults.invoke(context, instruction);
 		((CallT) insertResults).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { instruction });
 		return context.current();
 	}

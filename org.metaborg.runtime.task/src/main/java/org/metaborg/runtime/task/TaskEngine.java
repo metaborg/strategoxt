@@ -6,6 +6,7 @@ import static com.google.common.collect.Sets.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -55,7 +56,13 @@ public class TaskEngine {
 
 	/** Tasks that have failed to produce a solution. */
 	private final Set<IStrategoTerm> failed = new HashSet<IStrategoTerm>();
+	
+	/** Time taken for each task. **/
+	private final Map<IStrategoTerm, Long> toTime = new HashMap<IStrategoTerm, Long>();
 
+	/** Time taken for each task. **/
+	private final Map<IStrategoTerm, Long> toEvaluations = new HashMap<IStrategoTerm, Long>();
+	
 
 	/** All tasks (view). */
 	private final Set<IStrategoTerm> tasks = toInstruction.keySet();
@@ -189,7 +196,8 @@ public class TaskEngine {
 	 *            An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
 	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoList partitions,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed) {
+		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
+		IStrategoTerm time, IStrategoTerm evaluations) {
 		toInstruction.put(taskID, instruction);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
@@ -201,6 +209,10 @@ public class TaskEngine {
 			toResult.put(taskID, (IStrategoList) results);
 		if(failed.intValue() == 1)
 			this.failed.add(taskID);
+		if(time.getTermType() == IStrategoTerm.INT)
+			toTime.put(taskID, (long)((IStrategoInt)time).intValue());
+		if(evaluations.getTermType() == IStrategoTerm.INT)
+			toEvaluations.put(taskID, (long)((IStrategoInt)evaluations).intValue());
 	}
 
 	/**
@@ -384,6 +396,32 @@ public class TaskEngine {
 		removeFailed(taskID);
 	}
 
+	public void addTime(IStrategoTerm taskID, long time) {
+		final Long timeBox = toTime.get(taskID);
+		toTime.put(taskID, (timeBox == null ? 0 : timeBox) + time);
+	}
+	
+	public void clearTimes() {
+		toTime.clear();
+	}
+	
+	public Long getTime(IStrategoTerm taskID) {
+		return toTime.get(taskID);
+	}
+	
+	public void addEvaluation(IStrategoTerm taskID) {
+		final Long evaluationsBox = toEvaluations.get(taskID);
+		toEvaluations.put(taskID, (evaluationsBox == null ? 0 : evaluationsBox) + 1);
+	}
+	
+	public void clearEvaluations() {
+		toEvaluations.clear();
+	}
+	
+	public Long getEvaluations(IStrategoTerm taskID) {
+		return toEvaluations.get(taskID);
+	}
+	
 	public ITaskEvaluator getEvaluator() {
 		return evaluator;
 	}
@@ -400,6 +438,8 @@ public class TaskEngine {
 		toResult.clear();
 		toMessage.clear();
 		failed.clear();
+		toTime.clear();
+		toEvaluations.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
@@ -420,6 +460,8 @@ public class TaskEngine {
 			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
 			toRead.removeAllInverse(taskID);
+			toTime.remove(taskID);
+			toEvaluations.remove(taskID);
 			digester.undigest(getInstruction(taskID));
 		}
 		
