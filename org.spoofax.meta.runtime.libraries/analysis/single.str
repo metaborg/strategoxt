@@ -10,5 +10,6 @@ rules // Single file analysis
     ast -> (analyzed-ast, unevaluated-task*, evaluated-count, (error*, warning*, note*))
     with // Setup index
       partition := $[[project-path]/[path]];
-      r@Result(_, _, analyzed-ast, _, error*, warning*, note*) := <analyze-collect(|language, project-path)> File(partition, ast);
-    	(unevaluated-task*, evaluated-count) := <analyze-perform-all> [r]
+      r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
+    	(result*, unevaluated-task*, evaluated-count) := <analyze-perform-all> [r];
+    	Result(_, _, _, _, error*, warning*, note*) := <Hd> result*
