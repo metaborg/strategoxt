@@ -75,5 +75,6 @@ strategies
   
   type-match(|task*, relation) = prop-match(|task*, relation)
 
-  type-of = property-task(|Type())
+  type-of = debug(!"1 "); property-task(|Type()); debug(!"2 "); insert-results; try-remove-list; debug(!"3 ")
+  
   
