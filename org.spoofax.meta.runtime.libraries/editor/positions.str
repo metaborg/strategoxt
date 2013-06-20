@@ -1,4 +1,4 @@
-module positions
+module editor/positions
 
 signature constructors
 

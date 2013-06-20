@@ -1,10 +1,15 @@
 module types/collect
 
 imports 
-  task/-
-  types/-
-  nbl/-
-  editor/-
+	
+  task/core
+  task/messages
+  task/tasks
+  types/interface
+  types/tasks
+  nbl/collect
+  nbl/utils
+  editor/origins
   
 strategies
   
