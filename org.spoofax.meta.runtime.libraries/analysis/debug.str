@@ -5,6 +5,7 @@ imports
 	index/core
 	index/query
 	task/core
+	task/debug
 
 rules
 	
@@ -31,6 +32,14 @@ rules
       task-setup(|project-path);
       filename := <guarantee-extension(|"task.current.aterm")> path;
       result   := <task-debug-info(|partition)>
+      
+  analysis-debug-show-tasks-selection(|language):
+    (selected, _, _, path, project-path) -> (filename, result)
+    with
+    	partition := $[[project-path]/[path]];
+      task-setup(|project-path);
+      filename := <guarantee-extension(|"task.selected.aterm")> path;
+      result   := <task-debug-ast> selected
       
   analysis-debug-reset-index(|language):
     (_, _, _, path, project-path) -> None()
