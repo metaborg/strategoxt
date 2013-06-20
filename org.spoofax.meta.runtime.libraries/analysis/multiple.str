@@ -29,7 +29,3 @@ rules // Multi file analysis
       result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*;
     	(result'*, unevaluated-task*, evaluated-count) := <analyze-perform-all> result*
       
-rules // Utility
-
-  nabl-analyze-multiple-work-units = 
-    length; !(<id>, 3); mul
