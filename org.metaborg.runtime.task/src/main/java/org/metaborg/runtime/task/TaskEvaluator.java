@@ -130,16 +130,17 @@ public class TaskEvaluator implements ITaskEvaluator {
 		IStrategoTerm taskID, IStrategoTerm instruction) throws InterpreterException {
 		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
 		timer.start();
-		((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] {
-			insertedInstruction, taskID });
+		context.setCurrent(insertedInstruction);
+		boolean success = ((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { taskID });
 		taskEngine.addTime(taskID, timer.stop());
 		taskEngine.addEvaluation(taskID);
-		return context.current();
+		return success ? context.current() : null;
 	}
 
 	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction)
 		throws InterpreterException {
-		((CallT) insertResults).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { instruction });
+		context.setCurrent(instruction);
+		((CallT) insertResults).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[0]);
 		return context.current();
 	}
 
