@@ -59,10 +59,8 @@ rules
   perform-task(|nr): 
     Rewrite(key, term) -> result
     where
-      result := <try-make-list; filter(!(key, <id>); task-match)> term;
-      if [] := result then
-        fail
-      end
+      term'  := <try-make-list; map(try-remove-list)> term; 
+      result := <task-match; try-make-list> (key, term')
   
   perform-task(|nr):
   	Concat(term*) -> <concat> term*
