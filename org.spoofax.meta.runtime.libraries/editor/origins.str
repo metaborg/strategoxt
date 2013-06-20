@@ -1,14 +1,9 @@
 module editor/origins
 
-strategies
+imports
+	
+	editor/editor
 
-  project-path = prim("SSL_EXT_projectpath")
-  
-  plugin-path = prim("SSL_EXT_pluginpath")
-    
-  refresh-workspace-file:
-    path -> <prim("SSL_EXT_refreshresource", path)>
-  
 strategies
   
   origin-term      = prim("SSL_EXT_origin_term", <id>)

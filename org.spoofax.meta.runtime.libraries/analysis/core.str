@@ -21,7 +21,7 @@ signature
 rules // Analysis
 	
 	analyze-collect(|language, project-path):
-    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
+    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
     with
     	measure-time(
 	    	measure-time(
@@ -38,21 +38,28 @@ rules // Analysis
 	      	task-stop-collection(|partition);
 	      	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
 	      	, id | "analyze-collect-diff" 
-	  	  );  measure-time(
-	  	  	(error*, warning*, note*) := <analyze-messages(|partition)>
-	  	  	, id | "analyze-collect-messages"
 	  	  )
   	  , id | "analyze-collect-total")
 	
 	analyze-perform-all:
-		result* -> (unevaluated-task*, evaluated-count)
+		result* -> (result'*, unevaluated-task*, evaluated-count)
 		with
-			measure-time(mapconcat(analyze-result-reads); make-set => changed-read*, id | "analyze-task-evaluate-concat-reads");
-      measure-time(task-evaluate(|changed-read*) => (unevaluated-task*, evaluated-count), id | "analyze-task-evaluate")
-  
+			measure-time(
+				measure-time(
+					mapconcat(analyze-result-reads); make-set => changed-read*
+					, id | "analyze-task-evaluate-concat-reads"
+			  ); measure-time(
+	      	task-evaluate(|changed-read*) => (unevaluated-task*, evaluated-count)
+	      	, id | "analyze-task-evaluate"
+	      ); measure-time(
+	  	  	result'* := <map(analyze-messages)> result*
+	  	  	, id | "analyze-task-messages"
+	  	  )
+  	, id | "analyze-task-total")
+  	  
   // TODO: origin tracking    
-  analyze-messages(|partition):
-  	_ -> (error*, warning*, note*)
+  analyze-messages:
+  	Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
   	with
   		message* := <task-get-messages(|partition)>;
   		error*   := <filter(?Error(_, _); analyze-message-to-tuple)> message*;

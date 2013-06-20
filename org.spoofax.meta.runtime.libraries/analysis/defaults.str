@@ -1,0 +1,101 @@
+module analysis/defaults
+
+imports
+	
+	analysis/core
+	analysis/single
+	analysis/multiple
+	nbl/utils
+	index/core
+	task/core
+	editor/editor
+	editor/queue
+
+rules // Analysis
+	
+	analysis-default-editor = analysis-single-default-interface <+ (where(not(is-tuple)); analysis-multiple-default-queue)
+	analysis-default-cmd = analysis-single-default-interface <+ (where(not(is-tuple)); analysis-multiple-default-interface)
+
+rules // Single finle analysis
+	
+	analysis-single-default-interface = fail
+	
+  analysis-single-default(desugar-all, pp-message|language):
+    (ast, path, project-path) -> (ast', error*, warning*, note*)
+    with
+      editor-init;
+      <debug(!"Analyzing file: ")> path;
+      (ast', unevaluated-task*, evaluated-count, (analysis-error*, analysis-warning*, analysis-note*)) := <desugar-all; analyze-one(|language, path, project-path)> ast;
+      (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
+      // TODO: Update markers for partitions that have had a task executed.
+      
+rules // Multi-file analysis
+      
+  analysis-multiple-default-interface = fail    
+      
+	analysis-multiple-default-queue:
+    path* -> None()
+    with
+      queue-strategy(|"analysis-multiple-default-interface", "Analyzing files")
+      
+  analysis-multiple-default(parse, pp-message|language, project-path):
+    path* -> (result'*, unevaluated-task*, evaluated-count)
+    with
+    	debug(!"Analyzing files: ");
+      analysis-multiple-default-work-units; set-total-work-units;
+      measure-time(
+	      measure-time(
+	      	path'* := <map(\p -> $[[project-path]/[p]]\)> path*;
+	        (result*, unevaluated-task*, evaluated-count) := <analyze-multiple(parse, complete-work-unit|language, project-path)> path'*;
+	        result'* := <filter(analysis-message-update-editor(pp-message))> result*
+	      , id | "analysis-multiple-full-analysis"
+	      );
+	    	measure-time(
+		      index-commit
+	      	, id | "analysis-multiple-index-commit"
+	      );
+	    	measure-time(
+		      task-persist
+	      	, id | "analysis-multiple-task-commit"
+	      )
+	    , id | "analysis-multiple-total");
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
+	
+
+  analysis-multiple-default-work-units = 
+    length; !(<id>, 3); mul	
+	    
+rules // Message collection and updating.
+	
+	constraint-error = fail
+	constraint-warning = fail
+	constraint-note = fail
+	
+  analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*):
+    ast -> ([<map(pp-message)> analysis-error*, error*], [<map(pp-message)> analysis-warning*, warning*], 
+    	[<map(pp-message)> analysis-note*, note*])
+    with
+      error*   := <collect-all(constraint-error, conc)> ast;
+      warning* := <collect-all(constraint-warning, conc)> ast;
+      note*    := <collect-all(constraint-note, conc)> ast
+
+  analysis-message-update-editor(pp-message):
+    Result(partition, initial-ast, analyzed-ast, changed-read*, error* , warning* , note*) -> 
+    Result(partition, initial-ast, analyzed-ast, changed-read*, error'*, warning'*, note'*)
+    where
+      not(() := initial-ast)
+    with
+      (error'*, warning'*, note'*) := <analysis-message-collect(pp-message|error*, warning*, note*)> analyzed-ast;
+      <set-markers(|initial-ast)> (analyzed-ast, error'*, warning'*, note'*)
+      
+rules // On-save handler
+	
+  analysis-save-default(|language):
+  	(_, _, _, path, project-path) -> None()
+  	with
+  		index-setup(|language, [project-path], $[[project-path]/[path]]);
+  		index-commit;
+  		task-setup(|project-path);
+  		task-persist
+		

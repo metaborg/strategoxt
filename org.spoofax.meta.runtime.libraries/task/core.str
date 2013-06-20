@@ -142,7 +142,7 @@ rules // API
 rules /** @internal API externals */
 
 	task-api-setup(|project-path) = prim("task_api_setup", project-path)
-	task-api-start-collection(|partition) = prim("task_api-start_collection", partition)
+	task-api-start-collection(|partition) = prim("task_api_start_collection", partition)
 	task-api-stop-collection(|partition) = prim("task_api_stop_collection", partition)
 	task-api-add-task(|partition, dependencies, instruction) = prim("task_api_add_task", partition, dependencies, instruction)
 	task-api-becomes-cyclic(|taskIDFrom, taskIDTo) = prim("task_api_becomes_cyclic", taskIDFrom, taskIDTo)
