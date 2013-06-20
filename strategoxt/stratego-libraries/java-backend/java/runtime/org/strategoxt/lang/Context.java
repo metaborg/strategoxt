@@ -26,6 +26,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
+import org.strategoxt.lang.typesmart.TypesmartSyntaxTermFactory;
 import org.strategoxt.lang.typesmart.TypesmartTermFactory;
 //import org.strategoxt.lang.typesmart.TypesmartTermFactory;
 
@@ -69,8 +70,10 @@ public class Context extends StackTracer implements IAsyncCancellable {
 	}
 
 	public Context(ITermFactory factory, IOAgent ioAgent) {
-		factory = TypesmartTermFactory.registerTypesmartFactory(this, factory);
-		assert TypesmartTermFactory.isTypesmart(factory);
+		factory = TypesmartSyntaxTermFactory.registerTypesmartFactory(this, factory);
+		assert TypesmartSyntaxTermFactory.isTypesmartSyntax(factory);
+//		factory = TypesmartTermFactory.registerTypesmartFactory(this, factory);
+//		assert TypesmartTermFactory.isTypesmart(factory);
 		this.factory = factory;
 		this.operatorRegistryMap = new HashMap<String, IOperatorRegistry>();
 		this.operatorRegistries = new ArrayList<IOperatorRegistry>();
