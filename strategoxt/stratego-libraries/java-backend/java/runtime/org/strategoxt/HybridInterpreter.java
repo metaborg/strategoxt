@@ -45,7 +45,7 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
-import org.strategoxt.lang.typesmart.TypesmartSyntaxTermFactory;
+import org.strategoxt.lang.typesmart.TypesmartTermFactory;
 import org.strategoxt.strc.desugar_0_0;
 import org.strategoxt.strc.desugar_list_matching_0_0;
 import org.strategoxt.strc.pre_desugar_0_0;
@@ -118,10 +118,8 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		super(termFactory, programFactory);
 
 		compiledContext = new HybridCompiledContext(termFactory);
-//		termFactory = TypesmartTermFactory.registerTypesmartFactory(compiledContext, termFactory);
-//		assert TypesmartTermFactory.isTypesmart(termFactory);
-		termFactory = new TypesmartSyntaxTermFactory(compiledContext, termFactory);
-		assert TypesmartSyntaxTermFactory.isTypesmartSyntax(termFactory);
+		termFactory = TypesmartTermFactory.registerTypesmartFactory(compiledContext, termFactory);
+		assert TypesmartTermFactory.isTypesmart(termFactory);
 		compiledContext.setFactory(termFactory);
 		getContext().setFactory(termFactory);
 		recordingFactory = new ConstructorRecordingTermFactory(termFactory);
