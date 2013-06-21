@@ -66,7 +66,9 @@ public class TaskManager {
 			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
 			TaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
 			if(taskEngine == null) {
-				taskEngine = tryReadFromFile(getFile(project), factory);
+				File taskEngineFile = getFile(project);
+				if(taskEngineFile.exists())
+					taskEngine = tryReadFromFile(taskEngineFile, factory);
 			}
 			if(taskEngine == null) {
 				taskEngine = createTaskEngine(factory);
@@ -115,7 +117,7 @@ public class TaskManager {
 			IStrategoTerm tasks = new TermReader(factory).parseFromFile(file.toString());
 			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
 		} catch(Exception e) {
-			return null;
+			throw new RuntimeException("Failed to load task engine from " + file.getName(), e);
 		}
 	}
 
