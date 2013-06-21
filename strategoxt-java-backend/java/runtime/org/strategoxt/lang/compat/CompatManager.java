@@ -51,7 +51,6 @@ public class CompatManager {
 
 		// More standard registries, kind of
         context.addOperatorRegistry(new LanguageLibrary());
-        context.addOperatorRegistry(new IndexLibrary());
         context.addOperatorRegistry(new OriginLibrary());
         context.addOperatorRegistry(new XMLLibrary());
         context.addOperatorRegistry(new InterpreterLibrary());
