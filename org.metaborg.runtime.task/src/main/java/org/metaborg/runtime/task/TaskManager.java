@@ -52,6 +52,13 @@ public class TaskManager {
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
+	
+	public TaskEngine getTaskEngine(String absoluteProjectPath) {
+		URI project = getProjectURIFromAbsolute(absoluteProjectPath);
+		WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
+		TaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
+		return taskEngine;
+	}
 
 	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
 		URI project = getProjectURI(projectPath, agent);
@@ -92,6 +99,13 @@ public class TaskManager {
 		File file = new File(projectPath);
 		if(!file.isAbsolute())
 			file = new File(agent.getWorkingDir(), projectPath);
+		return file.toURI();
+	}
+	
+	private URI getProjectURIFromAbsolute(String projectPath) {
+		File file = new File(projectPath);
+		if(!file.isAbsolute())
+			throw new RuntimeException("Project path is not absolute.");
 		return file.toURI();
 	}
 
