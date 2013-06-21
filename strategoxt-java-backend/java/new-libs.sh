@@ -20,6 +20,7 @@ $JAR uf spoofax-libs.jar.tmp -C $MB_EXEC/org.spoofax.interpreter.library.java/bi
 $JAR uf spoofax-libs.jar.tmp -C $MB_EXEC/org.spoofax.interpreter.library.xml/bin/ .
 $JAR uf spoofax-libs.jar.tmp -C $MB_EXEC/org.spoofax.interpreter.library.interpreter/bin/ .
 $JAR uf spoofax-libs.jar.tmp -C $MB_REP/org.spoofax.terms/bin/ .
+$JAR uf spoofax-libs.jar.tmp -C $MB_REP/org.spoofax.interpreter.library.index/bin/ .
 $JAR uf spoofax-libs.jar.tmp -C $JSGLR/org.spoofax.jsglr/bin/ .
 $JAR uf spoofax-libs.jar.tmp -C $JSGLR/org.spoofax.interpreter.library.jsglr/bin/ .
 $JAR uf spoofax-libs.jar.tmp -C $SPX/org.spoofax.interpreter.library.language/bin/ .
