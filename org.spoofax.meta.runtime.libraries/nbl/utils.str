@@ -32,9 +32,11 @@ rules
     where(after := <times>; !(after, before); diff-times; times-to-seconds; Fst; log)
   
   measure-time(s, log | name) = 
-    measure-time(s, record-time-native(|name); log)
+    measure-time(s, record-time(|name); log)
+  
+  record-time(|name) = id
     
-  external record-time-native(|name)
+  //external record-time-native(|name)
   	
  	try-make-list = is-list <+ ?Dependency(_) <+ ![<id>]
 		

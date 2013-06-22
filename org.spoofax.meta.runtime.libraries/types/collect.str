@@ -27,14 +27,16 @@ strategies
   new-property-task(|task*):
     (Type(), term) -> <type-of(|task*)> term
 
+  property-task(|kind, task*) = 
+     property-task(|kind)
+  <+ <new-property-task(|task*)> (kind, <id>)
+ 
   property-task(|kind) = 
     get-annos
   ; fetch-elem(?(kind, task))
   ; !task
  
-  property-task(|kind, task*) = 
-     property-task(|kind)
-  <+ <new-property-task(|task*)> (kind, <id>)
+  property-of(|kind) = property-task(|kind); insert-results; try-remove-list
     
 strategies
   
@@ -80,5 +82,5 @@ strategies
   
   type-match(|task*, relation) = prop-match(|task*, relation)
 
-  type-of = property-task(|Type())
+  type-of = property-of(|Type())
   
