@@ -5,6 +5,7 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -19,7 +20,11 @@ public class task_api_get_messages_0_1 extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
 		throws InterpreterException {
 		final IStrategoTerm partition = tvars[0];
-		env.setCurrent(TaskManager.getInstance().getCurrent().getMessages((IStrategoString) partition));
+		final IStrategoList messages = TaskManager.getInstance().getCurrent().getMessages((IStrategoString) partition);
+		if(messages != null)
+			env.setCurrent(messages);
+		else
+			return false;
 		return true;
 	}
 }
