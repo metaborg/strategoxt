@@ -1,0 +1,18 @@
+module analysis/resolve
+
+imports
+	
+	nbl/resolve
+	task/core
+	index/core
+	index/query
+	
+rules
+	
+	analysis-resolve(|language, project-path, path):
+		node -> definition
+		where
+			task-setup(|project-path);
+    	index-setup(|language, project-path, $[[project-path]/[path]]);
+    	<nabl-has-reference> node;
+    	definition := <nabl-collect-one-resolved-def; index-get-all; Hd> node

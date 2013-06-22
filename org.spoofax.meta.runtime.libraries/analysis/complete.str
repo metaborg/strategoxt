@@ -1,0 +1,15 @@
+module analysis/complete
+
+imports
+	
+	nbl/complete
+	task/core
+	index/core
+	
+rules
+	
+	analysis-propose-completions(|language, project-path, path):
+		ast -> <nabl-propose-completions> ast
+		with
+    	task-setup(|project-path);
+    	index-setup(|language, project-path, $[[project-path]/[path]])
