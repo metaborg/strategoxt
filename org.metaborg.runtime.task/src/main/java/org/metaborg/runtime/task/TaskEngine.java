@@ -127,7 +127,8 @@ public class TaskEngine {
 
 		final IStrategoTerm taskID = taskID(instruction);
 
-		if(toTasks.put(taskID, new Task(instruction)) == null) {
+		if(!toTasks.containsKey(taskID)) {
+			toTasks.put(taskID, new Task(instruction));
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
 		}
@@ -159,7 +160,7 @@ public class TaskEngine {
 		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
 		IStrategoTerm time, IStrategoTerm evaluations) {
 		Task task = new Task(instruction);
-		if(toTasks.put(taskID, task) == null)
+		if(toTasks.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
 		for(final IStrategoTerm partition : partitions)
