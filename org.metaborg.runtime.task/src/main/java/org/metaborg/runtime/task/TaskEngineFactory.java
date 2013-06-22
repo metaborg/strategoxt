@@ -25,8 +25,8 @@ public class TaskEngineFactory {
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			IStrategoTerm results = serializeResults(taskEngine.getResult(taskID), factory, serializer);
 			final boolean failed = taskEngine.hasFailed(taskID);
-			final Long time = taskEngine.getTime(taskID);
-			final Long evaluations = taskEngine.getEvaluations(taskID);
+			final long time = taskEngine.getTime(taskID);
+			final short evaluations = taskEngine.getEvaluations(taskID);
 			tasks =
 				factory.makeListCons(
 					createTaskTerm(factory, taskID, instruction, partitions, dependencies, reads, results, failed,
@@ -64,7 +64,7 @@ public class TaskEngineFactory {
 
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
 		Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
-		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, Long time, Long evaluations) {
+		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, long time, short evaluations) {
 		return factory.makeTuple(
 			taskID, 
 			instruction, 
@@ -73,8 +73,8 @@ public class TaskEngineFactory {
 			factory.makeList(reads), 
 			results == null ? factory.makeTuple() : results, 
 			failed ? factory.makeInt(1) : factory.makeInt(0), 
-			time == null ? factory.makeTuple() : factory.makeInt((int) (long) time),
-			evaluations == null ? factory.makeTuple() : factory.makeInt((int) (long) evaluations)
+			factory.makeInt((int) time),
+			factory.makeInt(evaluations)
 		);
 	}
 
