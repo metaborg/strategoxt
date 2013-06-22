@@ -191,8 +191,7 @@ public class TaskEngine {
 
 		for(final IStrategoTerm removed : removedTasks) {
 			toPartition.remove(removed, partition);
-			Collection<IStrategoString> partitions = toPartition.get(removed);
-			if(partitions == null || partitions.isEmpty())
+			if(!toPartition.containsKey(removed))
 				garbage.add(removed);
 		}
 		
