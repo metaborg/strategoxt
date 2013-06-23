@@ -158,7 +158,7 @@ public class TaskEngine {
 	 */
 	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoList partitions,
 		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm time, IStrategoTerm evaluations) {
+		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
 		Task task = new Task(instruction);
 		if(toTasks.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
@@ -173,6 +173,8 @@ public class TaskEngine {
 			task.results = (IStrategoList) results;
 		if(failed.intValue() == 1)
 			task.failed = true;
+		if(message.getTermType() != IStrategoTerm.TUPLE || message.getSubtermCount() != 0)
+			task.message = message;
 		if(time.getTermType() == IStrategoTerm.INT)
 			task.time = ((IStrategoInt) time).intValue();
 		if(evaluations.getTermType() == IStrategoTerm.INT)
@@ -194,7 +196,7 @@ public class TaskEngine {
 			if(!toPartition.containsKey(removed))
 				garbage.add(removed);
 		}
-		
+
 		inCollection.remove(partition);
 		collectGarbage();
 	}
