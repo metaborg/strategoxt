@@ -117,7 +117,12 @@ public class TaskManager {
 			IStrategoTerm tasks = new TermReader(factory).parseFromFile(file.toString());
 			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
 		} catch(Exception e) {
-			throw new RuntimeException("Failed to load task engine from " + file.getName(), e);
+			if(!file.delete())
+				throw new RuntimeException("Failed to load task engine from " + file.getName()
+					+ ". The file could not be deleted, please manually delete the file and restart analysis.", e);
+			else
+				throw new RuntimeException("Failed to load task engine from " + file.getName()
+					+ ". The file has been deleted, a new task engine will be created on the next analysis.", e);
 		}
 	}
 
