@@ -30,15 +30,12 @@ rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
   perform-task(|nr):
-  	ResolveDefs(scope, ns, name) -> result
+  	ResolveDefs(scope, ns, name) -> def*
   	where
   		uri   := <nabl-uri> scope;
   		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
   		def*  := <nabl-lookup(|ns, name')> uri;
-  		switch id
-        case ?[]  : fail
-        otherwise : id
-			end => result;
+  		not(?[]);
 			<nabl-add-read-extend(|nr, ns, name')> uri
 
 	// Calls a user-defined disambiguation filter on definitions with relevant information.
@@ -46,10 +43,10 @@ rules // Resolve
 		DisambiguateDefs(def*, prop*, namespace, name) -> result
 		where
 			if <Tl> def* then
-				result := <try(nabl-disambiguate(|prop*, namespace, name))> def*
+				<try(nabl-disambiguate(|prop*, namespace, name))> def*
 			else
-				result := def*
-			end
+				!def*
+			end => result
 
 	// Looks up named imports, active in scopes with namespace and name..
 	perform-task(|nr):
@@ -97,14 +94,11 @@ rules // Visibility
 	
   // Looks up defintions in scopes with namespace and name.
   perform-task(|nr):
-  	ResolveAllDefs(scope, ns) -> result
+  	ResolveAllDefs(scope, ns) -> def*
   	where
   		uri  := <nabl-uri> scope;
   		def* := <nabl-lookup-all(|ns)> uri;
-  		switch id
-        case ?[]  : fail
-        otherwise : id
-			end => result
+  		not(?[])
 
 rules // Import calculation
 	
@@ -149,7 +143,7 @@ rules // Import calculation
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
+					case task-get-result => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<id>]
 					otherwise                                             : ![]
 				end => result
@@ -192,17 +186,6 @@ rules // Property constraints
       else
         entry' := <task-create-dependencies> value
       end
-
-rules // Property calcuation
-
-  perform-task(|nr): 
-  	PropCalc(prop, term) -> result'
-  	where
-  		result := <calc-property> (prop, term);
-  		switch id
-  			case task-collect-dependencies => d : !d
-      	otherwise                           : id
-			end => result'
 
 rules // Utility
 	
