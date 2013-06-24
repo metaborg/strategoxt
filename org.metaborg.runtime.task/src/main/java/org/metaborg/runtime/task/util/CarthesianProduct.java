@@ -5,18 +5,17 @@ import java.util.Collection;
 import java.util.Map.Entry;
 
 import org.spoofax.interpreter.library.ssl.StrategoHashMap;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import com.google.common.collect.Multimap;
 
 public final class CarthesianProduct {
-	public static Collection<StrategoHashMap> cartesianProduct(Multimap<IStrategoInt, IStrategoTerm> results) {
+	public static Collection<StrategoHashMap> cartesianProduct(Multimap<IStrategoTerm, IStrategoTerm> results) {
 		Collection<StrategoHashMap> result = new ArrayList<StrategoHashMap>();
 		if(results.size() > 0)
 			result.add(new StrategoHashMap());
 
-		for(Entry<IStrategoInt, Collection<IStrategoTerm>> entry : results.asMap().entrySet()) {
+		for(Entry<IStrategoTerm, Collection<IStrategoTerm>> entry : results.asMap().entrySet()) {
 			Collection<StrategoHashMap> newResults = new ArrayList<StrategoHashMap>();
 			for(StrategoHashMap map : result) {
 				for(IStrategoTerm val : entry.getValue()) {

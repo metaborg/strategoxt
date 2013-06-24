@@ -32,17 +32,11 @@ rules // Resolve
   perform-task(|nr):
   	ResolveDefs(scope, ns, name) -> def*
   	where
-  		debug(!"1: ");
   		uri   := <nabl-uri> scope;
-  		debug(!"2: ");
   		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
-  		debug(!"3: ");
   		<nabl-add-read-extend(|nr, ns, name')> uri;
-  		debug(!"4: ");
   		def*  := <nabl-lookup(|ns, name')> uri;
-  		debug(!"5: ");
-  		not(?[]);
-  		debug(!"6: ")
+  		not(?[])
 
 	// Calls a user-defined disambiguation filter on definitions with relevant information.
 	perform-task(|nr):
@@ -82,13 +76,13 @@ rules // Resolve
 			
 	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
-		where
+		with
 			<nabl-add-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <hashtable-get(|ns)> h
+					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hashtable-get(|ns)> h
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<task-create-dependency> import-closure-id]
 					otherwise                                             : ![]
 				end => result
@@ -150,7 +144,7 @@ rules // Import calculation
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
+					case task-get-result; Hd => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<id>]
 					otherwise                                             : ![]
 				end => result

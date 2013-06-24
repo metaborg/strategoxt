@@ -21,7 +21,6 @@ import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
@@ -102,40 +101,34 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				++numTasksEvaluated;
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
+				nextScheduled.remove(instruction);
 				final Iterable<IStrategoTerm> instructions =
 					instructionCombinations(context, collect, insert, instruction);
 
-				// TODO: optimize fail/success by using bit flags?
-				boolean fail = false;
-				boolean success = false;
+				// TODO: optimize success/unknown using a bitflag?
+				boolean unknown = false;
+				boolean failure = true;
 				for(IStrategoTerm insertedInstruction : instructions) {
 					final IStrategoTerm result = solve(context, perform, taskID, insertedInstruction);
 					final ResultType resultType = handleResult(taskID, instruction, result);
 					switch(resultType) {
 						case Fail:
-							fail = true;
 							break;
 						case Success:
-							success = true;
+							failure = false;
 							break;
-						case Unknown:
-							throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
-								+ ".");
-						default:
+						default: // Unknown result or dynamic dependency.
+							unknown = true;
 							break;
 					}
 				}
 
-				if(fail || success) {
-					// TODO: should completely failed tasks activate other tasks? Probably not since one of its results
-					// will be empty, so it cannot be evaluated.
+				if(!unknown) {
+					// Try to schedule new tasks even for failed tasks since they may activate combinators.
 					tryScheduleNewTasks(taskID);
-
-					if(success) {
-						nextScheduled.remove(instruction);
-					} else {
+					
+					if(failure)
 						taskEngine.setFailed(taskID);
-					}
 				}
 			}
 
@@ -160,18 +153,16 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 		if(resultIDs.getSubtermCount() == 0) {
 			instructions.add(instruction);
-		}
-		else if(!isTaskCombinator(instruction)) {
+		} else if(!isTaskCombinator(instruction)) {
 			// TODO: prevent construction of a multimap by changing cartesianProduct to accept a list of task IDs.
-			final Multimap<IStrategoInt, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
+			final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
 			for(IStrategoTerm resultID : resultIDs) {
-				IStrategoInt key = (IStrategoInt) resultID;
-				final Iterable<IStrategoTerm> results = taskEngine.getResults(key);
+				final Iterable<IStrategoTerm> results = taskEngine.getResults(resultID);
 				// If one of the results of a dependency are empty the task cannot be executed, so return no
 				// instructions.
 				if(!results.iterator().hasNext())
 					return instructions;
-				resultsMap.putAll(key, results);
+				resultsMap.putAll(resultID, results);
 			}
 
 			final Collection<StrategoHashMap> resultCombinations = cartesianProduct(resultsMap);
@@ -202,7 +193,12 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction,
 		StrategoHashMap resultCombinations) {
-		return invoke(context, insertResults, instruction, resultCombinations);
+		return invoke(context, insertResults, instruction,
+			createHashtableTerm(context.getFactory(), resultCombinations));
+	}
+
+	private IStrategoAppl createHashtableTerm(ITermFactory factory, StrategoHashMap hashMap) {
+		return factory.makeAppl(factory.makeConstructor("Hashtable", 1), hashMap);
 	}
 
 	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID,
@@ -215,7 +211,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	}
 
 	private enum ResultType {
-		Unknown, DynamicDependency, Fail, Success
+		DynamicDependency, Fail, Success
 	}
 
 	private ResultType handleResult(IStrategoTerm taskID, final IStrategoTerm instruction, final IStrategoTerm result) {

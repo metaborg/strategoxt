@@ -27,7 +27,7 @@ public class UtilsTest extends TaskTest {
 		IStrategoTerm d = def("Java", segment("Class", "D"));
 		IStrategoTerm e = def("Java", segment("Class", "E"));
 
-		Multimap<IStrategoInt, IStrategoTerm> results = LinkedHashMultimap.create();
+		Multimap<IStrategoTerm, IStrategoTerm> results = LinkedHashMultimap.create();
 		results.put(i(1), a);
 		results.put(i(1), b);
 		results.put(i(2), c);
@@ -62,7 +62,7 @@ public class UtilsTest extends TaskTest {
 		IStrategoTerm e = def("Java", segment("Class", "E"));
 		IStrategoTerm f = def("Java", segment("Class", "F"));
 
-		Multimap<IStrategoInt, IStrategoTerm> results = LinkedHashMultimap.create();
+		Multimap<IStrategoTerm, IStrategoTerm> results = LinkedHashMultimap.create();
 		results.put(i(1), a);
 		results.put(i(1), b);
 		results.put(i(2), c);
@@ -105,7 +105,7 @@ public class UtilsTest extends TaskTest {
 		IStrategoTerm a = def("Java", segment("Class", "A"));
 		IStrategoTerm b = def("Java", segment("Class", "B"));
 
-		Multimap<IStrategoInt, IStrategoTerm> results = LinkedHashMultimap.create();
+		Multimap<IStrategoTerm, IStrategoTerm> results = LinkedHashMultimap.create();
 		results.put(i(1), a);
 		results.put(i(2), b);
 
@@ -119,7 +119,7 @@ public class UtilsTest extends TaskTest {
 
 	@Test
 	public void testCartesianProduct4() {
-		Multimap<IStrategoInt, IStrategoTerm> results = LinkedHashMultimap.create();
+		Multimap<IStrategoTerm, IStrategoTerm> results = LinkedHashMultimap.create();
 		Collection<StrategoHashMap> product = CarthesianProduct.cartesianProduct(results);
 		assertEquals(0, product.size());
 	}
