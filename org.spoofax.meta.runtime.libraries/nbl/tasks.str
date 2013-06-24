@@ -24,7 +24,7 @@ signature
     PropConstraint         : List(Prop) * List(Result)                 -> Instruction
     PropCalc               : Property * Term                           -> Instruction
         
-    ResolveAllDefs            : Scope * Namespace                  -> Instruction
+    ResolveAllDefs         : Scope * Namespace                  -> Instruction
         
 rules // Resolve
   
@@ -32,11 +32,17 @@ rules // Resolve
   perform-task(|nr):
   	ResolveDefs(scope, ns, name) -> def*
   	where
+  		debug(!"1: ");
   		uri   := <nabl-uri> scope;
+  		debug(!"2: ");
   		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
+  		debug(!"3: ");
+  		<nabl-add-read-extend(|nr, ns, name')> uri;
+  		debug(!"4: ");
   		def*  := <nabl-lookup(|ns, name')> uri;
+  		debug(!"5: ");
   		not(?[]);
-			<nabl-add-read-extend(|nr, ns, name')> uri
+  		debug(!"6: ")
 
 	// Calls a user-defined disambiguation filter on definitions with relevant information.
 	perform-task(|nr):
@@ -53,14 +59,14 @@ rules // Resolve
 		ResolveNamedImports(scope, ns, name) -> result
 		where
 			uri     := <nabl-uri> scope;
+			<nabl-add-read(|nr)> uri;
 			name'   := <try-remove-list; strip-annos> name; // TODO: can this be a list?
 			import* := <nabl-lookup-named-import(|ns, name')> uri;
       switch id
       	case ?[]                            : fail
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
-      end => result;
-      <nabl-add-read(|nr)> uri
+      end => result
 	
 	// Looks up wildcard imports for a namespace active in scopes.
 	perform-task(|nr):
@@ -77,6 +83,7 @@ rules // Resolve
 	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
 		where
+			<nabl-add-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
@@ -87,8 +94,7 @@ rules // Resolve
 				end => result
 			else
 				result := []
-			end;
-			<nabl-add-read(|nr)> uri
+			end
 
 rules // Visibility
 	
@@ -106,13 +112,13 @@ rules // Import calculation
 	perform-task(|nr):
 		ImportCalc(uri) -> result
 		where
+			<nabl-add-read(|nr)> uri;
 			import-ns-use*        := <nabl-get-all-properties(|Import())> uri;
 			(imported-uri*, uri*) := <partition(resolve-transitive-import, resolve-import)> import-ns-use*;
   		switch id
         case d := <task-collect-dependencies> : !d
         otherwise                             : id
-			end => result;
-			<nabl-add-read(|nr)> uri
+			end => result
 
 	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
 	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
@@ -122,6 +128,7 @@ rules // Import calculation
 	perform-task(|nr):
 		ImportClosure(uri) -> result
 		with
+			<nabl-add-read(|nr)> uri;
 			import-calc-id        := <task-instruction-id> ImportCalc(uri);
 			(imported-uri*, uri*) := <task-get-result; Hd> import-calc-id; // Result for this task must exit, as a dependency is expressed on it during collect.
 			hashtable             := <new-hashtable>;
@@ -130,8 +137,7 @@ rules // Import calculation
 			switch id
 				case task-collect-dependencies => d : !d
 				otherwise                           : !hashtable
-			end => result;
-			<nabl-add-read(|nr)> uri
+			end => result
 			
 	import-to-hash-table(|hashtable):
 		(ns, import-uri*) -> <hash-multimap-putlist(|ns, import-uri*)> hashtable
@@ -139,6 +145,7 @@ rules // Import calculation
 	import-closure-transitive(|nr, hashtable):
 		uri	-> result
 		with
+			<nabl-add-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
@@ -149,8 +156,7 @@ rules // Import calculation
 				end => result
 			else
 				result := []
-			end;
-			<nabl-add-read(|nr)> uri
+			end
 
 rules // Property constraints
 	  

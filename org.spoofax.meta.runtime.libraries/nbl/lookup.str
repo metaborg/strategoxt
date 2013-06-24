@@ -14,7 +14,7 @@ rules // Lookup
 	nabl-lookup(|ns, name):
 		uri -> def*
 		with
-  		uri' := <map(nabl-extend-uri(|ns, name, ()))> uri;
+  		uri' := <nabl-extend-uri(|ns, name, ())> uri;
   		def* := <nabl-get-all-definitions> uri'
 
 	nabl-lookup-all(|ns):

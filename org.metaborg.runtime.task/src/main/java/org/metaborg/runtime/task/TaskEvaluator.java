@@ -158,7 +158,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 		// TODO: insert and collect results in Java instead of an external strategy?
 
-		if(!isTaskCombinator(instruction)) {
+		if(resultIDs.getSubtermCount() == 0) {
+			instructions.add(instruction);
+		}
+		else if(!isTaskCombinator(instruction)) {
 			// TODO: prevent construction of a multimap by changing cartesianProduct to accept a list of task IDs.
 			final Multimap<IStrategoInt, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
 			for(IStrategoTerm resultID : resultIDs) {
