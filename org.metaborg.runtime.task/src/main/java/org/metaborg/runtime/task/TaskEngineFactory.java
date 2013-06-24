@@ -23,8 +23,8 @@ public class TaskEngineFactory {
 			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
 			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
-			final IStrategoTerm results = serializeResults(taskEngine.getResult(taskID), factory, serializer);
-			final boolean failed = taskEngine.hasFailed(taskID);
+			final IStrategoTerm results = serializeResults(taskEngine.getResults(taskID), factory, serializer);
+			final boolean failed = taskEngine.failed(taskID);
 			IStrategoTerm message = taskEngine.getMessage(taskID);
 			if(message != null)
 				message = serializer.toAnnotations(message);
@@ -83,7 +83,7 @@ public class TaskEngineFactory {
 		);
 	}
 
-	private IStrategoTerm serializeResults(IStrategoTerm results, ITermFactory factory,
+	private IStrategoList serializeResults(Iterable<IStrategoTerm> results, ITermFactory factory,
 		TermAttachmentSerializer serializer) {
 		if(results != null) {
 			IStrategoList newResults = factory.makeList();

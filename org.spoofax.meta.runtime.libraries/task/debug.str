@@ -3,26 +3,6 @@ module task/debug
 imports
 	
 	task/core
-	
-rules
-	
-  crush-annos(nul, sum, s) :
-    _#(xs){a*} -> r2
-    where
-     r1 := <foldr(nul, sum, s)> xs;
-     r2 := <foldr(!r1, sum, s)> a*
-
-	collect-all-annos(s, un) =
-		![<s> | <crush-annos(![], un, collect-all-annos(s, un))>]
-	<+ crush-annos(![], un, collect-all-annos(s, un))
-
-rules
-	
-	task-result-id:
-    Result(taskID) -> taskID
-
-	task-collect-result-ids =
-		collect-all-annos(task-result-id, union)
 
 rules
 	

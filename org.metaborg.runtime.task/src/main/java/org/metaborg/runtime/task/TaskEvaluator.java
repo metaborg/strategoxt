@@ -1,9 +1,14 @@
 package org.metaborg.runtime.task;
 
+import static org.metaborg.runtime.task.util.CarthesianProduct.cartesianProduct;
+import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
+import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
@@ -11,23 +16,26 @@ import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalMultimap;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
-import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.Tools;
-import org.spoofax.interpreter.stratego.CallT;
+import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
+import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 public class TaskEvaluator implements ITaskEvaluator {
 	private final TaskEngine taskEngine;
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
+	private final IStrategoConstructor singleConstructor;
 
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
@@ -48,9 +56,11 @@ public class TaskEvaluator implements ITaskEvaluator {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
+		this.singleConstructor = factory.makeConstructor("Single", 1);
 	}
 
 	public void schedule(IStrategoTerm taskID) {
+		// TODO: TaskEngine should keep a list of tasks to schedule and pass it to evaluate.
 		nextScheduled.add(taskID);
 	}
 
@@ -58,23 +68,24 @@ public class TaskEvaluator implements ITaskEvaluator {
 		evaluationQueue.add(taskID);
 	}
 
-	public IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults)
-		throws InterpreterException {
+	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		taskEngine.clearTimes();
 		taskEngine.clearEvaluations();
 
 		try {
+			// TODO: Move this to the stopCollection function in TaskEngine so that tasks are already invalidated.
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
 			for(final IStrategoTerm taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
 			}
 
+			// TODO: This can also be done on-demand in tryScheduleNewTasks.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : nextScheduled) {
 				final Set<IStrategoTerm> dependencies = new HashSet<IStrategoTerm>(taskEngine.getDependencies(taskID));
 				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
-					if(taskEngine.isSolved(dependency))
+					if(taskEngine.solved(dependency))
 						dependencies.remove(dependency);
 				}
 
@@ -91,29 +102,40 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				++numTasksEvaluated;
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
-				final IStrategoTerm result = solve(context, performInstruction, insertResults, taskID, instruction);
-				if(result != null && Tools.isTermAppl(result)) {
-					// The task has dynamic dependencies.
-					final IStrategoAppl resultAppl = (IStrategoAppl) result;
-					if(resultAppl.getConstructor().equals(dependencyConstructor)) {
-						updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
-					} else {
-						throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
-							+ ". Must be a list, Dependency(_) constructor or failure.");
+				final Iterable<IStrategoTerm> instructions =
+					instructionCombinations(context, collect, insert, instruction);
+
+				// TODO: optimize fail/success by using bit flags?
+				boolean fail = false;
+				boolean success = false;
+				for(IStrategoTerm insertedInstruction : instructions) {
+					final IStrategoTerm result = solve(context, perform, taskID, insertedInstruction);
+					final ResultType resultType = handleResult(taskID, instruction, result);
+					switch(resultType) {
+						case Fail:
+							fail = true;
+							break;
+						case Success:
+							success = true;
+							break;
+						case Unknown:
+							throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
+								+ ".");
+						default:
+							break;
 					}
-				} else if(result == null) {
-					// The task failed to produce a result.
-					taskEngine.addFailed(taskID);
-					nextScheduled.remove(taskID);
+				}
+
+				if(fail || success) {
+					// TODO: should completely failed tasks activate other tasks? Probably not since one of its results
+					// will be empty, so it cannot be evaluated.
 					tryScheduleNewTasks(taskID);
-				} else if(Tools.isTermList(result)) {
-					// The task produced a result.
-					taskEngine.addResult(taskID, (IStrategoList) result);
-					nextScheduled.remove(taskID);
-					tryScheduleNewTasks(taskID);
-				} else {
-					throw new IllegalStateException("Unexpected result from perform-task(|taskID): " + result
-						+ ". Must be a list, Dependency(_) constructor or failure.");
+
+					if(success) {
+						nextScheduled.remove(instruction);
+					} else {
+						taskEngine.setFailed(taskID);
+					}
 				}
 			}
 
@@ -129,23 +151,96 @@ public class TaskEvaluator implements ITaskEvaluator {
 		toRuntimeDependency.clear();
 	}
 
-	private IStrategoTerm solve(IContext context, Strategy performInstruction, Strategy insertResults,
-		IStrategoTerm taskID, IStrategoTerm instruction) throws InterpreterException {
-		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
-		timer.start();
-		context.setCurrent(insertedInstruction);
-		boolean success =
-			((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { taskID });
-		taskEngine.addTime(taskID, timer.stop());
-		taskEngine.addEvaluation(taskID);
-		return success ? context.current() : null;
+	private Iterable<IStrategoTerm> instructionCombinations(IContext context, Strategy collect, Strategy insert,
+		IStrategoTerm instruction) {
+		final IStrategoTerm resultIDs = invoke(context, collect, instruction);
+		final Collection<IStrategoTerm> instructions = new LinkedList<IStrategoTerm>();
+
+		// TODO: insert and collect results in Java instead of an external strategy?
+
+		if(!isTaskCombinator(instruction)) {
+			// TODO: prevent construction of a multimap by changing cartesianProduct to accept a list of task IDs.
+			final Multimap<IStrategoInt, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
+			for(IStrategoTerm resultID : resultIDs) {
+				IStrategoInt key = (IStrategoInt) resultID;
+				final Iterable<IStrategoTerm> results = taskEngine.getResults(key);
+				// If one of the results of a dependency are empty the task cannot be executed, so return empty mapping.
+				if(!results.iterator().hasNext())
+					return new StrategoHashMap();
+				resultsMap.putAll(key, results);
+			}
+
+			final Collection<StrategoHashMap> resultCombinations = cartesianProduct(resultsMap);
+			for(StrategoHashMap mapping : resultCombinations) {
+				printMapping(mapping);
+				System.out.println("Inserting into task " + instruction);
+				instructions.add(insertResults(context, insert, instruction, mapping));
+			}
+		} else {
+			StrategoHashMap mapping = new StrategoHashMap();
+			for(IStrategoTerm resultID : resultIDs) {
+				final Iterable<IStrategoTerm> results = taskEngine.getResults(resultID);
+				mapping.put(resultID, makeList(factory, results));
+			}
+
+			printMapping(mapping);
+			System.out.println("Inserting into combinator " + instruction);
+			instructions.add(insertResults(context, insert, instruction, mapping));
+		}
+
+		return instructions;
 	}
 
-	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction)
-		throws InterpreterException {
-		context.setCurrent(instruction);
-		((CallT) insertResults).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[0]);
-		return context.current();
+	private void printMapping(StrategoHashMap mapping) {
+		for(Entry<IStrategoTerm, IStrategoTerm> entry : mapping.entrySet())
+			System.out.println(entry.getKey() + " -> " + entry.getValue());
+	}
+
+	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction,
+		StrategoHashMap resultCombinations) {
+		return invoke(context, insertResults, instruction, resultCombinations);
+	}
+
+	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID,
+		IStrategoTerm instruction) {
+		timer.start();
+		final IStrategoTerm result = invoke(context, performInstruction, instruction, taskID);
+		taskEngine.addTime(taskID, timer.stop());
+		taskEngine.addEvaluation(taskID);
+		return result;
+	}
+
+	private enum ResultType {
+		Unknown, DynamicDependency, Fail, Success
+	}
+
+	private ResultType handleResult(IStrategoTerm taskID, final IStrategoTerm instruction, final IStrategoTerm result) {
+		if(result != null) {
+			if(Tools.isTermAppl(result)) {
+				final IStrategoAppl resultAppl = (IStrategoAppl) result;
+				if(resultAppl.getConstructor().equals(dependencyConstructor)) {
+					// The task has dynamic dependencies.
+					updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
+					return ResultType.DynamicDependency;
+				} else if(resultAppl.getConstructor().equals(singleConstructor)) {
+					// The result must be treated as a single result.
+					taskEngine.addResult(taskID, result.getSubterm(0));
+					return ResultType.Success;
+				}
+			} else if(Tools.isTermList(result)) {
+				// The task produced multiple results.
+				taskEngine.addResults(taskID, result);
+				return ResultType.Success;
+			} else {
+				// The task produced a single result.
+				taskEngine.addResult(taskID, result);
+				return ResultType.Success;
+			}
+		} else {
+			// The task failed to produce a result.
+			return ResultType.Fail;
+		}
+		return ResultType.Unknown;
 	}
 
 	private void tryScheduleNewTasks(IStrategoTerm solved) {
@@ -168,7 +263,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
 			final boolean removed = toRuntimeDependency.remove(dependent, solved);
-			if(dependenciesSize == 1 && removed && !taskEngine.isSolved(dependent))
+			if(dependenciesSize == 1 && removed && !taskEngine.solved(dependent))
 				queue(dependent);
 		}
 	}
@@ -178,5 +273,14 @@ public class TaskEvaluator implements ITaskEvaluator {
 		toRuntimeDependency.removeAll(delayed);
 		for(final IStrategoTerm dependency : dependencies)
 			toRuntimeDependency.put(delayed, dependency);
+	}
+
+	private boolean isTaskCombinator(IStrategoTerm instruction) {
+		// TODO: extendible task combinators; use new-combinator instead of new-task and set a boolean?
+		if(Tools.isTermAppl(instruction)) {
+			final String name = ((IStrategoAppl) instruction).getConstructor().getName();
+			return name.equals("Choice") || name.equals("PropConstraint");
+		}
+		return false;
 	}
 }

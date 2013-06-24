@@ -18,6 +18,6 @@ public class task_api_has_failed_0_1 extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
 		throws InterpreterException {
 		final IStrategoTerm taskID = tvars[0];
-		return TaskManager.getInstance().getCurrent().hasFailed(taskID);
+		return TaskManager.getInstance().getCurrent().failed(taskID);
 	}
 }

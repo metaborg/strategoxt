@@ -1,7 +1,6 @@
 package org.metaborg.runtime.task;
 
 import org.spoofax.interpreter.core.IContext;
-import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
@@ -14,8 +13,7 @@ public interface ITaskEvaluator {
 	 */
 	public abstract void schedule(IStrategoTerm taskID);
 
-	public abstract IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults)
-		throws InterpreterException;
+	public abstract IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform);
 
 	public abstract void reset();
 }

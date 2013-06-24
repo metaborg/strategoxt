@@ -1,11 +1,15 @@
 package org.metaborg.runtime.task;
 
-import org.spoofax.interpreter.terms.IStrategoList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.spoofax.interpreter.terms.IStrategoTerm;
+
+import com.google.common.collect.Lists;
 
 public final class Task {
 	public final IStrategoTerm instruction;
-	public IStrategoList results;
+	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
 	public IStrategoTerm message;
 	public boolean failed = false;
 	public long time = -1;
@@ -15,14 +19,33 @@ public final class Task {
 		this.instruction = instruction;
 	}
 
-	public Task(IStrategoTerm instruction, IStrategoList results, IStrategoTerm message, boolean failed, long time,
-		short evaluations) {
-		this.instruction = instruction;
-		this.results = results;
-		this.message = message;
-		this.failed = failed;
-		this.time = time;
-		this.evaluations = evaluations;
+	public Iterable<IStrategoTerm> results() {
+		return results;
+	}
+	
+	public boolean hasResults() {
+		return !results.isEmpty();
+	}
+	
+	public void setResults(Iterable<IStrategoTerm> results) {
+		this.results = Lists.newLinkedList(results);
+	}
+	
+	public void addResults(Iterable<IStrategoTerm> results) {
+		for(IStrategoTerm result : results)
+			this.results.add(result);
+	}
+	
+	public void addResult(IStrategoTerm result) {
+		results.add(result);
+	}
+	
+	public void clearResults() {
+		results.clear();
+	}
+	
+	public boolean solved() {
+		return hasResults() || failed;
 	}
 
 	@Override
