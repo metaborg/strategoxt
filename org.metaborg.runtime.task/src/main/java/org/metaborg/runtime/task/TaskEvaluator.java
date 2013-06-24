@@ -164,9 +164,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm resultID : resultIDs) {
 				IStrategoInt key = (IStrategoInt) resultID;
 				final Iterable<IStrategoTerm> results = taskEngine.getResults(key);
-				// If one of the results of a dependency are empty the task cannot be executed, so return empty mapping.
+				// If one of the results of a dependency are empty the task cannot be executed, so return no
+				// instructions.
 				if(!results.iterator().hasNext())
-					return new StrategoHashMap();
+					return instructions;
 				resultsMap.putAll(key, results);
 			}
 

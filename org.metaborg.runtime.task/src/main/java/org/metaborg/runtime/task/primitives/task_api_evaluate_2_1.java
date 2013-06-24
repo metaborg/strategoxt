@@ -18,7 +18,7 @@ public class task_api_evaluate_2_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoTerm changedReads = (IStrategoList) tvars[0];
-		final Strategy collect = svars[1];
+		final Strategy collect = svars[0];
 		final Strategy insert = svars[1];
 		final Strategy perform = svars[2];
 		env.setCurrent(TaskManager.getInstance().getCurrent()
