@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.collection;
 
 import java.util.Collection;
 import java.util.Map;
@@ -9,12 +9,12 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 
-public class ManyToManyMap<K, V> implements Multimap<K, V> {
+public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalMultimap<K, V> {
 	private final Multimap<K, V> keyToValue = LinkedHashMultimap.create();
 	private final Multimap<V, K> valueToKey = LinkedHashMultimap.create();
 
-	public static <K, V> ManyToManyMap<K, V> create() {
-		return new ManyToManyMap<K, V>();
+	public static <K, V> BidirectionalMultimap<K, V> create() {
+		return new BidirectionalLinkedHashMultimap<K, V>();
 	}
 
 	public void clear() {

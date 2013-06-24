@@ -3,10 +3,12 @@ package org.metaborg.runtime.task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
+import org.metaborg.runtime.task.collection.BidirectionalMultimap;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -32,10 +34,11 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private final Set<IStrategoTerm> nextScheduled = new HashSet<IStrategoTerm>();
 
 	/** Queue of task that are scheduled for evaluation. */
-	private final Queue<IStrategoTerm> evaluationQueue = new ConcurrentLinkedQueue<IStrategoTerm>();
+	private final Queue<IStrategoTerm> evaluationQueue = new LinkedList<IStrategoTerm>();
 
 	/** Dependencies of tasks which are updated during evaluation. */
-	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toRuntimeDependency = ManyToManyMap.create();
+	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency =
+		BidirectionalLinkedHashMultimap.create();
 
 	/** Timer for measuring task time **/
 	private final Timer timer = new Timer();
@@ -131,7 +134,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 		final IStrategoTerm insertedInstruction = insertResults(context, insertResults, instruction);
 		timer.start();
 		context.setCurrent(insertedInstruction);
-		boolean success = ((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { taskID });
+		boolean success =
+			((CallT) performInstruction).evaluateWithArgs(context, new Strategy[0], new IStrategoTerm[] { taskID });
 		taskEngine.addTime(taskID, timer.stop());
 		taskEngine.addEvaluation(taskID);
 		return success ? context.current() : null;

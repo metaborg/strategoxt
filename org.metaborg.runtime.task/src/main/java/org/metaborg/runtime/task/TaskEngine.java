@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
+import org.metaborg.runtime.task.collection.BidirectionalMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -31,13 +33,15 @@ public class TaskEngine {
 	private final Map<IStrategoTerm, Task> toTasks = new HashMap<IStrategoTerm, Task>();
 
 	/** Origin partitions of tasks. */
-	private final ManyToManyMap<IStrategoTerm, IStrategoString> toPartition = ManyToManyMap.create();
+	private final BidirectionalMultimap<IStrategoTerm, IStrategoString> toPartition = BidirectionalLinkedHashMultimap
+		.create();
 
 	/** Dependencies between tasks. */
-	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toDependency = ManyToManyMap.create();
+	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
+		.create();
 
 	/** Dependencies between tasks. */
-	private final ManyToManyMap<IStrategoTerm, IStrategoTerm> toRead = ManyToManyMap.create();
+	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toRead = BidirectionalLinkedHashMultimap.create();
 
 	/** Tasks that are not in any partition are garbage. **/
 	private final Set<IStrategoTerm> garbage = new HashSet<IStrategoTerm>();
