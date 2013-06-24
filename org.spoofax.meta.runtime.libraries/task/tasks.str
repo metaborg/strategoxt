@@ -34,6 +34,7 @@ rules
 	perform-task(|nr):
  		Choice(choice*) -> <Hd> choice*
 
+	// TODO: can we still use <Hd> to determine if a task failed or not?
 	// TODO: should not store any result.
   perform-task(|n):
     Message(task, trigger, message) -> []
@@ -49,18 +50,10 @@ rules
       [] := dep*
     	
   perform-task(|nr): 
-  	Match(key, bound, term) -> result
-  	where
-  		result := <try-make-list; filter(!(key, <id>, bound); debug(!"m "); task-match)> term;
-  		if [] := result then
-  			fail
-			end
+  	Match(key, bound, term) -> <task-match> (key, term, bound)
   
   perform-task(|nr): 
-    Rewrite(key, term) -> result
-    where
-      term'  := <try-make-list; map(try-remove-list)> term; 
-      result := <task-match; try-make-list> (key, term')
+    Rewrite(key, term) -> <task-match> (key, term)
   
   perform-task(|nr):
   	Concat(term*) -> <concat> term*

@@ -226,6 +226,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 					// The result must be treated as a single result.
 					taskEngine.addResult(taskID, result.getSubterm(0));
 					return ResultType.Success;
+				} else {
+					// Treat as single result.
+					taskEngine.addResult(taskID, result);
+					return ResultType.Success;
 				}
 			} else if(Tools.isTermList(result)) {
 				// The task produced multiple results.
@@ -240,7 +244,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 			// The task failed to produce a result.
 			return ResultType.Fail;
 		}
-		return ResultType.Unknown;
 	}
 
 	private void tryScheduleNewTasks(IStrategoTerm solved) {
@@ -276,10 +279,11 @@ public class TaskEvaluator implements ITaskEvaluator {
 	}
 
 	private boolean isTaskCombinator(IStrategoTerm instruction) {
-		// TODO: extendible task combinators; use new-combinator instead of new-task and set a boolean?
+		// TODO: extensible task combinators; use new-combinator instead of new-task and set a boolean?
 		if(Tools.isTermAppl(instruction)) {
 			final String name = ((IStrategoAppl) instruction).getConstructor().getName();
-			return name.equals("Choice") || name.equals("PropConstraint");
+			return name.equals("Choice") || name.equals("PropConstraint") || name.equals("Message")
+				|| name.equals("Concat") || name.equals("DisambiguateDefs");
 		}
 		return false;
 	}

@@ -26,7 +26,7 @@ rules
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
   		switch !resolved
-  			case ?Def(_) : nabl-get-property(|kind); insert-results-or-create-dependency; try-make-list
+  			case ?Def(_) : nabl-get-property(|kind); insert-results-or-create-dependency
   			otherwise    : id
   		end => result
   
@@ -36,7 +36,7 @@ rules
       [] := dep*
   	
   perform-task(|n): 
-  	PropCalc(result) -> <try-make-list> result
+  	PropCalc(result) -> result
   
   // TODO: remove this one	
   perform-task(|n): 
@@ -52,14 +52,4 @@ rules
       [] := dep*
   	
   perform-task(|n): 
-  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
-  	where
-  		not(<is-list> term; <is-list> expected)
-			
-  perform-task(|n): 
-  	PropCheck(term*, expected*) -> <try-make-list> term*
-  	where
-  		<is-list> term*;
-  		<is-list> expected*;
-  		<cart(type-prop-eq)> (term*, expected*)
-
+  	PropCheck(actual, expected) -> <type-prop-eq> (actual, expected)
