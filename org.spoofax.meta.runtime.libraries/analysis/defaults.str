@@ -20,14 +20,15 @@ rules // Single finle analysis
 	
 	analysis-single-default-interface = fail
 	
-  analysis-single-default(desugar-all, pp-message|language):
+  analysis-single-default(desugar-before, desugar-after, pp-message|language):
     (ast, path, project-path) -> (ast', error*, warning*, note*)
     with
       editor-init;
       <debug(!"Analyzing file: ")> path;
-      (ast', unevaluated-task*, evaluated-count, (analysis-error*, analysis-warning*, analysis-note*)) := <desugar-all; analyze-one(|language, path, project-path)> ast;
+      (ast', unevaluated-task*, evaluated-count, (analysis-error*, analysis-warning*, analysis-note*)) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task* 
       // TODO: Update markers for partitions that have had a task executed.
       
 rules // Multi-file analysis
@@ -39,7 +40,7 @@ rules // Multi-file analysis
     with
       queue-strategy(|"analysis-multiple-default-interface", "Analyzing files")
       
-  analysis-multiple-default(parse, pp-message|language, project-path):
+  analysis-multiple-default(parse, desugar-before, desugar-after, pp-message|language, project-path):
     path* -> (result'*, unevaluated-task*, evaluated-count)
     with
     	debug(!"Analyzing files: ");
@@ -48,7 +49,7 @@ rules // Multi-file analysis
 	      measure-time(
 	      	path'* := <map(\p -> $[[project-path]/[p]]\)> path*;
 	        (result*, unevaluated-task*, evaluated-count) := <analyze-multiple(parse, complete-work-unit|language, project-path)> path'*;
-	        result'* := <filter(analysis-message-update-editor(pp-message))> result*
+	        result'* := <filter(analysis-message-update-editor(desugar-after, pp-message))> result*
 	      , id | "analysis-multiple-full-analysis"
 	      );
 	    	measure-time(
@@ -60,8 +61,8 @@ rules // Multi-file analysis
 	      	, id | "analysis-multiple-task-commit"
 	      )
 	    , id | "analysis-multiple-total");
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
-	
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task*
 
   analysis-multiple-default-work-units = 
     length; !(<id>, 3); mul	
@@ -80,9 +81,9 @@ rules // Message collection and updating.
       warning* := <collect-all(constraint-warning, conc)> ast;
       note*    := <collect-all(constraint-note, conc)> ast
 
-  analysis-message-update-editor(pp-message):
+  analysis-message-update-editor(desugar-after, pp-message):
     Result(partition, initial-ast, analyzed-ast, changed-read*, error* , warning* , note*) -> 
-    Result(partition, initial-ast, analyzed-ast, changed-read*, error'*, warning'*, note'*)
+    Result(partition, initial-ast, <desugar-after> analyzed-ast, changed-read*, error'*, warning'*, note'*)
     where
       not(() := initial-ast)
     with
