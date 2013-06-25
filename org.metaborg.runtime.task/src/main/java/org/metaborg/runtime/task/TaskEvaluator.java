@@ -82,6 +82,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(final IStrategoTerm taskID : nextScheduled) {
 				taskEngine.unsolve(taskID);
 				taskEngine.removeReads(taskID);
+				taskEngine.removeMessage(taskID);
 			}
 
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
