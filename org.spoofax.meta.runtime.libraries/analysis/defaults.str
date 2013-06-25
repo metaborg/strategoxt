@@ -27,7 +27,8 @@ rules // Single finle analysis
       <debug(!"Analyzing file: ")> path;
       (ast', unevaluated-task*, evaluated-count, (analysis-error*, analysis-warning*, analysis-note*)) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task* 
       // TODO: Update markers for partitions that have had a task executed.
       
 rules // Multi-file analysis
@@ -60,8 +61,8 @@ rules // Multi-file analysis
 	      	, id | "analysis-multiple-task-commit"
 	      )
 	    , id | "analysis-multiple-total");
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
-	
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task*
 
   analysis-multiple-default-work-units = 
     length; !(<id>, 3); mul	
