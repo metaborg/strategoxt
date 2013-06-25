@@ -82,7 +82,7 @@ rules // Resolve
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hashtable-get(|ns)> h
+					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hashtable-get(|ns) <+ ![]> h
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<task-create-dependency> import-closure-id]
 					otherwise                                             : ![]
 				end => result
