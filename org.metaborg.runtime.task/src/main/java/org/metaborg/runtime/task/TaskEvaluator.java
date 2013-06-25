@@ -41,6 +41,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	/** Queue of task that are scheduled for evaluation. */
 	private final Queue<IStrategoTerm> evaluationQueue = new LinkedList<IStrategoTerm>();
+	
+	/** Set of tasks in the queue. **/
+	private final Set<IStrategoTerm> queued = new HashSet<IStrategoTerm>();
 
 	/** Dependencies of tasks which are updated during evaluation. */
 	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency =
@@ -63,7 +66,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 	}
 
 	private void queue(IStrategoTerm taskID) {
-		evaluationQueue.add(taskID);
+		if(!queued.contains(taskID)) {
+			evaluationQueue.add(taskID);
+			queued.add(taskID);
+		}
 	}
 
 	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
@@ -101,6 +107,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				++numTasksEvaluated;
 				nextScheduled.remove(taskID);
+				queued.remove(taskID);
 				
 				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
