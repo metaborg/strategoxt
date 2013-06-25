@@ -41,7 +41,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	/** Queue of task that are scheduled for evaluation. */
 	private final Queue<IStrategoTerm> evaluationQueue = new LinkedList<IStrategoTerm>();
-	
+
 	/** Set of tasks in the queue. **/
 	private final Set<IStrategoTerm> queued = new HashSet<IStrategoTerm>();
 
@@ -78,11 +78,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 		try {
 			// TODO: Move this to the stopCollection function in TaskEngine so that tasks are already invalidated.
-			// Remove solutions and reads for tasks that are scheduled for evaluation.
+			// Remove solutions for tasks that are scheduled for evaluation.
 			for(final IStrategoTerm taskID : nextScheduled) {
 				taskEngine.unsolve(taskID);
-				taskEngine.removeReads(taskID);
-				taskEngine.removeMessage(taskID);
 			}
 
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
@@ -109,10 +107,13 @@ public class TaskEvaluator implements ITaskEvaluator {
 				++numTasksEvaluated;
 				nextScheduled.remove(taskID);
 				queued.remove(taskID);
-				
+
+				// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
+				// overwrite previous data.
 				taskEngine.unsolve(taskID);
 				taskEngine.removeReads(taskID);
-				
+				taskEngine.removeMessage(taskID);
+
 				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 				final Iterable<IStrategoTerm> instructions =
@@ -139,7 +140,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 				if(!unknown) {
 					// Try to schedule new tasks even for failed tasks since they may activate combinators.
 					tryScheduleNewTasks(taskID);
-					
+
 					if(failure)
 						taskEngine.setFailed(taskID);
 				}
