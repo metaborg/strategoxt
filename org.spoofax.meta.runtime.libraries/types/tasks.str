@@ -44,4 +44,6 @@ rules
       [] := dep*
   	
   perform-task(|n): 
-  	PropCheck(actual, expected) -> <type-prop-eq> (actual, expected)
+  	PropCheck(actual, expected) -> actual
+  	where
+  		<type-prop-eq> (actual, expected)
