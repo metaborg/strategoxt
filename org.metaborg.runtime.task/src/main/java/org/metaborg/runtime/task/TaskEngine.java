@@ -224,13 +224,11 @@ public class TaskEngine {
 			final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
 			final Queue<IStrategoTerm> workList = new LinkedList<IStrategoTerm>(getRead(changedRead));
 			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
-				System.out.println("Read: " + taskID + " - " + getInstruction(taskID));
 				evaluator.schedule(taskID);
 				seen.add(taskID);
 				Collection<IStrategoTerm> dependent = getDependent(taskID);
 				for(IStrategoTerm dependentTaskID : dependent) {
 					if(!seen.contains(dependentTaskID)) {
-						System.out.println("Dep: " + dependentTaskID + " - " + getInstruction(dependentTaskID));
 						workList.offer(dependentTaskID);
 					}
 				}
