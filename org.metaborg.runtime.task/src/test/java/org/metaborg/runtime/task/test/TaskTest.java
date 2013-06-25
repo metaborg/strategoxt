@@ -9,6 +9,7 @@ import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -46,6 +47,10 @@ public class TaskTest {
 
 	public static IStrategoString str(String str) {
 		return factory.makeString(str);
+	}
+	
+	public static IStrategoInt i(int i) {
+		return factory.makeInt(i);
 	}
 
 	public static IStrategoAppl constructor(String constructor, IStrategoTerm... terms) {
@@ -92,16 +97,20 @@ public class TaskTest {
 	}
 
 	public static IStrategoAppl resolve(String language, IStrategoTerm... segments) {
-		return factory.makeAppl(factory.makeConstructor("Resolve", 1), uri(language, segments));
+		return constructor("Resolve", uri(language, segments));
 	}
 
 	public static IStrategoAppl resolveImport(String language, IStrategoTerm... segments) {
-		return factory.makeAppl(factory.makeConstructor("ResolveImport", 1), uri(language, segments));
+		return constructor("ResolveImport", uri(language, segments));
 	}
 
 	public static IStrategoAppl choice(IStrategoTerm... results) {
-		return factory.makeAppl(factory.makeConstructor("Choice", 1), list(results));
+		return constructor("Choice", list(results));
 	}
+	
+    public static IStrategoAppl def(String language, IStrategoTerm... segments) {
+        return constructor("Def", uri(language, segments));
+    }
 
 	public static <T> boolean assertContains(Iterable<T> iterable, T element) {
 		boolean found = false;

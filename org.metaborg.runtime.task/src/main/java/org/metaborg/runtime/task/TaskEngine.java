@@ -12,7 +12,6 @@ import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.spoofax.interpreter.core.IContext;
-import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
@@ -124,7 +123,8 @@ public class TaskEngine {
 	 * @param instruction The instruction.
 	 * @return A unique task identifier for given instruction.
 	 */
-	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction) {
+	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
+		boolean combinator) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
@@ -132,7 +132,7 @@ public class TaskEngine {
 		final IStrategoTerm taskID = taskID(instruction);
 
 		if(!toTasks.containsKey(taskID)) {
-			toTasks.put(taskID, new Task(instruction));
+			toTasks.put(taskID, new Task(instruction, combinator));
 			addedTasks.add(taskID);
 			evaluator.schedule(taskID);
 		}
@@ -160,10 +160,10 @@ public class TaskEngine {
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoList partitions,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
-		Task task = new Task(instruction);
+	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt combinator,
+		IStrategoList partitions, IStrategoList dependencies, IStrategoList reads, IStrategoTerm results,
+		IStrategoInt failed, IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
+		Task task = new Task(instruction, combinator.intValue() == 1);
 		if(toTasks.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
@@ -174,9 +174,9 @@ public class TaskEngine {
 		for(final IStrategoTerm read : reads)
 			toRead.put(taskID, read);
 		if(results.getTermType() == IStrategoTerm.LIST)
-			task.results = (IStrategoList) results;
+			task.setResults(results);
 		if(failed.intValue() == 1)
-			task.failed = true;
+			task.setFailed();
 		if(message.getTermType() != IStrategoTerm.TUPLE || message.getSubtermCount() != 0)
 			task.message = message;
 		if(time.getTermType() == IStrategoTerm.INT)
@@ -210,15 +210,14 @@ public class TaskEngine {
 	 * changed by a read.
 	 * 
 	 * @param context The context to call the perform and insert strategies with.
-	 * @param performInstruction The strategy that performs an instruction.
-	 * @param insertResults The strategy that inserts results into an instruction.
+	 * @param perform The strategy that performs an instruction.
+	 * @param insert The strategy that inserts results into an instruction.
 	 * @param changedReads A list of reads which have changed.
 	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
 	 *         evaluations.
-	 * @throws InterpreterException
 	 */
-	public IStrategoTuple evaluate(IContext context, Strategy performInstruction, Strategy insertResults,
-		IStrategoList changedReads) throws InterpreterException {
+	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform,
+		IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(final IStrategoTerm changedRead : changedReads) {
 			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
@@ -229,12 +228,13 @@ public class TaskEngine {
 				seen.add(taskID);
 				Collection<IStrategoTerm> dependent = getDependent(taskID);
 				for(IStrategoTerm dependentTaskID : dependent) {
-					if(!seen.contains(dependentTaskID))
+					if(!seen.contains(dependentTaskID)) {
 						workList.offer(dependentTaskID);
+					}
 				}
 			}
 		}
-		return evaluator.evaluate(context, performInstruction, insertResults);
+		return evaluator.evaluate(context, collect, insert, perform);
 	}
 
 	public Iterable<IStrategoTerm> getTaskIDs() {
@@ -251,6 +251,10 @@ public class TaskEngine {
 
 	public IStrategoTerm getInstruction(IStrategoTerm taskID) {
 		return getTask(taskID).instruction;
+	}
+
+	public boolean isCombinator(IStrategoTerm taskID) {
+		return getTask(taskID).combinator;
 	}
 
 	public Set<IStrategoString> getAllPartition() {
@@ -313,18 +317,26 @@ public class TaskEngine {
 		toDependency.put(taskID, dependency);
 	}
 
-	public void addResult(IStrategoTerm taskID, IStrategoList resultList) {
-		getTask(taskID).results = resultList;
+	public boolean hasResults(IStrategoTerm taskID) {
+		return getTask(taskID).hasResults();
 	}
 
-	public void removeResult(IStrategoTerm taskID) {
-		getTask(taskID).results = null;
+	public Iterable<IStrategoTerm> getResults(IStrategoTerm taskID) {
+		return getTask(taskID).results();
 	}
 
-	public IStrategoList getResult(IStrategoTerm taskID) {
-		return getTask(taskID).results;
+	public void setResults(IStrategoTerm taskID, IStrategoList results) {
+		getTask(taskID).setResults(results);
 	}
 
+	public void addResults(IStrategoTerm taskID, Iterable<IStrategoTerm> results) {
+		getTask(taskID).addResults(results);
+	}
+
+	public void addResult(IStrategoTerm taskID, IStrategoTerm result) {
+		getTask(taskID).addResult(result);
+	}
+	
 	public void setMessage(IStrategoTerm taskID, IStrategoTerm message) {
 		getTask(taskID).message = message;
 	}
@@ -348,25 +360,20 @@ public class TaskEngine {
 		return messages;
 	}
 
-	public void addFailed(IStrategoTerm taskID) {
-		getTask(taskID).failed = true;
-	}
-
-	public void removeFailed(IStrategoTerm taskID) {
-		getTask(taskID).failed = false;
+	public void setFailed(IStrategoTerm taskID) {
+		getTask(taskID).setFailed();
 	}
 
 	public boolean hasFailed(IStrategoTerm taskID) {
-		return getTask(taskID).failed;
+		return getTask(taskID).hasFailed();
 	}
 
 	public boolean isSolved(IStrategoTerm taskID) {
-		return getResult(taskID) != null || hasFailed(taskID) == true;
+		return getTask(taskID).isSolved();
 	}
 
-	public void removeSolved(IStrategoTerm taskID) {
-		removeResult(taskID);
-		removeFailed(taskID);
+	public void unsolve(IStrategoTerm taskID) {
+		getTask(taskID).unsolve();
 	}
 
 	public void addTime(IStrategoTerm taskID, long time) {

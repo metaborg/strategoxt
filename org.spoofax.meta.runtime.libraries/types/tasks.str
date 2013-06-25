@@ -7,6 +7,8 @@ imports
 	nbl/entries
 	nbl/query
 	nbl/utils
+	nbl/uri
+	nbl/tasks
   types/interface
   task/core
   
@@ -25,8 +27,8 @@ rules
   	PropLookup(kind, t) -> result
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
-  		switch !resolved
-  			case ?Def(_) : nabl-get-property(|kind); insert-results-or-create-dependency; try-make-list
+  		switch id
+  			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); insert-results-or-create-dependency // TODO: is this read needed?
   			otherwise    : id
   		end => result
   
@@ -36,15 +38,7 @@ rules
       [] := dep*
   	
   perform-task(|n): 
-  	PropCalc(result) -> <try-make-list> result
-  
-  // TODO: remove this one	
-  perform-task(|n): 
-    PropCalc(result, dep*) -> <perform-task(|n)> PropCalc(result)
-    with
-      fail
-    where 
-      <if is-list then Hd end> dep*
+  	PropCalc(result) -> result
   
   avoid-task(|dep*):
     PropCheck(actual, expected) -> <perform-task(|0) <+ ![]> 
@@ -52,14 +46,6 @@ rules
       [] := dep*
   	
   perform-task(|n): 
-  	PropCheck(term, expected) -> <perform-task(|n)> PropCheck(<try-make-list> term, <try-make-list> expected)
+  	PropCheck(actual, expected) -> actual
   	where
-  		not(<is-list> term; <is-list> expected)
-			
-  perform-task(|n): 
-  	PropCheck(term*, expected*) -> <try-make-list> term*
-  	where
-  		<is-list> term*;
-  		<is-list> expected*;
-  		<cart(type-prop-eq)> (term*, expected*)
-
+  		<type-prop-eq> (actual, expected)

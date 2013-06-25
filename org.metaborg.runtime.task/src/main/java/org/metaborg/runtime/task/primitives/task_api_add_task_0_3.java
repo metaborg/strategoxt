@@ -22,7 +22,7 @@ public class task_api_add_task_0_3 extends AbstractPrimitive {
 		final IStrategoTerm dependencies = tvars[1];
 		final IStrategoTerm instruction = tvars[2];
 		env.setCurrent(TaskManager.getInstance().getCurrent()
-			.addTask((IStrategoString) partition, (IStrategoList) dependencies, instruction));
+			.addTask((IStrategoString) partition, (IStrategoList) dependencies, instruction, false));
 		return true;
 	}
 }

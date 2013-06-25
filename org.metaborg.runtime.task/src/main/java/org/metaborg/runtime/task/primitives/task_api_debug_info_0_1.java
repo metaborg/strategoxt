@@ -1,5 +1,7 @@
 package org.metaborg.runtime.task.primitives;
 
+import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
@@ -51,7 +53,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, TaskEngine engine, ITermFactory factory) {
 		Task task = engine.getTask(taskID);
 		IStrategoList dependencies = factory.makeList(engine.getDependencies(taskID));
-		IStrategoTerm results = engine.hasFailed(taskID) ? fail(factory) : task.results;
+		IStrategoTerm results = engine.hasFailed(taskID) ? fail(factory) : makeList(factory, task.results());
 
 		return factory.makeTuple(
 			taskID, 
@@ -59,7 +61,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 			dependencies, 
 			results == null ? none(factory) : results,
 			task.message == null ? none(factory) : task.message, 
-				factory.makeInt((int) task.time),
+			factory.makeInt((int) task.time),
 			factory.makeInt(task.evaluations)
 		);
 	}

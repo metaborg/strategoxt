@@ -1,28 +1,67 @@
 package org.metaborg.runtime.task;
 
-import org.spoofax.interpreter.terms.IStrategoList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.spoofax.interpreter.terms.IStrategoTerm;
+
+import com.google.common.collect.Lists;
 
 public final class Task {
 	public final IStrategoTerm instruction;
-	public IStrategoList results;
+	public final boolean combinator;
+	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+	private boolean solved = false;
 	public IStrategoTerm message;
-	public boolean failed = false;
+	private boolean failed = false;
 	public long time = -1;
 	public short evaluations = 0;
 
-	public Task(IStrategoTerm instruction) {
+	public Task(IStrategoTerm instruction, boolean combinator) {
 		this.instruction = instruction;
+		this.combinator = combinator;
 	}
 
-	public Task(IStrategoTerm instruction, IStrategoList results, IStrategoTerm message, boolean failed, long time,
-		short evaluations) {
-		this.instruction = instruction;
-		this.results = results;
-		this.message = message;
-		this.failed = failed;
-		this.time = time;
-		this.evaluations = evaluations;
+	public Iterable<IStrategoTerm> results() {
+		return results;
+	}
+	
+	public boolean hasResults() {
+		return !results.isEmpty();
+	}
+	
+	public void setResults(Iterable<IStrategoTerm> results) {
+		this.results = Lists.newLinkedList(results);
+		solved = true;
+	}
+	
+	public void addResults(Iterable<IStrategoTerm> results) {
+		for(IStrategoTerm result : results)
+			this.results.add(result);
+		solved = true;
+	}
+	
+	public void addResult(IStrategoTerm result) {
+		results.add(result);
+		solved = true;
+	}
+	
+	public boolean hasFailed() {
+		return failed;
+	}
+	
+	public void setFailed() {
+		failed = true;
+	}
+	
+	public boolean isSolved() {
+		return solved || failed;
+	}
+	
+	public void unsolve() {
+		results.clear();
+		failed = false;
+		solved = false;
 	}
 
 	@Override

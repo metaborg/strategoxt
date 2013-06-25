@@ -6,23 +6,23 @@ import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
+import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class task_api_evaluate_2_1 extends AbstractPrimitive {
-	public static task_api_evaluate_2_1 instance = new task_api_evaluate_2_1();
+public class task_api_add_combinator_0_3 extends AbstractPrimitive {
+	public static task_api_add_combinator_0_3 instance = new task_api_add_combinator_0_3();
 
-	public task_api_evaluate_2_1() {
-		super("task_api_evaluate", 3, 1);
+	public task_api_add_combinator_0_3() {
+		super("task_api_add_combinator", 0, 3);
 	}
 
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-		final IStrategoTerm changedReads = (IStrategoList) tvars[0];
-		final Strategy collect = svars[0];
-		final Strategy insert = svars[1];
-		final Strategy perform = svars[2];
+		final IStrategoTerm partition = tvars[0];
+		final IStrategoTerm dependencies = tvars[1];
+		final IStrategoTerm instruction = tvars[2];
 		env.setCurrent(TaskManager.getInstance().getCurrent()
-			.evaluate(env, collect, insert, perform, (IStrategoList) changedReads));
+			.addTask((IStrategoString) partition, (IStrategoList) dependencies, instruction, true));
 		return true;
 	}
 }

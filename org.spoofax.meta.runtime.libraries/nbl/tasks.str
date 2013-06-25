@@ -24,91 +24,83 @@ signature
     PropConstraint         : List(Prop) * List(Result)                 -> Instruction
     PropCalc               : Property * Term                           -> Instruction
         
-    ResolveAllDefs            : Scope * Namespace                  -> Instruction
+    ResolveAllDefs         : Scope * Namespace                  -> Instruction
         
 rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
   perform-task(|nr):
-  	ResolveDefs(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
+  	ResolveDefs(scope, ns, name) -> def*
   	where
-  		uri*  := <filter(nabl-uri)> scope*;
-  		name' := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
-  		def*  := <nabl-lookup(|ns, name')> uri*;
-  		<map(nabl-add-read-extend(|nr, ns, name'))> uri*;
-  		switch !def*
-        case ?[]:
-        	fail
-        otherwise: 
-        	!def* // TODO: id?
-			end => result
+  		uri   := <nabl-uri> scope;
+  		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
+  		<nabl-add-read-extend(|nr, ns, name')> uri;
+  		def*  := <nabl-lookup(|ns, name')> uri;
+  		not(?[])
 
 	// Calls a user-defined disambiguation filter on definitions with relevant information.
 	perform-task(|nr):
 		DisambiguateDefs(def*, prop*, namespace, name) -> result
 		where
 			if <Tl> def* then
-				result := <try(nabl-disambiguate(|prop*, namespace, name))> def*
+				<try(nabl-disambiguate(|prop*, namespace, name))> def*
 			else
-				result := def*
-			end
+				!def*
+			end => result
+
+	task-is-combinator = ?DisambiguateDefs(_, _, _, _)
 
 	// Looks up named imports, active in scopes with namespace and name..
 	perform-task(|nr):
-		ResolveNamedImports(scope*@<with(is-list|"Expected a list of scopes.")>, ns, name) -> result
+		ResolveNamedImports(scope, ns, name) -> result
 		where
-			uri*    := <filter(nabl-uri)> scope*;
-			name'   := <try-remove-list; strip-annos> name; // Name could be a list, and annotated.
-			import* := <nabl-lookup-named-import(|ns, name')> uri*;
-			<map(nabl-add-read(|nr))> uri*;
-      if <task-has-dependencies> import* then
-      	result := <task-collect-dependencies> import*
-      else
-	      result := import*
-      end
+			uri     := <nabl-uri> scope;
+			<nabl-add-read(|nr)> uri;
+			name'   := <try-remove-list; strip-annos> name; // TODO: can this be a list?
+			import* := <nabl-lookup-named-import(|ns, name')> uri;
+      switch id
+      	case ?[]                            : fail
+      	case task-collect-dependencies => d : !d
+      	otherwise                           : id
+      end => result
 	
 	// Looks up wildcard imports for a namespace active in scopes.
 	perform-task(|nr):
-		ResolveWildcardImports(scope*, ns) -> result
+		ResolveWildcardImports(scope, ns) -> result
 		where
-			uri*        := <filter(nabl-uri)> scope*;
-			import-uri* := <mapconcat(resolve-one-wildcard-import(|nr, ns))> uri*;
+			uri         := <nabl-uri> scope;
+			import-uri* := <resolve-one-wildcard-import(|nr, ns)> uri;
       switch id
+      	case ?[]                            : fail
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
       end => result
 			
 	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
-		where
+		with
+			<nabl-add-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <Hd; hashtable-get(|ns)> h
+					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hashtable-get(|ns) <+ ![]> h
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<task-create-dependency> import-closure-id]
 					otherwise                                             : ![]
 				end => result
 			else
 				result := []
-			end;
-			<nabl-add-read(|nr)> uri
+			end
 
 rules // Visibility
 	
   // Looks up defintions in scopes with namespace and name.
   perform-task(|nr):
-  	ResolveAllDefs(scope*@<with(is-list|"Expected a list of scopes.")>, ns) -> result
+  	ResolveAllDefs(scope, ns) -> def*
   	where
-  		uri*  := <filter(nabl-uri)> scope*;
-  		def*  := <nabl-lookup-all(|ns)> uri*;
-  		//<map(nabl-add-read-extend(|nr, ns, name'))> uri*;
-  		switch !def*
-        case ?[]:
-        	fail
-        otherwise: 
-        	!def* // TODO: id?
-			end => result	
+  		uri  := <nabl-uri> scope;
+  		def* := <nabl-lookup-all(|ns)> uri;
+  		not(?[])
 
 rules // Import calculation
 	
@@ -116,13 +108,13 @@ rules // Import calculation
 	perform-task(|nr):
 		ImportCalc(uri) -> result
 		where
+			<nabl-add-read(|nr)> uri;
 			import-ns-use*        := <nabl-get-all-properties(|Import())> uri;
 			(imported-uri*, uri*) := <partition(resolve-transitive-import, resolve-import)> import-ns-use*;
   		switch id
         case d := <task-collect-dependencies> : !d
-        otherwise                             : ![<id>]
-			end => result;
-			<nabl-add-read(|nr)> uri
+        otherwise                             : id
+			end => result
 
 	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
 	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
@@ -132,6 +124,7 @@ rules // Import calculation
 	perform-task(|nr):
 		ImportClosure(uri) -> result
 		with
+			<nabl-add-read(|nr)> uri;
 			import-calc-id        := <task-instruction-id> ImportCalc(uri);
 			(imported-uri*, uri*) := <task-get-result; Hd> import-calc-id; // Result for this task must exit, as a dependency is expressed on it during collect.
 			hashtable             := <new-hashtable>;
@@ -139,9 +132,8 @@ rules // Import calculation
 			d* := <collect-all(?URI(_, _)); mapconcat(import-closure-transitive(|nr, hashtable))> imported-uri*;
 			switch id
 				case task-collect-dependencies => d : !d
-				otherwise                           : ![hashtable]
-			end => result;
-			<nabl-add-read(|nr)> uri
+				otherwise                           : !hashtable
+			end => result
 			
 	import-to-hash-table(|hashtable):
 		(ns, import-uri*) -> <hash-multimap-putlist(|ns, import-uri*)> hashtable
@@ -149,18 +141,18 @@ rules // Import calculation
 	import-closure-transitive(|nr, hashtable):
 		uri	-> result
 		with
+			<nabl-add-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
+					case task-get-result; Hd => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<id>]
 					otherwise                                             : ![]
 				end => result
 			else
 				result := []
-			end;
-			<nabl-add-read(|nr)> uri
+			end
 
 rules // Property constraints
 	  
@@ -168,19 +160,21 @@ rules // Property constraints
   	PropConstraint(prop*, res*) -> result
   	where
   		filtered := <filter(nabl-resolve-constraint(|prop*))> res*;
-      switch !filtered
-      	case task-collect-dependencies => d: !d
-      	otherwise: !filtered // TODO: id?
+      switch id
+      	case task-collect-dependencies => d : !d
+      	otherwise                           : id
       end => result
+      
+  task-is-combinator = ?PropConstraint(_, _)
   		
   nabl-resolve-constraint(|prop*):
     entry -> entry'
     where
       filtered := <filter(nabl-resolve-constraint-one(|entry))> prop*;
-      switch !filtered
-      	case ?[]: fail
-      	case task-collect-dependencies => d: !d
-      	otherwise: !entry
+      switch id
+      	case ?[]                            : fail
+      	case task-collect-dependencies => d : !d
+      	otherwise                           : !entry
       end => entry'
       
   // TODO: check dependencies (3rd subterm) as well.
@@ -196,18 +190,6 @@ rules // Property constraints
       else
         entry' := <task-create-dependencies> value
       end
-
-rules // Property calcuation
-
-  perform-task(|nr): 
-  	PropCalc(prop, term) -> result'
-  	where
-  		result := <calc-property> (prop, term);
-  		switch !result
-  			case task-collect-dependencies => d : !d
-      	case not(is-list)                   : ![result]
-      	otherwise                           : !result
-			end => result'
 
 rules // Utility
 	

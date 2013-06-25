@@ -3,6 +3,7 @@ module task/core
 imports 
   
   task/interface
+  task/utils
   
 signature
 
@@ -12,10 +13,11 @@ signature
   
   constructors
     
-    Result : Int -> Result
+    Result : TaskID -> Result
     Fail : Result
     
-    Dependency : List(Int) -> Result
+    Single     : List(Result) -> Result
+    Dependency : List(TaskID) -> Result
 		
 rules // Creation
   
@@ -23,9 +25,10 @@ rules // Creation
   //tdebug(s) = debug(s)
   
   new-task(|partition) = new-task(|partition, <dependent-tasks>)
-  
   new-task(|partition, dependencies) = 
-    task-add-task(|partition, dependencies, <id>)
+  		task-is-combinator; task-add-combinator(|partition, dependencies, <id>) 
+  	<+ 
+  		task-add-task(|partition, dependencies, <id>)
    
   //    tdebug(!"new task ")
   //  ; avoid-task(|dependencies)
@@ -57,12 +60,20 @@ rules // Dependencies
 		!Dependency(<id>)
 
 rules // Results
+
+	insert-results-hashmap(|results-hashmap) =
+		switch id
+			case has-annos  : !(<id>, <get-annos; insert-results-hashmap(|results-hashmap)>); set-annos
+			case is-list    : filter(insert-results-hashmap(|results-hashmap); not(?[]))
+			case ?Result(n) : (<hashtable-get(|n)> results-hashmap) <+ <with(fail|"Cannot insert result: ")> n
+			otherwise       : all(insert-results-hashmap(|results-hashmap))
+		end
 	
 	insert-results-with-fail =
 		switch id
 			case has-annos  : !(<id>, <get-annos; insert-results-with-fail>); set-annos
 			case is-list    : filter(insert-results-with-fail; not(?[]))
-			case ?Result(n) : (task-api-get-result(|n) <+ (task-api-has-failed(|n); ![]) <+ with(fail|"Cannot insert result: "))
+			case ?Result(n) : (task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ with(fail|"Cannot insert result: "))
 			otherwise       : all(insert-results-with-fail)
 		end
 	
@@ -70,7 +81,7 @@ rules // Results
 		switch id
 			case has-annos  : !(<id>, <get-annos; insert-results>); set-annos
 			case is-list    : map(insert-results); remove-all(?[])
-			case ?Result(n) : task-api-get-result(|n) <+ (task-api-has-failed(|n); ![])
+			case ?Result(n) : task-api-get-results(|n) <+ (task-api-has-failed(|n); ![])
 			otherwise       : all(insert-results)
 		end
 		
@@ -78,7 +89,7 @@ rules // Results
 		switch id
 			case has-annos  : !(<id>, <get-annos; insert-results-or-create-dependency>); set-annos
 			case is-list    : map(insert-results-or-create-dependency); remove-all(?[])
-			case ?Result(n) : task-api-get-result(|n) <+ (task-api-has-failed(|n); ![]) <+ !Dependency([n])
+			case ?Result(n) : task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ !Dependency([n])
 			otherwise       : all(insert-results-or-create-dependency)
 		end
 	
@@ -87,27 +98,33 @@ rules // Projections
 	task-result-id:
     Result(taskID) -> taskID
 
+	task-collect-result-ids =
+		collect-all-annos(task-result-id, union)
+
 rules // API
 	
 	task-setup(|project-path)                            = task-api-setup(|project-path)
 	task-start-collection(|partition)                    = task-api-start-collection(|partition)
 	task-stop-collection(|partition)                     = task-api-stop-collection(|partition)
 	task-add-task(|partition, dependencies, instruction) = task-api-add-task(|partition, dependencies, instruction)
+	task-add-combinator(|partition, dependencies, instruction) = task-api-add-combinator(|partition, dependencies, instruction)
 	task-becomes-cyclic(|taskIDFrom, taskIDTo)           = task-api-becomes-cyclic(|taskIDFrom, taskIDTo)
 	task-debug-info(|partition)                          = task-api-debug-info(|partition)
 	task-add-message(|taskID, message)                   = task-api-add-message(|taskID, message)
 	task-get-messages(|partition)                        = task-api-get-messages(|partition)
-	task-evaluate(|changed-read*)                        = task-api-evaluate(task-perform-task, insert-results-with-fail|changed-read*)
+	task-evaluate(|changed-read*)                        = task-api-evaluate(task-collect-result-ids, 
+	                                                         insert-results-hashmap, task-perform-task|changed-read*)
 	task-exists(|instruction)                            = task-api-exists(|instruction)
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
 	task-unload(|project-path)                           = task-api-unload(|project-path)
 	task-unload                                          = task-unload(|<id>)
 	
+	// TODO: rename to task-get-results.
 	task-get-result =
 		switch id
-			case ?Result(taskID) : task-api-get-result(|taskID)
-			otherwise            : task-api-get-result(|<id>)
+			case ?Result(taskID) : task-api-get-results(|taskID)
+			otherwise            : task-api-get-results(|<id>)
 		end
 	
 	task-has-failed =
@@ -118,7 +135,7 @@ rules // API
 		
 	task-get-solved =
 		switch id
-			case ?Result(taskID) : task-api-get-result(|taskID) <+ (task-api-has-failed(|taskID); ![])
+			case ?Result(taskID) : task-api-get-results(|taskID) <+ (task-api-has-failed(|taskID); ![])
 			otherwise            : task-api-has-failed(|<id>) <+ (task-api-has-failed(|<id>); ![])
 		end
 				
@@ -145,15 +162,16 @@ rules /** @internal API externals */
 	task-api-start-collection(|partition) = prim("task_api_start_collection", partition)
 	task-api-stop-collection(|partition) = prim("task_api_stop_collection", partition)
 	task-api-add-task(|partition, dependencies, instruction) = prim("task_api_add_task", partition, dependencies, instruction)
+	task-api-add-combinator(|partition, dependencies, instruction) = prim("task_api_add_combinator", partition, dependencies, instruction)
 	task-api-becomes-cyclic(|taskIDFrom, taskIDTo) = prim("task_api_becomes_cyclic", taskIDFrom, taskIDTo)
-	task-api-get-result(|taskID) = prim("task_api_get_result", taskID)
+	task-api-get-results(|taskID) = prim("task_api_get_results", taskID)
 	task-api-debug-info(|partition) = prim("task_api_debug_info", partition)
 	task-api-add-message(|taskID, message) = prim("task_api_add_message", taskID, message)
 	task-api-get-messages(|partition) = prim("task_api_get_messages", partition)
 	task-api-has-failed(|taskID) = prim("task_api_has_failed", taskID)
 	task-api-add-read(|taskID, read) = prim("task_api_add_read", taskID, read)
 	task-api-add-dependency(|taskID, dependency) = prim("task_api_add_dependency", taskID, dependency)
-	task-api-evaluate(perform-task, insert-result|changed-reads) = prim("task_api_evaluate", perform-task, insert-result|changed-reads)
+	task-api-evaluate(collect-results, insert-results, perform-task|changed-reads) = prim("task_api_evaluate", collect-results, insert-results, perform-task|changed-reads)
 	task-api-exists(|instruction) = prim("task_api_exists", instruction)
 	task-api-get-dependencies(|taskID) = prim("task_api_get_dependencies", taskID)
 	task-api-reset = prim("task_api_reset")
