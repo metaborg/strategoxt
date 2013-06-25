@@ -100,8 +100,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 			int numTasksEvaluated = 0;
 			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				++numTasksEvaluated;
+				nextScheduled.remove(taskID);
+				
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
-				nextScheduled.remove(instruction);
 				final Iterable<IStrategoTerm> instructions =
 					instructionCombinations(context, collect, insert, instruction);
 
