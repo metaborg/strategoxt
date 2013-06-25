@@ -19,7 +19,6 @@ import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 public class TaskEngine {
@@ -44,6 +43,9 @@ public class TaskEngine {
 
 	/** Tasks that are not in any partition are garbage. **/
 	private final Set<IStrategoTerm> garbage = new HashSet<IStrategoTerm>();
+
+	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
+	private final Set<IStrategoTerm> scheduled = new HashSet<IStrategoTerm>();
 
 
 	/** New tasks that have been added since last call to {@link #startCollection(IStrategoString)}. */
@@ -134,7 +136,7 @@ public class TaskEngine {
 		if(!toTasks.containsKey(taskID)) {
 			toTasks.put(taskID, new Task(instruction, combinator));
 			addedTasks.add(taskID);
-			evaluator.schedule(taskID);
+			schedule(taskID);
 		}
 		removedTasks.remove(taskID);
 
@@ -206,6 +208,15 @@ public class TaskEngine {
 	}
 
 	/**
+	 * Schedules task with given identifier for evaluation the next time {@link #evaluate} is called.
+	 * 
+	 * @param taskID The identifier of the task to schedule.
+	 */
+	private void schedule(IStrategoTerm taskID) {
+		scheduled.add(taskID);
+	}
+
+	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
 	 * 
@@ -213,10 +224,11 @@ public class TaskEngine {
 	 * @param perform The strategy that performs an instruction.
 	 * @param insert The strategy that inserts results into an instruction.
 	 * @param changedReads A list of reads which have changed.
+	 * 
 	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
 	 *         evaluations.
 	 */
-	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform,
+	public IStrategoTerm evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform,
 		IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(final IStrategoTerm changedRead : changedReads) {
@@ -224,7 +236,7 @@ public class TaskEngine {
 			final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
 			final Queue<IStrategoTerm> workList = new LinkedList<IStrategoTerm>(getRead(changedRead));
 			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
-				evaluator.schedule(taskID);
+				schedule(taskID);
 				seen.add(taskID);
 				Collection<IStrategoTerm> dependent = getDependent(taskID);
 				for(IStrategoTerm dependentTaskID : dependent) {
@@ -234,7 +246,10 @@ public class TaskEngine {
 				}
 			}
 		}
-		return evaluator.evaluate(context, collect, insert, perform);
+
+		IStrategoTerm result = evaluator.evaluate(scheduled, context, collect, insert, perform);
+		scheduled.clear();
+		return result;
 	}
 
 	public Iterable<IStrategoTerm> getTaskIDs() {
@@ -336,7 +351,7 @@ public class TaskEngine {
 	public void addResult(IStrategoTerm taskID, IStrategoTerm result) {
 		getTask(taskID).addResult(result);
 	}
-	
+
 	public void setMessage(IStrategoTerm taskID, IStrategoTerm message) {
 		getTask(taskID).message = message;
 	}
