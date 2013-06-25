@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 public final class Task {
 	public final IStrategoTerm instruction;
 	public final boolean combinator;
+	
 	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
 	private boolean solved = false;
 	public IStrategoTerm message;

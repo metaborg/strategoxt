@@ -215,21 +215,25 @@ public class TaskEngine {
 	private void schedule(IStrategoTerm taskID) {
 		scheduled.add(taskID);
 	}
-
+	
 	/**
-	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
-	 * changed by a read.
+	 * Invalidates task with given identifier, removing their results, reads and messages.
 	 * 
-	 * @param context The context to call the perform and insert strategies with.
-	 * @param perform The strategy that performs an instruction.
-	 * @param insert The strategy that inserts results into an instruction.
-	 * @param changedReads A list of reads which have changed.
-	 * 
-	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
-	 *         evaluations.
+	 * @param taskID The identifier of the task to invalidate.
 	 */
-	public IStrategoTerm evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform,
-		IStrategoList changedReads) {
+	public void invalidate(IStrategoTerm taskID) {
+		final Task task = getTask(taskID);
+		task.unsolve();
+		removeReads(taskID);
+		task.message = null;
+	}
+	
+	/**
+	 * Invalidates and schedules tasks that have changed because something they read has changed.
+	 * 
+	 * @param changedReads A list of reads which have changed.
+	 */
+	public void invalidateTaskReads(IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(final IStrategoTerm changedRead : changedReads) {
 			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
@@ -237,6 +241,7 @@ public class TaskEngine {
 			final Queue<IStrategoTerm> workList = new LinkedList<IStrategoTerm>(getRead(changedRead));
 			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 				schedule(taskID);
+				invalidate(taskID);
 				seen.add(taskID);
 				Collection<IStrategoTerm> dependent = getDependent(taskID);
 				for(IStrategoTerm dependentTaskID : dependent) {
@@ -246,12 +251,26 @@ public class TaskEngine {
 				}
 			}
 		}
-
+	}
+	
+	/**
+	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
+	 * changed by a read.
+	 * 
+	 * @param context The context to call the perform and insert strategies with.
+	 * @param perform The strategy that performs an instruction.
+	 * @param insert The strategy that inserts results into an instruction.
+	 * 
+	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
+	 *         evaluations.
+	 */
+	public IStrategoTerm evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		IStrategoTerm result = evaluator.evaluate(scheduled, context, collect, insert, perform);
 		scheduled.clear();
 		return result;
 	}
 
+	
 	public Iterable<IStrategoTerm> getTaskIDs() {
 		return toTasks.keySet();
 	}

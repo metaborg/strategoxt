@@ -70,12 +70,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 		taskEngine.clearEvaluations();
 
 		try {
-			// TODO: Move this to the stopCollection function in TaskEngine so that tasks are already invalidated.
-			// Remove solutions for tasks that are scheduled for evaluation.
-			for(final IStrategoTerm taskID : scheduled) {
-				taskEngine.unsolve(taskID);
-			}
-
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : scheduled) {
@@ -103,9 +97,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 				// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
 				// overwrite previous data.
-				taskEngine.unsolve(taskID);
-				taskEngine.removeReads(taskID);
-				taskEngine.removeMessage(taskID);
+				taskEngine.invalidate(taskID);
 
 				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
