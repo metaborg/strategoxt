@@ -68,6 +68,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(final IStrategoTerm taskID : nextScheduled) {
 				taskEngine.removeSolved(taskID);
 				taskEngine.removeReads(taskID);
+				taskEngine.removeMessage(taskID);
 			}
 
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
