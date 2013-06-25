@@ -7,6 +7,8 @@ imports
 	nbl/entries
 	nbl/query
 	nbl/utils
+	nbl/uri
+	nbl/tasks
   types/interface
   task/core
   
@@ -25,8 +27,8 @@ rules
   	PropLookup(kind, t) -> result
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
-  		switch !resolved
-  			case ?Def(_) : nabl-get-property(|kind); insert-results-or-create-dependency
+  		switch id
+  			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); insert-results-or-create-dependency // TODO: is this read needed?
   			otherwise    : id
   		end => result
   
