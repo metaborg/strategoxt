@@ -109,6 +109,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 				nextScheduled.remove(taskID);
 				queued.remove(taskID);
 				
+				taskEngine.unsolve(taskID);
+				taskEngine.removeReads(taskID);
+				
 				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
 				final Iterable<IStrategoTerm> instructions =
