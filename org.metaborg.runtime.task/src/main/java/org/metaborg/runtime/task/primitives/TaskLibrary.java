@@ -6,6 +6,7 @@ public class TaskLibrary extends AbstractStrategoOperatorRegistry {
 	public static final String REGISTRY_NAME = "TASK";
 
 	public TaskLibrary() {
+		add(task_api_add_combinator_0_3.instance);
 		add(task_api_add_dependency_0_2.instance);
 		add(task_api_add_message_0_2.instance);
 		add(task_api_add_read_0_2.instance);

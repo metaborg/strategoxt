@@ -20,11 +20,12 @@ public class TaskEngineFactory {
 		IStrategoList tasks = factory.makeList();
 		for(final IStrategoTerm taskID : taskEngine.getTaskIDs()) {
 			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
+			final boolean combinator = taskEngine.isCombinator(taskID);
 			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
 			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(taskEngine.getResults(taskID), factory, serializer);
-			final boolean failed = taskEngine.failed(taskID);
+			final boolean failed = taskEngine.hasFailed(taskID);
 			IStrategoTerm message = taskEngine.getMessage(taskID);
 			if(message != null)
 				message = serializer.toAnnotations(message);
@@ -32,7 +33,7 @@ public class TaskEngineFactory {
 			final short evaluations = taskEngine.getEvaluations(taskID);
 			tasks =
 				factory.makeListCons(
-					createTaskTerm(factory, taskID, instruction, partitions, dependencies, reads, results, failed,
+					createTaskTerm(factory, taskID, instruction, combinator, partitions, dependencies, reads, results, failed,
 						message, time, evaluations), tasks);
 		}
 
@@ -51,27 +52,30 @@ public class TaskEngineFactory {
 		for(IStrategoTerm task : tasks) {
 			final IStrategoTerm taskID = task.getSubterm(0);
 			final IStrategoTerm instruction = task.getSubterm(1);
-			final IStrategoList partitions = (IStrategoList) task.getSubterm(2);
-			final IStrategoList dependencies = (IStrategoList) task.getSubterm(3);
-			final IStrategoList reads = (IStrategoList) task.getSubterm(4);
-			final IStrategoTerm results = deserializeResults(task.getSubterm(5), factory, serializer);
-			final IStrategoInt failed = (IStrategoInt) task.getSubterm(6);
-			final IStrategoTerm message = task.getSubterm(7);
-			final IStrategoTerm time = task.getSubterm(8);
-			final IStrategoTerm evaluations = task.getSubterm(9);
-			taskEngine.addPersistedTask(taskID, instruction, partitions, dependencies, reads, results, failed, message,
-				time, evaluations);
+			final IStrategoInt combinator = (IStrategoInt) task.getSubterm(2);
+			final IStrategoList partitions = (IStrategoList) task.getSubterm(3);
+			final IStrategoList dependencies = (IStrategoList) task.getSubterm(4);
+			final IStrategoList reads = (IStrategoList) task.getSubterm(5);
+			final IStrategoTerm results = deserializeResults(task.getSubterm(6), factory, serializer);
+			final IStrategoInt failed = (IStrategoInt) task.getSubterm(7);
+			final IStrategoTerm message = task.getSubterm(8);
+			final IStrategoTerm time = task.getSubterm(9);
+			final IStrategoTerm evaluations = task.getSubterm(10);
+			taskEngine.addPersistedTask(taskID, instruction, combinator, partitions, dependencies, reads, results,
+				failed, message, time, evaluations);
 		}
 
 		return taskEngine;
 	}
 
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
-		Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
-		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time, short evaluations) {
+		boolean combinator, Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
+		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time,
+		short evaluations) {
 		return factory.makeTuple(
 			taskID, 
-			instruction, 
+			instruction,
+			combinator ? factory.makeInt(1) : factory.makeInt(0),
 			factory.makeList(partitions), 
 			factory.makeList(dependencies),
 			factory.makeList(reads), 

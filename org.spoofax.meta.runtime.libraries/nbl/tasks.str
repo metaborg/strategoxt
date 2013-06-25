@@ -36,6 +36,7 @@ rules // Resolve
   		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
   		<nabl-add-read-extend(|nr, ns, name')> uri;
   		def*  := <nabl-lookup(|ns, name')> uri;
+  		debug(!"Resolved: ");
   		not(?[])
 
 	// Calls a user-defined disambiguation filter on definitions with relevant information.
@@ -47,6 +48,8 @@ rules // Resolve
 			else
 				!def*
 			end => result
+
+	task-is-combinator = ?DisambiguateDefs(_, _, _, _)
 
 	// Looks up named imports, active in scopes with namespace and name..
 	perform-task(|nr):
@@ -162,6 +165,8 @@ rules // Property constraints
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
       end => result
+      
+  task-is-combinator = ?PropConstraint(_, _)
   		
   nabl-resolve-constraint(|prop*):
     entry -> entry'

@@ -9,14 +9,17 @@ import com.google.common.collect.Lists;
 
 public final class Task {
 	public final IStrategoTerm instruction;
+	public final boolean combinator;
 	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+	private boolean solved = false;
 	public IStrategoTerm message;
-	public boolean failed = false;
+	private boolean failed = false;
 	public long time = -1;
 	public short evaluations = 0;
 
-	public Task(IStrategoTerm instruction) {
+	public Task(IStrategoTerm instruction, boolean combinator) {
 		this.instruction = instruction;
+		this.combinator = combinator;
 	}
 
 	public Iterable<IStrategoTerm> results() {
@@ -29,23 +32,36 @@ public final class Task {
 	
 	public void setResults(Iterable<IStrategoTerm> results) {
 		this.results = Lists.newLinkedList(results);
+		solved = true;
 	}
 	
 	public void addResults(Iterable<IStrategoTerm> results) {
 		for(IStrategoTerm result : results)
 			this.results.add(result);
+		solved = true;
 	}
 	
 	public void addResult(IStrategoTerm result) {
 		results.add(result);
+		solved = true;
 	}
 	
-	public void clearResults() {
+	public boolean hasFailed() {
+		return failed;
+	}
+	
+	public void setFailed() {
+		failed = true;
+	}
+	
+	public boolean isSolved() {
+		return solved || failed;
+	}
+	
+	public void unsolve() {
 		results.clear();
-	}
-	
-	public boolean solved() {
-		return hasResults() || failed;
+		failed = false;
+		solved = false;
 	}
 
 	@Override

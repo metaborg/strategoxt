@@ -33,6 +33,8 @@ rules
       
 	perform-task(|nr):
  		Choice(choice*) -> <Hd> choice*
+ 		
+	task-is-combinator = ?Choice(_)
 
 	// TODO: can we still use <Hd> to determine if a task failed or not?
 	// TODO: should not store any result.
@@ -43,6 +45,8 @@ rules
     		case Success() : <Hd> task; task-add-message(|n, message)
     		case Failure() : not(<Hd> task); task-add-message(|n, message)
     	end
+
+	task-is-combinator = ?Message(_, _, _)
 
   avoid-task(|dep*):
     Match(_, _, _) -> <perform-task(|0) <+ ![]>
@@ -57,3 +61,5 @@ rules
   
   perform-task(|nr):
   	Concat(term*) -> <concat> term*
+
+	task-is-combinator = ?Concat(_)

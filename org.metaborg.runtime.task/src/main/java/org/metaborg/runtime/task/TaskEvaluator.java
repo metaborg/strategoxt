@@ -65,6 +65,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private void queue(IStrategoTerm taskID) {
 		evaluationQueue.add(taskID);
+		System.out.println("Queueing: " + taskID + " - " + taskEngine.getInstruction(taskID));
 	}
 
 	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
@@ -75,23 +76,28 @@ public class TaskEvaluator implements ITaskEvaluator {
 			// TODO: Move this to the stopCollection function in TaskEngine so that tasks are already invalidated.
 			// Remove solutions and reads for tasks that are scheduled for evaluation.
 			for(final IStrategoTerm taskID : nextScheduled) {
-				taskEngine.removeSolved(taskID);
+				taskEngine.unsolve(taskID);
 				taskEngine.removeReads(taskID);
 			}
 
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : nextScheduled) {
+				System.out.println("Checking: " + taskID + " - " + taskEngine.getInstruction(taskID));
 				final Set<IStrategoTerm> dependencies = new HashSet<IStrategoTerm>(taskEngine.getDependencies(taskID));
 				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
-					if(taskEngine.solved(dependency))
+					System.out.println("Deps on: " + dependency + " - " + taskEngine.getInstruction(dependency));
+					if(taskEngine.isSolved(dependency)) {
+						System.out.println("But it is solved");
 						dependencies.remove(dependency);
+					}
 				}
 
 				// If the task has no unsolved dependencies, queue it for analysis.
 				if(dependencies.isEmpty()) {
-					evaluationQueue.add(taskID);
+					queue(taskID);
 				} else {
+					System.out.println("Has deps: " + dependencies);
 					toRuntimeDependency.putAll(taskID, dependencies);
 				}
 			}
@@ -102,16 +108,20 @@ public class TaskEvaluator implements ITaskEvaluator {
 				++numTasksEvaluated;
 				nextScheduled.remove(taskID);
 				
+				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
+				System.out.println("Evaluating: " + taskID + " - " + instruction);
 				final Iterable<IStrategoTerm> instructions =
-					instructionCombinations(context, collect, insert, instruction);
+					instructionCombinations(context, collect, insert, combinator, instruction);
 
 				// TODO: optimize success/unknown using a bitflag?
 				boolean unknown = false;
 				boolean failure = true;
 				for(IStrategoTerm insertedInstruction : instructions) {
+					System.out.println("Solving: " + taskID + " - " + instruction);
 					final IStrategoTerm result = solve(context, perform, taskID, insertedInstruction);
 					final ResultType resultType = handleResult(taskID, instruction, result);
+					System.out.println("Result: " + result + " = " + resultType);
 					switch(resultType) {
 						case Fail:
 							break;
@@ -146,7 +156,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	}
 
 	private Iterable<IStrategoTerm> instructionCombinations(IContext context, Strategy collect, Strategy insert,
-		IStrategoTerm instruction) {
+		boolean combinator, IStrategoTerm instruction) {
 		final IStrategoTerm resultIDs = invoke(context, collect, instruction);
 		final Collection<IStrategoTerm> instructions = new LinkedList<IStrategoTerm>();
 
@@ -154,7 +164,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 		if(resultIDs.getSubtermCount() == 0) {
 			instructions.add(instruction);
-		} else if(!isTaskCombinator(instruction)) {
+		} else if(!combinator) {
 			// TODO: prevent construction of a multimap by changing cartesianProduct to accept a list of task IDs.
 			final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
 			for(IStrategoTerm resultID : resultIDs) {
@@ -267,7 +277,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
 			final boolean removed = toRuntimeDependency.remove(dependent, solved);
-			if(dependenciesSize == 1 && removed && !taskEngine.solved(dependent))
+			if(dependenciesSize == 1 && removed && !taskEngine.isSolved(dependent))
 				queue(dependent);
 		}
 	}
@@ -277,15 +287,5 @@ public class TaskEvaluator implements ITaskEvaluator {
 		toRuntimeDependency.removeAll(delayed);
 		for(final IStrategoTerm dependency : dependencies)
 			toRuntimeDependency.put(delayed, dependency);
-	}
-
-	private boolean isTaskCombinator(IStrategoTerm instruction) {
-		// TODO: extensible task combinators; use new-combinator instead of new-task and set a boolean?
-		if(Tools.isTermAppl(instruction)) {
-			final String name = ((IStrategoAppl) instruction).getConstructor().getName();
-			return name.equals("Choice") || name.equals("PropConstraint") || name.equals("Message")
-				|| name.equals("Concat") || name.equals("DisambiguateDefs");
-		}
-		return false;
 	}
 }

@@ -2,6 +2,7 @@ module task/interface
 
 strategies
   
-  perform-task(|nr) = fail
-  task-match        = fail
-  avoid-task(|dep*) = fail
+  perform-task(|nr)  = fail
+  task-match         = fail
+  avoid-task(|dep*)  = fail
+  task-is-combinator = fail
