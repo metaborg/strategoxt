@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
@@ -47,7 +46,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency =
 		BidirectionalLinkedHashMultimap.create();
 
-	/** Timer for measuring task time **/
+	/** Timer for measuring task time. **/
 	private final Timer timer = new Timer();
 
 
@@ -65,7 +64,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private void queue(IStrategoTerm taskID) {
 		evaluationQueue.add(taskID);
-		System.out.println("Queueing: " + taskID + " - " + taskEngine.getInstruction(taskID));
 	}
 
 	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
@@ -83,12 +81,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : nextScheduled) {
-				System.out.println("Checking: " + taskID + " - " + taskEngine.getInstruction(taskID));
 				final Set<IStrategoTerm> dependencies = new HashSet<IStrategoTerm>(taskEngine.getDependencies(taskID));
 				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
-					System.out.println("Deps on: " + dependency + " - " + taskEngine.getInstruction(dependency));
 					if(taskEngine.isSolved(dependency)) {
-						System.out.println("But it is solved");
 						dependencies.remove(dependency);
 					}
 				}
@@ -97,7 +92,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 				if(dependencies.isEmpty()) {
 					queue(taskID);
 				} else {
-					System.out.println("Has deps: " + dependencies);
 					toRuntimeDependency.putAll(taskID, dependencies);
 				}
 			}
@@ -110,7 +104,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 				
 				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
-				System.out.println("Evaluating: " + taskID + " - " + instruction);
 				final Iterable<IStrategoTerm> instructions =
 					instructionCombinations(context, collect, insert, combinator, instruction);
 
@@ -118,10 +111,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 				boolean unknown = false;
 				boolean failure = true;
 				for(IStrategoTerm insertedInstruction : instructions) {
-					System.out.println("Solving: " + taskID + " - " + instruction);
 					final IStrategoTerm result = solve(context, perform, taskID, insertedInstruction);
 					final ResultType resultType = handleResult(taskID, instruction, result);
-					System.out.println("Result: " + result + " = " + resultType);
 					switch(resultType) {
 						case Fail:
 							break;
@@ -178,8 +169,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 			final Collection<StrategoHashMap> resultCombinations = cartesianProduct(resultsMap);
 			for(StrategoHashMap mapping : resultCombinations) {
-				printMapping(mapping);
-				System.out.println("Inserting into task " + instruction);
 				instructions.add(insertResults(context, insert, instruction, mapping));
 			}
 		} else {
@@ -189,17 +178,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 				mapping.put(resultID, makeList(factory, results));
 			}
 
-			printMapping(mapping);
-			System.out.println("Inserting into combinator " + instruction);
 			instructions.add(insertResults(context, insert, instruction, mapping));
 		}
 
 		return instructions;
-	}
-
-	private void printMapping(StrategoHashMap mapping) {
-		for(Entry<IStrategoTerm, IStrategoTerm> entry : mapping.entrySet())
-			System.out.println(entry.getKey() + " -> " + entry.getValue());
 	}
 
 	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction,

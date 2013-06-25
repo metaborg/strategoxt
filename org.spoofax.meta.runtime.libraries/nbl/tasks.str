@@ -36,7 +36,6 @@ rules // Resolve
   		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
   		<nabl-add-read-extend(|nr, ns, name')> uri;
   		def*  := <nabl-lookup(|ns, name')> uri;
-  		debug(!"Resolved: ");
   		not(?[])
 
 	// Calls a user-defined disambiguation filter on definitions with relevant information.
