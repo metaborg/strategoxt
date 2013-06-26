@@ -241,7 +241,6 @@ public class TaskEngine {
 			final Queue<IStrategoTerm> workList = new LinkedList<IStrategoTerm>(getRead(changedRead));
 			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 				schedule(taskID);
-				invalidate(taskID);
 				seen.add(taskID);
 				Collection<IStrategoTerm> dependent = getDependent(taskID);
 				for(IStrategoTerm dependentTaskID : dependent) {
@@ -265,6 +264,11 @@ public class TaskEngine {
 	 *         evaluations.
 	 */
 	public IStrategoTerm evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		for(IStrategoTerm taskID : scheduled)
+			invalidate(taskID);
+		clearTimes();
+		clearEvaluations();
+		
 		IStrategoTerm result = evaluator.evaluate(scheduled, context, collect, insert, perform);
 		scheduled.clear();
 		return result;
@@ -453,6 +457,7 @@ public class TaskEngine {
 		toDependency.clear();
 		toRead.clear();
 		garbage.clear();
+		scheduled.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
@@ -465,6 +470,7 @@ public class TaskEngine {
 			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
 			toRead.removeAllInverse(taskID);
+			scheduled.remove(taskID);
 			digester.undigest(getInstruction(taskID));
 			toTasks.remove(taskID);
 		}

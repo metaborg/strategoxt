@@ -66,9 +66,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect, Strategy insert,
 		Strategy perform) {
-		taskEngine.clearTimes();
-		taskEngine.clearEvaluations();
-
 		try {
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
