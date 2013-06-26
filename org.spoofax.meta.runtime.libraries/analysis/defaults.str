@@ -48,7 +48,7 @@ rules // Multi-file analysis
       measure-time(
 	      measure-time(
 	      	path'* := <map(\p -> $[[project-path]/[p]]\)> path*;
-	        (result*, unevaluated-task*, evaluated-count) := <analyze-multiple(parse, complete-work-unit|language, project-path)> path'*;
+	        (result*, unevaluated-task*, evaluated-count) := <analyze-multiple(parse; desugar-before, complete-work-unit|language, project-path)> path'*;
 	        result'* := <filter(analysis-message-update-editor(desugar-after, pp-message))> result*
 	      , id | "analysis-multiple-full-analysis"
 	      );
