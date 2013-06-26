@@ -3,9 +3,6 @@ package org.metaborg.runtime.task.digest;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
@@ -19,7 +16,6 @@ import org.spoofax.terms.io.binary.SAFWriter;
 
 public class SHA1TermDigester implements ITermDigester {
 	private final MessageDigest digest;
-	private final Map<IStrategoTerm, IStrategoTerm> mapping = new HashMap<IStrategoTerm, IStrategoTerm>();
 	private final ByteBuffer intBuffer = ByteBuffer.allocate(4);
 	private final ByteBuffer doubleBuffer = ByteBuffer.allocate(8);
 
@@ -28,42 +24,22 @@ public class SHA1TermDigester implements ITermDigester {
 	}
 
 	public IStrategoTerm digest(IStrategoTerm term, ITermFactory factory) {
-		IStrategoTerm digestedTerm = mapping.get(term);
-		if(digestedTerm == null) {
-			digest.reset();
-			digestTopSerializer(term);
-			byte[] data = digest.digest();
-			digestedTerm = factory.makeTuple(factory.makeInt(toInt(data, 0)), factory.makeInt(toInt(data, 4)));
-			mapping.put(term, digestedTerm);
-		}
-		return digestedTerm;
-	}
-
-	public void undigest(IStrategoTerm term) {
-		mapping.remove(term);
-	}
-
-	public boolean digested(IStrategoTerm term) {
-		return mapping.containsKey(term);
+		digest.reset();
+		digestTopSerializer(term);
+		byte[] data = digest.digest();
+		return factory.makeTuple(factory.makeInt(toInt(data, 0)), factory.makeInt(toInt(data, 4)));
 	}
 
 	public IStrategoTerm state(ITermFactory factory) {
-		IStrategoList mappingTerm = factory.makeList();
-		for (Entry<IStrategoTerm, IStrategoTerm> entry : mapping.entrySet())
-			mappingTerm = factory.makeListCons(
-					factory.makeTuple(entry.getKey(), entry.getValue()),
-					mappingTerm);
-		return mappingTerm;
+		return factory.makeInt(0);
 	}
 
 	public void setState(IStrategoTerm state) {
-		mapping.clear();
-		for (IStrategoTerm entry : state)
-			mapping.put(entry.getSubterm(0), entry.getSubterm(1));
+		
 	}
 
 	public void reset() {
-		mapping.clear();
+
 	}
 
 	private void digestTopSerializer(IStrategoTerm term) {

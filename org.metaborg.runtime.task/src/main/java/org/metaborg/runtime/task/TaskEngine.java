@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
@@ -24,11 +25,15 @@ import org.spoofax.interpreter.terms.ITermFactory;
 public class TaskEngine {
 	private final ITermFactory factory;
 	private final ITermDigester digester;
+	private ITaskEvaluator evaluator;
 	private final IStrategoConstructor resultConstructor;
 
 
 	/** Mapping of task identifiers to tasks. */
-	private final Map<IStrategoTerm, Task> toTasks = new HashMap<IStrategoTerm, Task>();
+	private final Map<IStrategoTerm, Task> toTask = new HashMap<IStrategoTerm, Task>();
+
+	/** Mapping of instructions to task identifiers. */
+	private final Map<IStrategoTerm, IStrategoTerm> fromInstruction = new HashMap<IStrategoTerm, IStrategoTerm>();
 
 	/** Origin partitions of tasks. */
 	private final BidirectionalMultimap<IStrategoTerm, IStrategoString> toPartition = BidirectionalLinkedHashMultimap
@@ -40,6 +45,7 @@ public class TaskEngine {
 
 	/** Dependencies between tasks. */
 	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toRead = BidirectionalLinkedHashMultimap.create();
+
 
 	/** Tasks that are not in any partition are garbage. **/
 	private final Set<IStrategoTerm> garbage = new HashSet<IStrategoTerm>();
@@ -56,10 +62,6 @@ public class TaskEngine {
 
 	/** Partitions that are in process of task collection. */
 	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
-
-
-	/** Evaluates tasks to results. */
-	private ITaskEvaluator evaluator;
 
 
 	public TaskEngine(ITermFactory factory, ITermDigester digester) {
@@ -95,7 +97,7 @@ public class TaskEngine {
 	 * @return True if it exists, false otherwise.
 	 */
 	public boolean taskExists(IStrategoTerm instruction) {
-		return digester.digested(instruction);
+		return fromInstruction.containsKey(instruction);
 	}
 
 	/**
@@ -105,11 +107,16 @@ public class TaskEngine {
 	 * @return Identifier of the instruction.
 	 */
 	public IStrategoTerm taskID(IStrategoTerm instruction) {
-		final IStrategoTerm taskID = digester.digest(instruction, factory);
-		if(!toTasks.containsKey(instruction))
+		IStrategoTerm taskID = fromInstruction.get(instruction);
+		if(taskID != null)
 			return taskID;
-		final IStrategoTerm instr = toTasks.get(taskID).instruction;
-		if(instr != null && !instruction.match(instr)) {
+		taskID = digester.digest(instruction, factory);
+		fromInstruction.put(instruction, taskID);
+		final Task task = getTask(taskID);
+		if(task == null)
+			return taskID;
+		final IStrategoTerm instr = task.instruction;
+		if(!instruction.match(instr)) {
 			reset();
 			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr
 				+ " have the same identifier: " + taskID);
@@ -133,8 +140,8 @@ public class TaskEngine {
 
 		final IStrategoTerm taskID = taskID(instruction);
 
-		if(!toTasks.containsKey(taskID)) {
-			toTasks.put(taskID, new Task(instruction, combinator));
+		if(!toTask.containsKey(taskID)) {
+			toTask.put(taskID, new Task(instruction, combinator));
 			addedTasks.add(taskID);
 			schedule(taskID);
 		}
@@ -166,9 +173,10 @@ public class TaskEngine {
 		IStrategoList partitions, IStrategoList dependencies, IStrategoList reads, IStrategoTerm results,
 		IStrategoInt failed, IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
 		Task task = new Task(instruction, combinator.intValue() == 1);
-		if(toTasks.put(taskID, task) != null)
+		if(toTask.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
-
+		
+		fromInstruction.put(task.instruction, taskID);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
 		for(final IStrategoTerm dependency : dependencies)
@@ -180,11 +188,11 @@ public class TaskEngine {
 		if(failed.intValue() == 1)
 			task.setFailed();
 		if(message.getTermType() != IStrategoTerm.TUPLE || message.getSubtermCount() != 0)
-			task.message = message;
+			task.setMessage(message);
 		if(time.getTermType() == IStrategoTerm.INT)
-			task.time = ((IStrategoInt) time).intValue();
+			task.setTime(((IStrategoInt) time).intValue());
 		if(evaluations.getTermType() == IStrategoTerm.INT)
-			task.evaluations = (short) ((IStrategoInt) evaluations).intValue();
+			task.setEvaluations((short) ((IStrategoInt) evaluations).intValue());
 	}
 
 	/**
@@ -215,7 +223,7 @@ public class TaskEngine {
 	private void schedule(IStrategoTerm taskID) {
 		scheduled.add(taskID);
 	}
-	
+
 	/**
 	 * Invalidates task with given identifier, removing their results, reads and messages.
 	 * 
@@ -224,10 +232,10 @@ public class TaskEngine {
 	public void invalidate(IStrategoTerm taskID) {
 		final Task task = getTask(taskID);
 		task.unsolve();
+		task.clearMessage();
 		removeReads(taskID);
-		task.message = null;
 	}
-	
+
 	/**
 	 * Invalidates and schedules tasks that have changed because something they read has changed.
 	 * 
@@ -251,7 +259,7 @@ public class TaskEngine {
 			}
 		}
 	}
-	
+
 	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
@@ -268,31 +276,27 @@ public class TaskEngine {
 			invalidate(taskID);
 		clearTimes();
 		clearEvaluations();
-		
+
 		IStrategoTerm result = evaluator.evaluate(scheduled, context, collect, insert, perform);
 		scheduled.clear();
 		return result;
 	}
 
-	
-	public Iterable<IStrategoTerm> getTaskIDs() {
-		return toTasks.keySet();
-	}
 
-	public Task getTask(IStrategoTerm taskID) {
-		return toTasks.get(taskID);
+	public Iterable<IStrategoTerm> getTaskIDs() {
+		return toTask.keySet();
 	}
 
 	public Iterable<Task> getTasks() {
-		return toTasks.values();
+		return toTask.values();
 	}
 
-	public IStrategoTerm getInstruction(IStrategoTerm taskID) {
-		return getTask(taskID).instruction;
+	public Iterable<Entry<IStrategoTerm, Task>> getTaskEntries() {
+		return toTask.entrySet();
 	}
 
-	public boolean isCombinator(IStrategoTerm taskID) {
-		return getTask(taskID).combinator;
+	public Task getTask(IStrategoTerm taskID) {
+		return toTask.get(taskID);
 	}
 
 	public Set<IStrategoString> getAllPartition() {
@@ -355,91 +359,26 @@ public class TaskEngine {
 		toDependency.put(taskID, dependency);
 	}
 
-	public boolean hasResults(IStrategoTerm taskID) {
-		return getTask(taskID).hasResults();
-	}
-
-	public Iterable<IStrategoTerm> getResults(IStrategoTerm taskID) {
-		return getTask(taskID).results();
-	}
-
-	public void setResults(IStrategoTerm taskID, IStrategoList results) {
-		getTask(taskID).setResults(results);
-	}
-
-	public void addResults(IStrategoTerm taskID, Iterable<IStrategoTerm> results) {
-		getTask(taskID).addResults(results);
-	}
-
-	public void addResult(IStrategoTerm taskID, IStrategoTerm result) {
-		getTask(taskID).addResult(result);
-	}
-
-	public void setMessage(IStrategoTerm taskID, IStrategoTerm message) {
-		getTask(taskID).message = message;
-	}
-
-	public void removeMessage(IStrategoTerm taskID) {
-		getTask(taskID).message = null;
-	}
-
-	public IStrategoTerm getMessage(IStrategoTerm taskID) {
-		return getTask(taskID).message;
-	}
-
 	public IStrategoList getMessages(IStrategoString partition) {
-		Collection<IStrategoTerm> taskIDs = getInPartition(partition);
 		IStrategoList messages = factory.makeList();
-		for(IStrategoTerm taskID : taskIDs) {
-			IStrategoTerm message = getMessage(taskID);
+		for(IStrategoTerm taskID : getInPartition(partition)) {
+			IStrategoTerm message = getTask(taskID).message();
 			if(message != null)
 				messages = factory.makeListCons(message, messages);
 		}
 		return messages;
 	}
 
-	public void setFailed(IStrategoTerm taskID) {
-		getTask(taskID).setFailed();
-	}
-
-	public boolean hasFailed(IStrategoTerm taskID) {
-		return getTask(taskID).hasFailed();
-	}
-
-	public boolean isSolved(IStrategoTerm taskID) {
-		return getTask(taskID).isSolved();
-	}
-
-	public void unsolve(IStrategoTerm taskID) {
-		getTask(taskID).unsolve();
-	}
-
-	public void addTime(IStrategoTerm taskID, long time) {
-		getTask(taskID).time += time;
-	}
-
 	public void clearTimes() {
 		for(Task task : getTasks()) {
-			task.time = -1;
+			task.clearFailed();
 		}
-	}
-
-	public long getTime(IStrategoTerm taskID) {
-		return getTask(taskID).time;
-	}
-
-	public void addEvaluation(IStrategoTerm taskID) {
-		++getTask(taskID).evaluations;
 	}
 
 	public void clearEvaluations() {
 		for(Task task : getTasks()) {
-			task.evaluations = 0;
+			task.clearEvaluations();
 		}
-	}
-
-	public short getEvaluations(IStrategoTerm taskID) {
-		return getTask(taskID).evaluations;
 	}
 
 	public ITaskEvaluator getEvaluator() {
@@ -452,7 +391,9 @@ public class TaskEngine {
 
 	public void reset() {
 		digester.reset();
-		toTasks.clear();
+		evaluator.reset();
+		toTask.clear();
+		fromInstruction.clear();
 		toPartition.clear();
 		toDependency.clear();
 		toRead.clear();
@@ -461,18 +402,18 @@ public class TaskEngine {
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
-		evaluator.reset();
 	}
 
 	private void collectGarbage() {
 		for(final IStrategoTerm taskID : garbage) {
+			fromInstruction.remove(getTask(taskID).instruction);
 			toDependency.removeAll(taskID);
 			toDependency.removeAllInverse(taskID);
 			toRead.removeAll(taskID);
 			toRead.removeAllInverse(taskID);
 			scheduled.remove(taskID);
-			digester.undigest(getInstruction(taskID));
-			toTasks.remove(taskID);
+			
+			toTask.remove(taskID);
 		}
 
 		garbage.clear();

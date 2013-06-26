@@ -40,9 +40,9 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(resolveInstruction, taskEngine.getInstruction(resolveID));
-		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
-		assertEquals(choiceInstruction, taskEngine.getInstruction(choiceID));
+		assertEquals(resolveInstruction, taskEngine.getTask(resolveID).instruction);
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
+		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
 
 		assertTrue(assertContains(taskEngine.getPartitionsOf(resolveID), partition1));
 		assertFalse(assertContains(taskEngine.getPartitionsOf(resolveID), partition2));
@@ -165,9 +165,9 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(resolveInstruction, taskEngine.getInstruction(resolveID));
-		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
-		assertEquals(choiceInstruction, taskEngine.getInstruction(choiceID));
+		assertEquals(resolveInstruction, taskEngine.getTask(resolveID).instruction);
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
+		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
 
 		// Update partition1 with only the resolveImport task, removing the resolve task.
 		taskEngine.startCollection(partition1);
@@ -176,15 +176,15 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.stopCollection(partition1);
 
 		assertEquals(null, taskEngine.getTask(resolveID));
-		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
-		assertEquals(choiceInstruction, taskEngine.getInstruction(choiceID));
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
+		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
 
 		// Update partition2 with no tasks, removing the choice task.
 		taskEngine.startCollection(partition2);
 		taskEngine.stopCollection(partition2);
 
 		assertEquals(null, taskEngine.getTask(resolveID));
-		assertEquals(resolveImportInstruction, taskEngine.getInstruction(resolveImportID));
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
 		assertEquals(null, taskEngine.getTask(choiceID));
 	}
 

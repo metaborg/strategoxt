@@ -9,60 +9,112 @@ import com.google.common.collect.Lists;
 
 public final class Task {
 	public final IStrategoTerm instruction;
-	public final boolean combinator;
-	
+	public final boolean isCombinator;
+
 	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
-	private boolean solved = false;
-	public IStrategoTerm message;
 	private boolean failed = false;
-	public long time = -1;
-	public short evaluations = 0;
+	private boolean solved = false;
+	private IStrategoTerm message;
+	private long time = -1;
+	private short evaluations = 0;
 
 	public Task(IStrategoTerm instruction, boolean combinator) {
 		this.instruction = instruction;
-		this.combinator = combinator;
+		this.isCombinator = combinator;
 	}
 
 	public Iterable<IStrategoTerm> results() {
 		return results;
 	}
-	
+
 	public boolean hasResults() {
 		return !results.isEmpty();
 	}
-	
+
 	public void setResults(Iterable<IStrategoTerm> results) {
 		this.results = Lists.newLinkedList(results);
 		solved = true;
 	}
-	
+
 	public void addResults(Iterable<IStrategoTerm> results) {
 		for(IStrategoTerm result : results)
 			this.results.add(result);
 		solved = true;
 	}
-	
+
 	public void addResult(IStrategoTerm result) {
 		results.add(result);
 		solved = true;
 	}
 	
-	public boolean hasFailed() {
+	public void clearResults() {
+		results.clear();
+	}
+
+	public boolean failed() {
 		return failed;
 	}
-	
+
 	public void setFailed() {
 		failed = true;
 	}
 	
-	public boolean isSolved() {
+	public void clearFailed() {
+		failed = false;
+	}
+
+	public boolean solved() {
 		return solved || failed;
 	}
-	
+
 	public void unsolve() {
 		results.clear();
 		failed = false;
 		solved = false;
+	}
+
+	public IStrategoTerm message() {
+		return message;
+	}
+	
+	public void setMessage(IStrategoTerm message) {
+		this.message = message;
+	}
+
+	public void clearMessage() {
+		message = null;
+	}
+
+	public long time() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+	
+	public void addTime(long time) {
+		this.time += time;
+	}
+	
+	public void clearTime() {
+		time = -1;
+	}
+
+	public short evaluations() {
+		return evaluations;
+	}
+
+	public void setEvaluations(short evaluations) {
+		this.evaluations = evaluations;
+	}
+	
+	public void addEvaluation() {
+		++evaluations;
+	}
+	
+	public void clearEvaluations() {
+		evaluations = 0;
 	}
 
 	@Override

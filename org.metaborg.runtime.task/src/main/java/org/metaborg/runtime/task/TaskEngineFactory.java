@@ -18,19 +18,22 @@ public class TaskEngineFactory {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
-		for(final IStrategoTerm taskID : taskEngine.getTaskIDs()) {
-			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
-			final boolean combinator = taskEngine.isCombinator(taskID);
+		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
+			final IStrategoTerm taskID = entry.getKey();
+			final Task task = entry.getValue();
+			
+			final IStrategoTerm instruction = task.instruction;
+			final boolean combinator = task.isCombinator;
 			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
 			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
-			final IStrategoTerm results = serializeResults(taskEngine.getResults(taskID), factory, serializer);
-			final boolean failed = taskEngine.hasFailed(taskID);
-			IStrategoTerm message = taskEngine.getMessage(taskID);
+			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
+			final boolean failed = task.failed();
+			IStrategoTerm message = task.message();
 			if(message != null)
 				message = serializer.toAnnotations(message);
-			final long time = taskEngine.getTime(taskID);
-			final short evaluations = taskEngine.getEvaluations(taskID);
+			final long time = task.time();
+			final short evaluations = task.evaluations();
 			tasks =
 				factory.makeListCons(
 					createTaskTerm(factory, taskID, instruction, combinator, partitions, dependencies, reads, results, failed,
