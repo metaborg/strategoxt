@@ -36,9 +36,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private final IStrategoConstructor singleConstructor;
 
 
-	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
-	private final Set<IStrategoTerm> nextScheduled = new HashSet<IStrategoTerm>();
-
 	/** Queue of task that are scheduled for evaluation. */
 	private final Queue<IStrategoTerm> evaluationQueue = new LinkedList<IStrategoTerm>();
 
@@ -60,11 +57,6 @@ public class TaskEvaluator implements ITaskEvaluator {
 		this.singleConstructor = factory.makeConstructor("Single", 1);
 	}
 
-	public void schedule(IStrategoTerm taskID) {
-		// TODO: TaskEngine should keep a list of tasks to schedule and pass it to evaluate.
-		nextScheduled.add(taskID);
-	}
-
 	private void queue(IStrategoTerm taskID) {
 		if(!queued.contains(taskID)) {
 			evaluationQueue.add(taskID);
@@ -72,20 +64,12 @@ public class TaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
-	public IStrategoTuple evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		taskEngine.clearTimes();
-		taskEngine.clearEvaluations();
-
+	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect, Strategy insert,
+		Strategy perform) {
 		try {
-			// TODO: Move this to the stopCollection function in TaskEngine so that tasks are already invalidated.
-			// Remove solutions for tasks that are scheduled for evaluation.
-			for(final IStrategoTerm taskID : nextScheduled) {
-				taskEngine.unsolve(taskID);
-			}
-
 			// TODO: This can also be done on-demand in tryScheduleNewTasks.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
-			for(final IStrategoTerm taskID : nextScheduled) {
+			for(final IStrategoTerm taskID : scheduled) {
 				final Set<IStrategoTerm> dependencies = new HashSet<IStrategoTerm>(taskEngine.getDependencies(taskID));
 				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
 					if(taskEngine.isSolved(dependency)) {
@@ -105,14 +89,12 @@ public class TaskEvaluator implements ITaskEvaluator {
 			int numTasksEvaluated = 0;
 			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				++numTasksEvaluated;
-				nextScheduled.remove(taskID);
+				scheduled.remove(taskID);
 				queued.remove(taskID);
 
 				// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
 				// overwrite previous data.
-				taskEngine.unsolve(taskID);
-				taskEngine.removeReads(taskID);
-				taskEngine.removeMessage(taskID);
+				taskEngine.invalidate(taskID);
 
 				final boolean combinator = taskEngine.isCombinator(taskID);
 				final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
@@ -146,14 +128,13 @@ public class TaskEvaluator implements ITaskEvaluator {
 				}
 			}
 
-			return factory.makeTuple(factory.makeList(nextScheduled), factory.makeInt(numTasksEvaluated));
+			return factory.makeTuple(factory.makeList(scheduled), factory.makeInt(numTasksEvaluated));
 		} finally {
 			reset();
 		}
 	}
 
 	public void reset() {
-		nextScheduled.clear();
 		evaluationQueue.clear();
 		toRuntimeDependency.clear();
 	}
