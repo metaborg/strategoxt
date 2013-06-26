@@ -21,7 +21,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	public static task_api_debug_info_0_1 instance = new task_api_debug_info_0_1();
 
 	public task_api_debug_info_0_1() {
-		super("task_api_debug_info", 0, 2);
+		super("task_api_debug_info", 0, 1);
 	}
 
 	@Override
