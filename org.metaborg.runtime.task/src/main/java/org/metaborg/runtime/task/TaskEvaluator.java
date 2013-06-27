@@ -86,11 +86,11 @@ public class TaskEvaluator implements ITaskEvaluator {
 			}
 
 			// Evaluate each task in the queue.
-			int numTasksEvaluated = 0;
+			final Set<IStrategoTerm> evaluated = new HashSet<IStrategoTerm>();
 			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 				final Task task = taskEngine.getTask(taskID);
 
-				++numTasksEvaluated;
+				evaluated.add(taskID);
 				scheduled.remove(taskID);
 				queued.remove(taskID);
 
@@ -131,7 +131,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 				}
 			}
 
-			return factory.makeTuple(factory.makeList(scheduled), factory.makeInt(numTasksEvaluated));
+			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
 		} finally {
 			reset();
 		}

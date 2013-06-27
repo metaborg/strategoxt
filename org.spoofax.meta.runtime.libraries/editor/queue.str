@@ -2,10 +2,15 @@ module editor/queue
 
 rules
 	
-  // Set markers for a given file. Use when checking files from a queued strategy.
-  // Current term: (ast-desugared, errors, warnings, notes) tuple
-  // ast: the root node of the file to set markers on 
-  set-markers(|ast) = prim("SSL_EXT_set_markers", ast)
+  // Set markers and analyzed AST for a given file. Use when checking files from a queued strategy.
+  // Current term: (ast-analyzed, errors, warnings, notes) tuple
+  // fileOrAST: file to set the markers on or the root node of the file to set markers on 
+  set-markers(|fileOrAST) = prim("SSL_EXT_set_markers", fileOrAST)
+  
+  // Set only the markers for given file, does not change the stored AST.
+  // Current term: (errors, warnings, notes) tuple
+  // fileOrAST: file to set the markers on or the root node of the file to set markers on 
+  set-only-markers(|fileOrAST) = prim("SSL_EXT_set_only_markers", fileOrAST)
 
   // Indicate that one or more files need analysis. 
   // Current term: ss a list of absolute file paths, or a single absolute file path to analyze

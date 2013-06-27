@@ -46,11 +46,11 @@ rules // Analysis
   	  , id | "analyze-collect-total")
 	
 	analyze-perform-all:
-		result* -> (result'*, unevaluated-task*, evaluated-count)
+		result* -> (result'*, evaluated-task*, unevaluated-task*)
 		with
 			measure-time(
 				measure-time(
-	      	task-evaluate => (unevaluated-task*, evaluated-count)
+	      	task-evaluate => (evaluated-task*, unevaluated-task*)
 	      	, id | "analyze-task-evaluate"
 	      ); measure-time(
 	  	  	result'* := <map(analyze-messages)> result*
@@ -58,10 +58,15 @@ rules // Analysis
 	  	  )
   	, id | "analyze-task-total")
   	  
-  // TODO: origin tracking    
+    
   analyze-messages:
   	Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
   	with
+			(error*, warning*, note*) := <analyze-get-messages> partition
+
+	analyze-get-messages:
+		partition -> (error*, warning*, note*)
+		with
   		message* := <task-get-messages(|partition)>;
   		error*   := <filter(?Error(_, _, _); analyze-message-to-tuple)> message*;
   		warning* := <filter(?Warning(_, _, _); analyze-message-to-tuple)> message*;
