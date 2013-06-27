@@ -205,6 +205,19 @@ public class TaskEngine {
 	}
 
 	/**
+	 * Removes task with given identifier from the task engine.
+	 * 
+	 * @param taskID The identifier of the task to remove.
+	 */
+	public void removeTask(IStrategoTerm taskID) {
+		fromInstruction.remove(getTask(taskID).instruction);
+		removeDependencies(taskID);
+		removeReads(taskID);
+		scheduled.remove(taskID);
+		toTask.remove(taskID);
+	}
+	
+	/**
 	 * Stops collection for given partition.
 	 * 
 	 * @param partition The partition to stop collecting tasks for.
@@ -225,14 +238,8 @@ public class TaskEngine {
 	}
 	
 	private void collectGarbage() {
-		for(final IStrategoTerm taskID : garbage) {
-			fromInstruction.remove(getTask(taskID).instruction);
-			removeDependencies(taskID);
-			removeReads(taskID);
-			scheduled.remove(taskID);
-
-			toTask.remove(taskID);
-		}
+		for(final IStrategoTerm taskID : garbage)
+			removeTask(taskID);
 
 		garbage.clear();
 	}
