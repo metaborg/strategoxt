@@ -12,7 +12,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
-import org.metaborg.runtime.task.collection.BidirectionalMultimap;
+import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -44,7 +44,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private final Set<IStrategoTerm> queued = new HashSet<IStrategoTerm>();
 
 	/** Dependencies of tasks which are updated during evaluation. */
-	private final BidirectionalMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency =
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency =
 		BidirectionalLinkedHashMultimap.create();
 
 	/** Timer for measuring task time. **/
