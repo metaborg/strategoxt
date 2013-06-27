@@ -198,8 +198,10 @@ rules // generic analysis of defs
 			d := <new-def(|partition, def-uri)> a
 		with
 			// duplicate definition error
-			resolve := <new-task(|partition)> ResolveDefs(current-uri, ns, name);
-			<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+			if Unique() := unique then 
+				resolve := <new-task(|partition)> ResolveDefs(current-uri, ns, name);
+				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+			end
 	
 	nabl-def-alias(|partition, def-uri):
 	  DefScope(term{anno*}) -> <new-alias(|partition, def-uri, alias-uri)>
@@ -225,7 +227,7 @@ rules // generic analysis of uses
 			choice   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, choice)>;
 		  if <not(has-annos; get-annos; collect-one(?NoUnresolvedError()))> name then
-		  	<task-create-error-on-failure(|partition, choice, "Unresolved reference")> name
+		  	<nabl-fix-name; task-create-error-on-failure(|partition, choice, "Unresolved reference")> name
 		  end;
 		  if <is-completion-name> name then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
