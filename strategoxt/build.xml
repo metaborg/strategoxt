@@ -29,10 +29,10 @@
 	<property name="test-gen" location="test-bin/" />
 
 	<!-- For CI builds -->
-	<!--<property name="java-front" location="syntax/java-front" />-->
-	<property name="install-prefix" location="/tmp/install-dir" />
+	<property name="install-prefix-out" location="dist" />
+	<property name="install-prefix" location="${install-prefix-out}" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt" />
-	<property name="subdists-install-prefix" location="/tmp/subinstall-dir" />
+	<property name="subdists-install-prefix" location="sub-dist" />
 
 	<target name="all" depends="explain, build" />
 
