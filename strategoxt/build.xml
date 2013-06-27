@@ -5,7 +5,7 @@
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 
-	<property name="version" value="0" />
+	<!-- <property name="version" value="0" /> -->
 	<property name="revision" value="0" />
 
 	<!-- Import Ant contrib -->
@@ -19,15 +19,14 @@
 	<property file="build.properties" />
 
 	<!-- Location of the syntax folder -->
-	<!-- <property name="syntax-dir" value="syntax" /> -->
-
+	<property name="syntax-dir" value="syntax" />
 	<!-- Location of libraries folder -->
-	<!-- <property name="libraries-dir" value="stratego-libraries" /> -->
+	<property name="libraries-dir" value="stratego-libraries" />
 
 	<!-- Destination of files -->
 	<!-- <property name="lib" location="lib/" /> -->
 	<property name="bin" location="bin/" />
-	<!-- <property name="test-gen" location="generated/" /> -->
+	<property name="test-gen" location="test-bin/" />
 
 	<!-- For CI builds -->
 	<!--<property name="java-front" location="syntax/java-front" />-->
@@ -35,7 +34,16 @@
 	<property name="install-location" location="${install-prefix}/share/strategoxt" />
 	<property name="subdists-install-prefix" location="sub-dists" />
 
-	<target name="all" depends="build" />
+	<target name="all" depends="explain, build" />
+
+	<target name="explain">
+		<echo>Going to do a build</echo>
+		<echo>- revision: ${revision}</echo>
+		<echo>- version: ${version}</echo>
+		<echo>- install output (install-prefix): ${install-prefix}</echo>
+		<echo>- dependencies install output (subdists-install-prefix): ${subdists-install-prefix}</echo>
+		<echo>- sdf2bundle from: ${sdf2bundle}</echo>
+	</target>
 
 	<target name="build">
 		<mkdir dir="${subdists-install-prefix}" />
@@ -68,6 +76,7 @@
 			<property name="install-prefix" location="${install-prefix}" />
 			<target name="clean" />
 		</subant>
+		<delete dir="${test-gen}" />
 	</target>
 
 	<target name="jar" depends="build">
@@ -96,6 +105,7 @@
 
 
 	<target name="test">
+		<mkdir dir="${test-gen}" />
 		<for param="deffile">
 			<path>
 				<fileset dir="${libraries-dir}" includes="sglr/tests/*.def" excludes="sglr/tests/List.def" />
@@ -120,7 +130,7 @@
 			<sequential>
 				<trycatch>
 					<try>
-						<strj-test input="@{strfile}" synaterm="${syntax-dir}/${syn.aterm}" synbox="${syntax-dir}/${syn.box}" generated="${test-gen}" compiler="${install-location}/${jar.name}" />
+						<strj-test input="@{strfile}" synaterm="${syntax-dir}/aterm-front/syn" synbox="${syntax-dir}/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar" />
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
