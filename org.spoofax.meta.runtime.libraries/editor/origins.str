@@ -16,6 +16,9 @@ strategies
   origin-strip     = prim("SSL_EXT_origin_strip", <id>)
   origin-equal(|t) = prim("SSL_EXT_origin_equal", <id>, t)
 
+	origin-location-offset = prim("SSL_EXT_origin_location_offset", <id>)
+	origin-location-offset-set(|origin-location-offset) = prim("SSL_EXT_set_origin_location_offset", origin-location-offset)
+
   origin-language-description =
     prim("SSL_EXT_languagedescription", <id>)
 
