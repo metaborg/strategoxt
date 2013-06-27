@@ -16,8 +16,9 @@ signature
     Rewrite : ID * Term                            -> Instruction
     Concat  : List(Result)                         -> Instruction
     
-    Success : MessageTrigger
-    Failure : MessageTrigger
+    Failure  : MessageTrigger // No results
+    Success  : MessageTrigger // At least one result
+    Multiple : MessageTrigger // More than one result
 	
 rules
 	
@@ -36,14 +37,13 @@ rules
  		
 	task-is-combinator = ?Choice(_)
 
-	// TODO: can we still use <Hd> to determine if a task failed or not?
-	// TODO: should not store any result.
   perform-task(|n):
     Message(task, trigger, message) -> []
     where
     	switch !trigger
-    		case Success() : <Hd> task; task-add-message(|n, message)
-    		case Failure() : not(<Hd> task); task-add-message(|n, message)
+    		case Failure()  : not(<Hd> task); task-add-message(|n, message)
+    		case Success()  : <Hd> task; task-add-message(|n, message)
+    		case Multiple() : <Tl; Hd> task; task-add-message(|n, message)
     	end
 
 	task-is-combinator = ?Message(_, _, _)
