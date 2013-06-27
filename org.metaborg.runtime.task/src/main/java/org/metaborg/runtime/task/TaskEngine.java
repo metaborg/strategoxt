@@ -235,8 +235,6 @@ public class TaskEngine {
 		task.unsolve();
 		task.clearMessage();
 		removeReads(taskID);
-
-		System.out.println("Invalidating: " + taskID + " = " + task.instruction);
 	}
 
 	/**
