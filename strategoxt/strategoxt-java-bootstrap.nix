@@ -1,8 +1,7 @@
 { nixpkgs ? ../../nixpkgs
 , javaFront ? { outPath = ../../java-front ; rev = 1234; }
-, strategoxtJava ? { outPath = ../../strategoxt-java ; rev = 1234; }
-, hydraConfig ? ../.
-, baseline
+, strategoxtJava ? { outPath = ../../strategoxt ; rev = 1234; }
+, baseline ? ../../strategoxt.jar
 } :
 let
   pkgs = import nixpkgs {};
