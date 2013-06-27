@@ -19,53 +19,53 @@
 	<target name="all" depends="build-install" />
 
 	<target name="build-install">
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="aterm-front" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="stratego-front" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
 			<fileset dir="gpp" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
-			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
+			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
 			<fileset dir="sdf-front" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
-			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
-			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
+			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
 			<fileset dir="stratego-regular" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
-			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
-			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="java-front" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
 			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
+			<fileset dir="java-front" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
 	</target>
 
 	<target name="clean">
-		<subant target="clean">
+		<subant target="clean" inheritall="false">
 			<fileset dir="." includes="*/build.xml" />
 		</subant>
 	</target>

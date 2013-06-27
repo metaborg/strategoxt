@@ -21,72 +21,71 @@
 	<target name="all" depends="build-install" />
 
 	<target name="build-install">
-		<subant>
-			<fileset dir="aterm" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.aterm-front" location="${repository.syntax}/share/strategoxt/aterm-front" />
 			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
+			<fileset dir="aterm" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="gpp" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
+			<fileset dir="gpp" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="rtg" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.stratego-regular" location="${repository.syntax}/share/strategoxt/rtg" />
+			<fileset dir="rtg" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.sdf-front" location="${repository.syntax}/share/strategoxt/sdf-front" />
 			<fileset dir="sdf" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
-			<property name="dep.sdf-front" location="${repository.syntax}/share/strategoxt/sdf-front" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
+		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.sdf-front" location="${repository.syntax}/share/strategoxt/sdf-front" />
 			<fileset dir="sglr" includes="build.xml" />
-			<property name="install-prefix" location="${install-prefix}" />
-			<property name="dep.sdf-front" location="${repository.syntax}/share/strategoxt/sdf-front" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="tool-doc" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
+			<fileset dir="tool-doc" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="lib" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
+			<fileset dir="lib" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="xtc" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.libstratego-lib" location="${repository.libraries}/share/strategoxt/libstratego-lib" />
+			<fileset dir="xtc" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="strc" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
 			<property name="dep.stratego-front" location="${repository.syntax}/share/strategoxt/stratego-front" />
+			<fileset dir="strc" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant>
-			<fileset dir="java-backend" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.stratego-front" location="${repository.syntax}/share/strategoxt/stratego-front" />
 			<property name="dep.java-front" location="${repository.syntax}/share/strategoxt/java_front" />
@@ -104,6 +103,7 @@
 			<property name="dep.libstratego-gpp" location="${repository.libraries}/share/strategoxt/libstratego-gpp" />
 			<property name="dep.libstratego-tool-doc" location="${repository.libraries}/share/strategoxt/libstratego-tool-doc" />
 			<property name="dep.libstrc" location="${repository.libraries}/share/strategoxt/libstrc" />
+			<fileset dir="java-backend" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
 		</subant>

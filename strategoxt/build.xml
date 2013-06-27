@@ -30,9 +30,9 @@
 
 	<!-- For CI builds -->
 	<!--<property name="java-front" location="syntax/java-front" />-->
-	<property name="install-prefix" location="dist" />
+	<property name="install-prefix" location="/tmp/install-dir" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt" />
-	<property name="subdists-install-prefix" location="sub-dists" />
+	<property name="subdists-install-prefix" location="/tmp/subinstall-dir" />
 
 	<target name="all" depends="explain, build" />
 
@@ -47,33 +47,33 @@
 
 	<target name="build">
 		<mkdir dir="${subdists-install-prefix}" />
-		<subant>
-			<fileset dir="syntax" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
+			<fileset dir="syntax" includes="build.xml" />
 			<target name="all" />
 		</subant>
-		<subant>
-			<fileset dir="stratego-libraries" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
 			<property name="repository.syntax" location="${subdists-install-prefix}" />
 			<property name="repository.libraries" location="${subdists-install-prefix}" />
+			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="all" />
 		</subant>
 	</target>
 
 	<target name="clean">
-		<subant>
-			<fileset dir="syntax" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
+			<fileset dir="syntax" includes="build.xml" />
 			<target name="clean" />
 		</subant>
-		<subant>
-			<fileset dir="stratego-libraries" includes="build.xml" />
+		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
+			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="clean" />
 		</subant>
 		<delete dir="${test-gen}" />
