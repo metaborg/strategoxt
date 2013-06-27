@@ -130,7 +130,7 @@
 			<sequential>
 				<trycatch>
 					<try>
-						<strj-test input="@{strfile}" synaterm="${syntax-dir}/aterm-front/syn" synbox="${syntax-dir}/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar" />
+						<strj-test input="@{strfile}" synaterm="${subdists-install-prefix}/share/strategoxt/aterm-front" synbox="${subdists-install-prefix}/share/strategoxt/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar"/>
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
