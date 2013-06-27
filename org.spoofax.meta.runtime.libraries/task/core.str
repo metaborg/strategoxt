@@ -115,6 +115,7 @@ rules // API
 	task-get-messages(|partition)                        = task-api-get-messages(|partition)
 	task-evaluate                        								 = task-api-evaluate(task-collect-result-ids, insert-results-hashmap, task-perform-task)
 	task-invalidate-task-reads(|changedRead*)            = task-api-invalidate-task-reads(|changedRead*)
+	task-partitions-of(|taskIDOrTaskID*)                 = task-api-partitions-of(|taskIDOrTaskID*)
 	task-exists(|instruction)                            = task-api-exists(|instruction)
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
@@ -172,6 +173,7 @@ rules /** @internal API externals */
 	task-api-get-messages(|partition) = prim("task_api_get_messages", partition)
 	task-api-has-failed(|taskID) = prim("task_api_has_failed", taskID)
 	task-api-invalidate-task-reads(|changedReads) = prim("task_api_invalidate_task_reads", changedReads)
+	task-api-partitions-of(|taskIDOrTaskIDS) = prim("task_api_partitions_of", taskIDOrTaskIDS)
 	task-api-add-read(|taskID, read) = prim("task_api_add_read", taskID, read)
 	task-api-add-dependency(|taskID, dependency) = prim("task_api_add_dependency", taskID, dependency)
 	task-api-evaluate(collect-results, insert-results, perform-task|) = prim("task_api_evaluate", collect-results, insert-results, perform-task|)
