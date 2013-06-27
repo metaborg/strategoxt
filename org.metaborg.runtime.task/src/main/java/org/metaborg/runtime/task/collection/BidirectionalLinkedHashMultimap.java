@@ -8,12 +8,13 @@ import java.util.Set;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.SetMultimap;
 
-public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalMultimap<K, V> {
-	private final Multimap<K, V> keyToValue = LinkedHashMultimap.create();
-	private final Multimap<V, K> valueToKey = LinkedHashMultimap.create();
+public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMultimap<K, V> {
+	private final SetMultimap<K, V> keyToValue = LinkedHashMultimap.create();
+	private final SetMultimap<V, K> valueToKey = LinkedHashMultimap.create();
 
-	public static <K, V> BidirectionalMultimap<K, V> create() {
+	public static <K, V> BidirectionalSetMultimap<K, V> create() {
 		return new BidirectionalLinkedHashMultimap<K, V>();
 	}
 
@@ -42,15 +43,15 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalMulti
 		return keyToValue.containsEntry(key, value);
 	}
 
-	public Collection<Entry<K, V>> entries() {
+	public Set<Entry<K, V>> entries() {
 		return keyToValue.entries();
 	}
 
-	public Collection<V> get(K key) {
+	public Set<V> get(K key) {
 		return keyToValue.get(key);
 	}
 
-	public Collection<K> getInverse(V value) {
+	public Set<K> getInverse(V value) {
 		return valueToKey.get(value);
 	}
 
@@ -94,27 +95,27 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalMulti
 		return keyToValue.remove(key, value) & valueToKey.remove(value, key);
 	}
 
-	public Collection<V> removeAll(Object key) {
+	public Set<V> removeAll(Object key) {
 
-		Collection<V> removed = keyToValue.removeAll(key);
+		Set<V> removed = keyToValue.removeAll(key);
 		for (V r : removed)
 			valueToKey.remove(r, key);
 
 		return removed;
 	}
 
-	public Collection<K> removeAllInverse(Object value) {
+	public Set<K> removeAllInverse(Object value) {
 
-		Collection<K> removed = valueToKey.removeAll(value);
+		Set<K> removed = valueToKey.removeAll(value);
 		for (K r : removed)
 			keyToValue.remove(r, value);
 
 		return removed;
 	}
 
-	public Collection<V> replaceValues(K key, Iterable<? extends V> values) {
+	public Set<V> replaceValues(K key, Iterable<? extends V> values) {
 
-		Collection<V> replaced = keyToValue.replaceValues(key, values);
+		Set<V> replaced = keyToValue.replaceValues(key, values);
 
 		for (V r : replaced)
 			valueToKey.remove(r, key);

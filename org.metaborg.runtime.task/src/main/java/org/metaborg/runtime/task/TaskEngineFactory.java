@@ -1,6 +1,7 @@
 package org.metaborg.runtime.task;
 
-import java.util.Collection;
+import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+
 import java.util.Map.Entry;
 
 import org.spoofax.interpreter.core.Tools;
@@ -18,19 +19,22 @@ public class TaskEngineFactory {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
-		for(final IStrategoTerm taskID : taskEngine.getTaskIDs()) {
-			final IStrategoTerm instruction = taskEngine.getInstruction(taskID);
-			final boolean combinator = taskEngine.isCombinator(taskID);
-			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
-			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
-			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
-			final IStrategoTerm results = serializeResults(taskEngine.getResults(taskID), factory, serializer);
-			final boolean failed = taskEngine.hasFailed(taskID);
-			IStrategoTerm message = taskEngine.getMessage(taskID);
+		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
+			final IStrategoTerm taskID = entry.getKey();
+			final Task task = entry.getValue();
+			
+			final IStrategoTerm instruction = task.instruction;
+			final boolean combinator = task.isCombinator;
+			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
+			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
+			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
+			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
+			final boolean failed = task.failed();
+			IStrategoTerm message = task.message();
 			if(message != null)
 				message = serializer.toAnnotations(message);
-			final long time = taskEngine.getTime(taskID);
-			final short evaluations = taskEngine.getEvaluations(taskID);
+			final long time = task.time();
+			final short evaluations = task.evaluations();
 			tasks =
 				factory.makeListCons(
 					createTaskTerm(factory, taskID, instruction, combinator, partitions, dependencies, reads, results, failed,
@@ -69,16 +73,16 @@ public class TaskEngineFactory {
 	}
 
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
-		boolean combinator, Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
-		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time,
+		boolean combinator, Iterable<IStrategoString> partitions, Iterable<IStrategoTerm> dependencies,
+		Iterable<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time,
 		short evaluations) {
 		return factory.makeTuple(
 			taskID, 
 			instruction,
 			combinator ? factory.makeInt(1) : factory.makeInt(0),
-			factory.makeList(partitions), 
-			factory.makeList(dependencies),
-			factory.makeList(reads), 
+			makeList(factory, partitions), 
+			makeList(factory, dependencies),
+			makeList(factory, reads), 
 			results == null ? factory.makeTuple() : results, 
 			failed ? factory.makeInt(1) : factory.makeInt(0), 
 			message == null ? factory.makeTuple() : message,

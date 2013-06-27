@@ -20,7 +20,7 @@ public class task_api_add_message_0_2 extends AbstractPrimitive {
 		throws InterpreterException {
 		final IStrategoTerm taskID = tvars[0];
 		final IStrategoTerm message = tvars[1];
-		TaskManager.getInstance().getCurrent().setMessage(taskID, message);
+		TaskManager.getInstance().getCurrent().getTask(taskID).setMessage(message);
 		return true;
 	}
 }
