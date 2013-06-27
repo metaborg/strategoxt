@@ -41,7 +41,8 @@ rules // Analysis
 	      	, id | "analyze-collect-diff" 
 	  	  ); measure-time(
 	  	  	task-invalidate-task-reads(|changed-read*)
-	  	  	, id | "analyze-collect-invalidate")
+	  	  	, id | "analyze-collect-invalidate"
+	  	  )
   	  , id | "analyze-collect-total")
 	
 	analyze-perform-all:

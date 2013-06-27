@@ -71,6 +71,14 @@ public class TaskEngine {
 		this.resultConstructor = factory.makeConstructor("Result", 1);
 	}
 
+	public ITermDigester getDigester() {
+		return digester;
+	}
+	
+	public ITaskEvaluator getEvaluator() {
+		return evaluator;
+	}
+
 	public void setEvaluator(ITaskEvaluator evaluator) {
 		this.evaluator = evaluator;
 	}
@@ -214,6 +222,19 @@ public class TaskEngine {
 
 		inCollection.remove(partition);
 		collectGarbage();
+	}
+	
+	private void collectGarbage() {
+		for(final IStrategoTerm taskID : garbage) {
+			fromInstruction.remove(getTask(taskID).instruction);
+			removeDependencies(taskID);
+			removeReads(taskID);
+			scheduled.remove(taskID);
+
+			toTask.remove(taskID);
+		}
+
+		garbage.clear();
 	}
 
 	/**
@@ -391,14 +412,6 @@ public class TaskEngine {
 	}
 
 
-	public ITaskEvaluator getEvaluator() {
-		return evaluator;
-	}
-
-	public ITermDigester getDigester() {
-		return digester;
-	}
-
 	public void reset() {
 		digester.reset();
 		evaluator.reset();
@@ -412,18 +425,5 @@ public class TaskEngine {
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
-	}
-
-	private void collectGarbage() {
-		for(final IStrategoTerm taskID : garbage) {
-			fromInstruction.remove(getTask(taskID).instruction);
-			removeDependencies(taskID);
-			removeReads(taskID);
-			scheduled.remove(taskID);
-
-			toTask.remove(taskID);
-		}
-
-		garbage.clear();
 	}
 }
