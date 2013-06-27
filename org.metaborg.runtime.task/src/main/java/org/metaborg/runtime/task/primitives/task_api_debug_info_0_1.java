@@ -52,7 +52,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 
 	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, TaskEngine engine, ITermFactory factory) {
 		Task task = engine.getTask(taskID);
-		IStrategoList dependencies = factory.makeList(engine.getDependencies(taskID));
+		IStrategoList dependencies = makeList(factory, engine.getDependencies(taskID));
 		IStrategoTerm results = task.failed() ? fail(factory) : makeList(factory, task.results());
 		IStrategoTerm message = task.message();
 

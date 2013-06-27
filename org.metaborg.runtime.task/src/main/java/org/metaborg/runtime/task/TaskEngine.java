@@ -1,6 +1,5 @@
 package org.metaborg.runtime.task;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -21,6 +20,8 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+
+import com.google.common.collect.Lists;
 
 public class TaskEngine {
 	private final ITermFactory factory;
@@ -175,7 +176,7 @@ public class TaskEngine {
 		Task task = new Task(instruction, combinator.intValue() == 1);
 		if(toTask.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
-		
+
 		fromInstruction.put(task.instruction, taskID);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
@@ -234,6 +235,8 @@ public class TaskEngine {
 		task.unsolve();
 		task.clearMessage();
 		removeReads(taskID);
+
+		System.out.println("Invalidating: " + taskID + " = " + task.instruction);
 	}
 
 	/**
@@ -246,12 +249,11 @@ public class TaskEngine {
 		for(final IStrategoTerm changedRead : changedReads) {
 			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 			final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
-			final Queue<IStrategoTerm> workList = new LinkedList<IStrategoTerm>(getRead(changedRead));
+			final Queue<IStrategoTerm> workList = Lists.newLinkedList(getRead(changedRead));
 			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 				schedule(taskID);
 				seen.add(taskID);
-				Collection<IStrategoTerm> dependent = getDependent(taskID);
-				for(IStrategoTerm dependentTaskID : dependent) {
+				for(IStrategoTerm dependentTaskID : getDependent(taskID)) {
 					if(!seen.contains(dependentTaskID)) {
 						workList.offer(dependentTaskID);
 					}
@@ -299,23 +301,25 @@ public class TaskEngine {
 		return toTask.get(taskID);
 	}
 
+
 	public Set<IStrategoString> getAllPartition() {
 		return new HashSet<IStrategoString>(toPartition.values());
 	}
 
-	public Collection<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
+	public Iterable<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
 		return toPartition.get(taskID);
 	}
 
-	public Collection<IStrategoTerm> getInPartition(IStrategoString partition) {
+	public Iterable<IStrategoTerm> getInPartition(IStrategoString partition) {
 		return toPartition.getInverse(partition);
 	}
 
-	public Collection<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
+
+	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
 		return toDependency.get(taskID);
 	}
 
-	public Collection<IStrategoTerm> getDependent(IStrategoTerm taskID) {
+	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {
 		return toDependency.getInverse(taskID);
 	}
 
@@ -327,8 +331,7 @@ public class TaskEngine {
 		seen.add(taskIDTo);
 
 		for(IStrategoTerm taskID; (taskID = queue.poll()) != null;) {
-			final Collection<IStrategoTerm> dependencies = getDependencies(taskID);
-			for(IStrategoTerm dependency : dependencies) {
+			for(IStrategoTerm dependency : getDependencies(taskID)) {
 				if(dependency.equals(taskIDFrom))
 					return true;
 				if(seen.add(dependency))
@@ -339,11 +342,21 @@ public class TaskEngine {
 		return false;
 	}
 
-	public Collection<IStrategoTerm> getReads(IStrategoTerm taskID) {
+	public void addDependency(IStrategoTerm taskID, IStrategoTerm dependency) {
+		toDependency.put(taskID, dependency);
+	}
+
+	public void removeDependencies(IStrategoTerm taskID) {
+		toDependency.removeAll(taskID);
+		toDependency.removeAllInverse(taskID);
+	}
+
+
+	public Iterable<IStrategoTerm> getReads(IStrategoTerm taskID) {
 		return toRead.get(taskID);
 	}
 
-	public Collection<IStrategoTerm> getRead(IStrategoTerm read) {
+	public Iterable<IStrategoTerm> getRead(IStrategoTerm read) {
 		return toRead.getInverse(read);
 	}
 
@@ -351,13 +364,10 @@ public class TaskEngine {
 		toRead.put(taskID, read);
 	}
 
-	public Collection<IStrategoTerm> removeReads(IStrategoTerm taskID) {
-		return toRead.removeAll(taskID);
+	public void removeReads(IStrategoTerm taskID) {
+		toRead.removeAll(taskID);
 	}
 
-	public void addDependency(IStrategoTerm taskID, IStrategoTerm dependency) {
-		toDependency.put(taskID, dependency);
-	}
 
 	public IStrategoList getMessages(IStrategoString partition) {
 		IStrategoList messages = factory.makeList();
@@ -369,9 +379,10 @@ public class TaskEngine {
 		return messages;
 	}
 
+
 	public void clearTimes() {
 		for(Task task : getTasks()) {
-			task.clearFailed();
+			task.clearTime();
 		}
 	}
 
@@ -380,6 +391,7 @@ public class TaskEngine {
 			task.clearEvaluations();
 		}
 	}
+
 
 	public ITaskEvaluator getEvaluator() {
 		return evaluator;
@@ -407,12 +419,10 @@ public class TaskEngine {
 	private void collectGarbage() {
 		for(final IStrategoTerm taskID : garbage) {
 			fromInstruction.remove(getTask(taskID).instruction);
-			toDependency.removeAll(taskID);
-			toDependency.removeAllInverse(taskID);
-			toRead.removeAll(taskID);
-			toRead.removeAllInverse(taskID);
+			removeDependencies(taskID);
+			removeReads(taskID);
 			scheduled.remove(taskID);
-			
+
 			toTask.remove(taskID);
 		}
 

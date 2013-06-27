@@ -28,6 +28,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 public class TaskEvaluator implements ITaskEvaluator {
 	private final TaskEngine taskEngine;
@@ -69,7 +70,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 		try {
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : scheduled) {
-				final Set<IStrategoTerm> dependencies = new HashSet<IStrategoTerm>(taskEngine.getDependencies(taskID));
+				final Set<IStrategoTerm> dependencies = Sets.newHashSet(taskEngine.getDependencies(taskID));
 				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
 					if(taskEngine.getTask(dependency).solved()) {
 						dependencies.remove(dependency);
@@ -104,18 +105,20 @@ public class TaskEvaluator implements ITaskEvaluator {
 				// TODO: optimize success/unknown using a bitflag?
 				boolean unknown = false;
 				boolean failure = true;
-				for(IStrategoTerm insertedInstruction : instructions) {
-					final IStrategoTerm result = solve(context, perform, taskID, task, insertedInstruction);
-					final ResultType resultType = handleResult(taskID, task, instruction, result);
-					switch(resultType) {
-						case Fail:
-							break;
-						case Success:
-							failure = false;
-							break;
-						default: // Unknown result or dynamic dependency.
-							unknown = true;
-							break;
+				if(instructions != null) {
+					for(IStrategoTerm insertedInstruction : instructions) {
+						final IStrategoTerm result = solve(context, perform, taskID, task, insertedInstruction);
+						final ResultType resultType = handleResult(taskID, task, instruction, result);
+						switch(resultType) {
+							case Fail:
+								break;
+							case Success:
+								failure = false;
+								break;
+							default: // Unknown result or dynamic dependency.
+								unknown = true;
+								break;
+						}
 					}
 				}
 
@@ -154,10 +157,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm resultID : resultIDs) {
 				final Task task = taskEngine.getTask(resultID);
 				final Iterable<IStrategoTerm> results = task.results();
-				// If one of the results of a dependency are empty the task cannot be executed, so return no
-				// instructions.
+				// If one of the results of a dependency are empty the task cannot be executed, so return null to signal
+				// this.
 				if(!results.iterator().hasNext())
-					return instructions;
+					return null;
 				resultsMap.putAll(resultID, results);
 			}
 
@@ -203,7 +206,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private ResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm instruction, IStrategoTerm result) {
 		if(result == null)
 			return ResultType.Fail; // The task failed to produce a result.
-		
+
 		if(Tools.isTermAppl(result)) {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
 			if(resultAppl.getConstructor().equals(dependencyConstructor)) {
@@ -232,7 +235,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private void tryScheduleNewTasks(IStrategoTerm solved) {
 		// Retrieve dependent tasks of the solved task.
-		final Collection<IStrategoTerm> dependents = taskEngine.getDependent(solved);
+		final Iterable<IStrategoTerm> dependents = taskEngine.getDependent(solved);
 		// Make a copy for toRuntimeDependency because a remove operation can occur while iterating.
 		final Collection<IStrategoTerm> runtimeDependents =
 			new ArrayList<IStrategoTerm>(toRuntimeDependency.getInverse(solved));
@@ -243,9 +246,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 			int dependenciesSize = dependencies.size();
 			if(dependenciesSize == 0) {
 				// If toRuntimeDependency does not contain dependencies for dependent yet, add them.
-				dependencies = taskEngine.getDependencies(dependent);
-				dependenciesSize = dependencies.size();
-				toRuntimeDependency.putAll(dependent, dependencies);
+				toRuntimeDependency.putAll(dependent, taskEngine.getDependencies(dependent));
+				dependenciesSize = toRuntimeDependency.get(dependent).size();
 			}
 
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.

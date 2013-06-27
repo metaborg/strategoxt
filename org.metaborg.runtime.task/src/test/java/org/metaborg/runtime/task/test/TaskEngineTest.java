@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
+import com.google.common.collect.Iterables;
+
 public class TaskEngineTest extends TaskTest {
 	private final IStrategoString partition1 = str("String.java");
 	private final IStrategoString partition2 = str("Integer.java");
@@ -57,15 +59,15 @@ public class TaskEngineTest extends TaskTest {
 		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveID));
 		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveImportID));
 		assertTrue(assertContains(taskEngine.getInPartition(partition2), choiceID));
-
-		assertEquals(0, taskEngine.getDependencies(resolveID).size());
-		assertEquals(0, taskEngine.getDependencies(resolveImportID).size());
+		
+		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveID)));
+		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveImportID)));
 		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveID));
 		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveImportID));
 
 		assertTrue(assertContains(taskEngine.getDependent(resolveID), choiceID));
 		assertTrue(assertContains(taskEngine.getDependent(resolveImportID), choiceID));
-		assertEquals(0, taskEngine.getDependent(choiceID).size());
+		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID)));
 	}
 
 	@Test
@@ -105,20 +107,20 @@ public class TaskEngineTest extends TaskTest {
 		choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(2, taskEngine.getPartitionsOf(resolveID).size());
-		assertEquals(2, taskEngine.getPartitionsOf(resolveImportID).size());
-		assertEquals(2, taskEngine.getPartitionsOf(choiceID).size());
+		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(resolveID)));
+		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(resolveImportID)));
+		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(choiceID)));
 
-		assertEquals(3, taskEngine.getInPartition(partition1).size());
-		assertEquals(3, taskEngine.getInPartition(partition1).size());
+		assertEquals(3, Iterables.size(taskEngine.getInPartition(partition1)));
+		assertEquals(3, Iterables.size(taskEngine.getInPartition(partition1)));
 
-		assertEquals(0, taskEngine.getDependencies(resolveID).size());
-		assertEquals(0, taskEngine.getDependencies(resolveImportID).size());
-		assertEquals(2, taskEngine.getDependencies(choiceID).size());
+		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveID)));
+		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveImportID)));
+		assertEquals(2, Iterables.size(taskEngine.getDependencies(choiceID)));
 
-		assertEquals(1, taskEngine.getDependent(resolveID).size());
-		assertEquals(1, taskEngine.getDependent(resolveImportID).size());
-		assertEquals(0, taskEngine.getDependent(choiceID).size());
+		assertEquals(1, Iterables.size(taskEngine.getDependent(resolveID)));
+		assertEquals(1, Iterables.size(taskEngine.getDependent(resolveImportID)));
+		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID)));
 	}
 
 	@Test(expected = IllegalStateException.class)

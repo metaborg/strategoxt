@@ -1,5 +1,7 @@
 package org.metaborg.runtime.task.primitives;
 
+import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -13,11 +15,11 @@ public class task_api_get_dependencies_0_1 extends AbstractPrimitive {
 	public task_api_get_dependencies_0_1() {
 		super("task_api_get_dependencies", 0, 1);
 	}
-	
+
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoTerm taskID = tvars[0];
-		env.setCurrent(env.getFactory().makeList(TaskManager.getInstance().getCurrent().getDependencies(taskID)));
+		env.setCurrent(makeList(env.getFactory(), TaskManager.getInstance().getCurrent().getDependencies(taskID)));
 		return true;
 	}
 }

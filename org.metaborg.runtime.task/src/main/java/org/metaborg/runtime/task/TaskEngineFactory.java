@@ -1,6 +1,7 @@
 package org.metaborg.runtime.task;
 
-import java.util.Collection;
+import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+
 import java.util.Map.Entry;
 
 import org.spoofax.interpreter.core.Tools;
@@ -24,9 +25,9 @@ public class TaskEngineFactory {
 			
 			final IStrategoTerm instruction = task.instruction;
 			final boolean combinator = task.isCombinator;
-			final Collection<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
-			final Collection<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
-			final Collection<IStrategoTerm> reads = taskEngine.getReads(taskID);
+			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
+			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
+			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
 			final boolean failed = task.failed();
 			IStrategoTerm message = task.message();
@@ -72,16 +73,16 @@ public class TaskEngineFactory {
 	}
 
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
-		boolean combinator, Collection<IStrategoString> partitions, Collection<IStrategoTerm> dependencies,
-		Collection<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time,
+		boolean combinator, Iterable<IStrategoString> partitions, Iterable<IStrategoTerm> dependencies,
+		Iterable<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time,
 		short evaluations) {
 		return factory.makeTuple(
 			taskID, 
 			instruction,
 			combinator ? factory.makeInt(1) : factory.makeInt(0),
-			factory.makeList(partitions), 
-			factory.makeList(dependencies),
-			factory.makeList(reads), 
+			makeList(factory, partitions), 
+			makeList(factory, dependencies),
+			makeList(factory, reads), 
 			results == null ? factory.makeTuple() : results, 
 			failed ? factory.makeInt(1) : factory.makeInt(0), 
 			message == null ? factory.makeTuple() : message,

@@ -46,10 +46,6 @@ public final class Task {
 		results.add(result);
 		solved = true;
 	}
-	
-	public void clearResults() {
-		results.clear();
-	}
 
 	public boolean failed() {
 		return failed;
@@ -57,10 +53,6 @@ public final class Task {
 
 	public void setFailed() {
 		failed = true;
-	}
-	
-	public void clearFailed() {
-		failed = false;
 	}
 
 	public boolean solved() {
