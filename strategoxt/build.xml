@@ -134,7 +134,7 @@
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
-						<fail />
+						<!-- <fail /> -->
 					</catch>
 				</trycatch>
 			</sequential>
