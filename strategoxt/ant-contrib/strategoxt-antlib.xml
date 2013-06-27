@@ -421,7 +421,7 @@
 			</strj-for-test>
 			<uptodate-io input="${@{input}.dirname}/${@{input}.basename}/test/Main.java" output="${@{input}.dirname}/${@{input}.basename}/test/fingerprint" type="javac">
 				<action>
-					<javac srcdir="${@{input}.dirname}/${@{input}.basename}" destdir="${@{input}.dirname}/${@{input}.basename}" classpath="@{compiler}" source="1.5" target="1.5" nowarn="on" fork="true" debug="true" debuglevel="source" compiler="classic">
+					<javac srcdir="${@{input}.dirname}/${@{input}.basename}" destdir="${@{input}.dirname}/${@{input}.basename}" classpath="@{compiler}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="source">
 					</javac>
 					<java fork="true" classname="test.Main" failonerror="true" dir="${@{input}.dirname}">
 						<classpath>
