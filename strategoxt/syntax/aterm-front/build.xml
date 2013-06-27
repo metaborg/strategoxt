@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.StrategoXT.atermfront" default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+
+	<!-- use this is for a build with a strategoxt.jar that does not include the Ant contributions -->
+	<import file="../../ant-contrib/strategoxt-antlib.xml" />
+
+	<!-- use this for a build with recent strategoxt.jar that has the Ant contributions inside -->
+	<!-- <typedef resource="strategoxt-antlib.xml" /> -->
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/aterm-front" />
+
+	<property name="syn" value="syn" />
+	<property name="bin" value="bin" />
+
+	<target name="all" depends="build, install" />
+
+	<target name="build" depends="build-syntax" />
+
+	<target name="build-syntax">
+		<mkdir dir="${bin}/${syn}" />
+
+		<sdf2generated base="${syn}/ATerms" main="ATerms" output="${bin}">
+			<includeargs>
+				<args>
+					<arg value="-I" />
+					<arg value="${sdf2bundle}/share/sdf-library/library" />
+				</args>
+			</includeargs>
+		</sdf2generated>
+	</target>
+
+	<target name="install">
+		<mkdir dir="${install-location}" />
+		<copy todir="${install-location}">
+			<fileset dir="${bin}" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${install-location}" />
+	</target>
+</project>

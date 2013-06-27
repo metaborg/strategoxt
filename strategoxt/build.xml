@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<project name="org.strategoxt.StrategoXT" default="all">
-
+<project name="org.strategoxt.strategoxt" default="all">
+	<import file="ant-contrib/strategoxt-antlib.xml" />
 
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
@@ -12,36 +12,90 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
 	<!-- Import Stratego/XT Ant contributions -->
-	<available property="contrib.available" resource="strategoxt-antlib.xml" />
-	<typedef resource="strategoxt-antlib.xml" />
+	<!-- <available property="contrib.available" resource="strategoxt-antlib.xml" />
+	<typedef resource="strategoxt-antlib.xml" /> -->
 
 	<!-- Import the properties file, containing e.g. the version number -->
 	<property file="build.properties" />
 
 	<!-- Location of the syntax folder -->
-	<property name="syntax-dir" value="syntax" />
+	<!-- <property name="syntax-dir" value="syntax" /> -->
 
 	<!-- Location of libraries folder -->
-	<property name="libraries-dir" value="stratego-libraries" />
+	<!-- <property name="libraries-dir" value="stratego-libraries" /> -->
 
 	<!-- Destination of files -->
-	<property name="lib" location="lib/" />
+	<!-- <property name="lib" location="lib/" /> -->
 	<property name="bin" location="bin/" />
-	<property name="test-gen" location="generated/" />
+	<!-- <property name="test-gen" location="generated/" /> -->
 
 	<!-- For CI builds -->
 	<!--<property name="java-front" location="syntax/java-front" />-->
 	<property name="install-prefix" location="dist" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt" />
-	<property name="jar.name" value="strategoxt.jar" />
+	<property name="subdists-install-prefix" location="sub-dists" />
 
-	<!-- Import syntax builder -->
-	<include file="${syntax-dir}/build.xml" as="syntax" />
+	<target name="all" depends="build" />
 
-	<!-- Import the libraries builder -->
-	<include file="${libraries-dir}/build.xml" as="libraries" />
+	<target name="build">
+		<mkdir dir="${subdists-install-prefix}" />
+		<subant>
+			<fileset dir="syntax" includes="build.xml" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<property name="sdf2bundle" value="${sdf2bundle}" />
+			<property name="nativepath" value="${nativepath}" />
+			<target name="all" />
+		</subant>
+		<subant>
+			<fileset dir="stratego-libraries" includes="build.xml" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<property name="sdf2bundle" value="${sdf2bundle}" />
+			<property name="nativepath" value="${nativepath}" />
+			<property name="repository.syntax" location="${subdists-install-prefix}" />
+			<property name="repository.libraries" location="${subdists-install-prefix}" />
+			<target name="all" />
+		</subant>
+	</target>
 
-	<target name="test" depends="create-dirs">
+	<target name="clean">
+		<subant>
+			<fileset dir="syntax" includes="build.xml" />
+			<property name="install-prefix" location="${install-prefix}" />
+			<target name="clean" />
+		</subant>
+		<subant>
+			<fileset dir="stratego-libraries" includes="build.xml" />
+			<property name="install-prefix" location="${install-prefix}" />
+			<target name="clean" />
+		</subant>
+	</target>
+
+	<target name="jar" depends="build">
+		<mkdir dir="${bin}" />
+		<jar destfile="${bin}/strategoxt.jar" manifest="stratego-libraries/java-backend/java/META-INF/MANIFEST.MF" update="false">
+			<fileset dir="." includes="COPYING" />
+			<fileset dir="ant-contrib" includes="**/*.xml" />
+			<fileset dir="${subdists-install-prefix}" includes="**/*.class" />
+			<zipgroupfileset dir="${subdists-install-prefix}" includes="**/*.jar" />
+			<!-- <fileset dir="${subdists-install-prefix}" includes="**/*.rtree" />
+			<fileset dir="${subdists-install-prefix}" includes="**/*.af" />
+			<fileset dir="${subdists-install-prefix}" includes="**/*.tbl" /> -->
+		</jar>
+	</target>
+
+	<target name="install" depends="jar">
+		<copy file="${bin}/strategoxt.jar" todir="${install-location}" overwrite="true" verbose="true" />
+		<mkdir dir="${install-prefix}/bin" />
+		<copy todir="${install-prefix}/bin" verbose="true">
+			<fileset dir="wrapper-scripts/unix/" includes="*" />
+		</copy>
+		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
+		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>
+		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/${jar.name}</echo>
+	</target>
+
+
+	<target name="test">
 		<for param="deffile">
 			<path>
 				<fileset dir="${libraries-dir}" includes="sglr/tests/*.def" excludes="sglr/tests/List.def" />
@@ -74,90 +128,6 @@
 				</trycatch>
 			</sequential>
 		</for>
-	</target>
-
-	<target name="all" depends="
-		ant-contrib-local,							
-		create-dirs,
-		syntax,
-		generate-java,
-		compile-java,
-		jar,
-		install" />
-
-	<target name="create-dirs">
-		<mkdir dir="${lib}" />
-		<mkdir dir="${bin}" />
-		<mkdir dir="${test-gen}" />
-		<mkdir dir="${install-location}" />
-	</target>
-
-	<target name="install" depends="jar">
-		<copy file="${jar.name}" tofile="${install-location}/${jar.name}" overwrite="true" verbose="true" />
-		<mkdir dir="${install-prefix}/bin" />
-		<copy todir="${install-prefix}/bin" verbose="true">
-			<fileset dir="wrapper-scripts/unix/" includes="*" />
-		</copy>
-		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
-		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>
-		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/${jar.name}</echo>
-	</target>
-
-	<target name="clean">
-		<delete dir="${lib}" />
-		<delete dir="${bin}" />
-		<delete dir="${test-gen}" />
-		<delete dir="${install-prefix}" />
-		<!-- <delete file="${jar.name}" /> -->
-		<!-- Clean the syntax -->
-		<antcall target="syntax.clean">
-			<param name="basedir" value="${syntax-dir}" />
-		</antcall>
-		<antcall target="libraries.clean">
-			<param name="basedir" value="${syntax-dir}" />
-		</antcall>
-	</target>
-
-	<target name="syntax">
-		<!-- Build the syntax -->
-		<antcall target="syntax.all">
-			<param name="basedir" value="${syntax-dir}" />
-		</antcall>
-	</target>
-
-	<target name="generate-java" depends="syntax">
-		<!-- Compile libraries to Java -->
-		<antcall target="libraries.part-1">
-			<param name="basedir" value="${libraries-dir}" />
-		</antcall>
-		<antcall target="syntax.java-front-java">
-			<param name="basedir" value="${syntax-dir}" />
-		</antcall>
-		<antcall target="libraries.part-2">
-			<param name="basedir" value="${libraries-dir}" />
-		</antcall>
-	</target>
-
-	<target name="compile-java" depends="generate-java">
-		<javac srcdir="${lib}" destdir="${bin}" classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="source" />
-		<javac srcdir="${libraries-dir}/java-backend/java/runtime" destdir="${bin}" classpath="${libraries-dir}/java-backend/java/spoofax-libs.jar:${libraries-dir}/java-backend/java/runtime:${bin}" source="1.5" target="1.5" nowarn="on" debug="true" debuglevel="source" />
-	</target>
-
-	<target name="jar">
-		<jar destfile="${jar.name}" manifest="${libraries-dir}/java-backend/java/META-INF/MANIFEST.MF" update="false">
-			<fileset dir="ant-contrib" includes="**/*.xml" />
-			<fileset dir="." includes="COPYING" />
-			<fileset dir="${bin}" includes="**/*.class" />
-			<fileset dir="${lib}" includes="**/*.rtree" />
-			<fileset dir="${lib}" includes="**/*.af" />
-			<fileset dir="${lib}" includes="**/*.tbl" />
-			<zipfileset includes="**/*" src="${libraries-dir}/java-backend/java/spoofax-libs.jar" />
-		</jar>
-	</target>
-
-	<target name="ant-contrib-local" unless="${contrib.available}">
-		<echo>Import local definition of StrategoXT-antlib</echo>
-		<typedef file="ant-contrib/strategoxt-antlib.xml" />
 	</target>
 
 </project>

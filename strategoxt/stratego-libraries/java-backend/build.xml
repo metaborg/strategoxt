@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<project name="org.strategoxt.strj" default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+
+	<!-- use this is for a build with a strategoxt.jar that does not include the Ant contributions -->
+	<import file="../../ant-contrib/strategoxt-antlib.xml" />
+
+	<!-- use this for a build with recent strategoxt.jar that has the Ant contributions inside -->
+	<!-- <typedef resource="strategoxt-antlib.xml" /> -->
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<!-- Import the properties file, telling us which compiler to use for Java -->
+	<property file="build.properties" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/libstratego-xtc" />
+
+	<property name="dep.libstratego-lib" location="../lib/dist/share/strategoxt/libstratego-lib" />
+	<property name="dep.stratego-front" location="../../syntax/stratego-front/dist/share/strategoxt/stratego-front" />
+	<property name="dep.java-front" location="../../syntax/java-front/dist/share/strategoxt/java_front" />
+	<property name="dep.stratego-regular" location="../../syntax/stratego-regular/dist/share/strategoxt/rtg" />
+	<property name="dep.sdf-front" location="../../syntax/sdf-front/dist/share/strategoxt/sdf-front" />
+	<property name="dep.gpp" location="../../syntax/gpp/dist/share/strategoxt/gpp" />
+	<property name="dep.libstratego-lib" location="../lib/dist/share/strategoxt/libstratego-lib" />
+	<property name="dep.libstratego-xtc" location="../xtc/dist/share/strategoxt/libstratego-xtc" />
+	<property name="dep.libstratego-sglr" location="../sglr/dist/share/strategoxt/libstratego-sglr" />
+	<property name="dep.libstratego-rtg" location="../rtg/dist/share/strategoxt/libstratego-rtg" />
+	<property name="dep.libstratego-sdf" location="../sdf/dist/share/strategoxt/libstratego-sdf" />
+	<property name="dep.libstratego-aterm" location="../aterm/dist/share/strategoxt/libstratego-aterm" />
+	<property name="dep.libstratego-gpp" location="../gpp/dist/share/strategoxt/libstratego-gpp" />
+	<property name="dep.libstratego-tool-doc" location="../tool-doc/dist/share/strategoxt/libstratego-tool-doc" />
+	<property name="dep.libstrc" location="../strc/dist/share/strategoxt/libstrc" />
+	<property name="dep.java-front" location="../../syntax/java-front/dist/share/strategoxt/java_front" />
+
+	<property name="syn" value="syn" />
+	<property name="src-gen" value="src-gen" />
+	<property name="bin" value="bin" />
+
+	<property name="bin.stratego" value="${src-gen}" />
+	<property name="bin.java" value="${bin}" />
+
+	<target name="all" depends="build, install" />
+	<target name="build" depends="build-stratego, build-java" />
+
+	<target name="build-stratego" depends="build-stratego-strj, build-stratego-tools, build-stratego-java-compat" />
+
+	<target name="build-stratego-strj">
+		<mkdir dir="${bin.stratego}/org/strategoxt/strj" />
+		<strj input="trans/strj.str" output="${bin.stratego}/org/strategoxt/strj/Main.java" package="org.strategoxt.strj">
+			<strjargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-la" />
+				<arg value="strc" />
+				<arg value="-la" />
+				<arg value="java-front" />
+				<arg value="-m" />
+				<arg value="main-strj" />
+				<arg value="--clean" />
+				<arg value="-D" />
+				<arg value="STRJ_VERSION_TERM=&quot;${version}&quot;" />
+				<arg value="-I" />
+				<arg value="${dep.stratego-front}" />
+				<arg value="-I" />
+				<arg value="${dep.java-front}/languages/stratego-java" />
+			</strjargs>
+			<str-deps>
+				<srcfiles dir="trans" includes="**/*.str" />
+				<srcfiles dir="${dep.stratego-front}" includes="**/*" />
+				<srcfiles dir="${dep.java-front}/languages/stratego-java" includes="**/*" />
+			</str-deps>
+		</strj>
+	</target>
+
+	<target name="build-stratego-tools">
+		<strj-lib input="java/tools/org/strategoxt/tools/tools.str" output="${bin.stratego}/org/strategoxt/tools/Main.java" package="org.strategoxt.tools">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+				<arg value="-la" />
+				<arg value="stratego-rtg" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="stratego-tool-doc" />
+				<arg value="-la" />
+				<arg value="stratego-sdf" />
+				<arg value="-la" />
+				<arg value="stratego-aterm" />
+				<arg value="-la" />
+				<arg value="strc" />
+				<arg value="-I" />
+				<arg value="${basedir}/java/pack-sdf-ext/extension" />
+				<arg value="-I" />
+				<arg value="${basedir}/java/tools/org/strategoxt/tools/lib" />
+				<arg value="-I" />
+				<arg value="${dep.stratego-front}" />
+				<arg value="-I" />
+				<arg value="${dep.stratego-regular}" />
+				<arg value="-I" />
+				<arg value="${dep.sdf-front}" />
+				<arg value="-I" />
+				<arg value="${dep.gpp}/syn/pp-table" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="java/tools/org/strategoxt/tools/lib" includes="**/*.str" />
+				<srcfiles dir="java/pack-sdf-ext/extension" includes="**/*.str" />
+				<srcfiles dir="${dep.stratego-front}" includes="**/*" />
+				<srcfiles dir="${dep.stratego-regular}" includes="**/*" />
+				<srcfiles dir="${dep.sdf-front}" includes="**/*" />
+				<srcfiles dir="${dep.gpp}/syn/pp-table" includes="**/*" />
+			</str-deps>
+		</strj-lib>
+	</target>
+
+	<target name="build-stratego-java-compat">
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java" package="org.strategoxt.lang.compat.override.jsglr_parser_compat">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+			</strjlibargs>
+		</strj-lib>
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/performance-tweaks.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks/Main.java" package="org.strategoxt.lang.compat.override.performance_tweaks">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+			</strjlibargs>
+		</strj-lib>
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance/Main.java" package="org.strategoxt.lang.compat.override.gpp_performance">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-gpp" />
+			</strjlibargs>
+		</strj-lib>
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/xtc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat/Main.java" package="org.strategoxt.lang.compat.override.xtc_compat">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+			</strjlibargs>
+		</strj-lib>
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/native-calls-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat/Main.java" package="org.strategoxt.lang.compat.override.native_calls_compat">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+			</strjlibargs>
+		</strj-lib>
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration/Main.java" package="org.strategoxt.lang.compat.override.java_integration">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+			</strjlibargs>
+		</strj-lib>
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel" />
+		<sglri input="java/runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.str" output="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree" parsetable="${dep.stratego-front}/Stratego.tbl" />
+
+
+		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/" />
+		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/strc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/Main.java" package="org.strategoxt.lang.compat.override.strc_compat">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
+				<arg value="-la" />
+				<arg value="org.strategoxt.strc" />
+				<arg value="-I" />
+				<arg value="${basedir}/java/runtime/org/strategoxt/lang/parallel/stratego_parallel" />
+				<arg value="-I" />
+				<arg value="${basedir}/trans" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-lib}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-xtc}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-sglr}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-rtg}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-sdf}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-aterm}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-gpp}" />
+				<arg value="-I" />
+				<arg value="${dep.libstratego-tool-doc}" />
+				<arg value="-I" />
+				<arg value="${basedir}/${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel" />
+				<arg value="-I" />
+				<arg value="${dep.libstrc}" />
+				<arg value="-I" />
+				<arg value="${dep.java-front}" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="java/runtime/org/strategoxt/lang/parallel/stratego_parallel" includes="**/*.str" />
+				<srcfiles dir="trans" includes="**/*.str" />
+				<srcfiles dir="${dep.libstratego-lib}" includes="**/*" />
+				<srcfiles dir="${dep.libstratego-xtc}" includes="**/*" />
+				<srcfiles dir="${dep.libstratego-sglr}" includes="**/*" />
+				<srcfiles dir="${dep.libstratego-rtg}" includes="**/*" />
+				<srcfiles dir="${dep.libstratego-sdf}" includes="**/*" />
+				<srcfiles dir="${dep.libstratego-gpp}" includes="**/*" />
+				<srcfiles dir="${dep.libstratego-tool-doc}" includes="**/*" />
+				<srcfiles dir="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel" includes="**/*" />
+				<srcfiles dir="${dep.libstrc}" includes="**/*" />
+				<srcfiles dir="${dep.java-front}" includes="**/*" />
+			</str-deps>
+		</strj-lib>
+	</target>
+
+
+	<path id="build.classpath">
+		<pathelement path="${java.class.path}" />
+		<pathelement location="java/runtime" />
+		<pathelement location="${bin.java}" />
+		<pathelement location="${bin.stratego}" />
+		<pathelement location="java/spoofax-libs.jar" />
+		<pathelement location="${dep.libstrc}/libstrc.jar" />
+		<pathelement location="${dep.libstratego-aterm}/libstratego-aterm.jar" />
+		<pathelement location="${dep.libstratego-sdf}/libstratego-sdf.jar" />
+		<pathelement location="${dep.libstratego-sglr}/libstratego-sglr.jar" />
+		<pathelement location="${dep.libstratego-rtg}/libstratego-rtg.jar" />
+		<pathelement location="${dep.libstratego-gpp}/libstratego-gpp.jar" />
+		<pathelement location="${dep.libstratego-lib}/libstratego-lib.jar" />
+		<pathelement location="${dep.libstratego-xtc}/libstratego-xtc.jar" />
+		<pathelement location="${dep.libstratego-tool-doc}/libstratego-tool-doc.jar" />
+		<pathelement location="${dep.java-front}/java_front.jar" />
+	</path>
+
+	<target name="build-java" depends="build-stratego">
+		<mkdir dir="${bin.java}" />
+		<javac srcdir="${bin.stratego}" destdir="${bin.java}" classpathref="build.classpath" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" />
+		<javac srcdir="java/runtime" destdir="${bin.java}" classpathref="build.classpath" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" />
+		<!-- <javac srcdir="java/eclipse" destdir="${bin.java}" classpath="${bin.java}" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" /> -->
+	</target>
+
+	<target name="jar" depends="build-java">
+		<jar destfile="${bin}/strj.jar" update="false">
+			<fileset dir="${bin.java}" includes="**/*.class" />
+			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+		</jar>
+	</target>
+
+	<target name="install" depends="jar">
+		<mkdir dir="${install-location}" />
+		<copy file="${bin}/strj.jar" todir="${install-location}" />
+		<copy file="java/spoofax-libs.jar" todir="${install-location}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${src-gen}" />
+		<delete dir="${install-location}" />
+		<delete>
+			<fileset dir="java" includes="**/*.ctree*, **/*.rtree" />
+		</delete>
+	</target>
+</project>

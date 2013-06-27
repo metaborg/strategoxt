@@ -1,4 +1,6 @@
+/java/bin
 /bin
 /dist
 /.cache
 /strategoxt.jar
+/src-gen

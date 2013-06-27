@@ -72,7 +72,7 @@ imports
   stratego/strc/match/matrix-to-dfa
   
   stratego/strc/c/escaping-variables
-  // UNDONE: VladVergu. Not needed bootstrapping to Java.
+  // UNDONE: VladVergu. Not needed for bootstrapping to Java.
   // stratego/strc/c/C-simplify
   // stratego/strc/c/frame-composition
   // stratego/strc/c/frames

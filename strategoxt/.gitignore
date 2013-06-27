@@ -1,11 +1,3 @@
-*.ctree
-*.ctree.dep
-*.rtree
-/strategoxt.jar
-#/strategoxt-base.jar
-/lib
 /bin
-/generated
-/stratego-libraries/strc/lib/stratego/strc/pp/stratego-parenthesize.str
 /dist
-/base
+/sub-dists

@@ -1,11 +1,4 @@
-/syn/Stratego-rtg.def
-/syn/Stratego-rtg.pp
-/syn/Stratego-rtg.pp.af
-/syn/Stratego-rtg.rtg
-/syn/Stratego-rtg.str
-/syn/Stratego-rtg.tbl
-/syn/rtg.def
-/syn/rtg.pp.af
-/syn/rtg.rtg
-/syn/rtg.str
-/syn/rtg.tbl
+/bin
+/dist
+/.cache
+/strategoxt.jar

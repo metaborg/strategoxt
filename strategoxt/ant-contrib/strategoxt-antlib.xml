@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<antlib>
+<project name="org.strategoxt.ant">
 	<macrodef name="pack-sdf">
 		<attribute name="input" />
 		<attribute name="output" />
@@ -145,26 +145,27 @@
 		<attribute name="base" />
 		<attribute name="main" />
 		<attribute name="pp" default="true" />
+		<attribute name="output" default="." />
 		<element name="includeargs" optional="true" />
 		<element name="deps" optional="true" />
 		<sequential>
-			<pack-sdf input="@{base}.sdf" output="@{base}.def">
+			<pack-sdf input="@{base}.sdf" output="@{output}/@{main}.def">
 				<includeargs />
 				<sdf-deps>
 					<deps />
 				</sdf-deps>
 			</pack-sdf>
-			<sdf2table input="@{base}.def" output="@{base}.tbl" main="@{main}" />
+			<sdf2table input="@{output}/@{main}.def" output="@{output}/@{main}.tbl" main="@{main}" />
 
 			<if>
 				<equals arg1="@{pp}" arg2="true" />
 				<then>
-					<ppgen input="@{base}.def" output="@{base}.pp" />
+					<ppgen input="@{output}/@{main}.def" output="@{output}/@{main}.pp" />
 				</then>
 			</if>
 
-			<sdf2rtg input="@{base}.def" output="@{base}.rtg" main="@{main}" />
-			<rtg2sig input="@{base}.rtg" output="@{base}.str" main="@{main}" />
+			<sdf2rtg input="@{output}/@{main}.def" output="@{output}/@{main}.rtg" main="@{main}" />
+			<rtg2sig input="@{output}/@{main}.rtg" output="@{output}/@{main}.str" main="@{main}" />
 		</sequential>
 	</macrodef>
 
@@ -496,4 +497,4 @@
 			<echo message="" />
 		</sequential>
 	</macrodef>
-</antlib>
+</project>

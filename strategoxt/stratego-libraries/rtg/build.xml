@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project name="libstratego-rtg" default="all">
+	<!-- Import Stratego/XT Ant contributions -->
+
+	<!-- use this is for a build with a strategoxt.jar that does not include the Ant contributions -->
+	<import file="../../ant-contrib/strategoxt-antlib.xml" />
+
+	<!-- use this for a build with recent strategoxt.jar that has the Ant contributions inside -->
+	<!-- <typedef resource="strategoxt-antlib.xml" /> -->
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/libstratego-rtg" />
+	<property name="dep.stratego-regular" location="../../syntax/stratego-regular/dist/share/strategoxt/rtg" />
+
+
+	<property name="syn" value="syn" />
+	<property name="bin" value="bin" />
+
+	<property name="bin.stratego" value="${bin}/stratego" />
+	<property name="bin.java" value="${bin}/java" />
+
+	<target name="all" depends="build, install" />
+	<target name="build" depends="build-stratego, build-java" />
+
+	<target name="build-stratego">
+		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_rtg" />
+		<strj-lib input="lib/stratego-rtg.str" output="${bin.stratego}/org/strategoxt/stratego_rtg/Main.java" package="org.strategoxt.stratego_rtg">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="stratego-sglr" />
+				<arg value="-la" />
+				<arg value="org.strategoxt.lang.compat.stratego_rtg_compat" />
+				<arg value="-I" />
+				<arg value="${dep.stratego-regular}" />
+			</strjlibargs>
+			<str-deps>
+				<srcfiles dir="lib" includes="**/*.str" />
+				<srcfiles dir="${dep.stratego-regular}" includes="**/*" />
+			</str-deps>
+		</strj-lib>
+		<!-- <copy file="lib/libstratego-rtg.ctree" todir="${bin}" /> -->
+		<copy file="lib/libstratego-rtg.rtree" todir="${bin}" />
+	</target>
+
+	<target name="build-java" depends="build-stratego">
+		<mkdir dir="${bin.java}" />
+		<javac srcdir="${bin.stratego}" destdir="${bin.java}" classpath="${bin.stratego}" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" />
+	</target>
+
+	<target name="jar" depends="build-java">
+		<jar destfile="${bin}/libstratego-rtg.jar" update="false">
+			<fileset dir="${bin.java}" includes="**/*.class" />
+			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+		</jar>
+	</target>
+
+	<target name="install" depends="jar">
+		<mkdir dir="${install-location}" />
+		<copy todir="${install-location}">
+			<fileset dir="${bin}" includes="*.rtree, *.jar" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${install-location}" />
+		<delete>
+			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree" />
+		</delete>
+	</target>
+</project>
