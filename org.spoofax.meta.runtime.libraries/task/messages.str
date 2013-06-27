@@ -14,38 +14,50 @@ signature
 		
 	constructors
 		
-    Error   : Origin * Term -> Message
-    Warning : Origin * Term -> Message
-    Note    : Origin * Term -> Message
+    Error   : Origin * Term * Msg -> Message
+    Warning : Origin * Term * Msg -> Message
+    Note    : Origin * Term * Msg -> Message
     
 rules
 	
 	task-error-message(|message):
-		term -> Error(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, message)
+		term -> Error(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, term, message)
 		
 	task-warning-message(|message):
-    term -> Warning(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, message)
+    term -> Warning(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, term, message)
     
 	task-note-message(|message):
-    term -> Note(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, message)
-    
-	task-message:
-		Error(_, message) -> message
+    term -> Note(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, term, message)
+
 
 	task-message:
-		Warning(_, message) -> message
+		Error(_, _, message) -> message
+
+	task-message:
+		Warning(_, _, message) -> message
 		
 	task-message:
-		Note(_, message) -> message
+		Note(_, _, message) -> message
+
+
+	task-message-term:
+		Error(_, term, _) -> term
+
+	task-message-term:
+		Warning(_, term, _) -> term
 		
-	task-message-origin:
-		Error(origin, _) -> origin
+	task-message-term:
+		Note(_, term, _) -> term
+		
 
 	task-message-origin:
-		Warning(origin, _) -> origin
+		Error(origin, _, _) -> origin
+
+	task-message-origin:
+		Warning(origin, _, _) -> origin
 		
 	task-message-origin:
-		Note(origin, _) -> origin
+		Note(origin, _, _) -> origin
 	
 rules
 	

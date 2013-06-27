@@ -4,6 +4,7 @@ imports
 	
 	task/core
 	task/tasks
+	task/messages
 	nbl/tasks
 	nbl/entries
 	nbl/interface
@@ -215,6 +216,7 @@ rules // generic analysis of uses
 			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name))> candidate*;
 			choice   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, choice)>;
+		  <task-create-error-on-failure(|partition, choice, "Unresolved reference")> name;
 		  if <is-completion-name> name then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);

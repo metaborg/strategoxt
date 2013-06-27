@@ -63,12 +63,16 @@ rules // Analysis
   	Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
   	with
   		message* := <task-get-messages(|partition)>;
-  		error*   := <filter(?Error(_, _); analyze-message-to-tuple)> message*;
-  		warning* := <filter(?Warning(_, _); analyze-message-to-tuple)> message*;
-  		note*    := <filter(?Note(_, _); analyze-message-to-tuple)> message*
+  		error*   := <filter(?Error(_, _, _); analyze-message-to-tuple)> message*;
+  		warning* := <filter(?Warning(_, _, _); analyze-message-to-tuple)> message*;
+  		note*    := <filter(?Note(_, _, _); analyze-message-to-tuple)> message*
   		
 	analyze-message-to-tuple:
-		message -> (<origin-location-offset-set(|<task-message-origin> message)> (), <task-message> message)
+		message -> (<origin-location-offset-set(|origin)> term, msg)
+		with
+			origin := <task-message-origin> message;
+			term   := <task-message-term> message;
+			msg    := <task-message> message
 
 rules // Index entries to diff
 	
