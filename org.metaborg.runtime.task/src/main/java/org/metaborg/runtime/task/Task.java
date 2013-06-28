@@ -68,7 +68,7 @@ public final class Task {
 	public IStrategoTerm message() {
 		return message;
 	}
-	
+
 	public void setMessage(IStrategoTerm message) {
 		this.message = message;
 	}
@@ -84,11 +84,11 @@ public final class Task {
 	public void setTime(long time) {
 		this.time = time;
 	}
-	
+
 	public void addTime(long time) {
 		this.time += time;
 	}
-	
+
 	public void clearTime() {
 		time = -1;
 	}
@@ -100,11 +100,11 @@ public final class Task {
 	public void setEvaluations(short evaluations) {
 		this.evaluations = evaluations;
 	}
-	
+
 	public void addEvaluation() {
 		++evaluations;
 	}
-	
+
 	public void clearEvaluations() {
 		evaluations = 0;
 	}
@@ -153,5 +153,10 @@ public final class Task {
 		if(time != other.time)
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Task(" + instruction + ", results=" + results + ", failed=" + failed + ", message=" + message + "]";
 	}
 }

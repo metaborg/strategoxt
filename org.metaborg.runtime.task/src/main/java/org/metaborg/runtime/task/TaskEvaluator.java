@@ -7,6 +7,7 @@ import static org.metaborg.runtime.task.util.ListBuilder.makeList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
@@ -131,10 +132,35 @@ public class TaskEvaluator implements ITaskEvaluator {
 				}
 			}
 
-			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
+			final Set<IStrategoTerm> cycle = findCycle(scheduled);
+			if(cycle != null) {
+				System.err.println("Cycle found: " + cycle);
+				for(IStrategoTerm taskID : cycle) {
+					final Task task = taskEngine.getTask(taskID);
+					System.out.println(taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
+				}
+			}
+			
+			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));			
 		} finally {
 			reset();
 		}
+	}
+
+	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks) {
+		return findCycle(tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it preserves order.
+	}	
+	
+	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks, Set<IStrategoTerm> seen) {
+		for(IStrategoTerm taskID : tasks) {
+			final Set<IStrategoTerm> newSeen = new LinkedHashSet<IStrategoTerm>(seen);
+			if(!newSeen.add(taskID))
+				return newSeen;
+			final Set<IStrategoTerm> rec = findCycle(taskEngine.getDependencies(taskID), newSeen);
+			if(rec != null)
+				return rec;
+		}
+		return null;
 	}
 
 	public void reset() {
