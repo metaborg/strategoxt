@@ -75,6 +75,10 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction, false);
 		IStrategoTerm resolveID = resultID(resolveResult);
+		
+		// Add a duplicate instruction but with different dependencies.
+		IStrategoTerm resolveResult2 = taskEngine.addTask(partition1, dependencies(resolveResult), resolveInstruction, false);
+		IStrategoTerm resolveID2 = resultID(resolveResult2);
 
 		IStrategoTerm resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
@@ -108,17 +112,19 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.stopCollection(partition2);
 
 		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(resolveID)));
+		assertEquals(1, Iterables.size(taskEngine.getPartitionsOf(resolveID2)));
 		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(resolveImportID)));
 		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(choiceID)));
 
-		assertEquals(3, Iterables.size(taskEngine.getInPartition(partition1)));
-		assertEquals(3, Iterables.size(taskEngine.getInPartition(partition1)));
+		assertEquals(4, Iterables.size(taskEngine.getInPartition(partition1)));
+		assertEquals(3, Iterables.size(taskEngine.getInPartition(partition2)));
 
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveID)));
+		assertEquals(1, Iterables.size(taskEngine.getDependencies(resolveID2)));
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveImportID)));
 		assertEquals(2, Iterables.size(taskEngine.getDependencies(choiceID)));
 
-		assertEquals(1, Iterables.size(taskEngine.getDependent(resolveID)));
+		assertEquals(2, Iterables.size(taskEngine.getDependent(resolveID)));
 		assertEquals(1, Iterables.size(taskEngine.getDependent(resolveImportID)));
 		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID)));
 	}

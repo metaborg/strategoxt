@@ -11,6 +11,7 @@ import java.util.Set;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
+import org.metaborg.runtime.task.util.ListBuilder;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
@@ -21,7 +22,9 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Table;
 
 public class TaskEngine {
 	private final ITermFactory factory;
@@ -33,19 +36,27 @@ public class TaskEngine {
 	/** Mapping of task identifiers to tasks. */
 	private final Map<IStrategoTerm, Task> toTask = new HashMap<IStrategoTerm, Task>();
 
-	/** Mapping of instructions to task identifiers. */
-	private final Map<IStrategoTerm, IStrategoTerm> fromInstruction = new HashMap<IStrategoTerm, IStrategoTerm>();
+	/** Mapping table of instructions and dependencies to task identifiers. */
+	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
+
 
 	/** Origin partitions of tasks. */
-	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoString> toPartition = BidirectionalLinkedHashMultimap
-		.create();
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoString> toPartition =
+		BidirectionalLinkedHashMultimap.create();
 
-	/** Dependencies between tasks. */
+	/**
+	 * Mapping of task identifiers to the initial dependencies of that task when it was added. Required for cleaning up
+	 * tasks in the {@link #toTaskID} table mapping because {@link #toDependency} can change during evaluation.
+	 **/
+	private final Map<IStrategoTerm, IStrategoList> toInitialDependencies = new HashMap<IStrategoTerm, IStrategoList>();
+
+	/** Dependencies between tasks. Can be updated dynamically. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
 		.create();
 
 	/** Dependencies between tasks. */
-	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRead = BidirectionalLinkedHashMultimap.create();
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRead = BidirectionalLinkedHashMultimap
+		.create();
 
 
 	/** Tasks that are not in any partition are garbage. **/
@@ -74,7 +85,7 @@ public class TaskEngine {
 	public ITermDigester getDigester() {
 		return digester;
 	}
-	
+
 	public ITaskEvaluator getEvaluator() {
 		return evaluator;
 	}
@@ -106,7 +117,7 @@ public class TaskEngine {
 	 * @return True if it exists, false otherwise.
 	 */
 	public boolean taskExists(IStrategoTerm instruction) {
-		return fromInstruction.containsKey(instruction);
+		return toTaskID.containsRow(instruction);
 	}
 
 	/**
@@ -115,12 +126,12 @@ public class TaskEngine {
 	 * @param instruction The instruction.
 	 * @return Identifier of the instruction.
 	 */
-	public IStrategoTerm taskID(IStrategoTerm instruction) {
-		IStrategoTerm taskID = fromInstruction.get(instruction);
+	public IStrategoTerm taskID(IStrategoTerm instruction, IStrategoList dependencies) {
+		IStrategoTerm taskID = toTaskID.get(instruction, dependencies);
 		if(taskID != null)
 			return taskID;
-		taskID = digester.digest(instruction, factory);
-		fromInstruction.put(instruction, taskID);
+		taskID = digester.digest(factory, instruction, dependencies);
+		toTaskID.put(instruction, dependencies, taskID);
 		final Task task = getTask(taskID);
 		if(task == null)
 			return taskID;
@@ -147,7 +158,7 @@ public class TaskEngine {
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		final IStrategoTerm taskID = taskID(instruction);
+		final IStrategoTerm taskID = taskID(instruction, dependencies);
 
 		if(!toTask.containsKey(taskID)) {
 			toTask.put(taskID, new Task(instruction, combinator));
@@ -157,6 +168,7 @@ public class TaskEngine {
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
+		toInitialDependencies.put(taskID, dependencies);
 		for(final IStrategoTerm dependency : dependencies)
 			addDependency(taskID, dependency);
 
@@ -172,22 +184,26 @@ public class TaskEngine {
 	 * 
 	 * @param taskID The identifier of the task.
 	 * @param instruction The instruction of the task.
-	 * @param partitions The partitions of the task
-	 * @param dependencies The dependencies of the task
+	 * @param partitions The partitions of the task.
+	 * @param initialDependencies The initial dependencies of the task.
+	 * @param dependencies The dependencies of the task.
 	 * @param reads The reads of the task.
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
 	 */
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt combinator,
-		IStrategoList partitions, IStrategoList dependencies, IStrategoList reads, IStrategoTerm results,
-		IStrategoInt failed, IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
+	public void
+		addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt combinator,
+			IStrategoList partitions, IStrategoList initialDependencies, IStrategoList dependencies,
+			IStrategoList reads, IStrategoTerm results, IStrategoInt failed, IStrategoTerm message, IStrategoTerm time,
+			IStrategoTerm evaluations) {
 		Task task = new Task(instruction, combinator.intValue() == 1);
 		if(toTask.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
-		fromInstruction.put(task.instruction, taskID);
+		toTaskID.put(task.instruction, dependencies, taskID);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
+		toInitialDependencies.put(taskID, initialDependencies);
 		for(final IStrategoTerm dependency : dependencies)
 			toDependency.put(taskID, dependency);
 		for(final IStrategoTerm read : reads)
@@ -210,13 +226,13 @@ public class TaskEngine {
 	 * @param taskID The identifier of the task to remove.
 	 */
 	public void removeTask(IStrategoTerm taskID) {
-		fromInstruction.remove(getTask(taskID).instruction);
+		toTaskID.remove(getTask(taskID).instruction, ListBuilder.makeList(factory, getInitialDependencies(taskID)));
 		removeDependencies(taskID);
 		removeReads(taskID);
 		scheduled.remove(taskID);
 		toTask.remove(taskID);
 	}
-	
+
 	/**
 	 * Stops collection for given partition.
 	 * 
@@ -236,7 +252,7 @@ public class TaskEngine {
 		inCollection.remove(partition);
 		collectGarbage();
 	}
-	
+
 	private void collectGarbage() {
 		for(final IStrategoTerm taskID : garbage)
 			removeTask(taskID);
@@ -341,6 +357,10 @@ public class TaskEngine {
 	}
 
 
+	public IStrategoList getInitialDependencies(IStrategoTerm taskID) {
+		return toInitialDependencies.get(taskID);
+	}
+
 	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
 		return toDependency.get(taskID);
 	}
@@ -373,6 +393,7 @@ public class TaskEngine {
 	}
 
 	public void removeDependencies(IStrategoTerm taskID) {
+		toInitialDependencies.remove(taskID);
 		toDependency.removeAll(taskID);
 		toDependency.removeAllInverse(taskID);
 	}
@@ -423,8 +444,9 @@ public class TaskEngine {
 		digester.reset();
 		evaluator.reset();
 		toTask.clear();
-		fromInstruction.clear();
+		toTaskID.clear();
 		toPartition.clear();
+		toInitialDependencies.clear();
 		toDependency.clear();
 		toRead.clear();
 		garbage.clear();

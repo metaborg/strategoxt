@@ -17,7 +17,8 @@ public class task_api_task_id_0_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoTerm instruction = tvars[0];
-		env.setCurrent(TaskManager.getInstance().getCurrent().taskID(instruction));
+		// HACK: pass empty list as dependencies.
+		env.setCurrent(TaskManager.getInstance().getCurrent().taskID(instruction, env.getFactory().makeList()));
 		return true;
 	}
 }

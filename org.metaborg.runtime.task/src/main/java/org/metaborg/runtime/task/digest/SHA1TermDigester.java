@@ -23,9 +23,10 @@ public class SHA1TermDigester implements ITermDigester {
 		digest = MessageDigest.getInstance("SHA-1");
 	}
 
-	public IStrategoTerm digest(IStrategoTerm term, ITermFactory factory) {
+	public IStrategoTerm digest(ITermFactory factory, IStrategoTerm... terms) {
 		digest.reset();
-		digestTopSerializer(term);
+		for(IStrategoTerm term : terms)
+			digestTopSerializer(term);
 		byte[] data = digest.digest();
 		return factory.makeTuple(factory.makeInt(toInt(data, 0)), factory.makeInt(toInt(data, 4)));
 	}

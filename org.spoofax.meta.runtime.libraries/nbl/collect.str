@@ -384,9 +384,12 @@ rules // generic analysis of imports
   <+ ns           := ins
   where
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
-  ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into 
-  ; Result(import-calc)    := <new-task(|partition, <dependent-tasks> from-uri)> ImportCalc(into-uri)
-  ; Result(import-closure) := <new-task(|partition, [import-calc])> ImportClosure(into-uri)
+  ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
+    // HACK: Don't add dependencies directly so that the initial dependencies for both tasks are set to [].
+  ; Result(import-calc)    := <new-task(|partition, [])> ImportCalc(into-uri)
+  ; <dependent-tasks; map(task-add-dependency(|import-calc))> from-uri
+  ; Result(import-closure) := <new-task(|partition, [])> ImportClosure(into-uri)
+  ; <task-add-dependency(|import-closure)> import-calc
         
   nabl-scope-uri(|lang, uri*, ns):
     Current() -> <lookup-uri(|lang, ns)> uri*

@@ -5,9 +5,11 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 public class NonDeterministicCountingTermDigester implements ITermDigester {
-	public int count = Integer.MIN_VALUE;
+	private static int RESET_COUNT = 0;
+	
+	public int count = RESET_COUNT;
 
-	public IStrategoTerm digest(IStrategoTerm term, ITermFactory factory) {
+	public IStrategoTerm digest(ITermFactory factory, IStrategoTerm... terms) {
 		if(count == Integer.MAX_VALUE)
 			throw new IllegalStateException("Counter has reached maximum number, cannot assign new identifier.");
 
@@ -23,6 +25,6 @@ public class NonDeterministicCountingTermDigester implements ITermDigester {
 	}
 
 	public void reset() {
-		count = Integer.MIN_VALUE;
+		count = RESET_COUNT;
 	}
 }
