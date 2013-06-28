@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
+import org.metaborg.runtime.task.util.Debug;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -132,12 +133,14 @@ public class TaskEvaluator implements ITaskEvaluator {
 				}
 			}
 
-			final Set<IStrategoTerm> cycle = findCycle(scheduled);
-			if(cycle != null) {
-				System.err.println("Cycle found: " + cycle);
-				for(IStrategoTerm taskID : cycle) {
-					final Task task = taskEngine.getTask(taskID);
-					System.out.println(taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
+			if(Debug.DEBUGGING) {
+				final Set<IStrategoTerm> cycle = findCycle(scheduled);
+				if(cycle != null) {
+					System.err.println("Cycle found: " + cycle);
+					for(IStrategoTerm taskID : cycle) {
+						final Task task = taskEngine.getTask(taskID);
+						System.out.println(taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
+					}
 				}
 			}
 			
