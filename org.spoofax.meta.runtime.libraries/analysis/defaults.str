@@ -30,7 +30,7 @@ rules // Single finle analysis
     (ast, path, project-path) -> (ast', error*, warning*, note*)
     with
       editor-init;
-      <debug(!"Analyzing file: ")> path;
+      <analysis-default-debug(!"Analyzing file: ")> path;
       (ast', evaluated-task*, unevaluated-task*, (analysis-error*, analysis-warning*, analysis-note*)) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
       partition* := <analysis-changed-partitions> evaluated-task*;
@@ -38,8 +38,8 @@ rules // Single finle analysis
       	partition := $[[project-path]/[path]];
       	<remove-all(?partition <+ ?path); analysis-message-update-partitions-queue> partition*
     	end;
-      <debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
-      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task* 
+      <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task* 
       // TODO: Update markers for partitions that have had a task executed.
       
 rules // Multi-file analysis
@@ -54,7 +54,7 @@ rules // Multi-file analysis
   analysis-multiple-default(parse, desugar-before, desugar-after, pp-message|language, project-path):
     path* -> (result'*, evaluated-task*, unevaluated-task*)
     with
-    	debug(!"Analyzing files: ");
+    	analysis-default-debug(!"Analyzing files: ");
       analysis-multiple-default-work-units; set-total-work-units;
       measure-time(
 	      measure-time(
@@ -72,8 +72,8 @@ rules // Multi-file analysis
 	      	, id | "analysis-multiple-task-commit"
 	      )
 	    , id | "analysis-multiple-total");
-      <debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
-      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task*
+      <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task*
       // TODO: Update markers for partitions that have had a task executed but were not analyzed.
 
   analysis-update-editor(desugar-after, pp-message):
@@ -121,4 +121,11 @@ rules // On-save handler
   		index-commit;
   		task-setup(|project-path);
   		task-persist
-		
+
+rules // Debugging
+	
+	analysis-default-debug(msg) = try(analysis-default-debug-interface(msg))
+	analysis-default-debug = try(analysis-default-debug-interface)
+	analysis-default-debug-interface(msg) = fail
+	analysis-default-debug-interface = fail
+	
