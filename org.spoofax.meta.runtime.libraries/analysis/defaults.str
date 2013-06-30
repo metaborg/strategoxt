@@ -107,7 +107,7 @@ rules // Message collection and updating.
   	queue-strategy(|"analysis-message-update-partitions", "Updating messages")
   
   analysis-message-update-partitions:
-  	partition* -> <map(analysis-message-update-partition)>
+  	partition* -> <filter(not(is-test-file); analysis-message-update-partition)>
   	
 	analysis-message-update-partition:
 		partition -> <analyze-get-messages; set-only-markers(|partition)>

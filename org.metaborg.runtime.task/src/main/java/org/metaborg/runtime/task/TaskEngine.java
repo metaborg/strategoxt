@@ -200,7 +200,7 @@ public class TaskEngine {
 		if(toTask.put(taskID, task) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
-		toTaskID.put(task.instruction, dependencies, taskID);
+		toTaskID.put(task.instruction, initialDependencies, taskID);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
 		toInitialDependencies.put(taskID, initialDependencies);
