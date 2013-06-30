@@ -21,13 +21,13 @@ signature
 rules
 	
 	task-error-message(|message):
-		term -> Error(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, term, message)
+		term -> Error(<origin-location-offset <+ !message>, term, message)
 		
 	task-warning-message(|message):
-    term -> Warning(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, term, message)
+    term -> Warning(<origin-location-offset <+ !message>, term, message)
     
 	task-note-message(|message):
-    term -> Note(<origin-location-offset <+ !message; debug(!"Could not find origin information, message will appear at the first line: ")>, term, message)
+    term -> Note(<origin-location-offset <+ !message>, term, message)
 
 
 	task-message:
