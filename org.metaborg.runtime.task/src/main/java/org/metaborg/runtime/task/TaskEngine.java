@@ -315,13 +315,13 @@ public class TaskEngine {
 	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
 	 *         evaluations.
 	 */
-	public IStrategoTerm evaluate(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+	public IStrategoTerm evaluate(IContext context, Strategy insert, Strategy perform) {
 		for(IStrategoTerm taskID : scheduled)
 			invalidate(taskID);
 		clearTimes();
 		clearEvaluations();
 
-		IStrategoTerm result = evaluator.evaluate(scheduled, context, collect, insert, perform);
+		IStrategoTerm result = evaluator.evaluate(scheduled, context, insert, perform);
 		scheduled.clear();
 		return result;
 	}

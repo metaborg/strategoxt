@@ -67,8 +67,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
-	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect, Strategy insert,
-		Strategy perform) {
+	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
 		try {
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : scheduled) {
@@ -102,7 +101,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 				final IStrategoTerm instruction = task.instruction;
 				final Iterable<IStrategoTerm> instructions =
-					instructionCombinations(context, collect, insert, task.isCombinator, instruction);
+					instructionCombinations(context, insert, task.isCombinator, instruction,
+						taskEngine.getDependencies(taskID));
 
 				// TODO: optimize success/unknown using a bitflag?
 				boolean unknown = false;
@@ -142,6 +142,18 @@ public class TaskEvaluator implements ITaskEvaluator {
 						System.out.println(taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
 					}
 				}
+				
+				for(IStrategoTerm taskID : scheduled) {
+					final Task task = taskEngine.getTask(taskID);
+					final Set<IStrategoTerm> dependencies = toRuntimeDependency.get(taskID);
+					if(!dependencies.isEmpty())
+						System.err.println(taskID + ": " + task + " still depends on: ");
+					for(IStrategoTerm dependencyID : dependencies) {
+						final Task dependency = taskEngine.getTask(dependencyID);
+						if(!dependency.solved())
+							System.out.println(dependencyID + ": " + dependency);
+					}
+				}
 			}
 			
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));			
@@ -171,26 +183,21 @@ public class TaskEvaluator implements ITaskEvaluator {
 		toRuntimeDependency.clear();
 	}
 
-	private Iterable<IStrategoTerm> instructionCombinations(IContext context, Strategy collect, Strategy insert,
-		boolean combinator, IStrategoTerm instruction) {
-		final IStrategoTerm resultIDs = invoke(context, collect, instruction);
+	private Iterable<IStrategoTerm> instructionCombinations(IContext context, Strategy insert, boolean combinator,
+		IStrategoTerm instruction, Iterable<IStrategoTerm> resultIDs) {
 		final Collection<IStrategoTerm> instructions = new LinkedList<IStrategoTerm>();
 
-		// TODO: insert and collect results in Java instead of an external strategy?
-
-		if(resultIDs.getSubtermCount() == 0) {
+		// TODO: insert results in Java instead of an external strategy?
+		if(Iterables.isEmpty(resultIDs)) {
 			instructions.add(instruction);
 		} else if(!combinator) {
 			// TODO: prevent construction of a multimap by changing cartesianProduct to accept a list of task IDs.
 			final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
 			for(IStrategoTerm resultID : resultIDs) {
 				final Task task = taskEngine.getTask(resultID);
-				final Iterable<IStrategoTerm> results = task.results();
-				// If one of the results of a dependency are empty the task cannot be executed, so return null to signal
-				// this.
-				if(!results.iterator().hasNext())
+				if(task.failed()) // If a dependency does not have any results, the task cannot be executed.
 					return null;
-				resultsMap.putAll(resultID, results);
+				resultsMap.putAll(resultID, task.results());
 			}
 
 			final Collection<StrategoHashMap> resultCombinations = cartesianProduct(resultsMap);
@@ -200,7 +207,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 		} else {
 			StrategoHashMap mapping = new StrategoHashMap();
 			for(IStrategoTerm resultID : resultIDs) {
-				mapping.put(resultID, makeList(factory, taskEngine.getTask(resultID).results()));
+				final Task task = taskEngine.getTask(resultID);
+				mapping.put(resultID, makeList(factory, task.results()));
 			}
 
 			instructions.add(insertResults(context, insert, instruction, mapping));
@@ -264,12 +272,10 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private void tryScheduleNewTasks(IStrategoTerm solved) {
 		// Retrieve dependent tasks of the solved task.
-		final Iterable<IStrategoTerm> dependents = taskEngine.getDependent(solved);
-		// Make a copy for toRuntimeDependency because a remove operation can occur while iterating.
-		final Collection<IStrategoTerm> runtimeDependents =
-			new ArrayList<IStrategoTerm>(toRuntimeDependency.getInverse(solved));
+		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(solved));
+		dependents.addAll(toRuntimeDependency.getInverse(solved));
 
-		for(final IStrategoTerm dependent : Iterables.concat(dependents, runtimeDependents)) {
+		for(final IStrategoTerm dependent : dependents) {
 			// Retrieve dependencies for a dependent task.
 			Collection<IStrategoTerm> dependencies = toRuntimeDependency.get(dependent);
 			int dependenciesSize = dependencies.size();

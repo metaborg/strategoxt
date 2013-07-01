@@ -16,10 +16,9 @@ public class task_api_evaluate_3_0 extends AbstractPrimitive {
 
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-		final Strategy collect = svars[0];
-		final Strategy insert = svars[1];
-		final Strategy perform = svars[2];
-		env.setCurrent(TaskManager.getInstance().getCurrent().evaluate(env, collect, insert, perform));
+		final Strategy insert = svars[0];
+		final Strategy perform = svars[1];
+		env.setCurrent(TaskManager.getInstance().getCurrent().evaluate(env, insert, perform));
 		return true;
 	}
 }

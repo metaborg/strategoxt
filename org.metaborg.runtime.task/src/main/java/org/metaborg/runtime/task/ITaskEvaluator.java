@@ -8,8 +8,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 
 public interface ITaskEvaluator {
-	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect,
-		Strategy insert, Strategy perform);
-
+	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert,
+		Strategy perform);
 	public abstract void reset();
 }
