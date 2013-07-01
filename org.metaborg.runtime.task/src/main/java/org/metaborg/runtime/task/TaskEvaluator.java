@@ -4,7 +4,6 @@ import static org.metaborg.runtime.task.util.CarthesianProduct.cartesianProduct;
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 import static org.metaborg.runtime.task.util.ListBuilder.makeList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;

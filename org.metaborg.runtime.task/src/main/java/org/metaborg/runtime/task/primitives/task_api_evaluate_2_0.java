@@ -7,11 +7,11 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class task_api_evaluate_3_0 extends AbstractPrimitive {
-	public static task_api_evaluate_3_0 instance = new task_api_evaluate_3_0();
+public class task_api_evaluate_2_0 extends AbstractPrimitive {
+	public static task_api_evaluate_2_0 instance = new task_api_evaluate_2_0();
 
-	public task_api_evaluate_3_0() {
-		super("task_api_evaluate", 3, 0);
+	public task_api_evaluate_2_0() {
+		super("task_api_evaluate", 2, 0);
 	}
 
 	@Override
