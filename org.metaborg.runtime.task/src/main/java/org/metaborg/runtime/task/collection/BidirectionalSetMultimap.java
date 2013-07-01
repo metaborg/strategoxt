@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Multimap;
+import com.google.common.collect.SetMultimap;
 
-public interface BidirectionalSetMultimap<K, V> extends Multimap<K, V> {
+public interface BidirectionalSetMultimap<K, V> extends SetMultimap<K, V> {
 	public abstract Map<V, Collection<K>> asInverseMap();
 
 	public abstract Set<K> getInverse(V value);
