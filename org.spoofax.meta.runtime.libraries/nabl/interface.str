@@ -1,4 +1,4 @@
-module nbl/interface
+module nabl/interface
 
 strategies // Collect
   
@@ -24,12 +24,6 @@ strategies // Projections
 	nabl-name-apply(s) = fail
 	
 	nabl-scopes = fail
-
-strategies // Tasks
-  
-	calc-property = fail
-
-	message-task(|partition) = fail
 	
 strategies // Lookup hooks
 	

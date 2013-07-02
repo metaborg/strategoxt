@@ -2,10 +2,10 @@ module analysis/core
 
 imports
 	
-  nbl/collect
-  nbl/entries
-  nbl/uri
-  nbl/utils
+  nabl/collect
+  nabl/entries
+  nabl/uri
+  nabl/utils
   index/core
   task/core
   task/messages

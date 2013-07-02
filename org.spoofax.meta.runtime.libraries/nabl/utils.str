@@ -1,4 +1,4 @@
-module nbl/utils
+module nabl/utils
 
 imports
 	

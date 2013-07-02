@@ -1,11 +1,11 @@
-module nbl/check
+module nabl/check
 
 imports
 	
-  nbl/resolve
-  nbl/query
-  nbl/uri
-  nbl/entries
+  nabl/resolve
+  nabl/query
+  nabl/uri
+  nabl/entries
 	
 rules // Unresolved
  

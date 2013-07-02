@@ -1,9 +1,9 @@
-module nbl/query
+module nabl/query
 
 imports
   
-  nbl/uri
-  nbl/entries
+  nabl/uri
+  nabl/entries
   index/query
   
 rules // Specific queries

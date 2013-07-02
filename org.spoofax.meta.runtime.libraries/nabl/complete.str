@@ -1,9 +1,9 @@
-module nbl/complete
+module nabl/complete
 
 imports
 	
-	nbl/collect
-  nbl/uri
+	nabl/collect
+  nabl/uri
   task/core
   
 signature

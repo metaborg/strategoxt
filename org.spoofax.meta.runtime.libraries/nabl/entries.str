@@ -1,10 +1,10 @@
-module nbl/entries
+module nabl/entries
 
 imports
   
-  nbl/collect
-  nbl/utils
-  nbl/uri
+  nabl/collect
+  nabl/utils
+  nabl/uri
   index/core
   
 signature

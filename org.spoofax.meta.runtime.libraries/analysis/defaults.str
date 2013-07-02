@@ -5,7 +5,7 @@ imports
 	analysis/core
 	analysis/single
 	analysis/multiple
-	nbl/utils
+	nabl/utils
 	index/core
 	task/core
 	editor/editor

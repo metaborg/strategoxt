@@ -1,8 +1,8 @@
-module nbl/uri
+module nabl/uri
 
 imports
   
-  nbl/interface
+  nabl/interface
   index/core
   
 signature

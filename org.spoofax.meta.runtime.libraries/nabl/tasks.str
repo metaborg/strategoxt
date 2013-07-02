@@ -1,15 +1,9 @@
-module nbl/tasks
+module nabl/tasks
 
 imports 
   
   task/core
-  nbl/lookup
-  nbl/collect
-  nbl/query
-  nbl/interface
-  nbl/uri
-  nbl/utils
-  nbl/entries
+  nabl/-
   
 signature
   

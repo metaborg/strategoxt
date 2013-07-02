@@ -1,9 +1,9 @@
-module nbl/resolve
+module nabl/resolve
 
 imports
   
-  nbl/tasks
-	nbl/entries
+  nabl/tasks
+	nabl/entries
 	task/core
       
 rules // Reference resolution
