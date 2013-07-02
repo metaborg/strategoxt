@@ -28,7 +28,10 @@ rules
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
   		switch id
-  			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); insert-results-or-create-dependency // TODO: is this read needed?
+  			// HACK: task-result-combinations also creates dependencies if any result has not been solved yet.
+  			// Proper way would be to decompose the PropLookup into a ResolveUseToDef, GetProperty and InsertCombinations task.
+  			// TODO: is this read needed?
+  			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); task-result-combinations
   			otherwise    : id
   		end => result
   
