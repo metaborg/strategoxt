@@ -125,7 +125,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 			}
 
 			debugUnevaluated(scheduled);
-			
+
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
 		} finally {
 			reset();
@@ -188,11 +188,13 @@ public class TaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
-	private void updateDelayedDependencies(IStrategoTerm delayed, IStrategoList dependencies) {
+	private void updateDelayedDependencies(IStrategoTerm taskID, IStrategoList dependencies) {
+		debugDelayedDependecy(taskID, dependencies);
+		
 		// Sets the runtime dependencies for a task to the given dependency list.
-		toRuntimeDependency.removeAll(delayed);
+		toRuntimeDependency.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
-			toRuntimeDependency.put(delayed, dependency);
+			toRuntimeDependency.put(taskID, dependency);
 	}
 
 	public void reset() {
@@ -232,7 +234,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 			}
 		}
 	}
-	
+
 	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks) {
 		return findCycle(tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it preserves order.
 	}
@@ -247,5 +249,16 @@ public class TaskEvaluator implements ITaskEvaluator {
 				return rec;
 		}
 		return null;
+	}
+	
+	private void debugDelayedDependecy(IStrategoTerm taskID, IStrategoList dependencies) {
+		final Task task = taskEngine.getTask(taskID);
+		for(IStrategoTerm dependencyID : dependencies) {
+			final Task dependencyTask = taskEngine.getTask(dependencyID);
+			if(dependencyTask.solved()) {
+				System.err.println("Task " + taskID + ": " + task + " reported a dynamic dependency on " + dependencyID
+					+ ": " + dependencyTask + " but it is already solved!");
+			}
+		}
 	}
 }
