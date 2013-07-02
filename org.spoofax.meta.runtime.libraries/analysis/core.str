@@ -29,6 +29,7 @@ rules // Analysis
 	    		index-setup(|language, [project-path], partition);
 			    index-start-collection(|partition);
 	    		task-setup(|project-path);
+	    		task-recover;
 	    		task-start-collection(|partition)
 	      	, id | "analyze-collect-setup"
 	      ); measure-time(

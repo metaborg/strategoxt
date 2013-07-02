@@ -117,6 +117,7 @@ rules // API
 	task-invalidate-task-reads(|changedRead*)            = task-api-invalidate-task-reads(|changedRead*)
 	task-partitions-of(|taskIDOrTaskID*)                 = task-api-partitions-of(|taskIDOrTaskID*)
 	task-exists(|instruction)                            = task-api-exists(|instruction)
+	task-recover                                         = task-api-recover
 	task-reset                                           = task-api-reset
 	task-persist                                         = task-api-persist
 	task-unload(|project-path)                           = task-api-unload(|project-path)
@@ -179,6 +180,7 @@ rules /** @internal API externals */
 	task-api-evaluate(insert, perform|) = prim("task_api_evaluate", insert, perform|)
 	task-api-exists(|instruction) = prim("task_api_exists", instruction)
 	task-api-get-dependencies(|taskID) = prim("task_api_get_dependencies", taskID)
+	task-api-recover = prim("task_api_recover")
 	task-api-reset = prim("task_api_reset")
 	task-api-persist = prim("task_api_persist")
 	task-api-task-id(|instruction) = prim("task_api_task_id", instruction)
