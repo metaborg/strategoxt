@@ -289,10 +289,9 @@ rules // generic analysis of uses
 			choice     := <new-task(|partition)> Choice(subtask*)
 			
 	nabl-use-propconstraint(|partition):
-		t@(task, [Prop(kind, expected, deps)|rest]) -> rec
+		(task, [p@Prop(kind, expected, deps)|rest]) -> rec
 		where
-			task-deps := <dependent-tasks> t;
-			pc        := <new-task(|partition, <union> (task-deps, deps))> PropConstraint(kind, expected, task);
+			pc        := <new-task(|partition, <dependent-tasks> (task, deps, p))> PropConstraint(kind, expected, task);
 			rec       := <nabl-use-propconstraint(|partition)> (pc, rest)
 			
 	nabl-use-propconstraint(|partition):
