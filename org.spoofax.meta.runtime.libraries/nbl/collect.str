@@ -267,7 +267,7 @@ rules // generic analysis of uses
       end;
       
       concatted     := <new-task(|partition)> Concat([defsTask, namedDefsTask|<conc> (wildcardDefsTask, subtasks)]);
-      filtered      := <nabl-use-propconstraint(|partition, prop*)> concatted;
+      filtered      := <nabl-use-propconstraint(|partition)> (concatted, prop*);
       disambiguated := <nabl-use-disambiguate(disambiguate|partition, prop*, ns, name)> filtered
           	
 	nabl-use-subtask-uri(|partition) = try(is-list; !Choice(<id>); new-task(|partition))
@@ -288,14 +288,15 @@ rules // generic analysis of uses
 			subtask*   := <nabl-use-subtasks(id, id|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
 			choice     := <new-task(|partition)> Choice(subtask*)
 			
-	nabl-use-propconstraint(|partition, prop*):
-		task -> result
+	nabl-use-propconstraint(|partition):
+		t@(task, [Prop(kind, expected, deps)|rest]) -> rec
 		where
-			if not([] := prop*) then
-				result := <new-task(|partition)> PropConstraint(prop*, task)
-			else
-				result := task
-			end	
+			task-deps := <dependent-tasks> t;
+			pc        := <new-task(|partition, <union> (task-deps, deps))> PropConstraint(kind, expected, task);
+			rec       := <nabl-use-propconstraint(|partition)> (pc, rest)
+			
+	nabl-use-propconstraint(|partition):
+		(task, []) -> task
 
 	nabl-use-disambiguate(disambiguate|partition, prop*, namespace, name):
 		task -> result
@@ -353,7 +354,7 @@ rules // completion
       end;
       
       concatted     := <new-task(|partition)> Concat([defsTask]);
-      filtered      := <nabl-use-propconstraint(|partition, prop*)> concatted
+      filtered      := <nabl-use-propconstraint(|partition)> (concatted, prop*)
     
 rules // generic analysis of imports
   
