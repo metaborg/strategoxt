@@ -136,26 +136,32 @@ public class TaskEvaluator implements ITaskEvaluator {
 				final Set<IStrategoTerm> cycle = findCycle(scheduled);
 				if(cycle != null) {
 					System.err.println("Cycle found: " + cycle);
+					System.err.flush();
 					for(IStrategoTerm taskID : cycle) {
 						final Task task = taskEngine.getTask(taskID);
-						System.out.println(taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
+						System.out.println("	" + taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
+						System.out.flush();
 					}
 				}
-				
+
 				for(IStrategoTerm taskID : scheduled) {
 					final Task task = taskEngine.getTask(taskID);
 					final Set<IStrategoTerm> dependencies = toRuntimeDependency.get(taskID);
-					if(!dependencies.isEmpty())
+					if(!dependencies.isEmpty()) {
 						System.err.println(taskID + ": " + task + " still depends on: ");
+						System.err.flush();
+					}
 					for(IStrategoTerm dependencyID : dependencies) {
 						final Task dependency = taskEngine.getTask(dependencyID);
-						if(!dependency.solved())
-							System.out.println(dependencyID + ": " + dependency);
+						if(!dependency.solved()) {
+							System.out.println("	" + dependencyID + ": " + dependency);
+							System.out.flush();
+						}
 					}
 				}
 			}
-			
-			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));			
+
+			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
 		} finally {
 			reset();
 		}
@@ -163,8 +169,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks) {
 		return findCycle(tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it preserves order.
-	}	
-	
+	}
+
 	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks, Set<IStrategoTerm> seen) {
 		for(IStrategoTerm taskID : tasks) {
 			final Set<IStrategoTerm> newSeen = new LinkedHashSet<IStrategoTerm>(seen);
@@ -194,8 +200,8 @@ public class TaskEvaluator implements ITaskEvaluator {
 			final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
 			for(IStrategoTerm resultID : resultIDs) {
 				final Task task = taskEngine.getTask(resultID);
-				if(task.failed()) // If a dependency does not have any results, the task cannot be executed.
-					return null;
+				if(task.failed() || !task.hasResults())
+					return null;  // If a dependency does not have any results, the task cannot be executed.
 				resultsMap.putAll(resultID, task.results());
 			}
 
@@ -275,18 +281,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 		dependents.addAll(toRuntimeDependency.getInverse(solved));
 
 		for(final IStrategoTerm dependent : dependents) {
-			// Retrieve dependencies for a dependent task.
-			Collection<IStrategoTerm> dependencies = toRuntimeDependency.get(dependent);
-			int dependenciesSize = dependencies.size();
-			if(dependenciesSize == 0) {
-				// If toRuntimeDependency does not contain dependencies for dependent yet, add them.
-				toRuntimeDependency.putAll(dependent, taskEngine.getDependencies(dependent));
-				dependenciesSize = toRuntimeDependency.get(dependent).size();
-			}
-
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
 			final boolean removed = toRuntimeDependency.remove(dependent, solved);
-			if(dependenciesSize == 1 && removed && !taskEngine.getTask(dependent).solved())
+			if(removed && toRuntimeDependency.get(dependent).size() == 0 && !taskEngine.getTask(dependent).solved())
 				queue(dependent);
 		}
 	}
