@@ -1,0 +1,9 @@
+module properties/eq
+
+signature constructors
+  
+  Eq: Relation
+  
+strategies
+  
+  property-eq = ?(_, Eq(), <eq>)

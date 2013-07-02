@@ -3,77 +3,27 @@ module types/collect
 imports 
 	
   task/-
-  types/-
   nbl/-
-  editor/origins
+  properties/-
+  types/-
   
-strategies
-  
-  collect-property-tasks(|partition) =
-    !([Type()|<custom-properties <+ ![]>], <id>)
-  ; foldl(annotate-property-task(|partition) <+ Snd)
-  ; where(nabl-constraint(|partition))
-  
-  annotate-property-task(|partition):
-    (kind, term{a*}) -> term{(kind, prop), a*}
-    where
-      not(<get-property-task(|kind)> term)
-    where
-      prop := <new-property-task(|partition)> 
-     
+rules
+       
   new-property-task(|partition):
     (Type(), term) -> <type-of(|partition)> term
-
-  get-property-task(|kind) = 
-    get-annos
-  ; fetch-elem(?(kind, task))
-  ; !task
- 
-  property-of(|kind) = get-property-task(|kind); insert-results
-    
-strategies
-  
-  prop-calc(|partition, dep*) = 
-    where(all-dep* := <union> (<dependent-tasks>, <dependent-tasks> dep*));
-    <new-task(|partition, all-dep*)> PropCalc(<id>)
-    
-  prop-check(|kind, partition, dep*):
-    (term, expected) -> task
-    where
-      actual    := <get-property-task(|kind)> term
-    ; expected* := <try-make-list> expected
-    ; check*    := <map(<new-task(|partition)> PropCheck(actual, <id>))> expected*
-    ; task      := <new-task(|partition, <dependent-tasks> [dep*, check*])> Choice(check*)
-  
-  prop-check(|kind, partition, dep*):
-    (term, expected, msg) -> task
-    where
-      task := <prop-check(|kind, partition, dep*)> (term, expected)
-    ; <origin-track-forced(task-create-error-on-failure(|partition, task, msg))> term
-  
-  prop-lookup(|kind, partition, dep*) = 
-    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-  ; <new-task(|partition, all-dep*)> PropLookup(kind, <id>) 
-  
-  prop-match(|partition, relation) = 
-    <new-task(|partition)> Rewrite(relation, <id>)
-    
-  prop-match(|partition, relation, dep*) = 
-    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-  ; <new-task(|partition)> Rewrite(relation, <id>)
-  
-strategies
   
   type-is(|partition)           = prop-calc(|partition, [])
   type-is(|partition, dep*)     = prop-calc(|partition, dep*)
   
-  type-check(|partition)        = prop-check(|Type(), partition, [])
-  type-check(|partition, dep*)  = prop-check(|Type(), partition, dep*)
+  type-match(|partition, expected)               = prop-match(fail|Type(), partition, [], Eq(), expected)
+  type-match(|partition, relation, expected)     = prop-match(fail|Type(), partition, [], relation, expected)
+  type-match(cont|partition, expected)           = prop-match(cont|Type(), partition, [], Eq(), expected)
+  type-match(cont|partition, relation, expected) = prop-match(cont|Type(), partition, [], relation, expected)
   
-  type-lookup(|partition)       = prop-lookup(|Type(), partition, [])
-  type-lookup(|partition, dep*) = prop-lookup(|Type(), partition, dep*)
-  
-  type-match(|partition, relation) = prop-match(|partition, relation)
-
+  type-lookup(|partition)           = prop-lookup(fail|Type(), partition, [])
+  type-lookup(|partition, dep*)     = prop-lookup(fail|Type(), partition, dep*)
+  type-lookup(cont|partition)       = prop-lookup(cont|Type(), partition, [])
+  type-lookup(cont|partition, dep*) = prop-lookup(cont|Type(), partition, dep*)
+ 
   type-of = property-of(|Type())
   

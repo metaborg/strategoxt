@@ -1,25 +1,19 @@
-module types/tasks
+module properties/tasks
 
 imports 
 	
-	nbl/resolve
-	nbl/collect
-	nbl/entries
-	nbl/query
-	nbl/utils
-	nbl/uri
-	nbl/tasks
-  types/interface
+	nbl/-
+  properties/-
   task/core
   
 signature
   
   constructors
 
-    PropLookup : Property * Term -> Instruction    
-    PropCalc   : Term * Term     -> Instruction
-    PropCalc   : Term            -> Instruction
-    PropCheck  : Term * Term     -> Instruction
+    PropLookup : Property * Term                   -> Instruction    
+    PropCalc   : Term * Term                       -> Instruction
+    PropCalc   : Term                              -> Instruction
+    PropCheck  : Property * Relation * Term * Term -> Instruction
 
 rules
   
@@ -41,11 +35,11 @@ rules
   	PropCalc(result) -> result
   
   avoid-task(|dep*):
-    PropCheck(actual, expected) -> <perform-task(|0) <+ ![]> 
+    PropCheck(kind, rel, actual, expected) -> <perform-task(|0) <+ ![]> 
     where
       [] := dep*
   	
   perform-task(|n): 
-  	PropCheck(actual, expected) -> actual
+  	PropCheck(kind, rel, actual, expected) -> actual
   	where
-  		<type-prop-eq> (actual, expected)
+  		<property-eq> (kind, rel, actual, expected)

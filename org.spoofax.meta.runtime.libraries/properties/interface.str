@@ -1,0 +1,11 @@
+module properties/interface
+
+strategies // implementations generated from NaBL
+  
+  custom-properties = fail
+  
+  new-property-task(|partition): (kind, term) -> <fail>
+
+strategies // user-defined implementations
+	
+	nabl-constraint(|partition) = fail
