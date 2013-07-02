@@ -157,6 +157,8 @@ public final class Task {
 
 	@Override
 	public String toString() {
-		return "Task(" + instruction + ", results=" + results + ", failed=" + failed + ", message=" + message + "]";
+		return "Task [instruction=" + instruction + ", isCombinator=" + isCombinator + ", results=" + results
+			+ ", failed=" + failed + ", solved=" + solved + ", message=" + message + ", time=" + time
+			+ ", evaluations=" + evaluations + "]";
 	}
 }
