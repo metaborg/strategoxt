@@ -15,7 +15,11 @@ signature
     Def   : URI                    -> Entry
     Alias : URI * URI              -> Entry
     Use   : URI                    -> Entry
+ 
+rules // Index entries to diff
   
+  analyze-diff-entry = ?Def(_)
+ 
 rules
   
   new-def(|partition, uri):

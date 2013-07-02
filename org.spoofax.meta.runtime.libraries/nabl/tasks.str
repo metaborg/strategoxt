@@ -4,7 +4,9 @@ imports
   
   task/core
   nabl/-
+  properties/entries
   properties/eq
+  properties/query
   
 signature
   

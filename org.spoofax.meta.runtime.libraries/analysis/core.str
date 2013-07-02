@@ -2,11 +2,11 @@ module analysis/core
 
 imports
 	
+  analysis/interface
+  index/core
   nabl/collect
-  nabl/entries
   nabl/uri
   nabl/utils
-  index/core
   task/core
   task/messages
   editor/origins
@@ -58,7 +58,6 @@ rules // Analysis
 	  	  )
   	, id | "analyze-task-total")
   	  
-    
   analyze-messages:
   	Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
   	with
@@ -78,14 +77,6 @@ rules // Analysis
 			origin := <task-message-origin> message;
 			term   := <task-message-term> message;
 			msg    := <task-message> message
-
-rules // Index entries to diff
-	
-  analyze-diff-entry =
-    ?Def(_)
-    
-  analyze-diff-entry =
-    ?Prop(_, _, _)
       
 rules // Projections
 	

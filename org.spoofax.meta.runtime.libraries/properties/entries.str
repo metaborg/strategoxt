@@ -14,6 +14,10 @@ signature
     
     Prop  : URI * Property * Value -> Entry
 
+rules // Index entries to diff
+  
+  analyze-diff-entry = ?Prop(_, _, _)
+
 rules
   
   new-prop(|partition, uri, kind, val):

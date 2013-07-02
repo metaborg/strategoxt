@@ -40,7 +40,7 @@ rules // generic analysis of properties
   nabl-annotate-property(|partition):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
-      not(<nabl-property-task(|kind)> term)
+      not(<nabl-get-property-task(|kind)> term)
     where
       prop := <nabl-new-property(|partition)> 
           
