@@ -4,6 +4,7 @@ imports
   
   task/core
   nabl/-
+  properties/eq
   
 signature
   
@@ -173,13 +174,13 @@ rules // Property constraints
       
   // TODO: check dependencies (3rd subterm) as well.
   nabl-resolve-constraint-one(|entry):
-    Prop(type, expectedValue, _) -> entry'
+    Prop(kind, expectedValue, _) -> entry'
     where
     	uri   := <nabl-uri> entry;
-      value := <nabl-get-property(|type)> uri;
+      value := <nabl-get-property(|kind)> uri;
       if value' := <insert-results> value then
         expectedValue' := <insert-results> expectedValue;
-        <nabl-property-eq(|type) <+ eq> (expectedValue', value');
+        <nabl-property-eq> (kind, Eq(), expectedValue', value');
         entry' := entry
       else
         entry' := <task-create-dependencies> value

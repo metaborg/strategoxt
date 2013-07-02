@@ -6,4 +6,4 @@ signature constructors
   
 strategies
   
-  property-eq = ?(_, Eq(), <eq>)
+  nabl-property-eq = ?(_, Eq(), <eq>)
