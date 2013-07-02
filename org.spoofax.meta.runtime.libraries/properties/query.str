@@ -1,0 +1,39 @@
+module properties/query
+
+imports
+	nabl/query
+	nabl/uri
+	task/core
+	properties/entries
+  
+rules
+	
+  /**
+   * Gets a property that matches the kind of value and given URI, or fails if no property is found.
+   *
+   * Example:
+   *   <nabl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
+   *
+   * @param type Only properties of this kind is returned.
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> Prop(uri, kind, value)
+   */
+  nabl-get-property(|kind) = 
+    nabl-get-all-properties(|kind); Hd
+      
+  /**
+   * Gets all properties that match the kind of value and given URI.
+   *
+   * Example:
+   *   <nabl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
+   *
+   * @param kind Only data of this kind is returned.
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
+   */
+  nabl-get-all-properties(|kind) =
+    <nabl-get-all-values> Prop(<nabl-uri>, kind, ())
+  + nabl-property-task(|kind); insert-results
+  
+  nabl-property-task(|kind) = 
+    get-annos
+  ; fetch-elem(?(kind, task))
+  ; !task

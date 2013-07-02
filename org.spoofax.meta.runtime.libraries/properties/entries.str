@@ -1,0 +1,33 @@
+module properties/entries
+
+imports
+  
+  nabl/collect
+  nabl/utils
+  nabl/uri
+  index/core
+  editor/origins
+  
+signature
+
+  constructors
+    
+    Prop  : URI * Property * Value -> Entry
+
+rules
+  
+  new-prop(|partition, uri, kind, val):
+  x -> prop
+  with
+    prop := <origin-track-forced(!Prop(uri, kind, val))> x;
+    <index-add(|partition)> prop
+      
+rules // index uri & value projections
+  
+  /** @internal */  
+  nabl-uri-impl:
+    Prop(uri, _, _) -> uri
+    
+  /** @internal */
+  nabl-value-impl:
+    Prop(_, _, value) -> value

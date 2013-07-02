@@ -1,0 +1,10 @@
+module types/query
+
+imports
+  
+  properties/query
+  types/collect
+  
+rules
+  
+  type-of = nabl-get-property(|Type())
