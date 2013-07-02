@@ -1,10 +1,7 @@
 package org.metaborg.runtime.task;
 
-import static org.metaborg.runtime.task.util.CarthesianProduct.cartesianProduct;
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
-import static org.metaborg.runtime.task.util.ListBuilder.makeList;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -13,11 +10,11 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
+import org.metaborg.runtime.task.util.CarthesianProduct;
 import org.metaborg.runtime.task.util.Debug;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
-import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
@@ -26,9 +23,6 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 public class TaskEvaluator implements ITaskEvaluator {
@@ -98,18 +92,16 @@ public class TaskEvaluator implements ITaskEvaluator {
 				// overwrite previous data.
 				taskEngine.invalidate(taskID);
 
-				final IStrategoTerm instruction = task.instruction;
 				final Iterable<IStrategoTerm> instructions =
-					instructionCombinations(context, insert, task.isCombinator, instruction,
-						taskEngine.getDependencies(taskID));
+					CarthesianProduct.taskCombinations(factory, taskEngine, context, insert, taskID, task);
 
 				// TODO: optimize success/unknown using a bitflag?
 				boolean unknown = false;
 				boolean failure = true;
 				if(instructions != null) {
-					for(IStrategoTerm insertedInstruction : instructions) {
-						final IStrategoTerm result = solve(context, perform, taskID, task, insertedInstruction);
-						final ResultType resultType = handleResult(taskID, task, instruction, result);
+					for(IStrategoTerm instruction : instructions) {
+						final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
+						final ResultType resultType = handleResult(taskID, task, result);
 						switch(resultType) {
 							case Fail:
 								break;
@@ -132,104 +124,12 @@ public class TaskEvaluator implements ITaskEvaluator {
 				}
 			}
 
-			if(Debug.DEBUGGING) {
-				final Set<IStrategoTerm> cycle = findCycle(scheduled);
-				if(cycle != null) {
-					System.err.println("Cycle found: " + cycle);
-					System.err.flush();
-					for(IStrategoTerm taskID : cycle) {
-						final Task task = taskEngine.getTask(taskID);
-						System.out.println("	" + taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
-						System.out.flush();
-					}
-				}
-
-				for(IStrategoTerm taskID : scheduled) {
-					final Task task = taskEngine.getTask(taskID);
-					final Set<IStrategoTerm> dependencies = toRuntimeDependency.get(taskID);
-					if(!dependencies.isEmpty()) {
-						System.err.println(taskID + ": " + task + " still depends on: ");
-						System.err.flush();
-					}
-					for(IStrategoTerm dependencyID : dependencies) {
-						final Task dependency = taskEngine.getTask(dependencyID);
-						if(!dependency.solved()) {
-							System.out.println("	" + dependencyID + ": " + dependency);
-							System.out.flush();
-						}
-					}
-				}
-			}
-
+			debugUnevaluated(scheduled);
+			
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
 		} finally {
 			reset();
 		}
-	}
-
-	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks) {
-		return findCycle(tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it preserves order.
-	}
-
-	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks, Set<IStrategoTerm> seen) {
-		for(IStrategoTerm taskID : tasks) {
-			final Set<IStrategoTerm> newSeen = new LinkedHashSet<IStrategoTerm>(seen);
-			if(!newSeen.add(taskID))
-				return newSeen;
-			final Set<IStrategoTerm> rec = findCycle(taskEngine.getDependencies(taskID), newSeen);
-			if(rec != null)
-				return rec;
-		}
-		return null;
-	}
-
-	public void reset() {
-		evaluationQueue.clear();
-		toRuntimeDependency.clear();
-	}
-
-	private Iterable<IStrategoTerm> instructionCombinations(IContext context, Strategy insert, boolean combinator,
-		IStrategoTerm instruction, Iterable<IStrategoTerm> resultIDs) {
-		final Collection<IStrategoTerm> instructions = new LinkedList<IStrategoTerm>();
-
-		// TODO: insert results in Java instead of an external strategy?
-		if(Iterables.isEmpty(resultIDs)) {
-			instructions.add(instruction);
-		} else if(!combinator) {
-			// TODO: prevent construction of a multimap by changing cartesianProduct to accept a list of task IDs.
-			final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
-			for(IStrategoTerm resultID : resultIDs) {
-				final Task task = taskEngine.getTask(resultID);
-				if(task.failed() || !task.hasResults())
-					return null;  // If a dependency does not have any results, the task cannot be executed.
-				resultsMap.putAll(resultID, task.results());
-			}
-
-			final Collection<StrategoHashMap> resultCombinations = cartesianProduct(resultsMap);
-			for(StrategoHashMap mapping : resultCombinations) {
-				instructions.add(insertResults(context, insert, instruction, mapping));
-			}
-		} else {
-			StrategoHashMap mapping = new StrategoHashMap();
-			for(IStrategoTerm resultID : resultIDs) {
-				final Task task = taskEngine.getTask(resultID);
-				mapping.put(resultID, makeList(factory, task.results()));
-			}
-
-			instructions.add(insertResults(context, insert, instruction, mapping));
-		}
-
-		return instructions;
-	}
-
-	private IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction,
-		StrategoHashMap resultCombinations) {
-		return invoke(context, insertResults, instruction,
-			createHashtableTerm(context.getFactory(), resultCombinations));
-	}
-
-	private IStrategoAppl createHashtableTerm(ITermFactory factory, StrategoHashMap hashMap) {
-		return factory.makeAppl(factory.makeConstructor("Hashtable", 1), hashMap);
 	}
 
 	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, Task task,
@@ -245,7 +145,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 		DynamicDependency, Fail, Success
 	}
 
-	private ResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm instruction, IStrategoTerm result) {
+	private ResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result) {
 		if(result == null)
 			return ResultType.Fail; // The task failed to produce a result.
 
@@ -293,5 +193,59 @@ public class TaskEvaluator implements ITaskEvaluator {
 		toRuntimeDependency.removeAll(delayed);
 		for(final IStrategoTerm dependency : dependencies)
 			toRuntimeDependency.put(delayed, dependency);
+	}
+
+	public void reset() {
+		evaluationQueue.clear();
+		toRuntimeDependency.clear();
+	}
+
+	private void debugUnevaluated(Iterable<IStrategoTerm> unevaluated) {
+		if(Debug.DEBUGGING) {
+			// Find cycles.
+			final Set<IStrategoTerm> cycle = findCycle(unevaluated);
+			if(cycle != null) {
+				System.err.println("Cycle found: " + cycle);
+				System.err.flush();
+				for(IStrategoTerm taskID : cycle) {
+					final Task task = taskEngine.getTask(taskID);
+					System.out.println("	" + taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
+					System.out.flush();
+				}
+			}
+
+			// Print out runtime dependencies.
+			for(IStrategoTerm taskID : unevaluated) {
+				final Task task = taskEngine.getTask(taskID);
+				final Set<IStrategoTerm> dependencies = toRuntimeDependency.get(taskID);
+				if(!dependencies.isEmpty()) {
+					System.err.println(taskID + ": " + task + " still depends on: ");
+					System.err.flush();
+				}
+				for(IStrategoTerm dependencyID : dependencies) {
+					final Task dependency = taskEngine.getTask(dependencyID);
+					if(!dependency.solved()) {
+						System.out.println("	" + dependencyID + ": " + dependency);
+						System.out.flush();
+					}
+				}
+			}
+		}
+	}
+	
+	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks) {
+		return findCycle(tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it preserves order.
+	}
+
+	private Set<IStrategoTerm> findCycle(Iterable<IStrategoTerm> tasks, Set<IStrategoTerm> seen) {
+		for(IStrategoTerm taskID : tasks) {
+			final Set<IStrategoTerm> newSeen = new LinkedHashSet<IStrategoTerm>(seen);
+			if(!newSeen.add(taskID))
+				return newSeen;
+			final Set<IStrategoTerm> rec = findCycle(taskEngine.getDependencies(taskID), newSeen);
+			if(rec != null)
+				return rec;
+		}
+		return null;
 	}
 }
