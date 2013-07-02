@@ -3,6 +3,7 @@ module nabl/lookup
 imports
   
   nabl/-
+  properties/query
   task/core
 
 rules // Lookup

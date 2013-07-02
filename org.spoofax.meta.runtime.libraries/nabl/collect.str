@@ -6,7 +6,8 @@ imports
 	task/tasks
 	task/messages
 	nabl/-
-	properties/collect
+	properties/-
+	editor/origins
 	
 signature 
 
@@ -50,12 +51,7 @@ signature
 	  Import   :                                Property
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
-  	Type     : Property
-  	
-  constructors // property
-    
-    Prop : Property * Value * List(Dependency) -> Prop
-    
+  	  
   constructors // partition
   
   	CollectPartition : Partition
@@ -90,11 +86,11 @@ strategies // generic traversal
     )    
   ; try(nabl-state-site)
   // visit children from left to right  
-  ; preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
+  ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
   ; try(nabl-use-site(|lang, partition, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, state*, implicit*))
-  ; collect-property-tasks(|partition)
+  ; nabl-annotate-properties(|partition)
     
 	nabl-siblings(|lang, partition, unique*, uri*) = 
 		[]  
@@ -395,21 +391,7 @@ rules // generic analysis of imports
     Context(_, name, _, _) -> uri
     where
       Use(uri) := <nabl-collect-use> name
-      
-rules // generic analysis of properties
-  
-  // call back to generic analysis
-	nabl-props(|partition, prop*):
-	  name -> name'
-	  where
-	    Def(uri) := <nabl-collect-def> name;
-		  name'    := <foldl(extend-prop(|partition, uri))> (prop*, name)
-      
-	extend-prop(|partition, uri):
-		(Prop(type, result, dep*), name) -> name
-		where
-		  prop := <new-prop(|partition, uri, type, result)> name
-        
+              
 rules // name retrieval
   
   nabl-name = is-string

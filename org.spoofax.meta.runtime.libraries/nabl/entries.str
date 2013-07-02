@@ -6,6 +6,7 @@ imports
   nabl/utils
   nabl/uri
   index/core
+  editor/origins
   
 signature
 
@@ -14,21 +15,20 @@ signature
     Def   : URI                    -> Entry
     Alias : URI * URI              -> Entry
     Use   : URI                    -> Entry
-    Prop  : URI * Property * Value -> Entry
   
 rules
   
   new-def(|partition, uri):
     x -> definition
     with
-      definition := <force-origins(!Def(uri))> x;
+      definition := <origin-track-forced(!Def(uri))> x;
       <index-add(|partition)> definition;
 			<new-alias(|partition, <nabl-nonunique-uri> uri, uri)> x
       
   new-alias(|partition, uri, alias-uri):
     x -> alias
     with
-      alias := <force-origins(!Alias(uri, alias-uri))> x;
+      alias := <origin-track-forced(!Alias(uri, alias-uri))> x;
       if <not(eq)> (uri, alias-uri) then
       	<index-add(|partition)> alias
       end
@@ -36,15 +36,9 @@ rules
   new-use(|partition, uri):
     x -> use
     with
-      use := <force-origins(!Use(uri))> x;
+      use := <origin-track-forced(!Use(uri))> x;
       <index-add(|partition)> use
 
-  new-prop(|partition, uri, kind, val):
-    x -> prop
-    with
-      prop := <force-origins(!Prop(uri, kind, val))> x;
-      <index-add(|partition)> prop
-      
 rules // index uri & value projections
   
   /** @internal */
@@ -58,11 +52,7 @@ rules // index uri & value projections
   /** @internal */  
   nabl-uri-impl:
     Use(uri) -> <nabl-is-uri> uri
-    
-  /** @internal */  
-  nabl-uri-impl:
-    Prop(uri, _, _) -> uri
-    
+        
     
   /** @internal */
   nabl-value-impl:
@@ -76,6 +66,3 @@ rules // index uri & value projections
   nabl-value-impl:
     Use(value) -> value
     
-  /** @internal */
-  nabl-value-impl:
-    Prop(_, _, value) -> value

@@ -6,40 +6,56 @@ imports
   properties/-
   nabl/-
   editor/origins
-
-strategies
+  types/collect
   
-  collect-property-tasks(|partition) =
-    !([Type()|<custom-properties <+ ![]>], <id>)
-  ; foldl(annotate-property-task(|partition) <+ Snd)
+signature
+  
+  sorts
+  
+    Property
+    
+  constructors
+    
+    Prop : Property * Value * List(Dependency) -> Prop
+   
+rules // generic analysis of properties
+  
+  // call back to generic analysis
+  nabl-props(|partition, prop*) =
+  	where (
+	  	nabl-collect-def
+	  ; nabl-uri => uri
+	  )
+	  ; <map(nabl-add-prop(|partition, uri, <id>))> prop*
+	
+  nabl-add-prop(|partition, uri, name):
+    Prop(kind, result, dep*) -> <new-prop(|partition, uri, kind, result)> name
+
+  // generic collection of property tasks
+  nabl-annotate-properties(|partition) =
+    !([Type()|<nabl-custom-properties <+ ![]>], <id>)
+  ; foldl(nabl-annotate-property(|partition) <+ Snd)
   ; where(nabl-constraint(|partition))
   
-  annotate-property-task(|partition):
+  nabl-annotate-property(|partition):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
-      not(<get-property-task(|kind)> term)
+      not(<nabl-property-task(|kind)> term)
     where
-      prop := <new-property-task(|partition)> 
-     
-  get-property-task(|kind) = 
-    get-annos
-  ; fetch-elem(?(kind, task))
-  ; !task
- 
-  property-of(|kind) = get-property-task(|kind); insert-results
-    
+      prop := <nabl-new-property(|partition)> 
+          
 strategies
   
-  prop-calc(|partition, dep*) = 
+  nabl-prop-calc(|partition, dep*) = 
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|partition, all-dep*)> PropCalc(<id>)
     
-  prop-lookup(cont|kind, partition, dep*) = 
+  nabl-prop-lookup(cont|kind, partition, dep*) = 
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|partition, all-dep*)> PropLookup(kind, <id>) 
   ; where(try(cont))
   
-  prop-match(cont|kind, partition, dep*, relation, expected) = 
+  nabl-prop-match(cont|kind, partition, dep*, relation, expected) = 
     ?actual
   ; expected* := <try-make-list> expected
   ; check*    := <map(<new-task(|partition)> PropCheck(kind, relation, actual, <id>))> expected*

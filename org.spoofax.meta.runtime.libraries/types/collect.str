@@ -7,23 +7,27 @@ imports
   properties/-
   types/-
   
+signature
+
+  constructors
+    
+    Type : Property
+    
 rules
        
   new-property-task(|partition):
     (Type(), term) -> <type-of(|partition)> term
   
-  type-is(|partition)           = prop-calc(|partition, [])
-  type-is(|partition, dep*)     = prop-calc(|partition, dep*)
+  type-is(|partition)           = nabl-prop-calc(|partition, [])
+  type-is(|partition, dep*)     = nabl-prop-calc(|partition, dep*)
   
-  type-match(|partition, expected)               = prop-match(fail|Type(), partition, [], Eq(), expected)
-  type-match(|partition, relation, expected)     = prop-match(fail|Type(), partition, [], relation, expected)
-  type-match(cont|partition, expected)           = prop-match(cont|Type(), partition, [], Eq(), expected)
-  type-match(cont|partition, relation, expected) = prop-match(cont|Type(), partition, [], relation, expected)
+  type-match(|partition, expected)               = nabl-prop-match(fail|Type(), partition, [], Eq(), expected)
+  type-match(|partition, relation, expected)     = nabl-prop-match(fail|Type(), partition, [], relation, expected)
+  type-match(cont|partition, expected)           = nabl-prop-match(cont|Type(), partition, [], Eq(), expected)
+  type-match(cont|partition, relation, expected) = nabl-prop-match(cont|Type(), partition, [], relation, expected)
   
-  type-lookup(|partition)           = prop-lookup(fail|Type(), partition, [])
-  type-lookup(|partition, dep*)     = prop-lookup(fail|Type(), partition, dep*)
-  type-lookup(cont|partition)       = prop-lookup(cont|Type(), partition, [])
-  type-lookup(cont|partition, dep*) = prop-lookup(cont|Type(), partition, dep*)
- 
-  type-of = property-of(|Type())
-  
+  type-lookup(|partition)           = nabl-prop-lookup(fail|Type(), partition, [])
+  type-lookup(|partition, dep*)     = nabl-prop-lookup(fail|Type(), partition, dep*)
+  type-lookup(cont|partition)       = nabl-prop-lookup(cont|Type(), partition, [])
+  type-lookup(cont|partition, dep*) = nabl-prop-lookup(cont|Type(), partition, dep*)
+   
