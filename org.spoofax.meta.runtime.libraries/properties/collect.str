@@ -50,14 +50,13 @@ strategies
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|partition, all-dep*)> PropCalc(<id>)
     
-  nabl-prop-lookup(cont|kind, partition, dep*) = 
+  nabl-prop-lookup(|kind, partition, dep*) = 
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|partition, all-dep*)> PropLookup(kind, <id>) 
-  ; where(try(cont))
   
-  nabl-prop-match(cont|kind, partition, dep*, relation, expected) = 
+  nabl-prop-match(|kind, partition, relation, expected) = 
     ?actual
   ; expected* := <try-make-list> expected
   ; check*    := <map(<new-task(|partition)> PropCheck(kind, relation, actual, <id>))> expected*
-  ; <new-task(|partition, <dependent-tasks> [dep*, check*])> Choice(check*)
-  ; where(try(cont))
+  ; <new-task(|partition, <dependent-tasks> check*)> Choice(check*)
+  
