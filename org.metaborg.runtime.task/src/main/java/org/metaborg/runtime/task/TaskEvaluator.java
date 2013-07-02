@@ -199,7 +199,9 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	public void reset() {
 		evaluationQueue.clear();
+		queued.clear();
 		toRuntimeDependency.clear();
+		timer.clear();
 	}
 
 	private void debugUnevaluated(Iterable<IStrategoTerm> unevaluated) {
