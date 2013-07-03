@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
+import org.metaborg.runtime.task.evaluation.LazyChoiceTaskEvaluator;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -49,10 +50,10 @@ public class TaskManager {
 
 	public TaskEngine createTaskEngine(ITermFactory factory) {
 		final TaskEngine taskEngine = new TaskEngine(factory, new NonDeterministicCountingTermDigester());
-		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
+		taskEngine.setEvaluator(new LazyChoiceTaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
-	
+
 	public TaskEngine getTaskEngine(String absoluteProjectPath) {
 		URI project = getProjectURIFromAbsolute(absoluteProjectPath);
 		WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
@@ -103,7 +104,7 @@ public class TaskManager {
 			file = new File(agent.getWorkingDir(), projectPath);
 		return file.toURI();
 	}
-	
+
 	private URI getProjectURIFromAbsolute(String projectPath) {
 		File file = new File(projectPath);
 		if(!file.isAbsolute())
