@@ -15,7 +15,7 @@ strategies // Collect
 	
 	nabl-import-site(|lang, partition, uri*, state*) = fail
 	
-	nabl-prop-site(|lang, partition, state*, implicit*) = fail
+	nabl-prop-site(|lang, partition, uri*, state*, implicit*) = fail
 	
 strategies // Projections
   

@@ -89,7 +89,7 @@ strategies // generic traversal
   ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
   ; try(nabl-use-site(|lang, partition, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, child-uri*, state*))
-  ; try(nabl-prop-site(|lang, partition, state*, implicit*))
+  ; try(nabl-prop-site(|lang, partition, uri'*, state*, implicit*))
   ; nabl-annotate-properties(|partition)
     
 	nabl-siblings(|lang, partition, unique*, uri*) = 
