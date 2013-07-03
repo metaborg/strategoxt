@@ -50,8 +50,10 @@ strategies
   ; <new-task(|partition, all-dep*)> PropCalc(<id>)
     
   nabl-prop-lookup(|kind, partition, dep*) = 
-    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-  ; <new-task(|partition, all-dep*)> PropLookup(kind, <id>) 
+     get-annos
+   ; fetch-elem(?(kind, <id>))
+  <+ where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
+   ; <new-task(|partition, all-dep*)> PropLookup(kind, <id>) 
   
   nabl-prop-match(|kind, partition, relation, expected) = 
     ?actual
