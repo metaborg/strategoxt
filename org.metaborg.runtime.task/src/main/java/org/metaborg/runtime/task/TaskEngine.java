@@ -169,9 +169,15 @@ public class TaskEngine {
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
-		toInitialDependencies.put(taskID, dependencies);
-		for(final IStrategoTerm dependency : dependencies)
-			addDependency(taskID, dependency);
+		
+		// TODO: Refactor this code out into an interface, since it is only valid for the LazyChoiceTaskEvaluator.
+		if(TaskIdentification.isChoice(instruction)) {
+			toInitialDependencies.put(taskID, factory.makeList());
+		} else {
+			toInitialDependencies.put(taskID, dependencies);
+			for(final IStrategoTerm dependency : dependencies)
+				addDependency(taskID, dependency);
+		}
 
 		return createResult(taskID);
 	}
@@ -364,6 +370,24 @@ public class TaskEngine {
 
 	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
 		return toDependency.get(taskID);
+	}
+	
+	public Iterable<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID) {
+		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
+		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
+
+		queue.add(taskID);
+		seen.add(taskID);
+
+		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
+			for(IStrategoTerm dependency : getDependencies(queueTaskID)) {
+				if(seen.add(dependency))
+					queue.add(dependency);
+			}
+		}
+		
+		seen.remove(taskID);
+		return seen;
 	}
 
 	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {

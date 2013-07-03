@@ -2,14 +2,18 @@ package org.metaborg.runtime.task.evaluation;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskEngine;
+import org.metaborg.runtime.task.TaskIdentification;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.CarthesianProduct;
@@ -25,6 +29,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
@@ -48,6 +53,11 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 	private final Timer timer = new Timer();
 
 
+	private final Map<IStrategoTerm, Iterator<IStrategoTerm>> choiceIterators =
+		new HashMap<IStrategoTerm, Iterator<IStrategoTerm>>();
+	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = new HashMap<IStrategoTerm, IStrategoTerm>();
+
+
 	public LazyChoiceTaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
@@ -61,11 +71,30 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			queued.add(taskID);
 		}
 	}
+	
+	private void queueTransitive(IStrategoTerm taskID) {
+		queue(taskID);
+		for(IStrategoTerm dependencyTaskID : taskEngine.getTransitiveDependencies(taskID))
+			queue(dependencyTaskID);
+	}
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
 		try {
+			// Find the set of tasks that is reachable from a Choice task.
+			// TODO: O(N^2) worst case run-time is bad.
+			final Set<IStrategoTerm> choiceReachable = new HashSet<IStrategoTerm>();
+			for(IStrategoTerm taskID : scheduled) {
+				final Task task = taskEngine.getTask(taskID);
+				if(TaskIdentification.isChoice(task.instruction)) {
+					Iterables.addAll(choiceReachable, taskEngine.getTransitiveDependencies(taskID));
+				}
+			}
+			
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : scheduled) {
+				if(choiceReachable.contains(taskID))
+					continue;
+				
 				final Set<IStrategoTerm> dependencies = Sets.newHashSet(taskEngine.getDependencies(taskID));
 				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
 					if(taskEngine.getTask(dependency).solved()) {
@@ -73,8 +102,8 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 					}
 				}
 
-				// If the task has no unsolved dependencies, queue it for analysis.
 				if(dependencies.isEmpty()) {
+					// If the task has no unsolved dependencies, queue it for analysis.
 					queue(taskID);
 				} else {
 					toRuntimeDependency.putAll(taskID, dependencies);
@@ -94,35 +123,10 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 				// overwrite previous data.
 				taskEngine.invalidate(taskID);
 
-				final Iterable<IStrategoTerm> instructions =
-					CarthesianProduct.taskCombinations(factory, taskEngine, context, insert, taskID, task);
-
-				// TODO: optimize success/unknown using a bitflag?
-				boolean unknown = false;
-				boolean failure = true;
-				if(instructions != null) {
-					for(IStrategoTerm instruction : instructions) {
-						final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
-						final ResultType resultType = handleResult(taskID, task, result);
-						switch(resultType) {
-							case Fail:
-								break;
-							case Success:
-								failure = false;
-								break;
-							default: // Unknown result or dynamic dependency.
-								unknown = true;
-								break;
-						}
-					}
-				}
-
-				if(!unknown) {
-					// Try to schedule new tasks even for failed tasks since they may activate combinators.
-					tryScheduleNewTasks(taskID);
-
-					if(failure)
-						task.setFailed();
+				if(TaskIdentification.isChoice(task.instruction)) {
+					evaluateChoice(context, insert, perform, taskID, task);
+				} else {
+					evaluateTask(context, insert, perform, taskID, task);
 				}
 			}
 
@@ -131,6 +135,96 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
 		} finally {
 			reset();
+		}
+	}
+
+	private void evaluateChoice(IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
+		// Handle the result of a choice task.
+		IStrategoTerm choiceTaskID = choiceTaskIDs.get(taskID);
+		if(choiceTaskID != null) {
+			final Task choiceTask = taskEngine.getTask(choiceTaskID);
+			if(!task.failed()) {
+				task.setResults(choiceTask.results());
+				tryScheduleNewTasks(taskID);
+				cleanupChoice(taskID);
+				toRuntimeDependency.put(taskID, choiceTaskID); // TODO: needed/correct?
+				return;
+			}
+		}
+
+		Iterator<IStrategoTerm> choiceIter = choiceIterators.get(taskID);
+		if(choiceIter == null) {
+			choiceIter = task.instruction.getSubterm(0).iterator();
+			choiceIterators.put(taskID, choiceIter);
+		}
+
+		// If the choice does not have any results left it has failed.
+		if(!choiceIter.hasNext()) {
+			task.setFailed();
+			tryScheduleNewTasks(taskID);
+			cleanupChoice(taskID);
+			return;
+		}
+
+		final IStrategoTerm currentTaskID = choiceIter.next();
+		final Task currentTask = taskEngine.getTask(currentTaskID);
+		taskEngine.addDependency(taskID, currentTaskID);
+		toRuntimeDependency.put(taskID, currentTaskID);
+
+		if(currentTask.solved()) {
+			if(currentTask.failed()) {
+				// Schedule the choice for evaluation again.
+				queue(taskID);
+			} else {
+				// Task was already solved.
+				task.setResults(currentTask.results());
+				tryScheduleNewTasks(taskID);
+				cleanupChoice(taskID);
+				toRuntimeDependency.put(taskID, currentTaskID); // TODO: needed/correct?
+				return;
+			}
+		} else {
+			// Queue task and its dependencies for evaluation.
+			queueTransitive(taskID);
+			return;
+		}
+	}
+
+	private void cleanupChoice(IStrategoTerm taskID) {
+		choiceIterators.remove(taskID);
+		choiceTaskIDs.remove(taskID);
+	}
+
+	private void evaluateTask(IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
+		final Iterable<IStrategoTerm> instructions =
+			CarthesianProduct.taskCombinations(factory, taskEngine, context, insert, taskID, task);
+
+		// TODO: optimize success/unknown using a bitflag?
+		boolean unknown = false;
+		boolean failure = true;
+		if(instructions != null) {
+			for(IStrategoTerm instruction : instructions) {
+				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
+				final ResultType resultType = handleResult(taskID, task, result);
+				switch(resultType) {
+					case Fail:
+						break;
+					case Success:
+						failure = false;
+						break;
+					default: // Unknown result or dynamic dependency.
+						unknown = true;
+						break;
+				}
+			}
+		}
+
+		if(!unknown) {
+			// Try to schedule new tasks even for failed tasks since they may activate combinators.
+			tryScheduleNewTasks(taskID);
+
+			if(failure)
+				task.setFailed();
 		}
 	}
 
@@ -192,7 +286,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 
 	private void updateDelayedDependencies(IStrategoTerm taskID, IStrategoList dependencies) {
 		debugDelayedDependecy(taskID, dependencies);
-		
+
 		// Sets the runtime dependencies for a task to the given dependency list.
 		toRuntimeDependency.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
@@ -254,7 +348,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 		return null;
 	}
-	
+
 	private void debugDelayedDependecy(IStrategoTerm taskID, IStrategoList dependencies) {
 		final Task task = taskEngine.getTask(taskID);
 		for(IStrategoTerm dependencyID : dependencies) {
