@@ -40,6 +40,4 @@ rules
       [] := dep*
   	
   perform-task(|n): 
-  	PropCheck(kind, rel, actual, expected) -> actual
-  	where
-  		<nabl-property-eq> (kind, rel, (actual, expected))
+  	PropCheck(kind, rel, actual, expected) -> <nabl-property-eq> (kind, rel, (actual, expected))
