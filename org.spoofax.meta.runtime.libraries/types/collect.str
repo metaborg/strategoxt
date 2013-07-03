@@ -15,7 +15,7 @@ signature
     
 rules
        
-  new-property-task(|partition):
+  nabl-new-property(|partition):
     (Type(), term) -> <type-of(|partition)> term
   
   type-is(|partition)           = nabl-prop-calc(|partition, [])
