@@ -26,6 +26,10 @@ public class Timer {
 	public long stop() {
 		return time() - startTime;
 	}
+	
+	public void clear() {
+		startTime = 0;
+	}
 
 	private long time() {
 		if(canLogCPUTime)

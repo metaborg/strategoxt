@@ -18,8 +18,7 @@ signature
     ResolveWildcardImports : Scope * Namespace                         -> Instruction
     ImportCalc             : URI                                       -> Instruction
     ImportClosure          : URI                                       -> Instruction
-    PropConstraint         : List(Prop) * List(Result)                 -> Instruction
-    PropCalc               : Property * Term                           -> Instruction
+    PropConstraint         : Kind * Expected * Result                  -> Instruction
         
     ResolveAllDefs         : Scope * Namespace                  -> Instruction
         
@@ -143,7 +142,7 @@ rules // Import calculation
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-					case task-get-result; Hd => h                             : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
+					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<id>]
 					otherwise                                             : ![]
 				end => result
@@ -151,42 +150,18 @@ rules // Import calculation
 				result := []
 			end
 
-rules // Property constraints
-	  
-  perform-task(|nr):
-  	PropConstraint(prop*, res*) -> result
-  	where
-  		filtered := <filter(nabl-resolve-constraint(|prop*))> res*;
+rules // Property constraint
+	
+	perform-task(|nr):
+		PropConstraint(kind, expected, definition) -> result
+		where
+    	uri    := <nabl-uri> definition;
+      value  := <nabl-get-property(|kind)> uri;
+      value' := <insert-results-or-create-dependency> value;
       switch id
       	case task-collect-dependencies => d : !d
-      	otherwise                           : id
+      	otherwise                           : <nabl-property-eq> (kind, Eq(), (expected, value')); !definition
       end => result
-      
-  task-is-combinator = ?PropConstraint(_, _)
-  		
-  nabl-resolve-constraint(|prop*):
-    entry -> entry'
-    where
-      filtered := <filter(nabl-resolve-constraint-one(|entry))> prop*;
-      switch id
-      	case ?[]                            : fail
-      	case task-collect-dependencies => d : !d
-      	otherwise                           : !entry
-      end => entry'
-      
-  // TODO: check dependencies (3rd subterm) as well.
-  nabl-resolve-constraint-one(|entry):
-    Prop(kind, expectedValue, _) -> entry'
-    where
-    	uri   := <nabl-uri> entry;
-      value := <nabl-get-property(|kind)> uri;
-      if value' := <insert-results> value then
-        expectedValue' := <insert-results> expectedValue;
-        <nabl-property-eq> (kind, Eq(), (value', expectedValue'));
-        entry' := entry
-      else
-        entry' := <task-create-dependencies> value
-      end
 
 rules // Utility
 	

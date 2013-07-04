@@ -439,7 +439,13 @@ public class TaskEngine {
 		}
 	}
 
-
+	public void recover() {
+		evaluator.reset();
+		addedTasks.clear();
+		removedTasks.clear();
+		inCollection.clear();
+	}
+	
 	public void reset() {
 		digester.reset();
 		evaluator.reset();
