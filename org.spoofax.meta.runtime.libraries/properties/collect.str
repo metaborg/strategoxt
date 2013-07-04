@@ -65,3 +65,13 @@ strategies
   ; check*    := <map(<new-task(|partition)> PropCheck(kind, relation, actual, <id>))> expected*
   ; <new-task(|partition, <dependent-tasks> check*)> Choice(check*)
   
+  nabl-prop-constraints(|partition, resolve) =
+    <new-task(|partition, [resolve | <map(nabl-prop-constraint)>])> Id(resolve)
+      
+  nabl-prop-constraint(|partition, resolve):
+    Prop(kind, expected, dep*) -> constr
+    where
+      actual := <new-task(|partition)> PropLookup(kind, resolve) 
+    ; dep'*  := <dependent-tasks> [expected, dep*]
+    ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
+    
