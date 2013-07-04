@@ -22,8 +22,10 @@ rules // generic analysis of properties
   
   // call back to generic analysis
   nabl-props(|partition, prop*) =
-  	where (
-	   <map(nabl-add-prop(|partition, <nabl-collect-def; nabl-uri>, <id>))> prop*
+    where (
+  	  ?name
+  	; nabl-collect-def; nabl-uri => uri
+	  ; <map(nabl-add-prop(|partition, uri, name))> prop*
 	  )
 	    
   nabl-add-prop(|partition, uri, name):
