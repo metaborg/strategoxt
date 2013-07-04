@@ -48,6 +48,10 @@ strategies
   nabl-prop-calc(|partition, dep*) = 
     where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
   ; <new-task(|partition, all-dep*)> PropCalc(<id>)
+  
+  nabl-prop-list(|partition, dep*) = 
+    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
+  ; <new-task(|partition, all-dep*)> PropList(<id>)
     
   nabl-prop-lookup(|kind, partition, dep*) = 
      get-annos

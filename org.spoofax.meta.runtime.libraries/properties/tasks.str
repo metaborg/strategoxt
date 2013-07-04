@@ -10,12 +10,18 @@ signature
   
   constructors
 
-    PropLookup : Property * Term                   -> Instruction    
-    PropCalc   : Term * Term                       -> Instruction
     PropCalc   : Term                              -> Instruction
+    PropList   : List(Term)                        -> Instruction
+    PropLookup : Property * Term                   -> Instruction    
     PropCheck  : Property * Relation * Term * Term -> Instruction
-
+    
 rules
+  
+  perform-task(|n): PropCalc(result) -> result
+  
+  perform-task(|n): PropList(result*) -> result*  
+  
+  task-is-combinator = ?PropList(_)
   
   perform-task(|n): 
   	PropLookup(kind, t) -> result
@@ -25,19 +31,7 @@ rules
   			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); insert-results-or-create-dependency // TODO: is this read needed?
   			otherwise    : id
   		end => result
-  
-  avoid-task(|dep*):
-    PropCalc(_) -> <perform-task(|0)> 
-    where
-      [] := dep*
-  	
-  perform-task(|n): 
-  	PropCalc(result) -> result
-  
-  avoid-task(|dep*):
-    PropCheck(kind, rel, actual, expected) -> <perform-task(|0) <+ ![]> 
-    where
-      [] := dep*
   	
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> <nabl-property-eq> (kind, rel, (actual, expected))
+
