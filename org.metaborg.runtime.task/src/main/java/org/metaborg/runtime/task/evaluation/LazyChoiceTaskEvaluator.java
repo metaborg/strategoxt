@@ -29,7 +29,6 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
@@ -71,64 +70,72 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			queued.add(taskID);
 		}
 	}
-	
+
 	private void queueTransitive(IStrategoTerm taskID) {
-		queue(taskID);
-		for(IStrategoTerm dependencyTaskID : taskEngine.getTransitiveDependencies(taskID))
-			queue(dependencyTaskID);
+		queueOrDefer(taskID);
+		for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(taskID)) {
+			queueOrDefer(dependencyTaskID);
+		}
+	}
+	
+	private void queueOrDefer(IStrategoTerm taskID) {
+		// TODO: don't call getDependencies twice
+		final Set<IStrategoTerm> dependencies = Sets.newHashSet(taskEngine.getDependencies(taskID));
+		for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
+			if(taskEngine.getTask(dependency).solved()) {
+				dependencies.remove(dependency);
+			}
+		}
+
+		if(dependencies.isEmpty()) {
+			// If the task has no unsolved dependencies, queue it for analysis.
+			queue(taskID);
+		} else {
+			toRuntimeDependency.putAll(taskID, dependencies);
+		}
+	}
+
+	private Set<IStrategoTerm> transitiveDependenciesNoChoice(IStrategoTerm taskID) {
+		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
+		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
+
+		queue.add(taskID);
+		seen.add(taskID);
+
+		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
+			final Task task = taskEngine.getTask(queueTaskID);
+			if(TaskIdentification.isChoice(task.instruction)) {
+				continue;
+			}
+			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
+				if(seen.add(dependency))
+					queue.add(dependency);
+			}
+		}
+
+		seen.remove(taskID);
+		return seen;
 	}
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
 		try {
-			// Find the set of tasks that is reachable from a Choice task.
-			// TODO: O(N^2) worst case run-time is bad.
-			final Set<IStrategoTerm> choiceReachable = new HashSet<IStrategoTerm>();
+			final Set<IStrategoTerm> evaluated = new HashSet<IStrategoTerm>();
+
+			// First only queue Choice tasks, which will in turn lazily queue tasks inside the Choice.
 			for(IStrategoTerm taskID : scheduled) {
 				final Task task = taskEngine.getTask(taskID);
 				if(TaskIdentification.isChoice(task.instruction)) {
-					Iterables.addAll(choiceReachable, taskEngine.getTransitiveDependencies(taskID));
+					queue(taskID);
 				}
 			}
-			
+			evaluateScheduledTasks(scheduled, evaluated, context, insert, perform);
+
+			// Queue the leftover tasks that need to be eagerly evaluated.
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : scheduled) {
-				if(choiceReachable.contains(taskID))
-					continue;
-				
-				final Set<IStrategoTerm> dependencies = Sets.newHashSet(taskEngine.getDependencies(taskID));
-				for(final IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
-					if(taskEngine.getTask(dependency).solved()) {
-						dependencies.remove(dependency);
-					}
-				}
-
-				if(dependencies.isEmpty()) {
-					// If the task has no unsolved dependencies, queue it for analysis.
-					queue(taskID);
-				} else {
-					toRuntimeDependency.putAll(taskID, dependencies);
-				}
+				queueOrDefer(taskID);
 			}
-
-			// Evaluate each task in the queue.
-			final Set<IStrategoTerm> evaluated = new HashSet<IStrategoTerm>();
-			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-				final Task task = taskEngine.getTask(taskID);
-
-				evaluated.add(taskID);
-				scheduled.remove(taskID);
-				queued.remove(taskID);
-
-				// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
-				// overwrite previous data.
-				taskEngine.invalidate(taskID);
-
-				if(TaskIdentification.isChoice(task.instruction)) {
-					evaluateChoice(context, insert, perform, taskID, task);
-				} else {
-					evaluateTask(context, insert, perform, taskID, task);
-				}
-			}
+			evaluateScheduledTasks(scheduled, evaluated, context, insert, perform);
 
 			debugUnevaluated(scheduled);
 
@@ -137,17 +144,43 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			reset();
 		}
 	}
+	
+	private Set<IStrategoTerm> evaluateScheduledTasks(final Set<IStrategoTerm> scheduled,
+		final Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
+		// Evaluate each task in the queue.
+		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
+			final Task task = taskEngine.getTask(taskID);
 
-	private void evaluateChoice(IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
+			evaluated.add(taskID);
+			scheduled.remove(taskID);
+			queued.remove(taskID);
+
+			// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
+			// overwrite previous data.
+			taskEngine.invalidate(taskID);
+
+			if(TaskIdentification.isChoice(task.instruction)) {
+				evaluateChoice(scheduled, evaluated, context, insert, perform, taskID, task);
+			} else {
+				evaluateTask(context, insert, perform, taskID, task);
+			}
+		}
+
+		return scheduled;
+	}
+
+	private void evaluateChoice(final Set<IStrategoTerm> scheduled, final Set<IStrategoTerm> evaluated,
+		IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
 		// Handle the result of a choice task.
 		IStrategoTerm choiceTaskID = choiceTaskIDs.get(taskID);
 		if(choiceTaskID != null) {
+			toRuntimeDependency.remove(taskID, choiceTaskID); // TODO: needed/correct?
+
 			final Task choiceTask = taskEngine.getTask(choiceTaskID);
-			if(!task.failed()) {
+			if(!choiceTask.failed() && choiceTask.hasResults()) {
 				task.setResults(choiceTask.results());
 				tryScheduleNewTasks(taskID);
-				cleanupChoice(taskID);
-				toRuntimeDependency.put(taskID, choiceTaskID); // TODO: needed/correct?
+				cleanupChoice(scheduled, evaluated, taskID);
 				return;
 			}
 		}
@@ -162,14 +195,15 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		if(!choiceIter.hasNext()) {
 			task.setFailed();
 			tryScheduleNewTasks(taskID);
-			cleanupChoice(taskID);
+			cleanupChoice(scheduled, evaluated, taskID);
 			return;
 		}
 
-		final IStrategoTerm currentTaskID = choiceIter.next();
+		// Retrieve the next task to evaluate.
+		final IStrategoTerm currentTaskID = choiceIter.next().getSubterm(0);
+		choiceTaskIDs.put(taskID, currentTaskID);
 		final Task currentTask = taskEngine.getTask(currentTaskID);
 		taskEngine.addDependency(taskID, currentTaskID);
-		toRuntimeDependency.put(taskID, currentTaskID);
 
 		if(currentTask.solved()) {
 			if(currentTask.failed()) {
@@ -179,18 +213,31 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 				// Task was already solved.
 				task.setResults(currentTask.results());
 				tryScheduleNewTasks(taskID);
-				cleanupChoice(taskID);
-				toRuntimeDependency.put(taskID, currentTaskID); // TODO: needed/correct?
+				cleanupChoice(scheduled, evaluated, taskID);
 				return;
 			}
 		} else {
 			// Queue task and its dependencies for evaluation.
-			queueTransitive(taskID);
+			queueTransitive(currentTaskID);
+			toRuntimeDependency.put(taskID, currentTaskID);
 			return;
 		}
 	}
 
-	private void cleanupChoice(IStrategoTerm taskID) {
+	private void cleanupChoice(final Set<IStrategoTerm> scheduled, final Set<IStrategoTerm> evaluated,
+		IStrategoTerm taskID) {
+		final Iterator<IStrategoTerm> choiceIter = choiceIterators.get(taskID);
+		while(choiceIter.hasNext()) {
+			final IStrategoTerm choiceTaskID = choiceIter.next().getSubterm(0);
+			System.out.println("Skipped " + choiceTaskID + ": " + taskEngine.getTask(choiceTaskID));
+			scheduled.remove(choiceTaskID);
+			evaluated.add(choiceTaskID);
+			for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(choiceTaskID)) {
+				System.out.println("Skipped " + dependencyTaskID + ": " + taskEngine.getTask(dependencyTaskID));
+				scheduled.remove(dependencyTaskID);
+				evaluated.add(dependencyTaskID);
+			}
+		}
 		choiceIterators.remove(taskID);
 		choiceTaskIDs.remove(taskID);
 	}
