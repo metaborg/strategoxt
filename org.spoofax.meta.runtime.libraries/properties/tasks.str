@@ -17,12 +17,6 @@ signature
     
 rules
   
-  perform-task(|n): PropCalc(result) -> result
-  
-  perform-task(|n): PropList(result*) -> result*  
-  
-  task-is-combinator = ?PropList(_)
-  
   perform-task(|n): 
   	PropLookup(kind, t) -> result
   	where

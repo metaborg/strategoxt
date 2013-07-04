@@ -91,12 +91,12 @@ rules // Resolve
 rules // Visibility
 	
   // Looks up defintions in scopes with namespace and name.
-  perform-task(|nr):
-  	ResolveAllDefs(scope, ns) -> def*
-  	where
-  		uri  := <nabl-uri> scope;
-  		def* := <nabl-lookup-all(|ns)> uri;
-  		not(?[])
+  // perform-task(|nr):
+  // 	ResolveAllDefs(scope, ns) -> def*
+  // 	where
+  // 		uri  := <nabl-uri> scope;
+  // 		def* := <nabl-lookup-all(|ns)> uri;
+  // 		not(?[])
 
 rules // Import calculation
 	
