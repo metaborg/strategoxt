@@ -10,22 +10,26 @@ signature
 
 	constructors
 
-    Id      : Term                                 -> Instruction		
-    Concat  : List(Term)                           -> Instruction
-    Choice  : List(Result)                         -> Instruction
-    Match   : ID * List(Term) * Term               -> Instruction
-    Rewrite : ID * Term                            -> Instruction
+    Id      : Term             -> Instruction		
+    Combine : List(Term)       -> Instruction
+    Collect : List(Term)       -> Instruction
+    Choice  : List(List(Term)) -> Instruction
+    Rewrite : ID * Term        -> Instruction
     
 rules
   
-  perform-task(|nr): Id(term) -> term
+  perform-task(|nr) = ?Id(<MkSingleton>)
   	
 rules
-	     
-  task-is-combinator = ?Concat(_)
+       
+  task-is-combinator = ?Combine(_)
+  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
 
-	perform-task(|nr): Concat(term*) -> <map(is-list <+ MkSingleton); concat> term*
-
+rules
+       
+  task-is-combinator = ?Collect(_)
+  perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
+  
 rules
   
 	task-is-combinator = ?Choice(_)
@@ -34,8 +38,6 @@ rules
 
 rules
       	
-  perform-task(|nr): Match(key, bound, term) -> <task-match> (key, term, bound)
-  
-  perform-task(|nr): Rewrite(key, term) -> <task-match> (key, term)
+  perform-task(|nr): Rewrite(key, term) -> <task-rewrite> (key, term)
   
   	

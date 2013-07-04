@@ -219,7 +219,7 @@ rules // generic analysis of uses
 		  end;
 		  if <is-completion-name> name then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
-		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
+		  	completion-concat   := <new-task(|partition)> Combine(completion-subtask*);
 		  	result              := name{u, Completion(completion-concat), anno*}
 		  else
 		  	result := name{u, anno*}
@@ -254,7 +254,7 @@ rules // generic analysis of uses
       	subtasks := []
       end;
       
-      concatted     := <new-task(|partition)> Concat([defsTask, namedDefsTask|<conc> (wildcardDefsTask, subtasks)]);
+      concatted     := <new-task(|partition)> Combine([defsTask, namedDefsTask|<conc> (wildcardDefsTask, subtasks)]);
       filtered      := <nabl-use-propconstraint(|partition)> (concatted, prop*);
       disambiguated := <nabl-use-disambiguate(disambiguate|partition, prop*, ns, name)> filtered
           	
@@ -340,7 +340,7 @@ rules // completion
       	subtasks := []
       end;
       
-      concatted     := <new-task(|partition)> Concat([defsTask]);
+      concatted     := <new-task(|partition)> Combine([defsTask]);
       filtered      := <nabl-use-propconstraint(|partition)> (concatted, prop*)
     
 rules // generic analysis of imports
