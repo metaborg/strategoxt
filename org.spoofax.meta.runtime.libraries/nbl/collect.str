@@ -147,7 +147,7 @@ rules // generic analysis of defs
     	
 	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
-		a@name{anno*} -> name{d,anno*}
+		a@name{anno*} -> <replace-annotations(?Def(_)|d)> name
 		where
 			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
@@ -164,7 +164,7 @@ rules // generic analysis of defs
 			  // 1. extend current URI with ID segment
 			  // 2. extend URIs of scoped namespaces
 		 	  // 3. preserve
-			    def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> current-uri
+			    def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name, unique)> current-uri
 			  ; match(child-uris|<replace-scope-uri(|def-uri)> (scoped, child-uri*))
 			  ; match(sibling-uris|sibl-uri*)
 		   
@@ -175,7 +175,7 @@ rules // generic analysis of defs
 			  // 2. preserve
 			  // 3. extend URI for namespace of definition site with Subsequent segment
 			    subs-uri := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
-			  ; def-uri  := <nabl-extend-uri(|unique*, partition, ns, name, unique)> subs-uri
+			  ; def-uri  := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name, unique)> subs-uri
 		    ; match(child-uris|child-uri*)
 			  ; match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
 		
@@ -186,7 +186,7 @@ rules // generic analysis of defs
 		    // 2. preserve
 		    // 3. preserve
 		      ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
-		    ; def-uri := <nabl-extend-uri(|unique*, partition, ns, name, unique)> ano-uri
+		    ; def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name, unique)> ano-uri
 			  ; match(child-uris|child-uri*)
 			  ; match(sibling-uris|sibl-uri*)
 		  end
@@ -232,9 +232,9 @@ rules // generic analysis of uses
 		  if <is-completion-name> name then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
-		  	result              := name{u, Completion(completion-concat), anno*}
+		  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name
 		  else
-		  	result := name{u, anno*}
+		  	result := <replace-annotations(?Use(_)|u)> name
 	  	end
 
 	nabl-use-subtasks(disambiguate, wildcardimport|partition, ns, name, prop*, range): 
