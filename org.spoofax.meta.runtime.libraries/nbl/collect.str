@@ -147,7 +147,7 @@ rules // generic analysis of defs
     	
 	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
-		a@name{anno*} -> name{d,anno*}
+		a@name{anno*} -> name{d, <nabl-remove-all-def> anno*}
 		where
 			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
@@ -232,9 +232,9 @@ rules // generic analysis of uses
 		  if <is-completion-name> name then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
-		  	result              := name{u, Completion(completion-concat), anno*}
+		  	result              := name{u, Completion(completion-concat), <nabl-remove-all-use> anno*}
 		  else
-		  	result := name{u, anno*}
+		  	result := name{u, <nabl-remove-all-use> anno*}
 	  	end
 
 	nabl-use-subtasks(disambiguate, wildcardimport|partition, ns, name, prop*, range): 
@@ -438,6 +438,9 @@ rules // URI retrieval
     get-annos;
     collect-all(?Def(_))
     
+  nabl-remove-all-def =
+  	remove-all(?Def(_))
+    
   nabl-collect-use =
     try(nabl-name);
     get-annos;
@@ -447,6 +450,9 @@ rules // URI retrieval
     try(nabl-name);
     get-annos;
     collect-all(?Use(_))
+    
+  nabl-remove-all-use =
+  	remove-all(?Use(_))
     
   nabl-collect-completion =
     get-annos;
