@@ -25,6 +25,16 @@ rules
     t{a*} -> t{a'*}
     where
       a'* := <remove-all(s)> a*
+      
+  replace-annotations(s|a):
+    t{a*} -> t{a, a'*}
+    where
+      a'* := <remove-all(s)> a*
+      
+  replace-annotations(s|a1, a2):
+    t{a*} -> t{a1, a2, a'*}
+    where
+      a'* := <remove-all(s)> a*
   
   measure-time(s, log) =
     where(before := <times>);
