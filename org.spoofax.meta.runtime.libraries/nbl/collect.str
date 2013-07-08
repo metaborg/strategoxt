@@ -77,7 +77,7 @@ strategies // generic traversal
 	  ast -> ast''
 	  where
 	    new-hashtable => unique*;
-	    ast'  := <nabl-collect(id|lang, partition, unique*, [])> ast ;
+	    ast'  := <nabl-collect(id|lang, partition, unique*, []); remove-annotations(?Scope(_))> ast ;
 	    ast'' := <alltd(message-task(|partition))> ast'
 	  
 	/**
