@@ -11,6 +11,7 @@ imports
 	nbl/uri
 	nbl/utils
 	types/collect
+	editor/origins
 	
 signature 
 
@@ -21,6 +22,10 @@ signature
   constructors // state
   	
   	State : String * Term -> State
+
+	constructors // unique name generation
+		
+		GenerateName : Namespace -> GenerateName
 
 	constructors // def
 
@@ -86,6 +91,7 @@ strategies // generic traversal
 	 */
 	nabl-collect(sibling-uris|lang, partition, unique*, uri*) =
 		nabl-state-pop(?state*)
+	; try(nabl-namegen(|lang, partition, unique*, uri*))
   ; try(nabl-scoping-site)
   ; (
 		   nabl-scope-site(?uri'*|lang, partition, unique*, uri*)
@@ -142,6 +148,38 @@ rules // generic analysis of scopes
 	   remove-annotations(?Scope(ns2*))
 	 ; add-annotation(|Scope(<union> (ns1*, ns2*)))
 	<+ add-annotation(|Scope(ns1*))
+
+rules // generic analysis of name generation
+	
+	nabl-namegen(|lang, partition, unique*, uri*):
+		name -> newname
+		where
+			<has-annotation(?GenerateName(ns))> name;
+			uri     := <lookup-uri(|lang, ns)> uri*;
+			newname := <origin-track-forced(<nabl-namegen-get(|lang, partition, ns, unique*)> uri)> name
+			
+	nabl-namegen-get(|lang, partition, ns, unique*):
+		uri -> $[[name][unique]]
+		with
+			key  := (lang, partition, ns, uri, "namegen");
+			name := <nabl-namegen-name(|lang, partition, ns)> uri;
+      if value := <hashtable-get(|key)> unique* then
+        unique    := <int-to-string> value;
+        new-value := <inc> value
+      else
+        unique    := "0";
+        new-value := 1
+      end;
+      <hashtable-put(|key, new-value)> unique*
+      
+  nabl-namegen-name(|lang, partition, ns):
+  	uri -> $[[l][p][n][us]]
+  	with
+  		Language(lname) := lang;
+  		l  := <debug; explode-string; Hd; to-lower; MkSingleton; implode-string> lname;
+  		p  := <debug; explode-string; Hd; to-lower; MkSingleton; implode-string> partition;
+  		n  := <debug; get-constructor; debug; explode-string; Hd; to-lower; MkSingleton; implode-string> ns;
+  		us := <debug; nabl-uri-path; filter(nabl-segment-name; debug; explode-string; Hd; to-lower); implode-string> uri
 	 
 rules // generic analysis of defs
     	
