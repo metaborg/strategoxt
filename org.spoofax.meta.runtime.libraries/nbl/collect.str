@@ -150,25 +150,37 @@ rules // generic analysis of scopes
 
 rules // generic analysis of name generation
 	
-	nabl-namegen(|lang, partition, uri*, anno*):
+	nabl-namegen(|lang, partition, uri*, unique*, anno*):
 		name -> newname'
 		where
 			<has-annotation(?GenerateName(ns))> name;
 			uri      := <lookup-uri(|lang, ns)> uri*;
-			newname  := <origin-track-forced(<nabl-namegen-get(|lang, partition, ns, uri)> name)> name;
+			newname  := <origin-track-forced(<nabl-namegen-get(|lang, partition, ns, uri, unique*)> name)> name;
 			newname' := <add-annotations(|anno*); remove-annotations(?GenerateName(_))> newname
 	
-	nabl-namegen-get(|lang, partition, ns, uri):
-		name -> newname
+	nabl-namegen-get(|lang, partition, ns, uri, unique*):
+		name -> $[[newname]__[numstr]]
 		with
-			newname := <nabl-namegen-name(|lang, partition, ns, uri)> name
+			name-key := (lang, partition, ns, uri, name, "namegen");
+			num-key  := (lang, partition, ns, uri, "namegen");
+			newname  := <nabl-namegen-name(|lang, partition, ns)> uri;
+      if num := <hashtable-get(|name-key)> unique* then
+        numstr := <int-to-string> num
+      else
+        if not(nextnum := <hashtable-get(|num-key)> unique*) then
+        	nextnum := 0
+        end;
+        <hashtable-put(|name-key, nextnum)> unique*;
+        <hashtable-put(|num-key, <inc> nextnum)> unique*;
+        numstr := <int-to-string> nextnum
+      end
       
-  nabl-namegen-name(|lang, partition, ns, uri):
-  	name -> <lower-case> $[[name]__[lname]__[partition]__[nname]__[uriname]]
+  nabl-namegen-name(|lang, partition, ns):
+  	uri -> <lower-case> $[[lang-name]__[partition]__[ns-name]__[uri-name]]
   	with
-  		Language(lname) := lang;
-  		nname           := <get-constructor> ns;
-  		uriname         := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"::"); concat-strings> uri
+  		Language(lang-name) := lang;
+  		ns-name             := <get-constructor> ns;
+  		uri-name            := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"::"); concat-strings> uri
 	 
 rules // generic analysis of defs
     	
@@ -180,7 +192,7 @@ rules // generic analysis of defs
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
 		with
 			// generate a name if needed
-			name' := <try(nabl-namegen(|lang, partition, child-uri*, anno*))> name
+			name' := <try(nabl-namegen(|lang, partition, child-uri*, unique*, anno*))> name
 		where
 			switch !defscope
 			  // in each case we 
@@ -254,7 +266,7 @@ rules // generic analysis of uses
 		name{anno*} -> result
 		with
 			// generate a name if needed
-			name' := <try(nabl-namegen(|lang, partition, uri*, anno*))> name
+			name' := <try(id)> name //nabl-namegen(|lang, partition, uri*, anno*)
 		where
 			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 			choice   := <new-task(|partition)> Choice(subtask*);
