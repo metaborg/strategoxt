@@ -7,7 +7,7 @@ Require-Bundle: org.spoofax.interpreter.core,
  org.spoofax.terms,
  org.spoofax.jsglr;bundle-version="0.3.0",
  org.spoofax.interpreter.externaldeps,
- org.junit4
+ org.junit
 Export-Package: org.metaborg.runtime.task;
   uses:="com.google.common.collect,
    org.strategoxt.lang,
