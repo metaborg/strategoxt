@@ -25,6 +25,9 @@ rules
 
   add-annotation(|a):
     t{a*} -> t{a, a*}
+    
+  add-annotations(|a'*):
+    t{a*} -> t{a'*, a*}
 
   remove-annotations(s):
     t{a*} -> t{a'*}
