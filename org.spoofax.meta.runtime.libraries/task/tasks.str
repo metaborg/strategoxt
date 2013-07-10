@@ -33,7 +33,7 @@ rules
       [] := <dependent-tasks> choice*
       
 	perform-task(|nr):
- 		Choice(choice*) -> <remove-all(?[]); Hd> choice*
+ 		Choice(choice*) -> <fetch-elem(not(?[]))> choice*
  		
 	task-is-combinator = ?Choice(_)
 
@@ -58,8 +58,7 @@ rules
   
   perform-task(|nr): 
     Rewrite(key, term) -> <task-match> (key, term)
-  
-  // TODO: this should no longer be needed with single-result tasks?
+
   perform-task(|nr):
   	Concat(term*) -> <concat> term*
 

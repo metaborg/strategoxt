@@ -51,7 +51,7 @@ rules // Dependencies
 		!Dependency([<id>])
   	
 	task-has-dependencies =
-		where(collect-one(?Dependency(_)))
+		where(collect-one-annos(?Dependency(_)))
 		
 	task-collect-dependencies =
 		collect-all-annos(?Dependency(<id>), union);

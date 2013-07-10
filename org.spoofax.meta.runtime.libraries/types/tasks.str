@@ -16,8 +16,7 @@ signature
   
   constructors
 
-    PropLookup : Property * Term -> Instruction    
-    PropCalc   : Term * Term     -> Instruction
+    PropLookup : Property * Term -> Instruction
     PropCalc   : Term            -> Instruction
     PropCheck  : Term * Term     -> Instruction
 
