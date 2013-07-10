@@ -44,17 +44,17 @@ rules // Creation
 rules // Dependencies
 	
   task-create-dependencies =
-  	collect-all(?Result(<id>));
+  	collect-all-annos(?Result(<id>), union);
   	!Dependency(<id>)
 
   task-create-dependency =
 		!Dependency([<id>])
   	
 	task-has-dependencies =
-		fetch(?Dependency(_))
+		where(collect-one(?Dependency(_)))
 		
 	task-collect-dependencies =
-		collect-all(?Dependency(<id>));
+		collect-all-annos(?Dependency(<id>), union);
 		concat;
 		where(Hd);
 		!Dependency(<id>)

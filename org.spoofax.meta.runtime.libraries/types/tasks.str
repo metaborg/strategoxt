@@ -27,10 +27,13 @@ rules
   	PropLookup(kind, t) -> result
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
-  		switch id
-  			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); insert-results-or-create-dependency // TODO: is this read needed?
-  			otherwise    : id
-  		end => result
+  		uri      := <nabl-uri> resolved;
+  		<nabl-add-read(|n)> uri;
+  		prop     := <nabl-get-property(|kind); insert-results-or-create-dependency> uri;
+      switch id
+      	case task-collect-dependencies => d : !d
+      	otherwise                           : id
+      end => result
   
   avoid-task(|dep*):
     PropCalc(_) -> <perform-task(|0)> 
