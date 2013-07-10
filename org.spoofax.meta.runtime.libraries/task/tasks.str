@@ -33,7 +33,7 @@ rules
       [] := <dependent-tasks> choice*
       
 	perform-task(|nr):
- 		Choice(choice*) -> <Hd> choice*
+ 		Choice(choice*) -> <remove-all(?[]); Hd> choice*
  		
 	task-is-combinator = ?Choice(_)
 
