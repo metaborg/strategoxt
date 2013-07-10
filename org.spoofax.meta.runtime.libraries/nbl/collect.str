@@ -104,7 +104,7 @@ strategies // generic traversal
   ; try(nabl-state-site)
   // visit children from left to right  
   ; preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
-  ; try(nabl-use-site(|lang, partition, uri'*, state*))
+  ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, state*, implicit*))
   ; annotate-property-tasks(|partition)
@@ -150,7 +150,7 @@ rules // generic analysis of scopes
 
 rules // generic analysis of name generation
 	
-	nabl-namegen(|lang, partition, uri*, unique*, anno*):
+	nabl-namegen(|lang, partition, unique*, uri*, anno*):
 		name -> newname'
 		where
 			<has-annotation(?GenerateName(ns))> name;
@@ -192,7 +192,7 @@ rules // generic analysis of defs
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
 		with
 			// generate a name if needed
-			name' := <try(nabl-namegen(|lang, partition, child-uri*, unique*, anno*))> name
+			name' := <try(nabl-namegen(|lang, partition, unique*, child-uri*, anno*))> name
 		where
 			switch !defscope
 			  // in each case we 
@@ -257,16 +257,16 @@ rules // generic analysis of defs
 rules // generic analysis of uses
 	
 	// single candidate
-	nabl-use(|lang, partition, uri*, candidate) =
+	nabl-use(|lang, partition, unique*, uri*, candidate) =
 		where (<not(is-list)> candidate);
-		nabl-use(|lang, partition, uri*, [candidate])
+		nabl-use(|lang, partition, unique*, uri*, [candidate])
 	
 	// list of candidates
-	nabl-use(|lang, partition, uri*, candidate*):
+	nabl-use(|lang, partition, unique*, uri*, candidate*):
 		name{anno*} -> result
 		with
 			// generate a name if needed
-			name' := <try(id)> name //nabl-namegen(|lang, partition, uri*, anno*)
+			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
 			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 			choice   := <new-task(|partition)> Choice(subtask*);
