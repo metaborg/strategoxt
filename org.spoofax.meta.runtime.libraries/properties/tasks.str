@@ -12,19 +12,16 @@ signature
 
     PropCalc   : Term                              -> Instruction
     PropList   : List(Term)                        -> Instruction
-    PropLookup : Property * Term                   -> Instruction    
+    PropLookup : Property * URI                    -> Instruction    
     PropCheck  : Property * Relation * Term * Term -> Instruction
     
 rules
-  
-  perform-task(|n): 
-  	PropLookup(kind, t) -> result
-  	where
-  		resolved := <nabl-collect-one-resolved-def> t;
-  		switch id
-  			case ?Def(_) : where(nabl-uri; nabl-add-read(|n)); nabl-get-property(|kind); insert-results-or-create-dependency // TODO: is this read needed?
-  			otherwise    : id
-  		end => result
+
+  perform-task(|n) =
+  	?PropLookup(kind, <id>) 
+  	;	nabl-add-read(|n) // TODO: is this read needed?
+    ; nabl-get-property(|kind)
+    ; insert-results-or-create-dependency 
   	
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> <nabl-property-eq> (kind, rel, (actual, expected))

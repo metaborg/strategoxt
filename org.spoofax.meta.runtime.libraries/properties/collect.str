@@ -57,7 +57,8 @@ strategies
      get-annos
    ; fetch-elem(?(kind, <id>))
   <+ where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-   ; <new-task(|partition, all-dep*)> PropLookup(kind, <id>) 
+   ; <new-task(|partition, all-dep*)> CollectDefs(<id>)
+   ; <new-task(|partition)> PropLookup(kind, <id>) 
   
   nabl-prop-match(|kind, partition, relation, expected) = 
     ?actual

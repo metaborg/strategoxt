@@ -3,6 +3,7 @@ module nabl/tasks
 imports 
   
   task/core
+  task/utils
   nabl/-
   properties/entries
   properties/eq
@@ -12,6 +13,7 @@ signature
   
   constructors
     
+    CollectDefs            : Term                                      -> Instruction
     ResolveDefs            : Scope * Namespace * Name                  -> Instruction
     DisambiguateDefs       : List(Def) * List(Prop) * Namespace * Name -> Instruction
     ResolveNamedImports    : Scope * Namespace * Name                  -> Instruction
@@ -22,6 +24,11 @@ signature
         
     ResolveAllDefs         : Scope * Namespace                  -> Instruction
         
+rules // basics
+  
+  perform-task(|nr) = 
+    ?CollectDefs(<id>)
+  ; (?Def(_) <+ get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))
 rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
