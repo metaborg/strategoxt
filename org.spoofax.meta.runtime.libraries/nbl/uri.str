@@ -134,6 +134,15 @@ rules // Projections
   nabl-segment-name:
     ID(_, name, _) -> name
     
+  nabl-segment-name:
+  	Subsequent(name) -> name
+  
+	nabl-segment-name:
+  	Anonymous(name) -> name
+  	
+	nabl-segment-name:
+  	ExternalDef(name) -> name
+    
   nabl-segment-qualifier:
     ID(_, _, qualifier) -> qualifier
     

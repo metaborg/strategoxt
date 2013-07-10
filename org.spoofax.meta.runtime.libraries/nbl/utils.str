@@ -18,8 +18,16 @@ rules
 	is-completion-name = ?"completion123"
   fix-completion-name = is-completion-name; !""
 
+	has-annotation(s) =
+		has-annos;
+		get-annos;
+		collect-one(s)
+
   add-annotation(|a):
     t{a*} -> t{a, a*}
+    
+  add-annotations(|a'*):
+    t{a*} -> t{a'*, a*}
 
   remove-annotations(s):
     t{a*} -> t{a'*}

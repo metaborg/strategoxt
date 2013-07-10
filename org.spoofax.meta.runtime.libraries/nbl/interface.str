@@ -11,7 +11,7 @@ strategies // Collect
 	
 	nabl-state-site = fail
 	
-	nabl-use-site(|lang, partition, uri*, state*) = fail
+	nabl-use-site(|lang, partition, unique*, uri*, state*) = fail
 	
 	nabl-import-site(|lang, partition, uri*, state*) = fail
 	

@@ -11,6 +11,7 @@ imports
 	nbl/uri
 	nbl/utils
 	types/collect
+	editor/origins
 	
 signature 
 
@@ -21,6 +22,10 @@ signature
   constructors // state
   	
   	State : String * Term -> State
+
+	constructors // unique name generation
+		
+		GenerateName : Namespace -> GenerateName
 
 	constructors // def
 
@@ -99,7 +104,7 @@ strategies // generic traversal
   ; try(nabl-state-site)
   // visit children from left to right  
   ; preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
-  ; try(nabl-use-site(|lang, partition, uri'*, state*))
+  ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, state*, implicit*))
   ; annotate-property-tasks(|partition)
@@ -142,15 +147,53 @@ rules // generic analysis of scopes
 	   remove-annotations(?Scope(ns2*))
 	 ; add-annotation(|Scope(<union> (ns1*, ns2*)))
 	<+ add-annotation(|Scope(ns1*))
+
+rules // generic analysis of name generation
+	
+	nabl-namegen(|lang, partition, unique*, uri*, anno*):
+		name -> <origin-track-forced(!newname')> name
+		where
+			<has-annotation(?GenerateName(ns))> name;
+			uri      := <lookup-uri(|lang, ns)> uri*;
+			newname  := <nabl-namegen-get(|lang, partition, ns, uri, unique*)> name;
+			newname' := <add-annotations(|anno*); remove-annotations(?GenerateName(_))> newname
+	
+	nabl-namegen-get(|lang, partition, ns, uri, unique*):
+		name -> result
+		with
+			name-key := (name, "namegen");
+			num-key  := (lang, partition, ns, uri, "namegen");
+      if full-newname := <hashtable-get(|name-key)> unique* then
+        result := full-newname
+      else
+        nextnum := <hashtable-get(|num-key) <+ !0> unique*;
+        newname := <nabl-namegen-name(|lang, partition, ns)> uri;
+        numstr  := <int-to-string> nextnum;
+        result  := $[[newname]__[numstr]];
+        <hashtable-put(|name-key, result)> unique*;
+        <hashtable-put(|num-key, <inc> nextnum)> unique*
+      end
+      
+  nabl-namegen-name(|lang, partition, ns):
+  	uri -> <nabl-namegen-name-fix> $[[lang-name]__[partition]__[ns-name]__[uri-name]]
+  	with
+  		Language(lang-name) := lang;
+  		ns-name             := <get-constructor> ns;
+  		uri-name            := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"_"); concat-strings> uri
+  		
+	nabl-namegen-name-fix = lower-case; string-replace(|"/", "_"); string-replace(|"-", "_")
 	 
 rules // generic analysis of defs
     	
 	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
-		a@name{anno*} -> <replace-annotations(?Def(_)|d)> name
+		a@name{anno*} -> <replace-annotations(?Def(_)|d)> name'
 		where
 			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
+		with
+			// generate a name if needed
+			name' := <try(nabl-namegen(|lang, partition, unique*, child-uri*, anno*))> name
 		where
 			switch !defscope
 			  // in each case we 
@@ -162,9 +205,9 @@ rules // generic analysis of defs
 			  case Current(): 
 		
 			  // 1. extend current URI with ID segment
-			  // 2. extend URIs of scoped namespaces
+			  // 2. extend URIs of scoped name'spaces
 		 	  // 3. preserve
-			    def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name, unique)> current-uri
+			    def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name', unique)> current-uri
 			  ; match(child-uris|<replace-scope-uri(|def-uri)> (scoped, child-uri*))
 			  ; match(sibling-uris|sibl-uri*)
 		   
@@ -173,9 +216,9 @@ rules // generic analysis of defs
 		       
 			  // 1. extend current URI with subsequent and ID segment
 			  // 2. preserve
-			  // 3. extend URI for namespace of definition site with Subsequent segment
+			  // 3. extend URI for name'space of definition site with Subsequent segment
 			    subs-uri := <nabl-extend-uri-subsequent(|unique*, partition)> current-uri
-			  ; def-uri  := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name, unique)> subs-uri
+			  ; def-uri  := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name', unique)> subs-uri
 		    ; match(child-uris|child-uri*)
 			  ; match(sibling-uris|<replace-scope-uri(|subs-uri)> ([ns], sibl-uri*))
 		
@@ -186,7 +229,7 @@ rules // generic analysis of defs
 		    // 2. preserve
 		    // 3. preserve
 		      ano-uri := <nabl-base-uri; nabl-extend-uri-anonymous(|unique*, partition)> lang 
-		    ; def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name, unique)> ano-uri
+		    ; def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name', unique)> ano-uri
 			  ; match(child-uris|child-uri*)
 			  ; match(sibling-uris|sibl-uri*)
 		  end
@@ -199,8 +242,8 @@ rules // generic analysis of defs
 		with
 			// duplicate definition error
 			if Unique() := unique then 
-				resolve := <new-task(|partition)> ResolveDefs(current-uri, ns, name);
-				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+				resolve := <new-task(|partition)> ResolveDefs(current-uri, ns, name');
+				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name'
 			end
 	
 	nabl-def-alias(|partition, def-uri):
@@ -215,26 +258,29 @@ rules // generic analysis of defs
 rules // generic analysis of uses
 	
 	// single candidate
-	nabl-use(|lang, partition, uri*, candidate) =
+	nabl-use(|lang, partition, unique*, uri*, candidate) =
 		where (<not(is-list)> candidate);
-		nabl-use(|lang, partition, uri*, [candidate])
+		nabl-use(|lang, partition, unique*, uri*, [candidate])
 	
 	// list of candidates
-	nabl-use(|lang, partition, uri*, candidate*):
+	nabl-use(|lang, partition, unique*, uri*, candidate*):
 		name{anno*} -> result
+		with
+			// generate a name if needed
+			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
-			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name))> candidate*;
+			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 			choice   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, choice)>;
-		  if <not(has-annos; get-annos; collect-one(?NoUnresolvedError()))> name then
-		  	<nabl-fix-name; task-create-error-on-failure(|partition, choice, "Unresolved reference")> name
+		  if <not(has-annos; get-annos; collect-one(?NoUnresolvedError()))> name' then
+		  	<nabl-fix-name; task-create-error-on-failure(|partition, choice, "Unresolved reference")> name'
 		  end;
-		  if <is-completion-name> name then
+		  if <is-completion-name> name' then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
-		  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name
+		  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name'
 		  else
-		  	result := <replace-annotations(?Use(_)|u)> name
+		  	result := <replace-annotations(?Use(_)|u)> name'
 	  	end
 
 	nabl-use-subtasks(disambiguate, wildcardimport|partition, ns, name, prop*, range): 
