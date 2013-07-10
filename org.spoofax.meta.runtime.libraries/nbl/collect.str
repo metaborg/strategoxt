@@ -151,28 +151,27 @@ rules // generic analysis of scopes
 rules // generic analysis of name generation
 	
 	nabl-namegen(|lang, partition, unique*, uri*, anno*):
-		name -> newname'
+		name -> <origin-track-forced(!newname')> name
 		where
 			<has-annotation(?GenerateName(ns))> name;
 			uri      := <lookup-uri(|lang, ns)> uri*;
-			newname  := <origin-track-forced(<nabl-namegen-get(|lang, partition, ns, uri, unique*)> name)> name;
+			newname  := <nabl-namegen-get(|lang, partition, ns, uri, unique*)> name;
 			newname' := <add-annotations(|anno*); remove-annotations(?GenerateName(_))> newname
 	
 	nabl-namegen-get(|lang, partition, ns, uri, unique*):
-		name -> $[[newname]__[numstr]]
+		name -> result
 		with
-			name-key := (lang, partition, ns, uri, name, "namegen");
+			name-key := (name, "namegen");
 			num-key  := (lang, partition, ns, uri, "namegen");
-			newname  := <nabl-namegen-name(|lang, partition, ns)> uri;
-      if num := <hashtable-get(|name-key)> unique* then
-        numstr := <int-to-string> num
+      if full-newname := <hashtable-get(|name-key)> unique* then
+        result := full-newname
       else
-        if not(nextnum := <hashtable-get(|num-key)> unique*) then
-        	nextnum := 0
-        end;
-        <hashtable-put(|name-key, nextnum)> unique*;
-        <hashtable-put(|num-key, <inc> nextnum)> unique*;
-        numstr := <int-to-string> nextnum
+        nextnum := <hashtable-get(|num-key) <+ !0> unique*;
+        newname := <nabl-namegen-name(|lang, partition, ns)> uri;
+        numstr  := <int-to-string> nextnum;
+        result  := $[[newname]__[numstr]];
+        <hashtable-put(|name-key, result)> unique*;
+        <hashtable-put(|num-key, <inc> nextnum)> unique*
       end
       
   nabl-namegen-name(|lang, partition, ns):
