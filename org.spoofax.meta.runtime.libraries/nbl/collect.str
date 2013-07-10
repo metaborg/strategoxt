@@ -175,11 +175,13 @@ rules // generic analysis of name generation
       end
       
   nabl-namegen-name(|lang, partition, ns):
-  	uri -> <lower-case> $[[lang-name]__[partition]__[ns-name]__[uri-name]]
+  	uri -> <nabl-namegen-name-fix> $[[lang-name]__[partition]__[ns-name]__[uri-name]]
   	with
   		Language(lang-name) := lang;
   		ns-name             := <get-constructor> ns;
-  		uri-name            := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"::"); concat-strings> uri
+  		uri-name            := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"_"); concat-strings> uri
+  		
+	nabl-namegen-name-fix = lower-case; string-replace(|"/", "_"); string-replace(|"-", "_")
 	 
 rules // generic analysis of defs
     	
