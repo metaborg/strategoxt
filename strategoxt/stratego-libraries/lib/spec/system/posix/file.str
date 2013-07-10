@@ -86,7 +86,6 @@ strategies
    */
   chdir =
     ?pathname; prim("SSL_chdir", pathname) => 0
-    <+ <conc-strings; perror; fail> ("SSL/chdir: Cannot change current working directory to ", <id>)
 
   /**
    * Create directory
@@ -96,7 +95,6 @@ strategies
   mkdir(|mode) =
     where(
       ?pathname; prim("SSL_mkdir", pathname, mode) => 0
-      <+ <conc-strings; perror; fail> ("SSL/mkdir: Cannot create directory ", <id>)
     )
 
   mkdir =
@@ -109,7 +107,6 @@ strategies
    */
   rmdir =
     ?pathname; prim("SSL_rmdir", pathname) => 0
-    <+ <conc-strings; perror; fail> ("SSL/rmdir: Cannot delete directory ", <id>)
 
 /**
  * Primitive file operations
@@ -197,7 +194,6 @@ strategies
    */
   filemode =
     ?pathname; prim("SSL_filemode", pathname); ?(<id>, 0)
-    <+ <conc-strings; perror; fail> ("SSL/filemode: Cannot get filemode from ", <id>)
 
   /**
    * @type File -> FileMode
