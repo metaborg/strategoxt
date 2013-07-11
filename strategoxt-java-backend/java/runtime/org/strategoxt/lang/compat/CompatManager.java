@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.VarScope;
-import org.spoofax.interpreter.library.index.IndexLibrary;
 import org.spoofax.interpreter.library.interpreter.InterpreterLibrary;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.jsglr.origin.OriginLibrary;
@@ -51,7 +50,6 @@ public class CompatManager {
 
 		// More standard registries, kind of
         context.addOperatorRegistry(new LanguageLibrary());
-        context.addOperatorRegistry(new IndexLibrary());
         context.addOperatorRegistry(new OriginLibrary());
         context.addOperatorRegistry(new XMLLibrary());
         context.addOperatorRegistry(new InterpreterLibrary());
