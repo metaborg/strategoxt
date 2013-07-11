@@ -44,7 +44,7 @@ rules
    * @see index-set-current-partition
    */
   index-get-current-partition =
-    prim("LANG_index_get_current_file")
+    prim("LANG_index_get_current_partition")
   
   /**
    * Gets a list of all partitions for current project.
@@ -55,7 +55,7 @@ rules
    * @type x -> List(partition)
    */   
   index-get-all-partitions =
-    prim("LANG_index_all_files")
+    prim("LANG_index_all_partitions")
   
   /**
    * Gets all index entries for the given partition.
@@ -67,20 +67,8 @@ rules
    * @type partition -> List(elem)
    */  
   index-get-all-in-partition =
-    prim("LANG_index_get_all_in_file", <id>)
-    
-  /**
-   * Gets the revision of a partition.
-   *
-   * Example:
-   *   <index-get-partition-revision> "fullpath/file.ext" => 13
-   *   <index-get-partition-revision> ("fullpath/file.ext", "subfile") => 37
-   *
-   * @type partition -> Int
-   */
-  index-get-partition-revision:
-    file -> <prim("LANG_index_get_file_revision", file)>
-    
+    prim("LANG_index_get_all_in_partition", <id>)
+
   /**
    * Gets the containing partitions of index entry with given template.
    *
@@ -90,4 +78,4 @@ rules
    * @type template -> List(partition)
    */  
   index-get-partitions-of:
-    template -> <prim("LANG_index_get_files_of", template)>
+    template -> <prim("LANG_index_get_partitions_of", template)>

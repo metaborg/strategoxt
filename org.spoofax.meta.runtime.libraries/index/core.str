@@ -1,5 +1,9 @@
 module index/core
 
+imports
+	
+	index/utils
+
 signature
 
   sorts
@@ -13,16 +17,14 @@ rules
    * Must be called once before doing anything with the library.
    *
    * Example:
-   *   <index-setup(|"MiniJava", [<project-path>], "test/test.mjv")
+   *   <index-setup(|"MiniJava", <project-path>)
    *
    * @param language          The language to set the index up for.
-   * @param project-path      The project paths that contain all source files to analyse and compile.
-   * @param current-partition The current partition that is being analysed. Can be retrieved later using 
-   *                          index-get-current-partition. Can also be changed later using index-set-current-partition.
+   * @param project-path      The project path that contains all source files to analyse.
    * @type x -> x
    */
-  index-setup(|language, project-paths, current-partition) =
-    prim("LANG_index_setup", language, project-paths, current-partition)
+  index-setup(|language, project-path) =
+    prim("LANG_index_setup", language, <index-setup-paths> project-path)
     
   /**
    * Unloads the currently loaded index.
@@ -47,7 +49,7 @@ rules
    * @type x -> ?x
    */
   index-set-current-partition = 
-    prim("LANG_index_set_current_file", <id>)
+    prim("LANG_index_set_current_partition", <id>)
 
 	index-start-collection(|partition) =
 		prim("LANG_index_start_collection", partition)
@@ -82,43 +84,6 @@ rules
     list-loop(with(index-add(|partition)))
     
   /**
-   * Removes given entry from the index that is contained in given partition.
-   *
-   * Example:
-   *   <index-remove(|"fullpath/file.ext")> Def([Entity(), "Bar"])
-   *   <index-remove(|("fullpath/file.ext", "subfile"))> Def([Entity(), "Bar"])
-   * 
-   * @param partition The partition to remove the element from.
-   * @type x -> ?x
-   */
-  index-remove(|partition) =
-    prim("LANG_index_remove", <id>, partition)
-    
-  /**
-   * Removes entries with given template from the index (from all partitions).
-   *
-   * Example:
-   *   <index-remove-all> Def([Entity(), "Bar"])
-   * 
-   * @param partition The partition to remove the element from.
-   * @type x -> ?x
-   */
-  index-remove-all =
-    prim("LANG_index_remove_all", <id>)
-    
-  /**
-   * Removes given entry from the index (from all partitions).
-   *
-   * Example:
-   *   <index-remove-all> DefData([Entity(), "Bar"], Type(), Type("Bar"))
-   * 
-   * @param partition The partition to remove the element from.
-   * @type x -> ?x
-   */
-  index-remove-one =
-    prim("LANG_index_remove_one", <id>)
-    
-  /**
    * Removes all elements from the index that are contained in given partition.
    *
    * Example:
@@ -128,14 +93,14 @@ rules
    * @type x -> ?x
    */
   index-clear-partition = 
-    prim("LANG_index_clear_file", <id>)
+    prim("LANG_index_clear_partition", <id>)
     
   /**
    * Removes all elements from the index.
    *
    * @type x -> x
    */
-  index-clear = 
+  index-clear-all = 
     prim("LANG_index_clear_all")
     
   /**
@@ -147,43 +112,9 @@ rules
     prim("LANG_index_reload")
    
   /**
-   * Serializes index to a cache on disk.
+   * Persists index to a cache on disk.
    *
    * @type x -> x
    */
-  index-commit = 
-    prim("LANG_index_commit")
-
-  /**
-   * Starts a transaction on the index for the current partition. Additions to the index are not visible to other files 
-   * until index-end-transaction is called. Operations on the index are only thread safe during a transaction.
-   *
-   * @type x -> x
-   */
-  index-start-transaction = 
-    prim("LANG_index_start_transaction")
-  
-  /**
-   * Ends a transaction on the index for the current partition. Additions made to the index during the transaction are
-   * added to the global index visible for other files. Operations on the index are not thread safe any more after 
-   * this call.
-   *
-   * @type x -> x
-   */
-  index-end-transaction = 
-    prim("LANG_index_end_transaction")
-  
-  /**
-   * Starts a transaction, applies given strategy and ends the transaction. All index operations used from the given
-   * strategy are thread safe.
-   * 
-   * @param s The strategy to apply. Transaction will still properly end if strategy fails.
-   * @type x -> x'
-   *
-   * @see index-start-transaction
-   * @see index-end-transaction
-   */
-  index-transaction(s) = 
-      prim("LANG_index_start_transaction")
-    ; try(s)
-    ; prim("LANG_index_end_transaction")
+  index-persist = 
+    prim("LANG_index_persist")

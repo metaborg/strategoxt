@@ -1,0 +1,35 @@
+module index/legacy
+
+imports
+	
+	index/core
+	index/utils
+
+rules // Redirects
+	
+	index-setup(|language, project-path, current-partition) =
+		index-setup(|language, <index-setup-paths> project-path);
+		<index-set-current-partition> current-partition
+		
+	index-clear = index-clear-all
+	
+	index-commit = index-persist
+		
+rules // Deprecated
+		
+	index-depricated-switch = fail
+	index-depricated = try(not(index-depricated-switch); with(fail|"Deprecated."))
+		
+  index-remove(|partition) = index-depricated
+    
+  index-remove-all = index-depricated
+    
+  index-remove-one = index-depricated
+  
+  index-get-partition-revision = index-depricated
+    
+  index-start-transaction = id
+  
+  index-end-transaction = id
+  
+  index-transaction(s) = s
