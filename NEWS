@@ -327,7 +327,7 @@ SUMMARY OF CHANGES
     - cgi and connect (socket) primitives removed. cgi is part of 
       stratego-net, connect should be improved.
 
-  * ssl (Martin Bravenboer, Rob Vermaas)
+  * ssl (Martin Bravenboer, Rob Vermaas) 
     - list-sort.str: quick sort by Rob Vermaas
     - many new IO and process related strategies: read-text-file, 
       read-text-from-stream, fprint, fputc, dirname, access, fgetc, 
