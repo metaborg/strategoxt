@@ -51,12 +51,71 @@ rules
   index-set-current-partition = 
     prim("LANG_index_set_current_partition", <id>)
 
+	/**
+	 * Starts collection for given partition. Used in conjunction with index-stop-collection to 
+	 * retrieve a list of added and removed index entries in relation to the previous entries in
+	 * given partition.
+	 *
+	 * Example:
+	 *   index-start-collection(|"fullpath/file.ext")
+	 *   index-start-collection(|("fullpath/file.ext", "subfile"))
+	 *
+	 * @type x -> x
+	 */
 	index-start-collection(|partition) =
 		prim("LANG_index_start_collection", partition)
 		
+	/**
+	 * Stops collection for the partition on which index-start-collection was called. Returns 
+	 * a tuple with removed and added entries in relation to the previous entries in that partition.
+	 *
+	 * Example:
+	 *   index-stop-collection => (removed, added)
+	 *
+	 * @type x -> (List(elem), List(elem))
+	 */
 	index-stop-collection =
 		prim("LANG_index_stop_collection")
+	
+	/**
+	 * Pushes a new index on the stack and sets that as the current index. Entries from the parent
+	 * index are still visible, but additions only apply to the current index. Clearing a partition
+	 * also hides all entries in that partition from the parent index.
+	 *
+	 * Example:
+	 *   index-push
+	 *
+	 * @type x -> x 
+	 */	
+	index-push = 
+		prim("LANG_index_push")
 
+	/**
+	 * Pops the current index from the stack and sets the parent index as the current index. All
+	 * modifications from the current index are discarded. The root index cannot be popped.
+	 *
+	 * Example:
+	 *   index-pop
+	 *
+	 * @type x -> x 
+	 */	
+	index-pop = 
+		prim("LANG_index_pop")
+
+	/**
+	 * Pops the current index from the stack and sets the parent index as the current index. All
+	 * modifications from the current index are merged into the parent index; partitions that were
+	 * cleared in the current index are cleared in the parent, and entries added to the current
+	 * index are also added to the parrent. The root index cannot be merged.
+	 *
+	 * Example:
+	 *   index-merge
+	 *
+	 * @type x -> x 
+	 */	
+	index-merge = 
+		prim("LANG_index_merge")
+		
   /**
    * Adds given element to the index.
    *
