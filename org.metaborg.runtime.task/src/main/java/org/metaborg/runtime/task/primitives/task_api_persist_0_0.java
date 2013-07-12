@@ -15,15 +15,14 @@ public class task_api_persist_0_0 extends AbstractPrimitive {
 	public task_api_persist_0_0() {
 		super("task_api_persist", 0, 0);
 	}
-	
+
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		try {
 			TaskManager.getInstance().storeCurrent(env.getFactory());
-			return true;
 		} catch(IOException e) {
-			e.printStackTrace();
-			return false;
+			throw new RuntimeException("Failed to persist task engine.", e);
 		}
+		return true;
 	}
 }

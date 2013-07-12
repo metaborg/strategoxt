@@ -23,7 +23,7 @@ public class task_api_get_results_0_1 extends AbstractPrimitive {
 		final TaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm taskID = tvars[0];
 		final Task task = taskEngine.getTask(taskID);
-		if(!task.solved())
+		if(task == null || !task.solved())
 			return false;
 		env.setCurrent(makeList(env.getFactory(), task.results()));
 		return true;
