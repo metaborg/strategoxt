@@ -19,8 +19,14 @@ rules
    *
    * @internal
    */
-  index-globals-path = 
-    !"/.internal/globals"
+  index-globals-path:
+  	names -> <separate-by(|"/"); concat-strings> path
+    with
+      if is-list then
+        path := <concat> [names, ["globals", ".internal"]]
+      else
+        path := [names, "global", ".internal"]
+      end
     
   /**
    * Gets the URI where globals are stored in the index for given name or names.
@@ -112,8 +118,23 @@ rules
   index-clear-global(|name):
     _ -> <id>
     with
-      <index-remove(|<index-globals-path>)> Global(<index-globals-uri> name, ())
-      
+      <index-globals-path; index-clear-partition> name
+rules
+	
+  /**
+   * Gets the 'fake' path where boolean globals are stored in the index.
+   *
+   * @internal
+   */
+  index-boolean-globals-path:
+  	names -> <separate-by(|"/"); concat-strings> path
+    with
+      if is-list then
+        path := <concat> [names, ["boolean", "globals", ".internal"]]
+      else
+        path := [names, "boolean", "global", ".internal"]
+      end
+	      
   /**
    * Gets the URI where boolean globals are stored in the index for given name or names.
    *
@@ -156,7 +177,7 @@ rules
   index-disable-global(|name):
     _ -> <id>
     with
-      <index-remove(|<index-globals-path>)> Global(<index-boolean-globals-uri> name)
+      <index-boolean-globals-path; index-clear-partition> name
       
   /**
    * Query for boolean value true in global boolean storage with given name.
