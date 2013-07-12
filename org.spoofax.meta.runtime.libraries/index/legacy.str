@@ -8,8 +8,7 @@ imports
 rules // Redirects
 	
 	index-setup(|language, project-path, current-partition) =
-		index-setup(|language, <index-setup-paths> project-path);
-		<index-set-current-partition> current-partition
+		index-setup(|language, <index-setup-paths> project-path)
 		
 	index-clear = index-clear-all
 	
@@ -27,6 +26,10 @@ rules // Deprecated
   index-remove-all = index-depricated
     
   index-remove-one = index-depricated
+  
+  index-get-current-partition = index-depricated
+  
+  index-set-current-partition = index-depricated
   
   index-get-partition-revision = index-depricated
     

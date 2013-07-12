@@ -38,18 +38,6 @@ rules
    */
   index-unload(|project-path) =
     prim("LANG_index_unload", project-path)
-    
-  /**
-   * Sets the current file the index (analysis) is operating on to the given file.
-   *
-   * Example:
-   *   <index-set-current-partition> "fullpath/file.ext"
-   *   <index-set-current-partition> ("fullpath/file.ext", "subfile")
-   *
-   * @type x -> ?x
-   */
-  index-set-current-partition = 
-    prim("LANG_index_set_current_partition", <id>)
 
 	/**
 	 * Starts collection for given partition. Used in conjunction with index-stop-collection to 
