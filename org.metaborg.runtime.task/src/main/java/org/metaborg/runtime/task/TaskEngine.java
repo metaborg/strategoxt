@@ -50,11 +50,13 @@ public class TaskEngine {
 	 **/
 	private final Map<IStrategoTerm, IStrategoList> toInitialDependencies = new HashMap<IStrategoTerm, IStrategoList>();
 
-	/** Dependencies between tasks. Can be updated dynamically. */
+	/** Bidirectional mapping of dependencies between tasks identifiers. Can be updated during evaluation. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
 		.create();
 
-	/** Dependencies between tasks. */
+	/**
+	 * Bidirectional mapping from task identifiers to URI's that they read during evaluation. Updated during evaluation.
+	 */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRead = BidirectionalLinkedHashMultimap
 		.create();
 
@@ -291,7 +293,7 @@ public class TaskEngine {
 		for(final IStrategoTerm changedRead : changedReads) {
 			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 			final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
-			final Queue<IStrategoTerm> workList = Lists.newLinkedList(getRead(changedRead));
+			final Queue<IStrategoTerm> workList = Lists.newLinkedList(getReaders(changedRead));
 			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 				schedule(taskID);
 				seen.add(taskID);
@@ -403,8 +405,8 @@ public class TaskEngine {
 		return toRead.get(taskID);
 	}
 
-	public Iterable<IStrategoTerm> getRead(IStrategoTerm read) {
-		return toRead.getInverse(read);
+	public Iterable<IStrategoTerm> getReaders(IStrategoTerm uri) {
+		return toRead.getInverse(uri);
 	}
 
 	public void addRead(IStrategoTerm taskID, IStrategoTerm read) {
@@ -445,7 +447,7 @@ public class TaskEngine {
 		removedTasks.clear();
 		inCollection.clear();
 	}
-	
+
 	public void reset() {
 		digester.reset();
 		evaluator.reset();
