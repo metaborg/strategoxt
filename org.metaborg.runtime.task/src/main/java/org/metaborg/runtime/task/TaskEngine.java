@@ -24,6 +24,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
 public class TaskEngine {
@@ -314,10 +315,9 @@ public class TaskEngine {
 	 * @param perform The strategy that performs an instruction.
 	 * @param insert The strategy that inserts results into an instruction.
 	 * 
-	 * @return A tuple with a list of task identifiers that have failed to produce a result and the number of task
-	 *         evaluations.
+	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
-	public IStrategoTerm evaluate(IContext context, Strategy insert, Strategy perform) {
+	public IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform) {
 		for(IStrategoTerm taskID : scheduled)
 			invalidate(taskID);
 		clearTimes();
@@ -328,6 +328,23 @@ public class TaskEngine {
 		return result;
 	}
 
+	/**
+	 * Evaluates given task identifiers and their transitive dependencies.
+	 * 
+	 * @param context The context to call the perform and insert strategies with.
+	 * @param perform The strategy that performs an instruction.
+	 * @param insert The strategy that inserts results into an instruction.
+	 * @param taskIDs The task identifiers to evaluate.
+	 * 
+	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
+	 */
+	public IStrategoTerm evaluateNow(IContext context, Strategy insert, Strategy perform,
+		Iterable<IStrategoTerm> taskIDs) {
+		final Set<IStrategoTerm> scheduled = Sets.newHashSet(taskIDs);
+		for(IStrategoTerm taskID : taskIDs)
+			scheduled.addAll(getTransitiveDependencies(taskID));
+		return evaluator.evaluate(scheduled, context, insert, perform);
+	}
 
 	public Iterable<IStrategoTerm> getTaskIDs() {
 		return toTask.keySet();
@@ -366,6 +383,25 @@ public class TaskEngine {
 	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
 		return toDependency.get(taskID);
 	}
+	
+	public Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID) {
+		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
+		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
+
+		queue.add(taskID);
+		seen.add(taskID);
+
+		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
+			for(IStrategoTerm dependency : getDependencies(queueTaskID)) {
+				if(seen.add(dependency))
+					queue.add(dependency);
+			}
+		}
+		
+		seen.remove(taskID);
+		return seen;
+	}
+
 
 	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {
 		return toDependency.getInverse(taskID);

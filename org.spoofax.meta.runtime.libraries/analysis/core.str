@@ -51,7 +51,7 @@ rules // Analysis
 		with
 			measure-time(
 				measure-time(
-	      	task-evaluate => (evaluated-task*, unevaluated-task*)
+	      	task-evaluate-scheduled => (evaluated-task*, unevaluated-task*)
 	      	, id | "analyze-task-evaluate"
 	      ); measure-time(
 	  	  	result'* := <map(analyze-messages)> result*
