@@ -40,7 +40,6 @@ rules // Single finle analysis
     	end;
       <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
       <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task* 
-      // TODO: Update markers for partitions that have had a task executed.
       
 rules // Multi-file analysis
       
@@ -118,7 +117,7 @@ rules // Message collection and updating.
 rules // On-save handler
 	
   analysis-save-default(|language):
-  	(_, _, _, path, project-path) -> None()
+  	(_, _, _, _, project-path) -> None()
   	with
   		index-setup(|language, project-path);
   		index-persist;
