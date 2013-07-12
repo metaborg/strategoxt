@@ -279,6 +279,8 @@ public class TaskEngine {
 	 */
 	public void invalidate(IStrategoTerm taskID) {
 		final Task task = getTask(taskID);
+		if(task == null)
+			throw new RuntimeException("Cannot invalidate task that does not exist: " + taskID);
 		task.unsolve();
 		task.clearMessage();
 		removeReads(taskID);
