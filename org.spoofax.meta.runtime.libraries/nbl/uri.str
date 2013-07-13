@@ -85,11 +85,8 @@ rules // stable URI extensions
       
 rules // Projections
   
-  nabl-uri = 
-    nabl-uri-impl <+ nabl-uri-generic
-    
-  nabl-value = 
-    nabl-value-impl <+ nabl-value-generic
+  nabl-uri = fail
+  nabl-value = fail
   
   nabl-uri-language:
     URI(language, _) -> language
@@ -202,25 +199,17 @@ rules // Printing
 rules /** @internal Projections */
 
   /** @internal */
-  nabl-uri-impl:
-    URI(_, _) -> <id>
-
-  /** @internal */
-  nabl-uri-generic:
-    term -> <not(is-list); ?_#(<?[<id>|_]>); nabl-is-uri> term
-    
-  /** @internal */
-  nabl-value-impl:
+  nabl-uri:
     URI(_, _) -> <id>
     
   /** @internal */
-  nabl-value-generic:
-    term -> <not(is-list); ?_#(<?[_, <id>|_]> ); nabl-is-uri> term
+  nabl-value:
+    URI(_, _) -> <id>
     
   /** @internal */  
-  nabl-uri-impl:
+  nabl-uri:
     _{anno*} -> <fetch-elem(nabl-uri)> anno*
 
   /** @internal */  
-  nabl-value-impl:
+  nabl-value:
     _{anno*} -> <fetch-elem(nabl-value)> anno*
