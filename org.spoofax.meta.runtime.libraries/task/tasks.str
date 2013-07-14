@@ -38,6 +38,6 @@ rules
 
 rules
       	
-  perform-task(|nr): Rewrite(key, term) -> [<task-rewrite> (key, term)]
+  perform-task(|nr): Rewrite(key, term) -> <task-rewrite; MkSingleton> (key, term)
   
   	
