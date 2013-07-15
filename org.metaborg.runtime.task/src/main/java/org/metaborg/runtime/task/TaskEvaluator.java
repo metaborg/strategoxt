@@ -26,7 +26,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import com.google.common.collect.Sets;
 
 public class TaskEvaluator implements ITaskEvaluator {
-	private final TaskEngine taskEngine;
+	private final ITaskEngine taskEngine;
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
 	private final IStrategoConstructor singleConstructor;
@@ -46,7 +46,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private final Timer timer = new Timer();
 
 
-	public TaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
+	public TaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);

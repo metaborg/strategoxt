@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
-public class TaskEngine {
+public class TaskEngine implements ITaskEngine {
 	private final ITermFactory factory;
 	private final ITermDigester digester;
 	private ITaskEvaluator evaluator;
@@ -97,11 +97,6 @@ public class TaskEngine {
 		this.evaluator = evaluator;
 	}
 
-	/**
-	 * Starts task collection for given partition.
-	 * 
-	 * @param partition The partition to collect tasks for.
-	 */
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
 			throw new IllegalStateException(
@@ -113,22 +108,11 @@ public class TaskEngine {
 		inCollection.add(partition);
 	}
 
-	/**
-	 * Queries if given instruction exists.
-	 * 
-	 * @param instruction The instruction.
-	 * @return True if it exists, false otherwise.
-	 */
 	public boolean taskExists(IStrategoTerm instruction) {
 		return toTaskID.containsRow(instruction);
 	}
 
-	/**
-	 * Given an instruction, returns its identifier.
-	 * 
-	 * @param instruction The instruction.
-	 * @return Identifier of the instruction.
-	 */
+
 	public IStrategoTerm taskID(IStrategoTerm instruction, IStrategoList dependencies) {
 		IStrategoTerm taskID = toTaskID.get(instruction, dependencies);
 		if(taskID != null)
@@ -147,14 +131,7 @@ public class TaskEngine {
 		return taskID;
 	}
 
-	/**
-	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
-	 * 
-	 * @param partition The partition where the task comes from.
-	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
-	 * @param instruction The instruction.
-	 * @return A unique task identifier for given instruction.
-	 */
+
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
 		boolean combinator) {
 		if(!inCollection.contains(partition))
@@ -182,18 +159,6 @@ public class TaskEngine {
 		return factory.makeAppl(resultConstructor, taskID);
 	}
 
-	/**
-	 * Adds a persisted task back to the task engine.
-	 * 
-	 * @param taskID The identifier of the task.
-	 * @param instruction The instruction of the task.
-	 * @param partitions The partitions of the task.
-	 * @param initialDependencies The initial dependencies of the task.
-	 * @param dependencies The dependencies of the task.
-	 * @param reads The reads of the task.
-	 * @param results A list of results of the task, or an empty tuple if it has no results.
-	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
-	 */
 	public void
 		addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt combinator,
 			IStrategoList partitions, IStrategoList initialDependencies, IStrategoList dependencies,
@@ -223,11 +188,6 @@ public class TaskEngine {
 			task.setEvaluations((short) ((IStrategoInt) evaluations).intValue());
 	}
 
-	/**
-	 * Removes task with given identifier from the task engine.
-	 * 
-	 * @param taskID The identifier of the task to remove.
-	 */
 	public void removeTask(IStrategoTerm taskID) {
 		toTaskID.remove(getTask(taskID).instruction, ListBuilder.makeList(factory, getInitialDependencies(taskID)));
 		removeDependencies(taskID);
@@ -236,11 +196,6 @@ public class TaskEngine {
 		toTask.remove(taskID);
 	}
 
-	/**
-	 * Stops collection for given partition.
-	 * 
-	 * @param partition The partition to stop collecting tasks for.
-	 */
 	public void stopCollection(IStrategoString partition) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
@@ -272,11 +227,6 @@ public class TaskEngine {
 		scheduled.add(taskID);
 	}
 
-	/**
-	 * Invalidates task with given identifier, removing their results, reads and messages.
-	 * 
-	 * @param taskID The identifier of the task to invalidate.
-	 */
 	public void invalidate(IStrategoTerm taskID) {
 		final Task task = getTask(taskID);
 		if(task == null)
@@ -286,11 +236,6 @@ public class TaskEngine {
 		removeReads(taskID);
 	}
 
-	/**
-	 * Invalidates and schedules tasks that have changed because something they read has changed.
-	 * 
-	 * @param changedReads A list of reads which have changed.
-	 */
 	public void invalidateTaskReads(IStrategoList changedReads) {
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(final IStrategoTerm changedRead : changedReads) {
@@ -309,16 +254,6 @@ public class TaskEngine {
 		}
 	}
 
-	/**
-	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
-	 * changed by a read.
-	 * 
-	 * @param context The context to call the perform and insert strategies with.
-	 * @param perform The strategy that performs an instruction.
-	 * @param insert The strategy that inserts results into an instruction.
-	 * 
-	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
-	 */
 	public IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform) {
 		for(IStrategoTerm taskID : scheduled)
 			invalidate(taskID);
@@ -330,16 +265,6 @@ public class TaskEngine {
 		return result;
 	}
 
-	/**
-	 * Evaluates given task identifiers and their transitive dependencies.
-	 * 
-	 * @param context The context to call the perform and insert strategies with.
-	 * @param perform The strategy that performs an instruction.
-	 * @param insert The strategy that inserts results into an instruction.
-	 * @param taskIDs The task identifiers to evaluate.
-	 * 
-	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
-	 */
 	public IStrategoTerm evaluateNow(IContext context, Strategy insert, Strategy perform,
 		Iterable<IStrategoTerm> taskIDs) {
 		final Set<IStrategoTerm> scheduled = Sets.newHashSet(taskIDs);
@@ -447,23 +372,12 @@ public class TaskEngine {
 		return toRead.getInverse(uri);
 	}
 
-	public void addRead(IStrategoTerm taskID, IStrategoTerm read) {
-		toRead.put(taskID, read);
+	public void addRead(IStrategoTerm taskID, IStrategoTerm uri) {
+		toRead.put(taskID, uri);
 	}
 
 	public void removeReads(IStrategoTerm taskID) {
 		toRead.removeAll(taskID);
-	}
-
-
-	public IStrategoList getMessages(IStrategoString partition) {
-		IStrategoList messages = factory.makeList();
-		for(IStrategoTerm taskID : getInPartition(partition)) {
-			IStrategoTerm message = getTask(taskID).message();
-			if(message != null)
-				messages = factory.makeListCons(message, messages);
-		}
-		return messages;
 	}
 
 
@@ -479,6 +393,7 @@ public class TaskEngine {
 		}
 	}
 
+	
 	public void recover() {
 		evaluator.reset();
 		addedTasks.clear();

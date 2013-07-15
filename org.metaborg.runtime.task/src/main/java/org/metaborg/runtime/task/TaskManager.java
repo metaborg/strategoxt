@@ -17,11 +17,11 @@ import org.spoofax.terms.io.binary.TermReader;
 
 public class TaskManager {
 	private static final TaskManager INSTANCE = new TaskManager();
-	private static final Map<URI, WeakReference<TaskEngine>> taskEngineCache =
-		new HashMap<URI, WeakReference<TaskEngine>>();
+	private static final Map<URI, WeakReference<ITaskEngine>> taskEngineCache =
+		new HashMap<URI, WeakReference<ITaskEngine>>();
 	private final static TaskEngineFactory taskEngineFactory = new TaskEngineFactory();
 
-	private final ThreadLocal<TaskEngine> current = new ThreadLocal<TaskEngine>();
+	private final ThreadLocal<ITaskEngine> current = new ThreadLocal<ITaskEngine>();
 	private final ThreadLocal<URI> currentProject = new ThreadLocal<URI>();
 
 	private TaskManager() {
@@ -32,7 +32,7 @@ public class TaskManager {
 		return INSTANCE;
 	}
 
-	public TaskEngine getCurrent() {
+	public ITaskEngine getCurrent() {
 		ensureInitialized();
 		return current.get();
 	}
@@ -47,24 +47,24 @@ public class TaskManager {
 				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
 	}
 
-	public TaskEngine createTaskEngine(ITermFactory factory) {
+	public ITaskEngine createTaskEngine(ITermFactory factory) {
 		final TaskEngine taskEngine = new TaskEngine(factory, new NonDeterministicCountingTermDigester());
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
 	
-	public TaskEngine getTaskEngine(String absoluteProjectPath) {
+	public ITaskEngine getTaskEngine(String absoluteProjectPath) {
 		URI project = getProjectURIFromAbsolute(absoluteProjectPath);
-		WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
-		TaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
+		WeakReference<ITaskEngine> taskEngineRef = taskEngineCache.get(project);
+		ITaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
 		return taskEngine;
 	}
 
-	public TaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
+	public ITaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
 		URI project = getProjectURI(projectPath, agent);
 		synchronized(TaskManager.class) {
-			WeakReference<TaskEngine> taskEngineRef = taskEngineCache.get(project);
-			TaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
+			WeakReference<ITaskEngine> taskEngineRef = taskEngineCache.get(project);
+			ITaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
 			if(taskEngine == null) {
 				File taskEngineFile = getFile(project);
 				if(taskEngineFile.exists())
@@ -73,7 +73,7 @@ public class TaskManager {
 			if(taskEngine == null) {
 				taskEngine = createTaskEngine(factory);
 			}
-			taskEngineCache.put(project, new WeakReference<TaskEngine>(taskEngine));
+			taskEngineCache.put(project, new WeakReference<ITaskEngine>(taskEngine));
 			current.set(taskEngine);
 			currentProject.set(project);
 			return taskEngine;
@@ -83,9 +83,9 @@ public class TaskManager {
 	public void unloadTaskEngine(String removedProjectPath, IOAgent agent) {
 		URI removedProject = getProjectURI(removedProjectPath, agent);
 		synchronized(TaskManager.class) {
-			WeakReference<TaskEngine> removedTaskEngine = taskEngineCache.remove(removedProject);
+			WeakReference<ITaskEngine> removedTaskEngine = taskEngineCache.remove(removedProject);
 
-			TaskEngine taskEngine = current.get();
+			ITaskEngine taskEngine = current.get();
 			if(taskEngine != null && taskEngine == removedTaskEngine.get()) {
 				current.set(null);
 			}
@@ -111,9 +111,9 @@ public class TaskManager {
 		return file.toURI();
 	}
 
-	public TaskEngine tryReadFromFile(File file, ITermFactory factory) {
+	public ITaskEngine tryReadFromFile(File file, ITermFactory factory) {
 		try {
-			TaskEngine taskEngine = createTaskEngine(factory);
+			ITaskEngine taskEngine = createTaskEngine(factory);
 			IStrategoTerm tasks = new TermReader(factory).parseFromFile(file.toString());
 			return taskEngineFactory.fromTerms(taskEngine, tasks, factory);
 		} catch(Exception e) {

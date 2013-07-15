@@ -4,7 +4,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.metaborg.runtime.task.TaskEngine;
+import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.library.IOAgent;
@@ -22,7 +22,7 @@ public class TaskTest {
 	protected static IOAgent agent;
 
 	protected static TaskManager taskManager;
-	protected static TaskEngine taskEngine;
+	protected static ITaskEngine taskEngine;
 
 	@BeforeClass
 	public static void setUpOnce() throws NoSuchAlgorithmException {

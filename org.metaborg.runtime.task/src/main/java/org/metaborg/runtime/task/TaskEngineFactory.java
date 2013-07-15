@@ -15,7 +15,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.attachments.TermAttachmentSerializer;
 
 public class TaskEngineFactory {
-	public IStrategoTerm toTerm(TaskEngine taskEngine, ITermFactory factory) {
+	public IStrategoTerm toTerm(ITaskEngine taskEngine, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
@@ -47,7 +47,7 @@ public class TaskEngineFactory {
 		return factory.makeTuple(digestState, tasks);
 	}
 
-	public TaskEngine fromTerms(TaskEngine taskEngine, IStrategoTerm term, ITermFactory factory) {
+	public ITaskEngine fromTerms(ITaskEngine taskEngine, IStrategoTerm term, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		final IStrategoTerm digestState = term.getSubterm(0);
