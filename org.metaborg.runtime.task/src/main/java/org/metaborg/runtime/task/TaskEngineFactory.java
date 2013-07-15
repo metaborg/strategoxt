@@ -26,7 +26,7 @@ public class TaskEngineFactory {
 			final IStrategoTerm instruction = task.instruction;
 			final boolean combinator = task.isCombinator;
 			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
-			final IStrategoList initialDependencies = taskEngine.getInitialDependencies(taskID);
+			final IStrategoList initialDependencies = task.initialDependencies;
 			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);

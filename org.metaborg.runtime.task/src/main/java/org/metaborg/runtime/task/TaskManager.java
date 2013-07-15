@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -48,9 +49,23 @@ public class TaskManager {
 	}
 
 	public ITaskEngine createTaskEngine(ITermFactory factory) {
-		final TaskEngine taskEngine = new TaskEngine(factory, new NonDeterministicCountingTermDigester());
+		final TaskEngine taskEngine = new TaskEngine(createEmptyTaskEngine(), factory, createTermDigester());
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
+	}
+	
+	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory) {
+		final TaskEngine taskEngine = new TaskEngine(parent, factory, createTermDigester());
+		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
+		return taskEngine;
+	}
+	
+	public ITaskEngine createEmptyTaskEngine() {
+		return new EmptyTaskEngine();
+	}
+	
+	private ITermDigester createTermDigester() {
+		return new NonDeterministicCountingTermDigester();
 	}
 	
 	public ITaskEngine getTaskEngine(String absoluteProjectPath) {
