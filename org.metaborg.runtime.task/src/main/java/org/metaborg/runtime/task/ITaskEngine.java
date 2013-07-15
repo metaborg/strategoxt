@@ -13,7 +13,6 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 
 
 public interface ITaskEngine {
-
 	/**
 	 * Returns the term digester.
 	 */
@@ -284,5 +283,4 @@ public interface ITaskEngine {
 	 * Resets the task engine to the initial state.
 	 */
 	public abstract void reset();
-
 }
