@@ -27,6 +27,11 @@ public interface ITaskEngine {
 	 * Sets the task evaluator.
 	 */
 	public abstract void setEvaluator(ITaskEvaluator evaluator);
+	
+	/**
+	 * Returns the parent task engine.
+	 */
+	public abstract ITaskEngine getParent();
 
 	
 	/**

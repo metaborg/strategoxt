@@ -48,26 +48,56 @@ public class TaskManager {
 				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
 	}
 
+	public ITaskEngine pushTaskEngine(ITermFactory factory) {
+		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine newTaskEngine = createTaskEngine(currentTaskEngine, factory);
+		current.set(newTaskEngine);
+		return newTaskEngine;
+	}
+
+	public ITaskEngine popTaskEngine() {
+		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
+		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
+			throw new RuntimeException("Cannot pop the root TaskEngine.");
+		current.set(parentTaskEngine);
+		return parentTaskEngine;
+	}
+
+	public ITaskEngine mergeTaskEngine(ITermFactory factory) {
+		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
+		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
+			throw new RuntimeException("Cannot merge the root TaskEngine.");
+
+		// Serialize current task engine into parent task engine.
+		final IStrategoTerm currentSerialized = taskEngineFactory.toTerm(currentTaskEngine, factory);
+		taskEngineFactory.fromTerms(parentTaskEngine, currentSerialized, factory);
+
+		current.set(parentTaskEngine);
+		return parentTaskEngine;
+	}
+
 	public ITaskEngine createTaskEngine(ITermFactory factory) {
 		final TaskEngine taskEngine = new TaskEngine(createEmptyTaskEngine(), factory, createTermDigester());
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
-	
+
 	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory) {
 		final TaskEngine taskEngine = new TaskEngine(parent, factory, createTermDigester());
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
-	
+
 	public ITaskEngine createEmptyTaskEngine() {
 		return new EmptyTaskEngine();
 	}
-	
+
 	private ITermDigester createTermDigester() {
 		return new NonDeterministicCountingTermDigester();
 	}
-	
+
 	public ITaskEngine getTaskEngine(String absoluteProjectPath) {
 		URI project = getProjectURIFromAbsolute(absoluteProjectPath);
 		WeakReference<ITaskEngine> taskEngineRef = taskEngineCache.get(project);
@@ -118,7 +148,7 @@ public class TaskManager {
 			file = new File(agent.getWorkingDir(), projectPath);
 		return file.toURI();
 	}
-	
+
 	private URI getProjectURIFromAbsolute(String projectPath) {
 		File file = new File(projectPath);
 		if(!file.isAbsolute())

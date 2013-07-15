@@ -119,6 +119,10 @@ public class TaskEngine implements ITaskEngine {
 		this.evaluator = evaluator;
 	}
 
+	public ITaskEngine getParent() {
+		return parent;
+	}
+	
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
 			throw new IllegalStateException(

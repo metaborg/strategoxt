@@ -27,6 +27,10 @@ public class EmptyTaskEngine implements ITaskEngine {
 
 	}
 
+	public ITaskEngine getParent() {
+		return null;
+	}
+
 	public void startCollection(IStrategoString partition) {
 
 	}
