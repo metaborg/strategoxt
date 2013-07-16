@@ -3,6 +3,7 @@ module nbl/tasks
 imports 
   
   task/core
+  task/tasks
   nbl/lookup
   nbl/collect
   nbl/query
@@ -100,6 +101,30 @@ rules // Visibility
   		uri  := <nabl-uri> scope;
   		def* := <nabl-lookup-all(|ns)> uri;
   		not(?[])
+
+	nabl-resolve-all-defs-subtasks(|partition, ns, prop*, range):
+		uri -> concatted
+		with
+			task := <nabl-resolve-all-defs-subtasks-one(|partition, ns, prop*, range)> uri;
+      switch !range
+      	case One(): ![]
+      	case All(): <nabl-uri-parent < nabl-resolve-all-defs-subtasks(|partition, ns, prop*, range) + ![]> uri
+    	end => subtask;
+    	concatted := <new-task(|partition)> Concat([task, subtask])
+		
+	nabl-resolve-all-defs-subtasks-one(|partition, ns, prop*, range):
+		uri -> filtered
+		with
+			def-task := <new-task(|partition)> ResolveAllDefs(<nabl-use-subtask-uri(|partition)> uri, ns);
+			if ExternalDef(x) := <nabl-uri-path; Hd> uri then
+        ext-uri      := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
+        ext-def-task := <new-task(|partition)> ResolveAllDefs(<nabl-use-subtask-uri(|partition)> ext-uri, ns);
+        task*        := [ext-def-task, def-task]
+      else
+      	task* := [def-task]
+      end;
+      concatted := <new-task(|partition)> Concat(task*);
+      filtered  := <nabl-use-propconstraint(|partition)> (concatted, prop*)
 
 rules // Import calculation
 	
