@@ -77,7 +77,7 @@ public class TaskEngine implements ITaskEngine {
 
 
 	/** Set of all removed task identifiers which should be invisible in the parent task engine. */
-	private final Set<IStrategoTerm> removed = new HashSet<IStrategoTerm>();
+	private final Set<IStrategoTerm> allRemoved = new HashSet<IStrategoTerm>();
 
 	/** Predicate that decides whether a task identifier from the parent should be visible or not. */
 	private final Predicate<IStrategoTerm> visible;
@@ -171,7 +171,7 @@ public class TaskEngine implements ITaskEngine {
 
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
-		if(getTask(taskID) == null) {
+		if(!taskIDExists(taskID)) {
 			toTask.put(taskID, new Task(instruction, dependencies, combinator));
 			addedTasks.add(taskID);
 			schedule(taskID);
@@ -184,6 +184,10 @@ public class TaskEngine implements ITaskEngine {
 
 		return createResult(taskID);
 	}
+	
+	private boolean taskIDExists(IStrategoTerm taskID) {
+		return getTaskCurrent(taskID) != null || parent.getTask(taskID) != null;
+	}
 
 	private IStrategoAppl createResult(IStrategoTerm taskID) {
 		return factory.makeAppl(resultConstructor, taskID);
@@ -195,9 +199,10 @@ public class TaskEngine implements ITaskEngine {
 			IStrategoList reads, IStrategoTerm results, IStrategoInt failed, IStrategoTerm message, IStrategoTerm time,
 			IStrategoTerm evaluations) {
 		Task task = new Task(instruction, initialDependencies, combinator.intValue() == 1);
-		if(getTask(taskID) == null)
+		if(getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
-
+		
+		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
@@ -218,14 +223,15 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public void removeTask(IStrategoTerm taskID) {
+		allRemoved.add(taskID);
 		final Task task = getTask(taskID);
+		if(task == null)
+			return; // Task is not in this task engine but in a parent one.
 		toTaskID.remove(task.instruction, ListBuilder.makeList(factory, task.initialDependencies));
 		removeDependencies(taskID);
 		removeReads(taskID);
 		scheduled.remove(taskID);
 		toTask.remove(taskID);
-
-		removed.add(taskID);
 	}
 
 	public void stopCollection(IStrategoString partition) {
@@ -260,7 +266,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	private boolean parentTaskVisible(IStrategoTerm taskID) {
-		return !removed.contains(taskID);
+		return !allRemoved.contains(taskID);
 	}
 
 	private boolean parentTaskVisible(Task task) {
@@ -349,7 +355,7 @@ public class TaskEngine implements ITaskEngine {
 
 	public Task getTask(IStrategoTerm taskID) {
 		Task task = toTask.get(taskID);
-		if(task == null && !parentTaskVisible(taskID))
+		if(task == null && parentTaskVisible(taskID))
 			task = parent.getTask(taskID);
 		return task;
 	}
@@ -480,6 +486,11 @@ public class TaskEngine implements ITaskEngine {
 		for(Task task : getTasks()) {
 			task.clearEvaluations();
 		}
+	}
+	
+	
+	public Iterable<IStrategoTerm> getRemovedTasks() {
+		return allRemoved;
 	}
 
 

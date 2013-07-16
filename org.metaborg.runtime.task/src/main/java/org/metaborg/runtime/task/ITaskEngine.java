@@ -302,6 +302,12 @@ public interface ITaskEngine {
 	 * Resets the evaluation count for each task.
 	 */
 	public abstract void clearEvaluations();
+	
+	
+	/**
+	 * Returns all task identifiers that have been removed as a result of garbage collection.
+	 */
+	public abstract Iterable<IStrategoTerm> getRemovedTasks();
 
 	
 	/**

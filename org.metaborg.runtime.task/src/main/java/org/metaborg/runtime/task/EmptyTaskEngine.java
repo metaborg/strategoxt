@@ -180,6 +180,10 @@ public class EmptyTaskEngine implements ITaskEngine {
 	public void clearEvaluations() {
 
 	}
+	
+	public Iterable<IStrategoTerm> getRemovedTasks() {
+		return new EmptyIterable<IStrategoTerm>(); 
+	}
 
 	public void recover() {
 

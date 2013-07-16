@@ -21,6 +21,7 @@ public class TaskManager {
 	private static final Map<URI, WeakReference<ITaskEngine>> taskEngineCache =
 		new HashMap<URI, WeakReference<ITaskEngine>>();
 	private final static TaskEngineFactory taskEngineFactory = new TaskEngineFactory();
+	private final static ITermDigester digester = new NonDeterministicCountingTermDigester();
 
 	private final ThreadLocal<ITaskEngine> current = new ThreadLocal<ITaskEngine>();
 	private final ThreadLocal<URI> currentProject = new ThreadLocal<URI>();
@@ -70,32 +71,33 @@ public class TaskManager {
 		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
 			throw new RuntimeException("Cannot merge the root TaskEngine.");
 
+		for(IStrategoTerm taskID : currentTaskEngine.getRemovedTasks())
+			parentTaskEngine.removeTask(taskID);
+		
 		// Serialize current task engine into parent task engine.
 		final IStrategoTerm currentSerialized = taskEngineFactory.toTerm(currentTaskEngine, factory);
 		taskEngineFactory.fromTerms(parentTaskEngine, currentSerialized, factory);
+		
+		// TODO: what about tasks that have changes, like more reads or dependencies?
 
 		current.set(parentTaskEngine);
 		return parentTaskEngine;
 	}
 
 	public ITaskEngine createTaskEngine(ITermFactory factory) {
-		final TaskEngine taskEngine = new TaskEngine(createEmptyTaskEngine(), factory, createTermDigester());
+		final TaskEngine taskEngine = new TaskEngine(createEmptyTaskEngine(), factory, digester);
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
 
 	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory) {
-		final TaskEngine taskEngine = new TaskEngine(parent, factory, createTermDigester());
+		final TaskEngine taskEngine = new TaskEngine(parent, factory, digester);
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
 
 	public ITaskEngine createEmptyTaskEngine() {
 		return new EmptyTaskEngine();
-	}
-
-	private ITermDigester createTermDigester() {
-		return new NonDeterministicCountingTermDigester();
 	}
 
 	public ITaskEngine getTaskEngine(String absoluteProjectPath) {

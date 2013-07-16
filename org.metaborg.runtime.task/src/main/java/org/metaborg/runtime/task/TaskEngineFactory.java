@@ -19,7 +19,7 @@ public class TaskEngineFactory {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
-		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
+		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntriesCurrent()) {
 			final IStrategoTerm taskID = entry.getKey();
 			final Task task = entry.getValue();
 			
