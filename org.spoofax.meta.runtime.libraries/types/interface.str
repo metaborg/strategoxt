@@ -7,5 +7,7 @@ strategies
   new-property-task(|task*): (kind, term) -> <fail>
 
   type-of(|task*) = fail
+  
+  type-of(|partition, uri*) = fail
 
   type-prop-eq = eq
