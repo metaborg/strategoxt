@@ -109,8 +109,8 @@ rules // Visibility
       switch !range
       	case One(): ![]
       	case All(): <nabl-uri-parent < nabl-resolve-all-defs-subtasks(|partition, ns, prop*, range) + ![]> uri
-    	end => subtask*;
-    	concatted := <new-task(|partition)> Concat([task|subtask*])
+    	end => subtask;
+    	concatted := <new-task(|partition)> Concat([task, subtask])
 		
 	nabl-resolve-all-defs-subtasks-one(|partition, ns, prop*, range):
 		uri -> filtered
