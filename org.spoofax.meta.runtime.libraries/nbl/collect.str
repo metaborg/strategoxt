@@ -151,12 +151,12 @@ rules // generic analysis of scopes
 rules // generic analysis of name generation
 	
 	nabl-namegen(|lang, partition, unique*, uri*, anno*):
-		name -> <origin-track-forced(!newname')> name
+		name -> <origin-track-forced(!newname{anno'*})> name
 		where
 			<has-annotation(?GenerateName(ns))> name;
 			uri      := <lookup-uri(|lang, ns)> uri*;
 			newname  := <nabl-namegen-get(|lang, partition, ns, uri, unique*)> name;
-			newname' := <add-annotations(|anno*); remove-annotations(?GenerateName(_))> newname
+			anno'*   := <remove-all(?GenerateName(_))> anno*
 	
 	nabl-namegen-get(|lang, partition, ns, uri, unique*):
 		name -> result
