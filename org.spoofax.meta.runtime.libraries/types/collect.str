@@ -35,6 +35,9 @@ strategies
      
   new-property-task(|lang, partition, uri*):
     (Type(), term) -> <type-of(|lang, partition, uri*) <+ type-of(|partition)> term
+    
+  new-property-task(|partition):
+    (Type(), term) -> <type-of(|partition)> term
 
   property-task(|kind, task*) = 
      property-task(|kind)
