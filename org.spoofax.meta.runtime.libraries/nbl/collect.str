@@ -107,7 +107,7 @@ strategies // generic traversal
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, state*, implicit*))
-  ; annotate-property-tasks(|partition, uri'*)
+  ; annotate-property-tasks(|lang, partition, uri'*)
     
 	nabl-siblings(|lang, partition, unique*, uri*) = 
 		[]  

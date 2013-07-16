@@ -13,27 +13,28 @@ imports
   
 strategies
   
-  annotate-property-tasks(|partition, uri*):
-  	term -> <foldl(annotate-property-task(|partition, uri*) <+ Snd)> (kind*, term')
+  annotate-property-tasks(|lang, partition, uri*):
+  	term -> <foldl(annotate-property-task(|lang, partition, uri*) <+ Snd)> (kind*, term')
   	where
   		kind* := [Type()|<custom-properties <+ ![]>];
   		term' := <remove-property-annotations(|kind*)> term
   
-  annotate-property-task(|partition, uri*):
+  annotate-property-task(|lang, partition, uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
       not(<property-task(|kind)> term)
     where
-      prop := <new-property-task(|partition, uri*)> 
+      prop := <new-property-task(|lang, partition, uri*)> 
   
   remove-property-annotations(|kind*) =
   	!(kind*, <id>); foldl(remove-property-annotation) 
   	
 	remove-property-annotation:
 		(kind, term) -> <remove-annotations(?(kind, _))> term
+
      
-  new-property-task(|task*, uri*):
-    (Type(), term) -> <type-of(|task*, uri*) <+ type-of(|task*)> term
+  new-property-task(|lang, partition, uri*):
+    (Type(), term) -> <type-of(|lang, partition, uri*) <+ type-of(|partition)> term
 
   property-task(|kind, task*) = 
      property-task(|kind)
