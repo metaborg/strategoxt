@@ -24,7 +24,7 @@ strategies
     where
       not(<property-task(|kind)> term)
     where
-      prop := <new-property-task(|lang, partition, uri*)> 
+      prop := <new-property-task(|lang, partition, uri*) <+ new-property-task(|partition)> 
   
   remove-property-annotations(|kind*) =
   	!(kind*, <id>); foldl(remove-property-annotation) 
@@ -34,7 +34,7 @@ strategies
 
      
   new-property-task(|lang, partition, uri*):
-    (Type(), term) -> <type-of(|lang, partition, uri*) <+ type-of(|partition)> term
+    (Type(), term) -> <type-of(|partition)> term
     
   new-property-task(|partition):
     (Type(), term) -> <type-of(|partition)> term
