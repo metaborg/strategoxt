@@ -3,14 +3,21 @@ module analysis/reanalysis
 imports
 	
 	analysis/core
+	analysis/defaults
+	task/core
+	index/core
 	nbl/collect
 
 rules
 	
 	start-reanalysis(|language, path, project-path) =
-		nabl-namegen-clear(|<analysis-partition(|path, project-path)>)
+		nabl-namegen-clear(|<analysis-partition(|path, project-path)>);
+		index-push;
+		task-push
 		
-	stop-reanalysis(|language, path, project-path) = id
+	stop-reanalysis(|language, path, project-path) =
+		task-pop;
+		index-pop
 	
 	reanalysis(s|language, path, project-path) =
 		where(start-reanalysis(|language, path, project-path); s; stop-reanalysis(|language, path, project-path))
@@ -20,4 +27,10 @@ rules
     with
       partition := <analysis-partition(|path, project-path)>;
       r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
-    	<analyze-perform-all> [r]
+    	(result*, evaluated-task*, unevaluated-task*) := <analyze-perform-all> [r];
+    	Result(_, _, _, _, error*, warning*, note*) := <Hd> result*;
+      <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task*; 
+      <map(analysis-default-debug(!"Error: "))> error*;
+      <map(analysis-default-debug(!"Warning: "))> warning*;
+      <map(analysis-default-debug(!"Note: "))> note*
