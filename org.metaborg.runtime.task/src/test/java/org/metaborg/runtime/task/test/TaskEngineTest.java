@@ -284,7 +284,7 @@ public class TaskEngineTest extends TaskTest {
 		assertNotNull(taskEngine.getTask(resolveA));
 	}
 
-	// Changes in current index are not visible in parent index.
+	// Changes in current task engine are not visible in parent task engine.
 	@Test
 	public void testStackNoParentChange() {
 		final ITaskEngine parent = taskEngine;
@@ -304,9 +304,9 @@ public class TaskEngineTest extends TaskTest {
 		assertSame(parent, current);
 	}
 
-	// Changes in parent index are visible in current index.
+	// Changes in parent task engine are visible in current task engine.
 	@Test
-	public void TestStackParentChangeVisible() {
+	public void testStackParentChangeVisible() {
 		final ITaskEngine parent = taskEngine;
 		ITaskEngine current = parent;
 
@@ -335,7 +335,7 @@ public class TaskEngineTest extends TaskTest {
 		assertSame(parent, current);
 	}
 
-	// Removing a task from current index makes it invisible in parent index.
+	// Removing a task from current task engine makes it invisible in parent task engine.
 	@Test
 	public void testStackRemove() {
 		final ITaskEngine parent = taskEngine;
