@@ -15,7 +15,8 @@ signature
     Collect : List(Term)       -> Instruction
     Choice  : List(List(Term)) -> Instruction
     Rewrite : ID * Term        -> Instruction
-    
+    Index   : Int * List(Term) -> Term
+     
 rules
   
   perform-task(|nr) = ?Id(<MkSingleton>)
@@ -33,11 +34,13 @@ rules
 rules
   
 	task-is-combinator = ?Choice(_)
-
-  perform-task(|nr): Choice(choice*) -> <Hd> choice*
-
+  perform-task(|nr)  = ?Choice(<Hd; MkSingleton>)
+  
 rules
       	
-  perform-task(|nr): Rewrite(key, term) -> <task-rewrite; MkSingleton> (key, term)
+  perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
   
+rules
+  
+  perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
   	
