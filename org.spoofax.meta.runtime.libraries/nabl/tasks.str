@@ -29,6 +29,7 @@ rules // basics
   perform-task(|nr) = 
     ?CollectDefs(<id>)
   ; (?Def(_) <+ get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))
+
 rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
