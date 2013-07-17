@@ -9,6 +9,8 @@ strategies // Collect
 	| lang, partition, unique*, uri*, state*
 	) = fail
 	
+	nabl-external-def-site(|partition) = fail
+
 	nabl-state-site = fail
 	
 	nabl-use-site(|lang, partition, unique*, uri*, state*) = fail
@@ -16,6 +18,7 @@ strategies // Collect
 	nabl-import-site(|lang, partition, uri*, state*) = fail
 	
 	nabl-prop-site(|lang, partition, state*, implicit*) = fail
+	
 	
 strategies // Projections
   
