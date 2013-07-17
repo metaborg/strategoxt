@@ -182,7 +182,7 @@ rules // generic analysis of name generation
   		ns-name             := <get-constructor> ns;
   		uri-name            := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"_"); concat-strings> uri
   		
-	nabl-namegen-name-fix = lower-case; string-replace(|"/", "_"); string-replace(|"-", "_")
+	nabl-namegen-name-fix = lower-case; string-replace(|"/", "_"); string-replace(|"-", "_"); string-replace(|".", "_")
 	 
 rules // generic analysis of defs
     	
