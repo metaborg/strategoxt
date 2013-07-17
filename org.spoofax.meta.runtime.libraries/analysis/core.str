@@ -95,3 +95,5 @@ rules // Projections
 		
 	analyze-result-analyzed-ast:
 		Result(_, _, analyzed-ast, _, _, _, _) -> analyzed-ast
+
+	analysis-partition(|path, project-path) = !$[[project-path]/[path]]

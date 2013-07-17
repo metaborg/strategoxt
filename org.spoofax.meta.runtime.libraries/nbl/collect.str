@@ -7,11 +7,13 @@ imports
 	task/messages
 	nbl/tasks
 	nbl/entries
+	nbl/query
 	nbl/interface
 	nbl/uri
 	nbl/utils
 	types/collect
 	editor/origins
+	index/core
 	
 signature 
 
@@ -26,6 +28,7 @@ signature
 	constructors // unique name generation
 		
 		GenerateName : Namespace -> GenerateName
+		GenerateNum  : URI * Int -> Entry
 
 	constructors // def
 
@@ -163,16 +166,15 @@ rules // generic analysis of name generation
 		name -> result
 		with
 			name-key := (name, "namegen");
-			num-key  := (lang, partition, ns, uri, "namegen");
       if full-newname := <hashtable-get(|name-key)> unique* then
         result := full-newname
       else
-        nextnum := <hashtable-get(|num-key) <+ !0> unique*;
+        nextnum := <nabl-namegen-get-num(|uri) <+ !0>;
         newname := <nabl-namegen-name(|lang, partition, ns)> uri;
         numstr  := <int-to-string> nextnum;
         result  := $[[newname]__[numstr]];
         <hashtable-put(|name-key, result)> unique*;
-        <hashtable-put(|num-key, <inc> nextnum)> unique*
+        <inc; nabl-namegen-store-num(|partition, uri)> nextnum
       end
       
   nabl-namegen-name(|lang, partition, ns):
@@ -183,6 +185,13 @@ rules // generic analysis of name generation
   		uri-name            := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"_"); concat-strings> uri
   		
 	nabl-namegen-name-fix = lower-case; string-replace(|"/", "_"); string-replace(|"-", "_"); string-replace(|".", "_")
+	
+	nabl-namegen-get-num(|uri)              = <nabl-get-all-values; !(<id>, 0); foldl(max)> GenerateNum(uri, ())
+	nabl-namegen-store-num(|partition, uri) = <index-add(|<nabl-namegen-partition(|partition)>)> GenerateNum(uri, <id>)
+	nabl-namegen-clear(|partition)          = nabl-namegen-partition(|partition); index-clear-partition
+	nabl-namegen-partition(|partition)      = !$[[partition]_namegen]
+	nabl-uri                                : GenerateNum(uri, _) -> uri
+	nabl-value                              : GenerateNum(_, num) -> num
 	 
 rules // generic analysis of defs
     	

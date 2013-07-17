@@ -35,7 +35,7 @@ rules // Single finle analysis
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
       partition* := <analysis-changed-partitions> evaluated-task*;
       if <not(is-test-file)> path then
-      	partition := $[[project-path]/[path]];
+      	partition := <analysis-partition(|path, project-path)>;
       	<remove-all(?partition <+ ?path); analysis-message-update-partitions-queue(|language, project-path)> partition*
     	end;
       <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];

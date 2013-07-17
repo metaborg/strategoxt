@@ -9,7 +9,7 @@ rules // Single file analysis
   analyze-one(|language, path, project-path):
     ast -> (analyzed-ast, evaluated-task*, unevaluated-task*, (error*, warning*, note*))
     with
-      partition := $[[project-path]/[path]];
+      partition := <analysis-partition(|path, project-path)>;
       r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
     	(result*, evaluated-task*, unevaluated-task*) := <analyze-perform-all> [r];
     	Result(_, _, _, _, error*, warning*, note*) := <Hd> result*

@@ -1,0 +1,23 @@
+module analysis/reanalysis
+
+imports
+	
+	analysis/core
+	nbl/collect
+
+rules
+	
+	start-reanalysis(|language, path, project-path) =
+		nabl-namegen-clear(|<analysis-partition(|path, project-path)>)
+		
+	stop-reanalysis(|language, path, project-path) = id
+	
+	reanalysis(s|language, path, project-path) =
+		where(start-reanalysis(|language, path, project-path); s; stop-reanalysis(|language, path, project-path))
+	
+  reanalyze-ast(|language, path, project-path):
+    ast -> analyzed-ast
+    with
+      partition := <analysis-partition(|path, project-path)>;
+      r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
+    	<analyze-perform-all> [r]
