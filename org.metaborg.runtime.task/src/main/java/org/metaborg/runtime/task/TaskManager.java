@@ -39,6 +39,15 @@ public class TaskManager {
 		return current.get();
 	}
 
+	private void setCurrent(URI project, ITaskEngine taskEngine) {
+		current.set(taskEngine);
+		taskEngineCache.put(project, new WeakReference<ITaskEngine>(taskEngine));
+	}
+
+	private void setCurrent(ITaskEngine taskEngine) {
+		setCurrent(currentProject.get(), taskEngine);
+	}
+
 	public boolean isInitialized() {
 		return current.get() != null;
 	}
@@ -52,7 +61,7 @@ public class TaskManager {
 	public ITaskEngine pushTaskEngine(ITermFactory factory) {
 		final ITaskEngine currentTaskEngine = current.get();
 		final ITaskEngine newTaskEngine = createTaskEngine(currentTaskEngine, factory);
-		current.set(newTaskEngine);
+		setCurrent(newTaskEngine);
 		return newTaskEngine;
 	}
 
@@ -61,7 +70,7 @@ public class TaskManager {
 		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
 		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
 			throw new RuntimeException("Cannot pop the root TaskEngine.");
-		current.set(parentTaskEngine);
+		setCurrent(parentTaskEngine);
 		return parentTaskEngine;
 	}
 
@@ -73,14 +82,14 @@ public class TaskManager {
 
 		for(IStrategoTerm taskID : currentTaskEngine.getRemovedTasks())
 			parentTaskEngine.removeTask(taskID);
-		
+
 		// Serialize current task engine into parent task engine.
 		final IStrategoTerm currentSerialized = taskEngineFactory.toTerm(currentTaskEngine, factory);
 		taskEngineFactory.fromTerms(parentTaskEngine, currentSerialized, factory);
-		
+
 		// TODO: what about tasks that have changes, like more reads or dependencies?
 
-		current.set(parentTaskEngine);
+		setCurrent(parentTaskEngine);
 		return parentTaskEngine;
 	}
 
@@ -120,8 +129,7 @@ public class TaskManager {
 			if(taskEngine == null) {
 				taskEngine = createTaskEngine(factory);
 			}
-			taskEngineCache.put(project, new WeakReference<ITaskEngine>(taskEngine));
-			current.set(taskEngine);
+			setCurrent(project, taskEngine);
 			currentProject.set(project);
 			return taskEngine;
 		}
