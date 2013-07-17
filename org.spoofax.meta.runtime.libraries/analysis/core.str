@@ -84,6 +84,9 @@ rules // Index entries to diff
 	
   analyze-diff-entry =
     ?Def(_)
+ 
+  analyze-diff-entry =
+    ?Alias(_, _)
     
   analyze-diff-entry =
     ?Prop(_, _, _)
