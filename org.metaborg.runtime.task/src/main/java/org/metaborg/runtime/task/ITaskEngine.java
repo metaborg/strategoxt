@@ -27,6 +27,11 @@ public interface ITaskEngine {
 	 * Sets the task evaluator.
 	 */
 	public abstract void setEvaluator(ITaskEvaluator evaluator);
+	
+	/**
+	 * Returns the parent task engine.
+	 */
+	public abstract ITaskEngine getParent();
 
 	
 	/**
@@ -37,7 +42,7 @@ public interface ITaskEngine {
 	public abstract void startCollection(IStrategoString partition);
 
 	/**
-	 * Queries if given instruction exists.
+	 * Queries if a task with given instruction exists.
 	 * 
 	 * @param instruction The instruction.
 	 * @return True if it exists, false otherwise.
@@ -45,12 +50,21 @@ public interface ITaskEngine {
 	public abstract boolean taskExists(IStrategoTerm instruction);
 
 	/**
-	 * Given an instruction, returns its identifier.
+	 * Given an instruction and its initial dependencies, returns its identifier. If it does not have an identifier,
+	 * null is returned.
 	 * 
 	 * @param instruction The instruction.
-	 * @return Identifier of the instruction.
+	 * @param dependencies The initial dependencies of the instruction.
 	 */
-	public abstract IStrategoTerm taskID(IStrategoTerm instruction, IStrategoList dependencies);
+	public abstract IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies);
+	
+	/**
+	 * Given an instruction and its initial dependencies, returns its identifier or creates a new identifier.
+	 * 
+	 * @param instruction The instruction.
+	 * @param dependencies The initial dependencies of the instruction.
+	 */
+	public abstract IStrategoTerm createTaskID(IStrategoTerm instruction, IStrategoList dependencies);
 
 	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
@@ -150,7 +164,7 @@ public interface ITaskEngine {
 	 * Gets all task identifier to task mappings.
 	 */
 	public abstract Iterable<Entry<IStrategoTerm, Task>> getTaskEntries();
-
+	
 	/**
 	 * Gets task corresponding to given task identifier.
 	 * 
@@ -158,6 +172,29 @@ public interface ITaskEngine {
 	 */
 	public abstract Task getTask(IStrategoTerm taskID);
 
+	
+	/**
+	 * Gets all task identifiers excluding task identifiers from the parent task engine.
+	 */
+	public abstract Iterable<IStrategoTerm> getTaskIDsCurrent();
+
+	/**
+	 * Gets all tasks excluding tasks from the parent task engine.
+	 */
+	public abstract Iterable<Task> getTasksCurrent();
+
+	/**
+	 * Gets all task identifier to task mappings excluding mappings from the parent task engine.
+	 */
+	public abstract Iterable<Entry<IStrategoTerm, Task>> getTaskEntriesCurrent();
+	
+	/**
+	 * Gets task corresponding to given task identifier excluding tasks from the parent task engine.
+	 * 
+	 * @param taskID The task identifier.
+	 */
+	public abstract Task getTaskCurrent(IStrategoTerm taskID);
+	
 	
 	/**
 	 * Gets all partitions.
@@ -169,7 +206,7 @@ public interface ITaskEngine {
 	 * 
 	 * @param taskID The task identifier.
 	 */
-	public abstract Iterable<IStrategoString> getPartitionsOf(IStrategoTerm taskID);
+	public abstract Set<IStrategoString> getPartitionsOf(IStrategoTerm taskID);
 
 	/**
 	 * Gets all task identifiers that have been added to given partition.
@@ -178,13 +215,6 @@ public interface ITaskEngine {
 	 */
 	public abstract Iterable<IStrategoTerm> getInPartition(IStrategoString partition);
 
-	
-	/**
-	 * Gets the dependencies that were given when task with given identifier was created.
-	 * 
-	 * @param taskID The task identifier to get the initial dependencies for.
-	 */
-	public abstract IStrategoList getInitialDependencies(IStrategoTerm taskID);
 
 	/**
 	 * Gets all other task identifiers that task with given identifier depends on.
@@ -272,6 +302,12 @@ public interface ITaskEngine {
 	 * Resets the evaluation count for each task.
 	 */
 	public abstract void clearEvaluations();
+	
+	
+	/**
+	 * Returns all task identifiers that have been removed as a result of garbage collection.
+	 */
+	public abstract Iterable<IStrategoTerm> getRemovedTasks();
 
 	
 	/**

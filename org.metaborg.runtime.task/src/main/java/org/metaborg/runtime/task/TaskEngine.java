@@ -1,9 +1,7 @@
 package org.metaborg.runtime.task;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
@@ -22,20 +20,25 @@ import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
 public class TaskEngine implements ITaskEngine {
+	private final ITaskEngine parent;
 	private final ITermFactory factory;
 	private final ITermDigester digester;
 	private ITaskEvaluator evaluator;
 	private final IStrategoConstructor resultConstructor;
 
 
-	/** Mapping of task identifiers to tasks. */
-	private final Map<IStrategoTerm, Task> toTask = new HashMap<IStrategoTerm, Task>();
+	/** Bidirectional mapping between task identifiers and tasks. */
+	private final BiMap<IStrategoTerm, Task> toTask = HashBiMap.create();
 
 	/** Mapping table of instructions and dependencies to task identifiers. */
 	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
@@ -44,12 +47,6 @@ public class TaskEngine implements ITaskEngine {
 	/** Origin partitions of tasks. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoString> toPartition =
 		BidirectionalLinkedHashMultimap.create();
-
-	/**
-	 * Mapping of task identifiers to the initial dependencies of that task when it was added. Required for cleaning up
-	 * tasks in the {@link #toTaskID} table mapping because {@link #toDependency} can change during evaluation.
-	 **/
-	private final Map<IStrategoTerm, IStrategoList> toInitialDependencies = new HashMap<IStrategoTerm, IStrategoList>();
 
 	/** Bidirectional mapping of dependencies between tasks identifiers. Can be updated during evaluation. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
@@ -79,10 +76,35 @@ public class TaskEngine implements ITaskEngine {
 	private final Set<IStrategoString> inCollection = new HashSet<IStrategoString>();
 
 
-	public TaskEngine(ITermFactory factory, ITermDigester digester) {
+	/** Set of all removed task identifiers which should be invisible in the parent task engine. */
+	private final Set<IStrategoTerm> allRemoved = new HashSet<IStrategoTerm>();
+
+	/** Predicate that decides whether a task identifier from the parent should be visible or not. */
+	private final Predicate<IStrategoTerm> visible;
+	private final Predicate<Task> visibleTask;
+	private final Predicate<Entry<IStrategoTerm, Task>> visibleEntry;
+
+
+	public TaskEngine(ITaskEngine parent, ITermFactory factory, ITermDigester digester) {
+		this.parent = parent;
 		this.factory = factory;
 		this.digester = digester;
 		this.resultConstructor = factory.makeConstructor("Result", 1);
+		this.visible = new Predicate<IStrategoTerm>() {
+			public boolean apply(IStrategoTerm taskID) {
+				return parentTaskVisible(taskID);
+			}
+		};
+		this.visibleTask = new Predicate<Task>() {
+			public boolean apply(Task task) {
+				return parentTaskVisible(task);
+			}
+		};
+		this.visibleEntry = new Predicate<Entry<IStrategoTerm, Task>>() {
+			public boolean apply(Entry<IStrategoTerm, Task> entry) {
+				return parentTaskVisible(entry.getKey());
+			}
+		};
 	}
 
 	public ITermDigester getDigester() {
@@ -97,6 +119,10 @@ public class TaskEngine implements ITaskEngine {
 		this.evaluator = evaluator;
 	}
 
+	public ITaskEngine getParent() {
+		return parent;
+	}
+	
 	public void startCollection(IStrategoString partition) {
 		if(inCollection.contains(partition))
 			throw new IllegalStateException(
@@ -104,17 +130,23 @@ public class TaskEngine implements ITaskEngine {
 
 		addedTasks.clear();
 		removedTasks.clear();
-		removedTasks.addAll(toPartition.getInverse(partition));
+		Iterables.addAll(removedTasks, getInPartition(partition));
 		inCollection.add(partition);
 	}
 
 	public boolean taskExists(IStrategoTerm instruction) {
-		return toTaskID.containsRow(instruction);
+		return toTaskID.containsRow(instruction) || parent.taskExists(instruction);
 	}
 
-
-	public IStrategoTerm taskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
 		IStrategoTerm taskID = toTaskID.get(instruction, dependencies);
+		if(taskID == null)
+			taskID = parent.getTaskID(instruction, dependencies);
+		return taskID;
+	}
+
+	public IStrategoTerm createTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+		IStrategoTerm taskID = getTaskID(instruction, dependencies);
 		if(taskID != null)
 			return taskID;
 		taskID = digester.digest(factory, instruction, dependencies);
@@ -131,28 +163,30 @@ public class TaskEngine implements ITaskEngine {
 		return taskID;
 	}
 
-
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
 		boolean combinator) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		final IStrategoTerm taskID = taskID(instruction, dependencies);
+		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
-		if(!toTask.containsKey(taskID)) {
-			toTask.put(taskID, new Task(instruction, combinator));
+		if(!taskIDExists(taskID)) {
+			toTask.put(taskID, new Task(instruction, dependencies, combinator));
 			addedTasks.add(taskID);
 			schedule(taskID);
 		}
 		removedTasks.remove(taskID);
 
 		toPartition.put(taskID, partition);
-		toInitialDependencies.put(taskID, dependencies);
 		for(final IStrategoTerm dependency : dependencies)
 			addDependency(taskID, dependency);
 
 		return createResult(taskID);
+	}
+	
+	private boolean taskIDExists(IStrategoTerm taskID) {
+		return getTaskCurrent(taskID) != null || parent.getTask(taskID) != null;
 	}
 
 	private IStrategoAppl createResult(IStrategoTerm taskID) {
@@ -164,14 +198,14 @@ public class TaskEngine implements ITaskEngine {
 			IStrategoList partitions, IStrategoList initialDependencies, IStrategoList dependencies,
 			IStrategoList reads, IStrategoTerm results, IStrategoInt failed, IStrategoTerm message, IStrategoTerm time,
 			IStrategoTerm evaluations) {
-		Task task = new Task(instruction, combinator.intValue() == 1);
-		if(toTask.put(taskID, task) != null)
+		Task task = new Task(instruction, initialDependencies, combinator.intValue() == 1);
+		if(getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
-
+		
+		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
 		for(final IStrategoTerm partition : partitions)
 			toPartition.put(taskID, (IStrategoString) partition);
-		toInitialDependencies.put(taskID, initialDependencies);
 		for(final IStrategoTerm dependency : dependencies)
 			toDependency.put(taskID, dependency);
 		for(final IStrategoTerm read : reads)
@@ -189,7 +223,11 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public void removeTask(IStrategoTerm taskID) {
-		toTaskID.remove(getTask(taskID).instruction, ListBuilder.makeList(factory, getInitialDependencies(taskID)));
+		allRemoved.add(taskID);
+		final Task task = getTask(taskID);
+		if(task == null)
+			return; // Task is not in this task engine but in a parent one.
+		toTaskID.remove(task.instruction, ListBuilder.makeList(factory, task.initialDependencies));
 		removeDependencies(taskID);
 		removeReads(taskID);
 		scheduled.remove(taskID);
@@ -227,8 +265,30 @@ public class TaskEngine implements ITaskEngine {
 		scheduled.add(taskID);
 	}
 
+	private boolean parentTaskVisible(IStrategoTerm taskID) {
+		return !allRemoved.contains(taskID);
+	}
+
+	private boolean parentTaskVisible(Task task) {
+		final IStrategoTerm taskID = toTask.inverse().get(task);
+		return parentTaskVisible(taskID);
+	}
+
+	private Iterable<IStrategoTerm> parentInvisibleFilter(Iterable<IStrategoTerm> taskIDs) {
+		return Iterables.filter(taskIDs, visible);
+	}
+
+	private Iterable<Task> parentTaskInvisibleFilter(Iterable<Task> tasks) {
+		return Iterables.filter(tasks, visibleTask);
+	}
+
+	private Iterable<Entry<IStrategoTerm, Task>>
+		parentEntryInvisibleFilter(Iterable<Entry<IStrategoTerm, Task>> entries) {
+		return Iterables.filter(entries, visibleEntry);
+	}
+
 	public void invalidate(IStrategoTerm taskID) {
-		final Task task = getTask(taskID);
+		final Task task = getTaskCurrent(taskID);
 		if(task == null)
 			throw new RuntimeException("Cannot invalidate task that does not exist: " + taskID);
 		task.unsolve();
@@ -273,44 +333,72 @@ public class TaskEngine implements ITaskEngine {
 		return evaluator.evaluate(scheduled, context, insert, perform);
 	}
 
+
 	public Iterable<IStrategoTerm> getTaskIDs() {
-		return toTask.keySet();
+		final Iterable<IStrategoTerm> parentTaskIDs = parentInvisibleFilter(parent.getTaskIDs());
+		final Iterable<IStrategoTerm> ownTaskIDs = toTask.keySet();
+		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
 
 	public Iterable<Task> getTasks() {
-		return toTask.values();
+		final Iterable<Task> parentTasks = parentTaskInvisibleFilter(parent.getTasks());
+		final Iterable<Task> ownTasks = toTask.values();
+		return Iterables.concat(parentTasks, ownTasks);
 	}
 
 	public Iterable<Entry<IStrategoTerm, Task>> getTaskEntries() {
-		return toTask.entrySet();
+		final Iterable<Entry<IStrategoTerm, Task>> parentTaskEntries =
+			parentEntryInvisibleFilter(parent.getTaskEntries());
+		final Iterable<Entry<IStrategoTerm, Task>> ownTaskEntries = toTask.entrySet();
+		return Iterables.concat(parentTaskEntries, ownTaskEntries);
 	}
 
 	public Task getTask(IStrategoTerm taskID) {
+		Task task = toTask.get(taskID);
+		if(task == null && parentTaskVisible(taskID))
+			task = parent.getTask(taskID);
+		return task;
+	}
+
+
+	public Iterable<IStrategoTerm> getTaskIDsCurrent() {
+		return toTask.keySet();
+	}
+
+	public Iterable<Task> getTasksCurrent() {
+		return toTask.values();
+	}
+
+	public Iterable<Entry<IStrategoTerm, Task>> getTaskEntriesCurrent() {
+		return toTask.entrySet();
+	}
+
+	public Task getTaskCurrent(IStrategoTerm taskID) {
 		return toTask.get(taskID);
 	}
 
 
 	public Set<IStrategoString> getAllPartition() {
-		return new HashSet<IStrategoString>(toPartition.values());
+		return Sets.union(new HashSet<IStrategoString>(toPartition.values()), parent.getAllPartition());
 	}
 
-	public Iterable<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
-		return toPartition.get(taskID);
+	public Set<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
+		return Sets.union(new HashSet<IStrategoString>(toPartition.get(taskID)), parent.getPartitionsOf(taskID));
 	}
 
 	public Iterable<IStrategoTerm> getInPartition(IStrategoString partition) {
-		return toPartition.getInverse(partition);
+		final Iterable<IStrategoTerm> parentTaskIDs = parentInvisibleFilter(parent.getInPartition(partition));
+		final Iterable<IStrategoTerm> ownTaskIDs = toPartition.getInverse(partition);
+		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
 
-
-	public IStrategoList getInitialDependencies(IStrategoTerm taskID) {
-		return toInitialDependencies.get(taskID);
-	}
 
 	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
-		return toDependency.get(taskID);
+		final Iterable<IStrategoTerm> parentTaskIDs = parentInvisibleFilter(parent.getDependencies(taskID));
+		final Iterable<IStrategoTerm> ownTaskIDs = toDependency.get(taskID);
+		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
-	
+
 	public Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID) {
 		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
 		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
@@ -324,14 +412,16 @@ public class TaskEngine implements ITaskEngine {
 					queue.add(dependency);
 			}
 		}
-		
+
 		seen.remove(taskID);
 		return seen;
 	}
 
 
 	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {
-		return toDependency.getInverse(taskID);
+		final Iterable<IStrategoTerm> parentTaskIDs = parentInvisibleFilter(parent.getDependent(taskID));
+		final Iterable<IStrategoTerm> ownTaskIDs = toDependency.getInverse(taskID);
+		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
 
 	public boolean becomesCyclic(IStrategoTerm taskIDFrom, IStrategoTerm taskIDTo) {
@@ -358,18 +448,23 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public void removeDependencies(IStrategoTerm taskID) {
-		toInitialDependencies.remove(taskID);
 		toDependency.removeAll(taskID);
 		toDependency.removeAllInverse(taskID);
 	}
 
 
 	public Iterable<IStrategoTerm> getReads(IStrategoTerm taskID) {
-		return toRead.get(taskID);
+		final Iterable<IStrategoTerm> ownURIs = toRead.get(taskID);
+		if(parentTaskVisible(taskID))
+			return Iterables.concat(parent.getReads(taskID), ownURIs);
+		else
+			return ownURIs;
 	}
 
 	public Iterable<IStrategoTerm> getReaders(IStrategoTerm uri) {
-		return toRead.getInverse(uri);
+		final Iterable<IStrategoTerm> parentTaskIDs = parentInvisibleFilter(parent.getReaders(uri));
+		final Iterable<IStrategoTerm> ownTaskIDs = toRead.getInverse(uri);
+		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
 
 	public void addRead(IStrategoTerm taskID, IStrategoTerm uri) {
@@ -392,13 +487,19 @@ public class TaskEngine implements ITaskEngine {
 			task.clearEvaluations();
 		}
 	}
-
 	
+	
+	public Iterable<IStrategoTerm> getRemovedTasks() {
+		return allRemoved;
+	}
+
+
 	public void recover() {
 		evaluator.reset();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
+		parent.recover();
 	}
 
 	public void reset() {
@@ -407,7 +508,6 @@ public class TaskEngine implements ITaskEngine {
 		toTask.clear();
 		toTaskID.clear();
 		toPartition.clear();
-		toInitialDependencies.clear();
 		toDependency.clear();
 		toRead.clear();
 		garbage.clear();
@@ -415,5 +515,6 @@ public class TaskEngine implements ITaskEngine {
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
+		parent.reset();
 	}
 }

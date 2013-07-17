@@ -19,14 +19,14 @@ public class TaskEngineFactory {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
-		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
+		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntriesCurrent()) {
 			final IStrategoTerm taskID = entry.getKey();
 			final Task task = entry.getValue();
 			
 			final IStrategoTerm instruction = task.instruction;
 			final boolean combinator = task.isCombinator;
 			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
-			final IStrategoList initialDependencies = taskEngine.getInitialDependencies(taskID);
+			final IStrategoList initialDependencies = task.initialDependencies;
 			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
