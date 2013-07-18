@@ -90,6 +90,20 @@ rules // Specific queries
       else
         aliasURI* := []
       end
+      
+  /**
+   * Gets all InverseAlias entries that match the given URI.
+   *
+   * Example:
+   *   <nabl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(inverseAliasURI)
+   */
+  nabl-get-inverse-alias:
+    containsURI -> inverse-alias
+    where
+    	uri           := <nabl-uri> containsURI;
+      inverse-alias := <nabl-get-value> InverseAlias(uri, ()) 
 
 rules // Generic queries
   

@@ -11,10 +11,11 @@ signature
 
   constructors
     
-    Def   : URI                    -> Entry
-    Alias : URI * URI              -> Entry
-    Use   : URI                    -> Entry
-    Prop  : URI * Property * Value -> Entry
+    Def          : URI                    -> Entry
+    Alias        : URI * URI              -> Entry
+    InverseAlias : URI * URI              -> Entry
+    Use          : URI                    -> Entry
+    Prop         : URI * Property * Value -> Entry
   
 rules
   
@@ -26,6 +27,16 @@ rules
 			<new-alias(|partition, <nabl-nonunique-uri> uri, uri)> x
       
   new-alias(|partition, uri, alias-uri):
+    x -> alias
+    with
+      alias := <force-origins(!Alias(uri, alias-uri))> x;
+      ialias := <force-origins(!InverseAlias(alias-uri, uri))> x;
+      if <not(eq)> (uri, alias-uri) then
+      	<index-add(|partition)> alias;
+      	<index-add(|partition)> ialias
+      end
+      
+  new-inverse-alias(|partition, uri, alias-uri):
     x -> alias
     with
       alias := <force-origins(!Alias(uri, alias-uri))> x;
@@ -55,6 +66,10 @@ rules // index uri & value projections
   nabl-uri:
     Alias(uri, _) -> uri
     
+  /** @internal */
+  nabl-uri:
+    InverseAlias(uri, _) -> uri
+    
   /** @internal */  
   nabl-uri:
     Use(uri) -> <nabl-is-uri> uri
@@ -71,6 +86,10 @@ rules // index uri & value projections
   /** @internal */
   nabl-value:
     Alias(_, value) -> value
+    
+  /** @internal */
+  nabl-value:
+    InverseAlias(_, value) -> value
 
   /** @internal */
   nabl-value:
