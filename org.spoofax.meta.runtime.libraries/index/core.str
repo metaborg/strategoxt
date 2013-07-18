@@ -26,6 +26,9 @@ rules
   index-setup(|language, project-path) =
     prim("LANG_index_setup_new", language, <index-setup-paths> project-path)
     
+  index-setup:
+  	(language, project-path) -> <prim("LANG_index_setup_new", language, <index-setup-paths> project-path)>
+    
   /**
    * Unloads the currently loaded index.
    *

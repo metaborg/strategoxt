@@ -123,6 +123,7 @@ rules // API
 	task-recover                                               = task-api-recover
 	task-reset                                                 = task-api-reset
 	task-setup(|project-path)                                  = task-api-setup(|project-path)
+	task-setup                                                 = task-api-setup(|<id>)
 	task-start-collection(|partition)                          = task-api-start-collection(|partition)
 	task-stop-collection(|partition)                           = task-api-stop-collection(|partition)
 	task-unload                                                = task-unload(|<id>)
