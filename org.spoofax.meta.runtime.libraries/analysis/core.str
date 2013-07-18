@@ -28,6 +28,7 @@ rules // Analysis
     	measure-time(
 	    	measure-time(
 	    		index-setup(|language, project-path);
+	    		index-recover;
 			    index-start-collection(|partition);
 	    		task-setup(|project-path);
 	    		task-recover;

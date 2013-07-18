@@ -16,7 +16,7 @@ public class task_api_recover_0_0 extends AbstractPrimitive {
 	
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-		TaskManager.getInstance().getCurrent().recover();
+		TaskManager.getInstance().popToRootTaskEngine().recover();
 		return true;
 	}
 }

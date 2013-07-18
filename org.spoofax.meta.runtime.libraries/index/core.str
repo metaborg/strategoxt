@@ -39,6 +39,12 @@ rules
   index-unload(|project-path) =
     prim("LANG_index_unload", project-path)
 
+  /**
+   * Tries to recover the index from an invalid state, for example after a crash.
+   */
+	index-recover =
+		prim("LANG_index_recover")
+		
 	/**
 	 * Starts collection for given partition. Used in conjunction with index-stop-collection to 
 	 * retrieve a list of added and removed index entries in relation to the previous entries in

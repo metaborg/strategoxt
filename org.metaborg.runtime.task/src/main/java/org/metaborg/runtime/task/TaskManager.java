@@ -73,6 +73,15 @@ public class TaskManager {
 		setCurrent(parentTaskEngine);
 		return parentTaskEngine;
 	}
+	
+	public ITaskEngine popToRootTaskEngine() {
+		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
+		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
+			return currentTaskEngine;
+		setCurrent(parentTaskEngine);
+		return popToRootTaskEngine();
+	}
 
 	public ITaskEngine mergeTaskEngine(ITermFactory factory) {
 		final ITaskEngine currentTaskEngine = current.get();
