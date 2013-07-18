@@ -46,7 +46,7 @@ rules
     with
     	partition := $[[project-path]/[path]];
       index-setup(|language, project-path);
-      index-clear-all
+      index-reset
       
   analysis-debug-reset-task(|language):
     (_, _, _, path, project-path) -> None()
