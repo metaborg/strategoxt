@@ -156,7 +156,7 @@ rules
    *
    * @type x -> x
    */
-  index-clear-all = 
+  index-reset = 
     prim("LANG_index_clear_all")
     
   /**

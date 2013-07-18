@@ -10,7 +10,8 @@ rules // Redirects
 	index-setup(|language, project-path, current-partition) =
 		index-setup(|language, <index-setup-paths> project-path)
 		
-	index-clear = index-clear-all
+	index-clear = index-reset
+	index-clear-all = index-reset
 	
 	index-commit = index-persist
 		
