@@ -6,6 +6,7 @@ imports
 	nbl/collect
 	nbl/entries
 	nbl/query
+	nbl/incremental
 	nbl/utils
 	nbl/uri
 	nbl/tasks
@@ -27,7 +28,7 @@ rules
   	where
   		resolved := <nabl-collect-one-resolved-def> t;
   		uri      := <nabl-uri> resolved;
-  		<nabl-add-read(|n)> uri;
+  		<nabl-add-uri-read(|n)> uri;
   		prop     := <nabl-get-property(|kind); insert-results-or-create-dependency> uri;
       switch id
       	case task-collect-dependencies => d : !d

@@ -3,6 +3,7 @@ module analysis/core
 imports
 	
   nbl/collect
+  nbl/incremental
   nbl/entries
   nbl/uri
   nbl/utils
@@ -38,7 +39,7 @@ rules // Analysis
 	  	  ); measure-time(
 	  	  	index-stop-collection => (removed-entry*, added-entry*);
 	      	task-stop-collection(|partition);
-	      	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
+	      	changed-read* := <nabl-get-changed-reads> [removed-entry*, added-entry*]
 	      	, id | "analyze-collect-diff" 
 	  	  ); measure-time(
 	  	  	task-invalidate-task-reads(|changed-read*)
@@ -79,17 +80,6 @@ rules // Analysis
 			origin := <task-message-origin> message;
 			term   := <task-message-term> message;
 			msg    := <task-message> message
-
-rules // Index entries to diff
-	
-  analyze-diff-entry =
-    ?Def(_)
- 
-  analyze-diff-entry =
-    ?Alias(_, _)
-    
-  analyze-diff-entry =
-    ?Prop(_, _, _)
       
 rules // Projections
 	

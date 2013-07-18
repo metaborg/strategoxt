@@ -7,6 +7,7 @@ imports
   nbl/lookup
   nbl/collect
   nbl/query
+  nbl/incremental
   nbl/interface
   nbl/uri
   nbl/utils
@@ -34,7 +35,7 @@ rules // Resolve
   	where
   		uri   := <nabl-uri> scope;
   		name' := <try-remove-list; strip-annos> name; // TODO: can this be a list?
-  		<nabl-add-read-extend(|nr, ns, name')> uri;
+  		<nabl-add-name-read(|nr, ns, name')> uri;
   		def*  := <nabl-lookup(|ns, name')> uri;
   		not(?[])
 
@@ -55,7 +56,7 @@ rules // Resolve
 		ResolveNamedImports(scope, ns, name) -> result
 		where
 			uri     := <nabl-uri> scope;
-			<nabl-add-read(|nr)> uri;
+			<nabl-add-uri-read(|nr)> uri;
 			name'   := <try-remove-list; strip-annos> name; // TODO: can this be a list?
 			import* := <nabl-lookup-named-import(|ns, name')> uri;
       switch id
@@ -79,7 +80,7 @@ rules // Resolve
 	resolve-one-wildcard-import(|nr, ns):
 		uri -> result
 		with
-			<nabl-add-read(|nr)> uri;
+			<nabl-add-uri-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
@@ -99,6 +100,7 @@ rules // Visibility
   	ResolveAllDefs(scope, ns) -> def*
   	where
   		uri  := <nabl-uri> scope;
+  		<nabl-add-ns-read(|nr, ns)> uri;
   		def* := <nabl-lookup-all(|ns)> uri;
   		not(?[])
 
@@ -132,7 +134,7 @@ rules // Import calculation
 	perform-task(|nr):
 		ImportCalc(uri) -> result
 		where
-			<nabl-add-read(|nr)> uri;
+			<nabl-add-uri-read(|nr)> uri;
 			import-ns-use*        := <nabl-get-all-properties(|Import())> uri;
 			(imported-uri*, uri*) := <partition(resolve-transitive-import, resolve-import)> import-ns-use*;
   		switch id
@@ -148,7 +150,7 @@ rules // Import calculation
 	perform-task(|nr):
 		ImportClosure(uri) -> result
 		with
-			<nabl-add-read(|nr)> uri;
+			<nabl-add-uri-read(|nr)> uri;
 			import-calc-id        := <task-instruction-id> ImportCalc(uri);
 			(imported-uri*, uri*) := <task-get-result; Hd> import-calc-id; // Result for this task must exit, as a dependency is expressed on it during collect.
 			hashtable             := <new-hashtable>;
@@ -165,7 +167,7 @@ rules // Import calculation
 	import-closure-transitive(|nr, hashtable):
 		uri	-> result
 		with
-			<nabl-add-read(|nr)> uri;
+			<nabl-add-uri-read(|nr)> uri;
 			if task-exists(|ImportClosure(uri)) then
 				import-closure-id := <task-instruction-id> ImportClosure(uri);
 				switch id
@@ -191,8 +193,3 @@ rules // Property constraint
       	otherwise                           : (<nabl-property-eq(|kind) <+ eq> (expected, value'); !definition) <+ 
                                               (<nabl-property-eq(|kind) <+ eq> (expected, <try-remove-list> value'); !definition)
       end => result
-
-rules // Utility
-	
-	nabl-add-read(|nr) = try(nabl-replace-uri-qualifier(|())); task-add-read(|nr)
-	nabl-add-read-extend(|nr, ns, name) = nabl-extend-uri(|ns, name, ()); task-add-read(|nr)

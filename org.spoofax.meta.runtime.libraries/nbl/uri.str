@@ -166,6 +166,9 @@ rules // Conditions
   nabl-is-nonunique =
     nabl-uri-qualifier;
     ?NonUnique()
+    
+  nabl-segment-is-id =
+  	?ID(_, _, _)
 
 rules // Equality
   
