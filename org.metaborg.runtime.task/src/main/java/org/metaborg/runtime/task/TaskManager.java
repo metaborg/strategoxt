@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
@@ -16,12 +15,12 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.io.binary.SAFWriter;
 import org.spoofax.terms.io.binary.TermReader;
 
+import com.google.common.collect.Maps;
+
 public class TaskManager {
 	private static final TaskManager INSTANCE = new TaskManager();
-	private static final Map<URI, WeakReference<ITaskEngine>> taskEngineCache =
-		new HashMap<URI, WeakReference<ITaskEngine>>();
+	private static final Map<URI, WeakReference<ITaskEngine>> taskEngineCache = Maps.newHashMap();
 	private final static TaskEngineFactory taskEngineFactory = new TaskEngineFactory();
-	private final static ITermDigester digester = new NonDeterministicCountingTermDigester();
 
 	private final ThreadLocal<ITaskEngine> current = new ThreadLocal<ITaskEngine>();
 	private final ThreadLocal<URI> currentProject = new ThreadLocal<URI>();
@@ -38,6 +37,11 @@ public class TaskManager {
 		ensureInitialized();
 		return current.get();
 	}
+	
+	public URI getCurrentProject() {
+		ensureInitialized();
+		return currentProject.get();
+	}
 
 	private void setCurrent(URI project, ITaskEngine taskEngine) {
 		current.set(taskEngine);
@@ -45,7 +49,7 @@ public class TaskManager {
 	}
 
 	private void setCurrent(ITaskEngine taskEngine) {
-		setCurrent(currentProject.get(), taskEngine);
+		setCurrent(getCurrentProject(), taskEngine);
 	}
 
 	public boolean isInitialized() {
@@ -60,7 +64,7 @@ public class TaskManager {
 
 	public ITaskEngine pushTaskEngine(ITermFactory factory) {
 		final ITaskEngine currentTaskEngine = current.get();
-		final ITaskEngine newTaskEngine = createTaskEngine(currentTaskEngine, factory);
+		final ITaskEngine newTaskEngine = createTaskEngine(currentTaskEngine, factory, currentTaskEngine.getDigester());
 		setCurrent(newTaskEngine);
 		return newTaskEngine;
 	}
@@ -103,12 +107,14 @@ public class TaskManager {
 	}
 
 	public ITaskEngine createTaskEngine(ITermFactory factory) {
-		final TaskEngine taskEngine = new TaskEngine(createEmptyTaskEngine(), factory, digester);
-		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
-		return taskEngine;
+		return createTaskEngine(factory, createTermDigester());
+	}
+	
+	public ITaskEngine createTaskEngine(ITermFactory factory, ITermDigester digester) {
+		return createTaskEngine(createEmptyTaskEngine(), factory, digester);
 	}
 
-	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory) {
+	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory, ITermDigester digester) {
 		final TaskEngine taskEngine = new TaskEngine(parent, factory, digester);
 		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
 		return taskEngine;
@@ -116,6 +122,10 @@ public class TaskManager {
 
 	public ITaskEngine createEmptyTaskEngine() {
 		return new EmptyTaskEngine();
+	}
+	
+	public ITermDigester createTermDigester() {
+		return new NonDeterministicCountingTermDigester();
 	}
 
 	public ITaskEngine getTaskEngine(String absoluteProjectPath) {
@@ -154,7 +164,7 @@ public class TaskManager {
 				current.set(null);
 			}
 
-			URI project = currentProject.get();
+			URI project = getCurrentProject();
 			if(project != null && project.equals(removedProject)) {
 				currentProject.set(null);
 			}
@@ -191,7 +201,7 @@ public class TaskManager {
 	}
 
 	public void storeCurrent(ITermFactory factory) throws IOException {
-		File file = getFile(currentProject.get());
+		File file = getFile(getCurrentProject());
 		IStrategoTerm tasks = taskEngineFactory.toTerm(getCurrent(), factory);
 		file.createNewFile();
 		FileOutputStream fos = new FileOutputStream(file);
