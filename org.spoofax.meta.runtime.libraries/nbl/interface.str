@@ -43,3 +43,11 @@ strategies // Name generation
 	
 	nabl-namegen-name(|lang, partition, uri, ns) = fail
 	
+strategies // Default error checks
+	
+	nabl-check-disable-unresolved = fail
+	
+	nabl-check-disable-duplicate(|uri, ns) = fail
+	
+	nabl-check-disable-hiding(|uri, ns) = fail
+	

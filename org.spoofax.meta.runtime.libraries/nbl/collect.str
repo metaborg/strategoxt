@@ -145,7 +145,7 @@ rules // generic analysis of defs
     	
 	// call back to generic analysis
 	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
-		a@name{anno*} -> <replace-annotations(?Def(_)|d)> name'
+		a@name{anno*} -> name''
 		where
 			// get URI for namespace of definition site
 			current-uri := <lookup-uri(|lang, ns)> child-uri*
@@ -193,9 +193,11 @@ rules // generic analysis of defs
 		  end
     with
 			// add Def entry to the index
-			d := <new-def(|partition, def-uri)> a
+			d      := <new-def(|partition, def-uri)> a;
+			name'' := <replace-annotations(?Def(_)|d)> name'
 		with
-			<nabl-duplicate-task(|partition, current-uri, ns, unique)> name'
+			<try(nabl-duplicate-task(|partition, unique))> name'';
+			<try(nabl-hiding-task(|partition))> name''
 	
 	nabl-def-alias(|partition, def-uri):
 	  term{anno*} -> <id>
@@ -226,7 +228,7 @@ rules // generic analysis of uses
 			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 			choice   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, choice)>;
-		  <nabl-unresolved-task(|partition, choice)> name';
+		  <try(nabl-unresolved-task(|partition, choice))> name';
 		  if <is-completion-name> name' then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);

@@ -7,32 +7,50 @@ imports
   nbl/query
   nbl/tasks
   nbl/entries
+  nbl/interface
   nbl/uri
+  nbl/utils
   task/core
   task/messages
-	
-signature
-
-	constructors
-		
-		NoUnresolvedError : NoUnresolvedError
+  task/tasks
 	
 rules // Error checking tasks
 	
 	nabl-unresolved-task(|partition, task):
 		name -> name
+		where
+			not(nabl-check-disable-unresolved)
 		with
-		  if <not(has-annos; get-annos; collect-one(?NoUnresolvedError()))> name then
-		  	<nabl-fix-name; task-create-error-on-failure(|partition, task, "Unresolved reference")> name
-		  end
+		  <nabl-fix-name; task-create-error-on-failure(|partition, task, "Unresolved reference")> name
 		  
-  nabl-duplicate-task(|partition, uri, ns, unique):
+  nabl-duplicate-task(|partition, unique):
 		name -> name
+		where
+	    uri := <nabl-uri> name;
+	    ns  := <nabl-uri-namespace> uri;
+			not(<nabl-check-disable-duplicate(|uri, ns)> name)
 		with
-			if Unique() := unique then 
-				resolve := <new-task(|partition)> ResolveDefs(uri, ns, name);
+			if Unique() := unique then
+		    uri'    := <nabl-uri-parent> uri;
+				resolve := <new-task(|partition)> ResolveDefs(uri', ns, name);
 				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
 			end
+			
+	nabl-hiding-task(|partition):
+		name -> name
+		where
+			uri := <nabl-uri> name;
+	    ns  := <nabl-uri-namespace> uri;
+			not(<nabl-check-disable-hiding(|uri, ns)> name)
+		where
+	    if inverse-alias := <nabl-get-inverse-alias> uri then
+	      uri' := <nabl-uri-parent; nabl-uri-parent> inverse-alias
+	    else
+	      uri' := <nabl-uri-parent; nabl-uri-parent> uri
+	    end;
+	    task*  := <nabl-use-subtasks(id, fail|partition, ns, <nabl-fix-name> name, [], All())> uri';
+	    task   := <new-task(|partition)> Choice(task*);
+	    <task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
 
 rules // Legacy
  
