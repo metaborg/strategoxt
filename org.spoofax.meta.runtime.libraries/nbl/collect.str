@@ -2,20 +2,17 @@ module nbl/collect
 
 imports
 	
-	task/core
-	task/tasks
-	task/messages
 	nbl/tasks
 	nbl/entries
-	nbl/query
+	nbl/check
 	nbl/namegen
 	nbl/interface
 	nbl/uri
 	nbl/utils
+	task/core
+	task/tasks
 	types/collect
-	editor/origins
-	index/core
-	
+
 signature 
 
 	sorts
@@ -67,10 +64,6 @@ signature
   constructors // partition
   
   	CollectPartition : Partition
-  	
-  constructors // unresolved error
-  	
-  	NoUnresolvedError : NoUnresolvedError
 	
 strategies // generic traversal
 	
@@ -202,11 +195,7 @@ rules // generic analysis of defs
 			// add Def entry to the index
 			d := <new-def(|partition, def-uri)> a
 		with
-			// duplicate definition error
-			if Unique() := unique then 
-				resolve := <new-task(|partition)> ResolveDefs(current-uri, ns, name');
-				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name'
-			end
+			<nabl-duplicate-task(|partition, current-uri, ns, unique)> name'
 	
 	nabl-def-alias(|partition, def-uri):
 	  term{anno*} -> <id>
@@ -237,9 +226,7 @@ rules // generic analysis of uses
 			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 			choice   := <new-task(|partition)> Choice(subtask*);
 		  u        := <new-use(|partition, choice)>;
-		  if <not(has-annos; get-annos; collect-one(?NoUnresolvedError()))> name' then
-		  	<nabl-fix-name; task-create-error-on-failure(|partition, choice, "Unresolved reference")> name'
-		  end;
+		  <nabl-unresolved-task(|partition, choice)> name';
 		  if <is-completion-name> name' then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);

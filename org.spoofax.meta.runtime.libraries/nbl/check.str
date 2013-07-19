@@ -3,11 +3,38 @@ module nbl/check
 imports
 	
   nbl/resolve
+  nbl/collect
   nbl/query
-  nbl/uri
+  nbl/tasks
   nbl/entries
+  nbl/uri
+  task/core
+  task/messages
 	
-rules // Unresolved
+signature
+
+	constructors
+		
+		NoUnresolvedError : NoUnresolvedError
+	
+rules // Error checking tasks
+	
+	nabl-unresolved-task(|partition, task):
+		name -> name
+		with
+		  if <not(has-annos; get-annos; collect-one(?NoUnresolvedError()))> name then
+		  	<nabl-fix-name; task-create-error-on-failure(|partition, task, "Unresolved reference")> name
+		  end
+		  
+  nabl-duplicate-task(|partition, uri, ns, unique):
+		name -> name
+		with
+			if Unique() := unique then 
+				resolve := <new-task(|partition)> ResolveDefs(uri, ns, name);
+				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+			end
+
+rules // Legacy
  
   nabl-is-unresolved =
     ?node;
@@ -15,8 +42,6 @@ rules // Unresolved
     get-annos;
     where(nabl-has-reference);
     not(nabl-collect-one-resolved-def)
-
-rules // Ambiguities
   
   nabl-get-ambiguities =
     nabl-collect-all-resolved-defs;
@@ -24,8 +49,6 @@ rules // Ambiguities
     filter(nabl-uri; nabl-uri-parent);
     make-set;
     where(<gt> (<length>, 1))
-
-rules // Duplicate definitions
   
   nabl-get-duplicate-definitions =
     has-annos;
