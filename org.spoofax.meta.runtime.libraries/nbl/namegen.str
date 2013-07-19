@@ -20,7 +20,7 @@ signature
 	
 rules
 	
-	nabl-namegen-stem(|ns) = add-annotations(|GenerateName(ns))
+	nabl-namegen-stem(|ns) = add-annotation(|GenerateName(ns))
 
 rules // Name generation
 	
