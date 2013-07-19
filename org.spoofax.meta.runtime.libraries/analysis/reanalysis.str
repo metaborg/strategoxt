@@ -26,7 +26,7 @@ rules
     ast -> analyzed-ast
     with
       partition := <analysis-partition(|path, project-path)>;
-      r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
+      r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(fail|language, project-path)> File(partition, ast);
     	(result*, evaluated-task*, unevaluated-task*) := <analyze-perform-all> [r];
     	Result(_, _, _, _, error*, warning*, note*) := <Hd> result*;
       <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];

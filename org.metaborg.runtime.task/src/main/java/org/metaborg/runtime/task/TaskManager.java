@@ -63,14 +63,14 @@ public class TaskManager {
 	}
 
 	public ITaskEngine pushTaskEngine(ITermFactory factory) {
-		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine currentTaskEngine = getCurrent();
 		final ITaskEngine newTaskEngine = createTaskEngine(currentTaskEngine, factory, currentTaskEngine.getDigester());
 		setCurrent(newTaskEngine);
 		return newTaskEngine;
 	}
 
 	public ITaskEngine popTaskEngine() {
-		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine currentTaskEngine = getCurrent();
 		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
 		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
 			throw new RuntimeException("Cannot pop the root TaskEngine.");
@@ -79,7 +79,7 @@ public class TaskManager {
 	}
 	
 	public ITaskEngine popToRootTaskEngine() {
-		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine currentTaskEngine = getCurrent();
 		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
 		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
 			return currentTaskEngine;
@@ -88,7 +88,7 @@ public class TaskManager {
 	}
 
 	public ITaskEngine mergeTaskEngine(ITermFactory factory) {
-		final ITaskEngine currentTaskEngine = current.get();
+		final ITaskEngine currentTaskEngine = getCurrent();
 		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
 		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
 			throw new RuntimeException("Cannot merge the root TaskEngine.");
@@ -159,7 +159,7 @@ public class TaskManager {
 		synchronized(TaskManager.class) {
 			WeakReference<ITaskEngine> removedTaskEngine = taskEngineCache.remove(removedProject);
 
-			ITaskEngine taskEngine = current.get();
+			ITaskEngine taskEngine = getCurrent();
 			if(taskEngine != null && taskEngine == removedTaskEngine.get()) {
 				current.set(null);
 			}

@@ -22,16 +22,17 @@ signature
     
 rules // Analysis
 	
-	analyze-collect(|language, project-path):
+	analyze-collect(|language, project-path) = analyze-collect(id|language, project-path)
+	analyze-collect(try-recover|language, project-path):
     File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
     with
     	measure-time(
 	    	measure-time(
 	    		index-setup(|language, project-path);
-	    		index-recover;
+	    		try(try-recover; index-recover);
 			    index-start-collection(|partition);
 	    		task-setup(|project-path);
-	    		task-recover;
+	    		try(try-recover; task-recover);
 	    		task-start-collection(|partition)
 	      	, id | "analyze-collect-setup"
 	      ); measure-time(
