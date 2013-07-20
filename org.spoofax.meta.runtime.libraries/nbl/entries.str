@@ -35,15 +35,7 @@ rules
       	<index-add(|partition)> alias;
       	<index-add(|partition)> ialias
       end
-      
-  new-inverse-alias(|partition, uri, alias-uri):
-    x -> alias
-    with
-      alias := <force-origins(!Alias(uri, alias-uri))> x;
-      if <not(eq)> (uri, alias-uri) then
-      	<index-add(|partition)> alias
-      end
-      
+
   new-use(|partition, uri):
     x -> use
     with

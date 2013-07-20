@@ -99,11 +99,11 @@ rules // Specific queries
    *
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(inverseAliasURI)
    */
-  nabl-get-inverse-alias:
-    containsURI -> inverse-alias
+  nabl-get-all-inverse-aliasses:
+    containsURI -> inverse-alias*
     where
-    	uri           := <nabl-uri> containsURI;
-      inverse-alias := <nabl-get-value> InverseAlias(uri, ()) 
+    	uri            := <nabl-uri> containsURI;
+      inverse-alias* := <nabl-get-all-values> InverseAlias(uri, ()) 
 
 rules // Generic queries
   

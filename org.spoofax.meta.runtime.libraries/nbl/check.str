@@ -43,14 +43,17 @@ rules // Error checking tasks
 	    ns  := <nabl-uri-namespace> uri;
 			not(<nabl-check-disable-hiding(|uri, ns)> name)
 		where
-	    if inverse-alias := <nabl-get-inverse-alias> uri then
-	      uri' := <nabl-uri-parent; nabl-uri-parent> inverse-alias
+	    if inverse-alias* := <nabl-get-all-inverse-aliasses> uri then
+	      uri* := <map(nabl-uri-parent; nabl-uri-parent)> inverse-alias*
 	    else
-	      uri' := <nabl-uri-parent; nabl-uri-parent> uri
+	      uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
 	    end;
-	    task*  := <nabl-use-subtasks(id, fail|partition, ns, <nabl-fix-name> name, [], All())> uri';
-	    task   := <new-task(|partition)> Choice(task*);
+	    task* := <mapconcat(nabl-use-subtasks(id, fail|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
+	    task  := <new-task(|partition)> Choice(task*);
 	    <task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
+
+	message-task(|partition) = 
+		nabl-hiding-task(|partition)
 
 rules // Legacy
  
