@@ -129,10 +129,6 @@ public class EmptyTaskEngine implements ITaskEngine {
 		return new EmptyIterable<IStrategoTerm>();
 	}
 
-	public IStrategoList getInitialDependencies(IStrategoTerm taskID) {
-		return null;
-	}
-
 	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
 		return new EmptyIterable<IStrategoTerm>();
 	}

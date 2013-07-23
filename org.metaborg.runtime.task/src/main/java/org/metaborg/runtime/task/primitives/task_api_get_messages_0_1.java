@@ -1,6 +1,7 @@
 package org.metaborg.runtime.task.primitives;
 
 import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -26,9 +27,11 @@ public class task_api_get_messages_0_1 extends AbstractPrimitive {
 		final IStrategoString partition = (IStrategoString)tvars[0];
 		IStrategoList messages = factory.makeList();
 		for(IStrategoTerm taskID : taskEngine.getInPartition(partition)) {
-			IStrategoTerm message = taskEngine.getTask(taskID).message();
-			if(message != null)
-				messages = factory.makeListCons(message, messages);
+			final Task task = taskEngine.getTask(taskID);
+			final IStrategoTerm message = task.message();
+			if(message == null)
+				continue;
+			messages = factory.makeListCons(message, messages);
 		}
 		env.setCurrent(messages);
 		return true;
