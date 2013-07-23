@@ -425,7 +425,6 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	private void addToPartition(IStrategoTerm taskID, IStrategoString partition) {
-		System.out.println("Part: " + taskID + " -> " + partition);
 		toPartition.put(taskID, partition);
 	}
 
