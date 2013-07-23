@@ -35,12 +35,11 @@ rules // Single finle analysis
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
       partition* := <analysis-changed-partitions> evaluated-task*;
       if <not(is-test-file)> path then
-      	partition := $[[project-path]/[path]];
+      	partition := <analysis-partition(|path, project-path)>;
       	<remove-all(?partition <+ ?path); analysis-message-update-partitions-queue(|language, project-path)> partition*
     	end;
       <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
       <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task* 
-      // TODO: Update markers for partitions that have had a task executed.
       
 rules // Multi-file analysis
       
@@ -64,12 +63,12 @@ rules // Multi-file analysis
 	      , id | "analysis-multiple-full-analysis"
 	      );
 	    	measure-time(
-		      index-commit
-	      	, id | "analysis-multiple-index-commit"
+		      index-persist
+	      	, id | "analysis-multiple-index-persist"
 	      );
 	    	measure-time(
 		      task-persist
-	      	, id | "analysis-multiple-task-commit"
+	      	, id | "analysis-multiple-task-persist"
 	      )
 	    , id | "analysis-multiple-total");
       <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
@@ -110,7 +109,7 @@ rules // Message collection and updating.
   	(partition*, language, project-path) -> <filter(not(is-test-file); analysis-message-update-partition)> partition*
   	with
     	task-setup(|project-path);
-      index-setup(|language, [project-path], ".")
+      index-setup(|language, project-path)
   	
 	analysis-message-update-partition:
 		partition -> <analyze-get-messages; set-only-markers(|partition)> partition
@@ -118,10 +117,10 @@ rules // Message collection and updating.
 rules // On-save handler
 	
   analysis-save-default(|language):
-  	(_, _, _, path, project-path) -> None()
+  	(_, _, _, _, project-path) -> None()
   	with
-  		index-setup(|language, [project-path], $[[project-path]/[path]]);
-  		index-commit;
+  		index-setup(|language, project-path);
+  		index-persist;
   		task-setup(|project-path);
   		task-persist
 

@@ -1,5 +1,6 @@
 package org.metaborg.runtime.task.primitives;
 
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -20,7 +21,10 @@ public class task_api_add_message_0_2 extends AbstractPrimitive {
 		throws InterpreterException {
 		final IStrategoTerm taskID = tvars[0];
 		final IStrategoTerm message = tvars[1];
-		TaskManager.getInstance().getCurrent().getTask(taskID).setMessage(message);
+		final Task task = TaskManager.getInstance().getCurrent().getTask(taskID);
+		if(task == null)
+			return false;
+		task.setMessage(message);
 		return true;
 	}
 }

@@ -13,7 +13,7 @@ rules
     (_, _, _, path, project-path) -> (filename, result)
     with
     	partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
+      index-setup(|language, project-path);
       filename := <guarantee-extension(|"index.current.aterm")> path;
       result   := <index-get-all-in-partition> partition
       
@@ -21,7 +21,7 @@ rules
     (_, _, _, path, project-path) -> (filename, result)
     with
     	partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
+      index-setup(|language, project-path);
       filename := <guarantee-extension(|"index.all.aterm")> path;
       result   := <index-get-all-partitions; map(\filename -> (filename, <index-get-all-in-partition> filename)\)>
       
@@ -45,8 +45,8 @@ rules
     (_, _, _, path, project-path) -> None()
     with
     	partition := $[[project-path]/[path]];
-      index-setup(|language, [project-path], partition);
-      index-clear
+      index-setup(|language, project-path);
+      index-reset
       
   analysis-debug-reset-task(|language):
     (_, _, _, path, project-path) -> None()
@@ -60,5 +60,5 @@ rules
     	partition := $[[project-path]/[path]];
     	task-setup(|project-path);
     	task-reset;
-      index-setup(|language, [project-path], partition);
+      index-setup(|language, project-path);
       index-reload

@@ -47,3 +47,9 @@ strategies
       full-path := <origin-file> trm;
       len-project-prefix := <project-path; string-length; inc>;
       rel-path := <string-as-chars(drop(|len-project-prefix))> full-path
+
+	origin-debug:
+		term -> term
+		with
+			<(origin-term     <+ !"Failed"); debug(!"origin-trm: ")> term;
+			<(origin-location <+ !"Failed"); debug(!"origin-loc: ")> term 

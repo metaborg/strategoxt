@@ -15,18 +15,18 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.attachments.TermAttachmentSerializer;
 
 public class TaskEngineFactory {
-	public IStrategoTerm toTerm(TaskEngine taskEngine, ITermFactory factory) {
+	public IStrategoTerm toTerm(ITaskEngine taskEngine, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
-		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
+		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntriesCurrent()) {
 			final IStrategoTerm taskID = entry.getKey();
 			final Task task = entry.getValue();
 			
 			final IStrategoTerm instruction = task.instruction;
 			final boolean combinator = task.isCombinator;
 			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
-			final IStrategoList initialDependencies = taskEngine.getInitialDependencies(taskID);
+			final IStrategoList initialDependencies = task.initialDependencies;
 			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
@@ -47,7 +47,7 @@ public class TaskEngineFactory {
 		return factory.makeTuple(digestState, tasks);
 	}
 
-	public TaskEngine fromTerms(TaskEngine taskEngine, IStrategoTerm term, ITermFactory factory) {
+	public ITaskEngine fromTerms(ITaskEngine taskEngine, IStrategoTerm term, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		final IStrategoTerm digestState = term.getSubterm(0);

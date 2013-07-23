@@ -11,10 +11,11 @@ signature
 
   constructors
     
-    Def   : URI                    -> Entry
-    Alias : URI * URI              -> Entry
-    Use   : URI                    -> Entry
-    Prop  : URI * Property * Value -> Entry
+    Def          : URI                    -> Entry
+    Alias        : URI * URI              -> Entry
+    InverseAlias : URI * URI              -> Entry
+    Use          : URI                    -> Entry
+    Prop         : URI * Property * Value -> Entry
   
 rules
   
@@ -29,10 +30,12 @@ rules
     x -> alias
     with
       alias := <force-origins(!Alias(uri, alias-uri))> x;
+      ialias := <force-origins(!InverseAlias(alias-uri, uri))> x;
       if <not(eq)> (uri, alias-uri) then
-      	<index-add(|partition)> alias
+      	<index-add(|partition)> alias;
+      	<index-add(|partition)> ialias
       end
-      
+
   new-use(|partition, uri):
     x -> use
     with
@@ -48,34 +51,42 @@ rules
 rules // index uri & value projections
   
   /** @internal */
-  nabl-uri-impl:
+  nabl-uri:
     Def(uri) -> uri
     
   /** @internal */
-  nabl-uri-impl:
+  nabl-uri:
     Alias(uri, _) -> uri
     
+  /** @internal */
+  nabl-uri:
+    InverseAlias(uri, _) -> uri
+    
   /** @internal */  
-  nabl-uri-impl:
+  nabl-uri:
     Use(uri) -> <nabl-is-uri> uri
     
   /** @internal */  
-  nabl-uri-impl:
+  nabl-uri:
     Prop(uri, _, _) -> uri
     
     
   /** @internal */
-  nabl-value-impl:
+  nabl-value:
     Def(value) -> value
     
   /** @internal */
-  nabl-value-impl:
+  nabl-value:
     Alias(_, value) -> value
+    
+  /** @internal */
+  nabl-value:
+    InverseAlias(_, value) -> value
 
   /** @internal */
-  nabl-value-impl:
+  nabl-value:
     Use(value) -> value
     
   /** @internal */
-  nabl-value-impl:
+  nabl-value:
     Prop(_, _, value) -> value

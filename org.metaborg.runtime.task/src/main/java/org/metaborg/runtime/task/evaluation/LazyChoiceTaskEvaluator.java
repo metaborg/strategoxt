@@ -77,7 +77,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			queueOrDefer(dependencyTaskID);
 		}
 	}
-	
+
 	private void queueOrDefer(IStrategoTerm taskID) {
 		// TODO: don't call getDependencies twice
 		final Set<IStrategoTerm> dependencies = Sets.newHashSet(taskEngine.getDependencies(taskID));
@@ -144,7 +144,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			reset();
 		}
 	}
-	
+
 	private Set<IStrategoTerm> evaluateScheduledTasks(final Set<IStrategoTerm> scheduled,
 		final Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
@@ -160,7 +160,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			taskEngine.invalidate(taskID);
 
 			if(TaskIdentification.isChoice(task.instruction)) {
-				evaluateChoice(scheduled, evaluated, context, insert, perform, taskID, task);
+				evaluateChoice(scheduled, evaluated, taskID, task);
 			} else {
 				evaluateTask(context, insert, perform, taskID, task);
 			}
@@ -170,7 +170,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	private void evaluateChoice(final Set<IStrategoTerm> scheduled, final Set<IStrategoTerm> evaluated,
-		IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
+		IStrategoTerm taskID, Task task) {
 		// Handle the result of a choice task.
 		IStrategoTerm choiceTaskID = choiceTaskIDs.get(taskID);
 		if(choiceTaskID != null) {

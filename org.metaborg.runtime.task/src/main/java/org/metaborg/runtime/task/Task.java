@@ -1,26 +1,40 @@
 package org.metaborg.runtime.task;
 
-import java.util.LinkedList;
 import java.util.List;
 
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import com.google.common.collect.Lists;
 
 public final class Task {
 	public final IStrategoTerm instruction;
+	public final IStrategoList initialDependencies;
 	public final boolean isCombinator;
 
-	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+	private List<IStrategoTerm> results = Lists.newLinkedList();
 	private boolean failed = false;
 	private boolean solved = false;
 	private IStrategoTerm message;
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, boolean combinator) {
+	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean combinator) {
 		this.instruction = instruction;
+		this.initialDependencies = initialDependencies;
 		this.isCombinator = combinator;
+	}
+	
+	public Task(Task task) {
+		this.instruction  = task.instruction;
+		this.initialDependencies = task.initialDependencies;
+		this.isCombinator = task.isCombinator;
+		this.results = Lists.newLinkedList(task.results);
+		this.failed = task.failed;
+		this.solved = task.solved;
+		this.message = task.message;
+		this.time = task.time;
+		this.evaluations = task.evaluations;
 	}
 
 	public Iterable<IStrategoTerm> results() {
@@ -113,12 +127,8 @@ public final class Task {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + evaluations;
-		result = prime * result + (failed ? 1231 : 1237);
+		result = prime * result + ((initialDependencies == null) ? 0 : initialDependencies.hashCode());
 		result = prime * result + ((instruction == null) ? 0 : instruction.hashCode());
-		result = prime * result + ((message == null) ? 0 : message.hashCode());
-		result = prime * result + ((results == null) ? 0 : results.hashCode());
-		result = prime * result + (int) (time ^ (time >>> 32));
 		return result;
 	}
 
@@ -131,26 +141,15 @@ public final class Task {
 		if(getClass() != obj.getClass())
 			return false;
 		Task other = (Task) obj;
-		if(evaluations != other.evaluations)
-			return false;
-		if(failed != other.failed)
+		if(initialDependencies == null) {
+			if(other.initialDependencies != null)
+				return false;
+		} else if(!initialDependencies.equals(other.initialDependencies))
 			return false;
 		if(instruction == null) {
 			if(other.instruction != null)
 				return false;
 		} else if(!instruction.equals(other.instruction))
-			return false;
-		if(message == null) {
-			if(other.message != null)
-				return false;
-		} else if(!message.equals(other.message))
-			return false;
-		if(results == null) {
-			if(other.results != null)
-				return false;
-		} else if(!results.equals(other.results))
-			return false;
-		if(time != other.time)
 			return false;
 		return true;
 	}

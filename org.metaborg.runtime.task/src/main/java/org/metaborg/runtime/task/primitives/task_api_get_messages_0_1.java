@@ -1,5 +1,7 @@
 package org.metaborg.runtime.task.primitives;
 
+import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -8,6 +10,7 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.ITermFactory;
 
 public class task_api_get_messages_0_1 extends AbstractPrimitive {
 	public static task_api_get_messages_0_1 instance = new task_api_get_messages_0_1();
@@ -19,12 +22,18 @@ public class task_api_get_messages_0_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
 		throws InterpreterException {
-		final IStrategoTerm partition = tvars[0];
-		final IStrategoList messages = TaskManager.getInstance().getCurrent().getMessages((IStrategoString) partition);
-		if(messages != null)
-			env.setCurrent(messages);
-		else
-			return false;
+		final ITermFactory factory = env.getFactory();
+		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
+		final IStrategoString partition = (IStrategoString)tvars[0];
+		IStrategoList messages = factory.makeList();
+		for(IStrategoTerm taskID : taskEngine.getInPartition(partition)) {
+			final Task task = taskEngine.getTask(taskID);
+			final IStrategoTerm message = task.message();
+			if(message == null)
+				continue;
+			messages = factory.makeListCons(message, messages);
+		}
+		env.setCurrent(messages);
 		return true;
 	}
 }

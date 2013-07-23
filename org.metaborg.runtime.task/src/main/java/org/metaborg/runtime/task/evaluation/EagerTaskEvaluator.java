@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
@@ -28,7 +29,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import com.google.common.collect.Sets;
 
 public class EagerTaskEvaluator implements ITaskEvaluator {
-	private final TaskEngine taskEngine;
+	private final ITaskEngine taskEngine;
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
 	private final IStrategoConstructor singleConstructor;
@@ -192,7 +193,7 @@ public class EagerTaskEvaluator implements ITaskEvaluator {
 
 	private void updateDelayedDependencies(IStrategoTerm taskID, IStrategoList dependencies) {
 		debugDelayedDependecy(taskID, dependencies);
-		
+
 		// Sets the runtime dependencies for a task to the given dependency list.
 		toRuntimeDependency.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
@@ -254,7 +255,7 @@ public class EagerTaskEvaluator implements ITaskEvaluator {
 		}
 		return null;
 	}
-	
+
 	private void debugDelayedDependecy(IStrategoTerm taskID, IStrategoList dependencies) {
 		final Task task = taskEngine.getTask(taskID);
 		for(IStrategoTerm dependencyID : dependencies) {

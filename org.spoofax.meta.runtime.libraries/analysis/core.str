@@ -3,6 +3,7 @@ module analysis/core
 imports
 	
   nbl/collect
+  nbl/incremental
   nbl/entries
   nbl/uri
   nbl/utils
@@ -21,15 +22,17 @@ signature
     
 rules // Analysis
 	
-	analyze-collect(|language, project-path):
+	analyze-collect(|language, project-path) = analyze-collect(id|language, project-path)
+	analyze-collect(try-recover|language, project-path):
     File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
     with
     	measure-time(
 	    	measure-time(
-	    		index-setup(|language, [project-path], partition);
+	    		index-setup(|language, project-path);
+	    		try(try-recover; index-recover);
 			    index-start-collection(|partition);
 	    		task-setup(|project-path);
-	    		task-recover;
+	    		try(try-recover; task-recover);
 	    		task-start-collection(|partition)
 	      	, id | "analyze-collect-setup"
 	      ); measure-time(
@@ -38,7 +41,7 @@ rules // Analysis
 	  	  ); measure-time(
 	  	  	index-stop-collection => (removed-entry*, added-entry*);
 	      	task-stop-collection(|partition);
-	      	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
+	      	changed-read* := <nabl-get-changed-reads> [removed-entry*, added-entry*]
 	      	, id | "analyze-collect-diff" 
 	  	  ); measure-time(
 	  	  	task-invalidate-task-reads(|changed-read*)
@@ -51,7 +54,7 @@ rules // Analysis
 		with
 			measure-time(
 				measure-time(
-	      	task-evaluate => (evaluated-task*, unevaluated-task*)
+	      	task-evaluate-scheduled => (evaluated-task*, unevaluated-task*)
 	      	, id | "analyze-task-evaluate"
 	      ); measure-time(
 	  	  	result'* := <map(analyze-messages)> result*
@@ -79,14 +82,6 @@ rules // Analysis
 			origin := <task-message-origin> message;
 			term   := <task-message-term> message;
 			msg    := <task-message> message
-
-rules // Index entries to diff
-	
-  analyze-diff-entry =
-    ?Def(_)
-    
-  analyze-diff-entry =
-    ?Prop(_, _, _)
       
 rules // Projections
 	
@@ -95,3 +90,5 @@ rules // Projections
 		
 	analyze-result-analyzed-ast:
 		Result(_, _, analyzed-ast, _, _, _, _) -> analyzed-ast
+
+	analysis-partition(|path, project-path) = !$[[project-path]/[path]]

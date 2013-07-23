@@ -3,11 +3,59 @@ module nbl/check
 imports
 	
   nbl/resolve
+  nbl/collect
   nbl/query
-  nbl/uri
+  nbl/tasks
   nbl/entries
+  nbl/interface
+  nbl/uri
+  nbl/utils
+  task/core
+  task/messages
+  task/tasks
 	
-rules // Unresolved
+rules // Error checking tasks
+	
+	nabl-unresolved-task(|partition, task):
+		name -> name
+		where
+			not(nabl-check-disable-unresolved)
+		with
+		  <nabl-fix-name; task-create-error-on-failure(|partition, task, "Unresolved reference")> name
+		  
+  nabl-duplicate-task(|partition, unique):
+		name -> name
+		where
+	    uri := <nabl-uri> name;
+	    ns  := <nabl-uri-namespace> uri;
+			not(<nabl-check-disable-duplicate(|uri, ns)> name)
+		with
+			if Unique() := unique then
+		    uri'    := <nabl-uri-parent> uri;
+				resolve := <new-task(|partition)> ResolveDefs(uri', ns, name);
+				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+			end
+			
+	nabl-hiding-task(|partition):
+		name -> name
+		where
+			uri := <nabl-uri> name;
+	    ns  := <nabl-uri-namespace> uri;
+			not(<nabl-check-disable-hiding(|uri, ns)> name)
+		where
+	    if inverse-alias* := <nabl-get-all-inverse-aliasses> uri then
+	      uri* := <map(nabl-uri-parent; nabl-uri-parent)> inverse-alias*
+	    else
+	      uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
+	    end;
+	    task* := <mapconcat(nabl-use-subtasks(id, fail|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
+	    task  := <new-task(|partition)> Choice(task*);
+	    <task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
+
+	message-task(|partition) = 
+		nabl-hiding-task(|partition)
+
+rules // Legacy
  
   nabl-is-unresolved =
     ?node;
@@ -15,8 +63,6 @@ rules // Unresolved
     get-annos;
     where(nabl-has-reference);
     not(nabl-collect-one-resolved-def)
-
-rules // Ambiguities
   
   nabl-get-ambiguities =
     nabl-collect-all-resolved-defs;
@@ -24,8 +70,6 @@ rules // Ambiguities
     filter(nabl-uri; nabl-uri-parent);
     make-set;
     where(<gt> (<length>, 1))
-
-rules // Duplicate definitions
   
   nabl-get-duplicate-definitions =
     has-annos;

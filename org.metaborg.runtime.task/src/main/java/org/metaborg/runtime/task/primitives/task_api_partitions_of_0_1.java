@@ -3,7 +3,7 @@ package org.metaborg.runtime.task.primitives;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.metaborg.runtime.task.TaskEngine;
+import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -24,7 +24,7 @@ public class task_api_partitions_of_0_1 extends AbstractPrimitive {
 
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-		final TaskEngine taskEngine = TaskManager.getInstance().getCurrent();
+		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm taskIDOrTaskIDS = tvars[0];
 		
 		final Set<IStrategoString> partitions = new HashSet<IStrategoString>();

@@ -2,10 +2,16 @@ package org.metaborg.runtime.task.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.TaskEngineFactory;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -59,7 +65,7 @@ public class TaskEngineTest extends TaskTest {
 		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveID));
 		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveImportID));
 		assertTrue(assertContains(taskEngine.getInPartition(partition2), choiceID));
-		
+
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveID)));
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveImportID)));
 		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveID));
@@ -75,12 +81,14 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction, false);
 		IStrategoTerm resolveID = resultID(resolveResult);
-		
+
 		// Add a duplicate instruction but with different dependencies.
-		IStrategoTerm resolveResult2 = taskEngine.addTask(partition1, dependencies(resolveResult), resolveInstruction, false);
+		IStrategoTerm resolveResult2 =
+			taskEngine.addTask(partition1, dependencies(resolveResult), resolveInstruction, false);
 		IStrategoTerm resolveID2 = resultID(resolveResult2);
 
-		IStrategoTerm resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
+		IStrategoTerm resolveImportResult =
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 
 		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
@@ -129,30 +137,30 @@ public class TaskEngineTest extends TaskTest {
 		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID)));
 	}
 
+	// Adding a task without starting collection.
 	@Test(expected = IllegalStateException.class)
 	public void testInCollection1() {
-		// Adding a task without starting collection.
 		taskEngine.addTask(partition1, dependencies(), resolveInstruction, false);
 	}
 
+	// Adding a task to another partition than the one that started a collection.
 	@Test(expected = IllegalStateException.class)
 	public void testInCollection2() {
-		// Adding a task to another partition than the one that started a collection.
 		taskEngine.startCollection(partition2);
 		taskEngine.addTask(partition1, dependencies(), resolveInstruction, false);
 		taskEngine.stopCollection(partition2);
 	}
 
+	// Stopping the collection of another partition than the one that started a collection.
 	@Test(expected = IllegalStateException.class)
 	public void testInCollection3() {
-		// Stopping the collection of another partition than the one that started a collection.
 		taskEngine.startCollection(partition1);
 		taskEngine.stopCollection(partition2);
 	}
 
+	// Starting collection for the same partition twice.
 	@Test(expected = IllegalStateException.class)
 	public void testInCollection4() {
-		// Starting collection for the same partition twice.
 		taskEngine.startCollection(partition2);
 		taskEngine.startCollection(partition2);
 	}
@@ -162,7 +170,8 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction, false);
 		IStrategoTerm resolveID = resultID(resolveResult);
-		IStrategoTerm resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
+		IStrategoTerm resolveImportResult =
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
@@ -201,7 +210,8 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult = taskEngine.addTask(partition1, dependencies(), resolveInstruction, false);
 		IStrategoTerm resolveID = resultID(resolveResult);
-		IStrategoTerm resolveImportResult = taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
+		IStrategoTerm resolveImportResult =
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
@@ -241,5 +251,212 @@ public class TaskEngineTest extends TaskTest {
 		assertFalse(taskEngine.becomesCyclic(resolveA, resolveC));
 		assertFalse(taskEngine.becomesCyclic(resolveB, resolveC));
 		assertFalse(taskEngine.becomesCyclic(resolveA, resolveB));
+	}
+
+	@Test
+	public void testPersistance() {
+		taskEngine.startCollection(partition1);
+		IStrategoTerm resolveD = resultID(taskEngine.addTask(partition1, list(), resolve("D"), false));
+		IStrategoTerm resolveC = resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), false));
+		IStrategoTerm resolveB = resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), false));
+		IStrategoTerm resolveA = resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), false));
+		taskEngine.stopCollection(partition1);
+
+		assertNotNull(taskEngine.getTask(resolveD));
+		assertNotNull(taskEngine.getTask(resolveC));
+		assertNotNull(taskEngine.getTask(resolveB));
+		assertNotNull(taskEngine.getTask(resolveA));
+
+		final TaskEngineFactory taskEngineFactory = new TaskEngineFactory();
+		final IStrategoTerm persisted = taskEngineFactory.toTerm(taskEngine, factory);
+		taskEngine.reset();
+
+		assertNull(taskEngine.getTask(resolveD));
+		assertNull(taskEngine.getTask(resolveC));
+		assertNull(taskEngine.getTask(resolveB));
+		assertNull(taskEngine.getTask(resolveA));
+
+		taskEngineFactory.fromTerms(taskEngine, persisted, factory);
+
+		assertNotNull(taskEngine.getTask(resolveD));
+		assertNotNull(taskEngine.getTask(resolveC));
+		assertNotNull(taskEngine.getTask(resolveB));
+		assertNotNull(taskEngine.getTask(resolveA));
+	}
+
+	// Changes in current task engine are not visible in parent task engine.
+	@Test
+	public void testStackNoParentChange() {
+		final ITaskEngine parent = taskEngine;
+		ITaskEngine current = taskManager.pushTaskEngine(factory);
+		assertNotSame(parent, current);
+
+		current.startCollection(partition2);
+		final IStrategoTerm resolveImportResult =
+			current.addTask(partition2, dependencies(), resolveImportInstruction, false);
+		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
+		current.stopCollection(partition2);
+
+		assertNull(parent.getTask(resolveImportID));
+		assertNotNull(current.getTask(resolveImportID));
+
+		current = taskManager.popTaskEngine();
+		assertSame(parent, current);
+	}
+
+	// Changes in parent task engine are visible in current task engine.
+	@Test
+	public void testStackParentChangeVisible() {
+		final ITaskEngine parent = taskEngine;
+		ITaskEngine current = parent;
+
+		current.startCollection(partition1);
+		final IStrategoTerm resolveResult = current.addTask(partition1, dependencies(), resolveInstruction, false);
+		final IStrategoTerm resolveID = resultID(resolveResult);
+		current.stopCollection(partition1);
+
+		assertNotNull(current.getTask(resolveID));
+
+		current = taskManager.pushTaskEngine(factory);
+		assertNotSame(parent, current);
+
+		current.startCollection(partition2);
+		final IStrategoTerm resolveImportResult =
+			current.addTask(partition2, dependencies(), resolveImportInstruction, false);
+		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
+		current.stopCollection(partition2);
+
+		assertNotNull(parent.getTask(resolveID));
+		assertNull(parent.getTask(resolveImportID));
+		assertNotNull(current.getTask(resolveID));
+		assertNotNull(current.getTask(resolveImportID));
+
+		current = taskManager.popTaskEngine();
+		assertSame(parent, current);
+	}
+
+	// Removing a task from current task engine makes it invisible in parent task engine.
+	@Test
+	public void testStackRemove() {
+		final ITaskEngine parent = taskEngine;
+		ITaskEngine current = parent;
+
+		current.startCollection(partition1);
+		final IStrategoTerm resolveResult = current.addTask(partition1, dependencies(), resolveInstruction, false);
+		final IStrategoTerm resolveID = resultID(resolveResult);
+		final IStrategoTerm resolveImportResult =
+			current.addTask(partition1, dependencies(), resolveImportInstruction, false);
+		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
+		current.stopCollection(partition1);
+
+		assertNotNull(current.getTask(resolveID));
+		assertNotNull(current.getTask(resolveImportID));
+
+		current = taskManager.pushTaskEngine(factory);
+		assertNotSame(parent, current);
+
+		// Remove all tasks in partition 1 using an empty collect phase.
+		current.startCollection(partition1);
+		current.stopCollection(partition1);
+
+		assertNotNull(parent.getTask(resolveID));
+		assertNotNull(parent.getTask(resolveImportID));
+		assertNull(current.getTask(resolveID));
+		assertNull(current.getTask(resolveImportID));
+
+		current = taskManager.popTaskEngine();
+		assertSame(parent, current);
+	}
+
+	// Popping a task engine discards all its changes.
+	@Test
+	public void testStackPop() {
+		final ITaskEngine parent = taskEngine;
+		ITaskEngine current = parent;
+
+		current.startCollection(partition1);
+		final IStrategoTerm resolveResult = current.addTask(partition1, dependencies(), resolveInstruction, false);
+		final IStrategoTerm resolveID = resultID(resolveResult);
+		final IStrategoTerm resolveImportResult =
+			current.addTask(partition1, dependencies(), resolveImportInstruction, false);
+		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
+		current.stopCollection(partition1);
+
+		assertNotNull(current.getTask(resolveID));
+		assertNotNull(current.getTask(resolveImportID));
+
+		current = taskManager.pushTaskEngine(factory);
+		assertNotSame(parent, current);
+
+		current.startCollection(partition2);
+		final IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		final IStrategoTerm choiceResult =
+			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction, true);
+		final IStrategoTerm choiceID = resultID(choiceResult);
+		current.stopCollection(partition2);
+
+		// Remove all tasks in partition 1 using an empty collect phase.
+		current.startCollection(partition1);
+		current.stopCollection(partition1);
+
+		assertNotNull(parent.getTask(resolveID));
+		assertNotNull(parent.getTask(resolveImportID));
+		assertNull(parent.getTask(choiceID));
+		assertNull(current.getTask(resolveID));
+		assertNull(current.getTask(resolveImportID));
+		assertNotNull(current.getTask(choiceID));
+
+		current = taskManager.popTaskEngine();
+		assertSame(parent, current);
+
+		assertNotNull(current.getTask(resolveID));
+		assertNotNull(current.getTask(resolveImportID));
+		assertNull(current.getTask(choiceID));
+	}
+
+	// Merging a task engine preserves all its changes.
+	@Test
+	public void testStackMerge() {
+		final ITaskEngine parent = taskEngine;
+		ITaskEngine current = parent;
+
+		current.startCollection(partition1);
+		final IStrategoTerm resolveResult = current.addTask(partition1, dependencies(), resolveInstruction, false);
+		final IStrategoTerm resolveID = resultID(resolveResult);
+		final IStrategoTerm resolveImportResult =
+			current.addTask(partition1, dependencies(), resolveImportInstruction, false);
+		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
+		current.stopCollection(partition1);
+
+		assertNotNull(current.getTask(resolveID));
+		assertNotNull(current.getTask(resolveImportID));
+
+		current = taskManager.pushTaskEngine(factory);
+		assertNotSame(parent, current);
+
+		current.startCollection(partition2);
+		final IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		final IStrategoTerm choiceResult =
+			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction, true);
+		final IStrategoTerm choiceID = resultID(choiceResult);
+		current.stopCollection(partition2);
+
+		// Remove all tasks in partition 1 using an empty collect phase.
+		current.startCollection(partition1);
+		current.stopCollection(partition1);
+
+		assertNotNull(parent.getTask(resolveID));
+		assertNotNull(parent.getTask(resolveImportID));
+		assertNull(parent.getTask(choiceID));
+		assertNull(current.getTask(resolveID));
+		assertNull(current.getTask(resolveImportID));
+		assertNotNull(current.getTask(choiceID));
+
+		current = taskManager.mergeTaskEngine(factory);
+		assertSame(parent, current);
+
+		assertNull(current.getTask(resolveID));
+		assertNull(current.getTask(resolveImportID));
+		assertNotNull(current.getTask(choiceID));
 	}
 }
