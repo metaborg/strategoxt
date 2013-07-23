@@ -1,6 +1,5 @@
 package org.metaborg.runtime.task;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.spoofax.interpreter.terms.IStrategoList;
@@ -13,7 +12,7 @@ public final class Task {
 	public final IStrategoList initialDependencies;
 	public final boolean isCombinator;
 
-	private List<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+	private List<IStrategoTerm> results = Lists.newLinkedList();
 	private boolean failed = false;
 	private boolean solved = false;
 	private IStrategoTerm message;
@@ -24,6 +23,18 @@ public final class Task {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
 		this.isCombinator = combinator;
+	}
+	
+	public Task(Task task) {
+		this.instruction  = task.instruction;
+		this.initialDependencies = task.initialDependencies;
+		this.isCombinator = task.isCombinator;
+		this.results = Lists.newLinkedList(task.results);
+		this.failed = task.failed;
+		this.solved = task.solved;
+		this.message = task.message;
+		this.time = task.time;
+		this.evaluations = task.evaluations;
 	}
 
 	public Iterable<IStrategoTerm> results() {
