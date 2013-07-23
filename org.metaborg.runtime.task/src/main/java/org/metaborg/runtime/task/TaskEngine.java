@@ -429,7 +429,8 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	private void removeFromPartition(IStrategoTerm taskID, IStrategoString partition) {
-		if(parentPartitionsVisible(taskID)) {
+		// TODO: remove nasty instanceof.
+		if(parentPartitionsVisible(taskID) && !(parent instanceof EmptyTaskEngine)) {
 			// TODO: copying is not correct if the parent changes, need to keep a Set<Partition> that have been del.
 			removePartitionsOf(taskID);
 			for(IStrategoString copyPartition : parent.getPartitionsOf(taskID)) {
