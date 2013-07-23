@@ -72,7 +72,6 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	}
 
 	public boolean putAll(Multimap<? extends K, ? extends V> multimap) {
-
 		boolean result = keyToValue.putAll(multimap);
 
 		for (Entry<? extends K, ? extends V> entry : multimap.entries())
@@ -82,7 +81,6 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	}
 
 	public boolean putAll(K key, Iterable<? extends V> values) {
-
 		boolean result = keyToValue.putAll(key, values);
 
 		for (V value : values)
@@ -96,8 +94,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	}
 
 	public Set<V> removeAll(Object key) {
-
-		Set<V> removed = keyToValue.removeAll(key);
+		final Set<V> removed = keyToValue.removeAll(key);
 		for (V r : removed)
 			valueToKey.remove(r, key);
 
@@ -105,8 +102,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	}
 
 	public Set<K> removeAllInverse(Object value) {
-
-		Set<K> removed = valueToKey.removeAll(value);
+		final Set<K> removed = valueToKey.removeAll(value);
 		for (K r : removed)
 			keyToValue.remove(r, value);
 
@@ -114,8 +110,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	}
 
 	public Set<V> replaceValues(K key, Iterable<? extends V> values) {
-
-		Set<V> replaced = keyToValue.replaceValues(key, values);
+		final Set<V> replaced = keyToValue.replaceValues(key, values);
 
 		for (V r : replaced)
 			valueToKey.remove(r, key);
