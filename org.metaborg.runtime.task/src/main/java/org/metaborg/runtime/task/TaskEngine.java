@@ -188,8 +188,7 @@ public class TaskEngine implements ITaskEngine {
 
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
-		if(!taskIDExists(taskID)) {
-			System.out.println("Adding: " + taskID);
+		if(getTask(taskID) == null) {
 			toTask.put(taskID, new Task(instruction, dependencies, combinator));
 			addedTasks.add(taskID);
 			schedule(taskID);
@@ -201,10 +200,6 @@ public class TaskEngine implements ITaskEngine {
 			addDependency(taskID, dependency);
 
 		return createResult(taskID);
-	}
-
-	private boolean taskIDExists(IStrategoTerm taskID) {
-		return getTaskCurrent(taskID) != null || parent.getTask(taskID) != null;
 	}
 
 	private IStrategoAppl createResult(IStrategoTerm taskID) {
@@ -241,8 +236,6 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public void removeTask(IStrategoTerm taskID) {
-		System.out.println("Removing: " + taskID);
-		
 		getTaskRemovalStatus(taskID).removed = true;
 		removePartitionsOf(taskID);
 		removeDependencies(taskID);
@@ -309,8 +302,6 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public void invalidate(IStrategoTerm taskID) {
-		System.out.println("Invalidating: " + taskID);
-		
 		Task task = getTaskCurrent(taskID);
 		if(task == null) {
 			task = parent.getTask(taskID);
@@ -434,6 +425,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	private void addToPartition(IStrategoTerm taskID, IStrategoString partition) {
+		System.out.println("Part: " + taskID + " -> " + partition);
 		toPartition.put(taskID, partition);
 	}
 
@@ -447,7 +439,7 @@ public class TaskEngine implements ITaskEngine {
 		}
 		toPartition.remove(taskID, partition);
 	}
-	
+
 	private void removePartitionsOf(IStrategoTerm taskID) {
 		toPartition.removeAll(taskID);
 		getTaskRemovalStatus(taskID).partitionOverride = true;
