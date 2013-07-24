@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.evaluation;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.CarthesianProduct;
@@ -25,7 +28,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Sets;
 
-public class TaskEvaluator implements ITaskEvaluator {
+public class EagerTaskEvaluator implements ITaskEvaluator {
 	private final ITaskEngine taskEngine;
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
@@ -46,7 +49,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 	private final Timer timer = new Timer();
 
 
-	public TaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
+	public EagerTaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
@@ -190,7 +193,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 
 	private void updateDelayedDependencies(IStrategoTerm taskID, IStrategoList dependencies) {
 		debugDelayedDependecy(taskID, dependencies);
-		
+
 		// Sets the runtime dependencies for a task to the given dependency list.
 		toRuntimeDependency.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
@@ -252,7 +255,7 @@ public class TaskEvaluator implements ITaskEvaluator {
 		}
 		return null;
 	}
-	
+
 	private void debugDelayedDependecy(IStrategoTerm taskID, IStrategoList dependencies) {
 		final Task task = taskEngine.getTask(taskID);
 		for(IStrategoTerm dependencyID : dependencies) {

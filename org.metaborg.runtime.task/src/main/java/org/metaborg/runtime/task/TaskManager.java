@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
+import org.metaborg.runtime.task.evaluation.EagerTaskEvaluator;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -37,7 +38,7 @@ public class TaskManager {
 		ensureInitialized();
 		return current.get();
 	}
-	
+
 	public URI getCurrentProject() {
 		ensureInitialized();
 		return currentProject.get();
@@ -77,7 +78,7 @@ public class TaskManager {
 		setCurrent(parentTaskEngine);
 		return parentTaskEngine;
 	}
-	
+
 	public ITaskEngine popToRootTaskEngine() {
 		final ITaskEngine currentTaskEngine = getCurrent();
 		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
@@ -109,21 +110,21 @@ public class TaskManager {
 	public ITaskEngine createTaskEngine(ITermFactory factory) {
 		return createTaskEngine(factory, createTermDigester());
 	}
-	
+
 	public ITaskEngine createTaskEngine(ITermFactory factory, ITermDigester digester) {
 		return createTaskEngine(createEmptyTaskEngine(), factory, digester);
 	}
 
 	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory, ITermDigester digester) {
 		final TaskEngine taskEngine = new TaskEngine(parent, factory, digester);
-		taskEngine.setEvaluator(new TaskEvaluator(taskEngine, factory));
+		taskEngine.setEvaluator(new EagerTaskEvaluator(taskEngine, factory));
 		return taskEngine;
 	}
 
 	public ITaskEngine createEmptyTaskEngine() {
 		return new EmptyTaskEngine();
 	}
-	
+
 	public ITermDigester createTermDigester() {
 		return new NonDeterministicCountingTermDigester();
 	}

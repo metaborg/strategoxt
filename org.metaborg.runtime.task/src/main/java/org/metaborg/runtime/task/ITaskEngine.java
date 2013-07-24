@@ -1,9 +1,10 @@
 package org.metaborg.runtime.task;
 
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoInt;
