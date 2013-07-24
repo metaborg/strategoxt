@@ -16,15 +16,22 @@ signature
 
   constructors
   
-    File : Path * AST -> File
-    Result : Partition * AST * AST * List(URI) * List(Term) * List(Term) * List(Term) -> Result
+    File        : Path * AST -> File
+    
     // Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
+    Result      : Partition * AST * AST * List(URI) * List(Term) * List(Term) * List(Term) -> Result
+    
+    // DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+    DebugResult : List(Entry) * List(Entry) * List(TaskID) * List(TaskID) * List(TaskID) -> Result
     
 rules // Analysis
 	
 	analyze-collect(|language, project-path) = analyze-collect(id|language, project-path)
 	analyze-collect(try-recover|language, project-path):
-    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
+    File(partition, initial-ast) -> ( 
+    	Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
+    , DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+  	)
     with
     	measure-time(
 	    	measure-time(
@@ -40,11 +47,11 @@ rules // Analysis
 	    	  , id | "analyze-collect-collect" 
 	  	  ); measure-time(
 	  	  	index-stop-collection => (removed-entry*, added-entry*);
-	      	task-stop-collection(|partition);
+	      	task-stop-collection(|partition) => (removed-task*, added-task*);
 	      	changed-read* := <nabl-get-changed-reads> [removed-entry*, added-entry*]
 	      	, id | "analyze-collect-diff" 
 	  	  ); measure-time(
-	  	  	task-invalidate-task-reads(|changed-read*)
+	  	  	task-invalidate-task-reads(|changed-read*) => invalidated-task*
 	  	  	, id | "analyze-collect-invalidate"
 	  	  )
   	  , id | "analyze-collect-total")
@@ -64,7 +71,8 @@ rules // Analysis
   	  
     
   analyze-messages:
-  	Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
+  	(Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _), debug-result) -> 
+  	(Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*), debug-result)
   	with
 			(error*, warning*, note*) := <analyze-get-messages> partition
 

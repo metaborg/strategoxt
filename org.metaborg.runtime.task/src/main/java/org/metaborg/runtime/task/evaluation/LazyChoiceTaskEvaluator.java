@@ -229,11 +229,11 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		final Iterator<IStrategoTerm> choiceIter = choiceIterators.get(taskID);
 		while(choiceIter.hasNext()) {
 			final IStrategoTerm choiceTaskID = choiceIter.next().getSubterm(0);
-			System.out.println("Skipped " + choiceTaskID + ": " + taskEngine.getTask(choiceTaskID));
+			//System.out.println("Skipped " + choiceTaskID + ": " + taskEngine.getTask(choiceTaskID));
 			scheduled.remove(choiceTaskID);
 			evaluated.add(choiceTaskID);
 			for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(choiceTaskID)) {
-				System.out.println("Skipped " + dependencyTaskID + ": " + taskEngine.getTask(dependencyTaskID));
+				//System.out.println("Skipped " + dependencyTaskID + ": " + taskEngine.getTask(dependencyTaskID));
 				scheduled.remove(dependencyTaskID);
 				evaluated.add(dependencyTaskID);
 			}

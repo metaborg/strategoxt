@@ -3,10 +3,12 @@ module analysis/reanalysis
 imports
 	
 	analysis/core
+	analysis/single
 	analysis/defaults
 	task/core
 	index/core
 	nbl/collect
+	nbl/namegen
 
 rules
 	
@@ -25,12 +27,20 @@ rules
   reanalyze-ast(|language, path, project-path):
     ast -> analyzed-ast
     with
-      partition := <analysis-partition(|path, project-path)>;
-      r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(fail|language, project-path)> File(partition, ast);
-    	(result*, evaluated-task*, unevaluated-task*) := <analyze-perform-all> [r];
-    	Result(_, _, _, _, error*, warning*, note*) := <Hd> result*;
-      <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
-      <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task*; 
+	    (
+	    	analyzed-ast
+			, (error*, warning*, note*)
+			, removed-entry*
+			, added-entry*
+			, removed-task*
+			, added-task*
+			, invalidated-task*
+			, evaluated-task*
+			, unevaluated-task*
+			) := <analyze-one(|language, path, project-path)> ast;
+			
+      <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, unevaluated-task*);
+      
       <map(analysis-default-debug(!"Error: "))> error*;
       <map(analysis-default-debug(!"Warning: "))> warning*;
       <map(analysis-default-debug(!"Note: "))> note*

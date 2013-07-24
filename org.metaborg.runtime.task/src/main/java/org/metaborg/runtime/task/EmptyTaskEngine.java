@@ -65,16 +65,16 @@ public class EmptyTaskEngine implements ITaskEngine {
 
 	}
 
-	public void stopCollection(IStrategoString partition) {
-
+	public IStrategoTerm stopCollection(IStrategoString partition) {
+		return null;
 	}
 
 	public void invalidate(IStrategoTerm taskID) {
 
 	}
 
-	public void invalidateTaskReads(IStrategoList changedReads) {
-
+	public Set<IStrategoTerm> invalidateTaskReads(IStrategoList changedReads) {
+		return ImmutableSet.of();
 	}
 
 	public IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform) {
@@ -177,9 +177,9 @@ public class EmptyTaskEngine implements ITaskEngine {
 	public void clearEvaluations() {
 
 	}
-	
+
 	public Iterable<IStrategoTerm> getRemovedTasks() {
-		return new EmptyIterable<IStrategoTerm>(); 
+		return new EmptyIterable<IStrategoTerm>();
 	}
 
 	public void recover() {

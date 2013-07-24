@@ -255,7 +255,7 @@ public class TaskEngine implements ITaskEngine {
 		toTask.remove(taskID);
 	}
 
-	public void stopCollection(IStrategoString partition) {
+	public IStrategoTerm stopCollection(IStrategoString partition) {
 		if(!inCollection.contains(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before stopping collection.");
@@ -268,6 +268,8 @@ public class TaskEngine implements ITaskEngine {
 
 		inCollection.remove(partition);
 		collectGarbage();
+
+		return factory.makeTuple(factory.makeList(removedTasks), factory.makeList(addedTasks));
 	}
 
 	private void collectGarbage() {
@@ -322,22 +324,27 @@ public class TaskEngine implements ITaskEngine {
 		removeReads(taskID);
 	}
 
-	public void invalidateTaskReads(IStrategoList changedReads) {
-		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
+	public Set<IStrategoTerm> invalidateTaskReads(IStrategoList changedReads) {
+		final Set<IStrategoTerm> seen = Sets.newHashSet();
+		final Queue<IStrategoTerm> workList = Lists.newLinkedList();
+
+		// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 		for(final IStrategoTerm changedRead : changedReads) {
-			// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
-			final Set<IStrategoTerm> seen = Sets.newHashSet();
-			final Queue<IStrategoTerm> workList = Lists.newLinkedList(getReaders(changedRead));
-			for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
-				schedule(taskID);
-				seen.add(taskID);
-				for(IStrategoTerm dependentTaskID : getDependent(taskID)) {
-					if(!seen.contains(dependentTaskID)) {
-						workList.offer(dependentTaskID);
-					}
+			Iterables.addAll(workList, getReaders(changedRead));
+		}
+
+		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
+		for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
+			schedule(taskID);
+			seen.add(taskID);
+			for(IStrategoTerm dependentTaskID : getDependent(taskID)) {
+				if(!seen.contains(dependentTaskID)) {
+					workList.offer(dependentTaskID);
 				}
 			}
 		}
+		
+		return seen;
 	}
 
 	public IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform) {
@@ -586,6 +593,7 @@ public class TaskEngine implements ITaskEngine {
 
 	public void recover() {
 		evaluator.reset();
+		scheduled.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();

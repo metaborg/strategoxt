@@ -107,8 +107,10 @@ public interface ITaskEngine {
 	 * Stops collection for given partition.
 	 * 
 	 * @param partition The partition to stop collecting tasks for.
+	 * 
+	 * @return A tuple with a list of task identifiers that have been removed and added. 
 	 */
-	public abstract void stopCollection(IStrategoString partition);
+	public abstract IStrategoTerm stopCollection(IStrategoString partition);
 
 	
 	/**
@@ -122,8 +124,10 @@ public interface ITaskEngine {
 	 * Invalidates and schedules tasks that have changed because something they read has changed.
 	 * 
 	 * @param changedReads A list of reads which have changed.
+	 * 
+	 * @return Set of invalidated task identifiers.
 	 */
-	public abstract void invalidateTaskReads(IStrategoList changedReads);
+	public abstract Set<IStrategoTerm> invalidateTaskReads(IStrategoList changedReads);
 
 	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have

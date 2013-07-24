@@ -10,16 +10,15 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public class task_api_stop_collection_0_1 extends AbstractPrimitive {
 	public static task_api_stop_collection_0_1 instance = new task_api_stop_collection_0_1();
-	
+
 	public task_api_stop_collection_0_1() {
 		super("task_api_stop_collection", 0, 1);
 	}
-	
+
 	@Override
-	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
-		throws InterpreterException {
+	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoTerm partition = tvars[0];
-		TaskManager.getInstance().getCurrent().stopCollection((IStrategoString) partition);
+		env.setCurrent(TaskManager.getInstance().getCurrent().stopCollection((IStrategoString) partition));
 		return true;
 	}
 }
