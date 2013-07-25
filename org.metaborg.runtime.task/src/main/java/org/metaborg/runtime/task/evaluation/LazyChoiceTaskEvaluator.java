@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskIdentification;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
@@ -32,7 +32,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import com.google.common.collect.Sets;
 
 public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
-	private final TaskEngine taskEngine;
+	private final ITaskEngine taskEngine;
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
 	private final IStrategoConstructor singleConstructor;
@@ -57,13 +57,16 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = new HashMap<IStrategoTerm, IStrategoTerm>();
 
 
-	public LazyChoiceTaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
+	public LazyChoiceTaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
 		this.singleConstructor = factory.makeConstructor("Single", 1);
 	}
 
+	/**
+	 * Queues given task identifier if it is not in the queue yet.
+	 */
 	private void queue(IStrategoTerm taskID) {
 		if(!queued.contains(taskID)) {
 			evaluationQueue.add(taskID);
@@ -71,6 +74,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Queues given task identifier and its transitive dependencies if they are not in the queue yet.
+	 */
 	private void queueTransitive(IStrategoTerm taskID) {
 		queueOrDefer(taskID);
 		for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(taskID)) {
@@ -78,6 +84,10 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Queues given task identifier if all their dependencies are solved, or defers evaluation until all their
+	 * dependencies have been solved.
+	 */
 	private void queueOrDefer(IStrategoTerm taskID) {
 		// TODO: don't call getDependencies twice
 		final Set<IStrategoTerm> dependencies = Sets.newHashSet(taskEngine.getDependencies(taskID));
@@ -95,6 +105,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Returns the set of transitive dependencies for given task identifier, but filters out choice tasks.
+	 */
 	private Set<IStrategoTerm> transitiveDependenciesNoChoice(IStrategoTerm taskID) {
 		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
 		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
@@ -145,6 +158,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
+	 */
 	private Set<IStrategoTerm> evaluateScheduledTasks(final Set<IStrategoTerm> scheduled,
 		final Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
@@ -169,6 +185,15 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		return scheduled;
 	}
 
+	private IStrategoTerm getTaskID(IStrategoTerm resultTerm) {
+		if(Tools.isTermAppl(resultTerm) && Tools.hasConstructor((IStrategoAppl)resultTerm, "Result", 1))
+			return resultTerm.getSubterm(0);
+		return null;
+	}
+	
+	/**
+	 * Evaluates a choice task.
+	 */
 	private void evaluateChoice(final Set<IStrategoTerm> scheduled, final Set<IStrategoTerm> evaluated,
 		IStrategoTerm taskID, Task task) {
 		// Handle the result of a choice task.
@@ -200,7 +225,13 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 
 		// Retrieve the next task to evaluate.
-		final IStrategoTerm currentTaskID = choiceIter.next().getSubterm(0);
+		final IStrategoTerm currentTaskResult = choiceIter.next();
+		final IStrategoTerm currentTaskID = getTaskID(currentTaskResult);
+		if(currentTaskID == null) {
+			// Current entry in the choice is not a task identifier, queue choice for evaluation again.
+			queue(taskID);
+			return;
+		}
 		choiceTaskIDs.put(taskID, currentTaskID);
 		final Task currentTask = taskEngine.getTask(currentTaskID);
 		taskEngine.addDependency(taskID, currentTaskID);
@@ -209,6 +240,7 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 			if(currentTask.failed()) {
 				// Schedule the choice for evaluation again.
 				queue(taskID);
+				return;
 			} else {
 				// Task was already solved.
 				task.setResults(currentTask.results());
@@ -224,16 +256,22 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Cleans up choice task evaluation after the choice task has succeeded or failed.
+	 */
 	private void cleanupChoice(final Set<IStrategoTerm> scheduled, final Set<IStrategoTerm> evaluated,
 		IStrategoTerm taskID) {
 		final Iterator<IStrategoTerm> choiceIter = choiceIterators.get(taskID);
 		while(choiceIter.hasNext()) {
-			final IStrategoTerm choiceTaskID = choiceIter.next().getSubterm(0);
-			//System.out.println("Skipped " + choiceTaskID + ": " + taskEngine.getTask(choiceTaskID));
-			scheduled.remove(choiceTaskID);
-			evaluated.add(choiceTaskID);
-			for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(choiceTaskID)) {
-				//System.out.println("Skipped " + dependencyTaskID + ": " + taskEngine.getTask(dependencyTaskID));
+			final IStrategoTerm currentTaskResult = choiceIter.next();
+			final IStrategoTerm currentTaskID = getTaskID(currentTaskResult);
+			if(currentTaskID == null)
+				continue;
+			// System.out.println("Skipped " + choiceTaskID + ": " + taskEngine.getTask(choiceTaskID));
+			scheduled.remove(currentTaskID);
+			evaluated.add(currentTaskID);
+			for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(currentTaskID)) {
+				// System.out.println("Skipped " + dependencyTaskID + ": " + taskEngine.getTask(dependencyTaskID));
 				scheduled.remove(dependencyTaskID);
 				evaluated.add(dependencyTaskID);
 			}
@@ -242,6 +280,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		choiceTaskIDs.remove(taskID);
 	}
 
+	/**
+	 * Evaluates a regular task.
+	 */
 	private void evaluateTask(IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
 		final Iterable<IStrategoTerm> instructions =
 			CarthesianProduct.taskCombinations(factory, taskEngine, context, insert, taskID, task);
@@ -275,6 +316,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Solves an instruction and returns its raw result.
+	 */
 	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, Task task,
 		IStrategoTerm instruction) {
 		timer.start();
@@ -288,6 +332,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		DynamicDependency, Fail, Success
 	}
 
+	/**
+	 * Handles the result of performing an instruction and returns its result type.
+	 */
 	private ResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result) {
 		if(result == null)
 			return ResultType.Fail; // The task failed to produce a result.
@@ -318,6 +365,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Tries to queue new tasks because given task has been solved.
+	 */
 	private void tryScheduleNewTasks(IStrategoTerm solved) {
 		// Retrieve dependent tasks of the solved task.
 		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(solved));
@@ -331,6 +381,9 @@ public class LazyChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	/**
+	 * Updates the runtime dependency graph with runtime dependencies for given task.
+	 */
 	private void updateDelayedDependencies(IStrategoTerm taskID, IStrategoList dependencies) {
 		debugDelayedDependecy(taskID, dependencies);
 
