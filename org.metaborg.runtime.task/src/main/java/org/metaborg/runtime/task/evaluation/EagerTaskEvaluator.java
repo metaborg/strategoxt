@@ -128,7 +128,7 @@ public class EagerTaskEvaluator implements ITaskEvaluator {
 
 			debugUnevaluated(scheduled);
 
-			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(scheduled));
+			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(), factory.makeList(scheduled));
 		} finally {
 			reset();
 		}

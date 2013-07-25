@@ -35,12 +35,13 @@ rules // Single finle analysis
 	    (
 	    	analyzed-ast
 			, (analysis-error*, analysis-warning*, analysis-note*)
-			, removed-entry*
-			, added-entry*
-			, removed-task*
-			, added-task*
-			, invalidated-task*
+			, removed-entry-count
+			, added-entry-count
+			, removed-task-count
+			, added-task-count
+			, invalidated-task-count
 			, evaluated-task*
+			, skipped-task*
 			, unevaluated-task*
 			) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
 			
@@ -52,7 +53,7 @@ rules // Single finle analysis
       	<remove-all(?partition <+ ?path); analysis-message-update-partitions-queue(|language, project-path)> partition*
     	end;
     	
-    	<analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, unevaluated-task*)
+    	<analysis-debug-results> (removed-entry-count, added-entry-count, removed-task-count, added-task-count, invalidated-task-count, evaluated-task*, skipped-task*, unevaluated-task*)
       
 rules // Multi-file analysis
       
@@ -72,45 +73,48 @@ rules // Multi-file analysis
       measure-time(
 	      measure-time(
 	      	path'* := <map(\p -> $[[project-path]/[p]]\)> path*;
-	        (result*, evaluated-task*, unevaluated-task*) := <analyze-multiple(parse; desugar-before, complete-work-unit|language, project-path)> path'*;
+	        (result*, evaluated-task*, skipped-task*, unevaluated-task*) := <analyze-multiple(parse; desugar-before, complete-work-unit|language, project-path)> path'*;
 	        (analysis-result*, debug-result*) := <unzip> result*
-	      , id | "analysis-multiple-full-analysis"
+	      , analysis-default-debug-time(!"Time - analysis: ") | "analysis-multiple-full-analysis"
 	      );
 	      measure-time(
 	      	analysis-result'* := <filter(analysis-update-editor(desugar-after, pp-message))> analysis-result*
-	      , id | "analysis-multiple-update-editors"
+	      	// TODO: Update markers for partitions that have had a task executed but were not analyzed.
+	      , analysis-default-debug-time(!"Time - messages: ") | "analysis-multiple-update-editors"
 	      );
 	    	measure-time(
 		      index-persist
-	      , id | "analysis-multiple-index-persist"
+	      , analysis-default-debug-time(!"Time - index persistance: ") | "analysis-multiple-index-persist"
 	      );
 	    	measure-time(
 		      task-persist
-	      , id | "analysis-multiple-task-persist"
-	      )
-	    , id | "analysis-multiple-total"
+	      , analysis-default-debug-time(!"Time - task engine persistance: ") | "analysis-multiple-task-persist"
+	      )	      
+	    , analysis-default-debug-time(!"Time - total: ") | "analysis-multiple-total"
       );
-	      
-      DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*) := <analysis-accumulate-debug-results> debug-result*;
-      <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, unevaluated-task*)
-      // TODO: Update markers for partitions that have had a task executed but were not analyzed.
+    	measure-time(
+      	DebugResult(removed-entry-count, added-entry-count, removed-task-count, added-task-count, invalidated-task-count) := <analysis-accumulate-debug-results> debug-result*;
+      	<analysis-debug-results> (removed-entry-count, added-entry-count, removed-task-count, added-task-count, invalidated-task-count, evaluated-task*, skipped-task*, unevaluated-task*)
+      , analysis-default-debug-time(!"Time - debug: ") | "analysis-multiple-debug"
+      )
 
-	analysis-accumulate-debug-results:
-		result* -> <foldl(analysis-concat-debug-result)> (result*, DebugResult([], [], [], [], []))
+	analysis-accumulate-debug-results = 
+		!(<id>, DebugResult(0, 0, 0, 0, 0));
+		foldl(analysis-concat-debug-result)
 			
 	analysis-concat-debug-result:
 		(
-			DebugResult(removed-entry1*, added-entry1*, removed-task1*, added-task1*, invalidated-task1*)
-		, DebugResult(removed-entry2*, added-entry2*, removed-task2*, added-task2*, invalidated-task2*)
+			DebugResult(removed-entry1-count, added-entry1-count, removed-task1-count, added-task1-count, invalidated-task1-count)
+		, DebugResult(removed-entry2-count, added-entry2-count, removed-task2-count, added-task2-count, invalidated-task2-count)
 	  )
 	  ->
-	  DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+	  DebugResult(removed-entry-count, added-entry-count, removed-task-count, added-task-count, invalidated-task-count)
 	  with
-	  	removed-entry*    := <make-set> [removed-entry1*, removed-entry2*];
-	  	added-entry*      := <make-set> [added-entry1*, added-entry2*];
-	  	removed-task*     := <make-set> [removed-task1*, removed-task2*];
-	  	added-task*       := <make-set> [added-task1*, added-task2*];
-	  	invalidated-task* := <make-set> [invalidated-task1*, invalidated-task2*]
+	  	removed-entry-count    := <add> (removed-entry1-count, removed-entry2-count);
+	  	added-entry-count      := <add> (added-entry1-count, added-entry2-count);
+	  	removed-task-count     := <add> (removed-task1-count, removed-task2-count);
+	  	added-task-count       := <add> (added-task1-count, added-task2-count);
+	  	invalidated-task-count := <add> (invalidated-task1-count, invalidated-task2-count)
 
   analysis-update-editor(desugar-after, pp-message):
     Result(partition, initial-ast, analyzed-ast, changed-read*, error* , warning* , note*) -> 
@@ -168,17 +172,23 @@ rules // Debugging
 	analysis-default-debug-interface(msg) = fail
 	analysis-default-debug-interface = fail
 	
+	analysis-default-debug-time(msg) = try(analysis-default-debug-time-interface(msg))
+	analysis-default-debug-time = try(analysis-default-debug-time-interface)
+	analysis-default-debug-time-interface(msg) = fail
+	analysis-default-debug-time-interface = fail
+	
 	analysis-debug-results =
 		?(
-				removed-entry*
-			, added-entry*
-			, removed-task*
-			, added-task*
-			, invalidated-task*
+				removed-entry-count
+			, added-entry-count
+			, removed-task-count
+			, added-task-count
+			, invalidated-task-count
 			, evaluated-task*
+			, skipped-task*
 			, unevaluated-task*
 		);
-  	<analysis-default-debug> $[Entries : [<length> removed-entry*] removed, [<length> added-entry*] added.];
-    <analysis-default-debug> $[Tasks   : [<length> removed-task*] removed, [<length> added-task*] added, [<length> invalidated-task*] invalidated, [<length> evaluated-task*] evaluated, [<length> unevaluated-task*] unevaluated.];
+  	<analysis-default-debug> $[Entries : [removed-entry-count] removed, [added-entry-count] added.];
+    <analysis-default-debug> $[Tasks   : [removed-task-count] removed, [added-task-count] added, [invalidated-task-count] invalidated, [<length> evaluated-task*] evaluated, [<length> skipped-task*] skipped, [<length> unevaluated-task*] unevaluated.];
     <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task* 
 	
