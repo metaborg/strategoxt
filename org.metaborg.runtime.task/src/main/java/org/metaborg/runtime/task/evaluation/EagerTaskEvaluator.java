@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.CarthesianProduct;
@@ -49,7 +48,7 @@ public class EagerTaskEvaluator implements ITaskEvaluator {
 	private final Timer timer = new Timer();
 
 
-	public EagerTaskEvaluator(TaskEngine taskEngine, ITermFactory factory) {
+	public EagerTaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
