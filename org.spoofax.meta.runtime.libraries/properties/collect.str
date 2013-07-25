@@ -32,17 +32,18 @@ rules // generic analysis of properties
     Prop(kind, result, dep*) -> <new-prop(|partition, uri, kind, result)> name
 
   // generic collection of property tasks
-  nabl-annotate-properties(|partition) =
-    !([Type()|<nabl-custom-properties <+ ![]>], <id>)
-  ; foldl(nabl-annotate-property(|partition) <+ Snd)
+  nabl-annotate-properties(|lang, partition, uri*) =
+    where(kind* := [Type()|<nabl-custom-properties <+ ![]>])
+  ; !(kind*, <remove-property-annotations(|kind*)>)
+  ; foldl(nabl-annotate-property(|lang, partition, uri*) <+ Snd)
   ; where(try(nabl-constraint(|partition)))
-  
-  nabl-annotate-property(|partition):
+
+  nabl-annotate-property(|lang, partition, uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
       not(<nabl-get-property-task(|kind)> term)
-    ; prop := <nabl-new-property(|partition)> 
-          
+    ; prop := <nabl-new-property(|lang, partition, uri*)>  
+      
 strategies
   
   nabl-prop-calc(|partition, dep*) = 
@@ -76,3 +77,10 @@ strategies
     ; dep'*  := <dependent-tasks> [expected, dep*]
     ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
     
+rules
+  
+  remove-property-annotations(|kind*) =
+    !(kind*, <id>); foldl(remove-property-annotation) 
+    
+  remove-property-annotation:
+    (kind, term) -> <remove-annotations(?(kind, _))> term

@@ -5,6 +5,8 @@ imports
   analysis/interface
   index/core
   nabl/collect
+  nabl/incremental
+  nabl/entries
   nabl/uri
   nabl/utils
   task/core
@@ -15,21 +17,30 @@ signature
 
   constructors
   
-    File : Path * AST -> File
-    Result : Partition * AST * AST * List(URI) * List(Term) * List(Term) * List(Term) -> Result
+    File        : Path * AST -> File
+    
     // Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
+    Result      : Partition * AST * AST * List(URI) * List(Term) * List(Term) * List(Term) -> Result
+    
+    // DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+    DebugResult : List(Entry) * List(Entry) * List(TaskID) * List(TaskID) * List(TaskID) -> Result
     
 rules // Analysis
 	
-	analyze-collect(|language, project-path):
-    File(partition, initial-ast) -> Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
+	analyze-collect(|language, project-path) = analyze-collect(id|language, project-path)
+	analyze-collect(try-recover|language, project-path):
+    File(partition, initial-ast) -> ( 
+    	Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
+    , DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+  	)
     with
     	measure-time(
 	    	measure-time(
-	    		index-setup(|language, [project-path], partition);
+	    		index-setup(|language, project-path);
+	    		try(try-recover; index-recover);
 			    index-start-collection(|partition);
 	    		task-setup(|project-path);
-	    		task-recover;
+	    		try(try-recover; task-recover);
 	    		task-start-collection(|partition)
 	      	, id | "analyze-collect-setup"
 	      ); measure-time(
@@ -37,11 +48,11 @@ rules // Analysis
 	    	  , id | "analyze-collect-collect" 
 	  	  ); measure-time(
 	  	  	index-stop-collection => (removed-entry*, added-entry*);
-	      	task-stop-collection(|partition);
-	      	changed-read* := <filter(analyze-diff-entry; nabl-uri; try(nabl-replace-uri-qualifier(|())))> [removed-entry*, added-entry*]
+	      	task-stop-collection(|partition) => (removed-task*, added-task*);
+	      	changed-read* := <nabl-get-changed-reads> [removed-entry*, added-entry*]
 	      	, id | "analyze-collect-diff" 
 	  	  ); measure-time(
-	  	  	task-invalidate-task-reads(|changed-read*)
+	  	  	task-invalidate-task-reads(|changed-read*) => invalidated-task*
 	  	  	, id | "analyze-collect-invalidate"
 	  	  )
   	  , id | "analyze-collect-total")
@@ -51,7 +62,7 @@ rules // Analysis
 		with
 			measure-time(
 				measure-time(
-	      	task-evaluate => (evaluated-task*, unevaluated-task*)
+	      	task-evaluate-scheduled => (evaluated-task*, unevaluated-task*)
 	      	, id | "analyze-task-evaluate"
 	      ); measure-time(
 	  	  	result'* := <map(analyze-messages)> result*
@@ -60,7 +71,8 @@ rules // Analysis
   	, id | "analyze-task-total")
   	  
   analyze-messages:
-  	Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*)
+  	(Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _), debug-result) -> 
+  	(Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*), debug-result)
   	with
 			(error*, warning*, note*) := <analyze-get-messages> partition
 
@@ -86,3 +98,5 @@ rules // Projections
 		
 	analyze-result-analyzed-ast:
 		Result(_, _, analyzed-ast, _, _, _, _) -> analyzed-ast
+
+	analysis-partition(|path, project-path) = !$[[project-path]/[path]]

@@ -18,7 +18,8 @@ public class task_api_invalidate_task_reads_0_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoList changedReads = (IStrategoList) tvars[0];
-		TaskManager.getInstance().getCurrent().invalidateTaskReads(changedReads);
+		env.setCurrent(env.getFactory().makeList(
+			TaskManager.getInstance().getCurrent().invalidateTaskReads(changedReads)));
 		return true;
 	}
 }

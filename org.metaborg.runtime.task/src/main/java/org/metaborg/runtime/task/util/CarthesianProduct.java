@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskEngine;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -42,7 +42,7 @@ public final class CarthesianProduct {
 		return result;
 	}
 
-	public static Iterable<IStrategoTerm> taskCombinations(ITermFactory factory, TaskEngine taskEngine,
+	public static Iterable<IStrategoTerm> taskCombinations(ITermFactory factory, ITaskEngine taskEngine,
 		IContext context, Strategy insert, IStrategoTerm taskID, Task task) {
 		final IStrategoTerm instruction = task.instruction;
 		final boolean isCombinator = task.isCombinator;
@@ -57,7 +57,7 @@ public final class CarthesianProduct {
 		}
 	}
 
-	public static Iterable<IStrategoTerm> termCombinations(ITermFactory factory, TaskEngine taskEngine,
+	public static Iterable<IStrategoTerm> termCombinations(ITermFactory factory, ITaskEngine taskEngine,
 		IContext context, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
 		final Collection<IStrategoTerm> instructions = new LinkedList<IStrategoTerm>();
 
@@ -78,7 +78,7 @@ public final class CarthesianProduct {
 		return instructions;
 	}
 
-	public static Iterable<IStrategoTerm> noCombinations(ITermFactory factory, TaskEngine taskEngine, IContext context,
+	public static Iterable<IStrategoTerm> noCombinations(ITermFactory factory, ITaskEngine taskEngine, IContext context,
 		Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
 		final StrategoHashMap mapping = new StrategoHashMap();
 		for(IStrategoTerm resultID : resultIDs) {

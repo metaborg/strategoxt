@@ -7,9 +7,25 @@ imports
 rules // Single file analysis
   
   analyze-one(|language, path, project-path):
-    ast -> (analyzed-ast, evaluated-task*, unevaluated-task*, (error*, warning*, note*))
-    with // Setup index
-      partition := $[[project-path]/[path]];
-      r@Result(_, _, analyzed-ast, _, _, _, _) := <analyze-collect(|language, project-path)> File(partition, ast);
+    ast -> 
+    (
+    	analyzed-ast
+		, (error*, warning*, note*)
+		, removed-entry*
+		, added-entry*
+		, removed-task*
+		, added-task*
+		, invalidated-task*
+		, evaluated-task*
+		, unevaluated-task*
+		)
+    with
+      partition := <analysis-partition(|path, project-path)>;
+      r@(
+      	Result(_, _, analyzed-ast, _, _, _, _)
+      , DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+      ) := <analyze-collect(|language, project-path)> File(partition, ast);
+      
     	(result*, evaluated-task*, unevaluated-task*) := <analyze-perform-all> [r];
-    	Result(_, _, _, _, error*, warning*, note*) := <Hd> result*
+    	
+    	Result(_, _, _, _, error*, warning*, note*) := <Hd; Fst> result*

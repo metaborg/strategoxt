@@ -2,8 +2,8 @@ package org.metaborg.runtime.task.primitives;
 
 import static org.metaborg.runtime.task.util.ListBuilder.makeList;
 
+import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskEngine;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -27,7 +27,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITermFactory factory = env.getFactory();
-		final TaskEngine engine = TaskManager.getInstance().getCurrent();
+		final ITaskEngine engine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm tupleOrPartitionOrID = tvars[0];
 
 		if(Tools.isTermTuple(tupleOrPartitionOrID) && tupleOrPartitionOrID.getSubtermCount() == 0) {
@@ -42,7 +42,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 		return true;
 	}
 
-	private IStrategoList createDebugTuples(Iterable<IStrategoTerm> taskIDs, TaskEngine engine, ITermFactory factory) {
+	private IStrategoList createDebugTuples(Iterable<IStrategoTerm> taskIDs, ITaskEngine engine, ITermFactory factory) {
 		IStrategoList list = factory.makeList();
 		for(IStrategoTerm taskID : taskIDs) {
 			list = factory.makeListCons(createDebugTuple(taskID, engine, factory), list);
@@ -50,7 +50,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 		return list;
 	}
 
-	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, TaskEngine engine, ITermFactory factory) {
+	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, ITaskEngine engine, ITermFactory factory) {
 		Task task = engine.getTask(taskID);
 		IStrategoList dependencies = makeList(factory, engine.getDependencies(taskID));
 		IStrategoTerm results = task.failed() ? fail(factory) : makeList(factory, task.results());

@@ -9,9 +9,11 @@ strategies // Collect
 	| lang, partition, unique*, uri*, state*
 	) = fail
 	
+	nabl-external-def-site(|partition) = fail
+
 	nabl-state-site = fail
 	
-	nabl-use-site(|lang, partition, uri*, state*) = fail
+	nabl-use-site(|lang, partition, unique*, uri*, state*) = fail
 	
 	nabl-import-site(|lang, partition, uri*, state*) = fail
 	
@@ -28,3 +30,16 @@ strategies // Projections
 strategies // Lookup hooks
 		
 	nabl-disambiguate(|prop*, namespace, name) = fail
+
+strategies // Name generation
+	
+	nabl-namegen-name(|lang, partition, uri, ns) = fail
+	
+strategies // Default error checks
+	
+	nabl-check-disable-unresolved = fail
+	
+	nabl-check-disable-duplicate(|uri, ns) = fail
+	
+	nabl-check-disable-hiding(|uri, ns) = fail
+	

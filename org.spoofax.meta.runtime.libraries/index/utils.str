@@ -1,0 +1,5 @@
+module index/utils
+
+rules
+	
+	index-setup-paths = try(is-list; Hd)

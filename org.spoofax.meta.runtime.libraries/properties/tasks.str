@@ -3,7 +3,7 @@ module properties/tasks
 imports 
 	
 	nabl/-
-  properties/-
+	properties/-
   task/core
   
 signature
@@ -19,10 +19,10 @@ rules
 
   perform-task(|n) =
   	?PropLookup(kind, <id>) 
-  	;	nabl-add-read(|n) // TODO: is this read needed?
+  	;	nabl-add-uri-read(|n) 
     ; nabl-get-property(|kind)
     ; insert-results-or-create-dependency 
-  	
+  	; try(task-collect-dependencies)
+  	  
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> <nabl-property-eq> (kind, rel, (actual, expected))
-

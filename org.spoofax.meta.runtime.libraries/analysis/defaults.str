@@ -27,20 +27,32 @@ rules // Single finle analysis
 	analysis-single-default-interface = fail
 	
   analysis-single-default(desugar-before, desugar-after, pp-message|language):
-    (ast, path, project-path) -> (ast', error*, warning*, note*)
+    (ast, path, project-path) -> (analyzed-ast, error*, warning*, note*)
     with
       editor-init;
       <analysis-default-debug(!"Analyzing file: ")> path;
-      (ast', evaluated-task*, unevaluated-task*, (analysis-error*, analysis-warning*, analysis-note*)) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
-      (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> ast';
+      
+	    (
+	    	analyzed-ast
+			, (analysis-error*, analysis-warning*, analysis-note*)
+			, removed-entry*
+			, added-entry*
+			, removed-task*
+			, added-task*
+			, invalidated-task*
+			, evaluated-task*
+			, unevaluated-task*
+			) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
+			
+      (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> analyzed-ast;
+      
       partition* := <analysis-changed-partitions> evaluated-task*;
       if <not(is-test-file)> path then
-      	partition := $[[project-path]/[path]];
+      	partition := <analysis-partition(|path, project-path)>;
       	<remove-all(?partition <+ ?path); analysis-message-update-partitions-queue(|language, project-path)> partition*
     	end;
-      <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
-      <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task* 
-      // TODO: Update markers for partitions that have had a task executed.
+    	
+    	<analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, unevaluated-task*)
       
 rules // Multi-file analysis
       
@@ -52,29 +64,53 @@ rules // Multi-file analysis
       queue-strategy(|"analysis-multiple-default-interface", "Analyzing files")
       
   analysis-multiple-default(parse, desugar-before, desugar-after, pp-message|language, project-path):
-    path* -> (result'*, evaluated-task*, unevaluated-task*)
+    path* -> (analysis-result'*, evaluated-task*, unevaluated-task*)
     with
     	analysis-default-debug(!"Analyzing files: ");
       analysis-multiple-default-work-units; set-total-work-units;
+      
       measure-time(
 	      measure-time(
 	      	path'* := <map(\p -> $[[project-path]/[p]]\)> path*;
 	        (result*, evaluated-task*, unevaluated-task*) := <analyze-multiple(parse; desugar-before, complete-work-unit|language, project-path)> path'*;
-	        result'* := <filter(analysis-update-editor(desugar-after, pp-message))> result*
+	        (analysis-result*, debug-result*) := <unzip> result*
 	      , id | "analysis-multiple-full-analysis"
 	      );
+	      measure-time(
+	      	analysis-result'* := <filter(analysis-update-editor(desugar-after, pp-message))> analysis-result*
+	      , id | "analysis-multiple-update-editors"
+	      );
 	    	measure-time(
-		      index-commit
-	      	, id | "analysis-multiple-index-commit"
+		      index-persist
+	      , id | "analysis-multiple-index-persist"
 	      );
 	    	measure-time(
 		      task-persist
-	      	, id | "analysis-multiple-task-commit"
+	      , id | "analysis-multiple-task-persist"
 	      )
-	    , id | "analysis-multiple-total");
-      <analysis-default-debug> $[[<length> evaluated-task*] task evaluated, [<length> unevaluated-task*] task unevaluated.];
-      <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task*
+	    , id | "analysis-multiple-total"
+      );
+	      
+      DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*) := <analysis-accumulate-debug-results> debug-result*;
+      <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, unevaluated-task*)
       // TODO: Update markers for partitions that have had a task executed but were not analyzed.
+
+	analysis-accumulate-debug-results:
+		result* -> <foldl(analysis-concat-debug-result)> (result*, DebugResult([], [], [], [], []))
+			
+	analysis-concat-debug-result:
+		(
+			DebugResult(removed-entry1*, added-entry1*, removed-task1*, added-task1*, invalidated-task1*)
+		, DebugResult(removed-entry2*, added-entry2*, removed-task2*, added-task2*, invalidated-task2*)
+	  )
+	  ->
+	  DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+	  with
+	  	removed-entry*    := <make-set> [removed-entry1*, removed-entry2*];
+	  	added-entry*      := <make-set> [added-entry1*, added-entry2*];
+	  	removed-task*     := <make-set> [removed-task1*, removed-task2*];
+	  	added-task*       := <make-set> [added-task1*, added-task2*];
+	  	invalidated-task* := <make-set> [invalidated-task1*, invalidated-task2*]
 
   analysis-update-editor(desugar-after, pp-message):
     Result(partition, initial-ast, analyzed-ast, changed-read*, error* , warning* , note*) -> 
@@ -110,7 +146,7 @@ rules // Message collection and updating.
   	(partition*, language, project-path) -> <filter(not(is-test-file); analysis-message-update-partition)> partition*
   	with
     	task-setup(|project-path);
-      index-setup(|language, [project-path], ".")
+      index-setup(|language, project-path)
   	
 	analysis-message-update-partition:
 		partition -> <analyze-get-messages; set-only-markers(|partition)> partition
@@ -118,10 +154,10 @@ rules // Message collection and updating.
 rules // On-save handler
 	
   analysis-save-default(|language):
-  	(_, _, _, path, project-path) -> None()
+  	(_, _, _, _, project-path) -> None()
   	with
-  		index-setup(|language, [project-path], $[[project-path]/[path]]);
-  		index-commit;
+  		index-setup(|language, project-path);
+  		index-persist;
   		task-setup(|project-path);
   		task-persist
 
@@ -131,4 +167,18 @@ rules // Debugging
 	analysis-default-debug = try(analysis-default-debug-interface)
 	analysis-default-debug-interface(msg) = fail
 	analysis-default-debug-interface = fail
+	
+	analysis-debug-results =
+		?(
+				removed-entry*
+			, added-entry*
+			, removed-task*
+			, added-task*
+			, invalidated-task*
+			, evaluated-task*
+			, unevaluated-task*
+		);
+  	<analysis-default-debug> $[Entries : [<length> removed-entry*] removed, [<length> added-entry*] added.];
+    <analysis-default-debug> $[Tasks   : [<length> removed-task*] removed, [<length> added-task*] added, [<length> invalidated-task*] invalidated, [<length> evaluated-task*] evaluated, [<length> unevaluated-task*] unevaluated.];
+    <map(task-debug-info(|<id>); analysis-default-debug(!"Unevaluated: "))> unevaluated-task* 
 	

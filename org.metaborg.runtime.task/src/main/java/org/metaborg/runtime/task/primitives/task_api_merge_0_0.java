@@ -7,18 +7,16 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class task_api_evaluate_2_0 extends AbstractPrimitive {
-	public static task_api_evaluate_2_0 instance = new task_api_evaluate_2_0();
+public class task_api_merge_0_0 extends AbstractPrimitive {
+	public static task_api_merge_0_0 instance = new task_api_merge_0_0();
 
-	public task_api_evaluate_2_0() {
-		super("task_api_evaluate", 2, 0);
+	public task_api_merge_0_0() {
+		super("task_api_merge", 0, 0);
 	}
-
+	
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-		final Strategy insert = svars[0];
-		final Strategy perform = svars[1];
-		env.setCurrent(TaskManager.getInstance().getCurrent().evaluate(env, insert, perform));
+		TaskManager.getInstance().mergeTaskEngine(env.getFactory());
 		return true;
 	}
 }

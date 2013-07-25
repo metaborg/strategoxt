@@ -30,9 +30,11 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-child-definitions(|ns):
-    containsURI -> <nabl-get-children(|ns)> Def(uri)
+    containsURI -> [def*, alias-def*]
     where
-    	uri := <nabl-uri> containsURI
+    	uri        := <nabl-uri> containsURI;
+    	def*       := <nabl-get-children(|ns); mapconcat(nabl-uri; nabl-get-unique-nonunique(\uri -> Def(uri)\))> Def(uri);
+    	alias-def* := <nabl-get-children(|ns); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> Alias(uri, ())
 
   /**
    * Gets all Use entries that match the given URI.
@@ -64,6 +66,20 @@ rules // Specific queries
       else
         aliasURI* := []
       end
+      
+  /**
+   * Gets all InverseAlias entries that match the given URI.
+   *
+   * Example:
+   *   <nabl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(inverseAliasURI)
+   */
+  nabl-get-all-inverse-aliasses:
+    containsURI -> inverse-alias*
+    where
+    	uri            := <nabl-uri> containsURI;
+      inverse-alias* := <nabl-get-all-values> InverseAlias(uri, ()) 
 
 rules // Generic queries
   

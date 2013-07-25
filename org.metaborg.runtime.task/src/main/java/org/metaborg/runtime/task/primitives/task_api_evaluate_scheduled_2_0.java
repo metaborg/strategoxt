@@ -7,18 +7,18 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class task_api_task_id_0_1 extends AbstractPrimitive {
-	public static task_api_task_id_0_1 instance = new task_api_task_id_0_1();
+public class task_api_evaluate_scheduled_2_0 extends AbstractPrimitive {
+	public static task_api_evaluate_scheduled_2_0 instance = new task_api_evaluate_scheduled_2_0();
 
-	public task_api_task_id_0_1() {
-		super("task_api_task_id", 0, 1);
+	public task_api_evaluate_scheduled_2_0() {
+		super("task_api_evaluate_scheduled", 2, 0);
 	}
-	
+
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
-		final IStrategoTerm instruction = tvars[0];
-		// HACK: pass empty list as dependencies.
-		env.setCurrent(TaskManager.getInstance().getCurrent().createTaskID(instruction, env.getFactory().makeList()));
+		final Strategy insert = svars[0];
+		final Strategy perform = svars[1];
+		env.setCurrent(TaskManager.getInstance().getCurrent().evaluateScheduled(env, insert, perform));
 		return true;
 	}
 }
