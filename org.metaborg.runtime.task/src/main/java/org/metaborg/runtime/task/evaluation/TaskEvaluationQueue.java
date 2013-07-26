@@ -1,7 +1,6 @@
 package org.metaborg.runtime.task.evaluation;
 
-import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
-
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -9,12 +8,9 @@ import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
-import org.metaborg.runtime.task.util.CarthesianProduct;
-import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -22,39 +18,43 @@ import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluationFrontend {
-	protected final ITaskEngine taskEngine;
-	protected final ITermFactory factory;
-	protected final IStrategoConstructor dependencyConstructor;
-	protected final IStrategoConstructor singleConstructor;
+	private final ITaskEngine taskEngine;
+	private final ITermFactory factory;
 
 
 	/** Queue of task that are scheduled for evaluation. */
-	protected final Queue<IStrategoTerm> evaluationQueue = Lists.newLinkedList();
+	private final Queue<IStrategoTerm> evaluationQueue = Lists.newLinkedList();
 
 	/** Set of tasks in the queue. **/
-	protected final Set<IStrategoTerm> queued = Sets.newHashSet();
+	private final Set<IStrategoTerm> queued = Sets.newHashSet();
 
 	/** Dependencies of tasks which are updated during evaluation. */
-	protected final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency =
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> runtimeDependencies =
 		BidirectionalLinkedHashMultimap.create();
 
-	/** Timer for measuring task time. **/
-	protected final Timer timer = new Timer();
+
+	/** Maps the constructor of a task to the evaluator that can evaluate the task. */
+	private final Map<IStrategoConstructor, ITaskEvaluator> taskEvaluators = Maps.newLinkedHashMap();
+
+	/** The default task evaluator that is used to evaluate tasks for which there is no specific evaluator. */
+	private final ITaskEvaluator defaultTaskEvaluator;
 
 
-	protected TaskEvaluationQueue(ITaskEngine taskEngine, ITermFactory factory) {
+	private Set<IStrategoTerm> scheduled;
+	private final Set<IStrategoTerm> skipped = Sets.newHashSet();
+	private final Set<IStrategoTerm> evaluated = Sets.newHashSet();
+
+
+	public TaskEvaluationQueue(ITaskEngine taskEngine, ITermFactory factory, ITaskEvaluator defaultTaskEvaluator) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
-		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
-		this.singleConstructor = factory.makeConstructor("Single", 1);
+		this.defaultTaskEvaluator = defaultTaskEvaluator;
 	}
 
-	/**
-	 * Queues given task identifier if it is not in the queue yet.
-	 */
 	public void queue(IStrategoTerm taskID) {
 		if(!queued.contains(taskID)) {
 			evaluationQueue.add(taskID);
@@ -62,14 +62,11 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		}
 	}
 
-	/**
-	 * Queues given task identifier if all their dependencies are solved, or defers evaluation until all their
-	 * dependencies have been solved.
-	 */
 	public void queueOrDefer(IStrategoTerm taskID) {
 		final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 		final Set<IStrategoTerm> dependenciesSet = Sets.newHashSet(dependencies);
 
+		// TODO: this could be done in constant time if task engine keeps a set of solved tasks.
 		for(final IStrategoTerm dependency : dependencies) {
 			if(taskEngine.getTask(dependency).solved()) {
 				dependenciesSet.remove(dependency);
@@ -81,55 +78,98 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			queue(taskID);
 		} else {
 			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
-			toRuntimeDependency.putAll(taskID, dependenciesSet);
+			runtimeDependencies.putAll(taskID, dependenciesSet);
 		}
 	}
 
-	/**
-	 * Tries to queue new tasks because given task has been solved.
-	 */
-	public void taskCompleted(IStrategoTerm solved) {
+	public void taskSolved(IStrategoTerm taskID) {
 		// Retrieve dependent tasks of the solved task.
-		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(solved));
-		dependents.addAll(toRuntimeDependency.getInverse(solved));
+		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(taskID));
+		dependents.addAll(runtimeDependencies.getInverse(taskID));
 
-		for(final IStrategoTerm dependent : dependents) {
+		for(final IStrategoTerm dependentTaskID : dependents) {
 			// Remove the dependency to the solved task. If that was the last dependency, schedule the task.
-			final boolean removed = toRuntimeDependency.remove(dependent, solved);
-			if(removed && toRuntimeDependency.get(dependent).size() == 0 && !taskEngine.getTask(dependent).solved())
-				queue(dependent);
+			final boolean removed = runtimeDependencies.remove(dependentTaskID, taskID);
+			if(removed && runtimeDependencies.get(dependentTaskID).size() == 0
+				&& !taskEngine.getTask(dependentTaskID).solved())
+				queue(dependentTaskID);
 		}
 	}
 
-	/**
-	 * Updates the runtime dependency graph with runtime dependencies for given task.
-	 */
+	public void taskSkipped(IStrategoTerm taskID) {
+		scheduled.remove(taskID);
+		skipped.add(taskID);
+	}
+
 	public void taskDelayed(IStrategoTerm taskID, IStrategoList dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
 		// Sets the runtime dependencies for a task to the given dependency list.
-		toRuntimeDependency.removeAll(taskID);
+		runtimeDependencies.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
-			toRuntimeDependency.put(taskID, dependency);
+			runtimeDependencies.put(taskID, dependency);
+	}
+	
+	public void addRuntimeDependency(IStrategoTerm taskID, IStrategoTerm dependencyTaskID) {
+		runtimeDependencies.put(taskID, dependencyTaskID);
+	}
+
+	public void removeRuntimeDependency(IStrategoTerm taskID, IStrategoTerm dependencyTaskID) {
+		runtimeDependencies.remove(taskID, dependencyTaskID);
+	}
+
+
+	public void addTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator) {
+		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
+			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
+		}
+
 	}
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
-		// TODO: queue tasks for an ITaskEvaluator, evaluate them and continue..
-		return null;
+		try {
+			this.scheduled = scheduled;
+
+			// Queue tasks and evaluate them for each specific task evaluator.
+			for(ITaskEvaluator taskEvaluator : taskEvaluators.values()) {
+				taskEvaluator.queue(taskEngine, this, scheduled);
+				evaluateQueuedTasks(context, insert, perform);
+			}
+
+			// Evaluate the remaining tasks with the default task evaluator.
+			defaultTaskEvaluator.queue(taskEngine, this, scheduled);
+			evaluateQueuedTasks(context, insert, perform);
+
+			// Debug unevaluated tasks if debugging is enabled.
+			TaskEvaluationDebugging.debugUnevaluated(taskEngine, scheduled, runtimeDependencies);
+
+			// Return evaluated, skipped and unevaluated task identifiers.
+			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(skipped),
+				factory.makeList(this.scheduled));
+		} finally {
+			reset();
+		}
 	}
 
 	public void reset() {
 		evaluationQueue.clear();
 		queued.clear();
-		toRuntimeDependency.clear();
-		timer.clear();
+		runtimeDependencies.clear();
+
+		scheduled = null;
+		skipped.clear();
+		evaluated.clear();
+
+		for(ITaskEvaluator evaluator : taskEvaluators.values())
+			evaluator.reset();
+		defaultTaskEvaluator.reset();
 	}
-	
+
+
 	/**
 	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
 	 */
-	private Set<IStrategoTerm> evaluateQueuedTasks(Set<IStrategoTerm> scheduled, Set<IStrategoTerm> skipped,
-		Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
+	private void evaluateQueuedTasks(IContext context, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 			final Task task = taskEngine.getTask(taskID);
@@ -142,18 +182,23 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			// overwrite previous data.
 			taskEngine.invalidate(taskID);
 
-			evaluateTask(taskID, task, scheduled, skipped, evaluated, context, insert, perform);
+			evaluateTask(taskID, task, context, insert, perform);
 		}
-
-		return scheduled;
 	}
 
-
 	/**
-	 * Evaluates given task. Called on each task in the queue in {@link #evaluateQueuedTasks}.
+	 * Evaluates given task using a specific or default task evaluator.
 	 */
-	private void evaluateTask(IStrategoTerm taskID, Task task, Set<IStrategoTerm> scheduled,
-		Set<IStrategoTerm> skipped, Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
-		// TODO: evaluate task using the correct ITaskEvaluator.
+	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy insert, Strategy perform) {
+		ITaskEvaluator taskEvaluator;
+		final IStrategoTerm instruction = task.instruction;
+		if(!Tools.isTermAppl(instruction)) {
+			taskEvaluator = defaultTaskEvaluator;
+		} else {
+			taskEvaluator = taskEvaluators.get(instruction);
+			if(taskEvaluator == null)
+				taskEvaluator = defaultTaskEvaluator;
+		}
+		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, insert, perform);
 	}
 }

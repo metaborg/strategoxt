@@ -8,9 +8,14 @@ import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 
+/**
+ * Frontend interface for task evaluation.
+ */
 public interface ITaskEvaluationFrontend {
-	public abstract void addTaskEvaluator(IStrategoConstructor instructionConstructor, ITaskEvaluator taskEvaluator);
-	public abstract void addDefaultTaskEvaluator(ITaskEvaluator taskEvaluator);
+	/**
+	 * Adds a task evaluator for given task constructor.
+	 */
+	public abstract void addTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator);
 
 	/**
 	 * Evaluates tasks given by a set of task identifiers.
@@ -26,7 +31,7 @@ public interface ITaskEvaluationFrontend {
 		Strategy perform);
 
 	/**
-	 * Resets the task evaluator to the initial state.
+	 * Resets the task evaluation frontend to the initial state.
 	 */
 	public abstract void reset();
 }

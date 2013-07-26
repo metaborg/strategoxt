@@ -8,8 +8,8 @@ import java.util.Set;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
-import org.metaborg.runtime.task.evaluation.LazyChoiceTaskEvaluator;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
+import org.metaborg.runtime.task.evaluation.ChoiceTaskEvaluator;
 import org.metaborg.runtime.task.util.ListBuilder;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -35,7 +35,7 @@ public class TaskEngine implements ITaskEngine {
 	private final ITaskEngine parent;
 	private final ITermFactory factory;
 	private final ITermDigester digester;
-	private ITaskEvaluationQueue evaluator;
+	private ITaskEvaluationFrontend evaluationFrontend;
 	private final IStrategoConstructor resultConstructor;
 
 
@@ -130,12 +130,12 @@ public class TaskEngine implements ITaskEngine {
 		return digester;
 	}
 
-	public ITaskEvaluationQueue getEvaluator() {
-		return evaluator;
+	public ITaskEvaluationFrontend getEvaluationFrontend() {
+		return evaluationFrontend;
 	}
 
-	public void setEvaluator(ITaskEvaluationQueue evaluator) {
-		this.evaluator = evaluator;
+	public void setEvaluationFrontend(ITaskEvaluationFrontend evaluationFrontend) {
+		this.evaluationFrontend = evaluationFrontend;
 	}
 
 	public ITaskEngine getParent() {
@@ -189,7 +189,7 @@ public class TaskEngine implements ITaskEngine {
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
 		// TODO: Refactor this code out into an interface, since it is only valid for the LazyChoiceTaskEvaluator.
-		if(evaluator instanceof LazyChoiceTaskEvaluator && TaskIdentification.isChoice(instruction)) {
+		if(evaluationFrontend instanceof ChoiceTaskEvaluator && TaskIdentification.isChoice(instruction)) {
 			dependencies = factory.makeList();
 		}
 
@@ -343,7 +343,7 @@ public class TaskEngine implements ITaskEngine {
 				}
 			}
 		}
-		
+
 		return seen;
 	}
 
@@ -353,7 +353,7 @@ public class TaskEngine implements ITaskEngine {
 		clearTimes();       // TODO: clear evaluation times of parent tasks.
 		clearEvaluations(); // TODO: clear evaluation count of parent tasks.
 
-		IStrategoTerm result = evaluator.evaluate(scheduled, context, insert, perform);
+		IStrategoTerm result = evaluationFrontend.evaluate(scheduled, context, insert, perform);
 		scheduled.clear();
 		return result;
 	}
@@ -363,7 +363,7 @@ public class TaskEngine implements ITaskEngine {
 		final Set<IStrategoTerm> scheduled = Sets.newHashSet(taskIDs);
 		for(IStrategoTerm taskID : taskIDs)
 			scheduled.addAll(getTransitiveDependencies(taskID));
-		return evaluator.evaluate(scheduled, context, insert, perform);
+		return evaluationFrontend.evaluate(scheduled, context, insert, perform);
 	}
 
 
@@ -592,7 +592,7 @@ public class TaskEngine implements ITaskEngine {
 
 
 	public void recover() {
-		evaluator.reset();
+		evaluationFrontend.reset();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();
@@ -601,7 +601,7 @@ public class TaskEngine implements ITaskEngine {
 
 	public void reset() {
 		digester.reset();
-		evaluator.reset();
+		evaluationFrontend.reset();
 
 		toTask.clear();
 		toTaskID.clear();

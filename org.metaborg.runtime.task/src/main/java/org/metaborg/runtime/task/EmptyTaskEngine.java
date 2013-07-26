@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.util.EmptyIterable;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -20,11 +20,11 @@ public class EmptyTaskEngine implements ITaskEngine {
 		return null;
 	}
 
-	public ITaskEvaluationQueue getEvaluator() {
+	public ITaskEvaluationFrontend getEvaluationFrontend() {
 		return null;
 	}
 
-	public void setEvaluator(ITaskEvaluationQueue evaluator) {
+	public void setEvaluationFrontend(ITaskEvaluationFrontend evaluationFrontend) {
 
 	}
 
