@@ -5,8 +5,10 @@ import static org.metaborg.runtime.task.util.ListBuilder.makeList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
@@ -20,6 +22,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.UnmodifiableIterator;
 
 public final class CarthesianProduct {
 	public static Collection<StrategoHashMap> cartesianProduct(Multimap<IStrategoTerm, IStrategoTerm> results) {
@@ -78,8 +81,8 @@ public final class CarthesianProduct {
 		return instructions;
 	}
 
-	public static Iterable<IStrategoTerm> noCombinations(ITermFactory factory, ITaskEngine taskEngine, IContext context,
-		Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
+	public static Iterable<IStrategoTerm> noCombinations(ITermFactory factory, ITaskEngine taskEngine,
+		IContext context, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
 		final StrategoHashMap mapping = new StrategoHashMap();
 		for(IStrategoTerm resultID : resultIDs) {
 			final Task task = taskEngine.getTask(resultID);
@@ -100,10 +103,7 @@ public final class CarthesianProduct {
 	}
 
 	public static <T> Iterable<T> singletonIterable(final T value) {
-		final Collection<T> c = new LinkedList<T>();
-		c.add(value);
-		return c;
-		/*return new Iterable<T>() {
+		return new Iterable<T>() {
 			public Iterator<T> iterator() {
 				return new UnmodifiableIterator<T>() {
 					boolean done;
@@ -123,6 +123,6 @@ public final class CarthesianProduct {
 					}
 				};
 			}
-		};*/
+		};
 	}
 }

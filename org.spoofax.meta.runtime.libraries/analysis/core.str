@@ -31,9 +31,10 @@ rules // Analysis
 	analyze-collect(try-recover|language, project-path):
     File(partition, initial-ast) -> ( 
     	Result(partition, initial-ast, analyzed-ast, changed-read*, [], [], [])
-    , DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
+    , DebugResult(<length> removed-entry*, <length> added-entry*, <length> removed-task*, <length> added-task*, <length> invalidated-task*)
   	)
     with
+    	<analysis-core-debug(!"Collecting: ")> partition;
     	measure-time(
 	    	measure-time(
 	    		index-setup(|language, project-path);
@@ -42,31 +43,31 @@ rules // Analysis
 	    		task-setup(|project-path);
 	    		try(try-recover; task-recover);
 	    		task-start-collection(|partition)
-	      	, id | "analyze-collect-setup"
+	      	, analysis-core-debug-time(!"Time - setup: ") | "analyze-collect-setup"
 	      ); measure-time(
 	      	analyzed-ast := <nabl-collect(|partition, Language(language))> initial-ast
-	    	  , id | "analyze-collect-collect" 
+	    	  , analysis-core-debug-time(!"Time - collect: ") | "analyze-collect-collect" 
 	  	  ); measure-time(
 	  	  	index-stop-collection => (removed-entry*, added-entry*);
 	      	task-stop-collection(|partition) => (removed-task*, added-task*);
 	      	changed-read* := <nabl-get-changed-reads> [removed-entry*, added-entry*]
-	      	, id | "analyze-collect-diff" 
+	      	, analysis-core-debug-time(!"Time - diff: ") | "analyze-collect-diff" 
 	  	  ); measure-time(
 	  	  	task-invalidate-task-reads(|changed-read*) => invalidated-task*
-	  	  	, id | "analyze-collect-invalidate"
+	  	  	, analysis-core-debug-time(!"Time - invalidate: ") | "analyze-collect-invalidate"
 	  	  )
   	  , id | "analyze-collect-total")
 	
 	analyze-perform-all:
-		result* -> (result'*, evaluated-task*, unevaluated-task*)
+		result* -> (result'*, evaluated-task*, skipped-task*, unevaluated-task*)
 		with
 			measure-time(
 				measure-time(
-	      	task-evaluate-scheduled => (evaluated-task*, unevaluated-task*)
-	      	, id | "analyze-task-evaluate"
+	      	task-evaluate-scheduled => (evaluated-task*, skipped-task*, unevaluated-task*)
+	      	, analysis-core-debug-time(!"Time - evaluation: ") | "analyze-task-evaluate"
 	      ); measure-time(
 	  	  	result'* := <map(analyze-messages)> result*
-	  	  	, id | "analyze-task-messages"
+	  	  	, analysis-core-debug-time(!"Time - messages: ") | "analyze-task-messages"
 	  	  )
   	, id | "analyze-task-total")
   	  
@@ -100,3 +101,16 @@ rules // Projections
 		Result(_, _, analyzed-ast, _, _, _, _) -> analyzed-ast
 
 	analysis-partition(|path, project-path) = !$[[project-path]/[path]]
+
+rules // Debugging
+	
+	analysis-core-debug(msg) = try(analysis-core-debug-interface(msg))
+	analysis-core-debug = try(analysis-core-debug-interface)
+	analysis-core-debug-interface(msg) = fail
+	analysis-core-debug-interface = fail
+	
+	analysis-core-debug-time(msg) = try(analysis-core-debug-time-interface(msg))
+	analysis-core-debug-time = try(analysis-core-debug-time-interface)
+	analysis-core-debug-time-interface(msg) = fail
+	analysis-core-debug-time-interface = fail
+	

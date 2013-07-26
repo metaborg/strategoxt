@@ -593,7 +593,6 @@ public class TaskEngine implements ITaskEngine {
 
 	public void recover() {
 		evaluator.reset();
-		scheduled.clear();
 		addedTasks.clear();
 		removedTasks.clear();
 		inCollection.clear();

@@ -36,10 +36,11 @@ rules
 			, added-task*
 			, invalidated-task*
 			, evaluated-task*
+			, skipped-task*
 			, unevaluated-task*
 			) := <analyze-one(|language, path, project-path)> ast;
 			
-      <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, unevaluated-task*);
+      <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, skipped-task*, unevaluated-task*);
       
       <map(analysis-default-debug(!"Error: "))> error*;
       <map(analysis-default-debug(!"Warning: "))> warning*;

@@ -58,7 +58,8 @@ rules // Resolve
 				<try(nabl-disambiguate(|prop*, namespace, name))> def*
 			else
 				!def*
-			end => result
+			end => result;
+			not(?[])
 
 	task-is-combinator = ?DisambiguateDefs(_, _, _, _)
 

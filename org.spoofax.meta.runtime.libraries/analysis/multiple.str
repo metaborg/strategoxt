@@ -24,8 +24,8 @@ rules // Multi file analysis
       end
 
   analyze-multiple-files(complete-work-unit|language, project-path):
-    file* -> (result'*, evaluated-task*, unevaluated-task*)
+    file* -> (result'*, evaluated-task*, skipped-task*, unevaluated-task*)
     with
       result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*;
-    	(result'*, evaluated-task*, unevaluated-task*) := <analyze-perform-all> result*
+    	(result'*, evaluated-task*, skipped-task*, unevaluated-task*) := <analyze-perform-all> result*
       
