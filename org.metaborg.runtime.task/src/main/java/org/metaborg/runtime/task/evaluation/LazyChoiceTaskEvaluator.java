@@ -1,9 +1,6 @@
 package org.metaborg.runtime.task.evaluation;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -19,14 +16,21 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-/**
- * @author gohla
- *
- */
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
-	private final Map<IStrategoTerm, Iterator<IStrategoTerm>> choiceIterators =
-		new HashMap<IStrategoTerm, Iterator<IStrategoTerm>>();
-	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = new HashMap<IStrategoTerm, IStrategoTerm>();
+	/**
+	 * Maps task identifiers from choice tasks to an iterator that holds the next task inside the choice to evaluate.
+	 */
+	private final Map<IStrategoTerm, Iterator<IStrategoTerm>> choiceIterators = Maps.newHashMap();
+
+	/**
+	 * Maps task identifiers from choice tasks to task identifiers from the task that the choice task is currently
+	 * evaluating.
+	 */
+	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = Maps.newHashMap();
 
 
 	public LazyChoiceTaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
@@ -47,8 +51,8 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 	 * Returns the set of transitive dependencies for given task identifier, but filters out choice tasks.
 	 */
 	private Set<IStrategoTerm> transitiveDependenciesNoChoice(IStrategoTerm taskID) {
-		final Set<IStrategoTerm> seen = new HashSet<IStrategoTerm>();
-		final Queue<IStrategoTerm> queue = new LinkedList<IStrategoTerm>();
+		final Set<IStrategoTerm> seen = Sets.newHashSet();
+		final Queue<IStrategoTerm> queue = Lists.newLinkedList();
 
 		queue.add(taskID);
 		seen.add(taskID);
@@ -70,8 +74,8 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
 		try {
-			final Set<IStrategoTerm> evaluated = new HashSet<IStrategoTerm>();
-			final Set<IStrategoTerm> skipped = new HashSet<IStrategoTerm>();
+			final Set<IStrategoTerm> evaluated = Sets.newHashSet();
+			final Set<IStrategoTerm> skipped = Sets.newHashSet();
 
 			// First only queue Choice tasks, which will in turn lazily queue tasks inside the Choice.
 			for(IStrategoTerm taskID : scheduled) {
@@ -80,17 +84,18 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 					queue(taskID);
 				}
 			}
-			evaluateScheduledTasks(scheduled, skipped, evaluated, context, insert, perform);
+			evaluateQueuedTasks(scheduled, skipped, evaluated, context, insert, perform);
 
 			// Queue the leftover tasks that need to be eagerly evaluated.
-			// Fill toRuntimeDependency for scheduled tasks such that solving the task activates their dependent tasks.
 			for(final IStrategoTerm taskID : scheduled) {
 				queueOrDefer(taskID);
 			}
-			evaluateScheduledTasks(scheduled, skipped, evaluated, context, insert, perform);
+			evaluateQueuedTasks(scheduled, skipped, evaluated, context, insert, perform);
 
-			debugUnevaluated(scheduled);
+			// Debug unevaluated tasks if debugging is enabled.
+			TaskEvaluationDebugging.debugUnevaluated(taskEngine, scheduled, toRuntimeDependency);
 
+			// Return evaluated, skipped and unevaluated task identifiers.
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(skipped),
 				factory.makeList(scheduled));
 		} finally {
@@ -99,30 +104,15 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 	}
 
 	/**
-	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
+	 * Evaluates a single task.
 	 */
-	private Set<IStrategoTerm> evaluateScheduledTasks(Set<IStrategoTerm> scheduled, final Set<IStrategoTerm> skipped,
-		Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
-		// Evaluate each task in the queue.
-		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-			final Task task = taskEngine.getTask(taskID);
-
-			evaluated.add(taskID);
-			scheduled.remove(taskID);
-			queued.remove(taskID);
-
-			// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
-			// overwrite previous data.
-			taskEngine.invalidate(taskID);
-
-			if(TaskIdentification.isChoice(task.instruction)) {
-				evaluateChoice(scheduled, skipped, taskID, task);
-			} else {
-				evaluateTask(context, insert, perform, taskID, task);
-			}
+	protected void evaluateTask(Set<IStrategoTerm> scheduled, Set<IStrategoTerm> skipped, Set<IStrategoTerm> evaluated,
+		IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
+		if(TaskIdentification.isChoice(task.instruction)) {
+			evaluateChoice(scheduled, skipped, taskID, task);
+		} else {
+			evaluateRegularTask(context, insert, perform, taskID, task);
 		}
-
-		return scheduled;
 	}
 
 	/**

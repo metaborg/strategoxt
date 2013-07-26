@@ -1,6 +1,5 @@
 package org.metaborg.runtime.task.evaluation;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
@@ -11,6 +10,8 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.collect.Sets;
+
 public class EagerTaskEvaluator extends AbstractTaskEvaluator {
 	public EagerTaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
 		super(taskEngine, factory);
@@ -18,35 +19,29 @@ public class EagerTaskEvaluator extends AbstractTaskEvaluator {
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
 		try {
+			// Queue or defer scheduled tasks.
 			for(final IStrategoTerm taskID : scheduled) {
 				queueOrDefer(taskID);
 			}
 
 			// Evaluate each task in the queue.
-			final Set<IStrategoTerm> evaluated = new HashSet<IStrategoTerm>();
-			for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-				final Task task = taskEngine.getTask(taskID);
+			final Set<IStrategoTerm> evaluated = Sets.newHashSet();
+			final Set<IStrategoTerm> skipped = Sets.newHashSet();
+			evaluateQueuedTasks(scheduled, skipped, evaluated, context, insert, perform);
 
-				evaluated.add(taskID);
-				scheduled.remove(taskID);
-				queued.remove(taskID);
+			// Debug unevaluated tasks if debugging is enabled.
+			TaskEvaluationDebugging.debugUnevaluated(taskEngine, scheduled, toRuntimeDependency);
 
-				// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
-				// overwrite previous data.
-				taskEngine.invalidate(taskID);
-
-				evaluateTask(context, insert, perform, taskID, task);
-			}
-
-			debugUnevaluated(scheduled);
-
-			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(), factory.makeList(scheduled));
+			// Return evaluated, skipped and unevaluated task identifiers.
+			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(skipped),
+				factory.makeList(scheduled));
 		} finally {
 			reset();
 		}
 	}
 
-	public void reset() {
-		super.reset();
+	protected void evaluateTask(Set<IStrategoTerm> scheduled, Set<IStrategoTerm> skipped, Set<IStrategoTerm> evaluated,
+		IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID, Task task) {
+		evaluateRegularTask(context, insert, perform, taskID, task);
 	}
 }
