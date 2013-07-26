@@ -2,27 +2,29 @@ package org.metaborg.runtime.task.evaluation;
 
 import java.util.Set;
 
+import org.metaborg.runtime.task.Task;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
 
 public interface ITaskEvaluator {
 	/**
-	 * Evaluates tasks given by a set of task identifiers.
-	 * 
-	 * @param scheduled The task identifiers of tasks to evaluate.
-	 * @param context The Stratego context used to insert results and perform instructions/
-	 * @param insert The strategy that inserts results into an instruction.
-	 * @param perform The strategy that evaluates an instruction.
-	 * 
-	 * @return A tuple with all evaluated task identifiers and unevaluated task identifiers.
+	 * Queues task in given evaluation queue from given set of scheduled tasks.
 	 */
-	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert,
-		Strategy perform);
-	
+	public abstract void queue(ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled);
+
 	/**
-	 * Resets the task evaluator to the initial state. 
+	 * Evaluates given task.
+	 * 
+	 * @param taskID
+	 * @param task
+	 * @param scheduled
+	 * @param skipped
+	 * @param evaluated
+	 * @param context
+	 * @param insert
+	 * @param perform
 	 */
-	public abstract void reset();
+	public abstract void evaluate(IStrategoTerm taskID, Task task, Set<IStrategoTerm> scheduled,
+		Set<IStrategoTerm> skipped, Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform);
 }

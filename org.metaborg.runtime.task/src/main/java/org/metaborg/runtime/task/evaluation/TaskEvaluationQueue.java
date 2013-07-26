@@ -18,12 +18,13 @@ import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
+public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluationFrontend {
 	protected final ITaskEngine taskEngine;
 	protected final ITermFactory factory;
 	protected final IStrategoConstructor dependencyConstructor;
@@ -44,24 +45,17 @@ public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
 	protected final Timer timer = new Timer();
 
 
-	protected AbstractTaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
+	protected TaskEvaluationQueue(ITaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
 		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
 		this.singleConstructor = factory.makeConstructor("Single", 1);
 	}
 
-	public void reset() {
-		evaluationQueue.clear();
-		queued.clear();
-		toRuntimeDependency.clear();
-		timer.clear();
-	}
-
 	/**
 	 * Queues given task identifier if it is not in the queue yet.
 	 */
-	protected void queue(IStrategoTerm taskID) {
+	public void queue(IStrategoTerm taskID) {
 		if(!queued.contains(taskID)) {
 			evaluationQueue.add(taskID);
 			queued.add(taskID);
@@ -72,7 +66,7 @@ public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
 	 * Queues given task identifier if all their dependencies are solved, or defers evaluation until all their
 	 * dependencies have been solved.
 	 */
-	protected void queueOrDefer(IStrategoTerm taskID) {
+	public void queueOrDefer(IStrategoTerm taskID) {
 		final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 		final Set<IStrategoTerm> dependenciesSet = Sets.newHashSet(dependencies);
 
@@ -94,7 +88,7 @@ public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Tries to queue new tasks because given task has been solved.
 	 */
-	protected void tryScheduleNewTasks(IStrategoTerm solved) {
+	public void taskCompleted(IStrategoTerm solved) {
 		// Retrieve dependent tasks of the solved task.
 		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(solved));
 		dependents.addAll(toRuntimeDependency.getInverse(solved));
@@ -110,7 +104,7 @@ public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Updates the runtime dependency graph with runtime dependencies for given task.
 	 */
-	protected void updateDelayedDependencies(IStrategoTerm taskID, IStrategoList dependencies) {
+	public void taskDelayed(IStrategoTerm taskID, IStrategoList dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
 		// Sets the runtime dependencies for a task to the given dependency list.
@@ -119,47 +113,22 @@ public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
 			toRuntimeDependency.put(taskID, dependency);
 	}
 
-	/**
-	 * Evaluates a regular task.
-	 */
-	protected void evaluateRegularTask(IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID,
-		Task task) {
-		final Iterable<IStrategoTerm> instructions =
-			CarthesianProduct.taskCombinations(factory, taskEngine, context, insert, taskID, task);
-
-		// TODO: optimize success/unknown using a bitflag?
-		boolean unknown = false;
-		boolean failure = true;
-		if(instructions != null) {
-			for(IStrategoTerm instruction : instructions) {
-				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
-				final ResultType resultType = handleResult(taskID, task, result);
-				switch(resultType) {
-					case Fail:
-						break;
-					case Success:
-						failure = false;
-						break;
-					default: // Unknown result or dynamic dependency.
-						unknown = true;
-						break;
-				}
-			}
-		}
-
-		if(!unknown) {
-			// Try to schedule new tasks even for failed tasks since they may activate combinators.
-			tryScheduleNewTasks(taskID);
-
-			if(failure)
-				task.setFailed();
-		}
+	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
+		// TODO: queue tasks for an ITaskEvaluator, evaluate them and continue..
+		return null;
 	}
 
+	public void reset() {
+		evaluationQueue.clear();
+		queued.clear();
+		toRuntimeDependency.clear();
+		timer.clear();
+	}
+	
 	/**
 	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
 	 */
-	protected Set<IStrategoTerm> evaluateQueuedTasks(Set<IStrategoTerm> scheduled, Set<IStrategoTerm> skipped,
+	private Set<IStrategoTerm> evaluateQueuedTasks(Set<IStrategoTerm> scheduled, Set<IStrategoTerm> skipped,
 		Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
@@ -173,65 +142,18 @@ public abstract class AbstractTaskEvaluator implements ITaskEvaluator {
 			// overwrite previous data.
 			taskEngine.invalidate(taskID);
 
-			evaluateTask(scheduled, skipped, evaluated, context, insert, perform, taskID, task);
+			evaluateTask(taskID, task, scheduled, skipped, evaluated, context, insert, perform);
 		}
 
 		return scheduled;
 	}
 
+
 	/**
 	 * Evaluates given task. Called on each task in the queue in {@link #evaluateQueuedTasks}.
 	 */
-	protected abstract void evaluateTask(Set<IStrategoTerm> scheduled, Set<IStrategoTerm> skipped,
-		Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform, IStrategoTerm taskID,
-		Task task);
-
-	/**
-	 * Solves an instruction and returns its raw result.
-	 */
-	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, Task task,
-		IStrategoTerm instruction) {
-		timer.start();
-		final IStrategoTerm result = invoke(context, performInstruction, instruction, taskID);
-		task.addTime(timer.stop());
-		task.addEvaluation();
-		return result;
-	}
-
-	private enum ResultType {
-		DynamicDependency, Fail, Success
-	}
-
-	/**
-	 * Handles the result of performing an instruction and returns its result type.
-	 */
-	private ResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result) {
-		if(result == null)
-			return ResultType.Fail; // The task failed to produce a result.
-
-		if(Tools.isTermAppl(result)) {
-			final IStrategoAppl resultAppl = (IStrategoAppl) result;
-			if(resultAppl.getConstructor().equals(dependencyConstructor)) {
-				// The task has dynamic dependencies.
-				updateDelayedDependencies(taskID, (IStrategoList) resultAppl.getSubterm(0));
-				return ResultType.DynamicDependency;
-			} else if(resultAppl.getConstructor().equals(singleConstructor)) {
-				// The result must be treated as a single result.
-				task.addResult(result.getSubterm(0));
-				return ResultType.Success;
-			} else {
-				// Treat as single result.
-				task.addResult(result);
-				return ResultType.Success;
-			}
-		} else if(Tools.isTermList(result)) {
-			// The task produced multiple results.
-			task.addResults(result);
-			return ResultType.Success;
-		} else {
-			// The task produced a single result.
-			task.addResult(result);
-			return ResultType.Success;
-		}
+	private void evaluateTask(IStrategoTerm taskID, Task task, Set<IStrategoTerm> scheduled,
+		Set<IStrategoTerm> skipped, Set<IStrategoTerm> evaluated, IContext context, Strategy insert, Strategy perform) {
+		// TODO: evaluate task using the correct ITaskEvaluator.
 	}
 }

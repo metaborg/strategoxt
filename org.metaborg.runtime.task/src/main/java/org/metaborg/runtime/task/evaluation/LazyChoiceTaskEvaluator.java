@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
+public class LazyChoiceTaskEvaluator extends TaskEvaluationQueue {
 	/**
 	 * Maps task identifiers from choice tasks to an iterator that holds the next task inside the choice to evaluate.
 	 */
@@ -137,7 +137,7 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 			final Task choiceTask = taskEngine.getTask(choiceTaskID);
 			if(!choiceTask.failed() && choiceTask.hasResults()) {
 				task.setResults(choiceTask.results());
-				tryScheduleNewTasks(taskID);
+				taskCompleted(taskID);
 				cleanupChoice(scheduled, skipped, taskID);
 				return;
 			}
@@ -152,7 +152,7 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 		// If the choice does not have any results left it has failed.
 		if(!choiceIter.hasNext()) {
 			task.setFailed();
-			tryScheduleNewTasks(taskID);
+			taskCompleted(taskID);
 			cleanupChoice(scheduled, skipped, taskID);
 			return;
 		}
@@ -178,7 +178,7 @@ public class LazyChoiceTaskEvaluator extends AbstractTaskEvaluator {
 			} else {
 				// Task was already solved.
 				task.setResults(currentTask.results());
-				tryScheduleNewTasks(taskID);
+				taskCompleted(taskID);
 				cleanupChoice(scheduled, skipped, taskID);
 				return;
 			}

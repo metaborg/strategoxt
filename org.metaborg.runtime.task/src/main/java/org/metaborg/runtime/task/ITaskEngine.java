@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoInt;
@@ -22,12 +22,12 @@ public interface ITaskEngine {
 	/**
 	 * Returns the task evaluator.
 	 */
-	public abstract ITaskEvaluator getEvaluator();
+	public abstract ITaskEvaluationQueue getEvaluator();
 
 	/**
 	 * Sets the task evaluator.
 	 */
-	public abstract void setEvaluator(ITaskEvaluator evaluator);
+	public abstract void setEvaluator(ITaskEvaluationQueue evaluator);
 	
 	/**
 	 * Returns the parent task engine.

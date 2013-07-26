@@ -8,7 +8,7 @@ import java.util.Set;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.LazyChoiceTaskEvaluator;
 import org.metaborg.runtime.task.util.ListBuilder;
 import org.spoofax.interpreter.core.IContext;
@@ -35,7 +35,7 @@ public class TaskEngine implements ITaskEngine {
 	private final ITaskEngine parent;
 	private final ITermFactory factory;
 	private final ITermDigester digester;
-	private ITaskEvaluator evaluator;
+	private ITaskEvaluationQueue evaluator;
 	private final IStrategoConstructor resultConstructor;
 
 
@@ -130,11 +130,11 @@ public class TaskEngine implements ITaskEngine {
 		return digester;
 	}
 
-	public ITaskEvaluator getEvaluator() {
+	public ITaskEvaluationQueue getEvaluator() {
 		return evaluator;
 	}
 
-	public void setEvaluator(ITaskEvaluator evaluator) {
+	public void setEvaluator(ITaskEvaluationQueue evaluator) {
 		this.evaluator = evaluator;
 	}
 

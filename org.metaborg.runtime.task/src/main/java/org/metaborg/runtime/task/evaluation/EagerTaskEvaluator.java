@@ -12,7 +12,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Sets;
 
-public class EagerTaskEvaluator extends AbstractTaskEvaluator {
+public class EagerTaskEvaluator extends TaskEvaluationQueue {
 	public EagerTaskEvaluator(ITaskEngine taskEngine, ITermFactory factory) {
 		super(taskEngine, factory);
 	}
