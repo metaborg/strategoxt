@@ -5,6 +5,7 @@ import java.util.Set;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 
@@ -17,6 +18,11 @@ public interface ITaskEvaluationFrontend {
 	 */
 	public abstract void addTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator);
 
+	/**
+	 * Tries to adjust given dependencies using a task evaluator.
+	 */
+	public abstract IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction);
+	
 	/**
 	 * Evaluates tasks given by a set of task identifiers.
 	 * 

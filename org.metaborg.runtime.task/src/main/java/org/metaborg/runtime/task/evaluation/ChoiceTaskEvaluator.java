@@ -12,7 +12,9 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.interpreter.terms.ITermFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -30,6 +32,10 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = Maps.newHashMap();
 
+
+	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+		return factory.makeList();
+	}
 
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {

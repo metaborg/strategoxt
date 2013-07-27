@@ -33,6 +33,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		this.singleConstructor = factory.makeConstructor("Single", 1);
 	}
 
+	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+		return dependencies;
+	}
+
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		// Queue or defer evaluation for all scheduled tasks.
 		for(final IStrategoTerm taskID : scheduled) {
@@ -73,7 +77,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				task.setFailed();
 		}
 	}
-	
+
 	public void reset() {
 		timer.reset();
 	}

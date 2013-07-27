@@ -110,7 +110,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		for(final IStrategoTerm dependency : dependencies)
 			runtimeDependencies.put(taskID, dependency);
 	}
-	
+
 	public void addRuntimeDependency(IStrategoTerm taskID, IStrategoTerm dependencyTaskID) {
 		runtimeDependencies.put(taskID, dependencyTaskID);
 	}
@@ -124,6 +124,11 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
 			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
 		}
+	}
+
+	public IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction) {
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
+		return taskEvaluator.adjustDependencies(dependencies, factory);
 	}
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
@@ -187,18 +192,25 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	/**
-	 * Evaluates given task using a specific or default task evaluator.
+	 * Returns a task evaluator for given instruction.
 	 */
-	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy insert, Strategy perform) {
+	private ITaskEvaluator getTaskEvaluator(IStrategoTerm instruction) {
 		ITaskEvaluator taskEvaluator;
-		final IStrategoTerm instruction = task.instruction;
 		if(!Tools.isTermAppl(instruction)) {
 			taskEvaluator = defaultTaskEvaluator;
 		} else {
-			taskEvaluator = taskEvaluators.get(((IStrategoAppl)instruction).getConstructor());
+			taskEvaluator = taskEvaluators.get(((IStrategoAppl) instruction).getConstructor());
 			if(taskEvaluator == null)
 				taskEvaluator = defaultTaskEvaluator;
 		}
+		return taskEvaluator;
+	}
+
+	/**
+	 * Evaluates given task using a specific or default task evaluator.
+	 */
+	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy insert, Strategy perform) {
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
 		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, insert, perform);
 	}
 }

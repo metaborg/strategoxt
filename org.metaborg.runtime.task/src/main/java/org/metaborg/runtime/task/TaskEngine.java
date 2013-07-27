@@ -9,7 +9,6 @@ import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
-import org.metaborg.runtime.task.evaluation.ChoiceTaskEvaluator;
 import org.metaborg.runtime.task.util.ListBuilder;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -188,10 +187,7 @@ public class TaskEngine implements ITaskEngine {
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		// TODO: Refactor this code out into an interface, since it is only valid for the LazyChoiceTaskEvaluator.
-		if(evaluationFrontend instanceof ChoiceTaskEvaluator && TaskIdentification.isChoice(instruction)) {
-			dependencies = factory.makeList();
-		}
+		dependencies = evaluationFrontend.adjustDependencies(dependencies, instruction);
 
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
