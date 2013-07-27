@@ -11,6 +11,7 @@ import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -132,16 +133,16 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 			// Queue tasks and evaluate them for each specific task evaluator.
 			for(ITaskEvaluator taskEvaluator : taskEvaluators.values()) {
-				taskEvaluator.queue(taskEngine, this, scheduled);
+				taskEvaluator.queue(taskEngine, this, this.scheduled);
 				evaluateQueuedTasks(context, insert, perform);
 			}
 
 			// Evaluate the remaining tasks with the default task evaluator.
-			defaultTaskEvaluator.queue(taskEngine, this, scheduled);
+			defaultTaskEvaluator.queue(taskEngine, this, this.scheduled);
 			evaluateQueuedTasks(context, insert, perform);
 
 			// Debug unevaluated tasks if debugging is enabled.
-			TaskEvaluationDebugging.debugUnevaluated(taskEngine, scheduled, runtimeDependencies);
+			TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
 
 			// Return evaluated, skipped and unevaluated task identifiers.
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(skipped),
@@ -195,7 +196,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		if(!Tools.isTermAppl(instruction)) {
 			taskEvaluator = defaultTaskEvaluator;
 		} else {
-			taskEvaluator = taskEvaluators.get(instruction);
+			taskEvaluator = taskEvaluators.get(((IStrategoAppl)instruction).getConstructor());
 			if(taskEvaluator == null)
 				taskEvaluator = defaultTaskEvaluator;
 		}
