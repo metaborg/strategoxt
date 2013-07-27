@@ -10,6 +10,7 @@ import java.util.Map;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.metaborg.runtime.task.evaluation.BaseTaskEvaluator;
+import org.metaborg.runtime.task.evaluation.ChoiceTaskEvaluator;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
 import org.spoofax.interpreter.library.IOAgent;
@@ -134,8 +135,7 @@ public class TaskManager {
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
 		final ITaskEvaluationFrontend taskEvaluationFrontend =
 			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
-		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new
-		// ChoiceTaskEvaluator(factory));
+		//taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new ChoiceTaskEvaluator());
 		return taskEvaluationFrontend;
 	}
 
