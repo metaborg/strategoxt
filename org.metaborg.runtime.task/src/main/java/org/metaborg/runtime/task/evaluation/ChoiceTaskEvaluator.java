@@ -43,7 +43,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy insert, Strategy perform) {
 		// Handle the result of a choice task.
-		IStrategoTerm choiceTaskID = choiceTaskIDs.get(taskID);
+		final IStrategoTerm choiceTaskID = choiceTaskIDs.get(taskID);
 		if(choiceTaskID != null) {
 			evaluationQueue.removeRuntimeDependency(taskID, choiceTaskID); // TODO: needed/correct?
 

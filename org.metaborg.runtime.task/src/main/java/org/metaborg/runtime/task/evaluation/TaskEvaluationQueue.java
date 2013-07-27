@@ -124,7 +124,6 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
 			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
 		}
-
 	}
 
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
