@@ -4,14 +4,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-
 
 public interface ITaskEngine {
 	/**
@@ -20,21 +19,21 @@ public interface ITaskEngine {
 	public abstract ITermDigester getDigester();
 
 	/**
-	 * Returns the task evaluator.
+	 * Returns the task evaluation frontend.
 	 */
-	public abstract ITaskEvaluator getEvaluator();
+	public abstract ITaskEvaluationFrontend getEvaluationFrontend();
 
 	/**
-	 * Sets the task evaluator.
+	 * Sets the task evaluation frontend.
 	 */
-	public abstract void setEvaluator(ITaskEvaluator evaluator);
-	
+	public abstract void setEvaluationFrontend(ITaskEvaluationFrontend evaluator);
+
 	/**
 	 * Returns the parent task engine.
 	 */
 	public abstract ITaskEngine getParent();
 
-	
+
 	/**
 	 * Starts task collection for given partition.
 	 * 
@@ -58,7 +57,7 @@ public interface ITaskEngine {
 	 * @param dependencies The initial dependencies of the instruction.
 	 */
 	public abstract IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies);
-	
+
 	/**
 	 * Given an instruction and its initial dependencies, returns its identifier or creates a new identifier.
 	 * 
@@ -108,11 +107,11 @@ public interface ITaskEngine {
 	 * 
 	 * @param partition The partition to stop collecting tasks for.
 	 * 
-	 * @return A tuple with a list of task identifiers that have been removed and added. 
+	 * @return A tuple with a list of task identifiers that have been removed and added.
 	 */
 	public abstract IStrategoTerm stopCollection(IStrategoString partition);
 
-	
+
 	/**
 	 * Invalidates task with given identifier, removing their results, reads and messages.
 	 * 
@@ -154,7 +153,7 @@ public interface ITaskEngine {
 	public abstract IStrategoTerm evaluateNow(IContext context, Strategy insert, Strategy perform,
 		Iterable<IStrategoTerm> taskIDs);
 
-	
+
 	/**
 	 * Gets all task identifiers.
 	 */
@@ -169,7 +168,7 @@ public interface ITaskEngine {
 	 * Gets all task identifier to task mappings.
 	 */
 	public abstract Iterable<Entry<IStrategoTerm, Task>> getTaskEntries();
-	
+
 	/**
 	 * Gets task corresponding to given task identifier.
 	 * 
@@ -177,7 +176,7 @@ public interface ITaskEngine {
 	 */
 	public abstract Task getTask(IStrategoTerm taskID);
 
-	
+
 	/**
 	 * Gets all task identifiers excluding task identifiers from the parent task engine.
 	 */
@@ -192,15 +191,15 @@ public interface ITaskEngine {
 	 * Gets all task identifier to task mappings excluding mappings from the parent task engine.
 	 */
 	public abstract Iterable<Entry<IStrategoTerm, Task>> getTaskEntriesCurrent();
-	
+
 	/**
 	 * Gets task corresponding to given task identifier excluding tasks from the parent task engine.
 	 * 
 	 * @param taskID The task identifier.
 	 */
 	public abstract Task getTaskCurrent(IStrategoTerm taskID);
-	
-	
+
+
 	/**
 	 * Gets all partitions.
 	 */
@@ -264,11 +263,11 @@ public interface ITaskEngine {
 	/**
 	 * Removes all incoming and outgoing dependencies for a task.
 	 * 
-	 * @param taskID The task identifier of the task to remove all dependencies for. 
+	 * @param taskID The task identifier of the task to remove all dependencies for.
 	 */
 	public abstract void removeDependencies(IStrategoTerm taskID);
 
-	
+
 	/**
 	 * Gets all URI's that task with given identifier has read.
 	 * 
@@ -278,6 +277,7 @@ public interface ITaskEngine {
 
 	/**
 	 * Gets all task identifiers that have read given URI.
+	 * 
 	 * @param uri The URI to get reader tasks for.
 	 */
 	public abstract Iterable<IStrategoTerm> getReaders(IStrategoTerm uri);
@@ -297,7 +297,7 @@ public interface ITaskEngine {
 	 */
 	public abstract void removeReads(IStrategoTerm taskID);
 
-	
+
 	/**
 	 * Resets the evaluation time for each task.
 	 */
@@ -307,14 +307,14 @@ public interface ITaskEngine {
 	 * Resets the evaluation count for each task.
 	 */
 	public abstract void clearEvaluations();
-	
-	
+
+
 	/**
 	 * Returns all task identifiers that have been removed as a result of garbage collection.
 	 */
 	public abstract Iterable<IStrategoTerm> getRemovedTasks();
 
-	
+
 	/**
 	 * Attempt to recover the task engine after an exception during collection or evaluation.
 	 */

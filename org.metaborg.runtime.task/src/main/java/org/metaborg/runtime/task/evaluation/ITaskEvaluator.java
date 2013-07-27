@@ -2,27 +2,37 @@ package org.metaborg.runtime.task.evaluation;
 
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.Task;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
+import org.spoofax.interpreter.terms.ITermFactory;
 
+/**
+ * Interface for evaluating individual tasks.
+ */
 public interface ITaskEvaluator {
 	/**
-	 * Evaluates tasks given by a set of task identifiers.
-	 * 
-	 * @param scheduled The task identifiers of tasks to evaluate.
-	 * @param context The Stratego context used to insert results and perform instructions/
-	 * @param insert The strategy that inserts results into an instruction.
-	 * @param perform The strategy that evaluates an instruction.
-	 * 
-	 * @return A tuple with all evaluated task identifiers and unevaluated task identifiers.
+	 * Returns adjusted dependencies.
 	 */
-	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert,
-		Strategy perform);
-	
+	public abstract IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory);
+
 	/**
-	 * Resets the task evaluator to the initial state. 
+	 * Queues task from given set of scheduled tasks.
+	 */
+	public abstract void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
+		Set<IStrategoTerm> scheduled);
+
+	/**
+	 * Evaluates given task.
+	 */
+	public abstract void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy insert, Strategy perform);
+
+	/**
+	 * Resets the task evaluator to its initial state.
 	 */
 	public abstract void reset();
 }
