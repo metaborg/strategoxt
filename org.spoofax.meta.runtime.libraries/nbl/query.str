@@ -17,7 +17,7 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-all-definitions:
-    contains-uri* -> <mapconcat(nabl-get-unique-nonunique(\uri -> Def(uri)\))> uri*
+    contains-uri* -> <mapconcat(nabl-get-unique-nonunique(!Def(<id>)))> uri*
     where
     	uri* := <nabl-uris> contains-uri*
     	
@@ -33,8 +33,8 @@ rules // Specific queries
     contains-uri* -> [def*, alias-def*]
     where
     	uri*       := <nabl-uris> contains-uri*;
-    	def*       := <mapconcat(\uri -> Def(uri)\; nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(\uri -> Def(uri)\))> uri*;
-    	alias-def* := <mapconcat(\uri -> Alias(uri, ())\; nabl-get-children(|ns));  mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> uri*
+    	def*       := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*;
+    	alias-def* := <mapconcat(!Alias(<id>, ()); nabl-get-children(|ns)); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> uri*
 
   /**
    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
@@ -58,7 +58,7 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
    */
   nabl-get-all-properties(|kind):
-		contains-uri* -> <mapconcat(\uri -> Prop(uri, kind, ())\; nabl-get-all-values)> uri*
+		contains-uri* -> <mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)> uri*
     where
     	uri* := <nabl-uris> contains-uri*
 
@@ -75,7 +75,7 @@ rules // Specific queries
     where
     	uri*           := <nabl-uris> contains-uri*;
     	nonunique-uri* := <filter(nabl-replace-uri-qualifier(|NonUnique()))> uri*;
-      alias-uri*     := <mapconcat(\uri -> Alias(uri, ())\; nabl-get-all-values)> nonunique-uri*
+      alias-uri*     := <mapconcat(!Alias(<id>, ()); nabl-get-all-values)> nonunique-uri*
       
   /**
    * Gets all InverseAlias entries that match the given URI.
@@ -89,7 +89,7 @@ rules // Specific queries
     contains-uri* -> inverse-alias*
     where
     	uri*           := <nabl-uris> contains-uri*;
-      inverse-alias* := <mapconcat(\uri -> InverseAlias(uri, ())\; nabl-get-all-values)> uri*
+      inverse-alias* := <mapconcat(!InverseAlias(<id>, ()); nabl-get-all-values)> uri*
 
 rules // Generic queries
   

@@ -221,18 +221,25 @@ rules /** @internal Projections */
 
     
   /** @internal */  
-  nabl-uri:
-    _{anno*} -> <fetch-elem(nabl-uri)> anno*
+  nabl-uri =
+  	has-annos;
+  	get-annos;
+  	fetch-elem(nabl-uri)
 
   /** @internal */  
-  nabl-value:
-    _{anno*} -> <fetch-elem(nabl-value)> anno*
+  nabl-value =
+  	has-annos;
+  	get-annos;
+  	fetch-elem(nabl-value)
 
   /** @internal */  
-  nabl-uris:
-    _{anno*} -> <filter(nabl-uri)> anno*
+  nabl-uris =
+  	has-annos;
+  	get-annos;
+  	filter(nabl-uri)
 
   /** @internal */  
-  nabl-values:
-    _{anno*} -> <filter(nabl-value)> anno*
-			
+  nabl-values =
+  	has-annos;
+  	get-annos;
+  	filter(nabl-value)
