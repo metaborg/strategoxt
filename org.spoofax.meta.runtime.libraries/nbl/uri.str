@@ -219,31 +219,6 @@ rules /** @internal Projections */
   nabl-values:
     URI(_, _) -> [<id>]
 
-
-	/** @internal */  
-  nabl-uri:
-    list -> <fetch-elem(nabl-uri)> list
-    where
-    	is-list
-
-  /** @internal */  
-  nabl-value:
-    list -> <fetch-elem(nabl-value)> list
-		where
-			is-list
-
-  /** @internal */  
-  nabl-uris:
-    list -> <filter(nabl-uri)> list
-    where
-    	is-list
-
-  /** @internal */  
-  nabl-values:
-    list -> <filter(nabl-value)> list
-		where
-			is-list
-    
     
   /** @internal */  
   nabl-uri:
@@ -255,9 +230,9 @@ rules /** @internal Projections */
 
   /** @internal */  
   nabl-uris:
-    _{anno*} -> <filter(nabl-uris)> anno*
+    _{anno*} -> <filter(nabl-uri)> anno*
 
   /** @internal */  
   nabl-values:
-    _{anno*} -> <filter(nabl-values)> anno*
+    _{anno*} -> <filter(nabl-value)> anno*
 			

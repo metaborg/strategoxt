@@ -118,11 +118,11 @@ rules // index uri & value projections
 
   /** @internal */
   nabl-value:
-    Use(value) -> value
+    Use(value) -> <nabl-uri>
     
   /** @internal */
   nabl-values:
-    Use(value) -> [value]
+    Use(value) -> <nabl-uris>
     
   /** @internal */
   nabl-value:
