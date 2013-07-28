@@ -234,30 +234,30 @@ rules /** @internal Projections */
 
   /** @internal */  
   nabl-uris:
-    list -> <collect-all(nabl-uri)> list
+    list -> <filter(nabl-uri)> list
     where
     	is-list
 
   /** @internal */  
   nabl-values:
-    list -> <collect-all(nabl-value)> list
+    list -> <filter(nabl-value)> list
 		where
 			is-list
     
     
   /** @internal */  
   nabl-uri:
-    _{anno*} -> <nabl-uri> anno*
+    _{anno*} -> <fetch-elem(nabl-uri)> anno*
 
   /** @internal */  
   nabl-value:
-    _{anno*} -> <nabl-value> anno*
+    _{anno*} -> <fetch-elem(nabl-value)> anno*
 
   /** @internal */  
   nabl-uris:
-    _{anno*} -> <nabl-uris> anno*
+    _{anno*} -> <filter(nabl-uris)> anno*
 
   /** @internal */  
   nabl-values:
-    _{anno*} -> <nabl-values> anno*
+    _{anno*} -> <filter(nabl-values)> anno*
 			
