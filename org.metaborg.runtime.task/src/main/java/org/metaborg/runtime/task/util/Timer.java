@@ -27,7 +27,7 @@ public class Timer {
 		return time() - startTime;
 	}
 	
-	public void clear() {
+	public void reset() {
 		startTime = 0;
 	}
 

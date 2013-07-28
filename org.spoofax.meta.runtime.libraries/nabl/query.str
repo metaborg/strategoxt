@@ -17,9 +17,9 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-all-definitions:
-    containsURI -> <nabl-get-unique-nonunique(\uri -> Def(uri)\)> uri
+    contains-uri* -> <mapconcat(nabl-get-unique-nonunique(!Def(<id>)))> uri*
     where
-    	uri := <nabl-uri> containsURI
+    	uri* := <nabl-uris> contains-uri*
     	
   /**
    * Gets all child definition entries in given URI that match given namespace.
@@ -30,11 +30,11 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-child-definitions(|ns):
-    containsURI -> [def*, alias-def*]
+    contains-uri* -> [def*, alias-def*]
     where
-    	uri        := <nabl-uri> containsURI;
-    	def*       := <nabl-get-children(|ns); mapconcat(nabl-uri; nabl-get-unique-nonunique(\uri -> Def(uri)\))> Def(uri);
-    	alias-def* := <nabl-get-children(|ns); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> Alias(uri, ())
+    	uri*       := <nabl-uris> contains-uri*;
+    	def*       := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*;
+    	alias-def* := <mapconcat(!Alias(<id>, ()); nabl-get-children(|ns)); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> uri*
 
   /**
    * Gets all Use entries that match the given URI.
@@ -58,14 +58,11 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(aliasURI)
    */
   nabl-get-all-aliases:
-    containsURI -> aliasURI*
+    contains-uri* -> alias-uri*
     where
-    	uri := <nabl-uri> containsURI;
-      if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
-        aliasURI* := <nabl-get-all-values> Alias(nonUniqueURI, ()) 
-      else
-        aliasURI* := []
-      end
+    	uri*           := <nabl-uris> contains-uri*;
+    	nonunique-uri* := <filter(nabl-replace-uri-qualifier(|NonUnique()))> uri*;
+      alias-uri*     := <mapconcat(!Alias(<id>, ()); nabl-get-all-values)> nonunique-uri*
       
   /**
    * Gets all InverseAlias entries that match the given URI.
@@ -76,10 +73,10 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(inverseAliasURI)
    */
   nabl-get-all-inverse-aliasses:
-    containsURI -> inverse-alias*
+    contains-uri* -> inverse-alias*
     where
-    	uri            := <nabl-uri> containsURI;
-      inverse-alias* := <nabl-get-all-values> InverseAlias(uri, ()) 
+    	uri*           := <nabl-uris> contains-uri*;
+      inverse-alias* := <mapconcat(!InverseAlias(<id>, ()); nabl-get-all-values)> uri*
 
 rules // Generic queries
   
