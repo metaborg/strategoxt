@@ -61,19 +61,6 @@ rules // Specific queries
 		containsURI -> <nabl-get-all-values> Prop(uri, kind, ())
     where
     	uri := <nabl-uri> containsURI
-     
-  /**
-   * Gets all Use entries that match the given URI.
-   *
-   * Example:
-   *   <nabl-get-all-uses> Def([Entity(), "M", "Bar"]) => [Use([Entity(), "M", "Bar"]), ...]
-   *
-   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Use(uri))
-   */
-  nabl-get-all-uses:
-    containsURI -> <nabl-get-all> Use(uri)
-    where
-    	uri := <nabl-uri> containsURI
 
   /**
    * Gets all Alias entries that match the given URI.

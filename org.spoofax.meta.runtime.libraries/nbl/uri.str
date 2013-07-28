@@ -86,7 +86,9 @@ rules // stable URI extensions
 rules // Projections
   
   nabl-uri = fail
+  nabl-uris = fail
   nabl-value = fail
+  nabl-values = fail
   
   nabl-uri-language:
     URI(language, _) -> language
@@ -208,11 +210,54 @@ rules /** @internal Projections */
   /** @internal */
   nabl-value:
     URI(_, _) -> <id>
+ 
+  /** @internal */
+  nabl-uris:
+    URI(_, _) -> [<id>]
     
-  /** @internal */  
+  /** @internal */
+  nabl-values:
+    URI(_, _) -> [<id>]
+
+
+	/** @internal */  
   nabl-uri:
-    _{anno*} -> <fetch-elem(nabl-uri)> anno*
+    list -> <fetch-elem(nabl-uri)> list
+    where
+    	is-list
 
   /** @internal */  
   nabl-value:
-    _{anno*} -> <fetch-elem(nabl-value)> anno*
+    list -> <fetch-elem(nabl-value)> list
+		where
+			is-list
+
+  /** @internal */  
+  nabl-uris:
+    list -> <collect-all(nabl-uri)> list
+    where
+    	is-list
+
+  /** @internal */  
+  nabl-values:
+    list -> <collect-all(nabl-value)> list
+		where
+			is-list
+    
+    
+  /** @internal */  
+  nabl-uri:
+    _{anno*} -> <nabl-uri> anno*
+
+  /** @internal */  
+  nabl-value:
+    _{anno*} -> <nabl-value> anno*
+
+  /** @internal */  
+  nabl-uris:
+    _{anno*} -> <nabl-uris> anno*
+
+  /** @internal */  
+  nabl-values:
+    _{anno*} -> <nabl-values> anno*
+			

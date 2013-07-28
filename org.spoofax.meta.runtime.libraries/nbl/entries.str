@@ -3,6 +3,7 @@ module nbl/entries
 imports
   
   nbl/collect
+  nbl/resolve
   nbl/utils
   nbl/uri
   index/core
@@ -14,7 +15,7 @@ signature
     Def          : URI                    -> Entry
     Alias        : URI * URI              -> Entry
     InverseAlias : URI * URI              -> Entry
-    Use          : URI                    -> Entry
+    Use          : Result                 -> Entry
     Prop         : URI * Property * Value -> Entry
   
 rules
@@ -53,22 +54,42 @@ rules // index uri & value projections
   /** @internal */
   nabl-uri:
     Def(uri) -> uri
+
+  /** @internal */
+  nabl-uris:
+    Def(uri) -> [uri]
     
   /** @internal */
   nabl-uri:
     Alias(uri, _) -> uri
     
   /** @internal */
+  nabl-uris:
+    Alias(uri, _) -> [uri]
+    
+  /** @internal */
   nabl-uri:
     InverseAlias(uri, _) -> uri
     
+  /** @internal */
+  nabl-uris:
+    InverseAlias(uri, _) -> [uri]
+    
   /** @internal */  
   nabl-uri:
-    Use(uri) -> <nabl-is-uri> uri
+    Use(uri) -> <nabl-collect-one-resolved-def; nabl-uri> uri
+    
+  /** @internal */  
+  nabl-uris:
+    Use(uri) -> <nabl-collect-all-resolved-defs; map(nabl-uri)> uri
     
   /** @internal */  
   nabl-uri:
     Prop(uri, _, _) -> uri
+    
+  /** @internal */  
+  nabl-uris:
+    Prop(uri, _, _) -> [uri]
     
     
   /** @internal */
@@ -76,17 +97,37 @@ rules // index uri & value projections
     Def(value) -> value
     
   /** @internal */
+  nabl-values:
+    Def(value) -> [value]
+    
+  /** @internal */
   nabl-value:
     Alias(_, value) -> value
     
   /** @internal */
+  nabl-values:
+    Alias(_, value) -> [value]
+    
+  /** @internal */
   nabl-value:
     InverseAlias(_, value) -> value
+    
+  /** @internal */
+  nabl-values:
+    InverseAlias(_, value) -> [value]
 
   /** @internal */
   nabl-value:
     Use(value) -> value
     
   /** @internal */
+  nabl-values:
+    Use(value) -> [value]
+    
+  /** @internal */
   nabl-value:
     Prop(_, _, value) -> value
+    
+  /** @internal */
+  nabl-values:
+    Prop(_, _, value) -> [value]
