@@ -33,3 +33,10 @@ rules
     contains-uri* -> <mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)> uri*
     where
       uri* := <nabl-uris> contains-uri*
+
+  nabl-get-all-properties(|kind) = nabl-get-property-task(|kind); insert-results
+  
+  nabl-get-property-task(|kind) = 
+    get-annos
+  ; fetch-elem(?(kind, task))
+  ; !task
