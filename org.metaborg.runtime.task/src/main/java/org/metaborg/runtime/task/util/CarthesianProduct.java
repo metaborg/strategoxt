@@ -108,12 +108,10 @@ public final class CarthesianProduct {
 				return new UnmodifiableIterator<T>() {
 					boolean done;
 
-					@Override
 					public boolean hasNext() {
 						return !done;
 					}
 
-					@Override
 					public T next() {
 						if(done) {
 							throw new NoSuchElementException();
