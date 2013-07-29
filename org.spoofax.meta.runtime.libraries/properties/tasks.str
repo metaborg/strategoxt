@@ -20,11 +20,10 @@ rules
   perform-task(|n) =
   	?PropLookup(kind, <id>)
   	;	nabl-add-uri-read(|n) 
-    ; nabl-get-property(|kind)
+    ; nabl-get-all-properties(|kind)
     ; insert-results-or-create-dependency 
-  	; try(filter(Hd)) // HACK
-    ; try(task-collect-dependencies)
-  	; MkSingleton
-    
+  	; (task-collect-dependencies <+ try(concat))
+    ; try(map(Hd); MkSingleton) // HACK
+      
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> <nabl-property-eq> (kind, rel, (actual, expected))

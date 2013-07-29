@@ -10,13 +10,13 @@ signature
 
 	constructors
 		
-    Id      : Term             -> Instruction   
-    Combine : List(Term)       -> Instruction
-    Collect : List(Term)       -> Instruction
-    Choice  : List(List(Term)) -> Instruction
-    Rewrite : ID * Term        -> Instruction
-    Index   : Int * List(Term) -> Term
-
+    Id      : Term              -> Instruction   
+    Combine : List(Term)        -> Instruction
+    Collect : List(Term)        -> Instruction
+    Choice  : List(List(Term))  -> Instruction
+    Rewrite : ID * Term         -> Instruction
+    Index   : Int * List(Term)  -> Instruction
+    
 rules
 	
 	task-is-combinator = ?Choice(_)
@@ -29,7 +29,7 @@ rules
 rules
        
   task-is-combinator = ?Combine(_)
-  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
+  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat; filter(not([])) // HACK
 
 rules
        
@@ -43,3 +43,4 @@ rules
 rules
   
   perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
+  
