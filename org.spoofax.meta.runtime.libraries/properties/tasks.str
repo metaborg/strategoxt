@@ -18,11 +18,13 @@ signature
 rules
 
   perform-task(|n) =
-  	?PropLookup(kind, <id>) 
+  	?PropLookup(kind, <id>)
   	;	nabl-add-uri-read(|n) 
     ; nabl-get-property(|kind)
     ; insert-results-or-create-dependency 
-  	; try(task-collect-dependencies)
-  	  
+  	; try(filter(Hd)) // HACK
+    ; try(task-collect-dependencies)
+  	; MkSingleton
+    
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> <nabl-property-eq> (kind, rel, (actual, expected))
