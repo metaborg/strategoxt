@@ -36,7 +36,11 @@ rules
 
   nabl-get-all-properties(|kind) = nabl-get-property-task(|kind); insert-results
   
+  nabl-get-property-task(|partition, kind) = 
+     nabl-get-property-task(|kind)
+  <+ <new-task(|partition)> Fail()
+  
   nabl-get-property-task(|kind) = 
-    get-annos
-  ; fetch-elem(?(kind, task))
-  ; !task
+     get-annos
+   ; fetch-elem(?(kind, <id>))
+  
