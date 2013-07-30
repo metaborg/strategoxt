@@ -326,15 +326,16 @@ public class TaskEngine implements ITaskEngine {
 
 		// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 		for(final IStrategoTerm changedRead : changedReads) {
-			Iterables.addAll(workList, getReaders(changedRead));
+			Iterables.addAll(seen, getReaders(changedRead));
 		}
-
+		workList.addAll(seen);
+		
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 			schedule(taskID);
-			seen.add(taskID);
-			for(IStrategoTerm dependentTaskID : getDependent(taskID)) {
-				if(!seen.contains(dependentTaskID)) {
+			final Iterable<IStrategoTerm> dependent = getDependent(taskID);
+			for(IStrategoTerm dependentTaskID : dependent) {
+				if(seen.add(dependentTaskID)) {
 					workList.offer(dependentTaskID);
 				}
 			}
@@ -491,6 +492,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {
+		// TODO: should not return duplicates.
 		final Iterable<IStrategoTerm> parentTaskIDs =
 			parentDependenciesVisibleFilter(parentVisibleFilter(parent.getDependent(taskID)));
 		final Iterable<IStrategoTerm> ownTaskIDs = toDependency.getInverse(taskID);
