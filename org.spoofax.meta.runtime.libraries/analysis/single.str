@@ -7,7 +7,7 @@ imports
 rules // Single file analysis
   
   analyze-one(|language, path, project-path) = 
-  	analyze-one(fail|language, path, project-path)
+  	analyze-one(id|language, path, project-path)
   
   analyze-one(try-recover|language, path, project-path):
     ast -> 
