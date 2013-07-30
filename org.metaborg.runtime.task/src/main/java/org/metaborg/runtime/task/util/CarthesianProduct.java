@@ -69,7 +69,7 @@ public final class CarthesianProduct {
 		for(IStrategoTerm resultID : resultIDs) {
 			final Task task = taskEngine.getTask(resultID);
 			if(task.failed() || !task.hasResults())
-				return null;  // If a dependency does not have any results, the task cannot be executed.
+				return null;  // If a dependency does not have any results, the term cannot be constructed.
 			resultsMap.putAll(resultID, task.results());
 		}
 

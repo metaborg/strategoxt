@@ -122,6 +122,7 @@ rules // API
 	task-push                                                  = task-api-push
 	task-recover                                               = task-api-recover
 	task-reset                                                 = task-api-reset
+task-result-combinations                                     = task-api-result-combinations(task-collect-result-ids, insert-results-hashmap|<id>)
 	task-setup(|project-path)                                  = task-api-setup(|project-path)
 	task-setup                                                 = task-api-setup(|<id>)
 	task-start-collection(|partition)                          = task-api-start-collection(|partition)
@@ -191,6 +192,7 @@ rules /** @internal API externals */
 	task-api-push = prim("task_api_push")
 	task-api-recover = prim("task_api_recover")
 	task-api-reset = prim("task_api_reset")
+	task-api-result-combinations(collect-results, insert-results|term) = prim("task_api_result_combinations", collect-results, insert-results|term)
 	task-api-setup(|project-path) = prim("task_api_setup", project-path)
 	task-api-start-collection(|partition) = prim("task_api_start_collection", partition)
 	task-api-stop-collection(|partition) = prim("task_api_stop_collection", partition)
