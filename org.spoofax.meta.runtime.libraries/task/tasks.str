@@ -29,7 +29,7 @@ rules
 rules
        
   task-is-combinator = ?Combine(_)
-  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat; filter(not([])) // HACK
+  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
 
 rules
        
