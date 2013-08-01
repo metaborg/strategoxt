@@ -321,10 +321,9 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	public Set<IStrategoTerm> invalidateTaskReads(IStrategoList changedReads) {
+		// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 		final Set<IStrategoTerm> seen = Sets.newHashSet();
 		final Queue<IStrategoTerm> workList = Lists.newLinkedList();
-
-		// Use work list to prevent recursion, keep collection of seen task ID's to prevent loops.
 		for(final IStrategoTerm changedRead : changedReads) {
 			Iterables.addAll(seen, getReaders(changedRead));
 		}
