@@ -10,7 +10,6 @@ import java.util.Map;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.metaborg.runtime.task.evaluation.BaseTaskEvaluator;
-import org.metaborg.runtime.task.evaluation.ChoiceTaskEvaluator;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
 import org.spoofax.interpreter.library.IOAgent;
@@ -170,12 +169,12 @@ public class TaskManager {
 		synchronized(TaskManager.class) {
 			WeakReference<ITaskEngine> removedTaskEngine = taskEngineCache.remove(removedProject);
 
-			ITaskEngine taskEngine = getCurrent();
+			ITaskEngine taskEngine = current.get();
 			if(taskEngine != null && taskEngine == removedTaskEngine.get()) {
 				current.set(null);
 			}
 
-			URI project = getCurrentProject();
+			URI project = currentProject.get();
 			if(project != null && project.equals(removedProject)) {
 				currentProject.set(null);
 			}
