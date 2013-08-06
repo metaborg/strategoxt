@@ -17,17 +17,21 @@ signature
     Error   : Origin * Term * Msg -> Message
     Warning : Origin * Term * Msg -> Message
     Note    : Origin * Term * Msg -> Message
+
+overlays
+	
+	MISSING_ORIGIN = "MISSING ORIGIN INFORMATION"
     
 rules
 	
 	task-error-message(|message):
-		term -> Error(<origin-location-offset <+ !message>, term, message)
+		term -> Error(<task-message-origin-location-offset> term, term, message)
 		
 	task-warning-message(|message):
-    term -> Warning(<origin-location-offset <+ !message>, term, message)
+    term -> Warning(<task-message-origin-location-offset> term, term, message)
     
 	task-note-message(|message):
-    term -> Note(<origin-location-offset <+ !message>, term, message)
+    term -> Note(<task-message-origin-location-offset> term, term, message)
 
 
 	task-message:
@@ -98,3 +102,21 @@ rules
 		
 	task-create-note-on-multiple(|partition, task, message) =
 		task-note-message(|message); task-create-message-on-multiple(|partition, task)
+
+rules
+	
+	task-message-origin-location-offset:
+		term -> <origin-location-offset <+ MISSING_ORIGIN()> term
+		where
+		  not(<is-list> term)
+		
+  task-message-origin-location-offset:
+    list -> location-offset
+    where
+      <is-list> list;
+      (
+      	(partition, line, column, start-offset, _) := <Hd; origin-location-offset> list;
+      	(_, _, _, _, end-offset)                   := <last; origin-location-offset> list;
+      	location-offset := (partition, line, column, start-offset, end-offset)
+      ) <+
+      	location-offset := MISSING_ORIGIN()
