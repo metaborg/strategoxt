@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.core.runtime,
   org.strategoxt.imp.runtime,
   org.spoofax.jsglr,
   org.strategoxt.strj
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.metaborg.meta.lang.index
 Eclipse-RegisterBuddy: org.strategoxt.imp.runtime
