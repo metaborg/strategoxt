@@ -2,7 +2,7 @@ module types/interface
 
 strategies
   
-  custom-properties = fail
+  custom-properties(add-properties) = fail
   
   new-property-task(|task*): (kind, term) -> <fail>
 

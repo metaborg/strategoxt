@@ -13,10 +13,16 @@ imports
   
 strategies
   
+ 	get-property-kinds:
+ 		_ -> [Type()|<iset-elements> iset]
+ 		with
+ 			iset := <new-iset>;
+ 			try(custom-properties(\p* -> <iset-addlist(|p*); fail> iset\))
+ 			
   annotate-property-tasks(|lang, partition, uri*):
   	term -> <foldl(annotate-property-task(|lang, partition, uri*) <+ Snd)> (kind*, term')
   	where
-  		kind* := [Type()|<custom-properties <+ ![]>];
+  		kind* := <get-property-kinds>;
   		term' := <remove-property-annotations(|kind*)> term
   
   annotate-property-task(|lang, partition, uri*):
