@@ -135,13 +135,25 @@ rules // Message collection and updating.
 	constraint-warning = fail
 	constraint-note = fail
 	
+	enable-wrapped-message-collect = fail
+	message-collect-wrapped(s)     = fail
+	
   analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*):
     ast -> ([<map(pp-message)> analysis-error*, error*], [<map(pp-message)> analysis-warning*, warning*], 
     	[<map(pp-message)> analysis-note*, note*])
     with
-      error*   := <collect-all(constraint-error, conc)> ast;
-      warning* := <collect-all(constraint-warning, conc)> ast;
-      note*    := <collect-all(constraint-note, conc)> ast
+      if enable-wrapped-message-collect then
+        message-collect-wrapped(
+		      error*   := <collect-all(constraint-error, conc)> ast;
+		      warning* := <collect-all(constraint-warning, conc)> ast;
+		      note*    := <collect-all(constraint-note, conc)> ast
+		    )
+		  else
+		    error*   := <collect-all(constraint-error, conc)> ast;
+        warning* := <collect-all(constraint-warning, conc)> ast;
+        note*    := <collect-all(constraint-note, conc)> ast
+      end
+		    
   
   analysis-message-update-partitions-queue(|language, project-path):
   	partition* -> <queue-strategy(|"analysis-message-update-partitions", "Updating messages")> (partition*, language, project-path)
