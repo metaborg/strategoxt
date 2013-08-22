@@ -17,7 +17,7 @@ signature
   constructors
     
     Prop : Property * Value * List(Dependency) -> Prop
-   
+
 rules // generic analysis of properties
   
   // call back to generic analysis
@@ -33,10 +33,15 @@ rules // generic analysis of properties
 
   // generic collection of property tasks
   nabl-annotate-properties(|lang, partition, uri*) =
-    where(kind* := [Type()|<nabl-custom-properties <+ ![]>])
+    where(
+      iset := <new-iset>
+    ; try(nabl-custom-properties(\p* -> <iset-addlist(|p*); fail> iset\))
+    ; kind* := [Type()|<iset-elements> iset]
+    )
   ; !(kind*, <remove-property-annotations(|kind*)>)
   ; foldl(nabl-annotate-property(|lang, partition, uri*) <+ Snd)
   ; where(try(nabl-constraint(|partition)))
+     
 
   nabl-annotate-property(|lang, partition, uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}

@@ -3,5 +3,5 @@ module types/interface
 strategies // user-defined implementations
 	
 	type-of(|partition) = fail
-  type-of(|lang, partition, uri*) = fail
 
+  type-of(|lang, partition, uri*) = fail
