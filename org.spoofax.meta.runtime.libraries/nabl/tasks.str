@@ -128,17 +128,8 @@ rules // Visibility
 	nabl-resolve-all-defs-subtasks-one(|partition, ns, prop*, range):
 		uri -> filtered
 		with
-			def-task := <new-task(|partition)> ResolveAllDefs(<nabl-use-subtask-uri(|partition)> uri, ns);
-	 // if ExternalDef(x) := <nabl-uri-path; Hd> uri then
-   //      ext-uri      := <nabl-uri-language; nabl-base-uri; nabl-extend-uri(|Anonymous(x))> uri;
-   //      ext-def-task := <new-task(|partition)> ResolveAllDefs(<nabl-use-subtask-uri(|partition)> ext-uri, ns);
-   //      task*        := [ext-def-task, def-task]
-   //    else
-   //    	task* := [def-task]
-   //    end;
-   //    concatted := <new-task(|partition)> Combine(task*);
-   //    filtered  := <nabl-use-propconstraint(|partition)> (concatted, prop*)
-      filtered  := <nabl-use-propconstraint(|partition)> (def-task, prop*)
+			def-task := <new-task(|partition)> ResolveAllDefs(<nabl-use-subtask-uri(|partition)> uri, ns)
+	  ; filtered  := <nabl-use-propconstraint(|partition)> (def-task, prop*)
 
 rules // Import calculation
 	

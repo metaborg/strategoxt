@@ -15,7 +15,7 @@ signature
     
 rules
        
-  nabl-new-property(|lang, partition, uri*): (Type(), term) -> <type-of(|lang, partition, uri*) <+ type-of(|partition)> term
+  nabl-new-property(|lang, partition, uri*): (Type(), term) -> <type-of(|lang, partition, uri*)> term
   
   type-is(|partition)           = nabl-prop-calc(|partition, [])
   type-is(|partition, dep*)     = nabl-prop-calc(|partition, dep*)

@@ -19,7 +19,6 @@ signature
     ID          : Namespace * Name * Qualifier -> Segment
     Subsequent  : String                       -> Segment
     Anonymous   : String                       -> Segment
-    ExternalDef : String                       -> Segment
     Unique      : String                       -> Qualifier
     NonUnique   :                                 Qualifier
     Unique      :                                 Qualifier
@@ -45,9 +44,7 @@ rules // Construction
   nabl-replace-uri-qualifier(|qualifier) =
     URI(id, [ID(id, id, !qualifier)|id])
       
-  nabl-external-segment: Anonymous(name) -> ExternalDef(name)
-  
-	nabl-nonunique-uri =
+  nabl-nonunique-uri =
 		URI(id, [ID(id, id, !NonUnique())|id])
 
 rules // stable URI extensions
@@ -139,10 +136,7 @@ rules // Projections
 	nabl-segment-name:
   	Anonymous(name) -> name
   	
-	nabl-segment-name:
-  	ExternalDef(name) -> name
-    
-  nabl-segment-qualifier:
+	nabl-segment-qualifier:
     ID(_, _, qualifier) -> qualifier
     
   nabl-uri-scope      = URI(id, Tl)
@@ -190,9 +184,6 @@ rules // Equality
   nabl-uri-segment-eq =
     ?(Anonymous(_), Anonymous(_))
     
-  nabl-uri-segment-eq =
-    ?(ExternalDef(_), ExternalDef(_))
-
 rules // Printing
   
   nabl-print-uri:
