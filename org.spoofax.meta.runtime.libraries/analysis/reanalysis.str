@@ -38,7 +38,7 @@ rules
 			, evaluated-task*
 			, skipped-task*
 			, unevaluated-task*
-			) := <analyze-one(|language, path, project-path)> ast;
+			) := <analyze-one(fail|language, path, project-path)> ast;
 			
       <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, skipped-task*, unevaluated-task*);
       
