@@ -14,9 +14,9 @@ signature
 		
 	constructors
 		
-    Error    : Origin * Term * Msg -> Message
-    Warning  : Origin * Term * Msg -> Message
-    Note     : Origin * Term * Msg -> Message
+    Error   : Origin * Term * Msg -> Message
+    Warning : Origin * Term * Msg -> Message
+    Note    : Origin * Term * Msg -> Message
     
     Failure  : MessageTrigger // No results
     Success  : MessageTrigger // At least one result
@@ -24,16 +24,20 @@ signature
 
     Message  : List(Result) * MessageTrigger * Term -> Instruction
 
+overlays
+  
+  MISSING_ORIGIN = "MISSING ORIGIN INFORMATION"
+
 rules // message creation
 	
 	task-error-message(|message):
-		term -> Error(<origin-location-offset <+ !message>, term, message)
+		term -> Error(<task-message-origin-location-offset> term, term, message)
 		
 	task-warning-message(|message):
-    term -> Warning(<origin-location-offset <+ !message>, term, message)
+    term -> Warning(<task-message-origin-location-offset> term, term, message)
     
 	task-note-message(|message):
-    term -> Note(<origin-location-offset <+ !message>, term, message)
+    term -> Note(<task-message-origin-location-offset> term, term, message)
 
 rules // querying
 	
@@ -118,3 +122,21 @@ rules // task execution
         case Success()  : <Hd> task; task-add-message(|n, message)
         case Multiple() : <Tl; Hd> task; task-add-message(|n, message)
       end
+
+rules
+	
+	task-message-origin-location-offset:
+		term -> <origin-location-offset <+ MISSING_ORIGIN()> term
+		where
+		  not(<is-list> term)
+		
+  task-message-origin-location-offset:
+    list -> location-offset
+    where
+      <is-list> list;
+      (
+      	(partition, line, column, start-offset, _) := <Hd; origin-location-offset> list;
+      	(_, _, _, _, end-offset)                   := <last; origin-location-offset> list;
+      	location-offset := (partition, line, column, start-offset, end-offset)
+      ) <+
+      	location-offset := MISSING_ORIGIN()
