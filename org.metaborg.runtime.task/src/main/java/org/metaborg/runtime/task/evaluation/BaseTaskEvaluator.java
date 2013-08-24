@@ -4,9 +4,9 @@ import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
 import java.util.Set;
 
+import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.util.CarthesianProduct;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -47,7 +47,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy insert, Strategy perform) {
 		final Iterable<IStrategoTerm> instructions =
-			CarthesianProduct.taskCombinations(factory, taskEngine, context, insert, taskID, task);
+			TaskInsertion.taskCombinations(factory, taskEngine, context, insert, taskID, task);
 
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
