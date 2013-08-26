@@ -43,6 +43,47 @@ strategies
 
 rules
 
+rules
+  
+  /**
+  * Given a string of literals (e.g. "context-free syntax"), converts the string
+  * into an outline label by providing it with origin information. The result is
+  * that the correct portion of text in the editor gets selected, upon selecting
+  * nodes with this label in the outline view.
+  * Note: this strategy is useful for constructing outline labels for unnamed
+  * elements. 
+  *
+  * @param term (e.g. 'context-free-syntax([])') provides the origin.
+  */  
+  literals-to-outline-label(|term):
+    literals -> literals
+    where
+      literals' := <split-at-space> literals;
+      (a, b, c, d, e) := <origin-location-offset> term;
+      (before, after) := <debug; split-before> (<origin-text> term, <Hd> literals');
+      start-offset := <add> (d, <string-length> before);
+      end-offset := <get-literals-end-offset(|literals', start-offset)> after;
+      <origin-location-offset-set(|(a, b, c, start-offset, end-offset))> literals
+      
+  /**
+  * @internal
+  */      
+  get-literals-end-offset(|literals, start-offset):
+    text -> end-offset
+    where
+      (before, after) := <split-after> (text, <Hd> literals);
+      end-offset := <get-literals-end-offset(|<Tl> literals, <add> (start-offset, <string-length> before))> after
+
+  /**
+  * @internal
+  */
+  get-literals-end-offset(|literals, start-offset):
+    _ -> <dec> start-offset
+    where
+      [] := literals
+
+rules
+
   /**
   * Given a term application, gets the portion of the origin text up to the start
   * of the origin text of the first subterm. If the result is an empty string, it
