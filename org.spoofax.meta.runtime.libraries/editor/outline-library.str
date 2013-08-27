@@ -11,7 +11,7 @@ strategies
    * Only AST nodes for which s1 succeed end up in the outline.
    *
    * Example:
-   *   outline-strategy = simple-label-outline(to-outline-label)
+   *   outline = simple-label-outline(to-outline-label)
    *   to-outline-label: Entity(name, _) -> name
    *   to-outline-label: Property(name, _) -> name
    */
@@ -22,7 +22,7 @@ strategies
    * AST nodes to outline nodes. Strategy s2 gets priority over strategy s1 in case both succeed.
    *
    * Example:
-   *   outline-strategy = custom-label-outline(to-outline-label, to-outline-node)
+   *   outline = custom-label-outline(to-outline-label, to-outline-node)
    *   to-outline-label: Entity(name, _) -> name
    *   to-outline-node: Property(name, _) -> Node(name, [Node("dummy", [])])
    */
