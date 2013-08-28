@@ -7,3 +7,5 @@ signature constructors
 strategies
   
   nabl-property-eq = ?(_, Eq(), <eq; Fst>)
+
+  nabl-property-eq(|kind, rel, expected) = <nabl-property-eq> (kind, rel, (<id>, expected))
