@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 
 import org.junit.Test;
-import org.metaborg.runtime.task.util.CarthesianProduct;
+import org.metaborg.runtime.task.TaskInsertion;
 import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -34,7 +34,7 @@ public class UtilsTest extends TaskTest {
 		results.put(i(2), d);
 		results.put(i(2), e);
 
-		Collection<StrategoHashMap> product = CarthesianProduct.cartesianProduct(results);
+		Collection<StrategoHashMap> product = TaskInsertion.cartesianProduct(results);
 
 		assertEquals(6, product.size());
 
@@ -70,7 +70,7 @@ public class UtilsTest extends TaskTest {
 		results.put(i(3), e);
 		results.put(i(3), f);
 
-		Collection<StrategoHashMap> product = CarthesianProduct.cartesianProduct(results);
+		Collection<StrategoHashMap> product = TaskInsertion.cartesianProduct(results);
 
 		assertEquals(8, product.size());
 
@@ -109,7 +109,7 @@ public class UtilsTest extends TaskTest {
 		results.put(i(1), a);
 		results.put(i(2), b);
 
-		Collection<StrategoHashMap> product = CarthesianProduct.cartesianProduct(results);
+		Collection<StrategoHashMap> product = TaskInsertion.cartesianProduct(results);
 
 		assertEquals(1, product.size());
 		assertTrue(containsMapping(product, entry(1, a), entry(2, b)));
@@ -120,11 +120,12 @@ public class UtilsTest extends TaskTest {
 	@Test
 	public void testCartesianProduct4() {
 		Multimap<IStrategoTerm, IStrategoTerm> results = LinkedHashMultimap.create();
-		Collection<StrategoHashMap> product = CarthesianProduct.cartesianProduct(results);
+		Collection<StrategoHashMap> product = TaskInsertion.cartesianProduct(results);
 		assertEquals(0, product.size());
 	}
 
-	private boolean containsMapping(Collection<StrategoHashMap> maps, Entry<IStrategoInt, IStrategoTerm>... mappings) {
+	private boolean containsMapping(Collection<StrategoHashMap> maps,
+		@SuppressWarnings("unchecked") Entry<IStrategoInt, IStrategoTerm>... mappings) {
 		for(StrategoHashMap map : maps) {
 			boolean found = mappings.length == 0 ? false : true;
 			for(Entry<IStrategoInt, IStrategoTerm> mapping : mappings) {

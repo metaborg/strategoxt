@@ -21,6 +21,7 @@ strategies
 
   pp-V-list(pp)    = ?[] <+ !V([], <map(pp-one-V(pp))>)
   pp-V-list(pp|vs) = ?[] <+ !V([SOpt(VS(), vs)], <map(pp-one-V(pp))>)
+  pp-V-list(pp|vs, sep) = ?[] <+ !V([SOpt(VS(), vs)], <map(pp-one-V(pp)); at-init(add-sep(|sep), id)>)
 
   pp-indent(|is) = filter(gpp-is-real-vbox); (?[] <+ !I([SOpt(IS(), is)], H([SOpt(HS(), "0")], <id>)))
 
@@ -32,3 +33,11 @@ strategies
 
   pp-HZ-list(pp)     = ?[] <+ !HZ([SOpt(HS(), "0")], <map(pp-one-Z(pp))>)
   pp-HZ-list(pp|sep) = ?[] <+ !HZ([SOpt(HS(), "0")], <map(pp-one-Z(pp)); separate-by(|S(sep))>)
+
+rules
+  
+  add-sep(|sep):
+    V(a, [b]) -> V(a, [b-with-sep])
+    where
+      (c, [d, e]) := <explode-term> b;
+      b-with-sep := <mkterm> (c, [d, <conc> (e, [S(sep)])])

@@ -2,6 +2,7 @@ module editor/outline-library
 
 imports
   editor/origins
+  nbl/utils
   
 strategies
   
@@ -10,7 +11,7 @@ strategies
    * Only AST nodes for which s1 succeed end up in the outline.
    *
    * Example:
-   *   outline-strategy = simple-label-outline(to-outline-label)
+   *   outline = simple-label-outline(to-outline-label)
    *   to-outline-label: Entity(name, _) -> name
    *   to-outline-label: Property(name, _) -> name
    */
@@ -21,7 +22,7 @@ strategies
    * AST nodes to outline nodes. Strategy s2 gets priority over strategy s1 in case both succeed.
    *
    * Example:
-   *   outline-strategy = custom-label-outline(to-outline-label, to-outline-node)
+   *   outline = custom-label-outline(to-outline-label, to-outline-node)
    *   to-outline-label: Entity(name, _) -> name
    *   to-outline-node: Property(name, _) -> Node(name, [Node("dummy", [])])
    */
@@ -29,17 +30,66 @@ strategies
 
   /**
   * @internal
+  * Note: we annotate labels with random numbers to guarantee that similar labels do not share the
+  * same in-memory term, which would cause origins to be overwritten.
   */  
   to-outline-node(s1, s2):
     term -> Node(label, children)
     where
-      label := <origin-track-forced(s1; term-to-outline-label)> term;
+      random := <next-random>;
+      label := <origin-track-forced(s1; term-to-outline-label; add-annotation(|random); remove-annotations(?random))> term;
       children := <get-arguments; custom-label-outline(s1, s2)> term
       
   /**
   * @internal
   */  
-  term-to-outline-label = is-string <+ origin-text <+ write-to-string
+  term-to-outline-label =
+    is-string 
+      <+
+    ?term{a}; origin-text; ?label; !label{a}
+      <+
+    write-to-string // fallback
+
+rules
+
+rules
+  
+  /**
+  * Given a string of literals (e.g. "context-free syntax"), converts the string
+  * into an outline label by providing it with origin information. The result is
+  * that the correct portion of text in the editor gets selected, upon selecting
+  * nodes with this label in the outline view.
+  * Note: this strategy is useful for constructing outline labels for unnamed
+  * elements. 
+  *
+  * @param term (e.g. 'context-free-syntax([])') provides the origin.
+  */  
+  literals-to-outline-label(|term):
+    literals -> literals
+    where
+      literals' := <split-at-space> literals;
+      (a, b, c, d, e) := <origin-location-offset> term;
+      (before, after) := <split-before> (<origin-text> term, <Hd> literals');
+      start-offset := <add> (d, <string-length> before);
+      end-offset := <get-literals-end-offset(|literals', start-offset)> after;
+      <origin-location-offset-set(|(a, b, c, start-offset, end-offset))> literals
+      
+  /**
+  * @internal
+  */      
+  get-literals-end-offset(|literals, start-offset):
+    text -> end-offset
+    where
+      (before, after) := <split-after> (text, <Hd> literals);
+      end-offset := <get-literals-end-offset(|<Tl> literals, <add> (start-offset, <string-length> before))> after
+
+  /**
+  * @internal
+  */
+  get-literals-end-offset(|literals, start-offset):
+    _ -> <dec> start-offset
+    where
+      [] := literals
 
 rules
 
