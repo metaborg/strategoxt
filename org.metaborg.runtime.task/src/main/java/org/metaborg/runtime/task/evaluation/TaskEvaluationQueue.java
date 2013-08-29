@@ -56,6 +56,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		this.defaultTaskEvaluator = defaultTaskEvaluator;
 	}
 
+	@Override
 	public void queue(IStrategoTerm taskID) {
 		if(!queued.contains(taskID)) {
 			evaluationQueue.add(taskID);
@@ -63,6 +64,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		}
 	}
 
+	@Override
 	public void queueOrDefer(IStrategoTerm taskID) {
 		final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 		final Set<IStrategoTerm> dependenciesSet = Sets.newHashSet(dependencies);
@@ -83,6 +85,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		}
 	}
 
+	@Override
 	public void taskSolved(IStrategoTerm taskID) {
 		// Retrieve dependent tasks of the solved task.
 		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(taskID));
@@ -97,11 +100,13 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		}
 	}
 
+	@Override
 	public void taskSkipped(IStrategoTerm taskID) {
 		scheduled.remove(taskID);
 		skipped.add(taskID);
 	}
 
+	@Override
 	public void taskDelayed(IStrategoTerm taskID, IStrategoList dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
@@ -111,26 +116,31 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			runtimeDependencies.put(taskID, dependency);
 	}
 
+	@Override
 	public void addRuntimeDependency(IStrategoTerm taskID, IStrategoTerm dependencyTaskID) {
 		runtimeDependencies.put(taskID, dependencyTaskID);
 	}
 
+	@Override
 	public void removeRuntimeDependency(IStrategoTerm taskID, IStrategoTerm dependencyTaskID) {
 		runtimeDependencies.remove(taskID, dependencyTaskID);
 	}
 
 
+	@Override
 	public void addTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator) {
 		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
 			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
 		}
 	}
 
+	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
 		return taskEvaluator.adjustDependencies(dependencies, factory);
 	}
 
+	@Override
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
 		try {
 			this.scheduled = scheduled;
@@ -156,6 +166,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		}
 	}
 
+	@Override
 	public void reset() {
 		evaluationQueue.clear();
 		queued.clear();

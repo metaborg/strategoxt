@@ -33,10 +33,12 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = Maps.newHashMap();
 
 
+	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
 		return factory.makeList();
 	}
 
+	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final Task task = taskEngine.getTask(taskID);
@@ -46,6 +48,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy insert, Strategy perform) {
 		// Handle the result of a choice task.
@@ -109,6 +112,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	@Override
 	public void reset() {
 		choiceIterators.clear();
 		choiceTaskIDs.clear();
