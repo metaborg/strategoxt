@@ -10,11 +10,12 @@ signature
 
 	constructors
 		
-    Choice  : List(Result)                         -> Instruction
-    Message : List(Result) * MessageTrigger * Term -> Instruction
-    Match   : ID * List(Term) * Term               -> Instruction
-    Rewrite : ID * Term                            -> Instruction
-    Concat  : List(Result)                         -> Instruction
+    Choice   : List(Result)                         -> Instruction
+    Sequence : List(Result)                         -> Instruction
+    Message  : List(Result) * MessageTrigger * Term -> Instruction
+    Match    : ID * List(Term) * Term               -> Instruction
+    Rewrite  : ID * Term                            -> Instruction
+    Concat   : List(Result)                         -> Instruction
     
     Failure  : MessageTrigger // No results
     Success  : MessageTrigger // At least one result
@@ -36,6 +37,11 @@ rules
  		Choice(choice*) -> <fetch-elem(not(?[]))> choice*
  		
 	task-is-combinator = ?Choice(_)
+	
+  perform-task(|nr):
+  	Sequence(task*) -> <map(not(?[])); last> task*
+    
+  task-is-combinator = ?Sequence(_)
 
   perform-task(|n):
     Message(task, trigger, message) -> []
