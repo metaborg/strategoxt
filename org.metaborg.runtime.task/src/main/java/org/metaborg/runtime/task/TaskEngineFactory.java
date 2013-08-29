@@ -19,10 +19,10 @@ public class TaskEngineFactory {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
 		IStrategoList tasks = factory.makeList();
-		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntriesCurrent()) {
+		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
 			final IStrategoTerm taskID = entry.getKey();
 			final Task task = entry.getValue();
-			
+
 			final IStrategoTerm instruction = task.instruction;
 			final boolean combinator = task.isCombinator;
 			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
@@ -80,15 +80,15 @@ public class TaskEngineFactory {
 		IStrategoTerm message, long time,
 		short evaluations) {
 		return factory.makeTuple(
-			taskID, 
+			taskID,
 			instruction,
 			combinator ? factory.makeInt(1) : factory.makeInt(0),
-			makeList(factory, partitions), 
+			makeList(factory, partitions),
 			initialDependencies,
 			makeList(factory, dependencies),
-			makeList(factory, reads), 
-			results == null ? factory.makeTuple() : results, 
-			failed ? factory.makeInt(1) : factory.makeInt(0), 
+			makeList(factory, reads),
+			results == null ? factory.makeTuple() : results,
+			failed ? factory.makeInt(1) : factory.makeInt(0),
 			message == null ? factory.makeTuple() : message,
 			factory.makeInt((int) time),
 			factory.makeInt(evaluations)

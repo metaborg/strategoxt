@@ -72,31 +72,37 @@ public class TaskManager {
 		return newTaskEngine;
 	}
 
+	private boolean isHierarchicalTaskEngine(ITaskEngine taskEngine) {
+		return taskEngine instanceof IHierarchicalTaskEngine;
+	}
+
 	public ITaskEngine popTaskEngine() {
 		final ITaskEngine currentTaskEngine = getCurrent();
-		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
-		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
-			throw new RuntimeException("Cannot pop the root TaskEngine.");
+		if(!isHierarchicalTaskEngine(currentTaskEngine))
+			throw new RuntimeException("Cannot pop the root task engine.");
+
+		final ITaskEngine parentTaskEngine = ((IHierarchicalTaskEngine) currentTaskEngine).getParent();
 		setCurrent(parentTaskEngine);
 		return parentTaskEngine;
 	}
 
 	public ITaskEngine popToRootTaskEngine() {
 		final ITaskEngine currentTaskEngine = getCurrent();
-		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
-		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
+		if(!isHierarchicalTaskEngine(currentTaskEngine))
 			return currentTaskEngine;
+		final ITaskEngine parentTaskEngine = ((IHierarchicalTaskEngine) currentTaskEngine).getParent();
 		setCurrent(parentTaskEngine);
 		return popToRootTaskEngine();
 	}
 
 	public ITaskEngine mergeTaskEngine(ITermFactory factory) {
 		final ITaskEngine currentTaskEngine = getCurrent();
-		final ITaskEngine parentTaskEngine = currentTaskEngine.getParent();
-		if(parentTaskEngine == null || parentTaskEngine instanceof EmptyTaskEngine)
-			throw new RuntimeException("Cannot merge the root TaskEngine.");
+		if(!isHierarchicalTaskEngine(currentTaskEngine))
+			throw new RuntimeException("Cannot merge from the root task engine.");
+		final IHierarchicalTaskEngine currentHierarchicalTaskEngine = (IHierarchicalTaskEngine) currentTaskEngine;
+		final ITaskEngine parentTaskEngine = currentHierarchicalTaskEngine.getParent();
 
-		for(IStrategoTerm taskID : currentTaskEngine.getRemovedTasks())
+		for(IStrategoTerm taskID : currentHierarchicalTaskEngine.getRemovedTasks())
 			parentTaskEngine.removeTask(taskID);
 
 		// Serialize current task engine into parent task engine.
@@ -114,17 +120,18 @@ public class TaskManager {
 	}
 
 	public ITaskEngine createTaskEngine(ITermFactory factory, ITermDigester digester) {
-		return createTaskEngine(createEmptyTaskEngine(), factory, digester);
-	}
-
-	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory, ITermDigester digester) {
-		final TaskEngine taskEngine = new TaskEngine(parent, factory, digester);
+		final TaskEngine taskEngine = new TaskEngine(factory, digester);
 		taskEngine.setEvaluationFrontend(createTaskEvaluationFrontend(taskEngine, factory));
+		taskEngine.setWrapper(taskEngine);
 		return taskEngine;
 	}
 
-	public ITaskEngine createEmptyTaskEngine() {
-		return new EmptyTaskEngine();
+	public ITaskEngine createTaskEngine(ITaskEngine parent, ITermFactory factory, ITermDigester digester) {
+		final TaskEngine taskEngine = new TaskEngine(factory, digester);
+		final ITaskEngine hierarchicalTaskEngine = new HierarchicalTaskEngine(taskEngine, parent);
+		taskEngine.setEvaluationFrontend(createTaskEvaluationFrontend(hierarchicalTaskEngine, factory));
+		taskEngine.setWrapper(hierarchicalTaskEngine);
+		return hierarchicalTaskEngine;
 	}
 
 	public ITermDigester createTermDigester() {
@@ -134,7 +141,7 @@ public class TaskManager {
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
 		final ITaskEvaluationFrontend taskEvaluationFrontend =
 			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
-		//taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new ChoiceTaskEvaluator());
+		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new ChoiceTaskEvaluator());
 		return taskEvaluationFrontend;
 	}
 
