@@ -22,15 +22,15 @@ import com.google.common.collect.Sets;
 
 public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	/**
-	 * Maps task identifiers from choice tasks to an iterator that holds the next task inside the choice to evaluate.
+	 * Maps task identifiers of choice tasks to an iterator that holds the next subtask inside the choice to evaluate.
 	 */
-	private final Map<IStrategoTerm, Iterator<IStrategoTerm>> choiceIterators = Maps.newHashMap();
+	private final Map<IStrategoTerm, Iterator<IStrategoTerm>> iterators = Maps.newHashMap();
 
 	/**
-	 * Maps task identifiers from choice tasks to task identifiers from the task that the choice task is currently
+	 * Maps task identifiers of choice tasks to task identifiers of subtasks that the choice tasks are currently
 	 * evaluating.
 	 */
-	private final Map<IStrategoTerm, IStrategoTerm> choiceTaskIDs = Maps.newHashMap();
+	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
 	@Override
@@ -52,70 +52,67 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy insert, Strategy perform) {
 		// Handle the result of a choice task.
-		final IStrategoTerm choiceTaskID = choiceTaskIDs.get(taskID);
-		if(choiceTaskID != null) {
-			evaluationQueue.removeRuntimeDependency(taskID, choiceTaskID); // TODO: needed/correct?
+		{
+			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);
+			if(subtaskID != null) {
+				evaluationQueue.removeRuntimeDependency(taskID, subtaskID); // TODO: needed/correct?
 
-			final Task choiceTask = taskEngine.getTask(choiceTaskID);
-			if(!choiceTask.failed() && choiceTask.hasResults()) {
-				task.setResults(choiceTask.results());
-				evaluationQueue.taskSolved(taskID);
-				cleanupChoice(taskID, taskEngine, evaluationQueue);
-				return;
+				// TODO: why do we need to check if the subtask has results?
+				final Task subtask = taskEngine.getTask(subtaskID);
+				if(!subtask.failed() && subtask.hasResults()) {
+					choiceSucceeds(task, subtaskID, subtask, taskEngine, evaluationQueue);
+					return;
+				}
 			}
 		}
 
-		Iterator<IStrategoTerm> choiceIter = choiceIterators.get(taskID);
-		if(choiceIter == null) {
-			choiceIter = task.instruction.getSubterm(0).iterator();
-			choiceIterators.put(taskID, choiceIter);
+		Iterator<IStrategoTerm> iter = iterators.get(taskID);
+		if(iter == null) {
+			iter = task.instruction.getSubterm(0).iterator();
+			iterators.put(taskID, iter);
 		}
 
 		// If the choice does not have any results left it has failed.
-		if(!choiceIter.hasNext()) {
-			task.setFailed();
-			evaluationQueue.taskSolved(taskID);
-			cleanupChoice(taskID, taskEngine, evaluationQueue);
+		if(!iter.hasNext()) {
+			choiceFails(task, taskID, taskEngine, evaluationQueue);
 			return;
 		}
 
 		// Retrieve the next task to evaluate.
-		final IStrategoTerm currentTaskResult = choiceIter.next();
-		final IStrategoTerm currentTaskID = getTaskID(currentTaskResult);
-		if(currentTaskID == null) {
+		final IStrategoTerm subtaskResult = iter.next();
+		final IStrategoTerm subtaskID = getTaskID(subtaskResult);
+		if(subtaskID == null) {
 			// Current entry in the choice is not a task identifier, queue choice for evaluation again.
 			// TODO: actually this term should be the result of this choice.
 			evaluationQueue.queue(taskID);
 			return;
 		}
-		choiceTaskIDs.put(taskID, currentTaskID);
-		final Task currentTask = taskEngine.getTask(currentTaskID);
-		taskEngine.addDependency(taskID, currentTaskID);
+		subtaskIDs.put(taskID, subtaskID);
+		final Task subtask = taskEngine.getTask(subtaskID);
+		taskEngine.addDependency(taskID, subtaskID);
 
-		if(currentTask.solved()) {
-			if(currentTask.failed()) {
+		if(subtask.solved()) {
+			if(subtask.failed()) {
 				// Schedule the choice for evaluation again.
 				evaluationQueue.queue(taskID);
 				return;
 			} else {
 				// Task was already solved.
-				task.setResults(currentTask.results());
-				evaluationQueue.taskSolved(taskID);
-				cleanupChoice(taskID, taskEngine, evaluationQueue);
+				choiceSucceeds(task, subtaskID, subtask, taskEngine, evaluationQueue);
 				return;
 			}
 		} else {
 			// Queue task and its dependencies for evaluation.
-			queueTransitive(currentTaskID, taskEngine, evaluationQueue);
-			evaluationQueue.addRuntimeDependency(taskID, currentTaskID);
+			queueTransitive(subtaskID, taskEngine, evaluationQueue);
+			evaluationQueue.addRuntimeDependency(taskID, subtaskID);
 			return;
 		}
 	}
 
 	@Override
 	public void reset() {
-		choiceIterators.clear();
-		choiceTaskIDs.clear();
+		iterators.clear();
+		subtaskIDs.clear();
 	}
 
 
@@ -129,10 +126,32 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	/**
+	 * Fails the given choice task.
+	 */
+	private void choiceFails(Task task, IStrategoTerm taskID, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue) {
+		task.setFailed();
+		evaluationQueue.taskSolved(taskID);
+		cleanupChoice(taskID, taskEngine, evaluationQueue);
+		return;
+	}
+
+	/**
+	 * Sets the result of given choice task to the result of given subtask.
+	 */
+	private void choiceSucceeds(Task task, IStrategoTerm taskID, Task subtask, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue) {
+		task.setResults(subtask.results());
+		evaluationQueue.taskSolved(taskID);
+		cleanupChoice(taskID, taskEngine, evaluationQueue);
+		return;
+	}
+
+	/**
 	 * Cleans up choice task evaluation after the choice task has succeeded or failed.
 	 */
 	private void cleanupChoice(IStrategoTerm taskID, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
-		final Iterator<IStrategoTerm> choiceIter = choiceIterators.get(taskID);
+		final Iterator<IStrategoTerm> choiceIter = iterators.get(taskID);
 		while(choiceIter.hasNext()) {
 			final IStrategoTerm currentTaskResult = choiceIter.next();
 			final IStrategoTerm currentTaskID = getTaskID(currentTaskResult);
@@ -146,8 +165,8 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 			}
 		}
 
-		choiceIterators.remove(taskID);
-		choiceTaskIDs.remove(taskID);
+		iterators.remove(taskID);
+		subtaskIDs.remove(taskID);
 	}
 
 	/**
