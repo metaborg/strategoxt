@@ -60,7 +60,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 				// TODO: why do we need to check if the subtask has results?
 				final Task subtask = taskEngine.getTask(subtaskID);
 				if(!subtask.failed() && subtask.hasResults()) {
-					choiceSucceeds(task, subtaskID, subtask, taskEngine, evaluationQueue);
+					choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 					return;
 				}
 			}
@@ -98,7 +98,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 				return;
 			} else {
 				// Task was already solved.
-				choiceSucceeds(task, subtaskID, subtask, taskEngine, evaluationQueue);
+				choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 				return;
 			}
 		} else {
@@ -151,17 +151,19 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	 * Cleans up choice task evaluation after the choice task has succeeded or failed.
 	 */
 	private void cleanupChoice(IStrategoTerm taskID, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
-		final Iterator<IStrategoTerm> choiceIter = iterators.get(taskID);
-		while(choiceIter.hasNext()) {
-			final IStrategoTerm currentTaskResult = choiceIter.next();
-			final IStrategoTerm currentTaskID = getTaskID(currentTaskResult);
-			if(currentTaskID == null)
-				continue;
+		final Iterator<IStrategoTerm> iter = iterators.get(taskID);
+		if(iter != null) {
+			while(iter.hasNext()) {
+				final IStrategoTerm subtaskResult = iter.next();
+				final IStrategoTerm subtaskID = getTaskID(subtaskResult);
+				if(subtaskID == null)
+					continue;
 
-			evaluationQueue.taskSkipped(currentTaskID);
+				evaluationQueue.taskSkipped(subtaskID);
 
-			for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(currentTaskID, taskEngine)) {
-				evaluationQueue.taskSkipped(dependencyTaskID);
+				for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(subtaskID, taskEngine)) {
+					evaluationQueue.taskSkipped(dependencyTaskID);
+				}
 			}
 		}
 

@@ -150,17 +150,19 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	 * Cleans up sequence task evaluation after the sequence task has succeeded or failed.
 	 */
 	private void cleanupSequence(IStrategoTerm taskID, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
-		final Iterator<IStrategoTerm> sequenceIter = iterators.get(taskID);
-		while(sequenceIter.hasNext()) {
-			final IStrategoTerm currentTaskResult = sequenceIter.next();
-			final IStrategoTerm currentTaskID = getTaskID(currentTaskResult);
-			if(currentTaskID == null)
-				continue;
+		final Iterator<IStrategoTerm> iter = iterators.get(taskID);
+		if(iter != null) {
+			while(iter.hasNext()) {
+				final IStrategoTerm subtaskResult = iter.next();
+				final IStrategoTerm subtaskID = getTaskID(subtaskResult);
+				if(subtaskID == null)
+					continue;
 
-			evaluationQueue.taskSkipped(currentTaskID);
+				evaluationQueue.taskSkipped(subtaskID);
 
-			for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoSequence(currentTaskID, taskEngine)) {
-				evaluationQueue.taskSkipped(dependencyTaskID);
+				for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoSequence(subtaskID, taskEngine)) {
+					evaluationQueue.taskSkipped(dependencyTaskID);
+				}
 			}
 		}
 
