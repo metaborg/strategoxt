@@ -69,6 +69,12 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 			}
 		}
 
+		if(!iter.hasNext()) {
+			// Last subtask has failed, so the sequence fails.
+			sequenceFails(task, taskID, taskEngine, evaluationQueue);
+			return;
+		}
+
 		// Retrieve the next subtask to evaluate.
 		final IStrategoTerm subtaskResult = iter.next();
 		final IStrategoTerm subtaskID = getTaskID(subtaskResult);
@@ -110,13 +116,13 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Handles the result of a solved task. Returns true if the result was handled, false otherwise.
 	 */
-	private boolean handleSolvedTask(Task task, IStrategoTerm taskID, Iterator<IStrategoTerm> sequenceIter,
-		Task subtask, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
+	private boolean handleSolvedTask(Task task, IStrategoTerm taskID, Iterator<IStrategoTerm> iter, Task subtask,
+		ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
 		if(subtask.failed()) {
 			// If any subtask of the sequence task fails, the sequence fails.
 			sequenceFails(task, taskID, taskEngine, evaluationQueue);
 			return true;
-		} else if(!sequenceIter.hasNext()) {
+		} else if(!iter.hasNext()) {
 			// If the last subtask of the sequence task succeeds, the sequence succeeds.
 			sequenceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 			return true;

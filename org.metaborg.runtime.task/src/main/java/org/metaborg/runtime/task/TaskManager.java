@@ -142,6 +142,7 @@ public class TaskManager {
 		final ITaskEvaluationFrontend taskEvaluationFrontend =
 			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
 		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new ChoiceTaskEvaluator());
+		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Sequence", 1), new SequenceTaskEvaluator());
 		return taskEvaluationFrontend;
 	}
 
