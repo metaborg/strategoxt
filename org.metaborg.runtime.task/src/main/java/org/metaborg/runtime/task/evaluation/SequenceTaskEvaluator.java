@@ -20,14 +20,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class ChoiceTaskEvaluator implements ITaskEvaluator {
+public class SequenceTaskEvaluator implements ITaskEvaluator {
 	/**
-	 * Maps task identifiers of choice tasks to an iterator that holds the next subtask inside the choice to evaluate.
+	 * Maps task identifiers from sequence tasks to an iterator that holds the next subtask inside the sequence to
+	 * evaluate.
 	 */
 	private final Map<IStrategoTerm, Iterator<IStrategoTerm>> iterators = Maps.newHashMap();
 
 	/**
-	 * Maps task identifiers of choice tasks to task identifiers of subtasks that the choice tasks are currently
+	 * Maps task identifiers of sequence tasks to task identifiers of subtasks that the sequence tasks are currently
 	 * evaluating.
 	 */
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
@@ -42,7 +43,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final Task task = taskEngine.getTask(taskID);
-			if(TaskIdentification.isChoice(task.instruction)) {
+			if(TaskIdentification.isSequence(task.instruction)) {
 				evaluationQueue.queue(taskID);
 			}
 		}
@@ -51,39 +52,34 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy insert, Strategy perform) {
-		// Handle the result of a choice task.
-		{
-			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);
-			if(subtaskID != null) {
-				evaluationQueue.removeRuntimeDependency(taskID, subtaskID); // TODO: needed/correct?
-
-				// TODO: why do we need to check if the subtask has results?
-				final Task subtask = taskEngine.getTask(subtaskID);
-				if(!subtask.failed() && subtask.hasResults()) {
-					choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
-					return;
-				}
-			}
-		}
-
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
 			iter = task.instruction.getSubterm(0).iterator();
 			iterators.put(taskID, iter);
 		}
 
-		// If the choice does not have any results left it has failed.
+		// Handle the result of a sequence subtask.
+		{
+			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);
+			if(subtaskID != null) {
+				evaluationQueue.removeRuntimeDependency(taskID, subtaskID); // TODO: needed/correct?
+				final Task subtask = taskEngine.getTask(subtaskID);
+				if(handleSolvedTask(task, taskID, iter, subtask, taskEngine, evaluationQueue))
+					return;
+			}
+		}
+
 		if(!iter.hasNext()) {
-			choiceFails(task, taskID, taskEngine, evaluationQueue);
+			// Last subtask has failed, so the sequence fails.
+			sequenceFails(task, taskID, taskEngine, evaluationQueue);
 			return;
 		}
 
-		// Retrieve the next task to evaluate.
+		// Retrieve the next subtask to evaluate.
 		final IStrategoTerm subtaskResult = iter.next();
 		final IStrategoTerm subtaskID = getTaskID(subtaskResult);
 		if(subtaskID == null) {
-			// Current entry in the choice is not a task identifier, queue choice for evaluation again.
-			// TODO: actually this term should be the result of this choice.
+			// Current entry in the sequence is not a task identifier, queue sequence for evaluation again.
 			evaluationQueue.queue(taskID);
 			return;
 		}
@@ -92,15 +88,8 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		taskEngine.addDependency(taskID, subtaskID);
 
 		if(subtask.solved()) {
-			if(subtask.failed()) {
-				// Schedule the choice for evaluation again.
-				evaluationQueue.queue(taskID);
+			if(handleSolvedTask(task, taskID, iter, subtask, taskEngine, evaluationQueue))
 				return;
-			} else {
-				// Task was already solved.
-				choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
-				return;
-			}
 		} else {
 			// Queue task and its dependencies for evaluation.
 			queueTransitive(subtaskID, taskEngine, evaluationQueue);
@@ -115,7 +104,6 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		subtaskIDs.clear();
 	}
 
-
 	/**
 	 * Gets the task identifier for given result term.
 	 */
@@ -126,31 +114,48 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	/**
-	 * Fails the given choice task.
+	 * Handles the result of a solved task. Returns true if the result was handled, false otherwise.
 	 */
-	private void choiceFails(Task task, IStrategoTerm taskID, ITaskEngine taskEngine,
+	private boolean handleSolvedTask(Task task, IStrategoTerm taskID, Iterator<IStrategoTerm> iter, Task subtask,
+		ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
+		if(subtask.failed()) {
+			// If any subtask of the sequence task fails, the sequence fails.
+			sequenceFails(task, taskID, taskEngine, evaluationQueue);
+			return true;
+		} else if(!iter.hasNext()) {
+			// If the last subtask of the sequence task succeeds, the sequence succeeds.
+			sequenceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Fails the given sequence task.
+	 */
+	private void sequenceFails(Task task, IStrategoTerm taskID, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setFailed();
 		evaluationQueue.taskSolved(taskID);
-		cleanupChoice(taskID, taskEngine, evaluationQueue);
+		cleanupSequence(taskID, taskEngine, evaluationQueue);
 		return;
 	}
 
 	/**
-	 * Sets the result of given choice task to the result of given subtask.
+	 * Sets the result of given sequence task to the result of given subtask.
 	 */
-	private void choiceSucceeds(Task task, IStrategoTerm taskID, Task subtask, ITaskEngine taskEngine,
+	private void sequenceSucceeds(Task task, IStrategoTerm taskID, Task subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setResults(subtask.results());
 		evaluationQueue.taskSolved(taskID);
-		cleanupChoice(taskID, taskEngine, evaluationQueue);
+		cleanupSequence(taskID, taskEngine, evaluationQueue);
 		return;
 	}
 
 	/**
-	 * Cleans up choice task evaluation after the choice task has succeeded or failed.
+	 * Cleans up sequence task evaluation after the sequence task has succeeded or failed.
 	 */
-	private void cleanupChoice(IStrategoTerm taskID, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
+	private void cleanupSequence(IStrategoTerm taskID, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
 		final Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter != null) {
 			while(iter.hasNext()) {
@@ -161,7 +166,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 				evaluationQueue.taskSkipped(subtaskID);
 
-				for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(subtaskID, taskEngine)) {
+				for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoSequence(subtaskID, taskEngine)) {
 					evaluationQueue.taskSkipped(dependencyTaskID);
 				}
 			}
@@ -176,15 +181,15 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private void queueTransitive(IStrategoTerm taskID, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
 		evaluationQueue.queueOrDefer(taskID);
-		for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(taskID, taskEngine)) {
+		for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoSequence(taskID, taskEngine)) {
 			evaluationQueue.queueOrDefer(dependencyTaskID);
 		}
 	}
 
 	/**
-	 * Returns the set of transitive dependencies for given task identifier, but filters out choice tasks.
+	 * Returns the set of transitive dependencies for given task identifier, but filters out sequence tasks.
 	 */
-	private Set<IStrategoTerm> transitiveDependenciesNoChoice(IStrategoTerm taskID, ITaskEngine taskEngine) {
+	private Set<IStrategoTerm> transitiveDependenciesNoSequence(IStrategoTerm taskID, ITaskEngine taskEngine) {
 		final Set<IStrategoTerm> seen = Sets.newHashSet();
 		final Queue<IStrategoTerm> queue = Lists.newLinkedList();
 
@@ -193,7 +198,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final Task task = taskEngine.getTask(queueTaskID);
-			if(TaskIdentification.isChoice(task.instruction)) {
+			if(TaskIdentification.isSequence(task.instruction)) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {

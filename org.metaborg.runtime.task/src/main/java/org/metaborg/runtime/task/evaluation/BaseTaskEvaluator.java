@@ -4,9 +4,9 @@ import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
 import java.util.Set;
 
-import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -33,10 +33,12 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		this.singleConstructor = factory.makeConstructor("Single", 1);
 	}
 
+	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
 		return dependencies;
 	}
 
+	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		// Queue or defer evaluation for all scheduled tasks.
 		for(final IStrategoTerm taskID : scheduled) {
@@ -44,6 +46,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy insert, Strategy perform) {
 		final Iterable<IStrategoTerm> instructions =
@@ -78,6 +81,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		}
 	}
 
+	@Override
 	public void reset() {
 		timer.reset();
 	}

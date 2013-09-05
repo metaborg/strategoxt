@@ -20,9 +20,7 @@ signature
 rules
 	
 	task-is-combinator = ?Choice(_)
-	perform-task(|nr) = ?Choice(<fetch-elem(not(?[]))>)
-     
-rules
+  perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
   
   perform-task(|nr) = ?Id(<MkSingleton>)
   	

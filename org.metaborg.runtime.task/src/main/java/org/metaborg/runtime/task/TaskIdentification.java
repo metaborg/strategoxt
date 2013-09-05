@@ -8,4 +8,8 @@ public class TaskIdentification {
 	public static boolean isChoice(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Choice", 1);
 	}
+
+	public static boolean isSequence(IStrategoTerm instruction) {
+		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Sequence", 1);
+	}
 }
