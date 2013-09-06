@@ -2,8 +2,8 @@ package org.metaborg.runtime.task.primitives;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskManager;
-import org.metaborg.runtime.task.util.CarthesianProduct;
 import org.metaborg.runtime.task.util.InvokeStrategy;
 import org.metaborg.runtime.task.util.ListBuilder;
 import org.spoofax.interpreter.core.IContext;
@@ -43,7 +43,7 @@ public class task_api_result_combinations_2_1 extends AbstractPrimitive {
 		}
 		
 		final Iterable<IStrategoTerm> combinations =
-			CarthesianProduct.termCombinations(factory, taskEngine, env, insert, term, resultIDs);
+			TaskInsertion.instructionCombinations(taskEngine, env, insert, term, resultIDs);
 		if(combinations == null)
 			return false;
 		env.setCurrent(ListBuilder.makeList(factory, combinations));
