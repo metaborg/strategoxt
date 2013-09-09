@@ -4,7 +4,7 @@ strategies // implementations generated from NaBL
   
   nabl-custom-properties(add-properties) = fail
   
-  nabl-new-property(|lang, partition, uri*): (kind, term) -> <fail>
+  nabl-collect-property(|lang, partition, uri*): (kind, term) -> <fail>
 
 strategies // user-defined implementations
 	
