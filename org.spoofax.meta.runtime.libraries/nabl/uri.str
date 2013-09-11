@@ -114,7 +114,12 @@ rules // Projections
       else
         parent' := parent
       end
-      
+  
+  nabl-uri-parents =
+    nabl-uri-parent 
+  < ![<id>|<nabl-uri-parents>] 
+  + ![]  
+        
   nabl-uri-name:
     uri -> <nabl-uri-path; Hd; nabl-segment-name> uri
     
