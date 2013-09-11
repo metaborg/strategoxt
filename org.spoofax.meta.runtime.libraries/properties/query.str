@@ -5,6 +5,7 @@ imports
 	nabl/uri
 	task/core
 	properties/entries
+  properties/tasks
   
 rules
 	
@@ -38,6 +39,7 @@ rules
   
   nabl-get-property-task(|partition, kind) = 
      nabl-get-property-task(|kind)
+  <+ <new-task(|partition)> PropLookup(kind, <nabl-uri>)
   <+ <new-task(|partition)> Fail()
   
   nabl-get-property-task(|kind) = 

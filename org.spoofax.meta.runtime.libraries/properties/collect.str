@@ -47,9 +47,8 @@ rules // generic analysis of properties
     )
   ; !(kind*, <remove-property-annotations(|kind*)>)
   ; foldl(nabl-annotate-property(|lang, partition, uri*) <+ Snd)
-  ; where(try(nabl-constraint(|partition)))
-     
-
+  ; where(try(nabl-constraint(|lang, partition, uri*)))
+  
   nabl-annotate-property(|lang, partition, uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
