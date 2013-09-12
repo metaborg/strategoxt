@@ -50,7 +50,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
-		IContext context, Strategy insert, Strategy perform) {
+		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		// Handle the result of a choice task.
 		{
 			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);

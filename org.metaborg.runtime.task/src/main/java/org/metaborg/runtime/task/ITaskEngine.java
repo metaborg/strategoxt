@@ -110,26 +110,29 @@ public interface ITaskEngine {
 	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
-	 *
+	 * 
 	 * @param context The context to call the perform and insert strategies with.
 	 * @param perform The strategy that performs an instruction.
+	 * @param collect The strategy that collects result IDs from a term.
 	 * @param insert The strategy that inserts results into an instruction.
-	 *
+	 * 
 	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
-	public abstract IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform);
+	public abstract IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert,
+		Strategy perform);
 
 	/**
 	 * Evaluates given task identifiers and their transitive dependencies.
-	 *
+	 * 
 	 * @param context The context to call the perform and insert strategies with.
 	 * @param perform The strategy that performs an instruction.
+	 * @param collect The strategy that collects result IDs from a term.
 	 * @param insert The strategy that inserts results into an instruction.
 	 * @param taskIDs The task identifiers to evaluate.
-	 *
+	 * 
 	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
-	public abstract IStrategoTerm evaluateNow(IContext context, Strategy insert, Strategy perform,
+	public abstract IStrategoTerm evaluateNow(IContext context, Strategy collect, Strategy insert, Strategy perform,
 		Iterable<IStrategoTerm> taskIDs);
 
 
@@ -179,7 +182,6 @@ public interface ITaskEngine {
 	 * Gets all task identifier to task mappings.
 	 */
 	public abstract Iterable<Entry<IStrategoTerm, Task>> getTaskEntries();
-
 
 
 	/**

@@ -29,7 +29,7 @@ public interface ITaskEvaluator {
 	 * Evaluates given task.
 	 */
 	public abstract void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy insert, Strategy perform);
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
 
 	/**
 	 * Resets the task evaluator to its initial state.

@@ -260,24 +260,24 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform) {
+	public IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		for(IStrategoTerm taskID : scheduled)
 			invalidate(taskID);
 		wrapper.clearTimes();
 		wrapper.clearEvaluations();
 
-		IStrategoTerm result = evaluationFrontend.evaluate(scheduled, context, insert, perform);
+		IStrategoTerm result = evaluationFrontend.evaluate(scheduled, context, collect, insert, perform);
 		scheduled.clear();
 		return result;
 	}
 
 	@Override
-	public IStrategoTerm evaluateNow(IContext context, Strategy insert, Strategy perform,
+	public IStrategoTerm evaluateNow(IContext context, Strategy collect, Strategy insert, Strategy perform,
 		Iterable<IStrategoTerm> taskIDs) {
 		final Set<IStrategoTerm> scheduled = Sets.newHashSet(taskIDs);
 		for(IStrategoTerm taskID : taskIDs)
 			scheduled.addAll(getTransitiveDependencies(taskID));
-		return evaluationFrontend.evaluate(scheduled, context, insert, perform);
+		return evaluationFrontend.evaluate(scheduled, context, collect, insert, perform);
 	}
 
 

@@ -51,7 +51,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
-		IContext context, Strategy insert, Strategy perform) {
+		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
 			iter = task.instruction.getSubterm(0).iterator();
