@@ -24,7 +24,7 @@ public final class Task {
 		this.initialDependencies = initialDependencies;
 		this.isCombinator = combinator;
 	}
-	
+
 	public Task(Task task) {
 		this.instruction  = task.instruction;
 		this.initialDependencies = task.initialDependencies;
@@ -67,6 +67,7 @@ public final class Task {
 
 	public void setFailed() {
 		failed = true;
+		solved = true;
 	}
 
 	public boolean solved() {

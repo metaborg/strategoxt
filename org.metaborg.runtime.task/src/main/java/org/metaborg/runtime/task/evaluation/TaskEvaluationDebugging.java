@@ -7,14 +7,14 @@ import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.Debug;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public final class TaskEvaluationDebugging {
 	/**
 	 * Produces debug information to debug unevaluated task problems.
 	 */
-	public static void debugUnevaluated(ITaskEngine taskEngine, Iterable<IStrategoTerm> unevaluated, BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency) {
+	public static void debugUnevaluated(ITaskEngine taskEngine, Iterable<IStrategoTerm> unevaluated,
+		BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency) {
 		if(Debug.DEBUGGING) {
 			// Find cycles.
 			final Set<IStrategoTerm> cycle = findCycle(taskEngine, unevaluated);
@@ -48,10 +48,12 @@ public final class TaskEvaluationDebugging {
 	}
 
 	private static Set<IStrategoTerm> findCycle(ITaskEngine taskEngine, Iterable<IStrategoTerm> tasks) {
-		return findCycle(taskEngine, tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it preserves order.
+		return findCycle(taskEngine, tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it
+																					// preserves order.
 	}
 
-	private static Set<IStrategoTerm> findCycle(ITaskEngine taskEngine, Iterable<IStrategoTerm> tasks, Set<IStrategoTerm> seen) {
+	private static Set<IStrategoTerm> findCycle(ITaskEngine taskEngine, Iterable<IStrategoTerm> tasks,
+		Set<IStrategoTerm> seen) {
 		for(IStrategoTerm taskID : tasks) {
 			final Set<IStrategoTerm> newSeen = new LinkedHashSet<IStrategoTerm>(seen);
 			if(!newSeen.add(taskID))
@@ -63,7 +65,8 @@ public final class TaskEvaluationDebugging {
 		return null;
 	}
 
-	public static void debugDelayedDependecy(ITaskEngine taskEngine, IStrategoTerm taskID, IStrategoList dependencies) {
+	public static void debugDelayedDependecy(ITaskEngine taskEngine, IStrategoTerm taskID,
+		Iterable<IStrategoTerm> dependencies) {
 		final Task task = taskEngine.getTask(taskID);
 		for(IStrategoTerm dependencyID : dependencies) {
 			final Task dependencyTask = taskEngine.getTask(dependencyID);

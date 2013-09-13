@@ -17,6 +17,8 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import fj.P2;
+
 public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final ITermFactory factory;
 	private final IStrategoConstructor dependencyConstructor;
@@ -49,16 +51,22 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		final Iterable<IStrategoTerm> instructions =
+		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
+
+		if(combinations != null && combinations._2()) {
+			// Inserting results failed because some tasks were not solved yet.
+			evaluationQueue.taskDelayed(taskID, combinations._1());
+			return;
+		}
 
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
 		boolean failure = true;
-		if(instructions != null) {
-			for(IStrategoTerm instruction : instructions) {
+		if(combinations != null) {
+			for(IStrategoTerm instruction : combinations._1()) {
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
-				final ResultType resultType = handleResult(taskID, task, result, evaluationQueue);
+				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
 				switch(resultType) {
 					case Fail:
 						break;
@@ -98,41 +106,37 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		return result;
 	}
 
-	private enum ResultType {
-		DynamicDependency, Fail, Success
-	}
-
 	/**
 	 * Handles the result of performing an instruction and returns its result type.
 	 */
-	private ResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result,
+	private TaskResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result,
 		ITaskEvaluationQueue evaluationQueue) {
 		if(result == null)
-			return ResultType.Fail; // The task failed to produce a result.
+			return TaskResultType.Fail; // The task failed to produce a result.
 
 		if(Tools.isTermAppl(result)) {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
 			if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 				// The task has dynamic dependencies and needs to be delayed.
-				evaluationQueue.taskDelayed(taskID, (IStrategoList) resultAppl.getSubterm(0));
-				return ResultType.DynamicDependency;
+				evaluationQueue.taskDelayed(taskID, resultAppl.getSubterm(0));
+				return TaskResultType.DynamicDependency;
 			} else if(resultAppl.getConstructor().equals(singleConstructor)) {
 				// The result must be treated as a single result.
 				task.addResult(result.getSubterm(0));
-				return ResultType.Success;
+				return TaskResultType.Success;
 			} else {
 				// Treat as single result.
 				task.addResult(result);
-				return ResultType.Success;
+				return TaskResultType.Success;
 			}
 		} else if(Tools.isTermList(result)) {
 			// The task produced multiple results.
 			task.addResults(result);
-			return ResultType.Success;
+			return TaskResultType.Success;
 		} else {
 			// The task produced a single result.
 			task.addResult(result);
-			return ResultType.Success;
+			return TaskResultType.Success;
 		}
 	}
 }

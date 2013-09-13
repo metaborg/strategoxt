@@ -107,7 +107,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
-	public void taskDelayed(IStrategoTerm taskID, IStrategoList dependencies) {
+	public void taskDelayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
 		// Sets the runtime dependencies for a task to the given dependency list.
