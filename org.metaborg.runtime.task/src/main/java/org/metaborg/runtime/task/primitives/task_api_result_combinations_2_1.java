@@ -22,29 +22,34 @@ public class task_api_result_combinations_2_1 extends AbstractPrimitive {
 	}
 
 	@Override
-	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
+	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
+			throws InterpreterException {
 		final ITermFactory factory = env.getFactory();
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm term = tvars[0];
 		final Strategy collect = svars[0];
 		final Strategy insert = svars[1];
-		final IStrategoTerm resultIDs = InvokeStrategy.invoke(env, collect, term);
-		
-		// HACK: produce dependencies if any of the results has not been solved yet.
+		final IStrategoTerm resultIDs = InvokeStrategy.invoke(env, collect,
+				term);
+
+		// HACK: produce dependencies if any of the results has not been solved
+		// yet.
 		IStrategoList dependencies = factory.makeList();
-		for(IStrategoTerm taskID : resultIDs) {
+		for (IStrategoTerm taskID : resultIDs) {
 			final Task task = taskEngine.getTask(taskID);
-			if(!task.solved())
+			if (!task.solved())
 				dependencies = factory.makeListCons(taskID, dependencies);
 		}
-		if(!dependencies.isEmpty()) {
-			env.setCurrent(factory.makeAppl(factory.makeConstructor("Dependency", 1), dependencies));
+		if (!dependencies.isEmpty()) {
+			env.setCurrent(factory.makeAppl(
+					factory.makeConstructor("Dependency", 1), dependencies));
 			return true;
 		}
-		
-		final Iterable<IStrategoTerm> combinations =
-			TaskInsertion.instructionCombinations(taskEngine, env, insert, term, resultIDs);
-		if(combinations == null)
+
+		final Iterable<IStrategoTerm> combinations = TaskInsertion
+				.insertResultCombinations(taskEngine, env, collect, insert,
+						term, resultIDs);
+		if (combinations == null)
 			return false;
 		env.setCurrent(ListBuilder.makeList(factory, combinations));
 		return true;
