@@ -141,19 +141,20 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
-	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert, Strategy perform) {
+	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect, Strategy insert,
+		Strategy perform) {
 		try {
 			this.scheduled = scheduled;
 
 			// Queue tasks and evaluate them for each specific task evaluator.
 			for(ITaskEvaluator taskEvaluator : taskEvaluators.values()) {
 				taskEvaluator.queue(taskEngine, this, this.scheduled);
-				evaluateQueuedTasks(context, insert, perform);
+				evaluateQueuedTasks(context, collect, insert, perform);
 			}
 
 			// Evaluate the remaining tasks with the default task evaluator.
 			defaultTaskEvaluator.queue(taskEngine, this, this.scheduled);
-			evaluateQueuedTasks(context, insert, perform);
+			evaluateQueuedTasks(context, collect, insert, perform);
 
 			// Debug unevaluated tasks if debugging is enabled.
 			TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
@@ -185,7 +186,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	/**
 	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
 	 */
-	private void evaluateQueuedTasks(IContext context, Strategy insert, Strategy perform) {
+	private void evaluateQueuedTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 			final Task task = taskEngine.getTask(taskID);
@@ -198,7 +199,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			// overwrite previous data.
 			taskEngine.invalidate(taskID);
 
-			evaluateTask(taskID, task, context, insert, perform);
+			evaluateTask(taskID, task, context, collect, insert, perform);
 		}
 	}
 
@@ -220,8 +221,9 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	/**
 	 * Evaluates given task using a specific or default task evaluator.
 	 */
-	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy insert, Strategy perform) {
+	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect, Strategy insert,
+		Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
-		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, insert, perform);
+		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 }

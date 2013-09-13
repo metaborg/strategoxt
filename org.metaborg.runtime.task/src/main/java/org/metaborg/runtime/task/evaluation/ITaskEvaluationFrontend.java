@@ -22,19 +22,20 @@ public interface ITaskEvaluationFrontend {
 	 * Tries to adjust given dependencies using a task evaluator.
 	 */
 	public abstract IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction);
-	
+
 	/**
 	 * Evaluates tasks given by a set of task identifiers.
-	 * 
+	 *
 	 * @param scheduled The task identifiers of tasks to evaluate.
 	 * @param context The Stratego context used to insert results and perform instructions.
 	 * @param insert The strategy that inserts results into an instruction.
+	 * @param collect The strategy that collects result IDs from a term.
 	 * @param perform The strategy that evaluates an instruction.
-	 * 
+	 *
 	 * @return A tuple with all evaluated task identifiers and unevaluated task identifiers.
 	 */
-	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy insert,
-		Strategy perform);
+	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect,
+		Strategy insert, Strategy perform);
 
 	/**
 	 * Resets the task evaluation frontend to the initial state.

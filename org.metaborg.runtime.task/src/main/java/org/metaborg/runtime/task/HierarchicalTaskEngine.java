@@ -143,14 +143,14 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm evaluateScheduled(IContext context, Strategy insert, Strategy perform) {
-		return current.evaluateScheduled(context, insert, perform);
+	public IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		return current.evaluateScheduled(context, collect, insert, perform);
 	}
 
 	@Override
-	public IStrategoTerm evaluateNow(IContext context, Strategy insert, Strategy perform,
+	public IStrategoTerm evaluateNow(IContext context, Strategy collect, Strategy insert, Strategy perform,
 		Iterable<IStrategoTerm> taskIDs) {
-		return current.evaluateNow(context, insert, perform, taskIDs);
+		return current.evaluateNow(context, collect, insert, perform, taskIDs);
 	}
 
 

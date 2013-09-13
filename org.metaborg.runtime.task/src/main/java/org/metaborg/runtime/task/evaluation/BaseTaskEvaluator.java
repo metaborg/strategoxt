@@ -48,9 +48,9 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
-		IContext context, Strategy insert, Strategy perform) {
+		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		final Iterable<IStrategoTerm> instructions =
-			TaskInsertion.taskCombinations(factory, taskEngine, context, insert, taskID, task);
+			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
 
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
