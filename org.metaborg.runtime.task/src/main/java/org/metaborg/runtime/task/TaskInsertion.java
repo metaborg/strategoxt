@@ -43,9 +43,9 @@ public final class TaskInsertion {
 		} else if(!isCombinator) {
 			return insertResultCombinations(taskEngine, context, collect, insert, instruction, resultIDs);
 		} else {
-			return P
-				.p(new SingletonIterable<>(insertResultLists(factory, taskEngine, context, insert, instruction,
-					resultIDs)), false);
+			return P.p(
+				new SingletonIterable<IStrategoTerm>(insertResultLists(factory, taskEngine, context, insert,
+					instruction, resultIDs)), false);
 		}
 	}
 
@@ -79,9 +79,9 @@ public final class TaskInsertion {
 		final Task task = taskEngine.getTask(taskID);
 
 		if(!task.solved()) {
-			return Either.right(new SingletonIterable<>(taskID));
+			return Either.right(new SingletonIterable<IStrategoTerm>(taskID));
 		} else if(task.failed() || !task.hasResults()) {
-			return null;  // If a dependency does not have any results, the task cannot be executed.
+			return null; // If a dependency does not have any results, the task cannot be executed.
 		}
 
 		final Collection<IStrategoTerm> results = Lists.newLinkedList();
