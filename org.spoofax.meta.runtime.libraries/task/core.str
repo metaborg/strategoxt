@@ -40,6 +40,19 @@ rules // Creation
   dependent-task = ?Result(<id>) 
   dependent-task =
     has-annos; get-annos; dependent-tasks
+    
+	task-create-execute-ctx = !""
+	task-create-execute(create-task):
+		term -> result
+		with
+		  ctx := <task-create-execute-ctx>
+		; task-push
+		; task-start-collection(|ctx)
+		; Result(taskID) := <create-task> term
+		; task-stop-collection(|ctx)
+		; <task-evaluate-now> taskID
+		; result := <task-get-result> taskID
+		; task-pop
 
 rules // Dependencies
 	
