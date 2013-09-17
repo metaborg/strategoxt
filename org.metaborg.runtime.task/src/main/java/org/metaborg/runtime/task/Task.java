@@ -71,7 +71,7 @@ public final class Task {
 	}
 
 	public boolean solved() {
-		return solved || failed;
+		return solved;
 	}
 
 	public void unsolve() {
