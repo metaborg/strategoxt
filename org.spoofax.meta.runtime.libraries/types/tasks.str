@@ -24,16 +24,36 @@ signature
 rules
   
   perform-task(|n): 
-  	PropLookup(kind, t) -> result
+  	PropLookup(kind, t) -> <debug(!"Result: ")> result
   	where
+  		debug(!$[
+Executing task [n]: ]);
   		resolved := <nabl-collect-one-resolved-def> t;
+  		debug(!"1: ");
   		uri      := <nabl-uri> resolved;
+  		debug(!"2: ");
   		<nabl-add-uri-read(|n)> uri;
-  		prop     := <nabl-get-property(|kind); insert-results-or-create-dependency> uri;
+  		debug(!"3: ");
+  		prop     := <nabl-get-all-properties(|kind); insert-results-or-create-dependency; flatten-list; make-set> uri;
+  		debug(!"4: ");
       switch id
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
       end => result
+      
+  perform-cyclic-task(|n): 
+  	PropLookup(kind, t) -> <debug(!"Result: ")> prop
+  	where
+  		debug(!$[
+Executing task [n]: ]);
+  		resolved := <nabl-collect-one-resolved-def> t;
+  		debug(!"a: ");
+  		uri      := <nabl-uri> resolved;
+  		debug(!"b: ");
+  		<nabl-add-uri-read(|n)> uri;
+  		debug(!"c: ");
+  		prop     := <nabl-get-all-properties(|kind); filter(insert-results); flatten-list; make-set> uri; // TODO: order?
+  		debug(!"d: ")
   
   avoid-task(|dep*):
     PropCalc(_) -> <perform-task(|0)> 

@@ -20,6 +20,13 @@ signature
     Failure  : MessageTrigger // No results
     Success  : MessageTrigger // At least one result
     Multiple : MessageTrigger // More than one result
+
+rules
+	
+	perform-cyclic-task(|nr) = fail
+	
+	perform-task(|nr):
+		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction
 	
 rules
 	

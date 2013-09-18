@@ -12,6 +12,7 @@ imports
 	task/core
 	task/tasks
 	types/collect
+	types/tasks
 
 signature 
 
@@ -52,7 +53,7 @@ signature
 	  Wildcard : List(Import) * RefScope * DefScope * List(Dependency) -> ImportDesc
 	  Single   : Term * DefScope * List(Dependency) -> ImportDesc
 	  Imported : Namespace                   -> Namespace
-	  Import   :                                Property
+	  Import   : Namespace                   -> Property
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
   	Type     : Property
@@ -253,7 +254,7 @@ rules // generic analysis of uses
 			namedDefsTask       := <new-task(|partition)> ResolveDefs(namedImportsTask, ns, name);
 			
 			if wildcardimport then 
-				wildcardImportsTask := <new-task(|partition)> ResolveWildcardImports(uri', ns);
+				wildcardImportsTask := <new-task(|partition)> PropLookup(Import(ns), Def(uri));
 				wildcardDefsTask    := [<new-task(|partition)> ResolveDefs(wildcardImportsTask, ns, name)]
 			else
 				wildcardDefsTask := []
@@ -335,18 +336,25 @@ rules // generic analysis of imports
   ; alias-uri := <nabl-extend-uri(|segment)> base-uri
     
   nabl-import-prop(|lang, partition, uri*, from, into):
-    Import(lang, ins) -> <new-prop(|partition, into-uri, Import(), (ins, from-uri))>
+    Import(lang, ns) -> <new-prop(|partition, into-uri, Import(ns), from-uri)>
   where
-     Imported(ns) := ins
-  <+ ns           := ins
+     <not(?Imported(_))> ns
   where
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
   ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
-    // HACK: Don't add dependencies directly so that the initial dependencies for both tasks are set to [].
-  ; Result(import-calc)    := <new-task(|partition, [])> ImportCalc(into-uri)
-  ; <dependent-tasks; map(task-add-dependency(|import-calc))> from-uri
-  ; Result(import-closure) := <new-task(|partition, [])> ImportClosure(into-uri)
-  ; <task-add-dependency(|import-closure)> import-calc
+    
+  nabl-import-prop(|lang, partition, uri*, from, into):
+    Import(lang, Imported(ns)) -> <new-prop(|partition, into-uri, Import(ns), proplookup)>
+  where
+    from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
+  ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
+  ; proplookup := <new-task(|partition)> PropLookup(Import(ns), from-uri) // TODO: can be cyclic
+    
+  //   // HACK: Don't add dependencies directly so that the initial dependencies for both tasks are set to [].
+  // ; Result(import-calc)    := <new-task(|partition, [])> ImportCalc(into-uri)
+  // ; <dependent-tasks; map(task-add-dependency(|import-calc))> from-uri
+  // ; Result(import-closure) := <new-task(|partition, [])> ImportClosure(into-uri)
+  // ; <task-add-dependency(|import-closure)> import-calc
         
   nabl-scope-uri(|lang, uri*, ns):
     Current() -> <lookup-uri(|lang, ns)> uri*

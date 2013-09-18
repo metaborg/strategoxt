@@ -247,7 +247,10 @@ public class TaskEngine implements ITaskEngine {
 
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
+			final Task task = getTask(taskID);
+			// System.out.println("Invalidated by read: " + taskID + " - " + task);
 			schedule(taskID);
+
 			final Iterable<IStrategoTerm> dependent = wrapper.getDependent(taskID);
 			for(IStrategoTerm dependentTaskID : dependent) {
 				if(seen.add(dependentTaskID)) {

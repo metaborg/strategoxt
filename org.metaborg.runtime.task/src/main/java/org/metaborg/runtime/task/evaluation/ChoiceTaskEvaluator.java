@@ -110,6 +110,12 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
+	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
+	}
+
+	@Override
 	public void reset() {
 		iterators.clear();
 		subtaskIDs.clear();

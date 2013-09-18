@@ -18,8 +18,13 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 import com.google.common.collect.Sets;
 
 public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluationFrontend {
@@ -34,7 +39,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private final Set<IStrategoTerm> queued = Sets.newHashSet();
 
 	/** Dependencies of tasks which are updated during evaluation. */
-	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> runtimeDependencies =
+	private BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> runtimeDependencies =
 		BidirectionalLinkedHashMultimap.create();
 
 
@@ -114,6 +119,8 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		runtimeDependencies.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
 			runtimeDependencies.put(taskID, dependency);
+
+		scheduled.add(taskID);
 	}
 
 	@Override
@@ -140,6 +147,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		return taskEvaluator.adjustDependencies(dependencies, factory);
 	}
 
+
 	@Override
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect, Strategy insert,
 		Strategy perform) {
@@ -158,6 +166,76 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 			// Debug unevaluated tasks if debugging is enabled.
 			TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
+
+
+			// Make a copy of the dynamic dependency graph for later use.
+			final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> copiedRuntimeDependencies =
+				BidirectionalLinkedHashMultimap.create(runtimeDependencies);
+			final Set<IStrategoTerm> taskIDs = Sets.newHashSet(copiedRuntimeDependencies.keySet());
+
+			// Evaluate all tasks left in the dependency graph using a special strategy to break cycles.
+			for(final IStrategoTerm taskID : taskIDs) {
+				queue(taskID);
+			}
+			evaluateCyclicTasks(context, collect, insert, perform);
+
+			// Store values
+			final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
+			for(final IStrategoTerm taskID : taskIDs) {
+				final Task task = taskEngine.getTask(taskID);
+				if(!task.failed())
+					values.putAll(taskID, task.results());
+			}
+
+			// Do fixpoint evaluation until the results of tasks stop changing.
+			for(int i = 0; i < 5; ++i) {
+				runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
+				for(final IStrategoTerm taskID : taskIDs) {
+					queue(taskID);
+				}
+				evaluateCyclicTasks(context, collect, insert, perform);
+
+				// Compare values
+				boolean done = true;
+				for(final IStrategoTerm taskID : taskIDs) {
+					final Task task = taskEngine.getTask(taskID);
+
+					if(values.get(taskID).isEmpty()) {
+						if(task.failed()) {
+							continue;
+						} else {
+							done = false;
+							break;
+						}
+					} else if(task.failed()) {
+						done = false;
+						break;
+					}
+
+					// TODO: creating two sets and taking the symmetric difference is VERY expensive?
+					final Multiset<IStrategoTerm> oldValues = HashMultiset.create(values.get(taskID));
+					final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results());
+					final Multiset<IStrategoTerm> diff1 = Multisets.difference(newValues, oldValues);
+					final Multiset<IStrategoTerm> diff2 = Multisets.difference(oldValues, newValues);
+
+					if(!diff1.isEmpty() || !diff2.isEmpty()) {
+						done = false;
+						break;
+					}
+				}
+
+				if(done) {
+					// System.out.println("Done in " + i);
+					break;
+				}
+
+				values.clear();
+				for(final IStrategoTerm taskID : taskIDs) {
+					final Task task = taskEngine.getTask(taskID);
+					if(!task.failed())
+						values.putAll(taskID, task.results());
+				}
+			}
 
 			// Return evaluated, skipped and unevaluated task identifiers.
 			return factory.makeTuple(factory.makeList(evaluated), factory.makeList(skipped),
@@ -204,6 +282,26 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	/**
+	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
+	 */
+	private void evaluateCyclicTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		// Evaluate each task in the queue.
+		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
+			final Task task = taskEngine.getTask(taskID);
+
+			evaluated.add(taskID);
+			scheduled.remove(taskID);
+			queued.remove(taskID);
+
+			// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
+			// overwrite previous data.
+			taskEngine.invalidate(taskID);
+
+			evaluateCyclicTask(taskID, task, context, collect, insert, perform);
+		}
+	}
+
+	/**
 	 * Returns a task evaluator for given instruction.
 	 */
 	private ITaskEvaluator getTaskEvaluator(IStrategoTerm instruction) {
@@ -225,5 +323,14 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
 		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
+	}
+
+	/**
+	 * Evaluates given task using a specific or default task evaluator.
+	 */
+	private void evaluateCyclicTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect,
+		Strategy insert, Strategy perform) {
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
+		taskEvaluator.evaluateCyclic(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 }
