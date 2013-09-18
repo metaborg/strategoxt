@@ -50,11 +50,22 @@ public final class TaskInsertion {
 	}
 
 	/**
-	 * Returns instruction permutations for a regular instruction, or dynamic dependencies encountered while creating
-	 * the instruction permutations. To create all permutations a cartesian product of all dependencies is created and
-	 * applied to the instruction. If all dependencies have only one result, this will result in just one instruction.
-	 * Otherwise multiple instructions are returned. If a dependency has failed or has no results, null is returned
-	 * instead. If dynamic dependencies are encountered, the resulting iterable contains task IDs of these dependencies.
+	 * Returns term permutations, or dynamic dependencies encountered while creating the term permutations. To create
+	 * all permutations, a cartesian product of all results of task dependencies is created and applied to the term.
+	 *
+	 * If all task dependencies have only one result, this will result in just one term. Otherwise multiple terms are
+	 * returned. If a task dependency has failed or has no results, null is returned instead. If dynamic task
+	 * dependencies are encountered, the resulting iterable contains task IDs of these dependencies.
+	 *
+	 * @param taskEngine The task engine to retrieve tasks from.
+	 * @param context A Stratego context for executing strategies.
+	 * @param collect Collect strategy that collects all result IDs in a term.
+	 * @param insert Insert strategy that inserts results into a term.
+	 * @param term The term to create permutations for.
+	 * @param dependencies The task IDs of tasks this term depends on.
+	 *
+	 * @return A 2-pair. If the second element is false, the first element contains permutations of the term. Otherwise
+	 *         it contains task IDs of dynamic task dependencies.
 	 */
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> insertResultCombinations(ITaskEngine taskEngine,
 		IContext context, Strategy collect, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> dependencies) {
@@ -161,7 +172,9 @@ public final class TaskInsertion {
 			mapping.put(resultID, makeList(factory, task.results()));
 		}
 
-		return insertResults(context, insert, term, mapping);
+		final IStrategoTerm insertedTerm = insertResults(context, insert, term, mapping);
+
+		return insertedTerm;
 	}
 
 	/**
