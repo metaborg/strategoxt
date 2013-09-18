@@ -45,9 +45,9 @@ strategies
 
   /**
    * @todo The xs variable is a hack for issue STR-382.
+   * @todo ?[]{} is a hack for issue SPX-724.
    */
-  rm-annotations :
-    t -> t{}
+  rm-annotations = ?[]{} <+ ?t; !t{}
 
   /**
    * Succeeds if a term has annotations.
