@@ -1,6 +1,7 @@
 package org.metaborg.runtime.task.primitives;
 
 import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskManager;
 import org.metaborg.runtime.task.util.InvokeStrategy;
@@ -23,27 +24,36 @@ public class task_api_result_combinations_2_1 extends AbstractPrimitive {
 	}
 
 	@Override
-	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
+	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
+			throws InterpreterException {
 		final ITermFactory factory = env.getFactory();
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm term = tvars[0];
 		final Strategy collect = svars[0];
 		final Strategy insert = svars[1];
+		final IStrategoTerm resultIDs = InvokeStrategy.invoke(env, collect,
+				term);
 
-		final IStrategoTerm resultIDs = InvokeStrategy.invoke(env, collect, term);
-		final P2<? extends Iterable<IStrategoTerm>, Boolean> result =
-			TaskInsertion.insertResultCombinations(taskEngine, env, collect, insert, term, resultIDs);
-		if(result._1() == null)
-			return false; // No combinations could be constructed because a dependency failed or had no results.
-		final IStrategoList resultList = ListBuilder.makeList(factory, result._1());
-
-		if(result._2()) {
-			// Results are task IDs of dependencies instead.
-			env.setCurrent(factory.makeAppl(factory.makeConstructor("Dependency", 1), resultList));
-		} else {
-			env.setCurrent(resultList);
+		// HACK: produce dependencies if any of the results has not been solved
+		// yet.
+		IStrategoList dependencies = factory.makeList();
+		for (IStrategoTerm taskID : resultIDs) {
+			final Task task = taskEngine.getTask(taskID);
+			if (!task.solved())
+				dependencies = factory.makeListCons(taskID, dependencies);
+		}
+		if (!dependencies.isEmpty()) {
+			env.setCurrent(factory.makeAppl(
+					factory.makeConstructor("Dependency", 1), dependencies));
+			return true;
 		}
 
+		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations = TaskInsertion
+				.insertResultCombinations(taskEngine, env, collect, insert,
+						term, resultIDs);
+		if (combinations == null)
+			return false;
+		env.setCurrent(ListBuilder.makeList(factory, combinations._1()));
 		return true;
 	}
 }
