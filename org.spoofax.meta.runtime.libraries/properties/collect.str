@@ -36,8 +36,10 @@ rules // generic analysis of properties
     )
       
   nabl-store-prop(|partition, uri, name):
-    Prop(kind, result, dep*) -> <new-prop(|partition, uri, kind, result)> name
-
+    Prop(kind, prop, dep*) -> <new-prop(|partition, uri, kind, result)> name
+    where
+      result := <new-task(|partition, dep*)> Id(prop)
+      
   // generic collection of property tasks
   nabl-annotate-properties(|lang, partition, uri*) =
     where(
