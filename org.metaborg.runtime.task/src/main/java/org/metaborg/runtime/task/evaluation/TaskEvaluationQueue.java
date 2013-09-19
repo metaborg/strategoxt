@@ -93,7 +93,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	@Override
 	public void taskSolved(IStrategoTerm taskID) {
 		// Retrieve dependent tasks of the solved task.
-		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(taskID));
+		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(taskID, false));
 		dependents.addAll(runtimeDependencies.getInverse(taskID));
 
 		for(final IStrategoTerm dependentTaskID : dependents) {
@@ -120,6 +120,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		for(final IStrategoTerm dependency : dependencies)
 			runtimeDependencies.put(taskID, dependency);
 
+		taskEngine.setDynamicDependencies(taskID, dependencies);
 		scheduled.add(taskID);
 	}
 
@@ -188,7 +189,9 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			}
 
 			// Do fixpoint evaluation until the results of tasks stop changing.
-			for(int i = 0; i < 5; ++i) {
+			for(int i = 0; i < 10; ++i) {
+				System.out.println("Fixpoint cycle " + i);
+
 				runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
 				for(final IStrategoTerm taskID : taskIDs) {
 					queue(taskID);
@@ -225,7 +228,6 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 				}
 
 				if(done) {
-					// System.out.println("Done in " + i);
 					break;
 				}
 

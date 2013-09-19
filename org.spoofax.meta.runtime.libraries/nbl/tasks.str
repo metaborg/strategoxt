@@ -20,7 +20,6 @@ signature
     ResolveDefs            : Scope * Namespace * Name                  -> Instruction
     DisambiguateDefs       : List(Def) * List(Prop) * Namespace * Name -> Instruction
     ResolveNamedImports    : Scope * Namespace * Name                  -> Instruction
-    ResolveWildcardImports : Scope * Namespace                         -> Instruction
     ImportCalc             : URI                                       -> Instruction
     ImportClosure          : URI                                       -> Instruction
     PropConstraint         : Kind * Expected * Result                  -> Instruction
@@ -65,36 +64,6 @@ rules // Resolve
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
       end => result
-	
-	// // Looks up wildcard imports for a namespace active in scopes.
-	// perform-task(|nr):
-	// 	ResolveWildcardImports(scope, ns) -> result
-	// 	where
-	// 		uri     := <nabl-uri> scope;
-	// 		<nabl-add-uri-read(|nr)> uri;
-	// 		import* := <nabl-lookup-unnamed-import(|ns)> uri;
- //      switch id
- //      	case ?[]                            : fail
- //      	case task-collect-dependencies => d : !d
- //      	otherwise                           : id
- //      end => result
-      
-	// 		
-	// resolve-one-wildcard-import(|nr, ns):
-	// 	uri -> result
-	// 	with
-	// 		<nabl-add-uri-read(|nr)> uri;
-	// 		if task-exists(|ImportClosure(uri)) then
-	// 			import-closure-id := <task-instruction-id> ImportClosure(uri);
-	// 			switch id
-	// 				case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-	// 				case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hashtable-get(|ns) <+ ![]> h
-	// 				case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<task-create-dependency> import-closure-id]
-	// 				otherwise                                             : ![]
-	// 			end => result
-	// 		else
-	// 			result := []
-	// 		end
 
 rules // Visibility
 	
@@ -121,58 +90,6 @@ rules // Visibility
 		with
 			def-task := <new-task(|partition)> ResolveAllDefs(<nabl-use-subtask-uri(|partition)> uri, ns);
       filtered  := <nabl-use-propconstraint(|partition)> (def-task, prop*)
-
-rules // Import calculation
-	
-// 	// Import calculation.
-// 	perform-task(|nr):
-// 		ImportCalc(uri) -> result
-// 		where
-// 			<nabl-add-uri-read(|nr)> uri;
-// 			import-ns-use*        := <nabl-get-all-properties(|Import())> uri;
-// 			(imported-uri*, uri*) := <partition(resolve-transitive-import, resolve-import)> import-ns-use*;
-//   		switch id
-//         case d := <task-collect-dependencies> : !d
-//         otherwise                             : id
-// 			end => result
-// 
-// 	resolve-transitive-import: (Imported(ns), use) -> (ns, <resolve-import-use> use)
-// 	resolve-import: (ns, use) -> (ns, <resolve-import-use> use)
-// 	resolve-import-use = task-get-solved; filter(nabl-uri) <+ task-create-dependencies
-// 	
-// 	// Import transitive closure calculation.
-// 	perform-task(|nr):
-// 		ImportClosure(uri) -> result
-// 		with
-// 			<nabl-add-uri-read(|nr)> uri;
-// 			import-calc-id        := <task-instruction-id> ImportCalc(uri);
-// 			(imported-uri*, uri*) := <task-get-result; Hd> import-calc-id; // Result for this task must exit, as a dependency is expressed on it during collect.
-// 			hashtable             := <new-hashtable>;
-// 			<map(import-to-hash-table(|hashtable))> uri*;
-// 			d* := <collect-all(?URI(_, _)); mapconcat(import-closure-transitive(|nr, hashtable))> imported-uri*;
-// 			switch id
-// 				case task-collect-dependencies => d : !d
-// 				otherwise                           : !hashtable
-// 			end => result
-// 			
-// 	import-to-hash-table(|hashtable):
-// 		(ns, import-uri*) -> <hash-multimap-putlist(|ns, import-uri*)> hashtable
-// 		
-// 	import-closure-transitive(|nr, hashtable):
-// 		uri	-> result
-// 		with
-// 			<nabl-add-uri-read(|nr)> uri;
-// 			if task-exists(|ImportClosure(uri)) then
-// 				import-closure-id := <task-instruction-id> ImportClosure(uri);
-// 				switch id
-// 					case task-has-failed                                  : <task-add-dependency-nocycle(|nr)> import-closure-id; ![]
-// 					case task-get-result; Hd => h                         : <task-add-dependency-nocycle(|nr)> import-closure-id; <hash-multimap-copy(|h)> hashtable; ![]
-// 					case not(task-becomes-cyclic(|nr, import-closure-id)) : ![<id>]
-// 					otherwise                                             : ![]
-// 				end => result
-// 			else
-// 				result := []
-// 			end
 
 rules // Property constraint
 	

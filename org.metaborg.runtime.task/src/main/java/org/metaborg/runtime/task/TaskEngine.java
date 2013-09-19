@@ -46,9 +46,14 @@ public class TaskEngine implements ITaskEngine {
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoString> toPartition =
 		BidirectionalLinkedHashMultimap.create();
 
-	/** Bidirectional mapping of dependencies between tasks identifiers. Can be updated during evaluation. */
+	/** Bidirectional mapping of dependencies between tasks identifiers. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
 		.create();
+	// TODO: may not be updated during evaluation any more!
+
+	/** Bidirectional mapping of dynamic dependencies between tasks identifiers. Can be updated during evaluation. */
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDynamicDependency =
+		BidirectionalLinkedHashMultimap.create();
 
 	/** Bidirectional mapping from task identifiers to URI's that they read during evaluation. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRead = BidirectionalLinkedHashMultimap
@@ -247,11 +252,9 @@ public class TaskEngine implements ITaskEngine {
 
 		// Schedule tasks and transitive dependent tasks that might have changed as a result of a change in reads.
 		for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
-			final Task task = getTask(taskID);
-			// System.out.println("Invalidated by read: " + taskID + " - " + task);
 			schedule(taskID);
 
-			final Iterable<IStrategoTerm> dependent = wrapper.getDependent(taskID);
+			final Iterable<IStrategoTerm> dependent = wrapper.getDependent(taskID, true);
 			for(IStrategoTerm dependentTaskID : dependent) {
 				if(seen.add(dependentTaskID)) {
 					workList.offer(dependentTaskID);
@@ -377,8 +380,11 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {
-		return toDependency.getInverse(taskID);
+	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic) {
+		if(withDynamic)
+			return Sets.union(toDynamicDependency.getInverse(taskID), toDependency.getInverse(taskID));
+		else
+			return toDependency.getInverse(taskID);
 	}
 
 	@Override
@@ -407,9 +413,17 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
+	public void setDynamicDependencies(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
+		toDynamicDependency.removeAll(taskID);
+		toDynamicDependency.putAll(taskID, dependencies);
+	}
+
+	@Override
 	public void removeDependencies(IStrategoTerm taskID) {
 		toDependency.removeAll(taskID);
 		toDependency.removeAllInverse(taskID);
+		toDynamicDependency.removeAll(taskID);
+		toDynamicDependency.removeAllInverse(taskID);
 	}
 
 
@@ -466,6 +480,7 @@ public class TaskEngine implements ITaskEngine {
 
 		toPartition.clear();
 		toDependency.clear();
+		toDynamicDependency.clear();
 		toRead.clear();
 
 		garbage.clear();

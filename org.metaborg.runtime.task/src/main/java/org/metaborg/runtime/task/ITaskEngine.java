@@ -110,12 +110,12 @@ public interface ITaskEngine {
 	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
-	 * 
+	 *
 	 * @param context The context to call the perform and insert strategies with.
 	 * @param perform The strategy that performs an instruction.
 	 * @param collect The strategy that collects result IDs from a term.
 	 * @param insert The strategy that inserts results into an instruction.
-	 * 
+	 *
 	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
 	public abstract IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert,
@@ -123,13 +123,13 @@ public interface ITaskEngine {
 
 	/**
 	 * Evaluates given task identifiers and their transitive dependencies.
-	 * 
+	 *
 	 * @param context The context to call the perform and insert strategies with.
 	 * @param perform The strategy that performs an instruction.
 	 * @param collect The strategy that collects result IDs from a term.
 	 * @param insert The strategy that inserts results into an instruction.
 	 * @param taskIDs The task identifiers to evaluate.
-	 * 
+	 *
 	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
 	public abstract IStrategoTerm evaluateNow(IContext context, Strategy collect, Strategy insert, Strategy perform,
@@ -243,10 +243,11 @@ public interface ITaskEngine {
 
 	/**
 	 * Gets all other task identifier that depend on the task with given identifier.
-	 *
+	 * 
 	 * @param taskID The task identifier to get dependent tasks for.
+	 * @param withDynamic If dynamic dependents should be included.
 	 */
-	public abstract Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID);
+	public abstract Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic);
 
 	/**
 	 * Queries if adding a dependency between two tasks would cause a cyclic dependency. Does not change the actual
@@ -266,6 +267,14 @@ public interface ITaskEngine {
 	 * @param dependency The task identifier of the task to add a dependency edge to.
 	 */
 	public abstract void addDependency(IStrategoTerm taskID, IStrategoTerm dependency);
+
+	/**
+	 * Sets the dynamic dependencies for a task.
+	 *
+	 * @param taskID The task identifier of the task to set the dynamic dependencies for.
+	 * @param dependencies The task identifiers of dynamic dependencies.
+	 */
+	public abstract void setDynamicDependencies(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
 
 	/**
 	 * Removes all incoming and outgoing dependencies for a task.

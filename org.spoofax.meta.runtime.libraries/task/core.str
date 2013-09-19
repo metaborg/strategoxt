@@ -103,14 +103,6 @@ rules // Results
 			otherwise       : all(insert-results)
 		end
 		
-	insert-results-ignore-dependencies =
-		switch id
-			case has-annos  : !(<id>, <get-annos; insert-results-ignore-dependencies>); set-annos
-			case is-list    : map(insert-results-ignore-dependencies)
-			case ?Result(n) : try(task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]))
-			otherwise       : all(insert-results-ignore-dependencies)
-		end
-		
 	insert-results-or-create-dependency =
 		switch id
 			case has-annos  : !(<id>, <get-annos; insert-results-or-create-dependency>); set-annos

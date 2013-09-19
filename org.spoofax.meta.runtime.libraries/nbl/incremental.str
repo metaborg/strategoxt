@@ -28,13 +28,9 @@ rules // Read processing
 	nabl-get-changed-reads:
 		changed-entry* -> [uri-read*, ns-read*]
 		with
-			debug(!"g: ");
 			uri*      := <filter(nabl-diff-entry; nabl-uri)> changed-entry*;
-			debug(!"h: ");
 			uri-read* := <map(try(nabl-replace-uri-qualifier(|())))> uri*;
-			debug(!"i: ");
-			ns-read*  := <filter(nabl-create-ns-read)> uri*;
-			debug(!"j: ")
+			ns-read*  := <filter(nabl-create-ns-read)> uri*
 	
 	nabl-create-ns-read:
 		uri -> (uri', ns)
