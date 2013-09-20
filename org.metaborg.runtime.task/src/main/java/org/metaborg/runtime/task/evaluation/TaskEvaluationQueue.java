@@ -168,74 +168,76 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			// Debug unevaluated tasks if debugging is enabled.
 			TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
 
+			if(!this.scheduled.isEmpty()) {
+				// Make a copy of the dynamic dependency graph for later use.
+				final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> copiedRuntimeDependencies =
+					BidirectionalLinkedHashMultimap.create(runtimeDependencies);
+				final Set<IStrategoTerm> taskIDs = Sets.newHashSet(copiedRuntimeDependencies.keySet());
 
-			// Make a copy of the dynamic dependency graph for later use.
-			final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> copiedRuntimeDependencies =
-				BidirectionalLinkedHashMultimap.create(runtimeDependencies);
-			final Set<IStrategoTerm> taskIDs = Sets.newHashSet(copiedRuntimeDependencies.keySet());
-
-			// Evaluate all tasks left in the dependency graph using a special strategy to break cycles.
-			for(final IStrategoTerm taskID : taskIDs) {
-				queue(taskID);
-			}
-			evaluateCyclicTasks(context, collect, insert, perform);
-
-			// Store values
-			final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
-			for(final IStrategoTerm taskID : taskIDs) {
-				final Task task = taskEngine.getTask(taskID);
-				if(!task.failed())
-					values.putAll(taskID, task.results());
-			}
-
-			// Do fixpoint evaluation until the results of tasks stop changing.
-			for(int i = 0; i < 10; ++i) {
-				System.out.println("Fixpoint cycle " + i);
-
-				runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
+				// Evaluate all tasks left in the dependency graph using a special strategy to break cycles.
 				for(final IStrategoTerm taskID : taskIDs) {
 					queue(taskID);
 				}
 				evaluateCyclicTasks(context, collect, insert, perform);
 
-				// Compare values
-				boolean done = true;
-				for(final IStrategoTerm taskID : taskIDs) {
-					final Task task = taskEngine.getTask(taskID);
-
-					if(values.get(taskID).isEmpty()) {
-						if(task.failed()) {
-							continue;
-						} else {
-							done = false;
-							break;
-						}
-					} else if(task.failed()) {
-						done = false;
-						break;
-					}
-
-					// TODO: creating two sets and taking the symmetric difference is VERY expensive?
-					final Multiset<IStrategoTerm> oldValues = HashMultiset.create(values.get(taskID));
-					final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results());
-					final Multiset<IStrategoTerm> diff1 = Multisets.difference(newValues, oldValues);
-					final Multiset<IStrategoTerm> diff2 = Multisets.difference(oldValues, newValues);
-
-					if(!diff1.isEmpty() || !diff2.isEmpty()) {
-						done = false;
-						break;
-					}
-				}
-
-				if(done) {
-					break;
-				}
-
-				values.clear();
+				// Store values
+				final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
 				for(final IStrategoTerm taskID : taskIDs) {
 					final Task task = taskEngine.getTask(taskID);
 					if(!task.failed())
 						values.putAll(taskID, task.results());
+				}
+
+				// Do fixpoint evaluation until the results of tasks stop changing.
+				for(int i = 0; i < 10; ++i) {
+					System.out.println("Fixpoint cycle " + i);
+
+					runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
+					for(final IStrategoTerm taskID : taskIDs) {
+						queue(taskID);
+					}
+					evaluateCyclicTasks(context, collect, insert, perform);
+
+					// Compare values
+					boolean done = true;
+					for(final IStrategoTerm taskID : taskIDs) {
+						final Task task = taskEngine.getTask(taskID);
+
+						// TODO: this assumes that no results and failure means the same, is that correct?
+						if(values.get(taskID).isEmpty()) {
+							if(task.failed()) {
+								continue;
+							} else {
+								done = false;
+								break;
+							}
+						} else if(task.failed()) {
+							done = false;
+							break;
+						}
+
+						// TODO: creating two sets and taking the symmetric difference is VERY expensive?
+						final Multiset<IStrategoTerm> oldValues = HashMultiset.create(values.get(taskID));
+						final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results());
+						final Multiset<IStrategoTerm> diff1 = Multisets.difference(newValues, oldValues);
+						final Multiset<IStrategoTerm> diff2 = Multisets.difference(oldValues, newValues);
+
+						if(!diff1.isEmpty() || !diff2.isEmpty()) {
+							done = false;
+							break;
+						}
+					}
+
+					if(done) {
+						break;
+					}
+
+					values.clear();
+					for(final IStrategoTerm taskID : taskIDs) {
+						final Task task = taskEngine.getTask(taskID);
+						if(!task.failed())
+							values.putAll(taskID, task.results());
+					}
 				}
 			}
 
