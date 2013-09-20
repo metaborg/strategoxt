@@ -1,6 +1,5 @@
 package org.metaborg.runtime.task.evaluation;
 
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 /**
@@ -33,13 +32,13 @@ public interface ITaskEvaluationQueue {
 	 * Indicates that task with given task identifier is delayed because dynamic dependencies have been found. Updates
 	 * the runtime dependency graph with runtime dependencies for given task.
 	 */
-	public abstract void taskDelayed(IStrategoTerm taskID, IStrategoList dependencies);
-	
+	public abstract void taskDelayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
+
 	/**
 	 * Adds a runtime dependency from given task identifier to given dependency task identifier.
 	 */
 	public abstract void addRuntimeDependency(IStrategoTerm taskID, IStrategoTerm dependencyTaskID);
-	
+
 	/**
 	 * Removes the runtime dependency from given task identifier to given dependency task identifier.
 	 */

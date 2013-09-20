@@ -6,6 +6,7 @@ imports
 	index/query
 	task/core
 	task/debug
+	editor/interop
 
 rules
 	
@@ -28,18 +29,30 @@ rules
   analysis-debug-show-tasks(|language):
     (_, _, _, path, project-path) -> (filename, result)
     with
-    	partition := $[[project-path]/[path]];
       task-setup(|project-path);
-      filename := <guarantee-extension(|"task.current.aterm")> path;
-      result   := <task-debug-info(|partition)>
+    	partition  := $[[project-path]/[path]];
+      result-ast := <task-debug-info(|partition)>;
+      if result-task := <foreign-call(|"Task", "from-task-debug")> result-ast then
+      	filename := <guarantee-extension(|"partition.task")> path;
+      	result   := result-task
+      else
+      	filename := <guarantee-extension(|"partition.aterm")> path;
+      	result   := result-ast
+    	end
       
   analysis-debug-show-tasks-selection(|language):
     (selected, _, _, path, project-path) -> (filename, result)
     with
-    	partition := $[[project-path]/[path]];
       task-setup(|project-path);
-      filename := <guarantee-extension(|"task.selected.aterm")> path;
-      result   := <task-debug-ast> selected
+    	partition  := $[[project-path]/[path]];
+      result-ast := <task-debug-ast> selected;
+      if result-task := <foreign-call(|"Task", "from-task-debug")> result-ast then
+      	filename := <guarantee-extension(|"selection.task")> path;
+      	result   := result-task
+      else
+      	filename := <guarantee-extension(|"selection.aterm")> path;
+      	result   := result-ast
+    	end
       
   analysis-debug-reset-index(|language):
     (_, _, _, path, project-path) -> None()

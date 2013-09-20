@@ -117,7 +117,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean combinator) {
+		boolean isCombinator, boolean shortCircuit) {
 		if(!taskCollection.inCollection(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
@@ -127,7 +127,7 @@ public class TaskEngine implements ITaskEngine {
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			toTask.put(taskID, new Task(instruction, dependencies, combinator));
+			toTask.put(taskID, new Task(instruction, dependencies, isCombinator, shortCircuit));
 			taskCollection.addTask(taskID);
 			schedule(taskID);
 		}
@@ -145,15 +145,15 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void
-		addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt combinator,
-			IStrategoList partitions, IStrategoList initialDependencies, IStrategoList dependencies,
-			IStrategoList reads, IStrategoTerm results, IStrategoInt failed, IStrategoTerm message, IStrategoTerm time,
-			IStrategoTerm evaluations) {
+	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
+		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
+		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
+		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
-		Task task = new Task(instruction, initialDependencies, combinator.intValue() == 1);
+		Task task =
+			new Task(instruction, initialDependencies, isCombinator.intValue() == 1, shortCircuit.intValue() == 1);
 		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
 		for(final IStrategoTerm partition : partitions)

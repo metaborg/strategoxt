@@ -22,97 +22,136 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
+import fj.P;
+import fj.P2;
+import fj.data.Either;
+
 public final class TaskInsertion {
 	/**
 	 * Returns all instruction permutations of given task based on its dependencies. For regular tasks,
 	 * {@link #instructionCombinations} is called. For task combinators, {@link #combinatorCombinations} is called. This
 	 * function assumes that all dependencies of the given task have been solved.
 	 */
-	public static Iterable<IStrategoTerm> taskCombinations(ITermFactory factory, ITaskEngine taskEngine,
-		IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task) {
+	public static P2<? extends Iterable<IStrategoTerm>, Boolean> taskCombinations(ITermFactory factory,
+		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task) {
 		final IStrategoTerm instruction = task.instruction;
 		final boolean isCombinator = task.isCombinator;
 		final Iterable<IStrategoTerm> resultIDs = taskEngine.getDependencies(taskID);
 
-		final Iterable<IStrategoTerm> instructions;
 		if(Iterables.isEmpty(resultIDs)) {
-			instructions = new SingletonIterable<IStrategoTerm>(instruction);
+			return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
 		} else if(!isCombinator) {
-			instructions = insertResultCombinations(taskEngine, context, collect, insert, instruction, resultIDs);
+			return insertResultCombinations(taskEngine, context, collect, insert, instruction, resultIDs);
 		} else {
-			instructions = insertResultLists(factory, taskEngine, context, insert, instruction, resultIDs);
+			return P.p(
+				new SingletonIterable<IStrategoTerm>(insertResultLists(factory, taskEngine, context, insert,
+					instruction, resultIDs)), false);
 		}
-
-		return instructions;
 	}
 
 	/**
-	 * Returns instruction permutations for a regular instruction. To create all permutations a cartesian product of all
-	 * dependencies is created and applied to the instruction. If all dependencies have only one result, this will
-	 * result in just one instruction. If a dependency has failed or has no results, null is returned instead.
+	 * Returns term permutations, or dynamic dependencies encountered while creating the term permutations. To create
+	 * all permutations, a cartesian product of all results of task dependencies is created and applied to the term.
+	 *
+	 * If all task dependencies have only one result, this will result in just one term. Otherwise multiple terms are
+	 * returned. If a task dependency has failed or has no results, null is returned instead. If dynamic task
+	 * dependencies are encountered, the resulting iterable contains task IDs of these dependencies.
+	 *
+	 * @param taskEngine The task engine to retrieve tasks from.
+	 * @param context A Stratego context for executing strategies.
+	 * @param collect Collect strategy that collects all result IDs in a term.
+	 * @param insert Insert strategy that inserts results into a term.
+	 * @param term The term to create permutations for.
+	 * @param dependencies The task IDs of tasks this term depends on.
+	 *
+	 * @return A 2-pair. If the second element is false, the first element contains permutations of the term. Otherwise
+	 *         it contains task IDs of dynamic task dependencies.
 	 */
-	public static Iterable<IStrategoTerm> insertResultCombinations(ITaskEngine taskEngine, IContext context,
-		Strategy collect, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> dependencies) {
+	public static P2<? extends Iterable<IStrategoTerm>, Boolean> insertResultCombinations(ITaskEngine taskEngine,
+		IContext context, Strategy collect, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> dependencies) {
 		final Set<IStrategoTerm> seen = Sets.newHashSet();
-		final Multimap<IStrategoTerm, IStrategoTerm> resultMapping =
+		final Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>> result =
 			createResultMapping(taskEngine, context, collect, insert, dependencies, seen);
-		if(resultMapping == null)
+
+		if(result == null) {
 			return null;
-		return insertCarthesdianProduct(context, insert, term, resultMapping);
+		} else if(result.isRight()) {
+			return P.p(result.right().value(), true);
+		} else {
+			return P.p(insertCarthesianProduct(context, insert, term, result.left().value()), false);
+		}
 	}
 
-	private static Collection<IStrategoTerm> getResultsOf(ITaskEngine taskEngine, IContext context, Strategy collect,
-		Strategy insert, IStrategoTerm resultID, Set<IStrategoTerm> seen) {
-		seen.add(resultID);
-		final Task task = taskEngine.getTask(resultID);
+
+	private static Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> getResultsOf(
+		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID,
+		Set<IStrategoTerm> seen) {
+		seen.add(taskID);
+		final Task task = taskEngine.getTask(taskID);
 
 		if(!task.solved()) {
-			throw new RuntimeException("Task " + resultID + " has not been solved yet.");
-			// return null; // TODO: this indicates a dynamic dependency, should return resultID
+			return Either.right(new SingletonIterable<IStrategoTerm>(taskID));
 		} else if(task.failed() || !task.hasResults()) {
-			return null;  // If a dependency does not have any results, the task cannot be executed.
+			return null; // If a dependency does not have any results, the task cannot be executed.
 		}
 
 		final Collection<IStrategoTerm> results = Lists.newLinkedList();
+		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
+
 		for(final IStrategoTerm result : task.results()) {
 			final Iterable<IStrategoTerm> nestedResultIDs = getResultIDs(context, collect, result);
 			if(Iterables.isEmpty(nestedResultIDs)) {
 				results.add(result);
 			} else {
-				final Multimap<IStrategoTerm, IStrategoTerm> resultMapping =
+				final Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>> resultMapping =
 					createResultMapping(taskEngine, context, collect, insert, nestedResultIDs, seen);
-				if(resultMapping == null)
+
+				if(resultMapping == null) {
 					return null;
-				// TODO: handle dynamic dependency
-				final Collection<IStrategoTerm> insertedResults =
-					insertCarthesdianProduct(context, insert, result, resultMapping);
-				results.addAll(insertedResults);
+				} else if(resultMapping.isRight()) {
+					Iterables.addAll(dynamicDependencies, resultMapping.right().value());
+				} else {
+					final Collection<IStrategoTerm> insertedResults =
+						insertCarthesianProduct(context, insert, result, resultMapping.left().value());
+					results.addAll(insertedResults);
+				}
 			}
 		}
-		return results;
+
+		if(dynamicDependencies.isEmpty())
+			return Either.left(results);
+		else
+			return Either.right(dynamicDependencies);
 	}
 
-	private static Iterable<IStrategoTerm> getResultIDs(IContext context, Strategy collect, IStrategoTerm term) {
-		return invoke(context, collect, term);
-	}
-
-	private static Multimap<IStrategoTerm, IStrategoTerm> createResultMapping(ITaskEngine taskEngine, IContext context,
-		Strategy collect, Strategy insert, Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen) {
+	private static Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>>
+		createResultMapping(ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert,
+			Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen) {
 		final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
+		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
+
 		for(final IStrategoTerm resultID : resultIDs) {
 			if(seen.contains(resultID))
 				continue;
-			final Collection<IStrategoTerm> results =
+			final Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> results =
 				getResultsOf(taskEngine, context, collect, insert, resultID, Sets.newHashSet(seen));
-			if(results == null)
+
+			if(results == null) {
 				return null;
-			// TODO: handle dynamic dependency.
-			resultsMap.putAll(resultID, results);
+			} else if(results.isRight()) {
+				Iterables.addAll(dynamicDependencies, results.right().value());
+			} else {
+				resultsMap.putAll(resultID, results.left().value());
+			}
 		}
-		return resultsMap;
+
+		if(dynamicDependencies.isEmpty())
+			return Either.left(resultsMap);
+		else
+			return Either.right(dynamicDependencies);
 	}
 
-	private static Collection<IStrategoTerm> insertCarthesdianProduct(IContext context, Strategy insert,
+	private static Collection<IStrategoTerm> insertCarthesianProduct(IContext context, Strategy insert,
 		IStrategoTerm term, Multimap<IStrategoTerm, IStrategoTerm> resultMapping) {
 		final Collection<StrategoHashMap> resultCombinations = cartesianProduct(resultMapping);
 		final Collection<IStrategoTerm> instructions = Lists.newLinkedList();
@@ -125,15 +164,17 @@ public final class TaskInsertion {
 	/**
 	 * Returns an iterable that only has one instruction where the results have been inserted as lists.
 	 */
-	private static Iterable<IStrategoTerm> insertResultLists(ITermFactory factory, ITaskEngine taskEngine,
-		IContext context, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
+	private static IStrategoTerm insertResultLists(ITermFactory factory, ITaskEngine taskEngine, IContext context,
+		Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
 		final StrategoHashMap mapping = new StrategoHashMap();
 		for(IStrategoTerm resultID : resultIDs) {
 			final Task task = taskEngine.getTask(resultID);
 			mapping.put(resultID, makeList(factory, task.results()));
 		}
 
-		return new SingletonIterable<IStrategoTerm>(insertResults(context, insert, term, mapping));
+		final IStrategoTerm insertedTerm = insertResults(context, insert, term, mapping);
+
+		return insertedTerm;
 	}
 
 	/**
@@ -158,6 +199,11 @@ public final class TaskInsertion {
 			result = newResults;
 		}
 		return result;
+	}
+
+
+	private static Iterable<IStrategoTerm> getResultIDs(IContext context, Strategy collect, IStrategoTerm term) {
+		return invoke(context, collect, term);
 	}
 
 	private static IStrategoTerm insertResults(IContext context, Strategy insertResults, IStrategoTerm instruction,

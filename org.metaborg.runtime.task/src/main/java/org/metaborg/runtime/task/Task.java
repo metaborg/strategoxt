@@ -10,7 +10,8 @@ import com.google.common.collect.Lists;
 public final class Task {
 	public final IStrategoTerm instruction;
 	public final IStrategoList initialDependencies;
-	public final boolean isCombinator;
+	public final boolean isCombinator; // TODO: move this to task (type) definition, this is wasting space.
+	public final boolean shortCircuit; // TODO: move this to task (type) definition, this is wasting space.
 
 	private List<IStrategoTerm> results = Lists.newLinkedList();
 	private boolean failed = false;
@@ -19,16 +20,18 @@ public final class Task {
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean combinator) {
+	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean isCombinator, boolean shortCircuit) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
-		this.isCombinator = combinator;
+		this.isCombinator = isCombinator;
+		this.shortCircuit = shortCircuit;
 	}
-	
+
 	public Task(Task task) {
-		this.instruction  = task.instruction;
+		this.instruction = task.instruction;
 		this.initialDependencies = task.initialDependencies;
 		this.isCombinator = task.isCombinator;
+		this.shortCircuit = task.shortCircuit;
 		this.results = Lists.newLinkedList(task.results);
 		this.failed = task.failed;
 		this.solved = task.solved;
@@ -67,10 +70,11 @@ public final class Task {
 
 	public void setFailed() {
 		failed = true;
+		solved = true;
 	}
 
 	public boolean solved() {
-		return solved || failed;
+		return solved;
 	}
 
 	public void unsolve() {
