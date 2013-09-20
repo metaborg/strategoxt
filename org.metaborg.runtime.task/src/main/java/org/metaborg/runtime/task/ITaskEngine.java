@@ -51,28 +51,32 @@ public interface ITaskEngine {
 	 * @param partition The partition where the task comes from.
 	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
 	 * @param instruction The instruction.
+	 * @param isCombinator Whether this task is a task combinator.
+	 * @param shortCircuit Whether evaluating this task stops after the first successful instruction has been executed.
+	 *
 	 * @return A unique task identifier for given instruction.
 	 */
 	public abstract IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies,
-		IStrategoTerm instruction, boolean combinator);
+		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.
 	 *
 	 * @param taskID The identifier of the task.
 	 * @param instruction The instruction of the task.
+	 * @param isCombinator Whether this task is a task combinator. A value of 1 indicates a task combinator
+	 * @param shortCircuit Whether this task should be short circuited. A value of 1 indicates true.
 	 * @param partitions The partitions of the task.
 	 * @param initialDependencies The initial dependencies of the task.
 	 * @param dependencies The dependencies of the task.
 	 * @param reads The reads of the task.
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
-	 * @param failed An integer value that indicates if the task had failed. A value of 1 indicates failure.
+	 * @param failed If the task has failed. A value of 1 indicates failure.
 	 */
-	public abstract void
-		addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt combinator,
-			IStrategoList partitions, IStrategoList initialDependencies, IStrategoList dependencies,
-			IStrategoList reads, IStrategoTerm results, IStrategoInt failed, IStrategoTerm message, IStrategoTerm time,
-			IStrategoTerm evaluations);
+	public abstract void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
+		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
+		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
+		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations);
 
 	/**
 	 * Removes task with given identifier from the task engine.
@@ -110,12 +114,12 @@ public interface ITaskEngine {
 	/**
 	 * Evaluates all tasks that have been added since the last call to evaluate (or reset) and all tasks that have
 	 * changed by a read.
-	 * 
+	 *
 	 * @param context The context to call the perform and insert strategies with.
 	 * @param perform The strategy that performs an instruction.
 	 * @param collect The strategy that collects result IDs from a term.
 	 * @param insert The strategy that inserts results into an instruction.
-	 * 
+	 *
 	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
 	public abstract IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert,
@@ -123,13 +127,13 @@ public interface ITaskEngine {
 
 	/**
 	 * Evaluates given task identifiers and their transitive dependencies.
-	 * 
+	 *
 	 * @param context The context to call the perform and insert strategies with.
 	 * @param perform The strategy that performs an instruction.
 	 * @param collect The strategy that collects result IDs from a term.
 	 * @param insert The strategy that inserts results into an instruction.
 	 * @param taskIDs The task identifiers to evaluate.
-	 * 
+	 *
 	 * @return A tuple with a list of task identifiers that have failed and succeeded to produce a result.
 	 */
 	public abstract IStrategoTerm evaluateNow(IContext context, Strategy collect, Strategy insert, Strategy perform,

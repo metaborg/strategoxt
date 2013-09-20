@@ -25,11 +25,13 @@ rules // Creation
   //tdebug(s) = debug(s)
   
   new-task(|partition) = new-task(|partition, <dependent-tasks>)
-  new-task(|partition, dependencies) = 
-  		task-is-combinator; task-add-combinator(|partition, dependencies, <id>) 
-  	<+ 
-  		task-add-task(|partition, dependencies, <id>)
-   
+  new-task(|partition, dependencies):
+  	instruction -> result
+  	with
+  		is-combinator := <task-is-combinator; !1 <+ !0> instruction;
+  		short-circuit := <task-short-circuit; !1 <+ !0> instruction;
+  		result := <task-add-task(|partition, dependencies, instruction, is-combinator, short-circuit)> instruction
+ 
   //    tdebug(!"new task ")
   //  ; avoid-task(|dependencies)
   //  ; tdebug(!"avoided ")
@@ -121,9 +123,8 @@ rules // Projections
 
 rules // API
 	
-	task-add-combinator(|partition, dependencies, instruction) = task-api-add-combinator(|partition, dependencies, instruction)
 	task-add-message(|taskID, message)                         = task-api-add-message(|taskID, message)
-	task-add-task(|partition, dependencies, instruction)       = task-api-add-task(|partition, dependencies, instruction)
+	task-add-task(|partition, dependencies, instruction, isCombinator, shortCircuit) = task-api-add-task(|partition, dependencies, instruction, isCombinator, shortCircuit)
 	task-becomes-cyclic(|taskIDFrom, taskIDTo)                 = task-api-becomes-cyclic(|taskIDFrom, taskIDTo)
 	task-clear-partition                                       = task-api-clear-partition(|<id>)
 	task-debug-info(|partition)                                = task-api-debug-info(|partition)
@@ -186,11 +187,10 @@ rules // API
 
 rules /** @internal API externals */
 
-	task-api-add-combinator(|partition, dependencies, instruction) = prim("task_api_add_combinator", partition, dependencies, instruction)
 	task-api-add-dependency(|taskID, dependency) = prim("task_api_add_dependency", taskID, dependency)
 	task-api-add-message(|taskID, message) = prim("task_api_add_message", taskID, message)
 	task-api-add-read(|taskID, read) = prim("task_api_add_read", taskID, read)
-	task-api-add-task(|partition, dependencies, instruction) = prim("task_api_add_task", partition, dependencies, instruction)
+	task-api-add-task(|partition, dependencies, instruction, isCombinator, shortCircuit) = prim("task_api_add_task", partition, dependencies, instruction, isCombinator, shortCircuit)
 	task-api-becomes-cyclic(|taskIDFrom, taskIDTo) = prim("task_api_becomes_cyclic", taskIDFrom, taskIDTo)
 	task-api-clear-partition(|partition) = prim("task_api_clear_partition", partition)
 	task-api-debug-info(|partition) = prim("task_api_debug_info", partition)
