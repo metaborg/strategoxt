@@ -306,11 +306,11 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID) {
+	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic) {
 		// TODO: Should not return duplicates?
 		final Iterable<IStrategoTerm> parentTaskIDs =
-			parentDependenciesVisibleFilter(parentVisibleFilter(parent.getDependent(taskID)));
-		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependent(taskID);
+			parentDependenciesVisibleFilter(parentVisibleFilter(parent.getDependent(taskID, withDynamic)));
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependent(taskID, withDynamic);
 		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
 
@@ -322,6 +322,11 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	@Override
 	public void addDependency(IStrategoTerm taskID, IStrategoTerm dependency) {
 		current.addDependency(taskID, dependency);
+	}
+
+	@Override
+	public void setDynamicDependencies(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
+		current.setDynamicDependencies(taskID, dependencies);
 	}
 
 	@Override

@@ -25,6 +25,12 @@ rules
   ; nabl-get-all-properties(|kind)
   ; map(fancy-combination)
   ; (concat <+ filter(?Dependency(<id>)); !Dependency(<concat>))
+    
+  perform-cyclic-task(|n) =
+  	?PropLookup(kind, <nabl-uri>)
+  ; nabl-add-uri-read(|n)
+	; nabl-get-all-properties(|kind); filter(insert-results); flatten-list; make-set
+	  // TODO: does not make combinations
   
   fancy-combination = 
      ?Result(_)

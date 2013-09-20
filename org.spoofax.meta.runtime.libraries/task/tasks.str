@@ -19,6 +19,13 @@ signature
     
 rules
 	
+	perform-cyclic-task(|nr) = fail
+	
+	perform-task(|nr):
+		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction
+
+rules
+	
 	task-is-combinator = ?Choice(_)
   perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
   

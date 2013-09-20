@@ -247,10 +247,11 @@ public interface ITaskEngine {
 
 	/**
 	 * Gets all other task identifier that depend on the task with given identifier.
-	 *
+	 * 
 	 * @param taskID The task identifier to get dependent tasks for.
+	 * @param withDynamic If dynamic dependents should be included.
 	 */
-	public abstract Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID);
+	public abstract Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic);
 
 	/**
 	 * Queries if adding a dependency between two tasks would cause a cyclic dependency. Does not change the actual
@@ -270,6 +271,14 @@ public interface ITaskEngine {
 	 * @param dependency The task identifier of the task to add a dependency edge to.
 	 */
 	public abstract void addDependency(IStrategoTerm taskID, IStrategoTerm dependency);
+
+	/**
+	 * Sets the dynamic dependencies for a task.
+	 *
+	 * @param taskID The task identifier of the task to set the dynamic dependencies for.
+	 * @param dependencies The task identifiers of dynamic dependencies.
+	 */
+	public abstract void setDynamicDependencies(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
 
 	/**
 	 * Removes all incoming and outgoing dependencies for a task.
