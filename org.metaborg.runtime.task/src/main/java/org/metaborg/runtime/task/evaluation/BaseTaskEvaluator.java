@@ -67,16 +67,22 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm instruction : combinations._1()) {
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
 				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
+				boolean done = false;
 				switch(resultType) {
 					case Fail:
 						break;
 					case Success:
 						failure = false;
+						if(task.shortCircuit)
+							done = true;
 						break;
 					default: // Unknown result or dynamic dependency.
 						unknown = true;
 						break;
 				}
+
+				if(done)
+					break;
 			}
 		}
 
