@@ -96,6 +96,48 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
+	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
+			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
+
+		if(combinations != null && combinations._2()) {
+			// Inserting results failed because some tasks were not solved yet.
+			evaluationQueue.taskDelayed(taskID, combinations._1());
+			return;
+		}
+
+		// TODO: optimize success/unknown using a bitflag?
+		boolean unknown = false;
+		boolean failure = true;
+		if(combinations != null) {
+			for(IStrategoTerm instruction : combinations._1()) {
+				instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
+				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
+				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
+				switch(resultType) {
+					case Fail:
+						break;
+					case Success:
+						failure = false;
+						break;
+					default: // Unknown result or dynamic dependency.
+						unknown = true;
+						break;
+				}
+			}
+		}
+
+		if(!unknown) {
+			// Try to schedule new tasks even for failed tasks since they may activate combinators.
+			evaluationQueue.taskSolved(taskID);
+
+			if(failure)
+				task.setFailed();
+		}
+	}
+
+	@Override
 	public void reset() {
 		timer.reset();
 	}

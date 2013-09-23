@@ -72,9 +72,9 @@ public class TaskEngineTest extends TaskTest {
 		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveID));
 		assertTrue(assertContains(taskEngine.getDependencies(choiceID), resolveImportID));
 
-		assertTrue(assertContains(taskEngine.getDependent(resolveID), choiceID));
-		assertTrue(assertContains(taskEngine.getDependent(resolveImportID), choiceID));
-		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID)));
+		assertTrue(assertContains(taskEngine.getDependent(resolveID, false), choiceID));
+		assertTrue(assertContains(taskEngine.getDependent(resolveImportID, false), choiceID));
+		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID, false)));
 	}
 
 	@Test
@@ -135,9 +135,9 @@ public class TaskEngineTest extends TaskTest {
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveImportID)));
 		assertEquals(2, Iterables.size(taskEngine.getDependencies(choiceID)));
 
-		assertEquals(2, Iterables.size(taskEngine.getDependent(resolveID)));
-		assertEquals(1, Iterables.size(taskEngine.getDependent(resolveImportID)));
-		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID)));
+		assertEquals(2, Iterables.size(taskEngine.getDependent(resolveID, false)));
+		assertEquals(1, Iterables.size(taskEngine.getDependent(resolveImportID, false)));
+		assertEquals(0, Iterables.size(taskEngine.getDependent(choiceID, false)));
 	}
 
 	// Adding a task without starting collection.

@@ -17,16 +17,15 @@ public final class TaskEvaluationDebugging {
 		BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency) {
 		if(Debug.DEBUGGING) {
 			// Find cycles.
-			final Set<IStrategoTerm> cycle = findCycle(taskEngine, unevaluated);
+			final Set<IStrategoTerm> cycle = findCycle(toRuntimeDependency, unevaluated);
 			if(cycle != null) {
 				System.err.println("Cycle found: " + cycle);
-				System.err.flush();
 				for(IStrategoTerm taskID : cycle) {
 					final Task task = taskEngine.getTask(taskID);
-					System.out.println("	" + taskID + ": " + task + " - " + taskEngine.getDependencies(taskID));
-					System.out.flush();
+					System.err.println("	" + taskID + ": " + task + " - " + toRuntimeDependency.get(taskID));
 				}
 			}
+			System.err.println();
 
 			// Print out runtime dependencies.
 			for(IStrategoTerm taskID : unevaluated) {
@@ -34,31 +33,33 @@ public final class TaskEvaluationDebugging {
 				final Set<IStrategoTerm> dependencies = toRuntimeDependency.get(taskID);
 				if(!dependencies.isEmpty()) {
 					System.err.println(taskID + ": " + task + " still depends on: ");
-					System.err.flush();
 				}
 				for(IStrategoTerm dependencyID : dependencies) {
 					final Task dependency = taskEngine.getTask(dependencyID);
 					if(!dependency.solved()) {
-						System.out.println("	" + dependencyID + ": " + dependency);
-						System.out.flush();
+						System.err.println("	" + dependencyID + ": " + dependency);
 					}
 				}
 			}
+			System.err.println();
+			System.err.println();
 		}
 	}
 
-	private static Set<IStrategoTerm> findCycle(ITaskEngine taskEngine, Iterable<IStrategoTerm> tasks) {
-		return findCycle(taskEngine, tasks, new LinkedHashSet<IStrategoTerm>()); // Use LinkedHashSet because it
-																					// preserves order.
+	private static Set<IStrategoTerm> findCycle(
+		BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency, Iterable<IStrategoTerm> tasks) {
+		// Use LinkedHashSet because it preserves order.
+		return findCycle(toRuntimeDependency, tasks, new LinkedHashSet<IStrategoTerm>());
 	}
 
-	private static Set<IStrategoTerm> findCycle(ITaskEngine taskEngine, Iterable<IStrategoTerm> tasks,
+	private static Set<IStrategoTerm> findCycle(
+		BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toRuntimeDependency, Iterable<IStrategoTerm> tasks,
 		Set<IStrategoTerm> seen) {
 		for(IStrategoTerm taskID : tasks) {
 			final Set<IStrategoTerm> newSeen = new LinkedHashSet<IStrategoTerm>(seen);
 			if(!newSeen.add(taskID))
 				return newSeen;
-			final Set<IStrategoTerm> rec = findCycle(taskEngine, taskEngine.getDependencies(taskID), newSeen);
+			final Set<IStrategoTerm> rec = findCycle(toRuntimeDependency, toRuntimeDependency.get(taskID), newSeen);
 			if(rec != null)
 				return rec;
 		}
