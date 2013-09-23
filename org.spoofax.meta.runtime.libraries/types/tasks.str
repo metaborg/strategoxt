@@ -17,9 +17,10 @@ signature
   
   constructors
 
-    PropLookup : Property * Term -> Instruction
-    PropCalc   : Term            -> Instruction
-    PropCheck  : Term * Term     -> Instruction
+    PropLookup  : Property * Term -> Instruction
+    PropsLookup : Property * Term -> Instruction
+    PropCalc    : Term            -> Instruction
+    PropCheck   : Term * Term     -> Instruction
 
 rules
   
@@ -29,7 +30,7 @@ rules
   		resolved := <nabl-collect-one-resolved-def> t;
   		uri      := <nabl-uri> resolved;
   		<nabl-add-uri-read(|n)> uri;
-  		prop     := <nabl-get-all-properties(|kind); insert-results-or-create-dependency; flatten-list; make-set> uri;
+  		prop     := <nabl-get-property(|kind); insert-results-or-create-dependency> uri;
       switch id
       	case task-collect-dependencies => d : !d
       	otherwise                           : id
@@ -41,7 +42,29 @@ rules
   		resolved := <nabl-collect-one-resolved-def> t;
   		uri      := <nabl-uri> resolved;
   		<nabl-add-uri-read(|n)> uri;
+  		prop     := <nabl-get-property(|kind); insert-results> uri
+
+  		
+  perform-task(|n): 
+  	PropsLookup(kind, t) -> result
+  	where
+  		resolved := <nabl-collect-one-resolved-def> t;
+  		uri      := <nabl-uri> resolved;
+  		<nabl-add-uri-read(|n)> uri;
+  		prop     := <nabl-get-all-properties(|kind); insert-results-or-create-dependency; flatten-list; make-set> uri;
+      switch id
+      	case task-collect-dependencies => d : !d
+      	otherwise                           : id
+      end => result
+      
+  perform-cyclic-task(|n): 
+  	PropsLookup(kind, t) -> prop
+  	where
+  		resolved := <nabl-collect-one-resolved-def> t;
+  		uri      := <nabl-uri> resolved;
+  		<nabl-add-uri-read(|n)> uri;
   		prop     := <nabl-get-all-properties(|kind); filter(insert-results); flatten-list; make-set> uri
+
   
   avoid-task(|dep*):
     PropCalc(_) -> <perform-task(|0)> 

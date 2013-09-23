@@ -348,7 +348,7 @@ rules // generic analysis of imports
   where
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
   ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
-  ; proplookup := <new-task(|partition)> PropLookup(Import(ns), from-uri)
+  ; proplookup := <new-task(|partition)> PropsLookup(Import(ns), from-uri)
         
   nabl-scope-uri(|lang, uri*, ns):
     Current() -> <lookup-uri(|lang, ns)> uri*
