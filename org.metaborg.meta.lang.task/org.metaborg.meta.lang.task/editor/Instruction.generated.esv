@@ -1,0 +1,36 @@
+
+module Instruction.generated
+
+completions
+  completion template MsgType : "note" =
+    "note"                                                                
+  completion template MsgType : "warning" =
+    "warning"                                                          
+  completion template MsgType : "error" =
+    "error"                                                              
+  completion template MsgTrigger : "fails" =
+    "fails"                                                           
+  completion template MsgTrigger : "succeeds" =
+    "succeeds"                                                     
+  completion template MsgTrigger : "has multiple results" =
+    "has multiple results"                             
+  completion template Instruction : "show MsgType Term on Term when Term MsgTrigger" =
+    "show " <MsgType:MsgType> " " <Term:Term> " on " <Term:Term> " when " <Term:Term> " " <MsgTrigger:MsgTrigger>  
+  completion template Instruction : "choose " =
+    "choose " <:Term>                                              
+  completion template Instruction : "concat " =
+    "concat " <:Term>                                              
+  completion template Instruction : "produce Term" =
+    "produce " <Term:Term>                                    
+  completion template Instruction : "lookup property Term on Term" =
+    "lookup property " <Term:Term> " on " <Term:Term>  
+  completion template Instruction : "rewrite Term using relation Term" =
+    "rewrite " <Term:Term> " using relation " <Term:Term>  
+  completion template Instruction : "match Term using relation Term with bindings Term" =
+    "match " <Term:Term> " using relation " <Term:Term> " with bindings " <Term:Term>  
+  completion template Instruction : "resolve definition Term Term in Term" =
+    "resolve definition " <Term:Term> " " <Term:Term> " in " <Term:Term>  
+  completion template Instruction : "resolve import Term Term in Term" =
+    "resolve import " <Term:Term> " " <Term:Term> " in " <Term:Term>  
+  completion template Instruction : "disambiguate definitions Term" =
+    "disambiguate definitions " <Term:Term>  

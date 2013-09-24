@@ -1,0 +1,16 @@
+module Task.main
+
+imports Task-Builders Task-Refactorings Task-Colorer Task-Completions Task-Folding Task-References Task-Syntax
+
+language General properties
+                  
+  name          : Task
+  id            : org.metaborg.meta.lang.task
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the Task language"
+  url           : http://strategoxt.org
+                  
+  extensions    : task
+  table         : include/Task.tbl
+  start symbols : Tasks

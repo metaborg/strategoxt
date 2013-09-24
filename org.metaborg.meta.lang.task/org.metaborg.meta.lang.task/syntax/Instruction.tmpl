@@ -1,0 +1,33 @@
+module Instruction
+
+imports
+
+	Common
+	Term
+	Task
+	
+templates
+
+	MsgType.Note = <note>
+	MsgType.Warn = <warning>
+	MsgType.Err  = <error>
+	
+	MsgTrigger.Fail = <fails>
+	MsgTrigger.Succ = <succeeds>
+	MsgTrigger.Mult = <has multiple results>
+	
+	Instruction.Msg = <show <MsgType> <Term> on <Term> when <Term> <MsgTrigger>>
+	
+	Instruction.Choice = <choose <Term*; separator=" <+ ">>
+	Instruction.Concat = <concat <Term*; separator=" + ">>
+	
+	Instruction.PropCalc = <produce <Term>>
+	Instruction.PropLookup = <lookup property <Term> on <Term>>
+	
+	Instruction.Rewrite = <rewrite <Term> using relation <Term>>
+	Instruction.Match = <match <Term> using relation <Term> with bindings <Term>>
+		
+	Instruction.ResolveDefs = <resolve definition <Term> <Term> in <Term>>
+	Instruction.ResolveNamedImports = <resolve import <Term> <Term> in <Term>>
+	Instruction.DisambiguateDefs = <disambiguate definitions <Term>>
+	

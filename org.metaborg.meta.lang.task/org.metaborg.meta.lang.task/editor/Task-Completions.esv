@@ -1,0 +1,16 @@
+module Task-Completions
+
+imports 
+
+	Task-Completions.generated
+	
+	Common.generated
+	Term.generated
+	Task.generated
+	URI.generated
+
+completions
+  
+  completion proposer                  : editor-complete
+                                         
+  completion trigger                   : "."
