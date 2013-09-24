@@ -1,0 +1,181 @@
+module Instruction.pp.generated
+
+strategies
+  prettyprint-MsgType :
+    Note() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("note")]
+                )
+              ]
+
+  prettyprint-MsgType :
+    Warn() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("warning")]
+                )
+              ]
+
+  prettyprint-MsgType :
+    Err() -> [ H(
+                 [SOpt(HS(), "0")]
+               , [S("error")]
+               )
+             ]
+
+  prettyprint-MsgTrigger :
+    Fail() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("fails")]
+                )
+              ]
+
+  prettyprint-MsgTrigger :
+    Succ() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("succeeds")]
+                )
+              ]
+
+  prettyprint-MsgTrigger :
+    Mult() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("has multiple results")]
+                )
+              ]
+
+  prettyprint-Instruction :
+    Msg(a, b, c, d, e) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [ S("show ")
+                              , a0
+                              , S(" ")
+                              , b0
+                              , S(" on ")
+                              , c0
+                              , S(" when ")
+                              , d0
+                              , S(" ")
+                              , e0
+                              ]
+                            )
+                          ]
+    where a0 := <pp-one-Z(prettyprint-MsgType)> a
+    where b0 := <pp-one-Z(prettyprint-Term)> b
+    where c0 := <pp-one-Z(prettyprint-Term)> c
+    where d0 := <pp-one-Z(prettyprint-Term)> d
+    where e0 := <pp-one-Z(prettyprint-MsgTrigger)> e
+
+  prettyprint-Instruction :
+    Choice(a) -> [ H(
+                     [SOpt(HS(), "0")]
+                   , [S("choose "), a3]
+                   )
+                 ]
+    where a3 := <pp-H-list(prettyprint-Term|" <+ ")> a
+
+  prettyprint-Instruction :
+    Concat(a) -> [ H(
+                     [SOpt(HS(), "0")]
+                   , [S("concat "), a4]
+                   )
+                 ]
+    where a4 := <pp-H-list(prettyprint-Term|" + ")> a
+
+  prettyprint-Instruction :
+    PropCalc(a) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("produce "), a5]
+                     )
+                   ]
+    where a5 := <pp-one-Z(prettyprint-Term)> a
+
+  prettyprint-Instruction :
+    PropLookup(a, b) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [ S("lookup property ")
+                            , a6
+                            , S(" on ")
+                            , b1
+                            ]
+                          )
+                        ]
+    where a6 := <pp-one-Z(prettyprint-Term)> a
+    where b1 := <pp-one-Z(prettyprint-Term)> b
+
+  prettyprint-Instruction :
+    Rewrite(a, b) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ S("rewrite ")
+                         , a7
+                         , S(" using relation ")
+                         , b2
+                         ]
+                       )
+                     ]
+    where a7 := <pp-one-Z(prettyprint-Term)> a
+    where b2 := <pp-one-Z(prettyprint-Term)> b
+
+  prettyprint-Instruction :
+    Match(a, b, c) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [ S("match ")
+                          , a8
+                          , S(" using relation ")
+                          , b3
+                          , S(" with bindings ")
+                          , c1
+                          ]
+                        )
+                      ]
+    where a8 := <pp-one-Z(prettyprint-Term)> a
+    where b3 := <pp-one-Z(prettyprint-Term)> b
+    where c1 := <pp-one-Z(prettyprint-Term)> c
+
+  prettyprint-Instruction :
+    ResolveDefs(a, b, c) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [ S("resolve definition ")
+                                , a9
+                                , S(" ")
+                                , b4
+                                , S(" in ")
+                                , c2
+                                ]
+                              )
+                            ]
+    where a9 := <pp-one-Z(prettyprint-Term)> a
+    where b4 := <pp-one-Z(prettyprint-Term)> b
+    where c2 := <pp-one-Z(prettyprint-Term)> c
+
+  prettyprint-Instruction :
+    ResolveNamedImports(a, b, c) -> [ H(
+                                        [SOpt(HS(), "0")]
+                                      , [ S("resolve import ")
+                                        , a10
+                                        , S(" ")
+                                        , b5
+                                        , S(" in ")
+                                        , c3
+                                        ]
+                                      )
+                                    ]
+    where a10 := <pp-one-Z(prettyprint-Term)> a
+    where b5 := <pp-one-Z(prettyprint-Term)> b
+    where c3 := <pp-one-Z(prettyprint-Term)> c
+
+  prettyprint-Instruction :
+    DisambiguateDefs(a) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("disambiguate definitions "), a11]
+                             )
+                           ]
+    where a11 := <pp-one-Z(prettyprint-Term)> a
+
+  prettyprint-example =
+    prettyprint-MsgType
+
+  prettyprint-example =
+    prettyprint-MsgTrigger
+
+  prettyprint-example =
+    prettyprint-Instruction

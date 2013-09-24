@@ -1,0 +1,20 @@
+module names
+
+imports
+	
+	include/Analysis
+	
+namespaces
+
+	Task
+	
+binding rules
+
+	Tasks(_):
+		scopes Task
+
+	TaskDef(t, _, _, _):
+		defines Task t
+		
+	TaskRef(t):
+		refers to Task t

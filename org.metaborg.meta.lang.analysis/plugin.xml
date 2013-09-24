@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="task, index, analysis"
+            description="Analysis"
+            language="Analysis"
+            derivedFrom="DynamicRoot"
+            validator="org.metaborg.meta.lang.analysis.AnalysisValidator"
+            validatorClass="org.metaborg.meta.lang.analysis.AnalysisValidator"
+      ></language>
+   </extension>
+   <extension
+         id="org.metaborg.meta.lang.analysis.parser"
+         name="Analysis Parser"
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="org.metaborg.meta.lang.analysis.AnalysisParseController"
+            language="Analysis">
+      </parser>
+   </extension>    
+</plugin>

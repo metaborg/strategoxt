@@ -1,0 +1,82 @@
+module Term.pp.generated
+
+strategies
+  prettyprint-Term :
+    Tupl(a) -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("("), a20, S(")")]
+                 )
+               ]
+    where a20 := <pp-one-Z(prettyprint-Terms)> a
+
+  prettyprint-Term :
+    Appl(a, b) -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [ a21
+                      , S("(")
+                      , b7
+                      , S(")")
+                      ]
+                    )
+                  ]
+    where a21 := <pp-one-Z(prettyprint-ID)> a
+    where b7 := <pp-one-Z(prettyprint-Terms)> b
+
+  prettyprint-Term :
+    List(a) -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("["), a22, S("]")]
+                 )
+               ]
+    where a22 := <pp-one-Z(prettyprint-Terms)> a
+
+  prettyprint-Term :
+    Str(a) -> [ H(
+                  [SOpt(HS(), "0")]
+                , [a23]
+                )
+              ]
+    where a23 := <pp-one-Z(prettyprint-STRING)> a
+
+  prettyprint-Term :
+    Int(a) -> [ H(
+                  [SOpt(HS(), "0")]
+                , [a24]
+                )
+              ]
+    where a24 := <pp-one-Z(prettyprint-INT)> a
+
+  prettyprint-Term :
+    Real(a) -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [a25]
+                 )
+               ]
+    where a25 := <pp-one-Z(prettyprint-FLOAT)> a
+
+  prettyprint-Term :
+    Anno(a, b) -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [ a26
+                      , S("{")
+                      , b8
+                      , S("}")
+                      ]
+                    )
+                  ]
+    where a26 := <pp-one-Z(prettyprint-Term)> a
+    where b8 := <pp-one-Z(prettyprint-Terms)> b
+
+  prettyprint-Terms :
+    a -> [ H(
+             [SOpt(HS(), "0")]
+           , [a27]
+           )
+         ]
+    where a27 := <pp-H-list(prettyprint-Term|", ")> a
+
+  prettyprint-example =
+    prettyprint-Term
+
+  prettyprint-example =
+    prettyprint-Terms

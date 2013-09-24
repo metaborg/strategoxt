@@ -1,0 +1,17 @@
+module Analysis-Completions
+
+imports 
+
+	Analysis-Completions.generated
+	Analysis.generated
+	Common.generated
+	Instruction.generated
+	Task.generated
+	Term.generated
+	URI.generated
+
+completions
+            
+  completion proposer                  : editor-complete
+                                         
+  completion trigger                   : "."

@@ -1,0 +1,56 @@
+module URI.pp.generated
+
+strategies
+  prettyprint-URI :
+    a -> [ H(
+             [SOpt(HS(), "0")]
+           , [a28]
+           )
+         ]
+    where a28 := <pp-H-list(prettyprint-Segment|" / ")> a
+
+  prettyprint-Segment :
+    Id(a, b) -> [ H(
+                    [SOpt(HS(), "0")]
+                  , [a29, S(":"), b9]
+                  )
+                ]
+    where a29 := <pp-one-Z(prettyprint-ID)> a
+    where b9 := <pp-one-Z(prettyprint-ID)> b
+
+  prettyprint-Segment :
+    Id(a, b, c) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [ a30
+                       , S(":")
+                       , b10
+                       , S("#")
+                       , c5
+                       ]
+                     )
+                   ]
+    where a30 := <pp-one-Z(prettyprint-ID)> a
+    where b10 := <pp-one-Z(prettyprint-ID)> b
+    where c5 := <pp-one-Z(prettyprint-ID)> c
+
+  prettyprint-Segment :
+    Anon(a) -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("anon "), a31]
+                 )
+               ]
+    where a31 := <pp-one-Z(prettyprint-ID)> a
+
+  prettyprint-Segment :
+    Subsq(a) -> [ H(
+                    [SOpt(HS(), "0")]
+                  , [S("subsq "), a32]
+                  )
+                ]
+    where a32 := <pp-one-Z(prettyprint-ID)> a
+
+  prettyprint-example =
+    prettyprint-URI
+
+  prettyprint-example =
+    prettyprint-Segment
