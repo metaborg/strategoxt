@@ -24,6 +24,8 @@ completions
     "produce " <Term:Term>                                    
   completion template Instruction : "lookup property Term on Term" =
     "lookup property " <Term:Term> " on " <Term:Term>  
+  completion template Instruction : "lookup properties Term on Term" =
+    "lookup properties " <Term:Term> " on " <Term:Term>  
   completion template Instruction : "rewrite Term using relation Term" =
     "rewrite " <Term:Term> " using relation " <Term:Term>  
   completion template Instruction : "match Term using relation Term with bindings Term" =

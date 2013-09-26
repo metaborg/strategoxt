@@ -23,6 +23,7 @@ templates
 	
 	Instruction.PropCalc = <produce <Term>>
 	Instruction.PropLookup = <lookup property <Term> on <Term>>
+	Instruction.PropsLookup = <lookup properties <Term> on <Term>>
 	
 	Instruction.Rewrite = <rewrite <Term> using relation <Term>>
 	Instruction.Match = <match <Term> using relation <Term> with bindings <Term>>

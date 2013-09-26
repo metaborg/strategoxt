@@ -52,6 +52,8 @@ rules // Instructions
 	
 	to-instruction = PropLookup(make-abstract, make-abstract)
 	
+	to-instruction = PropsLookup(make-abstract, make-abstract)
+	
 	to-instruction:
 		Rewrite(relation, term) -> Rewrite(<make-abstract> term, <make-abstract> relation)
 		

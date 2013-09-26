@@ -14,6 +14,7 @@ exports
     "concat" {Term "+"}*                                        -> Instruction {cons("Concat")}
     "produce" Term                                              -> Instruction {cons("PropCalc")}
     "lookup" "property" Term "on" Term                          -> Instruction {cons("PropLookup")}
+    "lookup" "properties" Term "on" Term                        -> Instruction {cons("PropsLookup")}
     "rewrite" Term "using" "relation" Term                      -> Instruction {cons("Rewrite")}
     "match" Term "using" "relation" Term "with" "bindings" Term -> Instruction {cons("Match")}
     "resolve" "definition" Term Term "in" Term                  -> Instruction {cons("ResolveDefs")}
