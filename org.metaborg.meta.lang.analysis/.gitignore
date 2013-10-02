@@ -15,7 +15,7 @@ include/analysis.ctree.dep
 include/analysis.jar
 include/analysis-java.jar
 editor/java/trans
-editor/Analysis-*.generated.*
+editor/Analysis-*.generated.esv
 syntax/Analysis*.generated.esv
 syntax/Analysis.generated.pp
 .settings/org.eclipse.jdt.core.prefs
