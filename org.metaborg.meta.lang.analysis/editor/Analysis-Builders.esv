@@ -15,13 +15,16 @@ builders
   provider : include/analysis-java.jar                                                             
                                                                                                    
   observer : editor-analyze            (multifile)                                                 
+                                                                                                                        
+  builder : "Show abstract syntax"      = debug-show-aterm (openeditor) (realtime) (meta) (source)  
+  builder : "Show analyzed syntax"      = debug-show-analyzed (openeditor) (realtime) (meta)        
+  builder : "Show index (project)"      = debug-index-project (openeditor) (meta)
+  builder : "Show index (partition)"    = debug-index-partition (openeditor) (meta)
+  builder : "Show tasks (project)"      = debug-task-project (openeditor) (meta)
+  builder : "Show tasks (partition)"    = debug-task-partition (openeditor) (meta)
+  builder : "Show tasks (selection)"    = debug-task-selection (openeditor) (meta)
+  builder : "Show analysis (project)"   = debug-project (openeditor) (meta)
+  builder : "Show analysis (partition)" = debug-partition (openeditor) (meta)
+  builder : "Reset and reanalyze"       = debug-reanalyze (meta)                                    
                                                                                                    
-  builder  : "Generate Java"           = generate-java (openeditor) (realtime)                     
-  builder  : "Show abstract syntax"    = debug-show-aterm (openeditor) (realtime) (meta) (source)  
-  builder  : "Show analyzed syntax"    = debug-show-analyzed (openeditor) (realtime) (meta)        
-  builder  : "Show index (current)"    = debug-show-index-current (openeditor) (meta)              
-  builder  : "Show index (all)"        = debug-show-index-all (openeditor) (meta)                  
-  builder  : "Show tasks (selection)"  = debug-show-tasks-selection (openeditor) (meta)            
-  builder  : "Reset and reanalyze"     = debug-reanalyze (meta)                                    
-                                                                                                   
-  on save  : editor-save                                                                           
+  on save : editor-save                                                                           

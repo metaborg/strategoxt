@@ -9,3 +9,4 @@ rules
   outline = simple-label-outline(to-outline-label)
   
   to-outline-label = ?TaskDef(<id>, _, _, _)
+  to-outline-label = ?Index(<id>, _)

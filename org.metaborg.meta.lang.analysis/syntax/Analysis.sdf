@@ -1,5 +1,5 @@
 module Analysis
-imports Task
+imports Task Instruction Index Term URI Common
 
 exports
   context-free start-symbols

@@ -7,6 +7,7 @@ imports
 	lib/runtime/tmpl/pp
 	Analysis.pp.generated
 	Common.pp.generated
+	Index.pp.generated
 	Instruction.pp.generated
 	Task.pp.generated
 	Term.pp.generated
@@ -14,7 +15,7 @@ imports
 	
 strategies
 	
-  prettyprint-task-ast =
+  prettyprint-analysis-ast =
   	(
       prettyprint-Start
     ; !V([], <id>)
@@ -25,7 +26,7 @@ strategies
     	bottomup(try(
     		not(is-string)
     	; not(is-list)
-    	; not(prettyprint-task-ast)
+    	; not(prettyprint-analysis-ast)
     	; debug(!"cannot pp ")
   	  ))
 	  ; fail

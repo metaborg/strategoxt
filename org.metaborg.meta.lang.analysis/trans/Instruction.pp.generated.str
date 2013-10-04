@@ -47,142 +47,142 @@ strategies
     Msg(a, b, c, d, e) -> [ H(
                               [SOpt(HS(), "0")]
                             , [ S("show ")
-                              , a136
+                              , a234
                               , S(" ")
-                              , b58
+                              , b105
                               , S(" on ")
-                              , c19
+                              , c29
                               , S(" when ")
-                              , d7
+                              , d10
                               , S(" ")
-                              , e0
+                              , e2
                               ]
                             )
                           ]
-    where a136 := <pp-one-Z(prettyprint-MsgType)> a
-    where b58 := <pp-one-Z(prettyprint-Term)> b
-    where c19 := <pp-one-Z(prettyprint-Term)> c
-    where d7 := <pp-one-Z(prettyprint-Term)> d
-    where e0 := <pp-one-Z(prettyprint-MsgTrigger)> e
+    where a234 := <pp-one-Z(prettyprint-MsgType)> a
+    where b105 := <pp-one-Z(prettyprint-Term)> b
+    where c29 := <pp-one-Z(prettyprint-Term)> c
+    where d10 := <pp-one-Z(prettyprint-Term)> d
+    where e2 := <pp-one-Z(prettyprint-MsgTrigger)> e
 
   prettyprint-Instruction :
     Choice(a) -> [ H(
                      [SOpt(HS(), "0")]
-                   , [S("choose "), a137]
+                   , [S("choose "), a235]
                    )
                  ]
-    where a137 := <pp-H-list(prettyprint-Term|" <+ ")> a
+    where a235 := <pp-H-list(prettyprint-Term|" <+ ")> a
 
   prettyprint-Instruction :
     Concat(a) -> [ H(
                      [SOpt(HS(), "0")]
-                   , [S("concat "), a138]
+                   , [S("concat "), a236]
                    )
                  ]
-    where a138 := <pp-H-list(prettyprint-Term|" + ")> a
+    where a236 := <pp-H-list(prettyprint-Term|" + ")> a
 
   prettyprint-Instruction :
     PropCalc(a) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("produce "), a139]
+                     , [S("produce "), a237]
                      )
                    ]
-    where a139 := <pp-one-Z(prettyprint-Term)> a
+    where a237 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Instruction :
     PropLookup(a, b) -> [ H(
                             [SOpt(HS(), "0")]
                           , [ S("lookup property ")
-                            , a140
+                            , a238
                             , S(" on ")
-                            , b59
+                            , b106
                             ]
                           )
                         ]
-    where a140 := <pp-one-Z(prettyprint-Term)> a
-    where b59 := <pp-one-Z(prettyprint-Term)> b
+    where a238 := <pp-one-Z(prettyprint-Term)> a
+    where b106 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Instruction :
     PropsLookup(a, b) -> [ H(
                              [SOpt(HS(), "0")]
                            , [ S("lookup properties ")
-                             , a141
+                             , a239
                              , S(" on ")
-                             , b60
+                             , b107
                              ]
                            )
                          ]
-    where a141 := <pp-one-Z(prettyprint-Term)> a
-    where b60 := <pp-one-Z(prettyprint-Term)> b
+    where a239 := <pp-one-Z(prettyprint-Term)> a
+    where b107 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Instruction :
     Rewrite(a, b) -> [ H(
                          [SOpt(HS(), "0")]
                        , [ S("rewrite ")
-                         , a142
+                         , a240
                          , S(" using relation ")
-                         , b61
+                         , b108
                          ]
                        )
                      ]
-    where a142 := <pp-one-Z(prettyprint-Term)> a
-    where b61 := <pp-one-Z(prettyprint-Term)> b
+    where a240 := <pp-one-Z(prettyprint-Term)> a
+    where b108 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Instruction :
     Match(a, b, c) -> [ H(
                           [SOpt(HS(), "0")]
                         , [ S("match ")
-                          , a143
+                          , a241
                           , S(" using relation ")
-                          , b62
+                          , b109
                           , S(" with bindings ")
-                          , c20
+                          , c30
                           ]
                         )
                       ]
-    where a143 := <pp-one-Z(prettyprint-Term)> a
-    where b62 := <pp-one-Z(prettyprint-Term)> b
-    where c20 := <pp-one-Z(prettyprint-Term)> c
+    where a241 := <pp-one-Z(prettyprint-Term)> a
+    where b109 := <pp-one-Z(prettyprint-Term)> b
+    where c30 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Instruction :
     ResolveDefs(a, b, c) -> [ H(
                                 [SOpt(HS(), "0")]
                               , [ S("resolve ")
-                                , a144
+                                , a242
                                 , S(" ")
-                                , b63
+                                , b110
                                 , S(" definition in ")
-                                , c21
+                                , c31
                                 ]
                               )
                             ]
-    where a144 := <pp-one-Z(prettyprint-Term)> a
-    where b63 := <pp-one-Z(prettyprint-Term)> b
-    where c21 := <pp-one-Z(prettyprint-Term)> c
+    where a242 := <pp-one-Z(prettyprint-Term)> a
+    where b110 := <pp-one-Z(prettyprint-Term)> b
+    where c31 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Instruction :
     ResolveNamedImports(a, b, c) -> [ H(
                                         [SOpt(HS(), "0")]
                                       , [ S("resolve ")
-                                        , a145
+                                        , a243
                                         , S(" ")
-                                        , b64
+                                        , b111
                                         , S(" import in ")
-                                        , c22
+                                        , c32
                                         ]
                                       )
                                     ]
-    where a145 := <pp-one-Z(prettyprint-Term)> a
-    where b64 := <pp-one-Z(prettyprint-Term)> b
-    where c22 := <pp-one-Z(prettyprint-Term)> c
+    where a243 := <pp-one-Z(prettyprint-Term)> a
+    where b111 := <pp-one-Z(prettyprint-Term)> b
+    where c32 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Instruction :
     DisambiguateDefs(a) -> [ H(
                                [SOpt(HS(), "0")]
-                             , [S("disambiguate "), a146]
+                             , [S("disambiguate "), a244]
                              )
                            ]
-    where a146 := <pp-one-Z(prettyprint-Term)> a
+    where a244 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-example =
     prettyprint-MsgType

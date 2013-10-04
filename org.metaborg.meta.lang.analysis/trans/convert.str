@@ -8,14 +8,24 @@ imports
 	lib/runtime/nbl/tasks
 	pp
 
+rules // All
+	
+	from-debug-str:
+		(task-tuple*, index-tuple*) -> str
+		with
+			task-section   := <from-task-debug> task-tuple*
+		; index-section* := <from-index-debug> index-tuple*
+		; str            := <prettyprint-analysis-ast> Sections([task-section|index-section*])
+
 rules // Task
 	
+	from-task-debug-str = from-task-debug; !Sections([<id>]); prettyprint-analysis-ast
+	
 	from-task-debug:
-		task-tuple* -> tasks-str
+		task-tuple* -> task-section
 		with
-			task-def* := <map(from-task-debug-tuple)> task-tuple*
-		; tasks     := Sections([Tasks(task-def*)])
-		; tasks-str := <prettyprint-task-ast> tasks
+			task-def*    := <map(from-task-debug-tuple)> task-tuple*
+		; task-section := Tasks(task-def*)
 			
 	from-task-debug-tuple:
 		(tid, instr, dep*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <map(to-taskref)> dep*, <to-instruction <+ make-abstract> instr, <to-res> res)
@@ -28,6 +38,20 @@ rules // Task
 		
 	to-res:
 		res -> <to-abstract-terms; (result-to-fail <+ result-to-empty <+ fix-terms)> res
+
+rules // Index
+	
+	from-index-debug-str = from-index-debug; !Sections(<id>); prettyprint-analysis-ast
+	
+	from-index-debug:
+		index-tuple* -> index-section*
+		with
+			index-section* := <map(from-index-partition-debug-tuple)> index-tuple*
+		  
+  from-index-partition-debug-tuple:
+  	(partition, entry*) -> Index(partition, entry'*)
+  	with
+  		entry'* := <map(to-abstract-terms; to-entry)> entry*
 
 rules // Instructions
 	
@@ -75,6 +99,25 @@ rules // Task result terms
 		Appl("Result", [Int(tid)]) -> <to-taskref> tid
 		
 	all-terms-to-taskrefs = topdown-annos(try(term-to-taskref))
+
+rules // Index entries
+	
+	to-entry:
+		Appl("Def", [uri]) -> Def(<make-abstract> uri)
+		
+	to-entry:
+		Appl("Use", [res]) -> Use(<make-abstract> res)
+		
+	to-entry:
+		Appl("Prop", [kind, val]) -> Prop(<make-abstract> kind, <make-abstract> val)
+		
+	to-entry:
+		Appl("Alias", [uri1, uri2]) -> Alias(<make-abstract> uri1, <make-abstract> uri2)
+		
+	to-entry:
+		Appl("InverseAlias", [uri1, uri2]) -> IAlias(<make-abstract> uri1, <make-abstract> uri2)
+		
+	all-to-entry = topdown-annos(try(to-entry))
 	
 rules // URIs
 	
@@ -117,7 +160,7 @@ rules // Postprocessing
 	
 	all-quote-strings = topdown-annos(try(quote-string))
 	
-	fix-terms = all-terms-to-taskrefs; all-terms-to-uris; all-quote-strings
+	fix-terms = all-to-entry; all-terms-to-taskrefs; all-terms-to-uris; all-quote-strings
 	
 	make-abstract = to-abstract-terms; fix-terms
 	

@@ -3,6 +3,13 @@ module Analysis
 imports
 
 	Task
+	Instruction
+	Index
+	
+	Term
+	URI
+	
+	Common
 	
 context-free start-symbols
 

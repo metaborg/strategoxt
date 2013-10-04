@@ -1,0 +1,73 @@
+module Index.pp.generated
+
+strategies
+  prettyprint-Section :
+    Index(a, b) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [S("index "), a228]
+                     )
+                   , b101
+                   ]
+    where a228 := <pp-one-Z(prettyprint-Term)> a
+    where b101 := <pp-indent(|"2")> [<pp-V-list(prettyprint-Entry)> b]
+
+  prettyprint-Entry :
+    Def(a) -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("def "), a229]
+                )
+              ]
+    where a229 := <pp-one-Z(prettyprint-Term)> a
+
+  prettyprint-Entry :
+    Use(a) -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("use "), a230]
+                )
+              ]
+    where a230 := <pp-one-Z(prettyprint-Term)> a
+
+  prettyprint-Entry :
+    Prop(a, b) -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [ S("prop ")
+                      , a231
+                      , S(" = ")
+                      , b102
+                      ]
+                    )
+                  ]
+    where a231 := <pp-one-Z(prettyprint-Term)> a
+    where b102 := <pp-one-Z(prettyprint-Term)> b
+
+  prettyprint-Entry :
+    Alias(a, b) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [ S("alias ")
+                       , a232
+                       , S(" -> ")
+                       , b103
+                       ]
+                     )
+                   ]
+    where a232 := <pp-one-Z(prettyprint-Term)> a
+    where b103 := <pp-one-Z(prettyprint-Term)> b
+
+  prettyprint-Entry :
+    IAlias(a, b) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [ S("alias ")
+                        , a233
+                        , S(" <- ")
+                        , b104
+                        ]
+                      )
+                    ]
+    where a233 := <pp-one-Z(prettyprint-Term)> a
+    where b104 := <pp-one-Z(prettyprint-Term)> b
+
+  prettyprint-example =
+    prettyprint-Section
+
+  prettyprint-example =
+    prettyprint-Entry
