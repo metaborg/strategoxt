@@ -16,7 +16,7 @@ signature
 rules
 
   nabl-scoping-site =
-    ?Tasks(_)
+    ?Sections(_)
     ; origin-track-forced(
         nabl-scope(|[NablNsTask()])
       |

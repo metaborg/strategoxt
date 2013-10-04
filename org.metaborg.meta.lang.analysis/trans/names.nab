@@ -10,7 +10,7 @@ namespaces
 	
 binding rules
 
-	Tasks(_):
+	Sections(_):
 		scopes Task
 
 	TaskDef(t, _, _, _):

@@ -26,7 +26,7 @@ strategies
     	bottomup(try(
     		not(is-string)
     	; not(is-list)
-    	; not(prettyprint-analysis-ast)
+    	; not(prettyprint-example)
     	; debug(!"cannot pp ")
   	  ))
 	  ; fail

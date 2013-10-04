@@ -3,13 +3,15 @@ imports Term
 
 exports
   context-free syntax
-    "index" Term Entry*       -> Section {cons("Index")}
-    "def" Term                -> Entry   {cons("Def")}
-    "use" Term                -> Entry   {cons("Use")}
-    "prop" Term "=" Term      -> Entry   {cons("Prop")}
-    "alias" Term "-" ">" Term -> Entry   {cons("Alias")}
-    "alias" Term "<" "-" Term -> Entry   {cons("IAlias")}
+    "index" Term Entry*             -> Section {cons("Index")}
+    "def" Term                      -> Entry   {cons("Def")}
+    "use" Term                      -> Entry   {cons("Use")}
+    "prop" Term "--" Term ">>" Term -> Entry   {cons("Prop")}
+    "alias" Term "-" ">" Term       -> Entry   {cons("Alias")}
+    "alias" Term "<" "-" Term       -> Entry   {cons("IAlias")}
+    Entry                           -> Term    
 
   context-free syntax
     CONTENTCOMPLETE -> Section {cons("COMPLETION-Section")}
     CONTENTCOMPLETE -> Entry   {cons("COMPLETION-Entry")}
+    CONTENTCOMPLETE -> Term    {cons("COMPLETION-Term")}

@@ -37,7 +37,7 @@ rules // Task
 		tid -> TaskRef(<to-tid> tid)
 		
 	to-res:
-		res -> <to-abstract-terms; (result-to-fail <+ result-to-empty <+ fix-terms)> res
+		res -> <to-abstract-terms; (result-to-fail <+ result-to-empty <+ convert-terms)> res
 
 rules // Index
 	
@@ -47,11 +47,11 @@ rules // Index
 		index-tuple* -> index-section*
 		with
 			index-section* := <map(from-index-partition-debug-tuple)> index-tuple*
-		  
+	
   from-index-partition-debug-tuple:
-  	(partition, entry*) -> Index(partition, entry'*)
+  	(partition, entry*) -> Index(<make-abstract> partition, entry'*)
   	with
-  		entry'* := <map(to-abstract-terms; to-entry)> entry*
+  		entry'* := <map(make-abstract)> entry*
 
 rules // Instructions
 	
@@ -103,19 +103,19 @@ rules // Task result terms
 rules // Index entries
 	
 	to-entry:
-		Appl("Def", [uri]) -> Def(<make-abstract> uri)
+		Appl("Def", [uri]) -> Def(uri)
 		
 	to-entry:
-		Appl("Use", [res]) -> Use(<make-abstract> res)
+		Appl("Use", [res]) -> Use(res)
 		
 	to-entry:
-		Appl("Prop", [kind, val]) -> Prop(<make-abstract> kind, <make-abstract> val)
+		Appl("Prop", [uri, kind, val]) -> Prop(uri, kind, val)
 		
 	to-entry:
-		Appl("Alias", [uri1, uri2]) -> Alias(<make-abstract> uri1, <make-abstract> uri2)
+		Appl("Alias", [uri1, uri2]) -> Alias(uri1, uri2)
 		
 	to-entry:
-		Appl("InverseAlias", [uri1, uri2]) -> IAlias(<make-abstract> uri1, <make-abstract> uri2)
+		Appl("InverseAlias", [uri1, uri2]) -> IAlias(uri1, uri2)
 		
 	all-to-entry = topdown-annos(try(to-entry))
 	
@@ -160,9 +160,9 @@ rules // Postprocessing
 	
 	all-quote-strings = topdown-annos(try(quote-string))
 	
-	fix-terms = all-to-entry; all-terms-to-taskrefs; all-terms-to-uris; all-quote-strings
+	convert-terms = all-to-entry; all-terms-to-taskrefs; all-terms-to-uris; all-quote-strings
 	
-	make-abstract = to-abstract-terms; fix-terms
+	make-abstract = to-abstract-terms; convert-terms
 	
 rules // Utilities
 	
