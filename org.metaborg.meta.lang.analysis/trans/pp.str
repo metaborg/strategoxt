@@ -15,6 +15,18 @@ imports
 strategies
 	
   prettyprint-task-ast =
-      prettyprint-example
+  	(
+      prettyprint-Start
     ; !V([], <id>)
     ; box2text-string(|120)
+    )
+  <+ 
+    (
+    	bottomup(try(
+    		not(is-string)
+    	; not(is-list)
+    	; not(prettyprint-task-ast)
+    	; debug(!"cannot pp ")
+  	  ))
+	  ; fail
+  	)

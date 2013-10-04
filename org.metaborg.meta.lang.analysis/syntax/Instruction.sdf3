@@ -28,7 +28,7 @@ templates
 	Instruction.Rewrite = <rewrite <Term> using relation <Term>>
 	Instruction.Match = <match <Term> using relation <Term> with bindings <Term>>
 		
-	Instruction.ResolveDefs = <resolve definition <Term> <Term> in <Term>>
-	Instruction.ResolveNamedImports = <resolve import <Term> <Term> in <Term>>
-	Instruction.DisambiguateDefs = <disambiguate definitions <Term>>
+	Instruction.ResolveDefs = <resolve <Term> <Term> definition in <Term>>
+	Instruction.ResolveNamedImports = <resolve <Term> <Term> import in <Term>>
+	Instruction.DisambiguateDefs = <disambiguate <Term>>
 	

@@ -13,4 +13,4 @@ language General properties
                   
   extensions    : task, index, analysis
   table         : include/Analysis.tbl
-  start symbols : Tasks
+  start symbols : Start

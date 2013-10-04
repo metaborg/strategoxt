@@ -9,7 +9,11 @@ imports
 
 templates
 
-	Tasks.Tasks     = <<TaskDef*; separator="\n\n">>
+	Section.Tasks = 
+<tasks
+
+	<TaskDef*; separator="\n\n">
+>
 	
 	TaskDef.TaskDef = 
 <task <TASKID> [<TaskRef*; separator=", ">] = 

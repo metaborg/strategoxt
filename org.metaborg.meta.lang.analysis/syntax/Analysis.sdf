@@ -3,4 +3,10 @@ imports Task
 
 exports
   context-free start-symbols
-    Tasks
+    Start
+
+  context-free syntax
+    Section* -> Start {cons("Sections")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Start {cons("COMPLETION-Start")}

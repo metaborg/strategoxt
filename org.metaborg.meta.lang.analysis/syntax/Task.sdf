@@ -3,7 +3,7 @@ imports Common Term URI Instruction
 
 exports
   context-free syntax
-    TaskDef*                                                            -> Tasks       {cons("Tasks")}
+    "tasks" TaskDef*                                                    -> Section     {cons("Tasks")}
     "task" TASKID "[" {TaskRef ","}* "]" "=" Instruction "-" ">" Result -> TaskDef     {cons("TaskDef")}
     TASKID                                                              -> TaskRef     {cons("TaskRef")}
     Term                                                                -> Instruction 
@@ -14,7 +14,7 @@ exports
     "/" URI "/"                                                         -> Term        {cons("URI")}
 
   context-free syntax
-    CONTENTCOMPLETE -> Tasks       {cons("COMPLETION-Tasks")}
+    CONTENTCOMPLETE -> Section     {cons("COMPLETION-Section")}
     CONTENTCOMPLETE -> TaskDef     {cons("COMPLETION-TaskDef")}
     CONTENTCOMPLETE -> TaskRef     {cons("COMPLETION-TaskRef")}
     CONTENTCOMPLETE -> Instruction {cons("COMPLETION-Instruction")}

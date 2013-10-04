@@ -6,4 +6,8 @@ imports
 	
 context-free start-symbols
 
-  Tasks
+  Start
+
+templates
+
+	Start.Sections = <<Section*; separator="\n\n">>

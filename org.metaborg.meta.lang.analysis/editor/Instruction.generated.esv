@@ -30,9 +30,9 @@ completions
     "rewrite " <Term:Term> " using relation " <Term:Term>  
   completion template Instruction : "match Term using relation Term with bindings Term" =
     "match " <Term:Term> " using relation " <Term:Term> " with bindings " <Term:Term>  
-  completion template Instruction : "resolve definition Term Term in Term" =
-    "resolve definition " <Term:Term> " " <Term:Term> " in " <Term:Term>  
-  completion template Instruction : "resolve import Term Term in Term" =
-    "resolve import " <Term:Term> " " <Term:Term> " in " <Term:Term>  
-  completion template Instruction : "disambiguate definitions Term" =
-    "disambiguate definitions " <Term:Term>  
+  completion template Instruction : "resolve Term Term definition in Term" =
+    "resolve " <Term:Term> " " <Term:Term> " definition in " <Term:Term>  
+  completion template Instruction : "resolve Term Term import in Term" =
+    "resolve " <Term:Term> " " <Term:Term> " import in " <Term:Term>  
+  completion template Instruction : "disambiguate Term" =
+    "disambiguate " <Term:Term>                          

@@ -8,14 +8,14 @@ imports
 	lib/runtime/nbl/tasks
 	pp
 
-rules
+rules // Task
 	
 	from-task-debug:
 		task-tuple* -> tasks-str
 		with
 			task-def* := <map(from-task-debug-tuple)> task-tuple*
-		; tasks     := Tasks(task-def*)
-		; tasks-str := <prettyprint-task-ast <+ (bottomup(try(not(is-string) ; not(is-list) ; not(prettyprint-task-ast) ; debug(!"cannot pp "))); fail)> tasks
+		; tasks     := Sections([Tasks(task-def*)])
+		; tasks-str := <prettyprint-task-ast> tasks
 			
 	from-task-debug-tuple:
 		(tid, instr, dep*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <map(to-taskref)> dep*, <to-instruction <+ make-abstract> instr, <to-res> res)
