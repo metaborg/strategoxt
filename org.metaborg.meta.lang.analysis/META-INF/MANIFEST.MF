@@ -21,3 +21,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.metaborg.meta.lang.analysis
 Eclipse-RegisterBuddy: org.strategoxt.imp.runtime
 Bundle-Vendor: Metaborg
+Eclipse-BundleShape: dir
