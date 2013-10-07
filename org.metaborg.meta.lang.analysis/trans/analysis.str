@@ -82,3 +82,11 @@ rules // Debugging
 		
 	debug-reanalyze = 
 		analysis-debug-reanalyze(|<language>)
+		
+	test-converter:
+		(_, _, _, _, _) -> (filename, result)
+		with
+			ast     := [ ( 1, Choice([Result(2)]), [2], [ ], None(), -1, 0)];
+			result  := <from-task-debug-str> ast;
+			filename := "test.task"
+
