@@ -40,5 +40,5 @@
     <import file="build.generated.xml"/>   
 
     <!-- Main target -->
-    <target name="all" depends="spoofaximp.default.jar"/>
+    <target name="all" depends="spoofaximp.default.ctree"/>
 </project>
