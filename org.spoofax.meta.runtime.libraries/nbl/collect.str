@@ -224,17 +224,27 @@ rules // generic analysis of uses
 			// generate a name if needed
 			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
-			subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
-			choice   := <new-task(|partition)> Choice(subtask*);
-		  u        := <new-use(|partition, choice)>;
-		  <try(nabl-unresolved-task(|partition, choice))> name';
-		  if <is-completion-name> name' then
-		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
-		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
-		  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name'
-		  else
-		  	result := <replace-annotations(?Use(_)|u)> name'
-	  	end
+			if inner-name := <nabl-name> name'; Use(inner-use-task) := <nabl-collect-use> inner-name then
+				// Filter the inner use with properties instead of
+				subtask* := <map(nabl-filter-use-candidate(|lang, partition, uri*, inner-use-task))> candidate*;
+				choice   := <new-task(|partition)> Choice(subtask*);
+			  u        := <new-use(|partition, choice)>;
+			  <try(nabl-unresolved-task(|partition, choice))> inner-name; // TODO: this may result in multiple unresolved msgs.
+			  // TODO: what about completions?
+			  result := <nabl-name-apply(add-annotation(|u))> name'
+			else
+				subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
+				choice   := <new-task(|partition)> Choice(subtask*);
+			  u        := <new-use(|partition, choice)>;
+			  <try(nabl-unresolved-task(|partition, choice))> name';
+			  if <is-completion-name> name' then
+			  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
+			  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
+			  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name'
+			  else
+			  	result := <replace-annotations(?Use(_)|u)> name'
+		  	end
+			end
 
 	nabl-use-subtasks(disambiguate, wildcardimport|partition, ns, name, prop*, range): 
 		uri  -> [task|subtasks]
@@ -281,6 +291,12 @@ rules // generic analysis of uses
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*);
 			subtask*   := <nabl-use-subtasks(id, id|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
 			choice     := <new-task(|partition)> Choice(subtask*)
+			
+	// candidate in current scope
+	nabl-filter-use-candidate(|lang, partition, uri*, use-task):
+		UseCandidate(_, prop*, Current(), wci, _) -> task
+		where
+			task := <nabl-use-propconstraint(|partition)> (use-task, prop*)
 			
 	nabl-use-propconstraint(|partition):
 		(task, [p@Prop(kind, expected, deps)|rest]) -> rec
@@ -378,10 +394,6 @@ rules // generic analysis of properties
 		  prop := <new-prop(|partition, uri, type, result)> name
         
 rules // name retrieval
-  
-  nabl-name = is-string
-  
-  nabl-name-apply(s) = is-string; s
     
   nabl-fix-name = try(fix-completion-name); strip-annos
   
