@@ -1,0 +1,12 @@
+module Analysis
+imports Task Instruction Index Term URI Common
+
+exports
+  context-free start-symbols
+    Start
+
+  context-free syntax
+    Section* -> Start {cons("Sections")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Start {cons("COMPLETION-Start")}

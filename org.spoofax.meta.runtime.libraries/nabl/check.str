@@ -32,7 +32,7 @@ rules // Error checking tasks
 		with
 			if Unique() := unique then
 				uri'		:= <nabl-uri-parent> uri;
-				resolve := <new-task(|partition)> ResolveDefs(uri', ns, name);
+				resolve := <new-task(|partition)> ResolveDefs(uri', ns, name, []);
 				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
 			end
 			
@@ -48,7 +48,7 @@ rules // Error checking tasks
 			else
 				uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
 			end;
-			task* := <mapconcat(nabl-use-subtasks(id, fail|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
+			task* := <mapconcat(nabl-use-subtasks(|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
 			task	:= <new-task(|partition)> Choice(task*);
 			<task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
 

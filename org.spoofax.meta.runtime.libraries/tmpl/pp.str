@@ -1,4 +1,4 @@
-module pp
+module tmpl/pp
 
 imports
   libstratego-lib

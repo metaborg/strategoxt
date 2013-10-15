@@ -1,0 +1,11 @@
+module Term.generated
+
+completions
+  completion template Term : "(Terms)" =
+    "(" <Terms:Terms> ")"  
+  completion template Term : "ID(Terms)" =
+    <ID:ID> "(" <Terms:Terms> ")"  
+  completion template Term : "[Terms]" =
+    "[" <Terms:Terms> "]"  
+  completion template Term : "Term{Terms}" =
+    <Term:Term> "{" <Terms:Terms> "}"  

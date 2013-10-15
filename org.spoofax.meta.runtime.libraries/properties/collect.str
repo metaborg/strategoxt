@@ -72,7 +72,7 @@ strategies
    ; fetch-elem(?(kind, <id>))
   <+ where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
    ; <new-task(|partition, all-dep*)> CollectDefs(<id>)
-   ; <new-task(|partition)> PropLookup(kind, <id>) 
+   ; <new-task(|partition)> PropsLookup(kind, <id>) 
   
   nabl-prop-match(|kind, partition, relation, expected) = 
     ?actual
@@ -86,7 +86,7 @@ strategies
   nabl-prop-constraint(|partition, resolve):
     Prop(kind, expected, dep*) -> constr
     where
-      actual := <new-task(|partition)> PropLookup(kind, resolve) 
+      actual := <new-task(|partition)> PropsLookup(kind, resolve) 
     ; dep'*  := <dependent-tasks> [expected, dep*]
     ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
     

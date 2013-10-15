@@ -1,0 +1,15 @@
+module Index.generated
+
+completions
+  completion template Section : "index Term " =
+    "index " <Term:Term> "\n\n\t" (cursor) (blank)  
+  completion template Entry : "def Term" =
+    "def " <Term:Term>  
+  completion template Entry : "use Term" =
+    "use " <Term:Term>  
+  completion template Entry : "prop Term -- Term >> Term" =
+    "prop " <Term:Term> " -- " <Term:Term> " >> " <Term:Term>  
+  completion template Entry : "alias Term -> Term" =
+    "alias " <Term:Term> " -> " <Term:Term>  
+  completion template Entry : "alias Term <- Term" =
+    "alias " <Term:Term> " <- " <Term:Term>  

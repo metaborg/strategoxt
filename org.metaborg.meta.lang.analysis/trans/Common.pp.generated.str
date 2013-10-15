@@ -1,0 +1,56 @@
+module Common.pp.generated
+
+strategies
+  prettyprint-ID =
+    ![S(<is-string>)]
+
+  prettyprint-INT =
+    ![S(<is-string>)]
+
+  prettyprint-FLOAT =
+    ![S(<is-string>)]
+
+  prettyprint-TASKID =
+    ![S(<is-string>)]
+
+  prettyprint-STRING =
+    ![S(<is-string>)]
+
+  prettyprint-StringChar =
+    ![S(<is-string>)]
+
+  prettyprint-BackSlashChar =
+    ![S(<is-string>)]
+
+  prettyprint-CommentChar =
+    ![S(<is-string>)]
+
+  prettyprint-EOF =
+    ![S(<is-string>)]
+
+  prettyprint-example =
+    prettyprint-ID
+
+  prettyprint-example =
+    prettyprint-INT
+
+  prettyprint-example =
+    prettyprint-FLOAT
+
+  prettyprint-example =
+    prettyprint-TASKID
+
+  prettyprint-example =
+    prettyprint-STRING
+
+  prettyprint-example =
+    prettyprint-StringChar
+
+  prettyprint-example =
+    prettyprint-BackSlashChar
+
+  prettyprint-example =
+    prettyprint-CommentChar
+
+  prettyprint-example =
+    prettyprint-EOF

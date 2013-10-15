@@ -1,0 +1,177 @@
+module convert
+
+imports
+	
+	include/Analysis
+	lib/runtime/task/tasks
+	lib/runtime/task/messages
+	lib/runtime/nbl/tasks
+	pp
+
+rules // All
+	
+	from-debug-str:
+		(task-tuple*, index-tuple*) -> str
+		with
+			task-section   := <from-task-debug> task-tuple*
+		; index-section* := <from-index-debug> index-tuple*
+		; str            := <prettyprint-analysis-ast> Sections([task-section|index-section*])
+
+rules // Task
+	
+	from-task-debug-str = from-task-debug; !Sections([<id>]); prettyprint-analysis-ast
+	
+	from-task-debug:
+		task-tuple* -> task-section
+		with
+			task-def*    := <map(from-task-debug-tuple)> task-tuple*
+		; task-section := Tasks(task-def*)
+			
+	from-task-debug-tuple:
+		(tid, instr, dep*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <map(to-taskref)> dep*, <to-instruction <+ make-abstract> instr, <to-res> res)
+		
+	to-tid:
+		tid -> <try(int-to-string)> tid
+		
+	to-taskref:
+		tid -> TaskRef(<to-tid> tid)
+		
+	to-res:
+		res -> <to-abstract-terms; (result-to-fail <+ result-to-empty <+ convert-terms)> res
+
+rules // Index
+	
+	from-index-debug-str = from-index-debug; !Sections(<id>); prettyprint-analysis-ast
+	
+	from-index-debug:
+		index-tuple* -> index-section*
+		with
+			index-section* := <map(from-index-partition-debug-tuple)> index-tuple*
+	
+  from-index-partition-debug-tuple:
+  	(partition, entry*) -> Index(<make-abstract> partition, entry'*)
+  	with
+  		entry'* := <map(make-abstract)> entry*
+
+rules // Instructions
+	
+	to-message-trigger: Success() -> Succ()
+	to-message-trigger: Failure() -> Fail()
+	to-message-trigger: Multiple() -> Mult()
+	
+	to-instruction:
+		Message(task, trigger, Note(_, term, message)) -> Msg(Note(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
+		
+	to-instruction:
+		Message(task, trigger, Warning(_, term, message)) -> Msg(Warn(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
+		
+	to-instruction:
+		Message(task, trigger, Error(_, term, message)) -> Msg(Err(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
+		
+	to-instruction = Choice(map(make-abstract))
+	
+	to-instruction = Concat(map(make-abstract))
+	
+	to-instruction = PropCalc(make-abstract)
+	
+	to-instruction = PropLookup(make-abstract, make-abstract)
+	
+	to-instruction = PropsLookup(make-abstract, make-abstract)
+	
+	to-instruction:
+		Rewrite(relation, term) -> Rewrite(<make-abstract> term, <make-abstract> relation)
+		
+	to-instruction:
+		Match(relation, term, binding*) -> Match(<make-abstract> term, <make-abstract> relation, <make-abstract> binding*)
+		
+	to-instruction:
+		ResolveDefs(scope, namespace, name) -> ResolveDefs(<make-abstract> namespace, <make-abstract> name, <make-abstract> scope)
+		
+	to-instruction:
+		ResolveNamedImports(scope, namespace, name) -> ResolveDefs(<make-abstract> namespace, <make-abstract> name, <make-abstract> scope)
+	
+	to-instruction:
+		DisambiguateDefs(def*, _, namespace, name) -> DisambiguateDefs(<make-abstract> def*)
+		
+rules // Task result terms
+	
+	term-to-taskref:
+		Appl("Result", [Int(tid)]) -> <to-taskref> tid
+		
+	all-terms-to-taskrefs = topdown-annos(try(term-to-taskref))
+
+rules // Index entries
+	
+	to-entry:
+		Appl("Def", [uri]) -> Def(uri)
+		
+	to-entry:
+		Appl("Use", [res]) -> Use(res)
+		
+	to-entry:
+		Appl("Prop", [uri, kind, val]) -> Prop(uri, kind, val)
+		
+	to-entry:
+		Appl("Alias", [uri1, uri2]) -> Alias(uri1, uri2)
+		
+	to-entry:
+		Appl("InverseAlias", [uri1, uri2]) -> IAlias(uri1, uri2)
+		
+	all-to-entry = topdown-annos(try(to-entry))
+	
+rules // URIs
+	
+	term-to-uri:
+		Appl("URI", [_, List(segment*)]) -> URI(<map(term-to-segment)> segment*)
+		
+	term-to-segment:
+		Appl("ID", [Appl(ns, []), Str(name)]) -> Id(<namespace-remove-nablns> ns, name)
+
+	term-to-segment:
+		Appl("ID", [Appl(ns, []), Str(name), Appl("NonUnique", [])]) -> Id(<namespace-remove-nablns> ns, name)
+		
+	term-to-segment:
+		Appl("ID", [Appl(ns, []), Str(name), Appl("Unique", [Str(u)])]) -> Id(<namespace-remove-nablns> ns, name, <qualifier-remove-partition> u)
+		
+	term-to-segment:
+		Appl("Anonymous", [Str(a)]) -> Anon(<qualifier-remove-partition> a)
+		
+	term-to-segment:
+		Appl("Subsequent", [Str(a)]) -> Subsq(<qualifier-remove-partition> a)
+		
+	qualifier-remove-partition = explode-string; last; ![<id>]; implode-string
+	
+	namespace-remove-nablns = explode-string; drop(|6); implode-string
+		
+	all-terms-to-uris = topdown-annos(try(term-to-uri))
+	
+rules // Special results
+	
+	result-to-fail:
+		Appl("Fail", []) -> Fail()
+		
+	result-to-empty:
+		Appl("None", []) -> Empty()
+	
+rules // Postprocessing
+	
+	quote-string:
+		Str(str) -> Str(<try(double-quote)> str)
+	
+	all-quote-strings = topdown-annos(try(quote-string))
+	
+	convert-terms = all-to-entry; all-terms-to-taskrefs; all-terms-to-uris; all-quote-strings
+	
+	make-abstract = to-abstract-terms; convert-terms
+	
+rules // Utilities
+	
+	topdown-annos(s) =
+		switch id
+			case has-annos  : ?t; !(<s; all(topdown-annos(s))> t, <get-annos; topdown-annos(s)> t); set-annos
+			otherwise       : s; all(topdown-annos(s))
+		end
+
+rules // Externals
+	
+	external to-abstract-terms(|)

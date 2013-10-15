@@ -1,0 +1,13 @@
+module Analysis.pp.generated
+
+strategies
+  prettyprint-Start :
+    Sections(a) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [a357]
+                     )
+                   ]
+    where a357 := <pp-V-list(prettyprint-Section|"1")> a
+
+  prettyprint-example =
+    prettyprint-Start

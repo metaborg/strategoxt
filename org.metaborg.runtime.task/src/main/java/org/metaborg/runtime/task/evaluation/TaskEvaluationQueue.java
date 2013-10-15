@@ -165,10 +165,10 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			defaultTaskEvaluator.queue(taskEngine, this, this.scheduled);
 			evaluateQueuedTasks(context, collect, insert, perform);
 
-			// Debug unevaluated tasks if debugging is enabled.
-			TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
-
 			if(!this.scheduled.isEmpty()) {
+				// Debug unevaluated tasks if debugging is enabled.
+				TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
+
 				// Make a copy of the dynamic dependency graph for later use.
 				final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> copiedRuntimeDependencies =
 					BidirectionalLinkedHashMultimap.create(runtimeDependencies);
@@ -189,7 +189,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 				}
 
 				// Do fixpoint evaluation until the results of tasks stop changing.
-				for(int i = 0; i < 10; ++i) {
+				for(int i = 0; i < 25; ++i) {
 					System.out.println("Fixpoint cycle " + i);
 
 					runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
@@ -229,6 +229,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 					}
 
 					if(done) {
+						System.out.println("Done with fixpoint evaluation!");
 						break;
 					}
 

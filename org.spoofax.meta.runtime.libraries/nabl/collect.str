@@ -243,7 +243,7 @@ rules // generic analysis of uses
 	nabl-use-subtasks-one(|partition, ns):
 		uri -> [[uri], wildcard-import]
 		with
-			wildcard-import := <new-task(|partition)> PropLookup(Import(ns), Def(uri))
+			wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
@@ -327,7 +327,7 @@ rules // generic analysis of imports
   where
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
   ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
-  ; proplookup := <new-task(|partition)> PropLookup(Import(ns), from-uri)
+  ; proplookup := <new-task(|partition)> PropsLookup(Import(ns), from-uri)
         
   nabl-scope-uri(|lang, uri*, ns):
     Current() -> <lookup-uri(|lang, ns)> uri*

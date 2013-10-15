@@ -1,0 +1,11 @@
+module URI.generated
+
+completions
+  completion template Segment : "ID:ID" =
+    <ID:ID> ":" <ID:ID>  
+  completion template Segment : "ID:ID#ID" =
+    <ID:ID> ":" <ID:ID> "#" <ID:ID>  
+  completion template Segment : "anon ID" =
+    "anon " <ID:ID>  
+  completion template Segment : "subsq ID" =
+    "subsq " <ID:ID>  

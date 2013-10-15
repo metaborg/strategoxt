@@ -24,8 +24,8 @@ public final class TaskEvaluationDebugging {
 					final Task task = taskEngine.getTask(taskID);
 					System.err.println("	" + taskID + ": " + task + " - " + toRuntimeDependency.get(taskID));
 				}
+				System.err.println();
 			}
-			System.err.println();
 
 			// Print out runtime dependencies.
 			for(IStrategoTerm taskID : unevaluated) {
