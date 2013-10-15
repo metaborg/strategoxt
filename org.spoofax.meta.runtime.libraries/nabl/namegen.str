@@ -2,11 +2,11 @@ module nbl/namegen
 
 imports
 	
-	nbl/collect
-	nbl/query
-	nbl/uri
-	nbl/utils
-	nbl/interface
+	nabl/collect
+	nabl/query
+	nabl/uri
+	nabl/utils
+	nabl/interface
 	editor/origins
 	index/core
 	index/query

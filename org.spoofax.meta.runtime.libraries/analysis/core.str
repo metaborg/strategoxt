@@ -2,12 +2,13 @@ module analysis/core
 
 imports
 	
-  nbl/collect
-  nbl/incremental
-  nbl/entries
-  nbl/uri
-  nbl/utils
+  analysis/interface
   index/core
+  nabl/collect
+  nabl/incremental
+  nabl/entries
+  nabl/uri
+  nabl/utils
   task/core
   task/messages
   editor/origins
@@ -70,7 +71,6 @@ rules // Analysis
 	  	  )
   	, id | "analyze-task-total")
   	  
-    
   analyze-messages:
   	(Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _), debug-result) -> 
   	(Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*), debug-result)

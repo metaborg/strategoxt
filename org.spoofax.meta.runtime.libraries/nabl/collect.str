@@ -1,18 +1,20 @@
-module nbl/collect
+module nabl/collect
 
 imports
 	
-	nbl/tasks
-	nbl/entries
-	nbl/check
-	nbl/namegen
-	nbl/interface
-	nbl/uri
-	nbl/utils
 	task/core
 	task/tasks
+	task/messages
+	nabl/tasks
+  nabl/entries
+  nabl/check
+  nabl/namegen
+  nabl/interface
+  nabl/uri
+  nabl/utils
+  properties/-
+	editor/origins
 	types/collect
-	types/tasks
 
 signature 
 
@@ -56,12 +58,7 @@ signature
 	  Import   : Namespace                   -> Property
 	  Import   : Language * Namespace        -> Property
 	  Import   : Language * Namespace * Name -> Property
-  	Type     : Property
-  	
-  constructors // property
-    
-    Prop : Property * Value * List(Dependency) -> Prop
-    
+  	  
   constructors // partition
   
   	CollectPartition : Partition
@@ -71,12 +68,8 @@ strategies // generic traversal
 	/**
 	 * Main strategy to collect all index elements and task* from an AST.
 	 */
-	nabl-collect(|partition, lang):
-	  ast -> ast''
-	  where
-	    new-hashtable => unique*;
-	    ast'  := <nabl-collect(id|lang, partition, unique*, [])> ast ;
-	    ast'' := <alltd(message-task(|partition))> ast'
+	nabl-collect(|partition, lang) =
+	  nabl-collect(id|lang, partition, <new-hashtable>, [])
 	  
 	/**
 	 * Performs the collection in a topdown traversal. 
@@ -96,12 +89,12 @@ strategies // generic traversal
     )    
   ; try(nabl-state-site)
   // visit children from left to right  
-  ; preserve-annos(force-origins(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
+  ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
   ; try(nabl-external-def-site(|partition))
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, child-uri*, state*))
-  ; try(nabl-prop-site(|lang, partition, state*, implicit*))
-  ; annotate-property-tasks(|lang, partition, uri'*)
+  ; try(nabl-prop-site(|lang, partition, uri*, state*, implicit*))
+  ; nabl-annotate-properties(|lang, partition, uri'*)
     
 	nabl-siblings(|lang, partition, unique*, uri*) = 
 		[]  
@@ -230,48 +223,34 @@ rules // generic analysis of uses
 		  <try(nabl-unresolved-task(|partition, choice))> name';
 		  if <is-completion-name> name' then
 		  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
-		  	completion-concat   := <new-task(|partition)> Concat(completion-subtask*);
+		  	completion-concat   := <new-task(|partition)> Combine(completion-subtask*);
 		  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name'
 		  else
 		  	result := <replace-annotations(?Use(_)|u)> name'
 	  	end
 
-	nabl-use-subtasks(disambiguate, wildcardimport|partition, ns, name, prop*, range): 
-		uri  -> [task|subtasks]
+	nabl-use-subtasks(|partition, ns, name, prop*, range):
+		uri -> <new-task(|partition)> ResolveDefs(uri*, ns, name, prop*)
 		with
-			task := <nabl-use-subtasks-one(disambiguate, wildcardimport|partition, ns, name, prop*, range)> uri;
       switch !range
-      	case One(): ![]
-      	case All(): <nabl-uri-parent < nabl-use-subtasks(disambiguate, id|partition, ns, name, prop*, range) + ![]> uri
-    	end => subtasks
+      	case One(): ![uri]
+      	case All(): ![uri|<nabl-uri-parents> uri]
+    	end;
+    	mapconcat(nabl-use-subtasks-one(|partition, ns)); <new-task(|partition)> Combine(<id>) => uri*
+    	// TODO: disambiguation
+    	// TODO: order of imported URI's is unclear
     	
-  nabl-use-subtasks-one(disambiguate, wildcardimport|partition, ns, name, prop*, range):
-		uri  -> disambiguated
+	nabl-use-subtasks-one(|partition, ns):
+		uri -> [[uri], wildcard-import]
 		with
-			uri'                := <nabl-use-subtask-uri(|partition)> uri;
-			defsTask            := <new-task(|partition)> ResolveDefs(uri', ns, name);
-			namedImportsTask    := <new-task(|partition)> ResolveNamedImports(uri', ns, name);
-			namedDefsTask       := <new-task(|partition)> ResolveDefs(namedImportsTask, ns, name);
-			
-			if wildcardimport then 
-				wildcardImportsTask := <new-task(|partition)> PropsLookup(Import(ns), Def(uri));
-				wildcardDefsTask    := [<new-task(|partition)> ResolveDefs(wildcardImportsTask, ns, name)]
-			else
-				wildcardDefsTask := []
-			end;
-
-      concatted     := <new-task(|partition)> Concat([defsTask, namedDefsTask|wildcardDefsTask]);
-      filtered      := <nabl-use-propconstraint(|partition)> (concatted, prop*);
-      disambiguated := <nabl-use-disambiguate(disambiguate|partition, prop*, ns, name)> filtered
-          	
-	nabl-use-subtask-uri(|partition) = try(is-list; !Choice(<id>); new-task(|partition))
+			wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
 		UseCandidate(ns, prop*, Current(), wci, _) -> choice
 		where
 			uri       := <lookup-uri(|lang, ns)> uri*;
-      subtask*  := <nabl-use-subtasks(id, !wci; ?True()|partition, ns, name, prop*, All())> uri; // TODO: only disambiguate if required.
+      subtask*  := <nabl-use-subtasks(|partition, ns, name, prop*, All())> uri; // TODO: only disambiguate if required.
       choice    := <new-task(|partition)> Choice(subtask*)
 
 	// candidate in another scope (result of resolution)	  
@@ -279,7 +258,7 @@ rules // generic analysis of uses
 		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*) -> choice
 		where
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*);
-			subtask*   := <nabl-use-subtasks(id, id|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
+			subtask*   := <nabl-use-subtasks(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result; // TODO: only disambiguate if required.
 			choice     := <new-task(|partition)> Choice(subtask*)
 			
 	nabl-use-propconstraint(|partition):
@@ -311,7 +290,7 @@ rules // completion
 		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, _) -> subtask*
 		where
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), []);
-			subtask*   := <nabl-resolve-all-defs-subtasks(|partition, ns, prop*, One())> ctx-result
+	    subtask*   := <nabl-resolve-all-defs-subtasks(|partition, ns, prop*, One())> ctx-result
     
 rules // generic analysis of imports
   
@@ -362,21 +341,7 @@ rules // generic analysis of imports
     Context(_, name, _, _) -> uri
     where
       Use(uri) := <nabl-collect-use> name
-      
-rules // generic analysis of properties
-  
-  // call back to generic analysis
-	nabl-props(|partition, prop*):
-	  name -> name'
-	  where
-	    Def(uri) := <nabl-collect-def> name;
-		  name'    := <foldl(extend-prop(|partition, uri))> (prop*, name)
-      
-	extend-prop(|partition, uri):
-		(Prop(type, result, dep*), name) -> name
-		where
-		  prop := <new-prop(|partition, uri, type, result)> name
-        
+              
 rules // name retrieval
   
   nabl-name = is-string

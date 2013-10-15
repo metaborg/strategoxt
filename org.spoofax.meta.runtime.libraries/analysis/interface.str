@@ -1,0 +1,6 @@
+module analysis/interface
+
+rules
+  
+  analyze-diff-entry = fail
+  

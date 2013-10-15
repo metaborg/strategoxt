@@ -7,8 +7,8 @@ imports
 	analysis/defaults
 	task/core
 	index/core
-	nbl/collect
-	nbl/namegen
+	nabl/collect
+	nabl/namegen
 
 rules
 	

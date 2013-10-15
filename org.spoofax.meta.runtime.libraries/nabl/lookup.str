@@ -1,12 +1,9 @@
-module nbl/lookup
+module nabl/lookup
 
 imports
   
-  nbl/collect
-  nbl/query
-  nbl/tasks
-  nbl/uri
-  nbl/entries
+  nabl/-
+  properties/query
   task/core
 
 rules // Lookup

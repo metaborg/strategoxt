@@ -1,9 +1,9 @@
-module nbl/query
+module nabl/query
 
 imports
   
-  nbl/uri
-  nbl/entries
+  nabl/uri
+  nabl/entries
   index/query
   
 rules // Specific queries
@@ -37,30 +37,17 @@ rules // Specific queries
     	alias-def* := <mapconcat(!Alias(<id>, ()); nabl-get-children(|ns)); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> uri*
 
   /**
-   * Gets a property that matches the kind of value and given URI, or fails if no property is found.
+   * Gets all Use entries that match the given URI.
    *
    * Example:
-   *   <nabl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
+   *   <nabl-get-all-uses> Def([Entity(), "M", "Bar"]) => [Use([Entity(), "M", "Bar"]), ...]
    *
-   * @param type Only properties of this kind is returned.
-   * @type Def(uri) or "name"{uri} or URI(language, path) -> Prop(uri, kind, value)
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Use(uri))
    */
-  nabl-get-property(|kind) = 
-  	nabl-get-all-properties(|kind); Hd
-      
-  /**
-   * Gets all properties that match the kind of value and given URI.
-   *
-   * Example:
-   *   <nabl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
-   *
-   * @param kind Only data of this kind is returned.
-   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
-   */
-  nabl-get-all-properties(|kind):
-		contains-uri* -> <mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)> uri*
+  nabl-get-all-uses:
+    containsURI -> <nabl-get-all> Use(uri)
     where
-    	uri* := <nabl-uris> contains-uri*
+    	uri := <nabl-uri> containsURI
 
   /**
    * Gets all Alias entries that match the given URI.

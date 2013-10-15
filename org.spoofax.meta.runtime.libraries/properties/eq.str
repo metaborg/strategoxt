@@ -1,0 +1,13 @@
+module properties/eq
+
+signature constructors
+  
+  Eq: Relation
+  
+strategies
+  
+  nabl-reflexive = ?Eq()
+  
+  nabl-property-eq = ?(_, <nabl-reflexive>, <eq; Fst>)
+
+  nabl-property-eq(|kind, rel, expected) = <nabl-property-eq> (kind, rel, (<id>, expected))

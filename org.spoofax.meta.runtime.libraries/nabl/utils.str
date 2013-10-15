@@ -1,4 +1,4 @@
-module nbl/utils
+module nabl/utils
 
 imports
 	
@@ -11,9 +11,6 @@ rules
 	
 	vdebug(s) = where(verbose < debug(s) + id)
 	verbose   = fail
-
-  force-origins(s) =
-    ![<id>]; all(s); ?[<id>]
 
 	is-completion-name = ?"completion123"
   fix-completion-name = is-completion-name; !""

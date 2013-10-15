@@ -1,10 +1,9 @@
-module nbl/resolve
+module nabl/resolve
 
 imports
   
-  nbl/tasks
-	nbl/entries
-	nbl/utils
+  nabl/tasks
+	nabl/entries
 	task/core
   task/utils
   

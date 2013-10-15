@@ -2,8 +2,8 @@ module nbl/incremental
 
 imports
 	
-	nbl/uri
-	nbl/entries
+	nabl/uri
+	nabl/entries
 	task/core
 	
 rules // Read generation

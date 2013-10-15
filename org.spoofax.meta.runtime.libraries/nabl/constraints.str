@@ -1,0 +1,81 @@
+module nabl/constraints
+
+imports
+  nabl/uri
+  nabl/tasks
+  task/core
+  task/tasks
+  
+rules
+  
+  nabl-lookup-local(|ctx) =
+    nabl-uri
+  ; nabl-lookup-local(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
+    
+  nabl-lookup-local(|ctx, ns) =
+    nabl-uri
+  ; nabl-lookup-local(|ctx, ns, <nabl-uri-name>)
+  
+  nabl-lookup-local(|ctx, ns, name) =
+    nabl-uri-parent
+  ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
+
+rules
+  
+  nabl-lookup-lexical(|ctx) =
+    nabl-uri
+  ; nabl-lookup-lexical(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
+    
+  nabl-lookup-lexical(|ctx, ns) =
+    nabl-uri
+  ; nabl-lookup-lexical(|ctx, ns, <nabl-uri-name>)
+  
+  nabl-lookup-lexical(|ctx, ns, name) =
+    nabl-uri-parents
+  ; map(<new-task(|ctx)> ResolveDefs(<id>, ns, name, []))
+  ; <new-task(|ctx)> Choice(<id>)
+  
+  nabl-lookup-lexical-parent(|ctx) =
+    nabl-uri
+  ; nabl-lookup-lexical-parent(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
+    
+  nabl-lookup-lexical-parent(|ctx, ns) =
+    nabl-uri
+  ; nabl-lookup-lexical-parent(|ctx, ns, <nabl-uri-name>)
+  
+  nabl-lookup-lexical-parent(|ctx, ns, name) =
+    nabl-uri-parent
+  ; nabl-lookup-lexical(|ctx, ns, name)
+    
+rules
+  
+  nabl-lookup-local-import(|ctx) =
+    nabl-uri
+  ; nabl-lookup-local-import(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
+  
+  nabl-lookup-local-import(|ctx, ns) =
+    nabl-uri
+  ; nabl-lookup-local-import(|ctx, ns, <nabl-uri-name>)
+  
+  nabl-lookup-local-import(|ctx, ns, name) =
+    <new-task(|ctx)> Fail() // ResolveWildcardImports(<nabl-uri-parent>, ns)
+  ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
+  
+rules
+  
+  nabl-lookup-lexical-import(|ctx) =
+    nabl-uri
+  ; nabl-lookup-lexical-import(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
+  
+  nabl-lookup-lexical-import(|ctx, ns) =
+    nabl-uri
+  ; nabl-lookup-lexical-import(|ctx, ns, <nabl-uri-name>)
+  
+  nabl-lookup-lexical-import(|ctx, ns, name) =
+    nabl-uri-parents
+  ; map(
+      <new-task(|ctx)> Fail() //ResolveWildcardImports(<id>, ns)
+    ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
+    )
+  ; <new-task(|ctx)> Choice(<id>)
+    

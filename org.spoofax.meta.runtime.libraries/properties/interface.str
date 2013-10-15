@@ -1,0 +1,14 @@
+module properties/interface
+
+strategies // implementations generated from NaBL
+  
+  nabl-custom-properties(add-properties) = fail
+  
+  nabl-collect-property(|lang, partition, uri*): (kind, term) -> <fail>
+
+strategies // user-defined implementations
+	
+	nabl-constraint(|lang, partition, uri*) = nabl-constraint(|partition)
+
+	nabl-constraint(|partition) = fail
+

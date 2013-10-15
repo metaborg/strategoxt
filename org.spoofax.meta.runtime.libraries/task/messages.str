@@ -3,7 +3,6 @@ module task/messages
 imports
 	
 	task/core
-	task/tasks
 	editor/origins
 	
 signature
@@ -11,18 +10,25 @@ signature
 	sorts
 	
 		Message
+		MessageTrigger
 		
 	constructors
 		
     Error   : Origin * Term * Msg -> Message
     Warning : Origin * Term * Msg -> Message
     Note    : Origin * Term * Msg -> Message
+    
+    Failure  : MessageTrigger // No results
+    Success  : MessageTrigger // At least one result
+    Multiple : MessageTrigger // More than one result
+
+    Message  : List(Result) * MessageTrigger * Term -> Instruction
 
 overlays
-	
-	MISSING_ORIGIN = "MISSING ORIGIN INFORMATION"
-    
-rules
+  
+  MISSING_ORIGIN = "MISSING ORIGIN INFORMATION"
+
+rules // message creation
 	
 	task-error-message(|message):
 		term -> Error(<task-message-origin-location-offset> term, term, message)
@@ -33,7 +39,8 @@ rules
 	task-note-message(|message):
     term -> Note(<task-message-origin-location-offset> term, term, message)
 
-
+rules // querying
+	
 	task-message:
 		Error(_, _, message) -> message
 
@@ -63,7 +70,7 @@ rules
 	task-message-origin:
 		Note(origin, _, _) -> origin
 	
-rules
+rules // task creation
 	
 	task-create-message-on-failure(|partition, task):
     message -> <new-task(|partition)> Message(task, Failure(), message)
@@ -102,6 +109,19 @@ rules
 		
 	task-create-note-on-multiple(|partition, task, message) =
 		task-note-message(|message); task-create-message-on-multiple(|partition, task)
+
+rules // task execution
+  
+  task-is-combinator = ?Message(_, _, _)
+
+  perform-task(|n):
+    Message(task, trigger, message) -> []
+    where
+      switch !trigger
+        case Failure()  : not(<Hd> task); task-add-message(|n, message)
+        case Success()  : <Hd> task; task-add-message(|n, message)
+        case Multiple() : <Tl; Hd> task; task-add-message(|n, message)
+      end
 
 rules
 	

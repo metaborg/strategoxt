@@ -2,7 +2,7 @@ module editor/outline-library
 
 imports
   editor/origins
-  nbl/utils
+  nabl/utils
   
 strategies
   

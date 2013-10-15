@@ -14,7 +14,7 @@ signature
   constructors
     
     Result : TaskID -> Result
-    Fail : Result
+    Fail   : Result
     
     Single     : List(Result) -> Result
     Dependency : List(TaskID) -> Result
