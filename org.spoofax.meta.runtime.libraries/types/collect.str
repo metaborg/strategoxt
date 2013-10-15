@@ -14,9 +14,11 @@ signature
     Type : Property
     
 rules
-       
-  nabl-collect-property(|lang, partition, uri*): (Type(), term) -> <type-of(|lang, partition, uri*)> term
   
+  create-property-task(|ctx, kind) =
+    where(Type() := kind)
+  ; create-type-task(|ctx)
+       
   type-is(|partition)           = nabl-prop-calc(|partition, [])
   type-is(|partition, dep*)     = nabl-prop-calc(|partition, dep*)
   
@@ -29,12 +31,6 @@ rules
   type-match(|partition, expected)           = nabl-prop-match(|Type(), partition, Eq(), expected)
   type-match(|partition, relation, expected) = nabl-prop-match(|Type(), partition, relation, expected)
    
-  type-check(|partition):
-    (exp, expected, err) -> <task-create-error-on-failure(|partition, check, err)> exp
-    where
-      actual := <type-of(|partition)> exp 
-    ; check  := <type-match(|partition, expected)> actual
-      
   store-type(|partition, type) =
     nabl-store-prop(|partition, Prop(Type(), type, []))
     

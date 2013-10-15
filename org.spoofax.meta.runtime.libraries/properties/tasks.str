@@ -22,14 +22,14 @@ rules
   ; nabl-add-uri-read(|n)
 	// HACK: task-result-combinations also creates dependencies if any result has not been solved yet.
 	// Proper way would be to decompose the PropLookup into a ResolveUseToDef, GetProperty and InsertCombinations task.
-  ; nabl-get-all-properties(|kind)
+  ; get-index-properties(|kind)
   ; map(fancy-combination)
   ; (concat <+ filter(?Dependency(<id>)); !Dependency(<concat>))
     
   perform-cyclic-task(|n) =
   	?PropsLookup(kind, <nabl-uri>)
   ; nabl-add-uri-read(|n)
-	; nabl-get-all-properties(|kind); filter(insert-results); flatten-list; make-set
+	; get-index-properties(|kind); filter(insert-results); flatten-list; make-set
 	  // TODO: does not make combinations
   
   fancy-combination = 

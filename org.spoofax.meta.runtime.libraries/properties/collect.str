@@ -40,6 +40,8 @@ rules // generic analysis of properties
     where
       result := <new-task(|partition, <dependent-tasks> dep*)> Id(prop)
       
+rules
+        
   // generic collection of property tasks
   nabl-annotate-properties(|lang, partition, uri*) =
     where(
@@ -54,8 +56,8 @@ rules // generic analysis of properties
   nabl-annotate-property(|lang, partition, uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
-      not(<nabl-get-property-task(|kind)> term)
-    ; prop := <nabl-collect-property(|lang, partition, uri*)>  
+      not(<get-property-task(|kind)> term)
+    ; prop := <create-property-task(|partition, kind)> term
       
 strategies
   
@@ -80,16 +82,16 @@ strategies
   ; check*    := <map(<new-task(|partition)> PropCheck(kind, relation, actual, <id>))> expected*
   ; <new-task(|partition, <dependent-tasks> check*)> Choice(check*)
   
-  // FIXME: is resolve a Result or a task ID?
-  nabl-prop-constraints(|partition, resolve) =
-    <new-task(|partition, <dependent-tasks> [resolve | <map(nabl-prop-constraint)>])> Id(resolve)
-      
-  nabl-prop-constraint(|partition, resolve):
-    Prop(kind, expected, dep*) -> constr
-    where
-      actual := <new-task(|partition)> PropsLookup(kind, resolve) 
-    ; dep'*  := <dependent-tasks> [expected, dep*]
-    ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
+  // // FIXME: is resolve a Result or a task ID?
+  // nabl-prop-constraints(|partition, resolve) =
+  //   <new-task(|partition, <dependent-tasks> [resolve | <map(nabl-prop-constraint)>])> Id(resolve)
+  //     
+  // nabl-prop-constraint(|partition, resolve):
+  //   Prop(kind, expected, dep*) -> constr
+  //   where
+  //     actual := <new-task(|partition)> PropsLookup(kind, resolve) 
+  //   ; dep'*  := <dependent-tasks> [expected, dep*]
+  //   ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
     
 rules
   

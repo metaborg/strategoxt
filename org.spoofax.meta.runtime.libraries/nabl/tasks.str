@@ -58,7 +58,7 @@ rules // Resolve
 		Prop(kind, expected, _) -> result
 		where
 			uri    := <nabl-uri> definition;
-      value  := <nabl-get-property(|kind)> uri;
+      value  := <get-index-property(|kind)> uri;
       value' := <insert-results-or-create-dependency> value;
       switch id
       	case task-collect-dependencies => d : !d

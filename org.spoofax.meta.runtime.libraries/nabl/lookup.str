@@ -30,5 +30,5 @@ rules // Imports
   nabl-get-import-uris-named(|language, namespace, name):
     uri -> importURI*
     with
-      importResult* := <nabl-get-all-properties(|Import(language, namespace, name))> uri; // TODO: this now uses aliasses?
+      importResult* := <get-index-properties(|Import(language, namespace, name))> uri; // TODO: this now uses aliasses?
       importURI*    := <map(task-get-solved <+ task-create-dependencies; ![<id>]); concat> importResult*

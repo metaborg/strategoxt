@@ -6,43 +6,67 @@ imports
 	task/core
 	properties/entries
   properties/tasks
-  
-rules
-	
-  /**
-   * Gets a property that matches the kind of value and given URI, or fails if no property is found.
-   *
-   * Example:
-   *   <nabl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
-   *
-   * @param type Only properties of this kind is returned.
-   * @type Def(uri) or "name"{uri} or URI(language, path) -> Prop(uri, kind, value)
-   */
-  nabl-get-property(|kind) = 
-    nabl-get-all-properties(|kind); Hd
-      
-  /**
-   * Gets all properties that match the kind of value and given URI.
-   *
-   * Example:
-   *   <nabl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
-   *
-   * @param kind Only data of this kind is returned.
-   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
-   */
-  nabl-get-all-properties(|kind):
-    contains-uri* -> <mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)> uri*
-    where
-      uri* := <nabl-uris> contains-uri*
+  properties/interface
+  nabl/interface
 
-  nabl-get-all-properties(|kind) = nabl-get-property-task(|kind); insert-results
-  
-  nabl-get-property-task(|partition, kind) = 
-     nabl-get-property-task(|kind)
-  <+ <new-task(|partition)> PropsLookup(kind, <nabl-uri>)
-  <+ <new-task(|partition)> Fail()
-  
-  nabl-get-property-task(|kind) = 
+rules
+
+  get-or-create-property-task(|ctx, kind) = 
+     get-property-task(|kind) 
+  <+ create-property-task(|ctx, kind)
+    
+  get-property-task(|kind) =
      get-annos
    ; fetch-elem(?(kind, <id>))
+    
+rules
+  
+  get-property(|kind) =
+     get-property-task(|kind)
+   ; insert-results // TODO: is this the right insertion?
+  <+ try(nabl-name)
+   ; get-index-property(|kind)
+   
+  get-index-property(|kind) =
+    nabl-uris // TODO: how to handle multiple values?
+  ; fetch-elem(!Prop(<id>, kind, ()); nabl-get-value)
+   
+  get-index-properties(|kind) =
+    nabl-uris // TODO: how to handle multiple values?
+  ; mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)
+   
+    
+   
+//   /**
+//    * Gets a property that matches the kind of value and given URI, or fails if no property is found.
+//    *
+//    * Example:
+//    *   <nabl-get-property(|Size())> Def([Entity(), "Bar"]) => Size(8)
+//    *
+//    * @param type Only properties of this kind is returned.
+//    * @type Def(uri) or "name"{uri} or URI(language, path) -> Prop(uri, kind, value)
+//    */
+//   nabl-get-property(|kind) = 
+//     nabl-get-all-properties(|kind); Hd
+//       
+//   /**
+//    * Gets all properties that match the kind of value and given URI.
+//    *
+//    * Example:
+//    *   <nabl-get-all-properties(|Size())> Def([Entity(), "Bar"]) => [Size(8), ...]
+//    *
+//    * @param kind Only data of this kind is returned.
+//    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Prop(uri, kind, value))
+//    */
+//   nabl-get-all-properties(|kind):
+//     contains-uri* -> <mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)> uri*
+//     where
+//       uri* := <nabl-uris> contains-uri*
+// 
+//   nabl-get-all-properties(|kind) = nabl-get-property-task(|kind); insert-results
+//   
+//   nabl-get-property-task(|partition, kind) = 
+//      nabl-get-property-task(|kind)
+//   <+ <new-task(|partition)> PropsLookup(kind, <nabl-uri>)
+//   <+ <new-task(|partition)> Fail()
   

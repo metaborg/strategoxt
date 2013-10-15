@@ -5,6 +5,13 @@ imports
   properties/query
   types/collect
   
-rules
+rules // during analysis
   
-  type-of = nabl-get-property(|Type())
+  type-task(|ctx) = get-or-create-property-task(|ctx, Type())
+  get-type-task   = get-property-task(|Type())
+  
+rules // post analysis
+  
+  get-type =
+     get-property(|Type())
+     
