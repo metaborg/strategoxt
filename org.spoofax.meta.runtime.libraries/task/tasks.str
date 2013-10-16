@@ -10,12 +10,13 @@ signature
 
 	constructors
 		
-    Id      : Term              -> Instruction   
-    Combine : List(Term)        -> Instruction
-    Collect : List(Term)        -> Instruction
-    Choice  : List(List(Term))  -> Instruction
-    Rewrite : ID * Term         -> Instruction
-    Index   : Int * List(Term)  -> Instruction
+    Id       : Term              -> Instruction   
+    Combine  : List(Term)        -> Instruction
+    Collect  : List(Term)        -> Instruction
+    Choice   : List(List(Term))  -> Instruction
+    Sequence : List(Term)        -> Instruction
+    Rewrite  : ID * Term         -> Instruction
+    Index    : Int * List(Term)  -> Instruction
     
 rules
 	
@@ -28,6 +29,13 @@ rules
 	
 	task-is-combinator = ?Choice(_)
   perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
+  
+rules
+	
+	task-is-combinator = ?Sequence(_)
+  perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
+  
+rules
   
   perform-task(|nr) = ?Id(<MkSingleton>)
   	
