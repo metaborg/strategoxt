@@ -36,6 +36,7 @@ rules // Error checking tasks
 				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
 			end
 			
+	// TODO: check needs to be converted into a task.
 	nabl-hiding-task(|partition):
 		name -> name
 		where
@@ -52,7 +53,7 @@ rules // Error checking tasks
 			task	:= <new-task(|partition)> Choice(task*);
 			<task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
 
-	message-task(|partition) = 
+	nabl-constraint(|partition) = 
 		nabl-hiding-task(|partition)
 
 rules // Legacy
