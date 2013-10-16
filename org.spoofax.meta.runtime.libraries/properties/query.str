@@ -23,8 +23,8 @@ rules
   
   get-property(|kind) =
      get-property-task(|kind)
-   ; insert-results // TODO: is this the right insertion? probably need recursive insertion.
-  <+ try(nabl-name)
+   ; insert-results // TODO: is this the right insertion?
+  <+ try(nabl-get-name)
    ; get-index-property(|kind)
    
   get-index-property(|kind) =

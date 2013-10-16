@@ -346,7 +346,7 @@ rules // generic analysis of imports
               
 rules // name retrieval
   
-  nabl-name = is-string
+  nabl-get-name = is-string
   
   nabl-name-apply(s) = is-string; s
     
@@ -355,22 +355,22 @@ rules // name retrieval
 rules // URI retrieval
   
   nabl-collect-def =
-    try(nabl-name);
+    try(nabl-get-name);
     get-annos;
     collect-one(?Def(_))
     
   nabl-collect-all-def =
-    try(nabl-name);
+    try(nabl-get-name);
     get-annos;
     collect-all(?Def(_))
     
   nabl-collect-use =
-    try(nabl-name);
+    try(nabl-get-name);
     get-annos;
     collect-one(?Use(_))
     
   nabl-collect-all-use =
-    try(nabl-name);
+    try(nabl-get-name);
     get-annos;
     collect-all(?Use(_))
     

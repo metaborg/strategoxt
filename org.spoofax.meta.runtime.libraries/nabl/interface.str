@@ -21,7 +21,7 @@ strategies // Collect
 	
 strategies // Projections
   
-	nabl-name = fail
+	nabl-get-name = fail
 	
 	nabl-name-apply(s) = fail
 	
