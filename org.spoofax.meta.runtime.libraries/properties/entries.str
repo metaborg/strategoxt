@@ -20,18 +20,26 @@ rules // Index entries to diff
 
 rules
   
-  new-prop(|partition, uri, kind, val):
-  x -> prop
-  with
-    prop := <origin-track-forced(!Prop(uri, kind, val))> x;
-    <index-add(|partition)> prop
-      
+	new-prop(|partition, uri, kind, val):
+		x -> prop
+		with
+			prop := <origin-track-forced(!Prop(uri, kind, val))> x;
+			<index-add(|partition)> prop
+	      
 rules // index uri & value projections
   
   /** @internal */  
-  nabl-uri-impl:
+  nabl-uri:
     Prop(uri, _, _) -> uri
     
+  /** @internal */  
+  nabl-uris:
+    Prop(uri, _, _) -> [uri]
+    
   /** @internal */
-  nabl-value-impl:
+  nabl-value:
     Prop(_, _, value) -> value
+    
+  /** @internal */
+  nabl-values:
+    Prop(_, _, value) -> [value]

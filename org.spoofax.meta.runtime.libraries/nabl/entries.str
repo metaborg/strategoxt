@@ -17,7 +17,6 @@ signature
     Alias        : URI * URI              -> Entry
     InverseAlias : URI * URI              -> Entry
     Use          : Result                 -> Entry
-    Prop         : URI * Property * Value -> Entry
 
 rules // Index entries to diff
   
@@ -82,14 +81,6 @@ rules // index uri & value projections
   nabl-uris:
     Use(uri) -> <nabl-collect-all-resolved-defs; map(nabl-uri)> uri
     
-  /** @internal */  
-  nabl-uri:
-    Prop(uri, _, _) -> uri
-    
-  /** @internal */  
-  nabl-uris:
-    Prop(uri, _, _) -> [uri]
-    
   /** @internal */
   nabl-value:
     Def(value) -> value
@@ -121,11 +112,3 @@ rules // index uri & value projections
   /** @internal */
   nabl-values:
     Use(value) -> <nabl-uris>
-    
-  /** @internal */
-  nabl-value:
-    Prop(_, _, value) -> value
-    
-  /** @internal */
-  nabl-values:
-    Prop(_, _, value) -> [value]
