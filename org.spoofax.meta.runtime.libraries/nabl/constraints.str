@@ -58,6 +58,7 @@ rules
   ; nabl-lookup-local-import(|ctx, ns, <nabl-uri-name>)
   
   nabl-lookup-local-import(|ctx, ns, name) =
+  	// TODO: imports
     <new-task(|ctx)> Fail() // ResolveWildcardImports(<nabl-uri-parent>, ns)
   ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
   
@@ -74,6 +75,7 @@ rules
   nabl-lookup-lexical-import(|ctx, ns, name) =
     nabl-uri-parents
   ; map(
+    	// TODO: imports
       <new-task(|ctx)> Fail() //ResolveWildcardImports(<id>, ns)
     ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
     )
