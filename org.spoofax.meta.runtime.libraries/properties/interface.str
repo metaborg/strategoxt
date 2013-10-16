@@ -12,3 +12,5 @@ strategies // user-defined implementations
 
 	nabl-constraint(|partition) = fail
 
+	nabl-property-eq = fail
+	
