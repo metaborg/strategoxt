@@ -19,16 +19,16 @@ templates
 	Instruction.Msg = <show <MsgType> <Term> on <Term> when <Term> <MsgTrigger>>
 	
 	Instruction.Choice = <choose <Term*; separator=" <+ ">>
-	Instruction.Concat = <concat <Term*; separator=" + ">>
+	Instruction.Sequence = <sequence <Term*; separator=" ; ">>
+	Instruction.Combine = <concat <Term*; separator=" + ">>
 	
-	Instruction.PropCalc = <produce <Term>>
+	Instruction.Id = <produce <Term>>
 	Instruction.PropLookup = <lookup property <Term> on <Term>>
 	Instruction.PropsLookup = <lookup properties <Term> on <Term>>
+	Instruction.PropCheck = <check prop <Term> <Term> against <Term> using relation <Term>>
 	
 	Instruction.Rewrite = <rewrite <Term> using relation <Term>>
-	Instruction.Match = <match <Term> using relation <Term> with bindings <Term>>
+	Instruction.Match = <match <Term> using relation <Term> wrt bindings <Term>>
 		
-	Instruction.ResolveDefs = <resolve <Term> <Term> definition in <Term>>
-	Instruction.ResolveNamedImports = <resolve <Term> <Term> import in <Term>>
-	Instruction.DisambiguateDefs = <disambiguate <Term>>
+	Instruction.ResolveDefs = <resolve <Term> <Term> definition in <Term> wrt props <Term>>
 	
