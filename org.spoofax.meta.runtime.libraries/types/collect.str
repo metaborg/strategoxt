@@ -2,10 +2,9 @@ module types/collect
 
 imports 
 	
-  task/-
-  nabl/-
-  properties/-
-  types/-
+	types/interface
+	properties/collect
+	properties/eq
   
 signature
 

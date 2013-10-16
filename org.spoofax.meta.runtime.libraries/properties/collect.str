@@ -2,9 +2,16 @@ module properties/collect
 
 imports 
 	
-  task/-
-  properties/-
-  nabl/-
+	properties/entries
+	properties/tasks
+	properties/interface
+	properties/query
+  task/core
+  task/tasks
+  nabl/collect
+  nabl/uri
+  nabl/tasks
+  nabl/utils
   editor/origins
   types/collect
   

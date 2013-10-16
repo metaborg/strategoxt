@@ -2,7 +2,9 @@ module nabl/lookup
 
 imports
   
-  nabl/-
+	nabl/query
+	nabl/uri
+	nabl/collect
   properties/query
   task/core
 

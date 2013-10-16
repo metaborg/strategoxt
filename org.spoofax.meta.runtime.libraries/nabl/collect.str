@@ -12,7 +12,9 @@ imports
   nabl/interface
   nabl/uri
   nabl/utils
-  properties/-
+  properties/collect
+  properties/entries
+  properties/tasks
 	editor/origins
 	types/collect
 

@@ -2,8 +2,10 @@ module properties/tasks
 
 imports 
 	
-	nabl/-
-	properties/-
+	nabl/incremental
+	nabl/uri
+	properties/query
+	properties/eq
   task/core
   
 signature
