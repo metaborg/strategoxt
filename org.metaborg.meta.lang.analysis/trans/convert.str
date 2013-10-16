@@ -5,7 +5,7 @@ imports
 	include/Analysis
 	lib/runtime/task/tasks
 	lib/runtime/task/messages
-	lib/runtime/nbl/tasks
+	lib/runtime/nabl/tasks
 	pp
 
 rules // All
