@@ -1,8 +1,9 @@
 module names
 
 imports
-  lib/runtime/nbl/-
+  lib/runtime/nabl/-
   lib/runtime/task/-
+  lib/runtime/properties/-
   lib/runtime/types/-
   lib/runtime/editor/-
   include/Analysis
@@ -21,6 +22,12 @@ rules
         nabl-scope(|[NablNsTask()])
       |
       )
+
+  nabl-get-scope =
+    ?Sections(_) ; ![NablNsTask()]
+
+  nabl-get-name :
+    TaskDef(t, _, _, _) -> <strip-annos> t
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
     ?TaskDef(t, _, _, _)
@@ -48,6 +55,9 @@ rules
         ; match(implicits__|[])
       |
       )
+
+  nabl-get-name :
+    TaskRef(t) -> <strip-annos> t
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
     ?TaskRef(t)
