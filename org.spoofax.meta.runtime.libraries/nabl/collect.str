@@ -243,9 +243,10 @@ rules // generic analysis of uses
     	// TODO: order of imported URI's is unclear
     	
 	nabl-use-subtasks-one(|partition, ns):
-		uri -> [[uri], wildcard-import]
+		uri -> [uri', wildcard-import]
 		with
-			wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
+		  uri' := <try(nabl-is-uri; MkSingleton)> uri
+		; wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
 		  	
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
