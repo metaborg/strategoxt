@@ -14,7 +14,7 @@ signature
     
     Prop  : URI * Property * Value -> Entry
 
-rules // Index entries to diff
+rules // Index entries to diff for incrementality
   
   analyze-diff-entry = ?Prop(_, _, _)
 

@@ -18,9 +18,11 @@ signature
     InverseAlias : URI * URI              -> Entry
     Use          : Result                 -> Entry
 
-rules // Index entries to diff
+rules // Index entries to diff for incrementality
   
   analyze-diff-entry = ?Def(_)
+  
+  analyze-diff-entry = ?Alias(_, _)
  
 rules
   

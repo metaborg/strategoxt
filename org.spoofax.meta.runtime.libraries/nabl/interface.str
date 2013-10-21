@@ -43,3 +43,7 @@ strategies // Default error checks
 	
 	nabl-check-disable-hiding(|uri, ns) = fail
 	
+strategies // Incrementality
+	
+	nabl-diff-entry = fail
+	
