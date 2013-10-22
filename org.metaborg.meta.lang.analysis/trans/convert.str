@@ -173,10 +173,12 @@ rules // Utilities
 
 	to-abstract-terms =
 		switch id
-			case not(is-tuple); ?cons#(terms) : !Appl(cons, <map(to-abstract-terms)> terms)
-			case is-tuple;      ?_#(terms)    : !Tupl(<map(to-abstract-terms)> terms)
-			case is-list;       ?terms        : !List(<map(to-abstract-terms)> terms)
-			case is-int;        ?int          : !Int(<int-to-string> int)
-			case is-real;       ?real         : !Real(<real-to-string> real)
-			case is-string;     ?str          : !Str(str)
+			case is-appl;   ?cons#(terms) : !Appl(cons, <map(to-abstract-terms)> terms)
+			case is-tuple;  ?_#(terms)    : !Tupl(<map(to-abstract-terms)> terms)
+			case is-list;   ?terms        : !List(<map(to-abstract-terms)> terms)
+			case is-int;    ?int          : !Int(<int-to-string> int)
+			case is-real;   ?real         : !Real(<real-to-string> real)
+			case is-string; ?str          : !Str(str)
 		end
+
+	is-appl = not(is-tuple <+ is-list <+ is-int <+ is-real <+ is-string)
