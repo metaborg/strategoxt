@@ -16,7 +16,7 @@ signature
 
 rules // Index entries to diff for incrementality
   
-  analyze-diff-entry = ?Prop(_, _, _)
+  nabl-diff-entry = ?Prop(_, _, _)
 
 rules
   

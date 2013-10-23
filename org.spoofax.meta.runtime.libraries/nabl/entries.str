@@ -20,9 +20,9 @@ signature
 
 rules // Index entries to diff for incrementality
   
-  analyze-diff-entry = ?Def(_)
+  nabl-diff-entry = ?Def(_)
   
-  analyze-diff-entry = ?Alias(_, _)
+  nabl-diff-entry = ?Alias(_, _)
  
 rules
   
