@@ -49,7 +49,8 @@ rules // Error checking tasks
 			else
 				uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
 			end;
-			task := <mapconcat(nabl-use-subtask(|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
+			task* := <map(nabl-use-subtask(|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
+			task  := <new-task(|partition)> Choice(task*);
 			<task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
 
 	nabl-constraint(|partition) = 
