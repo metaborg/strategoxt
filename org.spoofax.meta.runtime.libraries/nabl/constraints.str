@@ -2,9 +2,12 @@ module nabl/constraints
 
 imports
   nabl/uri
+  nabl/collect
+  nabl/entries
   nabl/tasks
   task/core
   task/tasks
+  properties/tasks
   
 rules
   
@@ -58,8 +61,8 @@ rules
   ; nabl-lookup-local-import(|ctx, ns, <nabl-uri-name>)
   
   nabl-lookup-local-import(|ctx, ns, name) =
-  	// TODO: imports
-    <new-task(|ctx)> Fail() // ResolveWildcardImports(<nabl-uri-parent>, ns)
+    nabl-uri-parent
+  ; <new-task(|ctx)> PropsLookup(Import(ns), Def(<id>))
   ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
   
 rules
@@ -75,8 +78,7 @@ rules
   nabl-lookup-lexical-import(|ctx, ns, name) =
     nabl-uri-parents
   ; map(
-    	// TODO: imports
-      <new-task(|ctx)> Fail() //ResolveWildcardImports(<id>, ns)
+    	<new-task(|ctx)> PropsLookup(Import(ns), Def(<id>))
     ; <new-task(|ctx)> ResolveDefs(<id>, ns, name, [])
     )
   ; <new-task(|ctx)> Choice(<id>)
