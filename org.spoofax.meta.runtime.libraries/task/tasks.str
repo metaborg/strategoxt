@@ -17,7 +17,7 @@ signature
     Sequence : List(Term)        -> Instruction
     Rewrite  : ID * Term         -> Instruction
     Index    : Int * List(Term)  -> Instruction
-    
+    Length   : List(Term)        -> Instruction
 rules
 	
 	perform-cyclic-task(|nr) = fail
@@ -56,4 +56,5 @@ rules
 rules
   
   perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
+  perform-task(|nr) = ?Length(<length>);  MkSingleton
   
