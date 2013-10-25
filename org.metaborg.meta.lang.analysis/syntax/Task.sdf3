@@ -23,7 +23,7 @@ templates
 >
 	TaskRef.TaskRef = <<TASKID>>
 	
-	Instruction = <<Term>>
+	Instruction = <<Term>> {avoid}
 	
 	Result       = <<Term>>
 	Result.Fail  = "fail"

@@ -6,7 +6,7 @@ exports
     "tasks" TaskDef*                                                    -> Section     {cons("Tasks")}
     "task" TASKID "[" {TaskRef ","}* "]" "=" Instruction "-" ">" Result -> TaskDef     {cons("TaskDef")}
     TASKID                                                              -> TaskRef     {cons("TaskRef")}
-    Term                                                                -> Instruction 
+    Term                                                                -> Instruction {avoid}
     Term                                                                -> Result      
     "fail"                                                              -> Result      {cons("Fail")}
     "_"                                                                 -> Result      {cons("Empty")}
