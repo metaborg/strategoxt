@@ -99,6 +99,14 @@ strategies
   //     actual := <new-task(|partition)> PropsLookup(kind, resolve) 
   //   ; dep'*  := <dependent-tasks> [expected, dep*]
   //   ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
+
+rules
+  
+    create-property-task(|ctx, kind) :
+    x -> <nabl-prop-calc(|ctx, t*)> t*
+    where 
+    	<is-list> x
+    ; t* := <map(get-or-create-property-task(|ctx, kind))> x
     
 rules
   

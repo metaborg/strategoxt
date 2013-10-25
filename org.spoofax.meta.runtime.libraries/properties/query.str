@@ -12,11 +12,13 @@ imports
 rules
 
   get-or-create-property-task(|ctx, kind) = 
-     get-property-task(|kind) 
+     get-property-task(|kind)
+  <+ map(create-property-task(|ctx, kind))
   <+ create-property-task(|ctx, kind)
-    
+  
   get-property-task(|kind) =
-     get-annos
+     map(get-property-task(|kind))
+  <+ get-annos
    ; fetch-elem(?(kind, <id>))
     
 rules
