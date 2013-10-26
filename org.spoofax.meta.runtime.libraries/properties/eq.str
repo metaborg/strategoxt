@@ -8,6 +8,9 @@ strategies
   
   nabl-reflexive = ?Eq()
   
-  nabl-property-eq = ?(_, <nabl-reflexive>, <eq; Fst>)
-
+  nabl-property-eq:
+    (_, rel, p) -> <where(strip-annos; eq); Fst> p
+    where
+      <nabl-reflexive> rel
+  
   nabl-property-eq(|kind, rel, expected) = <nabl-property-eq> (kind, rel, (<id>, expected))
