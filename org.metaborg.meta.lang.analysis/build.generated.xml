@@ -95,6 +95,7 @@
 			<include name="**/*.tmpl" />
 			<include name="**/*.sdf3" />
 			<include name="**/*.nab" />
+			<include name="**/*.ts" />
 		</fileset>
 	</path>
 
