@@ -1,0 +1,34 @@
+module Analysis-Menus
+
+imports Analysis-Menus.generated
+
+  // This file can be used to specify toolbar menus.
+  // See the imported file for a brief introduction and examples.
+
+menus
+  
+  menu: "Actions"
+    
+    action: "Generate Java"        = generate-java (openeditor) (realtime)
+    action: "Show Abstract Syntax" = debug-show-aterm (openeditor) (realtime) (meta) (source)
+    action: "Show Analyzed Syntax" = debug-show-analyzed (openeditor) (meta)
+    
+    separator
+    
+    submenu: "Show Index"
+      action: "Project"            = debug-index-project (openeditor) (meta)
+      action: "Partition"          = debug-index-partition (openeditor) (meta)
+    end
+    
+    submenu: "Show Tasks"
+      action: "Project"            = debug-task-project (openeditor) (meta)
+      action: "Partition"          = debug-task-partition (openeditor) (meta)
+      action: "Selection"          = debug-task-selection (openeditor) (meta)
+    end
+    
+    submenu: "Show Analysis"
+      action: "Project"            = debug-project (openeditor) (meta)
+      action: "Partition"          = debug-partition (openeditor) (meta)
+    end
+    
+    action: "Reset and reanalyze"  = debug-reanalyze (meta)   

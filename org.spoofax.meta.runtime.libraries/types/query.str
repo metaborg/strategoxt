@@ -1,0 +1,17 @@
+module types/query
+
+imports
+  
+  properties/query
+  types/collect
+  
+rules // during analysis
+  
+  type-task(|ctx) = get-or-create-property-task(|ctx, Type())
+  get-type-task   = get-property-task(|Type())
+  
+rules // post analysis
+  
+  get-type =
+     get-property(|Type())
+     

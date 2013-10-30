@@ -1,0 +1,117 @@
+module properties/collect
+
+imports 
+	
+	properties/entries
+	properties/tasks
+	properties/interface
+	properties/query
+  task/core
+  task/tasks
+  nabl/collect
+  nabl/uri
+  nabl/tasks
+  nabl/utils
+  editor/origins
+  types/collect
+  
+signature
+  
+  sorts
+  
+    Property
+    
+  constructors
+    
+    Prop : Property * Value * List(Dependency) -> Prop
+
+rules // generic analysis of properties
+  
+  // call back to generic analysis
+  nabl-store-props(|partition, prop*) =
+    where (
+  	  ?name
+  	; nabl-collect-def; nabl-uri => uri
+	  ; <map(nabl-store-prop(|partition, uri, name))> prop*
+	  )
+	
+	nabl-store-prop(|partition, prop) =
+    where (
+      ?name
+    ; nabl-collect-def; nabl-uri => uri
+    ; <nabl-store-prop(|partition, uri, name)> prop
+    )
+      
+  nabl-store-prop(|partition, uri, name):
+    Prop(kind, prop, dep*) -> <new-prop(|partition, uri, kind, result)> name
+    where
+      result := <new-task(|partition, <dependent-tasks> dep*)> Id(prop)
+      
+rules
+        
+  // generic collection of property tasks
+  nabl-annotate-properties(|lang, partition, uri*) =
+    where(
+      iset := <new-iset>
+    ; try(nabl-custom-properties(\p* -> <iset-addlist(|p*); fail> iset\))
+    ; kind* := [Type()|<iset-elements> iset]
+    )
+  ; !(kind*, <remove-property-annotations(|kind*)>)
+  ; foldl(nabl-annotate-property(|lang, partition, uri*) <+ Snd)
+  ; where(try(nabl-constraint(|lang, partition, uri*)))
+  
+  nabl-annotate-property(|lang, partition, uri*):
+    (kind, term{a*}) -> term{(kind, prop), a*}
+    where
+      not(<get-property-task(|kind)> term)
+    ; prop := <create-property-task(|partition, kind)> term
+      
+strategies
+  
+  nabl-prop-calc(|partition, dep*) = 
+    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
+  ; <new-task(|partition, all-dep*)> Id(<id>)
+  
+  nabl-prop-list(|partition, dep*) = 
+    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
+  ; <new-task(|partition, all-dep*)> Combine(<id>)
+    
+  nabl-prop-lookup(|kind, partition, dep*) = 
+     get-annos
+   ; fetch-elem(?(kind, <id>))
+  <+ where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
+   ; <new-task(|partition, all-dep*)> CollectDefs(<id>)
+   ; <new-task(|partition)> PropsLookup(kind, <id>) 
+  
+  nabl-prop-match(|kind, partition, relation, expected) = 
+    ?actual
+  ; expected* := <try-make-list> expected
+  ; check*    := <map(<new-task(|partition)> PropCheck(kind, relation, actual, <id>))> expected*
+  ; <new-task(|partition, <dependent-tasks> check*)> Choice(check*)
+  
+  // // FIXME: is resolve a Result or a task ID?
+  // nabl-prop-constraints(|partition, resolve) =
+  //   <new-task(|partition, <dependent-tasks> [resolve | <map(nabl-prop-constraint)>])> Id(resolve)
+  //     
+  // nabl-prop-constraint(|partition, resolve):
+  //   Prop(kind, expected, dep*) -> constr
+  //   where
+  //     actual := <new-task(|partition)> PropsLookup(kind, resolve) 
+  //   ; dep'*  := <dependent-tasks> [expected, dep*]
+  //   ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
+
+rules
+  
+    create-property-task(|ctx, kind) :
+    x -> <nabl-prop-calc(|ctx, t*)> t*
+    where 
+    	<is-list> x
+    ; t* := <map(get-or-create-property-task(|ctx, kind))> x
+    
+rules
+  
+  remove-property-annotations(|kind*) =
+    !(kind*, <id>); foldl(remove-property-annotation) 
+    
+  remove-property-annotation:
+    (kind, term) -> <remove-annotations(?(kind, _))> term

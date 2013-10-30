@@ -2,8 +2,8 @@ module nbl/incremental
 
 imports
 	
-	nbl/uri
-	nbl/entries
+	nabl/uri
+	nabl/interface
 	task/core
 	
 rules // Read generation
@@ -37,12 +37,3 @@ rules // Read processing
 		where
 			ns   := <nabl-uri-namespace> uri;
 			uri' := <nabl-uri-parent> uri
-
-  nabl-diff-entry =
-    ?Def(_)
- 
-  nabl-diff-entry =
-    ?Alias(_, _)
-    
-  nabl-diff-entry =
-    ?Prop(_, _, _)

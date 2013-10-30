@@ -18,21 +18,21 @@ completions
     "show " <MsgType:MsgType> " " <Term:Term> " on " <Term:Term> " when " <Term:Term> " " <MsgTrigger:MsgTrigger>  
   completion template Instruction : "choose " =
     "choose " <:Term>                                              
+  completion template Instruction : "sequence " =
+    "sequence " <:Term>                                          
   completion template Instruction : "concat " =
     "concat " <:Term>                                              
   completion template Instruction : "produce Term" =
     "produce " <Term:Term>                                    
-  completion template Instruction : "lookup property Term on Term" =
-    "lookup property " <Term:Term> " on " <Term:Term>  
-  completion template Instruction : "lookup properties Term on Term" =
-    "lookup properties " <Term:Term> " on " <Term:Term>  
-  completion template Instruction : "rewrite Term using relation Term" =
-    "rewrite " <Term:Term> " using relation " <Term:Term>  
-  completion template Instruction : "match Term using relation Term with bindings Term" =
-    "match " <Term:Term> " using relation " <Term:Term> " with bindings " <Term:Term>  
-  completion template Instruction : "resolve Term Term definition in Term" =
-    "resolve " <Term:Term> " " <Term:Term> " definition in " <Term:Term>  
-  completion template Instruction : "resolve Term Term import in Term" =
-    "resolve " <Term:Term> " " <Term:Term> " import in " <Term:Term>  
-  completion template Instruction : "disambiguate Term" =
-    "disambiguate " <Term:Term>                          
+  completion template Instruction : "lookup Term prop on Term" =
+    "lookup " <Term:Term> " prop on " <Term:Term>  
+  completion template Instruction : "lookup Term props on Term" =
+    "lookup " <Term:Term> " props on " <Term:Term>  
+  completion template Instruction : "check Term prop Term against Term wrt Term" =
+    "check " <Term:Term> " prop " <Term:Term> " against " <Term:Term> " wrt " <Term:Term>  
+  completion template Instruction : "rewrite Term wrt Term" =
+    "rewrite " <Term:Term> " wrt " <Term:Term>       
+  completion template Instruction : "match Term using relation Term wrt bindings Term" =
+    "match " <Term:Term> " using relation " <Term:Term> " wrt bindings " <Term:Term>  
+  completion template Instruction : "resolve Term Term definition in Term wrt props Term" =
+    "resolve " <Term:Term> " " <Term:Term> " definition in " <Term:Term> " wrt props " <Term:Term>  

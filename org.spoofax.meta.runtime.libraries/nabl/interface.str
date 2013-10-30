@@ -1,4 +1,4 @@
-module nbl/interface
+module nabl/interface
 
 strategies // Collect
   
@@ -17,26 +17,18 @@ strategies // Collect
 	
 	nabl-import-site(|lang, partition, uri*, state*) = fail
 	
-	nabl-prop-site(|lang, partition, state*, implicit*) = fail
+	nabl-prop-site(|lang, partition, uri*, state*, implicit*) = fail
 	
 strategies // Projections
   
-	nabl-name = fail
+	nabl-get-name = fail
 	
 	nabl-name-apply(s) = fail
 	
 	nabl-scopes = fail
-
-strategies // Tasks
-  
-	calc-property = fail
-
-	message-task(|partition) = fail
 	
 strategies // Lookup hooks
-	
-	nabl-property-eq(|kind) = fail
-	
+		
 	nabl-disambiguate(|prop*, namespace, name) = fail
 
 strategies // Name generation
@@ -50,4 +42,8 @@ strategies // Default error checks
 	nabl-check-disable-duplicate(|uri, ns) = fail
 	
 	nabl-check-disable-hiding(|uri, ns) = fail
+	
+strategies // Incrementality
+	
+	nabl-diff-entry = fail
 	

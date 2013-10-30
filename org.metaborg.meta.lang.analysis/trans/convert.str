@@ -5,7 +5,7 @@ imports
 	include/Analysis
 	lib/runtime/task/tasks
 	lib/runtime/task/messages
-	lib/runtime/nbl/tasks
+	lib/runtime/nabl/tasks
 	pp
 
 rules // All
@@ -70,13 +70,18 @@ rules // Instructions
 		
 	to-instruction = Choice(map(make-abstract))
 	
-	to-instruction = Concat(map(make-abstract))
+	to-instruction = Sequence(map(make-abstract))
 	
-	to-instruction = PropCalc(make-abstract)
+	to-instruction = Combine(map(make-abstract))
+	
+	to-instruction = Id(make-abstract)
 	
 	to-instruction = PropLookup(make-abstract, make-abstract)
 	
 	to-instruction = PropsLookup(make-abstract, make-abstract)
+	
+	to-instruction:
+		PropCheck(kind, relation, expected, input) -> PropCheck(<make-abstract> kind, <make-abstract> expected, <make-abstract> input, <make-abstract> relation)
 	
 	to-instruction:
 		Rewrite(relation, term) -> Rewrite(<make-abstract> term, <make-abstract> relation)
@@ -85,13 +90,7 @@ rules // Instructions
 		Match(relation, term, binding*) -> Match(<make-abstract> term, <make-abstract> relation, <make-abstract> binding*)
 		
 	to-instruction:
-		ResolveDefs(scope, namespace, name) -> ResolveDefs(<make-abstract> namespace, <make-abstract> name, <make-abstract> scope)
-		
-	to-instruction:
-		ResolveNamedImports(scope, namespace, name) -> ResolveDefs(<make-abstract> namespace, <make-abstract> name, <make-abstract> scope)
-	
-	to-instruction:
-		DisambiguateDefs(def*, _, namespace, name) -> DisambiguateDefs(<make-abstract> def*)
+		ResolveDefs(scope, namespace, name, prop*) -> ResolveDefs(<make-abstract> namespace, <make-abstract> name, <make-abstract> scope, <make-abstract> prop*)
 		
 rules // Task result terms
 	
@@ -172,6 +171,14 @@ rules // Utilities
 			otherwise       : s; all(topdown-annos(s))
 		end
 
-rules // Externals
-	
-	external to-abstract-terms(|)
+	to-abstract-terms =
+		switch id
+			case is-appl;   ?cons#(terms) : !Appl(cons, <map(to-abstract-terms)> terms)
+			case is-tuple;  ?_#(terms)    : !Tupl(<map(to-abstract-terms)> terms)
+			case is-list;   ?terms        : !List(<map(to-abstract-terms)> terms)
+			case is-int;    ?int          : !Int(<int-to-string> int)
+			case is-real;   ?real         : !Real(<real-to-string> real)
+			case is-string; ?str          : !Str(str)
+		end
+
+	is-appl = not(is-tuple <+ is-list <+ is-int <+ is-real <+ is-string)

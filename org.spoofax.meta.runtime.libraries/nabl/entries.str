@@ -1,12 +1,13 @@
-module nbl/entries
+module nabl/entries
 
 imports
   
-  nbl/collect
-  nbl/resolve
-  nbl/utils
-  nbl/uri
+  nabl/collect
+  nabl/utils
+  nabl/uri
+  nabl/resolve
   index/core
+  editor/origins
   
 signature
 
@@ -16,22 +17,27 @@ signature
     Alias        : URI * URI              -> Entry
     InverseAlias : URI * URI              -> Entry
     Use          : Result                 -> Entry
-    Prop         : URI * Property * Value -> Entry
+
+rules // Index entries to diff for incrementality
   
+  nabl-diff-entry = ?Def(_)
+  
+  nabl-diff-entry = ?Alias(_, _)
+ 
 rules
   
   new-def(|partition, uri):
     x -> definition
     with
-      definition := <force-origins(!Def(uri))> x;
+      definition := <origin-track-forced(!Def(uri))> x;
       <index-add(|partition)> definition;
 			<new-alias(|partition, <nabl-nonunique-uri> uri, uri)> x
       
   new-alias(|partition, uri, alias-uri):
     x -> alias
     with
-      alias := <force-origins(!Alias(uri, alias-uri))> x;
-      ialias := <force-origins(!InverseAlias(alias-uri, uri))> x;
+      alias := <origin-track-forced(!Alias(uri, alias-uri))> x;
+      ialias := <origin-track-forced(!InverseAlias(alias-uri, uri))> x;
       if <not(eq)> (uri, alias-uri) then
       	<index-add(|partition)> alias;
       	<index-add(|partition)> ialias
@@ -40,15 +46,9 @@ rules
   new-use(|partition, uri):
     x -> use
     with
-      use := <force-origins(!Use(uri))> x;
+      use := <origin-track-forced(!Use(uri))> x;
       <index-add(|partition)> use
 
-  new-prop(|partition, uri, kind, val):
-    x -> prop
-    with
-      prop := <force-origins(!Prop(uri, kind, val))> x;
-      <index-add(|partition)> prop
-      
 rules // index uri & value projections
   
   /** @internal */
@@ -83,15 +83,6 @@ rules // index uri & value projections
   nabl-uris:
     Use(uri) -> <nabl-collect-all-resolved-defs; map(nabl-uri)> uri
     
-  /** @internal */  
-  nabl-uri:
-    Prop(uri, _, _) -> uri
-    
-  /** @internal */  
-  nabl-uris:
-    Prop(uri, _, _) -> [uri]
-    
-    
   /** @internal */
   nabl-value:
     Def(value) -> value
@@ -123,11 +114,3 @@ rules // index uri & value projections
   /** @internal */
   nabl-values:
     Use(value) -> <nabl-uris>
-    
-  /** @internal */
-  nabl-value:
-    Prop(_, _, value) -> value
-    
-  /** @internal */
-  nabl-values:
-    Prop(_, _, value) -> [value]

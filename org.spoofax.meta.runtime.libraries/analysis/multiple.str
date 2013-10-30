@@ -4,7 +4,7 @@ imports
 
   analysis/core
   task/core
-  nbl/utils
+  nabl/utils
 
 rules // Multi file analysis
   

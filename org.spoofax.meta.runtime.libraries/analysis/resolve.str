@@ -2,8 +2,8 @@ module analysis/resolve
 
 imports
 	
-	nbl/resolve
-	nbl/entries
+	nabl/resolve
+	nabl/entries
 	task/core
 	index/core
 	index/query

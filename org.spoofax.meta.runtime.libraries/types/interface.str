@@ -1,13 +1,10 @@
 module types/interface
 
-strategies
+imports
   
-  custom-properties(add-properties) = fail
+  types/collect
   
-  new-property-task(|task*): (kind, term) -> <fail>
-
-  type-of(|partition) = fail
-  
-  type-of(|lang, partition, uri*) = fail
-
-  type-prop-eq = eq
+strategies // user-defined implementations
+	
+	create-type-task(|ctx) = fail
+	

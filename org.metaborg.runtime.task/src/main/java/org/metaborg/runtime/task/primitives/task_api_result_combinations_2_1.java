@@ -33,7 +33,7 @@ public class task_api_result_combinations_2_1 extends AbstractPrimitive {
 		final IStrategoTerm resultIDs = InvokeStrategy.invoke(env, collect, term);
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> result =
 			TaskInsertion.insertResultCombinations(taskEngine, env, collect, insert, term, resultIDs);
-		if(result._1() == null)
+		if(result == null || result._1() == null)
 			return false; // No combinations could be constructed because a dependency failed or had no results.
 		final IStrategoList resultList = ListBuilder.makeList(factory, result._1());
 

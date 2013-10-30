@@ -3,76 +3,58 @@ module task/tasks
 imports
 	
 	task/core
+  task/messages
 	task/interface
-  nbl/utils
   
 signature
 
 	constructors
 		
-    Choice   : List(Result)                         -> Instruction
-    Sequence : List(Result)                         -> Instruction
-    Message  : List(Result) * MessageTrigger * Term -> Instruction
-    Match    : ID * List(Term) * Term               -> Instruction
-    Rewrite  : ID * Term                            -> Instruction
-    Concat   : List(Result)                         -> Instruction
-    
-    Failure  : MessageTrigger // No results
-    Success  : MessageTrigger // At least one result
-    Multiple : MessageTrigger // More than one result
-
+    Id       : Term              -> Instruction   
+    Combine  : List(Term)        -> Instruction
+    Collect  : List(Term)        -> Instruction
+    Choice   : List(List(Term))  -> Instruction
+    Sequence : List(Term)        -> Instruction
+    Rewrite  : ID * Term         -> Instruction
+    Index    : Int * List(Term)  -> Instruction
+    Length   : List(Term)        -> Instruction
 rules
 	
 	perform-cyclic-task(|nr) = fail
 	
 	perform-task(|nr):
 		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction
-	
+
 rules
 	
-	avoid-task(|dep*):
-	  Choice([choice]) -> choice
-	  where
-	    <dependent-tasks> choice => dep*
-	
-	avoid-task(|dep*):
-    Choice(choice*) -> <concat> choice*
-    where
-      [] := <dependent-tasks> choice*
-      
-	perform-task(|nr):
- 		Choice(choice*) -> <fetch-elem(not(?[]))> choice*
- 		
 	task-is-combinator = ?Choice(_)
-	
-  perform-task(|nr):
-  	Sequence(task*) -> <map(not(?[])); last> task*
-    
-  task-is-combinator = ?Sequence(_)
-
-  perform-task(|n):
-    Message(task, trigger, message) -> []
-    where
-    	switch !trigger
-    		case Failure()  : not(<Hd> task); task-add-message(|n, message)
-    		case Success()  : <Hd> task; task-add-message(|n, message)
-    		case Multiple() : <Tl; Hd> task; task-add-message(|n, message)
-    	end
-
-	task-is-combinator = ?Message(_, _, _)
-
-  avoid-task(|dep*):
-    Match(_, _, _) -> <perform-task(|0) <+ ![]>
-    where
-      [] := dep*
-    	
-  perform-task(|nr): 
-  	Match(key, bound, term) -> <task-match> (key, term, bound)
+  perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
   
-  perform-task(|nr): 
-    Rewrite(key, term) -> <task-match> (key, term)
+rules
+	
+	task-is-combinator = ?Sequence(_)
+  perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
+  
+rules
+  
+  perform-task(|nr) = ?Id(<MkSingleton>)
+  	
+rules
+       
+  task-is-combinator = ?Combine(_)
+  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
 
-  perform-task(|nr):
-  	Concat(term*) -> <concat> term*
-
-	task-is-combinator = ?Concat(_)
+rules
+       
+  task-is-combinator = ?Collect(_)
+  perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
+  
+rules
+      	
+  perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
+  
+rules
+  
+  perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
+  perform-task(|nr) = ?Length(<length>);  MkSingleton
+  
