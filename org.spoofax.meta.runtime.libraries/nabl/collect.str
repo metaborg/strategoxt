@@ -219,14 +219,14 @@ rules // generic analysis of uses
 			// generate a name if needed
 			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
-			if inner-name := <debug(!"1: "); not(is-string); debug(!"2: "); nabl-get-name; debug(!"3: ")> name'; Use(inner-use-task) := <debug(!"4: "); nabl-collect-use; debug(!"5: ")> inner-name then
+			if inner-name := <not(is-string); nabl-get-name> name'; Use(inner-use-task) := <nabl-collect-use> inner-name then
 				// Filter the inner use with properties instead of
 				subtask* := <map(nabl-filter-use-candidate(|lang, partition, uri*, inner-use-task))> candidate*;
 				choice   := <new-task(|partition)> Choice(subtask*);
 			  u        := <new-use(|partition, choice)>;
 			  <try(nabl-unresolved-task(|partition, choice))> inner-name; // TODO: this may result in multiple unresolved msgs.
 			  // TODO: what about completions?
-			  result := <debug(!"a: "); nabl-name-apply(add-annotation(|u)); debug(!"b: ")> name'
+			  result := <nabl-name-apply(add-annotation(|u))> name'
 			else
 				subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 				choice   := <new-task(|partition)> Choice(subtask*);
