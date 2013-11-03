@@ -27,7 +27,10 @@ rules
   (  get-property-task(|kind)
   <+ try(nabl-get-name)
    ; get-index-property(|kind)
-  ); insert-results; Hd // TODO: is this the right insertion? probably need recursive insertion.
+  ); try( // this is needed for cases where the results are already inserted
+      insert-results // TODO: is this the right insertion? probably need recursive insertion.
+    ; Hd
+    ) 
    
   get-index-property(|kind) =
     nabl-uris // TODO: how to handle multiple values?
