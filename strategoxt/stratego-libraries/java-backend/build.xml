@@ -18,7 +18,7 @@
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 	<property name="install-prefix" location="dist" />
-	<property name="install-location" location="${install-prefix}/share/strategoxt/libstratego-xtc" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/libstratego-strj" />
 
 	<property name="dep.libstratego-lib" location="../lib/dist/share/strategoxt/libstratego-lib" />
 	<property name="dep.stratego-front" location="../../syntax/stratego-front/dist/share/strategoxt/stratego-front" />
@@ -282,13 +282,14 @@
 		<jar destfile="${bin}/strj.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
 		</jar>
 	</target>
 
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy file="${bin}/strj.jar" todir="${install-location}" />
-		<copy file="java/spoofax-libs.jar" todir="${install-location}" />
+		<!-- <copy file="java/spoofax-libs.jar" todir="${install-location}" /> -->
 	</target>
 
 	<target name="clean">
