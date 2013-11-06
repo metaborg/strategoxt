@@ -142,27 +142,10 @@ strategies
    */
   string-escape-padd(|n) :
     StringEscape1(s, t) -> <desugar> Term |[
-      <!t
-       ; (   concat-strings(|)
-          <+ is-string(|)
-          <+ int-to-string(|)
-          <+ real-to-string(|)
-          <+ { x, y :
-               ?x
-               ; prim("SSL_stacktrace_get_all_frame_names",|); ?[ _ | y]
-               ; !y
-               ; report-failure(|~str:message {^[]}, x)
-             }
-         )
-       ; string-replace(|"\n", ~str:s_padded {^[]})>
+      <!t; internal-ensure-as-string(|); string-replace(|"\n", ~str:s_padded {^[]})>
     ]|
     with
       s_padded := <string-as-chars(!['\n' | <remove-padding-single-line(|n)>])> s
-    ; x := <new>
-    ; y := <new>
-    ; (  message := <conc-strings> ("Internal error: escaped term in string quotation is not a string in ", <WithContext>)
-      <+ message := "Internal error: escaped term in string quotation is not a string"
-      )
 
   DesugarQuoted :
     StringEscape2(s, t) -> StringEscape1(s, t)
