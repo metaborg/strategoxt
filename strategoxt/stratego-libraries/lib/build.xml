@@ -41,9 +41,7 @@
 				<srcfiles dir="spec" includes="**/*.str" />
 			</str-deps>
 		</strj-lib>
-		<!-- <copy file="spec/libstratego-lib-posix-xsi.ctree" todir="${bin}" /> -->
 		<copy file="spec/libstratego-lib-posix-xsi.rtree" todir="${bin}" />
-		<!-- <copy file="${bin}/libstratego-lib-posix-xsi.ctree" tofile="${bin}/libstratego-lib.ctree" /> -->
 		<copy file="${bin}/libstratego-lib-posix-xsi.rtree" tofile="${bin}/libstratego-lib.rtree" />
 	</target>
 
