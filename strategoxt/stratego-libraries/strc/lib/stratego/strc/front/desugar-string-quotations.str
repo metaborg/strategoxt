@@ -141,9 +141,7 @@ strategies
    * Adjust padding of quoted string escapes.
    */
   string-escape-padd(|n) :
-    StringEscape1(s, t) -> <desugar> Term |[
-      <!t; internal-ensure-as-string(|); string-replace(|"\n", ~str:s_padded {^[]})>
-    ]|
+    StringEscape1(s, t) -> <desugar> Term |[ <internal-string-interpolation(|t, ~str:s_padded)> ]|
     with
       s_padded := <string-as-chars(!['\n' | <remove-padding-single-line(|n)>])> s
 

@@ -1337,6 +1337,13 @@ strategies
   		; prim("SSL_stacktrace_get_all_frame_names",|); ?[ _ | y]
   		; !y
   		; report-failure(|"Internal error: escaped term in string quotation is not a string", x)
- }
+      }
+  
+  /**
+  * @internal
+  * Used by desugaring of string interpolation $[... [x] ...]
+  */
+  internal-string-interpolation(|t, padded_s) = <internal-ensure-as-string; string-replace(|"\n", padded_s)> t 
+    
 
 
