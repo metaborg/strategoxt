@@ -1322,4 +1322,21 @@ strategies
   /** @internal */
   internal-string-replace-found(|old, new):
     (pre, rest, []) -> (<conc> (new, pre), rest, old)
+  
+  /**
+  * @internal
+  * Used by desugaring of string interpolation $[... [x] ...]
+  */
+  internal-ensure-as-string =
+  	concat-strings(|)
+  	<+ is-string(|)
+  	<+ int-to-string(|)
+  	<+ real-to-string(|)
+  	<+ { x, y :
+  		?x
+  		; prim("SSL_stacktrace_get_all_frame_names",|); ?[ _ | y]
+  		; !y
+  		; report-failure(|"Internal error: escaped term in string quotation is not a string", x)
+ }
+
 
