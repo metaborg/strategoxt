@@ -184,22 +184,16 @@ rules
          ; s_conds := <CtoS(<rule-traced-name> annos)> cond*
 
   CtoS(name) : [] -> Id()
+  
   CtoS(name) : [WhereClause(s) | cond*] -> Seq(Where(s),  <CtoS(name)> cond*)
+  
   CtoS(name) : [WithClause(s)  | cond*] -> Seq(with,      <CtoS(name)> cond*)
     where
-      message := <conc-strings> ("Internal error: with clause failed unexpectedly in rule ", <name>)
+      sname := <name>
     ; x := <new>
     ; y := <new>
     ; with := Strat |[
-        where(
-          s
-          <+ { x, y: ?x
-           ; prim("SSL_stacktrace_get_all_frame_names",|)
-           ; ?y
-           ; !x
-           ; report-with-failure(|~str:message {^[]}, y)
-             }
-        )
+        where( s <+ report-with-failure(| ~str:sname {^[]}) )
       ]|
       <+ with := With(s) // <name> failed
 
@@ -222,23 +216,14 @@ strategies // "with" strategy
   
   Desugar:
     With(s) ->
-    |[ where(
-         s
-         <+ { x: ?x
-          ; prim("SSL_stacktrace_get_all_frame_names",|)
-           ; // TODO: call report-failure(|~str:message {^[]}, x) instead
-             report-failure(
-                log(|Critical(){^[]}, ~str:message {^[]}, x)
-              ; exit(|)
-              )
-            }
-       )
+    |[
+      where( s <+ report-with-failure(| ~str:sname {^[]}) )
     ]|
     where
       x := <new>
-    ; (  message := <conc-strings> ("Internal error: with clause failed unexpectedly in ", <WithContext>)
-      <+ message := "Internal error: with clause failed unexpectedly"
-      )
+      ; ( sname := <WithContext>
+        <+sname := ""
+        )
 
 strategies // "with" in dynamic rules
 

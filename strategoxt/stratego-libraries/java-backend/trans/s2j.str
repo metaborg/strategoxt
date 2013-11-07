@@ -270,6 +270,10 @@ rules
            context.setStandAlone(false);
            System.exit(0);
          }
+       } catch (StrategoErrorExit exit) {
+         context.setStandAlone(false);
+         System.err.println(exit.getLocalizedMessage());
+         System.exit(exit.getValue());
        } catch (StrategoExit exit) {
          context.setStandAlone(false);
          System.exit(exit.getValue());

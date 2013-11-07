@@ -27,13 +27,18 @@ strategies
     error;
     SRTS-EXT-fatal-err(|<try(concat-strings)>, ())
   
-  override report-failure(|message, term) =
-    report-failure(
-      log(|Critical(), message, term);
-      SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
-    )
+  override report-failure(|message, term) = SRTS-EXT-fatal-err(|message, <try(concat-strings)> term)
   
-  external SRTS-EXT-fatal-err(|msg, term)
   
-  // TODO: exception rethrowing in risky, finally?
-
+  /**
+  * Raise an execution exception with a stack trace
+  * @param String
+  * @param Term
+  * @param List(String)
+  */
+  external SRTS-EXT-fatal-err(|msg, term, trace)
+  
+  /**
+  // * Same as above except that it retrieves the stack trace itself
+  */
+  SRTS-EXT-fatal-err(|msg, term) = SRTS-EXT-fatal-err(|msg, term, <prim("SSL_stacktrace_get_all_frame_names",|); Tl; Tl>)

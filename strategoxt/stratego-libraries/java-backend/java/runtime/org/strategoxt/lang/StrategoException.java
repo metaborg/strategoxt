@@ -5,7 +5,7 @@ package org.strategoxt.lang;
  */
 public class StrategoException extends RuntimeException {
 	private static final long serialVersionUID = 4363328974592977938L;
-
+	
 	public StrategoException() {}
 	
 	public StrategoException(String message) {
