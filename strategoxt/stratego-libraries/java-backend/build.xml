@@ -254,7 +254,7 @@
 
 
 	<path id="build.classpath">
-		<pathelement path="${java.class.path}" />
+		<!-- <pathelement path="${java.class.path}" /> -->
 		<pathelement location="java/runtime" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />

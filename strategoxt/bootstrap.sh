@@ -1,8 +1,8 @@
 #! /bin/sh
 
-for i in {0..8}
+for i in {0..3}
 do
-	echo "Build $i/7\n" &&
+	echo "Build $i/4\n" &&
 	if [ $i -eq 0 ]
 	then
 		mv strategoxt-base.jar strategoxt-base-$i.jar
