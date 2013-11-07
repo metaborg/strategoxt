@@ -18,9 +18,9 @@ import org.strategoxt.lang.StrategoErrorExit;
  * @author Vlad Vergu <v.a.vergu add tudelft.nl>
  * 
  */
-public class SSL_EXT_catch_with extends AbstractPrimitive {
+public class SSL_EXT_catch_with_0_2 extends AbstractPrimitive {
 
-	public SSL_EXT_catch_with() {
+	public SSL_EXT_catch_with_0_2() {
 		super("SSL_EXT_catch_with", 2, 0);
 	}
 
@@ -39,7 +39,14 @@ public class SSL_EXT_catch_with extends AbstractPrimitive {
 		try {
 			return svars[0].evaluate(env);
 		} catch (StrategoErrorExit e) {
-			IStrategoTerm nt = factory.makeTuple(ct, e.getTrace());
+			for(String s : env.getStackTracer().getTrace()) {
+				System.err.println(s);
+			}
+			IStrategoTerm nt = null;
+			if(e.getTrace() != null)
+				nt = factory.makeTuple(new IStrategoTerm[]{ct, e.getTrace()}, factory.makeList());
+			else
+				nt = factory.makeTuple(new IStrategoTerm[]{ct, factory.makeList()}, factory.makeList());
 			env.setCurrent(nt);
 			boolean s2 = svars[1].evaluate(env);
 			if (!s2) {

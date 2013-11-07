@@ -39,6 +39,6 @@ strategies
   external SRTS-EXT-fatal-err(|msg, term, trace)
   
   /**
-  // * Same as above except that it retrieves the stack trace itself
+  * Same as above except that it retrieves the stack trace itself
   */
   SRTS-EXT-fatal-err(|msg, term) = SRTS-EXT-fatal-err(|msg, term, <prim("SSL_stacktrace_get_all_frame_names",|); Tl; Tl>)
