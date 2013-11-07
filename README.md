@@ -1,4 +1,4 @@
-nbl-library
+runtime-libraries
 ===========
 
-runtime libraries for Spoofax' name binding language
+Stratego runtime libraries for NaBL, the task engine and name & type analysis.
