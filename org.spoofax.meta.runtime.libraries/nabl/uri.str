@@ -4,6 +4,7 @@ imports
   
   nabl/interface
   index/core
+  editor/annotations
   
 signature
 
@@ -23,6 +24,7 @@ signature
     NonUnique   :                                 Qualifier
     Unique      :                                 Qualifier
     URI         : Language * List(Segment)     -> URI
+    Barrier     : List(Namespace)              -> Annotation
     
 rules // Construction
   
@@ -46,8 +48,14 @@ rules // Construction
       
   nabl-nonunique-uri =
 		URI(id, [ID(id, id, !NonUnique())|id])
+		
+	nabl-segment-add-barriers(|namespace*):
+		segment -> <replace-annotation(?Barrier(_)|new-barrier)> segment
+		where
+			Barrier(existing-namespace*) := <get-annotation(?Barrier(_))> segment;
+			new-barrier                  := Barrier([existing-namespace*, namespace*])
 
-rules // stable URI extensions
+rules // Stable URI extensions
   
   nabl-extend-uri(|table, partition, ns, n, u):
     uri -> <nabl-extend-uri(|ns, n, qualifier)> uri
@@ -101,24 +109,24 @@ rules // Projections
     where
       [_|parent] := path
   
-  nabl-uri-parent(|targetNamespace):
-    URI(language, path) -> URI(language, parent')
-    where
-      [_|parent] := path;
-      if [segment|_] := parent; namespace := <nabl-segment-namespace> segment then
-        if <nabl-scopes> (namespace, targetNamespace) then
-          parent' := parent
-        else
-          parent' := <nabl-uri-parent(|targetNamespace)> parent
-        end
-      else
-        parent' := parent
-      end
-  
-  nabl-uri-parents =
-    nabl-uri-parent 
-  < ![<id>|<nabl-uri-parents>] 
-  + ![]  
+  nabl-uri-parents:
+  	uri -> parent*
+  	where
+  		if parent := <nabl-uri-parent> uri then
+  			parent* := [parent|<nabl-uri-parents> parent]
+			else
+				parent* := []	
+			end
+  		
+	nabl-uri-parents(|target-ns):
+  	uri -> parent*
+  	where
+  		barrier-ns* := <nabl-uri-barriers <+ ![]> uri;
+  		if <not(elem)> (target-ns, barrier-ns*); parent := <nabl-uri-parent> uri then
+  			parent* := [parent|<nabl-uri-parents(|target-ns)> parent]
+			else
+				parent* := []	
+			end
         
   nabl-uri-name:
     uri -> <nabl-uri-path; Hd; nabl-segment-name> uri
@@ -128,6 +136,9 @@ rules // Projections
 
   nabl-uri-qualifier:
     uri -> <nabl-uri-path; Hd; nabl-segment-qualifier> uri
+    
+  nabl-uri-barriers:
+  	uri -> <nabl-uri-path; Hd; nabl-segment-barriers> uri
       
   nabl-segment-namespace:
     ID(namespace, _, _) -> namespace
@@ -143,6 +154,11 @@ rules // Projections
   	
 	nabl-segment-qualifier:
     ID(_, _, qualifier) -> qualifier
+    
+  nabl-segment-barriers:
+  	segment -> namespace*
+  	where
+  		Barrier(namespace*) := <get-annotation(?Barrier(_))> segment 
     
   nabl-uri-scope      = URI(id, Tl)
   nabl-uri-scopes    = nabl-closure(nabl-uri-scope)
