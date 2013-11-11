@@ -16,6 +16,7 @@ imports
   properties/entries
   properties/tasks
 	editor/origins
+	editor/annotations
 	types/collect
 
 signature 
@@ -190,7 +191,7 @@ rules // generic analysis of defs
     with
 			// add Def entry to the index
 			d      := <new-def(|partition, def-uri)> a;
-			name'' := <replace-annotations(?Def(_)|d)> name'
+			name'' := <replace-annotation(?Def(_)|d)> name'
 		with
 			<try(nabl-duplicate-task(|partition, unique))> name''
 	
@@ -235,9 +236,9 @@ rules // generic analysis of uses
 			  if <is-completion-name> name' then
 			  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
 			  	completion-concat   := <new-task(|partition)> Combine(completion-subtask*);
-			  	result              := <replace-annotations(?Use(_)|u, Completion(completion-concat))> name'
+			  	result              := <replace-annotations(?Use(_)|[u, Completion(completion-concat)])> name'
 			  else
-			  	result := <replace-annotations(?Use(_)|u)> name'
+			  	result := <replace-annotation(?Use(_)|u)> name'
 		  	end
 			end
 

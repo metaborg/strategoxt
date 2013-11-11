@@ -13,6 +13,7 @@ imports
   nabl/tasks
   nabl/utils
   editor/origins
+  editor/annotations
   types/collect
   
 signature
