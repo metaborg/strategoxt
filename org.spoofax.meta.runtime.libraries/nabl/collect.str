@@ -56,7 +56,7 @@ signature
 	constructors // import
 	  
 	  Wildcard : List(Import) * RefScope * DefScope * List(Dependency) -> ImportDesc
-	  Single   : Term * DefScope * List(Dependency) -> ImportDesc
+	  Single   : Namespace * Term * DefScope * List(Dependency) -> ImportDesc
 	  Imported : Namespace                   -> Namespace
 	  Import   : Namespace                   -> Property
 	  Import   : Language * Namespace        -> Property
@@ -95,7 +95,7 @@ strategies // generic traversal
   ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
   ; try(nabl-external-def-site(|partition))
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
-  ; try(nabl-import-site(|lang, partition, child-uri*, state*))
+  ; try(nabl-import-site(|lang, partition, unique*, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, uri*, state*, implicit*))
   ; nabl-annotate-properties(|lang, partition, uri'*)
     
@@ -327,25 +327,24 @@ rules // completion
     
 rules // generic analysis of imports
   
-  nabl-import(|lang, partition, uri*, imports) =
-    where(<map(nabl-import-candidate(|lang, partition, uri*))> imports)
+  nabl-import(|lang, partition, unique*, uri*, imports) =
+    where(<map(nabl-import-candidate(|lang, partition, unique*, uri*))> imports)
   
-  nabl-import-candidate(|lang, partition, uri*) =
-    ?Single(term, scope*, dep)
-  ; Def(uri) := <nabl-collect-def> term
-  ; ns       := <nabl-uri-namespace> uri
-  ; segment  := <nabl-uri-path; Hd> uri
-  ; <map(nabl-import-alias(|lang, partition, uri*, uri, ns, segment))> scope*
-       
-  nabl-import-candidate(|lang, partition, uri*) =
+  nabl-import-candidate(|lang, partition, unique*, uri*) =
+    ?Single(ns, term, scope*, dep)
+  ; Use(uri) := <nabl-collect-use> term
+  ; name     := <nabl-get-name; nabl-fix-name> term
+  ; <try-make-list; map(nabl-import-alias(|lang, partition, unique*, uri*, uri, ns, name))> scope*
+
+  nabl-import-candidate(|lang, partition, unique*, uri*) =
     ?Wildcard(import*, from, into, dep)
   ; <map(nabl-import-prop(|lang, partition, uri*, from, into))> import*
   
-  nabl-import-alias(|lang, partition, uri*, uri, ns, segment):
-    scope -> <new-alias(|partition, uri, alias-uri)>
+  nabl-import-alias(|lang, partition, unique*, uri*, target-uri, ns, name):
+    scope -> <new-alias(|partition, alias-uri, target-uri)>
   where
-    base-uri  := <nabl-scope-uri(|lang, uri*, ns)> 
-  ; alias-uri := <nabl-extend-uri(|segment)> base-uri
+    base-uri  := <nabl-scope-uri(|lang, uri*, ns)> scope
+  ; alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, NonUnique())> base-uri
     
   nabl-import-prop(|lang, partition, uri*, from, into):
     Import(lang, ns) -> <new-prop(|partition, into-uri, Import(ns), from-uri)>
