@@ -49,12 +49,15 @@ rules // Construction
   nabl-nonunique-uri =
 		URI(id, [ID(id, id, !NonUnique())|id])
 		
-	nabl-segment-add-barriers(|namespace*):
-		segment -> <replace-annotation(?Barrier(_)|new-barrier)> segment
+	nabl-uri-add-barriers(|namespace*):
+		URI(lang, [seg|s]) -> URI(lang, [<replace-annotation(?Barrier(_)|new-barrier)> seg|s])
 		where
-			Barrier(existing-namespace*) := <get-annotation(?Barrier(_))> segment;
-			new-barrier                  := Barrier([existing-namespace*, namespace*])
-
+			existing-namespace* := <get-annotation(?Barrier(<id>)) <+ ![]> seg;
+			new-barrier         := Barrier([existing-namespace*, namespace*])
+			
+	nabl-uri-strip-barriers = 
+		URI(id, map(remove-annotations(?Barrier(_))))
+		
 rules // Stable URI extensions
   
   nabl-extend-uri(|table, partition, ns, n, u):

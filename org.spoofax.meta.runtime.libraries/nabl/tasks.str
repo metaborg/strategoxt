@@ -23,6 +23,7 @@ signature
     
     CollectDefs            : Term                                      -> Instruction
     ResolveDefs            : Scope * Namespace * Name * Prop           -> Instruction
+    CheckDefs              : Namespace * URI                           -> Instruction
     DisambiguateDefs       : List(Def) * List(Prop) * Namespace * Name -> Instruction
     ResolveNamedImports    : Scope * Namespace * Name                  -> Instruction
     ImportCalc             : URI                                       -> Instruction
@@ -68,6 +69,11 @@ rules // Resolve
 
 	perform-task(|nr):
 		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
+		
+	perform-task(|nr):
+		CheckDefs(ns, d) -> d
+		where
+			<nabl-uri; nabl-uri-namespace; ?ns> d
 	
 	// TODO: this task is not created any more
 	// Calls a user-defined disambiguation filter on definitions with relevant information.

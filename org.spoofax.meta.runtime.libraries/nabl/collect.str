@@ -141,7 +141,7 @@ rules // generic analysis of scopes
 rules // generic analysis of defs
     	
 	// call back to generic analysis
-	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped):
+	nabl-def(child-uris, sibling-uris|lang, partition, unique*, child-uri*, sibl-uri*, ns, unique, defscope, scoped, nt-scoped):
 		a@name{anno*} -> name''
 		where
 			// get URI for namespace of definition site
@@ -162,8 +162,11 @@ rules // generic analysis of defs
 			  // 1. extend current URI with ID segment
 			  // 2. extend URIs of scoped name'spaces
 		 	  // 3. preserve
-			    def-uri := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name', unique)> current-uri
-			  ; match(child-uris|<replace-scope-uri(|def-uri)> (scoped, child-uri*))
+			    def-uri         := <nabl-extend-uri(|unique*, partition, ns, <rm-annotations> name', unique)> current-uri
+			  ; nt-def-uri      := <nabl-uri-add-barriers(|nt-scoped)> def-uri
+			  ; new-child-uri*  := <replace-scope-uri(|def-uri)> (scoped, child-uri*)
+				; new-child-uri'* := <replace-scope-uri(|nt-def-uri)> (nt-scoped, new-child-uri*)
+			  ; match(child-uris|new-child-uri'*)
 			  ; match(sibling-uris|sibl-uri*)
 		   
 		    // 2nd case: definition in subsequent scope and maybe in external scopes
@@ -190,7 +193,7 @@ rules // generic analysis of defs
 		  end
     with
 			// add Def entry to the index
-			d      := <new-def(|partition, def-uri)> a;
+			d      := <new-def(|partition, <nabl-uri-strip-barriers> def-uri)> a;
 			name'' := <replace-annotation(?Def(_)|d)> name'
 		with
 			<try(nabl-duplicate-task(|partition, unique))> name''
@@ -253,6 +256,12 @@ rules // generic analysis of uses
     	// TODO: disambiguation
     	// TODO: order of imported URI's is unclear
     	
+	nabl-use-check-tasks(|partition, ns):
+		name -> task'
+		where
+			Use(task) := <nabl-collect-use> name;
+			task'     := <new-task(|partition)> CheckDefs(ns, task)
+    	
 	nabl-use-subtask-scopes(|partition, ns):
 		uri -> [uri', wildcard-import]
 		with
@@ -268,10 +277,16 @@ rules // generic analysis of uses
       
 	// candidate in another scope (result of resolution)	  
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*) -> subtask
+		UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*) -> subtask
 		where
+			<not(?Result(_))> ctx-name;
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*);
 			subtask    := <nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result // TODO: only disambiguate if required.
+			
+	nabl-use-candidate(|lang, partition, uri*, name):
+		UseCandidate(ns, prop*, Context(_, ctx-result@Result(_), _, _), _, dep*) -> subtask
+		where
+			subtask := <nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result // TODO: only disambiguate if required.
 			
 	// candidate in current scope
 	nabl-filter-use-candidate(|lang, partition, uri*, use-task):
