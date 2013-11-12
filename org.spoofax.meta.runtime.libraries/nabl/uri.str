@@ -126,7 +126,7 @@ rules // Projections
   	where
   		barrier-ns* := <nabl-uri-barriers <+ ![]> uri;
   		if <not(elem)> (target-ns, barrier-ns*); parent := <nabl-uri-parent> uri then
-  			parent* := [parent|<nabl-uri-parents(|target-ns)> parent]
+  			parent* := [<nabl-uri-strip-barriers> parent|<nabl-uri-parents(|target-ns)> parent]
 			else
 				parent* := []	
 			end
