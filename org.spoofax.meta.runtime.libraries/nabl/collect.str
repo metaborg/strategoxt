@@ -250,7 +250,8 @@ rules // generic analysis of uses
 		uri -> <new-task(|partition)> ResolveDefs(uri*, ns, name, prop*)
 		with
 			// Strip barriers because URI's in the index also do not have barriers (matching would fail).
-			uri' := <nabl-uri-strip-barriers> uri;
+			// Try because uri could be a Result(_) term.
+			uri' := <try(nabl-uri-strip-barriers)> uri;
       switch !range
       	case One(): ![uri']
       	case All(): ![uri'|<nabl-uri-parents(|ns)> uri]
