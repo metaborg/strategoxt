@@ -92,6 +92,9 @@ rules // Instructions
 	to-instruction:
 		ResolveDefs(scope, namespace, name, prop*) -> ResolveDefs(<make-abstract> namespace, <make-abstract> name, <make-abstract> scope, <make-abstract> prop*)
 		
+	to-instruction:
+		CheckDefs(ns, def*) -> CheckDefs(<make-abstract> def*, <make-abstract> ns)
+		
 rules // Task result terms
 	
 	term-to-taskref:
@@ -124,13 +127,13 @@ rules // URIs
 		Appl("URI", [_, List(segment*)]) -> URI(<map(term-to-segment)> segment*)
 		
 	term-to-segment:
-		Appl("ID", [Appl(ns, []), Str(name)]) -> Id(<namespace-remove-nablns> ns, name)
+		Appl("ID", [Appl(ns, []), term]) -> Id(<namespace-remove-nablns> ns, term)
 
 	term-to-segment:
-		Appl("ID", [Appl(ns, []), Str(name), Appl("NonUnique", [])]) -> Id(<namespace-remove-nablns> ns, name)
+		Appl("ID", [Appl(ns, []), term, Appl("NonUnique", [])]) -> Id(<namespace-remove-nablns> ns, term)
 		
 	term-to-segment:
-		Appl("ID", [Appl(ns, []), Str(name), Appl("Unique", [Str(u)])]) -> Id(<namespace-remove-nablns> ns, name, <qualifier-remove-partition> u)
+		Appl("ID", [Appl(ns, []), term, Appl("Unique", [Str(u)])]) -> Id(<namespace-remove-nablns> ns, term, <qualifier-remove-partition> u)
 		
 	term-to-segment:
 		Appl("Anonymous", [Str(a)]) -> Anon(<qualifier-remove-partition> a)
@@ -182,3 +185,16 @@ rules // Utilities
 		end
 
 	is-appl = not(is-tuple <+ is-list <+ is-int <+ is-real <+ is-string)
+	
+	print-abstract-term =
+		switch id
+			case ?Appl(cons, terms) : !$[[cons]([<print-abstract-term-list> terms])]
+			case ?Tupl(terms)       : !$[([<print-abstract-term-list> terms])]
+			case ?List(terms)       : !$[[[<print-abstract-term-list> terms]]]
+			case ?Int(int)          : !int
+			case ?Real(real)        : !real
+			case ?Str(str)          : !str
+		end
+
+	print-abstract-term-list = map(print-abstract-term); separate-by(|", "); concat-strings
+	

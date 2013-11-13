@@ -29,6 +29,9 @@ rules
   nabl-get-name :
     TaskDef(t, _, _, _) -> t
 
+  nabl-name-apply(s) =
+    TaskDef(s, id, id, id)
+
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
     ?TaskDef(t, _, _, _)
     ; origin-track-forced(
@@ -45,6 +48,7 @@ rules
           , Unique()
           , Current()
           , []
+          , []
           )
         , id
         , id
@@ -58,6 +62,9 @@ rules
 
   nabl-get-name :
     TaskRef(t) -> t
+
+  nabl-name-apply(s) =
+    TaskRef(s)
 
   nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
     ?TaskRef(t)

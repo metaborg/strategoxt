@@ -30,5 +30,6 @@ templates
 	Instruction.Rewrite = <rewrite <Term> wrt <Term>>
 	Instruction.Match = <match <Term> using relation <Term> wrt bindings <Term>>
 		
-	Instruction.ResolveDefs = <resolve <Term> <Term> definition in <Term> wrt props <Term>>
+	Instruction.ResolveDefs = <resolve <Term> <Term> in <Term> wrt props <Term>>
+	Instruction.CheckDefs = <check <Term> against namespace <Term>>
 	

@@ -82,11 +82,7 @@ rules // Debugging
 		
 	debug-reanalyze = 
 		analysis-debug-reanalyze(|<language>)
-		
-	test-converter:
-		(_, _, _, _, _) -> (filename, result)
-		with
-			ast     := [ ( 1, Choice([Result(2)]), [2], [ ], None(), -1, 0)];
-			result  := <from-task-debug-str> ast;
-			filename := "test.task"
 
+rules // Hacks
+	
+	nabl-def(s1, s2|t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) = nabl-def(s1, s2|t1, t2, t3, t4, t5, t6, t7, t8, t9) 

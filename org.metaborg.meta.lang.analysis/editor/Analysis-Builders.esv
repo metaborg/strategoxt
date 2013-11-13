@@ -15,8 +15,7 @@ builders
   provider : include/analysis-java.jar                                                             
                                                                                                    
   observer : editor-analyze (multifile)                                                 
-                                                                
-  builder : "Test converter"            = test-converter (openeditor)                                                        
+                                                
   builder : "Show abstract syntax"      = debug-show-aterm (openeditor) (realtime) (meta) (source)  
   builder : "Show analyzed syntax"      = debug-show-analyzed (openeditor) (realtime) (meta)        
   builder : "Show index (project)"      = debug-index-project (openeditor) (meta)

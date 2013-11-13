@@ -47,148 +47,161 @@ strategies
     Msg(a, b, c, d, e) -> [ H(
                               [SOpt(HS(), "0")]
                             , [ S("show ")
-                              , a506
+                              , a121
                               , S(" ")
-                              , b199
+                              , b48
                               , S(" on ")
-                              , c155
+                              , c22
                               , S(" when ")
-                              , d101
+                              , d5
                               , S(" ")
-                              , e73
+                              , e1
                               ]
                             )
                           ]
-    where a506 := <pp-one-Z(prettyprint-MsgType)> a
-    where b199 := <pp-one-Z(prettyprint-Term)> b
-    where c155 := <pp-one-Z(prettyprint-Term)> c
-    where d101 := <pp-one-Z(prettyprint-Term)> d
-    where e73 := <pp-one-Z(prettyprint-MsgTrigger)> e
+    where a121 := <pp-one-Z(prettyprint-MsgType)> a
+    where b48 := <pp-one-Z(prettyprint-Term)> b
+    where c22 := <pp-one-Z(prettyprint-Term)> c
+    where d5 := <pp-one-Z(prettyprint-Term)> d
+    where e1 := <pp-one-Z(prettyprint-MsgTrigger)> e
 
   prettyprint-Instruction :
     Choice(a) -> [ H(
                      [SOpt(HS(), "0")]
-                   , [S("choose "), a507]
+                   , [S("choose "), a122]
                    )
                  ]
-    where a507 := <pp-H-list(prettyprint-Term|" <+ ")> a
+    where a122 := <pp-H-list(prettyprint-Term|" <+ ")> a
 
   prettyprint-Instruction :
     Sequence(a) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("sequence "), a508]
+                     , [S("sequence "), a123]
                      )
                    ]
-    where a508 := <pp-H-list(prettyprint-Term|" ; ")> a
+    where a123 := <pp-H-list(prettyprint-Term|" ; ")> a
 
   prettyprint-Instruction :
     Combine(a) -> [ H(
                       [SOpt(HS(), "0")]
-                    , [S("concat "), a509]
+                    , [S("concat "), a124]
                     )
                   ]
-    where a509 := <pp-H-list(prettyprint-Term|" + ")> a
+    where a124 := <pp-H-list(prettyprint-Term|" + ")> a
 
   prettyprint-Instruction :
     Id(a) -> [ H(
                  [SOpt(HS(), "0")]
-               , [S("produce "), a510]
+               , [S("produce "), a125]
                )
              ]
-    where a510 := <pp-one-Z(prettyprint-Term)> a
+    where a125 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Instruction :
     PropLookup(a, b) -> [ H(
                             [SOpt(HS(), "0")]
                           , [ S("lookup ")
-                            , a511
+                            , a126
                             , S(" prop on ")
-                            , b200
+                            , b49
                             ]
                           )
                         ]
-    where a511 := <pp-one-Z(prettyprint-Term)> a
-    where b200 := <pp-one-Z(prettyprint-Term)> b
+    where a126 := <pp-one-Z(prettyprint-Term)> a
+    where b49 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Instruction :
     PropsLookup(a, b) -> [ H(
                              [SOpt(HS(), "0")]
                            , [ S("lookup ")
-                             , a512
+                             , a127
                              , S(" props on ")
-                             , b201
+                             , b50
                              ]
                            )
                          ]
-    where a512 := <pp-one-Z(prettyprint-Term)> a
-    where b201 := <pp-one-Z(prettyprint-Term)> b
+    where a127 := <pp-one-Z(prettyprint-Term)> a
+    where b50 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Instruction :
     PropCheck(a, b, c, d) -> [ H(
                                  [SOpt(HS(), "0")]
                                , [ S("check ")
-                                 , a513
+                                 , a128
                                  , S(" prop ")
-                                 , b202
+                                 , b51
                                  , S(" against ")
-                                 , c156
+                                 , c23
                                  , S(" wrt ")
-                                 , d102
+                                 , d6
                                  ]
                                )
                              ]
-    where a513 := <pp-one-Z(prettyprint-Term)> a
-    where b202 := <pp-one-Z(prettyprint-Term)> b
-    where c156 := <pp-one-Z(prettyprint-Term)> c
-    where d102 := <pp-one-Z(prettyprint-Term)> d
+    where a128 := <pp-one-Z(prettyprint-Term)> a
+    where b51 := <pp-one-Z(prettyprint-Term)> b
+    where c23 := <pp-one-Z(prettyprint-Term)> c
+    where d6 := <pp-one-Z(prettyprint-Term)> d
 
   prettyprint-Instruction :
     Rewrite(a, b) -> [ H(
                          [SOpt(HS(), "0")]
                        , [ S("rewrite ")
-                         , a514
+                         , a129
                          , S(" wrt ")
-                         , b203
+                         , b52
                          ]
                        )
                      ]
-    where a514 := <pp-one-Z(prettyprint-Term)> a
-    where b203 := <pp-one-Z(prettyprint-Term)> b
+    where a129 := <pp-one-Z(prettyprint-Term)> a
+    where b52 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Instruction :
     Match(a, b, c) -> [ H(
                           [SOpt(HS(), "0")]
                         , [ S("match ")
-                          , a515
+                          , a130
                           , S(" using relation ")
-                          , b204
+                          , b53
                           , S(" wrt bindings ")
-                          , c157
+                          , c24
                           ]
                         )
                       ]
-    where a515 := <pp-one-Z(prettyprint-Term)> a
-    where b204 := <pp-one-Z(prettyprint-Term)> b
-    where c157 := <pp-one-Z(prettyprint-Term)> c
+    where a130 := <pp-one-Z(prettyprint-Term)> a
+    where b53 := <pp-one-Z(prettyprint-Term)> b
+    where c24 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Instruction :
     ResolveDefs(a, b, c, d) -> [ H(
                                    [SOpt(HS(), "0")]
                                  , [ S("resolve ")
-                                   , a516
+                                   , a131
                                    , S(" ")
-                                   , b205
-                                   , S(" definition in ")
-                                   , c158
+                                   , b54
+                                   , S(" in ")
+                                   , c25
                                    , S(" wrt props ")
-                                   , d103
+                                   , d7
                                    ]
                                  )
                                ]
-    where a516 := <pp-one-Z(prettyprint-Term)> a
-    where b205 := <pp-one-Z(prettyprint-Term)> b
-    where c158 := <pp-one-Z(prettyprint-Term)> c
-    where d103 := <pp-one-Z(prettyprint-Term)> d
+    where a131 := <pp-one-Z(prettyprint-Term)> a
+    where b54 := <pp-one-Z(prettyprint-Term)> b
+    where c25 := <pp-one-Z(prettyprint-Term)> c
+    where d7 := <pp-one-Z(prettyprint-Term)> d
+
+  prettyprint-Instruction :
+    CheckDefs(a, b) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [ S("check ")
+                           , a132
+                           , S(" against namespace ")
+                           , b55
+                           ]
+                         )
+                       ]
+    where a132 := <pp-one-Z(prettyprint-Term)> a
+    where b55 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-example =
     prettyprint-MsgType

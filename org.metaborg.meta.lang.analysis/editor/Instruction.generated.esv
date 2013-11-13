@@ -34,5 +34,7 @@ completions
     "rewrite " <Term:Term> " wrt " <Term:Term>       
   completion template Instruction : "match Term using relation Term wrt bindings Term" =
     "match " <Term:Term> " using relation " <Term:Term> " wrt bindings " <Term:Term>  
-  completion template Instruction : "resolve Term Term definition in Term wrt props Term" =
-    "resolve " <Term:Term> " " <Term:Term> " definition in " <Term:Term> " wrt props " <Term:Term>  
+  completion template Instruction : "resolve Term Term in Term wrt props Term" =
+    "resolve " <Term:Term> " " <Term:Term> " in " <Term:Term> " wrt props " <Term:Term>  
+  completion template Instruction : "check Term against namespace Term" =
+    "check " <Term:Term> " against namespace " <Term:Term>  
