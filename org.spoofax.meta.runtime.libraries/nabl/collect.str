@@ -224,15 +224,13 @@ rules // generic analysis of uses
 			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
 			if inner-name := <not(is-string); nabl-get-name> name'; Use(inner-use-task) := <nabl-collect-use> inner-name then
-				// Filter the inner use with properties instead of creating a new resolution task
-				// TODO: filter-use-candidate for resolution within context
-				// TODO: check if namespace conforms to wanted namespace
+				// Filter the inner use with properties instead of creating a new resolution task 
 				subtask* := <map(nabl-filter-use-candidate(|lang, partition, uri*, inner-use-task))> candidate*;
 				choice   := <new-task(|partition)> Choice(subtask*);
 			  u        := <new-use(|partition, choice)>;
 			  <try(nabl-unresolved-task(|partition, choice))> inner-name; // TODO: this may result in multiple unresolved msgs.
 			  // TODO: what about completions?
-			  result := <nabl-name-apply(add-annotation(|u))> name'
+			  result := <nabl-name-apply(replace-annotations(?Use(_)|u))> name'
 			else
 				subtask* := <map(nabl-use-candidate(|lang, partition, uri*, <nabl-fix-name> name'))> candidate*;
 				choice   := <new-task(|partition)> Choice(subtask*);
@@ -259,22 +257,28 @@ rules // generic analysis of uses
     	// TODO: disambiguation
     	// TODO: order of imported URI's is unclear
     	
-	nabl-use-check-tasks(|partition, ns):
-		name -> task'
-		where
-			Use(task) := <nabl-collect-use> name;
-			task'     := <new-task(|partition)> CheckDefs(ns, task)
-    	
 	nabl-use-subtask-scopes(|partition, ns):
 		uri -> [uri', wildcard-import]
 		with
 		  uri' := <try(nabl-is-uri; MkSingleton)> uri
 		; wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
+		  
+	nabl-use-check-tasks(|partition, ns):
+		name -> task'
+		where
+			Use(task) := <nabl-collect-use> name;
+			task'     := <new-task(|partition)> CheckDefs(ns, task)
+			
+	nabl-use-check-tasks(|partition, ns):
+		task -> task'
+		where
+			<not(nabl-collect-use)> task;
+			task' := <new-task(|partition)> CheckDefs(ns, task)
 
 
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Current(), wci, _) -> subtask
+		UseCandidate(ns, prop*, Current(), _, _) -> subtask
 		where
 			uri       := <lookup-uri(|lang, ns)> uri*;
       subtask   := <nabl-use-subtask(|partition, ns, name, prop*, All())> uri // TODO: only disambiguate if required.
@@ -296,16 +300,21 @@ rules // generic analysis of uses
 			
 	// filtering candidate in current scope
 	nabl-filter-use-candidate(|lang, partition, uri*, use-task):
-		UseCandidate(_, prop*, Current(), wci, _) -> task
+		UseCandidate(ns, prop*, Current(), _, _) -> check-task
 		where
-			task := <nabl-use-propconstraint(|partition)> (use-task, prop*)
+			constraint-task := <nabl-use-propconstraint(|partition)> (use-task, prop*);
+			check-task      := <nabl-use-check-tasks(|partition, ns)> 
+
+	// filtering candidate in another scope: ignore existing resolution  
+	nabl-filter-use-candidate(|lang, partition, uri*, name):
+		UseCandidate(_, _, Context(_, _, _, _), _, _) -> <nabl-use-candidate(|lang, partition, uri*, name)>
 
 			
 	nabl-use-propconstraint(|partition):
 		(task, [p@Prop(kind, expected, deps)|rest]) -> rec
 		where
-			pc        := <new-task(|partition, <dependent-tasks> (task, deps, p))> PropConstraint(kind, expected, task);
-			rec       := <nabl-use-propconstraint(|partition)> (pc, rest)
+			pc  := <new-task(|partition, <dependent-tasks> (task, deps, p))> PropConstraint(kind, expected, task);
+			rec := <nabl-use-propconstraint(|partition)> (pc, rest)
 			
 	nabl-use-propconstraint(|partition):
 		(task, []) -> task
