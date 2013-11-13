@@ -192,7 +192,7 @@ rules // generic analysis of defs
 			  ; match(sibling-uris|sibl-uri*)
 		  end
     with
-			// add Def entry to the index
+			// Add Def entry to the index. Strip barriers from URI so that barriers don't end up in the index.
 			d      := <new-def(|partition, <nabl-uri-strip-barriers> def-uri)> a;
 			name'' := <replace-annotation(?Def(_)|d)> name'
 		with
@@ -224,7 +224,9 @@ rules // generic analysis of uses
 			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
 			if inner-name := <not(is-string); nabl-get-name> name'; Use(inner-use-task) := <nabl-collect-use> inner-name then
-				// Filter the inner use with properties instead of
+				// Filter the inner use with properties instead of creating a new resolution task
+				// TODO: filter-use-candidate for resolution within context
+				// TODO: check if namespace conforms to wanted namespace
 				subtask* := <map(nabl-filter-use-candidate(|lang, partition, uri*, inner-use-task))> candidate*;
 				choice   := <new-task(|partition)> Choice(subtask*);
 			  u        := <new-use(|partition, choice)>;
@@ -244,6 +246,7 @@ rules // generic analysis of uses
 			  	result := <replace-annotation(?Use(_)|u)> name'
 		  	end
 			end
+
 
 	nabl-use-subtask(|partition, ns, name, prop*, range):
 		uri -> <new-task(|partition)> ResolveDefs(uri*, ns, name, prop*)
@@ -267,7 +270,8 @@ rules // generic analysis of uses
 		with
 		  uri' := <try(nabl-is-uri; MkSingleton)> uri
 		; wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
-		  	
+
+
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
 		UseCandidate(ns, prop*, Current(), wci, _) -> subtask
@@ -275,24 +279,27 @@ rules // generic analysis of uses
 			uri       := <lookup-uri(|lang, ns)> uri*;
       subtask   := <nabl-use-subtask(|partition, ns, name, prop*, All())> uri // TODO: only disambiguate if required.
       
-	// candidate in another scope (result of resolution)	  
+	// candidate in another scope (result of another resolution, which will be created here)	  
 	nabl-use-candidate(|lang, partition, uri*, name):
 		UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*) -> subtask
 		where
 			<not(?Result(_))> ctx-name;
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*);
 			subtask    := <nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result // TODO: only disambiguate if required.
-			
+	
+	// candidate in another scope (result of existing resolution)		
 	nabl-use-candidate(|lang, partition, uri*, name):
 		UseCandidate(ns, prop*, Context(_, ctx-result@Result(_), _, _), _, dep*) -> subtask
 		where
 			subtask := <nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result // TODO: only disambiguate if required.
+
 			
-	// candidate in current scope
+	// filtering candidate in current scope
 	nabl-filter-use-candidate(|lang, partition, uri*, use-task):
 		UseCandidate(_, prop*, Current(), wci, _) -> task
 		where
 			task := <nabl-use-propconstraint(|partition)> (use-task, prop*)
+
 			
 	nabl-use-propconstraint(|partition):
 		(task, [p@Prop(kind, expected, deps)|rest]) -> rec
@@ -344,6 +351,7 @@ rules // generic analysis of imports
     scope -> <new-alias(|partition, alias-uri, target-uri)>
   where
     base-uri  := <nabl-scope-uri(|lang, uri*, ns)> scope
+    // TODO: uniqueness should be a property of the import, assumes non-unique right now.
   ; alias-uri := <nabl-extend-uri(|unique*, partition, ns, name, NonUnique())> base-uri
     
   nabl-import-prop(|lang, partition, uri*, from, into):
