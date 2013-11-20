@@ -101,7 +101,7 @@
 			<fileset dir="wrapper-scripts/unix/" includes="*" />
 		</copy>
 		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
-		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>
+		<!-- <echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>-->
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt.jar</echo>
 	</target>
 
