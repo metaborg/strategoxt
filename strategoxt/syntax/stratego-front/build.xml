@@ -104,11 +104,16 @@
 	</target>
 
 	<target name="install" depends="build">
-		<mkdir dir="${install-location}" />
-		<copy todir="${install-location}">
-			<fileset dir="${bin}" />
-			<fileset dir="${syn}" includes="*.sdf" />
-		</copy>
+    <mkdir dir="${install-location}" />
+    <copy todir="${install-location}">
+      <fileset dir="${bin}" includes="*Stratego*.str, *Stratego*.rtg, *Stratego*.pp*" />
+    	<fileset dir="${bin}" includes="stratego/strc/**/*.str" />
+    </copy>
+    <mkdir dir="${install-location}/sdf" />
+    <copy todir="${install-location}/sdf">
+      <fileset dir="${bin}" includes="*Stratego*.def, *Stratego*.tbl, *Stratego*.sdf" />
+    	<fileset dir="${syn}" includes="*.sdf" />
+    </copy>
 	</target>
 
 	<target name="clean">

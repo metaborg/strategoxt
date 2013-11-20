@@ -95,14 +95,19 @@
 	</target>
 
 	<target name="install" depends="jar">
-		<copy file="${bin}/strategoxt.jar" todir="${install-location}" overwrite="true" verbose="true" />
-		<mkdir dir="${install-prefix}/bin" />
-		<copy todir="${install-prefix}/bin" verbose="true">
+		<mkdir dir="${install-location}/strategoxt" />
+		<copy file="${bin}/strategoxt.jar" todir="${install-location}/strategoxt" overwrite="true" verbose="true" />
+		<mkdir dir="${install-location}/bin" />
+		<copy todir="${install-location}/bin" verbose="true">
 			<fileset dir="wrapper-scripts/unix/" includes="*" />
 		</copy>
-		<chmod dir="${install-prefix}/bin" includes="*" perm="a+rx" />
-		<!-- <echo file="${install-prefix}/nix-support/hydra-build-products" append="true">nix-build out ${install-location}</echo>-->
-		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt.jar</echo>
+		<chmod dir="${install-location}/bin" includes="*" perm="a+rx" />
+		<copy todir="${install-prefix}" verbose="true">
+			<fileset dir="${subdists-install-prefix}" includes="**/*" />
+		</copy>
+		<tar destfile="${install-prefix}/strategoxt-distrib.tar.gz" basedir="${install-location}" compression="gzip" />
+		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt/strategoxt.jar</echo>
+		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file distrib ${install-prefix}/strategoxt-distrib.tar.gz</echo>
 	</target>
 
 
@@ -132,7 +137,7 @@
 			<sequential>
 				<trycatch>
 					<try>
-						<strj-test input="@{strfile}" synaterm="${subdists-install-prefix}/share/strategoxt/aterm-front" synbox="${subdists-install-prefix}/share/strategoxt/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar"/>
+						<strj-test input="@{strfile}" synaterm="${subdists-install-prefix}/share/strategoxt/aterm-front" synbox="${subdists-install-prefix}/share/strategoxt/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar" />
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />

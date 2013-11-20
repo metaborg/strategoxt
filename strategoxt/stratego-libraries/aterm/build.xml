@@ -40,12 +40,12 @@
 				<arg value="-I" />
 				<arg value="${dep.aterm-front}" />
 				<arg value="-I" />
-				<arg value="${dep.gpp}/syn/box" />
+				<arg value="${dep.gpp}/sdf" />
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />
 				<srcfiles dir="${dep.aterm-front}" includes="**/*" />
-				<srcfiles dir="${dep.gpp}/syn/box" includes="**/*" />
+				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
 		<!-- <copy file="lib/libstratego-aterm.ctree" todir="${bin}" /> -->

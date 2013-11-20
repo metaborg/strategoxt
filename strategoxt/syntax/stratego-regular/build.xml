@@ -38,17 +38,24 @@
 				<args>
 					<arg value="-I" />
 					<arg value="${dep.stratego-front}" />
+					<arg value="-I" />
+					<arg value="${dep.stratego-front}/sdf" />
 				</args>
 			</includeargs>
 		</sdf2generated>
-		<sglri input="pp/rtg.pp" output="${bin}/rtg.pp.af" parsetable="${dep.box}/syn/pp-table/pp-table.tbl" />
+		<sglri input="pp/rtg.pp" output="${bin}/rtg.pp.af" parsetable="${dep.box}/sdf/pp-table.tbl" />
 	</target>
 
 	<target name="install">
 		<mkdir dir="${install-location}" />
-		<copy todir="${install-location}">
-			<fileset dir="${bin}" />
-		</copy>
+    <copy todir="${install-location}">
+      <fileset dir="${bin}" includes="*rtg.str, *rtg.rtg, *rtg.pp*" />
+    </copy>
+    <mkdir dir="${install-location}/sdf" />
+    <copy todir="${install-location}/sdf">
+      <fileset dir="${bin}" includes="*rtg*.def, *rtg*.tbl" />
+      <fileset dir="${syn}" includes="*.sdf" />
+    </copy>
 	</target>
 
 	<target name="clean">

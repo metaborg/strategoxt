@@ -71,6 +71,8 @@
 				<arg value="-I" />
 				<arg value="${dep.stratego-front}" />
 				<arg value="-I" />
+				<arg value="${dep.stratego-front}/sdf" />
+				<arg value="-I" />
 				<arg value="${dep.java-front}/languages/stratego-java" />
 			</strjargs>
 			<str-deps>
@@ -109,11 +111,19 @@
 				<arg value="-I" />
 				<arg value="${dep.stratego-front}" />
 				<arg value="-I" />
+				<arg value="${dep.stratego-front}/sdf" />
+				<arg value="-I" />
 				<arg value="${dep.stratego-regular}" />
+				<arg value="-I" />
+				<arg value="${dep.stratego-regular}/sdf" />
 				<arg value="-I" />
 				<arg value="${dep.sdf-front}" />
 				<arg value="-I" />
-				<arg value="${dep.gpp}/syn/pp-table" />
+				<arg value="${dep.sdf-front}/sdf" />
+				<arg value="-I" />
+				<arg value="${dep.gpp}" />
+				<arg value="-I" />
+				<arg value="${dep.gpp}/sdf" />
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="java/tools/org/strategoxt/tools/lib" includes="**/*.str" />
@@ -121,7 +131,7 @@
 				<srcfiles dir="${dep.stratego-front}" includes="**/*" />
 				<srcfiles dir="${dep.stratego-regular}" includes="**/*" />
 				<srcfiles dir="${dep.sdf-front}" includes="**/*" />
-				<srcfiles dir="${dep.gpp}/syn/pp-table" includes="**/*" />
+				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
 	</target>
@@ -196,7 +206,7 @@
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel" />
-		<sglri input="java/runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.str" output="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree" parsetable="${dep.stratego-front}/Stratego.tbl" />
+		<sglri input="java/runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.str" output="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree" parsetable="${dep.stratego-front}/sdf/Stratego.tbl" />
 
 
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/" />

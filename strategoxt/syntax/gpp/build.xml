@@ -16,13 +16,8 @@
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 	<property name="install-prefix" location="dist" />
-	<property name="install-location" location="${install-prefix}/share/strategoxt/gpp" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt" />
 	<property name="dep.stratego-front" location="../stratego-front/dist/share/strategoxt/stratego-front" />
-
-	<property name="syn.box" value="syn/box" />
-	<property name="syn.pp" value="syn/pp-table" />
-	<property name="syn.box.abs" location="${syn.box}" />
-	<property name="syn.pp.abs" location="${syn.pp}" />
 
 	<property name="syn.box" value="syn/box" />
 	<property name="syn.pp" value="syn/pp-table" />
@@ -44,6 +39,8 @@
 				<args>
 					<arg value="-I" />
 					<arg value="${dep.stratego-front}" />
+					<arg value="-I" />
+					<arg value="${dep.stratego-front}/sdf" />
 				</args>
 			</includeargs>
 		</sdf2generated>
@@ -61,12 +58,24 @@
 		</sdf2generated>
 		<sglri input="${syn.pp}/pp-table-pretty.pp" output="${bin}/${syn.pp}/pp-table-pretty.pp.af" parsetable="${bin.abs}/${syn.pp}/pp-table.tbl" />
 	</target>
-
+	
 	<target name="install" depends="build">
-		<mkdir dir="${install-location}" />
-		<copy todir="${install-location}">
-			<fileset dir="${bin}" includes="**/*" />
-		</copy>
+		
+		<mkdir dir="${install-location}/gpp" />
+    <copy todir="${install-location}/gpp">
+      <fileset dir="${bin}/${syn.box}" includes="Box.pp*, Box.rtg, Box.str, boxstyle.css" />
+    	<fileset dir="${syn.box}" includes="Box.pp*" />
+      <fileset dir="${bin}/${syn.pp}" includes="pp-table*.pp*, pp-table.str" />
+    	<fileset dir="${syn.pp}" includes="pp-table*.pp*" />
+    </copy>
+		
+    <mkdir dir="${install-location}/gpp/sdf" />
+		<copy todir="${install-location}/gpp/sdf">
+		  <fileset dir="${bin}/${syn.box}" includes="*.tbl, *.def" />
+			<fileset dir="${bin}/${syn.pp}" includes="*.tbl, *.def" />
+			<fileset dir="${syn.box}" includes="*.sdf" />
+			<fileset dir="${syn.pp}" includes="*.sdf" />
+    </copy>
 	</target>
 
 	<target name="clean">

@@ -39,9 +39,14 @@
 
 	<target name="install">
 		<mkdir dir="${install-location}" />
-		<copy todir="${install-location}">
-			<fileset dir="${bin}" />
-		</copy>
+    <copy todir="${install-location}">
+    	<fileset dir="${bin}" includes="ATerms.str, ATerms.rtg, ATerms.pp*" />
+    </copy>
+    
+    <mkdir dir="${install-location}/sdf" />
+    <copy todir="${install-location}/sdf">
+    	<fileset dir="${bin}" includes="ATerms.def, ATerms.tbl" />
+    </copy>
 	</target>
 
 	<target name="clean">

@@ -42,10 +42,13 @@
 				<arg value="stratego-aterm" />
 				<arg value="-I" />
 				<arg value="${dep.sdf-front}" />
+				<arg value="-I" />
+				<arg value="${dep.sdf-front}/sdf" />
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />
 				<srcfiles dir="${dep.sdf-front}" includes="**/*" />
+				<srcfiles dir="${dep.sdf-front}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
 		<!-- <copy file="lib/libstratego-sdf.ctree" todir="${bin}" /> -->

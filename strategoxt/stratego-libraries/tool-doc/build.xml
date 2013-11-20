@@ -50,11 +50,11 @@
 				<arg value="-D" />
 				<arg value="SRTS_package_version_0_0=&quot;&lt;SRTS-package-version>&quot;" />
 				<arg value="-I" />
-				<arg value="${dep.gpp}/syn/box" />
+				<arg value="${dep.gpp}/sdf" />
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />
-				<srcfiles dir="${dep.gpp}/syn/box" includes="**/*" />
+				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
 		<!-- <copy file="lib/libstratego-tool-doc.ctree" todir="${bin}" /> -->

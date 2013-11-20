@@ -43,17 +43,24 @@
 					<arg value="${sdf2bundle}/share/sdf-library/library" />
 					<arg value="-I" />
 					<arg value="${dep.stratego-front}" />
+					<arg value="-I" />
+					<arg value="${dep.stratego-front}/sdf" />
 				</args>
 			</includeargs>
 		</sdf2generated>
-		<sglri input="pp/Sdf2.pp" output="${bin}/Sdf2.pp.af" parsetable="${dep.box}/syn/pp-table/pp-table.tbl" />
+		<sglri input="pp/Sdf2.pp" output="${bin}/Sdf2.pp.af" parsetable="${dep.box}/sdf/pp-table.tbl" />
 	</target>
 
 	<target name="install">
-		<mkdir dir="${install-location}" />
-		<copy todir="${install-location}">
-			<fileset dir="${bin}" />
-		</copy>
+    <mkdir dir="${install-location}" />
+    <copy todir="${install-location}">
+      <fileset dir="${bin}" includes="*Sdf2.str, *Sdf2.rtg, *Sdf2.pp*" />
+    </copy>
+    
+    <mkdir dir="${install-location}/sdf" />
+    <copy todir="${install-location}/sdf">
+      <fileset dir="${bin}" includes="*Sdf2.def, *Sdf2.tbl" />
+    </copy>
 	</target>
 
 	<target name="clean">
