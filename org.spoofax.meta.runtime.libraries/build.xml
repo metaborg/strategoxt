@@ -1,0 +1,81 @@
+<project name="org.metaborg.meta.runtime.libraries">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="ant-contrib-0.6.jar"/>
+	<!--<typedef resource="strategoxt-antlib.xml" />-->
+
+	<import file="strategoxt-antlib.xml" />
+
+	<property name="src-gen" value="src-gen/org/metaborg/meta/runtime/libraries"/>
+
+	<target name="all" depends="editor, index, task, tmpl, analysis"/>
+
+	<target name="editor">
+		<mkdir dir="${src-gen}/editor"/>
+		<strj-lib input="${basedir}/editor/editor.str" output="${src-gen}/editor/Main.java" package="org.metaborg.meta.runtime.libraries.editor">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-I" />
+				<arg value="${basedir}" />
+			</strjlibargs>
+		</strj-lib>
+	</target>
+
+	<target name="index">
+		<mkdir dir="${src-gen}/index"/>
+		<strj-lib input="${basedir}/index/index.str" output="${src-gen}/index/Main.java" package="org.metaborg.meta.runtime.libraries.index">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-I" />
+				<arg value="${basedir}" />
+			</strjlibargs>
+		</strj-lib>
+	</target>
+
+	<target name="task" depends="editor">
+		<mkdir dir="${src-gen}/task"/>
+		<strj-lib input="${basedir}/task/task.str" output="${src-gen}/task/Main.java" package="org.metaborg.meta.runtime.libraries.task">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="libeditor" />
+				<arg value="-I" />
+				<arg value="${basedir}" />
+			</strjlibargs>
+		</strj-lib>
+	</target>
+
+	<target name="tmpl">
+		<mkdir dir="${src-gen}/tmpl"/>
+		<strj-lib input="${basedir}/tmpl/pp.str" output="${src-gen}/tmpl/Main.java" package="org.metaborg.meta.runtime.libraries.tmpl">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="gpp-lib" />
+				<arg value="-I" />
+				<arg value="${basedir}" />
+			</strjlibargs>
+		</strj-lib>
+	</target>
+
+	<target name="analysis">
+		<mkdir dir="${src-gen}/analysis"/>
+		<strj-lib input="${basedir}/analysis/analysis.str" output="${src-gen}/analysis/Main.java" package="org.metaborg.meta.runtime.libraries.analysis">
+			<strjlibargs>
+				<arg value="-la" />
+				<arg value="stratego-lib" />
+				<arg value="-la" />
+				<arg value="libeditor" />
+				<arg value="-la" />
+				<arg value="libindex" />
+				<arg value="-la" />
+				<arg value="libtask" />
+				<arg value="-I" />
+				<arg value="${basedir}" />
+			</strjlibargs>
+		</strj-lib>
+	</target>
+</project>
