@@ -1,0 +1,11 @@
+module index/index
+
+imports
+  
+  libstratego-lib
+  index/core
+  index/globals
+  index/partition
+  index/query
+  index/utils
+  

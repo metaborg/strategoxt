@@ -1,12 +1,15 @@
 module analysis/reanalysis
 
 imports
+  
+  task/libtask
+  index/libindex
+  
+imports
 	
 	analysis/core
 	analysis/single
 	analysis/defaults
-	task/core
-	index/core
 	nabl/collect
 	nabl/namegen
 

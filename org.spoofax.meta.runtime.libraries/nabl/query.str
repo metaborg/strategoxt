@@ -2,9 +2,12 @@ module nabl/query
 
 imports
   
+  index/libindex
+  
+imports
+  
   nabl/uri
   nabl/entries
-  index/query
   
 rules // Specific queries
 

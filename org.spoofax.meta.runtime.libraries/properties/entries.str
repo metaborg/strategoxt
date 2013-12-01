@@ -2,11 +2,14 @@ module properties/entries
 
 imports
   
+  index/libindex
+  editor/libeditor
+
+imports
+  
   nabl/collect
   nabl/utils
   nabl/uri
-  index/core
-  editor/origins
   
 signature
 

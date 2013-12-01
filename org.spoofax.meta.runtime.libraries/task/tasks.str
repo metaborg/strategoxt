@@ -18,6 +18,7 @@ signature
     Rewrite  : ID * Term         -> Instruction
     Index    : Int * List(Term)  -> Instruction
     Length   : List(Term)        -> Instruction
+    
 rules
 	
 	perform-cyclic-task(|nr) = fail

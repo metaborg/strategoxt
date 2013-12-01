@@ -2,12 +2,15 @@ module nabl/lookup
 
 imports
   
+  task/libtask
+  
+imports
+  
 	nabl/query
 	nabl/uri
 	nabl/collect
   properties/query
-  task/core
-
+  
 rules // Lookup
 	
 	nabl-lookup(|ns, name):

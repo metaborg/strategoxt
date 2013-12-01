@@ -1,6 +1,10 @@
 module nabl/check
 
 imports
+  
+  task/libtask
+  
+imports
 	
 	nabl/resolve
 	nabl/collect
@@ -10,9 +14,6 @@ imports
 	nabl/interface
 	nabl/uri
 	nabl/utils
-	task/core
-	task/messages
-	task/tasks
 	
 rules // Error checking tasks
 	

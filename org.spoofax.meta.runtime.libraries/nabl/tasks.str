@@ -2,9 +2,12 @@ module nabl/tasks
 
 imports 
   
-  task/core
-  task/tasks
-  task/utils
+  task/libtask
+  
+  // extends perform-task
+
+imports
+  
   nabl/lookup
   nabl/collect
   nabl/query
@@ -34,14 +37,14 @@ signature
         
 rules // basics
   
-  perform-task(|nr) = 
+  extend perform-task(|nr) = 
     ?CollectDefs(<id>)
   ; (?Def(_) <+ try(nabl-get-name); get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))
 
 rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
-  perform-task(|nr):
+  extend perform-task(|nr):
   	ResolveDefs(scope, ns, name, prop*) -> result
   	where
   		uri        := <nabl-uri> scope;
@@ -51,7 +54,7 @@ rules // Resolve
   		// alias-def* := <nabl-extend-uri(|ns, name, NonUnique()); nabl-get-all-aliases; insert-results-or-create-dependency; try(concat)> uri;
   		result     := <filter(filter-defs-props(|prop*)); (task-collect-dependencies <+ not(?[]))> def*
   		
-	task-short-circuit = ?ResolveDefs(_, _, _, _)
+	extend task-short-circuit = ?ResolveDefs(_, _, _, _)
   		
 	filter-defs-props(|prop*):
 		definition -> <map(filter-defs-prop(|definition)); (task-collect-dependencies <+ !definition)> prop*
@@ -68,10 +71,10 @@ rules // Resolve
       	                                      <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value')); !definition
       end => result
 
-	perform-task(|nr):
+	extend perform-task(|nr):
 		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
 		
-	perform-task(|nr):
+	extend perform-task(|nr):
 		CheckDefs(ns, d) -> d
 		where
 			<nabl-uri; nabl-uri-namespace; ?ns> d
@@ -108,7 +111,7 @@ rules // Resolve
 rules // Visibility
 	
   // Looks up defintions in scopes with namespace and name.
-  perform-task(|nr):
+  extend perform-task(|nr):
   	ResolveAllDefs(scope, ns) -> def*
   	where
   		uri  := <nabl-uri> scope;

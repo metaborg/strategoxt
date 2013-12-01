@@ -1,10 +1,13 @@
 module analysis/complete
 
 imports
+  
+  index/libindex
+  task/libtask
+
+imports
 	
 	nabl/complete
-	task/core
-	index/core
 	
 rules
 	

@@ -3,7 +3,6 @@ module task/new-messages
 imports
   
   task/core
-  editor/origins
   task/messages
   
 signature

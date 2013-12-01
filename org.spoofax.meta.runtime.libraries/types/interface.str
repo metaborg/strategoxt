@@ -1,8 +1,4 @@
 module types/interface
-
-imports
-  
-  types/collect
   
 strategies // user-defined implementations
 	

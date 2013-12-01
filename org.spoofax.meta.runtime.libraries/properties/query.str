@@ -1,13 +1,17 @@
 module properties/query
 
 imports
+
+	task/libtask
+
+imports
+  
+  nabl/interface
 	nabl/query
 	nabl/uri
-	task/core
 	properties/entries
   properties/tasks
   properties/interface
-  nabl/interface
 
 rules
 

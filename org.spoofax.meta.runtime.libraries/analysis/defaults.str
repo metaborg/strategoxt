@@ -1,16 +1,18 @@
 module analysis/defaults
 
 imports
+  
+  index/libindex
+  task/libtask
+  editor/libeditor
+
+imports
 	
 	analysis/core
 	analysis/single
 	analysis/multiple
 	nabl/utils
-	index/core
-	task/core
-	editor/editor
-	editor/queue
-
+	
 rules // Analysis
 	
 	analysis-default-editor = analysis-single-default-interface <+ (where(not(is-tuple)); analysis-multiple-default-queue)
