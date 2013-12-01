@@ -1,4 +1,4 @@
-module editor/outline-library
+module editor/outline
 
 imports
 	
