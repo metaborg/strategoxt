@@ -7,6 +7,7 @@ imports
 	properties/query
 	properties/eq
   task/core
+  editor/annotations
   
 signature
   
@@ -16,6 +17,7 @@ signature
     PropList    : List(Term)                        -> Instruction
     PropsLookup : Property * URI                    -> Instruction    
     PropCheck   : Property * Relation * Term * Term -> Instruction
+    PropExtract : Property * Term                   -> Instruction
     
 rules
 
@@ -50,3 +52,6 @@ rules
       
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> [<nabl-property-eq> (kind, rel, (actual, expected))]
+
+  perform-task(|n):
+    PropExtract(kind, t) -> <get-annotation(?(kind, <id>))> t

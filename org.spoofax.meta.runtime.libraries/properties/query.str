@@ -11,11 +11,6 @@ imports
 
 rules
 
-  get-or-create-property-task(|ctx, kind) = 
-     get-property-task(|kind)
-  <+ map(create-property-task(|ctx, kind))
-  <+ create-property-task(|ctx, kind)
-  
   get-property-task(|kind) =
      map(get-property-task(|kind))
   <+ get-annos

@@ -103,11 +103,18 @@ strategies
 
 rules
   
-    create-property-task(|ctx, kind) :
+  get-or-create-property-task(|ctx, kind) = 
+     get-property-task(|kind)
+  <+ map(create-property-task(|ctx, kind))
+  <+ create-property-task(|ctx, kind)
+  
+  create-property-task(|ctx, kind):
+    r@Result(_) -> <new-task(|ctx)> PropExtract(kind, r)
+    
+  create-property-task(|ctx, kind) :
     x -> <nabl-prop-calc(|ctx, t*)> t*
     where 
-    	<is-list> x
-    ; t* := <map(get-or-create-property-task(|ctx, kind))> x
+    	t* := <map(get-or-create-property-task(|ctx, kind))> x
     
 rules
   
