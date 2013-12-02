@@ -4,6 +4,12 @@ imports
 	
 	task/core
 
+signature
+
+	constructors
+		
+		Debug : Term * Term -> Instruction
+
 rules
 	
 	task-transitive-dependencies = task-transitive-dependencies(|[])
@@ -28,3 +34,15 @@ rules
 			resultID* := <task-collect-result-ids> ast;
 			dep*      := <mapconcat(task-transitive-dependencies)> resultID*;
 			debug*    := <make-set; map(task-debug-info(|<id>))> [resultID*, dep*]
+
+rules
+	
+	task-debug(|ctx):
+		term -> <new-task(|ctx)> Debug("", term)
+		
+	task-debug(|ctx, prefix):
+		term -> <new-task(|ctx)> Debug(prefix, term)
+		
+	perform-task(|nr):
+		Debug(prefix, term) -> <debug(!$[[nr] - [prefix]]); !term> term
+		
