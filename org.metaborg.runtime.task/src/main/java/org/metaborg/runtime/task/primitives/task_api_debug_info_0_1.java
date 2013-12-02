@@ -1,6 +1,6 @@
 package org.metaborg.runtime.task.primitives;
 
-import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+import static org.metaborg.runtime.task.util.TermTools.makeList;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;

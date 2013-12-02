@@ -1,7 +1,7 @@
 package org.metaborg.runtime.task;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
-import static org.metaborg.runtime.task.util.ListBuilder.makeList;
+import static org.metaborg.runtime.task.util.TermTools.makeList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,8 +29,8 @@ import fj.data.Either;
 public final class TaskInsertion {
 	/**
 	 * Returns all instruction permutations of given task based on its dependencies. For regular tasks,
-	 * {@link #instructionCombinations} is called. For task combinators, {@link #combinatorCombinations} is called. This
-	 * function assumes that all dependencies of the given task have been solved.
+	 * {@link #insertResultCombinations} is called. For task combinators, {@link #insertResultLists} is called. This
+	 * function assumes that all dependencies of the given task have been solved (have a result or failed).
 	 */
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> taskCombinations(ITermFactory factory,
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task) {

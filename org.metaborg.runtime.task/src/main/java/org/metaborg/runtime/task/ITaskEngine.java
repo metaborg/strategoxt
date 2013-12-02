@@ -7,7 +7,6 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -57,7 +56,7 @@ public interface ITaskEngine {
 	 * @return A unique task identifier for given instruction.
 	 */
 	public abstract IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies,
-		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit);
+		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit, boolean failOnDependenciesFailure);
 
 	/**
 	 * Adds a persisted task back to the task engine.
@@ -73,10 +72,10 @@ public interface ITaskEngine {
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed If the task has failed. A value of 1 indicates failure.
 	 */
-	public abstract void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
-		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations);
+	public abstract void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
+		boolean shortCircuit, boolean failOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
+		IStrategoTerm results, boolean failed, IStrategoTerm message, long time, short evaluations);
 
 	/**
 	 * Removes task with given identifier from the task engine.
@@ -247,7 +246,7 @@ public interface ITaskEngine {
 
 	/**
 	 * Gets all other task identifier that depend on the task with given identifier.
-	 * 
+	 *
 	 * @param taskID The task identifier to get dependent tasks for.
 	 * @param withDynamic If dynamic dependents should be included.
 	 */

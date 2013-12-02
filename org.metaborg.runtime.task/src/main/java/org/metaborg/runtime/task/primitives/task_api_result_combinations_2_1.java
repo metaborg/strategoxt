@@ -4,7 +4,7 @@ import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskManager;
 import org.metaborg.runtime.task.util.InvokeStrategy;
-import org.metaborg.runtime.task.util.ListBuilder;
+import org.metaborg.runtime.task.util.TermTools;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
@@ -35,7 +35,7 @@ public class task_api_result_combinations_2_1 extends AbstractPrimitive {
 			TaskInsertion.insertResultCombinations(taskEngine, env, collect, insert, term, resultIDs);
 		if(result == null || result._1() == null)
 			return false; // No combinations could be constructed because a dependency failed or had no results.
-		final IStrategoList resultList = ListBuilder.makeList(factory, result._1());
+		final IStrategoList resultList = TermTools.makeList(factory, result._1());
 
 		if(result._2()) {
 			// Results are task IDs of dependencies instead.
