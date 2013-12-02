@@ -5,6 +5,7 @@ imports
   nabl/uri
   nabl/entries
   index/query
+  task/core
   
 rules // Specific queries
 
@@ -110,17 +111,25 @@ rules // Generic queries
         entries  := <nabl-filter-entries(|namespace, prefix)> children
 
   nabl-get-unique-nonunique(create-template):
-  	uri -> [unique*, nonUnique*]
+  	uri -> [unique*, non-unique*]
   	where
       if alias* := <nabl-get-all-aliases> uri then
-        unique* := <mapconcat(create-template; nabl-get-all)> alias*
+      	// HACK: handle Result terms on the resulting URI of an alias. this should be decomposed into a task?
+      	(alias-result*, alias-uri*) := <partition(?Result(_); insert-results-or-create-dependency)> alias*;
+      	if deps := <task-collect-dependencies> alias-result* then
+      		unique* := [deps]
+        else
+        	unique-uri*    := <mapconcat(create-template; nabl-get-all)> alias-uri*;
+        	unique-result* := <try(concat)> alias-result*;
+        	unique*        := [unique-uri*, unique-result*]
+        end
       else
         unique* := []
       end;
-      if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
-        nonUnique*    := <create-template; nabl-get-all> nonUniqueURI
+      if non-unique-uri := <nabl-replace-uri-qualifier(|NonUnique())> uri then
+        non-unique* := <create-template; nabl-get-all> non-unique-uri
       else
-        nonUnique*    := []
+        non-unique* := []
       end
 
 rules /** @internal Entry filtering */
