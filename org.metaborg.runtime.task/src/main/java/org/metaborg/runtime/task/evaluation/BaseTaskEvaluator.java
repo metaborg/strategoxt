@@ -204,10 +204,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			return false;
 
 		for(IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
-			if(!taskEngine.getTask(dependency).dependencyFailed())
-				return false;
+			if(taskEngine.getTask(dependency).dependencyFailed())
+				return true;
 		}
 
-		return true;
+		return false;
 	}
 }
