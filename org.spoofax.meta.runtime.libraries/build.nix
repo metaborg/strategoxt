@@ -19,9 +19,10 @@ let
       postUnpack = ''
       '';
 
-      antTargets = ["all"];
+      antTargets = ["all" "install"];
       antProperties = [
         { name = "eclipse.spoofaximp.strategojar"; value = strategoxt; }
+        { name = "output"; value = "$out"; }
       ];
       antBuildInputs = [ pkgs.ecj strategoxt ];
 

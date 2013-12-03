@@ -22,6 +22,15 @@
 	
 	<target name="all" depends="editor, index, task, tmpl, analysis"/>
 
+
+	<target name="install" depends="all">
+		<copy todir="${output}" verbose="true">
+                	<fileset dir="${basedir}" includes="*.ctree"/>
+			<fileset dir="${basedir}" includes="*.rtree"/>
+			<fileset dir="${basedir}/dist/" includes="*.jar"/>
+		</copy>
+	</target>
+
 	
 	<target name="editor">
 		<mkdir dir="${src-gen}/editor"/>
