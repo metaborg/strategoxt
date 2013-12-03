@@ -15,11 +15,14 @@
 				<include name="**/*.ctree.dep"/>
 			</fileset>
 		</delete>
-		<deltree dir="${basedir}/src-gen"/>
+		<delete dir="${basedir}/src-gen"/>
+		<delete dir="${basedir}/dist"/>
 	</target>
 
+	
 	<target name="all" depends="editor, index, task, tmpl, analysis"/>
 
+	
 	<target name="editor">
 		<mkdir dir="${src-gen}/editor"/>
 		<mkdir dir="${basedir}/bin/editor"/>
@@ -43,9 +46,10 @@
 			</classpath>
 		</javac>
 
-		<jar destfile="${basedir}/dist/editor.jar" includes="${basedir}/bin/editor/**"/>
+		<jar basedir="${basedir}/bin" includes="editor/**" destfile="${basedir}/dist/editor.jar"/>
 	</target>
 
+	
 	<target name="index">
 		<mkdir dir="${src-gen}/index"/>
 		<mkdir dir="${basedir}/bin/index"/>
@@ -61,16 +65,17 @@
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		
 		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/index/**" destdir="${basedir}/bin/index">
 			<classpath>
 				<pathelement location="${eclipse.spoofaximp.strategojar}" />
 			</classpath>
 		</javac>
 
-		<jar destfile="${basedir}/dist/index.jar" includes="${basedir}/bin/index/**"/>
-
+		<jar basedir="${basedir}/bin" includes="index/**" destfile="${basedir}/dist/index.jar"/>
 	</target>
 
+	
 	<target name="task" depends="editor">
 		<mkdir dir="${src-gen}/task"/>
 		<mkdir dir="${basedir}/bin/task"/>
@@ -86,15 +91,17 @@
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		
 		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/task/**" destdir="${basedir}/bin/task">
 			<classpath>
 				<pathelement location="${eclipse.spoofaximp.strategojar}" />
 			</classpath>
 		</javac>
 
-		<jar destfile="${basedir}/dist/task.jar" includes="${basedir}/bin/task/**"/>
+		<jar basedir="${basedir}/bin" includes="task/**" destfile="${basedir}/dist/task.jar"/>
 	</target>
 
+	
 	<target name="tmpl">
 		<mkdir dir="${src-gen}/tmpl"/>
 		<mkdir dir="${basedir}/bin/tmpl"/>
@@ -110,15 +117,17 @@
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		
 		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/tmpl/**" destdir="${basedir}/bin/tmpl">
 			<classpath>
 				<pathelement location="${eclipse.spoofaximp.strategojar}" />
 			</classpath>
 		</javac>
 
-		<jar destfile="${basedir}/dist/tmpl.jar" includes="${basedir}/bin/tmpl/**"/>
+		<jar basedir="${basedir}/bin" includes="tmpl/**" destfile="${basedir}/dist/tmpl.jar"/>
 	</target>
 
+	
 	<target name="analysis">
 		<mkdir dir="${src-gen}/analysis"/>
 		<mkdir dir="${basedir}/bin/analysis"/>
@@ -138,12 +147,13 @@
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		
 		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/analysis/**" destdir="${basedir}/bin/analysis">
 			<classpath>
 				<pathelement location="${eclipse.spoofaximp.strategojar}" />
 			</classpath>
 		</javac>
 
-		<jar destfile="${basedir}/dist/analysis.jar" includes="${basedir}/bin/analysis/**"/>
+		<jar basedir="${basedir}/bin" includes="analysis/**" destfile="${basedir}/dist/analysis.jar"/>
 	</target>
 </project>
