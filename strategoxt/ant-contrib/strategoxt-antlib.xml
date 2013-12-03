@@ -267,27 +267,27 @@
 			<dirname file="@{input}" property="@{input}.dirname" />
 			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
 			<uptodate-mio input="@{input}" output="@{output}" type="strj-lib">
-			<action>
-				<strj input="@{input}" output="@{lib-output}" package="@{package}">
-					<strjargs>
-						<arg value="--library" />
-						<arg value="-F" />
-						<strjlibargs />
-					</strjargs>
-				</strj>
-				<strj input="@{lib-output}" output="@{output}" package="@{package}">
-					<strjargs>
-						<arg value="--library" />
-						<strjlibargs />
-					</strjargs>
-				</strj>
-			</action>
-			<deps>
-				<str-deps />
-			</deps>
-		  </uptodate-mio>
+				<action>
+					<strj input="@{input}" output="@{lib-output}" package="@{package}">
+						<strjargs>
+							<arg value="--library" />
+							<arg value="-F" />
+							<strjlibargs />
+						</strjargs>
+					</strj>
+					<strj input="@{lib-output}" output="@{output}" package="@{package}">
+						<strjargs>
+							<arg value="--library" />
+							<strjlibargs />
+						</strjargs>
+					</strj>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
 		</sequential>
-	  </macrodef>
+	</macrodef>
 
 	<macrodef name="gen-renamed-sdf-module">
 		<attribute name="input" />
