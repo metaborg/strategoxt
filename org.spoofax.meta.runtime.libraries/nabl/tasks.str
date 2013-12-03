@@ -2,7 +2,7 @@ module nabl/tasks
 
 imports 
   
-  task/libtask
+  libtask
   
   // extends perform-task
 

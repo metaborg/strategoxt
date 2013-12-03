@@ -2,9 +2,9 @@ module analysis/debug
 
 imports
   
-  index/libindex
-  task/libtask
-  editor/libeditor
+  libindex
+  libtask
+  libeditor
 
 rules // Index
 	 

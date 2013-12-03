@@ -3,8 +3,8 @@ module nabl/utils
 imports
 	
 	libstratego-lib
-	task/libtask
-	editor/libeditor
+	libtask
+	libeditor
 
 rules 
 	

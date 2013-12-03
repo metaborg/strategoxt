@@ -2,7 +2,7 @@ module nabl/query
 
 imports
   
-  index/libindex
+  libindex
   
 imports
   

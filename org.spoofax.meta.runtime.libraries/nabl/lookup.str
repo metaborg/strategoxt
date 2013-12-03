@@ -2,7 +2,7 @@ module nabl/lookup
 
 imports
   
-  task/libtask
+  libtask
   
 imports
   

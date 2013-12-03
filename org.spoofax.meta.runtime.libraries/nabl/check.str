@@ -2,7 +2,7 @@ module nabl/check
 
 imports
   
-  task/libtask
+  libtask
   
 imports
 	

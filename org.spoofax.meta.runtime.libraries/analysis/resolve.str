@@ -2,8 +2,8 @@ module analysis/resolve
 
 imports
   
-  task/libtask
-  index/libindex
+  libtask
+  libindex
   
 imports
 	

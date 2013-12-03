@@ -2,7 +2,7 @@ module properties/query
 
 imports
 
-	task/libtask
+	libtask
 
 imports
   

@@ -2,8 +2,8 @@ module properties/collect
 
 imports 
 	
-  task/libtask
-  editor/libeditor
+  libtask
+  libeditor
 
 imports
   

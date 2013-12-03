@@ -2,8 +2,8 @@ module nbl/namegen
 
 imports
   
-  editor/libeditor
-  index/libindex
+  libeditor
+  libindex
   
 imports
 	

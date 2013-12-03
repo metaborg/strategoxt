@@ -2,8 +2,8 @@ module nabl/entries
 
 imports
   
-  index/libindex
-  editor/libeditor
+  libindex
+  libeditor
 
 imports
   

@@ -3,79 +3,147 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="ant-contrib-0.6.jar"/>
 	<!--<typedef resource="strategoxt-antlib.xml" />-->
 
-	<import file="strategoxt-antlib.xml" />
+	<import file="strategoxt-antlib.xml"/>
 
 	<property name="src-gen" value="src-gen/org/metaborg/meta/runtime/libraries"/>
+
+	<target name="clean">
+		<delete>
+			<fileset dir="${basedir}">
+				<include name="**/*.ctree"/>
+				<include name="**/*.rtree"/>
+				<include name="**/*.ctree.dep"/>
+			</fileset>
+		</delete>
+		<deltree dir="${basedir}/src-gen"/>
+	</target>
 
 	<target name="all" depends="editor, index, task, tmpl, analysis"/>
 
 	<target name="editor">
 		<mkdir dir="${src-gen}/editor"/>
-		<strj-lib input="${basedir}/editor/editor.str" output="${src-gen}/editor/Main.java" package="org.metaborg.meta.runtime.libraries.editor">
+		<mkdir dir="${basedir}/bin/editor"/>
+
+		<strj-lib 
+			input="${basedir}/editor/editor.str" 
+			lib-output = "${basedir}/libeditor.ctree"
+			output="${src-gen}/editor/Main.java" 
+			package="org.metaborg.meta.runtime.libraries.editor">
 			<strjlibargs>
 				<arg value="-la" />
-				<arg value="stratego-lib" />
+				<arg value="org.strategoxt.stratego_lib" />
 				<arg value="-I" />
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+
+		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/editor/**" destdir="${basedir}/bin/editor">
+			<classpath>
+				<pathelement location="${eclipse.spoofaximp.strategojar}" />
+			</classpath>
+		</javac>
+
+		<jar destfile="${basedir}/dist/editor.jar" includes="${basedir}/bin/editor/**"/>
 	</target>
 
 	<target name="index">
 		<mkdir dir="${src-gen}/index"/>
-		<strj-lib input="${basedir}/index/index.str" output="${src-gen}/index/Main.java" package="org.metaborg.meta.runtime.libraries.index">
+		<mkdir dir="${basedir}/bin/index"/>
+
+		<strj-lib 
+			input="${basedir}/index/index.str" 
+			lib-output = "${basedir}/libindex.ctree"
+      output="${src-gen}/index/Main.java" package="org.metaborg.meta.runtime.libraries.index">
 			<strjlibargs>
 				<arg value="-la" />
-				<arg value="stratego-lib" />
+				<arg value="org.strategoxt.stratego_lib" />
 				<arg value="-I" />
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/index/**" destdir="${basedir}/bin/index">
+			<classpath>
+				<pathelement location="${eclipse.spoofaximp.strategojar}" />
+			</classpath>
+		</javac>
+
+		<jar destfile="${basedir}/dist/index.jar" includes="${basedir}/bin/index/**"/>
+
 	</target>
 
 	<target name="task" depends="editor">
 		<mkdir dir="${src-gen}/task"/>
-		<strj-lib input="${basedir}/task/task.str" output="${src-gen}/task/Main.java" package="org.metaborg.meta.runtime.libraries.task">
+		<mkdir dir="${basedir}/bin/task"/>
+
+		<strj-lib input="${basedir}/task/task.str" lib-output = "${basedir}/libtask.ctree"
+      output="${src-gen}/task/Main.java" package="org.metaborg.meta.runtime.libraries.task">
 			<strjlibargs>
 				<arg value="-la" />
-				<arg value="stratego-lib" />
+				<arg value="org.strategoxt.stratego_lib" />
 				<arg value="-la" />
-				<arg value="libeditor" />
+				<arg value="org.metaborg.meta.runtime.libraries.editor" />
 				<arg value="-I" />
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/task/**" destdir="${basedir}/bin/task">
+			<classpath>
+				<pathelement location="${eclipse.spoofaximp.strategojar}" />
+			</classpath>
+		</javac>
+
+		<jar destfile="${basedir}/dist/task.jar" includes="${basedir}/bin/task/**"/>
 	</target>
 
 	<target name="tmpl">
 		<mkdir dir="${src-gen}/tmpl"/>
-		<strj-lib input="${basedir}/tmpl/pp.str" output="${src-gen}/tmpl/Main.java" package="org.metaborg.meta.runtime.libraries.tmpl">
+		<mkdir dir="${basedir}/bin/tmpl"/>
+
+		<strj-lib input="${basedir}/tmpl/pp.str" lib-output = "${basedir}/libtmpl.ctree"
+      output="${src-gen}/tmpl/Main.java" package="org.metaborg.meta.runtime.libraries.tmpl">
 			<strjlibargs>
 				<arg value="-la" />
-				<arg value="stratego-lib" />
+				<arg value="org.strategoxt.stratego_lib" />
 				<arg value="-la" />
-				<arg value="gpp-lib" />
+				<arg value="org.strategoxt.stratego_gpp" />
 				<arg value="-I" />
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/tmpl/**" destdir="${basedir}/bin/tmpl">
+			<classpath>
+				<pathelement location="${eclipse.spoofaximp.strategojar}" />
+			</classpath>
+		</javac>
+
+		<jar destfile="${basedir}/dist/tmpl.jar" includes="${basedir}/bin/tmpl/**"/>
 	</target>
 
 	<target name="analysis">
 		<mkdir dir="${src-gen}/analysis"/>
-		<strj-lib input="${basedir}/analysis/analysis.str" output="${src-gen}/analysis/Main.java" package="org.metaborg.meta.runtime.libraries.analysis">
+		<mkdir dir="${basedir}/bin/analysis"/>
+
+		<strj-lib input="${basedir}/analysis/analysis.str" lib-output = "${basedir}/libanalysis.ctree"
+      output="${src-gen}/analysis/Main.java" package="org.metaborg.meta.runtime.libraries.analysis">
 			<strjlibargs>
 				<arg value="-la" />
-				<arg value="stratego-lib" />
+				<arg value="org.strategoxt.stratego_lib" />
 				<arg value="-la" />
-				<arg value="libeditor" />
+				<arg value="org.metaborg.meta.runtime.libraries.editor" />
 				<arg value="-la" />
-				<arg value="libindex" />
+				<arg value="org.metaborg.meta.runtime.libraries.index" />
 				<arg value="-la" />
-				<arg value="libtask" />
+				<arg value="org.metaborg.meta.runtime.libraries.task" />
 				<arg value="-I" />
 				<arg value="${basedir}" />
 			</strjlibargs>
 		</strj-lib>
+		<javac srcdir="${basedir}/src-gen" includes="org/metaborg/meta/runtime/libraries/analysis/**" destdir="${basedir}/bin/analysis">
+			<classpath>
+				<pathelement location="${eclipse.spoofaximp.strategojar}" />
+			</classpath>
+		</javac>
+
+		<jar destfile="${basedir}/dist/analysis.jar" includes="${basedir}/bin/analysis/**"/>
 	</target>
 </project>

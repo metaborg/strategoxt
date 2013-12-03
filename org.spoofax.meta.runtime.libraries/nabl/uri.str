@@ -2,7 +2,7 @@ module nabl/uri
 
 imports
   
-  editor/libeditor
+  libeditor
   
 imports
   

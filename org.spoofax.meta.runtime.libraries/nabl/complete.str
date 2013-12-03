@@ -2,7 +2,7 @@ module nabl/complete
 
 imports
   
-  task/libtask
+  libtask
   
 imports
 	

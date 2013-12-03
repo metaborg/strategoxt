@@ -2,9 +2,9 @@ module analysis/core
 
 imports
   
-  index/libindex
-  task/libtask
-  editor/libeditor
+  libindex
+  libtask
+  libeditor
 
 imports
 	
