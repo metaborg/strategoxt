@@ -1,6 +1,6 @@
 { nixpkgs ? ../../nixpkgs
 , runtime-libraries ? ../../runtime-libraries 
-, strategoxt ../../strategoxt
+, strategoxt ? ../../strategoxt
 , stratego-jar ? ../../strategoxt.jar
 } :
 let
@@ -11,22 +11,21 @@ let
       name = "runtime-libraries";
       src = runtime-libraries;
       buildInputs = with pkgs; [ ecj openjdk ];
-    
-      preConfigure = ''
-        cd org.spoofax.meta.runtime.libraries
-        ulimit -s unlimited
-      '';
 
       postUnpack = ''
-	cp strategoxt/strategoxt/ant-contrib/strategoxt-antlib.xml .
+        cp ${strategoxt}/strategoxt/ant-contrib/strategoxt-antlib.xml runtime-libraries/org.spoofax.meta.runtime.libraries/
       '';
 
+      preConfigure = ''
+        cd org.spoofax.meta.runtime.libraries
+      '';
+    
       antTargets = ["all" "install"];
       antProperties = [
         { name = "eclipse.spoofaximp.strategojar"; value = stratego-jar; }
         { name = "output"; value = "$out"; }
       ];
-      antBuildInputs = [ pkgs.ecj stratego-jar ];
+      antBuildInputs = [ pkgs.ecj strategoxt stratego-jar ];
 
       ANT_OPTS="-Xss8m -Xmx1024m";
 
