@@ -1,7 +1,7 @@
 { nixpkgs ? ../../nixpkgs
 , runtime-libraries ? ../../runtime-libraries 
 , strategoxt ? ../../strategoxt
-, stratego-jar ? ../../strategoxt.jar
+, strj ? ../../strategoxt.jar
 } :
 let
   pkgs = import nixpkgs {};
@@ -22,10 +22,10 @@ let
     
       antTargets = ["all" "install"];
       antProperties = [
-        { name = "eclipse.spoofaximp.strategojar"; value = stratego-jar; }
+        { name = "eclipse.spoofaximp.strategojar"; value = strj; }
         { name = "output"; value = "$out"; }
       ];
-      antBuildInputs = [ pkgs.ecj strategoxt stratego-jar ];
+      antBuildInputs = [ pkgs.ecj strategoxt strj ];
 
       ANT_OPTS="-Xss8m -Xmx1024m";
 
