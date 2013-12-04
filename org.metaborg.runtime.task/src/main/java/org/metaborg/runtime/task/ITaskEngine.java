@@ -75,7 +75,7 @@ public interface ITaskEngine {
 	public abstract void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
 		boolean shortCircuit, boolean failOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
-		IStrategoTerm results, boolean failed, IStrategoTerm message, long time, short evaluations);
+		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations);
 
 	/**
 	 * Removes task with given identifier from the task engine.

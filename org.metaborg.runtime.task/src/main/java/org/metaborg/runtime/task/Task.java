@@ -8,10 +8,6 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import com.google.common.collect.Lists;
 
 public final class Task {
-	private enum Status {
-		Unknown, Success, Fail, DependencyFail
-	}
-
 	public final IStrategoTerm instruction;
 	public final IStrategoList initialDependencies;
 
@@ -21,7 +17,7 @@ public final class Task {
 	public final boolean executeOnDependenciesFailure;
 
 	private List<IStrategoTerm> results = Lists.newLinkedList();
-	private Status status = Status.Unknown;
+	private TaskStatus status = TaskStatus.Unknown;
 	private IStrategoTerm message;
 	private long time = -1;
 	private short evaluations = 0;
@@ -61,43 +57,51 @@ public final class Task {
 
 	public void setResults(Iterable<IStrategoTerm> results) {
 		this.results = Lists.newLinkedList(results);
-		status = Status.Success;
+		status = TaskStatus.Success;
 	}
 
 	public void addResults(Iterable<IStrategoTerm> results) {
 		for(IStrategoTerm result : results)
 			this.results.add(result);
-		status = Status.Success;
+		status = TaskStatus.Success;
 	}
 
 	public void addResult(IStrategoTerm result) {
 		results.add(result);
-		status = Status.Success;
+		status = TaskStatus.Success;
+	}
+
+	public TaskStatus status() {
+		return status;
+	}
+
+	public void setStatus(TaskStatus status) {
+		this.status = status;
 	}
 
 	public boolean failed() {
-		return status == Status.Fail || status == Status.DependencyFail;
+		return status == TaskStatus.Fail || status == TaskStatus.DependencyFail;
 	}
 
 	public void setFailed() {
-		status = Status.Fail;
+		status = TaskStatus.Fail;
 	}
 
 	public boolean dependencyFailed() {
-		return status == Status.DependencyFail;
+		return status == TaskStatus.DependencyFail;
 	}
 
 	public void setDependencyFailed() {
-		status = Status.DependencyFail;
+		status = TaskStatus.DependencyFail;
 	}
 
 	public boolean solved() {
-		return status != Status.Unknown;
+		return status != TaskStatus.Unknown;
 	}
 
 	public void unsolve() {
 		results.clear();
-		status = Status.Unknown;
+		status = TaskStatus.Unknown;
 	}
 
 	public IStrategoTerm message() {

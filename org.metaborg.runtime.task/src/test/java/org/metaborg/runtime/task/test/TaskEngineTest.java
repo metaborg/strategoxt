@@ -272,12 +272,17 @@ public class TaskEngineTest extends TaskTest {
 	public void testPersistance() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveD = resultID(taskEngine.addTask(partition1, list(), resolve("D"), true, false, false));
+		taskEngine.getTask(resolveD).setFailed();
 		IStrategoTerm resolveC =
 			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), false, true, false));
+		taskEngine.getTask(resolveC).addResult(factory.makeInt(42));
 		IStrategoTerm resolveB =
 			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), false, true, true));
+		taskEngine.getTask(resolveB).addResult(factory.makeInt(1));
+		taskEngine.getTask(resolveB).addResult(factory.makeInt(2));
 		IStrategoTerm resolveA =
 			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), true, false, true));
+		taskEngine.getTask(resolveA).setDependencyFailed();
 		taskEngine.stopCollection(partition1);
 
 		assertNotNull(taskEngine.getTask(resolveD));
@@ -300,6 +305,25 @@ public class TaskEngineTest extends TaskTest {
 		assertNotNull(taskEngine.getTask(resolveC));
 		assertNotNull(taskEngine.getTask(resolveB));
 		assertNotNull(taskEngine.getTask(resolveA));
+
+
+		assertTrue(taskEngine.getTask(resolveD).failed());
+		assertFalse(taskEngine.getTask(resolveC).failed());
+		assertFalse(taskEngine.getTask(resolveB).failed());
+		assertTrue(taskEngine.getTask(resolveA).failed()); // Dependency failure implies failure.
+
+
+		assertFalse(taskEngine.getTask(resolveD).dependencyFailed());
+		assertFalse(taskEngine.getTask(resolveC).dependencyFailed());
+		assertFalse(taskEngine.getTask(resolveB).dependencyFailed());
+		assertTrue(taskEngine.getTask(resolveA).dependencyFailed());
+
+
+		assertFalse(taskEngine.getTask(resolveD).results().iterator().hasNext());
+		assertContains(taskEngine.getTask(resolveC).results(), factory.makeInt(42));
+		assertContains(taskEngine.getTask(resolveB).results(), factory.makeInt(1));
+		assertContains(taskEngine.getTask(resolveB).results(), factory.makeInt(2));
+		assertFalse(taskEngine.getTask(resolveA).results().iterator().hasNext());
 
 
 		assertTrue(taskEngine.getTask(resolveD).isCombinator);

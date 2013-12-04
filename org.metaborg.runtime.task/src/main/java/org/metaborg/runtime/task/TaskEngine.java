@@ -153,7 +153,7 @@ public class TaskEngine implements ITaskEngine {
 	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
 		boolean shortCircuit, boolean executeOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
-		IStrategoTerm results, boolean failed, IStrategoTerm message, long time, short evaluations) {
+		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
@@ -170,11 +170,10 @@ public class TaskEngine implements ITaskEngine {
 			addRead(taskID, read);
 		if(results != null)
 			task.setResults(results);
-		if(failed)
-			task.setFailed();
 		if(message != null)
 			task.setMessage(message);
 
+		task.setStatus(status);
 		task.setTime(time);
 		task.setEvaluations(evaluations);
 	}

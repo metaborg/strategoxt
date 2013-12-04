@@ -40,7 +40,7 @@ public class TaskEngineFactory {
 			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
-			final boolean failed = task.failed();
+			final TaskStatus status = task.status();
 			IStrategoTerm message = task.message();
 			if(message != null)
 				message = serializer.toAnnotations(message);
@@ -49,7 +49,7 @@ public class TaskEngineFactory {
 			tasks =
 				factory.makeListCons(
 					createTaskTerm(factory, taskID, instruction, isCombinator, shortCircuit, failOnDependenciesFailure,
-						partitions, initialDependencies, dependencies, reads, results, failed, message, time,
+						partitions, initialDependencies, dependencies, reads, results, status, message, time,
 						evaluations), tasks);
 		}
 
@@ -76,13 +76,14 @@ public class TaskEngineFactory {
 			final IStrategoList dependencies = (IStrategoList) task.getSubterm(7);
 			final IStrategoList reads = (IStrategoList) task.getSubterm(8);
 			final IStrategoTerm results = deserializeResults(task.getSubterm(9), factory, serializer);
-			final IStrategoInt failed = (IStrategoInt) task.getSubterm(10);
+			final IStrategoInt status = (IStrategoInt) task.getSubterm(10);
 			final IStrategoTerm message = task.getSubterm(11);
 			final IStrategoTerm time = task.getSubterm(12);
 			final IStrategoTerm evaluations = task.getSubterm(13);
 			taskEngine.addPersistedTask(taskID, instruction, takeBool(isCombinator), takeBool(shortCircuit),
 				takeBool(failOnDependenciesFailure), partitions, initialDependencies, dependencies, reads,
-				takeNullable(results), takeBool(failed), takeNullable(message), takeLong(time), takeShort(evaluations));
+				takeNullable(results), TaskStatus.get(status.intValue()), takeNullable(message), takeLong(time),
+				takeShort(evaluations));
 		}
 
 		return taskEngine;
@@ -91,12 +92,12 @@ public class TaskEngineFactory {
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
 		boolean isCombinator, boolean shortCircuit, boolean failOnDependenciesFailure,
 		Iterable<IStrategoString> partitions, IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies,
-		Iterable<IStrategoTerm> reads, IStrategoTerm results, boolean failed, IStrategoTerm message, long time,
+		Iterable<IStrategoTerm> reads, IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time,
 		short evaluations) {
 		return factory.makeTuple(taskID, instruction, makeBool(factory, isCombinator), makeBool(factory, shortCircuit),
 			makeBool(factory, failOnDependenciesFailure), makeList(factory, partitions), initialDependencies,
 			makeList(factory, dependencies), makeList(factory, reads), makeNullable(factory, results),
-			makeBool(factory, failed), makeNullable(factory, message), makeLong(factory, time),
+			factory.makeInt(status.id), makeNullable(factory, message), makeLong(factory, time),
 			makeShort(factory, evaluations));
 	}
 
