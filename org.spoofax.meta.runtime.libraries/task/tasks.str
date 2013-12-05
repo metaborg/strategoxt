@@ -10,7 +10,8 @@ signature
 
 	constructors
 		
-    Id       : Term              -> Instruction   
+    Id       : Term              -> Instruction
+    Not      : Result            -> Instruction
     Combine  : List(Term)        -> Instruction
     Collect  : List(Term)        -> Instruction
     Choice   : List(List(Term))  -> Instruction
@@ -29,16 +30,68 @@ rules
 	
 	task-is-combinator = ?Choice(_)
   perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
+
+  /**
+  * Create a choice task
+  * @type List(task) -> Result(Int)
+  */
+  task-create-or(|ctx) = <new-task(|ctx)> Choice(<id>)
+  
+  /**
+  * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
+  * @type term -> Result(Int)
+  */
+  task-create-or(t1, t2|ctx):
+    term -> <task-create-or(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
   
 rules
 	
 	task-is-combinator = ?Sequence(_)
   perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
   
+  /**
+  * Create a sequence task
+  * @type List(task) -> Result(Int)
+  */
+  task-create-and(|ctx) = <new-task(|ctx)> Sequence(<id>)
+
+  /**
+  * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
+  * @type term -> Result(Int)
+  */
+  task-create-and(t1, t2|ctx):
+    term -> <new-task(|ctx)> Sequence([task1, task2])
+    with
+      task1 := <t1(|ctx)> term;
+      task2 := <t2(|ctx)> term
+  
 rules
   
   perform-task(|nr) = ?Id(<MkSingleton>)
-  	
+
+rules
+  
+  /**
+  * Negation on the success of a task
+  * @type: Not(result) -> !Success(result)
+  */
+  perform-task(|nr):
+    Not(result) -> ()
+    where
+      <?[]> result
+
+  task-is-combinator = ?Not(_)
+  
+  /**
+  * Create negation task
+  */
+  task-create-not(|ctx) = <new-task(|ctx)> Not(<id>)
+  
+  /**
+  * Create negation task, where t takes a ctx argument and produces the task to be negated 
+  */
+  task-create-not(t|ctx) = t(|ctx); task-create-not(|ctx)
+  
 rules
        
   task-is-combinator = ?Combine(_)
