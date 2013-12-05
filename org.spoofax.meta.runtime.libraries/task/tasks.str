@@ -125,7 +125,7 @@ rules
   * @type term -> Result(Int)
   */
   task-create-rewrite(|ctx, key):
-  	term -> <new-task(|ctx)> (key, term)
+  	term -> <new-task(|ctx)> Rewrite(key, term)
       	
   perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
   
