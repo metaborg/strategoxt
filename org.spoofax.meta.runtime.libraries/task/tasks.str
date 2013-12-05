@@ -28,48 +28,62 @@ rules
 
 rules
 	
-	task-is-combinator = ?Choice(_)
-  perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
-
   /**
   * Create a choice task
   * @type List(task) -> Result(Int)
   */
-  task-create-or(|ctx) = <new-task(|ctx)> Choice(<id>)
+  task-create-choice(|ctx) = <new-task(|ctx)> Choice(<id>)
   
   /**
   * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
   * @type term -> Result(Int)
   */
-  task-create-or(t1, t2|ctx):
-    term -> <task-create-or(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+  task-create-choice(t1, t2|ctx):
+    term -> <task-create-choice(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+	
+	task-is-combinator = ?Choice(_)
+  perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
   
 rules
 	
-	task-is-combinator = ?Sequence(_)
-  perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
-  
   /**
   * Create a sequence task
   * @type List(task) -> Result(Int)
   */
-  task-create-and(|ctx) = <new-task(|ctx)> Sequence(<id>)
+  task-create-sequence(|ctx) = <new-task(|ctx)> Sequence(<id>)
 
   /**
   * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
   * @type term -> Result(Int)
   */
-  task-create-and(t1, t2|ctx):
-    term -> <new-task(|ctx)> Sequence([task1, task2])
-    with
-      task1 := <t1(|ctx)> term;
-      task2 := <t2(|ctx)> term
+  task-create-sequence(t1, t2|ctx):
+    term -> <task-create-sequence(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+	
+	task-is-combinator = ?Sequence(_)
+  perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
   
 rules
+  
+  /**
+  * Create an identity task
+  * @type term -> Result(Int)
+  */
+	task-create-id(|ctx) = <new-task(|ctx)> Id(<id>)
   
   perform-task(|nr) = ?Id(<MkSingleton>)
 
 rules
+  
+  /**
+  * Create negation task
+  * @type task -> Result(Int)
+  */
+  task-create-not(|ctx) = <new-task(|ctx)> Not(<id>)
+  
+  /**
+  * Create negation task, where t takes a ctx argument and produces the task to be negated 
+  */
+  task-create-not(t|ctx) = t(|ctx); task-create-not(|ctx)
   
   /**
   * Negation on the success of a task
@@ -82,27 +96,36 @@ rules
 
   task-is-combinator = ?Not(_)
   
-  /**
-  * Create negation task
-  */
-  task-create-not(|ctx) = <new-task(|ctx)> Not(<id>)
-  
-  /**
-  * Create negation task, where t takes a ctx argument and produces the task to be negated 
-  */
-  task-create-not(t|ctx) = t(|ctx); task-create-not(|ctx)
-  
 rules
+       
+  /**
+  * Create a combine task
+  * @type List(task) -> Result(Int)
+  */
+	task-create-combine(|ctx)= <new-task(|ctx)> Combine(<id>)
        
   task-is-combinator = ?Combine(_)
   perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
 
 rules
        
+  /**
+  * Create a collect task
+  * @type List(task) -> Result(Int)
+  */
+	task-create-collect(|ctx) = <new-task(|ctx)> Collect(<id>)
+       
   task-is-combinator = ?Collect(_)
   perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
   
 rules
+      	
+  /**
+  * Create a rewrite task
+  * @type term -> Result(Int)
+  */
+  task-create-rewrite(|ctx, key):
+  	term -> <new-task(|ctx)> (key, term)
       	
   perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
   
