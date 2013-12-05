@@ -8,7 +8,6 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -106,17 +105,18 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit) {
-		return current.addTask(partition, dependencies, instruction, isCombinator, shortCircuit);
+		boolean isCombinator, boolean shortCircuit, boolean failOnDependenciesFailure) {
+		return current.addTask(partition, dependencies, instruction, isCombinator, shortCircuit,
+			failOnDependenciesFailure);
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
-		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
-		current.addPersistedTask(taskID, instruction, isCombinator, shortCircuit, partitions, initialDependencies,
-			dependencies, reads, results, failed, message, time, evaluations);
+	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
+		boolean shortCircuit, boolean failOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
+		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
+		current.addPersistedTask(taskID, instruction, isCombinator, shortCircuit, failOnDependenciesFailure,
+			partitions, initialDependencies, dependencies, reads, results, status, message, time, evaluations);
 	}
 
 	@Override

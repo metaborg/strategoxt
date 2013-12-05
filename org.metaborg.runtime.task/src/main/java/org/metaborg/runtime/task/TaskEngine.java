@@ -8,12 +8,11 @@ import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
-import org.metaborg.runtime.task.util.ListBuilder;
+import org.metaborg.runtime.task.util.TermTools;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -122,7 +121,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit) {
+		boolean isCombinator, boolean shortCircuit, boolean executeOnDependenciesFailure) {
 		if(!taskCollection.inCollection(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
@@ -132,7 +131,8 @@ public class TaskEngine implements ITaskEngine {
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			toTask.put(taskID, new Task(instruction, dependencies, isCombinator, shortCircuit));
+			toTask.put(taskID, new Task(instruction, dependencies, isCombinator, shortCircuit,
+				executeOnDependenciesFailure));
 			taskCollection.addTask(taskID);
 			schedule(taskID);
 		}
@@ -150,33 +150,32 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
-		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
+	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
+		boolean shortCircuit, boolean executeOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
+		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
 		Task task =
-			new Task(instruction, initialDependencies, isCombinator.intValue() == 1, shortCircuit.intValue() == 1);
+			new Task(instruction, initialDependencies, isCombinator, shortCircuit, executeOnDependenciesFailure);
 		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
+
 		for(final IStrategoTerm partition : partitions)
 			addToPartition(taskID, (IStrategoString) partition);
 		for(final IStrategoTerm dependency : dependencies)
 			addDependency(taskID, dependency);
 		for(final IStrategoTerm read : reads)
 			addRead(taskID, read);
-		if(results.getTermType() == IStrategoTerm.LIST)
+		if(results != null)
 			task.setResults(results);
-		if(failed.intValue() == 1)
-			task.setFailed();
-		if(message.getTermType() != IStrategoTerm.TUPLE || message.getSubtermCount() != 0)
+		if(message != null)
 			task.setMessage(message);
-		if(time.getTermType() == IStrategoTerm.INT)
-			task.setTime(((IStrategoInt) time).intValue());
-		if(evaluations.getTermType() == IStrategoTerm.INT)
-			task.setEvaluations((short) ((IStrategoInt) evaluations).intValue());
+
+		task.setStatus(status);
+		task.setTime(time);
+		task.setEvaluations(evaluations);
 	}
 
 	@Override
@@ -188,7 +187,7 @@ public class TaskEngine implements ITaskEngine {
 		final Task task = getTask(taskID); // Don't use wrapper, cannot remove from parent in this task engine.
 		if(task == null)
 			return; // Task is not in this task engine but might be in a parent one.
-		toTaskID.remove(task.instruction, ListBuilder.makeList(factory, task.initialDependencies));
+		toTaskID.remove(task.instruction, TermTools.makeList(factory, task.initialDependencies));
 		toTask.remove(taskID);
 	}
 
@@ -205,8 +204,7 @@ public class TaskEngine implements ITaskEngine {
 
 		collectGarbage();
 
-		return factory
-			.makeTuple(ListBuilder.makeList(factory, removedTasks), ListBuilder.makeList(factory, addedTasks));
+		return factory.makeTuple(TermTools.makeList(factory, removedTasks), TermTools.makeList(factory, addedTasks));
 	}
 
 	private void collectGarbage() {

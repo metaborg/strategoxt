@@ -10,31 +10,38 @@ import com.google.common.collect.Lists;
 public final class Task {
 	public final IStrategoTerm instruction;
 	public final IStrategoList initialDependencies;
-	public final boolean isCombinator; // TODO: move this to task (type) definition, this is wasting space.
-	public final boolean shortCircuit; // TODO: move this to task (type) definition, this is wasting space.
+
+	// TODO: move these to task (type) definition, this is wasting space.
+	public final boolean isCombinator;
+	public final boolean shortCircuit;
+	public final boolean executeOnDependenciesFailure;
 
 	private List<IStrategoTerm> results = Lists.newLinkedList();
-	private boolean failed = false;
-	private boolean solved = false;
+	private TaskStatus status = TaskStatus.Unknown;
 	private IStrategoTerm message;
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean isCombinator, boolean shortCircuit) {
+	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean isCombinator,
+		boolean shortCircuit, boolean executeOnDependenciesFailure) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
+
 		this.isCombinator = isCombinator;
 		this.shortCircuit = shortCircuit;
+		this.executeOnDependenciesFailure = executeOnDependenciesFailure;
 	}
 
 	public Task(Task task) {
 		this.instruction = task.instruction;
 		this.initialDependencies = task.initialDependencies;
+
 		this.isCombinator = task.isCombinator;
 		this.shortCircuit = task.shortCircuit;
+		this.executeOnDependenciesFailure = task.executeOnDependenciesFailure;
+
 		this.results = Lists.newLinkedList(task.results);
-		this.failed = task.failed;
-		this.solved = task.solved;
+		this.status = task.status;
 		this.message = task.message;
 		this.time = task.time;
 		this.evaluations = task.evaluations;
@@ -50,37 +57,51 @@ public final class Task {
 
 	public void setResults(Iterable<IStrategoTerm> results) {
 		this.results = Lists.newLinkedList(results);
-		solved = true;
+		status = TaskStatus.Success;
 	}
 
 	public void addResults(Iterable<IStrategoTerm> results) {
 		for(IStrategoTerm result : results)
 			this.results.add(result);
-		solved = true;
+		status = TaskStatus.Success;
 	}
 
 	public void addResult(IStrategoTerm result) {
 		results.add(result);
-		solved = true;
+		status = TaskStatus.Success;
+	}
+
+	public TaskStatus status() {
+		return status;
+	}
+
+	public void setStatus(TaskStatus status) {
+		this.status = status;
 	}
 
 	public boolean failed() {
-		return failed;
+		return status == TaskStatus.Fail || status == TaskStatus.DependencyFail;
 	}
 
 	public void setFailed() {
-		failed = true;
-		solved = true;
+		status = TaskStatus.Fail;
+	}
+
+	public boolean dependencyFailed() {
+		return status == TaskStatus.DependencyFail;
+	}
+
+	public void setDependencyFailed() {
+		status = TaskStatus.DependencyFail;
 	}
 
 	public boolean solved() {
-		return solved;
+		return status != TaskStatus.Unknown;
 	}
 
 	public void unsolve() {
 		results.clear();
-		failed = false;
-		solved = false;
+		status = TaskStatus.Unknown;
 	}
 
 	public IStrategoTerm message() {
@@ -161,7 +182,6 @@ public final class Task {
 	@Override
 	public String toString() {
 		return "Task [instruction=" + instruction + ", isCombinator=" + isCombinator + ", results=" + results
-			+ ", failed=" + failed + ", solved=" + solved + ", message=" + message + ", time=" + time
-			+ ", evaluations=" + evaluations + "]";
+			+ ", status=" + status + ", message=" + message + ", time=" + time + ", evaluations=" + evaluations + "]";
 	}
 }

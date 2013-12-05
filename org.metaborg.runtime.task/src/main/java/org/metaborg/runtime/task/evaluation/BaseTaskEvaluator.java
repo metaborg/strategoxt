@@ -51,6 +51,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
+
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
 
@@ -60,10 +61,12 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			return;
 		}
 
+		final boolean execute = combinations != null && !dependenciesFailed(taskEngine, taskID, task);
+
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
 		boolean failure = true;
-		if(combinations != null) {
+		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
 				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
@@ -91,7 +94,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			evaluationQueue.taskSolved(taskID);
 
 			if(failure)
-				task.setFailed();
+				if(!execute)
+					task.setDependencyFailed();
+				else
+					task.setFailed();
 		}
 	}
 
@@ -107,10 +113,12 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			return;
 		}
 
+		final boolean execute = combinations != null && !dependenciesFailed(taskEngine, taskID, task);
+
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
 		boolean failure = true;
-		if(combinations != null) {
+		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
 				instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
@@ -133,7 +141,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			evaluationQueue.taskSolved(taskID);
 
 			if(failure)
-				task.setFailed();
+				if(!execute)
+					task.setDependencyFailed();
+				else
+					task.setFailed();
 		}
 	}
 
@@ -186,5 +197,17 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			task.addResult(result);
 			return TaskResultType.Success;
 		}
+	}
+
+	private boolean dependenciesFailed(ITaskEngine taskEngine, IStrategoTerm taskID, Task task) {
+		if(!task.executeOnDependenciesFailure)
+			return false;
+
+		for(IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
+			if(taskEngine.getTask(dependency).dependencyFailed())
+				return true;
+		}
+
+		return false;
 	}
 }
