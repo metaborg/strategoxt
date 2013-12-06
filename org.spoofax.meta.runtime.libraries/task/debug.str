@@ -43,6 +43,14 @@ rules
 	task-debug(|ctx, prefix):
 		term -> <new-task(|ctx)> Debug(prefix, term)
 		
+	task-is-combinator = ?Debug(_, _)
+
 	perform-task(|nr):
-		Debug(prefix, term) -> <debug(!$[[nr] - [prefix]]); !term> term
+		Debug(prefix, term) -> <debug(!$[[nr] - [prefix]]); !term> msg
+		with
+			if <?[]> term then
+			  msg := "FAIL"
+			else
+			  msg := term
+			end
 		
