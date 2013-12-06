@@ -16,8 +16,8 @@ import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -127,7 +127,7 @@ public final class TaskInsertion {
 	private static Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>>
 		createResultMapping(ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert,
 			Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen) {
-		final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = LinkedHashMultimap.create();
+		final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = ArrayListMultimap.create();
 		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
 
 		for(final IStrategoTerm resultID : resultIDs) {
