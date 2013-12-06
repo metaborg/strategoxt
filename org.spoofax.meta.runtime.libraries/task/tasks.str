@@ -70,6 +70,11 @@ rules
   */
 	task-create-id(|ctx) = <new-task(|ctx)> Id(<id>)
   
+  task-create-id(|ctx, dep*) =
+    ?term;
+    all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>);
+    <new-task(|ctx, all-dep*)> Id(term)
+  
   perform-task(|nr) = ?Id(<MkSingleton>)
 
 rules
