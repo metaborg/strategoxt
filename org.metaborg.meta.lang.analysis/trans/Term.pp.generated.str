@@ -4,76 +4,76 @@ strategies
   prettyprint-Term :
     Tupl(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [S("("), a576, S(")")]
+                 , [S("("), a828, S(")")]
                  )
                ]
-    where a576 := <pp-one-Z(prettyprint-Terms)> a
+    where a828 := <pp-one-Z(prettyprint-Terms)> a
 
   prettyprint-Term :
     Appl(a, b) -> [ H(
                       [SOpt(HS(), "0")]
-                    , [ a577
+                    , [ a829
                       , S("(")
-                      , b209
+                      , b311
                       , S(")")
                       ]
                     )
                   ]
-    where a577 := <pp-one-Z(prettyprint-ID)> a
-    where b209 := <pp-one-Z(prettyprint-Terms)> b
+    where a829 := <pp-one-Z(prettyprint-ID)> a
+    where b311 := <pp-one-Z(prettyprint-Terms)> b
 
   prettyprint-Term :
     List(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [S("["), a578, S("]")]
+                 , [S("["), a830, S("]")]
                  )
                ]
-    where a578 := <pp-one-Z(prettyprint-Terms)> a
+    where a830 := <pp-one-Z(prettyprint-Terms)> a
 
   prettyprint-Term :
     Str(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [a579]
+                , [a831]
                 )
               ]
-    where a579 := <pp-one-Z(prettyprint-STRING)> a
+    where a831 := <pp-one-Z(prettyprint-STRING)> a
 
   prettyprint-Term :
     Int(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [a580]
+                , [a832]
                 )
               ]
-    where a580 := <pp-one-Z(prettyprint-INT)> a
+    where a832 := <pp-one-Z(prettyprint-INT)> a
 
   prettyprint-Term :
     Real(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [a581]
+                 , [a833]
                  )
                ]
-    where a581 := <pp-one-Z(prettyprint-FLOAT)> a
+    where a833 := <pp-one-Z(prettyprint-FLOAT)> a
 
   prettyprint-Term :
     Anno(a, b) -> [ H(
                       [SOpt(HS(), "0")]
-                    , [ a582
+                    , [ a834
                       , S("{")
-                      , b210
+                      , b312
                       , S("}")
                       ]
                     )
                   ]
-    where a582 := <pp-one-Z(prettyprint-Term)> a
-    where b210 := <pp-one-Z(prettyprint-Terms)> b
+    where a834 := <pp-one-Z(prettyprint-Term)> a
+    where b312 := <pp-one-Z(prettyprint-Terms)> b
 
   prettyprint-Terms :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a583]
+           , [a835]
            )
          ]
-    where a583 := <pp-H-list(prettyprint-Term|", ")> a
+    where a835 := <pp-H-list(prettyprint-Term|", ")> a
 
   prettyprint-example =
     prettyprint-Term

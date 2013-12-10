@@ -186,27 +186,35 @@ rules // Utilities
 			otherwise       : s; all(topdown-annos(s))
 		end
 
-	to-abstract-terms =
-		switch id
-			case is-appl;   ?cons#(terms) : !Appl(cons, <map(to-abstract-terms)> terms)
-			case is-tuple;  ?_#(terms)    : !Tupl(<map(to-abstract-terms)> terms)
-			case is-list;   ?terms        : !List(<map(to-abstract-terms)> terms)
-			case is-int;    ?int          : !Int(<int-to-string> int)
-			case is-real;   ?real         : !Real(<real-to-string> real)
-			case is-string; ?str          : !Str(str)
-		end
+	to-abstract-terms:
+		term -> aterm
+		where
+			switch id
+				case is-appl;   ?cons#(terms) : !Appl(cons, <map(to-abstract-terms)> terms)
+				case is-tuple;  ?_#(terms)    : !Tupl(<map(to-abstract-terms)> terms)
+				case is-list;   ?terms        : !List(<map(to-abstract-terms)> terms)
+				case is-int;    ?int          : !Int(<int-to-string> int)
+				case is-real;   ?real         : !Real(<real-to-string> real)
+				case is-string; ?str          : !Str(str)
+			end => res;
+			if <has-annos> term then
+				anno* := <get-annos> term;
+				aterm := Anno(res, <map(to-abstract-terms)> anno*)
+			else
+				aterm := res
+			end
 
 	is-appl = not(is-tuple <+ is-list <+ is-int <+ is-real <+ is-string)
 	
-	print-abstract-term =
-		switch id
-			case ?Appl(cons, terms) : !$[[cons]([<print-abstract-term-list> terms])]
-			case ?Tupl(terms)       : !$[([<print-abstract-term-list> terms])]
-			case ?List(terms)       : !$[[[<print-abstract-term-list> terms]]]
-			case ?Int(int)          : !int
-			case ?Real(real)        : !real
-			case ?Str(str)          : !str
-		end
-
-	print-abstract-term-list = map(print-abstract-term); separate-by(|", "); concat-strings
+// 	print-abstract-term =
+// 		switch id
+// 			case ?Appl(cons, terms) : !$[[cons]([<print-abstract-term-list> terms])]
+// 			case ?Tupl(terms)       : !$[([<print-abstract-term-list> terms])]
+// 			case ?List(terms)       : !$[[[<print-abstract-term-list> terms]]]
+// 			case ?Int(int)          : !int
+// 			case ?Real(real)        : !real
+// 			case ?Str(str)          : !str
+// 		end
+// 
+// 	print-abstract-term-list = map(print-abstract-term); separate-by(|", "); concat-strings
 	

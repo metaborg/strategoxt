@@ -4,82 +4,82 @@ strategies
   prettyprint-Section :
     Index(a, b) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("index "), a548]
+                     , [S("index "), a800]
                      )
                    , H(
                        []
                      , [S("")]
                      )
-                   , b196
+                   , b298
                    ]
-    where a548 := <pp-one-Z(prettyprint-Term)> a
-    where b196 := <pp-indent(|"2")> [<pp-V-list(prettyprint-Entry)> b]
+    where a800 := <pp-one-Z(prettyprint-Term)> a
+    where b298 := <pp-indent(|"2")> [<pp-V-list(prettyprint-Entry)> b]
 
   prettyprint-Entry :
     Def(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [S("def "), a549]
+                , [S("def "), a801]
                 )
               ]
-    where a549 := <pp-one-Z(prettyprint-Term)> a
+    where a801 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Entry :
     Use(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [S("use "), a550]
+                , [S("use "), a802]
                 )
               ]
-    where a550 := <pp-one-Z(prettyprint-Term)> a
+    where a802 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Entry :
     Prop(a, b, c) -> [ H(
                          [SOpt(HS(), "0")]
                        , [ S("prop ")
-                         , a551
+                         , a803
                          , S(" -- ")
-                         , b197
+                         , b299
                          , S(" >> ")
-                         , c86
+                         , c128
                          ]
                        )
                      ]
-    where a551 := <pp-one-Z(prettyprint-Term)> a
-    where b197 := <pp-one-Z(prettyprint-Term)> b
-    where c86 := <pp-one-Z(prettyprint-Term)> c
+    where a803 := <pp-one-Z(prettyprint-Term)> a
+    where b299 := <pp-one-Z(prettyprint-Term)> b
+    where c128 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Entry :
     Alias(a, b) -> [ H(
                        [SOpt(HS(), "0")]
                      , [ S("alias ")
-                       , a552
+                       , a804
                        , S(" -> ")
-                       , b198
+                       , b300
                        ]
                      )
                    ]
-    where a552 := <pp-one-Z(prettyprint-Term)> a
-    where b198 := <pp-one-Z(prettyprint-Term)> b
+    where a804 := <pp-one-Z(prettyprint-Term)> a
+    where b300 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Entry :
     IAlias(a, b) -> [ H(
                         [SOpt(HS(), "0")]
                       , [ S("alias ")
-                        , a553
+                        , a805
                         , S(" <- ")
-                        , b199
+                        , b301
                         ]
                       )
                     ]
-    where a553 := <pp-one-Z(prettyprint-Term)> a
-    where b199 := <pp-one-Z(prettyprint-Term)> b
+    where a805 := <pp-one-Z(prettyprint-Term)> a
+    where b301 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Term :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a554]
+           , [a806]
            )
          ]
-    where a554 := <pp-one-Z(prettyprint-Entry)> a
+    where a806 := <pp-one-Z(prettyprint-Entry)> a
 
   prettyprint-example =
     prettyprint-Section

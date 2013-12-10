@@ -10,55 +10,55 @@ strategies
                     []
                   , [S("")]
                   )
-                , a567
+                , a819
                 ]
-    where a567 := <pp-indent(|"2")> [<pp-V-list(prettyprint-TaskDef|"1")> a]
+    where a819 := <pp-indent(|"2")> [<pp-V-list(prettyprint-TaskDef|"1")> a]
 
   prettyprint-TaskDef :
     TaskDef(a, b, c, d, e) -> [ H(
                                   [SOpt(HS(), "0")]
                                 , [ S("task ")
-                                  , a568
+                                  , a820
                                   , S(" [")
-                                  , b208
+                                  , b310
                                   , S("] =")
                                   ]
                                 )
-                              , c91
-                              , a569
-                              , d56
+                              , c133
+                              , a821
+                              , d80
                               ]
-    where a568 := <pp-one-Z(prettyprint-TASKID)> a
-    where b208 := <pp-H-list(prettyprint-TaskRef|", ")> b
-    where c91 := <pp-indent(|"2")> [<pp-one-Z(prettyprint-Instruction)> c]
-    where a569 := <pp-indent(|"2")> [S("->")]
-    where d56 := <pp-indent(|"2")> [ <pp-one-Z(prettyprint-Result)> d
+    where a820 := <pp-one-Z(prettyprint-TASKID)> a
+    where b310 := <pp-H-list(prettyprint-TaskRef|", ")> b
+    where c133 := <pp-indent(|"2")> [<pp-one-Z(prettyprint-Instruction)> c]
+    where a821 := <pp-indent(|"2")> [S("->")]
+    where d80 := <pp-indent(|"2")> [ <pp-one-Z(prettyprint-Result)> d
                                    , <pp-one-Z(prettyprint-Reads)> e
                                    ]
 
   prettyprint-TaskRef :
     TaskRef(a) -> [ H(
                       [SOpt(HS(), "0")]
-                    , [a570]
+                    , [a822]
                     )
                   ]
-    where a570 := <pp-one-Z(prettyprint-TASKID)> a
+    where a822 := <pp-one-Z(prettyprint-TASKID)> a
 
   prettyprint-Instruction :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a571]
+           , [a823]
            )
          ]
-    where a571 := <pp-one-Z(prettyprint-Term)> a
+    where a823 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Result :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a572]
+           , [a824]
            )
          ]
-    where a572 := <pp-one-Z(prettyprint-Term)> a
+    where a824 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Result :
     Fail() -> [ H(
@@ -99,26 +99,26 @@ strategies
                   )
                 , H(
                     [SOpt(HS(), "0")]
-                  , [a573]
+                  , [a825]
                   )
                 ]
-    where a573 := <pp-one-Z(prettyprint-Term)> a
+    where a825 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Term :
     TaskRef(a) -> [ H(
                       [SOpt(HS(), "0")]
-                    , [S("&"), a574]
+                    , [S("&"), a826]
                     )
                   ]
-    where a574 := <pp-one-Z(prettyprint-TASKID)> a
+    where a826 := <pp-one-Z(prettyprint-TASKID)> a
 
   prettyprint-Term :
     URI(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [S("/ "), a575, S(" /")]
+                , [S("/ "), a827, S(" /")]
                 )
               ]
-    where a575 := <pp-one-Z(prettyprint-URI)> a
+    where a827 := <pp-one-Z(prettyprint-URI)> a
 
   prettyprint-example =
     prettyprint-Section
