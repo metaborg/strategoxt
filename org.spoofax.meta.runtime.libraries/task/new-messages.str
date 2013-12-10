@@ -42,7 +42,6 @@ rules // task creation
 rules // task execution
   
   task-is-combinator = ?Message(_, _)
-  task-dep-fail = ?Message(_, _)
 
   perform-task(|n):
     Message(trigger*, message) -> []
