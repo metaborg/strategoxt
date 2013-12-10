@@ -21,34 +21,30 @@ signature
     
 rules
 
-  perform-task(|n) =
-  	?PropsLookup(kind, <nabl-uri>)
-  ; nabl-add-uri-read(|n)
-	// HACK: task-result-combinations also creates dependencies if any result has not been solved yet.
-	// Proper way would be to decompose the PropLookup into a ResolveUseToDef, GetProperty and InsertCombinations task.
-  ; get-index-properties(|kind)
-  ; map(fancy-combination)
-  ; (concat <+ filter(?Dependency(<id>)); !Dependency(<concat>))
+  perform-task(|n):
+  	PropsLookup(kind, contains-uri) -> res
+  	where
+  	  uri  := <nabl-uri> contains-uri
+  	; <nabl-add-uri-read(|n)> uri
+		  // HACK: task-result-combinations also creates dependencies if any result has not been solved yet.
+		  // Proper way would be to decompose the PropLookup into a ResolveUseToDef, GetProperty and InsertCombinations task.
+  	; val  := <get-index-properties(|kind)> uri
+  	; comb := <map(fancy-combination)> val
+  	; res  := <(concat <+ filter(?Dependency(<id>)); !Dependency(<concat>))> comb
     
-  perform-cyclic-task(|n) =
-  	?PropsLookup(kind, <nabl-uri>)
-  ; nabl-add-uri-read(|n)
-	; get-index-properties(|kind); filter(insert-results); flatten-list; make-set
+  perform-cyclic-task(|n):
+  	PropsLookup(kind, contains-uri) -> res
+  	where
+  	  uri := <nabl-uri> contains-uri
+  	; <nabl-add-uri-read(|n)> uri
+  	; val := <get-index-properties(|kind)> uri
+		; res := <filter(insert-results); flatten-list; make-set> val
 	  // TODO: does not make combinations
   
   fancy-combination = 
-     ?Result(_)
-  ;  (task-result-combinations <+ ![])
+     (?Result(_); (task-result-combinations <+ ![]))
   <+ (task-result-combinations; not(?[])) 
   <+ MkSingleton
-  
-  // perform-task(|n) =
-  // 	?PropLookup(kind, <id>)
-  // 	;	nabl-add-uri-read(|n) 
-  //   ; nabl-get-all-properties(|kind)
-  //   ; insert-results-or-create-dependency 
-  // 	; (task-collect-dependencies <+ try(concat))
-  //   ; try(map(Hd); MkSingleton) // HACK
       
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> [<nabl-property-eq> (kind, rel, (actual, expected))]
