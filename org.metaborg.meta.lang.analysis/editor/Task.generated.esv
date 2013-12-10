@@ -3,14 +3,18 @@ module Task.generated
 
 completions
   completion template Section : "tasks " =
-    "tasks\n\n\t" (cursor) (blank)                                         
-  completion template TaskDef : "task TASKID [] = Instruction -> Result" =
-    "task " <TASKID:TASKID> " [" <:TaskRef> "] =\n\t" <Instruction:Instruction> "\n\t->\n\t" <Result:Result> (blank)  
+    "tasks\n\n\t" (cursor) (blank)                                                       
+  completion template TaskDef : "task TASKID [] = Instruction -> ResultReads" =
+    "task " <TASKID:TASKID> " [" <:TaskRef> "] =\n\t" <Instruction:Instruction> "\n\t->\n\t" <Result:Result> <Reads:Reads> (blank)  
   completion template Result : "fail" =
-    "fail"                                                                    
+    "fail"                                                                                  
+  completion template Result : "depfail" =
+    "depfail"                                                                            
   completion template Result : "_" =
-    "_"                                                                          
+    "_"                                                                                        
+  completion template Reads : " reads Term" =
+    "\nreads\n" <Term:Term> (blank)                                                   
   completion template Term : "&TASKID" =
-    "&" <TASKID:TASKID>                                                      
+    "&" <TASKID:TASKID>                                                                    
   completion template Term : "/ URI /" =
-    "/ " <URI:URI> " /"                                                      
+    "/ " <URI:URI> " /"                                                                    

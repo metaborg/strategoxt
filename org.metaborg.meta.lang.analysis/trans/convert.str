@@ -28,7 +28,13 @@ rules // Task
 		; task-section := Tasks(task-def*)
 			
 	from-task-debug-tuple:
-		(tid, instr, dep*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <map(to-taskref)> dep*, <to-instruction <+ make-abstract> instr, <to-res> res)
+		(tid, instr, dep*, read*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <map(to-taskref)> dep*, <to-instruction <+ make-abstract> instr, <to-res> res, reads)
+		where
+			if [] := read* then
+				reads := None()
+			else
+				reads := Reads(<make-abstract> read*)
+			end
 		
 	to-tid:
 		tid -> <try(int-to-string)> tid
@@ -37,7 +43,7 @@ rules // Task
 		tid -> TaskRef(<to-tid> tid)
 		
 	to-res:
-		res -> <to-abstract-terms; (result-to-fail <+ result-to-empty <+ convert-terms)> res
+		res -> <to-abstract-terms; (result-to-fail <+ result-to-depfail <+ result-to-empty <+ convert-terms)> res
 
 rules // Index
 	
@@ -133,6 +139,9 @@ rules // URIs
 		Appl("ID", [Appl(ns, []), term, Appl("NonUnique", [])]) -> Id(<namespace-remove-nablns> ns, term)
 		
 	term-to-segment:
+		Appl("ID", [Appl(ns, []), term, Tupl([])]) -> Id(<namespace-remove-nablns> ns, term, "*")
+		
+	term-to-segment:
 		Appl("ID", [Appl(ns, []), term, Appl("Unique", [Str(u)])]) -> Id(<namespace-remove-nablns> ns, term, <qualifier-remove-partition> u)
 		
 	term-to-segment:
@@ -151,6 +160,9 @@ rules // Special results
 	
 	result-to-fail:
 		Appl("Fail", []) -> Fail()
+
+	result-to-depfail:
+		Appl("DepFail", []) -> DepFail()
 		
 	result-to-empty:
 		Appl("None", []) -> Empty()

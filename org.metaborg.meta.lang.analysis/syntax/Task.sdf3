@@ -19,15 +19,24 @@ templates
 <task <TASKID> [<TaskRef*; separator=", ">] = 
 	<Instruction> 
 	-\> 
-	<Result>
+	<Result><Reads>
 >
 	TaskRef.TaskRef = <<TASKID>>
 	
 	Instruction = <<Term>> {avoid}
 	
-	Result       = <<Term>>
-	Result.Fail  = "fail"
-	Result.Empty = "_"
+	Result         = <<Term>>
+	Result.Fail    = "fail"
+	Result.DepFail = "depfail"
+	Result.Empty   = "_"
+	
+	Reads.None     = <>
+	Reads.Reads    = 
+<
+
+reads
+<Term>
+>
 	
 	Term.TaskRef = <&<TASKID>>
-	Term.URI = </ <URI> />
+	Term.URI     = </ <URI> />

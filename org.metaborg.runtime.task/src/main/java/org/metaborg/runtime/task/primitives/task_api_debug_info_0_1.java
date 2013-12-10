@@ -11,10 +11,10 @@ import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 public class task_api_debug_info_0_1 extends AbstractPrimitive {
@@ -50,25 +50,42 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 		return list;
 	}
 
-	private IStrategoTuple createDebugTuple(IStrategoTerm taskID, ITaskEngine engine, ITermFactory factory) {
+	private IStrategoTerm createDebugTuple(IStrategoTerm taskID, ITaskEngine engine, ITermFactory factory) {
 		Task task = engine.getTask(taskID);
-		IStrategoList dependencies = makeList(factory, engine.getDependencies(taskID));
-		IStrategoTerm results = task.failed() ? fail(factory) : makeList(factory, task.results());
-		IStrategoTerm message = task.message();
+		final IStrategoList dependencies = makeList(factory, engine.getDependencies(taskID));
+		final IStrategoTerm message = task.message();
+		final IStrategoTerm reads = makeList(factory, engine.getReads(taskID));
+		final IStrategoTerm results;
+		switch(task.status()) {
+			case DependencyFail:
+				results = depfail(factory);
+				break;
+			case Fail:
+				results = fail(factory);
+				break;
+			case Success:
+				results = makeList(factory, task.results());
+				break;
+			default:
+				results = none(factory);
+		}
 
-		return factory.makeTuple(
-			taskID, 
-			task.instruction, 
-			dependencies, 
-			results == null ? none(factory) : results,
-			message == null ? none(factory) : message, 
-			factory.makeInt((int) task.time()),
-			factory.makeInt(task.evaluations())
-		);
+		return taskTuple(factory, taskID, task.instruction, dependencies, reads, results, message == null
+			? none(factory) : message, factory.makeInt((int) task.time()), factory.makeInt(task.evaluations()));
+	}
+
+	private IStrategoTerm taskTuple(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
+		IStrategoTerm dependencies, IStrategoTerm reads, IStrategoTerm results, IStrategoTerm message,
+		IStrategoInt time, IStrategoInt evaluations) {
+		return factory.makeTuple(taskID, instruction, dependencies, reads, results, message, time, evaluations);
 	}
 
 	private IStrategoAppl fail(ITermFactory factory) {
 		return factory.makeAppl(factory.makeConstructor("Fail", 0));
+	}
+
+	private IStrategoAppl depfail(ITermFactory factory) {
+		return factory.makeAppl(factory.makeConstructor("DepFail", 0));
 	}
 
 	private IStrategoAppl none(ITermFactory factory) {
