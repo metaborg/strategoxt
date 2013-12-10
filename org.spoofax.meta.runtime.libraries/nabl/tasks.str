@@ -30,7 +30,8 @@ signature
     ImportClosure          : URI                                       -> Instruction
     PropConstraint         : Kind * Expected * Result                  -> Instruction
         
-    ResolveAllDefs         : Scope * Namespace                  -> Instruction
+    ResolveAllDefs         : Scope * Namespace                         -> Instruction
+    ResolveAllDefs         : Scope * Namespace * Name * Prop           -> Instruction
         
 rules // basics
   
@@ -51,6 +52,11 @@ rules // Resolve
   		result     := <filter(filter-defs-props(|prop*)); (task-collect-dependencies <+ not(?[]))> def*
   		
 	task-short-circuit = ?ResolveDefs(_, _, _, _)
+ 
+ 
+  perform-task(|nr):
+    ResolveAllDefs(scope, ns, name, prop*) -> <perform-task(|nr)> ResolveDefs(scope, ns, name, prop*)
+ 
   		
 	filter-defs-props(|prop*):
 		definition -> <map(filter-defs-prop(|definition)); (task-collect-dependencies <+ !definition)> prop*

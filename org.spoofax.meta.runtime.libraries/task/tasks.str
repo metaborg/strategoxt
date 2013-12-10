@@ -61,7 +61,12 @@ rules
 	
 	task-is-combinator = ?Sequence(_)
   perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
+
+rules
   
+  task-create-where(s|ctx):
+    term -> <task-create-sequence(|ctx)> <try(flatten-list)> [<s> term, term]
+
 rules
   
   /**
@@ -69,6 +74,11 @@ rules
   * @type term -> Result(Int)
   */
 	task-create-id(|ctx) = <new-task(|ctx)> Id(<id>)
+  
+  task-create-id(|ctx, dep*) =
+    ?term;
+    all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>);
+    <new-task(|ctx, all-dep*)> Id(term)
   
   perform-task(|nr) = ?Id(<MkSingleton>)
 
