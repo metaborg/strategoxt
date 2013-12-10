@@ -61,7 +61,12 @@ rules
 	
 	task-is-combinator = ?Sequence(_)
   perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
+
+rules
   
+  task-create-where(s|ctx):
+    term -> <task-create-sequence(|ctx)> <try(flatten-list)> [<s> term, term]
+
 rules
   
   /**
