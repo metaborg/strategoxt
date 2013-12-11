@@ -51,6 +51,18 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
+	}
+
+	@Override
+	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
+	}
+
+	private void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cyclic) {
 
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
@@ -61,13 +73,15 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			return;
 		}
 
-		final boolean execute = combinations != null && !dependenciesFailed(taskEngine, taskID, task);
+		final boolean execute = combinations != null;
 
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
 		boolean failure = true;
 		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
+				if(cyclic)
+					instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
 				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
 				boolean done = false;
@@ -86,53 +100,6 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 				if(done)
 					break;
-			}
-		}
-
-		if(!unknown) {
-			// Try to schedule new tasks even for failed tasks since they may activate combinators.
-			evaluationQueue.taskSolved(taskID);
-
-			if(failure)
-				if(!execute)
-					task.setDependencyFailed();
-				else
-					task.setFailed();
-		}
-	}
-
-	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
-			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
-
-		if(combinations != null && combinations._2()) {
-			// Inserting results failed because some tasks were not solved yet.
-			evaluationQueue.taskDelayed(taskID, combinations._1());
-			return;
-		}
-
-		final boolean execute = combinations != null && !dependenciesFailed(taskEngine, taskID, task);
-
-		// TODO: optimize success/unknown using a bitflag?
-		boolean unknown = false;
-		boolean failure = true;
-		if(execute) {
-			for(IStrategoTerm instruction : combinations._1()) {
-				instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
-				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
-				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
-				switch(resultType) {
-					case Fail:
-						break;
-					case Success:
-						failure = false;
-						break;
-					default: // Unknown result or dynamic dependency.
-						unknown = true;
-						break;
-				}
 			}
 		}
 
@@ -197,17 +164,5 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			task.addResult(result);
 			return TaskResultType.Success;
 		}
-	}
-
-	private boolean dependenciesFailed(ITaskEngine taskEngine, IStrategoTerm taskID, Task task) {
-		if(!task.executeOnDependenciesFailure)
-			return false;
-
-		for(IStrategoTerm dependency : taskEngine.getDependencies(taskID)) {
-			if(taskEngine.getTask(dependency).dependencyFailed())
-				return true;
-		}
-
-		return false;
 	}
 }

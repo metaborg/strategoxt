@@ -105,18 +105,16 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit, boolean failOnDependenciesFailure) {
-		return current.addTask(partition, dependencies, instruction, isCombinator, shortCircuit,
-			failOnDependenciesFailure);
+		boolean isCombinator, boolean shortCircuit) {
+		return current.addTask(partition, dependencies, instruction, isCombinator, shortCircuit);
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
-		boolean shortCircuit, boolean failOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
+	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
 		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
-		current.addPersistedTask(taskID, instruction, isCombinator, shortCircuit, failOnDependenciesFailure,
-			partitions, initialDependencies, dependencies, reads, results, status, message, time, evaluations);
+		current.addPersistedTask(taskID, task, partitions, initialDependencies, dependencies, reads, results, status,
+			message, time, evaluations);
 	}
 
 	@Override

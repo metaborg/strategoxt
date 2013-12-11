@@ -56,15 +56,13 @@ public interface ITaskEngine {
 	 * @return A unique task identifier for given instruction.
 	 */
 	public abstract IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies,
-		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit, boolean failOnDependenciesFailure);
+		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.
 	 *
 	 * @param taskID The identifier of the task.
-	 * @param instruction The instruction of the task.
-	 * @param isCombinator Whether this task is a task combinator. A value of 1 indicates a task combinator
-	 * @param shortCircuit Whether this task should be short circuited. A value of 1 indicates true.
+	 * @param task The task object.
 	 * @param partitions The partitions of the task.
 	 * @param initialDependencies The initial dependencies of the task.
 	 * @param dependencies The dependencies of the task.
@@ -72,8 +70,7 @@ public interface ITaskEngine {
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed If the task has failed. A value of 1 indicates failure.
 	 */
-	public abstract void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
-		boolean shortCircuit, boolean failOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
+	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
 		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations);
 

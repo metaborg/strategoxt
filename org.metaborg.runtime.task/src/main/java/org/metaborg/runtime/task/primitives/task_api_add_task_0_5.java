@@ -10,11 +10,11 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class task_api_add_task_0_6 extends AbstractPrimitive {
-	public static task_api_add_task_0_6 instance = new task_api_add_task_0_6();
+public class task_api_add_task_0_5 extends AbstractPrimitive {
+	public static task_api_add_task_0_5 instance = new task_api_add_task_0_5();
 
-	public task_api_add_task_0_6() {
-		super("task_api_add_task", 0, 6);
+	public task_api_add_task_0_5() {
+		super("task_api_add_task", 0, 5);
 	}
 
 	@Override
@@ -24,12 +24,8 @@ public class task_api_add_task_0_6 extends AbstractPrimitive {
 		final IStrategoTerm instruction = tvars[2];
 		final IStrategoInt isCombinator = (IStrategoInt) tvars[3];
 		final IStrategoInt shortCircuit = (IStrategoInt) tvars[4];
-		final IStrategoInt failOnDependenciesFailure = (IStrategoInt) tvars[5];
-		env.setCurrent(TaskManager
-			.getInstance()
-			.getCurrent()
-			.addTask(partition, dependencies, instruction, isCombinator.intValue() == 1, shortCircuit.intValue() == 1,
-				failOnDependenciesFailure.intValue() == 1));
+		env.setCurrent(TaskManager.getInstance().getCurrent()
+			.addTask(partition, dependencies, instruction, isCombinator.intValue() == 1, shortCircuit.intValue() == 1));
 		return true;
 	}
 }

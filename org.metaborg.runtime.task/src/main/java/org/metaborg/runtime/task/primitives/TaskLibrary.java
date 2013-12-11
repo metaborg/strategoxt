@@ -9,7 +9,7 @@ public class TaskLibrary extends AbstractStrategoOperatorRegistry {
 		add(task_api_add_dependency_0_2.instance);
 		add(task_api_add_message_0_2.instance);
 		add(task_api_add_read_0_2.instance);
-		add(task_api_add_task_0_6.instance);
+		add(task_api_add_task_0_5.instance);
 		add(task_api_becomes_cyclic_0_2.instance);
 		add(task_api_clear_partition_0_1.instance);
 		add(task_api_debug_info_0_1.instance);

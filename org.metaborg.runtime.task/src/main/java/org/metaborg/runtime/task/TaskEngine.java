@@ -121,7 +121,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit, boolean executeOnDependenciesFailure) {
+		boolean isCombinator, boolean shortCircuit) {
 		if(!taskCollection.inCollection(partition))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
@@ -131,8 +131,7 @@ public class TaskEngine implements ITaskEngine {
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			toTask.put(taskID, new Task(instruction, dependencies, isCombinator, shortCircuit,
-				executeOnDependenciesFailure));
+			toTask.put(taskID, new Task(instruction, dependencies, isCombinator, shortCircuit));
 			taskCollection.addTask(taskID);
 			schedule(taskID);
 		}
@@ -150,15 +149,12 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, boolean isCombinator,
-		boolean shortCircuit, boolean executeOnDependenciesFailure, Iterable<IStrategoTerm> partitions,
+	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
 		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
-		Task task =
-			new Task(instruction, initialDependencies, isCombinator, shortCircuit, executeOnDependenciesFailure);
 		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
 

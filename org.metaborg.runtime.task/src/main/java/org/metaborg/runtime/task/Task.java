@@ -14,7 +14,6 @@ public final class Task {
 	// TODO: move these to task (type) definition, this is wasting space.
 	public final boolean isCombinator;
 	public final boolean shortCircuit;
-	public final boolean executeOnDependenciesFailure;
 
 	private List<IStrategoTerm> results = Lists.newLinkedList();
 	private TaskStatus status = TaskStatus.Unknown;
@@ -22,14 +21,12 @@ public final class Task {
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean isCombinator,
-		boolean shortCircuit, boolean executeOnDependenciesFailure) {
+	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean isCombinator, boolean shortCircuit) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
 
 		this.isCombinator = isCombinator;
 		this.shortCircuit = shortCircuit;
-		this.executeOnDependenciesFailure = executeOnDependenciesFailure;
 	}
 
 	public Task(Task task) {
@@ -38,7 +35,6 @@ public final class Task {
 
 		this.isCombinator = task.isCombinator;
 		this.shortCircuit = task.shortCircuit;
-		this.executeOnDependenciesFailure = task.executeOnDependenciesFailure;
 
 		this.results = Lists.newLinkedList(task.results);
 		this.status = task.status;
