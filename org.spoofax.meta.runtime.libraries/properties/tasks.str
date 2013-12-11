@@ -13,9 +13,7 @@ signature
   
   constructors
 
-    PropCalc    : Term                              -> Instruction
-    PropList    : List(Term)                        -> Instruction
-    PropsLookup : Property * URI                    -> Instruction    
+    PropsLookup : Property * URI                    -> Instruction
     PropCheck   : Property * Relation * Term * Term -> Instruction
     PropExtract : Property * Term                   -> Instruction
     
@@ -23,14 +21,12 @@ rules
 
   perform-task(|n):
   	PropsLookup(kind, contains-uri) -> res
-  	where
-  	  uri  := <nabl-uri> contains-uri
+		where
+  	  uri := <nabl-uri> contains-uri
   	; <nabl-add-uri-read(|n)> uri
-		  // HACK: task-result-combinations also creates dependencies if any result has not been solved yet.
-		  // Proper way would be to decompose the PropLookup into a ResolveUseToDef, GetProperty and InsertCombinations task.
-  	; val  := <get-index-properties(|kind)> uri
-  	; comb := <map(fancy-combination)> val
-  	; res  := <(concat <+ filter(?Dependency(<id>)); !Dependency(<concat>))> comb
+  	; val := <get-index-properties(|kind)> uri
+  	; res := <try(concat)> val
+		  // TODO: why try concat?
     
   perform-cyclic-task(|n):
   	PropsLookup(kind, contains-uri) -> res
@@ -38,14 +34,9 @@ rules
   	  uri := <nabl-uri> contains-uri
   	; <nabl-add-uri-read(|n)> uri
   	; val := <get-index-properties(|kind)> uri
-		; res := <filter(insert-results); flatten-list; make-set> val
-	  // TODO: does not make combinations
-  
-  fancy-combination = 
-     (?Result(_); (task-result-combinations <+ ![]))
-  <+ (task-result-combinations; not(?[])) 
-  <+ MkSingleton
-      
+		; res := <try(concat); make-set> val
+		  // TODO: why try concat?
+
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> [<nabl-property-eq> (kind, rel, (actual, expected))]
 
