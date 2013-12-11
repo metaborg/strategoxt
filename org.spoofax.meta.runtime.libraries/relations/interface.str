@@ -1,0 +1,9 @@
+module relations/interface
+
+strategies
+  
+  // interface for static relation tuples, e.g. 
+  //
+  // relation-tuple(store): (IntTy(), SubType()) -> <store> FloatTy()
+
+  relation-tuple(store) = fail

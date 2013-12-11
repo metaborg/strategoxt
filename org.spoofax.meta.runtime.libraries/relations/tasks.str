@@ -1,0 +1,24 @@
+module relations/tasks
+
+imports
+	
+	relations/query
+	relations/interface
+signature
+  
+  constructors
+
+    RelationLookup : Relation * Term        -> Instruction
+    
+rules
+
+  perform-task(|n):
+    RelationLookup(rel, t) -> [stat-val*, index-val*]
+    where
+      // <nabl-add-uri-read(|n)> uri
+      stat-set := <new-iset>
+    ; <try(relation-tuple(<iset-add(|<id>)> stat-set))> (rel, t)
+    ; stat-val*  := <iset-elements> stat-set
+    ; <iset-destroy> stat-set
+    ; index-val* := <get-index-relations(|rel)> t
+  
