@@ -17,8 +17,9 @@ rules
     where
       // <nabl-add-uri-read(|n)> uri
       stat-set := <new-iset>
-    ; <try(relation-tuple(<iset-add(|<id>)> stat-set))> (rel, t)
+    ; <try(relation-tuple(store-tuple(|stat-set)))> (t, rel)
     ; stat-val*  := <iset-elements> stat-set
     ; <iset-destroy> stat-set
     ; index-val* := <get-index-relations(|rel)> t
-  
+   
+  store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set

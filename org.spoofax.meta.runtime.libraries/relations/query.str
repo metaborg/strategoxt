@@ -7,7 +7,9 @@ imports
 rules
   
   get-index-relation(|rel) =
-    fetch-elem(!RelTuple(<id>, rel, ()); nabl-get-value)
+    !RelTuple(<id>, rel, ())
+  ; nabl-get-value
    
   get-index-relations(|rel) =
-    mapconcat(!RelTuple(<id>, rel, ()); nabl-get-all-values)
+    !RelTuple(<id>, rel, ())
+  ; nabl-get-all-values
