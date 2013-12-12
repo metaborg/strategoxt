@@ -191,7 +191,7 @@ rules /** @internal API externals */
 	task-api-add-dependency(|taskID, dependency) = prim("task_api_add_dependency", taskID, dependency)
 	task-api-add-message(|taskID, message) = prim("task_api_add_message", taskID, message)
 	task-api-add-read(|taskID, read) = prim("task_api_add_read", taskID, read)
-	task-api-add-task(|partition, dependencies, instruction, is-combinator, short-circuit, dep-fail) = prim("task_api_add_task", partition, dependencies, instruction, is-combinator, short-circuit, dep-fail)
+	task-api-add-task(|partition, dependencies, instruction, is-combinator, short-circuit, dep-fail) = prim("task_api_add_task", partition, dependencies, instruction, is-combinator, short-circuit)
 	task-api-becomes-cyclic(|taskIDFrom, taskIDTo) = prim("task_api_becomes_cyclic", taskIDFrom, taskIDTo)
 	task-api-clear-partition(|partition) = prim("task_api_clear_partition", partition)
 	task-api-debug-info(|partition) = prim("task_api_debug_info", partition)
