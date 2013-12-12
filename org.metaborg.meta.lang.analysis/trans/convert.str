@@ -76,13 +76,13 @@ rules // Instructions
 	to-message-trigger: Multiple() -> Mult()
 	
 	to-instruction:
-		Message(task, trigger, Note(_, term, message)) -> Msg(Note(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
+		Message(task, trigger, _, Note(_, term, message)) -> Msg(Note(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
 		
 	to-instruction:
-		Message(task, trigger, Warning(_, term, message)) -> Msg(Warn(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
+		Message(task, trigger, _, Warning(_, term, message)) -> Msg(Warn(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
 		
 	to-instruction:
-		Message(task, trigger, Error(_, term, message)) -> Msg(Err(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
+		Message(task, trigger, _, Error(_, term, message)) -> Msg(Err(), <make-abstract> message, <make-abstract> term, <make-abstract> task, <to-message-trigger> trigger)
 		
 	to-instruction = Choice(map(make-abstract))
 	
