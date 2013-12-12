@@ -32,3 +32,4 @@ rules
     with
       task := <new-task(|partition)> RelationLookup(Transitive(rel), t2)
     ; transitive := <origin-track-forced(!RelTuple(t1, Transitive(rel), task))> t1
+    ; <index-add(|partition)> transitive

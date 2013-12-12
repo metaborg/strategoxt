@@ -2,8 +2,10 @@ module relations/tasks
 
 imports
 	
-	relations/query
-	relations/interface
+	relations/entries
+  relations/query
+  relations/interface
+	
 signature
   
   constructors
@@ -13,7 +15,7 @@ signature
 rules
 
   perform-task(|n):
-    RelationLookup(rel, t) -> [stat-val*, index-val*]
+    RelationLookup(rel, t) -> [stat-val*, non-trans-val*, index-val*]
     where
       // <nabl-add-uri-read(|n)> uri
       stat-set := <new-iset>
@@ -21,5 +23,10 @@ rules
     ; stat-val*  := <iset-elements> stat-set
     ; <iset-destroy> stat-set
     ; index-val* := <get-index-relations(|rel)> t
-   
+    ; if Transitive(rel') := rel then
+        non-trans-val* := <get-index-relations(|rel)> t
+      else
+        non-trans-val* := []
+      end
+      
   store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set
