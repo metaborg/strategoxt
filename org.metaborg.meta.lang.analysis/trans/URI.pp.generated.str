@@ -4,50 +4,50 @@ strategies
   prettyprint-URI :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a836]
+           , [a545]
            )
          ]
-    where a836 := <pp-H-list(prettyprint-Segment|" / ")> a
+    where a545 := <pp-H-list(prettyprint-Segment|" / ")> a
 
   prettyprint-Segment :
     Id(a, b) -> [ H(
                     [SOpt(HS(), "0")]
-                  , [a837, S(":"), b313]
+                  , [a546, S(":"), b188]
                   )
                 ]
-    where a837 := <pp-one-Z(prettyprint-ID)> a
-    where b313 := <pp-one-Z(prettyprint-Term)> b
+    where a546 := <pp-one-Z(prettyprint-ID)> a
+    where b188 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Segment :
     Id(a, b, c) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [ a838
+                     , [ a547
                        , S(":")
-                       , b314
+                       , b189
                        , S("#")
-                       , c134
+                       , c77
                        ]
                      )
                    ]
-    where a838 := <pp-one-Z(prettyprint-ID)> a
-    where b314 := <pp-one-Z(prettyprint-Term)> b
-    where c134 := <pp-one-Z(prettyprint-ID)> c
+    where a547 := <pp-one-Z(prettyprint-ID)> a
+    where b189 := <pp-one-Z(prettyprint-Term)> b
+    where c77 := <pp-one-Z(prettyprint-ID)> c
 
   prettyprint-Segment :
     Anon(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [S("anon "), a839]
+                 , [S("anon "), a548]
                  )
                ]
-    where a839 := <pp-one-Z(prettyprint-ID)> a
+    where a548 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-Segment :
     Subsq(a) -> [ H(
                     [SOpt(HS(), "0")]
-                  , [S("subsq "), a840]
+                  , [S("subsq "), a549]
                   )
                 ]
-    where a840 := <pp-one-Z(prettyprint-ID)> a
+    where a549 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-example =
     prettyprint-URI

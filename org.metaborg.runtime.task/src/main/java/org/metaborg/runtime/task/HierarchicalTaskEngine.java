@@ -299,6 +299,15 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
+	public Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID) {
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getDynamicDependencies(taskID);
+		if(parentTaskVisible(taskID) && parentDependenciesVisible(taskID))
+			return Iterables.concat(parent.getDynamicDependencies(taskID), ownTaskIDs);
+		else
+			return ownTaskIDs;
+	}
+
+	@Override
 	public Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID) {
 		return current.getTransitiveDependencies(taskID);
 	}

@@ -228,16 +228,23 @@ public interface ITaskEngine {
 
 
 	/**
-	 * Gets all other task identifiers that task with given identifier depends on.
-	 *
-	 * @param taskID The task identifier to get dependencies for.
+	 * Gets all other task identifiers that task with given identifier statically depends on.
+	 * 
+	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID);
 
 	/**
-	 * Gets all other task identifier that task with given identifier transitively depends on.
-	 *
-	 * @param taskID The task identifier to get dependencies for.
+	 * Gets all other task identifiers that task with given identifier dynamically depends on.
+	 * 
+	 * @param taskID The task identifier to get dynamic dependencies for.
+	 */
+	public abstract Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID);
+
+	/**
+	 * Gets all other task identifier that task with given identifier statically transitively depends on.
+	 * 
+	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID);
 

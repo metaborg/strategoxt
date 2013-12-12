@@ -28,7 +28,7 @@ rules // Task
 		; task-section := Tasks(task-def*)
 			
 	from-task-debug-tuple:
-		(tid, instr, dep*, read*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <map(to-taskref)> dep*, <to-instruction <+ make-abstract> instr, <to-res> res, reads)
+		(tid, instr, sdep*, ddep*, read*, res, msg, execs, time) -> TaskDef(<to-tid> tid, <to-deps> (sdep*, ddep*), <to-instruction <+ make-abstract> instr, <to-res> res, reads)
 		where
 			if [] := read* then
 				reads := None()
@@ -38,6 +38,16 @@ rules // Task
 		
 	to-tid:
 		tid -> <try(int-to-string)> tid
+		
+	to-deps:
+		(sdep*, ddep*) -> result
+		where
+			switch id
+				case ([]     , []     ): !None()
+				case (not([]), []     ): !SDeps(<map(to-taskref)> sdep*)
+				case ([]     , not([])): !DDeps(<map(to-taskref)> ddep*)
+				case (not([]), not([])): !SDDeps(<map(to-taskref)> sdep*, <map(to-taskref)> ddep*)
+			end => result
 		
 	to-taskref:
 		tid -> TaskRef(<to-tid> tid)
@@ -165,7 +175,7 @@ rules // Special results
 		Appl("DepFail", []) -> DepFail()
 		
 	result-to-empty:
-		Appl("None", []) -> Empty()
+		Appl("None", []) -> NotExec()
 	
 rules // Postprocessing
 	

@@ -1,0 +1,15 @@
+module outline
+
+imports
+	
+	include/Analysis
+	lib/runtime/editor/outline-library
+
+strategies
+	
+  outline = simple-label-outline(to-outline-label)
+
+rules
+  
+  to-outline-label: 
+  	TaskDef(task-id, _, _, _, _) -> task-id 

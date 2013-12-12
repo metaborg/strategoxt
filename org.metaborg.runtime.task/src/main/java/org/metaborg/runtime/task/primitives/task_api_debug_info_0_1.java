@@ -52,8 +52,9 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 
 	private IStrategoTerm createDebugTuple(IStrategoTerm taskID, ITaskEngine engine, ITermFactory factory) {
 		Task task = engine.getTask(taskID);
-		final IStrategoList dependencies = makeList(factory, engine.getDependencies(taskID));
-		final IStrategoTerm message = task.message();
+		final IStrategoList staticDependencies = makeList(factory, engine.getDependencies(taskID));
+		final IStrategoList dynamicDependencies = makeList(factory, engine.getDynamicDependencies(taskID));
+		final IStrategoTerm message = task.message() == null ? none(factory) : task.message();
 		final IStrategoTerm reads = makeList(factory, engine.getReads(taskID));
 		final IStrategoTerm results;
 		switch(task.status()) {
@@ -70,14 +71,15 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 				results = none(factory);
 		}
 
-		return taskTuple(factory, taskID, task.instruction, dependencies, reads, results, message == null
-			? none(factory) : message, factory.makeInt((int) task.time()), factory.makeInt(task.evaluations()));
+		return taskTuple(factory, taskID, task.instruction, staticDependencies, dynamicDependencies, reads, results,
+			message, factory.makeInt((int) task.time()), factory.makeInt(task.evaluations()));
 	}
 
 	private IStrategoTerm taskTuple(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,
-		IStrategoTerm dependencies, IStrategoTerm reads, IStrategoTerm results, IStrategoTerm message,
-		IStrategoInt time, IStrategoInt evaluations) {
-		return factory.makeTuple(taskID, instruction, dependencies, reads, results, message, time, evaluations);
+		IStrategoTerm staticDependencies, IStrategoTerm dynamicDependencies, IStrategoTerm reads,
+		IStrategoTerm results, IStrategoTerm message, IStrategoInt time, IStrategoInt evaluations) {
+		return factory.makeTuple(taskID, instruction, staticDependencies, dynamicDependencies, reads, results, message,
+			time, evaluations);
 	}
 
 	private IStrategoAppl fail(ITermFactory factory) {

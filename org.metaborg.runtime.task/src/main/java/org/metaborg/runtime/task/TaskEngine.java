@@ -355,6 +355,11 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
+	public Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID) {
+		return toDynamicDependency.get(taskID);
+	}
+
+	@Override
 	public Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID) {
 		final Set<IStrategoTerm> seen = Sets.newHashSet();
 		final Queue<IStrategoTerm> queue = Lists.newLinkedList();
