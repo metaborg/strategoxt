@@ -205,13 +205,13 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 						// TODO: this assumes that no results and failure means the same, is that correct?
 						if(values.get(taskID).isEmpty()) {
-							if(task.failed()) {
+							if(task.failed() || !task.hasResults()) {
 								continue;
 							} else {
 								done = false;
 								break;
 							}
-						} else if(task.failed()) {
+						} else if(task.failed() || !task.hasResults()) {
 							done = false;
 							break;
 						}

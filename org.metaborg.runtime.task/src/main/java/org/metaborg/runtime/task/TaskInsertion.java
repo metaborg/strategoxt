@@ -35,17 +35,25 @@ public final class TaskInsertion {
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> taskCombinations(ITermFactory factory,
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task) {
 		final IStrategoTerm instruction = task.instruction;
-		final boolean isCombinator = task.isCombinator;
-		final Iterable<IStrategoTerm> resultIDs = taskEngine.getDependencies(taskID);
+		final Iterable<IStrategoTerm> actualDependencies = getResultIDs(context, collect, instruction);
+		final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
 
-		if(Iterables.isEmpty(resultIDs)) {
+		if(Iterables.isEmpty(allDependencies)) {
 			return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
-		} else if(!isCombinator) {
-			return insertResultCombinations(taskEngine, context, collect, insert, instruction, resultIDs);
+		} else if(!task.isCombinator) {
+			for(IStrategoTerm dependencyID : allDependencies) {
+				final Task dependency = taskEngine.getTask(dependencyID);
+				if(dependency.failed() || !dependency.hasResults()) {
+					return null; // If a dependency does not have any results, the task cannot be executed.
+				}
+			}
+
+			return insertResultCombinations(taskEngine, context, collect, insert, instruction, actualDependencies,
+				new SingletonIterable<IStrategoTerm>(taskID));
 		} else {
 			return P.p(
 				new SingletonIterable<IStrategoTerm>(insertResultLists(factory, taskEngine, context, insert,
-					instruction, resultIDs)), false);
+					instruction, actualDependencies)), false);
 		}
 	}
 
@@ -68,8 +76,9 @@ public final class TaskInsertion {
 	 *         it contains task IDs of dynamic task dependencies.
 	 */
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> insertResultCombinations(ITaskEngine taskEngine,
-		IContext context, Strategy collect, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> dependencies) {
-		final Set<IStrategoTerm> seen = Sets.newHashSet();
+		IContext context, Strategy collect, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> dependencies,
+		Iterable<IStrategoTerm> initialSeen) {
+		final Set<IStrategoTerm> seen = Sets.newHashSet(initialSeen);
 		final Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>> result =
 			createResultMapping(taskEngine, context, collect, insert, dependencies, seen);
 
@@ -82,6 +91,35 @@ public final class TaskInsertion {
 		}
 	}
 
+	private static Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>>
+		createResultMapping(ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert,
+			Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen) {
+		final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = ArrayListMultimap.create();
+		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
+
+		for(final IStrategoTerm resultID : resultIDs) {
+			if(seen.contains(resultID)) {
+				resultsMap.put(resultID, createCycleTerm(context.getFactory(), resultID));
+				continue;
+			}
+
+			final Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> results =
+				getResultsOf(taskEngine, context, collect, insert, resultID, Sets.newHashSet(seen));
+
+			if(results == null) {
+				return null;
+			} else if(results.isRight()) {
+				Iterables.addAll(dynamicDependencies, results.right().value());
+			} else {
+				resultsMap.putAll(resultID, results.left().value());
+			}
+		}
+
+		if(dynamicDependencies.isEmpty())
+			return Either.left(resultsMap);
+		else
+			return Either.right(dynamicDependencies);
+	}
 
 	private static Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> getResultsOf(
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID,
@@ -120,33 +158,6 @@ public final class TaskInsertion {
 
 		if(dynamicDependencies.isEmpty())
 			return Either.left(results);
-		else
-			return Either.right(dynamicDependencies);
-	}
-
-	private static Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>>
-		createResultMapping(ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert,
-			Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen) {
-		final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = ArrayListMultimap.create();
-		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
-
-		for(final IStrategoTerm resultID : resultIDs) {
-			if(seen.contains(resultID))
-				continue;
-			final Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> results =
-				getResultsOf(taskEngine, context, collect, insert, resultID, Sets.newHashSet(seen));
-
-			if(results == null) {
-				return null;
-			} else if(results.isRight()) {
-				Iterables.addAll(dynamicDependencies, results.right().value());
-			} else {
-				resultsMap.putAll(resultID, results.left().value());
-			}
-		}
-
-		if(dynamicDependencies.isEmpty())
-			return Either.left(resultsMap);
 		else
 			return Either.right(dynamicDependencies);
 	}
@@ -214,5 +225,9 @@ public final class TaskInsertion {
 
 	private static IStrategoAppl createHashtableTerm(ITermFactory factory, StrategoHashMap hashMap) {
 		return factory.makeAppl(factory.makeConstructor("Hashtable", 1), hashMap);
+	}
+
+	private static IStrategoAppl createCycleTerm(ITermFactory factory, IStrategoTerm taskID) {
+		return factory.makeAppl(factory.makeConstructor("CYCLIC_INSERTION", 1), taskID);
 	}
 }
