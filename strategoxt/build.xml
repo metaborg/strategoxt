@@ -106,8 +106,9 @@
 			<fileset dir="${subdists-install-prefix}" includes="**/*" />
 		</copy>
 		<tar destfile="${install-prefix}/strategoxt-distrib.tar.gz" basedir="${install-location}" compression="gzip" />
-		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt/strategoxt.jar ${line.separator}</echo>
-		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar.gz ${line.separator}</echo>
+		<delete file="${install-prefix}/nix-support/hydra-build-products" />
+		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt/strategoxt.jar${line.separator}</echo>
+		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar.gz</echo>
 	</target>
 
 
