@@ -1,6 +1,6 @@
 module Analysis.main
 
-imports Analysis-Refactorings Analysis-Colorer Analysis-Completions Analysis-Folding Analysis-References Analysis-Syntax
+imports Analysis-Menus Analysis-Refactorings Analysis-Colorer Analysis-Completions Analysis-Folding Analysis-References Analysis-Syntax
 
 language General properties
                   
