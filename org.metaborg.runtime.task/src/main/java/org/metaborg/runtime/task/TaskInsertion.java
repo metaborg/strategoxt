@@ -36,24 +36,22 @@ public final class TaskInsertion {
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task) {
 		final IStrategoTerm instruction = task.instruction;
 		final Iterable<IStrategoTerm> actualDependencies = getResultIDs(context, collect, instruction);
-		final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
 
-		if(Iterables.isEmpty(allDependencies)) {
-			return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
-		} else if(!task.isCombinator) {
-			for(IStrategoTerm dependencyID : allDependencies) {
-				final Task dependency = taskEngine.getTask(dependencyID);
-				if(dependency.failed() || !dependency.hasResults()) {
-					return null; // If a dependency does not have any results, the task cannot be executed.
-				}
-			}
-
-			return insertResultCombinations(taskEngine, context, collect, insert, instruction, actualDependencies,
-				new SingletonIterable<IStrategoTerm>(taskID));
-		} else {
+		if(task.isCombinator) {
 			return P.p(
 				new SingletonIterable<IStrategoTerm>(insertResultLists(factory, taskEngine, context, insert,
 					instruction, actualDependencies)), false);
+		} else {
+			final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
+			if(dependencyFailure(taskEngine, allDependencies))
+				return null;
+
+			if(Iterables.isEmpty(actualDependencies)) {
+				return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
+			} else {
+				return insertResultCombinations(taskEngine, context, collect, insert, instruction, actualDependencies,
+					new SingletonIterable<IStrategoTerm>(taskID));
+			}
 		}
 	}
 
@@ -210,6 +208,19 @@ public final class TaskInsertion {
 			result = newResults;
 		}
 		return result;
+	}
+
+	/**
+	 * Checks if any tasks with given identifiers fail.
+	 */
+	private static boolean dependencyFailure(ITaskEngine taskEngine, Iterable<IStrategoTerm> taskIDs) {
+		for(IStrategoTerm taskID : taskIDs) {
+			final Task task = taskEngine.getTask(taskID);
+			if(task.failed() || !task.hasResults()) {
+				return true; // If a dependency does not have any results, the task cannot be executed.
+			}
+		}
+		return false;
 	}
 
 
