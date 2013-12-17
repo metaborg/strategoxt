@@ -137,14 +137,6 @@ public interface ITaskEngine {
 
 
 	/**
-	 * Queries if a task with given instruction exists.
-	 *
-	 * @param instruction The instruction.
-	 * @return True if it exists, false otherwise.
-	 */
-	public abstract boolean taskExists(IStrategoTerm instruction);
-
-	/**
 	 * Gets task with given identifier.
 	 *
 	 * @param taskID The task identifier.

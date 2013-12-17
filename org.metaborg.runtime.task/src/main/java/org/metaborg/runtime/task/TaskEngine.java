@@ -282,11 +282,6 @@ public class TaskEngine implements ITaskEngine {
 
 
 	@Override
-	public boolean taskExists(IStrategoTerm instruction) {
-		return toTaskID.containsRow(instruction);
-	}
-
-	@Override
 	public Task getTask(IStrategoTerm taskID) {
 		return toTask.get(taskID);
 	}

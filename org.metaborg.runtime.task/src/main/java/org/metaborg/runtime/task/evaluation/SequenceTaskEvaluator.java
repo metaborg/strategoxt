@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskIdentification;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -43,7 +42,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final Task task = taskEngine.getTask(taskID);
-			if(TaskIdentification.isSequence(task.instruction)) {
+			if(SequenceTaskEvaluator.isSequence(task.instruction)) {
 				evaluationQueue.queue(taskID);
 			}
 		}
@@ -204,7 +203,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final Task task = taskEngine.getTask(queueTaskID);
-			if(TaskIdentification.isSequence(task.instruction)) {
+			if(SequenceTaskEvaluator.isSequence(task.instruction)) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
@@ -215,5 +214,9 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 
 		seen.remove(taskID);
 		return seen;
+	}
+
+	private static boolean isSequence(IStrategoTerm instruction) {
+		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Sequence", 1);
 	}
 }

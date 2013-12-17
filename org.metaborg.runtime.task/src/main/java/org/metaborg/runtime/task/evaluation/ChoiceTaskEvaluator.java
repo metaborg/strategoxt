@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskIdentification;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -42,7 +41,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final Task task = taskEngine.getTask(taskID);
-			if(TaskIdentification.isChoice(task.instruction)) {
+			if(ChoiceTaskEvaluator.isChoice(task.instruction)) {
 				evaluationQueue.queue(taskID);
 			}
 		}
@@ -199,7 +198,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final Task task = taskEngine.getTask(queueTaskID);
-			if(TaskIdentification.isChoice(task.instruction)) {
+			if(ChoiceTaskEvaluator.isChoice(task.instruction)) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
@@ -210,5 +209,9 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 		seen.remove(taskID);
 		return seen;
+	}
+
+	private static boolean isChoice(IStrategoTerm instruction) {
+		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Choice", 1);
 	}
 }

@@ -175,11 +175,6 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 
 	@Override
-	public boolean taskExists(IStrategoTerm instruction) {
-		return current.taskExists(instruction) || parent.taskExists(instruction);
-	}
-
-	@Override
 	public Task getTask(IStrategoTerm taskID) {
 		Task task = current.getTask(taskID);
 		if(task == null && parentTaskVisible(taskID))

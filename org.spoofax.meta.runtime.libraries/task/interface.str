@@ -8,4 +8,3 @@ strategies
   avoid-task(|dep*)  = fail
   task-is-combinator = fail
   task-short-circuit = fail
-	task-dep-fail      = fail
