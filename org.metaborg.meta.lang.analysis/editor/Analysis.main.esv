@@ -15,7 +15,7 @@ language General properties
   table         : include/Analysis.tbl
   start symbols : Start
   
-  provider : include/analysis.jar                                                                
+  provider : include/analysis.ctree                                                                
   provider : include/analysis-java.jar                                                             
                                                                                                    
   observer : editor-analyze (multifile)                                                              
