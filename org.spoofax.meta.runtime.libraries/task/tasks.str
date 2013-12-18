@@ -11,22 +11,32 @@ signature
 	constructors
 		
     Id       : Term              -> Instruction
-    Not      : Result            -> Instruction
-    Combine  : List(Term)        -> Instruction
-    Collect  : List(Term)        -> Instruction
     Choice   : List(List(Term))  -> Instruction
     Sequence : List(Term)        -> Instruction
-    Rewrite  : ID * Term         -> Instruction
+    Combine  : List(Term)        -> Instruction
+    Collect  : List(Term)        -> Instruction
+    Not      : Result            -> Instruction
     Index    : Int * List(Term)  -> Instruction
     Length   : List(Term)        -> Instruction
-rules
-	
-	perform-cyclic-task(|nr) = fail
-	
-	perform-task(|nr):
-		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction
+    Insert   : Term              -> Instruction
+    Rewrite  : ID * Term         -> Instruction
 
-rules
+rules // Identity
+  
+  /**
+  * Create an identity task
+  * @type term -> Result(Int)
+  */
+	task-create-id(|ctx) = <new-task(|ctx)> Id(<id>)
+  
+  task-create-id(|ctx, dep*) =
+    ?term;
+    all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>);
+    <new-task(|ctx, all-dep*)> Id(term)
+  
+  perform-task(|nr) = ?Id(<MkSingleton>)
+
+rules // Choice
 	
   /**
   * Create a choice task
@@ -44,7 +54,7 @@ rules
 	task-is-combinator = ?Choice(_)
   perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
   
-rules
+rules // Sequence
 	
   /**
   * Create a sequence task
@@ -62,27 +72,34 @@ rules
 	task-is-combinator = ?Sequence(_)
   perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
 
-rules
+rules // Combine
+       
+  /**
+  * Create a combine task
+  * @type List(task) -> Result(Int)
+  */
+	task-create-combine(|ctx)= <new-task(|ctx)> Combine(<id>)
+       
+  task-is-combinator = ?Combine(_)
+  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
+
+rules // Collect
+       
+  /**
+  * Create a collect task
+  * @type List(task) -> Result(Int)
+  */
+	task-create-collect(|ctx) = <new-task(|ctx)> Collect(<id>)
+       
+  task-is-combinator = ?Collect(_)
+  perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
+
+rules // Where
   
   task-create-where(s|ctx):
     term -> <task-create-sequence(|ctx)> <try(flatten-list)> [<s> term, term]
 
-rules
-  
-  /**
-  * Create an identity task
-  * @type term -> Result(Int)
-  */
-	task-create-id(|ctx) = <new-task(|ctx)> Id(<id>)
-  
-  task-create-id(|ctx, dep*) =
-    ?term;
-    all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>);
-    <new-task(|ctx, all-dep*)> Id(term)
-  
-  perform-task(|nr) = ?Id(<MkSingleton>)
-
-rules
+rules // Negation
   
   /**
   * Create negation task
@@ -103,32 +120,31 @@ rules
     Not(result) -> ()
     where
       <?[]> result
-
+      
   task-is-combinator = ?Not(_)
   
-rules
-       
-  /**
-  * Create a combine task
-  * @type List(task) -> Result(Int)
-  */
-	task-create-combine(|ctx)= <new-task(|ctx)> Combine(<id>)
-       
-  task-is-combinator = ?Combine(_)
-  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
-
-rules
-       
-  /**
-  * Create a collect task
-  * @type List(task) -> Result(Int)
-  */
-	task-create-collect(|ctx) = <new-task(|ctx)> Collect(<id>)
-       
-  task-is-combinator = ?Collect(_)
-  perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
+rules // Index
   
-rules
+  perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
+  
+rules // Length
+	
+  perform-task(|nr) = ?Length(<length>);  MkSingleton
+
+rules // Result insertion
+	
+	task-create-insert(|ctx):
+		term -> <new-task(|ctx)> Insert(term)
+	
+	perform-task(|nr):
+		Insert(term) -> result
+		where
+		  inserted := <insert-results-or-create-dependency> term
+		; result   := <try(task-has-dependencies; task-collect-dependencies)> inserted
+		  
+	task-is-combinator = ?Insert(_)
+  
+rules // General purpose rewrite
       	
   /**
   * Create a rewrite task
@@ -139,8 +155,9 @@ rules
       	
   perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
   
-rules
-  
-  perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
-  perform-task(|nr) = ?Length(<length>);  MkSingleton
-  
+rules // Cyclic task execution
+	
+	perform-cyclic-task(|nr) = fail
+	
+	perform-task(|nr):
+		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction

@@ -19,6 +19,10 @@ signature
     
 rules
 
+	// TODO: replace all PropsLookup references with a call to this rule.
+	prop-create-lookup(|ctx, kind):
+		contains-uri -> <new-task(|ctx)> PropsLookup(kind, contains-uri)
+
   perform-task(|n):
   	PropsLookup(kind, contains-uri) -> res
 		where
@@ -37,8 +41,20 @@ rules
 		; res := <try(concat); make-set> val
 		  // TODO: why try concat?
 
+rules
+	
+	// TODO: replace all PropCheck references with a call to this rule.
+	prop-create-check(|ctx, kind, rel, actual):
+		expected -> <new-task(|ctx)> PropCheck(kind, rel, actual, expected)
+	
   perform-task(|n): 
   	PropCheck(kind, rel, actual, expected) -> [<nabl-property-eq> (kind, rel, (actual, expected))]
 
+rules
+
+	// TODO: replace all PropExtract references with a call to this rule.
+	prop-create-extract(|ctx, kind):
+		term -> <new-task(|ctx)> PropExtract(kind, term)
+
   perform-task(|n):
-    PropExtract(kind, t) -> <get-annotation(?(kind, <id>))> t
+    PropExtract(kind, term) -> <get-annotation(?(kind, <id>))> term

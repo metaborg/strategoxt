@@ -279,8 +279,8 @@ rules // generic analysis of uses
 	nabl-use-subtask-scopes(|partition, ns):
 		uri -> [uri', wildcard-import]
 		with
-		  uri' := <try(nabl-is-uri; MkSingleton)> uri
-		; wildcard-import := <new-task(|partition)> PropsLookup(Import(ns), Def(uri))
+		  uri'            := <try(nabl-is-uri; MkSingleton)> uri
+		; wildcard-import := <prop-create-lookup(|partition, Import(ns)); task-create-insert(|partition); task-create-combine(|partition)> uri
 		  
 	nabl-use-check-tasks(|partition, ns):
 		name -> task'
