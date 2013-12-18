@@ -2,12 +2,12 @@ module Analysis-Menus
 
 menus
   
-  menu: "Actions"
+  menu: "Syntax"
     
     action: "Show abstract syntax" = debug-show-aterm (openeditor) (realtime) (meta) (source)
     action: "Show analyzed syntax" = debug-show-analyzed (openeditor) (meta)
     
-    separator
+  menu: "Analysis"
     
     submenu: "Show index"
       action: "Project"            = debug-index-project (openeditor) (meta)
