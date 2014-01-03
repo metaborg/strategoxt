@@ -4,10 +4,11 @@ imports
   
   modelware/signatures
   nabl/-
+  editor/origins
 
 rules
   
-  mw-model2tree: M(obj)                    -> <mw-obj2term> obj
+  mw-model2tree: M(obj)                    -> <origin-track-forced(mw-obj2term)> obj
   mw-obj2term  : Obj(_, QID("ast", c), s*) -> c#(<map(mw-slot2term)> s*)
   mw-slot2term : None()                    -> None()
   mw-slot2term : Some(val)                 -> Some(<mw-val2term> val)
