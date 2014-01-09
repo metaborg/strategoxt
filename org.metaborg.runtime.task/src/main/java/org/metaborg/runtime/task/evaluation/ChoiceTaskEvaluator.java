@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
+import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -112,6 +113,11 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
+	}
+
+	@Override
+	public void delayCurrent() {
+		throw new NotImplementedException("Delaying a choice task has not been implemented yet");
 	}
 
 	@Override

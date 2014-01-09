@@ -42,14 +42,14 @@ rules // basics
 rules // Resolve
   
   // Looks up defintions in scopes with namespace and name.
-  perform-task(|nr):
+  perform-task(|task-id):
   	ResolveDefs(scope, ns, name, prop*) -> result
   	where
-  		uri        := <nabl-uri> scope;
-  		name'      := <try-remove-list; strip-annos> name;
-  		<nabl-add-name-read(|nr, ns, name')> uri;
-  		def*       := <nabl-lookup(|ns, name')> uri;
-  		result     := <filter(filter-defs-props(|prop*)); (task-collect-dependencies <+ not(?[]))> def*
+  		uri    := <nabl-uri> scope;
+  		name'  := <try-remove-list; strip-annos> name;
+  		<nabl-add-name-read(|task-id, ns, name')> uri;
+  		def*   := <nabl-lookup(|ns, name')> uri;
+  		result := <filter(filter-defs-props(|task-id, prop*)); not(?[])> def*
   		
 	task-short-circuit = ?ResolveDefs(_, _, _, _)
  
@@ -58,23 +58,26 @@ rules // Resolve
     ResolveAllDefs(scope, ns, name, prop*) -> <perform-task(|nr)> ResolveDefs(scope, ns, name, prop*)
  
   		
-	filter-defs-props(|prop*):
-		definition -> <map(filter-defs-prop(|definition)); (task-collect-dependencies <+ !definition)> prop*
+	filter-defs-props(|task-id, prop*):
+		definition -> <map(filter-defs-prop(|task-id, definition)); !definition> prop*
 	 	
-	filter-defs-prop(|definition):
-		Prop(kind, expected, _) -> result
+	filter-defs-prop(|task-id, definition):
+		Prop(kind, expected, _) -> definition
 		where
 			uri    := <nabl-uri> definition;
       value  := <get-index-property(|kind)> uri;
-      value' := <insert-results-or-create-dependency> value;
-      switch id
-      	case task-collect-dependencies => d : !d
-      	otherwise                           : <nabl-property-eq> (kind, Eq(), (expected, value')); !definition <+
-      	                                      <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value')); !definition
-      end => result
+      value' := <insert-results-or-delay(|task-id)> value;
+      <filter-defs-prop-eq(|expected, value')> kind
 
-	perform-task(|nr):
-		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
+	filter-defs-prop-eq(|expected, value):
+		kind -> <nabl-property-eq> (kind, Eq(), (expected, value))
+		
+	filter-defs-prop-eq(|expected, value):
+		kind -> <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value))
+		
+
+	perform-task(|task-id):
+		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|task-id, definition)> Prop(kind, expected, [])
 		
 	perform-task(|nr):
 		CheckDefs(ns, d) -> d

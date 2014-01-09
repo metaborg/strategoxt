@@ -74,6 +74,16 @@ rules // Dependencies
 		where(Hd);
 		!Dependency(<id>)
 
+	task-get-dependencies:
+		Dependency(dep*) -> dep*
+		where
+			<is-list> dep*
+		
+	task-get-dependencies:
+		Dependency(dep) -> [dep]
+		where
+			<not(is-list)> dep
+
 rules // Results
 
 	insert-results-hashmap(|results-hashmap) =
@@ -112,6 +122,15 @@ rules // Results
 			case ?Result(n) : task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ !Dependency([n])
 			otherwise       : all(insert-results-or-create-dependency)
 		end
+		
+	insert-results-or-delay(|task-id):
+		term -> inserted
+		where
+			inserted := <insert-results-or-create-dependency> term;
+			if dependencies := <task-collect-dependencies> inserted then
+				dep* := <task-get-dependencies> dependencies;
+				<task-delay-task(|task-id)> dep*
+			end
 	
 rules // Projections
 	
@@ -126,6 +145,7 @@ rules // API
 	task-add-message(|taskID, message)                         = task-api-add-message(|taskID, message)
 	task-add-task(|partition, dependencies, instruction, is-combinator, short-circuit) = task-api-add-task(|partition, dependencies, instruction, is-combinator, short-circuit)
 	task-clear-partition                                       = task-api-clear-partition(|<id>)
+	task-delay-task(|task-id)                                  = task-api-delay-task(|task-id, <id>)
 	task-debug-info(|partition)                                = task-api-debug-info(|partition)
 	task-evaluate-now                                          = task-api-evaluate-now(task-collect-result-ids, insert-results-hashmap, task-perform-task|<id>)
 	task-evaluate-scheduled                                    = task-api-evaluate-scheduled(task-collect-result-ids, insert-results-hashmap, task-perform-task)
@@ -180,6 +200,7 @@ rules /** @internal API externals */
 	task-api-add-read(|taskID, read) = prim("task_api_add_read", taskID, read)
 	task-api-add-task(|partition, dependencies, instruction, is-combinator, short-circuit) = prim("task_api_add_task", partition, dependencies, instruction, is-combinator, short-circuit)
 	task-api-clear-partition(|partition) = prim("task_api_clear_partition", partition)
+	task-api-delay-task(|task-id, dependencies) = prim("task_api_delay_task", task-id, dependencies)
 	task-api-debug-info(|partition) = prim("task_api_debug_info", partition)
 	task-api-evaluate-now(collect, insert, perform|taskIDs) = prim("task_api_evaluate_now", collect, insert, perform|taskIDs)
 	task-api-evaluate-scheduled(collect, insert, perform|) = prim("task_api_evaluate_scheduled", collect, insert, perform|)

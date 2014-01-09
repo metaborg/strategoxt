@@ -49,6 +49,9 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	/** The default task evaluator that is used to evaluate tasks for which there is no specific evaluator. */
 	private final ITaskEvaluator defaultTaskEvaluator;
 
+	/** The task evaluator that is currently being used to evaluate tasks. **/
+	private ITaskEvaluator currentTaskEvaluator = null;
+
 
 	private Set<IStrategoTerm> scheduled;
 	private final Set<IStrategoTerm> skipped = Sets.newHashSet();
@@ -115,6 +118,9 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	public void taskDelayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
+		// HACK: assumes sequential task evaluation.
+		currentTaskEvaluator.delayCurrent();
+
 		// Sets the runtime dependencies for a task to the given dependency list.
 		runtimeDependencies.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies)
@@ -157,11 +163,13 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 			// Queue tasks and evaluate them for each specific task evaluator.
 			for(ITaskEvaluator taskEvaluator : taskEvaluators.values()) {
+				currentTaskEvaluator = taskEvaluator;
 				taskEvaluator.queue(taskEngine, this, this.scheduled);
 				evaluateQueuedTasks(context, collect, insert, perform);
 			}
 
 			// Evaluate the remaining tasks with the default task evaluator.
+			currentTaskEvaluator = defaultTaskEvaluator;
 			defaultTaskEvaluator.queue(taskEngine, this, this.scheduled);
 			evaluateQueuedTasks(context, collect, insert, perform);
 
@@ -263,6 +271,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		for(ITaskEvaluator evaluator : taskEvaluators.values())
 			evaluator.reset();
 		defaultTaskEvaluator.reset();
+		currentTaskEvaluator = null;
 	}
 
 
@@ -336,6 +345,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private void evaluateCyclicTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect,
 		Strategy insert, Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
+		currentTaskEvaluator = taskEvaluator;
 		taskEvaluator.evaluateCyclic(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 }

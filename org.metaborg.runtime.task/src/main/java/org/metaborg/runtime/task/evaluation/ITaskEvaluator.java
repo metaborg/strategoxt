@@ -38,6 +38,11 @@ public interface ITaskEvaluator {
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
 
 	/**
+	 * Delays the current executing task.
+	 */
+	public abstract void delayCurrent();
+
+	/**
 	 * Resets the task evaluator to its initial state.
 	 */
 	public abstract void reset();
