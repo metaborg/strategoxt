@@ -19,7 +19,7 @@ public final class TermTools {
 	}
 
 	public static boolean takeBool(IStrategoTerm term) {
-		return term.getTermType() == IStrategoTerm.INT && ((IStrategoInt) term).intValue() == 1;
+		return term.getTermType() == IStrategoTerm.INT && ((IStrategoInt) term).intValue() != 0;
 	}
 
 

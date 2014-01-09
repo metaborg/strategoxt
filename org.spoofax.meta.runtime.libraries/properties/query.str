@@ -23,7 +23,7 @@ rules
   <+ try(nabl-get-name)
    ; get-index-property(|kind)
   ); try( // this is needed for cases where the results are already inserted
-      insert-results // TODO: is this the right insertion? probably need recursive insertion.
+      task-result-combinations-single // TODO: is this the right insertion? probably need recursive insertion.
     ; Hd
     ) 
    

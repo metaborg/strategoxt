@@ -33,7 +33,8 @@ public final class TaskInsertion {
 	 * function assumes that all dependencies of the given task have been solved (have a result or failed).
 	 */
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> taskCombinations(ITermFactory factory,
-		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task) {
+		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task,
+		boolean singleLevel) {
 		final IStrategoTerm instruction = task.instruction;
 		final Iterable<IStrategoTerm> actualDependencies = getResultIDs(context, collect, instruction);
 
@@ -50,7 +51,7 @@ public final class TaskInsertion {
 				return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
 			} else {
 				return insertResultCombinations(taskEngine, context, collect, insert, instruction, actualDependencies,
-					new SingletonIterable<IStrategoTerm>(taskID));
+					new SingletonIterable<IStrategoTerm>(taskID), singleLevel);
 			}
 		}
 	}
@@ -75,10 +76,10 @@ public final class TaskInsertion {
 	 */
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> insertResultCombinations(ITaskEngine taskEngine,
 		IContext context, Strategy collect, Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> dependencies,
-		Iterable<IStrategoTerm> initialSeen) {
+		Iterable<IStrategoTerm> initialSeen, boolean singleLevel) {
 		final Set<IStrategoTerm> seen = Sets.newHashSet(initialSeen);
 		final Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>> result =
-			createResultMapping(taskEngine, context, collect, insert, dependencies, seen);
+			createResultMapping(taskEngine, context, collect, insert, dependencies, seen, singleLevel);
 
 		if(result == null) {
 			return null;
@@ -91,7 +92,7 @@ public final class TaskInsertion {
 
 	private static Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>>
 		createResultMapping(ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert,
-			Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen) {
+			Iterable<IStrategoTerm> resultIDs, Set<IStrategoTerm> seen, boolean singleLevel) {
 		final Multimap<IStrategoTerm, IStrategoTerm> resultsMap = ArrayListMultimap.create();
 		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
 
@@ -102,7 +103,7 @@ public final class TaskInsertion {
 			}
 
 			final Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> results =
-				getResultsOf(taskEngine, context, collect, insert, resultID, Sets.newHashSet(seen));
+				getResultsOf(taskEngine, context, collect, insert, resultID, Sets.newHashSet(seen), singleLevel);
 
 			if(results == null) {
 				return null;
@@ -121,7 +122,7 @@ public final class TaskInsertion {
 
 	private static Either<Collection<IStrategoTerm>, ? extends Iterable<IStrategoTerm>> getResultsOf(
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID,
-		Set<IStrategoTerm> seen) {
+		Set<IStrategoTerm> seen, boolean singleLevel) {
 		seen.add(taskID);
 		final Task task = taskEngine.getTask(taskID);
 
@@ -136,11 +137,11 @@ public final class TaskInsertion {
 
 		for(final IStrategoTerm result : task.results()) {
 			final Iterable<IStrategoTerm> nestedResultIDs = getResultIDs(context, collect, result);
-			if(Iterables.isEmpty(nestedResultIDs)) {
+			if(singleLevel || Iterables.isEmpty(nestedResultIDs)) {
 				results.add(result);
 			} else {
 				final Either<Multimap<IStrategoTerm, IStrategoTerm>, ? extends Iterable<IStrategoTerm>> resultMapping =
-					createResultMapping(taskEngine, context, collect, insert, nestedResultIDs, seen);
+					createResultMapping(taskEngine, context, collect, insert, nestedResultIDs, seen, singleLevel);
 
 				if(resultMapping == null) {
 					return null;
