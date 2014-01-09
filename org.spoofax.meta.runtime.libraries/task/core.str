@@ -139,6 +139,12 @@ rules // Projections
 
 	task-collect-result-ids =
 		collect-all-annos(task-result-id, union)
+	
+	task-use-result-id:
+    Use(Result(taskID)) -> taskID
+		
+	task-collect-result-ids-2 =
+		collect-all-annos-2(task-result-id, task-use-result-id, union)
 
 rules // API
 	
@@ -147,8 +153,8 @@ rules // API
 	task-clear-partition                                       = task-api-clear-partition(|<id>)
 	task-delay-task(|task-id)                                  = task-api-delay-task(|task-id, <id>)
 	task-debug-info(|partition)                                = task-api-debug-info(|partition)
-	task-evaluate-now                                          = task-api-evaluate-now(task-collect-result-ids, insert-results-hashmap, task-perform-task|<id>)
-	task-evaluate-scheduled                                    = task-api-evaluate-scheduled(task-collect-result-ids, insert-results-hashmap, task-perform-task)
+	task-evaluate-now                                          = task-api-evaluate-now(task-collect-result-ids-2, insert-results-hashmap, task-perform-task|<id>)
+	task-evaluate-scheduled                                    = task-api-evaluate-scheduled(task-collect-result-ids-2, insert-results-hashmap, task-perform-task)
 	task-get-messages(|partition)                              = task-api-get-messages(|partition)
 	task-get-readers                                           = task-api-get-readers(|<id>)
 	task-invalidate-task-reads(|changedRead*)                  = task-api-invalidate-task-reads(|changedRead*)
@@ -159,7 +165,8 @@ rules // API
 	task-push                                                  = task-api-push
 	task-recover                                               = task-api-recover
 	task-reset                                                 = task-api-reset
-	task-result-combinations                                   = task-api-result-combinations(task-collect-result-ids, insert-results-hashmap|<id>)
+	task-result-combinations                                   = task-api-result-combinations(task-collect-result-ids-2, insert-results-hashmap|<id>, 0)
+	task-result-combinations-single                            = task-api-result-combinations(task-collect-result-ids-2, insert-results-hashmap|<id>, 1)
 	task-setup(|project-path)                                  = task-api-setup(|project-path)
 	task-setup                                                 = task-api-setup(|<id>)
 	task-start-collection(|partition)                          = task-api-start-collection(|partition)
@@ -217,7 +224,7 @@ rules /** @internal API externals */
 	task-api-push = prim("task_api_push")
 	task-api-recover = prim("task_api_recover")
 	task-api-reset = prim("task_api_reset")
-	task-api-result-combinations(collect-results, insert-results|term) = prim("task_api_result_combinations", collect-results, insert-results|term)
+	task-api-result-combinations(collect-results, insert-results|term, single-level) = prim("task_api_result_combinations", collect-results, insert-results|term, single-level)
 	task-api-setup(|project-path) = prim("task_api_setup", project-path)
 	task-api-start-collection(|partition) = prim("task_api_start_collection", partition)
 	task-api-stop-collection(|partition) = prim("task_api_stop_collection", partition)

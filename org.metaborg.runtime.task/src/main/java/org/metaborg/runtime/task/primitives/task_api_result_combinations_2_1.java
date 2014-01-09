@@ -28,13 +28,14 @@ public class task_api_result_combinations_2_1 extends AbstractPrimitive {
 		final ITermFactory factory = env.getFactory();
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm term = tvars[0];
+		final boolean singleLevel = TermTools.takeBool(tvars[1]);
 		final Strategy collect = svars[0];
 		final Strategy insert = svars[1];
 
 		final IStrategoTerm resultIDs = InvokeStrategy.invoke(env, collect, term);
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> result =
 			TaskInsertion.insertResultCombinations(taskEngine, env, collect, insert, term, resultIDs,
-				new EmptyIterable<IStrategoTerm>());
+				new EmptyIterable<IStrategoTerm>(), singleLevel);
 		if(result == null || result._1() == null)
 			return false; // No combinations could be constructed because a dependency failed or had no results.
 		final IStrategoList resultList = TermTools.makeList(factory, result._1());

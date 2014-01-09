@@ -74,7 +74,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		delayed = false;
 
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
-			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
+			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task, false);
 
 		if(combinations != null && combinations._2()) {
 			// Inserting results failed because some tasks were not solved yet.

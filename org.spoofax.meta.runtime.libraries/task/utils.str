@@ -15,3 +15,27 @@ rules
 	collect-all-annos(s, un) =
 		![<s> | <crush-annos(![], un, collect-all-annos(s, un))>]
 	<+ crush-annos(![], un, collect-all-annos(s, un))
+
+
+
+
+
+  crush-annos-2(nul, un, s, sa) :
+    _#(xs){a*} -> r2
+    where
+     r1 := <foldr(nul, un, collect-all-annos-2(s, un))> xs;
+     r2 := <foldr(!r1, un, collect-all-annos-2(sa, un))> a*
+     
+  crush-annos-2(nul, un, s) :
+    _#(xs){a*} -> r2
+    where
+     r1 := <foldr(nul, un, collect-all-annos-2(s, un))> xs;
+     r2 := <foldr(!r1, un, collect-all-annos-2(s, un))> a*
+
+	collect-all-annos-2(s, sa, un) =
+		![<s> | <crush-annos-2(![], un, s, sa)>]
+	<+ crush-annos-2(![], un, s)
+
+	collect-all-annos-2(s, un) =
+		![<s> | <crush-annos-2(![], un, s)>]
+	<+ crush-annos-2(![], un, s)
