@@ -239,6 +239,6 @@ public final class TaskInsertion {
 	}
 
 	private static IStrategoAppl createCycleTerm(ITermFactory factory, IStrategoTerm taskID) {
-		return factory.makeAppl(factory.makeConstructor("CYCLIC_INSERTION", 1), taskID);
+		return factory.makeAppl(factory.makeConstructor("Result", 1), taskID);
 	}
 }

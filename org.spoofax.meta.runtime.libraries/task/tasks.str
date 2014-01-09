@@ -136,11 +136,8 @@ rules // Result insertion
 	task-create-insert(|ctx):
 		term -> <new-task(|ctx)> Insert(term)
 	
-	perform-task(|nr):
-		Insert(term) -> result
-		where
-		  inserted := <insert-results-or-create-dependency> term
-		; result   := <try(task-has-dependencies; task-collect-dependencies)> inserted
+	perform-task(|task-id):
+		Insert(term) -> <insert-results-or-delay(|task-id)> term
 		  
 	task-is-combinator = ?Insert(_)
   

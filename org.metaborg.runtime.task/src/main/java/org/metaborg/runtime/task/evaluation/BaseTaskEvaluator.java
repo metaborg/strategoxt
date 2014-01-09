@@ -25,6 +25,9 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final IStrategoConstructor singleConstructor;
 
 
+	/** Flag indicating if the current task has been delayed. **/
+	private boolean delayed = false;
+
 	/** Timer for measuring task time. **/
 	private final Timer timer = new Timer();
 
@@ -60,9 +63,15 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
 	}
 
+	@Override
+	public void delayCurrent() {
+		delayed = true;
+	}
+
 	private void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
 		boolean cyclic) {
+		delayed = false;
 
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
@@ -82,8 +91,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			for(IStrategoTerm instruction : combinations._1()) {
 				if(cyclic)
 					instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
+
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
 				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
+
 				boolean done = false;
 				switch(resultType) {
 					case Fail:
@@ -98,12 +109,12 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						break;
 				}
 
-				if(done)
+				if(done || delayed)
 					break;
 			}
 		}
 
-		if(!unknown) {
+		if(!unknown && !delayed) {
 			// Try to schedule new tasks even for failed tasks since they may activate combinators.
 			evaluationQueue.taskSolved(taskID);
 
@@ -117,6 +128,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public void reset() {
+		delayed = false;
 		timer.reset();
 	}
 
