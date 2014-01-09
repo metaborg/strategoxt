@@ -93,7 +93,7 @@ strategies // generic traversal
   ; try(nabl-state-site)
   // visit children from left to right  
   ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
-  ; try(nabl-external-def-site(|partition))
+  ; try(nabl-external-def-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, unique*, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, uri*, state*, implicit*))

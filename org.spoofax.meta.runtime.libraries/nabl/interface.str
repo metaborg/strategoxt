@@ -9,7 +9,7 @@ strategies // Collect
 	| lang, partition, unique*, uri*, state*
 	) = fail
 	
-	nabl-external-def-site(|partition) = fail
+	nabl-external-def-site(|lang, partition, unique*, uri*, state*) = fail
 
 	nabl-state-site = fail
 	
