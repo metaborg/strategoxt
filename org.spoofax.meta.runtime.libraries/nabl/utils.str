@@ -58,3 +58,16 @@ rules // multimap simulation
 			
 	hash-multimap-copy-fold(|key, value*):
 		to -> <hash-multimap-putlist(|key, value*)> to
+
+rules // Debugging
+	
+	debug0 = debug(!"0 ")
+	debug1 = debug(!"1 ")
+	debug2 = debug(!"2 ")
+	debug3 = debug(!"3 ")
+	debug4 = debug(!"4 ")
+	debug5 = debug(!"5 ")
+	debug6 = debug(!"6 ")
+	debug7 = debug(!"7 ")
+	debug8 = debug(!"8 ")
+	debug9 = debug(!"9 ")

@@ -116,8 +116,13 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void delayCurrent() {
+	public void delay() {
 		throw new NotImplementedException("Delaying a choice task has not been implemented yet");
+	}
+
+	@Override
+	public IStrategoTerm current() {
+		throw new NotImplementedException("Getting the currently evaluating choice task has not been implemented yet");
 	}
 
 	@Override

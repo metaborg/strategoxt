@@ -25,6 +25,9 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final IStrategoConstructor singleConstructor;
 
 
+	/** Task identifier of the task that is currently being evaluated. **/
+	private IStrategoTerm current = null;
+
 	/** Flag indicating if the current task has been delayed. **/
 	private boolean delayed = false;
 
@@ -63,22 +66,18 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
 	}
 
-	@Override
-	public void delayCurrent() {
-		delayed = true;
-	}
-
 	private void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
 		boolean cyclic) {
 		delayed = false;
+		current = taskID;
 
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task, false);
 
 		if(combinations != null && combinations._2()) {
 			// Inserting results failed because some tasks were not solved yet.
-			evaluationQueue.taskDelayed(taskID, combinations._1());
+			evaluationQueue.delay(taskID, combinations._1());
 			return;
 		}
 
@@ -124,6 +123,19 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				else
 					task.setFailed();
 		}
+
+		delayed = false;
+		current = null;
+	}
+
+	@Override
+	public IStrategoTerm current() {
+		return current;
+	}
+
+	@Override
+	public void delay() {
+		delayed = true;
 	}
 
 	@Override
@@ -156,7 +168,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
 			if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 				// The task has dynamic dependencies and needs to be delayed.
-				evaluationQueue.taskDelayed(taskID, resultAppl.getSubterm(0));
+				evaluationQueue.delay(taskID, resultAppl.getSubterm(0));
 				return TaskResultType.DynamicDependency;
 			} else if(resultAppl.getConstructor().equals(singleConstructor)) {
 				// The result must be treated as a single result.

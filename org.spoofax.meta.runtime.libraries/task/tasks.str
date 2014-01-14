@@ -137,7 +137,7 @@ rules // Result insertion
 		term -> <new-task(|ctx)> Insert(term)
 	
 	perform-task(|task-id):
-		Insert(term) -> <insert-results-or-delay(|task-id)> term
+		Insert(term) -> <insert-results-or-delay> term
 		  
 	task-is-combinator = ?Insert(_)
   
