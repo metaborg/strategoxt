@@ -4,6 +4,7 @@ imports
   
   task/interface
   task/utils
+  nabl/entries
   
 signature
 
