@@ -93,7 +93,7 @@ strategies // generic traversal
   ; try(nabl-state-site)
   // visit children from left to right  
   ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
-  ; try(nabl-external-def-site(|lang, partition, unique*, uri'*, state*))
+  ; try(nabl-external-def-site(|lang, partition, unique*, uri'*, state*, implicit*))
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, unique*, child-uri*, state*))
   ; try(nabl-prop-site(|lang, partition, uri*, state*, implicit*))
@@ -207,7 +207,7 @@ rules // generic analysis of defs
 	  ; segment   := <nabl-uri-path; Hd> def-uri
 	  ; alias-uri := <nabl-extend-uri(|segment); nabl-nonunique-uri> base-uri
 	  where
-	   new-alias(|partition, alias-uri, def-uri)
+	    new-alias(|partition, alias-uri, def-uri)
       
 rules // generic analysis of uses
 	
