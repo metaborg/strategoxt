@@ -115,11 +115,10 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
-	public void taskDelayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
+	public void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
-		// HACK: assumes sequential task evaluation.
-		currentTaskEvaluator.delayCurrent();
+		currentTaskEvaluator.delay();
 
 		// Sets the runtime dependencies for a task to the given dependency list.
 		runtimeDependencies.removeAll(taskID);
@@ -256,6 +255,11 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		} finally {
 			reset();
 		}
+	}
+
+	@Override
+	public IStrategoTerm current() {
+		return currentTaskEvaluator.current();
 	}
 
 	@Override

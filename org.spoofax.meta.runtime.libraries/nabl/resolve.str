@@ -23,13 +23,13 @@ rules // Reference resolution
 	nabl-collect-all-resolved-defs:
 		ast -> def*
 		with
-			if ast' := <insert-results> ast then
+			if ast' := <insert-results-or-delay> ast then
 				def* := <collect-all-annos(?Def(_), conc)> ast'
 			else
 				def* := []
 			end
 
 	nabl-collect-one-resolved-def =
-		insert-results-or-create-dependency;
-		collect-one-annos(?Def(_) <+ ?Dependency(_))
+		insert-results-or-delay;
+		collect-one-annos(?Def(_))
 	

@@ -24,12 +24,6 @@ public interface ITaskEvaluationFrontend {
 	public abstract IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction);
 
 	/**
-	 * Indicates that task with given task identifier is delayed because dynamic dependencies have been found. Updates
-	 * the runtime dependency graph with runtime dependencies for given task.
-	 */
-	public abstract void taskDelayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
-
-	/**
 	 * Evaluates tasks given by a set of task identifiers.
 	 *
 	 * @param scheduled The task identifiers of tasks to evaluate.
@@ -42,6 +36,17 @@ public interface ITaskEvaluationFrontend {
 	 */
 	public abstract IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect,
 		Strategy insert, Strategy perform);
+
+	/**
+	 * Returns the task identifier of the task that is currently being evaluated.
+	 */
+	public abstract IStrategoTerm current();
+
+	/**
+	 * Indicates that task with given task identifier is delayed because dynamic dependencies have been found. Updates
+	 * the runtime dependency graph with runtime dependencies for given task.
+	 */
+	public abstract void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
 
 	/**
 	 * Resets the task evaluation frontend to the initial state.

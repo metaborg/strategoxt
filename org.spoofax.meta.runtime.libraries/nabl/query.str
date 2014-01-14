@@ -115,14 +115,10 @@ rules // Generic queries
   	where
       if alias* := <nabl-get-all-aliases> uri then
       	// HACK: handle Result terms on the resulting URI of an alias. this should be decomposed into a task?
-      	(alias-result*, alias-uri*) := <partition(?Result(_); insert-results-or-create-dependency)> alias*;
-      	if deps := <task-collect-dependencies> alias-result* then
-      		unique* := [deps]
-        else
-        	unique-uri*    := <mapconcat(create-template; nabl-get-all)> alias-uri*;
-        	unique-result* := <try(concat)> alias-result*;
-        	unique*        := [unique-uri*, unique-result*]
-        end
+      	(alias-result*, alias-uri*) := <partition(?Result(_); insert-results-or-delay)> alias*;
+      	unique-uri*                 := <mapconcat(create-template; nabl-get-all)> alias-uri*;
+      	unique-result*              := <try(concat)> alias-result*;
+      	unique*                     := [unique-uri*, unique-result*]
       else
         unique* := []
       end;

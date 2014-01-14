@@ -49,7 +49,7 @@ rules // Resolve
   		name'  := <try-remove-list; strip-annos> name;
   		<nabl-add-name-read(|task-id, ns, name')> uri;
   		def*   := <nabl-lookup(|ns, name')> uri;
-  		result := <filter(filter-defs-props(|task-id, prop*)); not(?[])> def*
+  		result := <filter(filter-defs-props(|prop*)); not(?[])> def*
   		
 	task-short-circuit = ?ResolveDefs(_, _, _, _)
  
@@ -58,15 +58,15 @@ rules // Resolve
     ResolveAllDefs(scope, ns, name, prop*) -> <perform-task(|nr)> ResolveDefs(scope, ns, name, prop*)
  
   		
-	filter-defs-props(|task-id, prop*):
-		definition -> <map(filter-defs-prop(|task-id, definition)); !definition> prop*
+	filter-defs-props(|prop*):
+		definition -> <map(filter-defs-prop(|definition)); !definition> prop*
 	 	
-	filter-defs-prop(|task-id, definition):
+	filter-defs-prop(|definition):
 		Prop(kind, expected, _) -> definition
 		where
 			uri    := <nabl-uri> definition;
       value  := <get-index-property(|kind)> uri;
-      value' := <insert-results-or-delay(|task-id)> value;
+      value' := <insert-results-or-delay> value;
       <filter-defs-prop-eq(|expected, value')> kind
 
 	filter-defs-prop-eq(|expected, value):
@@ -77,7 +77,7 @@ rules // Resolve
 		
 
 	perform-task(|task-id):
-		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|task-id, definition)> Prop(kind, expected, [])
+		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
 		
 	perform-task(|nr):
 		CheckDefs(ns, d) -> d
