@@ -58,16 +58,6 @@ rules // Creation
 		; task-pop
 
 rules // Dependencies
-	
-  task-create-dependencies =
-  	collect-all-annos(?Result(<id>), union);
-  	!Dependency(<id>)
-
-  task-create-dependency =
-		!Dependency([<id>])
-  	
-	task-has-dependencies =
-		where(collect-one-annos(?Dependency(_)))
 		
 	task-collect-dependencies =
 		collect-all-annos(?Dependency(<id>), union);
@@ -87,43 +77,32 @@ rules // Dependencies
 
 rules // Results
 
+	replace-results(list, result) =
+		switch id
+			case has-annos  : ?t; !(<replace-results-noannos(list, result)> t, <get-annos; replace-results(list, result)> t); set-annos
+			otherwise       : replace-results-noannos(list, result)
+		end		
+
+	replace-results-noannos(list, result) =
+		switch id
+			case is-list    : list
+			case ?Result(n) : result
+			otherwise       : all(replace-results(list, result))
+		end
+		
+		
 	insert-results-hashmap(|results-hashmap) =
-		switch id
-			case has-annos  : ?t; !(<insert-results-hashmap-noannos(|results-hashmap)> t, <get-annos; insert-results-hashmap(|results-hashmap)> t); set-annos
-			otherwise       : insert-results-hashmap-noannos(|results-hashmap)
-		end
-		
-	insert-results-hashmap-noannos(|results-hashmap) =
-		switch id
-			case is-list    : filter(insert-results-hashmap(|results-hashmap))
-			case ?Result(n) : try(<hashtable-get(|n)> results-hashmap)
-			otherwise       : all(insert-results-hashmap(|results-hashmap))
-		end
-	
-	insert-results-with-fail =
-		switch id
-			case has-annos  : !(<id>, <get-annos; insert-results-with-fail>); set-annos
-			case is-list    : filter(insert-results-with-fail)
-			case ?Result(n) : (task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ with(fail|"Cannot insert result: "))
-			otherwise       : all(insert-results-with-fail)
-		end
-	
-	insert-results =
-		switch id
-			case has-annos  : !(<id>, <get-annos; insert-results>); set-annos
-			case is-list    : map(insert-results)
-			case ?Result(n) : task-api-get-results(|n) <+ (task-api-has-failed(|n); ![])
-			otherwise       : all(insert-results)
-		end
-		
+		replace-results(
+		  filter(insert-results-hashmap(|results-hashmap))
+		, \Result(n) -> <try(<hashtable-get(|n)> results-hashmap)>\
+	  )
+
 	insert-results-or-create-dependency =
-		switch id
-			case has-annos  : !(<id>, <get-annos; insert-results-or-create-dependency>); set-annos
-			case is-list    : map(insert-results-or-create-dependency)
-			case ?Result(n) : task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ !Dependency([n])
-			otherwise       : all(insert-results-or-create-dependency)
-		end
-		
+		replace-results(
+		  map(insert-results-or-create-dependency)
+		, \Result(n) -> <task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ !Dependency([n])>\
+	  )
+	
 	insert-results-or-delay:
 		term -> inserted
 		where

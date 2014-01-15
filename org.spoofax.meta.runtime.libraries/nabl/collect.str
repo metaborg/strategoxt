@@ -338,12 +338,6 @@ rules // generic analysis of uses
 	nabl-use-propconstraint(|partition):
 		(task, []) -> task
 
-	nabl-use-disambiguate(disambiguate|partition, prop*, namespace, name):
-		task -> result
-		where
-			disambiguate;
-			result := <new-task(|partition)> DisambiguateDefs(task, prop*, namespace, name)
-
 rules // completion
 
 	// candidate in current scope

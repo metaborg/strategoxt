@@ -23,25 +23,18 @@ signature
     
     CollectDefs            : Term                                      -> Instruction
     ResolveDefs            : Scope * Namespace * Name * Prop           -> Instruction
-    CheckDefs              : Namespace * URI                           -> Instruction
-    DisambiguateDefs       : List(Def) * List(Prop) * Namespace * Name -> Instruction
-    ResolveNamedImports    : Scope * Namespace * Name                  -> Instruction
-    ImportCalc             : URI                                       -> Instruction
-    ImportClosure          : URI                                       -> Instruction
-    PropConstraint         : Kind * Expected * Result                  -> Instruction
-        
     ResolveAllDefs         : Scope * Namespace                         -> Instruction
     ResolveAllDefs         : Scope * Namespace * Name * Prop           -> Instruction
+    CheckDefs              : Namespace * URI                           -> Instruction
+    PropConstraint         : Kind * Expected * Result                  -> Instruction
         
-rules // basics
+rules // Collects all definitions in a term
   
-  perform-task(|nr) = 
-    ?CollectDefs(<id>)
-  ; (?Def(_) <+ try(nabl-get-name); get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))
+  perform-task(|nr): 
+    CollectDefs(term) -> <(?Def(_) <+ try(nabl-get-name); get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))> term 
 
-rules // Resolve
+rules // Resolve definitions in a scope of a certain namespace and name (stops when definitions are found in a scope)
   
-  // Looks up defintions in scopes with namespace and name.
   perform-task(|task-id):
   	ResolveDefs(scope, ns, name, prop*) -> result
   	where
@@ -52,70 +45,14 @@ rules // Resolve
   		result := <filter(filter-defs-props(|prop*)); not(?[])> def*
   		
 	task-short-circuit = ?ResolveDefs(_, _, _, _)
- 
- 
+
+rules // Resolve all definitions in a scope of a certain namespace and name
+	
   perform-task(|nr):
     ResolveAllDefs(scope, ns, name, prop*) -> <perform-task(|nr)> ResolveDefs(scope, ns, name, prop*)
- 
-  		
-	filter-defs-props(|prop*):
-		definition -> <map(filter-defs-prop(|definition)); !definition> prop*
-	 	
-	filter-defs-prop(|definition):
-		Prop(kind, expected, _) -> definition
-		where
-			uri    := <nabl-uri> definition;
-      value  := <get-index-property(|kind)> uri;
-      value' := <insert-results-or-delay> value;
-      <filter-defs-prop-eq(|expected, value')> kind
 
-	filter-defs-prop-eq(|expected, value):
-		kind -> <nabl-property-eq> (kind, Eq(), (expected, value))
-		
-	filter-defs-prop-eq(|expected, value):
-		kind -> <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value))
-		
-
-	perform-task(|task-id):
-		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
-		
-	perform-task(|nr):
-		CheckDefs(ns, d) -> d
-		where
-			<nabl-uri; nabl-uri-namespace; ?ns> d
+rules // Resolve all definitions in a scope of a certain namespace
 	
-	// TODO: this task is not created any more
-	// Calls a user-defined disambiguation filter on definitions with relevant information.
-	// perform-task(|nr):
-	// 	DisambiguateDefs(def*, prop*, namespace, name) -> result
-	// 	where
-	// 		if <Tl> def* then
-	// 			<try(nabl-disambiguate(|prop*, namespace, name))> def*
-	// 		else
-	// 			!def*
-	// 		end => result;
-	// 		not(?[])
-	// 
-	// 	task-is-combinator = ?DisambiguateDefs(_, _, _, _)
-
-	// TODO: this task is not created any more
-	// Looks up named imports, active in scopes with namespace and name..
-	// perform-task(|nr):
-	// 	ResolveNamedImports(scope, ns, name) -> result
-	// 	where
-	// 		uri     := <nabl-uri> scope;
-	// 		<nabl-add-uri-read(|nr)> uri;
-	// 		name'   := <try-remove-list; strip-annos> name; // TODO: can this be a list?
-	// 		import* := <nabl-lookup-named-import(|ns, name')> uri;
-	//      switch id
-	//      	case ?[]                            : fail
-	//      	case task-collect-dependencies => d : !d
-	//      	otherwise                           : id
-	//      end => result
-
-rules // Visibility
-	
-  // Looks up defintions in scopes with namespace and name.
   perform-task(|nr):
   	ResolveAllDefs(scope, ns) -> def*
   	where
@@ -138,3 +75,33 @@ rules // Visibility
 		with
 			def-task := <new-task(|partition)> ResolveAllDefs(uri, ns)
 	  ; filtered  := <nabl-use-propconstraint(|partition)> (def-task, prop*)
+
+rules // Check if a definition is in given namespace
+		
+	perform-task(|nr):
+		CheckDefs(ns, d) -> d
+		where
+			<nabl-uri; nabl-uri-namespace; ?ns> d
+
+rules // Filter definitions by properties
+  		
+	filter-defs-props(|prop*):
+		definition -> <map(filter-defs-prop(|definition)); !definition> prop*
+	 	
+	filter-defs-prop(|definition):
+		Prop(kind, expected, _) -> definition
+		where
+			uri    := <nabl-uri> definition;
+      value  := <get-index-property(|kind)> uri;
+      value' := <insert-results-or-delay> value;
+      <filter-defs-prop-eq(|expected, value')> kind
+
+	filter-defs-prop-eq(|expected, value):
+		kind -> <nabl-property-eq> (kind, Eq(), (expected, value))
+		
+	filter-defs-prop-eq(|expected, value):
+		kind -> <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value))
+		
+
+	perform-task(|task-id):
+		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
