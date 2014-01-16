@@ -23,7 +23,7 @@ rules // Error checking tasks
 		with
 			<nabl-fix-name; task-create-error-on-failure(|partition, task, "Unresolved reference")> name
 			
-	nabl-duplicate-task(|partition, unique):
+	nabl-duplicate-task(|ctx, unique):
 		name -> name
 		where
 			uri := <nabl-uri> name;
@@ -32,8 +32,8 @@ rules // Error checking tasks
 		with
 			if Unique() := unique then
 				uri'		:= <nabl-uri-parent> uri;
-				resolve := <new-task(|partition)> ResolveDefs(uri', ns, name, []);
-				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+				resolve := <nabl-create-resolvedefs(|ctx, ns, name, [])> uri';
+				<task-create-error-on-multiple(|ctx, resolve, "Duplicate definition")> name
 			end
 			
 	// TODO: check needs to be converted into a task.

@@ -27,12 +27,14 @@ rules // Identity
   * Create an identity task
   * @type term -> Result(Int)
   */
-	task-create-id(|ctx) = <new-task(|ctx)> Id(<id>)
+	task-create-id(|ctx):
+		term -> <new-task(|ctx)> Id(term)
   
-  task-create-id(|ctx, dep*) =
-    ?term;
-    all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>);
-    <new-task(|ctx, all-dep*)> Id(term)
+  task-create-id(|ctx, dep*):
+  	term -> <new-task(|ctx, all-dep*)> Id(term)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> term
+    
   
   perform-task(|nr) = ?Id(<MkSingleton>)
 
@@ -42,7 +44,8 @@ rules // Choice
   * Create a choice task
   * @type List(task) -> Result(Int)
   */
-  task-create-choice(|ctx) = <new-task(|ctx)> Choice(<id>)
+  task-create-choice(|ctx):
+  	term* -> <new-task(|ctx)> Choice(term*)
   
   /**
   * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
@@ -60,7 +63,8 @@ rules // Sequence
   * Create a sequence task
   * @type List(task) -> Result(Int)
   */
-  task-create-sequence(|ctx) = <new-task(|ctx)> Sequence(<id>)
+  task-create-sequence(|ctx):
+  	task* -> <new-task(|ctx)> Sequence(task*)
 
   /**
   * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
@@ -78,7 +82,13 @@ rules // Combine
   * Create a combine task
   * @type List(task) -> Result(Int)
   */
-	task-create-combine(|ctx)= <new-task(|ctx)> Combine(<id>)
+	task-create-combine(|ctx):
+		task* -> <new-task(|ctx)> Combine(task*)
+		
+	task-create-combine(|ctx, dep*):
+		task* -> <new-task(|ctx, all-dep*)> Combine(task*)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> task*
        
   task-is-combinator = ?Combine(_)
   perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat

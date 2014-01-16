@@ -246,8 +246,8 @@ rules // generic analysis of uses
 			end
 
 
-	nabl-use-subtask(|partition, ns, name, prop*, range):
-		uri -> <new-task(|partition)> ResolveDefs(uri*, ns, name, prop*)
+	nabl-use-subtask(|ctx, ns, name, prop*, range):
+		uri -> <nabl-create-resolvedefs(|ctx, ns, name, prop*)> uri*
 		with
 			// Strip barriers because URI's in the index also do not have barriers (matching would fail).
 			// Try because uri could be a Result(_) term.
@@ -256,13 +256,13 @@ rules // generic analysis of uses
       	case One(): ![uri']
       	case All(): ![uri'|<nabl-uri-parents(|ns)> uri]
     	end;
-    	mapconcat(nabl-use-subtask-scopes(|partition, ns)); 
-    	<new-task(|partition)> Combine(<id>) => uri*
+    	mapconcat(nabl-use-subtask-scopes(|ctx, ns)); 
+    	task-create-combine(|ctx) => uri*
     	// TODO: disambiguation
     	// TODO: order of imported URI's is unclear
     	
-  nabl-use-subtask-all(|partition, ns, name, prop*, range):
-    uri -> <new-task(|partition)> ResolveAllDefs(uri*, ns, name, prop*)
+  nabl-use-subtask-all(|ctx, ns, name, prop*, range):
+    uri -> <nabl-create-resolvealldefs(|ctx, ns, name, prop*)> uri*
     with
       // Strip barriers because URI's in the index also do not have barriers (matching would fail).
       // Try because uri could be a Result(_) term.
@@ -271,8 +271,8 @@ rules // generic analysis of uses
         case One(): ![uri']
         case All(): ![uri'|<nabl-uri-parents(|ns)> uri]
       end;
-      mapconcat(nabl-use-subtask-scopes(|partition, ns)); 
-      <new-task(|partition)> Combine(<id>) => uri*
+      mapconcat(nabl-use-subtask-scopes(|ctx, ns)); 
+      task-create-combine(|ctx) => uri*
       // TODO: disambiguation
       // TODO: order of imported URI's is unclear
     	
