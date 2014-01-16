@@ -68,7 +68,7 @@ rules
 strategies
   
   nabl-prop-calc(|partition, dep*):
-  	term -> <task-create-id(|partition, dep*)> Id(term)
+  	term -> <task-create-id(|partition, dep*)> term
   
   nabl-prop-list(|partition, dep*):
   	term -> <task-create-combine(|partition, dep*)> term

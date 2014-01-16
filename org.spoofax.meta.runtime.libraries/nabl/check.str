@@ -37,7 +37,7 @@ rules // Error checking tasks
 			end
 			
 	// TODO: check needs to be converted into a task.
-	nabl-hiding-task(|partition):
+	nabl-hiding-task(|ctx):
 		name -> name
 		where
 			uri := <nabl-uri> name;
@@ -49,9 +49,9 @@ rules // Error checking tasks
 			else
 				uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
 			end;
-			task* := <map(nabl-use-subtask(|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
-			task  := <new-task(|partition)> Choice(task*);
-			<task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
+			task* := <map(nabl-use-subtask(|ctx, ns, <nabl-fix-name> name, [], All()))> uri*;
+			task  := <task-create-choice(|ctx)> task*;
+			<task-create-error-on-success(|ctx, task, "Declaration hides previous definition")> name
 
 	nabl-constraint(|partition) = 
 		nabl-hiding-task(|partition)
