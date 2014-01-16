@@ -60,7 +60,6 @@ rules // Resolve definitions in a scope of a certain namespace and name (stops w
 
 rules // Resolve all definitions in a scope of a certain namespace and name
 	
-	// TODO: replace all ResolveAllDefs/4 with factory
   nabl-create-resolvealldefs(|ctx, ns, name, prop*):
   	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns, name, prop*)
   
@@ -70,7 +69,6 @@ rules // Resolve all definitions in a scope of a certain namespace and name
 
 rules // Resolve all definitions in a scope of a certain namespace
 
-	// TODO: replace all ResolveAllDefs/2 with factory
   nabl-create-resolvealldefs(|ctx, ns):
   	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns)
 
@@ -100,7 +98,6 @@ rules // Resolve all definitions in a scope of a certain namespace
 
 rules // Check if a definition is in given namespace
 
-	// TODO: replace all CheckDefs with factory
   nabl-create-checkdefs(|ctx, ns):
   	definition -> <new-task(|ctx)> CheckDefs(ns, definition)
 
@@ -130,9 +127,13 @@ rules // Filter definitions by properties
 		kind -> <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value))
 	
 	
-	// TODO: replace all PropConstraint with factory
   nabl-create-propconstraint(|ctx, kind, definition):
   	expected -> <new-task(|ctx)> PropConstraint(kind, expected, definition)
+  	
+	nabl-create-propconstraint(|ctx, dep*, kind, definition):
+  	expected -> <new-task(|ctx, all-dep*)> PropConstraint(kind, expected, definition)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> (kind, expected, definition)
 	
 
 	perform-task(|task-id):

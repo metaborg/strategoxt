@@ -282,17 +282,17 @@ rules // generic analysis of uses
 		  uri'            := <try(nabl-is-uri; MkSingleton)> uri
 		; wildcard-import := <prop-create-lookup(|partition, Import(ns)); task-create-insert(|partition); task-create-combine(|partition)> uri
 		  
-	nabl-use-check-tasks(|partition, ns):
+	nabl-use-check-tasks(|ctx, ns):
 		name -> task'
 		where
 			Use(task) := <nabl-collect-use> name;
-			task'     := <new-task(|partition)> CheckDefs(ns, task)
+			task'     := <nabl-create-checkdefs(|ctx, ns)> task
 			
-	nabl-use-check-tasks(|partition, ns):
+	nabl-use-check-tasks(|ctx, ns):
 		task -> task'
 		where
 			<not(nabl-collect-use)> task;
-			task' := <new-task(|partition)> CheckDefs(ns, task)
+			task' := <nabl-create-checkdefs(|ctx, ns)> task
 
 
 	// candidate in current scope
@@ -329,13 +329,13 @@ rules // generic analysis of uses
 		UseCandidate(_, _, Context(_, _, _, _), _, _) -> <nabl-use-candidate(|lang, partition, uri*, name)>
 
 			
-	nabl-use-propconstraint(|partition):
-		(task, [p@Prop(kind, expected, deps)|rest]) -> rec
+	nabl-use-propconstraint(|ctx):
+		(task, [p@Prop(kind, expected, dep*)|rest]) -> rec
 		where
-			pc  := <new-task(|partition, <dependent-tasks> (task, deps, p))> PropConstraint(kind, expected, task);
-			rec := <nabl-use-propconstraint(|partition)> (pc, rest)
+			pc  := <nabl-create-propconstraint(|ctx, dep*, kind, task)> expected;
+			rec := <nabl-use-propconstraint(|ctx)> (pc, rest)
 			
-	nabl-use-propconstraint(|partition):
+	nabl-use-propconstraint(|ctx):
 		(task, []) -> task
 
 rules // completion
