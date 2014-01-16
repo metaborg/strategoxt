@@ -100,7 +100,7 @@ rules
    ; fail
      
   create-property-task(|ctx, kind):
-    r@Result(_) -> <new-task(|ctx)> PropExtract(kind, r)
+    r@Result(_) -> <prop-create-extract(|ctx, kind)> r
     
   create-property-task(|ctx, kind) :
     term -> <nabl-prop-calc(|ctx, type*)> type*

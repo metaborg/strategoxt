@@ -238,7 +238,7 @@ rules // generic analysis of uses
 			  <try(nabl-unresolved-task(|partition, choice))> name';
 			  if <is-completion-name> name' then
 			  	completion-subtask* := <mapconcat(nabl-completion-candidate(|lang, partition, uri*))> candidate*;
-			  	completion-concat   := <new-task(|partition)> Combine(completion-subtask*);
+			  	completion-concat   := <task-create-combine(|partition)> completion-subtask*;
 			  	result              := <replace-annotations(?Use(_)|[u, Completion(completion-concat)])> name'
 			  else
 			  	result := <replace-annotation(?Use(_)|u)> name'
@@ -385,12 +385,12 @@ rules // generic analysis of imports
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
   ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
     
-  nabl-import-prop(|lang, partition, uri*, from, into):
-    Import(lang, Imported(ns)) -> <new-prop(|partition, into-uri, Import(ns), proplookup)>
+  nabl-import-prop(|lang, ctx, uri*, from, into):
+    Import(lang, Imported(ns)) -> <new-prop(|ctx, into-uri, Import(ns), proplookup)>
   where
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
   ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
-  ; proplookup := <new-task(|partition)> PropsLookup(Import(ns), from-uri)
+  ; proplookup := <prop-create-lookup(|ctx, Import(ns))> from-uri
 
 
   nabl-scope-uri(|lang, uri*, ns):

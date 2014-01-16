@@ -19,7 +19,6 @@ signature
     
 rules
 
-	// TODO: replace all PropsLookup references with a call to this rule.
 	prop-create-lookup(|ctx, kind):
 		contains-uri -> <new-task(|ctx)> PropsLookup(kind, contains-uri)
 
@@ -43,7 +42,6 @@ rules
 
 rules
 	
-	// TODO: replace all PropCheck references with a call to this rule.
 	prop-create-check(|ctx, kind, rel, actual):
 		expected -> <new-task(|ctx)> PropCheck(kind, rel, actual, expected)
 	
@@ -52,7 +50,6 @@ rules
 
 rules
 
-	// TODO: replace all PropExtract references with a call to this rule.
 	prop-create-extract(|ctx, kind):
 		term -> <new-task(|ctx)> PropExtract(kind, term)
 

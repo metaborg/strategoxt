@@ -36,7 +36,7 @@ rules
   nabl-lookup-lexical(|ctx, ns, name) =
     nabl-uri-parents
   ; map(nabl-create-resolvedefs(|ctx, ns, name, []))
-  ; <new-task(|ctx)> Choice(<id>)
+  ; task-create-choice(|ctx)
   
   nabl-lookup-lexical-parent(|ctx) =
     nabl-uri
@@ -62,7 +62,7 @@ rules
   
   nabl-lookup-local-import(|ctx, ns, name) =
     nabl-uri-parent
-  ; <new-task(|ctx)> PropsLookup(Import(ns), Def(<id>))
+  ; prop-create-lookup(|ctx, Import(ns))
   ; nabl-create-resolvedefs(|ctx, ns, name, [])
   
 rules
@@ -78,8 +78,8 @@ rules
   nabl-lookup-lexical-import(|ctx, ns, name) =
     nabl-uri-parents
   ; map(
-    	<new-task(|ctx)> PropsLookup(Import(ns), Def(<id>))
+    	prop-create-lookup(|ctx, Import(ns))
     ; nabl-create-resolvedefs(|ctx, ns, name, [])
     )
-  ; <new-task(|ctx)> Choice(<id>)
+  ; task-create-choice(|ctx)
     
