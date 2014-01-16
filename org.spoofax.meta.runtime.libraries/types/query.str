@@ -13,6 +13,4 @@ rules // during analysis
   
 rules // post analysis
   
-  get-type =
-		get-property(|Type())
- 
+  get-type = get-property(|Type())

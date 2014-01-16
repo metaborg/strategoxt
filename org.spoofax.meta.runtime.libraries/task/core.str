@@ -44,6 +44,9 @@ rules // Creation
   dependent-task =
     has-annos; get-annos; dependent-tasks
     
+	merge-dependencies(|dep*):
+  	term -> <union> (<dependent-tasks> dep*, <dependent-tasks> term)
+    
 	task-create-execute-ctx = !""
 	task-create-execute(create-task):
 		term -> result

@@ -30,6 +30,5 @@ rules
   type-match(|partition, expected)           = nabl-prop-match(|Type(), partition, Eq(), expected)
   type-match(|partition, relation, expected) = nabl-prop-match(|Type(), partition, relation, expected)
    
-  store-type(|partition, type) =
-    nabl-store-prop(|partition, Prop(Type(), type, []))
+  store-type(|partition, type) = nabl-store-prop(|partition, Prop(Type(), type, []))
     

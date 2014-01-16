@@ -30,10 +30,20 @@ signature
         
 rules // Collects all definitions in a term
   
+  // TODO: replace all CollectDefs with factory
+  nabl-create-collectdefs(|ctx):
+  	term -> <new-task(|ctx)> CollectDefs(term)
+
+  	
   perform-task(|nr): 
     CollectDefs(term) -> <(?Def(_) <+ try(nabl-get-name); get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))> term 
 
 rules // Resolve definitions in a scope of a certain namespace and name (stops when definitions are found in a scope)
+  
+	// TODO: replace all ResolveDefs with factory
+  nabl-create-resolvedefs(|ctx, ns, name, prop*):
+  	scope -> <new-task(|ctx)> ResolveDefs(scope, ns, name, prop*)
+
   
   perform-task(|task-id):
   	ResolveDefs(scope, ns, name, prop*) -> result
@@ -48,10 +58,20 @@ rules // Resolve definitions in a scope of a certain namespace and name (stops w
 
 rules // Resolve all definitions in a scope of a certain namespace and name
 	
+	// TODO: replace all ResolveAllDefs/4 with factory
+  nabl-create-resolvealldefs(|ctx, ns, name, prop*):
+  	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns, name, prop*)
+  
+  
   perform-task(|nr):
     ResolveAllDefs(scope, ns, name, prop*) -> <perform-task(|nr)> ResolveDefs(scope, ns, name, prop*)
 
 rules // Resolve all definitions in a scope of a certain namespace
+
+	// TODO: replace all ResolveAllDefs/2 with factory
+  nabl-create-resolvealldefs(|ctx, ns):
+  	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns)
+
 	
   perform-task(|nr):
   	ResolveAllDefs(scope, ns) -> def*
@@ -77,6 +97,11 @@ rules // Resolve all definitions in a scope of a certain namespace
 	  ; filtered  := <nabl-use-propconstraint(|partition)> (def-task, prop*)
 
 rules // Check if a definition is in given namespace
+
+	// TODO: replace all CheckDefs with factory
+  nabl-create-checkdefs(|ctx, ns):
+  	definition -> <new-task(|ctx)> CheckDefs(ns, definition)
+
 		
 	perform-task(|nr):
 		CheckDefs(ns, d) -> d
@@ -101,7 +126,12 @@ rules // Filter definitions by properties
 		
 	filter-defs-prop-eq(|expected, value):
 		kind -> <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value))
-		
+	
+	
+	// TODO: replace all PropConstraint with factory
+  nabl-create-propconstraint(|ctx, kind, definition):
+  	expected -> <new-task(|ctx)> PropConstraint(kind, expected, definition)
+	
 
 	perform-task(|task-id):
 		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
