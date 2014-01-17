@@ -107,7 +107,9 @@ rules
      get-property-task(|kind)
   <+ map(create-property-task(|ctx, kind))
   <+ create-property-task(|ctx, kind)
-  
+  <+ fatal-err(|$[Missing rule to create [kind] task for ])
+   ; fail
+     
   create-property-task(|ctx, kind):
     r@Result(_) -> <new-task(|ctx)> PropExtract(kind, r)
     
