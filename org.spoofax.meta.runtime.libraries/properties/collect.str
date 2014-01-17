@@ -107,6 +107,9 @@ rules
      get-property-task(|kind)
   <+ map(create-property-task(|ctx, kind))
   <+ create-property-task(|ctx, kind)
+  
+  must-get-or-create-property-task(|ctx, kind) =
+     get-or-create-property-task(|ctx, kind)
   <+ !(kind, <id>)
    ; fatal-err(|$[Missing rule to create task for ])
    ; fail
