@@ -90,7 +90,7 @@ rules // Analysis
 		with
 			origin := <task-message-origin> message;
 			term   := <task-message-term> message;
-			msg    := <task-message> message
+			msg    := <task-message; try(process-message)> message
       
 rules // Projections
 	
