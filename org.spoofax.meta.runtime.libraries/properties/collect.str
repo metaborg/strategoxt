@@ -7,6 +7,7 @@ imports
 	properties/interface
 	properties/query
   task/core
+  task/messages
   task/tasks
   nabl/collect
   nabl/uri
@@ -90,14 +91,13 @@ rules
   
   get-or-create-property-task(|ctx, kind) = 
      get-property-task(|kind)
-  <+ map(create-property-task(|ctx, kind))
+  // <+ map(create-property-task(|ctx, kind))
   <+ create-property-task(|ctx, kind)
-  
-  must-get-or-create-property-task(|ctx, kind) =
-     get-or-create-property-task(|ctx, kind)
-  <+ !(kind, <id>)
-   ; fatal-err(|$[Missing rule to create task for ])
-   ; fail
+  <+ where(
+  	   f := <new-task(|ctx)> Fail()
+     ; c := <get-constructor> kind
+     )
+   ; task-create-error-on-failure(|ctx, f, $[Could not create task for property [c].])
      
   create-property-task(|ctx, kind):
     r@Result(_) -> <prop-create-extract(|ctx, kind)> r
@@ -105,7 +105,7 @@ rules
   create-property-task(|ctx, kind) :
     term -> <nabl-prop-calc(|ctx, type*)> type*
     where 
-    	type* := <map(get-or-create-property-task(|ctx, kind))> term
+    	type* := <map(get-property-task(|kind) <+ create-property-task(|ctx, kind))> term
     
 rules
   
