@@ -98,7 +98,8 @@ rules
      ; c := <get-constructor> kind
      )
    ; task-create-error-on-failure(|ctx, f, $[Could not create task for property [c].])
-     
+   ; !f
+      
   create-property-task(|ctx, kind):
     r@Result(_) -> <prop-create-extract(|ctx, kind)> r
     
