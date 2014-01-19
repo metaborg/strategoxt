@@ -27,14 +27,13 @@ rules // Identity
   * Create an identity task
   * @type term -> Result(Int)
   */
-	task-create-id(|ctx):
-		term -> <new-task(|ctx)> Id(term)
+	task-create-id(|ctx) =
+	  ?Result(_) <+ <new-task(|ctx)> Id(<id>)
   
   task-create-id(|ctx, dep*):
   	term -> <new-task(|ctx, all-dep*)> Id(term)
   	with 
     	all-dep* := <merge-dependencies(|dep*)> term
-    
   
   perform-task(|nr) = ?Id(<MkSingleton>)
 
@@ -44,8 +43,8 @@ rules // Choice
   * Create a choice task
   * @type List(task) -> Result(Int)
   */
-  task-create-choice(|ctx):
-  	term* -> <new-task(|ctx)> Choice(term*)
+  task-create-choice(|ctx) =
+     ?[<?Result(_)>] <+ <new-task(|ctx)> Choice(<id>)
   
   /**
   * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
@@ -63,8 +62,8 @@ rules // Sequence
   * Create a sequence task
   * @type List(task) -> Result(Int)
   */
-  task-create-sequence(|ctx):
-  	task* -> <new-task(|ctx)> Sequence(task*)
+  task-create-sequence(|ctx) =
+    ?[<?Result(_)>] <+ <new-task(|ctx)> Sequence(<id>)
 
   /**
   * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
@@ -82,8 +81,8 @@ rules // Combine
   * Create a combine task
   * @type List(task) -> Result(Int)
   */
-	task-create-combine(|ctx):
-		task* -> <new-task(|ctx)> Combine(task*)
+	task-create-combine(|ctx) =
+	  ?[<?Result(_)>] <+ <new-task(|ctx)>Combine(<id>)
 		
 	task-create-combine(|ctx, dep*):
 		task* -> <new-task(|ctx, all-dep*)> Combine(task*)
@@ -127,9 +126,7 @@ rules // Negation
   * @type: Not(result) -> !Success(result)
   */
   perform-task(|nr):
-    Not(result) -> ()
-    where
-      <?[]> result
+    Not([]) -> ()
       
   task-is-combinator = ?Not(_)
   
@@ -143,11 +140,9 @@ rules // Length
 
 rules // Result insertion
 	
-	task-create-insert(|ctx):
-		term -> <new-task(|ctx)> Insert(term)
+	task-create-insert(|ctx) = <new-task(|ctx)> Insert(<id>)
 	
-	perform-task(|task-id):
-		Insert(term) -> <insert-results-or-delay> term
+	perform-task(|task-id) = ?Insert(<insert-results-or-delay>)
 		  
 	task-is-combinator = ?Insert(_)
   
@@ -157,8 +152,7 @@ rules // General purpose rewrite
   * Create a rewrite task
   * @type term -> Result(Int)
   */
-  task-create-rewrite(|ctx, key):
-  	term -> <new-task(|ctx)> Rewrite(key, term)
+  task-create-rewrite(|ctx, key) = <new-task(|ctx)> Rewrite(key, <id>)
       	
   perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
   
