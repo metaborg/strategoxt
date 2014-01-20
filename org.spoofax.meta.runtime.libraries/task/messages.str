@@ -18,6 +18,7 @@ signature
     Warning : Origin * Term * Msg -> Message
     Note    : Origin * Term * Msg -> Message
     
+    Always   : MessageTrigger // Always
     Failure  : MessageTrigger // No results
     Success  : MessageTrigger // At least one result
     Multiple : MessageTrigger // More than one result
@@ -71,6 +72,25 @@ rules // querying
 		Note(origin, _, _) -> origin
 	
 rules // task creation
+	
+	task-create-message(|partition, exclude*):
+    message -> <new-task(|partition)> Message((), exclude*, Always(), message)
+  
+  task-create-error(|partition, exclude*, message) = 
+  	task-error-message(|message); task-create-message(|partition, exclude*)
+	task-create-error(|partition, message) = 
+  	task-create-error(|partition, [], message)
+  		
+	task-create-warning(|partition, exclude*, message) =
+		task-warning-message(|message); task-create-message(|partition, exclude*)
+	task-create-warning(|partition, message) =
+		task-create-warning(|partition, [], message)
+		
+	task-create-note(|partition, exclude*, message) =
+		task-note-message(|message); task-create-message(|partition, exclude*)
+	task-create-note(|partition, message) =
+		task-create-note(|partition, [], message)	
+	
 	
 	task-create-message-on-failure(|partition, task, exclude*):
     message -> <new-task(|partition)> Message(task, exclude*, Failure(), message)
@@ -137,6 +157,7 @@ rules // task execution
     where
     	<map(not(?[]))> exclude*;
       switch !trigger
+      	case ?Always()   : task-add-message(|n, message)
         case ?Failure()  : not(<Hd> task); task-add-message(|n, message)
         case ?Success()  : <Hd> task; task-add-message(|n, message)
         case ?Multiple() : <Tl; Hd> task; task-add-message(|n, message)
