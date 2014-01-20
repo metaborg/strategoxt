@@ -91,14 +91,9 @@ rules
   
   get-or-create-property-task(|ctx, kind) = 
      get-property-task(|kind)
-  // <+ map(create-property-task(|ctx, kind))
   <+ create-property-task(|ctx, kind)
-  <+ where(
-  	   f := <new-task(|ctx)> Fail()
-     ; c := <get-constructor> kind
-     )
-   ; task-create-error-on-failure(|ctx, f, $[Could not create task for property [c].])
-   ; !f
+  <+ warn-msg(|$[Could not create task for property [<get-constructor> kind].])
+   ; <new-task(|ctx)> Fail()
       
   create-property-task(|ctx, kind):
     r@Result(_) -> <prop-create-extract(|ctx, kind)> r
