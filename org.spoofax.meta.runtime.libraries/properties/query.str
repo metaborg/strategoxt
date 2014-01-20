@@ -20,7 +20,7 @@ rules
   
   get-property(|kind) =
     (get-property-task(|kind) <+ try(nabl-get-name); get-index-property(|kind))
-  ; try(task-result-combinations-single; Hd) // Try because results may already be inserted? 
+  ; (task-result-combinations-single; Hd) // Try because results may already be inserted? 
 	
   get-index-property(|kind) =
     nabl-uris // TODO: how to handle multiple values?
