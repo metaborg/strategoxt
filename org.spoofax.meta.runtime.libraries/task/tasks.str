@@ -11,6 +11,7 @@ signature
 	constructors
 		
     Id       : Term              -> Instruction
+    Fail     :                      Instruction
     Choice   : List(List(Term))  -> Instruction
     Sequence : List(Term)        -> Instruction
     Combine  : List(Term)        -> Instruction
@@ -36,6 +37,14 @@ rules // Identity
     	all-dep* := <merge-dependencies(|dep*)> term
   
   perform-task(|nr) = ?Id(<MkSingleton>)
+  
+rules // Fail
+	
+	task-create-fail(|ctx):
+		_ -> <new-task(|ctx)> Fail()
+		
+	perform-task(|nr):
+		Fail() -> <fail>
 
 rules // Choice
 	

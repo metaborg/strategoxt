@@ -93,7 +93,7 @@ rules
      get-property-task(|kind)
   <+ create-property-task(|ctx, kind)
   <+ warn-msg(|$[Could not create task for property [<get-constructor> kind].])
-   ; <new-task(|ctx)> Fail()
+   ; task-create-fail(|ctx)
       
   create-property-task(|ctx, kind):
     r@Result(_) -> <prop-create-extract(|ctx, kind)> r
