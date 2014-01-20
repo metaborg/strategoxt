@@ -16,11 +16,11 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 import fj.P2;
 
-public class task_api_result_combinations_2_1 extends AbstractPrimitive {
-	public static task_api_result_combinations_2_1 instance = new task_api_result_combinations_2_1();
+public class task_api_result_combinations_2_2 extends AbstractPrimitive {
+	public static task_api_result_combinations_2_2 instance = new task_api_result_combinations_2_2();
 
-	public task_api_result_combinations_2_1() {
-		super("task_api_result_combinations", 2, 1);
+	public task_api_result_combinations_2_2() {
+		super("task_api_result_combinations", 2, 2);
 	}
 
 	@Override
