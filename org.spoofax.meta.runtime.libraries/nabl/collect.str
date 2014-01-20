@@ -66,6 +66,10 @@ signature
   
   	CollectPartition : Partition
 	
+	constructors // annotation
+	  
+	  ExternalDef  : URI -> Anno
+    
 strategies // generic traversal
 	
 	/**
@@ -198,8 +202,11 @@ rules // generic analysis of defs
 		with
 			<try(nabl-duplicate-task(|partition, unique))> name''
 	
+	nabl-external-def(|uri*) =
+	  add-annotations(|<map(!ExternalDef(<id>))> uri*)
+	  
 	nabl-def-alias(|partition, def-uri):
-	  term{anno*} -> <id>
+	  term{anno*} -> alias-uri
 	  where
 	    <fetch-elem(?Scope(scope*))> anno*
 	  ; ns        := <nabl-uri-namespace> def-uri
