@@ -10,10 +10,10 @@ rules // TODO: does not belong to editor, move to a new 'utils' directory
 		collect-one(s)
 
   add-annotation(|a):
-    t{a*} -> t{a, a*}
-    
+    t{a*} -> t{a, a*} where <not(is-list)> a
+  
   add-annotations(|a'*):
-    t{a*} -> t{a'*, a*}
+    t{a*} -> t{a''*} where <is-list> a'*; a''* := [a'*, a*] 
 
   remove-annotations(s):
     t{a*} -> t{a'*}
