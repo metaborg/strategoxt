@@ -71,3 +71,11 @@ rules // Debugging
 	debug7 = debug(!"7 ")
 	debug8 = debug(!"8 ")
 	debug9 = debug(!"9 ")
+
+	debuga = debug(!"a ")
+	debugb = debug(!"b ")
+	debugc = debug(!"c ")
+	
+	debugx = debug(!"x ")
+	debugy = debug(!"y ")
+	debugz = debug(!"z ")
