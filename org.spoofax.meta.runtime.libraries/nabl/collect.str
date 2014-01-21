@@ -202,17 +202,6 @@ rules // generic analysis of defs
 		with
 			<try(nabl-duplicate-task(|partition, unique))> name''
 	
-	nabl-external-def(|uri*) =
-	  add-annotations(|<map(!ExternalDef(<id>))> uri*)
-	
-	/** @internal */
-  nabl-uri:
-    ExternalDef(uri) -> uri
-
-  /** @internal */
-  nabl-uris:
-    ExternalDef(uri) -> [uri]
-
 	nabl-def-alias(|partition, def-uri):
 	  term{anno*} -> alias-uri
 	  where
