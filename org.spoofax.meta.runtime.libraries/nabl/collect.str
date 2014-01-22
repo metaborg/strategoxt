@@ -349,14 +349,14 @@ rules // completion
 		UseCandidate(ns, prop*, Current(), wci, _) -> subtask*
 		where
 			uri       := <lookup-uri(|lang, ns)> uri*;
-			subtask*  := <nabl-resolve-all-defs-subtasks(|partition, ns, prop*, All())> uri
+			subtask*  := <nabl-resolve-all-tasks(|partition, ns, prop*)> [uri|<nabl-uri-parents> uri]
 
 	// candidate in another scope (result of resolution)	  
 	nabl-completion-candidate(|lang, partition, uri*):
 		UseCandidate(ns, prop*, c@Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, _) -> subtask*
 		where
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), []);
-	    subtask*   := <nabl-resolve-all-defs-subtasks(|partition, ns, prop*, One())> ctx-result
+	    subtask*   := <nabl-resolve-all-tasks(|partition, ns, prop*)> [ctx-result]
     
 rules // generic analysis of imports
   
