@@ -281,7 +281,7 @@ rules // generic analysis of uses
       // TODO: order of imported URI's is unclear
   	  
 	nabl-use-check-tasks(|ctx, ns) =
-	   try(nabl-collect-use; ?Use(<id>)
+	   try(nabl-collect-use; ?Use(<id>))
 	 ; nabl-create-checkdefs(|ctx, ns)
 
 	// candidate in current scope
@@ -291,20 +291,15 @@ rules // generic analysis of uses
 			uri       := <lookup-uri(|lang, ns)> uri*;
       subtask   := <nabl-use-subtask(|partition, ns, name, prop*, All())> uri // TODO: only disambiguate if required.
       
-	// candidate in another scope (result of another resolution, which will be created here)	  
-	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*) -> subtask
-		where
-			<not(?Result(_))> ctx-name;
-			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*);
-			subtask    := <nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result // TODO: only disambiguate if required.
-	
-	// candidate in another scope (result of existing resolution)		
-	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Context(_, ctx-result@Result(_), _, _), _, dep*) -> subtask
-		where
-			subtask := <nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One())> ctx-result // TODO: only disambiguate if required.
-
+	// candidate in another scope (result of another resolution)	  
+	nabl-use-candidate(|lang, partition, uri*, name) =
+		?UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*)
+	; if Result(_) := ctx-name then // result exists
+	    !ctx-name
+	  else // result will be created here
+	    <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*)
+	  end
+	; nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One()) // TODO: only disambiguate if required.
 			
 	// filtering candidate in current scope
 	nabl-filter-use-candidate(|lang, partition, uri*, use-task):
