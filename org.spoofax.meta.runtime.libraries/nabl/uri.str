@@ -166,9 +166,14 @@ rules // query scope URIs
   nabl-uri-local-scopes =
     map(nabl-uri-parent)
   ; make-set
-    
-  // maps a list of definition URIs to a set of lexical scope (excluding local scope) URIs
+  
+  // maps a list of definition URIs to a set of lexical scope URIs (including local scope)
   nabl-uri-lexical-scopes =
+    map(nabl-uri-parents)
+  ; unions
+    
+  // maps a list of definition URIs to a set of lexical scope URIs (excluding local scope)
+  nabl-uri-lexical-parent-scopes =
     map(nabl-uri-parent; nabl-uri-parents)
   ; unions
   
