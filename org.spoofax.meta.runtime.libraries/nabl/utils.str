@@ -26,7 +26,7 @@ rules
   
   record-time(|name) = id
   	
- 	try-make-list = is-list <+ ?Dependency(_) <+ ![<id>]
+ 	try-make-list = is-list <+ ![<id>]
 		
 	try-remove-list = is-list < Hd + id
 	

@@ -149,9 +149,11 @@ rules // Length
 
 rules // Result insertion
 	
-	task-create-insert(|ctx) = <new-task(|ctx)> Insert(<id>)
+	task-create-insert(|ctx):
+		term -> <new-task(|ctx)> Insert(term)
 	
-	perform-task(|task-id) = ?Insert(<insert-results-or-delay>)
+	perform-task(|task-id):
+		Insert(term) -> <insert-results-or-delay> term
 		  
 	task-is-combinator = ?Insert(_)
   
