@@ -155,7 +155,8 @@ rules // task execution
   perform-task(|n):
     Message(task, exclude*, trigger, message) -> []
     where
-    	<map(not(?[]))> exclude*;
+    	 // Use task-result-combinations to recursively insert into exclude tasks, to find out if they fail.
+    	<map(not(?[]); task-result-combinations)> exclude*;
       switch !trigger
       	case ?Always()   : task-add-message(|n, message)
         case ?Failure()  : not(<Hd> task); task-add-message(|n, message)

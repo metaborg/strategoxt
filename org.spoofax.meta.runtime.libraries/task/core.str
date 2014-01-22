@@ -99,28 +99,19 @@ rules // Results
 		, \Result(n) -> <try(<hashtable-get(|n)> results-hashmap)>\
 	  )
 
-	insert-results(no-result) =
+	insert-results(no-result, fail-result) =
 		replace-results(
-			map(insert-results(no-result)), 
-			\Result(n) -> <task-api-get-results(|n) <+ (task-api-has-failed(|n); ![]) <+ no-result>\
+			map(insert-results(no-result, fail-result)), 
+			\Result(n) -> <task-api-get-results(|n) <+ (task-api-has-failed(|n); fail-result) <+ no-result>\
 		)
-
-	// Inserts task results into given term. 
-	// Creates a dependency term when dereferencing a task that has not been evaluated yet. 
-	insert-results-or-create-dependency =
-		insert-results(\Result(n) -> Dependency([n])\)
 	
 	// Inserts task results into given term.
-	// With fails when dereferencing a task that has not been evaluated yet.
-	insert-results-with-fail =
-		insert-results(\Result(n) -> <with(fail|"Cannot insert result ")>\)
-	
-	// Inserts task results into given term.
+	// Fails when dereferencing a task that has failed.
 	// Delays the current evaluating task when dereferencing a task that has not been evaluated yet.
 	insert-results-or-delay:
 		term -> inserted
 		where
-			inserted := <insert-results-or-create-dependency> term;
+			inserted := <insert-results(\Result(n) -> Dependency([n])\, ![])> term;
 			if dependencies := <task-collect-dependencies> inserted then
 				dep* := <task-get-dependencies> dependencies;
 				<task-delay> dep*
