@@ -285,22 +285,26 @@ rules // generic analysis of uses
 	 ; nabl-create-checkdefs(|ctx, ns)
 
 	// candidate in current scope
-	nabl-use-candidate(|lang, partition, uri*, name):
-		UseCandidate(ns, prop*, Current(), _, _) -> subtask
-		where
-			uri       := <lookup-uri(|lang, ns)> uri*;
-      subtask   := <nabl-use-subtask(|partition, ns, name, prop*, All())> uri // TODO: only disambiguate if required.
+	nabl-use-candidate(|lang, ctx, uri*, name) =
+	  ?UseCandidate(ns, prop*, Current(), _, _)
+	;	<lookup-uri(|lang, ns)> uri*
+  ; ![<try(nabl-uri-strip-barriers)>|<nabl-uri-parents(|ns)>]
+  ; nabl-insert-import-tasks(|ctx, ns)
+  ; nabl-resolve-task(|ctx, ns, <nabl-fix-name> name, prop*)
       
 	// candidate in another scope (result of another resolution)	  
-	nabl-use-candidate(|lang, partition, uri*, name) =
+	nabl-use-candidate(|lang, ctx, uri*, name) =
 		?UseCandidate(ns, prop*, Context(ctx-ns, ctx-name, ctx-prop*, ctx-context), _, dep*)
 	; if Result(_) := ctx-name then // result exists
 	    !ctx-name
 	  else // result will be created here
-	    <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*)
+	    <nabl-use-candidate(|lang, ctx, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*)
 	  end
-	; nabl-use-subtask(|partition, ns, <nabl-fix-name> name, prop*, One()) // TODO: only disambiguate if required.
-			
+	; nabl-insert-import-tasks(|ctx, ns)
+  ; nabl-resolve-task(|ctx, ns, <nabl-fix-name> name, prop*)
+    // TODO: disambiguation
+    // TODO: order of imported URI's is unclear
+  		
 	// filtering candidate in current scope
 	nabl-filter-use-candidate(|lang, partition, uri*, use-task):
 		UseCandidate(ns, prop*, Current(), _, _) -> check-task
