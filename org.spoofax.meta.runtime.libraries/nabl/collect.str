@@ -280,18 +280,9 @@ rules // generic analysis of uses
       // TODO: disambiguation
       // TODO: order of imported URI's is unclear
   	  
-	nabl-use-check-tasks(|ctx, ns):
-		name -> task'
-		where
-			Use(task) := <nabl-collect-use> name;
-			task'     := <nabl-create-checkdefs(|ctx, ns)> task
-			
-	nabl-use-check-tasks(|ctx, ns):
-		task -> task'
-		where
-			<not(nabl-collect-use)> task;
-			task' := <nabl-create-checkdefs(|ctx, ns)> task
-
+	nabl-use-check-tasks(|ctx, ns) =
+	   try(nabl-collect-use; ?Use(<id>)
+	 ; nabl-create-checkdefs(|ctx, ns)
 
 	// candidate in current scope
 	nabl-use-candidate(|lang, partition, uri*, name):
