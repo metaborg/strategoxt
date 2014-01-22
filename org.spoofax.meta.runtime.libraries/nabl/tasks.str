@@ -16,6 +16,7 @@ imports
   properties/entries
   properties/eq
   properties/query
+  properties/tasks
   
 signature
   
@@ -71,7 +72,6 @@ rules // Resolve all definitions in a scope of a certain namespace
 
   nabl-create-resolvealldefs(|ctx, ns):
   	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns)
-
 	
   perform-task(|nr):
   	ResolveAllDefs(scope, ns) -> def*
@@ -81,21 +81,37 @@ rules // Resolve all definitions in a scope of a certain namespace
   		def* := <nabl-lookup-all(|ns)> uri;
   		not(?[])
 
-	nabl-resolve-all-defs-subtasks(|partition, ns, prop*, range):
-		uri -> [task|subtasks]
-		with
-			task := <nabl-resolve-all-defs-subtasks-one(|partition, ns, prop*, range)> uri;
-      switch !range
-      	case One(): ![]
-      	case All(): <nabl-uri-parent < nabl-resolve-all-defs-subtasks(|partition, ns, prop*, range) + ![]> uri
-    	end => subtasks
-		
-	nabl-resolve-all-defs-subtasks-one(|partition, ns, prop*, range):
-		uri -> filtered
-		with
-			def-task := <new-task(|partition)> ResolveAllDefs(uri, ns)
-	  ; filtered  := <nabl-use-propconstraint(|partition)> (def-task, prop*)
-
+  // inserts wildcard import resolution tasks into a list of scope URIs
+  // each scope URI is wrapped in a list, 
+  // followed by the result of a wildcard import resolution task for this URI
+  nabl-insert-import-tasks(|ctx, ns) =
+    map(try(nabl-uri-strip-barriers))
+  ; mapconcat(
+      ![ <try(nabl-is-uri; MkSingleton)>
+       , <prop-create-lookup(|ctx, Import(ns)); task-create-insert(|ctx)>
+       ]
+    )
+    // TODO: order of imported URI's is unclear
+ 
+  // creates a short-circuit resolution task for a list of scope URIs
+  nabl-resolve-task(|ctx, ns, name, prop*) =
+    task-create-combine(|ctx) 
+  ; nabl-create-resolvedefs(|ctx, ns, name, prop*)
+    // TODO: disambiguation
+ 
+  // creates a full resolution task for a list of scope URIs
+  nabl-resolve-all-task(|ctx, ns, name, prop*) =
+    task-create-combine(|ctx) 
+  ; nabl-create-resolvealldefs(|ctx, ns, name, prop*)
+    // TODO: disambiguation
+  
+  // TODO: implement in same style as named version
+	nabl-resolve-all-tasks(|partition, ns, prop*) =
+		map(
+		  <new-task(|partition)> ResolveAllDefs(<id>, ns)
+		; <nabl-use-propconstraint(|partition)> (<id>, prop*)
+		)
+			
 rules // Check if a definition is in given namespace
 
   nabl-create-checkdefs(|ctx, ns):
