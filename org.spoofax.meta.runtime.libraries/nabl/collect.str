@@ -260,7 +260,7 @@ rules // generic analysis of uses
       	case One(): ![uri']
       	case All(): ![uri'|<nabl-uri-parents(|ns)> uri]
     	end;
-    	mapconcat(nabl-use-subtask-scopes(|ctx, ns)); 
+    	nabl-insert-import-tasks(|ctx, ns);
     	task-create-combine(|ctx) => uri*
     	// TODO: disambiguation
     	// TODO: order of imported URI's is unclear
@@ -275,17 +275,11 @@ rules // generic analysis of uses
         case One(): ![uri']
         case All(): ![uri'|<nabl-uri-parents(|ns)> uri]
       end;
-      mapconcat(nabl-use-subtask-scopes(|ctx, ns)); 
+      nabl-insert-import-tasks(|ctx, ns);
       task-create-combine(|ctx) => uri*
       // TODO: disambiguation
       // TODO: order of imported URI's is unclear
-    	
-	nabl-use-subtask-scopes(|partition, ns):
-		uri -> [uri', wildcard-import]
-		with
-		  uri'            := <try(nabl-is-uri; MkSingleton)> uri
-		; wildcard-import := <prop-create-lookup(|partition, Import(ns)); task-create-insert(|partition); task-create-combine(|partition)> uri
-		  
+  	  
 	nabl-use-check-tasks(|ctx, ns):
 		name -> task'
 		where
