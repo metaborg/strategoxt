@@ -47,9 +47,6 @@ signature
 		Surrounding :                                  	 							  RefScope
 		Context     : String * Namespace * List(Property) * RefScope -> RefScope
 		RefScope    : Term                                           -> RefScope
-		
-    All : Range
-    One : Range
     
     Completion : Result -> Completion
 	
@@ -215,15 +212,10 @@ rules // generic analysis of defs
       
 rules // generic analysis of uses
 	
-	// single candidate
-	nabl-use(|lang, partition, unique*, uri*, candidate) =
-		where (<not(is-list)> candidate);
-		nabl-use(|lang, partition, unique*, uri*, [candidate])
-	
-	// list of candidates
-	nabl-use(|lang, partition, unique*, uri*, candidate*):
+	nabl-use(|lang, partition, unique*, uri*, candidate):
 		name{anno*} -> result
 		with
+		  candidate* := <is-list <+ MkSingleton> candidate;
 			// generate a name if needed
 			name' := <try(nabl-namegen(|lang, partition, unique*, uri*, anno*))> name
 		where
