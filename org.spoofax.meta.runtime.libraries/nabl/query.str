@@ -6,6 +6,7 @@ imports
   nabl/entries
   index/query
   task/core
+  task/insert
   
 rules // Specific queries
 

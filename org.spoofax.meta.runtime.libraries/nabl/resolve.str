@@ -5,6 +5,7 @@ imports
   nabl/tasks
 	nabl/entries
 	task/core
+	task/insert
   task/utils
   
 rules // Reference resolution
