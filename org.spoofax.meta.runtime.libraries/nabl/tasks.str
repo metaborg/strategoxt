@@ -40,7 +40,7 @@ rules // Collects all definitions in a term
     	all-dep* := <merge-dependencies(|dep*)> term
   	
   perform-task(|nr): 
-    CollectDefs(term) -> <(?Def(_) <+ try(nabl-get-name); get-annos; mapconcat(?Def(_); MkSingleton + ?Use(<is-list <+ MkSingleton>)))> term 
+    CollectDefs(term) -> <(?Def(_) <+ try(nabl-get-name); get-annos; fetch(?Def(_) + ?Use(<id>)))> term 
 
 rules // Resolve definitions in a scope of a certain namespace and name (stops when definitions are found in a scope)
   
