@@ -164,31 +164,39 @@ rules // query scope URIs
   
   //  maps a list of definition URIs to a list of local scope URIs
   nabl-uri-local-scopes =
-    map(nabl-uri-parent)
+    ![<nabl-uri-parent>]
   
   // maps a list of definition URIs to a list of lexical scope URIs (including local scope)
   nabl-uri-lexical-scopes =
-    mapconcat(nabl-uri-parents)
+    nabl-uri-parents
     
   // maps a list of definition URIs to a list of lexical scope URIs (excluding local scope)
   nabl-uri-lexical-parent-scopes =
-    mapconcat(nabl-uri-parent; nabl-uri-parents)
+    nabl-uri-parent; nabl-uri-parents
   
   // maps a list of external definition URIs to a list of local scope URIs
   nabl-uri-external-scopes =
-    mapconcat(nabl-get-all-inverse-aliasses)
+    nabl-get-all-inverse-aliasses
   ; map(nabl-uri-parent)
   
   // maps a list of external definition URIs to a list of lexical scope URIs (including local scope)
   nabl-uri-external-lexical-scopes =
-    mapconcat(nabl-get-all-inverse-aliasses)
-  ; mapconcat(nabl-uri-parents)
+    nabl-get-all-inverse-aliasses
+  ; mapconcat(nabl-uri-lexical-scopes)
+  
+  // maps a list of external definition URIs to a list of lexical scope URIs (excluding local scope)
+  nabl-uri-external-lexical-parent-scopes =
+    nabl-get-all-inverse-aliasses
+  ; mapconcat(nabl-uri-lexical-parent-scopes)
   
   nabl-uri-all-local-scopes =
     <conc> (<nabl-uri-local-scopes>, <nabl-uri-external-scopes>)
     
   nabl-uri-all-lexical-scopes =
     <conc> (<nabl-uri-lexical-scopes>, <nabl-uri-external-lexical-scopes>)
+  
+  nabl-uri-all-lexical-parent-scopes =
+    <conc> (<nabl-uri-lexical-parent-scopes>, <nabl-uri-external-lexical-parent-scopes>)
     
 rules // Conditions
   
