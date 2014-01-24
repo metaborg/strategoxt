@@ -44,12 +44,7 @@ rules // Error checking tasks
 			ns	:= <nabl-uri-namespace> uri;
 			not(<nabl-check-disable-hiding(|uri, ns)> name)
 		where
-			if inverse-alias* := <nabl-get-all-inverse-aliasses> uri then
-				uri* := <map(nabl-uri-parent; nabl-uri-parent)> inverse-alias*
-			else
-				uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
-			end;
-			<mapconcat(![<try(nabl-uri-strip-barriers)>|<nabl-uri-parents(|ns)>])> uri*;
+			nabl-uri-all-lexical-parent-scopes;
 			nabl-insert-import-tasks(|ctx, ns);
       nabl-resolve-task(|ctx, ns, <nabl-fix-name> name, []) => task;
       <task-create-error-on-success(|ctx, task, "Declaration hides previous definition")> name
