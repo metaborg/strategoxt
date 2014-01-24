@@ -17,6 +17,7 @@ signature
     Choice   : List(List(Term))  -> Instruction
     Sequence : List(Term)        -> Instruction
     Combine  : List(Term)        -> Instruction
+    Diff     : Term * Term       -> Instruction
     Collect  : List(Term)        -> Instruction
     Not      : Result            -> Instruction
     Index    : Int * List(Term)  -> Instruction
@@ -103,6 +104,18 @@ rules // Combine
   task-is-combinator = ?Combine(_)
   perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
 
+rules // Diff
+  
+  task-create-diff(|ctx):
+    (l1, l2) -> <new-task(|ctx)> Diff(l1, l2)
+  
+  task-create-diff(|ctx, l2):
+    l1 -> <new-task(|ctx)> Diff(l1, l2)
+    
+  task-is-combinator = ?Diff(_, _)
+  perform-task(|nr):
+    Diff(l1, l2) -> <diff> (l1, <is-list <+ MkSingleton> l2)
+    
 rules // Collect
        
   /**
