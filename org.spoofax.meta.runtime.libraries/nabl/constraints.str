@@ -12,43 +12,48 @@ imports
 rules
   
   nabl-lookup-local(|ctx) =
-    nabl-uri
-  ; nabl-lookup-local(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
-    
-  nabl-lookup-local(|ctx, ns) =
-    nabl-uri
-  ; nabl-lookup-local(|ctx, ns, <nabl-uri-name>)
+    nabl-uri => uri
+  ; nabl-uri-all-local-scopes
+  ; nabl-resolve-task(|ctx, <nabl-uri-namespace> uri, <nabl-uri-name> uri, [])
   
-  nabl-lookup-local(|ctx, ns, name) =
-    nabl-uri-parent
-  ; nabl-create-resolvedefs(|ctx, ns, name, [])
+  nabl-lookup-local(|ctx, ns) =
+    nabl-uri => uri
+  ; nabl-uri-all-local-scopes
+  ; nabl-resolve-task(|ctx, ns, <nabl-uri-name> uri, [])
+    
+ nabl-lookup-local(|ctx, ns, name) =
+    nabl-uri-all-local-scopes
+  ; nabl-resolve-task(|ctx, ns, name, [])
 
 rules
   
   nabl-lookup-lexical(|ctx) =
-    nabl-uri
-  ; nabl-lookup-lexical(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
-    
-  nabl-lookup-lexical(|ctx, ns) =
-    nabl-uri
-  ; nabl-lookup-lexical(|ctx, ns, <nabl-uri-name>)
+    nabl-uri => uri
+  ; nabl-uri-all-lexical-scopes
+  ; nabl-resolve-task(|ctx, <nabl-uri-namespace> uri, <nabl-uri-name> uri, [])
   
-  nabl-lookup-lexical(|ctx, ns, name) =
-    nabl-uri-parents
-  ; map(nabl-create-resolvedefs(|ctx, ns, name, []))
-  ; task-create-choice(|ctx)
+  nabl-lookup-lexical(|ctx, ns) =
+    nabl-uri => uri
+  ; nabl-uri-all-lexical-scopes
+  ; nabl-resolve-task(|ctx, ns, <nabl-uri-name> uri, [])
+    
+ nabl-lookup-lexical(|ctx, ns, name) =
+    nabl-uri-all-lexical-scopes
+  ; nabl-resolve-task(|ctx, ns, name, [])
   
   nabl-lookup-lexical-parent(|ctx) =
-    nabl-uri
-  ; nabl-lookup-lexical-parent(|ctx, <nabl-uri-namespace>, <nabl-uri-name>)
-    
-  nabl-lookup-lexical-parent(|ctx, ns) =
-    nabl-uri
-  ; nabl-lookup-lexical-parent(|ctx, ns, <nabl-uri-name>)
+    nabl-uri => uri
+  ; nabl-uri-all-lexical-parent-scopes
+  ; nabl-resolve-task(|ctx, <nabl-uri-namespace> uri, <nabl-uri-name> uri, [])
   
-  nabl-lookup-lexical-parent(|ctx, ns, name) =
-    nabl-uri-parent
-  ; nabl-lookup-lexical(|ctx, ns, name)
+  nabl-lookup-lexical-parent(|ctx, ns) =
+    nabl-uri => uri
+  ; nabl-uri-all-lexical-parent-scopes
+  ; nabl-resolve-task(|ctx, ns, <nabl-uri-name> uri, [])
+    
+ nabl-lookup-lexical-parent(|ctx, ns, name) =
+    nabl-uri-all-lexical-parent-scopes
+  ; nabl-resolve-task(|ctx, ns, name, [])
     
 rules
   
