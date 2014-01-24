@@ -17,6 +17,7 @@ signature
     Choice   : List(List(Term))  -> Instruction
     Sequence : List(Term)        -> Instruction
     Combine  : List(Term)        -> Instruction
+    Singleton: Term              -> Instruction
     Diff     : Term * Term       -> Instruction
     Collect  : List(Term)        -> Instruction
     Not      : Result            -> Instruction
@@ -94,7 +95,7 @@ rules // Combine
   * @type List(task) -> Result(Int)
   */
 	task-create-combine(|ctx) =
-	  ?[<?Result(_)>] <+ <new-task(|ctx)>Combine(<id>)
+	  ?[<?Result(_)>] <+ <new-task(|ctx)> Combine(<id>)
 		
 	task-create-combine(|ctx, dep*):
 		task* -> <new-task(|ctx, all-dep*)> Combine(task*)
@@ -103,6 +104,18 @@ rules // Combine
        
   task-is-combinator = ?Combine(_)
   perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
+
+rules // Singleton
+  
+  task-is-combinator = ?Singleton(_) 
+  
+  task-create-singleton(|ctx) =
+    <new-task(|ctx)> Singleton(<id>)
+  
+  // if a bunch of elems should be removed
+  perform-task(|n):
+    Singleton(r@[_]) -> r
+    
 
 rules // Diff
   
