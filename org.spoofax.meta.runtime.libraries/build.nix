@@ -12,12 +12,9 @@ let
       src = runtime-libraries;
       buildInputs = with pkgs; [ ecj openjdk ];
 
-      postUnpack = ''
-        cp ${strategoxt}/strategoxt/ant-contrib/strategoxt-antlib.xml runtime-libraries/org.spoofax.meta.runtime.libraries/
-      '';
-
       preConfigure = ''
         cd org.spoofax.meta.runtime.libraries
+        cp ${strategoxt}/strategoxt/ant-contrib/strategoxt-antlib.xml .
       '';
     
       antTargets = ["all" "install"];
