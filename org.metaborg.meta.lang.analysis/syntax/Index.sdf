@@ -9,6 +9,7 @@ exports
     "prop" Term "--" Term ">>" Term -> Entry   {cons("Prop")}
     "alias" Term "-" ">" Term       -> Entry   {cons("Alias")}
     "alias" Term "<" "-" Term       -> Entry   {cons("IAlias")}
+    "rel" Term "<" Term ":" Term    -> Entry   {cons("Rel")}
     Entry                           -> Term    
 
   context-free syntax

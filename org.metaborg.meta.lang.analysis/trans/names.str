@@ -18,10 +18,7 @@ rules
 
   nabl-scoping-site =
     ?Sections(_)
-    ; origin-track-forced(
-        nabl-scope(|[NablNsTask()])
-      |
-      )
+    ; nabl-scope(|[NablNsTask()])
 
   nabl-get-scope =
     ?Sections(_) ; ![NablNsTask()]
@@ -55,11 +52,11 @@ rules
         , id
         , id
         )
-        ; match(child-uris__|c-uri1__)
-        ; match(sibl-uris__|s-uri1__)
-        ; match(implicits__|[])
       |
       )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
 
   nabl-get-name :
     TaskRef(t) -> t

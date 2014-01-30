@@ -5,6 +5,7 @@ imports
 	relations/entries
   relations/query
   relations/interface
+  task/create
 	
 signature
   
@@ -13,6 +14,9 @@ signature
     RelationLookup : Relation * Term -> Instruction
     
 rules
+
+	relation-create-lookup(|ctx, rel):
+		t -> <new-task(|ctx)> RelationLookup(rel, t)
 
   perform-task(|n):
     RelationLookup(rel, t) -> [stat-val*, non-trans-val*, index-val*]

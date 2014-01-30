@@ -135,7 +135,10 @@ rules // Index entries
 	to-entry:
 		Appl("InverseAlias", [uri1, uri2]) -> IAlias(uri1, uri2)
 		
-	all-to-entry = topdown-annos(try(to-entry))
+	to-entry:
+		Appl("RelTuple", [l, rel, r]) -> Rel(l, rel, r)
+		
+	all-to-entry = topdown-annos(with(to-entry|"Could not convert index entry"))
 	
 rules // URIs
 	
