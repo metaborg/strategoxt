@@ -90,7 +90,7 @@ rules // Resolve all definitions in a scope of a certain namespace
     map(try(nabl-uri-strip-barriers))
   ; mapconcat(
       ![ <try(nabl-is-uri; MkSingleton)>
-       , <prop-create-lookup(|ctx, Import(ns)); task-create-insert(|ctx)>
+       , <prop-create-lookup(|ctx, Import(ns)); task-create-insert(|ctx); task-create-combine(|ctx)>
        ]
     )
     // TODO: order of imported URI's is unclear

@@ -261,6 +261,7 @@ rules // generic analysis of uses
 	  else // result will be created here
 	    <nabl-use-candidate(|lang, ctx, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), dep*)
 	  end
+	; MkSingleton
 	; nabl-insert-import-tasks(|ctx, ns)
   ; nabl-resolve-task(|ctx, ns, <nabl-fix-name> name, prop*)
     // TODO: disambiguation
