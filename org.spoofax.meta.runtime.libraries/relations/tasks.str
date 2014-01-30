@@ -24,7 +24,7 @@ rules
     ; <iset-destroy> stat-set
     ; index-val* := <get-index-relations(|rel)> t
     ; if Transitive(rel') := rel then
-        non-trans-val* := <get-index-relations(|rel)> t
+        non-trans-val* := <get-index-relations(|rel')> t
       else
         non-trans-val* := []
       end
