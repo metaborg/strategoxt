@@ -79,9 +79,6 @@
 		<strj-lib input="${basedir}/index/index.str"
 		          output="${src-gen}/index/Main.java"
 		          package="org.metaborg.meta.runtime.libraries.index"
-		          source="1.7"
-		          target="1.7"
-		          debug="on"
 		>
 			<strjlibargs>
 				<arg value="-la" />
@@ -232,9 +229,9 @@
 		<javac srcdir="${basedir}/src-gen"
 		       includes="org/metaborg/meta/runtime/libraries/analysis/**"
 		       destdir="${basedir}/bin/analysis"
-      source="1.7"
-      target="1.7"
-      debug="on"
+		       source="1.7"
+		       target="1.7"
+		       debug="on"
 		>
 			<classpath>
 				<pathelement location="${eclipse.spoofaximp.strategojar}" />
