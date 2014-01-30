@@ -30,7 +30,7 @@ rules
 
 	insert-results(fail-result, no-result) =
 		replace-results(
-		  map(insert-results(no-result, fail-result)) 
+		  map(insert-results(fail-result, no-result)) 
 		, \Result(n) -> <task-get-results>\
 		, fail-result
 		, no-result	
