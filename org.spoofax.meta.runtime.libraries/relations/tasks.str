@@ -10,7 +10,7 @@ signature
   
   constructors
 
-    RelationLookup : Relation * Term        -> Instruction
+    RelationLookup : Relation * Term -> Instruction
     
 rules
 
