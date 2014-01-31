@@ -138,7 +138,7 @@ rules // Index entries
 	to-entry:
 		Appl("RelTuple", [l, rel, r]) -> Rel(l, rel, r)
 		
-	all-to-entry = topdown-annos(with(to-entry|"Could not convert index entry"))
+	all-to-entry = topdown-annos(try(to-entry))
 	
 rules // URIs
 	
