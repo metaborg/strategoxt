@@ -30,6 +30,7 @@ signature
     ResolveAllDefs         : Scope * Namespace * Name * Prop           -> Instruction
     CheckDefs              : Namespace * URI                           -> Instruction
     PropConstraint         : Kind * Expected * Result                  -> Instruction
+    ReplaceUseDef          : Term                                      -> Instruction
         
 rules // Collects all definitions in a term
   
@@ -156,3 +157,11 @@ rules // Filter definitions by properties
 
 	perform-task(|task-id):
 		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
+
+rules // Replace Use(Def(uri)) by Def(uri)
+	
+	nabl-create-replaceusedef(|ctx):
+		t -> <new-task(|ctx)> ReplaceUseDef(t)
+	
+	perform-task(|task-id):
+		ReplaceUseDef(t) -> <topdown-annos(try(\Use(Def(uri)) -> Def(uri)\))> t

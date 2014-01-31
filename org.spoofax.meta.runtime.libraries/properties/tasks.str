@@ -17,6 +17,7 @@ signature
     PropsLookup : Property * URI                    -> Instruction
     PropCheck   : Property * Relation * Term * Term -> Instruction
     PropExtract : Property * Term                   -> Instruction
+    PropRemove  : Term                              -> Instruction
     
 rules
 
@@ -56,3 +57,11 @@ rules
 
   perform-task(|n):
     PropExtract(kind, term) -> <get-annotation(?(kind, <id>))> term
+    
+rules
+	
+	prop-create-remove(|ctx):
+		term -> <new-task(|ctx)> PropRemove(term)
+		
+	perform-task(|task-id):
+		PropRemove(term) -> <topdown(try(remove-annotations(?(_, _))))> term
