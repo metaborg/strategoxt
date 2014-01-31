@@ -21,6 +21,10 @@ public class task_api_delay_0_1 extends AbstractPrimitive {
 		final IStrategoList dependencies = (IStrategoList) tvars[0];
 		final ITaskEvaluationFrontend evaluator = TaskManager.getInstance().getCurrent().getEvaluationFrontend();
 		final IStrategoTerm taskID = evaluator.current();
+
+		if(taskID == null)
+			throw new RuntimeException("Cannot delay task while no task evaluation is in progress.");
+
 		evaluator.delay(taskID, dependencies);
 		return false;
 	}

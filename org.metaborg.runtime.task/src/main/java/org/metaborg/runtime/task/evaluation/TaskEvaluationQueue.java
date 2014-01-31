@@ -259,6 +259,9 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 	@Override
 	public IStrategoTerm current() {
+		if(currentTaskEvaluator == null)
+			return null;
+
 		return currentTaskEvaluator.current();
 	}
 
