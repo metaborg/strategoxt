@@ -2,10 +2,10 @@ module relations/entries
 
 imports
 	
+	relations/entries
+	relations/tasks
 	index/core
 	editor/origins
-	relations/-
-	task/-
 	
 signature
 
@@ -14,10 +14,6 @@ signature
     RelTuple   : Term * Relation * Term -> Entry
     Inverse    : Relation -> Relation
     Transitive : Relation -> Relation 
-
-rules // Index entries to diff for incrementality
-  
-  nabl-diff-entry = ?RelTuple(_, _, _)
  
 rules
   
@@ -30,6 +26,6 @@ rules
       inverse := <origin-track-forced(!RelTuple(t2, Inverse(rel), t1))> t2
     ; <index-add(|partition)> inverse
     with // TODO: store transitive lookup only for transitive relations
-      task := <new-task(|partition)> RelationLookup(Transitive(rel), t2)
+      task       := <relation-create-lookup(|partition, Transitive(rel))> t2
     ; transitive := <origin-track-forced(!RelTuple(t1, Transitive(rel), task))> t1
     ; <index-add(|partition)> transitive

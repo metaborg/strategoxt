@@ -1,15 +1,17 @@
 module relations/query
 
 imports
+	
   relations/entries
-  nabl/query
+  index/query
   
 rules
   
-  get-index-relation(|rel) =
-    !RelTuple(<id>, rel, ())
-  ; nabl-get-value
+  get-index-relation(|rel):
+  	t -> <index-get-all; Hd; relation-tuple-value> RelTuple(t, rel, ())
    
-  get-index-relations(|rel) =
-    !RelTuple(<id>, rel, ())
-  ; nabl-get-all-values
+  get-index-relations(|rel):
+  	t -> <index-get-all; map(relation-tuple-value)> RelTuple(t, rel, ())
+
+	relation-tuple-value:
+		RelTuple(_, _, v) -> v
