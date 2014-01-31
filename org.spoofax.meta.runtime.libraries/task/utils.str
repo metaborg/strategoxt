@@ -39,3 +39,11 @@ rules
 	collect-all-annos-2(s, un) =
 		![<s> | <crush-annos-2(![], un, s)>]
 	<+ crush-annos-2(![], un, s)
+	
+rules
+	
+	topdown-annos(s) =
+		switch id
+			case has-annos => t : !(<s; all(topdown-annos(s))> t, <get-annos; s; all(topdown-annos(s))> t); set-annos
+			otherwise           : s; all(topdown-annos(s))
+		end
