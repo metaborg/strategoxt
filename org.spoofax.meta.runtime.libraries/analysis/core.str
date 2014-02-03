@@ -11,6 +11,7 @@ imports
   nabl/utils
   task/core
   task/messages
+  relations/incremental
   editor/origins
   
 signature
@@ -48,9 +49,13 @@ rules // Analysis
 	      	analyzed-ast := <nabl-collect(|partition, Language(language))> initial-ast
 	    	  , analysis-core-debug-time(!"Time - collect: ") | "analyze-collect-collect" 
 	  	  ); measure-time(
-	  	  	index-stop-collection => (removed-entry*, added-entry*);
+	  	  	index-stop-collection            => (removed-entry*, added-entry*);
 	      	task-stop-collection(|partition) => (removed-task*, added-task*);
-	      	changed-read* := <nabl-get-changed-reads> [removed-entry*, added-entry*]
+	      	
+	      	change*            := [removed-entry*, added-entry*];
+	      	nabl-changed-read* := <nabl-get-changed-reads> change*;
+	      	rel-changed-read*  := <relation-get-changed-reads> change*;
+	      	changed-read*      := [nabl-changed-read*, rel-changed-read*]
 	      	, analysis-core-debug-time(!"Time - diff: ") | "analyze-collect-diff" 
 	  	  ); measure-time(
 	  	  	task-invalidate-task-reads(|changed-read*) => invalidated-task*

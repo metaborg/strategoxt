@@ -46,3 +46,8 @@ rules
 
 	relation-try-term-to-uri:
 		term -> <try(nabl-collect-one-resolved-def; nabl-uri)> term
+
+rules
+	
+	relation-tuple-key:
+		RelTuple(key, _, _) -> key

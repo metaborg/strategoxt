@@ -4,9 +4,12 @@ imports
 	
 	relations/entries
   relations/query
+  relations/incremental
   relations/interface
   task/create
   task/tasks
+  nabl/uri
+  nabl/incremental
   nabl/utils
 	
 signature
@@ -26,12 +29,11 @@ rules
   perform-task(|task-id):
     RelationLookup(rel, t) -> [stat-val*, non-trans-val*, index-val*]
     where
-      // <nabl-add-uri-read(|n)> uri
       t' := <relation-try-term-to-uri> t
+		; <relation-add-read(|task-id)> t'
     ; stat-set := <new-iset>
     ; <try(relation-tuple(store-tuple(|stat-set)))> (t', rel)
     ; stat-val*  := <iset-elements> stat-set
-    ; <iset-destroy> stat-set
     ; index-val* := <get-index-relations(|rel)> t'
     ; if Transitive(rel') := rel then
         non-trans-val* := <get-index-relations(|rel')> t'
