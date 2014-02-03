@@ -62,6 +62,7 @@ rules // Index
     (_, _, _, path, project-path) -> (filename, result)
     with
       index-setup(|language, project-path);
+      task-setup(|project-path);
     	partition  := $[[project-path]/[path]];
       result-ast := [((partition, []), <index-get-all-in-partition> partition)];
       result-ast' := <beautify-indices> result-ast;
