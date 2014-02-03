@@ -8,6 +8,7 @@ imports
   properties/tasks
   properties/interface
   nabl/interface
+  editor/annotations
 
 rules
 
@@ -29,3 +30,7 @@ rules
   get-index-properties(|kind) =
     nabl-uris // TODO: how to handle multiple values?
   ; mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)
+
+rules
+	
+	property-remove-all = topdown(try(remove-annotations(?(_, _))))

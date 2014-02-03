@@ -127,7 +127,7 @@ rules // Index & task engine
     	index-setup(|language, project-path);
       task-setup(|project-path);
       task-debug  := <task-debug-info(|())>;
-      index-debug := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+      index-debug := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition; sort-index> f)\)>;
       result-ast  := (task-debug, index-debug);
       if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
       	filename := $[[project-path]/[<dirname> path]/project.analysis];
@@ -144,7 +144,7 @@ rules // Index & task engine
       task-setup(|project-path);
       partition   := $[[project-path]/[path]];
       task-debug  := <task-debug-info(|partition)>;
-      index-debug := [(partition, <index-get-all-in-partition> partition)];
+      index-debug := [(partition, <index-get-all-in-partition; sort-index> partition)];
       result-ast  := (task-debug, index-debug);
       if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
       	filename := <guarantee-extension(|"partition.analysis")> path;
@@ -189,7 +189,7 @@ rules // Helper rules for Index Resolved
 		where
 			index2 := <give-all-tasks-results>index;
 			index3 := <reverse-uris> index2;
-			index4 := <qsort(index-compare)> index3
+			index4 := <sort-index> index3
 
 	// ignore partitions of generated files
 	ignore-extensions: _ -> ["index", "analysis", "task"]
@@ -203,8 +203,10 @@ rules // Helper rules for Index Resolved
 	give-all-tasks-results = bottomup(try(give-task-results))
 	give-task-results: e@Result(_) -> <insert-results-or-delay <+ with(fail|"Task has no result yet: ")>e
 	
+	sort-index = qsort(index-compare)
+	
 	// order the index entries
-	index-ordering: _ -> ["Def","Prop","Alias","InverseAlias","Use"]
+	index-ordering: _ -> ["Def","Prop","RelTuple","Alias","InverseAlias","Use"]
 
 	index-compare: (a,b) -> (a,b)
 		where
