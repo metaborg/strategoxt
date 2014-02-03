@@ -4,6 +4,7 @@ imports
 	
 	task/core
 	task/create
+	task/insert
 
 signature
 
@@ -46,12 +47,13 @@ rules
 		
 	task-is-combinator = ?Debug(_, _)
 
-	perform-task(|nr):
-		Debug(prefix, term) -> <debug(!$[[nr] - [prefix]]); !term> msg
-		with
-			if <?[]> term then
-			  msg := "FAIL"
-			else
-			  msg := term
+	perform-task(|task-id):
+		Debug(prefix, term) -> term
+		where
+			switch !term
+				case ?[]                            : <task-debug-msg(|task-id, prefix); fail> "__FAIL__"
+				otherwise                           : <task-debug-msg(|task-id, prefix)> term
 			end
-		
+
+	task-debug-msg(|task-id, prefix):
+		msg -> <debug(!$[[task-id] - [prefix] ])> msg
