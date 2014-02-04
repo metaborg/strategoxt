@@ -259,6 +259,7 @@
 	<macrodef name="strj-lib">
 		<attribute name="input" />
 		<attribute name="output" />
+		<attribute name="lib-output" default="${@{input}.dirname}/lib${@{input}.basename}.ctree"/> 
 		<attribute name="package" />
 		<element name="strjlibargs" optional="true" />
 		<element name="str-deps" optional="true" />
@@ -267,14 +268,14 @@
 			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
 			<uptodate-mio input="@{input}" output="@{output}" type="strj-lib">
 				<action>
-					<strj input="@{input}" output="${@{input}.dirname}/lib${@{input}.basename}.ctree" package="@{package}">
+					<strj input="@{input}" output="@{lib-output}" package="@{package}">
 						<strjargs>
 							<arg value="--library" />
 							<arg value="-F" />
 							<strjlibargs />
 						</strjargs>
 					</strj>
-					<strj input="${@{input}.dirname}/lib${@{input}.basename}.ctree" output="@{output}" package="@{package}">
+					<strj input="@{lib-output}" output="@{output}" package="@{package}">
 						<strjargs>
 							<arg value="--library" />
 							<strjlibargs />
