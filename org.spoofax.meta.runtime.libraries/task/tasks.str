@@ -12,25 +12,25 @@ signature
 
 	constructors
 		
-    Id       : Term              -> Instruction
-    Fail     :                      Instruction
-    Choice   : List(List(Term))  -> Instruction
-    Sequence : List(Term)        -> Instruction
-    Combine  : List(Term)        -> Instruction
-    Singleton: Term              -> Instruction
-    Diff     : Term * Term       -> Instruction
-    Collect  : List(Term)        -> Instruction
-    Not      : Result            -> Instruction
-    Index    : Int * List(Term)  -> Instruction
-    Length   : List(Term)        -> Instruction
-    Insert   : Term              -> Instruction
-    Rewrite  : ID * Term         -> Instruction
+    Id       : Term               -> Instruction
+    Fail     :                       Instruction
+    Choice   : List(Result)       -> Instruction
+    Sequence : List(Result)       -> Instruction
+    Combine  : List(Result)       -> Instruction
+    Singleton: Result             -> Instruction
+    Diff     : Result * Result    -> Instruction
+    Collect  : List(Result)       -> Instruction
+    Not      : Result             -> Instruction
+    Index    : Int * List(Result) -> Instruction
+    Length   : List(Result)       -> Instruction
+    Insert   : Term               -> Instruction
+    Rewrite  : ID * Result        -> Instruction
 
 rules // Identity
   
   /**
   * Create an identity task
-  * @type term -> Result(Int)
+  * @type Partition * Term -> Result
   */
 	task-create-id(|ctx) =
 	  ?Result(_) <+ <new-task(|ctx)> Id(<id>)
@@ -54,14 +54,14 @@ rules // Choice
 	
   /**
   * Create a choice task
-  * @type List(task) -> Result(Int)
+  * @type Partition * List(Result) -> Result
   */
   task-create-choice(|ctx) =
      ?[<?Result(_)>] <+ <new-task(|ctx)> Choice(<id>)
   
   /**
   * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
-  * @type term -> Result(Int)
+  * @type Term -> Result
   */
   task-create-choice(t1, t2|ctx):
     term -> <task-create-choice(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
@@ -73,14 +73,14 @@ rules // Sequence
 	
   /**
   * Create a sequence task
-  * @type List(task) -> Result(Int)
+  * @type Partition * List(Result) -> Result
   */
   task-create-sequence(|ctx) =
     ?[<?Result(_)>] <+ <new-task(|ctx)> Sequence(<id>)
 
   /**
   * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
-  * @type term -> Result(Int)
+  * @type (Result * Partition -> Result) * (Result * Partition -> Result) * Partition -> Result
   */
   task-create-sequence(t1, t2|ctx):
     term -> <task-create-sequence(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
@@ -92,7 +92,7 @@ rules // Combine
        
   /**
   * Create a combine task
-  * @type List(task) -> Result(Int)
+  * @type Partition * List(Result) -> Result
   */
 	task-create-combine(|ctx) =
 	  ?[<?Result(_)>] <+ <new-task(|ctx)> Combine(<id>)
@@ -103,12 +103,16 @@ rules // Combine
     	all-dep* := <merge-dependencies(|dep*)> task*
        
   task-is-combinator = ?Combine(_)
-  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
+  perform-task(|nr)  = ?Combine(<mapconcat(is-list <+ MkSingleton)>)
 
 rules // Singleton
   
   task-is-combinator = ?Singleton(_) 
   
+  /**
+  * Create a singleton task
+  * @type Partition * Result -> Result
+  */  
   task-create-singleton(|ctx) =
     <new-task(|ctx)> Singleton(<id>)
   
@@ -116,9 +120,12 @@ rules // Singleton
   perform-task(|n):
     Singleton(r@[_]) -> r
     
-
 rules // Diff
   
+  /**
+  * Create a diff task
+  * @type Partition * Result * Result -> Result
+  */    
   task-create-diff(|ctx):
     (l1, l2) -> <new-task(|ctx)> Diff(l1, l2)
   
@@ -133,12 +140,12 @@ rules // Collect
        
   /**
   * Create a collect task
-  * @type List(task) -> Result(Int)
+  * @type Partition * List(Result) -> Result
   */
 	task-create-collect(|ctx) = <new-task(|ctx)> Collect(<id>)
        
   task-is-combinator = ?Collect(_)
-  perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
+  perform-task(|nr)  = ?Collect(<mapconcat(is-list <+ MkSingleton)>); MkSingleton
 
 rules // Where
   
@@ -149,7 +156,7 @@ rules // Negation
   
   /**
   * Create negation task
-  * @type task -> Result(Int)
+  * @type Partition * Result -> Result
   */
   task-create-not(|ctx) = <new-task(|ctx)> Not(<id>)
   

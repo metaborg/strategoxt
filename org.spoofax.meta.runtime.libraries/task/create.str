@@ -7,7 +7,14 @@ imports
 
 rules
 	
+	/**
+	 * @type Partition * Instruction -> Result
+	 */
   new-task(|partition) = new-task(|partition, <dependent-tasks>)
+
+  /**
+   * @type Partition * List(TaskID) * Instruction -> Result
+   */  
   new-task(|partition, dependencies):
   	instruction -> result
   	with
