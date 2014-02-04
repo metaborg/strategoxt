@@ -40,9 +40,11 @@ rules // Collects all definitions in a term
   	term -> <new-task(|ctx, all-dep*)> CollectDefs(term)
   	with 
     	all-dep* := <merge-dependencies(|dep*)> term
+    	
+  // todo: lift nabl-get-name to task creation, currently storing an AST in task (expensive storage!)
   	
   perform-task(|nr): 
-    CollectDefs(term) -> <(?Def(_) <+ try(nabl-get-name); get-annos; fetch(?Def(_) + ?Use(<id>)))> term 
+    CollectDefs(term) -> <?Def(_) <+ (try(nabl-get-name); get-annos; fetch(?Def(_) + ?Use(<id>)))> term 
 
 rules // Resolve definitions in a scope of a certain namespace and name (stops when definitions are found in a scope)
   

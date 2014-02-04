@@ -167,7 +167,7 @@ rules // Negation
   
   /**
   * Negation on the success of a task
-  * @type: Not(result) -> !Success(result)
+  * Not(result) ==> !Success(result)
   */
   perform-task(|nr):
     Not([]) -> ()
@@ -175,6 +175,8 @@ rules // Negation
   task-is-combinator = ?Not(_)
   
 rules // Index
+  
+  // EV: no creation strategy?
   
   perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
   
