@@ -13,7 +13,7 @@ binding rules
 	Sections(_):
 		scopes Task
 
-	TaskDef(t, _, _, _):
+	TaskDef(t, _, _, _, _):
 		defines Task t
 		
 	TaskRef(t):

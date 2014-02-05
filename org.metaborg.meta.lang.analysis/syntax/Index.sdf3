@@ -17,5 +17,6 @@ templates
 	Entry.Prop   = <prop <Term> -- <Term> \>\> <Term>>
 	Entry.Alias  = <alias <Term> -\> <Term>>
 	Entry.IAlias = <alias <Term> \<- <Term>>
+	Entry.Rel    = <rel <Term> \<<Term>: <Term>>
 	
-	Term        = <<Entry>>
+	Term = <<Entry>>

@@ -1,0 +1,31 @@
+module modelware/tree2model
+
+imports
+  
+  modelware/signatures
+  nabl/-
+  editor/origins
+
+rules
+  
+  mw-tree2model: t       -> M(<origin-track-forced(mw-term2obj)>)
+  mw-term2obj  : c#(t*)  -> Obj(<mw-def-uris>, QID("ast", c), <map(mw-term2slot)> t*)
+  mw-term2slot : None()  -> None()
+  mw-term2slot : Some(t) -> Some(<mw-term2val> t)
+  mw-term2slot : t*      -> <map(mw-term2val); mw-combine>
+  mw-term2slot : t       -> <mw-term2val>
+  mw-term2val  : t       -> Data(t) where is-string; not(mw-ref-uri)
+  mw-term2val  : t       -> Link(<mw-ref-uri>)
+  mw-term2val  : t       -> Contain(<origin-track-forced(mw-term2obj)> t) where mw-is-compound
+
+rules
+  
+  mw-def-uris    = get-arguments; filter(get-annos; fetch-elem(?Def(<id>)))
+  mw-ref-uri     = ?t{Use(_)}; (nabl-collect-one-resolved-def; ?Def(<id>) <+ !Unresolved())
+  mw-is-compound = where(not(?Some(_))); explode-term + map(explode-term)
+
+  mw-combine = ?[]
+  mw-combine:
+    t* -> c#([<map(get-arguments; Hd)> t*])
+    where
+      c#(_) := <Hd> t*

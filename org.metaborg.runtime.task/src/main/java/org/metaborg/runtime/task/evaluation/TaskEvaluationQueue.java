@@ -49,6 +49,9 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	/** The default task evaluator that is used to evaluate tasks for which there is no specific evaluator. */
 	private final ITaskEvaluator defaultTaskEvaluator;
 
+	/** The task evaluator that is currently being used to evaluate tasks. **/
+	private ITaskEvaluator currentTaskEvaluator = null;
+
 
 	private Set<IStrategoTerm> scheduled;
 	private final Set<IStrategoTerm> skipped = Sets.newHashSet();
@@ -112,8 +115,10 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
-	public void taskDelayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
+	public void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
+
+		currentTaskEvaluator.delay();
 
 		// Sets the runtime dependencies for a task to the given dependency list.
 		runtimeDependencies.removeAll(taskID);
@@ -157,11 +162,13 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 			// Queue tasks and evaluate them for each specific task evaluator.
 			for(ITaskEvaluator taskEvaluator : taskEvaluators.values()) {
+				currentTaskEvaluator = taskEvaluator;
 				taskEvaluator.queue(taskEngine, this, this.scheduled);
 				evaluateQueuedTasks(context, collect, insert, perform);
 			}
 
 			// Evaluate the remaining tasks with the default task evaluator.
+			currentTaskEvaluator = defaultTaskEvaluator;
 			defaultTaskEvaluator.queue(taskEngine, this, this.scheduled);
 			evaluateQueuedTasks(context, collect, insert, perform);
 
@@ -205,13 +212,13 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 						// TODO: this assumes that no results and failure means the same, is that correct?
 						if(values.get(taskID).isEmpty()) {
-							if(task.failed()) {
+							if(task.failed() || !task.hasResults()) {
 								continue;
 							} else {
 								done = false;
 								break;
 							}
-						} else if(task.failed()) {
+						} else if(task.failed() || !task.hasResults()) {
 							done = false;
 							break;
 						}
@@ -251,6 +258,14 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
+	public IStrategoTerm current() {
+		if(currentTaskEvaluator == null)
+			return null;
+
+		return currentTaskEvaluator.current();
+	}
+
+	@Override
 	public void reset() {
 		evaluationQueue.clear();
 		queued.clear();
@@ -263,6 +278,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		for(ITaskEvaluator evaluator : taskEvaluators.values())
 			evaluator.reset();
 		defaultTaskEvaluator.reset();
+		currentTaskEvaluator = null;
 	}
 
 
@@ -336,6 +352,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private void evaluateCyclicTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect,
 		Strategy insert, Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
+		currentTaskEvaluator = taskEvaluator;
 		taskEvaluator.evaluateCyclic(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 }

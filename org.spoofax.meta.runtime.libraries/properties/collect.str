@@ -7,6 +7,8 @@ imports
 	properties/interface
 	properties/query
   task/core
+  task/create
+  task/messages
   task/tasks
   nabl/collect
   nabl/uri
@@ -29,24 +31,22 @@ signature
 rules // generic analysis of properties
   
   // call back to generic analysis
-  nabl-store-props(|partition, prop*) =
-    where (
-  	  ?name
-  	; nabl-collect-def; nabl-uri => uri
+  nabl-store-props(|partition, prop*):
+  	name -> name
+  	where
+  	  uri := <nabl-collect-def; nabl-uri> name
 	  ; <map(nabl-store-prop(|partition, uri, name))> prop*
-	  )
 	
-	nabl-store-prop(|partition, prop) =
-    where (
-      ?name
-    ; nabl-collect-def; nabl-uri => uri
+	nabl-store-prop(|partition, prop):
+		name -> name
+		where
+      uri := <nabl-collect-def; nabl-uri> name
     ; <nabl-store-prop(|partition, uri, name)> prop
-    )
       
   nabl-store-prop(|partition, uri, name):
-    Prop(kind, prop, dep*) -> <new-prop(|partition, uri, kind, result)> name
+    Prop(kind, prop, dep*) -> <new-prop(|partition, uri, kind, task)> name
     where
-      result := <new-task(|partition, <dependent-tasks> dep*)> Id(prop)
+    	task := <task-create-id(|partition, <dependent-tasks> dep*)> prop
       
 rules
         
@@ -69,45 +69,40 @@ rules
       
 strategies
   
-  nabl-prop-calc(|partition, dep*) = 
-    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-  ; <new-task(|partition, all-dep*)> Id(<id>)
+  nabl-prop-calc(|partition, dep*):
+  	term -> <task-create-id(|partition, dep*)> term
   
-  nabl-prop-list(|partition, dep*) = 
-    where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-  ; <new-task(|partition, all-dep*)> Combine(<id>)
-    
-  nabl-prop-lookup(|kind, partition, dep*) = 
-     get-annos
-   ; fetch-elem(?(kind, <id>))
-  <+ where(all-dep* := <union> (<dependent-tasks> dep*, <dependent-tasks>))
-   ; <new-task(|partition, all-dep*)> CollectDefs(<id>)
-   ; <new-task(|partition)> PropsLookup(kind, <id>) 
+  nabl-prop-list(|partition, dep*):
+  	term -> <task-create-combine(|partition, dep*)> term
+	
+  nabl-prop-lookup(|kind, partition, dep*):
+  	term -> result
+  	with
+      result := <get-annos; fetch-elem(?(kind, <id>))> term
+      <+ 
+			result := <nabl-create-collectdefs(|partition, dep*); prop-create-lookup(|partition, kind)> term
   
-  nabl-prop-match(|kind, partition, relation, expected) = 
-    ?actual
-  ; expected* := <try-make-list> expected
-  ; check*    := <map(<new-task(|partition)> PropCheck(kind, relation, actual, <id>))> expected*
-  ; <new-task(|partition, <dependent-tasks> check*)> Choice(check*)
-  
-  // // FIXME: is resolve a Result or a task ID?
-  // nabl-prop-constraints(|partition, resolve) =
-  //   <new-task(|partition, <dependent-tasks> [resolve | <map(nabl-prop-constraint)>])> Id(resolve)
-  //     
-  // nabl-prop-constraint(|partition, resolve):
-  //   Prop(kind, expected, dep*) -> constr
-  //   where
-  //     actual := <new-task(|partition)> PropsLookup(kind, resolve) 
-  //   ; dep'*  := <dependent-tasks> [expected, dep*]
-  //   ; Result(constr) := <new-task(|partition, [actual, dep'*])> PropCheck(kind, Eq(), actual, expected)
+  nabl-prop-match(|kind, partition, relation, expected):
+  	actual -> <task-create-choice(|partition)> check*
+  	with 
+		  expected* := <try-make-list> expected
+		; check*    := <map(prop-create-check(|partition, kind, relation, actual))> expected*
 
 rules
   
-    create-property-task(|ctx, kind) :
-    x -> <nabl-prop-calc(|ctx, t*)> t*
+  get-or-create-property-task(|ctx, kind) = 
+     get-property-task(|kind)
+  <+ create-property-task(|ctx, kind)
+  <+ warn-msg(|$[Could not create task for property [<get-constructor> kind].])
+   ; task-create-fail(|ctx)
+      
+  create-property-task(|ctx, kind):
+    r@Result(_) -> <prop-create-extract(|ctx, kind)> r
+    
+  create-property-task(|ctx, kind) :
+    term -> <nabl-prop-calc(|ctx, type*)> type*
     where 
-    	<is-list> x
-    ; t* := <map(get-or-create-property-task(|ctx, kind))> x
+    	type* := <map(get-property-task(|kind) <+ create-property-task(|ctx, kind))> term
     
 rules
   

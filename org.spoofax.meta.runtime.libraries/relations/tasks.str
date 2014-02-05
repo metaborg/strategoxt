@@ -1,0 +1,58 @@
+module relations/tasks
+
+imports
+	
+	relations/entries
+  relations/query
+  relations/incremental
+  relations/interface
+  task/create
+  task/tasks
+  nabl/uri
+  nabl/incremental
+  nabl/utils
+	
+signature
+  
+  constructors
+
+    RelationLookup : Relation * Term -> Instruction
+    RelationMatch  : Relation * Term * Term -> Instruction
+    
+rules
+
+	relation-create-lookup(|ctx, rel):
+		t -> <task-create-insert(|ctx); task-create-combine(|ctx)> lookup
+		with
+			lookup := <new-task(|ctx)> RelationLookup(rel, t)
+
+  perform-task(|task-id):
+    RelationLookup(rel, t) -> [stat-val*, non-trans-val*, index-val*]
+    where
+      t' := <relation-try-term-to-uri> t
+		; <relation-add-read(|task-id)> t'
+    ; stat-set := <new-iset>
+    ; <try(relation-tuple(store-tuple(|stat-set)))> (t', rel)
+    ; stat-val*  := <iset-elements> stat-set
+    ; index-val* := <get-index-relations(|rel)> t'
+    ; if Transitive(rel') := rel then
+        non-trans-val* := <get-index-relations(|rel')> t'
+      else
+        non-trans-val* := []
+      end
+      
+  store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set
+  
+rules
+	
+  relation-create-match(|ctx, rel, expected):
+  	actual -> <task-create-choice(|ctx)> check*
+  	with 
+		  expected* := <try-make-list> expected
+		; check*    := <map(relation-create-match-task(|ctx, rel, actual))> expected*
+	
+	relation-create-match-task(|ctx, rel, actual):
+		expected -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
+		
+  perform-task(|task-id): 
+  	RelationMatch(rel, actual, expected) -> [<eq> (<relation-try-term-to-uri> actual, <relation-try-term-to-uri> expected)]

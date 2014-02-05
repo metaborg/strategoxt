@@ -2,9 +2,10 @@ module nabl/uri
 
 imports
   
-  nabl/interface
   index/core
   editor/annotations
+  nabl/interface
+  nabl/query
   
 signature
 
@@ -106,31 +107,6 @@ rules // Projections
     
   nabl-uri-path:
     URI(_, path) -> path
-    
-  nabl-uri-parent:
-    URI(language, path) -> URI(language, parent)
-    where
-      [_|parent] := path
-  
-  nabl-uri-parents:
-  	uri -> parent*
-  	where
-  		if parent := <nabl-uri-parent> uri then
-  			parent* := [parent|<nabl-uri-parents> parent]
-			else
-				parent* := []	
-			end
-  		
-	nabl-uri-parents(|target-ns):
-  	uri -> parent*
-  	where
-  		barrier-ns* := <nabl-uri-barriers <+ ![]> uri;
-  		if <not(elem)> (target-ns, barrier-ns*); parent := <nabl-uri-parent> uri then
-  			// Strip barriers from parent because URI's in the index also do not have barriers (matching would fail).
-  			parent* := [<nabl-uri-strip-barriers> parent|<nabl-uri-parents(|target-ns)> parent]
-			else
-				parent* := []	
-			end
         
   nabl-uri-name:
     uri -> <nabl-uri-path; Hd; nabl-segment-name> uri
@@ -163,18 +139,65 @@ rules // Projections
   	segment -> namespace*
   	where
   		Barrier(namespace*) := <get-annotation(?Barrier(_))> segment 
-    
-  nabl-uri-scope      = URI(id, Tl)
-  nabl-uri-scopes    = nabl-closure(nabl-uri-scope)
-  
-  nabl-uri-in-scope  = URI(id, [id|Tl])
-  nabl-uri-in-scopes = nabl-closure(nabl-uri-in-scope)
-  
+   
   nabl-closure(s) = 
       s 
     < ![<id>|<nabl-closure(s)>] 
     + ![]
 
+rules // query scope URIs
+  
+  // TODO: where should we strip barriers here?
+  nabl-uri-parent  = URI(id, Tl)
+  nabl-uri-parents = nabl-closure(nabl-uri-parent)
+      
+  nabl-uri-parents(|target-ns):
+    uri -> parent*
+    where
+      barrier-ns* := <nabl-uri-barriers <+ ![]> uri;
+      if <not(elem)> (target-ns, barrier-ns*); parent := <nabl-uri-parent> uri then
+        // Strip barriers from parent because URI's in the index also do not have barriers (matching would fail).
+        parent* := [<nabl-uri-strip-barriers> parent|<nabl-uri-parents(|target-ns)> parent]
+      else
+        parent* := [] 
+      end
+  
+  //  maps a list of definition URIs to a list of local scope URIs
+  nabl-uri-local-scopes =
+    ![<nabl-uri-parent>]
+  
+  // maps a list of definition URIs to a list of lexical scope URIs (including local scope)
+  nabl-uri-lexical-scopes =
+    nabl-uri-parents
+    
+  // maps a list of definition URIs to a list of lexical scope URIs (excluding local scope)
+  nabl-uri-lexical-parent-scopes =
+    nabl-uri-parent; nabl-uri-parents
+  
+  // maps a list of external definition URIs to a list of local scope URIs
+  nabl-uri-external-scopes =
+    nabl-get-all-inverse-aliasses
+  ; map(nabl-uri-parent)
+  
+  // maps a list of external definition URIs to a list of lexical scope URIs (including local scope)
+  nabl-uri-external-lexical-scopes =
+    nabl-get-all-inverse-aliasses
+  ; mapconcat(nabl-uri-lexical-scopes)
+  
+  // maps a list of external definition URIs to a list of lexical scope URIs (excluding local scope)
+  nabl-uri-external-lexical-parent-scopes =
+    nabl-get-all-inverse-aliasses
+  ; mapconcat(nabl-uri-lexical-parent-scopes)
+  
+  nabl-uri-all-local-scopes =
+    <conc> (<nabl-uri-local-scopes>, <nabl-uri-external-scopes>)
+    
+  nabl-uri-all-lexical-scopes =
+    <conc> (<nabl-uri-lexical-scopes>, <nabl-uri-external-lexical-scopes>)
+  
+  nabl-uri-all-lexical-parent-scopes =
+    <conc> (<nabl-uri-lexical-parent-scopes>, <nabl-uri-external-lexical-parent-scopes>)
+    
 rules // Conditions
   
   nabl-is-uri =

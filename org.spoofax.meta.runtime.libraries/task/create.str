@@ -1,0 +1,44 @@
+module task/create
+
+imports
+	
+	task/core
+	task/interface
+
+rules
+	
+	/**
+	 * @type Partition * Instruction -> Result
+	 */
+  new-task(|partition) = new-task(|partition, <dependent-tasks>)
+
+  /**
+   * @type Partition * List(TaskID) * Instruction -> Result
+   */  
+  new-task(|partition, dependencies):
+  	instruction -> result
+  	with
+  		is-combinator := <task-is-combinator; !1 <+ !0> instruction;
+  		short-circuit := <task-short-circuit; !1 <+ !0> instruction;
+  		result        := <task-add-task(|partition, dependencies, instruction, is-combinator, short-circuit)> instruction
+      
+  dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
+  dependent-task = ?Result(<id>) 
+  dependent-task =
+    has-annos; get-annos; dependent-tasks
+    
+	merge-dependencies(|dep*):
+  	term -> <union> (<dependent-tasks> dep*, <dependent-tasks> term)
+    
+	task-create-execute-ctx = !""
+	task-create-execute(create-task):
+		term -> result
+		with
+		  ctx := <task-create-execute-ctx>
+		; task-push
+		; task-start-collection(|ctx)
+		; Result(taskID) := <create-task> term
+		; task-stop-collection(|ctx)
+		; <task-evaluate-now> taskID
+		; result := <task-get-results> taskID
+		; task-pop

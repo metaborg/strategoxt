@@ -8,7 +8,6 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -111,12 +110,11 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
-		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations) {
-		current.addPersistedTask(taskID, instruction, isCombinator, shortCircuit, partitions, initialDependencies,
-			dependencies, reads, results, failed, message, time, evaluations);
+	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
+		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
+		current.addPersistedTask(taskID, task, partitions, initialDependencies, dependencies, reads, results, status,
+			message, time, evaluations);
 	}
 
 	@Override
@@ -175,11 +173,6 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 		return Iterables.filter(entries, visibleEntry);
 	}
 
-
-	@Override
-	public boolean taskExists(IStrategoTerm instruction) {
-		return current.taskExists(instruction) || parent.taskExists(instruction);
-	}
 
 	@Override
 	public Task getTask(IStrategoTerm taskID) {
@@ -296,6 +289,15 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependencies(taskID);
 		if(parentTaskVisible(taskID) && parentDependenciesVisible(taskID))
 			return Iterables.concat(parent.getDependencies(taskID), ownTaskIDs);
+		else
+			return ownTaskIDs;
+	}
+
+	@Override
+	public Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID) {
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getDynamicDependencies(taskID);
+		if(parentTaskVisible(taskID) && parentDependenciesVisible(taskID))
+			return Iterables.concat(parent.getDynamicDependencies(taskID), ownTaskIDs);
 		else
 			return ownTaskIDs;
 	}

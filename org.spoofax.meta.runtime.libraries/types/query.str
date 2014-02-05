@@ -2,8 +2,9 @@ module types/query
 
 imports
   
-  properties/query
   types/collect
+  properties/collect
+  properties/query
   
 rules // during analysis
   
@@ -12,6 +13,4 @@ rules // during analysis
   
 rules // post analysis
   
-  get-type =
-     get-property(|Type())
-     
+  get-type = get-property(|Type())

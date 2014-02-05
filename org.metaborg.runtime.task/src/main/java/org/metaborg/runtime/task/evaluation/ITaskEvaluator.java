@@ -38,6 +38,16 @@ public interface ITaskEvaluator {
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
 
 	/**
+	 * Returns the task identifier of the task that is currently being evaluated.
+	 */
+	public abstract IStrategoTerm current();
+
+	/**
+	 * Delays the current executing task.
+	 */
+	public abstract void delay();
+
+	/**
 	 * Resets the task evaluator to its initial state.
 	 */
 	public abstract void reset();

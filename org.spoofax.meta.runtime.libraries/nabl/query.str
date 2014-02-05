@@ -5,6 +5,8 @@ imports
   nabl/uri
   nabl/entries
   index/query
+  task/core
+  task/insert
   
 rules // Specific queries
 
@@ -30,11 +32,10 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-child-definitions(|ns):
-    contains-uri* -> [def*, alias-def*]
+    contains-uri* -> def*
     where
-    	uri*       := <nabl-uris> contains-uri*;
-    	def*       := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*;
-    	alias-def* := <mapconcat(!Alias(<id>, ()); nabl-get-children(|ns)); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> uri*
+    	uri* := <nabl-uris> contains-uri*;
+    	def* := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*
 
   /**
    * Gets all Use entries that match the given URI.
@@ -110,17 +111,21 @@ rules // Generic queries
         entries  := <nabl-filter-entries(|namespace, prefix)> children
 
   nabl-get-unique-nonunique(create-template):
-  	uri -> [unique*, nonUnique*]
+  	uri -> [unique*, non-unique*]
   	where
       if alias* := <nabl-get-all-aliases> uri then
-        unique* := <mapconcat(create-template; nabl-get-all)> alias*
+      	// HACK: handle Result terms on the resulting URI of an alias. this should be decomposed into a task?
+      	(alias-result*, alias-uri*) := <partition(?Result(_); insert-results-or-delay)> alias*;
+      	unique-uri*                 := <mapconcat(create-template; nabl-get-all)> alias-uri*;
+      	unique-result*              := <try(concat)> alias-result*;
+      	unique*                     := [unique-uri*, unique-result*]
       else
         unique* := []
       end;
-      if nonUniqueURI := <nabl-replace-uri-qualifier(|NonUnique())> uri then
-        nonUnique*    := <create-template; nabl-get-all> nonUniqueURI
+      if non-unique-uri := <nabl-replace-uri-qualifier(|NonUnique())> uri then
+        non-unique* := <create-template; nabl-get-all> non-unique-uri
       else
-        nonUnique*    := []
+        non-unique* := []
       end
 
 rules /** @internal Entry filtering */

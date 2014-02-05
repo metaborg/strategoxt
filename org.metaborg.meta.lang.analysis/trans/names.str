@@ -18,22 +18,19 @@ rules
 
   nabl-scoping-site =
     ?Sections(_)
-    ; origin-track-forced(
-        nabl-scope(|[NablNsTask()])
-      |
-      )
+    ; nabl-scope(|[NablNsTask()])
 
   nabl-get-scope =
     ?Sections(_) ; ![NablNsTask()]
 
   nabl-get-name :
-    TaskDef(t, _, _, _) -> t
+    TaskDef(t, _, _, _, _) -> t
 
   nabl-name-apply(s) =
-    TaskDef(s, id, id, id)
+    TaskDef(s, id, id, id, id)
 
   nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?TaskDef(t, _, _, _)
+    ?TaskDef(t, _, _, _, _)
     ; origin-track-forced(
         TaskDef(
           nabl-def(
@@ -53,12 +50,13 @@ rules
         , id
         , id
         , id
+        , id
         )
-        ; match(child-uris__|c-uri1__)
-        ; match(sibl-uris__|s-uri1__)
-        ; match(implicits__|[])
       |
       )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
 
   nabl-get-name :
     TaskRef(t) -> t

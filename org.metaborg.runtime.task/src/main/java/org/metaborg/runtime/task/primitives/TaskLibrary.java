@@ -6,16 +6,14 @@ public class TaskLibrary extends AbstractStrategoOperatorRegistry {
 	public static final String REGISTRY_NAME = "TASK";
 
 	public TaskLibrary() {
-		add(task_api_add_dependency_0_2.instance);
 		add(task_api_add_message_0_2.instance);
 		add(task_api_add_read_0_2.instance);
 		add(task_api_add_task_0_5.instance);
-		add(task_api_becomes_cyclic_0_2.instance);
 		add(task_api_clear_partition_0_1.instance);
 		add(task_api_debug_info_0_1.instance);
+		add(task_api_delay_0_1.instance);
 		add(task_api_evaluate_now_3_1.instance);
 		add(task_api_evaluate_scheduled_3_0.instance);
-		add(task_api_exists_0_1.instance);
 		add(task_api_get_dependencies_0_1.instance);
 		add(task_api_get_messages_0_1.instance);
 		add(task_api_get_readers_0_1.instance);
@@ -29,7 +27,7 @@ public class TaskLibrary extends AbstractStrategoOperatorRegistry {
 		add(task_api_push_0_0.instance);
 		add(task_api_recover_0_0.instance);
 		add(task_api_reset_0_0.instance);
-		add(task_api_result_combinations_2_1.instance);
+		add(task_api_result_combinations_2_2.instance);
 		add(task_api_setup_0_1.instance);
 		add(task_api_start_collection_0_1.instance);
 		add(task_api_stop_collection_0_1.instance);

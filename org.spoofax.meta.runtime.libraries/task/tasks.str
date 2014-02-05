@@ -3,6 +3,8 @@ module task/tasks
 imports
 	
 	task/core
+	task/create
+	task/insert
   task/messages
 	task/interface
   
@@ -10,51 +12,201 @@ signature
 
 	constructors
 		
-    Id       : Term              -> Instruction   
-    Combine  : List(Term)        -> Instruction
-    Collect  : List(Term)        -> Instruction
-    Choice   : List(List(Term))  -> Instruction
-    Sequence : List(Term)        -> Instruction
-    Rewrite  : ID * Term         -> Instruction
-    Index    : Int * List(Term)  -> Instruction
-    Length   : List(Term)        -> Instruction
-rules
+    Id       : Term               -> Instruction
+    Fail     :                       Instruction
+    Choice   : List(Result)       -> Instruction
+    Sequence : List(Result)       -> Instruction
+    Combine  : List(Result)       -> Instruction
+    Singleton: Result             -> Instruction
+    Diff     : Result * Result    -> Instruction
+    Collect  : List(Result)       -> Instruction
+    Not      : Result             -> Instruction
+    Index    : Int * List(Result) -> Instruction
+    Length   : List(Result)       -> Instruction
+    Insert   : Term               -> Instruction
+    Rewrite  : ID * Result        -> Instruction
+
+rules // Identity
+  
+  /**
+  * Create an identity task
+  * @type Partition * Term -> Result
+  */
+	task-create-id(|ctx) =
+	  ?Result(_) <+ <new-task(|ctx)> Id(<id>)
+  
+  task-create-id(|ctx, dep*):
+  	term -> <new-task(|ctx, all-dep*)> Id(term)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> term
+  
+  perform-task(|nr) = ?Id(<MkSingleton>)
+  
+rules // Fail
+	
+	task-create-fail(|ctx):
+		_ -> <new-task(|ctx)> Fail()
+		
+	perform-task(|nr):
+		Fail() -> <fail>
+
+rules // Choice
+	
+  /**
+  * Create a choice task
+  * @type Partition * List(Result) -> Result
+  */
+  task-create-choice(|ctx) =
+     ?[<?Result(_)>] <+ <new-task(|ctx)> Choice(<id>)
+  
+  /**
+  * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
+  * @type Term -> Result
+  */
+  task-create-choice(t1, t2|ctx):
+    term -> <task-create-choice(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+	
+	task-is-combinator = ?Choice(_)
+  perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
+  
+rules // Sequence
+	
+  /**
+  * Create a sequence task
+  * @type Partition * List(Result) -> Result
+  */
+  task-create-sequence(|ctx) =
+    ?[<?Result(_)>] <+ <new-task(|ctx)> Sequence(<id>)
+
+  /**
+  * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
+  * @type (Result * Partition -> Result) * (Result * Partition -> Result) * Partition -> Result
+  */
+  task-create-sequence(t1, t2|ctx):
+    term -> <task-create-sequence(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+	
+	task-is-combinator = ?Sequence(_)
+  perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
+
+rules // Combine
+       
+  /**
+  * Create a combine task
+  * @type Partition * List(Result) -> Result
+  */
+	task-create-combine(|ctx) =
+	  ?[<?Result(_)>] <+ <new-task(|ctx)> Combine(<id>)
+		
+	task-create-combine(|ctx, dep*):
+		task* -> <new-task(|ctx, all-dep*)> Combine(task*)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> task*
+       
+  task-is-combinator = ?Combine(_)
+  perform-task(|nr)  = ?Combine(<mapconcat(is-list <+ MkSingleton)>)
+
+rules // Singleton
+  
+  task-is-combinator = ?Singleton(_) 
+  
+  /**
+  * Create a singleton task
+  * @type Partition * Result -> Result
+  */  
+  task-create-singleton(|ctx) =
+    <new-task(|ctx)> Singleton(<id>)
+  
+  // if a bunch of elems should be removed
+  perform-task(|n):
+    Singleton(r@[_]) -> r
+    
+rules // Diff
+  
+  /**
+  * Create a diff task
+  * @type Partition * Result * Result -> Result
+  */    
+  task-create-diff(|ctx):
+    (l1, l2) -> <new-task(|ctx)> Diff(l1, l2)
+  
+  task-create-diff(|ctx, l2):
+    l1 -> <new-task(|ctx)> Diff(l1, l2)
+    
+  task-is-combinator = ?Diff(_, _)
+  perform-task(|nr):
+    Diff(l1, l2) -> <diff> (l1, <is-list <+ MkSingleton> l2)
+    
+rules // Collect
+       
+  /**
+  * Create a collect task
+  * @type Partition * List(Result) -> Result
+  */
+	task-create-collect(|ctx) = <new-task(|ctx)> Collect(<id>)
+       
+  task-is-combinator = ?Collect(_)
+  perform-task(|nr)  = ?Collect(<mapconcat(is-list <+ MkSingleton)>); MkSingleton
+
+rules // Where
+  
+  task-create-where(s|ctx):
+    term -> <task-create-sequence(|ctx)> <try(flatten-list)> [<s> term, term]
+
+rules // Negation
+  
+  /**
+  * Create negation task
+  * @type Partition * Result -> Result
+  */
+  task-create-not(|ctx) = <new-task(|ctx)> Not(<id>)
+  
+  /**
+  * Create negation task, where t takes a ctx argument and produces the task to be negated 
+  */
+  task-create-not(t|ctx) = t(|ctx); task-create-not(|ctx)
+  
+  /**
+  * Negation on the success of a task
+  * Not(result) ==> !Success(result)
+  */
+  perform-task(|nr):
+    Not([]) -> ()
+      
+  task-is-combinator = ?Not(_)
+  
+rules // Index
+  
+  // EV: no creation strategy?
+  
+  perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
+  
+rules // Length
+	
+  perform-task(|nr) = ?Length(<length>);  MkSingleton
+
+rules // Result insertion
+	
+	task-create-insert(|ctx):
+		term -> <new-task(|ctx)> Insert(term)
+	
+	perform-task(|task-id):
+		Insert(term) -> <insert-results-or-delay> term
+		  
+	task-is-combinator = ?Insert(_)
+  
+rules // General purpose rewrite
+      	
+  /**
+  * Create a rewrite task
+  * @type term -> Result(Int)
+  */
+  task-create-rewrite(|ctx, key) = <new-task(|ctx)> Rewrite(key, <id>)
+      	
+  perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
+  
+rules // Cyclic task execution
 	
 	perform-cyclic-task(|nr) = fail
 	
 	perform-task(|nr):
 		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction
-
-rules
-	
-	task-is-combinator = ?Choice(_)
-  perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
-  
-rules
-	
-	task-is-combinator = ?Sequence(_)
-  perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
-  
-rules
-  
-  perform-task(|nr) = ?Id(<MkSingleton>)
-  	
-rules
-       
-  task-is-combinator = ?Combine(_)
-  perform-task(|nr)  = ?Combine(<map(is-list <+ MkSingleton)>); concat
-
-rules
-       
-  task-is-combinator = ?Collect(_)
-  perform-task(|nr)  = ?Collect(<map(is-list <+ MkSingleton)>); concat; MkSingleton
-  
-rules
-      	
-  perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
-  
-rules
-  
-  perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
-  perform-task(|nr) = ?Length(<length>);  MkSingleton
-  

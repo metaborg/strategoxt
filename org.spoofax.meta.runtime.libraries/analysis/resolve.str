@@ -15,7 +15,7 @@ rules
 		where
 			task-setup(|project-path);
     	index-setup(|language, project-path);
-    	definition := <has-annos; get-annos; fetch-elem(?Use(<id>)); task-get-result; Hd> node
+    	definition := <has-annos; get-annos; fetch-elem(?Use(<id>)); task-get-results; Hd> node
     	
 	// Legacy
 	analysis-resolve(|language, project-path, path) = analysis-resolve(|language, project-path)

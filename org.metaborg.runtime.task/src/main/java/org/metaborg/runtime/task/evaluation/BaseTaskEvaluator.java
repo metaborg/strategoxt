@@ -25,6 +25,12 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final IStrategoConstructor singleConstructor;
 
 
+	/** Task identifier of the task that is currently being evaluated. **/
+	private IStrategoTerm current = null;
+
+	/** Flag indicating if the current task has been delayed. **/
+	private boolean delayed = false;
+
 	/** Timer for measuring task time. **/
 	private final Timer timer = new Timer();
 
@@ -51,22 +57,43 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
+	}
+
+	@Override
+	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
+	}
+
+	private void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cyclic) {
+		delayed = false;
+		current = taskID;
+
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
-			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
+			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task, false);
 
 		if(combinations != null && combinations._2()) {
 			// Inserting results failed because some tasks were not solved yet.
-			evaluationQueue.taskDelayed(taskID, combinations._1());
+			evaluationQueue.delay(taskID, combinations._1());
 			return;
 		}
+
+		final boolean execute = combinations != null;
 
 		// TODO: optimize success/unknown using a bitflag?
 		boolean unknown = false;
 		boolean failure = true;
-		if(combinations != null) {
+		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
+				if(cyclic)
+					instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
+
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
 				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
+
 				boolean done = false;
 				switch(resultType) {
 					case Fail:
@@ -81,64 +108,39 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						break;
 				}
 
-				if(done)
+				if(done || delayed)
 					break;
 			}
 		}
 
-		if(!unknown) {
+		if(!unknown && !delayed) {
 			// Try to schedule new tasks even for failed tasks since they may activate combinators.
 			evaluationQueue.taskSolved(taskID);
 
 			if(failure)
-				task.setFailed();
+				if(!execute)
+					task.setDependencyFailed();
+				else
+					task.setFailed();
 		}
+
+		delayed = false;
+		current = null;
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
-			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task);
+	public IStrategoTerm current() {
+		return current;
+	}
 
-		if(combinations != null && combinations._2()) {
-			// Inserting results failed because some tasks were not solved yet.
-			evaluationQueue.taskDelayed(taskID, combinations._1());
-			return;
-		}
-
-		// TODO: optimize success/unknown using a bitflag?
-		boolean unknown = false;
-		boolean failure = true;
-		if(combinations != null) {
-			for(IStrategoTerm instruction : combinations._1()) {
-				instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
-				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
-				final TaskResultType resultType = handleResult(taskID, task, result, evaluationQueue);
-				switch(resultType) {
-					case Fail:
-						break;
-					case Success:
-						failure = false;
-						break;
-					default: // Unknown result or dynamic dependency.
-						unknown = true;
-						break;
-				}
-			}
-		}
-
-		if(!unknown) {
-			// Try to schedule new tasks even for failed tasks since they may activate combinators.
-			evaluationQueue.taskSolved(taskID);
-
-			if(failure)
-				task.setFailed();
-		}
+	@Override
+	public void delay() {
+		delayed = true;
 	}
 
 	@Override
 	public void reset() {
+		delayed = false;
 		timer.reset();
 	}
 
@@ -166,7 +168,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
 			if(resultAppl.getConstructor().equals(dependencyConstructor)) {
 				// The task has dynamic dependencies and needs to be delayed.
-				evaluationQueue.taskDelayed(taskID, resultAppl.getSubterm(0));
+				evaluationQueue.delay(taskID, resultAppl.getSubterm(0));
 				return TaskResultType.DynamicDependency;
 			} else if(resultAppl.getConstructor().equals(singleConstructor)) {
 				// The result must be treated as a single result.

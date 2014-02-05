@@ -3,6 +3,7 @@ module task/messages
 imports
 	
 	task/core
+	task/create
 	editor/origins
 	
 signature
@@ -18,11 +19,12 @@ signature
     Warning : Origin * Term * Msg -> Message
     Note    : Origin * Term * Msg -> Message
     
+    Always   : MessageTrigger // Always
     Failure  : MessageTrigger // No results
     Success  : MessageTrigger // At least one result
     Multiple : MessageTrigger // More than one result
 
-    Message  : List(Result) * MessageTrigger * Term -> Instruction
+    Message  : Result * List(Result) * MessageTrigger * Term -> Instruction
 
 overlays
   
@@ -72,55 +74,95 @@ rules // querying
 	
 rules // task creation
 	
-	task-create-message-on-failure(|partition, task):
-    message -> <new-task(|partition)> Message(task, Failure(), message)
+	task-create-message(|partition, exclude*):
+    message -> <new-task(|partition)> Message((), exclude*, Always(), message)
   
-  task-create-error-on-failure(|partition, task, message) = 
-  	task-error-message(|message); task-create-message-on-failure(|partition, task)
+  task-create-error(|partition, exclude*, message) = 
+  	task-error-message(|message); task-create-message(|partition, exclude*)
+	task-create-error(|partition, message) = 
+  	task-create-error(|partition, [], message)
+  		
+	task-create-warning(|partition, exclude*, message) =
+		task-warning-message(|message); task-create-message(|partition, exclude*)
+	task-create-warning(|partition, message) =
+		task-create-warning(|partition, [], message)
 		
+	task-create-note(|partition, exclude*, message) =
+		task-note-message(|message); task-create-message(|partition, exclude*)
+	task-create-note(|partition, message) =
+		task-create-note(|partition, [], message)	
+	
+	
+	task-create-message-on-failure(|partition, task, exclude*):
+    message -> <new-task(|partition)> Message(task, exclude*, Failure(), message)
+  
+  task-create-error-on-failure(|partition, task, exclude*, message) = 
+  	task-error-message(|message); task-create-message-on-failure(|partition, task, exclude*)
+	task-create-error-on-failure(|partition, task, message) = 
+  	task-create-error-on-failure(|partition, task, [], message)
+  		
+	task-create-warning-on-failure(|partition, task, exclude*, message) =
+		task-warning-message(|message); task-create-message-on-failure(|partition, task, exclude*)
 	task-create-warning-on-failure(|partition, task, message) =
-		task-warning-message(|message); task-create-message-on-failure(|partition, task)
+		task-create-warning-on-failure(|partition, task, [], message)
 		
+	task-create-note-on-failure(|partition, task, exclude*, message) =
+		task-note-message(|message); task-create-message-on-failure(|partition, task, exclude*)
 	task-create-note-on-failure(|partition, task, message) =
-		task-note-message(|message); task-create-message-on-failure(|partition, task)
+		task-create-note-on-failure(|partition, task, [], message)		
 			
 			
-	task-create-message-on-success(|partition, task):
-    message -> <new-task(|partition)> Message(task, Success(), message)
+	task-create-message-on-success(|partition, task, exclude*):
+    message -> <new-task(|partition)> Message(task, exclude*, Success(), message)
   
-  task-create-error-on-success(|partition, task, message) = 
-  	task-error-message(|message); task-create-message-on-success(|partition, task)
+  task-create-error-on-success(|partition, task, exclude*, message) = 
+  	task-error-message(|message); task-create-message-on-success(|partition, task, exclude*)
+	task-create-error-on-success(|partition, task, message) = 
+		task-create-error-on-success(|partition, task, [], message)
 		
+	task-create-warning-on-success(|partition, task, exclude*, message) =
+		task-warning-message(|message); task-create-message-on-success(|partition, task, exclude*)
 	task-create-warning-on-success(|partition, task, message) =
-		task-warning-message(|message); task-create-message-on-success(|partition, task)
+		task-create-warning-on-success(|partition, task, [], message)
 		
+	task-create-note-on-success(|partition, task, exclude*, message) =
+		task-note-message(|message); task-create-message-on-success(|partition, task, exclude*)
 	task-create-note-on-success(|partition, task, message) =
-		task-note-message(|message); task-create-message-on-success(|partition, task)
+		task-create-note-on-success(|partition, task, [], message)
 		
 		
-	task-create-message-on-multiple(|partition, task):
-    message -> <new-task(|partition)> Message(task, Multiple(), message)
+	task-create-message-on-multiple(|partition, task, exclude*):
+    message -> <new-task(|partition)> Message(task, exclude*, Multiple(), message)
   
-  task-create-error-on-multiple(|partition, task, message) = 
-  	task-error-message(|message); task-create-message-on-multiple(|partition, task)
+  task-create-error-on-multiple(|partition, task, exclude*, message) = 
+  	task-error-message(|message); task-create-message-on-multiple(|partition, task, exclude*)
+	task-create-error-on-multiple(|partition, task, message) =
+		task-create-error-on-multiple(|partition, task, [], message)
 		
+	task-create-warning-on-multiple(|partition, task, exclude*, message) =
+		task-warning-message(|message); task-create-message-on-multiple(|partition, task, exclude*)
 	task-create-warning-on-multiple(|partition, task, message) =
-		task-warning-message(|message); task-create-message-on-multiple(|partition, task)
+		task-create-warning-on-multiple(|partition, task, [], message)
 		
+	task-create-note-on-multiple(|partition, task, exclude*, message) =
+		task-note-message(|message); task-create-message-on-multiple(|partition, task, exclude*)
 	task-create-note-on-multiple(|partition, task, message) =
-		task-note-message(|message); task-create-message-on-multiple(|partition, task)
+		task-create-note-on-multiple(|partition, task, [], message)
 
 rules // task execution
   
-  task-is-combinator = ?Message(_, _, _)
+  task-is-combinator = ?Message(_, _, _, _)
 
   perform-task(|n):
-    Message(task, trigger, message) -> []
+    Message(task, exclude*, trigger, message) -> []
     where
+    	 // Use task-result-combinations to recursively insert into exclude tasks, to find out if they fail.
+    	<map(not(?[]); task-result-combinations)> exclude*;
       switch !trigger
-        case Failure()  : not(<Hd> task); task-add-message(|n, message)
-        case Success()  : <Hd> task; task-add-message(|n, message)
-        case Multiple() : <Tl; Hd> task; task-add-message(|n, message)
+      	case ?Always()   : task-add-message(|n, message)
+        case ?Failure()  : not(<Hd> task); task-add-message(|n, message)
+        case ?Success()  : <Hd> task; task-add-message(|n, message)
+        case ?Multiple() : <Tl; Hd> task; task-add-message(|n, message)
       end
 
 rules

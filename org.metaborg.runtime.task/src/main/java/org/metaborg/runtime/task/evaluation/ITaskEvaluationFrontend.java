@@ -38,6 +38,17 @@ public interface ITaskEvaluationFrontend {
 		Strategy insert, Strategy perform);
 
 	/**
+	 * Returns the task identifier of the task that is currently being evaluated.
+	 */
+	public abstract IStrategoTerm current();
+
+	/**
+	 * Indicates that task with given task identifier is delayed because dynamic dependencies have been found. Updates
+	 * the runtime dependency graph with runtime dependencies for given task.
+	 */
+	public abstract void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
+
+	/**
 	 * Resets the task evaluation frontend to the initial state.
 	 */
 	public abstract void reset();

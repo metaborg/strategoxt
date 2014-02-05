@@ -26,7 +26,7 @@ rules
   
   record-time(|name) = id
   	
- 	try-make-list = is-list <+ ?Dependency(_) <+ ![<id>]
+ 	try-make-list = is-list <+ ![<id>]
 		
 	try-remove-list = is-list < Hd + id
 	
@@ -58,3 +58,24 @@ rules // multimap simulation
 			
 	hash-multimap-copy-fold(|key, value*):
 		to -> <hash-multimap-putlist(|key, value*)> to
+
+rules // Debugging
+	
+	debug0 = debug(!"0 ")
+	debug1 = debug(!"1 ")
+	debug2 = debug(!"2 ")
+	debug3 = debug(!"3 ")
+	debug4 = debug(!"4 ")
+	debug5 = debug(!"5 ")
+	debug6 = debug(!"6 ")
+	debug7 = debug(!"7 ")
+	debug8 = debug(!"8 ")
+	debug9 = debug(!"9 ")
+
+	debuga = debug(!"a ")
+	debugb = debug(!"b ")
+	debugc = debug(!"c ")
+	
+	debugx = debug(!"x ")
+	debugy = debug(!"y ")
+	debugz = debug(!"z ")

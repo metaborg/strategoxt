@@ -13,3 +13,5 @@ completions
     "alias " <Term:Term> " -> " <Term:Term>  
   completion template Entry : "alias Term <- Term" =
     "alias " <Term:Term> " <- " <Term:Term>  
+  completion template Entry : "rel Term <Term: Term" =
+    "rel " <Term:Term> " <" <Term:Term> ": " <Term:Term>  

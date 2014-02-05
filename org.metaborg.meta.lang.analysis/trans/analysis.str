@@ -11,9 +11,9 @@ imports
 	lib/runtime/nabl/-
 	lib/runtime/task/-
 	lib/runtime/index/-
-  editor/Analysis-Outliner
 	names
 	pp
+	outline
 	convert
 
 rules // Analysis

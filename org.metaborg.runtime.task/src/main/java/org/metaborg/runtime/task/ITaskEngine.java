@@ -7,7 +7,6 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -63,9 +62,7 @@ public interface ITaskEngine {
 	 * Adds a persisted task back to the task engine.
 	 *
 	 * @param taskID The identifier of the task.
-	 * @param instruction The instruction of the task.
-	 * @param isCombinator Whether this task is a task combinator. A value of 1 indicates a task combinator
-	 * @param shortCircuit Whether this task should be short circuited. A value of 1 indicates true.
+	 * @param task The task object.
 	 * @param partitions The partitions of the task.
 	 * @param initialDependencies The initial dependencies of the task.
 	 * @param dependencies The dependencies of the task.
@@ -73,10 +70,9 @@ public interface ITaskEngine {
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed If the task has failed. A value of 1 indicates failure.
 	 */
-	public abstract void addPersistedTask(IStrategoTerm taskID, IStrategoTerm instruction, IStrategoInt isCombinator,
-		IStrategoInt shortCircuit, IStrategoList partitions, IStrategoList initialDependencies,
-		IStrategoList dependencies, IStrategoList reads, IStrategoTerm results, IStrategoInt failed,
-		IStrategoTerm message, IStrategoTerm time, IStrategoTerm evaluations);
+	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
+		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations);
 
 	/**
 	 * Removes task with given identifier from the task engine.
@@ -139,14 +135,6 @@ public interface ITaskEngine {
 	public abstract IStrategoTerm evaluateNow(IContext context, Strategy collect, Strategy insert, Strategy perform,
 		Iterable<IStrategoTerm> taskIDs);
 
-
-	/**
-	 * Queries if a task with given instruction exists.
-	 *
-	 * @param instruction The instruction.
-	 * @return True if it exists, false otherwise.
-	 */
-	public abstract boolean taskExists(IStrategoTerm instruction);
 
 	/**
 	 * Gets task with given identifier.
@@ -232,22 +220,29 @@ public interface ITaskEngine {
 
 
 	/**
-	 * Gets all other task identifiers that task with given identifier depends on.
-	 *
-	 * @param taskID The task identifier to get dependencies for.
+	 * Gets all other task identifiers that task with given identifier statically depends on.
+	 * 
+	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID);
 
 	/**
-	 * Gets all other task identifier that task with given identifier transitively depends on.
-	 *
-	 * @param taskID The task identifier to get dependencies for.
+	 * Gets all other task identifiers that task with given identifier dynamically depends on.
+	 * 
+	 * @param taskID The task identifier to get dynamic dependencies for.
+	 */
+	public abstract Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID);
+
+	/**
+	 * Gets all other task identifier that task with given identifier statically transitively depends on.
+	 * 
+	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID);
 
 	/**
 	 * Gets all other task identifier that depend on the task with given identifier.
-	 * 
+	 *
 	 * @param taskID The task identifier to get dependent tasks for.
 	 * @param withDynamic If dynamic dependents should be included.
 	 */

@@ -16,18 +16,33 @@ templates
 >
 	
 	TaskDef.TaskDef = 
-<task <TASKID> [<TaskRef*; separator=", ">] = 
+<task <TASKID> <Deps>= 
 	<Instruction> 
 	-\> 
-	<Result>
+	<Result><Reads>
 >
 	TaskRef.TaskRef = <<TASKID>>
 	
+	Deps.None   = <>
+	Deps.SDeps  = <s[<DepList>] >
+	Deps.DDeps  = <d[<DepList>] >
+	Deps.SDDeps = <s[<DepList>] d[<DepList>] >
+	DepList     = <<TaskRef*; separator=", ">>
+
 	Instruction = <<Term>> {avoid}
 	
-	Result       = <<Term>>
-	Result.Fail  = "fail"
-	Result.Empty = "_"
+	Result         = <<Term>>
+	Result.Fail    = "fail"
+	Result.DepFail = "depfail"
+	Result.NotExec = "notexecuted"
+	
+	Reads.None     = <>
+	Reads.Reads    = 
+<
+
+reads
+<Term>
+>
 	
 	Term.TaskRef = <&<TASKID>>
-	Term.URI = </ <URI> />
+	Term.URI     = </ <URI> />

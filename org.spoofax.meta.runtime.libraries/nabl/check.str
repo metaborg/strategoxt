@@ -23,7 +23,7 @@ rules // Error checking tasks
 		with
 			<nabl-fix-name; task-create-error-on-failure(|partition, task, "Unresolved reference")> name
 			
-	nabl-duplicate-task(|partition, unique):
+	nabl-duplicate-task(|ctx, unique):
 		name -> name
 		where
 			uri := <nabl-uri> name;
@@ -32,27 +32,23 @@ rules // Error checking tasks
 		with
 			if Unique() := unique then
 				uri'		:= <nabl-uri-parent> uri;
-				resolve := <new-task(|partition)> ResolveDefs(uri', ns, name, []);
-				<task-create-error-on-multiple(|partition, resolve, "Duplicate definition")> name
+				resolve := <nabl-create-resolvedefs(|ctx, ns, name, [])> uri';
+				<task-create-error-on-multiple(|ctx, resolve, "Duplicate definition")> name
 			end
 			
 	// TODO: check needs to be converted into a task.
-	nabl-hiding-task(|partition):
+	nabl-hiding-task(|ctx):
 		name -> name
 		where
 			uri := <nabl-uri> name;
 			ns	:= <nabl-uri-namespace> uri;
 			not(<nabl-check-disable-hiding(|uri, ns)> name)
 		where
-			if inverse-alias* := <nabl-get-all-inverse-aliasses> uri then
-				uri* := <map(nabl-uri-parent; nabl-uri-parent)> inverse-alias*
-			else
-				uri* := <nabl-uri-parent; nabl-uri-parent; ![<id>]> uri
-			end;
-			task* := <map(nabl-use-subtask(|partition, ns, <nabl-fix-name> name, [], All()))> uri*;
-			task  := <new-task(|partition)> Choice(task*);
-			<task-create-error-on-success(|partition, task, "Declaration hides previous definition")> name
-
+			nabl-uri-all-lexical-parent-scopes;
+			nabl-insert-import-tasks(|ctx, ns);
+      nabl-resolve-task(|ctx, ns, <nabl-fix-name> name, []) => task;
+      <task-create-error-on-success(|ctx, task, "Declaration hides previous definition")> name
+  
 	nabl-constraint(|partition) = 
 		nabl-hiding-task(|partition)
 

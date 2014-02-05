@@ -6,7 +6,10 @@ imports
 	index/query
 	task/core
 	task/debug
+	task/insert
 	editor/interop
+	nabl/entries
+	nabl/uri
 
 rules // Index
 	 
@@ -25,6 +28,21 @@ rules // Index
       	filename := $[[project-path]/[<dirname> path]/index.project.aterm];
       	result   := result-ast
     	end
+    	
+  analysis-debug-index-project-resolve(|language):
+	(_, _, _, path, project-path) -> (filename, result)
+    with
+      index-setup(|language, project-path);
+      task-setup(|project-path);
+      result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+      result-ast' := <beautify-indices> result-ast;
+	  if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
+		filename := $[[project-path]/[<dirname> path]/project.index];
+		result   := result-index
+	  else
+		filename := $[[project-path]/[<dirname> path]/index.project.aterm];
+		result   := result-ast'
+	  end
 	 
   analysis-debug-index-partition(|language):
     (_, _, _, path, project-path) -> (filename, result)
@@ -38,6 +56,22 @@ rules // Index
       else
       	filename := <guarantee-extension(|"index.partition.aterm")> path;
       	result   := result-ast
+    	end
+    	
+  analysis-debug-index-partition-resolve(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      index-setup(|language, project-path);
+      task-setup(|project-path);
+    	partition  := $[[project-path]/[path]];
+      result-ast := [((partition, []), <index-get-all-in-partition> partition)];
+      result-ast' := <beautify-indices> result-ast;
+      if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
+      	filename := <guarantee-extension(|"partition.index")> path;
+      	result   := result-index
+      else
+      	filename := <guarantee-extension(|"index.partition.aterm")> path;
+      	result   := result-ast'
     	end
   
 rules // Task engine    
@@ -94,7 +128,7 @@ rules // Index & task engine
     	index-setup(|language, project-path);
       task-setup(|project-path);
       task-debug  := <task-debug-info(|())>;
-      index-debug := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+      index-debug := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition; sort-index> f)\)>;
       result-ast  := (task-debug, index-debug);
       if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
       	filename := $[[project-path]/[<dirname> path]/project.analysis];
@@ -111,7 +145,7 @@ rules // Index & task engine
       task-setup(|project-path);
       partition   := $[[project-path]/[path]];
       task-debug  := <task-debug-info(|partition)>;
-      index-debug := [(partition, <index-get-all-in-partition> partition)];
+      index-debug := [(partition, <index-get-all-in-partition; sort-index> partition)];
       result-ast  := (task-debug, index-debug);
       if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
       	filename := <guarantee-extension(|"partition.analysis")> path;
@@ -144,3 +178,71 @@ rules // Resetting
     	task-reset;
       index-setup(|language, project-path);
       index-reload
+
+rules // Helper rules for Index Resolved
+
+	beautify-indices: indices -> indices''
+		where
+			indices'  := <filter(ignore-extension)> indices;
+			indices'' := <map(beautify-index)>indices'
+		
+	beautify-index: (partition, index) -> (partition, index4)
+		where
+			index2 := <give-all-tasks-results>index;
+			index3 := <reverse-uris> index2;
+			index4 := <sort-index> index3
+
+	// ignore partitions of generated files
+	ignore-extensions: _ -> ["index", "analysis", "task"]
+	ignore-extension: (partition, index) -> (partition, index)
+		where
+			(path, _) := partition;
+			extension := <get-extension>path;
+			<not(elem)> (extension, <ignore-extensions>)
+	
+	// resolve all task results
+	give-all-tasks-results = bottomup(try(give-task-results))
+	give-task-results: e@Result(_) -> <insert-results-or-delay <+ with(fail|"Task has no result yet: ")>e
+	
+	sort-index = qsort(index-compare)
+	
+	// order the index entries
+	index-ordering: _ -> ["Def","Prop","RelTuple","Alias","InverseAlias","Use"]
+
+	index-compare: (a,b) -> (a,b)
+		where
+			a-order := <get-index> (<get-constructor>a, <index-ordering>);
+			b-order := <get-index> (<get-constructor>b, <index-ordering>);
+			if <eq>(a-order, b-order) then
+				if Use(_) := a then
+					Use([Def(URI(_, a-url))]) := a;
+					Use([Def(URI(_, b-url))]) := b
+				else
+					[URI(_, a-url)|_] := <get-arguments>a;
+					[URI(_, b-url)|_] := <get-arguments>b
+				end;
+				<uri-compare> (a-url, b-url)
+			else
+				cmp-o := <lt>(a-order, b-order)
+			end
+	
+	uri-compare: ([], []) -> <fail>
+	uri-compare: (a, []) -> <fail>
+	uri-compare: ([], b) -> ([], b)
+	uri-compare: ([a|as], [b|bs]) -> ([a|as], [b|bs]) 
+		where
+			ID(a-namespace, a-name, _) := a;
+			ID(b-namespace, b-name, _) := b;
+			if <eq>(a-namespace, b-namespace) then
+				if <eq>(a-name, b-name) then
+					<uri-compare> (as, bs)
+				else
+					<string-lt>(a-name, b-name)
+				end
+			else
+				<string-lt>(<get-constructor>a-namespace, <get-constructor>b-namespace)
+			end
+			
+	// reverse URIs (for having urls in the right order, and for ordering as tree)
+	reverse-uris = bottomup(try(reverse-uri))
+	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
