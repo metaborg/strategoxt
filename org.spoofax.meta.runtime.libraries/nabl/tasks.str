@@ -65,6 +65,7 @@ rules // Resolve definitions in a scope of a certain namespace and name (stops w
 
 rules // Resolve all definitions in a scope of a certain namespace and name
 	
+	// TODO: This seems to be redundant, given the perform-task rule
   nabl-create-resolvealldefs(|ctx, ns, name, prop*):
   	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns, name, prop*)
   
