@@ -154,7 +154,7 @@ rules // task execution
   task-is-combinator = ?Message(_, _, _, _)
 
   perform-task(|n):
-    Message(task, exclude*, trigger, message) -> []
+    Message(task, exclude*, trigger, message) -> ()
     where
     	 // Use task-result-combinations to recursively insert into exclude tasks, to find out if they fail.
     	<map(not(?[]); task-result-combinations)> exclude*;
