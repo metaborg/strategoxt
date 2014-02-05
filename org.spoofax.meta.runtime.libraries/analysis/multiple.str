@@ -3,6 +3,7 @@ module analysis/multiple
 imports
 
   analysis/core
+  task/core
   nabl/utils
 
 rules // Multi file analysis

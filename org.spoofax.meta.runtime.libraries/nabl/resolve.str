@@ -2,13 +2,11 @@ module nabl/resolve
 
 imports
   
-  libtask
-  
-imports
-  
   nabl/tasks
 	nabl/entries
-	
+	task/core
+  task/utils
+  
 rules // Reference resolution
   
   nabl-is-reference =

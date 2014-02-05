@@ -2,11 +2,9 @@ module nabl/uri
 
 imports
   
-  libeditor
-  
-imports
-  
   nabl/interface
+  index/core
+  editor/annotations
   
 signature
 

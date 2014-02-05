@@ -1,10 +1,12 @@
 module analysis/debug
 
 imports
-  
-  libindex
-  libtask
-  libeditor
+	
+	index/core
+	index/query
+	task/core
+	task/debug
+	editor/interop
 
 rules // Index
 	 

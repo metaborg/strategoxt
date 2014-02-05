@@ -1,12 +1,10 @@
 module nabl/collect
 
 imports
-  
-  libtask
-  libeditor
-  
-imports
 	
+	task/core
+	task/tasks
+	task/messages
 	nabl/tasks
   nabl/entries
   nabl/check
@@ -17,6 +15,8 @@ imports
   properties/collect
   properties/entries
   properties/tasks
+	editor/origins
+	editor/annotations
 	types/collect
 
 signature 

@@ -1,16 +1,5 @@
 module editor/editor
 
-imports
-
-  libstratego-lib
-    
-  editor/annotations
-  editor/interop
-  editor/origins
-  editor/outline
-  editor/positions
-  editor/queue
-
 rules
 	
   project-path = prim("SSL_EXT_projectpath")

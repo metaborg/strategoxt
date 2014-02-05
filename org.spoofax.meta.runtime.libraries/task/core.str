@@ -2,7 +2,6 @@ module task/core
 
 imports 
   
-  task/tasks
   task/interface
   task/utils
   

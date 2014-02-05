@@ -2,19 +2,18 @@ module properties/collect
 
 imports 
 	
-  libtask
-  libeditor
-
-imports
-  
 	properties/entries
 	properties/tasks
 	properties/interface
 	properties/query
+  task/core
+  task/tasks
   nabl/collect
   nabl/uri
   nabl/tasks
   nabl/utils
+  editor/origins
+  editor/annotations
   types/collect
   
 signature

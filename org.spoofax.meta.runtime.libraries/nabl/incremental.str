@@ -1,13 +1,10 @@
 module nbl/incremental
 
 imports
-  
-  libtask
-  
-imports
 	
 	nabl/uri
 	nabl/interface
+	task/core
 	
 rules // Read generation
 	

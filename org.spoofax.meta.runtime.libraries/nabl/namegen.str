@@ -1,17 +1,16 @@
 module nbl/namegen
 
 imports
-  
-  libeditor
-  libindex
-  
-imports
 	
 	nabl/collect
 	nabl/query
 	nabl/uri
 	nabl/utils
 	nabl/interface
+	editor/origins
+	editor/annotations
+	index/core
+	index/query
 	
 signature
 

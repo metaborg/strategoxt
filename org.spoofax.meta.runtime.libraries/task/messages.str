@@ -3,7 +3,7 @@ module task/messages
 imports
 	
 	task/core
-	libeditor
+	editor/origins
 	
 signature
 

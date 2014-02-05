@@ -1,19 +1,17 @@
 module analysis/core
 
 imports
-  
-  libindex
-  libtask
-  libeditor
-
-imports
 	
   analysis/interface
+  index/core
   nabl/collect
   nabl/incremental
   nabl/entries
   nabl/uri
   nabl/utils
+  task/core
+  task/messages
+  editor/origins
   
 signature
 

@@ -1,9 +1,6 @@
 .cache
-/dist
-ant-contrib*.jar
-strategoxt-antlib.xml
 /bin
 /src-gen
-*.ctree
-*.rtree
-*.ctree.dep
+**/*.ctree
+**/*.rtree
+**/*.ctree.dep

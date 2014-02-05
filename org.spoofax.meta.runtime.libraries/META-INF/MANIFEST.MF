@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Runtime Libraries
-Bundle-SymbolicName: org.metaborg.meta.runtime.libraries
-Bundle-Version: 1.2.0.qualifier
-Bundle-Vendor: metaborg.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.strategoxt.strj

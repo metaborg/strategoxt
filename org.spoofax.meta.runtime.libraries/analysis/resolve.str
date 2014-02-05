@@ -1,15 +1,13 @@
 module analysis/resolve
 
 imports
-  
-  libtask
-  libindex
-  
-imports
 	
 	nabl/resolve
 	nabl/entries
-		
+	task/core
+	index/core
+	index/query
+	
 rules
 	
 	analysis-resolve(|language, project-path):

@@ -1,13 +1,10 @@
 module nabl/complete
 
 imports
-  
-  libtask
-  
-imports
 	
 	nabl/collect
   nabl/uri
+  task/core
   
 signature
 

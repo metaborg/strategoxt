@@ -2,15 +2,12 @@ module nabl/entries
 
 imports
   
-  libindex
-  libeditor
-
-imports
-  
   nabl/collect
   nabl/utils
   nabl/uri
   nabl/resolve
+  index/core
+  editor/origins
   
 signature
 
