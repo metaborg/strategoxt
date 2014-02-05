@@ -32,11 +32,10 @@ rules // Specific queries
    * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
    */
   nabl-get-child-definitions(|ns):
-    contains-uri* -> [def*, alias-def*]
+    contains-uri* -> def*
     where
-    	uri*       := <nabl-uris> contains-uri*;
-    	def*       := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*;
-    	alias-def* := <mapconcat(!Alias(<id>, ()); nabl-get-children(|ns)); mapconcat(nabl-value; !Def(<id>); nabl-get-all-definitions)> uri*
+    	uri* := <nabl-uris> contains-uri*;
+    	def* := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*
 
   /**
    * Gets all Use entries that match the given URI.
