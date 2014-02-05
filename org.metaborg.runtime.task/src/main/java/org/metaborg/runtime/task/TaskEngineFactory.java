@@ -17,7 +17,6 @@ import org.spoofax.interpreter.library.ssl.StrategoHashMap;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 import org.spoofax.terms.attachments.TermAttachmentSerializer;
@@ -31,7 +30,7 @@ public class TaskEngineFactory {
 			final IStrategoTerm taskID = entry.getKey();
 			final Task task = entry.getValue();
 
-			final Iterable<IStrategoString> partitions = taskEngine.getPartitionsOf(taskID);
+			final Iterable<IStrategoTerm> sources = taskEngine.getSourcesOf(taskID);
 			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
 			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 			final IStrategoTerm results = serializeResults(task.results(), factory, serializer);
@@ -40,7 +39,7 @@ public class TaskEngineFactory {
 				message = serializer.toAnnotations(message);
 			tasks =
 				factory.makeListCons(
-					createTaskTerm(factory, taskID, task, partitions, dependencies, reads, results, message), tasks);
+					createTaskTerm(factory, taskID, task, sources, dependencies, reads, results, message), tasks);
 		}
 
 		final IStrategoTerm digestState = taskEngine.getDigester().state(factory);
@@ -62,7 +61,7 @@ public class TaskEngineFactory {
 			final IStrategoTerm instruction = taskTerm.getSubterm(++i);
 			final IStrategoInt isCombinator = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoInt shortCircuit = (IStrategoInt) taskTerm.getSubterm(++i);
-			final IStrategoList partitions = (IStrategoList) taskTerm.getSubterm(++i);
+			final IStrategoList sources = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoList initialDependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoList dependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoList reads = (IStrategoList) taskTerm.getSubterm(++i);
@@ -75,7 +74,7 @@ public class TaskEngineFactory {
 			final Task task =
 				new Task(instruction, initialDependencies, takeBool(isCombinator), takeBool(shortCircuit));
 
-			taskEngine.addPersistedTask(taskID, task, partitions, initialDependencies, dependencies, reads,
+			taskEngine.addPersistedTask(taskID, task, sources, initialDependencies, dependencies, reads,
 				takeNullable(results), TaskStatus.get(status.intValue()), takeNullable(message), takeLong(time),
 				takeShort(evaluations));
 		}
@@ -84,10 +83,10 @@ public class TaskEngineFactory {
 	}
 
 	private IStrategoTerm createTaskTerm(ITermFactory factory, IStrategoTerm taskID, Task task,
-		Iterable<IStrategoString> partitions, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
+		Iterable<IStrategoTerm> sources, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
 		IStrategoTerm results, IStrategoTerm message) {
 		return factory.makeTuple(taskID, task.instruction, makeBool(factory, task.isCombinator),
-			makeBool(factory, task.shortCircuit), makeList(factory, partitions), task.initialDependencies,
+			makeBool(factory, task.shortCircuit), makeList(factory, sources), task.initialDependencies,
 			makeList(factory, dependencies), makeList(factory, reads), makeNullable(factory, results),
 			factory.makeInt(task.status().id), makeNullable(factory, message), makeLong(factory, task.time()),
 			makeShort(factory, task.evaluations()));

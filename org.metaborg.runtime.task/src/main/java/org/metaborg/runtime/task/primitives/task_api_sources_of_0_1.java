@@ -1,6 +1,5 @@
 package org.metaborg.runtime.task.primitives;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
@@ -10,34 +9,34 @@ import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
-public class task_api_partitions_of_0_1 extends AbstractPrimitive {
-	public static task_api_partitions_of_0_1 instance = new task_api_partitions_of_0_1();
+public class task_api_sources_of_0_1 extends AbstractPrimitive {
+	public static task_api_sources_of_0_1 instance = new task_api_sources_of_0_1();
 
-	public task_api_partitions_of_0_1() {
-		super("task_api_partitions_of", 0, 1);
+	public task_api_sources_of_0_1() {
+		super("task_api_sources_of", 0, 1);
 	}
 
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm taskIDOrTaskIDS = tvars[0];
-		
-		final Set<IStrategoString> partitions = new HashSet<IStrategoString>();
+
+		final Set<IStrategoTerm> sources = Sets.newHashSet();
 		if(Tools.isTermList(taskIDOrTaskIDS)) {
 			for(IStrategoTerm taskID : taskIDOrTaskIDS) {
-				Iterables.addAll(partitions, taskEngine.getPartitionsOf(taskID));
+				Iterables.addAll(sources, taskEngine.getSourcesOf(taskID));
 			}
 		} else {
-			Iterables.addAll(partitions, taskEngine.getPartitionsOf(taskIDOrTaskIDS));
+			Iterables.addAll(sources, taskEngine.getSourcesOf(taskIDOrTaskIDS));
 		}
 
-		env.setCurrent(env.getFactory().makeList(partitions));
-		
+		env.setCurrent(env.getFactory().makeList(sources));
+
 		return true;
 	}
 }

@@ -14,7 +14,6 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -41,9 +40,9 @@ public class TaskEngine implements ITaskEngine {
 	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
 
 
-	/** Origin partitions of tasks. */
-	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoString> toPartition =
-		BidirectionalLinkedHashMultimap.create();
+	/** Origis of tasks. */
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toSource = BidirectionalLinkedHashMultimap
+		.create();
 
 	/** Bidirectional mapping of dependencies between tasks identifiers. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
@@ -59,7 +58,7 @@ public class TaskEngine implements ITaskEngine {
 		.create();
 
 
-	/** Tasks that are not in any partition are garbage. **/
+	/** Tasks that do not have a source are garbage. **/
 	private final Set<IStrategoTerm> garbage = Sets.newHashSet();
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
@@ -96,8 +95,8 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void startCollection(IStrategoString partition) {
-		taskCollection.startCollection(partition, wrapper.getInPartition(partition));
+	public void startCollection(IStrategoTerm source) {
+		taskCollection.startCollection(source, wrapper.getFromSource(source));
 	}
 
 	@Override
@@ -120,9 +119,9 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
 		boolean isCombinator, boolean shortCircuit) {
-		if(!taskCollection.inCollection(partition))
+		if(!taskCollection.inCollection(source))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
@@ -137,7 +136,7 @@ public class TaskEngine implements ITaskEngine {
 		}
 		taskCollection.keepTask(taskID);
 
-		addToPartition(taskID, partition);
+		addToSource(taskID, source);
 		for(final IStrategoTerm dependency : dependencies)
 			addDependency(taskID, dependency);
 
@@ -149,7 +148,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
+	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> sources,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
 		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
 		if(wrapper.getTask(taskID) != null)
@@ -158,8 +157,8 @@ public class TaskEngine implements ITaskEngine {
 		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
 
-		for(final IStrategoTerm partition : partitions)
-			addToPartition(taskID, (IStrategoString) partition);
+		for(final IStrategoTerm source : sources)
+			addToSource(taskID, source);
 		for(final IStrategoTerm dependency : dependencies)
 			addDependency(taskID, dependency);
 		for(final IStrategoTerm read : reads)
@@ -176,7 +175,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public void removeTask(IStrategoTerm taskID) {
-		removePartitionsOf(taskID);
+		removeSourcesOf(taskID);
 		removeDependencies(taskID);
 		removeReads(taskID);
 		scheduled.remove(taskID);
@@ -188,13 +187,13 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm stopCollection(IStrategoString partition) {
-		final Iterable<IStrategoTerm> removedTasks = taskCollection.stopCollection(partition);
+	public IStrategoTerm stopCollection(IStrategoTerm source) {
+		final Iterable<IStrategoTerm> removedTasks = taskCollection.stopCollection(source);
 		final Iterable<IStrategoTerm> addedTasks = taskCollection.addedTasks();
 
 		for(final IStrategoTerm removed : removedTasks) {
-			wrapper.removeFromPartition(removed, partition);
-			if(wrapper.getPartitionsOf(removed).isEmpty())
+			wrapper.removeFromSource(removed, source);
+			if(wrapper.getSourcesOf(removed).isEmpty())
 				garbage.add(removed);
 		}
 
@@ -314,33 +313,33 @@ public class TaskEngine implements ITaskEngine {
 
 
 	@Override
-	public Set<IStrategoString> getAllPartition() {
-		return Sets.newHashSet(toPartition.values());
+	public Set<IStrategoTerm> getAllSources() {
+		return Sets.newHashSet(toSource.values());
 	}
 
 	@Override
-	public Set<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
-		return toPartition.get(taskID);
+	public Set<IStrategoTerm> getSourcesOf(IStrategoTerm taskID) {
+		return toSource.get(taskID);
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getInPartition(IStrategoString partition) {
-		return toPartition.getInverse(partition);
+	public Iterable<IStrategoTerm> getFromSource(IStrategoTerm source) {
+		return toSource.getInverse(source);
 	}
 
 	@Override
-	public void addToPartition(IStrategoTerm taskID, IStrategoString partition) {
-		toPartition.put(taskID, partition);
+	public void addToSource(IStrategoTerm taskID, IStrategoTerm source) {
+		toSource.put(taskID, source);
 	}
 
 	@Override
-	public void removeFromPartition(IStrategoTerm taskID, IStrategoString partition) {
-		toPartition.remove(taskID, partition);
+	public void removeFromSource(IStrategoTerm taskID, IStrategoTerm source) {
+		toSource.remove(taskID, source);
 	}
 
 	@Override
-	public void removePartitionsOf(IStrategoTerm taskID) {
-		toPartition.removeAll(taskID);
+	public void removeSourcesOf(IStrategoTerm taskID) {
+		toSource.removeAll(taskID);
 	}
 
 
@@ -472,7 +471,7 @@ public class TaskEngine implements ITaskEngine {
 		toTask.clear();
 		toTaskID.clear();
 
-		toPartition.clear();
+		toSource.clear();
 		toDependency.clear();
 		toDynamicDependency.clear();
 		toRead.clear();

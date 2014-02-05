@@ -36,7 +36,7 @@ rules // API
 	task-get-readers                                           = task-api-get-readers(|<id>)
 	task-invalidate-task-reads(|changedRead*)                  = task-api-invalidate-task-reads(|changedRead*)
 	task-merge                                                 = task-api-merge
-	task-partitions-of(|taskIDOrTaskID*)                       = task-api-partitions-of(|taskIDOrTaskID*)
+	task-sources-of(|task-id-or-task-id*)                      = task-api-sources-of(|task-id-or-task-id*)
 	task-persist                                               = task-api-persist
 	task-pop                                                   = task-api-pop
 	task-push                                                  = task-api-push

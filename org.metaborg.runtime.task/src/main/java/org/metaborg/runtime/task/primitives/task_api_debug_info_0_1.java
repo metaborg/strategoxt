@@ -13,7 +13,6 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -28,15 +27,14 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITermFactory factory = env.getFactory();
 		final ITaskEngine engine = TaskManager.getInstance().getCurrent();
-		final IStrategoTerm tupleOrPartitionOrID = tvars[0];
+		final IStrategoTerm tupleOrSourceOrID = tvars[0];
 
-		if(Tools.isTermTuple(tupleOrPartitionOrID) && tupleOrPartitionOrID.getSubtermCount() == 0) {
+		if(Tools.isTermTuple(tupleOrSourceOrID) && tupleOrSourceOrID.getSubtermCount() == 0) {
 			env.setCurrent(createDebugTuples(engine.getTaskIDs(), engine, factory));
-		} else if(Tools.isTermString(tupleOrPartitionOrID)) {
-			env.setCurrent(createDebugTuples(engine.getInPartition((IStrategoString) tupleOrPartitionOrID), engine,
-				factory));
+		} else if(Tools.isTermString(tupleOrSourceOrID)) {
+			env.setCurrent(createDebugTuples(engine.getFromSource(tupleOrSourceOrID), engine, factory));
 		} else {
-			env.setCurrent(createDebugTuple(tupleOrPartitionOrID, engine, factory));
+			env.setCurrent(createDebugTuple(tupleOrSourceOrID, engine, factory));
 		}
 
 		return true;

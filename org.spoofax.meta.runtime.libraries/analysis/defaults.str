@@ -16,8 +16,8 @@ rules // Analysis
 	analysis-default-editor = analysis-single-default-interface <+ (where(not(is-tuple)); analysis-multiple-default-queue)
 	analysis-default-cmd = analysis-single-default-interface <+ (where(not(is-tuple)); analysis-multiple-default-interface)
 
-  analysis-changed-partitions:
-  	taskID* -> <task-partitions-of(|taskID*)>
+  analysis-changed-sources:
+  	task-id* -> <task-sources-of(|task-id*)>
   	
   is-test-file = 
     string-ends-with(|".spt")
@@ -47,7 +47,7 @@ rules // Single finle analysis
 			
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> analyzed-ast;
       
-      partition* := <analysis-changed-partitions> evaluated-task*;
+      partition* := <analysis-changed-sources; filter(is-string)> evaluated-task*;
       if <not(is-test-file)> path then
       	partition := <analysis-partition(|path, project-path)>;
       	<remove-all(?partition <+ ?path); analysis-message-update-partitions-queue(|language, project-path)> partition*
