@@ -1,6 +1,3 @@
 module analysis/interface
 
 rules
-  
-  process-message = fail
-  
