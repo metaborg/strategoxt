@@ -5,239 +5,155 @@
 
 	<import file="strategoxt-antlib.xml" />
 
-	<property name="src-gen" value="src-gen/org/metaborg/meta/runtime/libraries" />
+	<property name="build-root" value="${basedir}/build" />
+	<property name="src-gen" value="${build-root}/src-gen/org/metaborg/meta/runtime/libraries" />
 
-	<target name="clean">
+
+	<target name="setup">
+		<mkdir dir="${build-root}" />
+		<mkdir dir="${src-gen}" />
+	</target>
+
+
+	<target name="clean" depends="setup">
 		<delete>
-			<fileset dir="${basedir}">
+			<fileset dir="${build-root}">
 				<include name="**/*.ctree" />
 				<include name="**/*.rtree" />
 				<include name="**/*.ctree.dep" />
 			</fileset>
 		</delete>
-		<delete dir="${basedir}/src-gen" />
-		<delete dir="${basedir}/dist" />
+		<delete dir="${build-root}/src-gen" />
+		<delete dir="${build-root}/lib" />
 	</target>
 
 
-	<target name="all" depends="editor, index, task, tmpl, analysis" />
-
-
 	<target name="install" depends="all">
-		<copy todir="${output}" verbose="true">
-			<fileset dir="${basedir}" includes="*.ctree" />
-			<fileset dir="${basedir}" includes="*.rtree" />
-			<fileset dir="${basedir}/dist/" includes="*.jar" />
+		<mkdir dir="${output}/lib" />
+		<copy todir="${output}/lib">
+			<fileset dir="${build-root}/lib" includes="**" />
 		</copy>
 	</target>
 
 
-	<target name="editor">
-		<mkdir dir="${src-gen}/editor" />
-		<mkdir dir="${basedir}/bin/editor" />
-
-		<strj-lib input="${basedir}/editor/editor.str"
-		          output="${src-gen}/editor/Main.java"
-		          package="org.metaborg.meta.runtime.libraries.editor"
-		>
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="org.strategoxt.stratego_lib" />
-				<arg value="-I" />
-				<arg value="${basedir}" />
-			</strjlibargs>
-		</strj-lib>
-
-		<move todir="${basedir}">
-			<fileset dir="${basedir}/editor">
-				<include name="*.ctree" />
-				<include name="*.rtree" />
-				<include name="*.ctree.dep" />
-			</fileset>
-		</move>
-
-		<javac srcdir="${basedir}/src-gen"
-		       includes="org/metaborg/meta/runtime/libraries/editor/**"
-		       destdir="${basedir}/bin/editor"
-		       source="1.7"
-		       target="1.7"
-		       debug="on"
-		>
-			<classpath>
-				<pathelement location="${eclipse.spoofaximp.strategojar}" />
-			</classpath>
-		</javac>
-
-		<jar basedir="${basedir}/bin" includes="editor/**" destfile="${basedir}/dist/editor.jar" />
+	<target name="hydra" depends="install">
+		<delete file="${output}/nix-support/hydra-build-products" />
+		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/analysis/analysis.jar${line.separator}</echo>
+		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/editor/editor.jar${line.separator}</echo>
+		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/tmpl/tmpl.jar${line.separator}</echo>
+		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/modelware/modelware.jar${line.separator}</echo>
 	</target>
 
 
-	<target name="index">
-		<mkdir dir="${src-gen}/index" />
-		<mkdir dir="${basedir}/bin/index" />
-
-		<strj-lib input="${basedir}/index/index.str"
-		          output="${src-gen}/index/Main.java"
-		          package="org.metaborg.meta.runtime.libraries.index"
-		>
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="org.strategoxt.stratego_lib" />
-				<arg value="-I" />
-				<arg value="${basedir}" />
-			</strjlibargs>
-		</strj-lib>
-
-		<move todir="${basedir}">
-			<fileset dir="${basedir}/index">
-				<include name="*.ctree" />
-				<include name="*.rtree" />
-				<include name="*.ctree.dep" />
-			</fileset>
-		</move>
-
-		<javac srcdir="${basedir}/src-gen"
-		       includes="org/metaborg/meta/runtime/libraries/index/**"
-		       destdir="${basedir}/bin/index"
-		       source="1.7"
-		       target="1.7"
-		       debug="on"
-		>
-			<classpath>
-				<pathelement location="${eclipse.spoofaximp.strategojar}" />
-			</classpath>
-		</javac>
-
-		<jar basedir="${basedir}/bin" includes="index/**" destfile="${basedir}/dist/index.jar" />
-	</target>
+	<target name="all" depends="setup, analysis, editor, tmpl, modelware" />
 
 
-	<target name="task" depends="editor">
-		<mkdir dir="${src-gen}/task" />
-		<mkdir dir="${basedir}/bin/task" />
+	<macrodef name="build-lib">
+		<attribute name="name" />
+		<attribute name="package" />
+		<attribute name="package-dir" />
+		<attribute name="source-dir" />
+		<attribute name="source-file" />
+		<attribute name="target-jar" />
+		<attribute name="target-ctree-dir" />
 
-		<strj-lib input="${basedir}/task/task.str"
-		          output="${src-gen}/task/Main.java"
-		          package="org.metaborg.meta.runtime.libraries.task"
-		>
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="org.strategoxt.stratego_lib" />
-				<arg value="-la" />
-				<arg value="org.metaborg.meta.runtime.libraries.editor" />
-				<arg value="-I" />
-				<arg value="${basedir}" />
-			</strjlibargs>
-		</strj-lib>
+		<element name="extra-strj-args" optional="true" />
 
-		<move todir="${basedir}">
-			<fileset dir="${basedir}/task">
-				<include name="*.ctree" />
-				<include name="*.rtree" />
-				<include name="*.ctree.dep" />
-			</fileset>
-		</move>
+		<sequential>
+			<mkdir dir="${src-gen}/@{name}" />
+			<mkdir dir="${build-root}/bin/@{name}" />
 
-		<javac srcdir="${basedir}/src-gen"
-		       includes="org/metaborg/meta/runtime/libraries/task/**"
-		       destdir="${basedir}/bin/task"
-      source="1.7"
-      target="1.7"
-      debug="on"
-		>
-			<classpath>
-				<pathelement location="${eclipse.spoofaximp.strategojar}" />
-			</classpath>
-		</javac>
+			<strj-lib input="@{source-file}" output="${src-gen}/@{name}/Main.java" package="@{package}">
+				<strjlibargs>
+					<arg value="-la" />
+					<arg value="org.strategoxt.stratego_lib" />
+					<arg value="-I" />
+					<arg value="${basedir}" />
+					<extra-strj-args />
+				</strjlibargs>
+			</strj-lib>
 
-		<jar basedir="${basedir}/bin" includes="task/**" destfile="${basedir}/dist/task.jar" />
-	</target>
+			<mkdir dir="@{target-ctree-dir}" />
+			<move todir="@{target-ctree-dir}">
+				<fileset dir="@{source-dir}">
+					<include name="*.ctree" />
+					<include name="*.rtree" />
+					<include name="*.ctree.dep" />
+				</fileset>
+			</move>
 
+			<javac srcdir="${build-root}/src-gen"
+			       includes="@{package-dir}/**"
+			       destdir="${build-root}/bin/@{name}"
+			       source="1.7"
+			       target="1.7"
+			       debug="on"
+			>
+				<classpath>
+					<pathelement location="${eclipse.spoofaximp.strategojar}" />
+				</classpath>
+			</javac>
 
-	<target name="tmpl">
-		<mkdir dir="${src-gen}/tmpl" />
-		<mkdir dir="${basedir}/bin/tmpl" />
+			<jar basedir="${build-root}/bin" includes="@{name}/**" destfile="@{target-jar}" />
+		</sequential>
+	</macrodef>
 
-		<strj-lib input="${basedir}/tmpl/pp.str"
-		          output="${src-gen}/tmpl/Main.java"
-		          package="org.metaborg.meta.runtime.libraries.tmpl"
-		>
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="org.strategoxt.stratego_lib" />
-				<arg value="-la" />
-				<arg value="org.strategoxt.stratego_gpp" />
-				<arg value="-I" />
-				<arg value="${basedir}" />
-			</strjlibargs>
-		</strj-lib>
+	<macrodef name="build-lib-default">
+		<attribute name="name" />
+		<attribute name="source-dir" />
+		<attribute name="source-file" />
 
-		<move todir="${basedir}">
-			<fileset dir="${basedir}/tmpl">
-				<include name="*.ctree" />
-				<include name="*.rtree" />
-				<include name="*.ctree.dep" />
-			</fileset>
-		</move>
+		<element name="strj-args" optional="true" />
 
-		<javac srcdir="${basedir}/src-gen"
-		       includes="org/metaborg/meta/runtime/libraries/tmpl/**"
-		       destdir="${basedir}/bin/tmpl"
-      source="1.7"
-      target="1.7"
-      debug="on"
-		>
-			<classpath>
-				<pathelement location="${eclipse.spoofaximp.strategojar}" />
-			</classpath>
-		</javac>
-
-		<jar basedir="${basedir}/bin" includes="tmpl/**" destfile="${basedir}/dist/tmpl.jar" />
-	</target>
+		<sequential>
+			<build-lib name="@{name}"
+			           package="org.metaborg.meta.runtime.libraries.@{name}"
+			           package-dir="org/metaborg/meta/runtime/libraries/@{name}"
+			           source-file="@{source-file}"
+			           source-dir="@{source-dir}"
+			           target-jar="${build-root}/lib/@{name}/@{name}.jar"
+			           target-ctree-dir="${build-root}/lib/@{name}"
+			>
+				<extra-strj-args>
+					<strj-args />
+				</extra-strj-args>
+			</build-lib>
+		</sequential>
+	</macrodef>
 
 
 	<target name="analysis">
-		<mkdir dir="${src-gen}/analysis" />
-		<mkdir dir="${basedir}/bin/analysis" />
-
-		<strj-lib input="${basedir}/analysis/analysis.str"
-		          output="${src-gen}/analysis/Main.java"
-		          package="org.metaborg.meta.runtime.libraries.analysis"
-		>
-			<strjlibargs>
-				<arg value="-la" />
-				<arg value="org.strategoxt.stratego_lib" />
-				<arg value="-la" />
-				<arg value="org.metaborg.meta.runtime.libraries.editor" />
-				<arg value="-la" />
-				<arg value="org.metaborg.meta.runtime.libraries.index" />
-				<arg value="-la" />
-				<arg value="org.metaborg.meta.runtime.libraries.task" />
-				<arg value="-I" />
-				<arg value="${basedir}" />
-			</strjlibargs>
-		</strj-lib>
-
-		<move todir="${basedir}">
-			<fileset dir="${basedir}/analysis">
-				<include name="*.ctree" />
-				<include name="*.rtree" />
-				<include name="*.ctree.dep" />
-			</fileset>
-		</move>
-
-		<javac srcdir="${basedir}/src-gen"
-		       includes="org/metaborg/meta/runtime/libraries/analysis/**"
-		       destdir="${basedir}/bin/analysis"
-		       source="1.7"
-		       target="1.7"
-		       debug="on"
-		>
-			<classpath>
-				<pathelement location="${eclipse.spoofaximp.strategojar}" />
-			</classpath>
-		</javac>
-
-		<jar basedir="${basedir}/bin" includes="analysis/**" destfile="${basedir}/dist/analysis.jar" />
+		<build-lib-default name="analysis"
+		                   source-dir="${basedir}/analysis"
+		                   source-file="${basedir}/analysis/analysis.str"
+		/>
 	</target>
+
+	<target name="editor">
+		<build-lib-default name="editor"
+		                   source-dir="${basedir}/editor"
+		                   source-file="${basedir}/editor/editor.str"
+		/>
+	</target>
+
+	<target name="tmpl">
+		<build-lib-default name="tmpl"
+		                   source-dir="${basedir}/tmpl"
+		                   source-file="${basedir}/tmpl/pp.str"
+		>
+			<strj-args>
+				<arg value="-la" />
+				<arg value="org.strategoxt.stratego_gpp" />
+			</strj-args>
+		</build-lib-default>
+	</target>
+
+	<target name="modelware">
+		<build-lib-default name="modelware"
+		                   source-dir="${basedir}/modelware"
+		                   source-file="${basedir}/modelware/modelware.str"
+		/>
+	</target>
+
+
 </project>

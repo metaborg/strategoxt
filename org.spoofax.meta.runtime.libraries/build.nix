@@ -17,7 +17,7 @@ let
         cp ${strategoxt}/strategoxt/ant-contrib/strategoxt-antlib.xml .
       '';
     
-      antTargets = ["all" "install"];
+      antTargets = ["hydra"];
       antProperties = [
         { name = "eclipse.spoofaximp.strategojar"; value = "${strj}/share/strategoxt/strategoxt/strategoxt.jar"; }
         { name = "output"; value = "$out"; }
