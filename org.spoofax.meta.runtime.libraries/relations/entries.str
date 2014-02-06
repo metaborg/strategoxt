@@ -33,7 +33,7 @@ rules
       tuple := <origin-track-forced(!RelTuple(t1', rel, t2))> t1
     ; <index-add(|partition)> tuple
     ; if <relation-is-transitive> rel then
-	      task       := <relation-create-lookup(|partition, Transitive(rel))> t2
+	      task       := <relation-create-lookup(|partition, rel)> t2
 	    ; transitive := <origin-track-forced(!RelTuple(t1', Transitive(rel), task))> t1
 	    ; <index-add(|partition)> transitive
     end
