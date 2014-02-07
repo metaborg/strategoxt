@@ -3,6 +3,8 @@ module nabl/utils
 imports
 	
 	libstratego-lib
+	libstratego-aterm
+	libstratego-gpp
 	task/core
 	editor/annotations
 
@@ -61,6 +63,8 @@ rules // multimap simulation
 
 rules // Debugging
 	
+	pp-aterm = pp-aterm-box; box2text-string(|80)
+	
 	debug0 = debug(!"0 ")
 	debug1 = debug(!"1 ")
 	debug2 = debug(!"2 ")
@@ -75,7 +79,65 @@ rules // Debugging
 	debuga = debug(!"a ")
 	debugb = debug(!"b ")
 	debugc = debug(!"c ")
-	
+	debugd = debug(!"d ")
+	debuge = debug(!"e ")
+	debugf = debug(!"f ")
+	debugg = debug(!"g ")
+	debugh = debug(!"h ")
+	debugi = debug(!"i ")
+	debugj = debug(!"j ")
+	debugk = debug(!"k ")
+	debugl = debug(!"l ")
+	debugm = debug(!"m ")
+	debugn = debug(!"n ")
+	debugo = debug(!"o ")
+	debugp = debug(!"p ")
+	debugq = debug(!"q ")
+	debugr = debug(!"r ")
+	debugs = debug(!"s ")
+	debugt = debug(!"t ")
+	debugu = debug(!"u ")
+	debugv = debug(!"v ")
+	debugw = debug(!"w ")
 	debugx = debug(!"x ")
 	debugy = debug(!"y ")
 	debugz = debug(!"z ")
+
+
+	ppdebug0 = where(pp-aterm; debug(!"0 "))
+	ppdebug1 = where(pp-aterm; debug(!"1 "))
+	ppdebug2 = where(pp-aterm; debug(!"2 "))
+	ppdebug3 = where(pp-aterm; debug(!"3 "))
+	ppdebug4 = where(pp-aterm; debug(!"4 "))
+	ppdebug5 = where(pp-aterm; debug(!"5 "))
+	ppdebug6 = where(pp-aterm; debug(!"6 "))
+	ppdebug7 = where(pp-aterm; debug(!"7 "))
+	ppdebug8 = where(pp-aterm; debug(!"8 "))
+	ppdebug9 = where(pp-aterm; debug(!"9 "))
+	
+	ppdebuga = where(pp-aterm; debug(!"a "))
+	ppdebugb = where(pp-aterm; debug(!"b "))
+	ppdebugc = where(pp-aterm; debug(!"c "))
+	ppdebugd = where(pp-aterm; debug(!"d "))
+	ppdebuge = where(pp-aterm; debug(!"e "))
+	ppdebugf = where(pp-aterm; debug(!"f "))
+	ppdebugg = where(pp-aterm; debug(!"g "))
+	ppdebugh = where(pp-aterm; debug(!"h "))
+	ppdebugi = where(pp-aterm; debug(!"i "))
+	ppdebugj = where(pp-aterm; debug(!"j "))
+	ppdebugk = where(pp-aterm; debug(!"k "))
+	ppdebugl = where(pp-aterm; debug(!"l "))
+	ppdebugm = where(pp-aterm; debug(!"m "))
+	ppdebugn = where(pp-aterm; debug(!"n "))
+	ppdebugo = where(pp-aterm; debug(!"o "))
+	ppdebugp = where(pp-aterm; debug(!"p "))
+	ppdebugq = where(pp-aterm; debug(!"q "))
+	ppdebugr = where(pp-aterm; debug(!"r "))
+	ppdebugs = where(pp-aterm; debug(!"s "))
+	ppdebugt = where(pp-aterm; debug(!"t "))
+	ppdebugu = where(pp-aterm; debug(!"u "))
+	ppdebugv = where(pp-aterm; debug(!"v "))
+	ppdebugw = where(pp-aterm; debug(!"w "))
+	ppdebugx = where(pp-aterm; debug(!"x "))
+	ppdebugy = where(pp-aterm; debug(!"y "))
+	ppdebugz = where(pp-aterm; debug(!"z "))

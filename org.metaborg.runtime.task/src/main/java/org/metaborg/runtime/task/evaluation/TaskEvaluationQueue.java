@@ -122,8 +122,15 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 		// Sets the runtime dependencies for a task to the given dependency list.
 		runtimeDependencies.removeAll(taskID);
-		for(final IStrategoTerm dependency : dependencies)
+		for(final IStrategoTerm dependency : dependencies) {
 			runtimeDependencies.put(taskID, dependency);
+
+			final Task dependencyTask = taskEngine.getTask(dependency);
+			if(!dependencyTask.solved()) {
+				scheduled.add(dependency);
+				queueOrDefer(dependency);
+			}
+		}
 
 		taskEngine.setDynamicDependencies(taskID, dependencies);
 		scheduled.add(taskID);
@@ -342,7 +349,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	 */
 	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect, Strategy insert,
 		Strategy perform) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
 		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 
@@ -351,7 +358,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	 */
 	private void evaluateCyclicTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect,
 		Strategy insert, Strategy perform) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction);
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
 		currentTaskEvaluator = taskEvaluator;
 		taskEvaluator.evaluateCyclic(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}

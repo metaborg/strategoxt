@@ -17,6 +17,7 @@ rules /** @internal API primitives */
 	task-api-has-failed(|taskID) = prim("task_api_has_failed", taskID)
 	task-api-invalidate-task-reads(|changedReads) = prim("task_api_invalidate_task_reads", changedReads)
 	task-api-merge = prim("task_api_merge")
+	task-api-override-instruction(|task-id, new-instruction) = prim("task_api_override_instruction", task-id, new-instruction)
 	task-api-sources-of(|task-id-or-task-ids) = prim("task_api_sources_of", task-id-or-task-ids)
 	task-api-persist = prim("task_api_persist")
 	task-api-pop = prim("task_api_pop")

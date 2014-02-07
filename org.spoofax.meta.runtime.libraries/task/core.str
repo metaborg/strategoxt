@@ -8,6 +8,7 @@ imports
   task/primitives
   task/interface
   nabl/entries
+  nabl/utils
   
 signature
 
@@ -29,8 +30,8 @@ rules // API
 	task-clear-partition                                       = task-api-clear-partition(|<id>)
 	task-delay                                                 = task-api-delay(|<id>)
 	task-debug-info(|partition)                                = task-api-debug-info(|partition)
-	task-evaluate-now                                          = task-api-evaluate-now(task-collect-result-ids-2, insert-results-hashmap, perform-task|<id>)
-	task-evaluate-scheduled                                    = task-api-evaluate-scheduled(task-collect-result-ids-2, insert-results-hashmap, perform-task)
+	task-evaluate-now                                          = task-api-evaluate-now(task-collect-result-ids-2, insert-results-hashmap, task-perform-task|<id>)
+	task-evaluate-scheduled                                    = task-api-evaluate-scheduled(task-collect-result-ids-2, insert-results-hashmap, task-perform-task)
 	task-get-dependencies                                      = task-api-get-dependencies(|<id>)
 	task-get-messages(|partition)                              = task-api-get-messages(|partition)
 	task-get-readers                                           = task-api-get-readers(|<id>)
@@ -85,4 +86,27 @@ rules // Projections
 		
 	task-collect-result-ids-2 =
 		collect-all-annos-2(task-result-id, task-use-result-id, union)
-		
+
+rules // Execution
+	
+	task-perform-task(|task-id):
+		instruction -> result
+		where
+			if <task-is-higherorder> instruction then
+			  task-start-collection(|task-id)
+				; if new-instruction := <perform-task(|task-id)> instruction then
+					  (added*, removed*) := <task-stop-collection(|task-id)>
+					; changed* := [added*, removed*]
+					; task-api-override-instruction(|task-id, new-instruction)
+					; if [] := changed* then
+				  	result :=	<perform-task(|task-id)> new-instruction  
+				  else
+				  	<task-delay> changed*
+				  end
+			  else
+			  	task-stop-collection(|task-id);
+			  	fail
+		  	end
+			else
+				result :=	<perform-task(|task-id)> instruction
+			end
