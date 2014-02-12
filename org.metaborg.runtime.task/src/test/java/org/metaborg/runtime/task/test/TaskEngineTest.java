@@ -53,19 +53,19 @@ public class TaskEngineTest extends TaskTest {
 		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
 		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
 
-		assertTrue(assertContains(taskEngine.getPartitionsOf(resolveID), partition1));
-		assertFalse(assertContains(taskEngine.getPartitionsOf(resolveID), partition2));
-		assertTrue(assertContains(taskEngine.getPartitionsOf(resolveImportID), partition1));
-		assertFalse(assertContains(taskEngine.getPartitionsOf(resolveImportID), partition2));
-		assertTrue(assertContains(taskEngine.getPartitionsOf(choiceID), partition2));
-		assertFalse(assertContains(taskEngine.getPartitionsOf(choiceID), partition1));
+		assertTrue(assertContains(taskEngine.getSourcesOf(resolveID), partition1));
+		assertFalse(assertContains(taskEngine.getSourcesOf(resolveID), partition2));
+		assertTrue(assertContains(taskEngine.getSourcesOf(resolveImportID), partition1));
+		assertFalse(assertContains(taskEngine.getSourcesOf(resolveImportID), partition2));
+		assertTrue(assertContains(taskEngine.getSourcesOf(choiceID), partition2));
+		assertFalse(assertContains(taskEngine.getSourcesOf(choiceID), partition1));
 
-		assertTrue(assertContains(taskEngine.getInPartition(partition1), resolveID));
-		assertTrue(assertContains(taskEngine.getInPartition(partition1), resolveImportID));
-		assertFalse(assertContains(taskEngine.getInPartition(partition1), choiceID));
-		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveID));
-		assertFalse(assertContains(taskEngine.getInPartition(partition2), resolveImportID));
-		assertTrue(assertContains(taskEngine.getInPartition(partition2), choiceID));
+		assertTrue(assertContains(taskEngine.getFromSource(partition1), resolveID));
+		assertTrue(assertContains(taskEngine.getFromSource(partition1), resolveImportID));
+		assertFalse(assertContains(taskEngine.getFromSource(partition1), choiceID));
+		assertFalse(assertContains(taskEngine.getFromSource(partition2), resolveID));
+		assertFalse(assertContains(taskEngine.getFromSource(partition2), resolveImportID));
+		assertTrue(assertContains(taskEngine.getFromSource(partition2), choiceID));
 
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveID)));
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveImportID)));
@@ -122,13 +122,13 @@ public class TaskEngineTest extends TaskTest {
 		choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(resolveID)));
-		assertEquals(1, Iterables.size(taskEngine.getPartitionsOf(resolveID2)));
-		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(resolveImportID)));
-		assertEquals(2, Iterables.size(taskEngine.getPartitionsOf(choiceID)));
+		assertEquals(2, Iterables.size(taskEngine.getSourcesOf(resolveID)));
+		assertEquals(1, Iterables.size(taskEngine.getSourcesOf(resolveID2)));
+		assertEquals(2, Iterables.size(taskEngine.getSourcesOf(resolveImportID)));
+		assertEquals(2, Iterables.size(taskEngine.getSourcesOf(choiceID)));
 
-		assertEquals(4, Iterables.size(taskEngine.getInPartition(partition1)));
-		assertEquals(3, Iterables.size(taskEngine.getInPartition(partition2)));
+		assertEquals(4, Iterables.size(taskEngine.getFromSource(partition1)));
+		assertEquals(3, Iterables.size(taskEngine.getFromSource(partition2)));
 
 		assertEquals(0, Iterables.size(taskEngine.getDependencies(resolveID)));
 		assertEquals(1, Iterables.size(taskEngine.getDependencies(resolveID2)));

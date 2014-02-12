@@ -21,7 +21,7 @@ public class TaskLibrary extends AbstractStrategoOperatorRegistry {
 		add(task_api_has_failed_0_1.instance);
 		add(task_api_invalidate_task_reads_0_1.instance);
 		add(task_api_merge_0_0.instance);
-		add(task_api_partitions_of_0_1.instance);
+		add(task_api_sources_of_0_1.instance);
 		add(task_api_persist_0_0.instance);
 		add(task_api_pop_0_0.instance);
 		add(task_api_push_0_0.instance);

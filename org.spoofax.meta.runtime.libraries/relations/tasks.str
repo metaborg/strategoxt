@@ -27,19 +27,29 @@ rules
 			lookup := <new-task(|ctx)> RelationLookup(rel, t)
 
   perform-task(|task-id):
-    RelationLookup(rel, t) -> [stat-val*, non-trans-val*, index-val*]
+    RelationLookup(rel, t) -> [refl-val*, stat-val*, val*, trans-val*]
     where
       t' := <relation-try-term-to-uri> t
 		; <relation-add-read(|task-id)> t'
-    ; stat-set := <new-iset>
-    ; <try(relation-tuple(store-tuple(|stat-set)))> (t', rel)
-    ; stat-val*  := <iset-elements> stat-set
-    ; index-val* := <get-index-relations(|rel)> t'
-    ; if Transitive(rel') := rel then
-        non-trans-val* := <get-index-relations(|rel')> t'
+		; stat-val* := <relation-get-static(|rel)> t'
+    ; val* := <get-index-relations(|rel)> t'
+    ; if <relation-is-reflexive> rel then
+        refl-val* := [t]
       else
-        non-trans-val* := []
+        refl-val* := []
       end
+    ; if <relation-is-transitive> rel then
+        trans-val* := <get-index-relations(|Transitive(rel))> t'
+      else
+        trans-val* := []
+      end
+      
+  relation-get-static(|rel):
+  	t -> val*
+  	with
+      stat-set := <new-iset>
+    ; <try(relation-tuple(store-tuple(|stat-set)))> (t, rel)
+    ; val* := <iset-elements> stat-set
       
   store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set
   

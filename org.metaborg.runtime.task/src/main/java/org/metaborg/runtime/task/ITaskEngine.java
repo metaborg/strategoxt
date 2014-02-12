@@ -8,7 +8,6 @@ import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public interface ITaskEngine {
@@ -31,9 +30,9 @@ public interface ITaskEngine {
 	/**
 	 * Starts task collection for given partition.
 	 *
-	 * @param partition The partition to collect tasks for.
+	 * @param source The source to collect tasks for.
 	 */
-	public abstract void startCollection(IStrategoString partition);
+	public abstract void startCollection(IStrategoTerm source);
 
 
 	/**
@@ -47,7 +46,7 @@ public interface ITaskEngine {
 	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
 	 *
-	 * @param partition The partition where the task comes from.
+	 * @param source The origin of the task.
 	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
 	 * @param instruction The instruction.
 	 * @param isCombinator Whether this task is a task combinator.
@@ -55,22 +54,22 @@ public interface ITaskEngine {
 	 *
 	 * @return A unique task identifier for given instruction.
 	 */
-	public abstract IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies,
+	public abstract IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies,
 		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.
-	 *
+	 * 
 	 * @param taskID The identifier of the task.
 	 * @param task The task object.
-	 * @param partitions The partitions of the task.
+	 * @param sources The sources of the task.
 	 * @param initialDependencies The initial dependencies of the task.
 	 * @param dependencies The dependencies of the task.
 	 * @param reads The reads of the task.
 	 * @param results A list of results of the task, or an empty tuple if it has no results.
 	 * @param failed If the task has failed. A value of 1 indicates failure.
 	 */
-	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
+	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> sources,
 		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
 		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations);
 
@@ -84,11 +83,11 @@ public interface ITaskEngine {
 	/**
 	 * Stops collection for given partition.
 	 *
-	 * @param partition The partition to stop collecting tasks for.
+	 * @param source The partition to stop collecting tasks for.
 	 *
 	 * @return A tuple with a list of task identifiers that have been removed and added.
 	 */
-	public abstract IStrategoTerm stopCollection(IStrategoString partition);
+	public abstract IStrategoTerm stopCollection(IStrategoTerm source);
 
 
 	/**
@@ -177,65 +176,65 @@ public interface ITaskEngine {
 
 
 	/**
-	 * Gets all partitions.
+	 * Gets all sources.
 	 */
-	public abstract Set<IStrategoString> getAllPartition();
+	public abstract Set<IStrategoTerm> getAllSources();
 
 	/**
-	 * Gets all partitions which the task with given identifier has been added to.
+	 * Gets all sources which the task with given identifier has been added to.
 	 *
 	 * @param taskID The task identifier.
 	 */
-	public abstract Set<IStrategoString> getPartitionsOf(IStrategoTerm taskID);
+	public abstract Set<IStrategoTerm> getSourcesOf(IStrategoTerm taskID);
 
 	/**
-	 * Gets all task identifiers that have been added to given partition.
+	 * Gets all task identifiers that have been added to given source.
 	 *
-	 * @param partition The partition.
+	 * @param source The source.
 	 */
-	public abstract Iterable<IStrategoTerm> getInPartition(IStrategoString partition);
+	public abstract Iterable<IStrategoTerm> getFromSource(IStrategoTerm source);
 
 	/**
-	 * Adds task with given identifier to given partition.
-	 *
-	 * @param taskID The task identifier.
-	 * @param partition The partition.
-	 */
-	public abstract void addToPartition(IStrategoTerm taskID, IStrategoString partition);
-
-	/**
-	 * Removes task with given identifier from given partition.
+	 * Adds task with given identifier to given source.
 	 *
 	 * @param taskID The task identifier.
-	 * @param partition The partition.
+	 * @param source The source.
 	 */
-	public abstract void removeFromPartition(IStrategoTerm taskID, IStrategoString partition);
+	public abstract void addToSource(IStrategoTerm taskID, IStrategoTerm source);
 
 	/**
-	 * Remove task with given identifier from all partitions.
+	 * Removes task with given identifier from given source.
+	 *
+	 * @param taskID The task identifier.
+	 * @param source The partition.
+	 */
+	public abstract void removeFromSource(IStrategoTerm taskID, IStrategoTerm source);
+
+	/**
+	 * Remove task with given identifier from all sources.
 	 *
 	 * @param taskID The task identifier.
 	 */
-	public abstract void removePartitionsOf(IStrategoTerm taskID);
+	public abstract void removeSourcesOf(IStrategoTerm taskID);
 
 
 	/**
 	 * Gets all other task identifiers that task with given identifier statically depends on.
-	 * 
+	 *
 	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID);
 
 	/**
 	 * Gets all other task identifiers that task with given identifier dynamically depends on.
-	 * 
+	 *
 	 * @param taskID The task identifier to get dynamic dependencies for.
 	 */
 	public abstract Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID);
 
 	/**
 	 * Gets all other task identifier that task with given identifier statically transitively depends on.
-	 * 
+	 *
 	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID);

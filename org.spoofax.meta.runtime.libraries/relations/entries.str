@@ -3,6 +3,7 @@ module relations/entries
 imports
 	
 	relations/entries
+	relations/interface
 	relations/tasks
 	index/core
 	properties/query
@@ -31,10 +32,11 @@ rules
     with
       tuple := <origin-track-forced(!RelTuple(t1', rel, t2))> t1
     ; <index-add(|partition)> tuple
-    with // TODO: store transitive lookup only for transitive relations
-      task       := <relation-create-lookup(|partition, Transitive(rel))> t2
-    ; transitive := <origin-track-forced(!RelTuple(t1', Transitive(rel), task))> t1
-    ; <index-add(|partition)> transitive
+    ; if <relation-is-transitive> rel then
+	      task       := <relation-create-lookup(|partition, rel)> t2
+	    ; transitive := <origin-track-forced(!RelTuple(t1', Transitive(rel), task))> t1
+	    ; <index-add(|partition)> transitive
+    end
     // with // TODO: store inverses only for invertible relations
     //   inverse := <origin-track-forced(!RelTuple(t2, Inverse(rel), t1))> t2
     // ; <index-add(|partition)> inverse

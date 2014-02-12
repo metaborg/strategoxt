@@ -13,7 +13,7 @@ public class task_api_task_id_0_1 extends AbstractPrimitive {
 	public task_api_task_id_0_1() {
 		super("task_api_task_id", 0, 1);
 	}
-	
+
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoTerm instruction = tvars[0];
