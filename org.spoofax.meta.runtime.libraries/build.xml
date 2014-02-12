@@ -37,11 +37,9 @@
 
 
 	<target name="hydra" depends="install">
+		<tar destfile="${output}/runtime-libraries.tar" basedir="${output}/lib"/>
 		<delete file="${output}/nix-support/hydra-build-products" />
-		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/analysis/analysis.jar${line.separator}</echo>
-		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/editor/editor.jar${line.separator}</echo>
-		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/tmpl/tmpl.jar${line.separator}</echo>
-		<echo file="${output}/nix-support/hydra-build-products" append="true">file jar ${output}/lib/modelware/modelware.jar${line.separator}</echo>
+		<echo file="${output}/nix-support/hydra-build-products" append="true">file tar ${output}/runtime-libraries.tar${line.separator}</echo>
 	</target>
 
 
