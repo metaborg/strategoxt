@@ -48,7 +48,7 @@ public class UniqueQueue<T> implements Queue<T>, Set<T> {
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
+	public <TA> TA[] toArray(TA[] a) {
 		return queue.toArray(a);
 	}
 
