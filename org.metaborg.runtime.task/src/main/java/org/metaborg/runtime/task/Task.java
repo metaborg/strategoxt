@@ -55,6 +55,10 @@ public final class Task {
 		instructionOverride = newInstruction;
 	}
 
+	public IStrategoTerm instructionOverride() {
+		return instructionOverride;
+	}
+
 	public void clearInstructionOverride() {
 		instructionOverride = null;
 	}

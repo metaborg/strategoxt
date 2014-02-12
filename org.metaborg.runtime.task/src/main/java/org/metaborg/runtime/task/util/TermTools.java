@@ -28,9 +28,13 @@ public final class TermTools {
 	}
 
 	public static IStrategoTerm takeNullable(IStrategoTerm term) {
-		if(term.getTermType() == IStrategoTerm.TUPLE && term.getSubtermCount() == 0)
+		if(isNull(term))
 			return null;
 		return term;
+	}
+
+	public static boolean isNull(IStrategoTerm term) {
+		return term.getTermType() == IStrategoTerm.TUPLE && term.getSubtermCount() == 0;
 	}
 
 

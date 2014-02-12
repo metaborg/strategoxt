@@ -150,8 +150,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> sources,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
-		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
@@ -164,14 +163,6 @@ public class TaskEngine implements ITaskEngine {
 			addDependency(taskID, dependency);
 		for(final IStrategoTerm read : reads)
 			addRead(taskID, read);
-		if(results != null)
-			task.setResults(results);
-		if(message != null)
-			task.setMessage(message);
-
-		task.setStatus(status);
-		task.setTime(time);
-		task.setEvaluations(evaluations);
 	}
 
 	@Override

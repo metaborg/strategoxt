@@ -66,12 +66,9 @@ public interface ITaskEngine {
 	 * @param initialDependencies The initial dependencies of the task.
 	 * @param dependencies The dependencies of the task.
 	 * @param reads The reads of the task.
-	 * @param results A list of results of the task, or an empty tuple if it has no results.
-	 * @param failed If the task has failed. A value of 1 indicates failure.
 	 */
 	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> sources,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
-		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations);
+		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads);
 
 	/**
 	 * Removes task with given identifier from the task engine.
@@ -92,7 +89,7 @@ public interface ITaskEngine {
 
 	/**
 	 * Invalidates task with given identifier, removing their results, reads and messages.
-	 * 
+	 *
 	 * @param taskID The identifier of the task to invalidate.
 	 *
 	 * @return The task that was invalidated.
