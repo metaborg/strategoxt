@@ -19,6 +19,9 @@ signature
   constructors
     
     Result : TaskID -> Result
+    
+    HigherOrder     : Instruction * List(TaskID) -> EvaluationReturn
+    HigherOrderFail : List(TaskID)               -> EvaluationReturn
 
 rules // API
   
@@ -94,18 +97,12 @@ rules // Execution
 		where
 			if <task-is-higherorder> instruction then
 			  task-start-collection(|task-id)
-				; if new-instruction := <perform-task(|task-id)> instruction then
-					  (added*, removed*) := <task-stop-collection(|task-id)>
-					; changed* := [added*, removed*]
-					; task-api-override-instruction(|task-id, new-instruction)
-					; if [] := changed* then
-				  	result :=	<perform-task(|task-id)> new-instruction  
-				  else
-				  	<task-delay> changed*
-				  end
+			; if new-instruction := <perform-task(|task-id)> instruction then
+					(added*, removed*) := <task-stop-collection(|task-id)>
+				; result := HigherOrder(new-instruction, [added*, removed*])
 			  else
-			  	task-stop-collection(|task-id);
-			  	fail
+			    (added*, removed*) := <task-stop-collection(|task-id)>
+			  ; result := HigherOrderFail([added*, removed*])
 		  	end
 			else
 				result :=	<perform-task(|task-id)> instruction

@@ -35,7 +35,7 @@ rules // Lookup
 		; stat-val* := <relation-get-static(|rel)> t'
     ; val* := <get-index-relations(|rel)> t'
     ; if <relation-is-reflexive> rel then
-        refl-val* := [t]
+        refl-val* := [t']
       else
         refl-val* := []
       end
@@ -71,5 +71,5 @@ rules // Distance
 	task-is-combinator = ?RelationDistance(_, _, _)
 	
   perform-task(|task-id): 
-  	RelationDistance(rel, actual, value*) -> [<get-index> (<Hd; relation-try-term-to-uri> actual, <map(relation-try-term-to-uri)> value*)]
+  	RelationDistance(rel, actual, value*) -> [<debug5; get-index; debug6> (<debug0; try-remove-list; debug1; relation-try-term-to-uri; debug2> actual, <debug3; map(relation-try-term-to-uri); debug4> value*)]
 		// Remove list on `actual` because this task is a combinator and `actual` may only contain one element.

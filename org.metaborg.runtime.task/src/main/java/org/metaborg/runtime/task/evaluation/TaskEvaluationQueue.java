@@ -124,12 +124,6 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		runtimeDependencies.removeAll(taskID);
 		for(final IStrategoTerm dependency : dependencies) {
 			runtimeDependencies.put(taskID, dependency);
-
-			final Task dependencyTask = taskEngine.getTask(dependency);
-			if(!dependencyTask.solved()) {
-				scheduled.add(dependency);
-				queueOrDefer(dependency);
-			}
 		}
 
 		taskEngine.setDynamicDependencies(taskID, dependencies);

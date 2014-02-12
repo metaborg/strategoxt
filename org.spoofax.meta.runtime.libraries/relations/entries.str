@@ -45,10 +45,16 @@ rules
 rules
 	
 	relation-ensure-no-task-reference = 
-		with(not(collect-one-annos(?Use(_)))|$[Cannot create a relation tuple with a reference to a resolution task on the left hand side.]) 
+		with(not(collect-one-annos(relation-is-unresolved-use))|$[Cannot create a relation tuple with a reference to a resolution task on the left hand side.]) 
 
 	relation-try-term-to-uri:
-		term -> <try(collect-one-annos(relation-get-uri))> term
+		term -> result
+		where
+			if use := <collect-one-annos(relation-is-unresolved-use)> term then
+				result := <relation-resolve-use> use
+			else
+				result := <try(collect-one-annos(relation-get-uri))> term
+			end
 		
 	relation-get-uri:
 		Def(uri) -> uri
@@ -56,8 +62,11 @@ rules
 	relation-get-uri:
 		Use(Def(uri)) -> uri
 		
-	relation-get-uri:
-		Use(r@Result(_)) -> <insert-results-or-delay; nabl-uri> r
+	relation-is-unresolved-use =
+		?Use(Result(_))
+		
+	relation-resolve-use:
+		Use(r@Result(_)) -> <insert-results-or-delay; Hd; nabl-uri> r
 		
 rules
 	
