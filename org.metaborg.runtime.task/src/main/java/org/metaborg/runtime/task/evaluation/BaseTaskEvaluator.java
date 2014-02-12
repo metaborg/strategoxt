@@ -170,19 +170,25 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				// The task is a higher order task and has produced new tasks.
 				IStrategoTerm newInstruction = resultAppl.getSubterm(0);
 				IStrategoTerm createdTasks = resultAppl.getSubterm(1);
+
 				task.overrideInstruction(newInstruction);
+
 				for(IStrategoTerm createdTaskID : createdTasks)
 					evaluationQueue.queueOrDefer(createdTaskID);
+
 				if(createdTasks.iterator().hasNext()) {
 					evaluationQueue.delay(taskID, createdTasks);
-					return TaskResultType.HigherOrder;
+				} else {
+					evaluationQueue.queue(taskID);
 				}
-				return TaskResultType.Success;
+
+				return TaskResultType.HigherOrder;
 			} else if(resultAppl.getConstructor().equals(higherOrderFailConstructor)) {
 				// The task is a higher order task and has produced new tasks, but failed.
 				IStrategoTerm createdTasks = resultAppl.getSubterm(0);
 				for(IStrategoTerm createdTaskID : createdTasks)
 					evaluationQueue.queueOrDefer(createdTaskID);
+
 				return TaskResultType.Fail;
 			} else {
 				// Treat as single result.
