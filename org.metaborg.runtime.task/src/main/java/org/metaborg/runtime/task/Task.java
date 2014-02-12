@@ -37,6 +37,7 @@ public final class Task {
 		this.isCombinator = task.isCombinator;
 		this.shortCircuit = task.shortCircuit;
 
+		this.instructionOverride = task.instructionOverride;
 		this.results = Lists.newLinkedList(task.results);
 		this.status = task.status;
 		this.message = task.message;

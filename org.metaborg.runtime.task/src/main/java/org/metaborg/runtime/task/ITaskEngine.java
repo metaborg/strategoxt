@@ -59,7 +59,7 @@ public interface ITaskEngine {
 
 	/**
 	 * Adds a persisted task back to the task engine.
-	 * 
+	 *
 	 * @param taskID The identifier of the task.
 	 * @param task The task object.
 	 * @param sources The sources of the task.
@@ -92,10 +92,12 @@ public interface ITaskEngine {
 
 	/**
 	 * Invalidates task with given identifier, removing their results, reads and messages.
-	 *
+	 * 
 	 * @param taskID The identifier of the task to invalidate.
+	 *
+	 * @return The task that was invalidated.
 	 */
-	public abstract void invalidate(IStrategoTerm taskID);
+	public abstract Task invalidate(IStrategoTerm taskID);
 
 	/**
 	 * Invalidates and schedules tasks that have changed because something they read has changed.

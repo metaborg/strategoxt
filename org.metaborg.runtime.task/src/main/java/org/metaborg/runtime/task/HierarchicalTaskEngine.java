@@ -129,8 +129,8 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 
 	@Override
-	public void invalidate(IStrategoTerm taskID) {
-		current.invalidate(taskID);
+	public Task invalidate(IStrategoTerm taskID) {
+		return current.invalidate(taskID);
 	}
 
 	@Override

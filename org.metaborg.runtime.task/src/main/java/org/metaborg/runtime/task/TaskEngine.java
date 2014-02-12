@@ -219,7 +219,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void invalidate(IStrategoTerm taskID) {
+	public Task invalidate(IStrategoTerm taskID) {
 		Task task = getTask(taskID);
 		if(task == null) {
 			task = wrapper.getTask(taskID);
@@ -231,6 +231,8 @@ public class TaskEngine implements ITaskEngine {
 		task.unsolve();
 		task.clearMessage();
 		wrapper.removeReads(taskID);
+
+		return task;
 	}
 
 	@Override
@@ -260,8 +262,10 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		for(IStrategoTerm taskID : scheduled)
-			invalidate(taskID);
+		for(IStrategoTerm taskID : scheduled) {
+			final Task task = invalidate(taskID);
+			task.clearInstructionOverride();
+		}
 		wrapper.clearTimes();
 		wrapper.clearEvaluations();
 
