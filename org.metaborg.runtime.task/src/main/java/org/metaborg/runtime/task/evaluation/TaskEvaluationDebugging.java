@@ -9,6 +9,8 @@ import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.Debug;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
+import com.google.common.collect.Iterables;
+
 public final class TaskEvaluationDebugging {
 	/**
 	 * Produces debug information to debug unevaluated task problems.
@@ -68,12 +70,18 @@ public final class TaskEvaluationDebugging {
 
 	public static void debugDelayedDependecy(ITaskEngine taskEngine, IStrategoTerm taskID,
 		Iterable<IStrategoTerm> dependencies) {
-		final Task task = taskEngine.getTask(taskID);
-		for(IStrategoTerm dependencyID : dependencies) {
-			final Task dependencyTask = taskEngine.getTask(dependencyID);
-			if(dependencyTask.solved()) {
-				System.err.println("Task " + taskID + ": " + task + " reported a dynamic dependency on " + dependencyID
-					+ ": " + dependencyTask + " but it is already solved!");
+		if(Debug.DEBUGGING) {
+			final Task task = taskEngine.getTask(taskID);
+
+			if(Iterables.size(dependencies) == 0)
+				System.err.println("Task " + taskID + ": " + task + " reported a dynamic dependency on nothing.");
+
+			for(IStrategoTerm dependencyID : dependencies) {
+				final Task dependencyTask = taskEngine.getTask(dependencyID);
+				if(dependencyTask.solved()) {
+					System.err.println("Task " + taskID + ": " + task + " reported a dynamic dependency on "
+						+ dependencyID + ": " + dependencyTask + " but it is already solved!");
+				}
 			}
 		}
 	}
