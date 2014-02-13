@@ -5,10 +5,12 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
+import com.google.common.collect.ImmutableList;
+
 public final class TermTools {
     public static IStrategoList makeList(ITermFactory factory, Iterable<? extends IStrategoTerm> terms) {
     	IStrategoList list = factory.makeList();
-    	for(IStrategoTerm term : terms)
+		for(IStrategoTerm term : ImmutableList.copyOf(terms).reverse())
     		list = factory.makeListCons(term, list);
     	return list;
     }
