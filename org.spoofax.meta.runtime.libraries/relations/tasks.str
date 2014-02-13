@@ -16,10 +16,11 @@ signature
   
   constructors
 
-    RelationLookup : Relation * Term -> Instruction
-    RelationMatch  : Relation * Term * Term -> Instruction
+    RelationLookup   : Relation * Term -> Instruction
+    RelationMatch    : Relation * Term * Term -> Instruction
+    RelationDistance : Relation * Term * Term -> Instruction
     
-rules
+rules // Lookup
 
 	relation-create-lookup(|ctx, rel):
 		t -> <task-create-insert(|ctx); task-create-combine(|ctx)> lookup
@@ -27,14 +28,14 @@ rules
 			lookup := <new-task(|ctx)> RelationLookup(rel, t)
 
   perform-task(|task-id):
-    RelationLookup(rel, t) -> [refl-val*, stat-val*, val*, trans-val*]
+    RelationLookup(rel, t) -> <map(relation-try-term-to-uri)> [refl-val*, stat-val*, val*, trans-val*]
     where
       t' := <relation-try-term-to-uri> t
 		; <relation-add-read(|task-id)> t'
 		; stat-val* := <relation-get-static(|rel)> t'
     ; val* := <get-index-relations(|rel)> t'
     ; if <relation-is-reflexive> rel then
-        refl-val* := [t]
+        refl-val* := [t']
       else
         refl-val* := []
       end
@@ -53,16 +54,22 @@ rules
       
   store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set
   
-rules
+rules // Match
 	
-  relation-create-match(|ctx, rel, expected):
-  	actual -> <task-create-choice(|ctx)> check*
-  	with 
-		  expected* := <try-make-list> expected
-		; check*    := <map(relation-create-match-task(|ctx, rel, actual))> expected*
-	
-	relation-create-match-task(|ctx, rel, actual):
-		expected -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
+  relation-create-match(|ctx, rel, values):
+  	actual -> <new-task(|ctx)> RelationMatch(rel, actual, values) 
 		
   perform-task(|task-id): 
-  	RelationMatch(rel, actual, expected) -> [<eq> (<relation-try-term-to-uri> actual, <relation-try-term-to-uri> expected)]
+  	RelationMatch(rel, actual, value) -> [<eq> (<relation-try-term-to-uri> actual, <relation-try-term-to-uri> value)]
+
+rules // Distance
+	
+  relation-create-distance(|ctx, rel, values):
+  	actual -> <new-task(|ctx)> RelationDistance(rel, actual, values)
+	
+	// Task needs to be a combinator because `expected*` needs to be queried like a list to find the distance.
+	task-is-combinator = ?RelationDistance(_, _, _)
+	
+  perform-task(|task-id): 
+  	RelationDistance(rel, actual, value*) -> [<get-index> (<try-remove-list; relation-try-term-to-uri> actual, <map(relation-try-term-to-uri)> value*)]
+		// Remove list on `actual` because this task is a combinator and `actual` may only contain one element.

@@ -35,7 +35,7 @@ public final class TaskInsertion {
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> taskCombinations(ITermFactory factory,
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task,
 		boolean singleLevel) {
-		final IStrategoTerm instruction = task.instruction;
+		final IStrategoTerm instruction = task.instruction();
 		final Iterable<IStrategoTerm> actualDependencies = getResultIDs(context, collect, instruction);
 
 		if(task.isCombinator) {

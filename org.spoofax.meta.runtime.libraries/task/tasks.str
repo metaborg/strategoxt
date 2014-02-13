@@ -23,6 +23,7 @@ signature
     Not      : Result             -> Instruction
     Index    : Int * List(Result) -> Instruction
     Length   : List(Result)       -> Instruction
+    Sum      : List(Result)       -> Instruction
     Insert   : Term               -> Instruction
     Rewrite  : ID * Result        -> Instruction
 
@@ -176,13 +177,25 @@ rules // Negation
   
 rules // Index
   
-  // EV: no creation strategy?
+  task-create-index(|ctx, i):
+  	list -> <new-task(|ctx)> Index(i, list)
   
   perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
   
 rules // Length
 	
+	task-create-length(|ctx):
+		list -> <new-task(|ctx)> Length(list)
+	
   perform-task(|nr) = ?Length(<length>);  MkSingleton
+
+rules // Sum
+	
+	task-create-sum(|ctx):
+		list -> <new-task(|ctx)> Sum(list)
+		
+	perform-task(|task-id):
+		Sum(list) -> <sum> list
 
 rules // Result insertion
 	

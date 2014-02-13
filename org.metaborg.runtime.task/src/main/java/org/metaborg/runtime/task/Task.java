@@ -15,6 +15,7 @@ public final class Task {
 	public final boolean isCombinator;
 	public final boolean shortCircuit;
 
+	private IStrategoTerm instructionOverride = null;
 	private List<IStrategoTerm> results = Lists.newLinkedList();
 	private TaskStatus status = TaskStatus.Unknown;
 	private IStrategoTerm message;
@@ -36,12 +37,32 @@ public final class Task {
 		this.isCombinator = task.isCombinator;
 		this.shortCircuit = task.shortCircuit;
 
+		this.instructionOverride = task.instructionOverride;
 		this.results = Lists.newLinkedList(task.results);
 		this.status = task.status;
 		this.message = task.message;
 		this.time = task.time;
 		this.evaluations = task.evaluations;
 	}
+
+	public IStrategoTerm instruction() {
+		if(instructionOverride == null)
+			return instruction;
+		return instructionOverride;
+	}
+
+	public void overrideInstruction(IStrategoTerm newInstruction) {
+		instructionOverride = newInstruction;
+	}
+
+	public IStrategoTerm instructionOverride() {
+		return instructionOverride;
+	}
+
+	public void clearInstructionOverride() {
+		instructionOverride = null;
+	}
+
 
 	public Iterable<IStrategoTerm> results() {
 		return results;
@@ -66,6 +87,7 @@ public final class Task {
 		results.add(result);
 		status = TaskStatus.Success;
 	}
+
 
 	public TaskStatus status() {
 		return status;
@@ -100,6 +122,7 @@ public final class Task {
 		status = TaskStatus.Unknown;
 	}
 
+
 	public IStrategoTerm message() {
 		return message;
 	}
@@ -111,6 +134,7 @@ public final class Task {
 	public void clearMessage() {
 		message = null;
 	}
+
 
 	public long time() {
 		return time;
@@ -128,6 +152,7 @@ public final class Task {
 		time = -1;
 	}
 
+
 	public short evaluations() {
 		return evaluations;
 	}
@@ -143,6 +168,7 @@ public final class Task {
 	public void clearEvaluations() {
 		evaluations = 0;
 	}
+
 
 	@Override
 	public int hashCode() {

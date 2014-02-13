@@ -1,5 +1,6 @@
 package org.metaborg.runtime.task;
 
+import static org.metaborg.runtime.task.util.TermTools.isNull;
 import static org.metaborg.runtime.task.util.TermTools.makeBool;
 import static org.metaborg.runtime.task.util.TermTools.makeList;
 import static org.metaborg.runtime.task.util.TermTools.makeLong;
@@ -7,7 +8,6 @@ import static org.metaborg.runtime.task.util.TermTools.makeNullable;
 import static org.metaborg.runtime.task.util.TermTools.makeShort;
 import static org.metaborg.runtime.task.util.TermTools.takeBool;
 import static org.metaborg.runtime.task.util.TermTools.takeLong;
-import static org.metaborg.runtime.task.util.TermTools.takeNullable;
 import static org.metaborg.runtime.task.util.TermTools.takeShort;
 
 import java.util.Map.Entry;
@@ -70,13 +70,20 @@ public class TaskEngineFactory {
 			final IStrategoTerm message = taskTerm.getSubterm(++i);
 			final IStrategoTerm time = taskTerm.getSubterm(++i);
 			final IStrategoTerm evaluations = taskTerm.getSubterm(++i);
+			final IStrategoTerm instructionOverride = taskTerm.getSubterm(++i);
 
 			final Task task =
 				new Task(instruction, initialDependencies, takeBool(isCombinator), takeBool(shortCircuit));
+			task.overrideInstruction(instructionOverride);
+			if(!isNull(results))
+				task.setResults(results);
+			task.setStatus(TaskStatus.get(status.intValue()));
+			if(!isNull(message))
+				task.setMessage(message);
+			task.setTime(takeLong(time));
+			task.setEvaluations(takeShort(evaluations));
 
-			taskEngine.addPersistedTask(taskID, task, sources, initialDependencies, dependencies, reads,
-				takeNullable(results), TaskStatus.get(status.intValue()), takeNullable(message), takeLong(time),
-				takeShort(evaluations));
+			taskEngine.addPersistedTask(taskID, task, sources, initialDependencies, dependencies, reads);
 		}
 
 		return taskEngine;
@@ -89,7 +96,7 @@ public class TaskEngineFactory {
 			makeBool(factory, task.shortCircuit), makeList(factory, sources), task.initialDependencies,
 			makeList(factory, dependencies), makeList(factory, reads), makeNullable(factory, results),
 			factory.makeInt(task.status().id), makeNullable(factory, message), makeLong(factory, task.time()),
-			makeShort(factory, task.evaluations()));
+			makeShort(factory, task.evaluations()), makeNullable(factory, task.instructionOverride()));
 	}
 
 	private IStrategoList serializeResults(Iterable<IStrategoTerm> results, ITermFactory factory,
