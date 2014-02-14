@@ -54,21 +54,17 @@ public interface ITaskEngine {
 	 *
 	 * @return A unique task identifier for given instruction.
 	 */
-	public abstract IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies,
-		IStrategoTerm instruction, boolean isCombinator, boolean shortCircuit);
+	public abstract IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
+		boolean isCombinator, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.
 	 *
 	 * @param taskID The identifier of the task.
 	 * @param task The task object.
-	 * @param sources The sources of the task.
 	 * @param initialDependencies The initial dependencies of the task.
-	 * @param dependencies The dependencies of the task.
-	 * @param reads The reads of the task.
 	 */
-	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> sources,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads);
+	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies);
 
 	/**
 	 * Removes task with given identifier from the task engine.

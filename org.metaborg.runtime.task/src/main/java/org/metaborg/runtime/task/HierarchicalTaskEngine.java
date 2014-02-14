@@ -109,9 +109,8 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads) {
-		current.addPersistedTask(taskID, task, partitions, initialDependencies, dependencies, reads);
+	public void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies) {
+		current.addPersistedTask(taskID, task, initialDependencies);
 	}
 
 	@Override

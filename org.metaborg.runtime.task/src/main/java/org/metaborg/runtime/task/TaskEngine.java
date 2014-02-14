@@ -41,14 +41,13 @@ public class TaskEngine implements ITaskEngine {
 	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
 
 
-	/** Origis of tasks. */
+	/** Origins of tasks. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toSource = BidirectionalLinkedHashMultimap
 		.create();
 
 	/** Bidirectional mapping of dependencies between tasks identifiers. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
 		.create();
-	// TODO: may not be updated during evaluation any more!
 
 	/** Bidirectional mapping of dynamic dependencies between tasks identifiers. Can be updated during evaluation. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDynamicDependency =
@@ -149,20 +148,12 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> sources,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads) {
+	public void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
 		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
-
-		for(final IStrategoTerm source : sources)
-			addToSource(taskID, source);
-		for(final IStrategoTerm dependency : dependencies)
-			addDependency(taskID, dependency);
-		for(final IStrategoTerm read : reads)
-			addRead(taskID, read);
 	}
 
 	@Override
