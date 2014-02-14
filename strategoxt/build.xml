@@ -119,6 +119,7 @@
 
 
 	<target name="test">
+		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
 		<mkdir dir="${test-gen}" />
 		<for param="deffile">
 			<path>
