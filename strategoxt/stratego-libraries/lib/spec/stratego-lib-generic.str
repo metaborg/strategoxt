@@ -20,6 +20,7 @@ imports
   lang/dynamic-rules
   lang/stacktrace
   lang/with
+  lang/strategy-reference
 
   strategy/collect
   strategy/conditional
