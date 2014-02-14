@@ -1,12 +1,7 @@
 <?xml version="1.0"?>
 <project name="libstratego-xtc" default="all">
-	<!-- Import Stratego/XT Ant contributions -->
-
-	<!-- use this is for a build with a strategoxt.jar that does not include the Ant contributions -->
-	<import file="../../ant-contrib/strategoxt-antlib.xml" />
-
-	<!-- use this for a build with recent strategoxt.jar that has the Ant contributions inside -->
-	<!-- <typedef resource="strategoxt-antlib.xml" /> -->
+  <!-- Import Stratego/XT Ant contributions -->
+  <taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml"/>
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />

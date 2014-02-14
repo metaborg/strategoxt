@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="org.strategoxt.ant">
+<antlib>
 	<macrodef name="pack-sdf">
 		<attribute name="input" />
 		<attribute name="output" />
@@ -497,4 +497,4 @@
 			<echo message="" />
 		</sequential>
 	</macrodef>
-</project>
+</antlib>

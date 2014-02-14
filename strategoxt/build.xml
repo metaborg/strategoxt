@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.strategoxt" default="all">
-	<import file="ant-contrib/strategoxt-antlib.xml" />
-
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 
@@ -10,10 +8,6 @@
 
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
-
-	<!-- Import Stratego/XT Ant contributions -->
-	<!-- <available property="contrib.available" resource="strategoxt-antlib.xml" />
-	<typedef resource="strategoxt-antlib.xml" /> -->
 
 	<!-- Import the properties file, containing e.g. the version number -->
 	<property file="build.properties" />
@@ -45,7 +39,19 @@
 		<echo>- sdf2bundle from: ${sdf2bundle}</echo>
 	</target>
 
-	<target name="build">
+	<target name="antcontrib-build">
+		<subant inheritall="false">
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<fileset dir="ant-contrib" includes="build.xml" />
+			<target name="install" />
+		</subant>
+	</target>
+
+	<target name="antcontrib-load" depends="antcontrib-build">
+		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" classpath="${subdists-install-prefix}/share/strategoxt/antcontrib/strategoxt-ant.jar" />
+	</target>
+
+	<target name="build" depends="antcontrib-load">
 		<mkdir dir="${subdists-install-prefix}" />
 		<subant inheritall="false">
 			<property name="install-prefix" location="${subdists-install-prefix}" />
@@ -105,7 +111,7 @@
 		<copy todir="${install-prefix}" verbose="true">
 			<fileset dir="${subdists-install-prefix}" includes="**/*" />
 		</copy>
-		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-location}"/>
+		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-location}" />
 		<delete file="${install-prefix}/nix-support/hydra-build-products" />
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt/strategoxt.jar${line.separator}</echo>
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar</echo>
