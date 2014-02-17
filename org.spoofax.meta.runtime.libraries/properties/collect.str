@@ -65,7 +65,7 @@ rules
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
       not(<get-property-task(|kind)> term)
-    ; prop := <create-property-task(|partition, kind)> term
+    ; prop := <create-property-task(|partition, kind, uri*) <+ create-property-task(|partition, kind)> term
       
 strategies
   
@@ -92,6 +92,7 @@ rules
   
   get-or-create-property-task(|ctx, kind) = 
      get-property-task(|kind)
+  <+ (create-property-task(|ctx, kind, []); warn-msg(|$[Called create-property-task that accepts uri* with empty uri*, because it was not passed!])) 
   <+ create-property-task(|ctx, kind)
   <+ warn-msg(|$[Could not create task for property [<get-constructor> kind].])
    ; task-create-fail(|ctx)

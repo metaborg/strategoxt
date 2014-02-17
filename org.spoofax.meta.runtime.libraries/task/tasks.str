@@ -12,20 +12,22 @@ signature
 
 	constructors
 		
-    Id       : Term               -> Instruction
-    Fail     :                       Instruction
-    Choice   : List(Result)       -> Instruction
-    Sequence : List(Result)       -> Instruction
-    Combine  : List(Result)       -> Instruction
-    Singleton: Result             -> Instruction
-    Diff     : Result * Result    -> Instruction
-    Collect  : List(Result)       -> Instruction
-    Not      : Result             -> Instruction
-    Index    : Int * List(Result) -> Instruction
-    Length   : List(Result)       -> Instruction
-    Sum      : List(Result)       -> Instruction
-    Insert   : Term               -> Instruction
-    Rewrite  : ID * Result        -> Instruction
+    Id       : Term                -> Instruction
+    Fail     :                        Instruction
+    Choice   : List(Result)        -> Instruction
+    Sequence : List(Result)        -> Instruction
+    Combine  : List(Result)        -> Instruction
+    Singleton: Result              -> Instruction
+    Diff     : Result * Result     -> Instruction
+    Collect  : List(Result)        -> Instruction
+    Not      : Result              -> Instruction
+    Index    : Int * List(Result)  -> Instruction
+    Length   : List(Result)        -> Instruction
+    Sum      : List(Result)        -> Instruction
+    Fetch    : Term * List(Result) -> Instruction
+    Eq       : Term * Term         -> Instruction
+    Insert   : Term                -> Instruction
+    Rewrite  : ID * Result         -> Instruction
 
 rules // Identity
   
@@ -196,6 +198,22 @@ rules // Sum
 		
 	perform-task(|task-id):
 		Sum(list) -> <sum> list
+		
+rules // Fetch
+	
+	task-create-fetch(|ctx, list):
+		term -> <new-task(|ctx)> Fetch(term, list)
+		
+	perform-task(|task-id):
+		Fetch(term, list) -> <fetch-elem(?term)> list
+		
+rules // Equality
+	
+	task-create-eq(|ctx, expected):
+		actual -> <new-task(|ctx)> Eq(expected, actual)
+		
+	perform-task(|task-id):
+		Eq(expected, actual) -> <eq; !actual> (expected, actual)
 
 rules // Result insertion
 	

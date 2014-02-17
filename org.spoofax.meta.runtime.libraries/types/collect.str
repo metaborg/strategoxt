@@ -14,9 +14,9 @@ signature
     
 rules
   
-  create-property-task(|ctx, kind) =
+  create-property-task(|ctx, kind, uri*) =
     where(Type() := kind)
-  ; create-type-task(|ctx)
+  ; (create-type-task(|ctx, uri*) <+ create-type-task(|ctx))
        
   type-is(|partition)           = nabl-prop-calc(|partition, [])
   type-is(|partition, dep*)     = nabl-prop-calc(|partition, dep*)
