@@ -22,6 +22,8 @@ public class TaskEngineFactory {
 	public IStrategoTerm toTerm(ITaskEngine taskEngine, ITermFactory factory) {
 		final TermAttachmentSerializer serializer = new TermAttachmentSerializer(factory);
 
+		final IStrategoTerm digestState = taskEngine.getDigester().state(factory);
+
 		IStrategoList tasks = factory.makeList();
 		for(final Entry<IStrategoTerm, Task> entry : taskEngine.getTaskEntries()) {
 			final IStrategoTerm taskID = entry.getKey();
@@ -60,8 +62,6 @@ public class TaskEngineFactory {
 
 			tasks = factory.makeListCons(taskTuple, tasks);
 		}
-
-		final IStrategoTerm digestState = taskEngine.getDigester().state(factory);
 
 		return factory.makeTuple(digestState, tasks);
 	}

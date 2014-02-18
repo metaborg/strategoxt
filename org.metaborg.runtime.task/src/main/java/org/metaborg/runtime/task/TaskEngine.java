@@ -59,7 +59,7 @@ public class TaskEngine implements ITaskEngine {
 
 
 	/** Tasks that do not have a source are garbage. **/
-	private final UniqueQueue<IStrategoTerm> garbage = new UniqueQueue<IStrategoTerm>();
+	private final Queue<IStrategoTerm> garbage = new UniqueQueue<IStrategoTerm>();
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Set<IStrategoTerm> scheduled = Sets.newHashSet();
