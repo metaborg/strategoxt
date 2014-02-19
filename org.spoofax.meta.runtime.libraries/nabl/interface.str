@@ -15,6 +15,10 @@ strategies // Collect
 	
 	nabl-use-site(|lang, partition, unique*, uri*, state*) = fail
 	
+	nabl-filtering-site(|lang, partition, unique*, uri*, state*) = fail
+	
+	nabl-disambiguation-site(|lang, partition, unique*, uri*, state*) = fail
+	
 	nabl-import-site(|lang, partition, unique*, uri*, state*) = fail
 	
 	nabl-prop-site(|lang, partition, uri*, state*, implicit*) = fail
