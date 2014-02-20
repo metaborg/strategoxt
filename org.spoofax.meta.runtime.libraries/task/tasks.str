@@ -12,19 +12,22 @@ signature
 
 	constructors
 		
-    Id       : Term               -> Instruction
-    Fail     :                       Instruction
-    Choice   : List(Result)       -> Instruction
-    Sequence : List(Result)       -> Instruction
-    Combine  : List(Result)       -> Instruction
-    Singleton: Result             -> Instruction
-    Diff     : Result * Result    -> Instruction
-    Collect  : List(Result)       -> Instruction
-    Not      : Result             -> Instruction
-    Index    : Int * List(Result) -> Instruction
-    Length   : List(Result)       -> Instruction
-    Insert   : Term               -> Instruction
-    Rewrite  : ID * Result        -> Instruction
+    Id       : Term                -> Instruction
+    Fail     :                        Instruction
+    Choice   : List(Result)        -> Instruction
+    Sequence : List(Result)        -> Instruction
+    Combine  : List(Result)        -> Instruction
+    Singleton: Result              -> Instruction
+    Diff     : Result * Result     -> Instruction
+    Collect  : List(Result)        -> Instruction
+    Not      : Result              -> Instruction
+    Index    : Int * List(Result)  -> Instruction
+    Length   : List(Result)        -> Instruction
+    Sum      : List(Result)        -> Instruction
+    Fetch    : Term * List(Result) -> Instruction
+    Eq       : Term * Term         -> Instruction
+    Insert   : Term                -> Instruction
+    Rewrite  : ID * Result         -> Instruction
 
 rules // Identity
   
@@ -176,13 +179,41 @@ rules // Negation
   
 rules // Index
   
-  // EV: no creation strategy?
+  task-create-index(|ctx, i):
+  	list -> <new-task(|ctx)> Index(i, list)
   
   perform-task(|nr) = ?Index(i, <index(|i)>);  MkSingleton
   
 rules // Length
 	
+	task-create-length(|ctx):
+		list -> <new-task(|ctx)> Length(list)
+	
   perform-task(|nr) = ?Length(<length>);  MkSingleton
+
+rules // Sum
+	
+	task-create-sum(|ctx):
+		list -> <new-task(|ctx)> Sum(list)
+		
+	perform-task(|task-id):
+		Sum(list) -> <sum> list
+		
+rules // Fetch
+	
+	task-create-fetch(|ctx, list):
+		term -> <new-task(|ctx)> Fetch(term, list)
+		
+	perform-task(|task-id):
+		Fetch(term, list) -> <fetch-elem(?term)> list
+		
+rules // Equality
+	
+	task-create-eq(|ctx, expected):
+		actual -> <new-task(|ctx)> Eq(expected, actual)
+		
+	perform-task(|task-id):
+		Eq(expected, actual) -> <eq; !actual> (expected, actual)
 
 rules // Result insertion
 	

@@ -198,6 +198,16 @@ rules // query scope URIs
   nabl-uri-all-lexical-parent-scopes =
     <conc> (<nabl-uri-lexical-parent-scopes>, <nabl-uri-external-lexical-parent-scopes>)
     
+	nabl-sub-uri(|namespace):
+		uri -> <nabl-uri-strip-barriers> uri
+		where
+			nabl-uri-namespace => namespace
+		
+	nabl-sub-uri(|namespace):
+		uri -> <nabl-uri-parent; nabl-sub-uri(|namespace); nabl-uri-strip-barriers> uri
+		where
+			not(nabl-uri-namespace => namespace)
+    
 rules // Conditions
   
   nabl-is-uri =

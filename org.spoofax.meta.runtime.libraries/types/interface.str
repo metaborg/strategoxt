@@ -8,3 +8,4 @@ strategies // user-defined implementations
 	
 	create-type-task(|ctx) = fail
 	
+	create-type-task(|ctx, uri*) = fail

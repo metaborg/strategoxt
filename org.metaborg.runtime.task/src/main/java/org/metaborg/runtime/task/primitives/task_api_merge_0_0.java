@@ -13,7 +13,7 @@ public class task_api_merge_0_0 extends AbstractPrimitive {
 	public task_api_merge_0_0() {
 		super("task_api_merge", 0, 0);
 	}
-	
+
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		TaskManager.getInstance().mergeTaskEngine(env.getFactory());

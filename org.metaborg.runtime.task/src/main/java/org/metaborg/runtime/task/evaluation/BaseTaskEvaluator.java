@@ -21,8 +21,8 @@ import fj.P2;
 
 public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final ITermFactory factory;
-	private final IStrategoConstructor dependencyConstructor;
-	private final IStrategoConstructor singleConstructor;
+	private final IStrategoConstructor higherOrderConstructor;
+	private final IStrategoConstructor higherOrderFailConstructor;
 
 
 	/** Task identifier of the task that is currently being evaluated. **/
@@ -37,8 +37,8 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 	public BaseTaskEvaluator(ITermFactory factory) {
 		this.factory = factory;
-		this.dependencyConstructor = factory.makeConstructor("Dependency", 1);
-		this.singleConstructor = factory.makeConstructor("Single", 1);
+		this.higherOrderConstructor = factory.makeConstructor("HigherOrder", 2);
+		this.higherOrderFailConstructor = factory.makeConstructor("HigherOrderFail", 1);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		final boolean execute = combinations != null;
 
 		// TODO: optimize success/unknown using a bitflag?
-		boolean unknown = false;
+		boolean higherOrder = false;
 		boolean failure = true;
 		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
@@ -103,8 +103,8 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						if(task.shortCircuit)
 							done = true;
 						break;
-					default: // Unknown result or dynamic dependency.
-						unknown = true;
+					case HigherOrder:
+						higherOrder = true;
 						break;
 				}
 
@@ -113,7 +113,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			}
 		}
 
-		if(!unknown && !delayed) {
+		if(!higherOrder && !delayed) {
 			// Try to schedule new tasks even for failed tasks since they may activate combinators.
 			evaluationQueue.taskSolved(taskID);
 
@@ -166,14 +166,30 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 		if(Tools.isTermAppl(result)) {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
-			if(resultAppl.getConstructor().equals(dependencyConstructor)) {
-				// The task has dynamic dependencies and needs to be delayed.
-				evaluationQueue.delay(taskID, resultAppl.getSubterm(0));
-				return TaskResultType.DynamicDependency;
-			} else if(resultAppl.getConstructor().equals(singleConstructor)) {
-				// The result must be treated as a single result.
-				task.addResult(result.getSubterm(0));
-				return TaskResultType.Success;
+			if(resultAppl.getConstructor().equals(higherOrderConstructor)) {
+				// The task is a higher order task and has produced new tasks.
+				IStrategoTerm newInstruction = resultAppl.getSubterm(0);
+				IStrategoTerm createdTasks = resultAppl.getSubterm(1);
+
+				task.overrideInstruction(newInstruction);
+
+				for(IStrategoTerm createdTaskID : createdTasks)
+					evaluationQueue.queueOrDefer(createdTaskID);
+
+				if(createdTasks.iterator().hasNext()) {
+					evaluationQueue.delay(taskID, createdTasks);
+				} else {
+					evaluationQueue.queue(taskID);
+				}
+
+				return TaskResultType.HigherOrder;
+			} else if(resultAppl.getConstructor().equals(higherOrderFailConstructor)) {
+				// The task is a higher order task and has produced new tasks, but failed.
+				IStrategoTerm createdTasks = resultAppl.getSubterm(0);
+				for(IStrategoTerm createdTaskID : createdTasks)
+					evaluationQueue.queueOrDefer(createdTaskID);
+
+				return TaskResultType.Fail;
 			} else {
 				// Treat as single result.
 				task.addResult(result);

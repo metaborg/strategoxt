@@ -5,6 +5,8 @@ strategies // implementations generated from NaBL
   nabl-custom-properties(add-properties) = fail
   
   create-property-task(|ctx, kind) = fail
+  
+  create-property-task(|ctx, kind, uri*) = fail
 
 strategies // user-defined implementations
 	

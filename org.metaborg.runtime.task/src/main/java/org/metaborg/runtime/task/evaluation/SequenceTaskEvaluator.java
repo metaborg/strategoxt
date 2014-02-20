@@ -43,7 +43,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final Task task = taskEngine.getTask(taskID);
-			if(SequenceTaskEvaluator.isSequence(task.instruction)) {
+			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
 		}
@@ -54,7 +54,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
-			iter = task.instruction.getSubterm(0).iterator();
+			iter = task.instruction().getSubterm(0).iterator();
 			iterators.put(taskID, iter);
 		}
 
@@ -214,7 +214,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final Task task = taskEngine.getTask(queueTaskID);
-			if(SequenceTaskEvaluator.isSequence(task.instruction)) {
+			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {

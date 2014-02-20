@@ -9,7 +9,6 @@ import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import com.google.common.base.Predicate;
@@ -29,7 +28,7 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	private final Predicate<IStrategoTerm> visible;
 	private final Predicate<Task> visibleTask;
 	private final Predicate<Entry<IStrategoTerm, Task>> visibleEntry;
-	private final Predicate<IStrategoTerm> partitionsVisible;
+	private final Predicate<IStrategoTerm> sourcesVisible;
 	private final Predicate<IStrategoTerm> dependenciesVisible;
 	private final Predicate<IStrategoTerm> readsVisible;
 
@@ -56,10 +55,10 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 				return parentTaskVisible(entry.getKey());
 			}
 		};
-		this.partitionsVisible = new Predicate<IStrategoTerm>() {
+		this.sourcesVisible = new Predicate<IStrategoTerm>() {
 			@Override
 			public boolean apply(IStrategoTerm taskID) {
-				return parentPartitionsVisible(taskID);
+				return parentSourcesVisible(taskID);
 			}
 		};
 		this.dependenciesVisible = new Predicate<IStrategoTerm>() {
@@ -94,8 +93,8 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 
 	@Override
-	public void startCollection(IStrategoString partition) {
-		current.startCollection(partition);
+	public void startCollection(IStrategoTerm source) {
+		current.startCollection(source);
 	}
 
 	@Override
@@ -104,17 +103,14 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
 		boolean isCombinator, boolean shortCircuit) {
-		return current.addTask(partition, dependencies, instruction, isCombinator, shortCircuit);
+		return current.addTask(source, dependencies, instruction, isCombinator, shortCircuit);
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
-		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
-		current.addPersistedTask(taskID, task, partitions, initialDependencies, dependencies, reads, results, status,
-			message, time, evaluations);
+	public void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies) {
+		current.addPersistedTask(taskID, task, initialDependencies);
 	}
 
 	@Override
@@ -124,14 +120,14 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm stopCollection(IStrategoString partition) {
-		return current.stopCollection(partition);
+	public IStrategoTerm stopCollection(IStrategoTerm source) {
+		return current.stopCollection(source);
 	}
 
 
 	@Override
-	public void invalidate(IStrategoTerm taskID) {
-		current.invalidate(taskID);
+	public Task invalidate(IStrategoTerm taskID) {
+		return current.invalidate(taskID);
 	}
 
 	@Override
@@ -222,56 +218,56 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 
-	private boolean parentPartitionsVisible(IStrategoTerm taskID) {
+	private boolean parentSourcesVisible(IStrategoTerm taskID) {
 		return !getTaskRemovalStatus(taskID).partitionOverride;
 	}
 
-	private Iterable<IStrategoTerm> parentPartitionVisibleFilter(Iterable<IStrategoTerm> taskIDs) {
-		return Iterables.filter(taskIDs, partitionsVisible);
+	private Iterable<IStrategoTerm> parentSourcesVisibleFilter(Iterable<IStrategoTerm> taskIDs) {
+		return Iterables.filter(taskIDs, sourcesVisible);
 	}
 
 	@Override
-	public Set<IStrategoString> getAllPartition() {
-		return Sets.union(current.getAllPartition(), parent.getAllPartition());
+	public Set<IStrategoTerm> getAllSources() {
+		return Sets.union(current.getAllSources(), parent.getAllSources());
 	}
 
 	@Override
-	public Set<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
-		final Set<IStrategoString> ownPartitions = current.getPartitionsOf(taskID);
-		if(parentTaskVisible(taskID) && parentPartitionsVisible(taskID))
-			return Sets.union(ownPartitions, parent.getPartitionsOf(taskID));
+	public Set<IStrategoTerm> getSourcesOf(IStrategoTerm taskID) {
+		final Set<IStrategoTerm> ownSources = current.getSourcesOf(taskID);
+		if(parentTaskVisible(taskID) && parentSourcesVisible(taskID))
+			return Sets.union(ownSources, parent.getSourcesOf(taskID));
 		else
-			return ownPartitions;
+			return ownSources;
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getInPartition(IStrategoString partition) {
+	public Iterable<IStrategoTerm> getFromSource(IStrategoTerm source) {
 		final Iterable<IStrategoTerm> parentTaskIDs =
-			parentPartitionVisibleFilter(parentVisibleFilter(parent.getInPartition(partition)));
-		final Iterable<IStrategoTerm> ownTaskIDs = current.getInPartition(partition);
+			parentSourcesVisibleFilter(parentVisibleFilter(parent.getFromSource(source)));
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getFromSource(source);
 		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
 
 	@Override
-	public void addToPartition(IStrategoTerm taskID, IStrategoString partition) {
-		current.addToPartition(taskID, partition);
+	public void addToSource(IStrategoTerm taskID, IStrategoTerm source) {
+		current.addToSource(taskID, source);
 	}
 
 	@Override
-	public void removeFromPartition(IStrategoTerm taskID, IStrategoString partition) {
-		if(parentPartitionsVisible(taskID)) {
-			// TODO: copying is not correct if the parent changes, need to keep a Set<Partition> that have been del.
-			removePartitionsOf(taskID);
-			for(IStrategoString copyPartition : parent.getPartitionsOf(taskID)) {
-				addToPartition(taskID, copyPartition);
+	public void removeFromSource(IStrategoTerm taskID, IStrategoTerm source) {
+		if(parentSourcesVisible(taskID)) {
+			// TODO: copying is not correct if the parent changes, need to keep a Set<Source> that have been del.
+			removeSourcesOf(taskID);
+			for(IStrategoTerm sourceCopy : parent.getSourcesOf(taskID)) {
+				addToSource(taskID, sourceCopy);
 			}
 		}
-		current.removeFromPartition(taskID, partition);
+		current.removeFromSource(taskID, source);
 	}
 
 	@Override
-	public void removePartitionsOf(IStrategoTerm taskID) {
-		current.removePartitionsOf(taskID);
+	public void removeSourcesOf(IStrategoTerm taskID) {
+		current.removeSourcesOf(taskID);
 		getTaskRemovalStatus(taskID).partitionOverride = true;
 	}
 

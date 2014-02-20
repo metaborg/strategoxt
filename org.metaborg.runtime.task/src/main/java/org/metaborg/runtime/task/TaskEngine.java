@@ -9,12 +9,12 @@ import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.util.TermTools;
+import org.metaborg.runtime.task.util.UniqueQueue;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -41,14 +41,13 @@ public class TaskEngine implements ITaskEngine {
 	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
 
 
-	/** Origin partitions of tasks. */
-	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoString> toPartition =
-		BidirectionalLinkedHashMultimap.create();
+	/** Origins of tasks. */
+	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toSource = BidirectionalLinkedHashMultimap
+		.create();
 
 	/** Bidirectional mapping of dependencies between tasks identifiers. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDependency = BidirectionalLinkedHashMultimap
 		.create();
-	// TODO: may not be updated during evaluation any more!
 
 	/** Bidirectional mapping of dynamic dependencies between tasks identifiers. Can be updated during evaluation. */
 	private final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> toDynamicDependency =
@@ -59,8 +58,8 @@ public class TaskEngine implements ITaskEngine {
 		.create();
 
 
-	/** Tasks that are not in any partition are garbage. **/
-	private final Set<IStrategoTerm> garbage = Sets.newHashSet();
+	/** Tasks that do not have a source are garbage. **/
+	private final Queue<IStrategoTerm> garbage = new UniqueQueue<IStrategoTerm>();
 
 	/** Set of task that are scheduled for evaluation the next time evaluate is called. */
 	private final Set<IStrategoTerm> scheduled = Sets.newHashSet();
@@ -96,8 +95,8 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void startCollection(IStrategoString partition) {
-		taskCollection.startCollection(partition, wrapper.getInPartition(partition));
+	public void startCollection(IStrategoTerm source) {
+		taskCollection.startCollection(source, wrapper.getFromSource(source));
 	}
 
 	@Override
@@ -120,9 +119,9 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoString partition, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
 		boolean isCombinator, boolean shortCircuit) {
-		if(!taskCollection.inCollection(partition))
+		if(!taskCollection.inCollection(source))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
@@ -137,7 +136,7 @@ public class TaskEngine implements ITaskEngine {
 		}
 		taskCollection.keepTask(taskID);
 
-		addToPartition(taskID, partition);
+		addToSource(taskID, source);
 		for(final IStrategoTerm dependency : dependencies)
 			addDependency(taskID, dependency);
 
@@ -149,34 +148,21 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, Iterable<IStrategoTerm> partitions,
-		IStrategoList initialDependencies, Iterable<IStrategoTerm> dependencies, Iterable<IStrategoTerm> reads,
-		IStrategoTerm results, TaskStatus status, IStrategoTerm message, long time, short evaluations) {
+	public void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
 		toTask.put(taskID, task);
 		toTaskID.put(task.instruction, initialDependencies, taskID);
-
-		for(final IStrategoTerm partition : partitions)
-			addToPartition(taskID, (IStrategoString) partition);
-		for(final IStrategoTerm dependency : dependencies)
-			addDependency(taskID, dependency);
-		for(final IStrategoTerm read : reads)
-			addRead(taskID, read);
-		if(results != null)
-			task.setResults(results);
-		if(message != null)
-			task.setMessage(message);
-
-		task.setStatus(status);
-		task.setTime(time);
-		task.setEvaluations(evaluations);
 	}
 
 	@Override
 	public void removeTask(IStrategoTerm taskID) {
-		removePartitionsOf(taskID);
+		// Thrash higher-order tasks that were created by this task. Make a copy of the result of getFromSource because
+		// that collection will be changed by trashUnreferencedTasks, which would result in a concurrent modification.
+		trashUnreferencedTasks(Lists.newArrayList(getFromSource(taskID)), taskID);
+
+		removeSourcesOf(taskID);
 		removeDependencies(taskID);
 		removeReads(taskID);
 		scheduled.remove(taskID);
@@ -188,26 +174,34 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm stopCollection(IStrategoString partition) {
-		final Iterable<IStrategoTerm> removedTasks = taskCollection.stopCollection(partition);
+	public IStrategoTerm stopCollection(IStrategoTerm source) {
+		final Iterable<IStrategoTerm> removedTasks = taskCollection.stopCollection(source);
 		final Iterable<IStrategoTerm> addedTasks = taskCollection.addedTasks();
 
-		for(final IStrategoTerm removed : removedTasks) {
-			wrapper.removeFromPartition(removed, partition);
-			if(wrapper.getPartitionsOf(removed).isEmpty())
-				garbage.add(removed);
-		}
-
+		trashUnreferencedTasks(removedTasks, source);
 		collectGarbage();
 
 		return factory.makeTuple(TermTools.makeList(factory, removedTasks), TermTools.makeList(factory, addedTasks));
 	}
 
-	private void collectGarbage() {
-		for(final IStrategoTerm taskID : garbage)
-			wrapper.removeTask(taskID);
+	/**
+	 * Removes given tasks from given source, and marks the task as garbage if it is not referenced by any source.
+	 */
+	private void trashUnreferencedTasks(Iterable<IStrategoTerm> taskIDs, IStrategoTerm source) {
+		for(final IStrategoTerm removed : taskIDs) {
+			wrapper.removeFromSource(removed, source);
+			if(wrapper.getSourcesOf(removed).isEmpty()) {
+				garbage.add(removed);
+			}
+		}
+	}
 
-		garbage.clear();
+	/**
+	 * Removes all tasks that are marked as garbage, and clears garbage.
+	 */
+	private void collectGarbage() {
+		for(IStrategoTerm taskID; (taskID = garbage.poll()) != null;)
+			wrapper.removeTask(taskID);
 	}
 
 	/**
@@ -220,7 +214,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void invalidate(IStrategoTerm taskID) {
+	public Task invalidate(IStrategoTerm taskID) {
 		Task task = getTask(taskID);
 		if(task == null) {
 			task = wrapper.getTask(taskID);
@@ -232,6 +226,8 @@ public class TaskEngine implements ITaskEngine {
 		task.unsolve();
 		task.clearMessage();
 		wrapper.removeReads(taskID);
+
+		return task;
 	}
 
 	@Override
@@ -261,8 +257,10 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		for(IStrategoTerm taskID : scheduled)
-			invalidate(taskID);
+		for(IStrategoTerm taskID : scheduled) {
+			final Task task = invalidate(taskID);
+			task.clearInstructionOverride();
+		}
 		wrapper.clearTimes();
 		wrapper.clearEvaluations();
 
@@ -314,33 +312,33 @@ public class TaskEngine implements ITaskEngine {
 
 
 	@Override
-	public Set<IStrategoString> getAllPartition() {
-		return Sets.newHashSet(toPartition.values());
+	public Set<IStrategoTerm> getAllSources() {
+		return Sets.newHashSet(toSource.values());
 	}
 
 	@Override
-	public Set<IStrategoString> getPartitionsOf(IStrategoTerm taskID) {
-		return toPartition.get(taskID);
+	public Set<IStrategoTerm> getSourcesOf(IStrategoTerm taskID) {
+		return toSource.get(taskID);
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getInPartition(IStrategoString partition) {
-		return toPartition.getInverse(partition);
+	public Iterable<IStrategoTerm> getFromSource(IStrategoTerm source) {
+		return toSource.getInverse(source);
 	}
 
 	@Override
-	public void addToPartition(IStrategoTerm taskID, IStrategoString partition) {
-		toPartition.put(taskID, partition);
+	public void addToSource(IStrategoTerm taskID, IStrategoTerm source) {
+		toSource.put(taskID, source);
 	}
 
 	@Override
-	public void removeFromPartition(IStrategoTerm taskID, IStrategoString partition) {
-		toPartition.remove(taskID, partition);
+	public void removeFromSource(IStrategoTerm taskID, IStrategoTerm source) {
+		toSource.remove(taskID, source);
 	}
 
 	@Override
-	public void removePartitionsOf(IStrategoTerm taskID) {
-		toPartition.removeAll(taskID);
+	public void removeSourcesOf(IStrategoTerm taskID) {
+		toSource.removeAll(taskID);
 	}
 
 
@@ -472,7 +470,7 @@ public class TaskEngine implements ITaskEngine {
 		toTask.clear();
 		toTaskID.clear();
 
-		toPartition.clear();
+		toSource.clear();
 		toDependency.clear();
 		toDynamicDependency.clear();
 		toRead.clear();

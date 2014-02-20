@@ -20,8 +20,8 @@ rules
 
 rules
   
-  mw-def-uris    = get-arguments; filter(get-annos; fetch-elem(?Def(<id>)))
-  mw-ref-uri     = ?t{Use(_)}; (nabl-collect-one-resolved-def; ?Def(<id>) <+ !Unresolved())
+  mw-def-uris    = get-arguments; map(get-annos; filter(?Def(_); origin-location)); concat
+  mw-ref-uri     = get-annos; fetch-elem(?Use(_)); (nabl-collect-one-resolved-def; ?Def(_); origin-location <+ !Unresolved())
   mw-is-compound = where(not(?Some(_))); explode-term + map(explode-term)
 
   mw-combine = ?[]

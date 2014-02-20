@@ -97,6 +97,8 @@ strategies // generic traversal
   ; try(nabl-external-def-site(|lang, partition, unique*, uri'*, state*, implicit*))
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
   ; try(nabl-import-site(|lang, partition, unique*, child-uri*, state*))
+  ; try(nabl-filtering-site(|lang, partition, unique*, uri*, state*))
+  ; try(nabl-disambiguation-site(|lang, partition, unique*, uri*, state*))
   ; try(nabl-prop-site(|lang, partition, uri*, state*, implicit*))
   ; nabl-annotate-properties(|lang, partition, uri'*)
     
@@ -303,7 +305,21 @@ rules // completion
 		where
 			ctx-result := <nabl-use-candidate(|lang, partition, uri*, ctx-name)> UseCandidate(ctx-ns, ctx-prop*, ctx-context, True(), []);
 	    subtask*   := <nabl-resolve-all-tasks(|partition, ns, prop*)> [ctx-result]
-    
+
+rules // filtering
+	
+	nabl-filter(|lang, partition, uri*, filtered-defs):
+		name -> result
+		where
+			result := <replace-annotation(?Use(_)|Use(filtered-defs))> name
+		 
+rules // disambiguation
+	
+	nabl-disambiguate(|lang, partition, uri*, disambiguated-defs):
+		name -> result
+		where
+			result := <replace-annotation(?Use(_)|Use(disambiguated-defs))> name
+		 
 rules // generic analysis of imports
   
   nabl-import(|lang, partition, unique*, uri*, imports) =

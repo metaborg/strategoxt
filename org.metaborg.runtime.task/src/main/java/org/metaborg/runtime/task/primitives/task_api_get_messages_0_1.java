@@ -8,7 +8,6 @@ import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -18,15 +17,14 @@ public class task_api_get_messages_0_1 extends AbstractPrimitive {
 	public task_api_get_messages_0_1() {
 		super("task_api_get_messages", 0, 1);
 	}
-	
+
 	@Override
-	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars)
-		throws InterpreterException {
+	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITermFactory factory = env.getFactory();
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
-		final IStrategoString partition = (IStrategoString)tvars[0];
+		final IStrategoTerm source = tvars[0];
 		IStrategoList messages = factory.makeList();
-		for(IStrategoTerm taskID : taskEngine.getInPartition(partition)) {
+		for(IStrategoTerm taskID : taskEngine.getFromSource(source)) {
 			final Task task = taskEngine.getTask(taskID);
 			final IStrategoTerm message = task.message();
 			if(message == null)

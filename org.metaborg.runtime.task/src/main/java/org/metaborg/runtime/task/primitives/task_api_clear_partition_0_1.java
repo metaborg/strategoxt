@@ -6,7 +6,6 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public class task_api_clear_partition_0_1 extends AbstractPrimitive {
@@ -19,8 +18,8 @@ public class task_api_clear_partition_0_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
-		final IStrategoString partition = (IStrategoString) tvars[0];
-		for(IStrategoTerm taskID : taskEngine.getInPartition(partition)) {
+		final IStrategoTerm source = tvars[0];
+		for(IStrategoTerm taskID : taskEngine.getFromSource(source)) {
 			taskEngine.removeTask(taskID);
 		}
 		return true;

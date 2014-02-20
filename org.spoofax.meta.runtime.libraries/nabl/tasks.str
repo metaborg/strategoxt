@@ -30,7 +30,8 @@ signature
     ResolveAllDefs         : Scope * Namespace * Name * Prop           -> Instruction
     CheckDefs              : Namespace * URI                           -> Instruction
     PropConstraint         : Kind * Expected * Result                  -> Instruction
-        
+    SubURI                 : Namespace * URI                           -> Instruction
+    
 rules // Collects all definitions in a term
   
   nabl-create-collectdefs(|ctx):
@@ -65,6 +66,7 @@ rules // Resolve definitions in a scope of a certain namespace and name (stops w
 
 rules // Resolve all definitions in a scope of a certain namespace and name
 	
+	// TODO: This seems to be redundant, given the perform-task rule
   nabl-create-resolvealldefs(|ctx, ns, name, prop*):
   	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns, name, prop*)
   
@@ -158,3 +160,14 @@ rules // Filter definitions by properties
 
 	perform-task(|task-id):
 		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
+
+rules // URI manipulation
+	
+	nabl-create-suburi(|ctx, namespace):
+		contains-uri -> <new-task(|ctx)> SubURI(namespace, contains-uri)
+		
+	perform-task(|task-id):
+		SubURI(namespace, contains-uri) -> <nabl-sub-uri(|namespace)> uri
+		where
+			uri := <nabl-uri> contains-uri
+		
