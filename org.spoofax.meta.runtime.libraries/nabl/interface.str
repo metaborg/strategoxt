@@ -31,7 +31,9 @@ strategies // Projections
 	
 strategies // Lookup hooks
 		
-	nabl-disambiguate(|prop*, namespace, name) = fail
+	nabl-filter-def(|ctx, ctx-uri, ctx-term) = fail
+	
+	nabl-disambiguate-def(|ctx, ctx-uri, ctx-term) = fail
 
 strategies // Name generation
 	
