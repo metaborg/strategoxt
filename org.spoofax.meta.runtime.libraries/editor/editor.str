@@ -5,17 +5,3 @@ imports
 	libstratego-lib
 	
 	editor/-
-
-rules
-	
-  project-path = prim("SSL_EXT_projectpath")
-  
-  plugin-path = prim("SSL_EXT_pluginpath")
-    
-  refresh-workspace-file:
-    path -> <prim("SSL_EXT_refreshresource", path)>
-    
-  editor-init =
-    // Ensure all dynamic rules are properly scoped
-    try(dr-scope-all-end);
-    dr-scope-all-start
