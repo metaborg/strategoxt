@@ -242,6 +242,9 @@ rules // Equality
   nabl-uri-segment-eq =
     ?(Anonymous(_), Anonymous(_))
     
+  nabl-uri-namespace-eq(|namespace) =
+  	nabl-uri-namespace; ?namespace
+    
 rules // Printing
   
   nabl-print-uri:

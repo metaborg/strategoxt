@@ -396,6 +396,10 @@ rules // URI retrieval
     try(nabl-get-name);
     get-annos;
     collect-one(?Use(_))
+
+	nabl-collect-use-task =
+    nabl-collect-use;
+    ?Use(<id>)
     
   nabl-collect-all-use =
     try(nabl-get-name);
