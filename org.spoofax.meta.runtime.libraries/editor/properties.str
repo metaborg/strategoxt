@@ -70,7 +70,10 @@ rules	// Properties
 			uri := <nabl-collect-use;nabl-uri;pp-uri>t <+
 			uri := None()
 	
-	nabl-props: t -> <nabl-custom-properties(id);map(nabl-prop(|t))>
+	nabl-props: t -> props
+		with
+			props := <nabl-custom-properties(id);map(nabl-prop(|t))> <+
+			props := []
 	nabl-prop(|t): p -> <nabl-prop>(t, p)
 	nabl-prop: (t, property) -> (name, prop)
 		with
