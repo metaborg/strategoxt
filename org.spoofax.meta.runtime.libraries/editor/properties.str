@@ -113,7 +113,7 @@ rules // helper rules: formatting
 	pp-property: a -> <map(pp-property;\x->("",x)\)>a
 		where is-list
 	pp-property: Def(uri) -> <pp-uri>uri
-	pp-property = try(rm-annotations);write-to-string
+	pp-property = topdown(try(rm-annotations));write-to-string
 	
 rules // helper rules: format to HTML for hover
 	
