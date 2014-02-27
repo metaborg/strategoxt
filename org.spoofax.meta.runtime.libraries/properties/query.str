@@ -23,6 +23,10 @@ rules
     (get-property-task(|kind) <+ try(nabl-get-name); get-index-property(|kind))
   ; try(task-result-combinations-single; Hd) // Try because results may already be inserted? 
 	
+  get-properties(|kind) =
+    (get-property-task(|kind) <+ try(nabl-get-name); get-index-properties(|kind))
+  ; try(task-result-combinations-single; concat)
+	
   get-index-property(|kind) =
     nabl-uris // TODO: how to handle multiple values?
   ; fetch-elem(!Prop(<id>, kind, ()); nabl-get-value)

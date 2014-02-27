@@ -1,0 +1,125 @@
+module editor/properties
+
+imports
+
+	libstratego-gpp	
+	editor/interop
+	
+	index/core
+	nabl/collect
+	nabl/entries
+	nabl/uri
+	properties/interface
+	properties/query
+	task/core
+	types/query
+  
+rules	// Properties
+	
+	get-editor-properties(language-pp | language, project-path):
+		t ->
+			<concat
+			;filter(not-none)
+			;map(\(a,b)->(a,<pp-property>b)\)>
+			[
+				[
+					("Target",			<target-prop(language-pp)>t),
+					("Constructor",	<cons-prop>t),
+				 	("Type",				<type-prop>t),
+				 	("Name",				<name-prop>t),
+				 	("Defines",			<def-prop>t),
+				 	("Refers to",		<ref-prop>t)
+				]
+			,	<nabl-props>t
+			]
+			with
+	    	index-setup(|language, project-path);
+	    	task-setup(|project-path)
+	
+	target-prop(language-pp): t -> tar
+		with
+			tar := <pp-ast(language-pp)>t <+
+			tar := None()
+	
+	cons-prop: _ -> None()
+		where is-string
+	cons-prop: t -> constr
+		where not(is-string)
+		with
+			constr := <pp-cons>t <+
+			constr := None()
+	
+	type-prop: t -> type
+		with
+			type := <get-type>t <+
+			type := None()
+
+	name-prop: t -> name
+		where
+			name := <nabl-get-name>t <+
+			name := None()
+
+	def-prop: t -> uri
+		with
+			uri := <nabl-collect-def;nabl-uri;pp-uri>t <+
+			uri := None()
+
+	ref-prop: Def(uri) -> <pp-uri>uri	//TODO: remove this when we can use hover without resolving	
+	ref-prop: t -> uri
+		with
+			uri := <nabl-collect-use;nabl-uri;pp-uri>t <+
+			uri := None()
+	
+	nabl-props: t -> props
+		with
+			props := <nabl-custom-properties(id);map(nabl-prop(|t))> <+
+			props := []
+	nabl-prop(|t): p -> <nabl-prop>(t, p)
+	nabl-prop: (t, property) -> (name, prop)
+		with
+			name := <pp-nabl-prop-name>property
+		with
+			prop := <get-properties(|property);de-list;not(?Result(_); task-has-failed)>t <+
+			prop := None()
+	
+rules // helper rules: filtering
+
+	not-none: (a, b) -> (a, b)
+		where
+			<not(eq)>(b, None())
+	
+	de-list: [] -> None()
+	de-list: [a] -> a
+	de-list: [a|rest] -> [a|rest]
+	
+rules // helper rules: formatting
+	
+	pp-ast(language-pp) = topdown(try(rm-annotations));language-pp;box2text-string(|80)
+	
+	pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]]
+	
+	pp-uri = reverse-uri;foreign-call(|"Analysis", "make-abstract");foreign-call(|"Analysis", "prettyprint-example");box2text-string(|80)
+	
+	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
+	
+	pp-nabl-prop-name = write-to-string;string-replace(|"NablProp_","");string-replace(|"-"," ");upper-case-first
+	
+	upper-case-first: string -> <implode-string>[<to-upper>c|hars]
+		with [c|hars] := <explode-string>string
+	
+	pp-property: a -> a
+		where is-string
+	pp-property: None() -> "-"
+	pp-property: a -> <map(pp-property;\x->("",x)\)>a
+		where is-list
+	pp-property: Def(uri) -> <pp-uri>uri
+	pp-property = topdown(try(rm-annotations));write-to-string
+	
+rules // helper rules: format to HTML for hover
+	
+	properties-to-html = map(property-to-html);separate-by(|"<br/>\n");concat-strings
+	property-to-html: ("", prop) -> $[[<property-to-html>prop]]
+	property-to-html: (name, prop) -> $[<b>[name]</b>: [<property-to-html>prop]]
+	property-to-html: list -> $[<div>[<properties-to-html>list]</div>]
+		where is-list
+	property-to-html: prop -> prop
