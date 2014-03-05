@@ -15,7 +15,7 @@ let
     pkgs.releaseTools.antBuild {
       name = "strategoxt-java-${toString nr}";
       src = strategoxtJava;
-      buildInputs = with pkgs; [ strategoPackages.sdf strategoPackages.strategoxt ecj openjdk ];
+      buildInputs = with pkgs; [ strategoPackages.sdf ecj openjdk ];
 
       preConfigure = ''
         cd strategoxt
