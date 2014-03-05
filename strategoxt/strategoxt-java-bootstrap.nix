@@ -6,6 +6,11 @@
 let
   pkgs = import nixpkgs {};
 
+  baseline = pkgs.fetchurl {
+    url = https://github.com/metaborg/strategoxt/releases/download/baseline/strategoxt.jar;
+    sha256 = "316306e6c89301037bc6f83235cefb036f395bdc12cf848f75067653cc97344e";
+  };
+
   bootstrap = baseline: nr:
     pkgs.releaseTools.antBuild {
       name = "strategoxt-java-${toString nr}";
