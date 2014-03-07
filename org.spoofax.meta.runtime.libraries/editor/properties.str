@@ -13,19 +13,22 @@ imports
 	properties/query
 	task/core
 	types/query
+	types/collect
   
 rules	// Properties
 	
-	get-editor-properties(language-pp | language, project-path):
+	get-editor-properties(language-pp | language, project-path) = 
+		get-all-editor-properties(language-pp | language, project-path)
+	; filter(not-none)
+	
+	get-all-editor-properties(language-pp | language, project-path):
 		t ->
 			<concat
-			;filter(not-none)
 			;map(\(a,b)->(a,<pp-property>b)\)>
 			[
 				[
 					("Target",			<target-prop(language-pp)>t),
 					("Constructor",	<cons-prop>t),
-				 	("Type",				<type-prop>t),
 				 	("Name",				<name-prop>t),
 				 	("Defines",			<def-prop>t),
 				 	("Refers to",		<ref-prop>t)
@@ -72,7 +75,9 @@ rules	// Properties
 	
 	nabl-props: t -> props
 		with
-			props := <nabl-custom-properties(id);map(nabl-prop(|t))> <+
+			nabl-props := [Type()|<nabl-custom-properties(id)>]
+		with
+			props := <map(nabl-prop(|t))> nabl-props <+
 			props := []
 	nabl-prop(|t): p -> <nabl-prop>(t, p)
 	nabl-prop: (t, property) -> (name, prop)
@@ -80,6 +85,7 @@ rules	// Properties
 			name := <pp-nabl-prop-name>property
 		with
 			prop := <get-properties(|property);de-list;not(?Result(_); task-has-failed)>t <+
+			prop := <get-property(|property)	;				 not(?Result(_); task-has-failed)>t <+
 			prop := None()
 	
 rules // helper rules: filtering
@@ -87,6 +93,7 @@ rules // helper rules: filtering
 	not-none: (a, b) -> (a, b)
 		where
 			<not(eq)>(b, None())
+		; <not(eq)>(b, "-")
 	
 	de-list: [] -> None()
 	de-list: [a] -> a
@@ -102,6 +109,7 @@ rules // helper rules: formatting
 	
 	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
 	
+	pp-nabl-prop-name : Type() -> "Type"
 	pp-nabl-prop-name = write-to-string;string-replace(|"NablProp_","");string-replace(|"-"," ");upper-case-first
 	
 	upper-case-first: string -> <implode-string>[<to-upper>c|hars]
