@@ -100,7 +100,7 @@ strategies // generic traversal
   ; try(nabl-filtering-site(|lang, partition, unique*, uri*, state*))
   ; try(nabl-disambiguation-site(|lang, partition, unique*, uri*, state*))
   ; try(nabl-prop-site(|lang, partition, uri*, state*, implicit*))
-  ; nabl-annotate-properties(|lang, partition, uri'*)
+  ; nabl-annotate-properties(|lang, partition, uri*, uri'*)
     
 	nabl-siblings(|lang, partition, unique*, uri*) = 
 		[]  

@@ -51,21 +51,21 @@ rules // generic analysis of properties
 rules
         
   // generic collection of property tasks
-  nabl-annotate-properties(|lang, partition, uri*) =
+  nabl-annotate-properties(|lang, partition, old-uri*, new-uri*) =
     where(
       iset := <new-iset>
     ; try(nabl-custom-properties(\p* -> <iset-addlist(|p*); fail> iset\))
     ; kind* := [Type()|<iset-elements> iset]
     )
   ; !(kind*, <remove-property-annotations(|kind*)>)
-  ; foldl(nabl-annotate-property(|lang, partition, uri*) <+ Snd)
-  ; where(try(nabl-constraint(|lang, partition, uri*)))
+  ; foldl(nabl-annotate-property(|lang, partition, old-uri*, new-uri*) <+ Snd)
+  ; where(try(nabl-constraint(|lang, partition, old-uri*, new-uri*)))
   
-  nabl-annotate-property(|lang, partition, uri*):
+  nabl-annotate-property(|lang, partition, old-uri*, new-uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}
     where
       not(<get-property-task(|kind)> term)
-    ; prop := <create-property-task(|partition, kind, uri*) <+ create-property-task(|partition, kind)> term
+    ; prop := <create-property-task(|partition, kind, old-uri*, new-uri*) <+ create-property-task(|partition, kind, new-uri*) <+ create-property-task(|partition, kind)> term
       
 strategies
   
@@ -92,6 +92,7 @@ rules
   
   get-or-create-property-task(|ctx, kind) = 
      get-property-task(|kind)
+  <+ (create-property-task(|ctx, kind, [], []); warn-msg(|$[Called create-property-task that accepts uri* with empty uri*, because it was not passed!])) 
   <+ (create-property-task(|ctx, kind, []); warn-msg(|$[Called create-property-task that accepts uri* with empty uri*, because it was not passed!])) 
   <+ create-property-task(|ctx, kind)
   <+ warn-msg(|$[Could not create task for property [<get-constructor> kind].])
