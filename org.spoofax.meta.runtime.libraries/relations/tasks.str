@@ -55,12 +55,34 @@ rules // Lookup
   store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set
   
 rules // Match
-	
-  relation-create-match(|ctx, rel, values):
-  	actual -> <new-task(|ctx)> RelationMatch(rel, actual, values) 
-		
-  perform-task(|task-id): 
-  	RelationMatch(rel, actual, value) -> [<eq> (<relation-try-term-to-uri> actual, <relation-try-term-to-uri> value)]
+
+  relation-create-match(|ctx, rel, expected):
+  	actual -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
+  	
+  relation-create-match(|ctx):
+  	(rel, actual, expected) -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
+
+	perform-task(|task-id):
+		RelationMatch(rel, actual, expected) -> <id>
+		where
+		  actual'   := <relation-try-term-to-uri> actual
+		; expected' := <relation-try-term-to-uri> expected
+		; (<relation-perform-match(|rel)> (actual', expected') <+
+		  if <relation-is-symmetric> rel then
+		  	<relation-perform-match(|rel)> (expected', actual')
+	  	end)
+		  
+  relation-perform-match(|rel):
+  	(actual, expected) -> <relation-match-tuple> (rel, actual, expected)
+  	// TODO: can this be transtive?
+  	
+	relation-perform-match(|rel):
+  	(actual, expected) -> <id>
+  	where
+  	  <get-index-relations(|rel); fetch(?expected)> actual
+		; if <relation-is-transitive> rel then
+		    <get-index-relations(|Transitive(rel)); fetch(?expected)> actual
+		  end
 
 rules // Distance
 	

@@ -7,7 +7,9 @@ strategies
   // relation-tuple(store): (IntTy(), SubType()) -> <store> FloatTy()
 
   relation-tuple(store) = fail
+  relation-match-tuple = fail
   
   relation-is-transitive = fail
   relation-is-reflexive  = fail
+  relation-is-symmetric  = fail
   
