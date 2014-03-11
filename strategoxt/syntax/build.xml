@@ -53,6 +53,7 @@
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
 			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />
+			<property name="dep.rtg" location="${install-prefix}/share/strategoxt/rtg" />
 			<fileset dir="java-front" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />
