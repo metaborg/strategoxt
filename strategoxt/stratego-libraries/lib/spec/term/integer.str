@@ -36,6 +36,33 @@ strategies
 strategies
 
   /**
+   * Bitwise OR's two integers
+   */
+  iori = ?(x, y); prim("SSL_iori",x,y)
+
+  /**
+   * Bitwise XOR's two integers
+   */
+  xori = ?(x, y); prim("SSL_xori",x,y)
+
+  /**
+   * Bitwise AND's two integers
+   */
+  andi = ?(x, y); prim("SSL_andi",x,y)
+
+  /**
+   * Bitwise shift x to the left by y places
+   */
+  shli = ?(x, y); prim("SSL_shli",x,y)
+
+  /**
+   * Bitwise shift x to the right by y places
+   */
+  shli = ?(x, y); prim("SSL_shri",x,y)
+
+strategies
+
+  /**
    * Subtracts two numbers (integer or real)
    */
   subt  = ?(x,y); (prim("SSL_subti",x,y) <+ prim("SSL_subtr",x,y))
