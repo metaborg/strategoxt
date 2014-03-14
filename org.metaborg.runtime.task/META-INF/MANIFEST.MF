@@ -8,6 +8,7 @@ Require-Bundle: org.spoofax.interpreter.core,
  org.spoofax.interpreter.externaldeps,
  org.junit
 Export-Package: org.metaborg.runtime.task,
- org.metaborg.runtime.task.primitives
+ org.metaborg.runtime.task.primitives,
+ org.metaborg.runtime.task.util
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
