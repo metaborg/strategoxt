@@ -4,9 +4,11 @@ strategies
   
   // interface for static relation tuples, e.g. 
   //
-  // relation-tuple(store): (IntTy(), SubType()) -> <store> FloatTy()
-
-  relation-tuple(store) = fail
+  // relation-store-value(store): (SubType(), IntTy()) -> <store> FloatTy()
+  relation-store-value(store) = fail
+	// interface for static relation tuples, e.g. 
+  //
+  // relation-match-tuple: (SubType(), IntTy(), FloatTy())
   relation-match-tuple = fail
   
   relation-is-transitive = fail

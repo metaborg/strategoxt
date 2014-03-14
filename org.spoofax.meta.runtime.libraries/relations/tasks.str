@@ -49,7 +49,7 @@ rules // Lookup
   	t -> val*
   	with
       stat-set := <new-iset>
-    ; <try(relation-tuple(store-tuple(|stat-set)))> (t, rel)
+    ; <try(relation-store-value(store-tuple(|stat-set)))> (rel, t)
     ; val* := <iset-elements> stat-set
       
   store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set
@@ -63,13 +63,15 @@ rules // Match
   	(rel, actual, expected) -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
 
 	perform-task(|task-id):
-		RelationMatch(rel, actual, expected) -> <id>
+		RelationMatch(rel, actual, expected) -> expected
 		where
 		  actual'   := <relation-try-term-to-uri> actual
 		; expected' := <relation-try-term-to-uri> expected
 		; (<relation-perform-match(|rel)> (actual', expected') <+
 		  if <relation-is-symmetric> rel then
 		  	<relation-perform-match(|rel)> (expected', actual')
+		  else
+		  	fail
 	  	end)
 		  
   relation-perform-match(|rel):
