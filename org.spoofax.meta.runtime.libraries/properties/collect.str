@@ -90,13 +90,18 @@ strategies
 
 rules
   
-  get-or-create-property-task(|ctx, kind) = 
+  get-or-create-property-task(|ctx, kind):
+  	term -> task
+  	where ( 
      get-property-task(|kind)
-  <+ (create-property-task(|ctx, kind, [], []); warn-msg(|$[Called create-property-task that accepts uri* with empty uri*, because it was not passed!])) 
-  <+ (create-property-task(|ctx, kind, []); warn-msg(|$[Called create-property-task that accepts uri* with empty uri*, because it was not passed!])) 
+  <+ create-property-task(|ctx, kind, [], [])
+  ; where(err-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts old-uri* and new-uri* with empty lists, because it was not passed!])) 
+  <+ create-property-task(|ctx, kind, [])
+  ; where(err-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts uri* with an empty list, because it was not passed!])) 
   <+ create-property-task(|ctx, kind)
-  <+ warn-msg(|$[Could not create task for property [<get-constructor> kind].])
-   ; task-create-fail(|ctx)
+  <+ task-create-fail(|ctx)
+  ; where(err-msg(|$[Could not create task for property [<get-constructor> kind] on term [<write-to-string> term].]))
+  ) => task
       
   create-property-task(|ctx, kind):
     r@Result(_) -> <prop-create-extract(|ctx, kind)> r
