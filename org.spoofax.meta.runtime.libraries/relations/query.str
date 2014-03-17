@@ -4,6 +4,7 @@ imports
 	
   relations/entries
   index/query
+  task/insert
   
 rules
   
@@ -12,6 +13,9 @@ rules
    
   get-index-relations(|rel):
   	t -> <index-get-all; map(relation-tuple-value)> RelTuple(t, rel, ())
+  	
+	get-index-transitive-relations(|rel):
+		t -> <index-get-all; mapconcat(relation-tuple-value; insert-results-or-delay)> RelTuple(t, Transitive(rel), ())
 
 	relation-tuple-value:
 		RelTuple(_, _, v) -> v

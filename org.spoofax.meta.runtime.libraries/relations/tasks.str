@@ -40,7 +40,7 @@ rules // Lookup
         refl-val* := []
       end
     ; if <relation-is-transitive> rel then
-        trans-val* := <get-index-relations(|Transitive(rel))> t'
+        trans-val* := <get-index-transitive-relations(|rel)> t'
       else
         trans-val* := []
       end
@@ -66,13 +66,11 @@ rules // Match
 		RelationMatch(rel, actual, expected) -> expected
 		where
 		  actual'   := <relation-try-term-to-uri> actual
+	  ; <relation-add-read(|task-id)> actual'
 		; expected' := <relation-try-term-to-uri> expected
+	  ; <relation-add-read(|task-id)> expected'
 		; (<relation-perform-match(|rel)> (actual', expected') <+
-		  if <relation-is-symmetric> rel then
-		  	<relation-perform-match(|rel)> (expected', actual')
-		  else
-		  	fail
-	  	end)
+		  <where(<relation-is-symmetric> rel); relation-perform-match(|rel)> (expected', actual'))
 		  
   relation-perform-match(|rel):
   	(actual, expected) -> <relation-match-tuple> (rel, actual, expected)
@@ -81,11 +79,9 @@ rules // Match
 	relation-perform-match(|rel):
   	(actual, expected) -> <id>
   	where
-  	  <get-index-relations(|rel); fetch(?expected)> actual
-		; if <relation-is-transitive> rel then
-		    <get-index-relations(|Transitive(rel)); fetch(?expected)> actual
-		  end
-
+  	  <get-index-relations(|rel); fetch(relation-try-term-to-uri; ?expected)> actual <+ 
+		  <where(<relation-is-transitive> rel); get-index-transitive-relations(|rel); fetch(relation-try-term-to-uri; ?expected)> actual
+		  
 rules // Distance
 	
   relation-create-distance(|ctx, rel, values):
