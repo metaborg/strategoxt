@@ -294,7 +294,28 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		if (!foundRegisterer)
 			throw new NoInteropRegistererJarException(jars);
 	}
-
+	
+	/**
+	 * Directly register a InteropRegisterer instance without the need to package it into a .jar file
+	 * @param registerer InteropRegisterer instance to register
+	 */
+	public void registerClass(InteropRegisterer registerer){
+		registerClass(registerer,this.getClass().getClassLoader());
+	}
+	
+	/**
+	 * Directly register a InteropRegisterer instance without the need to package it into a .jar file
+	 * @param registerer InteropRegisterer instance to register
+	 * @param classLoader ClassLoader to use for InteropRegisterer registration
+	 */
+	public void registerClass(InteropRegisterer registerer, ClassLoader classLoader ){
+		assert recordingFactory.getWrappedFactory() == getCompiledContext().getFactory();
+		getCompiledContext().setFactory(recordingFactory);
+		registerer.registerLazy(getContext(), getCompiledContext(), classLoader);
+		getCompiledContext().addConstructors(recordingFactory.getAndClearConstructorRecord());
+		getCompiledContext().setFactory(recordingFactory.getWrappedFactory());
+	}
+	
 	private boolean registerJar(URLClassLoader classLoader, URL jar)
 			throws SecurityException, IncompatibleJarException, IOException {
 
