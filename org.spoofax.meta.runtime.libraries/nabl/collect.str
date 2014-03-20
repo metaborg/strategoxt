@@ -308,17 +308,21 @@ rules // completion
 
 rules // filtering
 	
-	nabl-filter(|lang, partition, uri*, filtered-defs):
+	nabl-filter(|lang, partition, uri*, ctx-string, ctx-terms):
 		name -> result
 		where
-			result := <replace-annotation(?Use(_)|Use(filtered-defs))> name
+		  defs-task   := <nabl-collect-use-task> name
+		; filter-task := <nabl-create-filter(|partition, ctx-terms, ctx-string)> defs-task
+		; result      := <replace-annotation(?Use(_)|Use(filter-task))> name
 		 
 rules // disambiguation
 	
-	nabl-disambiguate(|lang, partition, uri*, disambiguated-defs):
+	nabl-disambiguate(|lang, partition, uri*, ctx-string, ctx-terms):
 		name -> result
 		where
-			result := <replace-annotation(?Use(_)|Use(disambiguated-defs))> name
+		  defs-task   := <nabl-collect-use-task> name
+		; disamb-task := <nabl-create-disambiguate(|partition, ctx-terms, ctx-string)> defs-task
+		; result      := <replace-annotation(?Use(_)|Use(disamb-task))> name
 		 
 rules // generic analysis of imports
   
