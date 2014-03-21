@@ -21,6 +21,8 @@ rules
   		is-combinator := <task-is-combinator; !1 <+ !0> instruction;
   		short-circuit := <task-short-circuit; !1 <+ !0> instruction;
   		result        := <task-add-task(|partition, dependencies, instruction, is-combinator, short-circuit)> instruction
+  		
+	new-task-fixdeps(|partition, dependencies) = new-task(|partition, <dependent-tasks> dependencies)
       
   dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
   dependent-task = ?Result(<id>) 
