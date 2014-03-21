@@ -338,7 +338,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 						Object registerObject = registerClass.newInstance();
 						if (registerObject instanceof InteropRegisterer) {
 							//register instantiated InteropRegisterer
-							registerClass(registerObject,classLoader);
+							registerClass((InteropRegisterer)registerObject,classLoader);
 							foundRegisterer = true;
 						} else {
 							throw new IncompatibleJarException(jar, new ClassCastException("Unknown type for InteropRegisterer"));
