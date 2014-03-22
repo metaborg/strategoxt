@@ -193,12 +193,8 @@ public final class TaskInsertion {
 	 */
 	public static Collection<StrategoHashMap> cartesianProduct(Multimap<IStrategoTerm, IStrategoTerm> results) {
 		Collection<StrategoHashMap> result = new ArrayList<StrategoHashMap>();
-		if(results.size() > 10) {
-			throw new RuntimeException("Instruction with more than 10 results not computable");
-		}
-		if(results.size() > 0) {
+		if(results.size() > 0)
 			result.add(new StrategoHashMap());
-		}
 
 		for(Entry<IStrategoTerm, Collection<IStrategoTerm>> entry : results.asMap().entrySet()) {
 			Collection<StrategoHashMap> newResults = new ArrayList<StrategoHashMap>();
