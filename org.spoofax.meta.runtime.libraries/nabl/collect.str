@@ -312,7 +312,7 @@ rules // filtering
 		name -> result
 		where
 		  defs-task   := <nabl-collect-use-task> name
-		; filter-task := <nabl-create-filter(|partition, ctx-terms, ctx-string)> defs-task
+		; filter-task := <nabl-create-filter(|partition, uri*, ctx-terms, ctx-string)> defs-task
 		; result      := <replace-annotation(?Use(_)|Use(filter-task))> name
 		 
 rules // disambiguation
@@ -321,7 +321,7 @@ rules // disambiguation
 		name -> result
 		where
 		  defs-task   := <nabl-collect-use-task> name
-		; disamb-task := <nabl-create-disambiguate(|partition, ctx-terms, ctx-string)> defs-task
+		; disamb-task := <nabl-create-disambiguate(|partition, uri*, ctx-terms, ctx-string)> defs-task
 		; result      := <replace-annotation(?Use(_)|Use(disamb-task))> name
 		 
 rules // generic analysis of imports
