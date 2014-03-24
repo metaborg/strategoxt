@@ -3,7 +3,9 @@ module nabl/interface
 strategies // Collect
   
 	nabl-scoping-site = fail
-	
+  
+  nabl-new-scoping-site = fail
+  
 	nabl-def-site(
 	  child-uris, sibiling-uris, implicits
 	| lang, partition, unique*, uri*, state*

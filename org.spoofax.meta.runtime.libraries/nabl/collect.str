@@ -31,10 +31,11 @@ signature
 
 	constructors // def
 
-		Current    :            	DefScope
-		Subsequent :            	DefScope
-		DefScope   : Term      -> DefScope
-    Scope      : Namespace -> Scope
+		Current    :                  	DefScope
+		Subsequent :                   	DefScope
+		DefScope   : Term            -> DefScope
+    Scope      : Namespace       -> Scope
+    FixedScope : Namespace * URI -> Scope
     
   constructors // use
       
@@ -84,10 +85,12 @@ strategies // generic traversal
   ; try(nabl-scoping-site)
   ; (
 		   nabl-scope-site(?uri'*|lang, partition, unique*, uri*)
+		<+ nabl-new-scope-site(?uri'*|lang, partition, unique*, uri*)
 		<+ match(?uri'*|uri*) 
 		) 
   ; (
 			 nabl-def-site(?child-uri*, sibling-uris, ?implicit*|lang, partition, unique*, uri'*, state*)
+     ; try(nabl-new-scoping-site)
     <+ match(sibling-uris|uri*)
      ; match(?child-uri*|uri'*)
     )    
@@ -135,7 +138,15 @@ rules // generic analysis of scopes
 	  ; scope-uri* := <map(!(<id>, <lookup-uri(|uri'*)>))> ns*
 	  )
 	; add-annotation(|Scope(scope-uri*))
-	  
+	
+	nabl-new-scope-site(adapted-uris|lang, partition, unique*, uri*) =
+    remove-annotations(?FixedScope(ns, uri))
+  ; where (
+      uri'* := <update-scope-uri(!uri|lang)> (ns, uri*)
+    ; match(adapted-uris| uri'*)
+    )
+  ; add-annotation(|Scope([(ns, uri)]))
+     
 	nabl-scope(|ns1*) = 
 	   remove-annotations(?Scope(ns2*))
 	 ; add-annotation(|Scope(<union> (ns1*, ns2*)))
