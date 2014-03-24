@@ -32,11 +32,11 @@ signature
     PropConstraint         : Kind * Expected * Result                  -> Instruction
     SubURI                 : Namespace * URI                           -> Instruction
     
-    FilterDefsHigherOrder  : List(Def) * List(Term) * String           -> Instruction
-    FilterDefs             : List(DefTuple)                            -> Instruction
+    FilterDefsHigherOrder        : List(Def) * List(Term) * List(Term) * String -> Instruction
+    FilterDefs                   : List(DefTuple)                               -> Instruction
     
-    DisambiguateDefsHigherOrder  : List(Def) * List(Term) * String     -> Instruction
-    DisambiguateDefs             : List(DefTuple)                      -> Instruction
+    DisambiguateDefsHigherOrder  : List(Def) * List(Term) * List(Term) * String -> Instruction
+    DisambiguateDefs             : List(DefTuple)                               -> Instruction
     
 rules // Collects all definitions in a term
   
@@ -179,16 +179,16 @@ rules // URI manipulation
 
 rules // Filtering
 
-	nabl-create-filter(|ctx, ctx-terms, ctx-string):
-		defs -> <new-task(|ctx)> FilterDefsHigherOrder(defs, ctx-terms, ctx-string)
+	nabl-create-filter(|ctx, uri*, ctx-terms, ctx-string):
+		defs -> <new-task(|ctx)> FilterDefsHigherOrder(defs, uri*, ctx-terms, ctx-string)
 	
-	task-is-combinator = ?FilterDefsHigherOrder(_, _, _)
-	task-is-higherorder = ?FilterDefsHigherOrder(_, _, _)
+	task-is-combinator = ?FilterDefsHigherOrder(_, _, _, _)
+	task-is-higherorder = ?FilterDefsHigherOrder(_, _, _, _)
 	
 	perform-task(|task-id):
-		FilterDefsHigherOrder(def*, [ctx-terms], ctx-string) -> FilterDefs(def-tuple*)
+		FilterDefsHigherOrder(def*, uri*, [ctx-terms], ctx-string) -> FilterDefs(def-tuple*)
 		where
-			def-tuple* := <filter(nabl-filter-def(|task-id, ctx-terms, ctx-string))> def*
+			def-tuple* := <filter(nabl-filter-def(|task-id, uri*, ctx-terms, ctx-string))> def*
 
 
 	task-is-combinator = ?FilterDefs(_)
@@ -198,16 +198,16 @@ rules // Filtering
 		
 rules // Disambiguation
 
-	nabl-create-disambiguate(|ctx, ctx-terms, ctx-string):
-		defs -> <new-task(|ctx)> DisambiguateDefsHigherOrder(defs, ctx-terms, ctx-string)
+	nabl-create-disambiguate(|ctx, uri*, ctx-terms, ctx-string):
+		defs -> <new-task(|ctx)> DisambiguateDefsHigherOrder(defs, uri*, ctx-terms, ctx-string)
 	
-	task-is-combinator = ?DisambiguateDefsHigherOrder(_, _, _)
-	task-is-higherorder = ?DisambiguateDefsHigherOrder(_, _, _)
+	task-is-combinator = ?DisambiguateDefsHigherOrder(_, _, _, _)
+	task-is-higherorder = ?DisambiguateDefsHigherOrder(_, _, _, _)
 	
 	perform-task(|task-id):
-		DisambiguateDefsHigherOrder(def*, [ctx-terms], ctx-string) -> DisambiguateDefs(def-tuple*)
+		DisambiguateDefsHigherOrder(def*, uri*, [ctx-terms], ctx-string) -> DisambiguateDefs(def-tuple*)
 		where
-			def-tuple* := <filter(nabl-disambiguate-def(|task-id, ctx-terms, ctx-string))> def*
+			def-tuple* := <filter(nabl-disambiguate-def(|task-id, uri*, ctx-terms, ctx-string))> def*
 
 
 	task-is-combinator = ?DisambiguateDefs(_)
