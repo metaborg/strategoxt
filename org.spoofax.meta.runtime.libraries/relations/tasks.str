@@ -69,7 +69,8 @@ rules // Match
 	  ; <relation-add-read(|task-id)> actual'
 		; expected' := <relation-try-term-to-uri> expected
 	  ; <relation-add-read(|task-id)> expected'
-		; (<relation-perform-match(|rel)> (actual', expected') <+
+    ; (<relation-perform-match(|rel)> (actual, expected) <+
+		  <relation-perform-match(|rel)> (actual', expected') <+
 		  <where(<relation-is-symmetric> rel); relation-perform-match(|rel)> (expected', actual'))
 		  
   relation-perform-match(|rel):
