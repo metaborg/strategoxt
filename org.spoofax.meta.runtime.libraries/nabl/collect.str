@@ -360,7 +360,7 @@ rules // generic analysis of imports
   where
     from-uri := <nabl-scope-uri(|lang, uri*, ns)> from 
   ; into-uri := <nabl-scope-uri(|lang, uri*, ns)> into
-  ; proplookup := <prop-create-lookup(|ctx, Import(ns))> from-uri
+  ; proplookup := <prop-create-lookup(|ctx, Import(ns)); task-create-insert(|ctx); task-create-combine(|ctx)> from-uri
 
 
   nabl-scope-uri(|lang, uri*, ns):
