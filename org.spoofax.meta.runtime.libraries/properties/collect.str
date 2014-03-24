@@ -90,6 +90,12 @@ strategies
 
 rules
   
+  get-or-create-property-task(|ctx, kind, old-uri*, new-uri*) =
+     get-property-task(|kind)
+  <+ create-property-task(|ctx, kind, old-uri*, new-uri*)
+  <+ create-property-task(|ctx, kind, new-uri*)
+  <+ create-property-task(|ctx, kind)
+  
   get-or-create-property-task(|ctx, kind):
   	term -> task
   	where ( 
