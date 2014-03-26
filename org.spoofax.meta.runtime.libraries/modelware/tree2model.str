@@ -20,10 +20,10 @@ rules
 
 rules
   
-  mw-def-uris    = get-arguments; map(get-annos; filter(?Def(_); origin-location)); concat
-  mw-ref-uri     = get-annos; fetch-elem(?Use(_)); (nabl-collect-one-resolved-def; ?Def(_); origin-location <+ !Unresolved())
+  mw-def-uris    = get-arguments; map(get-annos; filter(?Def(_); try(origin-location))); concat
+  mw-ref-uri     = get-annos; fetch-elem(?Use(_)); (nabl-collect-one-resolved-def; ?Def(_); try(origin-location) <+ ?Use(<id>) <+ !Unresolved())
   mw-is-compound = where(not(?Some(_))); explode-term + map(explode-term)
-
+  
   mw-combine = ?[]
   mw-combine:
     t* -> c#([<map(get-arguments; Hd)> t*])
