@@ -2,6 +2,8 @@ module nabl/interface
 
 strategies // Collect
   
+  nabl-collect-rewrite(|lang, partition, old-uri*, new-uri*) = fail
+  
 	nabl-scoping-site = fail
   
   nabl-new-scoping-site = fail
