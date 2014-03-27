@@ -65,9 +65,7 @@ rules // Match
 	perform-task(|task-id):
 		RelationMatch(rel, actual, expected) -> expected
 		where
-		  (<is-list> actual
-		; <is-list> expected
-		; <zip(do-relation-match(|task-id, rel))> (actual, expected)) <+
+	    <zip(do-relation-match(|task-id, rel))> (actual, expected) <+
 		  <do-relation-match(|task-id, rel)> (actual, expected)
 	
 	do-relation-match(|task-id, rel):
