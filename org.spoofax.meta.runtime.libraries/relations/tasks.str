@@ -65,14 +65,20 @@ rules // Match
 	perform-task(|task-id):
 		RelationMatch(rel, actual, expected) -> expected
 		where
-		  actual'   := <relation-try-term-to-uri> actual
-	  ; <relation-add-read(|task-id)> actual'
-		; expected' := <relation-try-term-to-uri> expected
-	  ; <relation-add-read(|task-id)> expected'
+	    <zip(do-relation-match(|task-id, rel))> (actual, expected) <+
+		  <do-relation-match(|task-id, rel)> (actual, expected)
+	
+	do-relation-match(|task-id, rel):
+	  (actual, expected) -> expected
+	  where
+      actual'   := <relation-try-term-to-uri> actual
+    ; <relation-add-read(|task-id)> actual'
+    ; expected' := <relation-try-term-to-uri> expected
+    ; <relation-add-read(|task-id)> expected'
     ; (<relation-perform-match(|rel)> (actual, expected) <+
-		  <relation-perform-match(|rel)> (actual', expected') <+
-		  <where(<relation-is-symmetric> rel); relation-perform-match(|rel)> (expected', actual'))
-		  
+      <relation-perform-match(|rel)> (actual', expected') <+
+      <where(<relation-is-symmetric> rel); relation-perform-match(|rel)> (expected', actual'))
+
   relation-perform-match(|rel):
   	(actual, expected) -> <relation-match-tuple> (rel, actual, expected)
   	// TODO: can this be transtive?

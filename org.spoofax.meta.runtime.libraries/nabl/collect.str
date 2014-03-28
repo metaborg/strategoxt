@@ -75,7 +75,7 @@ strategies // generic traversal
 	 */
 	nabl-collect(|partition, lang) =
 	  nabl-collect(id|lang, partition, <new-hashtable>, [])
-	  
+	
 	/**
 	 * Performs the collection in a topdown traversal. 
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
@@ -95,7 +95,8 @@ strategies // generic traversal
      ; match(?child-uri*|uri'*)
     )    
   ; try(nabl-state-site)
-  // visit children from left to right  
+  // visit children from left to right
+  ; try(nabl-collect-rewrite(|lang, partition, uri*, uri'*))
   ; preserve-annos(origin-track-forced(id#(nabl-siblings(|lang, partition, unique*, child-uri*))))
   ; try(nabl-external-def-site(|lang, partition, unique*, uri'*, state*, implicit*))
   ; try(nabl-use-site(|lang, partition, unique*, uri'*, state*))
