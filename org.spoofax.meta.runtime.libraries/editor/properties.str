@@ -9,7 +9,7 @@ imports
 	nabl/collect
 	nabl/entries
 	nabl/uri
-	properties/interface
+	properties/collect
 	properties/query
 	task/core
 	types/query
@@ -75,7 +75,7 @@ rules	// Properties
 	
 	nabl-props: t -> props
 		with
-			nabl-props := [Type()|<nabl-props-custom>]
+			nabl-props := [Type()|<nabl-collect-custom-properties>]
 		with
 			props := <map(nabl-prop(|t))> nabl-props <+
 			props := []
@@ -87,12 +87,7 @@ rules	// Properties
 			prop := <get-properties(|property);de-list;not(?Result(_); task-has-failed)>t <+
 			prop := <get-property(|property)	;				 not(?Result(_); task-has-failed)>t <+
 			prop := None()
-	
-	nabl-props-custom : _ -> result
-		with
-			result := <nabl-custom-properties(id)> <+ 
-			result := []
-	
+		
 rules // helper rules: filtering
 
 	not-none: (a, b) -> (a, b)
