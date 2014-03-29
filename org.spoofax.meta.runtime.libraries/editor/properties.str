@@ -28,7 +28,7 @@ rules	// Properties
 			[
 				[
 					("Target",			<target-prop(language-pp)>t),
-					("Constructor",	<cons-prop>t),
+					("Target Constructor",<cons-prop>t),
 				 	("Name",				<name-prop>t),
 				 	("Defines",			<def-prop>t),
 				 	("Refers to",		<ref-prop>t)
@@ -106,7 +106,7 @@ rules // helper rules: filtering
 	
 rules // helper rules: formatting
 	
-	pp-ast(language-pp) = topdown(try(rm-annotations));language-pp;box2text-string(|80)
+	pp-ast(language-pp) = topdown(try(rm-annotations));language-pp
 	
 	pp-cons: t -> $[[<get-constructor> t]/[<get-arguments;length> t]]
 	
