@@ -1,6 +1,8 @@
+# Runtime libraries
+
 Stratego libraries for several components used in Spoofax.
 
-== Update the generated runtime libraries in Spoofax ==
+## Update the generated runtime libraries in Spoofax
 
 The runtime libraries are included into Spoofax projects by copying them into the project at generation time. 
 This is kind of hack, but it works for now..
@@ -18,7 +20,7 @@ To update these libraries follow these steps:
 * Open the `org.strategoxt.imp.generator\src\sdf2imp\project\create-runtime-libraries.str` file
 * Replace the contents under `strategies` with the copied text
 
-== Building ==
+## Building
 
 The runtime libraries are built to Stratego binary libraries, in rtree, ctree and jar format.
 Requirements for building are:
