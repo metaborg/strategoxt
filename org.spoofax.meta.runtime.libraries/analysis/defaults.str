@@ -10,6 +10,7 @@ imports
 	task/core
 	editor/editor
 	editor/queue
+	editor/dynrule
 
 rules // Analysis
 	
@@ -27,7 +28,7 @@ rules // Single finle analysis
 	analysis-single-default-interface = fail
 	
   analysis-single-default(desugar-before, desugar-after, pp-message|language):
-    (ast, path, project-path) -> (analyzed-ast, error*, warning*, note*)
+    (ast, path, project-path) -> (analyzed-ast', error*, warning*, note*)
     with
       editor-init;
       <analysis-default-debug(!"Analyzing file: ")> path;
@@ -43,9 +44,10 @@ rules // Single finle analysis
 			, evaluated-task*
 			, skipped-task*
 			, unevaluated-task*
-			) := <desugar-before; analyze-one(|language, path, project-path); desugar-after> ast;
+			) := <desugar-before; analyze-one(|language, path, project-path)> ast;
+			analyzed-ast' := <desugar-after> analyzed-ast;
 			
-      (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> analyzed-ast;
+      (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> analyzed-ast';
       
       partition* := <analysis-changed-sources; filter(is-string)> evaluated-task*;
       if <not(is-test-file)> path then
