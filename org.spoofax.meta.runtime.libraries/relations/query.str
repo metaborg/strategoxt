@@ -18,9 +18,9 @@ rules // Lookup relation values for given term
 	relation-lookup-internal(|rel):
 		term -> [refl-val*, stat-val*, val*, trans-val*]
 		where
-			val*       := <get-index-relations(|rel)> term
+		  refl-val*  := <(relation-is-reflexive; !term) <+ ![]> rel
 		; stat-val*  := <get-static-relations(|rel)> term
-		; refl-val*  := <(relation-is-reflexive; !term) <+ ![]> rel
+		; val*       := <get-index-relations(|rel)> term
 	  ; trans-val* := <(relation-is-transitive; <get-index-relations-transitive(|rel)> term) <+ ![]> rel
 		// TODO: what about symmetric relations?
 		
@@ -61,7 +61,7 @@ rules /** @internal */
   	term -> <index-get-all; map(relation-tuple-value)> RelTuple(term, rel, ())
   		
 	get-index-relations-transitive(|rel):
-		term -> <index-get-all; mapconcat(relation-tuple-value; insert-results-or-delay)> RelTuple(term, rel, ()) 
+		term -> <index-get-all; mapconcat(relation-tuple-value; insert-results-or-delay)> RelTuple(term, Transitive(rel), ()) 
   		
 	relation-tuple-value:
 		RelTuple(_, _, v) -> v
