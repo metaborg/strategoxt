@@ -40,8 +40,8 @@ rules // Check if relation exists between two terms
 			  actual'   := <relation-try-term-to-uri> actual
       ; expected' := <relation-try-term-to-uri> expected
 			; (
-			  	<relation-match-internal-match(|rel)> (actual, expected) <+
-			    <where(<relation-is-symmetric> rel); relation-match-internal-match(|rel)> (expected, actual)
+			  	<relation-match-internal-match(|rel)> (actual', expected') <+
+			    <where(<relation-is-symmetric> rel); relation-match-internal-match(|rel)> (expected', actual')
 			  )
 			)
 			
