@@ -58,7 +58,7 @@ rules // Check if relation exists between two terms
 rules /** @internal */
   
   get-index-relations(|rel):
-  	term -> <index-get-all; map(relation-tuple-value)> RelTuple(term, rel, ())
+    term -> <index-get-all; mapconcat(relation-tuple-value; (insert-results-or-delay <+ MkSingleton))> RelTuple(term, rel, ())
   		
 	get-index-relations-transitive(|rel):
 		term -> <index-get-all; mapconcat(relation-tuple-value; insert-results-or-delay)> RelTuple(term, Transitive(rel), ()) 
