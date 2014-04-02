@@ -35,13 +35,20 @@ rules // Lookup
 		  // TODO: remove redundant relation-try-term-to-uri call, already called in relation-lookup.
   
 rules // Match
+	
+  relation-create-match(|ctx):
+  	(rel, actual, expected) -> <relation-create-match(|ctx, rel, expected)> actual
 
   relation-create-match(|ctx, rel, expected):
-  	actual -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
+  	actual -> result
+  	with
+  	  match-task := <new-task(|ctx)> RelationMatch(rel, actual, expected)
+  	; if custom-task := <relation-match-custom(|ctx)> (rel, actual, expected) then
+  	  	result := <task-create-choice(|ctx)> [custom-task, match-task]
+  	  else
+  	  	result := match-task
+  	  end
   	
-  relation-create-match(|ctx):
-  	(rel, actual, expected) -> <new-task(|ctx)> RelationMatch(rel, actual, expected)
-
 	perform-task(|task-id):
 		RelationMatch(rel, actual, expected) -> expected
 		where

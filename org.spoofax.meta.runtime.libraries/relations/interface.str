@@ -2,14 +2,21 @@ module relations/interface
 
 strategies
   
-  // interface for static relation tuples, e.g. 
-  //
-  // relation-store-value(store): (SubType(), IntTy()) -> <store> FloatTy()
+  /** 
+   * Interface for static relation tuples, e.g. 
+   * relation-store-value(store): (SubType(), IntTy()) -> <store> FloatTy()
+   */
   relation-store-value(store) = fail
-	// interface for static relation tuples, e.g. 
-  //
-  // relation-match-tuple: (SubType(), IntTy(), FloatTy())
+  /** 
+   * Interface for static relation tuples, e.g. 
+   * relation-match-tuple = ?(SubType(), IntTy(), FloatTy())
+   */
   relation-match-tuple = fail
+  /** 
+   * Interface for custom relations, e.g.
+   * relation-match-custom(|ctx): (SubType(), IntTy(), FloatTy()) -> task
+   */
+  relation-match-custom(|ctx) = fail
   
   relation-is-transitive = fail
   relation-is-reflexive  = fail
