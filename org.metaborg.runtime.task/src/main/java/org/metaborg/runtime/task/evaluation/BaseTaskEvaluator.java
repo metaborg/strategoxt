@@ -124,6 +124,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 					task.setFailed();
 		}
 
+		if(delayed) {
+			taskEngine.invalidate(taskID);
+		}
+
 		delayed = false;
 		current = null;
 	}
