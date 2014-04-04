@@ -35,7 +35,7 @@ rules // URI conversion
 rules // Lookup
 
 	relation-create-lookup(|ctx, rel):
-		term -> /*<task-create-insert(|ctx); task-create-combine(|ctx)>*/ lookup-task
+		term -> <task-create-insert(|ctx); task-create-combine(|ctx)> lookup-task
 		with
 		  term-task   := <relation-create-term(|ctx)> term
 		; lookup-task := <new-task(|ctx)> RelationLookup(rel, term-task)

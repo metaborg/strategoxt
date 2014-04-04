@@ -2,12 +2,16 @@ package org.metaborg.runtime.task.evaluation.evaluators;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.ListTask;
+import org.metaborg.runtime.task.SetTask;
 import org.metaborg.runtime.task.TaskInsertion;
+import org.metaborg.runtime.task.TaskManager;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
@@ -53,6 +57,30 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor((IStrategoAppl) instruction, "Insert", 1))
+			|| (Tools.hasConstructor((IStrategoAppl) instruction, "Combine", 1))) {
+			IStrategoTerm innerResults = instruction.getSubterm(0);
+			if(innerResults.getTermType() != IStrategoTerm.LIST)
+				innerResults = factory.makeList(innerResults);
+
+			final Collection<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+			for(IStrategoTerm result : innerResults) {
+				if(Tools.isTermAppl(result) && Tools.hasConstructor((IStrategoAppl) result, "Result", 1)) {
+					results.add(result.getSubterm(0));
+				}
+			}
+
+			boolean set = results.size() != 0;
+			for(IStrategoTerm taskID : results) {
+				final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
+				set = (task instanceof SetTask) && set;
+			}
+
+			if(set) {
+				System.out.println("Creating set task: " + instruction);
+				return new SetTask(instruction, dependencies, type, shortCircuit);
+			}
+		}
 		return new ListTask(instruction, dependencies, type, shortCircuit);
 	}
 

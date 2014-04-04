@@ -43,7 +43,7 @@ public class RelationLookupEvaluator implements ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(RelationLookupEvaluator.isRelationLookup(task.instruction())) {
+			if(isRelationLookup(task.instruction())) {
 				evaluationQueue.queueOrDefer(taskID);
 			}
 		}

@@ -48,7 +48,7 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(RelationMatchEvaluator.isRelationMatch(task.instruction())) {
+			if(isRelationMatch(task.instruction())) {
 				evaluationQueue.queueOrDefer(taskID);
 			}
 		}
@@ -57,20 +57,18 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
+		evaluate(taskID, task, taskEngine, evaluationQueue);
 	}
 
 	@Override
 	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
+		evaluate(taskID, task, taskEngine, evaluationQueue);
 	}
 
-	private void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
-		boolean cyclic) {
+	private void
+		evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
 		current = taskID;
-
 		try {
 			final IStrategoTerm instruction = task.instruction();
 			final IStrategoTerm lookupTaskID = instruction.getSubterm(0).getSubterm(0);
@@ -78,16 +76,9 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
 			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
 
-			IStrategoList dynamicDependencies = factory.makeList();
-			if(!lookupTask.solved())
-				dynamicDependencies = factory.makeListCons(lookupTaskID, dynamicDependencies);
-			if(!expectedTermTask.solved())
-				dynamicDependencies = factory.makeListCons(expectedTermTaskID, dynamicDependencies);
-			if(!dynamicDependencies.isEmpty()) {
-				evaluationQueue.delay(taskID, dynamicDependencies);
-				taskEngine.invalidate(taskID);
-				return;
-			}
+			System.out.println(instruction);
+			System.out.println(lookupTask.results());
+			System.out.println(expectedTermTask.results());
 
 			task.setFailed();
 			for(IStrategoTerm expectedTermTuple : expectedTermTask.results()) {
@@ -99,6 +90,7 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 			}
 
 		} finally {
+			evaluationQueue.taskSolved(taskID);
 			current = null;
 		}
 	}
