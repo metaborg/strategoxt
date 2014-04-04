@@ -35,7 +35,7 @@ public class TaskEngine implements ITaskEngine {
 
 
 	/** Bidirectional mapping between task identifiers and tasks. */
-	private final BiMap<IStrategoTerm, Task> toTask = HashBiMap.create();
+	private final BiMap<IStrategoTerm, ITask> toTask = HashBiMap.create();
 
 	/** Mapping table of instructions and dependencies to task identifiers. */
 	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
@@ -106,10 +106,10 @@ public class TaskEngine implements ITaskEngine {
 			return taskID;
 		taskID = digester.digest(factory, instruction, dependencies);
 		toTaskID.put(instruction, dependencies, taskID);
-		final Task task = wrapper.getTask(taskID);
+		final ITask task = wrapper.getTask(taskID);
 		if(task == null)
 			return taskID;
-		final IStrategoTerm instr = task.instruction;
+		final IStrategoTerm instr = task.initialInstruction();
 		if(!instruction.match(instr)) {
 			wrapper.reset();
 			throw new IllegalStateException("Identifier collision, task " + instruction + " and " + instr
@@ -130,7 +130,7 @@ public class TaskEngine implements ITaskEngine {
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			final Task task = evaluationFrontend.create(instruction, dependencies, type, shortCircuit);
+			final ITask task = evaluationFrontend.create(instruction, dependencies, type, shortCircuit);
 			toTask.put(taskID, task);
 			taskCollection.addTask(taskID);
 			schedule(taskID);
@@ -149,12 +149,12 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies) {
+	public void addPersistedTask(IStrategoTerm taskID, ITask task, IStrategoList initialDependencies) {
 		if(wrapper.getTask(taskID) != null)
 			throw new RuntimeException("Trying to add a persisted task that already exists.");
 
 		toTask.put(taskID, task);
-		toTaskID.put(task.instruction, initialDependencies, taskID);
+		toTaskID.put(task.initialInstruction(), initialDependencies, taskID);
 	}
 
 	@Override
@@ -167,10 +167,10 @@ public class TaskEngine implements ITaskEngine {
 		removeDependencies(taskID);
 		removeReads(taskID);
 		scheduled.remove(taskID);
-		final Task task = getTask(taskID); // Don't use wrapper, cannot remove from parent in this task engine.
+		final ITask task = getTask(taskID); // Don't use wrapper, cannot remove from parent in this task engine.
 		if(task == null)
 			return; // Task is not in this task engine but might be in a parent one.
-		toTaskID.remove(task.instruction, TermTools.makeList(factory, task.initialDependencies));
+		toTaskID.remove(task.initialInstruction(), TermTools.makeList(factory, task.initialDependencies()));
 		toTask.remove(taskID);
 	}
 
@@ -215,13 +215,13 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public Task invalidate(IStrategoTerm taskID) {
-		Task task = getTask(taskID);
+	public ITask invalidate(IStrategoTerm taskID) {
+		ITask task = getTask(taskID);
 		if(task == null) {
 			task = wrapper.getTask(taskID);
 			if(task == null)
 				throw new RuntimeException("Cannot invalidate task that does not exist: " + taskID);
-			task = new Task(task);
+			task = evaluationFrontend.create(task);
 			toTask.put(taskID, task);
 		}
 		task.unsolve();
@@ -259,7 +259,7 @@ public class TaskEngine implements ITaskEngine {
 	@Override
 	public IStrategoTerm evaluateScheduled(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		for(IStrategoTerm taskID : scheduled) {
-			final Task task = invalidate(taskID);
+			final ITask task = invalidate(taskID);
 			task.clearInstructionOverride();
 		}
 		wrapper.clearTimes();
@@ -281,12 +281,12 @@ public class TaskEngine implements ITaskEngine {
 
 
 	@Override
-	public Task getTask(IStrategoTerm taskID) {
+	public ITask getTask(IStrategoTerm taskID) {
 		return toTask.get(taskID);
 	}
 
 	@Override
-	public IStrategoTerm getTaskID(Task task) {
+	public IStrategoTerm getTaskID(ITask task) {
 		return toTask.inverse().get(task);
 	}
 
@@ -302,12 +302,12 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public Iterable<Task> getTasks() {
+	public Iterable<ITask> getTasks() {
 		return toTask.values();
 	}
 
 	@Override
-	public Iterable<Entry<IStrategoTerm, Task>> getTaskEntries() {
+	public Iterable<Entry<IStrategoTerm, ITask>> getTaskEntries() {
 		return toTask.entrySet();
 	}
 
@@ -443,14 +443,14 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public void clearTimes() {
-		for(Task task : getTasks()) {
+		for(ITask task : getTasks()) {
 			task.clearTime();
 		}
 	}
 
 	@Override
 	public void clearEvaluations() {
-		for(Task task : getTasks()) {
+		for(ITask task : getTasks()) {
 			task.clearEvaluations();
 		}
 	}

@@ -45,9 +45,9 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(resolveInstruction, taskEngine.getTask(resolveID).instruction);
-		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
-		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
+		assertEquals(resolveInstruction, taskEngine.getTask(resolveID).initialInstruction());
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).initialInstruction());
+		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).initialInstruction());
 
 		assertTrue(assertContains(taskEngine.getSourcesOf(resolveID), partition1));
 		assertFalse(assertContains(taskEngine.getSourcesOf(resolveID), partition2));
@@ -186,9 +186,9 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
-		assertEquals(resolveInstruction, taskEngine.getTask(resolveID).instruction);
-		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
-		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
+		assertEquals(resolveInstruction, taskEngine.getTask(resolveID).initialInstruction());
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).initialInstruction());
+		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).initialInstruction());
 
 		// Update partition1 with only the resolveImport task, removing the resolve task.
 		taskEngine.startCollection(partition1);
@@ -198,15 +198,15 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.stopCollection(partition1);
 
 		assertEquals(null, taskEngine.getTask(resolveID));
-		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
-		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).instruction);
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).initialInstruction());
+		assertEquals(choiceInstruction, taskEngine.getTask(choiceID).initialInstruction());
 
 		// Update partition2 with no tasks, removing the choice task.
 		taskEngine.startCollection(partition2);
 		taskEngine.stopCollection(partition2);
 
 		assertEquals(null, taskEngine.getTask(resolveID));
-		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).instruction);
+		assertEquals(resolveImportInstruction, taskEngine.getTask(resolveImportID).initialInstruction());
 		assertEquals(null, taskEngine.getTask(choiceID));
 	}
 
@@ -323,17 +323,17 @@ public class TaskEngineTest extends TaskTest {
 		assertFalse(taskEngine.getTask(resolveA).results().iterator().hasNext());
 
 
-		assertEquals(TaskType.Combinator, taskEngine.getTask(resolveD).type);
-		assertFalse(taskEngine.getTask(resolveD).shortCircuit);
+		assertEquals(TaskType.Combinator, taskEngine.getTask(resolveD).type());
+		assertFalse(taskEngine.getTask(resolveD).shortCircuit());
 
-		assertEquals(TaskType.Regular, taskEngine.getTask(resolveC).type);
-		assertTrue(taskEngine.getTask(resolveC).shortCircuit);
+		assertEquals(TaskType.Regular, taskEngine.getTask(resolveC).type());
+		assertTrue(taskEngine.getTask(resolveC).shortCircuit());
 
-		assertEquals(TaskType.Regular, taskEngine.getTask(resolveB).type);
-		assertTrue(taskEngine.getTask(resolveB).shortCircuit);
+		assertEquals(TaskType.Regular, taskEngine.getTask(resolveB).type());
+		assertTrue(taskEngine.getTask(resolveB).shortCircuit());
 
-		assertEquals(TaskType.Combinator, taskEngine.getTask(resolveA).type);
-		assertFalse(taskEngine.getTask(resolveA).shortCircuit);
+		assertEquals(TaskType.Combinator, taskEngine.getTask(resolveA).type());
+		assertFalse(taskEngine.getTask(resolveA).shortCircuit());
 	}
 
 	// Changes in current task engine are not visible in parent task engine.

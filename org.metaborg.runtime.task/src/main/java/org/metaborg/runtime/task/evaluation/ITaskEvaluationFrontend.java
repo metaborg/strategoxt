@@ -2,7 +2,7 @@ package org.metaborg.runtime.task.evaluation;
 
 import java.util.Set;
 
-import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.TaskType;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -23,8 +23,13 @@ public interface ITaskEvaluationFrontend {
 	/**
 	 * Creates a task.
 	 */
-	public abstract Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
+	public abstract ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
 		boolean shortCircuit);
+
+	/**
+	 * Clones a task.
+	 */
+	public abstract ITask create(ITask task);
 
 	/**
 	 * Tries to adjust given dependencies using a task evaluator.

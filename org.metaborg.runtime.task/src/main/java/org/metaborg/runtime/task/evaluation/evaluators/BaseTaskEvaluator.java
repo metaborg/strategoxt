@@ -4,6 +4,7 @@ import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskInsertion;
@@ -51,8 +52,13 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		return new Task(instruction, dependencies, type, shortCircuit);
+	}
+
+	@Override
+	public ITask create(ITask task) {
+		return new Task((Task) task);
 	}
 
 	@Override
@@ -64,18 +70,18 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
+	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
 	}
 
-	private void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	private void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
 		boolean cyclic) {
 		delayed = false;
@@ -109,7 +115,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						break;
 					case Success:
 						failure = false;
-						if(task.shortCircuit)
+						if(task.shortCircuit())
 							done = true;
 						break;
 					case HigherOrder:
@@ -160,7 +166,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Solves an instruction and returns its raw result.
 	 */
-	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, Task task,
+	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, ITask task,
 		IStrategoTerm instruction) {
 		timer.start();
 		final IStrategoTerm result = invoke(context, performInstruction, instruction, taskID);
@@ -172,7 +178,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Handles the result of performing an instruction and returns its result type.
 	 */
-	private TaskResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result,
+	private TaskResultType handleResult(IStrategoTerm taskID, ITask task, IStrategoTerm result,
 		ITaskEvaluationQueue evaluationQueue) {
 		if(result == null)
 			return TaskResultType.Fail; // The task failed to produce a result.

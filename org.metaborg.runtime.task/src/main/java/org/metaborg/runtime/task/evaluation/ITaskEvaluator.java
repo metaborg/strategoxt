@@ -2,8 +2,8 @@ package org.metaborg.runtime.task.evaluation;
 
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -23,8 +23,13 @@ public interface ITaskEvaluator {
 	/**
 	 * Creates a task.
 	 */
-	public abstract Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
+	public abstract ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
 		boolean shortCircuit);
+
+	/**
+	 * Clones a task.
+	 */
+	public abstract ITask create(ITask task);
 
 	/**
 	 * Queues task from given set of scheduled tasks.
@@ -35,13 +40,13 @@ public interface ITaskEvaluator {
 	/**
 	 * Evaluates given task.
 	 */
-	public abstract void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	public abstract void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
 
 	/**
 	 * Evaluates given cyclic task.
 	 */
-	public abstract void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	public abstract void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
 
 	/**

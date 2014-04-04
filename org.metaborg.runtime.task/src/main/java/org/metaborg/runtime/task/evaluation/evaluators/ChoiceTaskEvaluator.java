@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
@@ -42,14 +43,19 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		return new Task(instruction, dependencies, type, shortCircuit);
+	}
+
+	@Override
+	public ITask create(ITask task) {
+		return new Task((Task) task);
 	}
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
-			final Task task = taskEngine.getTask(taskID);
+			final ITask task = taskEngine.getTask(taskID);
 			if(ChoiceTaskEvaluator.isChoice(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
@@ -57,7 +63,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
+	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		// Handle the result of a choice task.
 		{
@@ -66,7 +72,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 				evaluationQueue.removeRuntimeDependency(taskID, subtaskID); // TODO: needed/correct?
 
 				// TODO: why do we need to check if the subtask has results?
-				final Task subtask = taskEngine.getTask(subtaskID);
+				final ITask subtask = taskEngine.getTask(subtaskID);
 				if(!subtask.failed() && subtask.hasResults()) {
 					choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 					return;
@@ -96,7 +102,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 			return;
 		}
 		subtaskIDs.put(taskID, subtaskID);
-		final Task subtask = taskEngine.getTask(subtaskID);
+		final ITask subtask = taskEngine.getTask(subtaskID);
 		taskEngine.addDependency(taskID, subtaskID);
 
 		if(subtask.solved()) {
@@ -118,7 +124,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
 	}
@@ -152,7 +158,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Fails the given choice task.
 	 */
-	private void choiceFails(Task task, IStrategoTerm taskID, ITaskEngine taskEngine,
+	private void choiceFails(ITask task, IStrategoTerm taskID, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setFailed();
 		evaluationQueue.taskSolved(taskID);
@@ -163,7 +169,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Sets the result of given choice task to the result of given subtask.
 	 */
-	private void choiceSucceeds(Task task, IStrategoTerm taskID, Task subtask, ITaskEngine taskEngine,
+	private void choiceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setResults(subtask.results());
 		evaluationQueue.taskSolved(taskID);
@@ -216,7 +222,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		seen.add(taskID);
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
-			final Task task = taskEngine.getTask(queueTaskID);
+			final ITask task = taskEngine.getTask(queueTaskID);
 			if(ChoiceTaskEvaluator.isChoice(task.instruction())) {
 				continue;
 			}

@@ -26,8 +26,8 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 	/** Predicate that decides whether a task identifier from the parent should be visible or not. */
 	private final Predicate<IStrategoTerm> visible;
-	private final Predicate<Task> visibleTask;
-	private final Predicate<Entry<IStrategoTerm, Task>> visibleEntry;
+	private final Predicate<ITask> visibleTask;
+	private final Predicate<Entry<IStrategoTerm, ITask>> visibleEntry;
 	private final Predicate<IStrategoTerm> sourcesVisible;
 	private final Predicate<IStrategoTerm> dependenciesVisible;
 	private final Predicate<IStrategoTerm> readsVisible;
@@ -43,15 +43,15 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 				return parentTaskVisible(taskID);
 			}
 		};
-		this.visibleTask = new Predicate<Task>() {
+		this.visibleTask = new Predicate<ITask>() {
 			@Override
-			public boolean apply(Task task) {
+			public boolean apply(ITask task) {
 				return parentTaskVisible(task);
 			}
 		};
-		this.visibleEntry = new Predicate<Entry<IStrategoTerm, Task>>() {
+		this.visibleEntry = new Predicate<Entry<IStrategoTerm, ITask>>() {
 			@Override
-			public boolean apply(Entry<IStrategoTerm, Task> entry) {
+			public boolean apply(Entry<IStrategoTerm, ITask> entry) {
 				return parentTaskVisible(entry.getKey());
 			}
 		};
@@ -109,7 +109,7 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies) {
+	public void addPersistedTask(IStrategoTerm taskID, ITask task, IStrategoList initialDependencies) {
 		current.addPersistedTask(taskID, task, initialDependencies);
 	}
 
@@ -126,7 +126,7 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 
 	@Override
-	public Task invalidate(IStrategoTerm taskID) {
+	public ITask invalidate(IStrategoTerm taskID) {
 		return current.invalidate(taskID);
 	}
 
@@ -151,7 +151,7 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 		return !getTaskRemovalStatus(taskID).removed;
 	}
 
-	private boolean parentTaskVisible(Task task) {
+	private boolean parentTaskVisible(ITask task) {
 		final IStrategoTerm taskID = current.getTaskID(task);
 		return parentTaskVisible(taskID);
 	}
@@ -160,26 +160,26 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 		return Iterables.filter(taskIDs, visible);
 	}
 
-	private Iterable<Task> parentTaskVisibleFilter(Iterable<Task> tasks) {
+	private Iterable<ITask> parentTaskVisibleFilter(Iterable<ITask> tasks) {
 		return Iterables.filter(tasks, visibleTask);
 	}
 
-	private Iterable<Entry<IStrategoTerm, Task>>
-		parentEntryInvisibleFilter(Iterable<Entry<IStrategoTerm, Task>> entries) {
+	private Iterable<Entry<IStrategoTerm, ITask>> parentEntryInvisibleFilter(
+		Iterable<Entry<IStrategoTerm, ITask>> entries) {
 		return Iterables.filter(entries, visibleEntry);
 	}
 
 
 	@Override
-	public Task getTask(IStrategoTerm taskID) {
-		Task task = current.getTask(taskID);
+	public ITask getTask(IStrategoTerm taskID) {
+		ITask task = current.getTask(taskID);
 		if(task == null && parentTaskVisible(taskID))
 			task = parent.getTask(taskID);
 		return task;
 	}
 
 	@Override
-	public IStrategoTerm getTaskID(Task task) {
+	public IStrategoTerm getTaskID(ITask task) {
 		IStrategoTerm taskID = current.getTaskID(task);
 		if(taskID == null && parentTaskVisible(taskID))
 			taskID = parent.getTaskID(task);
@@ -203,17 +203,17 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public Iterable<Task> getTasks() {
-		final Iterable<Task> parentTasks = parentTaskVisibleFilter(parent.getTasks());
-		final Iterable<Task> ownTasks = current.getTasks();
+	public Iterable<ITask> getTasks() {
+		final Iterable<ITask> parentTasks = parentTaskVisibleFilter(parent.getTasks());
+		final Iterable<ITask> ownTasks = current.getTasks();
 		return Iterables.concat(parentTasks, ownTasks);
 	}
 
 	@Override
-	public Iterable<Entry<IStrategoTerm, Task>> getTaskEntries() {
-		final Iterable<Entry<IStrategoTerm, Task>> parentTaskEntries =
+	public Iterable<Entry<IStrategoTerm, ITask>> getTaskEntries() {
+		final Iterable<Entry<IStrategoTerm, ITask>> parentTaskEntries =
 			parentEntryInvisibleFilter(parent.getTaskEntries());
-		final Iterable<Entry<IStrategoTerm, Task>> ownTaskEntries = current.getTaskEntries();
+		final Iterable<Entry<IStrategoTerm, ITask>> ownTaskEntries = current.getTaskEntries();
 		return Iterables.concat(parentTaskEntries, ownTaskEntries);
 	}
 

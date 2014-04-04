@@ -7,13 +7,12 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import com.google.common.collect.Lists;
 
-public final class Task {
-	public final IStrategoTerm instruction;
-	public final IStrategoList initialDependencies;
-
+public final class Task implements ITask {
+	private final IStrategoTerm instruction;
+	private final IStrategoList initialDependencies;
 	// TODO: move these to task (type) definition, this is wasting space.
-	public final TaskType type;
-	public final boolean shortCircuit;
+	private final TaskType type;
+	private final boolean shortCircuit;
 
 	private IStrategoTerm instructionOverride = null;
 	private List<IStrategoTerm> results = Lists.newLinkedList();
@@ -45,126 +44,177 @@ public final class Task {
 		this.evaluations = task.evaluations;
 	}
 
+	@Override
 	public IStrategoTerm instruction() {
 		if(instructionOverride == null)
 			return instruction;
 		return instructionOverride;
 	}
 
+	@Override
 	public void overrideInstruction(IStrategoTerm newInstruction) {
 		instructionOverride = newInstruction;
 	}
 
+	@Override
 	public IStrategoTerm instructionOverride() {
 		return instructionOverride;
 	}
 
+	@Override
+	public IStrategoTerm initialInstruction() {
+		return instruction;
+	}
+
+	@Override
 	public void clearInstructionOverride() {
 		instructionOverride = null;
 	}
 
 
+	@Override
+	public IStrategoList initialDependencies() {
+		return initialDependencies;
+	}
+
+
+	@Override
+	public TaskType type() {
+		return type;
+	}
+
+
+	@Override
+	public boolean shortCircuit() {
+		return shortCircuit;
+	}
+
+
+	@Override
 	public Iterable<IStrategoTerm> results() {
 		return results;
 	}
 
+	@Override
 	public boolean hasResults() {
 		return !results.isEmpty();
 	}
 
+	@Override
 	public void setResults(Iterable<IStrategoTerm> results) {
 		this.results = Lists.newLinkedList(results);
 		status = TaskStatus.Success;
 	}
 
+	@Override
 	public void addResults(Iterable<IStrategoTerm> results) {
 		for(IStrategoTerm result : results)
 			this.results.add(result);
 		status = TaskStatus.Success;
 	}
 
+	@Override
 	public void addResult(IStrategoTerm result) {
 		results.add(result);
 		status = TaskStatus.Success;
 	}
 
 
+	@Override
 	public TaskStatus status() {
 		return status;
 	}
 
+	@Override
 	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
 
+	@Override
 	public boolean failed() {
 		return status == TaskStatus.Fail || status == TaskStatus.DependencyFail;
 	}
 
+	@Override
 	public void setFailed() {
 		status = TaskStatus.Fail;
 	}
 
+	@Override
 	public boolean dependencyFailed() {
 		return status == TaskStatus.DependencyFail;
 	}
 
+	@Override
 	public void setDependencyFailed() {
 		status = TaskStatus.DependencyFail;
 	}
 
+	@Override
 	public boolean solved() {
 		return status != TaskStatus.Unknown;
 	}
 
+	@Override
 	public void unsolve() {
 		results.clear();
 		status = TaskStatus.Unknown;
 	}
 
 
+	@Override
 	public IStrategoTerm message() {
 		return message;
 	}
 
+	@Override
 	public void setMessage(IStrategoTerm message) {
 		this.message = message;
 	}
 
+	@Override
 	public void clearMessage() {
 		message = null;
 	}
 
 
+	@Override
 	public long time() {
 		return time;
 	}
 
+	@Override
 	public void setTime(long time) {
 		this.time = time;
 	}
 
+	@Override
 	public void addTime(long time) {
 		this.time += time;
 	}
 
+	@Override
 	public void clearTime() {
 		time = -1;
 	}
 
 
+	@Override
 	public short evaluations() {
 		return evaluations;
 	}
 
+	@Override
 	public void setEvaluations(short evaluations) {
 		this.evaluations = evaluations;
 	}
 
+	@Override
 	public void addEvaluation() {
 		++evaluations;
 	}
 
+	@Override
 	public void clearEvaluations() {
 		evaluations = 0;
 	}

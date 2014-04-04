@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
@@ -43,14 +44,19 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		return new Task(instruction, dependencies, type, shortCircuit);
+	}
+
+	@Override
+	public ITask create(ITask task) {
+		return new Task((Task) task);
 	}
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
-			final Task task = taskEngine.getTask(taskID);
+			final ITask task = taskEngine.getTask(taskID);
 			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
@@ -58,7 +64,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
+	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
 		IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
@@ -71,7 +77,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);
 			if(subtaskID != null) {
 				evaluationQueue.removeRuntimeDependency(taskID, subtaskID); // TODO: needed/correct?
-				final Task subtask = taskEngine.getTask(subtaskID);
+				final ITask subtask = taskEngine.getTask(subtaskID);
 				if(handleSolvedTask(task, taskID, iter, subtask, taskEngine, evaluationQueue))
 					return;
 			}
@@ -92,7 +98,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 			return;
 		}
 		subtaskIDs.put(taskID, subtaskID);
-		final Task subtask = taskEngine.getTask(subtaskID);
+		final ITask subtask = taskEngine.getTask(subtaskID);
 		taskEngine.addDependency(taskID, subtaskID);
 
 		if(subtask.solved()) {
@@ -107,7 +113,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
 	}
@@ -140,7 +146,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Handles the result of a solved task. Returns true if the result was handled, false otherwise.
 	 */
-	private boolean handleSolvedTask(Task task, IStrategoTerm taskID, Iterator<IStrategoTerm> iter, Task subtask,
+	private boolean handleSolvedTask(ITask task, IStrategoTerm taskID, Iterator<IStrategoTerm> iter, ITask subtask,
 		ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
 		if(subtask.failed()) {
 			// If any subtask of the sequence task fails, the sequence fails.
@@ -157,7 +163,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Fails the given sequence task.
 	 */
-	private void sequenceFails(Task task, IStrategoTerm taskID, ITaskEngine taskEngine,
+	private void sequenceFails(ITask task, IStrategoTerm taskID, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setFailed();
 		evaluationQueue.taskSolved(taskID);
@@ -168,7 +174,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Sets the result of given sequence task to the result of given subtask.
 	 */
-	private void sequenceSucceeds(Task task, IStrategoTerm taskID, Task subtask, ITaskEngine taskEngine,
+	private void sequenceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setResults(subtask.results());
 		evaluationQueue.taskSolved(taskID);
@@ -221,7 +227,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 		seen.add(taskID);
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
-			final Task task = taskEngine.getTask(queueTaskID);
+			final ITask task = taskEngine.getTask(queueTaskID);
 			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
 				continue;
 			}

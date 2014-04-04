@@ -33,12 +33,12 @@ public final class TaskInsertion {
 	 * function assumes that all dependencies of the given task have been solved (have a result or failed).
 	 */
 	public static P2<? extends Iterable<IStrategoTerm>, Boolean> taskCombinations(ITermFactory factory,
-		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, Task task,
+		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID, ITask task,
 		boolean singleLevel) {
 		final IStrategoTerm instruction = task.instruction();
 		final Iterable<IStrategoTerm> actualDependencies = getResultIDs(context, collect, instruction);
 
-		switch(task.type) {
+		switch(task.type()) {
 			case Regular: {
 				final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
 				if(dependencyFailure(taskEngine, allDependencies))
@@ -60,7 +60,7 @@ public final class TaskInsertion {
 				return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
 			}
 			default: {
-				throw new RuntimeException("Task of type " + task.type + " not handled.");
+				throw new RuntimeException("Task of type " + task.type() + " not handled.");
 			}
 		}
 	}
@@ -133,7 +133,7 @@ public final class TaskInsertion {
 		ITaskEngine taskEngine, IContext context, Strategy collect, Strategy insert, IStrategoTerm taskID,
 		Set<IStrategoTerm> seen, boolean singleLevel) {
 		seen.add(taskID);
-		final Task task = taskEngine.getTask(taskID);
+		final ITask task = taskEngine.getTask(taskID);
 
 		if(!task.solved()) {
 			return Either.right(new SingletonIterable<IStrategoTerm>(taskID));
@@ -187,7 +187,7 @@ public final class TaskInsertion {
 		Strategy insert, IStrategoTerm term, Iterable<IStrategoTerm> resultIDs) {
 		final StrategoHashMap mapping = new StrategoHashMap();
 		for(IStrategoTerm resultID : resultIDs) {
-			final Task task = taskEngine.getTask(resultID);
+			final ITask task = taskEngine.getTask(resultID);
 			mapping.put(resultID, makeList(factory, task.results()));
 		}
 
@@ -225,7 +225,7 @@ public final class TaskInsertion {
 	 */
 	private static boolean dependencyFailure(ITaskEngine taskEngine, Iterable<IStrategoTerm> taskIDs) {
 		for(IStrategoTerm taskID : taskIDs) {
-			final Task task = taskEngine.getTask(taskID);
+			final ITask task = taskEngine.getTask(taskID);
 			if(task.failed() || !task.hasResults()) {
 				return true; // If a dependency does not have any results, the task cannot be executed.
 			}
