@@ -35,6 +35,8 @@ public interface ITask {
 
 	public abstract void addResult(IStrategoTerm result);
 
+	public abstract void clearResults();
+
 
 	public abstract TaskStatus status();
 

@@ -1,13 +1,9 @@
 package org.metaborg.runtime.task;
 
-import java.util.List;
-
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-import com.google.common.collect.Lists;
-
-public final class Task implements ITask {
+public abstract class ATask implements ITask {
 	private final IStrategoTerm instruction;
 	private final IStrategoList initialDependencies;
 	// TODO: move these to task (type) definition, this is wasting space.
@@ -15,21 +11,20 @@ public final class Task implements ITask {
 	private final boolean shortCircuit;
 
 	private IStrategoTerm instructionOverride = null;
-	private List<IStrategoTerm> results = Lists.newLinkedList();
 	private TaskStatus status = TaskStatus.Unknown;
 	private IStrategoTerm message;
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType taskType, boolean shortCircuit) {
+	public ATask(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
 
-		this.type = taskType;
+		this.type = type;
 		this.shortCircuit = shortCircuit;
 	}
 
-	public Task(Task task) {
+	public ATask(ATask task) {
 		this.instruction = task.instruction;
 		this.initialDependencies = task.initialDependencies;
 
@@ -37,7 +32,6 @@ public final class Task implements ITask {
 		this.shortCircuit = task.shortCircuit;
 
 		this.instructionOverride = task.instructionOverride;
-		this.results = Lists.newLinkedList(task.results);
 		this.status = task.status;
 		this.message = task.message;
 		this.time = task.time;
@@ -91,36 +85,6 @@ public final class Task implements ITask {
 
 
 	@Override
-	public Iterable<IStrategoTerm> results() {
-		return results;
-	}
-
-	@Override
-	public boolean hasResults() {
-		return !results.isEmpty();
-	}
-
-	@Override
-	public void setResults(Iterable<IStrategoTerm> results) {
-		this.results = Lists.newLinkedList(results);
-		status = TaskStatus.Success;
-	}
-
-	@Override
-	public void addResults(Iterable<IStrategoTerm> results) {
-		for(IStrategoTerm result : results)
-			this.results.add(result);
-		status = TaskStatus.Success;
-	}
-
-	@Override
-	public void addResult(IStrategoTerm result) {
-		results.add(result);
-		status = TaskStatus.Success;
-	}
-
-
-	@Override
 	public TaskStatus status() {
 		return status;
 	}
@@ -157,7 +121,7 @@ public final class Task implements ITask {
 
 	@Override
 	public void unsolve() {
-		results.clear();
+		clearResults();
 		status = TaskStatus.Unknown;
 	}
 
@@ -237,7 +201,7 @@ public final class Task implements ITask {
 			return false;
 		if(getClass() != obj.getClass())
 			return false;
-		Task other = (Task) obj;
+		ATask other = (ATask) obj;
 		if(initialDependencies == null) {
 			if(other.initialDependencies != null)
 				return false;
@@ -253,7 +217,7 @@ public final class Task implements ITask {
 
 	@Override
 	public String toString() {
-		return "Task [instruction=" + instruction + ", type=" + type + ", results=" + results
+		return "Task [instruction=" + instruction + ", type=" + type + ", results=" + results()
 			+ ", status=" + status + ", message=" + message + ", time=" + time + ", evaluations=" + evaluations + "]";
 	}
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.ListTask;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
@@ -45,12 +45,12 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new Task(instruction, dependencies, type, shortCircuit);
+		return new ListTask(instruction, dependencies, type, shortCircuit);
 	}
 
 	@Override
 	public ITask create(ITask task) {
-		return new Task((Task) task);
+		return new ListTask((ListTask) task);
 	}
 
 	@Override
@@ -64,8 +64,8 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
-		IContext context, Strategy collect, Strategy insert, Strategy perform) {
+	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
 			iter = task.instruction().getSubterm(0).iterator();
