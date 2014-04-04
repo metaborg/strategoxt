@@ -8,6 +8,7 @@ import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.SetTask;
 import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.NotImplementedException;
@@ -74,24 +75,26 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 			final IStrategoTerm instruction = task.instruction();
 			final IStrategoTerm lookupTaskID = instruction.getSubterm(0).getSubterm(0);
 			final SetTask lookupTask = (SetTask) taskEngine.getTask(lookupTaskID);
-			final IStrategoTerm matchTaskID = instruction.getSubterm(0).getSubterm(0);
-			final ITask matchTask = taskEngine.getTask(matchTaskID);
+			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
+			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
 
 			IStrategoList dynamicDependencies = factory.makeList();
 			if(!lookupTask.solved())
 				dynamicDependencies = factory.makeListCons(lookupTaskID, dynamicDependencies);
-			if(!matchTask.solved())
-				dynamicDependencies = factory.makeListCons(matchTaskID, dynamicDependencies);
+			if(!expectedTermTask.solved())
+				dynamicDependencies = factory.makeListCons(expectedTermTaskID, dynamicDependencies);
 			if(!dynamicDependencies.isEmpty()) {
 				evaluationQueue.delay(taskID, dynamicDependencies);
+				taskEngine.invalidate(taskID);
 				return;
 			}
 
 			task.setFailed();
-			for(IStrategoTerm matchURI : matchTask.results()) {
-				if(lookupTask.hasResult(matchURI)) {
+			for(IStrategoTerm expectedTermTuple : expectedTermTask.results()) {
+				if(lookupTask.hasResult(expectedTermTuple.getSubterm(0))
+					|| lookupTask.hasResult(expectedTermTuple.getSubterm(1))) {
 					task.setStatus(TaskStatus.Success);
-					break;
+					return;
 				}
 			}
 
@@ -115,7 +118,13 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 		current = null;
 	}
 
-	private static boolean isRelationMatch(IStrategoTerm instruction) {
+	public static boolean isRelationMatch(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationMatch", 2);
+	}
+
+	public static RelationMatchEvaluator register(ITaskEvaluationFrontend evaluationFrontend, ITermFactory factory) {
+		final RelationMatchEvaluator evaluator = new RelationMatchEvaluator(factory);
+		evaluationFrontend.addTaskEvaluator(factory.makeConstructor("RelationMatch", 2), evaluator);
+		return evaluator;
 	}
 }

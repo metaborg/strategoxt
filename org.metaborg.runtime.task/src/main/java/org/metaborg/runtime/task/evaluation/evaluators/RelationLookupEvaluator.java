@@ -6,6 +6,7 @@ import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.SetTask;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.interpreter.core.IContext;
@@ -77,5 +78,11 @@ public class RelationLookupEvaluator implements ITaskEvaluator {
 
 	private static boolean isRelationLookup(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationLookup", 2);
+	}
+
+	public static RelationLookupEvaluator register(ITaskEvaluationFrontend evaluationFrontend, ITermFactory factory) {
+		final RelationLookupEvaluator evaluator = new RelationLookupEvaluator(factory);
+		evaluationFrontend.addTaskEvaluator(factory.makeConstructor("RelationLookup", 2), evaluator);
+		return evaluator;
 	}
 }
