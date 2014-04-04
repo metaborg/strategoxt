@@ -12,7 +12,7 @@ public final class Task {
 	public final IStrategoList initialDependencies;
 
 	// TODO: move these to task (type) definition, this is wasting space.
-	public final boolean isCombinator;
+	public final TaskType type;
 	public final boolean shortCircuit;
 
 	private IStrategoTerm instructionOverride = null;
@@ -22,11 +22,11 @@ public final class Task {
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, boolean isCombinator, boolean shortCircuit) {
+	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType taskType, boolean shortCircuit) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
 
-		this.isCombinator = isCombinator;
+		this.type = taskType;
 		this.shortCircuit = shortCircuit;
 	}
 
@@ -34,7 +34,7 @@ public final class Task {
 		this.instruction = task.instruction;
 		this.initialDependencies = task.initialDependencies;
 
-		this.isCombinator = task.isCombinator;
+		this.type = task.type;
 		this.shortCircuit = task.shortCircuit;
 
 		this.instructionOverride = task.instructionOverride;
@@ -203,7 +203,7 @@ public final class Task {
 
 	@Override
 	public String toString() {
-		return "Task [instruction=" + instruction + ", isCombinator=" + isCombinator + ", results=" + results
+		return "Task [instruction=" + instruction + ", type=" + type + ", results=" + results
 			+ ", status=" + status + ", message=" + message + ", time=" + time + ", evaluations=" + evaluations + "]";
 	}
 }

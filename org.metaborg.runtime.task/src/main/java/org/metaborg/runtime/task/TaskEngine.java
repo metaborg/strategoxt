@@ -120,7 +120,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit) {
+		TaskType taskType, boolean shortCircuit) {
 		if(!taskCollection.inCollection(source))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
@@ -130,7 +130,7 @@ public class TaskEngine implements ITaskEngine {
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			toTask.put(taskID, new Task(instruction, dependencies, isCombinator, shortCircuit));
+			toTask.put(taskID, new Task(instruction, dependencies, taskType, shortCircuit));
 			taskCollection.addTask(taskID);
 			schedule(taskID);
 		}

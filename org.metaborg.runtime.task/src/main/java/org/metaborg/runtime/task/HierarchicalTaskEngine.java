@@ -104,8 +104,8 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit) {
-		return current.addTask(source, dependencies, instruction, isCombinator, shortCircuit);
+		TaskType taskType, boolean shortCircuit) {
+		return current.addTask(source, dependencies, instruction, taskType, shortCircuit);
 	}
 
 	@Override

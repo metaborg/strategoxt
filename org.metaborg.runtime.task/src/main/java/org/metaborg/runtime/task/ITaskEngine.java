@@ -45,17 +45,17 @@ public interface ITaskEngine {
 
 	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
-	 *
+	 * 
 	 * @param source The origin of the task.
 	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
 	 * @param instruction The instruction.
-	 * @param isCombinator Whether this task is a task combinator.
+	 * @param taskType Type of task.
 	 * @param shortCircuit Whether evaluating this task stops after the first successful instruction has been executed.
-	 *
+	 * 
 	 * @return A unique task identifier for given instruction.
 	 */
 	public abstract IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit);
+		TaskType taskType, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.

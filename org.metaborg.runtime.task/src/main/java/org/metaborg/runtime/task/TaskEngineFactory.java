@@ -1,14 +1,6 @@
 package org.metaborg.runtime.task;
 
-import static org.metaborg.runtime.task.util.TermTools.isNull;
-import static org.metaborg.runtime.task.util.TermTools.makeBool;
-import static org.metaborg.runtime.task.util.TermTools.makeList;
-import static org.metaborg.runtime.task.util.TermTools.makeLong;
-import static org.metaborg.runtime.task.util.TermTools.makeNullable;
-import static org.metaborg.runtime.task.util.TermTools.makeShort;
-import static org.metaborg.runtime.task.util.TermTools.takeBool;
-import static org.metaborg.runtime.task.util.TermTools.takeLong;
-import static org.metaborg.runtime.task.util.TermTools.takeShort;
+import static org.metaborg.runtime.task.util.TermTools.*;
 
 import java.util.Map.Entry;
 
@@ -44,7 +36,7 @@ public class TaskEngineFactory {
 				taskID,
 				task.instruction,
 				task.initialDependencies,
-				makeBool(factory, task.isCombinator),
+				factory.makeInt(task.type.id),
 				makeBool(factory, task.shortCircuit),
 				makeNullable(factory, task.instructionOverride()),
 				results,
@@ -79,7 +71,7 @@ public class TaskEngineFactory {
 			final IStrategoTerm taskID = taskTerm.getSubterm(++i);
 			final IStrategoTerm instruction = taskTerm.getSubterm(++i);
 			final IStrategoList initialDependencies = (IStrategoList) taskTerm.getSubterm(++i);
-			final IStrategoInt isCombinator = (IStrategoInt) taskTerm.getSubterm(++i);
+			final IStrategoInt taskType = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoInt shortCircuit = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoTerm instructionOverride = taskTerm.getSubterm(++i);
 			final IStrategoTerm results = serializer.fromAnnotations(taskTerm.getSubterm(++i), false);
@@ -94,7 +86,7 @@ public class TaskEngineFactory {
 			final IStrategoList reads = (IStrategoList) taskTerm.getSubterm(++i);
 
 			final Task task =
-				new Task(instruction, initialDependencies, takeBool(isCombinator), takeBool(shortCircuit));
+				new Task(instruction, initialDependencies, TaskType.get(taskType.intValue()), takeBool(shortCircuit));
 			task.overrideInstruction(instructionOverride);
 			if(!isNull(results))
 				task.setResults(results);

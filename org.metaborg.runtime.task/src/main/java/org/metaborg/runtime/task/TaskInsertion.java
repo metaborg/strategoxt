@@ -38,20 +38,29 @@ public final class TaskInsertion {
 		final IStrategoTerm instruction = task.instruction();
 		final Iterable<IStrategoTerm> actualDependencies = getResultIDs(context, collect, instruction);
 
-		if(task.isCombinator) {
-			return P.p(
-				new SingletonIterable<IStrategoTerm>(insertResultLists(factory, taskEngine, context, insert,
-					instruction, actualDependencies)), false);
-		} else {
-			final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
-			if(dependencyFailure(taskEngine, allDependencies))
-				return null;
+		switch(task.type) {
+			case Regular: {
+				final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
+				if(dependencyFailure(taskEngine, allDependencies))
+					return null;
 
-			if(Iterables.isEmpty(actualDependencies)) {
+				if(Iterables.isEmpty(actualDependencies)) {
+					return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
+				} else {
+					return insertResultCombinations(taskEngine, context, collect, insert, instruction,
+						actualDependencies, new SingletonIterable<IStrategoTerm>(taskID), singleLevel);
+				}
+			}
+			case Combinator: {
+				return P.p(
+					new SingletonIterable<IStrategoTerm>(insertResultLists(factory, taskEngine, context, insert,
+						instruction, actualDependencies)), false);
+			}
+			case Raw: {
 				return P.p(new SingletonIterable<IStrategoTerm>(instruction), false);
-			} else {
-				return insertResultCombinations(taskEngine, context, collect, insert, instruction, actualDependencies,
-					new SingletonIterable<IStrategoTerm>(taskID), singleLevel);
+			}
+			default: {
+				throw new RuntimeException("Task of type " + task.type + " not handled.");
 			}
 		}
 	}
