@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.evaluation;
+package org.metaborg.runtime.task.evaluation.evaluators;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -7,6 +7,9 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -37,6 +40,11 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
 		return factory.makeList();
+	}
+
+	@Override
+	public Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		return new Task(instruction, dependencies, type, shortCircuit);
 	}
 
 	@Override

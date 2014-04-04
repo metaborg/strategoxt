@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.spoofax.interpreter.core.IContext;
@@ -152,6 +153,12 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	public IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
 		return taskEvaluator.adjustDependencies(dependencies, factory);
+	}
+
+	@Override
+	public Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
+		return taskEvaluator.create(instruction, dependencies, type, shortCircuit);
 	}
 
 

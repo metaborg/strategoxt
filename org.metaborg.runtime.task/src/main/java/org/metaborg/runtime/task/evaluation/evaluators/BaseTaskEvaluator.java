@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.evaluation;
+package org.metaborg.runtime.task.evaluation.evaluators;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
@@ -7,6 +7,10 @@ import java.util.Set;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskInsertion;
+import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
+import org.metaborg.runtime.task.evaluation.TaskResultType;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -44,6 +48,11 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
 		return dependencies;
+	}
+
+	@Override
+	public Task create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		return new Task(instruction, dependencies, type, shortCircuit);
 	}
 
 	@Override
