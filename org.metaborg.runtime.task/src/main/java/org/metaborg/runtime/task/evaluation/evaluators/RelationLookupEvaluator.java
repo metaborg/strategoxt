@@ -30,7 +30,7 @@ public class RelationLookupEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new SetTask(instruction, dependencies, type, shortCircuit);
+		return new SetTask(instruction, dependencies, TaskType.Regular, shortCircuit);
 	}
 
 	@Override
