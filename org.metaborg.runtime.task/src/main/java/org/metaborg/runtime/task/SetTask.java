@@ -11,8 +11,8 @@ public class SetTask extends ATask {
 	private Set<IStrategoTerm> results = Sets.newHashSet();
 
 
-	public SetTask(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType taskType, boolean shortCircuit) {
-		super(instruction, initialDependencies, taskType, shortCircuit);
+	public SetTask(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit) {
+		super(instruction, initialDependencies, type, shortCircuit);
 	}
 
 	public SetTask(ATask task) {
