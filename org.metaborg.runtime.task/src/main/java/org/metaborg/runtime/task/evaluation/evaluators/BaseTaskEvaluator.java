@@ -57,6 +57,8 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		// HACK: create set task for insert and combine instructions that consist of only set tasks.
+		// TODO: should be factored out.
 		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor((IStrategoAppl) instruction, "Insert", 1))
 			|| (Tools.hasConstructor((IStrategoAppl) instruction, "Combine", 1))) {
 			IStrategoTerm innerResults = instruction.getSubterm(0);
@@ -77,10 +79,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			}
 
 			if(set) {
-				System.out.println("Creating set task: " + instruction);
 				return new SetTask(instruction, dependencies, type, shortCircuit);
 			}
 		}
+
 		return new ListTask(instruction, dependencies, type, shortCircuit);
 	}
 

@@ -2,11 +2,9 @@ package org.metaborg.runtime.task.evaluation.evaluators;
 
 import java.util.Set;
 
-import org.metaborg.runtime.task.EmptyTask;
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.SetTask;
-import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
@@ -21,13 +19,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 public class RelationMatchEvaluator implements ITaskEvaluator {
-	private final ITermFactory factory;
-
 	private IStrategoTerm current;
-
-	public RelationMatchEvaluator(ITermFactory factory) {
-		this.factory = factory;
-	}
 
 	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
@@ -36,12 +28,12 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new EmptyTask(instruction, dependencies, TaskType.Raw, shortCircuit);
+		return new SetTask(instruction, dependencies, TaskType.Raw, shortCircuit);
 	}
 
 	@Override
 	public ITask create(ITask task) {
-		return new EmptyTask((EmptyTask) task);
+		return new SetTask((SetTask) task);
 	}
 
 	@Override
@@ -76,19 +68,20 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
 			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
 
-			System.out.println(instruction);
-			System.out.println(lookupTask.results());
-			System.out.println(expectedTermTask.results());
-
 			task.setFailed();
 			for(IStrategoTerm expectedTermTuple : expectedTermTask.results()) {
-				if(lookupTask.hasResult(expectedTermTuple.getSubterm(0))
-					|| lookupTask.hasResult(expectedTermTuple.getSubterm(1))) {
-					task.setStatus(TaskStatus.Success);
+				final IStrategoTerm regularTerm = expectedTermTuple.getSubterm(0);
+				if(lookupTask.hasResult(regularTerm)) {
+					task.addResult(regularTerm);
+					return;
+				}
+
+				final IStrategoTerm uriTerm = expectedTermTuple.getSubterm(1);
+				if(lookupTask.hasResult(uriTerm)) {
+					task.addResult(uriTerm);
 					return;
 				}
 			}
-
 		} finally {
 			evaluationQueue.taskSolved(taskID);
 			current = null;
@@ -115,7 +108,7 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 	}
 
 	public static RelationMatchEvaluator register(ITaskEvaluationFrontend evaluationFrontend, ITermFactory factory) {
-		final RelationMatchEvaluator evaluator = new RelationMatchEvaluator(factory);
+		final RelationMatchEvaluator evaluator = new RelationMatchEvaluator();
 		evaluationFrontend.addTaskEvaluator(factory.makeConstructor("RelationMatch", 2), evaluator);
 		return evaluator;
 	}
