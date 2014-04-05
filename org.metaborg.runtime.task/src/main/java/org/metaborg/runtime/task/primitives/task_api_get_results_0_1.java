@@ -2,8 +2,8 @@ package org.metaborg.runtime.task.primitives;
 
 import static org.metaborg.runtime.task.util.TermTools.makeList;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -22,7 +22,7 @@ public class task_api_get_results_0_1 extends AbstractPrimitive {
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final ITaskEngine taskEngine = TaskManager.getInstance().getCurrent();
 		final IStrategoTerm taskID = tvars[0];
-		final Task task = taskEngine.getTask(taskID);
+		final ITask task = taskEngine.getTask(taskID);
 		if(task == null || !task.solved())
 			return false;
 		env.setCurrent(makeList(env.getFactory(), task.results()));

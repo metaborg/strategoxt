@@ -2,8 +2,8 @@ package org.metaborg.runtime.task.primitives;
 
 import static org.metaborg.runtime.task.util.TermTools.makeList;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -49,7 +49,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 	}
 
 	private IStrategoTerm createDebugTuple(IStrategoTerm taskID, ITaskEngine engine, ITermFactory factory) {
-		Task task = engine.getTask(taskID);
+		ITask task = engine.getTask(taskID);
 		final IStrategoList staticDependencies = makeList(factory, engine.getDependencies(taskID));
 		final IStrategoList dynamicDependencies = makeList(factory, engine.getDynamicDependencies(taskID));
 		final IStrategoTerm message = task.message() == null ? none(factory) : task.message();
@@ -69,8 +69,8 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 				results = none(factory);
 		}
 
-		return taskTuple(factory, taskID, task.instruction, staticDependencies, dynamicDependencies, reads, results,
-			message, factory.makeInt((int) task.time()), factory.makeInt(task.evaluations()));
+		return taskTuple(factory, taskID, task.initialInstruction(), staticDependencies, dynamicDependencies, reads,
+			results, message, factory.makeInt((int) task.time()), factory.makeInt(task.evaluations()));
 	}
 
 	private IStrategoTerm taskTuple(ITermFactory factory, IStrategoTerm taskID, IStrategoTerm instruction,

@@ -3,8 +3,8 @@ package org.metaborg.runtime.task.evaluation;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.metaborg.runtime.task.util.Debug;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -23,7 +23,7 @@ public final class TaskEvaluationDebugging {
 			if(cycle != null) {
 				System.err.println("Cycle found: " + cycle);
 				for(IStrategoTerm taskID : cycle) {
-					final Task task = taskEngine.getTask(taskID);
+					final ITask task = taskEngine.getTask(taskID);
 					System.err.println("	" + taskID + ": " + task + " - " + toRuntimeDependency.get(taskID));
 				}
 				System.err.println();
@@ -31,13 +31,13 @@ public final class TaskEvaluationDebugging {
 
 			// Print out runtime dependencies.
 			for(IStrategoTerm taskID : unevaluated) {
-				final Task task = taskEngine.getTask(taskID);
+				final ITask task = taskEngine.getTask(taskID);
 				final Set<IStrategoTerm> dependencies = toRuntimeDependency.get(taskID);
 				if(!dependencies.isEmpty()) {
 					System.err.println(taskID + ": " + task + " still depends on: ");
 				}
 				for(IStrategoTerm dependencyID : dependencies) {
-					final Task dependency = taskEngine.getTask(dependencyID);
+					final ITask dependency = taskEngine.getTask(dependencyID);
 					if(!dependency.solved()) {
 						System.err.println("	" + dependencyID + ": " + dependency);
 					}
@@ -71,13 +71,13 @@ public final class TaskEvaluationDebugging {
 	public static void debugDelayedDependecy(ITaskEngine taskEngine, IStrategoTerm taskID,
 		Iterable<IStrategoTerm> dependencies) {
 		if(Debug.DEBUGGING) {
-			final Task task = taskEngine.getTask(taskID);
+			final ITask task = taskEngine.getTask(taskID);
 
 			if(Iterables.size(dependencies) == 0)
 				System.err.println("Task " + taskID + ": " + task + " reported a dynamic dependency on nothing.");
 
 			for(IStrategoTerm dependencyID : dependencies) {
-				final Task dependencyTask = taskEngine.getTask(dependencyID);
+				final ITask dependencyTask = taskEngine.getTask(dependencyID);
 				if(dependencyTask.solved()) {
 					System.err.println("Task " + taskID + ": " + task + " reported a dynamic dependency on "
 						+ dependencyID + ": " + dependencyTask + " but it is already solved!");

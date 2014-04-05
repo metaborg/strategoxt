@@ -48,7 +48,7 @@ public class TaskTest {
 	public static IStrategoString str(String str) {
 		return factory.makeString(str);
 	}
-	
+
 	public static IStrategoInt i(int i) {
 		return factory.makeInt(i);
 	}
@@ -71,7 +71,7 @@ public class TaskTest {
 
 	public static IStrategoAppl uri(String language, IStrategoTerm... segments) {
 		IStrategoTerm[] reversed = new IStrategoTerm[segments.length];
-		for (int i = 0; i < reversed.length; ++i)
+		for(int i = 0; i < reversed.length; ++i)
 			// Paths are reversed in Stratego for easy appending of new names.
 			reversed[i] = segments[reversed.length - i - 1];
 		return constructor("URI", constructor("Language", str(language), list(reversed)));
@@ -91,7 +91,7 @@ public class TaskTest {
 
 	public static IStrategoList dependencies(IStrategoTerm... results) {
 		IStrategoTerm[] dependencies = new IStrategoTerm[results.length];
-		for (int i = 0; i < results.length; ++i)
+		for(int i = 0; i < results.length; ++i)
 			dependencies[i] = resultID(results[i]);
 		return list(dependencies);
 	}
@@ -107,24 +107,24 @@ public class TaskTest {
 	public static IStrategoAppl choice(IStrategoTerm... results) {
 		return constructor("Choice", list(results));
 	}
-	
-    public static IStrategoAppl def(String language, IStrategoTerm... segments) {
-        return constructor("Def", uri(language, segments));
-    }
+
+	public static IStrategoAppl def(String language, IStrategoTerm... segments) {
+		return constructor("Def", uri(language, segments));
+	}
 
 	public static <T> boolean assertContains(Iterable<T> iterable, T element) {
 		boolean found = false;
-		for (T item : iterable)
+		for(T item : iterable)
 			found = found || element.equals(item);
 		return found;
 	}
 
 	public static <T> boolean assertContainsAll(Iterable<T> iterable, T element) {
-		if (!iterable.iterator().hasNext())
+		if(!iterable.iterator().hasNext())
 			return false;
 
 		boolean found = true;
-		for (T item : iterable)
+		for(T item : iterable)
 			found = found && element.equals(item);
 		return found;
 	}

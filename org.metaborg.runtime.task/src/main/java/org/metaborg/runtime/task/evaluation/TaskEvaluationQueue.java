@@ -4,8 +4,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.spoofax.interpreter.core.IContext;
@@ -154,6 +155,18 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		return taskEvaluator.adjustDependencies(dependencies, factory);
 	}
 
+	@Override
+	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
+		return taskEvaluator.create(instruction, dependencies, type, shortCircuit);
+	}
+
+
+	@Override
+	public ITask create(ITask task) {
+		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.initialInstruction());
+		return taskEvaluator.create(task);
+	}
 
 	@Override
 	public IStrategoTuple evaluate(Set<IStrategoTerm> scheduled, IContext context, Strategy collect, Strategy insert,
@@ -191,7 +204,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 				// Store values
 				final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
 				for(final IStrategoTerm taskID : taskIDs) {
-					final Task task = taskEngine.getTask(taskID);
+					final ITask task = taskEngine.getTask(taskID);
 					if(!task.failed())
 						values.putAll(taskID, task.results());
 				}
@@ -209,7 +222,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 					// Compare values
 					boolean done = true;
 					for(final IStrategoTerm taskID : taskIDs) {
-						final Task task = taskEngine.getTask(taskID);
+						final ITask task = taskEngine.getTask(taskID);
 
 						// TODO: this assumes that no results and failure means the same, is that correct?
 						if(values.get(taskID).isEmpty()) {
@@ -243,7 +256,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 					values.clear();
 					for(final IStrategoTerm taskID : taskIDs) {
-						final Task task = taskEngine.getTask(taskID);
+						final ITask task = taskEngine.getTask(taskID);
 						if(!task.failed())
 							values.putAll(taskID, task.results());
 					}
@@ -289,7 +302,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private void evaluateQueuedTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-			final Task task = taskEngine.getTask(taskID);
+			final ITask task = taskEngine.getTask(taskID);
 
 			evaluated.add(taskID);
 			scheduled.remove(taskID);
@@ -309,7 +322,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private void evaluateCyclicTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-			final Task task = taskEngine.getTask(taskID);
+			final ITask task = taskEngine.getTask(taskID);
 
 			evaluated.add(taskID);
 			scheduled.remove(taskID);
@@ -341,16 +354,17 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	/**
 	 * Evaluates given task using a specific or default task evaluator.
 	 */
-	private void evaluateTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect, Strategy insert,
+	private void evaluateTask(IStrategoTerm taskID, ITask task, IContext context, Strategy collect, Strategy insert,
 		Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
+		currentTaskEvaluator = taskEvaluator;
 		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 
 	/**
 	 * Evaluates given task using a specific or default task evaluator.
 	 */
-	private void evaluateCyclicTask(IStrategoTerm taskID, Task task, IContext context, Strategy collect,
+	private void evaluateCyclicTask(IStrategoTerm taskID, ITask task, IContext context, Strategy collect,
 		Strategy insert, Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
 		currentTaskEvaluator = taskEvaluator;

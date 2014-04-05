@@ -1,12 +1,21 @@
-package org.metaborg.runtime.task.evaluation;
+package org.metaborg.runtime.task.evaluation.evaluators;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Set;
 
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.ListTask;
+import org.metaborg.runtime.task.SetTask;
 import org.metaborg.runtime.task.TaskInsertion;
+import org.metaborg.runtime.task.TaskManager;
+import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
+import org.metaborg.runtime.task.evaluation.TaskResultType;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
@@ -47,6 +56,42 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
+	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		// HACK: create set task for insert and combine instructions that consist of only set tasks.
+		// TODO: should be factored out.
+		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor((IStrategoAppl) instruction, "Insert", 1))
+			|| (Tools.hasConstructor((IStrategoAppl) instruction, "Combine", 1))) {
+			IStrategoTerm innerResults = instruction.getSubterm(0);
+			if(innerResults.getTermType() != IStrategoTerm.LIST)
+				innerResults = factory.makeList(innerResults);
+
+			final Collection<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+			for(IStrategoTerm result : innerResults) {
+				if(Tools.isTermAppl(result) && Tools.hasConstructor((IStrategoAppl) result, "Result", 1)) {
+					results.add(result.getSubterm(0));
+				}
+			}
+
+			boolean set = results.size() != 0;
+			for(IStrategoTerm taskID : results) {
+				final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
+				set = (task instanceof SetTask) && set;
+			}
+
+			if(set) {
+				return new SetTask(instruction, dependencies, type, shortCircuit);
+			}
+		}
+
+		return new ListTask(instruction, dependencies, type, shortCircuit);
+	}
+
+	@Override
+	public ITask create(ITask task) {
+		return new ListTask((ListTask) task);
+	}
+
+	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		// Queue or defer evaluation for all scheduled tasks.
 		for(final IStrategoTerm taskID : scheduled) {
@@ -55,18 +100,18 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue,
-		IContext context, Strategy collect, Strategy insert, Strategy perform) {
+	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
 		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
 	}
 
-	private void evaluate(IStrategoTerm taskID, Task task, ITaskEngine taskEngine,
+	private void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
 		boolean cyclic) {
 		delayed = false;
@@ -100,7 +145,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						break;
 					case Success:
 						failure = false;
-						if(task.shortCircuit)
+						if(task.shortCircuit())
 							done = true;
 						break;
 					case HigherOrder:
@@ -151,7 +196,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Solves an instruction and returns its raw result.
 	 */
-	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, Task task,
+	private IStrategoTerm solve(IContext context, Strategy performInstruction, IStrategoTerm taskID, ITask task,
 		IStrategoTerm instruction) {
 		timer.start();
 		final IStrategoTerm result = invoke(context, performInstruction, instruction, taskID);
@@ -163,7 +208,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	/**
 	 * Handles the result of performing an instruction and returns its result type.
 	 */
-	private TaskResultType handleResult(IStrategoTerm taskID, Task task, IStrategoTerm result,
+	private TaskResultType handleResult(IStrategoTerm taskID, ITask task, IStrategoTerm result,
 		ITaskEvaluationQueue evaluationQueue) {
 		if(result == null)
 			return TaskResultType.Fail; // The task failed to produce a result.

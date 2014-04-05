@@ -1,6 +1,6 @@
 package org.metaborg.runtime.task.primitives;
 
-import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
@@ -18,7 +18,7 @@ public class task_api_has_failed_0_1 extends AbstractPrimitive {
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		final IStrategoTerm taskID = tvars[0];
-		final Task task = TaskManager.getInstance().getCurrent().getTask(taskID);
+		final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
 		if(task == null)
 			return false;
 		return TaskManager.getInstance().getCurrent().getTask(taskID).failed();

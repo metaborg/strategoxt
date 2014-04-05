@@ -49,13 +49,13 @@ public interface ITaskEngine {
 	 * @param source The origin of the task.
 	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
 	 * @param instruction The instruction.
-	 * @param isCombinator Whether this task is a task combinator.
+	 * @param type Type of task.
 	 * @param shortCircuit Whether evaluating this task stops after the first successful instruction has been executed.
 	 *
 	 * @return A unique task identifier for given instruction.
 	 */
 	public abstract IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
-		boolean isCombinator, boolean shortCircuit);
+		TaskType type, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.
@@ -64,7 +64,7 @@ public interface ITaskEngine {
 	 * @param task The task object.
 	 * @param initialDependencies The initial dependencies of the task.
 	 */
-	public abstract void addPersistedTask(IStrategoTerm taskID, Task task, IStrategoList initialDependencies);
+	public abstract void addPersistedTask(IStrategoTerm taskID, ITask task, IStrategoList initialDependencies);
 
 	/**
 	 * Removes task with given identifier from the task engine.
@@ -90,7 +90,7 @@ public interface ITaskEngine {
 	 *
 	 * @return The task that was invalidated.
 	 */
-	public abstract Task invalidate(IStrategoTerm taskID);
+	public abstract ITask invalidate(IStrategoTerm taskID);
 
 	/**
 	 * Invalidates and schedules tasks that have changed because something they read has changed.
@@ -135,14 +135,14 @@ public interface ITaskEngine {
 	 *
 	 * @param taskID The task identifier.
 	 */
-	public abstract Task getTask(IStrategoTerm taskID);
+	public abstract ITask getTask(IStrategoTerm taskID);
 
 	/**
 	 * Gets task identifier of given task.
 	 *
 	 * @param task The task.
 	 */
-	public abstract IStrategoTerm getTaskID(Task task);
+	public abstract IStrategoTerm getTaskID(ITask task);
 
 	/**
 	 * Given an instruction and its initial dependencies, returns its identifier. If it does not have an identifier,
@@ -162,12 +162,12 @@ public interface ITaskEngine {
 	/**
 	 * Gets all tasks.
 	 */
-	public abstract Iterable<Task> getTasks();
+	public abstract Iterable<ITask> getTasks();
 
 	/**
 	 * Gets all task identifier to task mappings.
 	 */
-	public abstract Iterable<Entry<IStrategoTerm, Task>> getTaskEntries();
+	public abstract Iterable<Entry<IStrategoTerm, ITask>> getTaskEntries();
 
 
 	/**
