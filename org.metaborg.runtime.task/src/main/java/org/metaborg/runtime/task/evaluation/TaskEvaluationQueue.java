@@ -357,6 +357,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private void evaluateTask(IStrategoTerm taskID, ITask task, IContext context, Strategy collect, Strategy insert,
 		Strategy perform) {
 		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
+		currentTaskEvaluator = taskEvaluator;
 		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 
