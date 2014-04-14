@@ -21,10 +21,10 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationLookup implements ITaskFactory, ITaskEvaluator {
+public class RelationLookupTask implements ITaskFactory, ITaskEvaluator {
 	private BaseTaskEvaluator evaluator;
 
-	public RelationLookup(ITermFactory factory) {
+	public RelationLookupTask(ITermFactory factory) {
 		this.evaluator = new BaseTaskEvaluator(factory);
 	}
 
@@ -87,9 +87,9 @@ public class RelationLookup implements ITaskFactory, ITaskEvaluator {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationLookup", 2);
 	}
 
-	public static RelationLookup register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+	public static RelationLookupTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
 		ITermFactory factory) {
-		final RelationLookup evaluator = new RelationLookup(factory);
+		final RelationLookupTask evaluator = new RelationLookupTask(factory);
 		final IStrategoConstructor constructor = factory.makeConstructor("RelationLookup", 2);
 		taskEngine.registerTaskFactory(constructor, evaluator);
 		evaluationFrontend.addTaskEvaluator(constructor, evaluator);

@@ -22,7 +22,7 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationMatch implements ITaskFactory, ITaskEvaluator {
+public class RelationMatchTask implements ITaskFactory, ITaskEvaluator {
 	private IStrategoTerm current;
 
 
@@ -116,9 +116,9 @@ public class RelationMatch implements ITaskFactory, ITaskEvaluator {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationMatch", 2);
 	}
 
-	public static RelationMatch register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+	public static RelationMatchTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
 		ITermFactory factory) {
-		final RelationMatch evaluator = new RelationMatch();
+		final RelationMatchTask evaluator = new RelationMatchTask();
 		final IStrategoConstructor constructor = factory.makeConstructor("RelationMatch", 2);
 		taskEngine.registerTaskFactory(constructor, evaluator);
 		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
