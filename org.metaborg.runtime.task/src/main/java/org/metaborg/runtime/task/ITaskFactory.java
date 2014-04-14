@@ -1,7 +1,7 @@
 package org.metaborg.runtime.task;
 
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public interface ITaskFactory {
 	/**
@@ -12,7 +12,7 @@ public interface ITaskFactory {
 	/**
 	 * Creates a task.
 	 */
-	public abstract ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
+	public abstract ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type,
 		boolean shortCircuit);
 
 	/**

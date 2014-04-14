@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.engine.TaskEngineFactory;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -16,9 +17,9 @@ public class TaskEngineTest extends TaskTest {
 	private final IStrategoString partition1 = str("String.java");
 	private final IStrategoString partition2 = str("Integer.java");
 
-	private final IStrategoTerm resolveInstruction = resolve("Java", segment("Package", "java"),
+	private final IStrategoAppl resolveInstruction = resolve("Java", segment("Package", "java"),
 		segment("Package", "util"), segment("Class", "String"));
-	private final IStrategoTerm resolveImportInstruction = resolveImport("Java", segment("Package", "java"),
+	private final IStrategoAppl resolveImportInstruction = resolveImport("Java", segment("Package", "java"),
 		segment("Package", "util"), segment("Class", "String"));
 
 	@Before
@@ -37,7 +38,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
@@ -89,7 +90,7 @@ public class TaskEngineTest extends TaskTest {
 			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition1, dependencies(resolveResult, resolveImportResult), choiceInstruction,
 				TaskType.Combinator, false);
@@ -178,7 +179,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
@@ -221,7 +222,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
@@ -444,7 +445,7 @@ public class TaskEngineTest extends TaskTest {
 		assertNotSame(parent, current);
 
 		current.startCollection(partition2);
-		final IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		final IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		final IStrategoTerm choiceResult =
 			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
 				TaskType.Combinator, false);
@@ -492,7 +493,7 @@ public class TaskEngineTest extends TaskTest {
 		assertNotSame(parent, current);
 
 		current.startCollection(partition2);
-		final IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		final IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		final IStrategoTerm choiceResult =
 			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
 				TaskType.Combinator, false);

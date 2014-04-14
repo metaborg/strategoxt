@@ -73,7 +73,7 @@ public class TaskEngineFactory {
 			int i = -1;
 
 			final IStrategoTerm taskID = taskTerm.getSubterm(++i);
-			final IStrategoTerm instruction = taskTerm.getSubterm(++i);
+			final IStrategoAppl instruction = (IStrategoAppl) taskTerm.getSubterm(++i);
 			final IStrategoList initialDependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoInt type = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoInt shortCircuit = (IStrategoInt) taskTerm.getSubterm(++i);
@@ -89,12 +89,11 @@ public class TaskEngineFactory {
 			final IStrategoList dynamicDependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoList reads = (IStrategoList) taskTerm.getSubterm(++i);
 
-			// TODO: instruction should always be an appl, change the interface.
 			final ITask task =
-				taskEngine.getTaskFactory((IStrategoAppl) instruction).create(instruction, dynamicDependencies,
+				taskEngine.getTaskFactory(instruction).create(instruction, dynamicDependencies,
 					TaskType.get(type.intValue()), takeBool(shortCircuit));
 			if(!isNull(instructionOverride))
-				task.overrideInstruction(instructionOverride);
+				task.overrideInstruction((IStrategoAppl) instructionOverride);
 			if(!isNull(results))
 				task.results().set(results);
 			task.setStatus(TaskStatus.get(status.intValue()));

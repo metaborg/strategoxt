@@ -12,6 +12,7 @@ import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -24,7 +25,7 @@ public class RelationMatchTask implements ITaskFactory, ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		return new Task(instruction, dependencies, TaskType.Raw, shortCircuit, new SetTaskResults());
 	}
 

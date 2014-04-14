@@ -120,12 +120,12 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm createTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm createTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		return current.createTaskID(instruction, dependencies);
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
 		TaskType type, boolean shortCircuit) {
 		return current.addTask(source, dependencies, instruction, type, shortCircuit);
 	}
@@ -209,7 +209,7 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm getTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		IStrategoTerm taskID = current.getTaskID(instruction, dependencies);
 		if(taskID == null) // TODO: this disregards the visibility of the task in the parent, is that OK?
 			taskID = parent.getTaskID(instruction, dependencies);

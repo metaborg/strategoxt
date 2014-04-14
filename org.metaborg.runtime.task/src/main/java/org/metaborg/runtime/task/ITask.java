@@ -1,16 +1,17 @@
 package org.metaborg.runtime.task;
 
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public interface ITask {
-	public abstract IStrategoTerm instruction();
+	public abstract IStrategoAppl instruction();
 
-	public abstract void overrideInstruction(IStrategoTerm newInstruction);
+	public abstract void overrideInstruction(IStrategoAppl newInstruction);
 
-	public abstract IStrategoTerm instructionOverride();
+	public abstract IStrategoAppl instructionOverride();
 
-	public abstract IStrategoTerm initialInstruction();
+	public abstract IStrategoAppl initialInstruction();
 
 	public abstract void clearInstructionOverride();
 

@@ -41,7 +41,7 @@ public final class TermTools {
 
 
 	public static IStrategoInt makeShort(ITermFactory factory, short num) {
-		return factory.makeInt((int) num);
+		return factory.makeInt(num);
 	}
 
 	public static short takeShort(IStrategoTerm term) {
@@ -59,6 +59,6 @@ public final class TermTools {
 	public static long takeLong(IStrategoTerm term) {
 		if(term.getTermType() != IStrategoTerm.INT)
 			return 0;
-		return (long) ((IStrategoInt) term).intValue();
+		return ((IStrategoInt) term).intValue();
 	}
 }

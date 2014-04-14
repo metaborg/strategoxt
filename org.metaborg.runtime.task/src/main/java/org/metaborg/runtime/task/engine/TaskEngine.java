@@ -47,7 +47,7 @@ public class TaskEngine implements ITaskEngine {
 	private final BiMap<IStrategoTerm, ITask> toTask = HashBiMap.create();
 
 	/** Mapping table of instructions and dependencies to task identifiers. */
-	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
+	private final Table<IStrategoAppl, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
 
 
 	/** Origins of tasks. */
@@ -127,7 +127,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm createTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm createTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		IStrategoTerm taskID = wrapper.getTaskID(instruction, dependencies);
 		if(taskID != null)
 			return taskID;
@@ -146,14 +146,13 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
 		TaskType type, boolean shortCircuit) {
 		if(!taskCollection.inCollection(source))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		// TODO: instruction should always be an appl, change the interface.
-		final ITaskFactory taskFactory = getTaskFactory((IStrategoAppl) instruction);
+		final ITaskFactory taskFactory = getTaskFactory(instruction);
 
 		dependencies = taskFactory.adjustDependencies(dependencies);
 
@@ -237,7 +236,7 @@ public class TaskEngine implements ITaskEngine {
 
 	/**
 	 * Schedules task with given identifier for evaluation the next time {@link #evaluate} is called.
-	 * 
+	 *
 	 * @param taskID The identifier of the task to schedule.
 	 */
 	private void schedule(IStrategoTerm taskID) {
@@ -251,8 +250,7 @@ public class TaskEngine implements ITaskEngine {
 			task = wrapper.getTask(taskID);
 			if(task == null)
 				throw new RuntimeException("Cannot invalidate task that does not exist: " + taskID);
-			// TODO: instruction should always be an appl, change the interface.
-			final ITaskFactory taskFactory = getTaskFactory((IStrategoAppl) task.initialInstruction());
+			final ITaskFactory taskFactory = getTaskFactory(task.initialInstruction());
 			task = taskFactory.clone(task);
 			toTask.put(taskID, task);
 		}
@@ -323,7 +321,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm getTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		return toTaskID.get(instruction, dependencies);
 	}
 

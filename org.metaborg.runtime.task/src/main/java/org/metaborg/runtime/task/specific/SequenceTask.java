@@ -56,7 +56,7 @@ public class SequenceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		return new Task(instruction, dependencies, type, shortCircuit, new ListTaskResults());
 	}
 

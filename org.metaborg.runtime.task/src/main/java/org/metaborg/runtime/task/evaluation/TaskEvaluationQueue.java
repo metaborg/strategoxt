@@ -123,7 +123,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	public void delayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
-		currentDelayed = true; // TODO: set this false somewhere
+		currentDelayed = true;
 
 		// Sets the runtime dependencies for a task to the given dependency list.
 		runtimeDependencies.removeAll(taskID);
@@ -314,8 +314,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			// overwrite previous data.
 			taskEngine.invalidate(taskID);
 
-			// TODO: instruction should always be an appl, change the interface.
-			final ITaskEvaluator taskEvaluator = getTaskEvaluator((IStrategoAppl) task.instruction());
+			final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
 			taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform, cycle);
 
 			if(currentDelayed) {

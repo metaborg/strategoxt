@@ -6,9 +6,9 @@ import org.metaborg.runtime.task.SetTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
-import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
 public class RelationLookupTask implements ITaskFactory {
@@ -18,7 +18,7 @@ public class RelationLookupTask implements ITaskFactory {
 	}
 
 	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		// TODO: only thing this does is use a set, this should be done from the Stratego library instead.
 		return new Task(instruction, dependencies, type, shortCircuit, new SetTaskResults());
 	}

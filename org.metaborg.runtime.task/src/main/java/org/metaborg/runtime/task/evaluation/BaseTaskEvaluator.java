@@ -120,7 +120,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
 			if(resultAppl.getConstructor().equals(higherOrderConstructor)) {
 				// The task is a higher order task and has produced new tasks.
-				IStrategoTerm newInstruction = resultAppl.getSubterm(0);
+				IStrategoAppl newInstruction = (IStrategoAppl) resultAppl.getSubterm(0);
 				IStrategoTerm createdTasks = resultAppl.getSubterm(1);
 
 				task.overrideInstruction(newInstruction);

@@ -25,12 +25,12 @@ public class BaseTaskFactory implements ITaskFactory {
 	}
 
 	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		// HACK: create set task for insert and combine instructions that consist of only set tasks.
 		// TODO: should be factored out.
 		final ITaskResults taskResults;
-		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor((IStrategoAppl) instruction, "Insert", 1))
-			|| (Tools.hasConstructor((IStrategoAppl) instruction, "Combine", 1))) {
+		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor(instruction, "Insert", 1))
+			|| (Tools.hasConstructor(instruction, "Combine", 1))) {
 			IStrategoTerm innerResults = instruction.getSubterm(0);
 			if(innerResults.getTermType() != IStrategoTerm.LIST)
 				innerResults = factory.makeList(innerResults);

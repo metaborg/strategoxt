@@ -1,23 +1,24 @@
 package org.metaborg.runtime.task;
 
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public class Task implements ITask {
-	private final IStrategoTerm instruction;
+	private final IStrategoAppl instruction;
 	private final IStrategoList initialDependencies;
 	// TODO: move these to task (type) definition, this is wasting space.
 	private final TaskType type;
 	private final boolean shortCircuit;
 	private final ITaskResults results;
 
-	private IStrategoTerm instructionOverride = null;
+	private IStrategoAppl instructionOverride = null;
 	private TaskStatus status = TaskStatus.Unknown;
 	private IStrategoTerm message;
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit,
+	public Task(IStrategoAppl instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit,
 		ITaskResults results) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
@@ -41,24 +42,24 @@ public class Task implements ITask {
 	}
 
 	@Override
-	public IStrategoTerm instruction() {
+	public IStrategoAppl instruction() {
 		if(instructionOverride == null)
 			return instruction;
 		return instructionOverride;
 	}
 
 	@Override
-	public void overrideInstruction(IStrategoTerm newInstruction) {
+	public void overrideInstruction(IStrategoAppl newInstruction) {
 		instructionOverride = newInstruction;
 	}
 
 	@Override
-	public IStrategoTerm instructionOverride() {
+	public IStrategoAppl instructionOverride() {
 		return instructionOverride;
 	}
 
 	@Override
-	public IStrategoTerm initialInstruction() {
+	public IStrategoAppl initialInstruction() {
 		return instruction;
 	}
 
