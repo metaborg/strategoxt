@@ -6,13 +6,12 @@ import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.SetTaskResults;
 import org.metaborg.runtime.task.Task;
-import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.evaluation.BaseTaskEvaluator;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
-import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
@@ -22,8 +21,12 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationMatchEvaluator implements ITaskFactory, ITaskEvaluator {
-	private IStrategoTerm current;
+public class RelationLookup implements ITaskFactory, ITaskEvaluator {
+	private BaseTaskEvaluator evaluator;
+
+	public RelationLookup(ITermFactory factory) {
+		this.evaluator = new BaseTaskEvaluator(factory);
+	}
 
 
 	@Override
@@ -33,7 +36,7 @@ public class RelationMatchEvaluator implements ITaskFactory, ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new Task(instruction, dependencies, TaskType.Raw, shortCircuit, new SetTaskResults());
+		return new Task(instruction, dependencies, type, shortCircuit, new SetTaskResults());
 	}
 
 	@Override
@@ -46,7 +49,7 @@ public class RelationMatchEvaluator implements ITaskFactory, ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(isRelationMatch(task.instruction())) {
+			if(isRelationLookup(task.instruction())) {
 				evaluationQueue.queueOrDefer(taskID);
 			}
 		}
@@ -55,71 +58,39 @@ public class RelationMatchEvaluator implements ITaskFactory, ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue);
+		evaluator.evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
 	}
 
 	@Override
 	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue);
-	}
-
-	private void
-		evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue) {
-		current = taskID;
-		try {
-			final IStrategoTerm instruction = task.instruction();
-			final IStrategoTerm lookupTaskID = instruction.getSubterm(0).getSubterm(0);
-			final SetTaskResults lookupTaskResults = (SetTaskResults) taskEngine.getTask(lookupTaskID).results();
-			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
-			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
-
-			task.setFailed();
-			for(IStrategoTerm expectedTermTuple : expectedTermTask.results()) {
-				final IStrategoTerm regularTerm = expectedTermTuple.getSubterm(0);
-				if(lookupTaskResults.contains(regularTerm)) {
-					task.results().add(regularTerm);
-					task.setStatus(TaskStatus.Success);
-					return;
-				}
-
-				final IStrategoTerm uriTerm = expectedTermTuple.getSubterm(1);
-				if(lookupTaskResults.contains(uriTerm)) {
-					task.results().add(uriTerm);
-					task.setStatus(TaskStatus.Success);
-					return;
-				}
-			}
-		} finally {
-			evaluationQueue.taskSolved(taskID);
-			current = null;
-		}
+		evaluator.evaluateCyclic(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
 	}
 
 	@Override
 	public IStrategoTerm current() {
-		return current;
+		return evaluator.current();
 	}
 
 	@Override
 	public void delay() {
-		throw new NotImplementedException("Delaying a relation match task has not been implemented yet");
+		evaluator.delay();
 	}
 
 	@Override
 	public void reset() {
-		current = null;
+		evaluator.reset();
 	}
 
 
-	private static boolean isRelationMatch(IStrategoTerm instruction) {
-		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationMatch", 2);
+	private static boolean isRelationLookup(IStrategoTerm instruction) {
+		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationLookup", 2);
 	}
 
-	public static RelationMatchEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+	public static RelationLookup register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
 		ITermFactory factory) {
-		final RelationMatchEvaluator evaluator = new RelationMatchEvaluator();
-		final IStrategoConstructor constructor = factory.makeConstructor("RelationMatch", 2);
+		final RelationLookup evaluator = new RelationLookup(factory);
+		final IStrategoConstructor constructor = factory.makeConstructor("RelationLookup", 2);
 		taskEngine.registerTaskFactory(constructor, evaluator);
 		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
 		return evaluator;

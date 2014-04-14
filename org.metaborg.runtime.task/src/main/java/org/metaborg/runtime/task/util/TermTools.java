@@ -8,12 +8,12 @@ import org.spoofax.interpreter.terms.ITermFactory;
 import com.google.common.collect.ImmutableList;
 
 public final class TermTools {
-    public static IStrategoList makeList(ITermFactory factory, Iterable<? extends IStrategoTerm> terms) {
-    	IStrategoList list = factory.makeList();
+	public static IStrategoList makeList(ITermFactory factory, Iterable<? extends IStrategoTerm> terms) {
+		IStrategoList list = factory.makeList();
 		for(IStrategoTerm term : ImmutableList.copyOf(terms).reverse())
-    		list = factory.makeListCons(term, list);
-    	return list;
-    }
+			list = factory.makeListCons(term, list);
+		return list;
+	}
 
 
 	public static IStrategoTerm makeBool(ITermFactory factory, boolean bool) {

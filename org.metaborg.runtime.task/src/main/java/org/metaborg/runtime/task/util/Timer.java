@@ -26,7 +26,7 @@ public class Timer {
 	public long stop() {
 		return time() - startTime;
 	}
-	
+
 	public void reset() {
 		startTime = 0;
 	}

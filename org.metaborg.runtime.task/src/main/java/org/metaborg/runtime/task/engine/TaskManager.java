@@ -9,11 +9,11 @@ import java.util.Map;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
+import org.metaborg.runtime.task.evaluation.BaseTaskEvaluator;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
-import org.metaborg.runtime.task.specific.BaseTaskEvaluator;
-import org.metaborg.runtime.task.specific.RelationLookupEvaluator;
-import org.metaborg.runtime.task.specific.RelationMatchEvaluator;
+import org.metaborg.runtime.task.specific.RelationLookup;
+import org.metaborg.runtime.task.specific.RelationMatch;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -143,8 +143,8 @@ public class TaskManager {
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
 		final ITaskEvaluationFrontend taskEvaluationFrontend =
 			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
-		RelationLookupEvaluator.register(taskEngine, taskEvaluationFrontend, factory);
-		RelationMatchEvaluator.register(taskEngine, taskEvaluationFrontend, factory);
+		RelationLookup.register(taskEngine, taskEvaluationFrontend, factory);
+		RelationMatch.register(taskEngine, taskEvaluationFrontend, factory);
 		return taskEvaluationFrontend;
 	}
 

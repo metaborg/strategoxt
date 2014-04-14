@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class SequenceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
+public class SequenceTask implements ITaskFactory, ITaskEvaluator {
 	private final ITermFactory factory;
 
 	/**
@@ -45,7 +45,7 @@ public class SequenceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
-	public SequenceTaskEvaluator(ITermFactory factory) {
+	public SequenceTask(ITermFactory factory) {
 		this.factory = factory;
 	}
 
@@ -70,7 +70,7 @@ public class SequenceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
+			if(SequenceTask.isSequence(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
 		}
@@ -242,7 +242,7 @@ public class SequenceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final ITask task = taskEngine.getTask(queueTaskID);
-			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
+			if(SequenceTask.isSequence(task.instruction())) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
@@ -260,9 +260,9 @@ public class SequenceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Sequence", 1);
 	}
 
-	public static SequenceTaskEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+	public static SequenceTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
 		ITermFactory factory) {
-		final SequenceTaskEvaluator evaluator = new SequenceTaskEvaluator(factory);
+		final SequenceTask evaluator = new SequenceTask(factory);
 		final IStrategoConstructor constructor = factory.makeConstructor("Sequence", 1);
 		taskEngine.registerTaskFactory(constructor, evaluator);
 		evaluationFrontend.addTaskEvaluator(constructor, evaluator);

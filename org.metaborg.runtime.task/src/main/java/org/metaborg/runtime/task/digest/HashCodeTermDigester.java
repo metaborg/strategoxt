@@ -8,20 +8,20 @@ public class HashCodeTermDigester implements ITermDigester {
 		final int prime = 31;
 		int result = 1;
 		for(IStrategoTerm term : terms) {
-		    result = result * prime + term.hashCode();
+			result = result * prime + term.hashCode();
 		}
 		return factory.makeInt(result);
 	}
-	
+
 	public IStrategoTerm state(ITermFactory factory) {
 		return factory.makeInt(0);
 	}
-	
+
 	public void setState(IStrategoTerm state) {
-		
+
 	}
-	
+
 	public void reset() {
-		
+
 	}
 }

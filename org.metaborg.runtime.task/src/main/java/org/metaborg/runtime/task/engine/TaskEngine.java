@@ -237,7 +237,7 @@ public class TaskEngine implements ITaskEngine {
 
 	/**
 	 * Schedules task with given identifier for evaluation the next time {@link #evaluate} is called.
-	 *
+	 * 
 	 * @param taskID The identifier of the task to schedule.
 	 */
 	private void schedule(IStrategoTerm taskID) {

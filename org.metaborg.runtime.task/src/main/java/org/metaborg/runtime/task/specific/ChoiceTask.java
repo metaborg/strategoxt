@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class ChoiceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
+public class ChoiceTask implements ITaskFactory, ITaskEvaluator {
 	private final ITermFactory factory;
 
 	/**
@@ -44,7 +44,7 @@ public class ChoiceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
-	public ChoiceTaskEvaluator(ITermFactory factory) {
+	public ChoiceTask(ITermFactory factory) {
 		this.factory = factory;
 	}
 
@@ -69,7 +69,7 @@ public class ChoiceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(ChoiceTaskEvaluator.isChoice(task.instruction())) {
+			if(ChoiceTask.isChoice(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
 		}
@@ -237,7 +237,7 @@ public class ChoiceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final ITask task = taskEngine.getTask(queueTaskID);
-			if(ChoiceTaskEvaluator.isChoice(task.instruction())) {
+			if(ChoiceTask.isChoice(task.instruction())) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
@@ -255,9 +255,9 @@ public class ChoiceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Choice", 1);
 	}
 
-	public static ChoiceTaskEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+	public static ChoiceTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
 		ITermFactory factory) {
-		final ChoiceTaskEvaluator evaluator = new ChoiceTaskEvaluator(factory);
+		final ChoiceTask evaluator = new ChoiceTask(factory);
 		final IStrategoConstructor constructor = factory.makeConstructor("Choice", 1);
 		taskEngine.registerTaskFactory(constructor, evaluator);
 		evaluationFrontend.addTaskEvaluator(constructor, evaluator);

@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.specific;
+package org.metaborg.runtime.task.evaluation;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
@@ -8,9 +8,6 @@ import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.engine.ITaskEngine;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
-import org.metaborg.runtime.task.evaluation.TaskResultType;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;

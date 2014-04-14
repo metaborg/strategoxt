@@ -6,7 +6,7 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 public class NonDeterministicCountingTermDigester implements ITermDigester {
 	private static int RESET_COUNT = 0;
-	
+
 	public int count = RESET_COUNT;
 
 	public IStrategoTerm digest(ITermFactory factory, IStrategoTerm... terms) {
