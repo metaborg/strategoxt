@@ -6,6 +6,7 @@ import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.SetTaskResults;
 import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
@@ -74,12 +75,14 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 				final IStrategoTerm regularTerm = expectedTermTuple.getSubterm(0);
 				if(lookupTaskResults.contains(regularTerm)) {
 					task.results().add(regularTerm);
+					task.setStatus(TaskStatus.Success);
 					return;
 				}
 
 				final IStrategoTerm uriTerm = expectedTermTuple.getSubterm(1);
 				if(lookupTaskResults.contains(uriTerm)) {
 					task.results().add(uriTerm);
+					task.setStatus(TaskStatus.Success);
 					return;
 				}
 			}
