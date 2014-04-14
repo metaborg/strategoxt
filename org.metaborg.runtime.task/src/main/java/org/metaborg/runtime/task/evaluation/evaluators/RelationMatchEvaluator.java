@@ -4,7 +4,8 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.SetTask;
+import org.metaborg.runtime.task.SetTaskResults;
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
@@ -28,12 +29,12 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new SetTask(instruction, dependencies, TaskType.Raw, shortCircuit);
+		return new Task(instruction, dependencies, TaskType.Raw, shortCircuit, new SetTaskResults());
 	}
 
 	@Override
 	public ITask create(ITask task) {
-		return new SetTask((SetTask) task);
+		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
 
 	@Override
@@ -64,21 +65,21 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 		try {
 			final IStrategoTerm instruction = task.instruction();
 			final IStrategoTerm lookupTaskID = instruction.getSubterm(0).getSubterm(0);
-			final SetTask lookupTask = (SetTask) taskEngine.getTask(lookupTaskID);
+			final SetTaskResults lookupTask = (SetTaskResults) taskEngine.getTask(lookupTaskID);
 			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
 			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
 
 			task.setFailed();
-			for(IStrategoTerm expectedTermTuple : expectedTermTask.results()) {
+			for(IStrategoTerm expectedTermTuple : expectedTermTask.results().results()) {
 				final IStrategoTerm regularTerm = expectedTermTuple.getSubterm(0);
 				if(lookupTask.hasResult(regularTerm)) {
-					task.addResult(regularTerm);
+					task.results().addResult(regularTerm);
 					return;
 				}
 
 				final IStrategoTerm uriTerm = expectedTermTuple.getSubterm(1);
 				if(lookupTask.hasResult(uriTerm)) {
-					task.addResult(uriTerm);
+					task.results().addResult(uriTerm);
 					return;
 				}
 			}

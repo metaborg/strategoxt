@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.ListTask;
+import org.metaborg.runtime.task.ListTaskResults;
+import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
@@ -44,12 +46,12 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new ListTask(instruction, dependencies, type, shortCircuit);
+		return new Task(instruction, dependencies, type, shortCircuit, new ListTaskResults());
 	}
 
 	@Override
 	public ITask create(ITask task) {
-		return new ListTask((ListTask) task);
+		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 				// TODO: why do we need to check if the subtask has results?
 				final ITask subtask = taskEngine.getTask(subtaskID);
-				if(!subtask.failed() && subtask.hasResults()) {
+				if(!subtask.failed() && subtask.results().hasResults()) {
 					choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 					return;
 				}
@@ -171,7 +173,8 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private void choiceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
-		task.setResults(subtask.results());
+		task.results().setResults(subtask.results().results());
+		task.setStatus(TaskStatus.Success);
 		evaluationQueue.taskSolved(taskID);
 		cleanupChoice(taskID, taskEngine, evaluationQueue);
 		return;

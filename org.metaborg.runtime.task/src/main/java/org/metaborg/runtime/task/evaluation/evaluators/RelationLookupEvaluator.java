@@ -4,7 +4,8 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.SetTask;
+import org.metaborg.runtime.task.SetTaskResults;
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
@@ -31,12 +32,12 @@ public class RelationLookupEvaluator implements ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new SetTask(instruction, dependencies, TaskType.Regular, shortCircuit);
+		return new Task(instruction, dependencies, type, shortCircuit, new SetTaskResults());
 	}
 
 	@Override
 	public ITask create(ITask task) {
-		return new SetTask((SetTask) task);
+		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class task_api_get_results_0_1 extends AbstractPrimitive {
 		final ITask task = taskEngine.getTask(taskID);
 		if(task == null || !task.solved())
 			return false;
-		env.setCurrent(makeList(env.getFactory(), task.results()));
+		env.setCurrent(makeList(env.getFactory(), task.results().results()));
 		return true;
 	}
 }

@@ -8,10 +8,13 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.ListTask;
-import org.metaborg.runtime.task.SetTask;
+import org.metaborg.runtime.task.ITaskResults;
+import org.metaborg.runtime.task.ListTaskResults;
+import org.metaborg.runtime.task.SetTaskResults;
+import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskManager;
+import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
@@ -59,6 +62,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
 		// HACK: create set task for insert and combine instructions that consist of only set tasks.
 		// TODO: should be factored out.
+		final ITaskResults taskResults;
 		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor((IStrategoAppl) instruction, "Insert", 1))
 			|| (Tools.hasConstructor((IStrategoAppl) instruction, "Combine", 1))) {
 			IStrategoTerm innerResults = instruction.getSubterm(0);
@@ -75,20 +79,24 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			boolean set = results.size() != 0;
 			for(IStrategoTerm taskID : results) {
 				final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
-				set = (task instanceof SetTask) && set;
+				set = (task instanceof SetTaskResults) && set;
 			}
 
 			if(set) {
-				return new SetTask(instruction, dependencies, type, shortCircuit);
+				taskResults = new SetTaskResults();
+			} else {
+				taskResults = new ListTaskResults();
 			}
+		} else {
+			taskResults = new ListTaskResults();
 		}
 
-		return new ListTask(instruction, dependencies, type, shortCircuit);
+		return new Task(instruction, dependencies, type, shortCircuit, taskResults);
 	}
 
 	@Override
 	public ITask create(ITask task) {
-		return new ListTask((ListTask) task);
+		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
 
 	@Override
@@ -241,16 +249,19 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				return TaskResultType.Fail;
 			} else {
 				// Treat as single result.
-				task.addResult(result);
+				task.results().addResult(result);
+				task.setStatus(TaskStatus.Success);
 				return TaskResultType.Success;
 			}
 		} else if(Tools.isTermList(result)) {
 			// The task produced multiple results.
-			task.addResults(result);
+			task.results().addResults(result);
+			task.setStatus(TaskStatus.Success);
 			return TaskResultType.Success;
 		} else {
 			// The task produced a single result.
-			task.addResult(result);
+			task.results().addResult(result);
+			task.setStatus(TaskStatus.Success);
 			return TaskResultType.Success;
 		}
 	}
