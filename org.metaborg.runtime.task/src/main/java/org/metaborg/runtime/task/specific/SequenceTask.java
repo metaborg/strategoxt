@@ -79,7 +79,8 @@ public class SequenceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle) {
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
 			iter = task.instruction().getSubterm(0).iterator();
@@ -124,12 +125,6 @@ public class SequenceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 			evaluationQueue.addRuntimeDependency(taskID, subtaskID);
 			return;
 		}
-	}
-
-	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
 	}
 
 	@Override

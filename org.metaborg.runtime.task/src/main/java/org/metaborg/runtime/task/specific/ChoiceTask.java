@@ -78,7 +78,8 @@ public class ChoiceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle) {
 		// Handle the result of a choice task.
 		{
 			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);
@@ -135,12 +136,6 @@ public class ChoiceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 			evaluationQueue.addRuntimeDependency(taskID, subtaskID);
 			return;
 		}
-	}
-
-	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
 	}
 
 	@Override

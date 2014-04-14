@@ -36,19 +36,8 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
-	}
-
-	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
-	}
-
-	private void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
-		boolean cyclic) {
+		boolean cycle) {
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task, false);
 
@@ -65,7 +54,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		boolean failure = true;
 		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
-				if(cyclic)
+				if(cycle)
 					instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
 
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);

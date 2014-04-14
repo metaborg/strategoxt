@@ -174,12 +174,12 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			// Queue tasks and evaluate them for each specific task evaluator.
 			for(ITaskQueuer taskQueuer : taskQueuers.values()) {
 				taskQueuer.queue(taskEngine, this, this.scheduled);
-				evaluateQueuedTasks(context, collect, insert, perform);
+				evaluateQueuedTasks(context, collect, insert, perform, false);
 			}
 
 			// Evaluate the remaining tasks with the default task evaluator.
 			baseTaskQueuer.queue(taskEngine, this, this.scheduled);
-			evaluateQueuedTasks(context, collect, insert, perform);
+			evaluateQueuedTasks(context, collect, insert, perform, false);
 
 			if(!this.scheduled.isEmpty()) {
 				evaluateCyclic(context, collect, insert, perform);
@@ -206,7 +206,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		for(final IStrategoTerm taskID : taskIDs) {
 			queue(taskID);
 		}
-		evaluateCyclicTasks(context, collect, insert, perform);
+		evaluateQueuedTasks(context, collect, insert, perform, true);
 
 		// Store values
 		final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
@@ -224,7 +224,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			for(final IStrategoTerm taskID : taskIDs) {
 				queue(taskID);
 			}
-			evaluateCyclicTasks(context, collect, insert, perform);
+			evaluateQueuedTasks(context, collect, insert, perform, true);
 
 			// Compare values
 			boolean done = true;
@@ -297,7 +297,8 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	/**
 	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
 	 */
-	private void evaluateQueuedTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+	private void evaluateQueuedTasks(IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
 			currentTaskID = taskID;
@@ -315,39 +316,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 			// TODO: instruction should always be an appl, change the interface.
 			final ITaskEvaluator taskEvaluator = getTaskEvaluator((IStrategoAppl) task.instruction());
-			taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
-
-			if(currentDelayed) {
-				taskEngine.invalidate(taskID);
-			}
-
-			currentTaskID = null;
-			currentDelayed = false;
-		}
-	}
-
-	/**
-	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
-	 */
-	private void evaluateCyclicTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		// Evaluate each task in the queue.
-		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-			currentTaskID = taskID;
-			currentDelayed = false;
-
-			final ITask task = taskEngine.getTask(taskID);
-
-			evaluated.add(taskID);
-			scheduled.remove(taskID);
-			queued.remove(taskID);
-
-			// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
-			// overwrite previous data.
-			taskEngine.invalidate(taskID);
-
-			// TODO: instruction should always be an appl, change the interface.
-			final ITaskEvaluator taskEvaluator = getTaskEvaluator((IStrategoAppl) task.instruction());
-			taskEvaluator.evaluateCyclic(taskID, task, taskEngine, this, context, collect, insert, perform);
+			taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform, cycle);
 
 			if(currentDelayed) {
 				taskEngine.invalidate(taskID);

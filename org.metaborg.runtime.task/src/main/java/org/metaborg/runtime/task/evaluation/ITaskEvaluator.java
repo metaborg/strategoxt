@@ -14,13 +14,8 @@ public interface ITaskEvaluator {
 	 * Evaluates given task.
 	 */
 	public abstract void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
-
-	/**
-	 * Evaluates given cyclic task.
-	 */
-	public abstract void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform);
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle);
 
 	/**
 	 * Resets the task evaluator to its initial state.
