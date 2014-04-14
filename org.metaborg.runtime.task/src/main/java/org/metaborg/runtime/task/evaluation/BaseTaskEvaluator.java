@@ -2,8 +2,6 @@ package org.metaborg.runtime.task.evaluation;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
-import java.util.Set;
-
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskStatus;
@@ -25,12 +23,6 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final IStrategoConstructor higherOrderFailConstructor;
 
 
-	/** Task identifier of the task that is currently being evaluated. **/
-	private IStrategoTerm current = null;
-
-	/** Flag indicating if the current task has been delayed. **/
-	private boolean delayed = false;
-
 	/** Timer for measuring task time. **/
 	private final Timer timer = new Timer();
 
@@ -41,14 +33,6 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		this.higherOrderFailConstructor = factory.makeConstructor("HigherOrderFail", 1);
 	}
 
-
-	@Override
-	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
-		// Queue or defer evaluation for all scheduled tasks.
-		for(final IStrategoTerm taskID : scheduled) {
-			evaluationQueue.queueOrDefer(taskID);
-		}
-	}
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
@@ -65,15 +49,12 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	private void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
 		boolean cyclic) {
-		delayed = false;
-		current = taskID;
-
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task, false);
 
 		if(combinations != null && combinations._2()) {
 			// Inserting results failed because some tasks were not solved yet.
-			evaluationQueue.delay(taskID, combinations._1());
+			evaluationQueue.delayed(taskID, combinations._1());
 			return;
 		}
 
@@ -104,14 +85,14 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						break;
 				}
 
-				if(done || delayed)
+				if(done || evaluationQueue.isDelayed())
 					break;
 			}
 		}
 
-		if(!higherOrder && !delayed) {
+		if(!higherOrder && !evaluationQueue.isDelayed()) {
 			// Try to schedule new tasks even for failed tasks since they may activate combinators.
-			evaluationQueue.taskSolved(taskID);
+			evaluationQueue.solved(taskID);
 
 			if(failure)
 				if(!execute)
@@ -119,28 +100,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				else
 					task.setFailed();
 		}
-
-		if(delayed) {
-			taskEngine.invalidate(taskID);
-		}
-
-		delayed = false;
-		current = null;
-	}
-
-	@Override
-	public IStrategoTerm current() {
-		return current;
-	}
-
-	@Override
-	public void delay() {
-		delayed = true;
 	}
 
 	@Override
 	public void reset() {
-		delayed = false;
 		timer.reset();
 	}
 
@@ -177,7 +140,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 					evaluationQueue.queueOrDefer(createdTaskID);
 
 				if(createdTasks.iterator().hasNext()) {
-					evaluationQueue.delay(taskID, createdTasks);
+					evaluationQueue.delayed(taskID, createdTasks);
 				} else {
 					evaluationQueue.queue(taskID);
 				}

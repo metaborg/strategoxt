@@ -1,34 +1,17 @@
 package org.metaborg.runtime.task.specific;
 
-import java.util.Set;
-
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.SetTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
-import org.metaborg.runtime.task.evaluation.BaseTaskEvaluator;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
-import org.spoofax.interpreter.core.IContext;
-import org.spoofax.interpreter.core.Tools;
-import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationLookupTask implements ITaskFactory, ITaskEvaluator {
-	private BaseTaskEvaluator evaluator;
-
-	public RelationLookupTask(ITermFactory factory) {
-		this.evaluator = new BaseTaskEvaluator(factory);
-	}
-
-
+public class RelationLookupTask implements ITaskFactory {
 	@Override
 	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return dependencies;
@@ -36,6 +19,7 @@ public class RelationLookupTask implements ITaskFactory, ITaskEvaluator {
 
 	@Override
 	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		// TODO: only thing this does is use a set, this should be done from the Stratego library instead.
 		return new Task(instruction, dependencies, type, shortCircuit, new SetTaskResults());
 	}
 
@@ -45,54 +29,10 @@ public class RelationLookupTask implements ITaskFactory, ITaskEvaluator {
 	}
 
 
-	@Override
-	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
-		for(IStrategoTerm taskID : scheduled) {
-			final ITask task = taskEngine.getTask(taskID);
-			if(isRelationLookup(task.instruction())) {
-				evaluationQueue.queueOrDefer(taskID);
-			}
-		}
-	}
-
-	@Override
-	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluator.evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
-	}
-
-	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluator.evaluateCyclic(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
-	}
-
-	@Override
-	public IStrategoTerm current() {
-		return evaluator.current();
-	}
-
-	@Override
-	public void delay() {
-		evaluator.delay();
-	}
-
-	@Override
-	public void reset() {
-		evaluator.reset();
-	}
-
-
-	private static boolean isRelationLookup(IStrategoTerm instruction) {
-		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationLookup", 2);
-	}
-
-	public static RelationLookupTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
-		ITermFactory factory) {
-		final RelationLookupTask evaluator = new RelationLookupTask(factory);
+	public static RelationLookupTask register(ITaskEngine taskEngine, ITermFactory factory) {
+		final RelationLookupTask evaluator = new RelationLookupTask();
 		final IStrategoConstructor constructor = factory.makeConstructor("RelationLookup", 2);
 		taskEngine.registerTaskFactory(constructor, evaluator);
-		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
 		return evaluator;
 	}
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
-import org.metaborg.runtime.task.evaluation.BaseTaskEvaluator;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
 import org.metaborg.runtime.task.specific.RelationLookupTask;
@@ -141,9 +140,8 @@ public class TaskManager {
 	}
 
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
-		final ITaskEvaluationFrontend taskEvaluationFrontend =
-			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
-		RelationLookupTask.register(taskEngine, taskEvaluationFrontend, factory);
+		final ITaskEvaluationFrontend taskEvaluationFrontend = new TaskEvaluationQueue(taskEngine, factory);
+		RelationLookupTask.register(taskEngine, factory);
 		RelationMatchTask.register(taskEngine, taskEvaluationFrontend, factory);
 		return taskEvaluationFrontend;
 	}
