@@ -7,10 +7,12 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.ListTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.NotImplementedException;
@@ -18,6 +20,7 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -26,7 +29,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class ChoiceTaskEvaluator implements ITaskEvaluator {
+public class ChoiceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
+	private final ITermFactory factory;
+
 	/**
 	 * Maps task identifiers of choice tasks to an iterator that holds the next subtask inside the choice to evaluate.
 	 */
@@ -39,8 +44,13 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
+	public ChoiceTaskEvaluator(ITermFactory factory) {
+		this.factory = factory;
+	}
+
+
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return factory.makeList();
 	}
 
@@ -50,9 +60,10 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(ITask task) {
+	public ITask clone(ITask task) {
 		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
+
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
@@ -239,7 +250,17 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		return seen;
 	}
 
+
 	private static boolean isChoice(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Choice", 1);
+	}
+
+	public static ChoiceTaskEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+		ITermFactory factory) {
+		final ChoiceTaskEvaluator evaluator = new ChoiceTaskEvaluator(factory);
+		final IStrategoConstructor constructor = factory.makeConstructor("Choice", 1);
+		taskEngine.registerTaskFactory(constructor, evaluator);
+		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
+		return evaluator;
 	}
 }

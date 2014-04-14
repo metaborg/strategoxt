@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.SetTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskType;
@@ -14,19 +15,21 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationLookupEvaluator implements ITaskEvaluator {
+public class RelationLookupEvaluator implements ITaskFactory, ITaskEvaluator {
 	private BaseTaskEvaluator evaluator;
 
 	public RelationLookupEvaluator(ITermFactory factory) {
 		this.evaluator = new BaseTaskEvaluator(factory);
 	}
 
+
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return dependencies;
 	}
 
@@ -36,9 +39,10 @@ public class RelationLookupEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(ITask task) {
+	public ITask clone(ITask task) {
 		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
+
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
@@ -77,13 +81,17 @@ public class RelationLookupEvaluator implements ITaskEvaluator {
 		evaluator.reset();
 	}
 
+
 	private static boolean isRelationLookup(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationLookup", 2);
 	}
 
-	public static RelationLookupEvaluator register(ITaskEvaluationFrontend evaluationFrontend, ITermFactory factory) {
+	public static RelationLookupEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+		ITermFactory factory) {
 		final RelationLookupEvaluator evaluator = new RelationLookupEvaluator(factory);
-		evaluationFrontend.addTaskEvaluator(factory.makeConstructor("RelationLookup", 2), evaluator);
+		final IStrategoConstructor constructor = factory.makeConstructor("RelationLookup", 2);
+		taskEngine.registerTaskFactory(constructor, evaluator);
+		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
 		return evaluator;
 	}
 }

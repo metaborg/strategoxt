@@ -4,33 +4,14 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.TaskType;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
-import org.spoofax.interpreter.terms.ITermFactory;
 
 /**
  * Interface for evaluating individual tasks.
  */
 public interface ITaskEvaluator {
-	/**
-	 * Returns adjusted dependencies.
-	 */
-	public abstract IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory);
-
-	/**
-	 * Creates a task.
-	 */
-	public abstract ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
-		boolean shortCircuit);
-
-	/**
-	 * Clones a task.
-	 */
-	public abstract ITask create(ITask task);
-
 	/**
 	 * Queues task from given set of scheduled tasks.
 	 */

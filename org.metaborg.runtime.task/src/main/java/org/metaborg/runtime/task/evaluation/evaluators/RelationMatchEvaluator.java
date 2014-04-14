@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.SetTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskStatus;
@@ -16,15 +17,17 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationMatchEvaluator implements ITaskEvaluator {
+public class RelationMatchEvaluator implements ITaskFactory, ITaskEvaluator {
 	private IStrategoTerm current;
 
+
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return dependencies;
 	}
 
@@ -34,9 +37,10 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(ITask task) {
+	public ITask clone(ITask task) {
 		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
+
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
@@ -107,13 +111,17 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 		current = null;
 	}
 
-	public static boolean isRelationMatch(IStrategoTerm instruction) {
+
+	private static boolean isRelationMatch(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "RelationMatch", 2);
 	}
 
-	public static RelationMatchEvaluator register(ITaskEvaluationFrontend evaluationFrontend, ITermFactory factory) {
+	public static RelationMatchEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+		ITermFactory factory) {
 		final RelationMatchEvaluator evaluator = new RelationMatchEvaluator();
-		evaluationFrontend.addTaskEvaluator(factory.makeConstructor("RelationMatch", 2), evaluator);
+		final IStrategoConstructor constructor = factory.makeConstructor("RelationMatch", 2);
+		taskEngine.registerTaskFactory(constructor, evaluator);
+		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
 		return evaluator;
 	}
 }

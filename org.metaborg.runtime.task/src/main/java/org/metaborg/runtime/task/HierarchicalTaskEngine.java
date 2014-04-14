@@ -8,6 +8,8 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -75,10 +77,12 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 		};
 	}
 
+
 	@Override
 	public ITermDigester getDigester() {
 		return current.getDigester();
 	}
+
 
 	@Override
 	public ITaskEvaluationFrontend getEvaluationFrontend() {
@@ -89,6 +93,20 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	public void setEvaluationFrontend(ITaskEvaluationFrontend evaluator) {
 		current.setEvaluationFrontend(evaluator);
 		// TODO: also set in parent?
+	}
+
+
+	@Override
+	public ITaskFactory getTaskFactory(IStrategoAppl instruction) {
+		final ITaskFactory taskFactory = current.getTaskFactory(instruction);
+		if(taskFactory instanceof BaseTaskFactory)
+			return parent.getTaskFactory(instruction);
+		return taskFactory;
+	}
+
+	@Override
+	public void registerTaskFactory(IStrategoConstructor constructor, ITaskFactory factory) {
+		current.registerTaskFactory(constructor, factory);
 	}
 
 

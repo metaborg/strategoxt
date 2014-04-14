@@ -7,6 +7,8 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -15,6 +17,7 @@ public interface ITaskEngine {
 	 * Returns the term digester.
 	 */
 	public abstract ITermDigester getDigester();
+
 
 	/**
 	 * Returns the task evaluation frontend.
@@ -25,6 +28,22 @@ public interface ITaskEngine {
 	 * Sets the task evaluation frontend.
 	 */
 	public abstract void setEvaluationFrontend(ITaskEvaluationFrontend evaluator);
+
+
+	/**
+	 * Gets the task factory for given instruction.
+	 *
+	 * @param instruction The instruction
+	 */
+	public abstract ITaskFactory getTaskFactory(IStrategoAppl instruction);
+
+	/**
+	 * Registers a task factory for given instruction constructor.
+	 *
+	 * @param constructor The constructor of the instruction to activate given factory for.
+	 * @param factory The task factory
+	 */
+	public abstract void registerTaskFactory(IStrategoConstructor constructor, ITaskFactory factory);
 
 
 	/**

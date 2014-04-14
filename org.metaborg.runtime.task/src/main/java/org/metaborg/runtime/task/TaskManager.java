@@ -143,10 +143,8 @@ public class TaskManager {
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
 		final ITaskEvaluationFrontend taskEvaluationFrontend =
 			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
-		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new ChoiceTaskEvaluator());
-		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Sequence", 1), new SequenceTaskEvaluator());
-		RelationLookupEvaluator.register(taskEvaluationFrontend, factory);
-		RelationMatchEvaluator.register(taskEvaluationFrontend, factory);
+		RelationLookupEvaluator.register(taskEngine, taskEvaluationFrontend, factory);
+		RelationMatchEvaluator.register(taskEngine, taskEvaluationFrontend, factory);
 		return taskEvaluationFrontend;
 	}
 

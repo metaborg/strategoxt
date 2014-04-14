@@ -4,6 +4,7 @@ import static org.metaborg.runtime.task.util.TermTools.*;
 
 import java.util.Map.Entry;
 
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -85,8 +86,9 @@ public class TaskEngineFactory {
 			final IStrategoList dynamicDependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoList reads = (IStrategoList) taskTerm.getSubterm(++i);
 
+			// TODO: instruction should always be an appl, change the interface.
 			final ITask task =
-				taskEngine.getEvaluationFrontend().create(instruction, dynamicDependencies,
+				taskEngine.getTaskFactory((IStrategoAppl) instruction).create(instruction, dynamicDependencies,
 					TaskType.get(type.intValue()), takeBool(shortCircuit));
 			if(!isNull(instructionOverride))
 				task.overrideInstruction(instructionOverride);

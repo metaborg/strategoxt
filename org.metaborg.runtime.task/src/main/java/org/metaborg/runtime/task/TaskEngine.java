@@ -1,5 +1,6 @@
 package org.metaborg.runtime.task;
 
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
@@ -23,6 +24,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
@@ -31,8 +33,11 @@ public class TaskEngine implements ITaskEngine {
 	private final ITermFactory factory;
 	private final ITermDigester digester;
 	private ITaskEvaluationFrontend evaluationFrontend;
+	private final ITaskFactory baseTaskFactory;
 	private final IStrategoConstructor resultConstructor;
 
+	/** Mapping of instruction constructors to their factory. */
+	private final Map<IStrategoConstructor, ITaskFactory> taskFactories = Maps.newHashMap();
 
 	/** Bidirectional mapping between task identifiers and tasks. */
 	private final BiMap<IStrategoTerm, ITask> toTask = HashBiMap.create();
@@ -72,13 +77,20 @@ public class TaskEngine implements ITaskEngine {
 		this.factory = factory;
 		this.digester = digester;
 		this.taskCollection = new TaskCollection();
+		this.baseTaskFactory = new BaseTaskFactory(factory);
 		this.resultConstructor = factory.makeConstructor("Result", 1);
 	}
+
+	public void setWrapper(ITaskEngine wrapper) {
+		this.wrapper = wrapper;
+	}
+
 
 	@Override
 	public ITermDigester getDigester() {
 		return digester;
 	}
+
 
 	@Override
 	public ITaskEvaluationFrontend getEvaluationFrontend() {
@@ -90,9 +102,20 @@ public class TaskEngine implements ITaskEngine {
 		this.evaluationFrontend = evaluationFrontend;
 	}
 
-	public void setWrapper(ITaskEngine wrapper) {
-		this.wrapper = wrapper;
+
+	@Override
+	public ITaskFactory getTaskFactory(IStrategoAppl instruction) {
+		final ITaskFactory taskFactory = taskFactories.get(instruction.getConstructor());
+		if(taskFactory == null)
+			return baseTaskFactory;
+		return taskFactory;
 	}
+
+	@Override
+	public void registerTaskFactory(IStrategoConstructor constructor, ITaskFactory factory) {
+		taskFactories.put(constructor, factory);
+	}
+
 
 	@Override
 	public void startCollection(IStrategoTerm source) {
@@ -125,12 +148,15 @@ public class TaskEngine implements ITaskEngine {
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		dependencies = evaluationFrontend.adjustDependencies(dependencies, instruction);
+		// TODO: instruction should always be an appl, change the interface.
+		final ITaskFactory taskFactory = getTaskFactory((IStrategoAppl) instruction);
+
+		dependencies = taskFactory.adjustDependencies(dependencies);
 
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			final ITask task = evaluationFrontend.create(instruction, dependencies, type, shortCircuit);
+			final ITask task = taskFactory.create(instruction, dependencies, type, shortCircuit);
 			toTask.put(taskID, task);
 			taskCollection.addTask(taskID);
 			schedule(taskID);
@@ -221,7 +247,9 @@ public class TaskEngine implements ITaskEngine {
 			task = wrapper.getTask(taskID);
 			if(task == null)
 				throw new RuntimeException("Cannot invalidate task that does not exist: " + taskID);
-			task = evaluationFrontend.create(task);
+			// TODO: instruction should always be an appl, change the interface.
+			final ITaskFactory taskFactory = getTaskFactory((IStrategoAppl) task.initialInstruction());
+			task = taskFactory.clone(task);
 			toTask.put(taskID, task);
 		}
 		task.unsolve();

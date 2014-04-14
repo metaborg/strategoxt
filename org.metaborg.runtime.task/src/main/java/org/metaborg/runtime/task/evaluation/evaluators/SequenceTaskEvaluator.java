@@ -7,10 +7,12 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.ListTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.NotImplementedException;
@@ -18,6 +20,7 @@ import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -26,7 +29,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class SequenceTaskEvaluator implements ITaskEvaluator {
+public class SequenceTaskEvaluator implements ITaskFactory, ITaskEvaluator {
+	private final ITermFactory factory;
+
 	/**
 	 * Maps task identifiers from sequence tasks to an iterator that holds the next subtask inside the sequence to
 	 * evaluate.
@@ -40,8 +45,13 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
+	public SequenceTaskEvaluator(ITermFactory factory) {
+		this.factory = factory;
+	}
+
+
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return factory.makeList();
 	}
 
@@ -51,9 +61,10 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(ITask task) {
+	public ITask clone(ITask task) {
 		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
+
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
@@ -244,7 +255,17 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 		return seen;
 	}
 
+
 	private static boolean isSequence(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Sequence", 1);
+	}
+
+	public static SequenceTaskEvaluator register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+		ITermFactory factory) {
+		final SequenceTaskEvaluator evaluator = new SequenceTaskEvaluator(factory);
+		final IStrategoConstructor constructor = factory.makeConstructor("Sequence", 1);
+		taskEngine.registerTaskFactory(constructor, evaluator);
+		evaluationFrontend.addTaskEvaluator(constructor, evaluator);
+		return evaluator;
 	}
 }

@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
 import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
 import org.spoofax.interpreter.core.IContext;
@@ -14,7 +13,6 @@ import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -147,25 +145,6 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
 			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
 		}
-	}
-
-	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
-		return taskEvaluator.adjustDependencies(dependencies, factory);
-	}
-
-	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
-		return taskEvaluator.create(instruction, dependencies, type, shortCircuit);
-	}
-
-
-	@Override
-	public ITask create(ITask task) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.initialInstruction());
-		return taskEvaluator.create(task);
 	}
 
 	@Override
