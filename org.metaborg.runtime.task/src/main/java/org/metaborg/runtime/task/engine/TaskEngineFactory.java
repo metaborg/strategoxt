@@ -1,9 +1,12 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
 import static org.metaborg.runtime.task.util.TermTools.*;
 
 import java.util.Map.Entry;
 
+import org.metaborg.runtime.task.ITask;
+import org.metaborg.runtime.task.TaskStatus;
+import org.metaborg.runtime.task.TaskType;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;

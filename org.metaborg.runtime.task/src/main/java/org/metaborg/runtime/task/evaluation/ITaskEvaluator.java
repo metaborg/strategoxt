@@ -3,7 +3,7 @@ package org.metaborg.runtime.task.evaluation;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;

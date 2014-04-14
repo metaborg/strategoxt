@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.evaluation.evaluators;
+package org.metaborg.runtime.task.specific;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -6,12 +6,12 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.ListTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;

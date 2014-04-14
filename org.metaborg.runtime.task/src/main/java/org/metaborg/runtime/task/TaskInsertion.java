@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.util.SingletonIterable;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.library.ssl.StrategoHashMap;

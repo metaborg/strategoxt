@@ -2,8 +2,8 @@ package org.metaborg.runtime.task.primitives;
 
 import static org.metaborg.runtime.task.util.TermTools.makeList;
 
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.TaskManager;
+import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.engine.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;

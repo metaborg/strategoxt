@@ -3,6 +3,7 @@ package org.metaborg.runtime.task;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.metaborg.runtime.task.engine.TaskManager;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;

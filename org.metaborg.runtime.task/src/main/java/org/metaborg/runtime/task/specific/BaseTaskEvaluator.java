@@ -1,13 +1,13 @@
-package org.metaborg.runtime.task.evaluation.evaluators;
+package org.metaborg.runtime.task.specific;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
 import org.metaborg.runtime.task.TaskInsertion;
 import org.metaborg.runtime.task.TaskStatus;
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.metaborg.runtime.task.evaluation.TaskResultType;

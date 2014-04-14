@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +11,9 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
-import org.metaborg.runtime.task.evaluation.evaluators.BaseTaskEvaluator;
-import org.metaborg.runtime.task.evaluation.evaluators.RelationLookupEvaluator;
-import org.metaborg.runtime.task.evaluation.evaluators.RelationMatchEvaluator;
+import org.metaborg.runtime.task.specific.BaseTaskEvaluator;
+import org.metaborg.runtime.task.specific.RelationLookupEvaluator;
+import org.metaborg.runtime.task.specific.RelationMatchEvaluator;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;

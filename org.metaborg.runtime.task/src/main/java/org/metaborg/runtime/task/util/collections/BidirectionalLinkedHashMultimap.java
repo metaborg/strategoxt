@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.collection;
+package org.metaborg.runtime.task.util.collections;
 
 import java.util.Collection;
 import java.util.Map;
