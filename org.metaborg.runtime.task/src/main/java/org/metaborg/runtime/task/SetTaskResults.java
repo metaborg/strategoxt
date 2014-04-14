@@ -1,5 +1,6 @@
 package org.metaborg.runtime.task;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -9,47 +10,49 @@ import com.google.common.collect.Sets;
 public class SetTaskResults implements ITaskResults {
 	private Set<IStrategoTerm> results = Sets.newHashSet();
 
+
 	public SetTaskResults() {
 
 	}
 
 	public SetTaskResults(ITaskResults results) {
-		this.results = Sets.newHashSet(results.results());
+		this.results = Sets.newHashSet(results);
 	}
 
 
-	@Override
-	public Iterable<IStrategoTerm> results() {
-		return results;
-	}
-
-	public boolean hasResult(IStrategoTerm term) {
+	public boolean contains(IStrategoTerm term) {
 		return results.contains(term);
 	}
 
 	@Override
-	public boolean hasResults() {
-		return !results.isEmpty();
+	public boolean empty() {
+		return results.isEmpty();
 	}
 
 	@Override
-	public void setResults(Iterable<IStrategoTerm> results) {
+	public void set(Iterable<IStrategoTerm> results) {
 		this.results = Sets.newHashSet(results);
 	}
 
 	@Override
-	public void addResults(Iterable<IStrategoTerm> results) {
+	public void addAll(Iterable<IStrategoTerm> results) {
 		for(IStrategoTerm result : results)
 			this.results.add(result);
 	}
 
 	@Override
-	public void addResult(IStrategoTerm result) {
+	public void add(IStrategoTerm result) {
 		results.add(result);
 	}
 
 	@Override
-	public void clearResults() {
+	public void clear() {
 		results.clear();
+	}
+
+
+	@Override
+	public Iterator<IStrategoTerm> iterator() {
+		return results.iterator();
 	}
 }

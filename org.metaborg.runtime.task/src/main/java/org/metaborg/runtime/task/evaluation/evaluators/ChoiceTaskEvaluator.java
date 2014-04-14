@@ -75,7 +75,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 				// TODO: why do we need to check if the subtask has results?
 				final ITask subtask = taskEngine.getTask(subtaskID);
-				if(!subtask.failed() && subtask.results().hasResults()) {
+				if(!subtask.failed() && !subtask.results().empty()) {
 					choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 					return;
 				}
@@ -173,7 +173,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private void choiceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
-		task.results().setResults(subtask.results().results());
+		task.results().set(subtask.results());
 		task.setStatus(TaskStatus.Success);
 		evaluationQueue.taskSolved(taskID);
 		cleanupChoice(taskID, taskEngine, evaluationQueue);

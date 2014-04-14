@@ -272,11 +272,11 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.getTask(resolveD).setFailed();
 		IStrategoTerm resolveC =
 			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), TaskType.Regular, true));
-		taskEngine.getTask(resolveC).results().addResult(factory.makeInt(42));
+		taskEngine.getTask(resolveC).results().add(factory.makeInt(42));
 		IStrategoTerm resolveB =
 			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), TaskType.Regular, true));
-		taskEngine.getTask(resolveB).results().addResult(factory.makeInt(1));
-		taskEngine.getTask(resolveB).results().addResult(factory.makeInt(2));
+		taskEngine.getTask(resolveB).results().add(factory.makeInt(1));
+		taskEngine.getTask(resolveB).results().add(factory.makeInt(2));
 		IStrategoTerm resolveA =
 			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), TaskType.Combinator, false));
 		taskEngine.getTask(resolveA).setDependencyFailed();
@@ -316,11 +316,11 @@ public class TaskEngineTest extends TaskTest {
 		assertTrue(taskEngine.getTask(resolveA).dependencyFailed());
 
 
-		assertFalse(taskEngine.getTask(resolveD).results().results().iterator().hasNext());
-		assertContains(taskEngine.getTask(resolveC).results().results(), factory.makeInt(42));
-		assertContains(taskEngine.getTask(resolveB).results().results(), factory.makeInt(1));
-		assertContains(taskEngine.getTask(resolveB).results().results(), factory.makeInt(2));
-		assertFalse(taskEngine.getTask(resolveA).results().results().iterator().hasNext());
+		assertTrue(taskEngine.getTask(resolveD).results().empty());
+		assertContains(taskEngine.getTask(resolveC).results(), factory.makeInt(42));
+		assertContains(taskEngine.getTask(resolveB).results(), factory.makeInt(1));
+		assertContains(taskEngine.getTask(resolveB).results(), factory.makeInt(2));
+		assertTrue(taskEngine.getTask(resolveA).results().empty());
 
 
 		assertEquals(TaskType.Combinator, taskEngine.getTask(resolveD).type());

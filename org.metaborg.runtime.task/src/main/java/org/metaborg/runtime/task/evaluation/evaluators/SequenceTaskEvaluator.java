@@ -178,7 +178,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private void sequenceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
-		task.results().setResults(subtask.results().results());
+		task.results().set(subtask.results());
 		task.setStatus(TaskStatus.Success);
 		evaluationQueue.taskSolved(taskID);
 		cleanupSequence(taskID, taskEngine, evaluationQueue);

@@ -63,7 +63,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 				results = fail(factory);
 				break;
 			case Success:
-				results = makeList(factory, task.results().results());
+				results = makeList(factory, task.results());
 				break;
 			default:
 				results = none(factory);

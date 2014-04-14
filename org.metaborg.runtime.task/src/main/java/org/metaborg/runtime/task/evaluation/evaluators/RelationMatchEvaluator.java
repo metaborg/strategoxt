@@ -65,21 +65,21 @@ public class RelationMatchEvaluator implements ITaskEvaluator {
 		try {
 			final IStrategoTerm instruction = task.instruction();
 			final IStrategoTerm lookupTaskID = instruction.getSubterm(0).getSubterm(0);
-			final SetTaskResults lookupTask = (SetTaskResults) taskEngine.getTask(lookupTaskID);
+			final SetTaskResults lookupTaskResults = (SetTaskResults) taskEngine.getTask(lookupTaskID).results();
 			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
 			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
 
 			task.setFailed();
-			for(IStrategoTerm expectedTermTuple : expectedTermTask.results().results()) {
+			for(IStrategoTerm expectedTermTuple : expectedTermTask.results()) {
 				final IStrategoTerm regularTerm = expectedTermTuple.getSubterm(0);
-				if(lookupTask.hasResult(regularTerm)) {
-					task.results().addResult(regularTerm);
+				if(lookupTaskResults.contains(regularTerm)) {
+					task.results().add(regularTerm);
 					return;
 				}
 
 				final IStrategoTerm uriTerm = expectedTermTuple.getSubterm(1);
-				if(lookupTask.hasResult(uriTerm)) {
-					task.results().addResult(uriTerm);
+				if(lookupTaskResults.contains(uriTerm)) {
+					task.results().add(uriTerm);
 					return;
 				}
 			}

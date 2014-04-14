@@ -137,14 +137,14 @@ public final class TaskInsertion {
 
 		if(!task.solved()) {
 			return Either.right(new SingletonIterable<IStrategoTerm>(taskID));
-		} else if(task.failed() || !task.results().hasResults()) {
+		} else if(task.failed() || task.results().empty()) {
 			return null; // If a dependency does not have any results, the task cannot be executed.
 		}
 
 		final Collection<IStrategoTerm> results = Lists.newLinkedList();
 		final Collection<IStrategoTerm> dynamicDependencies = Lists.newLinkedList();
 
-		for(final IStrategoTerm result : task.results().results()) {
+		for(final IStrategoTerm result : task.results()) {
 			final Iterable<IStrategoTerm> nestedResultIDs = getResultIDs(context, collect, result);
 			if(singleLevel || Iterables.isEmpty(nestedResultIDs)) {
 				results.add(result);
@@ -188,7 +188,7 @@ public final class TaskInsertion {
 		final StrategoHashMap mapping = new StrategoHashMap();
 		for(IStrategoTerm resultID : resultIDs) {
 			final ITask task = taskEngine.getTask(resultID);
-			mapping.put(resultID, makeList(factory, task.results().results()));
+			mapping.put(resultID, makeList(factory, task.results()));
 		}
 
 		final IStrategoTerm insertedTerm = insertResults(context, insert, term, mapping);
@@ -226,7 +226,7 @@ public final class TaskInsertion {
 	private static boolean dependencyFailure(ITaskEngine taskEngine, Iterable<IStrategoTerm> taskIDs) {
 		for(IStrategoTerm taskID : taskIDs) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(task.failed() || !task.results().hasResults()) {
+			if(task.failed() || task.results().empty()) {
 				return true; // If a dependency does not have any results, the task cannot be executed.
 			}
 		}

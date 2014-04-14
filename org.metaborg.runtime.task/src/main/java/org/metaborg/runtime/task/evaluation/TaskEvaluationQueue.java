@@ -206,7 +206,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 				for(final IStrategoTerm taskID : taskIDs) {
 					final ITask task = taskEngine.getTask(taskID);
 					if(!task.failed())
-						values.putAll(taskID, task.results().results());
+						values.putAll(taskID, task.results());
 				}
 
 				// Do fixpoint evaluation until the results of tasks stop changing.
@@ -226,20 +226,20 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 						// TODO: this assumes that no results and failure means the same, is that correct?
 						if(values.get(taskID).isEmpty()) {
-							if(task.failed() || !task.results().hasResults()) {
+							if(task.failed() || task.results().empty()) {
 								continue;
 							} else {
 								done = false;
 								break;
 							}
-						} else if(task.failed() || !task.results().hasResults()) {
+						} else if(task.failed() || task.results().empty()) {
 							done = false;
 							break;
 						}
 
 						// TODO: creating two sets and taking the symmetric difference is VERY expensive?
 						final Multiset<IStrategoTerm> oldValues = HashMultiset.create(values.get(taskID));
-						final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results().results());
+						final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results());
 						final Multiset<IStrategoTerm> diff1 = Multisets.difference(newValues, oldValues);
 						final Multiset<IStrategoTerm> diff2 = Multisets.difference(oldValues, newValues);
 
@@ -258,7 +258,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 					for(final IStrategoTerm taskID : taskIDs) {
 						final ITask task = taskEngine.getTask(taskID);
 						if(!task.failed())
-							values.putAll(taskID, task.results().results());
+							values.putAll(taskID, task.results());
 					}
 				}
 			}

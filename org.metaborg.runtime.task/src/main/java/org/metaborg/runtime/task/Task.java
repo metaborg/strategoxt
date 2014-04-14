@@ -129,7 +129,7 @@ public class Task implements ITask {
 
 	@Override
 	public void unsolve() {
-		results.clearResults();
+		results.clear();
 		status = TaskStatus.Unknown;
 	}
 

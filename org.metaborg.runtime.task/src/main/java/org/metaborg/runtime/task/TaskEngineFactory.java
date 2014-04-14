@@ -21,7 +21,7 @@ public class TaskEngineFactory {
 			final IStrategoTerm taskID = entry.getKey();
 			final ITask task = entry.getValue();
 
-			IStrategoTerm results = serializer.toAnnotations(makeList(factory, task.results().results()));
+			IStrategoTerm results = serializer.toAnnotations(makeList(factory, task.results()));
 			IStrategoTerm message = task.message();
 			if(message != null)
 				message = serializer.toAnnotations(message);
@@ -91,7 +91,7 @@ public class TaskEngineFactory {
 			if(!isNull(instructionOverride))
 				task.overrideInstruction(instructionOverride);
 			if(!isNull(results))
-				task.results().setResults(results);
+				task.results().set(results);
 			task.setStatus(TaskStatus.get(status.intValue()));
 			if(!isNull(message))
 				task.setMessage(message);

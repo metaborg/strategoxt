@@ -79,7 +79,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			boolean set = results.size() != 0;
 			for(IStrategoTerm taskID : results) {
 				final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
-				set = (task instanceof SetTaskResults) && set;
+				set = task != null && (task.results() instanceof SetTaskResults) && set;
 			}
 
 			if(set) {
@@ -249,18 +249,18 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				return TaskResultType.Fail;
 			} else {
 				// Treat as single result.
-				task.results().addResult(result);
+				task.results().add(result);
 				task.setStatus(TaskStatus.Success);
 				return TaskResultType.Success;
 			}
 		} else if(Tools.isTermList(result)) {
 			// The task produced multiple results.
-			task.results().addResults(result);
+			task.results().addAll(result);
 			task.setStatus(TaskStatus.Success);
 			return TaskResultType.Success;
 		} else {
 			// The task produced a single result.
-			task.results().addResult(result);
+			task.results().add(result);
 			task.setStatus(TaskStatus.Success);
 			return TaskResultType.Success;
 		}
