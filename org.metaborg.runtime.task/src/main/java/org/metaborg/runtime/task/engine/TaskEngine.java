@@ -81,7 +81,7 @@ public class TaskEngine implements ITaskEngine {
 		this.factory = factory;
 		this.digester = digester;
 		this.taskCollection = new TaskCollection();
-		this.baseTaskFactory = new BaseTaskFactory(factory);
+		this.baseTaskFactory = new BaseTaskFactory(factory, this);
 		this.resultConstructor = factory.makeConstructor("Result", 1);
 	}
 

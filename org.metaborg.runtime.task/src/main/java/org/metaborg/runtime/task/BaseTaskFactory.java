@@ -3,7 +3,7 @@ package org.metaborg.runtime.task;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.metaborg.runtime.task.engine.TaskManager;
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
@@ -12,10 +12,12 @@ import org.spoofax.interpreter.terms.ITermFactory;
 
 public class BaseTaskFactory implements ITaskFactory {
 	private final ITermFactory factory;
+	private final ITaskEngine taskEngine;
 
 
-	public BaseTaskFactory(ITermFactory factory) {
+	public BaseTaskFactory(ITermFactory factory, ITaskEngine taskEngine) {
 		this.factory = factory;
+		this.taskEngine = taskEngine;
 	}
 
 
@@ -44,7 +46,7 @@ public class BaseTaskFactory implements ITaskFactory {
 
 			boolean set = results.size() != 0;
 			for(IStrategoTerm taskID : results) {
-				final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
+				final ITask task = taskEngine.getTask(taskID);
 				set = task != null && (task.results() instanceof SetTaskResults) && set;
 			}
 
