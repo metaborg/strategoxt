@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.evaluation.evaluators;
+package org.metaborg.runtime.task.specific;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -6,16 +6,21 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.ListTask;
+import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.ListTaskResults;
+import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
-import org.spoofax.NotImplementedException;
+import org.metaborg.runtime.task.evaluation.ITaskQueuer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -24,7 +29,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class SequenceTaskEvaluator implements ITaskEvaluator {
+public class SequenceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
+	private final ITermFactory factory;
+
 	/**
 	 * Maps task identifiers from sequence tasks to an iterator that holds the next subtask inside the sequence to
 	 * evaluate.
@@ -38,34 +45,42 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
+	public SequenceTask(ITermFactory factory) {
+		this.factory = factory;
+	}
+
+
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return factory.makeList();
 	}
 
 	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new ListTask(instruction, dependencies, type, shortCircuit);
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		return new Task(instruction, dependencies, type, shortCircuit, new ListTaskResults());
 	}
 
 	@Override
-	public ITask create(ITask task) {
-		return new ListTask((ListTask) task);
+	public ITask clone(ITask task) {
+		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
+
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
+			if(SequenceTask.isSequence(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
 		}
 	}
 
+
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle) {
 		Iterator<IStrategoTerm> iter = iterators.get(taskID);
 		if(iter == null) {
 			iter = task.instruction().getSubterm(0).iterator();
@@ -113,22 +128,6 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
-	}
-
-	@Override
-	public void delay() {
-		throw new NotImplementedException("Delaying a sequence task has not been implemented yet");
-	}
-
-	@Override
-	public IStrategoTerm current() {
-		throw new NotImplementedException("Getting the currently evaluating sequence task has not been implemented yet");
-	}
-
-	@Override
 	public void reset() {
 		iterators.clear();
 		subtaskIDs.clear();
@@ -166,7 +165,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	private void sequenceFails(ITask task, IStrategoTerm taskID, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setFailed();
-		evaluationQueue.taskSolved(taskID);
+		evaluationQueue.solved(taskID);
 		cleanupSequence(taskID, taskEngine, evaluationQueue);
 		return;
 	}
@@ -176,8 +175,9 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private void sequenceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
-		task.setResults(subtask.results());
-		evaluationQueue.taskSolved(taskID);
+		task.results().set(subtask.results());
+		task.setStatus(TaskStatus.Success);
+		evaluationQueue.solved(taskID);
 		cleanupSequence(taskID, taskEngine, evaluationQueue);
 		return;
 	}
@@ -194,10 +194,10 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 				if(subtaskID == null)
 					continue;
 
-				evaluationQueue.taskSkipped(subtaskID);
+				evaluationQueue.skipped(subtaskID);
 
 				for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoSequence(subtaskID, taskEngine)) {
-					evaluationQueue.taskSkipped(dependencyTaskID);
+					evaluationQueue.skipped(dependencyTaskID);
 				}
 			}
 		}
@@ -228,7 +228,7 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final ITask task = taskEngine.getTask(queueTaskID);
-			if(SequenceTaskEvaluator.isSequence(task.instruction())) {
+			if(SequenceTask.isSequence(task.instruction())) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
@@ -241,7 +241,17 @@ public class SequenceTaskEvaluator implements ITaskEvaluator {
 		return seen;
 	}
 
+
 	private static boolean isSequence(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Sequence", 1);
+	}
+
+	public static SequenceTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+		ITermFactory factory) {
+		final SequenceTask evaluator = new SequenceTask(factory);
+		final IStrategoConstructor constructor = factory.makeConstructor("Sequence", 1);
+		taskEngine.registerTaskFactory(constructor, evaluator);
+		evaluationFrontend.registerTaskEvaluator(constructor, evaluator);
+		return evaluator;
 	}
 }

@@ -1,9 +1,13 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
 import static org.metaborg.runtime.task.util.TermTools.*;
 
 import java.util.Map.Entry;
 
+import org.metaborg.runtime.task.ITask;
+import org.metaborg.runtime.task.TaskStatus;
+import org.metaborg.runtime.task.TaskType;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -69,7 +73,7 @@ public class TaskEngineFactory {
 			int i = -1;
 
 			final IStrategoTerm taskID = taskTerm.getSubterm(++i);
-			final IStrategoTerm instruction = taskTerm.getSubterm(++i);
+			final IStrategoAppl instruction = (IStrategoAppl) taskTerm.getSubterm(++i);
 			final IStrategoList initialDependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoInt type = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoInt shortCircuit = (IStrategoInt) taskTerm.getSubterm(++i);
@@ -86,12 +90,12 @@ public class TaskEngineFactory {
 			final IStrategoList reads = (IStrategoList) taskTerm.getSubterm(++i);
 
 			final ITask task =
-				taskEngine.getEvaluationFrontend().create(instruction, dynamicDependencies,
+				taskEngine.getTaskFactory(instruction).create(instruction, dynamicDependencies,
 					TaskType.get(type.intValue()), takeBool(shortCircuit));
 			if(!isNull(instructionOverride))
-				task.overrideInstruction(instructionOverride);
+				task.overrideInstruction((IStrategoAppl) instructionOverride);
 			if(!isNull(results))
-				task.setResults(results);
+				task.results().set(results);
 			task.setStatus(TaskStatus.get(status.intValue()));
 			if(!isNull(message))
 				task.setMessage(message);

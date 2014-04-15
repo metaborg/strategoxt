@@ -36,7 +36,7 @@ public class SHA1TermDigester implements ITermDigester {
 	}
 
 	public void setState(IStrategoTerm state) {
-		
+
 	}
 
 	public void reset() {
@@ -54,45 +54,45 @@ public class SHA1TermDigester implements ITermDigester {
 
 	private void digestTerm(IStrategoTerm term) {
 		switch(term.getTermType()) {
-		case IStrategoTerm.APPL: {
-			final IStrategoAppl t = (IStrategoAppl) term;
-			digest.update(t.getConstructor().getName().getBytes());
-			intBuffer.position(0);
-			digest.update(intBuffer.putInt(t.getConstructor().getArity()).array());
+			case IStrategoTerm.APPL: {
+				final IStrategoAppl t = (IStrategoAppl) term;
+				digest.update(t.getConstructor().getName().getBytes());
+				intBuffer.position(0);
+				digest.update(intBuffer.putInt(t.getConstructor().getArity()).array());
 
-			for(IStrategoTerm subterm : t)
-				digestTop(subterm);
-			break;
-		}
-		case IStrategoTerm.TUPLE: {
-			final IStrategoTuple t = (IStrategoTuple) term;
-			for(IStrategoTerm subterm : t)
-				digestTop(subterm);
-			break;
-		}
-		case IStrategoTerm.LIST: {
-			final IStrategoList t = (IStrategoList) term;
-			for(IStrategoTerm subterm : t)
-				digestTop(subterm);
-			break;
-		}
-		case IStrategoTerm.INT: {
-			final IStrategoInt t = (IStrategoInt) term;
-			intBuffer.position(0);
-			digest.update(intBuffer.putInt(t.intValue()).array());
-			break;
-		}
-		case IStrategoTerm.REAL: {
-			final IStrategoReal t = (IStrategoReal) term;
-			doubleBuffer.position(0);
-			digest.update(doubleBuffer.putDouble(t.realValue()).array());
-			break;
-		}
-		case IStrategoTerm.STRING: {
-			final IStrategoString t = (IStrategoString) term;
-			digest.update(t.stringValue().getBytes());
-			break;
-		}
+				for(IStrategoTerm subterm : t)
+					digestTop(subterm);
+				break;
+			}
+			case IStrategoTerm.TUPLE: {
+				final IStrategoTuple t = (IStrategoTuple) term;
+				for(IStrategoTerm subterm : t)
+					digestTop(subterm);
+				break;
+			}
+			case IStrategoTerm.LIST: {
+				final IStrategoList t = (IStrategoList) term;
+				for(IStrategoTerm subterm : t)
+					digestTop(subterm);
+				break;
+			}
+			case IStrategoTerm.INT: {
+				final IStrategoInt t = (IStrategoInt) term;
+				intBuffer.position(0);
+				digest.update(intBuffer.putInt(t.intValue()).array());
+				break;
+			}
+			case IStrategoTerm.REAL: {
+				final IStrategoReal t = (IStrategoReal) term;
+				doubleBuffer.position(0);
+				digest.update(doubleBuffer.putDouble(t.realValue()).array());
+				break;
+			}
+			case IStrategoTerm.STRING: {
+				final IStrategoString t = (IStrategoString) term;
+				digest.update(t.stringValue().getBytes());
+				break;
+			}
 		}
 	}
 

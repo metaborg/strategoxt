@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.collection;
+package org.metaborg.runtime.task.util.collections;
 
 import java.util.Collection;
 import java.util.Map;
@@ -104,7 +104,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	public boolean putAll(Multimap<? extends K, ? extends V> multimap) {
 		boolean result = keyToValue.putAll(multimap);
 
-		for (Entry<? extends K, ? extends V> entry : multimap.entries())
+		for(Entry<? extends K, ? extends V> entry : multimap.entries())
 			result &= valueToKey.put(entry.getValue(), entry.getKey());
 
 		return result;
@@ -114,7 +114,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	public boolean putAll(K key, Iterable<? extends V> values) {
 		boolean result = keyToValue.putAll(key, values);
 
-		for (V value : values)
+		for(V value : values)
 			result &= valueToKey.put(value, key);
 
 		return result;
@@ -128,7 +128,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	@Override
 	public Set<V> removeAll(Object key) {
 		final Set<V> removed = keyToValue.removeAll(key);
-		for (V r : removed)
+		for(V r : removed)
 			valueToKey.remove(r, key);
 
 		return removed;
@@ -137,7 +137,7 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	@Override
 	public Set<K> removeAllInverse(Object value) {
 		final Set<K> removed = valueToKey.removeAll(value);
-		for (K r : removed)
+		for(K r : removed)
 			keyToValue.remove(r, value);
 
 		return removed;
@@ -147,9 +147,9 @@ public class BidirectionalLinkedHashMultimap<K, V> implements BidirectionalSetMu
 	public Set<V> replaceValues(K key, Iterable<? extends V> values) {
 		final Set<V> replaced = keyToValue.replaceValues(key, values);
 
-		for (V r : replaced)
+		for(V r : replaced)
 			valueToKey.remove(r, key);
-		for (V value : values)
+		for(V value : values)
 			valueToKey.put(value, key);
 
 		return replaced;

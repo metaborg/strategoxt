@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
 public class TaskRemovalStatus {
 	public boolean removed = false;

@@ -4,9 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.TaskEngineFactory;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.engine.TaskEngineFactory;
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -16,9 +17,9 @@ public class TaskEngineTest extends TaskTest {
 	private final IStrategoString partition1 = str("String.java");
 	private final IStrategoString partition2 = str("Integer.java");
 
-	private final IStrategoTerm resolveInstruction = resolve("Java", segment("Package", "java"),
+	private final IStrategoAppl resolveInstruction = resolve("Java", segment("Package", "java"),
 		segment("Package", "util"), segment("Class", "String"));
-	private final IStrategoTerm resolveImportInstruction = resolveImport("Java", segment("Package", "java"),
+	private final IStrategoAppl resolveImportInstruction = resolveImport("Java", segment("Package", "java"),
 		segment("Package", "util"), segment("Class", "String"));
 
 	@Before
@@ -37,7 +38,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
@@ -89,7 +90,7 @@ public class TaskEngineTest extends TaskTest {
 			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition1, dependencies(resolveResult, resolveImportResult), choiceInstruction,
 				TaskType.Combinator, false);
@@ -178,7 +179,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
@@ -221,7 +222,7 @@ public class TaskEngineTest extends TaskTest {
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
-		IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
@@ -272,11 +273,11 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.getTask(resolveD).setFailed();
 		IStrategoTerm resolveC =
 			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), TaskType.Regular, true));
-		taskEngine.getTask(resolveC).addResult(factory.makeInt(42));
+		taskEngine.getTask(resolveC).results().add(factory.makeInt(42));
 		IStrategoTerm resolveB =
 			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), TaskType.Regular, true));
-		taskEngine.getTask(resolveB).addResult(factory.makeInt(1));
-		taskEngine.getTask(resolveB).addResult(factory.makeInt(2));
+		taskEngine.getTask(resolveB).results().add(factory.makeInt(1));
+		taskEngine.getTask(resolveB).results().add(factory.makeInt(2));
 		IStrategoTerm resolveA =
 			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), TaskType.Combinator, false));
 		taskEngine.getTask(resolveA).setDependencyFailed();
@@ -316,11 +317,11 @@ public class TaskEngineTest extends TaskTest {
 		assertTrue(taskEngine.getTask(resolveA).dependencyFailed());
 
 
-		assertFalse(taskEngine.getTask(resolveD).results().iterator().hasNext());
+		assertTrue(taskEngine.getTask(resolveD).results().empty());
 		assertContains(taskEngine.getTask(resolveC).results(), factory.makeInt(42));
 		assertContains(taskEngine.getTask(resolveB).results(), factory.makeInt(1));
 		assertContains(taskEngine.getTask(resolveB).results(), factory.makeInt(2));
-		assertFalse(taskEngine.getTask(resolveA).results().iterator().hasNext());
+		assertTrue(taskEngine.getTask(resolveA).results().empty());
 
 
 		assertEquals(TaskType.Combinator, taskEngine.getTask(resolveD).type());
@@ -444,7 +445,7 @@ public class TaskEngineTest extends TaskTest {
 		assertNotSame(parent, current);
 
 		current.startCollection(partition2);
-		final IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		final IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		final IStrategoTerm choiceResult =
 			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
 				TaskType.Combinator, false);
@@ -492,7 +493,7 @@ public class TaskEngineTest extends TaskTest {
 		assertNotSame(parent, current);
 
 		current.startCollection(partition2);
-		final IStrategoTerm choiceInstruction = choice(resolveResult, resolveImportResult);
+		final IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		final IStrategoTerm choiceResult =
 			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
 				TaskType.Combinator, false);

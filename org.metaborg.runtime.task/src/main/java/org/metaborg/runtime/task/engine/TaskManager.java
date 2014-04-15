@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +11,8 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
-import org.metaborg.runtime.task.evaluation.evaluators.BaseTaskEvaluator;
-import org.metaborg.runtime.task.evaluation.evaluators.RelationLookupEvaluator;
-import org.metaborg.runtime.task.evaluation.evaluators.RelationMatchEvaluator;
+import org.metaborg.runtime.task.specific.RelationLookupTask;
+import org.metaborg.runtime.task.specific.RelationMatchTask;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -141,12 +140,9 @@ public class TaskManager {
 	}
 
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
-		final ITaskEvaluationFrontend taskEvaluationFrontend =
-			new TaskEvaluationQueue(taskEngine, factory, new BaseTaskEvaluator(factory));
-		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Choice", 1), new ChoiceTaskEvaluator());
-		// taskEvaluationFrontend.addTaskEvaluator(factory.makeConstructor("Sequence", 1), new SequenceTaskEvaluator());
-		RelationLookupEvaluator.register(taskEvaluationFrontend, factory);
-		RelationMatchEvaluator.register(taskEvaluationFrontend, factory);
+		final ITaskEvaluationFrontend taskEvaluationFrontend = new TaskEvaluationQueue(taskEngine, factory);
+		RelationLookupTask.register(taskEngine, factory);
+		RelationMatchTask.register(taskEngine, taskEvaluationFrontend, factory);
 		return taskEvaluationFrontend;
 	}
 

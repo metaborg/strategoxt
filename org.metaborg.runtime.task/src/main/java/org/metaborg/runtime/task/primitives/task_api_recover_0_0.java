@@ -1,6 +1,6 @@
 package org.metaborg.runtime.task.primitives;
 
-import org.metaborg.runtime.task.TaskManager;
+import org.metaborg.runtime.task.engine.TaskManager;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
@@ -13,7 +13,7 @@ public class task_api_recover_0_0 extends AbstractPrimitive {
 	public task_api_recover_0_0() {
 		super("task_api_recover", 0, 0);
 	}
-	
+
 	@Override
 	public boolean call(IContext env, Strategy[] svars, IStrategoTerm[] tvars) throws InterpreterException {
 		TaskManager.getInstance().popToRootTaskEngine().recover();

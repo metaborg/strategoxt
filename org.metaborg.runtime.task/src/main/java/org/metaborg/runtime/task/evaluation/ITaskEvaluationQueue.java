@@ -21,18 +21,23 @@ public interface ITaskEvaluationQueue {
 	 * Indicates that task with given task identifier has been solved. Tries to queue new tasks that are activated by
 	 * solving that task.
 	 */
-	public abstract void taskSolved(IStrategoTerm taskID);
+	public abstract void solved(IStrategoTerm taskID);
 
 	/**
 	 * Indicates that task with given task identifier has been skipped.
 	 */
-	public abstract void taskSkipped(IStrategoTerm taskID);
+	public abstract void skipped(IStrategoTerm taskID);
 
 	/**
 	 * Indicates that task with given task identifier is delayed because dynamic dependencies have been found. Updates
 	 * the runtime dependency graph with runtime dependencies for given task.
 	 */
-	public abstract void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
+	public abstract void delayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
+
+	/**
+	 * Query if the currently evaluating task has been delayed. *
+	 */
+	public abstract boolean isDelayed();
 
 	/**
 	 * Adds a runtime dependency from given task identifier to given dependency task identifier.

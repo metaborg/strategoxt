@@ -1,35 +1,38 @@
 package org.metaborg.runtime.task;
 
+import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public abstract class ATask implements ITask {
-	private final IStrategoTerm instruction;
+public class Task implements ITask {
+	private final IStrategoAppl instruction;
 	private final IStrategoList initialDependencies;
 	// TODO: move these to task (type) definition, this is wasting space.
 	private final TaskType type;
 	private final boolean shortCircuit;
+	private final ITaskResults results;
 
-	private IStrategoTerm instructionOverride = null;
+	private IStrategoAppl instructionOverride = null;
 	private TaskStatus status = TaskStatus.Unknown;
 	private IStrategoTerm message;
 	private long time = -1;
 	private short evaluations = 0;
 
-	public ATask(IStrategoTerm instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit) {
+	public Task(IStrategoAppl instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit,
+		ITaskResults results) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
-
 		this.type = type;
 		this.shortCircuit = shortCircuit;
+		this.results = results;
 	}
 
-	public ATask(ATask task) {
+	public Task(Task task) {
 		this.instruction = task.instruction;
 		this.initialDependencies = task.initialDependencies;
-
 		this.type = task.type;
 		this.shortCircuit = task.shortCircuit;
+		this.results = task.results;
 
 		this.instructionOverride = task.instructionOverride;
 		this.status = task.status;
@@ -39,24 +42,24 @@ public abstract class ATask implements ITask {
 	}
 
 	@Override
-	public IStrategoTerm instruction() {
+	public IStrategoAppl instruction() {
 		if(instructionOverride == null)
 			return instruction;
 		return instructionOverride;
 	}
 
 	@Override
-	public void overrideInstruction(IStrategoTerm newInstruction) {
+	public void overrideInstruction(IStrategoAppl newInstruction) {
 		instructionOverride = newInstruction;
 	}
 
 	@Override
-	public IStrategoTerm instructionOverride() {
+	public IStrategoAppl instructionOverride() {
 		return instructionOverride;
 	}
 
 	@Override
-	public IStrategoTerm initialInstruction() {
+	public IStrategoAppl initialInstruction() {
 		return instruction;
 	}
 
@@ -81,6 +84,12 @@ public abstract class ATask implements ITask {
 	@Override
 	public boolean shortCircuit() {
 		return shortCircuit;
+	}
+
+
+	@Override
+	public ITaskResults results() {
+		return results;
 	}
 
 
@@ -121,7 +130,7 @@ public abstract class ATask implements ITask {
 
 	@Override
 	public void unsolve() {
-		clearResults();
+		results.clear();
 		status = TaskStatus.Unknown;
 	}
 
@@ -201,7 +210,7 @@ public abstract class ATask implements ITask {
 			return false;
 		if(getClass() != obj.getClass())
 			return false;
-		ATask other = (ATask) obj;
+		Task other = (Task) obj;
 		if(initialDependencies == null) {
 			if(other.initialDependencies != null)
 				return false;
@@ -217,7 +226,7 @@ public abstract class ATask implements ITask {
 
 	@Override
 	public String toString() {
-		return "Task [instruction=" + instruction + ", type=" + type + ", results=" + results()
-			+ ", status=" + status + ", message=" + message + ", time=" + time + ", evaluations=" + evaluations + "]";
+		return "Task [instruction=" + instruction + ", type=" + type + ", results=" + results() + ", status=" + status
+			+ ", message=" + message + ", time=" + time + ", evaluations=" + evaluations + "]";
 	}
 }

@@ -4,9 +4,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.util.Debug;
+import org.metaborg.runtime.task.util.collections.BidirectionalSetMultimap;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
 import com.google.common.collect.Iterables;

@@ -2,12 +2,9 @@ package org.metaborg.runtime.task.evaluation;
 
 import java.util.Set;
 
-import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.TaskType;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 
@@ -16,25 +13,14 @@ import org.spoofax.interpreter.terms.IStrategoTuple;
  */
 public interface ITaskEvaluationFrontend {
 	/**
-	 * Adds a task evaluator for given task constructor.
+	 * Adds a task queuer for given instruction constructor.
 	 */
-	public abstract void addTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator);
+	public abstract void addTaskQueuer(IStrategoConstructor constructor, ITaskQueuer taskQueuer);
 
 	/**
-	 * Creates a task.
+	 * Adds a task evaluator for given instruction constructor.
 	 */
-	public abstract ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type,
-		boolean shortCircuit);
-
-	/**
-	 * Clones a task.
-	 */
-	public abstract ITask create(ITask task);
-
-	/**
-	 * Tries to adjust given dependencies using a task evaluator.
-	 */
-	public abstract IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction);
+	public abstract void registerTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator);
 
 	/**
 	 * Evaluates tasks given by a set of task identifiers.
@@ -59,7 +45,7 @@ public interface ITaskEvaluationFrontend {
 	 * Indicates that task with given task identifier is delayed because dynamic dependencies have been found. Updates
 	 * the runtime dependency graph with runtime dependencies for given task.
 	 */
-	public abstract void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
+	public abstract void delayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies);
 
 	/**
 	 * Resets the task evaluation frontend to the initial state.

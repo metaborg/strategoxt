@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.util.SingletonIterable;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.library.ssl.StrategoHashMap;
@@ -68,18 +69,18 @@ public final class TaskInsertion {
 	/**
 	 * Returns term permutations, or dynamic dependencies encountered while creating the term permutations. To create
 	 * all permutations, a cartesian product of all results of task dependencies is created and applied to the term.
-	 *
+	 * 
 	 * If all task dependencies have only one result, this will result in just one term. Otherwise multiple terms are
 	 * returned. If a task dependency has failed or has no results, null is returned instead. If dynamic task
 	 * dependencies are encountered, the resulting iterable contains task IDs of these dependencies.
-	 *
+	 * 
 	 * @param taskEngine The task engine to retrieve tasks from.
 	 * @param context A Stratego context for executing strategies.
 	 * @param collect Collect strategy that collects all result IDs in a term.
 	 * @param insert Insert strategy that inserts results into a term.
 	 * @param term The term to create permutations for.
 	 * @param dependencies The task IDs of tasks this term depends on.
-	 *
+	 * 
 	 * @return A 2-pair. If the second element is false, the first element contains permutations of the term. Otherwise
 	 *         it contains task IDs of dynamic task dependencies.
 	 */
@@ -137,7 +138,7 @@ public final class TaskInsertion {
 
 		if(!task.solved()) {
 			return Either.right(new SingletonIterable<IStrategoTerm>(taskID));
-		} else if(task.failed() || !task.hasResults()) {
+		} else if(task.failed() || task.results().empty()) {
 			return null; // If a dependency does not have any results, the task cannot be executed.
 		}
 
@@ -226,7 +227,7 @@ public final class TaskInsertion {
 	private static boolean dependencyFailure(ITaskEngine taskEngine, Iterable<IStrategoTerm> taskIDs) {
 		for(IStrategoTerm taskID : taskIDs) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(task.failed() || !task.hasResults()) {
+			if(task.failed() || task.results().empty()) {
 				return true; // If a dependency does not have any results, the task cannot be executed.
 			}
 		}

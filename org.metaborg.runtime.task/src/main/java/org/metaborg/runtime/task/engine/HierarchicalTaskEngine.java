@@ -1,13 +1,19 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.metaborg.runtime.task.BaseTaskFactory;
+import org.metaborg.runtime.task.ITask;
+import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
+import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
@@ -75,10 +81,12 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 		};
 	}
 
+
 	@Override
 	public ITermDigester getDigester() {
 		return current.getDigester();
 	}
+
 
 	@Override
 	public ITaskEvaluationFrontend getEvaluationFrontend() {
@@ -93,17 +101,31 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 
 	@Override
+	public ITaskFactory getTaskFactory(IStrategoAppl instruction) {
+		final ITaskFactory taskFactory = current.getTaskFactory(instruction);
+		if(taskFactory instanceof BaseTaskFactory)
+			return parent.getTaskFactory(instruction);
+		return taskFactory;
+	}
+
+	@Override
+	public void registerTaskFactory(IStrategoConstructor constructor, ITaskFactory factory) {
+		current.registerTaskFactory(constructor, factory);
+	}
+
+
+	@Override
 	public void startCollection(IStrategoTerm source) {
 		current.startCollection(source);
 	}
 
 	@Override
-	public IStrategoTerm createTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm createTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		return current.createTaskID(instruction, dependencies);
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
 		TaskType type, boolean shortCircuit) {
 		return current.addTask(source, dependencies, instruction, type, shortCircuit);
 	}
@@ -187,7 +209,7 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm getTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		IStrategoTerm taskID = current.getTaskID(instruction, dependencies);
 		if(taskID == null) // TODO: this disregards the visibility of the task in the parent, is that OK?
 			taskID = parent.getTaskID(instruction, dependencies);

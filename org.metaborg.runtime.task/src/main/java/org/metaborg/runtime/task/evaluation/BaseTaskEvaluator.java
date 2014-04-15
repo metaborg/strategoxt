@@ -1,28 +1,17 @@
-package org.metaborg.runtime.task.evaluation.evaluators;
+package org.metaborg.runtime.task.evaluation;
 
 import static org.metaborg.runtime.task.util.InvokeStrategy.invoke;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Set;
-
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.ListTask;
-import org.metaborg.runtime.task.SetTask;
 import org.metaborg.runtime.task.TaskInsertion;
-import org.metaborg.runtime.task.TaskManager;
-import org.metaborg.runtime.task.TaskType;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
-import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
-import org.metaborg.runtime.task.evaluation.TaskResultType;
+import org.metaborg.runtime.task.TaskStatus;
+import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.util.Timer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
@@ -34,12 +23,6 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 	private final IStrategoConstructor higherOrderFailConstructor;
 
 
-	/** Task identifier of the task that is currently being evaluated. **/
-	private IStrategoTerm current = null;
-
-	/** Flag indicating if the current task has been delayed. **/
-	private boolean delayed = false;
-
 	/** Timer for measuring task time. **/
 	private final Timer timer = new Timer();
 
@@ -50,79 +33,17 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		this.higherOrderFailConstructor = factory.makeConstructor("HigherOrderFail", 1);
 	}
 
-	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
-		return dependencies;
-	}
-
-	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		// HACK: create set task for insert and combine instructions that consist of only set tasks.
-		// TODO: should be factored out.
-		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor((IStrategoAppl) instruction, "Insert", 1))
-			|| (Tools.hasConstructor((IStrategoAppl) instruction, "Combine", 1))) {
-			IStrategoTerm innerResults = instruction.getSubterm(0);
-			if(innerResults.getTermType() != IStrategoTerm.LIST)
-				innerResults = factory.makeList(innerResults);
-
-			final Collection<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
-			for(IStrategoTerm result : innerResults) {
-				if(Tools.isTermAppl(result) && Tools.hasConstructor((IStrategoAppl) result, "Result", 1)) {
-					results.add(result.getSubterm(0));
-				}
-			}
-
-			boolean set = results.size() != 0;
-			for(IStrategoTerm taskID : results) {
-				final ITask task = TaskManager.getInstance().getCurrent().getTask(taskID);
-				set = (task instanceof SetTask) && set;
-			}
-
-			if(set) {
-				return new SetTask(instruction, dependencies, type, shortCircuit);
-			}
-		}
-
-		return new ListTask(instruction, dependencies, type, shortCircuit);
-	}
-
-	@Override
-	public ITask create(ITask task) {
-		return new ListTask((ListTask) task);
-	}
-
-	@Override
-	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
-		// Queue or defer evaluation for all scheduled tasks.
-		for(final IStrategoTerm taskID : scheduled) {
-			evaluationQueue.queueOrDefer(taskID);
-		}
-	}
 
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, false);
-	}
-
-	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform, true);
-	}
-
-	private void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
-		boolean cyclic) {
-		delayed = false;
-		current = taskID;
-
+		boolean cycle) {
 		final P2<? extends Iterable<IStrategoTerm>, Boolean> combinations =
 			TaskInsertion.taskCombinations(factory, taskEngine, context, collect, insert, taskID, task, false);
 
 		if(combinations != null && combinations._2()) {
 			// Inserting results failed because some tasks were not solved yet.
-			evaluationQueue.delay(taskID, combinations._1());
+			evaluationQueue.delayed(taskID, combinations._1());
 			return;
 		}
 
@@ -133,7 +54,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 		boolean failure = true;
 		if(execute) {
 			for(IStrategoTerm instruction : combinations._1()) {
-				if(cyclic)
+				if(cycle)
 					instruction = factory.makeTuple(instruction, factory.makeString("cyclic"));
 
 				final IStrategoTerm result = solve(context, perform, taskID, task, instruction);
@@ -153,14 +74,14 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 						break;
 				}
 
-				if(done || delayed)
+				if(done || evaluationQueue.isDelayed())
 					break;
 			}
 		}
 
-		if(!higherOrder && !delayed) {
+		if(!higherOrder && !evaluationQueue.isDelayed()) {
 			// Try to schedule new tasks even for failed tasks since they may activate combinators.
-			evaluationQueue.taskSolved(taskID);
+			evaluationQueue.solved(taskID);
 
 			if(failure)
 				if(!execute)
@@ -168,28 +89,10 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				else
 					task.setFailed();
 		}
-
-		if(delayed) {
-			taskEngine.invalidate(taskID);
-		}
-
-		delayed = false;
-		current = null;
-	}
-
-	@Override
-	public IStrategoTerm current() {
-		return current;
-	}
-
-	@Override
-	public void delay() {
-		delayed = true;
 	}
 
 	@Override
 	public void reset() {
-		delayed = false;
 		timer.reset();
 	}
 
@@ -217,7 +120,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 			final IStrategoAppl resultAppl = (IStrategoAppl) result;
 			if(resultAppl.getConstructor().equals(higherOrderConstructor)) {
 				// The task is a higher order task and has produced new tasks.
-				IStrategoTerm newInstruction = resultAppl.getSubterm(0);
+				IStrategoAppl newInstruction = (IStrategoAppl) resultAppl.getSubterm(0);
 				IStrategoTerm createdTasks = resultAppl.getSubterm(1);
 
 				task.overrideInstruction(newInstruction);
@@ -226,7 +129,7 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 					evaluationQueue.queueOrDefer(createdTaskID);
 
 				if(createdTasks.iterator().hasNext()) {
-					evaluationQueue.delay(taskID, createdTasks);
+					evaluationQueue.delayed(taskID, createdTasks);
 				} else {
 					evaluationQueue.queue(taskID);
 				}
@@ -241,16 +144,19 @@ public class BaseTaskEvaluator implements ITaskEvaluator {
 				return TaskResultType.Fail;
 			} else {
 				// Treat as single result.
-				task.addResult(result);
+				task.results().add(result);
+				task.setStatus(TaskStatus.Success);
 				return TaskResultType.Success;
 			}
 		} else if(Tools.isTermList(result)) {
 			// The task produced multiple results.
-			task.addResults(result);
+			task.results().addAll(result);
+			task.setStatus(TaskStatus.Success);
 			return TaskResultType.Success;
 		} else {
 			// The task produced a single result.
-			task.addResult(result);
+			task.results().add(result);
+			task.setStatus(TaskStatus.Success);
 			return TaskResultType.Success;
 		}
 	}

@@ -4,8 +4,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.TaskManager;
+import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.engine.TaskManager;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoAppl;

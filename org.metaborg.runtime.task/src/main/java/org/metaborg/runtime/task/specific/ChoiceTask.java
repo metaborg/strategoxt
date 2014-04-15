@@ -1,4 +1,4 @@
-package org.metaborg.runtime.task.evaluation.evaluators;
+package org.metaborg.runtime.task.specific;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -6,16 +6,21 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.ListTask;
+import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.ListTaskResults;
+import org.metaborg.runtime.task.Task;
+import org.metaborg.runtime.task.TaskStatus;
 import org.metaborg.runtime.task.TaskType;
+import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
-import org.spoofax.NotImplementedException;
+import org.metaborg.runtime.task.evaluation.ITaskQueuer;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
+import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -24,7 +29,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class ChoiceTaskEvaluator implements ITaskEvaluator {
+public class ChoiceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
+	private final ITermFactory factory;
+
 	/**
 	 * Maps task identifiers of choice tasks to an iterator that holds the next subtask inside the choice to evaluate.
 	 */
@@ -37,34 +44,42 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	private final Map<IStrategoTerm, IStrategoTerm> subtaskIDs = Maps.newHashMap();
 
 
+	public ChoiceTask(ITermFactory factory) {
+		this.factory = factory;
+	}
+
+
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, ITermFactory factory) {
+	public IStrategoList adjustDependencies(IStrategoList dependencies) {
 		return factory.makeList();
 	}
 
 	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new ListTask(instruction, dependencies, type, shortCircuit);
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
+		return new Task(instruction, dependencies, type, shortCircuit, new ListTaskResults());
 	}
 
 	@Override
-	public ITask create(ITask task) {
-		return new ListTask((ListTask) task);
+	public ITask clone(ITask task) {
+		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
 	}
+
 
 	@Override
 	public void queue(ITaskEngine taskEngine, ITaskEvaluationQueue evaluationQueue, Set<IStrategoTerm> scheduled) {
 		for(IStrategoTerm taskID : scheduled) {
 			final ITask task = taskEngine.getTask(taskID);
-			if(ChoiceTaskEvaluator.isChoice(task.instruction())) {
+			if(ChoiceTask.isChoice(task.instruction())) {
 				evaluationQueue.queue(taskID);
 			}
 		}
 	}
 
+
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle) {
 		// Handle the result of a choice task.
 		{
 			final IStrategoTerm subtaskID = subtaskIDs.get(taskID);
@@ -73,7 +88,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 				// TODO: why do we need to check if the subtask has results?
 				final ITask subtask = taskEngine.getTask(subtaskID);
-				if(!subtask.failed() && subtask.hasResults()) {
+				if(!subtask.failed() && !subtask.results().empty()) {
 					choiceSucceeds(task, taskID, subtask, taskEngine, evaluationQueue);
 					return;
 				}
@@ -124,22 +139,6 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	}
 
 	@Override
-	public void evaluateCyclic(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
-		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		evaluate(taskID, task, taskEngine, evaluationQueue, context, collect, insert, perform);
-	}
-
-	@Override
-	public void delay() {
-		throw new NotImplementedException("Delaying a choice task has not been implemented yet");
-	}
-
-	@Override
-	public IStrategoTerm current() {
-		throw new NotImplementedException("Getting the currently evaluating choice task has not been implemented yet");
-	}
-
-	@Override
 	public void reset() {
 		iterators.clear();
 		subtaskIDs.clear();
@@ -161,7 +160,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	private void choiceFails(ITask task, IStrategoTerm taskID, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
 		task.setFailed();
-		evaluationQueue.taskSolved(taskID);
+		evaluationQueue.solved(taskID);
 		cleanupChoice(taskID, taskEngine, evaluationQueue);
 		return;
 	}
@@ -171,8 +170,9 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 	 */
 	private void choiceSucceeds(ITask task, IStrategoTerm taskID, ITask subtask, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue) {
-		task.setResults(subtask.results());
-		evaluationQueue.taskSolved(taskID);
+		task.results().set(subtask.results());
+		task.setStatus(TaskStatus.Success);
+		evaluationQueue.solved(taskID);
 		cleanupChoice(taskID, taskEngine, evaluationQueue);
 		return;
 	}
@@ -189,10 +189,10 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 				if(subtaskID == null)
 					continue;
 
-				evaluationQueue.taskSkipped(subtaskID);
+				evaluationQueue.skipped(subtaskID);
 
 				for(IStrategoTerm dependencyTaskID : transitiveDependenciesNoChoice(subtaskID, taskEngine)) {
-					evaluationQueue.taskSkipped(dependencyTaskID);
+					evaluationQueue.skipped(dependencyTaskID);
 				}
 			}
 		}
@@ -223,7 +223,7 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
 			final ITask task = taskEngine.getTask(queueTaskID);
-			if(ChoiceTaskEvaluator.isChoice(task.instruction())) {
+			if(ChoiceTask.isChoice(task.instruction())) {
 				continue;
 			}
 			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
@@ -236,7 +236,17 @@ public class ChoiceTaskEvaluator implements ITaskEvaluator {
 		return seen;
 	}
 
+
 	private static boolean isChoice(IStrategoTerm instruction) {
 		return Tools.isTermAppl(instruction) && Tools.hasConstructor((IStrategoAppl) instruction, "Choice", 1);
+	}
+
+	public static ChoiceTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
+		ITermFactory factory) {
+		final ChoiceTask evaluator = new ChoiceTask(factory);
+		final IStrategoConstructor constructor = factory.makeConstructor("Choice", 1);
+		taskEngine.registerTaskFactory(constructor, evaluator);
+		evaluationFrontend.registerTaskEvaluator(constructor, evaluator);
+		return evaluator;
 	}
 }

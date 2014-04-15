@@ -5,16 +5,13 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskEngine;
-import org.metaborg.runtime.task.TaskType;
-import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
-import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
+import org.metaborg.runtime.task.engine.ITaskEngine;
+import org.metaborg.runtime.task.util.collections.BidirectionalLinkedHashMultimap;
+import org.metaborg.runtime.task.util.collections.BidirectionalSetMultimap;
 import org.spoofax.interpreter.core.IContext;
-import org.spoofax.interpreter.core.Tools;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.IStrategoTuple;
 import org.spoofax.interpreter.terms.ITermFactory;
@@ -44,14 +41,20 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		BidirectionalLinkedHashMultimap.create();
 
 
-	/** Maps the constructor of a task to the evaluator that can evaluate the task. */
+	/** Maps the constructor of an instruction to the queuer that can queue the task. */
+	private final Map<IStrategoConstructor, ITaskQueuer> taskQueuers = Maps.newLinkedHashMap();
+
+	/** The default task queuer that is used to queue tasks for which there is no specific queuer. */
+	private final ITaskQueuer baseTaskQueuer;
+
+	/** Maps the constructor of an instruction to the evaluator that can evaluate the task. */
 	private final Map<IStrategoConstructor, ITaskEvaluator> taskEvaluators = Maps.newLinkedHashMap();
 
 	/** The default task evaluator that is used to evaluate tasks for which there is no specific evaluator. */
-	private final ITaskEvaluator defaultTaskEvaluator;
+	private final ITaskEvaluator baseTaskEvaluator;
 
-	/** The task evaluator that is currently being used to evaluate tasks. **/
-	private ITaskEvaluator currentTaskEvaluator = null;
+	private IStrategoTerm currentTaskID = null;
+	private boolean currentDelayed = false;
 
 
 	private Set<IStrategoTerm> scheduled;
@@ -59,10 +62,11 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	private final Set<IStrategoTerm> evaluated = Sets.newHashSet();
 
 
-	public TaskEvaluationQueue(ITaskEngine taskEngine, ITermFactory factory, ITaskEvaluator defaultTaskEvaluator) {
+	public TaskEvaluationQueue(ITaskEngine taskEngine, ITermFactory factory) {
 		this.taskEngine = taskEngine;
 		this.factory = factory;
-		this.defaultTaskEvaluator = defaultTaskEvaluator;
+		this.baseTaskQueuer = new BaseTaskQueuer();
+		this.baseTaskEvaluator = new BaseTaskEvaluator(factory);
 	}
 
 	@Override
@@ -95,7 +99,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
-	public void taskSolved(IStrategoTerm taskID) {
+	public void solved(IStrategoTerm taskID) {
 		// Retrieve dependent tasks of the solved task.
 		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(taskID, false));
 		dependents.addAll(runtimeDependencies.getInverse(taskID));
@@ -110,16 +114,16 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	}
 
 	@Override
-	public void taskSkipped(IStrategoTerm taskID) {
+	public void skipped(IStrategoTerm taskID) {
 		scheduled.remove(taskID);
 		skipped.add(taskID);
 	}
 
 	@Override
-	public void delay(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
+	public void delayed(IStrategoTerm taskID, Iterable<IStrategoTerm> dependencies) {
 		TaskEvaluationDebugging.debugDelayedDependecy(taskEngine, taskID, dependencies);
 
-		currentTaskEvaluator.delay();
+		currentDelayed = true;
 
 		// Sets the runtime dependencies for a task to the given dependency list.
 		runtimeDependencies.removeAll(taskID);
@@ -129,6 +133,11 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 		taskEngine.setDynamicDependencies(taskID, dependencies);
 		scheduled.add(taskID);
+	}
+
+	@Override
+	public boolean isDelayed() {
+		return currentDelayed;
 	}
 
 	@Override
@@ -143,29 +152,17 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 
 	@Override
-	public void addTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator) {
-		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
-			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
+	public void addTaskQueuer(IStrategoConstructor constructor, ITaskQueuer taskQueuer) {
+		if(taskQueuers.put(constructor, taskQueuer) != null) {
+			throw new RuntimeException("Task queuer for " + constructor + " already exists.");
 		}
 	}
 
 	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies, IStrategoTerm instruction) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
-		return taskEvaluator.adjustDependencies(dependencies, factory);
-	}
-
-	@Override
-	public ITask create(IStrategoTerm instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(instruction);
-		return taskEvaluator.create(instruction, dependencies, type, shortCircuit);
-	}
-
-
-	@Override
-	public ITask create(ITask task) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.initialInstruction());
-		return taskEvaluator.create(task);
+	public void registerTaskEvaluator(IStrategoConstructor constructor, ITaskEvaluator taskEvaluator) {
+		if(taskEvaluators.put(constructor, taskEvaluator) != null) {
+			throw new RuntimeException("Task evaluator for " + constructor + " already exists.");
+		}
 	}
 
 	@Override
@@ -175,92 +172,17 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			this.scheduled = scheduled;
 
 			// Queue tasks and evaluate them for each specific task evaluator.
-			for(ITaskEvaluator taskEvaluator : taskEvaluators.values()) {
-				currentTaskEvaluator = taskEvaluator;
-				taskEvaluator.queue(taskEngine, this, this.scheduled);
-				evaluateQueuedTasks(context, collect, insert, perform);
+			for(ITaskQueuer taskQueuer : taskQueuers.values()) {
+				taskQueuer.queue(taskEngine, this, this.scheduled);
+				evaluateQueuedTasks(context, collect, insert, perform, false);
 			}
 
 			// Evaluate the remaining tasks with the default task evaluator.
-			currentTaskEvaluator = defaultTaskEvaluator;
-			defaultTaskEvaluator.queue(taskEngine, this, this.scheduled);
-			evaluateQueuedTasks(context, collect, insert, perform);
+			baseTaskQueuer.queue(taskEngine, this, this.scheduled);
+			evaluateQueuedTasks(context, collect, insert, perform, false);
 
 			if(!this.scheduled.isEmpty()) {
-				// Debug unevaluated tasks if debugging is enabled.
-				TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
-
-				// Make a copy of the dynamic dependency graph for later use.
-				final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> copiedRuntimeDependencies =
-					BidirectionalLinkedHashMultimap.create(runtimeDependencies);
-				final Set<IStrategoTerm> taskIDs = Sets.newHashSet(copiedRuntimeDependencies.keySet());
-
-				// Evaluate all tasks left in the dependency graph using a special strategy to break cycles.
-				for(final IStrategoTerm taskID : taskIDs) {
-					queue(taskID);
-				}
-				evaluateCyclicTasks(context, collect, insert, perform);
-
-				// Store values
-				final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
-				for(final IStrategoTerm taskID : taskIDs) {
-					final ITask task = taskEngine.getTask(taskID);
-					if(!task.failed())
-						values.putAll(taskID, task.results());
-				}
-
-				// Do fixpoint evaluation until the results of tasks stop changing.
-				for(int i = 0; i < 25; ++i) {
-					System.out.println("Fixpoint cycle " + i);
-
-					runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
-					for(final IStrategoTerm taskID : taskIDs) {
-						queue(taskID);
-					}
-					evaluateCyclicTasks(context, collect, insert, perform);
-
-					// Compare values
-					boolean done = true;
-					for(final IStrategoTerm taskID : taskIDs) {
-						final ITask task = taskEngine.getTask(taskID);
-
-						// TODO: this assumes that no results and failure means the same, is that correct?
-						if(values.get(taskID).isEmpty()) {
-							if(task.failed() || !task.hasResults()) {
-								continue;
-							} else {
-								done = false;
-								break;
-							}
-						} else if(task.failed() || !task.hasResults()) {
-							done = false;
-							break;
-						}
-
-						// TODO: creating two sets and taking the symmetric difference is VERY expensive?
-						final Multiset<IStrategoTerm> oldValues = HashMultiset.create(values.get(taskID));
-						final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results());
-						final Multiset<IStrategoTerm> diff1 = Multisets.difference(newValues, oldValues);
-						final Multiset<IStrategoTerm> diff2 = Multisets.difference(oldValues, newValues);
-
-						if(!diff1.isEmpty() || !diff2.isEmpty()) {
-							done = false;
-							break;
-						}
-					}
-
-					if(done) {
-						System.out.println("Done with fixpoint evaluation!");
-						break;
-					}
-
-					values.clear();
-					for(final IStrategoTerm taskID : taskIDs) {
-						final ITask task = taskEngine.getTask(taskID);
-						if(!task.failed())
-							values.putAll(taskID, task.results());
-					}
-				}
+				evaluateCyclic(context, collect, insert, perform);
 			}
 
 			// Return evaluated, skipped and unevaluated task identifiers.
@@ -271,12 +193,86 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		}
 	}
 
+	private void evaluateCyclic(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+		// Debug unevaluated tasks if debugging is enabled.
+		TaskEvaluationDebugging.debugUnevaluated(taskEngine, this.scheduled, runtimeDependencies);
+
+		// Make a copy of the dynamic dependency graph for later use.
+		final BidirectionalSetMultimap<IStrategoTerm, IStrategoTerm> copiedRuntimeDependencies =
+			BidirectionalLinkedHashMultimap.create(runtimeDependencies);
+		final Set<IStrategoTerm> taskIDs = Sets.newHashSet(copiedRuntimeDependencies.keySet());
+
+		// Evaluate all tasks left in the dependency graph using a special strategy to break cycles.
+		for(final IStrategoTerm taskID : taskIDs) {
+			queue(taskID);
+		}
+		evaluateQueuedTasks(context, collect, insert, perform, true);
+
+		// Store values
+		final Multimap<IStrategoTerm, IStrategoTerm> values = ArrayListMultimap.create();
+		for(final IStrategoTerm taskID : taskIDs) {
+			final ITask task = taskEngine.getTask(taskID);
+			if(!task.failed())
+				values.putAll(taskID, task.results());
+		}
+
+		// Do fixpoint evaluation until the results of tasks stop changing.
+		for(int i = 0; i < 25; ++i) {
+			System.out.println("Fixpoint cycle " + i);
+
+			runtimeDependencies = BidirectionalLinkedHashMultimap.create(copiedRuntimeDependencies);
+			for(final IStrategoTerm taskID : taskIDs) {
+				queue(taskID);
+			}
+			evaluateQueuedTasks(context, collect, insert, perform, true);
+
+			// Compare values
+			boolean done = true;
+			for(final IStrategoTerm taskID : taskIDs) {
+				final ITask task = taskEngine.getTask(taskID);
+
+				// TODO: this assumes that no results and failure means the same, is that correct?
+				if(values.get(taskID).isEmpty()) {
+					if(task.failed() || task.results().empty()) {
+						continue;
+					} else {
+						done = false;
+						break;
+					}
+				} else if(task.failed() || task.results().empty()) {
+					done = false;
+					break;
+				}
+
+				// TODO: creating two sets and taking the symmetric difference is VERY expensive?
+				final Multiset<IStrategoTerm> oldValues = HashMultiset.create(values.get(taskID));
+				final Multiset<IStrategoTerm> newValues = HashMultiset.create(task.results());
+				final Multiset<IStrategoTerm> diff1 = Multisets.difference(newValues, oldValues);
+				final Multiset<IStrategoTerm> diff2 = Multisets.difference(oldValues, newValues);
+
+				if(!diff1.isEmpty() || !diff2.isEmpty()) {
+					done = false;
+					break;
+				}
+			}
+
+			if(done) {
+				System.out.println("Done with fixpoint evaluation!");
+				break;
+			}
+
+			values.clear();
+			for(final IStrategoTerm taskID : taskIDs) {
+				final ITask task = taskEngine.getTask(taskID);
+				if(!task.failed())
+					values.putAll(taskID, task.results());
+			}
+		}
+	}
+
 	@Override
 	public IStrategoTerm current() {
-		if(currentTaskEvaluator == null)
-			return null;
-
-		return currentTaskEvaluator.current();
+		return currentTaskID;
 	}
 
 	@Override
@@ -285,23 +281,29 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 		queued.clear();
 		runtimeDependencies.clear();
 
+		currentTaskID = null;
+		currentDelayed = false;
+
 		scheduled = null;
 		skipped.clear();
 		evaluated.clear();
 
 		for(ITaskEvaluator evaluator : taskEvaluators.values())
 			evaluator.reset();
-		defaultTaskEvaluator.reset();
-		currentTaskEvaluator = null;
+		baseTaskEvaluator.reset();
 	}
 
 
 	/**
 	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
 	 */
-	private void evaluateQueuedTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
+	private void evaluateQueuedTasks(IContext context, Strategy collect, Strategy insert, Strategy perform,
+		boolean cycle) {
 		// Evaluate each task in the queue.
 		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
+			currentTaskID = taskID;
+			currentDelayed = false;
+
 			final ITask task = taskEngine.getTask(taskID);
 
 			evaluated.add(taskID);
@@ -312,62 +314,25 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 			// overwrite previous data.
 			taskEngine.invalidate(taskID);
 
-			evaluateTask(taskID, task, context, collect, insert, perform);
-		}
-	}
+			final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
+			taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform, cycle);
 
-	/**
-	 * Evaluates queued tasks and updates the scheduled and evaluated sets.
-	 */
-	private void evaluateCyclicTasks(IContext context, Strategy collect, Strategy insert, Strategy perform) {
-		// Evaluate each task in the queue.
-		for(IStrategoTerm taskID; (taskID = evaluationQueue.poll()) != null;) {
-			final ITask task = taskEngine.getTask(taskID);
+			if(currentDelayed) {
+				taskEngine.invalidate(taskID);
+			}
 
-			evaluated.add(taskID);
-			scheduled.remove(taskID);
-			queued.remove(taskID);
-
-			// Clean up data for this task again, since a task may be scheduled multiple times. A re-schedule should
-			// overwrite previous data.
-			taskEngine.invalidate(taskID);
-
-			evaluateCyclicTask(taskID, task, context, collect, insert, perform);
+			currentTaskID = null;
+			currentDelayed = false;
 		}
 	}
 
 	/**
 	 * Returns a task evaluator for given instruction.
 	 */
-	private ITaskEvaluator getTaskEvaluator(IStrategoTerm instruction) {
-		ITaskEvaluator taskEvaluator;
-		if(!Tools.isTermAppl(instruction)) {
-			taskEvaluator = defaultTaskEvaluator;
-		} else {
-			taskEvaluator = taskEvaluators.get(((IStrategoAppl) instruction).getConstructor());
-			if(taskEvaluator == null)
-				taskEvaluator = defaultTaskEvaluator;
-		}
+	private ITaskEvaluator getTaskEvaluator(IStrategoAppl instruction) {
+		final ITaskEvaluator taskEvaluator = taskEvaluators.get(instruction.getConstructor());
+		if(taskEvaluator == null)
+			return baseTaskEvaluator;
 		return taskEvaluator;
-	}
-
-	/**
-	 * Evaluates given task using a specific or default task evaluator.
-	 */
-	private void evaluateTask(IStrategoTerm taskID, ITask task, IContext context, Strategy collect, Strategy insert,
-		Strategy perform) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
-		currentTaskEvaluator = taskEvaluator;
-		taskEvaluator.evaluate(taskID, task, taskEngine, this, context, collect, insert, perform);
-	}
-
-	/**
-	 * Evaluates given task using a specific or default task evaluator.
-	 */
-	private void evaluateCyclicTask(IStrategoTerm taskID, ITask task, IContext context, Strategy collect,
-		Strategy insert, Strategy perform) {
-		final ITaskEvaluator taskEvaluator = getTaskEvaluator(task.instruction());
-		currentTaskEvaluator = taskEvaluator;
-		taskEvaluator.evaluateCyclic(taskID, task, taskEngine, this, context, collect, insert, perform);
 	}
 }

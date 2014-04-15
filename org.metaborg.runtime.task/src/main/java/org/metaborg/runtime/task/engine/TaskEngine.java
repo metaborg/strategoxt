@@ -1,15 +1,20 @@
-package org.metaborg.runtime.task;
+package org.metaborg.runtime.task.engine;
 
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
-import org.metaborg.runtime.task.collection.BidirectionalLinkedHashMultimap;
-import org.metaborg.runtime.task.collection.BidirectionalSetMultimap;
+import org.metaborg.runtime.task.BaseTaskFactory;
+import org.metaborg.runtime.task.ITask;
+import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.util.TermTools;
 import org.metaborg.runtime.task.util.UniqueQueue;
+import org.metaborg.runtime.task.util.collections.BidirectionalLinkedHashMultimap;
+import org.metaborg.runtime.task.util.collections.BidirectionalSetMultimap;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
@@ -23,6 +28,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 
@@ -31,14 +37,17 @@ public class TaskEngine implements ITaskEngine {
 	private final ITermFactory factory;
 	private final ITermDigester digester;
 	private ITaskEvaluationFrontend evaluationFrontend;
+	private final ITaskFactory baseTaskFactory;
 	private final IStrategoConstructor resultConstructor;
 
+	/** Mapping of instruction constructors to their factory. */
+	private final Map<IStrategoConstructor, ITaskFactory> taskFactories = Maps.newHashMap();
 
 	/** Bidirectional mapping between task identifiers and tasks. */
 	private final BiMap<IStrategoTerm, ITask> toTask = HashBiMap.create();
 
 	/** Mapping table of instructions and dependencies to task identifiers. */
-	private final Table<IStrategoTerm, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
+	private final Table<IStrategoAppl, IStrategoList, IStrategoTerm> toTaskID = HashBasedTable.create();
 
 
 	/** Origins of tasks. */
@@ -72,13 +81,20 @@ public class TaskEngine implements ITaskEngine {
 		this.factory = factory;
 		this.digester = digester;
 		this.taskCollection = new TaskCollection();
+		this.baseTaskFactory = new BaseTaskFactory(factory);
 		this.resultConstructor = factory.makeConstructor("Result", 1);
 	}
+
+	public void setWrapper(ITaskEngine wrapper) {
+		this.wrapper = wrapper;
+	}
+
 
 	@Override
 	public ITermDigester getDigester() {
 		return digester;
 	}
+
 
 	@Override
 	public ITaskEvaluationFrontend getEvaluationFrontend() {
@@ -90,9 +106,20 @@ public class TaskEngine implements ITaskEngine {
 		this.evaluationFrontend = evaluationFrontend;
 	}
 
-	public void setWrapper(ITaskEngine wrapper) {
-		this.wrapper = wrapper;
+
+	@Override
+	public ITaskFactory getTaskFactory(IStrategoAppl instruction) {
+		final ITaskFactory taskFactory = taskFactories.get(instruction.getConstructor());
+		if(taskFactory == null)
+			return baseTaskFactory;
+		return taskFactory;
 	}
+
+	@Override
+	public void registerTaskFactory(IStrategoConstructor constructor, ITaskFactory factory) {
+		taskFactories.put(constructor, factory);
+	}
+
 
 	@Override
 	public void startCollection(IStrategoTerm source) {
@@ -100,7 +127,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm createTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm createTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		IStrategoTerm taskID = wrapper.getTaskID(instruction, dependencies);
 		if(taskID != null)
 			return taskID;
@@ -119,18 +146,20 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoTerm instruction,
+	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
 		TaskType type, boolean shortCircuit) {
 		if(!taskCollection.inCollection(source))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
 
-		dependencies = evaluationFrontend.adjustDependencies(dependencies, instruction);
+		final ITaskFactory taskFactory = getTaskFactory(instruction);
+
+		dependencies = taskFactory.adjustDependencies(dependencies);
 
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			final ITask task = evaluationFrontend.create(instruction, dependencies, type, shortCircuit);
+			final ITask task = taskFactory.create(instruction, dependencies, type, shortCircuit);
 			toTask.put(taskID, task);
 			taskCollection.addTask(taskID);
 			schedule(taskID);
@@ -221,7 +250,8 @@ public class TaskEngine implements ITaskEngine {
 			task = wrapper.getTask(taskID);
 			if(task == null)
 				throw new RuntimeException("Cannot invalidate task that does not exist: " + taskID);
-			task = evaluationFrontend.create(task);
+			final ITaskFactory taskFactory = getTaskFactory(task.initialInstruction());
+			task = taskFactory.clone(task);
 			toTask.put(taskID, task);
 		}
 		task.unsolve();
@@ -291,7 +321,7 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public IStrategoTerm getTaskID(IStrategoTerm instruction, IStrategoList dependencies) {
+	public IStrategoTerm getTaskID(IStrategoAppl instruction, IStrategoList dependencies) {
 		return toTaskID.get(instruction, dependencies);
 	}
 
