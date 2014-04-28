@@ -161,7 +161,7 @@ public class TaskManager {
 			if(taskEngine == null) {
 				File taskEngineFile = getFile(project);
 				if(taskEngineFile.exists())
-					taskEngine = tryReadFromFile(taskEngineFile, factory);
+					taskEngine = read(taskEngineFile, factory);
 			}
 			if(taskEngine == null) {
 				taskEngine = createTaskEngine(factory);
@@ -203,7 +203,7 @@ public class TaskManager {
 		return file.toURI();
 	}
 
-	public ITaskEngine tryReadFromFile(File file, ITermFactory factory) {
+	public ITaskEngine read(File file, ITermFactory factory) {
 		try {
 			ITaskEngine taskEngine = createTaskEngine(factory);
 			IStrategoTerm tasks = new TermReader(factory).parseFromFile(file.toString());
@@ -218,17 +218,20 @@ public class TaskManager {
 		}
 	}
 
-	public void storeCurrent(ITermFactory factory) throws IOException {
-		File file = getFile(getCurrentProject());
-		IStrategoTerm tasks = taskEngineFactory.toTerm(getCurrent(), factory);
+	public void write(ITaskEngine taskEngine, File file, ITermFactory factory) throws IOException {
+		final IStrategoTerm serialized = taskEngineFactory.toTerm(taskEngine, factory);
 		file.createNewFile();
-		FileOutputStream fos = new FileOutputStream(file);
+		final FileOutputStream fos = new FileOutputStream(file);
 		try {
-			SAFWriter.writeTermToSAFStream(tasks, fos);
+			SAFWriter.writeTermToSAFStream(serialized, fos);
 			fos.flush();
 		} finally {
 			fos.close();
 		}
+	}
+
+	public void storeCurrent(ITermFactory factory) throws IOException {
+		write(getCurrent(), getFile(getCurrentProject()), factory);
 	}
 
 	private File getFile(URI project) {
