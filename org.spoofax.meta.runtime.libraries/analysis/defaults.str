@@ -68,7 +68,12 @@ rules // Multi-file analysis
       queue-strategy(|"analysis-multiple-default-interface", "Analyzing files")
       
   analysis-multiple-default(parse, desugar-before, desugar-after, pp-message|language, project-path):
-    path* -> (analysis-result'*, evaluated-task*, unevaluated-task*)
+    path* -> (
+      analysis-result'*
+    , (removed-entry-count, added-entry-count)
+    , (removed-task-count, added-task-count, invalidated-task-count, evaluated-task*, skipped-task*, unevaluated-task*)
+    , (parse-time, collect-time, perform-time, index-persist-time, task-persist-time)
+    )
     with
     	analysis-default-debug(!"Analyzing files: ");
       analysis-multiple-default-work-units; set-total-work-units;
@@ -76,7 +81,8 @@ rules // Multi-file analysis
       measure-time(
 	      measure-time(
 	      	path'* := <map(\p -> $[[project-path]/[p]]\)> path*;
-	        (result*, evaluated-task*, skipped-task*, unevaluated-task*) := <analyze-multiple(parse; (analysis-pre-trans <+ desugar-before), complete-work-unit|language, project-path)> path'*;
+	        ((result*, evaluated-task*, skipped-task*, unevaluated-task*), parse-time, collect-time, perform-time) := 
+	        	<analyze-multiple(parse; (analysis-pre-trans <+ desugar-before), complete-work-unit|language, project-path)> path'*;
 	        (analysis-result*, debug-result*) := <unzip> result*
 	      , analysis-default-debug-time(!"Time - analysis: ") | "analysis-multiple-full-analysis"
 	      );
@@ -86,15 +92,15 @@ rules // Multi-file analysis
 	      , analysis-default-debug-time(!"Time - messages: ") | "analysis-multiple-update-editors"
 	      );
 	    	(
-	    		analysis-disable-persist <+
+	    		(analysis-disable-persist; index-persist-time := 0.0; task-persist-time := 0.0) <+
 	    		(
 			    	measure-time(
 				      index-persist
-			      , analysis-default-debug-time(!"Time - index persistance: ") | "analysis-multiple-index-persist"
+			      , analysis-default-debug-time(!"Time - index persistance: "), ?index-persist-time | "analysis-multiple-index-persist"
 			      );
 			    	measure-time(
 				      task-persist
-			      , analysis-default-debug-time(!"Time - task engine persistance: ") | "analysis-multiple-task-persist"
+			      , analysis-default-debug-time(!"Time - task engine persistance: "), ?task-persist-time | "analysis-multiple-task-persist"
 			      )
 		      )
 	      )  

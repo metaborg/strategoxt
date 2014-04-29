@@ -18,13 +18,16 @@ rules
 	is-completion-name = ?"completion123"
   fix-completion-name = is-completion-name; !""
   
-  measure-time(s, log) =
+  measure-time(s, log, match) =
     where(before := <times>);
     s;
-    where(after := <times>; !(after, before); diff-times; times-to-seconds; Fst; log)
+    where(after := <times>; !(after, before); diff-times; times-to-seconds; Fst; match; log)
   
   measure-time(s, log | name) = 
-    measure-time(s, record-time(|name); log)
+    measure-time(s, record-time(|name); log, id)
+    
+  measure-time(s, log, match | name) = 
+    measure-time(s, record-time(|name); log, match)
   
   record-time(|name) = id
   	
