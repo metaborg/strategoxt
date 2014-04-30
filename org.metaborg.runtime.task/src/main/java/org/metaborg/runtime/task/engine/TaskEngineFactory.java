@@ -90,7 +90,7 @@ public class TaskEngineFactory {
 			final IStrategoList reads = (IStrategoList) taskTerm.getSubterm(++i);
 
 			final ITask task =
-				taskEngine.getTaskFactory(instruction).create(instruction, dynamicDependencies,
+				taskEngine.getTaskFactory(instruction).create(instruction, initialDependencies,
 					TaskType.get(type.intValue()), takeBool(shortCircuit));
 			if(!isNull(instructionOverride))
 				task.overrideInstruction((IStrategoAppl) instructionOverride);
