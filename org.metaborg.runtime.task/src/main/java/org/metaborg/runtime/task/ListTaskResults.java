@@ -26,6 +26,11 @@ public class ListTaskResults implements ITaskResults {
 	}
 
 	@Override
+	public int size() {
+		return results.size();
+	}
+
+	@Override
 	public void set(Iterable<IStrategoTerm> results) {
 		this.results = Lists.newLinkedList(results);
 	}
