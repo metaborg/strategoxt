@@ -37,6 +37,17 @@ public class TaskManager {
 		return INSTANCE;
 	}
 
+
+	public boolean isInitialized() {
+		return current.get() != null;
+	}
+
+	private void ensureInitialized() {
+		if(!isInitialized())
+			throw new IllegalStateException(
+				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
+	}
+
 	public ITaskEngine getCurrent() {
 		ensureInitialized();
 		return current.get();
@@ -56,14 +67,9 @@ public class TaskManager {
 		setCurrent(getCurrentProject(), taskEngine);
 	}
 
-	public boolean isInitialized() {
-		return current.get() != null;
-	}
 
-	private void ensureInitialized() {
-		if(!isInitialized())
-			throw new IllegalStateException(
-				"Task engine has not been set-up, use task-setup(|project-path) to set up the task system before use.");
+	private boolean isHierarchicalTaskEngine(ITaskEngine taskEngine) {
+		return taskEngine instanceof IHierarchicalTaskEngine;
 	}
 
 	public ITaskEngine pushTaskEngine(ITermFactory factory) {
@@ -71,10 +77,6 @@ public class TaskManager {
 		final ITaskEngine newTaskEngine = createTaskEngine(currentTaskEngine, factory, currentTaskEngine.getDigester());
 		setCurrent(newTaskEngine);
 		return newTaskEngine;
-	}
-
-	private boolean isHierarchicalTaskEngine(ITaskEngine taskEngine) {
-		return taskEngine instanceof IHierarchicalTaskEngine;
 	}
 
 	public ITaskEngine popTaskEngine() {
@@ -116,6 +118,7 @@ public class TaskManager {
 		return parentTaskEngine;
 	}
 
+
 	public ITaskEngine createTaskEngine(ITermFactory factory) {
 		return createTaskEngine(factory, createTermDigester());
 	}
@@ -146,12 +149,6 @@ public class TaskManager {
 		return taskEvaluationFrontend;
 	}
 
-	public ITaskEngine getTaskEngine(String absoluteProjectPath) {
-		URI project = getProjectURIFromAbsolute(absoluteProjectPath);
-		WeakReference<ITaskEngine> taskEngineRef = taskEngineCache.get(project);
-		ITaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
-		return taskEngine;
-	}
 
 	public ITaskEngine loadTaskEngine(String projectPath, ITermFactory factory, IOAgent agent) {
 		URI project = getProjectURI(projectPath, agent);
@@ -159,7 +156,7 @@ public class TaskManager {
 			WeakReference<ITaskEngine> taskEngineRef = taskEngineCache.get(project);
 			ITaskEngine taskEngine = taskEngineRef == null ? null : taskEngineRef.get();
 			if(taskEngine == null) {
-				File taskEngineFile = getFile(project);
+				File taskEngineFile = getTaskEngineFile(project);
 				if(taskEngineFile.exists())
 					taskEngine = read(taskEngineFile, factory);
 			}
@@ -172,8 +169,8 @@ public class TaskManager {
 		}
 	}
 
-	public void unloadTaskEngine(String removedProjectPath, IOAgent agent) {
-		URI removedProject = getProjectURI(removedProjectPath, agent);
+	public void unloadTaskEngine(String projectPath, IOAgent agent) {
+		URI removedProject = getProjectURI(projectPath, agent);
 		synchronized(TaskManager.class) {
 			WeakReference<ITaskEngine> removedTaskEngine = taskEngineCache.remove(removedProject);
 
@@ -187,20 +184,6 @@ public class TaskManager {
 				currentProject.set(null);
 			}
 		}
-	}
-
-	private URI getProjectURI(String projectPath, IOAgent agent) {
-		File file = new File(projectPath);
-		if(!file.isAbsolute())
-			file = new File(agent.getWorkingDir(), projectPath);
-		return file.toURI();
-	}
-
-	private URI getProjectURIFromAbsolute(String projectPath) {
-		File file = new File(projectPath);
-		if(!file.isAbsolute())
-			throw new RuntimeException("Project path is not absolute.");
-		return file.toURI();
 	}
 
 	public ITaskEngine read(File file, ITermFactory factory) {
@@ -230,12 +213,28 @@ public class TaskManager {
 		}
 	}
 
-	public void storeCurrent(ITermFactory factory) throws IOException {
-		write(getCurrent(), getFile(getCurrentProject()), factory);
+	public void writeCurrent(ITermFactory factory) throws IOException {
+		write(getCurrent(), getTaskEngineFile(getCurrentProject()), factory);
 	}
 
-	private File getFile(URI project) {
-		File container = new File(new File(project), ".cache");
+
+	public URI getProjectURI(String projectPath, IOAgent agent) {
+		File file = new File(projectPath);
+		if(!file.isAbsolute())
+			file = new File(agent.getWorkingDir(), projectPath);
+		return file.toURI();
+	}
+
+	public URI getProjectURIFromAbsolute(String projectPath) {
+		File file = new File(projectPath);
+		if(!file.isAbsolute())
+			throw new RuntimeException("Project path is not absolute.");
+		return file.toURI();
+	}
+
+
+	public File getTaskEngineFile(URI projectPath) {
+		File container = new File(new File(projectPath), ".cache");
 		container.mkdirs();
 		return new File(container, "taskengine.idx");
 	}
