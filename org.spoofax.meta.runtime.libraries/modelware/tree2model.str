@@ -4,7 +4,8 @@ imports
   
   modelware/signatures
   nabl/-
-  editor/origins
+  index/-
+  editor/-
 
 rules
   
@@ -21,7 +22,7 @@ rules
 rules
   
   mw-def-uris    = get-arguments; map(get-annos; filter(?Def(_); try(origin-location))); concat
-  mw-ref-uri     = get-annos; fetch-elem(?Use(_)); (nabl-collect-one-resolved-def; ?Def(_); try(origin-location) <+ ?Use(<id>) <+ !Unresolved())
+  mw-ref-uri     = get-annos; fetch-elem(?Use(_)); (nabl-collect-one-resolved-def; index-get-all; Hd; ?Def(_); try(origin-location) <+ ?Use(<id>) <+ !Unresolved())
   mw-is-compound = where(not(?Some(_))); explode-term + map(explode-term)
   
   mw-combine = ?[]
