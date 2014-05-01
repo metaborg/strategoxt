@@ -79,7 +79,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 
 	@Override
 	public void queueOrDefer(IStrategoTerm taskID) {
-		final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
+		final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID, false);
 		final Set<IStrategoTerm> dependenciesSet = Sets.newHashSet(dependencies);
 
 		// TODO: this could be done in constant time if task engine keeps a set of solved tasks.
@@ -101,7 +101,7 @@ public class TaskEvaluationQueue implements ITaskEvaluationQueue, ITaskEvaluatio
 	@Override
 	public void solved(IStrategoTerm taskID) {
 		// Retrieve dependent tasks of the solved task.
-		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependent(taskID, false));
+		final Set<IStrategoTerm> dependents = Sets.newHashSet(taskEngine.getDependents(taskID, false));
 		dependents.addAll(runtimeDependencies.getInverse(taskID));
 
 		for(final IStrategoTerm dependentTaskID : dependents) {

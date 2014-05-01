@@ -226,7 +226,7 @@ public class ChoiceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 			if(ChoiceTask.isChoice(task.instruction())) {
 				continue;
 			}
-			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
+			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID, false)) {
 				if(seen.add(dependency))
 					queue.add(dependency);
 			}

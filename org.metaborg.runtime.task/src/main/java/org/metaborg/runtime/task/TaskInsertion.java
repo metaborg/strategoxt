@@ -41,7 +41,7 @@ public final class TaskInsertion {
 
 		switch(task.type()) {
 			case Regular: {
-				final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID);
+				final Iterable<IStrategoTerm> allDependencies = taskEngine.getDependencies(taskID, false);
 				if(dependencyFailure(taskEngine, allDependencies))
 					return null;
 

@@ -275,7 +275,7 @@ public class TaskEngine implements ITaskEngine {
 		for(IStrategoTerm taskID; (taskID = workList.poll()) != null;) {
 			schedule(taskID);
 
-			final Iterable<IStrategoTerm> dependent = wrapper.getDependent(taskID, true);
+			final Iterable<IStrategoTerm> dependent = wrapper.getDependents(taskID, true);
 			for(IStrategoTerm dependentTaskID : dependent) {
 				if(seen.add(dependentTaskID)) {
 					workList.offer(dependentTaskID);
@@ -374,8 +374,11 @@ public class TaskEngine implements ITaskEngine {
 
 
 	@Override
-	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
-		return toDependency.get(taskID);
+	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID, boolean withDynamic) {
+		if(withDynamic)
+			return Sets.union(toDynamicDependency.get(taskID), toDependency.get(taskID));
+		else
+			return toDependency.get(taskID);
 	}
 
 	@Override
@@ -392,7 +395,7 @@ public class TaskEngine implements ITaskEngine {
 		seen.add(taskID);
 
 		for(IStrategoTerm queueTaskID; (queueTaskID = queue.poll()) != null;) {
-			for(IStrategoTerm dependency : wrapper.getDependencies(queueTaskID)) {
+			for(IStrategoTerm dependency : wrapper.getDependencies(queueTaskID, false)) {
 				if(seen.add(dependency))
 					queue.add(dependency);
 			}
@@ -403,11 +406,16 @@ public class TaskEngine implements ITaskEngine {
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic) {
+	public Iterable<IStrategoTerm> getDependents(IStrategoTerm taskID, boolean withDynamic) {
 		if(withDynamic)
 			return Sets.union(toDynamicDependency.getInverse(taskID), toDependency.getInverse(taskID));
 		else
 			return toDependency.getInverse(taskID);
+	}
+
+	@Override
+	public Iterable<IStrategoTerm> getDynamicDependents(IStrategoTerm taskID) {
+		return toDynamicDependency.getInverse(taskID);
 	}
 
 	@Override
@@ -419,7 +427,7 @@ public class TaskEngine implements ITaskEngine {
 		seen.add(taskIDTo);
 
 		for(IStrategoTerm taskID; (taskID = queue.poll()) != null;) {
-			for(IStrategoTerm dependency : wrapper.getDependencies(taskID)) {
+			for(IStrategoTerm dependency : wrapper.getDependencies(taskID, false)) {
 				if(dependency.equals(taskIDFrom))
 					return true;
 				if(seen.add(dependency))

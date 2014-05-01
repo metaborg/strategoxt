@@ -50,7 +50,7 @@ public class task_api_debug_info_0_1 extends AbstractPrimitive {
 
 	private IStrategoTerm createDebugTuple(IStrategoTerm taskID, ITaskEngine engine, ITermFactory factory) {
 		ITask task = engine.getTask(taskID);
-		final IStrategoList staticDependencies = makeList(factory, engine.getDependencies(taskID));
+		final IStrategoList staticDependencies = makeList(factory, engine.getDependencies(taskID, false));
 		final IStrategoList dynamicDependencies = makeList(factory, engine.getDynamicDependencies(taskID));
 		final IStrategoTerm message = task.message() == null ? none(factory) : task.message();
 		final IStrategoTerm reads = makeList(factory, engine.getReads(taskID));

@@ -231,7 +231,7 @@ public class SequenceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 			if(SequenceTask.isSequence(task.instruction())) {
 				continue;
 			}
-			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID)) {
+			for(IStrategoTerm dependency : taskEngine.getDependencies(queueTaskID, false)) {
 				if(seen.add(dependency))
 					queue.add(dependency);
 			}

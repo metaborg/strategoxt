@@ -31,7 +31,7 @@ public class TaskEngineFactory {
 				message = serializer.toAnnotations(message);
 
 			final Iterable<IStrategoTerm> sources = taskEngine.getSourcesOf(taskID);
-			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID);
+			final Iterable<IStrategoTerm> dependencies = taskEngine.getDependencies(taskID, false);
 			final Iterable<IStrategoTerm> dynamicDependencies = taskEngine.getDynamicDependencies(taskID);
 			final Iterable<IStrategoTerm> reads = taskEngine.getReads(taskID);
 

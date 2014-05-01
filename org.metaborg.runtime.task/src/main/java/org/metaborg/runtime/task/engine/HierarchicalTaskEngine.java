@@ -303,10 +303,10 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID) {
-		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependencies(taskID);
+	public Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID, boolean withDynamic) {
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependencies(taskID, withDynamic);
 		if(parentTaskVisible(taskID) && parentDependenciesVisible(taskID))
-			return Iterables.concat(parent.getDependencies(taskID), ownTaskIDs);
+			return Iterables.concat(parent.getDependencies(taskID, withDynamic), ownTaskIDs);
 		else
 			return ownTaskIDs;
 	}
@@ -326,13 +326,23 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 	}
 
 	@Override
-	public Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic) {
+	public Iterable<IStrategoTerm> getDependents(IStrategoTerm taskID, boolean withDynamic) {
 		// TODO: Should not return duplicates?
 		final Iterable<IStrategoTerm> parentTaskIDs =
-			parentDependenciesVisibleFilter(parentVisibleFilter(parent.getDependent(taskID, withDynamic)));
-		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependent(taskID, withDynamic);
+			parentDependenciesVisibleFilter(parentVisibleFilter(parent.getDependents(taskID, withDynamic)));
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getDependents(taskID, withDynamic);
 		return Iterables.concat(parentTaskIDs, ownTaskIDs);
 	}
+
+	@Override
+	public Iterable<IStrategoTerm> getDynamicDependents(IStrategoTerm taskID) {
+		// TODO: Should not return duplicates?
+		final Iterable<IStrategoTerm> parentTaskIDs =
+			parentDependenciesVisibleFilter(parentVisibleFilter(parent.getDynamicDependents(taskID)));
+		final Iterable<IStrategoTerm> ownTaskIDs = current.getDynamicDependents(taskID);
+		return Iterables.concat(parentTaskIDs, ownTaskIDs);
+	}
+
 
 	@Override
 	public boolean becomesCyclic(IStrategoTerm taskIDFrom, IStrategoTerm taskIDTo) {

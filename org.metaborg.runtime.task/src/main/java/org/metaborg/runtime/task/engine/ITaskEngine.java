@@ -237,10 +237,11 @@ public interface ITaskEngine {
 
 	/**
 	 * Gets all other task identifiers that task with given identifier statically depends on.
-	 *
+	 * 
 	 * @param taskID The task identifier to get static dependencies for.
+	 * @param withDynamic If dynamic dependencies should be included.
 	 */
-	public abstract Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID);
+	public abstract Iterable<IStrategoTerm> getDependencies(IStrategoTerm taskID, boolean withDynamic);
 
 	/**
 	 * Gets all other task identifiers that task with given identifier dynamically depends on.
@@ -250,19 +251,26 @@ public interface ITaskEngine {
 	public abstract Iterable<IStrategoTerm> getDynamicDependencies(IStrategoTerm taskID);
 
 	/**
-	 * Gets all other task identifier that task with given identifier statically transitively depends on.
+	 * Gets all other task identifiers that task with given identifier statically transitively depends on.
 	 *
 	 * @param taskID The task identifier to get static dependencies for.
 	 */
 	public abstract Set<IStrategoTerm> getTransitiveDependencies(IStrategoTerm taskID);
 
 	/**
-	 * Gets all other task identifier that depend on the task with given identifier.
+	 * Gets all other task identifiers that depend on the task with given identifier.
 	 *
 	 * @param taskID The task identifier to get dependent tasks for.
 	 * @param withDynamic If dynamic dependents should be included.
 	 */
-	public abstract Iterable<IStrategoTerm> getDependent(IStrategoTerm taskID, boolean withDynamic);
+	public abstract Iterable<IStrategoTerm> getDependents(IStrategoTerm taskID, boolean withDynamic);
+
+	/**
+	 * Gets all other task identifiers that dynamically depend on the task with given identifier.
+	 *
+	 * @param taskID The task identifier to get dynamically dependent tasks for.
+	 */
+	public abstract Iterable<IStrategoTerm> getDynamicDependents(IStrategoTerm taskID);
 
 	/**
 	 * Queries if adding a dependency between two tasks would cause a cyclic dependency. Does not change the actual
