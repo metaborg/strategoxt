@@ -27,39 +27,49 @@ public class BaseTaskFactory implements ITaskFactory {
 	}
 
 	@Override
-	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		// HACK: create set task for insert and combine instructions that consist of only set tasks.
-		// TODO: should be factored out.
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type,
+		TaskStorageType storageType, boolean shortCircuit) {
 		final ITaskResults taskResults;
-		if(Tools.isTermAppl(instruction) && (Tools.hasConstructor(instruction, "Insert", 1))
-			|| (Tools.hasConstructor(instruction, "Combine", 1))) {
-			IStrategoTerm innerResults = instruction.getSubterm(0);
-			if(innerResults.getTermType() != IStrategoTerm.LIST)
-				innerResults = factory.makeList(innerResults);
+		switch(storageType) {
+			case Auto: {
+				IStrategoTerm innerResults = instruction.getSubterm(0);
+				if(innerResults.getTermType() != IStrategoTerm.LIST)
+					innerResults = factory.makeList(innerResults);
 
-			final Collection<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
-			for(IStrategoTerm result : innerResults) {
-				if(Tools.isTermAppl(result) && Tools.hasConstructor((IStrategoAppl) result, "Result", 1)) {
-					results.add(result.getSubterm(0));
+				final Collection<IStrategoTerm> results = new LinkedList<IStrategoTerm>();
+				for(IStrategoTerm result : innerResults) {
+					if(Tools.isTermAppl(result) && Tools.hasConstructor((IStrategoAppl) result, "Result", 1)) {
+						results.add(result.getSubterm(0));
+					}
 				}
-			}
 
-			boolean set = results.size() != 0;
-			for(IStrategoTerm taskID : results) {
-				final ITask task = taskEngine.getTask(taskID);
-				set = task != null && (task.results() instanceof SetTaskResults) && set;
-			}
+				boolean set = results.size() != 0;
+				for(IStrategoTerm taskID : results) {
+					final ITask task = taskEngine.getTask(taskID);
+					set = task != null && (task.results() instanceof SetTaskResults) && set;
+				}
 
-			if(set) {
-				taskResults = new SetTaskResults();
-			} else {
+				if(set) {
+					taskResults = new SetTaskResults();
+				} else {
+					taskResults = new ListTaskResults();
+				}
+				break;
+			}
+			case List: {
 				taskResults = new ListTaskResults();
+				break;
 			}
-		} else {
-			taskResults = new ListTaskResults();
+			case Set: {
+				taskResults = new SetTaskResults();
+				break;
+			}
+			default: {
+				throw new RuntimeException("Unhandled task storage type " + storageType);
+			}
 		}
 
-		return new Task(instruction, dependencies, type, shortCircuit, taskResults);
+		return new Task(instruction, dependencies, type, storageType, shortCircuit, taskResults);
 	}
 
 	@Override

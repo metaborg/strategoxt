@@ -7,6 +7,7 @@ import java.util.Set;
 import org.metaborg.runtime.task.BaseTaskFactory;
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.TaskStorageType;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
@@ -126,8 +127,8 @@ public class HierarchicalTaskEngine implements IHierarchicalTaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
-		TaskType type, boolean shortCircuit) {
-		return current.addTask(source, dependencies, instruction, type, shortCircuit);
+		TaskType type, TaskStorageType storageType, boolean shortCircuit) {
+		return current.addTask(source, dependencies, instruction, type, storageType, shortCircuit);
 	}
 
 	@Override

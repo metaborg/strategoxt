@@ -10,6 +10,7 @@ import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.ListTaskResults;
 import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskStatus;
+import org.metaborg.runtime.task.TaskStorageType;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
@@ -56,8 +57,9 @@ public class SequenceTask implements ITaskFactory, ITaskQueuer, ITaskEvaluator {
 	}
 
 	@Override
-	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new Task(instruction, dependencies, type, shortCircuit, new ListTaskResults());
+	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type,
+		TaskStorageType storageType, boolean shortCircuit) {
+		return new Task(instruction, dependencies, type, TaskStorageType.List, shortCircuit, new ListTaskResults());
 	}
 
 	@Override

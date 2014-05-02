@@ -28,7 +28,8 @@ rules // API
   // todo: add API documentation for each of these including types
 	
 	task-add-message(|taskID, message)                         = task-api-add-message(|taskID, message)
-	task-add-task(|partition, dependencies, instruction, is-combinator, short-circuit) = task-api-add-task(|partition, dependencies, instruction, is-combinator, short-circuit)
+	task-add-task(|partition, dependencies, instruction, 
+	               type, storage-type, short-circuit)          = task-api-add-task(|partition, dependencies, instruction, type, storage-type, short-circuit)
 	task-add-read(|task-id)                                    = task-api-add-read(|task-id, <id>)
 	task-clear-partition                                       = task-api-clear-partition(|<id>)
 	task-delay                                                 = task-api-delay(|<id>)

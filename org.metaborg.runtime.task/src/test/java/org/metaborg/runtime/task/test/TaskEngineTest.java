@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.metaborg.runtime.task.TaskStorageType;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.engine.TaskEngineFactory;
@@ -31,10 +32,12 @@ public class TaskEngineTest extends TaskTest {
 	public void testAddTasks() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult =
-			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		IStrategoTerm resolveID = resultID(resolveResult);
 		IStrategoTerm resolveImportResult =
-			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
@@ -42,7 +45,7 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
@@ -78,47 +81,58 @@ public class TaskEngineTest extends TaskTest {
 	public void testNoDuplicates() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult =
-			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		IStrategoTerm resolveID = resultID(resolveResult);
 
 		// Add a duplicate instruction but with different dependencies.
 		IStrategoTerm resolveResult2 =
-			taskEngine.addTask(partition1, dependencies(resolveResult), resolveInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(resolveResult), resolveInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		IStrategoTerm resolveID2 = resultID(resolveResult2);
 
 		IStrategoTerm resolveImportResult =
-			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 
 		IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition1, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition1);
 
 		// Add all tasks again to partition 2.
 		taskEngine.startCollection(partition2);
 		// Add 2 duplicates.
-		resolveResult = taskEngine.addTask(partition2, dependencies(), resolveInstruction, TaskType.Regular, false);
+		resolveResult =
+			taskEngine.addTask(partition2, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		resolveID = resultID(resolveResult);
-		resolveResult = taskEngine.addTask(partition2, dependencies(), resolveInstruction, TaskType.Regular, false);
+		resolveResult =
+			taskEngine.addTask(partition2, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		resolveID = resultID(resolveResult);
-		resolveResult = taskEngine.addTask(partition2, dependencies(), resolveInstruction, TaskType.Regular, false);
+		resolveResult =
+			taskEngine.addTask(partition2, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		resolveID = resultID(resolveResult);
 
 		// Add 1 duplicate.
 		resolveImportResult =
-			taskEngine.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		resolveImportID = resultID(resolveImportResult);
 		resolveImportResult =
-			taskEngine.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		resolveImportID = resultID(resolveImportResult);
 
 		choiceInstruction = choice(resolveResult, resolveImportResult);
 		choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
@@ -143,14 +157,16 @@ public class TaskEngineTest extends TaskTest {
 	// Adding a task without starting collection.
 	@Test(expected = IllegalStateException.class)
 	public void testInCollection1() {
-		taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+		taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+			false);
 	}
 
 	// Adding a task to another partition than the one that started a collection.
 	@Test(expected = IllegalStateException.class)
 	public void testInCollection2() {
 		taskEngine.startCollection(partition2);
-		taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+		taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+			false);
 		taskEngine.stopCollection(partition2);
 	}
 
@@ -172,10 +188,12 @@ public class TaskEngineTest extends TaskTest {
 	public void testRemoveTasks() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult =
-			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		IStrategoTerm resolveID = resultID(resolveResult);
 		IStrategoTerm resolveImportResult =
-			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
@@ -183,7 +201,7 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
@@ -194,7 +212,8 @@ public class TaskEngineTest extends TaskTest {
 		// Update partition1 with only the resolveImport task, removing the resolve task.
 		taskEngine.startCollection(partition1);
 		resolveImportResult =
-			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
@@ -215,10 +234,12 @@ public class TaskEngineTest extends TaskTest {
 	public void testReset() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveResult =
-			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		IStrategoTerm resolveID = resultID(resolveResult);
 		IStrategoTerm resolveImportResult =
-			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			taskEngine.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		taskEngine.stopCollection(partition1);
 
@@ -226,7 +247,7 @@ public class TaskEngineTest extends TaskTest {
 		taskEngine.startCollection(partition2);
 		IStrategoTerm choiceResult =
 			taskEngine.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		IStrategoTerm choiceID = resultID(choiceResult);
 		taskEngine.stopCollection(partition2);
 
@@ -241,13 +262,17 @@ public class TaskEngineTest extends TaskTest {
 	public void testBecomesCyclic() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveD =
-			resultID(taskEngine.addTask(partition1, list(), resolve("D"), TaskType.Regular, false));
+			resultID(taskEngine
+				.addTask(partition1, list(), resolve("D"), TaskType.Regular, TaskStorageType.Auto, false));
 		IStrategoTerm resolveC =
-			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), TaskType.Regular, false));
+			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), TaskType.Regular,
+				TaskStorageType.Auto, false));
 		IStrategoTerm resolveB =
-			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), TaskType.Regular, false));
+			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), TaskType.Regular,
+				TaskStorageType.Auto, false));
 		IStrategoTerm resolveA =
-			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), TaskType.Regular, false));
+			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), TaskType.Regular,
+				TaskStorageType.Auto, false));
 		taskEngine.stopCollection(partition1);
 
 		assertTrue(taskEngine.becomesCyclic(resolveD, resolveA));
@@ -269,17 +294,21 @@ public class TaskEngineTest extends TaskTest {
 	public void testPersistance() {
 		taskEngine.startCollection(partition1);
 		IStrategoTerm resolveD =
-			resultID(taskEngine.addTask(partition1, list(), resolve("D"), TaskType.Combinator, false));
+			resultID(taskEngine.addTask(partition1, list(), resolve("D"), TaskType.Combinator, TaskStorageType.Auto,
+				false));
 		taskEngine.getTask(resolveD).setFailed();
 		IStrategoTerm resolveC =
-			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), TaskType.Regular, true));
+			resultID(taskEngine.addTask(partition1, list(resolveD), resolve("C"), TaskType.Regular,
+				TaskStorageType.Auto, true));
 		taskEngine.getTask(resolveC).results().add(factory.makeInt(42));
 		IStrategoTerm resolveB =
-			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), TaskType.Regular, true));
+			resultID(taskEngine.addTask(partition1, list(resolveC), resolve("B"), TaskType.Regular,
+				TaskStorageType.Auto, true));
 		taskEngine.getTask(resolveB).results().add(factory.makeInt(1));
 		taskEngine.getTask(resolveB).results().add(factory.makeInt(2));
 		IStrategoTerm resolveA =
-			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), TaskType.Combinator, false));
+			resultID(taskEngine.addTask(partition1, list(resolveB), resolve("A"), TaskType.Combinator,
+				TaskStorageType.Auto, false));
 		taskEngine.getTask(resolveA).setDependencyFailed();
 		taskEngine.stopCollection(partition1);
 
@@ -346,7 +375,8 @@ public class TaskEngineTest extends TaskTest {
 
 		current.startCollection(partition2);
 		final IStrategoTerm resolveImportResult =
-			current.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			current.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		current.stopCollection(partition2);
 
@@ -365,7 +395,8 @@ public class TaskEngineTest extends TaskTest {
 
 		current.startCollection(partition1);
 		final IStrategoTerm resolveResult =
-			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		final IStrategoTerm resolveID = resultID(resolveResult);
 		current.stopCollection(partition1);
 
@@ -376,7 +407,8 @@ public class TaskEngineTest extends TaskTest {
 
 		current.startCollection(partition2);
 		final IStrategoTerm resolveImportResult =
-			current.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			current.addTask(partition2, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		current.stopCollection(partition2);
 
@@ -397,10 +429,12 @@ public class TaskEngineTest extends TaskTest {
 
 		current.startCollection(partition1);
 		final IStrategoTerm resolveResult =
-			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		final IStrategoTerm resolveID = resultID(resolveResult);
 		final IStrategoTerm resolveImportResult =
-			current.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		current.stopCollection(partition1);
 
@@ -431,10 +465,12 @@ public class TaskEngineTest extends TaskTest {
 
 		current.startCollection(partition1);
 		final IStrategoTerm resolveResult =
-			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		final IStrategoTerm resolveID = resultID(resolveResult);
 		final IStrategoTerm resolveImportResult =
-			current.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		current.stopCollection(partition1);
 
@@ -448,7 +484,7 @@ public class TaskEngineTest extends TaskTest {
 		final IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		final IStrategoTerm choiceResult =
 			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		final IStrategoTerm choiceID = resultID(choiceResult);
 		current.stopCollection(partition2);
 
@@ -479,10 +515,12 @@ public class TaskEngineTest extends TaskTest {
 
 		current.startCollection(partition1);
 		final IStrategoTerm resolveResult =
-			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveInstruction, TaskType.Regular, TaskStorageType.Auto,
+				false);
 		final IStrategoTerm resolveID = resultID(resolveResult);
 		final IStrategoTerm resolveImportResult =
-			current.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular, false);
+			current.addTask(partition1, dependencies(), resolveImportInstruction, TaskType.Regular,
+				TaskStorageType.Auto, false);
 		final IStrategoTerm resolveImportID = resultID(resolveImportResult);
 		current.stopCollection(partition1);
 
@@ -496,7 +534,7 @@ public class TaskEngineTest extends TaskTest {
 		final IStrategoAppl choiceInstruction = choice(resolveResult, resolveImportResult);
 		final IStrategoTerm choiceResult =
 			current.addTask(partition2, dependencies(resolveResult, resolveImportResult), choiceInstruction,
-				TaskType.Combinator, false);
+				TaskType.Combinator, TaskStorageType.Auto, false);
 		final IStrategoTerm choiceID = resultID(choiceResult);
 		current.stopCollection(partition2);
 

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.TaskStatus;
+import org.metaborg.runtime.task.TaskStorageType;
 import org.metaborg.runtime.task.TaskType;
 import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoInt;
@@ -41,6 +42,7 @@ public class TaskEngineFactory {
 				task.initialInstruction(),
 				task.initialDependencies(),
 				factory.makeInt(task.type().id),
+				factory.makeInt(task.storageType().id),
 				makeBool(factory, task.shortCircuit()),
 				makeNullable(factory, task.instructionOverride()),
 				results,
@@ -76,6 +78,7 @@ public class TaskEngineFactory {
 			final IStrategoAppl instruction = (IStrategoAppl) taskTerm.getSubterm(++i);
 			final IStrategoList initialDependencies = (IStrategoList) taskTerm.getSubterm(++i);
 			final IStrategoInt type = (IStrategoInt) taskTerm.getSubterm(++i);
+			final IStrategoInt storageType = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoInt shortCircuit = (IStrategoInt) taskTerm.getSubterm(++i);
 			final IStrategoTerm instructionOverride = taskTerm.getSubterm(++i);
 			final IStrategoTerm results = serializer.fromAnnotations(taskTerm.getSubterm(++i), false);
@@ -91,7 +94,7 @@ public class TaskEngineFactory {
 
 			final ITask task =
 				taskEngine.getTaskFactory(instruction).create(instruction, initialDependencies,
-					TaskType.get(type.intValue()), takeBool(shortCircuit));
+					TaskType.get(type.intValue()), TaskStorageType.get(storageType.intValue()), takeBool(shortCircuit));
 			if(!isNull(instructionOverride))
 				task.overrideInstruction((IStrategoAppl) instructionOverride);
 			if(!isNull(results))

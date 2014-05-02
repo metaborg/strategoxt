@@ -45,6 +45,9 @@ rules // Lookup (customised in Java to store its result in a hash set, for fast 
     where
 		  result* := <relation-lookup(|rel)> term
 		  // TODO: remove redundant relation-try-term-to-uri calls in relation-lookup, term' is already the correct term.
+		  
+  task-get-storage-type:
+  	RelationLookup(_, _) -> <task-set-storage>
   
 rules // Match (custom implementation in Java that uses the hash set from a lookup task for fast lookups)
 	
@@ -62,6 +65,12 @@ rules // Match (custom implementation in Java that uses the hash set from a look
   	  else
   	  	result := match-task
   	  end
+  
+  task-get-type:
+  	RelationMatch(_, _) -> <task-raw-type>
+  	  
+  task-get-storage-type:
+  	RelationMatch(_, _) -> <task-set-storage>
 		  
 rules // Distance
 	

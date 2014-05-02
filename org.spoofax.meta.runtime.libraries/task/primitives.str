@@ -4,7 +4,7 @@ rules /** @internal API primitives */
 
 	task-api-add-message(|taskID, message) = prim("task_api_add_message", taskID, message)
 	task-api-add-read(|taskID, read) = prim("task_api_add_read", taskID, read)
-	task-api-add-task(|partition, dependencies, instruction, is-combinator, short-circuit) = prim("task_api_add_task", partition, dependencies, instruction, is-combinator, short-circuit)
+	task-api-add-task(|partition, dependencies, instruction, type, storage-type, short-circuit) = prim("task_api_add_task", partition, dependencies, instruction, type, storage-type, short-circuit)
 	task-api-clear-partition(|partition) = prim("task_api_clear_partition", partition)
 	task-api-delay(|dependencies) = prim("task_api_delay", dependencies)
 	task-api-debug-info(|partition) = prim("task_api_debug_info", partition)

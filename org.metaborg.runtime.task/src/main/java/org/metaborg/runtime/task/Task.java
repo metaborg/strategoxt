@@ -9,6 +9,7 @@ public class Task implements ITask {
 	private final IStrategoList initialDependencies;
 	// TODO: move these to task (type) definition, this is wasting space.
 	private final TaskType type;
+	private final TaskStorageType storageType;
 	private final boolean shortCircuit;
 	private final ITaskResults results;
 
@@ -18,11 +19,12 @@ public class Task implements ITask {
 	private long time = -1;
 	private short evaluations = 0;
 
-	public Task(IStrategoAppl instruction, IStrategoList initialDependencies, TaskType type, boolean shortCircuit,
-		ITaskResults results) {
+	public Task(IStrategoAppl instruction, IStrategoList initialDependencies, TaskType type,
+		TaskStorageType storageType, boolean shortCircuit, ITaskResults results) {
 		this.instruction = instruction;
 		this.initialDependencies = initialDependencies;
 		this.type = type;
+		this.storageType = storageType;
 		this.shortCircuit = shortCircuit;
 		this.results = results;
 	}
@@ -31,6 +33,7 @@ public class Task implements ITask {
 		this.instruction = task.instruction;
 		this.initialDependencies = task.initialDependencies;
 		this.type = task.type;
+		this.storageType = task.storageType;
 		this.shortCircuit = task.shortCircuit;
 		this.results = task.results;
 
@@ -80,6 +83,11 @@ public class Task implements ITask {
 		return type;
 	}
 
+
+	@Override
+	public TaskStorageType storageType() {
+		return storageType;
+	}
 
 	@Override
 	public boolean shortCircuit() {

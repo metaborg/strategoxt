@@ -8,6 +8,7 @@ import java.util.Set;
 import org.metaborg.runtime.task.BaseTaskFactory;
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.TaskStorageType;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
@@ -147,7 +148,7 @@ public class TaskEngine implements ITaskEngine {
 
 	@Override
 	public IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
-		TaskType type, boolean shortCircuit) {
+		TaskType type, TaskStorageType storageType, boolean shortCircuit) {
 		if(!taskCollection.inCollection(source))
 			throw new IllegalStateException(
 				"Collection has not been started yet. Call task-start-collection(|partition) before adding tasks.");
@@ -159,7 +160,7 @@ public class TaskEngine implements ITaskEngine {
 		final IStrategoTerm taskID = createTaskID(instruction, dependencies);
 
 		if(wrapper.getTask(taskID) == null) {
-			final ITask task = taskFactory.create(instruction, dependencies, type, shortCircuit);
+			final ITask task = taskFactory.create(instruction, dependencies, type, storageType, shortCircuit);
 			toTask.put(taskID, task);
 			taskCollection.addTask(taskID);
 			schedule(taskID);

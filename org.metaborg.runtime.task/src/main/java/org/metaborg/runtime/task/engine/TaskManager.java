@@ -11,7 +11,6 @@ import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.digest.NonDeterministicCountingTermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.TaskEvaluationQueue;
-import org.metaborg.runtime.task.specific.RelationLookupTask;
 import org.metaborg.runtime.task.specific.RelationMatchTask;
 import org.spoofax.interpreter.library.IOAgent;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -144,8 +143,7 @@ public class TaskManager {
 
 	public ITaskEvaluationFrontend createTaskEvaluationFrontend(ITaskEngine taskEngine, ITermFactory factory) {
 		final ITaskEvaluationFrontend taskEvaluationFrontend = new TaskEvaluationQueue(taskEngine, factory);
-		RelationLookupTask.register(taskEngine, factory);
-		RelationMatchTask.register(taskEngine, taskEvaluationFrontend, factory);
+		RelationMatchTask.register(taskEvaluationFrontend, factory);
 		return taskEvaluationFrontend;
 	}
 

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.metaborg.runtime.task.ITask;
 import org.metaborg.runtime.task.ITaskFactory;
+import org.metaborg.runtime.task.TaskStorageType;
 import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.digest.ITermDigester;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
@@ -67,17 +68,17 @@ public interface ITaskEngine {
 
 	/**
 	 * Adds an instruction with dependencies from a partition and returns a unique task identifier for this instruction.
-	 *
+	 * 
 	 * @param source The origin of the task.
 	 * @param dependencies A list of task identifiers of the tasks that given instruction depends on,
 	 * @param instruction The instruction.
 	 * @param type Type of task.
+	 * @param storageType Result storage type of task.
 	 * @param shortCircuit Whether evaluating this task stops after the first successful instruction has been executed.
-	 *
 	 * @return A unique task identifier for given instruction.
 	 */
 	public abstract IStrategoTerm addTask(IStrategoTerm source, IStrategoList dependencies, IStrategoAppl instruction,
-		TaskType type, boolean shortCircuit);
+		TaskType type, TaskStorageType storageType, boolean shortCircuit);
 
 	/**
 	 * Adds a persisted task back to the task engine.
@@ -237,7 +238,7 @@ public interface ITaskEngine {
 
 	/**
 	 * Gets all other task identifiers that task with given identifier statically depends on.
-	 * 
+	 *
 	 * @param taskID The task identifier to get static dependencies for.
 	 * @param withDynamic If dynamic dependencies should be included.
 	 */

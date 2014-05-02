@@ -1,40 +1,19 @@
 package org.metaborg.runtime.task.specific;
 
 import org.metaborg.runtime.task.ITask;
-import org.metaborg.runtime.task.ITaskFactory;
 import org.metaborg.runtime.task.SetTaskResults;
-import org.metaborg.runtime.task.Task;
 import org.metaborg.runtime.task.TaskStatus;
-import org.metaborg.runtime.task.TaskType;
 import org.metaborg.runtime.task.engine.ITaskEngine;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationFrontend;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluationQueue;
 import org.metaborg.runtime.task.evaluation.ITaskEvaluator;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.stratego.Strategy;
-import org.spoofax.interpreter.terms.IStrategoAppl;
 import org.spoofax.interpreter.terms.IStrategoConstructor;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
 
-public class RelationMatchTask implements ITaskFactory, ITaskEvaluator {
-	@Override
-	public IStrategoList adjustDependencies(IStrategoList dependencies) {
-		return dependencies;
-	}
-
-	@Override
-	public ITask create(IStrategoAppl instruction, IStrategoList dependencies, TaskType type, boolean shortCircuit) {
-		return new Task(instruction, dependencies, TaskType.Raw, shortCircuit, new SetTaskResults());
-	}
-
-	@Override
-	public ITask clone(ITask task) {
-		return new Task((Task) task); // TODO: get rid of cast or ITask interface.
-	}
-
-
+public class RelationMatchTask implements ITaskEvaluator {
 	@Override
 	public void evaluate(IStrategoTerm taskID, ITask task, ITaskEngine taskEngine,
 		ITaskEvaluationQueue evaluationQueue, IContext context, Strategy collect, Strategy insert, Strategy perform,
@@ -73,11 +52,9 @@ public class RelationMatchTask implements ITaskFactory, ITaskEvaluator {
 	}
 
 
-	public static RelationMatchTask register(ITaskEngine taskEngine, ITaskEvaluationFrontend evaluationFrontend,
-		ITermFactory factory) {
+	public static RelationMatchTask register(ITaskEvaluationFrontend evaluationFrontend, ITermFactory factory) {
 		final RelationMatchTask evaluator = new RelationMatchTask();
 		final IStrategoConstructor constructor = factory.makeConstructor("RelationMatch", 2);
-		taskEngine.registerTaskFactory(constructor, evaluator);
 		evaluationFrontend.registerTaskEvaluator(constructor, evaluator);
 		return evaluator;
 	}

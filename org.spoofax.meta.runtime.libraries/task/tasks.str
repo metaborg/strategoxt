@@ -28,6 +28,7 @@ signature
     Eq       : Term * Term         -> Instruction
     Insert   : Term                -> Instruction
     Rewrite  : ID * Result         -> Instruction
+    MakeSet  : Term                -> Instruction 
 
 rules // Identity
   
@@ -69,7 +70,9 @@ rules // Choice
   task-create-choice(t1, t2|ctx):
     term -> <task-create-choice(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
 	
-	task-is-combinator = ?Choice(_)
+	task-get-type: Choice(_) -> <task-combinator-type>
+	task-get-storage-type: Choice(_) -> <task-auto-storage>
+
   perform-task(|nr)  = ?Choice(<fetch-elem(not(?[]))>)
   
 rules // Sequence
@@ -88,7 +91,9 @@ rules // Sequence
   task-create-sequence(t1, t2|ctx):
     term -> <task-create-sequence(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
 	
-	task-is-combinator = ?Sequence(_)
+	task-get-type: Sequence(_) -> <task-combinator-type>
+	task-get-storage-type: Sequence(_) -> <task-auto-storage>
+
   perform-task(|nr)  = ?Sequence(<not(fetch-elem(?[])); last>)
 
 rules // Combine
@@ -104,6 +109,9 @@ rules // Combine
 		task* -> <new-task(|ctx, all-dep*)> Combine(task*)
   	with 
     	all-dep* := <merge-dependencies(|dep*)> task*
+       
+	task-get-type: Combine(_) -> <task-combinator-type>
+	task-get-storage-type: Combine(_) -> <task-auto-storage>
        
   task-is-combinator = ?Combine(_)
   perform-task(|nr)  = ?Combine(<mapconcat(is-list <+ MkSingleton)>)
@@ -223,7 +231,19 @@ rules // Result insertion
 	perform-task(|task-id):
 		Insert(term) -> <insert-results-or-delay> term
 		  
-	task-is-combinator = ?Insert(_)
+	task-get-type: Insert(_) -> <task-combinator-type>
+	task-get-storage-type: Insert(_) -> <task-auto-storage>
+
+rules // Turn results into a set
+	
+	task-create-make-set(|ctx):
+		term -> <new-task(|ctx)> MakeSet(term)
+		
+	perform-task(|task-id):
+		MakeSet(term) -> term // Do nothing, task storage type takes care of conversion into set.
+		
+	task-get-storage-type:
+		MakeSet(_) -> <task-set-storage>
   
 rules // General purpose rewrite
       	
