@@ -124,6 +124,7 @@ rules
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
      import java.lang.ref.WeakReference;
+	 import test.strj.runtime.*;
          
      @SuppressWarnings("all")
      public class x_name {
@@ -156,6 +157,7 @@ rules
          } finally {
            isIniting = false;
          }
+		 InteropRegisterer.initialize();
          return context;
        }
      }
@@ -341,6 +343,20 @@ rules
             bstm2*
           }
         ]|
+		
+		~*<java-split-method> |[
+		  public static void initialize() {
+		  	final StrategyCollector collector = new StrategyCollector();
+			final java.util.List<RegisteringStrategy> knownInstances = java.util.Arrays.asList( ~instances* );
+			for (RegisteringStrategy s : knownInstances) {
+				s.registerImplementators(collector);
+			}
+			collector.createExecutors();
+			for (RegisteringStrategy s : knownInstances) {
+				s.bindExecutors(collector);
+			}
+		  }
+		]|
       }
     ]|
     with
@@ -348,6 +364,10 @@ rules
       bstm1* := <filter(java-register-strategy)> defs
     ; bstm2* := <filter(java-register-strategy-lazy)> defs
     ; x_name := <ApplicationName>
+	; instances* := <filter(java-initialize-instances)> defs
+	
+  java-initialize-instances:
+    SDefT(x,_,_,_) -> |[x.instance]|
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
@@ -448,16 +468,51 @@ rules
     SDefT(x, s*, t*, s){a*} -> 
     type-dec |[
        @SuppressWarnings("all")
-       public static class x extends Strategy {
+       public static class x extends RegisteringStrategy {
          public static x instance = new x();
+		 
+		 ~executor-refs*
+		 
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyImplementator("~x", instance);
+		 }
+		 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+		 }
+		 
          
          ~body
          ~invokedynamic*
        }
     ]|
     with
-      body           := <translate-definition-body>
-    ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+      body            := <translate-definition-body>
+    ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+	; executorNames   := <collect-called-strategy-names> s
+	; executor-refs*   :=  <map(strategy-call-to-java-field)>  executorNames
+	; executor-inits* := <map(initialize-strategy-field)> executorNames
+
+	
+	
+  collect-called-strategy-names = collect-all(?CallT(_,_,_))
+  
+  strategy-call-to-java-field:
+  	CallT(SVar(x), _, _) -> |[ private Strategy x' ;]|
+	with
+		x' := <strategy-call-to-reference-name>
+		
+  initialize-strategy-field:
+    CallT(SVar(x), _, _) -> |[~field = collector.getStrategyExecutor("~name");]|
+	with
+	      field := Id(<strategy-call-to-reference-name>)
+		; name := x
+  
+  strategy-call-to-reference-name:
+  	CallT(SVar(x), _, _) -> <concat-strings> [x, "_Executor"]
+	
+  strategy-call-to-name:
+    CallT(SVar(x), _, _) -> x
 
   translate-outer-definition-override :
     AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
@@ -512,8 +567,18 @@ rules
     AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
-       private static final class x extends Strategy {
+       private static final class x extends RegisteringStrategy {
          public static final x instance = new x();
+		 
+		 ~executor-refs*
+		 
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyImplementator("~x", instance);
+		 }
+		 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+		 }
          
          ~body
          ~invokedynamic*
@@ -522,6 +587,10 @@ rules
     with
       body           := <translate-definition-body> def
     ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+	; executorNames   := <collect-called-strategy-names> s
+	; executor-refs*   := <map(strategy-call-to-java-field)> executorNames
+	; executor-inits* := <map(initialize-strategy-field)> executorNames
+	
 
   translate-outer-definition-conflict :
     AnnoDef(a*, SDefT(x, _, _, _)) -> ()
@@ -783,6 +852,7 @@ strategies
     <+ translate-Escape
     <+ fatal-err(|"translate-strategy failed ")
        )
+	   
 
   translate-Let : 
     Let(defs, body) -> body'
@@ -833,10 +903,12 @@ strategies
       if (term == null) 
         break Fail;
     ]|
+	
     with
+     // strategyInstance := <debug> x
       lifted-decls-wrap(
         if <is-self-call> x then
-          e_instance := |[ this ]|
+          e_instance :=  Id(<strategy-call-to-reference-name>)
         else
           e_instance := <lifted-call-to-instance>
         end
@@ -845,6 +917,7 @@ strategies
       ,
         ?bstm_init*
       )
+	 where strategyInstance := <strategy-call-to-reference-name>
 
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
@@ -897,7 +970,7 @@ strategies
     end
   
   lifted-call-to-instance =
-    lifted-call-to-instance-self-call
+   ( lifted-call-to-instance-self-call
   <+
     lifted-call-to-instance-from-frame
   <+
@@ -905,15 +978,15 @@ strategies
   <+
     lifted-call-to-instance-direct
   <+
-    lifted-call-to-instance-instance
+    lifted-call-to-instance-instance ) ; debug
   
   lifted-call-to-instance-self-call :
-    CallT(SVar(x), _, _) -> expr |[ this ]|
+    CallT(SVar(x), _, _) ->  ExprName(Id(<strategy-call-to-reference-name>))
     where
       <is-self-call> x
 
   lifted-call-to-instance-from-frame :
-    CallT(SVar(x{a*}), _, _) -> expr |[ x ]|
+    CallT(SVar(x{a*}), _, _) ->  |[ x ]| //ExprName(Id(<strategy-call-to-reference-name>)) // //expr |[ context.getStrategyInstance(x) ]|
     where
       frame := <CurrentLiftedFrame>
     ; !a*
@@ -945,12 +1018,14 @@ strategies
       end
   
   lifted-call-to-instance-direct :
-    CallT(SVar(x{a*}), _, _) -> expr |[ x ]|
+    CallT(SVar(x{a*}), _, _) ->  |[ x ]| // ExprName(Id(<strategy-call-to-reference-name>)) //|[ x ]| // ExprName(Id(<strategy-call-to-reference-name>))
     where
       <IsStrategyArg> (<CurrentLiftedFrame>, x{})
 
   lifted-call-to-instance-instance :
-    CallT(SVar(x), _, _) -> expr |[ x.instance ]|
+    CallT(SVar(x), _, _) ->  ExprName(Id(<strategy-call-to-reference-name>)) //|[ x.instance ]| //ExprName(Id(<strategy-call-to-reference-name>))
+  
+  
   
   is-dynamic-signature(|s*, t*) =
     where(
