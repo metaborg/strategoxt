@@ -124,7 +124,6 @@ rules
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
      import java.lang.ref.WeakReference;
-	 import test.strj.runtime.*;
          
      @SuppressWarnings("all")
      public class x_name {
@@ -157,7 +156,7 @@ rules
          } finally {
            isIniting = false;
          }
-		 InteropRegisterer.initialize();
+		 new LibraryInitializer().initialize();
          return context;
        }
      }
@@ -185,6 +184,7 @@ rules
      ~*lifted-defs
 
      ~*register
+	 ~*libraryInitializer
      }
   ]|
   with 
@@ -197,6 +197,7 @@ rules
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
     ; register      := <java-interop-registerers> defs
+	; libraryInitializer := <java-library-initializer> defs
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
         case 1: e_traces := |[ true ]|
@@ -305,16 +306,42 @@ rules
       x_name := <MainClassName>
     ; main   := <get-config <+ !"main"> "-m"
     ; x_main := <conc-strings> (<cify; jify; dollars-for-capitals> main, "_0_0")
-  
-  // TODO: do interop strategy additions in a fully on-demand fashion?
-  //       (need to adapt VarScope class to do so)
-  java-interop-registerers : 
+	
+  java-library-initializer :
     defs ->
     class-body-dec* |[
       public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
         new InteropRegisterer().registerLazy(context, compiledContext, InteropRegisterer.class.getClassLoader());
       }
       
+      // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
+      @SuppressWarnings("unused")
+      public static class LibraryInitializer extends org.strategoxt.lang.LibraryInitializer {
+       
+		
+		
+		  protected java.util.List<RegisteringStrategy> getLibraryStrategies() {
+			return  java.util.Arrays.asList( ~instances* );
+		  }
+		  
+		  protected java.util.List<org.strategoxt.lang.LibraryInitializer> getDependentLibraryInitializer() {
+		  	return java.util.Collections.emptyList();
+		  }
+		
+      }
+    ]|
+    with
+      // HACK: non-lazy defs are used only to trick javac to compile everything atm
+   
+	 instances* := <filter(java-initialize-instances)> defs
+    
+  
+  // TODO: do interop strategy additions in a fully on-demand fashion?
+  //       (need to adapt VarScope class to do so)
+  java-interop-registerers : 
+    defs ->
+    class-body-dec* |[
+     
       // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
       @SuppressWarnings("unused")
       public static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
@@ -344,19 +371,7 @@ rules
           }
         ]|
 		
-		~*<java-split-method> |[
-		  public static void initialize() {
-		  	final StrategyCollector collector = new StrategyCollector();
-			final java.util.List<RegisteringStrategy> knownInstances = java.util.Arrays.asList( ~instances* );
-			for (RegisteringStrategy s : knownInstances) {
-				s.registerImplementators(collector);
-			}
-			collector.createExecutors();
-			for (RegisteringStrategy s : knownInstances) {
-				s.bindExecutors(collector);
-			}
-		  }
-		]|
+		
       }
     ]|
     with
