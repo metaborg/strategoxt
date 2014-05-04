@@ -181,7 +181,7 @@ rules
 
      ~*constant-defs
      ~*function-defs
-     ~*lifted-defs
+     //~*lifted-defs
 
      ~*register
 	 ~*libraryInitializer
@@ -210,7 +210,7 @@ rules
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
-  ; lifted-defs   := <bagof-LiftedDef>
+  //; lifted-defs   := <bagof-LiftedDef>
   ; cnstr-decls   := <bagof-ConstructorDecl>
   ; cnstr-inits   := <bagof-ConstructorInit>
   ; def-inits     := <bagof-DefInit>
@@ -487,6 +487,8 @@ rules
          public static x instance = new x();
 		 
 		 ~executor-refs*
+		 ~lifted-decls*
+		 
 		 
 		 public void registerImplementators(StrategyCollector collector) {
 		 	collector.registerStrategyImplementator("~x", instance);
@@ -504,27 +506,37 @@ rules
     with
       body            := <translate-definition-body>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
-	; executorNames   := <collect-called-strategy-names> s
-	; executor-refs*   :=  <map(strategy-call-to-java-field)>  executorNames
+	; executorNames   := <debug> <bagof-ExecutorNames;make-set;filter(not(?[]))>
+	; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
+	; lifted-decls*   := <bagof-LiftedDef>
+	; rules(LiftedDef := [])
+	; rules(ExecutorNames := [])
 
 	
 	
-  collect-called-strategy-names = collect-all(?CallT(_,_,_))
+ // collect-called-strategy-names = collect-all(?CallT(_,_,_));debug;filter(where(\CallT(SVar(x),_,_) -> <not(or(is-lifted-var(|CurrentLiftedFrame),is-closure-var(|x)))> //x\) );debug
   
   strategy-call-to-java-field:
-  	CallT(SVar(x), _, _) -> |[ private Strategy x' ;]|
+  	(strategyName, fieldName) -> <debug> |[ private Strategy ~fieldNameId ;]|
 	with
-		x' := <strategy-call-to-reference-name>
+		fieldNameId := Id(fieldName)
 		
   initialize-strategy-field:
-    CallT(SVar(x), _, _) -> |[~field = collector.getStrategyExecutor("~name");]|
+    (strategyName, fieldName) -> <debug> |[~field = collector.getStrategyExecutor("~name");]|
 	with
-	      field := Id(<strategy-call-to-reference-name>)
-		; name := x
+	      field := Id(fieldName)
+		; name := strategyName
   
   strategy-call-to-reference-name:
-  	CallT(SVar(x), _, _) -> <concat-strings> [x, "_Executor"]
+  	CallT(SVar(x), _, _) -> <name-to-reference-name> x
+  
+	
+   name-to-reference-name:
+   x -> referenceName
+   with
+   	referenceName := <concat-strings> [x, "_Executor"]
+   	;rules(ExecutorNames :+= (x,referenceName))
 	
   strategy-call-to-name:
     CallT(SVar(x), _, _) -> x
@@ -602,9 +614,12 @@ rules
     with
       body           := <translate-definition-body> def
     ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
-	; executorNames   := <collect-called-strategy-names> s
+	; executorNames   := []//<bagof-ExecutorNames> s
 	; executor-refs*   := <map(strategy-call-to-java-field)> executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
+	; lifted-decls*   := <bagof-LiftedDef>
+	; rules(LiftedDef := [])
+	; rules(ExecutorNames := [])
 	
 
   translate-outer-definition-conflict :
@@ -644,7 +659,9 @@ rules
       ; body           := <java-eliminate-stacktrace> <translate-definition-body>
       ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
       |}
-  
+
+
+
   maybe-make-invoke-dynamic :
     (s*, t*) -> invokedynamic*
     with
@@ -875,8 +892,10 @@ strategies
       {| InnerDefinition :
         !defs
       ; record-inner-definitions
+      //; localstrategies := <map(translate-inner-definition-let)>
       ; list-loop(rules(LiftedDef :+= <translate-inner-definition>))
-      ; body' := <translate-strategy> body
+	  
+      ; body' := (<translate-strategy> body) //{LocalStrategies(localstrategies)}
       |}
 
   record-inner-definitions =
@@ -920,7 +939,6 @@ strategies
     ]|
 	
     with
-     // strategyInstance := <debug> x
       lifted-decls-wrap(
         if <is-self-call> x then
           e_instance :=  Id(<strategy-call-to-reference-name>)
@@ -932,7 +950,7 @@ strategies
       ,
         ?bstm_init*
       )
-	 where strategyInstance := <strategy-call-to-reference-name>
+	 
 
   translate-PrimT :
     CallDynamic(f, s*, t*) -> <fail>
@@ -993,7 +1011,8 @@ strategies
   <+
     lifted-call-to-instance-direct
   <+
-    lifted-call-to-instance-instance ) ; debug
+    lifted-call-to-instance-instance 
+ ) 
   
   lifted-call-to-instance-self-call :
     CallT(SVar(x), _, _) ->  ExprName(Id(<strategy-call-to-reference-name>))
@@ -1038,7 +1057,9 @@ strategies
       <IsStrategyArg> (<CurrentLiftedFrame>, x{})
 
   lifted-call-to-instance-instance :
-    CallT(SVar(x), _, _) ->  ExprName(Id(<strategy-call-to-reference-name>)) //|[ x.instance ]| //ExprName(Id(<strategy-call-to-reference-name>))
+    CallT(SVar(x), _, _) -> 
+    <if or(is-lifted-var(|x),is-closure-var(|x)) then \x -> |[x.instance]|\ else \x-> ExprName(Id(<name-to-reference-name>))\  end>  x
+		
   
   
   
@@ -1673,3 +1694,7 @@ strategies
     <map(java-MatchArg1 <+ java-MatchArg2)> 
        [ (hd, expr|[ ((IStrategoList) e).head() ]|)
        , (tl, expr|[ ((IStrategoList) e).tail() ]|) ] => match-args
+	   
+signature
+constructors
+LocalStrategies: List(TypeDecl) -> Local

@@ -51,17 +51,29 @@ rules
       })
   
   collect-direct-lifted-vars(|lifted-name) =
-    filter(
-      where(
-        get-annos
-      ; one(Frames(one(?lifted-name)))
-      ; one(?Offset(_))
-      )
-    ; not(is-self-call)
-    //; where(write-to-string; debug(!"  lifted:          "))
-    //<+
-    //  where(write-to-string; debug(!"  not lifted:      "); fail)
+   filter(
+    is-lifted-var(|lifted-name)
+   
     )
+	
+   is-lifted-var(|lifted-name) = 
+    where(
+      get-annos
+    ; one(Frames(one(?lifted-name)))
+    ; one(?Offset(_))
+    )
+  ; not(is-self-call)
+  ; where(write-to-string; debug(!"  lifted:          "))
+  <+
+    where(write-to-string; debug(!"  not lifted:      "); fail)
+	
+	is-closure-var(|closure-name) = 
+		(where(
+			get-annos;
+			one(?Closure(<conc-strings;debug>(closure-name,"_cl")))
+		)
+    	; where(write-to-string; debug(!"  closure:          "))
+    		<+ where(write-to-string; debug(!"  not closure:      "); fail))
 
   collect-indirect-lifted-tvars =
     filter({ x:
