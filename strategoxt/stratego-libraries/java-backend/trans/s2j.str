@@ -206,6 +206,8 @@ rules
   with
     rules(
       CurrentLiftedFrame := None()
+	  CollectedExecutors := []
+	   ExecutorNames := []
     )
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
@@ -503,27 +505,42 @@ rules
          ~invokedynamic*
        }
     ]|
-    with
-      body            := <translate-definition-body>
+	 with
+	body            := <translate-definition-body>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
-	; executorNames   := <debug> <bagof-ExecutorNames;make-set;filter(not(?[]))>
+	; executorNames   := <debug;CollectedExecutors;debug>
 	; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <bagof-LiftedDef>
 	; rules(LiftedDef := [])
-	; rules(ExecutorNames := [])
-
+	
+	list-first : [x|xs] -> x
+	list-rest  : [x|xs] -> xs
+	
+	
+    executorNamesStack-Push = where(<debug> "Push");rules(ExecutorNames := Cons([],<ExecutorNames>));where(ExecutorNames;debug)
+    executorNamesStack-Pop  = where(<debug> "Pop");rules(CollectedExecutors := <ExecutorNames;list-first>); rules(ExecutorNames := <ExecutorNames;list-rest> );where(CollectedExecutors;debug);where(ExecutorNames;debug)
+    executorNamesStack-Head = ExecutorNames;list-first
+    executorNamesStack-Rest = ExecutorNames;list-rest
+    executorNamesStack-AddName : (strategyName, fieldName) -> <id>
+		where
+		<debug> "Add"
+		; head := <executorNamesStack-Head;debug>
+		; rest := <executorNamesStack-Rest;debug>
+		; elem := <debug> (strategyName, fieldName)
+		;  rules(ExecutorNames := <debug>Cons(Cons(elem, head) ,rest))
+		; <debug> <ExecutorNames>
 	
 	
  // collect-called-strategy-names = collect-all(?CallT(_,_,_));debug;filter(where(\CallT(SVar(x),_,_) -> <not(or(is-lifted-var(|CurrentLiftedFrame),is-closure-var(|x)))> //x\) );debug
   
   strategy-call-to-java-field:
-  	(strategyName, fieldName) -> <debug> |[ private Strategy ~fieldNameId ;]|
+  	(strategyName, fieldName) -> |[ private Strategy ~fieldNameId ;]|
 	with
 		fieldNameId := Id(fieldName)
 		
   initialize-strategy-field:
-    (strategyName, fieldName) -> <debug> |[~field = collector.getStrategyExecutor("~name");]|
+    (strategyName, fieldName) -> |[~field = collector.getStrategyExecutor("~name");]|
 	with
 	      field := Id(fieldName)
 		; name := strategyName
@@ -534,9 +551,9 @@ rules
 	
    name-to-reference-name:
    x -> referenceName
-   with
-   	referenceName := <concat-strings> [x, "_Executor"]
-   	;rules(ExecutorNames :+= (x,referenceName))
+   where
+      referenceName := <concat-strings> [x, "_Executor"]
+    ; <executorNamesStack-AddName> (x,referenceName)
 	
   strategy-call-to-name:
     CallT(SVar(x), _, _) -> x
@@ -619,7 +636,7 @@ rules
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <bagof-LiftedDef>
 	; rules(LiftedDef := [])
-	; rules(ExecutorNames := [])
+//	; rules(ExecutorNames := [])
 	
 
   translate-outer-definition-conflict :
@@ -631,10 +648,19 @@ rules
     SDefT(x, s*, t*, s) ->
     type-dec |[
        @SuppressWarnings("all")
-       private static final class x extends Strategy {
+       private static final class x extends RegisteringStrategy {
          ~instance-field*
          ~lifted-tfield*
          ~lifted-sfield*
+		 
+		 ~executor-refs*
+		 
+		 public void registerImplementators(StrategyCollector collector) {
+		 }
+		 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+		 }
          
          ~body
          ~invokedynamic*
@@ -657,6 +683,9 @@ rules
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x{})
       ; body           := <java-eliminate-stacktrace> <translate-definition-body>
+      ; executorNames   := <debug;CollectedExecutors;debug>
+      ; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
+      ; executor-inits* := <map(initialize-strategy-field)> executorNames
       ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
       |}
 
@@ -709,9 +738,10 @@ rules
        }
     ]|
     with
+     
       {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame, java-CheckBuild,
          IsLiftedTVar, IsLiftedSVar, LiftedTVars, LiftedSVars:
-        (s'*, [])          := <translate-params> s*
+       (s'*, [])          := <where(executorNamesStack-Push);translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; x'                 := <undo-dollars-for-capitals> x
       ; param*             := <conc> (s'*, t'*)   
@@ -720,7 +750,7 @@ rules
         else
           mod_override* := [ anno |[ @Override ]| ]
         end
-      ; bstm := <translate-strategy> s  
+      ; bstm := <translate-strategy;where(executorNamesStack-Pop)> s 
       |}
     
   translate-outer-definition :
