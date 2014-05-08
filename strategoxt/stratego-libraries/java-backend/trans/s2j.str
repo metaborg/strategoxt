@@ -65,7 +65,7 @@ rules
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
-      )
+      );debug
     ; log-timed(
         dr-scope-all-verbose(java-compile-spec)
       ; java-simplify
@@ -156,7 +156,7 @@ rules
          } finally {
            isIniting = false;
          }
-		 new LibraryInitializer().initialize();
+		 context.setStrategyCollector(new LibraryInitializer().initialize());
          return context;
        }
      }
@@ -209,7 +209,7 @@ rules
 	  CollectedExecutors := []
 	   ExecutorNames := []
     )
-  ; function-defs := <map(translate-outer-definition-top)> defs
+  ; function-defs := <debug;map(translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   //; lifted-defs   := <bagof-LiftedDef>
@@ -407,7 +407,7 @@ rules
   translate-constant-definition : // TODO: check if constant strategy definition name not taken
     (name, value) -> def'
     with
-      name'  := <dollars-for-capitals> name
+      name'  := <dollars-for-capitals;where(<debug> "Constant");debug> name
     ; def    := SDefT(name', [], [], Build(value))
     ; def'   := <translate-outer-definition> def
   
@@ -508,28 +508,24 @@ rules
 	 with
 	body            := <translate-definition-body>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
-	; executorNames   := <debug;CollectedExecutors;debug>
+	; executorNames   := <debug;CollectedExecutors;make-set>
 	; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
-	; lifted-decls*   := <bagof-LiftedDef>
+	; lifted-decls*   := <bagof-LiftedDef;filter(not(?[]));map(\(instance,decl) -> decl\)>
 	; rules(LiftedDef := [])
 	
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs
 	
 	
-    executorNamesStack-Push = where(<debug> "Push");rules(ExecutorNames := Cons([],<ExecutorNames>));where(ExecutorNames;debug)
-    executorNamesStack-Pop  = where(<debug> "Pop");rules(CollectedExecutors := <ExecutorNames;list-first>); rules(ExecutorNames := <ExecutorNames;list-rest> );where(CollectedExecutors;debug);where(ExecutorNames;debug)
-    executorNamesStack-Head = ExecutorNames;list-first
-    executorNamesStack-Rest = ExecutorNames;list-rest
+    executorNamesStack-Push = rules(ExecutorNames := Cons([],<ExecutorNames>))
+    executorNamesStack-Pop  = rules(CollectedExecutors := <ExecutorNames;list-first;foldr(![],union(\((x1,y1),(x2,y2)) -> <eq> (y1,y2)\ ),![<id>])>); rules(ExecutorNames := <ExecutorNames;list-rest> )
     executorNamesStack-AddName : (strategyName, fieldName) -> <id>
 		where
-		<debug> "Add"
-		; head := <executorNamesStack-Head;debug>
-		; rest := <executorNamesStack-Rest;debug>
-		; elem := <debug> (strategyName, fieldName)
-		;  rules(ExecutorNames := <debug>Cons(Cons(elem, head) ,rest))
-		; <debug> <ExecutorNames>
+		  head := <ExecutorNames;list-first>
+		; rest := <ExecutorNames;list-rest>
+		; elem := (strategyName, fieldName)
+		;  rules(ExecutorNames := Cons(Cons(elem, head) ,rest))
 	
 	
  // collect-called-strategy-names = collect-all(?CallT(_,_,_));debug;filter(where(\CallT(SVar(x),_,_) -> <not(or(is-lifted-var(|CurrentLiftedFrame),is-closure-var(|x)))> //x\) );debug
@@ -634,7 +630,7 @@ rules
 	; executorNames   := []//<bagof-ExecutorNames> s
 	; executor-refs*   := <map(strategy-call-to-java-field)> executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
-	; lifted-decls*   := <bagof-LiftedDef>
+	; lifted-decls*   := <bagof-LiftedDef;filter(not(?[]));map(\(instance,decl) -> decl\)>
 	; rules(LiftedDef := [])
 //	; rules(ExecutorNames := [])
 	
@@ -683,7 +679,7 @@ rules
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x{})
       ; body           := <java-eliminate-stacktrace> <translate-definition-body>
-      ; executorNames   := <debug;CollectedExecutors;debug>
+      ; executorNames   := <CollectedExecutors;debug>
       ; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
       ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
@@ -921,11 +917,10 @@ strategies
     with
       {| InnerDefinition :
         !defs
-      ; record-inner-definitions
-      //; localstrategies := <map(translate-inner-definition-let)>
-      ; list-loop(rules(LiftedDef :+= <translate-inner-definition>))
+      ; record-inner-definitions;where(<debug> "Let");where(<debug> body);where(<debug> defs);debug
+      ; list-loop(rules(LiftedDef :+= ("s" ,<translate-inner-definition>)))
 	  
-      ; body' := (<translate-strategy> body) //{LocalStrategies(localstrategies)}
+      ; body' := <debug> (<translate-strategy> body)
       |}
 
   record-inner-definitions =
@@ -1069,7 +1064,7 @@ strategies
       ; rules(
           CallTDecl: x -> x'
         )
-      ; init := bstm |[ x x' = new x(); ]|
+      ; init := bstm* |[ x x' = new x(); x'.bindExecutors(context.getStrategyCollector());]|
       ; rules(
           CallTDecls :+= init
         )

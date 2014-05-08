@@ -1,6 +1,7 @@
 package org.strategoxt.lang;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,9 +29,9 @@ public class StrategyCollector {
 	private Strategy[] getStrategyImplementators(String name) {
 		List<Strategy> implementators = this.strategyImplementators.get(name);
 		if (implementators == null) {
-			
+
 			throw new RuntimeException("No implementators found for strategy " + name);
-		
+
 		}
 		Strategy[] fastImplementators = new Strategy[implementators.size()];
 		int index = 0;
@@ -46,17 +47,21 @@ public class StrategyCollector {
 	}
 
 	public Strategy getStrategyExecutor(String name) {
-		Strategy s =  this.strategyExecutors.get(name);
+		Strategy s = this.strategyExecutors.get(name);
 		if (s == null) {
-			try {
-				Class<? extends Strategy> strategyClass = (Class<? extends Strategy>) StrategyCollector.class.getClassLoader().loadClass(
-						"org.strategoxt.stratego_lib." + name);
-				Field instanceField = strategyClass.getDeclaredField("instance");
-				return (Strategy)instanceField.get(null);
+			final List<String> packages = Arrays.asList("org.strategoxt.stratego_lib", "org.strategoxt.lang");
+			for (String packageName : packages) {
+				try {
+					Class<? extends Strategy> strategyClass = (Class<? extends Strategy>) StrategyCollector.class.getClassLoader().loadClass(
+							packageName + "." + name);
+					Field instanceField = strategyClass.getDeclaredField("instance");
+					return (Strategy) instanceField.get(null);
 
-			} catch (Exception e) {
-				throw new RuntimeException("No executor found for strategy " + name);
+				} catch (Exception e) {
+
+				}
 			}
+			throw new RuntimeException("No executor found for strategy " + name);
 		}
 		return s;
 	}

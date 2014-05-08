@@ -57,6 +57,8 @@ public class Context extends StackTracer implements IAsyncCancellable {
     private transient AbstractPrimitive lastPrimitive1, lastPrimitive2;
 
 	private transient volatile boolean asyncCancelled;
+	
+	private StrategyCollector strategyCollector;
 
     public Context() {
     	this(new TermFactory());
@@ -120,7 +122,15 @@ public class Context extends StackTracer implements IAsyncCancellable {
         op.setIOAgent(ioAgent);
         super.setIOAgent(ioAgent);
     }
+    
+    public void setStrategyCollector(StrategyCollector strategyCollector) {
+		this.strategyCollector = strategyCollector;
+	}
 
+    public StrategyCollector getStrategyCollector() {
+		return strategyCollector;
+	}
+    
 	/**
 	 * Registers a new class loader used for dynamical class loading
 	 * (using {@link SSL_EXT_java_call}).

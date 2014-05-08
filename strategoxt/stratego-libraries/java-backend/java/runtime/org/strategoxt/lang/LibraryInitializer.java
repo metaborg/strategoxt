@@ -6,8 +6,10 @@ public abstract class LibraryInitializer {
 
 	private boolean isInitialized = false;
 	
-	public final void initialize() {
-		this.initialize(new StrategyCollector());
+	public final StrategyCollector initialize() {
+		StrategyCollector c = new StrategyCollector();
+		this.initialize(c);
+		return c;
 	}
 
 	private final void initialize(final StrategyCollector collector) {

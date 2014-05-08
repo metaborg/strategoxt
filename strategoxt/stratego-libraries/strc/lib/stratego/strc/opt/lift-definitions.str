@@ -2,7 +2,7 @@ module lift-definitions
 imports stratego/strc/lib/stratlib stratego/strc/opt/stratego-laws
 strategies
 
-  lift-definitions =
+  lift-definitions = 
     declare-standard-strategies
     ; Specification([id, Strategies(map(ignore-anno-def(DeclareTopLevel)); map(lift-sdefs <+ ![<id>]); concat)])
 

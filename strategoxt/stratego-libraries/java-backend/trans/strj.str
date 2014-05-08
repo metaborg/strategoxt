@@ -59,9 +59,9 @@ strategies
       )
     end
   ; try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; strc-optimize
-  ; strc-export-external-defs
-  ; strc-output-frontend
+  ; debug;strc-optimize;debug
+  ; strc-export-external-defs;debug
+  ; strc-output-frontend;debug
   ; s2j
   ; with(clean-output-dir)
   ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
