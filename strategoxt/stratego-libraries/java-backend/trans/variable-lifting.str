@@ -63,17 +63,18 @@ rules
     ; one(?Offset(_))
     )
   ; not(is-self-call)
-  ; where(write-to-string; debug(!"  lifted:          "))
-  <+
-    where(write-to-string; debug(!"  not lifted:      "); fail)
+  //; where(write-to-string; debug(!"  lifted:          "))
+//  <+
+//    where(write-to-string; debug(!"  not lifted:      "); fail)
 	
 	is-closure-var(|closure-name) = 
 		(where(
 			get-annos;
-			one(?Closure(<conc-strings;debug>(closure-name,"_cl")))
+			one(?Closure(<conc-strings>(closure-name,"_cl")))
 		)
-    	; where(write-to-string; debug(!"  closure:          "))
-    		<+ where(write-to-string; debug(!"  not closure:      "); fail))
+    	//; where(write-to-string; debug(!"  closure:          "))
+    	//	<+ where(write-to-string; debug(!"  not closure:      "); fail))
+		)
 
   collect-indirect-lifted-tvars =
     filter({ x:
