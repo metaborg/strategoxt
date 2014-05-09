@@ -208,8 +208,10 @@ rules
       CurrentLiftedFrame := None()
 	  CollectedExecutors := []
 	   ExecutorNames := []
+	   LiftedDefs := []
+	   CollectedLiftedDefs := []
     )
-  ; function-defs := <debug;map(translate-outer-definition-top)> defs
+  ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   //; lifted-defs   := <bagof-LiftedDef>
@@ -407,7 +409,7 @@ rules
   translate-constant-definition : // TODO: check if constant strategy definition name not taken
     (name, value) -> def'
     with
-      name'  := <dollars-for-capitals;where(<debug> "Constant");debug> name
+      name'  := <dollars-for-capitals> name
     ; def    := SDefT(name', [], [], Build(value))
     ; def'   := <translate-outer-definition> def
   
@@ -498,6 +500,7 @@ rules
 		 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
+			~lifted-binds*
 		 }
 		 
          
@@ -508,27 +511,27 @@ rules
 	 with
 	body            := <translate-definition-body>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
-	; executorNames   := <debug;CollectedExecutors;make-set>
+	; executorNames   := <CollectedExecutors;make-set>
 	; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
-	; lifted-decls*   := <bagof-LiftedDef;filter(not(?[]));map(\(instance,decl) -> decl\)>
-	; rules(LiftedDef := [])
+	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	; lifted-binds*   := <get-lifted-bindings>
+//	; rules(LiftedDef := [])
 	
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs
 	
-	
     executorNamesStack-Push = rules(ExecutorNames := Cons([],<ExecutorNames>))
     executorNamesStack-Pop  = rules(CollectedExecutors := <ExecutorNames;list-first;foldr(![],union(\((x1,y1),(x2,y2)) -> <eq> (y1,y2)\ ),![<id>])>); rules(ExecutorNames := <ExecutorNames;list-rest> )
-    executorNamesStack-AddName : (strategyName, fieldName) -> <id>
-		where
-		  head := <ExecutorNames;list-first>
-		; rest := <ExecutorNames;list-rest>
-		; elem := (strategyName, fieldName)
-		;  rules(ExecutorNames := Cons(Cons(elem, head) ,rest))
+    executorNamesStack-AddName = ?(_,_); where ( rules(ExecutorNames := Cons(Cons( <id>, <ExecutorNames;list-first>) ,<ExecutorNames;list-rest>)))
 	
+	liftedDefsStack-Push = rules(LiftedDefs := Cons([], <LiftedDefs>))
+	liftedDefsStack-Pop  = rules(CollectedLiftedDefs := <LiftedDefs;list-first>); rules(LiftedDefs := <LiftedDefs;list-rest>)
+	liftedDefsStack-Add  = where ( rules(LiftedDefs := Cons(Cons(<id>, <LiftedDefs;list-first>), <LiftedDefs;list-rest>)))
+  
+    get-lifted-bindings =  CollectedLiftedDefs;map(\(instance,decl) -> instance\);filter(not(?[])); map(lifted-instance-to-bind-call)
 	
- // collect-called-strategy-names = collect-all(?CallT(_,_,_));debug;filter(where(\CallT(SVar(x),_,_) -> <not(or(is-lifted-var(|CurrentLiftedFrame),is-closure-var(|x)))> //x\) );debug
+	lifted-instance-to-bind-call:  instance -> |[~instance.bindExecutors(collector);]|
   
   strategy-call-to-java-field:
   	(strategyName, fieldName) -> |[ private Strategy ~fieldNameId ;]|
@@ -611,6 +614,7 @@ rules
          public static final x instance = new x();
 		 
 		 ~executor-refs*
+		 ~lifted-decls*
 		 
 		 public void registerImplementators(StrategyCollector collector) {
 		 	collector.registerStrategyImplementator("~x", instance);
@@ -618,6 +622,7 @@ rules
 		 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
+			~lifted-binds*
 		 }
          
          ~body
@@ -630,10 +635,13 @@ rules
 	; executorNames   := []//<bagof-ExecutorNames> s
 	; executor-refs*   := <map(strategy-call-to-java-field)> executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
-	; lifted-decls*   := <bagof-LiftedDef;filter(not(?[]));map(\(instance,decl) -> decl\)>
-	; rules(LiftedDef := [])
+	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	; lifted-binds*   := <get-lifted-bindings>
+//	; rules(LiftedDef := [])
 //	; rules(ExecutorNames := [])
 	
+	
+  	
 
   translate-outer-definition-conflict :
     AnnoDef(a*, SDefT(x, _, _, _)) -> ()
@@ -642,7 +650,7 @@ rules
 
   translate-inner-definition :
     SDefT(x, s*, t*, s) ->
-    type-dec |[
+    (initialize-field, type-dec |[
        @SuppressWarnings("all")
        private static final class x extends RegisteringStrategy {
          ~instance-field*
@@ -650,18 +658,20 @@ rules
          ~lifted-sfield*
 		 
 		 ~executor-refs*
+		 ~lifted-decls*
 		 
 		 public void registerImplementators(StrategyCollector collector) {
 		 }
 		 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
+			~lifted-binds*
 		 }
          
          ~body
          ~invokedynamic*
        }
-    ]|
+    ]|)
     with
       ?def
     ; lifted-tvar*   := <collect-lifted-tvars> def
@@ -671,18 +681,22 @@ rules
     ; lifted-args    := <conc> (lifted-svar*, lifted-tvar*)
     with
       if !lifted-tvar* => lifted-svar* => [] then
-        instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|
+        instance-field* := class-body-dec* |[ public static final x instance = new x(); ]|;
+		initialize-field := |[x.instance]|
       else
-        instance-field* := []
+        instance-field* := [];
+		initialize-field := []
       end
     with
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x{})
       ; body           := <java-eliminate-stacktrace> <translate-definition-body>
-      ; executorNames   := <CollectedExecutors;debug>
+      ; executorNames   := <CollectedExecutors>
       ; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
       ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+	  ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+	  ; lifted-binds*   := <get-lifted-bindings>
       |}
 
 
@@ -737,7 +751,7 @@ rules
      
       {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame, java-CheckBuild,
          IsLiftedTVar, IsLiftedSVar, LiftedTVars, LiftedSVars:
-       (s'*, [])          := <where(executorNamesStack-Push);translate-params> s*
+       (s'*, [])          := <where(executorNamesStack-Push;liftedDefsStack-Push);translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; x'                 := <undo-dollars-for-capitals> x
       ; param*             := <conc> (s'*, t'*)   
@@ -746,7 +760,7 @@ rules
         else
           mod_override* := [ anno |[ @Override ]| ]
         end
-      ; bstm := <translate-strategy;where(executorNamesStack-Pop)> s 
+      ; bstm := <translate-strategy;where(executorNamesStack-Pop;liftedDefsStack-Pop)> s 
       |}
     
   translate-outer-definition :
@@ -917,10 +931,10 @@ strategies
     with
       {| InnerDefinition :
         !defs
-      ; record-inner-definitions;where(<debug> "Let");where(<debug> body);where(<debug> defs);debug
-      ; list-loop(rules(LiftedDef :+= ("s" ,<translate-inner-definition>)))
+      ; record-inner-definitions
+      ; list-loop(translate-inner-definition;liftedDefsStack-Add)
 	  
-      ; body' := <debug> (<translate-strategy> body)
+      ; body' := <translate-strategy> body
       |}
 
   record-inner-definitions =
@@ -1022,7 +1036,7 @@ strategies
       // Lift definition and produce call
       with(
         !SDefT(<newname => x> "jlifted", [], [], <id>)
-      ; rules(DefInit :+= <translate-inner-definition>)
+      ; rules(DefInit :+= <translate-inner-definition; \(_, def) -> def\>)
       )
     ; <lifted-call-to-instance> CallT(SVar(x), [], [])
     end
@@ -1083,7 +1097,7 @@ strategies
 
   lifted-call-to-instance-instance :
     CallT(SVar(x), _, _) -> 
-    <if or(is-lifted-var(|x),is-closure-var(|x)) then \x -> |[x.instance]|\ else \x-> ExprName(Id(<name-to-reference-name>))\  end>  x
+    <debug;if or(is-lifted-var(|x),is-closure-var(|x)) then \x -> |[x.instance]|\ else \x-> ExprName(Id(<name-to-reference-name>))\  end>  x
 		
   
   

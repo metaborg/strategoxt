@@ -21,7 +21,7 @@ strategies
     dr-scope-all-verbose(
       dollars-for-capitals-top
     ; split-large-strategies
-    ; lift-definitions
+  //  ; lift-definitions
     ; canonicalize
     ; simplify1
     ; mark-bound-unbound-vars
