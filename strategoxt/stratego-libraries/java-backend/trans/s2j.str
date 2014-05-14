@@ -65,7 +65,7 @@ rules
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
-      );debug
+      )
     ; log-timed(
         dr-scope-all-verbose(java-compile-spec)
       ; java-simplify
@@ -335,10 +335,13 @@ rules
       }
     ]|
     with
-      // HACK: non-lazy defs are used only to trick javac to compile everything atm
-   
-	 instances* := <filter(java-initialize-instances)> defs
+	 instances* := <filter(java-library-instance)> defs
     
+  java-library-instance:
+    SDefT(x{a*},_,_,_) -> |[x.instance]|
+  java-library-instance:
+    AnnoDef(_,SDefT(x{a*},_,_,_))  -> |[x.instance]|
+  
   
   // TODO: do interop strategy additions in a fully on-demand fashion?
   //       (need to adapt VarScope class to do so)
@@ -386,7 +389,7 @@ rules
 	; instances* := <filter(java-initialize-instances)> defs
 	
   java-initialize-instances:
-    SDefT(x,_,_,_) -> |[x.instance]|
+    SDefT(x{a*},_,_,_) -> |[x.instance]|
 
   java-register-strategy :
     SDefT(x,_,_,_) ->
@@ -495,7 +498,7 @@ rules
 		 
 		 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyImplementator("~x", instance);
+		 	collector.registerStrategyImplementator("~x'", instance);
 		 }
 		 
 		 public void bindExecutors(StrategyCollector collector) {
@@ -510,8 +513,9 @@ rules
     ]|
 	 with
 	body            := <translate-definition-body>
-    ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+	; x'              := <undo-dollars-for-capitals> x
 	; executorNames   := <CollectedExecutors;make-set>
+    ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
 	; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
@@ -521,9 +525,10 @@ rules
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs
 	
-    executorNamesStack-Push = rules(ExecutorNames := Cons([],<ExecutorNames>))
-    executorNamesStack-Pop  = rules(CollectedExecutors := <ExecutorNames;list-first;foldr(![],union(\((x1,y1),(x2,y2)) -> <eq> (y1,y2)\ ),![<id>])>); rules(ExecutorNames := <ExecutorNames;list-rest> )
-    executorNamesStack-AddName = ?(_,_); where ( rules(ExecutorNames := Cons(Cons( <id>, <ExecutorNames;list-first>) ,<ExecutorNames;list-rest>)))
+    executorNamesStack-Push = rules(ExecutorNames := Cons([],<ExecutorNames>)) 
+    executorNamesStack-Pop  = rules(CollectedExecutors := <ExecutorNames;list-first;foldr(![],union(\((x1,y1),(x2,y2)) -> <eq> (y1,y2)\ ),![<id>])>); rules(ExecutorNames := <ExecutorNames;list-rest> ) 
+    executorNamesStack-AddName = ?(_,_); where(rules(ExecutorNames := Cons(Cons( <id>, <ExecutorNames;list-first>) ,<ExecutorNames;list-rest>)))
+	
 	
 	liftedDefsStack-Push = rules(LiftedDefs := Cons([], <LiftedDefs>))
 	liftedDefsStack-Pop  = rules(CollectedLiftedDefs := <LiftedDefs;list-first>); rules(LiftedDefs := <LiftedDefs;list-rest>)
@@ -551,8 +556,9 @@ rules
    name-to-reference-name:
    x -> referenceName
    where
-      referenceName := <concat-strings> [x, "_Executor"]
-    ; <executorNamesStack-AddName> (x,referenceName)
+       x' := <undo-dollars-for-capitals> x
+     ; referenceName := <concat-strings> [x', "_Executor"]
+     ; <executorNamesStack-AddName> (x',referenceName)
 	
   strategy-call-to-name:
     CallT(SVar(x), _, _) -> x
@@ -617,7 +623,7 @@ rules
 		 ~lifted-decls*
 		 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyImplementator("~x", instance);
+		 	collector.registerStrategyImplementator("~x'", instance);
 		 }
 		 
 		 public void bindExecutors(StrategyCollector collector) {
@@ -630,10 +636,11 @@ rules
        }
     ]|
     with
-      body           := <translate-definition-body> def
-    ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
-	; executorNames   := []//<bagof-ExecutorNames> s
-	; executor-refs*   := <map(strategy-call-to-java-field)> executorNames
+      body            := <translate-definition-body> def
+	; x'              := <undo-dollars-for-capitals> x
+	; executorNames   := <CollectedExecutors>
+    ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+	; executor-refs*  := <map(strategy-call-to-java-field)> executorNames
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
 	; lifted-binds*   := <get-lifted-bindings>
@@ -690,11 +697,11 @@ rules
     with
       {| CurrentLiftedFrame :
         rules(CurrentLiftedFrame := x{})
-      ; body           := <java-eliminate-stacktrace> <translate-definition-body>
+      ; body            := <java-eliminate-stacktrace> <translate-definition-body>
       ; executorNames   := <CollectedExecutors>
       ; executor-refs*  := <map(strategy-call-to-java-field)>  executorNames
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
-      ; invokedynamic* := <maybe-make-invoke-dynamic> (s*, t*)
+      ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
 	  ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
 	  ; lifted-binds*   := <get-lifted-bindings>
       |}
@@ -727,7 +734,13 @@ rules
     ; e_s*      := <number(\(_,n) -> |[ sargs[~i:<write-to-string> n] ]|\)> s*
     ; e_t*      := <number(\(_,n) -> |[ targs[~i:<write-to-string> n] ]|\)> t*
   
-  translate-definition-body :
+  translate-definition-body  = 
+      where(executorNamesStack-Push;liftedDefsStack-Push);
+	  translate-definition-body-inner;
+	  where(executorNamesStack-Pop;liftedDefsStack-Pop)
+	  
+	  
+  translate-definition-body-inner:
     SDefT(x, s*, t*, s) ->
     |[ mod_override*
        public IStrategoTerm invoke(Context context, IStrategoTerm term, param*) {
@@ -751,7 +764,7 @@ rules
      
       {| IsStrategyArg, java-CheckBuild, CurrentLiftedFrame, java-CheckBuild,
          IsLiftedTVar, IsLiftedSVar, LiftedTVars, LiftedSVars:
-       (s'*, [])          := <where(executorNamesStack-Push;liftedDefsStack-Push);translate-params> s*
+       (s'*, [])          := <translate-params> s*
       ; (t'*,  bstm_init*) := <translate-params> t*
       ; x'                 := <undo-dollars-for-capitals> x
       ; param*             := <conc> (s'*, t'*)   
@@ -760,7 +773,7 @@ rules
         else
           mod_override* := [ anno |[ @Override ]| ]
         end
-      ; bstm := <translate-strategy;where(executorNamesStack-Pop;liftedDefsStack-Pop)> s 
+      ; bstm := <translate-strategy> s 
       |}
     
   translate-outer-definition :
@@ -979,11 +992,11 @@ strategies
 	
     with
       lifted-decls-wrap(
-        if <is-self-call> x then
-          e_instance :=  Id(<strategy-call-to-reference-name>)
-        else
+        //if <is-self-call> x then
+        //  e_instance :=  Id(<strategy-call-to-reference-name>)
+        //else
           e_instance := <lifted-call-to-instance>
-        end
+       // end
       ; e_s* := <map(lifted-strategy-to-instance)> s*
       ; e_t* := <map(java-construct-term)> t*
       ,
@@ -1054,9 +1067,12 @@ strategies
  ) 
   
   lifted-call-to-instance-self-call :
-    CallT(SVar(x), _, _) ->  ExprName(Id(<strategy-call-to-reference-name>))
+    CallT(SVar(x{a*}), _, _) ->  
+	<if <elem> ("StaticBind", a*) then !|[this]| else !ExprName(Id(<strategy-call-to-reference-name>))  end> 
+
     where
       <is-self-call> x
+	
 
   lifted-call-to-instance-from-frame :
     CallT(SVar(x{a*}), _, _) ->  |[ x ]| //ExprName(Id(<strategy-call-to-reference-name>)) // //expr |[ context.getStrategyInstance(x) ]|

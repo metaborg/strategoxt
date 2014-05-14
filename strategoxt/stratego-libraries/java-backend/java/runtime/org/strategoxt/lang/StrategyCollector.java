@@ -49,6 +49,7 @@ public class StrategyCollector {
 	public Strategy getStrategyExecutor(String name) {
 		Strategy s = this.strategyExecutors.get(name);
 		if (s == null) {
+			System.out.println("No implementator found. Try to resolve classpath " + name);
 			final List<String> packages = Arrays.asList("org.strategoxt.stratego_lib", "org.strategoxt.lang");
 			for (String packageName : packages) {
 				try {
@@ -61,6 +62,7 @@ public class StrategyCollector {
 
 				}
 			}
+			System.out.println("Failed");
 			throw new RuntimeException("No executor found for strategy " + name);
 		}
 		return s;
