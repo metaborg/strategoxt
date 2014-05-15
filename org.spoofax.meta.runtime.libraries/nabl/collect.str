@@ -71,12 +71,6 @@ signature
 strategies // generic traversal
 	
 	/**
-	 * Main strategy to collect all index elements and task* from an AST.
-	 */
-	nabl-collect(|partition, lang) =
-	  nabl-collect(id|lang, partition, <new-hashtable>, [])
-	
-	/**
 	 * Performs the collection in a topdown traversal. 
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
 	 */

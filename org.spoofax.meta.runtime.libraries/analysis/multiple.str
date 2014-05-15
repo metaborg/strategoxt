@@ -8,7 +8,7 @@ imports
 
 rules // Multi file analysis
   
-  analyze-multiple(parse-file, complete-work-unit|language, project-path):
+  analyze-multiple(parse-file, complete-work-unit, collector|language, project-path):
     path* -> (result, parse-time, collect-time, perform-time)
     with
     	measure-time(
@@ -16,7 +16,7 @@ rules // Multi file analysis
     	  , id, ?parse-time
     	);
     	measure-time(
-      	result* := <map(analyze-collect(|language, project-path); where(complete-work-unit))> file*
+      	result* := <map(analyze-collect(collector|language, project-path); where(complete-work-unit))> file*
       	, id, ?collect-time
       );
       measure-time(

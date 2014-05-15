@@ -54,12 +54,16 @@ rules // Match (custom implementation in Java that uses the hash set from a look
   relation-create-match(|ctx):
   	(rel, actual, expected) -> <relation-create-match(|ctx, rel, expected)> actual
 
-  relation-create-match(|ctx, rel, expected):
+	relation-create-match(|ctx, rel, expected) = 
+		relation-create-match(|ctx, rel, expected, [])
+
+  relation-create-match(|ctx, rel, expected, dep*):
   	actual -> result
-  	with
-  		lookup-task := <relation-create-lookup(|ctx, rel)> actual
+  	with 
+  	  lookup-task := <relation-create-lookup(|ctx, rel)> actual
   	; term-task   := <relation-create-term(|ctx)> expected
-  	; match-task  := <new-task(|ctx)> RelationMatch(lookup-task, term-task)
+    ; all-dep*    := <merge-dependencies(|dep*)> (rel, actual, expected)
+  	; match-task  := <new-task(|ctx, all-dep*)> RelationMatch(lookup-task, term-task)
   	; if custom-task := <relation-match-custom(|ctx)> (rel, actual, expected) then
   	  	result := <task-create-choice(|ctx)> [custom-task, match-task]
   	  else
