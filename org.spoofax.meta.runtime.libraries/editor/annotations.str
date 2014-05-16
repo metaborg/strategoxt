@@ -29,3 +29,5 @@ rules // TODO: does not belong to editor, move to a new 'utils' directory
     t{a*} -> t{a'*, a''*}
     where
       a''* := <remove-all(s)> a*
+
+	preserve-annotations-attachments(s) = prim("SSL_preserve_annotations_attachments", s|)
