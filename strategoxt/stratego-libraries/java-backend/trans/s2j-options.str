@@ -45,6 +45,11 @@ rules
       <post-extend-config> ("-D", [<parse-define-option>]); !()
     , fail // undocumented/deprecated
     )
+  + Option(
+      "--no-default-lib"
+      , <set-config> ("-la", <get-config;remove-all(?"org.strategoxt.stratego_lib")> "-la"); !()
+      , !"Default library is not added to imports.")
+	 
   s2j-general-options =
     ArgOption(
       "-I" + "--Include"

@@ -116,7 +116,7 @@ rules
     |[ 
      ~package-dec?: pkgname
      
-     ~import-dec*:imports
+    
 
      import org.strategoxt.lang.*;
      import org.spoofax.interpreter.terms.*;
@@ -136,7 +136,7 @@ rules
      ~*cnst-decls
      ~*cnstr-decls
      
-     public static Context init(Context context) {
+     public static Context init(Context context, boolean link) {
        synchronized (x_name.class) {
          if (isIniting) return null;
          try {
@@ -156,13 +156,15 @@ rules
          } finally {
            isIniting = false;
          }
-		 context.setStrategyCollector(new LibraryInitializer().initialize());
+         if (link) {
+           context.setStrategyCollector(new LibraryInitializer().initialize());
+         }
          return context;
        }
      }
      
      public static Context init() {
-       return init(new Context());
+       return init(new Context(), true);
      }
 
      ~*main
@@ -179,12 +181,12 @@ rules
        }
      ]|
 
+	 ~*libraryInitializer
      ~*constant-defs
      ~*function-defs
      //~*lifted-defs
 
      ~*register
-	 ~*libraryInitializer
      }
   ]|
   with 
@@ -239,7 +241,7 @@ rules
       x' := <jify> x
   
   java-init-import :
-    x -> |[ x'.Main.init(context); ]|
+    x -> |[ x'.Main.init(context, false); ]|
     with
       x' := <jify> x
 
@@ -293,7 +295,7 @@ rules
      
      public static IStrategoTerm mainNoExit(Context context, String... args) throws StrategoExit {
        try {
-         init(context);
+         init(context, true);
          return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
        } finally {
          context.getIOAgent().closeAllFiles();
@@ -325,22 +327,35 @@ rules
 		
 		
 		  protected java.util.List<RegisteringStrategy> getLibraryStrategies() {
-			return  java.util.Arrays.asList( ~instances* );
+			return  java.util.Arrays.<RegisteringStrategy>asList( ~instances* );
 		  }
 		  
 		  protected java.util.List<org.strategoxt.lang.LibraryInitializer> getDependentLibraryInitializer() {
-		  	return java.util.Collections.emptyList();
+		  	return java.util.Arrays.<org.strategoxt.lang.LibraryInitializer>asList( ~dependentLibs* );
 		  }
 		
       }
     ]|
     with
-	 instances* := <filter(java-library-instance)> defs
+      instances* := <filter(java-library-instance)> defs
+    ; dependentLibs* := (<java-dependent-library-initializer>)
     
   java-library-instance:
     SDefT(x{a*},_,_,_) -> |[x.instance]|
   java-library-instance:
     AnnoDef(_,SDefT(x{a*},_,_,_))  -> |[x.instance]|
+  
+    java-dependent-library-initializer =
+      <get-config> "-la"
+    ; map(java-import-to-library-initializer)
+    <+
+      ![]
+	  
+	  java-import-to-library-initializer :
+	    x -> |[ new x'.LibraryInitializer() ]|
+	    with
+	      x' := <jify> x
+ 
   
   
   // TODO: do interop strategy additions in a fully on-demand fashion?
@@ -365,7 +380,7 @@ rules
         ~*<java-split-method>  |[
           private void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
             compiledContext.registerComponent("~x_name");
-            x_name.init(compiledContext);
+            x_name.init(compiledContext, true);
             bstm1*
           }
         ]|
@@ -373,7 +388,7 @@ rules
         ~*<java-split-method>  |[
           private void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader, org.spoofax.interpreter.core.VarScope varScope) {
             compiledContext.registerComponent("~x_name");
-            x_name.init(compiledContext);
+            x_name.init(compiledContext, true);
             bstm2*
           }
         ]|
