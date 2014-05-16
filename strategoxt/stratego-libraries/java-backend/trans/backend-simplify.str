@@ -27,8 +27,6 @@ strategies
     ; mark-bound-unbound-vars
     ; escaping-variables
     ; remove-closure-allocs
-	; where(<debug> "Static Anno")
-	; debug
 
 	; \x -> <annotate-static-calls>(x, [])\
 	
@@ -95,12 +93,12 @@ rules
     ( Let(defs,s), current_defs) -> 
 			Let(<annotate-static-calls> (defs, new_defs), <annotate-static-calls> (s, new_defs))
 		where
-			new_defs := <conc>(current_defs, <map(debug;annotate-def-to-sig;debug)> defs)
+			new_defs := <conc>(current_defs, <map(annotate-def-to-sig)> defs)
    annotate-static-calls :
      (CallT(SVar(x{a*}), t, s), current_defs) -> CallT(SVar(x'), <annotate-static-calls> (t, current_defs), <annotate-static-calls> (s, current_defs))
      where
 	   newAnnos* := Cons("StaticBind",a*);
-	   x' := <if <elem> (<debug;annotate-call-to-sig;debug>CallT(SVar(x{a*}), t, s), <debug> current_defs) then !x{newAnnos*} else !x{a*} end>
+	   x' := <if <elem> (<annotate-call-to-sig>CallT(SVar(x{a*}), t, s), current_defs) then !x{newAnnos*} else !x{a*} end>
 	   
 	  
    annotate-static-calls :

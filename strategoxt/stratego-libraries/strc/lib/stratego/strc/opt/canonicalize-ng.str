@@ -75,7 +75,7 @@ strategies
   lift-call-arg :
     |[ s1 ]| -> ([|[ g~{t*}(|) = s2 ]|], |[ g(|) ]|)
     where //debug(!"lift-call-arg: ");
-	  g  := <newname> "lf"
+	  g  := <newname> "lifted"
 	; s2 := <canonicalize> s1
 	; t* := <is-just-closure-allocation <+ ![]> s2
 

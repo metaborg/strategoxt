@@ -531,7 +531,20 @@ rules
 	
 	
 	liftedDefsStack-Push = rules(LiftedDefs := Cons([], <LiftedDefs>))
-	liftedDefsStack-Pop  = rules(CollectedLiftedDefs := <LiftedDefs;list-first>); rules(LiftedDefs := <LiftedDefs;list-rest>)
+	liftedDefsStack-Pop  =  
+	  let  head = LiftedDefs;list-first in
+	  let  rest = LiftedDefs;list-rest in
+	  (if  rest;?[] 
+	   then
+	       rules(CollectedLiftedDefs := <head>)
+		 ; rules(LiftedDefs := <rest> ) 
+	   else 
+	       rules(CollectedLiftedDefs := []) 
+		  ;rules(LiftedDefs := Cons(<conc>(<rest;list-first> , <head>), <rest;list-rest>))
+	  end)
+	  end end
+	
+	
 	liftedDefsStack-Add  = where ( rules(LiftedDefs := Cons(Cons(<id>, <LiftedDefs;list-first>), <LiftedDefs;list-rest>)))
   
     get-lifted-bindings =  CollectedLiftedDefs;map(\(instance,decl) -> instance\);filter(not(?[])); map(lifted-instance-to-bind-call)
