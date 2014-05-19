@@ -44,4 +44,10 @@ public class StrategyExecutor extends Strategy {
 	// Question: Is that right? Can we rely on always using the same params
 	// Need to handle params
 
+	
+	
+	@Override
+	public String toString() {
+		return "StrategyExecutor " + java.util.Arrays.toString(this.implementators);
+	}
 }

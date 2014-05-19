@@ -1,6 +1,8 @@
 package org.strategoxt.lang;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class LibraryInitializer {
 
@@ -11,21 +13,54 @@ public abstract class LibraryInitializer {
 		this.initialize(c);
 		return c;
 	}
+	
+	private static class InitializerSetEntry {
+		private LibraryInitializer initializer;
 
+		public InitializerSetEntry(LibraryInitializer initializer) {
+			super();
+			this.initializer = initializer;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null) return false;
+			return this.hashCode() == obj.hashCode();
+		}
+		
+		@Override
+		public int hashCode() {
+			return this.initializer.getClass().hashCode();
+		}
+		
+		@Override
+		public String toString() {
+			return this.initializer.toString() + " " + this.initializer.getClass().hashCode();
+		}
+		
+	}
+
+	private final void collectDependentInitializer(final Set<InitializerSetEntry> collector) {
+		collector.add(new InitializerSetEntry(this));
+		for (LibraryInitializer initializer : this.getDependentLibraryInitializer()) {
+			initializer.collectDependentInitializer(collector);
+		}
+	}
+	
 	private final void initialize(final StrategyCollector collector) {
 		if (this.isInitialized) {
 			return;
 		}
-		final List<LibraryInitializer> dependentInitializer = this.getDependentLibraryInitializer();
-		this.registerImplementators(collector);
-		for (LibraryInitializer initializer : dependentInitializer) {
-			initializer.registerImplementators(collector);
+		final Set<InitializerSetEntry> dependentInitializer = new HashSet<>();
+		this.collectDependentInitializer(dependentInitializer);
+		System.out.println("Initialzie with : " + dependentInitializer);
+		for (InitializerSetEntry initializer : dependentInitializer) {
+			initializer.initializer.registerImplementators(collector);
 		}
 		collector.createExecutors();
-		for (LibraryInitializer initializer : dependentInitializer) {
-			initializer.bindExecutors(collector);
+		for (InitializerSetEntry initializer : dependentInitializer) {
+			initializer.initializer.bindExecutors(collector);
 		}
-		this.bindExecutors(collector);
 	}
 
 	private final void registerImplementators(final StrategyCollector collector) {
