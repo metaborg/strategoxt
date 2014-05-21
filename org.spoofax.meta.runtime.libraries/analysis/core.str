@@ -47,7 +47,7 @@ rules // Analysis
 	    		task-start-collection(|partition)
 	      	, analysis-core-debug-time(!"Time - setup: ") | "analyze-collect-setup"
 	      ); measure-time(
-	      	analyzed-ast := <collector(id|Language(language), partition, <new-hashtable>, [])> initial-ast
+	      	analyzed-ast := <topdown(try(remove-property-annotations)); collector(id|Language(language), partition, <new-hashtable>, [])> initial-ast
 	    	  , analysis-core-debug-time(!"Time - collect: ") | "analyze-collect-collect" 
 	  	  ); measure-time(
 	  	  	index-stop-collection            => (removed-entry*, added-entry*);

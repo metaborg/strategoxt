@@ -58,7 +58,7 @@ rules
   // generic collection of property tasks
   nabl-annotate-properties(|lang, partition, old-uri*, new-uri*) =
     where(kind* := [Type()|<nabl-collect-custom-properties>])
-  ; !(kind*, <remove-property-annotations(|kind*)>)
+  ; !(kind*, <id>)
   ; foldl(nabl-annotate-property(|lang, partition, old-uri*, new-uri*) <+ Snd)
   ; where(try(nabl-constraint(|lang, partition, old-uri*, new-uri*)))
   
@@ -119,6 +119,12 @@ rules
     	type* := <map(get-property-task(|kind) <+ create-property-task(|ctx, kind))> term
     
 rules
+  
+  remove-property-annotations:
+    term -> term'
+    where
+      kind* := [Type()|<nabl-collect-custom-properties>];
+      term' := <remove-property-annotations(|kind*)> term
   
   remove-property-annotations(|kind*) =
     !(kind*, <id>); foldl(remove-property-annotation) 
