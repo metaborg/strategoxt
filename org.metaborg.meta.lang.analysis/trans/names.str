@@ -6,12 +6,6 @@ imports
   lib/runtime/properties/-
   lib/runtime/types/-
   lib/runtime/editor/-
-  include/Analysis
-
-
-signature
-  constructors
-    NablNsTask : Namespace
 
 
 rules
@@ -85,3 +79,12 @@ rules
         )
       |
       )
+
+
+imports
+  include/Analysis
+
+
+signature
+  constructors
+    NablNsTask : Namespace
