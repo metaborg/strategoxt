@@ -97,21 +97,30 @@ rules
   
   get-or-create-property-task(|ctx, kind, old-uri*, new-uri*):
   	term -> task
-     get-property-task(|kind)
-  <+ create-property-task(|ctx, kind, old-uri*, new-uri*)
-  <+ create-property-task(|ctx, kind, new-uri*)
-  <+ create-property-task(|ctx, kind)
-  <+ (msg := $[Could not create task for property [<get-constructor> kind] on term [<write-to-string> term].]; properties-warning-task(|ctx, msg); properties-console-msg(|msg))
+  	where
+  		(
+         get-property-task(|kind)
+      <+ create-property-task(|ctx, kind, old-uri*, new-uri*)
+      <+ create-property-task(|ctx, kind, new-uri*)
+      <+ create-property-task(|ctx, kind)
+      <+ cannot-create-property-task(|ctx, kind)
+      ) => task
   
   get-or-create-property-task(|ctx, kind):
   	term -> task
-  	where( 
-       get-property-task(|kind)
-    <+ (create-property-task(|ctx, kind, [], []); properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts old-uri* and new-uri* with empty lists, because it was not passed!])) 
-    <+ (create-property-task(|ctx, kind, []); properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts uri* with an empty list, because it was not passed!]))
-    <+ create-property-task(|ctx, kind)
-    <+ (msg := $[Could not create task for property [<get-constructor> kind] on term [<write-to-string> term].]; properties-warning-task(|ctx, msg); properties-console-msg(|msg))
-    ) => task
+  	where
+  		( 
+          get-property-task(|kind)
+      <+ (create-property-task(|ctx, kind, [], []); properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts old-uri* and new-uri* with empty lists, because it was not passed!])) 
+      <+ (create-property-task(|ctx, kind, []);     properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts uri* with an empty list, because it was not passed!]))
+      <+  create-property-task(|ctx, kind)
+      <+  cannot-create-property-task(|ctx, kind)
+      ) => task
+      
+  cannot-create-property-task(|ctx, kind):
+  	term -> <properties-warning-task(|ctx, msg); properties-console-msg(|msg)> term
+  	where
+  		msg := $[Could not create task for property [<get-constructor> kind] on term [<write-to-string> term].]
       
   create-property-task(|ctx, kind):
     r@Result(_) -> <prop-create-extract(|ctx, kind)> r
