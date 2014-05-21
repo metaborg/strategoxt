@@ -28,7 +28,9 @@ rules
   reanalyze-ast(|language, path, project-path):
     ast -> analyzed-ast
     with
-	    (
+    	property-kind* := <nabl-get-all-properties>
+    ; ast' := <topdown(try(remove-property-annotations(|property-kind*)))> ast
+	  ; (
 	    	analyzed-ast
 			, (error*, warning*, note*)
 			, removed-entry*
@@ -39,7 +41,7 @@ rules
 			, evaluated-task*
 			, skipped-task*
 			, unevaluated-task*
-			) := <topdown(try(remove-property-annotations)); analyze-one(fail|language, path, project-path)> ast;
+			) := <analyze-one(fail|language, path, project-path)> ast';
 			
       <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, skipped-task*, unevaluated-task*);
       
