@@ -5,6 +5,7 @@ imports
 	analysis/core
 	analysis/single
 	analysis/multiple
+	analysis/builtins
 	analysis/interface
 	nabl/collect
 	nabl/uri
@@ -35,7 +36,10 @@ rules // Single finle analysis
   analysis-single-default(desugar-before, collector, desugar-after, pp-message|language):
     (ast, path, project-path) -> (analyzed-ast', error*, warning*, note*)
     with
-      editor-init;
+      editor-init
+		with
+      analysis-analyze-builtin-partitions(collector|language, project-path)
+    with
       <analysis-default-debug(!"Analyzing file: ")> path;
       partition := <analysis-partition(|path, project-path)>;
       
@@ -80,6 +84,8 @@ rules // Multi-file analysis
     , (removed-task-count, added-task-count, invalidated-task-count, evaluated-task*, skipped-task*, unevaluated-task*)
     , (parse-time, collect-time, perform-time, index-persist-time, task-persist-time)
     )
+    with
+    	analysis-analyze-builtin-partitions(collector|language, project-path)
     with
     	analysis-default-debug(!"Analyzing files: ");
       analysis-multiple-default-work-units; set-total-work-units;
