@@ -54,13 +54,16 @@ rules
     iset := <new-iset>
   ; try(nabl-custom-properties(\p* -> <iset-addlist(|p*); fail> iset\))
   ; <iset-elements> iset
+    
+  nabl-get-all-properties = ![Type()|<nabl-collect-custom-properties>]
   
   // generic collection of property tasks
-  nabl-annotate-properties(|lang, partition, old-uri*, new-uri*) =
-    where(kind* := [Type()|<nabl-collect-custom-properties>])
-  ; !(kind*, <remove-property-annotations(|kind*)>)
-  ; foldl(nabl-annotate-property(|lang, partition, old-uri*, new-uri*) <+ Snd)
-  ; where(try(nabl-constraint(|lang, partition, old-uri*, new-uri*)))
+  nabl-annotate-properties(|lang, partition, old-uri*, new-uri*):
+  	term -> term'
+  	where
+      kind* := <nabl-get-all-properties>
+    ; term' := <foldl(nabl-annotate-property(|lang, partition, old-uri*, new-uri*) <+ Snd)> (kind*, term)
+    ; try(nabl-constraint(|lang, partition, old-uri*, new-uri*))
   
   nabl-annotate-property(|lang, partition, old-uri*, new-uri*):
     (kind, term{a*}) -> term{(kind, prop), a*}
@@ -120,8 +123,8 @@ rules
     
 rules
   
-  remove-property-annotations(|kind*) =
-    !(kind*, <id>); foldl(remove-property-annotation) 
+  remove-property-annotations(|kind*):
+  	term -> <foldl(remove-property-annotation)> (kind*, term)
     
   remove-property-annotation:
     (kind, term) -> <remove-annotations(?(kind, _))> term

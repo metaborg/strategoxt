@@ -75,7 +75,7 @@ strategies // generic traversal
 	 * At each node, it tries various calls to generated strategies, which call back to generic strategies.
 	 */
 	nabl-collect(sibling-uris|lang, partition, unique*, uri*) =
-		nabl-state-pop(?state*)
+	  nabl-state-pop(?state*)
   ; try(nabl-scoping-site)
   ; (
 		   nabl-scope-site(?uri'*|lang, partition, unique*, uri*)
