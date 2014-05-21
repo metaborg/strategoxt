@@ -9,6 +9,7 @@ imports
 	index/core
 	nabl/collect
 	nabl/namegen
+	properties/collect
 
 rules
 	
@@ -38,7 +39,7 @@ rules
 			, evaluated-task*
 			, skipped-task*
 			, unevaluated-task*
-			) := <analyze-one(fail|language, path, project-path)> ast;
+			) := <topdown(try(remove-property-annotations)); analyze-one(fail|language, path, project-path)> ast;
 			
       <analysis-debug-results> (removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*, evaluated-task*, skipped-task*, unevaluated-task*);
       
