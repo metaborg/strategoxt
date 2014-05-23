@@ -1,0 +1,17 @@
+module Term
+imports Common
+
+exports
+  context-free syntax
+    "(" Terms ")"      -> Term  {cons("Tupl")}
+    ID "(" Terms ")"   -> Term  {cons("Appl")}
+    "[" Terms "]"      -> Term  {cons("List")}
+    STRING             -> Term  {cons("Str")}
+    INT                -> Term  {cons("Int")}
+    FLOAT              -> Term  {cons("Real")}
+    Term "{" Terms "}" -> Term  {cons("Anno")}
+    {Term ","}*        -> Terms 
+
+  context-free syntax
+    CONTENTCOMPLETE -> Term  {cons("COMPLETION-Term")}
+    CONTENTCOMPLETE -> Terms {cons("COMPLETION-Terms")}

@@ -1,0 +1,15 @@
+module URI
+
+imports
+
+	Common
+	Term
+
+templates
+
+	URI = <<Segment*; separator=" / ">>
+	
+	Segment.Id   = <<ID>:<Term>>
+	Segment.Id   = <<ID>:<Term>#<ID>>
+	Segment.Anon = <anon <ID>>
+	Segment.Subsq = <subsq <ID>>

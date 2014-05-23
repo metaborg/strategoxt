@@ -1,0 +1,82 @@
+module relations/query
+
+imports
+	
+  relations/entries
+  relations/interface
+  index/query
+  task/insert
+  
+rules // Lookup relation values for given term
+	
+	relation-lookup(|rel):
+		term -> <map(relation-try-term-to-uri)> [refl-val*, val*]
+		where
+		  refl-val* := <(relation-is-reflexive; ![term]) <+ ![]> rel;
+			(
+				val* := <relation-lookup-internal(|rel); where(Hd)> term <+
+			  val* := <relation-try-term-to-uri; relation-lookup-internal(|rel)> term
+		  )
+
+	relation-lookup-internal(|rel):
+		term -> [stat-val*, val*, trans-val*]
+		where
+		  stat-val*  := <get-static-relations(|rel)> term
+		; val*       := <get-index-relations(|rel)> term
+	  ; trans-val* := <(relation-is-transitive; <get-index-relations-transitive(|rel)> term) <+ ![]> rel
+		// TODO: what about symmetric relations?
+		
+rules // Check if relation exists between two terms
+	
+	relation-match(|rel, expected):
+		actual -> expected
+		where
+      <zip(relation-match-internal(|rel)) <+ relation-match-internal(|rel)> (actual, expected)
+	
+	relation-match-internal(|rel):
+		(actual, expected) -> expected
+		where
+			<relation-match-internal-match(|rel)> (actual, expected) <+
+			<where(<relation-is-symmetric> rel); relation-match-internal-match(|rel)> (expected, actual) <+
+			(
+			  actual'   := <relation-try-term-to-uri> actual
+      ; expected' := <relation-try-term-to-uri> expected
+			; (
+			  	<relation-match-internal-match(|rel)> (actual', expected') <+
+			    <where(<relation-is-symmetric> rel); relation-match-internal-match(|rel)> (expected', actual')
+			  )
+			)
+			
+  relation-match-internal-match(|rel):
+  	(actual, expected) -> <relation-match-tuple> (rel, actual, expected)
+  	// TODO: can this be transtive?
+  	
+	relation-match-internal-match(|rel):
+  	(actual, expected) -> <id>
+  	where
+  	  <get-index-relations(|rel); fetch(relation-try-term-to-uri; ?expected)> actual <+ 
+		  <where(<relation-is-transitive> rel); get-index-relations-transitive(|rel); fetch(relation-try-term-to-uri; ?expected)> actual
+
+rules /** @internal */
+  
+  get-index-relations(|rel):
+    term -> <index-get-all; relation-get-all-values> RelTuple(term, rel, ())
+  		
+	get-index-relations-transitive(|rel):
+		term -> <index-get-all; relation-get-all-values> RelTuple(term, Transitive(rel), ()) 
+  		
+	relation-tuple-value:
+		RelTuple(_, _, v) -> v
+		
+	relation-get-all-values = mapconcat(relation-tuple-value; insert-results-or-delay; (is-list <+ MkSingleton))
+
+rules /** @internal */
+
+  get-static-relations(|rel):
+  	t -> val*
+  	with
+      stat-set := <new-iset>
+    ; <try(relation-store-value(store-tuple(|stat-set)))> (rel, t)
+    ; val* := <iset-elements> stat-set
+      
+  store-tuple(|set): elem -> <fail> with <iset-add(|elem)> set

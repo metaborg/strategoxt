@@ -1,0 +1,33 @@
+module editor/annotations
+
+imports
+	
+rules // TODO: does not belong to editor, move to a new 'utils' directory
+	
+	get-annotation(s) =
+		has-annos;
+		get-annos;
+		collect-one(s)
+
+  add-annotation(|a):
+    t{a*} -> t{a, a*} where <not(is-list)> a
+  
+  add-annotations(|a'*):
+    t{a*} -> t{a''*} where <is-list> a'*; a''* := [a'*, a*] 
+
+  remove-annotations(s):
+    t{a*} -> t{a'*}
+    where
+      a'* := <remove-all(s)> a*
+      
+  replace-annotation(s|a):
+    t{a*} -> t{a, a'*}
+    where
+      a'* := <remove-all(s)> a*
+      
+  replace-annotations(s|a'*):
+    t{a*} -> t{a'*, a''*}
+    where
+      a''* := <remove-all(s)> a*
+
+	preserve-annotations-attachments(s) = prim("SSL_preserve_annotations_attachments", s|)

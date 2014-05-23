@@ -18,6 +18,8 @@
 	<property name="dep.gpp" location="../../syntax/gpp/dist/share/strategoxt/gpp" />
 	<property name="dep.stratego-front" location="../../syntax/stratego-front/dist/share/strategoxt/stratego-front" />
 
+	<property name="dep.runtime-libraries" location="lib/runtime-libraries/org.spoofax.meta.runtime.libraries" />
+	
 	<property name="syn" value="syn" />
 	<property name="bin" value="bin" />
 
@@ -42,6 +44,8 @@
 				<arg value="-la" />
 				<arg value="stratego-rtg" />
 				<arg value="-la" />
+        <arg value="stratego-aterm" />
+				<arg value="-la" />
 				<arg value="org.strategoxt.lang.compat.strc_compat" />
 				<arg value="-I" />
 				<arg value="${dep.stratego-front}" />
@@ -53,6 +57,8 @@
 				<arg value="${dep.gpp}" />
 				<arg value="-I" />
 				<arg value="${dep.gpp}/sdf" />
+				<arg value="-I" />
+				<arg value="${dep.runtime-libraries}" />
 				<arg value="-O" />
 				<arg value="2" />
 			</strjlibargs>

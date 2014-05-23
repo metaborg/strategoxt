@@ -1,0 +1,22 @@
+module modelware/signatures
+
+signature constructors // grammar
+
+  // TODO
+
+signature constructors // metamodel
+  
+  // TODO
+  
+signature constructors // model
+  
+  M         : Object                      -> Model
+  Obj       : Opt(URI) * QID * List(Slot) -> Object
+            : Value                       -> Slot
+            : Opt(Value)                  -> Slot
+            : List(Value)                 -> Slot
+  Data      : String                      -> Value
+  Contain   : Object                      -> Value
+  Link      : QID                         -> Value
+  QID       : PackName * ClassName        -> QID
+  Unresolved:                                QID

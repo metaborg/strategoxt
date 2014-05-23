@@ -1,0 +1,11 @@
+module editor/Analysis-Outliner
+
+imports
+  include/Analysis
+  lib/runtime/editor/outline-library
+  lib/runtime/editor/origins
+  editor/Analysis-Outliner.generated
+
+rules
+  
+  outline-expand-to-level = !3

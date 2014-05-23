@@ -1,0 +1,28 @@
+module Analysis-Menus
+
+menus
+  
+  menu: "Syntax"
+    
+    action: "Show abstract syntax" = debug-show-aterm (openeditor) (realtime) (meta) (source)
+    action: "Show analyzed syntax" = debug-show-analyzed (openeditor) (meta)
+    
+  menu: "Analysis"
+    
+    submenu: "Show index"
+      action: "Project"            = debug-index-project (openeditor) (meta)
+      action: "Partition"          = debug-index-partition (openeditor) (meta)
+    end
+    
+    submenu: "Show tasks"
+      action: "Project"            = debug-task-project (openeditor) (meta)
+      action: "Partition"          = debug-task-partition (openeditor) (meta)
+      action: "Selection"          = debug-task-selection (openeditor) (meta)
+    end
+    
+    submenu: "Show analysis"
+      action: "Project"            = debug-project (openeditor) (meta)
+      action: "Partition"          = debug-partition (openeditor) (meta)
+    end
+    
+    action: "Reset and reanalyze"  = debug-reanalyze (meta)   

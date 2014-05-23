@@ -1,0 +1,22 @@
+module nabl/lookup
+
+imports
+  
+	nabl/query
+	nabl/uri
+	nabl/collect
+  properties/query
+  task/core
+
+rules // Lookup
+	
+	nabl-lookup(|ns, name):
+		uri -> def*
+		with
+  		uri' := <nabl-extend-uri(|ns, name, NonUnique())> uri;
+  		def* := <nabl-get-all-definitions> uri'
+
+	nabl-lookup-all(|ns):
+		uri -> def*
+		with
+  		def*  := <nabl-get-child-definitions(|ns)> uri

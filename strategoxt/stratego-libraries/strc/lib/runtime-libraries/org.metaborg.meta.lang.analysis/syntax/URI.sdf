@@ -1,0 +1,14 @@
+module URI
+imports Common Term
+
+exports
+  context-free syntax
+    {Segment "/"}*     -> URI     
+    ID ":" Term        -> Segment {cons("Id")}
+    ID ":" Term "#" ID -> Segment {cons("Id")}
+    "anon" ID          -> Segment {cons("Anon")}
+    "subsq" ID         -> Segment {cons("Subsq")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> URI     {cons("COMPLETION-URI")}
+    CONTENTCOMPLETE -> Segment {cons("COMPLETION-Segment")}

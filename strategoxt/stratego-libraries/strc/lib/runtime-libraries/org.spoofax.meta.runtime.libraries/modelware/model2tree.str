@@ -1,0 +1,23 @@
+module modelware/model2tree
+
+imports
+  
+  modelware/signatures
+  nabl/-
+  editor/origins
+
+rules
+  
+  mw-model2tree: M(obj)                    -> <origin-track-forced(mw-obj2term)> obj
+  mw-obj2term  : Obj(_, QID("ast", c), s*) -> c#(<map(mw-slot2term)> s*)
+  mw-slot2term : None()                    -> None()
+  mw-slot2term : Some(val)                 -> Some(<mw-val2term> val)
+  mw-slot2term : []                        -> []
+  mw-slot2term : val                       -> <mw-val2term>
+  mw-val2term  : Data(val)                 -> val
+  mw-val2term  : Link(uri)                 -> <mw-name-of + map(mw-name-of)> uri
+  mw-val2term  : Contain(obj)              -> <mw-obj2term + map(mw-obj2term)> obj
+  
+rules
+  
+  mw-name-of = ?URI(_, <id>); Hd; ?ID(_, <id>, _)

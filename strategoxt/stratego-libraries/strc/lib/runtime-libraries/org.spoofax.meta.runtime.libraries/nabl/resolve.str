@@ -1,0 +1,35 @@
+module nabl/resolve
+
+imports
+  
+  nabl/tasks
+	nabl/entries
+	task/core
+	task/insert
+  task/utils
+  
+rules // Reference resolution
+  
+  nabl-is-reference =
+    ?Use(_)
+    
+  nabl-has-reference =
+    collect-one(nabl-is-reference)
+    
+  nabl-has-reference =
+    has-annos;
+    get-annos;
+    nabl-has-reference
+  
+	nabl-collect-all-resolved-defs:
+		ast -> def*
+		with
+			if ast' := <insert-results-or-delay> ast then
+				def* := <collect-all-annos(?Def(_), conc)> ast'
+			else
+				def* := []
+			end
+
+	nabl-collect-one-resolved-def =
+		insert-results-or-delay;
+		collect-one-annos(?Def(_))

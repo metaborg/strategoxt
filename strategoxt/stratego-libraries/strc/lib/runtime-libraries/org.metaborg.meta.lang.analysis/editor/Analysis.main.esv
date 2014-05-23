@@ -1,0 +1,23 @@
+module Analysis.main
+
+imports Analysis-Menus Analysis-Refactorings Analysis-Colorer Analysis-Completions Analysis-Folding Analysis-References Analysis-Syntax
+
+language General properties
+                  
+  name          : Analysis
+  id            : org.metaborg.meta.lang.analysis
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the Analysis language"
+  url           : http://strategoxt.org
+                  
+  extensions    : task, index, analysis
+  table         : include/Analysis.tbl
+  start symbols : Start
+  
+  provider : include/analysis.ctree                                                                
+  provider : include/analysis-java.jar                                                             
+                                                                                                   
+  observer : editor-analyze (multifile)                                                              
+                                                                                                   
+  on save : editor-save                                                                           

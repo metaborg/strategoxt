@@ -1,0 +1,139 @@
+module properties/collect
+
+imports 
+	
+	properties/entries
+	properties/tasks
+	properties/interface
+	properties/query
+	properties/debug
+  task/core
+  task/create
+  task/messages
+  task/tasks
+  nabl/collect
+  nabl/uri
+  nabl/tasks
+  nabl/utils
+  editor/origins
+  editor/annotations
+  types/collect
+  
+signature
+  
+  sorts
+  
+    Property
+    
+  constructors
+    
+    Prop : Property * Value * List(Dependency) -> Prop
+
+rules // generic analysis of properties
+  
+  // call back to generic analysis
+  nabl-store-props(|partition, prop*):
+  	name -> name
+  	where
+  	  uri := <nabl-collect-def; nabl-uri> name
+	  ; <map(nabl-store-prop(|partition, uri, name))> prop*
+	
+	nabl-store-prop(|partition, prop):
+		name -> name
+		where
+      uri := <nabl-collect-def; nabl-uri> name
+    ; <nabl-store-prop(|partition, uri, name)> prop
+      
+  nabl-store-prop(|partition, uri, name):
+    Prop(kind, prop, dep*) -> <new-prop(|partition, uri, kind, task)> name
+    where
+    	task := <task-create-id(|partition, <dependent-tasks> dep*)> prop
+      
+rules
+        
+  nabl-collect-custom-properties =
+    iset := <new-iset>
+  ; try(nabl-custom-properties(\p* -> <iset-addlist(|p*); fail> iset\))
+  ; <iset-elements> iset
+    
+  nabl-get-all-properties = ![Type()|<nabl-collect-custom-properties>]
+  
+  // generic collection of property tasks
+  nabl-annotate-properties(|lang, partition, old-uri*, new-uri*):
+  	term -> term'
+  	where
+      kind* := <nabl-get-all-properties>
+    ; term' := <foldl(nabl-annotate-property(|lang, partition, old-uri*, new-uri*) <+ Snd)> (kind*, term)
+    ; try(nabl-constraint(|lang, partition, old-uri*, new-uri*))
+  
+  nabl-annotate-property(|lang, partition, old-uri*, new-uri*):
+    (kind, term{a*}) -> term{(kind, prop), a*}
+    where
+      not(<get-property-task(|kind)> term)
+    ; prop := <create-property-task(|partition, kind, old-uri*, new-uri*) <+ create-property-task(|partition, kind, new-uri*) <+ create-property-task(|partition, kind)> term
+      
+strategies
+  
+  nabl-prop-calc(|partition, dep*):
+  	term -> <task-create-id(|partition, dep*)> term
+  
+  nabl-prop-list(|partition, dep*):
+  	term -> <task-create-combine(|partition, dep*)> term
+	
+  nabl-prop-lookup(|kind, partition, dep*):
+  	term -> result
+  	with
+      result := <get-annos; fetch-elem(?(kind, <id>))> term
+      <+ 
+			result := <nabl-create-collectdefs(|partition, dep*); prop-create-lookup(|partition, kind)> term
+  
+  nabl-prop-match(|kind, partition, relation, expected):
+  	actual -> <task-create-choice(|partition)> check*
+  	with 
+		  expected* := <try-make-list> expected
+		; check*    := <map(prop-create-check(|partition, kind, relation, actual))> expected*
+
+rules
+  
+  get-or-create-property-task(|ctx, kind, old-uri*, new-uri*):
+  	term -> task
+  	where
+  		(
+         get-property-task(|kind)
+      <+ create-property-task(|ctx, kind, old-uri*, new-uri*)
+      <+ create-property-task(|ctx, kind, new-uri*)
+      <+ create-property-task(|ctx, kind)
+      <+ cannot-create-property-task(|ctx, kind)
+      ) => task
+  
+  get-or-create-property-task(|ctx, kind):
+  	term -> task
+  	where
+  		( 
+          get-property-task(|kind)
+      <+ (create-property-task(|ctx, kind, [], []); properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts old-uri* and new-uri* with empty lists, because it was not passed!])) 
+      <+ (create-property-task(|ctx, kind, []);     properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts uri* with an empty list, because it was not passed!]))
+      <+  create-property-task(|ctx, kind)
+      <+  cannot-create-property-task(|ctx, kind)
+      ) => task
+      
+  cannot-create-property-task(|ctx, kind):
+  	term -> <properties-warning-task(|ctx, msg); properties-console-msg(|msg)> term
+  	where
+  		msg := $[Could not create task for property [<get-constructor> kind] on term [<write-to-string> term].]
+      
+  create-property-task(|ctx, kind):
+    r@Result(_) -> <prop-create-extract(|ctx, kind)> r
+    
+  create-property-task(|ctx, kind) :
+    term -> <nabl-prop-calc(|ctx, type*)> type*
+    where 
+    	type* := <map(get-property-task(|kind) <+ create-property-task(|ctx, kind))> term
+    
+rules
+  
+  remove-property-annotations(|kind*):
+  	term -> <foldl(remove-property-annotation)> (kind*, term)
+    
+  remove-property-annotation:
+    (kind, term) -> <remove-annotations(?(kind, _))> term

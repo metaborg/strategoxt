@@ -1,0 +1,26 @@
+
+module Task.generated
+
+completions
+  completion template Section : "tasks " =
+    "tasks\n\n\t" (cursor) (blank)                                                     
+  completion template TaskDef : "task TASKID Deps= Instruction -> ResultReads" =
+    "task " <TASKID:TASKID> " " <Deps:Deps> "=\n\t" <Instruction:Instruction> "\n\t->\n\t" <Result:Result> <Reads:Reads> (blank)  
+  completion template Deps : "s[DepList] " =
+    "s[" <DepList:DepList> "] "                                                      
+  completion template Deps : "d[DepList] " =
+    "d[" <DepList:DepList> "] "                                                      
+  completion template Deps : "s[DepList] d[DepList] " =
+    "s[" <DepList:DepList> "] d[" <DepList:DepList> "] "                  
+  completion template Result : "fail" =
+    "fail"                                                                                
+  completion template Result : "depfail" =
+    "depfail"                                                                          
+  completion template Result : "notexecuted" =
+    "notexecuted"                                                                  
+  completion template Reads : " reads Term" =
+    "\nreads\n" <Term:Term> (blank)                                                 
+  completion template Term : "&TASKID" =
+    "&" <TASKID:TASKID>                                                                  
+  completion template Term : "/ URI /" =
+    "/ " <URI:URI> " /"                                                                  

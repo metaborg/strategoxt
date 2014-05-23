@@ -1,0 +1,22 @@
+module properties/interface
+
+strategies // implementations generated from NaBL
+  
+  nabl-custom-properties(add-properties) = fail
+  
+  create-property-task(|ctx, kind) = fail
+  
+  create-property-task(|ctx, kind, uri*) = fail
+
+  create-property-task(|ctx, kind, old-uri*, new-uri*) = fail
+
+strategies // user-defined implementations
+	
+	nabl-constraint(|lang, partition, old-uri*, new-uri*) = nabl-constraint(|lang, partition, new-uri*)
+
+  nabl-constraint(|lang, partition, uri*) = nabl-constraint(|partition)
+
+	nabl-constraint(|partition) = fail
+
+	nabl-property-eq = fail
+	
