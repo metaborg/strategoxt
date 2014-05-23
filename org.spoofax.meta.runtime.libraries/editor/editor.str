@@ -1,0 +1,7 @@
+module editor/editor
+
+imports
+	
+	libstratego-lib
+	
+	editor/-

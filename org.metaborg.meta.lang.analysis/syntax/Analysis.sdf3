@@ -1,0 +1,20 @@
+module Analysis
+
+imports
+
+	Task
+	Instruction
+	Index
+	
+	Term
+	URI
+	
+	Common
+	
+context-free start-symbols
+
+  Start
+
+templates
+
+	Start.Sections = <<Section*; separator="\n\n">>

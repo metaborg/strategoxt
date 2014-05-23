@@ -1,0 +1,50 @@
+module task/insert
+
+imports
+	
+	task/core
+
+rules
+	
+	replace-results(list, result, fail-result, no-result) =
+		switch id
+			case has-annos  : ?t; !(<replace-results-noannos(list, result, fail-result, no-result)> t, <get-annos; replace-results(list, result, fail-result, no-result)> t); set-annos
+			otherwise       : replace-results-noannos(list, result, fail-result, no-result)
+		end		
+
+	replace-results-noannos(list, result, fail-result, no-result) =
+		switch id
+			case is-list    : list
+			case ?Result(n) : result <+ (task-has-failed; fail-result) <+ no-result 
+			otherwise       : all(replace-results(list, result, fail-result, no-result))
+		end
+		
+		
+	insert-results-hashmap(|results-hashmap) =
+		replace-results(
+		  filter(insert-results-hashmap(|results-hashmap))
+		, \Result(n) -> <try(<hashtable-get(|n)> results-hashmap)>\
+		, id
+		, id
+	  )
+
+	insert-results(fail-result, no-result) =
+		replace-results(
+		  map(insert-results(fail-result, no-result)) 
+		, \Result(n) -> <task-get-results>\
+		, fail-result
+		, no-result	
+		)
+	
+	// Inserts task results into given term.
+	// Fails when dereferencing a task that has failed.
+	// Delays the current evaluating task when dereferencing a task that has not been evaluated yet.
+	insert-results-or-delay:
+		term -> inserted
+		where
+			deps     := <new-iset>;
+			inserted := <insert-results(![], \Result(n) -> <iset-add(|n)> deps\)> term;
+			dep*     := <iset-elements> deps;
+			if <gt> (<length> dep*, 0) then
+				<task-delay> dep*
+			end

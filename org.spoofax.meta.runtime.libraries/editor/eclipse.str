@@ -1,0 +1,10 @@
+module editor/eclipse
+
+rules
+	
+  project-path = prim("SSL_EXT_projectpath")
+  
+  plugin-path = prim("SSL_EXT_pluginpath")
+    
+  refresh-workspace-file:
+    path -> <prim("SSL_EXT_refreshresource", path)>

@@ -1,0 +1,28 @@
+module Instruction
+imports Common Term Task
+
+exports
+  context-free syntax
+    "note"                                                     -> MsgType     {cons("Note")}
+    "warning"                                                  -> MsgType     {cons("Warn")}
+    "error"                                                    -> MsgType     {cons("Err")}
+    "fails"                                                    -> MsgTrigger  {cons("Fail")}
+    "succeeds"                                                 -> MsgTrigger  {cons("Succ")}
+    "has" "multiple" "results"                                 -> MsgTrigger  {cons("Mult")}
+    "show" MsgType Term "on" Term "when" Term MsgTrigger       -> Instruction {cons("Msg")}
+    "choose" {Term "<+"}*                                      -> Instruction {cons("Choice")}
+    "sequence" {Term ";"}*                                     -> Instruction {cons("Sequence")}
+    "concat" {Term "+"}*                                       -> Instruction {cons("Combine")}
+    "produce" Term                                             -> Instruction {cons("Id")}
+    "lookup" Term "prop" "on" Term                             -> Instruction {cons("PropLookup")}
+    "lookup" Term "props" "on" Term                            -> Instruction {cons("PropsLookup")}
+    "check" Term "prop" Term "against" Term "wrt" Term         -> Instruction {cons("PropCheck")}
+    "rewrite" Term "wrt" Term                                  -> Instruction {cons("Rewrite")}
+    "match" Term "using" "relation" Term "wrt" "bindings" Term -> Instruction {cons("Match")}
+    "resolve" Term Term "in" Term "wrt" "props" Term           -> Instruction {cons("ResolveDefs")}
+    "check" Term "against" "namespace" Term                    -> Instruction {cons("CheckDefs")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> MsgType     {cons("COMPLETION-MsgType")}
+    CONTENTCOMPLETE -> MsgTrigger  {cons("COMPLETION-MsgTrigger")}
+    CONTENTCOMPLETE -> Instruction {cons("COMPLETION-Instruction")}

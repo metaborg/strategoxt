@@ -1,0 +1,68 @@
+module task/create
+
+imports
+	
+	task/core
+	task/interface
+
+rules
+	
+	/**
+	 * @type Partition * Instruction -> Result
+	 */
+  new-task(|partition) = new-task(|partition, <dependent-tasks>)
+
+  /**
+   * @type Partition * List(TaskID) * Instruction -> Result
+   */  
+  new-task(|partition, type, storage-type) = new-task(|partition, <dependent-tasks>, type, storage-type)
+
+  /**
+   * @type Partition * List(TaskID) * Instruction -> Result
+   */  
+  new-task(|partition, dependencies):
+  	instruction -> result
+  	with
+  		type          := <determine-task-type> instruction;
+  		storage-type  := <determine-task-storage-type> instruction;
+			result        := <new-task(|partition, dependencies, type, storage-type)> instruction
+  		
+	new-task(|partition, dependencies, type, storage-type):
+		instruction -> result
+		with
+  		short-circuit := <task-short-circuit; !1 <+ !0> instruction;
+  		result        := <task-add-task(|partition, dependencies, instruction, type, storage-type, short-circuit)> instruction
+  
+  task-regular-type = !0
+  task-combinator-type = !1
+  task-raw-type = !2
+  
+  task-auto-storage = !0
+  task-list-storage = !1
+  task-set-storage = !2
+  		
+	determine-task-type = task-get-type <+ (task-is-combinator; task-combinator-type) <+ task-regular-type // Default to regular task
+	determine-task-storage-type = task-get-storage-type <+ task-list-storage // Default to list storage
+  		
+	new-task-fixdeps(|partition, dependencies) = new-task(|partition, <dependent-tasks> dependencies)
+      
+  dependent-tasks = collect-all(dependent-task, union); flatten-list; make-set
+  dependent-task = ?Result(<id>) 
+  dependent-task =
+    has-annos; get-annos; dependent-tasks
+    
+	merge-dependencies(|dep*):
+  	term -> <union> (<dependent-tasks> dep*, <dependent-tasks> term)
+    
+	task-create-execute-ctx = !""
+	task-create-execute(create-task):
+		term -> result
+		with
+		  ctx := <task-create-execute-ctx>
+		; task-push
+		; task-start-collection(|ctx)
+		; Result(taskID) := <create-task> term
+		; task-stop-collection(|ctx)
+		; <task-evaluate-now> taskID
+		; result := <task-get-results> taskID
+		; task-pop

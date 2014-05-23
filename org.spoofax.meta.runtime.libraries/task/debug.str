@@ -1,0 +1,59 @@
+module task/debug
+
+imports
+	
+	task/core
+	task/create
+	task/insert
+
+signature
+
+	constructors
+		
+		Debug : Term * Term -> Instruction
+
+rules
+	
+	task-transitive-dependencies = task-transitive-dependencies(|[])
+	
+	task-transitive-dependencies(|seen):
+		taskID -> [dep*, trans-dep*]
+		where
+			not(<elem> (taskID, seen));
+			dep*       := <task-get-dependencies> taskID;
+			trans-dep* := <mapconcat(task-transitive-dependencies(|[taskID|seen]))> dep*
+			
+	task-transitive-dependencies(|seen):
+		taskID -> []
+		where
+			<elem> (taskID, seen)
+			
+rules
+	
+	task-debug-ast:
+		ast -> debug*
+		with
+			resultID* := <task-collect-result-ids> ast;
+			dep*      := <mapconcat(task-transitive-dependencies)> resultID*;
+			debug*    := <make-set; map(task-debug-info(|<id>))> [resultID*, dep*]
+
+rules
+	
+	task-debug(|ctx):
+		term -> <new-task(|ctx)> Debug("", term)
+		
+	task-debug(|ctx, prefix):
+		term -> <new-task(|ctx)> Debug(prefix, term)
+		
+	task-is-combinator = ?Debug(_, _)
+
+	perform-task(|task-id):
+		Debug(prefix, term) -> term
+		where
+			switch !term
+				case ?[]                            : <task-debug-msg(|task-id, prefix); fail> "__FAIL__"
+				otherwise                           : <task-debug-msg(|task-id, prefix)> term
+			end
+
+	task-debug-msg(|task-id, prefix):
+		msg -> <debug(!$[[task-id] - [prefix] ])> msg

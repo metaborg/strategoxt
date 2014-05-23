@@ -1,0 +1,110 @@
+module task/core
+
+imports 
+  
+  task/create
+  task/insert
+  task/utils
+  task/primitives
+  task/interface
+  nabl/entries
+  nabl/utils
+  
+signature
+
+  sorts
+  
+    Result Instruction
+  
+  constructors
+    
+    Result : TaskID -> Result
+    
+    HigherOrder     : Instruction * List(TaskID) -> EvaluationReturn
+    HigherOrderFail : List(TaskID)               -> EvaluationReturn
+
+rules // API
+  
+  // todo: add API documentation for each of these including types
+	
+	task-add-message(|taskID, message)                         = task-api-add-message(|taskID, message)
+	task-add-task(|partition, dependencies, instruction, 
+	               type, storage-type, short-circuit)          = task-api-add-task(|partition, dependencies, instruction, type, storage-type, short-circuit)
+	task-add-read(|task-id)                                    = task-api-add-read(|task-id, <id>)
+	task-clear-partition                                       = task-api-clear-partition(|<id>)
+	task-delay                                                 = task-api-delay(|<id>)
+	task-debug-info(|partition)                                = task-api-debug-info(|partition)
+	task-evaluate-now                                          = task-api-evaluate-now(task-collect-result-ids-2, insert-results-hashmap, task-perform-task|<id>)
+	task-evaluate-scheduled                                    = task-api-evaluate-scheduled(task-collect-result-ids-2, insert-results-hashmap, task-perform-task)
+	task-get-dependencies                                      = task-api-get-dependencies(|<id>)
+	task-get-messages(|partition)                              = task-api-get-messages(|partition)
+	task-get-readers                                           = task-api-get-readers(|<id>)
+	task-invalidate-task-reads(|changedRead*)                  = task-api-invalidate-task-reads(|changedRead*)
+	task-merge                                                 = task-api-merge
+	task-sources-of(|task-id-or-task-id*)                      = task-api-sources-of(|task-id-or-task-id*)
+	task-persist                                               = task-api-persist
+	task-pop                                                   = task-api-pop
+	task-push                                                  = task-api-push
+	task-recover                                               = task-api-recover
+	task-reset                                                 = task-api-reset
+	task-result-combinations                                   = task-api-result-combinations(task-collect-result-ids-2, insert-results-hashmap|<id>, 0)
+	task-result-combinations-single                            = task-api-result-combinations(task-collect-result-ids-2, insert-results-hashmap|<id>, 1)
+	task-setup(|project-path)                                  = task-api-setup(|project-path)
+	task-setup                                                 = task-api-setup(|<id>)
+	task-start-collection(|partition)                          = task-api-start-collection(|partition)
+	task-stop-collection(|partition)                           = task-api-stop-collection(|partition)
+	task-unload                                                = task-unload(|<id>)
+	task-unload(|project-path)                                 = task-api-unload(|project-path)
+	
+	// Deprecated, use task-get-results
+	task-get-result = task-get-results
+	
+	task-get-results =
+		switch id
+			case ?Result(taskID) : task-api-get-results(|taskID)
+			otherwise            : task-api-get-results(|<id>)
+		end
+	
+	task-has-failed =
+		switch id
+			case ?Result(taskID) : task-api-has-failed(|taskID)
+			otherwise            : task-api-has-failed(|<id>)
+		end
+		
+	task-get-solved =
+		switch id
+			case ?Result(taskID) : task-api-get-results(|taskID) <+ (task-api-has-failed(|taskID); ![])
+			otherwise            : task-api-has-failed(|<id>) <+ (task-api-has-failed(|<id>); ![])
+		end
+
+rules // Projections
+	
+	task-result-id:
+    Result(taskID) -> taskID
+
+	task-collect-result-ids =
+		collect-all-annos(task-result-id, union)
+	
+	task-use-result-id:
+    Use(Result(taskID)) -> taskID
+		
+	task-collect-result-ids-2 =
+		collect-all-annos-2(task-result-id, task-use-result-id, union)
+
+rules // Execution
+	
+	task-perform-task(|task-id):
+		instruction -> result
+		where
+			if <task-is-higherorder> instruction then
+			  task-start-collection(|task-id)
+			; if new-instruction := <perform-task(|task-id)> instruction then
+					(_, added*) := <task-stop-collection(|task-id)>
+				; result := HigherOrder(new-instruction, added*)
+			  else
+			    (_, added*) := <task-stop-collection(|task-id)>
+			  ; result := HigherOrderFail(added*)
+		  	end
+			else
+				result :=	<perform-task(|task-id)> instruction
+			end

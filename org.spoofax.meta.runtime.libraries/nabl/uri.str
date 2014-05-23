@@ -1,0 +1,297 @@
+module nabl/uri
+
+imports
+  
+  index/core
+  editor/annotations
+  nabl/interface
+  nabl/query
+  
+signature
+
+  sorts
+  
+    Language
+    Segment
+    Qualifier
+    
+  constructors
+    
+    Language    : String                       -> Language
+    ID          : Namespace * Name * Qualifier -> Segment
+    Subsequent  : String                       -> Segment
+    Anonymous   : String                       -> Segment
+    Unique      : String                       -> Qualifier
+    NonUnique   :                                 Qualifier
+    Unique      :                                 Qualifier
+    URI         : Language * List(Segment)     -> URI
+    Barrier     : List(Namespace)              -> Annotation
+    
+rules // Construction
+  
+  nabl-base-uri = 
+    !URI(<id>, [])
+     
+  nabl-extend-uri(|segment) = 
+    URI(id, ![segment|<id>])
+    
+  nabl-extend-uri(|namespace, name, qualifier) = 
+    URI(id, ![ID(namespace, name, qualifier)|<id>])
+    
+  nabl-replace-uri(|segment) = 
+    URI(id, [!segment|id])
+    
+  nabl-replace-uri(|namespace, name, qualifier) = 
+    URI(id, [!ID(namespace, name, qualifier)|id])
+    
+  nabl-replace-uri-qualifier(|qualifier) =
+    URI(id, [ID(id, id, !qualifier)|id])
+      
+  nabl-nonunique-uri =
+		URI(id, [ID(id, id, !NonUnique())|id])
+		
+	nabl-uri-add-barriers(|namespace*):
+		URI(lang, [seg|s]) -> URI(lang, [<replace-annotation(?Barrier(_)|new-barrier)> seg|s])
+		where
+			existing-namespace* := <get-annotation(?Barrier(<id>)) <+ ![]> seg;
+			new-barrier         := Barrier([existing-namespace*, namespace*])
+			
+	nabl-uri-strip-barriers = 
+		URI(id, map(remove-annotations(?Barrier(_))))
+		
+rules // Stable URI extensions
+  
+  nabl-extend-uri(|table, partition, ns, n, u):
+    uri -> <nabl-extend-uri(|ns, n, qualifier)> uri
+    where 
+	    if where(<?NonUnique()> u) then
+	      qualifier := NonUnique()
+	    else
+	      qualifier := Unique(<stable-uri-part(|table, partition)> (partition, uri, ns, n))
+	    end
+    
+  nabl-extend-uri-anonymous(|table, partition):
+    uri -> <nabl-extend-uri(|Anonymous(unique))> uri
+    where
+      unique := <stable-uri-part(|table, partition)> (partition, uri, "anonymous")
+      
+  nabl-extend-uri-subsequent(|table, partition):
+    uri -> <nabl-extend-uri(|Subsequent(unique))> uri
+    where
+      unique := <stable-uri-part(|table, partition)> (partition, uri, "subsequent")
+
+  stable-uri-part(|table, partition):
+    key -> $[[partition]/[unique]]
+    where
+      if value := <hashtable-get(|key)> table then
+        unique    := <int-to-string> value;
+        new-value := <inc> value
+      else
+        unique    := "0";
+        new-value := 1
+      end;
+      <hashtable-put(|key, new-value)> table
+      
+rules // Projections
+  
+  nabl-uri = fail
+  nabl-uris = fail
+  nabl-value = fail
+  nabl-values = fail
+  
+  nabl-uri-language:
+    URI(language, _) -> language
+    
+  nabl-uri-language-name:
+    URI(Language(name), _) -> name
+    
+  nabl-uri-path:
+    URI(_, path) -> path
+        
+  nabl-uri-name:
+    uri -> <nabl-uri-path; Hd; nabl-segment-name> uri
+    
+  nabl-uri-namespace:
+    uri -> <nabl-uri-path; Hd; nabl-segment-namespace> uri    
+
+  nabl-uri-qualifier:
+    uri -> <nabl-uri-path; Hd; nabl-segment-qualifier> uri
+    
+  nabl-uri-barriers:
+  	uri -> <nabl-uri-path; Hd; nabl-segment-barriers> uri
+      
+  nabl-segment-namespace:
+    ID(namespace, _, _) -> namespace
+    
+  nabl-segment-name:
+    ID(_, name, _) -> name
+    
+  nabl-segment-name:
+  	Subsequent(name) -> name
+  
+	nabl-segment-name:
+  	Anonymous(name) -> name
+  	
+	nabl-segment-qualifier:
+    ID(_, _, qualifier) -> qualifier
+    
+  nabl-segment-barriers:
+  	segment -> namespace*
+  	where
+  		Barrier(namespace*) := <get-annotation(?Barrier(_))> segment 
+   
+  nabl-closure(s) = 
+      s 
+    < ![<id>|<nabl-closure(s)>] 
+    + ![]
+
+rules // query scope URIs
+  
+  // TODO: where should we strip barriers here?
+  nabl-uri-parent  = URI(id, Tl)
+  nabl-uri-parents = nabl-closure(nabl-uri-parent)
+      
+  nabl-uri-parents(|target-ns):
+    uri -> parent*
+    where
+      barrier-ns* := <nabl-uri-barriers <+ ![]> uri;
+      if <not(elem)> (target-ns, barrier-ns*); parent := <nabl-uri-parent> uri then
+        // Strip barriers from parent because URI's in the index also do not have barriers (matching would fail).
+        parent* := [<nabl-uri-strip-barriers> parent|<nabl-uri-parents(|target-ns)> parent]
+      else
+        parent* := [] 
+      end
+  
+  //  maps a list of definition URIs to a list of local scope URIs
+  nabl-uri-local-scopes =
+    ![<nabl-uri-parent>]
+  
+  // maps a list of definition URIs to a list of lexical scope URIs (including local scope)
+  nabl-uri-lexical-scopes =
+    nabl-uri-parents
+    
+  // maps a list of definition URIs to a list of lexical scope URIs (excluding local scope)
+  nabl-uri-lexical-parent-scopes =
+    nabl-uri-parent; nabl-uri-parents
+  
+  // maps a list of external definition URIs to a list of local scope URIs
+  nabl-uri-external-scopes =
+    nabl-get-all-inverse-aliasses
+  ; map(nabl-uri-parent)
+  
+  // maps a list of external definition URIs to a list of lexical scope URIs (including local scope)
+  nabl-uri-external-lexical-scopes =
+    nabl-get-all-inverse-aliasses
+  ; mapconcat(nabl-uri-lexical-scopes)
+  
+  // maps a list of external definition URIs to a list of lexical scope URIs (excluding local scope)
+  nabl-uri-external-lexical-parent-scopes =
+    nabl-get-all-inverse-aliasses
+  ; mapconcat(nabl-uri-lexical-parent-scopes)
+  
+  nabl-uri-all-local-scopes =
+    <conc> (<nabl-uri-local-scopes>, <nabl-uri-external-scopes>)
+    
+  nabl-uri-all-lexical-scopes =
+    <conc> (<nabl-uri-lexical-scopes>, <nabl-uri-external-lexical-scopes>)
+  
+  nabl-uri-all-lexical-parent-scopes =
+    <conc> (<nabl-uri-lexical-parent-scopes>, <nabl-uri-external-lexical-parent-scopes>)
+    
+	nabl-sub-uri(|namespace):
+		uri -> <nabl-uri-strip-barriers> uri
+		where
+			nabl-uri-namespace => namespace
+		
+	nabl-sub-uri(|namespace):
+		uri -> <nabl-uri-parent; nabl-sub-uri(|namespace); nabl-uri-strip-barriers> uri
+		where
+			not(nabl-uri-namespace => namespace)
+    
+rules // Conditions
+  
+  nabl-is-uri =
+  	?URI(_, _)
+  
+  nabl-is-unique =
+    nabl-uri-qualifier;
+    ?Unique(_)
+    
+  nabl-is-nonunique =
+    nabl-uri-qualifier;
+    ?NonUnique()
+    
+  nabl-segment-is-id =
+  	?ID(_, _, _)
+
+rules // Equality
+  
+  nabl-uri-eq = 
+    ?(URI(lang1, segs1), URI(lang2, segs2));
+    <eq> (lang1, lang2);
+    <zip(nabl-uri-segment-eq)> (segs1, segs2)
+    
+  nabl-uri-segment-eq =
+    ?(ID(ns1, name1, _), ID(ns2, name2, _));
+    <eq> (ns1, ns2);
+    <eq> (name1, name2)
+     
+  nabl-uri-segment-eq =
+    ?(Subsequent(_), Subsequent(_))
+    
+  nabl-uri-segment-eq =
+    ?(Anonymous(_), Anonymous(_))
+    
+  nabl-uri-namespace-eq(|namespace) =
+  	nabl-uri-namespace; ?namespace
+    
+rules // Printing
+  
+  nabl-print-uri:
+    uri -> $[[ns] [names]]
+    where
+      ns#(_) := <nabl-uri-namespace> uri;
+      names  := <nabl-uri-path; filter(nabl-segment-name); separate-by(|"."); concat-strings> uri
+        
+rules /** @internal Projections */
+
+  /** @internal */
+  nabl-uri:
+    URI(_, _) -> <id>
+    
+  /** @internal */
+  nabl-value:
+    URI(_, _) -> <id>
+ 
+  /** @internal */
+  nabl-uris:
+    URI(_, _) -> [<id>]
+    
+  /** @internal */
+  nabl-values:
+    URI(_, _) -> [<id>]
+
+    
+  /** @internal */  
+  nabl-uri =
+  	has-annos;
+  	get-annos;
+  	fetch-elem(nabl-uri)
+
+  /** @internal */  
+  nabl-value =
+  	has-annos;
+  	get-annos;
+  	fetch-elem(nabl-value)
+
+  /** @internal */  
+  nabl-uris =
+  	has-annos;
+  	get-annos;
+  	filter(nabl-uri)
+
+  /** @internal */  
+  nabl-values =
+  	has-annos;
+  	get-annos;
+  	filter(nabl-value)

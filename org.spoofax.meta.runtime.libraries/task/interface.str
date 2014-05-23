@@ -1,0 +1,15 @@
+module task/interface
+
+strategies
+  
+  perform-task(|task-id) = fail
+  avoid-task(|dep*)      = fail
+  
+  task-get-type          = fail
+  task-get-storage-type  = fail
+  task-is-combinator     = fail // Deprecated, use task-get-type = task-combinator-type
+  task-short-circuit     = fail
+  task-is-higherorder    = fail
+  
+  task-rewrite           = fail
+  task-match             = fail 

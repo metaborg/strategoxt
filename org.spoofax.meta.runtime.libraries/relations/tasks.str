@@ -1,0 +1,89 @@
+module relations/tasks
+
+imports
+	
+	relations/entries
+  relations/query
+  relations/incremental
+  relations/interface
+  task/create
+  task/tasks
+  nabl/uri
+  nabl/incremental
+  nabl/utils
+	
+signature
+  
+  constructors
+
+		RelationTerm     : Term -> Instruction
+    RelationLookup   : Relation * Term -> Instruction
+    RelationMatch    : List(Term) * Term -> Instruction
+    RelationDistance : Relation * Term * Term -> Instruction
+
+rules // URI conversion
+	
+	relation-create-term(|ctx):
+		term -> <new-task(|ctx)> RelationTerm(term)
+		
+	perform-task(|task-id):
+		RelationTerm(term) -> (term, term')
+		where
+	    term' := <relation-try-term-to-uri> term
+		; <relation-add-read(|task-id)> term'
+    
+rules // Lookup (customised in Java to store its result in a hash set, for fast lookups)
+
+	relation-create-lookup(|ctx, rel):
+		term -> <task-create-insert(|ctx); task-create-combine(|ctx)> lookup-task
+		with
+		  term-task   := <relation-create-term(|ctx)> term
+		; lookup-task := <new-task(|ctx)> RelationLookup(rel, term-task)
+
+  perform-task(|task-id):
+    RelationLookup(rel, (term, term')) -> result*
+    where
+		  result* := <relation-lookup(|rel)> term
+		  // TODO: remove redundant relation-try-term-to-uri calls in relation-lookup, term' is already the correct term.
+		  
+  task-get-storage-type:
+  	RelationLookup(_, _) -> <task-set-storage>
+  
+rules // Match (custom implementation in Java that uses the hash set from a lookup task for fast lookups)
+	
+  relation-create-match(|ctx):
+  	(rel, actual, expected) -> <relation-create-match(|ctx, rel, expected)> actual
+
+	relation-create-match(|ctx, rel, expected) = 
+		relation-create-match(|ctx, rel, expected, [])
+
+  relation-create-match(|ctx, rel, expected, dep*):
+  	actual -> result
+  	with 
+  	  lookup-task := <relation-create-lookup(|ctx, rel)> actual
+  	; term-task   := <relation-create-term(|ctx)> expected
+    ; all-dep*    := <merge-dependencies(|dep*)> (rel, actual, expected, lookup-task, term-task)
+  	; match-task  := <new-task(|ctx, all-dep*)> RelationMatch(lookup-task, term-task)
+  	; if custom-task := <relation-match-custom(|ctx)> (rel, actual, expected) then
+  	  	result := <task-create-choice(|ctx)> [custom-task, match-task]
+  	  else
+  	  	result := match-task
+  	  end
+  
+  task-get-type:
+  	RelationMatch(_, _) -> <task-raw-type>
+  	  
+  task-get-storage-type:
+  	RelationMatch(_, _) -> <task-set-storage>
+		  
+rules // Distance
+	
+  relation-create-distance(|ctx, rel, values):
+  	actual -> <new-task(|ctx)> RelationDistance(rel, actual, values)
+	
+	// Task needs to be a combinator because `expected*` needs to be queried like a list to find the distance.
+	task-is-combinator = ?RelationDistance(_, _, _)
+	
+  perform-task(|task-id): 
+  	RelationDistance(rel, actual, value*) -> [<get-index> (<try-remove-list; relation-try-term-to-uri> actual, <map(relation-try-term-to-uri)> value*)]
+		// Remove list on `actual` because this task is a combinator and `actual` may only contain one element.
