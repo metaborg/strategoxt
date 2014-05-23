@@ -6,6 +6,8 @@ module strc
 imports
   libstratego-sglr
 
+  runtime-libraries/org.spoofax.meta.runtime.libraries/nabl/-
+
   stratego/strc/model/model
 
   stratego/strc/lib/stratlib
