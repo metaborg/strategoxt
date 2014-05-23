@@ -1,0 +1,782 @@
+module stratego-names
+
+imports
+  lib/runtime/nabl/-
+  lib/runtime/task/-
+  lib/runtime/properties/-
+  lib/runtime/types/-
+  lib/runtime/editor/-
+
+
+rules
+
+  nabl-get-scope =
+    ?SD(name, d)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    SD(name, d) -> name
+
+  nabl-name-apply(s) =
+    SD(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?SD(name, d)
+    ; origin-track-forced(
+        SD(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsStrategy()
+          , Unique()
+          , Current()
+          , [NablNsVariable()]
+          , []
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-get-scope =
+    ?SDefT(f, xs, ys, s)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    SDefT(f, xs, ys, s) -> f
+
+  nabl-name-apply(s) =
+    SDefT(s, id, id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?SDefT(f, xs, ys, s)
+    ; origin-track-forced(
+        SDefT(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsStrategy()
+          , Unique()
+          , Current()
+          , [NablNsVariable()]
+          , []
+          )
+        , id
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-get-scope =
+    ?ExtSDef(f, xs, ys)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    ExtSDef(f, xs, ys) -> f
+
+  nabl-name-apply(s) =
+    ExtSDef(s, id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?ExtSDef(f, xs, ys)
+    ; origin-track-forced(
+        ExtSDef(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsStrategy()
+          , Unique()
+          , Current()
+          , [NablNsVariable()]
+          , []
+          )
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-get-scope =
+    ?ExtSDefInl(f, xs, ys, s)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    ExtSDefInl(f, xs, ys, s) -> f
+
+  nabl-name-apply(s) =
+    ExtSDefInl(s, id, id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?ExtSDefInl(f, xs, ys, s)
+    ; origin-track-forced(
+        ExtSDefInl(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsStrategy()
+          , Unique()
+          , Current()
+          , [NablNsVariable()]
+          , []
+          )
+        , id
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-get-scope =
+    ?RDefT(f, xs, ys, s)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    RDefT(f, xs, ys, s) -> f
+
+  nabl-name-apply(s) =
+    RDefT(s, id, id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?RDefT(f, xs, ys, s)
+    ; origin-track-forced(
+        RDefT(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsStrategy()
+          , Unique()
+          , Current()
+          , [NablNsVariable()]
+          , []
+          )
+        , id
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-get-name :
+    CallT(f, ss, ts) -> f
+
+  nabl-name-apply(s) =
+    CallT(s, id, id)
+
+  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
+    ?CallT(f, ss, ts)
+    ; origin-track-forced(
+        CallT(
+          nabl-use(
+          | lang__
+          , partition__
+          , uniques__
+          , uris__
+          , [ UseCandidate(
+                NablNsStrategy()
+              , []
+              , Current()
+              , True()
+              , []
+              )
+            ]
+          )
+        , id
+        , id
+        )
+      |
+      )
+
+  nabl-get-name :
+    OpDeclInj(t) -> Inj()
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?OpDeclInj(t)
+    ; origin-track-forced(OpDeclInj(id)|)
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?OpDeclInj(t) ; OpDeclInj(id) ; fail
+
+  nabl-get-name :
+    OpDeclQ(c, t) -> c
+
+  nabl-name-apply(s) =
+    OpDeclQ(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?OpDeclQ(c, t)
+    ; origin-track-forced(
+        OpDeclQ(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsConstructor()
+          , Unique()
+          , Current()
+          , []
+          , []
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?OpDeclQ(c, t)
+    ; OpDeclQ(
+        nabl-store-props(
+        | partition__
+        , [Prop(Type(), t, [])]
+        )
+      , id
+      )
+    ; fail
+
+  nabl-get-name :
+    OpDecl(c, t) -> c
+
+  nabl-name-apply(s) =
+    OpDecl(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?OpDecl(c, t)
+    ; origin-track-forced(
+        OpDecl(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsConstructor()
+          , Unique()
+          , Current()
+          , []
+          , []
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?OpDecl(c, t)
+    ; OpDecl(
+        nabl-store-props(
+        | partition__
+        , [Prop(Type(), t, [])]
+        )
+      , id
+      )
+    ; fail
+
+  nabl-get-name :
+    ExtOpDeclInj(t) -> Inj()
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?ExtOpDeclInj(t)
+    ; origin-track-forced(ExtOpDeclInj(id)|)
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?ExtOpDeclInj(t) ; ExtOpDeclInj(id) ; fail
+
+  nabl-get-name :
+    ExtOpDeclQ(c, t) -> c
+
+  nabl-name-apply(s) =
+    ExtOpDeclQ(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?ExtOpDeclQ(c, t)
+    ; origin-track-forced(
+        ExtOpDeclQ(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsConstructor()
+          , Unique()
+          , Current()
+          , []
+          , []
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?ExtOpDeclQ(c, t)
+    ; ExtOpDeclQ(
+        nabl-store-props(
+        | partition__
+        , [Prop(Type(), t, [])]
+        )
+      , id
+      )
+    ; fail
+
+  nabl-get-name :
+    ExtOpDecl(c, t) -> c
+
+  nabl-name-apply(s) =
+    ExtOpDecl(s, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?ExtOpDecl(c, t)
+    ; origin-track-forced(
+        ExtOpDecl(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsConstructor()
+          , Unique()
+          , Current()
+          , []
+          , []
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+    ?ExtOpDecl(c, t)
+    ; ExtOpDecl(
+        nabl-store-props(
+        | partition__
+        , [Prop(Type(), t, [])]
+        )
+      , id
+      )
+    ; fail
+
+  nabl-get-name :
+    Overlay(c, xs, t) -> c
+
+  nabl-name-apply(s) =
+    Overlay(s, id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+    ?Overlay(c, xs, t)
+    ; origin-track-forced(
+        Overlay(
+          nabl-def(
+            ?c-uri1__
+          , ?s-uri1__
+          | lang__
+          , partition__
+          , uniques__
+          , uri__
+          , uri__
+          , NablNsOverlay()
+          , Unique()
+          , Current()
+          , []
+          , []
+          )
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+
+imports
+  stratego-names-aux
+
+
+signature
+  constructors
+    NablNsStrategy    : Namespace
+    NablNsVariable    : Namespace
+    NablNsConstructor : Namespace
+    NablNsOverlay     : Namespace
+
+
+signature
+  constructors
+    NablProp_signature   : Property
+    NablProp_ast         : Property
+    NablProp_unique-name : Property
+    NablProp_signature   : Property
+    NablProp_signature   : Property
+    NablProp_ast         : Property
+
+
+rules
+
+  nabl-custom-properties(add-properties) =
+    ![ NablProp_signature()
+     , NablProp_ast()
+     , NablProp_unique-name()
+     , NablProp_signature()
+     , NablProp_signature()
+     , NablProp_ast()
+     ]
+    ; add-properties
+
+  signature-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  signature-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_signature())
+
+  signature-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  signature-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  signature-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  signature-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_signature(), task*, [])
+
+  signature-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_signature(), task*, dep*)
+
+  signature-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_signature()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  signature-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_signature(), task*, relation, expected)
+
+  create-signature-task(|task*) =
+    fail
+
+  get-signature =
+    get-property(|NablProp_signature())
+
+  store-signature(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_signature(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-signature-task(|partition)> term
+    where NablProp_signature() := kind
+
+  ast-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  ast-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_ast())
+
+  ast-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  ast-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  ast-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  ast-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_ast(), task*, [])
+
+  ast-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_ast(), task*, dep*)
+
+  ast-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_ast()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  ast-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_ast(), task*, relation, expected)
+
+  create-ast-task(|task*) =
+    fail
+
+  get-ast =
+    get-property(|NablProp_ast())
+
+  store-ast(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_ast(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-ast-task(|partition)> term
+    where NablProp_ast() := kind
+
+  unique-name-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  unique-name-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_unique-name())
+
+  unique-name-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  unique-name-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  unique-name-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  unique-name-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_unique-name(), task*, [])
+
+  unique-name-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_unique-name(), task*, dep*)
+
+  unique-name-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_unique-name()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  unique-name-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_unique-name(), task*, relation, expected)
+
+  create-unique-name-task(|task*) =
+    fail
+
+  get-unique-name =
+    get-property(|NablProp_unique-name())
+
+  store-unique-name(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_unique-name(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-unique-name-task(|partition)> term
+    where NablProp_unique-name() := kind
+
+  signature-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  signature-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_signature())
+
+  signature-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  signature-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  signature-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  signature-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_signature(), task*, [])
+
+  signature-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_signature(), task*, dep*)
+
+  signature-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_signature()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  signature-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_signature(), task*, relation, expected)
+
+  create-signature-task(|task*) =
+    fail
+
+  get-signature =
+    get-property(|NablProp_signature())
+
+  store-signature(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_signature(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-signature-task(|partition)> term
+    where NablProp_signature() := kind
+
+  signature-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  signature-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_signature())
+
+  signature-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  signature-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  signature-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  signature-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_signature(), task*, [])
+
+  signature-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_signature(), task*, dep*)
+
+  signature-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_signature()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  signature-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_signature(), task*, relation, expected)
+
+  create-signature-task(|task*) =
+    fail
+
+  get-signature =
+    get-property(|NablProp_signature())
+
+  store-signature(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_signature(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-signature-task(|partition)> term
+    where NablProp_signature() := kind
+
+  ast-is(|task*) =
+    nabl-prop-calc(|task*, [])
+
+  ast-task(|task*) =
+    get-or-create-property-task(|task*, NablProp_ast())
+
+  ast-is(|task*, dep*) =
+    nabl-prop-calc(|task*, dep*)
+
+  ast-list(|task*) =
+    nabl-prop-list(|task*, [])
+
+  ast-list(|task*, dep*) =
+    nabl-prop-list(|task*, dep*)
+
+  ast-lookup(|task*) =
+    nabl-prop-lookup(|NablProp_ast(), task*, [])
+
+  ast-lookup(|task*, dep*) =
+    nabl-prop-lookup(|NablProp_ast(), task*, dep*)
+
+  ast-match(|task*, expected) =
+    nabl-prop-match(
+    | NablProp_ast()
+    , task*
+    , Eq()
+    , expected
+    )
+
+  ast-match(|task*, relation, expected) =
+    nabl-prop-match(|NablProp_ast(), task*, relation, expected)
+
+  create-ast-task(|task*) =
+    fail
+
+  get-ast =
+    get-property(|NablProp_ast())
+
+  store-ast(|partition, prop) =
+    nabl-store-prop(
+    | partition
+    , Prop(NablProp_ast(), prop, [])
+    )
+
+  create-property-task(|partition, kind):
+    term -> <create-ast-task(|partition)> term
+    where NablProp_ast() := kind

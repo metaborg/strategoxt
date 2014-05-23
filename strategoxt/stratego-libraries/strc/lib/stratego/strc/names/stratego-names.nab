@@ -1,0 +1,67 @@
+module stratego-names
+
+imports stratego-names-aux
+
+namespaces Strategy Variable Constructor Overlay
+
+properties
+
+   signature of Strategy : Int
+   ast of Strategy : Definition
+   unique-name of Strategy : String
+   
+   signature of Constructor : Int
+   
+   signature of Overlay : Int
+   ast of Overlay : Overlay
+   
+binding rules // strategies
+
+  SD(name, d) :
+  	defines Strategy name
+  	scopes Variable
+
+  SDefT(f, xs, ys, s) :
+  	defines Strategy f
+  	scopes Variable
+  	
+  ExtSDef(f, xs, ys) :
+  	defines Strategy f
+  	scopes Variable
+  	
+  ExtSDefInl(f, xs, ys, s) :
+  	defines Strategy f
+  	scopes Variable
+ 	
+  RDefT(f, xs, ys, s) :
+  	defines Strategy f
+  	scopes Variable
+ 	
+  CallT(f, ss, ts) :
+  	refers to Strategy f //of arity (i, j)
+  	
+binding rules // constructors
+
+  OpDeclInj(t) :
+  	defines Constructor Inj() of type t
+  	
+  OpDeclQ(c, t) :
+  	defines Constructor c of type t
+  	
+  OpDecl(c, t) :
+  	defines Constructor c	of type t
+  	
+  ExtOpDeclInj(t) :
+  	defines Constructor Inj() of type t
+  	
+  ExtOpDeclQ(c, t) :
+  	defines Constructor c	of type t
+  		
+  ExtOpDecl(c, t) :	
+  	defines Constructor c	of type t
+ 
+binding rules // overlays
+
+ 	Overlay(c, xs, t) :
+ 		defines Overlay c
+  	

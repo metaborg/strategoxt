@@ -1,0 +1,72 @@
+module stratego-names-aux
+
+imports model
+
+signature
+  constructors
+  	SD : String * Definition -> Definition
+  	
+rules
+	
+	explicit-names = 
+		alltd(explicit-name-def; top)
+	
+	explicit-name :
+		d@SDefT(f, _, _, _) -> SD($[[<cify>n]_[i]_[j]], d)
+		where (n, i, j) := <m-def-signature> d
+
+
+rules // properties of strategy definitions
+	
+	store-def-properties(|ctx, f, d) =
+  	sig@(n, i, j) := <m-def-signature> d;
+  	name := $[[n]_[i]_[j]];
+    <store-signature(|ctx, sig)> f;
+    <store-ast(|ctx, d)> f;
+    <store-unique-name(|ctx, name)> f
+	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	d@SDefT(f, xs, ys, s) -> <fail>
+  	where store-def-properties(|ctx, f, d)
+  	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	d@ExtSDef(f, xs, ys) -> <fail>
+  	where store-def-properties(|ctx, f, d)
+  	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	d@ExtSDefInl(f, xs, ys, s) -> <fail>
+  	where store-def-properties(|ctx, f, d)
+  	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	d@RDefT(f, xs, ys, s) -> <fail>
+  	where store-def-properties(|ctx, f, d)
+  		
+rules // properties of constructors
+	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	OpDeclQ(c, t) -> <fail>
+  	where <store-signature(|ctx, <m-constr-signature>)> c
+	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	OpDecl(c, t) -> <fail>
+  	where <store-signature(|ctx, <m-constr-signature>)> c
+	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	ExtOpDeclQ(c, t) -> <fail>
+  	where <store-signature(|ctx, <m-constr-signature>)> c
+	
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	ExtOpDecl(c, t) -> <fail>
+  	where <store-signature(|ctx, <m-constr-signature>)> c
+
+rules // properties overlays
+
+  nabl-prop-site(|lang, ctx, uris, states, implicits) :
+  	o@Overlay(c, xs, t) -> <fail>
+  	where <store-signature(|ctx, <m-overlay-signature>)> c;
+          <store-ast(|ctx, o)> c
+		
+	
+
+  	
+  	 		
