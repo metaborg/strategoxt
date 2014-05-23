@@ -1,0 +1,22 @@
+module singleast
+
+imports
+	
+	analysis/builtins
+	analysis/core
+	analysis/single
+	analysis/defaults
+	nabl/collect
+	
+rules
+	
+	analysis-singleast = analysis-singleast(nabl-collect)
+	analysis-singleast(collector):
+		ast -> (ast', messages)
+		with
+			language     := "Language";
+			path         := "path";
+			project-path := ".";
+      analysis-analyze-builtin-partitions(collector|language, project-path);
+	    (ast', (e*, w*, n*), _, _, _, _, _, _, _, _) := <analyze-one(collector|language, path, project-path)> ast;
+			messages := <analysis-message-collect(id|e*, w*, n*)> ast'
