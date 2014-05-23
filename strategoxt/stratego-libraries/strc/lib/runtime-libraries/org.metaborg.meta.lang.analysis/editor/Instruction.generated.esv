@@ -1,0 +1,40 @@
+
+module Instruction.generated
+
+completions
+  completion template MsgType : "note" =
+    "note"                                                                
+  completion template MsgType : "warning" =
+    "warning"                                                          
+  completion template MsgType : "error" =
+    "error"                                                              
+  completion template MsgTrigger : "fails" =
+    "fails"                                                           
+  completion template MsgTrigger : "succeeds" =
+    "succeeds"                                                     
+  completion template MsgTrigger : "has multiple results" =
+    "has multiple results"                             
+  completion template Instruction : "show MsgType Term on Term when Term MsgTrigger" =
+    "show " <MsgType:MsgType> " " <Term:Term> " on " <Term:Term> " when " <Term:Term> " " <MsgTrigger:MsgTrigger>  
+  completion template Instruction : "choose " =
+    "choose " <:Term>                                              
+  completion template Instruction : "sequence " =
+    "sequence " <:Term>                                          
+  completion template Instruction : "concat " =
+    "concat " <:Term>                                              
+  completion template Instruction : "produce Term" =
+    "produce " <Term:Term>                                    
+  completion template Instruction : "lookup Term prop on Term" =
+    "lookup " <Term:Term> " prop on " <Term:Term>  
+  completion template Instruction : "lookup Term props on Term" =
+    "lookup " <Term:Term> " props on " <Term:Term>  
+  completion template Instruction : "check Term prop Term against Term wrt Term" =
+    "check " <Term:Term> " prop " <Term:Term> " against " <Term:Term> " wrt " <Term:Term>  
+  completion template Instruction : "rewrite Term wrt Term" =
+    "rewrite " <Term:Term> " wrt " <Term:Term>       
+  completion template Instruction : "match Term using relation Term wrt bindings Term" =
+    "match " <Term:Term> " using relation " <Term:Term> " wrt bindings " <Term:Term>  
+  completion template Instruction : "resolve Term Term in Term wrt props Term" =
+    "resolve " <Term:Term> " " <Term:Term> " in " <Term:Term> " wrt props " <Term:Term>  
+  completion template Instruction : "check Term against namespace Term" =
+    "check " <Term:Term> " against namespace " <Term:Term>  

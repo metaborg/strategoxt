@@ -1,0 +1,221 @@
+module nabl/tasks
+
+imports 
+  
+  task/core
+  task/create
+  task/insert
+  task/tasks
+  task/utils
+  nabl/lookup
+  nabl/collect
+  nabl/query
+  nabl/incremental
+  nabl/interface
+  nabl/uri
+  nabl/utils
+  nabl/entries
+  properties/entries
+  properties/eq
+  properties/query
+  properties/tasks
+  
+signature
+  
+  constructors
+    
+    CollectDefs            : Term                                      -> Instruction
+    ResolveDefs            : Scope * Namespace * Name * Prop           -> Instruction
+    ResolveAllDefs         : Scope * Namespace                         -> Instruction
+    ResolveAllDefs         : Scope * Namespace * Name * Prop           -> Instruction
+    CheckDefs              : Namespace * URI                           -> Instruction
+    PropConstraint         : Kind * Expected * Result                  -> Instruction
+    SubURI                 : Namespace * URI                           -> Instruction
+    
+    FilterDefsHigherOrder        : List(Def) * List(Term) * List(Term) * String -> Instruction
+    FilterDefs                   : List(DefTuple)                               -> Instruction
+    
+    DisambiguateDefsHigherOrder  : List(Def) * List(Term) * List(Term) * String -> Instruction
+    DisambiguateDefs             : List(DefTuple)                               -> Instruction
+    
+rules // Collects all definitions in a term
+  
+  nabl-create-collectdefs(|ctx):
+  	term -> <new-task(|ctx)> CollectDefs(term)
+
+  nabl-create-collectdefs(|ctx, dep*):
+  	term -> <new-task(|ctx, all-dep*)> CollectDefs(term)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> term
+    	
+  // todo: lift nabl-get-name to task creation, currently storing an AST in task (expensive storage!)
+  	
+  perform-task(|nr): 
+    CollectDefs(term) -> <?Def(_) <+ (try(nabl-get-name); get-annos; fetch(?Def(_) + ?Use(<id>)))> term 
+
+rules // Resolve definitions in a scope of a certain namespace and name (stops when definitions are found in a scope)
+  
+  nabl-create-resolvedefs(|ctx, ns, name, prop*):
+  	scope -> <new-task(|ctx)> ResolveDefs(scope, ns, name, prop*)
+
+  
+  perform-task(|task-id):
+  	ResolveDefs(scope, ns, name, prop*) -> result
+  	where
+  		uri    := <nabl-uri> scope;
+  		name'  := <try-remove-list; strip-annos> name;
+  		<nabl-add-name-read(|task-id, ns, name')> uri;
+  		def*   := <nabl-lookup(|ns, name')> uri;
+  		result := <filter(filter-defs-props(|prop*)); not(?[])> def*
+  		
+	task-short-circuit = ?ResolveDefs(_, _, _, _)
+
+rules // Resolve all definitions in a scope of a certain namespace and name
+	
+	// TODO: This seems to be redundant, given the perform-task rule
+  nabl-create-resolvealldefs(|ctx, ns, name, prop*):
+  	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns, name, prop*)
+  
+  
+  perform-task(|nr):
+    ResolveAllDefs(scope, ns, name, prop*) -> <perform-task(|nr)> ResolveDefs(scope, ns, name, prop*)
+
+rules // Resolve all definitions in a scope of a certain namespace
+
+  nabl-create-resolvealldefs(|ctx, ns):
+  	scope -> <new-task(|ctx)> ResolveAllDefs(scope, ns)
+	
+  perform-task(|nr):
+  	ResolveAllDefs(scope, ns) -> def*
+  	where
+  		uri  := <nabl-uri> scope;
+  		<nabl-add-ns-read(|nr, ns)> uri;
+  		def* := <nabl-lookup-all(|ns)> uri;
+  		not(?[])
+
+  // inserts wildcard import resolution tasks into a list of scope URIs
+  // each scope URI is wrapped in a list, 
+  // followed by the result of a wildcard import resolution task for this URI
+  nabl-insert-import-tasks(|ctx, ns) =
+    map(try(nabl-uri-strip-barriers))
+  ; mapconcat(
+      ![ <try(nabl-is-uri; MkSingleton)>
+       , <prop-create-lookup(|ctx, Import(ns)); task-create-insert(|ctx); task-create-combine(|ctx)>
+       ]
+    )
+    // TODO: order of imported URI's is unclear
+ 
+  // creates a short-circuit resolution task for a list of scope URIs
+  nabl-resolve-task(|ctx, ns, name, prop*) =
+    task-create-combine(|ctx) 
+  ; nabl-create-resolvedefs(|ctx, ns, name, prop*)
+    // TODO: disambiguation
+ 
+  // creates a full resolution task for a list of scope URIs
+  nabl-resolve-all-task(|ctx, ns, name, prop*) =
+    task-create-combine(|ctx) 
+  ; nabl-create-resolvealldefs(|ctx, ns, name, prop*)
+    // TODO: disambiguation
+  
+  // TODO: implement in same style as named version
+	nabl-resolve-all-tasks(|partition, ns, prop*) =
+		map(
+		  <new-task(|partition)> ResolveAllDefs(<id>, ns)
+		; <nabl-use-propconstraint(|partition)> (<id>, prop*)
+		)
+			
+rules // Check if a definition is in given namespace
+
+  nabl-create-checkdefs(|ctx, ns):
+  	definition -> <new-task(|ctx)> CheckDefs(ns, definition)
+
+		
+	perform-task(|nr):
+		CheckDefs(ns, d) -> d
+		where
+			<nabl-uri; nabl-uri-namespace; ?ns> d
+
+rules // Filter definitions by properties
+  		
+	filter-defs-props(|prop*):
+		definition -> <map(filter-defs-prop(|definition)); !definition> prop*
+	 	
+	filter-defs-prop(|definition):
+		Prop(kind, expected, _) -> definition
+		where
+			uri    := <nabl-uri> definition;
+      value  := <get-index-property(|kind)> uri;
+      value' := <insert-results-or-delay> value;
+      <filter-defs-prop-eq(|expected, value')> kind
+
+	filter-defs-prop-eq(|expected, value):
+		kind -> <nabl-property-eq> (kind, Eq(), (expected, value))
+		
+	filter-defs-prop-eq(|expected, value):
+		kind -> <nabl-property-eq> (kind, Eq(), (expected, <try-remove-list> value))
+	
+	
+  nabl-create-propconstraint(|ctx, kind, definition):
+  	expected -> <new-task(|ctx)> PropConstraint(kind, expected, definition)
+  	
+	nabl-create-propconstraint(|ctx, dep*, kind, definition):
+  	expected -> <new-task(|ctx, all-dep*)> PropConstraint(kind, expected, definition)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> (kind, expected, definition)
+	
+
+	perform-task(|task-id):
+		PropConstraint(kind, expected, definition) -> <filter-defs-prop(|definition)> Prop(kind, expected, [])
+
+rules // URI manipulation
+	
+	nabl-create-suburi(|ctx, namespace):
+		contains-uri -> <new-task(|ctx)> SubURI(namespace, contains-uri)
+		
+	perform-task(|task-id):
+		SubURI(namespace, contains-uri) -> <nabl-sub-uri(|namespace)> uri
+		where
+			uri := <nabl-uri> contains-uri
+
+rules // Filtering
+
+	nabl-create-filter(|ctx, uri*, ctx-terms, ctx-string):
+		defs -> <new-task(|ctx)> FilterDefsHigherOrder(defs, uri*, ctx-terms, ctx-string)
+	
+	task-is-combinator = ?FilterDefsHigherOrder(_, _, _, _)
+	task-is-higherorder = ?FilterDefsHigherOrder(_, _, _, _)
+	
+	perform-task(|task-id):
+		FilterDefsHigherOrder(def*, uri*, [ctx-terms], ctx-string) -> FilterDefs(def-tuple*)
+		where
+			def-tuple* := <filter(nabl-filter-def(|task-id, uri*, ctx-terms, ctx-string))> def*
+
+
+	task-is-combinator = ?FilterDefs(_)
+	
+	perform-task(|task-id):
+		FilterDefs(def-tuple*) -> <filter(not(?(_, [])))> def-tuple*
+		
+rules // Disambiguation
+
+	nabl-create-disambiguate(|ctx, uri*, ctx-terms, ctx-string):
+		defs -> <new-task(|ctx)> DisambiguateDefsHigherOrder(defs, uri*, ctx-terms, ctx-string)
+	
+	task-is-combinator = ?DisambiguateDefsHigherOrder(_, _, _, _)
+	task-is-higherorder = ?DisambiguateDefsHigherOrder(_, _, _, _)
+	
+	perform-task(|task-id):
+		DisambiguateDefsHigherOrder(def*, uri*, [ctx-terms], ctx-string) -> DisambiguateDefs(def-tuple*)
+		where
+			def-tuple* := <filter(nabl-disambiguate-def(|task-id, uri*, ctx-terms, ctx-string))> def*
+
+
+	task-is-combinator = ?DisambiguateDefs(_)
+	
+	// TODO: this task is not generic enough yet, it currently assumes minimization.
+	perform-task(|task-id):
+		DisambiguateDefs(def-tuple*) -> def-sorted2*
+		where
+		  def-sorted1* := <sort-list(LSort(\((_, [x]), (_, [y])) -> <gt> (x, y)\))> def-tuple*
+		; def-sorted2* := <take-while(?(_, x)); map(Fst)> def-sorted1* // Take all defs with the same distance.
+		

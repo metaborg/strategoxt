@@ -1,0 +1,376 @@
+module task/tasks
+
+imports
+	
+	task/core
+	task/create
+	task/insert
+  task/messages
+	task/interface
+  
+signature
+
+	constructors
+		
+    Id       : Term                -> Instruction
+    Fail     :                        Instruction
+    Choice   : List(Result)        -> Instruction
+    Sequence : List(Result)        -> Instruction
+    Combine  : List(Result)        -> Instruction
+    Singleton: Result              -> Instruction
+    Diff     : Result * Result     -> Instruction
+    Collect  : List(Result)        -> Instruction
+    Not      : Result              -> Instruction
+    Index    : Int * List(Result)  -> Instruction
+    Length   : List(Result)        -> Instruction
+    Sum      : List(Result)        -> Instruction
+    Fetch    : Term * List(Result) -> Instruction
+    Eq       : Term * Term         -> Instruction
+    Insert   : Term                -> Instruction
+    Rewrite  : ID * Result         -> Instruction
+    MakeSet  : Term                -> Instruction 
+
+rules
+  
+  /**
+   * Create a task that produces its input term.
+   *
+   * @type Term -> Result
+   */
+	task-create-id(|ctx) =
+	  ?Result(_) <+ <new-task(|ctx)> Id(<id>)
+
+  /**
+   * Create a task that produces its input term, where results are stored in a set.
+   *
+   * @type Term -> Result
+   */	  
+	task-create-set-id(|ctx) =
+	  ?Result(_) <+ <new-task(|ctx, <task-regular-type>, <task-set-storage>)> Id(<id>)
+  
+  /**
+   * Create a task that produces its input term, with extra static dependencies.
+   *
+   * @type Term -> Result
+   */
+  task-create-id(|ctx, dep*):
+  	term -> <new-task(|ctx, all-dep*)> Id(term)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> term
+    	
+  /**
+   * Create a task that produces its input term, with extra dependencies, where results are stored in a set.
+   *
+   * @type Term -> Result
+   */
+  task-create-set-id(|ctx, dep*):
+  	term -> <new-task(|ctx, all-dep*, <task-regular-type>, <task-set-storage>)> Id(term)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> term
+  
+  
+  /** @internal */
+  perform-task(|task-id) = ?Id(<MkSingleton>)
+  
+rules
+	
+  /**
+   * Create a task that always fails.
+   *
+   * @type _ -> Result
+   */
+	task-create-fail(|ctx):
+		_ -> <new-task(|ctx)> Fail()
+	
+	
+	/** @internal */	
+	perform-task(|task-id):
+		Fail() -> <fail>
+
+rules
+	
+  /**
+   * Create a task that produces the results of the first subtask that succeeds.
+   *
+   * @type List(Result) -> Result
+   */
+  task-create-choice(|ctx) =
+     ?[<?Result(_)>] <+ <new-task(|ctx)> Choice(<id>)
+  
+  /**
+   * Create a choice task between two tasks, where t1 and t2 take a ctx and produce a task.
+   *
+   * @type Term -> Result
+   */
+  task-create-choice(t1, t2|ctx):
+    term -> <task-create-choice(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+	
+	
+	/** @internal */
+	task-get-type: Choice(_) -> <task-combinator-type>
+	/** @internal */
+	task-get-storage-type: Choice(_) -> <task-auto-storage>
+	/** @internal */
+  perform-task(|task-id) = ?Choice(<fetch-elem(not(?[]))>)
+  
+rules
+	
+  /**
+   * Create a task that only succeeds when all subtasks succeed, and produces the result of the last subtask.
+   *
+   * @type List(Result) -> Result
+   */
+  task-create-sequence(|ctx) =
+    ?[<?Result(_)>] <+ <new-task(|ctx)> Sequence(<id>)
+
+  /**
+   * Create a sequence task between two tasks, where t1 and t2 take a ctx and produce a task.
+   * @type (Result * Partition -> Result) * (Result * Partition -> Result) * Partition -> Result
+   */
+  task-create-sequence(t1, t2|ctx):
+    term -> <task-create-sequence(|ctx)> [<t1(|ctx)> term, <t2(|ctx)> term]
+	
+	
+	/** @internal */
+	task-get-type: Sequence(_) -> <task-combinator-type>
+	/** @internal */
+	task-get-storage-type: Sequence(_) -> <task-auto-storage>
+	/** @internal */
+  perform-task(|task-id)  = ?Sequence(<not(fetch-elem(?[])); last>)
+
+rules
+       
+  /**
+   * Create a task that combines the results of all subtasks.
+   * 
+   * @type List(Result) -> Result
+   */
+	task-create-combine(|ctx) =
+	  ?[<?Result(_)>] <+ <new-task(|ctx)> Combine(<id>)
+	
+  /**
+   * Create a task that combines the results of all subtasks, with extra static dependencies.
+   * 
+   * @type List(Result) -> Result
+   */	
+	task-create-combine(|ctx, dep*):
+		task* -> <new-task(|ctx, all-dep*)> Combine(task*)
+  	with 
+    	all-dep* := <merge-dependencies(|dep*)> task*
+
+
+  /** @internal */
+	task-get-type: Combine(_) -> <task-combinator-type>
+	/** @internal */
+	task-get-storage-type: Combine(_) -> <task-auto-storage>
+	/** @internal */
+  perform-task(|task-id)  = ?Combine(<mapconcat(is-list <+ MkSingleton)>)
+
+rules
+       
+  /**
+   * Creates a task that collects all results from its subtasks, and produces a single list with all collected results.
+   *
+   * @type List(Result) -> Result
+   */
+	task-create-collect(|ctx) = <new-task(|ctx)> Collect(<id>)
+
+
+  /** @internal */
+	task-get-type: Collect(_) -> <task-combinator-type>
+	/** @internal */
+  perform-task(|task-id)  = ?Collect(<mapconcat(is-list <+ MkSingleton)>); MkSingleton
+
+rules
+	
+  /**
+   * Creates a task that inserts task results into given term.
+   *
+   * @type Term -> Result
+   */
+	task-create-insert(|ctx):
+		term -> <new-task(|ctx)> Insert(term)
+	
+	
+	/** @internal */
+	task-get-type: Insert(_) -> <task-combinator-type>
+	/** @internal */
+	task-get-storage-type: Insert(_) -> <task-auto-storage>
+	/** @internal */
+	perform-task(|task-id): Insert(term) -> <insert-results-or-delay> term
+
+rules
+  
+  /**
+   * Creates a task that only succeeds if its subtask produces exactly one result, and produces that result.
+   *
+   * @type Result -> Result
+   */  
+  task-create-singleton(|ctx) =
+    <new-task(|ctx)> Singleton(<id>)
+  
+  
+  /** @internal */
+	task-get-type: Singleton(_) -> <task-combinator-type>
+	/** @internal */
+  perform-task(|task-id): Singleton(r@[_]) -> r
+    
+rules
+  
+  /**
+   * Creates a task that takes the difference between two lists.
+   *
+   * @type List(Term) * List(Term) -> Result
+   */
+  task-create-diff(|ctx):
+    (l1, l2) -> <new-task(|ctx)> Diff(l1, l2)
+  
+  /**
+   * Creates a task that takes the difference between two lists, where the second list is passed as a term argument.
+   *
+   * @type List(Term) -> Result
+   */
+  task-create-diff(|ctx, l2):
+    l1 -> <new-task(|ctx)> Diff(l1, l2)
+
+
+  /** @internal */
+	task-get-type: Diff(_, _) -> <task-combinator-type>
+	/** @internal */
+  perform-task(|task-id): Diff(l1, l2) -> <diff> (l1, <is-list <+ MkSingleton> l2)
+
+rules
+  
+  // TODO: what does this do?
+  task-create-where(s|ctx):
+    term -> <task-create-sequence(|ctx)> <try(flatten-list)> [<s> term, term]
+
+rules
+  
+  /**
+   * Creates a negation task, that succeeds if it subtask fails, and vice versa.
+   *
+   * @type Result -> Result
+   */
+  task-create-not(|ctx) = <new-task(|ctx)> Not(<id>)
+  
+  /**
+   * Create negation task, where t takes a ctx argument and produces the task to be negated 
+   */
+  task-create-not(t|ctx) = t(|ctx); task-create-not(|ctx)
+  
+  
+  /** @internal */
+	task-get-type: Not(_) -> <task-combinator-type>
+	/** @internal */
+  perform-task(|task-id): Not([]) -> ()
+  
+rules
+  
+  /**
+   * Creates a task that produces the term at given index in a list.
+   *
+   * @type List(Term) -> Result
+   */
+  task-create-index(|ctx, i):
+  	list -> <new-task(|ctx)> Index(i, list)
+  
+  
+  /** @internal */
+  perform-task(|task-id) = ?Index(i, <index(|i)>); MkSingleton
+  
+rules
+	
+  /**
+   * Creates a task that produces the length of a list.
+   *
+   * @type List(Term) -> Result
+   */
+	task-create-length(|ctx):
+		list -> <new-task(|ctx)> Length(list)
+	
+	
+	/** @internal */
+  perform-task(|task-id) = ?Length(<length>); MkSingleton
+
+rules
+	
+  /**
+   * Creates a task that produces the sum of the numbers in a list.
+   *
+   * @type List(INT <+ REAL) -> Result
+   */
+	task-create-sum(|ctx):
+		list -> <new-task(|ctx)> Sum(list)
+	
+	
+	/** @internal */
+	perform-task(|task-id):
+		Sum(list) -> <sum> list
+		
+rules
+	
+  /**
+   * Creates a task that succeeds if the list contains the term.
+   *
+   * @type Term -> Result
+   */
+	task-create-fetch(|ctx, list):
+		term -> <new-task(|ctx)> Fetch(term, list)
+	
+	
+	/** @internal */
+	perform-task(|task-id):
+		Fetch(term, list) -> <fetch-elem(?term)> list
+		
+rules
+	
+  /**
+   * Creates a task that succeeds if given terms are equal.
+   *
+   * @type Term -> Result
+   */
+	task-create-eq(|ctx, expected):
+		actual -> <new-task(|ctx)> Eq(expected, actual)
+		
+		
+  /** @internal */
+	perform-task(|task-id):
+		Eq(expected, actual) -> <eq; !actual> (expected, actual)
+
+rules
+
+  /**
+   * Creates a task that converts the results of its subtask into set, removing all duplicates.
+   *
+   * @type Result -> Result
+   */	
+	task-create-make-set(|ctx):
+		term -> <new-task(|ctx)> MakeSet(term)
+		
+		
+	/** @internal */
+	task-get-storage-type: MakeSet(_) -> <task-set-storage>
+	/** @internal */
+	perform-task(|task-id): MakeSet(term) -> term // Do nothing, task storage type takes care of conversion into set.		
+  
+rules
+      	
+  /**
+   * Create task that performs a rewrite on its input term. It will perform the task-rewrite strategy with input
+   * term (key, term), where the key is given as a strategy argument to this strategy.
+   *
+   * @type Term -> Result
+   */
+  task-create-rewrite(|ctx, key) = <new-task(|ctx)> Rewrite(key, <id>)
+  
+  
+  /** @internal */    	
+  perform-task(|nr) = ?Rewrite(key, term); <task-rewrite; MkSingleton> (key, term)
+  
+rules /** @internal Cyclic task evaluation */
+	
+	perform-cyclic-task(|nr) = fail
+	
+	perform-task(|nr):
+		(instruction, "cyclic") -> <perform-cyclic-task(|nr) <+ perform-task(|nr)> instruction

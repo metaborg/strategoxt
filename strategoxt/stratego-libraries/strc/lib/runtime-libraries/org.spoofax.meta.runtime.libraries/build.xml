@@ -1,0 +1,157 @@
+<project name="org.metaborg.meta.runtime.libraries">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="ant-contrib-0.6.jar" />
+	<!--<typedef resource="strategoxt-antlib.xml" />-->
+
+	<import file="strategoxt-antlib.xml" />
+
+	<property name="build-root" value="${basedir}/build" />
+	<property name="src-gen" value="${build-root}/src-gen/org/metaborg/meta/runtime/libraries" />
+
+
+	<target name="setup">
+		<mkdir dir="${build-root}" />
+		<mkdir dir="${src-gen}" />
+	</target>
+
+
+	<target name="clean" depends="setup">
+		<delete>
+			<fileset dir="${build-root}">
+				<include name="**/*.ctree" />
+				<include name="**/*.rtree" />
+				<include name="**/*.ctree.dep" />
+			</fileset>
+		</delete>
+		<delete dir="${build-root}/src-gen" />
+		<delete dir="${build-root}/lib" />
+	</target>
+
+
+	<target name="install" depends="all">
+		<mkdir dir="${output}/lib" />
+		<copy todir="${output}/lib">
+			<fileset dir="${build-root}/lib" includes="**" />
+		</copy>
+	</target>
+
+
+	<target name="hydra" depends="install">
+		<tar destfile="${output}/runtime-libraries.tar" basedir="${output}/lib"/>
+		<delete file="${output}/nix-support/hydra-build-products" />
+		<echo file="${output}/nix-support/hydra-build-products" append="true">file tar ${output}/runtime-libraries.tar${line.separator}</echo>
+	</target>
+
+
+	<target name="all" depends="setup, analysis, editor, tmpl, modelware" />
+
+
+	<macrodef name="build-lib">
+		<attribute name="name" />
+		<attribute name="package" />
+		<attribute name="package-dir" />
+		<attribute name="source-dir" />
+		<attribute name="source-file" />
+		<attribute name="target-jar" />
+		<attribute name="target-ctree-dir" />
+
+		<element name="extra-strj-args" optional="true" />
+
+		<sequential>
+			<mkdir dir="${src-gen}/@{name}" />
+			<mkdir dir="${build-root}/bin/@{name}" />
+
+			<strj-lib input="@{source-file}" output="${src-gen}/@{name}/Main.java" package="@{package}">
+				<strjlibargs>
+					<arg value="-la" />
+					<arg value="org.strategoxt.stratego_lib" />
+					<arg value="-I" />
+					<arg value="${basedir}" />
+					<extra-strj-args />
+				</strjlibargs>
+			</strj-lib>
+
+			<mkdir dir="@{target-ctree-dir}" />
+			<move todir="@{target-ctree-dir}">
+				<fileset dir="@{source-dir}">
+					<include name="*.ctree" />
+					<include name="*.rtree" />
+					<include name="*.ctree.dep" />
+				</fileset>
+			</move>
+
+			<javac srcdir="${build-root}/src-gen"
+			       includes="@{package-dir}/**"
+			       destdir="${build-root}/bin/@{name}"
+			       source="1.7"
+			       target="1.7"
+			       debug="on"
+			>
+				<classpath>
+					<pathelement location="${eclipse.spoofaximp.strategojar}" />
+				</classpath>
+			</javac>
+
+			<jar basedir="${build-root}/bin" includes="@{name}/**" destfile="@{target-jar}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="build-lib-default">
+		<attribute name="name" />
+		<attribute name="source-dir" />
+		<attribute name="source-file" />
+
+		<element name="strj-args" optional="true" />
+
+		<sequential>
+			<build-lib name="@{name}"
+			           package="org.metaborg.meta.runtime.libraries.@{name}"
+			           package-dir="org/metaborg/meta/runtime/libraries/@{name}"
+			           source-file="@{source-file}"
+			           source-dir="@{source-dir}"
+			           target-jar="${build-root}/lib/@{name}/@{name}.jar"
+			           target-ctree-dir="${build-root}/lib/@{name}"
+			>
+				<extra-strj-args>
+					<strj-args />
+				</extra-strj-args>
+			</build-lib>
+		</sequential>
+	</macrodef>
+
+
+	<target name="analysis">
+		<build-lib-default name="analysis"
+		                   source-dir="${basedir}/analysis"
+		                   source-file="${basedir}/analysis/analysis.str"
+		/>
+	</target>
+
+	<target name="editor">
+		<build-lib-default name="editor"
+		                   source-dir="${basedir}/editor"
+		                   source-file="${basedir}/editor/editor.str"
+		/>
+	</target>
+
+	<target name="tmpl">
+		<build-lib-default name="tmpl"
+		                   source-dir="${basedir}/tmpl"
+		                   source-file="${basedir}/tmpl/pp.str"
+		>
+			<strj-args>
+				<arg value="-la" />
+				<arg value="org.strategoxt.stratego_gpp" />
+			</strj-args>
+		</build-lib-default>
+	</target>
+
+	<target name="modelware">
+		<build-lib-default name="modelware"
+		                   source-dir="${basedir}/modelware"
+		                   source-file="${basedir}/modelware/modelware.str"
+		/>
+	</target>
+
+
+</project>

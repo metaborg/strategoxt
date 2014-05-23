@@ -1,0 +1,58 @@
+module properties/tasks
+
+imports 
+	
+	nabl/incremental
+	nabl/uri
+	properties/query
+	properties/eq
+  task/core
+  task/create
+  editor/annotations
+
+signature
+  
+  constructors
+
+    PropsLookup : Property * URI                    -> Instruction
+    PropCheck   : Property * Relation * Term * Term -> Instruction
+    PropExtract : Property * Term                   -> Instruction
+    
+rules
+
+	prop-create-lookup(|ctx, kind):
+		contains-uri -> <new-task(|ctx)> PropsLookup(kind, contains-uri)
+
+  perform-task(|n):
+  	PropsLookup(kind, contains-uri) -> res
+		where
+  	  uri := <nabl-uri> contains-uri
+  	; <nabl-add-uri-read(|n)> uri
+  	; val := <get-index-properties(|kind)> uri
+  	; res := <try(concat)> val
+		  // TODO: why try concat?
+    
+  perform-cyclic-task(|n):
+  	PropsLookup(kind, contains-uri) -> res
+  	where
+  	  uri := <nabl-uri> contains-uri
+  	; <nabl-add-uri-read(|n)> uri
+  	; val := <get-index-properties(|kind)> uri
+		; res := <try(concat); make-set> val
+		  // TODO: why try concat?
+
+rules
+	
+	prop-create-check(|ctx, kind, rel, actual):
+		expected -> <new-task(|ctx)> PropCheck(kind, rel, actual, expected)
+	
+  perform-task(|n): 
+  	PropCheck(kind, rel, actual, expected) -> [<nabl-property-eq> (kind, rel, (actual, expected))]
+
+rules
+
+	prop-create-extract(|ctx, kind):
+		term -> <new-task(|ctx)> PropExtract(kind, term)
+
+  perform-task(|n):
+    PropExtract(kind, term) -> <get-annotation(?(kind, <id>))> term

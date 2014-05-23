@@ -1,0 +1,156 @@
+module nabl/query
+
+imports
+  
+  nabl/uri
+  nabl/entries
+  index/query
+  task/core
+  task/insert
+  
+rules // Specific queries
+
+  /**
+   * Gets all unique and non-unique definition entries that match the given URI.
+   *
+   * Example:
+   *   <nabl-get-all-definitions> [Entity(), "M", "Bar"] => [Def([Entity(), "M", "Bar"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
+   */
+  nabl-get-all-definitions:
+    contains-uri* -> <mapconcat(nabl-get-unique-nonunique(!Def(<id>)))> uri*
+    where
+    	uri* := <nabl-uris> contains-uri*
+    	
+  /**
+   * Gets all child definition entries in given URI that match given namespace.
+   *
+   * Example:
+   *   <nabl-get-child-definitions> [Entity(), "M", "Bar"] => [Def([Field(), "a", "M", "Bar"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Def(uri))
+   */
+  nabl-get-child-definitions(|ns):
+    contains-uri* -> def*
+    where
+    	uri* := <nabl-uris> contains-uri*;
+    	def* := <mapconcat(!Def(<id>); nabl-get-children(|ns)); mapconcat(nabl-uri; nabl-get-unique-nonunique(!Def(<id>)))> uri*
+
+  /**
+   * Gets all Use entries that match the given URI.
+   *
+   * Example:
+   *   <nabl-get-all-uses> Def([Entity(), "M", "Bar"]) => [Use([Entity(), "M", "Bar"]), ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(Use(uri))
+   */
+  nabl-get-all-uses:
+    containsURI -> <nabl-get-all> Use(uri)
+    where
+    	uri := <nabl-uri> containsURI
+
+  /**
+   * Gets all Alias entries that match the given URI.
+   *
+   * Example:
+   *   <nabl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(aliasURI)
+   */
+  nabl-get-all-aliases:
+    contains-uri* -> alias-uri*
+    where
+    	uri*           := <nabl-uris> contains-uri*;
+    	nonunique-uri* := <filter(nabl-replace-uri-qualifier(|NonUnique()))> uri*;
+      alias-uri*     := <mapconcat(!Alias(<id>, ()); nabl-get-all-values)> nonunique-uri*
+      
+  /**
+   * Gets all InverseAlias entries that match the given URI.
+   *
+   * Example:
+   *   <nabl-get-all-aliases> Def([Entity(), "M", "Bar"]) => [[Entity(), "M", "Baz"], ...]
+   *
+   * @type Def(uri) or "name"{uri} or URI(language, path) -> List(inverseAliasURI)
+   */
+  nabl-get-all-inverse-aliasses:
+    contains-uri* -> inverse-alias*
+    where
+    	uri*           := <nabl-uris> contains-uri*;
+      inverse-alias* := <mapconcat(!InverseAlias(<id>, ()); nabl-get-all-values)> uri*
+
+rules // Generic queries
+  
+  nabl-get-all:
+    template -> <index-get-all> template
+       
+  nabl-get-all-values:
+    template -> <nabl-get-all; map(nabl-value)> template
+
+  nabl-get:
+    template -> <nabl-get-all; Hd> template
+     
+  nabl-get-value:
+    template -> <nabl-get-all; Hd; nabl-value> template
+  
+  nabl-get-children:
+    template -> entries
+      with
+        entries  := <index-get-children> template
+
+  nabl-get-children(|namespace):
+    template -> entries
+      with
+        children := <index-get-children> template;
+        entries  := <nabl-filter-entries(|namespace)> children
+        
+  nabl-get-children(|namespace, prefix):
+    template -> entries
+      with
+        children := <index-get-children> template;
+        entries  := <nabl-filter-entries(|namespace, prefix)> children
+
+  nabl-get-unique-nonunique(create-template):
+  	uri -> [unique*, non-unique*]
+  	where
+      if alias* := <nabl-get-all-aliases> uri then
+      	// HACK: handle Result terms on the resulting URI of an alias. this should be decomposed into a task?
+      	(alias-result*, alias-uri*) := <partition(?Result(_); insert-results-or-delay)> alias*;
+      	unique-uri*                 := <mapconcat(create-template; nabl-get-all)> alias-uri*;
+      	unique-result*              := <try(concat)> alias-result*;
+      	unique*                     := [unique-uri*, unique-result*]
+      else
+        unique* := []
+      end;
+      if non-unique-uri := <nabl-replace-uri-qualifier(|NonUnique())> uri then
+        non-unique* := <create-template; nabl-get-all> non-unique-uri
+      else
+        non-unique* := []
+      end
+
+rules /** @internal Entry filtering */
+  
+  /** @internal */
+  nabl-filter-entries(|namespace, prefix):
+    entry* -> <filter(nabl-compare-prefix(|namespace, prefix))> entry*
+  
+  /** @internal */
+  nabl-filter-entries(|namespace):
+    entry* -> <filter(nabl-compare-namespace(|namespace))> entry*
+
+rules /** @internal Helpers */
+  
+  /** @internal */
+  nabl-compare-prefix(|namespace, prefix):
+    entry -> <id>
+    where
+      uri := <nabl-uri> entry;
+      <eq> (namespace, <nabl-uri-namespace> uri);
+      <is-substring(!prefix)> <nabl-uri-name> uri
+      
+  /** @internal */
+  nabl-compare-namespace(|namespace):
+    entry -> <id>
+    where
+      uri := <nabl-uri> entry;
+      <eq> (namespace, <nabl-uri-namespace> uri)

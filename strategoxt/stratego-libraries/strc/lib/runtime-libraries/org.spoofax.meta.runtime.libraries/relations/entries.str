@@ -1,0 +1,71 @@
+module relations/entries
+
+imports
+	
+	relations/entries
+	relations/interface
+	relations/tasks
+	index/core
+	properties/query
+	nabl/resolve
+	nabl/entries
+	nabl/utils
+	task/core
+	task/insert
+	task/utils
+	editor/origins
+	
+signature
+
+  constructors
+    
+    RelTuple   : Term * Relation * Term -> Entry
+    Inverse    : Relation -> Relation
+    Transitive : Relation -> Relation 
+ 
+rules
+  
+  new-rel-tuple(|partition, rel, t2):
+    t1 -> tuple
+    with
+      relation-ensure-no-task-reference
+    ; t1' := <relation-try-term-to-uri> t1
+    with
+      tuple := <origin-track-forced(!RelTuple(t1', rel, t2))> t1
+    ; <index-add(|partition)> tuple
+    ; if <relation-is-transitive> rel then
+	      task       := <relation-create-lookup(|partition, rel)> t2
+	    ; transitive := <origin-track-forced(!RelTuple(t1', Transitive(rel), task))> t1
+	    ; <index-add(|partition)> transitive
+    end
+
+rules
+	
+	relation-ensure-no-task-reference = 
+		with(not(collect-one-annos(relation-is-unresolved-use))|$[Cannot create a relation tuple with a reference to a resolution task on the left hand side.]) 
+
+	relation-try-term-to-uri:
+		term -> result
+		where
+			if use := <collect-one-annos(relation-is-unresolved-use)> term then
+				result := <relation-resolve-use> use
+			else
+				result := <try(collect-one-annos(relation-get-uri))> term
+			end
+		
+	relation-get-uri:
+		Def(uri) -> uri
+		
+	relation-get-uri:
+		Use(Def(uri)) -> uri
+		
+	relation-is-unresolved-use =
+		?Use(Result(_))
+		
+	relation-resolve-use:
+		Use(r@Result(_)) -> <insert-results-or-delay; Hd; nabl-uri> r
+		
+rules
+	
+	relation-tuple-key:
+		RelTuple(key, _, _) -> key

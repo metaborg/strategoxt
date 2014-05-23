@@ -1,0 +1,17 @@
+module properties/eq
+
+signature constructors
+  
+  Eq: Relation
+  
+strategies
+  
+  nabl-reflexive = ?Eq()
+  
+  nabl-property-eq:
+    (_, rel, p) -> <where(strip-annos; eq); Fst> p
+    where
+      <nabl-reflexive> rel
+  
+  nabl-property-eq(|kind, rel, expected):
+  	actual -> <nabl-property-eq> (kind, rel, (actual, expected))

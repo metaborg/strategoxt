@@ -1,0 +1,18 @@
+module properties/debug
+
+imports
+	
+	task/messages
+	task/tasks
+	nabl/utils
+	
+rules
+	
+	properties-console-msg-enable = fail
+	properties-console-msg(|msg) = where(try(properties-console-msg-enable; err-msg(|msg)))
+	
+	properties-warning-task-disable = fail
+	properties-warning-task(|ctx, msg):
+		term -> <task-create-fail(|ctx)>
+		where
+			<properties-warning-task-disable <+ task-create-warning(|ctx, msg)> term

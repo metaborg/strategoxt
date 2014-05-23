@@ -1,0 +1,13 @@
+module analysis/analysis
+
+imports
+	
+	libstratego-lib
+	
+	analysis/-
+	index/-
+	nabl/-
+	properties/-
+	relations/-
+	task/-
+	types/-

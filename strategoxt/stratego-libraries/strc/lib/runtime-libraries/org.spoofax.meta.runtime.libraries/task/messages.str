@@ -1,0 +1,184 @@
+module task/messages
+
+imports
+	
+	task/core
+	task/create
+	editor/origins
+	
+signature
+
+	sorts
+	
+		Message
+		MessageTrigger
+		
+	constructors
+		
+    Error   : Origin * Term * Msg -> Message
+    Warning : Origin * Term * Msg -> Message
+    Note    : Origin * Term * Msg -> Message
+    
+    Always   : MessageTrigger // Always
+    Failure  : MessageTrigger // No results
+    Success  : MessageTrigger // At least one result
+    Multiple : MessageTrigger // More than one result
+
+    Message  : Result * List(Result) * MessageTrigger * Term -> Instruction
+
+overlays
+  
+  MISSING_ORIGIN = "MISSING ORIGIN INFORMATION"
+
+rules // message creation
+	
+	task-error-message(|message):
+		term -> Error(<task-message-origin-location-offset> term, term, message)
+		
+	task-warning-message(|message):
+    term -> Warning(<task-message-origin-location-offset> term, term, message)
+    
+	task-note-message(|message):
+    term -> Note(<task-message-origin-location-offset> term, term, message)
+
+rules // querying
+	
+	task-message:
+		Error(_, _, message) -> message
+
+	task-message:
+		Warning(_, _, message) -> message
+		
+	task-message:
+		Note(_, _, message) -> message
+
+
+	task-message-term:
+		Error(_, term, _) -> term
+
+	task-message-term:
+		Warning(_, term, _) -> term
+		
+	task-message-term:
+		Note(_, term, _) -> term
+		
+
+	task-message-origin:
+		Error(origin, _, _) -> origin
+
+	task-message-origin:
+		Warning(origin, _, _) -> origin
+		
+	task-message-origin:
+		Note(origin, _, _) -> origin
+	
+rules // task creation
+	
+	task-create-message(|partition, exclude*):
+    message -> <new-task(|partition)> Message((), exclude*, Always(), message)
+  
+  task-create-error(|partition, exclude*, message) = 
+  	task-error-message(|message); task-create-message(|partition, exclude*)
+	task-create-error(|partition, message) = 
+  	task-create-error(|partition, [], message)
+  		
+	task-create-warning(|partition, exclude*, message) =
+		task-warning-message(|message); task-create-message(|partition, exclude*)
+	task-create-warning(|partition, message) =
+		task-create-warning(|partition, [], message)
+		
+	task-create-note(|partition, exclude*, message) =
+		task-note-message(|message); task-create-message(|partition, exclude*)
+	task-create-note(|partition, message) =
+		task-create-note(|partition, [], message)	
+	
+	
+	task-create-message-on-failure(|partition, task, exclude*):
+    message -> <new-task(|partition)> Message(task, exclude*, Failure(), message)
+  
+  task-create-error-on-failure(|partition, task, exclude*, message) = 
+  	task-error-message(|message); task-create-message-on-failure(|partition, task, exclude*)
+	task-create-error-on-failure(|partition, task, message) = 
+  	task-create-error-on-failure(|partition, task, [], message)
+  		
+	task-create-warning-on-failure(|partition, task, exclude*, message) =
+		task-warning-message(|message); task-create-message-on-failure(|partition, task, exclude*)
+	task-create-warning-on-failure(|partition, task, message) =
+		task-create-warning-on-failure(|partition, task, [], message)
+		
+	task-create-note-on-failure(|partition, task, exclude*, message) =
+		task-note-message(|message); task-create-message-on-failure(|partition, task, exclude*)
+	task-create-note-on-failure(|partition, task, message) =
+		task-create-note-on-failure(|partition, task, [], message)		
+			
+			
+	task-create-message-on-success(|partition, task, exclude*):
+    message -> <new-task(|partition)> Message(task, exclude*, Success(), message)
+  
+  task-create-error-on-success(|partition, task, exclude*, message) = 
+  	task-error-message(|message); task-create-message-on-success(|partition, task, exclude*)
+	task-create-error-on-success(|partition, task, message) = 
+		task-create-error-on-success(|partition, task, [], message)
+		
+	task-create-warning-on-success(|partition, task, exclude*, message) =
+		task-warning-message(|message); task-create-message-on-success(|partition, task, exclude*)
+	task-create-warning-on-success(|partition, task, message) =
+		task-create-warning-on-success(|partition, task, [], message)
+		
+	task-create-note-on-success(|partition, task, exclude*, message) =
+		task-note-message(|message); task-create-message-on-success(|partition, task, exclude*)
+	task-create-note-on-success(|partition, task, message) =
+		task-create-note-on-success(|partition, task, [], message)
+		
+		
+	task-create-message-on-multiple(|partition, task, exclude*):
+    message -> <new-task(|partition)> Message(task, exclude*, Multiple(), message)
+  
+  task-create-error-on-multiple(|partition, task, exclude*, message) = 
+  	task-error-message(|message); task-create-message-on-multiple(|partition, task, exclude*)
+	task-create-error-on-multiple(|partition, task, message) =
+		task-create-error-on-multiple(|partition, task, [], message)
+		
+	task-create-warning-on-multiple(|partition, task, exclude*, message) =
+		task-warning-message(|message); task-create-message-on-multiple(|partition, task, exclude*)
+	task-create-warning-on-multiple(|partition, task, message) =
+		task-create-warning-on-multiple(|partition, task, [], message)
+		
+	task-create-note-on-multiple(|partition, task, exclude*, message) =
+		task-note-message(|message); task-create-message-on-multiple(|partition, task, exclude*)
+	task-create-note-on-multiple(|partition, task, message) =
+		task-create-note-on-multiple(|partition, task, [], message)
+
+rules // task execution
+  
+  task-is-combinator = ?Message(_, _, _, _)
+
+  perform-task(|n):
+    Message(task, exclude*, trigger, message) -> ()
+    where
+    	 // Use task-result-combinations to recursively insert into exclude tasks, to find out if they fail.
+    	<map(not(?[]); task-result-combinations)> exclude*;
+      switch !trigger
+      	case ?Always()   : task-add-message(|n, message)
+        case ?Failure()  : not(<Hd> task); task-add-message(|n, message)
+        case ?Success()  : <Hd> task; task-add-message(|n, message)
+        case ?Multiple() : <Tl; Hd> task; task-add-message(|n, message)
+      end
+
+rules
+	
+	task-message-origin-location-offset:
+		term -> <origin-location-offset <+ MISSING_ORIGIN()> term
+		where
+		  not(<is-list> term)
+		
+  task-message-origin-location-offset:
+    list -> location-offset
+    where
+      <is-list> list;
+      (
+      	(partition, line, column, start-offset, _) := <Hd; origin-location-offset> list;
+      	(_, _, _, _, end-offset)                   := <last; origin-location-offset> list;
+      	location-offset := (partition, line, column, start-offset, end-offset)
+      ) <+
+      	location-offset := MISSING_ORIGIN()

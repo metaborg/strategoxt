@@ -1,0 +1,33 @@
+module Task
+imports Common Term URI Instruction
+
+exports
+  context-free syntax
+    "tasks" TaskDef*                                        -> Section     {cons("Tasks")}
+    "task" TASKID Deps "=" Instruction "-" ">" Result Reads -> TaskDef     {cons("TaskDef")}
+    TASKID                                                  -> TaskRef     {cons("TaskRef")}
+                                                            -> Deps        {cons("None")}
+    "s[" DepList "]"                                        -> Deps        {cons("SDeps")}
+    "d[" DepList "]"                                        -> Deps        {cons("DDeps")}
+    "s[" DepList "]" "d[" DepList "]"                       -> Deps        {cons("SDDeps")}
+    {TaskRef ","}*                                          -> DepList     
+    Term                                                    -> Instruction {avoid}
+    Term                                                    -> Result      
+    "fail"                                                  -> Result      {cons("Fail")}
+    "depfail"                                               -> Result      {cons("DepFail")}
+    "notexecuted"                                           -> Result      {cons("NotExec")}
+                                                            -> Reads       {cons("None")}
+    "reads" Term                                            -> Reads       {cons("Reads")}
+    "&" TASKID                                              -> Term        {cons("TaskRef")}
+    "/" URI "/"                                             -> Term        {cons("URI")}
+
+  context-free syntax
+    CONTENTCOMPLETE -> Section     {cons("COMPLETION-Section")}
+    CONTENTCOMPLETE -> TaskDef     {cons("COMPLETION-TaskDef")}
+    CONTENTCOMPLETE -> TaskRef     {cons("COMPLETION-TaskRef")}
+    CONTENTCOMPLETE -> Deps        {cons("COMPLETION-Deps")}
+    CONTENTCOMPLETE -> DepList     {cons("COMPLETION-DepList")}
+    CONTENTCOMPLETE -> Instruction {cons("COMPLETION-Instruction")}
+    CONTENTCOMPLETE -> Result      {cons("COMPLETION-Result")}
+    CONTENTCOMPLETE -> Reads       {cons("COMPLETION-Reads")}
+    CONTENTCOMPLETE -> Term        {cons("COMPLETION-Term")}

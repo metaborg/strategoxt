@@ -1,0 +1,34 @@
+module types/collect
+
+imports 
+	
+	types/interface
+	properties/collect
+	properties/eq
+  
+signature
+
+  constructors
+    
+    Type : Property
+    
+rules
+  
+  create-property-task(|ctx, kind, uri*) =
+    where(Type() := kind)
+  ; (create-type-task(|ctx, uri*) <+ create-type-task(|ctx))
+       
+  type-is(|partition)           = nabl-prop-calc(|partition, [])
+  type-is(|partition, dep*)     = nabl-prop-calc(|partition, dep*)
+  
+  type-list(|partition)         = nabl-prop-list(|partition, [])
+  type-list(|partition, dep*)   = nabl-prop-list(|partition, dep*)
+  
+  type-lookup(|partition)       = nabl-prop-lookup(|Type(), partition, [])
+  type-lookup(|partition, dep*) = nabl-prop-lookup(|Type(), partition, dep*)
+
+  type-match(|partition, expected)           = nabl-prop-match(|Type(), partition, Eq(), expected)
+  type-match(|partition, relation, expected) = nabl-prop-match(|Type(), partition, relation, expected)
+   
+  store-type(|partition, type) = nabl-store-prop(|partition, Prop(Type(), type, []))
+    

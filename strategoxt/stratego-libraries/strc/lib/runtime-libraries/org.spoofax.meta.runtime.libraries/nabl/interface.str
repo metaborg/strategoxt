@@ -1,0 +1,57 @@
+module nabl/interface
+
+strategies // Collect
+  
+  nabl-collect-rewrite(|lang, partition, old-uri*, new-uri*) = fail
+  
+	nabl-scoping-site = fail
+  
+  nabl-new-scoping-site = fail
+  
+	nabl-def-site(
+	  child-uris, sibiling-uris, implicits
+	| lang, partition, unique*, uri*, state*
+	) = fail
+	
+	nabl-external-def-site(|lang, partition, unique*, uri*, state*, implicit*) = fail
+
+	nabl-state-site = fail
+	
+	nabl-use-site(|lang, partition, unique*, uri*, state*) = fail
+	
+	nabl-filtering-site(|lang, partition, unique*, uri*, state*) = fail
+	
+	nabl-disambiguation-site(|lang, partition, unique*, uri*, state*) = fail
+	
+	nabl-import-site(|lang, partition, unique*, uri*, state*) = fail
+	
+	nabl-prop-site(|lang, partition, uri*, state*, implicit*) = fail
+	
+strategies // Projections
+  
+	nabl-get-name = fail
+	
+	nabl-name-apply(s) = fail
+	
+strategies // Lookup hooks
+		
+	nabl-filter-def(|ctx, uri*, ctx-terms, ctx-string) = fail
+	
+	nabl-disambiguate-def(|ctx, uri*, ctx-terms, ctx-string) = fail
+
+strategies // Name generation
+	
+	nabl-namegen-name(|lang, partition, uri, ns) = fail
+	
+strategies // Default error checks
+	
+	nabl-check-disable-unresolved = fail
+	
+	nabl-check-disable-duplicate(|uri, ns) = fail
+	
+	nabl-check-disable-hiding(|uri, ns) = fail
+	
+strategies // Incrementality
+	
+	nabl-diff-entry = fail
+	

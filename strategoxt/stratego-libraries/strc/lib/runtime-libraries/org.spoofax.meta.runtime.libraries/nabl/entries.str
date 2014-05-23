@@ -1,0 +1,116 @@
+module nabl/entries
+
+imports
+  
+  nabl/collect
+  nabl/utils
+  nabl/uri
+  nabl/resolve
+  index/core
+  editor/origins
+  
+signature
+
+  constructors
+    
+    Def          : URI                    -> Entry
+    Alias        : URI * URI              -> Entry
+    InverseAlias : URI * URI              -> Entry
+    Use          : Result                 -> Entry
+
+rules // Index entries to diff for incrementality
+  
+  nabl-diff-entry = ?Def(_)
+  
+  nabl-diff-entry = ?Alias(_, _)
+ 
+rules
+  
+  new-def(|partition, uri):
+    x -> definition
+    with
+      definition := <origin-track-forced(!Def(uri))> x;
+      <index-add(|partition)> definition;
+			<new-alias(|partition, <nabl-nonunique-uri> uri, uri)> x
+      
+  new-alias(|partition, uri, alias-uri):
+    x -> alias
+    with
+      alias := <origin-track-forced(!Alias(uri, alias-uri))> x;
+      ialias := <origin-track-forced(!InverseAlias(alias-uri, uri))> x;
+      if <not(eq)> (uri, alias-uri) then
+      	<index-add(|partition)> alias;
+      	<index-add(|partition)> ialias
+      end
+
+  new-use(|partition, uri):
+    x -> use
+    with
+      use := <origin-track-forced(!Use(uri))> x;
+      <index-add(|partition)> use
+
+rules // index uri & value projections
+  
+  /** @internal */
+  nabl-uri:
+    Def(uri) -> uri
+
+  /** @internal */
+  nabl-uris:
+    Def(uri) -> [uri]
+    
+  /** @internal */
+  nabl-uri:
+    Alias(uri, _) -> uri
+    
+  /** @internal */
+  nabl-uris:
+    Alias(uri, _) -> [uri]
+    
+  /** @internal */
+  nabl-uri:
+    InverseAlias(uri, _) -> uri
+    
+  /** @internal */
+  nabl-uris:
+    InverseAlias(uri, _) -> [uri]
+    
+  /** @internal */  
+  nabl-uri:
+    Use(uri) -> <nabl-collect-one-resolved-def; nabl-uri> uri
+    
+  /** @internal */  
+  nabl-uris:
+    Use(uri) -> <nabl-collect-all-resolved-defs; map(nabl-uri)> uri
+    
+  /** @internal */
+  nabl-value:
+    Def(value) -> value
+    
+  /** @internal */
+  nabl-values:
+    Def(value) -> [value]
+    
+  /** @internal */
+  nabl-value:
+    Alias(_, value) -> value
+    
+  /** @internal */
+  nabl-values:
+    Alias(_, value) -> [value]
+    
+  /** @internal */
+  nabl-value:
+    InverseAlias(_, value) -> value
+    
+  /** @internal */
+  nabl-values:
+    InverseAlias(_, value) -> [value]
+
+  /** @internal */
+  nabl-value:
+    Use(value) -> <nabl-uri>
+    
+  /** @internal */
+  nabl-values:
+    Use(value) -> <nabl-uris>

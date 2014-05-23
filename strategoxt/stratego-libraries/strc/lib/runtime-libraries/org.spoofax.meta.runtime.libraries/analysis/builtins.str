@@ -1,0 +1,30 @@
+module analysis/builtins
+
+imports
+	
+	analysis/single
+	analysis/interface
+	
+rules
+
+	analysis-analyze-builtin-partitions(collector|language, project-path) =
+		analysis-get-builtin-partitions; map(analysis-analyze-builtin-partition(collector|language, project-path))	
+
+	analysis-get-builtin-partitions =
+		analysis-builtin-partitions <+ ![]
+
+	analysis-analyze-builtin-partition(collector|language, project-path):
+		(path, ast) -> analyzed-ast
+		with
+	    (
+	    	analyzed-ast
+			, (analysis-error*, analysis-warning*, analysis-note*)
+			, removed-entry-count
+			, added-entry-count
+			, removed-task-count
+			, added-task-count
+			, invalidated-task-count
+			, evaluated-task*
+			, skipped-task*
+			, unevaluated-task*
+			) := <analyze-one(collector|language, path, project-path)> ast

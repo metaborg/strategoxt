@@ -1,0 +1,40 @@
+module properties/query
+
+imports
+	nabl/query
+	nabl/uri
+	task/core
+	properties/entries
+  properties/tasks
+  properties/interface
+  nabl/interface
+  editor/annotations
+
+rules
+
+  get-property-task(|kind) =
+     map(get-property-task(|kind))
+  <+ get-annos
+   ; fetch-elem(?(kind, <id>))
+    
+rules
+  
+  get-property(|kind) =
+    (get-property-task(|kind) <+ try(nabl-get-name); get-index-property(|kind))
+  ; try(task-result-combinations-single; Hd) // Try because results may already be inserted? 
+	
+  get-properties(|kind) =
+    (get-property-task(|kind) <+ try(nabl-get-name); get-index-properties(|kind))
+  ; try(task-result-combinations-single; concat)
+	
+  get-index-property(|kind) =
+    nabl-uris // TODO: how to handle multiple values?
+  ; fetch-elem(!Prop(<id>, kind, ()); nabl-get-value)
+   
+  get-index-properties(|kind) =
+    nabl-uris // TODO: how to handle multiple values?
+  ; mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)
+
+rules
+	
+	property-remove-all = topdown(try(remove-annotations(?(_, _))))

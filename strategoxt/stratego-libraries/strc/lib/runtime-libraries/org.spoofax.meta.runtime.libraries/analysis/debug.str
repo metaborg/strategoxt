@@ -1,0 +1,248 @@
+module analysis/debug
+
+imports
+	
+	index/core
+	index/query
+	task/core
+	task/debug
+	task/insert
+	editor/interop
+	nabl/entries
+	nabl/uri
+
+rules // Index
+	 
+	analysis-debug-show-all-partitions(|language) = analysis-debug-index-project(|language)
+	analysis-debug-show-current-partition(|language) = analysis-debug-index-partition(|language)
+	 
+  analysis-debug-index-project(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      index-setup(|language, project-path);
+      result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+      if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast then
+      	filename := $[[project-path]/[<dirname> path]/project.index];
+      	result   := result-index
+      else
+      	filename := $[[project-path]/[<dirname> path]/index.project.aterm];
+      	result   := result-ast
+    	end
+    	
+  analysis-debug-index-project-resolve(|language):
+	(_, _, _, path, project-path) -> (filename, result)
+    with
+      index-setup(|language, project-path);
+      task-setup(|project-path);
+      result-ast := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition> f)\)>;
+      result-ast' := <beautify-indices> result-ast;
+	  if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
+		filename := $[[project-path]/[<dirname> path]/project.index];
+		result   := result-index
+	  else
+		filename := $[[project-path]/[<dirname> path]/index.project.aterm];
+		result   := result-ast'
+	  end
+	 
+  analysis-debug-index-partition(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      index-setup(|language, project-path);
+    	partition  := $[[project-path]/[path]];
+      result-ast := [(partition, <index-get-all-in-partition> partition)];
+      if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast then
+      	filename := <guarantee-extension(|"partition.index")> path;
+      	result   := result-index
+      else
+      	filename := <guarantee-extension(|"index.partition.aterm")> path;
+      	result   := result-ast
+    	end
+    	
+  analysis-debug-index-partition-resolve(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      index-setup(|language, project-path);
+      task-setup(|project-path);
+    	partition  := $[[project-path]/[path]];
+      result-ast := [((partition, []), <index-get-all-in-partition> partition)];
+      result-ast' := <beautify-indices> result-ast;
+      if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
+      	filename := <guarantee-extension(|"partition.index")> path;
+      	result   := result-index
+      else
+      	filename := <guarantee-extension(|"index.partition.aterm")> path;
+      	result   := result-ast'
+    	end
+  
+rules // Task engine    
+      
+  analysis-debug-show-tasks(|language) = analysis-debug-task-partition(|language)
+  analysis-debug-show-tasks-selection(|language) = analysis-debug-task-selection(|language)
+
+  analysis-debug-task-project(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      task-setup(|project-path);
+      result-ast := <task-debug-info(|())>;
+      if result-task := <foreign-call(|"Analysis", "from-task-debug-str")> result-ast then
+      	filename := $[[project-path]/[<dirname> path]/project.task];
+      	result   := result-task
+      else
+      	filename := $[[project-path]/[<dirname> path]/task.project.aterm];
+      	result   := result-ast
+    	end
+      
+  analysis-debug-task-partition(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+      task-setup(|project-path);
+    	partition  := $[[project-path]/[path]];
+      result-ast := <task-debug-info(|partition)>;
+      if result-task := <foreign-call(|"Analysis", "from-task-debug-str")> result-ast then
+      	filename := <guarantee-extension(|"partition.task")> path;
+      	result   := result-task
+      else
+      	filename := <guarantee-extension(|"task.partition.aterm")> path;
+      	result   := result-ast
+    	end
+      
+  analysis-debug-task-selection(|language):
+    (selected, _, _, path, project-path) -> (filename, result)
+    with
+      task-setup(|project-path);
+    	partition  := $[[project-path]/[path]];
+      result-ast := <task-debug-ast> selected;
+      if result-task := <foreign-call(|"Analysis", "from-task-debug-str")> result-ast then
+      	filename := <guarantee-extension(|"selection.task")> path;
+      	result   := result-task
+      else
+      	filename := <guarantee-extension(|"task.selection.aterm")> path;
+      	result   := result-ast
+    	end
+    	
+rules // Index & task engine
+	
+  analysis-debug-project(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+    	index-setup(|language, project-path);
+      task-setup(|project-path);
+      task-debug  := <task-debug-info(|())>;
+      index-debug := <index-get-all-partitions; map(\f -> (f, <index-get-all-in-partition; sort-index> f)\)>;
+      result-ast  := (task-debug, index-debug);
+      if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
+      	filename := $[[project-path]/[<dirname> path]/project.analysis];
+      	result   := result-analysis
+      else
+      	filename := $[[project-path]/[<dirname> path]/analysis.project.aterm];
+      	result   := result-ast
+    	end
+    	
+  analysis-debug-partition(|language):
+    (_, _, _, path, project-path) -> (filename, result)
+    with
+    	index-setup(|language, project-path);
+      task-setup(|project-path);
+      partition   := $[[project-path]/[path]];
+      task-debug  := <task-debug-info(|partition)>;
+      index-debug := [(partition, <index-get-all-in-partition; sort-index> partition)];
+      result-ast  := (task-debug, index-debug);
+      if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
+      	filename := <guarantee-extension(|"partition.analysis")> path;
+      	result   := result-analysis
+      else
+      	filename := <guarantee-extension(|"partition.aterm")> path;
+      	result   := result-ast
+    	end
+   
+rules // Resetting  
+      
+  analysis-debug-reset-index(|language):
+    (_, _, _, path, project-path) -> None()
+    with
+    	partition := $[[project-path]/[path]];
+      index-setup(|language, project-path);
+      index-reset
+      
+  analysis-debug-reset-task(|language):
+    (_, _, _, path, project-path) -> None()
+    with
+      task-setup(|project-path);
+      task-reset
+
+  analysis-debug-reanalyze(|language):
+    (_, _, _, path, project-path) -> None()
+    with
+    	partition := $[[project-path]/[path]];
+    	task-setup(|project-path);
+    	task-reset;
+      index-setup(|language, project-path);
+      index-reload
+
+rules // Helper rules for Index Resolved
+
+	beautify-indices: indices -> indices''
+		where
+			indices'  := <filter(ignore-extension)> indices;
+			indices'' := <map(beautify-index)>indices'
+		
+	beautify-index: (partition, index) -> (partition, index4)
+		where
+			index2 := <give-all-tasks-results>index;
+			index3 := <reverse-uris> index2;
+			index4 := <sort-index> index3
+
+	// ignore partitions of generated files
+	ignore-extensions: _ -> ["index", "analysis", "task"]
+	ignore-extension: (partition, index) -> (partition, index)
+		where
+			(path, _) := partition;
+			extension := <get-extension>path;
+			<not(elem)> (extension, <ignore-extensions>)
+	
+	// resolve all task results
+	give-all-tasks-results = bottomup(try(give-task-results))
+	give-task-results: e@Result(_) -> <insert-results-or-delay <+ with(fail|"Task has no result yet: ")>e
+	
+	sort-index = qsort(index-compare)
+	
+	// order the index entries
+	index-ordering: _ -> ["Def","Prop","RelTuple","Alias","InverseAlias","Use"]
+
+	index-compare: (a,b) -> (a,b)
+		where
+			a-order := <get-index> (<get-constructor>a, <index-ordering>);
+			b-order := <get-index> (<get-constructor>b, <index-ordering>);
+			if <eq>(a-order, b-order) then
+				if Use(_) := a then
+					Use([Def(URI(_, a-url))]) := a;
+					Use([Def(URI(_, b-url))]) := b
+				else
+					[URI(_, a-url)|_] := <get-arguments>a;
+					[URI(_, b-url)|_] := <get-arguments>b
+				end;
+				<uri-compare> (a-url, b-url)
+			else
+				cmp-o := <lt>(a-order, b-order)
+			end
+	
+	uri-compare: ([], []) -> <fail>
+	uri-compare: (a, []) -> <fail>
+	uri-compare: ([], b) -> ([], b)
+	uri-compare: ([a|as], [b|bs]) -> ([a|as], [b|bs]) 
+		where
+			ID(a-namespace, a-name, _) := a;
+			ID(b-namespace, b-name, _) := b;
+			if <eq>(a-namespace, b-namespace) then
+				if <eq>(a-name, b-name) then
+					<uri-compare> (as, bs)
+				else
+					<string-lt>(a-name, b-name)
+				end
+			else
+				<string-lt>(<get-constructor>a-namespace, <get-constructor>b-namespace)
+			end
+			
+	// reverse URIs (for having urls in the right order, and for ordering as tree)
+	reverse-uris = bottomup(try(reverse-uri))
+	reverse-uri: URI(language, uri) -> URI(language, <reverse>uri)
