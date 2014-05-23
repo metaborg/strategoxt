@@ -1,6 +1,7 @@
 module stratego-names-aux
 
-imports model
+imports
+  stratego/strc/model/model
 
 signature
   constructors

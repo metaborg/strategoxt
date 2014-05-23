@@ -1,13 +1,5 @@
 module stratego-names
 
-imports
-  lib/runtime/nabl/-
-  lib/runtime/task/-
-  lib/runtime/properties/-
-  lib/runtime/types/-
-  lib/runtime/editor/-
-
-
 rules
 
   nabl-get-scope =
@@ -460,7 +452,12 @@ rules
 
 
 imports
-  stratego-names-aux
+  stratego/strc/names/stratego-names-aux
+  runtime-libraries/org.spoofax.meta.runtime.libraries/nabl/-
+  runtime-libraries/org.spoofax.meta.runtime.libraries/task/-
+  runtime-libraries/org.spoofax.meta.runtime.libraries/properties/-
+  runtime-libraries/org.spoofax.meta.runtime.libraries/types/-
+  runtime-libraries/org.spoofax.meta.runtime.libraries/editor/-
 
 
 signature
