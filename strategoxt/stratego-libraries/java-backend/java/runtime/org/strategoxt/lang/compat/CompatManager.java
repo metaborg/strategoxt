@@ -3,8 +3,10 @@ package org.strategoxt.lang.compat;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.metaborg.runtime.task.primitives.TaskLibrary;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.VarScope;
+import org.spoofax.interpreter.library.index.primitives.IndexLibrary;
 import org.spoofax.interpreter.library.interpreter.InterpreterLibrary;
 import org.spoofax.interpreter.library.jsglr.JSGLRLibrary;
 import org.spoofax.interpreter.library.jsglr.origin.OriginLibrary;
@@ -51,6 +53,8 @@ public class CompatManager {
         context.addOperatorRegistry(new OriginLibrary());
         context.addOperatorRegistry(new XMLLibrary());
         context.addOperatorRegistry(new InterpreterLibrary());
+        context.addOperatorRegistry(new IndexLibrary());
+        context.addOperatorRegistry(new TaskLibrary());
 	}
 
 	public void registerComponent(String component) {
