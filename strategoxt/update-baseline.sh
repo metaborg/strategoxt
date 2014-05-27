@@ -2,7 +2,7 @@
 
 rm -rf baseline &&
 
-wget https://github.com/metaborg/strategoxt/releases/download/baseline/strategoxt-baseline.zip &&
+wget --no-check-certificate -O strategoxt-baseline.zip https://github.com/metaborg/strategoxt/releases/download/baseline/strategoxt-baseline.zip &&
 
 unzip strategoxt-baseline.zip &&
 
