@@ -11,6 +11,7 @@
 
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="strj-sut" value="" />
+	<property name="dep.libstratego-lib" location="../lib/spec" />
 
 	<!--
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
@@ -18,7 +19,7 @@
 	<property name="install-prefix" location="dist" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt/libstrc" /> -->
 
-	<target name="test-all" depends="test-strc" />
+	<target name="test-all" depends="test-test1" />
 
 	<target name="test-strc">
 		<!-- 
@@ -52,16 +53,79 @@
 		</for>
 	</target>
 
-
-	<macrodef name="log">
-		<attribute name="message" />
+	<macrodef name="strj-workingdir">
+		<attribute name="input" />
+		<attribute name="output" />
+		<attribute name="package" />
+		<attribute name="workdir" />
+		<attribute name="strj" />
+		<element name="strjargs" optional="true" />
+		<element name="str-deps" optional="true" />
 		<sequential>
-			<echo message="========================================================================================" />
-			<echo message="@{message}" />
-			<echo message="========================================================================================" />
-			<echo message="" />
+			<property name="@{input}.abs" location="@{input}" />
+			<property name="@{output}.abs" location="@{output}" />
+			<uptodate-mio input="@{input}" output="@{output}" type="strj">
+				<action>
+					<java classname="org.strategoxt.strj.Main" failonerror="true" fork="true" dir="@{workdir}" classpath="@{strj}">
+						<arg value="-i" />
+						<arg value="${@{input}.abs}" />
+						<arg value="-o" />
+						<arg value="${@{output}.abs}" />
+						<arg value="-p" />
+						<arg value="@{package}" />
+						<arg value="-D" />
+						<arg value="VERSION_TERM=&quot;${version}&quot;" />
+						<arg value="-D" />
+						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+						<strjargs />
+					</java>
+				</action>
+				<deps>
+					<str-deps />
+				</deps>
+			</uptodate-mio>
 		</sequential>
 	</macrodef>
 
+	<target name="test-test1">
+		<property name="test-dir" location="tests/test1" />
+		<property name="test-gen" location="${test-dir}/test-gen" />
+		<property name="test-gen-bin" location="${test-gen}" />
+		<for param="test-source">
+			<path>
+				<fileset dir="${test-dir}" includes="test??.str, test???.str" />
+			</path>
+			<sequential>
+				<log message="Testing @{test-source}" />
+				<mkdir dir="${test-gen}" />
+				<mkdir dir="${test-gen}/org/test" />
+				<mkdir dir="${test-gen-bin}" />
+				<trycatch property="failure">
+					<try>
+						<!-- do the test -->
+						<strj-workingdir input="@{test-source}" strj="${strj-sut}" output="${test-gen}/org/test/Main.java" package="org.test" workdir="${test-dir}">
+							<strjargs>
+								<arg value="-la" />
+								<arg value="stratego-lib" />
+								<arg value="-I" />
+								<arg value="${dep.libstratego-lib}" />
+							</strjargs>
+						</strj-workingdir>
+						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}" />
+					</try>
+
+					<catch>
+						<fail message="Test failure of @{test-source}: ${failure}" />
+					</catch>
+
+					<finally>
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
+					</finally>
+				</trycatch>
+			</sequential>
+		</for>
+	</target>
 
 </project>

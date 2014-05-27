@@ -338,7 +338,7 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="strj-for-test">
+	<!-- <macrodef name="strj-for-test">
 		<attribute name="input" />
 		<attribute name="output" />
 		<attribute name="package" />
@@ -371,14 +371,14 @@
 				</deps>
 			</uptodate-mio>
 		</sequential>
-	</macrodef>
+	</macrodef> -->
 
 	<!--
 	**************************************************************
 	*********** MACROS FOR TESTING *******************************
 	-->
 
-	<macrodef name="strj-test">
+	<!-- <macrodef name="strj-test">
 		<attribute name="input" />
 		<attribute name="synaterm" />
 		<attribute name="synbox" />
@@ -434,7 +434,7 @@
 				</action>
 			</uptodate-io>
 		</sequential>
-	</macrodef>
+	</macrodef> -->
 
 	<!--
 	**************************************************************

@@ -120,7 +120,7 @@
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar</echo>
 	</target>
 
-	<target name="test">
+	<target name="test" depends="antcontrib-load">
 		<subant inheritall="false">
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
 			<fileset dir="stratego-libraries/strc" includes="build.test.xml" />
