@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project name="libstrc-test" default="test-all">
+	<!-- Import Stratego/XT Ant contributions -->
+	<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
+
+	<!-- Import Ant contrib -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+	<!-- Import the properties file, telling us which compiler to use for Java -->
+	<property file="build.properties" />
+
+	<!-- Build configuration. Overwrite these from importer -->
+	<property name="strj-sut" value="" />
+
+	<!--
+	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
+	<property name="nativepath" value="${sdf2bundle}/bin/" />
+	<property name="install-prefix" location="dist" />
+	<property name="install-location" location="${install-prefix}/share/strategoxt/libstrc" /> -->
+
+	<target name="test-all" depends="test-strc" />
+
+	<target name="test-strc">
+		<!-- 
+	   For each in "tests/test-strc" invoke the compiler on the file matching "testXX.str"
+	     - succeed if the compilation succeeds. fail if the compilation fails
+	  -->
+		<for param="str-source">
+			<path>
+				<fileset dir="tests/test-strc" includes="test??.str" />
+			</path>
+			<sequential>
+				<log message="Testing @{str-source}.sh" />
+				<trycatch property="failure">
+					<try>
+						<exec executable="@{str-source}.sh" dir="tests/test-strc" failonerror="true">
+							<env key="STRJ" value="${str-sut}" />
+						</exec>
+					</try>
+
+					<catch>
+						<fail message="Test failure of @{str-source}: ${failure}" />
+					</catch>
+
+					<finally>
+					</finally>
+				</trycatch>
+				<delete includeemptydirs="true">
+					<fileset dir="tests/test-strc" includes="*.actual, **/*.java, **/*.class, **/*.dep, **/*.rtree, **/*.tmp" />
+				</delete>
+			</sequential>
+		</for>
+	</target>
+
+
+	<macrodef name="log">
+		<attribute name="message" />
+		<sequential>
+			<echo message="========================================================================================" />
+			<echo message="@{message}" />
+			<echo message="========================================================================================" />
+			<echo message="" />
+		</sequential>
+	</macrodef>
+
+
+</project>

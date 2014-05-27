@@ -1,6 +1,6 @@
 module test09
 imports
-  libtest09-lib
+  test09-lib
 
 strategies
 

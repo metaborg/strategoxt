@@ -1,5 +1,7 @@
 #!/bin/sh
 
-${STRC} -i test07.str -Xlinker -lstratego-lib || exit 1
+java -jar ${STRJ} -i test07.str -la stratego-lib || exit 1
 
-./test07 || exit 1 
+javac -cp ${STRJ} test07.java || exit 1
+
+java -cp .:${STRJ} test07 || exit 1
