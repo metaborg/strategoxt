@@ -123,8 +123,9 @@
 	<target name="test" depends="antcontrib-load">
 		<subant inheritall="false">
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
-			<fileset dir="stratego-libraries/strc" includes="build.test.xml" />
-			<target name="test-all" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<fileset dir="stratego-libraries" includes="build.xml" />
+			<target name="test" />
 		</subant>
 	</target>
 

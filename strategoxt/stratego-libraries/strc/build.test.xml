@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="libstrc-test" default="test-all">
+<project name="libstrc-test" default="test">
 	<!-- Import Stratego/XT Ant contributions -->
 	<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
 
@@ -12,6 +12,7 @@
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="strj-sut" value="" />
 	<property name="dep.libstratego-lib" location="../lib/spec" />
+	<property name="dep.stratego-front" location="../../dist/share/strategoxt/stratego-front" />
 
 	<!--
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
@@ -19,7 +20,7 @@
 	<property name="install-prefix" location="dist" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt/libstrc" /> -->
 
-	<target name="test-all" depends="test-test1" />
+	<target name="test" depends="test-strc, test-test1" />
 
 	<target name="test-strc">
 		<!-- 
@@ -53,40 +54,6 @@
 		</for>
 	</target>
 
-	<macrodef name="strj-workingdir">
-		<attribute name="input" />
-		<attribute name="output" />
-		<attribute name="package" />
-		<attribute name="workdir" />
-		<attribute name="strj" />
-		<element name="strjargs" optional="true" />
-		<element name="str-deps" optional="true" />
-		<sequential>
-			<property name="@{input}.abs" location="@{input}" />
-			<property name="@{output}.abs" location="@{output}" />
-			<uptodate-mio input="@{input}" output="@{output}" type="strj">
-				<action>
-					<java classname="org.strategoxt.strj.Main" failonerror="true" fork="true" dir="@{workdir}" classpath="@{strj}">
-						<arg value="-i" />
-						<arg value="${@{input}.abs}" />
-						<arg value="-o" />
-						<arg value="${@{output}.abs}" />
-						<arg value="-p" />
-						<arg value="@{package}" />
-						<arg value="-D" />
-						<arg value="VERSION_TERM=&quot;${version}&quot;" />
-						<arg value="-D" />
-						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
-						<strjargs />
-					</java>
-				</action>
-				<deps>
-					<str-deps />
-				</deps>
-			</uptodate-mio>
-		</sequential>
-	</macrodef>
-
 	<target name="test-test1">
 		<property name="test-dir" location="tests/test1" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
@@ -109,10 +76,14 @@
 								<arg value="stratego-lib" />
 								<arg value="-I" />
 								<arg value="${dep.libstratego-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.stratego-front}" />
 							</strjargs>
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}" />
+						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
+							<jvmarg value="-Xss16m"/>
+						</java>
 					</try>
 
 					<catch>
