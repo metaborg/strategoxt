@@ -22,7 +22,7 @@
 	<property name="install-prefix" location="dist" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt/libstrc" /> -->
 
-	<target name="test" depends="test-strc, test-test1, test-test2" />
+	<target name="test" depends="test-strc, test-test1, test-test2, test-testneg" />
 
 	<target name="test-strc">
 		<!-- 
@@ -86,7 +86,7 @@
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
-							<jvmarg value="-Xss16m"/>
+							<jvmarg value="-Xss16m" />
 						</java>
 					</try>
 
@@ -135,12 +135,63 @@
 						</strj-workingdir>
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
-							<jvmarg value="-Xss16m"/>
+							<jvmarg value="-Xss16m" />
 						</java>
 					</try>
 
 					<catch>
 						<fail message="Test failure of @{test-source}: ${failure}" />
+					</catch>
+
+					<finally>
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
+					</finally>
+				</trycatch>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="test-testneg">
+		<property name="test-dir" location="tests/testneg" />
+		<property name="test-gen" location="${test-dir}/test-gen" />
+		<property name="test-gen-bin" location="${test-gen}" />
+		<for param="test-source">
+			<path>
+				<fileset dir="${test-dir}" includes="test*.str" />
+			</path>
+			<sequential>
+				<log message="Testing @{test-source}" />
+				<mkdir dir="${test-gen}" />
+				<mkdir dir="${test-gen}/org/test" />
+				<mkdir dir="${test-gen-bin}" />
+				<trycatch property="failure" reference="failure-refid">
+					<try>
+						<!-- do the test -->
+						<strj-workingdir input="@{test-source}" strj="${strj-sut}" output="${test-gen}/org/test/Main.java" package="org.test" workdir="${test-dir}">
+							<strjargs>
+								<arg value="-la" />
+								<arg value="stratego-lib" />
+								<arg value="-I" />
+								<arg value="${dep.libstratego-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.libsslcompat-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.java-front-15}" />
+								<arg value="-I" />
+								<arg value="${dep.stratego-front}" />
+							</strjargs>
+						</strj-workingdir>
+						<fail message="Test failure of @{test-source}. Compilation was expected to fail but succeeded" />
+					</try>
+
+					<catch>
+						<if>
+							<contains string="${failure}" substring="Test failure of" />
+							<then>
+								<throw refid="failure-refid" />
+							</then>
+						</if>
 					</catch>
 
 					<finally>
