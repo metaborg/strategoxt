@@ -21,7 +21,8 @@ public class RelationMatchTask implements ITaskEvaluator {
 		try {
 			final IStrategoTerm instruction = task.instruction();
 			final IStrategoTerm lookupTaskID = instruction.getSubterm(0).getSubterm(0);
-			final SetTaskResults lookupTaskResults = (SetTaskResults) taskEngine.getTask(lookupTaskID).results();
+			final ITask lookupTask = taskEngine.getTask(lookupTaskID);
+			final SetTaskResults lookupTaskResults = (SetTaskResults) lookupTask.results();
 			final IStrategoTerm expectedTermTaskID = instruction.getSubterm(1).getSubterm(0);
 			final ITask expectedTermTask = taskEngine.getTask(expectedTermTaskID);
 
