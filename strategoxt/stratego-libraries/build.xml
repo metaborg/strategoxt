@@ -117,6 +117,7 @@
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="dep.libstratego-lib" location="lib/spec" />
+			<property name="dep.libsslcompat-lib" location="lib/ssl-compat" />
 			<property name="dep.stratego-front" location="${repository.libraries}/share/strategoxt/stratego-front" />
 			<fileset dir="strc" includes="build.test.xml" />
 			<target name="test" />

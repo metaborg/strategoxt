@@ -12,7 +12,9 @@
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="strj-sut" value="" />
 	<property name="dep.libstratego-lib" location="../lib/spec" />
+	<property name="dep.libsslcompat-lib" location="../lib/ssl-compat" />
 	<property name="dep.stratego-front" location="../../dist/share/strategoxt/stratego-front" />
+	<property name="dep.java-front-15" location="../../dist/share/strategoxt/java_front/languages/java-15" />
 
 	<!--
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
@@ -20,7 +22,7 @@
 	<property name="install-prefix" location="dist" />
 	<property name="install-location" location="${install-prefix}/share/strategoxt/libstrc" /> -->
 
-	<target name="test" depends="test-strc, test-test1" />
+	<target name="test" depends="test-strc, test-test1, test-test2" />
 
 	<target name="test-strc">
 		<!-- 
@@ -45,11 +47,11 @@
 					</catch>
 
 					<finally>
+						<delete includeemptydirs="true">
+							<fileset dir="tests/test-strc" includes="*.actual, **/*.java, **/*.class, **/*.dep, **/*.rtree, **/*.tmp" />
+						</delete>
 					</finally>
 				</trycatch>
-				<delete includeemptydirs="true">
-					<fileset dir="tests/test-strc" includes="*.actual, **/*.java, **/*.class, **/*.dep, **/*.rtree, **/*.tmp" />
-				</delete>
 			</sequential>
 		</for>
 	</target>
@@ -76,6 +78,57 @@
 								<arg value="stratego-lib" />
 								<arg value="-I" />
 								<arg value="${dep.libstratego-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.stratego-front}" />
+								<arg value="-I" />
+								<arg value="${dep.libsslcompat-lib}" />
+							</strjargs>
+						</strj-workingdir>
+						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
+							<jvmarg value="-Xss16m"/>
+						</java>
+					</try>
+
+					<catch>
+						<fail message="Test failure of @{test-source}: ${failure}" />
+					</catch>
+
+					<finally>
+						<delete dir="${test-gen}" />
+						<delete dir="${test-gen-bin}" />
+					</finally>
+				</trycatch>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="test-test2">
+		<property name="test-dir" location="tests/test2" />
+		<property name="test-gen" location="${test-dir}/test-gen" />
+		<property name="test-gen-bin" location="${test-gen}" />
+		<for param="test-source">
+			<path>
+				<fileset dir="${test-dir}" includes="*.str" />
+			</path>
+			<sequential>
+				<log message="Testing @{test-source}" />
+				<mkdir dir="${test-gen}" />
+				<mkdir dir="${test-gen}/org/test" />
+				<mkdir dir="${test-gen-bin}" />
+				<trycatch property="failure">
+					<try>
+						<!-- do the test -->
+						<strj-workingdir input="@{test-source}" strj="${strj-sut}" output="${test-gen}/org/test/Main.java" package="org.test" workdir="${test-dir}">
+							<strjargs>
+								<arg value="-la" />
+								<arg value="stratego-lib" />
+								<arg value="-I" />
+								<arg value="${dep.libstratego-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.libsslcompat-lib}" />
+								<arg value="-I" />
+								<arg value="${dep.java-front-15}" />
 								<arg value="-I" />
 								<arg value="${dep.stratego-front}" />
 							</strjargs>
