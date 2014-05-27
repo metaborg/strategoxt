@@ -8,20 +8,24 @@ imports
 
 rules // Multi file analysis
   
-  analyze-multiple(parse-file, complete-work-unit, collector|language, project-path):
-    path* -> (result, parse-time, collect-time, perform-time)
+  analyze-multiple(parse-file, trans, complete-work-unit, collector|language, project-path):
+    path* -> (result, parse-time, trans-time, collect-time, perform-time)
     with
     	measure-time(
-      	file* := <map(analyze-parse-file(parse-file); where(complete-work-unit))> path*
-    	  , id, ?parse-time
+      	ast* := <map(analyze-parse-file(parse-file); where(complete-work-unit))> path*
+    	, id, ?parse-time
     	);
     	measure-time(
-      	result* := <map(analyze-collect(collector|language, project-path); where(complete-work-unit))> file*
-      	, id, ?collect-time
+      	trans* := <map(analysis-do-pre-trans(trans); where(complete-work-unit))> ast*
+    	, id, ?trans-time
+    	);
+    	measure-time(
+      	result* := <map(analyze-collect(collector|language, project-path); where(complete-work-unit))> trans*
+      , id, ?collect-time
       );
       measure-time(
     		result  := <analyze-perform-all> result*
-    		, id, ?perform-time
+    	, id, ?perform-time
     	)
 
   analyze-parse-file(parse-file):
@@ -30,3 +34,6 @@ rules // Multi file analysis
       if not(ast := <file-exists; parse-file> path) then
         ast := ()
       end
+      
+  analysis-do-pre-trans(trans):
+  	File(path, ast) -> File(path, <trans> ast)
