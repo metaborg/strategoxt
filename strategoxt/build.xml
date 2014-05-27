@@ -120,13 +120,26 @@
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar</echo>
 	</target>
 
-	<target name="test" depends="antcontrib-load">
+	<target name="test-compiler" depends="antcontrib-load">
 		<subant inheritall="false">
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
-			<target name="test" />
+			<target name="test-compiler" />
 		</subant>
+	</target>
+
+	<target name="test-interpreter" depends="antcontrib-load">
+		<subant inheritall="false">
+			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<fileset dir="stratego-libraries" includes="build.xml" />
+			<target name="test-interpreter" />
+		</subant>
+	</target>
+
+	<target name="test" depends="test-compiler, test-interpreter">
+
 	</target>
 
 	<!-- <target name="test">

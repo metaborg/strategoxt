@@ -112,7 +112,7 @@
 		</subant>
 	</target>
 
-	<target name="test">
+	<target name="test-compiler">
 		<subant inheritall="false">
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
 			<property name="install-prefix" location="${subdists-install-prefix}" />
@@ -120,7 +120,19 @@
 			<property name="dep.libsslcompat-lib" location="lib/ssl-compat" />
 			<property name="dep.stratego-front" location="${repository.libraries}/share/strategoxt/stratego-front" />
 			<fileset dir="strc" includes="build.test.xml" />
-			<target name="test" />
+			<target name="test-compiler" />
+		</subant>
+	</target>
+
+	<target name="test-interpreter">
+		<subant inheritall="false">
+			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<property name="dep.libstratego-lib" location="lib/spec" />
+			<property name="dep.libsslcompat-lib" location="lib/ssl-compat" />
+			<property name="dep.stratego-front" location="${repository.libraries}/share/strategoxt/stratego-front" />
+			<fileset dir="strc" includes="build.test.xml" />
+			<target name="test-interpreter" />
 		</subant>
 	</target>
 
