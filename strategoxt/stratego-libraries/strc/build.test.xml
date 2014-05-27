@@ -34,7 +34,7 @@
 				<trycatch property="failure">
 					<try>
 						<exec executable="@{str-source}.sh" dir="tests/test-strc" failonerror="true">
-							<env key="STRJ" value="${str-sut}" />
+							<env key="STRJ" value="${strj-sut}" />
 						</exec>
 					</try>
 

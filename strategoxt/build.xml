@@ -113,15 +113,22 @@
 		</copy>
 		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-location}" />
 		<copy todir="stratego-libraries/java-backend/java/" verbose="true" overwrite="true">
-			<fileset dir="${install-location}/strategoxt" includes="strategoxt.jar" /> 
+			<fileset dir="${install-location}/strategoxt" includes="strategoxt.jar" />
 		</copy>
 		<delete file="${install-prefix}/nix-support/hydra-build-products" />
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt/strategoxt.jar${line.separator}</echo>
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar</echo>
 	</target>
 
-
 	<target name="test">
+		<subant inheritall="false">
+			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<fileset dir="stratego-libraries/strc" includes="build.test.xml" />
+			<target name="test-all" />
+		</subant>
+	</target>
+
+	<!-- <target name="test">
 		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
 		<mkdir dir="${test-gen}" />
 		<for param="deffile">
@@ -152,11 +159,10 @@
 					</try>
 					<catch>
 						<echo message="FAILURE: Test @{strfile} failed" />
-						<!-- <fail /> -->
 					</catch>
 				</trycatch>
 			</sequential>
 		</for>
 	</target>
-
+-->
 </project>
