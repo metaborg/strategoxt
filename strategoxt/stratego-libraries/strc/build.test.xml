@@ -60,6 +60,9 @@
 	</target>
 
 	<target name="test-test1">
+		<local name="test-dir" />
+		<local name="test-gen" />
+		<local name="test-gen-bin" />
 		<property name="test-dir" location="tests/test1" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -107,6 +110,9 @@
 	</target>
 
 	<target name="test-test2">
+		<local name="test-dir" />
+		<local name="test-gen" />
+		<local name="test-gen-bin" />
 		<property name="test-dir" location="tests/test2" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -156,6 +162,9 @@
 	</target>
 
 	<target name="test-testneg">
+		<local name="test-dir" />
+		<local name="test-gen" />
+		<local name="test-gen-bin" />
 		<property name="test-dir" location="tests/testneg" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -207,6 +216,9 @@
 	</target>
 
 	<target name="test-test1-interp">
+		<local name="test-dir" />
+		<local name="test-gen" />
+		<local name="test-gen-bin" />
 		<property name="test-dir" location="tests/test1" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
@@ -255,6 +267,9 @@
 	</target>
 
 	<target name="test-test2-interp">
+		<local name="test-dir" />
+		<local name="test-gen" />
+		<local name="test-gen-bin" />
 		<property name="test-dir" location="tests/test2" />
 		<property name="test-gen" location="${test-dir}/test-gen" />
 		<property name="test-gen-bin" location="${test-gen}" />
