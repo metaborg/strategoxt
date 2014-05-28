@@ -20,9 +20,12 @@ imports
 strategies
 
   frontend = 
-  	?spec;
-    (analyzed-spec, (error*, warning*, note*)) := <analysis-singleast> spec
-    ; fatal-err(|"NaBL-based analysis completed. This exit is explicit in frontend.str ")
+  	?spec
+    ; where(
+      	(analyzed-spec, (error*, warning*, note*)) := <analysis-singleast> spec
+        ; debug(!"analyzed-spec: ")
+      )
+    //; fatal-err(|"NaBL-based analysis completed. This exit is explicit in frontend.str foobar")
     ; m-transform-no-overlays(id
 
       // add some definitions and constructors

@@ -220,19 +220,6 @@ rules
       )
 
   nabl-get-name :
-    OpDeclInj(t) -> Inj()
-
-  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?OpDeclInj(t)
-    ; origin-track-forced(OpDeclInj(id)|)
-    ; match(child-uris__|c-uri1__)
-    ; match(sibl-uris__|s-uri1__)
-    ; match(implicits__|[])
-
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?OpDeclInj(t) ; OpDeclInj(id) ; fail
-
-  nabl-get-name :
     OpDeclQ(c, t) -> c
 
   nabl-name-apply(s) =
@@ -317,19 +304,6 @@ rules
       , id
       )
     ; fail
-
-  nabl-get-name :
-    ExtOpDeclInj(t) -> Inj()
-
-  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
-    ?ExtOpDeclInj(t)
-    ; origin-track-forced(ExtOpDeclInj(id)|)
-    ; match(child-uris__|c-uri1__)
-    ; match(sibl-uris__|s-uri1__)
-    ; match(implicits__|[])
-
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
-    ?ExtOpDeclInj(t) ; ExtOpDeclInj(id) ; fail
 
   nabl-get-name :
     ExtOpDeclQ(c, t) -> c

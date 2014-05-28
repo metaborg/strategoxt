@@ -11,8 +11,8 @@ rules
 	
 	explicit-names = 
 		alltd(explicit-name-def; top)
-	
-	explicit-name :
+			
+	explicit-name-def :
 		d@SDefT(f, _, _, _) -> SD($[[<cify>n]_[i]_[j]], d)
 		where (n, i, j) := <m-def-signature> d
 
