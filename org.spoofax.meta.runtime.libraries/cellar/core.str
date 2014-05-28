@@ -1,4 +1,4 @@
-module analysis/core
+module cellar/core
 
 imports
 	

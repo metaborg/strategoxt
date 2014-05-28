@@ -1,4 +1,4 @@
-module analysis/defaults
+module cellar/defaults
 
 imports
 	

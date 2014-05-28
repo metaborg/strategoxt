@@ -2,7 +2,7 @@ module analysis/builtins
 
 imports
 	
-	analysis/single
+	analysis/new-analysis
 	analysis/interface
 	
 rules
@@ -16,15 +16,6 @@ rules
 	analysis-analyze-builtin-partition(collector|language, project-path):
 		(path, ast) -> analyzed-ast
 		with
-	    (
-	    	analyzed-ast
-			, (analysis-error*, analysis-warning*, analysis-note*)
-			, removed-entry-count
-			, added-entry-count
-			, removed-task-count
-			, added-task-count
-			, invalidated-task-count
-			, evaluated-task*
-			, skipped-task*
-			, unevaluated-task*
-			) := <analyze-one(collector|language, path, project-path)> ast
+			partition := <analysis-partition(|project-path)> path
+	  ; Result([FileResult(_, _, _, _, analyzed-ast, _, _, _)], _, _, _) := 
+	    	<analysis-files(id, collector, id, id|language, project-path)> [File(partition, ast)]

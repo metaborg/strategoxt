@@ -1,4 +1,4 @@
-module analysis/single
+module cellar/single
 
 imports
 	
