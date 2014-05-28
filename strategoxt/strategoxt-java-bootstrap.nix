@@ -28,7 +28,7 @@ let
     pkgs.releaseTools.antBuild {
       name = "strategoxt-java-${toString nr}";
       src = strategoxtJava;
-      buildInputs = with pkgs; [ strategoPackages.sdf openjdk ];
+      buildInputs = with pkgs; [ strategoPackages.sdf ecj openjdk ];
 
       preConfigure = ''
         cd strategoxt
@@ -44,16 +44,17 @@ let
         cd ..
       '';
       
-      
       antTargets = ["all" "install"] ++ (pkgs.lib.optional (nr == 3) "test-compiler");
       antProperties = [
         { name = "revision"; value = "${toString strategoxtJava.rev}"; }
         { name = "sdf2bundle"; value = pkgs.strategoPackages.sdf; }
-        # { name = "sdf2bundle"; value = "${baseline}"; }
-        # { name = "nativepath"; value = "${pkgs.strategoPackages.sdf}/bin"; }
+        { name = "baseline"; value = baseline; }
         { name = "install-prefix-out"; value = "$out"; }
       ] ;
-      antBuildInputs = [ (pkgs.lib.concatStrings [baseline "/share/strategoxt/strategoxt" ] ) ] ; # todo: ecj strj
+      antBuildInputs = [
+        (pkgs.lib.concatStrings [baseline "/share/strategoxt/strategoxt" ])
+        pkgs.ecj
+      ] ; 
 
       ANT_OPTS="-Xss8m -Xmx1024m";
 
@@ -84,9 +85,13 @@ let
       antProperties = [
         { name = "revision"; value = "${toString strategoxtJava.rev}"; }
         { name = "sdf2bundle"; value = pkgs.strategoPackages.sdf; }
+        { name = "baseline"; value = baseline; }
         { name = "install-prefix-out"; value = "$out"; }
       ] ;
-      antBuildInputs = [ pkgs.ecj baseline] ;
+      antBuildInputs = [
+        (pkgs.lib.concatStrings [baseline "/share/strategoxt/strategoxt" ])
+        pkgs.ecj
+      ] ; 
 
       ANT_OPTS="-Xss8m -Xmx1024m";
 
@@ -96,10 +101,10 @@ let
   jobs = {
 
     bootstrap1 = bootstrap baseline 1;
-    #bootstrap2 = bootstrap jobs.bootstrap1 2;
-    #bootstrap3 = bootstrap jobs.bootstrap2 3;
-    #test-compiler = test jobs.bootstrap3 "test-compiler";
-    #test-interpreter = test jobs.bootstrap3 "test-interpreter";
+    bootstrap2 = bootstrap jobs.bootstrap1 2;
+    bootstrap3 = bootstrap jobs.bootstrap2 3;
+    test-compiler = test jobs.bootstrap3 "test-compiler";
+    test-interpreter = test jobs.bootstrap3 "test-interpreter";
   };
 in
   jobs
