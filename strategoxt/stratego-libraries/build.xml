@@ -114,11 +114,12 @@
 
 	<target name="test-compiler">
 		<subant inheritall="false">
+			<property name="install-prefix" location="${install-prefix}" />
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
-			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="dep.libstratego-lib" location="lib/spec" />
 			<property name="dep.libsslcompat-lib" location="lib/ssl-compat" />
 			<property name="dep.stratego-front" location="${repository.libraries}/share/strategoxt/stratego-front" />
+			<property name="dep.java-front-15" location="${repository.libraries}/share/strategoxt/java_front/languages/java-15" />
 			<fileset dir="strc" includes="build.test.xml" />
 			<target name="test-compiler" />
 		</subant>

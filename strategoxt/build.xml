@@ -123,7 +123,7 @@
 	<target name="test-compiler" depends="antcontrib-load">
 		<subant inheritall="false">
 			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
-			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="test-compiler" />
 		</subant>
