@@ -9,6 +9,7 @@ imports
 rules // during analysis
   
   type-task(|ctx) = get-or-create-property-task(|ctx, Type())
+  type-task(|ctx, kind, old-uri*, new-uri*) = get-or-create-property-task(|ctx, Type(), old-uri*, new-uri*)
   get-type-task   = get-property-task(|Type())
   
 rules // post analysis

@@ -111,11 +111,16 @@ rules
   	where
   		( 
           get-property-task(|kind)
-      <+ (create-property-task(|ctx, kind, [], []); properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts old-uri* and new-uri* with empty lists, because it was not passed!])) 
-      <+ (create-property-task(|ctx, kind, []);     properties-console-msg(|$[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts uri* with an empty list, because it was not passed!]))
+      <+ (create-property-task(|ctx, kind, [], []); uris-not-passed(|ctx, kind))  
+      <+ (create-property-task(|ctx, kind, []);     uris-not-passed(|ctx, kind))
       <+  create-property-task(|ctx, kind)
       <+  cannot-create-property-task(|ctx, kind)
       ) => task
+      
+  uris-not-passed(|ctx, kind):
+  	term -> <properties-warning-task(|ctx, msg); properties-console-msg(|msg)> term
+  	where
+  		msg := $[Called create-property-task for property [<get-constructor> kind] on term [<write-to-string> term] that accepts uris with empty lists instead, because uris were not passed!]
       
   cannot-create-property-task(|ctx, kind):
   	term -> <properties-warning-task(|ctx, msg); properties-console-msg(|msg)> term
