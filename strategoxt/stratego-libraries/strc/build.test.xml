@@ -24,7 +24,7 @@
 
 	<target name="test-all" depends="test-compiler, test-interpreter" />
 
-	<target name="test-compiler" depends="test-strc, test-test1, test-test2, test-testneg" />
+	<target name="test-compiler" depends="test-test1, test-strc, test-test2, test-testneg" />
 	<target name="test-interpreter" depends="test-test1-interp, test-test2-interp" />
 
 	<target name="test-strc">
@@ -93,6 +93,7 @@
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
+							<jvmarg value="-Xmx1024m" />
 						</java>
 					</try>
 
@@ -145,6 +146,7 @@
 						<javac srcdir="${test-gen}" destdir="${test-gen-bin}" classpath="${strj-sut}" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 						<java classname="org.test.Main" failonerror="true" fork="true" classpath="${test-gen-bin}:${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
+							<jvmarg value="-Xmx1024m" />
 						</java>
 					</try>
 
@@ -248,6 +250,7 @@
 						</strj-workingdir>
 						<java classname="run" failonerror="true" fork="true" classpath="${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
+							<jvmarg value="-Xmx1024m" />
 							<arg value="${test-gen}/testmodule.ctree" />
 							<arg value="main" />
 						</java>
@@ -301,6 +304,7 @@
 						</strj-workingdir>
 						<java classname="run" failonerror="true" fork="true" classpath="${strj-sut}" dir="${test-gen-bin}">
 							<jvmarg value="-Xss16m" />
+							<jvmarg value="-Xmx1024m" />
 							<arg value="${test-gen}/testmodule.ctree" />
 							<arg value="main" />
 						</java>

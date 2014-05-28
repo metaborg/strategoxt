@@ -70,13 +70,21 @@
 			<target name="all" />
 		</subant>
 	</target>
+	
+	<target name="clean" depends="clean-syntax, clean-libraries"/>
 
-	<target name="clean">
+	<target name="clean-syntax">
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="syntax" includes="build.xml" />
 			<target name="clean" />
 		</subant>
+		<delete dir="${test-gen}" />
+		<delete dir="${subdists-install-prefix}" />
+		<delete dir="${bin}" />
+	</target>
+
+	<target name="clean-libraries">
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
@@ -86,7 +94,7 @@
 		<delete dir="${subdists-install-prefix}" />
 		<delete dir="${bin}" />
 	</target>
-
+				
 	<target name="jar" depends="build">
 		<mkdir dir="${bin}" />
 		<jar destfile="${bin}/strategoxt.jar" manifest="stratego-libraries/java-backend/java/META-INF/MANIFEST.MF" update="false">

@@ -14,6 +14,6 @@ java -jar ${STRJ} -i test09.str -la org.test09_lib -p test09 -o test09 || exit 1
 javac -cp .:${STRJ} test09/*.java || exit 1
 
 # Run the program
-java -cp .:${STRJ} test09/test09 || exit 1
+java -cp .:${STRJ} -Xmx1024m test09/test09 || exit 1
 
 rm -rf org test09
