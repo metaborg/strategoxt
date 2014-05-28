@@ -7,8 +7,8 @@ let
   pkgs = import nixpkgs {};
 
   baseline = pkgs.fetchurl {
-    url = https://github.com/metaborg/strategoxt/releases/download/baseline/strategoxt.jar;
-    sha256 = "316306e6c89301037bc6f83235cefb036f395bdc12cf848f75067653cc97344e";
+    url = https://github.com/metaborg/strategoxt/releases/download/baseline-2/strategoxt-distrib.tar;
+    sha256 = "e4d3920bb5b5a9d365e12d7f4626d93c42eafe4996c284cab5c7960c1da645f0";
   };
 
   bootstrap = baseline: nr:
@@ -28,7 +28,11 @@ let
         mkdir -p strategoxt/syntax/java-front
         cp -Rv ${javaFront}/* strategoxt/syntax/java-front/
         chmod -R a+w strategoxt/syntax/java-front
-        cd ..
+        mkdir baseline
+        cd baseline
+        cp ${baseline} .
+        tar -xf ${baseline} .
+        cd ../..
       '';
 
       antTargets = ["all" "install"] ++ (pkgs.lib.optional (nr == 3) "test-compiler");
