@@ -44,12 +44,46 @@ let
       dontInstall = true;
     };
 
+  test = baseline: test-target:
+    pkgs.releaseTools.antBuild {
+      name = "strategoxt-java-test";
+      src = strategoxtJava;
+      buildInputs = with pkgs; [ strategoPackages.sdf ecj openjdk ];
+
+      preConfigure = ''
+        cd strategoxt
+        ulimit -s unlimited
+      '';
+
+      postUnpack = ''
+        cd $sourceRoot
+        rm -f strategoxt/syntax/java-front
+        mkdir -p strategoxt/syntax/java-front
+        cp -Rv ${javaFront}/* strategoxt/syntax/java-front/
+        chmod -R a+w strategoxt/syntax/java-front
+        cd ..
+      '';
+
+      antTargets = ["install" test-target];
+      antProperties = [
+        { name = "revision"; value = "${toString strategoxtJava.rev}"; }
+        { name = "sdf2bundle"; value = pkgs.strategoPackages.sdf; }
+        { name = "install-prefix-out"; value = "$out"; }
+      ] ;
+      antBuildInputs = [ pkgs.ecj baseline] ;
+
+      ANT_OPTS="-Xss8m -Xmx1024m";
+
+      dontInstall = true;
+    };
+
   jobs = {
 
     bootstrap1 = bootstrap baseline 1;
     bootstrap2 = bootstrap jobs.bootstrap1 2;
     bootstrap3 = bootstrap jobs.bootstrap2 3;
-
+    test-compiler = test jobs.bootstrap3 "test-compiler";
+    test-interpreter = test jobs.bootstrap3 "test-interpreter";
   };
 in
   jobs
