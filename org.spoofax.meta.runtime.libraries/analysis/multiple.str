@@ -36,4 +36,4 @@ rules // Multi file analysis
       end
       
   analysis-do-pre-trans(trans):
-  	File(path, ast) -> File(path, <trans> ast)
+  	File(path, ast) -> File(path, ast, <trans> ast)

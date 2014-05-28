@@ -10,7 +10,7 @@ rules // Single file analysis
   	analyze-one(collector, id|language, path, project-path)
   
   analyze-one(collector, try-recover|language, path, project-path):
-    ast -> 
+    (initial-ast, transformed-ast) -> 
     (
     	analyzed-ast
 		, (error*, warning*, note*)
@@ -28,7 +28,7 @@ rules // Single file analysis
       r@(
       	Result(_, _, analyzed-ast, _, _, _, _)
       , DebugResult(removed-entry*, added-entry*, removed-task*, added-task*, invalidated-task*)
-      ) := <analyze-collect(collector, try-recover|language, project-path)> File(partition, ast);
+      ) := <analyze-collect(collector, try-recover|language, project-path)> File(partition, initial-ast, transformed-ast);
       
     	(result*, evaluated-task*, skipped-task*, unevaluated-task*) := <analyze-perform-all> [r];
     	

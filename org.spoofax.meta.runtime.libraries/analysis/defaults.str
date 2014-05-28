@@ -43,6 +43,7 @@ rules // Single finle analysis
       <analysis-default-debug(!"Analyzing file: ")> path;
       partition := <analysis-partition(|path, project-path)>;
       
+      transformed-ast := <analysis-pre-trans <+ desugar-before> ast;
 	    (
 	    	analyzed-ast
 			, (analysis-error*, analysis-warning*, analysis-note*)
@@ -54,7 +55,7 @@ rules // Single finle analysis
 			, evaluated-task*
 			, skipped-task*
 			, unevaluated-task*
-			) := <(analysis-pre-trans <+ desugar-before); analyze-one(collector|language, path, project-path)> ast;
+			) := <analyze-one(collector|language, path, project-path)> (ast, transformed-ast);
 			analyzed-ast' := <analysis-post-trans(|partition) <+ desugar-after> analyzed-ast;
 			
       (error*, warning*, note*) := <analysis-message-collect(pp-message|analysis-error*, analysis-warning*, analysis-note*)> analyzed-ast';
