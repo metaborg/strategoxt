@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.strategoxt" default="all">
+
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 
@@ -111,7 +112,13 @@
 		<copy todir="${install-prefix}" verbose="true">
 			<fileset dir="${subdists-install-prefix}" includes="**/*" />
 		</copy>
-		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-location}" />
+		<copy todir="${install-location}" verbose="true">
+			<fileset dir="${sdf2bundle}/share/strategoxt" includes="macosx/*, linux/*, build-lib/*" />
+		</copy>
+		<copy todir="${install-prefix}/share" verbose="true">
+			<fileset dir="${sdf2bundle}/share" includes="sdf-library/**/*" />
+		</copy>
+		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-prefix}" excludes="strategoxt-distrib.tar" />
 		<copy todir="stratego-libraries/java-backend/java/" verbose="true" overwrite="true">
 			<fileset dir="${install-location}/strategoxt" includes="strategoxt.jar" />
 		</copy>
