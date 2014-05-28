@@ -1,3 +1,3 @@
 #!/bin/sh
 
-${STRC} -i test16.str -la stratego-lib || exit 1
+java -jar ${STRJ} -i test16.str -la stratego-lib || exit 1

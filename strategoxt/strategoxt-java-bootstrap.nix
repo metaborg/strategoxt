@@ -31,7 +31,7 @@ let
         cd ..
       '';
 
-      antTargets = ["all" "install"] ++ (pkgs.lib.optional (nr == 3) "test");
+      antTargets = ["all" "install"] ++ (pkgs.lib.optional (nr == 3) "test-compiler");
       antProperties = [
         { name = "revision"; value = "${toString strategoxtJava.rev}"; }
         { name = "sdf2bundle"; value = pkgs.strategoPackages.sdf; }

@@ -1,5 +1,7 @@
 #!/bin/sh
 
-${STRC} -i test04.str -la ${STRATEGO_LIB}/lib/libstratego-lib.la || exit 1
+java -jar ${STRJ} -i test04.str -la stratego-lib || exit 1 
 
-./test04 || exit 1 
+javac -cp ${STRJ} test04.java || exit 1
+
+java -cp .:${STRJ} test04 || exit 1 
