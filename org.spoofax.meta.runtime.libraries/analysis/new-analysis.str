@@ -60,7 +60,7 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
     with
     	analysis-analyze-builtin-partitions(collector|language, project-path)
     with
-    	analysis-files-work-units; set-total-work-units
+    	<analysis-files-work-units; set-total-work-units> file*
     with
     	measure-time(
     		pre-trans-file* := <map(analysis-files-pre-trans(pre-trans); where(complete-work-unit))> file*
@@ -75,6 +75,7 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
         task-evaluate-scheduled => (evaluated-task*, skipped-task*, unevaluated-task*)
       , ?evaluate-time
       )
+    ; where(complete-work-unit)
     ; task-sources-of(|evaluated-task*) => affected-source*
 	  ; messages-result* := <map(analysis-add-messages(pp-message))> result*
 	  ; measure-time(
@@ -108,7 +109,7 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
 			// TODO: This might destroy origins, such that setting error markers in another file may not work??
 			
   analysis-files-work-units:
-  	file* -> <mul> (<length> file*, 3)
+  	file* -> <add> (<mul> (<length> file*, 2), 1)
 
 rules // Common
 	
