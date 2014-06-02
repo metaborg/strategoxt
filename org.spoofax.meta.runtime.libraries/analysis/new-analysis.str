@@ -195,20 +195,20 @@ rules // Spoofax interfacing
 	analysis-files-spoofax(parse-file, pre-trans, collector, post-trans, pp-message|language, project-path):
 		input -> output
 		with
-			file*  := <analysis-spoofax-to-files(parse-file)> input
+			file*  := <analysis-spoofax-to-files(parse-file|project-path)> input
 		; result := <analysis-files(pre-trans, collector, post-trans, pp-message|language, project-path)> file*
-		; output := <analysis-spoofax-output(pp-message); ppdebuga> result 
+		; output := <analysis-spoofax-output(pp-message)> result 
 	
 
-	analysis-spoofax-to-files(parse-file):
-		(ast, path, project-path) -> [File(<analysis-partition(|project-path)> path, ast)]
+	analysis-spoofax-to-files(parse-file|project-path):
+		(ast, path, _) -> [File(<analysis-partition(|project-path)> path, ast)]
 		
-	analysis-spoofax-to-files(parse-file):
+	analysis-spoofax-to-files(parse-file|project-path):
 		path* -> file*
 		where
 			<is-list> path*
 		with
-			file* := <map(analyze-parse-file(parse-file))> path*
+			file* := <map(analysis-partition(|project-path); analyze-parse-file(parse-file))> path*
 			
   analyze-parse-file(parse-file):
     path -> File(path, ast)
