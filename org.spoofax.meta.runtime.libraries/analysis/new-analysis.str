@@ -6,7 +6,6 @@ imports
 	analysis/interface
 	nabl/collect
 	nabl/uri
-	nabl/utils
 	nabl/incremental
 	relations/incremental
 	index/core
@@ -16,6 +15,7 @@ imports
 	editor/editor
 	editor/queue
 	editor/dynrule
+	editor/time
 	
 signature
   constructors
@@ -261,11 +261,6 @@ rules // Utility
 	
 	analysis-file-result-partition:
 		FileResult(_, _, partition, _, _, _, _, _) -> partition
-		
-  measure-time(s, match) =
-    where(before := <times>);
-    s;
-    where(after := <times>; !(after, before); diff-times; times-to-seconds; Fst; match)
 		
 rules // Debugging
 	
