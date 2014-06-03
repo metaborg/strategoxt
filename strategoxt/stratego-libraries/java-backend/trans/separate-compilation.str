@@ -1,0 +1,143 @@
+module separate-compilation
+
+signature
+	constructors
+		IncludeAST: Term * String -> Include
+
+strategies
+
+    /*strc-front-end =
+        log-timed(
+          strc-get-infile
+  		;strc-pack-stratego-trm
+  		; tfc1(|"Stratego-Sugar-Cong", "pack")
+    		; strc-output-ast
+        	; frontend
+        | "Front-end succeeded"
+        , 1
+        )*/
+	  
+    strc-front-end1(back-end) =
+      log-timed(
+        strc-get-infile
+	
+  	; separate-compilation-front-end(back-end)
+      | "Front-end succeeded"
+      , 1
+      )
+	
+  	strc-front-end2 = 
+      //  strc-get-infile
+      //  ; strc-pack-stratego-trm
+  	 where(<debug> "FRONT END");
+  		tfc1(|"Stratego-Sugar-Cong", "pack")
+        ; strc-output-ast
+  	  	; frontend
+   
+    
+	
+
+
+	separate-compilation-front-end(back-end)=
+	where(debug);
+	 where(fileName := <\FILE(s) -> s\>);
+	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
+	 pack-process-options;
+	 
+	 separate-compilation-parse-file;
+	 where(<debug> "Rewrite");
+	 (separate-compilation-rewrite-imports(back-end);debug) => (ast, newLibs);
+	 debug;
+	 where(incl := <get-config <+ ![]> "-I");
+	 where(<set-config>("-I", <conc;debug> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
+	 where(pack := <get-config <+ !""> "-p"; libs := <get-config <+ ![]> "-la");
+	 where(<set-config>("-la", <conc;debug> (libs, <map(\(x,_)-> x\)> newLibs)));
+	 where(<debug> "Flat stratego");
+	 !IncludeAST(ast,fileName);
+	 pack-stratego(|<pack-include-path>);
+	 where(<debug> "Old front end") => (files, spec);
+	 !spec;
+	 strc-front-end2;
+	 where(<debug>"Backend");
+	 where(<get-config;debug> "-o");
+	 back-end;
+	 where(<set-config>("-p", pack); <set-config> ("-la", libs); <set-config> ("-I", incl));
+	 where(<debug> "Separate finished")
+
+	 
+	 
+	separate-compilation-rewrite-imports(back-end) =
+		?(fileName, <id>);
+		let
+			replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
+			to-library-name = !["lib", <id;replace(|'-','_')>, "lib"]; concat-strings 
+			to-library-import = ?Import(<id>);to-library-name;!Import(<id>)
+			import-to-flag = \Import(name) -> <debug>(<concat-strings;debug>[<get-config> "-p", ".", name],<separate-compilation-replace-file;debug> (fileName, name))\
+			fold-on-imports(import-predicate, import-transform, collect-transform) =
+				let
+					transform-ast = bottomup((?Imports(<id>);filter(not(where(debug;where(import-predicate);debug;(import-transform<+where(<debug> "TRANSFORM FAILED")))));!Imports(<id>))<+id)
+					collect-imports = collect-all(where(import-predicate))
+				in where(ast:=<id>);!(<transform-ast> ast, <collect-imports;map(collect-transform);debug> ast) end
+			save-and-set-options(s|name) = 
+				?FILE(<id>);
+				where(input := <get-config;debug> "-i"; output := <get-config;debug> "-o"; package := <get-config;debug> "-p"; islib := <get-config<+!0;debug> "--lib"; baseout := <get-config> "baseout");
+				where(	<set-config> ("-i",<id>); <set-config> ("--library" ,""));
+				where(	<set-config> ("-p", <concat-strings>[package, ".", <to-library-name> name]));
+				where(	<set-config>("-o",<concat-strings>[<debug;separate-compilation-replace-file;debug;try(mkdir)> (output, <to-library-name> name),"/",<to-library-name> name,".java"]));
+				where(	<set-config> ("baseout" ,<get-config> "-o"));
+							where(<debug> "Compile child");
+				!FILE(<id>);
+				s;
+				where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
+		in
+		fold-on-imports(\Import(s) -> (IncludeFromPath(s),<pack-include-path>)\;separate-compilation-parse-file;where(<debug> "Parsed"),
+			where(where(<debug> "Compile");\Import(name) -> <debug;separate-compilation-get-file;debug;save-and-set-options(separate-compilation-front-end(back-end)|name)> name\);to-library-import, 
+			where(<debug> "Flag");debug;to-library-import;debug;import-to-flag;debug);debug end
+
+		   
+		   
+			separate-compilation-get-file : name->
+			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
+			
+	
+			separate-compilation-replace-file = 
+			let
+				cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string
+				in \(filePath, newName) -> <conc-strings> (<cut-until-slash> filePath, newName)\ end
+		    
+    separate-compilation-parse-file =
+       ?(IncludeFromPath(<id>), includes)
+      ; if has-extension(|"str") then
+          remove-extension
+        end
+      ;  ?mod
+      ;  <fetch-elem(
+             pack-include-from-dir(|mod)
+             <+ pack-include-from-xtc(|mod)
+           )
+         > includes
+      ; (id, report-ambs)
+      ; pack-fc(|"Stratego-Sugar-Cong")
+	  
+	  separate-compilation-parse-file = 
+      let pack-qualify-pathname =
+              where(explode-string => cs)
+            ; if <pack-is-qualified> cs then
+                id
+              else
+                <implode-string> ['.', '/' | cs]
+              end
+  
+           pack-is-qualified =
+             ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
+
+       in ?(IncludePathName(<pack-qualify-pathname>), _)
+        ; if file-exists then
+            pack-include-pathname
+            ; (id,report-ambs)
+              // (id, xtc-transform(!"report-ambs")) // EV
+            ; pack-fc(|"Stratego-Sugar-Cong")
+          else
+		  fail
+          end
+      end

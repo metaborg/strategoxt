@@ -15,6 +15,7 @@ signature
   constructors
     IncludePathName : String -> Include
     IncludeFromPath : String -> Include
+	IncludeAST: Term * String -> Include
 
 strategies
 

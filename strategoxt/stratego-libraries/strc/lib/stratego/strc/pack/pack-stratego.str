@@ -49,17 +49,18 @@ strategies
       pack-stratego-options
     , pack-process-options
     ; pack-report-options
-    ; pack-stratego(|<pack-include-path>) => (files, spec)
+    ; pack-stratego(|<pack-include-path;debug>) => (files, spec)
     ; <pack-maybe-create-depfile> files
     ; <write-to> spec
     )
 
   pack-stratego(|mkpt) =
-      \ FILE(s) -> IncludePathName(s) \
+     ( \ FILE(s) -> IncludePathName(s) \ <+ ?IncludeAST(_,_))
+	 ; debug
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(
         { file:
-          pack-stratego-parse-stratego => (file,_)
+         pack-stratego-parse-stratego => (file,_)
         ; rules( FileDependencies :+= file )
         ; if <get-config> "--dump-aterms" then
             where({fn, trm: 
@@ -70,10 +71,11 @@ strategies
                 })
           end
         }
-      , pack-get-stratego-imports 
+      , pack-get-stratego-imports
         ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
+    ; where(<debug> "Graph finished")
     ; (uniq,id)
     ; if ?(_, []) then
        Fst
@@ -116,6 +118,8 @@ strategies
 
 strategies
 
+  pack-stratego-parse-stratego= ? (IncludeAST(term,file),_) ;!(file, term)
+
   /**
    * Include from a fixed location
    */
@@ -146,7 +150,8 @@ strategies
    * Include from some location in the include path
    */
   pack-stratego-parse-stratego =
-      ?(IncludeFromPath(<id>), includes)
+    ?(IncludeFromPath(<id>), includes)
+	  
     ; if has-extension(|"str") then
         remove-extension
       end
@@ -167,6 +172,7 @@ strategies
       )> includes
     ; (id, report-ambs)
     ; pack-fc(|"Stratego-Sugar-Cong")
+	
 
   pack-fc(|format) =
     where(
@@ -196,7 +202,7 @@ strategies
 
   pack-include-pathname :
     file -> (file, tree)
-      where has-extension(|"rtree")
+      where  has-extension(|"rtree")
           ; pack-log-include
           ; <ReadFromFile> file => tree
 
@@ -269,7 +275,9 @@ strategies
   pack-get-stratego-imports =
     ?(file, <?Specification(<id>) + ?Module(_,<id>)>)
     ; filter(?Imports(<id>) ; mapconcat(pack-expand-import))
+	;debug
     ; concat
+	;debug
     ; where(
         map({import:
             ?import

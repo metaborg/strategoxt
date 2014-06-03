@@ -212,6 +212,7 @@ rules
 	   ExecutorNames := []
 	   LiftedDefs := []
 	   CollectedLiftedDefs := []
+	   ConstInit := []
     )
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
@@ -506,11 +507,14 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        public static class x extends RegisteringStrategy {
-         public static x instance = new x();
+		 static x instance = new x();
 		 
 		 ~executor-refs*
 		 ~lifted-decls*
 		 
+		 public static Strategy getStrategy(Context context) {
+		 	return context.getStrategyCollector().getStrategyExecutor("~x'");
+		 }
 		 
 		 public void registerImplementators(StrategyCollector collector) {
 		 	collector.registerStrategyImplementator("~x'", instance);

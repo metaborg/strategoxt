@@ -17,6 +17,7 @@ imports
   strj-options
   s2j
   lib/dr-scoping
+  separate-compilation
 
 strategies
 
@@ -55,16 +56,20 @@ strategies
     else
       dr-scope-all-verbose(
         with(<set-config> ("JAVA_PLATFORM", ()))
-      ; strc-front-end
-      )
-    end
-  ; try(mark-always-needed(|<get-config> "-m", 0, 0))
-  ; debug;strc-optimize;debug
-  ; strc-export-external-defs;debug
-  ; strc-output-frontend;debug
-  ; s2j
-  ; with(clean-output-dir)
-  ; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)
+      ; strc-front-end1(
+	  	  try(mark-always-needed(|<get-config> "-m", 0, 0))
+	  		; strc-optimize
+			; where(<get-config;debug> "-o")
+			; strc-export-external-defs
+			; where(<get-config;debug> "-o")
+			; strc-output-frontend
+			; where(<get-config;debug> "-o")
+			; s2j
+			; where(<get-config;debug> "-o")
+			; with(clean-output-dir)
+			; where(<get-config;debug> "-o")
+			; log-timed(list-loop(output-java) | "Pretty printing succeeded", 1)))
+  end
   
   clean-output-dir =
     if <get-config> "--clean" then
@@ -130,19 +135,19 @@ strategies
        x_name' := <conc-strings> (<output-dirname>, "/", x_name, ".java")
    
    output-dirname =
-     OutputDirName
-   <+
-     <get-config> "-o"
+  //   (OutputDirName;where(<debug> "Cache");debug)
+ //  <+
+    <get-config> "-o"
    ; if has-extension(|"java") + has-extension(|"ctree") then
        dirname
      end
    ; try(file-exists <+ mkdir <+ fatal-err(|"Output directory does not exist"))
    ; rules(OutputDirName := <id>)
-   <+
+/*   <+
      strc-getoutfile(!"")
    ; dirname
    ; try(file-exists <+ mkdir)
-   ; rules(OutputDirName := <id>)
+   ; rules(OutputDirName := <id>)*/
 
    // Using XTC for debugging:
    // using something like rtg-format-check(true, true|<java-rtg>) is more expensive atm,
