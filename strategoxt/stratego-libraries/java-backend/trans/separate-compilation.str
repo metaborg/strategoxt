@@ -18,10 +18,11 @@ strategies
         )*/
 	  
     strc-front-end1(back-end) =
+	where(rules(CompiledModules:=[]));
       log-timed(
-        strc-get-infile
+        strc-get-infile  
 	
-  	; separate-compilation-front-end(back-end)
+  	; separate-compilation-front-end(back-end|<get-config> "-p")
       | "Front-end succeeded"
       , 1
       )
@@ -31,26 +32,29 @@ strategies
       //  ; strc-pack-stratego-trm
   	 where(<debug> "FRONT END");
   		tfc1(|"Stratego-Sugar-Cong", "pack")
-        ; strc-output-ast
+        ; strc-output-ast 
   	  	; frontend
    
     
 	
 
 
-	separate-compilation-front-end(back-end)=
+	separate-compilation-front-end(back-end|working-package)=
 	where(debug);
 	 where(fileName := <\FILE(s) -> s\>);
 	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
 	 pack-process-options;
+	 where(incl := <get-config <+ ![]> "-I");
+	 where(pack := <get-config <+ !""> "-p"; libs := <get-config <+ ![]> "-la");
 	 
 	 separate-compilation-parse-file;
+	 where(moduleName:=<\(_,Module(name,_))->name\><id>);
 	 where(<debug> "Rewrite");
-	 (separate-compilation-rewrite-imports(back-end);debug) => (ast, newLibs);
+	 (separate-compilation-rewrite-imports(back-end|working-package);debug) => (ast, newLibs);
 	 debug;
-	 where(incl := <get-config <+ ![]> "-I");
+	
 	 where(<set-config>("-I", <conc;debug> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
-	 where(pack := <get-config <+ !""> "-p"; libs := <get-config <+ ![]> "-la");
+	 
 	 where(<set-config>("-la", <conc;debug> (libs, <map(\(x,_)-> x\)> newLibs)));
 	 where(<debug> "Flat stratego");
 	 !IncludeAST(ast,fileName);
@@ -59,42 +63,67 @@ strategies
 	 !spec;
 	 strc-front-end2;
 	 where(<debug>"Backend");
-	 where(<get-config;debug> "-o");
+	 where(<get-config> "-o");
 	 back-end;
 	 where(<set-config>("-p", pack); <set-config> ("-la", libs); <set-config> ("-I", incl));
+	 where(rules(CompiledModules:=Cons(moduleName,<CompiledModules>)));
 	 where(<debug> "Separate finished")
 
 	 
 	 
-	separate-compilation-rewrite-imports(back-end) =
+	separate-compilation-rewrite-imports(back-end|working-package) =
 		?(fileName, <id>);
 		let
 			replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
+			
 			to-library-name = !["lib", <id;replace(|'-','_')>, "lib"]; concat-strings 
+			
 			to-library-import = ?Import(<id>);to-library-name;!Import(<id>)
-			import-to-flag = \Import(name) -> <debug>(<concat-strings;debug>[<get-config> "-p", ".", name],<separate-compilation-replace-file;debug> (fileName, name))\
+			
+			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", name],<separate-compilation-replace-file> (fileName, name))\
+			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let
-					transform-ast = bottomup((?Imports(<id>);filter(not(where(debug;where(import-predicate);debug;(import-transform<+where(<debug> "TRANSFORM FAILED")))));!Imports(<id>))<+id)
+					
+					
+					transform-ast = bottomup(
+						(?Imports(<id>);
+						\imports -> <conc> (<filter(where(import-predicate));map(import-transform)> imports, <filter(where(not(import-predicate)))> imports)\;
+						//map((where(import-predicate);(import-transform<+fatal-err(|"Transform failed")))<+id);
+						!Imports(<id>))<+id) 
 					collect-imports = collect-all(where(import-predicate))
-				in where(ast:=<id>);!(<transform-ast> ast, <collect-imports;map(collect-transform);debug> ast) end
+				in where(ast:=<id>);!(<transform-ast;debug> ast, <collect-imports;debug;map(collect-transform);debug> ast) end
+				
+				
 			save-and-set-options(s|name) = 
 				?FILE(<id>);
-				where(input := <get-config;debug> "-i"; output := <get-config;debug> "-o"; package := <get-config;debug> "-p"; islib := <get-config<+!0;debug> "--lib"; baseout := <get-config> "baseout");
+				where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--lib"; baseout := <get-config> "baseout");
 				where(	<set-config> ("-i",<id>); <set-config> ("--library" ,""));
-				where(	<set-config> ("-p", <concat-strings>[package, ".", <to-library-name> name]));
-				where(	<set-config>("-o",<concat-strings>[<debug;separate-compilation-replace-file;debug;try(mkdir)> (output, <to-library-name> name),"/",<to-library-name> name,".java"]));
-				where(	<set-config> ("baseout" ,<get-config> "-o"));
-							where(<debug> "Compile child");
+				where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name> name]));
+				where(	<set-config> ("baseout" ,<concat-strings>[<debug;separate-compilation-replace-file;debug;try(mkdir)> (output, <to-library-name> name),"/",<to-library-name> name]));
+				where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
+				
+				where(<debug> "Compile child");
 				!FILE(<id>);
 				s;
 				where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
+				
+				
 		in
-		fold-on-imports(\Import(s) -> (IncludeFromPath(s),<pack-include-path>)\;separate-compilation-parse-file;where(<debug> "Parsed"),
-			where(where(<debug> "Compile");\Import(name) -> <debug;separate-compilation-get-file;debug;save-and-set-options(separate-compilation-front-end(back-end)|name)> name\);to-library-import, 
-			where(<debug> "Flag");debug;to-library-import;debug;import-to-flag;debug);debug end
-
-		   
+		fold-on-imports(
+			\Import(s) -> (IncludeFromPath(s),<pack-include-path>)\;separate-compilation-parse-file;where(<debug> "Parsed"),
+			
+			where(	where(<debug> "Compile");
+					\Import(name) -> name\;
+					where(<debug> "Check to compile");
+					if not(\name -> <elem> (<debug>name, <CompiledModules;debug>)\) then
+						\name -> <separate-compilation-get-file;save-and-set-options(separate-compilation-front-end(back-end|working-package)|name)> name\
+					else
+						!"Do not compile";debug
+					end);
+			to-library-import;debug, 
+			
+			where(<debug> "Flag");debug;to-library-import;debug;import-to-flag;debug) end
 		   
 			separate-compilation-get-file : name->
 			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
