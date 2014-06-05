@@ -112,9 +112,6 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
 			
   analysis-files-total-progress:
   	file* -> <add> (<mul> (<length> file*, 2), 1)
-  	
-	analysis-set-progress = try(where(<gt> (<id>, 0)); set-total-work-units)
-	analysis-inc-progress(|total-size) = where(try(<gt> (total-size, 0); complete-work-unit))
 
 rules // Common
 	
@@ -265,6 +262,9 @@ rules // Utility
 	
 	analysis-file-result-partition:
 		FileResult(_, _, partition, _, _, _, _, _) -> partition
+		
+	analysis-set-progress = try(where(<gt> (<id>, 0)); set-total-work-units)
+	analysis-inc-progress(|total-size) = where(try(<gt> (total-size, 0); complete-work-unit))
 		
 rules // Debugging
 	
