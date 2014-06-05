@@ -16,6 +16,7 @@ imports
 	editor/queue
 	editor/dynrule
 	editor/time
+	nabl/utils
 	
 signature
   constructors
@@ -60,14 +61,15 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
     with
     	analysis-analyze-builtin-partitions(collector|language, project-path)
     with
-    	<analysis-files-work-units; set-total-work-units> file*
+    	total-progress := <analysis-files-total-progress> file*
+    ; <analysis-set-progress> total-progress
     with
     	measure-time(
-    		pre-trans-file* := <map(analysis-files-pre-trans(pre-trans); where(complete-work-unit))> file*
+    		pre-trans-file* := <map(analysis-files-pre-trans(pre-trans); analysis-inc-progress(|total-progress))> file*
     	, ?pre-trans-time
     	)
     ; measure-time(
-        collect-result* := <map(analysis-collect(collector|language, project-path); where(complete-work-unit))> pre-trans-file*
+        collect-result* := <map(analysis-collect(collector|language, project-path); analysis-inc-progress(|total-progress))> pre-trans-file*
       , ?collect-time
       )
     ; (result*, collect-debug-result*) := <unzip> collect-result*
@@ -75,7 +77,7 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
         task-evaluate-scheduled => (evaluated-task*, skipped-task*, unevaluated-task*)
       , ?evaluate-time
       )
-    ; where(complete-work-unit)
+    ; analysis-inc-progress(|total-progress)
     ; task-sources-of(|evaluated-task*) => affected-source*
 	  ; messages-result* := <map(analysis-add-messages(pp-message))> result*
 	  ; measure-time(
@@ -108,8 +110,11 @@ rules // Core multi-file analysis that takes File/2 appls, analyzes those files,
 			analyzed-transformed-ast := <analysis-post-trans(|partition) <+ post-trans> analyzed-ast
 			// TODO: This might destroy origins, such that setting error markers in another file may not work??
 			
-  analysis-files-work-units:
+  analysis-files-total-progress:
   	file* -> <add> (<mul> (<length> file*, 2), 1)
+  	
+	analysis-set-progress = try(where(<gt> (<id>, 0)); set-total-work-units)
+	analysis-inc-progress(|total-size) = where(try(<gt> (total-size, 0); complete-work-unit))
 
 rules // Common
 	
@@ -198,8 +203,7 @@ rules // Spoofax interfacing
 		with
 			file*  := <analysis-spoofax-to-files(parse-file|project-path)> input
 		; result := <analysis-files(pre-trans, collector, post-trans, pp-message|language, project-path)> file*
-		; output := <analysis-spoofax-output(pp-message)> result 
-	
+		; output := <analysis-spoofax-output(pp-message)> result
 
 	analysis-spoofax-to-files(parse-file|project-path):
 		(ast, path, _) -> [File(<analysis-partition(|project-path)> path, ast)]
