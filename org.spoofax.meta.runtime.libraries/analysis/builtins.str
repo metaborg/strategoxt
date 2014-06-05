@@ -2,7 +2,7 @@ module analysis/builtins
 
 imports
 	
-	analysis/new-analysis
+	analysis/core
 	analysis/interface
 	
 rules

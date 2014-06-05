@@ -1,4 +1,4 @@
-module new-analysis
+module analysis/core
 
 imports
 	

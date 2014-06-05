@@ -2,7 +2,7 @@ module analysis/reanalysis
 
 imports
 	
-	analysis/new-analysis
+	analysis/core
 	task/core
 	index/core
 	nabl/collect

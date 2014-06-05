@@ -1,8 +1,8 @@
-module legacy-analysis
+module analysis/legacy
 
 imports
 	
-	analysis/new-analysis
+	analysis/core
 	editor/eclipse
 	editor/queue
 	nabl/collect
@@ -16,7 +16,7 @@ rules // Analysis
 	
 	analysis-default-editor = 
 		(where(is-tuple); analysis-single-default-interface) <+ 
-		queue-strategy(|"analysis-multiple-default-interface", "Analyzing files")
+		queue-strategy(|"analysis-multiple-default-interface", "Analyzing files (legacy)")
 	analysis-default-cmd = 
 		analysis-multiple-default-interface
 

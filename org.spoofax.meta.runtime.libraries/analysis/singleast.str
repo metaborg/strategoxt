@@ -2,7 +2,7 @@ module singleast
 
 imports
 	
-	analysis/new-analysis
+	analysis/core
 	nabl/collect
 	
 rules
