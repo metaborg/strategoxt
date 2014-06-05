@@ -1,0 +1,37 @@
+module analysis/legacy
+
+imports
+	
+	analysis/core
+	editor/eclipse
+	editor/queue
+	nabl/collect
+	
+rules // Interface
+	
+	analysis-single-default-interface = fail
+	analysis-multiple-default-interface = fail
+	
+rules // Analysis
+	
+	analysis-default-editor = 
+		(where(is-tuple); analysis-single-default-interface) <+ 
+		queue-strategy(|"analysis-multiple-default-interface", "Analyzing files (legacy)")
+	analysis-default-cmd = 
+		analysis-multiple-default-interface
+
+	// Called by only by Spoofax.
+	analysis-single-default(pre-trans, post-trans, pp-message|language) = 
+		analysis-single-default(pre-trans, nabl-collect, post-trans, pp-message|language)
+	analysis-single-default(pre-trans, collector, post-trans, pp-message|language) = 
+		analysis-files-spoofax(fail, pre-trans, post-trans, pp-message|language, <project-path>)
+	
+	// Called by Spoofax and Sunshine, but pretend it is Spoofax and parse files anyway.
+	analysis-multiple-default(parse-file, pre-trans, post-trans, pp-message|language, project-path) = 
+		analysis-multiple-default(parse-file, pre-trans, nabl-collect, post-trans, pp-message|language, project-path)
+	analysis-multiple-default(parse-file, pre-trans, collector, post-trans, pp-message|language, project-path) = 
+		analysis-files-spoofax(parse-file, pre-trans, post-trans, pp-message|language, project-path)
+	
+rules // On save handler
+	
+	analysis-save-default(|language) = analysis-spoofax-save(|language)
