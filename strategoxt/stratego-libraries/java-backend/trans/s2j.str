@@ -543,7 +543,7 @@ rules
 	
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs
-	
+	 
     executorNamesStack-Push = rules(ExecutorNames := Cons([],<ExecutorNames>)) 
     executorNamesStack-Pop  = rules(CollectedExecutors := <ExecutorNames;list-first;foldr(![],union(\((x1,y1),(x2,y2)) -> <eq> (y1,y2)\ ),![<id>])>); rules(ExecutorNames := <ExecutorNames;list-rest> ) 
     executorNamesStack-AddName = ?(_,_); where(rules(ExecutorNames := Cons(Cons( <id>, <ExecutorNames;list-first>) ,<ExecutorNames;list-rest>)))

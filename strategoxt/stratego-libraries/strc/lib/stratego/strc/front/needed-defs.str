@@ -147,9 +147,21 @@ strategies
    */
 
   joindefs = 
-    joinannodefs(JoinDefs1 <+ JoinDefs2)
-  <+
-    JoinDefsExt
+  where(<debug> "Join");
+  debug;
+  	partition(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_));debug;
+	?(externals, internals);
+	!internals;
+	debug;
+    joinannodefs(JoinDefs1 <+ JoinDefs2);
+	debug
+//	!(<id>, externals);
+//	conc;
+//	debug;
+//	where(<debug> "Join Finished")
+	
+//  <+
+//  JoinDefsExt
   
   joinannodefs(s) =
     if filter(?AnnoDef(<id>, _)); concat; not([]); make-set => annos then
@@ -195,10 +207,10 @@ rules
     ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
 
   JoinDefsExt =
-    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
-    ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"error: redefining external definition: ")> f
-    ; giving-up
+    debug;fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_));debug
+    ; fetch(?SDefT(f,_,_,_));debug
+  //  ; <debug(!"error: redefining external definition: ")> f
+   // ; giving-up
 
   choices = 
     foldr(!Fail(), !Choice(<Fst>,<Snd>))

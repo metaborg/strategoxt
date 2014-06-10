@@ -88,23 +88,23 @@ strategies
 					
 					transform-ast = bottomup(
 						(?Imports(<id>);
-						\imports -> <conc> (<filter(where(import-predicate));map(import-transform)> imports, <filter(where(not(import-predicate)))> imports)\;
-						//map((where(import-predicate);(import-transform<+fatal-err(|"Transform failed")))<+id);
+						//imports -> <conc> (<filter(where(import-predicate));map(import-transform)> imports, <filter(where(not(import-predicate)))> imports)\;
+						map(where(import-predicate) < import-transform + id);
 						!Imports(<id>))<+id) 
 					collect-imports = collect-all(where(import-predicate))
 				in where(ast:=<id>);!(<transform-ast;debug> ast, <collect-imports;debug;map(collect-transform);debug> ast) end
 				
 				
 			save-and-set-options(s|name) = 
-				?FILE(<id>);
+				?FILE(file);
 				where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--lib"; baseout := <get-config> "baseout");
-				where(	<set-config> ("-i",<id>); <set-config> ("--library" ,""));
+				where(	<set-config> ("-i",file); <set-config> ("--library" ,""));
 				where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name> name]));
 				where(	<set-config> ("baseout" ,<concat-strings>[<debug;separate-compilation-replace-file;debug;try(mkdir)> (output, <to-library-name> name),"/",<to-library-name> name]));
 				where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
 				
 				where(<debug> "Compile child");
-				!FILE(<id>);
+				!FILE(file);
 				s;
 				where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
 				
