@@ -182,12 +182,22 @@ public class Context extends StackTracer implements IAsyncCancellable {
     		throws StrategoExit, StrategoException {
 
     	IStrategoList input = toCLITerm(appName, args);
-
+    	System.out.println("Invoke CLI");
     	// Launch with a clean operand stack when launched from SSL_java_call, Ant, etc.
     	if (new Exception().getStackTrace().length > 20) {
-    		return new StackSaver(strategy).invokeStackFriendly(this, input, NO_STRATEGIES, NO_TERMS);
+    		try {
+    		return  new StackSaver(strategy).invokeStackFriendly(this, input, NO_STRATEGIES, NO_TERMS);
+    		} catch (Exception e) {
+    		this.printStackTrace();
+    		throw e;
+    		}
     	} else {
+    		try {
     		return strategy.invoke(this, input);
+    		} catch (Exception e) {
+        		this.printStackTrace();
+        		throw e;
+        		}
     	}
     }
 

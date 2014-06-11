@@ -147,18 +147,10 @@ strategies
    */
 
   joindefs = 
-  where(<debug> "Join");
-  debug;
-  	partition(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_));debug;
+  	partition(?ExtSDef(_,_,_) + ?ExtSDefInl(_,_,_,_));
 	?(externals, internals);
 	!internals;
-	debug;
-    joinannodefs(JoinDefs1 <+ JoinDefs2);
-	debug
-//	!(<id>, externals);
-//	conc;
-//	debug;
-//	where(<debug> "Join Finished")
+    joinannodefs(JoinDefs1 <+ JoinDefs2)
 	
 //  <+
 //  JoinDefsExt
@@ -207,8 +199,8 @@ rules
     ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
 
   JoinDefsExt =
-    debug;fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_));debug
-    ; fetch(?SDefT(f,_,_,_));debug
+    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
+    ; fetch(?SDefT(f,_,_,_))
   //  ; <debug(!"error: redefining external definition: ")> f
    // ; giving-up
 

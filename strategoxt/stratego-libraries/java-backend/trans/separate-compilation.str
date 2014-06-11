@@ -22,7 +22,7 @@ strategies
       log-timed(
         strc-get-infile  
 	
-  	; separate-compilation-front-end(back-end|<get-config> "-p")
+  	; separate-compilation-front-end(back-end|<get-config> "-p",<get-config;explode-string;reverse;drop-until(?'/');reverse;implode-string> "-o")
       | "Front-end succeeded"
       , 1
       )
@@ -39,7 +39,7 @@ strategies
 	
 
 
-	separate-compilation-front-end(back-end|working-package)=
+	separate-compilation-front-end(back-end|working-package,working-output)=
 	where(debug);
 	 where(fileName := <\FILE(s) -> s\>);
 	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
@@ -50,7 +50,7 @@ strategies
 	 separate-compilation-parse-file;
 	 where(moduleName:=<\(_,Module(name,_))->name\><id>);
 	 where(<debug> "Rewrite");
-	 (separate-compilation-rewrite-imports(back-end|working-package);debug) => (ast, newLibs);
+	 (separate-compilation-rewrite-imports(back-end|working-package,working-output);debug) => (ast, newLibs);
 	 debug;
 	
 	 where(<set-config>("-I", <conc;debug> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
@@ -71,40 +71,47 @@ strategies
 
 	 
 	 
-	separate-compilation-rewrite-imports(back-end|working-package) =
+	separate-compilation-rewrite-imports(back-end|working-package,working-output) =
 		?(fileName, <id>);
 		let
 			replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 			
-			to-library-name = !["lib", <id;replace(|'-','_')>, "lib"]; concat-strings 
+			to-library-name = separate-compilation-modify-filename(!["lib", <id> ,"lib"];concat-strings); debug//!["lib", <id;replace(|'-','_')>, "lib"]; concat-strings 
 			
-			to-library-import = ?Import(<id>);to-library-name;!Import(<id>)
+			to-library-import = ?Import(<id>);to-library-name;where(<debug>"Transform import");debug;\name -> [name,"/",<separate-compilation-get-filename> name]\;debug;concat-strings;debug;!Import(<id>)
 			
-			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", name],<separate-compilation-replace-file> (fileName, name))\
+			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-library-name;replace(|'/','.')> name],<separate-compilation-replace-file> (fileName, name))\
 			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let
 					
 					
 					transform-ast = bottomup(
-						(?Imports(<id>);
-						//imports -> <conc> (<filter(where(import-predicate));map(import-transform)> imports, <filter(where(not(import-predicate)))> imports)\;
-						map(where(import-predicate) < import-transform + id);
-						!Imports(<id>))<+id) 
+						?Imports(<id>) <
+						debug;map(
+							if import-predicate
+								then where (<debug> "Import Predicate succeded");
+									import-transform;where(<debug> "Import transform succeded")
+								else id
+							end);
+						!Imports(<id>) + id) 
 					collect-imports = collect-all(where(import-predicate))
 				in where(ast:=<id>);!(<transform-ast;debug> ast, <collect-imports;debug;map(collect-transform);debug> ast) end
 				
 				
 			save-and-set-options(s|name) = 
-				?FILE(file);
-				where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--lib"; baseout := <get-config> "baseout");
-				where(	<set-config> ("-i",file); <set-config> ("--library" ,""));
-				where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name> name]));
-				where(	<set-config> ("baseout" ,<concat-strings>[<debug;separate-compilation-replace-file;debug;try(mkdir)> (output, <to-library-name> name),"/",<to-library-name> name]));
-				where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
-				
+			where(<debug> "Save and set"); debug;
+			?FILE(<id>);
+				where(<debug> "Get Config");
+				where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0;debug> "--library"; baseout := <get-config> "baseout");
+				where(<debug> "Set Config");
+				where(	<set-config;debug> ("-i",<id>));
+				where(	<set-config;debug> ("-p", <concat-strings>[working-package, ".", <to-library-name;replace(|'/','.')> name]));
+				where(	<set-config;debug> ("baseout" ,<debug;concat-strings>[<conc-strings;try(mkdir)> (working-output, <to-library-name> name) ,"/",<to-library-name;separate-compilation-get-filename> name]));
+				where(	<set-config;debug>("-o",<concat-strings>[<get-config> "baseout",".java"]));
+				where(  <set-config;debug> ("--library" ,""));
 				where(<debug> "Compile child");
-				!FILE(file);
+				!FILE(<id>);
 				s;
 				where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
 				
@@ -117,17 +124,27 @@ strategies
 					\Import(name) -> name\;
 					where(<debug> "Check to compile");
 					if not(\name -> <elem> (<debug>name, <CompiledModules;debug>)\) then
-						\name -> <separate-compilation-get-file;save-and-set-options(separate-compilation-front-end(back-end|working-package)|name)> name\
+					where(<debug> "Do compile");debug;
+						\name -> <debug;separate-compilation-get-file;debug;save-and-set-options(debug;separate-compilation-front-end(back-end|working-package,working-output)|name)> name\
 					else
 						!"Do not compile";debug
 					end);
+			where(<debug> "To Lib import");
+			debug;
 			to-library-import;debug, 
 			
-			where(<debug> "Flag");debug;to-library-import;debug;import-to-flag;debug) end
+			where(<debug> "Flag");debug;import-to-flag;debug) end
 		   
 			separate-compilation-get-file : name->
 			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
 			
+			
+			separate-compilation-get-filename = explode-string;reverse;take-until(?'/');reverse;implode-string
+			
+			separate-compilation-modify-filename(s) =
+			let
+				split-string = reverse;split-at(?'/');tmap(reverse;implode-string)
+				in explode-string;fetch(?'/') < split-string;?(name, path);![path, "/", <s> name];concat-strings+ s end
 	
 			separate-compilation-replace-file = 
 			let
