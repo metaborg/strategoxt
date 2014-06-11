@@ -55,4 +55,8 @@ rules
 		term -> <new-task(|ctx)> PropExtract(kind, term)
 
   perform-task(|n):
-    PropExtract(kind, term) -> <get-annotation(?(kind, <id>))> term
+    PropExtract(kind, term) -> result
+    where
+      result := <get-annotation(?(kind, <id>))> term
+    <+ result := <perform-task(|n)> PropsLookup(kind, term) // TODO: This can be avoided in the generator. 1) Create a choice. 2) Generate right task based on variable types (URI or term)
+    
