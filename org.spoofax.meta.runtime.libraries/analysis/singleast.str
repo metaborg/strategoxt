@@ -7,8 +7,8 @@ imports
 	
 rules
 	
-	analysis-singleast = analysis-singleast(nabl-collect)
-	analysis-singleast(collector):
+	analysis-singleast = analysis-singleast(nabl-collect|-1.0)
+	analysis-singleast(collector|parse-time):
 		ast -> (analyzed-ast, (error*, warning*, note*))
 		with
 			language     := "Language"
@@ -16,4 +16,4 @@ rules
 		; project-path := "."
     ; partition := <analysis-partition(|project-path)> path
 	  ; Result([FileResult(_, _, _, _, analyzed-ast, error*, warning*, note*)], _, _, _) := 
-	    	<analysis-files(id, id, id|language, project-path)> [File(partition, ast)]
+	    	<analysis-files(id, id, id|language, project-path)> [File(partition, ast, parse-time)]

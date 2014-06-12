@@ -3,7 +3,6 @@ module analysis/interface
 rules
 
   analysis-interface = fail
-  analysis-interface-spoofax = fail
   
 	analysis-pre-trans = fail
 	analysis-post-trans(|ctx) = fail

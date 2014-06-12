@@ -10,4 +10,4 @@ rules
   measure-time(s, match) =
     where(before := <cputime>);
     s;
-    where(after := <cputime>; !(after, before); subt; cputime-to-seconds; match)
+    where(after := <cputime>; !(after, before); subt; match)

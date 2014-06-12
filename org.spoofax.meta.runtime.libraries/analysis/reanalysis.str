@@ -30,7 +30,7 @@ rules
     ; ast' := <topdown(try(remove-property-annotations(|property-kind*)))> ast
     ; partition := <analysis-partition(|project-path)> path
 	  ; Result([FileResult(_, _, _, _, analyzed-ast, error*, warning*, note*)], _, debug-result, _) := 
-	    	<analysis-files(id, id, id|language, project-path)> [File(partition, ast)]
+	    	<analysis-files(id, id, id|language, project-path)> [File(partition, ast, 0.0)]
     ; <analysis-debug-results> debug-result      
     ; <map(analysis-debug(!"Error: "))> error*
     ; <map(analysis-debug(!"Warning: "))> warning*
