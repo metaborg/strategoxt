@@ -18,4 +18,4 @@ rules
 		with
 			partition := <analysis-partition(|project-path)> path
 	  ; Result([FileResult(_, _, _, _, analyzed-ast, _, _, _)], _, _, _) := 
-	    	<analysis-files(id, collector, id, id|language, project-path)> [File(partition, ast, 0.0)]
+	    	<analysis-files-no-builtins(id, collector, id, id|language, project-path)> [File(partition, ast, 0.0)]
