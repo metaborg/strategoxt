@@ -58,6 +58,7 @@ strategies
 rules
     
   s2j = 
+  {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition:
       with(
         s2j-init-options
       ; record-main-classname
@@ -87,7 +88,7 @@ rules
           ![<id>]
         end
       | "Backend postprocessing succeeded", 1
-      )
+      ) |}
   
   record-main-classname =
     (<get-config> "-o" <+ strc-getoutfile(!""))
@@ -212,7 +213,6 @@ rules
 	   ExecutorNames := []
 	   LiftedDefs := []
 	   CollectedLiftedDefs := []
-	   ConstInit := []
     )
   ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
