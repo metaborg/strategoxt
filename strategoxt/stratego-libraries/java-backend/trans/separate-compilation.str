@@ -22,7 +22,7 @@ strategies
       log-timed(
         strc-get-infile  
 	
-  	; separate-compilation-front-end(back-end|<get-config> "-p",<get-config;explode-string;reverse;drop-until(?'/');reverse;implode-string> "-o")
+  	; separate-compilation-front-end(back-end|<get-config> "-p",<get-config> "-o")
       | "Front-end succeeded"
       , 1
       )
@@ -74,9 +74,9 @@ strategies
 
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
-		where(	<set-config;debug> ("-i",filename));
+		where(	<set-config> ("-i",filename));
 		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> modulename]));
-		where(	<set-config> ("baseout" ,<concat-strings>[<conc-strings;try(mkdir)> (working-output, <to-library-name> modulename) ,"/",<to-library-name;separate-compilation-get-filename> modulename]));
+		where(	<set-config> ("baseout" ,<concat-strings>[<concat-strings;(mkdir <+ err(|"Creating dir failed"))> [working-output, "/", <to-library-name> modulename] ,"/",<to-library-name;separate-compilation-get-filename> modulename]));
 		where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
 		where(  <set-config> ("--library" ,""));
 		s;
