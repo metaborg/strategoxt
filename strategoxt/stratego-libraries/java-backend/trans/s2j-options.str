@@ -48,7 +48,15 @@ rules
   + Option(
       "--no-default-lib"
       , <set-config> ("-la", <get-config;remove-all(?"org.strategoxt.stratego_lib")> "-la"); !()
-      , !"Default library is not added to imports.")
+      , !"--no-default-lib   Default library is not added to imports.")
+  + Option(
+      "--strategy-forward-declaration"
+	  , <set-config> ("--strategy-forward-declaration", "");!()
+	  , !"--strategy-forward-declaration   Unknown strategies are assumed as declared.")
+  + Option("--slack",
+		where(<set-config> ("--slack", ())); !(),
+		!"--slack              Continue when module is not found")
+	  
 	 
   s2j-general-options =
     ArgOption(

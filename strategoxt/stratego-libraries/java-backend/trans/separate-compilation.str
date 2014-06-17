@@ -40,42 +40,58 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	where(debug);
 	 where(fileName := <\FILE(s) -> s\>);
 	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
+	 debug;
 	 pack-process-options;
 	 where(incl := <get-config <+ ![]> "-I");
-	 where(pack := <get-config <+ !""> "-p"; libs := <get-config <+ ![]> "-la");
+	 where(libs := <get-config <+ ![]> "-la");
 	 
 	 separate-compilation-parse-file;
 	 where(moduleName:=<\(_,Module(name,_))->name\><id>);
-	 where(<debug> "Rewrite");
-	 (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs);
-	 where(<set-config>("-I", <conc> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
-	 where(<set-config>("-la", <conc> (libs, <map(\(x,_)-> x\)> newLibs)));
-	 !IncludeAST(ast,fileName);
-	 pack-stratego(|<pack-include-path>);
-	 where(<debug> "Old front end") => (files, spec);
-	 !spec;
-	 strc-front-end2;
-	 where(<debug>"Backend");
-	 where(<get-config> "-o");
-	 back-end;
-	 where(<set-config>("-p", pack); <set-config> ("-la", libs); <set-config> ("-I", incl));
+	 save-and-set-options(
+		 where(<debug> "Rewrite");
+		 (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs);
+		 where(<set-config>("-I", <conc> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
+		 where(<set-config>("-la", <conc> (libs, <map(\(x,_)-> x\)> newLibs)));
+		!IncludeAST(ast,fileName);
+		pack-stratego(|<pack-include-path>);
+		where(<debug> "Old front end") => (files, spec);
+		!spec;
+		strc-front-end2;
+		where(<debug>"Backend");
+		where(<get-config> "-o");
+		back-end;
+		where(<set-config> ("-la", libs); <set-config> ("-I", incl))
+	 | working-package,working-output,fileName,moduleName);
 	 where(<debug> "Separate finished")
 
+
+	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
+	
+	
+	to-library-name = separate-compilation-modify-filename(!["lib", <id> ,"lib"];concat-strings)
+
+	save-and-set-options(s|working-package,working-output,filename, modulename) = 
+		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
+		where(	<set-config;debug> ("-i",filename));
+		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> modulename]));
+		where(	<set-config> ("baseout" ,<concat-strings>[<conc-strings;try(mkdir)> (working-output, <to-library-name> modulename) ,"/",<to-library-name;separate-compilation-get-filename> modulename]));
+		where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
+		where(  <set-config> ("--library" ,""));
+		s;
+		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
 	 
 	 
 	separate-compilation-rewrite-imports(back-end|working-package,working-output) =
 		?(fileName, <id>);
 		let
-			replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 			
-			to-library-name = separate-compilation-modify-filename(!["lib", <id> ,"lib"];concat-strings)
+			
 			
 			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<separate-compilation-get-filename> name]\;concat-strings;!Import(<id>)
 			
-			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-library-name;replace(|'/','.')> name],<separate-compilation-replace-file> (fileName, name))\
+			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> name],<separate-compilation-replace-file> (fileName, name))\
 			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let
@@ -93,17 +109,7 @@ strategies
 				in where(ast:=<id>);!(<transform-ast> ast, <collect-imports;map(collect-transform)> ast) end
 				
 				
-			save-and-set-options(s|name) = 
-			?FILE(<id>);
-				where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
-				where(	<set-config> ("-i",<id>));
-				where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;replace(|'/','.')> name]));
-				where(	<set-config> ("baseout" ,<concat-strings>[<conc-strings;try(mkdir)> (working-output, <to-library-name> name) ,"/",<to-library-name;separate-compilation-get-filename> name]));
-				where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
-				where(  <set-config> ("--library" ,""));
-				!FILE(<id>);
-				s;
-				where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
+			
 				
 				
 		in
@@ -115,7 +121,7 @@ strategies
 					if not(\name -> <elem> (name, <CompiledModules>)\) then
 						where(<debug> "Do compile");
 						rules(CompiledModules := Cons(<id>,<CompiledModules>));
-						\name -> <separate-compilation-get-file;save-and-set-options(separate-compilation-front-end(back-end|working-package,working-output)|name)> name\
+						\name -> <separate-compilation-get-file;separate-compilation-front-end(back-end|working-package,working-output)> name\
 					else
 						!"Do not compile"
 					end);

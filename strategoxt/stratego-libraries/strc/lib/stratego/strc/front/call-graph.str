@@ -3,6 +3,7 @@ module call-graph
 strategies
 
   check-calls =
+  {| CcHoArg :
     where(
       m-get-all-def-sigs
       ; map(register-ho-arg)
@@ -12,7 +13,7 @@ strategies
           ; not(?[])
         )
       ; ?[]
-    )
+    ) |}
 
   register-ho-arg =
     ?sig@(f, _, _)
@@ -32,8 +33,8 @@ strategies
         if ?(f, 0, 0) then
           <bagof-CcHoArg> f
           ; if ?[] then
-              err(|["*** ", dsig, " calls non-existing ", sig])
-              ; fail
+              warn(|["*** ", dsig, " calls non-existing ", sig])
+            //  ; fail
             else if not(?[_]) then
               err(|["*** ", dsig, " calls ", f, 
                     " as higher-order arg, but there is there more",
@@ -41,10 +42,16 @@ strategies
               ; fail
             end end
         else
-          err(|["*** ", dsig, " calls non-existing ", sig])
-          ; fail
+          warn(|["*** ", dsig, " calls non-existing ", sig])
+         // ; fail
         end
       end
+
+  strategy-not-found(|msgs) =
+    if <get-config> "--strategy-forward-declaration"
+      then warn(|msgs)
+      else err(|msgs);fail
+    end
 
   svar-arity-to-sig :
     (x, (i, j)) -> (x, i, j)
