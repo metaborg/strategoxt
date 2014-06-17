@@ -129,6 +129,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
+		<copy file="java/tools/org/strategoxt/tools/libtools.rtree" todir="${bin}" />
 	</target>
 
 	<target name="build-stratego-java-compat">
@@ -260,7 +261,7 @@
 
 	<path id="build.classpath">
 		<!-- <pathelement path="${java.class.path}" /> -->
-		<pathelement location="java/runtime" />
+		<pathelement location="j  ava/runtime" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
 		<pathelement location="java/spoofax-libs.jar" />
@@ -294,6 +295,7 @@
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy file="${bin}/strj.jar" todir="${install-location}" />
+		<copy file="${bin}/libtools.rtree" todir="${install-location}" />
 		<!-- <copy file="java/spoofax-libs.jar" todir="${install-location}" /> -->
 	</target>
 
