@@ -158,41 +158,4 @@
 
 	</target>
 
-	<!-- <target name="test">
-		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
-		<mkdir dir="${test-gen}" />
-		<for param="deffile">
-			<path>
-				<fileset dir="${libraries-dir}" includes="sglr/tests/*.def" excludes="sglr/tests/List.def" />
-			</path>
-			<sequential>
-				<basename file="@{deffile}" property="@{deffile}.basename" suffix=".def" />
-				<dirname file="@{deffile}" property="@{deffile}.dirname" />
-				<property name="@{deffile}.rel.in" value="@{deffile}" relative="yes" />
-				<property name="@{deffile}.rel.out" value="${test-gen}/${@{deffile}.basename}" relative="yes" />
-
-				<sdf2rtg input="${@{deffile}.rel.in}" output="${@{deffile}.rel.out}.rtg" main="Main" />
-				<rtg2sig input="${@{deffile}.rel.out}.rtg" output="${@{deffile}.rel.out}.str" main="Main" />
-				<sdf2table input="@{deffile}" output="${test-gen}/${@{deffile}.basename}.tbl" main="Main" />
-			</sequential>
-		</for>
-
-		<for param="strfile">
-			<path>
-				<fileset dir="${libraries-dir}" includes="*/tests/*.str" />
-				<fileset dir="${syntax-dir}/java-front" includes="test/*.str" />
-			</path>
-			<sequential>
-				<trycatch>
-					<try>
-						<strj-test input="@{strfile}" synaterm="${subdists-install-prefix}/share/strategoxt/aterm-front" synbox="${subdists-install-prefix}/share/strategoxt/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar" />
-					</try>
-					<catch>
-						<echo message="FAILURE: Test @{strfile} failed" />
-					</catch>
-				</trycatch>
-			</sequential>
-		</for>
-	</target>
--->
 </project>
