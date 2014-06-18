@@ -42,9 +42,7 @@
 				<srcfiles dir="${dep.libstratego-lib}" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<!-- <copy file="lib/libstratego-xtc-posix-xsi.ctree" todir="${bin}" /> -->
 		<copy file="lib/libstratego-xtc-posix-xsi.rtree" todir="${bin}" />
-		<!-- <copy file="${bin}/libstratego-xtc-posix-xsi.ctree" tofile="${bin}/libstratego-xtc.ctree" /> -->
 		<copy file="${bin}/libstratego-xtc-posix-xsi.rtree" tofile="${bin}/libstratego-xtc.rtree" />
 	</target>
 

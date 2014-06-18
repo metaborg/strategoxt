@@ -89,7 +89,6 @@
 			<property name="dep.gpp" location="${repository.syntax}/share/strategoxt/gpp" />
 			<property name="dep.java-front" location="${repository.syntax}/share/strategoxt/java_front" />
 			<property name="dep.libstratego-lib" location="${repository.libraries}/share/strategoxt/libstratego-lib" />
-			<property name="dep.libstratego-lib" location="${repository.libraries}/share/strategoxt/libstratego-lib" />
 			<property name="dep.libstratego-xtc" location="${repository.libraries}/share/strategoxt/libstratego-xtc" />
 			<property name="dep.libstratego-sglr" location="${repository.libraries}/share/strategoxt/libstratego-sglr" />
 			<property name="dep.libstratego-rtg" location="${repository.libraries}/share/strategoxt/libstratego-rtg" />

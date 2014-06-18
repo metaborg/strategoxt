@@ -65,7 +65,6 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<!-- <copy file="lib/libstrc.ctree" todir="${bin}" /> -->
 		<copy file="lib/libstrc.rtree" todir="${bin}" />
 	</target>
 
