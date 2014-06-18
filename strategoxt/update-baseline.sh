@@ -6,7 +6,7 @@ mkdir baseline &&
 
 cd baseline &&
 
-wget https://github.com/metaborg/strategoxt/releases/download/baseline-2/strategoxt-distrib.tar &&
+wget https://github.com/metaborg/strategoxt/releases/download/baselines%2Fbaseline-20140618/strategoxt-distrib.tar &&
 
 tar -xpf strategoxt-distrib.tar &&
 
