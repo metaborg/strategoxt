@@ -7,7 +7,7 @@ let
   pkgs = import nixpkgs {};
 
   baselineTarball = pkgs.fetchurl {
-    url = https://github.com/metaborg/strategoxt/releases/download/baseline-2/strategoxt-distrib.tar;
+    url = https://github.com/metaborg/strategoxt/releases/download/baselines%2Fbaseline-20140528/strategoxt-distrib.tar;
     sha256 = "545e14a2ae302f96a35b95683ffb1915d4bbaa48e112f552d8469a97f40877e3";
   };
   
