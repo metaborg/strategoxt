@@ -280,9 +280,8 @@
 		<mkdir dir="${bin.java}" />
 		<property name="appClasspath" refid="build.classpath" />
 		<echo message="CLASSPATH = ${appClasspath}" />
-		<javac srcdir="${bin.stratego}" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-		<javac srcdir="java/runtime" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-		<!-- <javac srcdir="java/eclipse" destdir="${bin.java}" classpath="${bin.java}" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" /> -->
+		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source"/>
+		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 	</target>
 
 	<target name="jar" depends="build-java">
