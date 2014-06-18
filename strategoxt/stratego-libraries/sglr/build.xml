@@ -54,7 +54,7 @@
 
 	<target name="build-java" depends="build-stratego">
 		<mkdir dir="${bin.java}" />
-		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 	</target>
 
 	<target name="jar" depends="build-java">
