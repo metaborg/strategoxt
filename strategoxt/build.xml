@@ -2,6 +2,7 @@
 <project name="org.strategoxt.strategoxt" default="all">
 
 	<property name="baseline" value="baseline" />
+	<property name="base-strategoxt" location="${baseline}/share/strategoxt/strategoxt/strategoxt.jar" />
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 
@@ -59,6 +60,7 @@
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
+			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<fileset dir="syntax" includes="build.xml" />
 			<target name="all" />
 		</subant>
@@ -66,6 +68,7 @@
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
+			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<property name="repository.syntax" location="${subdists-install-prefix}" />
 			<property name="repository.libraries" location="${subdists-install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
