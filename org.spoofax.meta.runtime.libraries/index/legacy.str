@@ -3,6 +3,7 @@ module index/legacy
 imports
 	
 	index/core
+	index/query
 	index/utils
 
 rules // Redirects
@@ -14,11 +15,20 @@ rules // Redirects
 	index-clear-all = index-reset
 	
 	index-commit = index-persist
+	
+	index-clear-partition = index-clear-source
+	
+	index-get-children = index-get-all-childs
+	index-get-all-partitions = index-get-all-sources
+	index-get-all-in-partition = index-get-all-in-source
+	index-get-partitions-of = index-get-all-sources-of
 		
 rules // Deprecated
 		
-	index-depricated-switch = fail
-	index-depricated = try(not(index-depricated-switch); with(fail|"Deprecated."))
+	index-depricated-disable = fail
+	index-depricated = try(not(index-depricated-disable); with(fail|"Deprecated."))
+	
+	index-add-all(|source) = index-depricated
 		
 	index-get-all-with-partitions = index-depricated
 		
