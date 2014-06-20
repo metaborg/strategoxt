@@ -41,3 +41,12 @@ strategies
           )
         )
       ; ?s2
+  
+  /**
+  * Convenience strategy for pretty printing a term
+  *
+  * @param Int width of the column to use for pretty printing
+  * @type Term -> String
+  */
+  pp-aterm(|width) = aterm-escape-string; pp-aterm-box; box2text-string(|width)
+  
