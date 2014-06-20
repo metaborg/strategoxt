@@ -9,8 +9,7 @@ signature
 
   constructors
     
-    Global : URI               -> Entry
-    Global : URI * List(Entry) -> Entry
+    Global : URI -> Key
     
 rules
     
@@ -54,9 +53,7 @@ rules
    * @type _ -> ?value
    */
   index-get-global(|name):
-    _ -> value
-    where
-      Global(_, value) := <index-get-all; Hd> Global(<index-globals-uri> name, ())
+    _ -> <index-get-one> Global(<index-globals-uri> name)
     
   /**
    * Gets all values in global storage with given name.
@@ -69,10 +66,7 @@ rules
    * @type _ -> List(value)
    */ 
   index-get-all-globals(|name):
-    _ -> values'
-    with
-      values  := <index-get-all> Global(<index-globals-uri> name, ());
-      values' := <filter(?Global(_, <id>))> values
+    _ -> <index-get-all> Global(<index-globals-uri> name)
     
   /**
    * Add value to global storage with given name.
@@ -87,7 +81,7 @@ rules
   index-add-global(|name):
     value -> <id>
     with
-      <index-add(|<index-globals-path>)> Global(<index-globals-uri> name, value)
+      <index-add(|value, <index-globals-path>)> Global(<index-globals-uri> name)
       
   /**
    * Overwrites value in global storage with given value.
@@ -118,7 +112,7 @@ rules
   index-clear-global(|name):
     _ -> <id>
     with
-      <index-globals-path; index-clear-partition> name
+      <index-globals-path; index-clear-source> name
 rules
 	
   /**
@@ -177,7 +171,7 @@ rules
   index-disable-global(|name):
     _ -> <id>
     with
-      <index-boolean-globals-path; index-clear-partition> name
+      <index-boolean-globals-path; index-clear-source> name
       
   /**
    * Query for boolean value true in global boolean storage with given name.
@@ -192,4 +186,4 @@ rules
   index-is-global-enabled(|name):
     _ -> <id>
     where
-      <index-get-all; Hd> Global(<index-boolean-globals-uri> name)
+      <index-get-one> Global(<index-boolean-globals-uri> name)
