@@ -19,30 +19,32 @@ signature
 
   constructors
     
-    RelTuple   : Term * Relation * Term -> Entry
+    RelTuple   : Term * Relation -> Key
     Inverse    : Relation -> Relation
     Transitive : Relation -> Relation 
  
 rules
   
-  new-rel-tuple(|partition, rel, t2):
+  new-rel-tuple(|source, rel, t2):
     t1 -> tuple
     with
       relation-ensure-no-task-reference
     ; t1' := <relation-try-term-to-uri> t1
     with
-      tuple := <origin-track-forced(!RelTuple(t1', rel, t2))> t1
-    ; <index-add(|partition)> tuple
+      tuple := RelTuple(t1', rel)
+    ; <index-collect(|<origin-track-forced(!t2)> t1, source)> tuple
     ; if <relation-is-transitive> rel then
-	      task       := <relation-create-lookup(|partition, rel)> t2
-	    ; transitive := <origin-track-forced(!RelTuple(t1', Transitive(rel), task))> t1
-	    ; <index-add(|partition)> transitive
+	      task := <relation-create-lookup(|source, rel)> t2
+	    ; <index-collect(|<origin-track-forced(!task)> t1, source)> RelTuple(t1', Transitive(rel))
     end
 
 rules
 	
 	relation-ensure-no-task-reference = 
-		with(not(collect-one-annos(relation-is-unresolved-use))|$[Cannot create a relation tuple with a reference to a resolution task on the left hand side.]) 
+		with(
+			not(collect-one-annos(relation-is-unresolved-use))
+		| $[Cannot create a relation tuple with a reference to a resolution task on the left hand side.]
+		) 
 
 	relation-try-term-to-uri:
 		term -> result
@@ -68,4 +70,4 @@ rules
 rules
 	
 	relation-tuple-key:
-		RelTuple(key, _, _) -> key
+		RelTuple(key, _) -> key

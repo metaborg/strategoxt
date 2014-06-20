@@ -96,8 +96,6 @@ rules // Projections
   
   nabl-uri = fail
   nabl-uris = fail
-  nabl-value = fail
-  nabl-values = fail
   
   nabl-uri-language:
     URI(language, _) -> language
@@ -258,20 +256,11 @@ rules /** @internal Projections */
   /** @internal */
   nabl-uri:
     URI(_, _) -> <id>
-    
-  /** @internal */
-  nabl-value:
-    URI(_, _) -> <id>
  
   /** @internal */
   nabl-uris:
     URI(_, _) -> [<id>]
-    
-  /** @internal */
-  nabl-values:
-    URI(_, _) -> [<id>]
 
-    
   /** @internal */  
   nabl-uri =
   	has-annos;
@@ -279,19 +268,7 @@ rules /** @internal Projections */
   	fetch-elem(nabl-uri)
 
   /** @internal */  
-  nabl-value =
-  	has-annos;
-  	get-annos;
-  	fetch-elem(nabl-value)
-
-  /** @internal */  
   nabl-uris =
   	has-annos;
   	get-annos;
   	filter(nabl-uri)
-
-  /** @internal */  
-  nabl-values =
-  	has-annos;
-  	get-annos;
-  	filter(nabl-value)

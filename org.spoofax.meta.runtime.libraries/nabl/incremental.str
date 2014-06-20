@@ -8,20 +8,20 @@ imports
 	
 rules // Read generation
 	
-	nabl-add-uri-read(|taskID):
+	nabl-add-uri-read(|task-id):
 		uri -> uri
 		with
-			<try(nabl-replace-uri-qualifier(|())); task-add-read(|taskID)> uri
+			<try(nabl-replace-uri-qualifier(|())); task-add-read(|task-id)> uri
 			
-	nabl-add-ns-read(|taskID, ns):
+	nabl-add-ns-read(|task-id, namespace):
 		uri -> uri
 		with
-			<task-add-read(|taskID)> (uri, ns)
+			<task-add-read(|task-id)> (uri, namespace)
 			
-	nabl-add-name-read(|taskID, ns, name):
+	nabl-add-name-read(|task-id, namespace, name):
 		uri -> uri
 		with
-			<nabl-extend-uri(|ns, name, ()); task-add-read(|taskID)> uri
+			<nabl-extend-uri(|namespace, name, ()); task-add-read(|task-id)> uri
 			
 rules // Read processing
 	

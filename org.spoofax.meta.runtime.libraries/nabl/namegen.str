@@ -17,7 +17,7 @@ signature
 	constructors
 		
 		GenerateName : Namespace -> GenerateName
-		GenerateNum  : URI * Int -> Entry
+		GenerateNum  : URI -> Key
 	
 rules
 	
@@ -69,10 +69,10 @@ rules // Name generation strategies
 
 rules // Storage & retrieval
 	
-	nabl-namegen-get-num(|uri)              = <nabl-get-all-values; !(<id>, 0); foldl(max)> GenerateNum(uri, ())
-	nabl-namegen-store-num(|partition, uri) = <index-add(|<nabl-namegen-partition(|partition)>)> GenerateNum(uri, <id>)
-	nabl-namegen-clear(|partition)          = nabl-namegen-partition(|partition); index-clear-partition
+	nabl-namegen-get-num(|uri)              = <index-get-all; !(<id>, 0); foldl(max)> GenerateNum(uri)
+	nabl-namegen-store-num(|partition, uri):
+		value -> <index-add(|value, <nabl-namegen-partition(|partition)>)> GenerateNum(uri)
+	nabl-namegen-clear(|partition)          = nabl-namegen-partition(|partition); index-clear-source
 	nabl-namegen-partition(|partition)      = !$[[partition]_namegen]
-	nabl-uri                                : GenerateNum(uri, _) -> uri
-	nabl-value                              : GenerateNum(_, num) -> num
+	nabl-uri                                : GenerateNum(uri) -> uri
 	

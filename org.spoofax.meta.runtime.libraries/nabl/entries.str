@@ -13,41 +13,39 @@ signature
 
   constructors
     
-    Def          : URI                    -> Entry
-    Alias        : URI * URI              -> Entry
-    InverseAlias : URI * URI              -> Entry
-    Use          : Result                 -> Entry
+    Def          : URI    -> Key
+    Alias        : URI    -> Key
+    InverseAlias : URI    -> Key
+    Use          : Result -> Key
 
 rules // Index entries to diff for incrementality
   
   nabl-diff-entry = ?Def(_)
-  
-  nabl-diff-entry = ?Alias(_, _)
+  nabl-diff-entry = ?Alias(_)
  
 rules
   
-  new-def(|partition, uri):
+  new-def(|source, uri):
     x -> definition
     with
       definition := <origin-track-forced(!Def(uri))> x;
-      <index-add(|partition)> definition;
-			<new-alias(|partition, <nabl-nonunique-uri> uri, uri)> x
+      <index-collect(|source)> definition;
+			<new-alias(|source, <nabl-nonunique-uri> uri, uri)> x
       
-  new-alias(|partition, uri, alias-uri):
-    x -> alias
+  new-alias(|source, uri, alias-uri):
+    _ -> alias
     with
-      alias := <origin-track-forced(!Alias(uri, alias-uri))> x;
-      ialias := <origin-track-forced(!InverseAlias(alias-uri, uri))> x;
+      alias  := Alias(uri);
+      ialias := InverseAlias(alias-uri);
       if <not(eq)> (uri, alias-uri) then
-      	<index-add(|partition)> alias;
-      	<index-add(|partition)> ialias
+      	<index-collect(|source, alias-uri)> alias;
+      	<index-collect(|source, uri)> ialias
       end
 
   new-use(|partition, uri):
     x -> use
     with
-      use := <origin-track-forced(!Use(uri))> x;
-      <index-add(|partition)> use
+      use := <origin-track-forced(!Use(uri))> x
 
 rules // index uri & value projections
   
@@ -61,19 +59,19 @@ rules // index uri & value projections
     
   /** @internal */
   nabl-uri:
-    Alias(uri, _) -> uri
+    Alias(uri) -> uri
     
   /** @internal */
   nabl-uris:
-    Alias(uri, _) -> [uri]
+    Alias(uri) -> [uri]
     
   /** @internal */
   nabl-uri:
-    InverseAlias(uri, _) -> uri
+    InverseAlias(uri) -> uri
     
   /** @internal */
   nabl-uris:
-    InverseAlias(uri, _) -> [uri]
+    InverseAlias(uri) -> [uri]
     
   /** @internal */  
   nabl-uri:
@@ -82,35 +80,3 @@ rules // index uri & value projections
   /** @internal */  
   nabl-uris:
     Use(uri) -> <nabl-collect-all-resolved-defs; map(nabl-uri)> uri
-    
-  /** @internal */
-  nabl-value:
-    Def(value) -> value
-    
-  /** @internal */
-  nabl-values:
-    Def(value) -> [value]
-    
-  /** @internal */
-  nabl-value:
-    Alias(_, value) -> value
-    
-  /** @internal */
-  nabl-values:
-    Alias(_, value) -> [value]
-    
-  /** @internal */
-  nabl-value:
-    InverseAlias(_, value) -> value
-    
-  /** @internal */
-  nabl-values:
-    InverseAlias(_, value) -> [value]
-
-  /** @internal */
-  nabl-value:
-    Use(value) -> <nabl-uri>
-    
-  /** @internal */
-  nabl-values:
-    Use(value) -> <nabl-uris>

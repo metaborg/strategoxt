@@ -60,10 +60,10 @@ rules
 	index-start-collection(|partition) =
 		prim("LANG_index_start_collection", partition)
 		
-	index-collect(|value):
+	index-collect(|value, source):
 		key -> <prim("LANG_index_collect", key, value)>
 		
-	index-collect:
+	index-collect(|source):
 		key -> <prim("LANG_index_collect_boolean", key)>
 		
 	/**

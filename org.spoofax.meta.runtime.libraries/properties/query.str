@@ -1,7 +1,8 @@
 module properties/query
 
 imports
-	nabl/query
+	
+	index/query
 	nabl/uri
 	task/core
 	properties/entries
@@ -29,11 +30,11 @@ rules
 	
   get-index-property(|kind) =
     nabl-uris // TODO: how to handle multiple values?
-  ; fetch-elem(!Prop(<id>, kind, ()); nabl-get-value)
+  ; fetch-elem(!Prop(<id>, kind); index-get-one)
    
   get-index-properties(|kind) =
     nabl-uris // TODO: how to handle multiple values?
-  ; mapconcat(!Prop(<id>, kind, ()); nabl-get-all-values)
+  ; mapconcat(!Prop(<id>, kind); index-get-all)
 
 rules
 	

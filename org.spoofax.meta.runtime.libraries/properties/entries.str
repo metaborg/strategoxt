@@ -12,34 +12,26 @@ signature
 
   constructors
     
-    Prop  : URI * Property * Value -> Entry
+    Prop  : URI * Property -> Key
 
 rules // Index entries to diff for incrementality
   
-  nabl-diff-entry = ?Prop(_, _, _)
+  nabl-diff-entry = ?Prop(_, _)
 
 rules
   
-	new-prop(|partition, uri, kind, val):
+	new-prop(|source, uri, kind, val):
 		x -> prop
 		with
-			prop := <origin-track-forced(!Prop(uri, kind, val))> x;
-			<index-add(|partition)> prop
+			prop := Prop(uri, kind);
+			<index-collect(|<origin-track-forced(!val)> x, source)> Prop(uri, kind)
 	      
 rules // index uri & value projections
   
   /** @internal */  
   nabl-uri:
-    Prop(uri, _, _) -> uri
+    Prop(uri, _) -> uri
     
   /** @internal */  
   nabl-uris:
-    Prop(uri, _, _) -> [uri]
-    
-  /** @internal */
-  nabl-value:
-    Prop(_, _, value) -> value
-    
-  /** @internal */
-  nabl-values:
-    Prop(_, _, value) -> [value]
+    Prop(uri, _) -> [uri]

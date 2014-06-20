@@ -346,8 +346,7 @@ rules
    * @type Result -> Result
    */	
 	task-create-make-set(|ctx):
-		term -> <new-task(|ctx)> MakeSet(term)
-		
+		term -> <new-task(|ctx)> MakeSet(term)		
 		
 	/** @internal */
 	task-get-storage-type: MakeSet(_) -> <task-set-storage>
