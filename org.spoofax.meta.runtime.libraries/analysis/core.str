@@ -149,8 +149,8 @@ rules // Common
 
       analyzed-ast := <collector(id|Language(language), partition, <new-hashtable>, [])> transformed-ast;
 
-      index-stop-collection            => (removed-entry*, added-entry*);
-      task-stop-collection(|partition) => (removed-task*, added-task*);
+      index-stop-collection(|partition) => (removed-entry*, added-entry*);
+      task-stop-collection(|partition)  => (removed-task*, added-task*);
       
       change*            := [removed-entry*, added-entry*];
       nabl-changed-read* := <nabl-get-changed-reads> change*;

@@ -57,12 +57,25 @@ rules
 	 *
 	 * @type x -> x
 	 */
-	index-start-collection(|partition) =
-		prim("LANG_index_start_collection", partition)
+	index-start-collection(|source) =
+		prim("LANG_index_start_collection", source)
 		
+  /**
+   * Collects given element, which will be added to the index when collection stops.
+   *
+   * @param value Value of the element.
+   * @param source The partition to add the element to.
+   * @type x -> ?x
+   */
 	index-collect(|value, source):
 		key -> <prim("LANG_index_collect", key, value)>
 		
+  /**
+   * Collects given element, which will be added to the index when collection stops.
+   *
+   * @param source The partition to add the element to.
+   * @type x -> ?x
+   */
 	index-collect(|source):
 		key -> <prim("LANG_index_collect_boolean", key)>
 		
@@ -71,12 +84,12 @@ rules
 	 * a tuple with removed and added entries in relation to the previous entries in that partition.
 	 *
 	 * Example:
-	 *   index-stop-collection => (removed, added)
+	 *   index-stop-collection(|"fullpath/file.ext") => (removed, added)
 	 *
 	 * @type x -> (List(elem), List(elem))
 	 */
-	index-stop-collection =
-		prim("LANG_index_stop_collection")
+	index-stop-collection(|source) =
+		prim("LANG_index_stop_collection", source)
 	
 	/**
 	 * Pushes a new index on the stack and sets that as the current index. Entries from the parent
