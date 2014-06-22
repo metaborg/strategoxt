@@ -136,13 +136,18 @@ rules
          CheckConsError : 
            Op(c, ts) -> Op(c, ts) 
            where 
-             log(|Error(), ["in ", kindstr, " ", fstr', ": ", 
+             log(|<check-contructor-get-warn-level>
+			 , ["in ", kindstr, " ", fstr', ": ", 
                     "constructor ", c, "/", <length; int-to-string> ts, " not declared"])
              ; <log-puts> "    "
              ; <pp-stratego-fragment> Op(c, ts)
              ; log-puts
              ; <log-puts> "\n"
        );
-       manytd(not(CheckCons /* <+ CheckTuple */); CheckConsError)
+       manytd(not(CheckCons /* <+ CheckTuple */);CheckConsError);
+	   check-construtor-if-forward(fail, id)			
     |}
+	
+	check-construtor-if-forward(sthen, selse) = !(<if get-config then sthen else selse end> "--constructor-forward-declaration")
+	check-contructor-get-warn-level  = check-construtor-if-forward(!Warning(), !Error())
 
