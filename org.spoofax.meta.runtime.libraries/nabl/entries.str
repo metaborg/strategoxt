@@ -38,8 +38,8 @@ rules
       alias  := Alias(uri);
       ialias := InverseAlias(alias-uri);
       if <not(eq)> (uri, alias-uri) then
-      	<index-collect(|source, alias-uri)> alias;
-      	<index-collect(|source, uri)> ialias
+      	<index-collect(|alias-uri, source)> alias;
+      	<index-collect(|uri, source)> ialias
       end
 
   new-use(|partition, uri):
