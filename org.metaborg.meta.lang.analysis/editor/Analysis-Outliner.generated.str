@@ -1,11 +1,10 @@
 module editor/Analysis-Outliner.generated
 
 imports
+  
   include/Analysis
   lib/runtime/editor/outline-library
 
 rules
-
-  outline = simple-label-outline(to-outline-label)
   
   to-outline-label = ?Index(<id>, _)

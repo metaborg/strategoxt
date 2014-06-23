@@ -4,98 +4,98 @@ strategies
   prettyprint-Section :
     Index(a, b) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [S("index "), a16]
+                     , [S("index "), a2]
                      )
                    , H(
                        []
                      , [S("")]
                      )
-                   , b10
+                   , b0
                    ]
-    where a16 := <pp-one-Z(prettyprint-Term)> a
-    where b10 := <pp-indent(|"2")> [<pp-V-list(prettyprint-Entry)> b]
+    where a2 := <pp-one-Z(prettyprint-Term)> a
+    where b0 := <pp-indent(|"2")> [<pp-V-list(prettyprint-Entry)> b]
 
   prettyprint-Entry :
     Def(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [S("def "), a17]
+                , [S("def "), a3]
                 )
               ]
-    where a17 := <pp-one-Z(prettyprint-Term)> a
+    where a3 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Entry :
     Use(a) -> [ H(
                   [SOpt(HS(), "0")]
-                , [S("use "), a18]
+                , [S("use "), a4]
                 )
               ]
-    where a18 := <pp-one-Z(prettyprint-Term)> a
+    where a4 := <pp-one-Z(prettyprint-Term)> a
 
   prettyprint-Entry :
     Prop(a, b, c) -> [ H(
                          [SOpt(HS(), "0")]
                        , [ S("prop ")
-                         , a19
+                         , a5
                          , S(" -- ")
-                         , b11
+                         , b1
                          , S(" >> ")
-                         , c4
+                         , c0
                          ]
                        )
                      ]
-    where a19 := <pp-one-Z(prettyprint-Term)> a
-    where b11 := <pp-one-Z(prettyprint-Term)> b
-    where c4 := <pp-one-Z(prettyprint-Term)> c
+    where a5 := <pp-one-Z(prettyprint-Term)> a
+    where b1 := <pp-one-Z(prettyprint-Term)> b
+    where c0 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Entry :
     Alias(a, b) -> [ H(
                        [SOpt(HS(), "0")]
                      , [ S("alias ")
-                       , a20
+                       , a6
                        , S(" -> ")
-                       , b12
+                       , b2
                        ]
                      )
                    ]
-    where a20 := <pp-one-Z(prettyprint-Term)> a
-    where b12 := <pp-one-Z(prettyprint-Term)> b
+    where a6 := <pp-one-Z(prettyprint-Term)> a
+    where b2 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Entry :
     IAlias(a, b) -> [ H(
                         [SOpt(HS(), "0")]
                       , [ S("alias ")
-                        , a21
+                        , a7
                         , S(" <- ")
-                        , b13
+                        , b3
                         ]
                       )
                     ]
-    where a21 := <pp-one-Z(prettyprint-Term)> a
-    where b13 := <pp-one-Z(prettyprint-Term)> b
+    where a7 := <pp-one-Z(prettyprint-Term)> a
+    where b3 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Entry :
     Rel(a, b, c) -> [ H(
                         [SOpt(HS(), "0")]
                       , [ S("rel ")
-                        , a22
+                        , a8
                         , S(" <")
-                        , b14
+                        , b4
                         , S(": ")
-                        , c5
+                        , c1
                         ]
                       )
                     ]
-    where a22 := <pp-one-Z(prettyprint-Term)> a
-    where b14 := <pp-one-Z(prettyprint-Term)> b
-    where c5 := <pp-one-Z(prettyprint-Term)> c
+    where a8 := <pp-one-Z(prettyprint-Term)> a
+    where b4 := <pp-one-Z(prettyprint-Term)> b
+    where c1 := <pp-one-Z(prettyprint-Term)> c
 
   prettyprint-Term :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a23]
+           , [a9]
            )
          ]
-    where a23 := <pp-one-Z(prettyprint-Entry)> a
+    where a9 := <pp-one-Z(prettyprint-Entry)> a
 
   prettyprint-example =
     prettyprint-Section

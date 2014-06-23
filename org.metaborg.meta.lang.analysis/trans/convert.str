@@ -122,21 +122,31 @@ rules // Index entries
 	
 	to-entry:
 		Appl("Def", [uri]) -> Def(uri)
+	to-entry:
+		Tupl([Appl("Def", [uri]), _]) -> Def(uri)
 		
 	to-entry:
 		Appl("Use", [res]) -> Use(res)
 		
 	to-entry:
 		Appl("Prop", [uri, kind, val]) -> Prop(uri, kind, val)
+	to-entry:
+		Tupl([Appl("Prop", [uri, kind]), val]) -> Prop(uri, kind, val)
 		
 	to-entry:
 		Appl("Alias", [uri1, uri2]) -> Alias(uri1, uri2)
+	to-entry:
+		Tupl([Appl("Alias", [uri1]), uri2]) -> Alias(uri1, uri2)
 		
 	to-entry:
 		Appl("InverseAlias", [uri1, uri2]) -> IAlias(uri1, uri2)
+	to-entry:
+		Tupl([Appl("InverseAlias", [uri1]), uri2]) -> Alias(uri1, uri2)
 		
 	to-entry:
 		Appl("RelTuple", [l, rel, r]) -> Rel(l, rel, r)
+	to-entry:
+		Tupl([Appl("RelTuple", [l, rel]), r]) -> Rel(l, rel, r)
 		
 	all-to-entry = topdown-annos(try(to-entry))
 	

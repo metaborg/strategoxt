@@ -4,50 +4,50 @@ strategies
   prettyprint-URI :
     a -> [ H(
              [SOpt(HS(), "0")]
-           , [a40]
+           , [a43]
            )
          ]
-    where a40 := <pp-H-list(prettyprint-Segment|" / ")> a
+    where a43 := <pp-H-list(prettyprint-Segment|" / ")> a
 
   prettyprint-Segment :
     Id(a, b) -> [ H(
                     [SOpt(HS(), "0")]
-                  , [a41, S(":"), b16]
+                  , [a44, S(":"), b17]
                   )
                 ]
-    where a41 := <pp-one-Z(prettyprint-ID)> a
-    where b16 := <pp-one-Z(prettyprint-Term)> b
+    where a44 := <pp-one-Z(prettyprint-ID)> a
+    where b17 := <pp-one-Z(prettyprint-Term)> b
 
   prettyprint-Segment :
     Id(a, b, c) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [ a42
+                     , [ a45
                        , S(":")
-                       , b17
+                       , b18
                        , S("#")
-                       , c6
+                       , c7
                        ]
                      )
                    ]
-    where a42 := <pp-one-Z(prettyprint-ID)> a
-    where b17 := <pp-one-Z(prettyprint-Term)> b
-    where c6 := <pp-one-Z(prettyprint-ID)> c
+    where a45 := <pp-one-Z(prettyprint-ID)> a
+    where b18 := <pp-one-Z(prettyprint-Term)> b
+    where c7 := <pp-one-Z(prettyprint-ID)> c
 
   prettyprint-Segment :
     Anon(a) -> [ H(
                    [SOpt(HS(), "0")]
-                 , [S("anon "), a43]
+                 , [S("anon "), a46]
                  )
                ]
-    where a43 := <pp-one-Z(prettyprint-ID)> a
+    where a46 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-Segment :
     Subsq(a) -> [ H(
                     [SOpt(HS(), "0")]
-                  , [S("subsq "), a44]
+                  , [S("subsq "), a47]
                   )
                 ]
-    where a44 := <pp-one-Z(prettyprint-ID)> a
+    where a47 := <pp-one-Z(prettyprint-ID)> a
 
   prettyprint-example =
     prettyprint-URI

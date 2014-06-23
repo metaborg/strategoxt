@@ -4,10 +4,10 @@ strategies
   prettyprint-Start :
     Sections(a) -> [ H(
                        [SOpt(HS(), "0")]
-                     , [a688]
+                     , [a1]
                      )
                    ]
-    where a688 := <pp-V-list(prettyprint-Section|"1")> a
+    where a1 := <pp-V-list(prettyprint-Section|"1")> a
 
   prettyprint-example =
     prettyprint-Start
