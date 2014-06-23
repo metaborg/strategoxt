@@ -41,7 +41,7 @@ rules // Specific queries
     where
     	uri*           := <nabl-uris> contains-uri*;
     	nonunique-uri* := <filter(nabl-replace-uri-qualifier(|NonUnique()))> uri*;
-      alias-uri*     := <mapconcat(!Alias(<id>); index-get-all)> nonunique-uri*
+      alias-uri*     := <mapconcat(!Alias(<id>); index-get-all-values)> nonunique-uri*
       
   /**
    * Gets all InverseAlias entries that match the given URI.
@@ -52,7 +52,7 @@ rules // Specific queries
     contains-uri* -> inverse-alias*
     where
     	uri*           := <nabl-uris> contains-uri*;
-      inverse-alias* := <mapconcat(!InverseAlias(<id>); index-get-all)> uri*
+      inverse-alias* := <mapconcat(!InverseAlias(<id>); index-get-all-values)> uri*
 
 rules // Generic queries
   
@@ -79,14 +79,14 @@ rules // Generic queries
       if alias* := <nabl-get-all-aliases> uri then
       	// HACK: handle Result terms on the resulting URI of an alias. this should be decomposed into a task?
       	(alias-result*, alias-uri*) := <partition(?Result(_); insert-results-or-delay)> alias*;
-      	unique-uri*                 := <mapconcat(create-key; index-get-all)> alias-uri*;
+      	unique-uri*                 := <mapconcat(create-key; index-get-all-values)> alias-uri*;
       	unique-result*              := <try(concat)> alias-result*;
       	unique*                     := [unique-uri*, unique-result*]
       else
         unique* := []
       end;
       if non-unique-uri := <nabl-replace-uri-qualifier(|NonUnique())> uri then
-        non-unique* := <create-key; index-get-all> non-unique-uri
+        non-unique* := <create-key; index-get-all-values> non-unique-uri
       else
         non-unique* := []
       end

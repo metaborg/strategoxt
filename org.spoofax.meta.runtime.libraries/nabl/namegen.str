@@ -69,7 +69,7 @@ rules // Name generation strategies
 
 rules // Storage & retrieval
 	
-	nabl-namegen-get-num(|uri)              = <index-get-all; !(<id>, 0); foldl(max)> GenerateNum(uri)
+	nabl-namegen-get-num(|uri)              = <index-get-all-values; !(<id>, 0); foldl(max)> GenerateNum(uri)
 	nabl-namegen-store-num(|partition, uri):
 		value -> <index-add(|value, <nabl-namegen-partition(|partition)>)> GenerateNum(uri)
 	nabl-namegen-clear(|partition)          = nabl-namegen-partition(|partition); index-clear-source

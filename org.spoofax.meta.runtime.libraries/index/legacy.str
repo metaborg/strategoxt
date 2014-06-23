@@ -4,7 +4,6 @@ imports
 	
 	index/core
 	index/query
-	index/utils
 
 rules // Redirects
 	
@@ -16,13 +15,14 @@ rules // Redirects
 	
 	index-commit = index-persist
 	
-	// index-clear-partition = index-clear-source
-	// 
-	// index-get-children = index-get-all-childs
-	// index-get-all-partitions = index-get-all-sources
-	// index-get-all-in-partition = index-get-all-in-source
-	// index-get-partitions-of = index-get-all-sources-of
-		
+	index-clear-partition = index-clear-source
+	
+	index-get-all = index-get-all-values
+	index-get-children = index-get-all-childs
+	index-get-all-partitions = index-get-all-sources
+	index-get-all-in-partition = index-get-all-values-in-source
+	index-get-partitions-of = index-get-all-sources-of
+	
 rules // Deprecated
 		
 	index-depricated-disable = fail

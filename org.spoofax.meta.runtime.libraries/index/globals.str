@@ -53,7 +53,7 @@ rules
    * @type _ -> ?value
    */
   index-get-global(|name):
-    _ -> <index-get-one> Global(<index-globals-uri> name)
+    _ -> <index-get-one-value> Global(<index-globals-uri> name)
     
   /**
    * Gets all values in global storage with given name.
@@ -66,7 +66,7 @@ rules
    * @type _ -> List(value)
    */ 
   index-get-all-globals(|name):
-    _ -> <index-get-all> Global(<index-globals-uri> name)
+    _ -> <index-get-all-values> Global(<index-globals-uri> name)
     
   /**
    * Add value to global storage with given name.
@@ -186,4 +186,4 @@ rules
   index-is-global-enabled(|name):
     _ -> <id>
     where
-      <index-get-one> Global(<index-boolean-globals-uri> name)
+      <index-get-one-value> Global(<index-boolean-globals-uri> name)

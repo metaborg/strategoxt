@@ -3,25 +3,41 @@ module index/query
 rules
 
   /**
-   * Get one index entry that matches the given key, or fail.
+   * Get one value from an index entry that matches the given key, or fail.
    *
-   * @type template -> ?elem
+   * @type key -> ?value
    */
-  index-get-one:
-    key -> <prim("LANG_index_get_one", key)>
+  index-get-one-value:
+    key -> <prim("LANG_index_get_one_value", key)>
 
   /**
-   * Get all index entries that match the given key.
+   * Get all values from index entries that match the given key.
    *
-   * @type template -> List(elem)
+   * @type key -> List(value)
    */
-  index-get-all:
-    key -> <prim("LANG_index_get_all", key)>
+  index-get-all-values:
+    key -> <prim("LANG_index_get_all_values", key)>
+    
+  /**
+   * Get one key-value pair from an index entry that matches the given key, or fail.
+   *
+   * @type key -> ?Tuple(key, value)
+   */
+  index-get-one-pair:
+    key -> <prim("LANG_index_get_one_pair", key)>
 
   /**
-   * Get all child entries of the given key.
+   * Get all key-value pairs from index entries that match the given key.
    *
-   * @type template -> List(elem)
+   * @type key -> List(Tuple(key, value))
+   */
+  index-get-all-pairs:
+    key -> <prim("LANG_index_get_all_pairs", key)>
+
+  /**
+   * Gets all values of child index entries of the given key.
+   *
+   * @type key -> List(value)
    */    
   index-get-all-childs:
     key -> <prim("LANG_index_get_all_childs", key)>
@@ -29,23 +45,31 @@ rules
   /**
    * Gets a list of all sources for the current project.
    *
-   * @type x -> List(partition)
+   * @type _ -> List(source)
    */   
   index-get-all-sources =
     prim("LANG_index_get_all_sources")
   
   /**
-   * Gets all index entries for the given source.
+   * Gets all values of index entries for the given source.
    *
-   * @type partition -> List(elem)
+   * @type source -> List(elem)
    */  
-  index-get-all-in-source:
-    source -> <prim("LANG_index_get_all_in_source", source)>
+  index-get-all-values-in-source:
+    source -> <prim("LANG_index_get_all_values_in_source", source)>
+    
+  /**
+   * Gets all key-value pairs of index entries for the given source.
+   *
+   * @type source -> List(elem)
+   */  
+  index-get-all-pairs-in-source:
+    source -> <prim("LANG_index_get_all_pairs_in_source", source)>
 
   /**
-   * Gets the containing sources of index entry with given key.
+   * Gets the containing sources of index entries with given key.
    *
-   * @type template -> List(partition)
+   * @type key -> List(source)
    */  
   index-get-all-sources-of:
     key -> <prim("LANG_index_get_all_sources_of", key)>

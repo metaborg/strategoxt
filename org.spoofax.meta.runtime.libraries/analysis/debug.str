@@ -20,7 +20,7 @@ rules // Index
     (_, _, _, path, project-path) -> (filename, result)
     with
       index-setup(|language, project-path);
-      result-ast := <index-get-all-sources; map(\f -> (f, <index-get-all-in-source> f)\)>;
+      result-ast := <index-get-all-sources; map(\f -> (f, <index-get-all-pairs-in-source> f)\)>;
       if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast then
       	filename := $[[project-path]/[<dirname> path]/project.index];
       	result   := result-index
@@ -34,7 +34,7 @@ rules // Index
     with
       index-setup(|language, project-path);
       task-setup(|project-path);
-      result-ast := <index-get-all-sources; map(\f -> (f, <index-get-all-in-source> f)\)>;
+      result-ast := <index-get-all-sources; map(\f -> (f, <index-get-all-pairs-in-source> f)\)>;
       result-ast' := <beautify-indices> result-ast;
 	  if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
 		filename := $[[project-path]/[<dirname> path]/project.index];
@@ -49,7 +49,7 @@ rules // Index
     with
       index-setup(|language, project-path);
     	partition  := $[[project-path]/[path]];
-      result-ast := [(partition, <index-get-all-in-source> partition)];
+      result-ast := [(partition, <index-get-all-pairs-in-source> partition)];
       if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast then
       	filename := <guarantee-extension(|"partition.index")> path;
       	result   := result-index
@@ -64,7 +64,7 @@ rules // Index
       index-setup(|language, project-path);
       task-setup(|project-path);
     	partition  := $[[project-path]/[path]];
-      result-ast := [((partition, []), <index-get-all-in-source> partition)];
+      result-ast := [((partition, []), <index-get-all-pairs-in-source> partition)];
       result-ast' := <beautify-indices> result-ast;
       if result-index := <foreign-call(|"Analysis", "from-index-debug-str")> result-ast' then
       	filename := <guarantee-extension(|"partition.index")> path;
@@ -128,7 +128,7 @@ rules // Index & task engine
     	index-setup(|language, project-path);
       task-setup(|project-path);
       task-debug  := <task-debug-info(|())>;
-      index-debug := <index-get-all-sources; map(\f -> (f, <index-get-all-in-source; sort-index> f)\)>;
+      index-debug := <index-get-all-sources; map(\f -> (f, <index-get-all-pairs-in-source; sort-index> f)\)>;
       result-ast  := (task-debug, index-debug);
       if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
       	filename := $[[project-path]/[<dirname> path]/project.analysis];
@@ -145,7 +145,7 @@ rules // Index & task engine
       task-setup(|project-path);
       partition   := $[[project-path]/[path]];
       task-debug  := <task-debug-info(|partition)>;
-      index-debug := [(partition, <index-get-all-in-source; sort-index> partition)];
+      index-debug := [(partition, <index-get-all-pairs-in-source; sort-index> partition)];
       result-ast  := (task-debug, index-debug);
       if result-analysis := <foreign-call(|"Analysis", "from-debug-str")> result-ast then
       	filename := <guarantee-extension(|"partition.analysis")> path;
@@ -209,7 +209,7 @@ rules // Helper rules for Index Resolved
 	// order the index entries
 	index-ordering: _ -> ["Def","Prop","RelTuple","Alias","InverseAlias","Use"]
 
-	index-compare: (a,b) -> (a,b)
+	index-compare: ((a, _), (b, _)) -> <id>
 		where
 			a-order := <get-index> (<get-constructor>a, <index-ordering>);
 			b-order := <get-index> (<get-constructor>b, <index-ordering>);

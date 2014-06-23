@@ -1,9 +1,5 @@
 module index/core
 
-imports
-	
-	index/utils
-
 signature
 
   sorts
@@ -27,6 +23,7 @@ rules
     prim("LANG_index_setup_new", language, <index-setup-paths> project-path)
   index-setup:
   	(language, project-path) -> <prim("LANG_index_setup_new", language, <index-setup-paths> project-path)>
+  index-setup-paths = try(is-list; Hd)
     
   /**
    * Unloads the currently loaded index.
@@ -48,9 +45,9 @@ rules
 		prim("LANG_index_recover")
 		
 	/**
-	 * Starts collection for given partition. Used in conjunction with index-stop-collection to 
+	 * Starts collection for a given source. Used in conjunction with index-stop-collection to 
 	 * retrieve a list of added and removed index entries in relation to the previous entries in
-	 * given partition.
+	 * given source.
 	 *
 	 * Example:
 	 *   index-start-collection(|"fullpath/file.ext")
@@ -64,29 +61,29 @@ rules
    * Collects given element, which will be added to the index when collection stops.
    *
    * @param value Value of the element.
-   * @param source The partition to add the element to.
-   * @type x -> ?x
+   * @param source The source to collect the element for.
+   * @type key -> key
    */
 	index-collect(|value, source):
 		key -> <prim("LANG_index_collect", key, value)>
 		
   /**
-   * Collects given element, which will be added to the index when collection stops.
+   * Collects given element without value, which will be added to the index when collection stops.
    *
-   * @param source The partition to add the element to.
-   * @type x -> ?x
+   * @param source The source to collect the element for.
+   * @type key -> key
    */
 	index-collect(|source):
 		key -> <prim("LANG_index_collect_boolean", key)>
 		
 	/**
-	 * Stops collection for the partition on which index-start-collection was called. Returns 
-	 * a tuple with removed and added entries in relation to the previous entries in that partition.
+	 * Stops collection for given source. Returns a tuple with removed and added entries in relation to the previous 
+	 * entries in that source.
 	 *
 	 * Example:
 	 *   index-stop-collection(|"fullpath/file.ext") => (removed, added)
 	 *
-	 * @type x -> (List(elem), List(elem))
+	 * @type _ -> (List(elem), List(elem))
 	 */
 	index-stop-collection(|source) =
 		prim("LANG_index_stop_collection", source)
@@ -134,17 +131,17 @@ rules
    * Adds given element to the index.
    *
    * @param value Value of the element.
-   * @param source The partition to add the element to.
-   * @type x -> ?x
+   * @param source The source to add the element to.
+   * @type key -> key
    */
   index-add(|value, source):
     key -> <prim("LANG_index_add", key, value, source)>
     
   /**
-   * Adds given element to the index.
+   * Adds given element without value to the index.
    *
-   * @param source The partition to add the element to.
-   * @type x -> ?x
+   * @param source The source to add the element to.
+   * @type key -> key
    */
   index-add(|source):
     key -> <prim("LANG_index_add_boolean", key, source)>
@@ -155,7 +152,7 @@ rules
    * Example:
    *   <index-clear-source> "fullpath/file.ext"
    *
-   * @type x -> ?x
+   * @type source -> source
    */
   index-clear-source:
   	source -> <prim("LANG_index_clear_source", source)>

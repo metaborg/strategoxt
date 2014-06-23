@@ -30,11 +30,11 @@ rules
 	
   get-index-property(|kind) =
     nabl-uris // TODO: how to handle multiple values?
-  ; fetch-elem(!Prop(<id>, kind); index-get-one)
+  ; fetch-elem(!Prop(<id>, kind); index-get-one-value)
    
   get-index-properties(|kind) =
     nabl-uris // TODO: how to handle multiple values?
-  ; mapconcat(!Prop(<id>, kind); index-get-all)
+  ; mapconcat(!Prop(<id>, kind); index-get-all-values)
 
 rules
 	

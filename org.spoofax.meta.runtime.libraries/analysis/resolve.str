@@ -16,4 +16,4 @@ rules
 			task-setup(|project-path);
     	index-setup(|language, project-path);
     	definition  := <has-annos; get-annos; fetch-elem(?Use(<id>)); task-get-results; Hd> node;
-    	definition' := <index-get-all; Hd> definition // Get definition from index again to get updated origin location.
+    	definition' := <index-get-one-value> definition // Get definition from index again to get updated origin location.
