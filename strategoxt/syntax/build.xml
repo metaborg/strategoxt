@@ -22,6 +22,7 @@
 		</subant>
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
+			<property name="dep.box" location="${baseline}/share/strategoxt/gpp" />
 			<fileset dir="stratego-front" includes="build.xml" />
 			<target name="build" />
 			<target name="install" />

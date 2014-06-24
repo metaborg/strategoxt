@@ -129,6 +129,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
+		<copy file="java/tools/org/strategoxt/tools/libtools.rtree" todir="${bin}" />
 	</target>
 
 	<target name="build-stratego-java-compat">
@@ -259,7 +260,6 @@
 
 
 	<path id="build.classpath">
-		<!-- <pathelement path="${java.class.path}" /> -->
 		<pathelement location="java/runtime" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
@@ -278,9 +278,8 @@
 
 	<target name="build-java" depends="build-stratego">
 		<mkdir dir="${bin.java}" />
-		<javac srcdir="${bin.stratego}" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-		<javac srcdir="java/runtime" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
-		<!-- <javac srcdir="java/eclipse" destdir="${bin.java}" classpath="${bin.java}" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" /> -->
+		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" />
+		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" />
 	</target>
 
 	<target name="jar" depends="build-java">
@@ -294,6 +293,7 @@
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy file="${bin}/strj.jar" todir="${install-location}" />
+		<copy file="${bin}/libtools.rtree" todir="${install-location}" />
 		<!-- <copy file="java/spoofax-libs.jar" todir="${install-location}" /> -->
 	</target>
 

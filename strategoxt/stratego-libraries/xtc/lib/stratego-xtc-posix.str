@@ -8,3 +8,5 @@ imports
   stratego/xtc/posix/Proc
   stratego/xtc/posix/Repository
   stratego/xtc/c99/xtc-new-file
+
+  tools/strategoxt-xtc-tools

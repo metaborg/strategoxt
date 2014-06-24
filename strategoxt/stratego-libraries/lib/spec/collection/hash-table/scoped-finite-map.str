@@ -12,7 +12,7 @@
 	end of a scope is completely transparent.
 */
 
-module lang/scoped-finite-map
+module collection/hash-table/scoped-finite-map
 imports 
   collection/hash-table/common
   collection/list/-
