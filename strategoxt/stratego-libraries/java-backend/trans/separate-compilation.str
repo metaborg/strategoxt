@@ -75,13 +75,15 @@ strategies
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
 		where(	<set-config> ("-i",filename));
-		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> modulename]));
-		where(	<set-config> ("baseout" ,<concat-strings>[<concat-strings;(mkdir <+ err(|"Creating dir failed"))> [working-output, "/", <to-library-name> modulename] ,"/",<to-library-name;separate-compilation-get-filename> modulename]));
+		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
+		where(	<set-config> ("baseout" ,<concat-strings>[<concat-strings;(mkdirs <+ err(|"Creating dir failed"))> [working-output, "/", <to-library-name;jify> modulename] ,"/",<to-library-name;separate-compilation-get-filename;jify> modulename]));
 		where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
 		where(  <set-config> ("--library" ,""));
 		s;
 		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
 	 
+	mkdirs = 
+	file-exists <+ mkdir <+ explode-string;reverse;drop(|1);drop-until(?'/');drop(|1);reverse;implode-string;mkdirs;mkdir
 	 
 	separate-compilation-rewrite-imports(back-end|working-package,working-output) =
 		?(fileName, <id>);
@@ -98,7 +100,7 @@ strategies
 					
 					
 					transform-ast = bottomup(
-						?Imports(<id>) <
+						(?Imports(<id>);debug;mapconcat(pack-expand-import);debug;map(\s -> Import(s)\);debug) <
 						map(
 							if import-predicate
 								then import-transform

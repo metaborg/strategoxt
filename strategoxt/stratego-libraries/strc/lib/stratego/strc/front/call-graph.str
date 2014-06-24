@@ -3,7 +3,7 @@ module call-graph
 strategies
 
   check-calls =
-  {| CcHoArg :
+  {| CcHoArg:
     where(
       m-get-all-def-sigs
       ; map(register-ho-arg)
@@ -33,7 +33,8 @@ strategies
         if ?(f, 0, 0) then
           <bagof-CcHoArg> f
           ; if ?[] then
-              warn(|["*** ", dsig, " calls non-existing ", sig])
+		  		!sig;
+			  strategy-not-found(|["*** ", dsig, " calls non-existing ", sig])
             //  ; fail
             else if not(?[_]) then
               err(|["*** ", dsig, " calls ", f, 
@@ -42,16 +43,26 @@ strategies
               ; fail
             end end
         else
-          warn(|["*** ", dsig, " calls non-existing ", sig])
+		!sig;
+          strategy-not-found(|["*** ", dsig, " calls non-existing ", sig])
          // ; fail
         end
       end
+	  
+   if-strategy-forward-declaration(sthen, selse) =
+      if <get-config> "--strategy-forward-declaration"
+        then sthen
+        else selse
+      end
+	  
 
   strategy-not-found(|msgs) =
-    if <get-config> "--strategy-forward-declaration"
-      then warn(|msgs)
-      else err(|msgs);fail
-    end
+  	if-strategy-forward-declaration(where(\(name, m, n) -> ExtSDef(name, <build-dummy-fun-args>m, <build-dummy-term-args>n)\; m-add-def);warn(|msgs),err(|msgs);fail)
+
+	build-dummy-fun-args : 0 -> []
+	build-dummy-fun-args : i -> Cons(VarDec("a",FunType([ConstType(Sort("ATerm",[]))],ConstType(Sort("ATerm",[])))), <dec;build-dummy-fun-args> i)
+	build-dummy-term-args: 0 -> []
+	build-dummy-term-args: i -> Cons(VarDec("l_1117",ConstType(Sort("ATerm",[]))), <dec;build-dummy-term-args> i)
 
   svar-arity-to-sig :
     (x, (i, j)) -> (x, i, j)
@@ -124,5 +135,5 @@ strategies
         rules( DefIsNeeded : sig )
         ; bagof-ModDefinition
         ; svars-arity
-        ; map(?(<id>,_); debug; try(CallSignature; mark-used-defs)) // try because of forward declaration of strategies
+        ; map(?(<id>,_); try(CallSignature; mark-used-defs)) // try because of forward declaration of strategies
       end

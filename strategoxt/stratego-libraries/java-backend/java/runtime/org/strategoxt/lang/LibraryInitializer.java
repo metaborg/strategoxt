@@ -14,6 +14,14 @@ public abstract class LibraryInitializer {
 		return c;
 	}
 	
+	/**
+	 * Wraps {@link LibraryInitializer} to compare them by class. To objects of
+	 * the same class should be equal. Used when collecting initializers to
+	 * avoid duplicated in sets.
+	 * 
+	 * @author moritzlichter
+	 *
+	 */
 	private static class InitializerSetEntry {
 		private LibraryInitializer initializer;
 
@@ -43,7 +51,10 @@ public abstract class LibraryInitializer {
 	private final void collectDependentInitializer(final Set<InitializerSetEntry> collector) {
 		collector.add(new InitializerSetEntry(this));
 		for (LibraryInitializer initializer : this.getDependentLibraryInitializer()) {
-			initializer.collectDependentInitializer(collector);
+			//Cycle detection
+			if (!collector.contains(new InitializerSetEntry(initializer))) {
+				initializer.collectDependentInitializer(collector);
+			}
 		}
 	}
 	
