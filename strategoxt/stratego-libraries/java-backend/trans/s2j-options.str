@@ -65,7 +65,7 @@ rules
   s2j-general-options =
     ArgOption(
       "-I" + "--Include"
-    , where(<post-extend-config>("-I", ["-I", <id>]))
+    , where(<post-extend-config>("-I", ["-I", IncludeDir(<id>)]))
     ; !()
     , !"-I d | --Include d Include modules from directory d"
     )

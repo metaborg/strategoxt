@@ -4,7 +4,7 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 
 public class StrategyExecutor extends Strategy {
 
-	private Strategy[] implementators;
+	private final Strategy[] implementators;
 
 	public StrategyExecutor(Strategy[] implementators) {
 		this.implementators = implementators;

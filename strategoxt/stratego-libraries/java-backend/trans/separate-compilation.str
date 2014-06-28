@@ -66,11 +66,10 @@ strategies
 	 | working-package,working-output,fileName,moduleName);
 	 where(<debug> "Separate finished")
 
-
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
 	
-	to-library-name = separate-compilation-modify-filename(!["lib", <id> ,"lib"];concat-strings)
+	to-library-name = separate-compilation-modify-filename(!["_",<id;jify>];concat-strings)
 
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
@@ -83,7 +82,7 @@ strategies
 		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
 	 
 	mkdirs = 
-	file-exists <+ mkdir <+ explode-string;reverse;drop(|1);drop-until(?'/');drop(|1);reverse;implode-string;mkdirs;mkdir
+	file-exists <+ mkdir <+ where(explode-string;reverse;drop(|1);drop-until(?'/');drop(|1);reverse;implode-string;mkdirs);mkdir
 	 
 	separate-compilation-rewrite-imports(back-end|working-package,working-output) =
 		?(fileName, <id>);
@@ -145,7 +144,10 @@ strategies
 			let
 				cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string
 				in \(filePath, newName) -> <conc-strings> (<cut-until-slash> filePath, newName)\ end
-		    
+	
+	
+	
+	
     separate-compilation-parse-file =
        ?(IncludeFromPath(<id>), includes)
       ; if has-extension(|"str") then
