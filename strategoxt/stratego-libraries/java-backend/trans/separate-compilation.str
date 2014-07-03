@@ -55,8 +55,8 @@ strategies
 		 where(<set-config>("-I", <conc> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
 		 where(<set-config>("-la", <conc> (libs, <map(\(x,_)-> x\)> newLibs)));
 		!IncludeAST(ast,fileName);
-		pack-stratego(|<pack-include-path>);
-		where(<debug> "Old front end") => (files, spec);
+		pack-stratego(|<pack-include-path>) => (files, spec);
+		where(<debug> "Old front end");
 		!spec;
 		strc-front-end2;
 		where(<debug>"Backend");

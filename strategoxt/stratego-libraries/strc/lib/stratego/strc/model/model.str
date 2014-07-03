@@ -231,7 +231,7 @@ strategies
      |}
 
   m-transform-no-overlays(s) =
-    {| ModDefinition, ModConstructor, ModOverlay, IsExternal, IsLocal
+    {| ModDefinition, ModConstructor, ModOverlay, IsExternal, IsLocal, RenameVar, CallSignature, HoArg
      : to-model
      ; s
      ; model-to-spec-no-overlays
