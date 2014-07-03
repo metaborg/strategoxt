@@ -40,13 +40,15 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
+	 log(|Info(), ["Compile to package: ", working-package]);
+	 log(|Info(), ["Place files in:     ", working-output]);
 	 where(fileName := <\FILE(s) -> s\>);
 	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
 	 debug;
 	 pack-process-options;
 	 where(incl := <get-config <+ ![]> "-I");
 	 where(libs := <get-config <+ ![]> "-la");
-	 
+	 log(|Info(), ["Parse file:         ", <id>]);
 	 separate-compilation-parse-file;
 	 where(moduleName:=<\(_,Module(name,_))->name\><id>);
 	 save-and-set-options(
@@ -54,6 +56,8 @@ strategies
 		 (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs);
 		 where(<set-config>("-I", <conc> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
 		 where(<set-config>("-la", <conc> (libs, <map(\(x,_)-> x\)> newLibs)));
+		 log(|Info(), ["Use import dirs: " , <get-config> "-I"]);
+		 log(|Info(), ["Use libraries:   " , <get-config> "-la"]);
 		!IncludeAST(ast,fileName);
 		pack-stratego(|<pack-include-path>) => (files, spec);
 		where(<debug> "Old front end");
@@ -92,7 +96,7 @@ strategies
 			
 			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<separate-compilation-get-filename> name]\;concat-strings;!Import(<id>)
 			
-			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> name],<separate-compilation-replace-file> (fileName, name))\
+			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> name],<concat-strings;where(<debug> "TRANSFORM");debug>[working-output, "/", <to-library-name> name])\
 			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let
