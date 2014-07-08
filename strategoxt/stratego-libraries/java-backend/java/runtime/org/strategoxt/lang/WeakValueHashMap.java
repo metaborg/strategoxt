@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.spoofax.NotImplementedException;
+import org.spoofax.terms.util.NotImplementedException;
 
 /**
  * This Map will remove entries when the value in the map has been cleaned from
