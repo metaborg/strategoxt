@@ -18,14 +18,13 @@ strategies
         )*/
 	  
     strc-front-end1(back-end) =
-	where(rules(CompiledModules:=[]));
+	{| CompiledModules, ImportMap :
       log-timed(
-        strc-get-infile  
-	
-  	; separate-compilation-front-end(back-end|<get-config> "-p",<get-config> "-o")
-      | "Front-end succeeded"
-      , 1
-      )
+	  
+	  rules(CompiledModules := []);
+        strc-get-infile ; 
+	    separate-compilation-front-end(back-end|<get-config> "-p",<get-config> "-o")
+      | "Front-end succeeded", 1) |}
 	
   	strc-front-end2 = 
       //  strc-get-infile
@@ -54,8 +53,10 @@ strategies
 	 save-and-set-options(
 		 where(<debug> "Rewrite");
 		 (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs);
-		 where(<set-config>("-I", <conc> (<map(\(_,x)-> IncludeDir(x)\)> newLibs, incl)));
-		 where(<set-config>("-la", <conc> (libs, <map(\(x,_)-> x\)> newLibs)));
+		 <map(Third)> newLibs => transitivImports;
+		 rules (ImportMap : moduleName -> transitivImports);
+		 where(<set-config>("-I", <conc> (<map(\(_,x,_)-> IncludeDir(x)\)> newLibs, incl)));
+		 where(<set-config>("-la", <conc> (libs, <map(\(x,_,_)-> x\)> newLibs)));
 		 log(|Info(), ["Use import dirs: " , <get-config> "-I"]);
 		 log(|Info(), ["Use libraries:   " , <get-config> "-la"]);
 		!IncludeAST(ast,fileName);
@@ -70,16 +71,26 @@ strategies
 	 | working-package,working-output,fileName,moduleName);
 	 where(<debug> "Separate finished")
 
+	 get-transitive-imports(|seen) = 
+	 	id => name;
+		if !(name, seen);elem then ![] end;
+		(ImportMap;map(\(importName, import) -> [import | <get-transitive-imports(|[name|seen])> importName]\);concat) <+ ![]
+
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
 	
 	to-library-name = separate-compilation-modify-filename(!["_",<id;jify>];concat-strings)
+	to-java-compilation-folder:   modulename -> <to-library-name;jify> modulename
+	to-java-compilation-filename: modulename -> <to-library-name;separate-compilation-get-filename;jify> modulename
+	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
+	to-java-compilation-abs-file (s | working-output): 
+	                              modulename -> <concat-strings>[<concat-strings;s> [working-output, "/", <to-java-compilation-folder> modulename] ,"/",<to-java-compilation-filename> modulename]
 
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
 		where(	<set-config> ("-i",filename));
 		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
-		where(	<set-config> ("baseout" ,<concat-strings>[<concat-strings;(mkdirs <+ err(|"Creating dir failed"))> [working-output, "/", <to-library-name;jify> modulename] ,"/",<to-library-name;separate-compilation-get-filename;jify> modulename]));
+		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(mkdirs <+ err(|"Creating dir failed")|working-output)> modulename));
 		where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
 		where(  <set-config> ("--library" ,""));
 		s;
@@ -96,14 +107,14 @@ strategies
 			
 			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<separate-compilation-get-filename> name]\;concat-strings;!Import(<id>)
 			
-			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-library-name;string-char-replace(|'/','.')> name],<concat-strings;where(<debug> "TRANSFORM");debug>[working-output, "/", <to-library-name> name])\
+			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],<concat-strings> [working-output, "/", <to-library-name> name], (name,Import(<to-java-compilation-rel-file> name)) )\
 			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let
 					
 					
 					transform-ast = bottomup(
-						(?Imports(<id>);debug;mapconcat(pack-expand-import);debug;map(\s -> Import(s)\);debug) <
+						(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
 						map(
 							if import-predicate
 								then import-transform
@@ -111,7 +122,12 @@ strategies
 							end);
 						!Imports(<id>) + id) 
 					collect-imports = collect-all(where(import-predicate))
-				in where(ast:=<id>);!(<transform-ast> ast, <collect-imports;map(collect-transform)> ast) end
+				in  id => Module(name, body); 
+					collect-all(?Import(_));
+					map(\Import(x)->x\;get-transitive-imports(|[name]));
+					concat;make-set => newImports;
+					!Module(name, [Imports(newImports)| body]) => ast;
+					!(<transform-ast> ast, <collect-imports;map(collect-transform)> ast) end
 				
 				
 			
@@ -122,13 +138,12 @@ strategies
 			\Import(s) -> (IncludeFromPath(s),<pack-include-path>)\;separate-compilation-parse-file,
 			
 			where(	\Import(name) -> name\;
-					where(<debug> "Check to compile"); debug;
 					if not(\name -> <elem> (name, <CompiledModules>)\) then
-						where(<debug> "Do compile");
-						rules(CompiledModules := Cons(<id>,<CompiledModules>));
+						log(|Info(),["Check to compile, compile", name]);
+						rules(CompiledModules := [<id>|<CompiledModules>]);
 						\name -> <separate-compilation-get-file;separate-compilation-front-end(back-end|working-package,working-output)> name\
 					else
-						!"Do not compile"
+						log(|Info(),["Check to compile, do not compile", name])
 					end);
 			to-library-import, 
 			import-to-flag) end
