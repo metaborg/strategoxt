@@ -9,7 +9,7 @@ imports
 
 strategies
 
-  frontend = 
+  frontend = {| HoArg, RenameVar, CallSignature:
     m-transform-no-overlays(id
 
       // add some definitions and constructors
@@ -118,7 +118,7 @@ strategies
               
       ; if-lib(remove-unused-external-defs, remove-unused-defs)
     )
-    ; tfc1(|"Stratego-Core", "fe-cong")
+    ; tfc1(|"Stratego-Core", "fe-cong") |}
 
 strategies
 
