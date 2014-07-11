@@ -3,17 +3,66 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.strategoxt.strj</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.metaborg</groupId>
-		<artifactId>org.metaborg.maven.parent.plugin</artifactId>
+		<artifactId>org.metaborg.maven.parent.java</artifactId>
 		<version>1.2.0-SNAPSHOT</version>
-		<relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent.plugin</relativePath>
+		<relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent.java</relativePath>
 	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.aterm</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.terms</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.interpreter.core</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.interpreter.library.xml</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.interpreter.library.interpreter</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.interpreter.library.java</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.interpreter.library.index</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>org.spoofax.jsglr</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.metaborg</groupId>
+			<artifactId>strategoxt-min-jar</artifactId>
+			<version>${metaborg-version}</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<sourceDirectory>java/runtime</sourceDirectory>
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -27,12 +76,25 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>java/eclipse</source>
 								<source>src-gen</source>
 							</sources>
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.plexus</groupId>
+						<artifactId>plexus-compiler-eclipse</artifactId>
+						<version>${maven-eclipse-compiler-version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<compilerId>eclipse</compilerId>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
