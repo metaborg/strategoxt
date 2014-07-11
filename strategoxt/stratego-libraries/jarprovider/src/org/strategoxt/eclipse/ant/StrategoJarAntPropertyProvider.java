@@ -12,7 +12,7 @@ public class StrategoJarAntPropertyProvider implements IAntPropertyValueProvider
     }
 
     public static String getStrategoJarPath() {
-        String result = org.strategoxt.stratego_lib.Main.class.getProtectionDomain().getCodeSource().getLocation()
+        String result = org.strategoxt.lang.Context.class.getProtectionDomain().getCodeSource().getLocation()
                 .getFile();
         if (Platform.getOS().equals(Platform.OS_WIN32)) {
             // FIXME: proper paths on Windows

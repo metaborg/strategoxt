@@ -63,11 +63,25 @@
 	<build>
 		<sourceDirectory>java/runtime</sourceDirectory>
 
+    <resources>
+      <resource>
+        <directory>src-gen</directory>
+        <includes>
+          <include>**/*.af</include>
+          <include>**/*.pp.af</include>
+          <include>**/*.def</include>
+          <include>**/*.tbl</include>
+          <include>**/*.str</include>
+          <include>**/*.rtree</include>
+          <include>**/*.ctree</include>
+        </includes>
+      </resource>
+    </resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>${maven-build-helper-version}</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -83,8 +97,8 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.codehaus.plexus</groupId>
