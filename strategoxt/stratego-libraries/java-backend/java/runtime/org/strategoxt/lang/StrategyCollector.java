@@ -2,6 +2,7 @@ package org.strategoxt.lang;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +11,19 @@ import java.util.Map;
 public class StrategyCollector {
 
 	private Map<String, List<Strategy>> strategyImplementators;
+	private Map<String, Strategy> overridenImplementator;
 	private Map<String, Strategy> strategyExecutors;
+	private Map<String, Strategy> nonOverridenExecutors;
 
 	public StrategyCollector() {
 		this.strategyImplementators = new HashMap<String, List<Strategy>>();
+		this.overridenImplementator = new HashMap<String, Strategy>();
 		this.strategyExecutors = new HashMap<String, Strategy>();
+		this.nonOverridenExecutors = new HashMap<String, Strategy>();
+	}
+	
+	private boolean isOverriden(String name) {
+		return this.overridenImplementator.containsKey(name);
 	}
 
 	public void registerStrategyImplementator(String name, Strategy implementator) {
@@ -24,6 +33,14 @@ public class StrategyCollector {
 			this.strategyImplementators.put(name, implementators);
 		}
 		implementators.add(implementator);
+	}
+	
+	public void registerStrategyOverrideImplementator(String name, Strategy implementator) {
+		if (this.isOverriden(name)) {
+			// Strategy is overriden multiple times. STRJ did not support this, we keep the latest implementator
+			System.out.println("Warning: Strategy \""+name +"\" is overriden mutliple times. The overriding implementator seen finally while linking is used.");
+		}
+		this.overridenImplementator.put(name, implementator);
 	}
 
 	private Strategy[] getStrategyImplementators(String name) {
@@ -67,15 +84,30 @@ public class StrategyCollector {
 		}
 		return s;
 	}
+	
+	public Strategy getStrategyNonOverridenExecutor(String name) {
+		return this.nonOverridenExecutors.get(name);
+	}
+	
+	private static Strategy createExectuor(Strategy[] s) {
+		if (s.length == 1) {
+			return s[0];
+		} else {
+			return new StrategyExecutor(s);
+		}
+	}
 
 	public void createExecutors() {
 		for (String strategyName : this.strategyImplementators.keySet()) {
-			Strategy[] s = this.getStrategyImplementators(strategyName);
-			if (s.length == 1) {
-				this.registerStrategyExecutor(strategyName, s[0]);
+			Strategy[] s;
+			if (this.isOverriden(strategyName)) {
+				s = new Strategy[]{this.overridenImplementator.get(strategyName)};
+				this.nonOverridenExecutors.put(strategyName, createExectuor(this.getStrategyImplementators(strategyName)));
 			} else {
-				this.registerStrategyExecutor(strategyName, new StrategyExecutor(s));
+				s= this.getStrategyImplementators(strategyName);
 			}
+			this.registerStrategyExecutor(strategyName, createExectuor(s));
+			
 		}
 	}
 

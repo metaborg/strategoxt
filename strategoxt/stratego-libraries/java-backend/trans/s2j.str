@@ -507,7 +507,7 @@ rules
     type-dec |[
        @SuppressWarnings("all")
        public static class x extends RegisteringStrategy {
-		 static x instance = new x();
+		 static final x instance = new x();
 		 
 		 ~executor-decls*
 		 ~lifted-decls*
@@ -539,7 +539,6 @@ rules
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
 	; lifted-binds*   := <get-lifted-bindings>
-//	; rules(LiftedDef := [])
 	
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs
@@ -599,17 +598,35 @@ rules
     AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
-       private static final class x' extends x {
+       private static final class x extends RegisteringStrategy {
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
-         private static final x proceed = new x();
-         ~(body)
-         @Override public String getName() { return "~x"; }
+         private Strategy proceed;
+		 static final x instance = new x();
+		 
+		 ~executor-decls*
+		 ~lifted-decls*
+		 
+		 public static Strategy getStrategy(Context context) {
+		 	return context.getStrategyCollector().getStrategyExecutor("~x");
+		 }
+	 
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerStrategyOverrideImplementator("~x", instance);
+		 }
+	 
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+			proceed = collector.getStrategyNonOverridenExecutor("~x");
+			
+		 }
+		 
+         ~body
+		 ~invokedynamic*
+         
        }
     ]|
-    with
-      x' := <conc-strings> (x, "_override")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
     with
       {| ProceedInvoke :
         e_s* := <translate-args> s*
@@ -618,32 +635,19 @@ rules
           ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
         )
       ; body := <translate-definition-body> def
+      ; executorNames   := <CollectedExecutors;make-set>
+      ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+      ; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
+      ; executor-inits* := <map(initialize-strategy-field)> executorNames
+      ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+      ; lifted-binds*   := <get-lifted-bindings>
       |}
-
+	
   translate-outer-definition-extend :
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
-    type-dec |[
-       @SuppressWarnings("all")
-       private static final class x' extends x {
-         private static final x proceed = x.instance;
-         ~(body)
-         @Override public String getName() { return "~x"; }
-       }
-    ]|
-    with
-      x' := <conc-strings> (x, "_extension")
-    ; rules(DefInit :+= |[ x.instance = new x'(); ]|)
-    with
-      {| ProceedInvoke :
-        e_s* := <translate-args> s*
-      ; e_t* := <translate-args> t*
-      ; def' := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Override()))
-      ; rules(
-          ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
-        )
-      ; body := <translate-definition-body> def'
-      |}
-
+    	<translate-outer-definition-plain> SDefT(x, s*, t*, s)
+	
+	
   translate-outer-definition-internal :
     AnnoDef([Internal()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
