@@ -2,28 +2,42 @@ package org.strategoxt.lang;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class StrategyCollector {
 
 	private Map<String, List<Strategy>> strategyImplementators;
-	private Map<String, Strategy> overridenImplementator;
+	private Map<String, Map<String, Strategy>> specialImplementators;
 	private Map<String, Strategy> strategyExecutors;
-	private Map<String, Strategy> nonOverridenExecutors;
+	private Map<String, Strategy> nonSpecialExecutors;
 
 	public StrategyCollector() {
 		this.strategyImplementators = new HashMap<String, List<Strategy>>();
-		this.overridenImplementator = new HashMap<String, Strategy>();
+		this.specialImplementators = new HashMap<String,Map<String, Strategy>>();
 		this.strategyExecutors = new HashMap<String, Strategy>();
-		this.nonOverridenExecutors = new HashMap<String, Strategy>();
+		this.nonSpecialExecutors = new HashMap<String, Strategy>();
 	}
 	
-	private boolean isOverriden(String name) {
-		return this.overridenImplementator.containsKey(name);
+	private boolean isSpecial(String name, String specialName) {
+		return this.specialImplementators.containsKey(name) && this.specialImplementators.get(specialName).containsKey(name);
+	}
+	
+	private String isSpecial(String name) {
+		String specialName = null;
+		for (Entry<String, Map<String, Strategy>>  e  : this.specialImplementators.entrySet() ) {
+			if (e.getValue().containsKey(name)) {
+				if (specialName == null) {
+					specialName = e.getKey();
+				} else {
+					System.out.println("Strategy " + name + " is " + specialName + " and also " + e.getKey()+ ". Use "+ specialName );
+				}
+			}
+		}
+		return specialName;
 	}
 
 	public void registerStrategyImplementator(String name, Strategy implementator) {
@@ -35,12 +49,17 @@ public class StrategyCollector {
 		implementators.add(implementator);
 	}
 	
-	public void registerStrategyOverrideImplementator(String name, Strategy implementator) {
-		if (this.isOverriden(name)) {
+	public void registerSpecialStrategyImplementator(String name, Strategy implementator, String specialName) {
+		if (this.isSpecial(name, specialName)) {
 			// Strategy is overriden multiple times. STRJ did not support this, we keep the latest implementator
-			System.out.println("Warning: Strategy \""+name +"\" is overriden mutliple times. The overriding implementator seen finally while linking is used.");
+			System.out.println("Warning: Strategy \""+name +"\" is " + specialName + " mutliple times. The overriding implementator seen finally while linking is used.");
 		}
-		this.overridenImplementator.put(name, implementator);
+		Map<String, Strategy> specialMap = this.specialImplementators.get(specialName);
+		if (specialMap == null) {
+			specialMap = new HashMap<String, Strategy>();
+			this.specialImplementators.put(specialName, specialMap);
+		}
+		specialMap.put(name, implementator);
 	}
 
 	private Strategy[] getStrategyImplementators(String name) {
@@ -85,8 +104,8 @@ public class StrategyCollector {
 		return s;
 	}
 	
-	public Strategy getStrategyNonOverridenExecutor(String name) {
-		return this.nonOverridenExecutors.get(name);
+	public Strategy getNonSpecialStrategyExecutor(String name) {
+		return this.nonSpecialExecutors.get(name);
 	}
 	
 	private static Strategy createExectuor(Strategy[] s) {
@@ -100,9 +119,10 @@ public class StrategyCollector {
 	public void createExecutors() {
 		for (String strategyName : this.strategyImplementators.keySet()) {
 			Strategy[] s;
-			if (this.isOverriden(strategyName)) {
-				s = new Strategy[]{this.overridenImplementator.get(strategyName)};
-				this.nonOverridenExecutors.put(strategyName, createExectuor(this.getStrategyImplementators(strategyName)));
+			String specialName = this.isSpecial(strategyName);
+			if (specialName != null) {
+				s = new Strategy[]{this.specialImplementators.get(specialName).get(strategyName)};
+				this.nonSpecialExecutors.put(strategyName, createExectuor(this.getStrategyImplementators(strategyName)));
 			} else {
 				s= this.getStrategyImplementators(strategyName);
 			}

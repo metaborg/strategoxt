@@ -612,13 +612,13 @@ rules
 		 }
 	 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerStrategyOverrideImplementator("~x", instance);
+		 	collector.registerSpecialStrategyImplementator("~x", instance, "overriden");
 		 }
 	 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
 			~lifted-binds*
-			proceed = collector.getStrategyNonOverridenExecutor("~x");
+			proceed = collector.getNonSpecialStrategyExecutor("~x");
 			
 		 }
 		 
@@ -645,7 +645,53 @@ rules
 	
   translate-outer-definition-extend :
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
-    	<translate-outer-definition-plain> SDefT(x, s*, t*, s)
+    type-dec |[
+       @SuppressWarnings("all")
+       private static final class x extends RegisteringStrategy {
+         // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
+         // NOTE: this prevents multiple overrides of a strategy.
+         private Strategy proceed;
+		 static final x instance = new x();
+ 
+		 ~executor-decls*
+		 ~lifted-decls*
+ 
+		 public static Strategy getStrategy(Context context) {
+		 	return context.getStrategyCollector().getStrategyExecutor("~x");
+		 }
+
+		 public void registerImplementators(StrategyCollector collector) {
+		 	collector.registerSpecialStrategyImplementator("~x", instance, "extended");
+		 }
+
+		 public void bindExecutors(StrategyCollector collector) {
+		 	~executor-inits*
+			~lifted-binds*
+			proceed = collector.getNonSpecialStrategyExecutor("~x");
+	
+		 }
+ 
+         ~body
+		 ~invokedynamic*
+       
+       }
+    ]|
+    with
+      {| ProceedInvoke :
+        e_s* := <translate-args> s*
+      ; e_t* := <translate-args> t*
+      ; rules(
+          ProceedInvoke := |[ proceed.invoke(context, term, e_s*, e_t*) ]|
+        )
+      ; def' := SDefT(x, s*, t*, GuardedLChoice(s, Id(), Override()))
+      ; body := <translate-definition-body> def'
+      ; executorNames   := <CollectedExecutors;make-set>
+      ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
+      ; executor-decls*  := <map(strategy-call-to-java-field)>  executorNames
+      ; executor-inits* := <map(initialize-strategy-field)> executorNames
+      ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
+      ; lifted-binds*   := <get-lifted-bindings>
+      |}
 	
 	
   translate-outer-definition-internal :
@@ -1257,7 +1303,7 @@ strategies
   find-import-term-file :
     file -> file'
     with
-      pack-stratego-options-wrap(
+        pack-stratego-options-wrap(
         pack-include-path
       ; getfirst(pack-find-from-dir(|file)) => file'
       <+
@@ -1274,8 +1320,8 @@ strategies
     finally(
       with(
         include* := <get-config <+ ![]> "-I"
-      ; <set-config> ("-I", [])
-      ; <parse-options(pack-stratego-options, system-usage, id)> [<whoami>, include*, "-I", "."]
+      ; <set-config> ("-I", [IncludeDir(".") | include*])
+     // ; <parse-options(pack-stratego-options, system-usage, id)> [<whoami>, include*, "-I", "."]
       )
     ; s
     , <set-config> ("-I", include*)
