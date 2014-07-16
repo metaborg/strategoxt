@@ -107,6 +107,7 @@
 			<fileset dir="ant-contrib" includes="**/*.xml" />
 			<fileset dir="${subdists-install-prefix}" includes="**/*.class" />
 			<zipgroupfileset dir="${subdists-install-prefix}" includes="**/*.jar" />
+			<zipgroupfileset dir="${baseline}/share/strategoxt/build-lib" includes="ant-contrib-0.6.jar" />
 			<!-- <fileset dir="${subdists-install-prefix}" includes="**/*.rtree" />
 			<fileset dir="${subdists-install-prefix}" includes="**/*.af" />
 			<fileset dir="${subdists-install-prefix}" includes="**/*.tbl" /> -->
