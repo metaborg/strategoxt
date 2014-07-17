@@ -74,6 +74,13 @@ strategies
         ))
 
       ; m-lift-dynamic-rules-from-spec
+	  
+	  // Need to desguar generated rules for dynamic rules, too
+      ; m-transform-local-defs(map(id
+          ; m-repair-types
+          ; pre-desugar		
+          ; raise-annotations
+        ))
 
       ; check-calls
 

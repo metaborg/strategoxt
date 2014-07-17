@@ -20,10 +20,9 @@ strategies
     strc-front-end1(back-end) =
 	{| CompiledModules, ImportMap :
       log-timed(
-	  
 	  rules(CompiledModules := []);
-        strc-get-infile ; 
-	    separate-compilation-front-end(back-end|<get-config> "-p",<get-config> "-o")
+        strc-get-infile ;
+	    separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config <+ !""> "-o")
       | "Front-end succeeded", 1) |}
 	
   	strc-front-end2 = 
@@ -48,7 +47,7 @@ strategies
 	 where(incl := <get-config <+ ![]> "-I");
 	 where(libs := <get-config <+ ![]> "-la");
 	 log(|Info(), ["Parse file:         ", <id>]);
-	 separate-compilation-parse-file;
+	 (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>]));
 	 where(moduleName:=<\(_,Module(name,_))->name\><id>);
 	 save-and-set-options(
 		 where(<debug> "Rewrite");
