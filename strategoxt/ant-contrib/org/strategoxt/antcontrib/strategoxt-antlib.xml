@@ -65,7 +65,7 @@
 						<arg value="${basedir}/@{output}" />
 						<arg value="--ignore-missing-cons" />
 						<arg value="-Xnativepath" />
-						<arg value="${nativepath}" />
+						<arg value="${nativepath}/" />
 					</java>
 				</action>
 			</uptodate-io>
@@ -217,7 +217,7 @@
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
 						<arg value="-Xnativepath" />
-						<arg value="${nativepath}" />
+						<arg value="${nativepath}/" />
 					</java>
 				</action>
 			</uptodate-io>
@@ -311,7 +311,7 @@
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
 						<arg value="-Xnativepath" />
-						<arg value="${nativepath}" />
+						<arg value="${nativepath}/" />
 					</java>
 				</action>
 			</uptodate-io>
