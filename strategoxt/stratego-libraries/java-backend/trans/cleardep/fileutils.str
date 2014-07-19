@@ -1,0 +1,30 @@
+module cleardep/fileutils
+
+strategies
+
+	path-get-filename =
+		  explode-string
+		; reverse
+		; take-until(?'/')
+		; reverse
+		; implode-string
+		
+	path-append(|folder) = 
+		  if !folder;path-is-directory
+		     then ![folder, <id>]
+		     else ![folder, "/", <id>]
+		  end
+		; concat-strings
+		
+	path-is-directory =
+		  explode-string
+		; last
+		; equal(|'/')
+		
+	path-ensure-trailing-slash =
+		if not(path-is-directory)
+		  then ![<id>,"/"];concat-strings
+		  else id
+		end
+	
+	 

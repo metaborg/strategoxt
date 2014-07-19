@@ -1,0 +1,28 @@
+module cleardep/cleardep
+
+imports libstrategolib
+imports cleardep/fileutils
+
+signature
+	constructors
+	
+	TimeStamper       : Stamper
+	ContentHashStamper: Stamper
+	Editor  : Mode
+	Compile : Mode
+	StrategoCompilationUnit : Impl -> CompilationUnit
+
+strategies
+
+	
+
+	create-compilation-unit(|source-file, output-path) =
+		  !(ContentHashStamper(), Some(<get-dep-file(|source-file, output-path)>), Some(output-path), None(), None(), [source-file], [], Compile(), None())
+		; prim("ClearDep_CompilationUnit_create")
+		; ?StrategoCompilationUnit(_)
+	
+	
+	get-dep-file(|source-file, output-path) =
+		  !source-file
+		; path-get-filename
+		; path-append(|output-path)

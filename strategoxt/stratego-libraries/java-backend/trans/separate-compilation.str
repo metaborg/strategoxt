@@ -1,5 +1,8 @@
 module separate-compilation
 
+imports cleardep/cleardep
+imports cleardep/fileutils
+
 signature
 	constructors
 		IncludeAST: Term * String -> Include
@@ -22,7 +25,7 @@ strategies
       log-timed(
 	  rules(CompiledModules := []);
         strc-get-infile ;
-	    separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config <+ !""> "-o")
+	    separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config;path-ensure-trailing-slash <+ !"./"> "-o")
       | "Front-end succeeded", 1) |}
 	
   	strc-front-end2 = 
@@ -38,9 +41,12 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	 log(|Info(), ["Compile to package: ", working-package]);
-	 log(|Info(), ["Place files in:     ", working-output]);
-	 where(fileName := <\FILE(s) -> s\>);
+	  if !working-output;not(path-is-directory)
+	    then log(|Error(), ["Given path is not a directory or does not end with a slash: ", working-output]); fail
+	  end
+	; log(|Info(), ["Compile to package: ", working-package])
+	; log(|Info(), ["Place files in:     ", working-output])
+	; where(fileName := <\FILE(s) -> s\>);
 	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
 	 debug;
 	 pack-process-options;
@@ -64,7 +70,6 @@ strategies
 		!spec;
 		strc-front-end2;
 		where(<debug>"Backend");
-		where(<get-config> "-o");
 		back-end;
 		where(<set-config> ("-la", libs); <set-config> ("-I", incl))
 	 | working-package,working-output,fileName,moduleName);
@@ -78,19 +83,22 @@ strategies
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
 	
-	to-library-name = separate-compilation-modify-filename(!["_",<id;jify>];concat-strings)
+	to-library-name = separate-compilation-modify-filename(if ?"char" then !["_", <id>];concat-strings end ; jify)
 	to-java-compilation-folder:   modulename -> <to-library-name;jify> modulename
-	to-java-compilation-filename: modulename -> <to-library-name;separate-compilation-get-filename;jify> modulename
+	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify> modulename
 	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
-	to-java-compilation-abs-file (s | working-output): 
-	                              modulename -> <concat-strings>[<concat-strings;s> [working-output, "/", <to-java-compilation-folder> modulename] ,"/",<to-java-compilation-filename> modulename]
+	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [working-output, <to-java-compilation-folder> modulename, "/"]
+	to-java-compilation-abs-file (| working-output) =
+		  id => modulename 
+		; to-java-compilation-filename
+		; path-append(|<to-java-compilation-abs-path(|working-output)> modulename)
 
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
 		where(	<set-config> ("-i",filename));
 		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
-		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(mkdirs <+ err(|"Creating dir failed")|working-output)> modulename));
-		where(	<set-config>("-o",<concat-strings>[<get-config> "baseout",".java"]));
+		where(	<set-config>("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
+		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(|working-output)> modulename));
 		where(  <set-config> ("--library" ,""));
 		s;
 		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
@@ -104,7 +112,7 @@ strategies
 			
 			
 			
-			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<separate-compilation-get-filename> name]\;concat-strings;!Import(<id>)
+			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<path-get-filename> name]\;concat-strings;!Import(<id>)
 			
 			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],<concat-strings> [working-output, "/", <to-library-name> name], (name,Import(<to-java-compilation-rel-file> name)) )\
 			
@@ -138,11 +146,11 @@ strategies
 			
 			where(	\Import(name) -> name\;
 					if not(\name -> <elem> (name, <CompiledModules>)\) then
-						log(|Info(),["Check to compile, compile", name]);
+						log(|Info(),["Check to compile, compile ", name]);
 						rules(CompiledModules := [<id>|<CompiledModules>]);
 						\name -> <separate-compilation-get-file;separate-compilation-front-end(back-end|working-package,working-output)> name\
 					else
-						log(|Info(),["Check to compile, do not compile", name])
+						log(|Info(),["Check to compile, do not compile ", name])
 					end);
 			to-library-import, 
 			import-to-flag) end
@@ -151,7 +159,7 @@ strategies
 			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
 			
 			
-			separate-compilation-get-filename = explode-string;reverse;take-until(?'/');reverse;implode-string
+
 			
 			separate-compilation-modify-filename(s) =
 			let
