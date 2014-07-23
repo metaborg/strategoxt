@@ -1,4 +1,4 @@
-package org.stratego.strj.cleardep_interface;
+package org.strategoxt.strj.cleardep_interface;
 
 import java.io.IOException;
 import java.util.Map;
@@ -12,6 +12,11 @@ import org.sugarj.common.path.Path;
 import org.sugarj.common.path.RelativePath;
 
 public class StrategoCompilationUnit extends CompilationUnit {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3462389746235492342L;
 
 	public static StrategoCompilationUnit create( Stamper stamper, Path compileDep, Path compileTarget, Path editedDep, Path editedTarget, Set<RelativePath> sourceFiles, Map<RelativePath, Integer> editedSourceFiles, Mode mode, Synthesizer syn) throws IOException {
 		return CompilationUnit.create(StrategoCompilationUnit.class, stamper, compileDep, compileTarget, editedDep, editedTarget, sourceFiles, editedSourceFiles, mode, syn);

@@ -1,27 +1,77 @@
 module cleardep/fileutils
 
+signature
+	constructors
+
+		AbsolutePath: String -> Path
+		RelativePath: Path * String -> Path
+
 strategies
 
+
+	is-abs-path = ?AbsolutePath(_)
+	is-rel-path = ?RelativePath(_,_)
+	is-path = is-abs-path + is-rel-path
+	
+	path-get-full-path = 
+		  ?AbsolutePath(<id>) 
+	
+	path-get-full-path =
+		  ?RelativePath(parent, path) 
+		; !parent ; path-get-full-path => parent-path
+		; ![parent-path, path]
+		; concat-strings 
+			
 	path-get-filename =
-		  explode-string
+		  ?AbsolutePath(<id>) + ?RelativePath(_, <id>) + is-string
+		; explode-string
 		; reverse
 		; take-until(?'/')
 		; reverse
 		; implode-string
+	
+	path-get-filename =
+			  is-string
+			; explode-string
+			; reverse
+			; take-until(?'/')
+			; reverse
+			; implode-string
+
+	path-append(|parent-path) = 
+		  where(<path-is-directory> parent-path)
+		; is-string
+		; not(explode-string; ?[])
+		; !RelativePath(parent-path, <id>)
 		
-	path-append(|folder) = 
-		  if !folder;path-is-directory
-		     then ![folder, <id>]
-		     else ![folder, "/", <id>]
-		  end
-		; concat-strings
-		
+	string-path-append(|folder) = 
+			  if !folder;explode-string;last;equal(|'/')
+			     then ![folder, <id>]
+			     else ![folder, "/", <id>]
+			  end
+			; concat-strings
+	
+		 
 	path-is-directory =
-		  explode-string
+		  path-get-full-path
+		; explode-string
 		; last
 		; equal(|'/')
 		
-	path-ensure-trailing-slash =
+	path-add-extension(|ext) =
+		  where(not(path-is-directory))
+		; (	  ?AbsolutePath(<id>)
+			; ![<id>, ".", ext]
+			; concat-strings
+			; !AbsolutePath(<id>)
+		  ) +
+		  (	  ?RelativePath(parent, <id>)
+			; ![<id>, ".", ext]
+			; concat-strings
+			; !RelativePath(parent, <id>)
+		  )
+	
+	string-ensure-trailing-slash =
 		if not(path-is-directory)
 		  then ![<id>,"/"];concat-strings
 		  else id

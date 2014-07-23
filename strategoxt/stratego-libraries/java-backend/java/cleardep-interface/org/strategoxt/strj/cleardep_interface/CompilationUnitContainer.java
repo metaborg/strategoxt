@@ -1,26 +1,31 @@
-package org.stratego.strj.cleardep_interface;
+package org.strategoxt.strj.cleardep_interface;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 
-import org.spoofax.interpreter.terms.ISimpleTerm;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermPrinter;
-import org.spoofax.terms.AbstractSimpleTerm;
 import org.spoofax.terms.StrategoTerm;
 import org.sugarj.common.cleardep.CompilationUnit;
 
-public class CompilationUnitContainer extends StrategoTerm {
+public class CompilationUnitContainer<C extends CompilationUnit> extends StrategoTerm {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 122398029374583475L;
 
 	private static final int TYPE = 12312;
 
-	private CompilationUnit unit;
+	private C unit;
 	
-	public CompilationUnitContainer(CompilationUnit unit) {
+	public CompilationUnitContainer(C unit) {
 		super(TYPE);
 		this.unit = unit;
 	}
 	
-	public CompilationUnit getUnit() {
+	public C getUnit() {
 		return unit;
 	}
 
@@ -45,6 +50,11 @@ public class CompilationUnitContainer extends StrategoTerm {
 	}
 
 	@Override
+	public String toString() {
+		return this.unit.getName();
+	}
+	
+	@Override
 	public void prettyPrint(ITermPrinter paramITermPrinter) {
 		paramITermPrinter.print(this.toString());
 	}
@@ -61,7 +71,12 @@ public class CompilationUnitContainer extends StrategoTerm {
 
 	@Override
 	protected int hashFunction() {
-		return this.hashCode();
+		return this.unit.hashCode();
+	}
+	
+	@Override
+	public Iterator<IStrategoTerm> iterator() {
+		return Collections.<IStrategoTerm>emptyList().iterator();
 	}
 
 

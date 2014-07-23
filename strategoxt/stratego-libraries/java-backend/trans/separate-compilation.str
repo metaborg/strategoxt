@@ -25,7 +25,7 @@ strategies
       log-timed(
 	  rules(CompiledModules := []);
         strc-get-infile ;
-	    separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config;path-ensure-trailing-slash <+ !"./"> "-o")
+	    separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config;string-ensure-trailing-slash <+ !"./"> "-o")
       | "Front-end succeeded", 1) |}
 	
   	strc-front-end2 = 
@@ -41,27 +41,30 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	  if !working-output;not(path-is-directory)
+	  if !AbsolutePath(working-output);not(path-is-directory)
 	    then log(|Error(), ["Given path is not a directory or does not end with a slash: ", working-output]); fail
 	  end
 	; log(|Info(), ["Compile to package: ", working-package])
 	; log(|Info(), ["Place files in:     ", working-output])
-	; where(fileName := <\FILE(s) -> s\>);
-	 \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\;
-	 debug;
-	 pack-process-options;
-	 where(incl := <get-config <+ ![]> "-I");
-	 where(libs := <get-config <+ ![]> "-la");
-	 log(|Info(), ["Parse file:         ", <id>]);
-	 (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>]));
-	 where(moduleName:=<\(_,Module(name,_))->name\><id>);
-	 save-and-set-options(
-		 where(<debug> "Rewrite");
-		 (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs);
-		 <map(Third)> newLibs => transitivImports;
-		 rules (ImportMap : moduleName -> transitivImports);
-		 where(<set-config>("-I", <conc> (<map(\(_,x,_)-> IncludeDir(x)\)> newLibs, incl)));
-		 where(<set-config>("-la", <conc> (libs, <map(\(x,_,_)-> x\)> newLibs)));
+	; where(fileName := <\FILE(s) -> s\>)
+	; \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\
+	; debug
+	; pack-process-options
+	; where(incl := <get-config <+ ![]> "-I")
+	; where(libs := <get-config <+ ![]> "-la")
+	; log(|Info(), ["Parse file:         ", <id>])
+	; (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>])) => parseResult
+	; where(moduleName:=<\(_,Module(name,_))->name\><id>)
+	; create-compilation-unit(|moduleName, AbsolutePath(<to-java-compilation-abs-path(|working-output)> moduleName)) => comp-unit
+	; save-and-set-options(
+		  where(<debug> "Rewrite")
+		; !parseResult
+		; (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs)
+		; <map(Third)> newLibs => transitivImports
+		; <map(\(_,_,_,FILE(name))->AbsolutePath(name)\;add-external-file-dependency(|comp-unit))> newLibs
+		; rules (ImportMap : moduleName -> transitivImports);
+		 where(<set-config>("-I", <conc> (<map(Snd;!IncludeDir(<id>))> newLibs, incl)));
+		 where(<set-config>("-la", <conc> (libs, <map(Fst)> newLibs)));
 		 log(|Info(), ["Use import dirs: " , <get-config> "-I"]);
 		 log(|Info(), ["Use libraries:   " , <get-config> "-la"]);
 		!IncludeAST(ast,fileName);
@@ -72,8 +75,10 @@ strategies
 		where(<debug>"Backend");
 		back-end;
 		where(<set-config> ("-la", libs); <set-config> ("-I", incl))
-	 | working-package,working-output,fileName,moduleName);
-	 where(<debug> "Separate finished")
+	 | working-package,working-output,fileName,moduleName)
+ 	; !comp-unit
+ 	; write-compilation-unit
+	; log(|Info(), ["Compilation of ", moduleName, " completed."])
 
 	 get-transitive-imports(|seen) = 
 	 	id => name;
@@ -91,7 +96,7 @@ strategies
 	to-java-compilation-abs-file (| working-output) =
 		  id => modulename 
 		; to-java-compilation-filename
-		; path-append(|<to-java-compilation-abs-path(|working-output)> modulename)
+		; string-path-append(|<to-java-compilation-abs-path(|working-output)> modulename)
 
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
@@ -114,7 +119,11 @@ strategies
 			
 			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<path-get-filename> name]\;concat-strings;!Import(<id>)
 			
-			import-to-flag = \Import(name) -> (<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],<concat-strings> [working-output, "/", <to-library-name> name], (name,Import(<to-java-compilation-rel-file> name)) )\
+			import-to-flag = \Import(name) -> 
+				(<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],
+				 <concat-strings> [working-output, "/", <to-library-name> name], 
+				 (name,Import(<to-java-compilation-rel-file> name)),
+				 <separate-compilation-get-file> name )\
 			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let

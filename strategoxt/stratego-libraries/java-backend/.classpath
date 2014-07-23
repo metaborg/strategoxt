@@ -3,10 +3,12 @@
 	<classpathentry kind="src" path="java/runtime"/>
 	<classpathentry kind="src" path="java/eclipse"/>
 	<classpathentry kind="src" path="src-gen"/>
+	<classpathentry kind="src" path="java/cleardep-interface"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="java/spoofax-libs.jar"/>
 	<classpathentry kind="lib" path="java/strategoxt.jar"/>
+	<classpathentry kind="lib" path="java/sugarj-common.jar"/>
 	<classpathentry kind="output" path="java/bin"/>
 </classpath>

@@ -1,4 +1,4 @@
-package org.stratego.strj.cleardep_interface;
+package org.strategoxt.strj.cleardep_interface;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import org.sugarj.common.cleardep.TimeStamper;
 import org.sugarj.common.cleardep.mode.DoCompileMode;
 import org.sugarj.common.cleardep.mode.ForEditorMode;
 import org.sugarj.common.cleardep.mode.Mode;
-import org.sugarj.common.path.AbsolutePath;
 import org.sugarj.common.path.Path;
 import org.sugarj.common.path.RelativePath;
 
@@ -41,10 +40,10 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 			// First argument needs to be a stamper constructor
 			Stamper stamper = stamperFromTerm(Term.termAt(argumentTuple, 0));
 			// Next arguments needs to be paths
-			Path depPath = pathFromOption(Term.termAt(argumentTuple, 1), AbsolutePath.class);
-			Path compileTarget = pathFromOption(Term.termAt(argumentTuple, 2), AbsolutePath.class);
-			Path editDepPath = pathFromOption(Term.termAt(argumentTuple, 3), AbsolutePath.class);
-			Path editTarget = pathFromOption(Term.termAt(argumentTuple, 4), AbsolutePath.class);
+			Path depPath = pathFromOption(Term.termAt(argumentTuple, 1));
+			Path compileTarget = pathFromOption(Term.termAt(argumentTuple, 2));
+			Path editDepPath = pathFromOption(Term.termAt(argumentTuple, 3));
+			Path editTarget = pathFromOption(Term.termAt(argumentTuple, 4));
 			Set<RelativePath> sourceFiles = sourceFilesFromTerm(Term.termAt(argumentTuple, 5));
 			Map<RelativePath, Integer> editedSourceFiles = editedSourceFilesFromTerm(Term.termAt(argumentTuple, 6));
 			Mode mode = modeFromTerm(Term.termAt(argumentTuple, 7));
@@ -52,15 +51,15 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 			if (!"None".equals(Term.tryGetName(Term.termAt(argumentTuple, 8))))
 				throw new IllegalArgumentException();
 
-			IStrategoTerm unitTerm =  new CompilationUnitContainer(StrategoCompilationUnit.create(stamper, depPath, compileTarget, editDepPath, editTarget, sourceFiles, editedSourceFiles, mode, null));
+			IStrategoTerm unitTerm = new CompilationUnitContainer<>(StrategoCompilationUnit.create(stamper, depPath, compileTarget, editDepPath, editTarget,
+					sourceFiles, editedSourceFiles, mode, null));
 			arg0.setCurrent(unitTerm);
-			
 		} catch (IllegalArgumentException e) {
 			return false;
 		} catch (IOException e) {
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private Stamper stamperFromTerm(IStrategoTerm t) throws IllegalArgumentException {
@@ -73,39 +72,30 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 			throw new IllegalArgumentException();
 	}
 
-	private <P extends Path> P pathFromOption(IStrategoTerm t, Class<P> pathClass) throws IllegalArgumentException {
+	private Path pathFromOption(IStrategoTerm t) throws IllegalArgumentException {
 		if (!Term.isTermAppl(t))
 			throw new IllegalArgumentException();
 		IStrategoAppl appl = (IStrategoAppl) t;
 		if (Term.hasConstructor(appl, "None"))
 			return null;
 		else if (Term.hasConstructor(appl, "Some"))
-			return pathFromTermString(Term.termAt(t, 0), pathClass);
+			return ClearDepUtils.pathFromPathTerm(Term.termAt(t, 0));
 		else
 			throw new IllegalArgumentException();
 
 	}
-
-	@SuppressWarnings("unchecked")
-	private <P extends Path> P pathFromTermString(IStrategoTerm t, Class<P> pathClass) throws IllegalArgumentException {
-		if (!Term.isTermString(t)) {
-			throw new IllegalArgumentException();
-		}
-		if (pathClass == AbsolutePath.class)
-			return (P) new AbsolutePath(Term.asJavaString(t));
-		else if (pathClass == RelativePath.class)
-			return (P) new RelativePath(Term.asJavaString(t));
-		else
-			throw new IllegalArgumentException();
-	}
-
+	
 	private Set<RelativePath> sourceFilesFromTerm(IStrategoTerm t) throws IllegalArgumentException {
 		if (!Term.isTermList(t))
 			throw new IllegalArgumentException();
 		IStrategoList pathList = (IStrategoList) t;
 		Set<RelativePath> paths = new HashSet<>();
 		for (IStrategoTerm pathTerm : pathList.getAllSubterms()) {
-			paths.add(pathFromTermString(pathTerm, RelativePath.class));
+			Path p = ClearDepUtils.pathFromPathTerm(pathTerm);
+			if (! (p instanceof RelativePath)) {
+				throw new IllegalArgumentException();
+			}
+			paths.add((RelativePath) p);
 		}
 		return paths;
 	}
@@ -118,11 +108,13 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 		for (IStrategoTerm entry : mapList.getAllSubterms()) {
 			if (!Term.isTermTuple(entry) && ((IStrategoTuple) entry).getSubtermCount() == 2)
 				throw new IllegalArgumentException();
-			RelativePath path = pathFromTermString(entry.getSubterm(0), RelativePath.class);
+			Path path = ClearDepUtils.pathFromPathTerm(entry.getSubterm(0));
+			if (!(path instanceof RelativePath))
+				throw new IllegalArgumentException();
 			if (!Term.isTermInt(entry.getSubterm(1)))
 				throw new IllegalArgumentException();
 			int integer = Term.asJavaInt(entry.getSubterm(1));
-			map.put(path, integer);
+			map.put((RelativePath) path, integer);
 		}
 		return map;
 	}

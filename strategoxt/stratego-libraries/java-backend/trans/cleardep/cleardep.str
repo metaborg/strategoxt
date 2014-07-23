@@ -17,12 +17,40 @@ strategies
 	
 
 	create-compilation-unit(|source-file, output-path) =
-		  !(ContentHashStamper(), Some(<get-dep-file(|source-file, output-path)>), Some(output-path), None(), None(), [source-file], [], Compile(), None())
+		  where(<is-string> source-file)
+		; where(<is-path> output-path)
+		; !(ContentHashStamper(), Some(<get-dep-file(|source-file, output-path);debug>), Some(output-path), None(), None(), [RelativePath(output-path, source-file)], [], Compile(), None())
+		; where(<debug> "TRY CREATE")
 		; prim("ClearDep_CompilationUnit_create")
-		; ?StrategoCompilationUnit(_)
+		; where(<debug> "Created Compilation Unit")
+		; !StrategoCompilationUnit(<id>)
+		; debug
+		<+ log(|Error(), ["Failed to create Compilation unit for ", source-file, " in ", output-path])
 	
+	write-compilation-unit =
+		 ( where (
+			  debug
+			; ?StrategoCompilationUnit(<id>)
+			; prim("ClearDep_CompilationUnit_write")
+		  )  <+   log(|Error(),["Failed to write Compilation unit ", <id>] )
+				; fail )
+				
+	add-external-file-dependency(|compilation-unit) =
+		where (<debug> ["Try ADD ", <id>, " to " , compilation-unit])
+		;  where(
+		      is-path => file-dependency
+			; !compilation-unit
+			; ?StrategoCompilationUnit(internal-unit)
+			; !file-dependency
+			; where (<debug> ["ADD ", file-dependency, " to " , internal-unit])
+			; prim("ClearDep_CompilationUnit_add_external_file_dep",| internal-unit)
+		)  <+  log(|Error(), ["Failed to add external file dependency ", <id>, " to ", compilation-unit])
+		
+		
+				   
 	
 	get-dep-file(|source-file, output-path) =
-		  !source-file
-		; path-get-filename
+		  !source-file;where (<debug> "SOURCE FILE"); debug
+	//	; path-get-filename
 		; path-append(|output-path)
+		; path-add-extension(|"dep")

@@ -14,6 +14,7 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.InteropSDefT;
 import org.strategoxt.lang.SRTS_EXT_eq_ignore_annos_0_1;
 import org.strategoxt.lang.SRTS_EXT_newint_0_0;
+import org.strategoxt.strj.cleardep_interface.ClearDepLibrary;
 
 /**
  * Handles per-context library compatibility components.
@@ -71,6 +72,8 @@ public class CompatManager {
 			ReadFromFile_cached_0_0.init();
 		} else if ("stratego_sglr".equals(component)) {
 			context.addOperatorRegistry(new JSGLRLibrary());
+		} else if ("strj".equals(component)) {
+			context.addOperatorRegistry(new ClearDepLibrary());
 		}
 	}
 }

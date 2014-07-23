@@ -261,6 +261,8 @@
 	<path id="build.classpath">
 		<!-- <pathelement path="${java.class.path}" /> -->
 		<pathelement location="java/runtime" />
+		<pathelement location="java/cleardep-interface" />
+		<pathelement location="java/sugarj-common.jar" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
 		<pathelement location="java/spoofax-libs.jar" />
@@ -288,6 +290,7 @@
 			<fileset dir="${bin.java}" includes="**/*.class" />
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
+			<zipgroupfileset dir="java" includes="sugarj-common.jar" />
 		</jar>
 	</target>
 
