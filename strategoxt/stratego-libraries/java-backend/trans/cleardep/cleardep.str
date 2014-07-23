@@ -36,13 +36,11 @@ strategies
 				; fail )
 				
 	add-external-file-dependency(|compilation-unit) =
-		where (<debug> ["Try ADD ", <id>, " to " , compilation-unit])
-		;  where(
+		  where(
 		      is-path => file-dependency
 			; !compilation-unit
 			; ?StrategoCompilationUnit(internal-unit)
 			; !file-dependency
-			; where (<debug> ["ADD ", file-dependency, " to " , internal-unit])
 			; prim("ClearDep_CompilationUnit_add_external_file_dep",| internal-unit)
 		)  <+  log(|Error(), ["Failed to add external file dependency ", <id>, " to ", compilation-unit])
 		
