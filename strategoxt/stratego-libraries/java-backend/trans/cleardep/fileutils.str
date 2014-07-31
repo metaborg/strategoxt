@@ -19,7 +19,7 @@ strategies
 	path-get-full-path =
 		  ?RelativePath(parent, path) 
 		; !parent ; path-get-full-path => parent-path
-		; ![parent-path, path]
+		; ![parent-path, "/", path]
 		; concat-strings 
 			
 	path-get-filename =
@@ -50,6 +50,10 @@ strategies
 			     else ![folder, "/", <id>]
 			  end
 			; concat-strings
+	
+	path-exists = 
+		  path-get-full-path;debug
+		; file-exists
 	
 		 
 	path-is-directory =

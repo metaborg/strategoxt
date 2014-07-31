@@ -21,10 +21,10 @@ import org.sugarj.common.path.Path;
 import org.sugarj.common.path.RelativePath;
 import org.sugarj.util.Pair;
 
-public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
+public class ClearDep_CompilationUnit_read extends AbstractPrimitive {
 
-	public ClearDep_CompilationUnit_create() {
-		super("ClearDep_CompilationUnit_create", 0, 0);
+	public ClearDep_CompilationUnit_read() {
+		super("ClearDep_CompilationUnit_read", 0, 0);
 	}
 
 	@Override
@@ -38,17 +38,15 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 			Stamper stamper = stamperFromTerm(Term.termAt(argumentTuple, 0));
 			// Next arguments needs to be paths
 			Path depPath = pathFromOption(Term.termAt(argumentTuple, 1));
-			Path compileTarget = pathFromOption(Term.termAt(argumentTuple, 2));
-			Path editDepPath = pathFromOption(Term.termAt(argumentTuple, 3));
-			Path editTarget = pathFromOption(Term.termAt(argumentTuple, 4));
-			Set<RelativePath> sourceFiles = sourceFilesFromTerm(Term.termAt(argumentTuple, 5));
-			Map<RelativePath, Integer> editedSourceFiles = null;//ClearDepUtils.editedSourceFilesFromTerm(Term.termAt(argumentTuple, 6));
-			Mode mode = ClearDepUtils.modeFromTerm(Term.termAt(argumentTuple, 7));
-			// Last is Synthesizer, not supported, required to be None()
-			if (!"None".equals(Term.tryGetName(Term.termAt(argumentTuple, 8))))
-				throw new IllegalArgumentException();
-			StrategoCompilationUnit unit = StrategoCompilationUnit.create(stamper, depPath, compileTarget, editDepPath, editTarget,
-						sourceFiles, editedSourceFiles, mode, null);
+			Path editDepPath = pathFromOption(Term.termAt(argumentTuple, 2));
+			Map<RelativePath, Integer> editedSourceFiles = ClearDepUtils.editedSourceFilesFromTerm(Term.termAt(argumentTuple, 3));
+			Mode mode = ClearDepUtils.modeFromTerm(Term.termAt(argumentTuple, 4));
+			Pair<StrategoCompilationUnit,Boolean>p  = StrategoCompilationUnit.read(stamper, depPath, editDepPath, editedSourceFiles, mode);
+			StrategoCompilationUnit unit = p.a;
+			if (unit == null) {
+				return false;
+			}
+			
 			IStrategoTerm unitTerm = new CompilationUnitContainer<>(unit);
 			arg0.setCurrent(unitTerm);
 		} catch (IllegalArgumentException e) {
@@ -56,8 +54,7 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 			throw new InterpreterException(e);
 		//	return false;
 		} catch (IOException e) {
-			throw new InterpreterException(e);
-	//		return false;
+			return false;
 		}
 		return true;
 	}

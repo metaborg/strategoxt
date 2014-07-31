@@ -7,10 +7,10 @@ import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.sugarj.common.path.Path;
 
-public class ClearDep_CompilationUnit_add_external_file_dep extends AbstractPrimitive {
+public class ClearDep_CompilationUnit_add_generated_file extends AbstractPrimitive {
 
-	public ClearDep_CompilationUnit_add_external_file_dep() {
-		super("ClearDep_CompilationUnit_add_external_file_dep", 0, 1);
+	public ClearDep_CompilationUnit_add_generated_file() {
+		super("ClearDep_CompilationUnit_add_generated_file", 0, 1);
 	}
 
 	@Override
@@ -18,7 +18,7 @@ public class ClearDep_CompilationUnit_add_external_file_dep extends AbstractPrim
 		try {
 			CompilationUnitContainer<?> container = ClearDepUtils.containerFromTerm(arg2[0]);
 			Path p = ClearDepUtils.pathFromPathTerm(arg0.current());
-			container.getUnit().addExternalFileDependency(p);
+			container.getUnit().addGeneratedFile(p);
 		} catch (IllegalArgumentException e) {
 			return false;
 		}

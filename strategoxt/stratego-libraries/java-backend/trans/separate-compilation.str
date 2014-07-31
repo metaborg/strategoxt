@@ -35,9 +35,7 @@ strategies
   		tfc1(|"Stratego-Sugar-Cong", "pack")
         ; strc-output-ast 
   	  	; frontend
-   
-    
-	
+
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
@@ -48,42 +46,42 @@ strategies
 	; log(|Info(), ["Place files in:     ", working-output])
 	; where(fileName := <\FILE(s) -> s\>)
 	; \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\
-	; debug
 	; pack-process-options
 	; where(incl := <get-config <+ ![]> "-I")
 	; where(libs := <get-config <+ ![]> "-la")
 	; log(|Info(), ["Parse file:         ", <id>])
 	; (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>])) => parseResult
 	; where(moduleName:=<\(_,Module(name,_))->name\><id>)
-	; create-compilation-unit(|moduleName, AbsolutePath(<to-java-compilation-abs-path(|working-output)> moduleName)) => comp-unit
-	; save-and-set-options(
-		  where(<debug> "Rewrite")
-		; !parseResult
-		; (separate-compilation-rewrite-imports(back-end|working-package,working-output)) => (ast, newLibs)
-		; <map(Third)> newLibs => transitivImports
-		; <map(\(_,_,_,FILE(name))->AbsolutePath(name)\;add-external-file-dependency(|comp-unit))> newLibs
-		; rules (ImportMap : moduleName -> transitivImports);
-		 where(<set-config>("-I", <conc> (<map(Snd;!IncludeDir(<id>))> newLibs, incl)));
-		 where(<set-config>("-la", <conc> (libs, <map(Fst)> newLibs)));
-		 log(|Info(), ["Use import dirs: " , <get-config> "-I"]);
-		 log(|Info(), ["Use libraries:   " , <get-config> "-la"]);
-		!IncludeAST(ast,fileName);
-		pack-stratego(|<pack-include-path>) => (files, spec);
-		where(<debug> "Old front end");
-		!spec;
-		strc-front-end2;
-		where(<debug>"Backend");
-		back-end;
-		where(<set-config> ("-la", libs); <set-config> ("-I", incl))
-	 | working-package,working-output,fileName,moduleName)
- 	; !comp-unit
- 	; write-compilation-unit
+	; if read-compilation-unit-for-module(|moduleName) => read-unit; is-persisted; is-consistent
+		then 
+			  log(|Info(),["Check to compile, is consistent, do not compile ", moduleName])
+			; !read-unit => work-unit
+		else
+			  log(|Info(), ["Check to compile, need to compile ", moduleName])
+			; create-compilation-unit-for-module(|moduleName) => work-unit
+			; save-and-set-options(
+				  where(<debug> "Rewrite")
+				  ; !parseResult
+				  ; (separate-compilation-rewrite-imports(back-end|moduleName, work-unit, working-package,working-output)) => (ast, newLibs)
+				  ; <map(Third)> newLibs => transitivImports
+				  ; rules (ImportMap : moduleName -> transitivImports)
+				  ; where(<set-config>("-I", <conc> (<map(Snd;!IncludeDir(<id>))> newLibs, incl)))
+				  ; where(<set-config>("-la", <conc> (libs, <map(Fst)> newLibs)))
+				  ; log(|Info(), ["Use import dirs: " , <get-config> "-I"])
+				  ; log(|Info(), ["Use libraries:   " , <get-config> "-la"])
+				  ; !IncludeAST(ast,fileName)
+				  ; pack-stratego(|<pack-include-path>) => (files, spec)
+				  ; where(<debug> "Old front end")
+				  ; !spec
+				  ; strc-front-end2
+				  ; where(<debug>"Backend")
+				  ; back-end(|work-unit)
+			  | working-package,working-output,fileName,moduleName)
+			; !work-unit
+			; persist-compilation-unit(|moduleName)
+	  end
+	; where(<set-config> ("-la", libs); <set-config> ("-I", incl))
 	; log(|Info(), ["Compilation of ", moduleName, " completed."])
-
-	 get-transitive-imports(|seen) = 
-	 	id => name;
-		if !(name, seen);elem then ![] end;
-		(ImportMap;map(\(importName, import) -> [import | <get-transitive-imports(|[name|seen])> importName]\);concat) <+ ![]
 
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
@@ -110,25 +108,29 @@ strategies
 	 
 	mkdirs = 
 	file-exists <+ mkdir <+ where(explode-string;reverse;drop(|1);drop-until(?'/');drop(|1);reverse;implode-string;mkdirs);mkdir
-	 
-	separate-compilation-rewrite-imports(back-end|working-package,working-output) =
+	
+	create-compilation-unit-for-module(|module-name) = 
+		  create-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name)
+	
+	read-compilation-unit-for-module(|module-name) = 
+		  read-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name)
+		
+	persist-compilation-unit(|module-name) = 
+		  write-compilation-unit
+	
+	separate-compilation-rewrite-imports(back-end|module-name, module-unit, working-package,working-output) =
 		?(fileName, <id>);
 		let
-			
-			
-			
 			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<path-get-filename> name]\;concat-strings;!Import(<id>)
 			
 			import-to-flag = \Import(name) -> 
 				(<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],
-				 <concat-strings> [working-output, "/", <to-library-name> name], 
+				 <concat-strings> [working-output, <to-library-name> name], 
 				 (name,Import(<to-java-compilation-rel-file> name)),
 				 <separate-compilation-get-file> name )\
 			
 			fold-on-imports(import-predicate, import-transform, collect-transform) =
 				let
-					
-					
 					transform-ast = bottomup(
 						(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
 						map(
@@ -140,48 +142,51 @@ strategies
 					collect-imports = collect-all(where(import-predicate))
 				in  id => Module(name, body); 
 					collect-all(?Import(_));
-					map(\Import(x)->x\;get-transitive-imports(|[name]));
-					concat;make-set => newImports;
-					!Module(name, [Imports(newImports)| body]) => ast;
+					!Module(name, body) => ast;
 					!(<transform-ast> ast, <collect-imports;map(collect-transform)> ast) end
-				
-				
-			
-				
-				
+					
+			maybe-compile(|imported-module-name) =
+			{| import-unit:
+				 (read-compilation-unit-for-module(|imported-module-name)
+				 	<+ (where(<debug> "Create");create-compilation-unit-for-module(|imported-module-name);debug)) // => import-unit
+						;debug
+				; if depends-on-transitivly(|module-unit)
+						then
+							  log(|Info(),["Depends transitivly, do not follow import ", imported-module-name])
+							; add-circular-module-dependency(|module-unit)
+						else
+							  log(|Info(),["Follow import ", imported-module-name]);debug
+							; add-module-dependency(|module-unit)
+							; !imported-module-name
+							; separate-compilation-get-file
+							; separate-compilation-front-end(back-end|working-package,working-output)
+					end
+				  
+			|}
+	
 		in
 		fold-on-imports(
 			\Import(s) -> (IncludeFromPath(s),<pack-include-path>)\;separate-compilation-parse-file,
-			
-			where(	\Import(name) -> name\;
-					if not(\name -> <elem> (name, <CompiledModules>)\) then
-						log(|Info(),["Check to compile, compile ", name]);
-						rules(CompiledModules := [<id>|<CompiledModules>]);
-						\name -> <separate-compilation-get-file;separate-compilation-front-end(back-end|working-package,working-output)> name\
-					else
-						log(|Info(),["Check to compile, do not compile ", name])
-					end);
-			to-library-import, 
+			where(maybe-compile(|<\Import(name) -> name\> <id>));to-library-import, 
 			import-to-flag) end
 		   
-			separate-compilation-get-file : name->
-			FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
+	separate-compilation-get-file : name->
+		FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
+	separate-compilation-get-relative-file : name->
+		<pack-include-path;fetch-elem(
+			\IncludeDir(dir) -> 
+				<where(<concat-strings; file-exists> [dir,"/", name, ".str"])>
+					 RelativePath(AbsolutePath(dir), <concat-strings> [name, ".str"])\)>
 			
-			
-
-			
-			separate-compilation-modify-filename(s) =
-			let
-				split-string = reverse;split-at(?'/');tmap(reverse;implode-string)
-				in explode-string;fetch(?'/') < split-string;?(name, path);![path, "/", <s> name];concat-strings+ s end
+	separate-compilation-modify-filename(s) =
+		let
+			split-string = reverse;split-at(?'/');tmap(reverse;implode-string)
+			in explode-string;fetch(?'/') < split-string;?(name, path);![path, "/", <s> name];concat-strings+ s end
 	
-			separate-compilation-replace-file = 
-			let
-				cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string
-				in \(filePath, newName) -> <conc-strings> (<cut-until-slash> filePath, newName)\ end
-	
-	
-	
+	separate-compilation-replace-file = 
+		let
+			cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string
+			in \(filePath, newName) -> <conc-strings> (<cut-until-slash> filePath, newName)\ end
 	
     separate-compilation-parse-file =
        ?(IncludeFromPath(<id>), includes)

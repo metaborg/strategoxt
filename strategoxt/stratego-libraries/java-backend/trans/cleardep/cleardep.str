@@ -14,41 +14,103 @@ signature
 
 strategies
 
-	
 
-	create-compilation-unit(|source-file, output-path) =
-		  where(<is-string> source-file)
-		; where(<is-path> output-path)
-		; !(ContentHashStamper(), Some(<get-dep-file(|source-file, output-path);debug>), Some(output-path), None(), None(), [RelativePath(output-path, source-file)], [], Compile(), None())
-		; where(<debug> "TRY CREATE")
+	unpack-stratego-unit = ?StrategoCompilationUnit(<id>)
+
+	create-compilation-unit(|source-file) =
+		  (where(<is-path;path-exists> source-file)
+		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), Some(source-file), None(), None(), [source-file], [], Compile(), None())
 		; prim("ClearDep_CompilationUnit_create")
-		; where(<debug> "Created Compilation Unit")
 		; !StrategoCompilationUnit(<id>)
-		; debug
-		<+ log(|Error(), ["Failed to create Compilation unit for ", source-file, " in ", output-path])
+		; log(|Info(), ["Created compilation unit ", <id>]))
+		<+ (log(|Info(), ["Failed to create Compilation unit for ", source-file]);fail)
+
+	read-compilation-unit(|source-file) =
+		  (where(<is-path;path-exists> source-file)
+		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), None(), [], Compile())
+		; prim("ClearDep_CompilationUnit_read")
+		; !StrategoCompilationUnit(<id>)
+		; log(|Info(), ["Read compilation unit ", <id>]))
+		<+ (log(|Info(), ["Failed to read Compilation unit for ", source-file]);fail)
+
 	
 	write-compilation-unit =
 		 ( where (
-			  debug
-			; ?StrategoCompilationUnit(<id>)
+			  unpack-stratego-unit
 			; prim("ClearDep_CompilationUnit_write")
-		  )  <+   log(|Error(),["Failed to write Compilation unit ", <id>] )
-				; fail )
+		  )  <+   (log(|Info(),["Failed to write Compilation unit ", <id>] )
+				; fail) )
 				
 	add-external-file-dependency(|compilation-unit) =
 		  where(
-		      is-path => file-dependency
-			; !compilation-unit
-			; ?StrategoCompilationUnit(internal-unit)
-			; !file-dependency
-			; prim("ClearDep_CompilationUnit_add_external_file_dep",| internal-unit)
-		)  <+  log(|Error(), ["Failed to add external file dependency ", <id>, " to ", compilation-unit])
+		      is-path
+			; prim("ClearDep_CompilationUnit_add_external_file_dep",| <unpack-stratego-unit> compilation-unit)
+		)  <+  log(|Info(), ["Failed to add external file dependency ", <id>, " to ", compilation-unit]); fail
 		
-		
-				   
+	add-generated-file(|compilation-unit) =
+		  where(
+			  is-path
+			  ; prim("ClearDep_CompilationUnit_add_generated_file", |<unpack-stratego-unit> compilation-unit)
+		) <+ log(|Info(), ["Failed to add generated file ", <id>, " to ", compilation-unit]);fail
 	
-	get-dep-file(|source-file, output-path) =
-		  !source-file;where (<debug> "SOURCE FILE"); debug
-	//	; path-get-filename
-		; path-append(|output-path)
+	add-generated-file(|compilation-unit, file) =
+		where(  !file
+		; add-generated-file(|compilation-unit))
+	
+	add-module-dependency(|compilation-unit) =
+		  where(
+			  unpack-stratego-unit
+			; prim("ClearDep_CompilationUnit_add_module_dep",| <unpack-stratego-unit> compilation-unit)
+		  ) <+  log(|Info(), ["Failed to add module dependency ", <id> , " to ", compilation-unit]);fail
+		  
+	add-circular-module-dependency(|compilation-unit) =
+		  where(
+			  unpack-stratego-unit
+			; prim("ClearDep_CompilationUnit_add_circular_module_dep",| <unpack-stratego-unit> compilation-unit)
+		  ) <+  log(|Info(), ["Failed to add circular module dependency ", <id> , " to ", compilation-unit]);fail
+	
+	is-consistent =
+		  where (
+			  unpack-stratego-unit
+			; !(<id>, [], Compile())
+			; (prim("ClearDep_CompilationUnit_is_consistent") 
+				<+ (log(|Info(), ["Is consistent failed for ", <id>]) ; fail))
+			; ?1
+		)
+		
+	is-persisted =
+		  where (
+			  unpack-stratego-unit
+			; (prim("ClearDep_CompilationUnit_is_persisted")
+			  <+ log(|Info(), ["Is persisted failed for ", <id>]);fail)
+			; ?1
+		)
+		
+	depends-on-transitivly(|check-against-unit) =
+		  where (
+			  unpack-stratego-unit
+			; (prim("ClearDep_CompilationUnit_depends_on_transitivly",|<unpack-stratego-unit> check-against-unit)
+				<+ (log(|Info(), ["Depends on transitivly failed for " , <id> , " on " , check-against-unit]) ; fail))
+			; ?1
+		)
+
+	depends-on-transitivly-noncircularly(|check-against-unit) =
+		  where (
+			  unpack-stratego-unit
+			; (prim("ClearDep_CompilationUnit_depends_on_transitivly_non_circularly",|<unpack-stratego-unit> check-against-unit)
+				<+ (log(|Info(), ["Depends on transitivly noncircular failed for " , <id> , " on " , check-against-unit]) ; fail))
+			; ?1
+		)
+		
+	depends-on-transitivly-circularly(|check-against-unit) =
+		  depends-on-transitivly(|check-against-unit)
+		; not(depends-on-transitivly-noncircularly(|check-against-unit))
+		
+	get-module-dependencies =
+		( unpack-stratego-unit
+		; prim("ClearDep_CompilationUnit_get_module_deps")
+		) <+ (log(|Info(), ["Get module dependencies failed for ", <id>]);fail)
+	
+	get-dep-file(|source-file) =
+		  !source-file
 		; path-add-extension(|"dep")

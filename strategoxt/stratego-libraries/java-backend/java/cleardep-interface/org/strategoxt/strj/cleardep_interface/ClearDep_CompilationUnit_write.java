@@ -27,7 +27,8 @@ public class ClearDep_CompilationUnit_write extends AbstractPrimitive {
 			unit.write();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
+			throw new InterpreterException(e);
+	//		return false;
 		}
 		return true;
 	}
