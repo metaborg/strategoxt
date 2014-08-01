@@ -54,7 +54,5 @@ Require-Bundle: org.spoofax.aterm,
  org.spoofax.interpreter.library.index
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
- java/runtime/,
- java/strategoxt.jar,
- java/eclipse/
+ java/strategoxt.jar
 Bundle-Vendor: StrategoXT.org
