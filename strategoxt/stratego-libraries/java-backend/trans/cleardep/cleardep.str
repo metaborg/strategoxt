@@ -21,16 +21,14 @@ strategies
 		  (where(<is-path;path-exists> source-file)
 		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), Some(source-file), None(), None(), [source-file], [], Compile(), None())
 		; prim("ClearDep_CompilationUnit_create")
-		; !StrategoCompilationUnit(<id>)
-		; log(|Info(), ["Created compilation unit ", <id>]))
+		; !StrategoCompilationUnit(<id>))
 		<+ (log(|Info(), ["Failed to create Compilation unit for ", source-file]);fail)
 
 	read-compilation-unit(|source-file) =
 		  (where(<is-path;path-exists> source-file)
 		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), None(), [], Compile())
 		; prim("ClearDep_CompilationUnit_read")
-		; !StrategoCompilationUnit(<id>)
-		; log(|Info(), ["Read compilation unit ", <id>]))
+		; !StrategoCompilationUnit(<id>))
 		<+ (log(|Info(), ["Failed to read Compilation unit for ", source-file]);fail)
 
 	
@@ -93,6 +91,9 @@ strategies
 				<+ (log(|Info(), ["Depends on transitivly failed for " , <id> , " on " , check-against-unit]) ; fail))
 			; ?1
 		)
+		
+	depends-on-transitivly-on-other(|unit2, unit1) =
+		  (!unit2; depends-on-transitivly(|unit1)) + (!unit1; depends-on-transitivly(|unit2))
 
 	depends-on-transitivly-noncircularly(|check-against-unit) =
 		  where (

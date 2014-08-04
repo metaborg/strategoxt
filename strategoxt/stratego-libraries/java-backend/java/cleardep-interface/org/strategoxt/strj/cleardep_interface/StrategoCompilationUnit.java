@@ -71,5 +71,44 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 	    return true;
 	  }*/
+	
+	@Override
+	 public void addModuleDependency(CompilationUnit mod) {
+		if (mod == this) {
+			throw new RuntimeException("Cannot depent on it self");
+		}
+		if (mod.dependsOnTransitively(this) || this.dependsOnTransitively(mod)) {
+			throw new RuntimeException("Closes circle");
+		}
+	    moduleDependencies.add(mod);
+	  }
+	
+	@Override
+	  public boolean dependsOnNoncircularly(CompilationUnit other) {
+		    return this == other || moduleDependencies.contains(other);    
+		  }
+	
+	@Override
+	public boolean dependsOn(CompilationUnit other) {
+	    return this == other ||  moduleDependencies.contains(other) || circularModuleDependencies.contains(other);    
+	  }
+	
+	@Override
+
+	  public boolean dependsOnTransitivelyNoncircularly(CompilationUnit other) {
+	//	System.out.println("Depends? " + this + " on " + other);
+	//	System.out.println(this.moduleDependencies);
+	    if (dependsOnNoncircularly(other))
+	      return true;
+	    for (CompilationUnit mod : moduleDependencies)
+	      if (mod.dependsOnTransitivelyNoncircularly(other))
+	        return true;
+	    return false;
+	  }
+	
+	@Override
+	public String toString() {
+		return "SC(" + this.getSourceArtifacts().toString() +")";
+	}
 
 }
