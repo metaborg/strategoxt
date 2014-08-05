@@ -49,6 +49,12 @@ strategies // Desugaring Strategies
         ; try(DesugarOnce)
       , try(DefLRule <+ DefScopeDefault)
     )
+    pre-desugar-without-once =
+      downup(
+          repeat(Desugar <+ VarToConst <+ DefDynRuleScope)
+          
+        , try(DefLRule <+ DefScopeDefault)
+      )
 
   stratego-desugar =
     topdown(repeat(Desugar))

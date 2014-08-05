@@ -30,9 +30,8 @@ strategies
   	strc-front-end2 = 
       //  strc-get-infile
       //  ; strc-pack-stratego-trm
-  	 where(<debug> "FRONT END");
   		tfc1(|"Stratego-Sugar-Cong", "pack")
-        ; strc-output-ast 
+        ; strc-output-ast
   	  	; frontend
 
 
@@ -65,15 +64,15 @@ strategies
 				  ; (separate-compilation-rewrite-imports(back-end|moduleName, work-unit, working-package,working-output)) => (ast, newLibs)
 				  ; where(<set-config>("-I", <conc;make-set> (<map(Third;Snd;!IncludeDir(<id>))> newLibs, incl)))
 				  ; where(<set-config>("-la", <conc;make-set> (libs, <map(Fst)> newLibs)))
-				  ; log(|Info(), ["Import transformation for ", moduleName])
-				  ; log(|Info(), ["Use import dirs: " , <get-config> "-I"])
-				  ; log(|Info(), ["Use libraries:   " , <get-config> "-la"])
+				  ; log(|Notice(), ["Import transformation for ", moduleName])
+				  ; log(|Notice(), ["Use import dirs: " , <get-config> "-I"])
+				  ; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
 				  ; !IncludeAST(ast,fileName)
 				  ; pack-stratego(|<pack-include-path>) => (files, spec)
-				  ; where(<debug> "Old front end")
 				  ; !spec
+				  ; log(|Notice(), ["Calling Frontend for ", moduleName])
 				  ; strc-front-end2
-				  ; where(<debug>"Backend")
+				  ; log(|Notice(), ["Calling Backend for ", moduleName])
 				  ; back-end(|work-unit)
 			  | working-package,working-output,fileName,moduleName)
 			; !work-unit

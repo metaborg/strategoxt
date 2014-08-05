@@ -78,7 +78,7 @@ strategies
 	  // Need to desguar generated rules for dynamic rules, too
       ; m-transform-local-defs(map(id
           ; m-repair-types
-          ; pre-desugar		
+          ; pre-desugar-without-once		
           ; raise-annotations
         ))
 
