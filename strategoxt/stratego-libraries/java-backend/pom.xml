@@ -4,6 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.strategoxt.strj</artifactId>
 	<packaging>jar</packaging>
+	<description>Stratego/XT Java backend and runtime</description>
+	<url>https://github.com/metaborg/strategoxt</url>
 
 	<parent>
 		<groupId>org.metaborg</groupId>
@@ -63,20 +65,20 @@
 	<build>
 		<sourceDirectory>java/runtime</sourceDirectory>
 
-    <resources>
-      <resource>
-        <directory>src-gen</directory>
-        <includes>
-          <include>**/*.af</include>
-          <include>**/*.pp.af</include>
-          <include>**/*.def</include>
-          <include>**/*.tbl</include>
-          <include>**/*.str</include>
-          <include>**/*.rtree</include>
-          <include>**/*.ctree</include>
-        </includes>
-      </resource>
-    </resources>
+		<resources>
+			<resource>
+				<directory>src-gen</directory>
+				<includes>
+					<include>**/*.af</include>
+					<include>**/*.pp.af</include>
+					<include>**/*.def</include>
+					<include>**/*.tbl</include>
+					<include>**/*.str</include>
+					<include>**/*.rtree</include>
+					<include>**/*.ctree</include>
+				</includes>
+			</resource>
+		</resources>
 
 		<plugins>
 			<plugin>
@@ -95,4 +97,25 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<developers>
+		<developer>
+			<name>Vlad Vergu</name>
+			<email>v.a.vergu@tudelft.nl</email>
+			<organization>Delft University of Technology</organization>
+			<organizationUrl>http://www.ewi.tudelft.nl/en</organizationUrl>
+		</developer>
+		<developer>
+			<name>Eelco Visser</name>
+			<email>visser@tudelft.nl</email>
+			<organization>Delft University of Technology</organization>
+			<organizationUrl>https://www.ewi.tudelft.nl/en</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:metaborg/strategoxt.git</connection>
+		<developerConnection>scm:git:git@github.com:metaborg/strategoxt.git</developerConnection>
+		<url>https://github.com/metaborg/strategoxt</url>
+	</scm>
 </project>
