@@ -81,6 +81,7 @@
 
 			<resource>
 				<directory>java</directory>
+				<targetPath>java</targetPath>
 				<includes>
 					<include>strategoxt.jar</include>
 				</includes>
