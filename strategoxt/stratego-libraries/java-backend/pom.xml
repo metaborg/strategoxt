@@ -78,6 +78,13 @@
 					<include>**/*.ctree</include>
 				</includes>
 			</resource>
+
+			<resource>
+				<directory>java</directory>
+				<includes>
+					<include>strategoxt.jar</include>
+				</includes>
+			</resource>
 		</resources>
 
 		<plugins>
