@@ -67,19 +67,6 @@
 
 		<resources>
 			<resource>
-				<directory>src-gen</directory>
-				<includes>
-					<include>**/*.af</include>
-					<include>**/*.pp.af</include>
-					<include>**/*.def</include>
-					<include>**/*.tbl</include>
-					<include>**/*.str</include>
-					<include>**/*.rtree</include>
-					<include>**/*.ctree</include>
-				</includes>
-			</resource>
-
-			<resource>
 				<directory>java</directory>
 				<targetPath>java</targetPath>
 				<includes>
@@ -89,6 +76,7 @@
 		</resources>
 
 		<plugins>
+			<!-- Use Eclipse JDT compiler, regular compiler cannot handle this number of classes. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -102,6 +90,34 @@
 				<configuration>
 					<compilerId>eclipse</compilerId>
 				</configuration>
+			</plugin>
+
+			<!-- Copy the StrategoXT runnable JAR into project, which is exported as a resource. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-strategoxt-jar</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.metaborg</groupId>
+									<artifactId>strategoxt-jar</artifactId>
+									<version>${metaborg-version}</version>
+									<type>jar</type>
+									<outputDirectory>java</outputDirectory>
+									<destFileName>strategoxt.jar</destFileName>
+									<overWrite>true</overWrite>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
