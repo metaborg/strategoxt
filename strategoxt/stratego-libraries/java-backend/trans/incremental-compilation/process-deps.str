@@ -1,0 +1,60 @@
+module incremental-compilation/process-deps
+imports incremental-compilation/utils
+imports cleardep/cleardep
+
+strategies
+
+	extract-dependencies =
+		  pack-stratego-unit
+		; get-stratego-source-file
+		//; path-relativize(| <pack-include-path;fetch-elem(\IncludeDir(x) -> AbsolutePath(x)\)>)
+		//; ?RelativePath(_, <id>)
+		; path-get-full-path
+		; !(IncludePathName(<id>), <pack-include-path>)
+		; (separate-compilation-parse-file <+ (log(|Error(), ["File not found: ", <id>]);fail))
+		; Snd
+		; fold-on-imports(import-is-file, id,
+				  	  \Import(i) -> i\
+					  ;
+				  		 separate-compilation-get-relative-file
+						 	; where(path-exists)
+							; read-or-create-compilation-unit
+						
+					)
+		; Snd
+		; map (unpack-stratego-unit)
+				  
+		
+	create-compilation-units-recursivly(|working-package,working-output)=
+	  if !AbsolutePath(working-output);not(path-is-directory)
+	    then log(|Error(), ["Given path is not an absolute directory", working-output]); fail
+	  end
+		; where(fileName := <\FILE(s) -> s\>)
+		; \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\
+		; (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>])) => parseResult
+		; where(moduleName:=<\(_,Module(name,_))->name\><id>)
+		; rules (ProcessedUnits: moduleName -> 1)
+		; !moduleName
+		; separate-compilation-get-relative-file
+		; where(path-exists)
+		;  read-or-create-compilation-unit => work-unit
+		
+			;	!parseResult; Snd
+				; fold-on-imports(import-is-file, 
+				  	  \Import(i) -> i\
+					; where(!work-unit <+ is-consistent-shallow) <+ where(
+				  		 separate-compilation-get-relative-file
+						 	; where(path-exists)
+							; read-or-create-compilation-unit
+							; add-module-dependency(|work-unit)
+						)
+					; if not(ProcessedUnits)
+						then 
+								separate-compilation-get-file
+								; create-compilation-units-recursivly(|working-package,working-output)
+						end, id)
+				  
+			 
+		; !work-unit
+	//	; persist-compilation-unit(|moduleName)
+	

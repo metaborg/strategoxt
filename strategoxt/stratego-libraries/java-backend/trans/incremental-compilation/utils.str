@@ -1,0 +1,28 @@
+module incremental-compilation/utils
+
+strategies
+
+	fold-on-imports(import-predicate, import-transform, collect-transform) =
+		{| CollectedImports:
+		let
+			transform-ast = bottomup(
+				(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
+				map(
+					if import-predicate
+						then where(rules(CollectedImports := [<collect-transform> | <CollectedImports>]));import-transform
+						else id;log(|Info(), ["Import predicate failed for ", <id>])
+					end);
+				!Imports(<id>) + id) 
+			collect-imports = collect-all(where(import-predicate))
+		in	  id => Module(name, body)
+			; !Module(name, body) => ast
+			; rules(CollectedImports := [])
+			; !ast
+			; transform-ast
+			; !(<id>, <CollectedImports;reverse>)
+		end
+		|}
+		
+	import-is-file = 
+		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
+		; separate-compilation-check-file

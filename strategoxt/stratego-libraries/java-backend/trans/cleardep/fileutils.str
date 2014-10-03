@@ -52,7 +52,7 @@ strategies
 			; concat-strings
 	
 	path-exists = 
-		  path-get-full-path;debug
+		  path-get-full-path
 		; file-exists
 	
 		 
@@ -75,10 +75,31 @@ strategies
 			; !RelativePath(parent, <id>)
 		  )
 	
+	path-has-extension(|ext) =
+		  ( ?AbsolutePath(<id>) + ?RelativePath(_, <id>) )
+		; !(ext, <get-extension>)
+		; eq
+	
 	string-ensure-trailing-slash =
 		if not(path-is-directory)
 		  then ![<id>,"/"];concat-strings
 		  else id
 		end
 	
+	path-relativize(|against) = 
+		  path-get-full-path; explode-string => child-path
+		; !against
+		; path-get-full-path; explode-string => parent-path
+		; !(parent-path, child-path)
+		; path-list-get-rest
+		; ? ['/'|rel-path]
+		; !RelativePath(against, <implode-string> rel-path)
+		
+	path-list-get-rest =
+		  ?([x|xs],[x|ys])
+		; if !xs;?[]
+			then !ys
+			else 	  !(xs,ys)
+					; path-list-get-rest
+		 end
 	 

@@ -66,7 +66,8 @@ public class CompatManager {
 	 * associated with a Stratego library.
 	 */
 	private void activateComponent(String component) {
-		if ("stratego_lib_posix_xsi".equals(component)) {
+		System.out.println(component);
+		if ("stratego_lib_posix_xsi".equals(component) || "stratego_lib".equals(component)) {
 			context.addOperatorRegistry(new CompatLibrary());
 			report_failure_compat_1_0.init();
 			ReadFromFile_cached_0_0.init();

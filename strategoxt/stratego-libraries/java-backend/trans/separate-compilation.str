@@ -2,6 +2,8 @@ module separate-compilation
 
 imports cleardep/cleardep
 imports cleardep/fileutils
+imports incremental-compilation/utils
+imports incremental-compilation/process-deps
 
 signature
 	constructors
@@ -37,14 +39,38 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
+		 // create-compilation-units(|working-package, working-output)
+		  where(fileName := <\FILE(s) -> s\>)
+		; !AbsolutePath(fileName)
+		; path-relativize (|
+			<pack-include-path;fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\);debug> )
+		;debug
+		; read-or-create-compilation-unit(|<id>)
+		; ![<id>]
+		; createBuildSchedule
+		; flattenBuildSchedule
+		; log(|Info(), ["Calculated build schedule ", <id>])
+		; map(	not(needsTaskToBeBuild) <+ (task-get-units
+				; where(<debug> "New Task")
+				; debug
+				; map(	  get-stratego-source-file
+						; path-get-full-path
+						; !FILE(<id>)
+						; compile(back-end|working-package,working-output)
+					))
+				
+		)
+		
+	
+	compile (back-end|working-package,working-output)=
 	  if !AbsolutePath(working-output);not(path-is-directory)
 	    then log(|Error(), ["Given path is not a directory or does not end with a slash: ", working-output]); fail
 	  end
 	; where(fileName := <\FILE(s) -> s\>)
-	; if read-compilation-unit(|AbsolutePath(fileName)) => read-unit; is-persisted; is-consistent
+	; if read-compilation-unit(|AbsolutePath(fileName)) => read-unit; is-persisted; is-consistent-shallow; is-consistent-to-interfaces
 		then 
-			  log(|Info(),["Check to compile, is consistent, do not compile ", fileName])
-			  ; !read-unit => work-unit
+			  log(|Info(),["Check to compile, is consistent to interfaces, do not compile ", fileName])
+			; !read-unit => work-unit
 		else
 			  \ FILE(s) -> (IncludePathName(s),<pack-include-path>)\
 			; pack-process-options
@@ -129,50 +155,43 @@ strategies
 				 (name,Import(<to-java-compilation-rel-file> name)),
 				 <separate-compilation-get-file> name )\
 			
-			fold-on-imports(import-predicate, import-transform, collect-transform) =
-				let
-					transform-ast = bottomup(
-						(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
-						map(
-							if import-predicate
-								then import-transform
-								else id;log(|Info(), ["Import predicate failed for ", <id>])
-							end);
-						!Imports(<id>) + id) 
-					collect-imports = collect-all(where(import-predicate))
-				in  id => Module(name, body); 
-					//collect-all(?Import(_));
-					//map(\Import(x)->x\;read-compilation-unit-for-module;get-transitive-imports(|[name]));
-					//concat;make-set => newImports;
+		
 					
-					!Module(name, body) => ast;
-					!(<transform-ast> ast, <collect-imports;map(collect-transform)> ast) end
-					
-			maybe-compile(|imported-module-name) =
+			maybe-compile(|imported-module-name) = id /*
 			{| import-unit:
 				 (read-compilation-unit-for-module(|imported-module-name)
-				 	<+ (where(<debug> "Create");create-compilation-unit-for-module(|imported-module-name);debug)) //=> import-unit
+				 	<+ (where(<debug> "Create");create-compilation-unit-for-module(|imported-module-name);debug)) // => import-unit
 						;debug
-				; if depends-on-transitivly-on-other(|module-unit, <id>)
+				; if equal(| module-unit)
+					then	  log(|Info(), ["Module imports itself ", module-name])
+					else 
+						if depends-on-transitivly-on-other(|module-unit, <id>)
 						then
-							  log(|Info(),["Depends transitivly, do not follow import ", imported-module-name])
-							; add-circular-module-dependency(|module-unit)
-						else if !imported-module-name; CompilingModules
-							then log(|Info(), ["Module ", imported-module-name, " is already in work, do not follow import"])
-							else 
-								  log(|Info(),["Follow import ", imported-module-name]);debug
-								; add-module-dependency(|module-unit)
-								; !imported-module-name
-								; separate-compilation-get-file
-								; separate-compilation-front-end(back-end|working-package,working-output)
+							  log(|Info(),[module-unit , " depends transitivly, do not follow import ", imported-module-name])
+							; if depends-on-transitivly-noncircularly(|module-unit)
+								then log(|Info(), ["Imports depends on module ", imported-module-name , " - ", module-name])
+							//;	 add-circular-module-dependency(|module-unit)
+							 else log(|Info(), ["Module depends on import ", module-name, " - " , imported-module-name])
+							 //	; add-module-dependency(|module-unit)
 							end
+							//; add-module-dependency(|module-unit)
+						else
+							 // add-module-dependency(|module-unit);
+							 if !imported-module-name; CompilingModules
+								then log(|Info(), ["Module ", imported-module-name, " is already in work, do not follow import"])
+								else  //add-module-dependency(|module-unit);
+									  log(|Info(),["From ", module-name ," follow import ", imported-module-name]);debug
+									; !imported-module-name
+									; separate-compilation-get-file
+									; compile(back-end|working-package,working-output)
+							  end
 					end
-				  
-			|}
+				end
+			|}*/
 	
 		in
 		fold-on-imports(
-			\Import(s) -> (IncludeFromPath(s),<pack-include-path>)\;debug;separate-compilation-check-file,
+			import-is-file,
 			where(maybe-compile(|<\Import(name) -> name\> <id>));to-library-import, 
 			import-to-flag) end
 		   
@@ -202,7 +221,7 @@ strategies
 			    IncludeXTC() -> <conc-strings; xtc-find-loc> (mod, ".str")
 
 separate-compilation-check-file =
-  /* ?(IncludeFromPath(<id>), includes)
+   ?(IncludeFromPath(<id>), includes)
   ; if has-extension(|"str") then
       remove-extension
     end
@@ -211,10 +230,10 @@ separate-compilation-check-file =
          pack-include-from-dir-exists(|mod)
          <+ pack-include-from-xtc-exists(|mod)
        )
-     > includes*/ separate-compilation-parse-file
+     > includes /// separate-compilation-parse-file
 	 
 	 
-/*  separate-compilation-check-file = 
+  separate-compilation-check-file = 
      let pack-qualify-pathname =
              where(explode-string => cs)
            ; if <pack-is-qualified> cs then
@@ -227,8 +246,15 @@ separate-compilation-check-file =
             ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
 
       in ?(IncludePathName(<pack-qualify-pathname>), _)
-       ; file-exists
-     end*/
+       ; if file-exists then
+            pack-include-pathname
+            ; (id,report-ambs)
+              // (id, xtc-transform(!"report-ambs")) // EV
+            ; pack-fc(|"Stratego-Sugar-Cong")
+          else
+		  fail
+          end
+     end
 	
     separate-compilation-parse-file =
        ?(IncludeFromPath(<id>), includes)

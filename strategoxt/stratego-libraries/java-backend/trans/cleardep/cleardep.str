@@ -2,6 +2,7 @@ module cleardep/cleardep
 
 imports libstrategolib
 imports cleardep/fileutils
+imports incremental-compilation/process-deps
 
 signature
 	constructors
@@ -11,11 +12,21 @@ signature
 	Editor  : Mode
 	Compile : Mode
 	StrategoCompilationUnit : Impl -> CompilationUnit
+	
+	BuildSchedule: Impl -> BuildSchedule
+	BuildTask: Impl -> BuildTask
+	Open: TaskState
+	InProgress: TaskState
+	Success: TaskState
+	Failure: TaskState
 
 strategies
 
-
+	pack-stratego-unit = !StrategoCompilationUnit(<id>)
 	unpack-stratego-unit = ?StrategoCompilationUnit(<id>)
+	fail-with-message (|message) = 
+		  log(|Info(), message)
+		; fail
 
 	create-compilation-unit(|source-file) =
 		  (where(<is-path;path-exists> source-file)
@@ -30,7 +41,24 @@ strategies
 		; prim("ClearDep_CompilationUnit_read")
 		; !StrategoCompilationUnit(<id>))
 		<+ (log(|Info(), ["Failed to read Compilation unit for ", source-file]);fail)
+	
+	read-or-create-compilation-unit =
+		read-compilation-unit(|<id>) <+ create-compilation-unit(|<id>)
+	
+	read-or-create-compilation-unit(|source-file) =
+		read-compilation-unit(|source-file) <+ create-compilation-unit(|source-file)
 
+	get-source-files =
+		  (   unpack-stratego-unit
+			; prim("ClearDep_CompilationUnit_get_source_files")
+			; is-list
+		) <+ (log(|Info, ["Failed to get source files for ", <id>]); fail)
+	
+
+	get-stratego-source-file =
+		  get-source-files
+		; debug
+		; fetch-elem(where(?RelativePath(_,<id>);has-extension(|"str")))
 	
 	write-compilation-unit =
 		 ( where (
@@ -55,18 +83,13 @@ strategies
 		where(  !file
 		; add-generated-file(|compilation-unit))
 	
+	// Adds the current term as dependency to compilation-unit
 	add-module-dependency(|compilation-unit) =
 		  where(
 			  unpack-stratego-unit
 			; prim("ClearDep_CompilationUnit_add_module_dep",| <unpack-stratego-unit> compilation-unit)
 		  ) <+  log(|Info(), ["Failed to add module dependency ", <id> , " to ", compilation-unit]);fail
 		  
-	add-circular-module-dependency(|compilation-unit) =
-		  where(
-			  unpack-stratego-unit
-			; prim("ClearDep_CompilationUnit_add_circular_module_dep",| <unpack-stratego-unit> compilation-unit)
-		  ) <+  log(|Info(), ["Failed to add circular module dependency ", <id> , " to ", compilation-unit]);fail
-	
 	is-consistent =
 		  where (
 			  unpack-stratego-unit
@@ -75,6 +98,24 @@ strategies
 				<+ (log(|Info(), ["Is consistent failed for ", <id>]) ; fail))
 			; ?1
 		)
+		
+	is-consistent-shallow =
+		  where (
+			  unpack-stratego-unit
+			; !(<id>, [], Compile())
+			; (prim("ClearDep_CompilationUnit_is_consistent_shallow") 
+				<+ (log(|Info(), ["Is consistent failed for ", <id>]) ; fail))
+			; debug
+			; ?1
+		)
+		
+	is-consistent-to-interfaces =
+		  where (
+			  unpack-stratego-unit
+			; (prim("ClearDep_CompilationUnit_is_consistent_to_interfaces")
+				<+ fail-with-message(|["Is consistent to interfaces failed for ", <id>]))
+			; ?1
+		  )
 		
 	is-persisted =
 		  where (
@@ -115,3 +156,49 @@ strategies
 	get-dep-file(|source-file) =
 		  !source-file
 		; path-add-extension(|"dep")
+		
+	createBuildSchedule =
+		    (is-list
+		  ; map(unpack-stratego-unit)
+		  ; prim("ClearDep_BuildSchedule_createBuildSchedule", extract-dependencies |)
+		  ; !BuildSchedule(<id>)
+		) <+ fail-with-message(|["createBuildSchedule failed for ", <id>])
+	
+	flattenBuildSchedule =
+		(    ?BuildSchedule(<id>)
+		  ; prim("ClearDep_BuildSchedule_flatten")
+		  ; is-list
+		  ; map(!BuildTask(<id>))
+		) <+ fail-with-message(|["flattenBuildSchedule failed for ", <id>])
+	
+	needsTaskToBeBuild =
+		(   ?BuildTask(<id>)
+		  ; prim("ClearDep_BuildTask_needsToBeBuild")
+		) <+ fail-with-message(|["needsTaskToBeBuiled failed for ", <id>])
+		; ?1
+		
+	
+	isTaskCompleted =
+		  where(
+			  ?BuildTask(<id>)
+			; prim("ClearDep_BuildTask_isTaskCompleted")
+			; ?1
+		) <+ fail-with-message(|["isTaskCompleted failed for", <id>])
+	
+	getTaskState = 
+		(   ?BuildTask(<id>)
+		  ; prim("ClearDep_BuildTask_getState")
+		) <+ fail-with-message(|["getTaskState failed for ", <id>])
+		
+	setTaskState(|state) =
+		  where(
+			  ?BuildTask(<id>)
+			  ; prim("ClearDep_BuildTask_setState", |state)
+		) <+ fail-with-message(|["setTaskState failed for ", <id>, " and state ", state])
+		
+	task-get-units = 
+		  (	  ?BuildTask(<id>)
+			; prim("ClearDep_BuildTask_get_units")
+			; map(\s->StrategoCompilationUnit(s)\)
+		) <+ fail-with-message(|["Get units for tasks failed for ", <id>])
+	

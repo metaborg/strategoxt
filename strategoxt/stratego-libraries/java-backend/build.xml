@@ -260,6 +260,7 @@
 
 	<path id="build.classpath">
 		<!-- <pathelement path="${java.class.path}" /> -->
+		<pathelement location="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src"/>
 		<pathelement location="java/runtime" />
 		<pathelement location="java/cleardep-interface" />
 		<pathelement location="java/sugarj-common.jar" />
@@ -282,12 +283,14 @@
 		<mkdir dir="${bin.java}" />
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 		<javac srcdir="java/runtime" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
+		<javac srcdir="java/cleardep-interface" destdir="${bin.java}" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" />
 		<!-- <javac srcdir="java/eclipse" destdir="${bin.java}" classpath="${bin.java}" source="1.5" target="1.5" nowarn="off" debug="true" debuglevel="source" /> -->
 	</target>
 
 	<target name="jar" depends="build-java">
 		<jar destfile="${bin}/strj.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
+			<fileset dir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/bin" includes="**/*.class"/>
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
 			<zipgroupfileset dir="java" includes="sugarj-common.jar" />

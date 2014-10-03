@@ -54,7 +54,8 @@ public class ClearDep_CompilationUnit_read extends AbstractPrimitive {
 			throw new InterpreterException(e);
 		//	return false;
 		} catch (IOException e) {
-			return false;
+			throw new InterpreterException(e);
+			//return false;
 		}
 		return true;
 	}

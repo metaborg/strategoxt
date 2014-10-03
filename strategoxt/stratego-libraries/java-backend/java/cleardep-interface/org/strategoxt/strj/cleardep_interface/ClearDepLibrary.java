@@ -18,6 +18,16 @@ public class ClearDepLibrary extends AbstractStrategoOperatorRegistry {
 		this.add(new ClearDep_CompilationUnit_get_module_deps());
 		this.add(new ClearDep_CompilationUnit_add_generated_file());
 		this.add(new ClearDep_CompilationUnit_is_persisted());
+		this.add(new ClearDep_BuildSchedule_createBuildSchedule());
+		this.add(new ClearDep_BuildSchedule_flatten());
+		this.add(new ClearDep_BuildTask_getState());
+		this.add(new ClearDep_BuildTask_isTaskCompleted());
+		this.add(new ClearDep_BuildTask_needsToBeBuild());
+		this.add(new ClearDep_BuildTask_setState());
+		this.add(new ClearDep_BuildTask_get_units());
+		this.add(new ClearDep_CompilationUnit_get_source_files());
+		this.add(new ClearDep_CompilationUnit_is_consistent_shallow());
+		this.add(new ClearDep_CompilationUnit_is_consistent_to_interfaces());
 	}
 	
 	@Override

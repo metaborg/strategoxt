@@ -1,12 +1,14 @@
 package org.strategoxt.strj.cleardep_interface;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.sugarj.common.FileCommands;
 import org.sugarj.common.cleardep.CompilationUnit;
+import org.sugarj.common.cleardep.ContentHashStamper;
 import org.sugarj.common.cleardep.Stamper;
 import org.sugarj.common.cleardep.Synthesizer;
 import org.sugarj.common.cleardep.mode.Mode;
@@ -32,6 +34,71 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	@Override
 	protected boolean isConsistentExtend(Mode arg0) {
 		return true;
+	}
+	
+	@Override
+	public Integer getInterfaceHash() {
+		Set<Path> interfaceFiles = this.getAllInterfacesFiles();
+		if (interfaceFiles == null) {
+			System.out.println("Interface hash for " + this.getSourceArtifacts() + ": null");
+			return null;
+		}
+		Set<Integer> hashesSet = new HashSet<>();
+		for (Path path : interfaceFiles) {
+			hashesSet.add(ContentHashStamper.instance.stampOf(path));
+		}
+		int hash = hashesSet.hashCode();
+		System.out.println("Interface hash for " + this.getSourceArtifacts() + ": " + hash);
+		return hash;
+	}
+	
+	private Set<Path> getAllInterfacesFiles() {
+		return this.visit(new ModuleVisitor<Set<Path>>() {
+
+			@Override
+			public Set<Path> visit(CompilationUnit mod, Mode mode) {
+				if (mod instanceof StrategoCompilationUnit) {
+					Path interfaceFile = ((StrategoCompilationUnit)mod).getInterfaceFile();
+					if (interfaceFile == null) {
+						return null;
+					} else {
+						Set<Path> set = new HashSet<>();
+						set.add(interfaceFile);
+						return set;
+					}
+				} else {
+					return new HashSet<>();
+				}
+			}
+
+			@Override
+			public Set<Path> combine(Set<Path> t1, Set<Path> t2) {
+				if (t1 == null || t2 == null)
+					return null;
+				t1.addAll(t2);
+				return t1;
+			}
+
+			@Override
+			public Set<Path> init() {
+				return new HashSet<>();
+			}
+
+			@Override
+			public boolean cancel(Set<Path> t) {
+				return t == null;
+			}
+		
+		});
+	}
+	
+	private Path getInterfaceFile() {
+		for (Path p : this.getGeneratedFiles()) {
+			if (p.getAbsolutePath().endsWith(".rtree")) {
+				return p;
+			}
+		}
+		return null;
 	}
 	
 	/*@Override
@@ -71,40 +138,7 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 	    return true;
 	  }*/
-	
-	@Override
-	 public void addModuleDependency(CompilationUnit mod) {
-		if (mod == this) {
-			throw new RuntimeException("Cannot depent on it self");
-		}
-		if (mod.dependsOnTransitively(this) || this.dependsOnTransitively(mod)) {
-			throw new RuntimeException("Closes circle");
-		}
-	    moduleDependencies.add(mod);
-	  }
-	
-	@Override
-	  public boolean dependsOnNoncircularly(CompilationUnit other) {
-		    return this == other || moduleDependencies.contains(other);    
-		  }
-	
-	@Override
-	public boolean dependsOn(CompilationUnit other) {
-	    return this == other ||  moduleDependencies.contains(other) || circularModuleDependencies.contains(other);    
-	  }
-	
-	@Override
 
-	  public boolean dependsOnTransitivelyNoncircularly(CompilationUnit other) {
-	//	System.out.println("Depends? " + this + " on " + other);
-	//	System.out.println(this.moduleDependencies);
-	    if (dependsOnNoncircularly(other))
-	      return true;
-	    for (CompilationUnit mod : moduleDependencies)
-	      if (mod.dependsOnTransitivelyNoncircularly(other))
-	        return true;
-	    return false;
-	  }
 	
 	@Override
 	public String toString() {
