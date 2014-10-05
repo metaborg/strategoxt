@@ -41,27 +41,32 @@ strategies
 	separate-compilation-front-end(back-end|working-package,working-output)=
 		 // create-compilation-units(|working-package, working-output)
 		  where(fileName := <\FILE(s) -> s\>)
+		  
+	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
 		; !AbsolutePath(fileName)
 		; path-relativize (|
-			<pack-include-path;fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\);debug> )
-		;debug
+			<pack-include-path;fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\)> )
 		; read-or-create-compilation-unit(|<id>)
+	// Create the build schedule for the compilation unit and flatten it
 		; ![<id>]
 		; createBuildSchedule
 		; flattenBuildSchedule
 		; log(|Info(), ["Calculated build schedule ", <id>])
+	// Compile according to the build schedule, outer map maps over the build tasks in the build schedule
 		; map(	not(needsTaskToBeBuild) <+ (task-get-units
-				; where(<debug> "New Task")
-				; debug
+				; log(|Info(), ["Compile Build Task " , <id>])
+	// Compile each compilation unit in the task
 				; map(	 
 						compile(back-end|working-package,working-output)
 					))
+	// Calculate the transitive interface hashes for all files and then register them as module dependency 
+				; map (calculate-transitive-interface-hash)
 				; where( map ({unit: 
 					  id => unit
 					; get-all-module-dependencies ;debug
 					; map(update-module-dependency-interface(|unit))
 					}))
-				; map (calculate-transitive-interface-hash)
+	// Finally write all units
 				; map (write-compilation-unit)
 				
 		)

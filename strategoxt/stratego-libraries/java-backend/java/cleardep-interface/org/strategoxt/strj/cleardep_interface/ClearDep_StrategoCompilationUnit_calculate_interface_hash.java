@@ -22,6 +22,7 @@ public class ClearDep_StrategoCompilationUnit_calculate_interface_hash extends A
 				throw new IllegalArgumentException("Given unit is not a stratego compilation unit");
 			}
 			unit.setInterfaceHash(((StrategoCompilationUnit)unit).calculateTransisitveInterfaceHash());
+			System.out.println("Calculated interface hash: " + unit + " " + unit.getInterfaceHash());
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
