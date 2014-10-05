@@ -61,6 +61,7 @@ strategies
 					; get-all-module-dependencies ;debug
 					; map(update-module-dependency-interface(|unit))
 					}))
+				; map (calculate-transitive-interface-hash)
 				; map (write-compilation-unit)
 				
 		)

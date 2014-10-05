@@ -51,8 +51,7 @@ strategies
 	; strc-optimize
 	; strc-export-external-defs
 	; add-generated-file(|comp-unit, AbsolutePath(<strc-getoutfile(!".rtree")>))
-	; export-signature
-	; add-generated-file(|comp-unit, AbsolutePath(<strc-getoutfile(!".sig")>))
+	; where(set-local-interface-hash(|comp-unit, <defs-to-signature>)) // Set the local interface hash (local because hash does not include imported signatures)
 	; strc-output-frontend
 	; s2j
 	; with(clean-output-dir)

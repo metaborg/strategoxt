@@ -22,6 +22,8 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	 * 
 	 */
 	private static final long serialVersionUID = 3462389746235492342L;
+	
+	private Integer localInterfaceHashCode = null;
 
 	public static StrategoCompilationUnit create( Stamper stamper, Path compileDep, Path compileTarget, Path editedDep, Path editedTarget, Set<RelativePath> sourceFiles, Map<RelativePath, Integer> editedSourceFiles, Mode mode, Synthesizer syn) throws IOException {
 		return CompilationUnit.create(StrategoCompilationUnit.class, stamper, compileDep, compileTarget, editedDep, editedTarget, sourceFiles, editedSourceFiles, mode, syn);
@@ -36,34 +38,36 @@ public class StrategoCompilationUnit extends CompilationUnit {
 		return true;
 	}
 	
+	public void setLocalInterfaceHashCode(Integer hashCode) {
+		this.localInterfaceHashCode = hashCode;
+	}
+	
 	@Override
 	public Integer getInterfaceHash() {
-		Set<Path> interfaceFiles = this.getAllInterfacesFiles();
-		if (interfaceFiles == null) {
-			System.out.println("Interface hash for " + this.getSourceArtifacts() + ": null");
-			return null;
+		System.out.println("Interface hash for " + this +": " + super.getInterfaceHash());
+		return super.getInterfaceHash();
+	}
+	
+	protected Integer calculateTransisitveInterfaceHash() {
+		Set<Integer> hashesSet = this.getAllInterfacesHashes();
+		Integer hash = null;
+		if (hashesSet != null){
+			hash = hashesSet.hashCode();
 		}
-		Set<Integer> hashesSet = new HashSet<>();
-		for (Path path : interfaceFiles) {
-			hashesSet.add(ContentHashStamper.instance.stampOf(path));
-		}
-		int hash = hashesSet.hashCode();
-		System.out.println("Interface hash for " + this.getSourceArtifacts() + ": " + hash);
 		return hash;
 	}
 	
-	private Set<Path> getAllInterfacesFiles() {
-		return this.visit(new ModuleVisitor<Set<Path>>() {
+	private Set<Integer> getAllInterfacesHashes() {
+		return this.visit(new ModuleVisitor<Set<Integer>>() {
 
 			@Override
-			public Set<Path> visit(CompilationUnit mod, Mode mode) {
+			public Set<Integer> visit(CompilationUnit mod, Mode mode) {
 				if (mod instanceof StrategoCompilationUnit) {
-					Path interfaceFile = ((StrategoCompilationUnit)mod).getInterfaceFile();
-					if (interfaceFile == null) {
+					if (((StrategoCompilationUnit) mod).localInterfaceHashCode == null) {
 						return null;
 					} else {
-						Set<Path> set = new HashSet<>();
-						set.add(interfaceFile);
+						Set<Integer> set = new HashSet<>();
+						set.add(((StrategoCompilationUnit) mod).localInterfaceHashCode);
 						return set;
 					}
 				} else {
@@ -72,7 +76,7 @@ public class StrategoCompilationUnit extends CompilationUnit {
 			}
 
 			@Override
-			public Set<Path> combine(Set<Path> t1, Set<Path> t2) {
+			public Set<Integer> combine(Set<Integer> t1, Set<Integer> t2) {
 				if (t1 == null || t2 == null)
 					return null;
 				t1.addAll(t2);
@@ -80,25 +84,16 @@ public class StrategoCompilationUnit extends CompilationUnit {
 			}
 
 			@Override
-			public Set<Path> init() {
+			public Set<Integer> init() {
 				return new HashSet<>();
 			}
 
 			@Override
-			public boolean cancel(Set<Path> t) {
+			public boolean cancel(Set<Integer> t) {
 				return t == null;
 			}
 		
 		});
-	}
-	
-	private Path getInterfaceFile() {
-		for (Path p : this.getGeneratedFiles()) {
-			if (p.getAbsolutePath().endsWith(".sig")) {
-				return p;
-			}
-		}
-		return null;
 	}
 	
 	/*@Override

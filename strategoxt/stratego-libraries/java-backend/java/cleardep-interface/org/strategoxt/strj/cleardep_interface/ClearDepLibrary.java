@@ -30,6 +30,8 @@ public class ClearDepLibrary extends AbstractStrategoOperatorRegistry {
 		this.add(new ClearDep_CompilationUnit_is_consistent_shallow());
 		this.add(new ClearDep_CompilationUnit_is_consistent_to_interfaces());
 		this.add(new ClearDep_CompilationUnit_update_module_dependency_interface());
+		this.add(new ClearDep_StrategoCompilationUnit_set_local_interface_hash());
+		this.add(new ClearDep_StrategoCompilationUnit_calculate_interface_hash());
 	}
 	
 	@Override

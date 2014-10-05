@@ -221,4 +221,16 @@ strategies
 			; prim("ClearDep_BuildTask_get_units")
 			; map(\s->StrategoCompilationUnit(s)\)
 		) <+ fail-with-message(|["Get units for tasks failed for ", <id>])
+		
+	set-local-interface-hash(|unit, hash) = 
+		where(
+			  !unit
+			; unpack-stratego-unit
+			; prim("ClearDep_StrategoCompilationUnit_set_interface_hash",|hash)
+		) <+ fail-with-message(|["Set local interface hash failed for ", <id> , " with hash " , hash])
 	
+	calculate-transitive-interface-hash =
+		  where(
+			  unpack-stratego-unit
+			; prim("ClearDep_StrategoCompilationUnit_calculate_interface_hash")
+		) <+ fail-with-message(|["Calculate transisitve interface hash failed for ", <id>])
