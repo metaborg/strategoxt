@@ -94,7 +94,7 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	
 	private Path getInterfaceFile() {
 		for (Path p : this.getGeneratedFiles()) {
-			if (p.getAbsolutePath().endsWith(".rtree")) {
+			if (p.getAbsolutePath().endsWith(".sig")) {
 				return p;
 			}
 		}
@@ -142,7 +142,7 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	
 	@Override
 	public String toString() {
-		return "SC(" + this.getSourceArtifacts().toString() +")";
+		return "SC[" + super.hashCode() + "]_(" + this.getSourceArtifacts().toString() +")";
 	}
 
 }

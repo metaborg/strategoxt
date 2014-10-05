@@ -53,11 +53,15 @@ strategies
 		; map(	not(needsTaskToBeBuild) <+ (task-get-units
 				; where(<debug> "New Task")
 				; debug
-				; map(	  get-stratego-source-file
-						; path-get-full-path
-						; !FILE(<id>)
-						; compile(back-end|working-package,working-output)
+				; map(	 
+						compile(back-end|working-package,working-output)
 					))
+				; where( map ({unit: 
+					  id => unit
+					; get-all-module-dependencies ;debug
+					; map(update-module-dependency-interface(|unit))
+					}))
+				; map (write-compilation-unit)
 				
 		)
 		
@@ -66,8 +70,12 @@ strategies
 	  if !AbsolutePath(working-output);not(path-is-directory)
 	    then log(|Error(), ["Given path is not a directory or does not end with a slash: ", working-output]); fail
 	  end
+	; id => read-unit
+	; get-stratego-source-file
+	; path-get-full-path
+	; !FILE(<id>)
 	; where(fileName := <\FILE(s) -> s\>)
-	; if read-compilation-unit(|AbsolutePath(fileName)) => read-unit; is-persisted; is-consistent-shallow; is-consistent-to-interfaces
+	; if !read-unit; is-persisted; is-consistent-shallow; is-consistent-to-interfaces
 		then 
 			  log(|Info(),["Check to compile, is consistent to interfaces, do not compile ", fileName])
 			; !read-unit => work-unit
@@ -84,6 +92,7 @@ strategies
 			; log(|Info(), ["Place files in:     ", working-output])
 			; rules(CompilingModules: moduleName -> 1)
 			; create-compilation-unit-for-module(|moduleName) => work-unit
+			; where (!work-unit; get-module-dependencies; debug)
 			; save-and-set-options(
 				  where(<debug> "Rewrite")
 				  ; !parseResult
@@ -102,7 +111,7 @@ strategies
 				  ; back-end(|work-unit)
 			  | working-package,working-output,fileName,moduleName)
 			; !work-unit
-			; persist-compilation-unit(|moduleName)
+			; where (!work-unit; get-module-dependencies; debug)
 			; rules(CompilingModules-: moduleName)
 			; log(|Info(), ["Compilation of ", moduleName, " completed."])
 
@@ -140,9 +149,6 @@ strategies
 	
 	read-compilation-unit-for-module(|module-name) = 
 		  read-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name)
-		
-	persist-compilation-unit(|module-name) = 
-		  write-compilation-unit
 	
 	separate-compilation-rewrite-imports(back-end|module-name, module-unit, working-package,working-output) =
 		?(fileName, <id>);
@@ -157,37 +163,32 @@ strategies
 			
 		
 					
-			maybe-compile(|imported-module-name) = id /*
+			maybe-compile(|imported-module-name) = 
 			{| import-unit:
 				 (read-compilation-unit-for-module(|imported-module-name)
 				 	<+ (where(<debug> "Create");create-compilation-unit-for-module(|imported-module-name);debug)) // => import-unit
 						;debug
 				; if equal(| module-unit)
 					then	  log(|Info(), ["Module imports itself ", module-name])
-					else 
-						if depends-on-transitivly-on-other(|module-unit, <id>)
-						then
+					else
+						  add-module-dependency(|module-unit)
+						; if depends-on-transitivly-on-other(|module-unit, <id>)
+							then
 							  log(|Info(),[module-unit , " depends transitivly, do not follow import ", imported-module-name])
 							; if depends-on-transitivly-noncircularly(|module-unit)
 								then log(|Info(), ["Imports depends on module ", imported-module-name , " - ", module-name])
-							//;	 add-circular-module-dependency(|module-unit)
-							 else log(|Info(), ["Module depends on import ", module-name, " - " , imported-module-name])
-							 //	; add-module-dependency(|module-unit)
-							end
-							//; add-module-dependency(|module-unit)
-						else
-							 // add-module-dependency(|module-unit);
-							 if !imported-module-name; CompilingModules
+								else log(|Info(), ["Module depends on import ", module-name, " - " , imported-module-name])
+							  end
+							else
+							  if !imported-module-name; CompilingModules
 								then log(|Info(), ["Module ", imported-module-name, " is already in work, do not follow import"])
 								else  //add-module-dependency(|module-unit);
 									  log(|Info(),["From ", module-name ," follow import ", imported-module-name]);debug
-									; !imported-module-name
-									; separate-compilation-get-file
 									; compile(back-end|working-package,working-output)
 							  end
 					end
 				end
-			|}*/
+			|}
 	
 		in
 		fold-on-imports(

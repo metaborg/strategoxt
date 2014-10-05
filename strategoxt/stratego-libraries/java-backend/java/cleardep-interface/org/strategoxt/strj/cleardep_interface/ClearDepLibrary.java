@@ -16,6 +16,7 @@ public class ClearDepLibrary extends AbstractStrategoOperatorRegistry {
 		this.add(new ClearDep_CompilationUnit_depends_on_transitivly_non_circularly());
 		this.add(new ClearDep_CompilationUnit_add_module_dep());
 		this.add(new ClearDep_CompilationUnit_get_module_deps());
+		this.add(new ClearDep_CompilationUnit_get_module_circ_deps());
 		this.add(new ClearDep_CompilationUnit_add_generated_file());
 		this.add(new ClearDep_CompilationUnit_is_persisted());
 		this.add(new ClearDep_BuildSchedule_createBuildSchedule());
@@ -28,6 +29,7 @@ public class ClearDepLibrary extends AbstractStrategoOperatorRegistry {
 		this.add(new ClearDep_CompilationUnit_get_source_files());
 		this.add(new ClearDep_CompilationUnit_is_consistent_shallow());
 		this.add(new ClearDep_CompilationUnit_is_consistent_to_interfaces());
+		this.add(new ClearDep_CompilationUnit_update_module_dependency_interface());
 	}
 	
 	@Override

@@ -89,6 +89,14 @@ strategies
 			  unpack-stratego-unit
 			; prim("ClearDep_CompilationUnit_add_module_dep",| <unpack-stratego-unit> compilation-unit)
 		  ) <+  log(|Info(), ["Failed to add module dependency ", <id> , " to ", compilation-unit]);fail
+	
+	// Updates the module dependency interface hash for the current term in compilation-unit
+	// That means that the current term is a dependency of compilation unit
+	update-module-dependency-interface(|compilation-unit) =
+		where (
+			  unpack-stratego-unit
+			; prim("ClearDep_CompilationUnit_update_module_dependency_interface", |<unpack-stratego-unit> compilation-unit)
+		) <+ fail-with-message(|["Update module dependency interface failed for: update ", <id> , " in ", compilation-unit])
 		  
 	is-consistent =
 		  where (
@@ -149,9 +157,21 @@ strategies
 		; not(depends-on-transitivly-noncircularly(|check-against-unit))
 		
 	get-module-dependencies =
-		( unpack-stratego-unit
+		(( unpack-stratego-unit
 		; prim("ClearDep_CompilationUnit_get_module_deps")
-		) <+ (log(|Info(), ["Get module dependencies failed for ", <id>]);fail)
+		) <+ fail-with-message(|["Get module dependencies failed for ", <id>]) )
+		; map(pack-stratego-unit)
+		
+	get-module-circular-dependencies =
+		(( unpack-stratego-unit
+		; prim("ClearDep_CompilationUnit_get_module_circ_deps")
+		) <+ fail-with-message(|["Get module circular dependencies failed for ", <id>]))
+		; map(pack-stratego-unit)
+	
+	get-all-module-dependencies =
+		  !(<get-module-dependencies>, <get-module-circular-dependencies>)
+		; conc
+		
 	
 	get-dep-file(|source-file) =
 		  !source-file

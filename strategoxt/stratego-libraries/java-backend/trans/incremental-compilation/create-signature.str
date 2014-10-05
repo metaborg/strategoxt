@@ -1,0 +1,36 @@
+module incremental-compilation/create-signature
+
+imports libstrategolib
+
+strategies
+
+	defs-to-signature =
+	    Specification(
+	      [Signature([Constructors(filter-exported-constructors)]), 
+	       Strategies(filter-exported-strategies-to-sig)])
+		   
+	filter-exported-strategies-to-sig =
+		  filter-exported-strategies
+		; remove-var-decs
+		
+		
+	remove-var-decs =
+		bottomup(\VarDec(s,x) -> VarDec("_", x)\<+id)
+		
+		
+    export-signature =
+      strc-if-lib(where(
+        if <eq> (<get-config> "baseout", <get-config> "basein") then
+          <get-config> "baseout"
+          ; warn(|<concat-strings>["Could not export library signature: name for library same as name for base file"])
+        else
+          log-timed(
+            defs-to-signature
+            ; write-to
+            ; copy-to(strc-getoutfile(!".sig") => file1)
+            ; log(|Info(), ["Abstract syntax in '", file1, "'"])
+          | "Export of externals succeeded"
+          , 1
+          )
+        end
+      ))
