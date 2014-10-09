@@ -30,10 +30,15 @@ strategies
 
 	create-compilation-unit(|source-file) =
 		  (where(<is-path;path-exists> source-file)
-		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), Some(source-file), None(), None(), [source-file], [], Compile(), None())
+		; !source-file; path-replace-extension(|"meta") => meta-file
+		; (if !meta-file; path-exists
+			then ![source-file, meta-file]
+			else ![source-file] 
+			end) => sources
+		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), Some(source-file), None(), None(), sources, [], Compile(), None())
 		; prim("ClearDep_CompilationUnit_create")
 		; !StrategoCompilationUnit(<id>))
-		<+ (log(|Info(), ["Failed to create Compilation unit for ", source-file]);fail)
+		<+ fail-with-message(|["Failed to create Compilation unit for ", source-file])
 
 	read-compilation-unit(|source-file) =
 		  (where(<is-path;path-exists> source-file)

@@ -132,7 +132,11 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 	@Override
 	public String toString() {
-		return "SC[" + super.hashCode() + "]_(" + this.getSourceArtifacts().toString() + ")";
+		String sourceFiles = "";
+		for (RelativePath p : this.getSourceArtifacts()) {
+			sourceFiles += p.getRelativePath() + ", ";
+		}
+		return "SC[" + super.hashCode() + "]_(" + sourceFiles + ")";
 	}
 
 	@Override

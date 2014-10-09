@@ -80,6 +80,20 @@ strategies
 		; !(ext, <get-extension>)
 		; eq
 	
+	path-remove-extension =
+		  ?AbsolutePath(<id>)
+		; remove-extension
+		; !AbsolutePath(<id>)
+	
+	path-remove-extension =
+		  ?RelativePath(parent, <id>)
+		; remove-extension
+		; !RelativePath(parent, <id>)
+	
+	path-replace-extension(|newext) =
+		  path-remove-extension
+		; path-add-extension(|newext)
+	
 	string-ensure-trailing-slash =
 		if not(path-is-directory)
 		  then ![<id>,"/"];concat-strings
