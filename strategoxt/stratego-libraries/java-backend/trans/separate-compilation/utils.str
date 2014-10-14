@@ -1,4 +1,4 @@
-module incremental-compilation/utils
+module separate-compilation/utils
 
 strategies
 

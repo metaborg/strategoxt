@@ -1,0 +1,22 @@
+module separate-compilation/separate-compilation-options
+
+imports libstratego-lib
+imports cleardep/cleardep
+
+strategies
+	separate-compilation-options =
+	    Option(
+	      "--complete-rebuild"
+	    , <set-config> ("--complete-rebuild", ()); !()
+	    , !"--complete-rebuild     Rebuilds all modules, inpedenent whether they are consistent or not"
+	    )
+		
+	complete-rebuild = 
+		  !"--complete-rebuild"
+		; get-config
+		
+	get-schedule-mode =
+		  if complete-rebuild
+			then !RebuildAll()
+			else !RebuildInconsistent()
+		  end

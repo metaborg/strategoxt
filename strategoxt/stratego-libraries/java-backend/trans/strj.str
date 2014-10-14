@@ -18,7 +18,7 @@ imports
   s2j
   lib/dr-scoping
   separate-compilation
-  incremental-compilation/create-signature
+  separate-compilation/create-signature
 
 strategies
 

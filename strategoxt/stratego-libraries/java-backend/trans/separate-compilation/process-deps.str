@@ -1,5 +1,5 @@
-module incremental-compilation/process-deps
-imports incremental-compilation/utils
+module separate-compilation/process-deps
+imports separate-compilation/utils
 imports cleardep/cleardep
 
 strategies
@@ -18,7 +18,10 @@ strategies
 					  ;
 				  		 separate-compilation-get-relative-file
 						 	; where(path-exists)
-							; read-or-create-compilation-unit
+							; if complete-rebuild 
+								then create-compilation-unit
+								else read-or-create-compilation-unit
+							  end
 						
 					)
 		; Snd

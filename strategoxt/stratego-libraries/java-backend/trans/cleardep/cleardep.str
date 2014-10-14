@@ -2,7 +2,7 @@ module cleardep/cleardep
 
 imports libstrategolib
 imports cleardep/fileutils
-imports incremental-compilation/process-deps
+imports separate-compilation/process-deps
 
 signature
 	constructors
@@ -19,6 +19,9 @@ signature
 	InProgress: TaskState
 	Success: TaskState
 	Failure: TaskState
+	
+	RebuildAll: ScheduleMode
+	RebuildInconsistent: ScheduleMode
 
 strategies
 
@@ -39,6 +42,8 @@ strategies
 		; prim("ClearDep_CompilationUnit_create")
 		; !StrategoCompilationUnit(<id>))
 		<+ fail-with-message(|["Failed to create Compilation unit for ", source-file])
+			
+	create-compilation-unit = create-compilation-unit(|<id>)
 
 	read-compilation-unit(|source-file) =
 		  (where(<is-path;path-exists> source-file)
@@ -182,10 +187,10 @@ strategies
 		  !source-file
 		; path-add-extension(|"dep")
 		
-	createBuildSchedule =
+	createBuildSchedule(|schedule-mode) =
 		    (is-list
 		  ; map(unpack-stratego-unit)
-		  ; prim("ClearDep_BuildSchedule_createBuildSchedule", extract-dependencies |)
+		  ; prim("ClearDep_BuildSchedule_createBuildSchedule", extract-dependencies | schedule-mode)
 		  ; !BuildSchedule(<id>)
 		) <+ fail-with-message(|["createBuildSchedule failed for ", <id>])
 	

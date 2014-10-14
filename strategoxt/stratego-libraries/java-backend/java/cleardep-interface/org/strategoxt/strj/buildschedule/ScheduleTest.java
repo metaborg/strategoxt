@@ -18,8 +18,11 @@ public class ScheduleTest {
 		Mode mode = new DoCompileMode(null, true);
 		StrategoCompilationUnit unit = StrategoCompilationUnit.read(ContentHashStamper.instance, new AbsolutePath(
 				"/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/StrjTest/src/spec/stratego-lib-posix-xsi.str.dep"), null, null, mode).a;
-		BuildSchedule s = new BuildScheduleBuilder(Collections.<CompilationUnit>singleton(unit),BuildSchedule.ScheduleMode.REBUILD_INCONSISTENT).createBuildSchedule( null, mode);
-	//	System.out.println(s.flatten());
+	//	for (int i = 0; i < 1000; i++) {
+		BuildSchedule s = new BuildScheduleBuilder(Collections.<CompilationUnit>singleton(unit),BuildSchedule.ScheduleMode.REBUILD_ALL).createBuildSchedule( null, mode);
+		System.out.println(s.getOrderedSchedule());
+		//}
+		
 		
 	}
 }

@@ -22,7 +22,7 @@ public class ClearDep_BuildSchedule_flatten extends AbstractPrimitive {
 			return false;
 		}
 		BuildSchedule schedule = ((BuildScheduleContainer) arg0.current()).get();
-		List<BuildSchedule.Task> flattenedSchedule = schedule.flatten();
+		List<BuildSchedule.Task> flattenedSchedule = schedule.getOrderedSchedule();
 		List<BuildTaskContainer> wrappedFlattenedSchedule = new ArrayList<>(flattenedSchedule.size());
 		for (BuildSchedule.Task task : flattenedSchedule) {
 			wrappedFlattenedSchedule.add(new BuildTaskContainer(task));

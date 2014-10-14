@@ -1,4 +1,4 @@
-module incremental-compilation/create-signature
+module separate-compilation/create-signature
 
 imports libstrategolib
 

@@ -20,13 +20,12 @@ import org.sugarj.common.cleardep.mode.DoCompileMode;
 public class ClearDep_BuildSchedule_createBuildSchedule extends AbstractPrimitive {
 
 	public ClearDep_BuildSchedule_createBuildSchedule() {
-		super("ClearDep_BuildSchedule_createBuildSchedule", 1, 0);
+		super("ClearDep_BuildSchedule_createBuildSchedule", 1, 1);
 	}
 
 	@Override
 	public boolean call(IContext arg0, Strategy[] arg1, IStrategoTerm[] arg2) throws InterpreterException {
 		if (!Term.isTermList(arg0.current())) {
-			System.out.println("No list");
 			return false;
 		}
 		Set<CompilationUnit> rootUnits = new HashSet<>();
@@ -34,12 +33,23 @@ public class ClearDep_BuildSchedule_createBuildSchedule extends AbstractPrimitiv
 			if (term instanceof CompilationUnitContainer) {
 				rootUnits.add(((CompilationUnitContainer<?>) term).getUnit());
 			} else {
-				System.out.println("No compilation unit");
 				return false;
 			}
 		}
+		if (!Term.isTermAppl(arg2[0])) {
+			return false;
+		}
 		try {
-			 BuildScheduleBuilder builder = new BuildScheduleBuilder(rootUnits,ScheduleMode.REBUILD_INCONSISTENT);
+			ScheduleMode mode;
+			String modeString = Term.tryGetName(arg2[0]);
+			if ("RebuildAll".equals(modeString)) {
+				mode = ScheduleMode.REBUILD_ALL;
+			} else if ("RebuildInconsistent".equals(modeString)) {
+				mode = ScheduleMode.REBUILD_INCONSISTENT;
+			} else {
+				return false;
+			}
+			 BuildScheduleBuilder builder = new BuildScheduleBuilder(rootUnits,mode);
 			 
 			 builder.updateDependencies(new StrategoDependencyExtractor(arg1[0], arg0), null);
 			 BuildSchedule schedule = builder.createBuildSchedule( null, new DoCompileMode(null, true));

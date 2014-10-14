@@ -2,8 +2,9 @@ module separate-compilation
 
 imports cleardep/cleardep
 imports cleardep/fileutils
-imports incremental-compilation/utils
-imports incremental-compilation/process-deps
+imports separate-compilation/utils
+imports separate-compilation/process-deps
+imports separate-compilation/separate-compilation-options
 
 signature
 	constructors
@@ -46,10 +47,13 @@ strategies
 		; !AbsolutePath(fileName)
 		; path-relativize (|
 			<pack-include-path;fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\)> )
-		; read-or-create-compilation-unit(|<id>)
+		; if complete-rebuild 
+			then create-compilation-unit(|<id>)
+			else read-or-create-compilation-unit(|<id>)
+		  end
 	// Create the build schedule for the compilation unit and flatten it
 		; ![<id>]
-		; createBuildSchedule
+		; createBuildSchedule(|<get-schedule-mode>)
 		; flattenBuildSchedule
 		; log(|Info(), ["Calculated build schedule ", <id>])
 	// Compile according to the build schedule, outer map maps over the build tasks in the build schedule
@@ -71,6 +75,7 @@ strategies
 				
 		)
 		
+
 	
 	compile (back-end|working-package,working-output)=
 	  if !AbsolutePath(working-output);not(path-is-directory)
