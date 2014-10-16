@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.spoofax.IAsyncCancellable;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.Interpreter;
 import org.spoofax.interpreter.core.InterpreterErrorExit;
@@ -34,6 +33,7 @@ import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoString;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.StrategoConstructor;
 import org.spoofax.terms.TermFactory;
 import org.spoofax.terms.TermTransformer;

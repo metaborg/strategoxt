@@ -1,0 +1,188 @@
+module test116
+
+imports
+  libstratego-lib
+
+rules
+
+  main = 
+    test-suite(!"test116",
+      test0;
+      test1;
+      test2;
+      test3;
+      test4;
+      test5;
+      test6;
+      test7;
+      test8;
+      test9;
+      test10;
+      test11;
+      test12;
+      test13;
+      test14;
+      test15
+    )
+
+  s0(s) = s
+
+  test0 =
+    apply-test(!"test0",
+      s0(?a); !a,
+      !123,
+      !123
+    )
+
+  s1(s) = !999; ?a; !123; s; !999; ?a
+
+  test1 =
+    apply-test(!"test1",
+      s1(?a); !a,
+      !0,
+      !123
+    )
+
+  s2(|t) = !t; inc 
+
+  test2 =
+    apply-test(!"test2",
+      ?t; s2(|t),
+      !42,
+      !43
+    )
+  
+  s3(s) = s; ?3 <+ s; inc; ?t; s3(!t)
+  
+  test3 =
+    apply-test(!"test3",
+      s3(!1),
+      !0,
+      !3
+    )
+
+  s4-1(s) = dec; s
+  s4-2 = dec 
+        
+  s4-comp(s1, s2) = ?t; s1(s2; !t) 
+  
+  test4 =
+    apply-test(!"test4",
+      s4-comp(s4-1, s4-2; ?a); !a,
+      !55,
+      !53
+    )
+  
+  s5-1(s) = s
+  s5-2 = ?t; ![]; s5-1(!t)
+  
+  test5 =
+    apply-test(!"test5",
+      s5-2,
+      ![1, 2, 3],
+      ![1, 2, 3]
+    )
+    
+  s6-1(s) = ?0 <+ dec; ?t; s6-1(!t); s 
+
+  test6 =
+    apply-test(!"test6",
+      s6-1(!55),
+      !10,
+      !55
+    )
+  
+  s7-1(|t) = !t; ?0 <+ !t; dec; ?t'; s7-1(|t'); !t
+
+  test7 =
+    apply-test(!"test7",
+      s7-1(|5),
+      !-100,
+      !5)
+  
+  
+  s8-1(|t) = !t; ?0 <+ !t; dec; ?t'; s8-2(|t'); !t
+
+  s8-2(|t) = s8-1(|t)
+
+  test8 =
+    apply-test(!"test8",
+      s8-1(|5),
+      !-100,
+      !5)
+  
+  s9-1 = ?t; s9-2(s9-3(|t))
+  s9-2(s) = s
+  s9-3(|t) = !t
+  
+  test9 =
+    apply-test(!"test9",
+      s9-1,
+      !42,
+      ?42)
+  
+  s10-1 = s10-1(s10-2)
+  s10-1(s1) = s1(!42 | 42)
+  s10-2(s2|t) = s2; ?t
+
+  test10 = 
+    apply-test(!"test10",
+      s10-1,
+      ![],
+      ?42)
+  
+  s11-1 = ?x; ![]; s11-2(s11-3(|<s11-4> x ))
+  s11-2(s1) = s1 
+  s11-3(|t) = !t
+  s11-4 = id
+  
+  test11 =
+  	apply-test(!"test11",
+  	 s11-1,
+  	 !42,
+  	 ?42)
+  
+  s12-1 = s12-2(s12-3(!42))
+  s12-2(s) = s12-4(!43, s)
+  s12-3(s) = s
+  s12-4(s, s2) = s; s2
+  
+  test12 = 
+  	apply-test(!"test12",
+	  	s12-1,
+	  	![],
+	  	?42)
+	
+  s13-1 = s13-2(s13-3(!42))
+  s13-2(s) = ?[_, _|xs]; <s13-2(s13-2(s))> xs <+ ?[_]; s
+  s13-3(s) = s
+
+  test13 = 
+    apply-test(!"test13",
+      s13-1,
+      ![1, 2, 3],
+      ?42)
+
+  // s14-1(ss) = (?1 + ?2 + ?3 + ?4); inc; s14-1(not(ss)) + ?5; ss  
+
+
+  s14-1(ss) = (?1 + ?2 + ?3 + ?4); inc; let ss1 = not(ss) in s14-1(ss1) end + ?5; ss
+
+	test14 = 
+    apply-test(!"test14",
+      s14-1(?5),
+      !1,
+      ?5)
+ 
+  s15-1(s) = s
+  s15-2(s) = s
+  s15-3(|t) = !t 
+ 
+  test15 =
+    apply-test(!"test15",
+      s15-1(s15-2(s15-3(|42))),
+      ![],
+      ?42)
+  
+  
+  

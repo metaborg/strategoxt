@@ -1,8 +1,8 @@
 package org.strategoxt.lang.compat.strc_compat;
 
-import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.NotImplementedException;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.compat.StringValuePrimitive;

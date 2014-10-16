@@ -1,11 +1,11 @@
 package org.strategoxt.lang;
 
-import org.spoofax.NotImplementedException;
 import org.spoofax.interpreter.core.IConstruct;
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.stratego.CallT;
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.spoofax.terms.util.NotImplementedException;
 import org.strategoxt.lang.Strategy;
 
 /**

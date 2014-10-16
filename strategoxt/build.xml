@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.strategoxt" default="all">
+
+	<property name="baseline" value="baseline" />
+	<property name="base-strategoxt" location="${baseline}/share/strategoxt/strategoxt/strategoxt.jar" />
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
 
@@ -57,6 +60,7 @@
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
+			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<fileset dir="syntax" includes="build.xml" />
 			<target name="all" />
 		</subant>
@@ -64,19 +68,28 @@
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
+			<property name="base-strategoxt" value="${base-strategoxt}" />
 			<property name="repository.syntax" location="${subdists-install-prefix}" />
 			<property name="repository.libraries" location="${subdists-install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
 			<target name="all" />
 		</subant>
 	</target>
+	
+	<target name="clean" depends="clean-syntax, clean-libraries"/>
 
-	<target name="clean">
+	<target name="clean-syntax">
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="syntax" includes="build.xml" />
 			<target name="clean" />
 		</subant>
+		<delete dir="${test-gen}" />
+		<delete dir="${subdists-install-prefix}" />
+		<delete dir="${bin}" />
+	</target>
+
+	<target name="clean-libraries">
 		<subant inheritall="false">
 			<property name="install-prefix" location="${install-prefix}" />
 			<fileset dir="stratego-libraries" includes="build.xml" />
@@ -86,7 +99,7 @@
 		<delete dir="${subdists-install-prefix}" />
 		<delete dir="${bin}" />
 	</target>
-
+				
 	<target name="jar" depends="build">
 		<mkdir dir="${bin}" />
 		<jar destfile="${bin}/strategoxt.jar" manifest="stratego-libraries/java-backend/java/META-INF/MANIFEST.MF" update="false">
@@ -94,6 +107,7 @@
 			<fileset dir="ant-contrib" includes="**/*.xml" />
 			<fileset dir="${subdists-install-prefix}" includes="**/*.class" />
 			<zipgroupfileset dir="${subdists-install-prefix}" includes="**/*.jar" />
+			<zipgroupfileset dir="${baseline}/share/strategoxt/build-lib" includes="ant-contrib-0.6.jar" />
 			<!-- <fileset dir="${subdists-install-prefix}" includes="**/*.rtree" />
 			<fileset dir="${subdists-install-prefix}" includes="**/*.af" />
 			<fileset dir="${subdists-install-prefix}" includes="**/*.tbl" /> -->
@@ -111,49 +125,41 @@
 		<copy todir="${install-prefix}" verbose="true">
 			<fileset dir="${subdists-install-prefix}" includes="**/*" />
 		</copy>
-		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-location}" />
+		<copy todir="${install-location}" verbose="true">
+			<fileset dir="${baseline}/share/strategoxt" includes="macosx/*, linux/*, build-lib/*" />
+		</copy>
+		<copy todir="${install-prefix}/share" verbose="true">
+			<fileset dir="${baseline}/share" includes="sdf-library/**/*" />
+		</copy>
+		<tar destfile="${install-prefix}/strategoxt-distrib.tar" basedir="${install-prefix}" excludes="strategoxt-distrib.tar" />
+		<copy todir="stratego-libraries/java-backend/java/" verbose="true" overwrite="true">
+			<fileset dir="${install-location}/strategoxt" includes="strategoxt.jar" />
+		</copy>
 		<delete file="${install-prefix}/nix-support/hydra-build-products" />
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file jar ${install-location}/strategoxt/strategoxt.jar${line.separator}</echo>
 		<echo file="${install-prefix}/nix-support/hydra-build-products" append="true">file tar ${install-prefix}/strategoxt-distrib.tar</echo>
 	</target>
 
+	<target name="test-compiler" depends="antcontrib-load">
+		<subant inheritall="false">
+			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="install-prefix" location="${install-prefix}" />
+			<fileset dir="stratego-libraries" includes="build.xml" />
+			<target name="test-compiler" />
+		</subant>
+	</target>
 
-	<target name="test">
-		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" />
-		<mkdir dir="${test-gen}" />
-		<for param="deffile">
-			<path>
-				<fileset dir="${libraries-dir}" includes="sglr/tests/*.def" excludes="sglr/tests/List.def" />
-			</path>
-			<sequential>
-				<basename file="@{deffile}" property="@{deffile}.basename" suffix=".def" />
-				<dirname file="@{deffile}" property="@{deffile}.dirname" />
-				<property name="@{deffile}.rel.in" value="@{deffile}" relative="yes" />
-				<property name="@{deffile}.rel.out" value="${test-gen}/${@{deffile}.basename}" relative="yes" />
+	<target name="test-interpreter" depends="antcontrib-load">
+		<subant inheritall="false">
+			<property name="strj-sut" location="${install-location}/strategoxt/strategoxt.jar" />
+			<property name="install-prefix" location="${subdists-install-prefix}" />
+			<fileset dir="stratego-libraries" includes="build.xml" />
+			<target name="test-interpreter" />
+		</subant>
+	</target>
 
-				<sdf2rtg input="${@{deffile}.rel.in}" output="${@{deffile}.rel.out}.rtg" main="Main" />
-				<rtg2sig input="${@{deffile}.rel.out}.rtg" output="${@{deffile}.rel.out}.str" main="Main" />
-				<sdf2table input="@{deffile}" output="${test-gen}/${@{deffile}.basename}.tbl" main="Main" />
-			</sequential>
-		</for>
+	<target name="test" depends="test-compiler, test-interpreter">
 
-		<for param="strfile">
-			<path>
-				<fileset dir="${libraries-dir}" includes="*/tests/*.str" />
-				<fileset dir="${syntax-dir}/java-front" includes="test/*.str" />
-			</path>
-			<sequential>
-				<trycatch>
-					<try>
-						<strj-test input="@{strfile}" synaterm="${subdists-install-prefix}/share/strategoxt/aterm-front" synbox="${subdists-install-prefix}/share/strategoxt/gpp/syn/box" generated="${test-gen}" compiler="${install-location}/strategoxt.jar" />
-					</try>
-					<catch>
-						<echo message="FAILURE: Test @{strfile} failed" />
-						<!-- <fail /> -->
-					</catch>
-				</trycatch>
-			</sequential>
-		</for>
 	</target>
 
 </project>

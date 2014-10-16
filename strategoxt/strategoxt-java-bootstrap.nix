@@ -1,14 +1,27 @@
 { nixpkgs ? ../../nixpkgs
 , javaFront ? { outPath = ../../java-front ; rev = 1234; }
 , strategoxtJava ? { outPath = ../../strategoxt ; rev = 1234; }
-, baseline ? ../../strategoxt.jar
+, baselineTarball ? ../../strategoxt-distrib.tar
 } :
 let
   pkgs = import nixpkgs {};
 
-  baseline = pkgs.fetchurl {
-    url = https://github.com/metaborg/strategoxt/releases/download/baseline/strategoxt.jar;
-    sha256 = "316306e6c89301037bc6f83235cefb036f395bdc12cf848f75067653cc97344e";
+  baselineTarball = pkgs.fetchurl {
+    url = https://github.com/metaborg/strategoxt/releases/download/baselines%2Fbaseline-20140618/strategoxt-distrib.tar;
+    sha256 = "e13618393c9122a1adf773ea805fdffe11c078b1c2b6f10465dd153aacb5f1de";
+  };
+  
+  baseline = pkgs.stdenv.mkDerivation {
+      name = "strategoxt-baseline";
+
+
+      buildInputs = with pkgs; [ ];
+
+      buildCommand = ''
+        ensureDir $out
+        cd $out
+        tar -xf ${baselineTarball}
+      '';
   };
 
   bootstrap = baseline: nr:
@@ -30,14 +43,55 @@ let
         chmod -R a+w strategoxt/syntax/java-front
         cd ..
       '';
-
-      antTargets = ["all" "install"] ++ (pkgs.lib.optional (nr == 3) "test");
+      
+      antTargets = ["all" "install"] ++ (pkgs.lib.optional (nr == 3) "test-compiler");
       antProperties = [
         { name = "revision"; value = "${toString strategoxtJava.rev}"; }
         { name = "sdf2bundle"; value = pkgs.strategoPackages.sdf; }
+        { name = "baseline"; value = baseline; }
         { name = "install-prefix-out"; value = "$out"; }
       ] ;
-      antBuildInputs = [ pkgs.ecj baseline] ;
+      antBuildInputs = [
+        (pkgs.lib.concatStrings [baseline "/share/strategoxt/strategoxt" ])
+        pkgs.ecj
+      ] ; 
+
+      ANT_OPTS="-Xss8m -Xmx1024m";
+
+      dontInstall = true;
+    };
+
+  test = baseline: test-target:
+    pkgs.releaseTools.antBuild {
+      name = "strategoxt-java-test";
+      src = strategoxtJava;
+      buildInputs = with pkgs; [ strategoPackages.sdf ecj openjdk ];
+
+      preConfigure = ''
+        cd strategoxt
+        ulimit -s unlimited
+      '';
+
+      postUnpack = ''
+        cd $sourceRoot
+        rm -f strategoxt/syntax/java-front
+        mkdir -p strategoxt/syntax/java-front
+        cp -Rv ${javaFront}/* strategoxt/syntax/java-front/
+        chmod -R a+w strategoxt/syntax/java-front
+        cd ..
+      '';
+
+      antTargets = ["install" test-target];
+      antProperties = [
+        { name = "revision"; value = "${toString strategoxtJava.rev}"; }
+        { name = "sdf2bundle"; value = pkgs.strategoPackages.sdf; }
+        { name = "baseline"; value = baseline; }
+        { name = "install-prefix-out"; value = "$out"; }
+      ] ;
+      antBuildInputs = [
+        (pkgs.lib.concatStrings [baseline "/share/strategoxt/strategoxt" ])
+        pkgs.ecj
+      ] ; 
 
       ANT_OPTS="-Xss8m -Xmx1024m";
 
@@ -49,7 +103,8 @@ let
     bootstrap1 = bootstrap baseline 1;
     bootstrap2 = bootstrap jobs.bootstrap1 2;
     bootstrap3 = bootstrap jobs.bootstrap2 3;
-
+    test-compiler = test jobs.bootstrap3 "test-compiler";
+    test-interpreter = test jobs.bootstrap3 "test-interpreter";
   };
 in
   jobs

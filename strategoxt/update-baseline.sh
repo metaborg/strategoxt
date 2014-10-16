@@ -2,13 +2,15 @@
 
 rm -rf baseline &&
 
-wget https://github.com/metaborg/strategoxt/releases/download/baseline/strategoxt-baseline.zip &&
-
-unzip strategoxt-baseline.zip &&
-
-rm strategoxt-baseline.zip &&
+mkdir baseline &&
 
 cd baseline &&
+
+wget https://github.com/metaborg/strategoxt/releases/download/baselines%2Fbaseline-20140618/strategoxt-distrib.tar &&
+
+tar -xpf strategoxt-distrib.tar &&
+
+chmod a+x share/strategoxt/linux/* share/strategoxt/macosx/* &&
 
 git clone https://github.com/metaborg/java-front.git -b java-bootstrap java-front &&
 

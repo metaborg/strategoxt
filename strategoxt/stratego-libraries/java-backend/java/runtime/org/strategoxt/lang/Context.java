@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 
-import org.spoofax.IAsyncCancellable;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.core.InterpreterExit;
 import org.spoofax.interpreter.core.StackTracer;
@@ -23,6 +22,7 @@ import org.spoofax.interpreter.terms.IStrategoConstructor;
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.ITermFactory;
+import org.spoofax.interpreter.util.IAsyncCancellable;
 import org.spoofax.terms.TermFactory;
 import org.strategoxt.lang.compat.CompatManager;
 import org.strategoxt.lang.compat.SSL_EXT_java_call;
