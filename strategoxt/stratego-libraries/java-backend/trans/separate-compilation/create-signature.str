@@ -1,8 +1,13 @@
 module separate-compilation/create-signature
 
 imports libstrategolib
+imports separate-compilation/utils
 
 strategies
+
+	merge-rtrees =
+		  ?(Specification(l1), Specification(l2))
+		; !Specification(<conc> (l1, l2))
 
 	defs-to-signature =
 	    Specification(
@@ -34,3 +39,162 @@ strategies
           )
         end
       ))
+	  
+	  strc-export-external-defs2 =
+	    strc-if-lib(where(
+	      if <eq> (<get-config> "baseout", <get-config> "basein") then
+	        <get-config> "baseout"
+	        ; warn(|<concat-strings>["Could not export library signature: name for library same as name for base file"])
+	      else
+	        log-timed(
+	          defs-to-external-defs
+	          ; write-to
+	          ; copy-to(strc-getoutfile(!".rtree2");debug => file1)
+	          ; log(|Info(), ["Abstract syntax in '", file1, "'"])
+	        | "Export of externals succeeded"
+	        , 1
+	        )
+	      end
+	    ))
+		
+	create-rtree(|working-package,working-output) =
+	log(|Info(), ["Create rtree for ", <id>]);
+		get-stratego-source-file
+		; path-get-full-path
+		; debug
+		; !(IncludePathName(<id>),<pack-include-path>)
+		; debug
+		; separate-compilation-parse-file
+		; debug
+		; ?(_,<id>)
+		; where(moduleName:=<\Module(name,_)->name\><id>)
+		; debug
+		; ![<id>]
+		; pack-flatten-stratego
+		; debug
+		; strc-output-ast
+		; debug
+		; save-and-set-options (
+		 calculate-signature
+		; debug
+		; log(|Info(), ["Exporting rtree"])
+		; strc-export-external-defs2 | working-package,working-output, "", moduleName)
+	  
+	calculate-signature = 
+     {| HoArg, RenameVar, CallSignature, SameSigExtDef2:
+	 log(|Info(), ["Calculating signature"]);
+      m-transform-no-overlays(id
+
+        // add some definitions and constructors
+        ; if-not-lib(m-add-main)
+        ; m-add-anno-cong-def
+        ; where(dr-constructors; map(m-add-constructor))
+
+        // desugar and check constructors
+
+        ; m-transform-constructors(id
+            ; pre-desugar
+            ; try(DeclareVarToConst)
+  	      ; try((TupleDecl <+ QuotedConstrDecl); pre-desugar)
+            ; (GenerateCheckRule <+ dbg(|"GenerateCheckRule fails: "))
+            ; try(where(m-MkCongDef; m-add-def))
+          )
+
+        // desugar and check overlays
+
+        ; m-transform-overlays(id
+            ; pre-desugar
+            ; check-overlay
+            ; try(DeclareVarToConst)
+          )
+
+        ; m-transform-overlays(id
+            ; m-variables-to-constructors-in-def
+            ; pre-desugar
+            ; not(def-use-def)
+            ; not(check-where-with)
+            ; raise-annotations
+            ; GenerateCheckRule
+            ; DeclareExpandOverlay
+            ; where(Overlay-to-Congdef; m-add-def)
+          )
+
+        ; m-transform-overlays(
+            not(check-constructors)
+          )
+
+        // plug in dump of asts
+        ; if <get-config> "--dump-aterms" then 
+            where(
+              <debug> "Going to write to file"
+              ; if <get-config> "-i" then
+                  fp := <fopen <+ debug(!"Could not open file")> (<concat-strings> [<get-config> "-i", ".aterm"], "w")
+                else
+                  fp := <fopen <+ debug(!"Could not open file")> ("dump.aterm", "w")
+                end
+              ; <fprint <+ debug(!"Could not write to file")> (fp, [<bagof-StrAsts>])
+              ; <fclose> fp
+            )
+          end
+
+        // transform and check local definitions
+
+        ; m-transform-local-defs(map(id
+            ; m-repair-types
+            ; pre-desugar		
+            ; raise-annotations
+          ))
+
+        ; m-lift-dynamic-rules-from-spec
+	  
+  	  // Need to desguar generated rules for dynamic rules, too
+      //  ; m-transform-local-defs(map(id
+      //      ; m-repair-types
+      //      ; pre-desugar-without-once		
+      //      ; raise-annotations
+      //    ))
+
+        ; check-calls
+
+        ; m-transform-local-defs(
+            map(id
+              ; stratego-desugar
+              ; raise-annotations
+  	        ; not(def-use-def)
+              ; not(check-constructors)
+              ; expand-overlays-in-def
+              ; rules-to-sdefs-def
+              ; desugar-list-matching
+  	        ; desugar-DefaultVarDec
+              ; strename
+              ; desugar-def
+              ; check-patterns
+            )
+          )
+
+        ; m-transform-local-defs(id
+            ; ![<joindefs>] 
+            ; [RenameSDef]
+          )
+
+        ; m-transform-external-defs(id
+            ; if ?[_,_|_] then
+                warn(|"multiple external definitions with same signature")
+  	        ; [rules(SameSigExtDef2 :+= <id>) | ![]]
+              end
+            ; [RenameSDef
+               ; desugar-DefaultVarDec
+               ; strename
+              ]
+          )
+
+        ; m-transform-local-defs(
+            [rename-calls
+             ; simplify
+  	       ; define-congruences-def
+            ]
+          )
+              
+        ; if-lib(remove-unused-external-defs, remove-unused-defs)
+      )
+      ; tfc1(|"Stratego-Core", "fe-cong") |}

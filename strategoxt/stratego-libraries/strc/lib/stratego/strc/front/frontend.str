@@ -9,7 +9,7 @@ imports
 
 strategies
 
-  frontend = {| HoArg, RenameVar, CallSignature:
+  frontend = {| HoArg, RenameVar, CallSignature, SameSigExtDef:
     m-transform-no-overlays(id
 
       // add some definitions and constructors

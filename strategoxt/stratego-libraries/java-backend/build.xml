@@ -260,14 +260,11 @@
 
 
 	<path id="build.classpath">
-<<<<<<< HEAD
 		<!-- <pathelement path="${java.class.path}" /> -->
 		<pathelement location="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src"/>
-=======
->>>>>>> ab4138f969231952a46a5ddf114256982296c867
 		<pathelement location="java/runtime" />
 		<pathelement location="java/cleardep-interface" />
-		<pathelement location="java/sugarj-common.jar" />
+		<!-- <pathelement location="java/sugarj-common.jar" /> -->
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
 		<pathelement location="java/spoofax-libs.jar" />
@@ -285,6 +282,10 @@
 
 	<target name="build-java" depends="build-stratego">
 		<mkdir dir="${bin.java}" />
+		<javac srcdir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
+			 <exclude name="org/sugarj/common/Activator.java"/>
+			 <exclude name="org/sugarj/common/JavaCommands.java"/>
+		</javac>
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
@@ -298,7 +299,7 @@
 			<fileset dir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/bin" includes="**/*.class"/>
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
-			<zipgroupfileset dir="java" includes="sugarj-common.jar" />
+			<!-- ><zipgroupfileset dir="java" includes="sugarj-common.jar" /> -->
 		</jar>
 	</target>
 
