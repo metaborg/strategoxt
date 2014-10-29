@@ -61,22 +61,15 @@ strategies
 	log(|Info(), ["Create rtree for ", <id>]);
 		get-stratego-source-file
 		; path-get-full-path
-		; debug
 		; !(IncludePathName(<id>),<pack-include-path>)
-		; debug
 		; separate-compilation-parse-file
-		; debug
 		; ?(_,<id>)
 		; where(moduleName:=<\Module(name,_)->name\><id>)
-		; debug
 		; ![<id>]
 		; pack-flatten-stratego
-		; debug
 		; strc-output-ast
-		; debug
 		; save-and-set-options (
 		 calculate-signature
-		; debug
 		; log(|Info(), ["Exporting rtree"])
 		; strc-export-external-defs2 | working-package,working-output, "", moduleName)
 	  

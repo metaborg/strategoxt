@@ -18,11 +18,7 @@ strategies
 					  ;
 				  		 separate-compilation-get-relative-file
 						 	; where(path-exists)
-							; if complete-rebuild 
-								then log(|Info(), "Complete rebuild");create-compilation-unit
-								else log(|Info(), "Inc build");read-or-create-compilation-unit
-							  end
-						
+							; read-or-create-compilation-unit
 					)
 		; Snd
 		; map (unpack-stratego-unit)

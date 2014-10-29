@@ -67,8 +67,7 @@ strategies
 
 	get-stratego-source-file =
 		  get-source-files
-		; debug
-		; fetch-elem(where(?RelativePath(_,<id>);has-extension(|"str")))
+		; fetch-elem(where(?RelativePath(_,<id>);has-extension(|"str"))) => file
 	
 	write-compilation-unit =
 		 ( where (
@@ -123,7 +122,6 @@ strategies
 			; !(<id>, [], Compile())
 			; (prim("ClearDep_CompilationUnit_is_consistent_shallow") 
 				<+ (log(|Info(), ["Is consistent failed for ", <id>]) ; fail))
-			; debug
 			; ?1
 		)
 		
@@ -142,7 +140,8 @@ strategies
 			  <+ log(|Info(), ["Is persisted failed for ", <id>]);fail)
 			; ?1
 		)
-		
+	
+	// Checks whether the current term depends on check-against-unit
 	depends-on-transitivly(|check-against-unit) =
 		  where (
 			  unpack-stratego-unit

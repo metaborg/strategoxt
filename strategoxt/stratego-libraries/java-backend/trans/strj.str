@@ -45,17 +45,20 @@ strategies
   ; <exit> 1
   
   
-  strj-back-end(|comp-unit) =
+  strj-back-end(|comp-units) =
 
   try(mark-always-needed(|<get-config> "-m", 0, 0))
 	; strc-optimize
-	; strc-export-external-defs
-	; add-generated-file(|comp-unit, AbsolutePath(<strc-getoutfile(!".rtree")>))
-	; where(set-local-interface-hash(|comp-unit, <defs-to-signature>)) // Set the local interface hash (local because hash does not include imported signatures)
+	; strc-export-external-defs => defs
+	; where(!comp-units;map({comp-unit:
+		  ?comp-unit
+		; add-generated-file(|comp-unit, AbsolutePath(<strc-getoutfile(!".rtree")>)) 
+		; set-local-interface-hash(|comp-unit, <defs-to-signature> defs)  // Set the local interface hash (local because hash does not include imported signatures)
+		}))
 	; strc-output-frontend
 	; s2j
 	; with(clean-output-dir)
-	; log-timed(list-loop(output-java(|comp-unit)) | "Pretty printing succeeded", 1)
+	; log-timed(list-loop(output-java(|comp-units)) | "Pretty printing succeeded", 1)
   
   strj =
     if FILE(get-extension => "ctree") then
@@ -103,7 +106,7 @@ strategies
   <+
     warn(|"Could not clean output directory")
 
-  output-java(|comp-unit) :
+  output-java(|comp-units) :
     ast -> name
     with
       name := <output-filename <+ fatal-err(|"Internal error: unexpected output")> ast
@@ -118,7 +121,10 @@ strategies
         ; box  := <pp-java5-to-abox> ast
         ; <box2text-stream(|80, file)> box
         ; <fclose> file
-		; add-generated-file(|comp-unit, AbsolutePath(name))
+		; where(!comp-units;map({comp-unit:
+			  ?comp-unit
+			; add-generated-file(|comp-unit, AbsolutePath(name))
+			}))
       // end
     <+
       output-java-error

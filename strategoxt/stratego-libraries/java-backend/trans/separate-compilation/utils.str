@@ -7,12 +7,12 @@ strategies
 		let
 			transform-ast = bottomup(
 				(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
-				map(
+				  filter(
 					if import-predicate
 						then where(rules(CollectedImports := [<collect-transform> | <CollectedImports>]));import-transform
 						else id;log(|Info(), ["Import predicate failed for ", <id>])
-					end);
-				!Imports(<id>) + id) 
+					end)
+				; !Imports(<id>) + id) 
 			collect-imports = collect-all(where(import-predicate))
 		in	  id => Module(name, body)
 			; !Module(name, body) => ast

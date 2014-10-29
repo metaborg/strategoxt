@@ -47,7 +47,6 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 	@Override
 	public Integer getInterfaceHash() {
-		System.out.println("Interface hash for " + this + ": " + super.getInterfaceHash());
 		return super.getInterfaceHash();
 	}
 

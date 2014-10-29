@@ -296,7 +296,6 @@
 	<target name="jar" depends="build-java">
 		<jar destfile="${bin}/strj.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
-			<fileset dir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/bin" includes="**/*.class"/>
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
 			<!-- ><zipgroupfileset dir="java" includes="sugarj-common.jar" /> -->
