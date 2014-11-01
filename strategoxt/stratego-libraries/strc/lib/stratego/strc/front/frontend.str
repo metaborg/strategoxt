@@ -107,8 +107,8 @@ strategies
 
       ; m-transform-external-defs(id
           ; if ?[_,_|_] then
-              warn(|"multiple external definitions with same signature")
-	        ; [rules(SameSigExtDef :+= <id>) | ![]]
+          //    warn(|"multiple external definitions with same signature")
+	         [rules(SameSigExtDef :+= <id>) | ![]]
             end
           ; [RenameSDef
              ; desugar-DefaultVarDec

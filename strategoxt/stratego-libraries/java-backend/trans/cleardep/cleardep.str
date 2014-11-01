@@ -50,7 +50,7 @@ strategies
 		; !(ContentHashStamper(), Some(<get-dep-file(|source-file)>), None(), [], Compile())
 		; prim("ClearDep_CompilationUnit_read")
 		; !StrategoCompilationUnit(<id>))
-		<+ (log(|Info(), ["Failed to read Compilation unit for ", source-file]);fail)
+		<+ fail-with-message(|["Failed to read Compilation unit for ", source-file])
 	
 	read-or-create-compilation-unit =
 		read-compilation-unit(|<id>) <+ create-compilation-unit(|<id>)
@@ -62,12 +62,21 @@ strategies
 		  (   unpack-stratego-unit
 			; prim("ClearDep_CompilationUnit_get_source_files")
 			; is-list
-		) <+ (log(|Info, ["Failed to get source files for ", <id>]); fail)
+		) <+ fail-with-message(|["Failed to get source files for ", <id>])
 	
+	get-generated-files =
+		  (   unpack-stratego-unit
+			; prim("ClearDep_CompilationUnit_get_generated_files")
+			; is-list
+		) <+ fail-with-message(|["Files to get generated files for ", <id>])
 
 	get-stratego-source-file =
 		  get-source-files
-		; fetch-elem(where(?RelativePath(_,<id>);has-extension(|"str"))) => file
+		; fetch-elem(where(?RelativePath(_,<id>);has-extension(|"str")))
+	
+	get-generated-rtree =
+		  get-generated-files
+		; fetch-elem(where(path-has-extension(|"rtree")))
 	
 	write-compilation-unit =
 		 ( where (
@@ -231,15 +240,10 @@ strategies
 			; map(\s->StrategoCompilationUnit(s)\)
 		) <+ fail-with-message(|["Get units for tasks failed for ", <id>])
 		
-	set-local-interface-hash(|unit, hash) = 
+	set-interface-hash(|unit, hash) = 
 		where(
 			  !unit
 			; unpack-stratego-unit
-			; prim("ClearDep_StrategoCompilationUnit_set_interface_hash",|hash)
+			; prim("ClearDep_CompilationUnit_set_interface_hash",|hash)
 		) <+ fail-with-message(|["Set local interface hash failed for ", <id> , " with hash " , hash])
 	
-	calculate-transitive-interface-hash =
-		  where(
-			  unpack-stratego-unit
-			; prim("ClearDep_StrategoCompilationUnit_calculate_interface_hash")
-		) <+ fail-with-message(|["Calculate transisitve interface hash failed for ", <id>])

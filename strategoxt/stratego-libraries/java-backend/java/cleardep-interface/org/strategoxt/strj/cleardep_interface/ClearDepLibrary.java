@@ -1,6 +1,8 @@
 package org.strategoxt.strj.cleardep_interface;
 
 import org.spoofax.interpreter.library.AbstractStrategoOperatorRegistry;
+import org.strategoxt.strj.util.Unify_and_sort_Constructors;
+import org.strategoxt.strj.util.Unify_and_sort_Signatures;
 
 public class ClearDepLibrary extends AbstractStrategoOperatorRegistry {
 
@@ -30,8 +32,10 @@ public class ClearDepLibrary extends AbstractStrategoOperatorRegistry {
 		this.add(new ClearDep_CompilationUnit_is_consistent_shallow());
 		this.add(new ClearDep_CompilationUnit_is_consistent_to_interfaces());
 		this.add(new ClearDep_CompilationUnit_update_module_dependency_interface());
-		this.add(new ClearDep_StrategoCompilationUnit_set_local_interface_hash());
-		this.add(new ClearDep_StrategoCompilationUnit_calculate_interface_hash());
+		this.add(new ClearDep_CompilationUnit_get_generated_files());
+		this.add(new ClearDep_CompilationUnit_set_interface_hash());
+		this.add(new Unify_and_sort_Signatures());
+		this.add(new Unify_and_sort_Constructors());
 	}
 	
 	@Override

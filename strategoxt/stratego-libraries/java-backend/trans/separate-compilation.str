@@ -36,6 +36,7 @@ strategies
   		tfc1(|"Stratego-Sugar-Cong", "pack")
         ; strc-output-ast
   	  	; frontend
+		; strc-optimize
 
 
 
@@ -61,8 +62,7 @@ strategies
 				; log(|Info(), ["Compile Build Task " , <id>])
 	// Compiles a strongly connected component
 				; compile(back-end|working-package,working-output)
-	// Calculate the transitive interface hashes for all files and then register them as module dependency 
-				; map (calculate-transitive-interface-hash)
+	// Update the interface versions of the dependencies 
 				; where( map ({unit: 
 					  id => unit
 					; get-all-module-dependencies
@@ -102,7 +102,7 @@ strategies
 			; compile-asts(back-end|working-package,working-output, circular-units)
 		end
 			
-	compile-asts(back-end|working-package,working-output, circular-units)= {x, xs :
+	compile-asts(back-end|working-package,working-output, circular-units)= {x, xs, other-circular-units :
 			  log(|Info(), ["Transforming import"])
 			//  where(map(\(moduleName, _, _, _) -> moduleName\) => moduleNames)
 			; map( {moduleName, work-unit, ast, fileName, transformed-ast, new-libs :
@@ -120,10 +120,12 @@ strategies
 				  ?( (_, _, Module(_, new-content), new-libs, _), (moduleName, work-unit, Module(merged-name, merged-content), merged-libs, fileName) )
 				; !(moduleName, work-unit, Module(merged-name, <conc> (new-content, merged-content)), <conc> (new-libs, merged-libs), fileName)
 			})
+			
+			; where(!xs;map(Snd) => other-circular-units)
 
 			; log(|Info(), ["Prepare for front end"])
-			; {moduleName, merged-ast, new-libs, fileName:  
-			  ?(moduleName, _, merged-ast, new-libs, fileName)
+			; {moduleName, merged-ast, new-libs, fileName, work-unit, rtree-file, signature-term:  
+			  ?(moduleName, work-unit, merged-ast, new-libs, fileName)
 			; save-and-set-options(
 				  where(incl := <get-config <+ ![]> "-I")
 				; where(libs := <get-config <+ ![]> "-la")
@@ -139,6 +141,15 @@ strategies
 			
 				; log(|Notice(), ["Calling Frontend for ", moduleName])
 				; strc-front-end2
+			
+				;  log(|Info(), ["Calculating transitive externals for ", work-unit])
+				; where(
+					  calculate-transitive-externals(|work-unit, circular-units) => (rtree-file, signature-term)
+					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
+					; set-interface-hash(|work-unit, signature-term) 
+				
+				)
+				
 				; log(|Notice(), ["Calling Backend for ", moduleName])
 				; back-end(|circular-units)
 				; where(<set-config> ("-la", libs); <set-config> ("-I", incl))
@@ -146,12 +157,14 @@ strategies
 			;{compiled-module-name:
 			  !x
 			; ?(compiled-module-name, _, _ ,_,_)
+			; where(<debug> ["Compiled module name ", compiled-module-name])
 			; !xs
 			; map( {module-name, module-unit,  file-name:
 				  ?(module-name, module-unit, _, _, file-name)
-				; ![(module-name, module-unit, (file-name, Module(module-name, [Imports([Import(compiled-module-name)])])), file-name)]
+				  ; where(<debug> ["Generate dummy for ", module-name])
+				; ![(module-name, module-unit, (file-name, Module(module-name, [Imports([Import(compiled-module-name)])])), file-name)] ; debug
 				})
-			; map(compile-asts(back-end|working-package,working-output, []))
+			; map(compile-asts(back-end|working-package,working-output, other-circular-units))
 			}
 			; !circular-units
 			}
@@ -182,7 +195,7 @@ strategies
 	
 	read-compilation-unit-for-module(|module-name) = 
 		(   !module-name
-		  ;CompilationUnitCache) 
+		  ; CompilationUnitCache) 
 		<+
 		(   read-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name) => unit
 		  ; where(rules(CompilationUnitCache: module-name -> unit)) )
