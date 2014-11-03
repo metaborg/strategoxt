@@ -23,9 +23,13 @@ strategies
 		end
 		|}
 		
-	import-is-file = 
+	import-get-file = 
 		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
-		; separate-compilation-check-file
+		; is-module-available-get-file
+		
+	import-is-file =
+		  import-get-file
+		; has-extension(|"str")
 		
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");

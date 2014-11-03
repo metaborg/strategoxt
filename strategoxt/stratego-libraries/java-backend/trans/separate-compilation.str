@@ -5,6 +5,7 @@ imports cleardep/fileutils
 imports separate-compilation/utils
 imports separate-compilation/process-deps
 imports separate-compilation/separate-compilation-options
+imports separate-compilation/fileutils
 
 signature
 	constructors
@@ -115,7 +116,7 @@ strategies
 			// We know, that the list of units to compile at once is not empty, so we can guarantee a first element
 			; ?[x|xs]
 			; !(xs, x)
-			; log(|Info(), ["Combine modules"])
+			; log(|Notice(), ["Combine modules"])
 			; foldl( {new-content, new-libs, moduleName, work-unit, merged-name, merged-content, merged-libs, fileName :
 				  ?( (_, _, Module(_, new-content), new-libs, _), (moduleName, work-unit, Module(merged-name, merged-content), merged-libs, fileName) )
 				; !(moduleName, work-unit, Module(merged-name, <conc> (new-content, merged-content)), <conc> (new-libs, merged-libs), fileName)
@@ -157,12 +158,10 @@ strategies
 			;{compiled-module-name:
 			  !x
 			; ?(compiled-module-name, _, _ ,_,_)
-			; where(<debug> ["Compiled module name ", compiled-module-name])
 			; !xs
 			; map( {module-name, module-unit,  file-name:
 				  ?(module-name, module-unit, _, _, file-name)
-				  ; where(<debug> ["Generate dummy for ", module-name])
-				; ![(module-name, module-unit, (file-name, Module(module-name, [Imports([Import(compiled-module-name)])])), file-name)] ; debug
+				; ![(module-name, module-unit, (file-name, Module(module-name, [Imports([Import(compiled-module-name)])])), file-name)]
 				})
 			; map(compile-asts(back-end|working-package,working-output, other-circular-units))
 			}
@@ -200,6 +199,10 @@ strategies
 		(   read-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name) => unit
 		  ; where(rules(CompilationUnitCache: module-name -> unit)) )
 	
+	read-or-create-compilation-unit-for-module(|module-name) =
+		  read-compilation-unit-for-module(|module-name)
+		<+ create-compilation-unit-for-module(|module-name)
+	
 	separate-compilation-rewrite-imports(back-end|module-name, module-unit, working-package,working-output, circular-units) =
 		?(fileName, <id>);
 		let
@@ -215,8 +218,7 @@ strategies
 					
 			get-unit-add-dependency(|imported-module-name) = 
 			{| import-unit:
-				  (read-compilation-unit-for-module(|imported-module-name)
-				 	<+ create-compilation-unit-for-module(|imported-module-name)) // => import-unit
+				  read-or-create-compilation-unit-for-module(|imported-module-name)
 				; if equal(| module-unit)
 					then	  log(|Info(), ["Module imports itself ", module-name])
 					else
@@ -224,116 +226,40 @@ strategies
 					end
 				
 			|}
-	
-		in
-		  where(!circular-units;map(get-stratego-source-file) => circular-source-files)
-		; log(|Info(), ["Circular source files ", circular-source-files])
-		; fold-on-imports(
-			import-is-file,
-			{ term:
-				  id => term
-				; get-unit-add-dependency(|<\Import(name) -> name\> <id>)
+			
+			process-import(|circular-source-files) =
+				  ?(term, <has-extension(|"str")>)
+				; get-unit-add-dependency(|<\Import(name) -> name\> term)
 				; if !(<id;get-stratego-source-file>, circular-source-files); elem 
 						then fail // Circular, do not transform
 						else !term; to-library-import
-				  end}
-			, 
-			import-to-flag) end
+				  end
+				
+			process-import(|circular-source-files) =
+				  ?(Import(moduleName), file)
+				; where(<has-extension(|"rtree")> file)
+				; read-or-create-compilation-unit-for-module(|moduleName) => unit
+				; !file
+				; add-generated-file(|unit)
+				; where(<debug> ["Added generated file ", file])
+				
+	
+		in {| File: 
+		  where(!circular-units;map(get-stratego-source-file) => circular-source-files)
+		
+		; fold-on-imports(
+			{import, file:
+				  id => import
+				; import-get-file => file
+				; rules(File: import -> file)
+			},
+			  !(<id>, <id;File>)
+			; process-import(|circular-source-files)
+			, if File;has-extension(|"str")
+				then import-to-flag
+				else id
+			end
+			)
+		|}
+		end
 		   
-	separate-compilation-get-file : name->
-		FILE(<pack-include-path;fetch-elem(\IncludeDir(dir) -><concat-strings; file-exists> [dir,"/", name, ".str"]\)>)
-	separate-compilation-get-relative-file : name->
-		<pack-include-path;fetch-elem(
-			\IncludeDir(dir) -> 
-				<where(<concat-strings; file-exists> [dir,"/", name, ".str"])>
-					 RelativePath(AbsolutePath(dir), <concat-strings> [name, ".str"])\)>
-			
-	separate-compilation-modify-filename(s) =
-		let
-			split-string = reverse;split-at(?'/');tmap(reverse;implode-string)
-			in explode-string;fetch(?'/') < split-string;?(name, path);![path, "/", <s> name];concat-strings+ s end
-	
-	separate-compilation-replace-file = 
-		let
-			cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string
-			in \(filePath, newName) -> <conc-strings> (<cut-until-slash> filePath, newName)\ end
-			
-
-		    pack-include-from-dir-exists(|mod) :
-		      IncludeDir(dir) ->  <concat-strings; file-exists> [dir,"/", mod, ".str"]
-			  
-			  pack-include-from-xtc-exists(|mod) :
-			    IncludeXTC() -> <conc-strings; xtc-find-loc> (mod, ".str")
-
-separate-compilation-check-file =
-   ?(IncludeFromPath(<id>), includes)
-  ; if has-extension(|"str") then
-      remove-extension
-    end
-  ;  ?mod
-  ;  <fetch-elem(
-         pack-include-from-dir-exists(|mod)
-         <+ pack-include-from-xtc-exists(|mod)
-       )
-     > includes /// separate-compilation-parse-file
-	 
-	 
-  separate-compilation-check-file = 
-     let pack-qualify-pathname =
-             where(explode-string => cs)
-           ; if <pack-is-qualified> cs then
-               id
-             else
-               <implode-string> ['.', '/' | cs]
-             end
- 
-          pack-is-qualified =
-            ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
-
-      in ?(IncludePathName(<pack-qualify-pathname>), _)
-       ; if file-exists then
-            pack-include-pathname
-            ; (id,report-ambs)
-              // (id, xtc-transform(!"report-ambs")) // EV
-            ; pack-fc(|"Stratego-Sugar-Cong")
-          else
-		  fail
-          end
-     end
-	
-    separate-compilation-parse-file =
-       ?(IncludeFromPath(<id>), includes)
-      ; if has-extension(|"str") then
-          remove-extension
-        end
-      ;  ?mod
-      ;  <fetch-elem(
-             pack-include-from-dir(|mod)
-             <+ pack-include-from-xtc(|mod)
-           )
-         > includes
-      ; (id, report-ambs)
-      ; pack-fc(|"Stratego-Sugar-Cong")
-	  
-	  separate-compilation-parse-file = 
-      let pack-qualify-pathname =
-              where(explode-string => cs)
-            ; if <pack-is-qualified> cs then
-                id
-              else
-                <implode-string> ['.', '/' | cs]
-              end
-  
-           pack-is-qualified =
-             ?['/' | _] + ?['.' | _ ] + ?['\' | _] + [is-alpha, ':', '\' | id]
-
-       in ?(IncludePathName(<pack-qualify-pathname>), _)
-        ; if file-exists then
-            pack-include-pathname
-            ; (id,report-ambs)
-              // (id, xtc-transform(!"report-ambs")) // EV
-            ; pack-fc(|"Stratego-Sugar-Cong")
-          else
-		  fail
-          end
-      end
