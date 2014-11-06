@@ -7,9 +7,12 @@ strategies
 
 	calculate-transitive-externals(|comp-unit, circular-units) =
 		  defs-to-external-defs; unpack-specification => local-externals
-		; !comp-unit
-		; get-all-module-dependencies
+		; !circular-units
+		; mapconcat(get-all-module-dependencies)
+		; make-set
+		; log(|Notice(), ["Deps: ", <id>])
 		; !(<id>, circular-units)
+		; log(|Notice(), ["Circ: ", circular-units])
 		; diff
 		; map(get-generated-rtree;path-get-full-path; ReadFromFile;unpack-specification) => dep-externals
 		; foldr(!local-externals, merge-rtrees)

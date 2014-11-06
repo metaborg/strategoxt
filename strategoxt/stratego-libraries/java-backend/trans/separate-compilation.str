@@ -186,38 +186,30 @@ strategies
 	mkdirs = 
 	file-exists <+ mkdir <+ where(explode-string;reverse;drop(|1);drop-until(?'/');drop(|1);reverse;implode-string;mkdirs);mkdir
 	
-	// Cache compilation unit queries by name because reading from clear dep interface involves a consistency check which is slow
-	
-	create-compilation-unit-for-module(|module-name) = 
-		  create-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name) => unit
-		; where(rules(CompilationUnitCache: module-name -> unit))
-	
-	read-compilation-unit-for-module(|module-name) = 
-		(   !module-name
-		  ; CompilationUnitCache) 
-		<+
-		(   read-compilation-unit(|<separate-compilation-get-relative-file;where(path-exists)> module-name) => unit
-		  ; where(rules(CompilationUnitCache: module-name -> unit)) )
-	
-	read-or-create-compilation-unit-for-module(|module-name) =
-		  read-compilation-unit-for-module(|module-name)
-		<+ create-compilation-unit-for-module(|module-name)
 	
 	separate-compilation-rewrite-imports(back-end|module-name, module-unit, working-package,working-output, circular-units) =
 		?(fileName, <id>);
 		let
-			to-library-import = ?Import(<id>);to-library-name;\name -> [name,"/",<path-get-filename> name]\;concat-strings;!Import(<id>)
+			to-library-import = 
+				  ?Import(<id>)
+				; to-library-name
+				; \name -> [name,"/",<path-get-filename> name]\
+				; concat-strings
+				; !Import(<id>)
 			
 			import-to-flag = \Import(name) -> 
 				(<concat-strings>[working-package, ".", <to-java-compilation-folder;string-char-replace(|'/','.')> name],
+		
 				 <concat-strings> [working-output, <to-library-name> name], 
+					 
 				 (name,Import(<to-java-compilation-rel-file> name)),
+				 
 				 <separate-compilation-get-file> name )\
 			
 		
 					
 			get-unit-add-dependency(|imported-module-name) = 
-			{| import-unit:
+			{ import-unit:
 				  read-or-create-compilation-unit-for-module(|imported-module-name)
 				; if equal(| module-unit)
 					then	  log(|Info(), ["Module imports itself ", module-name])
@@ -225,23 +217,26 @@ strategies
 						  add-module-dependency(|module-unit)
 					end
 				
-			|}
+			}
 			
-			process-import(|circular-source-files) =
+			process-import-str(|circular-source-files) =
+			{ term: 
 				  ?(term, <has-extension(|"str")>)
 				; get-unit-add-dependency(|<\Import(name) -> name\> term)
 				; if !(<id;get-stratego-source-file>, circular-source-files); elem 
 						then fail // Circular, do not transform
 						else !term; to-library-import
 				  end
+			}
 				
-			process-import(|circular-source-files) =
-				  ?(Import(moduleName), file)
+			process-import-rtree(|circular-source-files) =
+			{ file :
+				  ?(term, file)
 				; where(<has-extension(|"rtree")> file)
-				; read-or-create-compilation-unit-for-module(|moduleName) => unit
-				; !file
-				; add-generated-file(|unit)
-				; where(<debug> ["Added generated file ", file])
+				; !AbsolutePath(file)
+				; add-external-file-dependency(|module-unit)
+				; !term
+				}
 				
 	
 		in {| File: 
@@ -254,10 +249,10 @@ strategies
 				; rules(File: import -> file)
 			},
 			  !(<id>, <id;File>)
-			; process-import(|circular-source-files)
+			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files))
 			, if File;has-extension(|"str")
 				then import-to-flag
-				else id
+				else fail // do not want to collect rtrees
 			end
 			)
 		|}

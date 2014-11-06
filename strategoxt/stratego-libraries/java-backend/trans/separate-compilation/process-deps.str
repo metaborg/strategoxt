@@ -1,6 +1,8 @@
 module separate-compilation/process-deps
+
 imports separate-compilation/utils
 imports cleardep/cleardep
+imports separate-compilation/unit-cache
 
 strategies
 
@@ -14,11 +16,11 @@ strategies
 		; (separate-compilation-parse-file <+ (log(|Error(), ["File not found: ", <id>]);fail))
 		; Snd
 		; fold-on-imports(import-is-file, id,
-				  	  \Import(i) -> i\
-					  ;
-				  		 separate-compilation-get-relative-file
-						 	; where(path-exists)
-							; read-or-create-compilation-unit
+					  \Import(i) -> i\
+					; if complete-rebuild
+						then create-if-not-in-cache-or-read-compilation-unit-for-module(|<id>)
+						else read-or-create-compilation-unit-for-module(|<id>)
+					  end
 					)
 		; Snd
 		; map (unpack-stratego-unit)

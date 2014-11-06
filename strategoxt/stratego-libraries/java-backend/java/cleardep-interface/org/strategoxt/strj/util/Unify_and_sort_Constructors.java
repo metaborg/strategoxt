@@ -30,6 +30,15 @@ public class Unify_and_sort_Constructors extends Abstract_Unify_and_sort {
 					typeIndex = 0;
 				}
 				
+				if (typeIndex == 1) {
+					String name1 = Term.asJavaString(Term.termAt(o1, 0));
+					String name2 = Term.asJavaString(Term.termAt(o2, 0));
+					int nameComp = name1.compareTo(name2);
+					if (nameComp != 0) {
+						return nameComp;
+					}
+				}
+				
 				IStrategoTerm type1 = Term.termAt(o1, typeIndex);
 				IStrategoTerm type2 = Term.termAt(o2, typeIndex);
 				

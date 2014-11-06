@@ -9,7 +9,7 @@ strategies
 				(?Imports(<id>);mapconcat(pack-expand-import);map(\s -> Import(s)\)) <
 				  filter(
 					if import-predicate
-						then where(rules(CollectedImports := [<collect-transform> | <CollectedImports>]));import-transform
+						then try(where(rules(CollectedImports := [<collect-transform> | <CollectedImports>])));import-transform
 						else id;log(|Info(), ["Import predicate failed for ", <id>])
 					end)
 				; !Imports(<id>) + id) 
