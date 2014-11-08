@@ -2,7 +2,10 @@
  * Various iteration strategies.
  */
 module strategy/iteration
+
 imports strategy/conditional
+imports term/integer
+
 strategies
 
   /**

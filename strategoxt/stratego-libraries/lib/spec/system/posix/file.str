@@ -1,7 +1,10 @@
 module system/posix/file
 imports
   system/posix/error
+  system/posix/file-abstractions
   term/string
+  
+  
 
 /**
  * Standard file descriptors

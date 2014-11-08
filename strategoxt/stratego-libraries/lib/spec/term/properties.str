@@ -9,6 +9,8 @@
 module term/properties
 imports 
   strategy/traversal/simple
+  collection/tuple/cons
+  collection/list/common
 
 strategies
 

@@ -19,6 +19,11 @@
  */
 module lang/stacktrace
 
+imports
+	strategy/conditionals
+	collection/list/common
+	system/io/term
+
 strategies
 
   /**

@@ -2,6 +2,14 @@
  * Traversals that carry an environment.
  */
 module strategy/traversal/environment
+
+imports
+	collection/list/zip
+	collection/list/common
+	collection/tuple/common
+	strategy/conditionals
+	term/integer
+
 rules
 
   all-dist(s) : 

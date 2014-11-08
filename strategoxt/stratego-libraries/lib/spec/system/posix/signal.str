@@ -6,6 +6,9 @@
  */
 module system/posix/signal
 
+imports collection/list/common
+imports term/integer
+
 signature
   constructors
     Signal:        String * Int * String -> Signal

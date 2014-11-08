@@ -122,6 +122,8 @@ strategies
 				; !(moduleName, work-unit, Module(merged-name, <conc> (new-content, merged-content)), <conc> (new-libs, merged-libs), fileName)
 			})
 			
+			// TODO: Eliminiate dulicate imports resulting from merging modules -> do not need to include rtrees multiple times
+			
 			; where(!xs;map(Snd) => other-circular-units)
 
 			; log(|Info(), ["Prepare for front end"])
@@ -192,9 +194,7 @@ strategies
 		let
 			to-library-import = 
 				  ?Import(<id>)
-				; to-library-name
-				; \name -> [name,"/",<path-get-filename> name]\
-				; concat-strings
+				; to-java-compilation-rel-file
 				; !Import(<id>)
 			
 			import-to-flag = \Import(name) -> 

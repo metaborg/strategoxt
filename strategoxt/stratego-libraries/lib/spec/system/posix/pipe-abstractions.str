@@ -2,6 +2,8 @@ module system/posix/pipe-abstractions
 imports 
   system/posix/file
   system/posix/process
+  system/posix/file-abstractions
+  system/posix/process-abstractions
 
 strategies
 

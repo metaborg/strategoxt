@@ -1,6 +1,10 @@
 module collection/hash-table/nested
 imports 
   collection/hash-table/common
+  
+  strategy/conditional
+  system/io/term
+  
 signature
   constructors
     NestedTable : Hashtable -> TableValue

@@ -4,6 +4,7 @@
 module term/integer
 imports
   lang/dynamic-rules
+  term/real
 
 strategies
 

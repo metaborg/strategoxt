@@ -6,6 +6,10 @@
  * building terms with annotations.
  */
 module term/annotation
+
+imports
+	strategy/traversal/simple
+
 signature
   constructors
     Anno : a * b -> a

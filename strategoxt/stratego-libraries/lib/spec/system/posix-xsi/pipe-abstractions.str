@@ -1,6 +1,7 @@
 module system/posix-xsi/pipe-abstractions
 imports 
   system/posix/pipe-abstractions
+  system/posix-xsi/file
 
 strategies
 

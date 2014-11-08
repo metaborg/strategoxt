@@ -6,6 +6,7 @@
  */
 module collection/set/indexed
 
+imports collection/list/common
 /**
  * IndexedSet representations
  */

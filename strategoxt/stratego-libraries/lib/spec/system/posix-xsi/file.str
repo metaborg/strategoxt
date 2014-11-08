@@ -1,5 +1,16 @@
 module system/posix-xsi/file
 
+imports
+  	term/string
+  
+  	system/error
+  	system/io/dir
+  	system/io/file
+  	
+  	system/posix/file-abstractions
+  	system/posix/file
+  
+
 /**
  * Generate a new, not existing file name.
  */
