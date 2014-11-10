@@ -20,7 +20,7 @@
 module lang/stacktrace
 
 imports
-	strategy/conditionals
+	strategy/conditional
 	collection/list/common
 	system/io/term
 

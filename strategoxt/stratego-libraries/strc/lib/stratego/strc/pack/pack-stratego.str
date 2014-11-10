@@ -27,7 +27,7 @@ strategies
     ; pack-process-options
     ; pack-report-options
     ; pack-stratego(|<pack-include-path>) => (files, spec)
-    ; <pack-maybe-create-depfile> files
+//    ; <pack-maybe-create-depfile> files // Dependencies now managed by strj
     ; !spec
     ; where(<set-config>("-I", incl))
 
@@ -50,7 +50,7 @@ strategies
     , pack-process-options
     ; pack-report-options
     ; pack-stratego(|<pack-include-path>) => (files, spec)
-    ; <pack-maybe-create-depfile> files
+//    ; <pack-maybe-create-depfile> files // Dependencies now managed by strj
     ; <write-to> spec
     )
 
