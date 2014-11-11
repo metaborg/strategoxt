@@ -34,7 +34,7 @@ strategies
       end => ast
   
   
-  extend default-lib-get-rtree-file:
+  extend default-lib-get-rtree-file =
       id => name
     ;switch !name
       case "libstratego-lib" +    "libstrategolib": "libstratego-lib.rtree"
