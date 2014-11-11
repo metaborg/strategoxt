@@ -33,21 +33,6 @@ strategies
         case "libstrc":              import-term(libstrc.rtree)
       end => ast
   
-  extend default-lib-get-rtree-file:
-      id => name
-    ;switch !name
-      case "libstratego-lib" +    "libstrategolib": "libstratego-lib.rtree"
-      case "libstratego-xtc":     "libstratego-xtc.rtree"
-      case "libstratego-sglr":    "libstratego-sglr.rtree"
-      case "libstratego-rtg":     "libstratego-rtg.rtree"
-      case "libstratego-sdf":     "libstratego-sdf.rtree"
-      case "libstratego-aterm":   "libstratego-aterm.rtree"
-      case "libstratego-gpp":     "libstratego-gpp.rtree"
-      case "libstratego-tool-doc":"libstratego-tool-doc.rtree"
-      case "libstratego-parallel":"libstratego-parallel.rtree"
-      case "libstrc":             "libstrc.rtree"
-    end
-  
    extend pack-stratego-parse-stratego:
      (IncludeFromPath("libjava-front"), includes) -> result
      where

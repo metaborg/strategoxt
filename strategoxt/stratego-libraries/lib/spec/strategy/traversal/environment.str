@@ -7,7 +7,7 @@ imports
 	collection/list/zip
 	collection/list/common
 	collection/tuple/common
-	strategy/conditional
+	strategy/conditionals
 	term/integer
 
 rules
