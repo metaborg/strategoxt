@@ -16,9 +16,9 @@ strategies
 			, !"--library-path l=p     Sets the path for the rtree file for the library l to p"
 		)
 		+ Option (
-			  "--library-initializers-as-string"
-			, <set-config> ("--library-initializers-as-string", ()); !()
-			, !"--library-initializers-as-string  Imports to dependent initializers are generated as strings"
+			  "--independent-java-compilation"
+			, <set-config> ("--independent-java-compilation", ()); !()
+			, !"--independent-java-compilation  Allows the generated Java code to be compiled without required libraries in classpath (moreover, each strategy can be compiled independent)"
 		)
 		
 		
@@ -53,5 +53,5 @@ strategies
 			else !RebuildInconsistent()
 		  end
 	
-	is-generate-initializers-as-strings =
-		  where(<get-config> "--library-initializers-as-string")
+	is-independent-java-compilation =
+		  where(<get-config> "--independent-java-compilation")

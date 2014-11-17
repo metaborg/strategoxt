@@ -228,12 +228,14 @@ rules
   
   java-imports =
     <get-config> "-la"
+  ; make-set
   ; map(java-import)
   <+
     ![]
   
   java-init-imports =
     <get-config> "-la"
+  ; make-set
   ; map(java-init-import)
   <+
     ![]
@@ -242,6 +244,34 @@ rules
     x -> TypeImportOnDemandDec(TypeName(Id(x')))
     with
       x' := <jify> x
+  
+  java-init-import :
+    x ->  |[
+	try {
+		Class c = Class.forName("~x'" + ".Main").getSuperclass();
+		java.lang.reflect.Method m = c.getMethod("init", Context.class, boolean.class);
+		m.invoke(null, context, false);
+	} catch(Exception ex) {
+		ex.printStackTrace();
+	} 
+	]|
+    with
+       is-independent-java-compilation
+    ; x' := <jify> x
+	
+  /*  java-init-import :
+      x -> bstm* |[ {
+  	try {
+  	Class c = Class.forName("~x'" + ".Main");
+  	Method m = c.getMethod("init", Context.class, Boolean.class);
+  	m.call(context, false);
+  	} catch (Exception e) {
+  	throw new RuntimeException("Failed to init " + "~x'", e);
+  	} }
+  	]|
+      with
+        not (is-independent-java-compilation)
+      ; x' := <jify> x*/
   
   java-init-import :
     x -> |[ x'.Main.init(context, false); ]|
@@ -342,7 +372,7 @@ rules
     ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
 
   java-library-initializer-dependent-libraries =
-	  not(is-generate-initializers-as-strings)
+	  not(is-independent-java-compilation)
 	; java-dependent-library-initializer(java-import-to-library-initializer-ref) => dependentLibs*
 	; !class-body-dec* |[
 	  protected java.util.List<org.strategoxt.lang.LibraryInitializer> getDependentLibraryInitializer() {
@@ -351,7 +381,7 @@ rules
 	]|	
 		
    java-library-initializer-dependent-libraries =
-	  is-generate-initializers-as-strings
+	  is-independent-java-compilation
 	; java-dependent-library-initializer(java-import-to-library-initializer-string) => dependentLibs*
 	; ! class-body-dec* |[
   	  protected java.util.List<String> getDependentLibraryInitializerClassNames() {
