@@ -24,6 +24,8 @@ imports
   backend-simplify
   s2j-options
   lib/dr-scoping
+  
+  separate-compilation/separate-compilation-options
 
 signature
   constructors 
@@ -58,7 +60,7 @@ strategies
 rules
     
   s2j = 
-  {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition:
+  {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
       with(
         s2j-init-options
       ; record-main-classname
@@ -331,31 +333,53 @@ rules
 			return  java.util.Arrays.<RegisteringStrategy>asList( ~instances* );
 		  }
 		  
-		  protected java.util.List<org.strategoxt.lang.LibraryInitializer> getDependentLibraryInitializer() {
-		  	return java.util.Arrays.<org.strategoxt.lang.LibraryInitializer>asList( ~dependentLibs* );
-		  }
+		  ~dependent-library-initializer-getter
 		
       }
     ]|
     with
       instances* := <filter(java-library-instance)> defs
-    ; dependentLibs* := (<java-dependent-library-initializer>)
+    ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
+
+  java-library-initializer-dependent-libraries =
+	  not(is-generate-initializers-as-strings)
+	; java-dependent-library-initializer(java-import-to-library-initializer-ref) => dependentLibs*
+	; !class-body-dec* |[
+	  protected java.util.List<org.strategoxt.lang.LibraryInitializer> getDependentLibraryInitializer() {
+		return java.util.Arrays.<org.strategoxt.lang.LibraryInitializer>asList( ~dependentLibs* );
+		}
+	]|	
+		
+   java-library-initializer-dependent-libraries =
+	  is-generate-initializers-as-strings
+	; java-dependent-library-initializer(java-import-to-library-initializer-string) => dependentLibs*
+	; ! class-body-dec* |[
+  	  protected java.util.List<String> getDependentLibraryInitializerClassNames() {
+  		return java.util.Arrays.<String>asList( ~dependentLibs* );
+  		}
+  	]|
+		
     
   java-library-instance:
     SDefT(x{a*},_,_,_) -> |[x.instance]|
   java-library-instance:
     AnnoDef(_,SDefT(x{a*},_,_,_))  -> |[x.instance]|
   
-    java-dependent-library-initializer =
+    java-dependent-library-initializer(import-transform) =
       <get-config> "-la"
-    ; map(java-import-to-library-initializer)
+    ; map(import-transform)
     <+
       ![]
 	  
-	  java-import-to-library-initializer :
-	    x -> |[ new x'.LibraryInitializer() ]|
-	    with
-	      x' := <jify> x
+  java-import-to-library-initializer-ref :
+    x -> |[ new x'.LibraryInitializer() ]|
+    with
+      x' := <jify> x
+	  
+  java-import-to-library-initializer-string :
+    x -> |[ "~x'" + ".LibraryInitializer"]|
+    with
+      x' := <jify> x
  
   
   

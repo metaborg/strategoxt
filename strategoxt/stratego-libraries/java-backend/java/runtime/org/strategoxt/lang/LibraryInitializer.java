@@ -1,5 +1,7 @@
 package org.strategoxt.lang;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +52,7 @@ public abstract class LibraryInitializer {
 
 	private final void collectDependentInitializer(final Set<InitializerSetEntry> collector) {
 		collector.add(new InitializerSetEntry(this));
-		for (LibraryInitializer initializer : this.getDependentLibraryInitializer()) {
+		for (LibraryInitializer initializer : this.getAllDependentLibraryInitializers()) {
 			//Cycle detection
 			if (!collector.contains(new InitializerSetEntry(initializer))) {
 				initializer.collectDependentInitializer(collector);
@@ -88,7 +90,45 @@ public abstract class LibraryInitializer {
 	}
 
 	protected abstract List<RegisteringStrategy> getLibraryStrategies();
+	
+	protected final List<LibraryInitializer> getAllDependentLibraryInitializers() {
+		List<LibraryInitializer> instantiatedInitializers = this.getDependentLibraryInitializer();
+		List<String> uninstantiatedInitializers = this.getDependentLibraryInitializerClassNames();
+		List<LibraryInitializer> allInitializers;
+		if (instantiatedInitializers != null) {
+			allInitializers = instantiatedInitializers;
+		} else {
+			allInitializers = new ArrayList<LibraryInitializer>();
+		}
+		if (uninstantiatedInitializers == null) {
+			return allInitializers;
+		}
+		for (String initializerClassName : uninstantiatedInitializers) {
+			try {
+				@SuppressWarnings("unchecked")
+				Class<LibraryInitializer> initializerClass = (Class<LibraryInitializer>) Class.forName(initializerClassName);
+				LibraryInitializer initializer = initializerClass.newInstance();
+				allInitializers.add(initializer);
+			} catch(ClassCastException e) {
+				// Wrong class object
+				throw new Error("Wrong library initializer class for " + initializerClassName, e);
+			} catch (ClassNotFoundException e) {
+				throw new Error("Unable to load imported initializer class for " + initializerClassName, e);
+			} catch (InstantiationException e) {
+				throw new Error("Unable to initialze initializer " + initializerClassName, e);
+			} catch (IllegalAccessException e) {
+				throw new Error("IllegalAcces while initializing " + initializerClassName, e);
+			}
+		}
+		return allInitializers;
+	}
 
-	protected abstract List<LibraryInitializer> getDependentLibraryInitializer();
+	protected List<LibraryInitializer> getDependentLibraryInitializer() {
+		return null;
+	};
+	
+	protected List<String> getDependentLibraryInitializerClassNames() {
+		return null;
+	}
 
 }

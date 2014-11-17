@@ -24,12 +24,14 @@ strategies
         , 1
         )*/
 	  
-    strc-front-end1(back-end) =
+	strc-front-end1(back-end) =
 	{| CompilingModules, ImportMap :
-      log-timed(
-        strc-get-infile ;
-	    separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config;string-ensure-trailing-slash <+ !"./"> "-o")
-      | "Front-end succeeded", 1) |}
+		  log-timed(
+			  strc-get-infile
+			; log(|Info(), ["Calling separate front end ", <id>])
+			; separate-compilation-front-end(back-end|<get-config <+ !"" > "-p",<get-config;string-ensure-trailing-slash <+ !"./"> "-o")
+			| "Front-end succeeded", 1)
+	|}
 	
   	strc-front-end2 = 
       //  strc-get-infile
@@ -43,17 +45,27 @@ strategies
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
 		 // create-compilation-units(|working-package, working-output)
-		  where(fileName := <\FILE(s) -> s\>)
-		  
+		  where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
-		; !AbsolutePath(fileName)
-		; path-relativize (|
-			<pack-include-path;fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\)> )
+		; !AbsolutePath(fileName) => absolute-file
+		; pack-include-path
+		; fetch-elem(\IncludeDir(d) -> <path-relativize(| AbsolutePath(d))>  absolute-file\)
+	//	; path-relativize (|
+	//		<pack-include-path; fetch-elem(\IncludeDir(d) -> AbsolutePath(d)\)> )
 		; if complete-rebuild 
 			then create-compilation-unit(|<id>)
 			else read-or-create-compilation-unit(|<id>)
 		  end
+		; pack-process-options
+		// But the output directory in the search path to find generated rtrees
+		; where({i , is:
+			  !"-I"
+			; get-config => [i|is]
+			; !("-I", [i,IncludeDir(working-output)|is])
+			; set-config
+		})
 	// Create the build schedule for the compilation unit and flatten it
+		; log(|Notice(), ["Calculating build schedule for ", <id>])
 		; ![<id>]
 		; createBuildSchedule(|<get-schedule-mode>)
 		; flattenBuildSchedule
@@ -89,7 +101,6 @@ strategies
 				  get-stratego-source-file
 				; path-get-full-path => fileName
 				; !(IncludePathName(fileName),<pack-include-path>)
-				; pack-process-options
 				 
 				; log(|Info(), ["Parse file:         ", <id>])
 				; (separate-compilation-parse-file <+ log(|Error(), ["File not found: ", <id>])) => parseResult
@@ -130,12 +141,9 @@ strategies
 			; {moduleName, merged-ast, new-libs, fileName, work-unit, rtree-file, signature-term:  
 			  ?(moduleName, work-unit, merged-ast, new-libs, fileName)
 			; save-and-set-options(
-				  where(incl := <get-config <+ ![]> "-I")
-				; where(libs := <get-config <+ ![]> "-la")
-				; where(<set-config>("-I", <conc;make-set> (<map(Third;Snd;!IncludeDir(<id>))> new-libs, incl)))
+				  where(libs := <get-config <+ ![]> "-la")
 				; where(<set-config>("-la", <conc;make-set> (libs, <map(Fst)> new-libs)))
 				; log(|Notice(), ["Import transformation for ", moduleName])
-				; log(|Notice(), ["Use import dirs: " , <get-config> "-I"])
 				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
 			
 				; !IncludeAST(merged-ast,fileName)
@@ -155,7 +163,7 @@ strategies
 				
 				; log(|Notice(), ["Calling Backend for ", moduleName])
 				; back-end(|circular-units)
-				; where(<set-config> ("-la", libs); <set-config> ("-I", incl))
+				; where(<set-config> ("-la", libs))
 			| working-package,working-output,fileName,moduleName)}
 			;{compiled-module-name:
 			  !x
@@ -174,7 +182,7 @@ strategies
 	string-char-replace(|c1, c2) = explode-string; map((?c1;!c2)<+id); implode-string
 	
 	
-	to-library-name = separate-compilation-modify-filename(if or(?"char",?"term") then !["_", <id>];concat-strings end ; jify)
+	to-library-name = separate-compilation-modify-filename(if ?"char" + ?"term" + ?"interface" + ?"class" then !["_", <id>];concat-strings end ; jify)
 	to-java-compilation-folder:   modulename -> <to-library-name;jify> modulename
 	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify> modulename
 	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]

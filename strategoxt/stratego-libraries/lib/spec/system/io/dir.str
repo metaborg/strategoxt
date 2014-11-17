@@ -2,6 +2,8 @@
  * Strategies for exploring directories.
  */
 module system/io/dir
+imports collection/list/cons
+
 strategies
 
   /**
