@@ -5,11 +5,43 @@ imports cleardep/cleardep
 
 strategies
 	separate-compilation-options =
-	    Option(
-	      "--complete-rebuild"
-	    , <set-config> ("--complete-rebuild", ()); !()
-	    , !"--complete-rebuild     Rebuilds all modules, inpedenent whether they are consistent or not"
-	    )
+		  Option(
+			  "--complete-rebuild"
+			, <set-config> ("--complete-rebuild", ()); !()
+			, !"--complete-rebuild     Rebuilds all modules, inpedenent whether they are consistent or not"
+		  )
+		+ ArgOption(
+			  "--library-path"
+			, process-library-path; !()
+			, !"--library-path l=p     Sets the path for the rtree file for the library l to p"
+		)
+		+ Option (
+			  "--library-initializers-as-string"
+			, <set-config> ("--library-initializers-as-string", ()); !()
+			, !"--library-initializers-as-string  Imports to dependent initializers are generated as strings"
+		)
+		
+		
+	process-library-path = 
+		  implode-string
+		; split-at(|'=')
+		; tmap(explode-string)
+		; ?(lib-name, <id>)
+		; try(unquote(?'"'))
+		; ?rtree-path
+		; !"--library-path"
+		; (get-config <+ ![])
+		; !("--library-path" , [(lib-name, rtree-path)|<id>])
+		; set-config
+		; !rtree-path
+		; validate-library-path(|lib-name)
+		
+	validate-library-path(|lib-name) =
+		if has-extension(|"rtree"); file-exists
+			then log(|Info(), ["Set library path for ", lib-name, " to ", <id>])
+			else log(|Error(), ["Invalid path for library ", lib-name , ": ", <id>]); fail
+		end
+	
 		
 	complete-rebuild = 
 		  !"--complete-rebuild"
@@ -20,3 +52,6 @@ strategies
 			then !RebuildAll()
 			else !RebuildInconsistent()
 		  end
+	
+	is-generate-initializers-as-strings =
+		  where(<get-config> "--library-initializers-as-string")

@@ -8,12 +8,21 @@ strategies
 				\IncludeDir(dir) -> 
 					<where(<concat-strings; file-exists> [dir,"/", name, ".str"])>
 						 RelativePath(AbsolutePath(dir), <concat-strings> [name, ".str"])\)>
-			
+		
+		
+		
 		separate-compilation-modify-filename(s) =
-			let
-				split-string = reverse;split-at(?'/');tmap(reverse;implode-string)
-				in explode-string;fetch(?'/') < split-string;?(name, path);![path, "/", <s> name];concat-strings+ s end
-	
+			  string-tokenize(|['/'])
+			; map(s)
+			; !(<id>, "")
+			; foldl({a,b:
+				  ?(a,b)
+				; if !b; ?"" 
+					then !a
+					else ![b,"/",a];concat-strings
+				  end}
+			  )
+			
 		separate-compilation-replace-file = 
 			let
 				cut-until-slash = explode-string;reverse;drop-until(?'/');reverse;implode-string

@@ -10,11 +10,9 @@ strategies
 		; !circular-units
 		; mapconcat(get-all-module-dependencies)
 		; make-set
-		; log(|Notice(), ["Deps: ", <id>])
 		; !(<id>, circular-units)
-		; log(|Notice(), ["Circ: ", circular-units])
 		; diff
-		; map(get-generated-rtree;path-get-full-path; ReadFromFile;unpack-specification) => dep-externals
+		; map((get-generated-rtree <+ (log(|Error(), ["Failed to get rtree for ", <id>]);fail));path-get-full-path; ReadFromFile;unpack-specification) => dep-externals
 		; foldr(!local-externals, merge-rtrees)
 		; unify-and-sort-externals
 		; pack-specification
