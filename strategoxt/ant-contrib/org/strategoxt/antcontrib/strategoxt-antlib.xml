@@ -76,6 +76,7 @@
 		<attribute name="input" />
 		<attribute name="output" />
 		<attribute name="main" />
+		<attribute name="module" default="@{main}"/>
 		<sequential>
 			<uptodate-io input="@{input}" output="@{output}" type="rtg2sig">
 				<action>
@@ -84,7 +85,7 @@
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="--module" />
-						<arg value="@{main}" />
+						<arg value="@{module}" />
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
 					</java>
@@ -256,7 +257,8 @@
 						<arg value="--slack"/>
 						<arg value="--strategy-forward-declaration" />
 						<arg value="--constructor-forward-declaration" />
-						<arg value="--complete-rebuild"/>
+						<arg value="--no-default-lib" /> <!-- No default lib: do not compile against the old stdlib provided with the used compiler -->
+						<arg value="--independent-java-compilation"/> <!-- Here are dependency cycles from stdlib to java_integration and back. We brake it here and want this library to be compiled independently. Works here, because std-lib does not use strategies from dependencies but dependencies only override/extend strategies -->
 						<strjargs />
 					</java>
 				</action>

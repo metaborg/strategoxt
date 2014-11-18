@@ -108,7 +108,9 @@ strategies
 				; log(|Info(), ["Check to compile, need to compile ", moduleName])
 				; log(|Info(), ["Compile to package: ", working-package])
 				; log(|Info(), ["Place files in:     ", working-output])
-				; create-compilation-unit-for-module(|moduleName) => work-unit
+				; (create-compilation-unit-for-module(|moduleName) => work-unit
+					<+ (log(|Error(), ["Module name does not match file name: ", moduleName, " in " , fileName]); fail))
+				; log(|Info(), "Create pair")
 				; !(moduleName, work-unit, parseResult, fileName)
 				 })
 			; compile-asts(back-end|working-package,working-output, circular-units)

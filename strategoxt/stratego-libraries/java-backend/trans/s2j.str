@@ -234,49 +234,36 @@ rules
     ![]
   
   java-init-imports =
-    <get-config> "-la"
+    (<get-config> "-la" <+
+    ![])
   ; make-set
   ; map(java-init-import)
-  <+
-    ![]
+  
   
   java-import :
     x -> TypeImportOnDemandDec(TypeName(Id(x')))
     with
       x' := <jify> x
   
-  java-init-import :
-    x ->  |[
+  java-init-import =
+      ?x
+	; jify
+	; ?x'
+	; if is-independent-java-compilation
+		then
+    	!|[
 	try {
-		Class c = Class.forName("~x'" + ".Main").getSuperclass();
+		Class c = Class.forName("~x'" + ".__$Main").getSuperclass();
 		java.lang.reflect.Method m = c.getMethod("init", Context.class, boolean.class);
 		m.invoke(null, context, false);
 	} catch(Exception ex) {
 		ex.printStackTrace();
 	} 
 	]|
-    with
-       is-independent-java-compilation
-    ; x' := <jify> x
-	
-  /*  java-init-import :
-      x -> bstm* |[ {
-  	try {
-  	Class c = Class.forName("~x'" + ".Main");
-  	Method m = c.getMethod("init", Context.class, Boolean.class);
-  	m.call(context, false);
-  	} catch (Exception e) {
-  	throw new RuntimeException("Failed to init " + "~x'", e);
-  	} }
-  	]|
-      with
-        not (is-independent-java-compilation)
-      ; x' := <jify> x*/
-  
-  java-init-import :
-    x -> |[ x'.Main.init(context, false); ]|
-    with
-      x' := <jify> x
+	else
+    	!|[ x'.__$Main.init(context, false); ]|
+      end
+    
 
   java-main-methods :
     _ ->
