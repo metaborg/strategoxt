@@ -76,6 +76,7 @@
 		<attribute name="input" />
 		<attribute name="output" />
 		<attribute name="main" />
+		<attribute name="module" default="@{main}"/>
 		<sequential>
 			<uptodate-io input="@{input}" output="@{output}" type="rtg2sig">
 				<action>
@@ -84,7 +85,7 @@
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="--module" />
-						<arg value="@{main}" />
+						<arg value="@{module}" />
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
 					</java>
@@ -175,6 +176,7 @@
 		<attribute name="language" />
 		<attribute name="main" />
 		<attribute name="outputmodule" />
+		<attribute name="main-strategy" default="io-@{outputmodule}"/>
 		<element name="args" optional="true" />
 		<sequential>
 			<uptodate-io input="@{input}" output="@{output}" type="sdf2parenthesize">
@@ -191,6 +193,8 @@
 						<arg value="@{outputmodule}" />
 						<arg value="-o" />
 						<arg value="${basedir}/@{output}" />
+						<arg value="--main-strategy"/>
+						<arg value="@{main-strategy}"/>
 						<args />
 					</java>
 				</action>
@@ -225,19 +229,23 @@
 	</macrodef>
 
 	<macrodef name="strj">
-		<attribute name="input" />
+		<attribute name="input-path"/>
+		<attribute name="input-module" />
 		<attribute name="output" />
 		<attribute name="package" />
 		<element name="strjargs" optional="true" />
 		<element name="str-deps" optional="true" />
 		<sequential>
-			<property name="@{input}.abs" location="@{input}" />
+			<echo>Calling strj</echo>
+			<property name="@{input-path}.abs" location="@{input-path}" />
 			<property name="@{output}.abs" location="@{output}" />
-			<uptodate-mio input="@{input}" output="@{output}" type="strj">
+			<uptodate-mio input="@{input-path}/@{input-module}" output="@{output}" type="strj" force="true">
 				<action>
 					<java classname="org.strategoxt.strj.Main" failonerror="true">
+						<arg value="-I"/>
+						<arg value="${@{input-path}.abs}"/>
 						<arg value="-i" />
-						<arg value="${@{input}.abs}" />
+						<arg value="${@{input-path}.abs}/@{input-module}" />
 						<arg value="-o" />
 						<arg value="${@{output}.abs}" />
 						<arg value="-p" />
@@ -246,6 +254,14 @@
 						<arg value="VERSION_TERM=&quot;${version}&quot;" />
 						<arg value="-D" />
 						<arg value="SVN_REVISION_TERM=&quot;${revision}&quot;" />
+						<arg value="--verbose" />
+						<arg value="2" />
+						<arg value="--clean"/>
+						<arg value="--slack"/>
+						<arg value="--strategy-forward-declaration" />
+						<arg value="--constructor-forward-declaration" />
+						<arg value="--no-default-lib" /> <!-- No default lib: do not compile against the old stdlib provided with the used compiler -->
+						<arg value="--independent-java-compilation"/> <!-- Here are dependency cycles from stdlib to java_integration and back. We brake it here and want this library to be compiled independently. Works here, because std-lib does not use strategies from dependencies but dependencies only override/extend strategies -->
 						<strjargs />
 					</java>
 				</action>
@@ -257,25 +273,26 @@
 	</macrodef>
 
 	<macrodef name="strj-lib">
-		<attribute name="input" />
-		<attribute name="output" />
-		<attribute name="lib-output" default="${@{input}.dirname}/lib${@{input}.basename}.ctree" />
+		<attribute name="input-path"/>
+		<attribute name="input-module" />
+		<attribute name="lib-output" default="@{input-path}/lib${@{input-module}.basename}.ctree" />
 		<attribute name="package" />
+		<attribute name="output"/>
 		<element name="strjlibargs" optional="true" />
 		<element name="str-deps" optional="true" />
 		<sequential>
 			<dirname file="@{input}" property="@{input}.dirname" />
 			<basename file="@{input}" property="@{input}.basename" suffix=".str" />
-			<uptodate-mio input="@{input}" output="@{output}" type="strj-lib">
+			<uptodate-mio input="@{input}" output="@{output}" type="strj-lib" force="true">
 				<action>
-					<strj input="@{input}" output="@{lib-output}" package="@{package}">
+				<!--	<strj input-path="@{input-path}" input-module="@{input-module}" output="@{lib-output}" package="@{package}">
 						<strjargs>
-							<arg value="--library" />
+							<arg value="- -library" />
 							<arg value="-F" />
 							<strjlibargs />
 						</strjargs>
-					</strj>
-					<strj input="@{lib-output}" output="@{output}" package="@{package}">
+					</strj> -->
+					<strj input-path="@{input-path}" input-module="@{input-module}" output="@{output}" package="@{package}">
 						<strjargs>
 							<arg value="--library" />
 							<strjlibargs />
@@ -409,6 +426,7 @@
 		<attribute name="type" />
 		<attribute name="input" />
 		<attribute name="output" />
+		<attribute name="force" default="false"/>
 		<element name="action" />
 		<element name="deps" />
 		<sequential>
@@ -419,7 +437,7 @@
 				</uptodate>
 			</condition>
 			<if>
-				<equals arg1="${@{input}.@{output}.@{type}}" arg2="true" />
+				<equals arg1="${@{input}.@{output}.@{type}}@{force}" arg2="truefalse" />
 				<then>
 					<echo message="@{output} is up-to-date" />
 				</then>
