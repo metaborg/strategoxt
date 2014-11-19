@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.11
  */
-module sdf2ast-conflicts
+module lib/sdf2ast-conflicts
 imports
   libstratego-lib
 //  Stratego

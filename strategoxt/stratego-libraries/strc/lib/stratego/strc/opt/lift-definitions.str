@@ -1,4 +1,4 @@
-module lift-definitions
+module stratego/strc/opt/lift-definitions
 imports stratego/strc/lib/stratlib stratego/strc/opt/stratego-laws
 strategies
 

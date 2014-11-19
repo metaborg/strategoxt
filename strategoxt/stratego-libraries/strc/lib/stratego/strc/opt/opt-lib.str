@@ -1,4 +1,4 @@
-module opt-lib
+module stratego/strc/opt/opt-lib
 imports Stratego
 strategies
 

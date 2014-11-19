@@ -1,6 +1,6 @@
 // Linearizing match operations 
 
-module linearize
+module stratego/strc/match/linearize
 imports Stratego
 
 strategies

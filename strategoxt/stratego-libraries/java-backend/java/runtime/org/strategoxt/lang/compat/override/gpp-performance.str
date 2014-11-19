@@ -1,4 +1,4 @@
-module gpp-performance
+module lang/compat/override/gpp-performance
 
 imports
   libstratego-gpp

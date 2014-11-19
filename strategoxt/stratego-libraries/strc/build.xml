@@ -29,7 +29,7 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/strc" />
-		<strj-lib input="lib/strc.str" output="${bin.stratego}/org/strategoxt/strc/Main.java" package="org.strategoxt.strc">
+		<strj-lib input-path="lib" input-module="strc.str" output="${bin.stratego}/org/strategoxt/" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -53,8 +53,6 @@
 				<arg value="${dep.gpp}" />
 				<arg value="-I" />
 				<arg value="${dep.gpp}/sdf" />
-				<arg value="-O" />
-				<arg value="2" />
 			</strjlibargs>
 			<str-deps>
 				<srcfiles dir="lib" includes="**/*.str" />
@@ -65,7 +63,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstrc.rtree" todir="${bin}" />
+		<copy file="${bin.stratego}/org/strategoxt/strc/strc.rtree" tofile="${bin}/libstrc.rtree" />
 	</target>
 
 	<path id="build.classpath">
@@ -96,7 +94,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${install-location}" />
 		<delete>
-			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree" />
+			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree, **/*.dep" />
 		</delete>
 	</target>
 </project>

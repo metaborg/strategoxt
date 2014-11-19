@@ -1,4 +1,4 @@
-module build-match-laws
+module stratego/strc/opt/build-match-laws
 imports Stratego Stratego-MetaTransition
 
 rules // combinations of match and build

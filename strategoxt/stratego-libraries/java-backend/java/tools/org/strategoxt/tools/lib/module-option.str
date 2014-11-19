@@ -1,4 +1,4 @@
-module module-option
+module lib/module-option
 
 strategies
 

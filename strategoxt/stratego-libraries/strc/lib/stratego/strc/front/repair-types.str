@@ -1,4 +1,4 @@
-module repair-types
+module stratego/strc/front/repair-types
 imports Stratego-Sugar 
 	stratego/strc/lib/stratlib
 strategies

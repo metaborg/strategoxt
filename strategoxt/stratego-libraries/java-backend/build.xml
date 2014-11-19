@@ -46,7 +46,7 @@
 
 	<target name="build-stratego-strj">
 		<mkdir dir="${bin.stratego}/org/strategoxt/strj" />
-		<strj input="trans/strj.str" output="${bin.stratego}/org/strategoxt/strj/Main.java" package="org.strategoxt.strj">
+		<strj input-path="trans" input-module="strj.str" output="${bin.stratego}/org/strategoxt/strj" package="org.strategoxt.strj">
 			<strjargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -79,7 +79,7 @@
 	</target>
 
 	<target name="build-stratego-tools">
-		<strj-lib input="java/tools/org/strategoxt/tools/tools.str" output="${bin.stratego}/org/strategoxt/tools/Main.java" package="org.strategoxt.tools">
+		<strj-lib input-path="java/tools/org/strategoxt/tools" input-module="tools.str" output="${bin.stratego}/org/strategoxt/tools" package="org.strategoxt.tools">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -129,12 +129,12 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="java/tools/org/strategoxt/tools/libtools.rtree" todir="${bin}" />
+		<copy file="${bin.stratego}/org/strategoxt/tools/tools/tools.rtree" tofile="${bin}/libtools.rtree" />
 	</target>
 
 	<target name="build-stratego-java-compat">
 		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/jsglr-parser-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/jsglr_parser_compat/Main.java" package="org.strategoxt.lang.compat.override.jsglr_parser_compat">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/jsglr-parser-compat.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -148,17 +148,15 @@
 		</strj-lib>
 
 
-		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/performance-tweaks.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/performance_tweaks/Main.java" package="org.strategoxt.lang.compat.override.performance_tweaks">
+		<mkdir dir="${bin.stratego}/org/strategoxt" />
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/performance-tweaks.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 			</strjlibargs>
 		</strj-lib>
 
-
-		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/gpp_performance/Main.java" package="org.strategoxt.lang.compat.override.gpp_performance">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt.lang.compat.override.gpp_performance">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -167,9 +165,7 @@
 			</strjlibargs>
 		</strj-lib>
 
-
-		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/xtc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/xtc_compat/Main.java" package="org.strategoxt.lang.compat.override.xtc_compat">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/xtc-compat.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -179,8 +175,7 @@
 		</strj-lib>
 
 
-		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/native-calls-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/native_calls_compat/Main.java" package="org.strategoxt.lang.compat.override.native_calls_compat">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/native-calls-compat.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -190,8 +185,7 @@
 		</strj-lib>
 
 
-		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/java_integration/Main.java" package="org.strategoxt.lang.compat.override.java_integration">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxtƒ">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -205,8 +199,7 @@
 		<sglri input="java/runtime/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.str" output="${bin.stratego}/org/strategoxt/lang/parallel/stratego_parallel/libstratego-parallel.rtree" parsetable="${dep.stratego-front}/sdf/Stratego.tbl" />
 
 
-		<mkdir dir="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/" />
-		<strj-lib input="java/runtime/org/strategoxt/lang/compat/override/strc-compat.str" output="${bin.stratego}/org/strategoxt/lang/compat/override/strc_compat/Main.java" package="org.strategoxt.lang.compat.override.strc_compat">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/strc-compat.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -285,6 +278,7 @@
 		<javac srcdir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
 			 <exclude name="org/sugarj/common/Activator.java"/>
 			 <exclude name="org/sugarj/common/JavaCommands.java"/>
+			 <exclude name="org/sugarj/common/ATermCommands.java"/>
 		</javac>
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />

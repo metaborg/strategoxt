@@ -1,4 +1,4 @@
-module idfail-laws
+module stratego/strc/opt/idfail-laws
 imports Stratego
 strategies
 

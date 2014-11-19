@@ -1,4 +1,4 @@
-module simplify1
+module stratego/strc/opt/simplify1
 imports stratego/strc/opt/stratego-laws stratego/strc/opt/opt-lib
 strategies
 

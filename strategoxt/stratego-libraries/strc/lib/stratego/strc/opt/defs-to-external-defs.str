@@ -1,4 +1,4 @@
-module defs-to-external-defs
+module stratego/strc/opt/defs-to-external-defs
 imports libstratego-lib Stratego
 strategies
 

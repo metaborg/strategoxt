@@ -1,4 +1,4 @@
-module sdf/grammar/utils
+module lib/sdf/grammar/utils
 strategies
 
   /**

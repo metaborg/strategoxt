@@ -4,7 +4,7 @@
  * @author Eelco Visser 1998 - 2004
  */
 
-module desugar
+module stratego/strc/front/desugar
 
 imports 
   Stratego-Sugar

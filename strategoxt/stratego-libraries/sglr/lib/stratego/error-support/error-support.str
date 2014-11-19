@@ -22,7 +22,7 @@
  *
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module error-support
+module stratego/error-support/error-support
 
 signature
   constructors

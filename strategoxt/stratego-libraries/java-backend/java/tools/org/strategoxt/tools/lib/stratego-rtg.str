@@ -1,7 +1,7 @@
 /**
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module stratego-rtg
+module lib/stratego-rtg
 
 /**
  * Constructors and production rules

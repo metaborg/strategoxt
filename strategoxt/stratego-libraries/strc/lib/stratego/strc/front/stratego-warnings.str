@@ -10,7 +10,7 @@
  *
  * @author Merijn de Jonge (m.de.jonge@tue.nl)
  */
-module stratego-warnings
+module stratego/strc/front/stratego-warnings
 imports
   libstratego-xtc
   stratego/strc/front/error-reporting

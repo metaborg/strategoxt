@@ -3,7 +3,7 @@
  * join the bodies of operators with multiple definitions.
  */
 
-module needed-defs
+module stratego/strc/front/needed-defs
 imports Stratego 
 	stratego/strc/front/DefaultStrat 
 	stratego/strc/front/desugar 

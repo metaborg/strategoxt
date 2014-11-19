@@ -1,4 +1,4 @@
-module regular-xtc-tools
+module lib/regular-xtc-tools
 imports
   pp-rtg
   libstratego-sglr

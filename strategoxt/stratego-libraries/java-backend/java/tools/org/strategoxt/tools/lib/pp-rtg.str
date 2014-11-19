@@ -1,4 +1,4 @@
-module pp-rtg
+module lib/pp-rtg
 imports 
   libstratego-lib
   libstratego-gpp

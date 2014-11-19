@@ -1,4 +1,4 @@
-module dead-def-elim
+module stratego/strc/opt/dead-def-elim
 imports Stratego stratego/strc/lib/stratlib
 strategies
 

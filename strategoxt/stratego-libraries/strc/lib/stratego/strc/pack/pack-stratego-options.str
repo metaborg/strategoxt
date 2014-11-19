@@ -1,4 +1,4 @@
-module pack-stratego-options
+module stratego/strc/pack/pack-stratego-options
 imports
   libstratego-xtc
   stratego/strc/pack/pack-stratego-options

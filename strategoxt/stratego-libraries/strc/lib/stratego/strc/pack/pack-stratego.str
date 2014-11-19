@@ -7,7 +7,7 @@
  * Pack-stratego calls an external process (parse-mod) for parsing
  * individual modules. 
  */
-module pack-stratego
+module stratego/strc/pack/pack-stratego
 
 imports 
   libstratego-xtc 

@@ -7,7 +7,7 @@
  * @author Eelco Visser
  */
 
-module stratlib
+module stratego/strc/lib/stratlib
 imports libstratego-lib Stratego-Sugar
 
 strategies

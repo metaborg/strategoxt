@@ -1,7 +1,7 @@
 /**
  * @author  Merijn de Jonge <mdjonge@cwi.nl>
  */
-module sdf-2-pp-lib
+module lib/sdf-2-pp-lib
 imports
   pp-table
   Bracket-Symbol

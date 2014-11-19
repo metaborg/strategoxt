@@ -24,7 +24,7 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_tool_doc" />
-		<strj-lib input="lib/stratego-tool-doc.str" output="${bin.stratego}/org/strategoxt/stratego_tool_doc/Main.java" package="org.strategoxt.stratego_tool_doc">
+		<strj-lib input-path="lib" input-module="stratego-tool-doc.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -52,8 +52,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<!-- <copy file="lib/libstratego-tool-doc.ctree" todir="${bin}" /> -->
-		<copy file="lib/libstratego-tool-doc.rtree" todir="${bin}" />
+		<copy file="${bin.stratego}/org/strategoxt/stratego_tool_doc/stratego_tool_doc.rtree" tofile="${bin}/libstratego-tool-doc.rtree" />
 	</target>
 
 	<path id="build.classpath">
@@ -84,7 +83,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${install-location}" />
 		<delete>
-			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree" />
+			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree, **/*.dep" />
 		</delete>
 	</target>
 </project>

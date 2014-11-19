@@ -3,7 +3,7 @@
  *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-module native-calls-compat
+module lang/compat/override/native-calls-compat
 
 imports
   libstratego-lib

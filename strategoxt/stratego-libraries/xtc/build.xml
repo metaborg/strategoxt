@@ -24,7 +24,7 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_xtc" />
-		<strj-lib input="lib/stratego-xtc-posix-xsi.str" output="${bin.stratego}/org/strategoxt/stratego_xtc/Main.java" package="org.strategoxt.stratego_xtc">
+		<strj-lib input-path="lib" input-module="stratego-xtc-posix-xsi.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -42,7 +42,7 @@
 				<srcfiles dir="${dep.libstratego-lib}" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="lib/libstratego-xtc-posix-xsi.rtree" todir="${bin}" />
+		<copy file="${bin}/stratego/org/strategoxt/stratego_xtc_posix_xsi/stratego_xtc_posix_xsi.rtree" tofile="${bin}/libstratego-xtc-posix-xsi.rtree" />
 		<copy file="${bin}/libstratego-xtc-posix-xsi.rtree" tofile="${bin}/libstratego-xtc.rtree" />
 	</target>
 
@@ -74,7 +74,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${install-location}" />
 		<delete>
-			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree" />
+			<fileset dir="lib" includes="**/*.ctree*, **/*.rtree, **/*.dep" />
 		</delete>
 	</target>
 </project>

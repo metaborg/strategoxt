@@ -1,4 +1,4 @@
-module strategoxt-xtc-tools
+module tools/strategoxt-xtc-tools
 
 /**
  * asfix

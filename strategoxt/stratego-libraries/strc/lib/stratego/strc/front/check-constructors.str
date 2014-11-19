@@ -1,4 +1,4 @@
-module check-constructors
+module stratego/strc/front/check-constructors
 imports
   libstratego-lib
   Stratego-Sugar

@@ -1,4 +1,4 @@
-module call-graph
+module stratego/strc/front/call-graph
 
 strategies
 

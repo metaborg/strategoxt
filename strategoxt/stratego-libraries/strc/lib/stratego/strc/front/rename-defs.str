@@ -1,4 +1,4 @@
-module rename-defs
+module stratego/strc/front/rename-defs
 imports Stratego-Sugar 
 	stratego/strc/lib/stratlib 
 strategies

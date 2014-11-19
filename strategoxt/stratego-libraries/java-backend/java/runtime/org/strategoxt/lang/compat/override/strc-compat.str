@@ -3,7 +3,7 @@
  *
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-module strc-compat
+module lang/compat/override/strc-compat
 
 imports
   libstratego-lib

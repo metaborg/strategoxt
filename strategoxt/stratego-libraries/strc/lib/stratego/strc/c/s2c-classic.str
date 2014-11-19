@@ -1,7 +1,7 @@
 /**
  * Compilation of Stratego programs to C 
  */
-module s2c-classic
+module stratego/strc/c/s2c-classic
 
 imports 
   libstratego-lib 

@@ -1,7 +1,7 @@
 /**
  * Library of utils for reporting errors in strc.
  */
-module error-reporting
+module stratego/strc/front/error-reporting
 imports
   libstratego-xtc
 

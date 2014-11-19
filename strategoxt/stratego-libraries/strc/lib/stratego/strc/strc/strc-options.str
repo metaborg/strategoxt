@@ -1,4 +1,4 @@
-module strc-options
+module stratego/strc/strc/strc-options
 imports stratego/strc/front/stratego-warnings-options
 
 signature

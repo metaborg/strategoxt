@@ -1,4 +1,4 @@
-module expand-overlays
+module stratego/strc/front/expand-overlays
 
 imports Stratego-Sugar 
 	stratego/strc/front/DefaultStrat 

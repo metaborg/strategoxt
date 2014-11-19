@@ -4,7 +4,7 @@
  * @author Eelco Visser 1998-2004
  */
 
-module combine-sections
+module stratego/strc/front/combine-sections
 imports libstratego-lib Stratego-Sugar
 strategies
 

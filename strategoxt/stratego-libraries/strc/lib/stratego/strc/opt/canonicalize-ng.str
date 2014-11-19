@@ -1,4 +1,4 @@
-module canonicalize-ng
+module stratego/strc/opt/canonicalize-ng
 imports
 	Stratego-Core
 	libstratego-lib

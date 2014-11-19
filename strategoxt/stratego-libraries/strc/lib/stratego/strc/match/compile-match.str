@@ -1,4 +1,4 @@
-module compile-match
+module stratego/strc/match/compile-match
 
 imports stratego/strc/match/match-to-matrix 
 	stratego/strc/match/matrix-to-dfa 

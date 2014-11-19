@@ -4,7 +4,7 @@
  * @author Lennart Kats
  */
 
-module desugar-string-quotations
+module stratego/strc/front/desugar-string-quotations
 
 strategies
 

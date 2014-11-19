@@ -1,4 +1,4 @@
-module DefaultStrat
+module stratego/strc/front/DefaultStrat
 imports Stratego-Sugar
 overlays
 

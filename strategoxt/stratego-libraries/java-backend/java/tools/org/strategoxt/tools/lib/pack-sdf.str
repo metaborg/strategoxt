@@ -9,7 +9,7 @@
  *             Joost Visser <jvisser@cwi.nl>
  *             Martin Bravenboer <martin.bravenboer@gmail.com>
  */
-module pack-sdf
+module lib/pack-sdf
 imports
   libstratego-lib
   libstratego-xtc

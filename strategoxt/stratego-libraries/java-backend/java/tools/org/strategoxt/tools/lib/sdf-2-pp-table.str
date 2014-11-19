@@ -1,4 +1,4 @@
-module sdf-2-pp-table
+module lib/sdf-2-pp-table
 imports
   sdf-2-pp-lib
   Bracket-Symbol

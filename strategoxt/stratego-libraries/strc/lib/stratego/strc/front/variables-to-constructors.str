@@ -2,7 +2,7 @@
  * Rename syntactic variables to nullary constructors if declared in the signature.
  */
 
-module variables-to-constructors
+module stratego/strc/front/variables-to-constructors
 imports libstratego-lib Stratego-Sugar
 strategies
 

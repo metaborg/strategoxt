@@ -1,4 +1,4 @@
-module lift-dynamic-rules
+module stratego/strc/front/lift-dynamic-rules
 imports libstratego-lib Stratego-Sugar
 
 	stratego/strc/lib/stratlib

@@ -1,4 +1,4 @@
-module asfix-abstractions
+module lib/asfix-abstractions
 imports
   asfix-extra
 

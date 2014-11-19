@@ -1,4 +1,4 @@
-module inlining
+module stratego/strc/opt/inlining
 
 imports Stratego-Amb 
 	stratego/strc/lib/stratlib 

@@ -2,7 +2,7 @@
  * extract: translate a specification to core Stratego and extract needed definitions
  */
 
-module extract
+module stratego/strc/front/extract
 imports stratego/strc/front/needed-defs 
 	stratego/strc/front/desugar 
 	stratego/strc/front/needed-constructors

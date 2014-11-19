@@ -4,7 +4,7 @@
  * @todo: refactor to use source model
  */
 
-module optimizer
+module stratego/strc/opt/optimizer
 imports Stratego stratego/strc/opt/stratego-laws libstratego-lib
 
 strategies

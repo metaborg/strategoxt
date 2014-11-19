@@ -1,4 +1,4 @@
-module add-main
+module stratego/strc/front/add-main
 strategies
 
   /**

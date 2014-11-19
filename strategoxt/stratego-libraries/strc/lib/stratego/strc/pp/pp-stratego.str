@@ -1,4 +1,4 @@
-module pp-stratego
+module stratego/strc/pp/pp-stratego
 
 imports 
   libstratego-lib

@@ -1,4 +1,4 @@
-module format-check
+module stratego/strc/strc/format-check
 strategies
 
   tfc1(|format, phase) = tfc(|format, 1, phase)

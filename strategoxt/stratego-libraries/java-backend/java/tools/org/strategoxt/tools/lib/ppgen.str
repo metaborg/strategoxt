@@ -1,4 +1,4 @@
-module ppgen
+module lib/ppgen
 imports
   libstratego-lib
   libstratego-xtc

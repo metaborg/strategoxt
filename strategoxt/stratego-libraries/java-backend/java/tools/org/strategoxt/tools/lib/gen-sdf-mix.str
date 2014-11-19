@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.17
  */
-module gen-sdf-mix
+module lib/gen-sdf-mix
 imports
   Sdf2
   libstratego-lib

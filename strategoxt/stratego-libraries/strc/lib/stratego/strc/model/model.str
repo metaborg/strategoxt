@@ -1,4 +1,4 @@
-module model
+module stratego/strc/model/model
 
 imports Stratego-Sugar
 

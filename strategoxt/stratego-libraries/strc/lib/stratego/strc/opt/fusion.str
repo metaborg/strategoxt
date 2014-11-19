@@ -1,4 +1,4 @@
-module fusion
+module stratego/strc/opt/fusion
 
 imports Stratego   
 	stratego/strc/opt/stratego-laws 

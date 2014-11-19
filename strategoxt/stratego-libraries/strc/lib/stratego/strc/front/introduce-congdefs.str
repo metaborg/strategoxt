@@ -2,7 +2,7 @@
  * Introduce congruence definitions
  */
 
-module introduce-congdefs
+module stratego/strc/front/introduce-congdefs
 
 imports Stratego-Sugar 
 	stratego/strc/front/desugar 

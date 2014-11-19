@@ -2,7 +2,7 @@
  * An xtc-less implementation of the compiler front-end.
  */
 
-module frontend
+module stratego/strc/front/frontend
 
 imports
   stratego/strc/strc/format-check

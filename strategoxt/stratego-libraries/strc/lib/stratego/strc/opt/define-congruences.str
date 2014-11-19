@@ -1,4 +1,4 @@
-module define-congruences
+module stratego/strc/opt/define-congruences
 
 imports stratego/strc/opt/stratego-laws 
 	stratego/strc/opt/opt-lib

@@ -1,4 +1,4 @@
-module report-ambs
+module stratego/strc/front/report-ambs
 imports 
   libstratego-lib
   libstratego-xtc

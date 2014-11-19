@@ -1,4 +1,4 @@
-module meta-explode
+module stratego/strc/parse/meta-explode
 imports libstratego-lib Stratego-Amb Stratego-MetaTransition
 signature
   constructors

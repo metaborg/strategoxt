@@ -1,7 +1,7 @@
 /**
  * Utils for properties of SDF productions
  */
-module sdf/production/utils
+module lib/sdf/production/utils
 strategies
 
   /**

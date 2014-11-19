@@ -2,7 +2,7 @@
  * Strategies for compiling a (generated) C file to object code and
  * linking it.
  */
-module compile-c
+module stratego/strc/strc/compile-c
 
 imports
   libstratego-lib
