@@ -7,8 +7,6 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
-import org.strategoxt.stratego_lib.log_0_2;
-import org.strategoxt.stratego_lib.report_failure_1_0;
 
 /**
  * Overrides report-failure(s) to throw a proper StrategoErrorExit exception
@@ -16,31 +14,37 @@ import org.strategoxt.stratego_lib.report_failure_1_0;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class report_failure_compat_1_0 extends report_failure_1_0 {
+public class report_failure_compat_1_0 extends RegisteringStrategy {
 	
-	private static volatile boolean isInited;
-	
-	private final report_failure_1_0 proceed = instance;
 	
 	private final LogIntercept logIntercept = new LogIntercept();
-
-	public static void init() {
-		if (!isInited) {
-			report_failure_1_0.instance = new report_failure_compat_1_0();
-			isInited = true;
-		}
-	}
+	
+	private Strategy proceed;
+	private Strategy log_0_2_Executor;
+	
+	static final report_failure_compat_1_0 instance = new report_failure_compat_1_0();
+	private static final LogIntercept logInstance = new LogIntercept();
+	
+    public void registerImplementators(StrategyCollector collector)
+    { 
+      collector.registerSpecialStrategyImplementator("report_failure_1_0", instance, "overriden");
+	  collector.registerSpecialStrategyImplementator("log_0_2", logInstance, "overriden");
+    }
+	
+    public void bindExecutors(StrategyCollector collector)
+    { 
+      proceed = collector.getNonSpecialStrategyExecutor("report_failure_1_0");
+	  logInstance.proceed = collector.getNonSpecialStrategyExecutor("log_0_2");
+    }
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
 		synchronized (this) {
 			String[] trace = context.getTrace();
 			try {
-				logIntercept.proceed = log_0_2.instance;
 				logIntercept.enabled = true;
 				logIntercept.lastMessage.set(null);
 				logIntercept.lastTerm.set(null);
-				log_0_2.instance = logIntercept;
 				
 				return proceed.invoke(context, current, s);
 			} catch (StrategoErrorExit e) {
@@ -55,7 +59,6 @@ public class report_failure_compat_1_0 extends report_failure_1_0 {
 					throw new StrategoExit(e);
 				}
 			} finally {
-				log_0_2.instance = logIntercept.proceed;
 				logIntercept.enabled = false;
 			}
 		}
@@ -64,7 +67,7 @@ public class report_failure_compat_1_0 extends report_failure_1_0 {
 	/**
 	 * Intercepts logging messages.
 	 */
-	private class LogIntercept extends log_0_2 {
+	private class LogIntercept extends RegisteringStrategy {
 		
 		log_0_2 proceed;
 		

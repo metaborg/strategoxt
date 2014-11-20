@@ -12,14 +12,14 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.TermConverter;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.WeakValueHashMap;
-import org.strategoxt.stratego_lib.$Read$From$File_0_0;
+import org.strategoxt.lang.RegisteringStrategy;
 
 /**
  * Reads terms from files with caching.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
+public class ReadFromFile_cached_0_0 extends RegisteringStrategy {
 
 	/**
 	 * The number of milliseconds leeway to give before deciding a file is out
@@ -29,7 +29,6 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 	 */
 	private static long FILE_TIME_GRANULARITY = 2001;
 	
-	private static volatile boolean isInited;
 	
 	private static Map<File, IStrategoTerm> asyncCache =
 		new WeakValueHashMap<File, IStrategoTerm>();
@@ -37,21 +36,29 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 	private static Map<IStrategoTerm, FileDate> asyncCacheDates =
 		new WeakHashMap<IStrategoTerm, FileDate>();
 	
-	public static void init() {
-		if (!isInited) {
-			$Read$From$File_0_0.instance = new ReadFromFile_cached_0_0();
-			isInited = true;
-		}
-	}
+	
+	private Strategy proceed;
+	
+	static final ReadFromFile_cached_0_0 instance = new ReadFromFile_cached_0_0();
+	
+    public void registerImplementators(StrategyCollector collector)
+    { 
+      collector.registerSpecialStrategyImplementator("$Read$From$File_0_0", instance, "overriden");
+    }
+	
+    public void bindExecutors(StrategyCollector collector)
+    { 
+      proceed = collector.getNonSpecialStrategyExecutor("$Read$From$File_0_0");
+    }
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm term) {
 		if (!isTermString(term))
-			return super.invoke(context, term);
+			return proceed.invoke(context, term);
 		
 		File file = context.getIOAgent().openFile(asJavaString(term));
 		if (!file.exists())
-			return super.invoke(context, term);
+			return proceed.invoke(context, term);
 		
 		FileDate cachedDate = null;
 		IStrategoTerm cachedTerm = null;
@@ -67,7 +74,7 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 		
 		if (now < fileDate + FILE_TIME_GRANULARITY) {
 			// Date stamp too recent or in the future
-			return super.invoke(context, term);
+			return proceed.invoke(context, term);
 		} else if (cachedDate != null
 				&& cachedDate.accessed > fileDate + FILE_TIME_GRANULARITY
 				&& cachedDate.file.equals(file)) {
@@ -78,7 +85,7 @@ public class ReadFromFile_cached_0_0 extends $Read$From$File_0_0 {
 			}
 			return cachedTerm;
 		} else {
-			IStrategoTerm result = super.invoke(context, term);
+			IStrategoTerm result = proceed.invoke(context, term);
 			if (result != null) {
 				putCache(file, now, result);
 			}

@@ -156,7 +156,7 @@
 			</strjlibargs>
 		</strj-lib>
 
-		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt.lang.compat.override.gpp_performance">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/gpp-performance.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
