@@ -140,6 +140,13 @@ rules
      ~*cnstr-decls
      
      public static Context init(Context context, boolean link) {
+        if (link) {
+           new LibraryInitializer().initialize(context);
+        }
+		return context;
+     }
+	 
+     public static Context initializeLibrary(Context context) {
        synchronized (x_name.class) {
          if (isIniting) return null;
          try {
@@ -150,7 +157,6 @@ rules
              initConstants(termFactory);
            }
            if (initedContext == null || initedContext.get() != context) {
-             ~*import-inits
              ~*def-inits
              context.registerComponent("~x_name'");
            }
@@ -158,9 +164,6 @@ rules
            constantFactory = termFactory;
          } finally {
            isIniting = false;
-         }
-         if (link) {
-           context.setStrategyCollector(new LibraryInitializer().initialize());
          }
          return context;
        }
@@ -285,7 +288,7 @@ rules
        try {
          IStrategoTerm result;
          try {
-           result = context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+           result = context.invokeStrategyCLI(context.getStrategyCollector().getStrategyExecutor("~x_main"), "~x_name", args);
          } finally {
            context.getIOAgent().closeAllFiles();
          }
@@ -316,7 +319,7 @@ rules
      public static IStrategoTerm mainNoExit(Context context, String... args) throws StrategoExit {
        try {
          init(context, true);
-         return context.invokeStrategyCLI(x_main.instance, "~x_name", args);
+         return context.invokeStrategyCLI(context.getStrategyCollector().getStrategyExecutor("~x_main"), "~x_name", args);
        } finally {
          context.getIOAgent().closeAllFiles();
        }
@@ -344,7 +347,9 @@ rules
       @SuppressWarnings("unused")
       public static class LibraryInitializer extends org.strategoxt.lang.LibraryInitializer {
        
-		
+		  protected void initializeLibrary(Context context) {
+		  	x_name.initializeLibrary(context);
+		  }
 		
 		  protected java.util.List<RegisteringStrategy> getLibraryStrategies() {
 			return  java.util.Arrays.<RegisteringStrategy>asList( ~instances* );
@@ -357,6 +362,7 @@ rules
     with
       instances* := <filter(java-library-instance)> defs
     ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
+	; x_name        := <MainClassName>
 
   java-library-initializer-dependent-libraries =
 	  not(is-independent-java-compilation)

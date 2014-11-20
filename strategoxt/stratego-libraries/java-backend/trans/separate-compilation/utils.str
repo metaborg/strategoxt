@@ -33,11 +33,14 @@ strategies
 		
 	save-and-set-options(s|working-package,working-output,filename, modulename) = 
 		where(input := <get-config> "-i"; output := <get-config> "-o"; package := <get-config> "-p"; islib := <get-config<+!0> "--library"; baseout := <get-config> "baseout");
+		where(main := <get-config <+ !()> "-m");
+		where(	<rm-config> "-m");
 		where(	<set-config> ("-i",filename));
 		where(	<set-config> ("-p", <concat-strings>[working-package, ".", <to-library-name;jify;string-char-replace(|'/','.');string-char-replace(|'-','_')> modulename]));
 		where(	<set-config>("-o", <to-java-compilation-abs-path(|working-output); (mkdirs <+ err(|"Creating dir failed"))> modulename));
 		where(	<set-config> ("baseout" ,<to-java-compilation-abs-file(|working-output)> modulename));
 		where(  <set-config> ("--library" ,""));
 		s;
-		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout))
+		where(<set-config> ("-i", input); <set-config> ("-o", output); <set-config> ("-p", package); <(?0;!"--library";rm-config)<+id> islib; <set-config> ("baseout", baseout));
+		where(<if not(?()) then <set-config> ("-m", <id>) end> main )
 	 
