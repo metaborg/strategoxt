@@ -10,10 +10,10 @@ public abstract class LibraryInitializer {
 
 	private boolean isInitialized = false;
 	
-	public final StrategyCollector initialize() {
+	public final void initialize(Context context) {
 		StrategyCollector c = new StrategyCollector();
-		this.initialize(c);
-		return c;
+		this.initialize(c, context);
+		context.setStrategyCollector(c);
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public abstract class LibraryInitializer {
 		}
 	}
 	
-	private final void initialize(final StrategyCollector collector) {
+	private final void initialize(final StrategyCollector collector, final Context context) {
 		if (this.isInitialized) {
 			return;
 		}
@@ -69,6 +69,9 @@ public abstract class LibraryInitializer {
 		System.out.println("Initialzie with : " + dependentInitializer);
 		for (InitializerSetEntry initializer : dependentInitializer) {
 			initializer.initializer.registerImplementators(collector);
+		}
+		for (InitializerSetEntry initializer : dependentInitializer) {
+			initializer.initializer.initializeLibrary(context);
 		}
 		collector.createExecutors();
 		for (InitializerSetEntry initializer : dependentInitializer) {
@@ -90,6 +93,8 @@ public abstract class LibraryInitializer {
 	}
 
 	protected abstract List<RegisteringStrategy> getLibraryStrategies();
+	
+	protected abstract void initializeLibrary(Context context);
 	
 	protected final List<LibraryInitializer> getAllDependentLibraryInitializers() {
 		List<LibraryInitializer> instantiatedInitializers = this.getDependentLibraryInitializer();
