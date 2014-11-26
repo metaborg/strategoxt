@@ -7,6 +7,8 @@ import org.strategoxt.lang.Context;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
+import org.strategoxt.lang.RegisteringStrategy;
+import org.strategoxt.lang.StrategyCollector;
 
 /**
  * Overrides report-failure(s) to throw a proper StrategoErrorExit exception
@@ -23,7 +25,7 @@ public class report_failure_compat_1_0 extends RegisteringStrategy {
 	private Strategy log_0_2_Executor;
 	
 	static final report_failure_compat_1_0 instance = new report_failure_compat_1_0();
-	private static final LogIntercept logInstance = new LogIntercept();
+	private final LogIntercept logInstance = new LogIntercept();
 	
     public void registerImplementators(StrategyCollector collector)
     { 
@@ -69,7 +71,7 @@ public class report_failure_compat_1_0 extends RegisteringStrategy {
 	 */
 	private class LogIntercept extends RegisteringStrategy {
 		
-		log_0_2 proceed;
+		Strategy proceed; //For log_0_2
 		
 		ThreadLocal<IStrategoTerm> lastTerm = new ThreadLocal<IStrategoTerm>();
 		

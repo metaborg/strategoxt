@@ -185,8 +185,10 @@
 		</strj-lib>
 
 
-		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxtƒ">
+		<strj-lib input-path="java/runtime/org/strategoxt" input-module="lang/compat/override/java-integration.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
+				<arg value="--external-import"/>
+				<arg value="org.strategoxt.lang.compat"/>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
 				<arg value="-la" />

@@ -12,7 +12,9 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.interpreter.terms.TermConverter;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.WeakValueHashMap;
+import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.RegisteringStrategy;
+import org.strategoxt.lang.StrategyCollector;
 
 /**
  * Reads terms from files with caching.
@@ -39,7 +41,7 @@ public class ReadFromFile_cached_0_0 extends RegisteringStrategy {
 	
 	private Strategy proceed;
 	
-	static final ReadFromFile_cached_0_0 instance = new ReadFromFile_cached_0_0();
+	public static final ReadFromFile_cached_0_0 instance = new ReadFromFile_cached_0_0();
 	
     public void registerImplementators(StrategyCollector collector)
     { 
