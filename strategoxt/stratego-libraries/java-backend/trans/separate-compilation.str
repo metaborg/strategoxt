@@ -135,12 +135,10 @@ strategies
 				; !(moduleName, work-unit, Module(merged-name, <conc> (new-content, merged-content)), <conc> (new-libs, merged-libs), fileName)
 			})
 			
-			// TODO: Eliminiate dulicate imports resulting from merging modules -> do not need to include rtrees multiple times
-			
 			; where(!xs;map(Snd) => other-circular-units)
 
 			; log(|Info(), ["Prepare for front end"])
-			; {moduleName, merged-ast, new-libs, fileName, work-unit, rtree-file, signature-term:  
+			; {moduleName, merged-ast, new-libs, fileName, work-unit, rtree-file, signature-term, externals:  
 			  ?(moduleName, work-unit, merged-ast, new-libs, fileName)
 			; save-and-set-options(
 				  where(libs := <get-config <+ ![]> "-la")
@@ -148,6 +146,10 @@ strategies
 				; log(|Notice(), ["Import transformation for ", moduleName])
 				; log(|Notice(), ["Use libraries:   " , <get-config> "-la"])
 			
+				// Find declared externals, front end does not treat them specially
+				// But we need to do in the backend
+				; !merged-ast
+				; collect-all(?ExtSDef(_,_,_)) => externals
 				; !IncludeAST(merged-ast,fileName)
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec
@@ -164,7 +166,7 @@ strategies
 				)
 				
 				; log(|Notice(), ["Calling Backend for ", moduleName])
-				; back-end(|circular-units)
+				; back-end(|circular-units, externals)
 				; where(<set-config> ("-la", libs))
 			| working-package,working-output,fileName,moduleName)}
 			;{compiled-module-name:

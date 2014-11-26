@@ -59,12 +59,13 @@ strategies
  
 rules
     
-  s2j = 
-  {|IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
+  s2j(|externals) = 
+  {|Externals, IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
       with(
         s2j-init-options
       ; record-main-classname
       )
+	; where(rules(Externals := externals))
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
@@ -127,6 +128,8 @@ rules
      import org.spoofax.interpreter.library.AbstractPrimitive;
      import java.util.ArrayList;
      import java.lang.ref.WeakReference;
+	 
+	 ~import-dec*:ext-imports
          
      @SuppressWarnings("all")
      public class x_name {
@@ -199,7 +202,7 @@ rules
       <list-loop(try(JavaTranslate))> ops
     ; <list-loop(try(JavaTranslate))> defs
     ; imports       := <java-imports>
-    ; import-inits  := <java-init-imports>
+    ; ext-imports   := <external-imports>
     ; x_name        := <MainClassName>
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
@@ -229,6 +232,12 @@ rules
   ; cnst-decls    := <bagof-ConstDecl>
   ; cnst-inits    := <bagof-ConstInit; concat; reverse>
   
+  external-imports =
+    <get-config <+ ![]> "--external-import"
+		; where(<debug> "Extneral imports"); debug
+    ; make-set
+    ; map(java-import)
+  
   java-imports =
     <get-config> "-la"
   ; make-set
@@ -236,38 +245,13 @@ rules
   <+
     ![]
   
-  java-init-imports =
-    (<get-config> "-la" <+
-    ![])
-  ; make-set
-  ; map(java-init-import)
-  
+ 
   
   java-import :
     x -> TypeImportOnDemandDec(TypeName(Id(x')))
     with
       x' := <jify> x
   
-  java-init-import =
-      ?x
-	; jify
-	; ?x'
-	; if is-independent-java-compilation
-		then
-    	!|[
-	try {
-		Class c = Class.forName("~x'" + ".__$Main").getSuperclass();
-		java.lang.reflect.Method m = c.getMethod("init", Context.class, boolean.class);
-		m.invoke(null, context, false);
-	} catch(Exception ex) {
-		ex.printStackTrace();
-	} 
-	]|
-	else
-    	!|[ x'.__$Main.init(context, false); ]|
-      end
-    
-
   java-main-methods :
     _ ->
     class-body-dec* |[
@@ -360,7 +344,8 @@ rules
       }
     ]|
     with
-      instances* := <filter(java-library-instance)> defs
+	  external-instances* := <Externals;map(\ExtSDef(n,s,t) -> SDefT(<conc-strings> (<jify> n, "_", <length;int-to-string > s, "_", <length;int-to-string > t), (),(),())\);map(java-library-instance)> ()
+    ; instances* := <conc> (external-instances*, <filter(java-library-instance)> defs)
     ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
 	; x_name        := <MainClassName>
 

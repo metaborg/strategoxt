@@ -45,11 +45,11 @@ strategies
   ; <exit> 1
   
   
-  strj-back-end(|comp-units) =
+  strj-back-end(|comp-units, externals) =
 
   try(mark-always-needed(|<get-config> "-m", 0, 0))
 	; strc-output-frontend
-	; s2j
+	; s2j(|externals)
 	; with(clean-output-dir)
 	; log-timed(list-loop(output-java(|comp-units)) | "Pretty printing succeeded", 1)
   
