@@ -57,13 +57,15 @@ strategies
 			else read-or-create-compilation-unit(|<id>)
 		  end
 		; pack-process-options
-		// But the output directory in the search path to find generated rtrees
+	// But the output directory in the search path to find generated rtrees
 		; where({i , is:
 			  !"-I"
 			; get-config => [i|is]
 			; !("-I", [i,IncludeDir(working-output)|is])
 			; set-config
 		})
+	// Remember initial la flags to generate imports later
+		; where(<set-config> ("-la-init", <get-config <+ ![]> "-la"))
 	// Create the build schedule for the compilation unit and flatten it
 		; log(|Notice(), ["Calculating build schedule for ", <id>])
 		; ![<id>]
@@ -150,6 +152,8 @@ strategies
 				// But we need to do in the backend
 				; !merged-ast
 				; collect-all(?ExtSDef(_,_,_)) => externals
+				; where (<debug> ["Found externals ", externals])
+				; where(<debug> merged-ast)
 				; !IncludeAST(merged-ast,fileName)
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec

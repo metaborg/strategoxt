@@ -130,6 +130,7 @@ rules
      import java.lang.ref.WeakReference;
 	 
 	 ~import-dec*:ext-imports
+	 ~import-dec*:imports
          
      @SuppressWarnings("all")
      public class x_name {
@@ -236,7 +237,7 @@ rules
     ; map(java-import)
   
   java-imports =
-    <get-config> "-la"
+    <get-config> "-la-init"
   ; make-set
   ; map(java-import)
   <+
