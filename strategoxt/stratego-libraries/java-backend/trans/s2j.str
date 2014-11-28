@@ -130,6 +130,7 @@ rules
      import java.lang.ref.WeakReference;
 	 
 	 ~import-dec*:ext-imports
+	 ~import-dec*:imports
          
      @SuppressWarnings("all")
      public class x_name {
@@ -195,7 +196,6 @@ rules
      ~*function-defs
      //~*lifted-defs
 
-     ~*register
      }
   ]|
   with 
@@ -207,7 +207,6 @@ rules
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
     ; main          := <java-main-methods>
-    ; register      := <java-interop-registerers> defs
 	; libraryInitializer := <java-library-initializer> defs
     ; switch <get-config> "--stacktrace"
         case 0: e_traces := |[ false ]|
@@ -234,12 +233,11 @@ rules
   
   external-imports =
     <get-config <+ ![]> "--external-import"
-		; where(<debug> "Extneral imports"); debug
     ; make-set
     ; map(java-import)
   
   java-imports =
-    <get-config> "-la"
+    <get-config> "-la-init"
   ; make-set
   ; map(java-import)
   <+
@@ -323,9 +321,6 @@ rules
   java-library-initializer :
     defs ->
     class-body-dec* |[
-      public static void registerInterop(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-        new InteropRegisterer().registerLazy(context, compiledContext, InteropRegisterer.class.getClassLoader());
-      }
       
       // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
       @SuppressWarnings("unused")
@@ -344,10 +339,23 @@ rules
       }
     ]|
     with
-	  external-instances* := <Externals;map(\ExtSDef(n,s,t) -> SDefT(<conc-strings> (<jify> n, "_", <length;int-to-string > s, "_", <length;int-to-string > t), (),(),())\);map(java-library-instance)> ()
-    ; instances* := <conc> (external-instances*, <filter(java-library-instance)> defs)
+	  instances* := <conc> (<java-get-external-strategy-instances>, <java-get-internal-strategy-instances> defs)
     ; dependent-library-initializer-getter := <java-library-initializer-dependent-libraries>
 	; x_name        := <MainClassName>
+
+  java-get-external-strategy-instances =
+	  Externals
+	; filter({n,s,t:
+		  ?ExtSDef(n,s,t)
+		; !(<jify;dollars-for-capitals> n, "_", <length;int-to-string > s, "_", <length;int-to-string > t)
+		; conc-strings
+		; where(not(!(<id>, []); can-bind-static))
+		; !SDefT(<id>, (), (), ())
+		})
+	; map(java-library-instance)
+
+  java-get-internal-strategy-instances =
+     filter(java-library-instance-qualified)
 
   java-library-initializer-dependent-libraries =
 	  not(is-independent-java-compilation)
@@ -367,17 +375,28 @@ rules
   		}
   	]|
 		
-    
   java-library-instance:
     SDefT(x{a*},_,_,_) -> |[x.instance]|
+	  
   java-library-instance:
-    AnnoDef(_,SDefT(x{a*},_,_,_))  -> |[x.instance]|
-  
-    java-dependent-library-initializer(import-transform) =
-      <get-config> "-la"
-    ; map(import-transform)
-    <+
-      ![]
+    AnnoDef(_,SDefT(x{a*},_,_,_))  -> <java-library-instance> SDefT(x, (), (), ())
+
+
+  java-library-instance-qualified:
+    SDefT(x{a*},_,_,_) -> |[x'.instance]|
+	where
+	  x' := <conc-strings> (<get-config> "-p", ".", x)
+	  
+  java-library-instance-qualified:
+    AnnoDef(_,SDefT(x{a*},_,_,_))  -> <java-library-instance-qualified> SDefT(x,(), (), ())
+
+
+
+  java-dependent-library-initializer(import-transform) =
+    <get-config> "-la"
+   ; map(import-transform)
+  <+
+    ![]
 	  
   java-import-to-library-initializer-ref :
     x -> |[ new x'.LibraryInitializer() ]|
@@ -388,73 +407,11 @@ rules
     x -> |[ "~x'" + ".LibraryInitializer"]|
     with
       x' := <jify> x
- 
-  
-  
-  // TODO: do interop strategy additions in a fully on-demand fashion?
-  //       (need to adapt VarScope class to do so)
-  java-interop-registerers : 
-    defs ->
-    class-body-dec* |[
-     
-      // InteropRegisterer is used for dynamic loading and gets lifted to a separate class
-      @SuppressWarnings("unused")
-      public static class InteropRegisterer extends org.strategoxt.lang.InteropRegisterer {
-        @Override
-        public void register(org.spoofax.interpreter.core.IContext context, Context compiledContext) {
-          register(context, compiledContext, context.getVarScope());
-        }
-        
-        @Override
-        public void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader) {
-          registerLazy(context, compiledContext, classLoader, context.getVarScope());
-        }
-        
-        ~*<java-split-method>  |[
-          private void register(org.spoofax.interpreter.core.IContext context, Context compiledContext, org.spoofax.interpreter.core.VarScope varScope) {
-            compiledContext.registerComponent("~x_name");
-            x_name.init(compiledContext, true);
-            bstm1*
-          }
-        ]|
-        
-        ~*<java-split-method>  |[
-          private void registerLazy(org.spoofax.interpreter.core.IContext context, Context compiledContext, ClassLoader classLoader, org.spoofax.interpreter.core.VarScope varScope) {
-            compiledContext.registerComponent("~x_name");
-            x_name.init(compiledContext, true);
-            bstm2*
-          }
-        ]|
-		
-		
-      }
-    ]|
-    with
-      // HACK: non-lazy defs are used only to trick javac to compile everything atm
-      bstm1* := <filter(java-register-strategy)> defs
-    ; bstm2* := <filter(java-register-strategy-lazy)> defs
-    ; x_name := <ApplicationName>
-	; instances* := <filter(java-initialize-instances)> defs
 	
   java-initialize-instances:
     SDefT(x{a*},_,_,_) -> |[x.instance]|
 
-  java-register-strategy :
-    SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x'", new InteropSDefT(x.instance, context)); ]|
-    with
-      x' := <undo-dollars-for-capitals> x
-
-  java-register-strategy-lazy :
-    SDefT(x,_,_,_) ->
-    |[ varScope.addSVar("~x'", new InteropSDefT(classLoader, "~y", context)); ]|
-    with
-      x' := <undo-dollars-for-capitals> x
-    with
-      y := <conc-strings> (<get-config> "-p", ".", x)
-    <+
-      y := <conc-strings> (<ApplicationName>, "$", x)
-
+ 
 rules
 
   translate-constant-definition : // TODO: check if constant strategy definition name not taken

@@ -1,20 +1,58 @@
 package org.strategoxt.lang;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import org.spoofax.interpreter.core.IContext;
+import org.spoofax.interpreter.core.VarScope;
 
 public abstract class LibraryInitializer {
 
 	private boolean isInitialized = false;
+	
+	public static void initializeIterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
+		LibraryInitializer dummyParent = new LibraryInitializer() {
+			
+			@Override
+			protected void initializeLibrary(Context context) {
+				// Do not to anything
+			}
+			
+			@Override
+			protected List<RegisteringStrategy> getLibraryStrategies() {
+				// Dont have anything
+				return Collections.emptyList();
+			}
+			
+			@Override
+			protected List<LibraryInitializer> getDependentLibraryInitializer() {
+				// But here we have something
+				return Arrays.asList(initializers);
+			}
+		};
+		dummyParent.registerInterop(context, compiledContext, context.getVarScope());
+	}
 	
 	public final void initialize(Context context) {
 		StrategyCollector c = new StrategyCollector();
 		this.initialize(c, context);
 		context.setStrategyCollector(c);
 	}
+	
+	public final void registerInterop(final IContext context, final Context compiledContext, final VarScope varScope) {
+		this.initialize(compiledContext);
+		for (Entry<String,Strategy> strategy : compiledContext.getStrategyCollector().getAvailableStrategies()) {
+			varScope.addSVar(strategy.getKey(), new InteropSDefT(strategy.getValue(), context));
+
+		}
+	}
+	
+	
 	
 	/**
 	 * Wraps {@link LibraryInitializer} to compare them by class. To objects of

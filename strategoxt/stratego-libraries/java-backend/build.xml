@@ -256,10 +256,9 @@
 
 	<path id="build.classpath">
 		<!-- <pathelement path="${java.class.path}" /> -->
-		<pathelement location="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src"/>
 		<pathelement location="java/runtime" />
 		<pathelement location="java/cleardep-interface" />
-		<!-- <pathelement location="java/sugarj-common.jar" /> -->
+		<pathelement location="java/sugarj-common.jar" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
 		<pathelement location="java/spoofax-libs.jar" />

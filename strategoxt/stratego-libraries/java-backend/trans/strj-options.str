@@ -22,7 +22,7 @@ strategies
     <set-config> ("VERSION", <strc-version-number>)
   ; <set-config> ("--verbose", 1)
   ; <set-config> ("--statistics", 1)
-  ; <set-config> ("-O", 2)
+  ; <set-config> ("-O", 0)
   ; <set-config> ("-I", [])
   ; <set-config> ("--no-concrete-syntax-externals", 1)
   ; <post-extend-config> ("-la", ["org.strategoxt.stratego_lib"])
