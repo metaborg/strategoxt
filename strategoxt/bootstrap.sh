@@ -1,14 +1,12 @@
-#! /bin/sh
+#!/usr/bin/env bash
 
-for i in {0..3}
-do
-	echo "Build $i/4\n" &&
-	if [ $i -eq 0 ]
-	then
-		mv strategoxt-base.jar strategoxt-base-$i.jar
-	else
-		cp dist/share/strategoxt/strategoxt.jar strategoxt-base-$i.jar
-	fi
-	ant clean &&
-	ANT_OPTS="-Xss8m -Xmx1024m" ant -lib strategoxt-base-$i.jar install || exit 1
-done
+set -eu
+
+BASELINE_VERSION="1.3.0"
+OUTPUT_VERSION="1.3.0-SNAPSHOT"
+BOOTSTRAP1_VERSION="1.3.0-bootstrap1-SNAPSHOT"
+BOOTSTRAP2_VERSION="1.3.0-bootstrap2-SNAPSHOT"
+
+mvn clean install -Dstrategoxt-baseline-version=$BASELINE_VERSION   -Dstrategoxt-output-version=$BOOTSTRAP1_VERSION -Dstrategoxt-output-location=bootstrap1
+mvn clean install -Dstrategoxt-baseline-version=$BOOTSTRAP1_VERSION -Dstrategoxt-output-version=$BOOTSTRAP2_VERSION -Dstrategoxt-output-location=bootstrap2
+mvn clean install -Dstrategoxt-baseline-version=$BOOTSTRAP2_VERSION -Dstrategoxt-output-version=$OUTPUT_VERSION     -Dstrategoxt-output-location=target

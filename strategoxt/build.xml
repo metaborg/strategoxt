@@ -56,9 +56,9 @@
 		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" classpath="${subdists-install-prefix}/share/strategoxt/antcontrib/strategoxt-ant.jar" />
 	</target>
 
-	<target name="build" depends="antcontrib-load, explain">
+	<target name="build" depends="antcontrib-load">
 		<mkdir dir="${subdists-install-prefix}" />
-		<subant inheritall="false" inheritrefs="true">
+		<subant inheritall="false">
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
