@@ -12,6 +12,8 @@
 
 	<target name="all">
 		<java classname="org.apache.tools.ant.launch.Launcher" fork="true" failonerror="true">
+			<jvmarg value="-Xss8m" />
+			<jvmarg value="-Xmx1024m" />
 			<classpath>
 				<pathelement location="${ant.home}/lib/ant-launcher.jar" />
 			</classpath>
