@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class StrategyCollector {
 
@@ -38,6 +39,14 @@ public class StrategyCollector {
 			}
 		}
 		return specialName;
+	}
+	
+	public Set<String> getAvailableStrategyNames() {
+		return this.strategyExecutors.keySet();
+	}
+	
+	public Set<Entry<String, Strategy>> getAvailableStrategies() {
+		return this.strategyExecutors.entrySet();
 	}
 
 	public void registerStrategyImplementator(String name, Strategy implementator) {

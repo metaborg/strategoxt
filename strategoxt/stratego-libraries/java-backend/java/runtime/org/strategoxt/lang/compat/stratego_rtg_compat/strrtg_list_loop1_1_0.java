@@ -4,12 +4,22 @@ import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.strategoxt.lang.Context;
 import org.strategoxt.lang.Strategy;
+import org.strategoxt.lang.RegisteringStrategy;
+import org.strategoxt.lang.StrategyCollector;
 
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class strrtg_list_loop1_1_0 extends Strategy {
-	public static strrtg_list_loop1_1_0 instance = new strrtg_list_loop1_1_0();
+public class strrtg_list_loop1_1_0 extends RegisteringStrategy {
+	
+	public static final strrtg_list_loop1_1_0 instance = new strrtg_list_loop1_1_0();
+	
+    public void registerImplementators(StrategyCollector collector) { 
+      collector.registerStrategyImplementator("strrtg-list-loop1", instance);
+    }
+	
+    public void bindExecutors(StrategyCollector collector) { 
+    }
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {

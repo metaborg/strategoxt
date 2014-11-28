@@ -97,7 +97,8 @@ rules
     )
   + ArgOption(
       "-O"
-    , <set-config>("-O", <string-to-int; strc-set-opt-level>);
+    , <set-config>("-O", 0); //<string-to-int; strc-set-opt-level>);
+      log(|Warning(), "Setting Optimization not supported for separate compilation");
       rules(ManuallySetOptimization: _)
     , !"-O n               Optimization level (0 = no optimization)"
     )

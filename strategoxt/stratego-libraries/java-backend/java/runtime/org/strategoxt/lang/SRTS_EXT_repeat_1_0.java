@@ -8,11 +8,18 @@ import org.spoofax.interpreter.terms.IStrategoTerm;
 /**
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class SRTS_EXT_repeat_1_0 extends Strategy {
+public class SRTS_EXT_repeat_1_0 extends RegisteringStrategy {
 
 	private static final int INSANE_LOOP_COUNT = 100000;
 	
 	public static SRTS_EXT_repeat_1_0 instance = new SRTS_EXT_repeat_1_0();
+	
+    public void registerImplementators(StrategyCollector collector) { 
+      collector.registerStrategyImplementator("SRTS-EXT-repeat", instance);
+    }
+	
+    public void bindExecutors(StrategyCollector collector) { 
+    }
 	
 	@Override
 	public IStrategoTerm invoke(Context context, IStrategoTerm current, Strategy s) {
