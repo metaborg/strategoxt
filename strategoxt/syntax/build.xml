@@ -6,6 +6,8 @@
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
@@ -50,7 +52,7 @@
 			<target name="build" />
 			<target name="install" />
 		</subant>
-		<subant inheritall="false">
+		<subant inheritall="false" inheritrefs="true">
 			<property name="install-prefix" location="${install-prefix}" />
 			<property name="dep.stratego-front" location="${install-prefix}/share/strategoxt/stratego-front" />
 			<property name="dep.box" location="${install-prefix}/share/strategoxt/gpp" />

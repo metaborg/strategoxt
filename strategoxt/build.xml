@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="org.strategoxt.strategoxt" default="all">
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
 	<property name="baseline" value="baseline" />
 	<property name="base-strategoxt" location="${baseline}/share/strategoxt/strategoxt/strategoxt.jar" />
@@ -34,10 +35,6 @@
 	<target name="all" depends="explain, build" />
 
 	<target name="explain">
-		<path id="classpath">
-		</path>
-		<pathconvert property="classpathProp" refid="classpath"/>
-		
 		<echo>Going to do a build</echo>
 		<echo>- revision: ${revision}</echo>
 		<echo>- version: ${version}</echo>
@@ -59,13 +56,14 @@
 		<taskdef resource="org/strategoxt/antcontrib/strategoxt-antlib.xml" classpath="${subdists-install-prefix}/share/strategoxt/antcontrib/strategoxt-ant.jar" />
 	</target>
 
-	<target name="build" depends="antcontrib-load">
+	<target name="build" depends="antcontrib-load, explain">
 		<mkdir dir="${subdists-install-prefix}" />
-		<subant inheritall="false">
+		<subant inheritall="false" inheritrefs="true">
 			<property name="install-prefix" location="${subdists-install-prefix}" />
 			<property name="sdf2bundle" value="${sdf2bundle}" />
 			<property name="nativepath" value="${nativepath}" />
 			<property name="base-strategoxt" value="${base-strategoxt}" />
+			<property name="baseline" value="${baseline}" />
 			<fileset dir="syntax" includes="build.xml" />
 			<target name="all" />
 		</subant>

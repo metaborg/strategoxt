@@ -6,6 +6,8 @@
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
 	<property name="nativepath" value="${sdf2bundle}/bin/" />
