@@ -26,7 +26,6 @@ strategies
        ; ?tbl
        ; rules(MemoRTGParseTable: _ -> tbl)
 
-  external STRRTG-get-rtg-parsetable(|)
 
 strategies
 

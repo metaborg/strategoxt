@@ -31,7 +31,7 @@
 				<arg value="stratego-lib" />
 				<arg value="-la" />
 				<arg value="stratego-sglr" />
-				<arg value="-la" />
+				<arg value="--external-import" />
 				<arg value="org.strategoxt.lang.compat.stratego_rtg_compat" />
 				<arg value="-I" />
 				<arg value="${dep.stratego-regular}/sdf" />

@@ -226,12 +226,10 @@ rules
     Config(items) -> HSection("Configuration:", [DefList(items)])
 
   DesugarToolDoc :
-    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <GetInternalDefaultXtcRepository <+ !"not available"> ())
+    DefaultXTCRepository() -> ConfigItem("Default XTC Repository", <xtc-GetInternalDefaultXtcRepository <+ !"not available"> ())
 
   DesugarToolDoc :
     CurrentXTCRepository() -> ConfigItem("Current XTC Repository", <xtc-location <+ !"not available"> ())
-
-  external GetInternalDefaultXtcRepository(|)
 
   DesugarToolDoc :
     ConfigItem(k, v) -> Def(k, Line(v))

@@ -24,7 +24,7 @@ public class report_failure_compat_1_0 extends RegisteringStrategy {
 	private Strategy proceed;
 	private Strategy log_0_2_Executor;
 	
-	static final report_failure_compat_1_0 instance = new report_failure_compat_1_0();
+	public static final report_failure_compat_1_0 instance = new report_failure_compat_1_0();
 	private final LogIntercept logInstance = new LogIntercept();
 	
     public void registerImplementators(StrategyCollector collector)

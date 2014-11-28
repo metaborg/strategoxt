@@ -25,6 +25,8 @@ strategies
     <+ GetInternalDefaultXtcRepository
 
   external GetInternalDefaultXtcRepository(|)
+  
+  xtc-GetInternalDefaultXtcRepository = GetInternalDefaultXtcRepository
 
   xtc-read = 
       ?rep

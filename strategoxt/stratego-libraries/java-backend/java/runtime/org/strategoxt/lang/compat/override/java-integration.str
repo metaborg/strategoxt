@@ -32,8 +32,8 @@ strategies
   external ReadFromFile-cached(|)
   override ReadFromFile = ReadFromFile-cached
   
-  external report-failure-compat(|)
-  override report-failure = report-failure-compat
+  external report-failure-compat(s|)
+  override report-failure(s) = report-failure-compat(s)
   
   /**
   * Raise an execution exception with a stack trace
