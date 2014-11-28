@@ -34,12 +34,17 @@
 	<target name="all" depends="explain, build" />
 
 	<target name="explain">
+		<path id="classpath">
+		</path>
+		<pathconvert property="classpathProp" refid="classpath"/>
+		
 		<echo>Going to do a build</echo>
 		<echo>- revision: ${revision}</echo>
 		<echo>- version: ${version}</echo>
 		<echo>- install output (install-prefix): ${install-prefix}</echo>
 		<echo>- dependencies install output (subdists-install-prefix): ${subdists-install-prefix}</echo>
 		<echo>- sdf2bundle from: ${sdf2bundle}</echo>
+		<echo>- classpath from: ${java.class.path}</echo>
 	</target>
 
 	<target name="antcontrib-build">
