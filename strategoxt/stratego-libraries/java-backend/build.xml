@@ -55,7 +55,7 @@
 				<arg value="-la" />
 				<arg value="stratego-gpp" />
 				<arg value="-la" />
-				<arg value="strc" />
+				<arg value="stratego-strc" />
 				<arg value="-la" />
 				<arg value="java-front" />
 				<arg value="-m" />
@@ -98,7 +98,7 @@
 				<arg value="-la" />
 				<arg value="stratego-aterm" />
 				<arg value="-la" />
-				<arg value="strc" />
+				<arg value="stratego-strc" />
 				<arg value="-I" />
 				<arg value="${basedir}/java/pack-sdf-ext/extension" />
 				<arg value="-I" />
@@ -208,7 +208,7 @@
 				<arg value="-la" />
 				<arg value="stratego-xtc" />
 				<arg value="-la" />
-				<arg value="org.strategoxt.strc" />
+				<arg value="stratego-strc" />
 				<arg value="-I" />
 				<arg value="${basedir}/java/runtime/org/strategoxt/lang/parallel/stratego_parallel" />
 				<arg value="-I" />
@@ -276,11 +276,6 @@
 
 	<target name="build-java" depends="build-stratego">
 		<mkdir dir="${bin.java}" />
-		<javac srcdir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
-			 <exclude name="org/sugarj/common/Activator.java"/>
-			 <exclude name="org/sugarj/common/JavaCommands.java"/>
-			 <exclude name="org/sugarj/common/ATermCommands.java"/>
-		</javac>
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />

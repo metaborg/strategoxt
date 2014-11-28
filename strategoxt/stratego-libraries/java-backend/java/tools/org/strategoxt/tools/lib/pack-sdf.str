@@ -40,7 +40,7 @@ strategies
     ; !out
     )
   
-  external asfix-yield(|stream) // HACK
+ // external asfix-yield(|stream) // HACK, for what?
 
 /**
  * Main strategies

@@ -21,7 +21,7 @@ import org.strategoxt.lang.StrategyCollector;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
-public class ReadFromFile_cached_0_0 extends RegisteringStrategy {
+public class $Read$From$File_cached_0_0 extends RegisteringStrategy {
 
 	/**
 	 * The number of milliseconds leeway to give before deciding a file is out
@@ -41,7 +41,7 @@ public class ReadFromFile_cached_0_0 extends RegisteringStrategy {
 	
 	private Strategy proceed;
 	
-	public static final ReadFromFile_cached_0_0 instance = new ReadFromFile_cached_0_0();
+	public static final $Read$From$File_cached_0_0 instance = new $Read$From$File_cached_0_0();
 	
     public void registerImplementators(StrategyCollector collector)
     { 

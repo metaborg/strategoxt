@@ -51,5 +51,3 @@ strategies
        ; open-parse-table
        ; ?tbl
        ; rules(MyMemoRTGParseTable: _ -> tbl)
-
-  external STRRTG-get-rtg-parsetable(|)
