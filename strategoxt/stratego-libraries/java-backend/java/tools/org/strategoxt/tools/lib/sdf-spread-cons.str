@@ -7,7 +7,7 @@ module lib/sdf-spread-cons
 imports
   Sdf2
   libstratego-lib
-  sdf/production/attributes
+  lib/sdf/production/attributes
 
 strategies
 

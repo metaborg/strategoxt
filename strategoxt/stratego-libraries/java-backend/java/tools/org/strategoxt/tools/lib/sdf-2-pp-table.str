@@ -1,7 +1,7 @@
 module lib/sdf-2-pp-table
 imports
-  sdf-2-pp-lib
-  Bracket-Symbol
+  lib/sdf-2-pp-lib
+  lib/Bracket-Symbol
 
 strategies
 

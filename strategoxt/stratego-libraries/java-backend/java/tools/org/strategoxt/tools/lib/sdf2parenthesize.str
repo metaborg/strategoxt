@@ -5,7 +5,7 @@
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.11
  */
-module sdf2parenthesize
+module lib/sdf2parenthesize
 imports
   libstratego-lib
   libstratego-xtc

@@ -9,7 +9,7 @@
 			<uptodate-mio input="@{input}" output="@{output}" type="pack-sdf">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-pack-sdf" />
+						<arg value="main-pack-sdf"/> 
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="-o" />

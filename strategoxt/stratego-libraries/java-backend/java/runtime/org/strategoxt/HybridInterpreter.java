@@ -393,7 +393,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		// FIXME: HybridInterpreter loads all libs into the same namespace
 		//        Which may affect interpreted code and invoke()
 		LibraryInitializer.initializeInterop(context, compiledContext,
-			new org.strategoxt.tools.tools.LibraryInitializer(),
+			new org.strategoxt.tools.LibraryInitializer(),
 			new org.strategoxt.stratego_gpp.LibraryInitializer(),
 			new org.strategoxt.stratego_aterm.LibraryInitializer(),
 			new org.strategoxt.stratego_rtg.LibraryInitializer(),

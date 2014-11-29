@@ -79,7 +79,7 @@
 	</target>
 
 	<target name="build-stratego-tools">
-		<strj-lib input-path="java/tools/org/strategoxt/tools" input-module="tools.str" output="${bin.stratego}/org/strategoxt/tools" package="org.strategoxt.tools">
+		<strj-lib input-path="java/tools/org/strategoxt/tools" input-module="tools.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="stratego-lib" />
@@ -102,8 +102,6 @@
 				<arg value="-I" />
 				<arg value="${basedir}/java/pack-sdf-ext/extension" />
 				<arg value="-I" />
-				<arg value="${basedir}/java/tools/org/strategoxt/tools/lib" />
-				<arg value="-I" />
 				<arg value="${dep.stratego-front}" />
 				<arg value="-I" />
 				<arg value="${dep.stratego-front}/sdf" />
@@ -121,7 +119,6 @@
 				<arg value="${dep.gpp}/sdf" />
 			</strjlibargs>
 			<str-deps>
-				<srcfiles dir="java/tools/org/strategoxt/tools/lib" includes="**/*.str" />
 				<srcfiles dir="java/pack-sdf-ext/extension" includes="**/*.str" />
 				<srcfiles dir="${dep.stratego-front}" includes="**/*" />
 				<srcfiles dir="${dep.stratego-regular}" includes="**/*" />
@@ -129,7 +126,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<copy file="${bin.stratego}/org/strategoxt/tools/tools/tools.rtree" tofile="${bin}/libtools.rtree" />
+		<copy file="${bin.stratego}/org/strategoxt/tools/tools.rtree" tofile="${bin}/libtools.rtree" />
 	</target>
 
 	<target name="build-stratego-java-compat">

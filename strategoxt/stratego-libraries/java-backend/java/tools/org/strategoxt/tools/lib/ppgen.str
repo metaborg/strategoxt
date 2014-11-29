@@ -3,8 +3,8 @@ imports
   libstratego-lib
   libstratego-xtc
   libstratego-sdf
-  sdf-2-pp-table
-  pp-pp-table
+  lib/sdf-2-pp-table
+  lib/pp-pp-table
 
 signature
   constructors

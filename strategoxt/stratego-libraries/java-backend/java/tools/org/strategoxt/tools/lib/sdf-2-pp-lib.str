@@ -3,10 +3,10 @@
  */
 module lib/sdf-2-pp-lib
 imports
-  pp-table
-  Bracket-Symbol
-  sdf/production/utils
-  sdf/production/attributes
+  lib/pp-table
+  lib/Bracket-Symbol
+  lib/sdf/production/utils
+  lib/sdf/production/attributes
 
 strategies
 

@@ -1,15 +1,15 @@
 module tools
 
 imports
-  rtg2sig
-  sdf2rtg
-  pack-sdf
-  ppgen
-  parse-pp-table
-  core-sdf-parenthesize
-  gen-renamed-sdf-module
-  gen-sdf-mix
-  sdf2ast-conflicts
-  sdf2parenthesize
-  parse-stratego
-  pack-sdf-ext
+  lib/rtg2sig
+  lib/sdf2rtg
+  lib/pack-sdf
+  lib/ppgen
+  lib/parse-pp-table
+  lib/core-sdf-parenthesize
+  lib/gen-renamed-sdf-module
+  lib/gen-sdf-mix
+  lib/sdf2ast-conflicts
+  lib/sdf2parenthesize
+  lib/parse-stratego
+  lib/pack-sdf-ext

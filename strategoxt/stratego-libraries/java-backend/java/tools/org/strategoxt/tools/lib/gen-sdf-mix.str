@@ -9,8 +9,8 @@ imports
   Sdf2
   libstratego-lib
   libstratego-xtc
-  sdf/grammar/utils
-  native-transform
+  lib/sdf/grammar/utils
+  lib/native-transform
 
 strategies
 

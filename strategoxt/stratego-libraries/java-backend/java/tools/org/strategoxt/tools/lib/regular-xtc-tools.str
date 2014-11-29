@@ -1,6 +1,6 @@
 module lib/regular-xtc-tools
 imports
-  pp-rtg
+  lib/pp-rtg
   libstratego-sglr
   libstrc
 

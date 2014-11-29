@@ -42,7 +42,7 @@
 				<arg value="-la" />
 				<arg value="stratego-rtg" />
 				<arg value="-la" />
-				<arg value="org.strategoxt.lang.compat.strc_compat" />
+				<arg value="org.strategoxt.lang.compat.override.strc_compat" />
 				<arg value="--external-import"/>
 				<arg value="org.strategoxt.lang.compat.strc_compat" />
 				<arg value="-I" />

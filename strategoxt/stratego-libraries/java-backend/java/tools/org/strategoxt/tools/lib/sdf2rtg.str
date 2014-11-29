@@ -6,9 +6,9 @@ imports
   lib/pp-rtg
   lib/sdf-options
   lib/core-sdf-grammar2rtg
-  regular-xtc-tools
-  sdf-desugar
-  native-transform
+  lib/regular-xtc-tools
+  lib/sdf-desugar
+  lib/native-transform
   
 strategies
 

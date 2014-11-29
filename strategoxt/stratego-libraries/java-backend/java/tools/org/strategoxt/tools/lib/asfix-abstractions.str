@@ -1,6 +1,6 @@
 module lib/asfix-abstractions
 imports
-  asfix-extra
+  lib/asfix-extra
 
 signature
 constructors

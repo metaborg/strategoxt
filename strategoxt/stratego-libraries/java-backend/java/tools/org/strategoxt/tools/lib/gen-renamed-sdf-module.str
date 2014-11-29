@@ -4,11 +4,11 @@
  * @author  Martin Bravenboer <martin.bravenboer@gmail.com>
  * @since   0.9.5
  */
-module gen-renamed-sdf-module
+module lib/gen-renamed-sdf-module
 imports
   libstratego-lib
   libstratego-xtc
-  sdf/grammar/utils
+  lib/sdf/grammar/utils
   lib/native-transform
   lib/sdf-desugar
   lib/sdf-ensugar
