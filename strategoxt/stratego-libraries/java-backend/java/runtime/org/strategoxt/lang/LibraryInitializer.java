@@ -15,7 +15,7 @@ public abstract class LibraryInitializer {
 
 	private boolean isInitialized = false;
 	
-	public static void initializeIterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
+	public static void initializeInterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
 		LibraryInitializer dummyParent = new LibraryInitializer() {
 			
 			@Override

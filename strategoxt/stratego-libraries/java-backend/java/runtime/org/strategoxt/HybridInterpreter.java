@@ -46,6 +46,7 @@ import org.strategoxt.lang.MissingStrategyException;
 import org.strategoxt.lang.StrategoErrorExit;
 import org.strategoxt.lang.StrategoException;
 import org.strategoxt.lang.StrategoExit;
+import org.strategoxt.lang.StrategyCollector;
 import org.strategoxt.lang.parallel.stratego_parallel.ParallelContext;
 
 /**
@@ -479,11 +480,13 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		final ITermFactory factory = getProgramFactory();
 		final IStrategoConstructor callT = factory.makeConstructor("CallT", 3);
 		final IStrategoConstructor sdefT = factory.makeConstructor("SDefT", 4);
-		s = (IStrategoAppl) pre_desugar_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) desugar_list_matching_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) desugar_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) raise_annotations_0_0.instance.invoke(getCompiledContext(), s);
-		s = (IStrategoAppl) simplify_0_0.instance.invoke(getCompiledContext(), s);
+		final Context compiledContext = getCompiledContext();
+		final StrategyCollector collector = compiledContext.getStrategyCollector();
+		s = (IStrategoAppl) collector.getStrategyExecutor("pre_desugar_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("desugar_list_matching_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("desugar_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("raise_annotations_0_0").invoke(compiledContext, s);
+		s = (IStrategoAppl) collector.getStrategyExecutor("simplify_0_0").invoke(compiledContext, s);
 		s = (IStrategoAppl) new TermTransformer(factory, false) {
 				@Override
 				public IStrategoTerm preTransform(IStrategoTerm term) {
