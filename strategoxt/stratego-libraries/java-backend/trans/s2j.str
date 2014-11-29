@@ -130,7 +130,7 @@ rules
      import java.lang.ref.WeakReference;
 	 
 	 ~import-dec*:ext-imports
-	 ~import-dec*:imports
+//	 ~import-dec*:imports
          
      @SuppressWarnings("all")
      public class x_name {

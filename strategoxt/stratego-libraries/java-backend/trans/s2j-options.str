@@ -115,17 +115,22 @@ rules
   
   // For compatibility, allow a number of built-in library names
   translate-default-library =
-    switch id
-      case "stratego-lib" + "stratego-xtc" + "stratego-sglr" + "stratego-rtg" + "stratego-aterm" +
-           "stratego-gpp" + "strc" + "stratego-tool-doc" + "stratego-sdf" + "java-front":
-        <conc-strings> ("org.strategoxt.", <id>)
-
-      case "stratego-parallel":
-        <conc-strings> ("org.strategoxt.lang.parallel.", <id>)
-      
-      otherwise:
-        jify
-    end
+	switch id
+	case "stratego-aterm" + "stratego-gpp" + "stratego-rtg" + "stratego-sdf" + "stratego-sglr" + "stratego-tool-doc":
+		<conc-strings> ("org.strategoxt.", <explode-string;debug;map(if ?'-' then !'_' else id end);implode-string>)
+	case "stratego-strc":
+		!"org.strategoxt.strc"
+	case "java-front":
+		!"org.strategoxt.javafront"
+	case "stratego-lib":
+		!"org.strategoxt.stratego_lib_posix_xsi"
+	case "stratego-xtc":
+		!"org.strategoxt.stratego_xtc_posix_xsi"
+	case "stratego-parallel":
+		<conc-strings> ("org.strategoxt.lang.parallel.", <id>)
+	otherwise:
+		jify
+	end
   
   // For compatibility, ignore all built-in library paths
   // (e.g., -la /home/.../java-front.la)
