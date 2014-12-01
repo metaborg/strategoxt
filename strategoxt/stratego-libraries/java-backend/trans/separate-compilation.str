@@ -117,7 +117,12 @@ strategies
 				 })
 			; compile-asts(back-end|working-package,working-output, circular-units)
 		end
-			
+		
+	add-default-lib-import = 
+		  is-generate-stdlib-import
+		;  ?Module(merged-name, [Imports(imports)|content])
+		; !Module(merged-name, [Imports(<make-set> [Import("libstratego-lib")|imports]) | content])
+	
 	compile-asts(back-end|working-package,working-output, circular-units)= {x, xs, other-circular-units :
 			  log(|Info(), ["Transforming import"])
 			//  where(map(\(moduleName, _, _, _) -> moduleName\) => moduleNames)
@@ -132,10 +137,15 @@ strategies
 			; ?[x|xs]
 			; !(xs, x)
 			; log(|Notice(), ["Combine modules"])
-			; foldl( {new-content, new-libs, moduleName, work-unit, merged-name, merged-content, merged-libs, fileName :
-				  ?( (_, _, Module(_, new-content), new-libs, _), (moduleName, work-unit, Module(merged-name, merged-content), merged-libs, fileName) )
-				; !(moduleName, work-unit, Module(merged-name, <conc> (new-content, merged-content)), <conc> (new-libs, merged-libs), fileName)
+			
+			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
+			; foldl( {new-content, new-libs, moduleName, work-unit, merged-name, merged-content, merged-libs, fileName, new-imports, merged-imports :
+				  ?( (_, _, Module(_, [Imports(new-imports)| new-content]), new-libs, _), (moduleName, work-unit, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName) )
+				; !(moduleName, work-unit, Module(merged-name, [Imports(<conc;make-set> (new-imports, merged-imports)) | <conc> (new-content, merged-content)]), <conc> (new-libs, merged-libs), fileName)
 			})
+			
+			// Add import to stdlib if required by options
+			; (id, id, try(add-default-lib-import), id, id)
 			
 			; where(!xs;map(Snd) => other-circular-units)
 
@@ -244,7 +254,7 @@ strategies
 			}
 				
 			process-import-rtree(|circular-source-files) =
-			{ file :
+			{ file, term :
 				  ?(term, file)
 				; where(<has-extension(|"rtree")> file)
 				; !AbsolutePath(file)
@@ -252,18 +262,30 @@ strategies
 				; !term
 				}
 				
+			process-import-default-lib(|circular-source-files) = 
+			{ lib, term:
+				  ?(term, lib)
+				; !lib
+				; default-lib-get-rtree-file
+				; !term
+				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
+			}
+			
+				
+			
+				
 	
 		in {| File: 
 		  where(!circular-units;map(get-stratego-source-file) => circular-source-files)
 		
-		; fold-on-imports(
+		; transform-imports-and-move-to-front(
 			{import, file:
 				  id => import
 				; import-get-file => file
 				; rules(File: import -> file)
 			},
 			  !(<id>, <id;File>)
-			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files))
+			;(process-import-str(|circular-source-files) + process-import-rtree(|circular-source-files) + process-import-default-lib(|circular-source-files))
 			, if File;has-extension(|"str")
 				then import-to-flag
 				else fail // do not want to collect rtrees
@@ -272,3 +294,7 @@ strategies
 		|}
 		end
 		   
+		
+	 	// Returns the rtree file for a default library import like libstrategolib
+		// It is actually implemented in strc-compat.str to keep handling libraries in one place
+		default-lib-get-rtree-file = fail

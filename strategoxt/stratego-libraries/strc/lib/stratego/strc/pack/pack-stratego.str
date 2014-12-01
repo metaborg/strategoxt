@@ -50,7 +50,7 @@ strategies
     , pack-process-options
     ; pack-report-options
     ; pack-stratego(|<pack-include-path>) => (files, spec)
-    ; <pack-maybe-create-depfile> files
+  //  ; <pack-maybe-create-depfile> files
     ; <write-to> spec
     )
 
