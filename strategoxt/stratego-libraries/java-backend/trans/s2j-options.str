@@ -117,7 +117,7 @@ rules
   translate-default-library =
 	switch id
 	case "stratego-aterm" + "stratego-gpp" + "stratego-rtg" + "stratego-sdf" + "stratego-sglr" + "stratego-tool-doc":
-		<conc-strings> ("org.strategoxt.", <explode-string;debug;map(if ?'-' then !'_' else id end);implode-string>)
+		<conc-strings> ("org.strategoxt.", <explode-string;map(if ?'-' then !'_' else id end);implode-string>)
 	case "stratego-strc":
 		!"org.strategoxt.strc"
 	case "java-front":

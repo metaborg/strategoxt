@@ -101,7 +101,7 @@ rules
   ; rules(
       MainClassName := <id>
     )
-  ; app-name := <!"-p"; get-config; string-tokenize('.'); last <+ MainClassName>
+  ; app-name := <!"-p"; get-config; dollars-for-capitals; string-tokenize('.'); last <+ MainClassName>
   ; rules(
       ConstantContainerClass := app-name
       ApplicationName        := app-name
@@ -205,7 +205,8 @@ rules
     ; ext-imports   := <external-imports>
     ; x_name        := <MainClassName>
     ; x_name'       := <ApplicationName>
-    ; pkgname       := <!package-dec? |[ package ~x:<get-config> "-p"; ]| <+ !None()>
+    ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
+	; where(<debug> "Package Name"); where(<debug> pkgname)
     ; main          := <java-main-methods>
 	; libraryInitializer := <java-library-initializer> defs
     ; switch <get-config> "--stacktrace"
@@ -385,7 +386,7 @@ rules
   java-library-instance-qualified:
     SDefT(x{a*},_,_,_) -> |[x'.instance]|
 	where
-	  x' := <conc-strings> (<get-config> "-p", ".", x)
+	  x' := <conc-strings> (<get-config;dollars-for-capitals> "-p", ".", x)
 	  
   java-library-instance-qualified:
     AnnoDef(_,SDefT(x{a*},_,_,_))  -> <java-library-instance-qualified> SDefT(x,(), (), ())
@@ -1242,7 +1243,7 @@ strategies
     with
       inputfile  := <find-import-term-file> file // (exits on error)
     ; outputfile := <base-filename> file
-    ; pkgname    := <get-config <+ !""> "-p"
+    ; pkgname    := <(get-config;dollars-for-capitals) <+ !""> "-p"
     ; pkgpath    := <conc-strings> ("/", <string-replace(|".", "/")> pkgname, "/")
     with
       outputdir := <output-dirname>

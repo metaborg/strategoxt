@@ -32,6 +32,9 @@ strategies
         case "libstratego-parallel": import-term(libstratego-parallel.rtree)
         case "libstrc":              import-term(libstrc.rtree)
       end => ast
+	 ; !name
+	 ; default-lib-get-rtree-file
+	 ; pack-log-include
   
   
   extend default-lib-get-rtree-file =

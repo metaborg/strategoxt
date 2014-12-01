@@ -152,8 +152,6 @@ strategies
 				// But we need to do in the backend
 				; !merged-ast
 				; collect-all(?ExtSDef(_,_,_)) => externals
-				; where (<debug> ["Found externals ", externals])
-				; where(<debug> merged-ast)
 				; !IncludeAST(merged-ast,fileName)
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec
@@ -191,8 +189,8 @@ strategies
 	
 	
 	to-library-name = separate-compilation-modify-filename(if ?"char" + ?"term" + ?"interface" + ?"class" then !["_", <id>];concat-strings end ; jify)
-	to-java-compilation-folder:   modulename -> <to-library-name;jify> modulename
-	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify> modulename
+	to-java-compilation-folder:   modulename -> <to-library-name;jify; dollars-for-capitals> modulename
+	to-java-compilation-filename: modulename -> <to-library-name;path-get-filename;jify; dollars-for-capitals> modulename
 	to-java-compilation-rel-file: modulename -> <concat-strings> [<to-java-compilation-folder> modulename ,"/",<to-java-compilation-filename> modulename]
 	to-java-compilation-abs-path (| working-output):modulename -> <concat-strings> [working-output, <to-java-compilation-folder> modulename, "/"]
 	to-java-compilation-abs-file (| working-output) =
