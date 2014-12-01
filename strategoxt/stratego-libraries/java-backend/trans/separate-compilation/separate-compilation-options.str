@@ -20,6 +20,11 @@ strategies
 			, <set-config> ("--independent-java-compilation", ()); !()
 			, !"--independent-java-compilation  Allows the generated Java code to be compiled without required libraries in classpath (moreover, each strategy can be compiled independent)"
 		)
+		+ Option(
+			  "--generate-stdlib-import"
+			, <set-config> ("--generate-stdlib-import", ()); !()
+			, !"--generate-stdlib-import        Generates an import to the standard-library for each module"
+		)
 		
 		
 	process-library-path = 
@@ -55,3 +60,6 @@ strategies
 	
 	is-independent-java-compilation =
 		  where(<get-config> "--independent-java-compilation")
+		  
+	is-generate-stdlib-import =
+		  where(<get-config> "--generate-stdlib-import")

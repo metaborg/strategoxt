@@ -22,6 +22,30 @@ strategies
 			; !(<id>, <CollectedImports;reverse>)
 		end
 		|}
+
+	transform-imports-and-move-to-front (import-predicate, import-transform, collect-transform) =
+		  ?Module(name, content)
+		; !content
+		; partition(\Imports(x)-> x\) => (import-terms, other-content)
+		; !(import-terms, [])
+		; foldl({imp, all-imp:
+			  ?(imp, all-imp)
+			; !imp
+			; mapconcat(pack-expand-import)
+			; !(<id>, all-imp)
+			; conc
+			}
+		  ) => all-imports
+		; map(\x -> Import(x)\)
+		; partition(where(import-predicate)) => (filtered-imports, other-imports)
+		; !filtered-imports
+		; filter(collect-transform) => collected-imports
+		; !filtered-imports
+		; filter(import-transform) => transformed-imports
+		; !(transformed-imports, other-imports)
+		; conc
+		; !(Module(name, [Imports(<id>) | other-content]), collected-imports)
+
 		
 	import-get-file = 
 		  \Import(s) -> (IncludeFromPath(s),<pack-include-path>)\
