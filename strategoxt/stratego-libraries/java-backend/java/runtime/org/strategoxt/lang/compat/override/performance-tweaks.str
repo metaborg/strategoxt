@@ -60,6 +60,9 @@ strategies
 
   override flatten-list =
     SRTS-EXT-flatten-list
+    
+  override concat =
+  	SRTS-EXT-concat
 
   external SRTS-EXT-string-replace(|s1, s2)
 
@@ -72,3 +75,5 @@ strategies
   external SRTS-EXT-repeat(s|)
 
   external SRTS-EXT-flatten-list(|)
+  
+  external SRTS-EXT-concat(|)
