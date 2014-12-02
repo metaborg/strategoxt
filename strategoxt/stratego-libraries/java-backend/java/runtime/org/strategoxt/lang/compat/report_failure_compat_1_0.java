@@ -29,13 +29,13 @@ public class report_failure_compat_1_0 extends RegisteringStrategy {
 	
     public void registerImplementators(StrategyCollector collector)
     { 
-      collector.registerSpecialStrategyImplementator("report_failure_1_0", instance, "overriden");
+      collector.registerStrategyImplementator("report_failure_compat_1_0", instance);
 	  collector.registerSpecialStrategyImplementator("log_0_2", logInstance, "overriden");
     }
 	
     public void bindExecutors(StrategyCollector collector)
     { 
-      proceed = collector.getNonSpecialStrategyExecutor("report_failure_1_0");
+      proceed = collector.getStrategyExecutor("report_failure_1_0");
 	  logInstance.proceed = collector.getNonSpecialStrategyExecutor("log_0_2");
     }
 	

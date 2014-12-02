@@ -17,6 +17,7 @@ imports
   // strategoxt-xtc-tools (in libstrc)
   lib/asfix-abstractions
   lib/pack-sdf-options
+  pack-sdf-ext
 
 /**
  * Entry point

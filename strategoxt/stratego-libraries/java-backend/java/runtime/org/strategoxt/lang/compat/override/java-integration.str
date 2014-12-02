@@ -35,6 +35,7 @@ strategies
   external report-failure-compat(s|)
   override report-failure(s) = report-failure-compat(s)
   
+  
   /**
   * Raise an execution exception with a stack trace
   * @param String

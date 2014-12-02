@@ -45,12 +45,12 @@ public class $Read$From$File_cached_0_0 extends RegisteringStrategy {
 	
     public void registerImplementators(StrategyCollector collector)
     { 
-      collector.registerSpecialStrategyImplementator("$Read$From$File_0_0", instance, "overriden");
+      collector.registerStrategyImplementator("$Read$From$File_cached_0_0", instance);
     }
 	
     public void bindExecutors(StrategyCollector collector)
     { 
-      proceed = collector.getNonSpecialStrategyExecutor("$Read$From$File_0_0");
+      proceed = collector.getStrategyExecutor("$Read$From$File_0_0");
     }
 	
 	@Override

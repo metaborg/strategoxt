@@ -23,7 +23,7 @@
 
 	<target name="build-stratego">
 		<mkdir dir="${bin.stratego}/org/strategoxt/stratego_lib" />
-		<strj-lib input-path="spec" input-module="stratego-lib-posix-xsi.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt">
+		<strj-lib input-path="spec" input-module="stratego-lib-posix-xsi.str" output="${bin.stratego}/org/strategoxt" package="org.strategoxt" generate-stdlib-import="false">
 			<strjlibargs>
 				<arg value="-la" />
 				<arg value="org.strategoxt.lang.compat.override.java_integration" />
