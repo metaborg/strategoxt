@@ -598,17 +598,17 @@ rules
 		 ~lifted-decls*
 		 
 		 public static Strategy getStrategy(Context context) {
-		 	return context.getStrategyCollector().getStrategyExecutor("~x");
+		 	return context.getStrategyCollector().getStrategyExecutor("~x'");
 		 }
 	 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerSpecialStrategyImplementator("~x", instance, "overriden");
+		 	collector.registerSpecialStrategyImplementator("~x'", instance, "overriden");
 		 }
 	 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
 			~lifted-binds*
-			proceed = collector.getNonSpecialStrategyExecutor("~x");
+			proceed = collector.getNonSpecialStrategyExecutor("~x'");
 			
 		 }
 		 
@@ -631,6 +631,7 @@ rules
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
       ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
       ; lifted-binds*   := <get-lifted-bindings>
+	  ; x' := <undo-dollars-for-capitals> x
       |}
 	
   translate-outer-definition-extend :
@@ -647,17 +648,17 @@ rules
 		 ~lifted-decls*
  
 		 public static Strategy getStrategy(Context context) {
-		 	return context.getStrategyCollector().getStrategyExecutor("~x");
+		 	return context.getStrategyCollector().getStrategyExecutor("~x'");
 		 }
 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerSpecialStrategyImplementator("~x", instance, "extended");
+		 	collector.registerSpecialStrategyImplementator("~x'", instance, "extended");
 		 }
 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
 			~lifted-binds*
-			proceed = collector.getNonSpecialStrategyExecutor("~x");
+			proceed = collector.getNonSpecialStrategyExecutor("~x'");
 	
 		 }
  
@@ -681,6 +682,7 @@ rules
       ; executor-inits* := <map(initialize-strategy-field)> executorNames
       ; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
       ; lifted-binds*   := <get-lifted-bindings>
+	  ; x' := <undo-dollars-for-capitals> x
       |}
 	
 	

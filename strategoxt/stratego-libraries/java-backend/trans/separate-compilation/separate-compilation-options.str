@@ -22,7 +22,7 @@ strategies
 		)
 		+ Option(
 			  "--generate-stdlib-import"
-			, <set-config> ("--generate-stdlib-import", ()); !()
+			, <set-config> ("--generate-stdlib-import", ());log(|Info(), "Imports to stdlib will be generated"); !()
 			, !"--generate-stdlib-import        Generates an import to the standard-library for each module"
 		)
 		
