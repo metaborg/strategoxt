@@ -15,8 +15,8 @@ public abstract class LibraryInitializer {
 
 	private boolean isInitialized = false;
 	
-	public static void initializeInterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
-		LibraryInitializer dummyParent = new LibraryInitializer() {
+	private static LibraryInitializer buildInitializer(final LibraryInitializer...initializers) {
+		return new LibraryInitializer() {
 			
 			@Override
 			protected void initializeLibrary(Context context) {
@@ -35,7 +35,14 @@ public abstract class LibraryInitializer {
 				return Arrays.asList(initializers);
 			}
 		};
-		dummyParent.registerInterop(context, compiledContext, context.getVarScope());
+	}
+	
+	public static void initializeInterop(final IContext context, final Context compiledContext, final LibraryInitializer...initializers) {
+		buildInitializer(initializers).registerInterop(context, compiledContext, context.getVarScope());
+	}
+	
+	public static void initialize(final Context context, final LibraryInitializer...initializers) {
+		buildInitializer(initializers).initialize(context);
 	}
 	
 	public final void initialize(Context context) {
@@ -112,8 +119,17 @@ public abstract class LibraryInitializer {
 			initializer.initializer.initializeLibrary(context);
 		}
 		collector.createExecutors();
+		RuntimeException lastE = null;
 		for (InitializerSetEntry initializer : dependentInitializer) {
+			try {
 			initializer.initializer.bindExecutors(collector);
+			}catch (RuntimeException e) {
+				System.err.println(e.getMessage());
+				lastE = e;
+			}
+		}
+		if(lastE != null) {
+			throw lastE;
 		}
 	}
 

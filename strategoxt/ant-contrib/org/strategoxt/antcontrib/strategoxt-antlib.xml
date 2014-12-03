@@ -9,7 +9,7 @@
 			<uptodate-mio input="@{input}" output="@{output}" type="pack-sdf">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="main-pack-sdf"/> 
+						<arg value="org.strategoxt.lib.pack-sdf.main-pack-sdf"/> 
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="-o" />
@@ -56,7 +56,7 @@
 			<uptodate-io input="@{input}" output="@{output}" type="sdf2rtg">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-sdf2rtg" />
+						<arg value="org.strategoxt.lib.sdf2rtg.main-sdf2rtg" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="-m" />
@@ -81,7 +81,7 @@
 			<uptodate-io input="@{input}" output="@{output}" type="rtg2sig">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-rtg2sig" />
+						<arg value="org.strategoxt.lib.rtg2sig.main-rtg2sig" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="--module" />
@@ -122,7 +122,7 @@
 			<uptodate-io input="@{input}" output="@{output}" type="ppgen">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-ppgen" />
+						<arg value="org.strategoxt.lib.ppgen.main-ppgen" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="-t" />
@@ -131,7 +131,7 @@
 						<arg value="${basedir}/@{output}.af" />
 					</java>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-pp-pp-table" />
+						<arg value="org.strategoxt.lib.pp-pp-table.main-pp-pp-table" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{output}.af" />
 						<arg value="-o" />
@@ -182,7 +182,7 @@
 			<uptodate-io input="@{input}" output="@{output}" type="sdf2parenthesize">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-sdf2parenthesize" />
+						<arg value="org.strategoxt.lib.sdf2parenthesize.main-sdf2parenthesize" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="-m" />
@@ -211,7 +211,7 @@
 			<uptodate-io input="@{input}" output="@{output}" type="gen-sdf-mix">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-gen-sdf-mix" />
+						<arg value="org.strategoxt.lib.gen-sdf-mix.main-gen-sdf-mix" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="--main" />
@@ -241,7 +241,8 @@
 			<property name="@{output}.abs" location="@{output}" />
 			<uptodate-mio input="@{input-path}/@{input-module}" output="@{output}" type="strj" force="true">
 				<action>
-					<java classname="org.strategoxt.strj.Main" failonerror="true">
+					<java classname="run" failonerror="true">
+						<arg value="org.strategoxt.strj.strj.main-strj"/>
 						<arg value="-I"/>
 						<arg value="${@{input-path}.abs}"/>
 						<arg value="-i" />
@@ -317,7 +318,7 @@
 			<uptodate-io input="@{input}" output="@{output}" type="gen-renamed-sdf-module">
 				<action>
 					<java classname="run" failonerror="true">
-						<arg value="org.strategoxt.tools.main-gen-renamed-sdf-module" />
+						<arg value="org.strategoxt.lib.gen-renamed-sdf-module.main-gen-renamed-sdf-module" />
 						<arg value="-i" />
 						<arg value="${basedir}/@{input}" />
 						<arg value="--main" />

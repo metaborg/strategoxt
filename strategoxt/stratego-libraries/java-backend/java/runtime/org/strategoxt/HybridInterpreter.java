@@ -68,6 +68,20 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 	protected static final String USAGE = "Uses: run [FILE.ctree | FILE.jar]... MAINCLASS [ARGUMENT]...\n" +
 	                                    "      run                    PACKAGE.MAINCLASS [ARGUMENT]...";
 
+	private static final LibraryInitializer[] STANDARD_LIBRARIES = new LibraryInitializer[] {
+		new org.strategoxt.tools.LibraryInitializer(),
+		new org.strategoxt.stratego_gpp.LibraryInitializer(),
+		new org.strategoxt.stratego_aterm.LibraryInitializer(),
+		new org.strategoxt.stratego_rtg.LibraryInitializer(),
+		new org.strategoxt.stratego_sdf.LibraryInitializer(),
+		new org.strategoxt.stratego_sglr.LibraryInitializer(),
+		new org.strategoxt.stratego_tool_doc.LibraryInitializer(),
+		new org.strategoxt.stratego_xtc_posix_xsi.LibraryInitializer(),
+		new org.strategoxt.javafront.LibraryInitializer(),
+		new org.strategoxt.stratego_lib_posix_xsi.LibraryInitializer(),
+		new org.strategoxt.strc.LibraryInitializer()
+	};
+
 	private final HybridCompiledContext compiledContext;
 
 	private boolean registeredLibraries;
@@ -232,8 +246,12 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 		String strategy = args[0];
 		String[] mainArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, mainArgs, 0, mainArgs.length);
+
+
+		System.out.println("Main args "+ java.util.Arrays.toString(mainArgs));
 		try {
 			Context context = new Context();
+			LibraryInitializer.initialize(context,STANDARD_LIBRARIES);
 			IStrategoTerm result;
 			try {
 				result = context.invokeStrategyCLI(strategy, strategy, mainArgs);
@@ -392,19 +410,7 @@ public class HybridInterpreter extends Interpreter implements IAsyncCancellable 
 
 		// FIXME: HybridInterpreter loads all libs into the same namespace
 		//        Which may affect interpreted code and invoke()
-		LibraryInitializer.initializeInterop(context, compiledContext,
-			new org.strategoxt.tools.LibraryInitializer(),
-			new org.strategoxt.stratego_gpp.LibraryInitializer(),
-			new org.strategoxt.stratego_aterm.LibraryInitializer(),
-			new org.strategoxt.stratego_rtg.LibraryInitializer(),
-			new org.strategoxt.stratego_sdf.LibraryInitializer(),
-			new org.strategoxt.stratego_sglr.LibraryInitializer(),
-			new org.strategoxt.stratego_tool_doc.LibraryInitializer(),
-			new org.strategoxt.stratego_xtc_posix_xsi.LibraryInitializer(),
-			new org.strategoxt.javafront.LibraryInitializer(),
-			new org.strategoxt.stratego_lib_posix_xsi.LibraryInitializer(),
-			new org.strategoxt.strc.LibraryInitializer()
-			);
+		LibraryInitializer.initializeInterop(context, compiledContext,STANDARD_LIBRARIES);
 	}
 
 	public final Context getCompiledContext() {

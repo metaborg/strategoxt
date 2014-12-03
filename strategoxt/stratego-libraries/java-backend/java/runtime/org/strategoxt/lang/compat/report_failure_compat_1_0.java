@@ -35,7 +35,7 @@ public class report_failure_compat_1_0 extends RegisteringStrategy {
 	
     public void bindExecutors(StrategyCollector collector)
     { 
-      proceed = collector.getStrategyExecutor("report_failure_1_0");
+      proceed = collector.getNonSpecialStrategyExecutor("report_failure_1_0");
 	  logInstance.proceed = collector.getNonSpecialStrategyExecutor("log_0_2");
     }
 	

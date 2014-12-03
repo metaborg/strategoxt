@@ -101,6 +101,7 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		}
 
 		try {
+			System.out.println("Call with " + arg);
 			IStrategoTerm result = strategy.invoke(context, arg);
 			if (result == null) {
 				return null;
@@ -161,29 +162,37 @@ public class SSL_EXT_java_call extends AbstractPrimitive {
 		Strategy cached = invocationCache.get(className);
 		if (cached != null)
 			return cached;
-		if (context != null && context.getStrategyCollector() != null) {
-			return context.getStrategyCollector().getStrategyExecutor(toStrategoName(className) + "_0_0");
-		}
+		/*if (context != null && context.getStrategyCollector() != null) {
+			Strategy s = context.getStrategyCollector().getStrategyExecutor(toStrategoName(className) + "_0_0");
+			if (s!= null) {
+				return s;
+			}
+		}*/
+		
+		System.out.println("Try to load " + className);
+		System.out.println("Class: " + toStrategoName(className) + "_0_0");
 
 		try {
 			Class<?> library;
 			try {
 				library = findClass(toStrategoName(className) + "_0_0");
-
+				System.out.println("Found class: " + library);
 				try {
 					Method instance = library.getMethod("getStrategy", Context.class);
-
+				
 					if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
 						throw new MissingStrategyException("Unable to initialize container library for strategy: " + className);
 
 					cached = (Strategy) instance.invoke(null, context);
+					System.out.println("Return " + cached);
 				} catch (NoSuchMethodException e) {
+					// Compatibility for old classes
+					Field instance = library.getField("instance");
+					if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
+						throw new MissingStrategyException("Unable to initialize container library for strategy: " + className);
+					cached = (Strategy) instance.get(null);
 				}
-				Field instance = library.getField("instance");
-				if (!Strategy.class.isAssignableFrom(instance.getDeclaringClass()))
-					throw new MissingStrategyException("Unable to initialize container library for strategy: " + className);
-				cached = (Strategy) instance.get(null);
-
+				
 			} catch (ClassNotFoundException e) {
 				library = Class.forName(toStrategoName(className));
 				cached = (Strategy) library.getMethod("getMainStrategy", new Class[0]).invoke(null);

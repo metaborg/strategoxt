@@ -212,7 +212,7 @@ public class Context extends StackTracer implements IAsyncCancellable {
 
 		SSL_EXT_java_call caller = (SSL_EXT_java_call) lookupPrimitive("SSL_EXT_java_call");
     	if (caller == null) caller = new SSL_EXT_java_call();
-    	return caller.call(this, strategy, input, false);
+    	return caller.call(this, strategy, input, true);
 	}
 
 	private IStrategoList toCLITerm(String appName, String... args) {

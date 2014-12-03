@@ -266,7 +266,7 @@ strategies
 			{ lib, term:
 				  ?(term, lib)
 				; !lib
-				; default-lib-get-rtree-file
+				; is-default-lib-rtree
 				; !term
 				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
 			}
@@ -297,4 +297,9 @@ strategies
 		
 	 	// Returns the rtree file for a default library import like libstrategolib
 		// It is actually implemented in strc-compat.str to keep handling libraries in one place
-		default-lib-get-rtree-file = fail
+		is-default-lib-rtree =
+			  "libstratego-lib" + "libstrategolib" +"libstratego-xtc"
+			+ "libstratego-sglr" + "libstratego-rtg" + "libstratego-sdf"
+			+ "libstratego-aterm" + "libstratego-gpp" + "libstratego-tool-doc"
+			+ "libstratego-parallel" + "libstrc"
+  
