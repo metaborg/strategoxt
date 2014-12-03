@@ -233,12 +233,19 @@
 		<attribute name="input-module" />
 		<attribute name="output" />
 		<attribute name="package" />
+		<attribute name="generate-stdlib-import" default="true"/>
 		<element name="strjargs" optional="true" />
 		<element name="str-deps" optional="true" />
 		<sequential>
 			<echo>Calling strj</echo>
 			<property name="@{input-path}.abs" location="@{input-path}" />
 			<property name="@{output}.abs" location="@{output}" />
+			<!-- For backward compatibility, because compiler needs stdlib in scope the most times -->
+			<!-- Repeat the clean arg in the else case, because we need a valid arg here -->
+			<condition property="stdlib-import" value="--generate-stdlib-import" else="--clean">
+				<equals arg1="@{generate-stdlib-import}" arg2="true"/>
+			</condition>
+			
 			<uptodate-mio input="@{input-path}/@{input-module}" output="@{output}" type="strj" force="true">
 				<action>
 					<java classname="org.strategoxt.strj.Main" failonerror="true">
@@ -262,7 +269,7 @@
 						<arg value="--constructor-forward-declaration" />
 						<arg value="--no-default-lib" /> <!-- No default lib: do not compile against the old stdlib provided with the used compiler -->
 						<arg value="--independent-java-compilation"/> <!-- Here are dependency cycles from stdlib to java_integration and back. We brake it here and want this library to be compiled independently. Works here, because std-lib does not use strategies from dependencies but dependencies only override/extend strategies -->
-						<arg value="--generate-stdlib-import"/> <!-- For backward compatibility, because compiler needs stdlib in scope the most times -->
+						<arg value="${stdlib-import}"/> 
 						<strjargs />
 					</java>
 				</action>
@@ -279,6 +286,7 @@
 		<attribute name="lib-output" default="@{input-path}/lib${@{input-module}.basename}.ctree" />
 		<attribute name="package" />
 		<attribute name="output"/>
+		<attribute name="generate-stdlib-import" default="true"/>
 		<element name="strjlibargs" optional="true" />
 		<element name="str-deps" optional="true" />
 		<sequential>
@@ -293,7 +301,7 @@
 							<strjlibargs />
 						</strjargs>
 					</strj> -->
-					<strj input-path="@{input-path}" input-module="@{input-module}" output="@{output}" package="@{package}">
+					<strj input-path="@{input-path}" input-module="@{input-module}" output="@{output}" package="@{package}" generate-stdlib-import="@{generate-stdlib-import}">
 						<strjargs>
 							<arg value="--library" />
 							<strjlibargs />
