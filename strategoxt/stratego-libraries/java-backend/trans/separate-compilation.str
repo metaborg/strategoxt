@@ -42,7 +42,6 @@ strategies
 		; strc-optimize
 
 
-
 	separate-compilation-front-end(back-end|working-package,working-output)=
 		 // create-compilation-units(|working-package, working-output)
 		  where(fileName := <\FILE(s) -> s\>) 
@@ -123,6 +122,19 @@ strategies
 		;  ?Module(merged-name, [Imports(imports)|content])
 		; !Module(merged-name, [Imports(<make-set> [Import("libstratego-lib")|imports]) | content])
 	
+	determine-circular-result-unit = 
+		  ?[x|xs]
+		; !(xs, ([], x))
+		; foldl(
+			{other-units, first-unit, current-unit:
+				  ?(current-unit, (other-units, first-unit))
+				; if !(current-unit, first-unit);tmap(get-stratego-source-file;path-get-full-path);string-gt
+					then !([current-unit | other-units], first-unit)
+					else !([first-unit | other-units], current-unit)
+				end
+			}
+		)
+	
 	compile-asts(back-end|working-package,working-output, circular-units)= {x, xs, other-circular-units :
 			  log(|Info(), ["Transforming import"])
 			//  where(map(\(moduleName, _, _, _) -> moduleName\) => moduleNames)
@@ -132,9 +144,9 @@ strategies
 				; (separate-compilation-rewrite-imports(back-end|moduleName, work-unit, working-package,working-output, circular-units)) => (transformed-ast, new-libs)
 				; !(moduleName, work-unit, transformed-ast, new-libs, fileName)
 				})
-			
 			// We know, that the list of units to compile at once is not empty, so we can guarantee a first element
 			; ?[x|xs]
+			; determine-circular-result-unit
 			; !(xs, x)
 			; log(|Notice(), ["Combine modules"])
 			
@@ -143,7 +155,6 @@ strategies
 				  ?( (_, _, Module(_, [Imports(new-imports)| new-content]), new-libs, _), (moduleName, work-unit, Module(merged-name, [Imports(merged-imports) | merged-content]), merged-libs, fileName) )
 				; !(moduleName, work-unit, Module(merged-name, [Imports(<conc;make-set> (new-imports, merged-imports)) | <conc> (new-content, merged-content)]), <conc> (new-libs, merged-libs), fileName)
 			})
-			
 			// Add import to stdlib if required by options
 			; (id, id, try(add-default-lib-import), id, id)
 			
@@ -163,6 +174,7 @@ strategies
 				; !merged-ast
 				; collect-all(?ExtSDef(_,_,_)) => externals
 				; !IncludeAST(merged-ast,fileName)
+
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec
 			
