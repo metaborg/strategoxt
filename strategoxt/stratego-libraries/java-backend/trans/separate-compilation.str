@@ -128,7 +128,7 @@ strategies
 		; foldl(
 			{other-units, first-unit, current-unit:
 				  ?(current-unit, (other-units, first-unit))
-				; if !(current-unit, first-unit);tmap(get-stratego-source-file;path-get-full-path);string-gt
+				; if !(current-unit, first-unit);tmap(Snd;get-stratego-source-file;path-get-full-path);string-gt
 					then !([current-unit | other-units], first-unit)
 					else !([first-unit | other-units], current-unit)
 				end
@@ -145,9 +145,11 @@ strategies
 				; !(moduleName, work-unit, transformed-ast, new-libs, fileName)
 				})
 			// We know, that the list of units to compile at once is not empty, so we can guarantee a first element
-			; ?[x|xs]
 			; determine-circular-result-unit
-			; !(xs, x)
+			; ?(xs, x)
+			; if not(!xs;?[]) then
+				  log(|Info(), ["Compile circular source files to ", x])
+			  end
 			; log(|Notice(), ["Combine modules"])
 			
 			// Import transformation guarantees that all imports are in the first place in the module in a single Imports term
