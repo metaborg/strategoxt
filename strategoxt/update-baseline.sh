@@ -12,7 +12,7 @@ tar -xpf strategoxt-distrib.tar &&
 
 chmod a+x share/strategoxt/linux/* share/strategoxt/macosx/* &&
 
-git clone https://github.com/metaborg/java-front.git -b java-bootstrap java-front &&
+git clone https://github.com/lichtemo/java-front.git -b java-bootstrap-separate-compilation java-front &&
 
 cd ../syntax  &&
 
