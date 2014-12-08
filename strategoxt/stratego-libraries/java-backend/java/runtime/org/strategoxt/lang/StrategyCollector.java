@@ -118,10 +118,15 @@ public class StrategyCollector {
 	}
 	
 	private static Strategy createExectuor(Strategy[] s) {
-		if (s.length == 1) {
+		switch (s.length)  {
+		case 1:
 			return s[0];
-		} else {
-			return new StrategyExecutor(s);
+		case 2:
+			return new StrategyExecutor2(s[0], s[1]);
+		case 3:
+			return new StrategyExecutor3(s[0], s[1], s[2]);
+		default:
+			return new StrategyExecutor(s);	
 		}
 	}
 
