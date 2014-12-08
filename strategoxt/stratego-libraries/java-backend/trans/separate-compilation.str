@@ -128,7 +128,7 @@ strategies
 		; foldl(
 			{other-units, first-unit, current-unit:
 				  ?(current-unit, (other-units, first-unit))
-				; if !(current-unit, first-unit);tmap(Snd;get-stratego-source-file;path-get-full-path);string-gt
+				; if !(current-unit, first-unit);tmap(Fst);string-gt
 					then !([current-unit | other-units], first-unit)
 					else !([first-unit | other-units], current-unit)
 				end
@@ -148,7 +148,7 @@ strategies
 			; determine-circular-result-unit
 			; ?(xs, x)
 			; if not(!xs;?[]) then
-				  log(|Info(), ["Compile circular source files to ", x])
+				  log(|Info(), ["Compile circular source files to ", <Snd> x])
 			  end
 			; log(|Notice(), ["Combine modules"])
 			

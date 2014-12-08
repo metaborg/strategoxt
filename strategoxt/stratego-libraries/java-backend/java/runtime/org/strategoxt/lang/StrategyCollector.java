@@ -34,7 +34,7 @@ public class StrategyCollector {
 				if (specialName == null) {
 					specialName = e.getKey();
 				} else {
-					System.out.println("Strategy " + name + " is " + specialName + " and also " + e.getKey()+ ". Use "+ specialName );
+					System.out.println("[StrategyCollector]   Strategy " + name + " is " + specialName + " and also " + e.getKey()+ ". Use "+ specialName );
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class StrategyCollector {
 	public void registerSpecialStrategyImplementator(String name, Strategy implementator, String specialName) {
 		if (this.isSpecial(name, specialName)) {
 			// Strategy is overriden multiple times. STRJ did not support this, we keep the latest implementator
-			System.out.println("Warning: Strategy \""+name +"\" is " + specialName + " mutliple times. The overriding implementator seen finally while linking is used.");
+			System.out.println("[StrategyCollector]   Warning: Strategy \""+name +"\" is " + specialName + " mutliple times. The overriding implementator seen finally while linking is used.");
 		}
 		Map<String, Strategy> specialMap = this.specialImplementators.get(specialName);
 		if (specialMap == null) {
@@ -94,7 +94,7 @@ public class StrategyCollector {
 	public Strategy getStrategyExecutor(String name) {
 		Strategy s = this.strategyExecutors.get(name);
 		if (s == null) {
-			System.out.println("No implementator found. Try to resolve classpath " + name);
+			System.out.println("[StrategyCollector]   No implementator found. Try to resolve classpath " + name);
 			final List<String> packages = Arrays.asList("org.strategoxt.stratego_lib", "org.strategoxt.lang");
 			for (String packageName : packages) {
 				try {
@@ -107,8 +107,8 @@ public class StrategyCollector {
 
 				}
 			}
-			System.out.println("Failed");
-			throw new RuntimeException("No executor found for strategy " + name);
+			System.out.println("[StrategyCollector]   Failed");
+			throw new RuntimeException("[StrategyCollector]   No executor found for strategy " + name);
 		}
 		return s;
 	}
@@ -134,6 +134,9 @@ public class StrategyCollector {
 				this.nonSpecialExecutors.put(strategyName, createExectuor(this.getStrategyImplementators(strategyName)));
 			} else {
 				s= this.getStrategyImplementators(strategyName);
+			}
+			if (s.length > 1) {
+				System.out.println("[StrategyCollector]   Got " + s.length + " executors for " + strategyName);
 			}
 			this.registerStrategyExecutor(strategyName, createExectuor(s));
 			
