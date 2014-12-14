@@ -2,17 +2,19 @@ package org.strategoxt.lang;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
 
-public class StrategyExecutor3 extends Strategy {
+public class StrategyExecutor4 extends Strategy {
 
 	private final Strategy strategy1;
 	private final Strategy strategy2;
 	private final Strategy strategy3;
+	private final Strategy strategy4;
 
-	public StrategyExecutor3(Strategy strategy1, Strategy strategy2, Strategy strategy3) {
+	public StrategyExecutor4(Strategy strategy1, Strategy strategy2, Strategy strategy3, Strategy strategy4) {
 		super();
 		this.strategy1 = strategy1;
 		this.strategy2 = strategy2;
 		this.strategy3 = strategy3;
+		this.strategy4 = strategy4;
 	}
 
 	public IStrategoTerm invoke(Context context, IStrategoTerm current) {
@@ -25,6 +27,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -41,6 +46,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, t1);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, t1);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -53,6 +61,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, t1, t2);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, t1, t2);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -69,6 +80,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, t1, t2, t3);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, t1, t2, t3);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -81,6 +95,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, t1, t2, t3, t4);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, t1, t2, t3, t4);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -97,6 +114,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, t1, t2, t3, t4, t5);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, t1, t2, t3, t4, t5);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -109,6 +129,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -125,6 +148,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, t1);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, t1);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -137,6 +163,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, t1, t2);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, t1, t2);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -154,6 +183,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, t1, t2, t3);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, t1, t2, t3);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -166,6 +198,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, t1, t2, t3, t4);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, t1, t2, t3, t4);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -183,6 +218,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, t1, t2, t3, t4, t5);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, t1, t2, t3, t4, t5);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -195,6 +233,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -211,6 +252,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, t1);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, t1);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -225,6 +269,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, t1, t2);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, t1, t2);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -237,6 +284,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, t1, t2, t3);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, t1, t2, t3);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -254,6 +304,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, t1, t2, t3, t4);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, t1, t2, t3, t4);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -267,6 +320,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, t1, t2, t3, t4, t5);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, t1, t2, t3, t4, t5);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -283,6 +339,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -297,6 +356,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, t1);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, t1);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -309,6 +371,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, t1, t2);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, t1, t2);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -326,6 +391,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, t1, t2, t3);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, t1, t2, t3);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -339,6 +407,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, t1, t2, t3, t4);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, t1, t2, t3, t4);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -356,6 +427,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, t1, t2, t3, t4, t5);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, t1, t2, t3, t4, t5);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -368,6 +442,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -384,6 +461,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, t1);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, t1);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -396,6 +476,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, t1, t2);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, t1, t2);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -413,6 +496,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, t1, t2, t3);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, t1, t2, t3);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -426,6 +512,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, t1, t2, t3, t4);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, t1, t2, t3, t4);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -443,6 +532,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, t1, t2, t3, t4, t5);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, t1, t2, t3, t4, t5);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -457,6 +549,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, s5);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, s5);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -469,6 +564,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, s5, t1);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, s5, t1);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -486,6 +584,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, s5, t1, t2);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, s5, t1, t2);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -499,6 +600,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, s5, t1, t2, t3);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, s5, t1, t2, t3);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -516,6 +620,9 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, s5, t1, t2, t3, t4);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, s5, t1, t2, t3, t4);
+		if (term0 != null)
+			return term0;
 		return null;
 	}
 
@@ -529,6 +636,9 @@ public class StrategyExecutor3 extends Strategy {
 		if (term0 != null)
 			return term0;
 		term0 = strategy3.invoke(context, current, s1, s2, s3, s4, s5, t1, t2, t3, t4, t5);
+		if (term0 != null)
+			return term0;
+		term0 = strategy4.invoke(context, current, s1, s2, s3, s4, s5, t1, t2, t3, t4, t5);
 		if (term0 != null)
 			return term0;
 		return null;
@@ -547,13 +657,16 @@ public class StrategyExecutor3 extends Strategy {
 		term0 = strategy3.invokeDynamic(context, current, s, t);
 		if (term0 != null)
 			return term0;
+		term0 = strategy4.invokeDynamic(context, current, s, t);
+		if (term0 != null)
+			return term0;
 
 		return null;
 	}
 
 	@Override
 	public String toString() {
-		return "StrategyExecutor [" + strategy1 + ", " + strategy2 +  ", " + strategy3 + "]";
+		return "StrategyExecutor [" + strategy1 + ", " + strategy2 + ", " + strategy3 + ", " + strategy4 + "]";
 	}
 
 }

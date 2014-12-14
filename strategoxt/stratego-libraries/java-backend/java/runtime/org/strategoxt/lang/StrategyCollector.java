@@ -125,6 +125,8 @@ public class StrategyCollector {
 			return new StrategyExecutor2(s[0], s[1]);
 		case 3:
 			return new StrategyExecutor3(s[0], s[1], s[2]);
+		case 4:
+			return new StrategyExecutor4(s[0], s[1], s[2], s[3]);
 		default:
 			return new StrategyExecutor(s);	
 		}
