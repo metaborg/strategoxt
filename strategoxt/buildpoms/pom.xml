@@ -21,6 +21,8 @@
     <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
+    <strategoxt-skip-build>false</strategoxt-skip-build>
+    <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
   </properties>
 
   <profiles>
@@ -63,6 +65,7 @@
               <goal>unpack</goal>
             </goals>
             <configuration>
+              <skip>${strategoxt-skip-build}</skip>
               <artifactItems>
                 <artifactItem>
                   <groupId>org.metaborg</groupId>
@@ -94,6 +97,7 @@
             <id>strategoxt-ant-build</id>
             <phase>compile</phase>
             <configuration>
+              <skip>${strategoxt-skip-build}</skip>
               <target>
                 <property
                   name="baseline"
@@ -145,6 +149,9 @@
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <skipAssembly>${strategoxt-skip-build}</skipAssembly>
+            </configuration>
           </execution>
         </executions>
       </plugin>
