@@ -65,6 +65,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
+		<copy file="lib/libstrc.ctree" todir="${bin}" />
 		<copy file="lib/libstrc.rtree" todir="${bin}" />
 	</target>
 
@@ -88,7 +89,7 @@
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy todir="${install-location}">
-			<fileset dir="${bin}" includes="*.rtree, *.jar" />
+			<fileset dir="${bin}" includes="*.ctree, *.rtree, *.jar" />
 		</copy>
 	</target>
 

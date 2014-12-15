@@ -43,7 +43,7 @@
 				<srcfiles dir="${dep.gpp}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<!-- <copy file="lib/libstratego-aterm.ctree" todir="${bin}" /> -->
+		<copy file="lib/libstratego-aterm.ctree" todir="${bin}" />
 		<copy file="lib/libstratego-aterm.rtree" todir="${bin}" />
 	</target>
 
@@ -60,14 +60,14 @@
 	<target name="jar" depends="build-java">
 		<jar destfile="${bin}/libstratego-aterm.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
-			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+			<fileset dir="${bin.stratego}" includes="**/*.ctree, **/*.rtree, **/*.pp.af, **/*.tbl" />
 		</jar>
 	</target>
 
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy todir="${install-location}">
-			<fileset dir="${bin}" includes="*.rtree, *.jar" />
+			<fileset dir="${bin}" includes="*.ctree, *.rtree, *.jar" />
 		</copy>
 	</target>
 
