@@ -5,19 +5,20 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>strategoxt-distrib</artifactId>
-  <version>${strategoxt-output-version}</version>
+  <artifactId>strategoxt-distrib-parent</artifactId>
+  <version>1.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <parent>
     <groupId>org.metaborg</groupId>
     <artifactId>org.metaborg.maven.parent</artifactId>
     <version>1.3.0-SNAPSHOT</version>
-    <relativePath>../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
+    <relativePath>../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
   </parent>
 
   <properties>
     <strategoxt-baseline-location>${project.build.directory}/baseline</strategoxt-baseline-location>
+    <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
   </properties>
@@ -50,8 +51,6 @@
   </profiles>
 
   <build>
-    <directory>${strategoxt-output-location}</directory>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -86,10 +85,8 @@
           <dependency>
             <groupId>org.metaborg</groupId>
             <artifactId>strategoxt-jar</artifactId>
-            <version>0.1</version>
+            <version>${strategoxt-baseline-version}</version>
             <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</systemPath>
           </dependency>
         </dependencies>
         <executions>
@@ -113,9 +110,13 @@
                 <property
                   name="subdists-install-prefix"
                   value="${strategoxt-subdist-location}" />
+                <property
+                  name="bin"
+                  value="${strategoxt-bin-location}" />
 
                 <ant
                   antfile="build.xml"
+                  dir="${strategoxt-build-location}"
                   inheritRefs="true"
                 >
                   <target name="install" />
@@ -144,36 +145,6 @@
             <goals>
               <goal>single</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-property</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireProperty>
-                  <property>strategoxt-baseline-version</property>
-                  <message>"Baseline version must be set, set it on the command-line using -Dstrategoxt-baseline-version=..."</message>
-                </requireProperty>
-                <requireProperty>
-                  <property>strategoxt-output-version</property>
-                  <message>"Output version must be set, set it on the command-line using -Dstrategoxt-output-version=..."</message>
-                </requireProperty>
-                <requireProperty>
-                  <property>strategoxt-output-location</property>
-                  <message>"Output location must be set, set it on the command-line using -Dstrategoxt-output-location=..."</message>
-                </requireProperty>
-              </rules>
-              <fail>true</fail>
-            </configuration>
           </execution>
         </executions>
       </plugin>
