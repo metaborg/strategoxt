@@ -2,11 +2,11 @@
 
 set -eu
 
-BASELINE_VERSION="1.3.0"
-OUTPUT_VERSION="1.3.0-SNAPSHOT"
-BOOTSTRAP1_VERSION="1.3.0-bootstrap1-SNAPSHOT"
-BOOTSTRAP2_VERSION="1.3.0-bootstrap2-SNAPSHOT"
+mvn clean install -f bootstrap-pom.xml
+mvn clean install -f buildpoms/pom.xml -Dstrategoxt-skip-build="true"
 
-mvn clean install -Dstrategoxt-baseline-version=$BASELINE_VERSION   -Dstrategoxt-output-version=$BOOTSTRAP1_VERSION -Dstrategoxt-output-location=bootstrap1
-mvn clean install -Dstrategoxt-baseline-version=$BOOTSTRAP1_VERSION -Dstrategoxt-output-version=$BOOTSTRAP2_VERSION -Dstrategoxt-output-location=bootstrap2
-mvn clean install -Dstrategoxt-baseline-version=$BOOTSTRAP2_VERSION -Dstrategoxt-output-version=$OUTPUT_VERSION     -Dstrategoxt-output-location=target
+echo "Build output located at..."
+echo "StrategoXT distribution bootstrap 1: buildpoms/bootstrap1/target"
+echo "StrategoXT distribution bootstrap 2: buildpoms/bootstrap2/target"
+echo "StrategoXT distribution bootstrap 3: buildpoms/bootstrap3/target"
+echo "StrategoXT minified JAR: buildpoms/minjar/target"

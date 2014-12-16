@@ -17,12 +17,17 @@
   </parent>
 
   <properties>
+    <strategoxt-assembly-location>${basedir}/assembly.xml</strategoxt-assembly-location>
+    <strategoxt-build-location>${basedir}/../</strategoxt-build-location>
+
+    <strategoxt-skip-build>false</strategoxt-skip-build>
+    <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
+    <strategoxt-baseline-id>strategoxt-distrib</strategoxt-baseline-id>
+
     <strategoxt-baseline-location>${project.build.directory}/baseline</strategoxt-baseline-location>
     <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
     <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
     <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
-    <strategoxt-skip-build>false</strategoxt-skip-build>
-    <strategoxt-baseline-version>${metaborg-version}</strategoxt-baseline-version>
   </properties>
 
   <profiles>
@@ -54,29 +59,41 @@
 
   <build>
     <plugins>
+      <!-- Position clean plugin before others, to make sure that clean happens before unpacking. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.metaborg</groupId>
+              <artifactId>${strategoxt-baseline-id}</artifactId>
+              <version>${strategoxt-baseline-version}</version>
+              <type>tar</type>
+              <classifier>bin</classifier>
+              <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
         <executions>
           <execution>
-            <id>strategoxt-unpack-baseline</id>
+            <id>strategoxt-unpack-baseline-build</id>
             <phase>initialize</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
-            <configuration>
-              <skip>${strategoxt-skip-build}</skip>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.metaborg</groupId>
-                  <artifactId>strategoxt-distrib</artifactId>
-                  <version>${strategoxt-baseline-version}</version>
-                  <type>tar</type>
-                  <classifier>bin</classifier>
-                  <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
+          </execution>
+          <execution>
+            <id>strategoxt-unpack-baseline-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -88,16 +105,57 @@
           <dependency>
             <groupId>org.metaborg</groupId>
             <artifactId>strategoxt-jar</artifactId>
-            <version>${strategoxt-baseline-version}</version>
+            <version>0.1</version>
             <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</systemPath>
           </dependency>
         </dependencies>
+        <configuration>
+          <skip>${strategoxt-skip-build}</skip>
+        </configuration>
         <executions>
           <execution>
-            <id>strategoxt-ant-build</id>
+            <id>strategoxt-ant-build-clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <target>
+                <property
+                  name="baseline"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="sdf2bundle"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="nativepath"
+                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                <property
+                  name="install-prefix-out"
+                  value="${strategoxt-dist-location}" />
+                <property
+                  name="subdists-install-prefix"
+                  value="${strategoxt-subdist-location}" />
+                <property
+                  name="bin"
+                  value="${strategoxt-bin-location}" />
+
+                <ant
+                  antfile="build.xml"
+                  dir="${strategoxt-build-location}"
+                  inheritRefs="true"
+                >
+                  <target name="clean" />
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>strategoxt-ant-build-install</id>
             <phase>compile</phase>
             <configuration>
-              <skip>${strategoxt-skip-build}</skip>
               <target>
                 <property
                   name="baseline"
@@ -139,7 +197,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>assembly.xml</descriptor>
+            <descriptor>${strategoxt-assembly-location}</descriptor>
           </descriptors>
         </configuration>
         <executions>
