@@ -1,7 +1,8 @@
 package org.strategoxt.lang;
 
 import static org.spoofax.interpreter.terms.IStrategoTerm.*;
-import static org.strategoxt.lang.Term.*;
+
+import java.util.LinkedList;
 
 import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
@@ -15,9 +16,9 @@ import org.spoofax.interpreter.terms.ITermFactory;
  * of the sublists are discarded. When the list contains an element that
  * is not a list, the strategy fails.
  * 
- * Under the assumption that {@link ITermFactory#makeList() ITermFactory.makeList}
- * method is O(n), this strategy has a complexity of O(n) where n is the
- * total number of elements in all sublists of the list term.
+ * This method has a time complexity of O(n) (traversing the list twice)
+ * and a space complexity of O(n), where n is the total number of
+ * elements in all sublists of the list term.
  */
 public class SRTS_EXT_concat_0_0 extends Strategy {
 	
@@ -31,9 +32,9 @@ public class SRTS_EXT_concat_0_0 extends Strategy {
 	    ITermFactory factory = context.getFactory();
 	    IStrategoList list = (IStrategoList)current;
 	    IStrategoList annos = list.getAnnotations();
-
-	    IStrategoList result = factory.makeList();
-
+	    
+	    // Build a doubly linked list with the terms. O(n)
+	    LinkedList<IStrategoTerm> tempList = new LinkedList<IStrategoTerm>();
 	    for (IStrategoTerm t : list) {
 	    	if (t.getTermType() != LIST) {
 				// The term must be a list...
@@ -42,8 +43,16 @@ public class SRTS_EXT_concat_0_0 extends Strategy {
 	    	
 	        IStrategoList elem_list = (IStrategoList) t;
             for (IStrategoTerm lt : elem_list) {
-                result = factory.makeListCons(lt, result);
+            	tempList.add(lt);
             }
+	    }
+	    
+	    // Build the Stratego list from tail to head. O(n)
+	    IStrategoList result = factory.makeList();
+	    while (!tempList.isEmpty())
+	    {
+	    	IStrategoTerm lt = tempList.removeLast();
+	    	result = factory.makeListCons(lt, result);
 	    }
 
 	    // NOTE: The Stratego implementation of `concat` preserves the
