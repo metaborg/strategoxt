@@ -19,7 +19,7 @@ strategies
     Specification([Signature([Constructors(id)]), Strategies(map(try(split-large-def)))])
   
   split-large-def :
-    SDefT(x, s*, t*, s) -> SDefT(x, s*, t*, s')
+    SDefT(x, s*, t*, s){a*} -> SDefT(x, s*, t*, s'){a*}
     with
       s' := <split-large-strategy(|x)> s
   

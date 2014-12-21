@@ -61,20 +61,24 @@ rules
     
   s2j(|externals) = 
   {|Externals, IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
-      with(
+  debug
+	 ; with(
         s2j-init-options
       ; record-main-classname
       )
 	; where(rules(Externals := externals))
+	;debug
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
       )
+	  ;debug
     ; log-timed(
         dr-scope-all-verbose(java-compile-spec)
       ; java-simplify
       | "Backend transformation succeeded", 1
       )
+	  ;debug
     ; log-timed(
         olevel1(java-optimize)
       | <conc-strings> ("Backend optimization succeeded -O ", <get-config; int-to-string> "-O"), 1
@@ -123,6 +127,7 @@ rules
     
 
      import org.strategoxt.lang.*;
+	 import org.strategoxt.lang.linking.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
@@ -222,7 +227,7 @@ rules
 	   LiftedDefs := []
 	   CollectedLiftedDefs := []
     )
-  ; function-defs := <map(translate-outer-definition-top)> defs
+  ; function-defs := <map(debug;translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   //; lifted-defs   := <bagof-LiftedDef>
@@ -481,9 +486,17 @@ rules
          bstm*
        }
     ]| 
+ 
   
   add-constant-factory-container(|x_main):
     AmbName(Id("termFactory")) -> expr |[ x_main.constantFactory ]|
+  
+	signature
+		constructors
+			CongruenceStrategy : StrategyAnno
+			DynamicRuleStrategy : StrategyAnno
+	
+			strategies
   
   translate-outer-definition =
      translate-outer-definition-plain
@@ -495,7 +508,9 @@ rules
   translate-outer-definition-plain :
     SDefT(x, s*, t*, s){a*} -> 
     type-dec |[
-       @SuppressWarnings("all")
+       
+       
+       mod_annotations*
        public static class x extends RegisteringStrategy {
 		 static final x instance = new x();
 		 
@@ -521,7 +536,9 @@ rules
        }
     ]|
 	 with
-	body            := <translate-definition-body>
+	 debug(!"Translate SDef")
+	
+	; body            := <translate-definition-body>
 	; x'              := <undo-dollars-for-capitals> x
 	; executorNames   := <CollectedExecutors;make-set>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
@@ -529,6 +546,13 @@ rules
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
 	; lifted-binds*   := <get-lifted-bindings>
+	; mod_annotations*:= [ anno |[@SuppressWarnings("all")]| | <filter(translate-sdef-anno-to-java-anno)> a*]
+	; where(<debug> mod_annotations*)
+	
+	//SingleElemAnno(TypeName("SuppressWarnings"), Lit(String("all")))
+	
+	translate-sdef-anno-to-java-anno : CongruenceStrategy() -> anno |[ @CongruenceStrategy ]|
+	translate-sdef-anno-to-java-anno : DynamicRuleStrategy() -> anno |[ @DynamicRuleStrategy ]|
 	
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs

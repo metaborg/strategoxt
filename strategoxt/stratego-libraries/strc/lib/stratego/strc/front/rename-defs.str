@@ -26,7 +26,7 @@ rules
     AnnoDef(a*, def) -> AnnoDef(a*, <RenameSDef> def)
 
   RenameSDef : 
-    SDefT(x, args1, args2, s) -> SDefT(y, args1, args2, s)
+    SDefT(x, args1, args2, s){a*} -> SDefT(y, args1, args2, s){a*}
     where <length> args1 => n
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
@@ -38,7 +38,7 @@ rules
                    <+ rules(HoArg : x -> y))
 
   RenameSDef : 
-    ExtSDef(x, args1, args2) -> ExtSDef(y, args1, args2)
+    ExtSDef(x, args1, args2){a*} -> ExtSDef(y, args1, args2){a*}
     where <length> args1 => n
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
@@ -50,7 +50,7 @@ rules
                    <+ rules(HoArg : x -> y))
 
   RenameSDef : 
-    ExtSDefInl(x, args1, args2, s) -> ExtSDefInl(y, args1, args2, s)
+    ExtSDefInl(x, args1, args2, s){a*} -> ExtSDefInl(y, args1, args2, s){a*}
     where <length> args1 => n
         ; <length> args2 => m
         ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y

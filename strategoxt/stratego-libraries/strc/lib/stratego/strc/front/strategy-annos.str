@@ -1,0 +1,6 @@
+module stratego/strc/front/strategy-annos
+
+signature
+	constructors
+		CongruenceStrategy : StrategyAnno
+		DynamicRuleStrategy : StrategyAnno

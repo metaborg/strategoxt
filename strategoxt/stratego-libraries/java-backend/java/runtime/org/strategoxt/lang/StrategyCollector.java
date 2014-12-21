@@ -9,6 +9,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.strategoxt.lang.linking.StrategyExecutor;
+import org.strategoxt.lang.linking.StrategyExecutor2;
+import org.strategoxt.lang.linking.StrategyExecutor3;
+import org.strategoxt.lang.linking.StrategyExecutor4;
+
 public class StrategyCollector {
 
 	private Map<String, List<Strategy>> strategyImplementators;
