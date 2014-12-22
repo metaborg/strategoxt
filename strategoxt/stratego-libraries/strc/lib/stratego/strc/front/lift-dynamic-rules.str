@@ -2,6 +2,7 @@ module lift-dynamic-rules
 imports libstratego-lib Stratego-Sugar
 
 	stratego/strc/lib/stratlib
+	stratego/strc/front/strategy-annos
 
 strategies
 
@@ -112,7 +113,7 @@ strategies
            |}
 
   add-def(|def) =
-    rules( LiftedRules :+ () -> def )
+    rules( LiftedRules :+ () -> def{DynamicRuleStrategy()} )
 
   get-rules = 
     <bagof-LiftedRules> ()
