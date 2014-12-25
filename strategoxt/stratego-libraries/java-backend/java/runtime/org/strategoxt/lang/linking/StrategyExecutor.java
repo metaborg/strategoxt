@@ -1,6 +1,8 @@
-package org.strategoxt.lang;
+package org.strategoxt.lang.linking;
 
 import org.spoofax.interpreter.terms.IStrategoTerm;
+import org.strategoxt.lang.Context;
+import org.strategoxt.lang.Strategy;
 
 public class StrategyExecutor extends Strategy {
 

@@ -2,12 +2,19 @@ package org.strategoxt.lang;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.strategoxt.lang.linking.StrategyExecutor;
+import org.strategoxt.lang.linking.StrategyExecutor2;
+import org.strategoxt.lang.linking.StrategyExecutor3;
+import org.strategoxt.lang.linking.StrategyExecutor4;
+import org.strategoxt.lang.linking.StrategyExecutorBuilder;
 
 public class StrategyCollector {
 
@@ -71,20 +78,14 @@ public class StrategyCollector {
 		specialMap.put(name, implementator);
 	}
 
-	private Strategy[] getStrategyImplementators(String name) {
+	private List<Strategy> getStrategyImplementators(String name) {
 		List<Strategy> implementators = this.strategyImplementators.get(name);
 		if (implementators == null) {
 
 			throw new RuntimeException("No implementators found for strategy " + name);
 
-		}
-		Strategy[] fastImplementators = new Strategy[implementators.size()];
-		int index = 0;
-		for (Strategy s : implementators) {
-			fastImplementators[index] = s;
-			index++;
-		}
-		return fastImplementators;
+		}return implementators;
+		
 	}
 
 	private void registerStrategyExecutor(String name, Strategy executor) {
@@ -94,6 +95,7 @@ public class StrategyCollector {
 	public Strategy getStrategyExecutor(String name) {
 		Strategy s = this.strategyExecutors.get(name);
 		if (s == null) {
+			// Compatibility to old stuff, not intended to be used, was needed in development process
 			System.out.println("[StrategyCollector]   No implementator found. Try to resolve classpath " + name);
 			final List<String> packages = Arrays.asList("org.strategoxt.stratego_lib", "org.strategoxt.lang");
 			for (String packageName : packages) {
@@ -117,35 +119,22 @@ public class StrategyCollector {
 		return this.nonSpecialExecutors.get(name);
 	}
 	
-	private static Strategy createExectuor(Strategy[] s) {
-		switch (s.length)  {
-		case 1:
-			return s[0];
-		case 2:
-			return new StrategyExecutor2(s[0], s[1]);
-		case 3:
-			return new StrategyExecutor3(s[0], s[1], s[2]);
-		case 4:
-			return new StrategyExecutor4(s[0], s[1], s[2], s[3]);
-		default:
-			return new StrategyExecutor(s);	
-		}
+	private static Strategy createExectuor(String startegyName, List<Strategy> strategies) {
+		return new StrategyExecutorBuilder().buildExecutor(startegyName, strategies);
 	}
 
 	public void createExecutors() {
 		for (String strategyName : this.strategyImplementators.keySet()) {
-			Strategy[] s;
+			List<Strategy> s;
 			String specialName = this.isSpecial(strategyName);
 			if (specialName != null) {
-				s = new Strategy[]{this.specialImplementators.get(specialName).get(strategyName)};
-				this.nonSpecialExecutors.put(strategyName, createExectuor(this.getStrategyImplementators(strategyName)));
+				s = Collections.singletonList(this.specialImplementators.get(specialName).get(strategyName));
+				this.nonSpecialExecutors.put(strategyName, createExectuor(strategyName,this.getStrategyImplementators(strategyName)));
 			} else {
 				s= this.getStrategyImplementators(strategyName);
 			}
-			if (s.length > 1) {
-				System.out.println("[StrategyCollector]   Got " + s.length + " executors for " + strategyName);
-			}
-			this.registerStrategyExecutor(strategyName, createExectuor(s));
+			
+			this.registerStrategyExecutor(strategyName, createExectuor(strategyName, s));
 			
 		}
 	}

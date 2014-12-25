@@ -27,7 +27,7 @@ strategies
            ; s2 := <afo> s1
            |}
 
-  afo-sdef :
+  afo-sdef = preserve-annos(\
     def1@|[ f1~{t*}(a1*|a2*) = s1 ]| -> |[ f1~{os,t*}(a3*|a4*) = s2 ]|
     where //debug(!"afo-sdef: ");
 	  {| ScopedCounter, OffSet
@@ -46,7 +46,8 @@ strategies
                             <get-scoped-counter(|"var")>)
            |}
 	//; debug(!"afo-sdef out: ")
-
+	\)
+	
   afo-scope :
     |[ {x1* : s1} ]| -> |[ {x2* : s2} ]|
     where //debug(!"afo-scope: ");

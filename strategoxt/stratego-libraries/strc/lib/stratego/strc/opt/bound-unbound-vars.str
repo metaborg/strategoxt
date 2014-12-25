@@ -156,7 +156,7 @@ strategies
     //; dr-print-rule-set(|"MarkVar")
 
   mark-sdef :
-    SDefT(f, as1, as2, s) -> SDefT(f, as1, as2, s')
+    SDefT(f, as1, as2, s){a*} -> SDefT(f, as1, as2, s'){a*}
     where <map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))> as2 => as2'
 	; {| MarkVar :
              <map(IntroduceBound)> as2'

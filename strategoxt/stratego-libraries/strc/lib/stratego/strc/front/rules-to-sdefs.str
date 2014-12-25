@@ -19,10 +19,10 @@ strategies
 rules
 
   RDtoSD : 
-    RDef(f, xs, r) -> SDefT(f, xs, [], Scope(<tvars> r, SRule(r){Id(f)}))
+    RDef(f, xs, r){a*} -> SDefT(f, xs, [], Scope(<tvars> r, SRule(r){Id(f)})){a*}
 
   RDtoSD : 
-    RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), SRule(r){Id(f)}))
+    RDefT(f, xs, ys, r){a*} -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), SRule(r){Id(f)})){a*}
     where <declared-vars> ys => ys'
         ; <tvars> r => vs
   

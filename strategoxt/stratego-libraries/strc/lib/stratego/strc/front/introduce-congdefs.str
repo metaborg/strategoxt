@@ -8,6 +8,7 @@ imports Stratego-Sugar
 	stratego/strc/front/desugar 
 	stratego/strc/lib/stratlib 
 	Stratego-Sugar-MetaTransition
+	stratego/strc/front/strategy-annos
 
 	overlays
 		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
@@ -89,30 +90,30 @@ rules
    */
 
   MkCongDef : 
-    OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, []))
+    OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, [])){CongruenceStrategy()}
     where <not(CongDefined)> (f, 0)
         ; rules(CongDefined : (f, 0) -> ())
 
   MkCongDef : 
     OpDecl(f, FunType(ts, t)) -> 
-    SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
+    SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs)){CongruenceStrategy()}
     where <length> ts => n
         ; <not(CongDefined)> (f, n)
         ; rules(CongDefined : (f, n) -> ())
         ; <unzip(new; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
 
   MkCongDefs : 
-    Constructors(ods) -> <filter(MkCongDef)> ods
+    Constructors(ods) -> <filter(MkCongDef;debug)> ods
 
 strategies
 
   m-MkCongDef : 
-    OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, []))
+    OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, [])){CongruenceStrategy()}
     where <not(ModDefinition)> (f, 0, 0)
 
   m-MkCongDef : 
     OpDecl(f, FunType(ts, t)) -> 
-    SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
+    SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs)){CongruenceStrategy()}
     where <length> ts => n
         ; <not(ModDefinition)> (f, n, 0)
         ; <unzip(new; !(VarDec(<id>, DefaultStrat()), <id>))> ts => (xdecs, xs)
@@ -132,7 +133,8 @@ strategies
              ; !x2; f2(|); ?y2
              ; !y1{^y2}
             }
-       ]|
+       ]| => anno-def
+	; !anno-def{CongruenceStrategy()}
 
   m-add-anno-cong-def =
     if <not(ModDefinition)> ("Anno_Cong__", 2, 0) then

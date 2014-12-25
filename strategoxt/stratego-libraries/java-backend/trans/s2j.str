@@ -61,7 +61,7 @@ rules
     
   s2j(|externals) = 
   {|Externals, IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
-      with(
+	  with(
         s2j-init-options
       ; record-main-classname
       )
@@ -123,6 +123,7 @@ rules
     
 
      import org.strategoxt.lang.*;
+	 import org.strategoxt.lang.linking.*;
      import org.spoofax.interpreter.terms.*;
      import static org.strategoxt.lang.Term.*;
      import org.spoofax.interpreter.library.AbstractPrimitive;
@@ -206,7 +207,6 @@ rules
     ; x_name        := <MainClassName>
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
-	; where(<debug> "Package Name"); where(<debug> pkgname)
     ; main          := <java-main-methods>
 	; libraryInitializer := <java-library-initializer> defs
     ; switch <get-config> "--stacktrace"
@@ -481,9 +481,17 @@ rules
          bstm*
        }
     ]| 
+ 
   
   add-constant-factory-container(|x_main):
     AmbName(Id("termFactory")) -> expr |[ x_main.constantFactory ]|
+  
+	signature
+		constructors
+			CongruenceStrategy : StrategyAnno
+			DynamicRuleStrategy : StrategyAnno
+	
+			strategies
   
   translate-outer-definition =
      translate-outer-definition-plain
@@ -495,7 +503,9 @@ rules
   translate-outer-definition-plain :
     SDefT(x, s*, t*, s){a*} -> 
     type-dec |[
-       @SuppressWarnings("all")
+       
+       
+       mod_annotations*
        public static class x extends RegisteringStrategy {
 		 static final x instance = new x();
 		 
@@ -521,7 +531,7 @@ rules
        }
     ]|
 	 with
-	body            := <translate-definition-body>
+	  body            := <translate-definition-body>
 	; x'              := <undo-dollars-for-capitals> x
 	; executorNames   := <CollectedExecutors;make-set>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
@@ -529,6 +539,12 @@ rules
 	; executor-inits* := <map(initialize-strategy-field)> executorNames
 	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
 	; lifted-binds*   := <get-lifted-bindings>
+	; mod_annotations*:= [ anno |[@SuppressWarnings("all")]| | <filter(translate-sdef-anno-to-java-anno)> a*]
+	
+	//SingleElemAnno(TypeName("SuppressWarnings"), Lit(String("all")))
+	
+	translate-sdef-anno-to-java-anno : CongruenceStrategy() -> anno |[ @CongruenceStrategy ]|
+	translate-sdef-anno-to-java-anno : DynamicRuleStrategy() -> anno |[ @DynamicRuleStrategy ]|
 	
 	list-first : [x|xs] -> x
 	list-rest  : [x|xs] -> xs
