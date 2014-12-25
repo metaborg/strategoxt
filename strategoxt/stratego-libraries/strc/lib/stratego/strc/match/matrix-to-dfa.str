@@ -7,6 +7,11 @@ imports stratego/strc/match/matrix
 	stratego/strc/match/match-to-matrix 
 	stratego/strc/front/DefaultStrat
 
+	overlays
+		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
+
+	    DefaultTerm = ConstType(Sort("ATerm",[]))
+			strategies
 strategies
 
   // scope rule fro MatrixSeenBefore should be improved; don't memo inside

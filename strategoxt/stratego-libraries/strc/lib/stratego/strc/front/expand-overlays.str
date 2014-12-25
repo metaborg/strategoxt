@@ -5,7 +5,11 @@ imports Stratego-Sugar
 	stratego/strc/lib/stratlib 
 	stratego/strc/front/raise-annotations
 
-strategies
+	overlays
+		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
+
+	    DefaultTerm = ConstType(Sort("ATerm",[]))
+			strategies
   
   ExpandOverlays : 
     |[ specification signature sdecl* overlays ol* strategies def1* ]| ->

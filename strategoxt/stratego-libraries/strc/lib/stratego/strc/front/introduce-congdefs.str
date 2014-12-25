@@ -9,7 +9,11 @@ imports Stratego-Sugar
 	stratego/strc/lib/stratlib 
 	Stratego-Sugar-MetaTransition
 
-strategies
+	overlays
+		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
+
+	    DefaultTerm = ConstType(Sort("ATerm",[]))
+			strategies
 
   introduce-congdefs =
     try(AddAnnoCongDef)
