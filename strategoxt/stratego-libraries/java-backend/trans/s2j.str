@@ -61,24 +61,20 @@ rules
     
   s2j(|externals) = 
   {|Externals, IsLocalOpDecl, ExecutorNames, CollectedExecutors, LiftedDefs, DefInit, CurrentLiftedFrame, IsStrategyArg, InnerDefinition, MainClassName, ProceedInvoke, CallTDecl, CallTAssigns, IsImported, ConstDecl, ConstInit, ConstantContainerClass, ApplicationName, java-Cache, IsProperList, InnerDefinition, ConstructorDecl, ConstructorInit:
-  debug
-	 ; with(
+	  with(
         s2j-init-options
       ; record-main-classname
       )
 	; where(rules(Externals := externals))
-	;debug
     ; log-timed(
         backend-simplify
       | "Backend preprocessing succeeded", 1
       )
-	  ;debug
     ; log-timed(
         dr-scope-all-verbose(java-compile-spec)
       ; java-simplify
       | "Backend transformation succeeded", 1
       )
-	  ;debug
     ; log-timed(
         olevel1(java-optimize)
       | <conc-strings> ("Backend optimization succeeded -O ", <get-config; int-to-string> "-O"), 1
@@ -211,7 +207,6 @@ rules
     ; x_name        := <MainClassName>
     ; x_name'       := <ApplicationName>
     ; pkgname       := <!package-dec? |[ package ~x:<get-config;dollars-for-capitals> "-p"; ]| <+ !None()>
-	; where(<debug> "Package Name"); where(<debug> pkgname)
     ; main          := <java-main-methods>
 	; libraryInitializer := <java-library-initializer> defs
     ; switch <get-config> "--stacktrace"
@@ -227,7 +222,7 @@ rules
 	   LiftedDefs := []
 	   CollectedLiftedDefs := []
     )
-  ; function-defs := <map(debug;translate-outer-definition-top)> defs
+  ; function-defs := <map(translate-outer-definition-top)> defs
   ; add-default-constructors
   ; constant-defs := <map(translate-constant-definition)> <get-config <+ ![]> "-D"
   //; lifted-defs   := <bagof-LiftedDef>
@@ -536,9 +531,7 @@ rules
        }
     ]|
 	 with
-	 debug(!"Translate SDef")
-	
-	; body            := <translate-definition-body>
+	  body            := <translate-definition-body>
 	; x'              := <undo-dollars-for-capitals> x
 	; executorNames   := <CollectedExecutors;make-set>
     ; invokedynamic*  := <maybe-make-invoke-dynamic> (s*, t*)
@@ -547,7 +540,6 @@ rules
 	; lifted-decls*   := <CollectedLiftedDefs;map(\(instance,decl) -> decl\)>
 	; lifted-binds*   := <get-lifted-bindings>
 	; mod_annotations*:= [ anno |[@SuppressWarnings("all")]| | <filter(translate-sdef-anno-to-java-anno)> a*]
-	; where(<debug> mod_annotations*)
 	
 	//SingleElemAnno(TypeName("SuppressWarnings"), Lit(String("all")))
 	
