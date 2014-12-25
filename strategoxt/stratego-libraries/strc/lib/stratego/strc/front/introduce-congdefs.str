@@ -129,7 +129,8 @@ strategies
              ; !x2; f2(|); ?y2
              ; !y1{^y2}
             }
-       ]|
+       ]| => anno-def
+	; !anno-def{CongruenceStrategy()}
 
   m-add-anno-cong-def =
     if <not(ModDefinition)> ("Anno_Cong__", 2, 0) then
