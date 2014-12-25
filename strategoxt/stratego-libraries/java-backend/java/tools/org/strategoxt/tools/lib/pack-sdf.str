@@ -239,7 +239,7 @@ strategies
     where(get-module-name-from-asfix => mod)
     ; collect(
           ?appl(prod(_,cf(sort("Import")),_),_)
-        ; get-module-name
+        ; pack-sdf-get-module-name
       , skip-non-imports
       )
     ; where(
@@ -264,13 +264,13 @@ strategies
   /**
    * Obtain module name from Import construct by removing optional parameters
    */
-  get-module-name =
+  pack-sdf-get-module-name =
       oncetd(?appl(prod(_,cf(sort("ModuleId")),_),_); yield => y)
     ; !y
 
   module-to-module-name = 
     ?appl(prod(_, cf(sort("Module")), _), [_, _, mid | _])
-    ; <get-module-name> mid
+    ; <pack-sdf-get-module-name> mid
 
   /**
    * Composing AsFix; The parser produces an AsFix term for each module. These
