@@ -36,7 +36,7 @@ strategies
       // Unpadd the initial string
     ; [QStr(
          string-as-chars(
-           remove-padding-single-line(|<padding-length> initial)
+           strc-remove-padding-single-line(|<padding-length> initial)
          )
        )
       | id
@@ -82,7 +82,7 @@ strategies
   string-literal-unpadd(|max) =
     QStr(string-as-chars(
       split-at-newlines
-    ; try([id | remove-padding(|max, max) => (<id>, max')])
+    ; try([id | strc-remove-padding(|max, max) => (<id>, max')])
     ; separate-by(|['\n'])
     ; concat
     ))
@@ -98,35 +98,35 @@ strategies
    *
    * @type List(List(Char)) -> (List(List(Char)), Int)
    */
-  remove-padding(|max, n) =
+  strc-remove-padding(|max, n) =
   	where(<leq> (n, 0) <+ ?[[] | _]) // finished with current line
-  ; [id | remove-padding(|max, max) => (<id>, max')]
+  ; [id | strc-remove-padding(|max, max) => (<id>, max')]
   ; !(<id>, max')
   <+
     [?[' '  | <id>] | id]
-  ; remove-padding(|max, <dec> n)
+  ; strc-remove-padding(|max, <dec> n)
   <+
     ?[['\t' | _] | _]
   ; if <lt> (n, 4) then
-      [id | remove-padding(|max, max) => (<id>, max')]
+      [id | strc-remove-padding(|max, max) => (<id>, max')]
     ; !(<id>, max')
     else
       [?[_ | <id>] | id]
-    ; remove-padding(|max, <subt> (n, 4))
+    ; strc-remove-padding(|max, <subt> (n, 4))
     end
   <+
     ?[_ | _] // uh oh, non-whitespace character with n > 0; reduce max
   ; where(max' := <subt> (max, n))
-  ; [id | remove-padding(|max', max') => (<id>, max'')]
+  ; [id | strc-remove-padding(|max', max') => (<id>, max'')]
   ; !(<id>, max'')
   <+
     []
   ; !([], max)
   
-  remove-padding-single-line(|n):
+  strc-remove-padding-single-line(|n):
     s -> s'
     with
-      ([s'], _) := <remove-padding(|n, n)> [s]
+      ([s'], _) := <strc-remove-padding(|n, n)> [s]
 
   split-at-newlines =
     at-suffix(
@@ -143,7 +143,7 @@ strategies
   string-escape-padd(|n) :
     StringEscape1(s, t) -> <desugar> Term |[ <internal-string-interpolation(|t, ~str:s_padded)> ]|
     with
-      s_padded := <string-as-chars(!['\n' | <remove-padding-single-line(|n)>])> s
+      s_padded := <string-as-chars(!['\n' | <strc-remove-padding-single-line(|n)>])> s
 
   DesugarQuoted :
     StringEscape2(s, t) -> StringEscape1(s, t)
