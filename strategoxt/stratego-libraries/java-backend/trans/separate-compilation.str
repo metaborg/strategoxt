@@ -60,7 +60,7 @@ strategies
 		; where({i , is:
 			  !"-I"
 			; get-config => [i|is]
-			; !("-I", [i,IncludeDir(working-output)|is])
+			; !("-I", <make-set>[i,IncludeDir(working-output)|is])
 			; set-config
 		})
 	// Remember initial la flags to generate imports later
@@ -284,8 +284,10 @@ strategies
 			process-import-default-lib(|circular-source-files) = 
 			{ lib, term:
 				  ?(term, lib)
-				  ; !term
-				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
+  				; !lib
+  				; is-default-lib-rtree
+  				; !term
+  				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
 			}
 			
 				
@@ -310,4 +312,10 @@ strategies
 			)
 		|}
 		end
-		   
+		
+	 	// Returns the rtree file for a default library import like libstrategolib
+		is-default-lib-rtree =
+			  ?"libstratego-lib" + ?"libstrategolib" + ?"libstratego-xtc"
+			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
+			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
+			+ ?"libstratego-parallel" + ?"libstrc"
