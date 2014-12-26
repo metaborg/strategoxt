@@ -209,7 +209,7 @@ rules
    // ; giving-up
 
   choices = 
-    foldr(!Fail(), Choice(<Snd>,<Fst>))
+    foldr(!Fail(), !Choice(<Snd>,<Fst>))
 
 rules
 
