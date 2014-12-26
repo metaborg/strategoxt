@@ -60,7 +60,7 @@ strategies
 		; where({i , is:
 			  !"-I"
 			; get-config => [i|is]
-			; !("-I", [i,IncludeDir(working-output)|is])
+			; !("-I", <make-set>[i,IncludeDir(working-output)|is])
 			; set-config
 		})
 	// Remember initial la flags to generate imports later
@@ -119,8 +119,11 @@ strategies
 		
 	add-default-lib-import = 
 		  is-generate-stdlib-import
-		;  ?Module(merged-name, [Imports(imports)|content])
+		 ; log(|Notice(), "Add import to libstratego-lib")
+		 ; ((
+		  ?Module(merged-name, [Imports(imports)|content])
 		; !Module(merged-name, [Imports(<make-set> [Import("libstratego-lib")|imports]) | content])
+		) <+ fatal-err(|["Unable to add default lib import to ", <id>]))
 	
 	determine-circular-result-unit = 
 		  ?[x|xs]
@@ -176,6 +179,8 @@ strategies
 				; !merged-ast
 				; collect-all(?ExtSDef(_,_,_)) => externals
 				; !IncludeAST(merged-ast,fileName)
+				
+				; log(|Notice(), ["Packing ", merged-ast])
 
 				; pack-stratego(|<pack-include-path>) => (files, spec)
 				; !spec
@@ -279,10 +284,10 @@ strategies
 			process-import-default-lib(|circular-source-files) = 
 			{ lib, term:
 				  ?(term, lib)
-				; !lib
-				; is-default-lib-rtree
-				; !term
-				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
+  				; !lib
+  				; is-default-lib-rtree
+  				; !term
+  				// Do not add as dependency, because it is inside a jar and the jar is safe to move and not expected to change
 			}
 			
 				
@@ -307,13 +312,10 @@ strategies
 			)
 		|}
 		end
-		   
 		
 	 	// Returns the rtree file for a default library import like libstrategolib
-		// It is actually implemented in strc-compat.str to keep handling libraries in one place
 		is-default-lib-rtree =
-			  "libstratego-lib" + "libstrategolib" +"libstratego-xtc"
-			+ "libstratego-sglr" + "libstratego-rtg" + "libstratego-sdf"
-			+ "libstratego-aterm" + "libstratego-gpp" + "libstratego-tool-doc"
-			+ "libstratego-parallel" + "libstrc"
-  
+			  ?"libstratego-lib" + ?"libstrategolib" + ?"libstratego-xtc"
+			+ ?"libstratego-sglr" + ?"libstratego-rtg" + ?"libstratego-sdf"
+			+ ?"libstratego-aterm" + ?"libstratego-gpp" + ?"libstratego-tool-doc"
+			+ ?"libstratego-parallel" + ?"libstrc"

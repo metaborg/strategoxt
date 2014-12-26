@@ -14,6 +14,9 @@ public class StrategyExecutorBuilder {
 		cleaned = removeDuplicatedStrategies(cleaned, DynamicRuleStrategy.class);
 		if (cleaned.size() > 1) {
 			System.out.println("[StrategyCollector]   Got " + cleaned.size() + " executors for " + strategyName);
+			for (Strategy s : strategies) {
+				System.out.println("    " + s.getClass().getName());
+			}
 		}
 		return chooseExecutorImpl(cleaned.toArray(new RegisteringStrategy[cleaned.size()]));
 	}
