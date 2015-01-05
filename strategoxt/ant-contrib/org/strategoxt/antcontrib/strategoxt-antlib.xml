@@ -269,6 +269,7 @@
 						<arg value="--constructor-forward-declaration" />
 						<arg value="--no-default-lib" /> <!-- No default lib: do not compile against the old stdlib provided with the used compiler -->
 						<arg value="--independent-java-compilation"/> <!-- Here are dependency cycles from stdlib to java_integration and back. We brake it here and want this library to be compiled independently. Works here, because std-lib does not use strategies from dependencies but dependencies only override/extend strategies -->
+						<arg value="--remove-overlays-from-externals"/> <!-- Backward compatability: Overlays are only visible inside a library -->
 						<arg value="${stdlib-import}"/> 
 						<strjargs />
 					</java>

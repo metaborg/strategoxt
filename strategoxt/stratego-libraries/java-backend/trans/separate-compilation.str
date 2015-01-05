@@ -43,7 +43,7 @@ strategies
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-		 // create-compilation-units(|working-package, working-output)
+	{| MainModule :
 		  where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
 		; !AbsolutePath(fileName) => absolute-file
@@ -54,7 +54,8 @@ strategies
 		; if complete-rebuild 
 			then create-compilation-unit(|<id>)
 			else read-or-create-compilation-unit(|<id>)
-		  end
+		  end => main-compilation-unit
+		; where(rules(MainModule : () -> main-compilation-unit))
 		; pack-process-options
 	// But the output directory in the search path to find generated rtrees
 		; where({i , is:
@@ -86,7 +87,7 @@ strategies
 				; map (write-compilation-unit)
 			)
 		)
-		
+	|}	
 
 	
 	compile (back-end|working-package,working-output)=
@@ -111,7 +112,6 @@ strategies
 				; log(|Info(), ["Place files in:     ", working-output])
 				; (create-compilation-unit-for-module(|moduleName) => work-unit
 					<+ (log(|Error(), ["Module name does not match file name: ", moduleName, " in " , fileName]); fail))
-				; log(|Info(), "Create pair")
 				; !(moduleName, work-unit, parseResult, fileName)
 				 })
 			; compile-asts(back-end|working-package,working-output, circular-units)
@@ -190,13 +190,21 @@ strategies
 			
 				;  log(|Info(), ["Calculating transitive externals for ", work-unit])
 				; where(
-					  calculate-transitive-externals(|work-unit, circular-units) => (rtree-file, signature-term)
+					  calculate-transitive-externals(
+						  is-remove-overlays-from-externals
+						; !();MainModule
+						; get-stratego-source-file
+						; !(<id>, <map(get-stratego-source-file)> circular-units)
+						; elem
+						|work-unit, circular-units) => (rtree-file, signature-term) 
 					; add-generated-file(|work-unit, AbsolutePath(rtree-file)) 
 					; set-interface-hash(|work-unit, signature-term) 
 				
 				)
 				
 				; log(|Notice(), ["Calling Backend for ", moduleName])
+				// Remove Overlays for Backend, they are only important for externals
+				; \Specification([Signature([Constructors(ops)]), _ , Strategies(defs)]) -> Specification([Signature([Constructors(ops)]), Strategies(defs)])\
 				; back-end(|circular-units, externals)
 				; where(<set-config> ("-la", libs))
 			| working-package,working-output,fileName,moduleName)}

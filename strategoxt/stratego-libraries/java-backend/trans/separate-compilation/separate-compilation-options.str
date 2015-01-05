@@ -18,12 +18,17 @@ strategies
 		+ Option (
 			  "--independent-java-compilation"
 			, <set-config> ("--independent-java-compilation", ()); !()
-			, !"--independent-java-compilation  Allows the generated Java code to be compiled without required libraries in classpath (moreover, each strategy can be compiled independent)"
+			, !"--independent-java-compilation    Allows the generated Java code to be compiled without required libraries in classpath (moreover, each strategy can be compiled independent)"
 		)
 		+ Option(
 			  "--generate-stdlib-import"
 			, <set-config> ("--generate-stdlib-import", ());log(|Info(), "Imports to stdlib will be generated"); !()
-			, !"--generate-stdlib-import        Generates an import to the standard-library for each module"
+			, !"--generate-stdlib-import          Generates an import to the standard-library for each module"
+		)
+		+ Option(
+			  "--remove-overlays-from-externals"
+			, <set-config> ("--remove-overlays-from-externals", ());log(|Info(), "Overlays will be removed from externals for modules, for which the compiler is called.");!()
+			, !"--remove-overlays-from-externals  Removes externals from modules externals, for backward compatability."
 		)
 		
 		
@@ -63,3 +68,6 @@ strategies
 		  
 	is-generate-stdlib-import =
 		  where(<get-config> "--generate-stdlib-import")
+	
+	is-remove-overlays-from-externals =
+		  where(<get-config> "--remove-overlays-from-externals")
