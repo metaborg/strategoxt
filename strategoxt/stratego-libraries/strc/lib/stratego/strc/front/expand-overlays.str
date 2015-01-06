@@ -6,11 +6,7 @@ imports Stratego-Sugar
 	stratego/strc/front/raise-annotations
 	stratego/strc/front/strategy-annos
 
-	overlays
-		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
-
-	    DefaultTerm = ConstType(Sort("ATerm",[]))
-			strategies
+strategies
   
   ExpandOverlays : 
     |[ specification signature sdecl* overlays ol* strategies def1* ]| ->

@@ -9,11 +9,7 @@ imports Stratego
 	stratego/strc/front/desugar 
 	stratego/strc/lib/stratlib
 
-	overlays
-		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
-
-	    DefaultTerm = ConstType(Sort("ATerm",[]))
-			strategies
+strategies
 
   /**
    * Obtaining all definitions
