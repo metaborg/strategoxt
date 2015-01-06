@@ -4,6 +4,7 @@ imports Stratego-Sugar
 	stratego/strc/front/DefaultStrat 
 	stratego/strc/lib/stratlib 
 	stratego/strc/front/raise-annotations
+	stratego/strc/front/strategy-annos
 
 	overlays
 		    DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
@@ -71,7 +72,7 @@ imports Stratego-Sugar
 rules
 
   Overlay-to-Congdef :
-    Overlay(f, xs, t) -> SDefT(f, xdecs, [], s)
+    Overlay(f, xs, t) -> SDefT(f, xdecs, [], s) {CongruenceStrategy()}
     where <map(!VarDec(<id>, DefaultStrat()))> xs => xdecs
 	; <term-to-cong <+ <fatal-err(|"Cannot generate congruence definition from overlay definition")> [f, "(", <length; int-to-string> xs, ")"]; fail> t => s
 

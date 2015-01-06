@@ -5,42 +5,54 @@ imports separate-compilation/utils
 
 strategies
 
-	calculate-transitive-externals(|comp-unit, circular-units) =
+	calculate-transitive-externals(remove-overlays|comp-unit, circular-units) =
 		  defs-to-external-defs; unpack-specification => local-externals
 		; !circular-units
 		; mapconcat(get-all-module-dependencies)
 		; make-set
 		; !(<id>, circular-units)
 		; diff
-		; map((get-generated-rtree <+ (log(|Error(), ["Failed to get rtree for ", <id>]);fail));path-get-full-path; ReadFromFile;unpack-specification) => dep-externals
+		; map((get-generated-rtree <+ (log(|Error(), ["Failed to get rtree for ", <id>]);fail));path-get-full-path;ReadFromFile;unpack-specification) => dep-externals
 		; foldr(!local-externals, merge-rtrees)
+		; if remove-overlays
+			then \(cs,os,ss) -> (cs, [], ss)\
+			end
 		; unify-and-sort-externals
 		; pack-specification
 		; where(export-externals(|".rtree") => externals-file)
 		; externals-to-signature => signature-term
 		; !(externals-file, signature-term)
-		
+	
 	
 	unpack-specification =
 		  ?Specification([Signature([Constructors(cs)]), Strategies(ss)])
-		; !(cs, ss)
+		; !(cs, [], ss)
+	unpack-specification =
+		  ?Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
+		; !(cs, os, ss)
 		
 	pack-specification =
-		  ?(cs, ss)
+		  ?(cs, [], ss)
 		; !Specification([Signature([Constructors(cs)]), Strategies(ss)])
+	pack-specification =
+		  ?(cs, os, ss)
+		; !Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
 
 	merge-rtrees =
-		  ?((cs1, ss1), (cs2, ss2))
-		; !(<conc> (cs1,cs2), <conc> (ss1, ss2))
+		  ?((cs1, os1, ss1), (cs2, os2, ss2))
+		; !(<conc> (cs1,cs2), <conc>(os1, os2), <conc> (ss1, ss2))
 		
 		
 	unify-and-sort-externals =
-		  ?(cs, ss)
+		  ?(cs, os, ss)
 		// The primitives sorts the constructors and signatures deterministically and removed duplicated
-		// My implementations in Stratego where so slow, that it increases the compilation time significantly
-		; !(<prim("Unify_and_sort_Constructors")> cs, <prim("Unify_and_sort_Signatures")> ss)
+		// My implementations in Stratego was so slow, that it increases the compilation time significantly
+		; !(<prim("Unify_and_sort_Constructors")> cs, os, <prim("Unify_and_sort_Signatures")> ss)
 		
 
+	externals-to-signature =
+		  ?Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(ss)])
+		; !Specification([Signature([Constructors(cs)]), Overlays(os), Strategies(<filter-anno-cong;remove-var-decs>ss)])
 	externals-to-signature =
 		  ?Specification([Signature([Constructors(cs)]), Strategies(ss)])
 		; !Specification([Signature([Constructors(cs)]), Strategies(<filter-anno-cong;remove-var-decs>ss)])
