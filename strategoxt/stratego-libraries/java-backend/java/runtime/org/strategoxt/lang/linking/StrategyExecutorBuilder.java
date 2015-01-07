@@ -2,37 +2,64 @@ package org.strategoxt.lang.linking;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.strategoxt.lang.RegisteringStrategy;
 import org.strategoxt.lang.Strategy;
 
 public class StrategyExecutorBuilder {
 	
-	public Strategy buildExecutor(String strategyName, List<Strategy> strategies) {
+	private Map<Strategy, Strategy> specialExecutors;
+	
+	public Strategy buildExecutor(String strategyName, List<Strategy> strategies ) {
 		List<Strategy> cleaned = removeDuplicatedStrategies(strategies, CongruenceStrategy.class);
 		cleaned = removeDuplicatedStrategies(cleaned, DynamicRuleStrategy.class);
-		if (cleaned.size() > 1) {
-			System.out.println("[StrategyCollector]   Got " + cleaned.size() + " executors for " + strategyName);
-			for (Strategy s : strategies) {
-				System.out.println("    " + s.getClass().getName());
-			}
+		
+		List<Strategy> specialStrategies = extractSpecialStrategies(cleaned);
+		if (specialStrategies == null) {
+			// No overriding or extending executors
+			this.specialExecutors = null;
+			return chooseExecutorImpl(cleaned);
 		}
-		return chooseExecutorImpl(cleaned.toArray(new RegisteringStrategy[cleaned.size()]));
+		System.out.println("Has special implementators " + strategyName);
+		System.out.println("Cleaned:  " + cleaned);
+		System.out.println("Special:  " + specialStrategies);
+		this.specialExecutors = new HashMap<Strategy, Strategy>();
+		List<Strategy> implementators = cleaned;
+		for (Strategy special : specialStrategies) {
+			System.out.println("Executor for " +special+ ": " + implementators);
+			Strategy executor = chooseExecutorImpl(implementators);
+			this.specialExecutors.put(special, executor);
+			
+			implementators = Collections.singletonList(special);
+		}
+		
+		return chooseExecutorImpl(implementators);
 	}
 	
-	private Strategy chooseExecutorImpl(Strategy[] s) {
-		switch (s.length)  {
+	public boolean hasSpecialExecutors() {
+		return this.specialExecutors != null;
+	}
+	
+	public Map<Strategy,Strategy> getSpecialExecutor() {
+		return this.specialExecutors;
+	}
+	
+	private static Strategy chooseExecutorImpl(List<Strategy> s) {
+		switch (s.size())  {
 		case 1:
-			return s[0];
+			return s.get(0);
 		case 2:
-			return new StrategyExecutor2(s[0], s[1]);
+			return new StrategyExecutor2(s.get(0), s.get(1));
 		case 3:
-			return new StrategyExecutor3(s[0], s[1], s[2]);
+			return new StrategyExecutor3(s.get(0), s.get(1), s.get(2));
 		case 4:
-			return new StrategyExecutor4(s[0], s[1], s[2], s[3]);
+			return new StrategyExecutor4(s.get(0), s.get(1), s.get(2), s.get(3));
 		default:
-			return new StrategyExecutor(s);	
+			return new StrategyExecutor(s.toArray(new Strategy[s.size()]));	
 		}
 	}
 	
@@ -51,6 +78,31 @@ public class StrategyExecutorBuilder {
 		}
 		return cleanedStrategies;
 		
+	}
+	
+	private List<Strategy> extractSpecialStrategies(List<Strategy> strategies) {
+		// Initialize the result list lazy, because it is empty usually
+		List<Strategy> special = null;
+		Iterator<Strategy> iterator = strategies.iterator();
+		while(iterator.hasNext()) {
+			Strategy strategy = iterator.next();
+			if (isOverriding(strategy) || isExtending(strategy)) {
+				if (special == null) {
+					special = new ArrayList<Strategy>();
+				}
+				special.add(strategy);
+				iterator.remove();
+			}
+		}
+		return special;
+	}
+	
+	private static boolean isOverriding(Strategy strategy) {
+		return strategy.getClass().getAnnotation(OverridingStrategy.class) != null;
+	}
+	
+	private static boolean isExtending(Strategy strategy) {
+		return strategy.getClass().getAnnotation(ExtendingStrategy.class) != null;
 	}
 
 }

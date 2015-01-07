@@ -604,6 +604,7 @@ rules
     AnnoDef([Override()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
+	   @OverridingStrategy
        private static final class x extends RegisteringStrategy {
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
@@ -618,13 +619,13 @@ rules
 		 }
 	 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerSpecialStrategyImplementator("~x'", instance, "overriden");
+		 	collector.registerStrategyImplementator("~x'", instance);
 		 }
 	 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
 			~lifted-binds*
-			proceed = collector.getNonSpecialStrategyExecutor("~x'");
+			proceed = collector.getStrategyExecutor("~x'", this);
 			
 		 }
 		 
@@ -654,6 +655,7 @@ rules
     AnnoDef([Extend()], def @ SDefT(x, s*, t*, s)) ->
     type-dec |[
        @SuppressWarnings("all")
+	   @ExtendingStrategy
        private static final class x extends RegisteringStrategy {
          // Initialize proceed with a new instance, to avoid stacking overrides due to repeated dynamic loads.
          // NOTE: this prevents multiple overrides of a strategy.
@@ -668,13 +670,13 @@ rules
 		 }
 
 		 public void registerImplementators(StrategyCollector collector) {
-		 	collector.registerSpecialStrategyImplementator("~x'", instance, "extended");
+		 	collector.registerStrategyImplementator("~x'", instance);
 		 }
 
 		 public void bindExecutors(StrategyCollector collector) {
 		 	~executor-inits*
 			~lifted-binds*
-			proceed = collector.getNonSpecialStrategyExecutor("~x'");
+			proceed = collector.getStrategyExecutor("~x'", this);
 	
 		 }
  
