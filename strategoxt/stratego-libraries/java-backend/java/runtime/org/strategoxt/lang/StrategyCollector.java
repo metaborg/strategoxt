@@ -23,7 +23,6 @@ public class StrategyCollector {
 	
 	
 	private Map<String, Strategy> strategyExecutors;
-	private Map<String, Strategy> nonSpecialExecutors;
 	
 	private Map<String, Map<Strategy, Strategy>> specialExecutors;
 
@@ -32,7 +31,7 @@ public class StrategyCollector {
 		//this.specialImplementators = new HashMap<String,Map<String, Strategy>>();
 		
 		this.strategyExecutors = new HashMap<String, Strategy>();
-		this.nonSpecialExecutors = new HashMap<String, Strategy>();
+		this.specialExecutors = new HashMap<String,Map<Strategy, Strategy>>();
 	}
 	
 	public Set<String> getAvailableStrategyNames() {
@@ -83,6 +82,9 @@ public class StrategyCollector {
 			final List<Strategy> implementators = strategy.getValue();
 			final Strategy executor = builder.buildExecutor(name, implementators);
 			this.strategyExecutors.put(name, executor);
+			if (builder.hasSpecialExecutors()) {
+				this.specialExecutors.put(name, builder.getSpecialExecutor());
+			}
 		}
 	}
 	
