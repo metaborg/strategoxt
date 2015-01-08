@@ -9,6 +9,7 @@ import org.strategoxt.lang.StrategoExit;
 import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.RegisteringStrategy;
 import org.strategoxt.lang.StrategyCollector;
+import org.strategoxt.lang.linking.OverridingStrategy;
 
 /**
  * Overrides report-failure(s) to throw a proper StrategoErrorExit exception
@@ -16,27 +17,27 @@ import org.strategoxt.lang.StrategyCollector;
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
+@OverridingStrategy
 public class report_failure_compat_1_0 extends RegisteringStrategy {
 	
 	
 	private final LogIntercept logIntercept = new LogIntercept();
 	
 	private Strategy proceed;
-	private Strategy log_0_2_Executor;
 	
 	public static final report_failure_compat_1_0 instance = new report_failure_compat_1_0();
 	private final LogIntercept logInstance = new LogIntercept();
 	
     public void registerImplementators(StrategyCollector collector)
     { 
-      collector.registerStrategyImplementator("report_failure_compat_1_0", instance);
-	  collector.registerSpecialStrategyImplementator("log_0_2", logInstance, "overriden");
+      collector.registerStrategyImplementator("report_failure_1_0", instance);
+	  collector.registerStrategyImplementator("log_0_2", logInstance);
     }
 	
     public void bindExecutors(StrategyCollector collector)
     { 
-      proceed = collector.getNonSpecialStrategyExecutor("report_failure_1_0");
-	  logInstance.proceed = collector.getNonSpecialStrategyExecutor("log_0_2");
+		proceed = collector.getStrategyExecutor("report_failure_1_0", this);
+		logInstance.proceed = collector.getStrategyExecutor("log_0_2", logInstance);
     }
 	
 	@Override
@@ -69,6 +70,7 @@ public class report_failure_compat_1_0 extends RegisteringStrategy {
 	/**
 	 * Intercepts logging messages.
 	 */
+	@OverridingStrategy
 	private class LogIntercept extends RegisteringStrategy {
 		
 		Strategy proceed; //For log_0_2

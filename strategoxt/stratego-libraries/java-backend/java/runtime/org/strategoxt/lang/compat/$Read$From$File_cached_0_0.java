@@ -15,12 +15,14 @@ import org.strategoxt.lang.WeakValueHashMap;
 import org.strategoxt.lang.Strategy;
 import org.strategoxt.lang.RegisteringStrategy;
 import org.strategoxt.lang.StrategyCollector;
+import org.strategoxt.lang.linking.OverridingStrategy;
 
 /**
  * Reads terms from files with caching.
  * 
  * @author Lennart Kats <lennart add lclnet.nl>
  */
+@OverridingStrategy
 public class $Read$From$File_cached_0_0 extends RegisteringStrategy {
 
 	/**
@@ -39,18 +41,18 @@ public class $Read$From$File_cached_0_0 extends RegisteringStrategy {
 		new WeakHashMap<IStrategoTerm, FileDate>();
 	
 	
-	private Strategy proceed;
-	
 	public static final $Read$From$File_cached_0_0 instance = new $Read$From$File_cached_0_0();
+	
+	private Strategy proceed;
 	
     public void registerImplementators(StrategyCollector collector)
     { 
-      collector.registerStrategyImplementator("ReadFromFile_cached_0_0", instance);
+      collector.registerStrategyImplementator("ReadFromFile_0_0", instance);
     }
 	
     public void bindExecutors(StrategyCollector collector)
     { 
-      proceed = collector.getNonSpecialStrategyExecutor("ReadFromFile_0_0");
+		proceed = collector.getStrategyExecutor("ReadFromFile_0_0", this);
     }
 	
 	@Override
