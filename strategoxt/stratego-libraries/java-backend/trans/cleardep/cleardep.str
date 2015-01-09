@@ -190,10 +190,24 @@ strategies
 		  !(<get-module-dependencies>, <get-module-circular-dependencies>)
 		; conc
 		
+		
 	
 	get-dep-file(|source-file) =
 		  !source-file
-		; path-add-extension(|"dep")
+		; ?RelativePath(_, relative-source-file)
+		; path-get-full-path
+		; !(IncludePathName(<id>), <pack-include-path>)
+		; separate-compilation-parse-file
+		; Snd
+		; ?Module(name, _)
+		; where(
+			if <eq>(<remove-extension> relative-source-file, name)
+				then id
+				else   log(|Error(), ["Module name ", name, " does not match path ", relative-source-file])
+					 ; fail
+			end
+			)
+		; !RelativePath(AbsolutePath(<output-dirname>), <conc-strings>(<to-java-compilation-folder>name, "/dependencies.dep"))
 		
 	createBuildSchedule(|schedule-mode) =
 		    (is-list
