@@ -2,9 +2,11 @@
 
 set -eu
 
-mvn clean install -f build-pom.xml
-mvn clean install -f buildpoms/pom.xml -Dstrategoxt-skip-build="true"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+mvn clean install -f "$DIR/build-pom.xml"
+mvn clean install -f "$DIR/buildpoms/pom.xml" -Dstrategoxt-skip-build="true"
 
 echo "Build output located at..."
-echo "StrategoXT distribution: buildpoms/build/target"
-echo "StrategoXT minified JAR: buildpoms/minjar/target"
+echo "StrategoXT distribution: $DIR/buildpoms/build/target"
+echo "StrategoXT minified JAR: $DIR/buildpoms/minjar/target"
