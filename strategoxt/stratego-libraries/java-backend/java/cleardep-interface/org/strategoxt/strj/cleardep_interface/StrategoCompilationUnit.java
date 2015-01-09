@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.sugarj.common.FileCommands;
 import org.sugarj.common.cleardep.CompilationUnit;
 import org.sugarj.common.cleardep.Stamper;
 import org.sugarj.common.cleardep.Synthesizer;
@@ -23,6 +24,8 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	private static final long serialVersionUID = 3462389746235492342L;
 
 	private Integer localInterfaceHashCode = null;
+	
+	
 
 	public static StrategoCompilationUnit create(Stamper stamper, Path compileDep, Path compileTarget, Path editedDep, Path editedTarget,
 			Set<RelativePath> sourceFiles, Map<RelativePath, Integer> editedSourceFiles, Mode mode, Synthesizer syn) throws IOException {
@@ -37,6 +40,25 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 	@Override
 	protected boolean isConsistentExtend(Mode arg0) {
+		// Get all source files
+		Set<RelativePath> path = this.getSourceArtifacts();
+		// Here is either a single str file or a str file and a meta file
+		if (path.size() == 2) {
+			return true;
+		}
+		// Only a str file, need to check whether a meta file has been created
+		if (path.size() == 1) {
+			RelativePath strFile = path.iterator().next();
+			String fileName = strFile.getRelativePath();
+			if (fileName.endsWith(".str")) {
+				String metaFileName = fileName.substring(0, fileName.length()-4) + ".meta";
+				RelativePath metaPath = new RelativePath(strFile.getBasePath(), metaFileName);
+				if (FileCommands.exists(metaPath)) {
+					// Oh, we got a new meta file, need to recompile
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 
@@ -97,37 +119,6 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 		});
 	}
-
-	/*
-	 * @Override
-	 * 
-	 * public boolean isConsistentShallow(Map<RelativePath, Integer>
-	 * editedSourceFiles, Mode mode) {
-	 * System.out.println("Is consistent Shallow?"); for (Path p :
-	 * this.sourceArtifacts.keySet()) { System.out.println("  " + p); } if
-	 * (hasPersistentVersionChanged()) {
-	 * System.out.println("Persitent version changed"); return false; }
-	 * 
-	 * if (!isConsistentWithSourceArtifacts(editedSourceFiles, mode)) {
-	 * System.out.println("Not consistent with source artifacts"); return false;
-	 * }
-	 * 
-	 * for (Entry<Path, Integer> e : generatedFiles.entrySet()) { if
-	 * (stamper.stampOf(e.getKey()) != e.getValue()) {
-	 * System.out.println("Generated files not consistent " + e.getKey());
-	 * return false; } }
-	 * 
-	 * for (Entry<? extends Path, Integer> e :
-	 * externalFileDependencies.entrySet()) if (stamper.stampOf(e.getKey()) !=
-	 * e.getValue()) {
-	 * System.out.println("Not consistent external file dependency"); return
-	 * false; }
-	 * 
-	 * if (!isConsistentExtend(mode)) {
-	 * System.out.println("Not consistent extended"); return false; }
-	 * 
-	 * return true; }
-	 */
 
 	@Override
 	public String toString() {
