@@ -9,7 +9,7 @@ imports
 strategies
 
   main-pp-sdf =
-    xtc-io-wrap(
+    io-stream-wrap(
       ?(fin, fout)
       ; <read-from-stream> fin
       ; pp-sdf-stream(|fout)
@@ -29,17 +29,12 @@ strategies
         )
    end
 
-  pp-sdf-stream(|stream) =
-    pp-sdf-box
-    ; box2text-stream(|80, stream)
-    ; <fputs> ("\n", stream)
-
   //pretty-printer for sdf
-  pp-sdf-box =
-	  sdf-desugar;
-	  parenthesize-Sdf2;
-	  sdf-ppfix;
-	  ast2box(|[<pp-table-sdf>, PP-Table([PP-Entry(Path1("Constructor"),[Arg("1")])])])
+ // pp-sdf-box =
+	//  sdf-desugar;
+	//  parenthesize-Sdf2;
+	//  sdf-ppfix;
+	//  ast2box(|[<pp-table-sdf>, PP-Table([PP-Entry(Path1("Constructor"),[Arg("1")])])])
   
   
  // pp-table-rtg =
