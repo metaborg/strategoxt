@@ -19,7 +19,6 @@ import org.sugarj.common.cleardep.TimeStamper;
 import org.sugarj.common.cleardep.mode.Mode;
 import org.sugarj.common.path.Path;
 import org.sugarj.common.path.RelativePath;
-import org.sugarj.util.Pair;
 
 public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 
@@ -63,7 +62,7 @@ public class ClearDep_CompilationUnit_create extends AbstractPrimitive {
 	}
 
 	private Stamper stamperFromTerm(IStrategoTerm t) throws IllegalArgumentException {
-		String stamperName = Term.tryGetName((IStrategoAppl) t);
+		String stamperName = Term.tryGetName(t);
 		if ("TimeStamper".equals(stamperName))
 			return TimeStamper.instance;
 		else if ("ContentHashStamper".equals(stamperName))

@@ -8,9 +8,7 @@ import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
-import org.sugarj.common.cleardep.ContentHashStamper;
 import org.sugarj.common.cleardep.mode.Mode;
-import org.sugarj.common.path.Path;
 import org.sugarj.common.path.RelativePath;
 
 public class ClearDep_CompilationUnit_is_consistent_shallow extends AbstractPrimitive {

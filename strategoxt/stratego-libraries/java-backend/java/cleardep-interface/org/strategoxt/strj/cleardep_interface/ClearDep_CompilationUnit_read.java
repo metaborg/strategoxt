@@ -1,16 +1,13 @@
 package org.strategoxt.strj.cleardep_interface;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;
 import org.spoofax.interpreter.stratego.Strategy;
 import org.spoofax.interpreter.terms.IStrategoAppl;
-import org.spoofax.interpreter.terms.IStrategoList;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.Term;
 import org.sugarj.common.cleardep.ContentHashStamper;
@@ -61,7 +58,7 @@ public class ClearDep_CompilationUnit_read extends AbstractPrimitive {
 	}
 
 	private Stamper stamperFromTerm(IStrategoTerm t) throws IllegalArgumentException {
-		String stamperName = Term.tryGetName((IStrategoAppl) t);
+		String stamperName = Term.tryGetName(t);
 		if ("TimeStamper".equals(stamperName))
 			return TimeStamper.instance;
 		else if ("ContentHashStamper".equals(stamperName))
@@ -83,19 +80,4 @@ public class ClearDep_CompilationUnit_read extends AbstractPrimitive {
 
 	}
 	
-	private Set<RelativePath> sourceFilesFromTerm(IStrategoTerm t) throws IllegalArgumentException {
-		if (!Term.isTermList(t))
-			throw new IllegalArgumentException();
-		IStrategoList pathList = (IStrategoList) t;
-		Set<RelativePath> paths = new HashSet<>();
-		for (IStrategoTerm pathTerm : pathList.getAllSubterms()) {
-			Path p = ClearDepUtils.pathFromPathTerm(pathTerm);
-			if (! (p instanceof RelativePath)) {
-				throw new IllegalArgumentException();
-			}
-			paths.add((RelativePath) p);
-		}
-		return paths;
-	}
-
 }

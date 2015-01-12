@@ -263,6 +263,7 @@
 		<!-- <pathelement path="${java.class.path}" /> -->
 		<pathelement location="java/runtime" />
 		<pathelement location="java/cleardep-interface" />
+		<!-- Currently need revision  4da27af6d53b80fb92df8ce7b03ae555ecc6d5d6 -->
 		<pathelement location="java/sugarj-common.jar" />
 		<pathelement location="${bin.java}" />
 		<pathelement location="${bin.stratego}" />
@@ -281,10 +282,6 @@
 
 	<target name="build-java" depends="build-stratego">
 		<mkdir dir="${bin.java}" />
-		<javac srcdir="/Volumes/Data/Developer/Java/EclipseWorkspaces/HiwiSE/sugar-lang/-main-/common/src" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
-			 <exclude name="org/sugarj/common/Activator.java"/>
-			 <exclude name="org/sugarj/common/JavaCommands.java"/>
-		</javac>
 		<javac srcdir="${bin.stratego}" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/runtime" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<javac srcdir="java/commandline" destdir="${bin.java}" includeAntRuntime="no" includeJavaRuntime="no" classpathref="build.classpath" source="1.7" target="1.7" nowarn="off" debug="true" debuglevel="lines,vars,source" fork="yes" compiler="org.eclipse.jdt.core.JDTCompilerAdapter" />
@@ -297,7 +294,7 @@
 			<fileset dir="${bin.java}" includes="**/*.class" />
 			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
 			<zipgroupfileset dir="java" includes="spoofax-libs.jar" />
-			<!-- ><zipgroupfileset dir="java" includes="sugarj-common.jar" /> -->
+			<zipgroupfileset dir="java" includes="sugarj-common.jar" />
 		</jar>
 	</target>
 
