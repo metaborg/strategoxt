@@ -3,10 +3,12 @@ package org.strategoxt.strj.cleardep_interface;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.sugarj.common.FileCommands;
 import org.sugarj.common.cleardep.CompilationUnit;
 import org.sugarj.common.cleardep.Stamper;
@@ -24,8 +26,8 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	private static final long serialVersionUID = 3462389746235492342L;
 
 	private Integer localInterfaceHashCode = null;
-	
-	
+	private CompilerOptions compiledOptions =null;
+	private transient CompilerOptions currentOptions =null;
 
 	public static StrategoCompilationUnit create(Stamper stamper, Path compileDep, Path compileTarget, Path editedDep, Path editedTarget,
 			Set<RelativePath> sourceFiles, Map<RelativePath, Integer> editedSourceFiles, Mode mode, Synthesizer syn) throws IOException {
@@ -40,6 +42,20 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 	@Override
 	protected boolean isConsistentExtend(Mode arg0) {
+		// Check whether a meta file for the compilation unit was added
+		if (!checkNewMetaFile()) {
+			return false;
+		}
+
+		// Compare compiler options
+		if (!compareCompilerOptions()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean checkNewMetaFile() {
 		// Get all source files
 		Set<RelativePath> path = this.getSourceArtifacts();
 		// Here is either a single str file or a str file and a meta file
@@ -51,7 +67,7 @@ public class StrategoCompilationUnit extends CompilationUnit {
 			RelativePath strFile = path.iterator().next();
 			String fileName = strFile.getRelativePath();
 			if (fileName.endsWith(".str")) {
-				String metaFileName = fileName.substring(0, fileName.length()-4) + ".meta";
+				String metaFileName = fileName.substring(0, fileName.length() - 4) + ".meta";
 				RelativePath metaPath = new RelativePath(strFile.getBasePath(), metaFileName);
 				if (FileCommands.exists(metaPath)) {
 					// Oh, we got a new meta file, need to recompile
@@ -61,9 +77,16 @@ public class StrategoCompilationUnit extends CompilationUnit {
 		}
 		return true;
 	}
+	
+	private boolean compareCompilerOptions() {
+		// There are no compiler options to compare against, ignore this check
+		if (this.currentOptions == null) {
+			return true;
+		}
+		return this.currentOptions.equals(this.compiledOptions);
+	}
 
 	public void setLocalInterfaceHashCode(Integer hashCode) {
-		System.out.println("Set local interface hash for " + this + ": " + hashCode);
 		this.localInterfaceHashCode = hashCode;
 	}
 
@@ -119,6 +142,14 @@ public class StrategoCompilationUnit extends CompilationUnit {
 
 		});
 	}
+	
+	public void setCompiledOptions(CompilerOptions options) {
+		this.compiledOptions = options;
+	}
+	
+	public void setCurrentOptions(CompilerOptions options) {
+		this.currentOptions = options;
+	}
 
 	@Override
 	public String toString() {
@@ -133,12 +164,14 @@ public class StrategoCompilationUnit extends CompilationUnit {
 	protected void readEntity(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		super.readEntity(in);
 		this.localInterfaceHashCode = (Integer) in.readObject();
+		this.compiledOptions = (CompilerOptions) in.readObject();
 	}
 
 	@Override
 	protected void writeEntity(ObjectOutputStream out) throws IOException {
 		super.writeEntity(out);
 		out.writeObject(this.localInterfaceHashCode);
+		out.writeObject(this.compiledOptions);
 	}
 
 }

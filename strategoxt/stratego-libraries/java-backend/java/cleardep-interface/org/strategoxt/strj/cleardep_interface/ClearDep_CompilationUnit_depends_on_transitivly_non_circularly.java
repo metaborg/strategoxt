@@ -1,8 +1,5 @@
 package org.strategoxt.strj.cleardep_interface;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.spoofax.interpreter.core.IContext;
 import org.spoofax.interpreter.core.InterpreterException;
 import org.spoofax.interpreter.library.AbstractPrimitive;

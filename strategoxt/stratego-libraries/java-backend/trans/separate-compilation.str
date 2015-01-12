@@ -40,11 +40,21 @@ strategies
         ; strc-output-ast
   	  	; frontend
 		; strc-optimize
+		
+	collect-config = 
+		  get-config-keys(id)
+		; map(
+			  !(<id>,<id>)
+			;(id,get-config)
+		)
+		; create-compiler-options => options
+		; rules(InitialCompilerConfig : _ -> options)
 
 
 	separate-compilation-front-end(back-end|working-package,working-output)=
-	{| MainModule :
-		  where(fileName := <\FILE(s) -> s\>) 
+	{| MainModule, InitialCompilerConfig :
+		  where(collect-config)
+		; where(fileName := <\FILE(s) -> s\>) 
 	// Make a relative file of the given with respect to the include path, then read or create the compilation unit for this file
 		; !AbsolutePath(fileName) => absolute-file
 		; pack-include-path
