@@ -5,13 +5,13 @@ imports
   stratego/aterm/PrettyPrintRules
 
 strategies
-  
+
   io-pp-aterm =
     io-stream-wrap(
       max-term-size-option + max-depth-option
     , system-usage
     , system-about
-    , io-pp-aterm-helper 
+    , io-pp-aterm-helper
     )
 
   io-pp-aterm-helper =
@@ -34,7 +34,7 @@ strategies
     ArgOption("--max-term-size"
     , where(string-to-int; set-max-term-size-config) ,!
 "--max-term-size int
-                    Set the term size from which the verbose 
+                    Set the term size from which the verbose
                     pretty printing must be used [8]"
     )
 
@@ -65,11 +65,11 @@ strategies
   pp-aterm =
     pp-aterm-box
     ; box2text-string(|80)
-  
-  pp-aterm-box(|maxtermsize) =
+
+  pp-aterm(|maxtermsize) =
     pp-aterm-box(|maxtermsize)
     ; box2text-string(|80)
- 
+
   pp-aterm-stream(|stream) =
     pp-aterm-stream(|8, stream)
 
@@ -79,14 +79,14 @@ strategies
     ; box2text-stream(|80, stream)
     ; <fputs> ("\n", stream)
 
-strategies 
+strategies
 
   /**
    *  Escaping special characters in strings
-   *  model after 
+   *  model after
    *  'static int symbolTextSize(Symbol sym)'
    *  in aterm.c (aterm-2.3.1)
-   * 
+   *
    */
   aterm-escape-strings =
     topdown(try(aterm-escape-string))
@@ -99,13 +99,13 @@ strategies
           escape-chars(
             Escape-backslash
           + Escape-double-quote
-          + Escape-linefeed 
+          + Escape-linefeed
           + \ ['\t' | cs ] -> ['\', 't'  | cs ] \
           + Escape-carriage-return
           )
         )
       ; ?s2
-  
+
   /**
   * Convenience strategy for pretty printing a term
   *
@@ -113,4 +113,3 @@ strategies
   * @type Term -> String
   */
   pp-aterm(|width) = aterm-escape-string; pp-aterm-box; box2text-string(|width)
-  
