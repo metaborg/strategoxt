@@ -11,10 +11,10 @@ strategies
       max-term-size-option + max-depth-option
     , system-usage
     , system-about
-    , pp-aterm 
+    , io-pp-aterm-helper 
     )
 
-  pp-aterm =
+  io-pp-aterm-helper =
     ?(<read-from-stream>, fout)
     ; if get-max-depth-config => depth then
         at-depth(!depth, !"...")
@@ -61,7 +61,15 @@ strategies
     <set-config> ("--max-depth", <id>)
 
 strategies
+
+  pp-aterm =
+    pp-aterm-box
+    ; box2text-string(|80)
   
+  pp-aterm-box(|maxtermsize) =
+    pp-aterm-box(|maxtermsize)
+    ; box2text-string(|80)
+ 
   pp-aterm-stream(|stream) =
     pp-aterm-stream(|8, stream)
 
