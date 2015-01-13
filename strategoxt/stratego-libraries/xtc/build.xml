@@ -44,6 +44,8 @@
 				<srcfiles dir="${dep.libstratego-lib}" includes="**/*" />
 			</str-deps>
 		</strj-lib>
+		<copy file="lib/libstratego-xtc-posix-xsi.ctree" todir="${bin}" />
+		<copy file="${bin}/libstratego-xtc-posix-xsi.ctree" tofile="${bin}/libstratego-xtc.ctree" />
 		<copy file="lib/libstratego-xtc-posix-xsi.rtree" todir="${bin}" />
 		<copy file="${bin}/libstratego-xtc-posix-xsi.rtree" tofile="${bin}/libstratego-xtc.rtree" />
 	</target>
@@ -61,14 +63,14 @@
 	<target name="jar" depends="build-java">
 		<jar destfile="${bin}/libstratego-xtc.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
-			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+			<fileset dir="${bin.stratego}" includes="**/*.ctree, **/*.rtree, **/*.pp.af, **/*.tbl" />
 		</jar>
 	</target>
 
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy todir="${install-location}">
-			<fileset dir="${bin}" includes="*.rtree, *.jar" />
+			<fileset dir="${bin}" includes="*.ctree, *.rtree, *.jar" />
 		</copy>
 	</target>
 

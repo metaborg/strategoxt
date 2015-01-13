@@ -48,7 +48,7 @@
 				<srcfiles dir="${dep.sdf-front}/sdf" includes="**/*" />
 			</str-deps>
 		</strj-lib>
-		<!-- <copy file="lib/libstratego-sdf.ctree" todir="${bin}" /> -->
+		<copy file="lib/libstratego-sdf.ctree" todir="${bin}" />
 		<copy file="lib/libstratego-sdf.rtree" todir="${bin}" />
 	</target>
 
@@ -65,14 +65,14 @@
 	<target name="jar" depends="build-java">
 		<jar destfile="${bin}/libstratego-sdf.jar" update="false">
 			<fileset dir="${bin.java}" includes="**/*.class" />
-			<fileset dir="${bin.stratego}" includes="**/*.rtree, **/*.pp.af, **/*.tbl" />
+			<fileset dir="${bin.stratego}" includes="**/*.ctree, **/*.rtree, **/*.pp.af, **/*.tbl" />
 		</jar>
 	</target>
 
 	<target name="install" depends="jar">
 		<mkdir dir="${install-location}" />
 		<copy todir="${install-location}">
-			<fileset dir="${bin}" includes="*.rtree, *.jar" />
+			<fileset dir="${bin}" includes="*.ctree, *.rtree, *.jar" />
 		</copy>
 	</target>
 
