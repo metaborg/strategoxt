@@ -15,6 +15,7 @@
 	<modules>
 		<module>buildpoms/build</module>
 		<module>buildpoms/jar</module>
+		<module>buildpoms/test</module>
 		<module>buildpoms/minjar</module>
 	</modules>
 </project>

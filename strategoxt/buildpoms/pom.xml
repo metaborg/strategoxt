@@ -153,7 +153,7 @@
             </goals>
           </execution>
           <execution>
-            <id>strategoxt-ant-build-install</id>
+            <id>strategoxt-ant-build</id>
             <phase>compile</phase>
             <configuration>
               <target>

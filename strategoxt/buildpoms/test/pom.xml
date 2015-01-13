@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>strategoxt-test</artifactId>
+  <version>1.3.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <parent>
+    <groupId>org.metaborg</groupId>
+    <artifactId>org.metaborg.maven.parent</artifactId>
+    <version>1.3.0-SNAPSHOT</version>
+    <relativePath>../../../../spoofax-deploy/org.metaborg.maven.parent</relativePath>
+  </parent>
+
+  <properties>
+    <strategoxt-skip-test>false</strategoxt-skip-test>
+
+    <strategoxt-build-location>${basedir}/../../</strategoxt-build-location>
+
+    <strategoxt-baseline-location>${project.build.directory}/baseline</strategoxt-baseline-location>
+    <strategoxt-bin-location>${project.build.directory}/bin</strategoxt-bin-location>
+    <strategoxt-dist-location>${project.build.directory}/dist</strategoxt-dist-location>
+    <strategoxt-subdist-location>${project.build.directory}/sub-dist</strategoxt-subdist-location>
+    <strategoxt-jar-location>${strategoxt-baseline-location}/share/strategoxt/strategoxt/strategoxt.jar</strategoxt-jar-location>
+  </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.metaborg</groupId>
+      <artifactId>strategoxt-jar</artifactId>
+      <version>${metaborg-version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.metaborg</groupId>
+              <artifactId>strategoxt-distrib</artifactId>
+              <version>${metaborg-version}</version>
+              <type>tar</type>
+              <classifier>bin</classifier>
+              <outputDirectory>${strategoxt-baseline-location}</outputDirectory>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
+        <executions>
+          <execution>
+            <id>strategoxt-unpack-baseline-build</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.metaborg</groupId>
+            <artifactId>strategoxt-jar</artifactId>
+            <version>0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${strategoxt-jar-location}</systemPath>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <skip>${strategoxt-skip-test}</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>strategoxt-ant-test</id>
+            <phase>test</phase>
+            <configuration>
+              <target>
+                <property
+                  name="baseline"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="sdf2bundle"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="nativepath"
+                  value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                <property
+                  name="install-prefix-out"
+                  value="${strategoxt-baseline-location}" />
+                <property
+                  name="strj-sut"
+                  value="${strategoxt-jar-location}" />
+
+                <ant
+                  antfile="build.xml"
+                  dir="${strategoxt-build-location}"
+                  inheritRefs="true"
+                >
+                  <target name="test-compiler" />
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

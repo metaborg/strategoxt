@@ -17,6 +17,7 @@
 		<module>buildpoms/bootstrap2</module>
 		<module>buildpoms/bootstrap3</module>
 		<module>buildpoms/jar</module>
+		<module>buildpoms/test</module>
 		<module>buildpoms/minjar</module>
 	</modules>
 </project>
