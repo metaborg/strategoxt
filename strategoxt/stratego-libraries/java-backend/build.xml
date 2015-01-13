@@ -301,6 +301,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${src-gen}" />
 		<delete dir="${install-location}" />
+		<delete file="java/strategoxt.jar" />
 		<delete>
 			<fileset dir="java" includes="**/*.ctree*, **/*.rtree" />
 		</delete>

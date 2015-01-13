@@ -79,7 +79,9 @@
 		</subant>
 	</target>
 	
-	<target name="clean" depends="clean-syntax, clean-libraries"/>
+	<target name="clean" depends="clean-syntax, clean-libraries">
+		<delete dir=".cache" />
+	</target>
 
 	<target name="clean-syntax">
 		<subant inheritall="false">
