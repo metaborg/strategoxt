@@ -96,9 +96,16 @@
                 <property
                   name="nativepath"
                   value="${strategoxt-baseline-location}/${strategoxt-nativepath}" />
+                <!-- Set install-prefix to baseline location, so that tests use that to find dependencies during compilation -->
                 <property
                   name="install-prefix-out"
                   value="${strategoxt-baseline-location}" />
+                <property
+                  name="subdists-install-prefix"
+                  value="${strategoxt-subdist-location}" />
+                <property
+                  name="bin"
+                  value="${strategoxt-bin-location}" />
                 <property
                   name="strj-sut"
                   value="${strategoxt-jar-location}" />
