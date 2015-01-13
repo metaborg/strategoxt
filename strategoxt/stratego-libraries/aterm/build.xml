@@ -34,6 +34,8 @@
 				<arg value="stratego-lib" />
 				<arg value="-la" />
 				<arg value="stratego-gpp" />
+				<arg value="-la" />
+				<arg value="stratego-xtc" />
 				<arg value="-I" />
 				<arg value="${dep.aterm-front}" />
 				<arg value="-I" />
