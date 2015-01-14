@@ -6,8 +6,7 @@
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
-	<!-- Import the properties file, telling us which compiler to use for Java -->
-	<property file="build.properties" />
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="sdf2bundle" value="${user.home}/.nix-profile" />
@@ -303,6 +302,7 @@
 		<delete dir="${bin}" />
 		<delete dir="${src-gen}" />
 		<delete dir="${install-location}" />
+		<delete file="java/strategoxt.jar" />
 		<delete>
 			<fileset dir="java" includes="**/*.ctree*, **/*.rtree" />
 		</delete>

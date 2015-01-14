@@ -6,8 +6,7 @@
 	<!-- Import Ant contrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
-	<!-- Import the properties file, telling us which compiler to use for Java -->
-	<property file="build.properties" />
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 
 	<!-- Build configuration. Overwrite these from importer -->
 	<property name="strj-sut" value="" />
