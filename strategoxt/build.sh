@@ -13,8 +13,8 @@ while getopts ":da:t" opt; do
       INPUT_MAVEN_ARGS=$OPTARG
       ;;
     t)
-	  INPUT_SKIP_TESTS="true"
-	  ;;
+      INPUT_SKIP_TESTS="true"
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
