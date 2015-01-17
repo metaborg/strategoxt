@@ -3,6 +3,7 @@
  */
 module strategy/conditional
 imports strategy/general/option
+imports collection/list/cons
 imports collection/tuple/cons
 
 strategies // Equality
