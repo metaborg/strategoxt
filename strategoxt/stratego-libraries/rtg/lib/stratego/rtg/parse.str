@@ -1,6 +1,7 @@
 module stratego/rtg/parse
 imports
   libstratego-sglr
+  stratego/rtg/signature
 
 strategies
 

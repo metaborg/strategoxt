@@ -1,6 +1,8 @@
 module stratego/sdf/pretty-print
 imports
    libstratego-gpp
+   stratego/sdf/desugar
+   
 
 strategies
 
