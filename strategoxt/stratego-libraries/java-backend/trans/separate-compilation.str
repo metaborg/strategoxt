@@ -89,9 +89,10 @@ strategies
 		  end
 		; log(|Info(), ["Calculated build schedule ", <id>])
 	// Compile according to the build schedule, outer map maps over the build tasks in the build schedule
-		; map(	if  is-global-compilation <+ not(needsTaskToBeBuild) then 
-				  (is-global-compilation <+ task-get-units)
-				; log(|Info(), ["Compile Build Task " , <id>])
+		; map(	//if  debug("Check "); ((is-global-compilation;debug(!"GLobal")) <+ (not(needsTaskToBeBuild);) then 
+		// TODO Reinclude the if when problem with istasktobebuild is completed
+				  log(|Info(), ["Compile Build Task " , <id>])
+				; (is-global-compilation <+ task-get-units)
 	// Compiles a strongly connected component
 				; compile(back-end|working-package,working-output)
 	// Update the interface versions of the dependencies 
@@ -102,7 +103,7 @@ strategies
 					}))
 	// Finally write all units
 				; map (write-compilation-unit)
-				end
+				//end
 		)
 	|}	
 
