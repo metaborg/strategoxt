@@ -3,7 +3,12 @@
  */
 
 module stratego/strc/front/variables-to-constructors
-imports libstratego-lib Stratego-Sugar
+
+imports
+	libstratego-lib
+	Stratego-Sugar
+	stratego/strc/model/model
+
 strategies
 
   variables-to-constructors =

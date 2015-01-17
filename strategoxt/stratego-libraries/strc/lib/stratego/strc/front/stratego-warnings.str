@@ -15,6 +15,7 @@ imports
   libstratego-xtc
   stratego/strc/front/error-reporting
   Stratego-Sugar
+  stratego/strc/lib/stratlib
 
 signature
   constructors

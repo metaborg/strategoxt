@@ -1,5 +1,10 @@
 module stratego/strc/opt/build-match-laws
-imports Stratego Stratego-MetaTransition
+
+imports
+	Stratego
+	Stratego-MetaTransition
+	stratego/strc/opt/stratego-laws
+	stratego/strc/front/desugar
 
 rules // combinations of match and build
 

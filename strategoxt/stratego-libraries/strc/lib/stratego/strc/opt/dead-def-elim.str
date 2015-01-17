@@ -1,5 +1,10 @@
 module stratego/strc/opt/dead-def-elim
-imports Stratego stratego/strc/lib/stratlib
+
+imports
+	Stratego
+	stratego/strc/lib/stratlib
+	stratego/strc/model/model
+	
 strategies
 
   only-local-option = 

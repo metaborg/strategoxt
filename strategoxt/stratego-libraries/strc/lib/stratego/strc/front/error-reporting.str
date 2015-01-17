@@ -4,6 +4,7 @@
 module stratego/strc/front/error-reporting
 imports
   libstratego-xtc
+  stratego/strc/pp/pp-stratego
 
 strategies
   

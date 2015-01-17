@@ -6,6 +6,10 @@
 
 module stratego/strc/front/desugar-string-quotations
 
+imports
+	Stratego-Sugar
+	stratego/strc/front/desugar
+
 strategies
 
   Desugar :

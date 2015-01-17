@@ -14,6 +14,11 @@ imports
   libstratego-rtg
   Stratego 
   stratego/strc/pack/pack-stratego-options
+  stratego/strc/front/report-ambs
+  stratego/strc/strc/format-check
+  stratego/strc/parse/parse-stratego
+  stratego/strc/front/frontend
+  stratego/strc/opt/optimizer
 
 strategies
 

@@ -1,4 +1,10 @@
 module stratego/strc/strc/format-check
+
+imports
+	libstratego-xtc
+	libstratego-rtg
+	stratego/strc/strc/strc
+
 strategies
 
   tfc1(|format, phase) = tfc(|format, 1, phase)

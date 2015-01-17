@@ -1,5 +1,9 @@
 module stratego/strc/front/call-graph
 
+imports
+	stratego/strc/model/model
+	stratego/strc/front/rename-defs
+
 strategies
 
   check-calls =

@@ -4,6 +4,8 @@ imports
   Stratego
   libstratego-lib
   libstratego-sglr
+  stratego/strc/parse/meta-explode
+  stratego/strc/front/desugar
   
 /**
  * Structure of meta files.

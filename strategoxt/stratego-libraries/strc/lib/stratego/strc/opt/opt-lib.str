@@ -1,5 +1,9 @@
 module stratego/strc/opt/opt-lib
-imports Stratego
+
+imports
+	Stratego
+	stratego/strc/lib/stratlib
+
 strategies
 
   apply-to-bodies(s) = 

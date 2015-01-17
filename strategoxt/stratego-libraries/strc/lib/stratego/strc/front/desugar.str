@@ -6,6 +6,10 @@
 
 module stratego/strc/front/desugar
 
+imports
+	stratego/strc/front/variables-to-constructors
+	stratego/strc/front/lift-dynamic-rules
+
 imports 
   Stratego-Sugar
   stratego/strc/lib/stratlib
