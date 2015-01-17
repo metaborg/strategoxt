@@ -2,6 +2,9 @@
  * Used for C99
  */
 module stratego/xtc/c99/Proc
+
+imports stratego/xtc/Proc
+
 strategies
 
   /**

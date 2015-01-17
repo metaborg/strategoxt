@@ -1,4 +1,9 @@
 module stratego/xtc/Repository
+
+imports
+	stratego/xtc/posix/Repository
+	stratego/xtc/c99/Repository
+
 signature
   sorts XtcKey
   constructors

@@ -1,5 +1,8 @@
 module tools/strategoxt-xtc-tools
 
+imports
+	stratego/xtc/posix/Proc
+
 /**
  * asfix
  */
